@@ -1,12 +1,13 @@
 # The Abel slope of the prime error is the archimedean genus exactly under RH with simple zeros
 
 - **ID:** abel-cramer-slope-is-the-archimedean-genus
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ACP README §9.8 (mass at infinite height), §6.3 (the budget); P41, P42, P46
 - **Statement:** With `g(u) = e^{−u/2}(ψ(⌊e^u⌋) − ⌊e^u⌋)` and `A(c) = ∫_0^∞ g² e^{−2cu} du`:
-  `RH ∧ (all zeros simple) ⇔ 2c·A(c) → 2 + γ − log 4π` as `c ↓ 0`. Under RH alone
-  `2c·A(c) → Σ_ρ m_ρ²/|ρ|²` (no mass at infinite height).
+  `RH ∧ (all zeros simple) ⇔ 2c·A(c) → 2 + γ − log 4π` as `c ↓ 0`
+  (`riemannHypothesis_and_simple_iff_tendsto_abelSlope`). The RH-only form
+  `2c·A(c) → Σ_ρ m_ρ²/|ρ|²` is not formalized: the zero-part bound uses distinct ordinates.
 
 ## Goal
 
@@ -18,9 +19,11 @@ height.
 ## Gates
 
 - [x] 0 → 1 well-posed; inputs located in the corpus.
-- [ ] 1 → 2 paper proof complete (below; heavy direction steps 3–6 to be checked against Lean).
-- [ ] 2 → 3 Lean: `M1` (⇐ direction), `M2` (shell tail energy), `M3` (Hadamard split), `M4`
-      (assembly).
+- [x] 1 → 2 paper proof complete (below).
+- [x] 2 → 3 Lean, compiled with `lake --old env lean`, standard axioms only:
+      `AnAbelSlopeAtTheGenusIsRHWithSimpleZeros` (⇐), `ThePrimeErrorSymbolSplitsAtTheZeros` (split and
+      remainder), `TheZeroPartHasNoMassAtInfiniteHeight` (zero part), `TheAbelSlopeOfThePrimeErrorIsTheArchimedeanGenus`
+      (assembly); corpus `RHTower.cramer_finite_zero_energy_tail`.
 
 ## Approach
 
@@ -37,16 +40,20 @@ A zero of order `m ≥ 2` adds `≥ 2/|ρ|²` beyond the copy sum: contradiction
    (identity `((ρ−½)⁻¹ + (s−ρ)⁻¹)/s = 1/(ρ(s−ρ)) + 1/(2ρ(ρ−½)s)`).
 3. `sup_{0<c≤1} ∫|E/s|² dy < ∞`: convexity `|ζ(σ+it)| ≪ t^{¼+η}`, `|Γℝ′/Γℝ| ≤ log t + K`,
    compactness near `y = 0` (`1/(s−1) − ζ` entire).
-4. Zero part `P_c(y) = Σ'_q b_q/(c + i(y − γ_q))`, `b_q = −1/ρ_q`. Finite truncations are Laplace
-   transforms of `e^{−cu} Σ_{q∈F} b_q e^{iγ_q u}`; Fatou bounds `∫|P_c − P_c^{F₀}|²` by
-   `2π liminf_F ∫_0^∞ |Σ_{F∖F₀} b e^{iγu}|² e^{−2cu} du`.
+4. Zero part `P_c(y) = Σ'_q b_q/(c + i(y − γ_q))`, `b_q = −1/ρ_q`. Finite truncations over
+   `|γ| ≤ N` are Laplace transforms of causal waves `1_{u>0} e^{−cu} Σ_{q∈F} b_q e^{iγ_q u}`;
+   Fatou bounds `∫|P_c|²` by the uniform bound on the truncations, each split as head + tail with
+   `|a + b|² ≤ (1 + t)|a|² + (1 + 1/t)|b|²`.
 5. Dyadic shells `2^k ≤ |γ| < 2^{k+1}` (corpus `integral_norm_sq_zeroSum_div_cube_le`, local
    harmonic sums, shell counts): block energy of the tail `k ≥ k₀` is `≤ τ(k₀) → 0` per unit
    `u`-block, uniformly; so `limsup (c/π)∫|P_c − P_c^{F₀}|² ≤ C τ(k₀)`.
-6. Finite part: `(c/π)∫|P_c^{F₀}|² → Σ_{γ} |Σ_{γ_q = γ} b_q|²`. Minkowski with step 3 gives
-   `2cA(c) → Σ_ρ m_ρ²/|ρ|²`; with simple zeros this is `Σ_q 1/|ρ_q|² = 2 + γ − log 4π`.
+6. Head: with distinct ordinates, `2c ∫_0^∞ e^{−2cu}|Σ_F b e^{iγu}|² du → Σ_F |b_q|²`. With step 3
+   and the same `(1 + t)` splitting, `limsup 2cA(c) ≤ Σ_q 1/|ρ_q|² = 2 + γ − log 4π`; the window
+   atoms give `liminf ≥` the same.
 
 ## Log
+
+- 2026-10-27 — formalized (⇐ in P50, ⇒ in P51); moved to 3-formalized.
 
 - 2026-10-27 — created; inputs: `logDeriv_xi_eq_partialFraction`, `exists_norm_riemannZeta_le_convexity`,
   `norm_logDeriv_Gammaℝ_le`, `sum_inv_one_add_abs_im_sub_le`, `integral_norm_sq_zeroSum_div_cube_le`,

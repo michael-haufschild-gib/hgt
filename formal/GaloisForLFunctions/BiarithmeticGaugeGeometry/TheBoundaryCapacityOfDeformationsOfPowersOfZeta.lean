@@ -147,7 +147,10 @@ theorem zetaPowDeformation_boundary_law {κ d : ℕ} {F Λ : ℂ → ℂ}
   have hsum : ∑ t ∈ Z, ((analyticOrderAt Λ' (((1 : ℝ) : ℂ) + (t : ℂ) * I)).toNat : ℝ) =
       ((∑ t ∈ Z, (analyticOrderAt Λ (1 + (t : ℂ) * I)).toNat : ℕ) : ℝ) := by
     push_cast
-    exact Finset.sum_congr rfl fun t ht => by rw [hordline t (hZ t ht).ne', Complex.ofReal_one]
+    refine Finset.sum_congr rfl fun t ht => ?_
+    have h := hordline t (hZ t ht).ne'
+    rw [Complex.ofReal_one] at h
+    rw [h]
   rw [hsum] at hcap
   have hnn : (0 : ℝ) ≤ (analyticOrderAt Λ' ((1 : ℝ) : ℂ)).toNat := Nat.cast_nonneg _
   have : ((2 * ∑ t ∈ Z, (analyticOrderAt Λ (1 + (t : ℂ) * I)).toNat : ℕ) : ℝ) ≤
@@ -180,7 +183,8 @@ theorem abscissaOfAbsConv_relDeficit_vonMangoldt_le_one (d : ℕ) {b : ℕ → �
       (relDeficit_le (fun n => mul_nonneg (Nat.cast_nonneg d) ArithmeticFunction.vonMangoldt_nonneg)
         hb)
       (LSeriesSummable_of_abscissaOfAbsConv_lt_re
-        (lt_of_le_of_lt (abscissaOfAbsConv_zeta_pow_le_one d) (by simpa using hy)))
+        (lt_of_le_of_lt (abscissaOfAbsConv_zeta_pow_le_one d)
+          (by rw [Complex.ofReal_re]; exact_mod_cast hy)))
 
 /-- **The boundary law of arithmetic members.** If `(F, Λ) ∈ CompletedPositiveSystem κ d` with
 `−F'/F = Σ b(n) n^{−s}`, `b ≥ 0`, and the deficit `D = Σ (dΛ(n) − b(n))⁺ n^{−s}` has zero Abel

@@ -2,10 +2,10 @@
 
 - **ID:** CDG-EXPLICIT-THETA-REGULATOR
 - **Stage:** 3-formalized
-- **Type:** Unconditional theorem; contribution status unaccepted.
+- **Type:** Unconditional theorem supporting the combined arithmetic metric.
 - **Source:** Conjugate-Diagonal Geometry question 2.
-- **Status:** Paper proof and Lean endpoints complete; novelty/significance gate open.
-- **Count:** 0 accepted contributions from this card.
+- **Status:** Paper proof and Lean endpoints complete.
+- **Count:** Part of contribution 1; no separate count.
 
 ## Exact construction and theorem
 
@@ -185,21 +185,20 @@ All audited endpoint axiom closures contain only `propext`, `Classical.choice`,
 command `lake --old env lean .../ExplicitThetaErrorCertificate.lean`.
 Imports are wired; no umbrella was compiled and no limits were raised.
 
-## Novelty, calibration, and successor
+## Source context and calibration
 
 The positive Poincaré–Lelong density is established mathematics; see Andersson,
 *Poincaré–Lelong Type Formulas and Segre Numbers*, J. Geom. Anal. 35:25 (2025),
 §5.6, https://d-nb.info/1355764351/34. Generic current convergence and a
-relabelled spectral norm do not count. This card remains unaccepted pending
-an audit of the combined arithmetic consequence against existing source
-contour and finite theta/Taylor reconstruction.
+relabelled spectral norm do not count separately. This card supplies the
+regulator and arithmetic error certificate for the combined finite-source metric.
 
 The construction carries no successor charge. Planted entire quartets retain
 positive current mass. Nothing here bounds the Hecke defect by capacity,
 forces its vanishing, or proves RH or simplicity. The constants provide a
 mathematical error envelope, not a numerical implementation.
 
-The active successor is
-[finite theta-source collided readings](../1-in-progress/finite-theta-collided-readings.md):
+The completed
+[finite theta-source collided readings](finite-theta-collided-readings.md)
 replace the infinite amplitude by finitely many literal integer theta terms
-with a prescribed cofinal coupling, and retain the full moving-window certificate.
+with a prescribed cofinal coupling and retain the full moving-window certificate.

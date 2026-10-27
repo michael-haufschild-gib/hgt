@@ -39,3 +39,4 @@ rational `CentralVanishingCeiling γ` ⟺ no off-critical zero at ordinate `γ`,
 ## Log
 - 2026-10-26 — created; C1 opened.
 - 2026-10-27 — C1 formalized.
+- 2026-10-27 — C2–C14 formalized (see `logs/bgg-250-contributions-2026-10-26.md` and the `3-formalized/bgg-*` cards).

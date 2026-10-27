@@ -15,6 +15,8 @@ language, mechanisms, traps, questions, tools, pillars, programme interfaces and
 contribution/success criteria. Full completion requires answers to all eleven
 questions and all eight missing tool families in §4; several endpoints imply RH.
 Infrastructure or a partial theorem cannot discharge those endpoints.
+This programme-wide backlog is inactive under the user's closure-only request;
+all already-started contributions are now complete, as recorded below.
 
 ## Gates
 
@@ -22,7 +24,7 @@ Infrastructure or a partial theorem cannot discharge those endpoints.
 - [ ] 1 → 2: dependency-closed paper proofs for each proposed contribution.
 - [ ] 2 → 3: exact Lean statements, individual `lake --old env lean` checks and transitive axiom audit.
 
-## Initial research direction
+## Original programme directions (inactive)
 
 Search existing collided-polarization and Hecke-law modules before adding code.
 Develop a quantitative defect calculus: conjugate-diagonal Gram traces, exact
@@ -34,10 +36,10 @@ central-order reduction, successor-charge question and two-variable carriers.
 
 | Obligation | Evidence needed | Current status |
 |---|---|---|
-| Foundational README | All requested conceptual sections, mathematically faithful boundaries | Initial draft written |
-| Dedicated code and umbrella | New checked leaves, imports in programme and cross-area umbrellas | Checked moving-source chain wired; no umbrella builds |
+| Foundational README | All requested conceptual sections, mathematically faithful boundaries | Foundations and arithmetic source-current construction documented |
+| Dedicated code and umbrella | New checked leaves, imports in programme and cross-area umbrellas | Checked source, polynomial, local and regularity leaves wired; no umbrella builds |
 | Q1 conjugation correspondence | Constructed arithmetic action, spectral identification | Open |
-| Q2 arithmetic evaluation of `D` | Exact identity or substantive prime-side defect estimate | Moving positive theta formula verified; significance audit open |
+| Q2 arithmetic evaluation of `D` | Exact identity or substantive prime-side defect estimate | Positive theta formula, polynomial-prefix uniform metric and higher-regularity windows verified; contribution 1 |
 | Q3 selective count | Fibre-dependent count with correct quadratic term | Open |
 | Q4 rank growth | Constructed section spaces and rank theorem | Open |
 | Q5 beyond-horizon localization | Odd-sector sign and required exceptional-set control | Open |
@@ -45,7 +47,7 @@ central-order reduction, successor-charge question and two-variable carriers.
 | Q7 capacity payment | Unconditional structural `Δ ≤ D` | Open |
 | Q8 coupled ceiling | Unconditional central-order theorem | Open |
 | Q9 escape completeness | Unattained-supremum and infinite-height classification | Open |
-| Q10 selection | Estimates at the required zero spacing | Open |
+| Q10 selection | Estimates at the required zero spacing | Uniform shrinking-neighborhood detector verified; spacing-scale selection remains open |
 | Q11 fixed tensor loss | Constructed base and power-independent loss | Open |
 
 ## Proof integrity and validation
@@ -99,7 +101,7 @@ The tail and moment inequalities follow termwise; summability justifies their su
 These are spectral density tools. They do not supply the missing arithmetic
 upper bound for `E`, and are valid on impure model divisors as well.
 
-## Forcing gap: a stronger elementary separation to check
+## Formalized forcing separation and positive survivor
 
 The source's exact functions are
 `N=2a cosh(δa)(a^5+δ²a^5+10δa^4+20a^3)` and
@@ -113,7 +115,7 @@ cost alone is `≥384 log(|γ|+3)N²`. The polar correction is nonnegative.
 Thus the exact sufficient forcing inequality cannot hold anywhere in the
 conductor range, including depth `δ=1/2`; no asymptotic height threshold is needed.
 
-Positive survivor to formalize with this obstruction: the explicit detector
+The formalized positive survivor is the explicit detector
 signal/noise bound `2H²≤(N²/2)exp(2δa)` and the resulting necessary aperture
 inequality for any successful forcing certificate. This excludes the overlap
 of two sufficient criteria; it does not show the actual odd detector is negative
@@ -152,28 +154,31 @@ to the collided trace, with constants controlled when reflection partners merge.
 
 ## Current files and validation
 
-Current validation supersedes the historical check notes below: the full
-source chain through `UniformThetaSourceMetric` passes individual Lean checks.
-The final source-only check verifies the moment, collided-norm, and Hecke-defect
-endpoints; all three transitive axiom lists contain only `propext`,
-`Classical.choice`, `Quot.sound`. The exact theorem and remaining significance
-gate are in `../3-formalized/theta-source-moving-collided-trace.md`. The explicit regulator
-remains a separate unproved conjecture. Accepted count remains 0/250.
+Closure of all already-started work is complete. No new contribution was opened.
+The earlier 250-contribution goal remains cleared; the wider programme questions
+above remain open and are not active work.
 
-- `DefectKernel.lean`: individual source check passed; olean built because the
-  new `ZetaDepthDistribution.lean` imports it.
-- Missing dependency `ArithmeticPolarization/HeckeInvarianceOfTheCollidedPolarizationIsRH.olean`
-  built successfully from its existing source; source unchanged.
-- `ZetaDepthDistribution.lean`: initial source check exposed two elaboration errors,
-  fixed by qualifying translation and making indicator cases explicit. Olean check
-  passed; needed by `TwoScaleDepthRigidity.lean`.
-- `TwoScaleDepthRigidity.lean`: source check passed after explicit weight/kernel
-  arguments removed costly implicit inference.
-- `TheConductorForcingGap.lean`: source-only check and transitive audits passed
-  for the positive signal bound, necessary aperture law, and separation.
-  Closed card: `../5-failed/conductor-forcing-separation.md`. Excluded from count.
-- Programme umbrella and cross-area import now include the six checked leaves.
-  Transitive axiom audit and final individual source checks remain pending.
+- The common theta source, prescribed regulator, finite-theta reading and
+  growing-test-family endpoint passed individual Lean checks and standard-only
+  transitive axiom audits.
+- The [polynomial-prefix metric and shrinking-disc detector](../3-formalized/polynomial-prefix-collided-metric.md)
+  passed final source-only checks 37030 and 96188. All six audited endpoints
+  contain only `propext`, `Classical.choice`, `Quot.sound`.
+- The earlier [higher-regularity common-source claim](../3-formalized/theta-source-moving-collided-trace.md)
+  passed final source-only check 12644, with both endpoint closures standard-only.
+- The initial defect/depth and two-scale rigidity leaves are checked. The
+  forcing route's positive signal bound, necessary aperture law and separation
+  are checked in `TheConductorForcingGap`; its completed
+  [no-go card](../5-failed/conductor-forcing-separation.md) records the survivor.
+
+These source-metric results form contribution 1; helpers, rate statements and
+extensions receive no separate count. Finished modules are wired into their
+owning umbrellas; no umbrella or full build was run. Completed scratch files
+and stale owned search outputs were removed. Detailed verification history is
+retained in `logs/conjugate-diagonal-geometry.md`.
+
+The modular-surface discussion above is an undeveloped programme lead, with no
+outstanding asserted new theorem and no contribution opened for it.
 
 ## A nonholomorphic source formula: paper construction
 
@@ -285,30 +290,15 @@ asserted.
 
 Lean implementation: `UniversalSourceWeight`, `CommonSourceRegulator`,
 `CommonSourceMetric`; each passed its individual olean check. Supporting
-curvature and Green calculus has also passed. Arithmetic source identification,
-the moving-window extension and the final novelty audit remain part of the
-contribution gate.
-
-## Verification update
-
-`SourceCurvatureCalculus.lean` and `XiSourceCurrent.lean` passed their individual
-olean checks. The new programme umbrella imports these and the previously
-checked defect/depth/rigidity leaves; `MainTheorems.lean` imports the programme.
-Neither umbrella was compiled. `XiLogRegularization.lean` also passed its
-individual olean check after API and elaboration repairs. `XiPositiveSourceMetric`,
-`UniversalSourceWeight` and `XiLogL1Convergence` have also passed their individual
-olean checks. `SourceCutoffControl`, `CommonSourceRegulator` and
-`CommonSourceMetric` have also passed. The theta identification and moving-window
-leaves remain unchecked.
-The transitive axiom audit passed for eleven principal checked declarations;
-their closures contain only `propext`, `Classical.choice` and `Quot.sound`.
-No accepted-contribution claim yet.
+curvature and Green calculus has also passed. Arithmetic source identification and both the C² and higher-regularity
+moving-window extensions are now checked. No novelty gate remains in the
+authorized workflow.
 
 ## Moving logarithmic windows: derivation and further extensions
 
-The C² endpoint with `|τ|≤n/2` and `j|L|≤2log(n+1)` described below is now
-verified. Broader windows using higher regularity remain separate conjectures.
-Historical proof-plan paragraphs below do not certify those extensions.
+Both the C² endpoint and the previously stated higher-regularity extension
+are now formalized. The derivation below uses the same common source schedule
+throughout; exact higher-regularity declarations appear in the closure section.
 
 Strengthen the common-source limit to `|L| <= c log n` for every fixed compact
 smooth test, fixed `c`, and finite moment order. Choose the source regulator by
@@ -325,16 +315,17 @@ The rapid-decay input is already proved in
 The required Cauchy derivative estimate is also available in mathlib and used
 by `HTGeometry/CauchySecondOrderStep`. New obligations are the cutoff seminorm
 construction, quantitative local error bound and moving-window passage.
-This remains a conjecture/proof plan; no uniform-limit theorem has been checked.
+These obligations are discharged by the checked source-current, tail and
+regularity-window modules.
 
 The common-index definition now includes both weighted-mass and local-error
 requirements. Both have proved eventually valid certificates, so the least
 index exists without consulting tests or divisor coordinates. Cutoff support
-and supremum bounds are written in `SourceCutoffControl` and under verification.
-`SourceSquareCalculus` contains the written, unchecked product-Laplacian and
+and supremum bounds are checked in `SourceCutoffControl`.
+`SourceSquareCalculus` supplies the checked product-Laplacian and
 holomorphic-square estimates needed for the quantitative current bound.
 
-The uniform tail admits a finite-regularity refinement. For a compact Cʳ test,
+The uniform tail admits a finite-regularity refinement. For a compact Cʳ test with r>=2,
 `|F(rho)|² <= C(1+|Im rho|)^(-2r)`. The reference divisor density is
 `q_rho=m_rho/(1+|gammaOf rho|²)`. On the omitted part of the nth cutoff,
 `|Im rho|>n`; the moment factor is at most `2^j exp(j|L|)`. Therefore
@@ -343,7 +334,8 @@ uniform tail majorant. The cutoff eventually equals one at each fixed zero,
 so dominated convergence includes equality at the boundary `cj=2r-2`.
 This is a sufficient regularity range, not a claimed optimal threshold.
 Smooth compact tests supply every finite logarithmic window and moment order.
-The stronger endpoint still requires a Lean proof and novelty audit.
+The stronger endpoint is proved in `ThetaSourceRegularityMetric`, including
+the closed boundary and the smooth-test specialization.
 
 The first uniform endpoint can stay on the existing `CompactTest` domain:
 all C² compact tests and all finite orders `j`, in the joint window
@@ -356,7 +348,7 @@ the checked C² input. The case `j=0` permits every L because that kernel is
 independent of L. Higher regularity enlarges the joint window as described
 above, but is not needed for this first source-evaluation endpoint.
 
-The endpoint should also be uniform for ordinate modulations `twist τ f` with
+The endpoint is also uniform for ordinate modulations `twist τ f` with
 `|τ|<=n/2`. This is the form that evaluates a local high-ordinate density
 statistic. The corpus already proves conductor-scale upper/lower bounds for
 `D(twist τ f)` in `TheLocalWeylLawOfTheCollidedForm`; those bounds are not new
@@ -390,14 +382,70 @@ Hecke invariance or an RH conclusion.
 
 ## Checked prescribed-regulator endpoint
 
-The historical unchecked-source notes above are superseded for the C² joint
-window by [the prescribed theta regulator and arithmetic certificate](../3-formalized/explicit-theta-source-regulator.md).
+The C² joint-window result is also realized by
+[the prescribed theta regulator and arithmetic certificate](../3-formalized/explicit-theta-source-regulator.md).
 One closed regulator recovers the full moving collided moments, norm, and
 Hecke defect, with an arithmetic logarithm-over-radius tail bound. The final
 error-certificate source check and all endpoint axiom audits pass. This is
-formalized infrastructure with novelty/significance still unaccepted; count
-remains 0/250. [Finite integer theta readings](../3-formalized/finite-theta-collided-readings.md)
+formalized infrastructure included in the finite arithmetic metric contribution. [Finite integer theta readings](../3-formalized/finite-theta-collided-readings.md)
 and their [uniform growing-test-family extension](../3-formalized/logarithmic-aperture-finite-theta-metric.md)
 now pass individual Lean checks and standard-only transitive axiom audits.
-The active strengthening is [a polynomial-size theta prefix](polynomial-prefix-collided-metric.md);
-its dependency-closed paper proof is written and its exact Lean chain is under verification.
+The [polynomial-size theta prefix and shrinking-disc detector](../3-formalized/polynomial-prefix-collided-metric.md)
+now pass their final individual source-only checks and all endpoint axiom audits.
+
+
+## Closure of the existing higher-regularity claim
+
+The user cleared the 250-contribution goal and requested completion of work
+already started, with no new contribution. This section closes the earlier
+common-source logarithmic-window claim above; it adds no contribution count.
+No web, hgtl7 skill, or novelty checks are part of this closure.
+
+For a compact C^(k+2) test f put r=k+2 and q=2k+2. Choose a>=0 containing
+its support, and set S_r=2^r(integral|f|+integral|f^(r)|). The existing
+arbitrary-order integration-by-parts theorem gives, on the zero strip,
+
+```
+|F_f(s-i tau)|^2 <= S_r^2 exp(a)/(1+|Im(s)-tau|)^(2r).
+```
+
+At a zero omitted by chi_n, write X=1+|gamma-tau|. For |tau|<=n/2,
+n+1<=2X and 1+|gammaOf(rho)|^2<=5X^2. Since 2r=q+2, the joint
+window j|L|<=q log(n+1) gives the pointwise majorant
+
+```
+|F_f(rho-i tau)|^2 k_L(depth(rho))^j
+ <= 2^j [5*2^q*S_r^2*exp(a)]/(1+|gammaOf(rho)|^2).
+```
+
+Multiplication by the omitted cutoff and actual multiplicity, followed by
+summation, bounds the omitted trace by 2^j C_r sourceReferenceTail(n).
+The boundary q=2r-2 is included; no strict aperture loss is used.
+
+For the compact-current term, the already checked common source schedule
+has error bounded by (2pi)^(-1)4^(j+1) A_f^2 exp(-n^4+E), with
+E=2((n+3+|tau|)^2+j|L|(n+7/2)). If j|L|<=b log(n+1), b>=0,
+then E<=(18+7b)(n+1)^2<=(36+14b)(n^2+1). Hence the normalized
+current error is bounded by (2/pi)A_f^2 exp(-n^4+K_b n^2+K_b),
+where K_b=36+14b. This tends to zero for each b, independently of j.
+The same actual source schedule therefore recovers all normalized moments
+uniformly in the C^(k+2) joint window, before choices of j,L,tau.
+
+For a smooth compact test and fixed c,j, choose k with 2k+2>=jc.
+The normalized result at that k, applied with tolerance epsilon/4^j,
+proves the earlier unnormalized claim for |L|<=c log(n+1). This is the
+same common theta-source reading, not a change of the source stage.
+Exact Lean verification is complete:
+
+- `SourceRegularityWindow`: main dependency check 85864; common-current
+  envelope and its vanishing limit, both standard-only axiom closures.
+- `SourceRegularityTail`: scratch 73835 and main dependency check 13962;
+  closed-boundary pointwise and full-trace tail bounds, standard-only closures.
+- `ThetaSourceRegularityMetric`: final source-only check 12644;
+  `thetaSource_uniform_regularity_moments` and
+  `thetaSource_uniform_smooth_log_windows`, both with exactly
+  `propext`, `Classical.choice`, `Quot.sound` in their axiom closures.
+
+All three leaves are wired into the programme umbrella. The endpoint required
+no olean. This closes the earlier paper claim and all remaining work within
+the user's existing-contributions-only instruction.

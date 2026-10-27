@@ -86,6 +86,15 @@ must be read in their owning modules before they are used.
 
 * **Polarization and capacity:** `Re W = D−Δ`, together with the Hecke law of `D`.
   This separates the evaluation problem from the missing compatibility.
+* **Arithmetic source currents:** Literal finite theta prefixes give entire amplitudes
+  `A_N` and positive densities `η |A_N'|² / (π (|A_N|²+η)²)`. Prescribed prefixes,
+  regulators and spatial cutoffs recover the actual multiplicity-weighted collided
+  trace and its depth moments. After moment normalization, convergence is uniform
+  over bounded source-norm families with logarithmically growing physical and Hecke
+  aperture. A polynomial integer-prefix schedule retains this uniformity. Localized
+  readings bracket full multiplicities in concentric shrinking discs, uniformly
+  over centers in a growing height window. The comparison with the reflection
+  pairing remains the capacity problem.
 * **Local-type geometry:** boosts at off-line pairs, resonance restrictions,
   and the affine localizers `σγ`. Their parity sectors distinguish harmless
   positivity from a sign that could force a companion zero.

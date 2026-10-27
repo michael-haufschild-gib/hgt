@@ -102,6 +102,14 @@ noncomputable def chiR (y : F) : ℝ := ((quadraticChar F y : ℤ) : ℝ)
 theorem chiR_mul (y z : F) : chiR (y * z) = chiR y * chiR z := by
   simp [chiR, map_mul]
 
+theorem chiR_eq_neg_one {c : F} (hc : ¬ IsSquare c) : chiR c = -1 := by
+  simp [chiR, quadraticChar_neg_one_iff_not_isSquare.mpr hc]
+
+theorem chiR_eq_one {c : F} (hc0 : c ≠ 0) (hc : IsSquare c) : chiR c = 1 := by
+  simp [chiR, (quadraticChar_one_iff_isSquare hc0).mpr hc]
+
+theorem chiR_one : chiR (1 : F) = 1 := chiR_eq_one one_ne_zero ⟨1, by ring⟩
+
 theorem abs_chiR_le (y : F) : |chiR y| ≤ 1 := by
   rcases quadraticChar_trichotomy F y with h | h | h <;> simp [chiR, h]
 

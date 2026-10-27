@@ -252,6 +252,16 @@ the horizon `N`. Every theorem states which are fixed and which grow.
     function and `ℤ[F]` a naive height (`hyperellipticDatum_window_exists_effectivity`,
     `hyperellipticDatum_exists_naiveHeight`). In genus one this is Hasse's theorem for every elliptic
     curve in odd characteristic (`RHTower.EllipticHasse.abs_natCard_point_sub_le`).
+13. **Counting reaches short sums** (`TheCompletionLaw`, `TheBurgessMoment`, `TheBurgessEnergy`,
+    `TheBurgessBound`). Completion turns the complete count into incomplete sums with a logarithmic
+    loss: `|Σ_{n<N} χ(n)| ≤ √p (1 + log p)` (`norm_sum_range_le_polyaVinogradov`). Below `√p` the
+    count must be taken on a family of curves: `Σ_x (Σ_{b<B} χ(x + b))^{2r}` is a sum of complete
+    sums over `y² = Π(x + bᵢ)`, square-root small unless the shifts pair up
+    (`sum_pow_two_mul_le`, from `RHTower.Hyperelliptic.abs_sum_quadraticChar_multiset_le`); Hölder
+    over the points `ā(M + m)` with their multiplicative energy (`burgessEnergy_le`) and induction
+    on the length give Burgess's bound `|Σ_{k<N} χ(M + k)| ≤ K_r N^{1−1/r} p^{(r+1)/(4r²)} (1 + log p)`
+    (`abs_burgessS_le`), nontrivial from `N = p^{1/4+ε}`. With smooth numbers and Mertens, the least
+    quadratic non-residue is `≤ p^{1/(4√e)+ε}` (`eventually_exists_nonresidue_le`).
 
 ---
 
@@ -269,6 +279,7 @@ the horizon `N`. Every theorem states which are fixed and which grow.
 | **E8 Calibration** | `ℙ¹ × ℙ¹` satisfies the calculus with dimensions; genus one: naive height ⇔ Hasse; odd-degree hyperelliptic curves of every genus over every finite field of odd characteristic are unitary by counting and carry effectivity functions and naive heights; golden datum: abundant, no naive height | `hyperbolicPlane_hodgeIndex`, `genusOne_exists_naiveHeight_iff`, `riemannHypothesis_oddHyperelliptic`, `hyperellipticDatum_window_exists_effectivity`, `goldenDatum_multiplicative_axioms_not_effective` |
 | **E9 One statement in five currencies** | RH ⇔ effectivity function ⇔ no abundant class ⇔ naive heights ⇔ fixed tensor loss ⇔ log-torsion law | `riemannHypothesis_effectivity_tfae` |
 | **E10 The prime side is an intersection** | `J(a, b) = gcd(a, b) log lcm(a, b)`; `I(m, mt) = φ(m) Λ(t)`; Weil's prime kernel plus the log-discriminant diagonal is minus the renormalized limit of positive gcd-twisted torsion energies | `logEnergy_eq`, `orbitIntersection_hecke`, `weilPrimeKernel_renormalized_torsion_energy` |
+| **E11 Counting reaches short sums** | Pólya–Vinogradov by completion; Burgess's bound for quadratic character sums from counting on the curves `y² = Π(x + bᵢ)` | `norm_sum_range_le_polyaVinogradov`, `sum_pow_two_mul_le`, `burgessEnergy_le`, `abs_burgessS_le`, `eventually_exists_nonresidue_le` |
 
 ---
 
@@ -293,8 +304,9 @@ the horizon `N`. Every theorem states which are fixed and which grow.
    twins?** At each finite level the finite Fourier transform of `ℤ/Nℤ`: additive characteristics
    `j/N` of the theta surface and multiplicative characters are exchanged by Gauss sums, whose
    modulus `√p` is a count (E6), and the sign of each functional equation is a unit. Square-root
-   cancellation from counting holds at every level; the walls ask for it at the arithmetic point,
-   uniformly in the level, where no finite group computes it. The archimedean intersection of
+   cancellation from counting holds at every level and, within a level, reaches sums of length
+   `p^{1/4+ε}` by counting on curves of growing genus (E11, Burgess); the walls ask for it at the
+   arithmetic point, uniformly in the level, where no finite group computes it. The archimedean intersection of
    torsion orbits couples the two operations exactly: the additive positions of the orbits of
    orders `m` and `mt` meet in `Λ(t)` per point (E10). Over `𝔽_q` the coupling that carries the
    sign is the Frobenius: `q`-th powers are flat under Hasse derivatives and fixed on points, so
@@ -357,7 +369,8 @@ and the box class; the theta surface with characteristic, its free polarization 
 Gauss-sum moduli and unit root numbers; the integrality floor for auxiliary integer polynomials and
 Nair's bound; the `ℙ¹ × ℙ¹` calibration; the golden base countermodel; the five-currency
 equivalence for `ζ`; torsion orbits with their intersection law, Ramanujan-sum Fourier
-coefficients, the q-deformed horizon, Abel energies and the gcd twist.
+coefficients, the q-deformed horizon, Abel energies and the gcd twist; the hyperelliptic
+calibration; Pólya–Vinogradov, the Burgess moment, energy and bound.
 
 **To build:** a section count on the scaling surface defined without the sign; a naive height on
 `ℤ[G]` from arithmetic; the limit of the Stepanov method (integer Chebyshev constant); charged

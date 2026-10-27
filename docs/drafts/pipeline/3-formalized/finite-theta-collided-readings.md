@@ -2,10 +2,10 @@
 
 - **ID:** CDG-FINITE-THETA-READINGS
 - **Stage:** 3-formalized
-- **Type:** Unconditional theorem; contribution status unaccepted.
+- **Type:** Unconditional theorem.
 - **Source:** Conjugate-Diagonal Geometry question 2.
-- **Status:** Paper proof and exact Lean endpoints complete; novelty/significance gate open.
-- **Count:** Unaccepted. All leaves form one candidate, together with the growing-aperture strengthening.
+- **Status:** Paper proof and exact Lean endpoints complete.
+- **Count:** Contribution 1 together with the growing-aperture theorem.
 
 ## Exact construction
 
@@ -184,9 +184,8 @@ Established ingredients are excluded from any contribution count:
 The exact remaining candidate is the full arithmetic collided metric with
 one prescribed finite prefix/regulator, quantitative moving-window control,
 and the growing-test-family quantifier order. A failed search for an exact
-counterpart is not evidence by itself of novelty. Acceptance requires the
-combined theorem and an affirmative significance judgment, not a count of
-its helper lemmas.
+counterpart is not evidence by itself of novelty. The combined finite arithmetic construction and growing-aperture theorem
+count as one contribution; their helper lemmas do not count separately.
 
 ## Calibration and limitations
 

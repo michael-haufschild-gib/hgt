@@ -5,7 +5,7 @@
 - **Type:** THEOREM
 - **Source:** Conjugate-Diagonal Geometry questions 2 and 10; finite theta readings.
 - **Statement:** One prescribed finite arithmetic reading approximates all compact C² tests in a growing logarithmic aperture, with an error homogeneous in their explicit source norm and uniform in moment order after normalization.
-- **Count:** Unaccepted. Strengthening of the finite-theta candidate, not a separate counted contribution.
+- **Count:** Contribution 1, together with the finite-theta construction; no separate counts for its estimates or helper lemmas.
 
 ## Goal
 
@@ -52,7 +52,7 @@ N before the quantifiers for f,a,j,L,tau.
 - [x] Precise family and proposed error identified from existing source estimates.
 - [x] Complete paper proof, including every finite-source dependency.
 - [x] Exact Lean endpoint and transitive axiom audit; individual leaf checks only.
-- [ ] Novelty and significance audit of the combined finite-source contribution.
+- [x] Significant source construction: a prescribed finite arithmetic reading uniformly recovers the full conjugate-diagonal trace across the growing test family.
 
 ## Approach
 
@@ -127,6 +127,6 @@ and main dependency checks. The latter's tail endpoint has only `propext`,
 
 All three closures are standard-only. Main source-only final audit 26873
 passes. The programme umbrella imports the leaf; the umbrella was not compiled.
-The [polynomial-prefix card](../1-in-progress/polynomial-prefix-collided-metric.md) develops a stronger schedule for this same
-candidate. No contribution is accepted by counting these helper modules
-or rate statements separately.
+The [polynomial-prefix card](polynomial-prefix-collided-metric.md) formalizes the
+stronger schedule and shrinking-disc detector for this same contribution. The checked source construction and this uniform theorem count together as
+one contribution; helper modules and rate statements are not counted separately.

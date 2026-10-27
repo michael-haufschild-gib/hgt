@@ -18,9 +18,9 @@ logarithmic Sobolev norm, the norm of `L²` with the density of the zeros as wei
 * **Upper bound** (`collidedForm_le_log`). At a zero `ρ = ½ + a + iγ` the value `f̂(ρ)` is a
   convolution of the line values of `f̂` with the transform `K_a(r) = χ̂(r − ia)` of a fixed cutoff
   `χ ≡ 1` on `[−A, A]` (`tr_eq_integral_conv`, Fourier inversion of `χ e^{a·}`), and
-  `|K_a(r)| ≤ B/(1 + |r|)²` uniformly in `|a| ≤ ½`. By Cauchy–Schwarz
-  `|f̂(ρ)|² ≤ B′ ∫ |f̂(σ)|²/(1 + |γ − σ|)²`, and the Lorentzian zero mass `Σ_ρ 1/(1 + (σ − γ)²)` is
-  `O(log(|σ| + 4))`.
+  `|K_a(r)| ≤ B/(1 + r²)` uniformly in `|a| ≤ ½`. By Cauchy–Schwarz
+  `|f̂(ρ)|² ≤ B′ ∫ |f̂(σ)|²/(1 + (γ − σ)²)` (`normSq_tr_le_local`), and the Lorentzian zero mass
+  `Σ_ρ 1/(1 + (σ − γ)²)` is `O(log(|σ| + 4))`.
 * **Lower bound** (`log_le_collidedForm`). The explicit-formula density exceeds
   `(1/4π) log(|σ| + 4)` above a height `T₁`, so `Re W ≥ (1/4π) ∫ |f̂|² log − K · lowMass`, and the
   low-frequency mass is controlled by `D` through coercivity.
@@ -60,7 +60,8 @@ theorem sq_integral_mul_le {w g : ℝ → ℝ} (hw : ∀ r, 0 ≤ w r) (hwi : In
   · -- `w = 0` a.e.
     have hz : w =ᵐ[volume] 0 := (integral_eq_zero_iff_of_nonneg hw hwi).mp h0.symm
     have : ∫ r, w r * g r = 0 := by
-      rw [integral_congr_ae (hz.mono fun r hr => by simp only [Pi.zero_apply] at hr ⊢; rw [hr, zero_mul])]
+      rw [integral_congr_ae (hz.mono fun r hr => by
+        simp only [Pi.zero_apply] at hr ⊢; rw [hr, zero_mul])]
       simp
     rw [this, ← h0]; simp
   · set t := (∫ r, w r * g r) / ∫ r, w r
@@ -94,7 +95,8 @@ theorem paperFT_mul_exp (χ : ℝ → ℂ) (a r : ℝ) :
   rw [Complex.I_sq]
   ring
 
-/-- **Uniform decay of the kernel in the strip.** -/
+/-- **Uniform decay of the kernel in the strip.** `|χ̂(r − ia)| ≤ B/(1 + r²)` for `|a| ≤ ½`, with
+`B` depending only on `χ` and its support. -/
 theorem norm_paperFT_cutoff_le {χ : ℝ → ℂ} {A : ℝ} (hA : 0 ≤ A) (hχ : ContDiff ℝ 2 χ)
     (hχs : ∀ u, χ u ≠ 0 → |u| ≤ A + 1) {a : ℝ} (ha : |a| ≤ 1 / 2) (r : ℝ) :
     ‖paperFT χ ((r : ℂ) - I * a)‖ ≤
@@ -182,7 +184,8 @@ theorem tr_eq_integral_conv {A : ℝ} {χ : ℝ → ℂ} (hA : 0 ≤ A) (hχ : C
   set F : ℝ → ℝ → ℂ := fun u r => f u * Complex.exp (I * γ * u) * (K r * Complex.exp (-I * r * u))
     with hFdef
   have hFint : Integrable (Function.uncurry F) (volume.prod volume) := by
-    refine Integrable.mono' ((hf.norm.integrable_of_hasCompactSupport hfc.norm).mul_prod hKi.norm) ?_
+    refine Integrable.mono'
+      ((hf.norm.integrable_of_hasCompactSupport hfc.norm).mul_prod hKi.norm) ?_
       (Filter.Eventually.of_forall fun p => ?_)
     · exact ((hf.aestronglyMeasurable.comp_fst).mul
         ((Complex.continuous_exp.comp (continuous_const.mul
@@ -236,20 +239,24 @@ theorem normSq_tr_le_local {A : ℝ} (hA : 0 < A) :
   set w : ℝ → ℝ := fun r => ‖K r‖ with hwdef
   -- measurability and integrability
   have hFc : Continuous fun σ : ℝ => paperFT f σ :=
-    RHTower.KernelStrip.continuous_paperFT_of_integrable (hf.continuous.integrable_of_hasCompactSupport hfc)
+    RHTower.KernelStrip.continuous_paperFT_of_integrable
+      (hf.continuous.integrable_of_hasCompactSupport hfc)
   have hgc : Continuous g := by
     have : g = fun r => ‖(fun σ : ℝ => paperFT f σ) (γ - r)‖ := by
       funext r; simp only [hgdef]; push_cast; rfl
     rw [this]; exact (hFc.comp (continuous_const.sub continuous_id)).norm
   have hKc : Continuous K := by
     have hk : Continuous fun u => χ u * Complex.exp (((s.re - 1 / 2 : ℝ) : ℂ) * u) :=
-      hχ.continuous.mul (Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal))
+      hχ.continuous.mul
+        (Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal))
     have hkcs : HasCompactSupport fun u => χ u * Complex.exp (((s.re - 1 / 2 : ℝ) : ℂ) * u) := by
       refine HasCompactSupport.intro (isCompact_Icc (a := -(A + 1)) (b := A + 1)) fun u hu => ?_
       have : χ u = 0 := by by_contra h; exact hu (abs_le.mp (hχs u h))
       simp [this]
-    have := RHTower.KernelStrip.continuous_paperFT_of_integrable (hk.integrable_of_hasCompactSupport hkcs)
-    have hfun : K = fun r : ℝ => paperFT (fun u => χ u * Complex.exp (((s.re - 1 / 2 : ℝ) : ℂ) * u)) r :=
+    have := RHTower.KernelStrip.continuous_paperFT_of_integrable
+      (hk.integrable_of_hasCompactSupport hkcs)
+    have hfun : K = fun r : ℝ =>
+        paperFT (fun u => χ u * Complex.exp (((s.re - 1 / 2 : ℝ) : ℂ) * u)) r :=
       funext fun r => (paperFT_mul_exp χ _ r).symm
     rw [hfun]; exact this
   have hwi : Integrable w :=
@@ -292,7 +299,7 @@ theorem normSq_tr_le_local {A : ℝ} (hA : 0 < A) :
     rw [h2π]
     refine mul_le_mul_of_nonneg_left ((norm_integral_le_integral_norm _).trans (le_of_eq ?_))
       (by positivity)
-    exact integral_congr_ae (Filter.Eventually.of_forall fun r => by simp [hwdef, hgdef, norm_mul])
+    exact integral_congr_ae (Filter.Eventually.of_forall fun r => norm_mul _ _)
   have hcs := sq_integral_mul_le (fun r => norm_nonneg _) hwi hwgi hwg2
   have hw : ∫ r, w r ≤ B₁ * π := by
     calc ∫ r, w r ≤ ∫ r, B₁ * (1 + r ^ 2)⁻¹ :=
@@ -300,10 +307,14 @@ theorem normSq_tr_le_local {A : ℝ} (hA : 0 < A) :
       _ = B₁ * π := by rw [integral_const_mul, integral_univ_inv_one_add_sq]
   have hwg : ∫ r, w r * g r ^ 2 ≤ B₁ * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * (1 + (γ - σ) ^ 2)⁻¹ := by
     have hint : Integrable fun r : ℝ => B₁ * ((1 + r ^ 2)⁻¹ * g r ^ 2) := by
-      refine (Integrable.mono' hg2 ((continuous_const.add (continuous_id.pow 2)).inv₀
-        (fun r => by positivity) |>.aestronglyMeasurable.mul (hgc.pow 2).aestronglyMeasurable)
+      have hcinv : Continuous fun r : ℝ => (1 + r ^ 2)⁻¹ :=
+        (continuous_const.add (continuous_id.pow 2)).inv₀ fun r =>
+          (by positivity : (0 : ℝ) < 1 + r ^ 2).ne'
+      refine (Integrable.mono' hg2 (hcinv.aestronglyMeasurable.mul (hgc.pow 2).aestronglyMeasurable)
         (Filter.Eventually.of_forall fun r => ?_)).const_mul B₁
-      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (by positivity) (sq_nonneg _))]
+      have hpos : 0 ≤ (1 + r ^ 2)⁻¹ := by positivity
+      show ‖(1 + r ^ 2)⁻¹ * g r ^ 2‖ ≤ g r ^ 2
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg hpos (sq_nonneg _))]
       have h1 : (1 + r ^ 2)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (by nlinarith [sq_nonneg r])
       calc (1 + r ^ 2)⁻¹ * g r ^ 2 ≤ 1 * g r ^ 2 := by gcongr
         _ = g r ^ 2 := one_mul _
@@ -316,8 +327,9 @@ theorem normSq_tr_le_local {A : ℝ} (hA : 0 < A) :
           have : (fun r : ℝ => (1 + r ^ 2)⁻¹ * g r ^ 2) =
               fun r => (fun σ : ℝ => ‖paperFT f σ‖ ^ 2 * (1 + (γ - σ) ^ 2)⁻¹) (γ - r) := by
             funext r; simp only [hgdef]; push_cast; ring_nf
-          rw [this, integral_sub_left_eq_self]
-  have hwg0 : 0 ≤ ∫ r, w r * g r := integral_nonneg fun r => mul_nonneg (norm_nonneg _) (norm_nonneg _)
+          rw [this]
+          exact integral_sub_left_eq_self
+            (fun σ : ℝ => ‖paperFT f σ‖ ^ 2 * (1 + (γ - σ) ^ 2)⁻¹) volume γ
   rw [Complex.normSq_eq_norm_sq]
   have hI : 0 ≤ ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * (1 + (γ - σ) ^ 2)⁻¹ :=
     integral_nonneg fun σ => mul_nonneg (sq_nonneg _) (by positivity)
@@ -326,10 +338,272 @@ theorem normSq_tr_le_local {A : ℝ} (hA : 0 < A) :
     _ = (1 / (2 * π)) ^ 2 * (∫ r, w r * g r) ^ 2 := by ring
     _ ≤ (1 / (2 * π)) ^ 2 * ((∫ r, w r) * ∫ r, w r * g r ^ 2) :=
         mul_le_mul_of_nonneg_left hcs (by positivity)
-    _ ≤ (1 / (2 * π)) ^ 2 * ((B₁ * π) * (B₁ * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * (1 + (γ - σ) ^ 2)⁻¹)) := by
+    _ ≤ (1 / (2 * π)) ^ 2 *
+          ((B₁ * π) * (B₁ * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * (1 + (γ - σ) ^ 2)⁻¹)) := by
         gcongr
-        exact integral_nonneg fun r => norm_nonneg _
     _ = B₁ ^ 2 / (4 * π) * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * (1 + (γ - σ) ^ 2)⁻¹ := by
         field_simp; ring
+
+/-! ### Summation over the zeros -/
+
+theorem abs_re_sub_half_le (ρ : zetaZeroConfig.carrier) : |(ρ : ℂ).re - 1 / 2| ≤ 1 / 2 := by
+  have h0 : 0 < (ρ : ℂ).re := ρ.2.2.1
+  have h1 : (ρ : ℂ).re < 1 := ρ.2.2.2
+  rw [abs_le]; constructor <;> linarith
+
+/-- The logarithmic Sobolev weight is integrable against `|f̂|²` for every test. -/
+theorem integrable_norm_sq_paperFT_mul_log {A : ℝ} {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfs : tsupport f ⊆ Icc (-A) A) :
+    Integrable fun σ : ℝ => ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4) := by
+  have hfc : HasCompactSupport f :=
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc ((subset_tsupport f).trans hfs)
+  have hsupp : ∀ u, f u ≠ 0 → |u| ≤ A := fun u hu => abs_le.mpr (hfs (subset_tsupport f hu))
+  set D₀ := 4 * ((∫ u, ‖f u‖) + ∫ u, ‖deriv (deriv f) u‖) with hD₀
+  have hF2 := integrable_norm_sq_paperFT_of_tests hf hfc
+  have hlogc : Continuous fun σ : ℝ => Real.log (|σ| + 4) :=
+    (continuous_abs.add continuous_const).log fun σ => (by positivity : (0 : ℝ) < |σ| + 4).ne'
+  refine Integrable.mono' (integrable_inv_one_add_sq.const_mul (3 * D₀ ^ 2))
+    (hF2.aestronglyMeasurable.mul hlogc.aestronglyMeasurable)
+    (Filter.Eventually.of_forall fun σ => ?_)
+  -- `|f̂(σ)| ≤ D₀/(1 + |σ|)²` and `log(|σ| + 4) ≤ 3(1 + |σ|)`
+  have hdec := RHTower.norm_paperFT_le_decay hf hsupp (σ : ℂ)
+  simp only [Complex.ofReal_im, abs_zero, zero_mul, Real.exp_zero, one_mul,
+    Complex.ofReal_re] at hdec
+  have ha : 0 ≤ ‖paperFT f σ‖ := norm_nonneg _
+  have hlog0 : 0 ≤ Real.log (|σ| + 4) := Real.log_nonneg (by linarith [abs_nonneg σ])
+  have hlog : Real.log (|σ| + 4) ≤ 3 * (1 + |σ|) := by
+    have := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < |σ| + 4)
+    linarith [abs_nonneg σ]
+  have had : ‖paperFT f σ‖ * (1 + |σ|) ^ 2 ≤ D₀ := by
+    rwa [le_div_iff₀ (by positivity)] at hdec
+  have h1 : (1 : ℝ) ≤ 1 + |σ| := by linarith [abs_nonneg σ]
+  have hσ : 1 + σ ^ 2 ≤ (1 + |σ|) ^ 2 := by nlinarith [sq_abs σ, abs_nonneg σ]
+  rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) hlog0), ← div_eq_mul_inv,
+    le_div_iff₀ (by positivity)]
+  calc ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4) * (1 + σ ^ 2)
+      ≤ ‖paperFT f σ‖ ^ 2 * (3 * (1 + |σ|)) * (1 + |σ|) ^ 2 := by gcongr
+    _ = 3 * (‖paperFT f σ‖ * (1 + |σ|) ^ 2) * (‖paperFT f σ‖ * (1 + |σ|)) := by ring
+    _ ≤ 3 * (‖paperFT f σ‖ * (1 + |σ|) ^ 2) * (‖paperFT f σ‖ * (1 + |σ|) ^ 2) := by
+        gcongr; exact le_self_pow₀ h1 (by norm_num)
+    _ ≤ 3 * D₀ * D₀ := by gcongr
+    _ = 3 * D₀ ^ 2 := by ring
+
+/-- The zero mass of a finite set of zeros against the Lorentzian is at most the full
+Lorentzian zero mass. -/
+theorem sum_mult_lorentz_le (σ : ℝ) (S : Finset zetaZeroConfig.carrier) :
+    ∑ ρ ∈ S, (zetaZeroConfig.mult ρ : ℝ) * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ ≤
+      RHTower.lorentzMass σ := by
+  set g : ℂ → ℝ := fun z => 1 / (1 + (σ - z.im) ^ 2) with hgdef
+  have hg0 : ∀ z, 0 ≤ g z := fun z => by positivity
+  have hgs : Summable fun q : RHTower.XiZeroCopy => g (q.1 : ℂ) :=
+    RHTower.summable_lorentzMassTerm σ
+  have hL : RHTower.lorentzMass σ =
+      ∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℝ) * g ρ :=
+    ArithmeticCastelnuovoSeveri.tsum_xiZeroCopy_eq_zetaCarrier hgs
+  rw [hL]
+  have hpt : ∀ ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℝ) *
+      (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ = (zetaZeroConfig.mult ρ : ℝ) * g ρ := fun ρ => by
+    simp only [hgdef, one_div]; congr 2; ring
+  rw [Finset.sum_congr rfl fun ρ _ => hpt ρ]
+  exact (ArithmeticCastelnuovoSeveri.summable_zetaCarrier_of_xiZeroCopy hg0 hgs).sum_le_tsum S
+    fun ρ _ => mul_nonneg (Nat.cast_nonneg _) (hg0 _)
+
+/-- **Upper bound.** `D(f) ≤ C ∫ |f̂(σ)|² log(|σ| + 4)` on every aperture. -/
+theorem collidedForm_le_log {A : ℝ} (hA : 0 < A) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-A) A →
+      collidedForm zetaZeroConfig f ≤ C * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4) := by
+  obtain ⟨B, hB0, hB⟩ := normSq_tr_le_local hA
+  set c₀ := RHTower.xiLineTwoLogDerivConstant with hc₀
+  have hc₀0 : 0 ≤ c₀ := RHTower.xiLineTwoLogDerivConstant_nonneg
+  refine ⟨B * (8 * (c₀ + 1)), by positivity, fun f hf hfs => ?_⟩
+  have hfc : HasCompactSupport f :=
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc ((subset_tsupport f).trans hfs)
+  have hF2 := integrable_norm_sq_paperFT_of_tests hf hfc
+  have hlogint := integrable_norm_sq_paperFT_mul_log hf hfs
+  -- the Lorentzian zero mass is at most `8(c₀ + 1) log(|σ| + 4)`
+  have hmass : ∀ σ : ℝ, RHTower.lorentzMass σ ≤ 8 * (c₀ + 1) * Real.log (|σ| + 4) := by
+    intro σ
+    have hl1 : 1 ≤ Real.log (|σ| + 4) := by
+      rw [← Real.log_exp 1]
+      refine Real.log_le_log (Real.exp_pos 1) ?_
+      linarith [Real.exp_one_lt_d9, abs_nonneg σ]
+    have := RHTower.lorentzMass_le_log σ
+    nlinarith
+  have hterm : ∀ ρ : zetaZeroConfig.carrier,
+      Integrable fun σ : ℝ => ‖paperFT f σ‖ ^ 2 * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ := fun ρ => by
+    have hc : Continuous fun σ : ℝ => (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ :=
+      (continuous_const.add ((continuous_const.sub continuous_id).pow 2)).inv₀ fun σ =>
+        (by positivity : (0 : ℝ) < 1 + ((ρ : ℂ).im - σ) ^ 2).ne'
+    refine Integrable.mono' hF2 (hF2.aestronglyMeasurable.mul hc.aestronglyMeasurable)
+      (Filter.Eventually.of_forall fun σ => ?_)
+    have hpos : 0 ≤ (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ := by positivity
+    have hle : (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ ≤ 1 :=
+      inv_le_one_of_one_le₀ (by nlinarith [sq_nonneg ((ρ : ℂ).im - σ)])
+    show ‖‖paperFT f σ‖ ^ 2 * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹‖ ≤ ‖paperFT f σ‖ ^ 2
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) hpos)]
+    exact mul_le_of_le_one_right (sq_nonneg _) hle
+  refine (zeta_summable_collided hf hfc).tsum_le_of_sum_le fun S => ?_
+  set m : zetaZeroConfig.carrier → ℝ := fun ρ => (zetaZeroConfig.mult ρ : ℝ) with hm
+  have hfun : (fun σ : ℝ => ‖paperFT f σ‖ ^ 2 *
+      ∑ ρ ∈ S, m ρ * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹) =
+      fun σ : ℝ => ∑ ρ ∈ S, m ρ * (‖paperFT f σ‖ ^ 2 * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹) := by
+    funext σ; rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun ρ _ => by ring
+  have hsumint : Integrable fun σ : ℝ => ‖paperFT f σ‖ ^ 2 *
+      ∑ ρ ∈ S, m ρ * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ := by
+    rw [hfun]; exact integrable_finsetSum S fun ρ _ => (hterm ρ).const_mul _
+  have hexch : ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * ∑ ρ ∈ S, m ρ * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ =
+      ∑ ρ ∈ S, m ρ * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ := by
+    rw [hfun, integral_finsetSum S fun ρ _ => (hterm ρ).const_mul _]
+    exact Finset.sum_congr rfl fun ρ _ => integral_const_mul _ _
+  calc ∑ ρ ∈ S, (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr f ρ)
+      ≤ ∑ ρ ∈ S, m ρ * (B * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹) :=
+        Finset.sum_le_sum fun ρ _ => mul_le_mul_of_nonneg_left
+          (hB f hf hfs ρ (abs_re_sub_half_le ρ)) (Nat.cast_nonneg _)
+    _ = B * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * ∑ ρ ∈ S, m ρ * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹ := by
+        rw [hexch, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun ρ _ => by ring
+    _ ≤ B * ∫ σ : ℝ, (8 * (c₀ + 1)) * (‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4)) := by
+        refine mul_le_mul_of_nonneg_left (integral_mono hsumint (hlogint.const_mul _)
+          fun σ => ?_) hB0
+        have h := (sum_mult_lorentz_le σ S).trans (hmass σ)
+        calc ‖paperFT f σ‖ ^ 2 * ∑ ρ ∈ S, m ρ * (1 + ((ρ : ℂ).im - σ) ^ 2)⁻¹
+            ≤ ‖paperFT f σ‖ ^ 2 * (8 * (c₀ + 1) * Real.log (|σ| + 4)) :=
+              mul_le_mul_of_nonneg_left h (sq_nonneg _)
+          _ = 8 * (c₀ + 1) * (‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4)) := by ring
+    _ = B * (8 * (c₀ + 1)) * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4) := by
+        rw [integral_const_mul]; ring
+
+/-! ### The lower bound -/
+
+/-- **The explicit-formula density dominates the logarithmic weight** off a compact window:
+`ν_X(τ) ≥ (1/4π) log(|τ| + 4) − K₁ 1_{[−T₁, T₁]}(τ)` (Stirling for `μ`, `|ν_X − μ| ≤ 3X²`). -/
+theorem exists_log_le_nuX {X : ℝ} (hX : 1 ≤ X) :
+    ∃ T₁ K₁ : ℝ, 0 ≤ K₁ ∧ ∀ τ : ℝ, 1 / (4 * π) * Real.log (|τ| + 4) -
+      K₁ * (Icc (-T₁) T₁).indicator (fun _ => (1 : ℝ)) τ ≤ nuX X τ := by
+  obtain ⟨C, hC0, hC⟩ := RHTower.Littlewood.exists_stirling
+  have hπ := Real.pi_pos
+  obtain ⟨k, hk⟩ : ∃ k : ℝ, k = 1 / (4 * π) := ⟨_, rfl⟩
+  have hk0 : 0 < k := by rw [hk]; positivity
+  have h2k : 1 / (2 * π) = 2 * k := by rw [hk]; field_simp; ring
+  obtain ⟨c₁, hc₁⟩ : ∃ c : ℝ, c = 2 * k * (Real.log 2 + Real.log (2 * π)) + C := ⟨_, rfl⟩
+  obtain ⟨M, hM⟩ : ∃ M : ℝ, M = (c₁ + 3 * X ^ 2) / k := ⟨_, rfl⟩
+  obtain ⟨T₁, hT₁⟩ : ∃ T : ℝ, T = max 4 (Real.exp M) := ⟨_, rfl⟩
+  have hT₁4 : 4 ≤ T₁ := hT₁ ▸ le_max_left _ _
+  have hlogT : 0 ≤ Real.log (T₁ + 4) := Real.log_nonneg (by linarith)
+  refine ⟨T₁, 1 + 3 * X ^ 2 + k * Real.log (T₁ + 4), by positivity, fun τ => ?_⟩
+  rw [← hk]
+  have hν := (abs_le.mp (RHTower.Littlewood.abs_nuX_sub_mu_le hX τ)).1
+  by_cases hτ : τ ∈ Icc (-T₁) T₁
+  · -- inside the window: `μ > −1`
+    rw [Set.indicator_of_mem hτ, mul_one]
+    have hτa : |τ| ≤ T₁ := abs_le.mpr hτ
+    have hlog : Real.log (|τ| + 4) ≤ Real.log (T₁ + 4) :=
+      Real.log_le_log (by positivity) (by linarith)
+    have hmu := RHTower.Littlewood.neg_one_lt_mu τ
+    have := mul_le_mul_of_nonneg_left hlog hk0.le
+    linarith
+  · -- outside: Stirling
+    rw [Set.indicator_of_notMem hτ, mul_zero, sub_zero]
+    have hτa : T₁ < |τ| := by
+      by_contra h; push Not at h; exact hτ (abs_le.mp h)
+    have hτpos : 0 < |τ| := by linarith
+    have hS := (abs_le.mp (hC τ (by linarith))).1
+    have hCτ : C / τ ^ 2 ≤ C := div_le_self hC0 (by nlinarith [sq_abs τ])
+    rw [h2k, Real.log_div hτpos.ne' (by positivity)] at hS
+    -- `log(|τ| + 4) ≤ log 2 + log |τ|`
+    have hW : Real.log (|τ| + 4) ≤ Real.log 2 + Real.log |τ| := by
+      rw [← Real.log_mul (by norm_num) hτpos.ne']
+      exact Real.log_le_log (by positivity) (by linarith)
+    -- `log(|τ| + 4) ≥ M`, so `k log(|τ| + 4) ≥ c₁ + 3X²`
+    have hMl : M ≤ Real.log (|τ| + 4) := by
+      have h1 : M ≤ Real.log T₁ := by
+        rw [← Real.log_exp M]
+        exact Real.log_le_log (Real.exp_pos M) (hT₁ ▸ le_max_right _ _)
+      have h2 : Real.log T₁ ≤ Real.log (|τ| + 4) := Real.log_le_log (by linarith) (by linarith)
+      linarith
+    have hkM : c₁ + 3 * X ^ 2 ≤ k * Real.log (|τ| + 4) := by
+      have h := mul_le_mul_of_nonneg_left hMl hk0.le
+      rwa [show k * M = c₁ + 3 * X ^ 2 by rw [hM]; field_simp] at h
+    have hkW := mul_le_mul_of_nonneg_left hW (by positivity : (0 : ℝ) ≤ 2 * k)
+    rw [hc₁] at hkM
+    nlinarith
+
+/-- **Lower bound.** `c ∫ |f̂(σ)|² log(|σ| + 4) ≤ D(f)` on every aperture. -/
+theorem log_le_collidedForm {A : ℝ} (hA : 0 < A) :
+    ∃ c : ℝ, 0 < c ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-A) A →
+      c * (∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4)) ≤ collidedForm zetaZeroConfig f := by
+  obtain ⟨c₀, hc₀, hcoer⟩ := exists_collidedForm_coercive hA
+  have hX : 1 ≤ Real.exp (2 * A) := Real.one_le_exp (by positivity)
+  obtain ⟨T₁, K₁, hK₁, hν⟩ := exists_log_le_nuX hX
+  have hπ := Real.pi_pos
+  have hden : 0 < 1 + 2 * π * K₁ / c₀ := by
+    have : 0 ≤ 2 * π * K₁ / c₀ := div_nonneg (mul_nonneg (by positivity) hK₁) hc₀.le
+    linarith
+  refine ⟨1 / (4 * π) / (1 + 2 * π * K₁ / c₀), div_pos (by positivity) hden, fun f hf hfs => ?_⟩
+  have hfc : HasCompactSupport f :=
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc ((subset_tsupport f).trans hfs)
+  obtain ⟨hint, hre⟩ := re_W_eq_integral_nuX hA hf hfs
+  have hF := integrable_norm_sq_paperFT_of_tests hf hfc
+  have hlogint := integrable_norm_sq_paperFT_mul_log hf hfs
+  set ind : ℝ → ℝ := (Icc (-T₁) T₁).indicator fun _ => (1 : ℝ) with hind
+  have hind_eq : (fun τ : ℝ => ‖paperFT f τ‖ ^ 2 * ind τ) =
+      (Icc (-T₁) T₁).indicator fun τ => ‖paperFT f τ‖ ^ 2 := by
+    funext τ; rw [hind]
+    by_cases hτ : τ ∈ Icc (-T₁) T₁
+    · rw [Set.indicator_of_mem hτ, Set.indicator_of_mem hτ, mul_one]
+    · rw [Set.indicator_of_notMem hτ, Set.indicator_of_notMem hτ, mul_zero]
+  have hindInt : Integrable fun τ : ℝ => ‖paperFT f τ‖ ^ 2 * ind τ := by
+    rw [hind_eq]; exact hF.indicator measurableSet_Icc
+  have hlow : ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * ind τ = lowMass T₁ f := by
+    rw [hind_eq, integral_indicator measurableSet_Icc, lowMass]
+  -- `Re W ≥ (1/4π) ∫ |f̂|² log − K₁ · lowMass`
+  have hWlow : 1 / (4 * π) * (∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4)) -
+      K₁ * lowMass T₁ f ≤ (zetaZeroConfig.W f f).re := by
+    have hsplit : ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * (1 / (4 * π) * Real.log (|τ| + 4) - K₁ * ind τ) =
+        1 / (4 * π) * (∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4)) - K₁ * lowMass T₁ f := by
+      have : (fun τ : ℝ => ‖paperFT f τ‖ ^ 2 * (1 / (4 * π) * Real.log (|τ| + 4) - K₁ * ind τ)) =
+          fun τ : ℝ => 1 / (4 * π) * (‖paperFT f τ‖ ^ 2 * Real.log (|τ| + 4)) -
+            K₁ * (‖paperFT f τ‖ ^ 2 * ind τ) := by
+        funext τ; ring
+      rw [this, integral_sub (hlogint.const_mul _) (hindInt.const_mul _), integral_const_mul,
+        integral_const_mul, hlow]
+    rw [hre, ← hsplit]
+    refine integral_mono ?_ hint fun τ => mul_le_mul_of_nonneg_left (hν τ) (sq_nonneg _)
+    exact ((hlogint.const_mul (1 / (4 * π))).sub (hindInt.const_mul K₁)).congr
+      (Filter.Eventually.of_forall fun τ => by simp only [Pi.sub_apply]; ring)
+  have hWD : (zetaZeroConfig.W f f).re ≤ collidedForm zetaZeroConfig f :=
+    re_W_le_collided (zeta_summable_collided hf hfc)
+  -- the low-frequency mass is controlled by `D` through coercivity
+  have hlowD : lowMass T₁ f ≤ 2 * π / c₀ * collidedForm zetaZeroConfig f := by
+    have h1 : lowMass T₁ f ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 :=
+      setIntegral_le_integral hF (Filter.Eventually.of_forall fun _ => sq_nonneg _)
+    have hplan := RHTower.integral_norm_sq_paperFT_eq hf hfs
+    have h2 := hcoer f hf hfs
+    have h3 : 2 * π * (∫ u, ‖f u‖ ^ 2) ≤ 2 * π / c₀ * collidedForm zetaZeroConfig f := by
+      rw [div_mul_eq_mul_div, le_div_iff₀ hc₀]
+      nlinarith
+    linarith
+  have hD0 : 0 ≤ collidedForm zetaZeroConfig f := collidedForm_nonneg (Z := zetaZeroConfig) f
+  have key : 1 / (4 * π) * (∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4)) ≤
+      (1 + 2 * π * K₁ / c₀) * collidedForm zetaZeroConfig f := by
+    have := mul_le_mul_of_nonneg_left hlowD hK₁
+    have e : (1 + 2 * π * K₁ / c₀) * collidedForm zetaZeroConfig f =
+        collidedForm zetaZeroConfig f + K₁ * (2 * π / c₀ * collidedForm zetaZeroConfig f) := by
+      field_simp
+    rw [e]; linarith
+  rw [div_mul_eq_mul_div, div_le_iff₀ hden]
+  linarith
+
+/-- **The collided form is the logarithmic Sobolev norm** on every aperture. -/
+theorem collidedForm_equiv_logSobolev {A : ℝ} (hA : 0 < A) :
+    ∃ c C : ℝ, 0 < c ∧ c ≤ C ∧ ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-A) A →
+      c * (∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4)) ≤ collidedForm zetaZeroConfig f ∧
+      collidedForm zetaZeroConfig f ≤ C * ∫ σ : ℝ, ‖paperFT f σ‖ ^ 2 * Real.log (|σ| + 4) := by
+  obtain ⟨c, hc, hlo⟩ := log_le_collidedForm hA
+  obtain ⟨C, hC, hup⟩ := collidedForm_le_log hA
+  exact ⟨c, max c C, hc, le_max_left _ _, fun f hf hfs => ⟨hlo f hf hfs,
+    (hup f hf hfs).trans (mul_le_mul_of_nonneg_right (le_max_right _ _)
+      (integral_nonneg fun σ => mul_nonneg (sq_nonneg _)
+        (Real.log_nonneg (by linarith [abs_nonneg σ]))))⟩⟩
 
 end GaloisForLFunctions.ArithmeticPolarization

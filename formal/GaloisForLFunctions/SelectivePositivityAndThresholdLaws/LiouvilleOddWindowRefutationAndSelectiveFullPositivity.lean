@@ -837,9 +837,9 @@ theorem integral_oddClampCombo_mul_odd_pow {N : ℕ} (a c : Fin N → ℝ) {R : 
       rw [intervalIntegral.integral_congr fun x hx => by
         have hx' := mem_Icc.mp (Set.uIcc_of_le (ha j).1 ▸ hx)
         change oddClamp (a j) x * x ^ (2 * p + 1) = x ^ (2 * p + 2)
-        rw [oddClamp_of_abs_le (abs_le.mpr ⟨by linarith [hx'.1], hx'.2⟩), mul_comm, ← pow_succ]
-      rw [integral_pow]
-      simp only [zero_pow (by omega : 2 * p + 2 + 1 ≠ 0), sub_zero]
+        rw [oddClamp_of_abs_le (abs_le.mpr ⟨by linarith [hx'.1], hx'.2⟩), mul_comm, ← pow_succ]]
+      rw [integral_pow, show 2 * p + 2 + 1 = 2 * p + 3 from rfl]
+      simp only [zero_pow (by omega : 2 * p + 3 ≠ 0), sub_zero]
       push_cast
       ring
     have hi2 : (∫ x in a j..R, oddClamp (a j) x * x ^ (2 * p + 1)) =
@@ -848,7 +848,7 @@ theorem integral_oddClampCombo_mul_odd_pow {N : ℕ} (a c : Fin N → ℝ) {R : 
         have hx' := mem_Icc.mp (Set.uIcc_of_le (ha j).2 ▸ hx)
         change oddClamp (a j) x * x ^ (2 * p + 1) = a j * x ^ (2 * p + 1)
         rw [oddClamp_of_ge (ha j).1 hx'.1]]
-      rw [intervalIntegral.integral_const_mul, integral_pow]
+      rw [intervalIntegral.integral_const_mul, integral_pow, show 2 * p + 1 + 1 = 2 * p + 2 from rfl]
       push_cast
       ring
     rw [hi1, hi2]
@@ -1015,7 +1015,7 @@ theorem abs_cos_sub_maclaurin_le (K : ℕ) (u : ℝ) :
   have hstep : cosMaclaurinRem (K + 2) v =
       cosMaclaurinRem (K + 1) v - (-1 : ℝ) ^ (K + 1) * (v ^ (2 * K + 2) / (2 * K + 2).factorial) := by
     unfold cosMaclaurinRem
-    rw [Finset.sum_range_succ]
+    rw [Finset.sum_range_succ, show 2 * (K + 1) = 2 * K + 2 from rfl]
     ring
   rw [hstep] at h2
   have hnn : 0 ≤ v ^ (2 * K + 2) / ((2 * K + 2).factorial : ℝ) := by positivity

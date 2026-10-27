@@ -1,8 +1,8 @@
 # Burgess's bound for quadratic character sums, from counting on curves
 
 - **ID:** aet-burgess
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** AET README §6 Q3, §9 topic 5 (uniform square-root cancellation from counting),
   `TheCompletionLaw` (Pólya–Vinogradov); Weil bound `RHTower.Hyperelliptic.abs_sum_quadraticChar_multiset_le`
 - **Statement:** `p` odd prime, `χ` the quadratic character, `r ≥ 2`. There is `K_r` with
@@ -25,10 +25,21 @@ Notation `S(M, N) = Σ_{k<N} χ(M + k)`, `T(x) = Σ_{b<B} χ(x + b)`, `L = 1 + l
 4. *Shift.* `χ(M + m + ab) = χ(a) χ(ā(M + m) + b)` (`a < p`), so
    `|Σ_{a≤A, b<B} S(M + ab, N)| ≤ Σ_x ν(x)|T(x)|`; and `S(M, N) − S(M + h, N) = S(M, h) − S(M + N, h)`.
 5. *Induction on `N`.* `B = ⌊p^{1/(2r)}⌋` (`B^r ≤ √p`, moment `≤ (r^{2r} + 6r) B^r p`),
-   `A = ⌊N/(κB)⌋`, `κ = 16`. Main term `≤ C κ^{1/(2r)} N^{1−1/r} p^{(r+1)/(4r²)} L`; error
+   `A = ⌊N/(32B)⌋` with `a ∈ (A, 2A]`. Main term `≤ C κ^{1/(2r)} N^{1−1/r} p^{(r+1)/(4r²)} L`; error
    `≤ 2 max_{h ≤ AB} |S(·, h)| ≤ 2K (N/κ)^{1−1/r} p^{(r+1)/(4r²)} L ≤ (K/2) N^{1−1/r} …`. Ranges:
    `N < 2κB` trivial (`N ≤ (2κ)^{1/r} N^{1−1/r} p^{1/(2r²)}`); `2AN > p` forces
    `N ≥ p^{1/2+1/(4r)}`·const, where Pólya–Vinogradov `√p L ≤ N^{1−1/r} p^{(r+1)/(4r²)} L` suffices.
 
+## Lean
+- `RHTower/HyperellipticCharacterSums.lean`: `abs_sum_quadraticChar_prod_le` (split, any degree),
+  `abs_sum_quadraticChar_multiset_le` (with multiplicities).
+- `ArithmeticEffectivityTheory/TheBurgessMoment.lean`: `card_evenTuples_le`, `sum_pow_two_mul_le`.
+- `ArithmeticEffectivityTheory/TheBurgessEnergy.lean`: `card_shift_le`, `sum_gcd_le`,
+  `burgessEnergy_le` (`a ∈ (A, 2A]`, bound `A² + 8AN(1 + log 2A)`).
+- `ArithmeticEffectivityTheory/TheBurgessBound.lean`: `pow_sum_le_holder`, `abs_burgessSum_pow_le`,
+  `abs_burgessSum_le_main`, `abs_burgessS_le` (`K_r = 2·576·2^r(r^{2r} + 6r) + 64`).
+  Axioms: propext, choice, Quot.sound.
+
 ## Log
 - 2026-10-27 — created; Weil input formalized (`RHTower/HyperellipticCharacterSums.lean`).
+- 2026-10-27 — formalized.

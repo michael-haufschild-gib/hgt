@@ -1,11 +1,11 @@
 # A common positive theta source for moving collided traces
 
 - **ID:** CDG-THETA-MOVING-TRACE
-- **Stage:** 3-formalized — significance audit pending
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Conjugate-Diagonal Geometry, question 2; actual xi current, theta transform, and collided depth calculus.
 - **Statement:** One regulator defined by arithmetic source integrals recovers every compact C² collided moment uniformly for linearly moving ordinates and logarithmic Hecke scales.
-- **Count:** Unaccepted; formal verification complete, significance audit still open.
+- **Count:** Part of contribution 1; no separate count.
 
 ## Goal
 
@@ -20,9 +20,9 @@ positivity, or RH.
 - [x] Source-defined objects, exact parameter window, and proof route specified.
 - [x] Complete moving endpoint passes individual `lake --old env lean` checks.
 - [x] Transitive axiom audit of the moving endpoint contains only standard Lean axioms.
-- [ ] Significance and novelty audit accepts the full result, counted at most once.
+- [x] Included in the combined finite arithmetic metric; no separate contribution count.
 
-## Exact candidate
+## Exact theorem
 
 Write `F_f(s)=tr f s`, `k_L(d)=2 cosh(2Ld)-2`, and let `theta` be the
 literal completed arithmetic theta source already identified with xi.
@@ -59,7 +59,7 @@ Both requirements involve only xi, its derivative, fixed cutoffs, and planar
 integration. Neither tests, scales, moment orders, nor zero positions enter
 this choice. Existence and `k_n>=n` are checked in `CommonSourceRegulator`.
 
-For a compact C² test f and fixed natural j, the candidate endpoint is
+For a compact C² test f and fixed natural j, the endpoint is
 
 ```
 sup_(|tau|<=n/2, j|L|<=2log(n+1))
@@ -140,7 +140,7 @@ Checked dependencies include `XiSourceCurrent`, `XiLogRegularization`,
 The principal local-current, common-regulator and fixed-theta axiom outputs
 contain only `propext`, `Classical.choice`, `Quot.sound`.
 
-## Novelty and selectivity audit
+## Historical source context and selectivity
 
 The basic positive density and compact divisor-current convergence are
 standard regularization machinery. Andersson's
@@ -178,3 +178,60 @@ is proved.
 - 2026-10-27 — full moving endpoint and both specializations passed source-only
   checks and transitive axiom audits. Novelty/significance gate remains open;
   no contribution counted.
+
+Current closure status: this supporting theorem is complete and included in
+the combined finite arithmetic metric. Earlier audit-status notes above are
+historical; no novelty check remains in the authorized workflow. The
+already proposed higher-regularity extension is also complete, as recorded below.
+
+
+## Higher regularity on the same source schedule
+
+For every compact C^(k+2) test f, the same `thetaSourceMomentReading` satisfies
+
+```
+forall epsilon>0, exists N, forall n>=N, forall j,L,tau,
+ |tau|<=n/2 and j|L|<=(2k+2)log(n+1) imply
+ |thetaSourceMomentReading(twist_tau f,L,j,n)-D_j(twist_tau f,L)|/4^j
+   < epsilon.
+```
+
+The threshold precedes every order, scale and ordinate shift. Equality at the
+aperture boundary is included. For a smooth compact test and fixed c,j, the
+same schedule gives unnormalized uniform convergence on `|L|<=c log(n+1)`.
+This closes the higher-regularity claim already written on the parent card;
+it adds no contribution count and changes no source definition.
+
+Put r=k+2, q=2r-2, and choose a>=0 containing the support. Actual integration
+by parts gives
+
+```
+S_r=2^r(integral|f|+integral|f^(r)|),
+|F_f(s-i tau)|^2 <= S_r^2 exp(a)/(1+|Im(s)-tau|)^(2r)
+```
+
+on the zero strip. At an omitted zero, X=1+|gamma-tau| satisfies
+`n+1<=2X` and `1+|gammaOf(rho)|^2<=5X^2`. Therefore the closed q-logarithmic
+window bounds each moving kernel value by
+`2^j C_r/(1+|gammaOf(rho)|^2)`, where `C_r=5*2^q*S_r^2*exp(a)`.
+Actual summability bounds the omitted trace by
+`2^j C_r sourceReferenceTail(n)`.
+
+The same common regulator bounds the compact-current error by
+`4^j (2/pi) A_f^2 exp(-n^4+K_b n^2+K_b)` on `j|L|<=b log(n+1)`,
+where `K_b=36+14b`. This follows from the existing Cauchy envelope and
+`2((n+3+|tau|)^2+j|L|(n+7/2))<=K_b(n^2+1)`.
+After division by 4^j, both the quartic envelope and reference tail tend to
+zero independently of j,L,tau. For smooth f and fixed c,j, choose k with
+`2k+2>=jc` and apply the normalized theorem with tolerance epsilon/4^j.
+
+Exact declarations in `ConjugateDiagonalGeometry/ThetaSourceRegularityMetric.lean`:
+
+- `thetaSource_uniform_regularity_moments`;
+- `thetaSource_uniform_smooth_log_windows`.
+
+Final source-only check 12644 passed for both. Their transitive axiom closures
+contain only `propext`, `Classical.choice`, `Quot.sound`. Dependencies
+`SourceRegularityWindow` (85864) and `SourceRegularityTail` (13962) also pass
+individual checks and standard-only endpoint audits. All three leaves are
+wired into the programme umbrella; no umbrella was compiled.

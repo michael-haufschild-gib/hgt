@@ -284,6 +284,7 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
 | **P48 The Mertens budget of a curve is the repulsion energy of its spectrum** | In every genus, the `H¹` Mertens row `h_m` (coefficients of `Π_i (1 − β_i u)⁻¹`) of a simple spectrum is `Σ_i A_i β_i^m` with the Lagrange weights `A_i = Π_{j≠i} β_i/(β_i − β_j)`; for a pure simple spectrum `(1/M) Σ_{m≤M} |h_m|² → Σ_i Π_{j≠i} |β_i − β_j|⁻²`, the repulsion energy of the Frobenius eigenvalues on the unit circle (`2q/(4q − a²)` in genus one, P47). Over `ℤ` the Mertens slope `Σ_ρ |ρζ′(ρ)|⁻²` (P45) has the same shape, `|ζ′(ρ)|` measuring the distances from `ρ` to the other zeros. | `prod_geom_eq_sum`, `spectralMertensRow_eq`, `spectralMertens_energy_le`, `tendsto_spectralMertens_energy_div`, `tendsto_curveMertens_energy_div` |
 | **P49 A Mertens budget is purity with a simple spectrum** | For any spectrum, a budget `Σ_{m≤M} |h_m|² ≤ S M + B` makes `H(z) = Σ h_m z^m` converge on the unit disc with `H(z) Π_i (1 − β_i z) = 1`; hence `|β_i| ≤ 1` (the product vanishes at `β_i⁻¹`), and a unimodular eigenvalue is simple (near a collision `|H((1 − ε)β̄)| ≥ 2^{−n}ε⁻²`, against the AM–GM majorant `K/(2tε²) + t/(2ε)` at `t = 2^{−n}/ε`). For a curve datum: a Mertens budget exists iff the spectrum is pure and simple — the genus-free `𝔽_q` form of P45. | `tsum_spectralMertensRow_mul_eval`, `norm_le_one_of_spectralMertens_budget`, `norm_tsum_spectralMertensRow_le`, `norm_lt_one_of_spectralMertens_budget_of_eq`, `curveMertens_budget_iff` |
 | **P50 An Abel slope at the genus is RH with simple zeros** | The Abel slope `2c∫e^{−2cu}g(u)² du` of the prime-error profile (`= (c/π)∫‖G(c+iy)‖² dy`): a bounded Abel slope gives a prime-error budget (`∫_0^L g² ≤ e·A(1/(2(L+1)))`); if it converges to `L`, then `Σ_{ρ∈Z} m_ρ²/|ρ|² ≤ L` for every finite set of critical zeros (Abel capacity); if it converges to the archimedean genus `2 + γ − log 4π`, then RH holds and every critical zero is simple, since the copies of the zeros already exhaust the genus. | `primeErrorAbelSlope`, `primeError_budget_of_abelSlope_le`, `exists_abelSlope_le_of_tendsto`, `sum_order_sq_le_of_tendsto_abelSlope`, `riemannHypothesis_and_simple_of_tendsto_abelSlope` |
+| **P51 The Abel–Cramér law** | `RH ∧ (every critical zero simple) ⇔ 2c∫e^{−2cu}g(u)² du → 2 + γ − log 4π` as `c ↓ 0`. Under RH the symbol splits as `F(s)/s = Σ'_q (−1/ρ_q)/(s − ρ_q) + R(s)` (Hadamard partial fraction of `ξ′/ξ`), the remainder is uniformly square integrable near the line (convexity bound, `Γℝ′/Γℝ ≪ log t`), and the zero part has no Abel mass at infinite height: finite zero sums are Laplace transforms of causal waves, the dyadic shells `|γ| ≥ 2^{k₀}` carry Abel energy `≤ 6 C τ(k₀) → 0` (Cramér's shell estimate), and finitely many zeros with distinct ordinates give the diagonal. The `𝔽_q` analogue is P42 (`slope = 2g` iff simple spectrum). | `primeError_budget_of_riemannHypothesis`, `primeErrorSymbol_eq_zeroPart_add`, `exists_integral_norm_sq_archRemainder_le`, `abel_tail_le`, `tendsto_abel_head`, `eventually_lintegral_zeroPart_le`, `eventually_abelSlope_lt`, `eventually_lt_abelSlope`, `riemannHypothesis_and_simple_iff_tendsto_abelSlope` |
 
 ---
 
@@ -315,7 +316,8 @@ and gauge Jensen (ACG); Künneth collapse (AKT); the window certificate for ever
    already over `𝔽_q`: an elliptic curve has one exactly under the strict Hasse bound, with slope
    `2#E(𝔽_q)²/(4q − a²)` (P47); in every genus the slope is the repulsion energy
    `Σ_i Π_{j≠i} |β_i − β_j|⁻²` of the Frobenius eigenvalues (P48). Over `𝔽_q` a Mertens budget exists exactly for a pure simple
-   spectrum in every genus (P49).
+   spectrum in every genus (P49). The prime-error Abel slope equals the genus `2 + γ − log 4π` exactly
+   under RH with simple zeros (P51), as a curve's slope equals `2g` exactly for a simple spectrum.
 4. **Which positivity is gauge charged and not isotropic?** Isotropy is forced by hyperbolic local
    symmetry, and every multiplicative correspondence — Hecke, archimedean, twisted — is hyperbolic at
    every off-line pair (P4, P5); the only elliptic multiplicative fibres off the line are resonant,
@@ -552,9 +554,11 @@ what ACP has proved about it.
    dominant translated zeros with residue masses, an uncancelled dominant zero forces Abel escape
    at rate `1/e`, and zero-free segments of the abscissa line carry no escape (P36). The escape rate
    is a capacity for the residue masses; non-summable residues along a line of zeros and an
-   unattained abscissa both send the normalized escape to infinite height (P37). Open: the mass at
-   infinite height `lim 2π e A − π Σ‖r_ρ‖²` when the residues are summable and the abscissa is
-   attained — a vertical mean-square statement for `ζ(s)/ζ(s+ε)` near the abscissa line.
+   unattained abscissa both send the normalized escape to infinite height (P37). For the prime-error
+   row the mass at infinite height vanishes under RH with simple zeros: its Abel slope is exactly
+   `Σ_ρ 1/|ρ|² = 2 + γ − log 4π` (P51). Open: the mass at infinite height for the damped receiver
+   when the residues are summable and the abscissa is attained — a vertical mean-square statement
+   for `ζ(s)/ζ(s+ε)` near the abscissa line.
 
 ---
 
@@ -651,6 +655,9 @@ reduction.
 | `TheMertensBudgetOfACurveIsTheRepulsionEnergyOfItsSpectrum` | Partial fractions of `Π(1 − β_i u)⁻¹` via Lagrange; the Mertens slope of a pure simple spectrum is `Σ_i Π_{j≠i} |β_i − β_j|⁻²` |
 | `AMertensBudgetIsPurityWithASimpleSpectrum` | The generating function of the Mertens row inverts `P` on the unit disc; a Mertens budget excludes eigenvalues outside the circle and collisions on it; the genus-free budget law |
 | `AnAbelSlopeAtTheGenusIsRHWithSimpleZeros` | The Abel slope of the prime error; Tauberian budget; Abel capacity of the critical zeros; slope at the genus ⇒ RH and simple zeros |
+| `ThePrimeErrorSymbolSplitsAtTheZeros` | Under RH, `(−ζ′/ζ − ζ)(s)/s` = zero part `Σ'_q (−1/ρ_q)/(s − ρ_q)` + archimedean remainder, uniformly square integrable near the line |
+| `TheZeroPartHasNoMassAtInfiniteHeight` | Causal zero waves and Plancherel for finite zero sums; block and Abel energies of high dyadic shells; the diagonal limit of finitely many zeros; Fatou bound for the zero part |
+| `TheAbelSlopeOfThePrimeErrorIsTheArchimedeanGenus` | RH gives a prime-error budget; upper and lower Abel bounds; the Abel–Cramér law |
 | `MomentAmplificationOfAnyFamilyLosesLinearly` | Family Jensen; the loss law of family averages; flatness; calibration over `𝔽_q` |
 | `ExteriorAndHeightCoupledQuartetContractions` | Post–Widder polar scale-weight positivity and the real-anchor law (`c(σ_max) ≥ c(σ_max + iγ₁)`, `≥ 2c` single-ordinate); functorial `CurveDatum.exterior` and complete quartet phase elimination on `Λ²`; archimedean `exteriorTwoDivisorPoly` (`2 Λ²z_ρ(t) = z_ρ(t)² − z_ρ(2t)`) and `Δκ = 0` contraction (`a < 1/4`); full-strip `coupledQuartetSymSquare` (`0 < a ≤ b < 1/2`, `Δκ = 0`) and `HeightCoupledSystem (2κ) κ d γ` (`F(s)² F(s+iγ) F(s−iγ)`) with zero-tax collided quartet contraction, Hadamard–digamma budget, ordinate-`γ` quartet multiplicity bound, and finite-step real-zero elimination |
 | `IntrinsicExteriorAndMinimumAnchorCost` | Local degree-`1` Adams `Λ²` vanishing, isobaric shift-packet `Λ²` dichotomy (`m₀ ≥ 5`, ratio `≥ 11/5`), and scale-space cross-singularity (`Re = 1 + a > 1`); unconditional `κ_γ ↦ 0` boundary-twist absorption (`absorbShiftedPoles`), `total_zero_mass_le` origin-capacity floor, exact `s = 2` pole defect, and `(9 + 12/(4+γ²) + 6/(1+γ²))κ → 9κ` ordinate pole decay; single-system `plantDoubleRealAnchor` (`Δκ = 2`) and functor-independent Hadamard minimum pole law (`16M + 144M/(9+4γ²) + 5d < 9κ`, `κ ≥ 3`); discrete Fejér–Egerváry–Szász multiplier converse (`c₁ ≤ 2c₀ cos(π/(K+2))`), all-height two-sided shifted-Gamma sandwich, and `FejerCoupledSystem K` central pole halving (`9(K+1)/(2K) κ ↘ (9/2)κ`, `27/4 · κ < 8κ` at `K = 2`) |

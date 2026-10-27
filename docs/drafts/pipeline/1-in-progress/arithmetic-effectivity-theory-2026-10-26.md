@@ -39,6 +39,7 @@ the Stepanov method over `ℤ` (Siegel abundance + integrality floor), the base 
 | E8 `ℙ¹ × ℙ¹` calibration; split hyperelliptic curves unitary by counting | `TheProjectiveSquareCalibration`, `TheHyperellipticCalibration`, `RHTower.Hyperelliptic*` | Lean |
 | E9 golden base countermodel, five currencies | `TheBaseAxioms` | Lean |
 | E10 the prime side is an intersection of torsion orbits; renormalized torsion energy | `TheLogEnergyOfRootsOfUnity`, `TheIntersectionOfTorsionOrbits`, `TheWeilPrimeKernelIsARenormalizedTorsionEnergy` | Lean |
+| E11 counting reaches short sums: Pólya–Vinogradov, Burgess, least non-residue | `TheCompletionLaw`, `TheBurgess*`, `TheLeastQuadraticNonresidue` | Lean |
 | open: selective (non-soft) polarization; naive height of trace type on `ℤ[G]`; integer Chebyshev limit | — | open |
 
 ## Key paper facts
@@ -55,3 +56,4 @@ the Stepanov method over `ℤ` (Siegel abundance + integrality floor), the base 
 - 2026-10-26 — created; README first draft; E1–E9 formalized, README updated with pillars and answers.
 - 2026-10-27 — E10 formalized; `𝔽_q` Stepanov comparison cites `RHTower.Stepanov`; loop in `logs/aet-250-contributions-2026-10-26.md`.
 - 2026-10-27 — curve calibration: RH for split odd-degree hyperelliptic curves (card `3-formalized/rh-split-hyperelliptic-by-counting.md`) and `TheHyperellipticCalibration`.
+- 2026-10-27 — RH for all odd-degree hyperelliptic curves over finite fields of odd characteristic; Hasse for elliptic curves; Burgess's bound; least quadratic non-residue.

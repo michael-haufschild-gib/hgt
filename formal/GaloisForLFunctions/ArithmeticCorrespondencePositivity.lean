@@ -13,6 +13,16 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheResolutionOfACo
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ABudgetPaysAHyperbolicPairOnlyOnAFiniteSegment
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.SparseAnnihilatorsAndTheStepanovMechanism
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheRankinSelbergSquareSeesTheFieldOfTheOtherZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.EveryXiZeroHasALocalQuadraticTerminal
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheReflectedXiPairHasAHeightReserve
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.RightQuadraticTerminalsNearOffLineZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.XiTerminalPairRay
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.XiZerosSupplyLogarithmicBand
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheVonMangoldtSquareIsTheZetaSource
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.XiTerminalOutwardLogDeriv
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.EveryRightZeroReachesAnOutwardZetaRay
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheSquareSeesTheRegularLogDerivative
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.XiRealReciprocalField
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheSelectivityBatteryOfCorrespondencePositivity
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.SymmetricSquareContractionsAndExteriorCounts
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheCofactorGramIsATranslationGram
@@ -60,6 +70,9 @@ import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheMertensBudgetOf
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheMertensBudgetOfACurveIsTheRepulsionEnergyOfItsSpectrum
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.AMertensBudgetIsPurityWithASimpleSpectrum
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.AnAbelSlopeAtTheGenusIsRHWithSimpleZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ThePrimeErrorSymbolSplitsAtTheZeros
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheZeroPartHasNoMassAtInfiniteHeight
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.TheAbelSlopeOfThePrimeErrorIsTheArchimedeanGenus
 
 /-!
 # Arithmetic Correspondence Positivity
@@ -82,7 +95,7 @@ Hardy perturbation; the boundary receiver's energy rate priced by the critical v
 shadows; the Mertens budget law (a linear Mertens energy forces purity and a simple spectrum); the
 prime-error budget dominates the archimedean genus `2 + γ − log 4π`; the genus-one Mertens
 budget is the strict Hasse bound, and in every genus the Mertens slope is the repulsion energy of
-the spectrum and a Mertens budget is purity with a simple spectrum; an Abel slope of the prime error at the
-archimedean genus is RH with simple zeros. See
+the spectrum and a Mertens budget is purity with a simple spectrum; the Abel–Cramér law (the Abel slope of the
+prime error is the archimedean genus exactly under RH with simple zeros). See
 `ArithmeticCorrespondencePositivity/README.md`.
 -/

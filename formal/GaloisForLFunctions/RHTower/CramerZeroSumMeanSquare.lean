@@ -283,6 +283,14 @@ theorem cramer_finite_zero_energy (hRH : RiemannHypothesis) {X D : ℝ}
         positivity
     _ = _ := by unfold cramerZeroEnergyConstant; ring
 
+/-- The constant of the shell-tail mean square. -/
+def cramerTailConstant : ℝ := 40960 * cramerCountConstant ^ 3
+
+theorem cramerTailConstant_nonneg : 0 ≤ cramerTailConstant := by
+  unfold cramerTailConstant
+  have := cramerCountConstant_pos
+  positivity
+
 /-- The share of the shells `k ≥ k₀`: `Σ_{k ≥ k₀} (k + 1)³ (2/3)^k`. -/
 def cramerShellTail (k₀ : ℕ) : ℝ :=
   ∑' k : ℕ, (((k + k₀ : ℕ) : ℝ) + 1) ^ 3 * (2 / 3 : ℝ) ^ (k + k₀)
@@ -296,14 +304,15 @@ theorem tendsto_cramerShellTail : Tendsto cramerShellTail atTop (𝓝 0) :=
 
 /-- **The high-shell mean square.** Under RH, a finite zero sum with coefficients
 `‖c_q‖ ≤ D/|γ_q|` supported on `|γ_q| ≥ 2^{k₀}` has dyadic mean square at most
-`40960 C³ D²/X · Σ_{k ≥ k₀} (k + 1)³ (2/3)^k`. -/
+`C_tail D²/X · Σ_{k ≥ k₀} (k + 1)³ (2/3)^k`. -/
 theorem cramer_finite_zero_energy_tail (hRH : RiemannHypothesis) {X D : ℝ}
     (hX : 0 < X) (hD : 0 ≤ D) (F : Finset XiZeroCopy) (c : XiZeroCopy → ℂ)
     (hc : ∀ q ∈ F, ‖c q‖ ≤ D / |zeroOrdinate q|) (k₀ : ℕ)
     (hF : ∀ q ∈ F, (2 : ℝ) ^ k₀ ≤ |zeroOrdinate q|) :
     ∫ x in X..2 * X, ‖∑ q ∈ F, c q * (x : ℂ) ^ (q.1 : ℂ)‖ ^ 2 / x ^ 3 ≤
-      40960 * cramerCountConstant ^ 3 * D ^ 2 / X * cramerShellTail k₀ := by
+      cramerTailConstant * D ^ 2 / X * cramerShellTail k₀ := by
   refine (cramer_finite_zero_energy_shells hRH hX hD F c hc).trans ?_
+  unfold cramerTailConstant
   have hk : ∀ k ∈ F.image cramerHeightIndex, k₀ ≤ k := by
     intro k hk
     obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hk
