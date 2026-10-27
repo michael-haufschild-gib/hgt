@@ -98,7 +98,8 @@ theorem eventually_eventually_lt_sourceWork_of_lt_negIndex {ι : Type*} [Fintype
       b < ENNReal.ofReal (xiTaperedSourceWork ((n : ℝ) + 4) N) := by
   filter_upwards [eventually_lt_dampedSourceWork_of_lt_negIndex f hf hfc hb] with n hn
   have hR : (4 : ℝ) ≤ (n : ℝ) + 4 := by
-    linarith only [Nat.cast_nonneg (R := ℝ) n]
+    have hn0 : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
+    linarith only [hn0]
   exact ((ENNReal.continuous_ofReal.tendsto _).comp
     (xiTaperedSourceWork_tendsto hR)).eventually (lt_mem_nhds hn)
 

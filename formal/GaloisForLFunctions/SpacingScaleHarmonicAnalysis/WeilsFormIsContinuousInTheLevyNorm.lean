@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheSelfEnergyOfAnAtomIsExactlyLogarithmic
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheDiamagneticInequality
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheFrobeniusSpanIsTheTowerOfTheScalingSurface
 
 /-!
 # Weil's form is continuous in the Lévy norm
@@ -65,8 +66,15 @@ theorem weilQuad_comp_sub (f : ℝ → ℝ) (c : ℝ) : weilQuad (fun u => f (u 
 
 /-! ### Cauchy–Schwarz by the discriminant -/
 
+/-- `∫ (α p + β q + r) = α ∫ p + β ∫ q + ∫ r`. -/
+theorem integral_lin3 {p q r : ℝ → ℝ} (hp : Integrable p) (hq : Integrable q) (hr : Integrable r)
+    (α β : ℝ) : ∫ u, (α * p u + β * q u + r u) = α * (∫ u, p u) + β * (∫ u, q u) + ∫ u, r u := by
+  rw [integral_add (f := fun u => α * p u + β * q u) (g := r) ((hp.const_mul α).add (hq.const_mul β))
+    hr, integral_add (f := fun u => α * p u) (g := fun u => β * q u) (hp.const_mul α)
+    (hq.const_mul β), integral_const_mul, integral_const_mul]
+
 /-- A quadratic `A t² + 2C t + B ≥ 0` for all `t` has `|C| ≤ √A √B`. -/
-theorem abs_le_sqrt_mul_sqrt_of_quadratic_nonneg {A B C : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B)
+theorem abs_le_sqrt_mul_sqrt_of_quadratic_nonneg {A B C : ℝ} (hA : 0 ≤ A)
     (h : ∀ t : ℝ, 0 ≤ A * (t * t) + 2 * C * t + B) : |C| ≤ Real.sqrt A * Real.sqrt B := by
   have hd := discrim_le_zero h
   unfold discrim at hd
@@ -78,14 +86,13 @@ theorem abs_integral_mul_le {a b : ℝ → ℝ} (ha : Integrable fun u => a u ^ 
     (hb : Integrable fun u => b u ^ 2) (hab : Integrable fun u => a u * b u) :
     |∫ u, a u * b u| ≤ Real.sqrt (∫ u, a u ^ 2) * Real.sqrt (∫ u, b u ^ 2) := by
   refine abs_le_sqrt_mul_sqrt_of_quadratic_nonneg (integral_nonneg fun u => sq_nonneg _)
-    (integral_nonneg fun u => sq_nonneg _) fun t => ?_
+    fun t => ?_
   have e : ∀ u, (t * a u + b u) ^ 2 = t * t * a u ^ 2 + 2 * t * (a u * b u) + b u ^ 2 :=
     fun u => by ring
   have hint : ∫ u, (t * a u + b u) ^ 2 =
       (∫ u, a u ^ 2) * (t * t) + 2 * (∫ u, a u * b u) * t + ∫ u, b u ^ 2 := by
     simp_rw [e]
-    rw [integral_add ((ha.const_mul _).add (hab.const_mul _)) hb,
-      integral_add (ha.const_mul _) (hab.const_mul _), integral_const_mul, integral_const_mul]
+    rw [integral_lin3 ha hab hb]
     ring
   rw [← hint]
   exact integral_nonneg fun u => sq_nonneg _
@@ -102,7 +109,7 @@ def levyMixed (f d : ℝ → ℝ) (y : ℝ) : ℝ :=
   archLevyDensity y * ∫ u, (f u - f (u + y)) * (d u - d (u + y))
 
 theorem integrable_sub_shift_mul (hf : Continuous f) (hfc : HasCompactSupport f)
-    (hd : Continuous d) (hdc : HasCompactSupport d) (y : ℝ) :
+    (hd : Continuous d) (y : ℝ) :
     Integrable fun u => (f u - f (u + y)) * (d u - d (u + y)) := by
   refine ((hf.sub (hf.comp (continuous_add_const y))).mul
     (hd.sub (hd.comp (continuous_add_const y)))).integrable_of_hasCompactSupport ?_
@@ -115,14 +122,13 @@ theorem levyIntegrand_smul_add (hf : Continuous f) (hfc : HasCompactSupport f)
       t * t * levyIntegrand f y + 2 * t * levyMixed f d y + levyIntegrand d y := by
   have h1 := RHTower.WeilMarkovPole.integrable_sub_shift_sq hf hfc y
   have h2 := RHTower.WeilMarkovPole.integrable_sub_shift_sq hd hdc y
-  have h3 := integrable_sub_shift_mul hf hfc hd hdc y
+  have h3 := integrable_sub_shift_mul hf hfc hd y
   have e : ∀ u, (t * f u + d u - (t * f (u + y) + d (u + y))) ^ 2 =
       t * t * (f u - f (u + y)) ^ 2 + 2 * t * ((f u - f (u + y)) * (d u - d (u + y))) +
         (d u - d (u + y)) ^ 2 := fun u => by ring
   unfold levyIntegrand levyMixed
   simp_rw [e]
-  rw [integral_add ((h1.const_mul _).add (h3.const_mul _)) h2,
-    integral_add (h1.const_mul _) (h3.const_mul _), integral_const_mul, integral_const_mul]
+  rw [integral_lin3 h1 h3 h2]
   ring
 
 theorem contDiff_smul_add (hf : ContDiff ℝ 2 f) (hd : ContDiff ℝ 2 d) (t : ℝ) :
@@ -140,7 +146,8 @@ theorem integrableOn_levyMixed (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport 
   have hs := integrableOn_levyIntegrand (contDiff_smul_add hf hd 1) (hasCompactSupport_smul_add hfc hdc 1)
   have h1 := integrableOn_levyIntegrand hf hfc
   have h2 := integrableOn_levyIntegrand hd hdc
-  refine (((hs.sub h1).sub h2).div_const 2).congr_fun (fun y _ => ?_) measurableSet_Ioi
+  refine IntegrableOn.congr_fun (((hs.sub h1).sub h2).div_const 2) (fun y _ => ?_)
+    measurableSet_Ioi
   have := levyIntegrand_smul_add hf.continuous hfc hd.continuous hdc 1 y
   simp only [levyIntegrand] at this
   simp only [Pi.sub_apply]
@@ -158,9 +165,7 @@ theorem levyEnergy_smul_add (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
   rw [show (fun y => archLevyDensity y * ∫ u, (t * f u + d u - (t * f (u + y) + d (u + y))) ^ 2) =
       fun y => t * t * levyIntegrand f y + 2 * t * levyMixed f d y + levyIntegrand d y from
     funext fun y => levyIntegrand_smul_add hf.continuous hfc hd.continuous hdc t y]
-  rw [integral_add ((h1.const_mul _).add (h3.const_mul _)) h2,
-    integral_add (h1.const_mul _) (h3.const_mul _), integral_const_mul, integral_const_mul]
-  rfl
+  exact integral_lin3 h1 h3 h2 _ _
 
 theorem levyEnergy_nonneg' (h : ℝ → ℝ) : 0 ≤ levyEnergy h :=
   setIntegral_nonneg_ae measurableSet_Ioi (levyIntegrand_nonneg h)
@@ -176,8 +181,7 @@ theorem levyEnergy_add_le (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
     have := levyEnergy_smul_add hf hfc hd hdc t
     have h0 := levyEnergy_nonneg' (fun u => t * f u + d u)
     nlinarith
-  have hX := abs_le_sqrt_mul_sqrt_of_quadratic_nonneg (levyEnergy_nonneg' f)
-    (levyEnergy_nonneg' d) hq
+  have hX := abs_le_sqrt_mul_sqrt_of_quadratic_nonneg (levyEnergy_nonneg' f) hq
   have h1 := levyEnergy_smul_add hf hfc hd hdc 1
   simp only [one_mul] at h1
   rw [h1]

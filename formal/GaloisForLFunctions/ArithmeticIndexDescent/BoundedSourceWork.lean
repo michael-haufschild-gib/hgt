@@ -150,8 +150,10 @@ theorem eventually_bounded_dampedSourceWork_iff :
     refine ⟨(B : ℝ), ?_⟩
     filter_upwards [xiDampedSourceWork_tendsto_energy.eventually (gt_mem_nhds hB)] with n hn
     have h := ENNReal.toReal_mono (by simp : (B : ℝ≥0∞) ≠ ⊤) hn.le
-    have hnonneg : 0 ≤ xiDampedSourceWork ((n : ℝ) + 4) :=
-      xiDampedSourceWork_nonneg (by linarith only [Nat.cast_nonneg (R := ℝ) n])
+    have hR : (4 : ℝ) ≤ (n : ℝ) + 4 := by
+      have hn0 : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
+      linarith only [hn0]
+    have hnonneg : 0 ≤ xiDampedSourceWork ((n : ℝ) + 4) := xiDampedSourceWork_nonneg hR
     simpa only [ENNReal.toReal_ofReal hnonneg, ENNReal.toReal_natCast] using h
 
 /-- Infinite off-line support is exactly divergence of the damped source work to infinity. -/

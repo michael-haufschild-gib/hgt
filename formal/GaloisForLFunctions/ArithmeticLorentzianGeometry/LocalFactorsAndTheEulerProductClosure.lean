@@ -91,32 +91,35 @@ theorem not_isHyperbolic_ladderGram {p : ℕ} (hp : p.Prime) : ¬ IsHyperbolic (
     rw [show (p : ℝ) ^ k = (Real.sqrt p ^ k) ^ 2 by rw [← pow_mul, mul_comm, pow_mul, hs2]]
     exact Real.sqrt_sq (by positivity)
   -- the entries in terms of `t = p^{−1/2}`
-  have k : ∀ i j : ℕ, (hij : i < j) → (hj : j < 6) →
-      ladderGram p 5 ⟨i, by omega⟩ ⟨j, hj⟩ = Real.log p * (Real.sqrt p)⁻¹ ^ (j - i) := by
-    intro i j hij hj
+  have kk : ∀ i j : Fin 6, (i : ℕ) < j →
+      ladderGram p 5 i j = Real.log p * (Real.sqrt p)⁻¹ ^ ((j : ℕ) - i) := by
+    intro i j hij
     simp only [ladderGram, Matrix.of_apply]
     rw [weilPrimeKernel_pow_pow hp hij, hsq, div_eq_mul_inv, inv_pow]
   have kc : ∀ i j : Fin 6, ladderGram p 5 i j = ladderGram p 5 j i := fun i j => by
     simp only [ladderGram, Matrix.of_apply]; exact weilPrimeKernel_comm _ _
   have k0 : ∀ i : Fin 6, ladderGram p 5 i i = 0 := fun i => by
     simp only [ladderGram, Matrix.of_apply]; exact weilPrimeKernel_self _
+  set t := (Real.sqrt p)⁻¹
+  have k01 : ladderGram p 5 0 1 = Real.log p * t ^ 1 := kk 0 1 (by decide)
+  have k45 : ladderGram p 5 4 5 = Real.log p * t ^ 1 := kk 4 5 (by decide)
+  have k04 : ladderGram p 5 0 4 = Real.log p * t ^ 4 := kk 0 4 (by decide)
+  have k05 : ladderGram p 5 0 5 = Real.log p * t ^ 5 := kk 0 5 (by decide)
+  have k14 : ladderGram p 5 1 4 = Real.log p * t ^ 3 := kk 1 4 (by decide)
+  have k15 : ladderGram p 5 1 5 = Real.log p * t ^ 4 := kk 1 5 (by decide)
   have hx := bil_pair_pair (ladderGram p 5) 0 1 0 1
   have hy := bil_pair_pair (ladderGram p 5) 4 5 4 5
   have hb := bil_pair_pair (ladderGram p 5) 0 1 4 5
-  rw [k0, k0, kc 1 0, k 0 1 (by norm_num) (by norm_num)] at hx
-  rw [k0, k0, kc 5 4, k 4 5 (by norm_num) (by norm_num)] at hy
-  rw [k 0 4 (by norm_num) (by norm_num), k 0 5 (by norm_num) (by norm_num),
-    k 1 4 (by norm_num) (by norm_num), k 1 5 (by norm_num) (by norm_num)] at hb
+  rw [k0, k0, kc 1 0, k01] at hx
+  rw [k0, k0, kc 5 4, k45] at hy
+  rw [k04, k05, k14, k15] at hb
   have hcs := h _ (Pi.single 4 1 + Pi.single 5 1) (show 0 < qf (ladderGram p 5) _ by
     rw [qf, hx]; positivity)
   rw [qf, qf, hx, hy, hb] at hcs
   have ht2 : (Real.sqrt p)⁻¹ ^ 2 ≤ 1 / 2 := by
     rw [inv_pow, hs2, one_div]
     exact inv_anti₀ (by norm_num) (by exact_mod_cast hp.two_le)
-  exact ladder_revCS_fails hL (inv_pos.mpr hs) ht2 (by
-    simp only [Nat.sub_zero, show 5 - 4 = 1 from rfl, show 4 - 1 = 3 from rfl,
-      show 5 - 1 = 4 from rfl, show 1 - 0 = 1 from rfl, pow_one] at hcs
-    linarith)
+  exact ladder_revCS_fails hL (inv_pos.mpr hs) ht2 (by rw [pow_one] at hcs; linarith)
 
 /-! ### The archimedean jump form is a Laplacian -/
 
@@ -148,6 +151,7 @@ theorem sum_ite_eq_zero_else {κ : Type*} [Fintype κ] [DecidableEq κ] (p : κ)
     zero_add, add_sub_cancel_left]
   exact sum_congr rfl fun q hq => if_neg (Ne.symm (ne_of_mem_erase hq))
 
+omit [Fintype ι] in
 theorem esymm2Form_apply (M : κ → ι → ℝ) (i j : ι) :
     esymm2Form M i j = (∑ p, M p i) * (∑ q, M q j) - ∑ p, M p i * M p j := by
   have e : ∀ p q, (if p = q then (0 : Matrix ι ι ℝ) else vecMulVec (M p) (M q)) i j =
