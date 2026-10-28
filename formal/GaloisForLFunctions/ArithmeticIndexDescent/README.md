@@ -1232,11 +1232,38 @@ unconditionally on this zero-free edge. The elementary scalar terms then
 give `G(t)-R_2(t)>=gamma>1/2` for every real `t`, with zero treated using
 `Reg(1)=-gamma`.
 
-This is a proved symbol comparison. A physical square-prime bound still
-requires the Fourier/Abel identification with
-`2*sum_n Lambda(n)/n*Corr_F(2*log(n))` and restoration of its pole. Omitting
-that distributional pole would change the form. The full archimedean
-normalization also contains its original mass term beyond the jump energy.
+The literal arithmetic identity is now formalized on every real compact
+smooth core. With the Fourier convention `exp(-2*pi*i*x*xi)`, it is
+
+\[
+ P_{\rm even}(F)
+ =\int_{\mathbb R}R_2(2\pi\xi)|\widehat F(\xi)|^2\,d\xi
+   +\frac12\left|\int_{\mathbb R}F\right|^2,
+ \qquad
+ P_{\rm even}(F)=2\sum_n\frac{\Lambda(n)}n\operatorname{Corr}_F(2\log n).
+\]
+
+Absolute Dirichlet summation proves the damped Fourier identity. Compact
+correlation support removes damping in the literal arithmetic sum. The
+regular Fourier part converges under a proved polynomial majorant, and
+the pole multiplier is exactly half a Poisson kernel. Its limiting half
+mean-square term is therefore retained.
+
+The completed Xi edge field also has a formalized logarithmic lower bound:
+`Re(xi'/xi)(1+iT)>=c*log(T)` eventually, for one `c>0`. Pairing a zero with
+its line conjugate preserves its ordinate and gives
+
+\[
+ \operatorname{Re}\frac{\xi'}{\xi}(1+iT)
+ \ge\frac{N(T+h)-N(T-h)}{2(1+h^2)}
+ \quad(0\le h\le T).
+\]
+
+The existing fixed-window zero count supplies the logarithmic growth.
+The retained Gamma share, physical coercivity, complete-profile transfer
+and square-plus-odd higher mixed index are under active formalization.
+The full archimedean normalization contains its original mass term beyond
+the Gamma jump energy used here.
 
 ### Polar compatibility
 
@@ -1764,6 +1791,8 @@ Quantitative pillars supplied by this programme:
 | All cubes and higher prime powers | The summable critical coefficient budget over every prime gives a uniform Gamma-small mixed tail and finite-detail approximation | `AllHigherPrimePowerMixedTailsAreGammaSmall` |
 | Infinite-prime higher-power mixed index | Gamma minus all mixed powers of exponent at least three has one uniform upper negative-dimension bound at every complete horizon | `AllHigherPrimePowerMixedFormsHaveUniformFiniteIndex` |
 | Regular square-prime boundary | Exact digamma and Xi decomposition proves a positive gap below the original Gamma jump symbol at every frequency | `TheSquarePrimeBoundaryHasAGammaGap` |
+| Literal square-prime identity | The original even-power sum equals its regular Fourier boundary plus exactly half the squared ordinary mean on compact smooth real cores | `TheSquarePrimeBoundaryHasItsMeanPole`, `TheSquarePrimeSourceIsItsBoundaryPairing` |
+| Logarithmic Xi edge growth | Line-conjugate pairs and the fixed-window zero count give an unconditional eventual positive multiple of log T on Re s=1 | `TheXiEdgeFieldHasLogarithmicGrowth` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

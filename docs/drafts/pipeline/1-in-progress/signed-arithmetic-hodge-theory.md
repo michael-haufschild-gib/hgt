@@ -285,14 +285,17 @@ an assumption available to the programme.
 2. Finite nested-parent sum<=16 Gamma: final-audited and integrated.
 3. Logarithmically weighted actual Haar readouts: final-audited and integrated;
    exact ancestor weights cost16 Gamma, natural-logarithmic weights cost32 Gamma.
-4. All-level high-generator tail bound: square-function and analysis-space
-   norm estimates are final-audited. Physical source identification retains
-   complete translation orbits of finitely many low generators.
-5. Compactness boundary: one-level detail compactness and an explicit
-   infinite orthogonal translated Haar family with uniformly bounded Gamma.
+4. All-level high-generator tail bound: final-audited, including physical
+   source realization. The root and finitely many low generators retain
+   every dyadic level. Squared L2 error on every finite original cell source
+   is at most32 Gamma(f)/(1+log A), uniformly in the horizon and coarse means.
+5. Compactness boundary: final-audited. Each fixed level has a compact
+   unit-Gamma detail envelope. The actual first Haar translation orbit has
+   constant Gamma, pairwise orthogonality and fixed positive L2 separation;
+   its range is not totally bounded.
 
-These five items are the current requested deliverables. They do not include
-proving the complete Weil sign or the critical-energy upper bound.
+All five multiscale Gamma and L2 statements are formalized and integrated.
+The complete Weil sign and the critical-energy upper bound remain open.
 
 ### Ancestor payment by tail flow
 
@@ -310,3 +313,30 @@ the existing translated Haar profiles and their exact masses, and proves
 V(j+1,a)=V(j,2a)+V(j,2a+1)+c(j+1,a)^2. Its final audit passes with standard
 axioms only. BinaryVarianceFlowCountsEveryAncestor formalizes the complete
 tail-flow and logarithmic consequences, with standard axioms only.
+
+### Physical finite-generator approximation and compactness boundary
+
+DyadicHaarCoordinatesReadTheOriginalSource identifies the original source's
+cell coordinates with its normalized Haar readouts at every level. The
+whole-line cell embedding U is an isometry with U*U=1. For an arbitrary
+compact BV source, the approximation concerns its actual cell component;
+every finite original cell profile is exactly in the range of U.
+
+FiniteGeneratorOrbitsApproximateThePhysicalCellSource constructs a cutoff
+P_A retaining the root and labels a<A for all j>=0. It proves the finite
+generator-label property, exact preservation of retained orbit vectors,
+and the physical bound
+
+norm(U U* f-U P_A U* f)^2<=32 Gamma(f)/(1+log A).
+
+For finite original cell sources, U U* f=f. No projected-source Gamma
+inequality is assumed. Both modules pass individual final Lean and standard
+transitive-axiom audits.
+
+CompactDetailsDoNotMakeTranslationOrbitsCompact proves compact envelopes at
+each fixed level for unit-Gamma complete-source details. The actual translated
+first Haar atom has inner product haarMass(1) times the Kronecker delta,
+squared pairwise distance2 haarMass(1), and constant original Gamma energy.
+Its full orbit is not totally bounded. This boundary is formalized with
+standard axioms only: finite generator families retain infinitely many
+orthogonal level directions, rather than producing compactness across levels.

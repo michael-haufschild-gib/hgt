@@ -380,29 +380,46 @@ the cutoff. Its Gamma budget belongs to the original source.
 identifies these readouts with the actual Hilbert coordinates of the original
 source. Let \(U\) be the complete-cell embedding followed by zero extension
 to whole-line \(L^2\). It is an isometry, \(U^*U=1\), and the \((j,a)\)
-detail coordinate of \(U^*f\) equals \(c_{j,a}\). The proof identifies each
+detail coordinate of \(U^*f\) equals \(c_{j,a}\) at common translation \(t=0\).
+The proof identifies each
 basis vector with the literal translated Haar profile, including its exact
 square-root mass. For a general source, \(UU^*f\) denotes its cell component.
+
+[FiniteGeneratorOrbitsApproximateThePhysicalCellSource](FiniteGeneratorOrbitsApproximateThePhysicalCellSource.lean)
+constructs the cell-space cutoff \(P_A\). It retains the root generator and
+all Haar labels \(a<A\), with every dyadic level \(j\ge0\) of each retained
+generator. The generator-label set is finite, and the cutoff fixes each
+retained orbit vector exactly. For \(A\ge1\),
+\[
+\|UU^*f-UP_AU^*f\|_2^2
+\le\frac{32\Gamma(f)}{1+\log A}.
+\]
+Every finite original cell profile lies exactly in the range of \(U\).
+For those sources, \(UU^*f=f\), so the estimate controls the entire physical
+source. It is uniform in the horizon and all coarse coefficients. Gamma
+is evaluated before projection. The approximation retains finitely many
+generator families and infinitely many level directions.
 
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
 is smaller than the available diagonal reserve, with explicit treatment of the coarse residual.
 Absolute-value estimates are acceptable only when their total cost is affordable.
 
-The first substantive target is a coherent family of Haar and coarse blocks with one Gamma
+The full-form target is a coherent family of Haar and coarse blocks using the joint Gamma
 allocation, both poles and an error uniform in the family size. A complete all-coefficient
 nonnegative result would establish the complete Weil sign and therefore RH.
 
 Complete logarithmic cells have a dyadic multiresolution: the cell at index one and the low
-details recur along translations by \(\log2\), while high details have a proved full-form floor.
+details recur along translations by \(\log2\). Within each fixed level, high detail sections
+have a proved full-form floor.
 The remaining task includes cross-level interactions and the finite generator orbits.
 The corpus supplies a useful one-prime estimate:
 [ThePrimeTwoMixedTailIsGammaSmall](../ArithmeticIndexDescent/ThePrimeTwoMixedTailIsGammaSmall.lean)
 bounds the high-detail tail of the actual prime-two mixed form by any prescribed positive
 fraction of Gamma energy, uniformly in the horizon. Its Gamma energy is evaluated on the
 complete source, with all coarse coefficients free. Finitely many detail coordinates therefore
-approximate this mixed term. Summing such estimates across primes or levels still requires one
-joint reserve allocation; the one-prime estimate does not supply the coarse-generator sign.
+approximate this mixed term. The joint Gamma allocation does not by itself bound these mixed
+forms simultaneously across lags and levels or supply the coarse-generator sign.
 
 [TranslatedDetailsAreUniformlySmallInGammaEnergy](../ArithmeticIndexDescent/TranslatedDetailsAreUniformlySmallInGammaEnergy.lean)
 also bounds the correlation of a high-detail section with any real translate
@@ -417,6 +434,20 @@ places the actual single-level detail projections of all unit-Gamma complete
 profiles in a compact subset of half-line \(L^2\), with all coarse coefficients
 and horizons free. Its positive weight is
 \(\log(1/\ell_a)\), including at \(a=1\).
+
+[CompactDetailsDoNotMakeTranslationOrbitsCompact](CompactDetailsDoNotMakeTranslationOrbitsCompact.lean)
+transports that compact envelope to each fixed dyadic level. Across all
+levels, let \(v_j=T_{\log2}^j\operatorname{haarAtom}(1)\). Then
+\[
+\langle v_j,v_k\rangle=m_1\delta_{jk},\qquad
+\|v_j-v_k\|_2^2=2m_1\quad(j\ne k),\qquad m_1>0.
+\]
+The full orbit is not totally bounded. Its literal translated source profiles
+have the same Gamma energy and remain compactly supported and of bounded
+variation. Finite generator families therefore retain infinitely many
+orthogonal level directions; their full orbits do not supply compactness
+across levels.
+
 [EveryIntegerPrimeLagHasGammaSmallMixedTails](../ArithmeticIndexDescent/EveryIntegerPrimeLagHasGammaSmallMixedTails.lean)
 also pays the mixed tail at each integer lag \(m\ge2\), with cost
 \(4\Lambda(m)/(\sqrt m\log(1/\ell_A))\) times the original Gamma energy.
@@ -599,9 +630,11 @@ These are imported mathematical foundations, not new contributions of this progr
 | Canonical critical source energy | [TheCriticalSourceRateHasACanonicalEnergy](../ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean) |
 | Source synthesis beyond narrow spacing | [TheSecondOrderSynthesis](../SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean) |
 
-The trial-correction estimates, whole-family operator bounds, exact radical retention and
-quantitative source-scale bounds with faithful completed-aperture transport, and simultaneous
-Ramanujan Gram and family-residual budgets are formalized contributions of this programme.
+The trial-correction estimates, whole-family operator bounds, exact radical retention,
+quantitative source-scale bounds with faithful completed-aperture transport, simultaneous
+Ramanujan Gram and family-residual budgets, joint dyadic Gamma allocation, physical
+approximation by finite generator families and the level-orbit compactness boundary are
+formalized contributions of this programme.
 Complete signed block payment, quantitative growing-family schedules with full-form complement and
 Gamma/pole transfer, and arithmetic upper control of critical work remain research targets.
 

@@ -42,8 +42,9 @@ theorem dampedSquarePrimeSource_eq_integral (u : SchwartzMap ℝ ℂ)
   have hf (n : ℕ) : Integrable (f n) :=
     (integrable_spectralDensity_mul_cos u (2 * Real.log n)).const_mul (w n)
   have hbound (n : ℕ) (ξ : ℝ) : ‖f n ξ‖ ≤ w n * ρ ξ := by
-    rw [f, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hw n), abs_mul,
-      abs_of_nonneg (sq_nonneg _)]
+    dsimp only [f]
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hw n), abs_mul,
+      abs_of_nonneg (show 0 ≤ ρ ξ from sq_nonneg _)]
     exact mul_le_mul_of_nonneg_left
       (mul_le_of_le_one_right (sq_nonneg _) (Real.abs_cos_le_one _)) (hw n)
   have hsum : Summable (fun n : ℕ => ∫ ξ : ℝ, ‖f n ξ‖) := by
@@ -56,14 +57,13 @@ theorem dampedSquarePrimeSource_eq_integral (u : SchwartzMap ℝ ℂ)
   have hsingle (n : ℕ) : (∫ ξ : ℝ, f n ξ) =
       w n * (autocorrelationSchwartz u (2 * Real.log n)).re := by
     rw [autocorrelationSchwartz_re_eq_integral_cos, ← integral_const_mul]
-    rfl
   have hpoint (ξ : ℝ) : (∑' n : ℕ, f n ξ) =
       (LSeries (fun n => (vonMangoldt n : ℂ))
         ((σ : ℂ) + ((4 * Real.pi * ξ : ℝ) : ℂ) * I)).re * ρ ξ := by
     rw [re_LSeries_vonMangoldt_eq (by simpa using hσ)]
     simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
       Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
-      mul_zero, zero_mul, sub_zero, add_zero, zero_add, mul_one]
+      mul_zero, sub_zero, add_zero, zero_add, mul_one]
     rw [← tsum_mul_right]
     apply tsum_congr
     intro n
@@ -126,6 +126,7 @@ theorem dampedSquarePrimeSource_one {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
   apply tsum_congr
   intro n
   rw [core_schwartz_autocorrelation_re, Real.rpow_neg_one, div_eq_mul_inv]
+  rfl
 
 /-- Damping removal on the literal source is a finite sum limit with its original coefficients. -/
 theorem continuous_dampedSquarePrimeSource_core {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
@@ -140,6 +141,7 @@ theorem continuous_dampedSquarePrimeSource_core {a : ℝ} (u : SuzukiRestrictedW
     apply tsum_eq_sum
     intro n hn
     rw [hN n (by simpa only [Finset.mem_range, not_lt] using hn), mul_zero]
+  change Continuous (fun σ : ℝ => dampedSquarePrimeSource (suzukiRestrictedWeilCoreSchwartz u) σ)
   simp_rw [he]
   apply Continuous.const_mul
   apply continuous_finset_sum
@@ -158,7 +160,7 @@ theorem dampedSquarePrimeSource_eq_pole_add_regular (u : SchwartzMap ℝ ℂ)
     dampedSquarePrimeSource u (1 + 4 * Real.pi * ε) =
       (∫ ξ : ℝ, squarePrimePoleMultiplier ε ξ * ‖𝓕 (u : ℝ → ℂ) ξ‖ ^ 2) +
         ∫ ξ : ℝ, regularSquareDampedSpectralDensity u ε ξ := by
-  have hσ : 1 < 1 + 4 * Real.pi * ε := by positivity
+  have hσ : 1 < 1 + 4 * Real.pi * ε := lt_add_of_pos_right 1 (by positivity)
   rw [dampedSquarePrimeSource_eq_integral u hσ,
     ← integral_add (integrable_squarePrimePole_spectralDensity u hε)
       (integrable_regularSquareDampedSpectralDensity u hε.le)]
@@ -167,7 +169,7 @@ theorem dampedSquarePrimeSource_eq_pole_add_regular (u : SchwartzMap ℝ ℂ)
   let s : ℂ := ((1 + 4 * Real.pi * ε : ℝ) : ℂ) +
     ((4 * Real.pi * ξ : ℝ) : ℂ) * I
   have hs : 1 < s.re := by simpa [s] using hσ
-  have hs1 : s ≠ 1 := fun he => by simpa [he] using hs
+  have hs1 : s ≠ 1 := fun he => by simp [he] at hs
   have hz : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_le_re hs.le
   have hp := congrArg Complex.re (RHTower.Sieve.neg_logDeriv_riemannZeta_eq_of_ne_zero hs1 hz)
   have he : s - 1 = ((4 * Real.pi * ε : ℝ) : ℂ) +

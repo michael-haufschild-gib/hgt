@@ -83,10 +83,10 @@ theorem norm_integral_coreSchwartz_sq {a : ℝ} (u : SuzukiRestrictedWeilCore a)
 theorem regularSquareDensity_zero_eq (u : SchwartzMap ℝ ℂ) (ξ : ℝ) :
     regularSquareDampedSpectralDensity u 0 ξ =
       squarePrimeRegularSymbol (2 * Real.pi * ξ) * ‖𝓕 (u : ℝ → ℂ) ξ‖ ^ 2 := by
-  unfold regularSquareDampedSpectralDensity squarePrimeRegularSymbol
-  congr 3
-  push_cast
-  ring
+  have he : (((1 + 4 * Real.pi * (0 : ℝ) : ℝ) : ℂ) +
+      ((4 * Real.pi * ξ : ℝ) : ℂ) * I) =
+        (1 : ℂ) + 2 * ((2 * Real.pi * ξ : ℝ) : ℂ) * I := by push_cast; ring
+  simp only [regularSquareDampedSpectralDensity, squarePrimeRegularSymbol, he]
 
 /-- The exact regular Fourier pairing and the ordinary mean reconstruct the literal even source. -/
 theorem squarePrimeSource_eq_regular_add_real_mean {a : ℝ} (u : SuzukiRestrictedWeilCore a) :

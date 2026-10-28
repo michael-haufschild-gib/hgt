@@ -58,8 +58,8 @@ theorem inner_firstHaarTranslationOrbit (j k : ℕ) :
     orthonormal_iff_ite.mp orthonormal_logCellDyadicOrbit]
   by_cases hjk : j = k
   · subst k
-    simp only [ite_true, mul_one, ← Complex.ofReal_mul, ← pow_two,
-      Real.sq_sqrt (haarMass_pos (le_refl 1)).le]
+    simp only [ite_true, mul_one]
+    rw [← Complex.ofReal_mul, ← pow_two, Real.sq_sqrt (haarMass_pos (le_refl 1)).le]
   · simp only [Prod.mk.injEq, hjk, false_and, if_false, mul_zero]
 
 /-- Distinct levels retain a fixed positive physical L² separation. -/

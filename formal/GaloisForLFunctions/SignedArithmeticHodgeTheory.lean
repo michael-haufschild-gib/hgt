@@ -24,6 +24,8 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.DyadicVarianceSplitsIntoT
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.BinaryVarianceFlowCountsEveryAncestor
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.HighGeneratorTailsAreSmallAcrossAllLevels
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.DyadicHaarCoordinatesReadTheOriginalSource
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.CompactDetailsDoNotMakeTranslationOrbitsCompact
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.FiniteGeneratorOrbitsApproximateThePhysicalCellSource
 
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
@@ -31,5 +33,8 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.DyadicHaarCoordinatesRead
 Certified signed residual calculus and faithful scale transport on the actual
 arithmetic source, with explicit graph growth under unbounded translation and
 quantitative Gram and prime-residual budgets for actual Ramanujan families,
-and complete weighted dyadic coordinates of the literal logarithmic-cell source.
+complete weighted dyadic coordinates of the literal logarithmic-cell source,
+joint Gamma allocation over all levels, physical approximation by finite
+generator families with their full level orbits, and the exact L² compactness
+boundary between individual levels and complete translation orbits.
 -/

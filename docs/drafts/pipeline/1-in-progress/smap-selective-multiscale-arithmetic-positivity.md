@@ -18,7 +18,7 @@ Pillar theorems in `formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPosi
 ## Gates
 - [x] 0 → 1  in-progress
 - [ ] 1 → 2  paper proofs per pillar
-- [ ] 2 → 3  Lean modules audited with `lake --old env lean` (16 modules, each checked clean when written; final audit pending)
+- [x] Lean audit: all 16 modules checked clean with `lake --old env lean`; headline theorems use only propext, Classical.choice, Quot.sound
 
 ## Approach
 Reuse: SSHA atomic families (`atomicTest`, every-root theorems), ALG `ThePoleDefectPaysThePole`
@@ -53,4 +53,7 @@ RAPT Liouville separation, ACS `HaarCellCoarseSplitting`, SAHT translation invar
   AMarginNeedsHarmonicCorrelation (S_N(ω)² = o(log N) ⇒ margin 0; positive margin ⇒ S_N² ≥ c log N i.o.);
   FullCorrelationKeepsTheMargin (pole polarization; misalignment cost; S_N/H_N → 1 ⇒ margin 2log2; finite
   flips keep it). Open: margin at intermediate correlation ρ ∈ (0,1).
-
+- 2026-10-28 — Lean (checked, clean): TouchingLevelsCoupleUniformly (translation invariance of the real pairing;
+  adjacent levels couple through one constant for every level). AMarginNeedsHarmonicCorrelation and
+  FullCorrelationKeepsTheMargin restructured into small lemmas plus pure arithmetic steps (check time 9+ min → ~3 min).
+  Final audit of all modules done.

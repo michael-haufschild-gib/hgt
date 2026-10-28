@@ -77,8 +77,8 @@ the displayed harmonic identity. Meanwhile
 The large harmonic row cancels only after retaining both pole terms. This
 offers a residual estimate, not merely the previously conjectured average
 rank-one form correction. The exact row identity is now verified in
-`TheArchimedeanCenterRowCancelsThePole`; the boundary square estimate and
-normalized residual transfer remain unchecked.
+`TheArchimedeanCenterRowCancelsThePole`; `HarmonicCenterBoundaryBounds` now
+verifies the weighted boundary square bound. Normalized residual transfer remains unchecked.
 
 The endpoint harmonic singularity has an elementary finite square bound:
 
@@ -501,7 +501,9 @@ The support graph now has thirty modules: three scratch-verified and installed, 
 
 Five support modules are now scratch-verified, installed, and supplied with first required oleans: the harmonic tail moments, finite/reversed Abel adapter, actual complete-Weil carrier, exact collar harmonic kernel, and finite harmonic row identities. Seven retained endpoint axiom reports are clean. Thirty-four total drafts are recorded in the manifest. The new unchecked assembly `TheCompleteWeilMatrixHasRamanujanQuasimodes` combines the exact matrix decomposition with all three norm error limits; its dependencies and endpoint have not yet passed Lean. Full-range coercivity and spectral exhaustion remain to assemble.
 
-Eleven support modules now pass scratch Lean verification and are installed. `TheArchimedeanCenterRowCancelsThePole` proves the exact center-density row and its cancellation against both pole rows, leaving the explicit harmonic boundary remainder. Its first required olean is being generated; the preceding ten are present. Thirteen retained transitive endpoint reports are clean. The missing existing `TheUniformMarginPaysThePoleOnlyUpToARootLogarithm` dependency compiled successfully without source changes. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records forty-two drafts. Remaining estimates and all three spectral endpoints are unchecked; final source audits and integration remain. No web searches or novelty audits are part of this work.
+Fifteen support modules now pass scratch Lean verification, are installed, and have their first required oleans. Exact center-pole cancellation, the weighted harmonic boundary square bound, the retained logarithmic gap for every `0<c<1`, the two-sided inverse-square row bound, and the pole-weighted row bound `36*N*sqrt(n)` are verified. Seventeen retained transitive endpoint reports are clean. The missing existing `TheUniformMarginPaysThePoleOnlyUpToARootLogarithm` dependency compiled successfully without source changes. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records forty-two drafts. Literal integral-error transfers, periodic rows, pole moments, coercivity, and all three spectral endpoints remain unchecked; final source audits and integration remain. No web searches or novelty audits are part of this work.
+
+The first combined literal-error check exposed an existing namespace collision: ACS `TheScalingSurface` and `DistinctEffectiveCyclesMeetNonnegatively` both declare incompatible `localPair` definitions. The old center helper imports the latter through `CrossTowerCollarAndFiniteEulerLatticePositivity`; the actual Weil carrier imports the former. New standalone drafts `TheLogarithmicCenterKernelIsHarmonic` and `TheLogarithmicCenterRowCancelsThePole` isolate the elementary density and harmonic identities directly over the Levy-density module. They replace two support nodes without changing the target or adding hypotheses. Thirteen active nodes remain verified; the two replacement nodes require fresh checks. Existing foreign modules and oleans are untouched.
 
 ### Complete assembly drafted; Lean verification incomplete
 

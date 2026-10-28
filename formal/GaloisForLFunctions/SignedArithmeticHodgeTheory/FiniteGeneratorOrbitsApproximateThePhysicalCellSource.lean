@@ -58,10 +58,11 @@ private theorem coordinates_orbit (i : ℕ × Option ℕ+) :
   rw [logCellDyadicCoordinates_apply, orthonormal_iff_ite.mp orthonormal_logCellDyadicOrbit]
   by_cases hk : k = i
   · subst k; simp [lp.single_apply]
-  · simp [lp.single_apply, hk, hk.symm]
+  · have hk' : i ≠ k := fun h => hk h.symm
+    simp [lp.single_apply, hk, hk']
 
-/-- Every retained generator survives the cutoff at every level. -/
 open Classical in
+/-- Every retained generator survives the cutoff at every level. -/
 theorem logCellGeneratorHead_orbit (A : ℕ) (i : ℕ × Option ℕ+) :
     logCellGeneratorHead A (logCellDyadicOrbit i) =
       if retainedLogCellGenerator A i.2 then logCellDyadicOrbit i else 0 := by
@@ -75,7 +76,8 @@ theorem logCellGeneratorHead_orbit (A : ℕ) (i : ℕ × Option ℕ+) :
     by_cases hk : k = i
     · subst k
       simp only [lpCoordinateProjection_apply, Set.indicator_apply, Set.mem_setOf_eq, if_pos hi]
-    · simp [lpCoordinateProjection_apply, indicator_apply, lp.single_apply, hk, hk.symm]
+    · have hk' : i ≠ k := fun h => hk h.symm
+      simp [lpCoordinateProjection_apply, indicator_apply, lp.single_apply, hk, hk']
   · rw [map_zero]
     apply lp.ext
     funext k
@@ -83,16 +85,17 @@ theorem logCellGeneratorHead_orbit (A : ℕ) (i : ℕ × Option ℕ+) :
     · subst k
       simp only [lpCoordinateProjection_apply, Set.indicator_apply, Set.mem_setOf_eq,
         if_neg hi, lp.coeFn_zero, Pi.zero_apply]
-    · simp [lpCoordinateProjection_apply, indicator_apply, lp.single_apply, hk, hk.symm]
+    · have hk' : i ≠ k := fun h => hk h.symm
+      simp [lpCoordinateProjection_apply, indicator_apply, lp.single_apply, hk, hk']
 
 theorem logCellGeneratorHead_root (A j : ℕ) :
     logCellGeneratorHead A (logCellDyadicOrbit (j, none)) = logCellDyadicOrbit (j, none) := by
-  rw [logCellGeneratorHead_orbit, if_pos trivial]
+  simpa only [retainedLogCellGenerator, if_true] using logCellGeneratorHead_orbit A (j, none)
 
 theorem logCellGeneratorHead_low_detail {A : ℕ} (j : ℕ) (a : ℕ+) (ha : (a : ℕ) < A) :
     logCellGeneratorHead A (logCellDyadicOrbit (j, some a)) =
       logCellDyadicOrbit (j, some a) := by
-  rw [logCellGeneratorHead_orbit, if_pos ha]
+  simpa only [retainedLogCellGenerator, if_pos ha] using logCellGeneratorHead_orbit A (j, some a)
 
 private theorem physical_coordinate_tail_norm (f : ℝ → ℝ)
     (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) (A : ℕ) :
@@ -126,7 +129,11 @@ private theorem physical_coordinate_tail_norm (f : ℝ → ℝ)
   have hsupp : Function.support (fun i => ‖z i‖ ^ 2) ⊆ range ι := by
     rintro ⟨j, o⟩ hi
     cases o with
-    | none => exact False.elim (hi (by rw [hzNone, norm_zero, zero_pow (by norm_num : 2 ≠ 0)]))
+    | none =>
+      apply False.elim
+      apply hi
+      change ‖z (j, none)‖ ^ 2 = 0
+      rw [hzNone, norm_zero, zero_pow (by norm_num : 2 ≠ 0)]
     | some a => exact ⟨(j, a), rfl⟩
   change ‖z‖ ^ 2 = _
   rw [HilbertSchmidt.lp_norm_sq_eq, ← hι.tsum_eq hsupp]
@@ -164,7 +171,10 @@ private theorem cellSection_fixed_by_cell_projection (c : ℕ → ℝ) (X : ℕ)
   rw [map_smul, map_smul]
   congr 1
   have hapos := (Finset.mem_Icc.mp ha).1
-  rw [← logCellEmbedding_weighted_single ⟨a, hapos⟩]
+  have he : logCellEmbedding ((Real.sqrt (logCell a) : ℂ) •
+      (lp.single 2 (⟨a, hapos⟩ : ℕ+) (1 : ℂ) : CellH)) = cellAtom a :=
+    logCellEmbedding_weighted_single ⟨a, hapos⟩
+  rw [← he]
   exact logCellEmbedding_adjoint_self _
 
 theorem realSourceLp_wholeCellProfile (c : ℕ → ℝ) (X : ℕ) :
