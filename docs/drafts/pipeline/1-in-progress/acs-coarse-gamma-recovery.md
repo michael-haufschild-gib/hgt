@@ -37,6 +37,6 @@ The [complete interval averaging loss, separated tail rows, pair-kernel decompos
 
 ## Verification handoff
 
-Work stopped when the user cleared the goal. All touching bounds passed the exact `LogCellGammaBoundaryRows.lean` audit. The `LogCellGammaNearFiniteRows.olean` dependency was built successfully. The subsequent `LogCellGammaDistantRows.olean` build was cancelled and produced no olean; its earlier exact source audit remains valid.
+The user explicitly resumed the three remaining tasks: uniform row assembly, actual-pair transfer and exterior finiteness, and simultaneous coarse/detail recovery. All touching bounds passed the exact `LogCellGammaBoundaryRows.lean` audit. The `LogCellGammaNearFiniteRows.olean` dependency was built successfully. The cancelled `LogCellGammaDistantRows.olean` build produced no olean; its earlier exact source audit remains valid. Its missing dependency build is now resumed.
 
 Unverified assembly candidates remain at `/tmp/acs-logcell-gamma-uniform-rows.lean`, `/tmp/acs-complete-cell-gamma-uniform-rows.lean`, and `/tmp/acs-complete-cell-gamma-recovery.lean`. They are not project modules or proved results. Resume with missing dependency oleans, one at a time, then check the candidates and exact installed files. The last candidate includes actual coarse square-mass identification and both original cell coefficients. No recovery theorem is certified until these checks pass.

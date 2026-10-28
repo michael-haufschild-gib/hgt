@@ -40,7 +40,7 @@ theorem sum_Icc_one_eq_sum_range (f : ℕ → ℝ) (N : ℕ) :
     ∑ n ∈ Icc 1 N, f n = ∑ i ∈ range N, f (i + 1) := by
   induction N with
   | zero => simp
-  | succ N ih => rw [sum_Icc_succ_top (by omega), ih, sum_range_succ]
+  | succ N ih => rw [sum_range_succ, ← ih, Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1)]
 
 /-- The partial sums of a `q`-periodic sequence of mean zero are bounded by `2qB`. -/
 theorem abs_sum_range_succ_periodic_le {q : ℕ} (hq : 1 ≤ q) {B : ℝ} (ψ : ℕ → ℝ)
@@ -51,7 +51,8 @@ theorem abs_sum_range_succ_periodic_le {q : ℕ} (hq : 1 ≤ q) {B : ℝ} (ψ : 
     rw [hmean] at h
     rw [← h]
     exact sum_congr rfl fun i _ => by rw [add_comm]
-  have h := abs_sum_range_sub_mul_mean_le hq (fun i => ψ (i + 1)) (fun i => hper (i + 1))
+  have h := abs_sum_range_sub_mul_mean_le hq (fun i => ψ (i + 1))
+    (fun i => by rw [show i + q + 1 = i + 1 + q by omega]; exact hper (i + 1))
     (fun i => hB (i + 1)) k
   rwa [hmean', zero_div, mul_zero, sub_zero] at h
 
@@ -141,11 +142,16 @@ theorem abs_weilQuad_atomicTest_periodic_sub_le (hg : ContDiff ℝ 2 g) (hgc : H
   have hpole : |2 * ((∫ u, g u * Real.exp (-(u / 2))) * ∑ n ∈ Icc 1 N, ψ n / n) *
       ((∫ u, g u * Real.exp (u / 2)) * ∑ n ∈ Icc 1 N, ψ n)| ≤
         8 * q ^ 2 * B ^ 2 * Real.exp (w / 2) * (∫ u, g u) ^ 2 := by
+    have hgi0 : 0 ≤ ∫ u, g u := integral_nonneg hg0
+    have h2q : 0 ≤ 2 * (q : ℝ) * B := by positivity
+    have h1 := mul_le_mul hA hb1 (abs_nonneg _) hgi0
+    have h2 := mul_le_mul hB' hb2 (abs_nonneg _) (mul_nonneg (Real.exp_pos _).le hgi0)
     simp only [abs_mul, abs_two]
     calc 2 * (|∫ u, g u * Real.exp (-(u / 2))| * |∑ n ∈ Icc 1 N, ψ n / n|) *
           (|∫ u, g u * Real.exp (u / 2)| * |∑ n ∈ Icc 1 N, ψ n|)
-        ≤ 2 * ((∫ u, g u) * (2 * q * B)) * ((Real.exp (w / 2) * ∫ u, g u) * (2 * q * B)) := by
-          gcongr
+        ≤ 2 * ((∫ u, g u) * (2 * q * B)) * ((Real.exp (w / 2) * ∫ u, g u) * (2 * q * B)) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left h1 (by norm_num)) h2 (by positivity)
+            (mul_nonneg (by norm_num) (mul_nonneg hgi0 h2q))
       _ = 8 * q ^ 2 * B ^ 2 * Real.exp (w / 2) * (∫ u, g u) ^ 2 := by ring
   calc _ = |(levyEnergy (atomicTest N (fun n => ψ n / Real.sqrt n) g) -
           (∑ n ∈ Icc 1 N, (ψ n / Real.sqrt n) ^ 2) * levyEnergy g) +
