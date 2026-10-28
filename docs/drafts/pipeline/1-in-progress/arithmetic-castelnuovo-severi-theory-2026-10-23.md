@@ -121,12 +121,15 @@ survivor).
   correlation), `parabola_secant_identity`, `offLine_sub_doubleZero_weight`,
   `paramDeficit_nonneg_and_eq_zero_iff` (`c = 2` is the unique rank–trace parameter matching
   off-line pair weight `c²` and double-zero weight `k_c(2)`), `blockA_coalescedPair_eq_doubleZero`
-  (coalescence indistinguishability: a double critical zero and a coalescing off-line pair produce
-  the identical Gram matrix `blockA`), `unitary_calibration_full_simple` (`κ = 1 ⟹ 100%` simple
-  critical zeros), `fake_curve_frobSq_lower_bound`, `goldenDatum_rankTrace_barrier` (`s₁ = 0 ⟹ κ ≥ 2`),
+  (abstract coalescence indistinguishability: a double fixed label and a reflected pair sharing a
+  real vector produce identical `blockA`), `unitary_calibration_full_simple` (coordinate model
+  with `N` simple fixed labels has `κ = 1`), `fake_curve_frobSq_lower_bound`,
+  `goldenDatum_rankTrace_barrier` (`s₁ = 0 ⟹ κ ≥ 2`),
   `rankTrace_tight_at_two_thirds`, `universal_matrix_functional_barrier`,
-  `universal_matrix_functional_barrier_at_two_thirds` (no matrix functional `Φ(blockA, Ncount)`
-  can certify more than `(2 − κ)N`, or `(2/3)N` at `κ = 4/3`), `subthreshold_two_thirds_deficit`,
+  `universal_matrix_functional_barrier_at_two_thirds` (a bound valid on **all** normalized abstract
+  blocks cannot exceed `(2 − κ)N` at the coordinate extremizer, or `(2/3)N` at its `κ = 4/3`
+  specialization; no arithmetic-realization theorem transfers this sharpness to zeta),
+  `subthreshold_two_thirds_deficit`,
   `subthreshold_cert_le_two_thirds`, `two_thirds_and_pair_correlation_escape`, `tendsto_certOpt_atTop`
   (`2/3` is the exact `λ = 1` pair-correlation threshold `2 − (1/λ + λ/3)`, and every finite
   pair-correlation bound `F ≤ B` beyond `1` yields `2/3 + 1/(3(3B − 2)) > 2/3`).

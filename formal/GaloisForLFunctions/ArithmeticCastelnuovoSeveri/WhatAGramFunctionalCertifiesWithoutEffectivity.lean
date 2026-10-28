@@ -20,9 +20,9 @@ functional observes only the total zero count `N` and the Hermitian evaluation G
 most `s₁ + s₂` and trace at most `N_on`, and `Q = Q^*` is the off-line pair sum with at most one
 positive square per pair (`n₊(Q) ≤ p`).
 
-This module establishes the **complete, unconditional classification** of what a Gram functional
-certifies without effectivity across all multiplicity weights `c > 0`, window profiles `v`, and
-bandwidths `λ`, and applies the resulting theorems to advance the zero-census, horizontal off-line
+This module establishes multiplicity inequalities and a sharpness classification **at the abstract
+coordinate extremizers** for bounds valid on every normalized `ZeroBlockData`. It also studies
+window profiles and bandwidths, and applies the resulting theorems to the zero-census, horizontal off-line
 moment, and double-exponential uniqueness thresholds in `RHTower`:
 
 1. **Strengthened `c = 2` and `c = 3` Multiplicity-Excess and Off-Line Exclusion Laws
@@ -50,11 +50,14 @@ moment, and double-exponential uniqueness thresholds in `RHTower`:
    (`universal_gram_certification_classification`):**
    Because `doubleZeroBlockData s₁ d₂` (`(s₁, s₂, p) = (s₁, d₂, 0)`) and
    `coalescedPairBlockData s₁ d₂` (`(s₁, s₂, p) = (s₁, 0, d₂)`) produce the **exact same** Gram
-   matrix `extremalDiag s₁ d₂` and total count `N = s₁ + 2d₂`, every functional of `(Â, N)` has:
+   matrix `extremalDiag s₁ d₂` and total count `N = s₁ + 2d₂`, functionals valid on every normalized
+   abstract block have the following extrema at that matrix:
    * exact maximum lower bound `(2 − κ)N` on `s₁`, on `s₁ + s₂`, and on `N_on` (uniquely achieved
      by `c = 2`);
    * exact maximum lower bound `((3 − κ)/2)N` on `N_d = s₁ + s₂ + 2p` (achieved by `c = 3`);
    * exact minimum upper bound `((κ − 1)/2)N` on `s₂` and on `p` (achieved by `c = 2`).
+   These statements neither realize the orthogonal frames as arithmetic evaluations nor rule out
+   stronger bounds restricted to the actual arithmetic family.
 
 3. **Below Pair Correlation (`λ ≤ 1`): Flat-Top Cap `2/3` vs. Variational Profile `HD(1) = 0.6725…`
    (`two_thirds_lt_HD_one`, `HD_one_lt_three_quarters`, `five_sixths_lt_GD_one`,
@@ -338,7 +341,7 @@ theorem norm_sq_v_doubleZeroBlockData (s₁ d₂ : ℕ) (z : Fin s₁ ⊕ Fin d�
   simp_rw [hterm]
   simp
 
-/-- **Complete Classification of Universal Matrix Functionals (`universal_gram_certification_classification`).**
+/-- **Classification at the coordinate extremizer of bounds valid on all normalized abstract blocks.**
 Because `doubleZeroBlockData s₁ d₂` and `coalescedPairBlockData s₁ d₂` share the exact same
 matrix `extremalDiag s₁ d₂` and total count `N = s₁ + 2d₂`, on `extremalDiag s₁ d₂`:
 1. Any universal lower bound `Φ_on` on `N_on` (or `s₁`, or `s₁ + s₂`) cannot exceed the `c = 2`
@@ -348,7 +351,9 @@ matrix `extremalDiag s₁ d₂` and total count `N = s₁ + 2d₂`, on `extremal
 3. Any universal upper bound `Ω_mult` on `s₂` (multiple critical zeros) is at least the `c = 2`
    exclusion ceiling `(3N − (4 tr Â − ‖Â‖_F²)) / 2 = d₂`;
 4. Any universal upper bound `Ω_off` on `p` (off-line pairs) is at least the `c = 2` exclusion
-   ceiling `(3N − (4 tr Â − ‖Â‖_F²)) / 2 = d₂`. -/
+   ceiling `(3N − (4 tr Â − ‖Â‖_F²)) / 2 = d₂`.
+The universal premises include synthetic blocks; validity only on arithmetic evaluation matrices
+does not supply these premises. -/
 theorem universal_gram_certification_classification (s₁ d₂ : ℕ)
     (Φ_on Ψ_dist Ω_mult Ω_off : Matrix (Fin s₁ ⊕ Fin d₂) (Fin s₁ ⊕ Fin d₂) ℂ → ℕ → ℝ)
     (hΦ : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (D : ZeroBlockData ι (Fin s₁ ⊕ Fin d₂)),

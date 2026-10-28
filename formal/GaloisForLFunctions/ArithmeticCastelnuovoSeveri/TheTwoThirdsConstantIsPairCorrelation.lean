@@ -8,7 +8,7 @@ import GaloisForLFunctions.RHTower.ZetaThreeQuartersReduction
 import GaloisForLFunctions.RHTower.Zeta23SimpleCriticalDensity
 
 /-!
-# The constant `2/3`: rank–trace inertia has capacity `2 − κ`, and `2/3` is the pair-correlation threshold
+# Rank–trace capacity `2 − κ` and abstract sharpness at `κ = 4/3`
 
 In Weil's proof over `𝔽_q`, Riemann–Roch supplies an effectivity on `C × C`, forcing the
 Castelnuovo–Severi defect `δ(f, f) = W(f, f)` to be positive semidefinite (`scalingSurface_hodgeIndex_iff`).
@@ -23,9 +23,17 @@ window of probe cycles:
 * each off-line pair `{ρ, 1 − ρ̄}` contributes a hyperbolic block `2 m_ρ (x_ρ x_ρᵀ − y_ρ y_ρᵀ)` to
   `Q` with at most one positive square (`n₊(Q) ≤ p`) and one negative square (its Hodge defect).
 
-This module proves that the constant `2/3` in the unconditional theorem that `2/3` of the zeros of
-`ζ` are simple and on the critical line (`two_thirds_and_pair_correlation_escape`) comes **from the
-pair-correlation input at the square-root threshold `λ = 1`, not from the rank–trace form**:
+The rank–trace inequality uses individual norm bounds, not pairwise orthogonality of evaluation
+vectors. The sharpness examples below are abstract `ZeroBlockData`: their vectors are chosen
+coordinate vectors, and their involution labels need not be realized by zeros of an L-function.
+In particular, these examples do not identify the prescribed arithmetic evaluations
+`φ̂(γ_ρ − τ_k)` with an orthogonal frame. The universal functional barriers apply to bounds valid
+for every normalized abstract block, evaluated at the displayed extremal matrix; they do not
+establish sharpness within the smaller class of arithmetic evaluation matrices.
+
+This module relates the constant `2/3` in the imported simple-critical-zero density theorem
+(`two_thirds_and_pair_correlation_escape`) to the rank–trace capacity and the **pair-correlation
+input for the flat-top profile at the square-root threshold `λ = 1`**:
 
 1. **Unique algebraic selection of `c = 2` (`kc_two_weight_identity`, `paramDeficit_of_one_le`,
    `paramDeficit_of_le_one`, `paramDeficit_nonneg_and_eq_zero_iff`).** In the `c`-parameterized
@@ -38,22 +46,25 @@ pair-correlation input at the square-root threshold `λ = 1`, not from the rank�
    (`unitary_calibration_full_simple`, `fake_curve_frobSq_lower_bound`, `goldenDatum_rankTrace_barrier`).**
    When the normalized trace is `tr Â = N` and the normalized Frobenius norm is `‖Â‖_F² = κ N`, the
    `c = 2` rank–trace form certifies `(2 − κ)N` simple on-line zeros. Over `𝔽_q`, a unitary curve
-   datum with `N` simple eigenvalues on an orthonormal contact frame (`doubleZeroBlockData N 0`) has
-   `κ = 1`, certifying `2 − 1 = 1` (`100%` simple on-line zeros, Weil's theorem). For a fake curve
+   model with `N` simple fixed labels on an orthonormal frame (`doubleZeroBlockData N 0`) has
+   `κ = 1`, certifying `2 − 1 = 1`. This is a finite matrix calibration, not a proof that a curve's
+   eigenvalues are simple or that its evaluation frame is orthogonal. For a fake curve
    with no simple on-line eigenvalues (`s₁ = 0`, such as `goldenDatum` where `N = 2, p = 1` and the
    Hodge defect is `1`), rank–trace inertia forces `‖Â‖_F² ≥ 4 tr Â − 2N`, hence `κ ≥ 2` and
    `2 − κ ≤ 0`.
-3. **Coalescence indistinguishability and exact sharpness at `2 − κ` (`doubleZeroBlockData`,
+3. **Abstract coalescence indistinguishability and exact sharpness at `2 − κ` (`doubleZeroBlockData`,
    `coalescedPairBlockData`, `blockA_coalescedPair_eq_doubleZero`, `rankTrace_tight_at_two_thirds`).**
-   A double on-line zero (`m = 2`, contributing `2 v vᵀ` to `P`) and a reflected off-line pair
-   coalescing on the critical line (`y_ρ = 0`, contributing `2 x xᵀ` to `Q`) produce the **exact
-   same Gram matrix** `blockA` on the probe cycles. For every `s₁, d₂ : ℕ` (`N = s₁ + 2d₂`),
+   A double fixed label (`m = 2`, contributing `2 v vᵀ` to `P`) and two swapped labels carrying
+   the same real vector (`y_ρ = 0`, contributing `2 v vᵀ` to `Q`) produce the **exact same
+   Gram matrix** `blockA`. This algebraic identity also holds on arbitrary real frames; the
+   coordinate choice supplies the particular moments below. No zero-realization or limiting
+   assertion is part of the construction. For every `s₁, d₂ : ℕ` (`N = s₁ + 2d₂`),
    `doubleZeroBlockData s₁ d₂` (all `N` zeros on the line, `s₁` simple and `d₂` double) and
    `coalescedPairBlockData s₁ d₂` (`s₁` simple zeros on the line and `d₂` coalesced off-line pairs)
    share the identical matrix `diag(1, …, 1, 2, …, 2)` with `tr Â = N`, `‖Â‖_F² = s₁ + 4d₂`, and
    `4 tr Â − ‖Â‖_F² − 2N = s₁ = N_on(coalesced)`. At `s₁ = 4k, d₂ = k` (`N = 6k`), `‖Â‖_F² = (4/3)N`
-   (`κ = 4/3`) and `s₁ = N_on = (2/3)N` with exact equality: no theorem from `(N, tr Â, ‖Â‖_F²)` and
-   the block inertia can certify a single zero beyond `(2/3)N` when `κ = 4/3`.
+   (`κ = 4/3`) and `s₁ = N_on = (2/3)N` with exact equality. At this matrix, a lower bound valid
+   for every normalized abstract block cannot exceed `(2/3)N`.
 4. **Why `κ = 4/3` is the sub-threshold pair-correlation limit, and how pair correlation beyond `1`
    breaks `2/3` (`subthreshold_two_thirds_deficit`, `subthreshold_cert_le_two_thirds`,
    `two_thirds_and_pair_correlation_escape`, `tendsto_certOpt_atTop`).**
@@ -193,7 +204,7 @@ theorem paramDeficit_nonneg_and_eq_zero_iff {c κ : ℝ} (hc : 0 ≤ c) (hκ : 1
       linarith [sq_nonneg (c - 1)]
     exact ⟨hpos.le, ⟨fun h0 => absurd h0 hpos.ne', fun h2 => by linarith⟩⟩
 
-/-! ## 2. Exact extremal configurations and coalescence indistinguishability -/
+/-! ## 3. Abstract extremal configurations and coalescence indistinguishability -/
 
 /-- Coordinate basis vector `e_z` in `ℂ^d`. -/
 def unitVec {d : Type*} [DecidableEq d] (z k : d) : ℂ :=
@@ -238,8 +249,8 @@ private lemma unitVec_inr_inr {α β : Type*} [DecidableEq α] [DecidableEq β] 
     unitVec (Sum.inr x : α ⊕ β) (Sum.inr y) = unitVec x y := by
   simp [unitVec]
 
-/-- The extremal `ZeroBlockData` configuration with `s₁` simple critical-line zeros and `d₂` double
-critical-line zeros on an orthonormal probe frame of size `s₁ + d₂` (no off-line pairs: `p = 0`). -/
+/-- An abstract coordinate-frame block with `s₁` fixed labels of multiplicity one and `d₂` of
+multiplicity two. All labels are fixed by reflection; the vectors are chosen basis vectors. -/
 def doubleZeroBlockData (s₁ d₂ : ℕ) :
     ZeroBlockData (Fin s₁ ⊕ Fin d₂) (Fin s₁ ⊕ Fin d₂) where
   m := Sum.elim (fun _ => 1) (fun _ => 2)
@@ -250,9 +261,10 @@ def doubleZeroBlockData (s₁ d₂ : ℕ) :
   m_σ _ := rfl
   v_σ z := (star_unitVec z).symm
 
-/-- The extremal `ZeroBlockData` configuration with `s₁` simple critical-line zeros and `p`
-reflected off-line pairs that have coalesced onto the probe frame (`yv = 0`, `xv` orthonormal and
-orthogonal to the critical-line frame; `s₂ = 0`). -/
+/-- An abstract block with `s₁` fixed labels and `p` swapped pairs. Each pair shares one real
+basis vector, distinct pairs and fixed labels use orthogonal coordinates, and `yv = 0`.
+The construction supplies an extremizer in `ZeroBlockData`, without asserting realization by
+the prescribed evaluation vectors of any L-function. -/
 def coalescedPairBlockData (s₁ p : ℕ) :
     ZeroBlockData (Fin s₁ ⊕ (Fin p ⊕ Fin p)) (Fin s₁ ⊕ Fin p) where
   m _ := 1
@@ -299,11 +311,8 @@ theorem blockA_doubleZeroBlockData (s₁ d₂ : ℕ) :
   simp only [Finset.mem_univ, if_true]
   rcases k with i | j <;> simp
 
-/-- **Coalescence indistinguishability.** The Gram matrix `blockA` of `coalescedPairBlockData s₁ d₂`
-(`s₁` simple critical zeros and `d₂` coalesced off-line pairs) is **identical** to the Gram matrix
-of `doubleZeroBlockData s₁ d₂` (`s₁` simple critical zeros and `d₂` double critical zeros). No
-matrix functional of `blockA` can separate critical-line multiplicity `2` from a coalescing
-off-line pair. -/
+/-- The abstract coalesced-pair block has the same diagonal matrix as the double-zero block.
+A functional of `blockA` alone cannot distinguish these two explicitly constructed blocks. -/
 theorem blockA_coalescedPairBlockData (s₁ d₂ : ℕ) :
     (coalescedPairBlockData s₁ d₂).blockA = extremalDiag s₁ d₂ := by
   ext k l
@@ -416,10 +425,9 @@ theorem rankTrace_extremalDiag_exact (s₁ d₂ : ℕ) :
   rw [rtrace_extremalDiag, frobSq_extremalDiag]
   ring
 
-/-- **Calibration over `𝔽_q`: orthonormal unitary spectrum gives `κ = 1` and `100%` simple critical zeros.**
-When all `N` eigenvalues are simple and on the unit circle (`d₂ = 0`, orthonormal contact frame
-`doubleZeroBlockData N 0`), `tr Â = N`, `‖Â‖_F² = N` (`κ = 1`), and rank–trace inertia certifies
-`4 tr Â − ‖Â‖_F² − 2N = N` (`2 − κ = 1`, reducing to Weil's full RH + simplicity). -/
+/-- In the coordinate model with `N` simple fixed labels, trace and squared Frobenius norm
+both equal `N`, so the rank–trace functional equals `N`. This calibrates the matrix inequality;
+simplicity and the coordinate frame are properties of the constructed model. -/
 theorem unitary_calibration_full_simple (N : ℕ) :
     RHLinalg.rtrace ((doubleZeroBlockData N 0).blockA) = N ∧
       RHLinalg.frobSq ((doubleZeroBlockData N 0).blockA) = N ∧
@@ -443,9 +451,9 @@ theorem fake_curve_frobSq_lower_bound {ι d : Type*} [Fintype ι] [DecidableEq �
   rw [hs₁, Nat.cast_zero] at h
   linarith
 
-/-- For the golden fake curve (`goldenDatum`, `N = 2`, `p = 1`, `s₁ = 0`), the Hodge defect is `1`
-and the coalesced off-line pair `coalescedPairBlockData 0 1` has `tr Â = 2 = N`, `‖Â‖_F² = 4 = 2N`
-(`κ = 2`), and rank–trace bound `4 tr Â − ‖Â‖_F² − 2N = 0`. -/
+/-- The golden datum has Hodge defect one. Separately, the abstract block with one coalesced
+pair has trace two, squared Frobenius norm four, and rank–trace functional zero.
+The conjunction does not identify the golden datum's evaluation matrix with this block. -/
 theorem goldenDatum_rankTrace_barrier {n : ℕ} (hn : 2 ≤ n) :
     hermNegIndex (goldenDatum.spanGram n) = 1 ∧
       RHLinalg.rtrace ((coalescedPairBlockData 0 1).blockA) = 2 ∧
@@ -460,8 +468,8 @@ theorem goldenDatum_rankTrace_barrier {n : ℕ} (hn : 2 ≤ n) :
       (counts_coalescedPairBlockData 0 1).1]
     norm_num
 
-/-- **Why the rank–trace form gives `2/3` and no more at `κ = 4/3`.**
-For every scale `k ≥ 1`, the `6k`-zero configurations `doubleZeroBlockData (4k) k` (all `6k` zeros
+/-- **Exact `2/3` sharpness in the abstract coordinate model at `κ = 4/3`.**
+For every scale `k`, the abstract `6k`-label configurations `doubleZeroBlockData (4k) k` (all `6k` zeros
 on the critical line, `4k` simple and `k` double) and `coalescedPairBlockData (4k) k` (`4k` simple
 zeros on the critical line and `k` coalesced off-line pairs) have the **same** Gram matrix `Â` with:
 * `N = 6k`,
@@ -469,8 +477,9 @@ zeros on the critical line and `k` coalesced off-line pairs) have the **same** G
 * `‖Â‖_F² = (4/3) N` (`κ = 4/3`),
 * `s₁ = (2/3) N` in both configurations, and `N_on = (2/3) N` in the coalesced-pair configuration.
 
-Thus no theorem from `(N, tr Â, ‖Â‖_F²)` and the block inertia can certify more than `(2/3)N`
-simple critical zeros—or even more than `(2/3)N` critical-line zeros—when `‖Â‖_F² = (4/3)N`. -/
+Thus a bound valid for every normalized abstract block cannot certify more than `(2/3)N`
+fixed-label mass on this matrix. Orthogonality is built into these explicit vectors, not assumed
+of actual zero evaluations. Sharpness for the prescribed arithmetic family does not follow. -/
 theorem rankTrace_tight_at_two_thirds (k : ℕ) :
     let D_mult := doubleZeroBlockData (4 * k) k
     let D_pair := coalescedPairBlockData (4 * k) k
@@ -519,12 +528,13 @@ theorem norm_sq_v_coalescedPairBlockData (s₁ p : ℕ) (z : Fin s₁ ⊕ (Fin p
   · exact huniv (Sum.inr j)
   · exact huniv (Sum.inr j)
 
-/-- **Universal matrix-functional barrier (`4 tr Â − ‖Â‖_F² − 2N` is Pareto-optimal).**
+/-- **Matrix-functional barrier over all normalized abstract blocks, at `extremalDiag`.**
 Let `Φ` be **any** real-valued functional of the full evaluation Gram matrix `blockA` and the total
 zero count `Ncount` (including arbitrary higher moments `tr(blockA^m)`, eigenvalues, or nonlinear
 spectral invariants). If `Φ D.blockA D.Ncount ≤ D.Non` holds for every normalized `ZeroBlockData`
 configuration `D` on the probe grid `Fin s₁ ⊕ Fin d₂`, then on `extremalDiag s₁ d₂` (`N = s₁ + 2d₂`),
-`Φ` cannot exceed the linear rank–trace bound `4 tr Â − ‖Â‖_F² − 2N = s₁`. -/
+`Φ` cannot exceed the linear rank–trace bound `4 tr Â − ‖Â‖_F² − 2N = s₁` there.
+The universal premise ranges over abstract blocks, not only realizable arithmetic evaluations. -/
 theorem universal_matrix_functional_barrier (s₁ d₂ : ℕ)
     (Φ : Matrix (Fin s₁ ⊕ Fin d₂) (Fin s₁ ⊕ Fin d₂) ℂ → ℕ → ℝ)
     (hΦ : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (D : ZeroBlockData ι (Fin s₁ ⊕ Fin d₂)),
@@ -539,9 +549,10 @@ theorem universal_matrix_functional_barrier (s₁ d₂ : ℕ)
     (counts_coalescedPairBlockData s₁ d₂).2.1, ← rankTrace_extremalDiag_exact s₁ d₂] at h
   exact h
 
-/-- **Universal `2/3` barrier at `κ = 4/3`.** Any functional `Φ(blockA, Ncount)` that is a valid
+/-- **Abstract `2/3` barrier at the coordinate extremizer.** Any functional `Φ(blockA, Ncount)` that is a valid
 lower bound on `N_on` (or `s₁`) for all normalized `ZeroBlockData` configurations on
-`Fin (4k) ⊕ Fin k` satisfies `Φ ((doubleZeroBlockData (4k) k).blockA) (6k) ≤ (2/3) · (6k)`. -/
+`Fin (4k) ⊕ Fin k` satisfies `Φ ((doubleZeroBlockData (4k) k).blockA) (6k) ≤ (2/3) · (6k)`.
+This is not a barrier for bounds restricted to actual zero evaluations. -/
 theorem universal_matrix_functional_barrier_at_two_thirds (k : ℕ)
     (Φ : Matrix (Fin (4 * k) ⊕ Fin k) (Fin (4 * k) ⊕ Fin k) ℂ → ℕ → ℝ)
     (hΦ : ∀ (ι : Type) [Fintype ι] [DecidableEq ι]

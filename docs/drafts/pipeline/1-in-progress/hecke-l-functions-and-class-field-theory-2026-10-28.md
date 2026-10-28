@@ -22,13 +22,18 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
       `toClassGroup_surjective`, `range_rayResidueClass`
 - [x] HL2 ray class characters on integral ideals; multiplicativity; convergence for `Re s > 1` —
       `heckeValue_mul`, `lSeriesSummable_heckeCoeff`
-- [ ] HL3 `L(s, ψ)`: absolute convergence `Re s > 1`, Euler product over prime ideals, `ψ = 1` vs `ζ_K`
+- [x] HL3 `L(s, ψ)`: absolute convergence over ideals for `Re s > 1`, prime-ideal Euler product,
+      nonvanishing there, and `ψ = 1` vs `ζ_K` — `summable_norm_heckeIdealTerm`,
+      `heckeL_eq_tsum_ideals`, `heckeL_eulerProduct_hasProd`, `heckeL_ne_zero`,
+      `heckeL_one_eq_dedekindZeta_mul`
 - [x] HL4 ray-class ideal counts with power saving and equal densities —
       `exists_abs_ncard_rayClassIdeals_sub_le` (`#{𝔞 ∈ c : N𝔞 ≤ x} = κ_𝔪 x + O(x^{1−1/n})`, one
-      `κ_𝔪` for all `c`); `exists_norm_sum_heckeCoeff_le` (`Σ_{N𝔞≤x} ψ(𝔞) = O(x^{1−1/n})`, `ψ ≠ 1`)
+      `κ_𝔪` for all `c`); `rayDensity_pos`; `exists_norm_sum_heckeCoeff_le`
+      (`Σ_{N𝔞≤x} ψ(𝔞) = O(x^{1−1/n})`, `ψ ≠ 1`)
 - [x] HL5 continuation to `Re s > 1 − 1/n`; holomorphic at `1` for `ψ ≠ 1`; residue for `ψ = 1` —
       `differentiableOn_heckeLCont`, `exists_norm_heckeL_le`, `heckeL_one_eq`,
-      `tendsto_sub_one_mul_heckeL_one` (via `HTGeometry.BoundedPartialSums.contLSeries`)
+      `tendsto_sub_one_mul_heckeL_one` (via `HTGeometry.BoundedPartialSums.contLSeries`),
+      `heckeDensity_eq_dedekindZeta_residue_mul`, `heckeDensity_pos`
 - [ ] HL6 `L(1, ψ) ≠ 0` for non-real `ψ` by Euler-factor positivity; real `ψ` by full continuation
       and Landau positivity after HL7; Mertens for Hecke characters
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform)
@@ -56,31 +61,17 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
 - 2026-10-28 — created; corpus/Mathlib survey: no ray class groups, Hecke characters, idèle class
   group or reciprocity map.
 
-## Current work
+## Completed Euler-product and residue batch
 
-HL3: identify the absolutely convergent coefficient L-series with the sum over nonzero ideals,
-then use unique ideal factorization and the existing
-`HTGeometry.hasProd_inv_one_sub_nome` to prove the prime-ideal Euler product.
-The trivial character must also be compared with Dedekind zeta by deleting the finitely many
-Euler factors in the finite modulus. No analytic continuation or reciprocity premise is to be
-introduced. Existing HL1, HL2, HL4 and HL5 sources were inspected; HL6, HL7 and CFT remain open.
+See [the formalized proof and declarations](../3-formalized/hecke-prime-ideal-euler-product-and-positive-residue.md).
+Four modules identify ideals with prime exponent vectors, transfer the existing occupation
+Euler product to the actual coefficient L-series, prove nonvanishing on `Re s > 1`, remove
+the finite-modulus Euler factors from Dedekind zeta, and identify the positive residue and
+positive ray-class densities. The prior residue limit alone did not establish positivity.
 
-- `NonzeroIdealsArePrimeExponentVectors.lean`: compiled successfully. Defines
-  `primeExponentsIdealEquiv`, with inverse identities and valuation readback.
-- `HeckeLSeriesHaveEulerProducts.lean`: compiled successfully. Includes
-  absolute convergence over individual ideals, equality with the coefficient series, the
-  prime-ideal Euler product and nonvanishing on `Re s > 1`.
-- `TheTrivialCharacterRemovesTheModulusEulerFactors.lean`: compiled successfully.
-  Compares the unit-modulus series with Dedekind zeta
-  and removes precisely the finite-modulus Euler factors.
-- Audited reused inputs `HTGeometry.hasProd_inv_one_sub_nome` and
-  `lSeriesSummable_heckeCoeff`: only `propext`, `Classical.choice`, `Quot.sound`.
-- The new factorization equivalence, ideal summability, coefficient/ideal sum equality,
-  prime-ideal Euler product, nonvanishing on `Re s > 1`, and finite Euler-factor deletion theorem
-  also passed `#print axioms` with only those three standard axioms.
-- Source audit found no positivity theorem for `heckeDensity` or `rayDensity`. The existing
-  residue limit alone does not certify a genuine pole. `TheTrivialCharacterHasAPositiveResidue.lean`
-  now derives the explicit Euler-corrected residue and its positivity; awaiting compilation.
+All nine audited results depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+Direct source checks are finishing. The programme is wired into `MainTheorems.lean`;
+no umbrella is compiled. HL6, HL7 and CFT remain open.
 
 ## Next analytic input
 

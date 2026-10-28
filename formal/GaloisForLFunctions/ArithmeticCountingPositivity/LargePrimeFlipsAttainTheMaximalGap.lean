@@ -1541,6 +1541,95 @@ theorem twisted_poincare_at_horizon {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 �
     (by have := logSum_nonneg Q; positivity) he₂ h1 h2 h3 h4 hS h5A h5B hAv hBv hAh hBh hP hGZX
     hbig1 hbig2 hbig3
 
+/-- **A horizon in range.** For a cutoff `Q` and parameters `ε, η, τ, g₁`, there is a horizon `X`
+at which the smooth chain has gap `g₁` up to the boundary and halo errors, and the halo
+errors of the mean are small. -/
+theorem exists_horizon_twisted (Q : ℕ) {ε η τ g₁ : ℝ} (hε0 : 0 < ε) (hη : 0 < η) (hτ0 : 0 < τ)
+    (hτ1 : τ ≤ 1 / 2) (hg₁def : g₁ = 2 * Real.log 2 - ε / 2) :
+    ∃ X : ℕ, 2 ≤ X ∧ 2 * ladderConstant Q / Real.log X ≤ τ ∧ 2 / Real.log X ≤ τ ∧
+      g₁ * (1 + 16 * logSum Q / Real.log X) ≤ boxGap X -
+        4 * logSum Q / Real.sqrt (Real.sqrt X) - 16 * logSum Q * ladderConstant Q / Real.log X ∧
+      16 * logSum Q / Real.log X ≤ 1 / 20 ∧
+      2 * Real.log 2 * 150 * (2 * ladderConstant Q / Real.log X) ≤ η / 4 ∧
+      2 * Real.log 2 * 150 * (2 / Real.log X) ≤ η / 16 := by
+  have hl2 := Real.log_two_gt_d9
+  have hl2' := Real.log_two_lt_d9
+  obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = ladderConstant Q := ⟨_, rfl⟩
+  obtain ⟨LQ, hLQdef⟩ : ∃ L : ℝ, L = logSum Q := ⟨_, rfl⟩
+  have hM : 0 ≤ M := by rw [hMdef]; exact ladderConstant_nonneg Q
+  have hLQ : 0 ≤ LQ := by rw [hLQdef]; exact logSum_nonneg Q
+  obtain ⟨L₀, hL₀def⟩ : ∃ L : ℝ, L = 1 + 320 * LQ + 64 * LQ * (2 * Real.log 2) / ε +
+      256 * LQ * M / ε + 2400 * (2 * Real.log 2) * M / η + 4800 * (2 * Real.log 2) / η := ⟨_, rfl⟩
+  have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hsq := (Real.tendsto_sqrt_atTop.comp Real.tendsto_sqrt_atTop).comp
+    tendsto_natCast_atTop_atTop
+  have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one (r := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+  have ev := ((hlog.eventually_ge_atTop L₀).and (hsq.eventually_ge_atTop (64 * LQ / ε + 1))).and
+    ((hpow.eventually_le_const (show (0 : ℝ) < ε / (16 * (2 * Real.log 2)) by positivity)).and
+      (Filter.eventually_ge_atTop 2))
+  obtain ⟨X₁, hX₁⟩ := Filter.eventually_atTop.mp ev
+  obtain ⟨X, hXX₁, hX2, hML, h2L, -⟩ := exists_horizon hM hτ0 (hτ1.trans (by norm_num)) X₁
+  obtain ⟨⟨hlX, hsX⟩, hpowX, -⟩ := hX₁ X hXX₁
+  simp only [Function.comp] at hlX hsX hpowX
+  obtain ⟨L, hLdef⟩ : ∃ L : ℝ, L = Real.log X := ⟨_, rfl⟩
+  rw [← hLdef] at hlX hML h2L
+  have hsX0 : 0 < Real.sqrt (Real.sqrt X) := by
+    have : 0 ≤ 64 * LQ / ε := by positivity
+    linarith
+  have t1 : 0 ≤ 320 * LQ := by positivity
+  have t2 : 0 ≤ 64 * LQ * (2 * Real.log 2) / ε := by positivity
+  have t3 : 0 ≤ 256 * LQ * M / ε := by positivity
+  have t4 : 0 ≤ 2400 * (2 * Real.log 2) * M / η := by positivity
+  have t5 : 0 ≤ 4800 * (2 * Real.log 2) / η := by positivity
+  rw [hL₀def] at hlX
+  have hL0 : 0 < L := by linarith
+  have he₂ : 16 * LQ / L ≤ 1 / 20 := by rw [div_le_iff₀ hL0]; linarith
+  have he₂log : 16 * LQ / L * (2 * Real.log 2) ≤ ε / 4 := by
+    have h64 : 64 * LQ * (2 * Real.log 2) / ε ≤ L := by linarith
+    rw [div_le_iff₀ hε0] at h64
+    rw [div_mul_eq_mul_div, div_le_iff₀ hL0]
+    linarith
+  have he₁M : 16 * LQ * M / L ≤ ε / 16 := by
+    have h256 : 256 * LQ * M / ε ≤ L := by linarith
+    rw [div_le_iff₀ hε0] at h256
+    rw [div_le_iff₀ hL0]
+    linarith
+  have he₁s : 4 * LQ / Real.sqrt (Real.sqrt X) ≤ ε / 16 := by
+    have h64 : 64 * LQ / ε ≤ Real.sqrt (Real.sqrt X) := by linarith
+    rw [div_le_iff₀ hε0] at h64
+    rw [div_le_iff₀ hsX0]
+    linarith
+  have hboxGap : 2 * Real.log 2 - ε / 8 ≤ boxGap X := by
+    rw [boxGap]
+    have hpow1 : (1 / 2 : ℝ) ^ (X + 1) ≤ (1 / 2 : ℝ) ^ X :=
+      pow_le_pow_of_le_one (by norm_num) (by norm_num) (Nat.le_succ X)
+    have h2 : (1 / 2 : ℝ) ^ X * (16 * (2 * Real.log 2)) ≤ ε :=
+      (le_div_iff₀ (by positivity)).mp hpowX
+    have h3 : 2 * Real.log 2 * (1 / 2 : ℝ) ^ (X + 1) ≤ 2 * Real.log 2 * (1 / 2 : ℝ) ^ X :=
+      mul_le_mul_of_nonneg_left hpow1 (by positivity)
+    linarith
+  have hcoef : g₁ * (1 + 16 * LQ / L) ≤ boxGap X - 4 * LQ / Real.sqrt (Real.sqrt X) -
+      16 * LQ * M / L := by
+    rw [hg₁def]
+    have h0 : 0 ≤ 16 * LQ / L := by positivity
+    have hε2 : 0 ≤ ε / 2 * (16 * LQ / L) := by positivity
+    nlinarith
+  have hLη : 0 ≤ L * η := by positivity
+  have hbig2 : 2 * Real.log 2 * 150 * (2 * M / L) ≤ η / 4 := by
+    have h2400 : 2400 * (2 * Real.log 2) * M / η ≤ L := by linarith
+    rw [div_le_iff₀ hη] at h2400
+    rw [mul_div_assoc', div_le_iff₀ hL0]
+    linarith
+  have hbig3 : 2 * Real.log 2 * 150 * (2 / L) ≤ η / 16 := by
+    have h4800 : 4800 * (2 * Real.log 2) / η ≤ L := by linarith
+    rw [div_le_iff₀ hη] at h4800
+    rw [mul_div_assoc', div_le_iff₀ hL0]
+    linarith
+  rw [hLdef] at hML h2L hcoef he₂ hbig2 hbig3
+  rw [hMdef] at hML hcoef hbig2
+  rw [hLQdef] at hcoef he₂
+  exact ⟨X, hX2, hML, h2L, hcoef, he₂, hbig2, hbig3⟩
+
 /-- **The twisted Poincaré inequality.** For a prime `p ≥ 11` and every `0 < η ≤ 1`, eventually
 in `N`, every `z` orthogonal to the flipped pole `ω_p(n)/√n` has `D_N(z) ≥ (2 log 2 − η)|z|²`. -/
 theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) {η : ℝ}
@@ -1580,99 +1669,27 @@ theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 �
     rw [div_le_iff₀ hlQ₀] at hκ₀
     rw [div_mul_eq_mul_div, div_le_one hlQ]
     linarith
-  obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = ladderConstant Q := ⟨_, rfl⟩
-  obtain ⟨LQ, hLQdef⟩ : ∃ L : ℝ, L = logSum Q := ⟨_, rfl⟩
-  have hM : 0 ≤ M := by rw [hMdef]; exact ladderConstant_nonneg Q
-  have hLQ : 0 ≤ LQ := by rw [hLQdef]; exact logSum_nonneg Q
   -- the horizon
-  obtain ⟨L₀, hL₀def⟩ : ∃ L : ℝ, L = 1 + 320 * LQ + 64 * LQ * (2 * Real.log 2) / ε +
-      256 * LQ * M / ε + 2400 * (2 * Real.log 2) * M / η + 4800 * (2 * Real.log 2) / η := ⟨_, rfl⟩
-  have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hsq := (Real.tendsto_sqrt_atTop.comp Real.tendsto_sqrt_atTop).comp
-    tendsto_natCast_atTop_atTop
-  have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one (r := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
-  have ev := ((hlog.eventually_ge_atTop L₀).and (hsq.eventually_ge_atTop (64 * LQ / ε + 1))).and
-    ((hpow.eventually_le_const (show (0 : ℝ) < ε / (16 * (2 * Real.log 2)) by positivity)).and
-      (Filter.eventually_ge_atTop 2))
-  obtain ⟨X₁, hX₁⟩ := Filter.eventually_atTop.mp ev
-  obtain ⟨X, hXX₁, hX2, hML, h2L, -⟩ := exists_horizon hM hτ0 (hτ1.trans (by norm_num)) X₁
-  obtain ⟨⟨hlX, hsX⟩, hpowX, -⟩ := hX₁ X hXX₁
-  simp only [Function.comp] at hlX hsX hpowX
-  obtain ⟨L, hLdef⟩ : ∃ L : ℝ, L = Real.log X := ⟨_, rfl⟩
-  rw [← hLdef] at hlX hML h2L
+  obtain ⟨X, hX2, hML, h2L, hcoef, he₂, hbig2, hbig3⟩ :=
+    exists_horizon_twisted Q hε0 hη hτ0 hτ1 hg₁def
   have hX1 : 1 ≤ X := by omega
-  have hsX0 : 0 < Real.sqrt (Real.sqrt X) := by
-    have : 0 ≤ 64 * LQ / ε := by positivity
-    linarith
-  -- the consequences of the horizon
-  have t1 : 0 ≤ 320 * LQ := by positivity
-  have t2 : 0 ≤ 64 * LQ * (2 * Real.log 2) / ε := by positivity
-  have t3 : 0 ≤ 256 * LQ * M / ε := by positivity
-  have t4 : 0 ≤ 2400 * (2 * Real.log 2) * M / η := by positivity
-  have t5 : 0 ≤ 4800 * (2 * Real.log 2) / η := by positivity
-  rw [hL₀def] at hlX
-  have hL1 : 1 ≤ L := by linarith
-  have hL0 : 0 < L := by linarith
-  have he₂ : 16 * LQ / L ≤ 1 / 20 := by rw [div_le_iff₀ hL0]; linarith
-  have he₂log : 16 * LQ / L * (2 * Real.log 2) ≤ ε / 4 := by
-    have h64 : 64 * LQ * (2 * Real.log 2) / ε ≤ L := by linarith
-    rw [div_le_iff₀ hε0] at h64
-    rw [div_mul_eq_mul_div, div_le_iff₀ hL0]
-    linarith
-  have he₁M : 16 * LQ * M / L ≤ ε / 16 := by
-    have h256 : 256 * LQ * M / ε ≤ L := by linarith
-    rw [div_le_iff₀ hε0] at h256
-    rw [div_le_iff₀ hL0]
-    linarith
-  have he₁s : 4 * LQ / Real.sqrt (Real.sqrt X) ≤ ε / 16 := by
-    have h64 : 64 * LQ / ε ≤ Real.sqrt (Real.sqrt X) := by linarith
-    rw [div_le_iff₀ hε0] at h64
-    rw [div_le_iff₀ hsX0]
-    linarith
-  have hboxGap : 2 * Real.log 2 - ε / 8 ≤ boxGap X := by
-    rw [boxGap]
-    have hpow1 : (1 / 2 : ℝ) ^ (X + 1) ≤ (1 / 2 : ℝ) ^ X :=
-      pow_le_pow_of_le_one (by norm_num) (by norm_num) (Nat.le_succ X)
-    have h2 : (1 / 2 : ℝ) ^ X * (16 * (2 * Real.log 2)) ≤ ε :=
-      (le_div_iff₀ (by positivity)).mp hpowX
-    have h3 : 2 * Real.log 2 * (1 / 2 : ℝ) ^ (X + 1) ≤ 2 * Real.log 2 * (1 / 2 : ℝ) ^ X :=
-      mul_le_mul_of_nonneg_left hpow1 (by positivity)
-    linarith
-  have hcoef : g₁ * (1 + 16 * LQ / L) ≤ boxGap X - 4 * LQ / Real.sqrt (Real.sqrt X) -
-      16 * LQ * M / L := by
-    rw [hg₁def]
-    have h0 : 0 ≤ 16 * LQ / L := by positivity
-    have := mul_le_mul_of_nonneg_left he₂log (show 0 ≤ (1 : ℝ) by norm_num)
-    have hε2 : 0 ≤ ε / 2 * (16 * LQ / L) := by positivity
-    nlinarith
-  have hLη : 0 ≤ L * η := by positivity
-  have hbig2 : 2 * Real.log 2 * 150 * (2 * M / L) ≤ η / 4 := by
-    have h2400 : 2400 * (2 * Real.log 2) * M / η ≤ L := by linarith
-    rw [div_le_iff₀ hη] at h2400
-    rw [mul_div_assoc', div_le_iff₀ hL0]
-    linarith
-  have hbig3 : 2 * Real.log 2 * 150 * (2 / L) ≤ η / 16 := by
-    have h4800 : 4800 * (2 * Real.log 2) / η ≤ L := by linarith
-    rw [div_le_iff₀ hη] at h4800
-    rw [mul_div_assoc', div_le_iff₀ hL0]
-    linarith
   -- the rough mass beyond the horizon
-  obtain ⟨G₀, hG₀def⟩ : ∃ G : ℝ, G = (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ +
-      4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η := ⟨_, rfl⟩
-  obtain ⟨N₀, hXN₀, hN₀⟩ := eventually_le_roughHarmonic_div (show 1 ≤ Q by omega) hX1 G₀
+  obtain ⟨N₀, hXN₀, hN₀⟩ := eventually_le_roughHarmonic_div (show 1 ≤ Q by omega) hX1
+    ((1 + Real.log X) / τ + 16 * (1 + 1 / τ) * logSum Q / g₁ +
+      4 * (2 * Real.log 2) * 150 * (1 + Real.log X) ^ 3 / η)
   refine ⟨N₀, fun N hN z hz => ?_⟩
   have hXN : X ≤ N := hXN₀.trans hN
-  have hGG₀ : G₀ ≤ roughHarmonic Q (N / X) := hN₀ N hN
-  rw [hG₀def] at hGG₀
-  have hGr : (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ ≤ roughHarmonic Q (N / X) := by
-    have : 0 ≤ 4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η := by positivity
+  have hGG₀ := hN₀ N hN
+  have hL0 : 0 ≤ Real.log X := Real.log_natCast_nonneg X
+  have hLQ := logSum_nonneg Q
+  have hGr : (1 + Real.log X) / τ + 16 * (1 + 1 / τ) * logSum Q / g₁ ≤
+      roughHarmonic Q (N / X) := by
+    have : 0 ≤ 4 * (2 * Real.log 2) * 150 * (1 + Real.log X) ^ 3 / η := by positivity
     linarith
-  have hGbig : 4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η ≤ roughHarmonic Q (N / X) := by
-    have : 0 ≤ (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ := by positivity
+  have hGbig : 4 * (2 * Real.log 2) * 150 * (1 + Real.log X) ^ 3 / η ≤
+      roughHarmonic Q (N / X) := by
+    have : 0 ≤ (1 + Real.log X) / τ + 16 * (1 + 1 / τ) * logSum Q / g₁ := by positivity
     linarith
-  rw [hLdef] at hML h2L hcoef he₂ hGr hGbig hbig2 hbig3
-  rw [hMdef] at hML hcoef hbig2
-  rw [hLQdef] at hcoef he₂ hGr
   exact twisted_poincare_at_horizon hp hp11 hpmem hQ2 hX2 hXN hη hη1 hεdef hg₁def hTdef hτ0 hτ1
     hτT hK hKt hκ hML h2L hcoef he₂ hGr hGbig hbig2 hbig3 z hz
 

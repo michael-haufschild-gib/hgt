@@ -65,7 +65,8 @@ This module proves four unconditional structural theorems governing the spectral
    (`η = 1/16 > 0`, `N = 243`) gives an explicit `ZeroBlockData` configuration with `tr Â = N`,
    `‖Â‖_F² = (4/3) N`, and **strictly positive** negative-part credit `2 tr(Q₋) > 0`
    (`¬ Q.PosSemidef`, non-coalesced!), yet `s₁ = (179/243) N < (3/4) N` and
-   `totalSlack < (1/12) N`.
+   `totalSlack < (1/12) N`. This is an abstract coordinate-frame counterexample, not a realization
+   by the prescribed arithmetic evaluation family; it constrains only claims valid on all such blocks.
 -/
 
 open Complex Finset Matrix Filter

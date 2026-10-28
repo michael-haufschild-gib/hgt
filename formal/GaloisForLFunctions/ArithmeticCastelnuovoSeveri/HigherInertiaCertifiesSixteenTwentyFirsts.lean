@@ -360,7 +360,7 @@ theorem vecMulVec_single_star (i : WitnessIdx) (x : ℝ) :
   rcases eq_or_ne a i with rfl | ha
   · rcases eq_or_ne b a with rfl | hb
     · simp [sq, Complex.conj_ofReal]
-    · simp [Pi.single_apply, hb, hb.symm]
+    · simp [hb, hb.symm]
   · simp [Pi.single_apply, ha]
 
 /-- The witness matrix is diagonal. -/
@@ -375,11 +375,11 @@ theorem witness_eq_diagonal :
   congr 1
   funext i
   rcases i with j | j
-  · simp only [Pi.add_apply, Finset.sum_apply, Pi.single_apply, Sum.inl.injEq, reduceCtorEq,
-      ite_false, Finset.sum_const_zero, add_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  · simp only [Finset.sum_apply, Pi.single_apply, Sum.inl.injEq, reduceCtorEq, ite_false,
+      Finset.sum_const_zero, add_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Real.sq_sqrt (witnessVal_nonneg _)]
-  · simp only [Pi.add_apply, Finset.sum_apply, Pi.single_apply, Sum.inr.injEq, reduceCtorEq,
-      ite_false, Finset.sum_const_zero, zero_add, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  · simp only [Finset.sum_apply, Pi.single_apply, Sum.inr.injEq, reduceCtorEq, ite_false,
+      Finset.sum_const_zero, zero_add, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
     simp [witnessVal]
 
@@ -396,7 +396,7 @@ theorem witness_norm :
   have h : ∀ j : Fin 5, ∑ k, Complex.normSq (witnessA j k) = 2 := fun j => by
     rw [Finset.sum_eq_single (Sum.inr j)]
     · simp [witnessA, Complex.normSq_ofReal, Real.mul_self_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
-    · intro b _ hb; simp [witnessA, Pi.single_apply, hb]
+    · intro b _ hb; simp [witnessA, hb]
     · intro h; exact absurd (Finset.mem_univ _) h
   simp [h]
   norm_num
@@ -412,11 +412,14 @@ theorem witness_moments :
   have htr : ∀ k : ℕ, ((H ^ k).trace).re =
       16 * (1 + Real.sqrt 2 / 4) ^ k + 16 * (1 - Real.sqrt 2 / 4) ^ k + 5 * 2 ^ k := by
     intro k
-    simp only [H, diagonal_pow, trace_diagonal, Complex.re_sum, Pi.pow_apply,
-      ← Complex.ofReal_pow, Complex.ofReal_re, Fintype.sum_sum_type, witnessVal, Sum.elim_inl,
-      Sum.elim_inr, Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-    push_cast
-    ring
+    have e : (H ^ k).trace = ((16 * (1 + Real.sqrt 2 / 4) ^ k + 16 * (1 - Real.sqrt 2 / 4) ^ k +
+        5 * 2 ^ k : ℝ) : ℂ) := by
+      simp only [H, diagonal_pow, trace_diagonal, Pi.pow_apply, Fintype.sum_sum_type, witnessVal,
+        Sum.elim_inl, Sum.elim_inr, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+        nsmul_eq_mul]
+      push_cast
+      ring
+    rw [e, Complex.ofReal_re]
   refine ⟨?_, ?_, ?_, ?_⟩ <;> rw [htr] <;> ring_nf <;> rw [hc] <;> norm_num
   all_goals nlinarith [hc]
 
@@ -460,3 +463,12 @@ theorem sum_qStar_witness : ∑ i, qStar (witness_isHermitian.eigenvalues₀ i) 
   norm_num
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia
+
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
+#print axioms sum_eigenvalues₀_le_card_of_columns
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
+#print axioms qStar_moments_le_card_of_columns
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
+#print axioms le_sixteen_twentyFirsts_of_valid
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
+#print axioms sum_qStar_witness

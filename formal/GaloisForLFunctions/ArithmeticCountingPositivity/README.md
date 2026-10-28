@@ -76,6 +76,10 @@ precision — do not conflate the two.
    prime eigenline changes that inner product by $o(1)$. The squared coordinate of the unit parity constraint therefore tends to
    $\left(\frac{p-1}{p+1}\frac{\sum_{d\mid m}\mu(m/d)\omega_p(d)}{\sqrt{\varphi(m)}}\right)^2$.
    This identifies a multiplicative constraint inside the actual finite spectrum; it does not bound its full orthogonal complement.
+7. **Finite-prime density.** For any finite set $F$ of primes,
+   $S_F(N)=c_FH_N+O_F(1)$ with $c_F=\prod_{p\in F}(p-1)/(p+1)>0$. Adding a prime gives an exact divisibility recurrence;
+   the bounded harmonic shell and contraction under $N\mapsto\lfloor N/p\rfloor$ control its error. The resulting prime gap is
+   $(2\log2)c_F^2$. Both the error constant and the eventual horizon retain their dependence on $F$.
 
 ---
 
@@ -93,6 +97,8 @@ precision — do not conflate the two.
 6. **Counting-to-eigenline bridge** (`primeParityHorizonVector_inner`, `tendsto_primeParityWindowCoordinateSq`,
    `exists_primeParity_eigenline_coordinates`): exact harmonic counts determine orientation-independent coordinates on actual simple
    prime eigenlines.
+7. **Positive density for every finite set of flips** (`finiteFlip_harmonic_recurrence`, `finiteFlip_harmonic_error_bounded`,
+   `finiteFlip_harmonicCorrelation_tendsto`, `finiteFlip_hasHyperplaneGap`).
 
 **Pillar obligations** (targets, not theorems): count before sign (an integer-side construction with square-root error);
 arithmetic selection on overlapping complete sources; uniform mixed-term control through exhaustion; a displacement-sensitive

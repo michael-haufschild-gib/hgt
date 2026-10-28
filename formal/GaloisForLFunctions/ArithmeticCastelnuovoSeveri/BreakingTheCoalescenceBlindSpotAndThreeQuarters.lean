@@ -9,14 +9,17 @@ import GaloisForLFunctions.SquareRootThreshold.DoubleWindowMinApertureAndPairCor
 # Breaking the Coalescence Blind Spot and Lowering `κ` to `5/4`: The Two Routes to `3/4` (`75%`)
 
 `TheTwoThirdsConstantIsPairCorrelation` established that at the sub-threshold pair-correlation value
-`κ = 4/3` (`λ = 1`), any functional depending only on the summed evaluation Gram matrix
-`Â = P + Q` and the total zero count `N` is bounded above by `(2 − κ)N = (2/3)N` because
+`κ = 4/3` (`λ = 1`), a lower bound valid for every normalized abstract `ZeroBlockData` and depending
+only on `Â = P + Q` and `N` is at most `(2 − κ)N = (2/3)N` on the coordinate extremizer because
 `doubleZeroBlockData (4k) k` (all `6k` zeros on the critical line, `4k` simple and `k` double) and
 `coalescedPairBlockData (4k) k` (`4k` simple critical zeros and `k` coalesced off-line pairs) share
-the identical summed matrix `Â = extremalDiag (4k) k`.
+the identical summed matrix `Â = extremalDiag (4k) k`. These are abstract coordinate frames;
+no realization by the prescribed zeta evaluation family is asserted. The barrier does not
+restrict functionals whose validity uses additional arithmetic properties of that family.
 
-This module proves unconditionally that the `2/3` barrier is broken—and the critical-line proportion
-reaches at least `3/4` (`75%`)—along **both** complementary routes:
+This module proves exact finite-matrix identities and sufficient conditions for a critical-line
+proportion of at least `3/4` (`75%`) along two complementary routes. The spectral-slack and
+prime-surplus lower bounds needed for the arithmetic conclusion remain premises:
 
 1. **Route I: Breaking the blind spot between double critical zeros and off-line pairs on the zero side.**
    Although the summed matrix `Â = P + Q` is identical for `doubleZeroBlockData s₁ d₂` and

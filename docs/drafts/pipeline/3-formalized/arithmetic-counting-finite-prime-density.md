@@ -1,9 +1,9 @@
 # Finite prime flips have an exact positive harmonic density
 
 - **ID:** ACP-FINITE-PRIME-DENSITY
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization follows)
-- **Parent:** arithmetic-counting-finite-flip-exhaustion.md
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean checked)
+- **Parent:** ../2-fully-proven/arithmetic-counting-finite-flip-exhaustion.md
 - **Statement:** For every finite set of primes `F`, the signed harmonic count has mean `c_F=prod_{p in F}(p-1)/(p+1)>0` with uniformly bounded error, and pays hyperplane gap `(2 log 2)c_F^2`.
 
 ## Exact statement
@@ -67,8 +67,10 @@ it makes no claim to the optimal gap or complete Weil positivity.
 - [x] Corpus searches distinguish this law from singleton parity and Mertens matching.
 - [x] Exact recurrence and closed bounded-error induction.
 - [x] Six public theorems pass the Lean and transitive axiom audit, with only the three standard axioms.
-- [ ] Final canonical source check, umbrella, README.
+- [x] Final canonical source check, umbrella, README.
 
 Installed as `ArithmeticCountingPositivity/FinitePrimeFlipsHavePositiveHarmonicDensity.lean`
-and wired into the own umbrella. Final installed-source check is running.
+and wired into the own umbrella. Final installed-source check exited zero without diagnostics. The adjacent
+`arithmetic-counting-finite-prime-density-audit.txt` preserves the source hash
+and all six transitive axiom reports.
 Its first olean will be needed by the already written exhaustion leaf.

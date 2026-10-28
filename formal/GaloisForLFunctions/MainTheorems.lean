@@ -5,6 +5,7 @@ import GaloisForLFunctions.U0
 import GaloisForLFunctions.Bottcher
 import GaloisForLFunctions.HilbertMetric
 import GaloisForLFunctions.SelbergClass
+import GaloisForLFunctions.HeckeLFunctions
 import GaloisForLFunctions.BiScaleUncertainty
 import GaloisForLFunctions.ArithmeticPositivityTheory
 import GaloisForLFunctions.BezoutValuationIncidence

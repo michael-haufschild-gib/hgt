@@ -20,7 +20,7 @@ horizon `1<=n<=N`, equality holds whenever `Q>N`.
 
 ## Positive finite stages
 
-The companion closed proof in `arithmetic-counting-finite-prime-density.md`
+The companion closed proof in `../3-formalized/arithmetic-counting-finite-prime-density.md`
 gives the exact positive harmonic density
 
 `c_Q=prod_{p<Q, p prime}(p-1)/(p+1)`
@@ -73,6 +73,6 @@ congruence is an existing corpus lemma.
 
 - [x] Exact family, quantifiers, positive survivor and closed paper proof.
 - [x] Corpus search before mathlib; imported statements inspected.
-- [ ] Companion finite-prime density formalized.
+- [x] Companion finite-prime density formalized, canonically checked, and axiom-audited.
 - [ ] Exhaustion Lean proof and transitive axiom audit.
 - [ ] Canonical source checks, umbrella, README, scratch cleanup.
