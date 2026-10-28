@@ -199,3 +199,11 @@ uniform Euclidean residual bound before logarithmic normalization.
 The harmonic square identity can alternatively be proved by induction:
 its first-moment sum is N, and adding the new reciprocal term changes the
 square sum by 2-1/(N+1). Both proofs are exact finite algebra.
+
+The scalar normalization was rechecked directly against
+`RenormalizedArithmeticPotentialTheory/TheArchimedeanFinitePartIsMinusLogTwoPi.lean`.
+Its exact `finitePart_profileRobin_eq` states
+`2*gammaHardyPhaseRate(0)+profileRobin(phi)+gamma
+ =-log(2*pi)+bumpRobin(phi,1)/M2`.
+With log(1/w)-log(N)=-log(c), this is precisely the proposed sigma.
+The evaluated Robin/Gamma identity is existing input, not part of the new claim.

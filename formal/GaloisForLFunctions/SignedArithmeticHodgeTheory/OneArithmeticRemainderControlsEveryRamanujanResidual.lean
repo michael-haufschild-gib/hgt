@@ -99,6 +99,7 @@ theorem abs_ramanujanPrimeResidual_le {m N n : ℕ} (hm : 0 < m)
           (abs_nonneg (e (N / n)))
         change _ ≤ (Real.sqrt (m.totient : ℝ) * (1 + 4 * Real.log m)) *
           (|e (N / n)| + 1 / ((N / n : ℕ) : ℝ))
+        simp only [div_eq_mul_inv, one_mul]
         nlinarith only [hnonneg]
   rw [hid, abs_mul, abs_of_nonneg (show 0 ≤ poleVector n by unfold poleVector; positivity)]
   calc
@@ -142,7 +143,7 @@ theorem ramanujanPrimeResidual_family_sq_le (S : Finset ℕ+) (c : ℕ+ → ℝ)
             ramanujanPrimeResidual_sq_le (m := (m : ℕ)) m.property hn
         _ = _ := by rw [← sum_div, ← sum_mul]; ring
     _ = _ := by
-      simp only [primeMertensSquareBudget, mul_sum]
+      rw [primeMertensSquareBudget, Finset.mul_sum]
       apply sum_congr rfl
       intro n _
       ring
@@ -156,7 +157,9 @@ theorem tendsto_primeMertensRemainderProfile :
     simpa only [neg_add_cancel] using
       tendsto_mertensSum_sub_log.add_const Real.eulerMascheroniConstant
   have hi := tendsto_const_div_atTop_nhds_zero_nat (1 : ℝ)
-  simpa only [primeMertensRemainderProfile, abs_zero, zero_add] using he.abs.add hi
+  change Tendsto (fun y : ℕ =>
+    |mertensSum y - Real.log y + Real.eulerMascheroniConstant| + 1 / (y : ℝ)) atTop (𝓝 0)
+  simpa only [abs_zero, zero_add] using he.abs.add hi
 
 /-- The same arithmetic budget is sublogarithmic, independently of the family. -/
 theorem tendsto_primeMertensSquareBudget_div_log :

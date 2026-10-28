@@ -24,7 +24,7 @@ So the uniform gap `g` of the prime form below its pole on the harmonic hyperpla
 
 noncomputable section
 
-open Finset Filter
+open Finset Filter Matrix
 
 namespace GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
 
@@ -113,8 +113,8 @@ theorem ramanujanAdjunctionEnergy_sub_one_ge {m : ℕ} (hm : 2 ≤ m) :
       (ramanujanAdjunctionEnergy m - ramanujanAdjunctionEnergy 1 = 2 * Real.log 2 ↔ m = 2) := by
   rw [ramanujanAdjunctionEnergy_one, ramanujanAdjunctionEnergy]
   rcases (show m = 2 ∨ 3 ≤ m by omega) with rfl | h3
-  · rw [tameDifferent_two]
-    push_cast
+  · have e : Real.log ((2 : ℕ) : ℝ) = Real.log 2 := by norm_num
+    rw [tameDifferent_two, e]
     exact ⟨by linarith, ⟨fun _ => rfl, fun _ => by ring⟩⟩
   · have := two_mul_log_two_lt_log_add_tameDifferent h3
     exact ⟨by linarith, ⟨fun h => by linarith, fun h => by omega⟩⟩
@@ -139,11 +139,11 @@ theorem atomicWeilForm_horizonExtend {N : ℕ} (x : PrimeHorizonIndex N → ℝ)
     atomicWeilForm N (horizonExtend x) = x ⬝ᵥ (fullPrimeMatrix N *ᵥ x) := by
   unfold atomicWeilForm
   rw [← Finset.sum_coe_sort (Icc 1 N)]
-  simp only [dotProduct, Matrix.mulVec, fullPrimeMatrix, mul_sum]
+  simp only [dotProduct, mulVec]
   refine sum_congr rfl fun i _ => ?_
-  rw [← Finset.sum_coe_sort (Icc 1 N)]
+  rw [← Finset.sum_coe_sort (Icc 1 N), mul_sum]
   refine sum_congr rfl fun j _ => ?_
-  simp only [horizonExtend_coe]
+  simp only [horizonExtend_coe, fullPrimeMatrix]
   ring
 
 /-! ### Two eigenvectors meet the hyperplane -/
@@ -157,7 +157,6 @@ theorem sum_eigenvector_mul {N : ℕ} (i j : PrimeHorizonIndex N) :
   simp only [Matrix.mulVec, dotProduct, Matrix.star_apply,
     Matrix.IsHermitian.eigenvectorUnitary_apply, star_trivial, Pi.single_apply] at h
   rw [h]
-  simp only [eq_comm]
 
 /-- On the plane of two eigenvectors the quadratic form is diagonal:
 `Q(a e_i + b e_j) = a² λ_i + b² λ_j` and `|a e_i + b e_j|² = a² + b²` for `i ≠ j`. -/
@@ -218,8 +217,8 @@ theorem eventually_exists_harmonic_atomicWeilForm_ge {ε : ℝ} (hε : 0 < ε) :
   have hj' := abs_lt.mp hj
   have hij : i ≠ j := fun h => by rw [h] at hi'; linarith
   -- both eigenvalues lie above `log N − γ − 2 log 2 − ε`
-  have hλi : Real.log N - γ - 2 * Real.log 2 - ε ≤ lam i := by linarith
-  have hλj : Real.log N - γ - 2 * Real.log 2 - ε ≤ lam j := by linarith
+  have hli : Real.log N - γ - 2 * Real.log 2 - ε ≤ lam i := by linarith
+  have hlj : Real.log N - γ - 2 * Real.log 2 - ε ≤ lam j := by linarith
   -- the harmonic coordinate of a horizon vector
   set ℓ : (PrimeHorizonIndex N → ℝ) → ℝ := fun v => ∑ k : PrimeHorizonIndex N, v k / Real.sqrt k
   -- choose the combination killing the harmonic coordinate
@@ -237,6 +236,6 @@ theorem eventually_exists_harmonic_atomicWeilForm_ge {ε : ℝ} (hε : 0 < ε) :
   · rw [sum_horizonExtend v (fun _ t => t ^ 2), hM]
     exact hab
   · rw [sum_horizonExtend v (fun _ t => t ^ 2), hM, atomicWeilForm_horizonExtend, hQ]
-    nlinarith [mul_le_mul_of_nonneg_left hλi (sq_nonneg a), mul_le_mul_of_nonneg_left hλj (sq_nonneg b)]
+    nlinarith [mul_le_mul_of_nonneg_left hli (sq_nonneg a), mul_le_mul_of_nonneg_left hlj (sq_nonneg b)]
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity

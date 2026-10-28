@@ -88,7 +88,47 @@ theorem exists_primeTwo_gamma_small_tail {δ : ℝ} (hδ : 0 < δ) :
   rw [primeTwoMixedSource_odd_horizon]
   linarith only [hbudget, hpay, hgamma, hext]
 
+/-- Splitting detail coefficients splits the entire odd-horizon mixed source. -/
+theorem primeTwoMixedSource_add_details (d e q : ℕ → ℝ) (Y : ℕ) :
+    primeTwoMixedSource (fun a => d a + e a) q (2 * Y + 1) (2 * Y + 1) =
+      primeTwoMixedSource d q (2 * Y + 1) (2 * Y + 1) +
+        primeTwoMixedSource e q (2 * Y + 1) (2 * Y + 1) := by
+  simp only [primeTwoMixedSource_odd_horizon,
+    primeTwoMixedSource_eq _ _ (le_refl (2 * Y + 1))]
+  rw [← mul_add, ← Finset.sum_add_distrib]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro a _ha
+  ring
+
+theorem primeTwoMixedSource_sub_head (d q : ℕ → ℝ) (A Y : ℕ) :
+    primeTwoMixedSource d q (2 * Y + 1) (2 * Y + 1) -
+      primeTwoMixedSource (fun a => if a < A then d a else 0) q (2 * Y + 1) (2 * Y + 1) =
+        primeTwoMixedSource (fun a => if A ≤ a then d a else 0) q (2 * Y + 1) (2 * Y + 1) := by
+  have hd : (fun a => (if a < A then d a else 0) + (if A ≤ a then d a else 0)) = d := by
+    funext a
+    by_cases h : a < A
+    · simp only [if_pos h, if_neg (by omega : ¬A ≤ a), add_zero]
+    · simp only [if_neg h, if_pos (by omega : A ≤ a), zero_add]
+  have hs := primeTwoMixedSource_add_details
+    (fun a => if a < A then d a else 0) (fun a => if A ≤ a then d a else 0) q Y
+  rw [hd] at hs
+  linarith only [hs]
+
+/-- Finitely many detail coordinates approximate the mixed source in the original Gamma form. -/
+theorem exists_primeTwo_finite_detail_approximation {δ : ℝ} (hδ : 0 < δ) :
+    ∃ A : ℕ, 1 ≤ A ∧ ∀ (d q : ℕ → ℝ) (Y : ℕ),
+      |primeTwoMixedSource d q (2 * Y + 1) (2 * Y + 1) -
+        primeTwoMixedSource (fun a => if a < A then d a else 0) q (2 * Y + 1) (2 * Y + 1)| ≤
+          δ * levyEnergy (completePairProfile q d (2 * Y + 1)) := by
+  obtain ⟨A, hA, hpay⟩ := exists_primeTwo_gamma_small_tail hδ
+  refine ⟨A, hA, ?_⟩
+  intro d q Y
+  rw [primeTwoMixedSource_sub_head]
+  exact hpay d q Y
+
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.abs_primeTwoMixedSource_le_graph_fraction
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_primeTwo_gamma_small_tail
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_primeTwo_finite_detail_approximation

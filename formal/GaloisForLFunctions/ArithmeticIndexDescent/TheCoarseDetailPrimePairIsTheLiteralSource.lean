@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticIndexDescent.TheGammaMeanGraphPaysThePrimeTwoMixedBlock
+import GaloisForLFunctions.ArithmeticIndexDescent.ThePrimeTwoMixedTailIsGammaSmall
 
 /-!
 # The mixed cell pairing is the original prime correlation
@@ -150,7 +150,24 @@ theorem exists_high_detail_gamma_pays_original_primeTwo :
   rw [← primeTwoMixedSource_eq_integrals]
   exact hpay d q Y
 
+/-- The original mixed prime-two tail is small relative to the untruncated Gamma source. -/
+theorem exists_original_primeTwo_gamma_small_tail {δ : ℝ} (hδ : 0 < δ) :
+    ∃ A : ℕ, 1 ≤ A ∧ ∀ (d q : ℕ → ℝ) (Y : ℕ),
+      let c := fun a => if A ≤ a then d a else 0
+      let X := 2 * Y + 1
+      |(2 * ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) *
+        ((∫ x, haarSectionProfile c X x * averageSectionProfile q X (x + Real.log 2)) +
+          ∫ x, averageSectionProfile q X x * haarSectionProfile c X (x + Real.log 2))| ≤
+        δ * levyEnergy (completePairProfile q d X) := by
+  obtain ⟨A, hA, hpay⟩ := exists_primeTwo_gamma_small_tail hδ
+  refine ⟨A, hA, ?_⟩
+  intro d q Y
+  dsimp only
+  rw [← primeTwoMixedSource_eq_integrals]
+  exact hpay d q Y
+
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.primeTwoMixedSource_eq_integrals
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_high_detail_gamma_pays_original_primeTwo
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_original_primeTwo_gamma_small_tail
