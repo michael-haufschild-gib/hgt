@@ -44,6 +44,8 @@ theorem halfLineExtend_rightShift_coeFn {s : ℝ} (hs : 0 ≤ s)
     ((indicator_ae_eq_of_halfLine (halfLineRightShift_coeFn s u)).trans ?_)
   filter_upwards [(measurePreserving_sub_right volume s).quasiMeasurePreserving.ae_eq_comp
     (halfLineExtend_coeFn u)] with x hx
+  change (halfLineExtend u : ℝ → ℂ) (x - s) =
+    (Ici (0 : ℝ)).indicator (u : ℝ → ℂ) (x - s) at hx
   by_cases hx0 : x ∈ Ici (0 : ℝ)
   · exact indicator_of_mem hx0 _
   · rw [indicator_of_notMem hx0, hx,
@@ -58,7 +60,8 @@ private theorem haarProfile_zero_neg (a : ℕ+) {x : ℝ} (hx : x < 0) :
     have hl := Real.log_nonneg (by exact_mod_cast hn : (1 : ℝ) ≤ n)
     linarith only [h.1, hl, hx]
   have ha := a.pos
-  simp only [haarProfile, hraw _ (by omega), mul_zero, sub_zero]
+  simp only [haarProfile, hraw (2 * (a : ℕ)) (by omega),
+    hraw (2 * (a : ℕ) + 1) (by omega), mul_zero, sub_zero]
 
 theorem halfLineExtend_haarAtom_coeFn (a : ℕ+) :
     (halfLineExtend (haarAtom a) : ℝ → ℂ) =ᵐ[volume]
@@ -68,7 +71,9 @@ theorem halfLineExtend_haarAtom_coeFn (a : ℕ+) :
   intro x
   by_cases hx : x ∈ Ici (0 : ℝ)
   · exact indicator_of_mem hx _
-  · rw [indicator_of_notMem hx, haarProfile_zero_neg a (lt_of_not_ge hx), Complex.ofReal_zero]
+  · rw [indicator_of_notMem hx]
+    change 0 = (haarProfile a x : ℂ)
+    rw [haarProfile_zero_neg a (lt_of_not_ge hx), Complex.ofReal_zero]
 
 /-- Every power of the actual dyadic shift has the expected original profile. -/
 theorem halfLineExtend_haarAtom_pow_coeFn (a : ℕ+) (j : ℕ) :
@@ -82,9 +87,13 @@ theorem halfLineExtend_haarAtom_pow_coeFn (a : ℕ+) (j : ℕ) :
     refine ((measurePreserving_sub_right volume (Real.log 2)).quasiMeasurePreserving.ae_eq_comp ih).trans
       (Eventually.of_forall ?_)
     intro x
-    congr 2
-    push_cast
-    ring
+    change (haarProfile a (x - Real.log 2 - j * Real.log 2) : ℂ) =
+      (haarProfile a (x - ((j + 1 : ℕ) : ℝ) * Real.log 2) : ℂ)
+    have he : x - Real.log 2 - j * Real.log 2 =
+        x - ((j + 1 : ℕ) : ℝ) * Real.log 2 := by
+      push_cast
+      ring
+    rw [he]
 
 /-- Exact whole-line waveform of a normalized dyadic detail basis vector. -/
 theorem sqrt_mass_wholeLineLogCellOrbit_coeFn (a : ℕ+) (j : ℕ) :
@@ -148,7 +157,9 @@ theorem physicalLogCellCoordinates_detail (f : ℝ → ℝ)
       simpa only [zero_add] using integral_translated_haarProfile_mul 0 (j, a)
         (memLp_compact_bv hv hc), Complex.ofReal_mul] at hinner
     exact hinner
-  exact mul_left_cancel₀ (by exact_mod_cast (Real.sqrt_pos.mpr (haarMass_pos a.pos)).ne') hscalar
+  have hmass : (Real.sqrt (haarMass a) : ℂ) ≠ 0 := fun he =>
+    (Real.sqrt_pos.mpr (haarMass_pos a.pos)).ne' (Complex.ofReal_injective he)
+  exact mul_left_cancel₀ hmass hscalar
 
 end GaloisForLFunctions.SignedArithmeticHodgeTheory
 
