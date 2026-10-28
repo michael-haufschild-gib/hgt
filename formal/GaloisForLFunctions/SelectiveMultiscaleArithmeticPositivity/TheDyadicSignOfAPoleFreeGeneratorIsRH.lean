@@ -1,6 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.OnePrimeSeesTheWholeDefectOfZeta
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheDyadicSignIsRigid
-import GaloisForLFunctions.RHTower.CHMDStage19ExactCoshSinhCompletedSquareAndStripCoshDominance
 
 /-!
 # The dyadic sign of a pole-free generator is RH, at every overlap
@@ -36,6 +35,8 @@ namespace GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
 open Zeta23 GaloisForLFunctions.HTGeometry ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig)
 
+local notation "Tr" => ArithmeticCastelnuovoSeveri.translate
+
 theorem gammaOf_one : gammaOf 1 = -(I / 2) := by
   rw [gammaOf, div_eq_iff I_ne_zero]
   ring_nf
@@ -53,10 +54,8 @@ theorem gammaOf_zero : gammaOf 0 = I / 2 := by
 /-- `1` is not a nontrivial zero of `ζ`. -/
 theorem one_not_mem_zetaZeroConfig : (1 : ℂ) ∉ zetaZeroConfig.carrier := by
   intro h
-  have hm : RHTower.IsNontrivialZero (1 : ℂ) := h
-  have hIm := WeilEF.abs_gammaOf_im_lt ⟨hm.2.1, hm.2.2⟩
-  rw [gammaOf_one] at hIm
-  norm_num at hIm
+  have hm : Zeta23.IsNontrivialZero (1 : ℂ) := h
+  exact absurd hm.2.2 (by norm_num)
 
 /-- **A pole-free test killing the deep zeros.** For a deep-sparse configuration not containing
 `1`, a set `F` of right zeros, a depth `σ₀ > ½` and `ε > 0`, a `C²` test supported in `[−ε, ε]`
@@ -118,14 +117,14 @@ theorem exists_test_killing_deep_zeros_poleFree_small (Z : ZeroConfig) (hsp : De
         rw [re_reflect] at this; linarith [hτr.2]
       · have := congrArg Complex.re h
         rw [re_reflect] at this; linarith [hτr.2]
-      · rw [← reflect_reflect τ, h, reflect_reflect]; exact hτ₀
+      · rw [← Zeta23.reflect_reflect τ, h, Zeta23.reflect_reflect]; exact hτ₀
     · refine ⟨hne1.symm, fun h => ?_, fun h => ?_, fun h => hne1 ?_⟩
       · have := congrArg Complex.re h
         rw [re_reflect, Complex.one_re] at this; linarith
       · rw [reflect_one] at h
         have := congrArg Complex.re h
         rw [Complex.zero_re] at this; linarith
-      · rw [← reflect_reflect τ₀, ← h, reflect_reflect]
+      · rw [← Zeta23.reflect_reflect τ₀, ← h, Zeta23.reflect_reflect]
   constructor
   · refine hnz _
       (by rw [SquareRootThreshold.im_gammaOf]; exact (by linarith : 1 / 2 - τ₀.re < 0).ne)
@@ -206,7 +205,7 @@ theorem zeta_poleFree_small_tower_law {p : ℕ} (hp : p.Prime) {ε : ℝ} (hε :
     (∃ g : ℝ → ℂ, ContDiff ℝ 2 g ∧ tsupport g ⊆ Set.Icc (-ε) ε ∧
       paperFT g (I / 2) = 0 ∧ paperFT g (-(I / 2)) = 0 ∧
       ∃ K : Finset ℤ, n ≤ hermNegIndex (weilGram (fun k => (ArithmeticFunction.vonMangoldt k : ℝ))
-        fun k : K => translate (((k : ℤ) : ℝ) * Real.log p) g)) ↔
+        fun k : K => Tr (((k : ℤ) : ℝ) * Real.log p) g)) ↔
       (n : ℕ∞) ≤ (outerEig zetaZeroConfig (Real.log p)).encard := by
   have hℓ : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
   rw [← deepSparse_poleFree_small_tower_law _ temperedConfig_zetaZeroConfig deepSparse_zeta
@@ -216,7 +215,7 @@ theorem zeta_poleFree_small_tower_law {p : ℕ} (hp : p.Prime) {ε : ℝ} (hε :
   all_goals
     have hgc : HasCompactSupport g := isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs
     have hw : weilGram (fun k => (ArithmeticFunction.vonMangoldt k : ℝ))
-        (fun k : K => translate (((k : ℤ) : ℝ) * Real.log p) g) =
+        (fun k : K => Tr (((k : ℤ) : ℝ) * Real.log p) g) =
         towerGram zetaZeroConfig g (Real.log p) K :=
       weilGram_eq_zeroGram _ (fun _ => translate_contDiff hg _)
         (fun _ => translate_hasCompactSupport hgc _)
@@ -239,7 +238,7 @@ theorem riemannHypothesis_iff_dyadicPositive_poleFree_small {ε : ℝ} (hε : 0 
     by_contra hne
     obtain ⟨ρ, hρ⟩ := Set.nonempty_iff_ne_empty.mpr hne
     have h1 : ((1 : ℕ) : ℕ∞) ≤ (outerEig zetaZeroConfig (Real.log (2 : ℕ))).encard :=
-      by exact_mod_cast Set.one_le_encard_iff_nonempty.mpr ⟨_, ρ, hρ, rfl⟩
+      by exact_mod_cast Set.one_le_encard_iff_nonempty.mpr ⟨frobEig (Real.log (2 : ℕ)) ρ, ρ, hρ, rfl⟩
     obtain ⟨g, hg, hgs, hp1, hp2, K, hK⟩ := hlaw.mpr h1
     have h0 := hpos g hg hgs hp1 hp2 K
     simp only [Nat.cast_ofNat] at hK h0

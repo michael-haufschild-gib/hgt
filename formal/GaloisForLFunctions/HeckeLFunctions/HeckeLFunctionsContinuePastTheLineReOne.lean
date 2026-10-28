@@ -37,7 +37,7 @@ variable {c : ℕ → ℂ} {θ K : ℝ}
 /-- `Σ_{k<N+1} c(k) = Σ_{k ∈ [1,N]} c(k)` when `c(0) = 0`. -/
 theorem sum_range_succ_eq_sum_Icc (hc0 : c 0 = 0) (N : ℕ) :
     ∑ k ∈ range (N + 1), c k = ∑ k ∈ Icc 1 N, c k := by
-  rw [sum_range_eq_add_Ico c N.succ_pos, hc0, zero_add, Ico_add_one_right_eq_Icc]
+  rw [sum_range_eq_add_Ico c (by omega : 0 < N + 1), hc0, zero_add, Ico_add_one_right_eq_Icc]
 
 theorem term_eq_mul_powNeg_of_zero (hc0 : c 0 = 0) (s : ℂ) (n : ℕ) :
     LSeries.term c s n = c n * powNeg s n := by
@@ -85,9 +85,12 @@ theorem differentiableOn_growthCont : DifferentiableOn ℂ (growthCont c θ) {s 
   have hs' : θ < s.re := hs
   have hσ₀ : θ < (θ + s.re) / 2 := by linarith
   obtain ⟨M, hM⟩ := exists_norm_sum_term_le hc0 hθ hK hσ₀
+  have hsU : s ∈ {z : ℂ | (((θ + s.re) / 2 : ℝ) : ℂ).re < z.re} := by
+    show (((θ + s.re) / 2 : ℝ) : ℂ).re < s.re
+    rw [ofReal_re]
+    linarith
   have hU : {z : ℂ | (((θ + s.re) / 2 : ℝ) : ℂ).re < z.re} ∈ 𝓝 s :=
-    (isOpen_lt continuous_const continuous_re).mem_nhds (by simp only [Set.mem_setOf_eq,
-      ofReal_re]; linarith)
+    (isOpen_lt continuous_const continuous_re).mem_nhds hsU
   refine (((differentiableOn_contLSeries hM).differentiableAt hU).congr_of_eventuallyEq ?_
     ).differentiableWithinAt
   filter_upwards [hU] with z hz
@@ -207,7 +210,9 @@ theorem exists_norm_sum_trivialRemainder_le :
   have hsum : ∑ k ∈ Icc 1 ⌊x⌋₊, trivialRemainder 𝔪 k =
       (∑ k ∈ Icc 1 ⌊x⌋₊, heckeCoeff 𝔪 1 k - (heckeDensity 𝔪 : ℂ) * x) +
         (heckeDensity 𝔪 : ℂ) * ((x - ⌊x⌋₊ : ℝ) : ℂ) := by
-    rw [Finset.sum_congr rfl fun k hk => if_neg (by simp at hk; omega), Finset.sum_sub_distrib,
+    rw [Finset.sum_congr rfl fun k hk => (show trivialRemainder 𝔪 k =
+      heckeCoeff 𝔪 1 k - heckeDensity 𝔪 from
+        if_neg (Nat.one_le_iff_ne_zero.mp (Finset.mem_Icc.mp hk).1)), Finset.sum_sub_distrib,
       Finset.sum_const, Nat.card_Icc, add_tsub_cancel_right, nsmul_eq_mul]
     push_cast
     ring
@@ -256,7 +261,7 @@ theorem tendsto_sub_one_mul_heckeL_one :
   refine LSeries_tendsto_sub_mul_nhds_one_of_tendsto_sum_div ?_
     fun σ hσ => lSeriesSummable_heckeCoeff 𝔪 1 (by simpa using hσ)
   have hdec : Tendsto (fun n : ℕ => C * (n : ℝ) ^ (-(finrank ℚ K : ℝ)⁻¹)) atTop (𝓝 0) := by
-    simpa using ((Real.tendsto_rpow_neg_atTop hn).comp tendsto_natCast_atTop_atTop).const_mul C
+    simpa using ((tendsto_rpow_neg_atTop hn).comp tendsto_natCast_atTop_atTop).const_mul C
   rw [tendsto_iff_norm_sub_tendsto_zero]
   refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ hdec
   filter_upwards [eventually_ge_atTop 1] with n hn1

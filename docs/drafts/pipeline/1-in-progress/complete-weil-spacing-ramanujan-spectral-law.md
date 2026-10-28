@@ -243,9 +243,8 @@ transitive axiom report in `logs/complete-weil-spacing-axioms-2026-10-28.log`;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
 Twenty-three support modules are scratch verified and installed; twenty-nine
 retained endpoint axiom reports are clean. First required oleans are built
-through module twenty-two; the complete mean-zero center-row dependency is
-being generated. These twenty-three modules are imported by their owner
-umbrellas; no umbrella was compiled. The SSHA density increment bound is documented in its README.
+through module twenty-three. These modules are imported by their owner
+umbrellas; no umbrella was compiled. The ground center residual is under check. The SSHA density increment bound is documented in its README.
 Final installed-source checks without output generation remain outstanding.
 The three main endpoints are still unchecked:
 
@@ -286,7 +285,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 20 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper` | Scratch verified; installed; first required olean built |
 | 21 | `HTGeometry/FiniteShiftedHarmonicAbelBounds` | Scratch verified; installed; first required olean built |
 | 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Scratch verified; installed; first required olean built |
-| 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Scratch verified; installed |
+| 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Scratch verified; installed; first required olean built |
 | 24 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionHasBoundedPoleResidual` | Unchecked scratch |
 | 25 | `HTGeometry/SymmetricFormGroundProjection` | Unchecked scratch |
 | 26 | `HTGeometry/HermitianLowerSpectralWindows` | Unchecked scratch |
