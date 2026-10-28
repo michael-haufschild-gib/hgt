@@ -26,6 +26,7 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGaugeAtEveryRoot
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleAtEveryRoot
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyWindow
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyProfile
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheDenjoyCarlemanProfiles
 
 /-!
 # Arithmetic Harmonic Analysis at the Spacing Scale
@@ -55,8 +56,9 @@ Umbrella for the harmonic analysis of Weil's form on the atomic family
   its bounded twists, the Markov form) transfers there, every twist that fails somewhere is seen
   there, and the Markov form has a negative square there unconditionally and only one iff RH;
 * for Gevrey profiles of class `s` an Euler–Maclaurin order `2⌈log log k⌉ + 2` brings the window to
-  `(log log N)^s`; the explicit profile `c E(1+x)E(1−x)` is Gevrey of class `2`, so positivity is RH
-  at overlap `(log log N)^α` for every `α > 2`.
+  `(log log N)^s`; the explicit profile `c E(1+x)E(1−x)` is Gevrey of class `2`, and the
+  Denjoy–Carleman profiles `c E(x^r)|_{1±x}`, `r` odd, are of class `1 + 1/r`: positivity is RH at
+  overlap `(log log N)^α` for every `α > 1`.
 
 See `SpacingScaleHarmonicAnalysis/README.md`.
 -/

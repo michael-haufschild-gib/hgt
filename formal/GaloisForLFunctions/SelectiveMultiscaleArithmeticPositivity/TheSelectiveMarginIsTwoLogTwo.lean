@@ -17,6 +17,11 @@ Robin–Euler ceiling fixes that of the Liouville twin.
   twin has no positive one.
 * **The selective margin** (`sSup_zeta_sub_sSup_liouville_hyperplaneGap`): the difference of the two
   optimal gaps is `2 log 2`.
+* **`ζ` has the largest margin among sign gauges** (`isGreatest_signGauge_hyperplaneGap`): the plane
+  of the two top eigenvectors of the full prime matrix meets every hyperplane
+  (`eventually_forall_exists_orthogonal_atomicWeilForm_ge`), so no gauge with `ω² = 1` has a gap
+  above `2 log 2`. Damped weights are excluded: the zero weight has every gap
+  (`hasHyperplaneGap_zero_weight`).
 * **The sharp selective Poincaré inequality** (`eventually_poleDefect_ge_offPole_sharp`): for every
   `η > 0`, eventually in `N`, `D_N(x) ≥ (2 log 2 − η)(|x|² − ℓ(x)²/H_N)` for all `x`.
 * **The sharp selective Gårding inequality** (`eventually_weilQuad_atomicTest_ge_sharp`): on narrow
@@ -127,5 +132,107 @@ theorem eventually_weilQuad_atomicTest_ge_sharp {φ : ℝ → ℝ} (hφ : ContDi
       A * c₀ * poleDefect N x :=
     mul_le_mul_of_nonneg_left (hgap N (le_trans (le_max_right _ _) hNN) x) (mul_nonneg hA hc₀)
   nlinarith
+
+/-! ### `ζ` has the largest margin among sign gauges -/
+
+section SignGauges
+
+open Filter Matrix
+
+/-- **Every hyperplane meets the top plane.** For every `ε > 0`, eventually in `N`, every linear
+condition `Σ_{n ≤ N} x_n c_n = 0` has a nonzero solution with
+`P_N(x) ≥ (log N − γ − 2 log 2 − ε)|x|²`: the eigenvectors of the full prime matrix at
+`log N − E_1` and `log N − E_2` span a plane, and a plane meets every hyperplane. -/
+theorem eventually_forall_exists_orthogonal_atomicWeilForm_ge {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℕ → ℝ, ∃ x : ℕ → ℝ, ∑ n ∈ Icc 1 N, x n * c n = 0 ∧
+      0 < ∑ n ∈ Icc 1 N, x n ^ 2 ∧
+      (Real.log N - Real.eulerMascheroniConstant - 2 * Real.log 2 - ε) *
+          ∑ n ∈ Icc 1 N, x n ^ 2 ≤ atomicWeilForm N x := by
+  have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  set δ := min ε (Real.log 2 / 2)
+  have hδ : 0 < δ := lt_min hε (by positivity)
+  have hδε : δ ≤ ε := min_le_left _ _
+  have hδl : δ ≤ Real.log 2 / 2 := min_le_right _ _
+  filter_upwards [eventually_fullPrimeMatrix_eigenvalue_near one_pos hδ,
+    eventually_fullPrimeMatrix_eigenvalue_near two_pos hδ] with N h₁ h₂ c
+  obtain ⟨i, hi⟩ := h₁
+  obtain ⟨j, hj⟩ := h₂
+  rw [ramanujanAdjunctionEnergy_one] at hi
+  rw [ramanujanAdjunctionEnergy_two] at hj
+  set lam := (fullPrimeMatrix_isHermitian N).eigenvalues
+  set e := (fullPrimeMatrix_isHermitian N).eigenvectorBasis
+  have hi' := abs_lt.mp hi
+  have hj' := abs_lt.mp hj
+  have hij : i ≠ j := fun h => by rw [h] at hi'; linarith
+  have hli : Real.log N - Real.eulerMascheroniConstant - 2 * Real.log 2 - ε ≤ lam i := by linarith
+  have hlj : Real.log N - Real.eulerMascheroniConstant - 2 * Real.log 2 - ε ≤ lam j := by linarith
+  set ℓ : (PrimeHorizonIndex N → ℝ) → ℝ := fun v => ∑ k : PrimeHorizonIndex N, v k * c k
+  -- the combination of the two eigenvectors killing the linear condition
+  obtain ⟨a, b, hab, hℓ⟩ : ∃ a b : ℝ, 0 < a ^ 2 + b ^ 2 ∧ a * ℓ ⇑(e i) + b * ℓ ⇑(e j) = 0 := by
+    by_cases h0 : ℓ ⇑(e i) = 0
+    · exact ⟨1, 0, by norm_num, by rw [h0]; ring⟩
+    · exact ⟨ℓ ⇑(e j), -ℓ ⇑(e i), by nlinarith [mul_self_pos.mpr h0, sq_nonneg (ℓ ⇑(e j))],
+        by ring⟩
+  obtain ⟨hQ, hM⟩ := quadratic_eigenvector_plane hij a b
+  set v := a • ⇑(e i) + b • ⇑(e j)
+  refine ⟨horizonExtend v, ?_, ?_, ?_⟩
+  · rw [sum_horizonExtend v (fun n t => t * c n)]
+    simp only [v, Pi.add_apply, Pi.smul_apply, smul_eq_mul, add_mul, sum_add_distrib, mul_assoc,
+      ← mul_sum]
+    exact hℓ
+  · rw [sum_horizonExtend v (fun _ t => t ^ 2), hM]
+    exact hab
+  · rw [sum_horizonExtend v (fun _ t => t ^ 2), hM, atomicWeilForm_horizonExtend, hQ]
+    nlinarith [mul_le_mul_of_nonneg_left hli (sq_nonneg a),
+      mul_le_mul_of_nonneg_left hlj (sq_nonneg b)]
+
+/-- **Every sign gauge has margin at most `2 log 2`**: if `ω² = 1`, every hyperplane gap of `ω` is
+at most `2 log 2`. The substitution `x = ωy` turns `ζ`'s hyperplane into the hyperplane
+`Σ y_n ω_n/√n = 0`, which also meets the top plane. -/
+theorem le_two_mul_log_two_of_hasHyperplaneGap_of_mul_self_eq_one {ω : ℕ → ℝ}
+    (hω : ∀ n, ω n * ω n = 1) {g : ℝ} (hg : HasHyperplaneGap ω g) : g ≤ 2 * Real.log 2 := by
+  by_contra hlt
+  rw [not_le] at hlt
+  set ε := (g - 2 * Real.log 2) / 4
+  have hε : 0 < ε := by simp only [ε]; linarith
+  obtain ⟨N₀, hN₀⟩ := hg ε hε
+  obtain ⟨N, hN, hex⟩ := ((eventually_ge_atTop N₀).and
+    (eventually_forall_exists_orthogonal_atomicWeilForm_ge hε)).exists
+  obtain ⟨y, hy, hmass, hge⟩ := hex (fun n => ω n / Real.sqrt n)
+  have hx : ∑ n ∈ Icc 1 N, ω n * y n / Real.sqrt n = 0 := by
+    rw [show ∑ n ∈ Icc 1 N, ω n * y n / Real.sqrt n =
+      ∑ n ∈ Icc 1 N, y n * (ω n / Real.sqrt n) from sum_congr rfl fun n _ => by ring]
+    exact hy
+  have hωω : (fun n => ω n * (ω n * y n)) = y := funext fun n => by rw [← mul_assoc, hω, one_mul]
+  have hsq : ∑ n ∈ Icc 1 N, (ω n * y n) ^ 2 = ∑ n ∈ Icc 1 N, y n ^ 2 :=
+    sum_congr rfl fun n _ => by rw [mul_pow, sq (ω n), hω, one_mul]
+  have hle := hN₀ N hN (fun n => ω n * y n) hx
+  beta_reduce at hle
+  rw [hωω, hsq] at hle
+  have h2 := le_of_mul_le_mul_right (hge.trans hle) hmass
+  simp only [ε] at h2
+  linarith
+
+/-- **`ζ` has the largest margin among sign gauges**: the largest hyperplane gap of a gauge with
+`ω² = 1` is `2 log 2`, attained by `ζ`. -/
+theorem isGreatest_signGauge_hyperplaneGap :
+    IsGreatest {g | ∃ ω : ℕ → ℝ, (∀ n, ω n * ω n = 1) ∧ HasHyperplaneGap ω g}
+      (2 * Real.log 2) :=
+  ⟨⟨fun _ => 1, fun _ => one_mul 1, zeta_hasHyperplaneGap_two_mul_log_two⟩,
+    fun _ ⟨_, hω, hg⟩ => le_two_mul_log_two_of_hasHyperplaneGap_of_mul_self_eq_one hω hg⟩
+
+/-- **Damping is not selectivity**: the zero weight has every hyperplane gap, so the extremal problem
+is posed among sign gauges. -/
+theorem hasHyperplaneGap_zero_weight (g : ℝ) : HasHyperplaneGap (fun _ => 0) g := fun ε hε => by
+  refine ⟨⌈Real.exp (Real.eulerMascheroniConstant + g)⌉₊, fun N hN x _ => ?_⟩
+  have hN' : Real.exp (Real.eulerMascheroniConstant + g) ≤ N :=
+    (Nat.le_ceil _).trans (by exact_mod_cast hN)
+  have hlog := Real.log_le_log (Real.exp_pos _) hN'
+  rw [Real.log_exp] at hlog
+  have h0 : atomicWeilForm N (fun n => 0 * x n) = 0 := by simp [atomicWeilForm]
+  rw [h0]
+  exact mul_nonneg (by linarith) (sum_nonneg fun _ _ => sq_nonneg _)
+
+end SignGauges
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity

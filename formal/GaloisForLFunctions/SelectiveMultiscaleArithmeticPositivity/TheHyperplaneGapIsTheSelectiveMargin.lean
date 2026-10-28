@@ -16,8 +16,9 @@ values are now pinned on both sides.
 * **The Liouville twin has none** (`not_liouville_hasHyperplaneGap`): its prime form reaches the
   ceiling `log N − γ` on the same hyperplane, so no `g > 0` is a gap for it.
 
-So the hyperplane gap is a twin-selective quantity with value in `(0, 2 log 2]` for `ζ` and `0` for
-its Liouville twin. The conjectured sharp gap `2 log 2` is its largest possible value.
+So the hyperplane gap is a twin-selective quantity with value in `(0, 2 log 2]` for `ζ` and no
+positive value for its Liouville twin. Both are attained exactly, `2 log 2` and `0`, in
+`TheSelectiveMarginIsTwoLogTwo`.
 -/
 
 noncomputable section

@@ -21,6 +21,13 @@ namespace GaloisForLFunctions.ArithmeticIndexDescent
 
 open ArithmeticCastelnuovoSeveri.LogCells BiarithmeticGaugeGeometry HTGeometry
 
+/-- The actual detail vector has exactly the balanced coefficient square mass. -/
+theorem norm_haarSection_sq (d : ℕ → ℝ) (X : ℕ) :
+    ‖haarSection d X‖ ^ 2 = ∑ a ∈ Finset.Icc 1 X, haarMass a * d a ^ 2 := by
+  have hn : (inner ℂ (haarSection d X) (haarSection d X)).re = ‖haarSection d X‖ ^ 2 :=
+    inner_self_eq_norm_sq (𝕜 := ℂ) _
+  exact hn.symm.trans (re_inner_haarSection_self d X)
+
 /-- The original Gamma profile pays the square mass of every actual high-detail projection. -/
 theorem cellGammaWeight_mul_haar_tail_mass_le_gamma (q d : ℕ → ℝ) {A : ℕ}
     (hA : 1 ≤ A) (X : ℕ) :
@@ -65,21 +72,14 @@ theorem cellGammaWeight_mul_norm_haar_head_error_sq_le_gamma (q d : ℕ → ℝ)
     cellGammaWeight A *
       ‖haarSection d X - haarSection (fun a => if a < A then d a else 0) X‖ ^ 2 ≤
         levyEnergy (completePairProfile q d X) := by
-  rw [haarSection_sub_head]
-  have hn : ‖haarSection (fun a => if A ≤ a then d a else 0) X‖ ^ 2 =
-      ∑ a ∈ Finset.Icc 1 X, haarMass a * (if A ≤ a then d a else 0) ^ 2 := by
-    have hi : (inner ℂ (haarSection (fun a => if A ≤ a then d a else 0) X)
-        (haarSection (fun a => if A ≤ a then d a else 0) X)).re =
-        ‖haarSection (fun a => if A ≤ a then d a else 0) X‖ ^ 2 := inner_self_eq_norm_sq _
-    exact hi.symm.trans (re_inner_haarSection_self _ X)
-  rw [hn]
+  rw [haarSection_sub_head, norm_haarSection_sq]
   exact cellGammaWeight_mul_haar_tail_mass_le_gamma q d hA X
 
 private theorem haarSection_head_one (d : ℕ → ℝ) (X : ℕ) :
     haarSection (fun a => if a < 1 then d a else 0) X = 0 := by
   apply Finset.sum_eq_zero
   intro a ha
-  rw [if_neg (by have := (Finset.mem_Icc.mp ha).1; omega), Complex.ofReal_zero, zero_smul]
+  simp only [if_neg (by have := (Finset.mem_Icc.mp ha).1; omega : ¬a < 1), Complex.ofReal_zero, zero_smul]
 
 /-- The first pair already supplies a uniform bound for the entire detail vector. -/
 theorem cellGammaWeight_one_mul_norm_haarSection_sq_le_gamma (q d : ℕ → ℝ) (X : ℕ) :
@@ -97,11 +97,11 @@ private theorem haarSection_head_mem_span (d : ℕ → ℝ) (A X : ℕ) :
   apply Submodule.sum_mem
   intro a _ha
   by_cases h : a < A
-  · rw [if_pos h]
+  · simp only [if_pos h, Complex.coe_smul]
     have hm : haarAtom a ∈ Submodule.span ℝ (haarAtom '' (Finset.range A : Set ℕ)) :=
       Submodule.subset_span ⟨a, Finset.mem_range.mpr h, rfl⟩
     exact Submodule.smul_mem _ (d a) hm
-  · rw [if_neg h, Complex.ofReal_zero, zero_smul]
+  · simp only [if_neg h, Complex.ofReal_zero, zero_smul]
     exact Submodule.zero_mem _
 
 /-- Original Gamma control makes the actual detail family totally bounded in half-line L². -/

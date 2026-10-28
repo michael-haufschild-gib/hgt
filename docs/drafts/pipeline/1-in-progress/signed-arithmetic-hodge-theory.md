@@ -196,15 +196,16 @@ normalization is proved by TheDyadicDetailsAreTheLiteralBalancedHaarSources.
 
 ### Arithmetic action in complete levels
 
-Because W_p W_2=W_2 W_p, the actual arithmetic action should have the exact
+Because W_p W_2=W_2 W_p, the actual arithmetic action has the exact
 level matrix law
 
 inner(W_2^j u,W_p W_2^k v)=0 if j<k,
 inner(W_2^j u,W_p W_2^k v)=inner(W_2^(j-k) u,W_p v) if k<=j,
 
-for u,v in K and p>=2. Prime two is the one-step shift. This is a candidate
-analytic operator-valued Toeplitz representation of the actual arithmetic
-semigroup. Its coefficients must be derived from the original source maps.
+for u in K, arbitrary v and p>=2. Prime two is the one-step shift.
+ArithmeticTranslationsHaveAnExactDyadicLevelMatrix proves this representation
+of the actual arithmetic semigroup, with coefficients read from the original
+source maps. Its final no-olean audit passes with standard axioms only.
 It supplies no selective sign or joint Gamma cost without additional proofs.
 
 ### Finite source exhaustion before form limits
@@ -254,3 +255,31 @@ constant kernel 1/(2D), retaining both child variances and the mean square.
 For actual logarithmic cells min(L,R)>=D/4, including at every real translate,
 so each sibling rectangle pays Var(parent)/8. This local result is a target;
 joint rectangle allocation and ancestor counting remain separate obligations.
+
+### Joint nested variance target
+
+For any finite set S of dyadic level / positive parent labels and any common
+real translation t, target
+
+sum_(j,a in S) Var_[t+j log2+log(2a), t+j log2+log(2a+2)](f) <=16 Gamma(f).
+
+Sibling rectangles are disjoint even though parent intervals are nested.
+The integer labels floor(exp(x-t)) and floor(exp(y-t)) determine their unique
+sibling level and parent. The existing DyadicSibling.level_unique theorem
+therefore pays the whole finite family using one product-measure integral.
+The Gamma normalization is the proved identity: symmetric pair mass=2 Gamma.
+This target still requires Lean proof. It is a joint variance estimate, not
+a complete signed-Weil bound; ancestor counting must connect it to logarithmic
+weights on the complete Haar coordinates.
+
+### Selective and compact source inputs
+
+GammaBoundedCompleteProfilesHaveCompactDetails supplies actual one-level
+L2 compactness under Gamma<=1, with arbitrary coarse coefficients and horizon.
+EveryIntegerPrimeLagHasGammaSmallMixedTails supplies each integer lag with
+cost4 Lambda(m)/sqrt(m)/log(1/ell_A); this cost is not summable over all primes.
+TheSelectiveMarginIsTwoLogTwo identifies the sharp discrete hyperplane margin
+2log2 and supplies the narrow-atomic Garding reserve with explicit spacing and
+retained-defect conditions. These source statements are read, not independently
+built here. Their full-cell, all-level and continuous-pole comparison is not
+an assumption available to the programme.

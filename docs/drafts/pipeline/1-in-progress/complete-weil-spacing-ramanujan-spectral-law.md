@@ -456,3 +456,30 @@ Two further unchecked drafts now assemble the exact complete normalized entries 
 The new unchecked generic draft `/tmp/HarmonicCenterBoundaryBounds.lean` combines the exact harmonic-tail square identity with the upper increment bound to prove the explicit weighted boundary estimate `sum n*R_n^2 <= 6*N^2`. Twelve scratch drafts now exist; none is verified or installed.
 
 Refreshed concurrent baseline: `TheArchimedeanCrossTermsVanishOnPeriodicProfiles.lean` was inspected at its exact expansion and periodic endpoint. Its quadratic-form estimate assumes a nonnegative common bump and `4*w<=atomSpacing(N)`, and bounds the archimedean interaction on mean-zero periodic pole profiles. Its independent compilation/axiom audit is not claimed here. Such quadratic-form vanishing is excluded from the novelty of this candidate. The target here requires actual norm residuals, both pole terms and the shifted ground energy, signed profiles, and complete bounded spectral counts/eigenlines for every `0<c<1`.
+
+The exact inverse-square error mechanism now has three further unchecked generic drafts: `IntegerLogarithmicWindowGap`, `FiniteInverseSquareDistanceRows`, and `FinitePoleWeightedDistanceRows`. Their statements retain `(1-c)` in every shifted logarithmic gap, give the two-sided reciprocal-square bound 4, and give the weighted row bound `36*N*sqrt(n)`. They are supporting estimates, not separate contributions. Fifteen candidate drafts remain unchecked and uninstalled.
+
+### Current exact support drafts
+
+Eighteen unchecked scratch modules now cover the following support graph. None is installed or verified, and the complete spectral endpoint is still unproved. Generic bounds will be discharged on the literal kernels; they are not substitute analytic premises.
+
+- `HTGeometry/HarmonicTailSquareIdentity`: unchecked `/tmp/HarmonicTailSquareIdentity.lean`.
+- `HTGeometry/FiniteReversedAbelBounds`: unchecked `/tmp/FiniteReversedAbelBounds.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixIsTheActualAtomicForm`: unchecked `/tmp/TheFullWeilMatrixIsTheActualAtomicForm.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheArchimedeanCenterKernelIsAHarmonicKernel`: unchecked `/tmp/TheArchimedeanCenterKernelIsAHarmonicKernel.lean`.
+- `HTGeometry/FiniteHarmonicRows`: unchecked `/tmp/FiniteHarmonicRows.lean`.
+- `SpacingScaleHarmonicAnalysis/TheArchimedeanDensityHasQuadraticIncrementControl`: unchecked `/tmp/TheArchimedeanDensityHasQuadraticIncrementControl.lean`.
+- `HTGeometry/FiniteWeightedGroundStateBound`: unchecked `/tmp/FiniteWeightedGroundStateBound.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheSeparatedAtomPairingsAreThePrimeKernel`: unchecked `/tmp/TheSeparatedAtomPairingsAreThePrimeKernel.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheSeparatedMarkovMatrixHasExactCrossEntries`: unchecked `/tmp/TheSeparatedMarkovMatrixHasExactCrossEntries.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixSplitsAtTheSpacing`: unchecked `/tmp/TheFullWeilMatrixSplitsAtTheSpacing.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheArchimedeanCenterRowCancelsThePole`: unchecked `/tmp/TheArchimedeanCenterRowCancelsThePole.lean`.
+- `HTGeometry/HarmonicCenterBoundaryBounds`: unchecked `/tmp/HarmonicCenterBoundaryBounds.lean`.
+- `HTGeometry/IntegerLogarithmicWindowGap`: unchecked `/tmp/IntegerLogarithmicWindowGap.lean`.
+- `HTGeometry/FiniteInverseSquareDistanceRows`: unchecked `/tmp/FiniteInverseSquareDistanceRows.lean`.
+- `HTGeometry/FinitePoleWeightedDistanceRows`: unchecked `/tmp/FinitePoleWeightedDistanceRows.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheAtomCrossMatrixIsCloseToItsCenterKernel`: unchecked `/tmp/TheAtomCrossMatrixIsCloseToItsCenterKernel.lean`.
+- `HTGeometry/FiniteKernelErrorFromDistanceRows`: unchecked `/tmp/FiniteKernelErrorFromDistanceRows.lean`.
+- `RenormalizedArithmeticPotentialTheory/TheAtomCrossReplacementHasUniformErrors`: unchecked `/tmp/TheAtomCrossReplacementHasUniformErrors.lean`.
+
+The last two assemblies give the exact uniform quadratic-form cost and bounded unnormalized pole-profile residual for the actual cross-integral replacement. The complete center action on mean-zero periodic profiles, pole-moment error, full-range coercivity, and spectral assembly remain to formalize.

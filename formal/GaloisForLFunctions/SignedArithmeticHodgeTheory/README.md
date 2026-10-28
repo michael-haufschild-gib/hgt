@@ -297,6 +297,18 @@ proves this exact normalization and its preservation at every dyadic level
 and under every integer logarithmic translation. Physical source estimates
 therefore apply to the same atoms, with their mass factors retained.
 
+Integer translations commute with the dyadic clock. If \(g_i\) are the
+wandering generators and
+\(A_p(r)_{il}=\langle W_2^r g_i,W_p g_l\rangle\), their complete matrix is
+\[
+\langle W_2^j g_i,W_pW_2^k g_l\rangle
+=\begin{cases}A_p(j-k)_{il}&k\le j,\\0&j<k.\end{cases}
+\]
+[ArithmeticTranslationsHaveAnExactDyadicLevelMatrix](ArithmeticTranslationsHaveAnExactDyadicLevelMatrix.lean)
+proves this triangular level law directly from the original arithmetic maps.
+Prime two shifts each generator chain by one level. The matrix describes the
+source action; its entries carry no asserted sign.
+
 This is Hilbert orthogonality in the closed logarithmic-cell subspace.
 Joint Gamma estimates across levels and full-Weil mixed bounds remain separate.
 The cell completion is not identified with the entire continuous source graph.
@@ -329,6 +341,25 @@ It remains a single-level estimate. A candidate joint proof partitions pairs
 of points by their unique dyadic sibling rectangle, pays each parent variance
 once, and counts the ancestors of every finer detail. The root mean orbits
 remain a separate arithmetic sector.
+
+[GammaBoundedCompleteProfilesHaveCompactDetails](../ArithmeticIndexDescent/GammaBoundedCompleteProfilesHaveCompactDetails.lean)
+places the actual single-level detail projections of all unit-Gamma complete
+profiles in a compact subset of half-line \(L^2\), with all coarse coefficients
+and horizons free. Its positive weight is
+\(\log(1/\ell_a)\), including at \(a=1\).
+[EveryIntegerPrimeLagHasGammaSmallMixedTails](../ArithmeticIndexDescent/EveryIntegerPrimeLagHasGammaSmallMixedTails.lean)
+also pays the mixed tail at each integer lag \(m\ge2\), with cost
+\(4\Lambda(m)/(\sqrt m\log(1/\ell_A))\) times the original Gamma energy.
+These results control one level. The displayed lag costs do not give a
+summable all-prime allocation.
+
+The discrete selective margin has a sharp value.
+[TheSelectiveMarginIsTwoLogTwo](../SelectiveMultiscaleArithmeticPositivity/TheSelectiveMarginIsTwoLogTwo.lean)
+identifies the optimal harmonic-hyperplane gap as \(2\log2\) for zeta and
+zero for the Liouville twin. It supplies a sharp Gårding reserve on narrow
+atomic sources, retaining the continuous pole product. The spacing and
+retained-defect conditions remain in that theorem. Transfer to the complete
+cell generator orbits is the required source comparison.
 
 ### Renormalized adjunction
 

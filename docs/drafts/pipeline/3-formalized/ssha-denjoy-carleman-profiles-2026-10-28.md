@@ -1,15 +1,15 @@
 # Denjoy–Carleman profiles: the window (log log N)^{1+ε}
 
 - **ID:** ssha-dc
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) → Lean
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** SSHA README "To build"; card 3-formalized/ssha-gevrey-window-2026-10-28
 - **Statement:** For odd r ≥ 1, E_r(x) = expNegInvGlue(x^r) satisfies |E_r^{(n)}| ≤ K_r^n (n!)^{1+1/r}; the profile c E_r(1+x) E_r(1−x) is Gevrey of class 1 + 1/r. Hence for every α > 1 there is an explicit profile with: RH iff Weil's form is eventually nonnegative on its atomic families of width (log log N)^α/N.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  paper proof below
-- [ ] 2 → 3  Lean
+- [x] 1 → 2  paper proof below
+- [x] 2 → 3  Lean: `TheDenjoyCarlemanProfiles.lean` (`abs_iteratedDeriv_glueR_le`, `riemannHypothesis_iff_dcProfile_nonneg_loglog`, `exists_dcProfile_loglog`); axioms propext, Classical.choice, Quot.sound
 
 ## Paper proof
 1. E_r is smooth (composition), vanishes on (−∞, 0] (r odd), so all its derivatives vanish there.

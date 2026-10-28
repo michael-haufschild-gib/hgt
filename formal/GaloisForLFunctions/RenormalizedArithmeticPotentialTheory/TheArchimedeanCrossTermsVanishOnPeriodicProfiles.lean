@@ -160,7 +160,7 @@ theorem atomCrossKernel_anti (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
 /-- **The Lévy energy of an atomic test**, below the spacing:
 `L(f_x) = |x|² L(g) − 2 Σ_{m<n} x_m x_n Ω(log n − log m)`. -/
 theorem levyEnergy_atomicTest_eq_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
-    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hw0 : 0 < w)
     (hw : w < atomSpacing N) (x : ℕ → ℝ) :
     levyEnergy (atomicTest N x g) = (∑ n ∈ Icc 1 N, x n ^ 2) * levyEnergy g -
       2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
@@ -252,7 +252,7 @@ theorem abs_levyEnergy_atomicTest_sub_le_of_periodic (hg : ContDiff ℝ 2 g)
         (∑ n ∈ Icc 1 N, (ψ n / Real.sqrt n) ^ 2) * levyEnergy g| ≤
       168 * q * B ^ 2 * (w * N) * ∫ u, g u ^ 2 := by
   have hδw : w < atomSpacing N := by linarith
-  rw [levyEnergy_atomicTest_eq_cross hg hgc hgsupp hN hw0 hδw]
+  rw [levyEnergy_atomicTest_eq_cross hg hgc hgsupp hw0 hδw]
   set Φ : ℝ → ℝ := fun t => atomCrossKernel g (max t (atomSpacing N))
   have hG : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg (g u)
   have hS : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then

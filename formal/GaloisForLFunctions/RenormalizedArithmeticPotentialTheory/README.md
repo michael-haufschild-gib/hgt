@@ -61,6 +61,7 @@ and Q3 (the gauge charge of a positive form). In wall terms it is Wall 14 (the d
 | [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md) | the gauge torus, square-class blindness, sign twins | gauge behaviour of the matching between places |
 | [SpacingScaleHarmonicAnalysis](../SpacingScaleHarmonicAnalysis/README.md) | the stability law at a fixed fraction `c₀δ_N` of the spacing (tilted weight `1 + n/N`); the critical exponent of the overlap regime | the counterterm calculus it matches: the covariant `log N + O(1)`, the constant-one self-energy, the finite parts |
 | `RHTower` | Mertens' first theorem; Mertens' theorem with Euler's constant | — |
+| `ArtinMertens` | the Frobenius density theorem in Mertens form: `Σ_{p ≤ y} φ(Frob_p) log p/p ∼ ⟨φ, 1⟩ log y` for every division-constant class function `φ` | the matching coefficient of non-abelian Chebotarev patterns |
 
 RAPT does not re-prove what these programmes own; it imports them and proves the laws that join
 them.
@@ -423,6 +424,13 @@ the place that pays.
     `A_ε = A − Σ (1 − ε(t))Λ(t)/t` with non-negative terms. So among matched gauges the Mertens limit
     is at most `−γ`, with equality only when `ε = 1` at every prime. Dually, Liouville is the bottom
     of the anti-matched family (RP33, RP36). Residue patterns are matched by their mean (RP38).
+38. **Chebotarev patterns are matched by their mean** (`chebotarevPattern`,
+    `tendsto_chebotarevPattern_div_log`, `gaugeForm_chebotarevPattern_soft`). For a Galois number
+    field `L` and a sign function `f` on `Gal(L/ℚ)` constant on divisions (`f(h) = f(g)` when `⟨h⟩`
+    is conjugate to `⟨g⟩`), the pattern `p ↦ f(Frob_p)` has logarithmic mean `⟨f, 1⟩`: the degree-one
+    primes of the fixed fields `L^H` count the cosets fixed by Frobenius, their Mertens sums are
+    `∼ log y`, and Artin induction spans the division-constant functions by the permutation
+    characters. Ramified primes divide `disc L` and cost `O(1)`. So `κ = ⟨f, 1⟩` (RP60).
 
 ---
 
@@ -469,6 +477,7 @@ the place that pays.
 | **RP37 The gap below the pole is `2 log 2`, carried by the 2-adic step** | for every `ε > 0`, eventually in `N`: `D_N(x) ≥ (2 log 2 − ε) Var_{1/n}(√n x)` for every `x`, so `P_N(x) ≤ (log N − γ − 2 log 2 + ε)\|x\|²` on `x ⊥ n^{−1/2}`; the 2-adic step `(1_{2∣n} − E_N/H_N)/√n` has `D_N = log 2 · E_N ≤ 2 log 2 \|x\|²` for every `N` and `P_N ≥ (log N − γ − 2 log 2 − ε)\|x\|²`. Mechanism: the finitely-many-prime valuation chain has gap `→ 2 log 2` (sharp ladder `log p Σ_{j ≤ J} p^{−j}`, Efron–Stein on boxes, halo paid by `log a`); `[1, N] = ⊔_a a · R(Q, N/a)` with the rough fibres tensorized at cost `K/log Q`, and the fibre means compared by Jensen with shell error `(1 + log t)/F(N/X)` | `eventually_smoothVar_le_smoothEnergy`, `two_scale_le`, `eventually_mul_harmonicVar_le_poleDefect`, `eventually_atomicWeilForm_le_two_log_two`, `poleDefect_twoAdicStep`, `eventually_atomicWeilForm_below_pole_two_log_two` |
 | **RP38 Residue-pattern gauges are matched by their mean** | for every `±1` pattern `f` on `ℤ/q`, the gauge `ε_f(p^k) = f(p mod q)^k` has `A_{ε_f}(y) − κ_f log y → α_f` with `κ_f = φ(q)^{−1} Σ_{u ∈ (ℤ/q)ˣ} f(u)` and `α_f = Σ_u f(u) c_u + Σ_{a ∉ (ℤ/q)ˣ} f(a) ν_a + R_∞` (proper prime powers absolutely summable); so `P_N(ε_f x) = κ_f ℓ² + 2α_f\|x\|² + o(mass)`: the abelian Chebotarev patterns are matched by their mean | `tendsto_primeClassMertensError`, `exists_abs_primeClassGaugeForm_finitePart_le`, `gaugeMertensSum_primeClassGauge_eq` |
 | **RP39 The top spectrum of the prime form is exhausted by the integers** | for `T, ε > 0`, eventually in `N`, `P_N(x) ≤ (log N − γ − T + ε)\|x\|²` on the orthogonal complement of at most `#{m : log m + d(m) < T}` vectors (`d` the tame different); with the Ramanujan spectral points (`eventually_fullPrimeMatrix_eigenvalue_near`) the spectrum of `P_N` within bounded distance of `log N − γ` is `log N − γ − {log m + d(m)} + o(1)`. Mechanism: the truncated `p`-ladder is exactly solvable (`ψ_k = 1_{j≥k} − c_k 1_{j=k−1}`, `λ_k = log p (k + c_k)`), the finite prime box has the product spectrum `λ(m) → log m + d(m)` with a penalty-free Poincaré inequality on the complement of its low modes, and the two scales of RP37 carry it to `[1, N]` | `ladForm_ladMode`, `ladExpansion`, `boxSpectral`, `smoothVar_mul_le_of_orthogonal`, `eventually_mul_sum_sq_le_poleDefect`, `eventually_atomicWeilForm_le_of_modes` |
+| **RP60 Non-abelian Chebotarev patterns are matched by their mean** | for a Galois number field `L`, any choice of Frobenius elements at `p ∤ disc L` and any sign function `f` on `Gal(L/ℚ)` constant on divisions, the pattern `g(p) = f(Frob_p)` has `Σ_{p ≤ y} g(p) log p/p = ⟨f, 1⟩ log y + o(log y)`, so `A_{ε_g}(y)/log y → ⟨f, 1⟩` and `\|P_N(ε_g x) − ⟨f, 1⟩ ℓ²\| ≤ (η log N + C_η) · mass`. Mechanism: Frobenius density theorem in Mertens form (soft Mertens over number fields from ideal counting; `\|H\| n_{L^H}(p) = #{g : g⁻¹ Frob_p g ∈ H}`; Artin induction) | `tendsto_chebotarevPattern_div_log`, `tendsto_gaugeMertensSum_chebotarevPattern_div_log`, `gaugeForm_chebotarevPattern_soft` |
 
 ---
 
@@ -653,8 +662,10 @@ transfer of the Mertens error to the horizon remainder, and summation by parts a
    remainder exactly as the harmonic convolution of the Mertens error, so the mass-scale law holds
    iff that error is bounded in logarithmic mean. Every sign pattern of the primes by residues mod
    `q`, so every abelian Chebotarev pattern, has `κ` equal to its mean over `(ℤ/q)ˣ` and a computed
-   finite part (RP38). Open: `κ` for non-abelian Chebotarev patterns, which needs Mertens' theorem
-   for Artin `L`-functions.
+   finite part (RP38). *Answered at leading order:* every Chebotarev pattern `f(Frob_p)` with `f`
+   constant on divisions of `Gal(L/ℚ)` has `κ = ⟨f, 1⟩` and the soft law (RP60). Open: their finite
+   part, which needs the Mertens constant (the prime ideal theorem for Artin `L`-functions), and
+   patterns not constant on divisions, which need Hecke `L`-functions.
 6. **Several primes at once.** *Answered for every finite prime set `Q`:* each finite family
    of classes `{n : n = d k, (k, Q) = 1}`, indexed by the `Q`-parts `d`, has counterterm
    `Σ_d δ_d^{−1} ℓ_d²`, where `δ_d = (1/d) Π_{p∈Q}(1−1/p)`. It is covariant under every
@@ -687,7 +698,8 @@ its present state:
   the characters mod `q`, with eigenvalues `2 Re(−L′/L(1, χ))` (RP34, RP35).
 * Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
   `κ = 1` for finitely many flips, `κ = 0` for every character `χ ≠ 1` (RP20, RP25), `κ` = the mean
-  of the pattern for every abelian Chebotarev pattern (RP38); an error `o(log y)` keeps the law at
+  of the pattern for every abelian Chebotarev pattern (RP38) and for every Chebotarev pattern
+  constant on divisions (RP60); an error `o(log y)` keeps the law at
   leading order (RP26); residue classes are invisible (RP24).
 * Q6 is answered through RP2, RP3 and RP5.
 * The central conjecture is replaced by the matched stability law (§9.1). RAPT proves it at widths
@@ -763,6 +775,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `MertensTheoremInResidueClassesWithItsConstant` | the non-coprime prime powers; the principal limit `−γ − Q_q`; the class constants through `−L′/L(1, χ)` |
 | `ResiduePatternGaugesAreMatchedByTheirMean` | residue-pattern gauges; Mertens decomposition; proper prime powers; non-unit classes; `κ_f`, `α_f` and the horizon law |
 | `TheMatchingCoefficientIsTheLogarithmicDensity` | prime-sign gauges; primes and proper prime powers; density gives matching; `κ = 1 − 2ϑ` for flipped density `ϑ` |
+| `NonAbelianChebotarevPatternsAreMatchedByTheirMean` | Chebotarev patterns `f(Frob_p)`; ramified primes bounded; `κ = ⟨f, 1⟩` and the soft law for division-constant `f` |
 | `ClassHarmonicSumsHaveConstants` | Euler's constant with a rate; Cauchy with a rate; shifted classes; the class constants `d_a`; `L_a` to second order |
 | `TheFinitePartOnResidueClasses` | the residue Gram as class Mertens sums; floors; the logarithmic model Gram to `O(1)`; the residue finite-part law |
 | `TheResidueFinitePartIsDiagonalizedByCharacters` | spectral values `β_χ`; conjugate characters; class constants as a character transform; Fourier inversion; diagonalization |

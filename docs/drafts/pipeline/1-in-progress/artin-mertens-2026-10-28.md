@@ -42,9 +42,26 @@ Programme folder: `formal/GaloisForLFunctions/ArtinMertens/`.
       `Σ φ(Frob_p) log p/p ∼ ⟨φ, 1⟩ log y` (Frobenius density theorem, Mertens form)
       (`TheFrobeniusDensityTheoremInMertensForm`: `mem_permSpan_of_isDivisionConstant`,
       `tendsto_frobMertens_div_log`, `tendsto_frobMertens_divisionIndicator_div_log`)
-- [ ] S7 error term: Weber `I_K(x) = c_K x + O(x^{1−1/n})` ⇒ `O(1)` in S3, S5, S6
+- [ ] S7 error term: Weber `I_K(x) = c_K x + O(x^{1−1/n})` ⇒ `O(1)` in S3, S5, S6. Mathlib has only
+      the limit (box-integral Riemann sums, no rate). Route:
+      (A) lattice count: `|#(Λ ∩ Y)·covol − vol Y| ≤ vol(cthickening d (∂Y))`, `d` = diameter of a
+          fundamental cell (cells of interior points stay inside; segment crossing hits `∂Y`); scaled:
+          error `t^n vol(cthickening (d/t) ∂Y)`.
+      (B) `vol(cthickening ε S) ≤ N_ε(S) vol(ball 2ε)` (HTGeometry `le_encard_of_isCover_of_measure_le`)
+          and `N_ε(φ''[0,1]^{n−1}) ≤ N_{ε/M}([0,1]^{n−1})` (`externalCoveringNumber_image_le`) ⇒ `O(ε)`.
+      (C) `∂(normLeOne K)` ⊆ finitely many Lipschitz images of `[0,1]^{n−1}`: `normLeOne =
+          normAtAllPlaces⁻¹'(expMapBasis '' paramSet)`; `u = exp(x_{w₀}) ∈ [0,1]` makes the map
+          `(u, x_i, θ_w, signs) ↦ (±u Π|η_i|_w^{x_i}, u Π|η_i|_w^{x_i} e^{iθ_w})` Lipschitz on a closed box;
+          frontier ⊆ image of the box faces (`subset_interior_normLeOne`, `closure_normLeOne_subset`).
+      (D) class-wise count = lattice points in `s^{1/n}·normLeOne` (`card_isPrincipal_dvd_norm_le`;
+          Mathlib's class bijections are private: reprove) ⇒ `I_K(s) = c_K s + O(s^{1−1/n})`.
+      (E) Mertens `O(1)`: `L(x) ≥ I(x) log x − Σ_j I(x/e^j)`, `Σ_{N𝔭^k ≤ x} log N𝔭 (N𝔭^k)^{δ−1} = O(x^δ)`
+          (dyadic, Chebyshev S2) ⇒ `A_K(x) = log x + O(1)`; S4a/S5/S6 differences already bounded.
 - [ ] S8 non-rational `φ`: Brauer induction + Hecke `L`-functions of intermediate fields
       (ray-class characters, `L(1, ψ) ≠ 0`, Mertens for Hecke characters)
+
+- [x] RAPT: Chebotarev patterns `f(Frob_p)` with division-constant `f` have `κ = ⟨f, 1⟩` and the soft
+      law (RP60, `NonAbelianChebotarevPatternsAreMatchedByTheirMean`)
 
 ## Approach
 Elementary Mertens over number fields from ideal counting, then Frobenius bookkeeping to pass from

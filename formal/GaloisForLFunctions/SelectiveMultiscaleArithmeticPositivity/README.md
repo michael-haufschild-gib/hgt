@@ -36,13 +36,14 @@ is, and how a level of the complete source is paid.
 | Programme | Interface |
 |---|---|
 | [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Complete cells, Haar details, Gamma variance payment, \(\log2\) self-similarity of averages, high-detail floor |
-| [ArithmeticIndexDescent](../ArithmeticIndexDescent/README.md) | Projections, finite index capture, ordered Chebyshev identity, Gamma boundary reserve, canonical critical energy |
+| [ArithmeticIndexDescent](../ArithmeticIndexDescent/README.md) | Projections, finite index capture, ordered Chebyshev identity, ordered Gamma tail and boundary masses, canonical critical energy |
 | [SignedArithmeticHodgeTheory](../SignedArithmeticHodgeTheory/README.md) | Schur residual calculus, Weil radical, translation escape, bounded scale transport |
 | [SpacingScaleHarmonicAnalysis](../SpacingScaleHarmonicAnalysis/README.md) | Atomic families, receiver, gauge and pole at every root |
 | [ArithmeticLorentzianGeometry](../ArithmeticLorentzianGeometry/README.md) | Narrow Hodge/TD, prime defect pays the pole, Robin–Euler threshold, Liouville gauge |
-| [RenormalizedArithmeticPotentialTheory](../RenormalizedArithmeticPotentialTheory/README.md) | Prime ceiling, Dirichlet defect, pole-hyperplane gap, Liouville separation, adjunction energies, Ramanujan spectral points |
+| [RenormalizedArithmeticPotentialTheory](../RenormalizedArithmeticPotentialTheory/README.md) | Prime ceiling, Dirichlet defect, pole-hyperplane gap and its sharp Poincaré constant \(2\log2\), Liouville separation, adjunction energies, Ramanujan spectral points |
 | [ArithmeticElectrostatics](../ArithmeticElectrostatics/README.md) | Atomic tests, the gauge at atomic resolution, twin prime sums |
 | [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Orbit correlations, orientation theorem; single-tower orientation is open there |
+| [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | Herglotz–Bochner on lattices; the two-prime spline orbit as a Bochner problem on the torus |
 | [RHTower](../RHTower) | Weil cone uniqueness: the full Weil cone is \(\{\Lambda\}\) under RH and empty otherwise |
 
 ACS, AID and SAHT build and project the complete source. SSHA and ALG control atomic families. RAPT
@@ -74,8 +75,9 @@ component orthogonal to the pole (pillar 4).
 **Selectivity has a size, and it is \(2\log2\).** No uniform gap of \(\zeta\) on the hyperplane
 exceeds \(2\log2\): the conductor-2 Ramanujan mode is the unique first excitation above the pole
 (pillar 5). RAPT's sharp Poincaré constant attains it. The Liouville twin's gap is exactly \(0\)
-(pillars 6, 7). So the selective margin is \(2\log2\). The prime 2 is the bottleneck, and the same
-prime generates the self-similarity of the complete source.
+(pillars 6, 7). So the selective margin is \(2\log2\), and no sign gauge has a larger one: \(\zeta\) is
+extremal among its sign twins. The prime 2 is the bottleneck, and the same prime generates the
+self-similarity of the complete source.
 
 **Multiscale structure is exact.** Two adjacent complete cells fill the translate of one cell by
 \(\log2\). The complete source is therefore a sum over levels of translates of one generator cell and
@@ -104,6 +106,9 @@ signed Chebyshev error along the dyadic orbit.
 | Harmonic hyperplane | \(\sum_{n\le N}x_n/\sqrt n=0\); equal to \(A(f_x)=0\) | `integral_atomicTest_mul_exp_neg_half` |
 | Markov finite part / retained defect | \(\varphi_0\), \(c_0\) of the narrow Markov lower bound | `markovFinitePart`, `defectFractionRetained` |
 | Hyperplane gap | uniform \(g\) with \(P_N(\omega x)\le(\log N-\gamma-g+\varepsilon)\vert x\vert^2\) on the hyperplane | `HasHyperplaneGap` |
+| Pole projection | \(x-(\ell(x)/H_N)u\), \(\ell(x)=\sum x_n/\sqrt n\), \(H_N=\sum1/n\) | `poleProj`, `harmonicSum`, `harmonicMass` |
+| Dyadic shift | \((Sx)_{2m}=x_m\), odd entries \(0\): the atomic form of \(T_{\log2}\) | `dyadicShift` |
+| Level orbit, pole pairing | \(\sum_jc_jf(\cdot-s_j)\); \(A(f)B(g)+A(g)B(f)\) | `levelOrbit`, `polePairing` |
 | Adjunction energy | \(E_m=\gamma+\log m+\tau(m)\), \(\tau\) the tame different | `ramanujanAdjunctionEnergy` |
 | Complete cell, translation | \(C_a=1_{[\log a,\log(a+1))}\), \(T_tf=f(\cdot-t)\) | `logCell`, `translate` |
 | Coarse / detail coefficients | pair averages and half differences | `coarseCoeff`, `detailCoeff`, `logDetail` |
@@ -195,6 +200,11 @@ signed Chebyshev error along the dyadic orbit.
    - `hasHyperplaneGap_zero_of_mul_self_eq_one`, `isGreatest_liouville_hyperplaneGap`: every sign
      gauge has gap \(0\), and the Liouville twin has no more;
    - `sSup_zeta_sub_sSup_liouville_hyperplaneGap`: the two optimal gaps differ by \(2\log2\);
+   - `eventually_forall_exists_orthogonal_atomicWeilForm_ge`: the plane of the two top eigenvectors
+     of the full prime matrix meets every hyperplane;
+   - `isGreatest_signGauge_hyperplaneGap`: \(\zeta\) has the largest gap among all gauges with
+     \(\omega^2=1\);
+   - `hasHyperplaneGap_zero_weight`: damped weights are excluded, since the zero weight has every gap;
    - `eventually_poleDefect_ge_offPole_sharp`, `eventually_weilQuad_atomicTest_ge_sharp`: the
      selective Poincaré and Gårding inequalities with reserve \(2\log2-\eta\).
 8. **A level is paid by its reserve** (`ALevelIsPaidByItsReserve`):
@@ -258,14 +268,17 @@ signed Chebyshev error along the dyadic orbit.
 | Identifying \(\zeta\) by an invariant gives positivity | \(\zeta\) uniquely maximizes the matched prime finite part: it is the hardest member, not the most positive |
 | The separation on the hyperplane is a sign separation | At spacing scale it is a uniform *margin* (`exists_liouville_weilQuad_add_le_of_harmonic`); narrow regimes are positive for twins too. Sign separation appears at unbounded overlap (every root) |
 | \(\zeta\) is the minimum of its gauge orbit | Only on nonnegative atomic tests; on the pole hyperplane the Liouville twin lies below (`exists_liouville_weilQuad_lt_of_harmonic`) |
-| The pole hyperplane gap can be made large | Every uniform gap of \(\zeta\) is at most \(2\log2\) (`le_two_mul_log_two_of_hasHyperplaneGap`) |
+| The pole hyperplane gap can be made large | Every uniform gap of \(\zeta\) is at most \(2\log2\) (`le_two_mul_log_two_of_hasHyperplaneGap`), and \(2\log2\) is attained (`isGreatest_zeta_hyperplaneGap`). No sign gauge does better (`isGreatest_signGauge_hyperplaneGap`) |
+| A larger gap means a more selective weight | Damping enlarges the gap without selecting anything: the zero weight has every gap (`hasHyperplaneGap_zero_weight`). Gaps compare only among sign gauges |
 | The discrete and continuous pole constraints differ | On atomic tests they coincide up to the nonzero factor \(A(g)\) |
-| The pole is harmless across scales | Pole products of level translates grow like \(2^{\lvert j-k\rvert/2}\); only \(\Lambda\)'s prime main term cancels them (AID Chebyshev identity). On the pole hyperplane they vanish identically, because the hyperplane is renormalization invariant (`harmonicSum_dyadicShift`) |
+| The pole is harmless across scales | Pole couplings of level copies are \(2A(f)B(f)\cosh\) of half the shift (`polePairing_shift`), growing like \(2^{\lvert j-k\rvert/2}\); only \(\Lambda\)'s prime main term cancels them (AID Chebyshev identity). On the pole hyperplane they vanish identically, because the hyperplane is renormalization invariant (`harmonicSum_dyadicShift`) |
+| Separated levels can be paid in absolute value | The Gamma part can (\(4^{-(k-j-1)}\), `abs_weilPair_shift_add_chebyshev_le`); the Chebyshev part cannot. Classically \((\psi(x)-x)/\sqrt x\) has positive mean square in logarithmic measure under RH (Cramér) and is larger otherwise, so absolute Chebyshev costs between levels do not decay with the level distance. Summability must come from signed cancellation |
+| The dyadic orbit of a generator is a one-prime problem | Only for exact atoms. A copy at lag \(m\log2\) of a test of width \(w\) reads every \(n\in2^me^{[-w,w]}\), that is the Chebyshev increment near \(2^m\) (`abs_weilPair_add_primePart_le`). An exact single tower is Toeplitz-blind (ACS) |
 | The gap only helps on the hyperplane | It pays the whole off-pole component of every atomic test (`exists_weilQuad_atomicTest_ge_selective`); only the pole coordinate \(\ell(x)^2/H_N\) is left to the pole term |
 | Translation invariance makes all levels equal | Diagonal blocks are equal (`weilQuadTw_level`); couplings depend on the level difference, and graph norms escape every exponential (SAHT) |
 | Adding a positively paid level cannot hurt | It leaves exactly the Schur-corrected coarse block, which is lower (`effectiveCoarse_le`) |
 | Positivity at a fixed overlap ratio is RH | The receiver needs unbounded polylog overlap; fixed ratios are finite regimes |
-| One-prime orbits behave like continuous orbits | Sampling at \(m\log p\) can alias; single-tower orientation is open (AOG) |
+| One-prime orbits behave like continuous orbits | Sampling at \(m\log p\) can alias; single-tower orientation is open (AOG), and a single prime tower is blind to symmetric Wolff configurations (ACS `exists_symmetric_wolff_toeplitz_blind_configuration`) |
 
 ---
 
@@ -273,20 +286,28 @@ signed Chebyshev error along the dyadic orbit.
 
 1. **What is the minimal twin-selective quantity?** *Answered on atomic families:*
    - Positivity at a root selects exactly \(\Lambda\), so no twin-blind quantity works there.
-   - On the pole hyperplane the prime-form gap is selective. It is positive for \(\zeta\), at most
-     \(2\log2\), and zero for the Liouville twin.
+   - On the pole hyperplane the prime-form gap is selective. It is exactly \(2\log2\) for \(\zeta\),
+     exactly \(0\) for the Liouville twin, and at most \(2\log2\) for every sign gauge.
    - Matched finite flips keep the main term and are separated only by local witnesses (SP, OWU).
    - On complete cells the high-detail floor is twin-blind, so selectivity must act on the low and
      cross-level residual.
 
-   *Open:* a selective quantity on coarse sections and generator orbits.
+   - Between separated hyperplane levels the coupling is the prime comb up to a summable Gamma
+     error, so a selective quantity on generator orbits must be a signed statement about the
+     Chebyshev error near the powers of 2.
+
+   *Open:* that signed statement, and a selective quantity on coarse sections.
 2. **Does the negative index flow monotonically under dyadic renormalization?** *Answered at the
    positivity level:*
    - A positively paid level leaves exactly the Schur-corrected coarse block.
    - The correction only lowers it.
    - Summable coupling costs below the initial margin keep a uniform positive margin at every level.
 
-   *Open:* actual coupling costs of the complete Weil form between levels.
+   - The coupling between separated levels splits exactly: a Gamma part costing
+     \(\pi4^{-(k-j-1)}\), a hyperbolic pole part that vanishes on the hyperplane, and the centered
+     Chebyshev error.
+
+   *Open:* signed control of the Chebyshev part, and the coupling of touching levels.
 3. **How far does the selective gap carry positivity?** *Answered at spacing scale:*
    - the gap is added to the Markov finite part, giving \(W\ge(\varphi_0+c_0G)\|f\|^2\) on the
      hyperplane;
@@ -294,20 +315,31 @@ signed Chebyshev error along the dyadic orbit.
    - the hyperplane, and with it these bounds, is invariant under dyadic renormalization.
 
    *Open:* coarse-scale transfer beyond the spacing scale.
-4. **Why \(2\log2\), and why the prime 2?** *Answered as an upper bound:*
+4. **Why \(2\log2\), and why the prime 2?** *Answered:*
    - \(2\log2=E_2-E_1\), the unique first adjunction excitation.
-   - No uniform hyperplane gap can exceed it.
+   - No uniform hyperplane gap can exceed it, and RAPT's sharp Poincaré constant attains it: the
+     gap of \(\zeta\) is exactly \(2\log2\), that of the Liouville twin exactly \(0\).
    - The prime 2 is the bottleneck of \(\log m+\tau(m)\) and generates the self-similarity.
-
-   *Open:* that \(2\log2\) is attained as a gap. RAPT has the statement, with an unfinished proof.
 5. **Which conservation law bounds critical energy from above?** *Open.* AID's monotone limit and
    index costs are lower laws.
-6. **How does the archimedean place couple to the finite places along the RG flow?** *Partly
-   answered:* every level repeats the generator energies (`weilQuadTw_level`). Gamma pays every
-   detail with \(\log a\) weight (ACS). *Open:* Gamma and pole couplings between levels.
-7. **In which topology does exhaustion preserve inequalities?** *Partly answered:* the form is
-   translation invariant at every level, while graph norms of orbits escape every exponential
-   (SAHT). *Open:* a topology in which the cross-level couplings are summable.
+6. **How does the archimedean place couple to the finite places along the RG flow?** *Answered
+   for separated levels:*
+   - every level repeats the generator energies (`weilQuadTw_level`);
+   - Gamma pays every detail with \(\log a\) weight (ACS);
+   - the pole couples two copies by \(2A(f)B(f)\cosh\) of half the shift, a hyperbolic rank-two form
+     that vanishes on the hyperplane;
+   - after the first Gamma mode cancels one pole product, the Gamma coupling of levels at gap
+     \(2\delta\) is at most \(\pi e^{-4\delta}\) times their masses.
+
+   *Open:* the coupling of touching levels.
+7. **In which topology does exhaustion preserve inequalities?** *Partly answered:*
+   - the form is translation invariant at every level, while graph norms of orbits escape every
+     exponential (SAHT);
+   - on the hyperplane, Gamma couplings are summable in the plain mass norm;
+   - absolute Chebyshev costs are not summable in any norm that ignores sign.
+
+   *Open:* a sign-sensitive topology, for example a Toeplitz norm along the orbit, in which the
+   Chebyshev couplings are summable.
 
 ---
 
@@ -331,15 +363,18 @@ signed Chebyshev error along the dyadic orbit.
 - Schur transparency and block dominance;
 - complete cells, translations, the doubled cell, the RG step and the multiresolution;
 - orbit pairings and the level-Toeplitz law;
-- the dyadic shift of atomic weights and its action on Weil's form, mass and the harmonic coordinate.
-- pole moments of level orbits, the cosh law and the hyperbolic signature of the pole across levels.
+- the dyadic shift of atomic weights and its action on Weil's form, mass and the harmonic coordinate;
+- pole moments of level orbits, the cosh law and the hyperbolic signature of the pole across levels;
+- the exact hyperplane gaps of \(\zeta\) and of sign gauges, and the sharp Poincaré and Gårding
+  inequalities;
+- shifted real tests, boundary-mass decay, and the three-part split of separated couplings
+  (Gamma, pole, Chebyshev).
 
 **To build:**
 
 - coarse-scale selective transfer;
-- coupling costs of the actual Weil form between levels, in multiresolution coordinates;
-- a quantitative hyperplane fraction;
-- generator-orbit Toeplitz symbols.
+- the coupling of touching levels (AID's touching-cell payment in multiresolution coordinates);
+- signed Toeplitz control of the windowed Chebyshev errors along the dyadic orbit.
 
 ---
 
@@ -347,17 +382,24 @@ signed Chebyshev error along the dyadic orbit.
 
 1. **Selective transfer at coarse scale.** A full-form lower bound on the generator orbits that uses
    the hyperplane gap or the Chebyshev main-term cancellation, beyond the spacing scale.
-2. **Cross-level coupling costs.** Bound the coupling between level \(j\) and \(k\) of the complete
-   form, using AID's centered Chebyshev identity for separated supports, as costs \(c_l\) for
-   `rgMargin`. Summable costs below the generator margin would give complete-cell positivity.
-3. **Generator-orbit Toeplitz symbols.** Positivity of \(\theta\mapsto\sum_me^{im\theta}W(f,T_{m\log2}f)\)
-   for the generators. This is a one-prime orbit problem, linked to AOG's single-tower orientation.
-4. **The sharp gap.** Prove that \(2\log2\) is attained as a uniform hyperplane gap. The upper bound
-   is here; the lower bound is RAPT work in progress.
+2. **Signed Chebyshev costs between levels.** The Gamma and pole parts of the coupling between
+   separated levels are settled (pillars 12, 13). The remaining part is the centered Chebyshev
+   integral, whose absolute value does not decay with the level distance. Find a signed bound
+   (cancellation between levels) that makes the costs fed to `rgMargin` summable.
+3. **Generator-orbit Toeplitz symbols.** For a hyperplane generator \(f\), the orbit Gram
+   \(W(T_{j\log2}f,T_{k\log2}f)\) is Toeplitz (pillar 10) and pole-free (pillar 12). Its symbol is the
+   Gamma symbol plus the Chebyshev increments near \(2^m\). Positivity of that symbol is the
+   single-orbit question. An exact prime tower is Toeplitz-blind (ACS), and the two-prime torus is a
+   Bochner equivalent of RH (ArithmeticPositiveDuality), so a positive answer must use the windows.
+4. **Rigidity of the maximal margin.** Among sign gauges the margin lies in \([0,2\log2]\), with
+   \(\zeta\) at the top and the Liouville twin at the bottom (pillar 7). Which gauges attain
+   \(2\log2\)? Is \(\zeta\) the unique completely multiplicative one, and how far do finite flips
+   move the margin?
 5. **A virial identity for critical energy.** An upper side for AID's canonical energy.
 6. **Selective input on the low and cross-level residual.** The high-detail floor is twin-blind
-   (pillar 8), so the complete-source sign is decided entirely by the low details \(a<A\), the
-   generator cell and the couplings between levels. Find the selective inequality there.
+   (pillar 9), so the complete-source sign is decided by the low details \(a<A\), the generator
+   cell and the couplings between levels. On the hyperplane the couplings are the Chebyshev error
+   (pillar 13). Find the selective inequality there.
 
 ---
 

@@ -4,6 +4,7 @@ import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleHyperp
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheSelectiveGardingInequality
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheConductorTwoIsTheFirstExcitation
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheHyperplaneGapIsTheSelectiveMargin
+import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheSelectiveMarginIsTwoLogTwo
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheHaarFloorIsTwinBlind
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ALevelIsPaidByItsReserve
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheCompleteSourceIsADyadicMultiresolution
@@ -17,10 +18,10 @@ import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.SeparatedLeve
 Umbrella for selective positivity of the Weil form on complete, self-similar arithmetic sources:
 selection of `Λ` by atomic positivity at every root; the pole hyperplane as the harmonic hyperplane;
 the full-form separation of `ζ` from its Liouville twin there; the selective Gårding inequality; the
-conductor-two excitation and the two-sided selective margin; the twin-blindness of the high-detail
-Haar floor; the renormalization calculus of a refinement level; the dyadic multiresolution of the
-complete source with its level-Toeplitz law; the renormalization invariance of the pole
-hyperplane; the hyperbolic pole coupling between levels; and the Chebyshev coupling of separated
-levels with its geometrically decaying Gamma cost. See
+conductor-two excitation and the selective margin, exactly `2 log 2`; the twin-blindness of the
+high-detail Haar floor; the renormalization calculus of a refinement level; the dyadic
+multiresolution of the complete source with its level-Toeplitz law; the renormalization invariance
+of the pole hyperplane; the hyperbolic pole coupling between levels; and the Chebyshev coupling of
+separated levels with its geometrically decaying Gamma cost. See
 `SelectiveMultiscaleArithmeticPositivity/README.md`.
 -/

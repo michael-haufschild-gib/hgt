@@ -11,7 +11,8 @@ builds them explicitly, with derivative bounds, and brings the window to `(log l
   `(−∞, 0]`, equal to `exp(−(1/x)^r)` on `(0, ∞)`, where
   `E_r^{(n)}(x) = Q_n(1/x) exp(−(1/x)^r)` with `Q_{n+1} = r X^{r+1} Q_n − X² Q_n′`
   (`iteratedDeriv_glueR_eqOn`).
-* **The weights `(j!)^{1/r}`** bound `t^j e^{−t^r}` because `(t^j e^{−t^r})^r ≤ (t^r)^j e^{−t^r} ≤ j!`
+* **The weights `(j!)^{1/r}`** bound `t^j e^{−t^r}` because
+  `(t^j e^{−t^r})^r ≤ (t^r)^j e^{−t^r} ≤ j!`
   (`pow_mul_exp_neg_pow_le`). With `W_D(Q) = Σ_{j<D} |c_j| (j!)^{1/r}`, the recursion gains at most
   `(r+1)(D+r)^{1+1/r}` per step (`dcNorm_step_le`), since `(i+m)! ≤ (i+m)^m i!`. Hence
   `|E_r^{(n)}| ≤ ((r+1)^{2+1/r})^n (n!)^{1+1/r}` (`abs_iteratedDeriv_glueR_le`): Gevrey class
@@ -214,7 +215,8 @@ theorem pow_succ_rpow_inv {x : ℝ} (hx : 0 ≤ x) (hr : 1 ≤ r) :
   push_cast
   field_simp
 
-/-- The coefficients of `r X^{r+1} Q − X² Q′`: `|q_j| ≤ r|c_{j−r−1}| [j ≥ r+1] + (j−1)|c_{j−1}| [j ≥ 2]`. -/
+/-- The coefficients of `r X^{r+1} Q − X² Q′`:
+`|q_j| ≤ r|c_{j−r−1}| [j ≥ r+1] + (j−1)|c_{j−1}| [j ≥ 2]`. -/
 theorem abs_coeff_dcStep_le (p : ℝ[X]) (j : ℕ) :
     |(C (r : ℝ) * X ^ (r + 1) * p - X ^ 2 * derivative p).coeff j| ≤
       (if r + 1 ≤ j then (r : ℝ) * |p.coeff (j - (r + 1))| else 0) +
@@ -331,7 +333,8 @@ theorem dcNorm_dcPoly_le (hr : 1 ≤ r) (n : ℕ) :
     have hD : ((n * (r + 1) + 1 : ℕ) : ℝ) + r = ((n : ℝ) + 1) * ((r : ℝ) + 1) := by
       push_cast; ring
     rw [hD, Real.mul_rpow (by positivity) hr1.le]
-    have hK : ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹) = ((r : ℝ) + 1) * ((r : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹) := by
+    have hK : ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹) =
+        ((r : ℝ) + 1) * ((r : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹) := by
       rw [show (2 : ℝ) + (r : ℝ)⁻¹ = 1 + (1 + (r : ℝ)⁻¹) by ring, Real.rpow_add hr1, Real.rpow_one]
     have hfac : ((n + 1).factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) =
         ((n : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹) * (n.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) := by
@@ -387,7 +390,8 @@ theorem dcBump_vanishesOff (hr : Odd r) : VanishesOff (dcBump r) := by
 
 theorem integral_dcBump_pos (hr : Odd r) : 0 < ∫ y, dcBump r y := by
   have hc : HasCompactSupport (dcBump r) := hasCompactSupport_of_vanishes (dcBump_vanishesOff hr)
-  have hint : Integrable (dcBump r) := (contDiff_dcBump r).continuous.integrable_of_hasCompactSupport hc
+  have hint : Integrable (dcBump r) :=
+    (contDiff_dcBump r).continuous.integrable_of_hasCompactSupport hc
   have hnn : ∀ x, 0 ≤ dcBump r x := fun x => mul_nonneg (glueR_nonneg _) (glueR_nonneg _)
   rw [integral_pos_iff_support_of_nonneg hnn hint]
   have hsub : Ioo (-1 : ℝ) 1 ⊆ Function.support (dcBump r) := fun x hx => by
@@ -407,7 +411,8 @@ theorem integral_dcProfile (hr : Odd r) : ∫ x, dcProfile r x = 1 := by
   unfold dcProfile
   rw [integral_const_mul, inv_mul_cancel₀ (integral_dcBump_pos hr).ne']
 
-/-- **The bump is Gevrey of class `1 + 1/r`**: `|(E_r(1+·)E_r(1−·))^{(q)}| ≤ (2K)^q (q!)^{1+1/r}`. -/
+/-- **The bump is Gevrey of class `1 + 1/r`**:
+`|(E_r(1+·)E_r(1−·))^{(q)}| ≤ (2K)^q (q!)^{1+1/r}`. -/
 theorem abs_iteratedDeriv_dcBump_le (hr : Odd r) (q : ℕ) (x : ℝ) :
     |iteratedDeriv q (dcBump r) x| ≤
       (2 * ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)) ^ q * (q.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) := by
