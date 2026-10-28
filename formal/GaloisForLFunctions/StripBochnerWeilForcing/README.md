@@ -1,127 +1,115 @@
 # Strip Bochner–Weil Forcing (SBWF)
 
-**One structure, three shadows, six unconditional forcing laws.** Single-channel quadratic
-positivity on the scaling surface is exhausted by source blindness
-(`isGreatest_meyerSharpPositiveIdeal`), while single-zero harmonic certificates in the critical
-strip hit the universal purchase cap `B < 2` (`MultiFrequencyCap`), certifying **zero** interior
-width for every pole order `κ ≥ 2`.
+Namespace `GaloisForLFunctions.StripBochnerWeilForcing`; umbrella `StripBochnerWeilForcing.lean`.
 
-`StripBochnerWeilForcing` introduces the **coupled strip Bochner–Weil form**, evaluating nonnegative
-scale-filtered logarithmic weights simultaneously across multiple vertical height channels, and
-derives the unconditional pole-sensitive forcing laws that govern completed Euler products and
-multiplicative strip gauges.
+**Question.** Single-channel quadratic positivity is exhausted by source blindness (ACS maximal blind ideal), and
+single-zero harmonic certificates in the strip hit the purchase cap $B<2$ (MPG), certifying zero interior width for
+every pole order $\kappa\ge2$. What does height positivity force when it is **coupled across many height channels**
+and combined with a **completed functional equation**? SBWF answers for the class of completed positive systems:
+exact pole-sensitive forcing laws, their sharpness, and the identification of the pole-order-one class with $\zeta$.
 
-Namespace `GaloisForLFunctions.StripBochnerWeilForcing`; umbrella
-`StripBochnerWeilForcing.lean`. Every theorem is unconditional.
+**Status.** Complete for what height positivity + completion can do: zero-free collars of width $\asymp1/(d\log T)$ with
+at most $\lfloor\kappa/2\rfloor$ exceptions, exact; at $\kappa=1$ the class is $\mathbb R^\times\zeta$, so interior forcing there is RH
+itself. The interior beyond the collar is not reached by this structure.
 
 ---
 
-## 1. The unified strip object and its shadows (`StripBochnerShadows.lean`)
+## 1. Place in the research
 
-For nonnegative weights `w : ι → ℝ`, frequencies `lam : ι → ℝ`, nonnegative scale aperture
-`K : ι → ℝ` (`∑ᵢ wᵢ Kᵢ < ∞`), and a finite tuple of vertical height channels `x, c : Fin n → ℝ`,
-the **coupled strip Bochner–Weil form** is
+SBWF is the strip side of height positivity; MPG is its boundary side; ArithmeticPositiveDuality reads both as
+capacity laws (inserted charge paid by the pole; intrinsic charge not).
 
-`stripBochnerForm w lam K x c = ∑ⱼ ∑ₖ cⱼ cₖ ∑ᵢ wᵢ Kᵢ cos(λᵢ (xⱼ − xₖ))`.
-
-1. **Multi-channel strip positivity (`stripBochnerForm_nonneg`, `hasSum_stripBochnerForm`):**
-   Every nonnegative aperture `K ≥ 0` induces an even positive-definite height kernel
-   `stripKernel w lam K`, decomposing frequencywise into sums of squares across channels.
-2. **Multiplicative boundary shadow (`isEvenPosDef_of_stripKernel_tendsto`,
-   `stripKernel_recovers_boundaryDivisor`):**
-   Along `δ ↓ 0⁺`, normalized strip kernels `δ · stripKernel w lam (K δ)` pass directly to positive
-   definiteness of the boundary divisor (`IsEvenPosDef D`), recovering
-   `MultiplicativePositivityGeometry.IsBoundaryDivisor.isEvenPosDef`.
-3. **Quadratic scaling-surface Hodge shadow (`polarSurfaceOfPoleBudget`,
-   `defect_polarSurfaceOfPoleBudget`, `hodgeIndex_polarSurfaceOfPoleBudget_iff`,
-   `defect_mono_poleBudget`):**
-   At the single origin channel (`n = 1`, `x = 0`), adjoining two isotropic polar fibres `(H, V)` of
-   pole budget `κ` to a symmetric local strip pairing `L` on `E` produces a `PolarSurface` on
-   `E × (ℝ × ℝ)` whose Castelnuovo–Severi defect equals `κ (ℓ_H(x) ℓ_V(y) + ℓ_V(x) ℓ_H(y)) − L(x, y)`.
-   Hodge index on this surface is equivalent to `L(x, x) ≤ 2 κ ℓ_H(x) ℓ_V(x)`.
-
----
-
-## 2. Collective multi-zero interior pole–repulsion (`CollectivePoleRepulsion.lean`)
-
-A **completed positive system** (`CompletedPositiveSystem κ d F Λ`) consists of `F` holomorphic and
-nonvanishing on `{Re s > 1}` with even positive-definite vertical log-derivative sections
-`u ↦ Re(−F'/F)(σ + iu)` (`σ > 1`), together with an order-one entire completion
-`Λ(s) = (s(s − 1))^κ Γ_ℝ(s)^d F(s)` (`d ≥ 1`) satisfying `Λ(1 − s) = Λ(s)` and
-`Λ(s̄) = conj(Λ(s))`. Finite-order completions with `F` bounded on `{Re s ≥ 2}` upgrade automatically
-to `OrderOneEnvelope Λ` (`CompletedPositiveSystem.ofFiniteOrder`).
-
-| Theorem | Mathematical statement |
+| Programme | Interface |
 |---|---|
-| `sum_orbit_resolvent_le_re_logDeriv` | For `r` upper-half-plane zeros `ρ_1, …, ρ_r` with pairwise distinct positive ordinates and `m_ℓ ≤ ord_{ρ_ℓ}(Λ)`, dihedral `{1 − ·, conj}` orbit disjointness in Hadamard's zero-pair series yields `∑_ℓ m_ℓ (Re 1/(s − ρ_ℓ) + Re 1/(s − ρ̄_ℓ)) ≤ Re(Λ'/Λ)(s)` on `Re s > 1`. |
-| `coupled_strip_pole_zero_forcing` | Master multi-channel inequality coupling `x, c : Fin n → ℝ` (`c_j ≥ 0`) at `s_{j,k} = (1 + δ) + i(x_j − x_k)` against pole budget `κ` and archimedean degree `d`. |
-| `re_logDeriv_Gammaℝ_le_all_heights` | Uniform archimedean real-part bound `Re(Γ_ℝ'/Γ_ℝ)(σ + it) ≤ log(3 + |t|)/2 + 1/4` for all `σ ∈ [1, 2]` and all `t ∈ ℝ`. |
-| `collective_half_pole_interior_forcing` | **Sharp half-pole interior forcing:** whenever `κ < 2 * ∑_ℓ m_ℓ`, coupling over slow-doubling Følner Finsets in the height subgroup generated by `(Im ρ_1, …, Im ρ_r)` forces `∃ w > 0, ∃ ℓ, Re ρ_ℓ ≤ 1 − w` with zero independence or separation hypotheses on the ordinates. |
-| `exists_completedPositiveSystem_boundary_zeros_at_half_pole` | **Exact sharpness of `2M > κ`:** for every `r ∈ ℕ` and any `γ : Fin r → ℝ`, `r`-fold Laplace-positive boundary twisting of `ζ` (`completedPositiveSystem_riemannZeta`, `CompletedPositiveSystem.twistBoundaryZero`) yields a `CompletedPositiveSystem (2 * r + 1) 1 F Λ` with `Λ(1 + i γ_ℓ) = 0` for all `ℓ` (`M ≥ r = ⌊κ/2⌋` boundary zeros at zero interior depth). |
-| `collective_star_collar_forcing` | `(r + 1)`-channel star `(0, Im ρ_1, …, Im ρ_r)` with weights `(√r, 1, …, 1)` forces explicit `1/(d log(3 + T))` collar depth whenever `√r · κ < ∑_ℓ m_ℓ`. |
-| `card_separated_collar_zeros_le_sq_poleOrder` | At most `κ²` `Δ`-separated zeros in `[Δ, T]` can enter the explicit collar `Re z > 1 − collarWidth κ d Δ T` (`0` for `κ = 0`, at most `1` for `κ = 1`). |
+| MultiplicativePositivityGeometry | Boundary divisor, Fejér barrier, boundary capacity; SBWF recovers boundary PD as the $\delta\downarrow0$ shadow |
+| ArithmeticPositiveDuality | Capacity theory; uses SBWF's completed capacity, gauge collapse, refund rigidity |
+| ArithmeticCastelnuovoSeveri | Maximal blind ideal; scaling-surface Hodge index (the quadratic shadow) |
+| `RHTower` | `xi`, pole-order-two strays, refunded quartets, Weil index conservation, divisor realization |
 
 ---
 
-## 3. Infinite gauge collapse & simple-pole refund rigidity (`InfiniteGaugePoleRigidity.lean`)
+## 2. Objects and language
 
-Finite Euler-product perturbations satisfy `ord₁ F − 1` divisor budgets (`StripDivisorRealization`),
-and at double pole (`κ = 2`) critical-zero refunds already buy complex off-line quartets
-(`RefundedComplexStray`). `InfiniteGaugePoleRigidity` resolves both infinite multiplicative gauges
-and simple-pole (`κ = 1`) critical-zero refunds unconditionally:
-
-| Theorem | Mathematical statement |
-|---|---|
-| `exists_monic_poly_of_completed_gauge` | Any entire function `E` of finite order with `E(1 − s) = ε E(s)` (`‖ε‖ = 1`) and `E(s) = (s(s − 1))^κ G(s)` on `Re s > σ₀`, where `G` is bounded on `Re s ≥ σ₀` and `G(σ) → 1` as `σ → +∞`, collapses to `ε = 1` and `E(s) = P.eval s` for a **monic polynomial `P` of exact degree `2 κ`** (specialized to `exp(−∫_0^∞ e^{−su} f(u) du)` in `exists_monic_poly_of_laplace_exp_gauge`). |
-| `completed_gauge_zero_and_quartet_budget` | Every collapsed gauge has total global zero multiplicity `≤ 2 κ`, and under `E(s̄) = conj(E(s))` at most `⌊κ / 2⌋` upper-half-plane off-critical quartets (`2 * ∑_i m_i ≤ κ`) across the entire plane. |
-| `simple_pole_nonneg_laplace_refund_rigidity` | **Unconditional `κ = 1` refund rigidity:** if `ν` is ANY nonnegative Borel measure on `ℝ` converging at some `σ₁`, and `E` is ANY non-identically-zero entire function with `E(1 − s) = ε E(s)` (`ε ≠ 0`, allowing arbitrary critical-zero deletions/refunds from `ξ`) such that `−(E'/E)(σ) + (ξ'/ξ)(σ) = ∫ e^{−σu} dν(u)` for `σ > σ₁`, then `ν` has infinite abscissa `−∞` via Landau's real-axis continuation + linear-ODE nonvanishing, `ν|_{(0, ∞)} = 0` via `σ ↦ 1 − σ` reflection at `σ = 1/4, 3/4`, and `E = c₀ · ξ` globally. |
-
----
-
-## 4. Reference-free strip reflection & the `κ = 1` phase transition (`StripReflectionRigidity.lean`)
-
-Coupling vertical positivity directly with `Λ(1 − s) = Λ(s)` inside `0 < Re s < 1` **without**
-subtracting a reference `ξ'/ξ` cancels both the `κ`-polar rational term and `logDeriv Λ`, leaving
-pure archimedean reflection and exposing an exact pole-order phase transition between `κ = 1` and
-`κ ≥ 2`:
-
-| Theorem | Mathematical statement |
-|---|---|
-| `completedPositiveSystem_strip_reflection` / `completedPositiveSystem_strip_reflection_digamma` | For `extFactor κ d Λ s = Λ(s) / ((s(s − 1))^κ Γ_ℝ(s)^d)` on `0 < Re s < 1` (`Λ(s) ≠ 0`), `(−logDeriv extFactor(s)) + (−logDeriv extFactor(1 − s)) = d(logDeriv Γ_ℝ(s) + logDeriv Γ_ℝ(1 − s)) = (d/2)(ψ(s/2) + ψ((1 − s)/2) − 2 log π)`. |
-| `exists_completedPositiveSystem_two_real_offCritical` | For every `β ∈ (0, 1) \ {1/2}`, twisting `ζ` by `(s − β)(s − (1 − β))/(s(s − 1))` produces a `CompletedPositiveSystem 2 1` vanishing at `β` and `1 − β`. |
-| `exists_completedPositiveSystem_two_complex_offCritical` | For every `a ∈ (0, 1/4]`, cancelling Hardy's first critical zero pair `1/2 ± i γ₀` of `ξ` (`γ₀ > 0`) via `dslope` and inserting `refundQuartic a γ₀` produces a `CompletedPositiveSystem 2 1` with a nonreal off-critical zero `1/2 + a + i γ₀`. Thus `κ = 1` is the **unique** pole order where critical-line forcing is not false. |
-| `no_entire_laplace_completed_system` | Archimedean reflection negativity `Re(logDeriv Γ_ℝ(1/2)) < 0` (`re_logDeriv_Gammaℝ_half_neg`) + Landau continuation along `(0, ∞)` rules out every nonzero entire `Λ(1 − s) = ε Λ(s)` (`ε ≠ 0`) with `−logDeriv Λ + d logDeriv Γ_ℝ = laplaceReal ν` on `(σ₁, ∞)` (`d ≥ 1`), with no finite-order assumption on `Λ`. |
-| `real_zero_archimedean_budget` | Positivity at `s = 2` against `Re(logDeriv Γ_ℝ(2)) = (−γ − log π)/2 < −5/6` (`re_logDeriv_Gammaℝ_two_lt`) forces `4 ord_{1/2}(Λ) + 8 ∑_{x ∈ X} ord_x(Λ) + 5 d < 9 κ` for every finite `X ⊂ (1/2, 1]`. |
-| `five_mul_degree_lt_nine_mul_poleOrder` / `not_completedPositiveSystem_zero` / `degree_eq_one_of_completedPositiveSystem_one` | Every `CompletedPositiveSystem κ d F Λ` satisfies `5 d < 9 κ`, forcing `κ ≥ 1` and `κ = 1 → d = 1`. |
-| `ne_zero_ofReal_of_completedPositiveSystem_one` | In every simple-pole `CompletedPositiveSystem 1 d F Λ`, `Λ(x) ≠ 0` for all `x ∈ ℝ` (ruling out both Siegel-type zeros on `(0, 1) \ {1/2}` and central vanishing at `s = 1/2`). |
+- **Coupled strip Bochner–Weil form** `stripBochnerForm w lam K x c` $=\sum_{j,k}c_jc_k\sum_iw_iK_i\cos(\lambda_i(x_j-x_k))$: nonnegative
+  weights, frequencies, scale aperture $K\ge0$, height channels $x$; induces the even PD kernel `stripKernel`.
+- **Shadows.** Boundary: $\delta\cdot$`stripKernel` → boundary divisor PD (MPG). Quadratic: one channel + two isotropic polar
+  fibres of budget $\kappa$ give a `PolarSurface` whose Hodge index is $L(x,x)\le2\kappa\ell_H(x)\ell_V(x)$
+  (`polarSurfaceOfPoleBudget`).
+- **Completed positive system** `CompletedPositiveSystem κ d F Λ`: $F$ holomorphic nonvanishing on $\Re s>1$ with PD vertical
+  sections of $\Re(-F'/F)$; order-one entire $\Lambda=(s(s-1))^\kappa\Gamma_{\mathbb R}^dF$ with $\Lambda(1-s)=\Lambda(s)$, real on the real axis.
+  Finite-order completions upgrade automatically (`CompletedPositiveSystem.ofFiniteOrder`).
+- **Collars**: `collarWidth`, `sharpCollarWidth` $\ge$ `sharpCollarConst κ`$/(d\log(3+T))$.
+- **Gauge**: entire $E=(s(s-1))^\kappa G$ with $E(1-s)=\varepsilon E(s)$, $G$ bounded, $G(\sigma)\to1$.
+- **Box wavepackets**: iterated discrete box convolutions (`boxConv`, `iterBoxConv`) replacing star channels.
 
 ---
 
-## 5. Iterated box wavepackets & sharp `⌊κ / 2⌋` collar sparsity (`SharpHalfPoleCollar.lean`)
+## 3. Mechanisms
 
-Replacing the `(r + 1)`-channel star by polynomial-scale iterated discrete box convolutions
-(`boxConv`, `iterBoxConv`) of step length `K = 16 M` smoothed over a unit-step window of length
-`N = 512 M² L` eliminates both the `√r` Cauchy–Schwarz star loss (`κ² → ⌊κ/2⌋`) and all
-`Δ`-separation / low-ordinate hypotheses:
-
-| Theorem | Mathematical statement |
-|---|---|
-| `sum_right_half_orbit_resolvent_le_re_logDeriv` | Strict fundamental-domain disjointness of `{ρ_ℓ, ρ̄_ℓ, 1 − ρ_ℓ, 1 − ρ̄_ℓ}` on `{Re z > 1/2, Im z > 0}` gives `∑_ℓ m_ℓ (Re 1/(s − ρ_ℓ) + Re 1/(s − ρ̄_ℓ)) ≤ Re(Λ'/Λ)(s)` (`Re s > 1`) for **any** injective tuple `ρ`, with zero distinct-ordinate or `Δ`-separation assumptions. |
-| `collective_half_pole_collar_forcing` | Whenever `κ < 2 * ∑_ℓ m_ℓ` up to height `T`, smoothed additive-cube wavepackets force `∃ ℓ, 1 ≤ m_ℓ ∧ Re ρ_ℓ ≤ 1 − collarDepth κ d r (∑_ℓ m_ℓ) T`. |
-| `sharpCollarWidth_ge` | At `M₀ = κ / 2 + 1`, `sharpCollarWidth κ d T := collarDepth κ d M₀ M₀ T` is independent of the zero set `Z` and satisfies `sharpCollarConst κ / (d log(3 + max T 0)) ≤ sharpCollarWidth κ d T` (`sharpCollarConst κ > 0`). |
-| `two_mul_sum_order_collar_zeros_le_poleOrder` / `sum_order_collar_zeros_le_half_poleOrder` / `card_collar_zeros_le_half_poleOrder` | **Exact `⌊κ / 2⌋` collar sparsity:** for **every** finite set `Z ⊂ {0 < Im z ≤ T, Re z > 1 − sharpCollarWidth κ d T}`, `2 * ∑_{z ∈ Z} ord_z(Λ) ≤ κ` (`∑ ord ≤ κ / 2`, `Z.card ≤ κ / 2`), matching the boundary-zero capacity `exists_completedPositiveSystem_boundary_zeros_at_half_pole`. |
-| `ne_zero_of_mem_sharpCollar_one` | **Exception-free `κ = 1` zero-free collar:** combining `card_collar_zeros_le_half_poleOrder` at `κ = 1` with `ne_zero_ofReal_of_completedPositiveSystem_one` proves `Λ(z) ≠ 0` across all `|Im z| ≤ T`, `Re z > 1 − sharpCollarWidth 1 d T` with no Siegel-zero exception and no low-ordinate gap. |
+1. **Multi-channel positivity**: frequencywise sums of squares across channels.
+2. **Hadamard zero-pair resolvent**: dihedral $\{1-\cdot,\overline{\cdot}\}$ orbit disjointness gives
+   $\sum_\ell m_\ell(\Re\frac1{s-\rho_\ell}+\Re\frac1{s-\bar\rho_\ell})\le\Re(\Lambda'/\Lambda)(s)$ on $\Re s>1$, for any injective tuple of right-half zeros.
+3. **Følner / box coupling** over the height subgroup generated by the ordinates: no independence or separation
+   hypotheses; iterated box wavepackets remove the $\sqrt r$ star loss.
+4. **Uniform archimedean bound** $\Re(\Gamma_{\mathbb R}'/\Gamma_{\mathbb R})(\sigma+it)\le\frac12\log(3+|t|)+\frac14$ on $[1,2]$.
+5. **Gauge collapse**: a completed gauge without archimedean factor is a monic polynomial of degree $2\kappa$.
+6. **Landau continuation + reflection**: a positive Laplace correction continues along the real axis; evaluating
+   under $s\mapsto1-s$ kills it.
+7. **Reference-free strip reflection**: without subtracting $\xi'/\xi$, the polar term and $\log\Lambda$ cancel, leaving pure
+   archimedean reflection $\frac d2(\psi(s/2)+\psi((1-s)/2)-2\log\pi)$; $\Re\Gamma_{\mathbb R}'/\Gamma_{\mathbb R}(\tfrac12)<0$ and at 2 $<-5/6$.
+8. **Complete monotonicity**: second differences of PD functions are PD, so PD sections of $\Re(-F'/F)$ with $\le C\sqrt x$
+   growth make $F$ completely monotone; Bernstein–Widder gives a positive Dirichlet measure; then positive-measure
+   theta rigidity (APD) identifies $\zeta$.
 
 ---
 
-## 6. The pole-budget-one class is `ℝ^× · ζ` (`PositiveDefiniteSectionsAreCompletelyMonotone.lean`, `TheSimplePoleClassIsZeta.lean`)
+## 4. Pillar theorems
 
-Positive-definite vertical sections make the uncompleted factor completely monotone; with the
-completed functional equation, positive-measure rigidity then identifies the whole `κ = 1` class.
+1. **Half-pole interior forcing**: $\kappa<2\sum m_\ell$ forces some $\Re\rho_\ell\le1-w$, $w>0$ (`collective_half_pole_interior_forcing`).
+2. **Sharpness**: twisting $\zeta$ at $r$ boundary heights gives a system with $\kappa=2r+1$ and $r$ boundary zeros
+   (`exists_completedPositiveSystem_boundary_zeros_at_half_pole`).
+3. **Sharp collar sparsity**: in the collar $\Re z>1-$`sharpCollarWidth`, $2\sum\operatorname{ord}\le\kappa$, no separation assumed
+   (`two_mul_sum_order_collar_zeros_le_poleOrder`); $\kappa=1$: exception-free zero-free collar, no Siegel zero
+   (`ne_zero_of_mem_sharpCollar_one`).
+4. **Gauge collapse** (`exists_monic_poly_of_completed_gauge`, `completed_gauge_zero_and_quartet_budget`).
+5. **Pole-order-one refund rigidity**: $-E'/E+\xi'/\xi$ = Laplace of $\nu\ge0$ ⇒ $E=c\xi$ (`simple_pole_nonneg_laplace_refund_rigidity`).
+6. **Pole-order phase transition**: at $\kappa=2$ systems with real or complex (refunded) off-critical zeros exist
+   (`exists_completedPositiveSystem_two_real_offCritical`, `exists_completedPositiveSystem_two_complex_offCritical`); every system has
+   $5d<9\kappa$, so $\kappa\ge1$ and $\kappa=1\Rightarrow d=1$ (`five_mul_degree_lt_nine_mul_poleOrder`); simple-pole systems have no real zeros.
+7. **The pole-order-one class is $\mathbb R^\times\zeta$** (`completedPositiveSystem_one_iff`, `completedPositiveSystem_one_Λ_eq`), and it has critical
+   zeros at arbitrary height (`completedPositiveSystem_one_critical_zeros`).
 
-| Theorem | Mathematical statement |
+---
+
+## 5. Traps
+
+| Trap | Truth |
 |---|---|
-| `isPosDef_re_iterate_deriv_two_mul` | If `u ↦ Re H(σ + iu)` is positive definite for every `σ` in an interval (`H` holomorphic), so is `u ↦ Re H^{(2k)}(σ + iu)` (second differences of positive-definite functions are positive definite). |
-| `exists_dirichletMeasure_of_posDef_sections` | `F` holomorphic, nonvanishing and real-positive on `(a, ∞)`, with positive-definite sections of `Re(−F'/F)` and `Re(−F'/F)(x) ≤ C√x`, is `∫ u^{−s} dμ(u)` on `Re s > b` (any `b > a`) for a positive measure `μ` on `[1, ∞)`: even derivatives of `−F'/F` are `≥ 0`, the growth bound forces odd ones `≤ 0`, Leibniz makes `F` completely monotone, Bernstein–Widder gives `μ`. |
-| `completedPositiveSystem_one_one_eq_zeta` / `completedPositiveSystem_one_iff` | Every `CompletedPositiveSystem 1 d F Λ` has `d = 1` and `F = Kζ` on `Re s > 1` with `K ∈ ℝ^×`; conversely every `Kζ` is one (`completedPositiveSystem_real_mul_zeta`). |
-| `completedPositiveSystem_one_Λ_eq` / `completedPositiveSystem_one_critical_zeros` | Its completion is `K · 2ξ` on `ℂ`, so it vanishes at critical points `1/2 + it` of arbitrarily large height: no pole-budget-one completed positive system is zero-free. |
+| Coupling heights buys interior width | Only the $1/\log T$ collar with $\lfloor\kappa/2\rfloor$ exceptions; sharp |
+| More channels remove the exceptions | The bound $2\sum m\le\kappa$ is attained by boundary twists |
+| Pole order bounds intrinsic zeros | It counts inserted charge (APD); $\kappa=1$ class is $\zeta$ itself |
+| A completed gauge can hide an infinite budget | Without archimedean factor it is a polynomial of degree $2\kappa$ |
+| $\kappa=1$ forcing is a new route | The class is $\mathbb R^\times\zeta$: interior forcing there = RH |
+| A refunded complex quartet needs pole order 3 | Pole order 2 suffices |
+| Reflection-free strip identities carry arithmetic | They leave pure archimedean reflection |
+
+---
+
+## 6. Open problems
+
+1. **Interior beyond the collar.** An additional invariant (not height positivity, not pole order) forcing zeros of a
+   completed positive system deeper than $1/\log T$ — necessarily non-height-positive by the sharpness theorems.
+2. **Equality case**: whether a system with even $\kappa$ carries boundary zeros of total multiplicity $\kappa/2$.
+3. **Degree $d>1$**: classify completed positive systems of pole order $\kappa$ and degree $d$ (beyond $5d<9\kappa$);
+   which are products of standard $L$-functions.
+4. **Collar constants**: optimal `sharpCollarConst`; compare with dlVP and VK as range-limited growth inputs (MPG).
+
+## 7. Tools to build
+
+An interior invariant for completed systems compatible with the functional equation; a classification of
+completed positive systems at small $(\kappa,d)$.
+
+## 8. Contribution standard
+
+Unconditional; states pole order and degree; reports sharpness by an explicit system (twisted $\zeta$, refunded strays);
+separates inserted from intrinsic charge.

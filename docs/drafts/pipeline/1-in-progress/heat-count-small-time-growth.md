@@ -85,6 +85,53 @@ So depth `δ` at ordinate `x` survives until `t ≈ δ / log x`, and is absorbed
   - `→ 79/160`: corpus density, with (S);
   - `→ 15/104`: Guth–Maynard, with (S).
 
+## Necessity: what is provable
+Zero dynamics `ż_k = 2 Σ_{j≠k} 1/(z_k − z_j)` give, for the window energy `E = Σ_k φ(x_k) y_k²`,
+`dE/ds = −4 Σ_{pairs} φ̄ (y_k − y_j)²/|z_k − z_j|² + (φ′-flux)`.
+
+Each pair term is `≤ 1`, and a zero has at most `C log x` partners `j` with
+`min(1, Δy²/Δx²)` not small.
+
+**(N₂) Polylog rate [paper; needs the inputs below].**
+- With local counts `#zeros of H_s in a window of length L ≤ C L log x`, uniformly in `s ≤ 1/8`, we get `dE/ds ≥ −C L log² x`.
+- A depth-`δ` zero then keeps a nonreal zero in its window until `t = c δ²/(L log² x)`.
+- Hence `N_off(δ, [X, 2X]) ≤ C L log X · N(c δ²/(L log² X))`.
+- **Rung 2 ⇒ polylog density:** `N(t) ≤ C t^{−A}` ⇒ `N_off(δ, X) ≪_δ (log X)^{2A+1}`.
+- Rung 1 gives nothing at this rate: `e^{o(1/t)}` with `1/t ≍ log² X` is superpolynomial.
+
+**(N₁) Mean-field rate, needed for rung 1 [OPEN].** Rung 1 ⇒ sub-power density needs
+survival `≥ c(δ)/log X`. Every energy or threshold functional tried fails at the same point,
+**threshold crowding**:
+- Pair drains are bounded per pair, so the drain is `≲ (log x/θ) · #{zeros above θ}`.
+- The budget is the excess above `2θ`.
+- Zeros just above `θ` count fully in the drain and carry no budget.
+
+Variants tried:
+- convex ramps;
+- threshold first moments `M_θ` with the exact cross-line identity `dM_θ/ds = −2 Σ_{y_k>θ>y_j} (y_k − y_j)/|z_kj|²`;
+- `θ`-averaging;
+- recursion over crowd levels.
+
+All lose at least a factor `(log x)^{1/m}` or `e^{c√(log log x)}`. That factor makes `e^{ε/τ}` superpolynomial.
+
+Physically the crowd is harmless: zeros at depth `≥ θ` survive `≍ θ²/log x` on their own. The missing ingredient is an argument that charges crowd drains to the crowd.
+
+**Infrastructure gaps (corpus and Mathlib):**
+- zero ODE for `H_s` or for `polyHeat s (xiRealApprox n)`, with collisions;
+- local zero counts for `H_s` uniform in `s`;
+- flux control (horizontal velocities, with symmetrised near-field terms);
+- two-sided Hurwitz convergence of compactly supported zero sums (the corpus has one side).
+
+A static contour version (Hermite/Gram negative index from `∮ G H′/H`) fails: real zeros' Gram mass swamps the pair's negative eigenvalue.
+
+## Lowering the exponent: routes
+The pointwise threshold is `c > sup_w θ_w`, where `θ_w` solves `(c − w)² = 4c μ(1/2 + w)`. Its floor is
+`4 μ(1/2) = 2/3` with Weyl's exponent.
+- **Derivative tests.** The `k`-th derivative test points are `(1 − k/(2^k−2), 1/(2^k−2))`, i.e. `(1/2, 1/6), (5/7, 1/14), (5/6, 1/30), …`. Their convex hull binds on the chord `(1/2, 1/6)–(5/7, 1/14)` of slope `4/9`, which gives `27/40` (current Lean). It is the limit of derivative tests.
+- **`2/3` [paper check].** Add `μ(11/18) ≤ 1/9`, from the exponent pair `(1/9, 13/18) = A(2/7, 4/7) = ABA(1/6, 2/3)` (two `B`-processes). The profile is then tight at `c = 2/3`: at `w = 0` (slope `1/2`) and at `w = 1/3` on the chord `(5/7, 1/14)–(1, 0)`. Every `c > 2/3` works. This needs van der Corput's `B`-process (Poisson summation with stationary phase), which the corpus lacks; `ExponentPairSelfDuality` is bookkeeping only.
+- **`4·13/84 = 13/21`:** Bourgain; out of reach.
+- **`1/2 + ε`:** counting instead of pointwise reality. Bad ordinates are controlled by mean values of `ζ` in the strip. `1/2` is the Euler-anchor barrier.
+
 ## Survivors to formalize (not dependency-closed)
 - (N), the necessity reduction. It certifies that rung 1 is at least as hard as sub-power density. Needs:
   - zero dynamics of `H_t`, via the polynomial approximants `xiRealApprox` and Hurwitz counting on boxes;
@@ -95,4 +142,5 @@ So depth `δ` at ordinate `x` survives until `t ≈ δ / log x`, and is absorbed
   - mean values of `ζ` in the strip.
 
 ## Log
+- 2026-10-28 — necessity: polylog rate (N₂) on paper; mean-field rate (N₁) open (threshold crowding); exponent routes mapped (`2/3` needs `μ(11/18) ≤ 1/9`).
 - 2026-10-28 — created; dictionary `κ = sup_w w E(1/2+w)` found (paper sketch); rung 1 identified with sub-power density.

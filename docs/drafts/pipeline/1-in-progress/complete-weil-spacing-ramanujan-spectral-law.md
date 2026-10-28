@@ -241,8 +241,9 @@ transitive axiom report in `logs/complete-weil-spacing-axioms-2026-10-28.log`;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
 Twenty support modules are scratch verified and installed; twenty-five retained
 endpoint axiom reports are clean. First required oleans are built through module
-nineteen; module twenty is being generated. Final installed-source checks
-without output generation remain outstanding.
+twenty. These twenty modules are imported by their owner umbrellas; no umbrella
+was compiled. The SSHA density increment bound is documented in its README.
+Final installed-source checks without output generation remain outstanding.
 The three main endpoints are still unchecked:
 
 - `tendsto_completeWeilMatrix_ramanujan_residual_norm`
@@ -253,7 +254,9 @@ The initial combined import check exposed an existing collision between ACS
 `TheScalingSurface.localPair` and `DistinctEffectiveCyclesMeetNonnegatively.localPair`
 (they occupy the same namespace). The two center adapters were replaced with
 minimal imports directly over the Levy density. The active source import graph
-has no path through the incompatible branch. Foreign sources were unchanged.
+has no path through the incompatible branch. Static checks of all three owner
+umbrellas likewise find no incompatible branch, both with and without the new
+direct imports. Foreign sources were unchanged.
 The superseded owned center modules and their build artifacts were removed.
 
 | # | Owner/module | Current verification |
@@ -277,7 +280,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 17 | `HTGeometry/FiniteKernelErrorFromDistanceRows` | Scratch verified; installed; first required olean built |
 | 18 | `RenormalizedArithmeticPotentialTheory/TheAtomCrossReplacementHasUniformErrors` | Scratch verified; installed; first required olean built |
 | 19 | `RenormalizedArithmeticPotentialTheory/TheCenterCollarIsPaidByTheTopAtoms` | Scratch verified; installed; first required olean built |
-| 20 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper` | Scratch verified; installed |
+| 20 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper` | Scratch verified; installed; first required olean built |
 | 21 | `HTGeometry/FiniteShiftedHarmonicAbelBounds` | Unchecked scratch |
 | 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Unchecked scratch |
 | 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Unchecked scratch |

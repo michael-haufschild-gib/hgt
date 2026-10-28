@@ -27,6 +27,7 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleAtEveryRoot
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyWindow
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyProfile
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheDenjoyCarlemanProfiles
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheArchimedeanDensityHasQuadraticIncrementControl
 
 /-!
 # Arithmetic Harmonic Analysis at the Spacing Scale

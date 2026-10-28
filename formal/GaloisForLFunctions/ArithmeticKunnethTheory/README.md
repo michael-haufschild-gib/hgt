@@ -1,309 +1,149 @@
 # Arithmetic Künneth Theory (AKT)
 
-Products of arithmetic spectra: external powers of the explicit-formula distribution, product
-Dirichlet polynomials, k-level receivers, Künneth and symmetric powers of curves, correspondences
-on the product, and families over a base. Over `𝔽_q` both proofs of purity use products: Weil uses
-`C × C`, Deligne uses tensor powers over a base. AKT asks which products of an arithmetic spectrum
-carry a term that does **not** scale with the amplification, since only such a term can turn
-positivity into a rate. Its first theorems answer this for the spectrum itself. A product of any
-order sees depth only through its total length. Its free region ends at the square-root threshold.
-Its positivity content over `𝔽_q` is the positivity of point counts.
-
 Namespace `GaloisForLFunctions.ArithmeticKunnethTheory`; umbrella `ArithmeticKunnethTheory.lean`.
+
+**Question.** Over $\mathbb F_q$ both proofs of purity use products: Weil uses $C\times C$, Deligne tensor powers over a
+base. Which products of an arithmetic spectrum carry a term that does **not** scale with the amplification — the only
+kind of term that can turn positivity into a rate?
+
+**Answer for the spectrum itself: none.** A product of any order sees depth only through its total length; its free
+region ends at the square-root threshold; its positivity content over $\mathbb F_q$ is positivity of point counts.
 
 ---
 
 ## 1. Place in the research
 
-**The question AKT owns.** Every exhaustion theorem in the corpus is an instance of *depth
-homogeneity*: whatever a mechanism gains on a zero's depth it pays for in arithmetic length (walls
-ledger face 1.15). Purity proofs break homogeneity with a term that does not scale:
+Every exhaustion theorem in the corpus is an instance of **depth homogeneity**: whatever a mechanism gains on a zero's
+depth it pays in arithmetic length. Purity proofs break it with a non-scaling term: Deligne's fixed base loss
+(tensor powers raise local weight), Weil's fixed budget $\tau(0)=2g$ (Frobenius power grows). Both live on products.
 
-- **Deligne:** the loss of a one-dimensional base stays fixed while tensor powers raise the local
-  weight.
-- **Weil:** the budget `τ(0) = 2g` stays fixed while the Frobenius power grows.
+**Three layers** of product constructions:
 
-Both terms live on products. AKT is the theory that classifies products of arithmetic spectra by
-*scaling class*, decides where a non-scaling term can exist, and hands each surviving question to
-its owner.
-
-**Three layers.** Every product construction definable from a source falls into one of them.
-
-| Layer | What is multiplied | Scaling class | Owner of the remaining question |
+| Layer | What is multiplied | Scaling class | Owner of what remains |
 |---|---|---|---|
-| 1. Spectrum | zero tuples: external powers `T^{⊠k}`, k-level receivers, moments, Nyquist diagonals, Künneth and symmetric powers | **homogeneous** (pillars 1–3) | beyond-threshold signed near-coincidences: TTPC, SquareRootThreshold (F2) |
-| 2. Correspondences | graphs on the product: Frobenius, Hecke, successor; the Weil pairing | **non-scaling budget** `τ(0)` | its positivity is the Hodge index: ACS, APD (F3) |
-| 3. Families over a base | fibres over the points of a base, tensor powers of a coefficient system | over ζ alone: abelian twists, whose tensor powers are moments (pillar 2) | a non-abelian base: F1 |
+| 1. Spectrum | zero tuples: $T^{\boxtimes k}$, $k$-level receivers, moments, Künneth/symmetric powers | **homogeneous** | beyond-threshold signed near-coincidences: TTPC, SRT |
+| 2. Correspondences | graphs on the product: Frobenius, Hecke, successor; Weil pairing | **non-scaling budget** $\tau(0)$ | its positivity is Hodge index: ACS, APD |
+| 3. Families over a base | fibres, tensor powers of a coefficient system | over $\zeta$ alone: abelian twists = moments | a non-abelian base |
 
-AKT is not a route by itself: layer 1 cannot supply the missing term. It is the programme that
-proves this, maps layers 2 and 3 precisely, and tests any new product construction against the
-classification.
+AKT is not a route: it proves layer 1 cannot supply the missing term, maps layers 2–3, and tests new product constructions.
 
 | Programme | Interface |
 |---|---|
-| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md) | Layer 1 beyond the threshold in degree two: signed close prime pairs. Pillar 1 shows the k-fold version has the same depth per total length |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Windowed Gram identity, sub-threshold silence, size bound attained for aligned data. Pillar 2 extends them to every product order |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Curve data, λ-ring of the scaling surface (`sigmaSeries`), Hodge index on the Frobenius span, golden datum. Pillar 3 is built on them; layer 2 is ACS |
-| [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | `curve_rh_tfae`: RH for curves ⇔ `|τ(m)| ≤ τ(0)`, the layer-2 budget; quantum budget of multiplicative positivity |
-| [StripBochnerWeilForcing](../StripBochnerWeilForcing/README.md) | Coupled multi-channel positivity: it couples heights `Σ vγ`, not depths. A layer-1 instance: boundary collar only |
-| [MultiplicativePositivityGeometry](../MultiplicativePositivityGeometry/README.md) | Euler-factor-wise products (twists, harmonic coupling): the multiplicative part of layer 1 |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Bézout structure: the additive correspondences of layer 2 and the near-coincidence counts of layer 1 |
-| [SignedSuccessorArithmetic](../SignedSuccessorArithmetic/README.md) | Successor correspondences, which are moved diagonals at the Nyquist scale |
-| [BiarithmeticGeometry](../BiarithmeticGeometry/README.md) | The correspondence algebra of the product at finite resolution |
+| TransThresholdPairCorrelation | Layer 1 beyond threshold in degree two |
+| SquareRootThreshold | Windowed Gram identity; extended here to every product order |
+| ArithmeticCastelnuovoSeveri | Curve data, λ-ring (`sigmaSeries`), golden datum; layer 2 |
+| ArithmeticPositiveDuality | `curve_rh_tfae`: the layer-2 budget $|\tau(m)|\le\tau(0)$ |
+| StripBochnerWeilForcing, MultiplicativePositivityGeometry | Height coupling and Euler-factor-wise products: layer-1 instances |
+| ArithmeticCorrelationGeometry | Gauge Jensen turns AKT homogeneity into a linear loss law |
+| BezoutValuationIncidence, SignedSuccessorArithmetic, BiarithmeticGeometry | Additive correspondences; successor graphs = moved diagonals |
 
 ---
 
 ## 2. Why
 
-**Products over `𝔽_q`.** For a curve `C`:
+**Over $\mathbb F_q$.** Künneth: $N_n(C^k)=N_n^k$. Weil: Hodge index on $C\times C$, genus as fixed budget. Deligne: the $2k$-th
+tensor power has local weight $|\alpha|^{2kn}$ against global cost $q^{n(1+kw)}$; the base part $q^n$ does not grow with $k$, so
+the $2k$-th root removes it.
 
-- Künneth gives `H^*(C^k) = H^*(C)^{⊗k}`, with point counts `N_n(C^k) = N_n^k`.
-- Weil proves `|N_n − q^n − 1| ≤ 2g q^{n/2}` by the Hodge index on `C × C`. The intersection
-  numbers of Frobenius graphs with the diagonal are `N_n`, and the genus enters as a fixed budget.
-- Deligne bounds a stalk eigenvalue `α` of a self-dual local system on a curve `U`. The `2k`-th
-  tensor power has local trace weight `|α|^{2kn}` at a point of degree `n`, while its global sum costs
-  `q^{n(1+kw)}`. The base part `q^n` does not grow with `k`, so the `2k`-th root removes it.
+**Over $\mathbb Z$.** $\operatorname{Spec}\mathbb Z\times\operatorname{Spec}\mathbb Z$ is missing, but its trace exists: external powers of $T(x)=\sum_\rho e^{(\rho-1/2)x}$,
+product Dirichlet polynomials, $k$-level correlations, kernels on $\mathbb N\times\mathbb N$. For the spectrum:
+- a $k$-linear receiver sees depths through $e^{\sum d_jx_j}\le e^{\delta S}$ on total length $S$ — one receiver of length $S$;
+- $D^k$ has length $X^k$; its windowed mean value is diagonal exactly up to $X^k=1/(2r)$ (Montgomery $\alpha<1$, Rudnick–Sarnak
+  $\sum|\xi_j|<2$, second and fourth moments are this one free region);
+- over $\mathbb F_q$, positivity of all Künneth–Adams counts and their zeta series ⇔ $N_n\ge0$; the golden fake curve has it.
 
-**Products over ℤ.** `Spec ℤ × Spec ℤ` is missing as a geometric object, but its trace exists:
-- the external power `T^{⊠k}` of the explicit-formula distribution `T(x) = Σ_ρ e^{(ρ−½)x}`;
-- product Dirichlet polynomials and their moments;
-- k-level correlations of zeros;
-- correspondences given by kernels on `ℕ × ℕ`.
-
-The review that founded AKT conjectured that some product carries a term that does not scale.
-
-**The answer for the spectrum.** It does not.
-- A k-linear receiver sees a tuple of depths `d_j` through `e^{Σ d_j x_j}`. On total length `S` this
-  is at most `e^{δS}`, the gain of one receiver of length `S`, whatever `k` is (pillar 1).
-- The `k`-th power of a polynomial of length `X` is a polynomial of length `X^k`. Its windowed mean
-  value is exactly diagonal up to `X^k = 1/(2r)` and no further (pillar 2). Montgomery's `α < 1`,
-  Rudnick–Sarnak's `Σ|ξ_j| < 2`, and the second and fourth moments of ζ are this one free region.
-- Over `𝔽_q`, positivity of all Künneth–Adams counts and of all their zeta series is equivalent to
-  `N_n ≥ 0`. The golden fake curve has this and is impure (pillar 3).
-
-Products of the spectrum are where purity statements land. Rudnick–Sarnak and the function-field
-prime correlations obtained through Deligne are consequences of purity, not causes of it.
+Products of the spectrum are where purity *lands*, not where it comes from.
 
 ---
 
 ## 3. Objects and language
 
-**Product receivers.** A product receiver of order `k` is a measure `μ` on `ℝ^k` with a weight
-`Φ ∈ L¹(μ)`. Its response is `R(z) = ∫ Φ(x) e^{⟨z,x⟩} dμ(x)`, read at `z_j = ρ_j − ½`.
-
 | Term | Meaning | Lean |
 |---|---|---|
-| total length | `Σ_j |x_j|` on the support | `totalLength` |
-| response | `∫ Φ e^{⟨z,x⟩} dμ` | `productResponse` |
-| diagonal image | image of `μ` under `x ↦ Σ_j x_j`, a degree-one receiver on `[−S, S]` | `Measure.map` in `integral_cexp_diag_eq_integral_map` |
-| depth | `d = Re ρ − ½` | — |
+| Product receiver | measure $\mu$ on $\mathbb R^k$, weight $\Phi$; response $\int\Phi e^{\langle z,x\rangle}d\mu$ at $z_j=\rho_j-\tfrac12$ | `productResponse`, `totalLength` |
+| Diagonal image | image under $x\mapsto\sum x_j$ | `integral_cexp_diag_eq_integral_map` |
+| Product polynomial | $D^k$, support $\{n_1\cdots n_k\}$, coefficients $c^{*k}$ | `powSupport`, `powCoeff` |
+| Free region / threshold | $2rX^k\le1$; total length $\asymp T$ | — |
+| Künneth–Adams count | $n\mapsto\prod_iN_{m_in}$ | `kunnethCount` |
+| λ-ring exponential | $\sigma(g)=\exp(\sum g(j)X^j/j)$ | `sigmaSeries`, `sigmaCoeff` |
 
-**Product polynomials.** `D(ξ) = Σ_{n∈s} c_n e^{2πiξ log n}`.
-
-| Term | Meaning | Lean |
-|---|---|---|
-| product support | `{n_1 ⋯ n_k : n_i ∈ s}` | `powSupport` |
-| product coefficient | `c^{*k}(N) = Σ_{n_1⋯n_k = N} Π c_{n_i}` | `powCoeff`, `powCoeffReal` |
-| windowed `2k`-th moment | `∫ pairTransform_η · |D|^{2k}` | — |
-| free region | `2rX^k ≤ 1`: the moment is its multiplicative diagonal | — |
-| threshold | total length `X^k = 1/(2r)`, i.e. `≍ T` at height `T` | — |
-
-**Künneth data over `𝔽_q`.** A curve datum `D` with point counts `N_n` (`CurveDatum.pointCount`).
-
-| Term | Meaning | Lean |
-|---|---|---|
-| Adams twist | `ψ^m`: the ghost sequence `n ↦ g(mn)` | — |
-| Künneth–Adams count | `n ↦ Π_i N_{m_i n}`, ghost sequence of `ψ^{m_1}C × ⋯ × ψ^{m_k}C` | `kunnethCount` |
-| λ-ring exponential | `σ(g) = exp(Σ g(j)X^j/j)`, zeta series and symmetric powers | `sigmaSeries`, `sigmaCoeff` |
-
-**Scaling vocabulary.**
-- **Gain:** the factor by which a zero of depth `δ` enlarges a receiver.
-- **Cost:** the size of the noise or trivial bound the gain must beat.
-- **Homogeneous:** gain and cost have the same exponent in the arithmetic length.
-- **Non-scaling term:** a cost that stays fixed while the gain grows: a *base loss* or a
-  *budget*.
-- **Layer:** spectrum, correspondence or base (§1).
-- **Moved diagonal:** a successor graph `n ↦ n + h`. Its logarithmic lag `log(1 + h/n)` tends to
-  `0`, so it sits at the Nyquist scale of the diagonal.
+**Scaling vocabulary.** *Gain*: factor by which a depth-$\delta$ zero enlarges a receiver; *cost*: noise or trivial bound
+to beat; *homogeneous*: same exponent in arithmetic length; *non-scaling term*: a base loss or budget fixed while the
+gain grows; *moved diagonal*: successor graph $n\mapsto n+h$, lag $\log(1+h/n)\to0$ (Nyquist scale of the diagonal).
 
 ---
 
 ## 4. Mechanisms
 
-1. **Laplace bound on the support.** `|e^{⟨z,x⟩}| = e^{Σ Re z_j x_j} ≤ e^{δ Σ|x_j|}`. Depth reaches a
-   receiver only through its total length, and the order `k` does not appear.
-2. **Diagonal pushforward.** On a repeated zero the response is the Laplace transform of the
-   diagonal image, so a product receiver *is* a degree-one receiver of the same length. Sharpness:
-   a receiver carried near `Σ x_j = S` attains `e^{δ(S−ε)}`.
-3. **Multiplicativity of frequencies.** `e^{2πiξ log m}e^{2πiξ log n} = e^{2πiξ log mn}`, so `D^k` is a
-   polynomial of length `X^k`. Distinct integers in `[1, Y]` are `1/Y`-separated in logarithm, so
-   below the threshold the only coincidences are equalities of products: unique factorization.
-4. **Aligned near-coincidence mass.** For nonnegative data and a nonnegative window, every
-   off-diagonal term is nonnegative. Beyond the threshold, size information is stuck at the
-   mean-value bound for every product order. What remains is the *signed* information carried by
-   the height phase.
-5. **Newton–Witt recursion.** `(n+1)σ_{n+1} = Σ_{j≤n} σ_j g(n+1−j)` uses only positive ghost
-   indices. So λ-ring positivity follows from ghost positivity, and Künneth positivity collapses to
-   `N_n ≥ 0`.
-6. **The base contrast (Deligne).** A non-scaling base loss requires local data: an eigenvalue
-   attached to a point of a base whose own cost is fixed. ζ's zeros are global data of `Spec ℤ`,
-   and the only families definable from ζ are twists by characters. These are abelian, and their
-   tensor powers are twists again. The archimedean family `t ↦ D(σ + it)` is a base with a fixed
-   loss, and its tensor powers are exactly the moments of mechanism 3.
-7. **The budget contrast (Weil).** `|τ(m)| ≤ τ(0)` is a two-point Gram inequality for a
-   correspondence pairing. Its budget does not scale, and it is the Hodge index on the Frobenius
-   span. Over ℤ at resolution `η` it says that primes in `[y, y(1+η)]` are counted with
-   square-root error and a constant independent of `y`, which is RH. Products of the spectrum do
-   not prove it.
+1. **Laplace bound on the support**: depth reaches a receiver only through total length; $k$ does not appear.
+2. **Diagonal pushforward**: on a repeated zero a product receiver *is* a degree-one receiver of the same length; sharp.
+3. **Multiplicativity of frequencies** + $1/Y$-separation of logs ⇒ below threshold the only coincidences are product
+   equalities (unique factorization).
+4. **Aligned near-coincidence mass**: beyond threshold, size information is stuck at the mean-value bound for every
+   order; only signed height-phase information remains.
+5. **Newton–Witt recursion** uses only positive ghost indices ⇒ Künneth positivity collapses to $N_n\ge0$.
+6. **Base contrast (Deligne)**: a non-scaling base loss needs local data over a fixed base; $\zeta$'s zeros are global, the
+   only families definable from $\zeta$ are abelian twists, whose tensor powers are twists again (moments).
+7. **Budget contrast (Weil)**: $|\tau(m)|\le\tau(0)$ is a two-point Gram inequality of a correspondence; over $\mathbb Z$ at resolution
+   $\eta$ it is RH. Products of the spectrum do not prove it.
 
 ---
 
 ## 5. Pillar theorems
 
-1. **Depth–length conservation** (`ProductReceiversSeeDepthOnlyThroughTotalLength`):
-   - `norm_productResponse_le`: `|R(z)| ≤ e^{δS} ∫|Φ| dμ` for total length `S` and depths `≤ δ`, for every order `k`;
-   - `integral_cexp_diag_eq_integral_map`, `ae_abs_le_of_map_sum`: the diagonal is a degree-one receiver on `[−S, S]`;
-   - `exp_mul_le_re_integral_cexp_diag`: sharpness.
-2. **The free region ends at the threshold for every product order**
-   (`ProductMomentsAreDiagonalBelowTheThreshold`):
-   - `expSum_pow_eq_powSum`: `D^k` is the polynomial with coefficients `c^{*k}`;
-   - `integral_pairTransform_mul_normSq_pow_eq_diag`: if `2rX^k ≤ 1`, the windowed `2k`-th moment is exactly `‖η‖² Σ_N |c^{*k}(N)|²`;
-   - `integral_normSq_pow_eq_diag_add_offDiag_nonneg`: beyond the threshold, for nonnegative data, the moment is the diagonal plus a nonnegative near-coincidence sum.
-3. **Künneth positivity is point-count positivity** (`KunnethPositivityIsPointCountPositivity`):
-   - `exists_sigmaCoeff_eq_ofReal_nonneg`: Newton–Witt positivity;
-   - `kunneth_positivity_tfae`: `N_n ≥ 0` ⇔ all Künneth–Adams counts `≥ 0` ⇔ all their zeta series have nonnegative real coefficients;
-   - `goldenDatum_kunneth_positive_not_pure`: the golden fake curve is Künneth-positive, impure, and fails the Hodge index on its Frobenius span.
-
-Used from the corpus: `SquareRootThreshold.integral_pairTransform_mul_normSq_expSum_eq_diag_add`,
-`SquareRootThreshold.le_integral_normSq_mul_normSq_expSum_of_nonneg`,
-`SquareRootThreshold.weilTest_self_eq_zero_of_le`,
-`ArithmeticCastelnuovoSeveri.CurveDatum.hodgeIndexOnSpan_iff_unitary`,
-`ArithmeticCastelnuovoSeveri.goldenDatum_not_unitary`,
-`ArithmeticCastelnuovoSeveri.goldenDatum_pointCount_nonneg`,
-`ArithmeticPositiveDuality.CurveDatum'.curve_rh_tfae`.
+1. **Depth–length conservation** for every order (`norm_productResponse_le`, `integral_cexp_diag_eq_integral_map`,
+   `exp_mul_le_re_integral_cexp_diag`).
+2. **The free region ends at the threshold for every product order** (`expSum_pow_eq_powSum`,
+   `integral_pairTransform_mul_normSq_pow_eq_diag`, `integral_normSq_pow_eq_diag_add_offDiag_nonneg`).
+3. **Künneth positivity is point-count positivity**; golden datum is Künneth-positive and impure
+   (`kunneth_positivity_tfae`, `goldenDatum_kunneth_positive_not_pure`).
 
 ---
 
 ## 6. Traps
 
-| Trap | Correct statement |
+| Trap | Truth |
 |---|---|
-| Tensor powers amplify depth | Only local data over a fixed base. On one spectrum, depth gain is bounded by the total length (pillar 1) |
-| k-level correlations are free beyond Rudnick–Sarnak support for large `k` | The free region ends at total length `T` for every `k` (pillar 2) |
-| Positivity of point counts of `C^k`, `Sym^k C`, Adams twists forces purity | It is `N_n ≥ 0`; the golden datum has it and is impure (pillar 3) |
-| Products of many small primes make near-coincidences cheaper | Same total length, same depth. The order changes constants (the `k!` of the diagonal), not exponents |
-| The archimedean family is a Deligne base | It is a base with fixed loss, but abelian; its tensor powers are moments, free only up to `X^k ≍ T` |
-| Coupled multi-channel positivity breaks homogeneity | It couples heights; depth enters through `1 − β` only, giving a boundary collar |
-| Family averages over `χ mod q` amplify | Primes start at `q + 1` while the zero count grows by `φ(q)`. The family is abelian and homogeneous |
-| Successor graphs supply effective classes | They are moved diagonals at the Nyquist scale; their intersection numbers are twin-prime sums (F2) |
-| Function-field twin-prime theorems show that products cause purity | They are consequences of Deligne's purity applied to configuration spaces |
-| Homogeneity retires the product side | Beyond the threshold the signed near-coincidence content is live: it is F2, owned by TTPC and SquareRootThreshold |
-| A k-fold gain by a constant is amplification | Amplification means a gain in the exponent against a fixed cost |
-| Products and correspondences are the same | `T^{⊠k}` multiplies spectra (homogeneous); the Weil pairing pulls `T` back along `(x, y) ↦ x − y` (budget, layer 2) |
+| Tensor powers amplify depth | Only local data over a fixed base; on one spectrum gain ≤ total length |
+| $k$-level correlations are free beyond RS support for large $k$ | Free region ends at total length $T$ for every $k$ |
+| Positivity of counts of $C^k$, $\operatorname{Sym}^kC$, Adams twists forces purity | It is $N_n\ge0$; golden datum |
+| More small primes make near-coincidences cheaper | Same total length, same depth; order changes constants only |
+| The archimedean family is a Deligne base | Abelian; its tensor powers are moments |
+| Family averages over $\chi\bmod q$ amplify | Abelian and homogeneous |
+| Successor graphs supply effective classes | Moved diagonals; their intersection numbers are twin-prime sums |
+| Function-field twin-prime theorems show products cause purity | They are consequences of purity |
+| Homogeneity retires the product side | Beyond threshold the signed near-coincidence content is live (TTPC, SRT) |
+| A constant-factor $k$-fold gain is amplification | Amplification = exponent gain against a fixed cost |
+| Products = correspondences | $T^{\boxtimes k}$ multiplies spectra (layer 1); the Weil pairing pulls $T$ back along $x-y$ (layer 2) |
 
 ---
 
-## 7. Questions AKT aims to answer
+## 7. Open problems
 
-1. **Classification.** Which product constructions definable from an arithmetic source carry a term
-   that does not scale with their amplification? For layer 1 the answer is none (pillars 1–2). The
-   open part is the precise class statement for mixed-sign, renormalized and family receivers.
-2. **Content of a product.** What does a product of spectra know beyond its total length? Below
-   the threshold, unique factorization; beyond it, signed near-coincidences of products. Is the
-   k-fold signed problem ever easier than the pair problem at the same total length?
-3. **Bases.** What data would a non-abelian base under ζ have to provide? Can such data be defined
-   from additive structure, given that multiplicatively definable data admit Beurling
-   countermodels?
-4. **Correspondences.** Which part of the layer-2 budget `τ(0)` at resolution `η` can product data
-   compute (it is archimedean and polar), and which part needs the Hodge index or Riemann–Roch?
+1. **Scaling-class theorem for all layer-1 receivers**: mixed-sign $k$-level receivers (distinct-zero
+   inclusion–exclusion), Nyquist-renormalized diagonals, receivers averaged over twists — gain exponent ≤ depth × total length.
+2. **Constants-only law beyond threshold**: at equal total length, $k$-fold detection needs the pair length up to a
+   factor depending only on $k$.
+3. **Conductor homogeneity**: formal no-go for family averages over $\chi\bmod q$.
+4. **Abelian-base no-go**: Euler-factor-wise products of $\zeta(s+i\tau_j)$ reduce to pillar 2.
+5. **Base axioms**: simple pole, no zeros, self-dual system with nonnegative even tensor powers and computable pole
+   part; prove multiplicatively definable data admit over-regular Beurling countermodels.
+6. **Moved diagonals**: intersection theory of successor graphs at Nyquist resolution; regularized self-intersection
+   ↔ pair correlation at $\alpha=1$ (TTPC interface).
+7. **Budget at resolution $\eta$**: split $T_\eta(0)$ into archimedean and polar parts; state $|T_\eta(x)|\le T_\eta(0)$ as a
+   correspondence statement (APD/ACS interface).
 
----
+## 8. Tools to build
 
-## 8. Open research topics
+Scaling-class calculus (gain/cost exponents); $k$-level inclusion–exclusion in product-receiver form; family receivers
+over twists; Nyquist renormalization of diagonals; successor-graph intersection numbers; base axioms with a Beurling
+test harness.
 
-1. **Scaling-class theorem for all layer-1 receivers.** Extend pillar 1 to:
-   - mixed-sign k-level receivers with distinct-zero inclusion–exclusion;
-   - Nyquist-renormalized diagonals as limits of product receivers;
-   - receivers averaged over a family of twists.
+## 9. Success criteria and conventions
 
-   The target is one statement: the gain exponent is at most the depth times the total length.
-2. **Constants-only law beyond the threshold.** At equal total length, k-fold detection of a depth
-   `δ` needs at least the pair detection length up to a factor depending only on `k`. A model
-   computation exists; the theorem does not.
-3. **Conductor homogeneity.** Make the family-average no-go formal. Averaging over `χ mod q` makes
-   the form archimedean up to aperture `½ log(q+1)`, while visibility needs `q^δ ≳ φ(q)`.
-4. **Abelian-base no-go.** Euler-factor-wise products of twists `ζ(s + iτ_j)` have unitary local
-   parameters, and their zero sets are translates. Formalize this, and that tensor powers over any
-   abelian family reduce to pillar 2.
-5. **Base axioms (F1 interface).** State the positivity data of a base: a simple pole, no zeros, a
-   self-dual system whose even tensor powers have nonnegative log-coefficients, and a computable pole
-   part. Prove that data definable from multiplicative structure alone admit over-regular Beurling
-   countermodels.
-6. **Moved diagonals.** Build the intersection theory of successor graphs with scaling cycles at
-   Nyquist resolution. Identify the regularized self-intersection (the genus at resolution `η`) with
-   pair correlation at `α = 1`, as an interface with TTPC.
-7. **Budget at resolution `η`.** Split `T_η(0)` into its archimedean and polar parts (computable) and
-   state the two-point law `|T_η(x)| ≤ T_η(0)` as a correspondence statement, as an interface with
-   APD and ACS.
-8. **Function-field direction.** Over `𝔽_q[T]`, write prime-pair correlations as point counts of
-   configuration varieties whose errors are bounded by purity. This records that layer-1
-   correlations are downstream of purity.
-
----
-
-## 9. Tools
-
-**Built:**
-- product receivers on `ℝ^k` with the total-length Laplace bound and the diagonal pushforward;
-- product Dirichlet polynomials (`powSupport`, `powCoeff`) with the exact sub-threshold diagonal and the aligned off-diagonal law at every order;
-- Newton–Witt positivity and the Künneth–Adams counts on ACS curve data.
-
-**To build:**
-- a scaling-class calculus (gain and cost exponents of a construction);
-- k-level inclusion–exclusion in product-receiver form;
-- family receivers over twists;
-- Nyquist renormalization of diagonals as limits of product receivers;
-- successor-graph intersection numbers on the scaling surface;
-- base axioms with a Beurling test harness.
-
----
-
-## 10. Success criteria
-
-AKT succeeds in one of two ways:
-
-- **A route.** A product construction definable from an arithmetic source, with a proved term that
-  does not scale with its amplification and an unconditional statement about zeros of ζ beyond
-  what its total length gives.
-- **A complete map.** Homogeneity proved for every layer-1 construction and every abelian layer-3
-  construction; layer 2 reduced to a stated Hodge-index or effectivity statement; each surviving
-  question stated precisely in the programme that owns it (F1, F2, F3).
-
-A contribution must:
-
-- **State its layer and scaling class:** product order, total length, the gain exponent and the
-  cost exponent.
-- **Calibrate:** specialize over `𝔽_q` correctly, either as a Künneth, Weil or Deligne statement or
-  as a stated failure, and be tested on the golden datum, Beurling systems, shifted pairs
-  `ζ(s−a)ζ(s+a)` and the pole-order models.
-- **Not count constants as amplification:** a gain is a change of exponent against a fixed cost.
-- **Be unconditional and in Lean:** no imported zero location, no assumption binders carrying the
-  missing input.
-- **Respect ownership:** beyond-threshold signed near-coincidence estimates go to TTPC and
-  SquareRootThreshold, Hodge index and effectivity to ACS and APD. AKT owns the classification and
-  the product calculus.
-
----
-
-## 11. Working conventions
-
-- State coordinates: log-scale `x = log n`, depth `d = Re ρ − ½`, total length in the units of the
-  receiver.
-- Products of spectra (`T^{⊠k}`, `D^k`) and correspondences (kernels on `ℕ × ℕ`, Weil pairing) are
-  different layers; say which one a statement is about.
-- Over `𝔽_q`, use the ACS curve data (`CurveDatum`, `pointCount`, `sigmaSeries`) and APD's
-  `CurveDatum'` for the trace sequence; do not redefine them.
-- Lean: products of finite exponential sums via `Finset.prod_univ_sum` and
-  `Finset.sum_fiberwise_of_maps_to`; window lemmas from `SquareRootThreshold`
-  (`weilTest_self_eq_zero_of_le`, `integral_pairTransform_mul_normSq_expSum_eq_diag_add`); type the
-  pushforward map explicitly as `Fin k → ℝ` to `ℝ`.
+Success is either a product construction with a proved non-scaling term and an unconditional zero statement beyond its
+total length, or a complete map (homogeneity for all layer-1 and abelian layer-3 constructions; layer 2 reduced to a
+stated Hodge-index statement). A contribution states layer, order, total length, gain and cost exponents; calibrates
+over $\mathbb F_q$ and on golden datum, Beurling systems, shifted pairs; does not count constants as amplification.
+Coordinates: $x=\log n$, depth $d=\Re\rho-\tfrac12$. Use ACS `CurveDatum`, `sigmaSeries` and APD `CurveDatum'`; window lemmas
+from SquareRootThreshold; type pushforward maps explicitly as `Fin k → ℝ` to `ℝ`.

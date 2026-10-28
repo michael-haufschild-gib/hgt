@@ -120,10 +120,8 @@ theorem toeplitzSum_pairKernel (χ : G →* ℂ) (ω : ℂ) (x : ι → G) (c : 
         conj ω * (conj (c a * χ (x a)) * (c b * reflectChar χ (x b))) := fun a b => by
     simp only [pairKernel, map_mul, conj_reflectChar, reflectChar_inv]
     ring
-  simp only [key, sum_add_distrib, ← mul_sum, charEval_apply, map_sum, sum_mul_sum]
-  rw [Finset.sum_comm (f := fun a b => conj (c a * reflectChar χ (x a)) * (c b * χ (x b))),
-    Finset.sum_comm (f := fun a b => conj (c a * χ (x a)) * (c b * reflectChar χ (x b)))]
-  simp only [mul_comm (conj _) _]
+  simp only [key, sum_add_distrib, ← mul_sum, ← sum_mul, charEval_apply, map_sum]
+  ring
 
 /-- **Hyperbolic plane law.** The Toeplitz form of `ωχ + ω̄χ†` is `2 Re(ω A conj B)`. -/
 theorem hermQuad_gram_pairKernel (χ : G →* ℂ) (ω : ℂ) (x : ι → G) (c : ι → ℂ) :
@@ -242,7 +240,7 @@ theorem sum_pow_mul_nodeVdm_inv {χ : Fin κ → G →* ℂ} {u : G}
     det_vandermonde_ne_zero_iff.mpr (hsep.comp finSumFinEquiv.symm.injective)
   have h1 := congrFun₂ (mul_nonsing_inv (nodeVdm χ u) (isUnit_iff_ne_zero.mpr hdet))
     (finSumFinEquiv m) (finSumFinEquiv m')
-  rw [Matrix.mul_apply, Matrix.one_apply, finSumFinEquiv.injective.eq_iff] at h1
+  simp only [Matrix.mul_apply, Matrix.one_apply, EmbeddingLike.apply_eq_iff_eq] at h1
   rw [← h1]
   refine sum_congr rfl fun d _ => ?_
   simp [nodeVdm, vandermonde_apply]
@@ -286,37 +284,41 @@ def testMatrix (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (u : G) (N : �
   fun s j => Sum.elim (fun d => -(nodeVdm χ u)⁻¹ d (finSumFinEquiv (Sum.inr j)))
     (fun d => (nodeVdm χ u)⁻¹ d (finSumFinEquiv (Sum.inl j)) * phase χ ω u N j) s
 
-/-- Evaluation of a test vector at a character, through its value `z = ψ(u)`. -/
-theorem charEval_testMatrix (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (u : G) (N : ℕ)
-    (ψ : G →* ℂ) (a : Fin κ → ℂ) :
-    charEval ψ (testFamily u N) (testMatrix χ ω u N *ᵥ a) =
-      ∑ j, a j * (-(∑ d : Fin (κ + κ), ψ u ^ (d : ℕ) * (nodeVdm χ u)⁻¹ d
-          (finSumFinEquiv (Sum.inr j))) +
+/-- Evaluation commutes with a coefficient matrix. -/
+theorem charEval_mulVec (ψ : G →* ℂ) {J : Type*} [Fintype J] (x : ι → G) (M : Matrix ι J ℂ)
+    (a : J → ℂ) : charEval ψ x (M *ᵥ a) = ∑ j, a j * charEval ψ x (fun s => M s j) := by
+  simp only [charEval_apply, mulVec, dotProduct, sum_mul, mul_sum]
+  rw [Finset.sum_comm]
+  exact sum_congr rfl fun j _ => sum_congr rfl fun s _ => by ring
+
+/-- Evaluation of the `j`-th test vector `X^N E_j − F_j` at a character, through `z = ψ(u)`. -/
+theorem charEval_testColumn (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (u : G) (N : ℕ)
+    (ψ : G →* ℂ) (j : Fin κ) :
+    charEval ψ (testFamily u N) (fun s => testMatrix χ ω u N s j) =
+      -(∑ d : Fin (κ + κ), ψ u ^ (d : ℕ) * (nodeVdm χ u)⁻¹ d (finSumFinEquiv (Sum.inr j))) +
         ψ u ^ N * phase χ ω u N j * ∑ d : Fin (κ + κ), ψ u ^ (d : ℕ) * (nodeVdm χ u)⁻¹ d
-          (finSumFinEquiv (Sum.inl j))) := by
-  simp only [charEval_apply, Fintype.sum_sum_type, testFamily, Sum.elim_inl, Sum.elim_inr,
-    map_pow, pow_add, mulVec, dotProduct, testMatrix, sum_mul, mul_add, sum_add_distrib, mul_sum]
-  rw [Finset.sum_comm, Finset.sum_comm (s := (univ : Finset (Fin (κ + κ))))]
-  congr 1 <;> refine sum_congr rfl fun j _ => sum_congr rfl fun d _ => ?_ <;> ring
+          (finSumFinEquiv (Sum.inl j)) := by
+  simp only [charEval_apply, Fintype.sum_sum_type, testFamily, testMatrix, Sum.elim_inl,
+    Sum.elim_inr, map_mul, map_pow, pow_add, mul_sum, ← sum_neg_distrib]
+  congr 1 <;> refine sum_congr rfl fun d _ => ?_ <;> ring
 
 theorem charEval_testMatrix_left {χ : Fin κ → G →* ℂ} {u : G}
     (hsep : Function.Injective (nodes χ u)) (ω : Fin κ → ℂ) (N : ℕ) (a : Fin κ → ℂ) (l : Fin κ) :
     charEval (χ l) (testFamily u N) (testMatrix χ ω u N *ᵥ a) =
       χ l u ^ N * phase χ ω u N l * a l := by
-  rw [charEval_testMatrix]
   have hl : χ l u = nodes χ u (Sum.inl l) := rfl
-  simp only [hl, sum_pow_mul_nodeVdm_inv hsep, reduceCtorEq, if_false, neg_zero, zero_add,
-    Sum.inl.injEq, mul_ite, mul_one, mul_zero, ite_mul, zero_mul, sum_ite_eq', mem_univ, if_true]
-  simp only [← hl]
+  simp only [charEval_mulVec, charEval_testColumn, hl, sum_pow_mul_nodeVdm_inv hsep,
+    reduceCtorEq, if_false, neg_zero, zero_add, Sum.inl.injEq, mul_ite, mul_one, mul_zero,
+    sum_ite_eq, mem_univ, if_true]
   ring
 
 theorem charEval_testMatrix_right {χ : Fin κ → G →* ℂ} {u : G}
     (hsep : Function.Injective (nodes χ u)) (ω : Fin κ → ℂ) (N : ℕ) (a : Fin κ → ℂ) (l : Fin κ) :
     charEval (reflectChar (χ l)) (testFamily u N) (testMatrix χ ω u N *ᵥ a) = -a l := by
-  rw [charEval_testMatrix]
   have hl : reflectChar (χ l) u = nodes χ u (Sum.inr l) := rfl
-  simp only [hl, sum_pow_mul_nodeVdm_inv hsep, reduceCtorEq, if_false, mul_zero, add_zero,
-    Sum.inr.injEq, mul_ite, mul_one, mul_neg, sum_neg_distrib, sum_ite_eq', mem_univ, if_true]
+  simp only [charEval_mulVec, charEval_testColumn, hl, sum_pow_mul_nodeVdm_inv hsep,
+    reduceCtorEq, if_false, mul_zero, add_zero, Sum.inr.injEq, mul_neg, mul_ite, mul_one,
+    sum_neg_distrib, sum_ite_eq, mem_univ, if_true]
 
 /-- The entries of the coefficient matrix are bounded independently of `N`. -/
 theorem norm_testMatrix_le {χ : Fin κ → G →* ℂ} {ω : Fin κ → ℂ} (hω : ∀ j, ω j ≠ 0) (u : G)

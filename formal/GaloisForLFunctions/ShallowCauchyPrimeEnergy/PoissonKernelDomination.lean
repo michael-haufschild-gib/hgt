@@ -34,19 +34,22 @@ theorem shift_mul_transverseCauchyKernel_le_four_mul_lorentz
   have hstep1 :
       4 * h * ((h + a + (h + b)) / ((h + a + (h + b)) ^ (2 : ℕ) + Δ ^ (2 : ℕ))) ≤
         4 * ((2 * h) ^ (2 : ℕ) / ((2 * h) ^ (2 : ℕ) + Δ ^ (2 : ℕ))) := by
-    rw [mul_div_assoc, mul_div_assoc,
+    rw [← mul_div_assoc, ← mul_div_assoc,
       div_le_div_iff₀ (by positivity) (by positivity)]
     have h1 : 16 * h ^ (3 : ℕ) * (h + a + (h + b)) ≤
         16 * h ^ (2 : ℕ) * (h + a + (h + b)) ^ (2 : ℕ) := by
-      have hhs : 2 * h * (h + a + (h + b)) ≤ (h + a + (h + b)) ^ (2 : ℕ) :=
-        mul_le_mul_of_nonneg_right hs_lo (by linarith)
+      have hhs : 2 * h * (h + a + (h + b)) ≤ (h + a + (h + b)) ^ (2 : ℕ) := by
+        rw [sq]
+        exact mul_le_mul_of_nonneg_right hs_lo (by linarith)
       have hh2 : 0 ≤ 8 * h ^ (2 : ℕ) := by positivity
       calc 16 * h ^ (3 : ℕ) * (h + a + (h + b))
           = 8 * h ^ (2 : ℕ) * (2 * h * (h + a + (h + b))) := by ring
         _ ≤ 8 * h ^ (2 : ℕ) * (h + a + (h + b)) ^ (2 : ℕ) :=
             mul_le_mul_of_nonneg_left hhs hh2
-        _ ≤ 16 * h ^ (2 : ℕ) * (h + a + (h + b)) ^ (2 : ℕ) := by
-            nlinarith [sq_nonneg h, sq_nonneg (h + a + (h + b))]
+        _ ≤ 16 * h ^ (2 : ℕ) * (h + a + (h + b)) ^ (2 : ℕ) :=
+            mul_le_mul_of_nonneg_right
+              (show 8 * h ^ (2 : ℕ) ≤ 16 * h ^ (2 : ℕ) by linarith [sq_nonneg h])
+              (sq_nonneg (h + a + (h + b)))
     have h2 : 4 * h * (h + a + (h + b)) * Δ ^ (2 : ℕ) ≤
         16 * h ^ (2 : ℕ) * Δ ^ (2 : ℕ) := by
       have hhs : 4 * h * (h + a + (h + b)) ≤ 16 * h ^ (2 : ℕ) := by
@@ -54,6 +57,10 @@ theorem shift_mul_transverseCauchyKernel_le_four_mul_lorentz
               mul_le_mul_of_nonneg_left hs_hi (by positivity)
           _ = 16 * h ^ (2 : ℕ) := by ring
       exact mul_le_mul_of_nonneg_right hhs (sq_nonneg Δ)
+    have hlhs : 4 * h * (h + a + (h + b)) * ((2 * h) ^ (2 : ℕ) + Δ ^ (2 : ℕ)) =
+        16 * h ^ (3 : ℕ) * (h + a + (h + b)) + 4 * h * (h + a + (h + b)) * Δ ^ (2 : ℕ) := by ring
+    have hrhs : 4 * (2 * h) ^ (2 : ℕ) * ((h + a + (h + b)) ^ (2 : ℕ) + Δ ^ (2 : ℕ)) =
+        16 * h ^ (2 : ℕ) * (h + a + (h + b)) ^ (2 : ℕ) + 16 * h ^ (2 : ℕ) * Δ ^ (2 : ℕ) := by ring
     linarith
   have hstep2 :
       (2 * h) ^ (2 : ℕ) / ((2 * h) ^ (2 : ℕ) + Δ ^ (2 : ℕ)) ≤
@@ -61,7 +68,10 @@ theorem shift_mul_transverseCauchyKernel_le_four_mul_lorentz
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     have hsq : (2 * h) ^ (2 : ℕ) ≤ R₀ ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) hR 2
     have hm := mul_le_mul_of_nonneg_right hsq (sq_nonneg Δ)
-    linarith
+    linarith [show (2 * h) ^ (2 : ℕ) * (R₀ ^ (2 : ℕ) + Δ ^ (2 : ℕ)) =
+        (2 * h) ^ (2 : ℕ) * R₀ ^ (2 : ℕ) + (2 * h) ^ (2 : ℕ) * Δ ^ (2 : ℕ) by ring,
+      show R₀ ^ (2 : ℕ) * ((2 * h) ^ (2 : ℕ) + Δ ^ (2 : ℕ)) =
+        (2 * h) ^ (2 : ℕ) * R₀ ^ (2 : ℕ) + R₀ ^ (2 : ℕ) * Δ ^ (2 : ℕ) by ring]
   unfold transverseCauchyKernel
   exact hstep1.trans (mul_le_mul_of_nonneg_left hstep2 (by norm_num))
 
@@ -77,7 +87,7 @@ theorem continuous_windowNarrowSum {ι : Type*} (Z : Finset ι) (γ : ι → ℝ
     {r : ℝ} (hr : 0 < r) :
     Continuous (windowNarrowSum Z γ r) := by
   unfold windowNarrowSum
-  refine continuous_finset_sum Z fun q _ => ?_
+  refine continuous_finsetSum Z fun q _ => ?_
   refine Continuous.div continuous_const (by fun_prop) fun t => ?_
   positivity
 
@@ -101,7 +111,6 @@ theorem narrowKernel_mul_eq_poisson {r : ℝ} (hr : 0 < r) (t x y : ℝ) :
   have hsq : (x - t) ^ (2 : ℕ) = (t - x) ^ (2 : ℕ) := by ring
   rw [halfPlanePoisson, halfPlanePoisson, hsq]
   field_simp
-  ring
 
 theorem integrable_narrowKernel_mul {r : ℝ} (hr : 0 < r) (x y : ℝ) :
     Integrable (fun t : ℝ =>
@@ -145,8 +154,8 @@ theorem integrable_windowNarrowSum_sq {ι : Type*} (Z : Finset ι) (γ : ι → 
     funext t
     rw [windowNarrowSum, sq, Finset.sum_mul_sum]
   rw [hrew]
-  exact integrable_finset_sum Z fun q₁ _ =>
-    integrable_finset_sum Z fun q₂ _ => integrable_narrowKernel_mul hr (γ q₁) (γ q₂)
+  exact integrable_finsetSum Z fun q₁ _ =>
+    integrable_finsetSum Z fun q₂ _ => integrable_narrowKernel_mul hr (γ q₁) (γ q₂)
 
 /-- **Exact Poisson semigroup `L²` identity.** The Lorentzian pair sum at width `R₀ > 0` equals
 `(4 / (π R₀))` times the global `L²` integral of `windowNarrowSum Z γ (R₀ / 2)`. -/
@@ -164,8 +173,8 @@ theorem lorentz_pairSum_eq_integral_windowNarrowSum_sq {ι : Type*} (Z : Finset 
           ((R₀ / 2) ^ (2 : ℕ) / ((R₀ / 2) ^ (2 : ℕ) + (t - γ q₂) ^ (2 : ℕ))) := by
     funext t
     rw [windowNarrowSum, sq, Finset.sum_mul_sum]
-  rw [hrew, MeasureTheory.integral_finset_sum Z (fun q₁ _ =>
-    integrable_finset_sum Z fun q₂ _ => integrable_narrowKernel_mul hr (γ q₁) (γ q₂))]
+  rw [hrew, MeasureTheory.integral_finsetSum Z (fun q₁ _ =>
+    integrable_finsetSum Z fun q₂ _ => integrable_narrowKernel_mul hr (γ q₁) (γ q₂))]
   have hsum_eq :
       (∑ q₁ ∈ Z, ∫ t : ℝ, ∑ q₂ ∈ Z,
           ((R₀ / 2) ^ (2 : ℕ) / ((R₀ / 2) ^ (2 : ℕ) + (t - γ q₁) ^ (2 : ℕ))) *
@@ -174,7 +183,7 @@ theorem lorentz_pairSum_eq_integral_windowNarrowSum_sq {ι : Type*} (Z : Finset 
           R₀ ^ (2 : ℕ) / (R₀ ^ (2 : ℕ) + (γ q₁ - γ q₂) ^ (2 : ℕ)) := by
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun q₁ _ => ?_
-    rw [MeasureTheory.integral_finset_sum Z
+    rw [MeasureTheory.integral_finsetSum Z
         (fun q₂ _ => integrable_narrowKernel_mul hr (γ q₁) (γ q₂)), Finset.mul_sum]
     refine Finset.sum_congr rfl fun q₂ _ => integral_narrowKernel_mul hR₀ (γ q₁) (γ q₂)
   rw [hsum_eq]
@@ -182,7 +191,7 @@ theorem lorentz_pairSum_eq_integral_windowNarrowSum_sq {ι : Type*} (Z : Finset 
 
 /-- Five-piece union bound on `ℝ` for any nonnegative integrable function. -/
 theorem integral_le_five_pieces {f : ℝ → ℝ} (hf : Integrable f)
-    (hnn : ∀ t : ℝ, 0 ≤ f t) {T : ℝ} (hT : 0 < T) :
+    (hnn : ∀ t : ℝ, 0 ≤ f t) {T : ℝ} (_hT : 0 < T) :
     (∫ t : ℝ, f t) ≤
       (∫ t in Iic (T / 2), f t) +
         (∫ t in Icc (T / 2) T, f t) +
@@ -194,11 +203,25 @@ theorem integral_le_five_pieces {f : ℝ → ℝ} (hf : Integrable f)
   have hi3 : Integrable ((Icc T (2 * T)).indicator f) := hf.indicator measurableSet_Icc
   have hi4 : Integrable ((Icc (2 * T) (4 * T)).indicator f) := hf.indicator measurableSet_Icc
   have hi5 : Integrable ((Ici (4 * T)).indicator f) := hf.indicator measurableSet_Ici
+  have h12 : Integrable (fun t =>
+      (Iic (T / 2)).indicator f t + (Icc (T / 2) T).indicator f t) := hi1.add hi2
+  have h123 : Integrable (fun t =>
+      ((Iic (T / 2)).indicator f t + (Icc (T / 2) T).indicator f t) +
+        (Icc T (2 * T)).indicator f t) := h12.add hi3
+  have h1234 : Integrable (fun t =>
+      (((Iic (T / 2)).indicator f t + (Icc (T / 2) T).indicator f t) +
+        (Icc T (2 * T)).indicator f t) +
+        (Icc (2 * T) (4 * T)).indicator f t) := h123.add hi4
+  have h12345 : Integrable (fun t =>
+      ((((Iic (T / 2)).indicator f t + (Icc (T / 2) T).indicator f t) +
+        (Icc T (2 * T)).indicator f t) +
+        (Icc (2 * T) (4 * T)).indicator f t) +
+        (Ici (4 * T)).indicator f t) := h1234.add hi5
   have hpt : ∀ t : ℝ, f t ≤
-      (Iic (T / 2)).indicator f t +
-        (Icc (T / 2) T).indicator f t +
-        (Icc T (2 * T)).indicator f t +
-        (Icc (2 * T) (4 * T)).indicator f t +
+      ((((Iic (T / 2)).indicator f t +
+        (Icc (T / 2) T).indicator f t) +
+        (Icc T (2 * T)).indicator f t) +
+        (Icc (2 * T) (4 * T)).indicator f t) +
         (Ici (4 * T)).indicator f t := by
     intro t
     have p1 := Set.indicator_nonneg (s := Iic (T / 2)) (fun x _ => hnn x) t
@@ -215,11 +238,11 @@ theorem integral_le_five_pieces {f : ℝ → ℝ} (hf : Integrable f)
         · by_cases h4 : t ≤ 4 * T
           · rw [Set.indicator_of_mem (show t ∈ Icc (2 * T) (4 * T) from ⟨by linarith, h4⟩)]
             linarith
-          · rw [Set.indicator_of_mem (show t ∈ Ici (4 * T) by linarith)]; linarith
-  have hmono := MeasureTheory.integral_mono hf ((((hi1.add hi2).add hi3).add hi4).add hi5) hpt
-  rw [MeasureTheory.integral_add (((hi1.add hi2).add hi3).add hi4) hi5,
-    MeasureTheory.integral_add ((hi1.add hi2).add hi3) hi4,
-    MeasureTheory.integral_add (hi1.add hi2) hi3,
+          · rw [Set.indicator_of_mem (show t ∈ Ici (4 * T) from le_of_not_ge h4)]; linarith
+  have hmono := MeasureTheory.integral_mono hf h12345 hpt
+  rw [MeasureTheory.integral_add h1234 hi5,
+    MeasureTheory.integral_add h123 hi4,
+    MeasureTheory.integral_add h12 hi3,
     MeasureTheory.integral_add hi1 hi2,
     MeasureTheory.integral_indicator measurableSet_Iic,
     MeasureTheory.integral_indicator measurableSet_Icc,
