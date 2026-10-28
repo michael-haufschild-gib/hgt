@@ -36,6 +36,8 @@ open MeasureTheory Finset
 
 namespace GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
 
+open GaloisForLFunctions.SpacingScaleHarmonicAnalysis GaloisForLFunctions.ArithmeticElectrostatics
+
 /-- The left pole moment `A(f) = ∫ f e^{−u/2}`. -/
 def poleMomentA (f : ℝ → ℝ) : ℝ := ∫ u, f u * Real.exp (-(u / 2))
 
@@ -84,8 +86,8 @@ theorem exp_abs_mul_le_abs_polePairing_shift (f : ℝ → ℝ) (s t : ℝ) :
     |poleMomentA f * poleMomentB f| * Real.exp (|t - s| / 2) ≤
       |polePairing (fun u => f (u - s)) (fun u => f (u - t))| := by
   rw [polePairing_shift, show 2 * poleMomentA f * poleMomentB f * Real.cosh ((t - s) / 2) =
-      (poleMomentA f * poleMomentB f) * (2 * Real.cosh ((t - s) / 2)) by ring, abs_mul,
-    abs_of_pos (by positivity : 0 < 2 * Real.cosh ((t - s) / 2))]
+      (poleMomentA f * poleMomentB f) * (2 * Real.cosh ((t - s) / 2)) by ring,
+    abs_mul (poleMomentA f * poleMomentB f), abs_of_pos (by positivity : 0 < 2 * Real.cosh ((t - s) / 2))]
   refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
   have h := exp_abs_le_two_mul_cosh ((t - s) / 2)
   rwa [abs_div, abs_two] at h
@@ -122,7 +124,7 @@ theorem integral_levelOrbit_mul {ι : Type*} (S : Finset ι) (c s : ι → ℝ) 
     ∫ u, levelOrbit S c s f u * e u = ∑ j ∈ S, c j * ∫ u, f (u - s j) * e u := by
   unfold levelOrbit
   simp_rw [sum_mul]
-  rw [integral_finset_sum _ fun j _ => integrable_const_mul_shift_mul hf hfc he (c j) (s j)]
+  rw [integral_finsetSum _ fun j _ => integrable_const_mul_shift_mul hf hfc he (c j) (s j)]
   refine sum_congr rfl fun j _ => ?_
   simp_rw [mul_assoc]
   exact integral_const_mul _ _
@@ -159,7 +161,9 @@ theorem hasCompactSupport_levelOrbit {ι : Type*} (S : Finset ι) (c s : ι → 
   classical
   unfold levelOrbit
   induction S using Finset.induction_on with
-  | empty => simpa using (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℝ))
+  | empty =>
+    simp only [sum_empty]
+    exact HasCompactSupport.zero
   | insert j S hj ih =>
     simp_rw [sum_insert hj]
     have hK : HasCompactSupport (fun u => c j * f (u - s j)) :=
@@ -230,7 +234,7 @@ theorem poleTerm_twoLevels_opposite {f : ℝ → ℝ} (hf : Continuous f) (hfc :
       (poleMomentA (levelOrbit univ ![1, -1] ![s, t] f) *
         poleMomentB (levelOrbit univ ![1, -1] ![s, t] f)) < 0 := by
   simp only [poleMomentA_levelOrbit _ _ _ hf hfc, poleMomentB_levelOrbit _ _ _ hf hfc,
-    Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+    Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one]
   have hneg := poleQuad_twoLevels_neg hst
   have hpos : 0 < (poleMomentA f * poleMomentB f) ^ 2 := by positivity
   have hexp : Real.exp (-(s / 2)) * Real.exp (s / 2) = 1 := by

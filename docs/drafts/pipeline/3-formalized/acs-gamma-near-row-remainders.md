@@ -55,3 +55,16 @@ Writing `wₐ=logCellWidth a`, `k=archLevyDensity`, and `E=exp(1/2)`, the checke
 The first estimate combines `wₐ≥1/(a+1)` with `k(w)≤E/(2w)` for `w≤1`. Multiplication by the adjacent upper width bounds gives the next two estimates. For the gap, the integer inequalities imply `(b+1)*3/2≤a` on the lower side or `(a+1)*3/2≤b` on the upper side; taking logarithms proves the interval inclusions. These estimates retain the actual nonuniform logarithmic widths.
 
 Both modules have six clean audits, with only `propext`, `Classical.choice`, `Quot.sound`. The uniform bound for the complete integrated error row remains a separate open assembly step.
+
+## Actual finite nearby rows
+
+[LogCellGammaNearFiniteRows.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/LogCellGammaNearFiniteRows.lean) passed its exact project check and all four transitive audits without warnings. Log: `/tmp/acs-logcell-gamma-near-finite-final.log`.
+
+For any common translation `s`, let `Rₐᵦ` be the actual integrated farthest-endpoint replacement loss between `s+(log a,log(a+1))` and `s+(log b,log(b+1))`. For arbitrary finite index subsets:
+
+- If every `b` satisfies `a+2≤b≤2a`, then `Σ_b Rₐᵦ≤ofReal(6*exp(1/2)*wₐ)` (`gamma_logCell_nearUpper_sum_le`).
+- If every `b` satisfies `1≤b`, `b+2≤a`, and `a≤2b`, then `Σ_b Rₐᵦ≤ofReal(2*exp(1/2)*wₐ)` (`gamma_logCell_nearLower_sum_le`).
+
+The endpoint losses are nonnegative, so a finite subset costs no more than its complete nearby row. An explicit finite reindexing identifies the upper interval with the already checked shifted range; the lower subset sits inside the checked filtered row. The actual pair-error endpoint inequality then gives each integrated term, and exact common-translation invariance removes `s`. All sums pass through `ofReal` only after their real summands are proved nonnegative.
+
+`gammaCellNearUpper_subset_le` and `gammaCellNearLower_subset_le` prove the intermediate real endpoint-row estimates. All three modules now have ten clean standard-axiom audits. The distant row, touching row, and full row assembly remain open.

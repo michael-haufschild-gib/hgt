@@ -258,10 +258,24 @@ ranges is zero. Orthogonality to every wandering level forces a vector into
 every range, proving completeness. The actual cell embedding satisfies
 \(UW_2^j=(T_{\log2})^jU\).
 
-This is Hilbert orthogonality in the closed logarithmic-cell subspace. The
-explicit balanced-Haar description of \(K\), joint Gamma estimates across
-levels and full-Weil mixed bounds are distinct tasks. The cell completion is
-not identified with the entire continuous source graph.
+The wandering coordinates are explicit. Put \(\ell_a=\log((a+1)/a)\),
+\(\alpha_a=\sqrt{\ell_{2a}/\ell_a}\) and
+\(\beta_a=\sqrt{\ell_{2a+1}/\ell_a}\). Then
+\(\alpha_a^2+\beta_a^2=1\), and
+
+\[
+W_2e_a=\alpha_ae_{2a}+\beta_ae_{2a+1},\qquad
+d_a=\beta_ae_{2a}-\alpha_ae_{2a+1}.
+\]
+
+[BalancedCellDetailsFormTheWanderingBasis](BalancedCellDetailsFormTheWanderingBasis.lean)
+constructs the Hilbert basis \(\{e_1\}\cup\{d_a:a\ge1\}\) of \(K\).
+The two weighted coordinate equations determine each cell pair, proving that
+these readouts leave no missing wandering direction.
+
+This is Hilbert orthogonality in the closed logarithmic-cell subspace.
+Joint Gamma estimates across levels and full-Weil mixed bounds remain separate.
+The cell completion is not identified with the entire continuous source graph.
 
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm

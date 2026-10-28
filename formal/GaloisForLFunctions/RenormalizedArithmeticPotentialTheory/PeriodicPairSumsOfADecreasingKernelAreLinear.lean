@@ -290,6 +290,193 @@ theorem abs_sum_periodicPair_le {q N : ℕ} (hq : 1 ≤ q) {B A : ℝ} (hA : 0 �
     rw [show 1 + i + J + 1 = (i + 1) + (J + 1) by ring, show 1 + i = i + 1 by ring]
     push_cast
     ring_nf
-  sorry
+  rw [hreidx]
+  -- the autocorrelation and the row sums
+  set c : ℕ → ℝ := fun J => (∑ i ∈ range q, ψ (i + 1) * ψ (i + 1 + (J + 1))) / q
+  set T : ℕ → ℝ := fun J => ∑ i ∈ range (N - 1 - J), gapKernel Φ (i + 1) (J + 1)
+  set E : ℕ → ℝ := fun J => ∑ i ∈ range (N - 1 - J),
+    (ψ (i + 1) * ψ (i + 1 + (J + 1)) - c J) * gapKernel Φ (i + 1) (J + 1)
+  have hsplit : ∀ J, ∑ i ∈ range (N - 1 - J), F i J = c J * T J + E J := fun J => by
+    simp only [F, T, E, mul_sum, ← sum_add_distrib]
+    exact sum_congr rfl fun i _ => by ring
+  rw [sum_congr rfl fun J _ => hsplit J, sum_add_distrib]
+  -- the error of each gap
+  have hE : ∀ J ∈ range (N - 1), |E J| ≤
+      6 * q * B ^ 2 * (2 * A * N * (1 / (((J : ℝ) + 1) * Real.sqrt ((J : ℝ) + 2)))) := by
+    intro J hJ
+    have hJN : J + 2 ≤ N := by have := mem_range.mp hJ; omega
+    set n := N - 1 - J
+    set u' : ℕ → ℝ := fun i => Φ (Real.log (((i + 1 : ℕ) : ℝ) + ((J + 1 : ℕ) : ℝ)) -
+      Real.log ((i + 1 : ℕ) : ℝ))
+    set v' : ℕ → ℝ := fun i => 1 / (Real.sqrt ((i + 1 : ℕ) : ℝ) *
+      Real.sqrt (((i + 1 : ℕ) : ℝ) + ((J + 1 : ℕ) : ℝ)))
+    have hb : ∀ i, gapKernel Φ (i + 1) (J + 1) = u' i * v' i := fun i => rfl
+    set U := A * (N / ((J + 1 : ℕ) : ℝ) + 1)
+    set V := 1 / Real.sqrt (((J + 1 : ℕ) : ℝ) + 1)
+    have hU0 : 0 ≤ U := by positivity
+    have hV0 : 0 ≤ V := by positivity
+    have hu0 : ∀ i < n, 0 ≤ u' i := fun i _ => hΦ0 _ (hlogpos (i + 1) (J + 1) (by omega) (by omega))
+    have huU : ∀ i < n, u' i ≤ U := fun i hi =>
+      hΦU (i + 1) (J + 1) (by omega) (by omega) (by omega)
+    have hum : ∀ i, i + 1 < n → u' i ≤ u' (i + 1) := by
+      intro i _
+      simp only [u']
+      refine hΦanti _ _ (hlogpos (i + 1 + 1) (J + 1) (by omega) (by omega)) ?_
+      have := htmono ((i + 1 : ℕ) : ℝ) ((J + 1 : ℕ) : ℝ) (by positivity) (by positivity)
+      push_cast at this ⊢
+      linarith
+    have hv0 : ∀ i < n, 0 ≤ v' i := fun i _ => by positivity
+    have hvV : ∀ i < n, v' i ≤ V := by
+      intro i _
+      simp only [v', V]
+      rw [one_div_le_one_div (by positivity) (by positivity)]
+      have h1 : 1 ≤ Real.sqrt ((i + 1 : ℕ) : ℝ) := Real.one_le_sqrt.mpr (by push_cast; linarith)
+      have h2 : Real.sqrt (((J + 1 : ℕ) : ℝ) + 1) ≤ Real.sqrt (((i + 1 : ℕ) : ℝ) + ((J + 1 : ℕ) : ℝ)) :=
+        Real.sqrt_le_sqrt (by push_cast; linarith)
+      nlinarith [Real.sqrt_nonneg (((J + 1 : ℕ) : ℝ) + 1)]
+    have hvm : ∀ i, i + 1 < n → v' (i + 1) ≤ v' i := by
+      intro i _
+      simp only [v']
+      rw [one_div_le_one_div (by positivity) (by positivity)]
+      exact mul_le_mul (Real.sqrt_le_sqrt (by push_cast; linarith))
+        (Real.sqrt_le_sqrt (by push_cast; linarith)) (by positivity) (by positivity)
+    -- the partial sums of the centred coefficient
+    have hP : ∀ k ≤ n, |∑ i ∈ range k, (ψ (i + 1) * ψ (i + 1 + (J + 1)) - c J)| ≤ 2 * q * B ^ 2 := by
+      intro k _
+      have h := abs_sum_range_sub_mul_mean_le hq (U := B ^ 2)
+        (fun i => ψ (i + 1) * ψ (i + 1 + (J + 1)))
+        (fun i => by
+          show ψ (i + q + 1) * ψ (i + q + 1 + (J + 1)) = ψ (i + 1) * ψ (i + 1 + (J + 1))
+          rw [show i + q + 1 = (i + 1) + q by ring, hper,
+            show i + 1 + q + (J + 1) = (i + 1 + (J + 1)) + q by ring, hper])
+        (fun i => by
+          show |ψ (i + 1) * ψ (i + 1 + (J + 1))| ≤ B ^ 2
+          rw [abs_mul, sq]; exact mul_le_mul (hB _) (hB _) (abs_nonneg _) hB0) k
+      rw [sum_sub_distrib, sum_const, card_range, nsmul_eq_mul]
+      exact h
+    have habel := abs_sum_range_mul_le (fun i => ψ (i + 1) * ψ (i + 1 + (J + 1)) - c J)
+      (fun i => gapKernel Φ (i + 1) (J + 1)) n hP
+    have hTV := sum_abs_sub_mul_le u' v' n hU0 hV0 hu0 huU hum hv0 hvV hvm
+    have hlast : |gapKernel Φ (n - 1 + 1) (J + 1)| ≤ U * V := by
+      rw [hb, abs_of_nonneg (mul_nonneg (hu0 _ (by omega)) (hv0 _ (by omega)))]
+      exact mul_le_mul (huU _ (by omega)) (hvV _ (by omega)) (hv0 _ (by omega)) hU0
+    have hUV : U * V ≤ 2 * A * N * (1 / (((J : ℝ) + 1) * Real.sqrt ((J : ℝ) + 2))) := by
+      simp only [U, V]
+      push_cast
+      have hJ1 : (0 : ℝ) < (J : ℝ) + 1 := by positivity
+      have hJN' : (J : ℝ) + 1 ≤ N := by exact_mod_cast (show J + 1 ≤ N by omega)
+      rw [show ((J : ℝ) + 1 + 1) = (J : ℝ) + 2 by ring]
+      have hs : 0 < Real.sqrt ((J : ℝ) + 2) := Real.sqrt_pos.mpr (by positivity)
+      rw [mul_one_div, mul_one_div, div_le_div_iff₀ hs (by positivity)]
+      have : (N : ℝ) / ((J : ℝ) + 1) + 1 ≤ 2 * N / ((J : ℝ) + 1) := by
+        rw [div_add_one hJ1.ne', div_le_div_iff_of_pos_right hJ1]; linarith
+      have := mul_le_mul_of_nonneg_left this hA
+      calc A * ((N : ℝ) / ((J : ℝ) + 1) + 1) * (((J : ℝ) + 1) * Real.sqrt ((J : ℝ) + 2))
+          ≤ A * (2 * N / ((J : ℝ) + 1)) * (((J : ℝ) + 1) * Real.sqrt ((J : ℝ) + 2)) :=
+            mul_le_mul_of_nonneg_right this (by positivity)
+        _ = 2 * A * N * Real.sqrt ((J : ℝ) + 2) := by field_simp
+    have hE' : |E J| ≤ 2 * q * B ^ 2 * (3 * (U * V)) := by
+      have h1 : |E J| = |∑ i ∈ range n, gapKernel Φ (i + 1) (J + 1) *
+          (ψ (i + 1) * ψ (i + 1 + (J + 1)) - c J)| := by
+        simp only [E]; congr 1; exact sum_congr rfl fun i _ => by ring
+      rw [h1]
+      refine habel.trans (mul_le_mul_of_nonneg_left ?_ (by positivity))
+      have h2 : ∑ i ∈ range (n - 1), |gapKernel Φ (i + 1 + 1) (J + 1) - gapKernel Φ (i + 1) (J + 1)|
+          ≤ 2 * U * V := by
+        refine le_trans (le_of_eq (sum_congr rfl fun i _ => by rw [hb, hb])) hTV
+      linarith
+    calc |E J| ≤ 2 * q * B ^ 2 * (3 * (U * V)) := hE'
+      _ ≤ 2 * q * B ^ 2 * (3 * (2 * A * N * (1 / (((J : ℝ) + 1) * Real.sqrt ((J : ℝ) + 2))))) :=
+          mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+      _ = _ := by ring
+  -- the main term: the autocorrelation against the decreasing row sums
+  have hT0 : ∀ J, 0 ≤ T J := fun J => sum_nonneg fun i _ => hF0 _ _ (by omega) (by omega)
+  have hTm : ∀ J, T (J + 1) ≤ T J := by
+    intro J
+    simp only [T]
+    calc ∑ i ∈ range (N - 1 - (J + 1)), gapKernel Φ (i + 1) (J + 1 + 1)
+        ≤ ∑ i ∈ range (N - 1 - (J + 1)), gapKernel Φ (i + 1) (J + 1) :=
+          sum_le_sum fun i _ => hFJ _ _ (by omega) (by omega)
+      _ ≤ ∑ i ∈ range (N - 1 - J), gapKernel Φ (i + 1) (J + 1) :=
+          sum_le_sum_of_subset_of_nonneg (range_subset_range.mpr (by omega))
+            fun i _ _ => hF0 _ _ (by omega) (by omega)
+  have hT1 : T 0 ≤ 3 * A * N := by
+    simp only [T]
+    have hterm : ∀ i ∈ range (N - 1 - 0), gapKernel Φ (i + 1) (0 + 1) ≤ 3 * A := by
+      intro i _
+      have hm0 : (0 : ℝ) < ((i + 1 : ℕ) : ℝ) := by positivity
+      have ht := hlogpos (i + 1) 1 (by omega) le_rfl
+      have h1 := div_le_log_add_sub_log hm0 (show (0 : ℝ) ≤ ((1 : ℕ) : ℝ) by positivity)
+      unfold gapKernel
+      simp only [Nat.cast_add, Nat.cast_one, zero_add] at ht h1 ⊢
+      have hinv : 1 / (Real.log ((i : ℝ) + 1 + 1) - Real.log ((i : ℝ) + 1)) ≤ (i : ℝ) + 2 := by
+        rw [div_le_iff₀ ht]
+        have := (div_le_iff₀ (show (0 : ℝ) < (i : ℝ) + 1 + 1 by positivity)).mp h1
+        nlinarith
+      have hΦb := hΦA _ ht
+      have hsq : (i : ℝ) + 1 ≤ Real.sqrt ((i : ℝ) + 1) * Real.sqrt ((i : ℝ) + 1 + 1) := by
+        rw [← Real.sqrt_mul (by positivity)]
+        exact Real.le_sqrt_of_sq_le (by nlinarith)
+      have hden : 0 < Real.sqrt ((i : ℝ) + 1) * Real.sqrt ((i : ℝ) + 1 + 1) := by positivity
+      calc Φ (Real.log ((i : ℝ) + 1 + 1) - Real.log ((i : ℝ) + 1)) *
+            (1 / (Real.sqrt ((i : ℝ) + 1) * Real.sqrt ((i : ℝ) + 1 + 1)))
+          ≤ A * ((i : ℝ) + 2 + 1) * (1 / ((i : ℝ) + 1)) := by
+            refine mul_le_mul (hΦb.trans (mul_le_mul_of_nonneg_left (by linarith) hA))
+              (one_div_le_one_div_of_le (by positivity) hsq) (by positivity) (by positivity)
+        _ ≤ 3 * A := by
+            rw [mul_one_div, div_le_iff₀ (by positivity)]; nlinarith
+    calc ∑ i ∈ range (N - 1 - 0), gapKernel Φ (i + 1) (0 + 1) ≤ ∑ _i ∈ range (N - 1 - 0), 3 * A :=
+          sum_le_sum hterm
+      _ = 3 * A * ((N - 1 - 0 : ℕ) : ℝ) := by rw [sum_const, card_range, nsmul_eq_mul]; ring
+      _ ≤ 3 * A * N := mul_le_mul_of_nonneg_left (by exact_mod_cast (show N - 1 - 0 ≤ N by omega))
+          (by positivity)
+  have hcper : ∀ J, c (J + q) = c J := fun J => by
+    simp only [c]
+    congr 1
+    exact sum_congr rfl fun i _ => by
+      rw [show i + 1 + (J + q + 1) = (i + 1 + (J + 1)) + q by ring, hper]
+  have hcB : ∀ J, |c J| ≤ B ^ 2 := fun J => by
+    simp only [c]
+    rw [abs_div, abs_of_pos hq0, div_le_iff₀ hq0]
+    refine (abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ i ∈ range q, |ψ (i + 1) * ψ (i + 1 + (J + 1))| ≤ ∑ _i ∈ range q, B ^ 2 :=
+          sum_le_sum fun i _ => by rw [abs_mul, sq]; exact mul_le_mul (hB _) (hB _) (abs_nonneg _) hB0
+      _ = B ^ 2 * q := by rw [sum_const, card_range, nsmul_eq_mul]; ring
+  have hcmean : ∑ J ∈ range q, c J = 0 := by
+    simp only [c, ← sum_div]
+    rw [sum_comm]
+    have : ∀ i ∈ range q, ∑ J ∈ range q, ψ (i + 1) * ψ (i + 1 + (J + 1)) = 0 := fun i _ => by
+      rw [← mul_sum, show ∑ J ∈ range q, ψ (i + 1 + (J + 1)) = ∑ J ∈ range q, ψ ((i + 2) + J) from
+        sum_congr rfl fun J _ => by rw [show i + 1 + (J + 1) = (i + 2) + J by ring],
+        sum_range_shift_of_periodic ψ hper, hmean, mul_zero]
+    rw [sum_eq_zero this, zero_div]
+  have hPc : ∀ k ≤ N - 1, |∑ J ∈ range k, c J| ≤ 2 * q * B ^ 2 := by
+    intro k _
+    have h := abs_sum_range_sub_mul_mean_le hq c hcper hcB k
+    rwa [hcmean, zero_div, mul_zero, sub_zero] at h
+  have hmain : |∑ J ∈ range (N - 1), c J * T J| ≤ 6 * q * B ^ 2 * A * N := by
+    rcases Nat.lt_or_ge (N - 1) 1 with hN1 | hN1
+    · rw [show N - 1 = 0 by omega, range_zero, sum_empty, abs_zero]; positivity
+    have habel := abs_sum_range_mul_le c T (N - 1) hPc
+    rw [abs_last_add_sum_abs_sub_eq T hN1 (fun J _ => hT0 J) (fun J _ => hTm J)] at habel
+    calc |∑ J ∈ range (N - 1), c J * T J| = |∑ J ∈ range (N - 1), T J * c J| := by
+          congr 1; exact sum_congr rfl fun J _ => mul_comm _ _
+      _ ≤ 2 * q * B ^ 2 * T 0 := habel
+      _ ≤ 2 * q * B ^ 2 * (3 * A * N) := mul_le_mul_of_nonneg_left hT1 (by positivity)
+      _ = 6 * q * B ^ 2 * A * N := by ring
+  have herr : |∑ J ∈ range (N - 1), E J| ≤ 36 * q * B ^ 2 * A * N := by
+    refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hE).trans ?_)
+    rw [← mul_sum, ← mul_sum]
+    have := sum_one_div_mul_sqrt_le (N - 1)
+    have h0 : 0 ≤ 6 * q * B ^ 2 * (2 * A * N) := by positivity
+    calc 6 * q * B ^ 2 * (2 * A * N * ∑ J ∈ range (N - 1), 1 / (((J : ℝ) + 1) * Real.sqrt ((J : ℝ) + 2)))
+        ≤ 6 * q * B ^ 2 * (2 * A * N * 3) := by
+          refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left this (by positivity))
+            (by positivity)
+      _ = 36 * q * B ^ 2 * A * N := by ring
+  calc |∑ J ∈ range (N - 1), c J * T J + ∑ J ∈ range (N - 1), E J|
+      ≤ |∑ J ∈ range (N - 1), c J * T J| + |∑ J ∈ range (N - 1), E J| := abs_add_le _ _
+    _ ≤ 6 * q * B ^ 2 * A * N + 36 * q * B ^ 2 * A * N := add_le_add hmain herr
+    _ = 42 * q * B ^ 2 * A * N := by ring
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

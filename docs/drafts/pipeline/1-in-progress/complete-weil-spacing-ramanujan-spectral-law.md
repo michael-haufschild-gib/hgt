@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** full-prime Ramanujan quasimodes; bounded-defect finite-span approximation; exact archimedean atom pairing; actual two-pole rows
-- **Statement:** The complete normalized Weil matrix has Ramanujan quasimodes at every fixed separated width ratio, and its bounded spectrum is exhausted by their explicit simple energies at a sufficiently small fixed ratio.
+- **Statement:** The complete normalized Weil matrix has Ramanujan quasimodes at every fixed separated width ratio, and its bounded spectrum is exhausted by their explicit simple energies throughout the separated regime (strengthened conjecture; exact separation interfaces still to prove).
 - **Count:** uncounted; stronger extension of the packet-form candidate, not an additional count for its weaker corollaries
 
 ## Goal
@@ -370,3 +370,55 @@ Consequently the whole row is bounded by
 This supplies the required bounded unnormalized error by elementary finite
 sums; it does not require a sharper weighted density derivative estimate.
 These row and transfer inequalities still require their exact Lean proofs.
+
+### Stronger conjecture exposed by the row argument: the entire separated regime
+
+The original small-c exhaustion restriction may be removable. This is a
+strengthened conjecture requiring a fresh paper and novelty audit, not a proved
+extension. The proposed final range is **0<c<1**, with w=c/N<atomSpacing(N)
+eventually. The existing exact prime and mass interfaces must be checked and,
+where their stated half-spacing restriction is stronger than their mechanism,
+proved on the full strictly separated range. No such relaxation is assumed.
+
+Let Omega be the symmetric nonnegative center-density matrix, s_n=1/sqrt(n),
+t_n=sqrt(n), and B=(alpha/N)(s tensor t+t tensor s-Omega). The exact row
+identity gives `(Omega s)_n/s_n <= n*(H_N+1)`: use H_(N-n)<=H_N
+and H_(N+n)-H_N<=1. Weighted Schur then gives, on x orthogonal to s,
+
+`<Bx,x> >= -alpha*sum_n (n/N)*(H_N+1)*x_n^2`.
+
+Since H_N<=log(N)+1 and `(n/N)*log(N/n)<=1`, the weighted sum on the
+right is at most `sum_n (n/N)*log(n)*x_n^2 + 3*mass(x)`.
+The already inspected `sum_top_le_poleDefect` yields coefficient 2 in front
+of D, sufficient for all c<1/2. The refreshed search additionally surfaced
+ALG `TheArchimedeanCrossEnergyIsOneSided.sum_top_le_poleDefect_param`:
+its statement and edge/Chebyshev proof were inspected. It yields coefficient
+`1+1/lam` for any lam>0, with a finite mass constant. This input is baseline
+and its independent source/axiom verification must be obtained before use.
+
+The pole has exactly zero prime defect. Write any vector as x=a*e+y, e=s/||s||,
+y orthogonal to e. Then D(y)=D(x). The ground-row identity and harmonic square
+bound give ||Be|| uniformly bounded. The cross and ground terms in <Bx,x>
+therefore cost only a constant times ||x||^2. Consequently, on the whole space,
+
+`<Bx,x> >= -alpha*(1+1/lam)*D(x)-C_lam*mass(x)`.
+
+The actual cross-integral replacement error has a stronger uniform operator
+bound as well: each absolute entry is at most
+`C_phi,c*w^2*max(n,j)^2/(n-j)^2`, hence every absolute row sums to at most
+`4*C_phi,c*w^2*N^2`. The symmetric Schur bound gives a uniform matrix norm
+at w=c/N. The actual two-pole coefficient error is O(w^2), while the outer
+product norm is at most 2*N*sqrt(H_N)<=2*N^(3/2), so that error is uniformly
+bounded too. The actual self-energy remainder is already bounded.
+
+Since alpha<=c<1, choose lam=2c/(1-c) and epsilon=(1-c)/4 in the prime
+counterterm estimate. This leaves defect coefficient at least (1-c)/4>0
+in the complete Weil matrix. Thus the same arithmetic compactness mechanism
+should give spectral exhaustion for every strictly separated c, without a
+smallness condition tied to the existing crude cross/pole estimates.
+
+The ground shift alpha<1 remains below every nontrivial arithmetic excitation
+(log(m)+tameDifferent(m)>1 for m>=2); this sharper elementary separation
+needs its own exact proof or a checked existing lemma. All other energies
+retain the established injectivity. This is one stronger target for the same
+prospective contribution, not a numerical improvement counted separately.

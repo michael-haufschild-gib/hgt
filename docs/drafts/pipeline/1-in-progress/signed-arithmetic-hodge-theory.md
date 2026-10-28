@@ -167,14 +167,15 @@ further obligations.
 
 ### Completed logarithmic-cell clock
 
-First prove the completed weighted statement on H=l2(N+;C), with the actual
-W=logCellShift 2 and K=(range W)^perp. W^j annihilates coordinates below 2^j,
+TheLogCellClockHasACompleteWanderingDecomposition proves the completed weighted
+statement on H=l2(N+;C), with actual W=logCellShift 2 and K=(range W)^perp. W^j annihilates coordinates below 2^j,
 so the intersection of its iterated ranges is zero. Distinct translates W^j K
 are orthogonal, and their closed linear span is H. The proof of completeness
 pulls a vector orthogonal to every W^j K back through the closed isometric range
-at every depth, then uses the support cutoff. This also gives exact finite
-Pythagoras and literal compatibility with the cell embedding U. Identify K
-with cell 1 plus the balanced weighted Haar details afterward.
+at every depth, then uses the support cutoff. Literal compatibility with the cell embedding U is also proved. Its final
+individual no-olean audit passes with standard axioms only. Exact finite
+Pythagoras and identification of K with cell 1 plus balanced weighted Haar
+details are further coordinate theorems.
 
 The existing finite unweighted average/difference expansion is already proved
 in TheCompleteSourceIsADyadicMultiresolution. The new target is the Hilbert
@@ -205,3 +206,13 @@ for u,v in K and p>=2. Prime two is the one-step shift. This is a candidate
 analytic operator-valued Toeplitz representation of the actual arithmetic
 semigroup. Its coefficients must be derived from the original source maps.
 It supplies no selective sign or joint Gamma cost without additional proofs.
+
+### Finite source exhaustion before form limits
+
+Prove e_(2a)=alpha_a W e_a+beta_a d_a and
+e_(2a+1)=beta_a W e_a-alpha_a d_a. The algebraic span of all W^j generators
+is W-invariant. Strong induction in the integer coordinate then places every
+standard cell vector, hence every finite compact cell profile, in this
+algebraic span. This is stronger domain information than Hilbert density:
+Gamma and the full Weil form can be evaluated on exact finite expansions
+without an unproved passage through infinite sums.

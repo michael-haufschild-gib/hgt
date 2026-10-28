@@ -109,7 +109,7 @@ theorem iteratedDeriv_glueR_of_nonpos (hr : Odd r) (n : ℕ) {x : ℝ} (hx : x �
   rw [closure_Iio] at hcl
   exact hcl hx
 
-theorem natDegree_dcPoly_lt (r n : ℕ) : (dcPoly r n).natDegree < n * (r + 1) + 1 := by
+theorem natDegree_dcPoly_lt (hr : 1 ≤ r) (n : ℕ) : (dcPoly r n).natDegree < n * (r + 1) + 1 := by
   induction n with
   | zero => simp [dcPoly]
   | succ n ih =>
@@ -126,8 +126,7 @@ theorem natDegree_dcPoly_lt (r n : ℕ) : (dcPoly r n).natDegree < n * (r + 1) +
     have h4 := natDegree_derivative_le (dcPoly r n)
     rw [Nat.succ_mul]
     generalize n * (r + 1) = a at *
-    trace_state
-    sorry
+    omega
 
 end Glue
 
