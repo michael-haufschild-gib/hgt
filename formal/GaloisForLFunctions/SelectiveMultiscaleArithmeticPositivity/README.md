@@ -91,11 +91,12 @@ under the dyadic step, so on it the pole couplings between levels vanish (pillar
 grow like \(2^{|k-j|/2}\) and form one hyperbolic plane (pillar 13): the pole is never a summable
 level cost, and one linear condition removes it.
 
-**The coupling between levels splits into three exact parts** (pillars 13, 14). Between separated
-levels the Gamma part costs \(4^{-(k-j-1)}\), a summable cost. The pole part is hyperbolic and
-vanishes on the hyperplane. What remains is the centered Chebyshev error at the lags between the
-levels. On the pole hyperplane, the entire arithmetic content of the multiscale problem is the
-signed Chebyshev error along the dyadic orbit.
+**The coupling between levels splits into three exact parts** (pillars 13–15). Adjacent levels
+couple through one constant, the same at every level. Between separated levels the Gamma part costs
+\(4^{-(k-j-1)}\), a summable cost. The pole part is hyperbolic and vanishes on the hyperplane. What
+remains is the centered Chebyshev error at the lags between the levels. On the pole hyperplane the
+entire arithmetic content of the multiscale problem is the signed Chebyshev error along the dyadic
+orbit.
 
 ---
 
@@ -112,6 +113,8 @@ signed Chebyshev error along the dyadic orbit.
 | Pole projection | \(x-(\ell(x)/H_N)u\), \(\ell(x)=\sum x_n/\sqrt n\), \(H_N=\sum1/n\) | `poleProj`, `harmonicSum`, `harmonicMass` |
 | Dyadic shift | \((Sx)_{2m}=x_m\), odd entries \(0\): the atomic form of \(T_{\log2}\) | `dyadicShift` |
 | Level orbit, pole pairing | \(\sum_jc_jf(\cdot-s_j)\); \(A(f)B(g)+A(g)B(f)\) | `levelOrbit`, `polePairing` |
+| Sign gauge, harmonic correlation | \(\omega^2=1\); \(S_N(\omega)/H_N\) with \(S_N=\sum_{n\le N}\omega(n)/n\) | `hasHyperplaneGap_two_mul_log_two_of_correlation` |
+| Copy of a real test | \(\varphi(\cdot-t)\) as a real test | `shiftTest` |
 | Adjunction energy | \(E_m=\gamma+\log m+\tau(m)\), \(\tau\) the tame different | `ramanujanAdjunctionEnergy` |
 | Complete cell, translation | \(C_a=1_{[\log a,\log(a+1))}\), \(T_tf=f(\cdot-t)\) | `logCell`, `translate` |
 | Coarse / detail coefficients | pair averages and half differences | `coarseCoeff`, `detailCoeff`, `logDetail` |
@@ -157,6 +160,20 @@ signed Chebyshev error along the dyadic orbit.
    coarse block (`PosDef.fromBlocks₂₂`). The correction \(BD^{-1}B^*\) is positive semidefinite.
 9. **Doubled cell.** \(C_{2a}+C_{2a+1}=T_{\log2}C_a\), from \(\log(2a)=\log2+\log a\) and the union
    of adjacent intervals.
+10. **A plane meets every hyperplane.** The eigenvectors of the full prime matrix at
+    \(\log N-E_1\) and \(\log N-E_2\) span a plane on which the prime form is at least
+    \(\log N-\gamma-2\log2-\varepsilon\). Every linear condition has a nonzero solution there, so
+    no sign gauge \(x\mapsto\omega x\) can push its gap above \(2\log2\).
+11. **Misalignment cost.** On \(y\perp\omega b\) the pole coordinate is
+    \(\langle y,(1-\omega)b\rangle\), and \(|(1-\omega)b|^2=2(H_N-S_N)\). Splitting \(y=\alpha b+z\)
+    lets the sharp gap pay \(z\) and the ceiling pay \(\alpha b\). The rows of the prime form sit
+    within a constant of \(\log N-\gamma\), so the cross term costs \(\alpha^2H/t+tB^2|z|^2\).
+12. **Exponential moments under translation.** \(A(T_sf)=e^{-s/2}A(f)\) and
+    \(B(T_sf)=e^{s/2}B(f)\), so the pole pairing of two copies is \(2A(f)B(f)\cosh\) of half the
+    shift, and on a level orbit the pole term factors as a product of two linear forms.
+13. **Boundary-mass decay.** After the first Gamma mode cancels one pole product, the Gamma tail is
+    charged by the masses damped by \(e^{\pm2(u-b)}\). Across a gap \(2\delta\) the damping costs
+    \(e^{-4\delta}\).
 
 ---
 
@@ -273,18 +290,11 @@ signed Chebyshev error along the dyadic orbit.
     - `abs_weilPair_shift_add_chebyshev_le`, `exp_neg_two_mul_dyadic_gap`: for copies of tests on
       \([0,\ell]\) at \(s\) and \(t>s+\ell\) the Gamma factor is \(e^{-2(t-s-\ell)}\), which is
       \(4^{-(k-j-1)}\) between dyadic levels \(j<k\).
-
----
-
-most
-      \(\pi e^{-4\delta}(\|f\|^2+\|g\|^2)\);
-    - `abs_weilPair_add_chebyshev_le`: the coupling is the centered Chebyshev integral
-      \(-\int_0^\infty(\psi_{\rm err}-c)q'\) up to that Gamma error;
-    - `abs_weilPair_add_primePart_le`: if the lower level has \(A(f)=0\), the coupling is the
-      negative prime comb up to that error;
-    - `abs_weilPair_shift_add_chebyshev_le`, `exp_neg_two_mul_dyadic_gap`: for copies of tests on
-      \([0,\ell]\) at \(s\) and \(t>s+\ell\) the Gamma factor is \(e^{-2(t-s-\ell)}\), which is
-      \(4^{-(k-j-1)}\) between dyadic levels \(j<k\).
+15. **Touching levels couple uniformly** (`TouchingLevelsCoupleUniformly`):
+    - `realWeilForm_shiftTest_shiftTest`: the pairing of two copies depends only on their shift;
+    - `exists_abs_weilPair_touching_le`, `exists_abs_weilPair_adjacent_dyadic_le`: copies at \(s\) and
+      \(s+\ell\) of tests on \([0,\ell]\) couple by at most \(C_\ell(\|\varphi\|^2+\|\psi\|^2)\), with one
+      constant for every \(s\); adjacent dyadic levels share one constant.
 
 ---
 
@@ -324,7 +334,6 @@ most
    - Matched finite flips keep the main term and are separated only by local witnesses (SP, OWU).
    - On complete cells the high-detail floor is twin-blind, so selectivity must act on the low and
      cross-level residual.
-
    - Between separated hyperplane levels the coupling is the prime comb up to a summable Gamma
      error, so a selective quantity on generator orbits must be a signed statement about the
      Chebyshev error near the powers of 2.
@@ -335,12 +344,12 @@ most
    - A positively paid level leaves exactly the Schur-corrected coarse block.
    - The correction only lowers it.
    - Summable coupling costs below the initial margin keep a uniform positive margin at every level.
-
    - The coupling between separated levels splits exactly: a Gamma part costing
      \(\pi4^{-(k-j-1)}\), a hyperbolic pole part that vanishes on the hyperplane, and the centered
      Chebyshev error.
+   - Touching levels couple through one constant for all levels.
 
-   *Open:* signed control of the Chebyshev part, and the coupling of touching levels.
+   *Open:* signed control of the Chebyshev part.
 3. **How far does the selective gap carry positivity?** *Answered at spacing scale:*
    - the gap is added to the Markov finite part, giving \(W\ge(\varphi_0+c_0G)\|f\|^2\) on the
      hyperplane;
@@ -356,15 +365,16 @@ most
 5. **Which conservation law bounds critical energy from above?** *Open.* AID's monotone limit and
    index costs are lower laws.
 6. **How does the archimedean place couple to the finite places along the RG flow?** *Answered
-   for separated levels:*
+   level by level:*
    - every level repeats the generator energies (`weilQuadTw_level`);
    - Gamma pays every detail with \(\log a\) weight (ACS);
    - the pole couples two copies by \(2A(f)B(f)\cosh\) of half the shift, a hyperbolic rank-two form
      that vanishes on the hyperplane;
    - after the first Gamma mode cancels one pole product, the Gamma coupling of levels at gap
-     \(2\delta\) is at most \(\pi e^{-4\delta}\) times their masses.
+     \(2\delta\) is at most \(\pi e^{-4\delta}\) times their masses;
+   - adjacent levels couple through one constant, uniform along the RG flow.
 
-   *Open:* the coupling of touching levels.
+   *Open:* the size of that constant against the generator margin.
 7. **In which topology does exhaustion preserve inequalities?** *Partly answered:*
    - the form is translation invariant at every level, while graph norms of orbits escape every
      exponential (SAHT);
@@ -403,12 +413,13 @@ most
 - the ceiling witness of a sign gauge, pole polarization, the misalignment cost, and the two
   harmonic-correlation criteria (zero margin, full margin);
 - shifted real tests, boundary-mass decay, and the three-part split of separated couplings
-  (Gamma, pole, Chebyshev).
+  (Gamma, pole, Chebyshev);
+- translation invariance of the real pairing, endpoint vanishing, and the uniform touching-level
+  bound.
 
 **To build:**
 
 - coarse-scale selective transfer;
-- the coupling of touching levels (AID's touching-cell payment in multiresolution coordinates);
 - signed Toeplitz control of the windowed Chebyshev errors along the dyadic orbit.
 
 ---
@@ -418,9 +429,10 @@ most
 1. **Selective transfer at coarse scale.** A full-form lower bound on the generator orbits that uses
    the hyperplane gap or the Chebyshev main-term cancellation, beyond the spacing scale.
 2. **Signed Chebyshev costs between levels.** The Gamma and pole parts of the coupling between
-   separated levels are settled (pillars 13, 14). The remaining part is the centered Chebyshev
-   integral, whose absolute value does not decay with the level distance. Find a signed bound
-   (cancellation between levels) that makes the costs fed to `rgMargin` summable.
+   separated levels are settled, and touching levels couple through one constant (pillars 13–15).
+   The remaining part is the centered Chebyshev integral, whose absolute value does not decay with
+   the level distance. Find a signed bound (cancellation between levels) that makes the costs fed
+   to `rgMargin` summable.
 3. **Generator-orbit Toeplitz symbols.** For a hyperplane generator \(f\), the orbit Gram
    \(W(T_{j\log2}f,T_{k\log2}f)\) is Toeplitz (pillar 11) and pole-free (pillar 13). Its symbol is the
    Gamma symbol plus the Chebyshev increments near \(2^m\). Positivity of that symbol is the

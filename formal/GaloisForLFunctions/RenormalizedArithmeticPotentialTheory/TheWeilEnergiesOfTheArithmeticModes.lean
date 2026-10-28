@@ -164,7 +164,6 @@ theorem abs_weilQuad_atomicTest_periodic_sub_le (hg : ContDiff ℝ 2 g) (hgc : H
 theorem div_sub_rayleigh_eq {W X G θ L P : ℝ} (hX : X ≠ 0) (hG : G ≠ 0) :
     W / (X * G) - (2 * θ + L / G - P / X) = (W - (X * (2 * θ * G + L) - G * P)) / (X * G) := by
   field_simp
-  ring
 
 /-- Weil's form of a periodic profile, as a Rayleigh quotient: with `X = |x|²` and `G = ‖g‖²`,
 `W(f_x)/(XG) = 2θ′(0) + L(g)/G − P_N(x)/X + O((qB²(wN)G + q²B²e^{w/2}(∫g)²)/(XG))`. -/
@@ -296,9 +295,7 @@ theorem abs_weilQuad_arithmeticMode_div_sub_le {φ : ℝ → ℝ} (hφ : ContDif
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hw0 : 0 < K / N := by positivity
   set w := K / N with hwdef
-  set B := ∑ j ∈ range m, |normalizedRamanujanMode m j|
   set g := atomDilate φ w
-  set X := ∑ n ∈ Icc 1 N, ramanujanPoleProfile m n ^ 2
   have hcd : ContDiff ℝ 2 g := hφ.comp (contDiff_id.div_const w)
   have hsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0 := by
     intro u hu
@@ -310,36 +307,38 @@ theorem abs_weilQuad_arithmeticMode_div_sub_le {φ : ℝ → ℝ} (hφ : ContDif
   have hG : ∫ u, g u ^ 2 = w * ∫ u, φ u ^ 2 := integral_atomDilate_sq hw0
   have hG0 : 0 < ∫ u, g u ^ 2 := by rw [hG]; positivity
   have hI : ∫ u, g u = w * ∫ u, φ u := integral_atomDilate hw0
-  have hB0 : 0 ≤ B := sum_nonneg fun j _ => abs_nonneg _
+  have hB0 : 0 ≤ ∑ j ∈ range m, |normalizedRamanujanMode m j| := sum_nonneg fun j _ => abs_nonneg _
   have hmain := abs_weilQuad_div_periodic_sub_le hcd hcs hsupp (fun u => hφ0 _) hw0 hw
     (q := m) (by omega) (normalizedRamanujanMode m) (fun n => normalizedRamanujanMode_periodic hm0 n)
     (sum_range_normalizedRamanujanMode hm) (abs_normalizedRamanujanMode_le hm0) hX hG0
-  have hnorm : ∫ u, arithmeticMode φ K m N u ^ 2 = X * ∫ u, g u ^ 2 :=
+  have hnorm : ∫ u, arithmeticMode φ K m N u ^ 2 =
+      (∑ n ∈ Icc 1 N, ramanujanPoleProfile m n ^ 2) * ∫ u, g u ^ 2 :=
     integral_atomicTest_sq hcd hcs hsupp (by linarith) _
   rw [hnorm]
   refine hmain.trans ?_
   -- the error constant
   have hwN : w * N = K := by rw [hwdef]; field_simp
-  rw [hwN, hI, div_le_div_iff₀ (mul_pos hX hG0) hX]
+  rw [hwN, hI, hG]
+  change _ / ((∑ n ∈ Icc 1 N, ramanujanPoleProfile m n ^ 2) * (w * ∫ u, φ u ^ 2)) ≤ _
+  generalize (∑ n ∈ Icc 1 N, ramanujanPoleProfile m n ^ 2) = X at hX ⊢
+  generalize (∑ j ∈ range m, |normalizedRamanujanMode m j|) = B at hB0 ⊢
+  refine (div_le_div_iff₀ (mul_pos hX (mul_pos hw0 hφ2)) hX).mpr ?_
   have hexp : Real.exp (w / 2) * w ≤ Real.exp (1 / 2) := by
     calc Real.exp (w / 2) * w ≤ Real.exp (1 / 2) * 1 :=
           mul_le_mul (Real.exp_le_exp.mpr (by linarith)) hw1 hw0.le (Real.exp_pos _).le
       _ = Real.exp (1 / 2) := mul_one _
-  have hc : 0 ≤ 8 * (m : ℝ) ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2 := by positivity
-  rw [hG]
-  have e : (168 * m * B ^ 2 * K + 8 * m ^ 2 * B ^ 2 * Real.exp (1 / 2) * (∫ u, φ u) ^ 2 /
-      (∫ u, φ u ^ 2)) * (X * (w * ∫ u, φ u ^ 2)) =
-      X * (168 * m * B ^ 2 * K * (w * ∫ u, φ u ^ 2) +
-        8 * m ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2 * (Real.exp (1 / 2) * w)) := by
-    field_simp
-  rw [e, mul_comm _ X]
-  refine mul_le_mul_of_nonneg_left ?_ hX.le
-  have : 8 * (m : ℝ) ^ 2 * B ^ 2 * Real.exp (w / 2) * (w * ∫ u, φ u) ^ 2 =
-      8 * m ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2 * (Real.exp (w / 2) * w * w) := by ring
-  rw [this]
-  have hexp' : Real.exp (w / 2) * w * w ≤ Real.exp (1 / 2) * w :=
-    mul_le_mul_of_nonneg_right hexp hw0.le
-  nlinarith [mul_le_mul_of_nonneg_left hexp' hc]
+  have hD : 8 * (m : ℝ) ^ 2 * B ^ 2 * Real.exp (1 / 2) * (∫ u, φ u) ^ 2 / (∫ u, φ u ^ 2) *
+      (∫ u, φ u ^ 2) = 8 * (m : ℝ) ^ 2 * B ^ 2 * Real.exp (1 / 2) * (∫ u, φ u) ^ 2 :=
+    div_mul_cancel₀ _ hφ2.ne'
+  have hc : 0 ≤ X * w * (8 * (m : ℝ) ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2) := by positivity
+  calc (168 * m * B ^ 2 * K * (w * ∫ u, φ u ^ 2) +
+        8 * m ^ 2 * B ^ 2 * Real.exp (w / 2) * (w * ∫ u, φ u) ^ 2) * X
+      = X * (168 * m * B ^ 2 * K * (w * ∫ u, φ u ^ 2)) +
+          X * w * (8 * m ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2) * (Real.exp (w / 2) * w) := by ring
+    _ ≤ X * (168 * m * B ^ 2 * K * (w * ∫ u, φ u ^ 2)) +
+          X * w * (8 * m ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2) * Real.exp (1 / 2) :=
+        add_le_add_left (mul_le_mul_of_nonneg_left hexp hc) _
+    _ = _ := by linear_combination (-(X * w)) * hD
 
 /-- **The Weil energies of the arithmetic modes.** For a nonnegative Lipschitz profile `φ` on
 `[0, 1]`, a conductor `m ≥ 2` and an overlap ratio `0 < K < 1/4`,

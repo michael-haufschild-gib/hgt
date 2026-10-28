@@ -63,7 +63,7 @@ theorem contDiff_boundaryParam (σ : {w : InfinitePlace K // IsReal w} → Bool)
   refine ContDiff.prodMk (contDiff_pi.mpr fun w => ?_) (contDiff_pi.mpr fun w => ?_)
   · exact contDiff_const.mul (contDiff_radialPart w.1)
   · refine (Complex.ofRealCLM.contDiff.comp (contDiff_radialPart w.1)).mul ?_
-    refine (Complex.contDiff_exp.restrict_scalars ℝ).comp ?_
+    refine Complex.contDiff_exp.comp ?_
     refine ContDiff.mul (Complex.ofRealCLM.contDiff.comp ?_) contDiff_const
     exact contDiff_const.mul (contDiff_apply ℝ ℝ (Sum.inr w))
 
@@ -118,7 +118,7 @@ theorem norm_mul_exp_unitAngle (z : ℂ) :
       push_cast
       field_simp
     · rw [show (((2 * Real.pi * (z.arg / (2 * Real.pi) + 1) : ℝ) : ℂ) * Complex.I) =
-          (z.arg : ℂ) * Complex.I + 2 * Real.pi * Complex.I by push_cast; field_simp; ring,
+          (z.arg : ℂ) * Complex.I + 2 * Real.pi * Complex.I by push_cast; field_simp,
         Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
   rw [harg, Complex.norm_mul_exp_arg_mul_I]
 
@@ -159,7 +159,7 @@ theorem frontier_normLeOne_subset :
       by_cases hw : w₁ = w₀
       · subst hw
         have : p w₀ = 0 := by
-          simp only [if_pos rfl, mem_Iio, not_lt] at hw₁
+          simp at hw₁
           linarith
         exact ⟨Sum.inl w₀, true, by simp [hydef, this]⟩
       · have hI := hpw w₁ hw

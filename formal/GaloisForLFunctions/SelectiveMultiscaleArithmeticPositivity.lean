@@ -13,6 +13,7 @@ import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheCompleteSo
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleHyperplaneIsRenormalizationInvariant
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleCouplesTheLevelsHyperbolically
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.SeparatedLevelsCoupleThroughTheChebyshevError
+import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TouchingLevelsCoupleUniformly
 
 /-!
 # Selective Multiscale Arithmetic Positivity
@@ -24,6 +25,7 @@ conductor-two excitation and the selective margin, exactly `2 log 2`, decided by
 correlation; the twin-blindness of the high-detail Haar floor; the renormalization calculus of a
 refinement level; the dyadic multiresolution of the complete source with its level-Toeplitz law;
 the renormalization invariance of the pole hyperplane; the hyperbolic pole coupling between levels;
-and the Chebyshev coupling of separated levels with its geometrically decaying Gamma cost. See
+the Chebyshev coupling of separated levels with its geometrically decaying Gamma cost; and the
+uniform coupling of touching levels. See
 `SelectiveMultiscaleArithmeticPositivity/README.md`.
 -/
