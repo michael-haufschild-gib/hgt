@@ -27,7 +27,6 @@ private theorem positiveExtension_coe (F : ℕ+ → ℝ) (a : ℕ+) :
     positiveExtension F a = F a := by
   rw [positiveExtension, dif_pos a.pos]
   congr 1
-  exact PNat.eq rfl
 
 private theorem positiveExtension_summable {F : ℕ+ → ℝ} (hF : Summable F) :
     Summable (positiveExtension F) := by
@@ -39,7 +38,7 @@ private def labelTail (F : ℕ → ℝ) (M : ℕ) : ℝ :=
 
 private theorem labelTail_summable {F : ℕ → ℝ} (hF : Summable F) (M : ℕ) :
     Summable (fun a => if M ≤ a then F a else 0) := by
-  simpa only [indicator_apply, mem_setOf_eq] using hF.indicator {a | M ≤ a}
+  simpa only [indicator, mem_setOf_eq] using hF.indicator {a | M ≤ a}
 
 private theorem labelTail_nonneg {F : ℕ → ℝ} (hF : ∀ a, 0 ≤ F a) (M : ℕ) :
     0 ≤ labelTail F M := by
@@ -128,18 +127,21 @@ private theorem sum_ancestor_weight_le {F G : ℕ → ℝ}
   classical
   let L := ∑ a ∈ T, (Nat.log 2 (a : ℕ) + 1)
   have hL (a : ℕ+) (ha : a ∈ T) : Nat.log 2 (a : ℕ) + 1 ≤ L := by
-    exact Finset.single_le_sum (fun b _ => Nat.zero_le (Nat.log 2 (b : ℕ) + 1)) ha
+    exact Finset.single_le_sum (s := T) (f := fun b : ℕ+ => Nat.log 2 (b : ℕ) + 1)
+      (fun b _ => Nat.zero_le (Nat.log 2 (b : ℕ) + 1)) ha
   have hthreshold (r : ℕ) :
       (∑ a ∈ T, if 2 ^ r ≤ (a : ℕ) then G a else 0) ≤ labelTail G (2 ^ r) := by
     have hsum : Summable (fun a : ℕ+ => if 2 ^ r ≤ (a : ℕ) then G a else 0) :=
-      (PNatBlock.summable_pnat_iff _).mpr (labelTail_summable hsG (2 ^ r))
+      (PNatBlock.summable_pnat_iff (fun n : ℕ => if 2 ^ r ≤ n then G n else 0)).mpr
+        (labelTail_summable hsG (2 ^ r))
     calc
       _ ≤ ∑' a : ℕ+, if 2 ^ r ≤ (a : ℕ) then G a else 0 :=
         hsum.sum_le_tsum T (fun a _ => by
           split_ifs
           · exact hG a
           · rfl)
-      _ = labelTail G (2 ^ r) := PNatBlock.tsum_pnat _ (by
+      _ = labelTail G (2 ^ r) := PNatBlock.tsum_pnat
+        (fun n : ℕ => if 2 ^ r ≤ n then G n else 0) (by
         rw [if_neg (by have := pow_pos (by norm_num : 0 < (2 : ℕ)) r; omega)])
   calc
     _ = ∑ a ∈ T, ∑ r ∈ Finset.range L, if 2 ^ r ≤ (a : ℕ) then G a else 0 :=
@@ -251,7 +253,7 @@ theorem sum_logCellAncestorWeight_orbit_le (t : ℝ) (T : Finset ℕ+)
     simpa only [G, positiveExtension_coe, logCellAncestorWeight] using h
   apply h'.trans
   have htail : labelTail F 1 = ∑' a : ℕ+, logCellParentVarianceOrbit t a f := by
-    rw [labelTail, ← PNatBlock.tsum_pnat _ (by simp)]
+    rw [labelTail, ← PNatBlock.tsum_pnat (fun n : ℕ => if 1 ≤ n then F n else 0) (by simp)]
     apply tsum_congr
     intro a
     rw [if_pos (show 1 ≤ (a : ℕ) by have := a.pos; omega)]
@@ -263,7 +265,7 @@ theorem sum_logCellAncestorWeight_orbit_le (t : ℝ) (T : Finset ℕ+)
       ∑' i : ℕ × ℕ+, logCellDyadicParentVariance t i f by
     unfold logCellParentVarianceOrbit
     rw [← hs.tsum_prod]
-    exact (Equiv.prodComm ℕ+ ℕ).tsum_eq _]
+    exact (Equiv.prodComm ℕ+ ℕ).tsum_eq (fun i : ℕ × ℕ+ => logCellDyadicParentVariance t i f)]
   exact Real.tsum_le_of_sum_le (fun _ => intervalVariance_nonneg _ _ _)
     (fun S => sum_logCellDyadicParentVariance_le t S hv hc)
 
@@ -299,37 +301,49 @@ theorem sum_log_weight_haar_orbit_le (t : ℝ) (T : Finset ℕ+)
       (tsum_nonneg (fun _ => sq_nonneg _))
   linarith only [hw, h]
 
+private theorem summable_ancestor_readouts_swapped (t : ℝ)
+    {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
+    Summable (fun i : ℕ+ × ℕ =>
+      logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2) := by
+  have hw0 (a : ℕ+) : 0 ≤ logCellAncestorWeight a * logCellHaarOrbitEnergy t a f :=
+    mul_nonneg (logCellAncestorWeight_pos a).le (tsum_nonneg (fun _ => sq_nonneg _))
+  have hsRows : Summable (fun a => logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) :=
+    summable_of_sum_le hw0 (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
+  apply (summable_prod_of_nonneg
+    (f := fun i : ℕ+ × ℕ => logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2)
+    (fun i => mul_nonneg (logCellAncestorWeight_pos i.1).le (sq_nonneg _))).mpr
+  constructor
+  · intro a
+    change Summable (fun j : ℕ => logCellAncestorWeight a * logCellHaarReadout t (j, a) f ^ 2)
+    exact ((readout_rows t hv hc).1 a).mul_left (logCellAncestorWeight a)
+  · simpa only [tsum_mul_left, logCellHaarOrbitEnergy] using hsRows
+
+/-- The full ancestor-weighted square function is summable and paid by one Gamma reserve. -/
+theorem tsum_ancestor_weight_readout_sq_le (t : ℝ)
+    {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
+    (∑' i : ℕ × ℕ+, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) ≤
+      16 * levyEnergy f := by
+  have hs := summable_ancestor_readouts_swapped t hv hc
+  rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq
+    (fun i : ℕ × ℕ+ => logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2)]
+  change (∑' i : ℕ+ × ℕ, logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2) ≤ _
+  rw [hs.tsum_prod]
+  simp only [tsum_mul_left]
+  change (∑' a, logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) ≤ _
+  exact Real.tsum_le_of_sum_le
+    (fun a => mul_nonneg (logCellAncestorWeight_pos a).le (tsum_nonneg (fun _ => sq_nonneg _)))
+    (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
+
 /-- Logarithmic ancestor weights control arbitrary finite selections of actual level coordinates. -/
 theorem sum_ancestor_weight_readout_sq_le (t : ℝ) (S : Finset (ℕ × ℕ+))
     {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     (∑ i ∈ S, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) ≤
       16 * levyEnergy f := by
-  have hw0 (a : ℕ+) : 0 ≤ logCellAncestorWeight a * logCellHaarOrbitEnergy t a f :=
-    mul_nonneg (logCellAncestorWeight_pos a).le (tsum_nonneg (fun _ => sq_nonneg _))
-  have hsRows : Summable (fun a => logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) :=
-    summable_of_sum_le hw0 (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
-  have hs : Summable (fun i : ℕ+ × ℕ =>
-      logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2) := by
-    apply (summable_prod_of_nonneg
-      (f := fun i : ℕ+ × ℕ => logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2)
-      (fun i => mul_nonneg (logCellAncestorWeight_pos i.1).le (sq_nonneg _))).mpr
-    constructor
-    · intro a
-      change Summable (fun j : ℕ => logCellAncestorWeight a * logCellHaarReadout t (j, a) f ^ 2)
-      exact ((readout_rows t hv hc).1 a).mul_left (logCellAncestorWeight a)
-    · simpa only [tsum_mul_left, logCellHaarOrbitEnergy] using hsRows
   have hsp : Summable (fun i : ℕ × ℕ+ => logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) :=
-    hs.comp_injective Prod.swap_injective
-  have hsum : (∑' i : ℕ × ℕ+, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) ≤
-      16 * levyEnergy f := by
-    rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq]
-    change (∑' i : ℕ+ × ℕ, logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2) ≤ _
-    rw [hs.tsum_prod]
-    simp only [tsum_mul_left]
-    change (∑' a, logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) ≤ _
-    exact Real.tsum_le_of_sum_le hw0 (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
+    (summable_ancestor_readouts_swapped t hv hc).comp_injective Prod.swap_injective
   exact (hsp.sum_le_tsum S (fun i _ =>
-    mul_nonneg (logCellAncestorWeight_pos i.2).le (sq_nonneg _))).trans hsum
+    mul_nonneg (logCellAncestorWeight_pos i.2).le (sq_nonneg _))).trans
+      (tsum_ancestor_weight_readout_sq_le t hv hc)
 
 /-- The original Gamma reserve bounds the logarithmic Haar square function on any finite family. -/
 theorem sum_log_weight_readout_sq_le (t : ℝ) (S : Finset (ℕ × ℕ+))

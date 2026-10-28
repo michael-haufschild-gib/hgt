@@ -3,7 +3,7 @@
 - **ID:** acs-gamma-near-row-remainders
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [coarse Gamma recovery](../1-in-progress/acs-coarse-gamma-recovery.md)
+- **Source:** [coarse Gamma recovery](acs-coarse-gamma-recovery.md)
 - **Statement:** Nearby replacement-loss rows and entire distant interaction rows have uniform bounds, independent of source index, finite subset, and common translation.
 
 ## Exact result
@@ -91,7 +91,7 @@ The upper-near, lower-near, distant, and adjacent filters cover `S.erase a`. Fin
 
 ## Remaining parent obligation
 
-The entire integrated pair-error row is formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md), [actual coarse-source accounting, complete-pair row transfer, and exterior finiteness](acs-coarse-gamma-accounting.md) are also formalized. Final energy comparison remains on the parent card. Full mixed prime and pole payment remains open.
+The entire integrated pair-error row, actual complete-pair transfer, exterior finiteness, and [coarse Gamma recovery with simultaneous detail payment](acs-coarse-gamma-recovery.md) are formalized. Full mixed prime and pole payment remains open on the ACS parent card.
 
 ## Log
 

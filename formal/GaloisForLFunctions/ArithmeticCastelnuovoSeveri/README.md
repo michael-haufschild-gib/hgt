@@ -274,8 +274,14 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     four times the squared coefficients weighted by its actual row sums
     (`GammaFiniteError.lean`). Exact partition of the literal coarse source then bounds its
     original Gamma energy by the retained graph, exterior charge, and those explicit error
-    rows (`CompleteCellGammaAccounting.lean`). Uniform bounds on the complete rows, full mixed
-    Weil payment, and full-source effectivity remain open.
+    rows (`CompleteCellGammaAccounting.lean`). The nearby, distant, and touching estimates
+    assemble into a uniform complete row bound (`LogCellGammaUniformRows.lean`); actual complete
+    pairs inherit it together with exterior-charge finiteness (`CompleteCellGammaUniformRows.lean`).
+    Consequently one explicit nonnegative constant $C$, independent of signed coefficients and
+    horizon, gives $\Gamma(g)+\sum_a\log(a)M_a d_a^2\leq\Gamma(f)+C\int g^2$, where $g$ is the
+    actual pair-average source and $f$ retains both original coefficients. The coarse square mass
+    is exactly $\sum_a w_a q_a^2$ (`CompleteCellGammaRecovery.lean`). Full mixed Weil payment and
+    full-source effectivity remain open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

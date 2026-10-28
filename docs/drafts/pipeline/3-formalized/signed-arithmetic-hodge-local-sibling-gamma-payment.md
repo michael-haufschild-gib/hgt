@@ -22,5 +22,6 @@ Capstones: `intervalVariance_adjacent_eq`, `sibling_gamma_ge_parent_variance`,
 Final individual no-olean audit passes. Transitive axioms are
 `propext`, `Classical.choice`, and `Quot.sound` only.
 
-Joint allocation across nested parents requires disjoint sibling rectangles.
-This local estimate alone supplies no full-Weil sign.
+Joint allocation across nested parents is formalized in
+`OneGammaReservePaysAllDyadicParentVariances.lean`, using disjoint sibling
+rectangles. These Gamma estimates supply no full-Weil sign.

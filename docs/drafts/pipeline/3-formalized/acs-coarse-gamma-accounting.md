@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Route:** ACS: full-source sections → Riemann–Roch/ampleness → Hodge index → RH.
-- **Parent:** [coarse Gamma recovery](../1-in-progress/acs-coarse-gamma-recovery.md)
+- **Parent:** [coarse Gamma recovery](acs-coarse-gamma-recovery.md)
 - **Statement:** The original Gamma energy of every finite signed complete-pair average is bounded by its retained mean graph, exterior charge, and explicit integrated endpoint-error rows.
 
 ## Exact theorem
@@ -46,4 +46,4 @@ All six transitive axiom audits contain only `propext`, `Classical.choice`, `Quo
 
 The complete pairs are exactly the `log 2` translate of the logarithmic partition. Removing the zero diagonal identifies their finite pair row with the checked uniform row. The family exterior is contained in each pair complement, so the checked exterior averaging-loss bound adds `exp(1/2)` per source width. Each weighted far charge is bounded by a finite actual exterior-kernel integral; a finite sum remains finite before conversion to real numbers.
 
-The exact project check and all three transitive axiom audits passed without warnings, with only `propext`, `Classical.choice`, `Quot.sound`. Log: `/tmp/acs-complete-cell-gamma-uniform-rows-final.log`. Final real coarse-energy recovery remains on the parent card. Full signed Gamma–prime–pole payment remains open.
+The exact project check and all three transitive axiom audits passed without warnings, with only `propext`, `Classical.choice`, `Quot.sound`. Log: `/tmp/acs-complete-cell-gamma-uniform-rows-final.log`. [Final real coarse-energy recovery with simultaneous detail payment](acs-coarse-gamma-recovery.md) is also formalized. Full signed Gamma–prime–pole payment remains open.

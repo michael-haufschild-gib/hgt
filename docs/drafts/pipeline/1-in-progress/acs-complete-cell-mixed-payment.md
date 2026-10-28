@@ -43,7 +43,15 @@ for every compact BV source, without local mean-zero restrictions. This pays loc
 
 The exterior sum is proved finite before conversion to real numbers. All three terms coexist in the original energy; no local mean-zero or exterior-vanishing premise appears. The explicit mean graph is not identified with the entire coarse Gamma energy.
 
-`CompleteCellMeanGraph.lean` passed its exact project check and both transitive axiom audits. It retains arbitrary original cell coefficients, logarithmic detail payment, the full mean graph, and an explicit exterior charge depending only on the actual pair averages. Its source is proved zero almost everywhere outside the interval family. [Coarse Gamma recovery](acs-coarse-gamma-recovery.md) tracks the remaining comparison with the entire original coarse energy; prime and pole coupling remain unpaid.
+`CompleteCellMeanGraph.lean` passed its exact project check and both transitive axiom audits. It retains arbitrary original cell coefficients, logarithmic detail payment, the full mean graph, and an explicit exterior charge depending only on the actual pair averages. Its source is proved zero almost everywhere outside the interval family.
+
+## Checked coarse Gamma recovery
+
+[Coarse Gamma recovery](../3-formalized/acs-coarse-gamma-recovery.md) passed all three exact project checks and thirteen standard-axiom audits. Uniform integrated row bounds, their actual-pair transfer, and exterior finiteness give
+
+`Γ(averageSectionProfile q X) + Σ_(a=1..X) log(a)*haarMass(a)*d(a)² ≤ Γ(completePairProfile q d X) + C*∫(averageSectionProfile q X)²`
+
+for every signed `q,d` and every horizon, with the explicit nonnegative constant `C=2*(13*exp(1/2)+2*gammaTailMass(log(3/2)))`. The integral equals the actual coefficient mass `Σ logCellWidth(a)*q(a)²`. The original independent cell coefficients `u,v` are retained in a separate exact specialization. This closes coarse Gamma recovery without using the detail reserve twice. Full signed prime and pole coupling remains unpaid.
 
 ## Log
 

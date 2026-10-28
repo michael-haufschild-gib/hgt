@@ -332,7 +332,7 @@ theorem two_mul_abs_poleMoments_windowTest_le_quarter (hG : ∀ n, ContDiff ℝ 
     rw [div_le_iff₀ hρ]
     have e : (quarterCE * (1 + 2) * D + (1 + 1 / 2) * quarterCU * X) * N / (3 / 2) * ρ =
         quarterCE * Q * (1 + 2) * D + (1 + 1 / 2) * quarterCU * Q * X := by
-      simp only [ρ, Q]; field_simp; ring
+      simp only [ρ, Q]; field_simp
     rw [e]; exact hS₂
   have hexp : Real.exp (w / 2) ≤ Real.exp (1 / 100) := Real.exp_le_exp.mpr (by linarith)
   have hd0 : 0 ≤ 3 / 2 * (1 + 1 / 100) * N * X +

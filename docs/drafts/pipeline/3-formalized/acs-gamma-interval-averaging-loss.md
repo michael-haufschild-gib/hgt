@@ -3,7 +3,7 @@
 - **ID:** acs-gamma-interval-averaging-loss
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [coarse Gamma recovery](../1-in-progress/acs-coarse-gamma-recovery.md)
+- **Source:** [coarse Gamma recovery](acs-coarse-gamma-recovery.md)
 - **Statement:** Replacing the actual Gamma kernel along an interval by its far-end charge loses exactly twice the first kernel moment below the interval width, hence at most `exp(1/2)` times that width when the width is at most one.
 
 ## Exact result
@@ -75,7 +75,7 @@ For any `F⊆Iᶜ`, with `0<w=|I|≤1`, `gamma_interval_exterior_subset_defect_l
 
 ## Remaining parent obligation
 
-The interval averaging loss, separated tails, symmetric finite-error estimate, and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are formalized. Recovering the entire coarse Gamma energy still requires uniform complete logarithmic-cell row bounds and the final real comparison. Full mixed Weil positivity remains open.
+The interval averaging loss, separated tails, symmetric finite-error estimate, and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are formalized. [Uniform complete rows and coarse Gamma recovery](acs-coarse-gamma-recovery.md) now also pass their exact Lean audits, retaining logarithmic detail payment in the original source. Full mixed Weil positivity remains open.
 
 ## Log
 

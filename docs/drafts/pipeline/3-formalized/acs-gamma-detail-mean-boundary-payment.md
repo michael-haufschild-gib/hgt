@@ -59,7 +59,7 @@ All four exact project files passed `lake --old env lean <module>.lean`, without
 
 ## Remaining parent obligation
 
-The complete-cell specialization is formalized. Full signed Gamma–prime–pole payment remains open. Recovering the entire coarse Gamma energy from its retained graph and boundary charges up to a uniform square-mass error is tracked in [coarse Gamma recovery](../1-in-progress/acs-coarse-gamma-recovery.md). This theorem supplies genuine Gamma payment on arbitrary sources; it does not assert a positive full Weil residual.
+The complete-cell specialization and [coarse Gamma recovery](acs-coarse-gamma-recovery.md) are formalized. Together they retain the entire original coarse Gamma energy and logarithmic detail payment, with one explicit universal error times the actual coarse square mass. Full signed Gamma–prime–pole payment remains open; no positive full Weil residual is asserted.
 
 ## Log
 

@@ -230,23 +230,18 @@ standard axioms only; physical Gamma estimates retain exact mass factors.
 
 ### One Gamma reserve for the complete tree
 
-The exact target is a single bound on the weighted squared physical detail
-readouts over all levels. Existing gamma_twoInterval_mean_variance_ge and
-archLevyDensity_ge_inv_two_mul suggest the local estimate
-Gamma(sibling rectangle)>=Var(parent)/8, since each actual child has at least
-one quarter of its parent's logarithmic width and each parent width is <=log2.
-DyadicSiblingPartition supplies uniqueness of the integer sibling rectangle.
-Adapt it to the actual physical interval pairs, sum disjoint rectangles once,
-and count how many parent variances contain each detail. The resulting weight
-should be comparable to 1+log(a). Root cell means remain a distinct sector.
-All constants, domain restrictions and the Gamma pair-integral normalization
-must be carried in the Lean statements.
+The local and joint variance allocations are formalized. Every actual sibling
+rectangle pays parent variance/8, and disjoint rectangles pay any finite family
+of parent variances by16 Gamma. Exact normalized Haar readouts and their
+dyadic variance recursion are also formalized. The remaining target is their
+logarithmically weighted square-function bound over all levels. Root cell
+means remain a distinct sector.
 
 ### Local sibling estimate
 
-Prove the exact adjacent-interval variance identity, including the parallel
-mass times the squared difference of actual means. On a parent interval of
-width D<=1 with children L,R, the existing Gamma density bound gives
+The exact adjacent-interval variance identity retains the parallel mass times
+the squared difference of actual means. On a parent interval of width D<=1
+with children L,R, the Gamma density bound gives
 
 min(L,R)/(2D) * Var(parent) <= Gamma(sibling rectangle).
 
@@ -310,5 +305,8 @@ Q(M)+P(2M)<=P(M).
 Summing at M=2^r telescopes. A detail with label a occurs at exactly
 1+Nat.log(2,a) thresholds. Thus the desired logarithmic square-function
 bound follows without assuming summability of depth-weighted variances.
-Readout squares must first be identified with the existing translated Haar
-profiles and their exact masses.
+DyadicVarianceSplitsIntoTheLiteralHaarReadout identifies the readouts with
+the existing translated Haar profiles and their exact masses, and proves
+V(j+1,a)=V(j,2a)+V(j,2a+1)+c(j+1,a)^2. Its final audit passes with standard
+axioms only. The tail-flow and logarithmic consequences are drafted and
+under individual Lean audit.
