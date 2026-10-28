@@ -463,12 +463,3 @@ theorem sum_qStar_witness : ∑ i, qStar (witness_isHermitian.eigenvalues₀ i) 
   norm_num
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia
-
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
-#print axioms sum_eigenvalues₀_le_card_of_columns
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
-#print axioms qStar_moments_le_card_of_columns
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
-#print axioms le_sixteen_twentyFirsts_of_valid
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri.HigherInertia in
-#print axioms sum_qStar_witness

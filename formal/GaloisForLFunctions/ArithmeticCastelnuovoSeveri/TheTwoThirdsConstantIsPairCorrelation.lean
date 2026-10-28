@@ -3,6 +3,7 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.ArithmeticHodgeIndexSigna
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.DistinctEffectiveCyclesMeetNonnegatively
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.BezoutEffectivityAndTheBeurlingObstruction
 import GaloisForLFunctions.HTGeometry.RiemannGaussian.HermitianRankTrace.Multiplicity
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CoalescenceDoesNotRequireOrthogonality
 import GaloisForLFunctions.RHTower.PairCorrelationExchangeRate
 import GaloisForLFunctions.RHTower.ZetaThreeQuartersReduction
 import GaloisForLFunctions.RHTower.Zeta23SimpleCriticalDensity
@@ -56,8 +57,9 @@ input for the flat-top profile at the square-root threshold `λ = 1`**:
    `coalescedPairBlockData`, `blockA_coalescedPair_eq_doubleZero`, `rankTrace_tight_at_two_thirds`).**
    A double fixed label (`m = 2`, contributing `2 v vᵀ` to `P`) and two swapped labels carrying
    the same real vector (`y_ρ = 0`, contributing `2 v vᵀ` to `Q`) produce the **exact same
-   Gram matrix** `blockA`. This algebraic identity also holds on arbitrary real frames; the
-   coordinate choice supplies the particular moments below. No zero-realization or limiting
+   Gram matrix** `blockA`. The arbitrary-frame identity is
+   `blockA_coalescedPairFrame_eq_doubleZeroFrame`; the coordinate choice supplies the particular
+   moments below. No zero-realization or limiting
    assertion is part of the construction. For every `s₁, d₂ : ℕ` (`N = s₁ + 2d₂`),
    `doubleZeroBlockData s₁ d₂` (all `N` zeros on the line, `s₁` simple and `d₂` double) and
    `coalescedPairBlockData s₁ d₂` (`s₁` simple zeros on the line and `d₂` coalesced off-line pairs)

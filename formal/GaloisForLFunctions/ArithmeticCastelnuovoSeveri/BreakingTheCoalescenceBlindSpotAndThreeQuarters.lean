@@ -18,8 +18,8 @@ no realization by the prescribed zeta evaluation family is asserted. The barrier
 restrict functionals whose validity uses additional arithmetic properties of that family.
 
 This module proves exact finite-matrix identities and sufficient conditions for a critical-line
-proportion of at least `3/4` (`75%`) along two complementary routes. The spectral-slack and
-prime-surplus lower bounds needed for the arithmetic conclusion remain premises:
+proportion of at least `3/4` (`75%`) along two complementary routes. The spectral-slack lower
+bound and prime-surplus upper bound needed for the arithmetic conclusion remain premises:
 
 1. **Route I: Breaking the blind spot between double critical zeros and off-line pairs on the zero side.**
    Although the summed matrix `Â = P + Q` is identical for `doubleZeroBlockData s₁ d₂` and

@@ -70,7 +70,8 @@ the finite-modulus Euler factors from Dedekind zeta, and identify the positive r
 positive ray-class densities. The prior residue limit alone did not establish positivity.
 
 All nine audited results depend only on `propext`, `Classical.choice`, and `Quot.sound`.
-Direct source checks are finishing. The programme is wired into `MainTheorems.lean`;
+All four modules passed final direct source checks with `lake --old env lean`.
+The programme is wired into `MainTheorems.lean`;
 no umbrella is compiled. HL6, HL7 and CFT remain open.
 
 ## Next analytic input
@@ -83,3 +84,12 @@ actual prime-ideal Euler factors, then combine with the existing continuation an
 bounds for characters with `ψ ^ 2 ≠ 1`. This is a next proof obligation, not a completed theorem.
 The requested ordering is Hecke first, CFT second. Real-character nonvanishing therefore needs
 the analytic route through HL7 and Landau positivity; it must not be postponed to reciprocity.
+
+### Active nonquadratic proof
+
+Construct the summable prime-ideal Euler logarithm and prove the local `3–4–1` inequality.
+For real `σ > 1` this gives `|L(σ,1)^3 L(σ,ψ)^4 L(σ,ψ²)| ≥ 1`.
+If `ψ² ≠ 1` and `L(1,ψ) = 0`, the existing holomorphic continuation gives a finite
+limit for `L(σ,ψ)/(σ-1)`, while `(σ-1)L(σ,1)` and `L(σ,ψ²)` have finite limits.
+Their product times `σ-1` is the displayed product and tends to zero, contradicting
+the lower bound. No full-plane continuation or reciprocity is needed for this case.

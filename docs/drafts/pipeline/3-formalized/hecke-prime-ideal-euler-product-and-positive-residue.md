@@ -68,8 +68,10 @@ All modules are in `formal/GaloisForLFunctions/HeckeLFunctions/`, namespace
 
 ## Validation
 
-The compiler and transitive `#print axioms` audit passed. Audited declarations depend only on
-`propext`, `Classical.choice`, and `Quot.sound`. Final direct source checks are in progress.
+All four modules passed final direct source checks, each run from `formal/` with
+`lake --old env lean GaloisForLFunctions/HeckeLFunctions/<Module>.lean`.
+The transitive `#print axioms` audit passed: audited declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`.
 The four modules are wired into `HeckeLFunctions.lean`, and the programme into `MainTheorems.lean`.
 No umbrella or full build is used.
 

@@ -116,6 +116,13 @@ survivor).
 - `TheSuccessorCollar`: `collar_bounds`, `successor_localPair_bounds` (consecutive Hecke cycles
   meet through the collar alone, `ω(log(1 + 1/k)) = (k+1)√(k(k+1))/(2k+1)` per unit mass).
 
+- `CoalescenceDoesNotRequireOrthogonality`: `blockA_coalescedPairFrame_eq_doubleZeroFrame`,
+  `counts_doubleZeroFrameData`, `counts_coalescedPairFrameData` (full Gram equality and equal
+  total multiplicity, with different fixed-label counts, on arbitrary real families),
+  `nonorthogonal_coalescence_example` (unit vectors with inner product `3/5`, trace `4`,
+  Frobenius square `232/25`). The orthogonal coordinate examples establish abstract sharpness,
+  not arithmetic realizability.
+
 - `TheTwoThirdsConstantIsPairCorrelation`: `rtrace_spanGram`, `frobSq_spanGram_eq_diag_add_offDiag`
   (`𝔽_q` calibration of trace and Frobenius norm into adjunction diagonal + Lefschetz pair
   correlation), `parabola_secant_identity`, `offLine_sub_doubleZero_weight`,
@@ -128,7 +135,7 @@ survivor).
   `rankTrace_tight_at_two_thirds`, `universal_matrix_functional_barrier`,
   `universal_matrix_functional_barrier_at_two_thirds` (a bound valid on **all** normalized abstract
   blocks cannot exceed `(2 − κ)N` at the coordinate extremizer, or `(2/3)N` at its `κ = 4/3`
-  specialization; no arithmetic-realization theorem transfers this sharpness to zeta),
+  specialization; these results supply no arithmetic-realization theorem transferring sharpness to zeta),
   `subthreshold_two_thirds_deficit`,
   `subthreshold_cert_le_two_thirds`, `two_thirds_and_pair_correlation_escape`, `tendsto_certOpt_atTop`
   (`2/3` is the exact `λ = 1` pair-correlation threshold `2 − (1/λ + λ/3)`, and every finite

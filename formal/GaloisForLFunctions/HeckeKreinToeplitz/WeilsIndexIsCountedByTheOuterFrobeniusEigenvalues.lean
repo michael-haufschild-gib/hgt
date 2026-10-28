@@ -123,12 +123,119 @@ theorem traceKernel_eq (n : Multiplicative ℤ) :
       ∑ i ∈ outer D, pairKernel (valChar (D.β i)) 1 n := by
   classical
   set f : ι → ℂ := fun i => valChar (D.β i) n
+  have hpos : ∀ i, 0 < ‖D.β i‖ := fun i => norm_pos_iff.mpr (β_ne_zero D i)
+  -- split the eigenvalues into unitary, outer and inner
   have hsplit : ∑ i, f i = ∑ i ∈ univ.filter (fun i => ‖D.β i‖ = 1), f i +
-      ∑ i ∈ outer D, f i + ∑ i ∈ univ.filter (fun i => ‖D.β i‖ < 1), f i := by
-    rw [← sum_filter_add_sum_filter_not univ (fun i => ‖D.β i‖ = 1) f, add_assoc]
-    congr 1
-    rw [sum_filter_filter_eq? ]
-    sorry
-  sorry
+      (∑ i ∈ outer D, f i + ∑ i ∈ univ.filter (fun i => ‖D.β i‖ < 1), f i) := by
+    rw [← sum_filter_add_sum_filter_not univ (fun i => ‖D.β i‖ = 1) f,
+      ← sum_filter_add_sum_filter_not (univ.filter fun i => ¬ ‖D.β i‖ = 1)
+        (fun i => 1 < ‖D.β i‖) f, filter_filter, filter_filter]
+    congr 2
+    · exact filter_congr fun i _ => ⟨fun h => h.2, fun h => ⟨h.ne', h⟩⟩
+    · exact filter_congr fun i _ => ⟨fun h => lt_of_le_of_ne (not_lt.mp h.2) h.1,
+        fun h => ⟨h.ne, not_lt.mpr h.le⟩⟩
+  -- the inner eigenvalues are the reflections of the outer ones
+  have hinner : ∑ i ∈ univ.filter (fun i => ‖D.β i‖ < 1), f i =
+      ∑ i ∈ outer D, f (reflectPerm D i) := by
+    refine (sum_equiv (reflectPerm D) (fun i => ?_) fun i _ => rfl).symm
+    simp only [outer, mem_filter, mem_univ, true_and, norm_β_reflectPerm, inv_lt_one₀ (hpos i)]
+  rw [traceKernel, hsplit, hinner, ← sum_add_distrib]
+  congr 1
+  refine sum_congr rfl fun i _ => ?_
+  simp only [f, pairKernel, one_mul, map_one, reflectChar_valChar (β_ne_zero D i),
+    β_reflectPerm]
+
+/-- The unitary part of the trace kernel is positive definite. -/
+theorem isPosDefKernel_unitaryPart :
+    IsPosDefKernel fun n => ∑ i ∈ univ.filter (fun i => ‖D.β i‖ = 1), valChar (D.β i) n :=
+  isPosDefKernel_finset_sum _ fun i hi =>
+    isPosDefKernel_of_unitary (isUnitaryChar_valChar (mem_filter.mp hi).2)
+
+theorem valChar_β_ofAdd_one (i : ι) : valChar (D.β i) (Multiplicative.ofAdd 1) = D.β i :=
+  valChar_ofAdd_one (β_ne_zero D i)
+
+/-- **The index of the trace kernel is the number of distinct outer eigenvalues.** -/
+theorem negIndex_traceKernel : negIndex (traceKernel D) = ((outer D).image D.β).card := by
+  classical
+  set P : Multiplicative ℤ → ℂ :=
+    fun n => ∑ i ∈ univ.filter (fun i => ‖D.β i‖ = 1), valChar (D.β i) n
+  have hk : traceKernel D = (fun n => P n + ∑ i : outer D, pairKernel (valChar (D.β i)) 1 n) ∘
+      zpowersHom (Multiplicative ℤ) (Multiplicative.ofAdd 1) := by
+    funext n
+    rw [Function.comp_apply, zpowersHom_ofAdd_one, traceKernel_eq,
+      ← (outer D).sum_coe_sort (fun i => pairKernel (valChar (D.β i)) 1 n)]
+  have hout : ∀ i : outer D, 1 < ‖D.β i‖ := fun i => (mem_filter.mp i.2).2
+  have hV1 : ∀ i : outer D, ‖valChar (D.β i) (Multiplicative.ofAdd 1)‖ ≠ 1 := fun i => by
+    rw [valChar_β_ofAdd_one]; exact (hout i).ne'
+  have hV2 : ∀ i k : outer D, valChar (D.β i) (Multiplicative.ofAdd 1) ≠
+      (conj (valChar (D.β k) (Multiplicative.ofAdd 1)))⁻¹ := fun i k h => by
+    rw [valChar_β_ofAdd_one, valChar_β_ofAdd_one] at h
+    have h1 := hout i
+    rw [h, norm_inv, Complex.norm_conj] at h1
+    exact absurd h1 (not_lt.mpr (inv_le_one_of_one_le₀ (hout k).le))
+  rw [hk, negIndex_zpowers_eq_card_classes (isPosDefKernel_unitaryPart D)
+    (fun i : outer D => valChar (D.β i)) (fun _ => 1) _ hV1 hV2, filter_true_of_mem fun v hv => ?_]
+  · congr 1
+    ext v
+    simp only [mem_image, mem_univ, true_and, valChar_β_ofAdd_one, Subtype.exists, exists_prop]
+  · obtain ⟨j, -, rfl⟩ := mem_image.mp hv
+    rw [classWeight, sum_const, nsmul_eq_mul, mul_one, Nat.cast_ne_zero, ← pos_iff_ne_zero,
+      card_pos]
+    exact ⟨j, mem_filter.mpr ⟨mem_univ _, rfl⟩⟩
+
+/-- Some eigenvalue is outer iff the datum is not unitary (the reflection pairs inner and outer). -/
+theorem outer_eq_empty_iff : outer D = ∅ ↔ ∀ i, ‖D.β i‖ = 1 := by
+  constructor
+  · intro h i
+    have hi : ¬ 1 < ‖D.β i‖ := fun hi => by
+      have : i ∈ outer D := mem_filter.mpr ⟨mem_univ _, hi⟩
+      rw [h] at this; exact not_mem_empty _ this
+    have hσ : ¬ 1 < ‖D.β (reflectPerm D i)‖ := fun hσ => by
+      have : reflectPerm D i ∈ outer D := mem_filter.mpr ⟨mem_univ _, hσ⟩
+      rw [h] at this; exact not_mem_empty _ this
+    rw [norm_β_reflectPerm, not_lt] at hσ
+    have hpos : 0 < ‖D.β i‖ := norm_pos_iff.mpr (β_ne_zero D i)
+    exact le_antisymm (not_lt.mp hi) ((one_le_inv₀ hpos).mp hσ |>.trans_eq' rfl |> fun h =>
+      by simpa using (inv_le_one₀ hpos).mp hσ)
+  · intro h
+    exact filter_false_of_mem fun i _ => by rw [h i]; exact lt_irrefl 1
+
+/-- **Weil's theorem as index zero.** For a curve datum, the trace kernel has no negative square iff
+the eigenvalues are unitary iff the square-root count holds. -/
+theorem negIndex_traceKernel_eq_zero_iff :
+    negIndex (traceKernel D) = 0 ↔ ∀ i, ‖D.β i‖ = 1 := by
+  rw [negIndex_traceKernel, Nat.cast_eq_zero, card_eq_zero, image_eq_empty, outer_eq_empty_iff]
+
+theorem negIndex_traceKernel_eq_zero_iff_count :
+    negIndex (traceKernel D) = 0 ↔
+      ∃ C : ℝ, ∀ k, D.q ^ k + 1 - C * D.sqrtq ^ k ≤ D.pointCount k := by
+  rw [negIndex_traceKernel_eq_zero_iff,
+    ArithmeticLorentzianGeometry.unitary_iff_exists_pointCount_ge]
+
+/-- With nonnegative counts, index zero is the trickle-down inequality on every Frobenius ladder. -/
+theorem negIndex_traceKernel_eq_zero_iff_trickleDown (hN : ∀ j, 1 ≤ j → 0 ≤ D.pointCount j) :
+    negIndex (traceKernel D) = 0 ↔
+      ∀ K, ArithmeticLorentzianGeometry.WeightedTrickleDown
+        (ArithmeticLorentzianGeometry.frobeniusWeight D K)
+        (ArithmeticLorentzianGeometry.frobeniusGram D K) := by
+  rw [negIndex_traceKernel_eq_zero_iff,
+    ArithmeticLorentzianGeometry.forall_weightedTrickleDown_iff_unitary D hN]
+
+/-- **The golden datum has index exactly one**: one outer eigenvalue, the golden ratio. -/
+theorem negIndex_golden_traceKernel : negIndex (traceKernel goldenDatum) = 1 := by
+  rw [negIndex_traceKernel]
+  have h : outer goldenDatum = {0} := by
+    ext i
+    fin_cases i
+    · simp only [outer, mem_filter, mem_univ, true_and, mem_singleton]
+      simp only [goldenDatum, Matrix.cons_val_zero, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos Real.goldenRatio_pos]
+      exact iff_of_true Real.one_lt_goldenRatio rfl
+    · simp only [outer, mem_filter, mem_univ, true_and, mem_singleton]
+      simp only [goldenDatum, Matrix.cons_val_one, Matrix.cons_val_zero, Complex.norm_real,
+        Real.norm_eq_abs, abs_of_pos (inv_pos.mpr Real.goldenRatio_pos)]
+      exact iff_of_false (not_lt.mpr (inv_le_one_of_one_le₀ Real.one_lt_goldenRatio.le))
+        (by decide)
+  rw [h, image_singleton, card_singleton, Nat.cast_one]
 
 end GaloisForLFunctions.HeckeKreinToeplitz

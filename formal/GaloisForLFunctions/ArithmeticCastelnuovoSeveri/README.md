@@ -175,8 +175,9 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     two-sided Landau–Widom count $(2\mp\eta)e^{2L}$.
 27. **Rank–trace inertia.** The normalized rank–trace inequality certifies $(2-\kappa)N$ simple
     fixed-label mass without pairwise orthogonality. Coordinate examples prove sharpness among all
-    normalized abstract blocks, not within the prescribed arithmetic evaluation family. The studied
-    sub-threshold profiles exceed $2/3$; the $3/4$ criteria require spectral slack or surplus (TTPC).
+    normalized abstract blocks, not within the prescribed arithmetic evaluation family. Full Gram
+    coalescence also holds for arbitrary real vectors (`CoalescenceDoesNotRequireOrthogonality`).
+    The studied sub-threshold profiles exceed $2/3$; the $3/4$ criteria require spectral slack or surplus (TTPC).
 28. **Which data force the sign over $\mathbb F_q$**: Rosati invariance ⇔ pole-subtracted Hasse–Weil ⇔
     forward light-cone Bézout; genus one: Hasse = degree positivity of $\mathbb Z[F]$, which Hecke scales lack.
 

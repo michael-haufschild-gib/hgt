@@ -13,7 +13,7 @@ evaluation family. Preserve the valid rank–trace inequality and repair overbro
 
 ## Gates
 - [x] 0 → 1: inspected constructors, consumers, and actual `evalVec`/`blockData` definitions.
-- [ ] 1 → 2: dependency-closed paper proof of arbitrary-frame coalescence and explicit example.
+- [x] 1 → 2: dependency-closed paper proof of arbitrary-frame coalescence and explicit example.
 - [ ] 2 → 3: Lean compilation and transitive `#print axioms` audit.
 
 ## Findings
@@ -27,6 +27,24 @@ grid. A functional valid only for actual zeta evaluations need not satisfy that 
 `Zeta23.ZeroSide.ZeroBlockData.mult_two` uses individual norm bounds, not pairwise orthogonality.
 The imported density theorem is proved through `Zeta23.thmB₀_mult_cumulative`, independently of
 these extremal constructors. Its broader analytic proof is outside this scope review.
+
+Source evidence:
+- `formal/.lake/packages/Zeta23/Zeta23/ZeroSide.lean`: `ZeroBlockData` (line 161),
+  `evalVec` (line 810), and `blockData` (line 823).
+- `formal/.lake/packages/Zeta23/Zeta23/ZeroSide/Mult.lean`: `ZeroBlockData.mult_two` (line 130).
+- `formal/GaloisForLFunctions/RHTower/Zeta23SimpleCriticalDensity.lean`:
+  `two_thirds_simpleCritical_epsilon` (line 89).
+
+Initial transitive axiom audit of `mult_two`, `rankTrace_tight_at_two_thirds`,
+`universal_matrix_functional_barrier`, and `two_thirds_simpleCritical_epsilon` passed:
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Corpus search also found
+`RiemannGaussian.HermitianInertia.frobSq_finsetSum_real_smul_vecMulVec_eq_pairCorrelation`
+in `RHTower/RiemannGaussian/EtaEnergyFiniteWindowPairCorrelation.lean`: the existing general
+Frobenius expansion retains cross-correlations. No replacement orthogonality hypothesis is needed.
+The arbitrary-frame construction below is an elementary extension of the existing examples,
+not a claim of new analytic information about zeta zeros.
 
 ## Approach and paper proof
 For arbitrary real families `u : α → d → ℝ`, `w : β → d → ℝ`, compare:
@@ -49,7 +67,14 @@ Frobenius norm `232/25`. Counts differ (`4` versus `2`); correlations remain in 
   different fixed-label counts, for every real family, including nonorthogonal normalized families.
 - **New insight:** coalescence indistinguishability is independent of orthogonality; the specific
   trace/Frobenius extremal values are a separate property of the coordinate frame.
-- **Status:** elementary finite-sum proof above; Lean implementation and axiom audit pending.
+- **Status:** elementary finite-sum proof above formalized in
+  `ArithmeticCastelnuovoSeveri/CoalescenceDoesNotRequireOrthogonality.lean`:
+  `blockA_coalescedPairFrame_eq_doubleZeroFrame`, `counts_doubleZeroFrameData`,
+  `counts_coalescedPairFrameData`, `blockA_correlatedPairFrame`, and
+  `nonorthogonal_coalescence_example`. Scratch and source compilation passed without warnings;
+  the new module's olean was emitted for its import by the original module. The original module's
+  source check and new declarations' transitive axiom audit remain pending. Existing declarations
+  and proofs in all four edited modules were compared after stripping comments: unchanged.
 
 ## Log
 - 2026-10-28 — audit opened; retain finite model theorem, correct arithmetic scope, formalize survivor.

@@ -136,7 +136,7 @@ theorem xiLine_eq_xi_add (s : ℂ) (u : ℝ) :
     xiLine s.im (s.re - 1 / 2 + u) = xi (s + u) := by
   rw [xiLine]
   congr 1
-  apply Complex.ext <;> simp
+  apply Complex.ext <;> simp <;> ring
 
 theorem norm_xiLine_neg (X w : ℝ) : ‖xiLine X (-w)‖ = ‖xiLine X w‖ := by
   rw [xiLine, xiLine, xi_half_sub_eq_conj, Complex.norm_conj]
