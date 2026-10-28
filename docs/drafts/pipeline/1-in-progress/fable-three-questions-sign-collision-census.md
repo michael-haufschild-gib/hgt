@@ -21,7 +21,14 @@ Answer (paper):
    every Brun–Titchmarsh / short-interval PNT statement up to `1 + o(1)`; so those inputs cannot decide
    the sign. `Λ` and its Liouville twin are never both dyadic positive (full form).
 
-Lean: TODO.
+Lean (compiled, axioms standard):
+`SelectiveMultiscaleArithmeticPositivity/TheDyadicSignIsRigid.lean` —
+`primeMass_add_le_of_towerPositive`, `not_towerPositive_and_of_unbounded`,
+`not_towerPositive_and_perturbed`, `sum_perturbation_Ioc_le`,
+`not_towerPositive_liouvilleTwin_and_vonMangoldt` (any scale `ℓ > 0`; dyadic specializations).
+`SelectiveMultiscaleArithmeticPositivity/TheDyadicSignOfAPoleFreeGeneratorIsRH.lean` —
+`zeta_poleFree_small_tower_law`, `riemannHypothesis_iff_towerPositive_poleFree_small`,
+`not_towerPositive_liouvilleTwin_of_riemannHypothesis`, `not_towerPositive_perturbed_of_riemannHypothesis`.
 
 ## Q-II — t-uniform collision bound for the heat flow
 

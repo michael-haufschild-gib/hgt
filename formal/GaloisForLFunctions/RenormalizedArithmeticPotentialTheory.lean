@@ -131,3 +131,4 @@ form, the Liouville flip of the polar divergence and the matching law for sign g
 stability law at atomic resolution; the laws in one statement.
 See `RenormalizedArithmeticPotentialTheory/README.md`.
 -/
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCompleteWeilSelfEnergyHasItsFinitePart

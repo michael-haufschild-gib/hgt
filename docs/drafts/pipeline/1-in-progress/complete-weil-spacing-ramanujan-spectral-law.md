@@ -241,12 +241,11 @@ The manifest `/tmp/WeilRamanujan-draft-manifest.json` records the active
 forty-two-module graph. Each verified scratch endpoint has a retained
 transitive axiom report in `logs/complete-weil-spacing-axioms-2026-10-28.log`;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
-Twenty-five support modules are scratch verified and installed; thirty-one
-retained endpoint axiom reports are clean. First required oleans are built
-through module twenty-four; the generic symmetric-form projection dependency
-is being generated. These modules are imported by their owner umbrellas;
-no umbrella was compiled. The SSHA density increment bound is documented in its README.
-Final installed-source checks without output generation remain outstanding.
+The table below records scratch verification, installation, and first required
+olean generation. Verified modules are imported by their owner
+umbrellas; no umbrella was compiled. The SSHA density increment bound is
+documented in its README. Final installed-source checks without output
+generation remain outstanding.
 The three main endpoints are still unchecked:
 
 - `tendsto_completeWeilMatrix_ramanujan_residual_norm`
@@ -288,9 +287,9 @@ The superseded owned center modules and their build artifacts were removed.
 | 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Scratch verified; installed; first required olean built |
 | 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Scratch verified; installed; first required olean built |
 | 24 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionHasBoundedPoleResidual` | Scratch verified; installed; first required olean built |
-| 25 | `HTGeometry/SymmetricFormGroundProjection` | Scratch verified; installed |
-| 26 | `HTGeometry/HermitianLowerSpectralWindows` | Unchecked scratch |
-| 27 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilSelfEnergyHasItsFinitePart` | Unchecked scratch |
+| 25 | `HTGeometry/SymmetricFormGroundProjection` | Scratch verified; installed; first required olean built |
+| 26 | `HTGeometry/HermitianLowerSpectralWindows` | Scratch verified; installed; first required olean built |
+| 27 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilSelfEnergyHasItsFinitePart` | Scratch verified; installed |
 | 28 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionSelectsTheConstantRamanujanMode` | Unchecked scratch |
 | 29 | `HTGeometry/FiniteTwoPoleKernelBounds` | Unchecked scratch |
 | 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Unchecked scratch |
@@ -307,9 +306,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 41 | `RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | Unchecked scratch |
 | 42 | `RenormalizedArithmeticPotentialTheory/TheSimpleCompleteWeilEigenlinesConvergeToRamanujanLines` | Unchecked scratch |
 
-The shifted Abel bounds, both center square-residual bounds, and quadratic
-two-pole product error and symmetric-form projection bound now pass Lean.
-Next unresolved checks: spectral-window infrastructure, self-energy and mode
-transfers, two-pole matrix
-assembly, coercivity, and spectral assembly.
+The analytic estimates, projection identity, lower spectral-window bounds, and
+self-energy finite part through row 27 pass Lean. Remaining checks cover mode
+transfers, two-pole matrix assembly, coercivity, and spectral assembly.
 No unchecked draft is a proved theorem or a completed contribution.

@@ -14,6 +14,8 @@ import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleHyperp
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleCouplesTheLevelsHyperbolically
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.SeparatedLevelsCoupleThroughTheChebyshevError
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TouchingLevelsCoupleUniformly
+import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheDyadicSignIsRigid
+import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheDyadicSignOfAPoleFreeGeneratorIsRH
 
 /-!
 # Selective Multiscale Arithmetic Positivity
@@ -25,7 +27,10 @@ conductor-two excitation and the selective margin, exactly `2 log 2`, decided by
 correlation; the twin-blindness of the high-detail Haar floor; the renormalization calculus of a
 refinement level; the dyadic multiresolution of the complete source with its level-Toeplitz law;
 the renormalization invariance of the pole hyperplane; the hyperbolic pole coupling between levels;
-the Chebyshev coupling of separated levels with its geometrically decaying Gamma cost; and the
-uniform coupling of touching levels. See
+the Chebyshev coupling of separated levels with its geometrically decaying Gamma cost; the
+uniform coupling of touching levels; the rigidity of the sign on one Hecke tower (two weights whose
+difference has unbounded prime mass are never both tower positive, so interval estimates on primes
+cannot decide it and the Liouville twin fails); and the tower sign of pole-free generators of
+arbitrarily small support, which is RH at every prime. See
 `SelectiveMultiscaleArithmeticPositivity/README.md`.
 -/

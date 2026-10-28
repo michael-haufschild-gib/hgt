@@ -162,9 +162,9 @@ theorem norm_taylorRemainder_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z
       _ = M * q ^ 2 * q ^ n := by rw [← hq]; ring
   have hle := htail.norm_le_of_bounded hgeo hbound
   have hle' : ‖F w - F z - (w - z) * deriv F z‖ ≤ M * q ^ 2 * (1 - q)⁻¹ := by
-    convert hle using 2
-    trace_state
-    sorry
+    refine le_trans (le_of_eq ?_) hle
+    congr 1
+    ring
   refine hle'.trans ?_
   have h1q : (1 - q)⁻¹ ≤ 2 := by
     rw [inv_le_comm₀ (by linarith) (by norm_num)]
@@ -174,148 +174,222 @@ theorem norm_taylorRemainder_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z
 
 /-! ## The Gaussian average -/
 
-/-- **The Gaussian average of a locally tame function.**  If `‖F(w)‖ ≤ ‖F(z)‖ e^{a‖w − z‖}` on
-`‖w − z‖ ≤ 2` and `‖F(z − iu)‖ ≤ B ‖F(z)‖ e^{b|u|}` for `|u| > 1`, then for every `λ ≥ 0`
-`‖∫ g_t(u) F(z − iu) du − F(z)‖ ≤ 7t ‖F(z)‖ (6a² e^{4a²t} + (B + 1 + 4a) e^{−λ + 4(b+λ)²t})`. -/
-theorem norm_integral_gaussDensity_mul_sub_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z : ℂ}
-    {t a b B lam : ℝ} (ht : 0 < t) (ha : 1 ≤ a) (hb : 0 ≤ b) (hB : 0 ≤ B) (hlam : 0 ≤ lam)
+/-- The weight bounding the Taylor remainder along the vertical line through `z`. -/
+def tameWeight (a b B lam u : ℝ) : ℝ :=
+  6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))
+    + (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|))
+
+section Tame
+
+variable {F : ℂ → ℂ} {z : ℂ} {a b B lam : ℝ}
+
+theorem exp_two_le_eight : Real.exp 2 ≤ 8 := by
+  have := Real.exp_one_lt_d9
+  have h2 : Real.exp 2 = Real.exp 1 ^ 2 := by rw [← Real.exp_nat_mul]; norm_num
+  rw [h2]
+  nlinarith [Real.exp_pos 1]
+
+theorem norm_I_mul_ofReal (u : ℝ) : ‖I * (u : ℂ)‖ = |u| := by
+  rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
+
+/-- On the circle of radius `2/a`, a tame function is at most `e² ‖F(z)‖`. -/
+theorem norm_le_on_sphere_of_tame (ha : 1 ≤ a)
+    (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖)) :
+    ∀ v ∈ sphere z (2 / a), ‖F v‖ ≤ ‖F z‖ * Real.exp 2 := by
+  intro v hv
+  have ha0 : 0 < a := by linarith
+  have hvz : ‖v - z‖ = 2 / a := by simpa [dist_eq_norm] using hv
+  have hρ2 : 2 / a ≤ 2 := by rw [div_le_iff₀ ha0]; linarith
+  have := hloc v (by rw [mem_closedBall, dist_eq_norm, hvz]; exact hρ2)
+  rwa [hvz, mul_div_cancel₀ _ ha0.ne'] at this
+
+/-- Cauchy's estimate at radius `2/a`: `‖F′(z)‖ ≤ 4a ‖F(z)‖`. -/
+theorem norm_deriv_le_of_tame (hF : Differentiable ℂ F) (ha : 1 ≤ a)
+    (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖)) :
+    ‖deriv F z‖ ≤ 4 * a * ‖F z‖ := by
+  have ha0 : 0 < a := by linarith
+  have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity : (0 : ℝ) < 2 / a)
+    hF.diffContOnCl (norm_le_on_sphere_of_tame ha hloc)
+  refine h.trans ?_
+  rw [div_div_eq_mul_div, div_le_iff₀ (by norm_num : (0 : ℝ) < 2)]
+  have hN := norm_nonneg (F z)
+  nlinarith [mul_le_mul_of_nonneg_left exp_two_le_eight (mul_nonneg hN ha0.le)]
+
+/-- The remainder for `|u| ≤ 1/a`. -/
+theorem norm_vertical_remainder_le_small (hF : Differentiable ℂ F) (ha : 1 ≤ a)
+    (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖)) {u : ℝ}
+    (hu : |u| ≤ 1 / a) :
+    ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
+      ≤ ‖F z‖ * (6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))) := by
+  have ha0 : 0 < a := by linarith
+  have hwz : (z - I * u) - z = -(I * u) := by ring
+  have hw : ‖(z - I * u) - z‖ ≤ (2 / a) / 2 := by
+    rw [hwz, norm_neg, norm_I_mul_ofReal]
+    calc |u| ≤ 1 / a := hu
+      _ = 2 / a / 2 := by ring
+  have h := norm_taylorRemainder_le hF (by positivity) (norm_le_on_sphere_of_tame ha hloc) hw
+  rw [hwz, norm_neg, norm_I_mul_ofReal] at h
+  refine h.trans ?_
+  have hsq : (|u| / (2 / a)) ^ 2 = a ^ 2 * u ^ 2 / 4 := by
+    rw [div_div_eq_mul_div, div_pow, mul_pow, sq_abs]; ring
+  rw [hsq]
+  have hN := norm_nonneg (F z)
+  have hE : 0 ≤ a ^ 2 * u ^ 2 := by positivity
+  have hexp : 1 ≤ Real.exp (a * |u|) := Real.one_le_exp (by positivity)
+  calc 2 * (‖F z‖ * Real.exp 2) * (a ^ 2 * u ^ 2 / 4)
+      ≤ 2 * (‖F z‖ * 8) * (a ^ 2 * u ^ 2 / 4) := by gcongr; exact exp_two_le_eight
+    _ = ‖F z‖ * (4 * (a ^ 2 * u ^ 2)) := by ring
+    _ ≤ ‖F z‖ * (6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))) := by
+        gcongr
+        nlinarith
+
+/-- The crude remainder bound `‖G‖ ≤ ‖F(z − iu)‖ + ‖F(z)‖ + 4a|u| ‖F(z)‖`. -/
+theorem norm_vertical_remainder_le_crude (hF : Differentiable ℂ F) (ha : 1 ≤ a)
+    (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖)) (u : ℝ) :
+    ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
+      ≤ ‖F (z - I * u)‖ + ‖F z‖ + 4 * a * |u| * ‖F z‖ := by
+  have hder := norm_deriv_le_of_tame hF ha hloc
+  have h1 := norm_sub_le (F (z - I * u) - F z) (-(I * u) * deriv F z)
+  have h2 := norm_sub_le (F (z - I * u)) (F z)
+  have h3 : ‖-(I * (u : ℂ)) * deriv F z‖ ≤ 4 * a * |u| * ‖F z‖ := by
+    rw [norm_mul, norm_neg, norm_I_mul_ofReal]
+    calc |u| * ‖deriv F z‖ ≤ |u| * (4 * a * ‖F z‖) := by gcongr
+      _ = 4 * a * |u| * ‖F z‖ := by ring
+  linarith
+
+/-- The remainder for `1/a < |u| ≤ 1`. -/
+theorem norm_vertical_remainder_le_middle (hF : Differentiable ℂ F) (ha : 1 ≤ a)
+    (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖)) {u : ℝ}
+    (hu : 1 / a < |u|) (hu1 : |u| ≤ 1) :
+    ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
+      ≤ ‖F z‖ * (6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))) := by
+  have ha0 : 0 < a := by linarith
+  have hwz : (z - I * u) - z = -(I * u) := by ring
+  have hfar : ‖F (z - I * u)‖ ≤ ‖F z‖ * Real.exp (a * |u|) := by
+    have := hloc (z - I * u) (by
+      rw [mem_closedBall, dist_eq_norm, hwz, norm_neg, norm_I_mul_ofReal]; linarith)
+    rwa [hwz, norm_neg, norm_I_mul_ofReal] at this
+  have hcrude := norm_vertical_remainder_le_crude hF ha hloc u
+  have hau : 1 ≤ a * |u| := by
+    rw [div_lt_iff₀ ha0] at hu; linarith
+  set x : ℝ := a * |u| with hx
+  have hx2 : a ^ 2 * u ^ 2 = x ^ 2 := by rw [hx, mul_pow, sq_abs]
+  have hx1 : 1 ≤ x ^ 2 := by nlinarith
+  have hxx : x ≤ x ^ 2 := by nlinarith
+  have hN := norm_nonneg (F z)
+  have hexp : 1 ≤ Real.exp x := Real.one_le_exp (by linarith)
+  have hgoal : ‖F z‖ * (6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))) = ‖F z‖ * (6 * x ^ 2 * Real.exp x) := by
+    rw [← hx2]; ring
+  rw [hgoal]
+  have hlin : 4 * a * |u| * ‖F z‖ = 4 * x * ‖F z‖ := by rw [hx]; ring
+  have hstep : ‖F (z - I * u)‖ + ‖F z‖ + 4 * a * |u| * ‖F z‖
+      ≤ ‖F z‖ * (Real.exp x + 1 + 4 * x) := by rw [hlin, ← hx] at *; nlinarith
+  refine hcrude.trans (hstep.trans ?_)
+  apply mul_le_mul_of_nonneg_left _ hN
+  nlinarith [mul_le_mul_of_nonneg_left hexp (by positivity : (0 : ℝ) ≤ x ^ 2)]
+
+/-- The remainder for `|u| > 1`. -/
+theorem norm_vertical_remainder_le_large (hF : Differentiable ℂ F) (ha : 1 ≤ a) (hb : 0 ≤ b)
+    (hB : 0 ≤ B) (hlam : 0 ≤ lam)
     (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖))
     (htail : ∀ u : ℝ, 1 < |u| → ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|))
-    (hint : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u))) :
-    ‖(∫ u : ℝ, (gaussDensity t u : ℂ) * F (z - I * u)) - F z‖ ≤
-      7 * t * ‖F z‖ * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
-        + (B + 1 + 4 * a) * Real.exp (-lam + 4 * (b + lam) ^ 2 * t)) := by
-  set N : ℝ := ‖F z‖ with hN
-  have hN0 : 0 ≤ N := norm_nonneg _
-  have ha0 : 0 < a := by linarith
-  set ρ : ℝ := 2 / a with hρdef
-  have hρ : 0 < ρ := by positivity
-  have hρ2 : ρ ≤ 2 := by rw [hρdef, div_le_iff₀ ha0]; linarith
-  -- the bound on the circle of radius `2/a`
-  have hsph : ∀ v ∈ sphere z ρ, ‖F v‖ ≤ N * Real.exp 2 := by
-    intro v hv
-    have hvz : ‖v - z‖ = ρ := by simpa [dist_eq_norm] using hv
-    have := hloc v (by rw [mem_closedBall, dist_eq_norm, hvz]; exact hρ2)
-    rw [hvz, hρdef, mul_div_cancel₀ _ ha0.ne'] at this
-    exact this
-  have he2 : Real.exp 2 ≤ 8 := by
-    have := Real.exp_one_lt_d9
-    have h2 : Real.exp 2 = Real.exp 1 ^ 2 := by rw [← Real.exp_nat_mul]; norm_num
-    rw [h2]
-    nlinarith [Real.exp_pos 1]
-  -- the derivative at the centre
-  have hder : ‖deriv F z‖ ≤ 4 * a * N := by
-    have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hρ hF.diffContOnCl hsph
-    refine h.trans ?_
-    rw [hρdef, div_div_eq_mul_div]
-    rw [div_le_iff₀ (by norm_num : (0 : ℝ) < 2)]
-    nlinarith [mul_le_mul_of_nonneg_left he2 (mul_nonneg hN0 ha0.le)]
-  -- the pointwise bound on the Taylor remainder along the vertical line
-  set G : ℝ → ℂ := fun u => F (z - I * u) - F z - (-(I * u)) * deriv F z with hG
-  set phi : ℝ → ℝ := fun u => 6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))
-      + (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|)) with hphi
-  have hphi1 : ∀ u, 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|)) :=
-    fun u => by positivity
-  have hphi0 : ∀ u, 0 ≤ 6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|)) := fun u => by positivity
-  have hnormIu : ∀ u : ℝ, ‖I * (u : ℂ)‖ = |u| := fun u => by
-    rw [norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
-  have hGbound : ∀ u : ℝ, ‖G u‖ ≤ N * phi u := by
-    intro u
-    have hwz : (z - I * u) - z = -(I * u) := by ring
-    by_cases h1 : |u| ≤ 1
-    · by_cases ha1 : |u| ≤ 1 / a
-      · have hw : ‖(z - I * u) - z‖ ≤ ρ / 2 := by
-          rw [hwz, norm_neg, hnormIu, hρdef]
-          calc |u| ≤ 1 / a := ha1
-            _ = 2 / a / 2 := by ring
-        have h := norm_taylorRemainder_le hF hρ hsph hw
-        rw [hwz] at h
-        have hG' : G u = F (z - I * u) - F z - -(I * ↑u) * deriv F z := rfl
-        rw [hG']
-        refine h.trans ?_
-        rw [norm_neg, hnormIu, hρdef]
-        have hexp : 1 ≤ Real.exp (a * |u|) := Real.one_le_exp (by positivity)
-        have hkey : 2 * (N * Real.exp 2) * (|u| / (2 / a)) ^ 2 ≤ 6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|)) * N := by
-          have hsq : (|u| / (2 / a)) ^ 2 = a ^ 2 * u ^ 2 / 4 := by
-            rw [div_div_eq_mul_div, div_pow, mul_pow, sq_abs]; ring
-          rw [hsq]
-          have hu2 : 0 ≤ a ^ 2 * u ^ 2 := by positivity
-          nlinarith [mul_le_mul_of_nonneg_left hexp (mul_nonneg hu2 hN0),
-            mul_le_mul_of_nonneg_left he2 (mul_nonneg hu2 hN0)]
-        rw [hphi]
-        nlinarith [hphi1 u, hkey]
-      · push Not at ha1
-        have hau : 1 ≤ a * |u| := by rwa [div_lt_iff₀ ha0, mul_comm] at ha1 |>.le
-        have hfar : ‖F (z - I * u)‖ ≤ N * Real.exp (a * |u|) := by
-          have := hloc (z - I * u) (by
-            rw [mem_closedBall, dist_eq_norm, hwz, norm_neg, hnormIu]; linarith)
-          rwa [hwz, norm_neg, hnormIu] at this
-        have hG' : ‖G u‖ ≤ ‖F (z - I * u)‖ + N + |u| * ‖deriv F z‖ := by
-          have h := norm_sub_le (F (z - I * u) - F z) (-(I * u) * deriv F z)
-          have h2 := norm_sub_le (F (z - I * u)) (F z)
-          rw [norm_mul, norm_neg, hnormIu] at h
-          simp only [hG]
-          linarith
-        have hexp : 1 ≤ Real.exp (a * |u|) := Real.one_le_exp (by positivity)
-        have hsq : 1 ≤ a ^ 2 * u ^ 2 := by
-          have : a ^ 2 * u ^ 2 = (a * |u|) ^ 2 := by rw [mul_pow, sq_abs]
-          rw [this]; nlinarith
-        have hlin : a * |u| ≤ a ^ 2 * u ^ 2 := by
-          have : a ^ 2 * u ^ 2 = (a * |u|) ^ 2 := by rw [mul_pow, sq_abs]
-          rw [this]; nlinarith
-        have hkey : ‖F (z - I * u)‖ + N + |u| * ‖deriv F z‖
-            ≤ N * (6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))) := by
-          have h3 : |u| * ‖deriv F z‖ ≤ 4 * N * (a * |u|) := by
-            nlinarith [mul_le_mul_of_nonneg_left hder (abs_nonneg u)]
-          have hE : 0 ≤ a ^ 2 * u ^ 2 := by positivity
-          nlinarith [mul_le_mul_of_nonneg_left hexp (mul_nonneg hE hN0),
-            mul_le_mul_of_nonneg_left hsq hN0, mul_le_mul_of_nonneg_left hlin hN0,
-            mul_le_mul_of_nonneg_left hsq (mul_nonneg hN0 (Real.exp_pos (a * |u|)).le)]
-        rw [hphi]
-        nlinarith [hphi1 u, mul_le_mul_of_nonneg_left (le_of_eq rfl : (0:ℝ) ≤ 0) hN0, hG', hkey,
-          mul_nonneg hN0 (hphi1 u)]
-    · push Not at h1
-      have hG' : ‖G u‖ ≤ ‖F (z - I * u)‖ + N + |u| * ‖deriv F z‖ := by
-        have h := norm_sub_le (F (z - I * u) - F z) (-(I * u) * deriv F z)
-        have h2 := norm_sub_le (F (z - I * u)) (F z)
-        rw [norm_mul, norm_neg, hnormIu] at h
-        simp only [hG]
-        linarith
-      have hu1 : 1 ≤ u ^ 2 := by
-        have : u ^ 2 = |u| ^ 2 := (sq_abs u).symm
-        rw [this]; nlinarith
-      have hulin : |u| ≤ u ^ 2 := by
-        have : u ^ 2 = |u| ^ 2 := (sq_abs u).symm
-        rw [this]; nlinarith
-      have hexpb : 1 ≤ Real.exp (b * |u|) := Real.one_le_exp (by positivity)
-      have hshift : Real.exp (b * |u|) ≤ Real.exp (-lam) * Real.exp ((b + lam) * |u|) := by
-        rw [← Real.exp_add]
-        exact Real.exp_le_exp.mpr (by nlinarith)
-      have hkey : ‖F (z - I * u)‖ + N + |u| * ‖deriv F z‖
-          ≤ N * ((B + 1 + 4 * a) * u ^ 2 * Real.exp (b * |u|)) := by
-        have htl := htail u h1
-        have h3 : |u| * ‖deriv F z‖ ≤ 4 * a * N * u ^ 2 := by
-          nlinarith [mul_le_mul_of_nonneg_left hder (abs_nonneg u),
-            mul_le_mul_of_nonneg_left hulin (mul_nonneg (by linarith : (0:ℝ) ≤ 4 * a) hN0)]
-        have hBpart : B * N * Real.exp (b * |u|) ≤ N * (B * u ^ 2 * Real.exp (b * |u|)) := by
-          nlinarith [mul_le_mul_of_nonneg_left hu1
-            (mul_nonneg (mul_nonneg hB hN0) (Real.exp_pos (b * |u|)).le)]
-        have hNpart : N ≤ N * (u ^ 2 * Real.exp (b * |u|)) := by
+    {u : ℝ} (hu : 1 < |u|) :
+    ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
+      ≤ ‖F z‖ * ((B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
+  have hcrude := norm_vertical_remainder_le_crude hF ha hloc u
+  have htl := htail u hu
+  have hN := norm_nonneg (F z)
+  have hu2 : |u| ≤ u ^ 2 := by rw [← sq_abs]; nlinarith
+  have hu1 : 1 ≤ u ^ 2 := by rw [← sq_abs]; nlinarith
+  have hexpb : 1 ≤ Real.exp (b * |u|) := Real.one_le_exp (by positivity)
+  have hshift : Real.exp (b * |u|) ≤ Real.exp (-lam) * Real.exp ((b + lam) * |u|) := by
+    rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by nlinarith)
+  have hcoef : 0 ≤ B + 1 + 4 * a := by linarith
+  calc ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
+      ≤ B * ‖F z‖ * Real.exp (b * |u|) + ‖F z‖ + 4 * a * |u| * ‖F z‖ := by linarith
+    _ ≤ ‖F z‖ * ((B + 1 + 4 * a) * u ^ 2 * Real.exp (b * |u|)) := by
+        have e1 : B * ‖F z‖ * Real.exp (b * |u|) ≤ ‖F z‖ * (B * u ^ 2 * Real.exp (b * |u|)) := by
+          have := mul_le_mul_of_nonneg_left hu1 (mul_nonneg (mul_nonneg hB hN)
+            (Real.exp_pos (b * |u|)).le)
+          nlinarith
+        have e2 : ‖F z‖ ≤ ‖F z‖ * (u ^ 2 * Real.exp (b * |u|)) := by
           have : 1 ≤ u ^ 2 * Real.exp (b * |u|) := by nlinarith
           nlinarith
-        have hapart : 4 * a * N * u ^ 2 ≤ N * (4 * a * u ^ 2 * Real.exp (b * |u|)) := by
-          nlinarith [mul_le_mul_of_nonneg_left hexpb
-            (mul_nonneg (mul_nonneg (by linarith : (0:ℝ) ≤ 4 * a) hN0) (sq_nonneg u))]
+        have e3 : 4 * a * |u| * ‖F z‖ ≤ ‖F z‖ * (4 * a * u ^ 2 * Real.exp (b * |u|)) := by
+          have h4a : 0 ≤ 4 * a := by linarith
+          have := mul_le_mul_of_nonneg_left hu2 (mul_nonneg h4a hN)
+          have := mul_le_mul_of_nonneg_left hexpb (mul_nonneg (mul_nonneg h4a hN) (sq_nonneg u))
+          nlinarith
         nlinarith
-      have hfinal : N * ((B + 1 + 4 * a) * u ^ 2 * Real.exp (b * |u|))
-          ≤ N * ((B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
-        have hc : 0 ≤ N * ((B + 1 + 4 * a) * u ^ 2) := by
-          have : 0 ≤ B + 1 + 4 * a := by linarith
-          positivity
-        nlinarith [mul_le_mul_of_nonneg_left hshift hc]
-      rw [hphi]
-      nlinarith [hphi0 u, mul_nonneg hN0 (hphi0 u)]
-  -- the integral identity
+    _ ≤ ‖F z‖ * ((B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
+        apply mul_le_mul_of_nonneg_left _ hN
+        have := mul_le_mul_of_nonneg_left hshift (mul_nonneg hcoef (sq_nonneg u))
+        nlinarith
+
+/-- The pointwise remainder bound `‖G(u)‖ ≤ ‖F(z)‖ φ(u)`. -/
+theorem norm_vertical_remainder_le (hF : Differentiable ℂ F) (ha : 1 ≤ a) (hb : 0 ≤ b)
+    (hB : 0 ≤ B) (hlam : 0 ≤ lam)
+    (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖))
+    (htail : ∀ u : ℝ, 1 < |u| → ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|)) (u : ℝ) :
+    ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖ ≤ ‖F z‖ * tameWeight a b B lam u := by
+  have hN := norm_nonneg (F z)
+  have h0 : 0 ≤ 6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|)) := by positivity
+  have h1 : 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|)) := by
+    have : 0 ≤ B + 1 + 4 * a := by linarith
+    positivity
+  rw [tameWeight, mul_add]
+  rcases le_or_gt (|u|) 1 with hu1 | hu1
+  · rcases le_or_gt (|u|) (1 / a) with hua | hua
+    · have := norm_vertical_remainder_le_small hF ha hloc hua
+      nlinarith [mul_nonneg hN h1]
+    · have := norm_vertical_remainder_le_middle hF ha hloc hua hu1
+      nlinarith [mul_nonneg hN h1]
+  · have := norm_vertical_remainder_le_large hF ha hb hB hlam hloc htail hu1
+    nlinarith [mul_nonneg hN h0]
+
+end Tame
+
+theorem integrable_gaussDensity_mul_tameWeight {t : ℝ} (ht : 0 < t) (a b B lam : ℝ) :
+    Integrable (fun u : ℝ => gaussDensity t u * tameWeight a b B lam u) := by
+  have h1 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht a).const_mul (6 * a ^ 2)
+  have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht (b + lam)).const_mul
+    ((B + 1 + 4 * a) * Real.exp (-lam))
+  exact (h1.add h2).congr (Eventually.of_forall fun u => by simp only [tameWeight]; ring)
+
+theorem integral_gaussDensity_mul_tameWeight_le {t : ℝ} (ht : 0 < t) {a b B lam : ℝ}
+    (ha : 0 ≤ a) (hB : 0 ≤ B) :
+    ∫ u : ℝ, gaussDensity t u * tameWeight a b B lam u ≤
+      7 * t * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
+        + (B + 1 + 4 * a) * Real.exp (-lam + 4 * (b + lam) ^ 2 * t)) := by
+  have h1 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht a).const_mul (6 * a ^ 2)
+  have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht (b + lam)).const_mul
+    ((B + 1 + 4 * a) * Real.exp (-lam))
+  have heq : (fun u : ℝ => gaussDensity t u * tameWeight a b B lam u) = fun u =>
+      6 * a ^ 2 * (gaussDensity t u * (u ^ 2 * Real.exp (a * |u|)))
+        + (B + 1 + 4 * a) * Real.exp (-lam)
+          * (gaussDensity t u * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
+    funext u; simp only [tameWeight]; ring
+  rw [heq, integral_add h1 h2, integral_const_mul, integral_const_mul]
+  have hc : 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam) := by
+    have : 0 ≤ B + 1 + 4 * a := by linarith
+    positivity
+  have hA := integral_gaussDensity_mul_sq_mul_exp_abs_le ht a
+  have hB' := integral_gaussDensity_mul_sq_mul_exp_abs_le ht (b + lam)
+  calc 6 * a ^ 2 * (∫ u : ℝ, gaussDensity t u * (u ^ 2 * Real.exp (a * |u|)))
+        + (B + 1 + 4 * a) * Real.exp (-lam)
+          * (∫ u : ℝ, gaussDensity t u * (u ^ 2 * Real.exp ((b + lam) * |u|)))
+      ≤ 6 * a ^ 2 * (7 * t * Real.exp (4 * a ^ 2 * t))
+        + (B + 1 + 4 * a) * Real.exp (-lam) * (7 * t * Real.exp (4 * (b + lam) ^ 2 * t)) := by
+        gcongr
+    _ = _ := by rw [Real.exp_add]; ring
+
+/-- `(∫ g_t(u) F(z − iu) du) − F(z) = ∫ g_t(u) G(u) du`: the zeroth and first Gaussian moments are
+`1` and `0`. -/
+theorem integral_gaussDensity_mul_sub_eq {F : ℂ → ℂ} {z : ℂ} {t : ℝ} (ht : 0 < t)
+    (hint : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u))) :
+    (∫ u : ℝ, (gaussDensity t u : ℂ) * F (z - I * u)) - F z
+      = ∫ u : ℝ, (gaussDensity t u : ℂ)
+          * (F (z - I * u) - F z - (-(I * u)) * deriv F z) := by
   have hg1 : ∫ u : ℝ, (gaussDensity t u : ℂ) = 1 := by
     have h := integral_gaussDensity_mul_pow_even ht 0
     simp only [mul_zero, pow_zero, mul_one, Nat.factorial_zero, Nat.cast_one, div_one] at h
@@ -334,54 +408,48 @@ theorem norm_integral_gaussDensity_mul_sub_le {F : ℂ → ℂ} (hF : Differenti
     have h := integrable_gaussDensity_mul_pow ht 1
     simp only [pow_one] at h
     exact h.ofReal.congr (Eventually.of_forall fun u => by push_cast; ring)
-  have hident : (∫ u : ℝ, (gaussDensity t u : ℂ) * F (z - I * u)) - F z
-      = ∫ u : ℝ, (gaussDensity t u : ℂ) * G u := by
-    have hsplit : ∀ u : ℝ, (gaussDensity t u : ℂ) * G u
-        = (gaussDensity t u : ℂ) * F (z - I * u) - F z * (gaussDensity t u : ℂ)
-          + (I * deriv F z) * ((gaussDensity t u : ℂ) * (u : ℂ)) := by
-      intro u; simp only [hG]; ring
-    simp_rw [hsplit]
-    rw [integral_add (hint.sub (hintg.const_mul _)) (hintgu.const_mul _),
-      integral_sub hint (hintg.const_mul _), integral_const_mul, integral_const_mul, hg1, hgu]
-    ring
-  -- the estimate
-  have hintphi : Integrable (fun u : ℝ => gaussDensity t u * phi u) := by
-    have h1 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht a).const_mul (6 * a ^ 2)
-    have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht (b + lam)).const_mul
-      ((B + 1 + 4 * a) * Real.exp (-lam))
-    exact (h1.add h2).congr (Eventually.of_forall fun u => by simp only [hphi]; ring)
-  have hphiint : ∫ u : ℝ, gaussDensity t u * phi u ≤
-      6 * a ^ 2 * (7 * t * Real.exp (4 * a ^ 2 * t))
-        + (B + 1 + 4 * a) * Real.exp (-lam) * (7 * t * Real.exp (4 * (b + lam) ^ 2 * t)) := by
-    have h1 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht a).const_mul (6 * a ^ 2)
-    have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht (b + lam)).const_mul
-      ((B + 1 + 4 * a) * Real.exp (-lam))
-    have heq : (fun u : ℝ => gaussDensity t u * phi u) = fun u =>
-        6 * a ^ 2 * (gaussDensity t u * (u ^ 2 * Real.exp (a * |u|)))
-          + (B + 1 + 4 * a) * Real.exp (-lam)
-            * (gaussDensity t u * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
-      funext u; simp only [hphi]; ring
-    rw [heq, integral_add h1 h2, integral_const_mul, integral_const_mul]
-    have hc : 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam) := by
-      have : 0 ≤ B + 1 + 4 * a := by linarith
-      positivity
-    gcongr
-    · exact integral_gaussDensity_mul_sq_mul_exp_abs_le ht a
-    · exact integral_gaussDensity_mul_sq_mul_exp_abs_le ht (b + lam)
-  rw [hident]
-  calc ‖∫ u : ℝ, (gaussDensity t u : ℂ) * G u‖ ≤ ∫ u : ℝ, gaussDensity t u * (N * phi u) := by
-        refine norm_integral_le_of_norm_le (hintphi.const_mul N |>.congr
-          (Eventually.of_forall fun u => by ring)) (Eventually.of_forall fun u => ?_)
-        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (gaussDensity_pos ht u)]
-        exact mul_le_mul_of_nonneg_left (hGbound u) (gaussDensity_pos ht u).le
-    _ = N * ∫ u : ℝ, gaussDensity t u * phi u := by
-        rw [← integral_const_mul]; congr 1; funext u; ring
-    _ ≤ N * (6 * a ^ 2 * (7 * t * Real.exp (4 * a ^ 2 * t))
-        + (B + 1 + 4 * a) * Real.exp (-lam) * (7 * t * Real.exp (4 * (b + lam) ^ 2 * t))) :=
-        mul_le_mul_of_nonneg_left hphiint hN0
-    _ = 7 * t * N * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
+  have hA : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u)
+      - F z * (gaussDensity t u : ℂ)) := hint.sub (hintg.const_mul _)
+  have hB : Integrable (fun u : ℝ => I * deriv F z * ((gaussDensity t u : ℂ) * (u : ℂ))) :=
+    hintgu.const_mul _
+  have hsplit : (fun u : ℝ => (gaussDensity t u : ℂ)
+      * (F (z - I * u) - F z - (-(I * u)) * deriv F z))
+      = fun u => ((gaussDensity t u : ℂ) * F (z - I * u) - F z * (gaussDensity t u : ℂ))
+          + I * deriv F z * ((gaussDensity t u : ℂ) * (u : ℂ)) := by
+    funext u; ring
+  rw [hsplit, integral_add hA hB, integral_sub hint (hintg.const_mul _), integral_const_mul,
+    integral_const_mul, hg1, hgu]
+  ring
+
+/-- **The Gaussian average of a locally tame function.**  If `‖F(w)‖ ≤ ‖F(z)‖ e^{a‖w − z‖}` on
+`‖w − z‖ ≤ 2` and `‖F(z − iu)‖ ≤ B ‖F(z)‖ e^{b|u|}` for `|u| > 1`, then for every `λ ≥ 0`
+`‖∫ g_t(u) F(z − iu) du − F(z)‖ ≤ 7t ‖F(z)‖ (6a² e^{4a²t} + (B + 1 + 4a) e^{−λ + 4(b+λ)²t})`. -/
+theorem norm_integral_gaussDensity_mul_sub_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z : ℂ}
+    {t a b B lam : ℝ} (ht : 0 < t) (ha : 1 ≤ a) (hb : 0 ≤ b) (hB : 0 ≤ B) (hlam : 0 ≤ lam)
+    (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖))
+    (htail : ∀ u : ℝ, 1 < |u| → ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|))
+    (hint : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u))) :
+    ‖(∫ u : ℝ, (gaussDensity t u : ℂ) * F (z - I * u)) - F z‖ ≤
+      7 * t * ‖F z‖ * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
         + (B + 1 + 4 * a) * Real.exp (-lam + 4 * (b + lam) ^ 2 * t)) := by
-        rw [Real.exp_add]; ring
+  rw [integral_gaussDensity_mul_sub_eq ht hint]
+  have hN := norm_nonneg (F z)
+  have hmaj : Integrable (fun u : ℝ => ‖F z‖ * (gaussDensity t u * tameWeight a b B lam u)) :=
+    (integrable_gaussDensity_mul_tameWeight ht a b B lam).const_mul _
+  calc ‖∫ u : ℝ, (gaussDensity t u : ℂ) * (F (z - I * u) - F z - (-(I * u)) * deriv F z)‖
+      ≤ ∫ u : ℝ, ‖F z‖ * (gaussDensity t u * tameWeight a b B lam u) := by
+        refine norm_integral_le_of_norm_le hmaj (Eventually.of_forall fun u => ?_)
+        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (gaussDensity_pos ht u)]
+        have := norm_vertical_remainder_le hF ha hb hB hlam hloc htail u
+        calc gaussDensity t u * ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
+            ≤ gaussDensity t u * (‖F z‖ * tameWeight a b B lam u) :=
+              mul_le_mul_of_nonneg_left this (gaussDensity_pos ht u).le
+          _ = _ := by ring
+    _ = ‖F z‖ * ∫ u : ℝ, gaussDensity t u * tameWeight a b B lam u := integral_const_mul _ _
+    _ ≤ ‖F z‖ * (7 * t * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
+        + (B + 1 + 4 * a) * Real.exp (-lam + 4 * (b + lam) ^ 2 * t))) :=
+        mul_le_mul_of_nonneg_left (integral_gaussDensity_mul_tameWeight_le ht (by linarith) hB) hN
+    _ = _ := by ring
 
 end
 

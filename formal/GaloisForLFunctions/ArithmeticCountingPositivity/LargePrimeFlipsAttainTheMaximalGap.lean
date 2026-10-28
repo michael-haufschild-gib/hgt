@@ -37,6 +37,8 @@ open GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
   GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
   GaloisForLFunctions.ArithmeticElectrostatics
 
+open _root_.RHTower _root_.RHTower.WeilSpectral _root_.Zeta23
+
 /-! ### 1. Arithmetic of the assembly -/
 
 /-- `(a + b)² ≤ (21/20) a² + 21 b²`. -/
@@ -323,7 +325,8 @@ theorem two_scale_arith {g ε τ κ L M W U DS DL ρ cU Tmax : ℝ} (hε : 0 < �
       linarith
   have hUL : 2 * (g * U) * (g - ε / 2) ≤ g * (1 - τ) * DL := by
     have hge : 0 ≤ g - ε / 2 := by linarith
-    have h1 := mul_le_mul_of_nonneg_left hU (mul_nonneg (mul_nonneg (by norm_num) hg0.le) hge)
+    have h1 := mul_le_mul_of_nonneg_left hU
+      (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hg0.le) hge)
     have h2 := mul_le_mul_of_nonneg_right hκ' (show 0 ≤ g * DL by positivity)
     linarith
   have hnum : (g - ε / 2) * ((1 + τ) ^ 2 + g * τ) ≤ g * (1 - τ) := by
@@ -337,7 +340,10 @@ theorem two_scale_arith {g ε τ κ L M W U DS DL ρ cU Tmax : ℝ} (hε : 0 < �
     have h4 : τ * (3 * g + g * τ + g ^ 2) ≤ τ * (g ^ 2 + 4 * g) := by
       apply mul_le_mul_of_nonneg_left _ hτ0.le
       nlinarith
-    have h5 : ε / 2 ≤ ε / 2 * (1 + τ) ^ 2 := by nlinarith
+    have h5 : ε / 2 ≤ ε / 2 * (1 + τ) ^ 2 := by
+      have h1τ : 1 ≤ (1 + τ) ^ 2 := by nlinarith
+      have := mul_le_mul_of_nonneg_left h1τ (show 0 ≤ ε / 2 by positivity)
+      linarith
     have h6 : 0 ≤ ε / 2 * (g * τ) := by positivity
     rw [h3]; linarith
   have hpos : 0 < g * (1 - τ) := mul_pos hg0 (by linarith)
@@ -486,6 +492,7 @@ theorem sum_smoothBox_eq_ladders {J Q p : ℕ} (hp : p ∈ (range Q).filter Nat.
       have := h3 p; omega
   · rintro ⟨u, i⟩ h
     rw [mem_sigma, mem_filter] at h
+    dsimp only at h
     obtain ⟨⟨hu, hpu⟩, -⟩ := h
     have hu0 : u ≠ 0 := by have := (mem_smoothBox.mp hu).1; omega
     have hfac : (u * p ^ i).factorization p = i := by
@@ -529,6 +536,7 @@ theorem pFibreVar_le {J Q p : ℕ} (hp : p ∈ (range Q).filter Nat.Prime) (f : 
   refine sum_le_sum fun u _ => ?_
   have := wVar_le (s := range (J + 1)) (w := fun i => 1 / ((u * p ^ i : ℕ) : ℝ))
     (v := fun i => f (u * p ^ i)) (fun i _ => by positivity) 0
+  rw [boxLadderVar]
   simpa only [sub_zero] using this
 
 /-- **Twisted Efron–Stein on the box.** Keeping the `p`-ladders separate, the box energy pays the
@@ -657,11 +665,12 @@ theorem sum_flip_mul_sq_le {J Q p X : ℕ} (hp : p ∈ (range Q).filter Nat.Prim
     exact sum_eq_zero fun i hi => by rw [hg i hi, hmu, sub_zero, mul_zero, mul_zero]
   set T := F.filter (· ≤ X) with hT
   have hrestrict : ∑ u ∈ F, 1 / (u : ℝ) * Λ u = ∑ u ∈ T, 1 / (u : ℝ) * Λ u := by
-    rw [hT, sum_filter]
-    refine sum_congr rfl fun u hu => ?_
-    split_ifs with h
-    · rfl
-    · rw [hvan_u u hu (not_le.mp h), mul_zero]
+    symm
+    refine sum_subset (filter_subset _ _) fun u hu hu' => ?_
+    have hXu : X < u := by
+      by_contra hle
+      exact hu' (mem_filter.mpr ⟨hu, not_lt.mp hle⟩)
+    rw [hvan_u u hu hXu, mul_zero]
   -- the pairing is the restricted sum
   have hLHS : ∑ a ∈ smoothBox J Q, 1 / (a : ℝ) * (finiteFlip {p} a * g a) =
       ∑ u ∈ T, 1 / (u : ℝ) * Λ u := by
@@ -752,13 +761,17 @@ theorem sum_smoothBox_zeroExt_eq_zero (Q X : ℕ) (h : ℕ → ℝ) :
   have := sum_smoothBox_zeroExt_mul Q X h (fun _ => 1)
   simp only [mul_one] at this
   rw [this]
-  set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h with hc
-  rw [sum_congr rfl (fun a _ => mul_sub (1 / (a : ℝ)) (h a) c), sum_sub_distrib, ← sum_mul]
+  have e : ∀ a ∈ smoothSet Q X,
+      1 / (a : ℝ) * (h a - wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h) =
+        1 / (a : ℝ) * h a - 1 / (a : ℝ) * wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h :=
+    fun a _ => mul_sub _ _ _
+  rw [sum_congr rfl e, sum_sub_distrib, ← sum_mul]
   by_cases hS : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) = 0
   · have h0 := (sum_eq_zero_iff_of_nonneg (fun a _ => by positivity)).mp hS
     rw [hS, zero_mul, sub_zero]
     exact sum_eq_zero fun a ha => by rw [h0 a ha, zero_mul]
-  · rw [hc, wMean, mul_div_cancel₀ _ hS, sub_self]
+  · simp only [wMean]
+    rw [mul_div_cancel₀ _ hS, sub_self]
 
 theorem sum_smoothBox_zeroExt_sq (Q X : ℕ) (h : ℕ → ℝ) :
     ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 = smoothVar Q X h := by
@@ -804,7 +817,7 @@ theorem smoothVar_mul_add_le_smoothEnergy {Q X : ℕ} (hX : 2 ≤ X) {p : ℕ}
   have hV0 : 0 ≤ smoothVar Q X h := wVar_nonneg fun _ _ => by positivity
   have hZ₀V : Z₀ ≤ Real.log p * ladderMass p X * smoothVar Q X h := by
     rw [hZ₀, ← sum_smoothBox_zeroExt_sq]
-    have h1 := pFibreVar_le hp (zeroExt Q X h)
+    have h1 := pFibreVar_le (J := X) hp (zeroExt Q X h)
     have h3 : 0 ≤ Real.log p * ladderMass p X := by linarith
     have h4 := pFibreVar_nonneg X Q p (zeroExt Q X h)
     calc (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h)
@@ -826,7 +839,8 @@ theorem smoothVar_mul_add_le_smoothEnergy {Q X : ℕ} (hX : 2 ≤ X) {p : ℕ}
   · have hZ : Z₀ = 0 := by
       have := hZ₀V; rw [hV, mul_zero] at this; linarith
     rw [hV, hZ, mul_zero, zero_add]
-    exact mul_nonneg (by positivity) (smoothEnergy_nonneg _ _ _)
+    exact mul_nonneg (add_nonneg zero_le_one (div_nonneg (mul_nonneg (by norm_num)
+      (logSum_nonneg Q)) (Real.log_natCast_nonneg X))) (smoothEnergy_nonneg _ _ _)
   · have e : (boxGap X + Z₀ / smoothVar Q X h - 4 * logSum Q / Real.sqrt (Real.sqrt X) -
         16 * logSum Q * ladderConstant Q / Real.log X) * smoothVar Q X h =
         (boxGap X - 4 * logSum Q / Real.sqrt (Real.sqrt X) -
@@ -847,11 +861,11 @@ theorem not_dvd_of_mem_roughInterval {Q X p b : ℕ} (hp : p.Prime) (hpQ : p < Q
 theorem finiteFlip_mul_rough {Q X p a b : ℕ} (hp : p.Prime) (hpQ : p < Q) (ha : a ≠ 0)
     (hb : b ∈ roughInterval Q X) : finiteFlip {p} (a * b) = finiteFlip {p} a := by
   have hb0 : b ≠ 0 := by have := (mem_roughInterval.mp hb).1; omega
-  rw [(finiteFlip_isSignGauge {p}).mul ha hb0, finiteFlip_eq_one_of_coprime, mul_one]
-  intro q hq
-  rw [mem_singleton] at hq
-  subst hq
-  exact not_dvd_of_mem_roughInterval hp hpQ hb
+  have hb1 : finiteFlip {p} b = 1 := finiteFlip_eq_one_of_coprime fun q hq => by
+    rw [mem_singleton] at hq
+    subst hq
+    exact not_dvd_of_mem_roughInterval hp hpQ hb
+  rw [(finiteFlip_isSignGauge {p}).mul ha hb0, hb1, mul_one]
 
 /-- A weight constant along rough fibres factors out of the smooth–rough decomposition. -/
 theorem sum_one_div_mul_eq_smooth_rough (Q N : ℕ) (s y : ℕ → ℝ)
@@ -869,7 +883,6 @@ theorem sum_one_div_mul_eq_smooth_rough (Q N : ℕ) (s y : ℕ → ℝ)
   have ha0 : (a : ℝ) ≠ 0 := by exact_mod_cast (show a ≠ 0 by omega)
   have hb0 : (b : ℝ) ≠ 0 := by exact_mod_cast (show b ≠ 0 by have := (mem_roughInterval.mp hb).1; omega)
   field_simp
-  ring
 
 /-- The fibre sum of `y` is the rough mass times the fibre mean. -/
 theorem sum_fibre_eq_roughHarmonic_mul {Q N a : ℕ} (ha : 1 ≤ a) (haN : a ≤ N) (y : ℕ → ℝ) :
@@ -894,11 +907,12 @@ theorem sum_flip_poleGauge_eq (N p : ℕ) (z : ℕ → ℝ) :
       ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (finiteFlip {p} n * poleGauge z n) := by
   refine sum_congr rfl fun n hn => ?_
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
-  have hs : Real.sqrt n ≠ 0 := (Real.sqrt_pos.mpr hn0).ne'
   rw [poleGauge]
-  rw [show (n : ℝ) = Real.sqrt n * Real.sqrt n by rw [Real.mul_self_sqrt hn0.le]]
+  set s := Real.sqrt n with hsdef
+  have hs : s ≠ 0 := (Real.sqrt_pos.mpr hn0).ne'
+  have hsq : (n : ℝ) = s * s := (Real.mul_self_sqrt hn0.le).symm
+  rw [hsq]
   field_simp
-  ring
 
 /-- The second moment of the harmonic measure against the squared mean: for `N ≥ 1`,
 `Σ (1/n) y_n² ≤ Σ (1/n)(y_n − c)² + (Σ (1/n) y_n)²/H_N`. -/
@@ -1057,7 +1071,8 @@ theorem roughHarmonic_mul_smoothVar_le {Q N X : ℕ} (hXN : X ≤ N) (y : ℕ �
     _ ≤ ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (roughHarmonic Q (N / a) * (fibreMean Q N y a - c) ^ 2) := by
         refine sum_le_sum fun a ha => ?_
         obtain ⟨ha1, haX, -⟩ := mem_smoothSet.mp ha
-        have := roughHarmonic_mono (Q := Q) (Nat.div_le_div_left haX (by omega : 0 < a))
+        have : roughHarmonic Q (N / X) ≤ roughHarmonic Q (N / a) :=
+          roughHarmonic_mono (Nat.div_le_div_left haX (by omega))
         exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right this (sq_nonneg _)) (by positivity)
     _ ≤ ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
           ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * (y (a * b) - c) ^ 2 := by
@@ -1079,8 +1094,426 @@ theorem roughHarmonic_mul_smoothVar_le {Q N X : ℕ} (hXN : X ≤ N) (y : ℕ �
 
 /-! ### 7. The twisted Poincaré inequality -/
 
-/-- **The twisted Poincaré inequality.** For a prime `p ≥ 11` and every `η > 0`, eventually in
-`N`, every `z` orthogonal to the flipped pole `ω_p(n)/√n` has `D_N(z) ≥ (2 log 2 − η)|z|²`. -/
+/-- **The two-scale inequality with the `p`-sector term.** With the cutoff `Q > p`, the horizon
+`X` and the rough mass at the horizon in range, every `z` satisfies
+`(2 log 2 − η/4) W + G Z ≤ D_N(z)`, where `W` is the centred second moment of the pole gauge,
+`G` the rough mass at the horizon and `Z` the paid `p`-sector excess. -/
+theorem two_scale_twisted {p Q X N : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q).filter Nat.Prime)
+    (hQ2 : 2 ≤ Q) (hX2 : 2 ≤ X) (hXN : X ≤ N) {η ε g₁ Tmax τ K : ℝ} (hη : 0 < η) (hεdef : ε = η / 4)
+    (hg₁def : g₁ = 2 * Real.log 2 - ε / 2) (hTdef : Tmax = 2 * Real.log 2 + 2 * Real.log p)
+    (hτ0 : 0 < τ) (hτ1 : τ ≤ 1 / 2) (hτT : τ * (Tmax ^ 2 + 4 * Tmax) ≤ ε / 2)
+    (hK : 0 < K) (hKt : ∀ Q X : ℕ, ∀ f : ℕ → ℝ, harmonicVar Q X f ≤ K * glauberForm Q X f)
+    (hκ : K / Real.log Q * (4 * Tmax) ≤ 1)
+    (hML : 2 * ladderConstant Q / Real.log X ≤ τ) (h2L : 2 / Real.log X ≤ τ)
+    (hcoef : g₁ * (1 + 16 * logSum Q / Real.log X) ≤ boxGap X -
+      4 * logSum Q / Real.sqrt (Real.sqrt X) - 16 * logSum Q * ladderConstant Q / Real.log X)
+    (hGr : (1 + Real.log X) / τ + 16 * (1 + 1 / τ) * logSum Q / g₁ ≤ roughHarmonic Q (N / X))
+    (z : ℕ → ℝ) :
+    (2 * Real.log 2 - η / 4) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
+        wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2 +
+      roughHarmonic Q (N / X) * ((Real.log p * ladderMass p X - boxGap X) *
+        pFibreVar X Q p (zeroExt Q X (fibreMean Q N (poleGauge z))) /
+          (1 + 16 * logSum Q / Real.log X)) ≤ poleDefect N z := by
+  have hl2 := Real.log_two_gt_d9
+  have hl2' := Real.log_two_lt_d9
+  have hlp0 : 0 ≤ Real.log p := Real.log_natCast_nonneg p
+  have hε0 : 0 < ε := by rw [hεdef]; positivity
+  have hg₁0 : 0 < g₁ := by rw [hg₁def, hεdef]; linarith
+  have hX1 : 1 ≤ X := by omega
+  have hL0 : 0 < Real.log X := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
+  set y := poleGauge z with hy
+  set h := fibreMean Q N y with hh
+  set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h with hc
+  have hV0 : 0 ≤ smoothVar Q X h := wVar_nonneg fun _ _ => by positivity
+  have hW0 : 0 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 := sum_nonneg fun n _ => by positivity
+  have hVp0 := pFibreVar_nonneg X Q p (zeroExt Q X h)
+  have hlM2 := ladderMass_le_two hp.two_le X
+  have he₂0 : 0 ≤ 16 * logSum Q / Real.log X := by
+    have := logSum_nonneg Q; positivity
+  have h1e : 0 < 1 + 16 * logSum Q / Real.log X := by linarith
+  have hG1 : 1 ≤ roughHarmonic Q (N / X) :=
+    one_le_roughHarmonic Q ((Nat.le_div_iff_mul_le (by omega)).mpr (by omega))
+  -- (A) the twisted smooth-chain bound
+  have hES := smoothVar_mul_add_le_smoothEnergy hX2 hpmem h
+  obtain ⟨Z, hZdef⟩ : ∃ Z : ℝ, Z =
+      (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) /
+        (1 + 16 * logSum Q / Real.log X) := ⟨_, rfl⟩
+  have hgap := boxGap_le_ladder hp hX1
+  have hZ0 : 0 ≤ Z := by
+    rw [hZdef]; exact div_nonneg (mul_nonneg (by linarith) hVp0) h1e.le
+  have hZV : Z ≤ 2 * Real.log p * smoothVar Q X h := by
+    rw [hZdef, div_le_iff₀ h1e, ← sum_smoothBox_zeroExt_sq]
+    have h1 := pFibreVar_le (J := X) hpmem (zeroExt Q X h)
+    have hbg : 0 < boxGap X := by
+      rw [boxGap]
+      have : (1 / 2 : ℝ) ^ (X + 1) < 1 := pow_lt_one₀ (by norm_num) (by norm_num) (by omega)
+      have := Real.log_pos (show (1 : ℝ) < 2 by norm_num)
+      nlinarith
+    have h3 : 0 ≤ Real.log p * ladderMass p X := by
+      have := one_le_ladderMass (p := p) X; positivity
+    have hS0 : 0 ≤ ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
+      sum_nonneg fun a _ => by positivity
+    calc (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h)
+        ≤ Real.log p * ladderMass p X * pFibreVar X Q p (zeroExt Q X h) :=
+          mul_le_mul_of_nonneg_right (by linarith) hVp0
+      _ ≤ Real.log p * ladderMass p X * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
+          mul_le_mul_of_nonneg_left h1 h3
+      _ ≤ 2 * Real.log p * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 := by
+          apply mul_le_mul_of_nonneg_right _ hS0
+          nlinarith
+      _ ≤ 2 * Real.log p * (∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2) *
+            (1 + 16 * logSum Q / Real.log X) := by
+          have h0 : 0 ≤ 2 * Real.log p * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 := by
+            positivity
+          nlinarith
+  have hA' : g₁ * smoothVar Q X h + Z ≤ smoothEnergy Q X h := by
+    have e : (1 + 16 * logSum Q / Real.log X) * (g₁ * smoothVar Q X h + Z) =
+        g₁ * (1 + 16 * logSum Q / Real.log X) * smoothVar Q X h +
+          (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) := by
+      rw [hZdef]; field_simp; ring
+    refine le_of_mul_le_mul_left ?_ h1e
+    rw [e]
+    have := mul_le_mul_of_nonneg_right hcoef hV0
+    linarith
+  -- (B) the two-scale inequality with the shifted constant
+  obtain ⟨g₁', hg₁'def⟩ : ∃ g : ℝ, g = g₁ + Z / smoothVar Q X h := ⟨_, rfl⟩
+  have hZVdiv : Z / smoothVar Q X h ≤ 2 * Real.log p := by
+    by_cases hV : smoothVar Q X h = 0
+    · rw [hV, div_zero]; positivity
+    · rw [div_le_iff₀ (lt_of_le_of_ne hV0 (Ne.symm hV))]; exact hZV
+  have hZVdiv0 : 0 ≤ Z / smoothVar Q X h := div_nonneg hZ0 hV0
+  have hg₁'0 : 0 < g₁' := by rw [hg₁'def]; linarith
+  have hg₁'T : g₁' ≤ Tmax := by rw [hg₁'def, hTdef, hg₁def]; linarith
+  have hA : g₁' * smoothVar Q X h ≤ smoothEnergy Q X h := by
+    rw [hg₁'def]
+    by_cases hV : smoothVar Q X h = 0
+    · rw [hV, mul_zero]; exact smoothEnergy_nonneg _ _ _
+    · rw [add_mul, div_mul_cancel₀ _ hV]; exact hA'
+  have hcore := two_scale_le hX2 hXN hg₁'0 hτ0 y hA
+  rw [← hh, ← hc] at hcore
+  have hU := sum_fibreVar_le hK.le hKt hQ2 N y
+  have hshell : roughHarmonic Q N ≤ roughHarmonic Q (N / X) + (1 + Real.log X) := by
+    have := roughHarmonic_sub_div_le Q N hX1; linarith
+  obtain ⟨hρ, hcU⟩ := ratio_bounds hτ0 hg₁0 (logSum_nonneg Q) hL0.le hshell hGr hτ1
+  have hcU' : roughHarmonic Q N / roughHarmonic Q (N / X) *
+      ((1 + 1 / τ) * (8 * logSum Q / roughHarmonic Q (N / X))) ≤ g₁' := by
+    rw [hg₁'def]; linarith
+  have hW := two_scale_arith hε0 (by rw [hg₁'def, hg₁def]; linarith) hg₁'T hτ0 hτ1 hτT hML h2L
+    hW0 (sum_nonneg fun a _ => mul_nonneg (by positivity) (harmonicVar_nonneg _ _ _))
+    (walkEnergy_nonneg _ _ _) (walkEnergy_nonneg _ _ _) hρ hcU' hκ hU hcore
+  -- (C) `W ≥ G V`, hence `(Z/V) W ≥ G Z`
+  have hWV := roughHarmonic_mul_smoothVar_le (Q := Q) hXN y
+  rw [← hh, ← hc] at hWV
+  have hGZ : roughHarmonic Q (N / X) * Z ≤ Z / smoothVar Q X h *
+      ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 := by
+    by_cases hV : smoothVar Q X h = 0
+    · have hZ : Z = 0 := by
+        have := hZV; rw [hV, mul_zero] at this; linarith
+      rw [hZ, div_zero, zero_mul, mul_zero]
+    · calc roughHarmonic Q (N / X) * Z = Z / smoothVar Q X h *
+            (roughHarmonic Q (N / X) * smoothVar Q X h) := by field_simp; ring
+        _ ≤ _ := mul_le_mul_of_nonneg_left hWV hZVdiv0
+  rw [← hZdef, ← walkEnergy_small_add_large Q N z, ← hy]
+  have : g₁' - ε / 2 = 2 * Real.log 2 - η / 4 + Z / smoothVar Q X h := by
+    rw [hg₁'def, hg₁def, hεdef]; ring
+  rw [this, add_mul] at hW
+  linarith
+
+/-- **The constraint data.** For `z` orthogonal to the flipped pole, the harmonic mean `Y` of
+the pole gauge, its smooth mean `c`, and the signed count `S_N` are tied by `c S_N = −A`,
+`Y = c H_N + B`, with `A`, `B` split at the horizon into a `p`-sector pairing, a variation term
+and a halo term, each with its bound. -/
+theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : p < Q) (hX2 : 2 ≤ X)
+    (hXN : X ≤ N) (z : ℕ → ℝ)
+    (hz : ∑ n ∈ Icc 1 N, finiteFlip {p} n * z n / Real.sqrt n = 0) :
+    ∃ A B P Av Ah Bv Bh : ℝ,
+      ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * poleGauge z n =
+          wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z)) *
+            ∑ n ∈ Icc 1 N, 1 / (n : ℝ) + B ∧
+      wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z)) *
+          ∑ n ∈ Icc 1 N, finiteFlip {p} n / n = -A ∧
+      ((p : ℝ) - 1) / ((p : ℝ) + 1) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ≤
+          ∑ n ∈ Icc 1 N, finiteFlip {p} n / n ∧
+      A = roughHarmonic Q (N / X) * P + Av + Ah ∧ B = Bv + Bh ∧
+      Av ^ 2 ≤ (1 + Real.log X) ^ 3 * (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
+        wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2) /
+          roughHarmonic Q (N / X) ∧
+      Bv ^ 2 ≤ (1 + Real.log X) ^ 3 * (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
+        wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2) /
+          roughHarmonic Q (N / X) ∧
+      Ah ^ 2 ≤ (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) *
+        ((2 * walkEnergy N (fun t => t.minFac < Q) (poleGauge z) +
+          2 * ladderConstant Q * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
+            wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2) /
+              Real.log X) ∧
+      Bh ^ 2 ≤ (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) *
+        ((2 * walkEnergy N (fun t => t.minFac < Q) (poleGauge z) +
+          2 * ladderConstant Q * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
+            wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2) /
+              Real.log X) ∧
+      P ^ 2 ≤ (1 - (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2) * ladderMass p X *
+        (∑ a ∈ smoothSet Q X, 1 / (a : ℝ)) *
+          pFibreVar X Q p (zeroExt Q X (fibreMean Q N (poleGauge z))) ∧
+      roughHarmonic Q (N / X) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) ≤
+        ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
+  have hp11' : (11 : ℝ) ≤ p := by exact_mod_cast hp11
+  have hX1 : 1 ≤ X := by omega
+  have hN1 : 1 ≤ N := le_trans hX1 hXN
+  have hL0 : 0 < Real.log X := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
+  set y := poleGauge z with hy
+  set h := fibreMean Q N y with hh
+  set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h with hc
+  have hG1 : 1 ≤ roughHarmonic Q (N / X) :=
+    one_le_roughHarmonic Q ((Nat.le_div_iff_mul_le (by omega)).mpr (by omega))
+  have hG0 : 0 < roughHarmonic Q (N / X) := by linarith
+  have hVp0 := pFibreVar_nonneg X Q p (zeroExt Q X h)
+  -- fibrations
+  have hflip : ∀ a b, a ≠ 0 → b ∈ roughInterval Q (N / a) →
+      finiteFlip {p} (a * b) = finiteFlip {p} a :=
+    fun a b ha hb => finiteFlip_mul_rough hp hpQ ha hb
+  have hone : ∀ a b, a ≠ 0 → b ∈ roughInterval Q (N / a) → (fun _ : ℕ => (1 : ℝ)) (a * b) =
+      (fun _ : ℕ => (1 : ℝ)) a := fun _ _ _ _ => rfl
+  have hfib : ∀ a ∈ smoothSet Q N, ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * y (a * b) =
+      roughHarmonic Q (N / a) * h a := fun a ha =>
+    sum_fibre_eq_roughHarmonic_mul (mem_smoothSet.mp ha).1 (mem_smoothSet.mp ha).2.1 y
+  have hfib1 : ∀ a ∈ smoothSet Q N, ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * (1 : ℝ) =
+      roughHarmonic Q (N / a) := fun a _ => by
+    rw [roughHarmonic]; exact sum_congr rfl fun b _ => by rw [mul_one]
+  have hzero : ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) *
+      (finiteFlip {p} a * (roughHarmonic Q (N / a) * h a)) = 0 := by
+    rw [sum_flip_poleGauge_eq] at hz
+    rw [sum_one_div_mul_eq_smooth_rough Q N (finiteFlip {p}) y hflip] at hz
+    rw [← hz]
+    exact sum_congr rfl fun a ha => by rw [hfib a ha]
+  have hSN : ∑ n ∈ Icc 1 N, finiteFlip {p} n / n =
+      ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (finiteFlip {p} a * roughHarmonic Q (N / a)) := by
+    have := sum_one_div_mul_eq_smooth_rough Q N (finiteFlip {p}) (fun _ => 1) hflip
+    simp only [mul_one] at this
+    rw [← sum_congr rfl fun a ha => by rw [hfib1 a ha]]
+    rw [← this]
+    exact sum_congr rfl fun n _ => by ring
+  have hHN : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) =
+      ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * roughHarmonic Q (N / a) := by
+    have := sum_one_div_mul_eq_smooth_rough Q N (fun _ => 1) (fun _ => 1) hone
+    simp only [mul_one, one_mul] at this
+    rw [this]
+    exact sum_congr rfl fun a ha => by rw [hfib1 a ha]
+  have hY : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * y n =
+      ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (roughHarmonic Q (N / a) * h a) := by
+    have := sum_one_div_mul_eq_smooth_rough Q N (fun _ => 1) y hone
+    simp only [one_mul] at this
+    rw [this]
+    exact sum_congr rfl fun a ha => by rw [hfib a ha]
+  -- the centred sums
+  obtain ⟨A, hAdef⟩ : ∃ A : ℝ, A = ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) *
+    (finiteFlip {p} a * (roughHarmonic Q (N / a) * (h a - c))) := ⟨_, rfl⟩
+  obtain ⟨B, hBdef⟩ : ∃ B : ℝ, B = ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) *
+    (roughHarmonic Q (N / a) * (h a - c)) := ⟨_, rfl⟩
+  have h4 : c * ∑ n ∈ Icc 1 N, finiteFlip {p} n / n = -A := by
+    rw [hSN, hAdef, mul_sum]
+    have e : ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (finiteFlip {p} a * (roughHarmonic Q (N / a) * h a)) =
+        ∑ a ∈ smoothSet Q N, (c * (1 / (a : ℝ) * (finiteFlip {p} a * roughHarmonic Q (N / a))) +
+          1 / (a : ℝ) * (finiteFlip {p} a * (roughHarmonic Q (N / a) * (h a - c)))) :=
+      sum_congr rfl fun a _ => by ring
+    rw [e, sum_add_distrib] at hzero
+    linarith
+  have h3 : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * y n = c * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) + B := by
+    rw [hY, hHN, hBdef, mul_sum, ← sum_add_distrib]
+    exact sum_congr rfl fun a _ => by ring
+  have hS : ((p : ℝ) - 1) / ((p : ℝ) + 1) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ≤
+      ∑ n ∈ Icc 1 N, finiteFlip {p} n / n := by
+    have := primeFlip_harmonicCorrelation_ge hp hN1
+    have hpos := gaugeHarmonicSum_one_pos hN1
+    rw [harmonicCorrelation, le_div_iff₀ hpos] at this
+    simp only [gaugeHarmonicSum] at this hpos ⊢
+    simpa using this
+  -- the splittings at the horizon
+  have hset : (smoothSet Q N).filter (fun a => a ≤ X) = smoothSet Q X := by
+    ext a
+    simp only [mem_filter, mem_smoothSet]
+    constructor
+    · rintro ⟨⟨h1, -, h3⟩, h4⟩; exact ⟨h1, h4, h3⟩
+    · rintro ⟨h1, h2, h3⟩; exact ⟨⟨h1, h2.trans hXN, h3⟩, h2⟩
+  obtain ⟨P, hPdef⟩ : ∃ P : ℝ, P = ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) *
+    (finiteFlip {p} a * zeroExt Q X h a) := ⟨_, rfl⟩
+  have hPsmooth : P = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (finiteFlip {p} a * (h a - c)) := by
+    rw [hPdef]
+    have := sum_smoothBox_zeroExt_mul Q X h (finiteFlip {p})
+    rw [← hc] at this
+    rw [← this]
+    exact sum_congr rfl fun a _ => by ring
+  obtain ⟨Av, hAvdef⟩ : ∃ Av : ℝ, Av = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
+    (finiteFlip {p} a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c))) :=
+    ⟨_, rfl⟩
+  obtain ⟨Ah, hAhdef⟩ : ∃ Ah : ℝ, Ah = ∑ a ∈ (smoothSet Q N).filter (fun a => ¬ a ≤ X),
+    1 / (a : ℝ) * (finiteFlip {p} a * (roughHarmonic Q (N / a) * (h a - c))) := ⟨_, rfl⟩
+  obtain ⟨Bv, hBvdef⟩ : ∃ Bv : ℝ, Bv = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
+    ((fun _ : ℕ => (1 : ℝ)) a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c))) :=
+    ⟨_, rfl⟩
+  obtain ⟨Bh, hBhdef⟩ : ∃ Bh : ℝ, Bh = ∑ a ∈ (smoothSet Q N).filter (fun a => ¬ a ≤ X),
+    1 / (a : ℝ) * ((fun _ : ℕ => (1 : ℝ)) a * (roughHarmonic Q (N / a) * (h a - c))) := ⟨_, rfl⟩
+  have h5A : A = roughHarmonic Q (N / X) * P + Av + Ah := by
+    rw [hAdef, ← sum_filter_add_sum_filter_not (smoothSet Q N) (fun a => a ≤ X), hset, hPsmooth,
+      hAvdef, hAhdef, mul_sum, ← sum_add_distrib]
+    congr 1
+    exact sum_congr rfl fun a _ => by ring
+  have hmean0 : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) = 0 := by
+    have := sum_smoothBox_zeroExt_eq_zero Q X h
+    rw [sum_smoothBox_zeroExt_mul Q X h (fun _ => 1)] at this
+    simpa [← hc] using this
+  have h5B : B = Bv + Bh := by
+    rw [hBdef, ← sum_filter_add_sum_filter_not (smoothSet Q N) (fun a => a ≤ X), hset, hBvdef,
+      hBhdef]
+    congr 1
+    have e : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (roughHarmonic Q (N / a) * (h a - c)) =
+        roughHarmonic Q (N / X) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) +
+          ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
+            ((fun _ : ℕ => (1 : ℝ)) a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c))) := by
+      rw [mul_sum, ← sum_add_distrib]
+      exact sum_congr rfl fun a _ => by ring
+    rw [e, hmean0, mul_zero, zero_add]
+  -- the error bounds
+  have hsq1 : ∀ a, finiteFlip {p} a ^ 2 ≤ 1 := fun a => by
+    rw [sq, singleFlip_mul_self]
+  have hsq2 : ∀ a, (fun _ : ℕ => (1 : ℝ)) a ^ 2 ≤ 1 := fun _ => by norm_num
+  have hWV := roughHarmonic_mul_smoothVar_le (Q := Q) hXN y
+  rw [← hh, ← hc, smoothVar, wVar, ← hc] at hWV
+  have hvar : ∀ s : ℕ → ℝ, (∀ a, s a ^ 2 ≤ 1) →
+      (∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
+        (s a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c)))) ^ 2 ≤
+      (1 + Real.log X) ^ 3 * (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) /
+        roughHarmonic Q (N / X) := by
+    intro s hs
+    rw [le_div_iff₀ hG0]
+    have := sum_var_sq_le (Q := Q) hX1 hXN s h hs c
+    calc _ ≤ (1 + Real.log X) ^ 3 * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 := this
+      _ = (1 + Real.log X) ^ 3 * (roughHarmonic Q (N / X) *
+            ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2) / roughHarmonic Q (N / X) := by
+          field_simp
+      _ ≤ _ := by
+          rw [div_mul_eq_mul_div, mul_div_assoc', le_div_iff₀ hG0, div_mul_cancel₀ _ hG0.ne']
+          exact mul_le_mul_of_nonneg_left hWV (by positivity)
+  have hhalo : ∀ s : ℕ → ℝ, (∀ a, s a ^ 2 ≤ 1) →
+      (∑ a ∈ (smoothSet Q N).filter (fun a => ¬ a ≤ X), 1 / (a : ℝ) *
+        (s a * (roughHarmonic Q (N / a) * (h a - c)))) ^ 2 ≤
+      (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) * ((2 * walkEnergy N (fun t => t.minFac < Q) y +
+        2 * ladderConstant Q * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) / Real.log X) := by
+    intro s hs
+    rw [hHN]
+    have := sum_halo_sq_le (Q := Q) (N := N) hX2 s y hs c
+    rw [← hh] at this
+    convert this using 2
+    ring
+  -- the `p`-sector bound
+  have hP : P ^ 2 ≤ (1 - (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2) * ladderMass p X *
+      (∑ a ∈ smoothSet Q X, 1 / (a : ℝ)) * pFibreVar X Q p (zeroExt Q X h) := by
+    have hmean := sum_smoothBox_zeroExt_eq_zero Q X h
+    have hvan : ∀ n, X < n → zeroExt Q X h n = 0 := fun n hn => by
+      rw [zeroExt, if_neg (not_le.mpr hn)]
+    have hpmem : p ∈ (range Q).filter Nat.Prime := mem_filter.mpr ⟨mem_range.mpr hpQ, hp⟩
+    have := sum_flip_mul_sq_le (X := X) hpmem hmean hvan
+    rw [← hPdef] at this
+    refine this.trans ?_
+    have hT : ∑ u ∈ ((smoothBox X Q).filter (fun u => ¬ p ∣ u)).filter (· ≤ X), 1 / (u : ℝ) ≤
+        ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) := by
+      refine sum_le_sum_of_subset_of_nonneg (fun u hu => ?_) fun _ _ _ => by positivity
+      obtain ⟨hu', huX⟩ := mem_filter.mp hu
+      obtain ⟨huB, -⟩ := mem_filter.mp hu'
+      exact mem_smoothSet.mpr ⟨(mem_smoothBox.mp huB).1, huX, (mem_smoothBox.mp huB).2.1⟩
+    have hc0 : 0 ≤ 1 - (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2 := by
+      obtain ⟨-, hle, -, -⟩ := cp_facts hp11' rfl
+      have h0 : 0 ≤ ((p : ℝ) - 1) / ((p : ℝ) + 1) := div_nonneg (by linarith) (by linarith)
+      nlinarith
+    have h1 := mul_le_mul_of_nonneg_right hT hVp0
+    have h2 := mul_le_mul_of_nonneg_left h1 (show 0 ≤ (1 - (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2) *
+      ladderMass p X by have := one_le_ladderMass (p := p) X; positivity)
+    linarith
+  have hGZX : roughHarmonic Q (N / X) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) ≤
+      ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
+    rw [hHN, mul_sum]
+    have hsub : smoothSet Q X ⊆ smoothSet Q N := fun a ha => by
+      obtain ⟨h1, h2, h3⟩ := mem_smoothSet.mp ha
+      exact mem_smoothSet.mpr ⟨h1, h2.trans hXN, h3⟩
+    calc ∑ a ∈ smoothSet Q X, roughHarmonic Q (N / X) * (1 / (a : ℝ))
+        ≤ ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * roughHarmonic Q (N / a) := by
+          refine sum_le_sum fun a ha => ?_
+          obtain ⟨ha1, haX, -⟩ := mem_smoothSet.mp ha
+          have : roughHarmonic Q (N / X) ≤ roughHarmonic Q (N / a) :=
+            roughHarmonic_mono (Nat.div_le_div_left haX (by omega))
+          rw [mul_comm]
+          exact mul_le_mul_of_nonneg_left this (by positivity)
+      _ ≤ _ := sum_le_sum_of_subset_of_nonneg hsub fun a _ _ => by
+          have := roughHarmonic_nonneg Q (N / a); positivity
+  exact ⟨A, B, P, Av, Ah, Bv, Bh, h3, h4, hS, h5A, h5B, hvar _ hsq1, hvar _ hsq2, hhalo _ hsq1,
+    hhalo _ hsq2, hP, hGZX⟩
+
+/-- **The twisted Poincaré inequality at a horizon.** With all parameters in range, every `z`
+orthogonal to the flipped pole satisfies `(2 log 2 − η)|z|² ≤ D_N(z)`. -/
+theorem twisted_poincare_at_horizon {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p)
+    (hpmem : p ∈ (range Q).filter Nat.Prime) (hQ2 : 2 ≤ Q) (hX2 : 2 ≤ X) (hXN : X ≤ N)
+    {η ε g₁ Tmax τ K : ℝ} (hη : 0 < η) (hη1 : η ≤ 1) (hεdef : ε = η / 4)
+    (hg₁def : g₁ = 2 * Real.log 2 - ε / 2) (hTdef : Tmax = 2 * Real.log 2 + 2 * Real.log p)
+    (hτ0 : 0 < τ) (hτ1 : τ ≤ 1 / 2) (hτT : τ * (Tmax ^ 2 + 4 * Tmax) ≤ ε / 2)
+    (hK : 0 < K) (hKt : ∀ Q X : ℕ, ∀ f : ℕ → ℝ, harmonicVar Q X f ≤ K * glauberForm Q X f)
+    (hκ : K / Real.log Q * (4 * Tmax) ≤ 1)
+    (hML : 2 * ladderConstant Q / Real.log X ≤ τ) (h2L : 2 / Real.log X ≤ τ)
+    (hcoef : g₁ * (1 + 16 * logSum Q / Real.log X) ≤ boxGap X -
+      4 * logSum Q / Real.sqrt (Real.sqrt X) - 16 * logSum Q * ladderConstant Q / Real.log X)
+    (he₂ : 16 * logSum Q / Real.log X ≤ 1 / 20)
+    (hGr : (1 + Real.log X) / τ + 16 * (1 + 1 / τ) * logSum Q / g₁ ≤ roughHarmonic Q (N / X))
+    (hGbig : 4 * (2 * Real.log 2) * 150 * (1 + Real.log X) ^ 3 / η ≤ roughHarmonic Q (N / X))
+    (hbig2 : 2 * Real.log 2 * 150 * (2 * ladderConstant Q / Real.log X) ≤ η / 4)
+    (hbig3 : 2 * Real.log 2 * 150 * (2 / Real.log X) ≤ η / 16)
+    (z : ℕ → ℝ) (hz : ∑ n ∈ Icc 1 N, finiteFlip {p} n * z n / Real.sqrt n = 0) :
+    (2 * Real.log 2 - η) * ∑ n ∈ Icc 1 N, z n ^ 2 ≤ poleDefect N z := by
+  have hl2 := Real.log_two_gt_d9
+  have hl2' := Real.log_two_lt_d9
+  have hp11' : (11 : ℝ) ≤ p := by exact_mod_cast hp11
+  have hlp : 2.35 ≤ Real.log p := log_ge_of_eleven_le hp11'
+  have hpQ : p < Q := mem_range.mp (mem_filter.mp hpmem).1
+  have hX1 : 1 ≤ X := by omega
+  have hN1 : 1 ≤ N := le_trans hX1 hXN
+  have hL0 : 0 < Real.log X := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
+  have h1 := two_scale_twisted hp hpmem hQ2 hX2 hXN hη hεdef hg₁def hTdef hτ0 hτ1 hτT hK hKt hκ
+    hML h2L hcoef hGr z
+  obtain ⟨A, B, P, Av, Ah, Bv, Bh, h3, h4, hS, h5A, h5B, hAv, hBv, hAh, hBh, hP, hGZX⟩ :=
+    constraint_data (Q := Q) (X := X) hp hp11 hpQ hX2 hXN z hz
+  have hH1 : 1 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
+    have := single_le_sum (f := fun n : ℕ => 1 / (n : ℝ)) (fun n _ => by positivity)
+      (mem_Icc.mpr ⟨le_rfl, hN1⟩)
+    simpa using this
+  have hH0 : 0 < ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by linarith
+  have hG1 : 1 ≤ roughHarmonic Q (N / X) :=
+    one_le_roughHarmonic Q ((Nat.le_div_iff_mul_le (by omega)).mpr (by omega))
+  have hG0 : 0 < roughHarmonic Q (N / X) := by linarith
+  have h2 : ∑ n ∈ Icc 1 N, z n ^ 2 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
+      wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2 +
+      (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * poleGauge z n) ^ 2 / ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
+    rw [sum_sq_eq_sum_one_div_poleGauge_sq]
+    exact sum_one_div_mul_sq_le hN1 (poleGauge z) _
+  have hbig1 : 2 * Real.log 2 * 150 * ((1 + Real.log X) ^ 3 / (roughHarmonic Q (N / X) *
+      ∑ n ∈ Icc 1 N, 1 / (n : ℝ))) ≤ η / 4 := by
+    rw [div_le_iff₀ hη] at hGbig
+    have hGH : roughHarmonic Q (N / X) ≤ roughHarmonic Q (N / X) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
+      have := mul_le_mul_of_nonneg_left hH1 hG0.le
+      linarith
+    rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+    have : 0 ≤ η / 4 := by positivity
+    nlinarith
+  have hW0 : 0 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
+      wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2 :=
+    sum_nonneg fun n _ => by positivity
+  have hZX0 : 0 ≤ ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) := sum_nonneg fun a _ => by positivity
+  rw [← walkEnergy_small_add_large Q N z] at h1 ⊢
+  exact twisted_assembly (lam := 2 * Real.log 2) (η := η) (p := (p : ℝ)) (ℓ := Real.log p)
+    (by linarith) (by linarith) hη hη1 hp11' hlp hW0 (pFibreVar_nonneg _ _ _ _) hG0 hH0
+    (walkEnergy_nonneg _ _ _) (walkEnergy_nonneg _ _ _) hL0 (ladderConstant_nonneg Q) hZX0
+    (one_le_ladderMass X) (boxGap_le_two_mul_log_two X)
+    (by have := logSum_nonneg Q; positivity) he₂ h1 h2 h3 h4 hS h5A h5B hAv hBv hAh hBh hP hGZX
+    hbig1 hbig2 hbig3
+
+/-- **The twisted Poincaré inequality.** For a prime `p ≥ 11` and every `0 < η ≤ 1`, eventually
+in `N`, every `z` orthogonal to the flipped pole `ω_p(n)/√n` has `D_N(z) ≥ (2 log 2 − η)|z|²`. -/
 theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) {η : ℝ}
     (hη : 0 < η) (hη1 : η ≤ 1) :
     ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ z : ℕ → ℝ,
@@ -1088,15 +1521,12 @@ theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 �
       (2 * Real.log 2 - η) * ∑ n ∈ Icc 1 N, z n ^ 2 ≤ poleDefect N z := by
   have hl2 := Real.log_two_gt_d9
   have hl2' := Real.log_two_lt_d9
-  have hp11' : (11 : ℝ) ≤ p := by exact_mod_cast hp11
-  have hlp : 2.35 ≤ Real.log p := log_ge_of_eleven_le hp11'
-  have hlp0 : 0 ≤ Real.log p := by linarith
+  have hlp0 : 0 ≤ Real.log p := Real.log_natCast_nonneg p
   -- the parameters
   obtain ⟨ε, hεdef⟩ : ∃ ε : ℝ, ε = η / 4 := ⟨_, rfl⟩
   have hε0 : 0 < ε := by rw [hεdef]; positivity
-  have hε1 : ε ≤ 1 / 4 := by rw [hεdef]; linarith
   obtain ⟨g₁, hg₁def⟩ : ∃ g : ℝ, g = 2 * Real.log 2 - ε / 2 := ⟨_, rfl⟩
-  have hg₁0 : 0 < g₁ := by rw [hg₁def]; linarith
+  have hg₁0 : 0 < g₁ := by rw [hg₁def, hεdef]; linarith
   obtain ⟨Tmax, hTdef⟩ : ∃ T : ℝ, T = 2 * Real.log 2 + 2 * Real.log p := ⟨_, rfl⟩
   have hTmax0 : 0 < Tmax := by rw [hTdef]; linarith
   obtain ⟨τ, hτdef⟩ : ∃ τ : ℝ, τ = min (1 / 2) (ε / (2 * (Tmax ^ 2 + 4 * Tmax))) := ⟨_, rfl⟩
@@ -1127,7 +1557,7 @@ theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 �
   have hLQ : 0 ≤ LQ := by rw [hLQdef]; exact logSum_nonneg Q
   -- the horizon
   obtain ⟨L₀, hL₀def⟩ : ∃ L : ℝ, L = 1 + 320 * LQ + 64 * LQ * (2 * Real.log 2) / ε +
-      256 * LQ * M / ε + 1200 * (2 * Real.log 2) * M / η + 4800 * (2 * Real.log 2) / η := ⟨_, rfl⟩
+      256 * LQ * M / ε + 2400 * (2 * Real.log 2) * M / η + 4800 * (2 * Real.log 2) / η := ⟨_, rfl⟩
   have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hsq := (Real.tendsto_sqrt_atTop.comp Real.tendsto_sqrt_atTop).comp
     tendsto_natCast_atTop_atTop
@@ -1149,388 +1579,70 @@ theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 �
   have t1 : 0 ≤ 320 * LQ := by positivity
   have t2 : 0 ≤ 64 * LQ * (2 * Real.log 2) / ε := by positivity
   have t3 : 0 ≤ 256 * LQ * M / ε := by positivity
-  have t4 : 0 ≤ 1200 * (2 * Real.log 2) * M / η := by positivity
+  have t4 : 0 ≤ 2400 * (2 * Real.log 2) * M / η := by positivity
   have t5 : 0 ≤ 4800 * (2 * Real.log 2) / η := by positivity
   rw [hL₀def] at hlX
   have hL1 : 1 ≤ L := by linarith
   have hL0 : 0 < L := by linarith
   have he₂ : 16 * LQ / L ≤ 1 / 20 := by rw [div_le_iff₀ hL0]; linarith
   have he₂log : 16 * LQ / L * (2 * Real.log 2) ≤ ε / 4 := by
-    have h := t2; rw [div_le_iff₀ hε0] at hlX ⊢
-    have : 64 * LQ * (2 * Real.log 2) ≤ L * ε := by
-      have := (div_le_iff₀ hε0).mp (show 64 * LQ * (2 * Real.log 2) / ε ≤ L by linarith)
-      linarith
+    have h64 : 64 * LQ * (2 * Real.log 2) / ε ≤ L := by linarith
+    rw [div_le_iff₀ hε0] at h64
     rw [div_mul_eq_mul_div, div_le_iff₀ hL0]
     linarith
   have he₁M : 16 * LQ * M / L ≤ ε / 16 := by
-    have : 256 * LQ * M ≤ L * ε := by
-      have := (div_le_iff₀ hε0).mp (show 256 * LQ * M / ε ≤ L by linarith)
-      linarith
-    rw [div_le_iff₀ hL0]; linarith
+    have h256 : 256 * LQ * M / ε ≤ L := by linarith
+    rw [div_le_iff₀ hε0] at h256
+    rw [div_le_iff₀ hL0]
+    linarith
   have he₁s : 4 * LQ / Real.sqrt (Real.sqrt X) ≤ ε / 16 := by
+    have h64 : 64 * LQ / ε ≤ Real.sqrt (Real.sqrt X) := by linarith
+    rw [div_le_iff₀ hε0] at h64
     rw [div_le_iff₀ hsX0]
-    have : 64 * LQ ≤ ε * Real.sqrt (Real.sqrt X) := by
-      have := (div_le_iff₀ hε0).mp (show 64 * LQ / ε ≤ Real.sqrt (Real.sqrt X) by linarith)
-      linarith
     linarith
   have hboxGap : 2 * Real.log 2 - ε / 8 ≤ boxGap X := by
     rw [boxGap]
-    have h1 : (1 / 2 : ℝ) ^ (X + 1) ≤ (1 / 2 : ℝ) ^ X :=
+    have hpow1 : (1 / 2 : ℝ) ^ (X + 1) ≤ (1 / 2 : ℝ) ^ X :=
       pow_le_pow_of_le_one (by norm_num) (by norm_num) (Nat.le_succ X)
     have h2 : (1 / 2 : ℝ) ^ X * (16 * (2 * Real.log 2)) ≤ ε :=
       (le_div_iff₀ (by positivity)).mp hpowX
+    have h3 : 2 * Real.log 2 * (1 / 2 : ℝ) ^ (X + 1) ≤ 2 * Real.log 2 * (1 / 2 : ℝ) ^ X :=
+      mul_le_mul_of_nonneg_left hpow1 (by positivity)
+    linarith
+  have hcoef : g₁ * (1 + 16 * LQ / L) ≤ boxGap X - 4 * LQ / Real.sqrt (Real.sqrt X) -
+      16 * LQ * M / L := by
+    rw [hg₁def]
+    have h0 : 0 ≤ 16 * LQ / L := by positivity
+    have := mul_le_mul_of_nonneg_left he₂log (show 0 ≤ (1 : ℝ) by norm_num)
+    have hε2 : 0 ≤ ε / 2 * (16 * LQ / L) := by positivity
     nlinarith
   have hbig2 : 2 * Real.log 2 * 150 * (2 * M / L) ≤ η / 4 := by
-    have : 1200 * (2 * Real.log 2) * M ≤ L * η := by
-      have := (div_le_iff₀ hη).mp (show 1200 * (2 * Real.log 2) * M / η ≤ L by linarith)
-      linarith
-    rw [mul_div_assoc', div_le_iff₀ hL0]; linarith
+    have h2400 : 2400 * (2 * Real.log 2) * M / η ≤ L := by linarith
+    rw [div_le_iff₀ hη] at h2400
+    rw [mul_div_assoc', div_le_iff₀ hL0]
+    linarith
   have hbig3 : 2 * Real.log 2 * 150 * (2 / L) ≤ η / 16 := by
-    have : 4800 * (2 * Real.log 2) ≤ L * η := by
-      have := (div_le_iff₀ hη).mp (show 4800 * (2 * Real.log 2) / η ≤ L by linarith)
-      linarith
-    rw [mul_div_assoc', div_le_iff₀ hL0]; linarith
+    have h4800 : 4800 * (2 * Real.log 2) / η ≤ L := by linarith
+    rw [div_le_iff₀ hη] at h4800
+    rw [mul_div_assoc', div_le_iff₀ hL0]
+    linarith
   -- the rough mass beyond the horizon
   obtain ⟨G₀, hG₀def⟩ : ∃ G : ℝ, G = (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ +
       4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η := ⟨_, rfl⟩
   obtain ⟨N₀, hXN₀, hN₀⟩ := eventually_le_roughHarmonic_div (show 1 ≤ Q by omega) hX1 G₀
   refine ⟨N₀, fun N hN z hz => ?_⟩
   have hXN : X ≤ N := hXN₀.trans hN
-  have hN1 : 1 ≤ N := le_trans hX1 hXN
   have hGG₀ : G₀ ≤ roughHarmonic Q (N / X) := hN₀ N hN
-  -- the two scales
-  set y := poleGauge z with hy
-  set h := fibreMean Q N y with hh
-  set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h with hc
-  have hG1 : 1 ≤ roughHarmonic Q (N / X) :=
-    one_le_roughHarmonic Q ((Nat.le_div_iff_mul_le (by omega)).mpr (by omega))
-  have hG0 : 0 < roughHarmonic Q (N / X) := by linarith
-  have hV0 : 0 ≤ smoothVar Q X h := wVar_nonneg fun _ _ => by positivity
-  have hW0 : 0 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 := sum_nonneg fun n _ => by positivity
-  have hDS0 := walkEnergy_nonneg N (fun t => t.minFac < Q) y
-  have hDL0 := walkEnergy_nonneg N (fun t => Q ≤ t.minFac) y
-  have hVp0 := pFibreVar_nonneg X Q p (zeroExt Q X h)
-  have hlM1 := one_le_ladderMass (p := p) X
-  have hlM2 := ladderMass_le_two hp.two_le X
-  have hbGle := boxGap_le_two_mul_log_two X
-  -- (A) the twisted smooth-chain bound, with `Z = Z₀/(1 + e₂)`
-  have hES := smoothVar_mul_add_le_smoothEnergy hX2 hpmem h
-  rw [← hLQdef, ← hMdef, ← hLdef] at hES
-  obtain ⟨Z, hZdef⟩ : ∃ Z : ℝ, Z =
-      (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) /
-        (1 + 16 * LQ / L) := ⟨_, rfl⟩
-  have he₂0 : 0 ≤ 16 * LQ / L := by positivity
-  have h1e : 0 < 1 + 16 * LQ / L := by linarith
-  have hZ0 : 0 ≤ Z := by
-    rw [hZdef]
-    have := boxGap_le_ladder hp hX1
-    exact div_nonneg (mul_nonneg (by linarith) hVp0) h1e.le
-  have hZV : Z ≤ 2 * Real.log p * smoothVar Q X h := by
-    rw [hZdef, div_le_iff₀ h1e, ← sum_smoothBox_zeroExt_sq]
-    have h1 := pFibreVar_le hpmem (zeroExt Q X h)
-    have hg : 0 < boxGap X := by linarith
-    have h3 : 0 ≤ Real.log p * ladderMass p X := by positivity
-    calc (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h)
-        ≤ Real.log p * ladderMass p X * pFibreVar X Q p (zeroExt Q X h) :=
-          mul_le_mul_of_nonneg_right (by linarith) hVp0
-      _ ≤ Real.log p * ladderMass p X * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
-          mul_le_mul_of_nonneg_left h1 h3
-      _ ≤ 2 * Real.log p * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 := by
-          apply mul_le_mul_of_nonneg_right _ (sum_nonneg fun a _ => by positivity)
-          nlinarith
-      _ ≤ 2 * Real.log p * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 *
-            (1 + 16 * LQ / L) := by
-          rw [mul_assoc]
-          apply mul_le_mul_of_nonneg_left _ (by positivity)
-          have : 0 ≤ ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
-            sum_nonneg fun a _ => by positivity
-          nlinarith
-  have hA' : g₁ * smoothVar Q X h + Z ≤ smoothEnergy Q X h := by
-    have hcoef : g₁ * (1 + 16 * LQ / L) ≤ boxGap X - 4 * LQ / Real.sqrt (Real.sqrt X) -
-        16 * LQ * M / L := by
-      rw [hg₁def]; nlinarith
-    have e : (1 + 16 * LQ / L) * (g₁ * smoothVar Q X h + Z) =
-        g₁ * (1 + 16 * LQ / L) * smoothVar Q X h +
-          (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) := by
-      rw [hZdef]; field_simp; ring
-    refine le_of_mul_le_mul_left ?_ h1e
-    rw [e]
-    have := mul_le_mul_of_nonneg_right hcoef hV0
-    linarith
-  -- (B) the two-scale inequality with the shifted constant `g₁' = g₁ + Z/V`
-  obtain ⟨g₁', hg₁'def⟩ : ∃ g : ℝ, g = g₁ + Z / smoothVar Q X h := ⟨_, rfl⟩
-  have hZVdiv : Z / smoothVar Q X h ≤ 2 * Real.log p := by
-    by_cases hV : smoothVar Q X h = 0
-    · rw [hV, div_zero]; positivity
-    · rw [div_le_iff₀ (lt_of_le_of_ne hV0 (Ne.symm hV))]; exact hZV
-  have hZVdiv0 : 0 ≤ Z / smoothVar Q X h := div_nonneg hZ0 hV0
-  have hg₁'0 : 0 < g₁' := by rw [hg₁'def]; linarith
-  have hg₁'T : g₁' ≤ Tmax := by rw [hg₁'def, hTdef, hg₁def]; linarith
-  have hA : g₁' * smoothVar Q X h ≤ smoothEnergy Q X h := by
-    rw [hg₁'def]
-    by_cases hV : smoothVar Q X h = 0
-    · rw [hV, mul_zero]; exact smoothEnergy_nonneg _ _ _
-    · rw [add_mul, div_mul_cancel₀ _ hV]; exact hA'
-  have hcore := two_scale_le hX2 hXN hg₁'0 hτ0 y hA
-  rw [← hh, ← hc, ← hMdef, ← hLdef, ← hLQdef] at hcore
-  have hU := sum_fibreVar_le hK.le hKt hQ2 N y
-  have hshell : roughHarmonic Q N ≤ roughHarmonic Q (N / X) + (1 + L) := by
-    have := roughHarmonic_sub_div_le Q N hX1
-    rw [← hLdef] at this; linarith
+  rw [hG₀def] at hGG₀
   have hGr : (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ ≤ roughHarmonic Q (N / X) := by
     have : 0 ≤ 4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η := by positivity
-    rw [hG₀def] at hGG₀; linarith
-  obtain ⟨hρ, hcU⟩ := ratio_bounds hτ0 hg₁0 hLQ hL0.le hshell hGr hτ1
-  have hcU' : roughHarmonic Q N / roughHarmonic Q (N / X) *
-      ((1 + 1 / τ) * (8 * LQ / roughHarmonic Q (N / X))) ≤ g₁' := by
-    rw [hg₁'def]; linarith
-  have hW := two_scale_arith hε0 (by rw [hg₁'def, hg₁def]; linarith) hg₁'T hτ0 hτ1 hτT hML h2L
-    hW0 (sum_nonneg fun a _ => mul_nonneg (by positivity) (harmonicVar_nonneg _ _ _))
-    hDS0 hDL0 hρ hcU' hκ hU hcore
-  -- (C) `W ≥ G V`, hence `(Z/V) W ≥ G Z`
-  have hWV := roughHarmonic_mul_smoothVar_le (Q := Q) hXN y
-  rw [← hh, ← hc] at hWV
-  have hGZ : roughHarmonic Q (N / X) * Z ≤ Z / smoothVar Q X h *
-      ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 := by
-    by_cases hV : smoothVar Q X h = 0
-    · have hZ : Z = 0 := by
-        have := hZV; rw [hV, mul_zero] at this; linarith
-      rw [hZ, div_zero, zero_mul, mul_zero]
-    · have hVpos : 0 < smoothVar Q X h := lt_of_le_of_ne hV0 (Ne.symm hV)
-      calc roughHarmonic Q (N / X) * Z = Z / smoothVar Q X h *
-            (roughHarmonic Q (N / X) * smoothVar Q X h) := by field_simp; ring
-        _ ≤ _ := mul_le_mul_of_nonneg_left hWV hZVdiv0
-  have h1 : (2 * Real.log 2 - η / 4) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 +
-      roughHarmonic Q (N / X) * ((Real.log p * ladderMass p X - boxGap X) *
-        pFibreVar X Q p (zeroExt Q X h) / (1 + 16 * LQ / L)) ≤
-      walkEnergy N (fun t => t.minFac < Q) y + walkEnergy N (fun t => Q ≤ t.minFac) y := by
-    rw [← hZdef]
-    have : g₁' - ε / 2 = 2 * Real.log 2 - η / 4 + Z / smoothVar Q X h := by
-      rw [hg₁'def, hg₁def, hεdef]; ring
-    rw [this, add_mul] at hW
     linarith
-  -- (D) the second moment and the constraint
-  have hH1 : 1 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
-    have := single_le_sum (f := fun n : ℕ => 1 / (n : ℝ)) (fun n _ => by positivity)
-      (mem_Icc.mpr ⟨le_rfl, hN1⟩)
-    simpa using this
-  have hH0 : 0 < ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by linarith
-  have h2 : ∑ n ∈ Icc 1 N, z n ^ 2 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 +
-      (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * y n) ^ 2 / ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
-    rw [sum_sq_eq_sum_one_div_poleGauge_sq]
-    exact sum_one_div_mul_sq_le hN1 y c
-  -- fibrations
-  have hflip : ∀ a b, a ≠ 0 → b ∈ roughInterval Q (N / a) →
-      finiteFlip {p} (a * b) = finiteFlip {p} a :=
-    fun a b ha hb => finiteFlip_mul_rough hp hpQ ha hb
-  have hone : ∀ a b, a ≠ 0 → b ∈ roughInterval Q (N / a) → (fun _ : ℕ => (1 : ℝ)) (a * b) =
-      (fun _ : ℕ => (1 : ℝ)) a := fun _ _ _ _ => rfl
-  have hfib : ∀ a ∈ smoothSet Q N, ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * y (a * b) =
-      roughHarmonic Q (N / a) * h a := fun a ha =>
-    sum_fibre_eq_roughHarmonic_mul (mem_smoothSet.mp ha).1 (mem_smoothSet.mp ha).2.1 y
-  have hfib1 : ∀ a ∈ smoothSet Q N, ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * (1 : ℝ) =
-      roughHarmonic Q (N / a) := fun a _ => by
-    rw [roughHarmonic]; exact sum_congr rfl fun b _ => by rw [mul_one]
-  -- the constraint `Σ ω y/n = 0` and the mean `Y`
-  have hzero : ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) *
-      (finiteFlip {p} a * (roughHarmonic Q (N / a) * h a)) = 0 := by
-    rw [sum_flip_poleGauge_eq] at hz
-    rw [sum_one_div_mul_eq_smooth_rough Q N (finiteFlip {p}) y hflip] at hz
-    rw [← hz]
-    exact sum_congr rfl fun a ha => by rw [hfib a ha]
-  have hSN : ∑ n ∈ Icc 1 N, finiteFlip {p} n / n =
-      ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (finiteFlip {p} a * roughHarmonic Q (N / a)) := by
-    have := sum_one_div_mul_eq_smooth_rough Q N (finiteFlip {p}) (fun _ => 1) hflip
-    simp only [mul_one] at this
-    rw [← sum_congr rfl fun a ha => by rw [hfib1 a ha]]
-    rw [← this]
-    exact sum_congr rfl fun n _ => by ring
-  have hHN : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) =
-      ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * roughHarmonic Q (N / a) := by
-    have := sum_one_div_mul_eq_smooth_rough Q N (fun _ => 1) (fun _ => 1) hone
-    simp only [mul_one, one_mul] at this
-    rw [this]
-    exact sum_congr rfl fun a ha => by rw [hfib1 a ha]
-  have hY : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * y n =
-      ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (roughHarmonic Q (N / a) * h a) := by
-    have := sum_one_div_mul_eq_smooth_rough Q N (fun _ => 1) y hone
-    simp only [one_mul] at this
-    rw [this]
-    exact sum_congr rfl fun a ha => by rw [hfib a ha]
-  -- the centred sums `A` and `B`
-  obtain ⟨A, hAdef⟩ : ∃ A : ℝ, A = ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) *
-    (finiteFlip {p} a * (roughHarmonic Q (N / a) * (h a - c))) := ⟨_, rfl⟩
-  obtain ⟨B, hBdef⟩ : ∃ B : ℝ, B = ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) *
-    (roughHarmonic Q (N / a) * (h a - c)) := ⟨_, rfl⟩
-  have h4 : c * ∑ n ∈ Icc 1 N, finiteFlip {p} n / n = -A := by
-    rw [hSN, hAdef, mul_sum, ← hzero, ← sum_neg_distrib, ← sum_add_distrib] at *
-    rw [hSN, hAdef, mul_sum]
-    have : ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (finiteFlip {p} a * (roughHarmonic Q (N / a) * h a)) =
-        ∑ a ∈ smoothSet Q N, (c * (1 / (a : ℝ) * (finiteFlip {p} a * roughHarmonic Q (N / a))) +
-          1 / (a : ℝ) * (finiteFlip {p} a * (roughHarmonic Q (N / a) * (h a - c)))) :=
-      sum_congr rfl fun a _ => by ring
-    rw [this, sum_add_distrib] at hzero
+  have hGbig : 4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η ≤ roughHarmonic Q (N / X) := by
+    have : 0 ≤ (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ := by positivity
     linarith
-  have h3 : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * y n = c * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) + B := by
-    rw [hY, hHN, hBdef, mul_sum, ← sum_add_distrib]
-    exact sum_congr rfl fun a _ => by ring
-  have hS : ((p : ℝ) - 1) / ((p : ℝ) + 1) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ≤
-      ∑ n ∈ Icc 1 N, finiteFlip {p} n / n := by
-    have := primeFlip_harmonicCorrelation_ge hp hN1
-    rw [harmonicCorrelation, gaugeHarmonicSum, gaugeHarmonicSum, le_div_iff₀] at this
-    · simpa using this
-    · have := gaugeHarmonicSum_one_pos hN1
-      rw [gaugeHarmonicSum] at this
-      exact this
-  -- the splittings of `A` and `B` at the horizon
-  have hset : (smoothSet Q N).filter (fun a => a ≤ X) = smoothSet Q X := by
-    ext a
-    simp only [mem_filter, mem_smoothSet]
-    constructor
-    · rintro ⟨⟨h1, -, h3⟩, h4⟩; exact ⟨h1, h4, h3⟩
-    · rintro ⟨h1, h2, h3⟩; exact ⟨⟨h1, h2.trans hXN, h3⟩, h2⟩
-  obtain ⟨P, hPdef⟩ : ∃ P : ℝ, P = ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) *
-    (finiteFlip {p} a * zeroExt Q X h a) := ⟨_, rfl⟩
-  have hPsmooth : P = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (finiteFlip {p} a * (h a - c)) := by
-    rw [hPdef]
-    have := sum_smoothBox_zeroExt_mul Q X h (finiteFlip {p})
-    rw [← hc] at this
-    rw [← this]
-    exact sum_congr rfl fun a _ => by ring
-  obtain ⟨Av, hAvdef⟩ : ∃ Av : ℝ, Av = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
-    (finiteFlip {p} a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c))) :=
-    ⟨_, rfl⟩
-  obtain ⟨Ah, hAhdef⟩ : ∃ Ah : ℝ, Ah = ∑ a ∈ (smoothSet Q N).filter (fun a => ¬ a ≤ X),
-    1 / (a : ℝ) * (finiteFlip {p} a * (roughHarmonic Q (N / a) * (h a - c))) := ⟨_, rfl⟩
-  obtain ⟨Bv, hBvdef⟩ : ∃ Bv : ℝ, Bv = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
-    ((fun _ : ℕ => (1 : ℝ)) a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c))) :=
-    ⟨_, rfl⟩
-  obtain ⟨Bh, hBhdef⟩ : ∃ Bh : ℝ, Bh = ∑ a ∈ (smoothSet Q N).filter (fun a => ¬ a ≤ X),
-    1 / (a : ℝ) * ((fun _ : ℕ => (1 : ℝ)) a * (roughHarmonic Q (N / a) * (h a - c))) := ⟨_, rfl⟩
-  have h5A : A = roughHarmonic Q (N / X) * P + Av + Ah := by
-    rw [hAdef, ← sum_filter_add_sum_filter_not (smoothSet Q N) (fun a => a ≤ X), hset, hPsmooth,
-      hAvdef, hAhdef, mul_sum, ← sum_add_distrib]
-    congr 1
-    exact sum_congr rfl fun a _ => by ring
-  have h5B : B = Bv + Bh := by
-    rw [hBdef, ← sum_filter_add_sum_filter_not (smoothSet Q N) (fun a => a ≤ X), hset, hBvdef,
-      hBhdef]
-    congr 1
-    have hmean0 : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) = 0 := by
-      have := sum_smoothBox_zeroExt_eq_zero Q X h
-      rw [sum_smoothBox_zeroExt_mul Q X h (fun _ => 1)] at this
-      simpa [← hc] using this
-    have : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (roughHarmonic Q (N / a) * (h a - c)) =
-        roughHarmonic Q (N / X) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) +
-          ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
-            ((fun _ : ℕ => (1 : ℝ)) a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c))) := by
-      rw [mul_sum, ← sum_add_distrib]
-      exact sum_congr rfl fun a _ => by ring
-    rw [this, hmean0, mul_zero, zero_add]
-  -- the error bounds
-  have hsq1 : ∀ a, finiteFlip {p} a ^ 2 ≤ 1 := fun a => by
-    rw [sq, singleFlip_mul_self]
-  have hsq2 : ∀ a, (fun _ : ℕ => (1 : ℝ)) a ^ 2 ≤ 1 := fun _ => by norm_num
-  have hAv : Av ^ 2 ≤ (1 + L) ^ 3 * (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) /
-      roughHarmonic Q (N / X) := by
-    rw [hAvdef, le_div_iff₀ hG0, hLdef]
-    have := sum_var_sq_le (Q := Q) hX1 hXN (finiteFlip {p}) h hsq1 c
-    have hWV' := hWV
-    rw [smoothVar, wVar, ← hc] at hWV'
-    calc _ ≤ (1 + Real.log X) ^ 3 * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 := this
-      _ = (1 + Real.log X) ^ 3 * (roughHarmonic Q (N / X) *
-            ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2) / roughHarmonic Q (N / X) := by
-          field_simp
-      _ ≤ _ := by
-          rw [div_mul_eq_mul_div, mul_div_assoc', le_div_iff₀ hG0, div_mul_cancel₀ _ hG0.ne']
-          exact mul_le_mul_of_nonneg_left hWV' (by positivity)
-  have hBv : Bv ^ 2 ≤ (1 + L) ^ 3 * (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) /
-      roughHarmonic Q (N / X) := by
-    rw [hBvdef, le_div_iff₀ hG0, hLdef]
-    have := sum_var_sq_le (Q := Q) hX1 hXN (fun _ => 1) h hsq2 c
-    have hWV' := hWV
-    rw [smoothVar, wVar, ← hc] at hWV'
-    calc _ ≤ (1 + Real.log X) ^ 3 * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 := this
-      _ = (1 + Real.log X) ^ 3 * (roughHarmonic Q (N / X) *
-            ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2) / roughHarmonic Q (N / X) := by
-          field_simp
-      _ ≤ _ := by
-          rw [div_mul_eq_mul_div, mul_div_assoc', le_div_iff₀ hG0, div_mul_cancel₀ _ hG0.ne']
-          exact mul_le_mul_of_nonneg_left hWV' (by positivity)
-  have hAh : Ah ^ 2 ≤ (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) *
-      ((2 * walkEnergy N (fun t => t.minFac < Q) y +
-        2 * M * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) / L) := by
-    rw [hAhdef, hHN, hMdef, hLdef]
-    have := sum_halo_sq_le (Q := Q) (N := N) hX2 (finiteFlip {p}) y hsq1 c
-    rw [← hh] at this
-    convert this using 2
-    ring
-  have hBh : Bh ^ 2 ≤ (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) *
-      ((2 * walkEnergy N (fun t => t.minFac < Q) y +
-        2 * M * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) / L) := by
-    rw [hBhdef, hHN, hMdef, hLdef]
-    have := sum_halo_sq_le (Q := Q) (N := N) hX2 (fun _ => 1) y hsq2 c
-    rw [← hh] at this
-    convert this using 2
-    ring
-  -- the `p`-sector bound
-  obtain ⟨ZX, hZXdef⟩ : ∃ Z : ℝ, Z = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) := ⟨_, rfl⟩
-  have hZX0 : 0 ≤ ZX := by rw [hZXdef]; exact sum_nonneg fun a _ => by positivity
-  have hP : P ^ 2 ≤ (1 - (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2) * ladderMass p X * ZX *
-      pFibreVar X Q p (zeroExt Q X h) := by
-    have hmean := sum_smoothBox_zeroExt_eq_zero Q X h
-    have hvan : ∀ n, X < n → zeroExt Q X h n = 0 := fun n hn => by
-      rw [zeroExt, if_neg (not_le.mpr hn)]
-    have := sum_flip_mul_sq_le (X := X) hpmem hmean hvan
-    rw [← hPdef] at this
-    refine this.trans ?_
-    have hT : ∑ u ∈ ((smoothBox X Q).filter (fun u => ¬ p ∣ u)).filter (· ≤ X), 1 / (u : ℝ) ≤ ZX := by
-      rw [hZXdef]
-      refine sum_le_sum_of_subset_of_nonneg (fun u hu => ?_) fun _ _ _ => by positivity
-      obtain ⟨hu', huX⟩ := mem_filter.mp hu
-      obtain ⟨huB, -⟩ := mem_filter.mp hu'
-      exact mem_smoothSet.mpr ⟨(mem_smoothBox.mp huB).1, huX, (mem_smoothBox.mp huB).2.1⟩
-    have hc0 : 0 ≤ 1 - (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2 := by
-      obtain ⟨-, hle, -, -⟩ := cp_facts hp11' rfl
-      have h0 : 0 ≤ ((p : ℝ) - 1) / ((p : ℝ) + 1) := div_nonneg (by linarith) (by linarith)
-      nlinarith
-    have := mul_le_mul_of_nonneg_right hT hVp0
-    have := mul_le_mul_of_nonneg_left this (show 0 ≤ (1 - (((p : ℝ) - 1) / ((p : ℝ) + 1)) ^ 2) *
-      ladderMass p X by positivity)
-    linarith
-  have hGZX : roughHarmonic Q (N / X) * ZX ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
-    rw [hHN, hZXdef, mul_sum]
-    have hsub : smoothSet Q X ⊆ smoothSet Q N := fun a ha => by
-      obtain ⟨h1, h2, h3⟩ := mem_smoothSet.mp ha
-      exact mem_smoothSet.mpr ⟨h1, h2.trans hXN, h3⟩
-    calc ∑ a ∈ smoothSet Q X, roughHarmonic Q (N / X) * (1 / (a : ℝ))
-        ≤ ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * roughHarmonic Q (N / a) := by
-          refine sum_le_sum fun a ha => ?_
-          obtain ⟨ha1, haX, -⟩ := mem_smoothSet.mp ha
-          have := roughHarmonic_mono (Q := Q) (Nat.div_le_div_left haX (by omega : 0 < a))
-          rw [mul_comm]
-          exact mul_le_mul_of_nonneg_left this (by positivity)
-      _ ≤ _ := sum_le_sum_of_subset_of_nonneg hsub fun a _ _ => by
-          have := roughHarmonic_nonneg Q (N / a); positivity
-  -- the largeness of the rough mass
-  have hbig1 : 2 * Real.log 2 * 150 * ((1 + L) ^ 3 / (roughHarmonic Q (N / X) *
-      ∑ n ∈ Icc 1 N, 1 / (n : ℝ))) ≤ η / 4 := by
-    have hGbig : 4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η ≤ roughHarmonic Q (N / X) := by
-      have : 0 ≤ (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ := by positivity
-      rw [hG₀def] at hGG₀; linarith
-    rw [div_le_iff₀ hη] at hGbig
-    have hGH : roughHarmonic Q (N / X) ≤ roughHarmonic Q (N / X) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
-      nlinarith
-    rw [mul_div_assoc', div_le_iff₀ (by positivity)]
-    nlinarith
-  -- assemble
-  rw [walkEnergy_small_add_large Q N z] at h1
-  rw [← hy] at h1
-  have := twisted_assembly (lam := 2 * Real.log 2) (η := η) (p := (p : ℝ)) (ℓ := Real.log p)
-    (by linarith) (by linarith) hη hη1 hp11' hlp hW0 hVp0 hG0 hH0 hDS0 hDL0 hL0 hZX0 hlM1 hbGle
-    he₂0 he₂ h1 h2 h3 h4 hS h5A h5B hAv hBv hAh hBh hP hGZX hbig1 hbig2 hbig3
-  rw [walkEnergy_small_add_large Q N z] at this
-  exact this
+  subst hLdef hMdef hLQdef
+  exact twisted_poincare_at_horizon hp hp11 hpmem hQ2 hX2 hXN hη hη1 hεdef hg₁def hTdef hτ0 hτ1
+    hτT hK hKt hκ hML h2L hcoef he₂ hGr hGbig hbig2 hbig3 z hz
 
 /-! ### 8. The maximal gap is attained by prime flips -/
 

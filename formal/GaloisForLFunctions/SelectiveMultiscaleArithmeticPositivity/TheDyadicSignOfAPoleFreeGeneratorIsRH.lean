@@ -290,16 +290,3 @@ theorem not_towerPositive_perturbed_of_riemannHypothesis (hRH : RiemannHypothesi
     ⟨towerPositive_vonMangoldt_of_riemannHypothesis hRH hp hf hfc, h⟩
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
-
-open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
-#print axioms riemannHypothesis_iff_towerPositive_poleFree_small
-open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
-#print axioms zeta_poleFree_small_tower_law
-open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
-#print axioms not_towerPositive_liouvilleTwin_of_riemannHypothesis
-open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
-#print axioms not_towerPositive_perturbed_of_riemannHypothesis
-open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
-#print axioms not_towerPositive_liouvilleTwin_and_vonMangoldt
-open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
-#print axioms sum_perturbation_Ioc_le
