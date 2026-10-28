@@ -151,10 +151,10 @@ norm; it does not determine Gamma, both poles or the full Weil sign.
 
 ## Complete dyadic coordinates
 
-Target the actual logarithmic-cell isometry W_2 and its cell embedding U,
-which satisfy T_(log 2) U=U W_2. Identify the wandering space as cell 1 plus
-balanced adjacent Haar vectors, prove purity by integer support growth, and
-obtain complete orthogonal dyadic coordinates. Prime two then acts along
+Use the actual logarithmic-cell isometry W_2 and its cell embedding U,
+which satisfy T_(log 2) U=U W_2. The wandering space consists of cell 1 plus
+balanced adjacent Haar vectors; integer support growth proves purity and
+complete orthogonal dyadic coordinates. Prime two acts along
 nearest-neighbour chains at fixed Haar index. This supplies exact multiscale
 source coordinates before any sign assertion.
 
@@ -173,27 +173,26 @@ so the intersection of its iterated ranges is zero. Distinct translates W^j K
 are orthogonal, and their closed linear span is H. The proof of completeness
 pulls a vector orthogonal to every W^j K back through the closed isometric range
 at every depth, then uses the support cutoff. Literal compatibility with the cell embedding U is also proved. Its final
-individual no-olean audit passes with standard axioms only. Exact finite
-Pythagoras and identification of K with cell 1 plus balanced weighted Haar
-details are further coordinate theorems.
+individual no-olean audit passes with standard axioms only. The complete
+Hilbert basis identifies K with cell 1 plus balanced weighted Haar details.
 
 The existing finite unweighted average/difference expansion is already proved
-in TheCompleteSourceIsADyadicMultiresolution. The new target is the Hilbert
-orthogonal decomposition and completion of the actual weighted clock. Its
+in TheCompleteSourceIsADyadicMultiresolution. The Hilbert
+orthogonal decomposition and completion use the actual weighted clock. Its
 completion is the logarithmic-cell subspace, not the entire continuous Weil
 graph. No full-form positivity follows from Hilbert orthogonality alone.
 
 ### Explicit balanced wandering coordinates
 
 For each positive a, set alpha_a=sqrt(ell_(2a)/ell_a) and
-beta_a=sqrt(ell_(2a+1)/ell_a). The target generator is
+beta_a=sqrt(ell_(2a+1)/ell_a). The generator is
 beta_a*e_(2a)-alpha_a*e_(2a+1), together with e_1.
 BalancedCellDetailsFormTheWanderingBasis proves orthonormality and completeness
 in K from the exact two-coordinate rotation and alpha_a^2+beta_a^2=1.
 EveryFiniteCellSourceHasFiniteDyadicCoordinates constructs the complete orbit
 Hilbert basis and literal coordinate isometry indexed by N x (Option N+).
-Both modules pass final no-olean audits with standard axioms only. Pay the embedding-to-balanced-Haar
-normalization explicitly before invoking Gamma estimates for those atoms.
+Both modules pass final no-olean audits with standard axioms only. The physical
+normalization is proved by TheDyadicDetailsAreTheLiteralBalancedHaarSources.
 
 ### Arithmetic action in complete levels
 
@@ -221,11 +220,12 @@ without an unproved passage through infinite sums.
 
 ### Physical balanced-Haar normalization
 
-Prove sqrt(haarMass a)*U(d_a)=haarAtom a using the existing physical Haar
-source and its mass. The scalar square-root identities follow from positive
-cell widths and the exact parent-width telescope. Transport this equality
-through every literal iterated log2 shift. This is the required comparison
-before applying physical Gamma estimates to the new coefficient coordinates.
+TheDyadicDetailsAreTheLiteralBalancedHaarSources proves
+sqrt(haarMass a)*U(d_a)=haarAtom a using the existing physical Haar source and
+its mass. Positive square-root identities and the parent-width telescope
+identify both coefficients. The equality survives every dyadic level and
+every integer logarithmic translation. Its final no-olean audit passes with
+standard axioms only; physical Gamma estimates retain exact mass factors.
 
 ### One Gamma reserve for the complete tree
 

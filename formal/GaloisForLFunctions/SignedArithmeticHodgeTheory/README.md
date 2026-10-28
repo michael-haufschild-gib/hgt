@@ -288,6 +288,15 @@ the complete Hilbert basis and an isometric coordinate map indexed by
 product with its literal generator. The finite expansion theorem permits
 finite source identities before invoking any continuity of an unbounded form.
 
+These coefficient details are the existing physical balanced Haar sources:
+\[
+\sqrt{\operatorname{haarMass}(a)}\,U d_a=\operatorname{haarAtom}(a).
+\]
+[TheDyadicDetailsAreTheLiteralBalancedHaarSources](TheDyadicDetailsAreTheLiteralBalancedHaarSources.lean)
+proves this exact normalization and its preservation at every dyadic level
+and under every integer logarithmic translation. Physical source estimates
+therefore apply to the same atoms, with their mass factors retained.
+
 This is Hilbert orthogonality in the closed logarithmic-cell subspace.
 Joint Gamma estimates across levels and full-Weil mixed bounds remain separate.
 The cell completion is not identified with the entire continuous source graph.

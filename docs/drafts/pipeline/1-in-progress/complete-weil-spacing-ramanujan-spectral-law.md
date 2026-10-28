@@ -450,3 +450,5 @@ No full-Weil Liouville sign claim is being inferred from global mean
 cancellation: the required local harmonic convolution is a separate input.
 
 Two additional unchecked support drafts, `TheSeparatedAtomPairingsAreThePrimeKernel` and `TheSeparatedMarkovMatrixHasExactCrossEntries`, give entrywise exact prime and Markov pairings at full spacing. The actual mass interface is AES `integral_atomicTest_sq`, already requiring only w<atomSpacing(N). These drafts are not installed, checked, or counted. Nine scratch drafts now support the strengthened target; the full spectral endpoint remains unproved.
+
+Two further unchecked drafts now assemble the exact complete normalized entries (`TheFullWeilMatrixSplitsAtTheSpacing`) and the exact center row on the pole (`TheArchimedeanCenterRowCancelsThePole`). The pole rows reuse ALG `atomPoleRow_zero_apply` and `atomPoleRow_one_apply`, inspected in source. Eleven scratch drafts exist; none has passed Lean or been installed.
