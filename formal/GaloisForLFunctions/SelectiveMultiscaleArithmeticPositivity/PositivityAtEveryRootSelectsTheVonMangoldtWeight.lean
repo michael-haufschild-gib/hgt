@@ -5,19 +5,19 @@ import GaloisForLFunctions.RHTower.WeilConeUniquenessUnconditional
 # Positivity at every root selects the von Mangoldt weight
 
 The atomic receiver holds at every root: for a bounded weight `|λ| ≤ Λ`, a smooth profile `φ` and
-dilations `κ_N` of overlap growth of some finite order, `Q_λ ≥ 0` on all tests iff `Q_λ` is eventually
-nonnegative on the atomic families of width `1/κ_N`
+dilations `κ_N` of overlap growth of some finite order, `Q_λ ≥ 0` on all tests iff `Q_λ` is
+eventually nonnegative on the atomic families of width `1/κ_N`
 (`weilPositive_iff_atomicFamilies_nonneg_of_growthPow`). The full Weil cone is `{Λ}` under RH and
 empty otherwise (`weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt`). Together:
 
-* **Selection** (`atomicPositiveAt_iff`): a bounded weight is eventually atomic-positive at some root
-  iff RH holds and the weight is `Λ` on `n ≥ 2`.
+* **Selection** (`atomicPositiveAt_iff`): a bounded weight is eventually atomic-positive at some
+  root iff RH holds and the weight is `Λ` on `n ≥ 2`.
 * **Twin-blind positivity is impossible** (`not_forall_atomicPositiveAt`,
   `not_atomicPositiveAt_liouville`): no family of bounded weights containing a weight different from
-  `Λ` is uniformly atomic-positive at a root. An inequality proved for every bounded twist of a family
-  that contains the Liouville twin cannot reach an RH-complete atomic family.
-* **One weight, one root** (`riemannHypothesis_of_atomicPositiveAt`): atomic positivity of any single
-  bounded weight at any single root is RH.
+  `Λ` is uniformly atomic-positive at a root. An inequality proved for every bounded twist of a
+  family that contains the Liouville twin cannot reach an RH-complete atomic family.
+* **One weight, one root** (`riemannHypothesis_of_atomicPositiveAt`): atomic positivity of any
+  single bounded weight at any single root is RH.
 
 So atomic positivity at a root is not a property a family of twins can share: it singles out `Λ`.
 A positivity proof must use a property of `Λ` that its bounded twists lack.
@@ -54,7 +54,8 @@ theorem atomicPositiveAt_iff {lam : ℕ → ℝ}
     AtomicPositiveAt lam φ κ ↔
       RiemannHypothesis ∧ ∀ n, 2 ≤ n → lam n = ArithmeticFunction.vonMangoldt n := by
   rw [← WeilSpectral.weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt,
-    weilPositiveFull_iff_real, weilPositive_iff_atomicFamilies_nonneg_of_growthPow hlam hφ hφ1 hφint hκ]
+    weilPositiveFull_iff_real,
+    weilPositive_iff_atomicFamilies_nonneg_of_growthPow hlam hφ hφ1 hφint hκ]
   rfl
 
 /-- **One weight, one root**: atomic positivity of a single bounded weight at a single root of

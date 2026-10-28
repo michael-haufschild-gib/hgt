@@ -59,7 +59,7 @@ Hodge index hold for every sign twin. On atomic families at any root of finite o
 however, positivity of a bounded weight *is* RH, and it forces the weight to be \(\Lambda\)
 (pillar 1). A positivity proof built from estimates shared by a family of twins containing one
 weight different from \(\Lambda\) cannot reach an RH-complete family. On complete cells the
-high-detail floor holds, with the same index, for every twist \(|\omega|\le1\) (pillar 7). So the
+high-detail floor holds, with the same index, for every twist \(|\omega|\le1\) (pillar 8). So the
 Liouville twin's negative directions live in the low and cross-level residual. Selectivity is a
 necessary ingredient, not a refinement.
 
@@ -68,18 +68,20 @@ necessary ingredient, not a refinement.
 (pillar 2). On that hyperplane the pole term vanishes, \(\zeta\)'s prime form has a uniform gap
 below its ceiling, and the Liouville twin's prime form reaches the ceiling. Sign twins differ from
 \(\zeta\) only in the prime form: the archimedean diagonal and both pole moments cancel exactly. So
-the gap transfers to the full Weil forms (pillar 3).
+the gap transfers to the full Weil forms (pillar 3), and on every atomic test it pays the whole
+component orthogonal to the pole (pillar 4).
 
 **Selectivity has a size.** Every uniform gap of \(\zeta\) on the hyperplane is at most \(2\log2\),
 because the conductor-2 Ramanujan mode is the unique first excitation above the pole. The Liouville
-twin has no positive gap (pillars 4, 5). The prime 2 is the bottleneck, and the same prime
+twin has no positive gap (pillars 5, 6). The prime 2 is the bottleneck, and the same prime
 generates the self-similarity of the complete source.
 
 **Multiscale structure is exact.** Two adjacent complete cells fill the translate of one cell by
 \(\log2\). The complete source is therefore a sum over levels of translates of one generator cell and
-of level details (pillar 8), and every translation-invariant form has level-Toeplitz Grams. A
+of level details (pillar 9), and every translation-invariant form has level-Toeplitz Grams. A
 level is paid when its coupling to the coarser part costs less than its detail reserve, and
-summable costs keep positivity under infinite refinement (pillar 6).
+summable costs keep positivity under infinite refinement (pillar 7). The pole hyperplane is invariant
+under the dyadic step, so on it the pole couplings between levels vanish (pillar 10).
 
 ---
 
@@ -163,35 +165,48 @@ summable costs keep positivity under infinite refinement (pillar 6).
    - `exists_pole_hyperplane_separates_full_weil_forms`: one constant \(G\) does both;
    - `exists_liouville_weilQuad_lt_of_harmonic`: on the hyperplane \(\zeta\) is not the minimum of
      its gauge orbit.
-4. **The conductor two is the first excitation** (`TheConductorTwoIsTheFirstExcitation`):
+4. **The selective Gårding inequality** (`TheSelectiveGardingInequality`):
+   - `poleDefect_poleProj` and `sum_sq_poleProj`: the defect ignores the pole direction, and the
+     projection to the hyperplane leaves mass \(|x|^2-\ell(x)^2/H_N\);
+   - `exists_poleDefect_ge_offPole`: \(D_N(x)\ge G(|x|^2-\ell(x)^2/H_N)\) for every \(x\);
+   - `exists_weilQuad_atomicTest_ge_selective`: on every narrow atomic test,
+     \(W(f_x)\ge(\varphi_0+c_0G)\|f_x\|^2-c_0G\|g\|^2\ell(x)^2/H_N+2A(f_x)B(f_x)\).
+5. **The conductor two is the first excitation** (`TheConductorTwoIsTheFirstExcitation`):
    - `ramanujanAdjunctionEnergy_sub_one_ge`: \(E_m-E_1\ge2\log2\), with equality iff \(m=2\);
    - `eventually_exists_harmonic_atomicWeilForm_ge`: some hyperplane vector has
      \(P_N\ge\log N-\gamma-2\log2-\varepsilon\).
-5. **The hyperplane gap is the selective margin** (`TheHyperplaneGapIsTheSelectiveMargin`):
+6. **The hyperplane gap is the selective margin** (`TheHyperplaneGapIsTheSelectiveMargin`):
    - `zeta_hasHyperplaneGap`: \(\zeta\) has a positive gap;
    - `le_two_mul_log_two_of_hasHyperplaneGap`: every gap of \(\zeta\) is \(\le2\log2\);
    - `not_liouville_hasHyperplaneGap`: the Liouville twin has none;
    - `hyperplaneGap_selective`: all three together.
-6. **A level is paid by its reserve** (`ALevelIsPaidByItsReserve`):
+7. **A level is paid by its reserve** (`ALevelIsPaidByItsReserve`):
    - `two_mul_add_ge_of_reserve` and `rg_step`: paying a coupling, and one RG step;
    - `rgMargin_ge` and `rgMargin_pos`: summable couplings keep a uniform margin under infinite
      refinement;
    - `fromBlocks_posSemidef_iff_effective` and `effectiveCoarse_le`: Schur transparency, and the
      correction only lowers the coarse block;
    - `sum_quadratic_ge_of_blockDominance`: Gershgorin for forms.
-7. **The Haar floor is twin-blind** (`TheHaarFloorIsTwinBlind`):
+8. **The Haar floor is twin-blind** (`TheHaarFloorIsTwinBlind`):
    - `twistedPrimeSum_haarSectionProfile`: the twisted prime charge of a balanced section is the
      quadratic form of \(\sum_m\omega(m)e_m(a,b)\);
    - `twistedPrimeSum_haarSectionProfile_le`: for \(|\omega|\le1\) it obeys \(\zeta\)'s bound;
    - `haarSectionProfile_roughWeilTw_ge` and `exists_haarTail_roughWeilTw_floor`: one lower index
      gives \(W_\omega\ge\) mass on every high section, for every such twist at once;
    - `liouville_haarTail_roughWeilTw_floor`: the Liouville twin has the floor too.
-8. **The complete source is a dyadic multiresolution** (`TheCompleteSourceIsADyadicMultiresolution`):
+9. **The complete source is a dyadic multiresolution** (`TheCompleteSourceIsADyadicMultiresolution`):
    - `logCell_two_mul_add`: the doubled cell is the translated cell;
    - `sum_logCell_rg_step`: one renormalization step;
    - `sum_logCell_multiresolution`: the full multiresolution;
    - `orbitPairing_translate_translate` and `weilOrbitPairing_level`: the level-Toeplitz law;
    - `weilQuadTw_level`: every level repeats the generator energies.
+10. **The pole hyperplane is renormalization invariant** (`ThePoleHyperplaneIsRenormalizationInvariant`):
+    - `atomicTest_dyadicShift`: the dyadic shift of weights is the translation by \(\log2\);
+    - `weilQuad_atomicTest_dyadicShift`: renormalization does not change Weil's form;
+    - `harmonicSum_dyadicShift`: the harmonic coordinate scales by \(1/\sqrt2\), so the hyperplane is
+      invariant;
+    - `weilQuad_twoLevel_eq_markov`: multiresolution combinations of hyperplane tests are hyperplane
+      tests, and their pole term vanishes.
 
 ---
 
@@ -206,7 +221,8 @@ summable costs keep positivity under infinite refinement (pillar 6).
 | \(\zeta\) is the minimum of its gauge orbit | Only on nonnegative atomic tests; on the pole hyperplane the Liouville twin lies below (`exists_liouville_weilQuad_lt_of_harmonic`) |
 | The pole hyperplane gap can be made large | Every uniform gap of \(\zeta\) is at most \(2\log2\) (`le_two_mul_log_two_of_hasHyperplaneGap`) |
 | The discrete and continuous pole constraints differ | On atomic tests they coincide up to the nonzero factor \(A(g)\) |
-| The pole is harmless across scales | Pole products of level translates grow like \(2^{\lvert j-k\rvert/2}\); only \(\Lambda\)'s prime main term cancels them (AID Chebyshev identity) |
+| The pole is harmless across scales | Pole products of level translates grow like \(2^{\lvert j-k\rvert/2}\); only \(\Lambda\)'s prime main term cancels them (AID Chebyshev identity). On the pole hyperplane they vanish identically, because the hyperplane is renormalization invariant (`harmonicSum_dyadicShift`) |
+| The gap only helps on the hyperplane | It pays the whole off-pole component of every atomic test (`exists_weilQuad_atomicTest_ge_selective`); only the pole coordinate \(\ell(x)^2/H_N\) is left to the pole term |
 | Translation invariance makes all levels equal | Diagonal blocks are equal (`weilQuadTw_level`); couplings depend on the level difference, and graph norms escape every exponential (SAHT) |
 | Adding a positively paid level cannot hurt | It leaves exactly the Schur-corrected coarse block, which is lower (`effectiveCoarse_le`) |
 | Positivity at a fixed overlap ratio is RH | The receiver needs unbounded polylog overlap; fixed ratios are finite regimes |
@@ -232,9 +248,13 @@ summable costs keep positivity under infinite refinement (pillar 6).
    - Summable coupling costs below the initial margin keep a uniform positive margin at every level.
 
    *Open:* actual coupling costs of the complete Weil form between levels.
-3. **How far does the selective gap carry positivity?** *Answered at spacing scale:* the gap is
-   added to the Markov finite part, giving \(W\ge(\varphi_0+c_0G)\|f\|^2\) on the hyperplane. *Open:*
-   coarse-scale transfer.
+3. **How far does the selective gap carry positivity?** *Answered at spacing scale:*
+   - the gap is added to the Markov finite part, giving \(W\ge(\varphi_0+c_0G)\|f\|^2\) on the
+     hyperplane;
+   - on every atomic test it pays the off-pole component (selective Gårding inequality);
+   - the hyperplane, and with it these bounds, is invariant under dyadic renormalization.
+
+   *Open:* coarse-scale transfer beyond the spacing scale.
 4. **Why \(2\log2\), and why the prime 2?** *Answered as an upper bound:*
    - \(2\log2=E_2-E_1\), the unique first adjunction excitation.
    - No uniform hyperplane gap can exceed it.
@@ -262,6 +282,7 @@ summable costs keep positivity under infinite refinement (pillar 6).
 - the twin difference formula;
 - gap transfer on the hyperplane;
 - the Liouville gauge as Liouville sign;
+- the pole projection, the selective Poincaré inequality and the selective Gårding inequality;
 - the twisted rough Weil form on BV sources and the twin-blind Haar floor;
 - the full-prime-matrix plane argument (horizon extension, eigenvector orthonormality, diagonal
   form on eigenvector planes);
@@ -270,7 +291,8 @@ summable costs keep positivity under infinite refinement (pillar 6).
 - level payment, the RG step and the margin recursion;
 - Schur transparency and block dominance;
 - complete cells, translations, the doubled cell, the RG step and the multiresolution;
-- orbit pairings and the level-Toeplitz law.
+- orbit pairings and the level-Toeplitz law;
+- the dyadic shift of atomic weights and its action on Weil's form, mass and the harmonic coordinate.
 
 **To build:**
 
@@ -294,7 +316,7 @@ summable costs keep positivity under infinite refinement (pillar 6).
    is here; the lower bound is RAPT work in progress.
 5. **A virial identity for critical energy.** An upper side for AID's canonical energy.
 6. **Selective input on the low and cross-level residual.** The high-detail floor is twin-blind
-   (pillar 7), so the complete-source sign is decided entirely by the low details \(a<A\), the
+   (pillar 8), so the complete-source sign is decided entirely by the low details \(a<A\), the
    generator cell and the couplings between levels. Find the selective inequality there.
 
 ---

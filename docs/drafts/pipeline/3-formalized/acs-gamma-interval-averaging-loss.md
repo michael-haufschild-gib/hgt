@@ -65,6 +65,14 @@ Set `Rᵢᵢ=0` and let `Rᵢⱼ` be the actual integrated farthest-endpoint rep
 
 Symmetry and `(u-v)²≤2(u²+v²)` prove this directly in nonnegative extended integrals. Diagonal coefficient differences vanish. `gammaFinitePairDefect_weighted_kernel_le` also proves that each actual weighted kernel is at most its retained mean edge plus this explicit error, without assuming a row bound. All three modules now have twenty-five clean axiom audits.
 
+## Exterior subsets and finite boundary charges
+
+[GammaExteriorSubsets.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/GammaExteriorSubsets.lean) passes its exact project check and four clean transitive audits, without warnings. Log: `/tmp/acs-gamma-exterior-subsets-final.log`.
+
+For any `F⊆Iᶜ`, with `0<w=|I|≤1`, `gamma_interval_exterior_subset_defect_le` bounds `∫_I∫_F D` by `exp(1/2)*w`. `gamma_interval_exterior_subset_kernel_le` bounds the actual kernel by `w*(2*T(w)+exp(1/2))`. The two endpoints are null, so restriction to any exterior subset preserves the checked full-exterior estimates.
+
+`gamma_interval_far_charge_le` bounds `∫_F ofReal(w*q²)*gammaFarCharge_I` by `ofReal(q²*w*(2*T(w)+exp(1/2)))`. The exact kernel decomposition first bounds the far charge by the actual interaction, and the finite kernel estimate then gives this bound. Thus finiteness is proved before any real conversion. `gammaIntervalPairDefect_le_boundary` also bounds a touching replacement error by the full source-row loss plus `ofReal(w*|J|*k(w))`. All four modules have twenty-nine clean axiom audits.
+
 ## Remaining parent obligation
 
 The interval averaging loss, separated tails, and symmetric finite-error estimate are formalized. Recovering the entire coarse Gamma energy still requires uniform logarithmic-cell row bounds and exact accounting for the actual coarse source. Full mixed Weil positivity remains open.

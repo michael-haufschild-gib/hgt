@@ -16,8 +16,8 @@ renormalization calculus of that step.
   `min(μ − β²/(θδ), (1 − θ)δ)` of the refined form.
 * **Summable couplings keep a uniform margin** (`rgMargin_ge`, `rgMargin_pos`): iterating, the
   margin after any number of levels is at least `min(μ₀, D) − Σ c_l`, where `c_l` are the coupling
-  costs and `D` a uniform lower bound for the surviving detail reserves. Positivity survives infinite
-  refinement as soon as the coupling costs are summable below the initial margin.
+  costs and `D` a uniform lower bound for the surviving detail reserves. Positivity survives
+  infinite refinement as soon as the coupling costs are summable below the initial margin.
 * **The paid level is transparent** (`fromBlocks_posSemidef_iff_effective`,
   `effectiveCoarse_le`): if the detail block is positive definite, the refined Gram is positive
   semidefinite iff the Schur-corrected coarse Gram `A − B D⁻¹ Bᴴ` is, and the correction only lowers

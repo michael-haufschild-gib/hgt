@@ -25,6 +25,7 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheAtomicFormIsMetzlerBe
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.ThePoleDefectControlsTheVRow
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.ThePoleDefectPaysThePole
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.WeilsFormIsPositiveOnEveryTestNearTheLogarithms
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheOverlapRatioIsTheCoveredMeasure
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheStabilityRegimeEndsAtTheRobinEulerThreshold
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheUniformMarginPaysThePoleOnlyUpToARootLogarithm
@@ -57,7 +58,8 @@ Jensen polynomials of `ξ`; reflection positivity in Cayley coordinates, where R
 negativity of the Li ladder on primitive vectors and equivalently its Metzler sign; the atomic
 intersection form of `ζ` — Metzler exactly up to the spacing, hyperbolic with `(TD_π)` and
 hyperbolic links at a fixed fraction of it — eventually in `N` at the fraction where the pole
-defect, through the multiplicative Hardy inequality, pays the pole — blind to sign twins where
+defect, through the multiplicative Hardy inequality, pays the pole, and there for every `C²` test
+supported in the windows `[log n, log n + w]` — blind to sign twins where
 the sign is not,
 supported on a set of measure at most the overlap ratio, and out of the stability regime beyond
 the Robin–Euler threshold;

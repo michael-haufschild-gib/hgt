@@ -178,7 +178,8 @@ theorem haarSectionProfile_roughWeilTw_ge {ω : ArithmeticFunction ℝ} (hω : �
   linarith
 
 /-- **One lower index for every twist**: there is `A ≥ 1` such that for every twist `|ω| ≤ 1`,
-every signed section supported at indices `a ≥ A` has `W_ω(f_c) ≥ Σ_a h_a c_a²`, for every horizon. -/
+every signed section supported at indices `a ≥ A` has `W_ω(f_c) ≥ Σ_a h_a c_a²`, for every horizon.
+-/
 theorem exists_haarTail_roughWeilTw_floor : ∃ A : ℕ, 1 ≤ A ∧ ∀ (ω : ArithmeticFunction ℝ),
     (∀ m, |ω m| ≤ 1) → ∀ (c : ℕ → ℝ) (X : ℕ),
       (∑ a ∈ Icc 1 X, haarMass a * haarTailCoeffs A c a ^ 2) ≤

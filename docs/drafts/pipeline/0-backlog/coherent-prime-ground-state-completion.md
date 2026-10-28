@@ -332,3 +332,58 @@ upward sum contributes -p*B/(p-1) and the downward sum -(k-1)*B;
 above k-1 only the jump to k-1 and the k-1 lower states contribute.
 These finite/geometric identities can discharge the actual local generator
 rather than defining it spectrally. They are unverified steps within this card.
+
+A direct physical-horizon comparison is now available for audit. Put
+`mu_N(n)=1/(H_N*n)` on 1<=n<=N and map n to its full prime-valuation sequence.
+For every divisibility cylinder d|n, its mass is exactly
+`H_floor(N/d)/(d*H_N)`, tending to 1/d; the corresponding geometric-product
+cylinder has that same mass. Finite exact-valuation cylinders follow by finite
+differences. This is a proposed carrier map, not a new generic distribution
+claim. A full weak-convergence theorem is not currently proved here.
+
+On pole-gauged functions x_n=f(v(n))/sqrt(H_N*n), the literal prime defect is
+the reversible truncated prime-power jump form for mu_N. The exact diagonal
+difference between `log(N)I-P_N-gamma I` and that defect generator is the
+complementary-quotient Mertens remainder together with the floor-rounding
+logarithm. It is bounded uniformly and tends to zero on every fixed normalized Ramanujan
+profile by the existing harmonic-boundary mechanism. Uniform approximation
+of bounded-defect vectors by a fixed finite Ramanujan span, together with the
+finite Gram lower bound, suggests that this diagonal error tends to zero in
+norm uniformly on every bounded-defect unit set. Coefficients of the finite
+approximants stay bounded, while the uniformly bounded multiplier controls
+the approximation error. This would identify the same actual generator from
+both the prime-sieve completion and the full integer horizons.
+
+Every ingredient of that uniform multiplier argument must still be stated and
+proved in Lean, including the exact diagonal identity and the correct Mertens
+normalization. It is part of the physical completion/limit candidate, not a
+separate count for finite linear-combination consequences or classical
+valuation-distribution facts. The refreshed measure search returned the exact
+existing geometric carrier and unrelated logarithmic circle equidistribution;
+no matching horizon-generator identification was found among those inspected
+statements.
+
+Precisely, write q=floor(N/n)>=1 and
+`M(q)=sum_(a<=q)Lambda(a)/a-log(q)+gamma`.
+The proposed diagonal error is
+`b_N(n)=log((N/n)/q)-M(q)`.
+Since q<=N/n<q+1, its absolute value is at most `1/q+abs(M(q))`.
+This vanishing bounded majorant includes the floor-rounding term; dropping
+that term would give an incorrect pointwise identity. The paper normalization
+is now explicit, but the actual-matrix and uniform-vanishing proofs remain open.
+
+The exact source introduction of `TheDeficitOfThePrimeFormIsADirichletEnergy`
+was rechecked and confirms the diagonal sum `A(floor(N/n))+log(n)`.
+Its existing `sum_top_le_poleDefect` gives a shorter route to uniform multiplier
+vanishing: split at q=floor(N/n)>=Y. On that region the multiplier majorant is
+small; on q<Y, n>N/Y, so the weighted top-atom bound forces its squared mass
+to zero uniformly for bounded defect and unit mass. No finite-span compactness
+is needed for this particular multiplier lemma. The mechanism is baseline
+support for the actual generator comparison, not separate novelty.
+
+After proving it, the resolvent identity could show norm convergence between
+the shifted finite-horizon prime and defect resolvents on their same Euclidean
+carrier: a defect resolvent maps its unit ball into a uniformly bounded-defect
+set, while the prime sharp-counterterm inequality bounds the other resolvent.
+This is still an unproved operator statement; actual inverse existence and
+all domain/normalization identities must be discharged, not assumed.

@@ -124,14 +124,16 @@ Distinct eigenvalue labels still require energy separation. These estimates
 control prime-matrix approximation, not the full-Weil complement or continuous
 Gamma and pole transfer.
 
-## Local source-capture target
+## Local source capture
 
-The exact totient bound suggests
+RamanujanFamiliesHaveAnExplicitLocalCaptureCost proves
 sum_(n<=L) |sum_(m in S) a_m v_m(n)|^2
 <=H_L*(sum_(m in S) phi(m))*(sum_(m in S) a_m^2).
-Combined with the proved global Gram lower estimate, this measures the fraction
-of normalized modal mass in each fixed integer window. Extract the positive
-readout bound and approximation cost before any route-retirement claim.
+Combined with the global Gram lower estimate, this gives local/global mass ratio
+at most H_L*sum_(m in S) phi(m)/(log N-1-2*sum_(m in S) m^2), whenever
+the denominator is positive. Each fixed finite modal span loses normalized mass
+on every fixed integer window, uniformly over all coefficients. The final
+individual Lean audit passes, with standard transitive axioms.
 The topology here is the literal prime-matrix l2 normalization; no claim about
 every full-Weil completion follows.
 
@@ -139,8 +141,67 @@ every full-Weil completion follows.
 
 The existing TheRenormalizedPrimeEnergyControlsTheDefect proves uniform finite
 Ramanujan approximation on every bounded actual renormalized-prime-energy
-sublevel. Combine this with local-modal mass control and the Gram lower bound
-to determine whether unit vectors in each such sublevel lose all mass on every
-fixed integer window. This is a source-transfer boundary in the literal
-integer-coordinate norm. Retain its quantitative local readout and approximation
-costs; it does not determine Gamma, both poles or the full Weil sign.
+sublevel. BoundedPrimeEnergyEscapesEveryFixedIntegerWindow combines this with
+local-modal capture: for every fixed T,L and epsilon>0, all sufficiently large
+horizons have local mass <=epsilon for every unit vector of renormalized prime
+energy <=T. The explicit transfer inequality is
+mass_L(x)<=2*norm(x-v)^2+2*mass_L(v). The final individual Lean audit passes,
+with standard transitive axioms. This is a boundary in the literal integer-coordinate
+norm; it does not determine Gamma, both poles or the full Weil sign.
+
+## Complete dyadic coordinates
+
+Target the actual logarithmic-cell isometry W_2 and its cell embedding U,
+which satisfy T_(log 2) U=U W_2. Identify the wandering space as cell 1 plus
+balanced adjacent Haar vectors, prove purity by integer support growth, and
+obtain complete orthogonal dyadic coordinates. Prime two then acts along
+nearest-neighbour chains at fixed Haar index. This supplies exact multiscale
+source coordinates before any sign assertion.
+
+A separate Gamma square-function estimate must pay all levels from one reserve.
+The candidate mechanism assigns each pair of points to its least common
+ancestor in the actual logarithmic-cell tree and uses the existing two-interval
+mean/variance inequality. Summing per-level Gamma bounds is not a proof of this
+joint estimate. All-prime couplings and the selective generator-orbit sign are
+further obligations.
+
+### Completed logarithmic-cell clock
+
+First prove the completed weighted statement on H=l2(N+;C), with the actual
+W=logCellShift 2 and K=(range W)^perp. W^j annihilates coordinates below 2^j,
+so the intersection of its iterated ranges is zero. Distinct translates W^j K
+are orthogonal, and their closed linear span is H. The proof of completeness
+pulls a vector orthogonal to every W^j K back through the closed isometric range
+at every depth, then uses the support cutoff. This also gives exact finite
+Pythagoras and literal compatibility with the cell embedding U. Identify K
+with cell 1 plus the balanced weighted Haar details afterward.
+
+The existing finite unweighted average/difference expansion is already proved
+in TheCompleteSourceIsADyadicMultiresolution. The new target is the Hilbert
+orthogonal decomposition and completion of the actual weighted clock. Its
+completion is the logarithmic-cell subspace, not the entire continuous Weil
+graph. No full-form positivity follows from Hilbert orthogonality alone.
+
+### Explicit balanced wandering coordinates
+
+For each positive a, set alpha_a=sqrt(ell_(2a)/ell_a) and
+beta_a=sqrt(ell_(2a+1)/ell_a). The target generator is
+beta_a*e_(2a)-alpha_a*e_(2a+1), together with e_1.
+Prove their orthonormality and completeness in K from the exact two-coordinate
+rotation and alpha_a^2+beta_a^2=1. Construct the Hilbert basis in Lean, then
+combine it with complete orthogonal levels to obtain a literal coordinate
+isometry indexed by N x (Option N+). Pay the embedding-to-balanced-Haar
+normalization explicitly before invoking Gamma estimates for those atoms.
+
+### Arithmetic action in complete levels
+
+Because W_p W_2=W_2 W_p, the actual arithmetic action should have the exact
+level matrix law
+
+inner(W_2^j u,W_p W_2^k v)=0 if j<k,
+inner(W_2^j u,W_p W_2^k v)=inner(W_2^(j-k) u,W_p v) if k<=j,
+
+for u,v in K and p>=2. Prime two is the one-step shift. This is a candidate
+analytic operator-valued Toeplitz representation of the actual arithmetic
+semigroup. Its coefficients must be derived from the original source maps.
+It supplies no selective sign or joint Gamma cost without additional proofs.

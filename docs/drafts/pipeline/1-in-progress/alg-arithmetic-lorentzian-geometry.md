@@ -57,6 +57,10 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
   K★(φ,ε) = min(overlap bounds, 1/(A+2c_P√e), e^{2θ′(0)+κ_L+γ−ε−2}) ∈ [1e-4, 6e-4] for κ_L ≥ −2,
   ε ≤ 1/8 (vs c★ ≈ 1e-11).
   Mechanism: pole defect pays the pole (no tilt). Gap to Robin–Euler threshold = Chebyshev A.
+- WeilsFormIsPositiveOnEveryTestNearTheLogarithms: window tests Σ G_n(· − log n), arbitrary C²
+  profiles in [0, w]; orthogonality, prime sum = Weil kernel × window Gram ≤ P_N(y), y_n = ‖G_n‖;
+  Lévy diag with pair windows; self-energy ≥ (log(1/w) + 2c_∞ − O(w))‖G‖²; eventually in N, Weil
+  form ≥ 0 on every C² test supported in ⋃[log n, log n + w], w ≤ K★_∞(ε) δ_N (κ_L → 2c_∞).
 - TheSupportOfAMixedLorentzianPolynomialIsMConvex: exchange in Lorentzian forms (Q_ai, Q_jk > 0 ⇒
   Q_aj or Q_ak > 0); mixed-Lorentzian supports are M-convex (induction: common variable → ∂_k;
   coprime → ∂_{e_a+e_k} then common-variable exchange); mixed = coefficient class; products,

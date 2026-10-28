@@ -7,8 +7,8 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.ThePoleHyperpla
 A **uniform pole-hyperplane gap** of a weight is a constant `g` such that for every `ε > 0`,
 eventually in `N`, its atomic prime form is at most `(log N − γ − g + ε)|x|²` on the harmonic
 hyperplane `Σ_{n ≤ N} x_n/√n = 0` (`HasHyperplaneGap`). It is the quantity that pays the full Weil
-form beyond the Robin–Euler point (`ThePoleHyperplaneSeparatesTheFullWeilForms`). Its possible values
-are now pinned on both sides.
+form beyond the Robin–Euler point (`ThePoleHyperplaneSeparatesTheFullWeilForms`). Its possible
+values are now pinned on both sides.
 
 * **`ζ` has one** (`zeta_hasHyperplaneGap`): some `g > 0` (RenormalizedArithmeticPotentialTheory).
 * **Every gap of `ζ` is at most `2 log 2`** (`le_two_mul_log_two_of_hasHyperplaneGap`): the

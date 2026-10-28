@@ -241,6 +241,28 @@ arithmetic requirement, constrained by the escape bounds above.
 
 ### Signed block payment
 
+The actual weighted logarithmic-cell shift \(W_2\) is a pure isometry on
+\(\ell^2(\mathbb N_{>0};\mathbb C)\). Write
+\(K=(\operatorname{ran}W_2)^\perp\). Then
+
+\[
+\ell^2=\overline{\bigoplus_{j\ge0}W_2^jK},\qquad
+\langle W_2^ju,W_2^kv\rangle=\delta_{jk}\langle u,v\rangle
+\quad(u,v\in K).
+\]
+
+[TheLogCellClockHasACompleteWanderingDecomposition](TheLogCellClockHasACompleteWanderingDecomposition.lean)
+proves this on the completed coefficient space. A vector in the range of
+\(W_2^j\) has no coordinates below \(2^j\), so the intersection of all these
+ranges is zero. Orthogonality to every wandering level forces a vector into
+every range, proving completeness. The actual cell embedding satisfies
+\(UW_2^j=(T_{\log2})^jU\).
+
+This is Hilbert orthogonality in the closed logarithmic-cell subspace. The
+explicit balanced-Haar description of \(K\), joint Gamma estimates across
+levels and full-Weil mixed bounds are distinct tasks. The cell completion is
+not identified with the entire continuous source graph.
+
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
 is smaller than the available diagonal reserve, with explicit treatment of the coarse residual.
@@ -357,6 +379,41 @@ finite Ramanujan span, with any prescribed error.
 proves this for the actual horizon matrices. This supplies a prime-side completeness statement
 on bounded energy sets. It does not supply uniform constants as the energy window grows or
 identify the full continuous source.
+
+### Local capture and escape of bounded prime energy
+
+Write \(D_S=1+2\sum_{m\in S}m^2\) and
+\(K_{S,L}=H_L\sum_{m\in S}\phi(m)\). Every modal coefficient family satisfies
+
+\[
+\sum_{n\le L}|F_{S,N}a(n)|^2\le K_{S,L}\sum_m a_m^2,
+\qquad
+\frac{\sum_{n\le L}|F_{S,N}a(n)|^2}{\|F_{S,N}a\|_2^2}
+\le\frac{K_{S,L}}{\log N-D_S}
+\]
+
+when \(L\le N\), \(\log N>D_S\), and the modal vector is nonzero.
+[RamanujanFamiliesHaveAnExplicitLocalCaptureCost](RamanujanFamiliesHaveAnExplicitLocalCaptureCost.lean)
+proves the underlying cross-multiplied inequality at every horizon, including
+zero vectors. Fixed finite modal spans therefore lose normalized mass on every
+fixed integer window, uniformly over their coefficients.
+
+This extends to every bounded actual prime-energy sublevel. For fixed \(T,L\)
+and every \(\varepsilon>0\), all sufficiently large horizons satisfy
+
+\[
+\|x\|=1,\quad E_N(x)\le T
+\quad\Longrightarrow\quad
+\sum_{n\le L}|x_n|^2\le\varepsilon.
+\]
+
+[BoundedPrimeEnergyEscapesEveryFixedIntegerWindow](BoundedPrimeEnergyEscapesEveryFixedIntegerWindow.lean)
+combines finite Ramanujan approximation with the explicit transfer bound
+\(\operatorname{mass}_L(x)\le2\|x-v\|^2+2\operatorname{mass}_L(v)\).
+Completeness on bounded energy sets is thus compatible with escape in fixed
+coordinates: the approximating modes themselves depend on the horizon.
+Source transfer must account for this escape through proved moving coordinates
+and norm comparisons.
 
 A source-compatible comparison must control continuous Gamma, polar images and the full-form
 complement on the same growing family. Choosing an arbitrarily slow diagonal sequence from

@@ -10,7 +10,8 @@ stability law is gauge blind, the narrow Hodge index holds for the Liouville twi
 positive cone `ζ` is even the minimum of its gauge orbit (ArithmeticElectrostatics). The pole
 hyperplane `Σ_{n ≤ N} x_n/√n = 0` is where this changes. There the pole term vanishes
 (`ThePoleHyperplaneIsTheHarmonicHyperplane`), the prime form of `ζ` has a uniform gap below its
-ceiling, and the Liouville twin's prime form reaches the ceiling (RenormalizedArithmeticPotentialTheory).
+ceiling, and the Liouville twin's prime form reaches the ceiling
+(RenormalizedArithmeticPotentialTheory).
 
 * **The gap pays on the hyperplane** (`exists_weilQuad_atomicTest_ge_of_harmonic`): eventually in
   `N`, at narrow widths, every atomic test on the hyperplane has

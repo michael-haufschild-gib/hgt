@@ -6,10 +6,11 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheGaugeIsInvisibleAtAtomicR
 # The pole hyperplane is the harmonic hyperplane
 
 Weil's form carries the pole through the two exponential moments `A(f) = ∫ f e^{−u/2}` and
-`B(f) = ∫ f e^{u/2}`: `W(f) = M(f) + 2A(f)B(f)` with `M` the Markov form. RenormalizedArithmeticPotentialTheory
-proves its prime gap on the discrete *harmonic hyperplane* `Σ_{n ≤ N} x_n/√n = 0`, and
-SpacingScaleHarmonicAnalysis states RH on the continuous *pole hyperplane* `A(f) = 0`. On atomic tests
-`f_x = Σ_{n ≤ N} x_n g(· − log n)` the two are the same hyperplane.
+`B(f) = ∫ f e^{u/2}`: `W(f) = M(f) + 2A(f)B(f)` with `M` the Markov form.
+RenormalizedArithmeticPotentialTheory proves its prime gap on the discrete *harmonic hyperplane*
+`Σ_{n ≤ N} x_n/√n = 0`, and SpacingScaleHarmonicAnalysis states RH on the continuous *pole
+hyperplane* `A(f) = 0`. On atomic tests `f_x = Σ_{n ≤ N} x_n g(· − log n)` the two are the same
+hyperplane.
 
 * **Pole moments of an atomic test** (`integral_atomicTest_mul_exp_neg_half`,
   `integral_atomicTest_mul_exp_half`): `A(f_x) = A(g) Σ x_n/√n` and `B(f_x) = B(g) Σ x_n √n`.
@@ -40,7 +41,8 @@ theorem exp_neg_half_log_eq {n : ℕ} (hn : 1 ≤ n) :
     Real.exp (-(Real.log n / 2)) = 1 / Real.sqrt n := by
   rw [Real.exp_neg, exp_half_log_eq_sqrt hn, one_div]
 
-/-- Translating a profile multiplies its exponential moment: `∫ g(u − c) e^{au} = e^{ac} ∫ g e^{au}`. -/
+/-- Translating a profile multiplies its exponential moment:
+`∫ g(u − c) e^{au} = e^{ac} ∫ g e^{au}`. -/
 theorem integral_shift_mul_exp (g : ℝ → ℝ) (c a : ℝ) :
     ∫ u, g (u - c) * Real.exp (a * u) = Real.exp (a * c) * ∫ u, g u * Real.exp (a * u) := by
   have h := integral_sub_right_eq_self (μ := volume) (fun v => g v * Real.exp (a * (v + c))) c

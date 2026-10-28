@@ -83,12 +83,13 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    evaluation at each zero. RH is reflection positivity of this ladder, and equivalently its Metzler
    sign; the trickle-down content sits inside the sign.
 5. **The critical regime.** What happens at the spacing scale? The Metzler sign holds exactly up
-   to overlap ratio one; the Hodge index, `(TD_π)` and hyperbolic links hold up to a fixed ratio
+   to overlap ratio one. The Hodge index, `(TD_π)` and hyperbolic links hold up to a fixed ratio
    `c★`, and eventually in `N` up to the fraction `K★(φ, ε)` at which the pole defect pays the
-   pole; a uniform margin stops at `K√(log N)`; the atom block leaves the stability regime at the
-   Robin–Euler threshold `exp(2θ′(0) + κ_L(φ) + γ)`, where the pole vector carries a positive
-   square of `−M`. Between `c★` and one the open content is `(TD_π)`
-   for a connected Metzler form; beyond one no gauge of the atoms is Metzler.
+   pole. At `K★_∞(ε)` Weil positivity holds for every `C²` test supported in the windows
+   `[log n, log n + w]`, whatever its profile. A uniform margin stops at `K√(log N)`. The atom
+   block leaves the stability regime at the Robin–Euler threshold `exp(2θ′(0) + κ_L(φ) + γ)`,
+   where the pole vector carries a positive square of `−M`. Between `c★` and one the open content
+   is `(TD_π)` for a connected Metzler form; beyond one no gauge of the atoms is Metzler.
 
 ## Objects and language
 
@@ -186,6 +187,8 @@ construction it exposes.
   M-convexity of mixed-Lorentzian supports and log-concavity of coefficients along exchange
   directions.
 - Holonomy rigidity of the successor connection: periodic on the torus ⇒ flat.
+- Window tests: the atomic estimates with per-atom profiles, coefficients the window norms, and
+  the decomposition of every test supported near the logarithms into windows.
 - The Cayley reflection formula `Q_K[c] = −2 Re Σ_a m_a p_c(w_a) p_c(w_a⁻¹)` on primitive vectors,
   and depth-one probes `Q[e_n − e_0] = 2ℓ(0) − 2ℓ(n)`.
 
@@ -376,6 +379,23 @@ is nonnegative on every atomic test once `φ₀ ≥ 2c_P e^{w/2} wN` and `c₀ �
 `κ_L(φ) ≥ −2` and `ε ≤ 1/8` — against `c★ ≈ 10⁻¹¹` for the tilted margin at every `N`. The pole is paid by the
 Dirichlet energy of the pole relations, not by a tilt; the remaining gap to the Robin–Euler
 threshold is the Chebyshev constant `A` of the cross penalty.
+
+[WeilsFormIsPositiveOnEveryTestNearTheLogarithms](WeilsFormIsPositiveOnEveryTestNearTheLogarithms.lean):
+the profile is not needed. A window test `Σ_n G_n(· − log n)` carries an arbitrary `C²` profile
+in `[0, w]` at each atom (`windowTest`). Below the spacing its norm is `Σ‖G_n‖²`, its prime sum is
+the Weil kernel against the window Gram, at most `P_N(y)` with `y_n = ‖G_n‖₂`
+(`primeSum_windowTest_le`), and its Lévy energy keeps the diagonal up to pair windows with
+correlations at most `y_m y_n` (`levyEnergy_windowTest_ge_diag`). Each window has self-energy at
+least `(log(1/w) + 2c_∞ − O(w))‖G_n‖²` (`levyEnergy_profile_ge`), since the shape term is
+nonnegative. The defect argument therefore runs on `y`, and eventually in `N`, at every width
+`w ≤ K★_∞(ε) δ_N`, Weil's form is nonnegative on every window test
+(`eventually_weilQuad_windowTest_nonneg`). The fraction `K★_∞` is `K★` with `κ_L(φ)` replaced by
+`2c_∞`. Every `C²` function vanishing off `⋃_{n ≤ N}[log n, log n + w]` is a window test
+(`windowTest_of_support`). So Weil's form is nonnegative on the whole infinite-dimensional space
+of `C²` tests supported within `K★_∞ δ_N` to the right of the logarithms of the integers up to `N`
+(`eventually_weilQuad_nonneg_of_support`). The prime lags `log(n/m)` of these tests reach every
+ratio of the horizon. What a fixed overlap ratio controls is the support near `log n`, not the
+shape.
 
 [TheOverlapRatioIsTheCoveredMeasure](TheOverlapRatioIsTheCoveredMeasure.lean): an atomic test
 vanishes off `⋃_n [log n, log n + w]`, of measure at most `Nw ≤ K` since `Nδ_N ≤ 1`
@@ -729,7 +749,8 @@ form and both poles in one estimate, with errors in the overlap norm, and establ
 an exhaustive family. An atomic test of overlap ratio `K` is supported on measure `≤ K`, so a
 single atomic family is exhaustive only when `K` grows at least like `log N`: a transfer must
 either let the overlap grow with `N` or assemble tests across levels, where positivity does not
-add.
+add. The shape is not the obstruction: at `K★_∞` positivity holds for every `C²` test supported in
+the windows, so what remains is the measure of the support, not the span of the family.
 
 **Higher-degree lifts and stability.** The mixed and coefficient classes coincide and are closed
 under products, nonnegative substitutions and derivatives. Open: a Lorentzian lift of the Weil

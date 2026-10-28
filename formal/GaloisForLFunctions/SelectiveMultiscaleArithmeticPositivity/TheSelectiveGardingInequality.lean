@@ -92,7 +92,7 @@ theorem poleDefect_sub_pole (N : ℕ) (x : ℕ → ℝ) (c : ℝ) :
   have hsm := Real.sqrt_pos.mpr hm0
   have hst := Real.sqrt_pos.mpr ht0
   congr 1
-  rw [Nat.cast_mul, Real.sqrt_mul hm0.le]
+  simp only [Nat.cast_mul, Real.sqrt_mul hm0.le]
   field_simp
   ring
 

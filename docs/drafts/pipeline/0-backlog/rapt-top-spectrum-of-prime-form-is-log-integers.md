@@ -38,3 +38,4 @@ Poincaré inequality (finite-prime chain ⊕ tensorized rough fibres) as the tem
 ## Log
 - 2026-10-28 — created in 0-backlog.
 - 2026-10-28 — `k = 2` formalized (RP37).
+- 2026-10-28 — all `k`: the codimension bound is formalized (RP39). With `eventually_fullPrimeMatrix_eigenvalue_near` and the simple levels (`matchedSieveEnergy_injective`), the conjecture follows by Courant–Fischer. The eigenvalue-index form `log N − λ_k → E_k` is not yet a Lean statement.

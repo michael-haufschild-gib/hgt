@@ -40,3 +40,18 @@ These discrete endpoint bounds do not yet recover the integrated coarse Gamma en
 ## Log
 
 - 2026-10-28 — Both exact Lean proofs audited; recorded directly in stage 3.
+
+## Adjacent and distant cell geometry
+
+[LogCellGammaRowGeometry.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/LogCellGammaRowGeometry.lean) passed its exact project check and four transitive axiom audits, without warnings. Log: `/tmp/acs-logcell-gamma-row-geometry-final.log`.
+
+Writing `wₐ=logCellWidth a`, `k=archLevyDensity`, and `E=exp(1/2)`, the checked bounds are:
+
+- `gamma_logCellWidth_le`: `k(wₐ)≤E*(a+1)/2` for `a≥1`.
+- `gamma_upper_adjacent_far_mass_le`: `w_(a+1)*k(wₐ)≤E/2`.
+- `gamma_lower_adjacent_far_mass_le`: `w_(a-1)*k(wₐ)≤3E/2` for `a≥2`.
+- `logCell_distant_subset`: if `2b<a` or `2a<b`, the whole open cell `b` lies beyond the two boundaries `log a-log(3/2)` and `log(a+1)+log(3/2)`.
+
+The first estimate combines `wₐ≥1/(a+1)` with `k(w)≤E/(2w)` for `w≤1`. Multiplication by the adjacent upper width bounds gives the next two estimates. For the gap, the integer inequalities imply `(b+1)*3/2≤a` on the lower side or `(a+1)*3/2≤b` on the upper side; taking logarithms proves the interval inclusions. These estimates retain the actual nonuniform logarithmic widths.
+
+Both modules have six clean audits, with only `propext`, `Classical.choice`, `Quot.sound`. The uniform bound for the complete integrated error row remains a separate open assembly step.

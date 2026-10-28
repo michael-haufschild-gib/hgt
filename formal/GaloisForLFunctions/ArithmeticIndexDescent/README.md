@@ -938,6 +938,35 @@ No boundedness of coefficient truncation in Gamma energy is assumed. The finite
 head reads only finitely many detail coordinates and their adjacent coarse
 differences.
 
+A second geometric payment retains a logarithmic weight on the coarse
+differences themselves. Merge target pairs `2a` and `2a+1` into
+`J_a=(log(4a),log(4a+4))`. For the original complete profile `F=q+d`,
+
+\[
+ \operatorname{Var}_{J_a}(F)\ge m_a(q_{2a}-q_{2a+1})^2,
+ \qquad
+ \sum_{a\le Y}(\log a)m_a(q_{2a}-q_{2a+1})^2\le\Gamma(F).
+\]
+
+The first inequality follows by retaining the square difference of the two
+actual means inside merged variance. The second uses disjoint merged intervals
+of width `logCellWidth(a)` in the existing Gamma variance theorem. All original
+detail coefficients remain present. This is a separate lower bound for the
+same Gamma energy; adding it to the detail bound requires counting both costs.
+
+Pointwise Young payment now gives an explicit decay rate:
+
+\[
+ (\log A)|B_2(d_{\ge A},q;X)|
+ \le (1+\ell^2)\Gamma(q+d),\qquad A\ge1,\quad X=2Y+1.
+\]
+
+For `A>1`, division by `log A` bounds the relative tail error. The same bound
+holds for the exact finite-head approximation error. In particular,
+`A>exp((1+ell²)/delta)` suffices for error at most `delta*Gamma(q+d)`.
+The two separate logarithmic charges cost `Gamma` and `ell²*Gamma`; no
+disjointness between those charges is assumed.
+
 The physical source identification is exact. The actual coarse Hilbert vector
 has `averageSectionProfile` as its real representative, and the complete vector
 has `completePairProfile` as its representative. Consequently `B₂` equals the
@@ -958,6 +987,51 @@ This payment uses the complete diagonal Gamma energy, so the sharp scalar
 boundary norm `pi/2` does not obstruct it. It supplies neither an all-prime estimate
 nor retention of the whole coarse Weil form through Schur elimination. Pure coarse
 prime terms, other primes and the pole terms still require their own joint payment.
+
+### Translated detail probes
+
+The local variance argument also controls every real translation, before
+selecting a prime lag. Retain the reciprocal-width weight
+
+\[
+ \kappa_a=\log\!\left(\frac1{\operatorname{logCellWidth}(a)}\right).
+\]
+
+For `a>=1`, it is positive, increases with `a`, and satisfies `kappa_a>=log a`.
+In particular `kappa_1=log(1/log 2)>0`: the first detail retains a genuine
+variance charge. This is the explicit weight supplied by Gamma variance
+coercivity; no optimality of that weight is asserted.
+
+A literal Haar atom has zero mean on its pair. Subtracting the other profile's
+actual mean and applying integral Young payment gives
+
+\[
+ 2\left|d_a\int H_a(u)g(u)\,du\right|
+ \le m_ad_a^2+\operatorname{Var}_{I_a}(g).
+\]
+
+Disjoint pair variances retain their weights in the original Gamma energy.
+For any compact BV profile `g`, the entire high-detail probe therefore obeys
+
+\[
+ 2\kappa_A\left|\int D(d_{\ge A},Y)(u)g(u)\,du\right|
+ \le\sum_{a\le Y}\kappa_am_ad_a^2+\Gamma(g).
+\]
+
+Now take `F=completePairProfile q d X`, with `Y<=X`, and translate the full
+original profile. Its own pair variances pay the first sum; translation
+preserves its Gamma energy. Thus, for every real `t` and `A>=1`,
+
+\[
+ \kappa_A\left|\int D(d_{\ge A},Y)(u)F(u-t)\,du\right|\le\Gamma(F).
+\]
+
+This implies inverse-logarithmic tail decay uniformly in every real lag.
+At `A=1` it bounds the entire detail pairing by `Gamma(F)/kappa_1`. All original
+coarse and detail coefficients remain present, and there is no parity or odd
+horizon restriction. The two variance bounds are used separately, each at cost
+`Gamma(F)`, before division by two. Summing this lag estimate against the full
+prime comb still requires an arithmetic bound on the combined terms.
 
 ### Polar compatibility
 
@@ -1472,6 +1546,9 @@ Quantitative pillars supplied by this programme:
 | Gamma-small prime-two tails | A fixed finite detail head approximates the mixed form with arbitrarily small error relative to the original untruncated Gamma energy, uniformly in horizon | `ThePrimeTwoMixedTailIsGammaSmall` |
 | Literal prime-two source transfer | The actual Hilbert mixed block equals the two physical correlations and the polarized difference of the complete, coarse and detail prime-two terms | `TheCoarseDetailPrimePairIsTheLiteralSource` |
 | Uniform partial-source index | Every strictly negative real subspace for original Gamma minus the signed prime-two mixed term has dimension bounded by one fixed finite number of low-detail readings | `ThePrimeTwoMixedFormHasUniformFiniteIndex` |
+| Merged-cell variance payment | The original Gamma energy bounds logarithmically weighted adjacent coarse differences, with arbitrary original detail retained | `MergedCellVariancePaysCoarseDifferences` |
+| Quantitative prime-two tail decay | The actual full odd-horizon mixed tail and finite-head error are bounded by `(1+ell²)/log(A)` times original Gamma energy | `ThePrimeTwoMixedTailHasLogarithmicDecay` |
+| Uniform translated detail probes | Every real translate of the original complete profile satisfies the reciprocal-width Gamma bound; the first cell also gives a bound for the whole detail pairing | `TranslatedDetailsAreUniformlySmallInGammaEnergy` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

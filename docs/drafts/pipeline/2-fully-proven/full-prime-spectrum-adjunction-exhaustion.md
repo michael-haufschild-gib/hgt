@@ -5,7 +5,7 @@
 - **Type:** THEOREM
 - **Source:** Ramanujan full-matrix quasimodes; harmonic rough-number tensorization; prime-defect Dirichlet form
 - **Statement:** Every bounded energy window of `log(N) I-P_N` converges, with multiplicity, to the simple energies `gamma+log(m)+tameDifferent(m)`.
-- **Count:** uncounted; fourteen of sixteen scratch modules pass; endpoint checks and final actual-source audits remain
+- **Count:** uncounted due concurrent overlap; all sixteen scratch modules pass; final actual-source audits remain
 
 ## Goal
 
@@ -18,7 +18,7 @@ improvement. No full Weil positivity or RH implication is asserted.
 
 ## Gates
 
-- [x] Corpus novelty and significance audit, with stated primary-literature exclusions.
+- [ ] Final corpus novelty/significance reassessment after the concurrent finite-box upper-count route; prior primary-literature exclusions remain recorded.
 - [x] Dependency-closed paper proof of compactness, exact spectral counts, and simple eigenlines.
 - [ ] Exact Lean realization, direct source checks, transitive axioms, umbrella wiring.
 
@@ -754,3 +754,46 @@ The rank/count proof otherwise elaborated. Added that annotation, replaced a
 deprecated negation tactic, and started the retry. Its failed-file axiom report
 was excluded. The matching normalization in the eigenline draft was repaired
 before its first check. Verified count remains fourteen scratch modules.
+
+The actual bounded-spectrum count retry passed and is installed. Its clean
+transitive report contains only the standard three axioms. The eigenline draft
+and all final actual-source checks remain; no count has been added.
+
+The concurrent source `TheTopSpectrumOfThePrimeFormIsExhaustedByTheIntegers`
+now contains the advertised `eventually_atomicWeilForm_le_of_modes` endpoint;
+its statement and final proof were inspected. Its independent source/axiom
+verification status has not been established here. The prior note about an
+absent endpoint described an earlier source state. This overlap may remove
+independent novelty of spectral exhaustion once verified: exact counts and
+simple eigenlines follow from such an upper bound together with the already
+completed quasimodes. Do not count those consequences twice. Complete our
+promised formalization and source audit, then reassess the package conservatively.
+
+The first eigenline scratch check failed in finite-set window membership and
+an outdated insertion-cardinality name. Qualified the Finset simplification
+lemmas and used the inspected `Finset.card_insert_of_notMem`; retry is active.
+No failed-file axiom report was retained. The other eigenline arguments
+elaborated. Fifteen scratch modules remain verified.
+Static audit of all fifteen installed sources passed: exact agreement with
+the passing scratch proofs after removing audit commands, no prohibited code
+mechanisms, and seventeen retained reports containing only the standard three
+axioms. A prose occurrence of "admit approximation" was correctly excluded
+from the code-only placeholder scan.
+
+### Final scratch completion and conservative novelty decision
+
+The eigenline retry passed (exit 0), and its source is installed. All sixteen
+scratch modules now pass; eighteen retained endpoint reports contain only
+`propext`, `Classical.choice`, and `Quot.sound`. Final direct source checks and
+umbrella wiring are still pending.
+
+The concurrent upper-bound endpoint is now present in source and described in
+the programme README. Its independent compilation is not claimed here (no
+olean was present at inspection). Nevertheless, the mathematical overlap is
+substantive: the upper bound, the already completed quasimodes, and ordinary
+finite-dimensional spectral projection arguments give the present count and
+eigenline conclusions. The explicit uniform bounded-defect Ramanujan
+approximation is useful infrastructure, but an alternative compactness proof
+does not warrant a second significant-contribution count. This package will
+be completed and retained as uncounted infrastructure, unless a later audit
+identifies a genuinely separate nontrivial theorem. No no-go is asserted.

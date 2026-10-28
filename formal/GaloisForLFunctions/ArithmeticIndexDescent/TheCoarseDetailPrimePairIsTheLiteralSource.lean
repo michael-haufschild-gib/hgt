@@ -133,6 +133,22 @@ theorem inner_shift_coarse_profile (q : ℕ → ℝ) (X : ℕ) (t : ℝ) :
     (halfLineExtend_averageSectionProfile q X)
     (fun _ hx => averageSectionProfile_zero_neg q X hx) t
 
+/-- A translated detail section pairs with the entire original complete-cell profile. -/
+theorem inner_shift_haar_completePair_profiles (c q d : ℕ → ℝ) (Y X : ℕ) (t : ℝ) :
+    (inner ℂ (halfLineRightShift t (haarSection c Y))
+      (coarseSection q X + haarSection d X)).re =
+        ∫ x, haarSectionProfile c Y x * completePairProfile q d X (x + t) := by
+  have hrep : ((coarseSection q X + haarSection d X : L²₊) : ℝ → ℂ) =ᵐ[halfLineMeasure]
+      fun x => (completePairProfile q d X x : ℂ) := by
+    filter_upwards [Lp.coeFn_add (coarseSection q X) (haarSection d X),
+      coarseSection_coeFn q X, haarSection_coeFn d X] with x hadd hc hd
+    rw [hadd]
+    simp only [Pi.add_apply, hc, hd, completePairProfile, Complex.ofReal_add]
+  have hz (x : ℝ) (hx : x < 0) : completePairProfile q d X x = 0 := by
+    rw [completePairProfile, averageSectionProfile_zero_neg q X hx,
+      haarSectionProfile_zero_neg d X hx, add_zero]
+  exact inner_shift_real_representatives _ _ _ _ hrep (halfLineExtend_haarSectionProfile c Y) hz t
+
 /-- The sum of both actual Hilbert sections realizes the entire complete-cell profile. -/
 theorem inner_shift_completePairProfile (q d : ℕ → ℝ) (X : ℕ) (t : ℝ) :
     (inner ℂ (halfLineRightShift t (coarseSection q X + haarSection d X))
@@ -215,6 +231,7 @@ theorem exists_original_primeTwo_gamma_small_tail {δ : ℝ} (hδ : 0 < δ) :
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.primeTwoMixedSource_eq_integrals
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.inner_shift_haar_completePair_profiles
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.primeTwoMixedSource_eq_polarized_integral
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_high_detail_gamma_pays_original_primeTwo
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_original_primeTwo_gamma_small_tail

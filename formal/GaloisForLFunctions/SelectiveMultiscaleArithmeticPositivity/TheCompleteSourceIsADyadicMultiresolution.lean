@@ -5,12 +5,13 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGaugeBecomesVisibleAt
 
 The complete logarithmic cells `C_a = 1_{[log a, log(a+1))}` carry every mixed entry of Weil's form
 (ArithmeticCastelnuovoSeveri). Two adjacent cells `C_{2a}`, `C_{2a+1}` fill `[log 2a, log(2a+2))`,
-which is `C_a` translated by `log 2`. So the complete source is a copy of itself one dyadic level up.
+which is `C_a` translated by `log 2`. So the complete source is a copy of itself one dyadic
+level up.
 
 * **The doubled cell** (`logCell_two_mul_add`): `C_{2a} + C_{2a+1} = T_{log 2} C_a`.
 * **One renormalization step** (`sum_logCell_rg_step`): every complete step profile on cells
-  `1, …, 2X + 1` is `c₁C₁`, plus the translate by `log 2` of the coarse profile with pair averages on
-  cells `1, …, X`, plus the details `C_{2a} − C_{2a+1}` weighted by half the pair differences.
+  `1, …, 2X + 1` is `c₁C₁`, plus the translate by `log 2` of the coarse profile with pair averages
+  on cells `1, …, X`, plus the details `C_{2a} − C_{2a+1}` weighted by half the pair differences.
 * **The multiresolution** (`sum_logCell_multiresolution`): on cells `1, …, 2^L − 1` the profile is
   a sum over levels `j < L` of the translates by `j log 2` of one generator cell `C₁` and of the
   level-`j` details, with coefficients the iterated averages and differences.
@@ -20,8 +21,8 @@ which is `C_a` translated by `log 2`. So the complete source is a copy of itself
   every level, and every reserve proved at one level holds at all levels (`weilQuadTw_level`).
 
 Positivity of the complete form is therefore positivity on the `T_{log 2}`-orbits of finitely many
-generators plus a payment of the couplings between levels; `ALevelIsPaidByItsReserve` is the calculus
-of that payment.
+generators plus a payment of the couplings between levels; `ALevelIsPaidByItsReserve` is the
+calculus of that payment.
 -/
 
 noncomputable section
@@ -147,7 +148,8 @@ theorem sum_logCell_multiresolution (L : ℕ) (c : ℕ → ℝ) :
         c 1 • logCell 1 + ∑ a ∈ Icc 1 (2 ^ L - 1), detailCoeff c a • logDetail a := by
       rw [levelPart, Function.iterate_zero_apply, show L + 1 - 1 - 0 = L by omega]
     have hlev : ∀ x ∈ range L, translate (Real.log 2 + x * Real.log 2)
-        (levelPart (coarseCoeff c) L x) = translate ((x + 1) * Real.log 2) (levelPart c (L + 1) (x + 1)) := by
+        (levelPart (coarseCoeff c) L x) =
+          translate ((x + 1) * Real.log 2) (levelPart c (L + 1) (x + 1)) := by
       intro x _
       rw [show Real.log 2 + x * Real.log 2 = (x + 1) * Real.log 2 by ring, levelPart, levelPart,
         Function.iterate_succ_apply, show L + 1 - 1 - (x + 1) = L - 1 - x by omega]

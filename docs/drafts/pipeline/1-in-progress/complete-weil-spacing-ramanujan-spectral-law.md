@@ -304,3 +304,69 @@ pole products, its exact polar-defect identity, the positive-integer/Fin index
 bijection, and equality of its Euclidean form to the actual synthesized Weil
 functional. It is not installed, checked, or counted. This is source transport,
 not the new spectral conclusion.
+
+Refreshed ALG and SSHA searches returned existing fixed-fraction positivity,
+restricted negative-index laws, and local Frobenius Ramanujan bounds. The local
+factor module's introduction was inspected: its Ramanujan parameter is a
+finite-field normalized trace, not the present integer-horizon excitation.
+The newer profile-free window module was inspected at its introduction and
+final support/positivity endpoints. None of those inspected statements asserts
+this common-profile full-Weil spectral law. Generic positivity is excluded
+novelty. A separate, unproved larger window-sector conjecture is recorded at
+`../0-backlog/complete-weil-window-arithmetic-profile-spectrum.md`.
+
+The exact center-density formula is already formalized in ACS
+`CrossTowerCollarAndFiniteEulerLatticePositivity`: `collarWeight_eq_of_lt`
+and `archLevyDensity_log_div_nat` were inspected in source. The new unchecked
+scratch `/tmp/TheArchimedeanCenterKernelIsAHarmonicKernel.lean` only converts
+that formula to the inverse-difference plus inverse-sum row in pole gauge.
+This adapter is supporting baseline reuse, not new counted mathematics.
+
+Additional primary-source audit: Suzuki, [Spectral convergence associated with
+Weil's quadratic form](https://arxiv.org/html/2610.32704v1), introduction and
+Theorems 1.1–1.2, assumes RH for convergence of distinguished differentiation
+extensions to distinct zeta-zero ordinates. This is a different operator and
+a conditional convergence theorem; it is not an input or a matching result
+for the present unconditional shrinking-atom Gram spectrum.
+
+New unchecked generic scratch `/tmp/FiniteHarmonicRows.lean` supplies the exact
+inverse-difference and inverse-sum row identities, including deletion of the
+diagonal. It supports the literal collar cancellation and is not counted.
+
+### Simpler exact-integral error mechanism
+
+A derivative-free alternative avoids shifted logarithmic exponential algebra.
+For 0<a<=b, put u=exp(-a/2), v=exp(-b/2), q=exp(-2a), r=exp(-2b),
+D=1-q, E=1-r. Then
+
+`omega(a)-omega(b)=(u-v)/D+v*(q-r)/(D*E)`.
+
+The exponential tangent inequality gives
+`u-v<=(b-a)*u/2` and `q-r<=2*(b-a)*q`. Also
+`a*exp(-a)<=1-exp(-2a)`, since exp(a)-exp(-a)>=a.
+Squaring gives `a^2*q<=D^2`. The existing CHMD theorem
+`archLevyDensity_mul_sq_le` bounds `omega(a)*a^2<=34`.
+Using v<=1 and E>=D yields
+
+`omega(a)-omega(b)<=19*(b-a)/a^2`,
+`omega(s-w)-omega(s+w)<=38*w/(s-w)^2`.
+
+The existing CHMD source and its proof were inspected. New unchecked scratch
+`/tmp/TheArchimedeanDensityHasQuadraticIncrementControl.lean` formalizes this
+argument without differentiation or additional analytic assumptions.
+
+For positive distinct integer n,j<=N, d=abs(n-j), M=max(n,j), and w=c/N,
+`abs(log(n/j))-w >= (1-c)*d/M`, since log(M/min)>=d/M
+and w<=c*d/M. The actual pair replacement error on a bounded pole profile
+is therefore at most `C_phi,c*w^2*M^2/(sqrt(j)*d^2)` per row entry.
+Split the row at n/2 and 2n. In the middle, M<=2n and
+1/sqrt(j)<=2/sqrt(n), so the sum is at most
+`32*C_phi,c*w^2*N*sqrt(n)`, using each one-sided reciprocal-square sum<=2.
+Outside that interval M^2/d^2<=4 and 1/sqrt(j)<=1; the row contributes
+at most `4*C_phi,c*w^2*N`, also <=the same scale times sqrt(n).
+Consequently the whole row is bounded by
+`36*C_phi,c*w^2*N*sqrt(n)` and its squared Euclidean norm by
+`(36*C_phi,c)^2*w^4*N^4`. At w=c/N this is uniform.
+This supplies the required bounded unnormalized error by elementary finite
+sums; it does not require a sharper weighted density derivative estimate.
+These row and transfer inequalities still require their exact Lean proofs.

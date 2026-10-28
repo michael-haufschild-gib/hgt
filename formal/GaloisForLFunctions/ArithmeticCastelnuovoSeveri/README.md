@@ -266,10 +266,16 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     actual Gamma interaction by its far-end charge loses exactly twice the first kernel moment
     below its width, at most $e^{1/2}$ times that width when it is at most one
     (`GammaIntervalRemainder.lean`). Integrated pair losses retain the exact touching defect and
-    are bounded by their endpoint drops across positive gaps (`GammaPairRemainder.lean`);
+    are bounded by their endpoint drops across positive gaps (`GammaPairRemainder.lean`).
+    Every exterior subset inherits finite kernel and weighted boundary-charge bounds
+    (`GammaExteriorSubsets.lean`);
     both nearby nonadjacent logarithmic rows have universal bounds
-    (`LogCellGammaRemainderRows.lean`). Full mixed Weil payment
-    and full-source effectivity remain open.
+    (`LogCellGammaRemainderRows.lean`). The finite symmetric replacement error is bounded by
+    four times the squared coefficients weighted by its actual row sums
+    (`GammaFiniteError.lean`). Exact partition of the literal coarse source then bounds its
+    original Gamma energy by the retained graph, exterior charge, and those explicit error
+    rows (`CompleteCellGammaAccounting.lean`). Uniform bounds on the complete rows, full mixed
+    Weil payment, and full-source effectivity remain open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

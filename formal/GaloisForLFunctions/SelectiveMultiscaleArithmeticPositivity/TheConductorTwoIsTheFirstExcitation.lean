@@ -5,13 +5,14 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFullPrimeMat
 
 The Ramanujan profile of conductor `m` is a quasimode of the full prime matrix `P_N` at energy
 `log N − E_m`, `E_m = γ + log m + τ(m)`, `τ(m) = Σ_{p ∣ m} log p/(p − 1)` the tame different
-(RenormalizedArithmeticPotentialTheory). The conductor `1` is the pole, `E_1 = γ`. Two facts locate the
-next level.
+(RenormalizedArithmeticPotentialTheory). The conductor `1` is the pole, `E_1 = γ`. Two facts locate
+the next level.
 
 * **The prime 2 is the bottleneck** (`two_mul_log_two_lt_log_add_tameDifferent`,
   `ramanujanAdjunctionEnergy_sub_one_ge`): `log m + τ(m) ≥ 2 log 2` for every `m ≥ 2`, with
   equality only at `m = 2`. So `E_m − E_1 ≥ 2 log 2 = E_2 − E_1`: the conductor `2` is the unique
-  first excitation, and its excitation energy is the one-prime tower gap `p log p/(p − 1)` at `p = 2`.
+  first excitation, and its excitation energy is the one-prime tower gap `p log p/(p − 1)` at
+  `p = 2`.
 * **The pole-hyperplane gap is at most `2 log 2`** (`eventually_exists_harmonic_atomicWeilForm_ge`):
   for every `ε > 0`, eventually in `N` some nonzero `x` with `Σ_{n ≤ N} x_n/√n = 0` has
   `P_N(x) ≥ (log N − γ − 2 log 2 − ε)|x|²`. The actual eigenvectors at `log N − E_1` and
@@ -51,16 +52,20 @@ theorem ramanujanAdjunctionEnergy_two : ramanujanAdjunctionEnergy 2 = γ + 2 * R
 
 theorem tameDifferent_nonneg (m : ℕ) : 0 ≤ tameDifferent m :=
   sum_nonneg fun p hp => div_nonneg (Real.log_natCast_nonneg p)
-    (by have := (Nat.prime_of_mem_primeFactors hp).two_le; have : (2 : ℝ) ≤ p := by exact_mod_cast this
-        linarith)
+    (by
+      have := (Nat.prime_of_mem_primeFactors hp).two_le
+      have : (2 : ℝ) ≤ p := by exact_mod_cast this
+      linarith)
 
 /-- A single prime factor's contribution bounds the tame different from below. -/
 theorem log_div_le_tameDifferent {m p : ℕ} (hp : p ∈ m.primeFactors) :
     Real.log p / ((p : ℝ) - 1) ≤ tameDifferent m :=
   single_le_sum (f := fun q : ℕ => Real.log q / ((q : ℝ) - 1))
     (fun q hq => div_nonneg (Real.log_natCast_nonneg q)
-      (by have := (Nat.prime_of_mem_primeFactors hq).two_le; have : (2 : ℝ) ≤ q := by exact_mod_cast this
-          linarith)) hp
+      (by
+        have := (Nat.prime_of_mem_primeFactors hq).two_le
+        have : (2 : ℝ) ≤ q := by exact_mod_cast this
+        linarith)) hp
 
 /-- **The prime 2 is the bottleneck**: `log m + τ(m) > 2 log 2` for every `m ≥ 3`. -/
 theorem two_mul_log_two_lt_log_add_tameDifferent {m : ℕ} (hm : 3 ≤ m) :
@@ -236,6 +241,7 @@ theorem eventually_exists_harmonic_atomicWeilForm_ge {ε : ℝ} (hε : 0 < ε) :
   · rw [sum_horizonExtend v (fun _ t => t ^ 2), hM]
     exact hab
   · rw [sum_horizonExtend v (fun _ t => t ^ 2), hM, atomicWeilForm_horizonExtend, hQ]
-    nlinarith [mul_le_mul_of_nonneg_left hli (sq_nonneg a), mul_le_mul_of_nonneg_left hlj (sq_nonneg b)]
+    nlinarith [mul_le_mul_of_nonneg_left hli (sq_nonneg a),
+      mul_le_mul_of_nonneg_left hlj (sq_nonneg b)]
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity

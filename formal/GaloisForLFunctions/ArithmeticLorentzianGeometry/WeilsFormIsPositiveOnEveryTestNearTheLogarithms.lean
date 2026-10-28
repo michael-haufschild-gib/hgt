@@ -348,14 +348,17 @@ theorem pairCorr_eq_zero (hGsupp : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) (m 
     · rw [hGsupp m _ hv, zero_mul]
   simp [pairCorr, hpt]
 
-/-- **Lower bound on the Lévy energy of a window test**, the diagonal kept exactly:
-`levyEnergy f ≥ Σ_m levyEnergy G_m − 2 Σ_{m ≠ n} y_m y_n · 2w(1/|log(n/m)| + 1)`. -/
-theorem levyEnergy_windowTest_ge_diag (hG : ∀ n, ContDiff ℝ 2 (G n))
+/-- **The Lévy energy of a window test with its pair windows**: the diagonal is kept exactly and
+the pair `(m, n)` costs at most `y_m y_n` times the Lévy mass of its window
+`[log(n/m) − w, log(n/m) + w]` on `(0, ∞)`. -/
+theorem levyEnergy_windowTest_ge_windows (hG : ∀ n, ContDiff ℝ 2 (G n))
     (hGsupp : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
     (hw : w ≤ atomSpacing N / 2) :
     ∑ m ∈ Icc 1 N, levyEnergy (G m) -
         2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
-          |windowNorm G m| * |windowNorm G n| * (2 * w * (1 / |Real.log n - Real.log m| + 1))) ≤
+          |windowNorm G m| * |windowNorm G n| * ∫ t in Set.Ioi 0,
+            (Set.Icc (Real.log n - Real.log m - w) (Real.log n - Real.log m + w)).indicator
+              archLevyDensity t) ≤
       levyEnergy (windowTest N G) := by
   have hδ := atomSpacing_pos hN
   have hw' : w < atomSpacing N := by linarith
@@ -446,18 +449,42 @@ theorem levyEnergy_windowTest_ge_diag (hG : ∀ n, ContDiff ℝ 2 (G n))
         integrable_finsetSum _ fun n hn => hcint m hm n hn]
     congr 2
     exact sum_congr rfl fun m hm => integral_finsetSum _ fun n hn => hcint m hm n hn
-  have hcbound : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, ∫ t in Set.Ioi 0, c m n t ≤
+  have hcbound : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, ∫ t in Set.Ioi 0, c m n t =
       ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
-        |y m| * |y n| * (2 * w * (1 / |Real.log n - Real.log m| + 1))) := by
-    refine sum_le_sum fun m hm => sum_le_sum fun n hn => ?_
+        |y m| * |y n| * ∫ t in Set.Ioi 0, (win m n).indicator ω t) := by
+    refine sum_congr rfl fun m _ => sum_congr rfl fun n _ => ?_
     by_cases hmn : m = n
     · simp [c, hmn]
     simp only [c, if_neg hmn]
     rw [integral_const_mul]
-    exact mul_le_mul_of_nonneg_left (hwin m hm n hn hmn).2 (by positivity)
   rw [hℓ] at hmono
   have hL : levyEnergy (windowTest N G) = ∫ t in Set.Ioi 0,
       ω t * ∫ u, (windowTest N G u - windowTest N G (u + t)) ^ 2 := rfl
+  linarith
+
+/-- **Lower bound on the Lévy energy of a window test**, the diagonal kept exactly:
+`levyEnergy f ≥ Σ_m levyEnergy G_m − 2 Σ_{m ≠ n} y_m y_n · 2w(1/|log(n/m)| + 1)`. -/
+theorem levyEnergy_windowTest_ge_diag (hG : ∀ n, ContDiff ℝ 2 (G n))
+    (hGsupp : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w ≤ atomSpacing N / 2) :
+    ∑ m ∈ Icc 1 N, levyEnergy (G m) -
+        2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
+          |windowNorm G m| * |windowNorm G n| * (2 * w * (1 / |Real.log n - Real.log m| + 1))) ≤
+      levyEnergy (windowTest N G) := by
+  have h := levyEnergy_windowTest_ge_windows hG hGsupp hN hw0 hw
+  have hb : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
+      |windowNorm G m| * |windowNorm G n| * ∫ t in Set.Ioi 0,
+        (Set.Icc (Real.log n - Real.log m - w) (Real.log n - Real.log m + w)).indicator
+          archLevyDensity t) ≤
+      ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
+        |windowNorm G m| * |windowNorm G n| * (2 * w * (1 / |Real.log n - Real.log m| + 1))) := by
+    refine sum_le_sum fun m hm => sum_le_sum fun n hn => ?_
+    by_cases hmn : m = n
+    · simp [hmn]
+    simp only [if_neg hmn]
+    have hsep := atomSpacing_le_abs_logGap hm hn hmn
+    simp only [logGap] at hsep
+    exact mul_le_mul_of_nonneg_left (window_integrable_and_le hw0 (by linarith)).2 (by positivity)
   linarith
 
 /-- **The self-energy of a window**: a `C²` bump supported in `[0, w]`, `w ≤ 1`, has
@@ -767,5 +794,111 @@ theorem eventually_weilQuad_windowTest_nonneg {ε : ℝ} (hε : 0 < ε) (hε1 : 
       have := exp_half_lt_two
       nlinarith [Real.exp_pos (1 / 2 : ℝ)]
     linarith
+
+/-! ### Every test near the logarithms -/
+
+/-- **Every test near the logarithms is a window test.** If `f` is `C²` and vanishes off
+`⋃_{n ≤ N} [log n, log n + w]` with `w < δ_N`, then `f = Σ_n G_n(· − log n)` with `C²` profiles
+supported in `[0, w]`. Here `G_n` is `f(· + log n)` on `(−η, w + η)`, `η = (δ_N − w)/2`, and `0`
+off it. On the margins `f(· + log n)` vanishes, since no other window reaches them. -/
+theorem windowTest_of_support {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) {N : ℕ}
+    (hw : w < atomSpacing N)
+    (hsupp : ∀ u, f u ≠ 0 → ∃ n ∈ Icc 1 N, u ∈ Set.Icc (Real.log n) (Real.log n + w)) :
+    ∃ G : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 2 (G n)) ∧ (∀ n u, u ∉ Set.Icc 0 w → G n u = 0) ∧
+      windowTest N G = f := by
+  classical
+  set δ := atomSpacing N
+  set η := (δ - w) / 2 with hηdef
+  have hη : 0 < η := by rw [hηdef]; linarith
+  -- two windows are `δ` apart
+  have hfar : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m ≠ n →
+      Real.log m - Real.log n ≤ -δ ∨ δ ≤ Real.log m - Real.log n := fun m hm n hn hmn => by
+    have h := atomSpacing_le_abs_logGap hn hm (Ne.symm hmn)
+    simp only [logGap] at h
+    exact le_abs'.mp h
+  -- `f(u + log n) = 0` on the margins around the window of `n`
+  have hzero : ∀ n ∈ Icc 1 N, ∀ u ∈ Set.Ioo (-η) (w + η), u ∉ Set.Icc 0 w →
+      f (u + Real.log n) = 0 := by
+    intro n hn u hu hu'
+    by_contra hne
+    obtain ⟨m, hm, hmem⟩ := hsupp _ hne
+    rcases eq_or_ne m n with rfl | hmn
+    · exact hu' ⟨by linarith [hmem.1], by linarith [hmem.2]⟩
+    · obtain ⟨h1, h2⟩ := hmem
+      obtain ⟨h3, h4⟩ := hu
+      rcases hfar m hm n hn hmn with h | h <;> linarith
+  set G : ℕ → ℝ → ℝ := fun n u =>
+    if n ∈ Icc 1 N ∧ u ∈ Set.Ioo (-η) (w + η) then f (u + Real.log n) else 0 with hGdef
+  have hGsupp : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0 := fun n u hu => by
+    simp only [hGdef]
+    split_ifs with h
+    · exact hzero n h.1 u h.2 hu
+    · rfl
+  refine ⟨G, fun n => ?_, hGsupp, ?_⟩
+  · by_cases hn : n ∈ Icc 1 N
+    swap
+    · have : G n = fun _ => 0 := funext fun u => by simp only [hGdef, hn, false_and, if_false]
+      rw [this]; exact contDiff_const
+    refine contDiff_iff_contDiffAt.mpr fun x => ?_
+    by_cases hx : x ∈ Set.Ioo (-η) (w + η)
+    · have hfn : ContDiff ℝ 2 (fun u => f (u + Real.log n)) :=
+        hf.comp (contDiff_id.add contDiff_const)
+      refine hfn.contDiffAt.congr_of_eventuallyEq ?_
+      filter_upwards [Ioo_mem_nhds hx.1 hx.2] with u hu
+      show (if n ∈ Icc 1 N ∧ u ∈ Set.Ioo (-η) (w + η) then f (u + Real.log n) else 0) =
+        f (u + Real.log n)
+      exact if_pos ⟨hn, hu⟩
+    · refine (contDiffAt_const (c := (0 : ℝ))).congr_of_eventuallyEq ?_
+      rcases not_and_or.mp (fun h => hx h) with h | h
+      · -- `x ≤ −η`: near `x` the profile vanishes
+        filter_upwards [Iio_mem_nhds (show x < 0 by linarith [not_lt.mp h])] with u hu
+        exact hGsupp n u fun h' => by linarith [h'.1, Set.mem_Iio.mp hu]
+      · filter_upwards [Ioi_mem_nhds (show w < x by linarith [not_lt.mp h])] with u hu
+        exact hGsupp n u fun h' => by linarith [h'.2, Set.mem_Ioi.mp hu]
+  · funext u
+    simp only [windowTest]
+    by_cases hfu : f u = 0
+    · rw [hfu]
+      refine sum_eq_zero fun n hn => ?_
+      simp only [hGdef]
+      split_ifs
+      · rw [sub_add_cancel, hfu]
+      · rfl
+    obtain ⟨m, hm, hmem⟩ := hsupp u hfu
+    rw [Finset.sum_eq_single m]
+    · simp only [hGdef, hm, true_and]
+      rw [if_pos ⟨by linarith [hmem.1], by linarith [hmem.2]⟩, sub_add_cancel]
+    · intro n hn hnm
+      simp only [hGdef]
+      rw [if_neg]
+      rintro ⟨-, h3, h4⟩
+      obtain ⟨h1, h2⟩ := hmem
+      rcases hfar m hm n hn (Ne.symm hnm) with h | h <;> linarith
+    · intro h; exact absurd hm h
+
+theorem windowFraction_le_half (ε : ℝ) : windowFraction ε ≤ 1 / 2 := by
+  have hK1 : windowFraction ε ≤ markovOverlapBound := (min_le_left _ _).trans (min_le_left _ _)
+  refine hK1.trans ?_
+  unfold markovOverlapBound
+  rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+  nlinarith [Real.add_one_le_exp 2]
+
+/-- **Weil's form is positive on every test near the logarithms.** For `0 < ε ≤ 1/4`, eventually
+in `N`, at every width `0 < w ≤ K★_∞(ε) δ_N`, every `C²` function vanishing off
+`⋃_{n ≤ N} [log n, log n + w]` has nonnegative Weil form. -/
+theorem eventually_weilQuad_nonneg_of_support {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1 / 4) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ w : ℝ, 0 < w → w ≤ windowFraction ε * atomSpacing N →
+      ∀ f : ℝ → ℝ, ContDiff ℝ 2 f →
+        (∀ u, f u ≠ 0 → ∃ n ∈ Icc 1 N, u ∈ Set.Icc (Real.log n) (Real.log n + w)) →
+        0 ≤ weilQuad f := by
+  obtain ⟨N₀, h⟩ := eventually_weilQuad_windowTest_nonneg hε hε1
+  refine ⟨max N₀ 1, fun N hN w hw0 hw f hf hsupp => ?_⟩
+  have hN1 : 1 ≤ N := le_trans (le_max_right _ _) hN
+  have hδ := atomSpacing_pos hN1
+  have hw' : w < atomSpacing N := by
+    have := mul_le_mul_of_nonneg_right (windowFraction_le_half ε) hδ.le
+    linarith
+  obtain ⟨G, hG, hGsupp, rfl⟩ := windowTest_of_support hf hw' hsupp
+  exact h N (le_trans (le_max_left _ _) hN) w hw0 hw G hG hGsupp
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
