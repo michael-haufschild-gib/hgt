@@ -450,4 +450,67 @@ theorem levyEnergy_windowTest_ge_sharp (hG : ∀ n, ContDiff ℝ 2 (G n))
     nlinarith
   linarith
 
+/-! ### The Markov form at the sharp cross penalty -/
+
+/-- The self-energy of a window with its shape term:
+`levyEnergy G ≥ (log(1/w) + 2c_∞ − (e^{1/2}/2) w) ‖G‖² + β(G)`. -/
+theorem levyEnergy_profile_ge_shape {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw0 : 0 < w) (hw1 : w ≤ 1) :
+    (Real.log (1 / w) + archRobinConstant - Real.exp (1 / 2) / 2 * w) * (∫ u, g u ^ 2) +
+      bumpRobin g w ≤ levyEnergy g := by
+  have hgc : HasCompactSupport g := HasCompactSupport.intro isCompact_Icc hgsupp
+  obtain ⟨C, hC⟩ := hg.lipschitzWith_of_hasCompactSupport hgc two_ne_zero
+  have hK : ∀ u v, |g u - g v| ≤ (C : ℝ) * |u - v| := fun u v => by
+    simpa [Real.dist_eq] using hC.dist_le_mul u v
+  have h := abs_levyEnergy_atom_sub_le hg hgc hgsupp hw0 hw1 hK
+  have := (abs_le.mp h).1
+  linarith
+
+/-- **The Markov form of a window test at the sharp cross penalty.** For `ε > 0`, `0 ≤ κ ≤ 1/2`,
+`λ > 0`, eventually in `N`: every window test at `w ≤ κ δ_N` whose profiles have shape term
+`β(G_n) ≥ β ‖G_n‖²` satisfies `M(f) ≥ φ₀ |y|² + c₀ D_N(y)` with
+`φ₀ = 2θ′(0) + log(1/(wN)) + 2c_∞ + β + γ − ε − (e^{1/2}/2) w − L_λ,κ wN` and
+`c₀ = 1 − ε − (2(1 + 1/λ)/(1 − κ)) wN`. -/
+theorem eventually_markovEnergy_windowTest_ge_sharp {ε : ℝ} (hε : 0 < ε) {κ : ℝ} (hκ0 : 0 ≤ κ)
+    (hκ : κ ≤ 1 / 2) {lam : ℝ} (hlam : 0 < lam) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ w : ℝ, 0 < w → w ≤ κ * atomSpacing N →
+      ∀ G : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 2 (G n)) → (∀ n u, u ∉ Set.Icc 0 w → G n u = 0) →
+      ∀ β : ℝ, (∀ n, β * ∫ u, G n u ^ 2 ≤ bumpRobin (G n) w) →
+        (2 * gammaHardyPhaseRate 0 + Real.log (1 / (w * N)) + archRobinConstant + β +
+            Real.eulerMascheroniConstant - ε - Real.exp (1 / 2) / 2 * w -
+            crossConstant lam κ * (w * N)) * (∑ n ∈ Icc 1 N, windowNorm G n ^ 2) +
+          (1 - ε - 2 * (1 + 1 / lam) / (1 - κ) * (w * N)) * poleDefect N (windowNorm G) ≤
+          markovEnergy (fun u => (windowTest N G u : ℂ)) := by
+  obtain ⟨N₁, hN₁⟩ := eventually_atomicWeilForm_add_poleDefect_le hε
+  refine ⟨max N₁ 1, fun N hN w hw0 hw G hG hGsupp β hβ => ?_⟩
+  have hN1 : 1 ≤ N := le_trans (le_max_right _ _) hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hδ := atomSpacing_pos hN1
+  have hδ1 := atomSpacing_le_one hN1
+  have hw2 : w ≤ atomSpacing N / 2 := by nlinarith
+  have hw' : w < atomSpacing N := by linarith
+  have hw1 : w ≤ 1 := by linarith
+  have hf := contDiff_windowTest hG N
+  have hfc := hasCompactSupport_windowTest hGsupp N
+  rw [markovEnergy_ofReal_eq_archForm_sub_primeSum hf hfc, archForm_eq_levyEnergy hf hfc,
+    integral_windowTest_sq hG hGsupp hw']
+  have hy : ∑ n ∈ Icc 1 N, ∫ u, G n u ^ 2 = ∑ n ∈ Icc 1 N, windowNorm G n ^ 2 :=
+    sum_congr rfl fun n _ => (windowNorm_sq G n).symm
+  rw [hy]
+  have hlevy := levyEnergy_windowTest_ge_sharp hG hGsupp hN1 hw0 hκ0 hκ hw hlam
+  have hP := hN₁ N (le_trans (le_max_left _ _) hN) (windowNorm G)
+  have hprime := primeSum_windowTest_le hG hGsupp hw'
+  have hself : (Real.log (1 / w) + archRobinConstant + β - Real.exp (1 / 2) / 2 * w) *
+      (∑ n ∈ Icc 1 N, windowNorm G n ^ 2) ≤ ∑ m ∈ Icc 1 N, levyEnergy (G m) := by
+    rw [mul_sum]
+    refine sum_le_sum fun n _ => ?_
+    rw [windowNorm_sq]
+    have h1 := levyEnergy_profile_ge_shape (hG n) (hGsupp n) hw0 hw1
+    have h2 := hβ n
+    nlinarith
+  have hlog : Real.log (1 / (w * N)) = Real.log (1 / w) - Real.log N := by
+    rw [one_div, Real.log_inv, Real.log_mul hw0.ne' hN0.ne', one_div, Real.log_inv]; ring
+  rw [hlog]
+  nlinarith
+
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

@@ -1033,6 +1033,32 @@ horizon restriction. The two variance bounds are used separately, each at cost
 `Gamma(F)`, before division by two. Summing this lag estimate against the full
 prime comb still requires an arithmetic bound on the combined terms.
 
+### Every even prime lag
+
+Write `B_m(d,q;X)` for both actual mixed Hilbert pairings, multiplied by the
+literal coefficient `c_m=2*Lambda(m)/sqrt(m)`. The coarse-to-detail orientation
+vanishes for every integer `m>=2`. At an even lag the detail-to-detail pairing
+also vanishes: its necessary incidence `(2a+1)m=2b+1` is impossible. Consequently
+
+\[
+ B_m(c,q;X)=c_m\int D(c,X)(u)F(u+\log m)\,du,
+ \qquad F=C(q,X)+D(d,X),
+\]
+
+with the original target details `d` arbitrary. This identity is between the
+actual half-line vectors and their physical profiles. The translated probe
+estimate therefore gives, at every complete horizon,
+
+\[
+ \kappa_A|B_m(d_{\ge A},q;X)|\le c_m\Gamma(F),\qquad
+ |B_m(d,q;X)|\le\frac{c_m}{\kappa_1}\Gamma(F).
+\]
+
+There is no odd-horizon restriction or omitted terminal half-pair. In
+particular the prime-two bound improves to `2*ell/kappa_A` relative to the
+original Gamma energy. The full power sum at prime two is a separate
+summation step; this theorem does not pay the all-prime mixed source.
+
 ### Polar compatibility
 
 For symmetric `Q_i` with a common anchor `e` and `a_i=Q_i[e]>0`, put
@@ -1549,6 +1575,7 @@ Quantitative pillars supplied by this programme:
 | Merged-cell variance payment | The original Gamma energy bounds logarithmically weighted adjacent coarse differences, with arbitrary original detail retained | `MergedCellVariancePaysCoarseDifferences` |
 | Quantitative prime-two tail decay | The actual full odd-horizon mixed tail and finite-head error are bounded by `(1+ell²)/log(A)` times original Gamma energy | `ThePrimeTwoMixedTailHasLogarithmicDecay` |
 | Uniform translated detail probes | Every real translate of the original complete profile satisfies the reciprocal-width Gamma bound; the first cell also gives a bound for the whole detail pairing | `TranslatedDetailsAreUniformlySmallInGammaEnergy` |
+| Every even-lag mixed source | Parity identifies each literal even-lag mixed block with the translated original complete profile, giving Gamma-small tails at every horizon | `EveryEvenPrimeLagHasGammaSmallMixedTails` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

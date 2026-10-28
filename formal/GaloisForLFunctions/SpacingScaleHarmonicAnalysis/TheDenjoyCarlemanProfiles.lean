@@ -360,4 +360,176 @@ theorem abs_iteratedDeriv_glueR_le (hr : Odd r) (n : ℕ) (x : ℝ) :
 
 end Weights
 
+/-! ### The Denjoy–Carleman profiles -/
+
+section Profile
+
+variable {r : ℕ}
+
+/-- The bump `E_r(1 + x) E_r(1 − x)`, positive exactly on `(−1, 1)`. -/
+def dcBump (r : ℕ) (x : ℝ) : ℝ := glueR r (1 + x) * glueR r (1 - x)
+
+/-- The normalized Denjoy–Carleman profile of class `1 + 1/r`. -/
+def dcProfile (r : ℕ) (x : ℝ) : ℝ := (∫ y, dcBump r y)⁻¹ * dcBump r x
+
+theorem contDiff_dcBump (r : ℕ) : ContDiff ℝ ∞ (dcBump r) :=
+  ((contDiff_glueR r).comp (contDiff_const.add contDiff_id)).mul
+    ((contDiff_glueR r).comp (contDiff_const.sub contDiff_id))
+
+theorem dcBump_vanishesOff (hr : Odd r) : VanishesOff (dcBump r) := by
+  intro x hx
+  unfold dcBump
+  rcases lt_or_gt_of_ne (show x ≠ 0 by rintro rfl; norm_num at hx) with h | h
+  · rw [abs_of_neg h] at hx
+    rw [glueR_of_nonpos hr (by linarith), zero_mul]
+  · rw [abs_of_pos h] at hx
+    rw [glueR_of_nonpos hr (show 1 - x ≤ 0 by linarith), mul_zero]
+
+theorem integral_dcBump_pos (hr : Odd r) : 0 < ∫ y, dcBump r y := by
+  have hc : HasCompactSupport (dcBump r) := hasCompactSupport_of_vanishes (dcBump_vanishesOff hr)
+  have hint : Integrable (dcBump r) := (contDiff_dcBump r).continuous.integrable_of_hasCompactSupport hc
+  rw [integral_pos_iff_support_of_nonneg (fun x => mul_nonneg (glueR_nonneg _) (glueR_nonneg _))
+    hint]
+  have hsub : Ioo (-1 : ℝ) 1 ⊆ Function.support (dcBump r) := fun x hx => by
+    simp only [Function.mem_support]
+    exact (mul_pos (glueR_pos (by linarith [hx.1])) (glueR_pos (by linarith [hx.2]))).ne'
+  refine lt_of_lt_of_le ?_ (measure_mono hsub)
+  rw [Real.volume_Ioo]
+  norm_num
+
+theorem contDiff_dcProfile (r : ℕ) : ContDiff ℝ ∞ (dcProfile r) :=
+  contDiff_const.mul (contDiff_dcBump r)
+
+theorem dcProfile_vanishesOff (hr : Odd r) : VanishesOff (dcProfile r) := fun x hx => by
+  simp [dcProfile, dcBump_vanishesOff hr x hx]
+
+theorem integral_dcProfile (hr : Odd r) : ∫ x, dcProfile r x = 1 := by
+  unfold dcProfile
+  rw [integral_const_mul, inv_mul_cancel₀ (integral_dcBump_pos hr).ne']
+
+/-- **The bump is Gevrey of class `1 + 1/r`**: `|(E_r(1+·)E_r(1−·))^{(q)}| ≤ (2K)^q (q!)^{1+1/r}`. -/
+theorem abs_iteratedDeriv_dcBump_le (hr : Odd r) (q : ℕ) (x : ℝ) :
+    |iteratedDeriv q (dcBump r) x| ≤
+      (2 * ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)) ^ q * (q.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) := by
+  set K := ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)
+  set s := 1 + (r : ℝ)⁻¹
+  have hs : 0 ≤ s := by positivity
+  have hK : 0 ≤ K := by positivity
+  have hE := contDiff_glueR r
+  have h1 : ContDiff ℝ ∞ fun x => glueR r (1 + x) := hE.comp (contDiff_const.add contDiff_id)
+  have h2 : ContDiff ℝ ∞ fun x => glueR r (1 - x) := hE.comp (contDiff_const.sub contDiff_id)
+  have e : dcBump r = (fun x => glueR r (1 + x)) * fun x => glueR r (1 - x) := rfl
+  rw [e, iteratedDeriv_mul (contDiffAt_of_smooth h1 q x) (contDiffAt_of_smooth h2 q x)]
+  simp only [iteratedDeriv_comp_const_add, iteratedDeriv_comp_const_sub]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+  have hsum : ∑ l ∈ Finset.range (q + 1), (q.choose l : ℝ) = 2 ^ q := by
+    exact_mod_cast Nat.sum_range_choose q
+  calc ∑ l ∈ Finset.range (q + 1), |(q.choose l : ℝ) * iteratedDeriv l (glueR r) (1 + x) *
+        ((-1 : ℝ) ^ (q - l) • iteratedDeriv (q - l) (glueR r) (1 - x))|
+      ≤ ∑ l ∈ Finset.range (q + 1), (q.choose l : ℝ) * (K ^ q * (q.factorial : ℝ) ^ s) := by
+        refine Finset.sum_le_sum fun l hl => ?_
+        have hlq : l ≤ q := Nat.lt_succ_iff.mp (Finset.mem_range.mp hl)
+        rw [smul_eq_mul, abs_mul, abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul,
+          Nat.abs_cast]
+        have a1 := abs_iteratedDeriv_glueR_le hr l (1 + x)
+        have a2 := abs_iteratedDeriv_glueR_le hr (q - l) (1 - x)
+        have hfac := factorial_rpow_mul_le hs hlq
+        have hKq : K ^ l * K ^ (q - l) = K ^ q := by rw [← pow_add, Nat.add_sub_cancel' hlq]
+        have hprod : |iteratedDeriv l (glueR r) (1 + x)| *
+            |iteratedDeriv (q - l) (glueR r) (1 - x)| ≤ K ^ q * (q.factorial : ℝ) ^ s := by
+          calc _ ≤ (K ^ l * (l.factorial : ℝ) ^ s) * (K ^ (q - l) * ((q - l).factorial : ℝ) ^ s) :=
+                mul_le_mul a1 a2 (abs_nonneg _) (by positivity)
+            _ = K ^ q * ((l.factorial : ℝ) ^ s * ((q - l).factorial : ℝ) ^ s) := by
+                rw [← hKq]; ring
+            _ ≤ K ^ q * (q.factorial : ℝ) ^ s := mul_le_mul_of_nonneg_left hfac (by positivity)
+        calc (q.choose l : ℝ) * |iteratedDeriv l (glueR r) (1 + x)| *
+              |iteratedDeriv (q - l) (glueR r) (1 - x)|
+            = (q.choose l : ℝ) * (|iteratedDeriv l (glueR r) (1 + x)| *
+              |iteratedDeriv (q - l) (glueR r) (1 - x)|) := by ring
+          _ ≤ _ := mul_le_mul_of_nonneg_left hprod (by positivity)
+    _ = (2 * K) ^ q * (q.factorial : ℝ) ^ s := by
+        rw [← Finset.sum_mul, hsum, mul_pow]; ring
+
+/-- **The profile is Gevrey of class `1 + 1/r`**: `‖φ_r^{(q)}‖₁ ≤ 2c (2K)^q (q!)^{1+1/r}`. -/
+theorem integral_abs_iteratedDeriv_dcProfile_le (hr : Odd r) (q : ℕ) :
+    ∫ t, |iteratedDeriv q (dcProfile r) t| ≤
+      2 * (∫ y, dcBump r y)⁻¹ * (2 * ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)) ^ q *
+        (q.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) := by
+  set c := (∫ y, dcBump r y)⁻¹
+  have hc : 0 ≤ c := inv_nonneg.mpr (integral_dcBump_pos hr).le
+  have he : iteratedDeriv q (dcProfile r) = fun t => c * iteratedDeriv q (dcBump r) t := by
+    funext t
+    exact iteratedDeriv_const_mul c (contDiffAt_of_smooth (contDiff_dcBump r) q t)
+  have hvan : ∀ t, t ∉ Icc (-1 : ℝ) 1 → dcBump r t = 0 := fun t ht =>
+    dcBump_vanishesOff hr t (by
+      simp only [mem_Icc, not_and_or, not_le] at ht
+      rcases ht with h | h
+      · rw [abs_of_neg (by linarith)]; linarith
+      · rw [abs_of_pos (by linarith)]; linarith)
+  have hd : Continuous fun t => c * iteratedDeriv q (dcBump r) t :=
+    continuous_const.mul ((contDiff_dcBump r).continuous_iteratedDeriv q (natCast_le_infty q))
+  have hdR : SupportedIn 1 fun t => c * iteratedDeriv q (dcBump r) t := fun t ht => by
+    show c * iteratedDeriv q (dcBump r) t = 0
+    rw [iteratedDeriv_eq_zero_of_vanish hvan q (fun h => by
+      have := abs_le.mpr ⟨h.1, h.2⟩; linarith), mul_zero]
+  have hb : ∀ t, |c * iteratedDeriv q (dcBump r) t| ≤
+      c * ((2 * ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)) ^ q * (q.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹)) :=
+    fun t => by
+      rw [abs_mul, abs_of_nonneg hc]
+      exact mul_le_mul_of_nonneg_left (abs_iteratedDeriv_dcBump_le hr q t) hc
+  rw [he]
+  have := integral_abs_le_of_bound hd (hasCompactSupport_of_vanishes hdR) hb hdR zero_le_one
+  linarith
+
+end Profile
+
+/-! ### The window `(log log N)^{1+ε}` -/
+
+section Window
+
+variable {r : ℕ}
+
+/-- **The log-log overlap law for the Denjoy–Carleman profile of class `1 + 1/r`**: for odd `r`
+and `α > 1 + 1/r`, RH holds iff for all large `N` Weil's form is nonnegative on the atomic families
+of `φ_r` of width `(log log N)^α/N`. -/
+theorem riemannHypothesis_iff_dcProfile_nonneg_loglog (hr : Odd r) {α : ℝ}
+    (hα : 1 + (r : ℝ)⁻¹ < α) :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      0 ≤ weilQuad (atomicTest N x (dilate ((N : ℝ) / Real.log (Real.log N) ^ α) (dcProfile r))) :=
+  riemannHypothesis_iff_atomicFamilies_nonneg_loglog (contDiff_dcProfile r)
+    (dcProfile_vanishesOff hr) (integral_dcProfile hr) (by positivity) hα (by positivity)
+    (integral_abs_iteratedDeriv_dcProfile_le hr)
+
+/-- **The gauge for the Denjoy–Carleman profiles**: under Gevrey overlap growth of class `1 + 1/r`,
+a bounded twist is seen iff it is not Weil positive. -/
+theorem dcProfile_atomicFamilies_negative_iff (hr : Odd r) {lam : ℕ → ℝ}
+    (hlam : ∀ n, |lam n| ≤ ArithmeticFunction.vonMangoldt n) {κ : ℕ → ℝ}
+    (hκ : OverlapGrowthGevrey (1 + (r : ℝ)⁻¹) κ) :
+    (∃ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ,
+      weilQuadTw lam (atomicTest N x (dilate (κ N) (dcProfile r))) < 0) ↔ ¬ WeilPositiveFull lam :=
+  atomicFamilies_negative_iff_of_gevrey hlam (contDiff_dcProfile r) (dcProfile_vanishesOff hr)
+    (integral_dcProfile hr) (by positivity) (by positivity)
+    (integral_abs_iteratedDeriv_dcProfile_le hr) hκ
+
+/-- **The window `(log log N)^{1+ε}`**: for every `α > 1` there is an explicit smooth profile
+`φ_r`, `r = 2⌈1/(α−1)⌉ + 1`, such that RH holds iff for all large `N` Weil's form is nonnegative
+on its atomic families of width `(log log N)^α/N`. -/
+theorem exists_dcProfile_loglog {α : ℝ} (hα : 1 < α) :
+    ∃ r : ℕ, Odd r ∧ (RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      0 ≤ weilQuad (atomicTest N x (dilate ((N : ℝ) / Real.log (Real.log N) ^ α)
+        (dcProfile r)))) := by
+  set m := ⌈(α - 1)⁻¹⌉₊
+  refine ⟨2 * m + 1, odd_two_mul_add_one m, riemannHypothesis_iff_dcProfile_nonneg_loglog
+    (odd_two_mul_add_one m) ?_⟩
+  have hα1 : 0 < α - 1 := by linarith
+  have hm : (α - 1)⁻¹ ≤ m := Nat.le_ceil _
+  have hr : (α - 1)⁻¹ < ((2 * m + 1 : ℕ) : ℝ) := by
+    push_cast; have : (0 : ℝ) ≤ m := Nat.cast_nonneg m; linarith
+  have hpos : (0 : ℝ) < ((2 * m + 1 : ℕ) : ℝ) := by positivity
+  have : ((2 * m + 1 : ℕ) : ℝ)⁻¹ < α - 1 := by
+    rw [inv_lt_comm₀ hpos hα1]; exact hr
+  linarith
+
+end Window
+
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

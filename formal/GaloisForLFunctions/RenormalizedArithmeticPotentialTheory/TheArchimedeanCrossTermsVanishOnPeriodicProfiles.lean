@@ -63,7 +63,7 @@ theorem integrableOn_crossIntegrand (hg : ContDiff ℝ 2 g) (hgc : HasCompactSup
     ContinuousOn.integrableOn_Icc ((continuousOn_archLevyDensity_Ioi.mono fun s hs =>
       lt_of_lt_of_le (by linarith) hs.1).mul
         ((continuous_bumpCorr hg hgc).comp (continuous_sub_right t)).continuousOn)
-  refine hK.of_forall_diff_eq_zero measurableSet_Ioi fun s hs => ?_
+  refine hK.of_forall_sdiff_eq_zero measurableSet_Ioi fun s hs => ?_
   have hs' : w < |s - t| := by
     rcases hs with ⟨-, hs2⟩
     simp only [Set.mem_Icc, not_and_or, not_le] at hs2
@@ -73,7 +73,7 @@ theorem integrableOn_crossIntegrand (hg : ContDiff ℝ 2 g) (hgc : HasCompactSup
   rw [bumpCorr_eq_zero hgsupp hs', mul_zero]
 
 theorem atomCrossKernel_nonneg (hg0 : ∀ u, 0 ≤ g u) (t : ℝ) : 0 ≤ atomCrossKernel g t :=
-  setIntegral_nonneg measurableSet_Ioi fun s hs =>
+  setIntegral_nonneg measurableSet_Ioi fun _ hs =>
     mul_nonneg (archLevyDensity_pos hs).le (bumpCorr_nonneg hg0 _)
 
 /-- The cross kernel lives on the window `[t − w, t + w]`. -/
@@ -154,5 +154,130 @@ theorem atomCrossKernel_anti (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
   refine setIntegral_mono_on (hint t₂ (by linarith)) (hint t₁ h1) measurableSet_Icc fun τ hτ => ?_
   exact mul_le_mul_of_nonneg_right (archLevyDensity_anti (by linarith [hτ.1]) (by linarith))
     (bumpCorr_nonneg hg0 τ)
+
+/-! ### 2. The exact expansion -/
+
+/-- **The Lévy energy of an atomic test**, below the spacing:
+`L(f_x) = |x|² L(g) − 2 Σ_{m<n} x_m x_n Ω(log n − log m)`. -/
+theorem levyEnergy_atomicTest_eq_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w < atomSpacing N) (x : ℕ → ℝ) :
+    levyEnergy (atomicTest N x g) = (∑ n ∈ Icc 1 N, x n ^ 2) * levyEnergy g -
+      2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        (if m < n then x m * x n * atomCrossKernel g (Real.log n - Real.log m) else 0) := by
+  set f := atomicTest N x g
+  have hf := contDiff_atomicTest hg N x
+  have hfc := hasCompactSupport_atomicTest hgsupp N x
+  -- the gaps exceed the width
+  have hgap : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m < n → w < Real.log n - Real.log m := by
+    intro m hm n hn hmn
+    have := atomSpacing_le_abs_logGap hm hn (by omega)
+    rw [logGap, abs_of_pos (by
+      have h1 : (m : ℝ) < n := by exact_mod_cast hmn
+      have h0 : (0 : ℝ) < m := by exact_mod_cast (mem_Icc.mp hm).1
+      linarith [Real.log_lt_log h0 h1])] at this
+    linarith
+  -- the shift expansion, pair by pair
+  have hpair : ∀ s, 0 < s → ∀ m ∈ Icc 1 N,
+      ∑ n ∈ Icc 1 N, x m * x n * bumpCorr g (s - (Real.log n - Real.log m)) =
+        x m ^ 2 * bumpCorr g s +
+          ∑ n ∈ Icc 1 N, (if m < n then x m * x n * bumpCorr g (s - (Real.log n - Real.log m))
+            else 0) := by
+    intro s hs m hm
+    have hterm : ∀ n ∈ Icc 1 N, x m * x n * bumpCorr g (s - (Real.log n - Real.log m)) =
+        (if n = m then x m ^ 2 * bumpCorr g s else 0) +
+          (if m < n then x m * x n * bumpCorr g (s - (Real.log n - Real.log m)) else 0) := by
+      intro n hn
+      rcases lt_trichotomy n m with hnm | rfl | hmn
+      · rw [if_neg (by omega), if_neg (by omega), zero_add]
+        have h := hgap n hn m hm hnm
+        rw [bumpCorr_eq_zero hgsupp (by rw [abs_of_pos (by linarith)]; linarith), mul_zero]
+      · rw [if_pos rfl, if_neg (lt_irrefl _), add_zero, sub_self, sub_zero]; ring
+      · rw [if_neg (by omega), if_pos hmn, zero_add]
+    rw [sum_congr rfl hterm, sum_add_distrib, sum_ite_eq' (Icc 1 N) m, if_pos hm]
+  have hpt : ∀ s ∈ Set.Ioi (0 : ℝ), archLevyDensity s * ∫ u, (f u - f (u + s)) ^ 2 =
+      (∑ n ∈ Icc 1 N, x n ^ 2) * (archLevyDensity s * ∫ u, (g u - g (u + s)) ^ 2) -
+        2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
+          x m * x n * (archLevyDensity s * bumpCorr g (s - (Real.log n - Real.log m))) else 0) := by
+    intro s hs
+    rw [integral_sub_shift_sq_eq hf.continuous hfc s, integral_sub_shift_sq_eq hg.continuous hgc s,
+      integral_atomicTest_sq hg hgc hgsupp hw x,
+      SpacingScaleHarmonicAnalysis.integral_atomicTest_mul_shift hg.continuous hgc N x s,
+      sum_congr rfl (hpair s hs), sum_add_distrib, ← sum_mul]
+    rw [show ∫ u, g u * g (u + s) = bumpCorr g s from rfl]
+    simp only [mul_sum, mul_ite, mul_zero]
+    ring_nf
+    rw [sum_congr rfl fun m _ => sum_congr rfl fun n _ => by
+      split_ifs <;> ring]
+  rw [levyEnergy, setIntegral_congr_fun measurableSet_Ioi hpt]
+  have hI1 : IntegrableOn (fun s => archLevyDensity s * ∫ u, (g u - g (u + s)) ^ 2) (Set.Ioi 0) :=
+    integrableOn_levyIntegrand hg hgc
+  have hI2 : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, IntegrableOn (fun s => if m < n then
+      x m * x n * (archLevyDensity s * bumpCorr g (s - (Real.log n - Real.log m))) else 0)
+      (Set.Ioi 0) := by
+    intro m hm n hn
+    by_cases hmn : m < n
+    · simp only [hmn, if_true]
+      exact (integrableOn_crossIntegrand hg hgc hgsupp hw0 (hgap m hm n hn hmn)).const_mul _
+    · simp only [hmn, if_false]
+      exact integrableOn_zero
+  rw [integral_sub (hI1.const_mul _) ((integrable_finset_sum _ fun m hm =>
+      integrable_finset_sum _ fun n hn => hI2 m hm n hn).const_mul _),
+    integral_const_mul, integral_const_mul, ← levyEnergy,
+    integral_finset_sum _ fun m hm => integrable_finset_sum _ fun n hn => hI2 m hm n hn]
+  congr 2
+  refine sum_congr rfl fun m hm => ?_
+  rw [integral_finset_sum _ fun n hn => hI2 m hm n hn]
+  refine sum_congr rfl fun n _ => ?_
+  split_ifs
+  · rw [integral_const_mul, atomCrossKernel]
+  · simp
+
+/-! ### 3. Periodic profiles -/
+
+/-- **The archimedean cross terms vanish on periodic profiles.** For `x_n = ψ(n)/√n` with `ψ`
+`q`-periodic of mean zero, `|ψ| ≤ B`, and a bump `g ≥ 0` on `[0, w]`, `4w ≤ δ_N`:
+`|L(f_x) − |x|² L(g)| ≤ 168 q B² (wN) ‖g‖²`. -/
+theorem abs_levyEnergy_atomicTest_sub_le_of_periodic (hg : ContDiff ℝ 2 g)
+    (hgc : HasCompactSupport g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hg0 : ∀ u, 0 ≤ g u)
+    {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w) (hw : 4 * w ≤ atomSpacing N) {q : ℕ} (hq : 1 ≤ q) {B : ℝ}
+    (ψ : ℕ → ℝ) (hper : ∀ n, ψ (n + q) = ψ n) (hmean : ∑ r ∈ range q, ψ r = 0)
+    (hB : ∀ n, |ψ n| ≤ B) :
+    |levyEnergy (atomicTest N (fun n => ψ n / Real.sqrt n) g) -
+        (∑ n ∈ Icc 1 N, (ψ n / Real.sqrt n) ^ 2) * levyEnergy g| ≤
+      168 * q * B ^ 2 * (w * N) * ∫ u, g u ^ 2 := by
+  set δ := atomSpacing N
+  have hδw : w < δ := by linarith
+  rw [levyEnergy_atomicTest_eq_cross hg hgc hgsupp hN hw0 hδw]
+  set Φ : ℝ → ℝ := fun t => atomCrossKernel g (max t δ)
+  have hG : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg (g u)
+  have hS : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
+      ψ m / Real.sqrt m * (ψ n / Real.sqrt n) * atomCrossKernel g (Real.log n - Real.log m) else 0) =
+      ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
+        ψ m / Real.sqrt m * (ψ n / Real.sqrt n) * Φ (Real.log n - Real.log m) else 0) := by
+    refine sum_congr rfl fun m hm => sum_congr rfl fun n hn => ?_
+    split_ifs with hmn
+    · have := atomSpacing_le_abs_logGap hm hn (by omega)
+      rw [logGap, abs_of_pos (by
+        have h1 : (m : ℝ) < n := by exact_mod_cast hmn
+        have h0 : (0 : ℝ) < m := by exact_mod_cast (mem_Icc.mp hm).1
+        linarith [Real.log_lt_log h0 h1])] at this
+      simp only [Φ, max_eq_left this]
+    · rfl
+  have hpair := abs_sum_periodicPair_le hq (N := N) (A := 2 * w * ∫ u, g u ^ 2) (by positivity) ψ
+    hper hmean hB Φ (fun t _ => atomCrossKernel_nonneg hg0 _)
+    (fun t ht => by
+      have h1 := atomCrossKernel_le hg hgc hgsupp hw0 (t := max t δ) (le_trans hw (le_max_right _ _))
+      have h2 : 1 / max t δ ≤ 1 / t := one_div_le_one_div_of_le ht (le_max_left _ _)
+      refine h1.trans (mul_le_mul_of_nonneg_left (by linarith) (by positivity)))
+    (fun t₁ t₂ _ h12 => atomCrossKernel_anti hg hgc hgsupp hg0 hw0
+      (lt_of_lt_of_le hδw (le_max_right _ _)) (max_le_max h12 le_rfl))
+  rw [← hS] at hpair
+  rw [sub_sub_cancel_left, abs_neg, abs_mul, abs_two]
+  calc 2 * |∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
+          ψ m / Real.sqrt m * (ψ n / Real.sqrt n) * atomCrossKernel g (Real.log n - Real.log m)
+            else 0)| ≤ 2 * (42 * q * B ^ 2 * (2 * w * ∫ u, g u ^ 2) * N) :=
+        mul_le_mul_of_nonneg_left hpair (by norm_num)
+    _ = 168 * q * B ^ 2 * (w * N) * ∫ u, g u ^ 2 := by ring
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

@@ -448,3 +448,5 @@ needed above. The new unchecked generic support draft
 row potential; it is an adapter of the inspected weighted-AMGM argument.
 No full-Weil Liouville sign claim is being inferred from global mean
 cancellation: the required local harmonic convolution is a separate input.
+
+Two additional unchecked support drafts, `TheSeparatedAtomPairingsAreThePrimeKernel` and `TheSeparatedMarkovMatrixHasExactCrossEntries`, give entrywise exact prime and Markov pairings at full spacing. The actual mass interface is AES `integral_atomicTest_sq`, already requiring only w<atomSpacing(N). These drafts are not installed, checked, or counted. Nine scratch drafts now support the strengthened target; the full spectral endpoint remains unproved.
