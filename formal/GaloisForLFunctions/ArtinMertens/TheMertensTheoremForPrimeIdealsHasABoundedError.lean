@@ -329,26 +329,24 @@ theorem exists_abs_primeMertens_sub_log_le :
   have hIlog' : (c * x - B₀ * (x : ℝ) ^ σ) * Real.log x ≤ idealCount K x * Real.log x :=
     mul_le_mul_of_nonneg_right hIx' (Real.log_nonneg hx1)
   have hcψ : c * primeChebyshev K x ≤ c * (D * x) := mul_le_mul_of_nonneg_left hψ hc.le
-  -- `c x |A_K(x) − log x| ≤ C c x`
+  -- `c x |A_K(x) − log x| ≤ x K₀`
   have hcx : 0 < c * x := mul_pos hc hx0
-  rw [abs_le, le_div_iff₀ hc, div_mul_eq_mul_div, le_div_iff₀ hc]
-  have hB0δ : 0 ≤ B₀ / δ := div_nonneg hB₀0 hδ0.le
-  constructor
-  · -- lower bound
-    have key : c * x * (Real.log x - primeMertens K x) ≤
-        x * (B₀ / δ + c * D + B₀ * D * (2 + 1 / δ) + (c + B₀)) := by
-      have : B₀ * (x / δ) = x * (B₀ / δ) := by ring
-      nlinarith
-    have := (mul_le_mul_iff_of_pos_left hx0).mp (by nlinarith : x * (c * (Real.log x -
-      primeMertens K x)) ≤ x * (B₀ / δ + c * D + B₀ * D * (2 + 1 / δ) + (c + B₀)))
-    nlinarith
-  · -- upper bound
-    have key : c * x * (primeMertens K x - Real.log x) ≤
-        x * (B₀ / δ + c * D + B₀ * D * (2 + 1 / δ) + (c + B₀)) := by
-      have : B₀ * (x / δ) = x * (B₀ / δ) := by ring
-      nlinarith
-    have := (mul_le_mul_iff_of_pos_left hx0).mp (by nlinarith : x * (c * (primeMertens K x -
-      Real.log x)) ≤ x * (B₀ / δ + c * D + B₀ * D * (2 + 1 / δ) + (c + B₀)))
-    nlinarith
+  have hcB : 0 ≤ (x : ℝ) * (c + B₀) := mul_nonneg hx0.le (add_nonneg hc.le hB₀0)
+  have hcD : 0 ≤ c * D * x := mul_nonneg (mul_nonneg hc.le hD) hx0.le
+  have hU : c * x * (primeMertens K x - Real.log x) ≤
+      x * (B₀ / δ + c * D + B₀ * D * (2 + 1 / δ) + (c + B₀)) := by
+    have : B₀ * ((x : ℝ) / δ) = x * (B₀ / δ) := by ring
+    linarith
+  have hLo : -(x * (B₀ / δ + c * D + B₀ * D * (2 + 1 / δ) + (c + B₀))) ≤
+      c * x * (primeMertens K x - Real.log x) := by
+    have : B₀ * ((x : ℝ) / δ) = x * (B₀ / δ) := by ring
+    linarith
+  have habs := abs_le.mpr ⟨hLo, hU⟩
+  rw [abs_mul, abs_of_pos hcx] at habs
+  rw [le_div_iff₀ hc]
+  have h : |primeMertens K x - Real.log x| * c * x ≤
+      (B₀ / δ + c * D + B₀ * D * (2 + 1 / δ) + (c + B₀)) * x := by
+    linarith
+  exact le_of_mul_le_mul_right h hx0
 
 end GaloisForLFunctions.ArtinMertens

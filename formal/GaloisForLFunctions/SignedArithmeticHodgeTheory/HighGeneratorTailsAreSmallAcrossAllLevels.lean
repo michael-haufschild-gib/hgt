@@ -56,11 +56,14 @@ theorem logCellHaar_high_detail_tail_le (t : ℝ) {A : ℕ} (hA : 1 ≤ A)
       32 * levyEnergy f / (1 + Real.log (A : ℝ)) := by
   have hs : Summable (fun i : ℕ × ℕ+ =>
       if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0) := by
-    simpa only [indicator, mem_setOf_eq] using
-      (summable_readout_squares t hv hc).indicator {i | A ≤ (i.2 : ℕ)}
+    refine ((summable_readout_squares t hv hc).indicator {i | A ≤ (i.2 : ℕ)}).congr fun i => ?_
+    by_cases hi : A ≤ (i.2 : ℕ)
+    · rw [if_pos hi, Set.indicator_of_mem hi]
+    · rw [if_neg hi, Set.indicator_of_notMem hi]
   have hswap : Summable (fun i : ℕ+ × ℕ =>
       if A ≤ (i.1 : ℕ) then logCellHaarReadout t (i.2, i.1) f ^ 2 else 0) :=
-    hs.comp_injective Prod.swap_injective
+    hs.comp_injective (i := fun p : ℕ+ × ℕ => (p.2, p.1))
+      (fun p q h => Prod.ext (congrArg Prod.snd h) (congrArg Prod.fst h))
   have he : (∑' i : ℕ × ℕ+, if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0) =
       ∑' a : ℕ+, if A ≤ (a : ℕ) then logCellHaarOrbitEnergy t a f else 0 := by
     rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq

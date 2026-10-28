@@ -38,7 +38,10 @@ private def labelTail (F : ℕ → ℝ) (M : ℕ) : ℝ :=
 
 private theorem labelTail_summable {F : ℕ → ℝ} (hF : Summable F) (M : ℕ) :
     Summable (fun a => if M ≤ a then F a else 0) := by
-  simpa only [indicator, mem_setOf_eq] using hF.indicator {a | M ≤ a}
+  refine (hF.indicator {a | M ≤ a}).congr fun a => ?_
+  by_cases ha : M ≤ a
+  · rw [if_pos ha, Set.indicator_of_mem ha]
+  · rw [if_neg ha, Set.indicator_of_notMem ha]
 
 private theorem labelTail_nonneg {F : ℕ → ℝ} (hF : ∀ a, 0 ≤ F a) (M : ℕ) :
     0 ≤ labelTail F M := by
@@ -339,8 +342,11 @@ theorem sum_ancestor_weight_readout_sq_le (t : ℝ) (S : Finset (ℕ × ℕ+))
     {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     (∑ i ∈ S, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) ≤
       16 * levyEnergy f := by
-  have hsp : Summable (fun i : ℕ × ℕ+ => logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) :=
-    (summable_ancestor_readouts_swapped t hv hc).comp_injective Prod.swap_injective
+  have hsp : Summable (fun i : ℕ × ℕ+ => logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) := by
+    have h := (summable_ancestor_readouts_swapped t hv hc).comp_injective
+      (i := fun p : ℕ × ℕ+ => (p.2, p.1))
+      (fun p q h => Prod.ext (congrArg Prod.snd h) (congrArg Prod.fst h))
+    exact h.congr (fun i => by rcases i with ⟨j, a⟩; rfl)
   exact (hsp.sum_le_tsum S (fun i _ =>
     mul_nonneg (logCellAncestorWeight_pos i.2).le (sq_nonneg _))).trans
       (tsum_ancestor_weight_readout_sq_le t hv hc)

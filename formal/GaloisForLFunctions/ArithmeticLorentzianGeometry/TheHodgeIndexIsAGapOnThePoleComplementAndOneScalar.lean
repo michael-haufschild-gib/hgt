@@ -120,9 +120,9 @@ theorem markovEnergy_atomicTest_smul (g : ℝ → ℝ) (N : ℕ) (t : ℝ) (x : 
   have e : (fun u => (atomicTest N (t • x) g u : ℂ)) =
       (t : ℂ) • fun u => (atomicTest N x g u : ℂ) := by
     funext u
-    simp only [atomicTest, Pi.smul_apply, smul_eq_mul, Complex.real_smul, mul_sum, mul_assoc]
+    simp only [atomicTest, Pi.smul_apply, smul_eq_mul, mul_assoc]
     push_cast
-    rfl
+    rw [mul_sum]
   rw [e, ArithmeticCriticalityTheory.markovEnergy_real_smul]
 
 /-! ### The atomic Hodge index -/
