@@ -19,9 +19,14 @@ finite part.
   `P_N(ε_F x) − P_N(x) = −2δ_F |x|² + o(mass)`. The divergences `ℓ²` cancel, and the finite part of
   the twin is lower by `2δ_F > 0` for every non-empty `F`.
 
-So among the twins of `ζ` that flip finitely many primes, `ζ` has the largest finite part, and
-each flipped prime lowers it by at least `4 log p/p`. Matching cannot select `ζ` within this
-family, but the finite part does, with an explicit margin at every prime.
+* **Rigidity** (`finitePartLimit_le_and_eq_iff`, `exists_abs_gaugeForm_sub_zetaForm_sub_le`): for
+  every sign gauge with matching coefficient `1` and a convergent Mertens error
+  `A_ε(y) − log y → α`, `α ≤ −γ`, with equality only for `ε = 1`; so
+  `P_N(εx) − P_N(x) = 2(α + γ)|x|² + o(mass)` with `α + γ < 0` for every such twin.
+
+So among the twins of `ζ` matched to the same polar divergence, `ζ` is the unique maximizer of the
+finite part, and each flipped prime lowers it by at least `4 log p/p`. Matching cannot select `ζ`
+within this family; the finite part does, with an explicit margin at every prime.
 -/
 
 noncomputable section
@@ -72,7 +77,7 @@ theorem finiteFlipDeficit_le (hF : ∀ p ∈ F, p.Prime) (y : ℕ) :
       have hp1 : (1 : ℝ) < p := by exact_mod_cast (hF p hp).one_lt
       exact div_nonneg (Real.log_nonneg hp1.le) (by linarith)
     have : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
-    simp only [finiteFlipDeficit, Icc_self, Finset.Icc_eq_empty_of_lt zero_lt_one, sum_empty]
+    simp only [finiteFlipDeficit, Finset.Icc_eq_empty_of_lt zero_lt_one, sum_empty]
     linarith
   have h1 := RHTower.Mertens.mertens_first y hy
   have h2 := (finiteFlip_matching hF).2 y hy
@@ -132,6 +137,117 @@ theorem exists_abs_finiteFlipForm_sub_zetaForm_add_le (hF : ∀ p ∈ F, p.Prime
         2 * ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C) := by
   obtain ⟨C₁, hC₁⟩ := exists_abs_gaugeForm_stepProfile_finitePart_le (finiteFlip_isSignGauge F)
     (by norm_num : |(1 : ℝ)| ≤ 1) (tendsto_finiteFlipMertensError hF) hη
+  obtain ⟨C₂, hC₂⟩ := exists_abs_atomicWeilForm_stepProfile_finitePart_le hη
+  refine ⟨max C₁ C₂, fun c M hM1 hM => ?_⟩
+  have h1 := hC₁ c M hM1 hM
+  have h2 := hC₂ c M hM1 hM
+  have hmono : ∀ C' : ℝ, C' ≤ max C₁ C₂ →
+      ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C') ≤
+        ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + max C₁ C₂) :=
+    fun C' hC' => sum_le_sum fun i _ => sum_le_sum fun j _ =>
+      mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  have h1' := h1.trans (hmono C₁ (le_max_left _ _))
+  have h2' := h2.trans (hmono C₂ (le_max_right _ _))
+  rw [abs_le] at h1' h2' ⊢
+  constructor <;> nlinarith [h1'.1, h1'.2, h2'.1, h2'.2]
+
+/-! ### Rigidity: `ζ` maximizes the finite part -/
+
+/-- The **gauge deficit** `D_ε(y) = Σ_{t ≤ y} (1 − ε(t))Λ(t)/t`. -/
+def gaugeDeficit (ε : ℕ → ℝ) (y : ℕ) : ℝ := ∑ t ∈ Icc 1 y, (1 - ε t) * Λ t / t
+
+theorem gaugeDeficit_term_nonneg {ε : ℕ → ℝ} (hε : IsSignGauge ε) (t : ℕ) :
+    0 ≤ (1 - ε t) * Λ t / t := by
+  rcases Nat.eq_zero_or_pos t with rfl | ht
+  · simp
+  have h1 : ε t * ε t = 1 := hε.mul_self ht.ne'
+  have h2 : ε t ≤ 1 := by nlinarith [sq_nonneg (ε t - 1)]
+  exact div_nonneg (mul_nonneg (by linarith) vonMangoldt_nonneg) (Nat.cast_nonneg t)
+
+theorem gaugeDeficit_mono {ε : ℕ → ℝ} (hε : IsSignGauge ε) : Monotone (gaugeDeficit ε) :=
+  monotone_nat_of_le_succ fun y => by
+    rw [gaugeDeficit, gaugeDeficit, sum_Icc_succ_top (by omega)]
+    linarith [gaugeDeficit_term_nonneg hε (y + 1)]
+
+/-- A sign gauge that is `1` at every prime is `1` on every positive integer. -/
+theorem IsSignGauge.eq_one_of_prime {ε : ℕ → ℝ} (hε : IsSignGauge ε)
+    (hp : ∀ p : ℕ, p.Prime → ε p = 1) : ∀ n : ℕ, 1 ≤ n → ε n = 1 := by
+  have h1 : ε 1 = 1 := by
+    have hm := hε.mul (one_ne_zero) (one_ne_zero)
+    have hs := hε.mul_self (one_ne_zero)
+    rw [one_mul] at hm
+    nlinarith
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro hn
+    rcases hn.eq_or_lt with rfl | hn2
+    · exact h1
+    have hmin := Nat.minFac_prime (show n ≠ 1 by omega)
+    have hdvd := Nat.minFac_dvd n
+    have hq : n / n.minFac < n := Nat.div_lt_self (by omega) hmin.one_lt
+    have hq1 : 1 ≤ n / n.minFac := Nat.div_pos (Nat.minFac_le (by omega)) hmin.pos
+    have hsplit : n = n.minFac * (n / n.minFac) := (Nat.mul_div_cancel' hdvd).symm
+    rw [hsplit, hε.mul hmin.ne_zero (by omega), hp _ hmin, ih _ hq hq1, one_mul]
+
+/-- **`ζ` maximizes the finite part**: if a sign gauge has `A_ε(y) − log y → α`, then `α ≤ −γ`, with
+equality exactly for the Euler gauge `ε = 1`. -/
+theorem finitePartLimit_le_and_eq_iff {ε : ℕ → ℝ} (hε : IsSignGauge ε) {α : ℝ}
+    (hE : Tendsto (gaugeMertensError ε 1) atTop (𝓝 α)) :
+    α ≤ -γ ∧ (α = -γ ↔ ∀ n : ℕ, 1 ≤ n → ε n = 1) := by
+  -- `D_ε = (A − log) − (A_ε − log) → −γ − α`
+  have hD : Tendsto (gaugeDeficit ε) atTop (𝓝 (-γ - α)) := by
+    refine (tendsto_mertensSum_sub_log.sub hE).congr fun y => ?_
+    rw [gaugeMertensError, gaugeMertensSum, mertensSum, gaugeDeficit]
+    rw [one_mul, sub_sub_sub_cancel_right, ← sum_sub_distrib]
+    exact sum_congr rfl fun t _ => by ring
+  have hD0 : 0 ≤ -γ - α :=
+    ge_of_tendsto hD (Eventually.of_forall fun y => sum_nonneg fun t _ =>
+      gaugeDeficit_term_nonneg hε t)
+  refine ⟨by linarith, ⟨fun hα => ?_, fun h1 => ?_⟩⟩
+  · -- a monotone deficit with limit `0` vanishes, so `ε = 1` at every prime
+    have hle : ∀ y, gaugeDeficit ε y ≤ 0 := by
+      intro y
+      have := (gaugeDeficit_mono hε).ge_of_tendsto hD y
+      rw [hα] at this
+      linarith
+    refine hε.eq_one_of_prime fun p hp => ?_
+    have hzero : gaugeDeficit ε p = 0 :=
+      le_antisymm (hle p) (sum_nonneg fun t _ => gaugeDeficit_term_nonneg hε t)
+    have hterm := (Finset.sum_eq_zero_iff_of_nonneg (fun t _ => gaugeDeficit_term_nonneg hε t)).mp
+      hzero p (mem_Icc.mpr ⟨hp.one_le, le_rfl⟩)
+    rw [vonMangoldt_apply_prime hp] at hterm
+    have hl : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+    rcases (div_eq_zero_iff.mp hterm) with h | h
+    · rcases mul_eq_zero.mp h with h' | h'
+      · linarith
+      · linarith
+    · linarith
+  · -- the Euler gauge has deficit `0`
+    have hzero : ∀ y, gaugeDeficit ε y = 0 := fun y => sum_eq_zero fun t ht => by
+      rw [h1 t (mem_Icc.mp ht).1, sub_self, zero_mul, zero_div]
+    have hD' : Tendsto (gaugeDeficit ε) atTop (𝓝 0) := by
+      simp only [hzero]
+      exact tendsto_const_nhds
+    have := tendsto_nhds_unique hD hD'
+    linarith
+
+/-- **Selection of `ζ` by the finite part**: for every sign gauge with matching coefficient `1` and a
+convergent Mertens error `A_ε(y) − log y → α`, and every `η > 0`, there is `C` such that
+`|P_N(εx) − P_N(x) − 2(α + γ)|x|²| ≤ 2 Σ_{i,j} |c_i| |c_j| (η H_{min} + C)` on uniform step profiles,
+with `α + γ ≤ 0`, and `α + γ = 0` only for `ε = 1`. -/
+theorem exists_abs_gaugeForm_sub_zetaForm_sub_le {ε : ℕ → ℝ} (hε : IsSignGauge ε) {α : ℝ}
+    (hE : Tendsto (gaugeMertensError ε 1) atTop (𝓝 α)) {η : ℝ} (hη : 0 < η) :
+    (α + γ ≤ 0 ∧ (α + γ = 0 ↔ ∀ n : ℕ, 1 ≤ n → ε n = 1)) ∧
+    ∃ C : ℝ, ∀ {k N : ℕ} (c : Fin k → ℝ) (M : Fin k → ℕ), (∀ i, 1 ≤ M i) → (∀ i, M i ≤ N) →
+      |atomicWeilForm N (fun n => ε n * stepProfile c M n) - atomicWeilForm N (stepProfile c M) -
+          2 * (α + γ) * ∑ n ∈ Icc 1 N, stepProfile c M n ^ 2| ≤
+        2 * ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C) := by
+  obtain ⟨hle, hiff⟩ := finitePartLimit_le_and_eq_iff hε hE
+  refine ⟨⟨by linarith, ⟨fun h => hiff.mp (by linarith), fun h => by linarith [hiff.mpr h]⟩⟩, ?_⟩
+  obtain ⟨C₁, hC₁⟩ := exists_abs_gaugeForm_stepProfile_finitePart_le hε
+    (by norm_num : |(1 : ℝ)| ≤ 1) hE hη
   obtain ⟨C₂, hC₂⟩ := exists_abs_atomicWeilForm_stepProfile_finitePart_le hη
   refine ⟨max C₁ C₂, fun c M hM1 hM => ?_⟩
   have h1 := hC₁ c M hM1 hM

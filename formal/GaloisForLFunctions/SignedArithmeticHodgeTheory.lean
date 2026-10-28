@@ -3,9 +3,11 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.OneStationarityBudgetCont
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheSignedComplementRetainsExactlyTheWeilRadical
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.TranslationPreservesWeilEnergyButEscapesEveryExponentialGraphBound
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.BoundedWindowsAdmitSourceCompatibleScaleTransport
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.CompletedAperturesCarryTheLiteralScaleTransport
 
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
 
-Quantitative signed residual calculus on the actual complete arithmetic source.
+Certified signed residual calculus and faithful scale transport on the actual
+arithmetic source, with explicit graph growth under unbounded translation.
 -/

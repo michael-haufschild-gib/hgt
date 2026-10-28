@@ -86,8 +86,9 @@ private def apertureCoreScaleLinear (a : SuzukiPositiveAperture) (t : ℝ) :
       change (apertureRepresentative a p).1 u + (apertureRepresentative a q).1 u = 0
       rw [apertureRepresentative_support a p u hu,
         apertureRepresentative_support a q u hu, add_zero]
-    · simpa only [realTestGraphLift_add, apertureRepresentative_lift] using
-        (apertureGraphCore a).subtype.map_add p q
+    · simp only [realTestGraphLift_add, apertureRepresentative_lift]
+      change p.val + q.val = p.val + q.val
+      rfl
   map_smul' c p := by
     change translatedSourceGraph (apertureRepresentative a (c • p)) t =
       c • translatedSourceGraph (apertureRepresentative a p) t
@@ -97,8 +98,9 @@ private def apertureCoreScaleLinear (a : SuzukiPositiveAperture) (t : ℝ) :
     · intro u hu
       change c * (apertureRepresentative a p).1 u = 0
       rw [apertureRepresentative_support a p u hu, mul_zero]
-    · simpa only [realTestGraphLift_smul, apertureRepresentative_lift] using
-        (apertureGraphCore a).subtype.map_smul c p
+    · simp only [realTestGraphLift_smul, apertureRepresentative_lift]
+      change c • p.val = c • p.val
+      rfl
 
 private theorem apertureCoreScaleLinear_bound (a : SuzukiPositiveAperture) (t : ℝ) :
     ∃ C : ℝ, ∀ p : apertureGraphCore a, ‖apertureCoreScaleLinear a t p‖ ≤ C * ‖p‖ := by
@@ -160,6 +162,8 @@ theorem weilForm_apertureScaleTransport (a : SuzukiPositiveAperture) (t : ℝ)
   · intro q
     rw [apertureScaleTransport_core, weilForm_translatedSourceGraph,
       ← weilForm_realTestGraphLift, apertureRepresentative_lift]
+    change weilForm q.val = weilForm q.val
+    rfl
 
 /-- One bound controls the completed aperture for every shift in a bounded range. -/
 theorem exists_apertureScaleTransport_norm_bound (a : SuzukiPositiveAperture) (T : ℝ) :

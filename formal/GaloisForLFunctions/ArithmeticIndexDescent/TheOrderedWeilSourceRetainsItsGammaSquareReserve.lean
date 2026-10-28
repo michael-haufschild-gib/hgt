@@ -147,6 +147,7 @@ theorem sourceGammaCollar_eq_boundary_pair (f g : realTests) {b : ℝ}
     rw [← integral_complex_ofReal]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro h hh
+    dsimp only
     rw [inner_translate_shiftedRealTest]
     have hl : ∀ u, 0 ≤ u → f.1 (u + b) = 0 :=
       fun u hu => hleft (u + b) (by linarith only [hu])
@@ -216,6 +217,7 @@ private theorem orderedGammaTail_eq_tilted_boundary_pair (f g : realTests) {b : 
         sourceCollarCorrelation (leftBoundaryTiltTest b f).1 (rightBoundaryTiltTest b g).1 h := by
       apply setIntegral_congr_fun measurableSet_Ioi
       intro h hh
+      dsimp only
       rw [tilted_collar_eq f g hleft hright hh.le]
       ring
     _ = _ := sourceGammaCollar_eq_boundary_pair _ _

@@ -50,3 +50,5 @@ The extra term is an explicit graph on the actual interval means, not the entire
 - 2026-10-28 — Opened after the full balanced-cell floor and smooth effectivity passed exact Lean audits.
 
 The pending finite-family candidate now also retains the exterior term in its real inequality, using the exact finite extended integral. Its finiteness is derived from the original compact-BV Gamma energy; no new integrability assumption is added. Candidate declaration: `levyEnergy_ge_log_variance_add_mean_graph_add_exterior`.
+
+The concrete candidate now keeps an explicit boundary charge depending only on the pair averages. The complete-cell source vanishes almost everywhere on the family complement, so this charge is the actual far-end kernel integral of width times average squared. Both the finite-family real exterior estimate and concrete specialization remain unverified.

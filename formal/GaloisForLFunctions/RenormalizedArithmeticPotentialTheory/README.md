@@ -432,6 +432,7 @@ the place that pays.
 | **RP33 The finite part separates ζ from its Liouville twin** | `A_λ(y) + log y → γ + τ`, `τ = lim Σ_{t ≤ y} (1 + λ(t))Λ(t)/t ≥ (log 2)/2`; `P_N(λx) = −ℓ² + 2(γ + τ)\|x\|² + o(mass)`; on `ℓ = 0`, `P_N(λx) − P_N(x) = 2(2γ + τ)\|x\|² + o(mass)` with `2γ + τ > 0` | `tendsto_liouvilleMertensError`, `exists_abs_liouvilleForm_stepProfile_finitePart_le`, `exists_abs_liouvilleForm_sub_zetaForm_sub_le` |
 | **RP34 Mertens' theorem in residue classes with its constant** | for `r` a unit mod `q`, `Σ_{t ≤ y, t ≡ r} Λ(t)/t = log y/φ(q) + c_r + o(1)` with `φ(q) c_r = −γ − Q_q + Re Σ_{χ ≠ 1} χ(r⁻¹)(−L′/L(1, χ))`, `Q_q = lim Σ_{t ≤ y, (t,q) > 1} Λ(t)/t` | `tendsto_classMertensSum_sub`, `classMertensConstant_eq`, `tendsto_principalMertensSum_sub_log` |
 | **RP35 The residue finite part is diagonalized by characters** | for units `a, b`: `⟨w_a^{(M)}, P w_b^{(M')}⟩ = (q/φ(q)) S_a(M) S_b(M') + c_{a⁻¹b} S_a(M) + c_{b⁻¹a} S_b(M) + O(η H_M + C_η)`; the finite-part matrix `F_{ab} = c_{a⁻¹b} + c_{b⁻¹a}` has every character as eigenvector, `Σ_b F_{ab} χ(b) = 2 Re β_χ · χ(a)`, `β_χ = −L′/L(1, χ)` (`χ ≠ 1`), `β_1 = −γ − Q_q`; inputs: class constants `q S_a(M) = log M + d_a + O(1/M)`, `L_a` to second order; the twisted pole `Re χ(n) u^{(M)}_n` has `P_N(x) = 2 Re(−L′/L(1, χ))\|x\|² + o(mass)` for every `χ ≠ 1` | `exists_abs_residueGram_finitePart_le`, `sum_residueFinitePart_mul_char`, `sum_classMertensConstant_mul_char`, `exists_classHarmonic_constant`, `exists_abs_atomicWeilForm_charPole_sub_le` |
+| **RP36 The finite part sees every flipped prime** | a twin flipping a finite prime set `F` has `A_{ε_F}(y) − log y → −γ − δ_F` with `δ_F ≥ 2 log p/p` for each `p ∈ F`; on every uniform profile `P_N(ε_F x) − P_N(x) = −2δ_F\|x\|² + o(mass)`: matching cannot separate the pair, the finite part does, and `ζ` has the largest finite part in the family | `exists_abs_finiteFlipForm_sub_zetaForm_add_le`, `two_mul_log_div_le_finiteFlipLimit`, `tendsto_finiteFlipMertensError` |
 
 ---
 
@@ -493,7 +494,9 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 10. **Is the coupled class bounded at the centre?** Owned by BGG.
 11. **What selects the fibre?** Divergences are soft: the tensor law holds for every sign twin in
     its gauged coordinates. Selection must come from the finite parts and from the gauge-charged
-    matching (RP8, RP11), which reads only the density of the gauge.
+    matching (RP8, RP11), which reads only the density of the gauge. Within the twins flipping
+    finitely many primes the finite part does select `ζ`: each flipped prime lowers it by at least
+    `4 log p/p` (RP36), and the Liouville twin is separated on the polar hyperplane (RP33).
 12. **What are the escape states of `ζ` at infinite height?** Infinite transverse energy (AES).
 
 ---
@@ -510,7 +513,7 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 | The anomaly is a nuisance to be removed for free | Its potential is the self-intersection; removing it saves at least `½ log N` |
 | At the horizon the divergence is rank one | Only on uniform profiles; on class-wise profiles it is the tensor counterterm, of unbounded rank |
 | A sign twin has the same divergences, so the same renormalization | The same spectrum, but the opposite polar matching at the Liouville gauge |
-| A twin flipping one prime is separated by the coupled renormalization | Its polar matching coefficient is `1`, as for `ζ`; only finite parts see individual primes |
+| A twin flipping one prime is separated by the coupled renormalization | Its polar matching coefficient is `1`, as for `ζ`; only finite parts see individual primes, each lowering it by at least `4 log p/p` (RP36) |
 | The Hecke anomaly `log t` is intrinsic to the prime place | It belongs to the Abel radius; at the horizon `[p]` scales the orbit densities by `1/p` and the anomaly cancels |
 | A matched counterterm proves the sign | It removes the divergence; the sign lives in the finite part |
 | The finite part of the prime place hides the zeros | On uniform profiles it is the scalar `−2γ`, on the classes the tower form; the zeros are invisible at log-scale resolution, and the sign is decided by the archimedean place and the pole |
@@ -704,6 +707,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheCharacterMertensSumConverges` | Abel summation against `ψ(x, χ)`; subexponential decay; convergence of `A_χ`; the finite part of a character gauge |
 | `TheCharacterMertensLimitIsTheLogarithmicDerivative` | Abel weights; Abel's theorem for `χΛ`; `α_χ = −L′/L(1, χ)` |
 | `TheFinitePartSeparatesZetaFromItsLiouvilleTwin` | the even prime-power limit `τ`; the Liouville Mertens limit; the Liouville finite part; separation from `ζ` on the polar hyperplane |
+| `TheFinitePartSeesEveryFlippedPrime` | the flip deficit and its limit `δ_F`; every flipped prime counts; the twin's Mertens limit; separation from `ζ` on every uniform profile |
 | `MertensTheoremInResidueClassesWithItsConstant` | the non-coprime prime powers; the principal limit `−γ − Q_q`; the class constants through `−L′/L(1, χ)` |
 | `ClassHarmonicSumsHaveConstants` | Euler's constant with a rate; Cauchy with a rate; shifted classes; the class constants `d_a`; `L_a` to second order |
 | `TheFinitePartOnResidueClasses` | the residue Gram as class Mertens sums; floors; the logarithmic model Gram to `O(1)`; the residue finite-part law |

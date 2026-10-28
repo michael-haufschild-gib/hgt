@@ -641,3 +641,8 @@ The rough-defect variance adapter passed. Its actual prime-power edge injection
 and the `C/log(Q)` variance estimate have a clean transitive audit. Source
 installed; first required olean builds for the smooth/rough projection adapter.
 Three of sixteen scratch modules pass. Spectral exhaustion remains unverified.
+
+The exact smooth/rough horizon partition passed with a clean transitive audit.
+It is installed; its first required olean builds for the conditional-mean
+projection adapter. All first four scratch modules pass. Twelve remain
+unverified, as do the final actual-source audits and exhaustion endpoints.

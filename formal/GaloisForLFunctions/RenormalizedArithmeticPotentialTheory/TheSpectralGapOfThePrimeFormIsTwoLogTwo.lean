@@ -441,7 +441,7 @@ theorem sum_log_mul_fibre_le (Q N : ℕ) (y : ℕ → ℝ) (c : ℝ) :
         ← sum_smallEdge_fibre_rough Q N (mem_roughInterval.mp hb).1]
     rw [this]
     exact sum_smallEdge_le Q N y
-  rw [e1, e2, mul_sum, mul_sum, ← sum_add_distrib]
+  rw [e1, e2]
   have hstep : ∀ b ∈ roughInterval Q N, 1 / (b : ℝ) * ∑ a ∈ smoothSet Q (N / b),
         1 / (a : ℝ) * Real.log a * (y (a * b) - c) ^ 2 ≤
       2 * (1 / (b : ℝ) * smoothEnergy Q (N / b) (fun a => y (a * b) - c)) +
@@ -460,6 +460,11 @@ theorem sum_log_mul_fibre_le (Q N : ℕ) (y : ℕ → ℝ) (c : ℝ) :
           (fun a => y (a * b) - c) + ∑ b ∈ roughInterval Q N, 2 * ladderConstant Q *
             (1 / (b : ℝ) * ∑ a ∈ smoothSet Q (N / b), 1 / (a : ℝ) * (y (a * b) - c) ^ 2) := by
         rw [sum_add_distrib, mul_sum]
+    _ = 2 * ∑ b ∈ roughInterval Q N, 1 / (b : ℝ) * smoothEnergy Q (N / b)
+          (fun a => y (a * b) - c) + 2 * ladderConstant Q * ∑ b ∈ roughInterval Q N,
+            1 / (b : ℝ) * ∑ a ∈ smoothSet Q (N / b), 1 / (a : ℝ) * (y (a * b) - c) ^ 2 := by
+        congr 1
+        exact (mul_sum _ _ _).symm
     _ ≤ _ := by linarith [e3]
 
 /-- **Shells are thin**: the rough mass of `(Y/t, Y]` is at most `1 + log t`. -/
@@ -468,8 +473,10 @@ theorem roughHarmonic_sub_div_le (Q Y : ℕ) {t : ℕ} (ht : 1 ≤ t) :
   have hsub : (roughInterval Q Y).filter (fun K => Y / t < K) ⊆
       (roughInterval 0 Y).filter (fun K => Y / t < K) := fun K hK => by
     obtain ⟨hK1, hK2⟩ := mem_filter.mp hK
-    exact mem_filter.mpr ⟨by rw [roughInterval_zero]; exact mem_Icc.mpr
-      ⟨(mem_roughInterval.mp hK1).1, (mem_roughInterval.mp hK1).2.1⟩, hK2⟩
+    have hK3 : K ∈ roughInterval 0 Y := by
+      rw [roughInterval_zero]
+      exact mem_Icc.mpr ⟨(mem_roughInterval.mp hK1).1, (mem_roughInterval.mp hK1).2.1⟩
+    exact mem_filter.mpr ⟨hK3, hK2⟩
   rw [roughHarmonic_sub_eq (Nat.div_le_self Y t)]
   refine (sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity).trans ?_
   rw [← roughHarmonic_sub_eq (Nat.div_le_self Y t)]

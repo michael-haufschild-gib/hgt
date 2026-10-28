@@ -52,6 +52,7 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 - RP35 residue finite part `c_{a⁻¹b} S_a + c_{b⁻¹a} S_b`; characters diagonalize it with eigenvalues
   `2 Re(−L′/L(1, χ))`, `2(−γ − Q_q)` on the trivial character; the twisted pole `Re χ · u^{(M)}` has
   horizon form `2 Re(−L′/L(1, χ))|x|² + o(mass)` for every modulus.
+- RP36 finite-flip twins: `P_N(ε_F x) − P_N(x) = −2δ_F|x|² + o(mass)`, `δ_F ≥ 2 log p/p` per `p ∈ F`.
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke
