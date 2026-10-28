@@ -977,10 +977,12 @@ theorem smoothEnergy_sub_const (Q X : ℕ) (h : ℕ → ℝ) (c : ℝ) :
     sum_congr rfl fun j _ => ?_
   split_ifs <;> ring
 
-/-- **The finite-prime chain at a horizon**: `(g_X − 4L/X^{1/4} − 16LM/log X) Var ≤
-(1 + 16L/log X) E` for `X ≥ 2`. -/
-theorem smoothVar_mul_le {Q X : ℕ} (hX : 2 ≤ X) (h : ℕ → ℝ) :
-    (boxGap X - 4 * logSum Q / Real.sqrt (Real.sqrt X) -
+/-- **From the box to the horizon**: if the zero extension of `h − mean` has box Poincaré constant
+`g`, then `(g − 4L/X^{1/4} − 16LM/log X) Var ≤ (1 + 16L/log X) E` on the `Q`-smooth numbers of
+`[1, X]`, `X ≥ 2`: the boundary is small below `√X` and paid by the halo above. -/
+theorem smoothVar_mul_le_of_box {Q X : ℕ} (hX : 2 ≤ X) (h : ℕ → ℝ) {g : ℝ}
+    (hbox : g * smoothVar Q X h ≤ boxEnergy X Q (zeroExt Q X h)) :
+    (g - 4 * logSum Q / Real.sqrt (Real.sqrt X) -
         16 * logSum Q * ladderConstant Q / Real.log X) * smoothVar Q X h ≤
       (1 + 16 * logSum Q / Real.log X) * smoothEnergy Q X h := by
   set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h
@@ -1000,15 +1002,7 @@ theorem smoothVar_mul_le {Q X : ℕ} (hX : 2 ≤ X) (h : ℕ → ℝ) :
       split_ifs
       · exact mul_nonneg (div_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _)) (sq_nonneg _)
       · exact le_rfl
-  -- the box comparison
-  have hbox := boxGap_mul_boxVar_le (J := X) (by omega) Q (zeroExt Q X h)
   have hext := boxEnergy_zeroExt_le Q X h
-  have hvar := smoothVar_le_boxVar Q X h
-  have hg : 0 ≤ boxGap X := by
-    rw [boxGap]
-    have : (1 / 2 : ℝ) ^ (X + 1) ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
-    have := Real.log_pos (show (1 : ℝ) < 2 by norm_num)
-    nlinarith
   -- the boundary: small below `√X`, the halo above
   have hbd := smoothBoundary_le (Q := Q) (by omega : 1 ≤ X) h
   have hsplit : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 * Real.sqrt ((a : ℝ) / X) ≤
@@ -1064,14 +1058,28 @@ theorem smoothVar_mul_le {Q X : ℕ} (hX : 2 ≤ X) (h : ℕ → ℝ) :
       2 / Real.log X * (2 * E + 2 * M * V)) :=
     hbd.trans (mul_le_mul_of_nonneg_left (hsplit.trans (add_le_add le_rfl
       (mul_le_mul_of_nonneg_left hhalo (by positivity)))) (by positivity))
-  have key : boxGap X * V ≤ E + 4 * L * (V / Real.sqrt (Real.sqrt X) +
+  have key : g * V ≤ E + 4 * L * (V / Real.sqrt (Real.sqrt X) +
       2 / Real.log X * (2 * E + 2 * M * V)) :=
-    (mul_le_mul_of_nonneg_left hvar hg).trans (hbox.trans (hext.trans (add_le_add le_rfl hB)))
+    hbox.trans (hext.trans (add_le_add le_rfl hB))
   have e1 : 4 * L * (V / Real.sqrt (Real.sqrt X) + 2 / Real.log X * (2 * E + 2 * M * V)) =
       4 * L / Real.sqrt (Real.sqrt X) * V + 16 * L * M / Real.log X * V + 16 * L / Real.log X * E := by
     field_simp; ring
   rw [e1] at key
   nlinarith
+
+/-- **The finite-prime chain at a horizon**: `(g_X − 4L/X^{1/4} − 16LM/log X) Var ≤
+(1 + 16L/log X) E` for `X ≥ 2`. -/
+theorem smoothVar_mul_le {Q X : ℕ} (hX : 2 ≤ X) (h : ℕ → ℝ) :
+    (boxGap X - 4 * logSum Q / Real.sqrt (Real.sqrt X) -
+        16 * logSum Q * ladderConstant Q / Real.log X) * smoothVar Q X h ≤
+      (1 + 16 * logSum Q / Real.log X) * smoothEnergy Q X h := by
+  have hg : 0 ≤ boxGap X := by
+    rw [boxGap]
+    have : (1 / 2 : ℝ) ^ (X + 1) ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+    have := Real.log_pos (show (1 : ℝ) < 2 by norm_num)
+    nlinarith
+  exact smoothVar_mul_le_of_box hX h ((mul_le_mul_of_nonneg_left (smoothVar_le_boxVar Q X h) hg).trans
+    (boxGap_mul_boxVar_le (J := X) (by omega) Q (zeroExt Q X h)))
 
 /-- **The finite-prime valuation chain has gap `2 log 2`.** For every finite prime cutoff `Q` and
 every `ε > 0`, eventually in `X`, `(2 log 2 − ε) Var ≤ E` on the `Q`-smooth numbers of `[1, X]`. -/

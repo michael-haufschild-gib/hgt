@@ -83,7 +83,7 @@ normalizer has constant 2*sum_m m^2. This controls the Gram part of growing-mode
 transfer only.
 Prime-matrix residual, modal complement and Gamma/pole comparison remain distinct.
 
-## Conductor-explicit prime residual target
+## Conductor-explicit prime residual budget
 
 Module 8 proves that the reciprocal Mangoldt mass on p-powers beyond y>=1
 is at most 2 log(p)/y. Subtracting the first floor(log_p y) powers from the
@@ -98,8 +98,10 @@ f(y)=|e(y)|+1/y, module 9 proves the literal normalized Ramanujan row residual b
 
 |residual_m(N,n)| <= sqrt(phi(m)) (1+4 log(m)) f(floor(N/n))/sqrt(n).
 
-It gives the formalized finite-family squared residual budget
-(sum_m phi(m)(1+4 log(m))^2) * sum_(n<=N) f(floor(N/n))^2/n.
+For arbitrary real coefficients a_m, it proves
+sum_n (sum_m a_m residual_m(N,n))^2
+<= (sum_m a_m^2) * (sum_m phi(m)(1+4 log(m))^2)
+  * sum_(n<=N) f(floor(N/n))^2/n.
 The harmonic-quotient theorem proves the second factor is o(log N).
 The input contains only finite prime arithmetic and the proved Mertens remainder;
 no conductor-uniform convergence or complement sign is assumed. Module 9,

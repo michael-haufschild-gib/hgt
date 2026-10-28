@@ -101,7 +101,12 @@ private theorem coarseGammaEdge_adjacent_ge (q : ℕ → ℝ) {a : ℕ} (ha : 1 
   have h := mul_le_mul_of_nonneg_left (width_mul_gamma_ge (logCellWidth_pos ha) hw1)
     (mul_nonneg (haarMass_pos ha).le (sq_nonneg (q (2 * a) - q (2 * a + 1))))
   rw [coarseGammaEdge_adjacent q ha]
-  convert h using 1 <;> ring
+  calc
+    _ = (haarMass a * (q (2 * a) - q (2 * a + 1)) ^ 2) *
+        (Real.exp (-(1 / 2 : ℝ)) / 2) := by ring
+    _ ≤ (haarMass a * (q (2 * a) - q (2 * a + 1)) ^ 2) *
+        (logCellWidth a * archLevyDensity (logCellWidth a)) := h
+    _ = _ := by ring
 
 /-- The existing mean graph pays the same adjacent variation read by prime two. -/
 theorem primeTwoCoarseVariation_le_meanGraph (q : ℕ → ℝ) {Y X : ℕ}
@@ -122,15 +127,16 @@ theorem primeTwoCoarseVariation_le_meanGraph (q : ℕ → ℝ) {Y X : ℕ}
     exact coarseGammaEdge_nonneg q (Finset.mem_Icc.mp ha).1 (Finset.mem_Icc.mp hb).1
   have hselected := Finset.sum_le_sum_of_subset_of_nonneg hrows
     (fun a ha _ => hrowNN a ha)
-  rw [Finset.sum_image (by intro a _ b _ hab; omega)] at hselected
+  rw [Finset.sum_image (by intro a _ b _ hab; change 2 * a = 2 * b at hab; omega)] at hselected
   have hcols : (∑ a ∈ Finset.Icc 1 Y, coarseGammaEdge q (2 * a) (2 * a + 1)) ≤
       ∑ a ∈ Finset.Icc 1 Y, ∑ b ∈ Finset.Icc 1 X, coarseGammaEdge q (2 * a) b := by
     apply Finset.sum_le_sum
     intro a ha
     have ha1 := (Finset.mem_Icc.mp ha).1
     have haY := (Finset.mem_Icc.mp ha).2
-    exact Finset.single_le_sum
-      (fun b hb => coarseGammaEdge_nonneg q (by omega) (Finset.mem_Icc.mp hb).1)
+    exact Finset.single_le_sum (s := Finset.Icc 1 X) (a := 2 * a + 1)
+      (f := coarseGammaEdge q (2 * a))
+      (fun b hb => coarseGammaEdge_nonneg q (by omega : 1 ≤ 2 * a) (Finset.mem_Icc.mp hb).1)
       (Finset.mem_Icc.mpr ⟨by omega, by omega⟩)
   have hlocal : (Real.exp (-(1 / 2 : ℝ)) / 2) * primeTwoCoarseVariation q Y ≤
       ∑ a ∈ Finset.Icc 1 Y, coarseGammaEdge q (2 * a) (2 * a + 1) := by
@@ -139,7 +145,9 @@ theorem primeTwoCoarseVariation_le_meanGraph (q : ℕ → ℝ) {Y X : ℕ}
   have hgraph : (Real.exp (-(1 / 2 : ℝ)) / 2) * primeTwoCoarseVariation q Y ≤
       completePairMeanGraph q X := hlocal.trans (hcols.trans hselected)
   have hhalf := mul_le_mul_of_nonneg_left hgraph (by norm_num : (0 : ℝ) ≤ 1 / 2)
-  convert hhalf using 1 <;> ring
+  calc
+    _ = (1 / 2 : ℝ) * ((Real.exp (-(1 / 2 : ℝ)) / 2) * primeTwoCoarseVariation q Y) := by ring
+    _ ≤ _ := hhalf
 
 /-- A horizon-independent detail charge for the literal prime-two coefficient. -/
 def primeTwoDetailCharge : ℝ :=
@@ -163,7 +171,6 @@ theorem primeTwoDetailCharge_payment :
         Real.exp (-(1 / 2 : ℝ)) / 4 + (ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) ^ 2 := by
       unfold primeTwoDetailCharge
       field_simp [Real.exp_ne_zero (-(1 / 2 : ℝ))]
-      ring
     rw [he]
     exact le_add_of_nonneg_left (by positivity)
 
@@ -173,10 +180,10 @@ theorem abs_primeTwoMixedSource_le_meanGraph (d q : ℕ → ℝ) {Y X : ℕ}
     |primeTwoMixedSource d q Y X| ≤ primeTwoDetailCharge * primeTwoDetailMass d Y +
       (1 / 2) * completePairMeanGraph q X := by
   apply (abs_primeTwoMixedSource_le_variation d q hYX primeTwoDetailCharge_pos).trans
-  exact add_le_add_left
+  exact add_le_add (le_refl _)
     ((mul_le_mul_of_nonneg_right primeTwoDetailCharge_payment
       (primeTwoCoarseVariation_nonneg q Y)).trans
-      (primeTwoCoarseVariation_le_meanGraph q hYX)) _
+      (primeTwoCoarseVariation_le_meanGraph q hYX))
 
 /-- Paying the complete prime-two mixed block retains the remaining detail charge. -/
 theorem completePair_gamma_after_primeTwoMixed (d q : ℕ → ℝ) (Y : ℕ) :

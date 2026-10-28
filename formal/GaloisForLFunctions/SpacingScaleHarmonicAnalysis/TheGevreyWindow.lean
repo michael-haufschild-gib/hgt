@@ -20,7 +20,7 @@ explicit, `C_p ≲ (p^s)^p`, and an order growing with `N` brings the window dow
 noncomputable section
 
 open MeasureTheory Set Filter Topology RHTower RHTower.DQPT
-open scoped Real ContDiff
+open scoped Real ContDiff Convolution
 
 namespace GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 
@@ -614,5 +614,214 @@ theorem tendsto_gevrey {κ : ℕ → ℝ} {s : ℝ} (hs : 0 ≤ s) (hκ : Overla
   exact tendsto_synthLevy_of he hLE (gevrey_lip_tendsto hs hK hK'ℓ hev M' A')
 
 end Growth
+
+/-! ### Gevrey tests -/
+
+section GevreyTests
+
+variable {φ g : ℝ → ℝ}
+
+/-- The derivatives of a mollification fall on the mollifier: `(g ∗ φ_m)^{(l)} = g ∗ (φ_m)^{(l)}`. -/
+theorem iteratedDeriv_mollify (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ) (hg : Continuous g)
+    {m : ℝ} (hm : 0 < m) (l : ℕ) :
+    iteratedDeriv l (mollify g φ m) = fun x => ∫ t, g t * iteratedDeriv l (dilate m φ) (x - t) := by
+  induction l with
+  | zero => rw [iteratedDeriv_zero]; funext x; simp only [iteratedDeriv_zero]; rfl
+  | succ l ih =>
+    rw [iteratedDeriv_succ, ih]
+    funext x
+    have hψ : ContDiff ℝ ∞ (iteratedDeriv l (dilate m φ)) := by
+      rw [iteratedDeriv_eq_iterate]; exact (contDiff_dilate_smooth hφ m).iterate_deriv l
+    have hψc := hasCompactSupport_iteratedDeriv (hasCompactSupport_dilate_of hφ1 hm) l
+    have h := hψc.hasDerivAt_convolution_right (ContinuousLinearMap.mul ℝ ℝ)
+      (hg.locallyIntegrable (μ := volume)) (hψ.of_le (natCast_le_infty 1)) x
+    have e : (fun x => ∫ t, g t * iteratedDeriv l (dilate m φ) (x - t)) =
+        g ⋆[ContinuousLinearMap.mul ℝ ℝ, volume] iteratedDeriv l (dilate m φ) := by
+      funext y; rfl
+    rw [e, h.deriv, iteratedDeriv_succ]
+    rfl
+
+/-- **Mollified tests are Gevrey**: for `|g| ≤ M_g` and a Gevrey profile, `g ∗ φ_m` satisfies
+`|(g ∗ φ_m)^{(l)}| ≤ M_g A (B m)^l (l!)^s`. -/
+theorem abs_iteratedDeriv_mollify_le (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hg : Continuous g) {Mg : ℝ} (hgM : ∀ t, |g t| ≤ Mg) {m : ℝ} (hm : 0 < m) {A Bφ s : ℝ}
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (l : ℕ) (x : ℝ) :
+    |iteratedDeriv l (mollify g φ m) x| ≤ Mg * A * (Bφ * m) ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s := by
+  have hMg : 0 ≤ Mg := (abs_nonneg _).trans (hgM 0)
+  have hψ : ContDiff ℝ ∞ (iteratedDeriv l (dilate m φ)) := by
+    rw [iteratedDeriv_eq_iterate]; exact (contDiff_dilate_smooth hφ m).iterate_deriv l
+  have hψc := hasCompactSupport_iteratedDeriv (hasCompactSupport_dilate_of hφ1 hm) l
+  rw [iteratedDeriv_mollify hφ hφ1 hg hm l]
+  refine (abs_integral_mul_le_sup_mul hgM
+    (hψ.continuous.integrable_of_hasCompactSupport hψc) x).trans ?_
+  rw [integral_abs_iteratedDeriv_dilate hφ hm l]
+  have := mul_le_mul_of_nonneg_left (hA l) (mul_nonneg hMg (pow_nonneg hm.le l))
+  calc Mg * (m ^ l * ∫ t, |iteratedDeriv l φ t|) = Mg * m ^ l * ∫ t, |iteratedDeriv l φ t| := by
+        ring
+    _ ≤ Mg * m ^ l * (A * Bφ ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) := this
+    _ = _ := by rw [mul_pow]; ring
+
+end GevreyTests
+
+/-! ### The transfer law in the Gevrey window -/
+
+section Transfer
+
+variable {Φ : (ℝ → ℝ) → ℝ} {φ : ℝ → ℝ} {A Bφ s : ℝ}
+
+/-- **Gevrey negative tests for a stable form**: a stable form negative on a `C²` test is negative
+on a smooth Gevrey test, its mollification by a dilated Gevrey profile. -/
+theorem exists_gevrey_neg_of_stable (hΦ : StableForm Φ) (hφ : ContDiff ℝ ∞ φ)
+    (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (hneg : Φ g < 0) :
+    ∃ (G : ℝ → ℝ) (M b : ℝ), ContDiff ℝ ∞ G ∧ HasCompactSupport G ∧ 0 ≤ M ∧ 0 ≤ b ∧
+      (∀ l t, |iteratedDeriv l G t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) ∧ Φ G < 0 := by
+  obtain ⟨R, Mg, L, hR, hgR, hgM, hgL⟩ := exists_test_bounds hg hgc
+  obtain ⟨Err, hErr, hle⟩ := hΦ.2 g hg hgc (R + 1) (by linarith)
+    (fun u hu => hgR u (by linarith))
+  obtain ⟨he, hV, -, -⟩ := tendsto_mollifyErr L (∫ s, |φ s|) Mg (∫ s, |deriv φ s|) (R + 1)
+  obtain ⟨n, hn1, hn2⟩ := (((hErr _ _ he hV).eventually (gt_mem_nhds
+    (show (0 : ℝ) < -Φ g by linarith))).and (eventually_ge_atTop 1)).exists
+  have hn : (1 : ℝ) ≤ n := by exact_mod_cast hn2
+  have hMg : 0 ≤ Mg := (abs_nonneg _).trans (hgM 0)
+  have hA0 : 0 ≤ A := by
+    have := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
+    simpa using this
+  refine ⟨mollify g φ n, Mg * A, Bφ * n, contDiff_mollify hφ hφ1 hg.continuous (by linarith),
+    hasCompactSupport_of_vanishes (mollify_supportedIn hφ1 hgR hn), by positivity, by positivity,
+    fun l t => abs_iteratedDeriv_mollify_le hφ hφ1 hg.continuous hgM (by linarith) hA l t, ?_⟩
+  obtain ⟨hD2, hDR, hsup, hlip⟩ := mollify_perturbation hφ hφ1 hφint hg hgR hgM hgL hn
+  have h := hle _ _ _ _ hD2 hDR hsup hlip hn
+  have he' : (fun u => g u + (mollify g φ n u - g u)) = mollify g φ n := by funext u; ring
+  rw [he'] at h
+  linarith
+
+/-- **A stable form negative on a Gevrey test is negative on the atomic families of Gevrey overlap
+growth**, for every Gevrey profile of the same class. -/
+theorem frequently_atomicTest_neg_of_stable_gevrey (hΦ : StableForm Φ) (hφ : ContDiff ℝ ∞ φ)
+    (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) {G : ℝ → ℝ} (hG : ContDiff ℝ ∞ G)
+    (hGc : HasCompactSupport G) {M b : ℝ} (hM0 : 0 ≤ M) (hb : 0 ≤ b)
+    (hGM : ∀ l t, |iteratedDeriv l G t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
+    (hneg : Φ G < 0) :
+    ∃ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ, Φ (atomicTest N x (dilate (κ N) φ)) < 0 := by
+  have hG2 : ContDiff ℝ 2 G := hG.of_le (natCast_le_infty 2)
+  obtain ⟨R, -, -, hR, hGR, -, -⟩ := exists_test_bounds hG2 hGc
+  obtain ⟨Err, hErr, hle⟩ := hΦ.2 G hG2 hGc (R + 1) (by linarith)
+    (fun u hu => hGR u (by linarith))
+  have hA0 : 0 ≤ A := by
+    have := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
+    simpa using this
+  set B := blockSize R
+  have hB : 1 ≤ B := one_le_blockSize R
+  obtain ⟨he, hV⟩ := tendsto_gevrey hs hκ hB (M := M) (b := b) (A := A) (Bφ := Bφ)
+    (A0 := ∫ s, |φ s|) (mul_nonneg hM0 hA0) hb hBφ
+    (fun l => M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) (fun q => ∫ s, |iteratedDeriv q φ s|)
+    (R + 1)
+  have h1 := (hErr _ _ he hV).eventually (gt_mem_nhds (show (0 : ℝ) < -Φ G by linarith))
+  have hNB : Tendsto (fun n : ℕ => n * B) atTop atTop :=
+    tendsto_atTop_mono (fun n => Nat.le_mul_of_pos_right n hB) tendsto_id
+  have h3 := hNB.eventually (hκ.1.eventually_ge_atTop 1)
+  rw [Filter.frequently_atTop]
+  intro a
+  obtain ⟨n, hn1, hk, hn3, hna⟩ :=
+    (h1.and (h3.and ((eventually_ge_atTop 2).and (eventually_ge_atTop a)))).exists
+  refine ⟨n * B, hna.trans (Nat.le_mul_of_pos_right n hB), ?_⟩
+  obtain ⟨x, D, hx, hD2, hDR, hsup, hlip⟩ := exists_gevreySynthesis hφ hφ1 hφint hG hGR hM0 hb
+    hBφ hs hGM hA hn3 hk (gevOrder (κ (n * B)))
+  refine ⟨x, ?_⟩
+  rw [hx, hΦ.1 _ (hG2.add hD2) (hGc.add (hasCompactSupport_of_vanishes hDR))]
+  have := hle D _ _ _ hD2 hDR hsup hlip hk
+  linarith
+
+/-- **The transfer law in the Gevrey window**: for a stable form, a Gevrey profile of class `s`
+and a dilation sequence of Gevrey overlap growth of class `s`, `Φ ≥ 0` on all tests iff `Φ` is
+eventually nonnegative on the atomic families of width `1/κ_N`. -/
+theorem nonneg_iff_atomicFamilies_nonneg_of_stable_gevrey (hΦ : StableForm Φ)
+    (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s)
+    (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) :
+    (∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g → 0 ≤ Φ g) ↔
+      ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ, 0 ≤ Φ (atomicTest N x (dilate (κ N) φ)) := by
+  constructor
+  · intro hpos
+    filter_upwards [hκ.1.eventually_gt_atTop 0] with N hk x
+    obtain ⟨h2, hc⟩ := atomicTest_dilate_mem (hφ.of_le (natCast_le_infty 2)) hφ1 hk N x
+    exact hpos _ h2 hc
+  · intro H
+    by_contra hneg0
+    push Not at hneg0
+    obtain ⟨g, hg, hgc, hneg⟩ := hneg0
+    obtain ⟨G, M, b, hG, hGc, hM0, hb, hGM, hGneg⟩ :=
+      exists_gevrey_neg_of_stable hΦ hφ hφ1 hφint hBφ hA hg hgc hneg
+    have hfr := frequently_atomicTest_neg_of_stable_gevrey hΦ hφ hφ1 hφint hs hBφ hA hκ hG hGc
+      hM0 hb hGM hGneg
+    obtain ⟨N, ⟨x, hx⟩, hN⟩ := (hfr.and_eventually H).exists
+    exact absurd (hN x) (not_le.mpr hx)
+
+end Transfer
+
+/-! ### The Gevrey window -/
+
+section Window
+
+variable {φ : ℝ → ℝ} {A Bφ s : ℝ} {κ : ℕ → ℝ}
+
+/-- **The overlap law in the Gevrey window**: for a smooth profile `φ` supported in `[−1, 1]` with
+`∫ φ = 1` and `‖φ^{(q)}‖₁ ≤ A B^q (q!)^s`, and every dilation sequence whose overlap ratio beats
+`(log log κ_N)^s`, RH holds iff for all large `N` Weil's form is nonnegative on every atomic test of
+width `1/κ_N`. -/
+theorem riemannHypothesis_iff_atomicFamilies_nonneg_of_gevrey (hφ : ContDiff ℝ ∞ φ)
+    (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hκ : OverlapGrowthGevrey s κ) :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      0 ≤ weilQuad (atomicTest N x (dilate (κ N) φ)) :=
+  RHTower.WeilSpectral.riemannHypothesis_iff_real_weilPositive.trans
+    (nonneg_iff_atomicFamilies_nonneg_of_stable_gevrey stableForm_weilQuad hφ hφ1 hφint hs hBφ hA
+      hκ)
+
+/-- **The gauge in the Gevrey window**: a bounded twist is seen by the atomic families of Gevrey
+overlap growth iff it is not Weil positive. -/
+theorem atomicFamilies_negative_iff_of_gevrey {lam : ℕ → ℝ}
+    (hlam : ∀ n, |lam n| ≤ ArithmeticFunction.vonMangoldt n) (hφ : ContDiff ℝ ∞ φ)
+    (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hκ : OverlapGrowthGevrey s κ) :
+    (∃ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ,
+      weilQuadTw lam (atomicTest N x (dilate (κ N) φ)) < 0) ↔ ¬ WeilPositiveFull lam := by
+  have h := nonneg_iff_atomicFamilies_nonneg_of_stable_gevrey (stableForm_weilQuadTw hlam) hφ hφ1
+    hφint hs hBφ hA hκ
+  have hreal : WeilPositiveFull lam ↔
+      ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g → 0 ≤ weilQuadTw lam g :=
+    ⟨fun hW g hg hgc => hW _ (Complex.ofRealCLM.contDiff.comp hg)
+      (hgc.comp_left Complex.ofReal_zero), fun hpos => WeilSpectral.weilPositiveFull_of_real hpos⟩
+  rw [hreal, h, Filter.not_eventually]
+  simp only [not_forall, not_le]
+
+/-- **The Markov form in the Gevrey window**: `M < 0` on some atomic test of width `1/κ_N` for
+infinitely many `N`, unconditionally. -/
+theorem markov_atomicFamilies_negative_of_gevrey (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hκ : OverlapGrowthGevrey s κ) :
+    ∃ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ, markovQuad (atomicTest N x (dilate (κ N) φ)) < 0 := by
+  obtain ⟨g, hg, hgc, hneg⟩ := exists_markovQuad_neg
+  obtain ⟨G, M, b, hG, hGc, hM0, hb, hGM, hGneg⟩ :=
+    exists_gevrey_neg_of_stable stableForm_markovQuad hφ hφ1 hφint hBφ hA hg hgc hneg
+  exact frequently_atomicTest_neg_of_stable_gevrey stableForm_markovQuad hφ hφ1 hφint hs hBφ hA hκ
+    hG hGc hM0 hb hGM hGneg
+
+/-- Widths `(log log N)^α/N`, `α > s` — overlap ratio `(log log N)^α` — have Gevrey overlap growth of
+class `s`. -/
+theorem overlapGrowthGevrey_loglog {α : ℝ} (hs : 0 ≤ s) (hα : s < α) :
+    OverlapGrowthGevrey s fun N : ℕ => (N : ℝ) / Real.log (Real.log N) ^ α := by
+  sorry
+
+end Window
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

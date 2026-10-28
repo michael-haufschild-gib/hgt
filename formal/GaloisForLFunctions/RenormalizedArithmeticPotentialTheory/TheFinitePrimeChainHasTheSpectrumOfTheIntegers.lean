@@ -195,15 +195,16 @@ theorem mul_pow_mem_smoothBox {J Q p u i : ℕ} (hp : p ∈ (range Q).filter Nat
   · rw [Nat.primeFactors_mul hu0 (pow_ne_zero _ hpp.ne_zero), mem_union] at hq
     rcases hq with hq | hq
     · exact h2 q hq
-    · rw [Nat.primeFactors_prime_pow (by have := mem_range.mp hi; omega) hpp] at hq
-      · rw [mem_singleton.mp hq]; exact mem_range.mp hpQ
+    · have hq' := Nat.mem_primeFactors.mp hq
+      rw [(Nat.prime_dvd_prime_iff_eq hq'.1 hpp).mp (hq'.1.dvd_of_dvd_pow hq'.2.1)]
+      exact mem_range.mp hpQ
   · rw [Nat.factorization_mul hu0 (pow_ne_zero _ hpp.ne_zero), Finsupp.add_apply,
       hpp.factorization_pow]
     by_cases hqp : q = p
     · subst hqp
       rw [Finsupp.single_eq_same, Nat.factorization_eq_zero_of_not_dvd hpu, zero_add]
       have := mem_range.mp hi; omega
-    · rw [Finsupp.single_eq_of_ne (Ne.symm hqp), add_zero]; exact h3 q
+    · rw [Finsupp.single_eq_of_ne hqp, add_zero]; exact h3 q
 
 /-- Moving a weighted sum through the four sums of the box energy. -/
 theorem sum_mul_boxEnergy_eq (J Q : ℕ) (s : Finset ℕ) (w : ℕ → ℝ) (F : ℕ → ℕ → ℝ) :
@@ -222,7 +223,7 @@ theorem sum_mul_boxEnergy_eq (J Q : ℕ) (s : Finset ℕ) (w : ℕ → ℝ) (F :
   rw [sum_comm]
   refine sum_congr rfl fun i' _ => ?_
   split_ifs
-  · rw [mul_sum]; exact sum_congr rfl fun j _ => by ring
+  · exact sum_congr rfl fun j _ => by ring
   · simp
 
 /-- **The levels of the box energy** in the top eigenbasis:
@@ -313,7 +314,7 @@ theorem boxSpectral_succ {J Q : ℕ} (hQ : Q.Prime)
       refine sum_congr rfl fun a ha => ?_
       rw [hslice a ha]
       simp only [ladInner, mul_sum, N]
-      rw [mul_sum]
+      rw [sum_mul]
       exact sum_congr rfl fun j _ => by ring
     rw [boxEig_succ hQ hm, hin, hnorm]
     have hNk := hN k hk

@@ -32,7 +32,7 @@ theorem abs_primeTwoMixedSource_le_graph_fraction (d q : ℕ → ℝ) {Y X : ℕ
     simpa only [mul_div_assoc, mul_comm] using
       mul_le_mul_of_nonneg_left primeTwoDetailCharge_payment hδ.le
   apply (abs_primeTwoMixedSource_le_variation d q hYX he).trans
-  apply add_le_add_left
+  apply add_le_add (le_refl _)
   calc
     _ ≤ (δ * (Real.exp (-(1 / 2 : ℝ)) / 4)) * primeTwoCoarseVariation q Y :=
       mul_le_mul_of_nonneg_right hcoef (primeTwoCoarseVariation_nonneg q Y)

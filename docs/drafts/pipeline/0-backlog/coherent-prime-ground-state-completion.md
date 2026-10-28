@@ -289,3 +289,27 @@ already proved. They supersede the earlier merely proposed carrier distinction;
 none counts as new here. The remaining sector source supplies measure-preserving
 coordinate evaluations and independence. These give concrete measure inputs
 for the desired L2 basis and generator without changing probability laws.
+
+The cylinder-density search surfaced `HTGeometry/CirclePoissonOuterFactor.lean`.
+Its Fourier definitions, orthogonality, and completeness argument through
+`eq_zero_of_inner_infiniteCircleFourierLp_eq_zero` were inspected. The proof
+uses Stone--Weierstrass on a compact circle product and density of continuous
+functions in L2. That compact carrier differs from the product of discrete
+natural valuations, so this is a proof pattern rather than a ready-made
+valuation-density theorem. A measurable cylinder monotone-class argument,
+or an explicitly proved compactification and measure transport, remains needed.
+The arithmetic Weyl-law candidate can reuse this exact valuation measure for
+its proposed positive Euler constant as an expectation of exp(-tameDifferent),
+but that identification and its ordinary-integer counting transfer remain unproved.
+
+A direct density route uses finite cylinder atoms. The local indicator v=k is
+the difference of two tail indicators v>=k and v>=k+1; each tail indicator is
+an exact finite combination of the constant and the first radial Ramanujan
+modes. Thus every finite-coordinate singleton cylinder indicator lies in the
+finite Ramanujan product span. These cylinder atoms, together with the whole
+space and the empty set, form a generating pi-system. An L2 vector orthogonal
+to the span is L1 on this probability space, and its integral vanishes on that
+pi-system. A finite signed/complex measure uniqueness argument then makes all
+measurable-set integrals zero and hence the vector zero. This avoids assuming
+compactness or an unproved product-basis interface. The exact indicator formulas,
+generating-system statement, and measure uniqueness adapters still need Lean.
