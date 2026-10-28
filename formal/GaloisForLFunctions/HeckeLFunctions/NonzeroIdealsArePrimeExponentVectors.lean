@@ -1,4 +1,5 @@
-import GaloisForLFunctions.HeckeLFunctions.HeckeCharactersGiveConvergentLSeries
+import Mathlib.NumberTheory.NumberField.Basic
+import Mathlib.RingTheory.DedekindDomain.Factorization
 
 /-!
 # Nonzero ideals are prime exponent vectors
@@ -27,8 +28,9 @@ def idealOfPrimeExponents (ν : HeightOneSpectrum (𝓞 K) →₀ ℕ) : (Ideal 
 def idealPrimeExponents (I : (Ideal (𝓞 K))⁰) : HeightOneSpectrum (𝓞 K) →₀ ℕ :=
   Finsupp.onFinset (Ideal.finite_factors (nonZeroDivisors.ne_zero I.2)).toFinset
     (fun v => (Associates.mk v.asIdeal).count (Associates.mk (I : Ideal (𝓞 K))).factors)
-    (fun v hv => Set.Finite.mem_toFinset.mpr
-      ((Associates.count_ne_zero_iff_dvd (nonZeroDivisors.ne_zero I.2) v.irreducible).mp hv))
+    (fun v hv => by
+      rw [Set.Finite.mem_toFinset]
+      exact (Associates.count_ne_zero_iff_dvd (nonZeroDivisors.ne_zero I.2) v.irreducible).mp hv)
 
 theorem idealPrimeExponents_apply (I : (Ideal (𝓞 K))⁰) (v : HeightOneSpectrum (𝓞 K)) :
     (idealPrimeExponents I v : ℤ) = count K v (I : Ideal (𝓞 K)) := by
@@ -41,8 +43,12 @@ theorem count_idealOfPrimeExponents (ν : HeightOneSpectrum (𝓞 K) →₀ ℕ)
     count K v ((idealOfPrimeExponents ν : Ideal (𝓞 K)) : FractionalIdeal (𝓞 K)⁰ K) = ν v := by
   change count K v ((ν.prod (fun w n => w.asIdeal ^ n) : Ideal (𝓞 K)) :
     FractionalIdeal (𝓞 K)⁰ K) = _
-  rw [Finsupp.prod, coeIdeal_finsetProd, count_prod]
-  · simp only [coeIdeal_pow, count_pow, count_maximal, mul_ite, mul_one, mul_zero,
+  rw [Finsupp.prod]
+  change count K v (coeIdealHom (𝓞 K)⁰ K (∏ w ∈ ν.support, w.asIdeal ^ ν w)) = _
+  rw [map_prod, count_prod]
+  · change (∑ w ∈ ν.support, count K v
+      ((w.asIdeal ^ ν w : Ideal (𝓞 K)) : FractionalIdeal (𝓞 K)⁰ K)) = _
+    simp only [coeIdeal_pow, count_pow, count_maximal, mul_ite, mul_one, mul_zero,
       Finset.sum_ite_eq', Finsupp.mem_support_iff, ne_eq, ite_not]
     split_ifs with h
     · simp [h]
@@ -53,8 +59,7 @@ theorem count_idealOfPrimeExponents (ν : HeightOneSpectrum (𝓞 K) →₀ ℕ)
 theorem idealPrimeExponents_idealOfPrimeExponents (ν : HeightOneSpectrum (𝓞 K) →₀ ℕ) :
     idealPrimeExponents (idealOfPrimeExponents ν) = ν := by
   ext v
-  exact Int.natCast_injective ((idealPrimeExponents_apply _ v).trans
-    (count_idealOfPrimeExponents ν v))
+  exact_mod_cast (idealPrimeExponents_apply _ v).trans (count_idealOfPrimeExponents ν v)
 
 theorem idealOfPrimeExponents_idealPrimeExponents (I : (Ideal (𝓞 K))⁰) :
     idealOfPrimeExponents (idealPrimeExponents I) = I := by

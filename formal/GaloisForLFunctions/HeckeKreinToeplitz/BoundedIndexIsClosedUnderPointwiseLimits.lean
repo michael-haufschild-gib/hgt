@@ -43,7 +43,7 @@ theorem eventually_le_hermNegIndex {β : Type*} {l : Filter β} {H : β → Matr
   -- compression to the negative eigenvectors
   set f : Fin s.card → ι := fun j => (s.equivFin.symm j : ι)
   have hf : Function.Injective f := fun j k h => s.equivFin.symm.injective (Subtype.ext h)
-  set U : Matrix ι ι ℂ := hH₀.eigenvectorUnitary
+  set U : Matrix ι ι ℂ := (hH₀.eigenvectorUnitary : Matrix ι ι ℂ)
   set S : Matrix ι (Fin s.card) ℂ := U.submatrix id f
   set c : Fin s.card → ℝ := fun j => hH₀.eigenvalues (f j)
   have hcneg : ∀ j, c j < 0 := fun j => by
@@ -97,7 +97,7 @@ theorem negIndex_le_of_tendsto {β : Type*} {l : Filter β} [l.NeBot] {k : β �
     negIndex k₀ ≤ m := by
   classical
   rw [negIndex_le_iff]
-  intro N x
+  intro _ x
   have hconv := eventually_le_hermNegIndex (H := fun n => gram (k n) x)
     (gram_isHermitian (isHermKernel_of_tendsto hk hh) x) fun a b => hk _
   obtain ⟨n, hn, hnm⟩ := (hconv.and hm).exists
