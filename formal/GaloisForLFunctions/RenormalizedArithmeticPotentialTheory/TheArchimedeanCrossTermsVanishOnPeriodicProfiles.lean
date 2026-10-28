@@ -200,15 +200,20 @@ theorem levyEnergy_atomicTest_eq_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompact
         2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
           x m * x n * (archLevyDensity s * bumpCorr g (s - (Real.log n - Real.log m))) else 0) := by
     intro s hs
+    have hcross : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
+        x m * x n * (archLevyDensity s * bumpCorr g (s - (Real.log n - Real.log m))) else 0) =
+        archLevyDensity s * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
+          x m * x n * bumpCorr g (s - (Real.log n - Real.log m)) else 0) := by
+      rw [mul_sum]
+      refine sum_congr rfl fun m _ => ?_
+      rw [mul_sum]
+      exact sum_congr rfl fun n _ => by split_ifs <;> ring
     rw [integral_sub_shift_sq_eq hf.continuous hfc s, integral_sub_shift_sq_eq hg.continuous hgc s,
       integral_atomicTest_sq hg hgc hgsupp hw x,
       SpacingScaleHarmonicAnalysis.integral_atomicTest_mul_shift hg.continuous hgc N x s,
-      sum_congr rfl (hpair s hs), sum_add_distrib, ← sum_mul]
-    rw [show ∫ u, g u * g (u + s) = bumpCorr g s from rfl]
-    simp only [mul_sum, mul_ite, mul_zero]
-    ring_nf
-    rw [sum_congr rfl fun m _ => sum_congr rfl fun n _ => by
-      split_ifs <;> ring]
+      sum_congr rfl (hpair s hs), sum_add_distrib, ← sum_mul,
+      show ∫ u, g u * g (u + s) = bumpCorr g s from rfl, hcross]
+    ring
   rw [levyEnergy, setIntegral_congr_fun measurableSet_Ioi hpt]
   have hI1 : IntegrableOn (fun s => archLevyDensity s * ∫ u, (g u - g (u + s)) ^ 2) (Set.Ioi 0) :=
     integrableOn_levyIntegrand hg hgc
@@ -221,13 +226,13 @@ theorem levyEnergy_atomicTest_eq_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompact
       exact (integrableOn_crossIntegrand hg hgc hgsupp hw0 (hgap m hm n hn hmn)).const_mul _
     · simp only [hmn, if_false]
       exact integrableOn_zero
-  rw [integral_sub (hI1.const_mul _) ((integrable_finset_sum _ fun m hm =>
-      integrable_finset_sum _ fun n hn => hI2 m hm n hn).const_mul _),
+  rw [integral_sub (hI1.const_mul _) ((integrable_finsetSum _ fun m hm =>
+      integrable_finsetSum _ fun n hn => hI2 m hm n hn).const_mul _),
     integral_const_mul, integral_const_mul, ← levyEnergy,
-    integral_finset_sum _ fun m hm => integrable_finset_sum _ fun n hn => hI2 m hm n hn]
+    integral_finsetSum _ fun m hm => integrable_finsetSum _ fun n hn => hI2 m hm n hn]
   congr 2
   refine sum_congr rfl fun m hm => ?_
-  rw [integral_finset_sum _ fun n hn => hI2 m hm n hn]
+  rw [integral_finsetSum _ fun n hn => hI2 m hm n hn]
   refine sum_congr rfl fun n _ => ?_
   split_ifs
   · rw [integral_const_mul, atomCrossKernel]
@@ -246,10 +251,9 @@ theorem abs_levyEnergy_atomicTest_sub_le_of_periodic (hg : ContDiff ℝ 2 g)
     |levyEnergy (atomicTest N (fun n => ψ n / Real.sqrt n) g) -
         (∑ n ∈ Icc 1 N, (ψ n / Real.sqrt n) ^ 2) * levyEnergy g| ≤
       168 * q * B ^ 2 * (w * N) * ∫ u, g u ^ 2 := by
-  set δ := atomSpacing N
-  have hδw : w < δ := by linarith
+  have hδw : w < atomSpacing N := by linarith
   rw [levyEnergy_atomicTest_eq_cross hg hgc hgsupp hN hw0 hδw]
-  set Φ : ℝ → ℝ := fun t => atomCrossKernel g (max t δ)
+  set Φ : ℝ → ℝ := fun t => atomCrossKernel g (max t (atomSpacing N))
   have hG : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg (g u)
   have hS : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m < n then
       ψ m / Real.sqrt m * (ψ n / Real.sqrt n) * atomCrossKernel g (Real.log n - Real.log m) else 0) =
@@ -262,13 +266,15 @@ theorem abs_levyEnergy_atomicTest_sub_le_of_periodic (hg : ContDiff ℝ 2 g)
         have h1 : (m : ℝ) < n := by exact_mod_cast hmn
         have h0 : (0 : ℝ) < m := by exact_mod_cast (mem_Icc.mp hm).1
         linarith [Real.log_lt_log h0 h1])] at this
-      simp only [Φ, max_eq_left this]
+      show _ = _ * atomCrossKernel g (max (Real.log n - Real.log m) (atomSpacing N))
+      rw [max_eq_left this]
     · rfl
   have hpair := abs_sum_periodicPair_le hq (N := N) (A := 2 * w * ∫ u, g u ^ 2) (by positivity) ψ
     hper hmean hB Φ (fun t _ => atomCrossKernel_nonneg hg0 _)
     (fun t ht => by
-      have h1 := atomCrossKernel_le hg hgc hgsupp hw0 (t := max t δ) (le_trans hw (le_max_right _ _))
-      have h2 : 1 / max t δ ≤ 1 / t := one_div_le_one_div_of_le ht (le_max_left _ _)
+      have h1 := atomCrossKernel_le hg hgc hgsupp hw0 (t := max t (atomSpacing N))
+        (le_trans hw (le_max_right _ _))
+      have h2 : 1 / max t (atomSpacing N) ≤ 1 / t := one_div_le_one_div_of_le ht (le_max_left _ _)
       refine h1.trans (mul_le_mul_of_nonneg_left (by linarith) (by positivity)))
     (fun t₁ t₂ _ h12 => atomCrossKernel_anti hg hgc hgsupp hg0 hw0
       (lt_of_lt_of_le hδw (le_max_right _ _)) (max_le_max h12 le_rfl))

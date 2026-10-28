@@ -100,8 +100,8 @@ theorem cellGammaWeight_mul_abs_haar_tail_pair_le_gamma (q d : ℕ → ℝ) {A m
       _ ≤ ‖v‖ * ‖v‖ := mul_le_mul_of_nonneg_right (norm_halfLineRightShift_le _ v) (norm_nonneg _)
       _ = _ := (pow_two _).symm
   have hmass : ‖v‖ ^ 2 = ∑ a ∈ Icc 1 X, haarMass a * (if A ≤ a then d a else 0) ^ 2 := by
-    simpa only [inner_self_eq_norm_sq] using
-      re_inner_haarSection_self (fun a => if A ≤ a then d a else 0) X
+    have hn : (inner ℂ v v).re = ‖v‖ ^ 2 := inner_self_eq_norm_sq _
+    exact hn.symm.trans (re_inner_haarSection_self (fun a => if A ≤ a then d a else 0) X)
   exact (mul_le_mul_of_nonneg_left (hnorm.trans_eq hmass) (cellGammaWeight_pos hA).le).trans
     (cellGammaWeight_mul_haar_tail_mass_le_gamma q d hA X)
 

@@ -240,3 +240,17 @@ and count how many parent variances contain each detail. The resulting weight
 should be comparable to 1+log(a). Root cell means remain a distinct sector.
 All constants, domain restrictions and the Gamma pair-integral normalization
 must be carried in the Lean statements.
+
+### Local sibling estimate
+
+Prove the exact adjacent-interval variance identity, including the parallel
+mass times the squared difference of actual means. On a parent interval of
+width D<=1 with children L,R, the existing Gamma density bound gives
+
+min(L,R)/(2D) * Var(parent) <= Gamma(sibling rectangle).
+
+The proof compares the complete uniform pair-difference integral with the
+constant kernel 1/(2D), retaining both child variances and the mean square.
+For actual logarithmic cells min(L,R)>=D/4, including at every real translate,
+so each sibling rectangle pays Var(parent)/8. This local result is a target;
+joint rectangle allocation and ancestor counting remain separate obligations.

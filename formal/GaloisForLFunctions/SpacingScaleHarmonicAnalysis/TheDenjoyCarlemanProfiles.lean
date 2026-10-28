@@ -388,8 +388,8 @@ theorem dcBump_vanishesOff (hr : Odd r) : VanishesOff (dcBump r) := by
 theorem integral_dcBump_pos (hr : Odd r) : 0 < ∫ y, dcBump r y := by
   have hc : HasCompactSupport (dcBump r) := hasCompactSupport_of_vanishes (dcBump_vanishesOff hr)
   have hint : Integrable (dcBump r) := (contDiff_dcBump r).continuous.integrable_of_hasCompactSupport hc
-  rw [integral_pos_iff_support_of_nonneg (fun x => mul_nonneg (glueR_nonneg _) (glueR_nonneg _))
-    hint]
+  have hnn : ∀ x, 0 ≤ dcBump r x := fun x => mul_nonneg (glueR_nonneg _) (glueR_nonneg _)
+  rw [integral_pos_iff_support_of_nonneg hnn hint]
   have hsub : Ioo (-1 : ℝ) 1 ⊆ Function.support (dcBump r) := fun x hx => by
     simp only [Function.mem_support]
     exact (mul_pos (glueR_pos (by linarith [hx.1])) (glueR_pos (by linarith [hx.2]))).ne'

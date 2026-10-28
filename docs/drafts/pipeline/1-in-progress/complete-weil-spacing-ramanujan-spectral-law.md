@@ -24,7 +24,7 @@ on arbitrary Weil tests, unbounded overlap, or RH.
 ## Exact proposed carrier and energies
 
 Fix real C2 phi supported in [0,1], M2=integral(phi^2)>0, I=integral(phi),
-and 0<c<1/2. Let w=c/N and g=atomDilate(phi,w). The proposed matrix is
+and 0<c<1. Let w=c/N and g=atomDilate(phi,w). The proposed matrix is
 
 `W_N=(atomicMarkovGram(g,N)
  + row0(atomPoleRow(g,N)) outer row1(atomPoleRow(g,N))
@@ -41,12 +41,12 @@ Put
 `alpha=c*I^2/M2`, and
 `lambda_m=sigma+log(m)+tameDifferent(m)+alpha*[m=1]` for m>=1.
 
-First target: every fixed normalized Ramanujan vector has residual norm tending
-to zero at lambda_m for W_N, for every 0<c<1/2. Second target: for an explicit
-positive profile-independent c_star and 0<c<c_star, every threshold away from
+Target: every fixed normalized Ramanujan vector has residual norm tending
+to zero at lambda_m for W_N, for every 0<c<1. Every threshold away from
 these energies has eventual exact spectral count, with multiplicity, equal to
 the finite arithmetic count; each fixed eigenline is eventually simple and
-captures its Ramanujan vector. Neither target is proved yet.
+captures its Ramanujan vector. The full-range coercivity argument below replaces
+the original small-c restriction. No part of this spectral target is proved yet.
 
 ## The new cancellation to audit
 
@@ -118,7 +118,7 @@ to zero. Combining these with the preceding rows would prove the first target.
 The weaker packet-form limit would then be a corollary of these actual
 quasimodes, not a separately counted contribution.
 
-## Exhaustion route at a fixed small ratio
+## Earlier small-ratio argument, superseded by the full-range mechanism
 
 `eventually_markovEnergy_ge_defect` and
 `two_mul_abs_poleMoments_le_defect` in ALG were inspected. After division by
@@ -452,3 +452,7 @@ cancellation: the required local harmonic convolution is a separate input.
 Two additional unchecked support drafts, `TheSeparatedAtomPairingsAreThePrimeKernel` and `TheSeparatedMarkovMatrixHasExactCrossEntries`, give entrywise exact prime and Markov pairings at full spacing. The actual mass interface is AES `integral_atomicTest_sq`, already requiring only w<atomSpacing(N). These drafts are not installed, checked, or counted. Nine scratch drafts now support the strengthened target; the full spectral endpoint remains unproved.
 
 Two further unchecked drafts now assemble the exact complete normalized entries (`TheFullWeilMatrixSplitsAtTheSpacing`) and the exact center row on the pole (`TheArchimedeanCenterRowCancelsThePole`). The pole rows reuse ALG `atomPoleRow_zero_apply` and `atomPoleRow_one_apply`, inspected in source. Eleven scratch drafts exist; none has passed Lean or been installed.
+
+The new unchecked generic draft `/tmp/HarmonicCenterBoundaryBounds.lean` combines the exact harmonic-tail square identity with the upper increment bound to prove the explicit weighted boundary estimate `sum n*R_n^2 <= 6*N^2`. Twelve scratch drafts now exist; none is verified or installed.
+
+Refreshed concurrent baseline: `TheArchimedeanCrossTermsVanishOnPeriodicProfiles.lean` was inspected at its exact expansion and periodic endpoint. Its quadratic-form estimate assumes a nonnegative common bump and `4*w<=atomSpacing(N)`, and bounds the archimedean interaction on mean-zero periodic pole profiles. Its independent compilation/axiom audit is not claimed here. Such quadratic-form vanishing is excluded from the novelty of this candidate. The target here requires actual norm residuals, both pole terms and the shifted ground energy, signed profiles, and complete bounded spectral counts/eigenlines for every `0<c<1`.
