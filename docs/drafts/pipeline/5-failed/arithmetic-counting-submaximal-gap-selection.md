@@ -44,7 +44,7 @@ The count retains useful energy rather than merely detecting a failure:
    positive hyperplane gap. Selectivity against Liouville is therefore
    strictly weaker than selection among multiplicative sources.
 
-Paper proof: `arithmetic-counting-pole-angle.md`. Lean survivors:
+Paper proof: `../3-formalized/arithmetic-counting-pole-angle.md`. Lean survivors:
 `eventually_prime_gap_ge_squared_correlation`,
 `gaugeWitness_attains_variance_bound`, `prime_parity_pairing`,
 `prime_parity_boundary_identity`, `prime_parity_boundary_bounds`,

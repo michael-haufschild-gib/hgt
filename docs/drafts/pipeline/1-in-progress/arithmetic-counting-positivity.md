@@ -77,17 +77,20 @@ finite arithmetic construction or README is finished.
   comparison are proved. Full-cone uniqueness has standard axioms only.
 - All four initial leaves are wired into the own umbrella, and that umbrella
   is imported by `MainTheorems.lean`. No umbrella was compiled.
-- Remaining first batch: recover an explicit successful exit for the first
-  leaf's canonical check (its earlier terminal result was lost at compaction); move
-  `arithmetic-counting-pole-angle.md` to `3-formalized`; preserve the audit log.
+- The first batch is closed: all four canonical leaf checks exited zero
+  without diagnostics. `arithmetic-counting-pole-angle.md` is now in
+  `3-formalized`, with the durable audit report beside it.
   The failed-rule card with its strongest positive survivor is now in
   `5-failed/arithmetic-counting-submaximal-gap-selection.md`.
 - Next exact proofs: `/tmp/acp-normalized-check.lean` (unit parity constraint,
   common harmonic normalization, exact mixed inner product, norm and residual
   limits) and `/tmp/acp-two-mode-check.lean` (homogeneous finite constrained-energy
   helper). These two scratch files have not been compiled yet.
-- `/tmp/acp-ramanujan-check.log` now records seven successful axiom audits;
-  `/tmp/acp-build-ramanujan.log` is the active olean command.
+- `/tmp/acp-ramanujan-check.log` records seven successful axiom audits;
+  `/tmp/acp-build-ramanujan.log` records its successful olean command. The
+  fifth leaf still needs its final canonical check.
+- The missing imported `TheSimplePrimeEigenlinesConvergeToRamanujanLines`
+  olean is now being built alone, for the harmonic spectral bridge.
 - The first four theorem axiom log is `/tmp/acp-axiom-audit.log`. Canonical logs
   are `/tmp/acp-final-correlation.log`, `/tmp/acp-final-sparse.log`,
   `/tmp/acp-final-parity.log`, `/tmp/acp-final-complete.log`. These are all finished.

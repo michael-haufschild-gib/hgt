@@ -89,7 +89,8 @@ theorem exists_abs_ncard_rayClassIdeals_sub_le_of_class (c : RayClassGroup 𝔪)
     (fun g => ((((-mixedEmbedding K (residueRep 𝔪 h𝔟 g.1.1 : K)) +ᵥ
       ((x * Ideal.absNorm 𝔟) ^ ((finrank ℚ K : ℝ)⁻¹)) • signedNormBall 𝔪.inf g.1.2) ∩
         (Λ : Set (mixedSpace K))).ncard : ℝ)) C (a := ZLattice.covolume Λ volume)
-    (b := x * Ideal.absNorm 𝔟 * V) (Real.rpow_nonneg (by positivity) α) fun g _ => by
+    (b := x * Ideal.absNorm 𝔟 * V) (e := (x * Ideal.absNorm 𝔟) ^ α)
+    (Real.rpow_nonneg (by positivity) α) fun g _ => by
       have := hC g _ hT (-mixedEmbedding K (residueRep 𝔪 h𝔟 g.1.1 : K))
       rwa [measureReal_signedNormBall_eq 𝔪.inf g.1.2 1] at this
   have hsum := ncard_rayClassIdeals_mul_torsionOrder_eq_sum h𝔟0 h𝔟 h𝔟c hx0

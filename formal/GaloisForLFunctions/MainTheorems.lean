@@ -52,3 +52,4 @@ import GaloisForLFunctions.ArithmeticElectrostatics
 import GaloisForLFunctions.ArithmeticIntersectionTheory
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 import GaloisForLFunctions.IncommensurableGaborPinching
+import GaloisForLFunctions.ShallowCauchyPrimeEnergy

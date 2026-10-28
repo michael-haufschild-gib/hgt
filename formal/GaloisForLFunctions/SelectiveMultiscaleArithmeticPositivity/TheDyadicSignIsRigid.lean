@@ -375,7 +375,7 @@ theorem mem_logWindow {D r : ℝ} (hDr : r < D) {n : ℕ}
   have hlo : Real.exp (D - r) ≤ n := (Nat.le_ceil _).trans (by exact_mod_cast h1)
   have hhi : (n : ℝ) ≤ Real.exp (D + r) :=
     (Nat.cast_le.mpr h2).trans (Nat.floor_le (Real.exp_pos _).le)
-  have hone : 1 < Real.exp (D - r) := Real.one_lt_exp.mpr (by linarith)
+  have hone : 1 < Real.exp (D - r) := Real.one_lt_exp_iff.mpr (by linarith)
   have hn2 : 2 ≤ n := by
     have : 1 < (n : ℝ) := lt_of_lt_of_le hone hlo
     have : 1 < n := by exact_mod_cast this
@@ -410,8 +410,8 @@ theorem sum_perturbation_Ioc_le (lam : ℕ → ℝ) {ε η : ℝ} (hε : 0 ≤ �
   rcases le_or_gt a b with hab | hab
   · rw [Nat.cast_sub hab]; ring_nf; rfl
   · rw [Nat.sub_eq_zero_of_le hab.le, Nat.cast_zero, zero_mul]
-    have : (b : ℝ) - a ≤ 0 := by have : (b : ℝ) < a := by exact_mod_cast hab
-                                   linarith
+    have hba : (b : ℝ) < a := by exact_mod_cast hab
+    have : (b : ℝ) - a ≤ 0 := by linarith
     have hpos : 0 ≤ ε * (a : ℝ) ^ (-η) := mul_nonneg hε (Real.rpow_nonneg (Nat.cast_nonneg _) _)
     nlinarith
 
@@ -429,7 +429,7 @@ theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (
   set δ : ℝ := 1 / 2 - η
   have hδ : 0 < δ := by simp only [δ]; linarith
   have hA : 0 < c * ε * (1 - Real.exp (-(2 * r))) := by
-    have : Real.exp (-(2 * r)) < 1 := Real.exp_lt_one_of_neg (by linarith)
+    have : Real.exp (-(2 * r)) < 1 := Real.exp_lt_one.mpr (by linarith)
     have : 0 < 1 - Real.exp (-(2 * r)) := by linarith
     positivity
   obtain ⟨d, hd1, hdr, hdM⟩ := exists_nat_lt_exp (B := c * ε) (M := M) (R := r) hA hδ
@@ -446,8 +446,8 @@ theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (
       (lam n + ε * (n : ℝ) ^ (-η) - lam n) / Real.sqrt n := by
     intro n hn
     obtain ⟨h2, -, hhi⟩ := mem_logWindow hdr hn
-    have hnpos : (0 : ℝ) < n := by have : (2 : ℝ) ≤ n := by exact_mod_cast h2
-                                    linarith
+    have h2' : (2 : ℝ) ≤ n := by exact_mod_cast h2
+    have hnpos : (0 : ℝ) < n := by linarith
     rw [add_sub_cancel_left, Real.sqrt_eq_rpow, mul_div_assoc, ← Real.rpow_sub hnpos]
     refine mul_le_mul_of_nonneg_left ?_ hε.le
     have e : Real.exp (-(1 / 2 + η) * (D + r)) = Real.exp (D + r) ^ (-η - 1 / 2) := by

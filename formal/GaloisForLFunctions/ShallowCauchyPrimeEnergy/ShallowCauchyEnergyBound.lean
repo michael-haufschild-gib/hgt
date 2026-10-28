@@ -105,6 +105,7 @@ theorem disjoint_map_rightUpper_lineReflected (S : Finset XiRightUpperZeroCopy) 
     rw [re_I_mul_xiSpectralPoint_lineConj]
     linarith
   rw [hcq] at hneg
+  change (I * xiSpectralPoint p.1.1).re < 0 at hneg
   linarith
 
 /-! ## Canonical dyadic strict-right, shallow, and deep windows -/
@@ -269,6 +270,10 @@ def xiRightUpperFiber (ρ : XiDivisorSupport) : Finset XiRightUpperZeroCopy :=
   (xiZeroCopyFiber ρ).preimage xiRightUpperZeroCopyEmbedding
     xiRightUpperZeroCopyEmbedding.injective.injOn
 
+theorem mem_xiRightUpperFiber_iff {ρ : XiDivisorSupport} {p : XiRightUpperZeroCopy} :
+    p ∈ xiRightUpperFiber ρ ↔ xiRightUpperZeroCopyEmbedding p ∈ xiZeroCopyFiber ρ :=
+  Finset.mem_preimage
+
 theorem map_xiRightUpperFiber_eq {ρ : XiDivisorSupport}
     (hre : 1 / 2 < (ρ : ℂ).re) (him : 0 < (ρ : ℂ).im) :
     (xiRightUpperFiber ρ).map xiRightUpperZeroCopyEmbedding = xiZeroCopyFiber ρ := by
@@ -316,15 +321,15 @@ theorem finiteOfflineCauchyEnergy_xiZeros_le_xiShallowCauchyEnergy
     intro j₁ _ j₂ _ hne
     rw [Function.onFun, Finset.disjoint_left]
     intro p hp₁ hp₂
-    have heq₁ : p.1.1.1 = supPt j₁ := mem_xiZeroCopyFiber.mp (Finset.mem_preimage.mp hp₁)
-    have heq₂ : p.1.1.1 = supPt j₂ := mem_xiZeroCopyFiber.mp (Finset.mem_preimage.mp hp₂)
+    have heq₁ : p.1.1.1 = supPt j₁ := mem_xiZeroCopyFiber.mp (mem_xiRightUpperFiber_iff.mp hp₁)
+    have heq₂ : p.1.1.1 = supPt j₂ := mem_xiZeroCopyFiber.mp (mem_xiRightUpperFiber_iff.mp hp₂)
     have hval : ρ j₁ = ρ j₂ := congrArg Subtype.val (heq₁.symm.trans heq₂)
     exact hne (hρ_inj hval)
   have hfib_coord : ∀ (j : Fin n), ∀ p ∈ fib j,
       (xiRightCenteredZero p.1).re = (ρ j).re - 1 / 2 ∧
         (xiRightCenteredZero p.1).im = (ρ j).im := by
     intro j p hp
-    have heq : p.1.1.1 = supPt j := mem_xiZeroCopyFiber.mp (Finset.mem_preimage.mp hp)
+    have heq : p.1.1.1 = supPt j := mem_xiZeroCopyFiber.mp (mem_xiRightUpperFiber_iff.mp hp)
     have hval : (p.1.1.1 : ℂ) = ρ j := congrArg Subtype.val heq
     exact ⟨by rw [xiRightCenteredZero_re, hval], by rw [xiRightCenteredZero_im, hval]⟩
   have hfib_sub : Finset.univ.biUnion fib ⊆ xiShallowRightUpperWindow h T := by

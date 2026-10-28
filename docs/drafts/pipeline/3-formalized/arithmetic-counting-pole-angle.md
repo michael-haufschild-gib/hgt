@@ -1,8 +1,8 @@
 # Harmonic counts transport the prime gap through the pole angle
 
 - **ID:** ACP-ANGLE
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean checked)
 - **Source:** arithmetic-counting-positivity.md; obstacles-summary.md §2.8, positive content of parity.
 - **Statement:** Uniformly over sign gauges, the atomic prime gap retains the square of the normalized harmonic correlation; sparse prime flips therefore retain positive gaps.
 
@@ -16,7 +16,7 @@ theorem, not positivity of the complete continuous Weil form.
 
 - [x] 0 → 1: source-pure construction; corpus novelty search completed.
 - [x] 1 → 2: dependency-closed paper proof below.
-- [ ] 2 → 3: Lean checks, transitive axiom audit and umbrella wiring.
+- [x] 2 → 3: Lean checks, transitive axiom audit and umbrella wiring.
 
 ## Paper proof [PROVED HERE]
 
@@ -137,4 +137,22 @@ multiplicative mean values or the elementary projection inequality.
 - **Rejected mechanism:** positive hyperplane gap plus multiplicativity and polar matching uniquely selects the von Mangoldt source.
 - **Strongest positive survivor:** uniform squared-angle count-to-gap inequality, including a concrete nontrivial completely multiplicative family with gaps approaching the untwisted maximum.
 - **New insight:** separation from Liouville is weaker than selection; finite-part rigidity or another arithmetic reading is still needed even after a gap has been paid.
-- **Status:** paper proof complete; exact Lean formalization immediately follows. The overall programme remains active.
+- **Status:** paper proof and exact Lean formalization complete. The overall programme remains active.
+
+## Lean declarations and verification
+
+All modules are in `GaloisForLFunctions/ArithmeticCountingPositivity/`.
+
+| Module | Principal declarations |
+|---|---|
+| `HarmonicCorrelationPaysThePrimeGap.lean` | `harmonicCorrelation_sq_mul_mass_le_variance`, `gaugeWitness_attains_variance_bound`, `eventually_prime_gap_ge_squared_correlation` |
+| `SparsePrimeFlipsRetainPositiveGaps.lean` | `harmonicMass_multiples`, `every_submaximal_gap_has_a_nontrivial_multiplicative_twin` |
+| `PrimeParityPairing.lean` | `prime_parity_pairing`, `prime_parity_boundary_bounds`, `primeFlip_harmonicCorrelation_tendsto`, `primeFlip_hasHyperplaneGap`, `two_adic_parity_has_gap_but_liouville_does_not` |
+| `NearMaximalGapsDoNotForceWeilPositivity.lean` | `primeFlip_exists_negative_complete_test`, `near_maximal_gaps_do_not_force_weil_positivity` |
+
+Each leaf passed its final canonical `lake --old env lean <file>` check,
+with no diagnostics. All 28 theorem transitive axiom reports contain only
+`propext`, `Classical.choice`, and `Quot.sound`. The own umbrella imports all
+four leaves and `MainTheorems.lean` imports the umbrella; no umbrella build
+was run. Commands, source hashes and axiom output are retained in
+`arithmetic-counting-pole-angle-audit.txt`.

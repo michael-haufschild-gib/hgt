@@ -314,7 +314,6 @@ theorem exists_xi_cofactor_near_ordinate :
       have hfl := Nat.floor_le (show 0 ≤ u / 2 by positivity)
       have hlt2 := Nat.lt_floor_add_one (u / 2)
       rw [← hk] at hfl hlt2
-      simp only [Fin.val_mk]
       rw [hTk, abs_le]
       constructor <;> linarith
     have hcard := (Finset.card_le_card hcover).trans Finset.card_biUnion_le
@@ -324,7 +323,7 @@ theorem exists_xi_cofactor_near_ordinate :
       refine (hwinT k _ fun q hq => (Finset.mem_filter.mp hq).2).trans ?_
       gcongr
       have hk9 : (k : ℝ) < 9 := by exact_mod_cast k.2
-      have hpos : 0 < T - 8 + 2 * (k : ℝ) := by
+      have hpos : 0 < T - 7 + 2 * (k : ℝ) := by
         have : (0 : ℝ) ≤ k := Nat.cast_nonneg _
         linarith
       calc Real.log (T - 7 + 2 * k) ≤ Real.log (T ^ 2) := by
@@ -335,7 +334,10 @@ theorem exists_xi_cofactor_near_ordinate :
           ((F.filter (fun q => |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1)).card : ℝ) := by
           exact_mod_cast hcard
       _ ≤ ∑ _k : Fin 9, C₁ * (2 * Real.log T) := Finset.sum_le_sum fun k _ => hk k
-      _ = 18 * C₁ * Real.log T := by simp; ring
+      _ = 18 * C₁ * Real.log T := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+          push_cast
+          ring
       _ ≤ 36 * C₁ * Real.log T := by nlinarith [hlogT, hC₁0]
   refine ⟨Z, m, g, hZball, hzeroZ, ?_, hg, hg0, heq, ?_⟩
   · rw [hcardF]
