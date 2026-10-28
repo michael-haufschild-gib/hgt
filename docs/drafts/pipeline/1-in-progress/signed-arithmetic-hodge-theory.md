@@ -233,9 +233,9 @@ standard axioms only; physical Gamma estimates retain exact mass factors.
 The local and joint variance allocations are formalized. Every actual sibling
 rectangle pays parent variance/8, and disjoint rectangles pay any finite family
 of parent variances by16 Gamma. Exact normalized Haar readouts and their
-dyadic variance recursion are also formalized. The remaining target is their
-logarithmically weighted square-function bound over all levels. Root cell
-means remain a distinct sector.
+dyadic variance recursion are formalized. The logarithmically weighted
+square-function bound over all levels is formalized as well. Root cell means
+remain a distinct sector.
 
 ### Local sibling estimate
 
@@ -265,8 +265,8 @@ therefore pays the whole finite family using one product-measure integral.
 The Gamma normalization is the proved identity: symmetric pair mass=2 Gamma.
 OneGammaReservePaysAllDyadicParentVariances passes its individual final audit
 with standard axioms only. It is a joint variance estimate, not
-a complete signed-Weil bound; ancestor counting must connect it to logarithmic
-weights on the complete Haar coordinates.
+a complete signed-Weil bound. The formalized ancestor count connects it to
+logarithmic weights on the complete Haar readouts.
 
 ### Selective and compact source inputs
 
@@ -284,8 +284,8 @@ an assumption available to the programme.
 
 1. Local sibling Gamma estimate: final-audited and integrated.
 2. Finite nested-parent sum<=16 Gamma: final-audited and integrated.
-3. Logarithmically weighted actual Haar coordinates: prove through ancestor
-   counts and exact variance identities.
+3. Logarithmically weighted actual Haar readouts: final-audited and integrated;
+   exact ancestor weights cost16 Gamma, natural-logarithmic weights cost32 Gamma.
 4. All-level high-generator tail bound: retain complete translation orbits
    of finitely many low generators.
 5. Compactness boundary: one-level detail compactness and an explicit
@@ -296,9 +296,9 @@ proving the complete Weil sign or the critical-energy upper bound.
 
 ### Ancestor payment by tail flow
 
-Use P(M)=sum of actual parent variances with label a>=M and Q(M)=sum of
+Let P(M)=sum of actual parent variances with label a>=M and Q(M)=sum of
 normalized Haar readout squares with label a>=M, over all levels. Exact
-variance splitting and even/odd child reindexing target
+variance splitting and even/odd child reindexing prove
 
 Q(M)+P(2M)<=P(M).
 
@@ -308,5 +308,5 @@ bound follows without assuming summability of depth-weighted variances.
 DyadicVarianceSplitsIntoTheLiteralHaarReadout identifies the readouts with
 the existing translated Haar profiles and their exact masses, and proves
 V(j+1,a)=V(j,2a)+V(j,2a+1)+c(j+1,a)^2. Its final audit passes with standard
-axioms only. The tail-flow and logarithmic consequences are drafted and
-under individual Lean audit.
+axioms only. BinaryVarianceFlowCountsEveryAncestor formalizes the complete
+tail-flow and logarithmic consequences, with standard axioms only.

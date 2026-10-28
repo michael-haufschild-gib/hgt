@@ -60,6 +60,7 @@ private theorem coordinates_orbit (i : ℕ × Option ℕ+) :
   · simp [lp.single_apply, hk, hk.symm]
 
 /-- Every retained generator survives the cutoff at every level. -/
+open Classical in
 theorem logCellGeneratorHead_orbit (A : ℕ) (i : ℕ × Option ℕ+) :
     logCellGeneratorHead A (logCellDyadicOrbit i) =
       if retainedLogCellGenerator A i.2 then logCellDyadicOrbit i else 0 := by

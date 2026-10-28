@@ -351,6 +351,21 @@ V_{j+1,a}=V_{j,2a}+V_{j,2a+1}+c_{j+1,a}^2,
 The child intervals, physical mass and source means are exact. No orthogonality
 with respect to the signed Weil form is asserted by this variance identity.
 
+[BinaryVarianceFlowCountsEveryAncestor](BinaryVarianceFlowCountsEveryAncestor.lean)
+proves the all-level logarithmic square-function bounds
+\[
+\sum_{(j,a)\in S}(1+\lfloor\log_2 a\rfloor)c_{j,a}^2\le16\Gamma(f),
+\qquad
+\sum_{(j,a)\in S}(1+\log a)c_{j,a}^2\le32\Gamma(f).
+\]
+They hold for every finite coordinate family \(S\), and also after summing
+every level of any finite family of generator labels. If \(P(M)\) is the
+total parent variance with label at least \(M\), and \(Q(M)\) the corresponding
+detail square mass, exact conservation gives \(Q(M)+P(2M)\le P(M)\).
+Telescoping at powers of two counts exactly \(1+\lfloor\log_2a\rfloor\)
+ancestors. All required summability follows from the joint \(16\Gamma\)
+bound. Gamma is evaluated on the original profile, with all coarse means free.
+
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
 is smaller than the available diagonal reserve, with explicit treatment of the coarse residual.
@@ -375,10 +390,9 @@ joint reserve allocation; the one-prime estimate does not supply the coarse-gene
 also bounds the correlation of a high-detail section with any real translate
 of its original complete profile by \(\Gamma(f)/\log A\), for \(A>1\).
 The bound is uniform in translation and retains all original coarse coefficients.
-It remains a single-level estimate. The joint parent-variance bound partitions
-pairs of points by their unique dyadic sibling rectangle. Ancestor counting
-must connect it to weighted detail coordinates. The root mean orbits remain
-a separate arithmetic sector.
+It remains a single-level estimate. The joint parent-variance allocation and
+ancestor count supply the all-level logarithmic detail bound above. The root
+mean orbits remain a separate arithmetic sector.
 
 [GammaBoundedCompleteProfilesHaveCompactDetails](../ArithmeticIndexDescent/GammaBoundedCompleteProfilesHaveCompactDetails.lean)
 places the actual single-level detail projections of all unit-Gamma complete

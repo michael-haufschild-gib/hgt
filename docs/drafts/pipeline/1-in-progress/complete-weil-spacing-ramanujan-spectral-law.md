@@ -500,3 +500,77 @@ The support graph now has thirty modules: three scratch-verified and installed, 
 Five support modules are now scratch-verified, installed, and supplied with first required oleans: the harmonic tail moments, finite/reversed Abel adapter, actual complete-Weil carrier, exact collar harmonic kernel, and finite harmonic row identities. Seven retained endpoint axiom reports are clean. Thirty-four total drafts are recorded in the manifest. The new unchecked assembly `TheCompleteWeilMatrixHasRamanujanQuasimodes` combines the exact matrix decomposition with all three norm error limits; its dependencies and endpoint have not yet passed Lean. Full-range coercivity and spectral exhaustion remain to assemble.
 
 Seven support modules now pass scratch Lean verification and have their first required oleans; the new verified modules are `SpacingScaleHarmonicAnalysis/TheArchimedeanDensityHasQuadraticIncrementControl` and `HTGeometry/FiniteWeightedGroundStateBound`. Nine retained transitive endpoint reports are clean. The manifest records forty-two drafts. The full remaining argument is now drafted through tunable center coercivity, complete-Weil coercivity with defect coefficient `(1-c)/4`, bounded-energy finite coordinates, exact bounded spectral counts, and simple eigenline convergence. These assemblies and their remaining dependencies are unchecked. Final source audits and integration remain. No web searches or novelty audits are part of this work.
+
+### Complete assembly drafted; Lean verification incomplete
+
+The forty-two-module scratch graph now reaches all three requested endpoints.
+The following fixes the constants and dependencies of the assembled argument;
+it does not change this card's unproved status.
+
+Write `A1=integral(abs(phi))`,
+`Cx=38*A1^2/(M2*(1-c)^2)`, and
+`Cp=exp(1/2)*(exp(1/2)+1)*A1^2/(2*M2)`.
+The literal matrix decomposition is
+
+`W_N=(log(N)+sigma-gamma+selfError_N)*Id-P_N+B_N-Xerr_N+PoleErr_N`.
+
+The signed-profile integral estimates give
+`abs(<Xerr_N*x,x>)<=4*Cx*c^2*norm(x)^2` and
+`abs(<PoleErr_N*x,x>)<=2*Cp*c^2*norm(x)^2` for N>=1.
+The self error is at most `exp(1/2)*c/(2*N)` in absolute value.
+On each fixed bounded pole profile `a(n)/sqrt(n)`, the cross-error squared
+norm is at most `(36*Cx*A*c^2)^2`, and the two-pole error squared norm is
+at most `4*Cp^2*A^2*c^4`, where `abs(a)<=A`.
+
+The center residual on the pole has squared norm at most `6*alpha^2`.
+A mean-zero periodic mode with interval-sum bound B and point bound A has
+center output squared norm at most `alpha^2*(4*B+A)^2`.
+Thus division by sqrt(log(N)) makes all these residuals vanish.
+Conductor one is constant; every other normalized Ramanujan mode has zero
+period mean by its exact Gram orthogonality with conductor one. The existing
+prime norm residual and the self-error bound now give the full norm
+quasimode at `lambda_m`, retaining both pole moments throughout.
+
+For coercivity, let `psi=log(4)+4/exp(1)` and `lam>0`. Weighted Schur and the
+parametric top-atom inequality give, on the harmonic hyperplane,
+
+`<B_N*y,y> >= -alpha*(1+1/lam)*D_N(y)
+              -alpha*((1+lam)*psi+3)*norm(y)^2`.
+
+The unit pole e has `norm(B_N*e)<=4*alpha`. Orthogonal pole removal preserves
+the exact defect and contracts the norm. The symmetric-form identity bounds
+the change of the center form by `12*alpha*norm(x)^2`, so the whole-space
+mass constant is `alpha*((1+lam)*psi+15)`.
+
+Set `lam=2*c/(1-c)` and `kappa=(1-c)/4`. Cauchy--Schwarz gives
+`0<=alpha<=c`, hence `alpha*(1+1/lam)<=(1+c)/2`.
+Combining the prime counterterm with the actual error costs gives eventually
+
+`W_N[x] >= a*norm(x)^2 + kappa*D_N(x)`,
+
+where
+
+`a=sigma-kappa-exp(1/2)/2-alpha*((1+lam)*psi+15)
+   -4*Cx*c^2-2*Cp*c^2`.
+
+This is a positive defect coefficient for every 0<c<1. No additional analytic
+premise is introduced. Unit vectors with W_N-energy at most T have defect at
+most `max(0,(T-a)/kappa)`. The verified arithmetic compactness theorem gives a
+fixed finite Ramanujan approximation; the identity Gram limit gives coordinate
+mass at least 1/18 on that sublevel.
+
+The trial energies are proper and distinct: the ground shift is less than one,
+whereas every other excitation is at least 2*log(2)>=1; other distinctions are
+inherited from the arithmetic adjunction energy. Norm quasimodes give distinct
+actual eigenvalues near each fixed finite packet. For a threshold T away from
+all trial energies, residual-over-gap estimates make every detecting coordinate
+above T vanish uniformly on the low spectral subspace. The coordinate-mass
+certificate and finite-dimensional rank then give the matching upper count.
+The arithmetic count therefore equals the actual bounded spectral count,
+including multiplicity. Two isolating thresholds leave exactly one eigenvalue
+near each lambda_m. The complementary spectral gap and the norm residual make
+its spectral projection capture the normalized Ramanujan vector in norm.
+
+The scratch endpoints are `tendsto_completeWeilMatrix_ramanujan_residual_norm`,
+`eventually_completeWeil_spectral_count_eq`, and
+`exists_simple_completeWeil_eigenline`. All three remain unchecked.

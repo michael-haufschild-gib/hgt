@@ -141,7 +141,7 @@ theorem exists_abs_gaugeMertensSum_chebotarevPattern_sub_le {frob : ℕ → G}
       Real.log p / p := sum_nonneg fun p _ =>
     div_nonneg (Real.log_natCast_nonneg p) (Nat.cast_nonneg p)
   have hram := ramifiedLogSum_le L y
-  have hR := abs_le.mp (abs_primeSignRemainder_le (chebotarevPattern_mul_self frob hf) y)
+  have hR := abs_le.mp (abs_primeSignRemainder_le (chebotarevPattern_mul_self (L := L) frob hf) y)
   have hfr' := abs_le.mp hfr
   rw [gaugeMertensSum_primeSignGauge_eq, sum_chebotarevPattern_eq, abs_le]
   constructor <;> linarith [hR.1, hR.2, hfr'.1, hfr'.2]

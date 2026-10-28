@@ -50,7 +50,7 @@ theorem truncPole_sq {N n : ℕ} (hn : n ∈ Icc 1 N) : truncPole N n ^ 2 = 1 / 
 /-- The pole has mass `H_N`. -/
 theorem sum_truncPole_sq (N : ℕ) :
     ∑ n ∈ Icc 1 N, truncPole N n ^ 2 = gaugeHarmonicSum (fun _ => 1) N :=
-  sum_congr rfl fun n hn => truncPole_sq hn
+  sum_congr rfl fun _ hn => truncPole_sq hn
 
 theorem gaugeHarmonicSum_one_pos {N : ℕ} (hN : 1 ≤ N) : 0 < gaugeHarmonicSum (fun _ => 1) N :=
   sum_pos (fun n hn => by have := (mem_Icc.mp hn).1; positivity) ⟨1, mem_Icc.mpr ⟨le_rfl, hN⟩⟩
@@ -119,7 +119,7 @@ theorem gauge_mul_gaugeWitness (hω : ∀ n, ω n * ω n = 1) :
 
 /-- **The prime form at the witness**: the projection costs `(S/H)²(log N + C₀)H` through the
 bottom of the twisted top, and `2|S/H|((log N + γ)|S| + BH)` through the rows of the prime form. -/
-theorem atomicWeilForm_gaugeWitness_ge (hω : ∀ n, ω n * ω n = 1) (hN : 1 ≤ N) :
+theorem atomicWeilForm_gaugeWitness_ge (hω : ∀ n, ω n * ω n = 1) :
     atomicWeilForm N (truncPole N) - (𝓢 / 𝓗) ^ 2 * ((Real.log N + (Real.log 4 + 4)) * 𝓗) -
         2 * (|𝓢 / 𝓗| * ((Real.log N + γ) * |𝓢| + (Real.log 4 + 4 + Real.log 2 + γ) * 𝓗)) ≤
       atomicWeilForm N (fun n => ω n * gaugeWitness ω N n) := by
@@ -290,7 +290,7 @@ theorem eventually_exists_gauge_ceiling_witness {ω : ℕ → ℝ} (hω : ∀ n,
     linarith only [h3]
   · rw [sum_gaugeWitness_sq hω hN1]
     exact (ceilingWitness_arith hγ hε hC₀ hHL (by linarith only [hL3, hη]) hLγ hSL hηκ hB2
-      hPb).trans (atomicWeilForm_gaugeWitness_ge hω hN1)
+      hPb).trans (atomicWeilForm_gaugeWitness_ge hω)
 
 /-- **No margin without harmonic correlation**: a sign gauge with `S_N(ω)²/log N → 0` has no
 positive hyperplane gap. -/
