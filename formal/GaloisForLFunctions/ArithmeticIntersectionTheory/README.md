@@ -1,262 +1,140 @@
 # Arithmetic Intersection Theory (AIT)
 
-**One question.** Weil's proof of the Riemann hypothesis for a curve over `𝔽_q` is intersection
-theory on `C × C`: intersection numbers are integers, correspondences act through a projection
-formula, the diagonal has a finite self-intersection given by adjunction, and the Hodge index
-theorem supplies the sign. Over `ℤ` the explicit formula is a pairing of the same shape. Which of the
-four ingredients exist for it, on which carrier, how do the carriers glue, and what exactly is the
-one statement that is missing?
+Namespace `GaloisForLFunctions.ArithmeticIntersectionTheory`; umbrella `ArithmeticIntersectionTheory.lean`.
 
-AIT is the intersection theory of the **characteristic circle** — the torsion `μ_∞ ⊂ 𝔾_m(ℂ)` of the
-multiplicative group over `ℤ`, with its three symmetries: power maps, rotations, Galois — and of its
-transfer to the scaling surface on which Weil's form lives. Its organizing sentence:
+**Question.** Weil's proof for curves is intersection theory on $C\times C$: integer intersection numbers, correspondences with a
+projection formula, a diagonal with finite self-intersection (adjunction), and the Hodge index for the sign. Over $\mathbb Z$ the
+explicit formula is a pairing of the same shape. Which of the four ingredients exist, on which carrier, how do the carriers
+glue, and what exactly is the one missing statement?
 
-> *Over `ℤ` the intersection numbers of torsion cycles exist, are log-orders of finite rings, and
-> obey the projection formula; the self-intersection of a torsion orbit is the discriminant of its
-> cyclotomic field. The diagonal exists only after a regularization, and the regularization is not
-> covariant: the Hecke correspondence `[t]` rescales the regulator by its degree, with anomaly
-> `log #ker[t]`. Weil's prime form is the finite intersection pairing, a sum of transverse local
-> tower forms, each bounded; their sum is not, and RH is the statement that the archimedean place
-> pays for it.*
+AIT is the intersection theory of the **characteristic circle** — the torsion $\mu_\infty\subset\mathbb G_m(\mathbb C)$ with power maps, rotations, Galois
+— and of its transfer to the scaling surface.
 
-Namespace `GaloisForLFunctions.ArithmeticIntersectionTheory`; umbrella
-`ArithmeticIntersectionTheory.lean`. Everything is unconditional; RH appears only as a hypothesis of
-a transfer statement or inside equivalences.
+> Over $\mathbb Z$ intersection numbers of torsion cycles exist, are log-orders of finite rings, and obey the projection formula; the
+> self-intersection of a torsion orbit is the discriminant of its cyclotomic field. The diagonal exists only after a
+> regularization, which is not covariant: $[t]$ rescales the regulator, anomaly $\log\#\ker[t]$. Weil's prime form is the finite
+> intersection pairing, a sum of transverse local tower forms, each bounded; their sum is not, and RH is the statement that
+> the archimedean place pays for it.
 
 ---
 
 ## 1. Place in the research
 
-Every live route of the frontier ends at an RH-equivalent receiver plus one missing sign. The
-exhaustion laws behind the three walls reduce to three structural facts
-([review fable](../../../docs/reports/review-2710/fable.md), §1.3): the Hecke algebra is
-commutative, every receiver is a linear functional of the explicit formula, and the diagonal has no
-finite self-intersection. Over `𝔽_q` one object — `C × C` with its intersection theory — removes all
-three. AIT asks what remains of that intersection theory over `ℤ`, builds it where it exists, and
-locates the missing statement inside it.
+Exhaustion laws reduce to three structural facts: the Hecke algebra is commutative, every receiver is a linear functional of
+the explicit formula, the diagonal has no finite self-intersection. Over $\mathbb F_q$ one object removes all three; AIT builds what
+remains over $\mathbb Z$ and locates the missing statement.
 
-| Programme | What AIT takes | What AIT adds |
-|---|---|---|
-| [ArithmeticEffectivityTheory](../ArithmeticEffectivityTheory/README.md) | torsion orbits `O_n`, orbit intersections `I(m,n)`, the Hecke law `I(m,mt) = φ(m)Λ(t)`, Abel energies `T_r`, the gcd twist, the renormalized torsion limit of Weil's prime kernel | the projection formula and the regulator anomaly; the different and the Hecke cocycle; intersection numbers as log-orders; the discriminant as self-intersection; the spacing regulator |
-| [ArithmeticElectrostatics](../ArithmeticElectrostatics/README.md) | the potential reading of the torsion and the zero divisor | the covariance theory of the counterterm; the Rosati reading of zero moments |
-| [RenormalizedBiarithmeticGeometry](../RenormalizedBiarithmeticGeometry/README.md) | the survival law, the counterterm rank dichotomy, the lattice germ `G_r(z) = Σ r^k/(k+z)` and its digamma limit | the lattice germ is the rotation spectrum of the torsion energy on `μ_N` (Gauss's digamma theorem); a covariant regulator, and why it carries no sign |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | the scaling surface and its Hodge index, the Hecke tower of a prime on the zero side, the `𝔽_q` calibration | the tower form of a prime on the prime side; the local Hodge index; transversality of ladders |
-| `RHTower` (separated bumps), [BiScaleUncertainty](../BiScaleUncertainty/README.md) | narrow-bump configurations, the archimedean Lévy gain, Weil positivity under RH for real `C²_c` tests | the transfer identity: on log-atom tests Weil's prime functional is the finite intersection pairing |
-| [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md), [ArithmeticCorrelationGeometry](../ArithmeticCorrelationGeometry/README.md) | the gauge torus `∏_p S¹`, sign twins, the Kronecker line | the tensor form of the prime kernel; gauge blindness of the finite intersection |
-| [ArithmeticPolarization](../ArithmeticPolarization/README.md), [ConjugateDiagonalGeometry](../ConjugateDiagonalGeometry/README.md) | `W`, `D`, `Δ`, local types at off-line pairs | the place of each form in the dictionary; zero moments as Rosati pairings |
-| [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | `Aff(ℚ)` states, Bost–Connes, successor blindness to atoms | the affine semigroup `z ↦ ζ z^t` of the circle and the spectrum of its elliptic part |
-| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md), [SquareRootThreshold](../SquareRootThreshold/README.md) | pair correlation, coalescent surplus, the square-root threshold | the two-point form of the missing statement |
-
-AIT does not re-prove what these programmes own; it imports them and proves the laws that glue
-them.
+| Programme | Takes / adds |
+|---|---|
+| ArithmeticEffectivityTheory | Torsion orbits, $I(m,n)$, Hecke law, Abel energies / projection formula, anomaly, different, Hecke cocycle, log-orders |
+| ArithmeticElectrostatics | Potential reading / covariance theory of the counterterm |
+| RenormalizedBiarithmeticGeometry | Survival law, rank dichotomy, lattice germ / germ = rotation spectrum (Gauss digamma) |
+| ArithmeticCastelnuovoSeveri, ArithmeticOrientationGeometry | Scaling surface, Hecke towers on the zero side / tower form on the prime side; local Hodge index |
+| `RHTower`, BiScaleUncertainty | Narrow bumps, Lévy gain, Weil positivity under RH / transfer identity on log-atom tests |
+| BiarithmeticGaugeGeometry, ArithmeticCorrelationGeometry | Gauge torus, twins / tensor form of the prime kernel; gauge blindness |
+| ArithmeticPolarization, ConjugateDiagonalGeometry | $W,D,\Delta$ / zero moments as Rosati pairings |
+| SpacingScaleHarmonicAnalysis | Exact atom constants (Robin constant, two-atom pairing) |
+| TransThresholdPairCorrelation, SquareRootThreshold | Two-point form of the missing statement |
 
 ---
 
 ## 2. Why
 
-**Weil's four ingredients.** On `C × C`: (i) intersection numbers of curves are integers, and the
-Lefschetz number `Γ_m · Δ` counts points; (ii) a correspondence `f` acts by `f_*`, `f^*` with the
-projection formula `f_*A · B = A · f^*B`; (iii) the diagonal is a curve, `Δ² = 2 − 2g` by adjunction;
-(iv) the Hodge index theorem, which on the plane of `Γ_m` and `Δ` is the Hasse–Weil bound. (i)–(iii)
-are identities; (iv) is the sign.
+**Weil's four ingredients**: (i) integer intersection numbers, Lefschetz $\Gamma_m\cdot\Delta=N_m$; (ii) projection formula; (iii) $\Delta^2=2-2g$; (iv) Hodge
+index. (i)–(iii) are identities; (iv) is the sign.
 
-**Over `ℤ` the identities hold on the characteristic circle.** The torsion orbit `O_n` (primitive
-`n`-th roots of unity) is the horizontal divisor `Φ_n = 0` of `𝔾_m/ℤ`.
+**Over $\mathbb Z$ the identities hold on the circle.** $O_n=\{\Phi_n=0\}$ is a horizontal divisor of $\mathbb G_m/\mathbb Z$.
+- *Intersection numbers are log-orders*: $I(n,m)=\log\#(\mathcal O_{\mathbb Q(\zeta_n)}/(\Phi_m(\zeta_n)))$; with $O_1=\{1\}$, $\Lambda(n)=\log\#(\mathcal O/(\zeta_n-1))$.
+- *Correspondences*: $[t]$ is Hecke; $z^t-w^t=\prod_{\omega\in\mu_t}(z-\omega w)$ is the projection formula.
+- *Adjunction*: self-intersection per point of $O_n$ = $\sum_{p^a\|n}(a-\tfrac1{p-1})\log p$ = the different per unit degree; $I(p^k,p^k)=\log|d_{\mathbb Q(\zeta_{p^k})}|$.
 
-* *Intersection numbers are log-orders.* The archimedean intersection
-  `I(n, m) = Σ_{η∈O_n, ξ∈O_m} log|η − ξ|` is the logarithm of the order of the finite ring
-  `𝓞_{ℚ(ζ_n)}/(Φ_m(ζ_n))`, the intersection scheme of the two divisors: the product formula. With the
-  arithmetic point `O_1 = {1}`, `Λ(n) = log #(𝓞_{ℚ(ζ_n)}/(ζ_n − 1))`.
-* *Correspondences.* The power map `[t]` is the Hecke correspondence. Its fibre over `z^t` is `μ_t z`,
-  and `z^t − w^t = ∏_{ω∈μ_t}(z − ωw)` is the projection formula for the archimedean pairing.
-* *Adjunction.* The self-intersection of `O_n` per point is `Σ_{p^a∥n}(a − 1/(p−1)) log p`, the
-  different of `ℚ(ζ_n)` per unit degree; for `n = p^k`, `I(n,n) = log|d_{ℚ(ζ_n)}|`.
+**The regularization is not covariant.** At Abel radius $r<1$ energies are positive (archimedean Hodge index); Weil's prime kernel
+is their limit after subtracting $\log1/(1-r)$ per point. $[t]$ replaces $r$ by $r^t$; the counterterm moves by $\log t$. On orbits this
+is the Hecke cocycle $\beta(n,t)$, not a bounded coboundary. Scaling radii with the spacing removes the anomaly — leaving a scalar
+counterterm that carries no sign.
 
-**What is not covariant is the regularization.** The archimedean pairing is singular on the
-diagonal. At Abel radius `r < 1` the energies are positive (the archimedean Hodge index, at every
-regulator), and Weil's prime kernel is their limit after subtracting `log(1/(1−r))` per point. The
-regularized projection formula `Σ_{ω∈μ_t} −log|1 − rωz| = −log|1 − r^t z^t|` shows that `[t]` replaces
-`r` by `r^t`; since `(1 − r^t)/(1 − r) → t` the counterterm moves by `log t = log #ker[t]`. On orbit
-cycles this anomaly, corrected by tame ramification, is the Hecke cocycle `β(n,t)`; it is not the
-coboundary of a bounded potential. Scaling each orbit's radius with its spacing `2π/n` removes the
-anomaly — and leaves a scalar counterterm, which carries no sign.
+**The local sign exists; the global sign is RH.** At $p$ the finite intersection on a ladder $\{cp^j\}$ is a positive
+Kac–Murdock–Szegő form, spectrum in $[(1-q)/(1+q),(1+q)/(1-q)]$, $q=p^{-1/2}$. Weil's prime kernel is $\sum_p\log p(\text{tower}-1)$: transverse local
+forms, each bounded, sum unbounded. On log-atom tests the prime functional *is* this sum.
 
-**The local sign exists; the global sign is RH.** At a prime `p` the finite intersection on a ladder
-`{cp^j}` is a sum over the levels of the `p`-power tower, each weighted by the orbit size `φ(p^k)`: a
-positive Kac–Murdock–Szegő form with spectrum in `[(1−q)/(1+q), (1+q)/(1−q)]`, `q = p^{−1/2}`. Weil's
-prime kernel is `Σ_p log p` (tower form − identity), a sum of transverse local forms on the tensor
-product of ladders: each is bounded, the sum is not. On log-atom tests the prime functional *is*
-this sum, so RH says that the archimedean place and the pole dominate the sum of the towers.
-
-**The elliptic correspondences look the wrong way.** Rotations of the circle are elliptic and
-exact, and diagonalize the torsion energy on `μ_N`; their eigenvalues are values of the archimedean
-local factor at rational points (Gauss's digamma theorem). The zeros of `ζ` enter only through the
-hyperbolic Hecke correspondences that glue the levels.
+**Elliptic correspondences look the wrong way**: rotations diagonalize torsion energy on $\mu_N$ with eigenvalues = archimedean
+local factor at rational points (Gauss digamma). Zeros enter only through hyperbolic Hecke maps.
 
 ---
 
 ## 3. Objects and language
 
-| Over `𝔽_q` (`C × C`) | AIT object | Over `ℤ` | Lean |
-|---|---|---|---|
-| curves on `C × C` | torsion cycles `Σ x_n O_n`; point cycles on `μ_N`; log-atom cycles on the scaling line | divisors `Φ_n = 0` of `𝔾_m/ℤ` | `primitiveRoots`, `logAtomTest` |
-| `D · E` | archimedean intersection `I(m,n)`; its log-order reading | `log #(𝓞/(Φ_m(ζ_n)))` | `orbitIntersection` (AET), `log_card_quotient_cyclotomicValue` |
-| Lefschetz `Γ_m · Δ = N_m` | intersection with the arithmetic point | `Λ(n) = log #(𝓞/(ζ_n − 1))` | `log_card_quotient_zeta_sub_one` |
-| `f_*`, `f^*`, projection formula | power maps `[t]`, fibres `μ_t z`, rotations `R_ζ` | Hecke, `ℚ/ℤ` | `sum_log_norm_sub_mul_nthRoots`, `pow_mul_rotate` |
-| `Δ² = 2 − 2g` | self-intersection `c(n) = I(n,n)/φ(n)` | the different; `log|d_{ℚ(ζ_{p^k})}|` | `selfIntersection_eq_sum_local`, `orbitIntersection_self_eq_log_discr` |
-| — | regulator: Abel radius `r`; spacing radius `e^{−ε/n}` | — | `circleKernel`, `spacingRadius` |
-| — | anomaly of `[t]`: `r ↦ r^t`, shift `log t` | — | `tendsto_log_one_sub_pow_sub_log_one_sub` |
-| — | Hecke cocycle `β(n,t) = c(tn) − c(n)` | `log t − Σ_{p∣t,p∤n} log p/(p−1)` | `heckeCocycle_eq` |
-| local intersection at `v` | `p`-ladder `{cp^j}`; tower form `K_q = (q^{|i−j|})`, levels weighted by `φ(p^k)` | KMS matrix, `q = p^{−1/2}` | `kmsForm_eq_orbit_levels` |
-| one Frobenius ladder | transverse ladders: `L_p = log p (K_p − 1) ⊗ 1` on `ℓ²(⊕_p ℕ)` | `P = Σ_p L_p` | `ladderKernel_eq_tensor`, `weilPrimeKernel_eq_sum_ladderKernel` |
-| — | rotation spectrum on `μ_N` | lattice germ `G_{r^N}(k/N)`, digamma `ψ(k/N)` | `rootCycleEnergy_eq`, `gauss_digamma_theorem` |
-| Hodge index | archimedean (every regulator), local (every prime), global (RH) | — | `hasSum_pointEnergy`, `localForm_lower`, `riemannHypothesis_archPolar_ge_towers` |
-| reflection pairing | Rosati product `Q(ρ) conj Q(ρ*)` of zero moments | — | `pair_pow_eq_two_re` |
+| Over $\mathbb F_q$ | AIT object | Lean |
+|---|---|---|
+| curves on $C\times C$ | torsion cycles $\sum x_nO_n$; point cycles on $\mu_N$; log-atom cycles | `primitiveRoots`, `logAtomTest` |
+| $D\cdot E$; Lefschetz | $I(m,n)$ as log-order; intersection with the arithmetic point | `orbitIntersection`, `log_card_quotient_cyclotomicValue`, `log_card_quotient_zeta_sub_one` |
+| projection formula | power maps, fibres $\mu_tz$, rotations | `sum_log_norm_sub_mul_nthRoots`, `pow_mul_rotate` |
+| $\Delta^2$ | $c(n)=I(n,n)/\varphi(n)$, the different | `selfIntersection_eq_sum_local`, `orbitIntersection_self_eq_log_discr` |
+| — | regulators: Abel radius; spacing radius $e^{-\varepsilon/n}$ | `circleKernel`, `spacingRadius` |
+| — | Hecke cocycle $\beta(n,t)=\log t-\sum_{p\mid t,p\nmid n}\log p/(p-1)$ | `heckeCocycle_eq` |
+| local intersection | $p$-ladder, tower form $K_q=(q^{|i-j|})$ | `kmsForm_eq_orbit_levels` |
+| one Frobenius ladder | transverse ladders $L_p=\log p(K_p-1)\otimes1$, $P=\sum_pL_p$ | `ladderKernel_eq_tensor`, `weilPrimeKernel_eq_sum_ladderKernel` |
+| — | rotation spectrum = lattice germ $G_{r^N}(k/N)$, digamma | `rootCycleEnergy_eq`, `gauss_digamma_theorem` |
+| Hodge index | archimedean / local / global | `hasSum_pointEnergy`, `localForm_lower`, `riemannHypothesis_archPolar_ge_towers` |
 
-**Words.**
-
-* *Carrier* (chart): the characteristic circle, the scaling surface, the zero divisor, the gauge
-  torus. A *transition* is a theorem identifying a pairing on one carrier with a pairing on another.
-* *Finite*, *archimedean*, *Fourier* reading of a pairing: log-orders of intersection rings, sums of
-  log-distances, rotation spectra.
-* *Regulator*, *counterterm*, *renormalized pairing*: the parameter making the diagonal finite, the
-  divergent diagonal removed, the limit. *Anomaly* of a correspondence: its effect on the
-  counterterm. *Covariant*: zero anomaly.
-* *Hecke cocycle*: the anomaly on the orbit `O_n`. *Saturated* cycle for `t`: supported on orders
-  divisible by every prime of `t`. *Tame different*: `e(n) = Σ_{p∣n} log p/(p−1)`.
-* *Ladder*: the orders `{cp^j}` with `p ∤ c`. *Tower form*: the finite intersection at `p` with its
-  natural diagonal. *Level*: the term of the tower form attached to `O_{p^k}`. *Transverse*: two
-  ladders of different primes meet in at most one order.
-* *Log-atom test*: narrow bumps at the points `log n` of a set of orders, narrower than
-  `log(1 + 1/M)`. *Pole direction*: the cycle `x_n = n^{−1/2}`.
-* *Local*, *archimedean*, *global* Hodge index: positivity at one prime, at finite regulator, and of
-  the explicit-formula pairing.
+**Words.** *Carrier* and *transition*; *finite / archimedean / Fourier reading*; *regulator, counterterm, anomaly, covariant*;
+*saturated cycle*; *tame different*; *ladder, tower form, level, transverse*; *log-atom test* (bumps narrower than $\log(1+1/M)$);
+*pole direction* $x_n=n^{-1/2}$.
 
 ---
 
 ## 4. Mechanisms
 
-1. **Projection formula** (`sum_log_norm_sub_mul_nthRoots`). `Σ_{ω∈μ_t} log|z − ωw| = log|z^t − w^t|`.
-2. **Regulator anomaly** (`sum_circleKernel_fibre`, `cycleEnergy_pullback`,
-   `tendsto_renormalized_pullback_sub`). `[t]` maps the radius `r` to `r^t`; the pullback of a cycle has
-   `t` times the energy at `r^t`, and its renormalized energy is shifted by `−t log t` per unit mass.
-3. **Intersection numbers are log-orders** (`log_card_quotient_cyclotomicValue`). The norm of `Φ_m(ζ_n)`
-   is the product over the complex embeddings, i.e. over `O_n`, of `∏_{ξ∈O_m}(η − ξ)`.
-4. **Adjunction** (`selfIntersection_eq`, `selfIntersection_eq_sum_local`,
-   `orbitIntersection_self_eq_log_discr`). `log` is a derivation of Dirichlet convolution, so
-   `μ * (id·log) = φ·log + φ*Λ` and `(φ*Λ)(n) = φ(n) e(n)`.
-5. **Hecke cocycle** (`heckeCocycle_eq`, `tendsto_heckeVariation`, `not_exists_bounded_potential`).
-   `P(tm,tn) = P(m,n)`; the renormalized torsion form moves by `−Σ x_n² β(n,t)`.
-6. **Towers** (`kmsForm_eq_tail`, `kmsForm_eq_orbit_levels`, `kmsForm_lower`, `kmsForm_upper`). With
-   tails `T_k = Σ_{i≥k} x_i q^{i−k}` and `x_k = T_k − qT_{k+1}`, `K_q(x) = T_0² + (1 − q²)Σ_{k≥1} T_k²`.
-7. **Transverse decomposition** (`eq_of_sameLadder_of_sameLadder`, `weilPrimeKernel_eq_sum_ladderKernel`,
-   `localForm_lower`, `localForm_upper`). Exactly one prime carries each entry; each local form is
-   bounded by `2q log p |x|²/(1 ± q)`.
-8. **Local forms do not sum** (`primeForm_poleVector_ge`, `not_exists_primeForm_le`). Along the pole
-   direction the prime form exceeds `H_M Σ_{t≤M} Λ(t)/t ≍ (log M)²` at mass `H_{M²} ≍ log M`.
-9. **Gauge blindness** (`signTwistKernel_eq`, `signTwistForm_eq`). `P^ε(m,n) = ε(m)ε(n)P(m,n)` for every
-   real sign twin, Liouville's included.
-10. **Fourier duality** (`torsionFourier_eq`, `gauss_digamma_theorem`, `rootCycleEnergy_eq`). On `μ_N`,
-    `Σ_a −log|1 − rζ^a| cos(2πak/N) = ½(r^k G_{r^N}(k/N) + r^{N−k} G_{r^N}(1 − k/N))`; the rotation modes
-    diagonalize the energy with lattice-germ eigenvalues; at `r → 1`, Gauss's theorem with `log N` as
-    the anomaly of `[N]`.
-11. **Transfer** (`primeSum_logAtom_eq`, `primeSum_logAtom_eq_towers`). On log-atom tests the lags
-    `log k` see only exact ratios (`eq_of_abs_log_sub_lt`), and Weil's prime functional is
-    `‖φ‖² Σ_{m,n} x_m x_n P(m,n)`.
-12. **Spacing regulator** (`spacingForm_nonneg`, `tendsto_spacingForm`, `spacingLimit_transport`). Radii
-    `ρ_mρ_n`, `ρ_n = e^{−ε/n}`, keep the Gram structure, give the scalar counterterm `log(1/(2ε))`, and
-    leave only tame ramification as Hecke variation.
-13. **Rosati moments** (`dualPoly_eq_conj`, `mul_dualPoly_of_critical`, `pair_pow_eq_two_re`). Zero moments
-    of Dirichlet polynomials are collided on the line and Rosati-paired off it.
-14. **Adjunction beats the tower** (`selfIntersection_ladder_ge`, `renormalized_ladder_le`). Along a ladder
-    the self-intersection grows like `(j − 1/(p−1)) log p`, the tower stays below `2q log p/(1 + q)`; from
-    the second level on the renormalized torsion form is negative definite.
-15. **The polar part** (`paperFT_logAtom_half`, `weilPoleTerm_logAtom`). On log-atom tests
-    `k̂(i/2) + k̂(−i/2) = 2αβ (Σ x_n n^{−1/2})(Σ x_n n^{1/2})`: the pole pairs the pole direction with its dual.
-16. **The square-root price** (`localForm_le`, `primeForm_le_sqrt`). Paying each tower separately bounds the
-    prime form on orders `≤ M` by `238 √M |x|²`, against `≍ log M` along the pole direction.
-17. **Tower coordinates** (`autocorr_logAtom`, `weilArchRe_logAtom`). The exact archimedean form turns the
-    archimedean and polar part of a log-atom test into `E_φ|x|² + 2αβ(Σ x_n n^{−1/2})(Σ x_n n^{1/2}) −
-    Σ_{m<n} x_m x_n K_φ(log(n/m))`, with the self-energy `E_φ` and the archimedean kernel `K_φ` of the atom;
-    `E_φ ≥ ‖φ‖²(γ₀ + e^{−1/2} log((1−δ)/δ))` (`atomSelfEnergy_ge`).
-18. **Base and successor** (`ladderKernel_mul_ladderKernel_eq_zero`, `frobeniusTower_lcm_ne_zero`,
-    `sameLadder_succ_iff`). Distinct primes never charge the same pair of orders; over `𝔽_q` two places
-    share the lags divisible by `lcm` of their degrees; `n` and `n + 1` share a ladder only for `1 → 2`.
+1. **Projection formula and regulator anomaly**: $[t]$ maps $r\mapsto r^t$; renormalized pullback shifted by $-t\log t$ per unit mass.
+2. **Log-orders**: norms of $\Phi_m(\zeta_n)$ over complex embeddings.
+3. **Adjunction**: $\log$ is a derivation of Dirichlet convolution: $\mu*(\mathrm{id}\cdot\log)=\varphi\log+\varphi*\Lambda$.
+4. **Towers**: $K_q(x)=T_0^2+(1-q^2)\sum_{k\ge1}T_k^2$ in tail coordinates.
+5. **Transverse decomposition**: exactly one prime carries each kernel entry; local bounds $2q\log p|x|^2/(1\pm q)$.
+6. **Local forms do not sum**: along the pole direction the prime form is $\asymp(\log M)^2$ at mass $\asymp\log M$.
+7. **Gauge blindness**: $P^\varepsilon(m,n)=\varepsilon(m)\varepsilon(n)P(m,n)$ for every real sign twin.
+8. **Fourier duality on $\mu_N$**: rotation modes diagonalize the energy with lattice-germ eigenvalues; Gauss's theorem with anomaly $\log N$.
+9. **Transfer**: log-atom lags see only exact ratios; prime functional $=\|\varphi\|^2\sum x_mx_nP(m,n)$.
+10. **Spacing regulator**: radii $e^{-\varepsilon/n}$ keep the Gram structure, scalar counterterm $\log(1/2\varepsilon)$, only tame ramification varies.
+11. **Polar part on log-atoms**: rank-two pairing of $\sum x_nn^{-1/2}$ with $\sum x_nn^{1/2}$.
+12. **Square-root price**: paying towers separately costs $\sqrt M$ against $\log M$ jointly.
+13. **Tower coordinates**: $\Re(\text{arch}+\text{polar})=E_\varphi|x|^2+2\alpha\beta(\sum x/\sqrt n)(\sum x\sqrt n)-\sum_{m<n}x_mx_nK_\varphi(\log n/m)$.
+14. **Adjunction beats the tower**: above the second level of every ladder the renormalized torsion form is negative definite.
+15. **Positive squares on boxes**: anti-poles at prime bases pair against first rungs; ground-state identity bounds them above.
 
 ---
 
 ## 5. Pillar theorems
 
-| Pillar | Statement | Lean |
-|---|---|---|
-| I. Projection formula | `Σ_{ω∈μ_t} log|z − ωw| = log|z^t − w^t|`; regularized: `r ↦ r^t` | `TheProjectionFormulaAndTheRegulatorAnomaly` |
-| II. Regulator anomaly | `log(1 − r^t) − log(1 − r) → log t`; renormalized pullback shifted by `−t log t |x|²` | same |
-| III. Intersection numbers are log-orders | `I(n,m) = log #(𝓞_{ℚ(ζ_n)}/(Φ_m(ζ_n)))`, `Λ(n) = log #(𝓞/(ζ_n − 1))` | `TheArchimedeanIntersectionIsALogOrder` |
-| IV. Adjunction | `I(n,n)/φ(n) = Σ_{p^a∥n}(a − 1/(p−1)) log p`; `I(p^k,p^k) = log|d_{ℚ(ζ_{p^k})}|` | `TheDifferentOfATorsionOrbit`, `TheArchimedeanIntersectionIsALogOrder` |
-| V. Hecke cocycle | variation `−Σ x_n² β(n,t)`, `β = log t − Σ_{p∣t,p∤n} log p/(p−1)`; cocycle; `0 ≤ c(t) ≤ β ≤ log t`; not a bounded coboundary; covariance up to the degree character on saturated cycles | `TheHeckeCocycleOfRenormalization` |
-| VI. Local Hodge index | tower decomposition with orbit-size weights; KMS bounds; ladder form `= log p (K_q − 1)` | `TheTowerFormOfAPrime` |
-| VII. Transversality | one prime per nonzero entry; `L_p = log p (K_p − 1) ⊗ 1`; `P = Σ_p L_p`; local bounds | `ThePrimeKernelIsASumOfTransverseTowers` |
-| VIII. Local is not global | no `C` with `Σ x_m x_n P(m,n) ≤ C|x|²` | `TheLocalFormsDoNotSum` |
-| IX. Gauge blindness | sign twins have unitarily equivalent prime forms | `TheFiniteIntersectionIsGaugeBlind` |
-| X. Fourier duality | rotation spectrum on `μ_N` = lattice germs; Gauss's digamma theorem with anomaly `log N` | `GaussDigammaIsTheFourierTransformOfTheTorsionEnergy`, `TheEllipticCorrespondencesOfTheCircle` |
-| XI. Transfer | prime functional on log-atom tests = `‖φ‖² Σ_p Q_p`; under RH, `‖φ‖² Σ_p Q_p ≤ Re(archimedean + polar part)` | `WeilsPrimeFunctionalIsTheFiniteIntersection` |
-| XII. Spacing regulator | positive at every `ε`; scalar counterterm; Hecke covariant up to tame ramification; indefinite limit | `TheSpacingRegulatorRemovesTheAnomaly` |
-| XIII. Rosati moments | zero moments collided on the line, Rosati off it; real on reflection-closed configurations | `ZeroMomentsAreRosatiPairings` |
-| XIV. Adjunction beats the tower | renormalized torsion form `≤ −((1−q)/(1+q)) log p |x|²` above the second level of every ladder; positive index `≤ 2` per ladder | `TheSelfIntersectionDominatesTheTower` |
-| XV. The polar part | rank-two pairing of `Σ x_n n^{−1/2}` with `Σ x_n n^{1/2}`; under RH, on the polar hyperplane the `Γ`-part alone dominates `‖φ‖² Σ_p Q_p` | `ThePolarPartPairsThePoleDirection` |
-| XVI. The square-root price | summing the local tower bounds costs `238 √M`; the joint structure costs `log M` | `TheSquareRootPriceOfSeparateTowers` |
-| XVII. RH in tower coordinates | `Re(archimedean + polar) = E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n) − Σ_{m<n} x_m x_n K_φ`; under RH, `‖φ‖² Σ_p Q_p + Σ_{m<n} x_m x_n K_φ ≤ E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n)` | `TheHodgeIndexInTowerCoordinates` |
-| XVIII. Base and successor | ladder kernels of distinct primes have disjoint supports, Frobenius towers of places overlap; the successor is transverse to every ladder except at `1 → 2` | `TheBaseAndTheSuccessor` |
-| XIX. Positive squares on boxes | at a prime base `q` the anti-pole `δ_q − Σ_p δ_{qp}/(2√p)` pairs the base against the first rung of every ladder through it, `R ≥ ½ Σ log p/p − log q`; anti-poles at the primes of `(M, Q₀M]` with arms in `(Q₀M, N/(Q₀M)]` are `R`-orthogonal; for `N ≥ (Q₀M)⁵` the positive index on `[1, N]` is `≥ M/log M` | `TheTorsionFormHasPolynomiallyManyPositiveSquares` |
-| XX. Few positive squares on boxes | the ground-state identity and `(a − b)² ≤ (3/2)a² + 3b²` on the pole relations give `R ≤ diag(2A(⌊N/n⌋) + d(n) − ½ log n)`; every `R`-positive subspace of `[1, N]` has dimension `≤ #{n : 2A(⌊N/n⌋) + d(n) > ½ log n} ≤ N^{4/5 + ε}` eventually; `d(n) ≤ 2 log K + 2 log 4 + 2 log n/K` | `ThePositiveSquaresOfTheTorsionFormLiveBelowFourFifths` |
+1. **Projection formula and anomaly** (module `TheProjectionFormulaAndTheRegulatorAnomaly`).
+2. **Intersection numbers are log-orders; adjunction = discriminant** (`log_card_quotient_cyclotomicValue`, `selfIntersection_eq_sum_local`,
+   `orbitIntersection_self_eq_log_discr`).
+3. **Hecke cocycle is not a bounded coboundary** (`heckeCocycle_eq`, `not_exists_bounded_potential`).
+4. **Local Hodge index; transversality; local is not global** (`kmsForm_eq_orbit_levels`, `weilPrimeKernel_eq_sum_ladderKernel`, `not_exists_primeForm_le`).
+5. **Gauge blindness** (`signTwistForm_eq`).
+6. **Fourier duality / Gauss digamma** (`gauss_digamma_theorem`).
+7. **Transfer and RH in tower coordinates**: under RH $\|\varphi\|^2\sum_pQ_p+\sum_{m<n}x_mx_nK_\varphi\le E_\varphi|x|^2+2\alpha\beta(\sum x/\sqrt n)(\sum x\sqrt n)$
+   (`primeSum_logAtom_eq_towers`, `riemannHypothesis_archPolar_ge_towers`; module `TheHodgeIndexInTowerCoordinates`).
+8. **Spacing regulator: positive, covariant up to tame ramification, indefinite limit** (`spacingForm_nonneg`, `spacingLimit_transport`).
+9. **Rosati moments** (`pair_pow_eq_two_re`).
+10. **Adjunction beats the tower** (`renormalized_ladder_le`).
+11. **Positive index on boxes** between $cN^{1/5}/\log N$ and $N^{4/5+\varepsilon}$ (modules `TheTorsionFormHasPolynomiallyManyPositiveSquares`,
+    `ThePositiveSquaresOfTheTorsionFormLiveBelowFourFifths`).
+12. **Base and successor**: ladders of distinct primes are disjoint; successor transverse to every ladder except $1\to2$ (`sameLadder_succ_iff`).
 
 ---
 
-## 6. Questions and answers
+## 6. Answers in brief
 
-1. **Can the diagonal be renormalized covariantly?** Not with a uniform regulator: the anomaly of
-   `[t]` is `log t` per point (Pillar II), and on orbit cycles the variation is the cocycle `β`, which
-   is not a bounded coboundary (Pillar V). With a regulator scaled to the torsion spacing the anomaly
-   disappears and only tame ramification remains, invariant on saturated cycles (Pillar XII). The
-   price is the sign: the counterterm becomes scalar, its null cone is `{0}`, and by the survival law
-   (RBG) positivity before the limit says nothing after it; the covariant limit is indefinite. The
-   missing object is a covariant regulator whose counterterm has a nontrivial null cone.
-2. **Where do integers enter on the prime side?** As orders of finite rings: every intersection number
-   of torsion orbits, and `Λ(n)` itself, is a log-order (Pillar III); the self-intersection is the
-   log-discriminant (Pillar IV); the levels of a tower are weighted by orbit sizes `φ(p^k)` (Pillar VI);
-   the anomaly is `log #ker[t]` (Pillar II). These integers are local: they produce the local Hodge
-   index and the identities, not the global sign (Pillar VIII).
-3. **Is there an elliptic correspondence?** Yes: rotations by `μ_∞`, exact for the archimedean
-   pairing, forming with the power maps the affine semigroup `z ↦ ζz^t` (`pow_mul_rotate`). Their
-   spectrum on `μ_N` is the lattice germ at `k/N`, renormalized to `−(ψ(k/N) + γ + log N)/N`: archimedean
-   data at rational points (Pillar X). Rotations localize in the additive dual `ℚ/ℤ`; zero ordinates
-   live in the multiplicative dual. An elliptic localizer for zeros cannot come from the torsion.
-4. **What is the base?** Over `𝔽_q` all places act on one Frobenius ladder. Over `ℤ` each prime has
-   its own ladders, transverse to those of every other prime; the prime kernel is a sum of commuting
-   local operators `log p (K_p − 1) ⊗ 1` on `ℓ²(⊕_p ℕ)` (Pillar VII), whose joint symbol lives on the
-   gauge torus with the heights `n^{it}` on its Kronecker line. Distinct primes never charge the same
-   pair of orders, while over `𝔽_q` any two places share lags (Pillar XVIII). The finite intersection
-   is blind to the order-two points of the torus (Pillar IX). There is no common ladder: that is the
-   absence of a base. The only other structure, the successor, crosses ladders at every edge except
-   `1 → 2` (Pillar XVIII): additive information lives between the towers, never inside one.
-5. **Which positivity holds where?** At finite regulator, archimedean positivity on every point cycle
-   (`hasSum_pointEnergy`) and on orbit cycles (AET); at each prime, the local Hodge index with explicit
-   bounds (Pillars VI–VII); globally, the sum of local forms is unbounded (Pillar VIII), Weil's prime
-   functional on log-atom tests equals that sum (Pillar XI), and RH is the statement that the
-   archimedean and polar parts dominate it. The polar part is rank two and pairs exactly the pole
-   direction, along which the sum of towers is unbounded (Pillar XV); on the polar hyperplane the
-   `Γ`-factor pays alone. All three parts are explicit forms on the cycle (Pillar XVII): RH implies
-   `‖φ‖² Σ_p Q_p(x) + Σ_{m<n} x_m x_n K_φ(log(n/m)) ≤ E_φ|x|² + 2αβ(Σ x_n n^{−1/2})(Σ x_n n^{1/2})` for
-   every log-atom cycle — the Hodge index of the explicit formula, read in tower coordinates. The archimedean self-energy of an atom of width `δ` grows like `log(1/δ)`
-   (RHTower separated bumps): at fixed orders narrow atoms are always positive, and the content of RH
-   is the regime `δ ≍ 1/M` of the widest admissible atoms. On the torsion side the diagonal is
-   already decisive one prime at a time: the self-intersection makes the renormalized form negative
-   definite above the second level of every ladder (Pillar XIV).
-6. **What is the two-point form of the missing statement?** Moments of Dirichlet polynomials over the
-   zeros, computable from primes up to the square-root threshold, are Rosati pairings: positive on
-   critical configurations, `2 Re(Q(ρ)conj Q(ρ*))^k` on off-line pairs (Pillar XIII). Their positivity is
-   a Hodge index of the same type as Weil's; beyond the threshold its prime-side form is TTPC's bound on
-   the coalescent surplus.
+- **Covariant renormalization of the diagonal?** Not with a uniform regulator (anomaly $\log t$, cocycle); with the spacing regulator
+  the anomaly disappears but the counterterm is scalar and the limit indefinite. Missing: a covariant regulator whose
+  counterterm has a nontrivial null cone.
+- **Where do integers enter?** As orders of finite rings — local; they give the local Hodge index, not the global sign.
+- **Elliptic correspondence?** Rotations: exact, but localize in additive $\mathbb Q/\mathbb Z$; zero ordinates live in the multiplicative dual.
+- **The base?** No common ladder: commuting transverse local operators on $\ell^2(\oplus_p\mathbb N)$; additive information lives between towers.
+- **Which positivity where?** Archimedean at finite regulator; local at each prime; global = RH, readable in tower coordinates;
+  the content is the regime $\delta\asymp1/M$ of the widest admissible atoms.
+- **Two-point form**: zero moments of Dirichlet polynomials are Rosati pairings; beyond the threshold their prime side is TTPC's
+  coalescent surplus.
 
 ---
 
@@ -264,79 +142,29 @@ hyperbolic Hecke correspondences that glue the levels.
 
 | Trap | Truth |
 |---|---|
-| The projection formula is exact, so the renormalized pairing is Hecke covariant | `[t]` rescales the regulator; the counterterm moves by `log t` |
-| The torsion counterterm is a scalar, so it commutes with everything | per orbit it is scalar; its change under `[t]` is the cocycle `β` |
-| A covariant regulator gives a sign | the spacing regulator is covariant up to tame ramification, positive at every `ε`, and its limit is indefinite |
-| Integer intersection numbers give the sign | integrality is local; the sum of local forms is unbounded |
-| Local positivity at every prime sums to global positivity | the identity is subtracted once per prime; `Σ_p log p/√p` diverges |
-| The product formula makes the torsion pairing trivial | the content is its split into finite and archimedean parts |
-| Rotations are an elliptic localizer for zeros | their spectrum is the archimedean factor at rational points |
-| A finer prime-side statement separates `ζ` from its twins | every real sign twin has a unitarily equivalent prime form |
-| Over `ℤ` there is one Frobenius | there is one ladder per prime, and the ladders are transverse |
-| Moments over zeros are positive data | they are Rosati pairings; positive only on critical configurations |
+| Exact projection formula ⇒ covariant renormalized pairing | $[t]$ rescales the regulator; counterterm moves by $\log t$ |
+| A scalar counterterm commutes with everything | Its change under $[t]$ is the cocycle $\beta$ |
+| A covariant regulator gives a sign | Spacing regulator: covariant, positive at every $\varepsilon$, indefinite limit |
+| Integer intersection numbers give the sign | Integrality is local; the sum of local forms is unbounded |
+| Local positivity at every prime sums | The identity is subtracted once per prime; $\sum\log p/\sqrt p$ diverges |
+| Rotations localize zeros | Their spectrum is the archimedean factor at rational points |
+| A finer prime-side statement separates $\zeta$ from twins | Sign twins have unitarily equivalent prime forms |
+| Over $\mathbb Z$ there is one Frobenius | One ladder per prime, transverse |
+| Moments over zeros are positive data | Rosati pairings; positive only on critical configurations |
 
 ---
 
-## 8. Tools
+## 8. Open problems
 
-**From sibling programmes:** torsion orbits, orbit intersections, the Hecke law, Abel energies and
-their Ramanujan Gram structure, the gcd twist, the renormalized torsion limit (AET); the survival law
-and the lattice germ with its digamma limit (RBG); separated narrow bumps and the archimedean Lévy
-gain (RHTower); Weil positivity under RH for real `C²_c` tests (BSU); Mertens' second theorem
-(RHTower); the cyclotomic discriminant, norms and embeddings (Mathlib).
+1. **A covariant regulator with a nontrivial null cone** (by the survival law, exactly what a sign through the limit requires).
+2. **The tower inequality on the polar hyperplane** at the widest admissible atoms $\delta\asymp1/M$ (constants now exact, SSHA).
+3. **Arithmetic Riemann–Roch on torsion orbits**: a section functor on the scaling surface with defect $\tfrac12\log|d|$.
+4. **The discriminant for all $n$**: $I(n,n)=\log|d_{\mathbb Q(\zeta_n)}|$ beyond prime powers.
+5. **Exact exponent of the positive index on boxes** (numerically $\approx N^{0.38}$; heuristics $\alpha^*\approx0.32$ or $1/\phi^2$).
+6. **Thresholds as weights**: a weight filtration of log-atom cycles by $\log(1/\delta)/\log M$.
 
-**Built here:** the projection formula and the regulator anomaly for point cycles; log-orders of
-cyclotomic intersection rings; the derivation `μ * (id·log) = φ·log + φ*Λ` and the different; the Hecke
-cocycle and the Hecke variation law; the Kac–Murdock–Szegő tower calculus (tails, levels, bounds);
-ladder kernels and the transverse decomposition of Weil's prime kernel; the pole-direction lower
-bound; sign gauges; the rotation diagonalization of point cycles and the folding of frequencies on
-`μ_N`; Gauss's digamma theorem; log-atom tests, the transfer identity and their Mellin values at
-`±½`; the polar part on log-atom tests; the square-root price of separate towers; the autocorrelation
-of log-atom tests, the archimedean part in tower coordinates and the self-energy bound; the
-spacing regulator; Rosati moments; the ladder index bound; disjointness of ladder supports, the
-Frobenius ladder, and successor transversality.
+## 9. Contribution standard
 
----
-
-## 9. Open research topics
-
-1. **A covariant regulator with a nontrivial null cone.** A family of positive pairings on torsion
-   cycles, Hecke covariant up to tame ramification, whose counterterm is not a multiple of the
-   identity. By the survival law this is exactly what a sign through the limit requires.
-2. **Sharp asymptotics of the archimedean constants.** *Answered in SSHA*
-   (`TheRobinConstantOfAnAtom`, `TheArchimedeanPairingOfTwoAtoms`): `E_φ = (log(1/δ) + κ_L(φ))‖φ‖² + O(δ)‖φ‖²`
-   with the exact constant `κ_L(φ) = 2c_∞ + β(φ)/‖φ‖²`, and the cross pairing of atoms at distance
-   `c > δ` is `(∫φ)² ω(c) + O((ω(c − δ) − ω(c + δ))(∫|φ|)²)`, `2ω(c) = e^{c/2}/sinh c`. The tower
-   inequality on the polar hyperplane at the widest admissible atoms `δ ≍ 1/M` remains the sharp form of
-   the question.
-3. **Arithmetic Riemann–Roch on torsion orbits.** The lattice `𝓞_{ℚ(ζ_n)}` with its trace form has a
-   theta `h⁰` whose Riemann–Roch defect is `½ log|d|`, the self-intersection of Pillar IV; a section
-   functor on the scaling surface with this defect is the `F3` question of the review.
-4. **The discriminant for all `n`.** `I(n,n) = log|d_{ℚ(ζ_n)}|` beyond prime powers.
-5. **Indices on boxes.** *Answered in growth* (Pillar XIX): the positive index of the renormalized
-   torsion form on `[1, N]` is at least `c N^{1/5}/log N`, against `≤ 2` per ladder; positive squares
-   sit at the shared bases of the ladders of different primes. Numerically it is `≈ N^{0.38}`
-   (6, 9, 14, 18, 23 at `N` = 100, 300, 1000, 2000, 4000), and the anti-pole heuristic gives bases up to
-   `N^{α*}`, `2α* + α* log(1/α*) = 1` (`α* ≈ 0.32`). Upper bound (Pillar XX): `≤ N^{4/5 + ε}`, the
-   positive squares live on the atoms below `N^{4/5}`. Open: the exact exponent; the twisted ground
-   state at `κ = −1/φ` suggests `1/φ² = 0.382…`.
-6. **Thresholds as weights.** Pillar XVI puts the square-root threshold at the cost of paying the
-   towers separately. A weight filtration of log-atom cycles by `log(1/δ)/log M`, with the self-energy on
-   one side and the tower sum on the other.
-
----
-
-## 10. Success criteria and contribution standards
-
-AIT succeeds when it proves the Hodge index for the explicit-formula pairing on a class of cycles
-that is cofinal and passes the battery, or proves that no regularization of a stated class can carry
-the sign, together with the strongest positive survivor; and when each question of §6 has an answer
-of that kind.
-
-A contribution is an unconditional Lean theorem about the objects of §3. It names its carrier and
-which reading (finite, archimedean, Fourier) it concerns; it states covariance (the anomaly) and
-positivity separately; it separates identities from signs; it states what it gives over `𝔽_q`, on the
-golden datum `1 − 5X + 5X²` and on the sign twins. Every no-go records its positive survivor.
-
-Principles: identities first, sign last; every regularization carries its anomaly; no positivity
-without a count; local is not global; a reformulation is not a reduction.
+Unconditional; name the carrier and reading (finite, archimedean, Fourier); state covariance (anomaly) and positivity separately;
+separate identities from signs; report over $\mathbb F_q$, on the golden datum and the sign twins; record the positive survivor of every
+no-go. Every regularization carries its anomaly; no positivity without a count; local is not global.

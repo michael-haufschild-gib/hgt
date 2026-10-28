@@ -38,7 +38,8 @@ theorem sum_half_pow_succ_le_one (K : ℕ) :
     refine Finset.sum_congr rfl fun _ _ => by ring
   rw [hfactor, geom_sum_eq (by norm_num)]
   have hp : 0 ≤ (1 / 2 : ℝ) ^ K := by positivity
-  linarith
+  linarith [show (1 / 2 : ℝ) * (((1 / 2 : ℝ) ^ K - 1) / (1 / 2 - 1)) =
+    1 - (1 / 2 : ℝ) ^ K by ring]
 
 theorem narrowMassTerm_le_far {r t : ℝ} {q : XiZeroCopy}
     (hf : ¬ |((q.1 : ℂ)).im - t| ≤ 1 / 16) :
@@ -51,7 +52,7 @@ theorem narrowMassTerm_le_far {r t : ℝ} {q : XiZeroCopy}
     have := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1 / 16) hlt.le 2
     linarith
   unfold narrowMassTerm lorentzMassTerm
-  rw [mul_div_assoc, mul_one, div_le_div_iff₀ (by positivity) (by positivity)]
+  rw [← mul_div_assoc, mul_one, div_le_div_iff₀ (by positivity) (by positivity)]
   have hden : 1 + (t - (q.1 : ℂ).im) ^ (2 : ℕ) ≤
       257 * (r ^ (2 : ℕ) + (t - (q.1 : ℂ).im) ^ (2 : ℕ)) := by
     have hr2 := sq_nonneg r
@@ -123,6 +124,23 @@ theorem sum_far_narrowMassTerm_le (Z : Finset XiZeroCopy)
   linarith [h1.trans hprod,
     show 257 * (u / 64) * (16 * Real.log S) = (257 / 4) * (u * Real.log S) by ring]
 
+theorem finset_sum_union_le_of_nonneg {α : Type*} [DecidableEq α] (s₁ s₂ : Finset α)
+    {f : α → ℝ} (hf : ∀ x, 0 ≤ f x) :
+    ∑ x ∈ s₁ ∪ s₂, f x ≤ (∑ x ∈ s₁, f x) + ∑ x ∈ s₂, f x := by
+  have h := Finset.sum_union_inter (s₁ := s₁) (s₂ := s₂) (f := f)
+  have hinter : 0 ≤ ∑ x ∈ s₁ ∩ s₂, f x := Finset.sum_nonneg fun x _ => hf x
+  linarith
+
+theorem finset_sum_range_biUnion_le_of_nonneg {α : Type*} [DecidableEq α] (K : ℕ)
+    (t : ℕ → Finset α) {f : α → ℝ} (hf : ∀ x, 0 ≤ f x) :
+    ∑ x ∈ (Finset.range K).biUnion t, f x ≤ ∑ j ∈ Finset.range K, ∑ x ∈ t j, f x := by
+  induction K with
+  | zero => simp
+  | succ k ih =>
+    rw [Finset.range_add_one, Finset.biUnion_insert,
+      Finset.sum_insert Finset.notMem_range_self]
+    exact (finset_sum_union_le_of_nonneg _ _ hf).trans (add_le_add le_rfl ih)
+
 theorem sum_near_narrowMassTerm_le (Z : Finset XiZeroCopy)
     {S R₀ u t : ℝ} (hS : 2 ≤ S) (hR₀ : 0 < R₀) (hRu : R₀ ≤ u) (hu16 : u ≤ 1 / 16)
     (ht : t ∈ Icc S (2 * S)) (hgood : ¬ MultiScaleBad S u t) :
@@ -172,7 +190,9 @@ theorem sum_near_narrowMassTerm_le (Z : Finset XiZeroCopy)
   have hF₀ : ∑ q ∈ F₀, narrowMassTerm (R₀ / 2) t q ≤ 20 * (u * Real.log S) := by
     have hle1 : ∀ q ∈ F₀, narrowMassTerm (R₀ / 2) t q ≤ 1 := fun q _ =>
       (narrowMassTerm_le_lorentzMassTerm hr0.le (by linarith) t q).trans
-        (by unfold lorentzMassTerm; exact div_le_one_of_le₀ (by positivity) (by positivity))
+        (by
+          unfold lorentzMassTerm
+          exact div_le_one_of_le₀ (by linarith [sq_nonneg (t - (q.1 : ℂ).im)]) (by positivity))
     calc ∑ q ∈ F₀, narrowMassTerm (R₀ / 2) t q ≤ ∑ _q ∈ F₀, (1 : ℝ) := Finset.sum_le_sum hle1
       _ = F₀.card := by simp
       _ ≤ 20 * (u * Real.log S) :=
@@ -207,8 +227,11 @@ theorem sum_near_narrowMassTerm_le (Z : Finset XiZeroCopy)
       unfold narrowMassTerm
       rw [div_le_iff₀ (by positivity)]
       have hinv : ((2 : ℝ) ^ (j + 1)) ^ (2 : ℕ) * (1 / 4 : ℝ) ^ (j + 1) = 1 := by
-        rw [← pow_mul, show 2 * (j + 1) = (j + 1) * 2 by ring, pow_mul]
-        norm_num
+        calc ((2 : ℝ) ^ (j + 1)) ^ (2 : ℕ) * (1 / 4 : ℝ) ^ (j + 1)
+            = ((2 : ℝ) ^ (2 : ℕ)) ^ (j + 1) * (1 / 4 : ℝ) ^ (j + 1) := by
+                rw [← pow_mul, mul_comm, pow_mul]
+          _ = ((2 : ℝ) ^ (2 : ℕ) * (1 / 4 : ℝ)) ^ (j + 1) := (mul_pow _ _ _).symm
+          _ = 1 := by norm_num
       have hmul : (R₀ / 2) ^ (2 : ℕ) =
           ((2 : ℝ) ^ (j + 1) * (R₀ / 2)) ^ (2 : ℕ) * (1 / 4 : ℝ) ^ (j + 1) := by
         calc (R₀ / 2) ^ (2 : ℕ) = (R₀ / 2) ^ (2 : ℕ) * 1 := (mul_one _).symm
@@ -239,9 +262,9 @@ theorem sum_near_narrowMassTerm_le (Z : Finset XiZeroCopy)
         Finset.sum_le_sum_of_subset_of_nonneg hsub fun q _ _ => hnn q
     _ ≤ (∑ q ∈ F₀, narrowMassTerm (R₀ / 2) t q) +
           ∑ q ∈ (Finset.range K).biUnion shell, narrowMassTerm (R₀ / 2) t q :=
-        Finset.sum_union_le _ _ hnn
+        finset_sum_union_le_of_nonneg _ _ hnn
     _ ≤ 20 * (u * Real.log S) + ∑ j ∈ Finset.range K, ∑ q ∈ shell j, narrowMassTerm (R₀ / 2) t q :=
-        add_le_add hF₀ (Finset.sum_biUnion_le _ _ hnn)
+        add_le_add hF₀ (finset_sum_range_biUnion_le_of_nonneg K shell hnn)
     _ ≤ 20 * (u * Real.log S) +
           ∑ j ∈ Finset.range K, 20 * (u * Real.log S) * ((1 / 2 : ℝ) ^ (j + 1)) :=
         add_le_add le_rfl (Finset.sum_le_sum hshell)
@@ -295,6 +318,7 @@ theorem narrowSuperlevel_subset_bad (Z : Finset XiZeroCopy) {S R₀ : ℝ} {j : 
   have hRu : R₀ ≤ (2 : ℝ) ^ j * R₀ := (one_mul R₀).symm.trans_le
     (mul_le_mul_of_nonneg_right h1 hR₀.le)
   have hle := windowNarrowSum_le_of_not_multiScaleBad Z hS hR₀ hRu hj16 hlog htIcc hngood
+  rw [Set.mem_setOf_eq] at htgt
   linarith
 
 /-- Majorant of `(windowNarrowSum Z im (R₀ / 2) t)²` on `[S, 2S]` built from measurable dyadic
@@ -366,7 +390,10 @@ theorem windowNarrowSum_sq_le_superlevelMajorant (Z : Finset XiZeroCopy)
         calc (105 * ((2 : ℝ) ^ (Nat.find hexk - 1 + 1) * R₀ * Real.log S)) ^ (2 : ℕ)
             = (narrowSuperlevel Z S R₀ (Nat.find hexk - 1)).indicator
                 (fun _ => (105 * ((2 : ℝ) ^ (Nat.find hexk - 1 + 1) * R₀ * Real.log S)) ^ (2 : ℕ))
-                t := (Set.indicator_of_mem htj _).symm
+                t :=
+              (Set.indicator_of_mem htj
+                (fun _ : ℝ =>
+                  (105 * ((2 : ℝ) ^ (Nat.find hexk - 1 + 1) * R₀ * Real.log S)) ^ (2 : ℕ))).symm
           _ ≤ _ := Finset.single_le_sum
               (fun _ _ => Set.indicator_nonneg (fun _ _ => by positivity) t) hjM
       unfold narrowSuperlevelMajorant
@@ -467,11 +494,10 @@ theorem eventually_log_cube_mul_rpow_three_quarters_le (K : ℝ) (hK : 0 ≤ K) 
     have hle1 : 1 / (K + 1) ≤ 1 := div_le_one_of_le₀ (by linarith) (by positivity)
     have hp : (1 / (K + 1)) ^ (3 : ℕ) ≤ 1 / (K + 1) := by
       calc (1 / (K + 1)) ^ (3 : ℕ)
-          = (1 / (K + 1)) * (1 / (K + 1)) * (1 / (K + 1)) := by ring
-        _ ≤ 1 * (1 * (1 / (K + 1))) :=
-            mul_le_mul hle1 (mul_le_mul hle1 le_rfl (by positivity) zero_le_one)
-              (by positivity) zero_le_one
-        _ = 1 / (K + 1) := by ring
+          = (1 / (K + 1)) ^ (2 : ℕ) * (1 / (K + 1)) := by ring
+        _ ≤ 1 * (1 / (K + 1)) :=
+            mul_le_mul_of_nonneg_right (pow_le_one₀ (by positivity) hle1) (by positivity)
+        _ = 1 / (K + 1) := one_mul _
     calc K * (1 / (K + 1)) ^ (3 : ℕ)
         ≤ K * (1 / (K + 1)) := mul_le_mul_of_nonneg_left hp hK
       _ ≤ (K + 1) * (1 / (K + 1)) := mul_le_mul_of_nonneg_right (by linarith) (by positivity)
@@ -684,9 +710,10 @@ theorem exists_integral_Icc_windowNarrowSum_sq_le :
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       have h4 : ((2 : ℝ) ^ (j + 1)) ^ (2 : ℕ) = 4 * (4 : ℝ) ^ j := by
-        rw [pow_succ, mul_pow, show ((2 : ℝ) ^ j) ^ (2 : ℕ) = (4 : ℝ) ^ j by
-          rw [← pow_mul, mul_comm, pow_mul]; norm_num]
-        ring
+        calc ((2 : ℝ) ^ (j + 1)) ^ (2 : ℕ)
+            = ((2 : ℝ) ^ (2 : ℕ)) ^ (j + 1) := by rw [← pow_mul, mul_comm, pow_mul]
+          _ = (4 : ℝ) ^ (j + 1) := by norm_num
+          _ = 4 * (4 : ℝ) ^ j := by rw [pow_succ]; ring
       have hexp_eq : -((2 : ℝ) ^ j * R₀ * Real.log S / 120000) =
           -((2 : ℝ) ^ j * (R₀ * Real.log S / 120000)) := by ring
       rw [hexp_eq]
@@ -1008,9 +1035,7 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
   obtain ⟨C₁, κ₂, hC₁, hκ₂, hev_Icc⟩ := exists_integral_Icc_windowNarrowSum_sq_le
   refine ⟨4 * (11 * C₁ + 2) / Real.pi, κ₂, by positivity, hκ₂, ?_⟩
   obtain ⟨S₀, hS₀⟩ := eventually_atTop.mp hev_Icc
-  have hcard_2T : ∀ᶠ T : ℝ in atTop,
-      ((zeroWindow (2 * T)).card : ℝ) ≤ (2 * T) * Real.log (2 * T) / 5 :=
-    (tendsto_const_nhds.mul tendsto_id).eventually eventually_card_zeroWindow_le
+  obtain ⟨T₀_w, hT₀_w⟩ := eventually_atTop.mp eventually_card_zeroWindow_le
   have htail_small : ∀ᶠ T : ℝ in atTop,
       8 * Real.pi * Real.log T ^ (2 : ℕ) ≤ T ^ (2 : ℕ) := by
     have h1 := (isLittleO_log_rpow_atTop (r := (1 : ℝ)) (by norm_num)).bound
@@ -1026,7 +1051,7 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
         _ = (1 / (8 * Real.pi + 1)) ^ (2 : ℕ) * T ^ (2 : ℕ) := by ring
     have hc_le : 8 * Real.pi * (1 / (8 * Real.pi + 1)) ^ (2 : ℕ) ≤ 1 := by
       have hle1 : 1 / (8 * Real.pi + 1) ≤ 1 :=
-        div_le_one_of_le₀ (by positivity) (by positivity)
+        div_le_one_of_le₀ (by linarith [Real.pi_pos]) (by positivity)
       calc 8 * Real.pi * (1 / (8 * Real.pi + 1)) ^ (2 : ℕ)
           = 8 * Real.pi * (1 / (8 * Real.pi + 1)) * (1 / (8 * Real.pi + 1)) := by ring
         _ ≤ 8 * Real.pi * (1 / (8 * Real.pi + 1)) * 1 :=
@@ -1041,12 +1066,15 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
       _ = (8 * Real.pi * (1 / (8 * Real.pi + 1)) ^ (2 : ℕ)) * T ^ (2 : ℕ) := by ring
       _ ≤ 1 * T ^ (2 : ℕ) := mul_le_mul_of_nonneg_right hc_le (sq_nonneg T)
       _ = T ^ (2 : ℕ) := one_mul _
-  filter_upwards [eventually_ge_atTop (max (2 * S₀) 4), hcard_2T, htail_small]
-    with T hTbig hcard htail R₀ hR₀ hR₀32 hκ
+  filter_upwards [eventually_ge_atTop (max (max (2 * S₀) (T₀_w / 2)) 4), htail_small]
+    with T hTbig htail R₀ hR₀ hR₀32 hκ
   have hT4 : 4 ≤ T := (le_max_right _ _).trans hTbig
   have hT0 : 0 < T := by linarith
   have hS_half : S₀ ≤ T / 2 := by
-    have := (le_max_left _ _).trans hTbig; linarith
+    have := (le_trans (le_max_left _ _) (le_max_left _ _)).trans hTbig; linarith
+  have hcard : ((zeroWindow (2 * T)).card : ℝ) ≤ (2 * T) * Real.log (2 * T) / 5 := by
+    have := (le_trans (le_max_right _ _) (le_max_left _ _)).trans hTbig
+    exact hT₀_w (2 * T) (by linarith)
   have hr0 : 0 < R₀ / 2 := half_pos hR₀
   have hr1 : R₀ / 2 ≤ 1 := by linarith
   have hRL1 : 1 ≤ (R₀ * Real.log T) ^ (2 : ℕ) := one_le_pow₀ (by linarith)
