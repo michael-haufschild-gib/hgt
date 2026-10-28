@@ -25,7 +25,9 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
 - [x] HL4 ray-class ideal counts with power saving and equal densities —
       `exists_abs_ncard_rayClassIdeals_sub_le` (`#{𝔞 ∈ c : N𝔞 ≤ x} = κ_𝔪 x + O(x^{1−1/n})`, one
       `κ_𝔪` for all `c`); `exists_norm_sum_heckeCoeff_le` (`Σ_{N𝔞≤x} ψ(𝔞) = O(x^{1−1/n})`, `ψ ≠ 1`)
-- [ ] HL5 continuation to `Re s > 1 − 1/n`; holomorphic at `1` for `ψ ≠ 1`; residue for `ψ = 1`
+- [x] HL5 continuation to `Re s > 1 − 1/n`; holomorphic at `1` for `ψ ≠ 1`; residue for `ψ = 1` —
+      `differentiableOn_heckeLCont`, `exists_norm_heckeL_le`, `heckeL_one_eq`,
+      `tendsto_sub_one_mul_heckeL_one` (via `HTGeometry.BoundedPartialSums.contLSeries`)
 - [ ] HL6 `L(1, ψ) ≠ 0` for non-real `ψ` (product of all `L(s, ψ)` has `|·| ≥ 1`); Mertens for Hecke
       characters; real `ψ` after CFT
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform)
