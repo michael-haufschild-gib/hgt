@@ -19,6 +19,7 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheWeightOfOneZero
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheMarkovFormFailsInsideTheSeparatedRegime
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheUniversalThresholdIsFinite
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheRowsAtBoundedOverlap
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheSecondOrderSynthesis
 
 /-!
 # Arithmetic Harmonic Analysis at the Spacing Scale
@@ -40,7 +41,9 @@ Umbrella for the harmonic analysis of Weil's form on the atomic family
 * the overlap law: once the overlap ratio beats `√(log N)` — widths `N^{−θ}`, `θ < 1`, or overlap
   `(log N)^{1/2+ε}` — positivity on the atomic families is the Riemann hypothesis (and at every
   fixed width); every twisted explicit formula that fails somewhere fails there; and the Markov
-  form has a negative square there unconditionally, and only one iff RH.
+  form has a negative square there unconditionally, and only one iff RH;
+* the second-order (trapezoid) synthesis moves the overlap law to the fourth root: overlap
+  `(log N)^{1/4+ε}` suffices.
 
 See `SpacingScaleHarmonicAnalysis/README.md`.
 -/

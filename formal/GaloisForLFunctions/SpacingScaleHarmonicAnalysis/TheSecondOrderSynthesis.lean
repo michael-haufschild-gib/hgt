@@ -3,19 +3,30 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheCriticalExponent
 /-!
 # The second-order synthesis
 
-The synthesis of `TheLogLatticeSynthesizesWideTests` puts each cell's mass on its left endpoint; its
-error is first order, `O(k/n₀)`, and the overlap law (`TheCriticalExponent`) needs the overlap
-ratio to beat `√(log N)`. Centring the cells on the atoms makes the first-order term cancel up to
-the variation of the gaps.
+The overlap law (`TheCriticalExponent`) synthesizes a fixed test `F` from atoms of width `1/k` at
+the log-lattice of level `n₀`; its cell weights `∫_{cell} F` put each cell's mass on the left
+endpoint, an error of first order `k/n₀`, so positivity is RH only once the overlap ratio `n₀/k`
+beats `√(log k)`. The trapezoid weights `F(a_j)(a_{j+1} − a_{j−1})/2` make the error second order
+`(k/n₀)²`, and the window narrows to the fourth root.
 
-* **The cell estimate** (`abs_taylor_le`, `abs_cell_integral_sub_le`): on a cell `[p, q] ∋ a`,
-  `∫_p^q G = G(a)(q − p) + G′(a) ∫_p^q (t − a) dt + E`, `|E| ≤ (q − p) H ∫_p^q |G″|`.
-* **Midpoint quadrature on a slowly varying lattice** (`abs_midSum_sub_integral_le`): with cells
-  bounded by the midpoints of consecutive nodes, gaps `≤ H` and gap variation `≤ δ`,
-  `|Σ_i G(a_{i+1})|cell_i| − ∫ G| ≤ (δ/4)(∫|G′| + H ∫|G″|) + H² ∫|G″|`. On the log-lattice of level
-  `n₀`, `H = 1/n₀` and `δ = 1/n₀²`: the error is second order.
+* **The trapezoid on a cell** (`abs_integral_sub_trap_le_one`, `abs_integral_sub_trap_le_two`):
+  `|∫_p^q G − (q − p)(G(p) + G(q))/2|` is `≤ (q − p) ∫_p^q |G′|` and `≤ (5/4)(q − p)² ∫_p^q |G″|`;
+  the Taylor expansions at the two endpoints (`abs_cell_integral_sub_le`) cancel to first order.
+  On nodes with gaps `≤ H` the rule `trapRule` errs by `H ∫|G′|` and by `(5/4) H² ∫|G″|`.
+* **The trapezoid synthesis** `trapSum F ψ a J r = T(t ↦ F(t) ψ(r − t))`
+  (`abs_trapSum_sub_integral_le`): it is within `(5/4) H² (M₂‖ψ‖₁ + 2L‖ψ′‖₁ + M‖ψ″‖₁)` of
+  `F ∗ ψ`, and its derivative is `≤ M‖ψ′‖₁ + H(L‖ψ′‖₁ + M‖ψ″‖₁)` (`abs_trapSum_deriv_le`).
+  It is an atomic test (`atomicTest_trapWeights`).
+* **The synthesis bound** (`exists_atomicTest_weilQuad_le_two`): with `ψ = φ_k` and `H = 1/n₀`,
+  the supremum error is `synthErrTwo = (5/4)(1/n₀)²(M₂‖φ‖₁ + 2Lk‖φ′‖₁ + Mk²‖φ″‖₁) + L‖φ‖₁/k`
+  while the Lipschitz constant stays `O(k)`; the Lévy energy of the error is
+  `O(((k/n₀)² + 1/k)² log k)`.
+* **The overlap law at the fourth root** (`riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo`):
+  for every `C²` profile and every dilation sequence with `(κ_N/N)⁴ log κ_N → 0`
+  (`OverlapGrowthTwo`, implied by `OverlapGrowth`), RH holds iff Weil's form is eventually
+  nonnegative on the atomic families of width `1/κ_N`. For widths `(log N)^α/N`
+  (`riemannHypothesis_iff_atomicFamilies_nonneg_log_quarter`) this holds for every `α > 1/4`.
 -/
-
 noncomputable section
 
 open MeasureTheory Set Filter Topology intervalIntegral RHTower
@@ -188,7 +199,7 @@ theorem trapRule_sub_integral (hGc : Continuous G) :
 /-- `Σ_{i<J} ∫_{a_i}^{a_{i+1}} |f| = ∫_{a_0}^{a_J} |f|`. -/
 theorem sum_integral_abs_cells {f : ℝ → ℝ} (hf : Continuous f) :
     ∑ i ∈ Finset.range J, ∫ s in a i..a (i + 1), |f s| = ∫ s in a 0..a J, |f s| :=
-  sum_integral_adjacent_intervals fun i _ => hf.abs.intervalIntegrable _ _
+  sum_integral_adjacent_intervals fun _ _ => hf.abs.intervalIntegrable _ _
 
 /-- **The trapezoid rule, first order**: gaps `≤ H` give `|T(G) − ∫ G| ≤ H ∫ |G′|`. -/
 theorem abs_trapRule_sub_le_one (ha : Monotone a) (hgap : ∀ i < J, a (i + 1) - a i ≤ H)
@@ -672,7 +683,7 @@ theorem OverlapGrowth.two {κ : ℕ → ℝ} (hκ : OverlapGrowth κ) : OverlapG
 /-- The second-order error is `≤ (5/4) x² (M₂‖φ‖₁ + 2L‖φ′‖₁ + M‖φ″‖₁) + L‖φ‖₁/k` when the mesh
 `h = 1/n₀` and the ratio `x = h k` satisfy `h ≤ x`. -/
 theorem synthErrTwo_le {A0 A1 A2 M L M2 K h x : ℝ} {n : ℕ} (hA0 : 0 ≤ A0) (hA1 : 0 ≤ A1)
-    (hA2 : 0 ≤ A2) (hM : 0 ≤ M) (hL : 0 ≤ L) (hM2 : 0 ≤ M2) (hh0 : 0 ≤ h) (hhx : h ≤ x)
+    (hL : 0 ≤ L) (hM2 : 0 ≤ M2) (hh0 : 0 ≤ h) (hhx : h ≤ x)
     (hK : h * K = x) (hn : 1 / (n : ℝ) = h) :
     synthErrTwo A0 A1 A2 M L M2 K n ≤
       5 / 4 * x ^ 2 * (M2 * A0 + 2 * L * A1 + M * A2) + L * (1 / K) * A0 := by
@@ -809,7 +820,7 @@ theorem tendsto_synth_two {κ : ℕ → ℝ} (hκ : OverlapGrowthTwo κ) {B : �
       simp only [h, r, K]; push_cast; field_simp
     have hhx : h ≤ B * r n := by
       rw [← hhK]; exact le_mul_of_one_le_right hh0 h1
-    have he := synthErrTwo_le hA0 hA1 hA2 hM hL hM2 hh0 hhx hhK (n := n) rfl
+    have he := synthErrTwo_le (A2 := A2) (M := M) hA0 hA1 hL hM2 hh0 hhx hhK (n := n) rfl
     have he0 := synthErrTwo_nonneg (n := n) hA0 hA1 hA2 hM hL hM2 hK0.le
     have heE : synthErrTwo A0 A1 A2 M L M2 (K n) n ≤ E n := by
       refine he.trans (le_of_eq ?_)

@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Route:** ACS: source sections → Riemann–Roch and ampleness → Hodge index → RH.
-- **Parent:** [acs-complete-cell-haar-effectivity](../1-in-progress/acs-complete-cell-haar-effectivity.md)
+- **Parent:** [balanced complete-cell effectivity](acs-complete-cell-haar-effectivity.md)
 - **Statement:** On actual balanced adjacent whole-cell sections, the full signed prime energy has an upper bound with logarithmic coefficient strictly below one and a mass error independent of the support horizon.
 
 ## Exact theorem
@@ -23,7 +23,7 @@ Lean proves
 ```
 
 There is no sign restriction on `c`, no assumed analytic estimate, and no discarded prime tail.
-Also `1/sqrt 2 < 1`. The full Weil lower bound is a separate open target.
+Also `1/sqrt 2 < 1`. The full Weil lower bound is now checked in `HaarCellEffectivity.lean`.
 
 The literal compact BV representative `haarSectionProfile c X` has this same original
 `RHTower.primeSum` and square mass `Σ M_a c_a²`. On each pair interval
@@ -52,7 +52,7 @@ All three exact project files passed `lake --old env lean` without warnings. Fou
 
 ## Scope
 
-This discharges the prime estimate for a concrete signed source subspace of complete cells. The matching Gamma bound is now checked in [coherent mean-zero Gamma payment](acs-coherent-mean-zero-gamma-payment.md). Pole payment and positivity of the full Weil form remain on the parent card; full-source effectivity remains open. This card went directly from active Lean work to stage 3; no paper-only stage-2 result was parked.
+This discharges the prime estimate for a concrete signed source subspace of complete cells. The matching Gamma bound is checked in [coherent mean-zero Gamma payment](acs-coherent-mean-zero-gamma-payment.md), and `HaarCellPoleBound.lean` pays the original adverse pole product. The [parent card](acs-complete-cell-haar-effectivity.md) records the checked full Weil floor, common-scale smooth realization, Riemann–Roch, and ampleness. Full-source effectivity remains open. This card went directly to stage 3; no paper-only stage-2 result was parked.
 
 ## Log
 

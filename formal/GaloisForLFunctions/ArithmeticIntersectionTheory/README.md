@@ -208,6 +208,7 @@ hyperbolic Hecke correspondences that glue the levels.
 | XVII. RH in tower coordinates | `Re(archimedean + polar) = E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n) − Σ_{m<n} x_m x_n K_φ`; under RH, `‖φ‖² Σ_p Q_p + Σ_{m<n} x_m x_n K_φ ≤ E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n)` | `TheHodgeIndexInTowerCoordinates` |
 | XVIII. Base and successor | ladder kernels of distinct primes have disjoint supports, Frobenius towers of places overlap; the successor is transverse to every ladder except at `1 → 2` | `TheBaseAndTheSuccessor` |
 | XIX. Positive squares on boxes | at a prime base `q` the anti-pole `δ_q − Σ_p δ_{qp}/(2√p)` pairs the base against the first rung of every ladder through it, `R ≥ ½ Σ log p/p − log q`; anti-poles at the primes of `(M, Q₀M]` with arms in `(Q₀M, N/(Q₀M)]` are `R`-orthogonal; for `N ≥ (Q₀M)⁵` the positive index on `[1, N]` is `≥ M/log M` | `TheTorsionFormHasPolynomiallyManyPositiveSquares` |
+| XX. Few positive squares on boxes | the ground-state identity and `(a − b)² ≤ (3/2)a² + 3b²` on the pole relations give `R ≤ diag(2A(⌊N/n⌋) + d(n) − ½ log n)`; every `R`-positive subspace of `[1, N]` has dimension `≤ #{n : 2A(⌊N/n⌋) + d(n) > ½ log n} ≤ N^{4/5 + ε}` eventually; `d(n) ≤ 2 log K + 2 log 4 + 2 log n/K` | `ThePositiveSquaresOfTheTorsionFormLiveBelowFourFifths` |
 
 ---
 
@@ -316,7 +317,9 @@ Frobenius ladder, and successor transversality.
    torsion form on `[1, N]` is at least `c N^{1/5}/log N`, against `≤ 2` per ladder; positive squares
    sit at the shared bases of the ladders of different primes. Numerically it is `≈ N^{0.38}`
    (6, 9, 14, 18, 23 at `N` = 100, 300, 1000, 2000, 4000), and the anti-pole heuristic gives bases up to
-   `N^{α*}`, `2α* + α* log(1/α*) = 1` (`α* ≈ 0.32`). Open: the exact exponent and an upper bound.
+   `N^{α*}`, `2α* + α* log(1/α*) = 1` (`α* ≈ 0.32`). Upper bound (Pillar XX): `≤ N^{4/5 + ε}`, the
+   positive squares live on the atoms below `N^{4/5}`. Open: the exact exponent; the twisted ground
+   state at `κ = −1/φ` suggests `1/φ² = 0.382…`.
 6. **Thresholds as weights.** Pillar XVI puts the square-root threshold at the cost of paying the
    towers separately. A weight filtration of log-atom cycles by `log(1/δ)/log M`, with the self-energy on
    one side and the tower sum on the other.

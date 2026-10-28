@@ -6,7 +6,7 @@ Companions: [summary and priorities](obstacles-summary.md), [walls](walls-ledger
 
 ## Evidence and classification
 
-This report uses corpus searches followed by inspection of Lean statements, hypotheses and proof context across established routes, candidates and current supporting frameworks. It does not infer status from modification dates or module titles. Source references below identify mathematical evidence, not a fresh kernel audit. No builds or compilations were run. Working or unintegrated developments retain that qualification. Search records and findings are in the [research log](../../../logs/review-2810-research.log), with [declaration evidence](../../../logs/review-2810-source-evidence.jsonl) and [filtered search results](../../../logs/review-2810-search/). Only the six requested inherited Markdown reports were consulted.
+This report uses corpus searches followed by inspection of Lean statements, hypotheses and proof context across established routes, candidates and current supporting frameworks. It does not infer status from modification dates or module titles. Source references below identify mathematical evidence, not a fresh kernel audit. No builds or compilations were run. Working-source capstones include Haar effectivity, the unbounded-carrier projection, Ramanujan quasimodes and energy separation, the Robin–Euler criterion, Liouville finite-part separation and the torsion index ceiling. Their statements are included with their stated scope; integration or fresh kernel validation is not inferred. Search records and findings are in the [research log](../../../logs/review-2810-research.log), with [declaration evidence](../../../logs/review-2810-source-evidence.jsonl) and [filtered search results](../../../logs/review-2810-search/). Only the six requested inherited Markdown reports were consulted.
 
 Two categories organize each route:
 
@@ -21,70 +21,124 @@ A false proposed estimate belongs in neither queue: it needs replacement. A prov
 
 Complete logarithmic cells retain every relevant prime translation, the Gamma contribution, mass and both exponential pole moments. For each fixed compact smooth test family, one refinement recovers **every mixed Weil entry**, not just diagonal energies. Pole-preserving smoothing realizes the finite arithmetic form on original smooth tests. These results close the fixed-support transfer problem. They do not prove the finite forms positive. [Complete source transfer](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/CompleteWeilSourceTransfer.lean), [smooth realization](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/SmoothFiniteCellArithmeticForm.lean).
 
-Narrow positive sections now have a unique bounded Weil-orthogonal projection in the closed source graph. Its complement satisfies
+Narrow positive sections have a unique bounded Weil-orthogonal projection in the closed source graph. Its complement satisfies
 
 \[
 W(g-Pg,h-Ph)=W(g,h)-W(Pg,Ph).
 \]
 
-Every negative square survives in this complement. For each finite probe family, the completed residual index is attained at a finite refinement; complete cells capture every finite actual Weil index. Thus the unresolved object can be stated precisely: **the signed complementary form, or an upper index bound on source-complete cells**. Projection existence and finite mixed-entry recovery are no longer the missing lemmas. [Projection](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheClosedSectionHasABoundedWeilProjection.lean), [finite attainment](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCompletedIndexIsReachedAtAFiniteStage.lean), [index capture](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCompleteCellsCaptureEveryFiniteIndex.lean).
+Every negative square survives in this complement. For each finite probe family, the completed residual index is attained at a finite refinement; complete cells capture every finite actual Weil index. Thus the unresolved object can be stated precisely: **the signed complementary form, or an upper index bound on source-complete cells**. Projection existence and finite mixed-entry recovery are established. [Projection](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheClosedSectionHasABoundedWeilProjection.lean), [finite attainment](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCompletedIndexIsReachedAtAFiniteStage.lean), [index capture](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCompleteCellsCaptureEveryFiniteIndex.lean).
 
 Two attempted exhaustions do not supply the sign. At fixed atom count, shrinking widths removes vanishing energy. Recentered high arithmetic bands have increasing coercivity, but their unit-energy balls pair to zero with each fixed compact source. Nested positive sections can therefore remain mathematically useful without exhausting the source. [Shrinking cells](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/ShrinkingCellsRemoveVanishingEnergy.lean), [moving-band decoupling](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/MovingArithmeticBandsDecoupleFromFixedTests.lean).
 
-Working source also provides a concrete signed block input. Balanced adjacent-cell Haar sections cancel translated prime pairings except at odd-boundary incidences `(2a+1)m=2b+1`; even multipliers vanish. For arbitrary real coefficients their actual prime energy obeys
+Fixed cells control the **complete source graph**, uniformly over every finite prefix of any prescribed increasing carrier. For any continuous weight at least one, widths can be chosen once so every independently profiled prefix pays that weighted mass; the graph bound can have any factor \(1+\varepsilon\). On the chosen integer-log carrier, its literal graph closure has a unique bounded Weil projection, exact Schur subtraction and projection cost at most \(2\|T_Wf\|^2\). The carrier is **proper**: actual cusp escape eventually lies outside it, and an infinite independent theta radical survives in the complement. Those null directions are not negative witnesses, but exclude strict coercivity on the entire complement. [Fixed graph control](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/FixedCellsControlTheCompleteSourceGraph.lean), [unbounded-carrier projection](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheUnboundedCellCarrierHasAWeilProjection.lean).
+
+Balanced adjacent-cell Haar sections retain prime pairings only at odd-boundary incidences \((2a+1)m=2b+1\); even multipliers vanish. For their compact BV profile \(f_c\), arbitrary real coefficients satisfy
 
 \[
-P_{\mathrm{Haar}}(c;X)\le
-\sum_{a=1}^{X}\left(16+\frac{\log(2a+1)}{\sqrt2}\right)h_a c_a^2,
-\qquad h_a=\operatorname{haarMass}(a).
+\begin{aligned}
+P(f_c)&\le\sum_{a=1}^{X}\left(16+\frac{\log(2a+1)}{\sqrt2}\right)h_ac_a^2,\\
+\mathcal L(f_c)&\ge\sum_{a=1}^{X}\log(a)h_ac_a^2,\\
+2C(f_c)^2-2S(f_c)^2&\ge-2\sum_{a=1}^{X}h_ac_a^2,
+\end{aligned}
 \]
 
-The logarithmic coefficient is strictly below one. This is a prime-only inequality on a restricted balanced block space: full archimedean/smoothing cost, both pole moments, coarse components and mixed-scale payment remain to be established. Ordinary mean-zero balance is not polar neutrality. [Haar compression](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellPrimeCompression.lean), [signed prime bound](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellPrimeBound.lean).
+where \(h_a=\operatorname{haarMass}(a)\), \(\mathcal L\) is Lévy energy and \(C,S\) are the hyperbolic pole moments. The assembled full rough-Weil inequality is
+
+\[
+W_{\rm rough}(f_c)\ge
+\sum_{a=1}^{X}\left((1-1/\sqrt2)\log a+2\theta'(0)-20\right)h_ac_a^2.
+\]
+
+Consequently **one lower index \(A\) gives \(W_{\rm rough}(f_c)\ge\sum h_ac_a^2\) for every finite signed section supported at \(a\ge A\), independently of its upper horizon**. This is an actual full-form positive family. Extracting a numerical threshold and applying fixed-family pole-preserving smoothing are work with established inputs. Ordinary mean-zero balance is not polar neutrality; the pole loss is paid. [Prime bound](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellPrimeBound.lean), [Gamma](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellGammaPayment.lean), [poles](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellPoleBound.lean), [full Haar floor](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean).
+
+More generally, coherent Gamma energy pays \(\sum_i\log(1/|I_i|)\int_{I_i}f^2\) for compact BV sources mean-zero on disjoint intervals of width at most one, allowing unequal touching cells and arbitrary complementary source. **Coarse components, interactions between scales and a source-complete positive decomposition remain research.** Local gains cannot spend the same Gamma reserve repeatedly. [Coherent coercivity](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/GammaMeanZeroCoercivity.lean).
 
 ### 2. Overlap has several different boundaries
 
-Write \(\delta_N=\log(1+1/N)\) and \(w\) for atom width. At a fixed sufficiently small fraction of \(\delta_N\), archimedean self-energy pays prime interactions and the pole. Actual zeta intersection Grams satisfy Hodge hyperbolicity, weighted trickle-down and link inequalities there. This is a genuine local closure. The corresponding narrow full-form positivity also holds for sign twins, so it does not select zeta globally. [Actual narrow Hodge theorem](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing.lean), [polar payment](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheTiltedMarginPaysThePolarDispersion.lean).
+Write \(\delta_N=\log(1+1/N)\). At a sufficiently small fixed fraction of \(\delta_N\), actual pole-inclusive zeta Grams satisfy Hodge hyperbolicity, weighted trickle-down and link inequalities. Narrow full-form positivity also holds for sign twins, so this regime is not globally selective. [Narrow Hodge](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing.lean), [polar payment](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheTiltedMarginPaysThePolarDispersion.lean).
 
-For nonnegative Lipschitz smooth profiles supported on \([0,1]\) and positive inside, the natural atomic form is Metzler for \(w=\rho\delta_N\), \(0<\rho<1\). For every fixed \(\rho>1\), sufficiently large atom families contain a frustrated sign triangle: **no diagonal unimodular gauge makes the atom block Metzler**. The theorem does not settle \(\rho=1\), and does not disprove full Weil positivity. An overlap programme requiring this gauge at every width is nevertheless impossible. [Metzler threshold](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheMetzlerThresholdOfTheOverlapRatioIsOne.lean).
+For the stated nonnegative smooth profiles positive inside their support, the natural atomic form is Metzler at \(w=\rho\delta_N\), \(0<\rho<1\). Every fixed \(\rho>1\) eventually produces a frustrated triangle, prohibiting every diagonal unimodular Metzler gauge. The endpoint \(\rho=1\) is not settled. This obstructs that gauge method, not full Weil positivity. [Gauge threshold](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheMetzlerThresholdOfTheOverlapRatioIsOne.lean).
 
-Pure Markov positivity is a different question. For every \(e/(2\pi)<c<1\), some smooth nonnegative plateau has negative Markov energy on the pole coefficients \(n^{-1/2}\) at width \(c\delta_N\). Complete overlap families also have negative Markov directions unconditionally. The **full Weil form**, or Markov form restricted to the exact pole hyperplane, remains the relevant RH target. [Separated Markov failure](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheMarkovFormFailsInsideTheSeparatedRegime.lean), [pole-hyperplane criterion](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold.lean).
-
-Full atomic synthesis is already RH-complete on shrinking-width schedules: \(w_N=N^{-\theta}\), \(0<\theta<1\), and \(w_N=(\log N)^\alpha/N\), \(\alpha>1/2\). More generally, inverse widths \(\kappa_N\to\infty\) with \((\kappa_N/N)^2\log\kappa_N\to0\) suffice. Eventual positivity for **all real coefficient vectors** on each such family is equivalent to RH. These are sufficient synthesis conditions, not a sharp theorem at \(\alpha=1/2\). Bounded-overlap improvement is a meaningful intermediate target; it is not, by itself, the complete RH bridge. [Critical exponent](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheCriticalExponent.lean).
-
-Atomic Fourier–Dirichlet factorization and a bound for each zero's summand give useful scale information. They do not establish a strict Fourier bandlimit or a Nyquist sampling theorem for zeta's zeros. Nor does a per-zero upper bound control the sum over all zeros. [Weight of one zero](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheWeightOfOneZero.lean).
-
-### 3. Finite-prime renormalization has an actual spectral theory
-
-For the prime-only form \(P_N\), the sharp ceiling is \(\log N-\gamma+o(1)\). Its defect is an exact nonnegative Dirichlet energy. The torsion form has a different leading counterterm: \(\varphi\log N+O(1)\), \(\varphi=(1+\sqrt5)/2\). Working source also gives the extremal Rayleigh edges of \(\alpha\operatorname{diag}(\log n)+P_N\): \(\kappa_\pm\log N+O_\alpha(1)\), where \(\kappa^2=\alpha\kappa+1\). This asserts the edges, not that every interior spectral value occurs. Here the source name `atomicWeilForm` denotes the **prime form**, not complete Weil energy. [Prime ceiling](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePoleIsTheTopOfThePrimeForm.lean), [Dirichlet defect](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheDeficitOfThePrimeFormIsADirichletEnergy.lean), [golden counterterm](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheTorsionCountertermIsTheGoldenRatio.lean), [working fixed-point family](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheSelfIntersectionFamilyObeysAFixedPointLaw.lean).
-
-For every fixed prime, the valuation potential pays the tower deficit, including small primes. For fixed finite class families the corresponding asymptotic is uniform over their coefficient vectors. For each finite prime set \(Q\), the matched adjunction operator acts on the actual \(Q\)-supported-integer \(\ell^2\) space, is self-adjoint on its maximal logarithmic domain, and has a complete product-Blaschke eigenbasis with simple eigenvalues
+Pure Markov positivity is different. For every \(e/(2\pi)<c<1\), some smooth nonnegative plateau has negative Markov energy on pole coefficients \(n^{-1/2}\) at width \(c\delta_N\). A profile-dependent Robin–Euler criterion also excludes the stability regime when
 
 \[
-\gamma+\log m+\operatorname{tameDifferent}(m)
-=\gamma+2\log m-\operatorname{selfIntersection}(m).
+2\theta'(0)+\log(1/(wN))+\kappa_L(\phi)+\gamma+\varepsilon+e^{1/2}w/2<0,
+\qquad 0<w\le\delta_N/2.
 \]
 
-Its shifted inverse is compact. A fixed finite-support sieve-horizon defect converges to its quadratic form. The remaining issue is **compatibility and estimates as prime sets, class depth, horizons and signed source families grow together**, including the full Gamma and pole terms. This operator is not identified with a spectral realization of \(\xi\). [Tower payment](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheArchimedeanPlacePaysTheTowerDeficit.lean), [adjunction basis](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheSieveOperatorHasTheAdjunctionEigenbasis.lean), [source landing](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheSieveHorizonDefectIsTheAdjunctionOperator.lean), [compact resolvent](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheAdjunctionResolventIsCompact.lean).
+At sufficiently large \(N\), this gives a negative pole test and rules out a positive weight satisfying \((-M)\pi\le0\). Its hypotheses and width restriction matter; it is not a global exact critical-ratio theorem. The full pole-paid form and the exact pole-hyperplane criterion survive. [Plateau failure](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheMarkovFormFailsInsideTheSeparatedRegime.lean), [Robin–Euler criterion](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheStabilityRegimeEndsAtTheRobinEulerThreshold.lean), [pole-hyperplane criterion](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold.lean).
 
-Leading polar matching alone remains nonselective: Euler and finite-prime flips have coefficient \(+1\), Liouville \(-1\), and extended nonprincipal real prime-conductor characters \(0\). Two-horizon sieve formulas are uniform in the two horizons with \(Q\) fixed; that is not uniformity in \(Q\). [Character matching](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/CharactersAreInvisibleToPolarMatching.lean), [two horizons](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFiniteSieveUnitGramHasTwoHorizons.lean).
+Second-order synthesis is RH-complete at \(w_N=N^{-\theta}\), \(0<\theta<1\), and \(w_N=(\log N)^\alpha/N\), \(\alpha>1/4\). More generally, inverse widths \(\kappa_N\to\infty\) with \((\kappa_N/N)^4\log\kappa_N\to0\) suffice. Eventual full-Weil positivity for **all real coefficient vectors** on each such family is equivalent to RH. These sufficient conditions do not establish sharpness at \(\alpha=1/4\). [Second-order synthesis](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean).
 
-Working source makes the distinction between **valuation classes and unit residue classes** exact. For fixed modulus \(q\), the latter have rank-one leading counterterm \((q/\phi(q))\ell^2\), with an absolute signed-profile Gram error. For a unit-class function \(f\), the leading coefficient is \((\sum_{a\in(\mathbb Z/q)^\times}f(a))^2/(q\phi(q))\). Thus every nonprincipal character, real or complex, loses the quadratic logarithmic divergence. This does not bound the remainder by actual L² mass uniformly in profiles or in \(q\), and does not prove its sign. [Residue-class counterterm](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheHorizonCountertermIsBlindToResidueClasses.lean), [class-function law](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheHorizonSeesOnlyTheMeanOfAClassFunction.lean).
+The exact prime decomposition \(P(f_x)=\|g\|_2^2P_N(x)+NR_w(x)\) has a proved Schur bound. For \(0\le w\le1\), \(w\le K/N\), the non-ratio row is at most \(2(\log4+4)e^{5/2}K+2e^{3/2}K(m/N)(\log m+1)\). This competes with the tilted saving \((m/4N)\log m\); it does not pay arbitrary growing overlap. Separately, \(w\le K\delta_N\) covers measure at most \(K\), so squared L² error against a unit plateau of length \(L\) is at least \(L-K\). The requirement \(K\gtrsim\log N\) concerns simultaneous coverage of the whole growing interval \([0,\log N]\), not approximation of each fixed compact test. [Rows](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheRowsAtBoundedOverlap.lean), [coverage](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheOverlapRatioIsTheCoveredMeasure.lean).
 
-### 4. Finiteness and absence of exceptions have distinct exact thresholds
+Even the corrected bound \(W_\omega+2S^2\ge0\) fails for a bounded sign twist on a wide two-atom dipole. A universal all-twist method therefore cannot cover every width. Neither this nor Fourier–Dirichlet factorization gives a strict bandlimit or Nyquist theorem for zeta zeros. [Universal threshold](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheUniversalThresholdIsFinite.lean), [single-zero weights](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheWeightOfOneZero.lean).
 
-Let \(\mathcal W(R)\) be the damped arithmetic source work and \(\Delta\mathcal W(R)=\mathcal W(2R)-\mathcal W(R)\), \(R\ge4\). Current source gives:
+### 3. Adjunction connects to actual prime modes, with an exhaustion gap
+
+For the prime-only matrix \(P_N\), the sharp ceiling is \(\log N-\gamma+o(1)\), with an exact nonnegative Dirichlet defect. The torsion counterterm is instead \(\varphi\log N+O(1)\), \(\varphi=(1+\sqrt5)/2\). The extremal Rayleigh edges of \(\alpha\operatorname{diag}(\log n)+P_N\) are \(\kappa_\pm\log N+O_\alpha(1)\), where \(\kappa^2=\alpha\kappa+1\). The joint height/prime numerical range has a semicircle upper envelope; no interior spectral-filling theorem follows. Renormalized torsion positive index has a sublinear upper bound \(N^{4/5+\varepsilon}\), alongside polynomial lower bounds; this is not a Weil index bound. [Prime ceiling](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePoleIsTheTopOfThePrimeForm.lean), [fixed-point family](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheSelfIntersectionFamilyObeysAFixedPointLaw.lean), [torsion index ceiling](../../../formal/GaloisForLFunctions/ArithmeticIntersectionTheory/ThePositiveSquaresOfTheTorsionFormLiveBelowFourFifths.lean).
+
+For each finite prime set \(Q\), the matched adjunction operator on the actual \(Q\)-supported-integer ℓ² carrier is self-adjoint on its maximal logarithmic domain, with complete product-Blaschke eigenbasis, simple energies
+
+\[
+E_m=\gamma+\log m+\operatorname{tameDifferent}(m)
+=\gamma+2\log m-\operatorname{selfIntersection}(m)
+\]
+
+and compact shifted inverse. A fixed-support sieve-horizon defect converges to its quadratic form. The raw one-prime tower finite part is nonnegative at every depth exactly for primes \(p\ge47\); valuation potential pays all fourteen deficits at \(p\le43\). [Adjunction](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheSieveOperatorHasTheAdjunctionEigenbasis.lean), [source landing](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheSieveHorizonDefectIsTheAdjunctionOperator.lean), [compact resolvent](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheAdjunctionResolventIsCompact.lean), [prime threshold](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheTowerDeficitChangesSignBetweenFortyThreeAndFortySeven.lean), [valuation payment](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheArchimedeanPlacePaysTheTowerDeficit.lean).
+
+The **full finite prime matrix** has an actual fixed-mode comparison. Ramanujan coefficients factor into valuation steps; completed prime-row corrections carry energy \(\log m+\operatorname{tameDifferent}(m)\), with summable tails uniform in the row at fixed \(m\). The profiles \(v_m(n)=c_m(n)/\sqrt{\phi(m)n}\) have Gram divided by \(\log N\) tending to the identity on each fixed conductor family, and
+
+\[
+\frac{\|(P_N-(\log N-E_m))v_m\|_2^2}{\log N}\longrightarrow0
+\quad(m\text{ fixed}).
+\]
+
+All positive conductor labels have distinct \(E_m\). The assembled quasimode and distinct-energy declarations are working source. Nearby finite-matrix eigenvalues can be obtained by applying the existing Hermitian residual lemma. **Growing-mode uniformity, complementary-source control and full Gamma/pole coupling remain open**; neither spectral completeness nor a Xi spectral realization follows. [Completed rows](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanPrimeRowsHaveAdjunctionEnergy.lean), [tails](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanPrimeCorrectionHasAUniformTail.lean), [Gram limit](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanPoleProfilesAreAsymptoticallyOrthonormal.lean), [quasimodes](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanPoleProfilesArePrimeQuasimodes.lean), [distinct energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanAdjunctionEnergiesAreDistinct.lean), [residual lemma](../../../formal/GaloisForLFunctions/HTGeometry/HermitianResidualFindsAnEigenvalue.lean).
+
+The actual prime form has a uniform gap on its **harmonic pole hyperplane**: some \(g>0\) gives \(P_N(x)\le(\log N-\gamma-g+\varepsilon)\|x\|_2^2\) eventually for every \(\sum_{n\le N}x_n/\sqrt n=0\). On this same fixed hyperplane the Liouville-twisted form attains \(\log N-\gamma-o(1)\). This is constrained sign selectivity, not full continuous Weil positivity. The discrete harmonic constraint must be compared with the actual exponential pole coordinates. [Gap](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePrimeFormHasASpectralGapBelowItsPole.lean), [separation](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePoleHyperplaneSeparatesZetaFromItsLiouvilleTwin.lean).
+
+Leading polar matching remains nonselective: Euler and finite prime flips have coefficient +1, Liouville −1 and extended nonprincipal real prime-conductor characters 0. A sign gauge with \(A_\epsilon(y)=\kappa\log y+\alpha+o(1)\) has leading polar coefficient \(\kappa\) and finite part \(2\alpha\), with explicit **absolute-profile** errors. Leading-order convergence alone determines \(\kappa\); a mass-scale remainder has a separate logarithmic-mean criterion. Nonprincipal character Mertens sums converge to \(-L'/L(1,\chi)\); real prime-conductor extensions add the ramified term. [Leading-order criterion](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/PolarMatchingNeedsOnlyTheLeadingOrder.lean), [finite-part law](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFinitePartIsTwiceTheMertensLimit.lean), [character value](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheCharacterMertensLimitIsTheLogarithmicDerivative.lean).
+
+For Liouville, the finite part is \(2(\gamma+\tau)\), where the convergent even-prime-power correction satisfies \(\tau\ge(\log2)/2>0\); Euler's is \(-2\gamma\). Their difference on pole-neutral step profiles has positive main coefficient \(2(2\gamma+\tau)\). Its error uses the absolute coefficient budget, so this is **not** a uniform mass-relative gap for every signed profile. It is distinct from the uniform prime pole-gap theorem. [Finite-part separation](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFinitePartSeparatesZetaFromItsLiouvilleTwin.lean).
+
+Fixed BV profiles \(g(\log n/\log N)/\sqrt n\) have Euler finite-part error at most \(\eta\log N+C_{\eta,g}\); arbitrary discrete profiles have variation-squared bounds. Valuation classes have growing-rank leading counterterms, while fixed-modulus unit-residue classes have rank one, \((q/\phi(q))\ell^2\), reading only the class-function mean. Neither fixed-profile asymptotics nor fixed-Q two-horizon uniformity controls growing variation, modulus and prime sets simultaneously. [BV laws](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheHorizonLawsHoldForProfilesOfBoundedVariation.lean), [residue law](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheHorizonSeesOnlyTheMeanOfAClassFunction.lean), [two horizons](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFiniteSieveUnitGramHasTwoHorizons.lean).
+
+### 4. Canonical critical energy separates finite support from RH
+
+Let \(\mathcal W(R)\) be damped arithmetic source work, \(\Delta\mathcal W(R)=\mathcal W(2R)-\mathcal W(R)\), and \(K(R)=R^2\Delta\mathcal W(R)\), \(R\ge4\). Define
+
+\[
+I_*=\frac{1294047}{4000},\qquad Q_*=2I_*=\frac{1294047}{2000}.
+\]
+
+These are quadraticIndexUnit and quadraticExclusionQuantum, derived from height-square bound \(431349/2000\). The source rate \(K\) is nonnegative, monotone and converges in the extended nonnegative reals to canonical energy \(\mathcal E_{\rm crit}\). Its pair kernel is entrywise nonnegative; no PSD Gram-kernel assertion follows. Off-line/critical exterior interactions belong to the energy and cannot be discarded. [Monotonicity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateIsMonotone.lean), [canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean).
 
 | Arithmetic bound | Exact consequence |
 |---|---|
 | Bounded \(\mathcal W\) | Finite off-line support; equivalently bounded integer-log spline negative index. |
 | \(\Delta\mathcal W(R)\to0\), or eventually \(\Delta\mathcal W(R)\le39/50\) | Finite off-line support. |
 | \(\Delta\mathcal W(R)\le39/50\) for **every** \(R\ge4\) | RH. |
-| \(R^2\Delta\mathcal W(R)\le48\) cofinally | RH. |
+| Eventual boundedness of \(K\), or \(\mathcal E_{\rm crit}<\infty\) | Finite off-line support. |
+| \(K(R)\le Q_*\) cofinally, or \(\mathcal E_{\rm crit}\le Q_*\) | RH. |
 | \(\mathcal W(R)\le2\) cofinally | RH. |
 
-Every off-line quartet costs more than \(39/50\) at its height. Any exception eventually forces the quadratically scaled increment above \(48\); infinitely many exceptions force it to infinity. Thus vanishing unscaled increments cannot eliminate a finite exceptional set. No sufficient arithmetic upper bound in this table has been produced. [Finite stratum](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheWorkAndIndexHaveTheSameFiniteStratum.lean), [vanishing increments](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/VanishingScaleIncrementsCharacterizeFiniteSupport.lean), [strict quantum](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/EveryOffLineQuartetCostsAStrictScaleQuantum.lean), [quadratic increments](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheQuadraticScaleWorkDetectsEveryException.lean).
+The trichotomy is \(K\equiv0\) under RH; convergence to finite \(L>Q_*\) for finite nonempty off-line support; divergence to infinity for infinite support. In the finite case, \(L=(3/2)\sum_{\text{off-line copies}}\gamma_\rho^2d_\rho F_\rho\). This source moment has signed individual terms, despite the nonnegative pair-energy representation. Every finite actual Weil negative index \(k\) forces
 
-Working source sharpens this to an exact trichotomy for \(R^2\Delta\mathcal W(R)\): identically zero under RH; convergence to a finite \(L>48\) for finite nonempty off-line support; divergence to \(+\infty\) for infinite support. Eventual boundedness, or existence of a finite limit, is therefore equivalent to finite support. The finite limit is the signed source moment \((3/2)\sum_{\mathrm{off\ copies}}\gamma_\rho^2 d_\rho F_\rho\); individual summands are not asserted positive. Every finite Weil negative index \(k\) also forces the quadratic increment eventually above each \(b<24k\). These are classification and lower-payment laws, not arithmetic upper bounds. [Trichotomy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalRateClassifiesAllOffLineSupport.lean), [index payment](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalRatePaysEveryNegativeSquare.lean).
+\[
+\mathcal E_{\rm crit}\ge\max\{I_*k,\ 50k^2-3k/2\}.
+\]
+
+The quadratic cost comes from a global reciprocal-height budget. These are **lower** bounds; arithmetic **upper** control sufficient for finiteness or RH remains missing. [Classification](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalRateClassifiesAllOffLineSupport.lean), [quantum](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheQuadraticScaleWorkDetectsEveryException.lean), [linear payment](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalRatePaysEveryNegativeSquare.lean), [quadratic payment](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSourceBudgetMakesTheIndexCostQuadratic.lean), [unscaled criterion](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/VanishingScaleIncrementsCharacterizeFiniteSupport.lean).
+
+### 5. Lorentzian closure has an arithmetic identification boundary
+
+Finite products of Lorentzian local polynomials and nonnegative substitutions are mixed-Lorentzian. The Hessians attainable at nonnegative points are exactly symmetric entrywise-nonnegative Lorentzian forms; every such matrix is the Hessian of its quadratic polynomial. A negative entry forbids literal identification in those coordinates. Closure supplies a calculus, not a selective arithmetic construction. [Finite products](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheEulerProductOfLorentzianLocalFactorsIsLorentzian.lean), [exact Hessian class](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheClosureProducesExactlyTheLorentzianForms.lean).
+
+Under the stated positive-coefficient normalization, top coefficient \((\sqrt q)^d\) and Ramanujan trace bound \(a_1\le d\sqrt q\), Lorentzian log-concavity forces the reverse inequality. Equality is the only possible boundary; at prime \(q=p\), integral trace excludes it. For elliptic quadratic factors the Lorentzian condition \(a_1^2\ge4p\) opposes Hasse's bound. Frobenius **Gram** positivity survives; these local L-polynomials cannot supply the proposed Lorentzian factors. [Obstruction and survivor](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/RamanujanAndLorentzianMeetOnlyAtTheWeilBound.lean).
+
+For the ordinary-coefficient Xi Jensen family, \(dJJ''\le(d-1)(J')^2\) is proved on \(s\ge0\). It gives no negative-half-line or all-degree real-rootedness theorem. Coefficient normalizations remain essential. [Half-line Laguerre law](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine.lean).
 
 ## Live routes
 
@@ -148,7 +202,7 @@ Each entry separates the existing receiver from the arithmetic input it still ne
 
 ### LA — Line anchor / Jensen and heat signs
 
-**Current:** Complementary tails and head-to-full transfer are controlled. Ordinary even Taylor coefficients satisfy the Turán/Lorentzian layer. Working generic theory includes mixed-Hessian hyperbolicity, Alexandrov–Fenchel inequalities and nonnegative substitution closure; none is all-degree Jensen real-rootedness or an identification of the overlapping Weil form.
+**Current:** Finite-head/heat receivers and positive complementary tails are available. Ordinary Xi coefficient families satisfy Turán/Lorentzian laws and the Jensen Laguerre inequality on the nonnegative half-line; generic finite-product and substitution closure is established. None gives the required all-degree real-rootedness or signed negative-half-line control.
 
 **A:** Certify selected finite heads and low-degree inequalities; translate coefficient conventions carefully, including factorial normalization; apply existing heat-tail errors.
 
@@ -164,7 +218,7 @@ Each entry separates the existing receiver from the arithmetic input it still ne
 
 ### HF — Arithmetic Hodge positivity
 
-**Current:** Complete Weil positivity, zero collided-form Hecke defect, and several subquantum work conditions are exact receivers. Complete-cell transfer, narrow Hodge/TD and closed-section residual constructions now give concrete finite and completed carriers.
+**Current:** Full Hodge/Weil sign, zero Hecke defect and sufficiently small source work are exact receivers. Complete cells capture all finite negative indices; positive sections have bounded projections and fixed-width graph coercivity. Canonical critical energy has a monotone source limit and linear/quadratic index lower costs. Fixed-conductor Ramanujan modes transfer adjunction energies to the actual prime matrix.
 
 **A:** Form actual finite mixed Grams, their projections and residuals; transport existing source-kernel cost bounds; keep distinct-index and multiplicity-weighted energies separate.
 
@@ -172,7 +226,7 @@ Each entry separates the existing receiver from the arithmetic input it still ne
 
 ### CHMD — Causal hyperbolic–modular duality
 
-**Current:** Completed graph domains, sharp-window convergence and bounded narrow-section projection are available. Exact wave and odd-Doob receivers remain.
+**Current:** Wave/Doob receivers and supported graph completion are established. One fixed unbounded integer-log cell carrier has full-graph coercivity, a bounded Weil projection and exact residual. The carrier is proper and its complement contains an infinite theta radical; these null directions are not negative witnesses.
 
 **A:** Apply domain/cutoff theorems to fixed sources and compute the signed residual with the retained primitive defect.
 
@@ -308,11 +362,11 @@ Each entry separates the existing receiver from the arithmetic input it still ne
 
 ### SRT — Lag localization and atomic visibility
 
-**Current:** Every-width lag bounds, full atomic synthesis and exact index/work laws detect all possible off-line zeros. Sufficient shrinking-width families are already RH-complete.
+**Current:** Every-width lag bounds, second-order atomic synthesis and canonical index/work laws detect all possible off-line zeros. Widths (log N)^α/N with α>1/4 are RH-complete. Bounded-overlap row costs and covered-measure limitations are explicit.
 
 **A:** Instantiate fixed-width detectors and synthesis errors; compute finite atomic Grams while distinguishing pure Markov, full Weil and pole-hyperplane forms.
 
-**B:** Prove an actual late-lag bound, zero-rate orbit estimate, complete overlap sign or sufficient work ceiling. Detection and per-zero bounds do not supply a collective source upper estimate. [Lag receiver](../../../formal/GaloisForLFunctions/SquareRootThreshold/EveryWidthDecidesTheCriticalLine.lean), [atomic receiver](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheCriticalExponent.lean).
+**B:** Prove an actual late-lag bound, zero-rate orbit estimate, complete overlap sign or sufficient work ceiling. Detection and per-zero bounds do not supply a collective source upper estimate. [Lag receiver](../../../formal/GaloisForLFunctions/SquareRootThreshold/EveryWidthDecidesTheCriticalLine.lean), [atomic receiver](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean).
 
 ### ACT — One-shift arithmetic criticality
 
@@ -324,7 +378,7 @@ Each entry separates the existing receiver from the arithmetic input it still ne
 
 ### AIP — Arithmetic incidence allocation
 
-**Current:** Global joint allocation is exactly the odd sign/RH problem. Local shared-surplus rules, complete-cell transfer and actual narrow-spacing Hodge/TD are established.
+**Current:** Global joint allocation is exactly the odd sign/RH problem. Complete-cell transfer and narrow Hodge/TD are established. High balanced Haar sections have a full rough-Weil floor uniform in upper horizon, with prime, Gamma and both poles paid. Coarse and mixed-scale residuals remain.
 
 **A:** Assemble complete finite incidence matrices with every successor, Gamma and polar contribution; calculate shared spending and existing mixed-entry errors once.
 
@@ -332,7 +386,7 @@ Each entry separates the existing receiver from the arithmetic input it still ne
 
 ### ACS — Arithmetic effectivity
 
-**Current:** Source RR, effectivity, Rosati-height and chirality receivers coexist with complete-cell realization and exact index capture. Finite-sieve adjunction now gives a concrete arithmetic spectral input with limited scope.
+**Current:** Source RR, effectivity, Rosati-height and chirality receivers coexist with complete-cell realization and exact index capture. High Haar sections have a horizon-uniform full-form floor; a proper unbounded cell carrier has a bounded projection. Finite-sieve adjunction and distinct fixed-conductor full-prime quasimodes are available, without complete-source effectivity.
 
 **A:** Transport fixed finite source families into complete smooth cells; calculate actual section/projection/finite-sieve data without assuming positivity.
 
@@ -369,9 +423,9 @@ These entries lack an independent source construction or its required landing. A
 |---|---|---|
 | BVI, arithmetic compensation and orientation dictionaries | Exact pronic/readout decompositions; fixed-row cancellation; VK escape decay; equivalent strip/rate currencies. | Actual complete signed energy at critical rate; moving-scale correlation, not another change of coordinates. |
 | AID, ACS complete cells, SSHA | Source-complete approximation, bounded narrow-section projection, finite index capture, RH-complete atomic schedules. | Complete-cell/residual sign or an arithmetic index ceiling. |
-| Balanced Haar-cell source | Exact odd-boundary prime compression and signed prime bound with logarithmic coefficient 1/√2, in working source. | Full Gamma/Lévy/pole payment, smoothing and coarse/mixed-scale completion. |
-| RAPT and arithmetic intersection | Sharp prime/torsion scales, covariant class counterterms, finite-prime adjunction and exact source finite parts. | Simultaneous source-faithful prime/class exhaustion with Gamma/pole payment. |
-| ALG | Actual narrow Hodge/TD, polar-dispersion payment, precise Metzler obstruction and generic Lorentzian Hessian theory. | A sign mechanism beyond the frustrated diagonal-gauge regime. Local hyperbolicity is not additive. |
+| Balanced Haar-cell source | Signed prime compression, coherent Gamma/pole payment and a horizon-uniform full rough-Weil floor above one fixed lower index. | Coarse modes, mixed-scale payment and source-complete positive decomposition. |
+| RAPT and arithmetic intersection | Sharp prime/torsion scales, pole-hyperplane gap, Liouville separation, BV/character finite parts, finite-sieve adjunction and fixed-conductor full-prime quasimodes. | Growing-conductor/modal-complement control and full Gamma/pole comparison under source exhaustion. |
+| ALG | Actual narrow Hodge/TD, finite-product closure, exact Hessian class, half-line Xi Laguerre law and local-factor/Metzler obstructions. | An arithmetic signed/block construction beyond generic nonnegative closure and a faithful complete-form identification. |
 | Arithmetic polarization, CDG, electrostatics | Positive collided form, faithful computation, theta-prefix detectors, field and moment-of-inertia identities. | Upper sign/cap on the computed defect at a sufficient threshold. |
 | Arithmetic correlation geometry, signed successor arithmetic | Gauge classification, almost-everywhere cancellation, exact finite moment cones, polynomial charged-cell counts. | Selection of the actual arithmetic gauge and sufficiently uniform signed correlations. A positive-density cell count alone would still not prove full Weil positivity. |
 | Pair correlation, IGP and large values | Quantitative simple-critical/distinct proportions, Schur slack and power-saving alignment counts under explicit parameters. | Eliminate exceptional zeros or prove matching-profile signed surplus bounds. A proportion or rare-event estimate does not provide zero exceptions. |
@@ -383,7 +437,7 @@ These entries lack an independent source construction or its required landing. A
 
 RH is still listed as unsolved by [Clay](https://www.claymath.org/millennium/Riemann-Hypothesis/). Consequently an unconditional sufficient input to any exact RH receiver above remains a breakthrough target unless an actual proof is supplied. Intermediate project formulations require their own novelty/literature assessment; their local absence is not evidence of worldwide impossibility.
 
-Two current announcements materially affect the wording of the research queue:
+External claims relevant to the research queue:
 
 - A September 2026 [quasi-RH manuscript](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-September-30-2026/paper.pdf) claims zero-freeness for Dirichlet L-functions in \(\Re s>7/8\), including zeta. This report inspected its theorem and scope, not its complete proof. Treat it as **external claimed proof**, not a local Lean result or proof of RH. If adopted, it supplies a fixed first strip; it does not yield all strips approaching 1/2. The corpus's counterexample to a cardinality-only shifted-character bound does not by itself refute a theorem using additional arithmetic structure.
 - A September 2026 [ordinary-correlation manuscript](https://github.com/openai/math/blob/main/preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026/final.pdf) claims fixed-affine-form Liouville two-point bounds \(C_{\mathrm{forms}}X/(\log X)^c\), and a qualitative corrected Elliott statement. This is not a power saving \(X^{1-\delta}\), nor a bound uniform for growing shifts or moduli. Fixed-form natural-density Chowla must therefore not be labelled “nobody has a solution.” Existing [logarithmic two-point Chowla](https://arxiv.org/abs/1509.05422) is a separate established input. Neither statement automatically pays the moving-source correlations in MC/PM/AIP.

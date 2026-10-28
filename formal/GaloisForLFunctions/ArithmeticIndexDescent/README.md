@@ -609,12 +609,71 @@ and a finite mixed-source payment, and also holds for nonarithmetic increasing c
 therefore establishes stable assembly on a restricted domain; it does not supply the critical
 arithmetic cancellation needed for larger overlapping cells or fixed-spline exhaustion.
 
+Let \(K\) be the closure in the original source graph of all finite independently profiled
+sums on this one integer-log carrier. The same bound \(\|p\|^2\le2W(p,p)\) holds
+on \(K\). Compressing the actual Weil operator \(A\) to \(K\) gives an invertible
+operator and hence a unique bounded Weil projection \(P\) from the whole graph to \(K\).
+It fixes \(K\), satisfies \(W(k,x-Px)=0\), and retains the exact signed identity
+
+\[
+ W(x-Px,y-Py)=W(x,y)-W(Px,Py).
+\]
+
+The cost is uniform over the unbounded carrier:
+
+\[
+ W(Px,Px)\le2\|Ax\|^2,\qquad \|Px\|^2\le4\|Ax\|^2.
+\]
+
+This is a proper closed carrier. The actual normalized cusp escape has graph norm squared
+tending to two and full Weil energy tending to zero, so it eventually leaves \(K\).
+The existing infinite independent theta radical is killed by \(P\) and survives unchanged
+in the residual. Zero-energy modes do not count as negative squares. Thus a uniform positive
+carrier supplies a global projection calculus while its complementary sign remains an
+independent arithmetic problem; its existence is not an exhaustion theorem.
+
 The corpus also supplies stronger control at a sharp boundary. Its actual Gamma boundary
 operator has `L²` norm at most `2π`, and sharp interval restrictions are uniformly bounded
 on the complete arithmetic graph and land in the exact aperture completion. The growth of
 the elementary constant `J(d)` as the gap closes is therefore not an intrinsic Gamma
 obstruction. These tools make cumulative signed assembly cost the central issue in a
 cell-based exhaustion; domain admission of each sharp cut is already available.
+
+This boundary bound now transfers to the literal C² spectral form. If \(f\) vanishes
+to the right of \(b\) and \(g\) to its left, their supports may touch at \(b\), and
+
+\[
+ \left|\int_0^\infty\omega(h)
+   \int_{\mathbb R}\bigl(f(u)g(u+h)+f(u+h)g(u)\bigr)\,du\,dh\right|
+ \le\pi\bigl(\|f\|_2^2+\|g\|_2^2\bigr).
+\]
+
+The collar bound holds for arbitrary signed continuous compact profiles. For C² profiles,
+polarizing the original spectral Lévy identity identifies the full Gamma cross term with
+the negative collar exactly. Both integral normalization and source domain are retained.
+The constant is independent of the boundary, support widths and profile derivatives.
+
+The actual finite prime horizon and both pole moments then give one constant \(C_R\)
+for every boundary in a fixed window \([-R,R]\):
+
+\[
+ |W(f,g)|\le C_R(\|f\|_2^2+\|g\|_2^2),\qquad
+ 2|W(f,g)|\le\varepsilon\|f\|_2^2+D_{R,\varepsilon}\|g\|_2^2.
+\]
+
+These constants are constructed from the complete source. The second bound follows by
+rescaling, with \(D_{R,\varepsilon}=4(C_R+1)^2/\varepsilon\). Consequently, for any
+prescribed new charge \(L\), a sufficiently short cell \((b,b+\delta)\) adjacent to
+the old left region satisfies
+
+\[
+ W(p+g,p+g)\ge W(p,p)-\varepsilon\|p\|_2^2+L\|g\|_2^2.
+\]
+
+The old diagonal is exact and need not be positive. No gap, profile derivative bound or
+mixed-sign assumption is present. The remaining assembly problem is cumulative: these
+absolute estimates still charge old mass at each extension and supply no width lower
+bound or exhaustive signature bound.
 
 ### Polar compatibility
 
@@ -1117,13 +1176,16 @@ Quantitative pillars supplied by this programme:
 | Exact finite attainment | Every finite residual index is at most the completed index; for each fixed probe family equality holds at all sufficiently large finite source stages | `TheCompletedIndexIsReachedAtAFiniteStage` |
 | Separated Gamma payment | The exact signed Gamma cross term is bounded by the actual Lévy tail times the two square masses, uniformly over all compact C² profiles across a gap | `SeparatedSupportsRemoveTheGammaSingularity` |
 | Finite prime horizon | A common support window truncates all mixed prime shifts uniformly over signed profiles and bounds their full sum by square masses | `BoundedWindowsHaveFinitePrimeInteraction` |
+| Touching Gamma supports | The literal half-line operator gives a gap-independent square-mass bound for signed compact profiles; the exact C² spectral collar identity retains the original Gamma normalization | `TouchingSupportsHaveBoundedGammaInteraction` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
+| Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Arbitrary short-cell charge | The inherited logarithmic section gain, with the full pole cost retained, pays every fixed mass charge below a profile-independent and translation-independent threshold | `EveryShortCellPaysAnyFixedMassCharge` |
 | Exact-diagonal extension | A constructed new width pays the full interaction, retaining `W(p,p)-epsilon*mass(p)` and any prescribed new-mass coefficient without an old sign premise | `AShortNewCellPaysItsOwnInteraction` |
 | Adaptive arithmetic extension | At every exterior centre, a new small cell preserves any chosen fraction below one of the entire old section floor, with old widths fixed and arbitrary new profiles | `AnAdditionalCellPreservesTheOldSections` |
 | Nested fixed-width positive sections | One width sequence at `log(n+1)` supports every finite independently profiled prefix with full Weil form at least square mass; earlier widths never change | `FixedCellWidthsSupportNestedPositiveSections` |
 | Actual graph coercivity | The C² inverse Doob lift preserves the full Weil diagonal; on a fixed window, the arithmetic section floor controls its complete source-graph norm | `TheGraphNormIsControlledBySectionEnergy` |
 | Uniform graph coercivity on a fixed carrier | A single width sequence pays any continuous spatial weight; the exact inverse Doob mass gives a full graph bound with any factor above one across every finite prefix | `FixedCellsControlTheCompleteSourceGraph` |
+| Unbounded-carrier projection and its exact boundary | The fixed integer-log carrier has a bounded full Weil projection with universal operator-energy cost; cusp escape proves properness and an infinite exact theta radical survives in its signed residual | `TheUnboundedCellCarrierHasAWeilProjection` |
 | Literal graph completion | The full finite-subset projection net converges in the existing complete source graph; its original Weil pairings equal the completed removal and residual forms, with residual orthogonal to the whole closed old carrier | `TheSectionProjectionConvergesInTheSourceGraph` |
 | Weighted source cost | Unused arithmetic reserve divides each exact cell's source-kernel energy by its mass weight; the resulting smaller cost bounds finite and completed removal and the signed residual | `TheUnusedReserveReducesTheSourceCost` |
 | Complete-cell index capture | One common actual logarithmic grid eventually carries every negative square of a fixed finite smooth Weil family; all mixed-entry convergence premises are discharged from the source | `TheCompleteCellsCaptureEveryFiniteIndex` |

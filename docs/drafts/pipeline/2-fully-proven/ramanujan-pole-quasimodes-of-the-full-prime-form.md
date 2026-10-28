@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM
 - **Source:** RAPT valuation steps and actual finite-sieve adjunction operator; RBG Ramanujan germs; Mertens finite part
-- **Count:** uncounted; exact Lean realization and final audits remain
+- **Count:** uncounted; all fourteen scratch checks passed; final direct-source audit remains
 
 ## Target
 
@@ -22,8 +22,7 @@ For every fixed m, the paper proof below establishes
 Distinct fixed m have inner product divided by log(N) tending to zero.
 Consequently, for each fixed finite conductor packet and every epsilon>0, all
 sufficiently large N admit distinct actual matrix eigenvalues simultaneously
-within epsilon of `log(N)-E(m)`. This is the exact finite-packet formulation
-being formalized. It does not order the entire spectrum or exclude additional eigenvalues.
+within epsilon of `log(N)-E(m)`. This is the exact finite-packet formulation implemented in Lean. It does not order the entire spectrum or exclude additional eigenvalues.
 It supplies no RH or full Weil-test sign inference.
 
 ## Connection to audit
@@ -55,7 +54,8 @@ The complete-period Ramanujan Gram supplies the normalized inner products.
 
 Exact row reindexing, the generator/eigenmode identity, uniform error domination,
 periodic harmonic transfer, and spectral-distance transfer have the dependency-closed
-paper proof below. Their Lean realization remains unverified.
+paper proof below. All fourteen implementation sources pass scratch checks;
+final direct actual-source checks remain.
 
 ## Novelty leads
 
@@ -93,6 +93,14 @@ was inspected through its tensor and counting arguments. It supplies established
 methodological context, with a different literal kernel. These checks support
 the distinction; they are not a claim of exhaustive worldwide novelty.
 
+Guo--Li--Zhou's [non-Følner Szegő theorem, Theorem 1.11](https://arxiv.org/html/2305.07860v3)
+was also checked: bounded real symbols give normalized empirical spectral
+limits along the natural integer truncations. That bulk assertion does not
+identify fixed logarithmically translated edge energies or Ramanujan residuals.
+Hilberdink--Pushnitski's [2021 LCM theorem](https://arxiv.org/html/2110.14323v1)
+gives compact-operator eigenvalue asymptotics for a different, homogeneous LCM
+kernel; its abstract and main theorem were inspected.
+
 The newly formalized `ThePrimeFormHasASpectralGapBelowItsPole.lean` and its
 pipeline card were read in full. They prove a uniform positive gap on the pole
 complement through harmonic-measure tensorization. They do not identify the
@@ -100,11 +108,25 @@ higher conductor offsets or prove actual norm residuals for Ramanujan modes.
 The present finite-packet result remains distinct; it does not prove the optimal
 gap or exhaust the full spectrum.
 
+The concurrent `rapt-sharp-gap-of-prime-form-is-two-log-two.md` card was read
+in full. It targets the first excited edge through a two-scale Poincare
+argument. Its proposed constant is excluded from this contribution's count;
+the present claim supplies actual residuals and simultaneous spectral points
+for every fixed finite conductor packet.
+
 A further RAPT-restricted Ramanujan/quasimode search during implementation
 returned this package's new completed-row inputs, the existing joint Cesaro
 Gram, local tower/sieve constructions, and the new one-gap theorem. Their
 claims remain distinct from the full-row residual and finite spectral packet.
 The present package is still uncounted until its remaining checks pass.
+
+The final packet-oriented corpus query again returned the present residual,
+the supported-sieve basis, and different prefix, pronic, and parity matrices.
+`BVI/PrimePacketConditionalTailAndCoherentPrefix.lean` was inspected through
+its actual packet and centered-tail identities; these use the pronic measure
+on Ramanujan primitives. The complete `pm-growing-cofactor-prime-head.md` card
+was read. Its moving prime sectors and natural-cutoff energy cancellation
+also concern those primitives, not eigenvalues of the literal prime matrix.
 
 ## Gates
 
@@ -186,7 +208,7 @@ short-cycle positivity statement, not full prime-matrix quasimodes. AIT search
 returned the existing local tower/KMS identities and the literal prime-form
 sum over towers. None supplies the present norm-residual limit.
 
-## Paper proof under implementation audit
+## Dependency-closed paper proof
 
 Fix m>=1 and put g(n)=c_m(n)/sqrt(phi(m)), k_p=v_p(m),
 Q={p:p divides m}, and kappa=log(m)+tameDifferent(m). The BVI multiplicativity
@@ -268,26 +290,21 @@ apply the proved finite-sieve energy injectivity. With disjoint intervals about
 P_N eigenvalues, at every prescribed accuracy. No statement about the other
 matrix eigenvalues is used or follows.
 
-All dependencies in this paper argument are identified; the remaining audit is
-exact Lean realization of the row correction, arithmetic product identification,
-uniform tail estimate, and finite-dimensional spectral transfer. This card stays
-at the paper-proof stage and uncounted while those are checked.
+All assertions in this paper argument now have passing Lean implementations.
+Nine transitive endpoint audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. The card remains at the paper-proof stage and uncounted until
+all fourteen final direct actual-source checks pass.
 
 ## Exact implementation interfaces
 
-Fourteen implementation drafts are written. The Hermitian residual helper passed
-scratch and first dependency-olean checks, as did the harmonic quotient square-error
-helper and the exact arbitrary-profile row module. The correction-to-residual
-module passed scratch and its first required olean check. The valuation-step
-identification and coprime correction product rules passed scratch and their
-first required olean check, as did the Mangoldt reindexing and completed
-prime-power row modules. The all-conductor completed-row module now passes
-scratch and its transitive axiom audit (propext, Classical.choice, Quot.sound);
-its first required olean passed. The uniform-tail module also passes its
-scratch check and transitive endpoint audit; its first required olean passed.
-The logarithmic Gram/norm module now also passes scratch, with both transitive
-endpoint audits clean; its first required olean passed. Four arithmetic
-sources remain unchecked:
+All fourteen sources are installed and pass scratch checks. Their required first
+dependency oleans are built; the finite-packet leaf has no olean. Both umbrellas
+are wired without compilation. Nine clean transitive endpoint reports are in
+`logs/ramanujan-prime-quasimodes-axioms-2026-10-28.log`.
+Final direct-source checks are being recorded in
+`logs/ramanujan-prime-quasimodes-source-audit-2026-10-28.log`.
+
+The implementation interfaces are:
 
 - `ThePrimeRowsReadPoleProfiles.lean`: literal arbitrary-profile row identity.
 - `HarmonicQuotientSquareError.lean`: the squared-error consequence of the

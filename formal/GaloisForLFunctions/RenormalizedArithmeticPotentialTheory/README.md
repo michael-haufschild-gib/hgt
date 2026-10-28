@@ -129,6 +129,11 @@ survival cone containing the degree-zero cycles.
    `γ + log m + tameDifferent(m) = γ + 2 log m − selfIntersection(m)`.
    This diagonalization identifies the entire maximal logarithmic domain;
    `A_Q + (1−γ)·1` has a compact inverse.
+   The same energies occur in the full integer prime matrices: the Ramanujan
+   profiles `u_m(n)=c_m(n)/√(φ(m)n)` have squared norm asymptotic to `log N`
+   and squared residual `o(log N)` at `log N−γ−log m−tameDifferent(m)`.
+   Every fixed finite conductor packet therefore gives distinct actual spectral
+   points at these offsets, with any prescribed eventual accuracy.
 6. *Is the matching of the places gauge blind?* No. Each place's counterterm is gauge blind, but
    their matching is not: the prime place of `ζ` diverges along the archimedean polar direction
    with coefficient `+1`, the Liouville twin with coefficient `−1`.
@@ -161,6 +166,7 @@ archimedean place and the pole are open (§9.1).
 | Hecke shift | `(T_t x)(n) = x(n/t)` on multiples of `t` | `heckeShift` |
 | tensor counterterm | `C(x) = Σ_{j ≤ J} δ_j^{−1} ℓ_j(x)²` | `tensorCounterterm` |
 | matched finite-sieve operator | `A_Q = diag(log n) − P_Q + γ_Q · 1` on the maximal logarithmic domain in `ℓ²(S_Q)` | `sieveAdjunctionOperator` |
+| full-horizon Ramanujan profile | `u_m(n)=c_m(n)/√(φ(m)n)`, `1≤n≤N`; arithmetic trial energy `E(m)=γ+log m+tameDifferent(m)` | `ramanujanHorizonVector`, `ramanujanAdjunctionEnergy` |
 | Liouville pole vector | `λ(n) n^{−1/2}`, `λ = (−1)^Ω` | `liouvilleSign`, `liouvilleTrunc` |
 
 ### 3.2 Renormalization data
@@ -420,6 +426,11 @@ the place that pays.
 | **RP27 The horizon laws hold for profiles of bounded variation** | every vector `G(n)/√n` is a step profile with absolute coefficient mass `V_N(G)`, the horizon variation; `\|P_N − ℓ²\| ≤ (log 8 + 5) H_N V_N²`, `\|P_N − ℓ² + 2γ\|x\|²\| ≤ (ηH_N + C_η) V_N²`, the tensor law with `C_{p,J} H_N (Σ_j V_N(G_j))²`; for `G = g(log ·/log N)`, `V_N ≤ Var g + \|g(1)\|`, so smooth signed (class) profiles obey the laws up to `o(mass)` | `abs_atomicWeilForm_profile_sub_le`, `exists_abs_atomicWeilForm_profile_finitePart_le`, `abs_atomicWeilForm_classwiseProfile_sub_le`, `exists_abs_atomicWeilForm_bv_finitePart_le`, `abs_atomicWeilForm_bv_classwise_sub_le` |
 | **RP28 The tower deficit changes sign between 43 and 47** | `d_p = u/sinh u − γ`, `u = (log p)/2`, strictly decreasing in `p`; for primes `d_p > 0` iff `p ≤ 43`; the tower finite part of `p` is nonnegative on every depth iff `p ≥ 47` | `towerDeficit_eq_div_sinh`, `towerDeficit_strictAnti`, `towerDeficit_pos_iff`, `towerFinitePart_nonneg_iff_fortySeven_le` |
 | **RP29 The prime form has a spectral gap below its pole** | there is `g > 0` with `D_N(x) ≥ g|x|²` and, eventually, `P_N(x) ≤ (log N − γ − g + ε)|x|²` for every `x ⊥ n^{−1/2}`; the harmonic measure `1/n` on `[1, N]` tensorizes over primes up to a constant | `exists_poleDefect_ge`, `exists_atomicWeilForm_le_of_pole_orthogonal`, `exists_harmonicVar_le_glauberForm` |
+| **RP30 The finite part is twice the Mertens limit** | if `A_ε(y) − κ log y → α` with `\|κ\| ≤ 1`, the gauged pole Gram is `κ H_M H_{M'} + 2α H_M + o(H_M) + O(1)` and `P_N(εx) = κℓ² + 2α\|x\|² + o(mass)` on uniform profiles; for `ζ` (`κ = 1`, `α = −γ`) this is RP10 | `exists_abs_primeBilinear_gaugeTrunc_finitePart_le`, `exists_abs_gaugeForm_stepProfile_finitePart_le`, `exists_abs_sum_div_sub_le_of_tendsto` |
+| **RP31 The character Mertens limit is the logarithmic derivative** | for `χ ≠ 1`, `A_χ(y) → −L′/L(1, χ)` (prime number theorem for characters, Abel summation, Abel's theorem for the Dirichlet series of `χΛ`); a real character gauge mod a prime `ℓ` has finite part `2(Re(−L′/L(1, χ)) + lim_y Σ_{t ≤ y, ℓ ∣ t} Λ(t)/t)` | `tendsto_charMertensSum`, `charMertensLimit_eq_neg_logDeriv`, `exists_abs_charGaugeForm_stepProfile_finitePart_le`, `tendsto_gaugeMertensSum_charGauge_logDeriv` |
+| **RP32 The pole hyperplane separates `ζ` from its Liouville twin** | on `Σ x_n/√n = 0`: `P_N(x) ≤ (log N − γ − g + ε)|x|²`, while `P_N(λx) ≥ (log N − γ − ε)|x|²` at some `x ≠ 0`; a margin `g` uniform in `N`, carried by the pole term | `exists_pole_hyperplane_separates_liouville`, `abs_sum_liouvilleSign_div_le`, `atomicWeilForm_truncPole_add` |
+| **RP33 The finite part separates ζ from its Liouville twin** | `A_λ(y) + log y → γ + τ`, `τ = lim Σ_{t ≤ y} (1 + λ(t))Λ(t)/t ≥ (log 2)/2`; `P_N(λx) = −ℓ² + 2(γ + τ)\|x\|² + o(mass)`; on `ℓ = 0`, `P_N(λx) − P_N(x) = 2(2γ + τ)\|x\|² + o(mass)` with `2γ + τ > 0` | `tendsto_liouvilleMertensError`, `exists_abs_liouvilleForm_stepProfile_finitePart_le`, `exists_abs_liouvilleForm_sub_zetaForm_sub_le` |
+| **RP34 Mertens' theorem in residue classes with its constant** | for `r` a unit mod `q`, `Σ_{t ≤ y, t ≡ r} Λ(t)/t = log y/φ(q) + c_r + o(1)` with `φ(q) c_r = −γ − Q_q + Re Σ_{χ ≠ 1} χ(r⁻¹)(−L′/L(1, χ))`, `Q_q = lim Σ_{t ≤ y, (t,q) > 1} Λ(t)/t` | `tendsto_classMertensSum_sub`, `classMertensConstant_eq`, `tendsto_principalMertensSum_sub_log` |
 
 ---
 
@@ -561,17 +572,24 @@ transfer of the Mertens error to the horizon remainder, and summation by parts a
    has a complete explicit basis, simple energies `γ + log m + tameDifferent(m)`, and compact
    shifted inverse. The normalized horizon defect of each fixed finite class vector `b` is
    exactly `−Re ⟨b,A_Q b⟩`. On all of `[1, N]` and all primes at once the pole is isolated with a
-   uniform gap: `P_N ≤ (log N − γ − g + ε)|·|²` on its complement (RP29). Open: the archimedean
-   cross terms of distinct atoms on class profiles, and the optimal gap (numerically `2 log 2`).
-3. **Characters at the horizon.** *Answered except for the finite part.* Mertens' theorem for
+   uniform gap: `P_N ≤ (log N − γ − g + ε)|·|²` on its complement (RP29).
+   Ramanujan profiles give norm quasimodes on the full horizon, and every fixed
+   finite conductor packet produces distinct actual eigenvalues near `log N−E(m)`.
+   Open: exhaustion of the bounded renormalized spectrum, the optimal gap, and
+   the archimedean cross terms of distinct atoms on class profiles.
+3. **Characters at the horizon.** *Answered.* Mertens' theorem for
    characters (RP19) and in residue classes (RP21) are proved. On the unit classes mod `q` the
    horizon counterterm is the rank-one `(q/φ(q)) ℓ(x)²` for every `q` (RP24): the horizon reads
    valuations, not residues, and the unbounded rank of the `p`-adic classes does not recur. A class
    function `f` on the units is seen only through its mean, `κ_f = (Σ_a f(a))²/(q φ(q))`, so every
    character `χ ≠ 1` of every modulus, real or complex (through `Re χ` and `Im χ`), has no polar
-   divergence (RP25). This extends RP20 from real characters mod a prime. Open: the finite part
-   `−L′/L(1, χ)`, which needs convergence of `A_χ`, not only boundedness, and is of the strength
-   of the prime number theorem in progressions.
+   divergence (RP25). This extends RP20 from real characters mod a prime. The finite part is
+   computed: `A_χ(y) → −L′/L(1, χ)` (RP31, from the prime number theorem for characters), and every
+   gauge with a convergent Mertens error `A_ε − κ log → α` has finite part `2α` (RP30). A real
+   character gauge mod `ℓ` thus has horizon form `2(Re(−L′/L(1, χ)) + c_ℓ)|x|² + o(mass)`, where
+   `c_ℓ` is the limit of `Σ_{t ≤ y, ℓ ∣ t} Λ(t)/t`: the horizon reads the logarithmic derivative of
+   `L(s, χ)` at `s = 1`, as it reads `−2γ` from `ζ`. Open: the finite part on residue-class
+   profiles, which needs the constants of Mertens' theorem in each class.
 4. **The exact torsion constant.** *Answered* (RP22): `κ_tor(N) = φ log N + O(1)`,
    `φ = (1 + √5)/2`, for every `N`. The continuum model's `e/(e − 1)` is wrong: it spreads the
    charges uniformly in `log n`, while the extremal charges `φ^{ω(n)}` are multiplicative, so each
@@ -593,7 +611,9 @@ transfer of the Mertens error to the horizon remainder, and summation by parts a
    The law holds for arbitrary signed finite class-wise step profiles with independent cutoffs.
    Its finite part has one shared Euler constant `γ_Q` and the exact transverse tower interaction.
    The boundary estimate is uniform in raw class orders; the density-normalized limit fixes a
-   finite class family. Passing to all primes or growing normalized class families remains open.
+   finite class family. Fixed Ramanujan conductor packets are also realized in
+   the full prime matrix through their norm residuals. Passing the class-profile
+   finite-part law to all primes or growing normalized class families remains open.
 
 ---
 
@@ -609,9 +629,13 @@ its present state:
   covariance without anomaly. Of the three conditions of the central conjecture, (i) is false for
   every regulator, (ii) holds at the horizon, and (iii) is the open sign of the finite part.
 * The prime finite part is computed: `−2γ` on the uniform survival cone (RP10), the tower form of
-  `p` with the local Euler constant on the classes (RP12).
+  `p` with the local Euler constant on the classes (RP12), whose sign changes exactly between the
+  primes `43` and `47` (RP28). For every gauge the finite part is twice the limit of its Mertens
+  error (RP30): `+2(γ + τ)` for the Liouville twin (RP33) and `2 Re(−L′/L(1, χ))`, corrected at
+  `ℓ`, for character gauges (RP31).
 * Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
-  `κ = 1` for finitely many flips, `κ = 0` for real characters mod a prime.
+  `κ = 1` for finitely many flips, `κ = 0` for every character `χ ≠ 1` (RP20, RP25); an error
+  `o(log y)` keeps the law at leading order (RP26); residue classes are invisible (RP24).
 * Q6 is answered through RP2, RP3 and RP5.
 * The central conjecture is replaced by the matched stability law (§9.1). RAPT proves it at widths
   `δ_N/(C log N)` (RP18). SSHA proves it at a fixed fraction `c₀δ_N` of the spacing. The overlap
@@ -660,6 +684,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheRoughHarmonicMeasureHasThinShells` | rough intervals and their level decomposition `R(p, X) = ⊔_j p^j R(p+1, X/p^j)`; Buchstab's inequality; `F_{p+1}(X) ≥ log(X+1) Π_{q≤p}(1 − 1/q)`; thin shells by Selberg's sieve; the shell rate `τ(p, X) ≤ C log p/(p log X)`, `τ < 1` |
 | `TheHarmonicMeasureTensorizesOverPrimes` | weighted variance (Steiner, Jensen, nested means); ladders and the Glauber form; peeling one prime; the potential `−A Σ_{q<Q}(log q/q)/log X`; `Var_{1/n,[1,X]} ≤ C · Σ_q Σ_u Var_{q-ladder}` uniformly in `X` |
 | `ThePrimeFormHasASpectralGapBelowItsPole` | the pole gauge; ladder Poincaré from the base point; `D_N ≥ log 2 · Glauber`; the Poincaré inequality `D_N ≥ g|x|²` on the pole complement; `P_N ≤ (log N − γ − g + ε)|x|²` there |
+| `ThePoleHyperplaneSeparatesZetaFromItsLiouvilleTwin` | `Σ_{d∣m} λ(d) = 1_□(m)` and `|Σ_{n≤N} λ(n)/n| ≤ 2`; the ground-state identity polarized at the pole; on the pole hyperplane `ζ`'s prime form stays `g` below the top while the Liouville twin's reaches it |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
 | `MertensTheoremForCharacters` | Abel summation with decreasing weights; partial sums of `L(1, χ)`; the logarithmic sum; the hyperbola identity; `A_χ = O(1)` |
 | `MertensTheoremInResidueClasses` | orthogonality; the principal Mertens sum; `A(y; r) = log y/φ(q) + O(1)` |
@@ -670,4 +695,9 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheHorizonSeesOnlyTheMeanOfAClassFunction` | class-function profiles; `κ_f = (Σ f)²/(q φ(q))`; characters of every modulus are invisible |
 | `TheHorizonLawsHoldForProfilesOfBoundedVariation` | summation by parts at the horizon; the horizon variation; polarity, finite part and tensor law for every profile; profiles of bounded variation |
 | `TheTowerDeficitChangesSignBetweenFortyThreeAndFortySeven` | `d_p = u/sinh u − γ`; strict monotonicity; `0.5753 < γ < 0.5777`; `d_43 > 0 > d_47`; the sign table of the tower finite part |
+| `TheFinitePartIsTwiceTheMertensLimit` | the gauged pole Gram as a Mertens convolution; convergent convolutions; the finite-part law for pole Grams and uniform profiles |
+| `TheCharacterMertensSumConverges` | Abel summation against `ψ(x, χ)`; subexponential decay; convergence of `A_χ`; the finite part of a character gauge |
+| `TheCharacterMertensLimitIsTheLogarithmicDerivative` | Abel weights; Abel's theorem for `χΛ`; `α_χ = −L′/L(1, χ)` |
+| `TheFinitePartSeparatesZetaFromItsLiouvilleTwin` | the even prime-power limit `τ`; the Liouville Mertens limit; the Liouville finite part; separation from `ζ` on the polar hyperplane |
+| `MertensTheoremInResidueClassesWithItsConstant` | the non-coprime prime powers; the principal limit `−γ − Q_q`; the class constants through `−L′/L(1, χ)` |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |

@@ -78,6 +78,7 @@ theorem sum_liouvilleSign_mul_div (N : ℕ) :
   congr 1
   have : (Icc 1 N).filter (fun m => d ∣ m) = (Ioc 0 N).filter (fun m => d ∣ m) := by
     rw [← Finset.Icc_add_one_left_eq_Ioc]
+    rfl
   rw [this, Nat.Ioc_filter_dvd_card_eq_div]
 
 /-- **The Liouville harmonic sum is bounded**: `|Σ_{n ≤ N} λ(n)/n| ≤ 2`. -/
@@ -280,9 +281,8 @@ theorem exists_pole_hyperplane_separates_liouville : ∃ g : ℝ, 0 < g ∧ ∀ 
         simp only [x]; ring, hbs n hn]
       ring
     rw [sum_congr rfl this, sum_sub_distrib, ← mul_sum]
-    simp only [s, S, H]
-    field_simp
-    ring
+    show S - s * H = 0
+    rw [div_mul_cancel₀ S hH0.ne', sub_self]
   have hxsq : ∑ n ∈ Icc 1 N, x n ^ 2 = H - S ^ 2 / H := by
     have : ∀ n ∈ Icc 1 N, x n ^ 2 = 1 / n - 2 * s * (liouvilleSign n / n) + s ^ 2 * (1 / n) :=
       fun n hn => by
@@ -319,7 +319,7 @@ theorem exists_pole_hyperplane_separates_liouville : ∃ g : ℝ, 0 < g ∧ ∀ 
     rwa [hbsq] at this
   have hlb2 : ∑ n ∈ Icc 1 N, (liouvilleSign n * b n) ^ 2 = H := by
     rw [← hbsq]
-    exact sum_congr rfl fun n _ => by rw [mul_pow, ← sq, show liouvilleSign n ^ 2 = 1 by
+    exact sum_congr rfl fun n _ => by rw [mul_pow, show liouvilleSign n ^ 2 = 1 by
       rw [sq, liouvilleSign_mul_self], one_mul]
   have hPu : -(s ^ 2 * ((L + C₀) * H)) ≤ atomicWeilForm N u := by
     have hu : u = fun n => (-s) * (liouvilleSign n * b n) := rfl
@@ -367,7 +367,7 @@ theorem exists_pole_hyperplane_separates_liouville : ∃ g : ℝ, 0 < g ∧ ∀ 
   have hT1 : s ^ 2 * ((L + C₀) * H) ≤ 4 + 4 * C₀ := by
     calc s ^ 2 * ((L + C₀) * H) ≤ 4 / H ^ 2 * ((L + C₀) * H) :=
           mul_le_mul_of_nonneg_right hs2 (by positivity)
-      _ = 4 * L / H + 4 * C₀ / H := by field_simp; ring
+      _ = 4 * L / H + 4 * C₀ / H := by field_simp
       _ ≤ 4 + 4 * C₀ := by
           have h1 : 4 * L / H ≤ 4 := by rw [div_le_iff₀ hH0]; linarith
           have h2 : 4 * C₀ / H ≤ 4 * C₀ := div_le_self (by positivity) (by linarith)

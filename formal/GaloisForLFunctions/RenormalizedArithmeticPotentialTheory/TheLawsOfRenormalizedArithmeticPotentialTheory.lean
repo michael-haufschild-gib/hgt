@@ -10,6 +10,8 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonSeesO
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.PolarMatchingNeedsOnlyTheLeadingOrder
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonLawsHoldForProfilesOfBoundedVariation
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTowerDeficitChangesSignBetweenFortyThreeAndFortySeven
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCharacterMertensLimitIsTheLogarithmicDerivative
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartSeparatesZetaFromItsLiouvilleTwin
 
 /-!
 # The laws of renormalized arithmetic potential theory
@@ -50,6 +52,13 @@ One statement collecting the laws of the programme, each in its sharp form.
     (`exists_abs_atomicWeilForm_bv_finitePart_le`).
 18. **The sign table of the tower finite part**: for a prime `p` it is nonnegative on every depth
     iff `p ≥ 47` (`towerFinitePart_nonneg_iff_fortySeven_le`).
+19. **The finite part is twice the Mertens limit**: `A_ε(y) − κ log y → α` gives
+    `P_N(εx) = κ ℓ² + 2α|x|² + o(mass)` (`exists_abs_gaugeForm_stepProfile_finitePart_le`).
+20. **The character Mertens limit is the logarithmic derivative**: `A_χ(y) → −L′/L(1, χ)` for
+    `χ ≠ 1` (`tendsto_charMertensSum`, `charMertensLimit_eq_neg_logDeriv`).
+21. **The finite part separates ζ from its Liouville twin**: on the polar hyperplane
+    `P_N(λx) − P_N(x) = 2(2γ + τ)|x|² + o(mass)` with `2γ + τ > 0`
+    (`exists_abs_liouvilleForm_sub_zetaForm_sub_le`).
 -/
 
 noncomputable section
@@ -144,7 +153,28 @@ theorem renormalized_arithmetic_potential_theory_laws :
             ∑ n ∈ Icc 1 N, (g (Real.log n / Real.log N) * poleVector n) ^ 2| ≤
         η * Real.log N + C) ∧
     -- the sign table of the tower finite part
-    (∀ p : ℕ, p.Prime → ((∀ (N : ℕ) (b : ℕ → ℝ), 0 ≤ towerFinitePart p N b) ↔ 47 ≤ p)) :=
+    (∀ p : ℕ, p.Prime → ((∀ (N : ℕ) (b : ℕ → ℝ), 0 ≤ towerFinitePart p N b) ↔ 47 ≤ p)) ∧
+    -- the finite part is twice the Mertens limit
+    (∀ ε : ℕ → ℝ, IsSignGauge ε → ∀ κ α : ℝ, |κ| ≤ 1 →
+      Tendsto (gaugeMertensError ε κ) atTop (𝓝 α) → ∀ η > 0, ∃ C : ℝ,
+        ∀ {k N : ℕ} (c : Fin k → ℝ) (M : Fin k → ℕ), (∀ i, 1 ≤ M i) → (∀ i, M i ≤ N) →
+        |atomicWeilForm N (fun n => ε n * stepProfile c M n) -
+            κ * polarFunctional N (stepProfile c M) ^ 2 -
+            2 * α * ∑ n ∈ Icc 1 N, stepProfile c M n ^ 2| ≤
+          ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C)) ∧
+    -- the character Mertens limit is the logarithmic derivative
+    (∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 →
+      Tendsto (charMertensSum χ) atTop
+        (𝓝 (-deriv (DirichletCharacter.LFunction χ) 1 / DirichletCharacter.LFunction χ 1))) ∧
+    -- the finite part separates ζ from its Liouville twin
+    (∀ η > 0, 0 < 2 * Real.eulerMascheroniConstant + liouvilleEvenLimit ∧
+      ∃ C : ℝ, ∀ {k N : ℕ} (c : Fin k → ℝ) (M : Fin k → ℕ), (∀ i, 1 ≤ M i) →
+        (∀ i, M i ≤ N) → polarFunctional N (stepProfile c M) = 0 →
+        |atomicWeilForm N (fun n => liouvilleSign n * stepProfile c M n) -
+            atomicWeilForm N (stepProfile c M) -
+            2 * (2 * Real.eulerMascheroniConstant + liouvilleEvenLimit) *
+              ∑ n ∈ Icc 1 N, stepProfile c M n ^ 2| ≤
+          2 * ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C)) :=
   ⟨fun _ _ hv => primeSurvival_rankOne hv,
     heckeCovariant_iff_const,
     fun _ hN => covariantCounterterm_sandwich hN,
@@ -163,6 +193,11 @@ theorem renormalized_arithmetic_potential_theory_laws :
     fun _ _ χ hχ => exists_abs_atomicWeilForm_charRe_le χ hχ,
     fun _ hε _ hκ h => gaugeForm_stepProfile_of_tendsto hε hκ h,
     fun hg _ hη => exists_abs_atomicWeilForm_bv_finitePart_le hg hη,
-    fun _ hp => towerFinitePart_nonneg_iff_fortySeven_le hp⟩
+    fun _ hp => towerFinitePart_nonneg_iff_fortySeven_le hp,
+    fun _ hε _ _ hκ hE _ hη => exists_abs_gaugeForm_stepProfile_finitePart_le hε hκ hE hη,
+    fun _ _ χ hχ => by
+      rw [← charMertensLimit_eq_neg_logDeriv χ hχ]
+      exact tendsto_charMertensSum χ hχ,
+    fun _ hη => exists_abs_liouvilleForm_sub_zetaForm_sub_le hη⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

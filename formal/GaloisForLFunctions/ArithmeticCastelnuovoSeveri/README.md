@@ -240,7 +240,16 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     reciprocal-width logarithms in the original Lévy form, including touching intervals and
     nonzero exterior source values (`GammaMeanZeroCoercivity.lean`). On the actual balanced
     pairs this gives $\sum_a \log(a)M_a c_a^2 \leq \operatorname{levyEnergy}(f)$
-    (`HaarCellGammaPayment.lean`). The pole bound and full-source effectivity remain open.
+    (`HaarCellGammaPayment.lean`). Both exponential-moment squares are at most the exact source
+    mass, so the original signed pole term is at least $-2\sum_a M_a c_a^2$
+    (`HaarCellPoleBound.lean`). Combining all original terms gives
+    $W(f)\geq\sum_a((1-1/\sqrt2)\log a+2\,\mathrm{gammaHardyPhaseRate}(0)-20)M_a c_a^2$.
+    One fixed lower arithmetic index therefore gives a unit-mass floor for every finite
+    signed balanced tail, independently of its upper horizon (`HaarCellEffectivity.lean`).
+    For every dimension, one common pole-preserving smoothing gives an independent source
+    space of exactly that dimension and a half-mass floor on its entire span. Its source-defined
+    L² cone has Riemann–Roch, ampleness, and Hodge index (`HaarCellSmoothEffectivity.lean`).
+    Full-source effectivity remains open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

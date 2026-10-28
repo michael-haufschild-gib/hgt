@@ -15,8 +15,8 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 - [x] 2 → 3  Lean: `renormalized_arithmetic_potential_theory_laws` and the module pillars, all
       axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired into
       `RenormalizedArithmeticPotentialTheory.lean`
-- [ ] open topics (README §9): the overlap regime beyond the spacing; the finite part
-      `−L′/L(1, χ)`; non-abelian Chebotarev gauges; passage to all primes
+- [ ] open topics (README §9): the overlap regime beyond the spacing; finite parts on
+      residue-class profiles; non-abelian Chebotarev gauges; passage to all primes
 
 ## Results (Lean)
 - RP1 coupled survival law; RP2 the archimedean place pays the arithmetic point.
@@ -44,6 +44,21 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
   variation; bounded-variation (smooth) signed and class profiles up to `o(mass)` (W23).
 - RP28 `d_p = u/sinh u − γ` strictly decreasing; `d_p > 0` iff `p ≤ 43`; tower finite part
   nonnegative iff `p ≥ 47` (W25 sign table).
+- RP30 finite part `= 2 lim (A_ε − κ log)` for every gauge with convergent Mertens error (RP10 is
+  `α = −γ`); RP31 `A_χ(y) → −L′/L(1, χ)` from the corpus PNT for characters; finite part of
+  real character gauges.
+- RP33 Liouville finite part `2(γ + τ)`; on `ℓ = 0`, `P_N(λx) − P_N(x) = 2(2γ + τ)|x|² + o(mass)`.
+- RP34 class Mertens constants `c_r` with `φ(q) c_r = −γ − Q_q + Re Σ_{χ≠1} χ(r⁻¹)(−L′/L(1, χ))`.
+
+## RP35 route (residue finite part)
+- Target: for units `a, b`, `1 ≤ M ≤ M'`: `G_ab(M, M') = (q/φ) S_a(M) S_b(M') + c_{a⁻¹b} S_a(M) +
+  c_{b⁻¹a} S_b(M) + o(H_M) + O(1)`; finite-part matrix `F_ab = c_{a⁻¹b} + c_{b⁻¹a}` with character
+  eigenvalues `2 Re β_χ`, `β_χ = −L′/L(1, χ)` (`χ ≠ 1`), `β_1 = −γ − Q_q`.
+- Inputs: class harmonic constant with rate, `|q S_a(M) − log M − q d_a| ≤ K/M` (shift identity
+  gives Cauchy rate for `S_{a+1} − S_a`, plus `H_M − log M − γ ∈ [0, 1/M]`); `L_a(M) = (log M)²/(2q)
+  + d_a log M + O(1)` (telescoping, `Σ 1/M²`); floor error `Σ_{m ≤ M} (log(M'/m) − log⌊M'/m⌋)/m ≤ 2`;
+  class-restricted convergent convolution of `A(·; r) − log/φ − c_r → 0` (RP30 lemma on `|D|`).
+- Algebra: `L_a + L_b − S_a(log M + q d_b) = O(1)` closes the log-part.
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke

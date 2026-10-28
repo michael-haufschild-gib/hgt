@@ -138,6 +138,9 @@ basis concerns the geometric valuation probability space, equivalently the
 radial Haar subspace after that identification is proved. Completeness in all
 of profinite L2 is not the intended assertion. An actual unit-orbit/radial
 identification and the associated measure pushforward remain proof obligations.
+The zero p-adic coordinate has infinite valuation and Haar measure zero;
+any map to natural-valued valuation coordinates must handle that null set
+explicitly. It cannot be treated as a pointwise bijection on the whole carrier.
 
 The targeted radial search found
 `CCM/CCMRationalProfiniteHaarUnitRadialization.lean`, subsequently read in full.

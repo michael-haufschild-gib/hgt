@@ -1,0 +1,9 @@
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheArithmeticSchurComplementHasCertifiedErrorBounds
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.OneStationarityBudgetControlsTheWholeSourceFamily
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheSignedComplementRetainsExactlyTheWeilRadical
+
+/-!
+# Signed arithmetic Hodge theory with source-compatible renormalization
+
+Quantitative signed residual calculus on the actual complete arithmetic source.
+-/

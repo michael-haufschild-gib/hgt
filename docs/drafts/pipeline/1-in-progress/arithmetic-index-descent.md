@@ -437,3 +437,104 @@ Full scratch7493 and mandatory actual direct74617 passed; four printed endpoints
 use only propext, Classical.choice and Quot.sound. Actual source wired; foundational
 README/checks updated. Removed weighted scratch. The uniform-closure/projection
 target above remains in its separate draft until checked.
+
+### Touching-cell source payment — research target
+
+The existing source extension uses a positive gap only for the Gamma cross term.
+The corpus already supplies a sharp Carleman boundary operator. Investigate the
+literal mixed Weil form for old profiles supported to the left of a boundary and
+new profiles supported to its right, allowing their supports to meet at that
+boundary. A uniform half-line Gamma L² bound, combined with the already proved
+finite prime horizon and global pole mass bounds, should remove gap dependence
+from the adjustable old/new mass payment. The short-cell logarithmic diagonal
+could then absorb the new charge. This target assumes no favorable mixed sign.
+
+A touching-cell extension alone would still spend old mass at every step;
+contiguous exhaustion would require a summable spatial allocation of those losses
+or a signed arithmetic improvement. It must not be inferred from merely positive
+new widths. Search and inspect the exact sharp-cut source statements before
+formulating a claimed theorem.
+
+### Unbounded arithmetic carrier and exact signed projection — formalized
+
+`TheUnboundedCellCarrierHasAWeilProjection.lean` constructs the actual finitely
+supported independent-profile space, its graph range closure, and a bounded
+original-Weil projection onto this fixed unbounded logarithmic carrier. Uniform
+coercivity survives closure. Exact signed Schur subtraction holds on every graph
+vector, with removed energy at most twice the squared norm of the actual Weil
+operator applied to that vector. The actual cusp escape proves this closed carrier
+proper. Every inherited theta critical mode has zero projection; an infinite
+independent zero-energy family therefore survives in the residual.
+
+Mandatory actual direct audit45786 passed with persisted output in
+`logs/arithmetic-index-descent-unbounded-carrier-audit.txt`; all seven printed
+endpoints use only propext, Classical.choice and Quot.sound. No warnings. Wired
+into own umbrella and explained in the foundational README. Earlier audit handle
+was lost at pause, so no success was inferred from it. No residual sign or
+exhaustive upper index bound follows from this restricted-carrier construction.
+
+### Exact Gamma boundary normalization — research target
+
+The inherited Carleman comparison gives operator norm at most2pi. For the actual
+Gamma density k(t)=exp(-t/2)/(1-exp(-2t)), test the positive Schur weight
+w(t)=exp(-t/2)/sqrt(1-exp(-2t)). For s>0, the candidate exact row identity is
+integral_0^infinity k(s+t)w(t)dt=(pi/2)w(s). The substitution
+x=sqrt(exp(2t)-1) reduces the integral to
+exp(-s/2) integral_0^infinity dx/(x^2+1-exp(-2s)). Equivalently use the
+arctangent primitive directly, avoiding a new change-of-variable interface.
+
+If formalized, weighted Schur would improve the boundary operator upper bound
+fourfold and the adjacent-cell Gamma charge by the same factor. A matching lower
+norm bound would require a separate boundary-concentration argument. Neither
+claim is currently formalized here. This estimate does not control cumulative
+prime/pole assembly or eliminate the signed residual. Complete the literal C2
+touching-cell transfer before relying on this sharper target.
+
+### Literal touching Gamma transfer — formalized
+
+`TouchingSupportsHaveBoundedGammaInteraction.lean` passed mandatory actual
+direct99370, four standard endpoint dependency prints and no warnings. It
+identifies the actual ordered half-line L2 pairing, transfers its bound to signed
+continuous compact profiles, and proves the C2 spectral cross term equals the
+negative literal collar for every disjoint pair. The resulting ordered Gamma
+bound is pi times the sum of ordinary square masses, independent of gap, boundary,
+width and derivatives. Existing sharp-boundary operator supplies the estimate;
+no new mixed-sign or source-domain premise is introduced. Wired and README updated.
+
+`TouchingCellsPayTheFullMixedSource.lean` is the actual importer, still unchecked:
+full prime/pole payment and the adjacent short-cell extension await its final audit.
+The sharper pi/2 Schur row remains a separate untested research draft.
+
+### Retained pole cancellation and localized Gamma loss — research target
+
+For supports ordered about b, write left and right distance profiles
+F(s)=f(b-s), G(t)=g(b+t), s,t>0. The exact Gamma density splits as
+k(s+t)=exp(-(s+t)/2)+exp(-2s)k(s+t)exp(-2t).
+Its first rank-one pairing is A(f)B(g), with the b factors canceling. In the
+full Weil cross term this should cancel precisely the A(f)B(g) pole contribution,
+leaving B(f)A(g), the actual signed prime Hankel contribution, and the faster
+Gamma tail. Check the literal source normalizations before formalizing.
+
+The remaining Gamma tail should then cost only the boundary-local masses
+integral_{u<b} exp(-4(b-u)) f(u)^2 and
+integral_{u>b} exp(-4(u-b)) g(u)^2. This could prevent spending the whole old mass
+at every extension. The remaining global polar row must be retained as part of
+the completed form; neither its sign nor its cancellation against the prime
+Hankel term may be assumed. A signed prime-discrepancy estimate is still required
+for an exhaustive index bound. No theorem about this split has been claimed here.
+
+### Full touching-cell source payment — formalized
+
+`TouchingCellsPayTheFullMixedSource.lean` passed mandatory actual direct85405,
+three standard endpoint dependency prints and no warnings. The actual Gamma
+import olean66915 passed first, unchanged after direct99370. The full source now
+has an ordered-window mass bound independent of the touching boundary, an
+adjustable epsilon old-mass payment with explicit reciprocal new cost, and an
+adjacent short-cell extension retaining the exact old Weil diagonal and any
+prescribed new-mass charge. No old positivity or mixed sign is assumed.
+
+Wired, foundational README and check record updated. The geometric positive-gap
+restriction is removed. Cumulative whole-old-mass losses, useful width lower
+bounds and the exhaustive signed index remain open. Exact Gamma Schur weighting
+and retained pole cancellation are separate research targets, not inputs to this
+formalized result.

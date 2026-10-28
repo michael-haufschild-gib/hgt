@@ -25,7 +25,9 @@ the coefficients are.
   fixed fraction of the local spacing — the cells are disjoint for `c < 1`
   (`adaptedCell_disjoint`) and cover measure at most `c log(N + 1)`, a fraction `c` of the range
   `[0, log(N + 1)]` of the atoms: `∫_{[0, log(N+1)]} (1 − f)² ≥ (1 − c) log(N + 1)`. Ratio one is
-  the Nyquist rate of the adapted family.
+  the Nyquist rate of the adapted family. Below it the adapted atoms meet nonpositively in the
+  Markov pairing (`markovPair_nonpos_of_disjoint`, `markovPair_adapted_nonpos`): the adapted
+  atomic Gram is Metzler, as the uniform one is below the spacing.
 -/
 
 noncomputable section
@@ -34,7 +36,7 @@ open MeasureTheory Set Finset
 
 namespace GaloisForLFunctions.ArithmeticLorentzianGeometry
 
-open GaloisForLFunctions.ArithmeticElectrostatics
+open GaloisForLFunctions.ArithmeticElectrostatics GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 
 variable {g : ℝ → ℝ} {w : ℝ}
 
@@ -242,5 +244,50 @@ theorem sub_le_setIntegral_sq_adapted {G : ℕ → ℝ → ℝ} {W : ℕ → ℝ
   have h2 := measureReal_adaptedCover_le hW0 hW N
   have : (1 - c) * L = L - c * L := by ring
   linarith
+
+/-- **Disjointly supported nonnegative functions meet nonpositively**: the overlap vanishes, the
+Lévy cross integrand is pointwise `≤ 0` and the prime pairing is nonnegative. -/
+theorem markovPair_nonpos_of_disjoint {f d : ℝ → ℝ} (hf0 : ∀ u, 0 ≤ f u) (hd0 : ∀ u, 0 ≤ d u)
+    (hdisj : ∀ u, f u * d u = 0) : markovPair f d ≤ 0 := by
+  have h1 : ∫ u, f u * d u = 0 := by simp [hdisj]
+  have h2 : ∫ y in Ioi 0, levyMixed f d y ≤ 0 := by
+    refine setIntegral_nonpos measurableSet_Ioi fun y hy => ?_
+    unfold levyMixed
+    refine mul_nonpos_of_nonneg_of_nonpos (RHTower.archLevyDensity_pos hy).le ?_
+    have hpt : ∀ u, (f u - f (u + y)) * (d u - d (u + y)) ≤ 0 := fun u => by
+      have e : (f u - f (u + y)) * (d u - d (u + y)) = -(f u * d (u + y)) - f (u + y) * d u := by
+        have := hdisj u; have := hdisj (u + y); nlinarith
+      rw [e]
+      nlinarith [mul_nonneg (hf0 u) (hd0 (u + y)), mul_nonneg (hf0 (u + y)) (hd0 u)]
+    exact integral_nonpos hpt
+  have h3 : 0 ≤ primePair f d := by
+    refine tsum_nonneg fun k => mul_nonneg (RHTower.vonMangoldtAtom_nonneg' k) (add_nonneg ?_ ?_) <;>
+      exact integral_nonneg fun t => mul_nonneg (hf0 _) (hd0 _)
+  unfold markovPair
+  rw [h1, mul_zero, zero_add]
+  linarith
+
+/-- **The adapted atomic Gram is Metzler below the Nyquist rate**: distinct adapted atoms of ratio
+`c < 1` meet nonpositively. -/
+theorem markovPair_adapted_nonpos {G : ℕ → ℝ → ℝ} {W : ℕ → ℝ} {c : ℝ} (hc : c < 1)
+    (hG0 : ∀ n u, 0 ≤ G n u) (hG : ∀ n u, u ∉ Set.Icc 0 (W n) → G n u = 0)
+    (hW : ∀ n, 1 ≤ n → W n ≤ c * Real.log (1 + 1 / (n : ℝ))) {m n : ℕ} (hm : 1 ≤ m)
+    (hmn : m < n) :
+    markovPair (fun u => G m (u - Real.log m)) (fun u => G n (u - Real.log n)) ≤ 0 := by
+  refine markovPair_nonpos_of_disjoint (fun u => hG0 m _) (fun u => hG0 n _) fun u => ?_
+  by_contra h
+  have hu1 : u - Real.log m ∈ Set.Icc 0 (W m) := by
+    by_contra h'; exact h (by rw [hG m _ h', zero_mul])
+  have hu2 : u - Real.log n ∈ Set.Icc 0 (W n) := by
+    by_contra h'; exact h (by rw [hG n _ h', mul_zero])
+  have hcell := adaptedCell_disjoint hc hm
+  have hl : Real.log (m + 1 : ℕ) ≤ Real.log n :=
+    Real.log_le_log (by positivity) (by exact_mod_cast Nat.succ_le_of_lt hmn)
+  have hWm := hW m hm
+  have hlog : 0 ≤ Real.log (1 + 1 / (m : ℝ)) := Real.log_nonneg (by
+    have : (0 : ℝ) ≤ 1 / m := by positivity
+    linarith)
+  have : W m ≤ c * Real.log (1 + 1 / (m : ℝ)) := hWm
+  linarith [hu1.2, hu2.1]
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

@@ -44,6 +44,14 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
   forms exactly). TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine (topic 8: d J J'' ≤ (d−1)J'²
   on s ≥ 0 for every Jensen polynomial of ξ; RH = same on s < 0). TheOverlapRatioIsTheCoveredMeasure
   (exhaustion: atomic tests of ratio K live on measure ≤ K; exhaustive families need K ≳ log N).
+- TheStabilityRegimeEndsAtTheRobinEulerThreshold (via RAPT finite part 2θ′(0)+log(1/(wN))+κ_L+γ,
+  attained by the pole vector): beyond exp(2θ′(0)+κ_L+γ) the atom block −M has a positive square
+  (pole vector); no π > 0 with (−M)π ≤ 0. Window = TD regime proper; constants cannot close it.
+- AnIsometricLadderCarriesNoPositiveSquare (Q4): decaying Metzler Toeplitz ladders are hyperbolic at
+  all depths iff NSD at all depths. Survivor: the positive square needs growing couplings; the
+  fixed-width prime pairing along p-ladders grows like w p^{k/2} (PNT main term = pole weight).
+  Conformal ladders G_ij = λ^{min} a_|i−j| ≅ Toeplitz(λ^{−k/2} a_k): same dichotomy; Frobenius
+  escapes since normalized couplings grow like q^{k/2}.
 - Topic 9 answered: RamanujanAndLorentzianMeetOnlyAtTheWeilBound (Lorentzian ⇒ a_1 ≥ d√q,
   Ramanujan ⇒ a_1 ≤ d√q; equality only for (1+√qT)^d; never at a prime; elliptic: Lorentzian ⇔
   a² ≥ 4p).
@@ -55,9 +63,8 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
 - K > 1: primitive gap, or a non-atomic Metzler basis.
 - Conformal correspondence with λ ≠ 1.
 - Adapted (local-spacing) atomic families: widths c·log(1+1/n) cover fraction c of [0, log(N+1)];
-  ratio 1 is their Nyquist rate (Lean). To formalize: disjoint nonnegative bumps of different
-  widths meet nonpositively (proof of markovPair_atom_nonpos verbatim) ⇒ adapted Gram Metzler.
-  Hodge index at c < 1 open.
+  ratio 1 is their Nyquist rate; adapted Gram Metzler for c < 1 (Lean). Hodge index / TD_π at
+  c < 1 open.
 - Mixed ⇒ coefficient Lorentzian (M-convex support of mixed-Lorentzian polynomials; Minkowski sums
   of M-convex sets) — needed only to iterate products inside the coefficient class.
 

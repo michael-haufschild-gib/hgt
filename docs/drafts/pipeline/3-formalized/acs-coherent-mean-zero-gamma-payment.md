@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Route:** ACS: source sections → Riemann–Roch and ampleness → Hodge index → RH.
-- **Parent:** [balanced complete-cell effectivity](../1-in-progress/acs-complete-cell-haar-effectivity.md)
+- **Parent:** [balanced complete-cell effectivity](acs-complete-cell-haar-effectivity.md)
 - **Statement:** The original Gamma Lévy form pays the full reciprocal-width logarithm times local square mass on a finite disjoint mean-zero interval family.
 
 ## Exact theorem
@@ -34,7 +34,7 @@ for every finite horizon and arbitrary real signed coefficients.
 
 All five exact project files passed `lake --old env lean` from `formal/`. Eight transitive `#print axioms` audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Imports are wired into the ACS umbrella; the umbrella was not built. Dependency artifacts were generated only for importing modules.
 
-This discharges both the general Gamma estimate and its concrete balanced whole-cell specialization. The pole estimate and full Gamma–prime–pole floor remain on the parent card until their own Lean audits pass. Full-source ACS effectivity remains open.
+This discharges both the general Gamma estimate and its concrete balanced whole-cell specialization. The [parent card](acs-complete-cell-haar-effectivity.md) records the checked pole estimate, full Gamma–prime–pole floor, and common-scale smooth Riemann–Roch and ampleness theorem. Full-source ACS effectivity remains open.
 
 ## Log
 

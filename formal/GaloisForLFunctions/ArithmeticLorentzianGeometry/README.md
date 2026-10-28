@@ -37,7 +37,8 @@ atoms. Up to a fixed ratio the archimedean self-energy pays the prime form and, 
 of the prime rows, the pole, for every bounded twist of the coefficients alike
 (`TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing`); at unbounded overlap (fixed width) positivity of
 the atomic Weil Grams is RH (SpacingScaleHarmonicAnalysis). In the language of this programme
-the separated regime is the **stability regime** of a Metzler form and bounded overlap is the
+small overlap is the **stability regime** of a Metzler form, which ends at the Robin–Euler threshold
+`exp(2θ′(0) + κ_L(φ) + γ)` below the spacing, and the rest of bounded overlap is the
 **trickle-down regime**. The programme's central conjecture is the trickle-down inequality for
 `ζ`'s Euler-gauge intersection form at every fixed overlap ratio, uniformly in `N`; uniformity
 in `K` is RH. Beyond `K = 1` the conjecture is a trickle-down inequality with a gap rather than a
@@ -63,8 +64,11 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    class is closed under differentiation, nonnegative substitution and products: the Euler
    product of Lorentzian local factors, composed with any nonnegative scale map, has one positive
    square at every nonnegative point. The closure is blind to the Euler point.
-4. **Realization.** What replaces Frobenius? Over `ℤ` no conformal map: dilations are boosts. Over
-   `𝔽_q` the trickle-down inequality is a square-root count, a finite piece of the ladder decides,
+4. **Realization.** What replaces Frobenius? Over `ℤ` no conformal map: dilations are boosts, and a
+   ladder of isometric translates with decaying couplings holds its Hodge index only in the
+   stability regime, so its positive square must come from the pole plane or from couplings that
+   grow along the ladder. Over `𝔽_q` the trickle-down inequality is a square-root count, a finite
+   piece of the ladder decides,
    and the Frobenius ladder of the local factor at `p` has the Hodge index exactly when RH over
    `𝔽_p` holds for it. The local polynomial itself is Lorentzian only at the Weil bound, hence
    never at a prime: Ramanujan and Lorentzian are opposite inequalities. Over `ℤ`, at a
@@ -72,7 +76,9 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    rows supplies `(TD_π)` and pays the polar dispersion.
 5. **The critical regime.** What happens at the spacing scale? The Metzler sign holds exactly up
    to overlap ratio one; the Hodge index, `(TD_π)` and hyperbolic links hold up to a fixed ratio
-   `c★`; a uniform margin stops at `K√(log N)`. Between `c★` and one the open content is `(TD_π)`
+   `c★`; a uniform margin stops at `K√(log N)`; the atom block leaves the stability regime at the
+   Robin–Euler threshold `exp(2θ′(0) + κ_L(φ) + γ)`, where the pole vector carries a positive
+   square of `−M`. Between `c★` and one the open content is `(TD_π)`
    for a connected Metzler form; beyond one no gauge of the atoms is Metzler.
 
 ## Objects and language
@@ -102,6 +108,9 @@ entries. Both depend on the coordinates.
 | Overlap ratio `K`; ratio and non-ratio prime lags | Locate where a form first reads the arithmetic gauge |
 | Horizon counterterms, finite parts with local Euler constants `γ_p` | Renormalized local data of the prime place |
 | Exhaustions with explicit norms | Specify what a finite signature theorem can reach |
+| Lorentzian polynomials, mixed derivatives `∂_{v_1}⋯∂_{v_m}`, mixed Hessians | Signature certificates of higher degree and their closure operations |
+| Isometric and conformal ladders `(λ^{min(i,j)} a_{|i−j|})` | Separate symmetries that can host the positive square from those that cannot |
+| Covered measure of an atomic family | Measure what a family of tests can approximate |
 
 Real quadratic and Hermitian forms have distinct APIs. Complex test spaces retain conjugation
 and Hermitian inertia; a real calculation is not automatically its complex analogue.
@@ -155,7 +164,12 @@ construction it exposes.
 - The Euler product closure for Lorentzian local factors of any degree, and the Ramanujan–Lorentzian
   rigidity of local L-factors at the Weil bound.
 - The Turán layer of `ξ` and Laguerre's inequality for its Jensen polynomials on the half-line.
-- The covered-measure bound: an atomic test of overlap ratio `K` lives on measure `≤ K`.
+- The covered-measure bound: an atomic test of overlap ratio `K` lives on measure `≤ K`; adapted
+  families cover the fraction `c` of their range and are Metzler below the Nyquist rate.
+- The ladder dichotomy: isometric and conformal ladders with decaying normalized couplings hold
+  the Hodge index only in the stability regime.
+- The end of the stability regime: beyond the Robin–Euler threshold the atom block has a positive
+  square along the pole vector.
 
 ## Core theory
 
@@ -335,8 +349,20 @@ regime of unbounded overlap in which positivity of the atomic Weil Grams is RH. 
 with a bump of width `w_n ≤ c log(1 + 1/n)` at each atom, are separated for `c < 1`
 (`adaptedCell_disjoint`) and cover the fraction `c` of `[0, log(N + 1)]`
 (`measureReal_adaptedCover_le`, `sub_le_setIntegral_sq_adapted`): ratio one is their Nyquist
-rate, and they are the families on which a Hodge index below the Nyquist rate would approach
-exhaustion.
+rate. Disjoint nonnegative bumps of any widths meet nonpositively in the Markov pairing
+(`markovPair_nonpos_of_disjoint`), so below the Nyquist rate the adapted atomic Gram is Metzler
+(`markovPair_adapted_nonpos`): adapted families are the families on which a Hodge index below the
+Nyquist rate would approach exhaustion.
+
+[TheStabilityRegimeEndsAtTheRobinEulerThreshold](TheStabilityRegimeEndsAtTheRobinEulerThreshold.lean):
+where does the atom block leave the stability regime? The finite part of the Markov form at the
+spacing scale is `2θ′(0) + log(1/(wN)) + κ_L(φ) + γ` and the pole vector `n^{−1/2}` attains it
+(RenormalizedArithmeticPotentialTheory). Hence, eventually in `N`, once this finite part plus `ε`
+is negative, the pole test has `M(f) < 0` (`eventually_markovEnergy_poleTest_neg`) and no positive
+weight `π` has `(−M)π ≤ 0` (`eventually_not_stability_atomBlock`): the atom block carries a
+positive square along the pole vector. Beyond the Robin–Euler threshold `exp(2θ′(0) + κ_L(φ) + γ)`
+the Hodge index needs the pole plane to absorb that square, and it is exactly `(TD_π)`; the
+stability regime cannot be extended there by sharper constants.
 
 [HyperbolicityIsBlindTheSignIsNot](HyperbolicityIsBlindTheSignIsNot.lean): the twisted Markov
 pairing is symmetric and bilinear, so the polar defect of a twin's Gram is the twin's Weil form
@@ -355,6 +381,22 @@ sends `H ↦ qH`, `V ↦ V`, `Γ_k ↦ Γ_{k+1}` and satisfies `TᵀG_{K+1}T = q
 `n ↦ pn` preserve the coupled kernel of every twin and act on the pole plane by the boost
 `diag(p^{−1/2}, p^{1/2})`: conformal factor one. Power maps `n ↦ n^k`, `k ≥ 2`, and the successor
 are not conformal. These statements concern the specified kernels and maps.
+
+[AnIsometricLadderCarriesNoPositiveSquare](AnIsometricLadderCarriesNoPositiveSquare.lean): what the
+conformal factor buys. A ladder of isometric translates has a symmetric Toeplitz Gram
+`(c_{|i−j|})`. With Metzler couplings it is negative semidefinite at every depth when
+`c_0 + 2Σ_{k≤n} c_k ≤ 0` (`qf_toeplitzLadder_nonpos`); if the couplings decay and some depth has a
+positive square, a vector and its far translate give two at a larger depth
+(`not_isHyperbolic_toeplitzLadder`). So a decaying isometric ladder has the Hodge index at every
+depth iff it is negative semidefinite at every depth (`forall_isHyperbolic_toeplitzLadder_iff`):
+the single positive square cannot live on it. A ladder with the conformal law of Frobenius,
+`G_{i+1,j+1} = λG_{ij}`, is congruent by `diag(λ^{−i/2})` to the Toeplitz ladder of its normalized
+couplings `λ^{−k/2}a_k` (`diagConj_conformalLadder`), so it
+carries a positive square only if these do not decay (`forall_isHyperbolic_conformalLadder_iff`):
+Frobenius ladders carry it because their normalized couplings grow like `q^{k/2}`. Over `ℤ`, the
+prime pairing of fixed-width atoms along a `p`-ladder does not decay: at lag `k log p` it weighs
+the integers within `e^{±w}` of `p^k`, of total weight `≍ wp^{k/2}`
+by the prime number theorem — the conformal weight of the pole plane, met by the pole term.
 
 ### Gauge fixing and the successor
 
@@ -456,7 +498,8 @@ whole polynomial.
 
 [TheHessianOfALorentzianPolynomialTricklesDown](TheHessianOfALorentzianPolynomialTricklesDown.lean):
 `∂_i f` is Lorentzian (`isLorentzianPoly_coeffDeriv`). The Hessian `∇²f(x) = Σ_{|α|=d−2}
-(x^α/α!) Q_α` satisfies `(d − 2)∇²f(x) = Σ_i x_i ∇²(∂_i f)(x)` and `∇²(∂_i f)(x) x = (d − 2)∇²f(x) e_i`
+(x^α/α!) Q_α` satisfies `(d − 2)∇²f(x) = Σ_i x_i ∇²(∂_i f)(x)` and
+`∇²(∂_i f)(x) x = (d − 2)∇²f(x) e_i`
 (`hess_succ_smul`, `sum_hess_coeffDeriv_mul`): the Hessians of the partial derivatives are links
 weighted by `x`. Reverse Cauchy–Schwarz in each link gives `(TD_x)`; the M-convex path lemma
 (`mconvex_path`) gives connectivity on the active variables; so `∇²f(x)` has one positive square
@@ -503,7 +546,8 @@ real-rootedness.
 [TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine](TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine.lean):
 what Lorentzianity gives is Laguerre's inequality where the roots are not. The strong
 log-concavity of the mixed class at `(s, 1)` along `(1, 0)` is `d J J'' ≤ (d − 1) J'²` at `s ≥ 0`
-for the dehomogenization `J` of a Lorentzian bivariate form (`laguerre_halfLine_of_isLorentzianPoly`):
+for the dehomogenization `J` of a Lorentzian bivariate form
+(`laguerre_halfLine_of_isLorentzianPoly`):
 `J^{1/d}` is concave on `[0, ∞)`. Every Jensen polynomial of `ξ` therefore satisfies Laguerre's
 inequality on the nonnegative half-line (`xi_jensen_laguerre_halfLine`). A real-rooted polynomial
 satisfies it on the whole line, and the Jensen polynomials of `ξ` have no positive roots: RH is the
@@ -519,8 +563,10 @@ the spacing (`K < 1`) the Metzler, connectivity and positive-image conditions ar
 question is exactly `(TD_π)`; in the stability regime `K ≤ c₀` the atom block is negative
 semidefinite, and for `K ≤ c★` its coupling to the pole plane is paid by the tilted margin, so the
 central conjecture is a theorem there (`weilQuad_atomicTest_nonneg`). Between `c★` and the spacing
-the Metzler structure holds and `(TD_π)` is open. There the Markov form loses positivity along the
-pole vector `(n^{−1/2})`, the top of the prime form with finite part `−γ`
+the Metzler structure holds and `(TD_π)` is open; beyond the Robin–Euler threshold the atom block
+is provably outside the stability regime, so no row-sum argument reaches the window. There the
+Markov form loses positivity along the pole vector `(n^{−1/2})`, the top of the prime form with
+finite part `−γ`
 (RenormalizedArithmeticPotentialTheory), which is the `H`-row of the pole plane: the pole term pays
 exactly that direction, and only in the Euler gauge. The remaining content is a gap of the Markov
 form on the complement of the pole vector, coupled to the pole plane through the `V`-row `(n^{1/2})`
@@ -528,9 +574,9 @@ along which the tilted margin grows. For `K > 1` no gauge of the atoms is Metzle
 becomes (TD) with a proved primitive gap, or `(TD_π)` in another basis. A proof through the Metzler
 structure is selective by construction: at level `N` no twin flipping a prime `≤ N` admits a
 Metzler gauge. The same questions stand for adapted families at a fixed fraction `c < 1` of the
-local spacing: they are separated and cover the fraction `c` of the atomic range; the sign
-argument for separated atoms (disjoint nonnegative bumps meet nonpositively) is to be carried to
-bumps of different widths, which makes their atomic Gram Metzler.
+local spacing: they are separated, their atoms meet nonpositively
+(`markovPair_adapted_nonpos`), so their atomic Gram is Metzler, and they cover the fraction `c`
+of the atomic range.
 
 **The Metzler property beyond atomic resolution.** Decided for gauges of the atomic basis: the
 threshold overlap ratio is exactly `K = 1` for every profile positive on `(0, 1)`. Open: a natural
@@ -565,8 +611,10 @@ sign twin, the Liouville twin included; over `𝔽_q` the square-root count fail
 
 **Conformal dynamics and reflection.** Study maps with `TᵀQT = λQ` and reflection forms on the
 affine algebra arising from arithmetic constructions. A boost on an indefinite fibre does not
-create a positive invariant metric. Construct a conformal correspondence with `λ ≠ 1`, or a
-trickle-down structure that supplies the Hasse–Weil inequality without one.
+create a positive invariant metric, and an isometric ladder with decaying couplings carries no
+positive square. Construct a conformal correspondence with `λ ≠ 1`, or a trickle-down structure
+that supplies the Hasse–Weil inequality without one; the growth `wp^{k/2}` of the prime pairing
+along `p`-ladders — the main term of the prime number theorem — is the candidate conformal weight.
 
 **Arithmetic elimination of reflection-odd classes.** Seek section, incidence or effectivity
 identities that exclude the odd sector for actual arithmetic objects without assuming purity, and
@@ -602,12 +650,13 @@ exclude an off-line zero. Average rarity alone cannot.
 | Subtracting a positive correction proves the original signature | It proves the signature of a different form; identify the target or prove the domination |
 | Nonnegative coefficients and connectivity imply Hodge index | The golden datum passes both; the trickle-down inequality is the content |
 | Stability-regime positivity carries the arithmetic | It holds for every bounded twist; the trickle-down regime is open |
+| Sharper constants extend the stability regime to the spacing | It ends at the Robin–Euler threshold, where the atom block acquires a positive square along the pole vector |
 | A proved Hodge index on an atomic family is arithmetic | At a fixed fraction of the spacing it holds at the Liouville point; only the Metzler sign rejects that twin |
 | Beyond the spacing a better gauge restores the Metzler sign | For `K > 1` an odd triangle of atoms frustrates every unimodular gauge; change the basis or prove the gap |
 | A positive Euler product gives the arithmetic sign | Its Hessian is Lorentzian for every nonnegative local datum and is not the Weil pairing |
 | The local L-factor at a prime is Lorentzian because of RH over `𝔽_p` | RH makes its Frobenius ladder trickle down; the polynomial is Lorentzian only at the Weil bound, never at a prime |
 | Mixed-Lorentzian products are Lorentzian in coefficient form | The closure is proved for the mixed class; M-convexity of a product's support is a separate statement |
-| A Hecke dilation can play the role of Frobenius | Dilations are isometries; Weil uses a conformal factor `q` |
+| A Hecke dilation can play the role of Frobenius | Dilations are isometries; Weil uses a conformal factor `q`, and an isometric ladder with decaying couplings carries no positive square |
 | The scale map is the archimedean place | A substitution is not an identity with the completed Γ-term and finite part |
 | A nef shift repairs the arithmetic form | It changes coordinates; a regulator subtraction changes the form |
 | A common gauge proves positivity | It selects coordinates or a source; it does not prove a signature |
