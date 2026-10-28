@@ -34,6 +34,7 @@ variable (L) in
 def chebotarevPattern (frob : ℕ → G) (f : G → ℝ) (t : ℕ) : ℝ :=
   if t.Prime ∧ ¬ (t : ℤ) ∣ discr L then f (frob t) else 1
 
+omit [Group G] [Fintype G] [MulSemiringAction G L] [IsGaloisGroup G ℚ L] in
 /-- The pattern's prime sum splits into the Frobenius–Mertens sum and the ramified primes. -/
 theorem sum_chebotarevPattern_eq (frob : ℕ → G) (f : G → ℝ) (y : ℕ) :
     ∑ t ∈ Icc 1 y, (if t.Prime then chebotarevPattern L frob f t * Real.log t / t else 0) =
@@ -85,6 +86,7 @@ theorem tendsto_chebotarevPattern_div_log {frob : ℕ → G} (hfrob : IsFrobeniu
   refine h.congr fun y => ?_
   rw [sum_chebotarevPattern_eq, add_div]
 
+omit [Group G] [Fintype G] [MulSemiringAction G L] [IsGaloisGroup G ℚ L] in
 /-- A sign-valued `f` gives a sign pattern. -/
 theorem chebotarevPattern_mul_self (frob : ℕ → G) {f : G → ℝ} (hf : ∀ σ, f σ * f σ = 1)
     (t : ℕ) : chebotarevPattern L frob f t * chebotarevPattern L frob f t = 1 := by

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticIndexDescent.EveryEvenPrimeLagHasGammaSmallMixedTails
+import GaloisForLFunctions.ArithmeticIndexDescent.GammaBoundedCompleteProfilesHaveCompactDetails
 import GaloisForLFunctions.HTGeometry.PaperHalfLineCalkin
 
 /-!
@@ -58,32 +59,6 @@ theorem inner_shift_haar_tail_eq_tail (d : ℕ → ℝ) (A X : ℕ) {m : ℕ} (h
       rw [if_pos (hAa.trans hab)]
     · simp only [if_neg he, mul_zero]
   · simp only [if_neg hAa, zero_mul]
-
-/-- The original Gamma profile pays the actual square mass of every high-detail projection. -/
-theorem cellGammaWeight_mul_haar_tail_mass_le_gamma (q d : ℕ → ℝ) {A : ℕ}
-    (hA : 1 ≤ A) (X : ℕ) :
-    cellGammaWeight A *
-        (∑ a ∈ Icc 1 X, haarMass a * (if A ≤ a then d a else 0) ^ 2) ≤
-      levyEnergy (completePairProfile q d X) := by
-  have hd : (∑ a ∈ Icc 1 X, cellGammaWeight a * haarMass a * d a ^ 2) ≤
-      levyEnergy (completePairProfile q d X) := by
-    apply le_trans ?_ (sum_cellGammaWeight_variance_le_gamma
-      (completePairProfile_bv q d X) (completePairProfile_compact q d X) X)
-    apply Finset.sum_le_sum
-    intro a ha
-    rw [intervalVariance_completePairProfile q d (mem_Icc.mp ha).1 (mem_Icc.mp ha).2]
-    exact le_of_eq (mul_assoc _ _ _)
-  apply le_trans ?_ hd
-  rw [Finset.mul_sum]
-  apply Finset.sum_le_sum
-  intro a ha
-  have hmass := (haarMass_pos (mem_Icc.mp ha).1).le
-  by_cases hAa : A ≤ a
-  · rw [if_pos hAa, mul_assoc]
-    exact mul_le_mul_of_nonneg_right (cellGammaWeight_mono hA hAa)
-      (mul_nonneg hmass (sq_nonneg _))
-  · rw [if_neg hAa, zero_pow (by norm_num : 2 ≠ 0), mul_zero, mul_zero]
-    exact mul_nonneg (mul_nonneg (cellGammaWeight_pos (mem_Icc.mp ha).1).le hmass) (sq_nonneg _)
 
 /-- Odd-lag detail corrections are paid in the same untruncated Gamma profile. -/
 theorem cellGammaWeight_mul_abs_haar_tail_pair_le_gamma (q d : ℕ → ℝ) {A m : ℕ}
@@ -176,7 +151,6 @@ theorem abs_integerMixed_le_gamma (d q : ℕ → ℝ) {m : ℕ} (hm : 2 ≤ m) (
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.inner_shift_haar_tail_eq_tail
-#print axioms GaloisForLFunctions.ArithmeticIndexDescent.cellGammaWeight_mul_haar_tail_mass_le_gamma
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.cellGammaWeight_mul_abs_haar_tail_pair_le_gamma
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.integerMixedSource_eq_fullProfile_sub_detail
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.abs_integerMixed_tail_le_gamma_div_weight
