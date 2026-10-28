@@ -93,3 +93,20 @@ If `ψ² ≠ 1` and `L(1,ψ) = 0`, the existing holomorphic continuation gives a
 limit for `L(σ,ψ)/(σ-1)`, while `(σ-1)L(σ,1)` and `L(σ,ψ²)` have finite limits.
 Their product times `σ-1` is the displayed product and tends to zero, contradicting
 the lower bound. No full-plane continuation or reciprocity is needed for this case.
+
+### Full-continuation dependency audit
+
+Corpus leads inspected while formalizing HL6:
+
+- `RHTower/EpsteinCharacterFunctionalEquation.lean` proves a binary-lattice theta
+  transformation with a Dirichlet character modulo a prime. It is a concrete model,
+  not the arbitrary-number-field theorem.
+- `HTGeometry/DirichletCoefficientTheta.lean` supplies convergence and the Mellin transform
+  of a theta series attached to any absolutely convergent coefficient series. It supplies
+  no arithmetic theta inversion and therefore cannot by itself extend `heckeL` to all `ℂ`.
+- `HTGeometry/FinitePiProductSummability.lean` has polynomial-Gaussian summability on `ℤ^n`.
+- `HTGeometry/RemovableSingularity.lean` supplies the derivative quotient limit used for HL6.
+
+HL7 must construct the ideal-lattice theta transformation, account for the unit action and
+archimedean signs, and identify its Mellin transform with the actual Hecke ideal series.
+These identities remain proof obligations; no functional-equation interface is assumed.

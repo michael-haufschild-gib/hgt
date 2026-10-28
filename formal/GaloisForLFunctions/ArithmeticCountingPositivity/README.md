@@ -80,6 +80,18 @@ precision — do not conflate the two.
    $S_F(N)=c_FH_N+O_F(1)$ with $c_F=\prod_{p\in F}(p-1)/(p+1)>0$. Adding a prime gives an exact divisibility recurrence;
    the bounded harmonic shell and contraction under $N\mapsto\lfloor N/p\rfloor$ control its error. The resulting prime gap is
    $(2\log2)c_F^2$. Both the error constant and the eventual horizon retain their dependence on $F$.
+8. **Finite-prime exhaustion separates quantifiers.** Flipping all primes below $Q$ agrees exactly with Liouville at every integer
+   below $Q$. Each fixed cutoff is multiplicative, polar matched and positively gapped. Yet no positive gap holds with one horizon
+   bound uniform in all sufficiently large cutoffs: choosing $Q>N$ would give the forbidden positive Liouville gap at horizon $N$.
+9. **Large prime flips attain the maximal gap.** For every prime $p\ge11$ the flip $\omega_p$ has hyperplane gap exactly $2\log2$,
+   the maximum over all sign gauges. In the two-scale decomposition of $[1,N]$ (smooth parts below a horizon $X$, rough fibres),
+   the flipped pole $\omega_p(n)/\sqrt n$ differs from the pole only inside the $p$-ladders of the smooth box. Efron–Stein on the box,
+   keeping the $p$-ladders separate, pays the within-$p$-fibre variance with the ladder constant $\log p\,W_p(X)\ge\log p(1+1/p)$
+   rather than $2\log2$; the pairing of $\omega_p$ with a mean-zero function is controlled by that variance with constant
+   $(1-c_p^2)W_p(X)$, $c_p=(p-1)/(p+1)$. The rotation of the pole therefore costs $2\log2(1-c_p^2)$ against an excess
+   $c_p^2(\log p-2\log2)$, and $4p\cdot2\log2<(p-1)^2(\log p-2\log2)$ holds from $p=11$ on. The halo above $X$ and the variation of
+   the rough masses below $X$ are paid by the walk energy and vanish with the horizon. Consequence: the exact discrete margin, even at
+   its maximum and together with complete multiplicativity and polar matching, does not select $\Lambda$.
 
 ---
 
@@ -99,6 +111,12 @@ precision — do not conflate the two.
    prime eigenlines.
 7. **Positive density for every finite set of flips** (`finiteFlip_harmonic_recurrence`, `finiteFlip_harmonic_error_bounded`,
    `finiteFlip_harmonicCorrelation_tendsto`, `finiteFlip_hasHyperplaneGap`).
+8. **Exact exhaustion obstruction with positive finite stages** (`finitePrimeExhaustion_eventually_eq_liouville`,
+   `finitePrimeExhaustion_each_stage_matched_positive`, `finitePrimeExhaustion_no_uniform_positive_gap`).
+9. **The maximal gap is not rigid** (`boxGap_mul_boxVar_add_le`, `sum_flip_mul_sq_le`, `eventually_primeFlip_poleDefect_ge`,
+   `primeFlip_hasHyperplaneGap_two_mul_log_two`, `isGreatest_primeFlip_hyperplaneGap`, `maximal_gap_does_not_select_the_source`):
+   every prime $p\ge11$ gives a completely multiplicative, polar-matched sign twin with the greatest hyperplane gap $2\log2$,
+   Weil coefficients of the size of $\Lambda$, and a negative complete Weil test.
 
 **Pillar obligations** (targets, not theorems): count before sign (an integer-side construction with square-root error);
 arithmetic selection on overlapping complete sources; uniform mixed-term control through exhaustion; a displacement-sensitive
@@ -112,11 +130,12 @@ signature bound or uniform complete-source index ceiling; obstructions with posi
 |---|---|
 | A Gram representation settles the sign | Prove equality with the literal complete form |
 | Multiplicativity breaks parity | Liouville is completely multiplicative |
-| A positive selective gap identifies the source | Single-prime flips have gaps arbitrarily close to $2\log2$ and keep polar matching |
+| A positive, even maximal, selective gap identifies the source | Single-prime flips at $p\ge11$ have the maximal gap $2\log2$ and keep polar matching |
 | Positive arithmetic weights select $\zeta$ | Test scalings, mixtures, golden data, Beurling systems |
 | Finite counts or ranks retain signs | Record exact correlations and what reweighting loses |
 | A fixed arithmetic mode controls a full spectrum | Bound its orthogonal complement uniformly |
 | Finite-horizon positivity passes to the limit | State the topology, error currency, uniformity |
+| Positive gaps at every finite prime cutoff give a gap after exhaustion | Their horizon bounds need not be uniform; finite flips stabilize to Liouville |
 | Positive measures explain arithmetic Herglotz | Positivity must come from arithmetic, not zeros |
 | A no-go completes a route | Extract its positive survivor |
 
@@ -126,8 +145,8 @@ Battery: Liouville twin, scaled $\Lambda$, quadratic mixtures, golden curve, ove
 
 ## 6. Open problems
 
-1. **Exact gap classification** among completely multiplicative gauges: determine the gaps of small-prime and multiple-prime flips,
-   and the information beyond a maximal gap needed to select the source.
+1. **Exact gap classification** among completely multiplicative gauges: the flips at $p\le7$ and the multiple-prime flips are not
+   decided by the secular bound $c_p^2\log p(1+1/p)>2\log2$; the information beyond a maximal gap needed to select the source.
 2. **Selective overlap transfer**: carry the discrete hyperplane gap into continuous atomic families beyond the Robin–Euler threshold, paying the
    affine pole direction separately.
 3. **Arithmetic Herglotz theory**: Toeplitz positivity from prime-side data with Gamma and poles.

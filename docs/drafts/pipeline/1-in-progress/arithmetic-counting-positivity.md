@@ -124,9 +124,12 @@ finite arithmetic construction or README is finished.
   equality, positive matched finite stages, and failure of a uniform positive
   gap even on a cofinal rectangle of prime cutoffs and horizons. It imports
   the finished `FinitePrimeFlipsHavePositiveHarmonicDensity.lean`.
-  Scratch check 43315 is running, with log
-  `/tmp/acp-finite-exhaustion-check.log`. Resume this handle before starting
-  another Lean process. Its paper card is in `2-fully-proven`.
+  Scratch check 43315 exited zero, with all five transitive axiom audits
+  standard. Installed as `FinitePrimeExhaustionLosesUniformGaps.lean`, wired
+  into the umbrella and README. Final canonical check 7214 is running,
+  with log `/tmp/acp-final-finite-exhaustion.log`. Resume this handle before
+  starting another Lean process. Its paper card remains in `2-fully-proven`
+  until that final check succeeds. No own olean is needed.
 - Corpus and mathlib leads used for that draft were inspected in source:
   `ArithmeticFunction.cardFactors_eq_sum_factorization`,
   `Nat.support_factorization`, `Finset.prod_pow_eq_pow_sum`,
@@ -135,13 +138,18 @@ finite arithmetic construction or README is finished.
   obstruction. Failed search calls were retried with exact names; no
   missing lemma is being treated as a proved input.
 - The next nonredundant use of the spectral bridge is on
-  `arithmetic-counting-small-prime-gap-boundary.md`: the candidate upper
-  bound `g <= p log(p)/(p+3)` for any gap of a single-prime flip. It is strict
-  below `2 log 2` for primes 2, 3, 5, 7, so could settle the sharp boundary
-  complementing the other researcher's prime-11 lower theorem. Initial
-  corpus searches found no such upper bound. Prefer the already checked
-  actual eigenline squared coordinates and the existing
-  `quadratic_eigenvector_plane` over reproving finite-mode energy limits.
-  This candidate remains unproved and must pass a paper audit and Lean.
+  `../2-fully-proven/arithmetic-counting-small-prime-gap-boundary.md`:
+  `g <= p log(p)/(p+3)` for every gap of a single-prime flip. The closed
+  paper proof uses the actual squared spectral coordinates and existing
+  `quadratic_eigenvector_plane`. Its strict bound below `2 log 2` for primes
+  2, 3, 5, 7 would complement the other researcher's prime-11 lower theorem.
+  Corpus searches found no such upper bound.
+- `/tmp/acp-small-prime-boundary-check.lean` is the complete unverified
+  draft of that closed proof. It has two public endpoints: the upper bound
+  and the positive-but-nonmaximal gap for primes below 11. It imports
+  `HarmonicParitySpectralCoordinates`; once canonical check 7214 finishes,
+  build that missing own olean exactly once (only if absent), then check
+  this scratch. Do not rebuild any existing dependency olean. The actual
+  prime-11 module is neither imported nor modified.
 - Research scope remains all source-report mechanisms and questions. No
   part of the current batch completes the full programme.

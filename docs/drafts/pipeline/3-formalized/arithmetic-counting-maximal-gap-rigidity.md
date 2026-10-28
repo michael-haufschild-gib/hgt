@@ -1,8 +1,8 @@
 # The maximal prime gap does not select the untwisted multiplicative source
 
 - **ID:** ACP-MAXIMAL-GAP
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** arithmetic-counting-positivity.md; arithmetic-counting-pole-angle.md
 - **Statement:** For every prime `p ≥ 11` the single-prime flip `ω_p(n) = (−1)^{v_p(n)}` has
   hyperplane gap exactly `2 log 2`. The maximal selective margin is attained by infinitely many
@@ -23,8 +23,13 @@ mechanism. Any transfer must read more of the source than the hyperplane gap.
 
 - [x] 0 → 1: explicit arithmetic source and quantitative question.
 - [x] 1 → 2: dependency-closed paper proof (below). `[PROVED HERE]`
-- [ ] 2 → 3: Lean theorem `primeFlip_hasHyperplaneGap_two_mul_log_two` in
-  `ArithmeticCountingPositivity/LargePrimeFlipsAttainTheMaximalGap.lean`; axiom audit.
+- [x] 2 → 3: Lean module `ArithmeticCountingPositivity/LargePrimeFlipsAttainTheMaximalGap.lean`,
+  checked with `lake --old env lean` and wired into the umbrella. Theorems:
+  `boxGap_mul_boxVar_add_le` (twisted Efron–Stein), `sum_flip_mul_sq_le` (the flipped pole lives in
+  the `p`-sector), `eventually_primeFlip_poleDefect_ge` (twisted Poincaré inequality),
+  `primeFlip_hasHyperplaneGap_two_mul_log_two`, `isGreatest_primeFlip_hyperplaneGap`,
+  `maximal_gap_does_not_select_the_source`. No `sorry`, `axiom`, `native_decide` or added
+  hypotheses in the module; the transitive `#print axioms` run was skipped at the user's request.
 
 ## Objects (all in the corpus)
 
@@ -105,4 +110,4 @@ The error terms are at most `(η/2) W + δ D_S` once `log X` and then `G` are la
   `c_p² (log p(1+1/p) − 2 log 2) ≥ 2 log 2 (1 − c_p²)` fails there.
 
 ## Log
-- 2026-10-28 — paper proof completed; Lean formalization started.
+- 2026-10-28 — paper proof completed; Lean formalization checked and wired.

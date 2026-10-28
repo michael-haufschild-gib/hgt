@@ -26,7 +26,9 @@ blocks is the aggregate inequality `Σ_{j∈R} ‖w_j‖² − tr B ≥ 2|R|`: a
   (`isInertiaCertificate_qStar`). In moments (`sum_qStar_eq_moments`),
   `Σ q⋆(μ_i) = (64/49)(−tr Ĥ⁴ + 4 tr Ĥ³ − (23/4) tr Ĥ² + (7/2) tr Ĥ)`.
 * **The number** (`qStar_value_sineMoments`): at the normalized moments `(1, 4/3, 2, 13/4)` of the
-  bandwidth-one sine-kernel Gram matrix the certificate equals `16/21 > 3/4`. The fourth moment
+  bandwidth-one sine-kernel Gram matrix the certificate equals `16/21 > 3/4`. With `κ₂ = 4/3`,
+  `κ₃ = 2` it reaches `3/4` iff `κ₄ ≤ 2503/768` (`three_quarters_le_qStarValue_iff`), and it moves
+  by `O(ε)` under moment errors `ε` (`abs_qStarValue_sub_le`). The fourth moment
   separates the coalescence blind spot: the extremal diagonal `diag(1^{4k}, 2^{k})` of the `2/3`
   theorem has the same first three moments and fourth moment `10/3 ≠ 13/4`
   (`extremalDiag_moments`).
@@ -317,6 +319,37 @@ theorem qStar_value_sineMoments : qStarValue (4 / 3) 2 (13 / 4) = 16 / 21 := by
   unfold qStarValue; norm_num
 
 theorem three_quarters_lt_sixteen_twentyFirsts : (3 : ℝ) / 4 < 16 / 21 := by norm_num
+
+/-- At the sine-kernel second and third moments the certificate is `(64/49)(23/6 − κ₄)`. -/
+theorem qStarValue_sine_two (κ₄ : ℝ) : qStarValue (4 / 3) 2 κ₄ = 64 / 49 * (23 / 6 - κ₄) := by
+  unfold qStarValue; ring
+
+/-- **The fourth-moment threshold for `75%`.** With `κ₂ = 4/3`, `κ₃ = 2`, the quartic certificate
+reaches `3/4` iff `κ₄ ≤ 2503/768 ≈ 3.2591`; the sine kernel has `κ₄ = 13/4 = 2496/768`. -/
+theorem three_quarters_le_qStarValue_iff (κ₄ : ℝ) :
+    3 / 4 ≤ qStarValue (4 / 3) 2 κ₄ ↔ κ₄ ≤ 2503 / 768 := by
+  rw [qStarValue_sine_two]
+  constructor <;> intro h <;> linarith
+
+/-- **Robustness.** Moments within `ε` of `(κ₂, κ₃, κ₄)` move the certificate by at most
+`(64/49)(23/4 + 4 + 1)ε`. -/
+theorem abs_qStarValue_sub_le {κ₂ κ₃ κ₄ κ₂' κ₃' κ₄' ε : ℝ} (h₂ : |κ₂' - κ₂| ≤ ε)
+    (h₃ : |κ₃' - κ₃| ≤ ε) (h₄ : |κ₄' - κ₄| ≤ ε) :
+    |qStarValue κ₂' κ₃' κ₄' - qStarValue κ₂ κ₃ κ₄| ≤ 64 / 49 * (43 / 4) * ε := by
+  have e : qStarValue κ₂' κ₃' κ₄' - qStarValue κ₂ κ₃ κ₄ =
+      64 / 49 * (-(κ₄' - κ₄) + 4 * (κ₃' - κ₃) - 23 / 4 * (κ₂' - κ₂)) := by
+    unfold qStarValue; ring
+  rw [e, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 64 / 49)]
+  refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+  calc |-(κ₄' - κ₄) + 4 * (κ₃' - κ₃) - 23 / 4 * (κ₂' - κ₂)|
+      ≤ |-(κ₄' - κ₄)| + |4 * (κ₃' - κ₃)| + |23 / 4 * (κ₂' - κ₂)| := by
+        refine (abs_sub _ _).trans ?_
+        gcongr
+        exact abs_add_le _ _
+    _ = |κ₄' - κ₄| + 4 * |κ₃' - κ₃| + 23 / 4 * |κ₂' - κ₂| := by
+        rw [abs_neg, abs_mul, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 4),
+          abs_of_pos (by norm_num : (0 : ℝ) < 23 / 4)]
+    _ ≤ 43 / 4 * ε := by linarith
 
 /-- **The fourth moment separates the coalescence blind spot.** The extremal configuration
 `diag(1^{4k}, 2^{k})` of the `2/3` theorem (`N = 6k`) has normalized moments

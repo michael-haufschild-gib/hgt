@@ -295,7 +295,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Scratch verified; installed; first required olean built |
 | 31 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasAnExactErrorDecomposition` | Scratch verified; installed; first required olean built |
 | 32 | `RenormalizedArithmeticPotentialTheory/HorizonKernelEuclideanIdentities` | Scratch verified; installed; first required olean built |
-| 33 | `RenormalizedArithmeticPotentialTheory/TheWeilReplacementErrorsVanishOnRamanujanModes` | Unchecked scratch |
+| 33 | `RenormalizedArithmeticPotentialTheory/TheWeilReplacementErrorsVanishOnRamanujanModes` | Scratch verified; installed |
 | 34 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasRamanujanQuasimodes` | Unchecked scratch |
 | 35 | `RenormalizedArithmeticPotentialTheory/ThePoleProjectionIsTheEuclideanGroundProjection` | Unchecked scratch |
 | 36 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionIsBoundedOnThePole` | Unchecked scratch |

@@ -180,6 +180,133 @@ theorem norm_xiLine_le_far_abs {X w t : ℝ} (hX : 200 ≤ X) (ht : 0 < t) (ht1 
         nlinarith [mul_le_mul_of_nonneg_right (by linarith : Real.log (X / (2 * Real.pi)) / 2 + 2
           ≤ Real.log X + 2) hd, mul_le_mul_of_nonneg_left hdU (by linarith : (0:ℝ) ≤ Real.log X + 2)]
 
+/-- **The vertical tail of `Ξ`.**  For `σ(z) ∈ B(c, 5/2)`, `c = 2 + iT`, and `|u| > 1`,
+`‖Ξ(z − iu)‖ ≤ e^{8a} ‖Ξ(z)‖ e^{(a + log X + 2)|u|} e^{u²/8t}` with `X = Im σ(z)`. -/
+theorem norm_XiC_vertical_le {c : ℂ} {T : ℝ} (hc : c = 2 + (T : ℂ) * I) {Z : Finset ℂ}
+    {m : ℂ → ℕ} {g : ℂ → ℂ} {K : ℝ}
+    (hg : AnalyticOnNhd ℂ g (ball c 11)) (hg0 : ∀ z ∈ ball c 11, g z ≠ 0)
+    (heq : EqOn xi (fun z => (∏ ρ ∈ Z, (z - ρ) ^ m ρ) * g z) (ball c 11))
+    (hK : ∀ s ∈ ball c 11, ‖deriv g s / g s‖ ≤ K) (hK0 : 0 ≤ K) {z : ℂ}
+    (hz : 1 / 2 + I * z ∈ ball c (5 / 2)) (hZ : ∀ ρ ∈ Z, 1 / 2 + I * z ≠ ρ)
+    (hX : 200 ≤ (1 / 2 + I * z).im) {t : ℝ} (ht : 0 < t) (ht1 : t ≤ 1) (u : ℝ) (hu : 1 < |u|) :
+    ‖XiC (z - I * u)‖ ≤
+      Real.exp (8 * (∑ ρ ∈ Z, (m ρ : ℝ) / ‖(1 / 2 + I * z) - ρ‖ + K)) * ‖XiC z‖
+        * Real.exp ((∑ ρ ∈ Z, (m ρ : ℝ) / ‖(1 / 2 + I * z) - ρ‖ + K
+            + Real.log (1 / 2 + I * z).im + 2) * |u|) * Real.exp (u ^ 2 / (8 * t)) := by
+  set sz : ℂ := 1 / 2 + I * z with hsz
+  set a : ℝ := ∑ ρ ∈ Z, (m ρ : ℝ) / ‖sz - ρ‖ + K with ha
+  set X : ℝ := sz.im with hXdef
+  have ha0 : 0 ≤ a := by
+    have : 0 ≤ ∑ ρ ∈ Z, (m ρ : ℝ) / ‖sz - ρ‖ := Finset.sum_nonneg fun _ _ => by positivity
+    linarith
+  have hlogX : 0 ≤ Real.log X := Real.log_nonneg (by linarith)
+  have hszc : ‖sz - c‖ < 5 / 2 := by simpa [dist_eq_norm] using hz
+  have hsz11 : sz ∈ ball c 11 := ball_subset_ball (by norm_num) hz
+  have hratio : ∀ s ∈ ball c 11, ‖xi s‖ ≤ ‖xi sz‖ * Real.exp (a * ‖s - sz‖) := fun s hs =>
+    norm_xi_le_mul_exp_of_cofactor hg hg0 heq hK hsz11 hs hZ
+  have hXi : XiC (z - I * u) = xi (sz + u) := by rw [XiC_eq_xi, half_add_I_mul_sub_I_mul]
+  have hXz : XiC z = xi sz := XiC_eq_xi z
+  rw [hXi, hXz]
+  have hE8 : 1 ≤ Real.exp (8 * a) := Real.one_le_exp (by positivity)
+  have hEu : 1 ≤ Real.exp (u ^ 2 / (8 * t)) := Real.one_le_exp (by positivity)
+  have hN := norm_nonneg (xi sz)
+  rcases lt_or_ge (|u|) (17 / 2) with hsmall | hlarge
+  · have hin : sz + u ∈ ball c 11 := by
+      rw [mem_ball, dist_eq_norm]
+      calc ‖sz + u - c‖ ≤ ‖sz - c‖ + ‖(u : ℂ)‖ := by
+            rw [show sz + u - c = (sz - c) + u by ring]; exact norm_add_le _ _
+        _ < 11 := by rw [Complex.norm_real, Real.norm_eq_abs]; linarith
+    have h := hratio _ hin
+    rw [show sz + u - sz = (u : ℂ) by ring, Complex.norm_real, Real.norm_eq_abs] at h
+    have hmono : Real.exp (a * |u|) ≤ Real.exp ((a + Real.log X + 2) * |u|) :=
+      Real.exp_le_exp.mpr (by nlinarith [abs_nonneg u])
+    calc ‖xi (sz + u)‖ ≤ ‖xi sz‖ * Real.exp (a * |u|) := h
+      _ ≤ Real.exp (8 * a) * ‖xi sz‖ * Real.exp ((a + Real.log X + 2) * |u|)
+            * Real.exp (u ^ 2 / (8 * t)) := by
+          have h1 : ‖xi sz‖ * Real.exp (a * |u|)
+              ≤ ‖xi sz‖ * Real.exp ((a + Real.log X + 2) * |u|) :=
+            mul_le_mul_of_nonneg_left hmono hN
+          have hP : 0 ≤ ‖xi sz‖ * Real.exp ((a + Real.log X + 2) * |u|) := by positivity
+          nlinarith [mul_le_mul_of_nonneg_left hE8 hP,
+            mul_le_mul_of_nonneg_left hEu (mul_nonneg (by positivity : (0:ℝ) ≤ Real.exp (8 * a)) hP)]
+  · -- far: the horizontal-line growth beyond the window
+    have hre : |sz.re - 1 / 2| < 4 := by
+      have h := Complex.abs_re_le_norm (sz - c)
+      have hre' : (sz - c).re = sz.re - 2 := by rw [hc]; simp
+      rw [hre'] at h
+      rw [abs_lt] at h ⊢
+      constructor <;> linarith [abs_lt.mp (lt_of_le_of_lt h hszc)]
+    set w : ℝ := sz.re - 1 / 2 + u with hw
+    have hwabs1 : 9 / 2 ≤ |w| := by
+      have := abs_sub_abs_le_abs_sub u (-(sz.re - 1 / 2))
+      rw [show u - -(sz.re - 1 / 2) = w by rw [hw]; ring, abs_neg] at this
+      linarith
+    have hwabs2 : |w| ≤ |u| + 4 := by
+      have := abs_add (sz.re - 1 / 2) u
+      rw [← hw] at this
+      linarith
+    have hfar := norm_xiLine_le_far_abs (X := X) hX ht ht1 hwabs1 (by linarith) hwabs2
+    rw [xiLine_eq_xi_add] at hfar
+    have hanchor : xiLine X (9 / 2) = xi (5 + (X : ℂ) * I) := by
+      rw [xiLine]; congr 1; push_cast; ring
+    have hW11 : (5 : ℂ) + (X : ℂ) * I ∈ ball c 11 := by
+      rw [mem_ball, dist_eq_norm, hc]
+      have him : |X - T| < 5 / 2 := by
+        have h := Complex.abs_im_le_norm (sz - c)
+        have him' : (sz - c).im = X - T := by rw [hc, hXdef]; simp
+        rw [him'] at h
+        linarith
+      calc ‖(5 : ℂ) + (X : ℂ) * I - (2 + (T : ℂ) * I)‖ = ‖(3 : ℂ) + ((X - T : ℝ) : ℂ) * I‖ := by
+            congr 1; push_cast; ring
+        _ ≤ ‖(3 : ℂ)‖ + ‖((X - T : ℝ) : ℂ) * I‖ := norm_add_le _ _
+        _ < 11 := by
+            rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+            norm_num; linarith
+    have hWdist : ‖(5 + (X : ℂ) * I) - sz‖ ≤ 8 := by
+      have h1 : ‖(5 + (X : ℂ) * I) - c‖ < 11 := by simpa [dist_eq_norm] using hW11
+      have h2 : ‖(5 + (X : ℂ) * I) - c‖ ≤ 11 / 2 := by
+        rw [hc]
+        have him : |X - T| < 5 / 2 := by
+          have h := Complex.abs_im_le_norm (sz - c)
+          have him' : (sz - c).im = X - T := by rw [hc, hXdef]; simp
+          rw [him'] at h
+          linarith
+        calc ‖(5 : ℂ) + (X : ℂ) * I - (2 + (T : ℂ) * I)‖
+            = ‖(3 : ℂ) + ((X - T : ℝ) : ℂ) * I‖ := by congr 1; push_cast; ring
+          _ ≤ ‖(3 : ℂ)‖ + ‖((X - T : ℝ) : ℂ) * I‖ := norm_add_le _ _
+          _ ≤ 11 / 2 := by
+              rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+              norm_num; linarith
+      calc ‖(5 + (X : ℂ) * I) - sz‖ ≤ ‖(5 + (X : ℂ) * I) - c‖ + ‖c - sz‖ :=
+            norm_sub_le_norm_sub_add_norm_sub _ _ _
+        _ ≤ 8 := by rw [norm_sub_rev c sz]; linarith
+    have hWratio : ‖xi (5 + (X : ℂ) * I)‖ ≤ ‖xi sz‖ * Real.exp (8 * a) := by
+      refine (hratio _ hW11).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hN)
+      nlinarith
+    have hsz_eq : sz + u = (sz.im : ℂ) * I + ((sz.re : ℂ) + u) := by
+      apply Complex.ext <;> simp
+    rw [hanchor] at hfar
+    have hfar' : ‖xi (sz + u)‖ ≤ ‖xi (5 + (X : ℂ) * I)‖
+        * Real.exp ((Real.log X + 2) * |u| + |u| ^ 2 / (8 * t)) := by
+      have := hfar
+      rwa [show sz + (u : ℂ) = sz + u from rfl] at this
+    rw [sq_abs] at hfar'
+    calc ‖xi (sz + u)‖ ≤ ‖xi sz‖ * Real.exp (8 * a)
+          * Real.exp ((Real.log X + 2) * |u| + u ^ 2 / (8 * t)) :=
+          hfar'.trans (mul_le_mul_of_nonneg_right hWratio (Real.exp_pos _).le)
+      _ ≤ Real.exp (8 * a) * ‖xi sz‖ * Real.exp ((a + Real.log X + 2) * |u|)
+            * Real.exp (u ^ 2 / (8 * t)) := by
+          rw [Real.exp_add]
+          have hmono : Real.exp ((Real.log X + 2) * |u|) ≤ Real.exp ((a + Real.log X + 2) * |u|) :=
+            Real.exp_le_exp.mpr (by nlinarith [abs_nonneg u])
+          have hP : 0 ≤ Real.exp (8 * a) * ‖xi sz‖ := by positivity
+          calc ‖xi sz‖ * Real.exp (8 * a)
+                * (Real.exp ((Real.log X + 2) * |u|) * Real.exp (u ^ 2 / (8 * t)))
+              = (Real.exp (8 * a) * ‖xi sz‖) * Real.exp ((Real.log X + 2) * |u|)
+                * Real.exp (u ^ 2 / (8 * t)) := by ring
+            _ ≤ (Real.exp (8 * a) * ‖xi sz‖) * Real.exp ((a + Real.log X + 2) * |u|)
+                * Real.exp (u ^ 2 / (8 * t)) := by gcongr
+
 end
 
 end RHTower.DeBruijn

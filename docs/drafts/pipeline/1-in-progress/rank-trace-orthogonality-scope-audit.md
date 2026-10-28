@@ -46,6 +46,12 @@ Frobenius expansion retains cross-correlations. No replacement orthogonality hyp
 The arbitrary-frame construction below is an elementary extension of the existing examples,
 not a claim of new analytic information about zeta zeros.
 
+Scope corrections also cover the finite unitary calibration (which constructs simple labels,
+rather than proving simplicity of a curve's eigenvalues), the downstream universal functional
+classification, and the displaced-pair example. The introduction to
+`BreakingTheCoalescenceBlindSpotAndThreeQuarters` now matches its theorem statements: the `3/4`
+conclusion requires a spectral-slack lower bound or prime-surplus upper bound.
+
 ## Approach and paper proof
 For arbitrary real families `u : α → d → ℝ`, `w : β → d → ℝ`, compare:
 
@@ -73,7 +79,7 @@ Frobenius norm `232/25`. Counts differ (`4` versus `2`); correlations remain in 
   `counts_coalescedPairFrameData`, `blockA_correlatedPairFrame`, and
   `nonorthogonal_coalescence_example`. Scratch and source compilation passed without warnings;
   the new module's olean was emitted for its import by the original module. The original module's
-  source check and new declarations' transitive axiom audit remain pending. Existing declarations
+  source check passed. New declarations' transitive axiom audit remains pending. Existing declarations
   and proofs in all four edited modules were compared after stripping comments: unchanged.
 
 ## Log

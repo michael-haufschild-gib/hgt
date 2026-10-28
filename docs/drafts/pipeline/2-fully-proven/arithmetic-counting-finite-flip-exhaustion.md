@@ -74,5 +74,9 @@ congruence is an existing corpus lemma.
 - [x] Exact family, quantifiers, positive survivor and closed paper proof.
 - [x] Corpus search before mathlib; imported statements inspected.
 - [x] Companion finite-prime density formalized, canonically checked, and axiom-audited.
-- [ ] Exhaustion Lean proof and transitive axiom audit.
+- [x] All five exhaustion theorems pass Lean and transitive axiom checks, with only the three standard axioms.
 - [ ] Canonical source checks, umbrella, README, scratch cleanup.
+
+Installed as `ArithmeticCountingPositivity/FinitePrimeExhaustionLosesUniformGaps.lean`
+and wired into the own umbrella and foundational README. Final installed-source
+check is running; no own olean is needed by the next leaf.
