@@ -25,7 +25,8 @@ private theorem harmonic_increment_sum (N : ℕ) :
   induction N with
   | zero => norm_num
   | succ N ih =>
-    simp only [Nat.succ_eq_add_one, sum_range_succ, Nat.cast_add, Nat.cast_one]
+    rw [Finset.sum_range_succ]
+    simp only [Nat.cast_add, Nat.cast_one]
     have h₁ : (N : ℝ) + 1 ≠ 0 := by positivity
     have h₂ : (N : ℝ) + 2 ≠ 0 := by positivity
     have he : 1 / ((N : ℝ) + 2) +
@@ -83,14 +84,16 @@ private theorem normalized_square_shift_sum {m q : ℕ} (hm : 0 < m)
     (hmq : m ∣ q) (hq : 0 < q) (hper : Function.Periodic (normalizedRamanujanMode m) q) :
     (∑ i ∈ range q, normalizedRamanujanMode m (i + 1) ^ 2) = q := by
   have hmean := periodMean_normalizedRamanujanMode_mul hm hm hmq hmq hq
-  simp only [eq_self_iff_true, ite_true, periodMean] at hmean
+  simp only [ite_true, periodMean] at hmean
   have hq0 : (q : ℝ) ≠ 0 := by exact_mod_cast hq.ne'
   have hsum := congrArg (fun x : ℝ => x * (q : ℝ)) hmean
   rw [div_mul_cancel₀ _ hq0, one_mul] at hsum
   have hsquare : (∑ i ∈ range q, normalizedRamanujanMode m i ^ 2) = q := by
     simpa only [pow_two] using hsum
+  have hperSq : Function.Periodic (fun n => normalizedRamanujanMode m n ^ 2) q :=
+    fun n => congrArg (fun x : ℝ => x ^ 2) (hper n)
   have hshift := sum_range_shift_of_periodic
-    (fun k => congrArg (fun x : ℝ => x ^ 2) (hper k)) 1
+    (p := fun n => normalizedRamanujanMode m n ^ 2) (q := q) hperSq 1
   calc
     _ = ∑ i ∈ range q, normalizedRamanujanMode m i ^ 2 := by
       simpa only [Nat.add_comm] using hshift
@@ -132,32 +135,28 @@ private theorem normalized_product_period_variation {m l q : ℕ}
       have h := mul_le_mul_of_nonneg_left hδ.2 (Nat.cast_nonneg q)
       linarith only [h]
 
-/-- Every literal Ramanujan Gram entry has a conductor-explicit, horizon-uniform error. -/
-theorem ramanujanPoleProfile_gram_error_le (m l : ℕ+) (N : ℕ) :
+private theorem ramanujanPoleProfile_gram_error_le_nat {m l : ℕ}
+    (hm : 0 < m) (hl : 0 < l) (N : ℕ) :
     |(∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) -
         (if m = l then 1 else 0) * (∑ n ∈ Icc 1 N, 1 / (n : ℝ))| ≤
       2 * (m : ℝ) * (l : ℝ) := by
-  have hpm : Function.Periodic (normalizedRamanujanMode m) ((m : ℕ) * l) := by
+  have hpm : Function.Periodic (normalizedRamanujanMode m) (m * l) := by
+    intro n
     simpa only [Nat.cast_id, Nat.mul_comm] using
-      (normalizedRamanujanMode_periodic m.property).nat_mul (l : ℕ)
-  have hpl : Function.Periodic (normalizedRamanujanMode l) ((m : ℕ) * l) := by
+      ((normalizedRamanujanMode_periodic hm).nat_mul l) n
+  have hpl : Function.Periodic (normalizedRamanujanMode l) (m * l) := by
+    intro n
     simpa only [Nat.cast_id] using
-      (normalizedRamanujanMode_periodic l.property).nat_mul (m : ℕ)
+      ((normalizedRamanujanMode_periodic hl).nat_mul m) n
   have hper : Function.Periodic
       (fun n => normalizedRamanujanMode m n * normalizedRamanujanMode l n)
-      ((m : ℕ) * l) := fun n => congrArg₂ (· * ·) (hpm n) (hpl n)
-  have hq := Nat.mul_pos m.property l.property
+      (m * l) := fun n => congrArg₂ (· * ·) (hpm n) (hpl n)
+  have hq := Nat.mul_pos hm hl
   have h := periodic_harmonic_discrepancy hq hper N
-  rw [periodMean_normalizedRamanujanMode_mul m.property l.property
-    (dvd_mul_right (m : ℕ) (l : ℕ)) (dvd_mul_left (l : ℕ) (m : ℕ)) hq] at h
-  have hb := h.trans (normalized_product_period_variation m.property l.property
-    (dvd_mul_right (m : ℕ) (l : ℕ)) (dvd_mul_left (l : ℕ) (m : ℕ)) hq hpm hpl)
-  have hδ : (if (m : ℕ) = (l : ℕ) then (1 : ℝ) else 0) =
-      (if m = l then 1 else 0) := by
-    by_cases hml : m = l
-    · subst l; simp
-    · rw [if_neg (fun he => hml (Subtype.ext he)), if_neg hml]
-  rw [hδ] at hb
+  rw [periodMean_normalizedRamanujanMode_mul (q := m * l) hm hl
+    (dvd_mul_right m l) (dvd_mul_left l m) hq] at h
+  have hb := h.trans (normalized_product_period_variation (q := m * l) hm hl
+    (dvd_mul_right m l) (dvd_mul_left l m) hq hpm hpl)
   have he : (∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) =
       ∑ n ∈ Icc 1 N, normalizedRamanujanMode m n * normalizedRamanujanMode l n / (n : ℝ) := by
     apply sum_congr rfl
@@ -166,6 +165,23 @@ theorem ramanujanPoleProfile_gram_error_le (m l : ℕ+) (N : ℕ) :
       Real.sq_sqrt (Nat.cast_nonneg n)]
   rw [he]
   simpa only [Nat.cast_mul, mul_assoc] using hb
+
+/-- Every literal Ramanujan Gram entry has a conductor-explicit, horizon-uniform error. -/
+theorem ramanujanPoleProfile_gram_error_le (m l : ℕ+) (N : ℕ) :
+    |(∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) -
+        (if m = l then 1 else 0) * (∑ n ∈ Icc 1 N, 1 / (n : ℝ))| ≤
+      2 * (m : ℝ) * (l : ℝ) := by
+  have h := ramanujanPoleProfile_gram_error_le_nat
+    (m := (m : ℕ)) (l := (l : ℕ)) m.property l.property N
+  have hδ : (if (m : ℕ) = (l : ℕ) then (1 : ℝ) else 0) =
+      (if m = l then 1 else 0) := by
+    by_cases hml : m = l
+    · subst l
+      simp
+    · have hval : (m : ℕ) ≠ (l : ℕ) := fun he => hml (Subtype.ext he)
+      rw [if_neg hval, if_neg hml]
+  rw [hδ] at h
+  exact h
 
 private theorem ramanujan_family_gram_expansion (S : Finset ℕ+)
     (c : ℕ+ → ℝ) (N : ℕ) :
@@ -208,7 +224,7 @@ theorem ramanujanPoleProfile_family_gram_error_le (S : Finset ℕ+)
     apply sum_congr rfl
     intro m hm
     rw [sum_eq_single m]
-    · simp only [eq_self_iff_true, ite_true, one_mul]
+    · simp only [ite_true, one_mul]
       ring
     · intro l _ hl
       rw [if_neg (Ne.symm hl), zero_mul, mul_zero]
@@ -262,8 +278,8 @@ private theorem harmonic_log_error_le (N : ℕ) :
   have hlo : Real.log N ≤ (harmonic N : ℝ) := by
     simpa only [Nat.floor_natCast] using log_le_harmonic_floor (N : ℝ) (Nat.cast_nonneg N)
   have hup := harmonic_le_one_add_log N
-  simp only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast,
-    ← one_div] at hlo hup
+  simp only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast] at hlo hup
+  simp only [← one_div] at hlo hup
   rw [abs_of_nonneg (sub_nonneg.mpr hlo)]
   linarith only [hup]
 

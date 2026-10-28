@@ -88,15 +88,16 @@ beyond y should be bounded by 2 log(p)/y. Complete geometric mass minus the
 first floor(log_p y) powers proves this directly. Summing only over conductor
 primes gives the proposed normalized correction bound
 
-4 sqrt(phi(m)) A_m / y, where A_m=sum_(p|m) log(p).
+4 sqrt(phi(m)) log(m) / y. The squarefree conductor part divides m,
+so sum_(p|m) log(p)<=log(m).
 
 With e(y)=MertensSum(y)-log(y)+EulerGamma and
 f(y)=|e(y)|+1/y, the literal normalized Ramanujan row residual should satisfy
 
-|residual_m(N,n)| <= sqrt(phi(m)) (1+4 A_m) f(floor(N/n))/sqrt(n).
+|residual_m(N,n)| <= sqrt(phi(m)) (1+4 log(m)) f(floor(N/n))/sqrt(n).
 
 This would give one explicit finite-family squared residual budget
-(sum_m phi(m)(1+4 A_m)^2) * sum_(n<=N) f(floor(N/n))^2/n.
+(sum_m phi(m)(1+4 log(m))^2) * sum_(n<=N) f(floor(N/n))^2/n.
 The harmonic-quotient theorem proves the second factor is o(log N).
 The input contains only finite prime arithmetic and the proved Mertens remainder;
 no conductor-uniform convergence or complement sign is assumed. These estimates

@@ -299,7 +299,8 @@ theorem smallEdge_eq {m : ℕ} (hm : 1 ≤ m) (Q N : ℕ) (y : ℕ → ℝ) :
       have hkp : k < p ^ k := Nat.lt_pow_self hpp.one_lt
       have hpkN : p ^ k ≤ N := htN.trans (Nat.div_le_self N m)
       refine hti (mem_image.mpr ⟨⟨p, k⟩, mem_sigma.mpr ⟨mem_filter.mpr ⟨mem_range.mpr ?_, hpp⟩,
-        mem_filter.mpr ⟨mem_range.mpr (by omega), by omega, ?_⟩⟩, rfl⟩)
+        mem_filter.mpr ⟨mem_range.mpr (Nat.lt_succ_of_le (hkp.le.trans hpkN)),
+          Nat.succ_le_of_lt hk0, ?_⟩⟩, rfl⟩)
       · rwa [hpp.pow_minFac hk0.ne'] at hQ
       · rw [mul_comm]; exact (Nat.le_div_iff_mul_le (by omega)).mp htN
   · rintro ⟨p₁, k₁⟩ h₁ ⟨p₂, k₂⟩ h₂ heq
@@ -312,7 +313,7 @@ theorem smallEdge_eq {m : ℕ} (hm : 1 ≤ m) (Q N : ℕ) (y : ℕ → ℝ) :
 /-- The small-prime part of the walk energy is the sum of the small edges. -/
 theorem sum_smallEdge_eq (Q N : ℕ) (y : ℕ → ℝ) :
     ∑ m ∈ Icc 1 N, smallEdge Q N y m = walkEnergy N (fun t => t.minFac < Q) y :=
-  sum_congr rfl fun m hm => smallEdge_eq (mem_Icc.mp hm).1 Q N y
+  sum_congr rfl fun _ hm => smallEdge_eq (mem_Icc.mp hm).1 Q N y
 
 theorem sum_smallEdge_le (Q N : ℕ) (y : ℕ → ℝ) :
     ∑ m ∈ Icc 1 N, smallEdge Q N y m ≤ walkEnergy N (fun t => t.minFac < Q) y :=

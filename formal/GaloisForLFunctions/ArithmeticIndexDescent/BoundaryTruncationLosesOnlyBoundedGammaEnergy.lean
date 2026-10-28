@@ -91,7 +91,8 @@ private theorem integrable_leakageTail {a : ℝ} (ha : 0 < a) :
 
 private theorem integral_leakageHead {a : ℝ} (ha : 0 < a) :
     (∫ t, leakageHead a t ∂μ₊) = 2 * a ^ (1 / 2 : ℝ) := by
-  rw [leakageHead, integral_indicator measurableSet_Ioc,
+  unfold leakageHead
+  rw [integral_indicator measurableSet_Ioc,
     Measure.restrict_restrict measurableSet_Ioc,
     show Ioc (0 : ℝ) a ∩ Ioi 0 = Ioc 0 a from inter_eq_left.mpr (fun _ ht => ht.1),
     ← intervalIntegral.integral_of_le ha.le,
@@ -101,7 +102,8 @@ private theorem integral_leakageHead {a : ℝ} (ha : 0 < a) :
 
 private theorem integral_leakageTail {a : ℝ} (ha : 0 < a) :
     (∫ t, leakageTail a t ∂μ₊) = 2 * a ^ (-1 / 2 : ℝ) := by
-  rw [leakageTail, integral_indicator measurableSet_Ioi,
+  unfold leakageTail
+  rw [integral_indicator measurableSet_Ioi,
     Measure.restrict_restrict measurableSet_Ioi,
     show Ioi a ∩ Ioi (0 : ℝ) = Ioi a from inter_eq_left.mpr (fun _ ht => ha.trans ht),
     integral_Ioi_rpow_of_lt (by norm_num : (-3 / 2 : ℝ) < -1) ha]
@@ -121,7 +123,8 @@ private theorem integrable_leakageRectangle {a : ℝ} (ha : 0 < a) :
 
 private theorem integral_leakageRectangle {a : ℝ} (ha : 0 < a) :
     (∫ p, leakageRectangle a p ∂(μ₊.prod μ₊)) = 4 := by
-  rw [leakageRectangle, integral_prod_mul, integral_leakageTail ha, integral_leakageHead ha,
+  unfold leakageRectangle
+  rw [integral_prod_mul, integral_leakageTail ha, integral_leakageHead ha,
     show (2 * a ^ (-1 / 2 : ℝ)) * (2 * a ^ (1 / 2 : ℝ)) =
       4 * (a ^ (-1 / 2 : ℝ) * a ^ (1 / 2 : ℝ)) by ring, ← Real.rpow_add ha]
   norm_num
@@ -149,7 +152,8 @@ private theorem integral_leakageMajorant {a : ℝ} (ha : 0 < a) :
     rw [integral_prod_swap, integral_leakageRectangle ha]
   have h1swap : (∫ p, leakageRectangle 1 p.swap ∂(μ₊.prod μ₊)) = 4 := by
     rw [integral_prod_swap, integral_leakageRectangle zero_lt_one]
-  rw [leakageMajorant, integral_add hB h1S, integral_add hA h1I, integral_add haI haS,
+  unfold leakageMajorant
+  rw [integral_add hB h1S, integral_add hA h1I, integral_add haI haS,
     integral_leakageRectangle ha, integral_leakageRectangle zero_lt_one, haswap, h1swap]
   norm_num
 
@@ -174,7 +178,8 @@ private theorem half_kernel_le_majorant_of_mismatch {a s t : ℝ} (ha : 0 < a)
   have hR1s := leakageRectangle_nonneg zero_lt_one (t, s)
   by_cases hta : t ≤ a
   · have he : leakageRectangle a (s, t) = s ^ (-3 / 2 : ℝ) * t ^ (-1 / 2 : ℝ) := by
-      simp only [leakageRectangle, leakageTail, leakageHead, indicator_of_mem hsi.1,
+      simp only [leakageRectangle, leakageTail, leakageHead,
+        indicator_of_mem (show s ∈ Ioi a from hsi.1),
         indicator_of_mem (show t ∈ Ioc 0 a from ⟨ht, hta⟩)]
     have hle : archLevyDensity (s + t) * gammaBoundarySchurWeight s *
         gammaBoundarySchurWeight t / 2 ≤ leakageRectangle a (s, t) := by
@@ -187,7 +192,8 @@ private theorem half_kernel_le_majorant_of_mismatch {a s t : ℝ} (ha : 0 < a)
       by_contra h
       exact hto ⟨lt_of_not_ge hta, le_of_not_gt h⟩
     have he : leakageRectangle 1 (t, s) = t ^ (-3 / 2 : ℝ) * s ^ (-1 / 2 : ℝ) := by
-      simp only [leakageRectangle, leakageTail, leakageHead, indicator_of_mem ht1,
+      simp only [leakageRectangle, leakageTail, leakageHead,
+        indicator_of_mem (show t ∈ Ioi (1 : ℝ) from ht1),
         indicator_of_mem (show s ∈ Ioc 0 1 from ⟨hs, hsi.2⟩)]
     have hle : archLevyDensity (s + t) * gammaBoundarySchurWeight s *
         gammaBoundarySchurWeight t / 2 ≤ leakageRectangle 1 (t, s) := by
@@ -221,7 +227,7 @@ private theorem literal_truncation_reserve_le {a s t : ℝ} (ha : 0 < a)
     rw [← leakageMajorant_swap a (s, t)]
     simpa only [truncatedGammaWeightFun, indicator_of_notMem hsi, indicator_of_mem hti,
       zero_div, div_self hwt, zero_sub, norm_neg, norm_one, one_pow, mul_one,
-      add_comm t s, mul_right_comm _ (gammaBoundarySchurWeight t)
+      Prod.swap, add_comm t s, mul_right_comm _ (gammaBoundarySchurWeight t)
         (gammaBoundarySchurWeight s)] using hle
   · simpa only [truncatedGammaWeightFun, indicator_of_notMem hsi, indicator_of_notMem hti,
       zero_div, sub_self, norm_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0),

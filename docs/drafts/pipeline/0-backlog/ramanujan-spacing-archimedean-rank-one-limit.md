@@ -133,3 +133,75 @@ v=w and v=-w by `C_c*w*n/(n-j)^2`. Summing inverse squares then gives
 required `O(w^3*N^2)` error. The fixed constant may depend on c and the profile,
 which is sufficient for this fixed-ratio limit. These inequalities and all
 finite-sum reindexings still need exact proofs.
+
+Further novelty audit: [Suzuki, Weil's quadratic form via the screw function](https://arxiv.org/html/2606.09096v1),
+introduction and main statements through Theorem 1.5, gives a literal restricted
+Weil operator and a small-aperture ground-energy asymptotic. This is baseline
+operator theory; it does not identify the present growing log-lattice packet
+limit. The corpus already realizes that interval operator in
+`RHTower/Suzuki/SuzukiWeilFriedrichsOperator.lean` (read through line 200),
+and `RHTower/PaperRestrictedWeilSource.lean` (read in full) represents the exact
+mixed form on its form domain. A future operator interpretation must use these
+existing carriers rather than claim another abstract construction as new.
+
+The numerical study [Kim et al., A Numerical Realization of Suzuki's Weil-Quadratic-Form Operator](https://arxiv.org/html/2607.24830v1)
+was inspected in its introduction, operator definitions, and scope discussion.
+Its main archimedean spectral formula concerns a small interval with no active
+primes, and the stated symbol-to-spectrum passage lacks rigorous remainder
+bounds. It supplies neither proof input nor evidence for this candidate's
+growing-lattice limit. No numerical experiments are used here. The corpus
+periodic-correlation search again found the existing harmonic mean theorem,
+not the required triangular lattice asymptotic.
+
+## Sharpened analytic obligations
+
+For a common period q and bounds |a|<=A, |b|<=B, put
+`R(d)=q^(-1)*sum_(j=0..q-1)a(j+d)b(j)`. Complete-period splitting gives,
+uniformly in d and L,
+`|sum_(j=1..L)a(j+d)b(j)-L*R(d)|<=2qAB`.
+Also |R(d)|<=AB and mean(R)=mean(a)*mean(b), by interchanging the two finite
+period sums and shifting a complete period. Reindexing n=j+d and including
+the zero-length d=N row yields
+`sum_(j<n<=N)a(n)b(j)/(n-j)
+ = N*sum_(d=1..N)R(d)/d - sum_(d=1..N)R(d) + error`,
+with |error|<=2qAB*H_N. The public periodic harmonic mean theorem handles
+the first term; the others vanish after division by N*log(N). The complementary
+kernel has absolute sum at most AB*N since 1/(n+j)<=1/n. These statements
+still need exact finite-sum Lean adapters.
+
+The pair replacement bound admits a fixed explicit majorant. Set kappa=1-2c>0.
+For 0<w=c/N<=1/2 and d=n-j>=1, the inspected bound exp(1/2)<2 gives
+`n-exp(w)*j >= d-2c >= kappa*d`.
+Write Dplus=n^2-exp(2w)*j^2 and Dminus=n^2-exp(-2w)*j^2. Then
+Dplus>=kappa*d*n and Dminus>=d*n. Subtracting the two rational weighted
+densities splits their difference into
+`(exp(w/2)-exp(-w/2))*n/Dplus`
+and
+`exp(-w/2)*n*(exp(2w)-exp(-2w))*j^2/(Dplus*Dminus)`.
+The elementary exponential increment bounds give a total at most
+`5*exp(1)*w*n/(kappa*d^2)`. Summing uses
+`sum_(d=1..n-1)1/d^2<=2`, proved by telescoping
+`1/d^2<=1/(d-1)-1/d` for d>=2. Thus the absolute aggregate error is bounded
+by a fixed multiple of w^3*N^2, including signed periodic coefficients.
+Its ratio to w*log(N) is bounded by a fixed multiple of 1/log(N), hence tends
+to zero. Formal denominator, exponential, and reindexing proofs remain.
+
+The exact diagonal identity is already public in
+`TheFinitePartOfTheMarkovFormAtTheSpacing.lean`:
+`integral_sub_shift_sq_atomicTest_eq` (source lines 129-160 inspected).
+Its integral and support arguments through line 320 were read. They expose
+the signed off-diagonal integrand before absolute-value estimates, so the new
+limit can preserve cancellation. The existing inequalities alone do not give
+the desired density.
+
+The profile regularity does not need an additional Lipschitz premise:
+`RHTower.CHMDDoobGraph.compact_source_lipschitz` in
+`CHMDCompactSourceClass.lean` (read in full) constructs one from C2 and compact
+support. Exact exponential translations are also already proved by
+`atomPoleRow_zero_apply` and `atomPoleRow_one_apply` in
+`ArithmeticLorentzianGeometry/TheUniformMarginPaysThePoleOnlyUpToARootLogarithm.lean`
+(lines 188-212 read). For the present pole gauge they reduce the two moments
+to `(integral g*exp(-u/2))*sum a(n)/n` and
+`(integral g*exp(u/2))*sum a(n)`. After dilation, the atom factors divided by w
+tend to integral phi. Ordinary and logarithmic periodic means then give the
+claimed product limit. Exact integration and finite-sum adapters remain.

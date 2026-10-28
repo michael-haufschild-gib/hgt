@@ -5,7 +5,7 @@
 - **Type:** THEOREM
 - **Source:** Ramanujan full-matrix quasimodes; harmonic rough-number tensorization; prime-defect Dirichlet form
 - **Statement:** Every bounded energy window of `log(N) I-P_N` converges, with multiplicity, to the simple energies `gamma+log(m)+tameDifferent(m)`.
-- **Count:** uncounted; sixteen scratch drafts exist; all Lean checks and audits remain
+- **Count:** uncounted; eight of sixteen scratch modules pass; endpoint checks and final actual-source audits remain
 
 ## Goal
 
@@ -673,3 +673,16 @@ The valuation-box retry passed with a clean transitive audit. Source installed;
 first required olean builds for the box-tail estimate. Seven of sixteen scratch
 modules pass. The explicit gcd modulus and its finite Ramanujan conductor set
 are now verified; mass capture and the spectral endpoints remain unverified.
+
+All seven required first oleans passed. The box-tail scratch failed on finite-sum
+scope around its additive coefficient and an ambiguous `not_imp`. Parenthesized
+the summand and qualified the logical lemma; the retry is running. Failed-check
+axiom output is excluded. The later eigenline draft now uses the inspected
+`Finset.card_le_one_iff` with implicit indices.
+
+The box-tail scratch now passes without diagnostics beyond the clean transitive
+axiom report. Removed an unused simp argument and a tactic after `field_simp`
+had already closed its goal. Source installed; its first olean builds solely
+for the uniform finite-approximation assembly. Eight of sixteen scratch modules
+pass, and the first seven required dependency builds are complete. The endpoint
+and final actual-source audits remain; count is unchanged.

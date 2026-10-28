@@ -669,9 +669,9 @@ satisfies the exact row identity
 An explicit arctangent primitive proves both integrability and normalization.
 Weighted Cauchy–Schwarz and Tonelli then give
 \(\|H_\Gamma\|_{L^2\to L^2}\le\pi/2\) for the existing boundary operator,
-improving its inherited upper bound by four. This is an upper norm estimate;
-norm equality remains a separate question. The displayed
-profile and full-source bounds above retain their previously proved constants.
+improving its inherited upper bound by four. Boundary truncations below prove
+that this operator constant is sharp. The displayed profile and full-source
+bounds above retain their previously proved constants.
 Kernel normalization supplies no sign for the remaining prime and pole terms.
 
 The same weight retains the whole mixed reserve. For arbitrary complex
@@ -706,8 +706,21 @@ constant, and square integrability forces that constant to vanish. Hence
 \]
 
 Each nonzero profile leaves a strict quadratic reserve. This statement is
-pointwise in the profile: it gives no uniform margin over growing families,
-and does not settle sharpness of the operator norm bound.
+pointwise in the profile: it gives no uniform margin over growing families.
+
+The mixed reserve vanishes exactly when both inputs vanish. The same ratio
+argument forces the first input to be zero; the exact mixed identity then
+forces the other input to be zero. Apply this classification to the pair
+\(((\pi/2)f,H_\Gamma f)\). Equality in the operator bound would give zero
+mixed reserve, so
+
+\[
+ f\ne0\quad\Longrightarrow\quad
+ \|H_\Gamma f\|_2<\frac\pi2\|f\|_2.
+\]
+
+This is strict norm inequality for each individual vector. It does not imply
+a uniform improvement of the operator constant.
 
 The critical boundary can be approached within the actual carrier. For
 \(a>0\), the vector \(f_a=1_{(a,1]}w\) belongs to the original half-line
@@ -720,8 +733,32 @@ The critical boundary can be approached within the actual carrier. For
 
 In particular, \(a=e^{-(n+1)}\) gives masses at least
 \(e^{-1}(n+1)/2\). These are literal compactly supported indicator profiles.
-Their divergent mass alone does not establish a near-critical Rayleigh value;
-the lost interaction across both cutoff boundaries must also be controlled.
+Their lost interaction across both cutoff boundaries is uniformly bounded:
+
+\[
+ 0\le \frac\pi2\|f_a\|_2^2-\Re\langle f_a,H_\Gamma f_a\rangle\le16.
+\]
+
+The reserve vanishes wherever both arguments are inside the cutoff or both
+are outside. On the remaining region, \(k(s+t)\le2/(s+t)\) and
+\(w(t)\le t^{-1/2}\) bound it by four power rectangles. Each has integral
+\((2a^{-1/2})(2a^{1/2})=4\), with unit scale used for the outer boundary.
+Thus the reserve stays bounded while square mass diverges. Consequently
+
+\[
+ \|H_\Gamma\|=\frac\pi2,
+ \qquad
+ \forall\delta>0\ \exists n:\quad
+ \Re\langle f_{e^{-(n+1)}},H_\Gamma f_{e^{-(n+1)}}\rangle
+ >(\pi/2-\delta)\|f_{e^{-(n+1)}}\|_2^2.
+\]
+
+The operator norm is sharp and no nonzero vector attains it. This settles the
+uniform scalar improvement question on the original half-line `L²` carrier.
+It leaves joint estimates retaining diagonal Gamma energy open: the cutoff
+vectors are not asserted to nearly saturate the full arithmetic form. The
+square reserve and explicit near-critical profiles are the useful surviving
+tools; signed prime payment remains separate.
 
 The actual finite prime horizon and both pole moments then give one constant \(C_R\)
 for every boundary in a fixed window \([-R,R]\):
@@ -1328,6 +1365,8 @@ Quantitative pillars supplied by this programme:
 | Exact mixed Gamma reserve | The unused `π/4` two-mass bound is an integrable weighted square difference on the original half-line `L²` carrier | `TheGammaBoundaryReserveIsAnExactSquare` |
 | Gamma equality rigidity | The critical Schur weight is not square integrable; only the zero actual `L²` vector attains the quadratic `π/2` bound | `TheGammaBoundaryBoundHasNoNonzeroEqualityCase` |
 | Actual boundary truncations | Compact indicator truncations lie in the original `L²` carrier, retain exact square mass and have an explicit logarithmic mass lower bound | `TruncatedGammaWeightsHaveLogarithmicMass` |
+| Mixed Gamma norm rigidity | Zero mixed reserve forces both inputs to vanish; every nonzero vector has strict norm deficit below `π/2` | `TheGammaBoundaryOperatorHasNoNormMaximizer` |
+| Sharp Gamma norm and near-critical profiles | Actual cutoff reserves are at most `16` while masses diverge, proving norm exactly `π/2` and explicit near-critical Rayleigh vectors | `BoundaryTruncationLosesOnlyBoundedGammaEnergy` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

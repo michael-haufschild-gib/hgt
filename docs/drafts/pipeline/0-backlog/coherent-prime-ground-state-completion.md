@@ -213,3 +213,27 @@ and bounded prime-shift form on the continuous theta mass carrier. It does not
 supply the discrete geometric-vacuum embeddings targeted here. A comparison
 between these two actual carriers would need a separate proved map; matching
 prime-shift terminology does not provide one.
+
+The later counting search surfaced `RHTower/EulerActivationSquarefreeProbability.lean`.
+Its probability construction through the infinite-occupancy theorem was read.
+It already constructs an infinite prime product and proves almost-sure infinite
+occupancy, but its critical local law has occupancy probability 1/(p+1), with
+a shifted geometric occupied fibre. The proposed ground-state valuation law
+has occupancy probability 1/p. These are different measures; the activation
+carrier cannot be substituted without a proved change of measure. The generic
+infinite-product and cylinder-independence construction is reusable baseline.
+
+An explicit generator target on the geometric valuation carrier is available
+for audit. With r=1/p and v the p-valuation, set
+`L_p f(v)=log(p)*(sum_(a>=1)r^a*(f(v)-f(v+a))
+ + sum_(a=1..v)(f(v)-f(v-a)))`.
+Detailed balance is `mu_p(v)*r^a=mu_p(v+a)`, so its proposed quadratic form is
+`log(p)*sum_v mu_p(v)*sum_(a>=1)r^a*(f(v+a)-f(v))^2`.
+On finite valuation-cylinder functions the full generator sums only the active
+prime coordinates. The intended operator is gamma plus its closure, identified
+with the actual finite-prime operators through the ground-state embeddings.
+Proving that identity, form closability/domain equality, and completeness of the
+finite-excitation basis remains necessary. A corpus search for a Ramanujan/Haar
+prime-jump generator returned continuous Weil/Doob forms and divisor-jump
+operators; no matching geometric-valuation generator was identified among the
+inspected statements. This is a lead, not a completed novelty audit.

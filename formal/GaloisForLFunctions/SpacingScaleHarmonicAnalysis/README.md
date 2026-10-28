@@ -450,7 +450,9 @@ families; the correction of a synthesis into the pole hyperplane by a synthesize
 
 **To build.** The cross-term density of the pole vector (the critical constant); the archimedean
 cross kernel of overlapping atoms with constants, to close the joint estimate at a fixed `K`; the
-alias fraction carried by a bounded overlap ratio; a large sieve over the zeros.
+alias fraction carried by a bounded overlap ratio; Gevrey profiles and tests with explicit
+derivative bounds and an Euler–Maclaurin order growing with `N` (the `(log log N)^s` window); a
+large sieve over the zeros.
 
 ---
 

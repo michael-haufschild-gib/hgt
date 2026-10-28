@@ -27,4 +27,8 @@ Conjecture only. No completed paper proof, Lean theorem, or full mixed Weil sign
 
 - 2026-10-28 — Opened after the general simultaneous Gamma variance, mean-graph, and exterior bound passed exact Lean audits.
 
-A first candidate `/tmp/acs-logcell-gamma-remainder-rows.lean` bounds the complete upper near row of nonadjacent endpoint losses by `6*exp(1/2)`, independently of source index. Four monotone kernel shifts telescope; the checked inverse-width lower bound controls the first reading. This candidate is unverified, and does not yet bound adjacent, lower, or distant interactions.
+`LogCellGammaRemainderRows.lean` passed its exact final check and both transitive audits: `gammaCellNearUpperRemainder_le` bounds the complete upper near row by `6*exp(1/2)`; `gammaCellNearLowerRemainder_le` bounds the lower near row by `2*exp(1/2)`, independently of source index. Four forward and two backward monotone shifts telescope; inverse-width and Gamma bounds control the endpoint readings. Audit log: `/tmp/acs-logcell-gamma-remainder-rows-final.log`. Only standard axioms; no warnings.
+
+Adjacent, distant, exterior, and integrated-kernel recovery remain open. `/tmp/acs-gamma-interval-remainder.lean` contains unverified exact tail rows, a triangular first-moment formula, and the complete exterior averaging-loss identity; verification is underway.
+
+A sharper decomposition is under investigation: first replace the actual kernel along each source interval by `gammaFarCharge` on its entire complement. The resulting nonnegative row loss should equal `2*∫_(0,w) t*k(t) dt`, hence be at most `exp(1/2)*w` for `w≤1`. This would handle touching interactions and the exterior in one row estimate. Only the further passage from the pointwise far charge to the pairwise farthest endpoint would require discrete rows; adjacent far-charge readings are nonsingular. This identity and its application are conjectural until checked in Lean.

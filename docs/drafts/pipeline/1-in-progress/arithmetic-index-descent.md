@@ -732,3 +732,45 @@ its mass is at least exp(-1)/2 times log(1/a). Exponential inner cutoffs give
 a linearly growing sequence of masses. Wired; the reserve bound and sharp norm
 remain unverified candidates. The separate mixed equality/strict norm source
 is also complete but unverified and unwired.
+
+### Mixed Gamma equality and norm rigidity — formalized
+
+Actual direct87656 passed without warnings; both endpoint dependency prints
+contain only propext, Classical.choice and Quot.sound. Zero mixed reserve
+forces both actual L2 inputs to vanish. The pair ((pi/2)f,Hf) therefore
+excludes equality in the norm bound for every nonzero f. Wired and foundational
+README/checks updated. This is pointwise strictness, not a uniform gap. The
+revised sharpness candidate remains unverified while its direct check runs.
+
+### Arithmetic mixed detail/average payment — next concrete target
+
+The corpus now gives simultaneous Gamma detail, mean-graph and exterior
+payment for arbitrary complete cells (ACS CompleteCellMeanGraph), and the
+coarse-to-detail prime orientation vanishes (HaarCellCoarseSplitting).
+The reverse prime-two orientation should equal the actual weighted sum
+ sum_a haarMass(a)*d(a)*(q(2a)-q(2a+1)),
+with finite-horizon coefficients extended by zero. Its adjacent mean-graph
+conductance is haarMass(a)*h_a*k(h_a), where h_a=logCellWidth(a). The elementary
+lower bound h*k(h)>=exp(-1/2)/2 for 0<h<=1 would control this mixed term by
+detail mass and the already retained mean graph. Preserve the literal factor
+2*vonMangoldt(2)/sqrt(2) from the original prime energy.
+
+This is a proposed arithmetic estimate, not a formal theorem. No source has
+been written yet. The complete all-prime payment and iterative signed Schur
+cost remain open; summing fixed-prime scalar bounds loses the required control.
+
+### Sharp Gamma boundary norm — formalized
+
+Mandatory actual final84870 passed without warnings; all four endpoint
+dependency prints contain only propext, Classical.choice and Quot.sound.
+Four power rectangles bound the actual cutoff square reserve by 16, while
+logarithmic mass diverges. The existing operator norm is exactly pi/2, and
+explicit nonzero cutoff vectors approach its Rayleigh value. Together with
+passed mixed equality rigidity, the sharp norm is never attained by a nonzero
+vector. Wired and foundational README/checks updated; no olean needed.
+
+Scope and survivor: a uniform scalar L2 improvement is impossible, but the
+exact square reserve and concrete near-critical sequence survive. Joint
+bounds retaining full diagonal Gamma energy are not ruled out. No uniform
+arithmetic source upper, exhaustive index bound or individual-defect
+exclusion follows from this calibration.

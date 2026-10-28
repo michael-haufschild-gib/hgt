@@ -722,20 +722,21 @@ theorem log_lt_log_block {n₀ : ℕ} (hn₀ : 1 ≤ n₀) (R : ℝ) :
     exact Real.log_lt_log (Real.exp_pos _) (by linarith)
   linarith
 
-/-- **The Euler–Maclaurin synthesis as a perturbation**: for a smooth profile `φ` and a smooth test
-`F` supported in `[−R, R]` with `|F^{(l)}| ≤ M_l`, the atomic test of level `n₀ B`, `n₀ ≥ 2`, with
-the weights `F(log n − c)/n` and width `1/k` is the translate by `c = log n₀ + R` of `F + D`, where
-`D` is a `C²` test supported in `[−(R+1), R+1]` with `|D| ≤ emErr` and Lipschitz constant `emLip`:
-the error is of order `(k/n₀)^{2m+2}` for every `m`. -/
-theorem exists_emSynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+/-- **The Euler–Maclaurin synthesis as a perturbation, for a given quadrature error**: if the
+weights `F(log n − c)/n` reproduce `F ∗ φ_k` within `e₁`, the atomic test of level `n₀ B` is the
+translate by `c = log n₀ + R` of `F + D` with `D` a `C²` test supported in `[−(R+1), R+1]`,
+`|D| ≤ e₁ + M₁ ‖φ‖₁/k`, and Lipschitz constant `emLip`. -/
+theorem exists_emSynthesis_of (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
     (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ ∞ F) (hFR : SupportedIn R F)
     (hM : ∀ l t, |iteratedDeriv l F t| ≤ M l) (hM0 : ∀ l, 0 ≤ M l)
-    {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {k : ℝ} (hk : 1 ≤ k) (m : ℕ) :
+    {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {k e₁ : ℝ} (hk : 1 ≤ k)
+    (h1' : ∀ r, |atomicTest (n₀ * blockSize R) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+      (r + (Real.log n₀ + R)) - ∫ v, F v * dilate k φ (r - v)| ≤ e₁) :
     ∃ (x : ℕ → ℝ) (D : ℝ → ℝ),
       atomicTest (n₀ * blockSize R) x (dilate k φ) =
         (fun u => F (u - (Real.log n₀ + R)) + D (u - (Real.log n₀ + R))) ∧
       ContDiff ℝ 2 D ∧ SupportedIn (R + 1) D ∧
-      (∀ u, |D u| ≤ emErr M (fun q => ∫ s, |iteratedDeriv q φ s|) m k n₀) ∧
+      (∀ u, |D u| ≤ e₁ + M 1 * (1 / k) * ∫ s, |φ s|) ∧
       ∀ u v, |D u - D v| ≤ emLip M (fun q => ∫ s, |iteratedDeriv q φ s|) k n₀ * |u - v| := by
   have hk0 : 0 < k := by linarith
   have hn₀1 : 1 ≤ n₀ := by omega
@@ -765,7 +766,9 @@ theorem exists_emSynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
   have hFL : ∀ u v, |F u - F v| ≤ M 1 * |u - v| :=
     abs_sub_le_of_hasDerivAt hF1 fun t => by simpa using hM 1 t
   -- the two halves of the supremum error, and the Lipschitz bound of the synthesis
-  have h1 := abs_emSynth_dilate_sub_le hφ hφc hF hFs hM hM0 hn₀ hN hk m
+  have h1 : ∀ r, |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+      (r + (Real.log n₀ + R)) - ∫ v, F v * dilate k φ (r - v)| ≤ e₁ := fun r => by
+    rw [← hNB]; exact h1' r
   have h2 : ∀ r, |(∫ v, F v * dilate k φ (r - v)) - F r| ≤ M 1 * (1 / k) * ∫ s, |φ s| := by
     intro r
     have := abs_integral_mul_sub_le hF.continuous hψ.continuous
@@ -779,17 +782,15 @@ theorem exists_emSynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
     abs_sub_le_of_hasDerivAt (fun r => hasDerivAt_atomicTest
       (hψ.differentiable (by simp)) (N + 1) (emWeights F (Real.log n₀ + R)) _ r)
       fun r => abs_emSynth_deriv_le hφ hφc hF hFs hM hM0 hn₀ hN hk r
-  have hA0 : (fun q => ∫ s, |iteratedDeriv q φ s|) 0 = ∫ s, |φ s| := by simp
   have hA1 : (fun q => ∫ s, |iteratedDeriv q φ s|) 1 = ∫ s, |deriv φ s| := by simp
   set S : ℝ → ℝ := fun r => atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
     (r + (Real.log n₀ + R))
   set D : ℝ → ℝ := fun r => S r - F r
-  have hsup : ∀ r, |D r| ≤ emErr M (fun q => ∫ s, |iteratedDeriv q φ s|) m k n₀ := by
+  have hsup : ∀ r, |D r| ≤ e₁ + M 1 * (1 / k) * ∫ s, |φ s| := by
     intro r
     calc |D r| = |(S r - ∫ v, F v * dilate k φ (r - v)) +
           ((∫ v, F v * dilate k φ (r - v)) - F r)| := by simp only [D]; ring_nf
-      _ ≤ _ := (abs_add_le _ _).trans (by
-          unfold emErr; rw [hA0]; linarith [h1 r, h2 r])
+      _ ≤ _ := (abs_add_le _ _).trans (by linarith [h1 r, h2 r])
   have hlip : ∀ u v, |D u - D v| ≤ emLip M (fun q => ∫ s, |iteratedDeriv q φ s|) k n₀ *
       |u - v| := by
     intro u v
@@ -824,6 +825,51 @@ theorem exists_emSynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
   funext u
   simp only [D, S, hNB, sub_add_cancel]
   ring
+
+
+/-- **The Euler–Maclaurin synthesis as a perturbation**: for a smooth profile `φ` and a smooth test
+`F` supported in `[−R, R]` with `|F^{(l)}| ≤ M_l`, the atomic test of level `n₀ B`, `n₀ ≥ 2`, with
+the weights `F(log n − c)/n` and width `1/k` is the translate by `c = log n₀ + R` of `F + D`, where
+`D` is a `C²` test supported in `[−(R+1), R+1]` with `|D| ≤ emErr` and Lipschitz constant `emLip`:
+the error is of order `(k/n₀)^{2m+2}` for every `m`. -/
+theorem exists_emSynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ ∞ F) (hFR : SupportedIn R F)
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M l) (hM0 : ∀ l, 0 ≤ M l)
+    {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {k : ℝ} (hk : 1 ≤ k) (m : ℕ) :
+    ∃ (x : ℕ → ℝ) (D : ℝ → ℝ),
+      atomicTest (n₀ * blockSize R) x (dilate k φ) =
+        (fun u => F (u - (Real.log n₀ + R)) + D (u - (Real.log n₀ + R))) ∧
+      ContDiff ℝ 2 D ∧ SupportedIn (R + 1) D ∧
+      (∀ u, |D u| ≤ emErr M (fun q => ∫ s, |iteratedDeriv q φ s|) m k n₀) ∧
+      ∀ u v, |D u - D v| ≤ emLip M (fun q => ∫ s, |iteratedDeriv q φ s|) k n₀ * |u - v| := by
+  have hn₀1 : 1 ≤ n₀ := by omega
+  have hB : 1 ≤ n₀ * blockSize R := by
+    have : 1 ≤ blockSize R := by
+      have h := Nat.le_ceil (1 + Real.exp (2 * R))
+      have : (1 : ℝ) ≤ blockSize R := by
+        have := Real.exp_pos (2 * R); simp only [blockSize] at h ⊢; linarith
+      exact_mod_cast this
+    nlinarith
+  obtain ⟨N, hNB⟩ : ∃ N : ℕ, n₀ * blockSize R = N + 1 := ⟨n₀ * blockSize R - 1, by omega⟩
+  have hN : Real.log n₀ + 2 * R < Real.log (1 + N) := by
+    have := log_lt_log_block hn₀1 R
+    rw [hNB] at this
+    push_cast at this
+    rwa [add_comm (N : ℝ) 1] at this
+  have hFs : ∀ t, t ∉ Icc (-R) R → F t = 0 := fun t ht => hFR t (by
+    simp only [mem_Icc, not_and_or, not_le] at ht
+    rcases ht with ht | ht
+    · exact lt_of_lt_of_le (by linarith) (neg_le_abs t)
+    · exact lt_of_lt_of_le ht (le_abs_self t))
+  obtain ⟨x, D, hx, hD2, hDR, hsup, hlip⟩ := exists_emSynthesis_of hφ hφ1 hφint hF hFR hM hM0 hn₀ hk
+    (e₁ := emConst M (fun q => ∫ s, |iteratedDeriv q φ s|) m * (k / n₀) ^ (2 * m + 2))
+    fun r => by
+      rw [hNB]
+      exact abs_emSynth_dilate_sub_le hφ (hasCompactSupport_of_vanishes hφ1) hF hFs hM hM0 hn₀ hN
+        hk m r
+  refine ⟨x, D, hx, hD2, hDR, fun u => (hsup u).trans (le_of_eq ?_), hlip⟩
+  unfold emErr
+  simp
 
 /-- **The Euler–Maclaurin synthesis bound**: the atoms of level `n₀ B` synthesize `F` up to a
 motion `weilErr F (R+1) e (synthLevy (R+1) e L k)` of Weil's form, `e = emErr`, `L = emLip`. -/

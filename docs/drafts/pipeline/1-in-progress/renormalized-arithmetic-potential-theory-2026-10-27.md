@@ -45,7 +45,7 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 - RP28 `d_p = u/sinh u − γ` strictly decreasing; `d_p > 0` iff `p ≤ 43`; tower finite part
   nonnegative iff `p ≥ 47` (W25 sign table).
 - RP30 finite part `= 2 lim (A_ε − κ log)` for every gauge with convergent Mertens error (RP10 is
-  `α = −γ`); RP31 `A_χ(y) → −L′/L(1, χ)` from the corpus PNT for characters; finite part of
+  `α = −γ`); converse on the pole: finite part `2α` iff the harmonic mean of the Mertens error is `α`; RP31 `A_χ(y) → −L′/L(1, χ)` from the corpus PNT for characters; finite part of
   real character gauges.
 - RP33 Liouville finite part `2(γ + τ)`; on `ℓ = 0`, `P_N(λx) − P_N(x) = 2(2γ + τ)|x|² + o(mass)`.
 - RP34 class Mertens constants `c_r` with `φ(q) c_r = −γ − Q_q + Re Σ_{χ≠1} χ(r⁻¹)(−L′/L(1, χ))`.

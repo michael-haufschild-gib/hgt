@@ -37,7 +37,9 @@ private theorem localMangoldt_prefix_ge {p y K : ℕ} (hp : p.Prime)
   have hsub : (range K).image (fun k => p ^ (k + 1)) ⊆ range (y + 1) := by
     intro t ht
     obtain ⟨k, hk, rfl⟩ := mem_image.mp ht
-    have hkK : k + 1 ≤ K := by simpa only [mem_range] using hk
+    have hkK : k + 1 ≤ K := by
+      have := mem_range.mp hk
+      omega
     exact mem_range.mpr (Nat.lt_succ_of_le ((Nat.pow_le_pow_right hp.pos hkK).trans hK))
   have h := sum_le_sum_of_subset_of_nonneg hsub
     (fun t _ _ => localMangoldtMass_nonneg p t)
@@ -81,8 +83,9 @@ theorem localMangoldtTail_le {p y : ℕ} (hp : p.Prime) (hy : 0 < y) :
   have hy0 : (0 : ℝ) < y := by exact_mod_cast hy
   have hlog : 0 ≤ Real.log p := Real.log_nonneg (by linarith only [hp2])
   have hY : (y : ℝ) ≤ (p : ℝ) ^ K * p := by
-    have h := (Nat.lt_pow_succ_log_self hp.one_lt y).le
-    exact_mod_cast h
+    have h : (y : ℝ) ≤ (p : ℝ) ^ (K + 1) := by
+      exact_mod_cast (Nat.lt_pow_succ_log_self hp.one_lt y).le
+    simpa only [pow_succ] using h
   have hfactor : (Real.log p / ((p : ℝ) - 1)) * p ≤ 2 * Real.log p := by
     rw [div_mul_eq_mul_div, div_le_iff₀ hp1]
     nlinarith only [mul_nonneg hlog (show 0 ≤ (p : ℝ) - 2 by linarith only [hp2])]
@@ -145,6 +148,7 @@ theorem abs_normalizedRamanujan_correction_le {m n y : ℕ}
         4 * Real.sqrt (m.totient : ℝ) * Real.log m / (y : ℝ) := by
   have hφ : 0 < (m.totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr hm
   have hsqrt : Real.sqrt (m.totient : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hφ).ne'
+  have hy0 : (y : ℝ) ≠ 0 := by exact_mod_cast hy.ne'
   calc
     _ ≤ ramanujanCorrectionTail m y / Real.sqrt (m.totient : ℝ) :=
       abs_normalizedRamanujan_correction_le_tail hm hn y
@@ -154,7 +158,7 @@ theorem abs_normalizedRamanujan_correction_le {m n y : ℕ}
     _ = (4 * Real.sqrt (m.totient : ℝ) ^ 2 * Real.log m / (y : ℝ)) /
         Real.sqrt (m.totient : ℝ) := by rw [Real.sq_sqrt hφ.le]
     _ = _ := by
-      field_simp
+      field_simp [hsqrt, hy0]
       ring
 
 end GaloisForLFunctions.SignedArithmeticHodgeTheory
