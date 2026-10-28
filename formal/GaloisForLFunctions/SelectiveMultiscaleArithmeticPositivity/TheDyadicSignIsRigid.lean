@@ -31,14 +31,14 @@ pairing of the difference `u = λ' − λ` alone (`lagW_sub`). This gives:
   primes has dyadic mass of order `2^{d/2}` by the prime number theorem.
 -/
 
-open Complex Filter Topology MeasureTheory
+open Complex Filter Topology MeasureTheory Matrix
 open scoped ComplexConjugate
+open Zeta23 GaloisForLFunctions.HTGeometry RHTower
 
 noncomputable section
 
 namespace GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
 
-open Zeta23 GaloisForLFunctions.HTGeometry RHTower
 open ArithmeticCastelnuovoSeveri (weilGram cx)
 
 local notation "Tr" => ArithmeticCastelnuovoSeveri.translate
@@ -72,7 +72,7 @@ theorem weilGram_tower_apply (lam : ℕ → ℝ) (g : ℝ → ℂ) (ℓ : ℝ) (
 theorem hermQuad_smul {ι : Type*} [Fintype ι] (H : Matrix ι ι ℂ) (c : ℂ) (x : ι → ℂ) :
     hermQuad H (c • x) = Complex.normSq c * hermQuad H x := by
   unfold hermQuad
-  rw [Matrix.mulVec_smul, star_smul, Matrix.smul_dotProduct, Matrix.dotProduct_smul, smul_eq_mul,
+  rw [Matrix.mulVec_smul, star_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul,
     smul_eq_mul, ← mul_assoc, Complex.star_def, ← Complex.normSq_eq_conj_mul_self,
     Complex.re_ofReal_mul]
 
@@ -102,9 +102,12 @@ theorem dotProduct_single_add_single {ι : Type*} [Fintype ι] [DecidableEq ι] 
     {i j : ι} (hij : i ≠ j) (z : ℂ) :
     star (Pi.single i 1 + Pi.single j z) ⬝ᵥ H *ᵥ (Pi.single i 1 + Pi.single j z) =
       H i i + H i j * z + conj z * H j i + conj z * H j j * z := by
-  rw [star_add, Matrix.mulVec_add, Matrix.mulVec_single, Matrix.mulVec_single, Matrix.add_dotProduct,
-    Matrix.dotProduct_add, Matrix.dotProduct_add]
-  simp only [Pi.star_single, Matrix.single_dotProduct, star_one, one_mul, Complex.star_def]
+  have hcol : ∀ (k : ι) (w : ℂ), H *ᵥ Pi.single k w = fun a => H a k * w := fun k w => by
+    funext a
+    simp [Matrix.mulVec, dotProduct, Pi.single_apply]
+  rw [star_add, ← Pi.single_star, ← Pi.single_star, Matrix.mulVec_add, hcol, hcol, add_dotProduct,
+    single_dotProduct, single_dotProduct]
+  simp only [Pi.add_apply, star_one, one_mul, Complex.star_def]
   ring
 
 /-- **The `2 × 2` window bound**: `‖H_{ij} + conj H_{ji}‖ ≤ Re H_{ii} + Re H_{jj}`. -/

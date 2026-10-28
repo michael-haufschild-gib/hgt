@@ -132,6 +132,35 @@ The pointwise threshold is `c > sup_w θ_w`, where `θ_w` solves `(c − w)² = 
 - **`4·13/84 = 13/21`:** Bourgain; out of reach.
 - **`1/2 + ε`:** counting instead of pointwise reality. Bad ordinates are controlled by mean values of `ζ` in the strip. `1/2` is the Euler-anchor barrier.
 
+## (N₂) static proof — the build plan (chosen 2026-10-28)
+Any polylog survival rate gives rung 2 ⇒ polylog density. A static Rouché argument at each deep zero
+gives rate `δ²/log⁴ X` without zero dynamics.
+
+**Theorem N₂.** For `0 < δ ≤ 1/2` there are `c, C, X₀` with: for `X ≥ X₀`, `0 < t ≤ c δ²/log⁴ X`,
+every finite set `F` of zero copies with ordinate in `[X, 2X]` and depth `|β − 1/2| ≥ δ` satisfies
+`#F ≤ C log X · N(t)`.
+Corollary: `N(t) ≤ A t^{−a}` ⇒ `#{depth ≥ δ, ordinate ≤ T} ≪ (log T)^{4a+2}`.
+
+**Proof.** Work in `XiC` coordinates: zero `ζ = x + iy`, `|y| = depth`.
+1. *Near/far split.*
+   - `Z` = copies with ordinate within 2 of `x`; `m = #Z ≤ C log X` (`exists_card_near_xi_zeros_le`).
+   - On `B(c, 3)`, `c = x − 2i` (Euler point), `XiC = P·g`, `P = ∏_Z (w − ζ_q)`, `g` zero-free (`exists_finset_zeroFree_factorization`).
+   - From `logDeriv_xi_eq_partialFraction`, the weighted density `exists_tsum_weighted_density_le` and `|logDeriv ξ(2+iT)| ≪ log T`: `|g′/g| ≤ K = C log X` on `B(c, 3)`.
+2. *Circle.* Choose `r ∈ [δ/4, δ/2]` at distance `≥ d = δ/(8(m+1))` from every `|ζ_q − ζ|` (pigeonhole). On `Γ = ∂B(ζ, r)`: `S := Σ_Z 1/|z − ζ_q| ≤ m/d`.
+3. *Ratio and Cauchy.* For `w` near `z ∈ Γ`, `|XiC(w)| ≤ |XiC(z)| e^{(S+K)|w−z|}`. Cauchy at radius `1/(S+K)` gives `|XiC″(w)| ≤ 2e (S+K)² e^{(S+K)|w−z|} |XiC(z)|`.
+4. *Gaussian.*
+   - `H_t(z) − XiC(z) = ∫ g_t(u)[XiC(z−iu) − XiC(z) + iu XiC′(z)] du`; the odd moment vanishes.
+   - Local part `≤ C t (S+K)² |XiC(z)|` for `t(S+K)² ≤ 1`.
+   - Tail `|u| ≥ 2`: global growth of `XiC` along horizontal lines, relative to `|XiC(c)|`, together with `|XiC(c)| ≤ (3/d)^m e^{3K} |XiC(z)|`. Its cost `e^{−1/(8t)}` is negligible when `1/t ≫ log X · log(log X/δ)`.
+5. *Rouché* (`exists_zero_mem_ball_of_norm_sub_lt`). `H_t` vanishes in `B(ζ, r)`, so it has a nonreal zero, since `r ≤ δ/2`.
+6. *Counting.* A `δ`-separated subfamily of `F` gives disjoint discs, hence `N(t) ≥ #F/(C log X)`.
+
+Stages:
+- A1 local factorization and the `g′/g` bound;
+- A2 Gaussian comparison, including tail growth;
+- A3 Rouché, radius choice and counting;
+- A4 rung-2 corollary.
+
 ## Survivors to formalize (not dependency-closed)
 - (N), the necessity reduction. It certifies that rung 1 is at least as hard as sub-power density. Needs:
   - zero dynamics of `H_t`, via the polynomial approximants `xiRealApprox` and Hurwitz counting on boxes;

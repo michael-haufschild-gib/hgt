@@ -141,6 +141,7 @@ theorem exists_rayClassIdeal_iff {x : ℝ} {γ : 𝓞 K} (hγ0 : algebraMap (�
       exact le_of_mul_le_mul_right hx hN𝔟
 
 omit [NumberField K] in
+omit [NumberField K] in
 variable (𝔪) in
 /-- Every residue modulo `𝔪₀` has a representative in `𝔟` when `𝔟 + 𝔪₀ = (1)`. -/
 theorem exists_mem_mk_eq (h𝔟 : 𝔟 ⊔ 𝔪.fin = ⊤) (ρ : 𝓞 K ⧸ 𝔪.fin) :
@@ -200,6 +201,7 @@ def conePoints (𝔟 : Ideal (𝓞 K)) (g : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf
   {a | a ∈ fundamentalCone K ∧ ∃ γ : 𝓞 K, mixedEmbedding K (γ : K) = a ∧
     (Ideal.absNorm (Ideal.span {γ}) : ℝ) ≤ T ∧ ElemCond 𝔪 𝔟 g γ}
 
+omit [NumberField K] in
 omit [NumberField K] in
 /-- `γ` determines its data `g`. -/
 theorem elemCond_unique {g g' : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf → ℤˣ)} {γ : 𝓞 K}
@@ -263,11 +265,14 @@ theorem ncard_conePoints {g : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf → ℤˣ)} {
   rw [conePoints_eq_image h𝔟0 h𝔟 hT, ncard_image_of_injective _ (add_right_injective _)]
 
 include h𝔟0 h𝔟 in
+include h𝔟0 h𝔟 in
 theorem finite_conePoints {g : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf → ℤˣ)} {T : ℝ} (hT : 0 < T) :
     (conePoints 𝔪 𝔟 g T).Finite := by
   rw [conePoints_eq_image h𝔟0 h𝔟 hT]
   refine Finite.image _ (finite_inter_lattice _ ?_)
   exact (((isBounded_normLeOne K).subset inter_subset_left).smul₀ _).vadd _
+
+noncomputable instance : Fintype (rayHom 𝔪).range := Fintype.ofFinite _
 
 noncomputable instance : Fintype (rayHom 𝔪).range := Fintype.ofFinite _
 
