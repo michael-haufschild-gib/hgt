@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** full-prime Ramanujan quasimodes; bounded-defect finite-span approximation; exact archimedean atom pairing; actual two-pole rows
-- **Statement:** The complete normalized Weil matrix has Ramanujan quasimodes at every fixed separated width ratio, and its bounded spectrum is exhausted by their explicit simple energies throughout the separated regime (strengthened conjecture; exact separation interfaces still to prove).
+- **Statement:** The complete normalized Weil matrix has Ramanujan quasimodes at every fixed separated width ratio, and its bounded spectrum is exhausted by their explicit simple energies throughout the separated regime (exact carrier and separated entries verified; norm estimates and spectral assembly pending).
 - **Count:** uncounted; stronger extension of the packet-form candidate, not an additional count for its weaker corollaries
 
 ## Goal
@@ -36,8 +36,9 @@ and 0<c<1. Let w=c/N and g=atomDilate(phi,w). The proposed matrix is
 These are existing literal atom and pole matrices. The inspected theorem
 `polarDefect_atomic` identifies their quadratic form with weilQuad of the
 actual synthesized test. The atom basis has mass matrix w*M2 times identity
-eventually, since the supports are separated. Reindexing Fin N to 1..N must
-be proved when applying the existing prime-matrix package.
+eventually, since the supports are separated. The verified `primeHorizonFinEquiv` transports Fin N to 1..N;
+`TheFullWeilMatrixSplitsAtTheSpacing` retains every normalized entry under
+this reindexing.
 
 Put
 `sigma=log(1/(2*pi*c))+bumpRobin(phi,1)/M2`,
@@ -51,7 +52,7 @@ the finite arithmetic count; each fixed eigenline is eventually simple and
 captures its Ramanujan vector. The full-range coercivity argument below replaces
 the original small-c restriction. No part of this spectral target is proved yet.
 
-## The new cancellation to audit
+## Exact center-pole cancellation
 
 Let s_n=1/sqrt(n), t_n=sqrt(n), and let Omega_N have zero diagonal and
 off-diagonal entry archLevyDensity(|log(n)-log(j)|). The center-value
@@ -75,8 +76,9 @@ the displayed harmonic identity. Meanwhile
 
 The large harmonic row cancels only after retaining both pole terms. This
 offers a residual estimate, not merely the previously conjectured average
-rank-one form correction. The identity and its exact normalizations still
-require Lean verification.
+rank-one form correction. The exact row identity is now verified in
+`TheArchimedeanCenterRowCancelsThePole`; the boundary square estimate and
+normalized residual transfer remain unchecked.
 
 The endpoint harmonic singularity has an elementary finite square bound:
 
@@ -499,7 +501,7 @@ The support graph now has thirty modules: three scratch-verified and installed, 
 
 Five support modules are now scratch-verified, installed, and supplied with first required oleans: the harmonic tail moments, finite/reversed Abel adapter, actual complete-Weil carrier, exact collar harmonic kernel, and finite harmonic row identities. Seven retained endpoint axiom reports are clean. Thirty-four total drafts are recorded in the manifest. The new unchecked assembly `TheCompleteWeilMatrixHasRamanujanQuasimodes` combines the exact matrix decomposition with all three norm error limits; its dependencies and endpoint have not yet passed Lean. Full-range coercivity and spectral exhaustion remain to assemble.
 
-Ten support modules now pass scratch Lean verification and are installed. `TheFullWeilMatrixSplitsAtTheSpacing` proves the exact complete normalized entries with prime, self, cross-integral, and both pole-product terms. Its first required olean is being generated; the preceding nine are present. Twelve retained transitive endpoint reports are clean. The missing existing `TheUniformMarginPaysThePoleOnlyUpToARootLogarithm` dependency compiled successfully without source changes. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records forty-two drafts. The remaining estimates and all three spectral endpoints are unchecked; final source audits and integration remain. No web searches or novelty audits are part of this work.
+Eleven support modules now pass scratch Lean verification and are installed. `TheArchimedeanCenterRowCancelsThePole` proves the exact center-density row and its cancellation against both pole rows, leaving the explicit harmonic boundary remainder. Its first required olean is being generated; the preceding ten are present. Thirteen retained transitive endpoint reports are clean. The missing existing `TheUniformMarginPaysThePoleOnlyUpToARootLogarithm` dependency compiled successfully without source changes. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records forty-two drafts. Remaining estimates and all three spectral endpoints are unchecked; final source audits and integration remain. No web searches or novelty audits are part of this work.
 
 ### Complete assembly drafted; Lean verification incomplete
 

@@ -376,6 +376,14 @@ The corresponding projection in the actual Haar analysis space has this
 squared norm error. It retains every dyadic level of each generator below
 the cutoff. Its Gamma budget belongs to the original source.
 
+[DyadicHaarCoordinatesReadTheOriginalSource](DyadicHaarCoordinatesReadTheOriginalSource.lean)
+identifies these readouts with the actual Hilbert coordinates of the original
+source. Let \(U\) be the complete-cell embedding followed by zero extension
+to whole-line \(L^2\). It is an isometry, \(U^*U=1\), and the \((j,a)\)
+detail coordinate of \(U^*f\) equals \(c_{j,a}\). The proof identifies each
+basis vector with the literal translated Haar profile, including its exact
+square-root mass. For a general source, \(UU^*f\) denotes its cell component.
+
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
 is smaller than the available diagonal reserve, with explicit treatment of the coarse residual.
