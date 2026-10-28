@@ -93,6 +93,47 @@ private theorem sum_labelTail_powers_le {F G : ℕ → ℝ}
       linarith only [h, ih]
   linarith only [hstrong L, labelTail_nonneg hF (2 ^ L)]
 
+private theorem count_binary_thresholds (a : ℕ+) {L : ℕ}
+    (hL : Nat.log 2 (a : ℕ) + 1 ≤ L) (d : ℝ) :
+    (∑ r ∈ Finset.range L, if 2 ^ r ≤ (a : ℕ) then d else 0) =
+      ((Nat.log 2 (a : ℕ) + 1 : ℕ) : ℝ) * d := by
+  classical
+  have hfilter : (Finset.range L).filter (fun r => 2 ^ r ≤ (a : ℕ)) =
+      Finset.range (Nat.log 2 (a : ℕ) + 1) := by
+    ext r
+    simp only [Finset.mem_filter, Finset.mem_range,
+      ← Nat.le_log_iff_pow_le (by norm_num : 1 < 2) (Nat.ne_of_gt a.pos)]
+    omega
+  rw [← Finset.sum_filter, hfilter, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+
+private theorem sum_ancestor_weight_le {F G : ℕ → ℝ}
+    (hF : ∀ a, 0 ≤ F a) (hG : ∀ a, 0 ≤ G a)
+    (hsF : Summable F) (hsG : Summable G)
+    (hflow : ∀ a, 1 ≤ a → G a + F (2 * a) + F (2 * a + 1) ≤ F a)
+    (T : Finset ℕ+) :
+    (∑ a ∈ T, ((Nat.log 2 (a : ℕ) + 1 : ℕ) : ℝ) * G a) ≤ labelTail F 1 := by
+  classical
+  let L := ∑ a ∈ T, (Nat.log 2 (a : ℕ) + 1)
+  have hL (a : ℕ+) (ha : a ∈ T) : Nat.log 2 (a : ℕ) + 1 ≤ L :=
+    Finset.single_le_sum (fun _ _ => Nat.zero_le _) ha
+  have hthreshold (r : ℕ) :
+      (∑ a ∈ T, if 2 ^ r ≤ (a : ℕ) then G a else 0) ≤ labelTail G (2 ^ r) := by
+    have hsum : Summable (fun a : ℕ+ => if 2 ^ r ≤ (a : ℕ) then G a else 0) :=
+      PNatBlock.summable_pnat_iff.mpr (labelTail_summable hsG (2 ^ r))
+    calc
+      _ ≤ ∑' a : ℕ+, if 2 ^ r ≤ (a : ℕ) then G a else 0 :=
+        hsum.sum_le_tsum T (fun a _ => by split_ifs <;> positivity)
+      _ = labelTail G (2 ^ r) := PNatBlock.tsum_pnat _ (by
+        rw [if_neg (by have := pow_pos (by norm_num : 0 < (2 : ℕ)) r; omega)])
+  calc
+    _ = ∑ a ∈ T, ∑ r ∈ Finset.range L, if 2 ^ r ≤ (a : ℕ) then G a else 0 :=
+      Finset.sum_congr rfl (fun a ha => (count_binary_thresholds a (hL a ha) (G a)).symm)
+    _ = ∑ r ∈ Finset.range L, ∑ a ∈ T, if 2 ^ r ≤ (a : ℕ) then G a else 0 :=
+      Finset.sum_comm
+    _ ≤ ∑ r ∈ Finset.range L, labelTail G (2 ^ r) :=
+      Finset.sum_le_sum (fun r _ => hthreshold r)
+    _ ≤ _ := sum_labelTail_powers_le hF hG hsF hsG hflow L
+
 private theorem summable_parent_variances (t : ℝ) {f : ℝ → ℝ}
     (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     Summable (fun i : ℕ × ℕ+ => logCellDyadicParentVariance t i f) :=
@@ -150,6 +191,87 @@ theorem logCellHaarOrbitEnergy_flow (t : ℝ) (a : ℕ+) {f : ℝ → ℝ}
   unfold logCellHaarOrbitEnergy logCellParentVarianceOrbit
   linarith only [hs, hVa, hDa, hbase]
 
+/-- The exact number of positive binary ancestors, including the generator itself. -/
+def logCellAncestorWeight (a : ℕ+) : ℝ := ((Nat.log 2 (a : ℕ) + 1 : ℕ) : ℝ)
+
+theorem logCellAncestorWeight_pos (a : ℕ+) : 0 < logCellAncestorWeight a := by
+  unfold logCellAncestorWeight
+  positivity
+
+/-- Every ancestor is counted while the original Gamma reserve is spent only once. -/
+theorem sum_logCellAncestorWeight_orbit_le (t : ℝ) (T : Finset ℕ+)
+    {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
+    (∑ a ∈ T, logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) ≤
+      16 * levyEnergy f := by
+  let F := positiveExtension (fun a => logCellParentVarianceOrbit t a f)
+  let G := positiveExtension (fun a => logCellHaarOrbitEnergy t a f)
+  have hF (a : ℕ) : 0 ≤ F a := by
+    dsimp only [F, positiveExtension]
+    split_ifs
+    · exact tsum_nonneg (fun _ => intervalVariance_nonneg _ _ _)
+    · rfl
+  have hG (a : ℕ) : 0 ≤ G a := by
+    dsimp only [G, positiveExtension]
+    split_ifs
+    · exact tsum_nonneg (fun _ => sq_nonneg _)
+    · rfl
+  have hsF := positiveExtension_summable (parent_variance_rows t hv hc).2
+  have hsG := positiveExtension_summable (readout_rows t hv hc).2
+  have hflow (a : ℕ) (ha : 1 ≤ a) : G a + F (2 * a) + F (2 * a + 1) ≤ F a := by
+    simpa only [G, F, positiveExtension, dif_pos (show 0 < a by omega),
+      dif_pos (show 0 < 2 * a by omega), dif_pos (show 0 < 2 * a + 1 by omega),
+      dyadicLeftCell, dyadicRightCell] using
+      logCellHaarOrbitEnergy_flow t ⟨a, ha⟩ hv hc
+  have h := sum_ancestor_weight_le hF hG hsF hsG hflow T
+  simp only [G, positiveExtension_coe, ← logCellAncestorWeight] at h
+  apply h.trans
+  have htail : labelTail F 1 = ∑' a : ℕ+, logCellParentVarianceOrbit t a f := by
+    rw [labelTail, ← PNatBlock.tsum_pnat _ (by simp)]
+    apply tsum_congr
+    intro a
+    rw [if_pos a.pos]
+    exact positiveExtension_coe _ a
+  rw [htail]
+  have hs := (summable_parent_variances t hv hc).comp_injective Prod.swap_injective
+  rw [show (∑' a : ℕ+, logCellParentVarianceOrbit t a f) =
+      ∑' i : ℕ × ℕ+, logCellDyadicParentVariance t i f by
+    rw [← hs.tsum_prod]
+    exact (Equiv.prodComm ℕ+ ℕ).tsum_eq _]
+  exact Real.tsum_le_of_sum_le (fun _ => intervalVariance_nonneg _ _ _)
+    (fun S => sum_logCellDyadicParentVariance_le t S hv hc)
+
+/-- The natural-logarithmic label cost is bounded by twice the exact ancestor count. -/
+theorem one_add_log_le_two_ancestorWeight (a : ℕ+) :
+    1 + Real.log (a : ℝ) ≤ 2 * logCellAncestorWeight a := by
+  have hp := Nat.lt_pow_succ_log_self (by norm_num : 1 < 2) (a : ℕ)
+  have hl := Real.log_lt_log (by exact_mod_cast a.pos : (0 : ℝ) < a)
+    (by exact_mod_cast hp : (a : ℝ) < ((2 ^ (Nat.log 2 (a : ℕ) + 1) : ℕ) : ℝ))
+  rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow] at hl
+  have htwo : Real.log 2 ≤ 1 := by
+    simpa using Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+  have hw : 1 ≤ logCellAncestorWeight a := by unfold logCellAncestorWeight; norm_cast; omega
+  have hmul := mul_le_mul_of_nonneg_left htwo (logCellAncestorWeight_pos a).le
+  change Real.log (a : ℝ) < logCellAncestorWeight a * Real.log 2 at hl
+  linarith only [hl, hw, hmul]
+
+/-- Logarithmic control retains the entire orbit of every selected generator. -/
+theorem sum_log_weight_haar_orbit_le (t : ℝ) (T : Finset ℕ+)
+    {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
+    (∑ a ∈ T, (1 + Real.log (a : ℝ)) * logCellHaarOrbitEnergy t a f) ≤
+      32 * levyEnergy f := by
+  have h := sum_logCellAncestorWeight_orbit_le t T hv hc
+  have hw : (∑ a ∈ T, (1 + Real.log (a : ℝ)) * logCellHaarOrbitEnergy t a f) ≤
+      2 * ∑ a ∈ T, logCellAncestorWeight a * logCellHaarOrbitEnergy t a f := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_le_sum
+    intro a _
+    rw [← mul_assoc]
+    exact mul_le_mul_of_nonneg_right (one_add_log_le_two_ancestorWeight a)
+      (tsum_nonneg (fun _ => sq_nonneg _))
+  linarith only [hw, h]
+
 end GaloisForLFunctions.SignedArithmeticHodgeTheory
 
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.logCellHaarOrbitEnergy_flow
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.sum_logCellAncestorWeight_orbit_le
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.sum_log_weight_haar_orbit_le

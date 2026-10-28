@@ -153,4 +153,289 @@ theorem integral_levy_abs_pairCorr_eq_zero (hGsupp : ∀ n u, u ∉ Set.Icc 0 w 
     have : w < |t - s| := by rw [abs_of_pos (by linarith)]; linarith
     rw [pairCorr_eq_zero hGsupp m n this, abs_zero, mul_zero]
 
+/-! ### The Lévy energy with masses -/
+
+/-- **The Lévy energy of a window test with the masses of the pairs**:
+`levyEnergy f ≥ Σ_m levyEnergy G_m − 2 Σ_{m ≠ n} ∫_0^∞ ω(t) |c_{mn}(t − log(n/m))| dt`. -/
+theorem levyEnergy_windowTest_ge_masses (hG : ∀ n, ContDiff ℝ 2 (G n))
+    (hGsupp : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    (hw : w ≤ atomSpacing N / 2) :
+    ∑ m ∈ Icc 1 N, levyEnergy (G m) -
+        2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else ∫ t in Set.Ioi 0,
+          archLevyDensity t * |pairCorr G m n (t - (Real.log n - Real.log m))|) ≤
+      levyEnergy (windowTest N G) := by
+  have hδ := atomSpacing_pos hN
+  have hw' : w < atomSpacing N := by linarith
+  set ω := archLevyDensity
+  have hsep : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m ≠ n → 2 * w ≤ |Real.log n - Real.log m| := by
+    intro m hm n hn hmn
+    have := atomSpacing_le_abs_logGap hm hn hmn
+    simp only [logGap] at this
+    linarith
+  set c : ℕ → ℕ → ℝ → ℝ := fun m n t =>
+    if m = n then 0 else ω t * |pairCorr G m n (t - (Real.log n - Real.log m))|
+  have hcint : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, IntegrableOn (c m n) (Set.Ioi 0) := by
+    intro m hm n hn
+    by_cases hmn : m = n
+    · simp only [c, if_pos hmn]; exact integrableOn_zero
+    · simp only [c, if_neg hmn]
+      exact integrableOn_levy_abs_pairCorr hG hGsupp hw0 (hsep m hm n hn hmn) m n
+  have hGint : ∀ m, IntegrableOn
+      (fun t => ω t * ∫ u, (G m u - G m (u + t)) ^ 2) (Set.Ioi 0) :=
+    fun m => integrableOn_levyIntegrand (hG m) (hasCompactSupport_profile hGsupp m)
+  have hcsum : IntegrableOn (fun t => ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, c m n t) (Set.Ioi 0) :=
+    integrable_finsetSum _ fun m hm => integrable_finsetSum _ fun n hn => hcint m hm n hn
+  have hdsum : IntegrableOn
+      (fun t => ∑ m ∈ Icc 1 N, ω t * ∫ u, (G m u - G m (u + t)) ^ 2) (Set.Ioi 0) :=
+    integrable_finsetSum _ fun m _ => hGint m
+  set ℓ : ℝ → ℝ := fun t => ∑ m ∈ Icc 1 N, ω t * (∫ u, (G m u - G m (u + t)) ^ 2) -
+    2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, c m n t
+  have hℓint : IntegrableOn ℓ (Set.Ioi 0) := hdsum.sub (hcsum.const_mul _)
+  have hf := contDiff_windowTest hG N
+  have hfc := hasCompactSupport_windowTest hGsupp N
+  have hpt : ∀ t ∈ Set.Ioi (0 : ℝ),
+      ℓ t ≤ ω t * ∫ u, (windowTest N G u - windowTest N G (u + t)) ^ 2 := by
+    intro t ht
+    have hω0 : 0 ≤ ω t := (archLevyDensity_pos ht).le
+    rw [integral_sub_shift_sq_windowTest_eq hG hGsupp hw' t]
+    have hsum : ω t * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
+        pairCorr G m n (t - (Real.log n - Real.log m))) ≤
+        ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, c m n t := by
+      rw [mul_sum]
+      refine sum_le_sum fun m _ => ?_
+      rw [mul_sum]
+      refine sum_le_sum fun n _ => ?_
+      by_cases hmn : m = n
+      · simp [c, hmn]
+      simp only [c, if_neg hmn]
+      exact mul_le_mul_of_nonneg_left (le_abs_self _) hω0
+    simp only [ℓ]
+    have e : ω t * (∑ m ∈ Icc 1 N, (∫ u, (G m u - G m (u + t)) ^ 2) -
+        2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
+          pairCorr G m n (t - (Real.log n - Real.log m)))) =
+        ∑ m ∈ Icc 1 N, ω t * (∫ u, (G m u - G m (u + t)) ^ 2) -
+          2 * (ω t * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else
+            pairCorr G m n (t - (Real.log n - Real.log m)))) := by
+      rw [mul_sub, Finset.mul_sum]; ring
+    rw [e]
+    linarith [hsum]
+  have hLint : IntegrableOn
+      (fun t => ω t * ∫ u, (windowTest N G u - windowTest N G (u + t)) ^ 2) (Set.Ioi 0) :=
+    integrableOn_levyIntegrand hf hfc
+  have hmono := setIntegral_mono_on hℓint hLint measurableSet_Ioi hpt
+  have hℓ : ∫ t in Set.Ioi 0, ℓ t = ∑ m ∈ Icc 1 N, levyEnergy (G m) -
+      2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, ∫ t in Set.Ioi 0, c m n t := by
+    simp only [ℓ]
+    rw [integral_sub hdsum (hcsum.const_mul _), integral_const_mul,
+      integral_finsetSum _ fun m _ => hGint m, integral_finsetSum _ fun m hm =>
+        integrable_finsetSum _ fun n hn => hcint m hm n hn]
+    congr 2
+    exact sum_congr rfl fun m hm => integral_finsetSum _ fun n hn => hcint m hm n hn
+  have hcbound : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, ∫ t in Set.Ioi 0, c m n t =
+      ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else ∫ t in Set.Ioi 0,
+        ω t * |pairCorr G m n (t - (Real.log n - Real.log m))|) := by
+    refine sum_congr rfl fun m _ => sum_congr rfl fun n _ => ?_
+    by_cases hmn : m = n
+    · simp [c, hmn]
+    · simp only [c, if_neg hmn]
+  rw [hℓ] at hmono
+  have hL : levyEnergy (windowTest N G) = ∫ t in Set.Ioi 0,
+      ω t * ∫ u, (windowTest N G u - windowTest N G (u + t)) ^ 2 := rfl
+  linarith
+
+/-! ### The cross penalty from a symmetric pair bound -/
+
+/-- **The cross penalty from a pair bound.** If a nonnegative array `V` has
+`V_mn + V_nm ≤ y_m y_n · 2w(1/(2(1 − κ)|log(n/m)|) + 1)` for `m ≠ n`, then
+`2 Σ_{m ≠ n} V_mn ≤ wN [(2(1 + 1/λ)/(1 − κ)) D_N(y) + L_λ,κ |y|²]`. -/
+theorem two_mul_sum_cross_le {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w) {κ : ℝ} (hκ0 : 0 ≤ κ)
+    (hκ : κ ≤ 1 / 2) {lam : ℝ} (hlam : 0 < lam) {y : ℕ → ℝ} (hy0 : ∀ n, 0 ≤ y n)
+    (V : ℕ → ℕ → ℝ)
+    (hV : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m ≠ n → V m n + V n m ≤
+      y m * y n * (2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|) + 1))) :
+    2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else V m n) ≤
+      w * N * (2 * (1 + 1 / lam) / (1 - κ) * poleDefect N y +
+        crossConstant lam κ * ∑ n ∈ Icc 1 N, y n ^ 2) := by
+  have hκ1 : 0 < 1 - κ := by linarith
+  set k : ℕ → ℕ → ℝ := fun m n =>
+    2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|) + 1)
+  have hk0 : ∀ m n, 0 ≤ k m n := fun m n =>
+    mul_nonneg (by positivity) (add_nonneg (one_div_nonneg.mpr
+      (mul_nonneg (mul_nonneg two_pos.le hκ1.le) (abs_nonneg _))) zero_le_one)
+  have hks : ∀ m n, k n m = k m n := fun m n => by simp only [k, abs_sub_comm]
+  set S := ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else V m n)
+  have hswap : S = ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else V n m) := by
+    simp only [S]
+    rw [sum_comm]
+    refine sum_congr rfl fun m _ => sum_congr rfl fun n _ => ?_
+    by_cases h : n = m
+    · simp [h]
+    · rw [if_neg h, if_neg (Ne.symm h)]
+  have habs : ∀ m n, y m * y n = |y m| * |y n| := fun m n => by
+    rw [abs_of_nonneg (hy0 m), abs_of_nonneg (hy0 n)]
+  have hS : 2 * S ≤ ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else |y m| * |y n| * k m n) := by
+    have : 2 * S = ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else (V m n + V n m)) := by
+      rw [two_mul]
+      nth_rewrite 2 [hswap]
+      simp only [S, ← sum_add_distrib]
+      refine sum_congr rfl fun m _ => sum_congr rfl fun n _ => ?_
+      split_ifs <;> ring
+    rw [this]
+    refine sum_le_sum fun m hm => sum_le_sum fun n hn => ?_
+    split_ifs with h
+    · exact le_rfl
+    · rw [← habs]; exact hV m hm n hn h
+  have hschur := RenormalizedArithmeticPotentialTheory.sum_abs_mul_sym_le N y k hk0 hks
+  have hrow : ∀ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else k m n) ≤
+      w / (1 - κ) * (2 * m * (1 + Real.log (N + 1)) + N) + 2 * w * N := by
+    intro m hm
+    have hr := sum_inv_abs_log_sub_le hm
+    have e : ∀ n ∈ Icc 1 N, (if m = n then 0 else k m n) ≤
+        w / (1 - κ) * (if m = n then 0 else 1 / |Real.log n - Real.log m|) + 2 * w := by
+      intro n _
+      split_ifs
+      · positivity
+      · simp only [k]
+        have : 2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|)) =
+            w / (1 - κ) * (1 / |Real.log n - Real.log m|) := by
+          field_simp
+        nlinarith
+    have hconst : ∑ n ∈ Icc 1 N, (2 * w) = 2 * w * N := by
+      rw [sum_const, Nat.card_Icc, nsmul_eq_mul]; push_cast; ring
+    calc ∑ n ∈ Icc 1 N, (if m = n then 0 else k m n)
+        ≤ ∑ n ∈ Icc 1 N, (w / (1 - κ) * (if m = n then 0 else 1 / |Real.log n - Real.log m|) +
+            2 * w) := sum_le_sum e
+      _ = w / (1 - κ) * ∑ n ∈ Icc 1 N, (if m = n then 0 else 1 / |Real.log n - Real.log m|) +
+            2 * w * N := by rw [sum_add_distrib, ← mul_sum, hconst]
+      _ ≤ w / (1 - κ) * (2 * m * (1 + Real.log (N + 1)) + N) + 2 * w * N := by
+          gcongr
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hrow' : ∀ m ∈ Icc 1 N, y m ^ 2 * ∑ n ∈ Icc 1 N, (if m = n then 0 else k m n) ≤
+      w * N / (1 - κ) * (2 * ((m : ℝ) / N * Real.log m * y m ^ 2) +
+        (2 * (1 + Real.log 2) + 1) * y m ^ 2) + 2 * w * N * y m ^ 2 := by
+    intro m hm
+    obtain ⟨hm1, hmN⟩ := Finset.mem_Icc.mp hm
+    have h1 := hrow m hm
+    have h2 := div_mul_one_add_log_le hm1 hmN
+    have hym := sq_nonneg (y m)
+    have e : w / (1 - κ) * (2 * m * (1 + Real.log (N + 1)) + N) =
+        w * N / (1 - κ) * (2 * ((m : ℝ) / N * (1 + Real.log (N + 1))) + 1) := by
+      field_simp
+    calc y m ^ 2 * ∑ n ∈ Icc 1 N, (if m = n then 0 else k m n)
+        ≤ y m ^ 2 * (w / (1 - κ) * (2 * m * (1 + Real.log (N + 1)) + N) + 2 * w * N) :=
+          mul_le_mul_of_nonneg_left h1 hym
+      _ = w * N / (1 - κ) * (2 * ((m : ℝ) / N * (1 + Real.log (N + 1))) + 1) * y m ^ 2 +
+            2 * w * N * y m ^ 2 := by rw [e]; ring
+      _ ≤ w * N / (1 - κ) * (2 * ((m : ℝ) / N * Real.log m + (1 + Real.log 2)) + 1) * y m ^ 2 +
+            2 * w * N * y m ^ 2 := by gcongr
+      _ = _ := by ring
+  have htop := sum_top_le_poleDefect_param N y hlam
+  have hsum : ∑ m ∈ Icc 1 N, y m ^ 2 * ∑ n ∈ Icc 1 N, (if m = n then 0 else k m n) ≤
+      w * N / (1 - κ) * (2 * ∑ n ∈ Icc 1 N, (n : ℝ) / N * Real.log n * y n ^ 2 +
+        (2 * (1 + Real.log 2) + 1) * ∑ n ∈ Icc 1 N, y n ^ 2) +
+        2 * w * N * ∑ n ∈ Icc 1 N, y n ^ 2 := by
+    refine (sum_le_sum hrow').trans (le_of_eq ?_)
+    rw [sum_add_distrib, ← mul_sum, ← mul_sum, sum_add_distrib, ← mul_sum, ← mul_sum]
+  have hcoef : 0 ≤ w * N / (1 - κ) := by positivity
+  have h1 := hS.trans hschur
+  have h2 := h1.trans hsum
+  have h3 : w * N / (1 - κ) * (2 * ∑ n ∈ Icc 1 N, (n : ℝ) / N * Real.log n * y n ^ 2) ≤
+      w * N / (1 - κ) * (2 * ((1 + 1 / lam) * poleDefect N y +
+        (1 + lam) * psiConstant * ∑ n ∈ Icc 1 N, y n ^ 2)) :=
+    mul_le_mul_of_nonneg_left (by linarith) hcoef
+  have e : w * N * (2 * (1 + 1 / lam) / (1 - κ) * poleDefect N y +
+      crossConstant lam κ * ∑ n ∈ Icc 1 N, y n ^ 2) =
+      w * N / (1 - κ) * (2 * ((1 + 1 / lam) * poleDefect N y +
+        (1 + lam) * psiConstant * ∑ n ∈ Icc 1 N, y n ^ 2)) +
+      w * N / (1 - κ) * ((2 * (1 + Real.log 2) + 1) * ∑ n ∈ Icc 1 N, y n ^ 2) +
+      2 * w * N * ∑ n ∈ Icc 1 N, y n ^ 2 := by
+    unfold crossConstant; field_simp; ring
+  rw [e]
+  nlinarith
+
+/-- **The halved cross penalty.** For a window test at `w ≤ κ δ_N`, `0 ≤ κ ≤ 1/2`, `λ > 0`,
+`levyEnergy f ≥ Σ levyEnergy G_m − (wN/2)[(2(1 + 1/λ)/(1 − κ)) D_N(y) + L_λ,κ |y|²]`. -/
+theorem levyEnergy_windowTest_ge_fubini (hG : ∀ n, ContDiff ℝ 2 (G n))
+    (hGsupp : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w)
+    {κ : ℝ} (hκ0 : 0 ≤ κ) (hκ : κ ≤ 1 / 2) (hwκ : w ≤ κ * atomSpacing N) {lam : ℝ}
+    (hlam : 0 < lam) :
+    ∑ m ∈ Icc 1 N, levyEnergy (G m) -
+        w * N / 2 * (2 * (1 + 1 / lam) / (1 - κ) * poleDefect N (windowNorm G) +
+          crossConstant lam κ * ∑ n ∈ Icc 1 N, windowNorm G n ^ 2) ≤
+      levyEnergy (windowTest N G) := by
+  have hδ := atomSpacing_pos hN
+  have hw2 : w ≤ atomSpacing N / 2 := by nlinarith
+  have hmaster := levyEnergy_windowTest_ge_masses hG hGsupp hN hw0 hw2
+  set y := windowNorm G
+  have hy0 : ∀ n, 0 ≤ y n := windowNorm_nonneg G
+  have hκ1 : 0 < 1 - κ := by linarith
+  set W : ℕ → ℕ → ℝ := fun m n => ∫ t in Set.Ioi 0,
+    archLevyDensity t * |pairCorr G m n (t - (Real.log n - Real.log m))|
+  -- `‖G_m‖₁‖G_n‖₁ ≤ w y_m y_n`
+  have hmass : ∀ m n, (∫ v, |G m v|) * (∫ v, |G n v|) ≤ w * (y m * y n) := fun m n => by
+    have h1 := integral_abs_profile_le hG hGsupp hw0 m
+    have h2 := integral_abs_profile_le hG hGsupp hw0 n
+    have hsw : Real.sqrt w * Real.sqrt w = w := Real.mul_self_sqrt hw0.le
+    calc (∫ v, |G m v|) * (∫ v, |G n v|) ≤ (Real.sqrt w * y m) * (Real.sqrt w * y n) :=
+          mul_le_mul h1 h2 (integral_nonneg fun _ => abs_nonneg _) (by positivity)
+      _ = w * (y m * y n) := by rw [← hsw]; ring
+  -- `W_mn + W_nm ≤ y_m y_n · w(1/(2(1 − κ)|log(n/m)|) + 1)`
+  have hWW : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m ≠ n → 2 * W m n + 2 * W n m ≤
+      y m * y n * (2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|) + 1)) := by
+    intro m hm n hn hmn
+    have hsep := atomSpacing_le_abs_logGap hm hn hmn
+    simp only [logGap] at hsep
+    have hwsep : w ≤ κ * |Real.log n - Real.log m| :=
+      hwκ.trans (mul_le_mul_of_nonneg_left hsep hκ0)
+    have hs2 : 2 * w ≤ |Real.log n - Real.log m| := by linarith
+    have hyy : 0 ≤ y m * y n := mul_nonneg (hy0 m) (hy0 n)
+    -- `ω(s − w) ≤ 1/(2(1 − κ)s) + 1`
+    have hω : ∀ s : ℝ, 2 * w ≤ s → w ≤ κ * s →
+        archLevyDensity (s - w) ≤ 1 / (2 * (1 - κ) * s) + 1 := by
+      intro s hs hws
+      have hsw : 0 < s - w := by linarith
+      have h1 := archLevyDensity_le_inv_add_one hsw
+      have h2 : 1 / (2 * (s - w)) ≤ 1 / (2 * (1 - κ) * s) :=
+        one_div_le_one_div_of_le (mul_pos (mul_pos two_pos hκ1) (by linarith)) (by nlinarith)
+      linarith
+    rcases le_or_gt (Real.log n - Real.log m) 0 with hneg | hpos
+    · have e : |Real.log n - Real.log m| = Real.log m - Real.log n := by
+        rw [abs_of_nonpos hneg]; ring
+      rw [e] at hwsep hs2
+      have h1 : W m n = 0 := integral_levy_abs_pairCorr_eq_zero hGsupp hw0 (by linarith) m n
+      have h2 : W n m ≤ archLevyDensity (Real.log m - Real.log n - w) *
+          ((∫ v, |G n v|) * ∫ v, |G m v|) := integral_levy_abs_pairCorr_le hG hGsupp hw0 hs2 n m
+      have h3 := hω _ hs2 hwsep
+      have hω0 : 0 ≤ archLevyDensity (Real.log m - Real.log n - w) :=
+        (archLevyDensity_pos (show (0 : ℝ) < Real.log m - Real.log n - w by linarith)).le
+      have h4 := mul_le_mul_of_nonneg_left (hmass n m) hω0
+      rw [e, h1]
+      have : archLevyDensity (Real.log m - Real.log n - w) * (w * (y n * y m)) ≤
+          (1 / (2 * (1 - κ) * (Real.log m - Real.log n)) + 1) * (w * (y m * y n)) := by
+        rw [mul_comm (y n)]
+        exact mul_le_mul_of_nonneg_right h3 (by positivity)
+      nlinarith
+    · have e : |Real.log n - Real.log m| = Real.log n - Real.log m := abs_of_pos hpos
+      rw [e] at hwsep hs2
+      have h1 : W n m = 0 := integral_levy_abs_pairCorr_eq_zero hGsupp hw0 (by linarith) n m
+      have h2 : W m n ≤ archLevyDensity (Real.log n - Real.log m - w) *
+          ((∫ v, |G m v|) * ∫ v, |G n v|) := integral_levy_abs_pairCorr_le hG hGsupp hw0 hs2 m n
+      have h3 := hω _ hs2 hwsep
+      have hω0 : 0 ≤ archLevyDensity (Real.log n - Real.log m - w) :=
+        (archLevyDensity_pos (show (0 : ℝ) < Real.log n - Real.log m - w by linarith)).le
+      have h4 := mul_le_mul_of_nonneg_left (hmass m n) hω0
+      rw [e, h1]
+      have : archLevyDensity (Real.log n - Real.log m - w) * (w * (y m * y n)) ≤
+          (1 / (2 * (1 - κ) * (Real.log n - Real.log m)) + 1) * (w * (y m * y n)) :=
+        mul_le_mul_of_nonneg_right h3 (by positivity)
+      nlinarith
+  have hcross := two_mul_sum_cross_le hN hw0 hκ0 hκ hlam hy0 (fun m n => 2 * W m n) hWW
+  have e : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else 2 * W m n) =
+      2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else W m n) := by
+    rw [mul_sum]; refine sum_congr rfl fun m _ => ?_
+    rw [mul_sum]; refine sum_congr rfl fun n _ => ?_
+    split_ifs <;> ring
+  rw [e] at hcross
+  linarith
+
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
