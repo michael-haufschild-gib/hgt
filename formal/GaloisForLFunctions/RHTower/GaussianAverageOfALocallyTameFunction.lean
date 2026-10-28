@@ -143,7 +143,7 @@ theorem norm_taylorRemainder_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z
   have hsum := Complex.hasSum_taylorSeries_on_ball hF.differentiableOn hwball
   have htail := (hasSum_nat_add_iff' 2).mpr hsum
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add, Nat.factorial_zero,
-    Nat.factorial_one, Nat.cast_one, inv_one, pow_zero, pow_one, one_smul, iteratedDeriv_zero,
+    Nat.factorial_one, pow_zero, pow_one, iteratedDeriv_zero,
     iteratedDeriv_one, smul_eq_mul] at htail
   have hgeo : HasSum (fun n : ℕ => M * q ^ 2 * q ^ n) (M * q ^ 2 * (1 - q)⁻¹) :=
     (hasSum_geometric_of_lt_one hq0 (by linarith)).mul_left _
@@ -408,7 +408,7 @@ theorem integral_gaussDensity_mul_sub_eq {F : ℂ → ℂ} {z : ℂ} {t : ℝ} (
   have hintgu : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * (u : ℂ)) := by
     have h := integrable_gaussDensity_mul_pow ht 1
     simp only [pow_one] at h
-    exact h.ofReal.congr (Eventually.of_forall fun u => by simp only [RCLike.ofReal_mul])
+    exact h.ofReal.congr (Eventually.of_forall fun u => by simp only [RCLike.ofReal_mul]; rfl)
   have hA : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u)
       - F z * (gaussDensity t u : ℂ)) := hint.sub (hintg.const_mul _)
   have hB : Integrable (fun u : ℝ => I * deriv F z * ((gaussDensity t u : ℂ) * (u : ℂ))) :=

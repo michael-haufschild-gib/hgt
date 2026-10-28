@@ -1229,7 +1229,7 @@ theorem two_scale_twisted {p Q X N : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q
         have := hZV; rw [hV, mul_zero] at this; linarith
       rw [hZ, zero_div, zero_mul, mul_zero]
     · calc roughHarmonic Q (N / X) * Z = Z / smoothVar Q X h *
-            (roughHarmonic Q (N / X) * smoothVar Q X h) := by field_simp; ring
+            (roughHarmonic Q (N / X) * smoothVar Q X h) := by field_simp
         _ ≤ _ := mul_le_mul_of_nonneg_left hWV hZVdiv0
   rw [← walkEnergy_small_add_large Q N z, ← hy]
   have : g₁' - ε / 2 = 2 * Real.log 2 - η / 4 + Z / smoothVar Q X h := by
@@ -1354,7 +1354,9 @@ theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : 
     rw [hPdef]
     have := sum_smoothBox_zeroExt_mul Q X h (finiteFlip {p})
     rw [← hc] at this
-    rw [← this]
+    rw [show ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * (finiteFlip {p} a * zeroExt Q X h a) =
+      ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * (zeroExt Q X h a * finiteFlip {p} a) from
+      sum_congr rfl fun a _ => by ring, this]
     exact sum_congr rfl fun a _ => by ring
   obtain ⟨Av, hAvdef⟩ : ∃ Av : ℝ, Av = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
     (finiteFlip {p} a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c))) :=
@@ -1372,9 +1374,11 @@ theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : 
     congr 1
     exact sum_congr rfl fun a _ => by ring
   have hmean0 : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) = 0 := by
-    have := sum_smoothBox_zeroExt_eq_zero Q X h
-    rw [sum_smoothBox_zeroExt_mul Q X h (fun _ => 1)] at this
-    simpa [← hc] using this
+    have h0 := sum_smoothBox_zeroExt_eq_zero Q X h
+    have e := sum_smoothBox_zeroExt_mul Q X h (fun _ => 1)
+    simp only [mul_one] at e
+    rw [e, ← hc] at h0
+    exact h0
   have h5B : B = Bv + Bh := by
     rw [hBdef, ← sum_filter_add_sum_filter_not (smoothSet Q N) (fun a => a ≤ X), hset, hBvdef,
       hBhdef]

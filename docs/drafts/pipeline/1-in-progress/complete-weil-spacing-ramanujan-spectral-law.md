@@ -290,7 +290,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 25 | `HTGeometry/SymmetricFormGroundProjection` | Scratch verified; installed; first required olean built |
 | 26 | `HTGeometry/HermitianLowerSpectralWindows` | Scratch verified; installed; first required olean built |
 | 27 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilSelfEnergyHasItsFinitePart` | Scratch verified; installed; first required olean built |
-| 28 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionSelectsTheConstantRamanujanMode` | Scratch verified; installed |
+| 28 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionSelectsTheConstantRamanujanMode` | Scratch verified; installed; first required olean built |
 | 29 | `HTGeometry/FiniteTwoPoleKernelBounds` | Unchecked scratch |
 | 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Unchecked scratch |
 | 31 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasAnExactErrorDecomposition` | Unchecked scratch |
