@@ -15,6 +15,8 @@
 - [ ] Final individual source checks, transitive axiom checks, umbrella imports, foundational documentation, scratch cleanup
 
 No novelty audits or web searches are part of this task, per user instruction.
+README integration must remain crisp and foundational; proof details, module
+inventories, and verification history stay on this card and in audit logs.
 The complete spectral statement remains unproved until its Lean endpoints pass.
 The argument below records the exact intended theorem and constants; generic
 support hypotheses must be discharged on the literal matrix.
@@ -241,9 +243,8 @@ transitive axiom report in `logs/complete-weil-spacing-axioms-2026-10-28.log`;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
 Twenty-two support modules are scratch verified and installed; twenty-eight
 retained endpoint axiom reports are clean. First required oleans are built
-through module twenty-one; the two-pole moment dependency is being generated.
-The first twenty-one modules are imported by their owner umbrellas; no umbrella
-was compiled. The literal signed two-pole product error now passes Lean. The SSHA density increment bound is documented in its README.
+through module twenty-two. All twenty-two are imported by their owner umbrellas;
+no umbrella was compiled. The complete mean-zero center-row assembly is under check. The SSHA density increment bound is documented in its README.
 Final installed-source checks without output generation remain outstanding.
 The three main endpoints are still unchecked:
 
@@ -283,7 +284,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 19 | `RenormalizedArithmeticPotentialTheory/TheCenterCollarIsPaidByTheTopAtoms` | Scratch verified; installed; first required olean built |
 | 20 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper` | Scratch verified; installed; first required olean built |
 | 21 | `HTGeometry/FiniteShiftedHarmonicAbelBounds` | Scratch verified; installed; first required olean built |
-| 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Scratch verified; installed |
+| 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Scratch verified; installed; first required olean built |
 | 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Unchecked scratch |
 | 24 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionHasBoundedPoleResidual` | Unchecked scratch |
 | 25 | `HTGeometry/SymmetricFormGroundProjection` | Unchecked scratch |

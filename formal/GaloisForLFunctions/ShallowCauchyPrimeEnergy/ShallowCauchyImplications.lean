@@ -54,6 +54,7 @@ theorem eventually_T_mul_log_le_eight_pi_mul_Ncount :
     _ = 8 * Real.pi * (T / (4 * Real.pi) * Zeta23.l T) := by
         have hpi : Real.pi ≠ 0 := Real.pi_pos.ne'
         field_simp
+        norm_num
     _ ≤ 8 * Real.pi * (Zeta23.Ncount T (2 * T) : ℝ) :=
         mul_le_mul_of_nonneg_left hN (by positivity)
 
@@ -693,16 +694,3 @@ theorem exists_arbitrary_deepFraction_with_linear_shallowEnergy_budget :
 end RHTower
 
 end
-
-#print axioms RHTower.lorentz_pairSum_eq_integral_windowNarrowSum_sq
-#print axioms RHTower.exists_dyadicZeroWindow_lorentzPairSum_le
-#print axioms RHTower.exists_uniform_xiShallowCauchyEnergy_le
-#print axioms RHTower.exists_xiShallowCauchyEnergy_one_div_log_le
-#print axioms RHTower.exists_finiteOfflineCauchyEnergy_xiRightUpper_one_div_log_le
-#print axioms RHTower.exists_finiteOfflineCauchyEnergy_zetaZeros_one_div_log_le
-#print axioms RHTower.exists_xiShallowCauchyEnergy_one_div_log_le_mul_Ncount
-#print axioms RHTower.exists_criticalScale_xiShallowCauchyEnergy_saturation
-#print axioms RHTower.exists_shallow_zetaZeros_sq_multiplicity_and_closePairs_le
-#print axioms RHTower.exists_card_xiDeepRightUpperWindow_exponential_le
-#print axioms RHTower.exists_shallowCauchyEnergy_and_exponential_deepWindow_le
-#print axioms RHTower.exists_arbitrary_deepFraction_with_linear_shallowEnergy_budget

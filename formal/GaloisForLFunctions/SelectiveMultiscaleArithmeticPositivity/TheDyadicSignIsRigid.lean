@@ -597,7 +597,7 @@ theorem not_dyadicPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf :
   have hθ2 := hX₀ x hxX
   have hθ : x * ((C - 1) / 2) ≤ Chebyshev.theta (C * x) - Chebyshev.theta x := by
     have e : ε₀ * (C + 1) = (C - 1) / 2 := by
-      simp only [ε₀]; field_simp; ring
+      simp only [ε₀]; field_simp
     have h1 := (abs_le.mp hθ1).1
     have h2 := (abs_le.mp hθ2).2
     nlinarith
@@ -606,7 +606,8 @@ theorem not_dyadicPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf :
   have hfinal : c * (C - 1) * Real.exp (-(3 * r / 2)) * Real.exp (1 / 2 * D) - 0 =
       c * (2 * Real.exp (-((D + r) / 2)) * (x * ((C - 1) / 2))) := by
     rw [sub_zero, show c * (2 * Real.exp (-((D + r) / 2)) * (x * ((C - 1) / 2))) =
-      c * (C - 1) * (Real.exp (-((D + r) / 2)) * x) by ring, hexp, ← Real.exp_add]
+      c * (C - 1) * (Real.exp (-((D + r) / 2)) * x) by ring, hexp, mul_assoc (c * (C - 1)),
+      ← Real.exp_add]
     congr 2; ring
   rw [hfinal]
   refine mul_le_mul_of_nonneg_left ?_ hc.le

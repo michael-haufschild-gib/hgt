@@ -439,7 +439,7 @@ theorem le_negIndex_of_separated {p : G → ℂ} (hp : IsPosDefOnGroup p)
     · simp only [ω', h, if_true]; exact hω j
     · simp only [ω', h, if_false]; exact (map_ne_zero_iff _ (RingHom.injective _)).mpr (hω j)
   · by_cases h : 1 < ‖χ j u‖
-    · simpa only [χ', h, if_true] using h
+    · simp only [χ', h, if_true]
     · simp only [χ', h, if_false]
       rw [norm_reflectChar]
       exact one_lt_inv₀ (norm_pos_iff.mpr (map_ne_zero _ _)) |>.mpr
