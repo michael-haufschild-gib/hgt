@@ -46,9 +46,11 @@ Metzler one: no gauge of the atomic basis is Metzler there.
 ## Questions
 
 1. **Hodge index without a surface.** Which forms on the atoms `log n` come from Lorentzian
-   objects built from local factors and the scale map? The Euler-product Hessian is Lorentzian
-   for every nonnegative local datum and is not the Weil pairing; the atomic intersection form of
-   `ζ` has a negative diagonal and is reached only by identification, and its Hodge index is a
+   objects built from local factors and the scale map? Exactly the Lorentzian forms: every
+   Hessian of the closure at a nonnegative point is symmetric, nonnegative and hyperbolic, and
+   every such form is the Hessian of its own quadratic. The Euler-product Hessian is Lorentzian for
+   every nonnegative local datum and is not the Weil pairing; the atomic intersection form of `ζ`
+   has a negative diagonal and is reached only by identification, and its Hodge index is a
    trickle-down inequality.
 2. **The sign as a hypothesis.** What is the positivity locus of the gauge torus? Modulo the
    archimedean characters `n^{iτ}` it is the Euler point: the sign is a gauge fixing by the
@@ -57,10 +59,15 @@ Metzler one: no gauge of the atomic basis is Metzler there.
 3. **Transfer.** Which operations preserve the signature, and is the Euler product one? Pullback,
    domination, conditionally negative sums and products in disjoint variables do; sums do not. For
    Metzler forms local-to-global is `(TD)`, a sum-closed condition, and polar gluing prices a sum
-   exactly. The Euler product preserves the Lorentzian property and is blind to the Euler point.
+   exactly. For polynomials the mixed Hessians of a Lorentzian polynomial trickle down, so the
+   class is closed under differentiation, nonnegative substitution and products: the Euler
+   product of Lorentzian local factors, composed with any nonnegative scale map, has one positive
+   square at every nonnegative point. The closure is blind to the Euler point.
 4. **Realization.** What replaces Frobenius? Over `ℤ` no conformal map: dilations are boosts. Over
    `𝔽_q` the trickle-down inequality is a square-root count, a finite piece of the ladder decides,
-   and the local factor at `p` is Lorentzian exactly when RH over `𝔽_p` holds for it. Over `ℤ`, at a
+   and the Frobenius ladder of the local factor at `p` has the Hodge index exactly when RH over
+   `𝔽_p` holds for it. The local polynomial itself is Lorentzian only at the Weil bound, hence
+   never at a prime: Ramanujan and Lorentzian are opposite inequalities. Over `ℤ`, at a
    fixed fraction of the spacing, the archimedean self-energy distributed by the tilt of the prime
    rows supplies `(TD_π)` and pays the polar dispersion.
 5. **The critical regime.** What happens at the spacing scale? The Metzler sign holds exactly up
@@ -142,7 +149,13 @@ construction it exposes.
 - Polar gluing with its exact dispersion, and reflection splitting with the optimal repair.
 - The Markov pairing of atoms: separation, the overlap law, tilted per-atom margins.
 - Frobenius ladders, square-root counts and finite-depth criteria for curve data.
-- Lorentzian polynomials in coefficient form and the Turán layer of `ξ`.
+- Lorentzian polynomials: the Hessian and mixed-Hessian trickle-down theorems, the
+  Alexandrov–Fenchel and Khovanskii–Teissier inequalities, strong log-concavity at nonnegative
+  points, and closure under differentiation, nonnegative substitution and products.
+- The Euler product closure for Lorentzian local factors of any degree, and the Ramanujan–Lorentzian
+  rigidity of local L-factors at the Weil bound.
+- The Turán layer of `ξ` and Laguerre's inequality for its Jensen polynomials on the half-line.
+- The covered-measure bound: an atomic test of overlap ratio `K` lives on measure `≤ K`.
 
 ## Core theory
 
@@ -219,6 +232,17 @@ datum: every ladder is Metzler, satisfies `(TD_π)` and has hyperbolic links
 `𝔽_p` for its local factor; with the Euler-product closure, which is Lorentzian for every
 nonnegative local datum, the content of the Hodge index over `ℤ` lies entirely in the
 local-to-global step.
+
+[RamanujanAndLorentzianMeetOnlyAtTheWeilBound](RamanujanAndLorentzianMeetOnlyAtTheWeilBound.lean):
+that input is a statement about the ladder, not about the local polynomial. Homogenize a
+sign-normalized local factor `1 + a_1T + ⋯ + a_dT^d`. If it is Lorentzian its normalized
+coefficients are log-concave, `b_k ≤ b_1^k` (`le_pow_of_logConcave`), and `a_d = (√q)^d` forces
+`a_1 ≥ d√q` (`sqrt_le_of_isLorentzianPoly`). Ramanujan gives `a_1 ≤ d√q`, so the two meet only at
+the maximal factor `(1 + √qT)^d` (`ramanujan_lorentzian_rigid`, `isLorentzianPoly_maximal`). At a
+prime an integral trace cannot equal `d√p`, so no Ramanujan local factor over `𝔽_p` is Lorentzian
+(`not_isLorentzianPoly_at_prime`). For elliptic curves `1 + aT + pT²` is Lorentzian iff `a² ≥ 4p`,
+the reverse of the Hasse bound (`isLorentzianPoly_quadFactor_iff`, `not_isLorentzianPoly_of_hasse`).
+The Lorentzian local inputs of a product closure cannot be the local L-factors.
 
 ### The atomic family of `ζ`
 
@@ -299,6 +323,21 @@ twisted prime pairing is exactly `ω(p)(log p/√p)‖g‖²` while the Lévy cr
 below the spacing (`not_exists_nonneg_gauge_twinAtomicIntersectionGram`), while `ω ≡ 1` gives
 `ζ`'s Metzler Gram.
 
+[TheOverlapRatioIsTheCoveredMeasure](TheOverlapRatioIsTheCoveredMeasure.lean): an atomic test
+vanishes off `⋃_n [log n, log n + w]`, of measure at most `Nw ≤ K` since `Nδ_N ≤ 1`
+(`measureReal_atomCover_le`, `natCast_mul_atomSpacing_le_one`). So `∫_I (1 − f)² ≥ |I| − K` for
+every interval `I` (`sub_le_setIntegral_sq_of_overlap`): at the ratio `c★`, where the Hodge index of
+the atomic family is a theorem, no atomic test comes within `L²`-distance `√(1 − c★)` of the
+indicator of a unit interval (`one_sub_fixedWidthRatio_le_setIntegral_sq`), and an atomic family
+exhausting `[0, log N]` needs `K ≥ log N − ε²` (`le_overlap_of_setIntegral_sq_le`). Bounded overlap
+is a statement about test functions of bounded support measure; the exhaustive regime is the
+regime of unbounded overlap in which positivity of the atomic Weil Grams is RH. Adapted families,
+with a bump of width `w_n ≤ c log(1 + 1/n)` at each atom, are separated for `c < 1`
+(`adaptedCell_disjoint`) and cover the fraction `c` of `[0, log(N + 1)]`
+(`measureReal_adaptedCover_le`, `sub_le_setIntegral_sq_adapted`): ratio one is their Nyquist
+rate, and they are the families on which a Hodge index below the Nyquist rate would approach
+exhaustion.
+
 [HyperbolicityIsBlindTheSignIsNot](HyperbolicityIsBlindTheSignIsNot.lean): the twisted Markov
 pairing is symmetric and bilinear, so the polar defect of a twin's Gram is the twin's Weil form
 `M_ω(f) + 2AB` (`polarDefect_twin`). The stability law and the pole estimate are twist-blind, so at
@@ -343,6 +382,19 @@ Hessian of `∏_p ⟨L_p, y⟩` at a positive point is a positive multiple of th
 symmetric form of the normalized local data, hence Lorentzian for every nonnegative local datum.
 The product closure cannot distinguish the Euler point from other nonnegative Euler products,
 and it contains neither the Γ-term, the pole plane nor the diagonal.
+
+[TheEulerProductOfLorentzianLocalFactorsIsLorentzian](TheEulerProductOfLorentzianLocalFactorsIsLorentzian.lean):
+the closure holds for local factors of every degree. Lorentzian polynomials in complementary
+variables have a Lorentzian product (`IsLorentzianPolynomial.mul_of_supportedIn`): the support is
+a product of M-convex sets, and each quadratic derivative of the product is a single product of
+total degree two — a nonnegative multiple of a quadratic derivative of one factor, or the product
+`symmProd` of two nonnegative linear forms. Placing the factors in the disjoint variables
+`x_{p,·}` (`isLorentzianPolynomial_rename`, `isLorentzianPolynomial_disjointProd`) and merging by
+the nonnegative substitution `x_{p,i} ↦ x_i` gives: every product of Lorentzian polynomials, and
+its composition with any nonnegative substitution, is mixed-Lorentzian (`isMixedLorentzian_prod`,
+`isMixedLorentzian_prod_subst`). For linear local factors the Hessian of `∏_p ⟨L_p, y⟩` is
+Lorentzian at every `y ≥ 0`, with no positivity required of the local factors at `y`
+(`isLorentzian_eulerHessian_of_nonneg`).
 
 ### Renormalized prime-place data
 
@@ -393,6 +445,52 @@ datum is unitary or `t ≥ 1`; the same threshold holds in the Hodge completion 
 The repaired pairing differs from the original one: a proof of the original Hodge index must
 eliminate the odd sector through a proved property of the source.
 
+### Lorentzian polynomials and their closure
+
+A polynomial `f = Σ_β c_β x^β` is Lorentzian of degree `d` (`IsLorentzianPoly`,
+`IsLorentzianPolynomial`) when its coefficients are nonnegative, its support is M-convex and every
+quadratic derivative `∂^α f`, `|α| = d − 2`, has one positive square. The programme proves the
+basic theorems of the class by its own local-to-global principle: Euler's identity is the link
+condition, so the weighted Metzler Hodge index theorem lifts signature from derivatives to the
+whole polynomial.
+
+[TheHessianOfALorentzianPolynomialTricklesDown](TheHessianOfALorentzianPolynomialTricklesDown.lean):
+`∂_i f` is Lorentzian (`isLorentzianPoly_coeffDeriv`). The Hessian `∇²f(x) = Σ_{|α|=d−2}
+(x^α/α!) Q_α` satisfies `(d − 2)∇²f(x) = Σ_i x_i ∇²(∂_i f)(x)` and `∇²(∂_i f)(x) x = (d − 2)∇²f(x) e_i`
+(`hess_succ_smul`, `sum_hess_coeffDeriv_mul`): the Hessians of the partial derivatives are links
+weighted by `x`. Reverse Cauchy–Schwarz in each link gives `(TD_x)`; the M-convex path lemma
+(`mconvex_path`) gives connectivity on the active variables; so `∇²f(x)` has one positive square
+for `x > 0`, and by continuity for `x ≥ 0` (`isHyperbolic_hess`, `isHyperbolic_hess_of_nonneg`).
+
+[TheMixedHessiansOfALorentzianPolynomialAreHyperbolic](TheMixedHessiansOfALorentzianPolynomialAreHyperbolic.lean):
+the same induction runs on polarizations. With `dval c [v_1, …, v_m] γ = ∂_{v_1}⋯∂_{v_m}∂^γ f`, the
+mixed Hessian along `v :: vs` is `Σ_i v_i H_i` with links `H_i` the mixed Hessians of `∂_i f` and
+`H_i(u, v) = (Hu)_i` (`mixHess_cons`, `bil_mixHess_link`, `weightedTrickleDown_of_links`). Every
+mixed quadratic derivative along nonnegative directions has one positive square
+(`isHyperbolic_mixHess`). This is the Alexandrov–Fenchel inequality
+`D(u, v, vs)² ≥ D(u, u, vs) D(v, v, vs)` for nonnegative `u, vs` (`alexandrov_fenchel`); along two
+directions the mixed sequence `k ↦ D(u^k, v^{d−k})` is log-concave (`khovanskii_teissier`).
+
+[TheLorentzianClassIsClosedUnderNonnegativeSubstitution](TheLorentzianClassIsClosedUnderNonnegativeSubstitution.lean):
+a polynomial is mixed-Lorentzian (`IsMixedLorentzian`) when it has nonnegative coefficients, is
+homogeneous, and every Hessian of `∂_{v_1}⋯∂_{v_{d−2}} p`, `v_t ≥ 0`, is hyperbolic. Lorentzian
+polynomials are mixed-Lorentzian (`IsLorentzianPolynomial.isMixedLorentzian`, via
+`hess0_dirDerivs`). The mixed class is closed under directional derivatives
+(`IsMixedLorentzian.differentiate`) and nonnegative substitutions (`IsMixedLorentzian.subst`):
+the chain rule pushes directions forward and pulls Hessians back. Its Hessian at every
+nonnegative point has one positive square (`IsMixedLorentzian.isHyperbolic_hessAt`), and reverse
+Cauchy–Schwarz against the point gives strong log-concavity
+`d p(x) ∂_v²p(x) ≤ (d − 1)(∂_v p(x))²` (`IsMixedLorentzian.logConcave`): every restriction
+`t ↦ p(x + tv)` satisfies the Newton inequality of a real-rooted polynomial of degree `d` at
+`t = 0`.
+
+[TheClosureProducesExactlyTheLorentzianForms](TheClosureProducesExactlyTheLorentzianForms.lean):
+a matrix is Lorentzian iff it is the Hessian at a nonnegative point of a mixed-Lorentzian
+polynomial (`isLorentzian_iff_exists_hessAt`); the Hessians of Euler products of Lorentzian local
+factors after a nonnegative substitution are Lorentzian (`isLorentzian_hessAt_prod_subst`), and a
+form with a negative entry is never such a Hessian (`not_exists_hessAt_of_neg`). Hessians of the
+closure carry the Lorentzian signature and nothing else.
+
 ### The Turán layer
 
 [LorentzianPolynomialsAndTheTuranLayer](LorentzianPolynomialsAndTheTuranLayer.lean): a bivariate
@@ -401,6 +499,16 @@ and its binomially normalized coefficients are log-concave. Every homogenized Je
 `Σ_k C(d,k) γ_{n+k} x^k y^{d−k}` of `ξ(½ + x) = Σ γ_k x^{2k}` at the centre is Lorentzian. Pólya's
 criterion uses `k! γ_k`, whose Newton inequalities are stronger; Lorentzianity does not give
 real-rootedness.
+
+[TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine](TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine.lean):
+what Lorentzianity gives is Laguerre's inequality where the roots are not. The strong
+log-concavity of the mixed class at `(s, 1)` along `(1, 0)` is `d J J'' ≤ (d − 1) J'²` at `s ≥ 0`
+for the dehomogenization `J` of a Lorentzian bivariate form (`laguerre_halfLine_of_isLorentzianPoly`):
+`J^{1/d}` is concave on `[0, ∞)`. Every Jensen polynomial of `ξ` therefore satisfies Laguerre's
+inequality on the nonnegative half-line (`xi_jensen_laguerre_halfLine`). A real-rooted polynomial
+satisfies it on the whole line, and the Jensen polynomials of `ξ` have no positive roots: RH is the
+same family of inequalities on the negative half-line, where the roots would lie. At `d = 2` the
+inequality is the Turán inequality, independent of `s`.
 
 ## Research directions
 
@@ -419,7 +527,10 @@ form on the complement of the pole vector, coupled to the pole plane through the
 along which the tilted margin grows. For `K > 1` no gauge of the atoms is Metzler, so the question
 becomes (TD) with a proved primitive gap, or `(TD_π)` in another basis. A proof through the Metzler
 structure is selective by construction: at level `N` no twin flipping a prime `≤ N` admits a
-Metzler gauge.
+Metzler gauge. The same questions stand for adapted families at a fixed fraction `c < 1` of the
+local spacing: they are separated and cover the fraction `c` of the atomic range; the sign
+argument for separated atoms (disjoint nonnegative bumps meet nonpositively) is to be carried to
+bumps of different widths, which makes their atomic Gram Metzler.
 
 **The Metzler property beyond atomic resolution.** Decided for gauges of the atomic basis: the
 threshold overlap ratio is exactly `K = 1` for every profile positive on `(0, 1)`. Open: a natural
@@ -467,11 +578,17 @@ fields the construction must reject the golden and complex fake data for a named
 
 **Signed overlap and exhaustion.** Retain the overlap Gram, prime lag form, archimedean cross
 form and both poles in one estimate, with errors in the overlap norm, and establish a transfer to
-an exhaustive family.
+an exhaustive family. An atomic test of overlap ratio `K` is supported on measure `≤ K`, so a
+single atomic family is exhaustive only when `K` grows at least like `log N`: a transfer must
+either let the overlap grow with `N` or assemble tests across levels, where positivity does not
+add.
 
-**Higher-degree lifts and stability.** Extend the coefficient theory with products, nonnegative
-substitutions and derivatives where a candidate lift requires them; find an arithmetic operation
-producing the factorially normalized Newton inequalities or real stability.
+**Higher-degree lifts and stability.** Products, nonnegative substitutions and derivatives are
+closed in the mixed class. Open: that a mixed-Lorentzian polynomial has M-convex support, which
+makes the two classes equal and closes the coefficient class under products (an M-convex
+Minkowski-sum statement); a Lorentzian lift of the Weil pairing through the closure, with the
+Γ-term, pole plane and diagonal identified; an arithmetic operation producing the factorially
+normalized Newton inequalities or real stability.
 
 **Exceptional extinction.** Combine geometric defects with the energy and work theories of AES
 and AID: a source estimate below the closed quantum of transverse energy or damped work would
@@ -488,11 +605,13 @@ exclude an off-line zero. Average rarity alone cannot.
 | A proved Hodge index on an atomic family is arithmetic | At a fixed fraction of the spacing it holds at the Liouville point; only the Metzler sign rejects that twin |
 | Beyond the spacing a better gauge restores the Metzler sign | For `K > 1` an odd triangle of atoms frustrates every unimodular gauge; change the basis or prove the gap |
 | A positive Euler product gives the arithmetic sign | Its Hessian is Lorentzian for every nonnegative local datum and is not the Weil pairing |
+| The local L-factor at a prime is Lorentzian because of RH over `𝔽_p` | RH makes its Frobenius ladder trickle down; the polynomial is Lorentzian only at the Weil bound, never at a prime |
+| Mixed-Lorentzian products are Lorentzian in coefficient form | The closure is proved for the mixed class; M-convexity of a product's support is a separate statement |
 | A Hecke dilation can play the role of Frobenius | Dilations are isometries; Weil uses a conformal factor `q` |
 | The scale map is the archimedean place | A substitution is not an identity with the completed Γ-term and finite part |
 | A nef shift repairs the arithmetic form | It changes coordinates; a regulator subtraction changes the form |
 | A common gauge proves positivity | It selects coordinates or a source; it does not prove a signature |
-| Positive local sections exhaust the Weil criterion | Shrinking supports require a separate signed transfer theorem |
+| Positive local sections exhaust the Weil criterion | Shrinking supports require a separate signed transfer theorem; an atomic test of overlap ratio `K` lives on measure `≤ K` |
 | Fixed-scale averages control every signed vector | Quantifiers and norms differ; prove the passage |
 | Lorentzian log-concavity implies Jensen real-rootedness | Real stability is stronger |
 | A symmetry obstruction excludes every geometry | It applies to the specified localization and invariance mechanism |

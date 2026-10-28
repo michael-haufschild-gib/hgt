@@ -52,6 +52,7 @@ omit [DecidableEq ι] in
 theorem mfact_eq_prod (α : ι →₀ ℕ) : mfact α = ∏ i, ((α i)! : ℝ) := by
   rw [mfact, Finsupp.prod_fintype _ _ (fun _ => by simp)]
 
+omit [DecidableEq ι] in
 theorem mfact_pos (α : ι →₀ ℕ) : 0 < mfact α := by
   rw [mfact_eq_prod]; exact prod_pos fun i _ => by positivity
 
@@ -243,6 +244,7 @@ theorem isLorentzianPoly_coeffDeriv {n : ℕ} {c : (ι →₀ ℕ) → ℝ} (hc 
 
 variable {c : (ι →₀ ℕ) → ℝ} {x : ι → ℝ}
 
+omit [DecidableEq ι] in
 theorem quadDeriv_nonneg (hc : ∀ β, 0 ≤ c β) (α : ι →₀ ℕ) (j k : ι) : 0 ≤ quadDeriv c α j k := by
   simp only [quadDeriv, Matrix.of_apply]
   exact mul_nonneg (mfact_pos _).le (hc _)
@@ -541,6 +543,7 @@ theorem isHyperbolic_hess {n : ℕ} {c : (ι →₀ ℕ) → ℝ} (hc : IsLorent
     have hc' : IsLorentzianPoly (n + 3) c := hc
     exact isHyperbolic_hess_succ hc' (fun i => ih (isLorentzianPoly_coeffDeriv hc' i)) hx
 
+omit [DecidableEq ι] in
 /-- Hyperbolicity is closed: a continuous family hyperbolic for `t > 0` is hyperbolic at `0`. -/
 theorem isHyperbolic_of_continuous {Q : ℝ → Matrix ι ι ℝ}
     (hcont : ∀ j k, Continuous fun t => Q t j k) (hpos : ∀ t, 0 < t → IsHyperbolic (Q t)) :

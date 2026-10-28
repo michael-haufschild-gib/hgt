@@ -413,6 +413,13 @@ the place that pays.
 | **RP20 Characters are invisible to polar matching** | real character gauges mod a prime are sign gauges with matching coefficient `0`; their step profiles carry no polar divergence | `charGauge_matching`, `abs_charGaugeForm_stepProfile_le` |
 | **RP21 Mertens' theorem in residue classes** | for `r` a unit mod `q`, `Σ_{t ≤ y, t ≡ r} Λ(t)/t = log y/φ(q) + O(1)` | `exists_abs_classMertensSum_sub_le` |
 | **RP22 The torsion counterterm is the golden ratio** | `φ log N − C₁ ≤ κ_tor(N) ≤ φ log N + C₂` for every `N ≥ 1`; `diag(log n) + P_N ≤ φ(log N + log 4 + 4)`, attained up to `O(1)` by `x_n = φ^{ω(n)}/√n` | `torsionCounterterm_golden`, `diag_add_atomicWeilForm_le_golden_log`, `diag_add_atomicWeilForm_goldenTest_ge` |
+| **RP23 The fixed-point law** | for every `α ∈ ℝ`, `spec(α diag(log n) + P_N) ⊂ [κ₋(log N + C), κ₊(log N + C)]`, both ends attained up to `O(1)`, `κ± = (α ± √(α² + 4))/2`; at `α = 1`: `[−log N/φ, φ log N]` | `fixedPoint_identity`, `fixedPoint_top`, `fixedPoint_bottom` |
+| **RP24 The horizon is blind to residue classes** | on step profiles over the unit classes mod `q`, `P_N = (q/φ(q)) ℓ² + O(\|c\|-mass)`: rank one for every `q`; survival on `ℓ = 0`; inputs `Σ_{m ≤ M, m ≡ a} 1/m = log M/q + O(q)` and `Σ_{m ≡ a} log(M/m)/m = (log M)²/(2q) + O(q log M)` | `exists_abs_atomicWeilForm_unitClassProfile_sub_le`, `exists_abs_residueGram_sub_le`, `abs_classHarmonic_sub_log_le`, `abs_classLogSum_sub_le` |
+| **RP25 The horizon sees only the mean of a class function** | twisting by `f(n mod q)` on the units gives the divergence `κ_f (Σ_i c_i log M_i)²`, `κ_f = (Σ_{a ∈ (ℤ/q)ˣ} f(a))²/(q φ(q))`; every character `χ ≠ 1` of every modulus (real and imaginary parts) has none | `exists_abs_atomicWeilForm_classFunctionProfile_sub_le`, `exists_abs_atomicWeilForm_charRe_le`, `exists_abs_atomicWeilForm_charIm_le` |
+| **RP26 Polar matching needs only the leading order** | transfer law: the horizon remainder of the gauged pole Gram is `Σ_{m ≤ M} (E(⌊M'/m⌋) + E(⌊M/m⌋))/m + O(H_M)`, `E = A_ε − κ log`; `A_ε(y)/log y → κ` gives `\|P_N(εx) − κℓ²\| ≤ (η log N + C_η) · mass`; on the diagonal, mass-scale remainder ⇔ `Σ_m E(⌊M/m⌋)/m = O(H_M)` | `abs_primeBilinear_gaugeTrunc_sub_transfer_le`, `gaugeForm_stepProfile_of_tendsto`, `gaugePole_bounded_iff` |
+| **RP27 The horizon laws hold for profiles of bounded variation** | every vector `G(n)/√n` is a step profile with absolute coefficient mass `V_N(G)`, the horizon variation; `\|P_N − ℓ²\| ≤ (log 8 + 5) H_N V_N²`, `\|P_N − ℓ² + 2γ\|x\|²\| ≤ (ηH_N + C_η) V_N²`, the tensor law with `C_{p,J} H_N (Σ_j V_N(G_j))²`; for `G = g(log ·/log N)`, `V_N ≤ Var g + \|g(1)\|`, so smooth signed (class) profiles obey the laws up to `o(mass)` | `abs_atomicWeilForm_profile_sub_le`, `exists_abs_atomicWeilForm_profile_finitePart_le`, `abs_atomicWeilForm_classwiseProfile_sub_le`, `exists_abs_atomicWeilForm_bv_finitePart_le`, `abs_atomicWeilForm_bv_classwise_sub_le` |
+| **RP28 The tower deficit changes sign between 43 and 47** | `d_p = u/sinh u − γ`, `u = (log p)/2`, strictly decreasing in `p`; for primes `d_p > 0` iff `p ≤ 43`; the tower finite part of `p` is nonnegative on every depth iff `p ≥ 47` | `towerDeficit_eq_div_sinh`, `towerDeficit_strictAnti`, `towerDeficit_pos_iff`, `towerFinitePart_nonneg_iff_fortySeven_le` |
+| **RP29 The prime form has a spectral gap below its pole** | there is `g > 0` with `D_N(x) ≥ g|x|²` and, eventually, `P_N(x) ≤ (log N − γ − g + ε)|x|²` for every `x ⊥ n^{−1/2}`; the harmonic measure `1/n` on `[1, N]` tensorizes over primes up to a constant | `exists_poleDefect_ge`, `exists_atomicWeilForm_le_of_pole_orthogonal`, `exists_harmonicVar_le_glauberForm` |
 
 ---
 
@@ -438,8 +445,8 @@ The twelve questions of the report (§4.4), in RAPT's terms.
    horizon, its metric is the tensor counterterm, and its prime finite part is the local tower form.
 2. **Does the anomaly cancel?** Yes, in two ways. Removing the self-intersection, as Weil's prime
    sum does, gives a covariant renormalized form. Covariance then forces a scalar counterterm,
-   `log N − γ + o(1)` with constant one (RP3). Keeping the anomaly costs at least `½ log N` (RP4) and at
-   most `log N + O(1)` (RP15).
+   `log N − γ + o(1)` with constant one (RP3). Keeping the anomaly costs exactly `(φ − 1) log N + O(1)`,
+   `φ` the golden ratio (RP22; the window was `[½, 1]`, RP4, RP15).
    At the horizon the cocycle disappears altogether: the tensor counterterm and the finite part are
    exactly invariant under `[p]` (RP9). The degree of `[p]` scales the orbit densities instead of
    shifting the regulator. *Answer:* the anomaly is an artifact of the radius; at the horizon it
@@ -518,10 +525,12 @@ majorant and the Hilbert-type row bound for the archimedean interaction of atoms
 self-energy with constant one; Abel summation with decreasing weights and Mertens' theorem for
 characters; character gauges; the equivalence of Gårding inequalities with finite-rank survival.
 
-Mertens' theorem in residue classes is built as well.
+Mertens' theorem in residue classes is built as well, with harmonic and logarithmic sums over
+residue classes, residue pole vectors and their exact Gram, class-function profiles, the
+transfer of the Mertens error to the horizon remainder, and summation by parts at the horizon
+(every profile as a step profile, with its horizon variation).
 
-**To build.** The class-wise horizon counterterm on the unit classes mod `q`; the finite part
-of the matching in the overlap regime beyond the spacing
+**To build.** The finite part of the matching in the overlap regime beyond the spacing
 (the spacing itself is reached in SSHA).
 
 ---
@@ -551,15 +560,18 @@ of the matching in the overlap regime beyond the spacing
    span. For every finite prime set `Q`, the actual matched operator on all supported integers
    has a complete explicit basis, simple energies `γ + log m + tameDifferent(m)`, and compact
    shifted inverse. The normalized horizon defect of each fixed finite class vector `b` is
-   exactly `−Re ⟨b,A_Q b⟩`. Open: the archimedean cross terms of distinct atoms on class profiles
-   and passage to all primes.
-3. **Characters at the horizon.** Mertens' theorem for characters (RP19) and in residue classes
-   (RP21) are proved, and real character gauges mod a prime have no polar divergence (RP20). Open:
-   the finite part `−L′/L(1, χ)` (convergence of `A_χ`, not only boundedness), complex characters
-   through the Hermitian prime form, and the class-wise counterterm. On the unit classes mod `q` the
-   horizon counterterm should be the rank-one `(q/φ(q)) ℓ(x)²`, unlike the unbounded rank on the
-   `p`-adic classes. The remaining input is the elementary asymptotics of `Σ_{m ≡ a} 1/m` and
-   `Σ_{m ≡ a} log(M/m)/m`.
+   exactly `−Re ⟨b,A_Q b⟩`. On all of `[1, N]` and all primes at once the pole is isolated with a
+   uniform gap: `P_N ≤ (log N − γ − g + ε)|·|²` on its complement (RP29). Open: the archimedean
+   cross terms of distinct atoms on class profiles, and the optimal gap (numerically `2 log 2`).
+3. **Characters at the horizon.** *Answered except for the finite part.* Mertens' theorem for
+   characters (RP19) and in residue classes (RP21) are proved. On the unit classes mod `q` the
+   horizon counterterm is the rank-one `(q/φ(q)) ℓ(x)²` for every `q` (RP24): the horizon reads
+   valuations, not residues, and the unbounded rank of the `p`-adic classes does not recur. A class
+   function `f` on the units is seen only through its mean, `κ_f = (Σ_a f(a))²/(q φ(q))`, so every
+   character `χ ≠ 1` of every modulus, real or complex (through `Re χ` and `Im χ`), has no polar
+   divergence (RP25). This extends RP20 from real characters mod a prime. Open: the finite part
+   `−L′/L(1, χ)`, which needs convergence of `A_χ`, not only boundedness, and is of the strength
+   of the prime number theorem in progressions.
 4. **The exact torsion constant.** *Answered* (RP22): `κ_tor(N) = φ log N + O(1)`,
    `φ = (1 + √5)/2`, for every `N`. The continuum model's `e/(e − 1)` is wrong: it spreads the
    charges uniformly in `log n`, while the extremal charges `φ^{ω(n)}` are multiplicative, so each
@@ -567,9 +579,13 @@ of the matching in the overlap regime beyond the spacing
    Open: the `O(1)` term, and the analogue for twisted torsion pairings.
 5. **Matching coefficients of natural gauges.** The matching law (RP11) turns any asymptotic
    `A_ε(y) = κ log y + O(1)` into a horizon divergence `κ ℓ²`. For a gauge flipping a set of primes of
-   logarithmic density `ϑ`, `κ = 1 − 2ϑ`. Real characters mod a prime have `κ = 0` (RP20). Compute
-   `κ` for Chebotarev sign patterns, and decide whether an error `o(log y)` instead of `O(1)` still
-   gives the law.
+   logarithmic density `ϑ`, `κ = 1 − 2ϑ`. Real characters mod a prime have `κ = 0` (RP20), and every
+   character `χ ≠ 1` of every modulus is invisible on character-twisted profiles (RP25); quadratic
+   Chebotarev patterns `(d/p)` are real characters. *Answered:* an error `o(log y)` keeps the law at
+   leading order, `|P_N(εx) − κℓ²| ≤ (η log N + C_η) · mass` (RP26). The transfer law identifies the
+   remainder exactly as the harmonic convolution of the Mertens error, so the mass-scale law holds
+   iff that error is bounded in logarithmic mean. Open: `κ` for non-abelian Chebotarev patterns,
+   which needs Mertens' theorem for Artin `L`-functions.
 6. **Several primes at once.** *Answered for every finite prime set `Q`:* each finite family
    of classes `{n : n = d k, (k, Q) = 1}`, indexed by the `Q`-parts `d`, has counterterm
    `Σ_d δ_d^{−1} ℓ_d²`, where `δ_d = (1/d) Π_{p∈Q}(1−1/p)`. It is covariant under every
@@ -640,9 +656,18 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheFinitePartOfTheMarkovFormAtTheSpacing` | the Lévy energy of an atomic test with its diagonal kept; pair windows `≤ 2w(1/|log(n/m)| + 1)`; the cross terms paid in mean square by the pole defect; the Markov ground energy at width `w ≤ δ_N/2`, `wN ≤ 1/(64e²)`, is `2θ′(0) + log(1/(wN)) + κ_L(φ) + γ + O(wN) + o(1)`, attained by the pole |
 | `TheArchimedeanFinitePartIsMinusLogTwoPi` | `2θ′(0) + 2c_∞ + γ = −log 2π` (with SSHA `archRobinConstant_eq`); the Markov ground energy at the spacing in closed form, `log(1/(2π wN)) + β(φ)/‖φ‖² + O(wN) + o(1)` |
 | `TheTorsionCountertermIsTheGoldenRatio` | the golden split `a² ≤ φ²(a − b)² + φ b²` on the prime-power edges; `diag(log n) + P_N ≤ φ Σ (A(⌊N/n⌋) + log n) x_n²`; the golden vector `φ^{ω(n)}/√n` and its mean co-height from the Chebyshev identity; non-coprime edges carry the tame different; `κ_tor(N) = φ log N + O(1)` |
+| `TheSelfIntersectionFamilyObeysAFixedPointLaw` | the `κ`-twisted ground-state identity `(κ − 1/κ) Σ log n x² + P_N + D_κ/κ = κ Σ (A + log n) x²`, `D_κ = Σ Λ(t)(x_{mt} − κx_m/√t)²`; the spectrum of `α diag(log n) + P_N` fills `[κ₋, κ₊] log N + O(1)`, `κ² = ακ + 1`, both ends attained at `κ±^{ω(n)}/√n` |
+| `TheRoughHarmonicMeasureHasThinShells` | rough intervals and their level decomposition `R(p, X) = ⊔_j p^j R(p+1, X/p^j)`; Buchstab's inequality; `F_{p+1}(X) ≥ log(X+1) Π_{q≤p}(1 − 1/q)`; thin shells by Selberg's sieve; the shell rate `τ(p, X) ≤ C log p/(p log X)`, `τ < 1` |
+| `TheHarmonicMeasureTensorizesOverPrimes` | weighted variance (Steiner, Jensen, nested means); ladders and the Glauber form; peeling one prime; the potential `−A Σ_{q<Q}(log q/q)/log X`; `Var_{1/n,[1,X]} ≤ C · Σ_q Σ_u Var_{q-ladder}` uniformly in `X` |
+| `ThePrimeFormHasASpectralGapBelowItsPole` | the pole gauge; ladder Poincaré from the base point; `D_N ≥ log 2 · Glauber`; the Poincaré inequality `D_N ≥ g|x|²` on the pole complement; `P_N ≤ (log N − γ − g + ε)|x|²` there |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
 | `MertensTheoremForCharacters` | Abel summation with decreasing weights; partial sums of `L(1, χ)`; the logarithmic sum; the hyperbola identity; `A_χ = O(1)` |
 | `MertensTheoremInResidueClasses` | orthogonality; the principal Mertens sum; `A(y; r) = log y/φ(q) + O(1)` |
 | `CharactersAreInvisibleToPolarMatching` | the character gauge; matching coefficient `0`; no horizon divergence on gauged step profiles |
 | `PolarMatchingReadsTheDensityOfTheGauge` | sign gauges; gauged rows and pole Gram; the matching law; Euler, Liouville and finite-flip instances |
+| `PolarMatchingNeedsOnlyTheLeadingOrder` | the Mertens error; the transfer law; the local and soft matching laws; the diagonal criterion |
+| `TheHorizonCountertermIsBlindToResidueClasses` | class harmonic and logarithmic sums; residue pole vectors and their Gram; the residue law; rank one on the unit classes |
+| `TheHorizonSeesOnlyTheMeanOfAClassFunction` | class-function profiles; `κ_f = (Σ f)²/(q φ(q))`; characters of every modulus are invisible |
+| `TheHorizonLawsHoldForProfilesOfBoundedVariation` | summation by parts at the horizon; the horizon variation; polarity, finite part and tensor law for every profile; profiles of bounded variation |
+| `TheTowerDeficitChangesSignBetweenFortyThreeAndFortySeven` | `d_p = u/sinh u − γ`; strict monotonicity; `0.5753 < γ < 0.5777`; `d_43 > 0 > d_47`; the sign table of the tower finite part |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |

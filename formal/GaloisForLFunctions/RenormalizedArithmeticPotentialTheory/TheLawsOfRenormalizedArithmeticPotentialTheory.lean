@@ -6,6 +6,10 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIs
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTorsionCountertermIsAtMostTwoLogarithms
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheSignOfTheTowerFinitePart
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheStabilityLawReachesTheSpacingUpToALogarithm
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonSeesOnlyTheMeanOfAClassFunction
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.PolarMatchingNeedsOnlyTheLeadingOrder
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonLawsHoldForProfilesOfBoundedVariation
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTowerDeficitChangesSignBetweenFortyThreeAndFortySeven
 
 /-!
 # The laws of renormalized arithmetic potential theory
@@ -36,11 +40,21 @@ One statement collecting the laws of the programme, each in its sharp form.
     `√p log p ≤ γ(p − 1)` (`towerFinitePart_nonneg_iff`).
 13. **The stability law reaches the spacing up to a logarithm**: the Markov form of every atomic test
     of width `≤ e^{−C₁}/(N(1 + log N))` is nonnegative (`markovEnergy_atomicTest_nonneg_logSpacing`).
+14. **The horizon is blind to residue classes**: on the unit classes mod `q` the counterterm is the
+    rank-one `(q/φ(q)) ℓ²` (`exists_abs_atomicWeilForm_unitClassProfile_sub_le`).
+15. **Characters of every modulus are invisible**: `Re χ` twists of uniform profiles carry no polar
+    divergence for `χ ≠ 1` (`exists_abs_atomicWeilForm_charRe_le`).
+16. **Polar matching needs only the leading order**: `A_ε(y)/log y → κ` gives
+    `P_N(εx) = κ ℓ² + (η log N + C_η) · mass` (`gaugeForm_stepProfile_of_tendsto`).
+17. **The finite part `−2γ` holds for profiles of bounded variation** up to `η log N + C_η`
+    (`exists_abs_atomicWeilForm_bv_finitePart_le`).
+18. **The sign table of the tower finite part**: for a prime `p` it is nonnegative on every depth
+    iff `p ≥ 47` (`towerFinitePart_nonneg_iff_fortySeven_le`).
 -/
 
 noncomputable section
 
-open Finset Matrix
+open Finset Matrix Filter Topology
 
 namespace GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 
@@ -102,7 +116,35 @@ theorem renormalized_arithmetic_potential_theory_laws :
     -- the stability law reaches the spacing up to a logarithm
     (∀ {g : ℝ → ℝ} {w : ℝ}, ContDiff ℝ 2 g → HasCompactSupport g →
       (∀ u, u ∉ Set.Icc 0 w → g u = 0) → ∀ {N : ℕ}, 1 ≤ N → 0 < w → w ≤ logSpacingWidth N →
-        ∀ x : ℕ → ℝ, 0 ≤ RHTower.markovEnergy (fun u => (atomicTest N x g u : ℂ))) :=
+        ∀ x : ℕ → ℝ, 0 ≤ RHTower.markovEnergy (fun u => (atomicTest N x g u : ℂ))) ∧
+    -- the horizon is blind to residue classes
+    (∀ (q : ℕ) [NeZero q], ∃ K : ℝ, ∀ {k N : ℕ} (c : (ZMod q)ˣ × Fin k → ℝ) (M : Fin k → ℕ),
+      (∀ i, M i ≤ N) → (∀ i, 1 ≤ M i) →
+      |atomicWeilForm N (unitClassProfile q c M) -
+          (q : ℝ) / q.totient * polarFunctional N (unitClassProfile q c M) ^ 2| ≤
+        K * ∑ α, ∑ β, |c α| * |c β| * harmonicSum (min (M α.2) (M β.2))) ∧
+    -- characters of every modulus are invisible
+    (∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 → ∃ K : ℝ,
+      ∀ {k N : ℕ} (c : Fin k → ℝ) (M : Fin k → ℕ), (∀ i, M i ≤ N) → (∀ i, 1 ≤ M i) →
+      |atomicWeilForm N (fun n : ℕ => (χ (n : ZMod q)).re * stepProfile c M n)| ≤
+        K * (1 + Real.log N) * (∑ i, |c i|) ^ 2) ∧
+    -- polar matching needs only the leading order
+    (∀ ε : ℕ → ℝ, IsSignGauge ε → ∀ κ : ℝ, |κ| ≤ 1 →
+      Tendsto (fun y : ℕ => gaugeMertensSum ε y / Real.log y) atTop (𝓝 κ) →
+      ∀ η > 0, ∃ C : ℝ, ∀ {k N : ℕ} (c : Fin k → ℝ) (M : Fin k → ℕ), (∀ i, M i ≤ N) →
+        (∀ i, 1 ≤ M i) →
+        |atomicWeilForm N (fun n => ε n * stepProfile c M n) -
+            κ * polarFunctional N (stepProfile c M) ^ 2| ≤
+          (η * Real.log N + C) * ∑ i, ∑ j, |c i| * |c j| * harmonicSum (min (M i) (M j))) ∧
+    -- the finite part holds for profiles of bounded variation
+    (∀ {g : ℝ → ℝ}, BoundedVariationOn g (Set.Icc 0 1) → ∀ η > 0, ∃ C : ℝ, ∀ N : ℕ, 2 ≤ N →
+      |atomicWeilForm N (fun n => g (Real.log n / Real.log N) * poleVector n) -
+          polarFunctional N (fun n => g (Real.log n / Real.log N) * poleVector n) ^ 2 +
+          2 * Real.eulerMascheroniConstant *
+            ∑ n ∈ Icc 1 N, (g (Real.log n / Real.log N) * poleVector n) ^ 2| ≤
+        η * Real.log N + C) ∧
+    -- the sign table of the tower finite part
+    (∀ p : ℕ, p.Prime → ((∀ (N : ℕ) (b : ℕ → ℝ), 0 ≤ towerFinitePart p N b) ↔ 47 ≤ p)) :=
   ⟨fun _ _ hv => primeSurvival_rankOne hv,
     heckeCovariant_iff_const,
     fun _ hN => covariantCounterterm_sandwich hN,
@@ -116,6 +158,11 @@ theorem renormalized_arithmetic_potential_theory_laws :
     renormalizesAt_two_log,
     fun _ hp => towerFinitePart_nonneg_iff hp,
     fun hg hgc hgsupp _ hN hw0 hw x =>
-      markovEnergy_atomicTest_nonneg_logSpacing hg hgc hgsupp hN hw0 hw x⟩
+      markovEnergy_atomicTest_nonneg_logSpacing hg hgc hgsupp hN hw0 hw x,
+    fun _ _ => exists_abs_atomicWeilForm_unitClassProfile_sub_le,
+    fun _ _ χ hχ => exists_abs_atomicWeilForm_charRe_le χ hχ,
+    fun _ hε _ hκ h => gaugeForm_stepProfile_of_tendsto hε hκ h,
+    fun hg _ hη => exists_abs_atomicWeilForm_bv_finitePart_le hg hη,
+    fun _ hp => towerFinitePart_nonneg_iff_fortySeven_le hp⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

@@ -41,7 +41,12 @@ becomes visible to Weil forms and where tests begin to see zeros up to height `�
 mechanism of the corpus stops at a threshold, and the thresholds line up there. SSHA owns that
 scale: Q1 of the report (how far the archimedean place pays the prime place, B3.25, B3.26), Q2 at
 and beyond the spacing (gauge selectivity, B3.16), and the harmonic-analysis face of Q3 (prime
-polynomials at zero ordinates, B3.24).
+polynomials at zero ordinates, B3.24). Of the report's work items it owns the Lévy synthesis (W22:
+SH9–SH11), the universal threshold (W26: SH4′, SH16) and the overlap bookkeeping (W12: SH7, SH17,
+with the Markov Gram at every width and its overlap law from ALG, `levyMarkovForm_atomicTest_eq`,
+`markovPair_shift_ge`),
+and it supplies Arithmetic Lorentzian Geometry with the separated law, the threshold and the overlap
+calculus on which its Metzler and trickle-down questions are posed.
 
 | Programme | What SSHA takes | What SSHA adds |
 |---|---|---|
@@ -210,7 +215,15 @@ blind.
    completely multiplicative or not — satisfies the spacing-scale law with the same constants. The
    separated regime of the Markov form carries no arithmetic beyond `|a(k)| ≤ Λ(k)`.
 10. **Non-ratio lags.** At every width, `primeSum f_x = Σ_k Λ_k · lagForm_k(x)` and the twin's sum
-    carries `ω(k)`. The difference between a twin at `x` and `ζ` at `ωx` is the lag form weighted by
+    carries `ω(k)`; only the lags `log k ≤ log N + w` meet the atoms, so the sums are finite. The
+    ratio lags read the bump only through `‖g‖²`: at every width
+    `primeSum f_x = ‖g‖² P_N(x) + NR_w(x)`, and the non-ratio form `NR_w` is the only overlap term.
+    Its rows, by a Schur test with weights `n^{−1/2}`, are `O(K)` up the tower (a window of width `w`
+    around `km` holds `≤ 2km(e^w − 1)` atoms, Chebyshev) and `O(K (m/N) log m)` down it (pairs
+    `kn = ℓ ≠ m` near `m` are divisors of `ℓ`, and `Σ_{d∣ℓ} Λ(d) = log ℓ`). So at bounded overlap
+    the coefficient-size method weighs three rows of the same shape `(m/N) log N` — the tilt saving
+    `1/4`, the archimedean cross kernel and the non-ratio lags, both `≍ K` — and closes only while
+    the first dominates. The difference between a twin at `x` and `ζ` at `ωx` is the lag form weighted by
     `ω(k) − ω(m)ω(n)`, which vanishes on every ratio lag (`n = km` or `m = kn`). Below the spacing
     there are no non-ratio lags; within `4δ_N` of the spacing there are.
 
@@ -293,6 +306,8 @@ blind.
 | **SH13 One negative square** | `M = Q − 2m₋m₊`, `M(u + iv) = M(u) + M(v)`; under overlap growth `M < 0` on some atomic test for infinitely many `N`, unconditionally (`ζ` itself): the threshold of the Markov law lies between `c₀` and overlap growth; and RH iff for all large `N`, `M ≥ 0` on the atomic tests in the pole hyperplane `m₋ = 0` (`markovQuad_eq`, `markovEnergy_eq_re_add_im`, `markov_atomicFamilies_negative`, `markovThreshold_bracket`, `riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg`) | `ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold` |
 | **SH14 Weight of one zero** | `(Σ_{n≤N} n^a)(Σ_{n≤N} n^{−a}) ≤ (N+1)²/(1 − a²)`; for a bump in `[−r, r]` the term of a zero `ρ`, `σ = Re ρ − ½`, is at most `m_ρ (e^{\|σ\|r}‖g‖₁)² ‖x‖² (N+1)/√(1 − 4σ²)`; for a dilated profile, relative to the diagonal energy, at most `m_ρ e^{2\|σ\|/k}(‖φ‖₁²/‖φ‖₂²)((N+1)/k)/(2√(β(1−β)))` (`sum_rpow_mul_sum_rpow_neg_le`, `norm_Wsummand_atomicTest_le`, `norm_Wsummand_atomicTest_dilate_le`) | `TheWeightOfOneZero` |
 | **SH15 The Markov form fails inside the separated regime** | `P_N(n^{−1/2}) = 2Σ_{n≤N} log n/n`; for `x, g ≥ 0` below the spacing `levyEnergy f_x ≤ ‖x‖² levyEnergy g`; `2c_∞ = 2 log 2 + π/2`; `2θ′(0) + γ = −(3 log 2 + π/2 + log π)`; on the pole vector `M < 0` for all large `N` once `c > e^{β(φ)/‖φ‖²}/(2π)`, and plateau profiles give every `c ∈ (e/(2π), 1)` (`atomicWeilForm_poleVector`, `levyEnergy_atomicTest_le`, `archRobinConstant_eq`, `markovQuad_poleVector_neg_of_threshold`, `markov_poleVector_negative_inside_separated`) | `TheMarkovFormFailsInsideTheSeparatedRegime` |
+| **SH16 The universal threshold is finite** | `Re W_ω = archForm − twistedPrimeSum ω + 2C² − 2S²`; for an `L`-Lipschitz test on `[0, D]`, `levyEnergy ≤ 36DL² + 4A(D)‖f‖²`; on the level-2 dipole `g − t g(· − log 2)` of a wide bump, with `C = 0` and the sign twist aligned with the lag correlations, `Re W_ω + 2S² < 0`; with SH4′: `c₀ ≤ K_univ < ∞` (`weilQuadTw_eq_markov`, `levyEnergy_le_of_wide`, `universalThreshold_finite`, `universalThreshold_bracket`) | `TheUniversalThresholdIsFinite` |
+| **SH17 The rows at bounded overlap** | at every width `primeSum f_x = ‖g‖² P_N(x) + NR_w(x)`; `\|NR_w(x)\| ≤ ‖g‖² Σ_m x_m² ρ_w(m)` with `ρ_w(m) = 2(log 4 + 4)e^{3w/2}(e^w − 1)N + 2e^{w/2}m(e^w − 1)(log m + w)`, at ratio `K` at most `2(log 4 + 4)e^{5/2}K + 2e^{3/2}K(m/N)(log m + 1)`; the prime form at ratio `K` as tilted row sums plus non-ratio rows; the summability premises of the gauge-defect identity discharged (`primeSum_atomicTest_eq_ratio_add`, `abs_nonRatioForm_le`, `nonRatioRow_le_of_ratio`, `primeSum_atomicTest_le_rows`, `twistedPrimeSum_sub_primeSum_gauge_eq_of_supp`) | `TheRowsAtBoundedOverlap`, `TheGaugeEntersThroughNonRatioLags` |
 
 ---
 
@@ -313,7 +328,14 @@ The questions of the report (§4.4), as SSHA answers them.
    threshold is bracketed and the correction rank is exactly located* (SH13): the Markov law
    `M ≥ 0` holds for every twist up to `c₀δ_N` and fails — for `ζ` itself, unconditionally — once the
    overlap ratio beats `√(log N)`; there the Markov form has a negative square, and RH is the
-   statement that it has only one, the pole.
+   statement that it has only one, the pole. The universal threshold `K_univ` — the largest ratio
+   at which `Re W_ω + 2S² ≥ 0` for every twist `|ω| ≤ 1`, uniformly in `N` — satisfies
+   `c₀ ≤ K_univ < ∞` (SH4′, SH16): a wide dipole on the atoms `1, 2` with vanishing cosh moment, read
+   against the sign twist aligned with its lag correlations, has negative archimedean form and a
+   nonnegative twisted prime sum. Beyond `K_univ` positivity must read arithmetic. At ratio `K` the
+   prime form is the tilted ratio rows plus the non-ratio rows `O(K) + O(K (m/N) log m)` (SH17):
+   the overlap enters the coefficient-size method as a row of the same shape as the tilt saving,
+   which is why universal methods stop at a fixed ratio.
 2. **What is the base over `ℤ`?** At the spacing, a Schur weight: the tilt `1 + n/N` is a positive
    structure across all prime ladders on which the tower forms and the archimedean cross kernel sum
    with bounded loss (SH3, SH4). It is not Hecke covariant and need not be: it enters as a similarity
@@ -366,6 +388,7 @@ The questions of the report (§4.4), as SSHA answers them.
 | Gauge selectivity can come from the Markov form | `ζ` is its ground state; only the pole is anti-Markovian |
 | Twins differ from `ζ` on every lag | The gauge factor vanishes on ratio lags; only non-ratio lags carry it |
 | The rank-one pole correction of the stability law is an artifact of the method | The Markov form alone fails on the pole vector at width `cδ_N` for every `c > e/(2π)` |
+| Universal methods might reach every bounded overlap | Some sign twist fails `Re W_ω + 2S² ≥ 0` at a finite ratio: `K_univ < ∞` |
 | The Markov law fails beyond the spacing because of arithmetic | It fails for `ζ` itself once the overlap beats `√(log N)`; RH says the failure has rank one |
 | A twin positive at the spacing is positive beyond it | Liouville is stable at width `c₀δ_N` and fails at every width of overlap growth |
 
@@ -395,10 +418,13 @@ Cauchy–Schwarz and the bump factor at complex frequencies; the exact self-ener
 `levyEnergy(φ(·/w)) = (log(1/w) + κ_L(φ))‖φ(·/w)‖² + O(w)` and the archimedean pairing
 `ω(s)(∫g)² + O(w)` of two separated atoms (`TheRobinConstantOfAnAtom`,
 `TheArchimedeanPairingOfTwoAtoms`); the archimedean Robin constant `2c_∞ = 2 log 2 + π/2`; the
-prime form of the pole vector; plateau profiles with shape term `β(φ)/‖φ‖² → 1`.
+prime form of the pole vector; plateau profiles with shape term `β(φ)/‖φ‖² → 1`; the finiteness of
+the lag sums; Weil's form of a twist in Markov form; the Lévy energy of wide tests; the dipole and the
+twist aligned with its lag correlations.
 
-**To build.** The cross-term density of the pole vector (the critical constant); the alias
-fraction carried by a bounded overlap ratio; a large sieve over the zeros.
+**To build.** The cross-term density of the pole vector (the critical constant); the archimedean
+cross kernel of overlapping atoms with constants, to close the joint estimate at a fixed `K`; the
+alias fraction carried by a bounded overlap ratio; a large sieve over the zeros.
 
 ---
 

@@ -6,8 +6,9 @@
 - **Count:** uncounted; separate novelty, paper, and Lean obligations
 
 For a finite prime set Q, let H_Q be ell-two on its supported positive integers
-and let A_Q be the actual operator `diag(log n)-P_Q+gamma_Q I`. The active
-valuation-spectrum card addresses its complete finite-prime diagonalization.
+and let A_Q be the actual operator `diag(log n)-P_Q+gamma_Q I`. Its complete
+finite-prime diagonalization, original maximal domain, simple spectrum, and
+compact shifted inverse are now formalized on the valuation-spectrum card.
 
 For Q contained in R, conjecture compatible embeddings obtained by tensoring
 with the normalized geometric ground vector at each new prime. In the unique
@@ -32,7 +33,7 @@ arithmetic horizons remain separate problems. No all-primes Weil sign or RH
 claim follows from a formal infinite tensor product.
 
 Inspected leads are recorded on
-`docs/drafts/pipeline/2-fully-proven/local-valuation-haar-diagonalization.md`.
+`docs/drafts/pipeline/3-formalized/local-valuation-haar-diagonalization.md`.
 No computations, no Lean proof, and no contribution count for this conjecture.
 
 A further corpus query for an infinite-prime ground-state/tame-different spectrum
@@ -48,3 +49,146 @@ finite-prime eigenbasis, then prove domain intertwining from the actual spectral
 domains. Only after those identities may the all-integer excitation carrier serve
 as a concrete realization of the Hilbert completion. Density and the completion's
 universal property remain obligations, as do novelty and all-prime energy audits.
+
+A second construction route may avoid rebuilding a tensor-product carrier.
+Use each proved coefficient unitary and extend excitation labels by zero under
+`S_Q -> S_R`. This defines an isometry, but is not the desired result by itself.
+Prove its physical coefficient formula on every existing product eigenvector:
+the unchanged-prime factors agree, and every new-prime ground contributes
+`sqrt(1-1/p)*p^(-v_p(n)/2)`. Their product is exactly
+`sqrt(delta_(R minus Q))/sqrt(e)`. Equality on the complete eigenbasis then
+extends the coefficient identity to every vector, because coordinate evaluation
+on each side is continuous. This discharges the physical embedding rather than
+assuming it. The proved spectral domains then give actual-domain intertwining.
+
+The candidate completion is ell-two on all positive integer excitation labels,
+with each finite-prime coefficient space included by zero extension. Every
+finite label set is contained in one finite prime sieve, so the union is dense.
+This could also prove uniqueness: compatible isometries into another Hilbert
+space give the same orthonormal excitation vectors, and density identifies their
+completion. None of these new identities has a Lean proof yet; they remain one
+prospective contribution, not separate counts for the embeddings and label operator.
+
+The existing generic `HTGeometry/IncompleteTensorProduct.lean` was read in full.
+It already constructs the Hilbert completion of finite-excitation pure tensors
+from any unit reference family and proves its product inner kernel. Thus generic
+incomplete-tensor existence is baseline. The proposed novelty must remain the
+specific arithmetic coefficient formula, actual-domain operator compatibility,
+and identification of that physical completion.
+
+An exact arithmetic coefficient identity should connect the finite-sieve basis
+to the full-horizon quasimodes. For supported positive m,n the proposed identity is
+
+`Phi_(m,Q)(n)=sqrt(delta_Q)*c_m(n)/sqrt(phi(m)*n)`.
+
+At one prime, the existing Blaschke coefficient at excitation k>=1 is zero
+below v=k-1, equals `-1/sqrt(p)` at v=k-1, and equals
+`(1-1/p)*p^(-(v-k)/2)` at v>=k. These agree algebraically with the displayed
+Ramanujan formula; the k=0 factor is the normalized geometric ground state.
+Coprime multiplicativity and the finite product should give the full formula.
+This identity would make the physical embedding proof particularly direct.
+Its exact square-root/product rewrites, finite-prime support conditions, and
+Lean verification remain obligations. It is part of the proposed completion,
+not another independently counted contribution.
+
+The coefficient search also surfaced
+`RHTower/XiTransverseValuationCanonicalReconstruction.lean`, read in full.
+It reconstructs finite Xi-shift aperture coefficients from a prescribed valuation
+sampling matrix and compares its Gram phases; it does not identify the literal
+number-minus-prime-kernel operator, the Ramanujan eigenbasis coefficients, or
+these ground-state embeddings. This is an excluded neighbouring construction.
+
+The full-horizon quasimode project offers another physical comparison to audit.
+For a finitely supported excitation vector b, set
+`J_N b=(log N)^(-1/2)*sum_m b_m u_(m,N)`.
+The proposed Gram and residual limits would imply
+`norm(J_N b)->norm(b)` and
+`norm((log N I-P_N)J_N b-J_N A b)->0`.
+Those finite linear-combination consequences alone are supporting statements,
+not a new contribution. Coupled to the actual coherent completion, they could
+identify the same arithmetic operator as the asymptotic action on every finite
+excitation span of the full horizon matrices. A bounded-time unitary-dynamics
+comparison may follow from the residuals by Duhamel's identity. No such limit
+has yet been formally proved here, and it would still not establish exhaustion
+of the entire finite-matrix spectrum.
+
+Literature baseline: Hilberdink's
+[multiplicative-matrix tensor theorem](https://doi.org/10.1016/j.laa.2017.06.037)
+already treats infinite prime tensor products. Hilberdink--Pushnitski's
+[LCM paper, Section 2](https://arxiv.org/html/2401.06892v1)
+gives eigenvalue products indexed by finite prime-exponent patterns for its
+different kernel. Thus neither prime factorization of a Hilbert carrier nor
+integer indexing of tensor eigenvalues can count as new here.
+
+Another carrier identification to audit is the product of geometric valuation
+laws `mu_p(v)=(1-1/p)*p^(-v)`. Removing the finite-prime ground factor should
+identify the physical embeddings with adjoining constant functions in new
+coordinates. Normalized Ramanujan modes should then form the product excitation
+basis in that probability-space completion. The finite local completed row is
+a reversible jump generator, since
+`mu_p(v)*p^(-a)=mu_p(v+a)` for upward step a and downward rate one.
+Its negative has the local adjunction energies. Extending this to an actual
+closed all-prime form, and identifying any profinite-Haar realization, remains
+unproved.
+
+The proposed profinite-Haar carrier must be the radial subspace invariant under
+multiplication by profinite units. Valuations forget the unit coordinates, and
+Ramanujan sums are constant on those unit orbits. Thus their proposed complete
+basis concerns the geometric valuation probability space, equivalently the
+radial Haar subspace after that identification is proved. Completeness in all
+of profinite L2 is not the intended assertion. An actual unit-orbit/radial
+identification and the associated measure pushforward remain proof obligations.
+
+The targeted radial search found
+`CCM/CCMRationalProfiniteHaarUnitRadialization.lean`, subsequently read in full.
+It already proves that averaging actual adelic congruence-class samples over
+profinite units gives a unit-invariant function on `ZMod N`. This is a relevant
+existing finite radialization mechanism; it does not assert the present L2
+completion, Ramanujan basis completeness there, or the adjunction generator.
+`HTGeometry/PrimeRadialFusionFieldCorrespondence.lean` was inspected through
+its profile/fusion construction. That radial terminology concerns formal
+power-series differential fields, a different object; it is not a dependency
+for this Hilbert-space project.
+
+`CCM/CCMRationalZModUnitInvariantMobius.lean` was then read in full. It proves
+that finite unit orbits are indexed by gcd and that every unit-invariant
+additive-valued function has a canonical expansion in divisibility indicators.
+This supplies a finite radial spanning mechanism. Passing from those indicators
+to normalized Ramanujan modes and proving density in the actual radial L2
+space still require their own exact arguments.
+
+The exact divisor-to-Ramanujan inversion was subsequently found and its proof
+read: `RHTower.pm_ramanujan_sum_divisors` in
+`PMPowerDampedMobiusRamanujanExpansion.lean` states
+`sum_(q divides d)c_q(n)=d*1_(d divides n)` for positive d,n. Its real-part
+version can supply the finite spanning bridge after the already available
+Ramanujan coefficient identification. The L2 density and arithmetic operator
+identification remain the substantive new obligations.
+
+This also exposes a distinction requiring proof: the finite-prime geometric
+ground masses at a fixed ordinary integer contain `delta_Q`, whose product over
+all primes vanishes. The expected completion is therefore not obtained by
+retaining point evaluations at ordinary integers in the original counting
+carrier. A positive result must identify the actual completion and its form,
+rather than merely report this obstruction.
+
+The first profinite/Ramanujan corpus query returned
+`CCM/CCMRationalProfiniteIntegerCyclicQuotient.lean`; its opening definitions
+and quotient argument were inspected. It already supplies the product-of-p-adics
+carrier and finite cyclic quotients. `BVI/ResidueModeCompleteness.lean` was
+inspected at its statement and basis construction: it concerns a uniform c0
+norm on normalized residue profiles, not this probability Hilbert space.
+No global Ramanujan-Haar completeness theorem was found by that initial query;
+the broader novelty and dependency audits remain open.
+
+For the finite Ramanujan product, the generic Mathlib
+`Nat.multiplicative_factorization` is already used by
+`ArithmeticFunction.IsMultiplicative.multiplicative_factorization` in
+`NumberTheory/ArithmeticFunction/Defs.lean`; that source was inspected.
+It accepts a function with coprime multiplicativity and value one at one,
+so a separate arithmetic-function wrapper should be unnecessary. Its exact
+declaration and proof in `Data/Nat/Factorization/Induction.lean` were then read;
+Lean use still needs a scratch check. The inspected corpus helper
+`RHTower.Sieve.prod_eq_of_multiplicative` and the vendored
+`ArithmeticFunction.IsMultiplicative.prod_factors_of_mult` only cover squarefree
+products; neither is the desired full prime-power coefficient identity.

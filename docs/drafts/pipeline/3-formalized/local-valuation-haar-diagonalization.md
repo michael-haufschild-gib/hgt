@@ -1,10 +1,10 @@
 # The matched finite-prime operator has the torsion-adjunction spectrum
 
 - **ID:** local-valuation-haar-diagonalization
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Source:** AIT transverse towers and torsion adjunction; RAPT finite-sieve finite part; Hardy Blaschke model space
-- **Count:** uncounted until exact Lean realization and final audits
+- **Count:** contribution 2 of the cross-programme research task; supporting modules count together
 
 ## Precise contribution
 
@@ -255,11 +255,12 @@ All twenty-two implementation sources passed scratch checks. Nineteen endpoint
 transitive axiom reports contain exactly `propext`, `Classical.choice`, and
 `Quot.sound`; evidence is preserved in
 `logs/local-valuation-adjunction-axioms-2026-10-28.log`.
-Final direct actual-source checks remain in progress, recorded individually in
+All twenty-two final direct actual-source checks passed, recorded individually in
 `logs/local-valuation-adjunction-source-audit-2026-10-28.log`.
 Both umbrellas import the finished sources without an umbrella compilation.
 No prohibited proof mechanism or raised elaboration limit occurs in these sources.
-The contribution remains uncounted until every final check passes.
+Owned scratch sources and temporary check outputs are removed. The paper proof,
+actual sources, and persistent audit logs are retained.
 
 ### Actual arithmetic endpoints
 
@@ -330,4 +331,4 @@ before repository insertion. Only first oleans required by dependent files were 
 - [x] Dependency-closed paper proof above.
 - [x] Exact Lean realization and nineteen clean transitive endpoint axiom audits.
 - [x] Umbrella wiring and foundational README update.
-- [ ] Final direct actual-source checks and scratch cleanup.
+- [x] Final direct actual-source checks and scratch cleanup.

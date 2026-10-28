@@ -334,3 +334,90 @@ Normalize the exact rational damping difference by R^2. Its fixed-height limit i
 ### Full quartet scale quantum — established
 
 EveryOffLineQuartetCostsAStrictScaleQuantum passed direct21606, standard axioms, wired. All sixteen ordered pair interactions of the four conjugate/reflection copies give exact lower payment2*(hS-hR)*(1+angle). At own height the source increment is strictly above39/50. Eventual closed control at39/50 iff finite off-line support; all-scale closed control iffRH. No source upper estimate supplied.
+
+### Moving-band source decoupling — established
+
+MovingArithmeticBandsDecoupleFromFixedTests passed direct7896, all three endpoints standard axioms, wired. Actual upper-half band translated by-logN lies in[-log2,1], retains A_N=1+rho*(1+(1+logN)/2) times mass, and satisfies A_N*W(p,g)^2<=D_I(g)*W(p,p). Energy-unit coupling to every fixed compact probe vanishes uniformly. The source estimate covers growing dimension and arbitrary profiles; no completed band projection or exhaustive positive span is asserted.
+
+### Finite critical-rate source moment — proof target
+
+The critical-rate draft now has a separate actual finite-source continuation. For finite off-line copies F, W(R) equals the finite sum of depth*h_R(gamma)*xiSourceField over F. Every field is the full Laurent/Gamma source field, including all exterior critical zeros. Therefore Q(R)=R^2*(W(2R)-W(R)) should converge to M_2=(3/2)*sum_F gamma^2*depth*xiSourceField. Source coefficients can be signed. The fixed-quartet lower payment forces M_2>=3gamma^2*(1+angle)>48 at every exception, and hence3gamma^2<M_2. Together with infinite-support divergence, this yields the exact zero/finite exceptional/infinite critical-rate trichotomy and bounded-Q iff finite-support classification. Both new source files remain unchecked and unwired.
+
+Further concrete target: every finite packet s of right-hand multiplicity copies has critical-rate charge(3/2)*sum_s gamma^2. The inherited source increment theorem gives this before the limit, with all exterior pairs nonnegative. The zero-free height gap makes this at least24*card(s), so every finite smooth Weil negative index should cost24 per negative square in Q's eventual lower bounds. This would connect the new rate invariant to index descent directly. No upper estimate is available.
+
+### Inverse-square source curvature — proof target
+
+Set a=R^-2 and h_a(t)=(1+a*t^2)^-2. Its second a-derivative is6*t^4/(1+a*t^2)^4. For actual heights >=4, this second profile is relatively Lipschitz in the exact sense needed to absorb the reflected mixed term. Proposed mechanism: each reflected pair is convex in a; convex secant comparison makes R^2*(pairWork(2R)-pairWork(R)) nondecreasing. Sum only after the already proved absolute convergence, avoiding differentiated infinite sums.
+
+The candidate intrinsic endpoint is E_2=(3/8)*sum_{p,q} reflectedWork(...,gamma_p^2,gamma_q^2), interpreted as a nonnegative extended sum. Pairwise scaled limits would prove nonnegativity. Monotonicity would dominate each finite-scale kernel by its limit, giving convergence of actual source Q to E_2 even when infinite. On finite off-line support, E_2 must equal the finite full-source moment by uniqueness of the proved limits. Critical exterior rows are essential: when q is critical the pair kernel is exactly2gamma_p^2*angular(p,q), not a divergent symmetric height majorant. Status: no source theorem yet; scalar relative and secant scratch drafted, awaiting check.
+
+### Critical-rate threshold uses the existing optimized arithmetic height floor
+
+Corpus research exposed the stronger actual off-line certificate H=431349/2000 in PrimeArchLogHeightDefectOrderTwentyThreeEndpointOptimization. The critical-rate drafts now use this theorem, with all its analytic premises already discharged. Thus the draft exclusion quantum is3H=1294047/2000 and each negative square costs3H/2, superseding the elementary48/24 targets. The height-dependent quartet charge remains3gamma^2*(1+angle), so its positive angle makes the threshold closed. This is reuse of an existing arithmetic source budget, not a newly claimed height theorem. Both rate classification and index payment still await direct checks.
+
+### Global spectral budget and quadratic index payment — proof target
+
+The existing strip-edge source sum has total mass at most3/50. A finite packet of k right copies plus its disjoint reflections spends twice the packet mass; the per-copy floor is1/(gamma^2+1). Thus the packet reciprocal sum is at most3/100. Cauchy–Schwarz forces sum gamma^2 >=(100/3)k^2-k. At the critical source rate this becomes50k^2-(3/2)k. Together with the optimized height-floor payment, this gives the maximum of a linear and a quadratic index charge, provided formalization succeeds. It uses an actual arithmetic upper budget for a different, positive resolvent quantity to strengthen forcing of the signed normal work. It does not identify the two quantities or prove an upper bound for normal work.
+
+### Critical-rate exception detector — established
+
+TheQuadraticScaleWorkDetectsEveryException passed direct95103; all four endpoint axioms are standard. Wired and foundational README updated. Q=R^2DeltaW retains fixed quartet charge3gamma^2(1+angle), source-derived closed exclusion quantum3H with H=431349/2000, cofinal RH equivalence, ordered finite Laurent-source detection, and divergence for infinite support. Finite-moment classification and index payments remain unchecked.
+
+### Exact finite source moment and rate trichotomy — established
+
+TheCriticalRateClassifiesAllOffLineSupport passed direct76302; all five endpoint axioms standard, no warnings. Every finite off-line copy is retained with its full exterior Laurent/Gamma source field. W(R) is its exact finite damped sum; Q tends to M2=(3/2)sum gamma^2*depth*sourceField. Every exception satisfies3gamma^2(1+angle)<=M2 and3gamma^2<M2. Under nonRH, finite M2 exceeds3H. Eventual boundedness of Q and existence of a finite Q limit are both equivalent to finite support. The zero/finite>3H/infinite rate trichotomy is unconditional. No source upper estimate. Wired/README updated.
+
+### Critical-rate index payment — established
+
+TheCriticalRatePaysEveryNegativeSquare direct6213 PASSED, all four endpoints standard axioms, no warnings. Actual Pontryagin packets force critical-rate charge and finite source moment pays lambda times every finite smooth Weil index, lambda=3H/2. Ordered finite-source detection retains all exterior rows. Wired and README updated. No arithmetic upper budget.
+
+### Quadratic arithmetic index cost — established
+
+TheSourceBudgetMakesTheIndexCostQuadratic direct73888 PASSED, all four endpoint axioms standard, no warnings. Full strip-edge arithmetic budget gives sum_right 1/(gamma^2+1)<=3/100; weighted Cauchy forces packet charge and each finite smooth Weil index k to cost50k^2-3k/2 in eventual Q and finite M2. Together with lambda*k this gives the maximum of linear and quadratic charges. It is not an upper bound on normal work. Wired and foundational README updated.
+
+### Inverse-scale curvature and source monotonicity — established
+
+TheCriticalSourceRateIsMonotone direct33517 PASSED, all four endpoints standard axioms, no warnings. Inverse-scale reflected pair convexity, pointwise critical pair monotonicity, full completed Q monotonicity and exact height-square pair limit established. Source order uses absolute summability, not infinite differentiation. Wired/README/card/checks updated. Scratch19343 removed after final source pass.
+
+### Fixed carriers paying an unbounded source-graph weight — proof target
+
+The completed projection currently has graph coercivity on each fixed arithmetic window. Seek one fixed unbounded logarithmic carrier with a graph coercivity constant independent of the finite prefix. This is a source construction on a restricted carrier; no density or exhaustive signature bound is claimed.
+
+First target: for every continuous real weight omega with omega>=1 and every strictly increasing centre sequence b_n, construct one positive width sequence w_n<=1 such that every finite independently profiled sum f, supported in those cells, satisfies integral omega*f^2 <= W(f,f). The exact diagonal-extension theorem already pays any prescribed new square-mass charge. On each fixed canonical cell envelope choose a bound c_n for omega. In the induction retain a_N=1+1/(N+1) times weighted mass. Spend epsilon_n=a_n-a_(n+1) on old ordinary mass, which is at most old weighted mass; the new diagonal pays a_(n+1)c_n. Weighted mass is exactly additive across the separated old/new supports. All old widths remain fixed.
+
+Then instantiate omega(u)=1+2(1+||tanhL||^2)*cosh(u/2)/riemannKernelReal(u). The literal graph identity gives ||Jf||^2 <= W(f,f)+2(1+||tanhL||^2)||Jf.source||^2 <=2W(f,f). The resulting unbounded sparse carrier can be completed with one global coercivity constant. The graph mass identity and polar rows must be proved on actual C2 tests, not assumed. Existing private cell-envelope helpers should be exposed through a reusable construction rather than silently treated as imported public facts. No existing olean may be rebuilt.
+
+Status: research target; no new source yet. Preliminary corpus query did not locate this weighted fixed-carrier theorem. The inherited aperture graph-norm equivalence has constants depending on the aperture and does not supply this result. Curvature/canonical-energy final checks take priority before this construction.
+
+### Canonical height-square source energy — formalized
+
+`TheCriticalSourceRateHasACanonicalEnergy.lean` identifies the real-scale limit of
+`ofReal (R²(W(2R)-W(R)))` with the extended nonnegative sum of the exact limiting
+reflected kernels. Every finite-scale rate is bounded above by this canonical energy.
+Its finiteness is equivalent to finite off-line support; on that stratum it equals
+the full Laurent-source moment. Global linear and quadratic finite-index charges
+hold, including the infinite-energy stratum. Critical exterior rows retain only
+the off-line height weight after exact cancellation. Nonnegative entries are not
+asserted to be a positive semidefinite Gram kernel.
+
+Direct final audit8646 passed, five printed endpoints depend only on propext,
+Classical.choice and Quot.sound. Wired into own umbrella; foundational README
+updated. Canonical/API scratch files removed. No independent upper energy bound
+has been obtained, so the source-payment question remains open.
+
+### Uniform graph closure of a fixed unbounded carrier — next proof target
+
+After the arbitrary-weight induction, specialize to
+`omega_epsilon = 1 + (2(1+||tanhL||²)/epsilon) cosh(u/2)/riemannKernelReal(u)`.
+The exact inverse Doob source-mass identity and full polar graph identity should
+then prove `||Jf||² <= (1+epsilon) W(f,f)` for every prefix of one fixed
+width sequence. No aperture-dependent norm constant is permitted in this target.
+
+Construct the literal linear space of finitely supported independent profiles on
+these chosen cells, take its range closure in the existing source graph, and
+transfer this uniform coercivity to the closure. Compress the actual bounded
+Weil operator to this closed carrier; the existing coercive inverse then constructs
+a bounded original-form projection. Prove the exact signed Schur identity on the
+whole graph. This removes the fixed-aperture restriction from the current
+projection construction. The residual sign, a comparable-spacing width bound,
+and exhaustive transfer remain independent open arithmetic questions.

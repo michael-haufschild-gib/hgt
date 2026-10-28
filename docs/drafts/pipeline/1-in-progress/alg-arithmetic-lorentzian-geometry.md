@@ -32,13 +32,34 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
   TheTiltedMarginPaysThePolarDispersion (Gram = tilted model + NSD residual; dispersion ≤ reserves);
   TheAtomicMetzlerPropertyIsSelective; HyperbolicityIsBlindTheSignIsNot (every sign twin hyperbolic
   at K ≤ c★; Liouville twin hyperbolic, not Metzler); TheTowerDeficitIsARowSum.
+- Lorentzian polynomials (closure toolkit): TheHessianOfALorentzianPolynomialTricklesDown (∂_i f
+  Lorentzian; ∇²f(x) hyperbolic for x ≥ 0 by weighted TD, Euler = link condition);
+  TheMixedHessiansOfALorentzianPolynomialAreHyperbolic (all mixed quadratic derivatives along
+  nonneg directions hyperbolic; Alexandrov–Fenchel; Khovanskii–Teissier);
+  TheLorentzianClassIsClosedUnderNonnegativeSubstitution (mixed class: Lorentzian ⇒ mixed; closed
+  under ∂_v, v ≥ 0, and p ↦ p(Ay), A ≥ 0; Hessian at x ≥ 0 hyperbolic; d p ∂_v²p ≤ (d−1)(∂_v p)²);
+  TheEulerProductOfLorentzianLocalFactorsIsLorentzian (disjoint-variable products Lorentzian,
+  renaming, ∏ f_p and (∏ f_p)∘A mixed-Lorentzian; Euler Hessian Lorentzian at all y ≥ 0).
+- TheClosureProducesExactlyTheLorentzianForms (Q1: Hessians of the closure at x ≥ 0 = Lorentzian
+  forms exactly). TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine (topic 8: d J J'' ≤ (d−1)J'²
+  on s ≥ 0 for every Jensen polynomial of ξ; RH = same on s < 0). TheOverlapRatioIsTheCoveredMeasure
+  (exhaustion: atomic tests of ratio K live on measure ≤ K; exhaustive families need K ≳ log N).
+- Topic 9 answered: RamanujanAndLorentzianMeetOnlyAtTheWeilBound (Lorentzian ⇒ a_1 ≥ d√q,
+  Ramanujan ⇒ a_1 ≤ d√q; equality only for (1+√qT)^d; never at a prime; elliptic: Lorentzian ⇔
+  a² ≥ 4p).
 
 ## Open
 - Window c★ < K < 1: TD_π for the Metzler Gram; the Markov form loses positivity along the pole
   vector n^{−1/2} (top of P_N, RAPT), paid by the pole term only in the Euler gauge; needed: a gap on
   its complement (cf. card selective-positivity-on-separated-atoms, gate C4).
 - K > 1: primitive gap, or a non-atomic Metzler basis.
-- Conformal correspondence with λ ≠ 1; product closure of Lorentzian polynomials; exhaustion.
+- Conformal correspondence with λ ≠ 1.
+- Adapted (local-spacing) atomic families: widths c·log(1+1/n) cover fraction c of [0, log(N+1)];
+  ratio 1 is their Nyquist rate (Lean). To formalize: disjoint nonnegative bumps of different
+  widths meet nonpositively (proof of markovPair_atom_nonpos verbatim) ⇒ adapted Gram Metzler.
+  Hodge index at c < 1 open.
+- Mixed ⇒ coefficient Lorentzian (M-convex support of mixed-Lorentzian polynomials; Minkowski sums
+  of M-convex sets) — needed only to iterate products inside the coefficient class.
 
 ## Findings so far
 - Degree 2: Lorentzian = Hodge index (no gain); nef shift makes any finite Gram nonneg (trap).

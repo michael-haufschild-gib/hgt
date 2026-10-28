@@ -228,6 +228,19 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     `finiteCellWeil c 0 1 X`, retaining every prime translation and both signed pole terms
     (`SmoothFiniteCellArithmeticForm.lean`). Full-source effectivity and the signed
     Gamma–prime–pole index bound remain open.
+    **Balanced complete-cell prime bound:** the actual balanced pair on cells $2a,2a+1$
+    has square mass $M_a$. Its translated real pairing with pair $b$ is exactly $M_b$
+    when $(2a+1)m=2b+1$, and zero otherwise; every even multiplier vanishes
+    (`HaarCellPrimeCompression.lean`). For arbitrary signed coefficients, the entire prime
+    energy is at most $\sum_a (16+\log(2a+1)/\sqrt2)M_a c_a^2$, independently of the upper
+    horizon (`HaarCellPrimeBound.lean`). This pays the prime term on a concrete source
+    subspace. The compact BV representatives have exactly zero mean on every pair, exact
+    weighted square mass, and the same original `RHTower.primeSum` (`HaarCellProfiles.lean`).
+    **Coherent Gamma payment:** finite disjoint mean-zero intervals retain their full
+    reciprocal-width logarithms in the original Lévy form, including touching intervals and
+    nonzero exterior source values (`GammaMeanZeroCoercivity.lean`). On the actual balanced
+    pairs this gives $\sum_a \log(a)M_a c_a^2 \leq \operatorname{levyEnergy}(f)$
+    (`HaarCellGammaPayment.lean`). The pole bound and full-source effectivity remain open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

@@ -96,6 +96,8 @@ exhaustive index receiver; the upper bound on these cell matrices still has to b
 | Exhaustion | Approximation of every required finite test family controlling all mixed form entries |
 | Source work | A damped arithmetic reading of transverse energy, with multiplicities and exterior rows retained |
 | Scale increment | `W(S)-W(R)`, with a nonnegative reflected-pair decomposition and a quantified annular defect cost |
+| Critical source rate | `R²(W(2R)-W(R))`, monotone in scale and retaining height-square charges of finite index witnesses |
+| Critical source energy | The nonnegative extended sum of the exact height-square reflected kernel over all multiplicity-copy pairs |
 
 An *index budget* bounds negative directions, not their amplitudes. A *payment* is a proved
 inequality absorbing an adverse interaction in a source reserve. *Descent* transports the specified
@@ -437,6 +439,36 @@ shapes. Narrowing a fixed pattern can improve its internal positivity while redu
 on a fixed ambient probe. The theorem leaves growing and translated arithmetic patterns open;
 their source constants and form approximation require separate estimates.
 
+### Moving arithmetic bands
+
+A growing translated family has a stronger, different boundary. Retain only the profiles
+with \(N/2\le n\le N\), then translate the section by \(-\log N\):
+
+\[
+ p_N(u)=\sum_{N/2\le n\le N}G_n(u+\log N-\log n).
+\]
+
+At every original full allowed width, this test is supported in the fixed interval
+\(I=[-\log2,1]\). The retained weighted reserve gives
+
+\[
+ W(p_N,p_N)\ge A_N\|p_N\|_2^2,\qquad
+ A_N=1+\rho\left(1+\frac{1+\log N}{2}\right)\longrightarrow\infty.
+\]
+
+For a fixed compact probe \(g\), let \(D_I(g)=\int_I|K_g(u)|^2\,du\). The exact combined
+source representation proves
+
+\[
+ A_N|W(p_N,g)|^2\le D_I(g)\,W(p_N,p_N).
+\]
+
+Thus the energy unit balls of these moving bands become uniformly invisible to every fixed
+probe, at rate \(O((\log N)^{-1/2})\). The estimate allows every independent profile and every
+admissible width; its source budget depends only on the fixed probe and interval. The number
+of available arithmetic cells grows, while their normalized action still vanishes.
+Wider interlaced carriers require control of their signed mixed terms.
+
 ### Separated mixed sources
 
 The archimedean interaction has a direct source bound over arbitrary signed profiles.
@@ -772,6 +804,199 @@ The eventual quantifier is essential. A bound along a selected unbounded subsequ
 not supplied as an equivalent condition. Finite exceptions remain compatible with the
 vanishing-increment condition; their exclusion requires a further estimate.
 
+### Work at the critical decay rate
+
+The scale difference has a distinguished normalization:
+
+\[
+ Q(R)=R^2\Delta W(R),\qquad
+ R^2\bigl(h_{2R}(t)-h_R(t)\bigr)\longrightarrow\frac32t^2.
+\]
+
+The actual quartet payment therefore gives, for every off-line zero and every
+\(b<3\gamma^2(1+a_\rho)\), the eventual lower bound \(b<Q(R)\).
+One fixed exception is visible at every sufficiently large scale, even when there are only
+finitely many exceptions. The limit is taken for that fixed quartet; no uniform limit over
+an unbounded collection of zeros is assumed.
+
+The corpus's optimized order-23 arithmetic source theorem supplies the off-line height floor
+\(\gamma^2\ge H\), where
+
+\[
+ H=\frac{431349}{2000},\qquad
+ \lambda=\frac32H,\qquad q_*=3H=\frac{1294047}{2000}.
+\]
+
+The positive diagonal angle makes the quartet charge strictly greater than \(q_*\).
+Consequently
+
+\[
+ \mathrm{RH}\quad\Longleftrightarrow\quad
+ \forall T\ \exists R\ge\max(T,4):\ Q(R)\le q_*.
+\]
+
+Under RH the work is identically zero. Under its negation, \(Q(R)>q_*\) eventually.
+If off-line support is infinite, choosing arbitrarily high fixed quartets proves the stronger
+conclusion \(Q(R)\to+\infty\). Sparse escape cannot hide in the critical normalization.
+Finite tapered Laurent-source readings retain each strict lower bound: first choose the
+damping scale, then remove the height taper. All exterior source fields remain present.
+
+The height floor is inherited from
+`RHTower.PrimeArchLogHeightDefectOrderTwentyThreeEndpointOptimization`; the critical-rate
+forcing is the contribution here. No optimality of this exclusion constant is asserted.
+An independent arithmetic upper bound for \(Q\) remains required.
+
+The critical rate has an additional order law. In the inverse-square coordinate
+\(a=R^{-2}\), write
+
+\[
+ g_a(t)=(1+at^2)^{-2},\qquad
+ v_a(t)=\frac{t^4}{(1+at^2)^4},\qquad
+ \partial_a^2g_a(t)=6v_a(t).
+\]
+
+For \(a\ge0\) and actual zero heights, the height gap proves
+
+\[
+ 2|v_a(t)-v_a(u)|\le |t-u|\bigl(v_a(t)+v_a(u)\bigr).
+\]
+
+The reflected near-collision and far-field estimates therefore make each pair-work
+\(F_{p,q}(a)\) convex. Its critical increment is the secant expression
+
+\[
+ R^2\bigl(F_{p,q}(a/4)-F_{p,q}(a)\bigr)
+ =\frac{F_{p,q}(a/4)-F_{p,q}(a)}a.
+\]
+
+Convex secant comparison makes this expression nondecreasing in \(R>0\).
+The pair increments are absolutely summable for \(R\ge4\), so the full arithmetic
+rate \(Q(R)\) is nondecreasing there. The proof differentiates each finite pair
+expression, then sums an established order inequality. It does not interchange an
+infinite sum with differentiation.
+
+The finite stratum has an exact source formula. Let \(F\) contain every off-line
+analytic-multiplicity copy, let \(d_p=\operatorname{Re}\rho_p-1/2\), and let \(S_p\) be its
+completed arithmetic Laurent-source field. If \(F\) is finite, then for every \(R\ge4\),
+
+\[
+ W(R)=\sum_{p\in F}d_p h_R(\gamma_p)S_p,\qquad
+ Q(R)\longrightarrow M_2=\frac32\sum_{p\in F}\gamma_p^2d_pS_p.
+\]
+
+Every \(S_p\) retains the entire exterior divisor and archimedean completion. The reduction
+to \(F\) uses zero displacement on critical copies, not a truncation of their interactions.
+The individual source coefficients \(d_pS_p\) may be signed. Positivity of the complete
+moment follows from its identification with the source rate and the quartet payment.
+
+The resulting classification is unconditional:
+
+| Off-line support | Critical-rate behavior |
+|---|---|
+| Empty, equivalently RH | \(Q\) is identically zero |
+| Finite and nonempty | \(Q\to M_2\), with \(M_2>q_*\) |
+| Infinite | \(Q\to+\infty\) |
+
+Thus eventual boundedness of \(Q\), or existence of any finite real limit for \(Q\), is
+equivalent to finite off-line support. This identifies the exact \(O(R^{-2})\) boundary for
+the unscaled increment. Every finite exception also satisfies
+
+\[
+ 3\gamma^2(1+a_\rho)\le M_2,\qquad 3\gamma^2<M_2.
+\]
+
+A finite critical-rate budget therefore gives finitely many exceptions and controls their
+heights. A budget at or below \(q_*\) excludes them all; no such
+independent upper budget is proved by this classification.
+
+The critical rate also measures every finite smooth Weil negative index. A finite packet
+\(P\) of right-hand multiplicity copies carries the charge
+
+\[
+ C_2(P)=\frac32\sum_{p\in P}\gamma_p^2\ge\lambda|P|.
+\]
+
+The completed source increment eventually exceeds every number below \(C_2(P)\).
+The actual Pontryagin bound supplies a packet of cardinality \(k=\nu_-(W_f)\) for every
+finite compact C² test family. Consequently every \(b<\lambda k\) satisfies
+\(b<Q(R)\) eventually. The same payment holds in finite Laurent-source readings, with
+the damping scale chosen before the height taper. On finite off-line support this gives
+
+\[
+ \lambda\,\nu_-(W_f)\le M_2.
+\]
+
+The packet is extracted from the actual divisor; no spectral witness or source estimate
+is assumed. This is a quantitative transfer from negative index to arithmetic work,
+while an upper budget on that work remains a separate research problem.
+
+An existing arithmetic resolvent budget strengthens this cost from linear to quadratic.
+At the strip edge, the full Xi divisor has positive spectral mass at most \(3/50\).
+A right-hand packet and its disjoint critical-line reflections spend twice the packet's
+mass. The per-copy lower bound therefore gives
+
+\[
+ \sum_{p\in P}\frac1{\gamma_p^2+1}\le\frac3{100}.
+\]
+
+Weighted Cauchy–Schwarz yields
+
+\[
+ |P|^2\le\frac3{100}\left(\sum_{p\in P}\gamma_p^2+|P|\right),
+ \qquad C_2(P)\ge50|P|^2-\frac32|P|.
+\]
+
+Thus, for every finite smooth Weil index \(k\), the critical source rate eventually
+exceeds every number below \(50k^2-3k/2\). On finite off-line support,
+
+\[
+ \max\!\left(\lambda k,\,50k^2-\frac32k\right)\le M_2.
+\]
+
+This uses the actual strip-edge arithmetic budget, with all copies and reflections
+accounted for. That budget controls reciprocal heights; its consequence here is a
+stronger lower cost for normal work. It does not supply an upper bound on \(M_2\).
+
+The critical rate also has a canonical energy without a finite-support assumption. Define
+
+\[
+ K_2(p,q)=\frac38\operatorname{reflectedWork}
+ (d_p-d_q,d_p+d_q,\gamma_p-\gamma_q;\gamma_p^2,\gamma_q^2),
+ \qquad \mathcal E_2=\sum_{p,q}K_2(p,q)\in[0,+\infty].
+\]
+
+Each summand is nonnegative and is the limit of its normalized pair increment.
+Pair monotonicity supplies a pointwise majorant by \(K_2\). Summable domination handles
+finite energy; arbitrarily large finite subsums handle infinite energy. Consequently, along
+the actual real damping scale,
+
+\[
+ 0\le Q(R)\le\mathcal E_2\quad(R\ge4),\qquad Q(R)\longrightarrow\mathcal E_2.
+\]
+
+This construction keeps the exact cancellation in critical exterior rows. If \(d_q=0\), then
+
+\[
+ K_2(p,q)=\frac34\gamma_p^2
+ \frac{d_p^2}{d_p^2+(\gamma_p-\gamma_q)^2},
+\]
+
+with the corpus's zero-denominator convention. The critical row's own height weight cancels.
+Replacing this expression by an absolute bound weighted by both heights can lose summability.
+
+The energy is finite exactly when off-line support is finite; on that stratum it equals the
+full Laurent-source moment \(M_2\). Every finite smooth Weil index \(k\) satisfies
+
+\[
+ \max\!\left(\lambda k,50k^2-\frac32k\right)\le\mathcal E_2,
+ \qquad \mathrm{RH}\ \Longleftrightarrow\ \mathcal E_2\le q_*.
+\]
+
+The extended formulation retains infinite energy instead of imposing a summability premise.
+Nonnegative pair values do not assert a positive semidefinite Gram kernel. This canonical
+identification and its lower charges still require an independent arithmetic upper estimate
+to exclude a defect.
+
 ## Questions the programme aims to answer
 
 1. Which arithmetic operation joins positive sections while paying their mixed Schur or polar
@@ -792,6 +1017,8 @@ vanishing-increment condition; their exclusion requires a further estimate.
    propagation eliminates the finite remainder?
    Can cancellation in the scale difference `W(2R)-W(R)` instead prove eventual work below the
    annular quantum, or convergence of that difference to zero?
+   Can its critically rescaled value `R^2*(W(2R)-W(R))` be bounded cofinally by the proved
+   exclusion quantum, which would also eliminate finite exceptions?
 9. Can terminal geometry support a boundary-to-interior estimate for the regularized arithmetic
    field with its singularities and archimedean background accounted for?
 10. Which construction recovers the curve case from actual arithmetic sections or incidence, with
@@ -834,6 +1061,12 @@ Quantitative pillars supplied by this programme:
 | Annular arithmetic payment | Full source-work increments pay right-zero packets with multiplicity; finite source cutoffs retain the payment; infinite off-line support forces arbitrarily high quantum increments | `SourceWorkIncrementsPayForNewZeros` |
 | Exact scale-increment stratum | Work at every real scale is at most copied energy; finite support gives its real limit and is equivalent to vanishing doubled increments or eventual increments below 21/100 | `VanishingScaleIncrementsCharacterizeFiniteSupport` |
 | Full quartet scale quantum | Sixteen actual ordered pairs pay twice the damping increment times one plus a positive diagonal angle; eventual closed bound 39/50 means finite exceptions, while every-scale control is equivalent to RH | `EveryOffLineQuartetCostsAStrictScaleQuantum` |
+| Critical-rate detection | A fixed quartet forces an eventual height-square charge in `R^2*DeltaW`; the certified arithmetic height floor gives a closed cofinal RH threshold, and infinite off-line support forces divergence | `TheQuadraticScaleWorkDetectsEveryException` |
+| Exact critical-rate classification | Finite off-line support gives an exact finite full-source moment limit; zero, finite exceptional and infinite support have distinct rate regimes, with strict height bounds for each finite exception | `TheCriticalRateClassifiesAllOffLineSupport` |
+| Critical-rate index payment | Actual right-copy packets witness every finite smooth Weil index and force its height-square source charge; each negative square costs the certified arithmetic unit, also in finite Laurent readings | `TheCriticalRatePaysEveryNegativeSquare` |
+| Quadratic arithmetic index cost | The certified full strip-edge budget bounds each right packet's reciprocal-height mass by 3/100; weighted Cauchy forces critical-rate cost at least 50k²−3k/2 for every finite Weil index | `TheSourceBudgetMakesTheIndexCostQuadratic` |
+| Inverse-scale curvature | Reflected work is convex in inverse-square scale above the actual height gap; convex secants make each normalized pair increment and the completed critical source rate monotone | `TheCriticalSourceRateIsMonotone` |
+| Canonical critical source energy | The real-scale critical rate converges to the nonnegative extended height-square pair sum; its finite stratum is the full Laurent-source moment and it retains every finite Weil index charge | `TheCriticalSourceRateHasACanonicalEnergy` |
 | Strict energy surplus | Every positive finite index lies strictly below distinct energy; the closed global threshold two is equivalent to RH | `TheEnergyStrictlyExceedsTheIndex` |
 | Closed source-work threshold | RH iff cofinally damped source work is at most two; every positive finite index is eventually exceeded by finite source work | `TheSourceWorkHasAClosedQuantumThreshold` |
 | Common finite stratum | Fixed-spline integer-log indices are uniformly bounded iff damped source work is eventually bounded | `TheWorkAndIndexHaveTheSameFiniteStratum` |
@@ -863,6 +1096,7 @@ Quantitative pillars supplied by this programme:
 | Complete-cell index capture | One common actual logarithmic grid eventually carries every negative square of a fixed finite smooth Weil family; all mixed-entry convergence premises are discharged from the source | `TheCompleteCellsCaptureEveryFiniteIndex` |
 | Bounded projection on the full graph | Actual arithmetic coercivity constructs a unique bounded Weil projection onto the closed section carrier; it agrees with the finite-section limit and gives exact signed Schur subtraction on all graph vectors | `TheClosedSectionHasABoundedWeilProjection` |
 | Strict full-width reserve | Keeping the true width inside the exponential pole factor leaves a positive uniform weighted reserve on the original section spaces and improves completed source cost by the factor `1+rho` | `TheFullWidthStillRetainsArithmeticReserve` |
+| Moving-band source decoupling | The translated upper arithmetic half-band has a growing logarithmic mass floor; its energy unit ball couples to every fixed compact probe by O((log N)^(-1/2)), with an explicit complete-source kernel budget | `MovingArithmeticBandsDecoupleFromFixedTests` |
 
 ## Tools to develop and research topics
 

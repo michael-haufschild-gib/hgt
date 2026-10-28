@@ -22,6 +22,7 @@ Prove the signed index estimate on the source-complete cells constructed in `Com
 - `exists_completeFiniteSourceTransfer` recovers the original Weil intersections and polarized Gram entries on one common complete-cell system.
 - `finiteCellWeil_original_surface_limit` realizes `finiteCellWeil c 0 1 X` by compact C² tests on the original surface. The same smoothing preserves both pole coordinates and exact Hecke subdivision; its first `X` cell sections are linearly independent at every scale.
 - Independent separated-section positivity has a support restriction; complete cells fill the gaps.
+- [Balanced complete-cell prime payment](../3-formalized/acs-balanced-complete-cell-prime-payment.md) proves exact cancellation of successor terms on balanced adjacent pairs and bounds their entire signed prime energy by `Σ (16 + log(2*a+1)/sqrt 2) M_a c_a^2`, uniformly in the upper horizon. The matching Gamma and pole estimates are active in [balanced complete-cell effectivity](acs-complete-cell-haar-effectivity.md); this subspace does not yet settle full-source effectivity.
 - Full-source effectivity and the signed Gamma–prime–pole index bound remain unproved.
 
 ## Log

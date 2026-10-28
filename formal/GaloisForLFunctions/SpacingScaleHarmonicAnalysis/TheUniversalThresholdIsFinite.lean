@@ -79,7 +79,7 @@ theorem weilQuadTw_eq_markov (ω : ArithmeticFunction ℝ) (hf : ContDiff ℝ 2 
 /-! ### Wide tests -/
 
 /-- An `L`-Lipschitz test supported in `[a, b]` moves by `L y` on a support of length `b − a + y`. -/
-theorem integral_sub_shift_sq_le_of_supp (hf : Continuous f) (hfc : HasCompactSupport f) {L a b : ℝ}
+theorem integral_sub_shift_sq_le_of_supp (hf : Continuous f) {L a b : ℝ}
     (hL : ∀ u v, |f u - f v| ≤ L * |u - v|) (hsupp : ∀ u, u ∉ Set.Icc a b → f u = 0) (hab : a ≤ b)
     {y : ℝ} (hy : 0 ≤ y) : ∫ u, (f u - f (u + y)) ^ 2 ≤ L ^ 2 * y ^ 2 * (b - a + y) := by
   have hzero : ∀ u, u ∉ Set.Icc (a - y) b → (f u - f (u + y)) ^ 2 = 0 := fun u hu => by
@@ -123,7 +123,7 @@ theorem levyEnergy_le_of_wide (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f
       integrableOn_sq_mul_archLevyDensity.mono_set fun y hy => hy.1
     have h1 := setIntegral_mono_on (hI.mono_set fun y hy => hy.1) (hm2.const_mul (2 * D * L ^ 2))
       measurableSet_Ioc fun y hy => by
-        have hQ := integral_sub_shift_sq_le_of_supp hf.continuous hfc hL hsupp hD.le hy.1.le
+        have hQ := integral_sub_shift_sq_le_of_supp hf.continuous hL hsupp hD.le hy.1.le
         have hω := (archLevyDensity_pos hy.1).le
         calc archLevyDensity y * Q y ≤ archLevyDensity y * (L ^ 2 * y ^ 2 * (D - 0 + y)) :=
               mul_le_mul_of_nonneg_left hQ hω
@@ -190,7 +190,7 @@ theorem atomicTest_dipole (g : ℝ → ℝ) (t : ℝ) :
   funext u
   have h : Finset.Icc 1 2 = {1, 2} := by decide
   simp only [atomicTest, h, Finset.sum_insert (by decide : (1 : ℕ) ∉ ({2} : Finset ℕ)),
-    Finset.sum_singleton, dipoleWeights, if_pos rfl, if_neg (by decide : (2 : ℕ) ≠ 1),
+    Finset.sum_singleton, dipoleWeights, if_neg (by decide : (2 : ℕ) ≠ 1),
     Nat.cast_one, Real.log_one, sub_zero]
   push_cast
   ring
@@ -279,9 +279,9 @@ theorem coshHalfMoment_dipole (hg : Continuous g) (hgc : HasCompactSupport g)
   ring
 
 /-- **The mass of the dipole**: `‖g − t g(· − a)‖² ≥ (τ²/2)‖g‖² − ‖g − g(· − a)‖²` for
-`τ ≤ 1 − t`, `0 ≤ t ≤ 1`. -/
+`0 ≤ τ ≤ 1 − t`, `0 ≤ t`. -/
 theorem integral_dipole_sq_ge (hg : Continuous g) (hgc : HasCompactSupport g) {τ : ℝ} (hτ : 0 ≤ τ)
-    (hτt : τ ≤ 1 - t) (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    (hτt : τ ≤ 1 - t) (ht0 : 0 ≤ t) :
     τ ^ 2 / 2 * (∫ u, g u ^ 2) - ∫ u, (g u - g (u - a)) ^ 2 ≤
       ∫ u, (g u - t * g (u - a)) ^ 2 := by
   have hga : Continuous fun u => g (u - a) := hg.comp (continuous_sub_right a)
@@ -308,8 +308,8 @@ theorem integral_dipole_sq_ge (hg : Continuous g) (hgc : HasCompactSupport g) {�
 end Dipole
 
 /-- The final inequality: a negative mass term beats the Lipschitz terms of a wide bump. -/
-theorem dipole_arch_neg {τ W K a A F G : ℝ} (hτ : 0 < τ) (hW : 1 ≤ W) (haW : a ≤ W) (ha : 0 ≤ a)
-    (hK : 0 ≤ K) (hθ : 2 * gammaHardyPhaseRate 0 < -5) (hA0 : 0 ≤ A) (hA : A ≤ 1)
+theorem dipole_arch_neg {τ W K a A F G : ℝ} (hW : 1 ≤ W) (haW : a ≤ W) (ha : 0 ≤ a)
+    (hθ : 2 * gammaHardyPhaseRate 0 < -5) (hA : A ≤ 1)
     (hF0 : 0 ≤ F) (hG : W / 2 ≤ G)
     (hmass : τ ^ 2 / 2 * G - (K / W) ^ 2 * a ^ 2 * (W + a) ≤ F)
     (hbig : 2 * (K ^ 2 * a ^ 2 + 144 * K ^ 2) < τ ^ 2 / 4 * W ^ 2) :
@@ -420,11 +420,11 @@ theorem universalThreshold_finite :
   -- the archimedean form is negative
   have hshift : ∫ u, (g u - g (u - a)) ^ 2 ≤ (K / W) ^ 2 * a ^ 2 * (W + a) := by
     rw [integral_sub_shift_neg_sq]
-    have := integral_sub_shift_sq_le_of_supp hg.continuous hgc hgL hgsupp hW0.le ha.le
+    have := integral_sub_shift_sq_le_of_supp hg.continuous hgL hgsupp hW0.le ha.le
     linarith
   have hmass : τ ^ 2 / 2 * (∫ u, g u ^ 2) - (K / W) ^ 2 * a ^ 2 * (W + a) ≤ ∫ u, f u ^ 2 := by
     rw [hfeq]
-    have := integral_dipole_sq_ge hg.continuous hgc hτ.le htτ ht0 ht1 (a := a)
+    have := integral_dipole_sq_ge hg.continuous hgc hτ.le htτ ht0 (a := a)
     linarith
   have hlevy := levyEnergy_le_of_wide hf hfc hfL hfsupp (by linarith)
   have hAW0 : 0 ≤ WeilLevyPoleGauss.archLevyAntideriv (W + a) := by
@@ -433,7 +433,7 @@ theorem universalThreshold_finite :
       (archLevyDensity_pos (lt_trans (by linarith) hy)).le
   have hneg : archForm f < 0 := by
     rw [archForm_eq_levyEnergy hf hfc]
-    have := dipole_arch_neg hτ hW1 haW ha.le hK0 two_gammaHardyPhaseRate_zero_lt hAW0 hAW
+    have := dipole_arch_neg hW1 haW ha.le two_gammaHardyPhaseRate_zero_lt hAW
       (integral_nonneg fun u => sq_nonneg (f u)) hg2 hmass hBW
     linarith
   -- assemble

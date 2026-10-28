@@ -74,7 +74,7 @@ theorem movingArithmeticBand_mass_floor {N : ℕ} (hN : 1 ≤ N) {w : ℝ}
     intro n _
     by_cases hn : (n : ℝ) < (N : ℝ) / 2
     · simp only [hband n hn, sectionMass, Pi.zero_apply, zero_pow (by decide : 2 ≠ 0),
-        integral_zero, mul_zero]
+        integral_zero, mul_zero, le_refl]
     · have hratio : (1 / 2 : ℝ) ≤ (n : ℝ) / N :=
         (le_div_iff₀ hN0).mpr (by linarith only [le_of_not_gt hn])
       have hprod := mul_le_mul_of_nonneg_right hratio
@@ -99,7 +99,7 @@ theorem movingArithmeticBand_mass_floor {N : ℕ} (hN : 1 ≤ N) {w : ℝ}
 
 /-- Recentring the upper arithmetic band keeps its full support in one fixed compact window. -/
 theorem movingArithmeticBand_eq_zero_off_window {N : ℕ} (hN : 1 ≤ N) {w : ℝ}
-    (hw0 : 0 < w) (hw : w ≤ fullSectionRatio * atomSpacing N)
+    (hw : w ≤ fullSectionRatio * atomSpacing N)
     (G : ℕ → ℝ → ℝ) (hg : ∀ n, ContDiff ℝ 2 (G n))
     (hs : ∀ n u, u ∉ Icc 0 w → G n u = 0)
     (hband : ∀ n : ℕ, (n : ℝ) < (N : ℝ) / 2 → G n = 0)
@@ -136,7 +136,7 @@ theorem movingArithmeticBand_source_coupling {N : ℕ} (hN : 1 ≤ N) {w : ℝ}
   let p := movingArithmeticBandTest N G hg hs
   let D := sourceKernelEnergy (Icc (-Real.log 2) 1) g
   have hcs := realWeilForm_sq_le_mass_mul_sourceKernelEnergy isCompact_Icc p g
-    (movingArithmeticBand_eq_zero_off_window hN hw0 hw G hg hs hband)
+    (movingArithmeticBand_eq_zero_off_window hN hw G hg hs hband)
   have hfloor := movingArithmeticBand_mass_floor hN hw0 hw G hg hs hband
   have hbudget := mul_le_mul_of_nonneg_left hcs (movingBandFloor_pos N).le
   have hpaid := mul_le_mul_of_nonneg_right hfloor
@@ -165,8 +165,8 @@ theorem movingBandFloor_tendsto_atTop : Tendsto movingBandFloor atTop atTop := b
 /-- Energy-normalized upper-band sections decouple uniformly from every fixed compact probe. -/
 theorem movingArithmeticBand_unit_energy_pairing_tendsto_zero (g : realTests)
     {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ N : ℕ in atTop, ∀ w : ℝ, ∀ hw0 : 0 < w,
-      ∀ hw : w ≤ fullSectionRatio * atomSpacing N,
+    ∀ᶠ N : ℕ in atTop, ∀ w : ℝ, 0 < w →
+      w ≤ fullSectionRatio * atomSpacing N →
       ∀ G : ℕ → ℝ → ℝ, ∀ hg : ∀ n, ContDiff ℝ 2 (G n),
       ∀ hs : ∀ n u, u ∉ Icc 0 w → G n u = 0,
       (∀ n : ℕ, (n : ℝ) < (N : ℝ) / 2 → G n = 0) →

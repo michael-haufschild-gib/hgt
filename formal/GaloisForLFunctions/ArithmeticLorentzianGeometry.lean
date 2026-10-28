@@ -10,8 +10,16 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheSuccessorConnectionIs
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.LorentzianPolynomialsAndTheTuranLayer
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.FrobeniusIsConformalHeckeIsABoost
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.LocalFactorsAndTheEulerProductClosure
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHessianOfALorentzianPolynomialTricklesDown
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheMixedHessiansOfALorentzianPolynomialAreHyperbolic
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheLorentzianClassIsClosedUnderNonnegativeSubstitution
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheEulerProductOfLorentzianLocalFactorsIsLorentzian
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheClosureProducesExactlyTheLorentzianForms
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.RamanujanAndLorentzianMeetOnlyAtTheWeilBound
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheAtomicFormIsMetzlerBelowTheSpacing
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheOverlapRatioIsTheCoveredMeasure
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheUniformMarginPaysThePoleOnlyUpToARootLogarithm
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheOverlapFrustratesTheMetzlerGauge
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheMetzlerThresholdOfTheOverlapRatioIsOne
@@ -30,10 +38,15 @@ Umbrella for the combinatorial Hodge theory of the affine monoid of the integers
 Lorentzian forms at degree two, domination and closure; the Hodge index of the scaling surface as
 reverse Cauchy–Schwarz and the nef shift; the trickle-down theorem and the Metzler Hodge index
 theorem; calibration over finite fields, where the trickle-down inequality is the square-root
-count; common gauge fixing by the archimedean place along the successor; the atomic intersection
-form of `ζ` — Metzler exactly up to the spacing, hyperbolic with `(TD_π)` and hyperbolic links at a
-fixed fraction of it, blind to sign twins where the sign is not; renormalized prime-place rows;
-polar gluing, its dispersion cost, associative assembly and compatibility with linear restriction;
-the coherent half-defect Frobenius repair with optimal rank and exact pole-preserving Hodge
-threshold. See `ArithmeticLorentzianGeometry/README.md`.
+count; common gauge fixing by the archimedean place along the successor; Lorentzian polynomials —
+the Hessian and mixed-Hessian trickle-down (Alexandrov–Fenchel, Khovanskii–Teissier), closure
+under differentiation, nonnegative substitution and products, the Euler product closure at every
+nonnegative point, the characterization of its Hessians as exactly the Lorentzian forms, the rigidity of Ramanujan local factors at the Weil bound, and Laguerre's
+inequality on the half-line for the Jensen polynomials of `ξ`; the atomic
+intersection form of `ζ` — Metzler exactly up to the spacing, hyperbolic with `(TD_π)` and
+hyperbolic links at a fixed fraction of it, blind to sign twins where the sign is not, and
+supported on a set of measure at most the overlap ratio;
+renormalized prime-place rows; polar gluing, its dispersion cost, associative assembly and
+compatibility with linear restriction; the coherent half-defect Frobenius repair with optimal rank
+and exact pole-preserving Hodge threshold. See `ArithmeticLorentzianGeometry/README.md`.
 -/

@@ -15,9 +15,8 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 - [x] 2 → 3  Lean: `renormalized_arithmetic_potential_theory_laws` and the module pillars, all
       axiom-clean (`propext`, `Classical.choice`, `Quot.sound`), wired into
       `RenormalizedArithmeticPotentialTheory.lean`
-- [ ] open topics (README §9): the overlap regime beyond the spacing; who pays the tower
-      deficit at small primes; class-wise counterterm on residue classes; exact torsion constant
-      in `[3/2, 2]`; Chebotarev gauges; several primes
+- [ ] open topics (README §9): the overlap regime beyond the spacing; the finite part
+      `−L′/L(1, χ)`; non-abelian Chebotarev gauges; passage to all primes
 
 ## Results (Lean)
 - RP1 coupled survival law; RP2 the archimedean place pays the arithmetic point.
@@ -37,6 +36,14 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
   width `c₀δ_N`).
 - RP19 Mertens for characters, `A_χ = O(1)`; RP20 real character gauges mod a prime have matching
   coefficient `0`; RP21 Mertens in residue classes.
+- RP24 unit residue classes mod `q`: counterterm `(q/φ(q)) ℓ²`, rank one for every `q`;
+  RP25 class functions seen only through their mean, every character `χ ≠ 1` invisible;
+  RP26 transfer law (remainder = harmonic convolution of the Mertens error), soft law under
+  `A_ε(y)/log y → κ`, diagonal criterion.
+- RP27 the horizon laws (polarity, `−2γ`, tensor law) for every profile, error by the horizon
+  variation; bounded-variation (smooth) signed and class profiles up to `o(mass)` (W23).
+- RP28 `d_p = u/sinh u − γ` strictly decreasing; `d_p > 0` iff `p ≤ 43`; tower finite part
+  nonnegative iff `p ≥ 47` (W25 sign table).
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke

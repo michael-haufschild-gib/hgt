@@ -1,12 +1,13 @@
 import GaloisForLFunctions.ArithmeticIndexDescent.EveryOffLineQuartetCostsAStrictScaleQuantum
+import GaloisForLFunctions.RHTower.PrimeArchLogHeightDefectOrderTwentyThreeEndpointOptimization
 
 /-!
 # Quadratic scale work detects every off-line exception
 
 The rational damping difference has exact critical decay R⁻². Every actual
 conjugate/reflection quartet therefore forces a positive asymptotic quantum
-in R² times the completed source-work increment. The zero-free height gap
-makes that quantum strictly greater than forty-eight. Infinite off-line
+in R² times the completed source-work increment. The certified arithmetic
+off-line height floor supplies its closed exclusion threshold. Infinite off-line
 support forces the rescaled work to infinity, even if escape is sparse.
 No arithmetic upper estimate is assumed or supplied.
 -/
@@ -19,6 +20,18 @@ open GaloisForLFunctions.ArithmeticCorrespondencePositivity
 open scoped Topology
 
 namespace GaloisForLFunctions.ArithmeticIndexDescent
+
+/-- Critical-rate cost per right copy from the certified arithmetic off-line height floor. -/
+def quadraticIndexUnit : ℝ := (3 / 2 : ℝ) * xiOrderTwentyThreeOptimizedHeightSq
+
+/-- A full conjugate pair costs twice the single-copy index unit. -/
+def quadraticExclusionQuantum : ℝ := 2 * quadraticIndexUnit
+
+theorem quadraticIndexUnit_pos : 0 < quadraticIndexUnit := by
+  norm_num [quadraticIndexUnit, xiOrderTwentyThreeOptimizedHeightSq]
+
+theorem quadraticExclusionQuantum_pos : 0 < quadraticExclusionQuantum :=
+  mul_pos (by norm_num) quadraticIndexUnit_pos
 
 private theorem normalized_damping_gap (t R : ℝ) (hR : 0 < R) :
     R ^ 2 * (heightDamping (2 * R) t - heightDamping R t) =
@@ -49,7 +62,9 @@ private theorem normalized_damping_gap_limit (t : ℝ) :
       (4 + (t / R) ^ 2) ^ 2 * (1 + (t / R) ^ 2) ^ 2) atTop (𝓝 16) := by
     convert ((tendsto_const_nhds.add hq).pow 2).mul
       ((tendsto_const_nhds.add hq).pow 2) using 1 <;> norm_num
-  convert hnum.div hden (by norm_num : (16 : ℝ) ≠ 0) using 1 <;> first | rfl | ring
+  convert hnum.div hden (by norm_num : (16 : ℝ) ≠ 0) using 1 <;> try rfl
+  congr 1
+  ring
 
 /-- The scale-square normalization retains a fixed positive height quantum. -/
 theorem heightDamping_quadraticGap_tendsto (t : ℝ) :
@@ -62,9 +77,27 @@ theorem heightDamping_quadraticGap_tendsto (t : ℝ) :
 /-- Completed arithmetic work at the critical quadratic decay scale. -/
 def quadraticWorkIncrement (R : ℝ) : ℝ := R ^ 2 * doubledSourceWorkIncrement R
 
+theorem quadraticWorkIncrement_eq_zero_of_riemannHypothesis (hRH : RiemannHypothesis)
+    (R : ℝ) : quadraticWorkIncrement R = 0 := by
+  rw [quadraticWorkIncrement, doubledSourceWorkIncrement,
+    xiDampedSourceWork_eq_zero_of_riemannHypothesis hRH,
+    xiDampedSourceWork_eq_zero_of_riemannHypothesis hRH]
+  ring
+
 theorem quadraticWorkIncrement_nonneg {R : ℝ} (hR : 4 ≤ R) :
     0 ≤ quadraticWorkIncrement R :=
   mul_nonneg (sq_nonneg R) (doubledSourceWorkIncrement_nonneg hR)
+
+/-- Removing the compact height taper retains the critically rescaled source increment. -/
+theorem quadraticTaperedSourceWork_tendsto {R : ℝ} (hR : 4 ≤ R) :
+    Tendsto (fun N : ℕ => R ^ 2 *
+      (xiTaperedSourceWork (2 * R) N - xiTaperedSourceWork R N)) atTop
+        (𝓝 (quadraticWorkIncrement R)) := by
+  change Tendsto (fun N : ℕ => R ^ 2 *
+    (xiTaperedSourceWork (2 * R) N - xiTaperedSourceWork R N)) atTop
+      (𝓝 (R ^ 2 * (xiDampedSourceWork (2 * R) - xiDampedSourceWork R)))
+  exact tendsto_const_nhds.mul (xiTaperedSourceWork_increment_tendsto hR
+    (show 4 ≤ 2 * R by linarith only [hR]))
 
 /-- The exact quartet payment survives multiplication by the scale square. -/
 theorem quartet_le_quadraticWorkIncrement {j : XiDivisorSupport}
@@ -87,23 +120,29 @@ theorem eventually_lt_quadraticIncrement_of_lt_quartetCharge {j : XiDivisorSuppo
         (1 + reflectionDiagonalAngle j)) atTop
       (𝓝 (3 * (j : ℂ).im ^ 2 * (1 + reflectionDiagonalAngle j))) := by
     convert (tendsto_const_nhds.mul (heightDamping_quadraticGap_tendsto (j : ℂ).im)).mul_const
-      (1 + reflectionDiagonalAngle j) using 1 <;> first | rfl | ring
+      (1 + reflectionDiagonalAngle j) using 1
+    first | rfl | ring
   filter_upwards [eventually_ge_atTop (4 : ℝ), hlim.eventually (lt_mem_nhds hb)] with R hR h
   exact h.trans_le (quartet_le_quadraticWorkIncrement hj hR)
 
-private theorem quartetCharge_gt_fortyEight {j : XiDivisorSupport}
+/-- The arithmetic height floor and positive diagonal angle give a strict quartet threshold. -/
+theorem quartetCharge_gt_exclusionQuantum {j : XiDivisorSupport}
     (hj : (j : ℂ).re ≠ 1 / 2) :
-    (48 : ℝ) < 3 * (j : ℂ).im ^ 2 * (1 + reflectionDiagonalAngle j) := by
-  have hheight : 4 ≤ |(j : ℂ).im| := four_le_abs_xiZeroHeight (firstZeroCopy j)
-  have hsq : (16 : ℝ) ≤ (j : ℂ).im ^ 2 := by
-    nlinarith only [hheight, sq_abs (j : ℂ).im, sq_nonneg (|(j : ℂ).im| - 4)]
-  have hprod := mul_pos (show 0 < (j : ℂ).im ^ 2 by linarith only [hsq])
+    quadraticExclusionQuantum < 3 * (j : ℂ).im ^ 2 * (1 + reflectionDiagonalAngle j) := by
+  have hsq := orderTwentyThreeOptimizedHeightSq_le_im_sq_of_xiZeroCopy_offLine
+    (firstZeroCopy j) hj
+  change xiOrderTwentyThreeOptimizedHeightSq ≤ (j : ℂ).im ^ 2 at hsq
+  have hfloor : 0 < xiOrderTwentyThreeOptimizedHeightSq := by
+    norm_num [xiOrderTwentyThreeOptimizedHeightSq]
+  have hprod := mul_pos (hfloor.trans_le hsq)
     (reflectionDiagonalAngle_pos hj)
+  unfold quadraticExclusionQuantum quadraticIndexUnit
   nlinarith only [hsq, hprod]
 
 /-- Every exception, including a lone finite quartet, crosses the closed asymptotic quantum. -/
-theorem riemannHypothesis_or_eventually_quadraticIncrement_gt_fortyEight :
-    RiemannHypothesis ∨ ∀ᶠ R : ℝ in atTop, 48 < quadraticWorkIncrement R := by
+theorem riemannHypothesis_or_eventually_quadraticIncrement_gt_exclusionQuantum :
+    RiemannHypothesis ∨ ∀ᶠ R : ℝ in atTop,
+      quadraticExclusionQuantum < quadraticWorkIncrement R := by
   by_cases hRH : RiemannHypothesis
   · exact Or.inl hRH
   right
@@ -111,21 +150,30 @@ theorem riemannHypothesis_or_eventually_quadraticIncrement_gt_fortyEight :
     by_contra! hall
     exact hRH (riemannHypothesis_of_forall_re_eq (c := 1 / 2) hall)
   exact eventually_lt_quadraticIncrement_of_lt_quartetCharge hj
-    (quartetCharge_gt_fortyEight hj)
+    (quartetCharge_gt_exclusionQuantum hj)
+
+/-- Every exception is detected by finite Laurent-source readings, in damping-then-taper order. -/
+theorem riemannHypothesis_or_eventually_finite_quadraticSourceWork_gt_exclusionQuantum :
+    RiemannHypothesis ∨ ∀ᶠ R : ℝ in atTop, ∀ᶠ N : ℕ in atTop,
+      quadraticExclusionQuantum <
+        R ^ 2 * (xiTaperedSourceWork (2 * R) N - xiTaperedSourceWork R N) := by
+  rcases riemannHypothesis_or_eventually_quadraticIncrement_gt_exclusionQuantum with hRH | h
+  · exact Or.inl hRH
+  right
+  filter_upwards [h, eventually_ge_atTop (4 : ℝ)] with R hQ hR
+  exact (quadraticTaperedSourceWork_tendsto hR).eventually (lt_mem_nhds hQ)
 
 /-- Cofinal control at the critical-rate quantum excludes both finite and infinite exceptions. -/
-theorem riemannHypothesis_iff_cofinally_quadraticIncrement_le_fortyEight :
+theorem riemannHypothesis_iff_cofinally_quadraticIncrement_le_exclusionQuantum :
     RiemannHypothesis ↔ ∀ T : ℝ, ∃ R : ℝ, T ≤ R ∧ 4 ≤ R ∧
-      quadraticWorkIncrement R ≤ 48 := by
+      quadraticWorkIncrement R ≤ quadraticExclusionQuantum := by
   constructor
   · intro hRH T
     refine ⟨max T 4, le_max_left _ _, le_max_right _ _, ?_⟩
-    rw [quadraticWorkIncrement, doubledSourceWorkIncrement,
-      xiDampedSourceWork_eq_zero_of_riemannHypothesis hRH,
-      xiDampedSourceWork_eq_zero_of_riemannHypothesis hRH]
-    norm_num
+    rw [quadraticWorkIncrement_eq_zero_of_riemannHypothesis hRH]
+    exact quadraticExclusionQuantum_pos.le
   · intro h
-    rcases riemannHypothesis_or_eventually_quadraticIncrement_gt_fortyEight with hRH | hhigh
+    rcases riemannHypothesis_or_eventually_quadraticIncrement_gt_exclusionQuantum with hRH | hhigh
     · exact hRH
     obtain ⟨T, hT⟩ := eventually_atTop.mp hhigh
     obtain ⟨R, hR, _, hbound⟩ := h T
@@ -159,5 +207,6 @@ theorem quadraticWorkIncrement_tendsto_atTop_of_infinite (hinf : offLineSupport.
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.heightDamping_quadraticGap_tendsto
-#print axioms GaloisForLFunctions.ArithmeticIndexDescent.riemannHypothesis_iff_cofinally_quadraticIncrement_le_fortyEight
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.riemannHypothesis_iff_cofinally_quadraticIncrement_le_exclusionQuantum
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.riemannHypothesis_or_eventually_finite_quadraticSourceWork_gt_exclusionQuantum
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.quadraticWorkIncrement_tendsto_atTop_of_infinite
