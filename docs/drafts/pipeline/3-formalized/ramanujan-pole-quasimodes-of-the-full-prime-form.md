@@ -1,10 +1,10 @@
 # Ramanujan pole profiles are quasimodes of the full finite prime form
 
 - **ID:** ramanujan-pole-quasimodes-of-the-full-prime-form
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Source:** RAPT valuation steps and actual finite-sieve adjunction operator; RBG Ramanujan germs; Mertens finite part
-- **Count:** uncounted; all fourteen scratch checks passed; final direct-source audit remains
+- **Count:** contribution 3 of this task; one full-matrix quasimode and finite-packet theorem
 
 ## Target
 
@@ -14,7 +14,7 @@ matrix `weilPrimeKernel(n,k)` for 1<=n,k<=N. Define
 `u_(m,N)(n)=c_m(n)/sqrt(phi(m)*n)`,
 `E(m)=gamma+log(m)+tameDifferent(m)`.
 
-For every fixed m, the paper proof below establishes
+For every fixed m, the Lean formalization proves
 
 `||P_N u_(m,N)-(log(N)-E(m))u_(m,N)||^2/log(N) -> 0`,
 `||u_(m,N)||^2/log(N) -> 1`.
@@ -54,15 +54,15 @@ The complete-period Ramanujan Gram supplies the normalized inner products.
 
 Exact row reindexing, the generator/eigenmode identity, uniform error domination,
 periodic harmonic transfer, and spectral-distance transfer have the dependency-closed
-paper proof below. All fourteen implementation sources pass scratch checks;
-final direct actual-source checks remain.
+paper proof below. All fourteen implementation sources pass their final direct
+actual-source checks. Nine transitive endpoint audits are clean.
 
 ## Novelty leads
 
 - `RAPT/TheValuationTowerIsExactlySolvable.lean` proves pointwise local pole-gauge
   eigenvectors and a sharp finite-class gap. Its formalized card anticipates the
   Kronecker energy list. These are baseline.
-- The active finite-sieve adjunction package proves an actual maximal-domain
+- The proved finite-sieve adjunction package proves an actual maximal-domain
   operator on supported-integer class coordinates. The proposed target acts on
   every integer up to N with the full literal prime matrix; it requires a new
   row-error estimate, not only convergence of quadratic forms.
@@ -118,7 +118,7 @@ A further RAPT-restricted Ramanujan/quasimode search during implementation
 returned this package's new completed-row inputs, the existing joint Cesaro
 Gram, local tower/sieve constructions, and the new one-gap theorem. Their
 claims remain distinct from the full-row residual and finite spectral packet.
-The present package is still uncounted until its remaining checks pass.
+The package passes the final source and transitive axiom audits recorded below.
 
 The final packet-oriented corpus query again returned the present residual,
 the supported-sieve basis, and different prefix, pronic, and parity matrices.
@@ -130,12 +130,14 @@ also concern those primitives, not eigenvalues of the literal prime matrix.
 
 ## Gates
 
-- [x] Complete corpus novelty and significance audit; final recheck remains before counting.
+- [x] Corpus novelty and significance audit, including final packet-oriented rechecks.
 - [x] Dependency-closed paper proof of the actual full-matrix assertion.
-- [ ] Exact Lean formalization, direct-source and transitive axiom audits.
+- [x] Exact Lean formalization, fourteen direct-source checks, nine transitive axiom audits, umbrella wiring.
 
-Finite-sieve adjunction is formalized. This theorem is undergoing its exact
-Lean realization and remains uncounted.
+Finite-sieve adjunction is formalized. All fourteen exact implementation sources
+pass scratch checks and match their installed versions. All fourteen final source
+checks passed with empty diagnostics. Source scans found no prohibited proof
+mechanisms or raised limits.
 
 ## Additional checked bridges and proof design
 
@@ -147,7 +149,7 @@ BVI coefficient: TTPC `ramanujanSum_eq_ramanujanLagCoefficient` and
 multiplicativity and the exact prime-power multiplier. Its
 `RamanujanLagCoefficientAndTotientQuotient.lean` gives the gcd-divisor formula.
 These discharge the arithmetic identification and unit-multiplication invariance
-at the paper level; the eventual Lean bridge should reuse these exact results.
+at the paper level and are reused by the exact Lean bridge.
 The local step equations and their proof were reread. No local mode formula is new.
 
 RAPT `roundoff_le` in `TheFinitePartIsEulersConstant.lean` gives precisely
@@ -173,13 +175,12 @@ row limit near the upper edge of the horizon.
 For a finite Hermitian matrix, expanding a nonzero vector x in an orthonormal
 eigenbasis gives `min_j |lambda_j-mu| <= ||(A-mu)x||/||x||`: otherwise every
 term of the squared residual expansion exceeds the claimed lower bound times
-its squared coefficient. This elementary finite-dimensional lemma will be
-formalized if no exact corpus instance is found. For a finite set of distinct
+its squared coefficient. This elementary finite-dimensional lemma is implemented in
+`HTGeometry/HermitianResidualFindsAnEigenvalue.lean`. For a finite set of distinct
 arithmetic energies, choose disjoint intervals smaller than one third of their
 minimum separation. The residual limits eventually put an actual matrix
-eigenvalue in each interval. The target should state the finite-packet result
-with an arbitrary prescribed accuracy, and also retain the asymptotically
-orthonormal Ramanujan vectors, rather than claim an ordering of the full spectrum.
+eigenvalue in each interval. The implementation states the finite-packet result with arbitrary prescribed
+accuracy and retains the asymptotically orthonormal Ramanujan vectors.
 
 Additional novelty query restricted to RAPT returned the existing coarse pole
 row bound, local tower equations, and the current supported-integer operator;
@@ -292,16 +293,16 @@ matrix eigenvalues is used or follows.
 
 All assertions in this paper argument now have passing Lean implementations.
 Nine transitive endpoint audits contain only `propext`, `Classical.choice`, and
-`Quot.sound`. The card remains at the paper-proof stage and uncounted until
-all fourteen final direct actual-source checks pass.
+`Quot.sound`. All fourteen final direct actual-source checks passed. This
+counts as one contribution; its supporting lemmas are not counted separately.
 
 ## Exact implementation interfaces
 
-All fourteen sources are installed and pass scratch checks. Their required first
-dependency oleans are built; the finite-packet leaf has no olean. Both umbrellas
-are wired without compilation. Nine clean transitive endpoint reports are in
+All fourteen sources are installed and pass final direct actual-source checks.
+Only first dependency oleans required by this package were built; the finite-
+packet leaf was checked directly. Both umbrellas are wired without compilation. Nine clean transitive endpoint reports are in
 `logs/ramanujan-prime-quasimodes-axioms-2026-10-28.log`.
-Final direct-source checks are being recorded in
+All fourteen final direct-source checks are recorded in
 `logs/ramanujan-prime-quasimodes-source-audit-2026-10-28.log`.
 
 The implementation interfaces are:
@@ -378,3 +379,8 @@ same injection on `range(v_p(n))`; the exact finite prime-atom sum proof was rea
 in `TheFinitePartIsTheTowerForm.lean`. The tower equation then gives the completed
 correction by subtracting the geometric constant profile. No numerical experiment
 or extra analytic premise is involved.
+
+The installed sources match the passing scratch proofs after removal of their
+audit commands. Owned quasimode scratch sources and temporary compiler logs
+are removed after recording these results. The separate exhaustion drafts
+remain unverified and are preserved on their own pipeline card.

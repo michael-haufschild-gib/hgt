@@ -13,31 +13,37 @@
 
 ## Concrete source calculation underway
 
-The coarse pair is `C_a = cellAtom (2*a) + cellAtom (2*a+1)`. For coefficients `u,v` on its two complete cells, the candidate exact splitting is
+The coarse pair is `C_a = cellAtom (2*a) + cellAtom (2*a+1)`. For coefficients `u,v` on its two complete cells, the checked exact splitting is
 
 `u cellAtom(2*a) + v cellAtom(2*a+1) = (haarRightCoeff a*u + haarLeftCoeff a*v) C_a + (u-v) haarAtom a`.
 
-The average block is the actual cell system translated by `log 2`. Integer right shifts preserve this block. The expected triangular prime law is that every translated coarse pair is orthogonal to every balanced detail. Prove these actual-vector identities in Lean, retaining the opposite mixed orientation. Then derive and audit a genuine bound for the remaining original Gamma–prime–pole coupling; no assumed positive Schur residual or unchanged-sign claim is permitted.
+The average block is the actual cell system translated by `log 2`. Every integer-translated coarse pair has zero real inner product with every balanced detail. The opposite mixed orientation remains. The open task is a genuine bound for the remaining original Gamma–prime–pole coupling; no assumed positive Schur residual or unchanged-sign claim is permitted.
 
 ## Status
 
-`HaarCellCoarseSplitting.lean` contains the actual pair splitting, exact `log 2` shift identity, endpoint-jump formula, and vanishing of the entire average-to-detail prime block for every integer multiplier. Four declarations passed their transitive axiom checks; the shift identity's numeral-coercion fix still needs its exact final audit. The opposite mixed orientation is retained. No mixed Weil sign has been proved. No stage-2 parking.
+[Complete-cell prime triangularity](../3-formalized/acs-complete-cell-prime-triangularity.md) passed its exact final Lean check, with five clean transitive axiom audits: actual pair splitting, exact `log 2` shift identity, endpoint-jump formula, and vanishing of the entire average-to-detail prime block for every integer multiplier. The opposite mixed orientation is retained. No mixed Weil sign has been proved. No stage-2 parking.
 
-## Full-source Gamma conjecture
+## Checked full-source Gamma variance bound
 
-For a finite family of disjoint intervals `I_i=(a_i,b_i)` of widths `w_i≤1`, define `mean_i=(∫ I_i f)/w_i` and `V_i=∫ I_i (f-mean_i)²`. The next analytic target removes all local mean-zero restrictions:
+For a finite family of disjoint nonempty intervals `I_i=(a_i,b_i)` of widths `w_i≤1`, define `mean_i=(∫ I_i f)/w_i` and `V_i=∫ I_i (f-mean_i)²`. Lean now proves:
 
 `Σ_i log(1/w_i)*V_i ≤ levyEnergy f`
 
-for every compact BV source. This would pay the balanced differences inside arbitrary complete-cell data even when pair averages are nonzero. The candidate mechanism is weighted variance on each exponential Gamma slice: its weighted variance is at least the minimum weight times the unweighted variance. Summing both interval charges should then preserve the existing coefficient one. This strengthening is conjectural and requires its own Lean proof; it does not retain the coarse Gamma energy as an additional free term.
+for every compact BV source, without local mean-zero restrictions. This pays local oscillation even with nonzero pair averages. Weighted variance on each exponential Gamma slice pays its minimum weight times the unweighted variance; coherent interval charges preserve coefficient one. The theorem does not retain the entire coarse Gamma energy as an additional free term.
 
-[Gamma payment with arbitrary means](../3-formalized/acs-gamma-payment-with-arbitrary-means.md) records six clean exact-file/transitive audits: actual interval variance, weighted moment-matrix payment, the exponential estimate, full two-interval Gamma coupling, and exterior-point variance charge. `GammaVarianceCapacity.lean` contains the finite-family extension; logarithmic coercivity remains prepared in `/tmp/acs-gamma-variance-coercivity.lean`. Those last extensions are not yet checked and are not counted as proofs.
+[Gamma payment with arbitrary means](../3-formalized/acs-gamma-payment-with-arbitrary-means.md) records twelve clean exact-file/transitive audits through the full logarithmic inequality `levyEnergy_ge_sum_log_variance` and its exact complete-cell specialization.
 
-The concrete source specialization is prepared in `/tmp/acs-complete-cell-variance.lean`. It retains independent average and detail coefficients on every pair and identifies them with arbitrary original cell coefficients. Its target is `Σ log(a)*haarMass(a)*(u(a)-v(a))² ≤ levyEnergy(Σ u(a)*rawCell(2a)+v(a)*rawCell(2a+1))`. Every dependency and this exact source theorem still need their final checks.
+`CompleteCellVariancePayment.lean` passed its exact final audit, including four clean transitive axiom prints. It retains independent average and detail coefficients on every pair and identifies them with arbitrary original cell coefficients. `cellPairSum_levyEnergy_ge` proves `Σ log(a)*haarMass(a)*(u(a)-v(a))² ≤ levyEnergy(Σ u(a)*rawCell(2a)+v(a)*rawCell(2a+1))` for arbitrary signed `u,v` and every finite horizon. No pair average is suppressed.
 
 ## Next remainder conjecture
 
-The same positive-kernel splitting may retain an explicit coarse remainder as well as both variance charges. For product weights `w≥m≥0`, `v≥n≥0`, the proposed additional term is `m*n*|I|*|J|*(mean_I(f)-mean_J(g))²`. The four nonnegative product pieces from `w=m+(w-m)` and `v=n+(v-n)` suggest a proof. Its Gamma counterpart would preserve the far-end kernel coupling of actual pair averages while paying detail variances. `/tmp/acs-variance-remainder.lean` contains the exact variance identity and a Lean candidate for this strengthened product-kernel bound. It has not been checked; no mathematical input from it is yet used.
+For product weights `w≥m≥0`, `v≥n≥0`, the four nonnegative product pieces from `w=m+(w-m)` and `v=n+(v-n)` retain the additional term `m*n*|I|*|J|*(mean_I(f)-mean_J(g))²` alongside both variance charges. `IntervalVarianceRemainder.lean` passed its exact final audit with three clean axiom prints: exact variance identity, strengthened product-kernel inequality, and exponential consequence. `GammaVarianceRemainder.lean` prepares their Gamma-series extension and exterior-point mean-displacement term; that extension is not yet checked.
+
+`/tmp/acs-gamma-mean-variance-capacity.lean` prepares the coherent strengthening
+
+`Σ_i log(1/w_i) V_i(f) + (1/2) Σ_ij w_i*w_j*k(max(b_j-a_i,b_i-a_j))*(mean_i(f)-mean_j(f))² ≤ levyEnergy f`.
+
+The extra term is an explicit graph on the actual interval means, not the entire coarse Gamma energy. The extended-integral theorem also retains `2 Σ_i ∫_F w_i*(mean_i(f)-f(y))²*gammaFarCharge_i(y)`, where `F` is the family complement; the displayed real graph inequality is its weaker corollary. The candidate combines the three-term pair estimate with the full exterior mean-displacement charge. The Gamma-series and finite-family extensions remain unchecked.
 
 ## Log
 

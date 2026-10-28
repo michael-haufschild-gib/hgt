@@ -555,10 +555,10 @@ theorem primesBelow_succ_eq (n : ℕ) :
     Nat.primesBelow (n + 1) = if n.Prime then insert n (Nat.primesBelow n) else Nat.primesBelow n := by
   simp only [Nat.primesBelow, range_add_one, filter_insert]
 
-/-- **Tensorization of the harmonic measure.** There is `C` such that for every `X` and every `f`,
-`Var_{1/n, [1, X]}(f) ≤ C Σ_{q ≤ X} Σ_{u ≤ X, q ∤ u} Var_{q-ladder of u}(f)`. -/
-theorem exists_harmonicVar_le_glauberForm :
-    ∃ C : ℝ, 0 < C ∧ ∀ X : ℕ, ∀ f : ℕ → ℝ, harmonicVar 0 X f ≤ C * glauberForm 0 X f := by
+/-- **Tensorization of the rough harmonic measures.** There is `C` such that for every roughness `Q`,
+every `X` and every `f`, `Var_{1/n, R(Q, X)}(f) ≤ C Σ_{q ≥ Q} Σ_{u, q ∤ u} Var_{q-ladder of u}(f)`. -/
+theorem exists_harmonicVar_le_glauberForm_rough :
+    ∃ C : ℝ, 0 < C ∧ ∀ Q X : ℕ, ∀ f : ℕ → ℝ, harmonicVar Q X f ≤ C * glauberForm Q X f := by
   obtain ⟨Cτ, hCτ1, hτ⟩ := exists_shellTau_le
   set η := 4 * Cτ
   have hη : 0 < η := by positivity
@@ -709,13 +709,25 @@ theorem exists_harmonicVar_le_glauberForm :
       calc wVar (roughInterval (Q + 1) X) (fun n => 1 / (n : ℝ)) f = harmonicVar (Q + 1) X f := rfl
         _ ≤ K * Real.exp (Ψ (Q + 1) X) * glauberForm (Q + 1) X f := hih
         _ = K * Real.exp (Ψ Q X) * glauberForm Q X f := by simp only [Ψ, hS, hG]
-  refine ⟨K, hK, fun X f => ?_⟩
+  refine ⟨K, hK, fun Q X f => ?_⟩
   by_cases hX : 2 ≤ X
-  · have h := claim (X + 1) 0 X (by omega) hX f
-    have hΨ : Ψ 0 X = 0 := by simp [Ψ, S, Nat.primesBelow]
-    rwa [hΨ, Real.exp_zero, mul_one] at h
+  · have h := claim (X + 1 - Q) Q X le_rfl hX f
+    have hlX : 0 < Real.log X := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
+    have hΨ : Ψ Q X ≤ 0 := by
+      simp only [Ψ]
+      exact div_nonpos_of_nonpos_of_nonneg (by nlinarith [hS0 Q]) hlX.le
+    refine h.trans (mul_le_mul_of_nonneg_right ?_ (glauberForm_nonneg _ _ _))
+    calc K * Real.exp (Ψ Q X) ≤ K * 1 :=
+          mul_le_mul_of_nonneg_left (Real.exp_le_one_iff.mpr hΨ) hK.le
+      _ = K := mul_one K
   · rw [harmonicVar_eq_zero_of_le_one fun K hK => by
       have := mem_roughInterval.mp hK; omega]
     exact mul_nonneg hK.le (glauberForm_nonneg _ _ _)
+
+/-- **Tensorization of the harmonic measure on `[1, X]`.** -/
+theorem exists_harmonicVar_le_glauberForm :
+    ∃ C : ℝ, 0 < C ∧ ∀ X : ℕ, ∀ f : ℕ → ℝ, harmonicVar 0 X f ≤ C * glauberForm 0 X f := by
+  obtain ⟨C, hC, h⟩ := exists_harmonicVar_le_glauberForm_rough
+  exact ⟨C, hC, fun X f => h 0 X f⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

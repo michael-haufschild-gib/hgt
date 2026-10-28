@@ -42,5 +42,26 @@ Target: `D ≥ (2 log 2 − ε) Var` (then RP29's assembly). Fix `Q₀` large, `
 
 Lower bound: the valuation step `1_{2|n} − 1_{2∤n}` (times `n^{−1/2}`), projected off the pole.
 
+## Progress
+
+- **Steps 1–3 formalized** (`RAPT/TheValuationChainOfFinitelyManyPrimesHasGapTwoLogTwo.lean`, axiom-clean,
+  olean built, not yet wired): `smoothBox`, `mem_smoothBox`, `sum_smoothBox_succ`, `boxVar_le_boxGlauber`
+  (Efron–Stein), `two_mul_sum_mul_wVar`, `boxLadderVar_le` (sharp ladder), `boxGap_le_ladder`,
+  `boxGap_mul_boxVar_le`, `smoothSet`, `smoothVar`, `smoothEnergy`, `sum_smoothSet_eq_ladders`,
+  `log_eq_sum_factorization`, `sum_log_mul_sq_le_smoothEnergy` (halo), `zeroExt`,
+  `smoothVar_le_boxVar`, `boxEnergy_zeroExt_le`, `inv_pow_le_sqrt`, `sum_boundary_weight_le`,
+  `smoothBoundary_le`, `smoothVar_mul_le`, **`eventually_smoothVar_le_smoothEnergy`**:
+  `(2 log 2 − ε) Var ≤ E` on `Q`-smooth numbers of `[1, X]`, `X ≥ X₀(Q, ε)`.
+- **Step 4–6 (Module B) design, conditioning on the `S`-part `a`:**
+  (B1) `Var(y) = Σ_a (1/a) harmonicVar Q₀ (N/a) (y(a·)) + Var_ν(h)`, `h(a)` = fibre mean,
+  `ν(a) = F(N/a)/a`, `F` = rough harmonic mass. (B2) within fibres: crude tensorization
+  (`exists_harmonicVar_le_glauberForm`, needs the general-`Q` export) and ladder base edges give
+  `Σ_a (1/a) harmonicVar ≤ (K/log Q₀) D_L`. (B3) Jensen on small-prime edges; commutation error =
+  rough shells `(F(N/a) − F(N/(ap^k)))/F(N/a) ≤ k C_sh log Q₀/(c log(N/a))` (thin shells + rough mass
+  lower bound), finite sum over `p < Q₀`; large `a` by the halo on `[1, N]` (`sum_smoothSet_eq_ladders`
+  with `Q = N + 1`). (B4) `Var_ν(h)`: restrict to `a ≤ N^δ`, compare with Module A at `X = N^δ`;
+  weights `F(N)/F(N^{1−δ}) ≤ (1 + O(δ))(1 + o(1))` from `F(Y) ≥ M log(Y+1)` and the upper bound via
+  `H(Y) ≥ F(Y^{1−δ′}) F_S(Y^{δ′})`, `F_S → Z_S = 1/M`. (B5) top control (#6) and assembly.
+
 ## Log
-- 2026-10-28 — created; plan above. Not yet formalized.
+- 2026-10-28 — created; plan above. Module A (steps 1–3) formalized.

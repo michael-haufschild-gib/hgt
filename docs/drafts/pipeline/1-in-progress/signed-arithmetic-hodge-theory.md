@@ -40,3 +40,29 @@ Weil value while their graph size diverges. Seek a quantitative escape theorem f
 nonzero compact test, with exact pole scaling and a positive aperture-dependent comparison.
 This tests whether dyadic coarse renormalization can use a single uniform graph topology.
 No blanket claim of unboundedness of each fixed translation is made without proof.
+
+## Scalar renormalization question
+
+For a nonzero compact source f, combine full-Weil translation invariance and
+all-rate source-graph escape. Seek a bound, uniform in every scalar amplitude a,
+
+c exp(B |t|) |W(a tau_t f)| <= |W(f)| ||a tau_t f||_graph^2.
+
+This measures the exact loss of signed energy under any graph-bounded scalar
+renormalization, rather than only ruling out fixed exponential amplitudes.
+A positive replacement uses two-sided comparisons on explicitly bounded source
+windows and bounded translation ranges. It does not assert a global bounded
+action of every fixed translation on the complete graph.
+
+## Completed aperture transport target
+
+Use the existing CHMD apertureGraphCore and apertureGraphCompletion. The proved
+bounded-window estimate should extend literal compact-source translation to a
+bounded linear map from the completed aperture a into the completed aperture
+ a+|t|. On smooth representatives the map must be the original translated test;
+on the completion it must preserve the full mixed Weil form and transport both
+pole coordinates by their exact exponential factors. Constants remain dependent
+on the source aperture and translation range.
+
+Do not identify the signed-source radical with the full Weil radical. The
+CHMDQuotientWeilForm two-pole classification remains part of the source data.

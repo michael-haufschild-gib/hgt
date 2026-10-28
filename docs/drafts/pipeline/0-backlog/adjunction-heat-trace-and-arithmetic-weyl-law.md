@@ -132,7 +132,7 @@ spectral object.
 ## Direct physical consequence to audit
 
 The arithmetic counting statement does not itself require the proposed infinite
-completion. Once the full-matrix quasimode packet theorem is formalized, the
+completion. The full-matrix quasimode packet theorem is now formalized. The
 finite set of conductors with E(n)<T should force at least that many distinct
 actual P_N eigenvalues in `(log(N)-T, log(N)-gamma+epsilon)` for all sufficiently
 large N. Choose the approximation tolerance below both epsilon and every finite
@@ -141,3 +141,11 @@ lower count of actual full-matrix spectral branches. This provides a possible
 unconditional physical endpoint even if the infinite-completion project remains
 open. A trace interpretation must wait for the actual operator identification;
 an abstract prescribed-label trace must not stand in for that identification.
+
+The separate spectral-exhaustion candidate now has a dependency-closed paper
+proof and is undergoing Lean verification. If that verification succeeds,
+the counting-law endpoint can concern the eventual exact full-matrix count,
+not only a lower count: first take the actual horizon limit at a non-arithmetic
+threshold T, then let T tend to infinity. No joint growing-window limit or
+interchange of those limits is justified by the present arguments. The counting
+law, corrected Euler constant, and any trace identification remain unproved.

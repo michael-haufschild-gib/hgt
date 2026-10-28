@@ -1,11 +1,11 @@
 # Spectral exhaustion by torsion-adjunction energies
 
 - **ID:** full-prime-spectrum-adjunction-exhaustion
-- **Stage:** 0-backlog
-- **Type:** CONJECTURE
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM
 - **Source:** Ramanujan full-matrix quasimodes; harmonic rough-number tensorization; prime-defect Dirichlet form
 - **Statement:** Every bounded energy window of `log(N) I-P_N` converges, with multiplicity, to the simple energies `gamma+log(m)+tameDifferent(m)`.
-- **Count:** uncounted; novelty, full paper proof, and Lean remain
+- **Count:** uncounted; sixteen scratch drafts exist; all Lean checks and audits remain
 
 ## Goal
 
@@ -18,8 +18,8 @@ improvement. No full Weil positivity or RH implication is asserted.
 
 ## Gates
 
-- [ ] Full corpus novelty and significance audit.
-- [ ] Dependency-closed paper proof of compactness and spectral exhaustion.
+- [x] Corpus novelty and significance audit, with stated primary-literature exclusions.
+- [x] Dependency-closed paper proof of compactness, exact spectral counts, and simple eigenlines.
 - [ ] Exact Lean realization, direct source checks, transitive axioms, umbrella wiring.
 
 ## Existing input inspected
@@ -376,3 +376,263 @@ of the span then has squared coordinate mass at least 1/18 by Cauchy--Schwarz.
 The inspected `ChronologicalHalfTailGram.lean` already uses this perturbation
 mechanism, and `GreedyCourantFischer.lean` supplies the rank-nullity argument.
 These are baseline supporting linear algebra, not separate contributions.
+
+The actual-matrix energy adapter has an unverified draft,
+`/tmp/TheRenormalizedPrimeEnergyControlsTheDefect.lean`. Extension by zero
+identifies the existing atomic form with the literal Euclidean matrix form.
+Its sharp counterterm bounds defect by `max(0,2(T-gamma+1))` on every unit
+energy sublevel, eventually uniformly in N. This discharges the energy-to-defect
+step using an existing unconditional theorem and transfers the finite-span
+approximation to actual horizon vectors. Eleven drafts now await checks.
+
+The normalized-coordinate adapter has an unverified draft,
+`/tmp/BoundedPrimeEnergyHasFiniteRamanujanCoordinates.lean`. It transfers the
+existing Gram and residual limits to `u_m/sqrt(log N)`, obtains an eventual
+uniform finite Gram lower bound, and combines the actual energy approximation
+with the generic certificate. The endpoint constructs the fixed conductor set
+and its positive coordinate lower bound for every unit vector of energy at
+most T. Twelve scratch drafts now await sequential verification.
+
+The unverified properness adapter is
+`/tmp/TheAdjunctionEnergyHasFiniteSublevels.lean`. Nonnegativity of the tame
+correction bounds a strict energy sublevel by `m<exp(T-gamma)`. It defines the
+exact finite conductor sublevel and supplies a positive threshold gap for
+that finite set. This elementary support does not itself count as a contribution.
+
+The unverified finite spectral-window adapter is
+`/tmp/HermitianSpectralWindowBounds.lean`. Parseval identifies the shifted form,
+bounds squared overlap with a trial vector above T by its residual squared
+divided by the squared energy gap, and proves a multiplicity-sensitive window
+count from injectivity of finitely many coordinates. The proof uses the literal
+Hermitian eigenbasis and finite-dimensional rank, not an assumed compact limit.
+Fourteen scratch drafts now await sequential verification.
+
+The actual spectral-count assembly has an unverified scratch draft,
+`/tmp/TheBoundedPrimeSpectrumIsTheAdjunctionSpectrum.lean`. It defines the
+renormalized eigenvalues of the literal matrix and proves the proposed exact
+strict-sublevel count away from arithmetic thresholds. Finite packets give
+the lower count. For the upper count, every low spectral vector orthogonal
+to the arithmetic sublevel would have all coordinates in the constructed
+certificate bounded by a finite sum of residual squares divided by fixed
+positive gaps. That sum tends to zero, contradicting positive coordinate mass.
+Fifteen drafts remain unchecked; the multiplicity-one and eigenline conclusion
+still needs its exact finite-window deduction.
+
+The unverified eigenline deduction is
+`/tmp/TheSimplePrimeEigenlinesConvergeToRamanujanLines.lean`. Properness and
+energy injectivity produce an isolating radius; the two threshold counts
+differ by one. The existing nearby-eigenvalue theorem then gives convergence
+of that unique actual eigenvalue. A newly drafted Parseval projection estimate
+in `HermitianSpectralWindowBounds.lean` bounds the complementary squared norm
+by the actual residual squared divided by the fixed window gap squared.
+Thus the proposed spectral projection captures the normalized Ramanujan vector.
+All sixteen drafts still await verification and remain uncounted.
+
+## Dependency-closed paper argument for the drafted endpoints
+
+This argument fixes the exact theorem targeted by the sixteen scratch sources.
+It is not a valid completed contribution until those sources pass Lean and all
+final audits. Write `P_N` for the literal prime matrix, `A_N=log(N)I-P_N`,
+`E(m)=gamma+log(m)+tameDifferent(m)`, and
+`v_(m,N)=c_m(n)/sqrt(phi(m)*n*log(N))` for positive conductors and N>=2.
+For every T outside `{E(m):m>=1}`, the target is
+
+`#{eigenvalues of A_N below T, with multiplicity} = #{m>=1:E(m)<T}`
+
+for all sufficiently large N. Each E(m) additionally has a fixed isolating
+window containing one simple actual eigenvalue eventually. That eigenvalue
+tends to E(m), and its spectral projection captures v_(m,N) in squared norm.
+
+### 1. The actual arithmetic compactness estimate
+
+For a real horizon vector x, extend by zero and put
+
+`D_N(x)=sum_(u<=N)sum_(t<=N/u) Lambda(t)*(x(ut)-x(u)/sqrt(t))^2`.
+
+The existing sharp counterterm, with epsilon=1/2, gives eventually and
+uniformly in x
+
+`<x,A_N x> >= (gamma-1/2)||x||^2 + D_N(x)/2`.
+
+Consequently unit vectors of energy at most T satisfy
+`D_N(x)<=K_T=max(0,2(T-gamma+1))`.
+The exact double-sum/Euclidean-form identity is part of the energy adapter.
+
+The inspected prime-peeling proof bounds every rough harmonic variance by
+`K exp(Psi(Q,X)) G_(Q,X)`, where Psi<=0 for X>=2; for X<2 the variance
+vanishes. Thus one constant C>0 works for every roughness threshold Q and
+horizon X. On a Q-rough interval with Q>=2, every prime ladder has weight
+log(p)>=log(Q). Bound each ladder variance by its edges from the valuation-zero
+base. Distinct pairs (prime, positive exponent) give distinct prime powers,
+so these edges inject into the literal defect. Therefore
+
+`Var_(Q,X)(sqrt(k)*z(k)) <= C/log(Q) * D^rough_(Q,X)(z)`.
+
+Here only the bottom vertex is restricted to the rough interval; the edge
+multiplier t remains unrestricted. This precise restriction matters in the
+following partition.
+
+Write every n uniquely as d*k with d Q-smooth and k Q-rough. On the fibre d,
+the quotient horizon is X=N/d. Apply the last inequality to
+`z_d(k)=sqrt(d)*x(d*k)`. Its pole gauge is exactly `sqrt(d*k)*x(d*k)`.
+The harmonic conditional mean h of this gauge, divided by sqrt(n), satisfies
+
+`||x-h||^2 = sum_d Var_(Q,N/d)(sqrt(d*k)*x(d*k))/d`.
+
+The same rescaling multiplies each edge square by d. Dividing by d and
+partitioning bottom vertices by their unique smooth/rough factors therefore
+gives exactly `sum_d D^rough_(Q,N/d)(z_d)/d=D_N(x)`. Hence
+
+`||x-h||^2 <= C*D_N(x)/log(Q)`.
+
+Large retained valuations are controlled separately. For any prime p, apply
+`a^2 <= 2(a-b)^2+2b^2` on every downward p-power edge. Reindexing by the
+upper vertex counts exactly v_p(n) edges at n. The bottom term is bounded
+by the geometric series `sum_(j>=1)p^(-j)=1/(p-1)`. This proves
+
+`log(p)*sum_n v_p(n)*x(n)^2 <= 2D_N(x)+2log(p)/(p-1)*||x||^2`.
+
+Let `B_Q=sum_(p<Q)(2/log(p)+2/(p-1))`. Outside the box v_p(n)<L for every
+p<Q, at least one retained valuation is at least L. Summing the preceding
+moment bounds gives
+
+`mass_outside_box <= B_Q*(D_N(x)+||x||^2)/L`.
+
+Set z=h inside the box and z=0 outside. Pointwise,
+`|x-z|^2 <= |x-h|^2+1_outside*|x|^2`; thus no projection contraction
+assumption is needed. For ||x||^2<=1 and D_N(x)<=K, first choose Q>=2 with
+`log(Q)>2C(K+1)/eta`, then L>0 with `L>2B_Q(K+1)/eta`. The resulting
+squared error is at most eta, uniformly in N and x.
+
+This approximation lies in one explicit finite Ramanujan span. Set
+`M=product_(p<Q)p^L`. The gcd with M replaces every retained valuation by
+min(v_p(n),L). It preserves box membership, and inside the box equals the
+full Q-smooth part. Thus the truncated conditional mean is `F(gcd(n,M))/sqrt(n)`
+for a real function F depending on N and x. Finite Möbius inversion expands
+F(gcd(n,M)) in indicators 1_(d divides n), d dividing M. The already proved
+identity `sum_(q divides d)c_q(n)=d*1_(d divides n)` expands these indicators
+in the normalized Ramanujan modes with q dividing M. The conductor set
+`S=M.divisors` depends only on K and eta, not on N or x.
+
+### 2. A uniform positive coordinate certificate
+
+The quasimode theorem gives `Gram(v_(m,N),v_(l,N))->[m=l]` on each fixed
+finite positive conductor set. If its entries differ from identity by at most
+`1/(2(|S|+1))`, then for every coefficient vector a,
+
+`||sum_(m in S)a_m v_(m,N)||^2 >= (sum_(m in S)a_m^2)/2`.
+
+Indeed the Gram error is bounded by the entrywise error times
+`(sum|a_m|)^2 <= |S| sum a_m^2`.
+
+Use the compactness estimate with eta=1/4 and K=K_T. For each unit vector x
+of energy at most T, choose z in that fixed span with ||x-z||<=1/2. Then
+||z||<=3/2, so its synthesis coefficients satisfy sum a_m^2<=9/2. Also
+`<x,z>=1-<x,x-z>>=1/2`. Cauchy--Schwarz in the finite coefficient space
+therefore yields
+
+`sum_(m in S)|<x,v_(m,N)>|^2 >= 1/18`.
+
+The constant is only a positive witness. It is uniform over the entire
+bounded-energy unit sublevel and all sufficiently large horizons.
+
+### 3. Exact multiplicity-sensitive spectral count
+
+The tame different is nonnegative, so E(m)>=gamma+log(m). Hence
+`S_T={m>=1:E(m)<T}` is finite. The finite-packet theorem and the positive
+minimum of T-E(m) on S_T give at least |S_T| actual eigenvalues below T,
+counting multiplicity, for all sufficiently large N.
+
+For the upper count, suppose the actual subspace below T had dimension greater
+than |S_T|. The linear map recording its coordinates against the profiles with
+m in S_T has a nontrivial kernel. Normalize a nonzero kernel vector x. Its
+energy is at most T and all its S_T coordinates vanish.
+
+For any m with E(m)>T, expansion in the actual Hermitian eigenbasis and
+Cauchy--Schwarz give
+
+`|<x,v_(m,N)>|^2 <= ||(A_N-E(m))v_(m,N)||^2/(E(m)-T)^2`.
+
+This estimate holds for every unit vector supported in the entire low spectral
+subspace, not merely for a single eigenvector. One direct proof restricts the
+Parseval sum for v to that subspace: every residual weight there is at least
+(E(m)-T)^2. The remaining coefficient sum for x is one.
+
+Apply this estimate to the fixed finite detecting set from Section 2. A conductor
+in S_T contributes zero; every other detecting conductor has E(m)>T because
+T is not an arithmetic energy. Its actual residual tends to zero by the
+quasimode theorem. Thus the total detecting coordinate mass is bounded by a
+fixed finite sum tending to zero, contradicting 1/18. The actual low dimension
+is at most |S_T|. Combined with the lower count, this proves the exact assertion.
+
+### 4. Isolation and convergence of the actual eigenline
+
+Fix m>=1. Properness makes the set E(l)<E(m)+1 finite; energy injectivity
+separates its members. Choose delta>0 so that |E(l)-E(m)|<2delta implies l=m.
+The thresholds E(m)-delta and E(m)+delta are outside the arithmetic energy set,
+and their arithmetic counts differ by exactly one. The proved actual counts
+therefore imply that the half-open window [E(m)-delta,E(m)+delta) contains
+exactly one spectral index eventually. This includes multiplicity and hence
+gives a simple eigenvalue.
+
+For any epsilon>0, the existing conductor-m quasimode puts an actual spectral
+point within min(epsilon,delta/2) of E(m). It lies in that window and must be
+the unique point there. Thus its energy tends to E(m).
+
+Let Pi_N be the literal orthogonal projection onto that window. Every excluded
+actual eigenvalue is at distance at least delta from E(m). Parseval gives
+
+`delta^2*||(I-Pi_N)v_(m,N)||^2 <= ||(A_N-E(m))v_(m,N)||^2 -> 0`.
+
+The normalized profile has squared norm tending to one, so this captures its
+nonzero limiting line in the unique actual eigenspace. All projections and
+residuals here belong to the actual finite matrix; no abstract limiting
+operator or assumed spectral compactness enters the argument.
+
+## Refreshed novelty and scope audit
+
+The final corpus queries for full-matrix bounded spectral exhaustion returned
+the present quasimode/packet package and other operators, not the exact count.
+The compactness query returned unrelated Ramanujan primitive/residue and
+hyperbolic-defect estimates. The current concurrent finite-prime valuation-chain
+source was inspected through its stated theorem and box construction: its
+sharp Poincare constant and finite-prime boxes are excluded from this count.
+The earlier ordered-spectrum backlog already conjectures the same energy list;
+resolving that conjecture with actual multiplicities and eigenlines is the new
+claim, not proposing the list itself.
+
+Additional primary-literature searches again located the previously audited
+Hilberdink singular-value and Hilberdink--Pushnitski LCM results. The former's
+[abstract and displayed triangular matrix](https://centaur.reading.ac.uk/66059/1/finitetoeplitz.pdf)
+concern singular-value asymptotics of a different operator. No matching exact
+Mangoldt-matrix exhaustion result was identified in these searches. This is
+a bounded literature audit, not a claim of exhaustive worldwide novelty.
+The finite gcd/Ramanujan expansion, generic Gram perturbation, rank-nullity,
+and spectral projection estimate are baseline supporting arguments.
+
+The contribution targets the prime matrix's bounded translated spectral edge.
+Full Weil positivity still requires its archimedean coupling. Neither RH nor
+a zero-density conclusion is inferred from this theorem.
+
+## Formalization checkpoint
+
+The paper argument is closed and is followed directly by sequential Lean
+verification. First check: `/tmp/TheRoughHarmonicMeasureTensorizesUniformly.lean`;
+log `/tmp/TheRoughHarmonicMeasureTensorizesUniformly-check.log`. No exhaustion
+source is installed yet. Passing transitive audits will be recorded in
+`logs/full-prime-spectrum-exhaustion-axioms-2026-10-28.log`.
+
+The uniform rough-interval tensorization scratch check passed with no diagnostics
+beyond a clean transitive audit: propext, Classical.choice, Quot.sound. The
+source is installed in RAPT. Its first olean is built solely because the rough
+defect adapter imports it. The other fifteen drafts remain unchecked. Current
+command is that first dependency build; its tool handle is authoritative.
+
+Uniform tensorization's first dependency build completed: both artifacts exist,
+its log is empty, and no owned compiler remains. Sequential verification now
+continues with the valuation-moment adapter. The energy draft's finite-sum
+coordinate evaluation uses the actual `PiLp.projₗ` linear projection.
+
+The valuation-moment scratch passed with only propext, Classical.choice,
+Quot.sound in its transitive audit. Source installed; first required olean is
+building for the box-tail adapter. Two of sixteen scratch modules now pass.

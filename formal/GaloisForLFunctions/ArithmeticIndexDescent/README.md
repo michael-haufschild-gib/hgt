@@ -674,6 +674,24 @@ neither norm equality nor an \(L^2\) eigenvector is asserted. The displayed
 profile and full-source bounds above retain their previously proved constants.
 Kernel normalization supplies no sign for the remaining prime and pole terms.
 
+The same weight retains the whole mixed reserve. For arbitrary complex
+positive-half-line `L²` inputs \(f,g\),
+
+\[
+ \frac\pi4(\|f\|_2^2+\|g\|_2^2)-\Re\langle g,H_\Gamma f\rangle
+ =\frac12\int_0^\infty\!\int_0^\infty
+   k(s+t)w(s)w(t)
+   \left|\frac{g(s)}{w(s)}-\frac{f(t)}{w(t)}\right|^2\,dt\,ds.
+\]
+
+The integrand is nonnegative and integrable on the actual product carrier.
+The exact Schur rows pay its two diagonal pieces, and the existing absolutely
+convergent Gamma pairing pays the cross term. Setting \(g=f\) expresses the
+quadratic deficit from \(\pi/2\) as this same square energy. Thus a mixed
+estimate can retain profile-dependent reserve rather than spending the whole
+norm bound. The identity supplies neither a uniform strict gap nor a signed
+prime-surplus estimate.
+
 The actual finite prime horizon and both pole moments then give one constant \(C_R\)
 for every boundary in a fixed window \([-R,R]\):
 
@@ -695,6 +713,56 @@ The old diagonal is exact and need not be positive. No gap, profile derivative b
 mixed-sign assumption is present. The remaining assembly problem is cumulative: these
 absolute estimates still charge old mass at each extension and supply no width lower
 bound or exhaustive signature bound.
+
+Before estimating an ordered cross block, one pole product can be canceled exactly.
+With \(C_{f,g}(h)=\int f(u)g(u+h)\,du\), the Gamma recursion is
+
+\[
+ k(h)=e^{-h/2}+e^{-2h}k(h),\qquad
+ \int_0^\infty e^{-h/2}C_{f,g}(h)\,dh=A(f)B(g).
+\]
+
+Consequently the original mixed form satisfies
+
+\[
+ W(f,g)=B(f)A(g)-P(f,g)-T_\Gamma(f,g),\qquad
+ T_\Gamma(f,g)=\int_0^\infty e^{-2h}k(h)C_{f,g}(h)\,dh,
+\]
+
+where \(P\) is the literal prime source. Exponentially tilting the two profiles
+identifies the tail with the same Gamma operator, giving
+
+\[
+ |T_\Gamma(f,g)|\le\pi\left(
+   \int e^{-4(b-u)}f(u)^2\,du+
+   \int e^{-4(u-b)}g(u)^2\,du\right).
+\]
+
+The ordered supports make these decaying boundary-distance weights. Thus Gamma
+can charge mass near the cut after its polar cancellation is retained. This
+identity concerns one ordered block; its surviving polar product is not one
+global rank-one correction under arbitrary assembly. Repeated cuts still need
+a proved allocation of their costs, and the signed pole–prime remainder remains.
+
+That remainder has an exact arithmetic description on the same profiles. Set
+\(q(h)=e^{-h/2}C_{f,g}(h)\) and \(E(h)=e^h-\psi(e^h)\). For compact `C²`
+profiles ordered about the cut, \(q\) is `C¹`, has a finite support horizon,
+and vanishes on nonpositive lags. The actual prime term is
+\(\sum_n\Lambda(n)q(\log n)\), with no extra factor of two, and the surviving
+pole is \(\int_0^\infty e^h q(h)\,dh\). Abel summation therefore gives, for
+every real constant \(c\),
+
+\[
+ W(f,g)=-\int_0^\infty (E(h)-c)q'(h)\,dh-T_\Gamma(f,g).
+\]
+
+All regularity, finite-horizon and integrability requirements follow from the
+actual test profiles. Constant centering is free because \(\int q'=0\).
+Taking absolute values only after cancellation bounds the full cross term by
+\(\int |E-c||q'|\) plus the localized Gamma charge above. This identifies the
+required derivative-weighted discrepancy; it does not bound it uniformly.
+Independent centering on different lag intervals would create boundary terms.
+The prime number theorem alone supplies no exhaustive signed index budget.
 
 ### Polar compatibility
 
@@ -1199,8 +1267,11 @@ Quantitative pillars supplied by this programme:
 | Finite prime horizon | A common support window truncates all mixed prime shifts uniformly over signed profiles and bounds their full sum by square masses | `BoundedWindowsHaveFinitePrimeInteraction` |
 | Touching Gamma supports | The literal half-line operator gives a gap-independent square-mass bound for signed compact profiles; the exact C² spectral collar identity retains the original Gamma normalization | `TouchingSupportsHaveBoundedGammaInteraction` |
 | Exact Gamma boundary weight | An explicit arctangent primitive gives the exact Schur row and the actual boundary operator norm bound `π/2` | `GammaBoundaryHasAnExactSchurWeight` |
+| Exact mixed Gamma reserve | The unused `π/4` two-mass bound is an integrable weighted square difference on the original half-line `L²` carrier | `TheGammaBoundaryReserveIsAnExactSquare` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
+| Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |
+| Centered arithmetic source | The literal ordered mixed Weil form equals centered Chebyshev error against the derivative of its own lag profile, minus the localized Gamma tail | `TheOrderedWeilSourceIsACenteredChebyshevDefect` |
 | Arbitrary short-cell charge | The inherited logarithmic section gain, with the full pole cost retained, pays every fixed mass charge below a profile-independent and translation-independent threshold | `EveryShortCellPaysAnyFixedMassCharge` |
 | Exact-diagonal extension | A constructed new width pays the full interaction, retaining `W(p,p)-epsilon*mass(p)` and any prescribed new-mass coefficient without an old sign premise | `AShortNewCellPaysItsOwnInteraction` |
 | Adaptive arithmetic extension | At every exterior centre, a new small cell preserves any chosen fraction below one of the entire old section floor, with old widths fixed and arbitrary new profiles | `AnAdditionalCellPreservesTheOldSections` |

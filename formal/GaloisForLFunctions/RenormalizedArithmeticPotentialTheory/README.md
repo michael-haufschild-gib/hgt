@@ -431,7 +431,7 @@ the place that pays.
 | **RP32 The pole hyperplane separates `ζ` from its Liouville twin** | on `Σ x_n/√n = 0`: `P_N(x) ≤ (log N − γ − g + ε)|x|²`, while `P_N(λx) ≥ (log N − γ − ε)|x|²` at some `x ≠ 0`; a margin `g` uniform in `N`, carried by the pole term | `exists_pole_hyperplane_separates_liouville`, `abs_sum_liouvilleSign_div_le`, `atomicWeilForm_truncPole_add` |
 | **RP33 The finite part separates ζ from its Liouville twin** | `A_λ(y) + log y → γ + τ`, `τ = lim Σ_{t ≤ y} (1 + λ(t))Λ(t)/t ≥ (log 2)/2`; `P_N(λx) = −ℓ² + 2(γ + τ)\|x\|² + o(mass)`; on `ℓ = 0`, `P_N(λx) − P_N(x) = 2(2γ + τ)\|x\|² + o(mass)` with `2γ + τ > 0` | `tendsto_liouvilleMertensError`, `exists_abs_liouvilleForm_stepProfile_finitePart_le`, `exists_abs_liouvilleForm_sub_zetaForm_sub_le` |
 | **RP34 Mertens' theorem in residue classes with its constant** | for `r` a unit mod `q`, `Σ_{t ≤ y, t ≡ r} Λ(t)/t = log y/φ(q) + c_r + o(1)` with `φ(q) c_r = −γ − Q_q + Re Σ_{χ ≠ 1} χ(r⁻¹)(−L′/L(1, χ))`, `Q_q = lim Σ_{t ≤ y, (t,q) > 1} Λ(t)/t` | `tendsto_classMertensSum_sub`, `classMertensConstant_eq`, `tendsto_principalMertensSum_sub_log` |
-| **RP35 The residue finite part is diagonalized by characters** | for units `a, b`: `⟨w_a^{(M)}, P w_b^{(M')}⟩ = (q/φ(q)) S_a(M) S_b(M') + c_{a⁻¹b} S_a(M) + c_{b⁻¹a} S_b(M) + O(η H_M + C_η)`; the finite-part matrix `F_{ab} = c_{a⁻¹b} + c_{b⁻¹a}` has every character as eigenvector, `Σ_b F_{ab} χ(b) = 2 Re β_χ · χ(a)`, `β_χ = −L′/L(1, χ)` (`χ ≠ 1`), `β_1 = −γ − Q_q`; inputs: class constants `q S_a(M) = log M + d_a + O(1/M)`, `L_a` to second order | `exists_abs_residueGram_finitePart_le`, `sum_residueFinitePart_mul_char`, `sum_classMertensConstant_mul_char`, `exists_classHarmonic_constant` |
+| **RP35 The residue finite part is diagonalized by characters** | for units `a, b`: `⟨w_a^{(M)}, P w_b^{(M')}⟩ = (q/φ(q)) S_a(M) S_b(M') + c_{a⁻¹b} S_a(M) + c_{b⁻¹a} S_b(M) + O(η H_M + C_η)`; the finite-part matrix `F_{ab} = c_{a⁻¹b} + c_{b⁻¹a}` has every character as eigenvector, `Σ_b F_{ab} χ(b) = 2 Re β_χ · χ(a)`, `β_χ = −L′/L(1, χ)` (`χ ≠ 1`), `β_1 = −γ − Q_q`; inputs: class constants `q S_a(M) = log M + d_a + O(1/M)`, `L_a` to second order; the twisted pole `Re χ(n) u^{(M)}_n` has `P_N(x) = 2 Re(−L′/L(1, χ))\|x\|² + o(mass)` for every `χ ≠ 1` | `exists_abs_residueGram_finitePart_le`, `sum_residueFinitePart_mul_char`, `sum_classMertensConstant_mul_char`, `exists_classHarmonic_constant`, `exists_abs_atomicWeilForm_charPole_sub_le` |
 
 ---
 
@@ -636,7 +636,8 @@ its present state:
   `p` with the local Euler constant on the classes (RP12), whose sign changes exactly between the
   primes `43` and `47` (RP28). For every gauge the finite part is twice the limit of its Mertens
   error (RP30): `+2(γ + τ)` for the Liouville twin (RP33) and `2 Re(−L′/L(1, χ))`, corrected at
-  `ℓ`, for character gauges (RP31).
+  `ℓ`, for character gauges (RP31). On the unit residue classes the finite part is diagonalized by
+  the characters mod `q`, with eigenvalues `2 Re(−L′/L(1, χ))` (RP34, RP35).
 * Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
   `κ = 1` for finitely many flips, `κ = 0` for every character `χ ≠ 1` (RP20, RP25); an error
   `o(log y)` keeps the law at leading order (RP26); residue classes are invisible (RP24).
@@ -707,4 +708,5 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `ClassHarmonicSumsHaveConstants` | Euler's constant with a rate; Cauchy with a rate; shifted classes; the class constants `d_a`; `L_a` to second order |
 | `TheFinitePartOnResidueClasses` | the residue Gram as class Mertens sums; floors; the logarithmic model Gram to `O(1)`; the residue finite-part law |
 | `TheResidueFinitePartIsDiagonalizedByCharacters` | spectral values `β_χ`; conjugate characters; class constants as a character transform; Fourier inversion; diagonalization |
+| `TheTwistedPoleReadsTheLogarithmicDerivative` | unit poles, their mass and Gram expansion; eigenprofiles have a scalar finite part; the twisted pole and `2 Re(−L′/L(1, χ))` |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |

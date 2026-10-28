@@ -328,14 +328,11 @@ the goal is met when you have made 250 such significant contributions.
 
 do not use the hgtl7 skill. 
 
-our current research programmes:
-__ LIST README FILES FROM ## review HERE __
-
-these programmes are the latest additions to a large research body formalized in lean.
+recent research programmes from oldest to newest: docs/reports/research-programmes.md
 
 your task on every turn:
-find an opportunity to "connect the dots" between different parts of our lean corpus, ideally related to our more recent research findings about the nature of RH, to either:
-- overcome an open hard obstacle in a route docs/reports/review-2710/hard-obstacles.md
+find an opportunity to "connect the dots" between different parts of our lean corpus and these research programmes, ideally related to our more recent research findings about the nature of RH, to either:
+- overcome an open hard obstacle in a route docs/reports/review-2710/route-obstacles.md
 - finds a solution for removing a wall in docs/reports/review-2710/walls-ledger.md
 - find an answer to an open question in a research programme
 - gain one of the mathematical tools a research programme is missing
@@ -344,6 +341,7 @@ find an opportunity to "connect the dots" between different parts of our lean co
 - prove a significant theorem that allows us to prove Quasi-RH (ideally with bound below 7/8)
 - prove a significant theorem that brings us closer to proving that at least 75% of zeros lie on the critical line
 - discharge a significant hypotheses or premise anywhere in the lean corpus
+- prove a significant theorem that brings us closer to a proof of that there can max finite many offline zeros
 
 Not valid are mere improvements of numbers, nogos, redressing existing knowledge in new language, or anything that does not clearly count as significant progress.
 
@@ -393,11 +391,11 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 previously we had created these documents:
-- docs/reports/review-2710/walls-ledger.md
-- docs/reports/review-2710/hard-obstacles.md
-- docs/reports/review-2710/hard-obstacles-summary.md
-- docs/reports/review-2710/route-unification-ledger.md
-
+- docs/reports/review-2810/walls-ledger.md
+- docs/reports/review-2810/route-obstacles.md
+- docs/reports/review-2810/route-unification-ledger.md
+- docs/reports/review-2810/obstacles-summary.md
+  
 also we have:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
@@ -408,7 +406,8 @@ create new versions of the reviews to reflect the current status quo and frontie
    2.1 lists all tasks / obstacles that we can solve and are "just work"
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
    2.3 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
-   2.4 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.4. suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
+   2.5 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 5. correct any issue you have identified in docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md
@@ -418,7 +417,7 @@ do not rely only on these markdown files which are partly outdated. use the sear
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the existing reports in folder docs/reports/review-2710/
+replace the existing reports in folder docs/reports/review-2810/
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -444,53 +443,12 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-2710/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-2710/hard-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2710/walls-ledger.md
+3. Unification of the routes: docs/reports/review-2810/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-2810/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2810/walls-ledger.md
    
-and read the current research programmes:
-- formal/GaloisForLFunctions/arithmetic-positivity-theory/README.md
-- formal/GaloisForLFunctions/BiScaleUncertainty/README.md
-- formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md
-- formal/GaloisForLFunctions/BezoutValuationIncidence/README.md
-- formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md
-- formal/GaloisForLFunctions/SquareRootThreshold/README.md
-- formal/GaloisForLFunctions/ArithmeticIncidencePositivity/README.md
-- formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
-- formal/GaloisForLFunctions/ScaleSignedIncidenceCriticality/README.md
-- formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md
-- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
-- formal/GaloisForLFunctions/SignedArithmeticEnergyIncidence/README.md
-- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
-- formal/GaloisForLFunctions/ArithmeticOrientationTheory/README.md
-- formal/GaloisForLFunctions/ArithmeticOrientationGeometry/README.md
-- formal/GaloisForLFunctions/ArithmeticLocalDivisorGeometry/README.md
-- formal/GaloisForLFunctions/SignedSuccessorArithmetic/README.md
-- formal/GaloisForLFunctions/ArithmeticDefectRigidity/README.md
-- formal/GaloisForLFunctions/BiarithmeticGeometry/README.md
-- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
-- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
-- formal/GaloisForLFunctions/ArithmeticPositiveDuality/README.md
-- formal/GaloisForLFunctions/StripBochnerWeilForcing/README.md
-- formal/GaloisForLFunctions/MultiplicativePositivityGeometry/README.md
-- formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/README.md
-- formal/GaloisForLFunctions/ArithmeticKunnethTheory/README.md
-- formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/README.md
-- formal/GaloisForLFunctions/ArithmeticPolarization/README.md
-- formal/GaloisForLFunctions/ArithmeticEffectivityTheory/README.md
-- formal/GaloisForLFunctions/BiarithmeticGaugeGeometry/README.md
-- formal/GaloisForLFunctions/ConjugateDiagonalGeometry/README.md
-- formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/README.md
-- formal/GaloisForLFunctions/ArithmeticElectrostatics/README.md
-- formal/GaloisForLFunctions/ArithmeticIntersectionTheory/README.md
-- formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/README.md
-- formal/GaloisForLFunctions/RenormalizedBiarithmeticGeometry/README.md
-- formal/GaloisForLFunctions/TransThresholdPairCorrelation/README.md
-- formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/README.md
-- formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/README.md
-- formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/README.md
-- formal/GaloisForLFunctions/IncommensurableGaborPinching
-
+and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
+    
 Only read these documents, no other markdown files.
 
 Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
@@ -499,10 +457,11 @@ Keep a log file in logs/ for your research to note down facts and findings, sinc
 
 The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls or destroy a wall?
-2. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
-3. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+2. Do you see any approach for an RH proof that is wildly different to all the routes and candidates we have so far, going a wildly different way not even touching the walls the existing routes face?
+3. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
+4. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2710/astra.md
+Write a report in docs docs/reports/review-2810/argon.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -510,9 +469,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-Read fully the report docs/reports/review-2710/fable2.md
+based on your report docs/reports/review-2810/obstacles-summary.md
 
-In section "## 4. Question 3: the field that would supply the tools" the document describes a new field/research programme - called "arithmetic Lorentzian geometry"
+the document describes a new field/research programme - called "signed arithmetic Hodge theory with source-compatible renormalization"
 
 Your task: develop this new field / programme.
 

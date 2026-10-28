@@ -59,6 +59,13 @@ It does not assert the existence of a new cohomology theory or a positive polari
 “Source-compatible” means that the actual test functions, their poles and their mixed pairings
 survive every comparison. “Renormalized” does not mean that an unpaid divergent term is discarded.
 
+The form attached to a radical matters. The CHMD signed-source radical can be removed while
+retaining both polar moments. The resulting full Weil form still has a two-dimensional polar
+radical, spanned by the ground and odd polar classes. Quotienting this larger radical preserves
+the Weil pairing but discards nonzero polar coordinates unless they are stored separately.
+[CHMDQuotientWeilForm](../RHTower/CHMDQuotientWeilForm.lean) proves this distinction and the exact
+two-pole classification. Here `arithmeticWeilRadical` always refers to the full Weil form.
+
 ## Mechanisms and pillar theorems
 
 ### Exact residual calculus
@@ -98,8 +105,88 @@ that the correction must remove. The error estimate is quadratic in stationarity
 graph error is linear.
 
 These are certified comparison tools. They do not bound stationarity on a new exhaustive
-arithmetic family or prove nonnegativity of the exact complement. Coherent multiblock payment
-and preservation of the radical are further parts of the residual calculus.
+arithmetic family or prove nonnegativity of the exact complement.
+
+### One budget for a complete coefficient family
+
+Let \(F:E\to H\) be a bounded source family on a real normed coefficient space, and let
+\(U:E\to K\) be its bounded trial correction. The single stationarity operator is
+\(D=J(F-U)\). For every coefficient vector \(c\),
+
+\[
+0\le W(Fc-Uc)-W(RFc)\le2\|D\|^2\|c\|^2,
+\qquad
+\|PFc-Uc\|\le2\|D\|\|c\|.
+\]
+
+For any two coefficient vectors,
+
+\[
+|W(Fc-Uc,Fd-Ud)-W(RFc,RFd)|
+\le2\|D\|^2\|c\|\|d\|.
+\]
+
+[OneStationarityBudgetControlsTheWholeSourceFamily](OneStationarityBudgetControlsTheWholeSourceFamily.lean)
+proves these simultaneous estimates. They apply before a choice of entries or blocks, so a
+shared reserve is charged once through the operator norm. The arithmetic task is to construct
+an exhaustive family and corrections for which this norm is sufficiently small; the estimates
+do not assume or supply that smallness.
+
+### Exact radical retention
+
+The arithmetic complement is \(\ker P=\ker J\). Its bilinear radical, viewed inside the
+original graph, is exactly \(\ker T_W\): restricting to the complement creates no new radical.
+For \(z\in\ker T_W\),
+
+\[
+P(x+z)=Px,\qquad R(x+z)=Rx+z.
+\]
+
+[TheSignedComplementRetainsExactlyTheWeilRadical](TheSignedComplementRetainsExactlyTheWeilRadical.lean)
+proves these identities and retains the actual infinite independent theta family in the
+residual. The positive carrier has no radical, so all full-form null information stays in the
+complement. Neither the kernel description nor radical removal determines its remaining sign.
+
+### Scale growth and scalar renormalization
+
+For a nonzero compact real source \(f\), let \(x_t\) be the original graph lift of
+\(f(\,\cdot-t)\). The complete Weil value is translation invariant. The two pole moments
+scale by \(e^{t/2}\) and \(e^{-t/2}\), respectively; these are established identities of the
+arithmetic scaling surface. Graph size behaves differently. For every \(B\ge0\), there is
+\(c_{f,B}>0\) such that
+
+\[
+c_{f,B}e^{B|t|}\le\|x_t\|^2\qquad(t\in\mathbb R).
+\]
+
+The proof uses the literal source weight \(\cosh(u/2)/\Phi(u)\) and theta decay at every
+exponential rate. Compact support supplies \(|u|\ge|t|-R_f\) wherever the translated source
+is nonzero. No positivity of \(W(f)\) is required.
+
+The growth also survives removal of the paid section. With \(C_W\) the bounded Weil-pairing
+constant, every graph vector satisfies
+
+\[
+\|x\|^2\le4W(x)+(4C_W+2)\|Rx\|^2.
+\]
+
+Consequently, \(c_{f,B}e^{B|t|}-4W(f)\le(4C_W+2)\|Rx_t\|^2\), and each nonzero compact
+translation orbit eventually lies outside the fixed coercive carrier.
+
+Every scalar amplitude \(a\) satisfies the stronger joint estimate
+
+\[
+c_{f,B}e^{B|t|}\,|W(a x_t)|\le |W(f)|\,\|a x_t\|^2.
+\]
+
+Thus scalar normalization cannot retain both a bounded original graph norm and a nonzero
+Weil energy along an escaping orbit. Even multiplication by any fixed exponential
+\(e^{-a|t|}\) leaves an exponentially growing graph norm.
+[TranslationPreservesWeilEnergyButEscapesEveryExponentialGraphBound](TranslationPreservesWeilEnergyButEscapesEveryExponentialGraphBound.lean)
+proves the quantitative bounds. They concern the original graph topology; they do not rule
+out every form-preserving quotient or a different topology with separately proved source and
+pole comparisons. They also do not assert that each individual fixed translation lacks a
+bounded extension on the whole graph.
 
 ### Signed block payment
 
@@ -155,16 +242,17 @@ These are imported mathematical foundations, not new contributions of this progr
 | Canonical critical source energy | [TheCriticalSourceRateHasACanonicalEnergy](../ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean) |
 | Source synthesis beyond narrow spacing | [TheSecondOrderSynthesis](../SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean) |
 
-The trial-correction theorem is a formalized contribution of this programme. Complete signed
-block payment, growing-mode transfer and arithmetic upper control of critical work remain
-research targets.
+The trial-correction estimates, whole-family operator bounds, exact radical retention and
+quantitative source-scale bounds are formalized contributions of this programme. Complete
+signed block payment, growing-mode transfer and arithmetic upper control of critical work
+remain research targets.
 
 ## Questions and open topics
 
 1. Which signed overlapping block families admit a uniformly paid mixed interaction without a
    diagonal Metzler gauge? What coarse complement do those families leave?
-2. What is the exact variational meaning of removing an arithmetic positive section? How do
-   nested section removals interact, and how is their residual radical represented?
+2. Which enlarging arithmetic corrections make the certified stationarity error uniformly
+   small? How can nested section removals control the sign outside the retained radical?
 3. Which explicit growing Ramanujan families control a useful source domain? What quantitative
    complement estimate survives the Gamma and continuous two-pole comparison?
 4. Which counterterms yield convergence in a topology strong enough to preserve mixed Weil

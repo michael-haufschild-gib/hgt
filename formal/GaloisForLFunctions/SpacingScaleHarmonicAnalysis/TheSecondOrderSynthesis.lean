@@ -21,7 +21,8 @@ beats `√(log k)`. The trapezoid weights `F(a_j)(a_{j+1} − a_{j−1})/2` make
   the supremum error is `synthErrTwo = (5/4)(1/n₀)²(M₂‖φ‖₁ + 2Lk‖φ′‖₁ + Mk²‖φ″‖₁) + L‖φ‖₁/k`
   while the Lipschitz constant stays `O(k)`; the Lévy energy of the error is
   `O(((k/n₀)² + 1/k)² log k)`.
-* **The overlap law at the fourth root** (`riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo`):
+* **The overlap law at the fourth root**
+  (`riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo`):
   for every `C²` profile and every dilation sequence with `(κ_N/N)⁴ log κ_N → 0`
   (`OverlapGrowthTwo`, implied by `OverlapGrowth`), RH holds iff Weil's form is eventually
   nonnegative on the atomic families of width `1/κ_N`. For widths `(log N)^α/N`
@@ -47,7 +48,8 @@ theorem abs_integral_abs_le_of_mem {f : ℝ → ℝ} (hf : Continuous f) {p q x 
     exact integral_mono_interval hy.1 hxy hx.2 (Eventually.of_forall fun s => abs_nonneg _)
       (hf.abs.intervalIntegrable p q)
 
-/-- **Taylor on a cell**: `|G(t) − G(a) − G′(a)(t − a)| ≤ |t − a| ∫_p^q |G″|` for `a, t ∈ [p, q]`. -/
+/-- **Taylor on a cell**: `|G(t) − G(a) − G′(a)(t − a)| ≤ |t − a| ∫_p^q |G″|` for
+`a, t ∈ [p, q]`. -/
 theorem abs_taylor_le (hG : ∀ s, HasDerivAt G (G' s) s) (hG' : ∀ s, HasDerivAt G' (G'' s) s)
     (hG'' : Continuous G'') {p q a t : ℝ} (ha : a ∈ Icc p q) (ht : t ∈ Icc p q) :
     |G t - G a - G' a * (t - a)| ≤ |t - a| * ∫ s in p..q, |G'' s| := by
@@ -301,7 +303,8 @@ theorem abs_trapSum_sub_integral_le (ha : Monotone a) (hgap : ∀ i < J, a (i + 
   have hG : ∀ t, HasDerivAt (fun t => F t * ψ (r - t))
       (F1 t * ψ (r - t) - F t * ψ1 (r - t)) t := hasDerivAt_mul_comp_sub hF hψ r
   have hG' : ∀ t, HasDerivAt (fun t => F1 t * ψ (r - t) - F t * ψ1 (r - t)) (G'' t) t :=
-    fun t => ((hasDerivAt_mul_comp_sub hF1 hψ r t).sub (hasDerivAt_mul_comp_sub hF hψ1 r t)).congr_deriv
+    fun t => ((hasDerivAt_mul_comp_sub hF1 hψ r t).sub
+      (hasDerivAt_mul_comp_sub hF hψ1 r t)).congr_deriv
       (by simp only [G'']; ring)
   have hG''c : Continuous G'' :=
     ((hF2c.mul (hψc.comp hsub)).sub (continuous_const.mul (hF1c.mul (hψ1c.comp hsub)))).add
@@ -463,7 +466,8 @@ theorem atomicTest_trapWeights {ψ : ℝ → ℝ} {J N : ℕ} (hn₀ : 1 ≤ n�
   rw [e1, e2]
   ring
 
-/-- **Error bounds of the second-order synthesis** `S = Σ_j F(a_j)(a_{j+1} − a_{j−1})/2 · φ_k(· − a_j)`
+/-- **Error bounds of the second-order synthesis**
+`S = Σ_j F(a_j)(a_{j+1} − a_{j−1})/2 · φ_k(· − a_j)`
 of `F`: the supremum error, the Lipschitz constant of `S`, the support, the smoothness. -/
 theorem synthesis_error_bounds_two (hφ : ContDiff ℝ 2 φ) (hφ1 : VanishesOff φ)
     (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ 2 F) (hR : 0 ≤ R) (hFR : SupportedIn R F)
@@ -489,7 +493,8 @@ theorem synthesis_error_bounds_two (hφ : ContDiff ℝ 2 φ) (hφ1 : VanishesOff
   have hc1' : Continuous fun s => k * deriv φ s := continuous_const.mul hc1
   have hc2' : Continuous fun s => k * (k * deriv (deriv φ) s) :=
     continuous_const.mul (continuous_const.mul hc2)
-  have hψ2c : Continuous (dilate k fun s => k * (k * deriv (deriv φ) s)) := continuous_dilate_of hc2'
+  have hψ2c : Continuous (dilate k fun s => k * (k * deriv (deriv φ) s)) :=
+    continuous_dilate_of hc2'
   have hψ1i : Integrable (dilate k fun s => k * deriv φ s) :=
     integrable_dilate_of hc1' (vanishesOff_const_mul hv1 k) hk0
   have hψ2i : Integrable (dilate k fun s => k * (k * deriv (deriv φ) s)) :=

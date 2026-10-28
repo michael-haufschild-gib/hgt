@@ -12,6 +12,7 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonLawsH
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTowerDeficitChangesSignBetweenFortyThreeAndFortySeven
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCharacterMertensLimitIsTheLogarithmicDerivative
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartSeparatesZetaFromItsLiouvilleTwin
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheResidueFinitePartIsDiagonalizedByCharacters
 
 /-!
 # The laws of renormalized arithmetic potential theory
@@ -59,6 +60,11 @@ One statement collecting the laws of the programme, each in its sharp form.
 21. **The finite part separates ζ from its Liouville twin**: on the polar hyperplane
     `P_N(λx) − P_N(x) = 2(2γ + τ)|x|² + o(mass)` with `2γ + τ > 0`
     (`exists_abs_liouvilleForm_sub_zetaForm_sub_le`).
+22. **Mertens' theorem in residue classes with its constant**: `A(y; r) − log y/φ(q) → c_r`
+    (`tendsto_classMertensSum_sub`).
+23. **The residue finite part is diagonalized by characters**: on the unit classes the finite part
+    is `c_{a⁻¹b} S_a + c_{b⁻¹a} S_b`, and every character is an eigenvector with eigenvalue
+    `2 Re β_χ` (`exists_abs_residueGram_finitePart_le`, `sum_residueFinitePart_mul_char`).
 -/
 
 noncomputable section
@@ -174,7 +180,23 @@ theorem renormalized_arithmetic_potential_theory_laws :
             atomicWeilForm N (stepProfile c M) -
             2 * (2 * Real.eulerMascheroniConstant + liouvilleEvenLimit) *
               ∑ n ∈ Icc 1 N, stepProfile c M n ^ 2| ≤
-          2 * ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C)) :=
+          2 * ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C)) ∧
+    -- Mertens' theorem in residue classes with its constant
+    (∀ (q : ℕ) [NeZero q] (r : ZMod q), IsUnit r →
+      Tendsto (fun y : ℕ => classMertensSum q r y - Real.log y / q.totient) atTop
+        (𝓝 (classMertensConstant q r))) ∧
+    -- the residue finite part is diagonalized by characters
+    (∀ (q : ℕ) [NeZero q] (a b : ZMod q), IsUnit a → IsUnit b → ∀ η > 0, ∃ C : ℝ,
+      ∀ M M' N : ℕ, 1 ≤ M → M ≤ M' → M' ≤ N →
+        |primeBilinear N (residuePole q a M) (residuePole q b M') -
+            (q : ℝ) / q.totient * classHarmonic q a M * classHarmonic q b M' -
+            classMertensConstant q (a⁻¹ * b) * classHarmonic q a M -
+            classMertensConstant q (b⁻¹ * a) * classHarmonic q b M| ≤
+          η * harmonicSum M + C) ∧
+    (∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (a : (ZMod q)ˣ),
+      ∑ b : (ZMod q)ˣ, ((classMertensConstant q ↑(a⁻¹ * b) +
+          classMertensConstant q ↑(b⁻¹ * a) : ℝ) : ℂ) * χ b =
+        ((2 * (residueSpectralValue χ).re : ℝ) : ℂ) * χ a) :=
   ⟨fun _ _ hv => primeSurvival_rankOne hv,
     heckeCovariant_iff_const,
     fun _ hN => covariantCounterterm_sandwich hN,
@@ -198,6 +220,9 @@ theorem renormalized_arithmetic_potential_theory_laws :
     fun _ _ χ hχ => by
       rw [← charMertensLimit_eq_neg_logDeriv χ hχ]
       exact tendsto_charMertensSum χ hχ,
-    fun _ hη => exists_abs_liouvilleForm_sub_zetaForm_sub_le hη⟩
+    fun _ hη => exists_abs_liouvilleForm_sub_zetaForm_sub_le hη,
+    fun _ _ _ hr => tendsto_classMertensSum_sub hr,
+    fun _ _ _ _ ha hb _ hη => exists_abs_residueGram_finitePart_le ha hb hη,
+    fun _ _ χ a => sum_residueFinitePart_mul_char χ a⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

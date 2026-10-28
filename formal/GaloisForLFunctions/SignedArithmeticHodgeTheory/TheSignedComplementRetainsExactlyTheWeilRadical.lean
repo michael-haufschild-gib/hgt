@@ -41,13 +41,17 @@ theorem stationarity_eq_zero_iff_mem_complement (x : SourceGraph) :
   constructor
   · intro hx
     have h := norm_projection_le_stationarity x
-    rw [hx, norm_zero, mul_zero] at h
+    rw [hx] at h
+    change ‖fixedLogCellWeilProjection x‖ ≤ 2 * ‖(0 : SourceGraph)‖ at h
+    rw [norm_zero, mul_zero] at h
     change fixedLogCellWeilProjection x = 0
     exact norm_eq_zero.mp (le_antisymm h (norm_nonneg _))
   · intro hx
     apply ext_inner_right ℝ
     intro u
-    rw [inner_arithmeticStationarity, inner_zero_left, weilBilin_comm]
+    rw [inner_arithmeticStationarity]
+    change weilBilin x u = inner ℝ (0 : SourceGraph) (u : SourceGraph)
+    rw [inner_zero_left, weilBilin_comm]
     have h := fixedLogCellWeilProjection_orthogonal x u.2
     change fixedLogCellWeilProjection x = 0 at hx
     simpa only [hx, sub_zero] using h

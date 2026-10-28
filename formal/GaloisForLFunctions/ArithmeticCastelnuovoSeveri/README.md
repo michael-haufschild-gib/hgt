@@ -249,7 +249,16 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     For every dimension, one common pole-preserving smoothing gives an independent source
     space of exactly that dimension and a half-mass floor on its entire span. Its source-defined
     L² cone has Riemann–Roch, ampleness, and Hodge index (`HaarCellSmoothEffectivity.lean`).
-    Full-source effectivity remains open.
+    **Independent pair averages:** every complete pair splits exactly into its weighted
+    average and balanced detail. The entire real average-to-detail prime block vanishes;
+    the opposite orientation remains (`HaarCellCoarseSplitting.lean`). Arbitrary interval
+    means also retain coherent far-end Gamma charges of their actual local variances,
+    with arbitrary source values on the complement (`GammaVarianceCapacity.lean`). For every
+    compact BV source, disjoint intervals of widths $w_i\leq1$ satisfy
+    $\sum_i\log(1/w_i)\int_{I_i}(f-\operatorname{mean}_{I_i}f)^2\leq\operatorname{levyEnergy}(f)$
+    (`GammaVarianceCoercivity.lean`). In original complete-cell coordinates this pays
+    $\sum_a\log(a)M_a(u_a-v_a)^2$ for arbitrary signed coefficients on both cells of every
+    pair (`CompleteCellVariancePayment.lean`). Full mixed Weil payment and full-source effectivity remain open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

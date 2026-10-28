@@ -582,3 +582,97 @@ orientation; mixed profiles cannot be replaced by a diagonal model.
 The centered defect bound depends on variation against q', not an assumed
 critical-scale estimate. It will not by itself bound the global negative index.
 No proof or new positivity result is claimed before the actual Lean audit.
+
+### Ordered pole cancellation and localized Gamma charge — formalized
+
+`TheOrderedGammaTailRetainsPolarCancellation.lean` passed mandatory actual
+direct59426, four standard endpoint dependency prints and no warnings. The first
+Gamma exponential equals A(f)B(g), cancels that exact polar term, and leaves
+W(f,g)=B(f)A(g)-prime(f,g)-GammaTail(f,g). Conjugating the tail by boundary
+distance weights bounds it by pi times the two exponentially localized square
+masses. The statements retain actual signed compact profiles; no sign input
+is added. Wired and foundational README/checks updated.
+
+The rank-one description applies to one ordered cross block, not a global
+rank-one correction after many cuts. Cumulative signed source payment remains
+open. Actual importer TheOrderedWeilSourceIsACenteredChebyshevDefect.lean is
+complete but unchecked/unwired; its required cancellation olean is next.
+
+### Gamma boundary reserve and saturation — research target
+
+For k(s+t), w(t)=exp(-t/2)/sqrt(1-exp(-2t)), and C=pi/2, the now formalized
+exact row suggests the ground-state identity
+ C*integral |f|^2 - Re< f,H_Gamma f >
+ = (1/2)*double_integral k(s+t)w(s)w(t)|f(s)/w(s)-f(t)/w(t)|^2.
+This would identify the retained Schur slack, not merely bound it by zero.
+Integrability and transfer to the existing L2 operator must be proved. The
+actual public inner_ccmGammaBoundaryCLM and integrable_ccmGammaBoundary_pair
+were inspected and provide its mixed kernel representation.
+
+Sharpness is a separate target: w^2=1/(2*sinh(t)) is not integrable at zero.
+Truncations on [epsilon,1] have diverging mass while the omitted cross-boundary
+interaction should stay bounded by a Carleman comparison, forcing norm pi/2.
+This is a proposed argument, not a formal theorem or a claim of an L2 eigenvector.
+An exact slack could support mixed source estimates, but no uniform strict gap
+or prime-sign control follows from its existence. Corpus searches found the
+existing general Schur upper calculus, not this exact actual-Gamma lower result.
+
+### Centered ordered arithmetic source — formalized
+
+`TheOrderedWeilSourceIsACenteredChebyshevDefect.lean` passed mandatory actual
+direct3416. Its three endpoint dependency prints contain only propext,
+Classical.choice and Quot.sound, with no warnings. The actual ordered Weil
+cross term is minus the centered Chebyshev discrepancy against its own lag
+derivative, minus the exponentially localized Gamma tail. Regularity, support
+horizon, integrability and the prime normalization are derived from the actual
+compact C2 profiles. No critical arithmetic estimate is assumed or proved.
+Wired into the own umbrella and recorded in README/checks. The weighted signed
+discrepancy and its cumulative index payment remain open.
+
+### Exact mixed Gamma reserve — candidate implementation
+
+Actual source `TheGammaBoundaryReserveIsAnExactSquare.lean` now contains the
+stronger two-input identity
+ pi/4*(norm(f)^2+norm(g)^2)-Re<g,H_Gamma f>
+ = (1/2)*integral k(s+t)w(s)w(t)|g(s)/w(s)-f(t)/w(t)|^2.
+The integrable diagonal pieces come from exact Schur rows; the cross term uses
+the existing absolutely integrable complex kernel pairing. This retains all
+shape-dependent slack. API18144 passed. Necessary previously absent Schur
+olean emission55733 is running; actual reserve module remains UNVERIFIED and
+UNWIRED until its own direct audit. This does not establish a uniform strict
+gap, sharpness, nonattainment, or the signed prime surplus.
+
+### Gamma equality rigidity — candidate, not yet checked
+
+A second candidate source, TheGammaBoundaryBoundHasNoNonzeroEqualityCase.lean,
+proves w(t)^2 >= exp(-1)/(2t) on (0,1), hence the exact weight is not L2.
+A zero quadratic reserve would give f(s)/w(s)=f(t)/w(t) almost everywhere on
+its product carrier. Fubini fixes the ratio, and square integrability forces
+its constant to vanish. The proposed conclusion is strict quadratic deficit
+for each nonzero actual L2 vector. This is not a uniform gap or norm sharpness.
+The source and its API scratch remain UNVERIFIED, UNWIRED; the reserve dependency
+must pass its own actual audit first. No arithmetic upper estimate is inferred.
+
+### Exact mixed Gamma reserve — formalized
+
+Mandatory actual direct60654 passed. All three endpoint dependency prints show
+only propext, Classical.choice and Quot.sound; no warnings. The full two-input
+square identity and product integrability now hold on the original half-line
+L2 carrier. Wired into the own umbrella, foundational README and checks updated.
+The equality-rigidity candidate remains unchecked. Scalar sharpness and the
+actual signed arithmetic payment are separate remaining questions.
+
+### Retaining the Gamma reserve in the actual arithmetic block — next target
+
+The exact mixed Gamma square can be transported through the actual shifted,
+reflected half-line profiles used in the touching-support theorem. Applying it
+to the exponentially tilted profiles after first-pole cancellation should give
+ W(f,g) = -integral(E-c)q' -pi/4*(leftBoundaryMass+rightBoundaryMass)
+          + integral GammaPairReserve(F,G).
+Here F,G must be the literal translated/reflected restrictions of those same
+profiles, with square norms equal to their actual boundary masses. The source
+identity and all profile maps/norms must be proved; no abstract Gram replacement.
+This would retain a nonnegative shape-dependent reserve inside the original
+arithmetic cross block. It would neither prove a cumulative signed payment nor
+permit spending one global pole or one old mass independently at many cuts.
+No implementation or formal theorem for this transfer exists yet.

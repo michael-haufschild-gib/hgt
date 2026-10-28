@@ -927,5 +927,208 @@ theorem sum_boundary_weight_le {p u X i : ℕ} (hp : p.Prime) (hu : 1 ≤ u) (hX
     _ = 4 * (Real.log p / ((u * p ^ i : ℕ) : ℝ)) * Real.sqrt (((u * p ^ i : ℕ) : ℝ) / X) := by
         simp only [B]; ring
 
+/-- The sum `L_Q = Σ_{p < Q} log p`. -/
+def logSum (Q : ℕ) : ℝ := ∑ p ∈ (range Q).filter Nat.Prime, Real.log p
+
+theorem logSum_nonneg (Q : ℕ) : 0 ≤ logSum Q := sum_nonneg fun p _ => Real.log_natCast_nonneg p
+
+/-- **The boundary**: `Σ_{boundary} ≤ 4 L_Q Σ_a (1/a)(h_a − c)² √(a/X)`. -/
+theorem smoothBoundary_le {Q X : ℕ} (hX : 1 ≤ X) (h : ℕ → ℝ) :
+    smoothBoundary Q X h ≤ 4 * logSum Q * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
+      (h a - wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h) ^ 2 * Real.sqrt ((a : ℝ) / X) := by
+  set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h
+  set S := ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 * Real.sqrt ((a : ℝ) / X)
+  suffices hp : smoothBoundary Q X h ≤ ∑ p ∈ (range Q).filter Nat.Prime, 4 * Real.log p * S by
+    refine hp.trans (le_of_eq ?_)
+    rw [← sum_mul, ← mul_sum]; rfl
+  rw [smoothBoundary]
+  refine sum_le_sum fun p hp => ?_
+  obtain ⟨hpQ, hpp⟩ := mem_filter.mp hp
+  rw [show S = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 * Real.sqrt ((a : ℝ) / X) from rfl,
+    sum_smoothSet_eq_ladders hpp (mem_range.mp hpQ), mul_sum]
+  refine sum_le_sum fun u hu => ?_
+  have hu1 := (mem_smoothSet.mp (mem_filter.mp hu).1).1
+  rw [sum_filter, mul_sum]
+  refine sum_le_sum fun i _ => ?_
+  have hpull : ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+      Real.log p / ((u * p ^ j : ℕ) : ℝ) * (h (u * p ^ i) - c) ^ 2 else 0) =
+      (h (u * p ^ i) - c) ^ 2 * ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+        Real.log p / ((u * p ^ j : ℕ) : ℝ) else 0) := by
+    rw [mul_sum]; exact sum_congr rfl fun j _ => by split_ifs <;> ring
+  rw [hpull]
+  have hD : 0 ≤ (h (u * p ^ i) - c) ^ 2 := sq_nonneg _
+  have hw := sum_boundary_weight_le (X := X) (i := i) hpp hu1 hX
+  split_ifs with hiX
+  · calc (h (u * p ^ i) - c) ^ 2 * ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+          Real.log p / ((u * p ^ j : ℕ) : ℝ) else 0)
+        ≤ (h (u * p ^ i) - c) ^ 2 * (4 * (Real.log p / ((u * p ^ i : ℕ) : ℝ)) *
+          Real.sqrt (((u * p ^ i : ℕ) : ℝ) / X)) := mul_le_mul_of_nonneg_left hw hD
+      _ = 4 * Real.log p * (1 / ((u * p ^ i : ℕ) : ℝ) * (h (u * p ^ i) - c) ^ 2 *
+          Real.sqrt (((u * p ^ i : ℕ) : ℝ) / X)) := by ring
+  · have : ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+        Real.log p / ((u * p ^ j : ℕ) : ℝ) else 0) = 0 :=
+      sum_eq_zero fun j _ => if_neg fun h => hiX h.2.1
+    rw [this]
+    simp
+
+theorem smoothEnergy_sub_const (Q X : ℕ) (h : ℕ → ℝ) (c : ℝ) :
+    smoothEnergy Q X (fun n => h n - c) = smoothEnergy Q X h := by
+  refine sum_congr rfl fun p _ => sum_congr rfl fun u _ => sum_congr rfl fun i _ =>
+    sum_congr rfl fun j _ => ?_
+  split_ifs <;> ring
+
+/-- **The finite-prime chain at a horizon**: `(g_X − 4L/X^{1/4} − 16LM/log X) Var ≤
+(1 + 16L/log X) E` for `X ≥ 2`. -/
+theorem smoothVar_mul_le {Q X : ℕ} (hX : 2 ≤ X) (h : ℕ → ℝ) :
+    (boxGap X - 4 * logSum Q / Real.sqrt (Real.sqrt X) -
+        16 * logSum Q * ladderConstant Q / Real.log X) * smoothVar Q X h ≤
+      (1 + 16 * logSum Q / Real.log X) * smoothEnergy Q X h := by
+  set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h
+  set V := smoothVar Q X h
+  set E := smoothEnergy Q X h
+  set L := logSum Q
+  set M := ladderConstant Q
+  have hL := logSum_nonneg Q
+  have hM := ladderConstant_nonneg Q
+  have hX0 : (0 : ℝ) < X := by exact_mod_cast (show 0 < X by omega)
+  have hlX : 0 < Real.log X := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
+  have hT : 0 < Real.sqrt (Real.sqrt X) := Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hX0)
+  have hV : V = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 := rfl
+  have hVnn : 0 ≤ V := wVar_nonneg fun _ _ => by positivity
+  have hE : 0 ≤ E := sum_nonneg fun _ _ => sum_nonneg fun _ _ => sum_nonneg fun _ _ =>
+    sum_nonneg fun _ _ => by
+      split_ifs
+      · exact mul_nonneg (div_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg _)) (sq_nonneg _)
+      · exact le_rfl
+  -- the box comparison
+  have hbox := boxGap_mul_boxVar_le (J := X) (by omega) Q (zeroExt Q X h)
+  have hext := boxEnergy_zeroExt_le Q X h
+  have hvar := smoothVar_le_boxVar Q X h
+  have hg : 0 ≤ boxGap X := by
+    rw [boxGap]
+    have : (1 / 2 : ℝ) ^ (X + 1) ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+    have := Real.log_pos (show (1 : ℝ) < 2 by norm_num)
+    nlinarith
+  -- the boundary: small below `√X`, the halo above
+  have hbd := smoothBoundary_le (Q := Q) (by omega : 1 ≤ X) h
+  have hsplit : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 * Real.sqrt ((a : ℝ) / X) ≤
+      V / Real.sqrt (Real.sqrt X) +
+        2 / Real.log X * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * Real.log a * (h a - c) ^ 2 := by
+    rw [hV, div_eq_mul_one_div, sum_mul, mul_sum, ← sum_add_distrib]
+    refine sum_le_sum fun a ha => ?_
+    obtain ⟨ha1, haX, -⟩ := mem_smoothSet.mp ha
+    have ha0 : (0 : ℝ) < a := by exact_mod_cast ha1
+    have hD : 0 ≤ 1 / (a : ℝ) * (h a - c) ^ 2 := by positivity
+    have hlog_a : 0 ≤ Real.log a := Real.log_natCast_nonneg a
+    by_cases hsq : a * a ≤ X
+    · -- `√(a/X) ≤ X^{−1/4}`
+      have hs : Real.sqrt ((a : ℝ) / X) ≤ 1 / Real.sqrt (Real.sqrt X) := by
+        have h1 : (a : ℝ) ≤ Real.sqrt X := by
+          rw [show (a : ℝ) = Real.sqrt ((a : ℝ) * a) by rw [Real.sqrt_mul_self ha0.le]]
+          exact Real.sqrt_le_sqrt (by exact_mod_cast hsq)
+        have h2 : (a : ℝ) / X ≤ 1 / Real.sqrt X := by
+          rw [div_le_div_iff₀ hX0 (Real.sqrt_pos.mpr hX0), one_mul]
+          have : Real.sqrt X * Real.sqrt X = X := Real.mul_self_sqrt hX0.le
+          nlinarith [Real.sqrt_nonneg (X : ℝ)]
+        calc Real.sqrt ((a : ℝ) / X) ≤ Real.sqrt (1 / Real.sqrt X) := Real.sqrt_le_sqrt h2
+          _ = 1 / Real.sqrt (Real.sqrt X) := by rw [Real.sqrt_div' 1 (Real.sqrt_nonneg _),
+              Real.sqrt_one]
+      have : 0 ≤ 2 / Real.log X * (1 / (a : ℝ) * Real.log a * (h a - c) ^ 2) := by positivity
+      calc 1 / (a : ℝ) * (h a - c) ^ 2 * Real.sqrt ((a : ℝ) / X)
+          ≤ 1 / (a : ℝ) * (h a - c) ^ 2 * (1 / Real.sqrt (Real.sqrt X)) :=
+            mul_le_mul_of_nonneg_left hs hD
+        _ ≤ _ := le_add_of_nonneg_right this
+    · -- the halo: `log a ≥ ½ log X`
+      have hs : Real.sqrt ((a : ℝ) / X) ≤ 1 := by
+        rw [Real.sqrt_le_one]
+        exact div_le_one_of_le₀ (by exact_mod_cast haX) hX0.le
+      have hla : Real.log X ≤ 2 * Real.log a := by
+        rw [← Real.log_rpow ha0, show ((a : ℝ) ^ (2 : ℝ)) = (a : ℝ) * a by
+          rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; ring]
+        exact Real.log_le_log hX0 (by exact_mod_cast (not_le.mp hsq).le)
+      have h1 : 1 / (a : ℝ) * (h a - c) ^ 2 ≤ 2 / Real.log X * (1 / (a : ℝ) * Real.log a * (h a - c) ^ 2) := by
+        have hr : 1 ≤ 2 / Real.log X * Real.log a := by
+          rw [div_mul_eq_mul_div, le_div_iff₀ hlX]; linarith
+        calc 1 / (a : ℝ) * (h a - c) ^ 2 = 1 * (1 / (a : ℝ) * (h a - c) ^ 2) := (one_mul _).symm
+          _ ≤ (2 / Real.log X * Real.log a) * (1 / (a : ℝ) * (h a - c) ^ 2) :=
+              mul_le_mul_of_nonneg_right hr hD
+          _ = 2 / Real.log X * (1 / (a : ℝ) * Real.log a * (h a - c) ^ 2) := by ring
+      have h0 : 0 ≤ 1 / (a : ℝ) * (h a - c) ^ 2 * (1 / Real.sqrt (Real.sqrt X)) := by positivity
+      calc 1 / (a : ℝ) * (h a - c) ^ 2 * Real.sqrt ((a : ℝ) / X) ≤ 1 / (a : ℝ) * (h a - c) ^ 2 :=
+            mul_le_of_le_one_right hD hs
+        _ ≤ _ := h1.trans (le_add_of_nonneg_left h0)
+  have hhalo := sum_log_mul_sq_le_smoothEnergy Q X (fun n => h n - c)
+  rw [smoothEnergy_sub_const, ← hV] at hhalo
+  -- assemble
+  have hB : smoothBoundary Q X h ≤ 4 * L * (V / Real.sqrt (Real.sqrt X) +
+      2 / Real.log X * (2 * E + 2 * M * V)) :=
+    hbd.trans (mul_le_mul_of_nonneg_left (hsplit.trans (add_le_add le_rfl
+      (mul_le_mul_of_nonneg_left hhalo (by positivity)))) (by positivity))
+  have key : boxGap X * V ≤ E + 4 * L * (V / Real.sqrt (Real.sqrt X) +
+      2 / Real.log X * (2 * E + 2 * M * V)) :=
+    (mul_le_mul_of_nonneg_left hvar hg).trans (hbox.trans (hext.trans (add_le_add le_rfl hB)))
+  have e1 : 4 * L * (V / Real.sqrt (Real.sqrt X) + 2 / Real.log X * (2 * E + 2 * M * V)) =
+      4 * L / Real.sqrt (Real.sqrt X) * V + 16 * L * M / Real.log X * V + 16 * L / Real.log X * E := by
+    field_simp; ring
+  rw [e1] at key
+  nlinarith
+
+/-- **The finite-prime valuation chain has gap `2 log 2`.** For every finite prime cutoff `Q` and
+every `ε > 0`, eventually in `X`, `(2 log 2 − ε) Var ≤ E` on the `Q`-smooth numbers of `[1, X]`. -/
+theorem eventually_smoothVar_le_smoothEnergy (Q : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ X₀ : ℕ, ∀ X, X₀ ≤ X → ∀ h : ℕ → ℝ,
+      (2 * Real.log 2 - ε) * smoothVar Q X h ≤ smoothEnergy Q X h := by
+  set A := 2 * Real.log 2
+  set L := logSum Q
+  set M := ladderConstant Q
+  have hA : 0 < A := by have := Real.log_pos (show (1 : ℝ) < 2 by norm_num); positivity
+  have hL := logSum_nonneg Q
+  have hM := ladderConstant_nonneg Q
+  have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hsq := (Real.tendsto_sqrt_atTop.comp Real.tendsto_sqrt_atTop).comp tendsto_natCast_atTop_atTop
+  have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one (r := (1 / 2 : ℝ)) (by norm_num) (by norm_num)
+  have ev := ((hlog.eventually_ge_atTop (max 1 (max (64 * A * L / ε) (128 * L * M / ε)))).and
+    (hsq.eventually_ge_atTop (32 * L / ε + 1))).and
+    ((hpow.eventually_le_const (show (0 : ℝ) < ε / (4 * A) by positivity)).and
+      (Filter.eventually_ge_atTop 2))
+  obtain ⟨X₀, hX₀⟩ := Filter.eventually_atTop.mp ev
+  refine ⟨X₀, fun X hX h => ?_⟩
+  obtain ⟨⟨hl, hs⟩, hp, hX2⟩ := hX₀ X hX
+  simp only [Function.comp] at hl hs
+  have hl1 : 1 ≤ Real.log X := (le_max_left _ _).trans hl
+  have hl2 : 64 * A * L / ε ≤ Real.log X := ((le_max_left _ _).trans (le_max_right _ _)).trans hl
+  have hl3 : 128 * L * M / ε ≤ Real.log X := ((le_max_right _ _).trans (le_max_right _ _)).trans hl
+  have hlX : 0 < Real.log X := by linarith
+  have hT : 0 < Real.sqrt (Real.sqrt X) := by linarith [show 0 ≤ 32 * L / ε by positivity]
+  have hpow' : (1 / 2 : ℝ) ^ (X + 1) ≤ ε / (4 * A) :=
+    (pow_le_pow_of_le_one (by norm_num) (by norm_num) (Nat.le_succ X)).trans hp
+  have hmain := smoothVar_mul_le (Q := Q) hX2 h
+  have hV : 0 ≤ smoothVar Q X h := wVar_nonneg fun _ _ => by positivity
+  -- the three small quantities
+  have ht : A * (16 * L / Real.log X) ≤ ε / 4 := by
+    rw [div_le_iff₀ hε] at hl2
+    rw [mul_div_assoc', div_le_iff₀ hlX]; nlinarith
+  have hs1 : 4 * L / Real.sqrt (Real.sqrt X) ≤ ε / 8 := by
+    rw [div_le_iff₀ hT]
+    have : 32 * L / ε ≤ Real.sqrt (Real.sqrt X) := by linarith
+    rw [div_le_iff₀ hε] at this; nlinarith
+  have hs2 : 16 * L * M / Real.log X ≤ ε / 8 := by
+    rw [div_le_iff₀ hε] at hl3
+    rw [div_le_iff₀ hlX]; nlinarith
+  have hg : A - ε / 4 ≤ boxGap X := by
+    rw [boxGap]
+    have := mul_le_mul_of_nonneg_left hpow' hA.le
+    rw [mul_div_assoc', mul_comm A ε, mul_div_mul_right _ _ hA.ne'] at this
+    nlinarith
+  have hcoef : (A - ε) * (1 + 16 * L / Real.log X) ≤
+      boxGap X - 4 * L / Real.sqrt (Real.sqrt X) - 16 * L * M / Real.log X := by
+    have h16 : 0 ≤ 16 * L / Real.log X := by positivity
+    nlinarith
+  have h1t : 0 < 1 + 16 * L / Real.log X := by positivity
+  have := mul_le_mul_of_nonneg_right hcoef hV
+  have h2 : (A - ε) * smoothVar Q X h * (1 + 16 * L / Real.log X) ≤
+      smoothEnergy Q X h * (1 + 16 * L / Real.log X) := by nlinarith
+  exact le_of_mul_le_mul_right h2 h1t
+
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 

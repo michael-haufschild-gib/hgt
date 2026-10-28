@@ -98,7 +98,7 @@ theorem deriv_orderedSourceLagWeight {f g : ℝ → ℝ}
       Real.exp (-h / 2) * (sectionCorr f (deriv g) h - sectionCorr f g h / 2) := by
   have he : HasDerivAt (fun s : ℝ => Real.exp (-s / 2))
       (Real.exp (-h / 2) * (-1 / 2)) h := by
-    simpa only [id_eq] using ((hasDerivAt_id h).neg.div_const 2).exp
+    simpa only [Pi.neg_apply, id_eq] using ((hasDerivAt_id h).neg.div_const 2).exp
   exact ((he.mul (hasDerivAt_sectionCorr hf hfc hg hgc h)).congr_deriv (by ring)).deriv
 
 theorem orderedSourceLagWeight_nonpos {f g : ℝ → ℝ} {b h : ℝ}
@@ -115,10 +115,31 @@ theorem exists_orderedSourceLag_horizon {f g : ℝ → ℝ}
     rw [he]
     exact CHMDStage6.hasCompactSupport_crossCorr_of_hasCompactSupport hgc hfc
   have hq : HasCompactSupport (orderedSourceLagWeight f g) := hc.mul_left
-  obtain ⟨r, hr⟩ := ArithmeticIncidencePositivity.exists_radius_of_hasCompactSupport hq
+  obtain ⟨r, hr⟩ := hq.isCompact.isBounded.subset_closedBall (0 : ℝ)
   refine ⟨max r 0 + 1, by positivity, ?_⟩
   intro h hh
-  exact hr h (lt_of_lt_of_le (by linarith only [le_max_left r 0, hh]) (le_abs_self h))
+  apply image_eq_zero_of_notMem_tsupport
+  intro hm
+  have hb : |h| ≤ r := by
+    simpa only [Metric.mem_closedBall, Real.dist_eq, sub_zero] using hr hm
+  have hlt : r < |h| :=
+    lt_of_lt_of_le (by linarith only [le_max_left r 0, hh]) (le_abs_self h)
+  exact not_lt_of_ge hb hlt
+
+/-- The centered arithmetic discrepancy is integrable on every actual compact mixed profile. -/
+theorem integrableOn_ordered_chebyshev_derivative (f g : realTests) (c : ℝ) :
+    IntegrableOn (fun h => (ArithmeticIncidencePositivity.chebyshevError h - c) *
+      deriv (orderedSourceLagWeight f.1 g.1) h) (Ioi (0 : ℝ)) := by
+  obtain ⟨S, hS, hvan⟩ := exists_orderedSourceLag_horizon f.2.2 g.2.2
+  obtain ⟨N, hN⟩ := exists_nat_gt (Real.exp S)
+  have hf1 : ContDiff ℝ 1 f.1 := f.2.1.of_le (by norm_num)
+  have hg1 : ContDiff ℝ 1 g.1 := g.2.1.of_le (by norm_num)
+  have hq := contDiff_one_orderedSourceLagWeight hf1 f.2.2 hg1 g.2.2
+  refine ((integrableOn_Ioi_chebyshevError_mul_deriv hq hS hvan hN.le).sub
+    ((integrableOn_Ioi_deriv hq hS hvan).const_mul c)).congr_fun
+      (fun h _ => ?_) measurableSet_Ioi
+  dsimp only [Pi.sub_apply]
+  ring
 
 /-- The original prime source has one oriented term, with no extra factor of two. -/
 theorem primePart_eq_orderedLag_sum {f g : ℝ → ℝ} {b S : ℝ} {N : ℕ}
@@ -139,7 +160,7 @@ theorem primePart_eq_orderedLag_sum {f g : ℝ → ℝ} {b S : ℝ} {N : ℕ}
       have hlog : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast (show 1 ≤ n by omega))
       rw [sourcePrimeCoefficient, if_pos hn, weilTest_eq_sectionCorr, weilTest_eq_sectionCorr,
         neg_neg, sectionCorr_ordered_nonpos hleft hright (neg_nonpos.mpr hlog),
-        Complex.ofReal_zero, zero_add, orderedSourceLagWeight, exp_neg_half_log hnpos]
+        Complex.ofReal_zero, zero_add, orderedSourceLagWeight, ArithmeticIncidencePositivity.exp_neg_half_log hnpos]
       push_cast
       ring
     · have hnle : n ≤ 1 := by omega
@@ -163,7 +184,7 @@ theorem primePart_eq_orderedLag_sum {f g : ℝ → ℝ} {b S : ℝ} {N : ℕ}
           (hN.trans (by exact_mod_cast hlarge.le))
         rw [hvan _ hlog, mul_zero, Complex.ofReal_zero]
   rw [hc]
-  simp only [map_sum, Complex.ofReal_re]
+  simp only [Complex.re_sum, Complex.ofReal_re]
 
 /-- The surviving polar product is the continuum density for the same ordered lag weight. -/
 theorem integral_exp_orderedSourceLagWeight {f g : ℝ → ℝ} {b : ℝ}
@@ -204,7 +225,7 @@ private theorem onePole_sub_prime_eq_centered_error {q : ℝ → ℝ} {S : ℝ} 
     (hzero : q 0 = 0) (hN : Real.exp S ≤ N) (c : ℝ) :
     (∫ h in Ioi (0 : ℝ), Real.exp h * q h) -
       (∑ n ∈ Finset.range (N + 1), ArithmeticFunction.vonMangoldt n * q (Real.log n)) =
-      -∫ h in Ioi (0 : ℝ), (chebyshevError h - c) * deriv q h := by
+      -∫ h in Ioi (0 : ℝ), (ArithmeticIncidencePositivity.chebyshevError h - c) * deriv q h := by
   have hiq := integrableOn_Ioi_of_vanishing hq.continuous hS (fun h hh => hvan h hh.le)
   have hie : IntegrableOn (fun h => Real.exp h * q h) (Ioi (0 : ℝ)) :=
     integrableOn_Ioi_of_vanishing (Real.continuous_exp.mul hq.continuous) hS
@@ -212,8 +233,9 @@ private theorem onePole_sub_prime_eq_centered_error {q : ℝ → ℝ} {S : ℝ} 
   have hsplit : (∫ h in Ioi (0 : ℝ), (Real.exp h + 1) * q h) =
       (∫ h in Ioi (0 : ℝ), Real.exp h * q h) + ∫ h in Ioi (0 : ℝ), q h := by
     rw [← integral_add hie hiq]
-    exact setIntegral_congr_fun measurableSet_Ioi fun h _ => by dsimp only; ring
-  have habel := sum_vonMangoldt_sub_polar_eq_chebyshevError hq hS hvan hN
+    exact setIntegral_congr_fun measurableSet_Ioi fun h _ => by ring
+  have habel := ArithmeticIncidencePositivity.sum_vonMangoldt_sub_polar_eq_chebyshevError
+    hq hS hvan hN
   rw [hsplit, hzero] at habel
   have hderiv : (∫ h in Ioi (0 : ℝ), deriv q h) = 0 := by
     rw [integral_Ioi_eq_intervalIntegral (hq.continuous_deriv le_rfl) hS
@@ -221,14 +243,14 @@ private theorem onePole_sub_prime_eq_centered_error {q : ℝ → ℝ} {S : ℝ} 
       intervalIntegral.integral_deriv_eq_sub
         (fun h _ => hq.differentiable one_ne_zero h)
         ((hq.continuous_deriv le_rfl).intervalIntegrable _ _), hvan S le_rfl, hzero, sub_self]
-  have hcenter : (∫ h in Ioi (0 : ℝ), (chebyshevError h - c) * deriv q h) =
-      ∫ h in Ioi (0 : ℝ), chebyshevError h * deriv q h := by
+  have hcenter : (∫ h in Ioi (0 : ℝ), (ArithmeticIncidencePositivity.chebyshevError h - c) * deriv q h) =
+      ∫ h in Ioi (0 : ℝ), ArithmeticIncidencePositivity.chebyshevError h * deriv q h := by
     calc
-      _ = (∫ h in Ioi (0 : ℝ), chebyshevError h * deriv q h) -
+      _ = (∫ h in Ioi (0 : ℝ), ArithmeticIncidencePositivity.chebyshevError h * deriv q h) -
           ∫ h in Ioi (0 : ℝ), c * deriv q h := by
         rw [← integral_sub (integrableOn_Ioi_chebyshevError_mul_deriv hq hS hvan hN)
           ((integrableOn_Ioi_deriv hq hS hvan).const_mul c)]
-        exact setIntegral_congr_fun measurableSet_Ioi fun h _ => by dsimp only; ring
+        exact setIntegral_congr_fun measurableSet_Ioi fun h _ => by ring
       _ = _ := by rw [integral_const_mul, hderiv, mul_zero, sub_zero]
   rw [hcenter]
   linarith only [habel]
@@ -237,7 +259,7 @@ private theorem onePole_sub_prime_eq_centered_error {q : ℝ → ℝ} {S : ℝ} 
 theorem realWeilForm_ordered_eq_centered_chebyshev (f g : realTests) {b : ℝ}
     (hleft : ∀ u, b ≤ u → f.1 u = 0) (hright : ∀ u, u ≤ b → g.1 u = 0) (c : ℝ) :
     realWeilForm f g =
-      -(∫ h in Ioi (0 : ℝ), (chebyshevError h - c) *
+      -(∫ h in Ioi (0 : ℝ), (ArithmeticIncidencePositivity.chebyshevError h - c) *
         deriv (orderedSourceLagWeight f.1 g.1) h) - orderedGammaTail f.1 g.1 := by
   obtain ⟨S, hS, hvan⟩ := exists_orderedSourceLag_horizon f.2.2 g.2.2
   obtain ⟨N, hN⟩ := exists_nat_gt (Real.exp S)
@@ -255,19 +277,19 @@ theorem realWeilForm_ordered_eq_centered_chebyshev (f g : realTests) {b : ℝ}
 theorem abs_realWeilForm_ordered_le_centered_chebyshev (f g : realTests) {b : ℝ}
     (hleft : ∀ u, b ≤ u → f.1 u = 0) (hright : ∀ u, u ≤ b → g.1 u = 0) (c : ℝ) :
     |realWeilForm f g| ≤
-      (∫ h in Ioi (0 : ℝ), |chebyshevError h - c| *
+      (∫ h in Ioi (0 : ℝ), |ArithmeticIncidencePositivity.chebyshevError h - c| *
         |deriv (orderedSourceLagWeight f.1 g.1) h|) +
           Real.pi * (leftBoundaryMass b f.1 + rightBoundaryMass b g.1) := by
   rw [realWeilForm_ordered_eq_centered_chebyshev f g hleft hright c]
-  have hi : |∫ h in Ioi (0 : ℝ), (chebyshevError h - c) *
+  have hi : |∫ h in Ioi (0 : ℝ), (ArithmeticIncidencePositivity.chebyshevError h - c) *
       deriv (orderedSourceLagWeight f.1 g.1) h| ≤
-      ∫ h in Ioi (0 : ℝ), |chebyshevError h - c| *
+      ∫ h in Ioi (0 : ℝ), |ArithmeticIncidencePositivity.chebyshevError h - c| *
         |deriv (orderedSourceLagWeight f.1 g.1) h| := by
     refine abs_integral_le_integral_abs.trans (le_of_eq ?_)
     exact setIntegral_congr_fun measurableSet_Ioi fun h _ => abs_mul _ _
   have ht := abs_orderedGammaTail_le_boundaryMass f.2.1.continuous f.2.2
     g.2.1.continuous g.2.2 hleft hright
-  have htri := abs_sub (-(∫ h in Ioi (0 : ℝ), (chebyshevError h - c) *
+  have htri := abs_sub (-(∫ h in Ioi (0 : ℝ), (ArithmeticIncidencePositivity.chebyshevError h - c) *
     deriv (orderedSourceLagWeight f.1 g.1) h)) (orderedGammaTail f.1 g.1)
   rw [abs_neg] at htri
   linarith only [hi, ht, htri]

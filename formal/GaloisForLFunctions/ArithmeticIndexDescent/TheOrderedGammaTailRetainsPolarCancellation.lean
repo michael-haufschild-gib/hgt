@@ -84,9 +84,9 @@ theorem archLevyDensity_first_mode {h : ℝ} (hh : 0 < h) :
     archLevyDensity h = Real.exp (-h / 2) + Real.exp (-2 * h) * archLevyDensity h := by
   have hd : 0 < 1 - Real.exp (-2 * h) :=
     sub_pos.mpr (Real.exp_lt_one_iff.mpr (by linarith only [hh]))
-  unfold archLevyDensity
-  field_simp [hd.ne']
-  ring
+  have hm : archLevyDensity h * (1 - Real.exp (-2 * h)) = Real.exp (-h / 2) := by
+    exact div_mul_cancel₀ _ hd.ne'
+  nlinarith only [hm]
 
 private theorem integrableOn_exp_sourceCollar_ordered {f g : ℝ → ℝ} {b : ℝ}
     (hf : Continuous f) (hfc : HasCompactSupport f)
@@ -172,7 +172,6 @@ private theorem sourceCollarCorrelation_boundary_tilt {f g : ℝ → ℝ} {b h :
     sourceCollarCorrelation_ordered hleft hright hh, ← integral_const_mul]
   apply integral_congr_ae
   filter_upwards [] with u
-  dsimp only
   have he : Real.exp (2 * (u - b)) * Real.exp (-2 * (u + h - b)) =
       Real.exp (-2 * h) := by
     rw [← Real.exp_add]

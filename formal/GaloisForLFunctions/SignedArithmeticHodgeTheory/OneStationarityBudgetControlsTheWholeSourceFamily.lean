@@ -17,10 +17,12 @@ namespace GaloisForLFunctions.SignedArithmeticHodgeTheory
 
 open ArithmeticIndexDescent
 
-local instance : NormedSpace ℝ closedFixedLogCellGraph :=
-  closedFixedLogCellGraph.normedSpace
-
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+
+private theorem stationarity_le_opNorm (D : E →L[ℝ] closedFixedLogCellGraph) (c : E) :
+    ‖D c‖ ≤ ‖D‖ * ‖c‖ :=
+  @ContinuousLinearMap.le_opNorm ℝ ℝ E closedFixedLogCellGraph
+    _ _ _ _ _ closedFixedLogCellGraph.normedSpace _ _ D c
 
 /-- The actual stationarity defect of a whole family and its trial corrections. -/
 def familyStationarity (F : E →L[ℝ] SourceGraph)
@@ -49,7 +51,7 @@ theorem family_energy_error_le_opNorm (F : E →L[ℝ] SourceGraph)
     (U : E →L[ℝ] closedFixedLogCellGraph) (c : E) :
     weilForm (F c - U c) - weilForm (arithmeticResidual (F c)) ≤
       2 * ‖familyStationarity F U‖ ^ 2 * ‖c‖ ^ 2 := by
-  have h := (familyStationarity F U).le_opNorm c
+  have h := stationarity_le_opNorm (familyStationarity F U) c
   have hs : ‖familyStationarity F U c‖ ^ 2 ≤
       (‖familyStationarity F U‖ * ‖c‖) ^ 2 :=
     pow_le_pow_left₀ (norm_nonneg _) h 2
@@ -67,7 +69,7 @@ theorem family_graph_error_le_opNorm (F : E →L[ℝ] SourceGraph)
   calc
     _ ≤ 2 * ‖familyStationarity F U c‖ := arithmetic_trial_graph_error (F c) (U c)
     _ ≤ 2 * (‖familyStationarity F U‖ * ‖c‖) :=
-      mul_le_mul_of_nonneg_left ((familyStationarity F U).le_opNorm c) (by norm_num)
+      mul_le_mul_of_nonneg_left (stationarity_le_opNorm (familyStationarity F U) c) (by norm_num)
     _ = _ := by ring
 
 /-- All mixed entries share one budget, including interactions of distant blocks. -/
@@ -76,16 +78,20 @@ theorem family_mixed_error_le_opNorm (F : E →L[ℝ] SourceGraph)
     |weilBilin (F c - U c) (F d - U d) -
         weilBilin (arithmeticResidual (F c)) (arithmeticResidual (F d))| ≤
       2 * ‖familyStationarity F U‖ ^ 2 * ‖c‖ * ‖d‖ := by
-  have hc := (familyStationarity F U).le_opNorm c
-  have hd := (familyStationarity F U).le_opNorm d
+  have hc := stationarity_le_opNorm (familyStationarity F U) c
+  have hd := stationarity_le_opNorm (familyStationarity F U) d
   calc
     _ ≤ 2 * ‖familyStationarity F U c‖ * ‖familyStationarity F U d‖ :=
       arithmetic_trial_mixed_error (F c) (F d) (U c) (U d)
     _ ≤ 2 * (‖familyStationarity F U‖ * ‖c‖) *
         (‖familyStationarity F U‖ * ‖d‖) := by
       have h := mul_le_mul hc hd (norm_nonneg _)
-        (mul_nonneg (norm_nonneg _) (norm_nonneg _))
-      simpa only [mul_assoc] using mul_le_mul_of_nonneg_left h (by norm_num : (0 : ℝ) ≤ 2)
+        ((norm_nonneg _).trans hc)
+      have hh := mul_le_mul_of_nonneg_left h (by norm_num : (0 : ℝ) ≤ 2)
+      change 2 * (‖familyStationarity F U c‖ * ‖familyStationarity F U d‖) ≤
+        2 * ((‖familyStationarity F U‖ * ‖c‖) *
+          (‖familyStationarity F U‖ * ‖d‖)) at hh
+      simpa only [mul_assoc] using hh
     _ = _ := by ring
 
 end GaloisForLFunctions.SignedArithmeticHodgeTheory

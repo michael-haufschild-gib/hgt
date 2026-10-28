@@ -20,6 +20,8 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.RamanujanAndLorentzianMe
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheAtomicFormIsMetzlerBelowTheSpacing
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.ThePoleDefectControlsTheVRow
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.ThePoleDefectPaysThePole
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheOverlapRatioIsTheCoveredMeasure
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheStabilityRegimeEndsAtTheRobinEulerThreshold
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheUniformMarginPaysThePoleOnlyUpToARootLogarithm
@@ -47,7 +49,9 @@ under differentiation, nonnegative substitution and products, the Euler product 
 nonnegative point, the characterization of its Hessians as exactly the Lorentzian forms, the rigidity of Ramanujan local factors at the Weil bound, and Laguerre's
 inequality on the half-line for the Jensen polynomials of `ξ`; the atomic
 intersection form of `ζ` — Metzler exactly up to the spacing, hyperbolic with `(TD_π)` and
-hyperbolic links at a fixed fraction of it, blind to sign twins where the sign is not,
+hyperbolic links at a fixed fraction of it — eventually in `N` at the fraction where the pole
+defect, through the multiplicative Hardy inequality, pays the pole — blind to sign twins where
+the sign is not,
 supported on a set of measure at most the overlap ratio, and out of the stability regime beyond
 the Robin–Euler threshold;
 renormalized prime-place rows; polar gluing, its dispersion cost, associative assembly and

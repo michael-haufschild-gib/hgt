@@ -70,7 +70,7 @@ theorem eventually_markovEnergy_ge_defect {φ : ℝ → ℝ} (hφ : ContDiff ℝ
       w * N ≤ markovOverlapBound → ∀ x : ℕ → ℝ,
         (2 * gammaHardyPhaseRate 0 + Real.log (1 / (w * N)) + profileRobin φ + γ - ε -
             Real.exp (1 / 2) / 2 * w - markovCrossConstant * (w * N)) *
-            ∫ u, atomicTest N x (atomDilate φ w) u ^ 2 +
+            (∫ u, atomicTest N x (atomDilate φ w) u ^ 2) +
           (∫ u, atomDilate φ w u ^ 2) * (1 - ε - 32 * Real.exp 2 * (w * N)) * poleDefect N x ≤
           markovEnergy (fun u => (atomicTest N x (atomDilate φ w) u : ℂ)) := by
   obtain ⟨N₁, hN₁⟩ := eventually_atomicWeilForm_add_poleDefect_le hε
@@ -102,15 +102,12 @@ theorem eventually_markovEnergy_ge_defect {φ : ℝ → ℝ} (hφ : ContDiff ℝ
   have h2 := mul_le_mul_of_nonneg_left hpen
     (by positivity : (0 : ℝ) ≤ 2 * ∫ u, atomDilate φ w u ^ 2)
   have h3 := mul_le_mul_of_nonneg_left hP hM
-  have hsq := integral_atomicTest_sq hgc2 hgc hgsupp hw' x
   rw [hlog]
-  simp only [hsq]
   unfold markovCrossConstant
   linarith
 
 /-! ### The defect pays the pole -/
 
-omit [Fintype ℕ] in
 theorem poleDefect_abs_le (N : ℕ) (x : ℕ → ℝ) :
     poleDefect N (fun n => |x n|) ≤ poleDefect N x := by
   refine sum_le_sum fun m _ => sum_le_sum fun t _ => ?_
@@ -194,7 +191,7 @@ theorem two_mul_abs_poleMoments_le_defect {g : ℝ → ℝ} {w : ℝ} (hg : Cont
     have e2 : ∑ n ∈ Icc 1 N, |x n| ^ 2 = X := sum_congr rfl fun n _ => sq_abs _
     rw [e1, e2] at h
     refine h.trans (mul_le_mul_of_nonneg_left (by linarith [poleDefect_abs_le N x]) ?_)
-    unfold hardyConstant at *
+    have := hardyConstant_pos
     positivity
   have hA1 : A₁ ^ 2 ≤ w * G := sq_integral_abs_le hg hgsupp hw0
   -- assemble the squares
@@ -232,9 +229,174 @@ theorem two_mul_abs_poleMoments_le_defect {g : ℝ → ℝ} {w : ℝ} (hg : Cont
     simp only [c]
     rw [mul_pow, mul_pow, poleConstant_sq, ← Real.exp_nat_mul]; ring_nf
   have h2 : (2 * |P|) ^ 2 ≤ (c * G * (2 * X + D)) ^ 2 := by
-    rw [mul_pow, sq_abs, mul_pow, mul_pow, hc2]
+    have hl : (2 * |P|) ^ 2 = 4 * P ^ 2 := by rw [mul_pow, sq_abs]; norm_num
+    have hr : (c * G * (2 * X + D)) ^ 2 = c ^ 2 * G ^ 2 * (2 * X + D) ^ 2 := by ring
+    rw [hl, hr, hc2]
     nlinarith [mul_nonneg (mul_nonneg (mul_nonneg hardyConstant_pos.le (Real.exp_pos w).le)
       (sq_nonneg (w * N))) (sq_nonneg G), sq_nonneg D]
   exact (pow_le_pow_iff_left₀ (by positivity) (by positivity) two_ne_zero).mp h2
+
+/-! ### Weil positivity -/
+
+/-- **Weil positivity from the finite part.** Eventually in `N`, at every width `w ≤ δ_N/2` with
+`wN ≤ 1/(64e²)`, `c_P e^{w/2} wN ≤ c₀` and `2c_P e^{w/2} wN ≤ φ₀`, Weil's form is nonnegative on
+every atomic test of the atom `φ(·/w)`. -/
+theorem eventually_weilQuad_atomicTest_nonneg_of_finitePart {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {K : ℝ}
+    (hK : ∀ u v, |φ u - φ v| ≤ K * |u - v|) {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1 / 2) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ w : ℝ, 0 < w → w ≤ atomSpacing N / 2 →
+      w * N ≤ markovOverlapBound →
+      poleConstant * Real.exp (w / 2) * (w * N) ≤ 1 - ε - 32 * Real.exp 2 * (w * N) →
+      2 * (poleConstant * Real.exp (w / 2) * (w * N)) ≤
+        2 * gammaHardyPhaseRate 0 + Real.log (1 / (w * N)) + profileRobin φ + γ - ε -
+          Real.exp (1 / 2) / 2 * w - markovCrossConstant * (w * N) →
+      ∀ x : ℕ → ℝ, 0 ≤ weilQuad (atomicTest N x (atomDilate φ w)) := by
+  obtain ⟨N₀, hN₀⟩ := eventually_markovEnergy_ge_defect hφ hφsupp hφ0 hK hε hε1
+  refine ⟨max N₀ 3, fun N hN w hw0 hw hwN hc₀ hφ₀ x => ?_⟩
+  have hN3 : 3 ≤ N := le_trans (le_max_right _ _) hN
+  have hM := hN₀ N (le_trans (le_max_left _ _) hN) w hw0 hw hwN x
+  obtain ⟨hgc2, hgsupp, hgc⟩ := atomDilate_facts hφ hφsupp hw0
+  have hw' : w < atomSpacing N := by linarith [atomSpacing_pos (show 1 ≤ N by omega)]
+  have hf := contDiff_atomicTest hgc2 N x
+  have hfc := hasCompactSupport_atomicTest hgsupp N x
+  have hpole := two_mul_abs_poleMoments_le_defect hgc2.continuous hgc hgsupp hw0 hN3 x
+  rw [integral_atomicTest_sq hgc2 hgc hgsupp hw' x] at hM
+  -- Weil's form is the Markov form plus the pole term
+  have hW : weilQuad (atomicTest N x (atomDilate φ w)) =
+      markovEnergy (fun u => (atomicTest N x (atomDilate φ w) u : ℂ)) +
+        2 * (∫ u, atomicTest N x (atomDilate φ w) u * Real.exp (-(u / 2))) *
+          ∫ u, atomicTest N x (atomDilate φ w) u * Real.exp (u / 2) := by
+    rw [weilQuad_eq hf hfc, add_sub_assoc, two_mul_cosh_sq_sub_sinh_sq_eq hf.continuous hfc,
+      markovEnergy_ofReal_eq_archForm_sub_primeSum hf hfc, archForm_eq_levyEnergy hf hfc]
+    ring
+  rw [hW]
+  set G := ∫ u, atomDilate φ w u ^ 2
+  set X := ∑ n ∈ Icc 1 N, x n ^ 2
+  set D := poleDefect N x
+  set c := poleConstant * Real.exp (w / 2) * (w * N)
+  set φ₀ := 2 * gammaHardyPhaseRate 0 + Real.log (1 / (w * N)) + profileRobin φ + γ - ε -
+    Real.exp (1 / 2) / 2 * w - markovCrossConstant * (w * N)
+  set c₀ := 1 - ε - 32 * Real.exp 2 * (w * N)
+  set P := (∫ u, atomicTest N x (atomDilate φ w) u * Real.exp (-(u / 2))) *
+    ∫ u, atomicTest N x (atomDilate φ w) u * Real.exp (u / 2)
+  have hG : 0 ≤ G := integral_nonneg fun _ => sq_nonneg _
+  have hX : 0 ≤ X := sum_nonneg fun _ _ => sq_nonneg _
+  have hD : 0 ≤ D := poleDefect_nonneg N x
+  have hP := neg_abs_le P
+  have h1 : 0 ≤ G * ((φ₀ - 2 * c) * X) := mul_nonneg hG (mul_nonneg (by linarith) hX)
+  have h2 : 0 ≤ G * ((c₀ - c) * D) := mul_nonneg hG (mul_nonneg (by linarith) hD)
+  have e : 2 * (∫ u, atomicTest N x (atomDilate φ w) u * Real.exp (-(u / 2))) *
+      ∫ u, atomicTest N x (atomDilate φ w) u * Real.exp (u / 2) = 2 * P := by ring
+  rw [e]
+  nlinarith
+
+/-- The fraction `K★(φ, ε)` of the spacing at which the pole defect pays the pole. -/
+def defectFraction (φ : ℝ → ℝ) (ε : ℝ) : ℝ :=
+  min (min markovOverlapBound (1 / (4 * (poleConstant * Real.exp (1 / 2) + 32 * Real.exp 2))))
+    (min (1 / (markovCrossConstant + 2 * (poleConstant * Real.exp (1 / 2))))
+      (Real.exp (2 * gammaHardyPhaseRate 0 + profileRobin φ + γ - ε - 2)))
+
+theorem markovCrossConstant_pos : 0 < markovCrossConstant := by
+  unfold markovCrossConstant
+  have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num)
+  positivity
+
+theorem defectFraction_pos (φ : ℝ → ℝ) (ε : ℝ) : 0 < defectFraction φ ε := by
+  have := poleConstant_pos
+  have := markovCrossConstant_pos
+  unfold defectFraction markovOverlapBound
+  refine lt_min (lt_min (by positivity) (by positivity)) (lt_min (by positivity) (Real.exp_pos _))
+
+/-- **Weil positivity at the fraction `K★(φ, ε)` of the spacing, eventually in `N`**: for every
+`C²` Lipschitz profile `φ` on `[0, 1]` and `0 < ε ≤ 1/4`, eventually in `N`, Weil's form is
+nonnegative on every atomic test of the atom `φ(·/w)` with `0 < w ≤ K★ δ_N`. -/
+theorem eventually_weilQuad_nonneg_at_fraction {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {K : ℝ}
+    (hK : ∀ u v, |φ u - φ v| ≤ K * |u - v|) {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1 / 4) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ w : ℝ, 0 < w → w ≤ defectFraction φ ε * atomSpacing N →
+      ∀ x : ℕ → ℝ, 0 ≤ weilQuad (atomicTest N x (atomDilate φ w)) := by
+  obtain ⟨N₀, hN₀⟩ := eventually_weilQuad_atomicTest_nonneg_of_finitePart hφ hφsupp hφ0 hK hε
+    (by linarith)
+  refine ⟨max N₀ 1, fun N hN w hw0 hw x => ?_⟩
+  have hN1 : 1 ≤ N := le_trans (le_max_right _ _) hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hδ := atomSpacing_pos hN1
+  have hδN : atomSpacing N * N ≤ 1 := by
+    have h := atomSpacing_le_inv hN1
+    calc atomSpacing N * N ≤ 1 / N * N := mul_le_mul_of_nonneg_right h hN0.le
+      _ = 1 := by field_simp
+  have hδ1 : atomSpacing N ≤ 1 := atomSpacing_le_one hN1
+  set Ks := defectFraction φ ε
+  have hKs := defectFraction_pos φ ε
+  have hc := poleConstant_pos
+  have hA := markovCrossConstant_pos
+  -- the pieces of `K★`
+  have hK1 : Ks ≤ markovOverlapBound := (min_le_left _ _).trans (min_le_left _ _)
+  have hK2 : Ks ≤ 1 / (4 * (poleConstant * Real.exp (1 / 2) + 32 * Real.exp 2)) :=
+    (min_le_left _ _).trans (min_le_right _ _)
+  have hK3 : Ks ≤ 1 / (markovCrossConstant + 2 * (poleConstant * Real.exp (1 / 2))) :=
+    (min_le_right _ _).trans (min_le_left _ _)
+  have hK4 : Ks ≤ Real.exp (2 * gammaHardyPhaseRate 0 + profileRobin φ + γ - ε - 2) :=
+    (min_le_right _ _).trans (min_le_right _ _)
+  have hMOB : markovOverlapBound ≤ 1 / 2 := by
+    unfold markovOverlapBound
+    rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith [Real.add_one_le_exp 2]
+  -- the overlap ratio `K = wN ≤ K★`
+  have hwN : w * N ≤ Ks := by
+    calc w * N ≤ Ks * atomSpacing N * N := mul_le_mul_of_nonneg_right hw hN0.le
+      _ = Ks * (atomSpacing N * N) := by ring
+      _ ≤ Ks * 1 := mul_le_mul_of_nonneg_left hδN hKs.le
+      _ = Ks := mul_one Ks
+  have hwN0 : 0 < w * N := by positivity
+  have hw2 : w ≤ atomSpacing N / 2 := by
+    calc w ≤ Ks * atomSpacing N := hw
+      _ ≤ 1 / 2 * atomSpacing N := mul_le_mul_of_nonneg_right (hK1.trans hMOB) hδ.le
+      _ = atomSpacing N / 2 := by ring
+  have hw1 : w ≤ 1 / 2 := by linarith
+  have hexp : Real.exp (w / 2) ≤ Real.exp (1 / 2) := Real.exp_le_exp.mpr (by linarith)
+  have hcK : poleConstant * Real.exp (w / 2) * (w * N) ≤ poleConstant * Real.exp (1 / 2) * Ks :=
+    mul_le_mul (mul_le_mul_of_nonneg_left hexp hc.le) hwN hwN0.le (by positivity)
+  refine hN₀ N (le_trans (le_max_left _ _) hN) w hw0 hw2 (hwN.trans hK1) ?_ ?_ x
+  · -- the defect keeps a positive weight
+    have h4 : (poleConstant * Real.exp (1 / 2) + 32 * Real.exp 2) * Ks ≤ 1 / 4 := by
+      have hpos : 0 < 4 * (poleConstant * Real.exp (1 / 2) + 32 * Real.exp 2) := by positivity
+      rw [le_div_iff₀ hpos] at hK2
+      linarith
+    have : 32 * Real.exp 2 * (w * N) ≤ 32 * Real.exp 2 * Ks :=
+      mul_le_mul_of_nonneg_left hwN (by positivity)
+    nlinarith
+  · -- the finite part exceeds the pole cost
+    have h5 : (markovCrossConstant + 2 * (poleConstant * Real.exp (1 / 2))) * Ks ≤ 1 := by
+      have hpos : 0 < markovCrossConstant + 2 * (poleConstant * Real.exp (1 / 2)) := by positivity
+      rw [le_div_iff₀ hpos] at hK3
+      linarith
+    have hlog : -(2 * gammaHardyPhaseRate 0 + profileRobin φ + γ - ε - 2) ≤
+        Real.log (1 / (w * N)) := by
+      have h6 : Real.log (w * N) ≤ 2 * gammaHardyPhaseRate 0 + profileRobin φ + γ - ε - 2 := by
+        have := Real.log_le_log hwN0 (hwN.trans hK4)
+        rwa [Real.log_exp] at this
+      rw [one_div, Real.log_inv]
+      linarith
+    have hAK : markovCrossConstant * (w * N) ≤ markovCrossConstant * Ks :=
+      mul_le_mul_of_nonneg_left hwN hA.le
+    have hew : Real.exp (1 / 2) / 2 * w ≤ 1 := by
+      have := exp_half_lt_two
+      nlinarith [Real.exp_pos (1 / 2 : ℝ)]
+    linarith
+
+/-- **The Hodge index of the atomic intersection Gram at `K★`, eventually in `N`.** -/
+theorem eventually_atomicIntersectionGram_isHyperbolic_at_fraction {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2)
+    {K : ℝ} (hK : ∀ u v, |φ u - φ v| ≤ K * |u - v|) {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1 / 4) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ w : ℝ, 0 < w → w ≤ defectFraction φ ε * atomSpacing N →
+      IsHyperbolic (atomicIntersectionGram (atomDilate φ w) N) := by
+  obtain ⟨N₀, h⟩ := eventually_weilQuad_nonneg_at_fraction hφ hφsupp hφ0 hK hε hε1
+  refine ⟨N₀, fun N hN w hw0 hw => ?_⟩
+  obtain ⟨hgc2, hgsupp, -⟩ := atomDilate_facts hφ hφsupp hw0
+  rw [atomicIntersectionGram_isHyperbolic_iff hgc2 hgsupp hw0.le N]
+  intro d
+  rw [finAtomicTest_eq_atomicTest]
+  exact h N hN w hw0 hw _
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

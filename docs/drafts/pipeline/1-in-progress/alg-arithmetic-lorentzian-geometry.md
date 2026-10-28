@@ -52,6 +52,11 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
   fixed-width prime pairing along p-ladders grows like w p^{k/2} (PNT main term = pole weight).
   Conformal ladders G_ij = λ^{min} a_|i−j| ≅ Toeplitz(λ^{−k/2} a_k): same dichotomy; Frobenius
   escapes since normalized couplings grow like q^{k/2}.
+- ThePoleDefectControlsTheVRow (multiplicative Hardy: (Σ√n x_n)² ≤ C_H N²/log N (D_N + |x|²)),
+  ThePoleDefectPaysThePole: eventually in N, Weil positivity / Hodge index of the atomic Gram at
+  K★(φ,ε) = min(overlap bounds, 1/(A+2c_P√e), e^{2θ′(0)+κ_L+γ−ε−2}) ∈ [1e-4, 6e-4] for κ_L ≥ −2,
+  ε ≤ 1/8 (vs c★ ≈ 1e-11).
+  Mechanism: pole defect pays the pole (no tilt). Gap to Robin–Euler threshold = Chebyshev A.
 - Topic 9 answered: RamanujanAndLorentzianMeetOnlyAtTheWeilBound (Lorentzian ⇒ a_1 ≥ d√q,
   Ramanujan ⇒ a_1 ≤ d√q; equality only for (1+√qT)^d; never at a prime; elliptic: Lorentzian ⇔
   a² ≥ 4p).

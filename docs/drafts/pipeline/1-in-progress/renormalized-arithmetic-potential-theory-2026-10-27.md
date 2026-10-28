@@ -50,7 +50,8 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 - RP33 Liouville finite part `2(γ + τ)`; on `ℓ = 0`, `P_N(λx) − P_N(x) = 2(2γ + τ)|x|² + o(mass)`.
 - RP34 class Mertens constants `c_r` with `φ(q) c_r = −γ − Q_q + Re Σ_{χ≠1} χ(r⁻¹)(−L′/L(1, χ))`.
 - RP35 residue finite part `c_{a⁻¹b} S_a + c_{b⁻¹a} S_b`; characters diagonalize it with eigenvalues
-  `2 Re(−L′/L(1, χ))`, `2(−γ − Q_q)` on the trivial character.
+  `2 Re(−L′/L(1, χ))`, `2(−γ − Q_q)` on the trivial character; the twisted pole `Re χ · u^{(M)}` has
+  horizon form `2 Re(−L′/L(1, χ))|x|² + o(mass)` for every modulus.
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke

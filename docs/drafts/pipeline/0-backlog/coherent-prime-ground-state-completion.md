@@ -195,3 +195,13 @@ Lean use still needs a scratch check. The inspected corpus helper
 `RHTower.Sieve.prod_eq_of_multiplicative` and the vendored
 `ArithmeticFunction.IsMultiplicative.prod_factors_of_mult` only cover squarefree
 products; neither is the desired full prime-power coefficient identity.
+
+A refreshed harmonic-completion search surfaced
+`RHTower/PaperPrimeRotationCoherentOperator.lean` and
+`RHTower/RouteRCompletionQuantumCostSeparation.lean`. The former was read in
+full: its coherent operator is a finite bilateral weighted-shift compression,
+with a Gram Fredholm determinant limit. The latter was read through its marked
+completion profile: it concerns an external tensor of a summable Hadamard
+corona class. Neither supplies the physical ground-state embeddings or the
+actual maximal-domain adjunction completion required here. Their terminology
+and generic constructions remain excluded baselines.

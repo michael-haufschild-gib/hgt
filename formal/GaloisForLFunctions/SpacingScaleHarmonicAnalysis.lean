@@ -20,6 +20,9 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheMarkovFormFailsInside
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheUniversalThresholdIsFinite
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheRowsAtBoundedOverlap
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheSecondOrderSynthesis
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheEulerMaclaurinSynthesis
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheOverlapLawAtEveryRoot
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGaugeAtEveryRoot
 
 /-!
 # Arithmetic Harmonic Analysis at the Spacing Scale
@@ -43,7 +46,11 @@ Umbrella for the harmonic analysis of Weil's form on the atomic family
   fixed width); every twisted explicit formula that fails somewhere fails there; and the Markov
   form has a negative square there unconditionally, and only one iff RH;
 * the second-order (trapezoid) synthesis moves the overlap law to the fourth root: overlap
-  `(log N)^{1/4+ε}` suffices.
+  `(log N)^{1/4+ε}` suffices for `C²` profiles;
+* the Euler–Maclaurin synthesis with weights `F(log n − c)/n` is accurate to every order for smooth
+  profiles: positivity is RH at overlap `(log N)^ε` for every `ε > 0`, every stable form (Weil's,
+  its bounded twists, the Markov form) transfers there, every twist that fails somewhere is seen
+  there, and the Markov form has a negative square there unconditionally.
 
 See `SpacingScaleHarmonicAnalysis/README.md`.
 -/

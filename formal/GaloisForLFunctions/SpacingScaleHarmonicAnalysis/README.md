@@ -18,12 +18,14 @@ ratio** `ϱ = w/δ_N`. Its organizing sentence:
 > only at the top scale, and the prime kernel, large only across scales. A Schur weight tilted
 > across scales separates them, and Weil's form is nonnegative up to the pole on every atomic test
 > of width `c₀δ_N`, for every `N`; without the pole it fails at every width `cδ_N`, `c > e/(2π)`.
-> As soon as the overlap ratio beats `√(log N)` — at every polynomially larger width `N^{−θ}`,
-> `θ < 1`, and already at overlap `(log N)^{1/2+ε}` — narrow atoms synthesize every fixed test and
-> positivity is the Riemann hypothesis: the critical exponent is one, and RH is the statement that
-> the pole remains the only negative square. The arithmetic gauge is invisible to the Markov form
+> As soon as the overlap ratio grows like a power of `log N` — at every width `N^{−θ}`, `θ < 1`,
+> at overlap `(log N)^{1/4+ε}` for every `C²` profile and at overlap `(log N)^ε` for every smooth
+> one — narrow atoms synthesize every fixed test and positivity is the Riemann hypothesis: the
+> critical exponent is one, the decisive scale is bounded overlap, and RH is the statement that the
+> pole remains the only negative square. The arithmetic gauge is invisible to the Markov form
 > on every family closed under `|·|`, reaches the prime form only through non-ratio lags, and once
-> the overlap beats `√(log N)` it is seen by exactly the twists that fail somewhere.*
+> the overlap ratio grows like a power of `log N` it is seen by exactly the twists that fail
+> somewhere.*
 
 Namespace `GaloisForLFunctions.SpacingScaleHarmonicAnalysis`; umbrella
 `SpacingScaleHarmonicAnalysis.lean`. Everything is unconditional; RH and its partial forms appear
@@ -42,7 +44,7 @@ mechanism of the corpus stops at a threshold, and the thresholds line up there. 
 scale: Q1 of the report (how far the archimedean place pays the prime place, B3.25, B3.26), Q2 at
 and beyond the spacing (gauge selectivity, B3.16), and the harmonic-analysis face of Q3 (prime
 polynomials at zero ordinates, B3.24). Of the report's work items it owns the Lévy synthesis (W22:
-SH9–SH11), the universal threshold (W26: SH4′, SH16) and the overlap bookkeeping (W12: SH7, SH17,
+SH9–SH11, SH18–SH20), the universal threshold (W26: SH4′, SH16) and the overlap bookkeeping (W12: SH7, SH17,
 with the Markov Gram at every width and its overlap law from ALG, `levyMarkovForm_atomicTest_eq`,
 `markovPair_shift_ge`),
 and it supplies Arithmetic Lorentzian Geometry with the separated law, the threshold and the overlap
@@ -149,8 +151,10 @@ the zeros it can see and positivity becomes a statement about zeros.
 ### 3.3 Words
 
 *Below / at / beyond the spacing*: `ϱ → 0` polynomially, `ϱ` a fixed constant `< 1`, `ϱ > 1`.
-*Unbounded overlap*: `ϱ → ∞` with `N`, in particular a fixed width. *Overlap growth*: widths
-`1/κ_N → 0` with `(κ_N/N)² log κ_N → 0`, the overlap ratio beating `√(log N)` (`OverlapGrowth`).
+*Unbounded overlap*: `ϱ → ∞` with `N`, in particular a fixed width. *Overlap growth of order `q`*:
+widths `1/κ_N → 0` with `(κ_N/N)^q log κ_N → 0`, the overlap ratio beating `(log N)^{1/q}`
+(`OverlapGrowthPow`; order `2` is `OverlapGrowth`, order `4` is `OverlapGrowthTwo`); *overlap
+growth* without order means order `2`.
 *Alias ripple*: the part of a synthesis at the frequencies `≍ N` of the atom lattice. *Diagonal* and *cross* parts of a
 form on the atomic family. *Ratio lag*: a prime-sum lag `log k` with `n = km`; *non-ratio lag*:
 `|log k − s_{mn}| ≤ w` with `n ≠ km`. *Concentrated* vector: carried by one dyadic block;
@@ -247,9 +251,17 @@ blind.
     A twisted explicit formula `|λ| ≤ Λ` differs from `ζ`'s by finitely many lags on a window, so the
     same holds for every twin.
 14. **The alias ripple pays `log N`.** The synthesis error `S − F` of 12 is a ripple at the
-    frequencies `≍ N` of the atom lattice, of relative size `O(1/ϱ)` by the cell bound, and the Lévy
-    bound charges it `log N` per unit mass. So the synthesis converges in Weil's form once
-    `ϱ ≫ √(log N)`. At bounded ratio the atoms covering an interval of length `2a` near the top have
+    frequencies `≍ N` of the atom lattice, and the Lévy bound charges it `log N` per unit mass. Its
+    relative size is the order of the quadrature: `O(1/ϱ)` for the cell weights `∫_{cell} F`;
+    `O(1/ϱ²)` for the trapezoid weights `F(a_j)(a_{j+1} − a_{j−1})/2`, for every `C²` profile —
+    the Taylor expansions at the two ends of a cell cancel to first order; `O(ϱ^{−p})` for every `p`
+    when the profile is smooth, with the weights `F(log n − c)/n`: in the variable `s = e^t` the
+    atoms are the integers, the synthesis is the sum over the integers of `s ↦ s⁻¹ H(log s)`,
+    `H(t) = F(t − c) φ_k(r + c − t)`, and Euler–Maclaurin summation to order `p` charges
+    `n₀^{−p}` times `p` derivatives of `H`, each worth a factor `k`. A `C²` test is first made smooth
+    by convolution with a dilated profile, at a cost `O((log m)/m²)` in the Lévy energy. So the
+    synthesis converges in Weil's form once `ϱ^{2p} ≫ log N`: `ϱ ≫ √(log N)`, `(log N)^{1/4}`,
+    `(log N)^ε`. At bounded ratio the atoms covering an interval of length `2a` near the top have
     relative overlap between `ϱe^{−2a}` and `ϱ`, so they reach aperture `≈ (1/2) log ϱ`, but only
     with a ripple of fixed relative size whose Lévy bound grows like `log N`: synthesis does not
     reduce bounded overlap to a finite-aperture problem.
@@ -308,6 +320,9 @@ blind.
 | **SH15 The Markov form fails inside the separated regime** | `P_N(n^{−1/2}) = 2Σ_{n≤N} log n/n`; for `x, g ≥ 0` below the spacing `levyEnergy f_x ≤ ‖x‖² levyEnergy g`; `2c_∞ = 2 log 2 + π/2`; `2θ′(0) + γ = −(3 log 2 + π/2 + log π)`; on the pole vector `M < 0` for all large `N` once `c > e^{β(φ)/‖φ‖²}/(2π)`, and plateau profiles give every `c ∈ (e/(2π), 1)` (`atomicWeilForm_poleVector`, `levyEnergy_atomicTest_le`, `archRobinConstant_eq`, `markovQuad_poleVector_neg_of_threshold`, `markov_poleVector_negative_inside_separated`) | `TheMarkovFormFailsInsideTheSeparatedRegime` |
 | **SH16 The universal threshold is finite** | `Re W_ω = archForm − twistedPrimeSum ω + 2C² − 2S²`; for an `L`-Lipschitz test on `[0, D]`, `levyEnergy ≤ 36DL² + 4A(D)‖f‖²`; on the level-2 dipole `g − t g(· − log 2)` of a wide bump, with `C = 0` and the sign twist aligned with the lag correlations, `Re W_ω + 2S² < 0`; with SH4′: `c₀ ≤ K_univ < ∞` (`weilQuadTw_eq_markov`, `levyEnergy_le_of_wide`, `universalThreshold_finite`, `universalThreshold_bracket`) | `TheUniversalThresholdIsFinite` |
 | **SH17 The rows at bounded overlap** | at every width `primeSum f_x = ‖g‖² P_N(x) + NR_w(x)`; `\|NR_w(x)\| ≤ ‖g‖² Σ_m x_m² ρ_w(m)` with `ρ_w(m) = 2(log 4 + 4)e^{3w/2}(e^w − 1)N + 2e^{w/2}m(e^w − 1)(log m + w)`, at ratio `K` at most `2(log 4 + 4)e^{5/2}K + 2e^{3/2}K(m/N)(log m + 1)`; the prime form at ratio `K` as tilted row sums plus non-ratio rows; the summability premises of the gauge-defect identity discharged (`primeSum_atomicTest_eq_ratio_add`, `abs_nonRatioForm_le`, `nonRatioRow_le_of_ratio`, `primeSum_atomicTest_le_rows`, `twistedPrimeSum_sub_primeSum_gauge_eq_of_supp`) | `TheRowsAtBoundedOverlap`, `TheGaugeEntersThroughNonRatioLags` |
+| **SH18 Second-order synthesis** | on a cell `|∫_p^q G − (q − p)(G(p) + G(q))/2| ≤ (5/4)(q − p)² ∫_p^q |G″|`; the trapezoid synthesis on the log-lattice is within `(5/4)(1/n₀)²(M₂‖φ‖₁ + 2Lk‖φ′‖₁ + Mk²‖φ″‖₁) + L‖φ‖₁/k` of `F` with Lipschitz constant `O(k)`; for every `C²` profile RH iff the atomic families are eventually nonnegative under overlap growth of order `4`, in particular at overlap ratio `(log N)^α`, `α > 1/4` (`abs_integral_sub_trap_le_two`, `abs_trapSum_sub_integral_le`, `exists_atomicTest_weilQuad_le_two`, `riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo`, `riemannHypothesis_iff_atomicFamilies_nonneg_log_quarter`) |
+| **SH19 The overlap law at every root** | `(d/ds)^j[s⁻¹H(log s)] = s^{−(j+1)}T_j(log s)`, `T_{j+1} = T_j′ − (j+1)T_j`, `‖T_p‖₁ ≤ (p+1)! Σ_{i≤p} ‖H^{(i)}‖₁`; Euler–Maclaurin on the log-lattice: `|Σ_n F(log n − c)/n · φ_k(r + c − log n) − (F ∗ φ_k)(r)| ≤ C_p(F, φ)(k/n₀)^p` for every even `p`; a negative `C²` test has a negative smooth mollification; for every smooth profile and every `q`, RH iff the atomic families are eventually nonnegative under overlap growth of order `q` — at overlap ratio `(log N)^α` for every `α > 0` (`hasDerivAt_logTowerS`, `abs_sum_logTowerS_sub_integral_le`, `abs_emSynth_dilate_sub_le`, `exists_atomicTest_weilQuad_le_em`, `exists_smooth_weilQuad_neg`, `riemannHypothesis_iff_atomicFamilies_nonneg_of_growthPow`, `riemannHypothesis_iff_atomicFamilies_nonneg_log_pos`) |
+| **SH20 The gauge at every root** | a *stable form* — translation invariant, moved by `Err(e, V) → 0` under a `C²` perturbation of supremum `e` and Lévy bound `V` — is nonnegative on all tests iff it is eventually nonnegative on the atomic families of overlap growth of any order, for every smooth profile; Weil's form, every twist `\|λ\| ≤ Λ` and the Markov form are stable; so a twist is seen at overlap `(log N)^ε` iff it is not Weil positive (Liouville, `cΛ`, quadratic mixtures; under RH `ζ` separates from them there), and `M < 0` on some atomic test for infinitely many `N`, unconditionally (`StableForm`, `nonneg_iff_atomicFamilies_nonneg_of_stable`, `atomicFamilies_negative_iff_of_growthPow`, `riemannHypothesis_imp_liouville_separation_of_growthPow`, `markov_atomicFamilies_negative_of_growthPow`) |
 
 ---
 
@@ -322,13 +337,15 @@ The questions of the report (§4.4), as SSHA answers them.
    `c > e/(2π) ≈ 0.43` (SH15). *The critical exponent is `θ* = 1`*
    (B3.26): for every `θ < 1`, positivity of Weil's form on the atomic families of width `N^{−θ}` for
    all large `N` is the Riemann hypothesis (SH11), as it is at every fixed width (SH6) — and so it
-   is at overlap ratio `(log N)^{1/2+ε}`. So there is no positivity statement weaker than RH once the
-   overlap ratio beats `√(log N)`; what remains is the window `c₀ < ϱ ≲ √(log N)`, where the alias
-   ripple of every synthesis costs `log N` (§4.E) and the gauge question is open. *The universal
-   threshold is bracketed and the correction rank is exactly located* (SH13): the Markov law
+   is at overlap ratio `(log N)^{1/2+ε}` (SH11), `(log N)^{1/4+ε}` for every `C²` profile (SH18) and
+   `(log N)^ε` for every smooth profile (SH19). So there is no positivity statement weaker than RH
+   once the overlap ratio grows like any power of `log N`: *the decisive scale is bounded overlap*.
+   What remains is the window between `c₀` and the sub-power growth rates, where the alias ripple
+   of every synthesis costs `log N` (§4.E) and the gauge question is open. *The universal
+   threshold is bracketed and the correction rank is exactly located* (SH13, SH20): the Markov law
    `M ≥ 0` holds for every twist up to `c₀δ_N` and fails — for `ζ` itself, unconditionally — once the
-   overlap ratio beats `√(log N)`; there the Markov form has a negative square, and RH is the
-   statement that it has only one, the pole. The universal threshold `K_univ` — the largest ratio
+   overlap ratio grows like a power of `log N`; there the Markov form has a negative square, and
+   under overlap growth RH is the statement that it has only one, the pole. The universal threshold `K_univ` — the largest ratio
    at which `Re W_ω + 2S² ≥ 0` for every twist `|ω| ≤ 1`, uniformly in `N` — satisfies
    `c₀ ≤ K_univ < ∞` (SH4′, SH16): a wide dipole on the atoms `1, 2` with vanishing cosh moment, read
    against the sign twist aligned with its lag correlations, has negative archimedean form and a
@@ -341,7 +358,7 @@ The questions of the report (§4.4), as SSHA answers them.
    with bounded loss (SH3, SH4). It is not Hecke covariant and need not be: it enters as a similarity
    of the Schur test, while the counterterm it serves — `log(1/w)` — is scalar and covariant. A base
    beyond the spacing is open.
-3. **When does a form see the gauge?** *Once the overlap ratio beats `√(log N)`.* The Markov form never favours
+3. **When does a form see the gauge?** *Once the overlap ratio grows like a power of `log N`.* The Markov form never favours
    `ζ` on a family closed under `|·|` (SH5), and at the spacing every twist — multiplicative or
    not — satisfies the stability law with `ζ`'s constants (SH4, SH4′). The prime form sees the gauge
    only through non-ratio lags (SH7), absent below the spacing. Under overlap growth the twisted
@@ -382,14 +399,15 @@ The questions of the report (§4.4), as SSHA answers them.
 | Stability at the spacing sees zeros, so it is RH | It is a theorem; it sees zeros up to height `≍ N` with a positive Nyquist margin |
 | A fixed-width family is still "near the spacing" | Its overlap ratio is unbounded, and positivity on it is RH |
 | Widths shrinking like `N^{−θ}` stay cheap | For every `θ < 1` the atoms synthesize every fixed test; positivity is RH |
-| RH-strength needs polynomial overlap | Overlap ratio `(log N)^{1/2+ε}` already synthesizes every fixed test |
+| RH-strength needs polynomial overlap | Overlap ratio `(log N)^ε` already synthesizes every fixed test, for every smooth profile |
+| The log-lattice is not uniform, so quadrature on it stops at low order | In `s = e^t` the atoms are the integers: the weights `F(log n − c)/n` make the synthesis Euler–Maclaurin summation, accurate to every order |
 | At bounded ratio the atoms reproduce smooth tests of aperture `≈ log ϱ` | Only up to an alias ripple of fixed relative size, whose Lévy bound grows like `log N` |
 | The synthesis error is the Lipschitz constant of the bump | It is the `L¹` norm of its derivative, cell by cell: `O(k/n₀)`, not `O(k²/n₀)` |
 | Gauge selectivity can come from the Markov form | `ζ` is its ground state; only the pole is anti-Markovian |
 | Twins differ from `ζ` on every lag | The gauge factor vanishes on ratio lags; only non-ratio lags carry it |
 | The rank-one pole correction of the stability law is an artifact of the method | The Markov form alone fails on the pole vector at width `cδ_N` for every `c > e/(2π)` |
 | Universal methods might reach every bounded overlap | Some sign twist fails `Re W_ω + 2S² ≥ 0` at a finite ratio: `K_univ < ∞` |
-| The Markov law fails beyond the spacing because of arithmetic | It fails for `ζ` itself once the overlap beats `√(log N)`; RH says the failure has rank one |
+| The Markov law fails beyond the spacing because of arithmetic | It fails for `ζ` itself once the overlap grows like a power of `log N`; RH says the failure has rank one |
 | A twin positive at the spacing is positive beyond it | Liouville is stable at width `c₀δ_N` and fails at every width of overlap growth |
 
 ---
@@ -397,7 +415,8 @@ The questions of the report (§4.4), as SSHA answers them.
 ## 8. Tools
 
 **Imported.** Atomic tests, `primeSum_atomicTest`, the coupled form, twins (AES); Schur rows,
-Mertens' first theorem (RAPT, RHTower); the Lévy form of `archForm`, the Markov property and the
+Mertens' first theorem (RAPT, RHTower); Euler–Maclaurin summation to every order with the Bernoulli
+remainder bound (RHTower, `dqpt_euler_maclaurin`); convolution calculus (Mathlib); the Lévy form of `archForm`, the Markov property and the
 contraction lemma (RHTower); Weil Grams, translates, the rational Hecke orbit (ACS); the spline
 orbit law (AOG); harmonic row sums (RHTower/Sieve); Chebyshev's bound (Mathlib).
 
@@ -420,7 +439,13 @@ Cauchy–Schwarz and the bump factor at complex frequencies; the exact self-ener
 `TheArchimedeanPairingOfTwoAtoms`); the archimedean Robin constant `2c_∞ = 2 log 2 + π/2`; the
 prime form of the pole vector; plateau profiles with shape term `β(φ)/‖φ‖² → 1`; the finiteness of
 the lag sums; Weil's form of a twist in Markov form; the Lévy energy of wide tests; the dipole and the
-twist aligned with its lag correlations.
+twist aligned with its lag correlations; the trapezoid rule on a cell and on a lattice to first and
+second order, and the trapezoid synthesis; the logarithmic tower `T_j` of `s ↦ s⁻¹ H(log s)`, the
+change of variables `s = e^t`, Euler–Maclaurin summation on the log-lattice, the `L¹` bound of the
+tower and the Leibniz bound; the Euler–Maclaurin synthesis with its supremum and Lipschitz bounds;
+the generic motion of Weil's form under a Lipschitz perturbation; mollification to smooth tests;
+overlap growth of every order; stable forms and the transfer of their signs to the atomic
+families.
 
 **To build.** The cross-term density of the pole vector (the critical constant); the archimedean
 cross kernel of overlapping atoms with constants, to close the joint estimate at a fixed `K`; the
@@ -437,9 +462,11 @@ alias fraction carried by a bounded overlap ratio; a large sieve over the zeros.
    all `x` at `wN ≤ 1/(64e²)` (`TheArchimedeanFinitePartIsMinusLogTwoPi`). Open: `c*_M` itself — the cross-term density on the pole vector and the
    profile minimizing `β(φ)/‖φ‖²` — and the critical constant of `Re W + 2S²`, where the pole
    decides.
-2. **The window `c₀ < ϱ ≲ √(log N)`.** The sharp threshold: the alias fraction `A(ϱ)` of the
-   best synthesis (for smooth profiles `Σ_{j≠0} |φ̂(2πjϱ)|²`, far below the cell bound `1/ϱ²`) and
-   whether RH-strength begins at `A(ϱ) log N ≍ 1`. At fixed `ϱ`: does the alias self-energy make
+2. **The window below every power of `log N`.** For smooth profiles RH-strength begins below
+   `(log N)^ε` for every `ε` (SH19). The sharp threshold: the alias fraction `A(ϱ)` of the best
+   synthesis (for smooth profiles `Σ_{j≠0} |φ̂(2πjϱ)|²`; for a Gevrey profile of class `s > 1`,
+   `e^{−cϱ^{1/s}}`, which would carry RH-strength down to `ϱ ≫ (log log N)^s`) and whether
+   RH-strength begins at `A(ϱ) log N ≍ 1`. At fixed `ϱ`: does the alias self-energy make
    Weil's form of every twist positive on the atomic tests of bounded aperture for large `N` — a
    Nyquist penalty — and what survives across all scales.
 3. **Gauge margin at bounded overlap.** Under overlap growth a twin is seen iff it fails somewhere
@@ -460,11 +487,11 @@ alias fraction carried by a bounded overlap ratio; a large sieve over the zeros.
 SSHA succeeds when the regimes below, at and beyond the spacing are separated by proved laws —
 unconditional positivity with matched constants at the spacing, RH-strength at every polynomial
 overlap, an exact account of bounded overlap — and when the place where the gauge enters Weil's
-form is located exactly. The first two (with RH-strength from overlap `(log N)^{1/2+ε}` on), the
+form is located exactly. The first two (with RH-strength from overlap `(log N)^ε` on), the
 location of the gauge (non-ratio lags, visible under overlap growth to exactly the twists that are
 not Weil positive) and the correction rank (needed already at `cδ_N`, `c > e/(2π)`; beyond the
-threshold one negative square unconditionally, only one iff RH) are proved; the window `c₀ < ϱ ≲ √(log N)` and the form margin there are the open
-core.
+threshold one negative square unconditionally, only one iff RH) are proved; the window between
+`c₀` and the sub-power growth rates of `ϱ`, and the form margin there, are the open core.
 
 A contribution is an unconditional Lean theorem about the atomic family or its overlap. It states
 its **width regime** (`ϱ`), its **correction rank**, its **constants** (matched or not), and whether

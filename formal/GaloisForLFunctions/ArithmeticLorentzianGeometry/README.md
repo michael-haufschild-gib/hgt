@@ -76,7 +76,8 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    rows supplies `(TD_π)` and pays the polar dispersion.
 5. **The critical regime.** What happens at the spacing scale? The Metzler sign holds exactly up
    to overlap ratio one; the Hodge index, `(TD_π)` and hyperbolic links hold up to a fixed ratio
-   `c★`; a uniform margin stops at `K√(log N)`; the atom block leaves the stability regime at the
+   `c★`, and eventually in `N` up to the fraction `K★(φ, ε)` at which the pole defect pays the
+   pole; a uniform margin stops at `K√(log N)`; the atom block leaves the stability regime at the
    Robin–Euler threshold `exp(2θ′(0) + κ_L(φ) + γ)`, where the pole vector carries a positive
    square of `−M`. Between `c★` and one the open content is `(TD_π)`
    for a connected Metzler form; beyond one no gauge of the atoms is Metzler.
@@ -170,6 +171,8 @@ construction it exposes.
   the Hodge index only in the stability regime.
 - The end of the stability regime: beyond the Robin–Euler threshold the atom block has a positive
   square along the pole vector.
+- The multiplicative Hardy inequality `(Σ√n x_n)² ≤ C_H(N²/log N)(D_N + |x|²)`: the pole defect
+  controls the `V`-row and pays the pole term.
 
 ## Core theory
 
@@ -336,6 +339,28 @@ twisted prime pairing is exactly `ω(p)(log p/√p)‖g‖²` while the Lévy cr
 `2wω(log p − w)‖g‖²`. Hence a real twin with `ω(p) = −1` at a prime `p ≤ N` has no Metzler gauge
 below the spacing (`not_exists_nonneg_gauge_twinAtomicIntersectionGram`), while `ω ≡ 1` gives
 `ζ`'s Metzler Gram.
+
+[ThePoleDefectControlsTheVRow](ThePoleDefectControlsTheVRow.lean): the `V`-row `Σ√n x_n` of the
+atoms is where a uniform margin loses `√(log N)`. The pole defect `D_N(x) = Σ_{mt≤N} Λ(t)(x_{mt} −
+x_m/√t)²`, the deficit of the prime form below its sharp counterterm, recovers it: the
+multiplicative Hardy inequality `(Σ_{n≤N} √n x_n)² ≤ C_H (N²/log N)(D_N(x) + |x|²)` holds for
+`N ≥ 3` (`sq_vRow_le`). Since `Σ_{t∣n} Λ(t) = log n`, each atom spreads over its incoming edges,
+`√(mt)x_{mt} = √(mt)(x_{mt} − x_m/√t) + √m x_m` splits each edge into a defect and an up-row
+term, and Chebyshev's bound makes both `O(N²/log N)` (`vRow_eq`, `sq_edgePart_le`, `mul_upRow_le`).
+
+[ThePoleDefectPaysThePole](ThePoleDefectPaysThePole.lean): keeping the defect in the finite-part
+lower bound of the Markov form, `M(f) ≥ ‖g‖²(φ₀|x|² + c₀D_N(x))` with
+`φ₀ = 2θ′(0) + log(1/(wN)) + κ_L(φ) + γ − ε − O(w + wN)` (`eventually_markovEnergy_ge_defect`),
+and bounding the pole term by Cauchy–Schwarz on the `H`-row and Hardy on the `V`-row,
+`2|AB| ≤ c_P e^{w/2} wN ‖g‖²(2|x|² + D_N(x))` (`two_mul_abs_poleMoments_le_defect`), Weil's form
+is nonnegative on every atomic test once `φ₀ ≥ 2c_P e^{w/2} wN` and `c₀ ≥ c_P e^{w/2} wN`
+(`eventually_weilQuad_atomicTest_nonneg_of_finitePart`). This holds at an explicit fraction
+`K★(φ, ε)` of the spacing, eventually in `N` (`eventually_weilQuad_nonneg_at_fraction`,
+`eventually_atomicIntersectionGram_isHyperbolic_at_fraction`): the minimum of two overlap bounds,
+`1/(A + 2c_Pe^{1/2})` and `exp(2θ′(0) + κ_L(φ) + γ − ε − 2)` — between `10⁻⁴` and `6·10⁻⁴` once
+`κ_L(φ) ≥ −2` and `ε ≤ 1/8` — against `c★ ≈ 10⁻¹¹` for the tilted margin at every `N`. The pole is paid by the
+Dirichlet energy of the pole relations, not by a tilt; the remaining gap to the Robin–Euler
+threshold is the Chebyshev constant `A` of the cross penalty.
 
 [TheOverlapRatioIsTheCoveredMeasure](TheOverlapRatioIsTheCoveredMeasure.lean): an atomic test
 vanishes off `⋃_n [log n, log n + w]`, of measure at most `Nw ≤ K` since `Nδ_N ≤ 1`
@@ -596,8 +621,10 @@ overlap family.
 **Arithmetic polar compatibility.** Find a decomposition of the complete intersection form whose
 anchors and reserves are source-defined, and determine whether the infinite-place cross energy,
 section relations or the successor connection pay the polar dispersion. In the stability regime
-the tilted archimedean margin pays it for the atom pieces; open beyond `c★`, where the margin is
-no longer positive and the payment must come from cross terms.
+the tilted archimedean margin pays it for the atom pieces, and the Dirichlet energy of the pole
+relations pays the pole term itself through the multiplicative Hardy inequality up to `K★`; open
+beyond the Robin–Euler threshold, where the finite part of the Markov form is negative and the
+payment must come from cross terms.
 
 **Coherent multiscale assembly.** Construct decompositions whose anchors and restriction maps
 respect the gluing calculus, separate within-block and between-block costs, and seek bounds
