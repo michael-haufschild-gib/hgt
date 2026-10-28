@@ -48,7 +48,9 @@ theorem primeSignGauge_isSignGauge (hg : ∀ p, g p * g p = 1) : IsSignGauge (pr
     exact prod_eq_one fun p _ => by rw [← mul_pow, hg, one_pow]
 
 theorem primeSignGauge_prime {p : ℕ} (hp : p.Prime) : primeSignGauge g p = g p := by
-  rw [primeSignGauge, hp.factorization, Finsupp.prod_single_index (pow_zero (g p)), pow_one]
+  rw [primeSignGauge, hp.factorization, Finsupp.prod_single_index]
+  · exact pow_one _
+  · exact pow_zero _
 
 /-- The proper prime-power remainder `R(y) = Σ_{t ≤ y, t not prime} ε_g(t)Λ(t)/t`. -/
 def primeSignRemainder (g : ℕ → ℝ) (y : ℕ) : ℝ :=
@@ -91,7 +93,7 @@ theorem tendsto_primeSignGauge_div_log (hg : ∀ p, g p * g p = 1) {κ : ℝ}
   have hR : Tendsto (fun y : ℕ => primeSignRemainder g y / Real.log y) atTop (𝓝 0) := by
     rw [tendsto_zero_iff_norm_tendsto_zero]
     refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_
-      (tendsto_const_nhds.div_atTop hlog)
+      ((tendsto_const_nhds (x := 8 + RHTower.Mertens.mertensTail)).div_atTop hlog)
     filter_upwards [hlog.eventually_gt_atTop 0] with y hy
     rw [norm_div, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hy]
     exact div_le_div_of_nonneg_right (abs_primeSignRemainder_le hg y) hy.le
@@ -176,6 +178,7 @@ theorem flipGauge_kappa (S : Set ℕ) [DecidablePred (· ∈ S)] {ϑ : ℝ}
     filter_upwards [hlog.eventually_gt_atTop 0] with y hy
     have hy' := hy.ne'
     field_simp
+    ring
   have h := hP.sub (hS.const_mul 2)
   refine h.congr fun y => ?_
   rw [mul_div_assoc', ← sub_div]

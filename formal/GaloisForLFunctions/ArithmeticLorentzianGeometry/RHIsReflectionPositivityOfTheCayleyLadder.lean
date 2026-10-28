@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.AnIsometricLadderCarriesNoPositiveSquare
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.LocalFactorsAndTheEulerProductClosure
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheTrickleDownInequalityIsTheSquareRootCount
 import GaloisForLFunctions.RHTower.LiCriterion
 import GaloisForLFunctions.RHTower.LiSubexponentialCriterion
@@ -228,10 +229,6 @@ theorem qf_cayleyLadder_nonpos_of_unitary {m : α → ℝ} {w : α → ℂ} (hm 
   linarith
 
 /-! ### Depth-one probes -/
-
-theorem bil_single_single {ι : Type*} [Fintype ι] [DecidableEq ι] (Q : Matrix ι ι ℝ) (i j : ι) :
-    bil Q (Pi.single i 1) (Pi.single j 1) = Q i j := by
-  simp [bil, dotProduct, Pi.single_apply]
 
 /-- **Depth-one probe**: `Q_{n+1}[e_n − e_0] = 2ℓ(0) − 2ℓ(n)` on a Toeplitz ladder. -/
 theorem qf_toeplitzLadder_last_sub_zero (ℓ : ℕ → ℝ) (n : ℕ) :

@@ -434,19 +434,3 @@ theorem isLorentzianPolynomial_prod_subst {κ τ : Type*} [Fintype κ] [Decidabl
   (isMixedLorentzian_prod_subst s hf hA).isLorentzianPolynomial
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms IsMixedLorentzian.isMConvex
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms isMixedLorentzian_iff_isLorentzianPolynomial
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms IsLorentzianPolynomial.mul
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms IsLorentzianPolynomial.subst
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms isLorentzianPolynomial_prod_subst
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms isMConvex_support_mul
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms IsLorentzianPolynomial.differentiate
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms IsHyperbolic.exchange

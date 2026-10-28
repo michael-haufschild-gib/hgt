@@ -21,7 +21,7 @@ Each pair uses the Gamma kernel at its farthest endpoint distance. Recovering th
 
 ## Status
 
-Conjecture only. No completed paper proof, Lean theorem, or full mixed Weil sign is claimed. The signed prime and pole interactions remain separate parent obligations. No stage-2 parking.
+The full coarse recovery statement remains conjectural. No full mixed Weil sign is claimed; checked component theorems are recorded below. The signed prime and pole interactions remain separate parent obligations. No stage-2 parking.
 
 ## Log
 
@@ -29,6 +29,6 @@ Conjecture only. No completed paper proof, Lean theorem, or full mixed Weil sign
 
 [Nearby endpoint losses](../3-formalized/acs-gamma-near-row-remainders.md), in `LogCellGammaRemainderRows.lean`, passed the exact final check and both transitive audits: `gammaCellNearUpperRemainder_le` bounds the complete upper near row by `6*exp(1/2)`; `gammaCellNearLowerRemainder_le` bounds the lower near row by `2*exp(1/2)`, independently of source index. Four forward and two backward monotone shifts telescope; inverse-width and Gamma bounds control the endpoint readings. Audit log: `/tmp/acs-logcell-gamma-remainder-rows-final.log`. Only standard axioms; no warnings.
 
-Adjacent, distant, exterior, and integrated-kernel recovery remain open. `/tmp/acs-gamma-interval-remainder.lean` contains unverified exact tail rows, a triangular first-moment formula, and the complete exterior averaging-loss identity; verification is underway.
+The [complete interval averaging loss and separated tail rows](../3-formalized/acs-gamma-interval-averaging-loss.md) passed twelve exact-file/transitive audits. Adjacent logarithmic-cell geometry, finite endpoint-row assembly, and the final coarse-energy comparison remain open.
 
-A sharper decomposition is under investigation: first replace the actual kernel along each source interval by `gammaFarCharge` on its entire complement. The resulting nonnegative row loss should equal `2*∫_(0,w) t*k(t) dt`, hence be at most `exp(1/2)*w` for `w≤1`. This would handle touching interactions and the exterior in one row estimate. Only the further passage from the pointwise far charge to the pairwise farthest endpoint would require discrete rows; adjacent far-charge readings are nonsingular. This identity and its application are conjectural until checked in Lean.
+`gamma_interval_row_defect_eq` now proves the exact complete exterior loss `2*∫_(0,w) t*k(t) dt`; `gamma_interval_row_defect_le` bounds it by `exp(1/2)*w` for `w≤1`. The actual kernel decomposition and its finite bound are also checked. This pays touching/exterior averaging loss in one row. The remaining discrete and quadratic-form assembly is not yet proved.

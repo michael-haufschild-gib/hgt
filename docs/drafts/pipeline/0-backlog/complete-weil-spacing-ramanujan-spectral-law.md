@@ -207,3 +207,24 @@ Its exact `finitePart_profileRobin_eq` states
  =-log(2*pi)+bumpRobin(phi,1)/M2`.
 With log(1/w)-log(N)=-log(c), this is precisely the proposed sigma.
 The evaluated Robin/Gamma identity is existing input, not part of the new claim.
+
+The pole-factor transfer needs only a bounded unnormalized error. With
+A1=integral(abs(phi)), support and the elementary exponential increment bound
+give `|Gpm-w*I|<=C*w^2*A1` and `|Gpm|<=exp(1/2)*w*A1` for w<=1.
+Hence `|Gminus*Gplus/(w*M2)-w*I^2/M2|<=C_phi*w^2`.
+On u_n=a(n)/sqrt(n), with |a|<=A, the two rank-one factors give
+`(sum a)*s+(sum a/n)*t`; their norm is at most
+`A*N*sqrt(H_N)+A*H_N*N`. Using H_N<=N and w=c/N already bounds the
+coefficient-error action uniformly in N. Division by sqrt(log N) therefore
+kills it. No quantitative asymptotic for the atom moments or log(N)/N estimate
+is needed for the residual theorem. The diagonal Robin error and the summed
+pair replacement error can be treated by the same bounded-error principle.
+
+For exact assembly, polarization of the existing signed finite-atom quadratic
+identity should identify the matrix entries as a scalar diagonal minus the
+literal prime matrix, minus the off-diagonal positive-center cross integrals,
+plus the two pole outer products. Distinct-atom support removes the mass cross
+term, and of the two signed center lags only the positive one meets the Levy
+integral. Reindexing Fin N by i+1 gives PrimeHorizonIndex N and therefore the
+same actual carrier used in the prime spectral package. This exact equality,
+including its factor two, remains an explicit Lean obligation.
