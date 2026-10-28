@@ -1260,7 +1260,16 @@ its line conjugate preserves its ordinate and gives
 \]
 
 The existing fixed-window zero count supplies the logarithmic growth.
-The retained Gamma share, physical coercivity, complete-profile transfer
+Together with the proved logarithmic digamma upper bound, it now gives
+one uniform `delta>0` such that
+
+\[
+ G(t)-R_2(t)\ge\delta G(t)+\frac\gamma2\qquad(t\in\mathbb R).
+\]
+
+At large frequency, the Xi contribution pays a Gamma fraction. On the
+remaining compact interval, continuity bounds `G`, and half the scalar
+gap pays the same fraction. Physical coercivity, complete-profile transfer
 and square-plus-odd higher mixed index are under active formalization.
 The full archimedean normalization contains its original mass term beyond
 the Gamma jump energy used here.
@@ -1793,6 +1802,7 @@ Quantitative pillars supplied by this programme:
 | Regular square-prime boundary | Exact digamma and Xi decomposition proves a positive gap below the original Gamma jump symbol at every frequency | `TheSquarePrimeBoundaryHasAGammaGap` |
 | Literal square-prime identity | The original even-power sum equals its regular Fourier boundary plus exactly half the squared ordinary mean on compact smooth real cores | `TheSquarePrimeBoundaryHasItsMeanPole`, `TheSquarePrimeSourceIsItsBoundaryPairing` |
 | Logarithmic Xi edge growth | Line-conjugate pairs and the fixed-window zero count give an unconditional eventual positive multiple of log T on Re s=1 | `TheXiEdgeFieldHasLogarithmicGrowth` |
+| Retained square-boundary Gamma share | One uniform positive delta gives G-R2 >= delta G + gamma/2 at every real frequency | `TheSquarePrimeBoundaryRetainsGammaEnergy` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

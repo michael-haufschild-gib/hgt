@@ -122,6 +122,8 @@ The corpus imports the external, formalized Alpöge–Furman theorem (Lean packa
 | Distinct ordinates carrying a critical zero | \(\ge4/5\) |
 | Zero copies within \(4/\log T\) of the line | \(\ge3/4\) |
 
+Mollified value moments cannot raise these numbers: an equal-valued reflected pair has every value moment of two critical zeros, so they certify simple zeros of either kind, not critical ones ([mimicry](../../../formal/GaloisForLFunctions/RHTower/ValueMomentsCannotSeparateReflectedPairs.lean)).
+
 [Two thirds](../../../formal/GaloisForLFunctions/RHTower/Zeta23SimpleCriticalDensity.lean), [off-line copies](../../../formal/GaloisForLFunctions/RHTower/Zeta23OffLineMultipleExclusionMontgomeryTaylor.lean), [IGP](../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean), [ordinates](../../../formal/GaloisForLFunctions/RHTower/Zeta23CriticalOrdinateCensus.lean), [near line](../../../formal/GaloisForLFunctions/RHTower/Zeta23SimpleOffLineNearLine.lean).
 
 ### 10. Over finite fields the local-to-global step is a count
@@ -474,7 +476,7 @@ A candidate lacks an independent source construction or its landing. Every promo
 | ACP, ADR, ACG | Escape classification, gauge-mass criterion, prime-error/genus laws, Stepanov mechanism | Visibility of every escape state; actual cancellation |
 | AES, CDG, PL, RBG | Field/energy laws, theta-prefix detectors, collided polarization | Upper sign or cap on the computed defect |
 | APD, MPG, SBWF, AE, ArtinMertens | Positive-measure rigidity, boundary capacity, finite-field calibration (hyperelliptic RH by counting), Frobenius densities in Mertens form | An independent arithmetic positivity input |
-| Zeta23 (external), TransThresholdPairCorrelation, IGP | Unconditional \(2/3\) and \(HD(1)\) simple-critical proportions; \(+10^{-8}\) slack; ordinate census | A new main term beyond Montgomery's \(|\alpha|\le1\) |
+| Zeta23 (external), TransThresholdPairCorrelation, IGP | Unconditional \(2/3\) and \(HD(1)\) simple-critical proportions; \(+10^{-8}\) slack; ordinate census | A displacement-sensitive source estimate at depth \(1/\log T\) |
 
 ## External mathematical status
 

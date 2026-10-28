@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanCenterKernelIsAHarmonicKernel
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheLogarithmicCenterKernelIsHarmonic
 import GaloisForLFunctions.HTGeometry.FiniteHarmonicRows
 
 /-!
@@ -15,21 +15,21 @@ open Finset
 
 namespace GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 
-open ArithmeticCastelnuovoSeveri HTGeometry
+open HTGeometry
 
 /-- The archimedean center kernel on the pole has an exact harmonic row. -/
-theorem sum_collarWeight_div_sqrt {n N : ℕ} (hn : n ∈ Icc 1 N) :
-    (∑ j ∈ Icc 1 N, collarWeight n j / Real.sqrt j) =
+theorem sum_archimedeanCenterKernel_div_sqrt {n N : ℕ} (hn : n ∈ Icc 1 N) :
+    (∑ j ∈ Icc 1 N, archimedeanCenterKernel n j / Real.sqrt j) =
       Real.sqrt n * (((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 -
         3 / (4 * (n : ℝ))) := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
   have hsn : Real.sqrt (n : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hn0).ne'
-  rw [← sum_erase_add (Icc 1 N) (fun j => collarWeight n j / Real.sqrt j) hn,
-    collarWeight_self, zero_div, add_zero, ← sum_erase_harmonic_kernel hn, mul_sum]
+  rw [← sum_erase_add (Icc 1 N) (fun j => archimedeanCenterKernel n j / Real.sqrt j) hn,
+    archimedeanCenterKernel_self, zero_div, add_zero, ← sum_erase_harmonic_kernel hn, mul_sum]
   refine sum_congr rfl fun j hj => ?_
   have hj' := mem_erase.mp hj
   have hnj : n ≠ j := Ne.symm hj'.1
-  rw [← collarWeight_div_sqrt_mul (mem_Icc.mp hn).1 (mem_Icc.mp hj'.2).1 hnj]
+  rw [← archimedeanCenterKernel_div_sqrt_mul (mem_Icc.mp hn).1 (mem_Icc.mp hj'.2).1 hnj]
   field_simp [hsn]
 
 /-- The sum of the two pole rows has its elementary exact action. -/
@@ -55,16 +55,15 @@ theorem sum_pole_outer_rows {n N : ℕ} (_hn : n ∈ Icc 1 N) :
   simp only [Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, mul_one_div]
 
 /-- The restored center matrix acts on the pole as one plus a boundary remainder. -/
-theorem sum_pole_minus_collar_div_sqrt {n N : ℕ} (hn : n ∈ Icc 1 N) :
+theorem sum_pole_minus_center_div_sqrt {n N : ℕ} (hn : n ∈ Icc 1 N) :
     (∑ j ∈ Icc 1 N,
-      ((Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) - collarWeight n j) /
+      ((Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) - archimedeanCenterKernel n j) /
         Real.sqrt j) =
       (N : ℝ) / Real.sqrt n + Real.sqrt n *
         ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
           3 / (4 * (n : ℝ))) := by
   simp only [sub_div, sum_sub_distrib]
-  rw [sum_pole_outer_rows hn, sum_collarWeight_div_sqrt hn]
+  rw [sum_pole_outer_rows hn, sum_archimedeanCenterKernel_div_sqrt hn]
   ring
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
-

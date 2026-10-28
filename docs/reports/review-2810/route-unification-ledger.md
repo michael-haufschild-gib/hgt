@@ -244,7 +244,8 @@ The 17 standalone candidates and PW-B are U3 producers whose landing is unproved
 | Finite negative index means RH | It means finite off-line support, which is [≥QRH], not RH. |
 | Finite off-line support is weaker than any quasi-RH | It implies \(\Theta<1\). |
 | The \(\alpha=1\) atomic receiver is a computation away | It needs compactly supported quasi-analytic profiles, which do not exist (inference). |
-| The \(2/3\) census is a route to RH | Proportions do not exclude individual zeros; the census needs a new main term even for \(70\%\). |
+| The \(2/3\) census is a route to RH | Proportions do not exclude individual zeros. |
+| Simple-zero theorems (CGG/BHB mollified moments) raise the critical-line census | Value moments cannot separate equal-valued reflected pairs from critical zeros, and the census extremal consists of simple zeros ([Lean](../../../formal/GaloisForLFunctions/RHTower/ValueMomentsCannotSeparateReflectedPairs.lean)). |
 | Regular integer counts force RH | Over-regular Beurling systems have off-line zeros; the functional equation excludes them. |
 | \(A_Q\) is the Xi operator | Adjunction energies are prime-matrix eigenvalues, not Xi zeros. |
 | Curves over finite fields can donate Weil positivity | The archimedean continuum cannot arise from finite places. |
@@ -254,7 +255,7 @@ The 17 standalone candidates and PW-B are U3 producers whose landing is unproved
 
 1. **One selective-positivity programme** for the U2 cluster: carry the \(2\log2\) margin past the Robin–Euler point (Q1).
 2. **One finite-support programme** joining HF/ACS/AIP (first-layer compactness), WL (subtracted lag) and WD/LA (heat horizon). Every result is checked against its implication \(\Theta<1\) (Q2).
-3. **One counting programme** joining the inertia census, the \(\mathbb F_q\) count-to-positivity theorems and a search for a \(\mathbb Z\)-Stepanov construction (Q3 and 2.7).
+3. **One counting programme** joining the inertia census, the displacement-sensitive horizontal-charge estimate (Q3), the \(\mathbb F_q\) count-to-positivity theorems and a search for a \(\mathbb Z\)-Stepanov construction (2.7).
 4. **Independent-construction experiments** for U3, each tested against the selectivity battery and the parity criterion.
 
 No route is promoted because its final condition was renamed, and no candidate is retired because another route reaches the same endpoint.

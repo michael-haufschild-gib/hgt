@@ -48,6 +48,7 @@ Here \(W\) is the full Weil form, \(D\) the positive collided form and \(\mathfr
 | **1.25 Parity form of selectivity** | **New (inference)** | Majorant information \(|\lambda|\le\Lambda\) is consistent with the Liouville twin, as sieve information is consistent with the parity-twisted sequence. Every crossing of Wall 1 needs a parity-breaking input. |
 | **1.26 Finite support stratum** | **New, exact** | Finite off-line support forces \(\Theta<1\). Its receivers (critical energy, subtracted lag, cosine defects, heat nonreal counts, finite complete-form index) are all [≥QRH]. |
 | **1.27 Critical-line census** | **New face** | Imported inertia theorem: \(\ge2/3\), \(\ge HD(1)\); IGP \(+10^{-8}\); off-line copies \(\le1-HD(1)\). The pair-correlation main term is capped by \(|\alpha|\le1\). |
+| **1.28 Value-moment mimicry** | **New, closed [Lean]** | Mollified moments cannot separate equal-valued reflected pairs from critical zeros; the mollifier route to beyond \(2/3\) is falsified. |
 | **1.0 Fixed strip** | Intake status | Quotient-head, Suzuki finite-contact and Möbius-divisor exponent laws added. The CGL \(7/8\) intake has no capstone. |
 | **3.26 Complete overlap transfer** | **Extended** | RH iff eventual atomic positivity at widths \((\log\log N)^\alpha/N\), \(\alpha>1\). At every width: Markov gap on \(p=0\) plus one affine scalar on \(p=1\) [S]. |
 | **3.37 Quasi-analytic boundary** | **New boundary (inference)** | \(\alpha=1\) would need compactly supported profiles of quasi-analytic class; Denjoy–Carleman excludes them. |
@@ -95,9 +96,10 @@ Here \(W\) is the full Weil form, \(D\) the positive collided form and \(\mathfr
 | **1.24 Selectivity** | **Theorem** | Selection at every root; twin-blind positivity impossible on RH-complete atomic families; Haar floor twin-blind. |
 | **1.25 Parity form** | Criterion (inference) | Selectivity is the parity barrier in Weil-form language; required: a parity-breaking input. |
 | **1.26 Finite support stratum** | Exact [≥QRH] | Finite support implies \(\Theta<1\) and excludes infinitely many near-line zeros, which density methods cannot do. |
-| **1.27 Critical-line census** | Open beyond \(HD(1)\) | Inertia method with pair correlation on \(|\alpha|\le1\); next main term: Hermitianized mollified moments, \(19/27\) under RH (Q3). |
+| **1.27 Critical-line census** | Open beyond \(HD(1)\) | Inertia method with pair correlation on \(|\alpha|\le1\). Value moments of any weight cannot certify criticality (1.28). Open: a displacement-sensitive source estimate at depth \(1/\log T\) (Q3). |
+| **1.28 Value-moment mimicry** | **Closed [Lean]** | An equal-valued reflected pair has every holomorphic value moment of two critical zeros. Survivor: \(|S_1|^2\le(\#\text{crit}+2\#\text{pairs})(\operatorname{Re}S_2+D)\). The Alpöge–Furman extremal consists of simple zeros, so no simplicity input moves the census. |
 
-Evidence: [lag](../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean), [abscissa laws](../../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean), [Vaughan strips](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/UniformVaughanPowerBoundsAreFixedStrips.lean), [canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean), [Chebyshev identity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheOrderedWeilSourceIsACenteredChebyshevDefect.lean), [selection](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/PositivityAtEveryRootSelectsTheVonMangoldtWeight.lean), [margin](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheSelectiveMarginIsTwoLogTwo.lean), [index exit](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheIndexExit.lean), [census](../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean).
+Evidence: [lag](../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean), [abscissa laws](../../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean), [Vaughan strips](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/UniformVaughanPowerBoundsAreFixedStrips.lean), [canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean), [Chebyshev identity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheOrderedWeilSourceIsACenteredChebyshevDefect.lean), [selection](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/PositivityAtEveryRootSelectsTheVonMangoldtWeight.lean), [margin](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheSelectiveMarginIsTwoLogTwo.lean), [index exit](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheIndexExit.lean), [census](../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean), [mimicry](../../../formal/GaloisForLFunctions/RHTower/ValueMomentsCannotSeparateReflectedPairs.lean).
 
 ## Wall 3 — Transfer, norms and exhaustion
 
@@ -204,7 +206,8 @@ Evidence: [count](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeomet
 | Same Metzler gauge through overlap | Narrow Hodge/TD; \(\rho\lessgtr1\) boundary | Signed/block methods. |
 | Hyperbolicity as an arithmetic input | Blind for every sign twin; Metzler sign selective | Selective sign transfer. |
 | \(\alpha=1\) or bounded-overlap receivers | \((\log\log N)^{1+\varepsilon}\) receiver; coverage bound | None needed; the boundary is quasi-analyticity. |
-| Pair correlation beyond its main term | \(HD(1)+10^{-8}\) | Hermitianized mollified moments (Q3). |
+| Mollified value moments (CGG/BHB) as a criticality certificate | Mimicry; defect-repaired Cauchy–Schwarz counts simple zeros of either kind | A displacement-sensitive count at depth \(1/\log T\) (Q3). |
+| Pair correlation beyond \(|\alpha|=1\), higher traces | \(HD(1)+10^{-8}\); \(k\lambda<2\) range | Same (Q3). |
 | Regular counts as forcing | Over-regular Beurling systems with off-line zeros | Use the functional equation. |
 | Stepanov over \(\mathbb Z\) by sparse annihilators | Exact lattice criterion; char-0 sparse root bound | A non-lattice auxiliary construction. |
 | Function-field approximation as imported positivity | Curves reproduce exactly the prime support | An archimedean component of non-finite-field origin. |
@@ -214,6 +217,6 @@ Evidence: [count](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeomet
 
 - [Q1](obstacles-summary.md#q1) targets **1.18 / 1.24 / 3.26 / 14.32**: selective positivity past the Robin–Euler point.
 - [Q2](obstacles-summary.md#q2) targets **3.35 / 1.26 / 1.22**: first-layer compactness and finite support.
-- [Q3](obstacles-summary.md#q3) targets **1.27**: a second main term for the inertia census.
+- [Q3](obstacles-summary.md#q3) targets **1.27 / 1.28**: a displacement-sensitive source estimate beyond the census constant.
 
 No route is declared dead by these priorities. Finite calculations, transfer instantiation and literature intake are listed as [just work](obstacles-summary.md#21-tasks-that-are-just-work).

@@ -23,7 +23,7 @@ def oddHigherPrimePowerMixedTerm (pk : Nat.Primes × ℕ) (d q : ℕ → ℝ) (X
 theorem oddHigherPrimePowerMixedTerm_even (pk : Nat.Primes × ℕ)
     (h : Even (pk.2 + 3)) (d q : ℕ → ℝ) (X : ℕ) :
     oddHigherPrimePowerMixedTerm pk d q X = 0 := by
-  exact if_neg h.not_odd
+  exact if_neg (Nat.not_odd_iff_even.mpr h)
 
 /-- The full mixed source over odd exponents at least three and every prime. -/
 def oddHigherPrimePowerMixedSource (d q : ℕ → ℝ) (X : ℕ) : ℝ :=

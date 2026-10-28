@@ -161,37 +161,40 @@ So a strip \(\operatorname{Re}\rho<3/4\) would follow from, and is equivalent to
 
 ## 2.5 Can we prove that at least 70% of zeros lie on the critical line?
 
-**Verdict: there is a concrete opportunity, but not inside the current mechanism.**
-
-- The current method (inertia plus pair correlation) is capped near \(0.67\)–\(0.68\).
-- \(70\%\) matches exactly the classical mollifier main terms at length \(\theta=1/2\), where Bui–Heath-Brown obtain \(19/27\approx70.37\%\) under RH.
-- The task is to remove RH from those main terms with the inertia method.
+**Verdict: not with any input the corpus or the literature has. The mollifier route (Bui–Heath-Brown's \(19/27\) made unconditional by inertia) does not work.** The corpus tested it and closed it as falsified: [failed card](../../drafts/pipeline/5-failed/inertia-robust-mollified-simple-zeros.md). The mechanism that kills it is now in Lean.
 
 **Where the corpus is.** At least \(HD(1)+10^{-8}\approx0.67250071\) of zeros are simple and critical, and off-line copies are at most \(1-HD(1)\approx32.75\%\). \(70\%\) needs off-line copies at most \(30\%\).
 
-**Why the present mechanism stalls.** The Alpöge–Furman rank–trace argument computes the Frobenius norm of the explicit-formula Gram from Montgomery's pair correlation on \(|\alpha|\le1\). The Montgomery–Taylor window is optimal there. The IGP slack (no three short-window evaluation vectors orthogonal) gains \(10^{-8}\), and an optimized slack (W08) remains a second-order correction. Moving the main term requires either:
+**Why mollified moments cannot help.**
 
-- pair correlation beyond \(|\alpha|=1\), which needs Hardy–Littlewood-type prime-pair asymptotics and is open; or
-- a different main term.
+1. **Value moments cannot see criticality.** Take a weight \(a=\zeta'M\) with real coefficients. An off-line pair with \(a(\rho)=a(1-\bar\rho)\) contributes to every holomorphic moment \(\sum_\rho F(a(\rho),a(1-\rho))\) exactly what two critical zeros with that value contribute. Consequences:
+   - No lower bound for the critical count that uses value moments alone can be positive on data that also arise from equal-valued pairs.
+   - The CGG ratio is not an unconditional bound.
+   - Pairs with values \(z,-z\) make the reflected second moment negative.
 
-**The different main term (Q3).** Conrey–Ghosh–Gonek's mollified discrete moments give, under their main terms, a simple-zero proportion \(1-(1+\theta)^{-3}\) for mollifier length \(\theta\) (the corpus records this algebra conditionally in KR-LLM). Two values of \(\theta\) matter:
+   What the data do certify is \(|S_1|^2\le(\#\text{critical}+2\#\text{pairs})(\operatorname{Re}S_2+D)\), with \(D\) the antisymmetric defect. That counts simple zeros of either kind. [Lean](../../../formal/GaloisForLFunctions/RHTower/ValueMomentsCannotSeparateReflectedPairs.lean).
+2. **Simplicity is the wrong information.** The Alpöge–Furman certificate depends only on the multiple-critical count plus the off-line pair count. Its extremal configuration (\(2/3\) simple critical, \(1/6\) off-line pairs) consists entirely of simple zeros. A theorem that all zeros are simple would leave the constant unchanged.
+3. **The obstruction has a scale.** Write the depth of an off-line pair as \(\lambda/\log T\).
+   - At \(\lambda\to0\) the pair coalesces and mollified moments exclude it like a double zero.
+   - At \(\lambda\ge19\) explicit Selberg density makes such zeros fewer than \(30\%\).
+   - At \(\lambda\asymp1\) a pair looks like a double point to pair correlation and like two simple zeros to mollifiers. That band is uncontrolled.
+4. **The input the route needs is stronger than its output.** Reaching \(70\%\) through Alpöge–Furman plus robust CGG requires at most \(0.26\%\) of zeros in off-line pairs. That alone puts \(99.5\%\) on the line.
 
-- \(\theta=\tfrac12\) gives \(19/27\);
-- \(70\%\) needs \(\theta\ge0.494\).
+**Other routes the corpus has closed** ([75% card](../../drafts/pipeline/1-in-progress/zeta23-beyond-bandwidth-one-proportion.md)):
 
-The obstacle is RH in the evaluation of \(\sum_\rho|\zeta'(\rho)M(\rho)|^2\). The inertia method suggests a replacement:
+- Higher trace moments are available only for \(k\lambda<2\); no useful even moment beyond the second exists at bandwidth near one. Even granting the conjectural fourth moment, the certificate gives \(13/18\approx72.2\%\).
+- Pair correlation beyond \(|\alpha|=1\) needs Hardy–Littlewood-strength prime-pair cancellation on average. Sieve bounds gain only \(o(1)\).
+- The \(0.679\) semidefinite-programming bound under RH uses a negative tail that has no source-faithful off-RH analogue.
 
-- Use the reflected pairing \(a(\rho)\overline{a(1-\bar\rho)}\), with \(a=\zeta'M\). It equals \(|a(\rho)|^2\) on the line, and each off-line pair contributes a \(2\times2\) block of positive index at most one.
-- Evaluate it through \(\zeta'(1-\rho)=-\chi(1-\rho)\zeta'(\rho)\) and Gonek–Landau-type sums, which do not use RH.
-- Replace Cauchy–Schwarz by the rank–trace inequality, so off-line pairs are charged instead of excluded.
+**What remains.** Only displacement-sensitive (horizontal-charge) estimates separate off-line pairs from double points at depth \(\lambda\asymp1\). In that programme the exact receiver is:
+\[
+hE_h+R_{\rm deep}\le\kappa N\ \Longrightarrow\ N_0\ge(1-2\kappa)N.
+\]
+- \(E_h\) is the positive shallow Cauchy energy at shift \(h\asymp1/\log T\), which charges every off-line copy within depth \(h\).
+- \(R_{\rm deep}\) is the count of deeper off-line copies.
+- \(70\%\) is \(\kappa=3/20\); \(75\%\) is \(\kappa=1/8\), already stated in Lean.
 
-**Open points:**
-
-1. Unconditional asymptotics of the reflected moments at \(\theta\ge1/2\), uniform enough for the trace and Frobenius sides.
-2. An inertia analogue of the Cauchy–Schwarz step whose off-line contribution is controlled by the positive index.
-3. Whether the reflected pairing really counts critical zeros rather than zeros where \(a\ne0\).
-
-None of these is RH-equivalent; all are open.
+The missing piece is a prime-side upper bound for \(hE_h\) at that scale. The corpus has such bounds only for \(h>1/2\). That is [Q3](#q3).
 
 ## 2.6 The three questions to answer next
 
@@ -226,15 +229,37 @@ Beyond \(K_1\) the Markov form has exactly one negative direction, the pole vect
 **First useful answer.** The growth law of the first-layer constants against the detail reserve (W04), and a proof or refutation of compactness for primes in dyadic ranges \(p\sim2^j\) uniformly in \(j\).
 
 <a id="q3"></a>
-### Q3. Can the inertia method remove RH from mollified discrete moments?
+### Q3. Is there a prime-side bound for the shallow Cauchy energy at depth \(1/\log T\)?
 
-**Exact object.** The reflected mollified moments \(\sum_\rho a(\rho)\) and \(\sum_\rho a(\rho)\overline{a(1-\bar\rho)}\) with \(a=\zeta'M\), mollifier length \(\theta\ge1/2\), inserted into a rank–trace inequality whose off-line part has bounded positive index.
+**Exact object.** Take the strict-right zeros at depth \(a_j\le h\), with ordinates \(\gamma_j\) and multiplicities \(m_j\). Their positive Cauchy energy is
+\[
+E_h=4\sum_{j,k}m_jm_k\frac{2h+a_j+a_k}{(2h+a_j+a_k)^2+(\gamma_j-\gamma_k)^2},
+\]
+taken at \(h\asymp1/\log T\). Every entry is positive, and \(\sum_jm_j\le hE_h\) holds with multiplicity, uniformly down to submicroscopic depth.
 
-**Payoff.** An unconditional \(19/27\approx70.4\%\), beyond any pair-correlation method. It would also show that the inertia mechanism, which already made pair correlation unconditional, extends to a second main term. That is evidence that counting with signatures can replace positivity in further arguments (2.7).
+**Why it is the right question.** Every input the corpus has is depth-blind at the scale \(1/\log T\):
 
-**First useful answer.** The unconditional main term of the reflected second moment at \(\theta=1/2\), or an exact reason the reflected pairing cannot be evaluated without RH.
+- pair correlation sees an off-line pair as a double point;
+- mollified value moments see it as two critical zeros;
+- density theorems start at depth about \(19/\log T\).
 
-**Why these three.** Q1 tests whether the U2 programme's selective input can work at all. Q2 is the shortest formal path to a historic intermediate theorem (finite support). Q3 is the most likely to yield an unconditional theorem beyond the literature with tools already in the corpus. None depends on the others.
+\(E_h\) is the one quantity that separates off-line pairs from critical multiplicity at that scale.
+
+**Payoff.** \(hE_h+R_{\rm deep}\le\tfrac3{20}N\) gives \(70\%\) on the line, and \(\le\tfrac18N\) gives \(75\%\). Either would be a theorem beyond the literature.
+
+**First useful answer.** One of:
+
+- a source (prime–Gamma) upper bound for \(E_h\) at any \(h=o(1)\);
+- an exact obstruction showing that the aperture-tangent covariance it needs is equivalent to a statement the corpus already classifies.
+
+The present arithmetic majorants stop at \(h>1/2\). [Shallow-layer law](../../../formal/GaloisForLFunctions/RHTower/XiWardSourceWindowMultiplicity.lean).
+
+**Why these three.**
+
+- Q1 tests whether the U2 programme's selective input can work at all.
+- Q2 is the shortest formal path to a historic intermediate theorem (finite support).
+- Q3 is the only identified path past the census constant. The mollifier route that the previous version of this question proposed is falsified (see 2.5).
+- None depends on the others. Q2 and Q3 both ask for displacement-sensitive control at the scale \(1/\log T\), once for all off-line zeros and once in proportion.
 
 The previous edition's first question, reducing the complete form to finitely many \(\log2\)-orbits, is withdrawn as a priority. The generator-orbit form is a Toeplitz system whose symbol is the zero measure (inference), so the reduction relocates RH without weakening it.
 
@@ -301,7 +326,7 @@ No existing discipline produces positivity of an arithmetically generated almost
 | Arithmetic Herglotz theorem | Positivity of an almost-periodic Toeplitz symbol from properties of its prime-side generation | Must reproduce RH's Toeplitz positivity on one orbit; must fail for Davenport–Heilbronn and Beurling over-regular systems |
 | Stepanov over \(\mathbb Z\) | An auxiliary construction giving a one-sided prime count at square-root precision without a lattice spectrum | Must reproduce hyperelliptic RH; must be parity-breaking |
 | Finite-rank renormalization | Show the complete form is a positive form plus a finite-rank form | Q2; must give exactly finite support, not RH |
-| Exact inertia counting | Signature counts with Frobenius control precise enough for a bounded off-line index | Must reproduce \(2/3\) and \(HD(1)\); Q3 is the next calibration |
+| Exact inertia counting | Signature counts with Frobenius control precise enough for a bounded off-line index | Must reproduce \(2/3\) and \(HD(1)\); must resolve depth \(1/\log T\), since value moments cannot (Q3) |
 
 ### Questions it must answer
 
@@ -322,4 +347,4 @@ No existing discipline produces positivity of an arithmetically generated almost
 7. **A new inequality.** A paid sign, index ceiling, count or energy bound, not another equivalence.
 8. **Formal closure.** Unconditional Lean statements with every input discharged.
 
-**First evidence of success** would be a positive answer to Q1 that fails visibly for the Liouville twin, or an unconditional proportion beyond \(HD(1)\) from a non-pair-correlation main term (Q3).
+**First evidence of success** would be a positive answer to Q1 that fails visibly for the Liouville twin, or an unconditional proportion beyond \(HD(1)\) from a displacement-sensitive source estimate (Q3).

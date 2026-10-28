@@ -37,17 +37,17 @@ theorem continuous_gammaIncrementSymbol : Continuous gammaIncrementSymbol :=
   (continuous_gammaHardyPhaseRate.sub continuous_const).const_mul 2
 
 private theorem xi_edge_field_abs (t : ℝ) :
-    (logDeriv xi ((1 : ℂ) + 2 * (|t| : ℂ) * I)).re =
+    (logDeriv xi ((1 : ℂ) + 2 * ((|t| : ℝ) : ℂ) * I)).re =
       (logDeriv xi ((1 : ℂ) + 2 * (t : ℂ) * I)).re := by
   rcases le_total 0 t with ht | ht
   · rw [abs_of_nonneg ht]
   · rw [abs_of_nonpos ht]
     have hleft : (1 : ℂ) + 2 * ((-t : ℝ) : ℂ) * I =
         (1 : ℂ) - ((2 * t : ℝ) : ℂ) * I := by push_cast; ring
-    rw [hleft, re_logDeriv_xi_conj_line]
-    congr 2
-    push_cast
-    ring
+    have hright : (1 : ℂ) + ((2 * t : ℝ) : ℂ) * I =
+        (1 : ℂ) + 2 * (t : ℂ) * I := by push_cast; ring
+    rw [hleft, ← hright]
+    simpa only [Complex.ofReal_one] using re_logDeriv_xi_conj_line 1 (2 * t)
 
 private theorem two_lt_log_four_pi_reserve : 2 < Real.log (4 * Real.pi) := by
   have h8 : (8 : ℝ) < 4 * Real.pi := by linarith only [Real.pi_gt_d2]
@@ -115,7 +115,7 @@ theorem exists_squarePrime_regular_retained_gamma :
     have hTGt : TG ≤ |t| := (le_max_right _ _).trans ht
     have hx := hxi (2 * |t|) (by linarith only [hTXt, hpos])
     have he : ((1 : ℂ) + ((2 * |t| : ℝ) : ℂ) * I) =
-        (1 : ℂ) + 2 * (|t| : ℂ) * I := by push_cast; ring
+        (1 : ℂ) + 2 * ((|t| : ℝ) : ℂ) * I := by push_cast; ring
     rw [he, xi_edge_field_abs] at hx
     have hl : Real.log |t| ≤ Real.log (2 * |t|) :=
       Real.log_le_log hpos (by linarith only [hpos])
@@ -133,7 +133,7 @@ theorem exists_squarePrime_regular_retained_gamma :
   let M : ℝ := max 1 (gammaIncrementSymbol z)
   have hM : 0 < M := zero_lt_one.trans_le (le_max_left _ _)
   let δ : ℝ := min c (Real.eulerMascheroniConstant / (2 * M))
-  have hδ : 0 < δ := min_pos hc (div_pos hγ (mul_pos (by norm_num) hM))
+  have hδ : 0 < δ := lt_min hc (div_pos hγ (mul_pos (by norm_num) hM))
   refine ⟨δ, hδ, ?_⟩
   intro t
   by_cases ht : |t| ≤ T

@@ -42,3 +42,4 @@
 - formal/GaloisForLFunctions/ArithmeticIndexDescent/README.md
 - formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/README.md
 - formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/README.md
+- formal/GaloisForLFunctions/ArithmeticCountingPositivity/README.md

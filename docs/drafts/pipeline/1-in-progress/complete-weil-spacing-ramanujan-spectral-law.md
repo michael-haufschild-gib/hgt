@@ -77,7 +77,7 @@ the displayed harmonic identity. Meanwhile
 The large harmonic row cancels only after retaining both pole terms. This
 offers a residual estimate, not merely the previously conjectured average
 rank-one form correction. The exact row identity is now verified in
-`TheArchimedeanCenterRowCancelsThePole`; `HarmonicCenterBoundaryBounds` now
+`TheLogarithmicCenterRowCancelsThePole`; `HarmonicCenterBoundaryBounds` now
 verifies the weighted boundary square bound. Normalized residual transfer remains unchecked.
 
 The endpoint harmonic singularity has an elementary finite square bound:
@@ -503,7 +503,7 @@ Five support modules are now scratch-verified, installed, and supplied with firs
 
 Fifteen support modules now pass scratch Lean verification, are installed, and have their first required oleans. Exact center-pole cancellation, the weighted harmonic boundary square bound, the retained logarithmic gap for every `0<c<1`, the two-sided inverse-square row bound, and the pole-weighted row bound `36*N*sqrt(n)` are verified. Seventeen retained transitive endpoint reports are clean. The missing existing `TheUniformMarginPaysThePoleOnlyUpToARootLogarithm` dependency compiled successfully without source changes. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records forty-two drafts. Literal integral-error transfers, periodic rows, pole moments, coercivity, and all three spectral endpoints remain unchecked; final source audits and integration remain. No web searches or novelty audits are part of this work.
 
-The first combined literal-error check exposed an existing namespace collision: ACS `TheScalingSurface` and `DistinctEffectiveCyclesMeetNonnegatively` both declare incompatible `localPair` definitions. The old center helper imports the latter through `CrossTowerCollarAndFiniteEulerLatticePositivity`; the actual Weil carrier imports the former. New standalone drafts `TheLogarithmicCenterKernelIsHarmonic` and `TheLogarithmicCenterRowCancelsThePole` isolate the elementary density and harmonic identities directly over the Levy-density module. They replace two support nodes without changing the target or adding hypotheses. Thirteen active nodes remain verified; the two replacement nodes require fresh checks. Existing foreign modules and oleans are untouched.
+The first combined literal-error check exposed an existing namespace collision: ACS `TheScalingSurface` and `DistinctEffectiveCyclesMeetNonnegatively` both declare incompatible `localPair` definitions. The old center helper imports the latter through `CrossTowerCollarAndFiniteEulerLatticePositivity`; the actual Weil carrier imports the former. New standalone drafts `TheLogarithmicCenterKernelIsHarmonic` and `TheLogarithmicCenterRowCancelsThePole` isolate the elementary density and harmonic identities directly over the Levy-density module. They replace two support nodes without changing the target or adding hypotheses. Both replacement nodes now pass Lean, are installed, and have their first required oleans. Fifteen active nodes are verified, with seventeen clean retained reports. The two superseded owned source modules and their build artifacts were removed; existing foreign modules and oleans are untouched.
 
 ### Complete assembly drafted; Lean verification incomplete
 
