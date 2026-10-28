@@ -3,7 +3,7 @@
 - **ID:** ACP-PARITY-RAMANUJAN
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean checked)
-- **Source:** ../1-in-progress/arithmetic-counting-maximal-gap-rigidity.md
+- **Source:** ../1-in-progress/arithmetic-counting-positivity.md
 
 ## Statement
 

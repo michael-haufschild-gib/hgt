@@ -3,7 +3,7 @@
 - **ID:** ACP-HARMONIC-SPECTRAL-COORDINATES
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper; Lean formalization in progress)
-- **Parent:** ../1-in-progress/arithmetic-counting-maximal-gap-rigidity.md
+- **Parent:** ../1-in-progress/arithmetic-counting-positivity.md
 
 ## Statement
 
@@ -74,6 +74,8 @@ It is not a claim to a new abstract spectral projection theorem.
 
 ## Scope
 
-This coordinate theorem does not by itself bound all constrained vectors.
-The spectral surplus and homogeneous constrained-energy estimate on the
-maximal-gap card remain necessary for that separate theorem.
+This coordinate theorem identifies the nonperiodic multiplicative constraint
+on the actual spectrum; it does not by itself bound all constrained vectors.
+It is retained as a reusable counting tool independently of the valuation-box
+maximal-gap theorem for primes at least 11. The redundant spectral endpoint
+for primes at least 41 has been dropped at the user's direction.

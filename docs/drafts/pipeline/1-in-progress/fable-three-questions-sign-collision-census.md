@@ -32,7 +32,22 @@ Lean (compiled, axioms standard):
 
 ## Q-II — t-uniform collision bound for the heat flow
 
-TODO (analysis next).
+Answer (paper): split the nonreal zeros of `H_t` at height `h`.
+1. Energy–count law: below the Gaussian horizon, `#{Im w ≥ h} ≤ 2K/h²`, `K` the energy
+   `Σ_{Im ρ>0} ((Im ρ)² − 2t − h²/2)_+` of `Ξ` (weak majorization at threshold `h²/2`).
+2. `t`-uniform high count at every height ⟺ zeros approach the line ⟺ LH ∧ every cosine shift has
+   finitely many nonreal zeros. (⇒ survival of deep zeros by Hurwitz discs; ⇐ energy law below the
+   horizon, antitone count above.) Zero high count at every height ⟺ RH.
+3. `t`-uniform total count ⟺ finite off-line support (corpus). The flow has no depth-count law for
+   the near-axis zeros (corpus `not_heat_depthCountLaw`, `twoPairQuartic_depthBudget_fails`): the
+   only dynamical content beyond the depth counting of `Ξ` is the near-axis count.
+So the subexponential/polynomial targets are statements about the near-axis count; any
+`t`-uniform bound on the high part is Lindelöf-strength.
+
+Lean (compiled): `RHTower/DeBruijnHighCollisionsReadTheDepth.lean` — `highCount_le_of_energy`,
+`exists_highCount_le_of_zerosApproachLine`, `eventually_exists_highZeros`,
+`zerosApproachLine_of_highCount`, `zerosApproachLine_iff_highCount`, `lindelof_of_highCount`,
+`highCount_iff_lindelof_and_cosShiftXi_finite_nonreal`, `riemannHypothesis_iff_highCount_zero`.
 
 ## Q-III — higher inertia census
 

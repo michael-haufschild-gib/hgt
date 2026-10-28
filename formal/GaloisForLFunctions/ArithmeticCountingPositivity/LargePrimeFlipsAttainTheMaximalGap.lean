@@ -1149,7 +1149,7 @@ theorem smoothEnergy_ge_twisted {p Q X : ℕ} (hp : p.Prime) (hpmem : p ∈ (ran
           (1 + 16 * logSum Q / Real.log X)) =
         g₁ * (1 + 16 * logSum Q / Real.log X) * smoothVar Q X h +
           (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) := by
-      field_simp; ring
+      rw [mul_add, mul_div_cancel₀ _ h1e.ne']; ring
     refine le_of_mul_le_mul_left ?_ h1e
     rw [e]
     have := mul_le_mul_of_nonneg_right hcoef hV0
@@ -1227,7 +1227,7 @@ theorem two_scale_twisted {p Q X N : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q
     by_cases hV : smoothVar Q X h = 0
     · have hZ : Z = 0 := by
         have := hZV; rw [hV, mul_zero] at this; linarith
-      rw [hZ, div_zero, zero_mul, mul_zero]
+      rw [hZ, zero_div, zero_mul, mul_zero]
     · calc roughHarmonic Q (N / X) * Z = Z / smoothVar Q X h *
             (roughHarmonic Q (N / X) * smoothVar Q X h) := by field_simp; ring
         _ ≤ _ := mul_le_mul_of_nonneg_left hWV hZVdiv0

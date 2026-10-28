@@ -54,3 +54,12 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
 ## Log
 - 2026-10-28 — created; corpus/Mathlib survey: no ray class groups, Hecke characters, idèle class
   group or reciprocity map.
+
+## Current work
+
+HL3: identify the absolutely convergent coefficient L-series with the sum over nonzero ideals,
+then use unique ideal factorization and the existing
+`HTGeometry.hasProd_inv_one_sub_nome` to prove the prime-ideal Euler product.
+The trivial character must also be compared with Dedekind zeta by deleting the finitely many
+Euler factors in the finite modulus. No analytic continuation or reciprocity premise is to be
+introduced. Existing HL1, HL2, HL4 and HL5 sources were inspected; HL6, HL7 and CFT remain open.

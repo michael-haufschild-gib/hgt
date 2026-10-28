@@ -408,7 +408,7 @@ theorem integral_gaussDensity_mul_sub_eq {F : ℂ → ℂ} {z : ℂ} {t : ℝ} (
   have hintgu : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * (u : ℂ)) := by
     have h := integrable_gaussDensity_mul_pow ht 1
     simp only [pow_one] at h
-    exact h.ofReal.congr (Eventually.of_forall fun u => by simp only [Complex.ofReal_mul])
+    exact h.ofReal.congr (Eventually.of_forall fun u => by simp only [RCLike.ofReal_mul])
   have hA : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u)
       - F z * (gaussDensity t u : ℂ)) := hint.sub (hintg.const_mul _)
   have hB : Integrable (fun u : ℝ => I * deriv F z * ((gaussDensity t u : ℂ) * (u : ℂ))) :=

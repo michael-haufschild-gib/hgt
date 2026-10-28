@@ -53,9 +53,16 @@ theorems in `PrimeParityRamanujanCoordinates.lean` now pass the kernel and
 transitive axiom audit. Its olean was written because the next harmonic
 normalization module imports it. The canonical final source check also passed.
 
-`arithmetic-counting-maximal-gap-rigidity.md` records the still-unproved exact
-endpoint. A two-mode spectral reduction now isolates its remaining analytic
-and linear-algebra obligations. No maximal-gap claim is yet asserted.
+The valuation-box branch is formalizing the maximal-gap theorem for primes
+at least 11 in `LargePrimeFlipsAttainTheMaximalGap.lean`; its paper card is
+`../2-fully-proven/arithmetic-counting-maximal-gap-rigidity.md`. The user
+confirmed this as the intended endpoint and rejected the redundant independent
+endpoint for primes at least 41. That draft and its separate two-mode helper
+have been removed. Preserve the other researcher's valuation-box work.
+
+The retained independent contribution is the exact bridge from parity counts
+to squared coordinates on actual prime eigenlines. It is useful beyond the
+maximal-gap application and must be finished on its own mathematical merits.
 
 Existing worktree contains other researchers' changes; preserve them. The source report
 is being updated concurrently: its inertia/mollifier proposal has changed into
@@ -82,10 +89,9 @@ finite arithmetic construction or README is finished.
   `3-formalized`, with the durable audit report beside it.
   The failed-rule card with its strongest positive survivor is now in
   `5-failed/arithmetic-counting-submaximal-gap-selection.md`.
-- Next exact proofs: `/tmp/acp-normalized-check.lean` (unit parity constraint,
+- Next exact proof: `/tmp/acp-normalized-check.lean` (unit parity constraint,
   common harmonic normalization, exact mixed inner product, norm and residual
-  limits) and `/tmp/acp-two-mode-check.lean` (homogeneous finite constrained-energy
-  helper). These two scratch files have not been compiled yet.
+  limits, and actual eigenline coordinates).
 - `/tmp/acp-ramanujan-check.log` records seven successful axiom audits;
   `/tmp/acp-build-ramanujan.log` records its successful olean command. The
   fifth leaf passed its final canonical check without diagnostics.
@@ -96,13 +102,12 @@ finite arithmetic construction or README is finished.
   the orientation-independent squared coordinate, and actual simple
   eigenline coordinates. Its paper card is
   `../2-fully-proven/arithmetic-counting-harmonic-spectral-coordinates.md`.
-  This scratch file is now checking. It includes all axiom commands.
-- `/tmp/acp-maximal-check.lean` imports the intended
-  `HarmonicParitySpectralCoordinates` leaf and the complete-source obstruction.
-  It now contains the homogeneous two-mode helper, arithmetic separation/count,
-  full constrained matrix bound, gauge translation, exact gap classification
-  for primes at least 41, and complete-source counterexample. It is an
-  uncompiled draft. Do not promote the maximal-gap conjecture yet.
+  Its first check found only local algebra/rewrite issues, now corrected for
+  another check. It includes all axiom commands. Do not accept the earlier
+  failed audit's `sorryAx` entries; only a completely successful check counts.
+- The abandoned `/tmp/acp-maximal-check.lean` and `/tmp/acp-two-mode-check.lean`
+  were removed at the user's direction. Do not resume that endpoint or
+  substitute it for the stronger valuation-box branch.
 - The first four theorem axiom log is `/tmp/acp-axiom-audit.log`. Canonical logs
   are `/tmp/acp-final-correlation.log`, `/tmp/acp-final-sparse.log`,
   `/tmp/acp-final-parity.log`, `/tmp/acp-final-complete.log`. These are all finished.
