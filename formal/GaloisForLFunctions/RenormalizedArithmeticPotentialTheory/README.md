@@ -391,6 +391,39 @@ the place that pays.
     the primes dividing `q`, and the others are `O(1)`. So every unit class carries
     `A(y; r) = log y/φ(q) + O(1)`: the same divergence, the prime place does not separate them.
 
+### H. Residues and finite parts
+
+32. **Residue classes are invisible to the divergence** (`classHarmonic`,
+    `abs_classHarmonic_add_one_sub_le`, `primeBilinear_residuePole_eq`,
+    `exists_abs_atomicWeilForm_unitClassProfile_sub_le`). The shift `m ↦ m + 1` moves a class harmonic
+    sum by at most `2`, so every class has `S_a(M) = log M/q + O(q)`. A prime power `t` carries the
+    class `a` into `at`, so the residue Gram is a sum of class Mertens sums, and the counterterm on
+    the unit classes is the single square `(q/φ(q)) ℓ²`. A class function is seen through its mean
+    only (RP24, RP25).
+33. **Every profile is a step profile** (`stepProfile_horizonDiff`, `horizonVariation_le`).
+    Summation by parts writes `G(n)/√n` as a step profile whose coefficient mass is the variation of
+    `G`, so the horizon laws hold for every profile of bounded variation (RP27).
+34. **The remainder is the convolution of the Mertens error** (`abs_primeBilinear_gaugeTrunc_sub_transfer_le`,
+    `gaugePole_finitePart_iff`). The gauged pole Gram is `Σ_{m ≤ M} (A_ε(⌊M'/m⌋) + A_ε(⌊M/m⌋))/m`
+    exactly. After the matched divergence `κ H H'` the remainder is the harmonic convolution of
+    `E = A_ε − κ log`. The divergence reads the leading order of `A_ε` (RP26); the finite part on
+    the pole is `2α` exactly when `E` has harmonic mean `α`, and in particular when `E → α` (RP30).
+35. **The finite part reads `−L′/L` at `s = 1`** (`charMertensSum_eq_abel`,
+    `tendsto_LSeries_twist_vonMangoldt`, `charMertensLimit_eq_neg_logDeriv`). Abel summation against
+    the prime number theorem for characters makes `A_χ` converge. Abel's theorem for the Dirichlet
+    series of `χΛ` and the continuity of `−L′/L` at `1` identify the limit. `ζ` contributes `−γ`, the
+    constant term of `−ζ′/ζ` at its pole; a character contributes `−L′/L(1, χ)` (RP31).
+36. **Characters diagonalize the residue finite part** (`classMertensConstant_eq_sum`,
+    `sum_classMertensConstant_mul_char`, `sum_residueFinitePart_mul_char`). The class Mertens
+    constants are the character transform of the values `β_χ`. The finite-part matrix
+    `c_{a⁻¹b} + c_{b⁻¹a}` is a convolution on `(ℤ/q)ˣ`, so the characters are its eigenvectors with
+    eigenvalues `2 Re β_χ`. The second-order class asymptotics make the logarithmic model Gram
+    exact to `O(1)` (RP34, RP35).
+37. **The finite part selects `ζ`** (`finitePartLimit_le_and_eq_iff`, `liouvilleLimit_le_and_eq_iff`).
+    `A_ε = A − Σ (1 − ε(t))Λ(t)/t` with non-negative terms. So among matched gauges the Mertens limit
+    is at most `−γ`, with equality only when `ε = 1` at every prime. Dually, Liouville is the bottom
+    of the anti-matched family (RP33, RP36). Residue patterns are matched by their mean (RP38).
+
 ---
 
 ## 5. Pillar theorems
@@ -522,6 +555,9 @@ The twelve questions of the report (§4.4), in RAPT's terms.
 | A matched counterterm proves the sign | It removes the divergence; the sign lives in the finite part |
 | The finite part of the prime place hides the zeros | On uniform profiles it is the scalar `−2γ`, on the classes the tower form; the zeros are invisible at log-scale resolution, and the sign is decided by the archimedean place and the pole |
 | The local Hodge index at `p` and the renormalization at the horizon are separate topics | The tower form of `p` is the finite part of the horizon renormalization on the `p`-adic classes |
+| Refining by residue classes raises the counterterm rank, as the valuation classes do | On the unit classes mod `q` the counterterm stays the single square `(q/φ(q)) ℓ²`; only valuations raise the rank (RP24) |
+| Characters are invisible at the horizon | Invisible to the divergence; their finite part is `2 Re(−L′/L(1, χ))`, and on residue profiles the characters are the eigenvectors of the finite part (RP31, RP35) |
+| A finite part needs a convergent Mertens error | It needs exactly a harmonic mean of the error; convergence is the Abelian sufficient condition (RP30) |
 
 ---
 

@@ -41,3 +41,4 @@
 - formal/GaloisForLFunctions/IncommensurableGaborPinching/README.md
 - formal/GaloisForLFunctions/ArithmeticIndexDescent/README.md
 - formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/README.md
+- formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/README.md

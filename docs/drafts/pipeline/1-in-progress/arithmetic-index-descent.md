@@ -774,3 +774,18 @@ exact square reserve and concrete near-critical sequence survive. Joint
 bounds retaining full diagonal Gamma energy are not ruled out. No uniform
 arithmetic source upper, exhaustive index bound or individual-defect
 exclusion follows from this calibration.
+
+### Exact prime-two mixed differences — formalized
+
+Actual direct19391 passed clean. All four endpoint dependency prints contain
+only propext, Classical.choice and Quot.sound. The literal shift2 sends one
+balanced detail to two complete coarse atoms, giving haarMass times their
+coefficient difference. The full two-orientation original prime coefficient
+has the same identity; the other orientation vanishes. An odd common horizon
+retains all mixed contributions, and adjustable Young payment charges only
+that actual coarse variation. Wired and foundational README/checks updated.
+
+Three continuation sources are candidates, not established results: Gamma
+mean-graph payment, literal physical-integral transfer, and arbitrarily small
+Gamma-relative high-detail tails. The all-prime mixed source and cumulative
+full-form Schur payment remain open.

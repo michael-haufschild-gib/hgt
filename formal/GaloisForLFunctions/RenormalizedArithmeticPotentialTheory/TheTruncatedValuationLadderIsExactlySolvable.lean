@@ -93,6 +93,7 @@ theorem sum_ladWeight_ge (hp : 1 < p) {J k : ℕ} (hk : 1 ≤ k) (hkJ : k ≤ J)
   have hp0 : (p : ℝ) ≠ 0 := by linarith
   have hp1' : (p : ℝ) - 1 ≠ 0 := by linarith
   have hr' : r - 1 ≠ 0 := sub_ne_zero.mpr hr1
+  have h1p : (1 : ℝ) - p ≠ 0 := sub_ne_zero.mpr (ne_of_lt hp1)
   rw [pow_succ]
   simp only [r] at hr' ⊢
   field_simp
@@ -186,11 +187,12 @@ theorem ladForm_single (J : ℕ) {m : ℕ} (hm : m ≤ J) (g : ℕ → ℝ) :
       ∑ j ∈ range (J + 1), (if m < j then Real.log p * (ladWeight p j * (g j - g m)) else 0) := by
     rw [sum_comm]
     simp only [sum_ite_eq', hmJ, if_true]
-  rw [sum_sub_distrib, h1, h2, ← sum_filter, show (range (J + 1)).filter (fun i => i < m) = range m by
+  simp only [sum_sub_distrib]
+  rw [h1, h2, ← sum_filter, show (range (J + 1)).filter (fun i => i < m) = range m by
       ext i; simp only [mem_filter, mem_range]; omega, ← sum_filter,
     show (range (J + 1)).filter (fun j => m < j) = Ioc m J by
       ext j; simp only [mem_filter, mem_range, mem_Ioc]; omega, ← mul_sum, ← mul_sum, ← mul_sum,
-    mul_sub]
+    mul_sub, sum_sub_distrib]
 
 /-! ### 4. The modes are orthogonal eigenvectors -/
 
@@ -272,8 +274,9 @@ theorem ladInner_comm (J : ℕ) (f g : ℕ → ℝ) : ladInner p J f g = ladInne
 /-- `⟨1, ψ_l⟩ = 0` for `1 ≤ l ≤ J`. -/
 theorem ladInner_one_ladMode (hp : 1 < p) {J l : ℕ} (hl : 1 ≤ l) (hlJ : l ≤ J) :
     ladInner p J (ladMode p J l) (fun _ => 1) = 0 := by
-  rw [ladInner_ladMode J hl hlJ, sum_Ico_ladWeight hp hl hlJ]
+  rw [ladInner_ladMode J hl hlJ]
   simp only [mul_one]
+  rw [sum_Ico_ladWeight hp hl hlJ]
   ring
 
 /-- **Orthogonality** of distinct modes. -/
@@ -305,10 +308,13 @@ theorem eq_zero_of_ladInner_ladMode (hp : 1 < p) {J : ℕ} {r : ℕ → ℝ}
     ∀ j ∈ range (J + 1), r j = 0 := by
   set S : ℕ → ℝ := fun k => ∑ j ∈ Ico k (J + 1), ladWeight p j * r j
   have hS0 : S 0 = 0 := by
+    have h0 : ∀ j, ladMode p J 0 j = 1 := fun j => by simp [ladMode]
     have := h 0 (mem_range.mpr (by omega))
     rw [ladInner] at this
-    simp only [S, ← this, ladMode, if_pos rfl, one_mul]
-    rw [show Ico 0 (J + 1) = range (J + 1) from (range_eq_Ico).symm]
+    simp only [h0, one_mul] at this
+    simp only [S]
+    rw [← range_eq_Ico]
+    exact this
   -- `S_k = 0` and `r_j = 0` below `k`, by induction
   have key : ∀ k, k ≤ J → S k = 0 ∧ ∀ j < k, r j = 0 := by
     intro k
@@ -400,5 +406,51 @@ theorem ladForm_self_eq (hp : 1 < p) (J : ℕ) (g : ℕ → ℝ) :
   refine sum_congr rfl fun k hk => ?_
   rw [ladForm_ladMode hp (by have := mem_range.mp hk; omega)]
   ring
+
+theorem ladInner_ladMode_eq_coeff (hp : 1 < p) {J k : ℕ} (hk : k ≤ J) (g : ℕ → ℝ) :
+    ladInner p J (ladMode p J k) g = ladCoeff p J k g * ladInner p J (ladMode p J k) (ladMode p J k) := by
+  rw [ladCoeff, div_mul_cancel₀ _ (ladInner_ladMode_self_pos hp hk).ne']
+
+/-- **Coefficient Parseval**: `Σ_j w_j (Σ_k z_k ψ_k(j))² = Σ_k z_k² ‖ψ_k‖²`. -/
+theorem sum_ladWeight_sq_sum (hp : 1 < p) (J : ℕ) (z : ℕ → ℝ) :
+    ∑ j ∈ range (J + 1), ladWeight p j * (∑ k ∈ range (J + 1), z k * ladMode p J k j) ^ 2 =
+      ∑ k ∈ range (J + 1), z k ^ 2 * ladInner p J (ladMode p J k) (ladMode p J k) := by
+  have e : ∀ j, ladWeight p j * (∑ k ∈ range (J + 1), z k * ladMode p J k j) ^ 2 =
+      ∑ k ∈ range (J + 1), ∑ l ∈ range (J + 1),
+        z k * z l * (ladWeight p j * (ladMode p J k j * ladMode p J l j)) := fun j => by
+    rw [sq, sum_mul_sum, mul_sum]
+    exact sum_congr rfl fun k _ => by rw [mul_sum]; exact sum_congr rfl fun l _ => by ring
+  rw [sum_congr rfl fun j _ => e j, sum_comm]
+  refine sum_congr rfl fun k hk => ?_
+  rw [sum_comm, sum_eq_single k]
+  · rw [← mul_sum, sq]; rfl
+  · intro l hl hlk
+    rw [← mul_sum, show ∑ j ∈ range (J + 1), ladWeight p j * (ladMode p J k j * ladMode p J l j) =
+      ladInner p J (ladMode p J k) (ladMode p J l) from rfl,
+      ladInner_ladMode_ladMode hp (by have := mem_range.mp hk; omega)
+        (by have := mem_range.mp hl; omega) (Ne.symm hlk), mul_zero]
+  · exact fun h => absurd hk h
+
+/-- `λ_k ≤ log p (k + 1/(p − 1))`. -/
+theorem ladEig_le (hp : 1 < p) (J k : ℕ) :
+    ladEig p J k ≤ Real.log p * (k + 1 / ((p : ℝ) - 1)) := by
+  unfold ladEig
+  have hl := Real.log_natCast_nonneg p
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
+  split_ifs with hk
+  · subst hk; simp only [Nat.cast_zero, zero_add]
+    exact mul_nonneg hl (div_nonneg zero_le_one (by linarith))
+  · exact mul_le_mul_of_nonneg_left (by linarith [ladCorr_le hp J k]) hl
+
+/-- `λ_k ≥ log p (k + 1/(p − 1)) − log p · p^{−(J−k+1)}/(p − 1)` for `k ≥ 1`. -/
+theorem ladEig_ge (hp : 1 < p) {J k : ℕ} (hk : 1 ≤ k) :
+    Real.log p * (k + 1 / ((p : ℝ) - 1)) -
+      Real.log p * ((1 / (p : ℝ)) ^ (J - k + 1) / ((p : ℝ) - 1)) ≤ ladEig p J k := by
+  unfold ladEig ladCorr
+  rw [if_neg (by omega)]
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
+  have : (1 - (1 / (p : ℝ)) ^ (J - k + 1)) / ((p : ℝ) - 1) =
+      1 / ((p : ℝ) - 1) - (1 / (p : ℝ)) ^ (J - k + 1) / ((p : ℝ) - 1) := by ring
+  rw [this]; ring_nf; exact le_rfl
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

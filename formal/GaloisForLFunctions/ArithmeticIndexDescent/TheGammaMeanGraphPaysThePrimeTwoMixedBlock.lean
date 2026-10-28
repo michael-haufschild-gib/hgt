@@ -149,18 +149,14 @@ theorem primeTwoDetailCharge_pos : 0 < primeTwoDetailCharge := by
   unfold primeTwoDetailCharge
   positivity
 
-private theorem primeTwoCoarseVariation_nonneg (q : ℕ → ℝ) (Y : ℕ) :
+theorem primeTwoCoarseVariation_nonneg (q : ℕ → ℝ) (Y : ℕ) :
     0 ≤ primeTwoCoarseVariation q Y := by
   apply Finset.sum_nonneg
   intro a ha
   exact mul_nonneg (haarMass_pos (Finset.mem_Icc.mp ha).1).le (sq_nonneg _)
 
-/-- The signed mixed block consumes one mean-graph payment and a fixed detail charge. -/
-theorem abs_primeTwoMixedSource_le_meanGraph (d q : ℕ → ℝ) {Y X : ℕ}
-    (hYX : 2 * Y + 1 ≤ X) :
-    |primeTwoMixedSource d q Y X| ≤ primeTwoDetailCharge * primeTwoDetailMass d Y +
-      (1 / 2) * completePairMeanGraph q X := by
-  have hcoef : (ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) ^ 2 / primeTwoDetailCharge ≤
+theorem primeTwoDetailCharge_payment :
+    (ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) ^ 2 / primeTwoDetailCharge ≤
       Real.exp (-(1 / 2 : ℝ)) / 4 := by
     apply (div_le_iff₀ primeTwoDetailCharge_pos).mpr
     have he : (Real.exp (-(1 / 2 : ℝ)) / 4) * primeTwoDetailCharge =
@@ -170,9 +166,16 @@ theorem abs_primeTwoMixedSource_le_meanGraph (d q : ℕ → ℝ) {Y X : ℕ}
       ring
     rw [he]
     exact le_add_of_nonneg_left (by positivity)
+
+/-- The signed mixed block consumes one mean-graph payment and a fixed detail charge. -/
+theorem abs_primeTwoMixedSource_le_meanGraph (d q : ℕ → ℝ) {Y X : ℕ}
+    (hYX : 2 * Y + 1 ≤ X) :
+    |primeTwoMixedSource d q Y X| ≤ primeTwoDetailCharge * primeTwoDetailMass d Y +
+      (1 / 2) * completePairMeanGraph q X := by
   apply (abs_primeTwoMixedSource_le_variation d q hYX primeTwoDetailCharge_pos).trans
   exact add_le_add_left
-    ((mul_le_mul_of_nonneg_right hcoef (primeTwoCoarseVariation_nonneg q Y)).trans
+    ((mul_le_mul_of_nonneg_right primeTwoDetailCharge_payment
+      (primeTwoCoarseVariation_nonneg q Y)).trans
       (primeTwoCoarseVariation_le_meanGraph q hYX)) _
 
 /-- Paying the complete prime-two mixed block retains the remaining detail charge. -/

@@ -43,7 +43,7 @@ theorem inner_coarseAtom {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) :
     inner_cellAtom ha1 hb0, inner_cellAtom ha1 hb1]
   by_cases hab : a = b
   · subst b
-    simp only [if_pos rfl, if_neg (by omega : 2 * a ≠ 2 * a + 1),
+    simp only [ite_true, if_neg (by omega : 2 * a ≠ 2 * a + 1),
       if_neg (by omega : 2 * a + 1 ≠ 2 * a), add_zero, zero_add]
     rw [← Complex.ofReal_add, adjacent_logCellWidths ha]
   · simp only [if_neg hab, if_neg (by omega : 2 * a ≠ 2 * b),
@@ -139,8 +139,10 @@ theorem primeTwoMixedSource_eq (d q : ℕ → ℝ) {Y X : ℕ} (hYX : 2 * Y + 1 
     primeTwoMixedSource d q Y X =
       (2 * ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) *
         ∑ a ∈ Finset.Icc 1 Y, haarMass a * d a * (q (2 * a) - q (2 * a + 1)) := by
-  rw [primeTwoMixedSource, inner_shift_coarseSection_haarSection q d X Y (by norm_num : 2 ≤ 2),
-    add_zero, inner_shift_two_haarSection_coarseSection d q hYX]
+  have hzero := inner_shift_coarseSection_haarSection q d X Y (by norm_num : 2 ≤ 2)
+  simp only [Nat.cast_ofNat] at hzero
+  rw [primeTwoMixedSource, hzero, add_zero,
+    inner_shift_two_haarSection_coarseSection d q hYX]
 
 /-- An odd complete horizon retains the whole prime-two block with no terminal remainder. -/
 theorem primeTwoMixedSource_odd_horizon (d q : ℕ → ℝ) (Y : ℕ) :
@@ -148,6 +150,7 @@ theorem primeTwoMixedSource_odd_horizon (d q : ℕ → ℝ) (Y : ℕ) :
       primeTwoMixedSource d q Y (2 * Y + 1) := by
   have hzero (Z : ℕ) := inner_shift_coarseSection_haarSection q d (2 * Y + 1) Z
     (by norm_num : 2 ≤ 2)
+  simp only [Nat.cast_ofNat] at hzero
   unfold primeTwoMixedSource
   rw [hzero, hzero, add_zero, add_zero]
   congr 1
@@ -205,7 +208,8 @@ theorem abs_primeTwoMixedSource_le_variation (d q : ℕ → ℝ) {Y X : ℕ}
       rw [show 2 * ell * (haarMass a * d a * (q (2 * a) - q (2 * a + 1))) =
         haarMass a * (2 * ell * d a * (q (2 * a) - q (2 * a + 1))) by ring,
         abs_mul, abs_of_nonneg hw]
-      convert h using 1 <;> ring
+      convert h using 1
+      ring
     _ = _ := by
       rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
       rfl

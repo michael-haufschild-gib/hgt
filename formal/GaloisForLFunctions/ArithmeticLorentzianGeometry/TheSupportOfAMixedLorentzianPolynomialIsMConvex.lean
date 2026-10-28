@@ -41,10 +41,6 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-! ### Exchange in a Lorentzian form -/
 
-theorem bil_single_single (Q : Matrix ι ι ℝ) (i j : ι) :
-    bil Q (Pi.single i 1) (Pi.single j 1) = Q i j := by
-  simp [bil, dotProduct, Pi.single_apply]
-
 /-- **Exchange in a Lorentzian form.** If `Q ≥ 0` is hyperbolic with `Q_{ai} > 0` and `Q_{jk} > 0`,
 then `Q_{aj} > 0` or `Q_{ak} > 0`: otherwise `x = e_a + t e_i`, `y = e_j + e_k` have
 `Q[x] Q[y] ≥ 4t Q_{ai} Q_{jk} > t² (Q_{ij} + Q_{ik})² = (xᵀQy)²` for small `t > 0`. -/
@@ -55,40 +51,40 @@ theorem IsHyperbolic.exchange {Q : Matrix ι ι ℝ} (hQ : Q.IsSymm) (hnn : ∀ 
   push Not at hcon
   have haj : Q a j = 0 := le_antisymm hcon.1 (hnn a j)
   have hak : Q a k = 0 := le_antisymm hcon.2 (hnn a k)
-  set S := Q i j + Q i k
-  set P := Q a i * Q j k
-  have hP : 0 < P := mul_pos hai hjk
-  have hS : 0 ≤ S := add_nonneg (hnn i j) (hnn i k)
-  set t := P / (S ^ 2 + 1)
-  have ht : 0 < t := by positivity
+  have hS : 0 ≤ Q i j + Q i k := add_nonneg (hnn i j) (hnn i k)
+  -- a small `t > 0` with `t S² < 4 Q_{ai} Q_{jk}`
+  obtain ⟨t, ht, htS⟩ : ∃ t : ℝ, 0 < t ∧ t * (Q i j + Q i k) ^ 2 < 4 * (Q a i * Q j k) := by
+    have hP : 0 < Q a i * Q j k := mul_pos hai hjk
+    refine ⟨Q a i * Q j k / ((Q i j + Q i k) ^ 2 + 1), by positivity, ?_⟩
+    rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+    nlinarith [sq_nonneg (Q i j + Q i k)]
   have hqx : qf Q (Pi.single a 1 + t • Pi.single i 1) = Q a a + 2 * t * Q a i + t ^ 2 * Q i i := by
     have h := qf_add_smul hQ 1 t (Pi.single a 1) (Pi.single i 1)
-    rw [one_smul] at h
+    simp only [one_smul] at h
     rw [h]
     simp only [qf, bil_single_single]
     ring
   have hqy : qf Q (Pi.single j 1 + Pi.single k 1) = Q j j + 2 * Q j k + Q k k := by
     have h := qf_add_smul hQ 1 1 (Pi.single j 1) (Pi.single k 1)
-    rw [one_smul] at h
+    simp only [one_smul] at h
     rw [h]
     simp only [qf, bil_single_single]
     ring
-  have hb : bil Q (Pi.single a 1 + t • Pi.single i 1) (Pi.single j 1 + Pi.single k 1) = t * S := by
-    simp only [bil_add_left, bil_add_right, bil_smul_left, bil_single_single, haj, hak, S]
+  have hb : bil Q (Pi.single a 1 + t • Pi.single i 1) (Pi.single j 1 + Pi.single k 1) =
+      t * (Q i j + Q i k) := by
+    simp only [bil_add_left, bil_add_right, bil_smul_left, bil_single_single, haj, hak]
     ring
   have hx : 0 < qf Q (Pi.single a 1 + t • Pi.single i 1) := by
     rw [hqx]
     nlinarith [hnn a a, mul_nonneg (sq_nonneg t) (hnn i i), mul_pos ht hai]
-  have h := hh _ _ hx
+  have h := hh _ (Pi.single j 1 + Pi.single k 1) hx
   rw [hqx, hqy, hb] at h
   have h1 : 2 * t * Q a i ≤ Q a a + 2 * t * Q a i + t ^ 2 * Q i i := by
     nlinarith [hnn a a, mul_nonneg (sq_nonneg t) (hnn i i)]
   have h2 : 2 * Q j k ≤ Q j j + 2 * Q j k + Q k k := by nlinarith [hnn j j, hnn k k]
   have h3 := mul_le_mul h1 h2 (by positivity) (by linarith [mul_pos ht hai])
-  have h4 : t * S ^ 2 < 4 * P := by
-    have e : t * (S ^ 2 + 1) = P := by simp only [t]; field_simp
-    nlinarith
-  nlinarith [mul_lt_mul_of_pos_left h4 ht]
+  have key : 4 * t * (Q a i * Q j k) ≤ t * (t * (Q i j + Q i k) ^ 2) := by nlinarith
+  nlinarith [mul_lt_mul_of_pos_left htS ht]
 
 /-! ### Quadratics -/
 
@@ -155,12 +151,13 @@ theorem coeff_dirDeriv_pair_ne_zero_iff {p : MvPolynomial ι ℝ} (hp : ∀ β, 
     add_eq_zero_iff_of_nonneg (coeff_dirDeriv_single_nonneg hp a γ)
       (coeff_dirDeriv_single_nonneg hp k γ), not_and_or]
 
+omit [Fintype ι] in
 theorem single_nonneg (k : ι) (r : ι) : (0 : ℝ) ≤ (Pi.single k 1 : ι → ℝ) r := by
   rw [Pi.single_apply]; split_ifs <;> norm_num
 
 /-! ### Degrees -/
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 theorem degree_of_coeff_ne_zero {p : MvPolynomial ι ℝ} {d : ℕ} (hp : p.IsHomogeneous d)
     {β : ι →₀ ℕ} (h : coeff β p ≠ 0) : Finsupp.degree β = d := by
   rw [Finsupp.degree_eq_weight_one]; exact hp h
@@ -186,6 +183,7 @@ theorem eq_of_le_of_degree_le {α γ : ι →₀ ℕ} (hle : γ ≤ α)
   have hsum : ∑ l, γ l = ∑ l, α l := le_antisymm (Finset.sum_le_sum hle') hd
   exact Finsupp.ext fun l => ((Finset.sum_eq_sum_iff_of_le hle').mp hsum l (mem_univ l)).symm
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- A monomial containing `x_k` is `x^ν x_k`. -/
 theorem exists_eq_add_single {β : ι →₀ ℕ} {k : ι} (h : 1 ≤ β k) :
     ∃ ν, β = ν + Finsupp.single k 1 := by
@@ -229,11 +227,11 @@ theorem exchange_disjoint {p : MvPolynomial ι ℝ} (hp : ∀ β, 0 ≤ coeff β
     (hpart : ∀ l, IsMConvex {γ | coeff γ (dirDeriv (Pi.single l 1) p) ≠ 0}) (hμ : μ ≠ 0)
     (hα : coeff (μ + Finsupp.single a 1 + Finsupp.single i 1) p ≠ 0)
     (hβ : coeff (ν + Finsupp.single k 1) p ≠ 0)
-    (hdisj : ∀ l, 1 ≤ (μ + Finsupp.single a 1 + Finsupp.single i 1) l →
-      (ν + Finsupp.single k 1) l = 0) :
-    ∃ j, 1 ≤ (ν + Finsupp.single k 1) j ∧
+    (hdisj : ∀ l, 1 ≤ (μ + Finsupp.single a 1 + Finsupp.single i 1 : ι →₀ ℕ) l →
+      (ν + Finsupp.single k 1 : ι →₀ ℕ) l = 0) :
+    ∃ j, 1 ≤ (ν + Finsupp.single k 1 : ι →₀ ℕ) j ∧
       coeff (μ + Finsupp.single a 1 + Finsupp.single j 1) p ≠ 0 := by
-  have hβi : (ν + Finsupp.single k 1) i = 0 :=
+  have hβi : (ν + Finsupp.single k 1 : ι →₀ ℕ) i = 0 :=
     hdisj i (by simp [single_apply_eq])
   have hνi : ν i = 0 := by
     simp only [Finsupp.add_apply, single_apply_eq] at hβi; omega
@@ -243,9 +241,9 @@ theorem exchange_disjoint {p : MvPolynomial ι ℝ} (hp : ∀ β, 0 ≤ coeff β
     left; rwa [add_right_comm]
   have hB : coeff ν (dirDeriv (Pi.single a 1 + Pi.single k 1) p) ≠ 0 := by
     rw [coeff_dirDeriv_pair_ne_zero_iff hp]; right; exact hβ
-  obtain ⟨j, hj, hJ⟩ := hpair _ hA _ hB i (by simp [hνi, single_apply_eq])
+  obtain ⟨j, hj, hJ⟩ := hpair _ hA _ hB i (by simp [hνi])
   rw [add_tsub_cancel_right] at hJ
-  have hβj : 1 ≤ (ν + Finsupp.single k 1) j := by
+  have hβj : 1 ≤ (ν + Finsupp.single k 1 : ι →₀ ℕ) j := by
     simp only [Finsupp.add_apply, single_apply_eq] at hj ⊢
     split_ifs at hj ⊢ <;> omega
   rcases (coeff_dirDeriv_pair_ne_zero_iff hp a k _).mp hJ with h | h
@@ -253,9 +251,9 @@ theorem exchange_disjoint {p : MvPolynomial ι ℝ} (hp : ∀ β, 0 ≤ coeff β
   -- `x^{α'} = x^μ x_j x_k` shares `x^μ` with `x^α`
   obtain ⟨l, hl⟩ := exists_one_le_of_degree_pos (β := μ)
     (Nat.pos_of_ne_zero fun h0 => hμ ((Finsupp.degree_eq_zero_iff μ).mp h0))
-  have hβk : 1 ≤ (ν + Finsupp.single k 1) k := by simp [single_apply_eq]
-  have hji : j ≠ i := fun h' => by rw [h', hβi] at hβj; omega
-  have hki : k ≠ i := fun h' => by rw [h', hβi] at hβk; omega
+  have hβk : 1 ≤ (ν + Finsupp.single k 1 : ι →₀ ℕ) k := by simp
+  have hji : j ≠ i := fun h' => by subst h'; omega
+  have hki : k ≠ i := fun h' => by subst h'; omega
   obtain ⟨j', hj', hJ'⟩ := exchange_of_common (hpart l) hα h
     (by simp only [Finsupp.add_apply]; omega) (by simp only [Finsupp.add_apply]; omega)
     (i := i) (by
@@ -297,7 +295,7 @@ theorem IsMixedLorentzian.isMConvex {d : ℕ} {p : MvPolynomial ι ℝ} (hp : Is
     obtain ⟨k, hβk⟩ := exists_one_le_of_degree_pos (β := β) (by omega)
     obtain ⟨ν, rfl⟩ := exists_eq_add_single hβk
     have hdν : Finsupp.degree ν = d := by rw [degree_add_single] at hdβ; omega
-    have hcop : ∀ l, 1 ≤ (ν + Finsupp.single k 1) l → α l = 0 := fun l hl => by
+    have hcop : ∀ l, 1 ≤ (ν + Finsupp.single k 1 : ι →₀ ℕ) l → α l = 0 := fun l hl => by
       by_contra h0
       have := hcommon l (Nat.one_le_iff_ne_zero.mpr h0)
       omega
@@ -327,7 +325,7 @@ theorem IsMixedLorentzian.isMConvex {d : ℕ} {p : MvPolynomial ι ℝ} (hp : Is
       subst hμ
       have hdμ := hdα
       rw [degree_add_single, degree_add_single] at hdμ
-      suffices h : ∃ j, 1 ≤ (ν + Finsupp.single k 1) j ∧
+      suffices h : ∃ j, 1 ≤ (ν + Finsupp.single k 1 : ι →₀ ℕ) j ∧
           coeff (μ + Finsupp.single a 1 + Finsupp.single j 1) p ≠ 0 by
         obtain ⟨j, hj, hJ⟩ := h
         refine ⟨j, by rw [hcop j hj]; omega, ?_⟩
@@ -348,7 +346,7 @@ theorem IsMixedLorentzian.isMConvex {d : ℕ} {p : MvPolynomial ι ℝ} (hp : Is
     · -- degree at least three
       refine exchange_disjoint hp.1 (IH (hp.differentiate fun r => add_nonneg
         (single_nonneg a r) (single_nonneg k r))) hpart
-        (fun h0 => by rw [h0, Finsupp.degree_zero] at hdμ; omega) hα' hβ' fun l hl => ?_
+        (fun h0 => by rw [h0, map_zero] at hdμ; omega) hα' hβ' fun l hl => ?_
       have := hcommon l hl
       omega
 
@@ -368,7 +366,8 @@ theorem exists_unitList : ∀ (n : ℕ) (α : ι →₀ ℕ), Finsupp.degree α 
     · rcases List.mem_cons.mp hv with rfl | hv
       · exact single_nonneg l i
       · exact hnn v hv i
-    · rw [dval, Finset.sum_eq_single l
+    · show (∑ i, (Pi.single l 1 : ι → ℝ) i * dval c vs (γ + Finsupp.single i 1)) = _
+      rw [Finset.sum_eq_single l
         (fun b _ hb => by rw [Pi.single_eq_of_ne hb, zero_mul]) (fun h => absurd (mem_univ l) h),
         Pi.single_eq_same, one_mul, hval, add_assoc, add_comm (Finsupp.single l 1)]
 
@@ -435,3 +434,19 @@ theorem isLorentzianPolynomial_prod_subst {κ τ : Type*} [Fintype κ] [Decidabl
   (isMixedLorentzian_prod_subst s hf hA).isLorentzianPolynomial
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms IsMixedLorentzian.isMConvex
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms isMixedLorentzian_iff_isLorentzianPolynomial
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms IsLorentzianPolynomial.mul
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms IsLorentzianPolynomial.subst
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms isLorentzianPolynomial_prod_subst
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms isMConvex_support_mul
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms IsLorentzianPolynomial.differentiate
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms IsHyperbolic.exchange

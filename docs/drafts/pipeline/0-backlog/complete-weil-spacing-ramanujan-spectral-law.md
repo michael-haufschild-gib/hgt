@@ -156,3 +156,46 @@ and overlap/harmonic-hyperplane results; no matching theorem was identified
 among those inspected statements. This is not an exhaustive novelty claim.
 The small-aperture Suzuki and numerical-study exclusions on the packet-form
 card remain relevant, but a dedicated external audit is still required.
+
+Further primary-source audit: Groskin, [A finite Guinand--Weil dictionary and
+archimedean tail order](https://arxiv.org/html/2607.02828v3), introduction and
+Section 2 through Theorem 2.5, was inspected. Its finite matrices use integer
+Fourier modes on a fixed interval and divided differences of source functions.
+Its proved dictionary identifies their quadratic values with exact zero sums;
+its stated tail theorem controls an omitted archimedean integral. The proposed
+carrier here instead uses shrinking atoms at logarithms of integers, with a
+jointly growing spatial horizon. No Ramanujan eigenline or corresponding
+bounded-spectrum exhaustion theorem was identified in the inspected material.
+This is a carrier-level distinction, not an exhaustive literature claim.
+
+The shifted-harmonic search surfaced the exact existing generic inputs:
+`RenormalizedBiarithmeticGeometry.abs_sum_range_le_of_periodic` and
+`RHTower.Sieve.abs_sum_mul_le_of_bounded_partial`, plus the tail version in
+`Sieve/AbelTail.lean`. Their source statements and proofs were inspected.
+The newer SAHT quantitative Gram file has a private harmonic discrepancy proof;
+its bounded-partial-sum mechanism is baseline and need not be duplicated.
+For a mean-zero periodic sequence, let D bound partial sums on every interval
+and A bound its values. The lower and upper difference-denominator sums in
+Omega's row are at most D each by Abel, including reversed lower intervals.
+The full sum-denominator sum is at most D/(n+1), and deleting its diagonal
+costs at most A/(2n). Thus the row divided by sqrt(n) is bounded by
+`D+D/(2*(n+1))+A/(4*n)`. The remaining adapters must instantiate these exact
+finite inequalities and prove the reversal/reindexing identities.
+
+The Robin remainder is already quantitative in the exact required carrier:
+`SpacingScaleHarmonicAnalysis.abs_levyEnergy_atomDilate_sub_le` gives normalized
+error at most exp(1/2)*w/2. Its source proof and the exact dilation mass and
+bumpRobin identities were inspected. Its Lipschitz premise can be discharged
+from compact C2 support using the previously inspected compact-source theorem.
+No additional regularity assumption or conjectural asymptotic is needed there.
+
+For the pole-vector remainder, put A_n=H_N-H_(N-n) and
+B_n=H_(N+n)-H_N. Then A_n>=0, 0<=B_n<=1, and
+`sum_(n=1..N) A_n^2=2*N-H_N`. The harmonic bracket in the exact row is
+`(A_n-B_n)/2+3/(4*n)`. Squaring with the elementary three-term inequality,
+using n<=N, sum A_n^2<=2N, and sum_(n<=N)1/n<=N bounds its weighted
+square sum by a constant times N^2. Multiplication by (alpha/N)^2 gives the
+uniform Euclidean residual bound before logarithmic normalization.
+The harmonic square identity can alternatively be proved by induction:
+its first-moment sum is N, and adding the new reciprocal term changes the
+square sum by 2-1/(N+1). Both proofs are exact finite algebra.

@@ -5,7 +5,7 @@
 - **Type:** THEOREM
 - **Source:** Ramanujan full-matrix quasimodes; harmonic rough-number tensorization; prime-defect Dirichlet form
 - **Statement:** Every bounded energy window of `log(N) I-P_N` converges, with multiplicity, to the simple energies `gamma+log(m)+tameDifferent(m)`.
-- **Count:** uncounted; nine of sixteen scratch modules pass; endpoint checks and final actual-source audits remain
+- **Count:** uncounted; ten of sixteen scratch modules pass; endpoint checks and final actual-source audits remain
 
 ## Goal
 
@@ -700,3 +700,7 @@ missing finite-set/scalar annotations. The scratch now uses explicit real inner
 symmetry, the already available finite Cauchy--Schwarz theorem with a constant
 one vector, and explicit annotations. Retry follows; failed-check axiom output
 is excluded. Nine scratch modules remain verified.
+
+The generic Gram certificate passed after removing one unnecessary tactic separator. Its clean transitive audit uses only propext, Classical.choice, Quot.sound. Source installed in HTGeometry. Ten of sixteen scratch modules pass; all nine preceding required oleans passed. The first Gram-certificate olean is needed by the bounded-energy coordinate certificate. Final source checks and spectral endpoints remain unverified; count stays 3/250.
+
+The matrix-energy scratch first check failed only at PiLp.projₗ: its dependent-family argument is explicit. Corpus-first API search and the mathlib source confirm the signature. Added the constant real family in the scratch; retry follows. Failed axiom output was excluded. Ten scratch modules remain verified, with ten first required oleans passed.

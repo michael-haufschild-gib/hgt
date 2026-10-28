@@ -859,6 +859,36 @@ therefore relevant to extension costs that would otherwise charge old mass
 at every step. A cumulative allocation across many cuts and a quantitative
 bound on the signed Chebyshev pairing are still required.
 
+### Arithmetic detail and average coupling
+
+Complete adjacent cells have two independent coordinates: the weighted average `q_a`
+and the balanced detail `d_a`. Write `C(q,X)` and `D(d,Y)` for their actual half-line
+Hilbert vectors, `m_a=haarMass(a)` and `ell=vonMangoldt(2)/sqrt(2)`.
+The opposite mixed prime orientations behave differently. ACS proves that the
+coarse-to-detail orientation vanishes for every integer prime lag. At lag `log 2`,
+the programme identifies the surviving orientation exactly:
+
+\[
+ \langle S_{\log2}D(d,Y),C(q,X)\rangle_{\mathbb R}
+   =\sum_{a=1}^{Y}m_a d_a(q_{2a}-q_{2a+1}),\qquad 2Y+1\le X.
+\]
+
+The original mixed prime-two coefficient is therefore
+`B₂=2 ell sum m_a d_a(q_(2a)-q_(2a+1))`. It reads adjacent coarse differences,
+not the whole coarse mass. For every positive `epsilon`,
+
+\[
+ |B_2|\le\epsilon\sum_{a\le Y}m_ad_a^2
+       +\frac{\ell^2}{\epsilon}\sum_{a\le Y}m_a(q_{2a}-q_{2a+1})^2.
+\]
+
+At a common odd horizon `X=2Y+1`, all detail indices above `Y` translate
+beyond the coarse support, so the same formula accounts for the entire mixed
+block without a terminal remainder. Both coarse and detail coefficients remain
+arbitrary. This is an exact partial-source identity and an adjustable payment;
+it does not supply an all-prime estimate or preserve the whole coarse Weil form
+through a Schur elimination.
+
 ### Polar compatibility
 
 For symmetric `Q_i` with a common anchor `e` and `a_i=Q_i[e]>0`, put
@@ -1367,6 +1397,7 @@ Quantitative pillars supplied by this programme:
 | Actual boundary truncations | Compact indicator truncations lie in the original `L²` carrier, retain exact square mass and have an explicit logarithmic mass lower bound | `TruncatedGammaWeightsHaveLogarithmicMass` |
 | Mixed Gamma norm rigidity | Zero mixed reserve forces both inputs to vanish; every nonzero vector has strict norm deficit below `π/2` | `TheGammaBoundaryOperatorHasNoNormMaximizer` |
 | Sharp Gamma norm and near-critical profiles | Actual cutoff reserves are at most `16` while masses diverge, proving norm exactly `π/2` and explicit near-critical Rayleigh vectors | `BoundaryTruncationLosesOnlyBoundedGammaEnergy` |
+| Actual prime-two mixed differences | The full mixed block at odd horizons reads adjacent coarse differences, with an adjustable weighted-square payment | `ThePrimeTwoMixedBlockReadsCoarseDifferences` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

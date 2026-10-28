@@ -33,7 +33,8 @@ def ramanujanPrimeResidual (m N n : ℕ) : ℝ :=
 def primeMertensSquareBudget (N : ℕ) : ℝ :=
   ∑ n ∈ Icc 1 N, primeMertensRemainderProfile (N / n) ^ 2 / (n : ℝ)
 
-private theorem abs_normalizedRamanujanMode_le_sqrt_totient {m : ℕ}
+/-- Complete-period normalization leaves a square-root totient amplitude bound. -/
+theorem abs_normalizedRamanujanMode_le_sqrt_totient {m : ℕ}
     (hm : 0 < m) (n : ℕ) :
     |normalizedRamanujanMode m n| ≤ Real.sqrt (m.totient : ℝ) := by
   have hφ : 0 < (m.totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr hm
