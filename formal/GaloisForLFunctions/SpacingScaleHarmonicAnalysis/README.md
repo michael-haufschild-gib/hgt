@@ -56,11 +56,11 @@ polynomials is $\log N/2\pi$; they match at $T\asymp N$, i.e. $w\asymp\delta_N$.
 
 | Object | Lean |
 |---|---|
-| Atomic test, atomic Weil prime form | `atomicTest`, `atomicWeilForm` |
-| Lévy density, Lévy energy, Lévy–Markov form | `archLevyDensity`, `levyEnergy`, `levyMarkovForm` |
+| Atomic test, atomic Weil prime form | `atomicTest`, `atomicWeilForm` (AES) |
+| Lévy density, Lévy energy, Lévy–Markov form | `archLevyDensity`, `levyEnergy`, `levyMarkovForm` (RHTower/ALG) |
 | Markov energy $M=\text{archForm}-\text{primeSum}$; Weil quadratic $Q$ | `markovEnergy`, `weilQuad` |
 | Tilt $r(n)=1+n/N$ | `atomicWeilForm_le_tilted` |
-| Lag forms, non-ratio form $NR_w$ | `lagForm`, `primeSum_atomicTest_eq_ratio_add_nonRatio` |
+| Lag forms, non-ratio form $NR_w$ | `lagForm`, `primeSum_atomicTest_eq_ratio_add` |
 | Overlap growth (orders), stable forms | `riemannHypothesis_iff_atomicFamilies_nonneg_of_growth` |
 | Robin constant of an atom; two-atom pairing | `archRobinConstant_eq`; modules `TheRobinConstantOfAnAtom`, `TheArchimedeanPairingOfTwoAtoms` |
 | Universal threshold $K_{\rm univ}$ | `universalThreshold_finite` |

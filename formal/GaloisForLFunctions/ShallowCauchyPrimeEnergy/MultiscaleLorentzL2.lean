@@ -229,7 +229,7 @@ theorem sum_near_narrowMassTerm_le (Z : Finset XiZeroCopy)
       have hinv : ((2 : ℝ) ^ (j + 1)) ^ (2 : ℕ) * (1 / 4 : ℝ) ^ (j + 1) = 1 := by
         calc ((2 : ℝ) ^ (j + 1)) ^ (2 : ℕ) * (1 / 4 : ℝ) ^ (j + 1)
             = ((2 : ℝ) ^ (2 : ℕ)) ^ (j + 1) * (1 / 4 : ℝ) ^ (j + 1) := by
-                rw [← pow_mul, mul_comm, pow_mul]
+                rw [← pow_mul, mul_comm (j + 1) 2, pow_mul]
           _ = ((2 : ℝ) ^ (2 : ℕ) * (1 / 4 : ℝ)) ^ (j + 1) := (mul_pow _ _ _).symm
           _ = 1 := by norm_num
       have hmul : (R₀ / 2) ^ (2 : ℕ) =
@@ -395,6 +395,8 @@ theorem windowNarrowSum_sq_le_superlevelMajorant (Z : Finset XiZeroCopy)
                 (fun _ : ℝ =>
                   (105 * ((2 : ℝ) ^ (Nat.find hexk - 1 + 1) * R₀ * Real.log S)) ^ (2 : ℕ))).symm
           _ ≤ _ := Finset.single_le_sum
+              (f := fun i => (narrowSuperlevel Z S R₀ i).indicator
+                (fun _ => (105 * ((2 : ℝ) ^ (i + 1) * R₀ * Real.log S)) ^ (2 : ℕ)) t)
               (fun _ _ => Set.indicator_nonneg (fun _ _ => by positivity) t) hjM
       unfold narrowSuperlevelMajorant
       linarith
@@ -1043,8 +1045,8 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
     filter_upwards [h1, eventually_ge_atTop (1 : ℝ)] with T hT hT1
     have hT0 : 0 < T := by linarith
     have hL0 : 0 ≤ Real.log T := Real.log_nonneg hT1
-    rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hL0,
-      abs_of_nonneg hT0.le, Real.rpow_one] at hT
+    rw [Real.norm_eq_abs, Real.norm_eq_abs, Real.rpow_one, abs_of_nonneg hL0,
+      abs_of_nonneg hT0.le] at hT
     have hsq : Real.log T ^ (2 : ℕ) ≤ (1 / (8 * Real.pi + 1)) ^ (2 : ℕ) * T ^ (2 : ℕ) := by
       calc Real.log T ^ (2 : ℕ)
           ≤ (1 / (8 * Real.pi + 1) * T) ^ (2 : ℕ) := pow_le_pow_left₀ hL0 hT 2
@@ -1114,7 +1116,8 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
         have := mul_le_mul_of_nonneg_left hlog_half_le (show 0 ≤ 2 * R₀ by positivity)
         linarith [show (2 * R₀) * Real.log T = 2 * (R₀ * Real.log T) by ring]
       calc ((2 * R₀) * Real.log (T / 2)) ^ (2 : ℕ)
-          ≤ (2 * (R₀ * Real.log T)) ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) h1 2
+          ≤ (2 * (R₀ * Real.log T)) ^ (2 : ℕ) :=
+            pow_le_pow_left₀ (by linarith [hκ_half, hκ₂]) h1 2
         _ = 4 * (R₀ * Real.log T) ^ (2 : ℕ) := by ring
     calc ∫ t in Icc (T / 2) T,
           (windowNarrowSum (dyadicZeroWindow T) (fun q => (q.1 : ℂ).im) (R₀ / 2) t) ^ (2 : ℕ)
@@ -1145,7 +1148,8 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
         have := mul_le_mul_of_nonneg_left hlog_2T_le hR₀.le
         linarith [show R₀ * (2 * Real.log T) = 2 * (R₀ * Real.log T) by ring]
       calc (R₀ * Real.log (2 * T)) ^ (2 : ℕ)
-          ≤ (2 * (R₀ * Real.log T)) ^ (2 : ℕ) := pow_le_pow_left₀ (by positivity) h1 2
+          ≤ (2 * (R₀ * Real.log T)) ^ (2 : ℕ) :=
+            pow_le_pow_left₀ (mul_nonneg hR₀.le (Real.log_nonneg (by linarith))) h1 2
         _ = 4 * (R₀ * Real.log T) ^ (2 : ℕ) := by ring
     calc ∫ t in Icc (2 * T) (4 * T),
           (windowNarrowSum (dyadicZeroWindow T) (fun q => (q.1 : ℂ).im) (R₀ / 2) t) ^ (2 : ℕ)
@@ -1203,7 +1207,6 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
         have hpi : Real.pi ≠ 0 := Real.pi_pos.ne'
         have hRne : R₀ ≠ 0 := hR₀.ne'
         field_simp
-        ring
 
 end RHTower
 
