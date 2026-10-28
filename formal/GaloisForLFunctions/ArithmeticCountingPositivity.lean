@@ -1,0 +1,13 @@
+import GaloisForLFunctions.ArithmeticCountingPositivity.HarmonicCorrelationPaysThePrimeGap
+import GaloisForLFunctions.ArithmeticCountingPositivity.SparsePrimeFlipsRetainPositiveGaps
+import GaloisForLFunctions.ArithmeticCountingPositivity.PrimeParityPairing
+import GaloisForLFunctions.ArithmeticCountingPositivity.NearMaximalGapsDoNotForceWeilPositivity
+
+/-!
+# Arithmetic Counting Positivity
+
+Arithmetic counts that retain signed multiplicative information and pay a
+quadratic inequality: harmonic correlation, the sharp pole-angle transfer,
+and prime-parity counting. The prime form and the complete Weil form have
+separate domains; a prime-gap payment does not assert complete positivity.
+-/

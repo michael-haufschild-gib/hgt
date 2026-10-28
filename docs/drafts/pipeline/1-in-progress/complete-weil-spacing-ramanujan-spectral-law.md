@@ -4,577 +4,300 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** full-prime Ramanujan quasimodes; bounded-defect finite-span approximation; exact archimedean atom pairing; actual two-pole rows
-- **Statement:** The complete normalized Weil matrix has Ramanujan quasimodes at every fixed separated width ratio, and its bounded spectrum is exhausted by their explicit simple energies throughout the separated regime (exact carrier and separated entries verified; norm estimates and spectral assembly pending).
-- **Count:** uncounted; stronger extension of the packet-form candidate, not an additional count for its weaker corollaries
-
-## Goal
-
-Identify the bounded spectrum of the actual complete Weil form on a growing
-log-lattice atom family. The target retains the prime, Gamma, and both pole
-terms. It would supply a spectral tool beyond the existing lower bounds and
-the proposed finite-packet quadratic-form limit. It does not assert positivity
-on arbitrary Weil tests, unbounded overlap, or RH.
+- **Statement:** For every fixed `0<c<1`, the actual complete normalized Weil matrix at width `w=c/N` has Ramanujan norm quasimodes, eventual exact bounded spectral counts, and convergence of its simple eigenlines to Ramanujan lines.
+- **Count:** uncounted; one full spectral package, with its support results and weaker packet-form corollaries included.
 
 ## Gates
 
-- [x] Exact carrier and normalization
-- [ ] Dependency-closed paper proof of row estimates, quasimodes, and spectral exhaustion
-- [ ] Lean realization, individual foreground checks, transitive axioms, umbrella wiring
+- [x] Exact actual carrier, normalization, and separated entries verified in Lean
+- [ ] All analytic estimates and the assembled paper argument verified in Lean
+- [ ] Ramanujan norm quasimodes, exact bounded spectral counts, simple eigenline convergence
+- [ ] Final individual source checks, transitive axiom checks, umbrella imports, foundational documentation, scratch cleanup
 
-Current scope excludes novelty audits and web searches, per user instruction.
-Earlier audit notes below are historical; no further novelty gate applies to this work.
+No novelty audits or web searches are part of this task, per user instruction.
+The complete spectral statement remains unproved until its Lean endpoints pass.
+The argument below records the exact intended theorem and constants; generic
+support hypotheses must be discharged on the literal matrix.
 
-## Exact proposed carrier and energies
+## Exact carrier and conclusion
 
-Fix real C2 phi supported in [0,1], M2=integral(phi^2)>0, I=integral(phi),
-and 0<c<1. Let w=c/N and g=atomDilate(phi,w). The proposed matrix is
+Fix real `C²` function `phi` supported in `[0,1]`, with
+`M2=integral(phi²)>0`, `I=integral(phi)`, and `0<c<1`.
+Set `w=c/N`, `g(u)=phi(u/w)`, and `G=integral(g²)=w*M2`.
+On the atoms centered at `log(n)`, `1<=n<=N`, define
 
 `W_N=(atomicMarkovGram(g,N)
  + row0(atomPoleRow(g,N)) outer row1(atomPoleRow(g,N))
- + row1(atomPoleRow(g,N)) outer row0(atomPoleRow(g,N)))/(w*M2)`.
+ + row1(atomPoleRow(g,N)) outer row0(atomPoleRow(g,N)))/G`.
 
-These are existing literal atom and pole matrices. The inspected theorem
-`polarDefect_atomic` identifies their quadratic form with weilQuad of the
-actual synthesized test. The atom basis has mass matrix w*M2 times identity
-eventually, since the supports are separated. The verified `primeHorizonFinEquiv` transports Fin N to 1..N;
-`TheFullWeilMatrixSplitsAtTheSpacing` retains every normalized entry under
-this reindexing.
+The exact finite-index equivalence `primeHorizonFinEquiv` transports the
+existing `Fin N` carrier to `PrimeHorizonIndex N`. Polarization and
+`polarDefect_atomic` identify this matrix's quadratic form with the actual
+synthesized `weilQuad`. Both exponential pole moments are retained.
+The supports are eventually separated: `atomSpacing(N)>=1/(N+1)` and
+`N>c/(1-c)` imply `c/N<atomSpacing(N)`. The mass Gram is then `G*Id`.
 
 Put
+
 `sigma=log(1/(2*pi*c))+bumpRobin(phi,1)/M2`,
-`alpha=c*I^2/M2`, and
-`lambda_m=sigma+log(m)+tameDifferent(m)+alpha*[m=1]` for m>=1.
+`alpha=c*I²/M2`,
+`lambda_m=sigma+log(m)+tameDifferent(m)+alpha*[m=1]`, for `m>=1`.
 
-Target: every fixed normalized Ramanujan vector has residual norm tending
-to zero at lambda_m for W_N, for every 0<c<1. Every threshold away from
-these energies has eventual exact spectral count, with multiplicity, equal to
-the finite arithmetic count; each fixed eigenline is eventually simple and
-captures its Ramanujan vector. The full-range coercivity argument below replaces
-the original small-c restriction. No part of this spectral target is proved yet.
+For the normalized Ramanujan profile
+`v_(m,N)(n)=normalizedRamanujanMode_m(n)/sqrt(n*log(N))`, the target is
+`norm((W_N-lambda_m*Id)v_(m,N))->0` and `norm(v_(m,N))->1`.
+For every real threshold `T` distinct from all `lambda_m`, the number of
+actual eigenvalues below `T`, counted with multiplicity, must eventually equal
+`#{m>=1:lambda_m<T}`. Each fixed label has an isolating interval containing
+exactly one eigenvalue eventually; its eigenvalue tends to `lambda_m`, and its
+spectral projection captures `v_(m,N)` in norm. The claim concerns this
+shrinking-atom family, without an assertion of arbitrary-test Weil positivity.
 
-## Exact center-pole cancellation
+## Assembled argument; Lean verification incomplete
 
-Let s_n=1/sqrt(n), t_n=sqrt(n), and let Omega_N have zero diagonal and
-off-diagonal entry archLevyDensity(|log(n)-log(j)|). The center-value
-archimedean and two-pole correction is
+### 1. Literal matrix decomposition
 
-`B_N=(alpha/N)*(s outer t+t outer s-Omega_N)`.
+Let `P_N` be the literal prime matrix, `s_n=1/sqrt(n)`, `t_n=sqrt(n)`,
+`T_N=s outer t+t outer s`, and `Omega_N` have zero diagonal and
+`Omega_N(n,j)=omega(abs(log(n)-log(j)))` off the diagonal, where
+`omega(u)=exp(-u/2)/(1-exp(-2u))`.
+The actual atom-pair formula and the exact exponential translations give
 
-The actual density is exp(-u/2)/(1-exp(-2u)). Direct partial fractions give
+`W_N=(2*gammaHardyPhaseRate(0)+levyEnergy(g)/G)*Id
+       -P_N-X_N/G+(Gminus*Gplus/G)*T_N`,
 
-`Omega_N(s)_n
- =sqrt(n)*((H_(N-n)+H_(N+n))/2-3/(4n))`,
+where `X_N` has the actual cross integrals off the diagonal and zero diagonal,
+and `Gplus/minus=integral(g(u)*exp(plus/minus u/2))`.
+The off-diagonal cross coefficient is minus one: the pair energy has twice
+that off-diagonal contribution. The existing finite-part identity
 
-where H_0=0 and H_k=sum_(j=1..k)1/j. Indeed, after dividing the row by
-sqrt(n), each j<n contributes n/(n^2-j^2), and each j>n contributes
-j/(j^2-n^2). Splitting both into their difference and sum denominators yields
-the displayed harmonic identity. Meanwhile
-`(s outer t+t outer s)s=N*s+H_N*t`. Therefore
-
-`B_N s-alpha*s
- =(alpha/N)*sqrt(n)*(H_N-(H_(N-n)+H_(N+n))/2+3/(4n))` coordinatewise.
-
-The large harmonic row cancels only after retaining both pole terms. This
-offers a residual estimate, not merely the previously conjectured average
-rank-one form correction. The exact row identity is now verified in
-`TheLogarithmicCenterRowCancelsThePole`; `HarmonicCenterBoundaryBounds` now
-verifies the weighted boundary square bound. Normalized residual transfer remains unchecked.
-
-The endpoint harmonic singularity has an elementary finite square bound:
-
-`sum_(k=1..N)(H_N-H_(k-1))^2=2*N-H_N`.
-
-Expand the square, interchange the finite sums, and count k<=min(i,j).
-The diagonal contributes H_N; the two strict triangles contribute
-2*sum_(j=1..N)(j-1)/j. This controls the displayed remainder uniformly in
-Euclidean norm, using n<=N and H_(N+n)-H_N<=1. Division by sqrt(log N)
-then makes the normalized pole residual tend to zero. No numerical check is
-used for either finite identity.
-
-For any fixed zero-mean periodic a, partial sums on every interval are
-uniformly bounded. Abel summation therefore bounds uniformly the shifted
-harmonic sums in the row of Omega_N(a(n)/sqrt(n)), giving absolute row
-at most C_a*sqrt(n). Both sum a(n) and sum a(n)/n are bounded as well.
-Consequently B_N applied to that unnormalized profile has bounded Euclidean
-norm, hence vanishing residual after division by sqrt(log N). Positive
-conductor Ramanujan modes other than one have zero period mean. The required
-uniform reversed and shifted harmonic-sum lemmas remain to formalize.
-
-## Actual atom integrals, not only their center values
-
-The pair estimate `abs_crossTerm_sub_le` bounds the difference between the
-literal atom integral and its center-density approximation. The associated
-packet-form card derives a candidate bound
-
-`(omega(s-w)-omega(s+w))/sqrt(n*j)
- <= C_c*w*max(n,j)/(n-j)^2`.
-
-For a fixed periodic pole profile bounded in pole gauge, divide the pair error
-by w*M2 and sum a row. Its absolute value is bounded by
-`C*w^2*N*sqrt(n)`, since sum of reciprocal difference squares is at most two
-on each side. Its Euclidean norm is uniformly bounded when w=c/N. Thus its
-normalized profile residual tends to zero. The actual pole scalar
-`(integral g*exp(-u/2))*(integral g*exp(u/2))/(w*M2)` differs from
-w*I^2/M2 by O(w^2); the corresponding row estimate also vanishes after
-normalization. Exact inequalities and integrability proofs remain.
-
-The Robin self-energy error is O(w), while the existing prime residual tends
-to zero. Combining these with the preceding rows would prove the first target.
-The weaker packet-form limit would then be a corollary of these actual
-quasimodes, not a separately counted contribution.
-
-## Earlier small-ratio argument, superseded by the full-range mechanism
-
-`eventually_markovEnergy_ge_defect` and
-`two_mul_abs_poleMoments_le_defect` in ALG were inspected. After division by
-w*M2 they imply a lower bound on W_N with defect coefficient
-
-`1-epsilon-(32*exp(2)+poleConstant*exp(w/2))*c`.
-
-Choose epsilon=1/4 and c smaller than both markovOverlapBound and
-`1/(4*(32*exp(2)+poleConstant*exp(1/2)))`, as well as 1/2. The coefficient
-is then at least 1/2 for w<=1. The remaining scalar coefficient has a fixed
-lower bound depending only on phi and c. Thus bounded W_N energy would bound
-the same literal prime defect. The newly checked finite-Ramanujan
-approximation can supply the detecting-coordinate certificate exactly as in
-the prime spectral-exhaustion project. The low-window residual/rank argument
-would then give exact counts and simple eigenlines for this actual matrix.
-
-Cauchy--Schwarz on [0,1] gives 0<=alpha<=c<1/2. The ground energy shift is
-therefore separated from every positive excitation, since log(m)>=log(2)>=1/2
-for m>=2. The established injectivity of adjunction energies separates all
-other labels, and logarithmic growth gives properness. These deductions and
-their precise strict inequalities still need verification.
-
-The repository's atomSpacing is log(1+1/N), not 1/N. The inspected
-`inv_succ_le_atomSpacing` bounds it below by 1/(N+1); for c<1/2 this gives
-w<=atomSpacing(N)/2 eventually. No all-horizon spacing inequality is assumed.
-
-## Audit status
-
-Inspected sources include ALG `TheAtomicFormIsMetzlerBelowTheSpacing.lean`
-at its literal matrix definitions and `polarDefect_atomic` (lines 282-320 and
-417-505), the exact exponential row translations, the RAPT signed diagonal
-identity, and the SSHA pair estimate. The first two corpus searches for this
-full-Weil Ramanujan spectral law returned existing prime spectra, pole rows,
-and overlap/harmonic-hyperplane results; no matching theorem was identified
-among those inspected statements. This is not an exhaustive novelty claim.
-The small-aperture Suzuki and numerical-study exclusions on the packet-form
-card are historical context; further external audit is excluded from this task.
-
-Further primary-source audit: Groskin, [A finite Guinand--Weil dictionary and
-archimedean tail order](https://arxiv.org/html/2607.02828v3), introduction and
-Section 2 through Theorem 2.5, was inspected. Its finite matrices use integer
-Fourier modes on a fixed interval and divided differences of source functions.
-Its proved dictionary identifies their quadratic values with exact zero sums;
-its stated tail theorem controls an omitted archimedean integral. The proposed
-carrier here instead uses shrinking atoms at logarithms of integers, with a
-jointly growing spatial horizon. No Ramanujan eigenline or corresponding
-bounded-spectrum exhaustion theorem was identified in the inspected material.
-This is a carrier-level distinction, not an exhaustive literature claim.
-
-The shifted-harmonic search surfaced the exact existing generic inputs:
-`RenormalizedBiarithmeticGeometry.abs_sum_range_le_of_periodic` and
-`RHTower.Sieve.abs_sum_mul_le_of_bounded_partial`, plus the tail version in
-`Sieve/AbelTail.lean`. Their source statements and proofs were inspected.
-The newer SAHT quantitative Gram file has a private harmonic discrepancy proof;
-its bounded-partial-sum mechanism is baseline and need not be duplicated.
-For a mean-zero periodic sequence, let D bound partial sums on every interval
-and A bound its values. The lower and upper difference-denominator sums in
-Omega's row are at most D each by Abel, including reversed lower intervals.
-The full sum-denominator sum is at most D/(n+1), and deleting its diagonal
-costs at most A/(2n). Thus the row divided by sqrt(n) is bounded by
-`D+D/(2*(n+1))+A/(4*n)`. The remaining adapters must instantiate these exact
-finite inequalities and prove the reversal/reindexing identities.
-
-The Robin remainder is already quantitative in the exact required carrier:
-`SpacingScaleHarmonicAnalysis.abs_levyEnergy_atomDilate_sub_le` gives normalized
-error at most exp(1/2)*w/2. Its source proof and the exact dilation mass and
-bumpRobin identities were inspected. Its Lipschitz premise can be discharged
-from compact C2 support using the previously inspected compact-source theorem.
-No additional regularity assumption or conjectural asymptotic is needed there.
-
-For the pole-vector remainder, put A_n=H_N-H_(N-n) and
-B_n=H_(N+n)-H_N. Then A_n>=0, 0<=B_n<=1, and
-`sum_(n=1..N) A_n^2=2*N-H_N`. The harmonic bracket in the exact row is
-`(A_n-B_n)/2+3/(4*n)`. Squaring with the elementary three-term inequality,
-using n<=N, sum A_n^2<=2N, and sum_(n<=N)1/n<=N bounds its weighted
-square sum by a constant times N^2. Multiplication by (alpha/N)^2 gives the
-uniform Euclidean residual bound before logarithmic normalization.
-The harmonic square identity can alternatively be proved by induction:
-its first-moment sum is N, and adding the new reciprocal term changes the
-square sum by 2-1/(N+1). Both proofs are exact finite algebra.
-
-The scalar normalization was rechecked directly against
-`RenormalizedArithmeticPotentialTheory/TheArchimedeanFinitePartIsMinusLogTwoPi.lean`.
-Its exact `finitePart_profileRobin_eq` states
 `2*gammaHardyPhaseRate(0)+profileRobin(phi)+gamma
- =-log(2*pi)+bumpRobin(phi,1)/M2`.
-With log(1/w)-log(N)=-log(c), this is precisely the proposed sigma.
-The evaluated Robin/Gamma identity is existing input, not part of the new claim.
+ =-log(2*pi)+bumpRobin(phi,1)/M2`
 
-The pole-factor transfer needs only a bounded unnormalized error. With
-A1=integral(abs(phi)), support and the elementary exponential increment bound
-give `|Gpm-w*I|<=C*w^2*A1` and `|Gpm|<=exp(1/2)*w*A1` for w<=1.
-Hence `|Gminus*Gplus/(w*M2)-w*I^2/M2|<=C_phi*w^2`.
-On u_n=a(n)/sqrt(n), with |a|<=A, the two rank-one factors give
-`(sum a)*s+(sum a/n)*t`; their norm is at most
-`A*N*sqrt(H_N)+A*H_N*N`. Using H_N<=N and w=c/N already bounds the
-coefficient-error action uniformly in N. Division by sqrt(log N) therefore
-kills it. No quantitative asymptotic for the atom moments or log(N)/N estimate
-is needed for the residual theorem. The diagonal Robin error and the summed
-pair replacement error can be treated by the same bounded-error principle.
+gives the exact decomposition
 
-For exact assembly, polarization of the existing signed finite-atom quadratic
-identity should identify the matrix entries as a scalar diagonal minus the
-literal prime matrix, minus the off-diagonal positive-center cross integrals,
-plus the two pole outer products. Distinct-atom support removes the mass cross
-term, and of the two signed center lags only the positive one meets the Levy
-integral. Reindexing Fin N by i+1 gives PrimeHorizonIndex N and therefore the
-same actual carrier used in the prime spectral package. This exact equality,
-including its factor two, remains an explicit Lean obligation.
+`W_N=(log(N)+sigma-gamma+selfError_N)*Id-P_N+B_N-Xerr_N+PoleErr_N`,
+`B_N=(alpha/N)*(T_N-Omega_N)`.
 
-Further corpus baseline: RAPT `TheArchimedeanPlacePaysTheArithmeticPoint.lean`
-was inspected through its joint-germ definitions and matched Cesaro counterterm.
-It already identifies conductor one as the unique periodic mode coupled to a
-constant archimedean mode. This algebraic rank-one mechanism is excluded novelty.
-The present target still requires the literal atom-integral matrix, cancellation
-of its boundary rows, actual norm residuals, and bounded spectral exhaustion.
+Compact `C²` support implies the Lipschitz regularity needed by the existing
+Robin remainder bound, so `abs(selfError_N)<=exp(1/2)*c/(2*N)`.
+There is no added regularity premise.
 
-The row argument naturally has a stronger intermediate form for every fixed
-periodic a, not only individual Ramanujan modes. Split a=mean(a)+b, with b of
-mean zero. The exact pole row and the shifted Abel bounds give
-`norm(B_N*(a(n)/sqrt(n))-alpha*mean(a)*s)<=C_a` uniformly in N.
-The actual atom-pair and pole-factor errors obey the same uniform bound.
-After division by sqrt(log N), the actual off-diagonal archimedean-plus-pole
-correction therefore tends in norm to alpha times the constant periodic
-component. This supplies the full residual control missing from a scalar
-rank-one form limit. Applying it to each Ramanujan mode would then reduce the
-full-Weil quasimode theorem to the already proved prime residual theorem.
-The generic periodic row statement and its transfer remain unformalized and
-are support for the same single spectral contribution.
+### 2. Exact center-pole cancellation
 
-The exact harmonic-tail first and second moments now have an unchecked draft
-`/tmp/HarmonicTailSquareIdentity.lean`. It uses the standard rational harmonic
-numbers cast to reals and the common reciprocal increment; no computation or
-new analytic premise is involved. It is support for this candidate, not a
-separate contribution. The full matrix proof remains incomplete.
+For positive distinct integers, elementary exponential algebra gives
 
-An unchecked finite/reversed Abel adapter is retained at
-`/tmp/FiniteReversedAbelBounds.lean`. It reuses the existing quantitative Abel
-inequality after truncating the sequence, then reflects a finite interval.
-These elementary adapters are baseline support, not a separate contribution.
-Completed API outputs retained for cleanup:
-`/tmp/WeilRamanujan-harmonic-reversal-mathlib-search.json`,
-`/tmp/WeilRamanujan-interval-reflection-search.json`,
-`/tmp/WeilRamanujan-interval-subtraction-search.json`,
-`/tmp/WeilRamanujan-interval-reflection-mathlib-search.json`, and
-`/tmp/WeilRamanujan-interval-subtraction-mathlib-search.json`.
+`Omega_N(n,j)/(sqrt(n)*sqrt(j))
+ = (1/2)*(1/abs(n-j)+1/(n+j))`.
 
-A direct carrier adapter can define the complete matrix on `PrimeHorizonIndex N`
-by the literal `markovPair(atom g n,atom g j)` plus the two products of actual
-exponential atom moments. The explicit bijection `n -> n-1` to `Fin N` then
-identifies it entrywise with the existing ALG Gram and pole rows. This avoids
-assuming any matrix model for Weil's form; the existing `polarDefect_atomic`
-identity can be transported by the same finite reindexing. The adapter and its
-quadratic identity remain unproved.
+Finite harmonic sums, with `H_0=0`, therefore give
 
-The exact scalar assembly has now been checked on paper. Put
-`G=integral(g^2)`, `Gpm=integral(g*exp(plus/minus u/2))`,
-`T_N=s outer t+t outer s`, and let X_N have zero diagonal and actual atom
-cross integrals off the diagonal. At separated supports the literal matrix is
+`(Omega_N*s)_n=sqrt(n)*((H_(N-n)+H_(N+n))/2-3/(4*n))`,
+`(T_N*s)_n=N/sqrt(n)+H_N*sqrt(n)`.
 
-`W_N=(2*gammaHardyPhaseRate(0)+levyEnergy(g)/G) I
-       -P_N-X_N/G+(Gminus*Gplus/G)*T_N`.
+Thus `B_N*s-alpha*s=(alpha/N)*sqrt(n)*R_n`, where
+`R_n=H_N-(H_(N-n)+H_(N+n))/2+3/(4*n)`.
+The exact harmonic-tail identities are
 
-The pair theorem `levyEnergy_atom_pair` confirms the off-diagonal coefficient
-minus one: its quadratic cross contribution is minus twice the cross integral.
-The two actual exponential moments give the displayed rank-two term exactly.
-The scalar diagonal minus log(N) tends to sigma-gamma, so the prime energy
-E(m)=gamma+log(m)+tame(m) gives precisely lambda_m after adding the rank-one
-limit. The carrier equality still requires Lean; no model matrix is assumed.
+`sum_(n=1..N)(H_N-H_(N-n))=N`,
+`sum_(n=1..N)(H_N-H_(N-n))²=2*N-H_N`.
 
-More explicitly, the inspected defect and pole inequalities give eventually
-`W_N[x]>=a_phi_c*norm(x)^2+(1/2)*D_N(x)` for the proposed small c, where a
-valid fixed scalar is
-`a_phi_c=2*rate(0)+log(1/c)+profileRobin(phi)+gamma-1/4
- -exp(1/2)/2-markovCrossConstant*c-2*poleConstant*exp(1/2)*c`.
-Here w<=1 and wN=c. Thus the existing uniform finite-Ramanujan approximation
-applies to every bounded-energy vector, with no sign restriction on phi.
-This scalar is only a coercivity aid, not a claimed sharp constant.
+They follow by finite reversal and the reciprocal harmonic increment, or by
+expanding the square and counting pairs. Also `0<=H_(N+n)-H_N<=1`.
+The elementary three-term square bound gives
+`sum_(n=1..N)n*R_n²<=6*N²`; hence
+`norm(B_N*s-alpha*s)²<=6*alpha²`.
+The large harmonic row cancels through both pole terms before normalization.
 
-The literal full-Weil carrier now has an unchecked scratch draft,
-`/tmp/TheFullWeilMatrixIsTheActualAtomicForm.lean`: the Markov Gram plus both
-pole products, its exact polar-defect identity, the positive-integer/Fin index
-bijection, and equality of its Euclidean form to the actual synthesized Weil
-functional. It is not installed, checked, or counted. This is source transport,
-not the new spectral conclusion.
+### 3. Mean-zero periodic rows
 
-Refreshed ALG and SSHA searches returned existing fixed-fraction positivity,
-restricted negative-index laws, and local Frobenius Ramanujan bounds. The local
-factor module's introduction was inspected: its Ramanujan parameter is a
-finite-field normalized trace, not the present integer-horizon excitation.
-The newer profile-free window module was inspected at its introduction and
-final support/positivity endpoints. None of those inspected statements asserts
-this common-profile full-Weil spectral law. Generic positivity is excluded
-novelty. A separate, unproved larger window-sector conjecture is recorded at
-`../0-backlog/complete-weil-window-arithmetic-profile-spectrum.md`.
+A period-`q` sequence `a` with zero period sum has interval sums bounded by
+`B=2*sum_(i<q)abs(a_i)`. Abel summation on translated and reflected intervals
+gives the inverse-distance row bound `2*B`. The inverse-sum row, with its
+diagonal removed, costs at most `B+A`, where `abs(a_n)<=A`.
+Consequently
 
-The exact center-density formula is already formalized in ACS
-`CrossTowerCollarAndFiniteEulerLatticePositivity`: `collarWeight_eq_of_lt`
-and `archLevyDensity_log_div_nat` were inspected in source. The new unchecked
-scratch `/tmp/TheArchimedeanCenterKernelIsAHarmonicKernel.lean` only converts
-that formula to the inverse-difference plus inverse-sum row in pole gauge.
-This adapter is supporting baseline reuse, not new counted mathematics.
+`abs((Omega_N*(a(n)/sqrt(n)))_n)<=(2*B+A)*sqrt(n)`,
+`abs((T_N*(a(n)/sqrt(n)))_n)<=2*B*sqrt(n)`,
+`norm(B_N*(a(n)/sqrt(n)))²<=alpha²*(4*B+A)²`.
 
-Additional primary-source audit: Suzuki, [Spectral convergence associated with
-Weil's quadratic form](https://arxiv.org/html/2610.32704v1), introduction and
-Theorems 1.1–1.2, assumes RH for convergence of distinguished differentiation
-extensions to distinct zeta-zero ordinates. This is a different operator and
-a conditional convergence theorem; it is not an input or a matching result
-for the present unconditional shrinking-atom Gram spectrum.
+Conductor one is constant. Every other normalized Ramanujan mode has zero
+period mean, from exact Gram orthogonality with conductor one. Thus the
+center correction has the required bounded raw residual in every fixed mode.
 
-New unchecked generic scratch `/tmp/FiniteHarmonicRows.lean` supplies the exact
-inverse-difference and inverse-sum row identities, including deletion of the
-diagonal. It supports the literal collar cancellation and is not counted.
+### 4. Literal cross-integral error
 
-### Simpler exact-integral error mechanism
+For `0<a<=b`, write `u=exp(-a/2)`, `v=exp(-b/2)`,
+`q=exp(-2a)`, `r=exp(-2b)`, `D=1-q`, `E=1-r`.
+Then `omega(a)-omega(b)=(u-v)/D+v*(q-r)/(D*E)`.
+Exponential tangent bounds give `u-v<=(b-a)*u/2`, `q-r<=2*(b-a)*q`,
+and `a²*q<=D²`. Together with `omega(a)*a²<=34`, this proves
 
-A derivative-free alternative avoids shifted logarithmic exponential algebra.
-For 0<a<=b, put u=exp(-a/2), v=exp(-b/2), q=exp(-2a), r=exp(-2b),
-D=1-q, E=1-r. Then
+`omega(a)-omega(b)<=19*(b-a)/a²`,
+`omega(s-w)-omega(s+w)<=38*w/(s-w)²`.
 
-`omega(a)-omega(b)=(u-v)/D+v*(q-r)/(D*E)`.
+For distinct positive integers `n,j<=N`, put `d=abs(n-j)`, `M=max(n,j)`.
+The exact logarithmic gap gives
+`abs(log(n)-log(j))-c/N >= (1-c)*d/M`.
+The signed atom-pair estimate therefore gives
 
-The exponential tangent inequality gives
-`u-v<=(b-a)*u/2` and `q-r<=2*(b-a)*q`. Also
-`a*exp(-a)<=1-exp(-2a)`, since exp(a)-exp(-a)>=a.
-Squaring gives `a^2*q<=D^2`. The existing CHMD theorem
-`archLevyDensity_mul_sq_le` bounds `omega(a)*a^2<=34`.
-Using v<=1 and E>=D yields
+`abs(Xerr_N(n,j))<=Cx*w²*M²/d²`,
+`Cx=38*A1²/(M2*(1-c)²)`, `A1=integral(abs(phi))`.
 
-`omega(a)-omega(b)<=19*(b-a)/a^2`,
-`omega(s-w)-omega(s+w)<=38*w/(s-w)^2`.
+The two-sided inverse-square row sum is at most `4`. Splitting the weighted
+row at `n/2` and `2*n` gives
+`sum_(j!=n)max(n,j)²/(sqrt(j)*abs(n-j)²)<=36*N*sqrt(n)`.
+Hence
 
-The existing CHMD source and its proof were inspected. New unchecked scratch
-`/tmp/TheArchimedeanDensityHasQuadraticIncrementControl.lean` formalizes this
-argument without differentiation or additional analytic assumptions.
+`abs(<Xerr_N*x,x>)<=4*Cx*c²*norm(x)²`,
+`norm(Xerr_N*(a(n)/sqrt(n)))²<=(36*Cx*A*c²)²`.
 
-For positive distinct integer n,j<=N, d=abs(n-j), M=max(n,j), and w=c/N,
-`abs(log(n/j))-w >= (1-c)*d/M`, since log(M/min)>=d/M
-and w<=c*d/M. The actual pair replacement error on a bounded pole profile
-is therefore at most `C_phi,c*w^2*M^2/(sqrt(j)*d^2)` per row entry.
-Split the row at n/2 and 2n. In the middle, M<=2n and
-1/sqrt(j)<=2/sqrt(n), so the sum is at most
-`32*C_phi,c*w^2*N*sqrt(n)`, using each one-sided reciprocal-square sum<=2.
-Outside that interval M^2/d^2<=4 and 1/sqrt(j)<=1; the row contributes
-at most `4*C_phi,c*w^2*N`, also <=the same scale times sqrt(n).
-Consequently the whole row is bounded by
-`36*C_phi,c*w^2*N*sqrt(n)` and its squared Euclidean norm by
-`(36*C_phi,c)^2*w^4*N^4`. At w=c/N this is uniform.
-This supplies the required bounded unnormalized error by elementary finite
-sums; it does not require a sharper weighted density derivative estimate.
-These row and transfer inequalities still require their exact Lean proofs.
+### 5. Both pole-moment errors
 
-### Stronger conjecture exposed by the row argument: the entire separated regime
+For `abs(t)<=1/2`, `0<=u<=w<=1`,
+`abs(exp(t*u)-1)<=w*exp(1/2)/2` and `exp(t*u)<=exp(1/2)`.
+Integrating against a signed atom yields
 
-The original small-c exhaustion restriction may be removable. This is a
-strengthened conjecture requiring a complete paper proof and Lean verification, not a proved
-extension. The proposed final range is **0<c<1**, with w=c/N<atomSpacing(N)
-eventually. The existing exact prime and mass interfaces must be checked and,
-where their stated half-spacing restriction is stronger than their mechanism,
-proved on the full strictly separated range. No such relaxation is assumed.
+`abs(Gplus/minus-w*I)<=exp(1/2)*w²*A1/2`,
+`abs(Gplus/minus)<=exp(1/2)*w*A1`.
 
-Let Omega be the symmetric nonnegative center-density matrix, s_n=1/sqrt(n),
-t_n=sqrt(n), and B=(alpha/N)(s tensor t+t tensor s-Omega). The exact row
-identity gives `(Omega s)_n/s_n <= n*(H_N+1)`: use H_(N-n)<=H_N
-and H_(N+n)-H_N<=1. Weighted Schur then gives, on x orthogonal to s,
+Expanding the product error around `w*I` gives
 
-`<Bx,x> >= -alpha*sum_n (n/N)*(H_N+1)*x_n^2`.
+`abs(Gminus*Gplus/G-w*I²/M2)<=Cp*w²`,
+`Cp=exp(1/2)*(exp(1/2)+1)*A1²/(2*M2)`.
 
-Since H_N<=log(N)+1 and `(n/N)*log(N/n)<=1`, the weighted sum on the
-right is at most `sum_n (n/N)*log(n)*x_n^2 + 3*mass(x)`.
-The already inspected `sum_top_le_poleDefect` yields coefficient 2 in front
-of D, sufficient for all c<1/2. The refreshed search additionally surfaced
-ALG `TheArchimedeanCrossEnergyIsOneSided.sum_top_le_poleDefect_param`:
-its statement and edge/Chebyshev proof were inspected. It yields coefficient
-`1+1/lam` for any lam>0, with a finite mass constant. This input is baseline
-and its independent source/axiom verification must be obtained before use.
+The elementary two-pole kernel bounds then imply
 
-The pole has exactly zero prime defect. Write any vector as x=a*e+y, e=s/||s||,
-y orthogonal to e. Then D(y)=D(x). The ground-row identity and harmonic square
-bound give ||Be|| uniformly bounded. The cross and ground terms in <Bx,x>
-therefore cost only a constant times ||x||^2. Consequently, on the whole space,
+`abs(<PoleErr_N*x,x>)<=2*Cp*c²*norm(x)²`,
+`norm(PoleErr_N*(a(n)/sqrt(n)))²<=4*Cp²*A²*c^4`.
 
-`<Bx,x> >= -alpha*(1+1/lam)*D(x)-C_lam*mass(x)`.
+All raw profile residuals above are uniformly bounded. Division by
+`sqrt(log(N))` makes them vanish. Combining them with the existing prime norm
+residual and the self-error limit proves the intended full-Weil quasimode.
 
-The actual cross-integral replacement error has a stronger uniform operator
-bound as well: each absolute entry is at most
-`C_phi,c*w^2*max(n,j)^2/(n-j)^2`, hence every absolute row sums to at most
-`4*C_phi,c*w^2*N^2`. The symmetric Schur bound gives a uniform matrix norm
-at w=c/N. The actual two-pole coefficient error is O(w^2), while the outer
-product norm is at most 2*N*sqrt(H_N)<=2*N^(3/2), so that error is uniformly
-bounded too. The actual self-energy remainder is already bounded.
+### 6. Coercivity for every strict width ratio
 
-Since alpha<=c<1, choose lam=2c/(1-c) and epsilon=(1-c)/4 in the prime
-counterterm estimate. This leaves defect coefficient at least (1-c)/4>0
-in the complete Weil matrix. Thus the same arithmetic compactness mechanism
-should give spectral exhaustion for every strictly separated c, without a
-smallness condition tied to the existing crude cross/pole estimates.
+The exact center row gives `(Omega_N*s)_n/s_n<=n*(H_N+1)`.
+Weighted Schur retains this variable row potential. Since
+`H_N<=log(N)+1` and `(n/N)*log(N/n)<=1`, division by `N` costs at most
+`sum_n (n/N)*log(n)*x_n²+3*norm(x)²`.
+For any `lam>0`, the existing parametric top-atom bound is
 
-The ground shift alpha<1 remains below every nontrivial arithmetic excitation
-(log(m)+tameDifferent(m)>1 for m>=2); this sharper elementary separation
-needs its own exact proof or a checked existing lemma. All other energies
-retain the established injectivity. This is one stronger target for the same
-prospective contribution, not a numerical improvement counted separately.
+`sum_n (n/N)*log(n)*x_n²
+ <=(1+1/lam)*D_N(x)+(1+lam)*psi*norm(x)²`,
+`psi=log(4)+4/exp(1)`.
 
-Exact separation check: AES `primeSum_atomicTest` and RAPT
-`integral_sub_shift_sq_atomicTest_eq` already assume only w<atomSpacing(N);
-SSHA `levyEnergy_atom_pair` assumes only w<s. Their source statements and
-relevant proofs were inspected. Thus their half-spacing relaxation is not an
-outstanding gap: the full separated range is already supported by these inputs.
-The identity for the synthesized mass still needs its exact named interface.
-
-New programme baseline: SMAP README was read through its questions/tools, and
-`TheConductorTwoIsTheFirstExcitation.lean` was inspected. Its
-`ramanujanAdjunctionEnergy_sub_one_ge` proves the sharp first excitation
-2*log(2), attained only at conductor two. It imports the completed quasimodes.
-Its selective gap-transfer and Garding results are baseline, not a new claim
-here. The proper shifted-energy ordering can reuse that exact gap. The
-finite weighted Schur proof in HTGeometry was also inspected; a variable
-diagonal version or existing ground-state identity is needed for the n-weighted
-center row. The scalar Schur theorem alone would lose this essential weight.
-
-Further exact baseline reuse: SMAP `TheSelectiveGardingInequality` was
-inspected through `harmonicSum_poleProj`, `sum_sq_poleProj`, and
-`poleDefect_sub_pole`. It already proves the projection and defect invariance
-needed above. The new unchecked generic support draft
-`/tmp/FiniteWeightedGroundStateBound.lean` retains the exact variable Schur
-row potential; it is an adapter of the inspected weighted-AMGM argument.
-No full-Weil Liouville sign claim is being inferred from global mean
-cancellation: the required local harmonic convolution is a separate input.
-
-Two additional unchecked support drafts, `TheSeparatedAtomPairingsAreThePrimeKernel` and `TheSeparatedMarkovMatrixHasExactCrossEntries`, give entrywise exact prime and Markov pairings at full spacing. The actual mass interface is AES `integral_atomicTest_sq`, already requiring only w<atomSpacing(N). These drafts are not installed, checked, or counted. Nine scratch drafts now support the strengthened target; the full spectral endpoint remains unproved.
-
-Two further unchecked drafts now assemble the exact complete normalized entries (`TheFullWeilMatrixSplitsAtTheSpacing`) and the exact center row on the pole (`TheArchimedeanCenterRowCancelsThePole`). The pole rows reuse ALG `atomPoleRow_zero_apply` and `atomPoleRow_one_apply`, inspected in source. Eleven scratch drafts exist; none has passed Lean or been installed.
-
-The new unchecked generic draft `/tmp/HarmonicCenterBoundaryBounds.lean` combines the exact harmonic-tail square identity with the upper increment bound to prove the explicit weighted boundary estimate `sum n*R_n^2 <= 6*N^2`. Twelve scratch drafts now exist; none is verified or installed.
-
-Refreshed concurrent baseline: `TheArchimedeanCrossTermsVanishOnPeriodicProfiles.lean` was inspected at its exact expansion and periodic endpoint. Its quadratic-form estimate assumes a nonnegative common bump and `4*w<=atomSpacing(N)`, and bounds the archimedean interaction on mean-zero periodic pole profiles. Its independent compilation/axiom audit is not claimed here. Such quadratic-form vanishing is excluded from the novelty of this candidate. The target here requires actual norm residuals, both pole terms and the shifted ground energy, signed profiles, and complete bounded spectral counts/eigenlines for every `0<c<1`.
-
-The exact inverse-square error mechanism now has three further unchecked generic drafts: `IntegerLogarithmicWindowGap`, `FiniteInverseSquareDistanceRows`, and `FinitePoleWeightedDistanceRows`. Their statements retain `(1-c)` in every shifted logarithmic gap, give the two-sided reciprocal-square bound 4, and give the weighted row bound `36*N*sqrt(n)`. They are supporting estimates, not separate contributions. Fifteen candidate drafts remain unchecked and uninstalled.
-
-### Current exact support drafts
-
-Eighteen unchecked scratch modules now cover the following support graph. None is installed or verified, and the complete spectral endpoint is still unproved. Generic bounds will be discharged on the literal kernels; they are not substitute analytic premises.
-
-- `HTGeometry/HarmonicTailSquareIdentity`: unchecked `/tmp/HarmonicTailSquareIdentity.lean`.
-- `HTGeometry/FiniteReversedAbelBounds`: unchecked `/tmp/FiniteReversedAbelBounds.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixIsTheActualAtomicForm`: unchecked `/tmp/TheFullWeilMatrixIsTheActualAtomicForm.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheArchimedeanCenterKernelIsAHarmonicKernel`: unchecked `/tmp/TheArchimedeanCenterKernelIsAHarmonicKernel.lean`.
-- `HTGeometry/FiniteHarmonicRows`: unchecked `/tmp/FiniteHarmonicRows.lean`.
-- `SpacingScaleHarmonicAnalysis/TheArchimedeanDensityHasQuadraticIncrementControl`: unchecked `/tmp/TheArchimedeanDensityHasQuadraticIncrementControl.lean`.
-- `HTGeometry/FiniteWeightedGroundStateBound`: unchecked `/tmp/FiniteWeightedGroundStateBound.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheSeparatedAtomPairingsAreThePrimeKernel`: unchecked `/tmp/TheSeparatedAtomPairingsAreThePrimeKernel.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheSeparatedMarkovMatrixHasExactCrossEntries`: unchecked `/tmp/TheSeparatedMarkovMatrixHasExactCrossEntries.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixSplitsAtTheSpacing`: unchecked `/tmp/TheFullWeilMatrixSplitsAtTheSpacing.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheArchimedeanCenterRowCancelsThePole`: unchecked `/tmp/TheArchimedeanCenterRowCancelsThePole.lean`.
-- `HTGeometry/HarmonicCenterBoundaryBounds`: unchecked `/tmp/HarmonicCenterBoundaryBounds.lean`.
-- `HTGeometry/IntegerLogarithmicWindowGap`: unchecked `/tmp/IntegerLogarithmicWindowGap.lean`.
-- `HTGeometry/FiniteInverseSquareDistanceRows`: unchecked `/tmp/FiniteInverseSquareDistanceRows.lean`.
-- `HTGeometry/FinitePoleWeightedDistanceRows`: unchecked `/tmp/FinitePoleWeightedDistanceRows.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheAtomCrossMatrixIsCloseToItsCenterKernel`: unchecked `/tmp/TheAtomCrossMatrixIsCloseToItsCenterKernel.lean`.
-- `HTGeometry/FiniteKernelErrorFromDistanceRows`: unchecked `/tmp/FiniteKernelErrorFromDistanceRows.lean`.
-- `RenormalizedArithmeticPotentialTheory/TheAtomCrossReplacementHasUniformErrors`: unchecked `/tmp/TheAtomCrossReplacementHasUniformErrors.lean`.
-
-The last two assemblies give the exact uniform quadratic-form cost and bounded unnormalized pole-profile residual for the actual cross-integral replacement. The complete center action on mean-zero periodic profiles, pole-moment error, full-range coercivity, and spectral assembly remain to formalize.
-
-Two further unchecked drafts complete the current twenty-module support inventory: `TheCenterCollarIsPaidByTheTopAtoms` and `TheCompleteWeilTrialEnergiesAreSimpleAndProper`. The former keeps the diagonal `n(H_N+1)` through weighted Schur and reduces it to the top-atom potential plus three masses. The latter reuses ALG `sq_integral_abs_le` and SMAP `ramanujanAdjunctionEnergy_sub_one_ge`; both exact source statements were inspected. The elementary lower bound `1<=2*log(2)` suffices, since the profile charge shift is strictly below one. Needed foreign dependency oleans exist; their axioms will be audited transitively through the new endpoints. None of these twenty drafts is installed or checked.
-
-### Formalization checkpoint
-
-`HTGeometry/HarmonicTailSquareIdentity.lean` is installed after successful scratch verification. Both square-moment endpoints have clean transitive axiom reports (only `propext`, `Classical.choice`, `Quot.sound`), retained in `logs/complete-weil-spacing-axioms-2026-10-28.log`. Its first required olean is built for `HarmonicCenterBoundaryBounds`; final source audit remains. Twenty other support drafts are unchecked, including the new `FiniteShiftedHarmonicAbelBounds` adapter. The full spectral theorem remains unproved. No novelty audit or web search is being performed.
-
-Three support modules now pass scratch Lean verification: `HarmonicTailSquareIdentity`, `FiniteReversedAbelBounds`, and `TheFullWeilMatrixIsTheActualAtomicForm`. All are installed; required oleans for the first two exist, and the third is being built. Transitive reports are clean. New unchecked drafts supply the shifted harmonic Abel rows, mean-zero center square residual, ground center square residual, signed pole-moment quadratic error, and symmetric ground-projection estimate. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records all twenty-five modules. Final source audits, literal error transfers, full-range coercivity, and spectral assembly remain.
-
-The support graph now has thirty modules: three scratch-verified and installed, twenty-seven unchecked. All three installed modules have their first required oleans. The missing existing `ArithmeticCastelnuovoSeveri/CrossTowerCollarAndFiniteEulerLatticePositivity` dependency was individually compiled successfully; the center-kernel adapter is being checked. Further unchecked drafts establish the exact width/self-energy normalization, the constant-Ramanujan-mode selection, finite two-pole kernel bounds, and literal two-pole replacement errors. These add no analytic premises to the target. No complete-Weil spectral claim is yet verified.
-
-Five support modules are now scratch-verified, installed, and supplied with first required oleans: the harmonic tail moments, finite/reversed Abel adapter, actual complete-Weil carrier, exact collar harmonic kernel, and finite harmonic row identities. Seven retained endpoint axiom reports are clean. Thirty-four total drafts are recorded in the manifest. The new unchecked assembly `TheCompleteWeilMatrixHasRamanujanQuasimodes` combines the exact matrix decomposition with all three norm error limits; its dependencies and endpoint have not yet passed Lean. Full-range coercivity and spectral exhaustion remain to assemble.
-
-Fifteen support modules now pass scratch Lean verification, are installed, and have their first required oleans. Exact center-pole cancellation, the weighted harmonic boundary square bound, the retained logarithmic gap for every `0<c<1`, the two-sided inverse-square row bound, and the pole-weighted row bound `36*N*sqrt(n)` are verified. Seventeen retained transitive endpoint reports are clean. The missing existing `TheUniformMarginPaysThePoleOnlyUpToARootLogarithm` dependency compiled successfully without source changes. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records forty-two drafts. Literal integral-error transfers, periodic rows, pole moments, coercivity, and all three spectral endpoints remain unchecked; final source audits and integration remain. No web searches or novelty audits are part of this work.
-
-The first combined literal-error check exposed an existing namespace collision: ACS `TheScalingSurface` and `DistinctEffectiveCyclesMeetNonnegatively` both declare incompatible `localPair` definitions. The old center helper imports the latter through `CrossTowerCollarAndFiniteEulerLatticePositivity`; the actual Weil carrier imports the former. New standalone drafts `TheLogarithmicCenterKernelIsHarmonic` and `TheLogarithmicCenterRowCancelsThePole` isolate the elementary density and harmonic identities directly over the Levy-density module. They replace two support nodes without changing the target or adding hypotheses. Both replacement nodes now pass Lean, are installed, and have their first required oleans. Fifteen active nodes are verified, with seventeen clean retained reports. The two superseded owned source modules and their build artifacts were removed; existing foreign modules and oleans are untouched.
-
-### Complete assembly drafted; Lean verification incomplete
-
-The forty-two-module scratch graph now reaches all three requested endpoints.
-The following fixes the constants and dependencies of the assembled argument;
-it does not change this card's unproved status.
-
-Write `A1=integral(abs(phi))`,
-`Cx=38*A1^2/(M2*(1-c)^2)`, and
-`Cp=exp(1/2)*(exp(1/2)+1)*A1^2/(2*M2)`.
-The literal matrix decomposition is
-
-`W_N=(log(N)+sigma-gamma+selfError_N)*Id-P_N+B_N-Xerr_N+PoleErr_N`.
-
-The signed-profile integral estimates give
-`abs(<Xerr_N*x,x>)<=4*Cx*c^2*norm(x)^2` and
-`abs(<PoleErr_N*x,x>)<=2*Cp*c^2*norm(x)^2` for N>=1.
-The self error is at most `exp(1/2)*c/(2*N)` in absolute value.
-On each fixed bounded pole profile `a(n)/sqrt(n)`, the cross-error squared
-norm is at most `(36*Cx*A*c^2)^2`, and the two-pole error squared norm is
-at most `4*Cp^2*A^2*c^4`, where `abs(a)<=A`.
-
-The center residual on the pole has squared norm at most `6*alpha^2`.
-A mean-zero periodic mode with interval-sum bound B and point bound A has
-center output squared norm at most `alpha^2*(4*B+A)^2`.
-Thus division by sqrt(log(N)) makes all these residuals vanish.
-Conductor one is constant; every other normalized Ramanujan mode has zero
-period mean by its exact Gram orthogonality with conductor one. The existing
-prime norm residual and the self-error bound now give the full norm
-quasimode at `lambda_m`, retaining both pole moments throughout.
-
-For coercivity, let `psi=log(4)+4/exp(1)` and `lam>0`. Weighted Schur and the
-parametric top-atom inequality give, on the harmonic hyperplane,
+On the harmonic hyperplane the two-pole form vanishes, so
 
 `<B_N*y,y> >= -alpha*(1+1/lam)*D_N(y)
-              -alpha*((1+lam)*psi+3)*norm(y)^2`.
+              -alpha*((1+lam)*psi+3)*norm(y)²`.
 
-The unit pole e has `norm(B_N*e)<=4*alpha`. Orthogonal pole removal preserves
-the exact defect and contracts the norm. The symmetric-form identity bounds
-the change of the center form by `12*alpha*norm(x)^2`, so the whole-space
-mass constant is `alpha*((1+lam)*psi+15)`.
+Let `e=s/norm(s)`. The raw pole residual and `norm(s)>=1` imply
+`norm(B_N*e)<=4*alpha`. Orthogonal pole removal preserves `D_N` and contracts
+the norm. The symmetric-form projection identity bounds the change in the
+center form by `12*alpha*norm(x)²`. Thus the whole-space mass constant is
+`alpha*((1+lam)*psi+15)`.
 
-Set `lam=2*c/(1-c)` and `kappa=(1-c)/4`. Cauchy--Schwarz gives
-`0<=alpha<=c`, hence `alpha*(1+1/lam)<=(1+c)/2`.
-Combining the prime counterterm with the actual error costs gives eventually
+Cauchy--Schwarz on `[0,1]` gives `0<=alpha<=c`. Set
+`lam=2*c/(1-c)` and `kappa=(1-c)/4`, so
+`alpha*(1+1/lam)<=(1+c)/2`.
+The existing prime counterterm gives eventually
+`log(N)*Id-P_N >= (gamma-kappa)*Id+(1-kappa)*D_N`.
+Combining every literal error cost yields
 
-`W_N[x] >= a*norm(x)^2 + kappa*D_N(x)`,
-
-where
-
+`W_N[x]>=a*norm(x)²+kappa*D_N(x)`,
 `a=sigma-kappa-exp(1/2)/2-alpha*((1+lam)*psi+15)
-   -4*Cx*c^2-2*Cp*c^2`.
+   -4*Cx*c²-2*Cp*c²`.
 
-This is a positive defect coefficient for every 0<c<1. No additional analytic
-premise is introduced. Unit vectors with W_N-energy at most T have defect at
-most `max(0,(T-a)/kappa)`. The verified arithmetic compactness theorem gives a
-fixed finite Ramanujan approximation; the identity Gram limit gives coordinate
-mass at least 1/18 on that sublevel.
+Here `kappa>0` for every `0<c<1`. Therefore unit vectors with energy at most
+`T` have defect at most `max(0,(T-a)/kappa)`.
 
-The trial energies are proper and distinct: the ground shift is less than one,
-whereas every other excitation is at least 2*log(2)>=1; other distinctions are
-inherited from the arithmetic adjunction energy. Norm quasimodes give distinct
-actual eigenvalues near each fixed finite packet. For a threshold T away from
-all trial energies, residual-over-gap estimates make every detecting coordinate
-above T vanish uniformly on the low spectral subspace. The coordinate-mass
-certificate and finite-dimensional rank then give the matching upper count.
-The arithmetic count therefore equals the actual bounded spectral count,
-including multiplicity. Two isolating thresholds leave exactly one eigenvalue
-near each lambda_m. The complementary spectral gap and the norm residual make
-its spectral projection capture the normalized Ramanujan vector in norm.
+### 7. Exact spectral assembly
 
-The scratch endpoints are `tendsto_completeWeilMatrix_ramanujan_residual_norm`,
-`eventually_completeWeil_spectral_count_eq`, and
-`exists_simple_completeWeil_eigenline`. All three remain unchecked.
+Prime-defect compactness gives a fixed finite Ramanujan approximation on each
+bounded complete-Weil energy sublevel. The finite Gram limit supplies a
+uniform detecting-coordinate mass of at least `1/18`.
+
+The trial energies are proper and distinct. The ground shift satisfies
+`alpha<1`, while every other arithmetic excitation is at least
+`2*log(2)>=1`. Distinct positive non-ground conductors inherit the known
+injectivity of arithmetic adjunction energy; logarithmic growth gives finite
+sublevels.
+
+Norm quasimodes give distinct actual eigenvalues near each fixed finite
+packet, proving the lower count. At a threshold away from all trial energies,
+residual-over-gap bounds make each detecting coordinate above the threshold
+vanish uniformly on the low spectral subspace. The coordinate-mass certificate
+and finite-dimensional rank give the matching upper count, including
+multiplicity. Two isolating thresholds leave one eigenvalue near each label.
+The complementary gap and the norm residual force its spectral projection to
+capture the normalized Ramanujan vector.
+
+## Verification checkpoint
+
+The manifest `/tmp/WeilRamanujan-draft-manifest.json` records the active
+forty-two-module graph. Each verified scratch endpoint has a retained
+transitive axiom report in `logs/complete-weil-spacing-axioms-2026-10-28.log`;
+only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
+Final installed-source checks without output generation remain outstanding.
+The three main endpoints are still unchecked:
+
+- `tendsto_completeWeilMatrix_ramanujan_residual_norm`
+- `eventually_completeWeil_spectral_count_eq`
+- `exists_simple_completeWeil_eigenline`
+
+The initial combined import check exposed an existing collision between ACS
+`TheScalingSurface.localPair` and `DistinctEffectiveCyclesMeetNonnegatively.localPair`
+(they occupy the same namespace). The two center adapters were replaced with
+minimal imports directly over the Levy density. The active source import graph
+has no path through the incompatible branch. Foreign sources were unchanged.
+The superseded owned center modules and their build artifacts were removed.
+
+| # | Owner/module | Current verification |
+|---|---|---|
+| 1 | `HTGeometry/HarmonicTailSquareIdentity` | Scratch verified; installed; first required olean built |
+| 2 | `HTGeometry/FiniteReversedAbelBounds` | Scratch verified; installed; first required olean built |
+| 3 | `RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixIsTheActualAtomicForm` | Scratch verified; installed; first required olean built |
+| 4 | `RenormalizedArithmeticPotentialTheory/TheLogarithmicCenterKernelIsHarmonic` | Scratch verified; installed; first required olean built |
+| 5 | `HTGeometry/FiniteHarmonicRows` | Scratch verified; installed; first required olean built |
+| 6 | `SpacingScaleHarmonicAnalysis/TheArchimedeanDensityHasQuadraticIncrementControl` | Scratch verified; installed; first required olean built |
+| 7 | `HTGeometry/FiniteWeightedGroundStateBound` | Scratch verified; installed; first required olean built |
+| 8 | `RenormalizedArithmeticPotentialTheory/TheSeparatedAtomPairingsAreThePrimeKernel` | Scratch verified; installed; first required olean built |
+| 9 | `RenormalizedArithmeticPotentialTheory/TheSeparatedMarkovMatrixHasExactCrossEntries` | Scratch verified; installed; first required olean built |
+| 10 | `RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixSplitsAtTheSpacing` | Scratch verified; installed; first required olean built |
+| 11 | `RenormalizedArithmeticPotentialTheory/TheLogarithmicCenterRowCancelsThePole` | Scratch verified; installed; first required olean built |
+| 12 | `HTGeometry/HarmonicCenterBoundaryBounds` | Scratch verified; installed; first required olean built |
+| 13 | `HTGeometry/IntegerLogarithmicWindowGap` | Scratch verified; installed; first required olean built |
+| 14 | `HTGeometry/FiniteInverseSquareDistanceRows` | Scratch verified; installed; first required olean built |
+| 15 | `HTGeometry/FinitePoleWeightedDistanceRows` | Scratch verified; installed; first required olean built |
+| 16 | `RenormalizedArithmeticPotentialTheory/TheAtomCrossMatrixIsCloseToItsCenterKernel` | Scratch verified; installed; first required olean built |
+| 17 | `HTGeometry/FiniteKernelErrorFromDistanceRows` | Scratch verified; installed; first required olean built |
+| 18 | `RenormalizedArithmeticPotentialTheory/TheAtomCrossReplacementHasUniformErrors` | Scratch verified; installed; first required olean built |
+| 19 | `RenormalizedArithmeticPotentialTheory/TheCenterCollarIsPaidByTheTopAtoms` | Scratch verified; installed; first required olean built |
+| 20 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper` | Unchecked scratch |
+| 21 | `HTGeometry/FiniteShiftedHarmonicAbelBounds` | Unchecked scratch |
+| 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Unchecked scratch |
+| 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Unchecked scratch |
+| 24 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionHasBoundedPoleResidual` | Unchecked scratch |
+| 25 | `HTGeometry/SymmetricFormGroundProjection` | Unchecked scratch |
+| 26 | `HTGeometry/HermitianLowerSpectralWindows` | Unchecked scratch |
+| 27 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilSelfEnergyHasItsFinitePart` | Unchecked scratch |
+| 28 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionSelectsTheConstantRamanujanMode` | Unchecked scratch |
+| 29 | `HTGeometry/FiniteTwoPoleKernelBounds` | Unchecked scratch |
+| 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Unchecked scratch |
+| 31 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasAnExactErrorDecomposition` | Unchecked scratch |
+| 32 | `RenormalizedArithmeticPotentialTheory/HorizonKernelEuclideanIdentities` | Unchecked scratch |
+| 33 | `RenormalizedArithmeticPotentialTheory/TheWeilReplacementErrorsVanishOnRamanujanModes` | Unchecked scratch |
+| 34 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasRamanujanQuasimodes` | Unchecked scratch |
+| 35 | `RenormalizedArithmeticPotentialTheory/ThePoleProjectionIsTheEuclideanGroundProjection` | Unchecked scratch |
+| 36 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionIsBoundedOnThePole` | Unchecked scratch |
+| 37 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionRetainsThePrimeDefect` | Unchecked scratch |
+| 38 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilEnergyControlsThePrimeDefect` | Unchecked scratch |
+| 39 | `RenormalizedArithmeticPotentialTheory/BoundedCompleteWeilEnergyHasFiniteRamanujanCoordinates` | Unchecked scratch |
+| 40 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixRealizesFiniteAdjunctionPackets` | Unchecked scratch |
+| 41 | `RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | Unchecked scratch |
+| 42 | `RenormalizedArithmeticPotentialTheory/TheSimpleCompleteWeilEigenlinesConvergeToRamanujanLines` | Unchecked scratch |
+
+Next unresolved checks: shifted trial energies,
+periodic rows, pole moments, projection/coercivity, then spectral assembly.
+No unchecked draft is a proved theorem or a completed contribution.

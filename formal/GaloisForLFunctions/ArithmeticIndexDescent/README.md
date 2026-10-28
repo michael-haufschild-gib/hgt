@@ -1269,10 +1269,72 @@ one uniform `delta>0` such that
 
 At large frequency, the Xi contribution pays a Gamma fraction. On the
 remaining compact interval, continuity bounds `G`, and half the scalar
-gap pays the same fraction. Physical coercivity, complete-profile transfer
-and square-plus-odd higher mixed index are under active formalization.
-The full archimedean normalization contains its original mass term beyond
-the Gamma jump energy used here.
+gap pays the same fraction. Plancherel and the exact Gamma jump identity
+now give, on every real compact smooth core,
+
+\[
+ \Gamma(F)-P_{\rm even}(F)+\frac12\left|\int F\right|^2
+ \ge\gamma\|F\|_2^2,
+\]
+
+and, with one uniform `delta>0`, simultaneously
+
+\[
+ \Gamma(F)-P_{\rm even}(F)+\frac12\left|\int F\right|^2
+ \ge\delta\Gamma(F)+\frac\gamma2\|F\|_2^2.
+\]
+
+Both inequalities now hold for every compact BV profile and therefore for
+every original `completePairProfile q d X`, with the same uniform `delta`.
+Pole-preserving smoothing has one common enlarged support interval and
+converges in ordinary L², Gamma energy and every correlation. Its ordinary
+mean is exactly the original mean divided by the pole normalizer, which
+tends to one. A common finite cutoff in the square-prime sum then transfers
+the inequalities without losing any source term.
+
+The added higher mixed source now retains only odd exponents at least
+three, over every prime. Its even-exponent terms vanish, and it is exactly
+the sum of both original physical coarse–detail correlations. Absolute
+summability and exact finite-head subtraction are formalized. For
+`F=completePairProfile q d X`, its tail satisfies
+
+\[
+ |B_{\rm odd}(d_{\ge A},q;X)|
+ \le\frac{C_{\ge3}}{\kappa_A}\Gamma(F),\qquad\kappa_A\ge\log A.
+\]
+
+Here `C_(>=3)` is the existing finite budget for all higher prime powers;
+it also bounds the disjoint odd subset. Every positive Gamma share gives
+one fixed finite detail cutoff, uniformly in all horizons and original
+profiles. Choose that cutoff using the retained square-source share
+`delta`. If the first `A` detail coefficients vanish, the combined form
+satisfies
+
+\[
+ \Gamma(F)-P_{\rm even}(F)-B_{\rm odd}(d,q;X)
+ +\frac12\left|\int F\right|^2
+ \ge\frac\gamma2\|F\|_2^2.
+\]
+
+For every finite real profile family, its first `A` detail coordinates and
+its actual ordinary mean form a linear readout into `R^(A+1)`. The source
+form is nonnegative on this readout's kernel. The readout restricts
+injectively to every strictly negative subspace `W`, proving
+
+\[
+ \dim W\le A+1.
+\]
+
+One `A` works for every horizon and finite profile family. Profile
+relations are allowed, and no uniform ordinary-mean bound as support grows
+is needed. Even powers occur only in `P_even`; only odd exponents at least
+three occur in the additional mixed source. All five requested endpoints
+are formalized and have passed their direct Lean checks.
+
+This bound concerns `Gamma-P_even-B_odd`. The full Weil form additionally
+contains its original archimedean mass term, first-prime terms, pure coarse
+and pure detail blocks at odd higher powers, and original polar terms.
+Those blocks are outside this theorem.
 
 ### Polar compatibility
 
@@ -1803,6 +1865,10 @@ Quantitative pillars supplied by this programme:
 | Literal square-prime identity | The original even-power sum equals its regular Fourier boundary plus exactly half the squared ordinary mean on compact smooth real cores | `TheSquarePrimeBoundaryHasItsMeanPole`, `TheSquarePrimeSourceIsItsBoundaryPairing` |
 | Logarithmic Xi edge growth | Line-conjugate pairs and the fixed-window zero count give an unconditional eventual positive multiple of log T on Re s=1 | `TheXiEdgeFieldHasLogarithmicGrowth` |
 | Retained square-boundary Gamma share | One uniform positive delta gives G-R2 >= delta G + gamma/2 at every real frequency | `TheSquarePrimeBoundaryRetainsGammaEnergy` |
+| Physical square-source coercivity | The literal even source leaves both the full gamma L² floor and a uniform retained Gamma share with gamma/2 L² floor on compact smooth real cores | `TheSquarePrimeSourceRetainsGammaEnergy` |
+| Complete-profile square coercivity | Both literal square-source estimates hold on every compact BV function and every complete cell profile, with the same uniform Gamma share | `TheSquarePrimeEstimateHoldsOnCompleteProfiles` |
+| Disjoint odd higher mixed source | Only odd exponents >=3 remain; literal mixed correlations, absolute convergence, exact head subtraction and arbitrary Gamma-small tails hold across all primes | `OddHigherPrimePowerMixedTailsAreGammaSmall` |
+| Uniform square-plus-odd index | One finite detail head and the ordinary mean bound every strictly negative real subspace of Gamma-P_even-B_odd by A+1, uniformly in horizon and finite profile family | `SquaresAndOddHigherMixedPowersHaveUniformFiniteIndex` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

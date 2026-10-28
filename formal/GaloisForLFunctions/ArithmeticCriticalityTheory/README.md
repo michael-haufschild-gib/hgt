@@ -17,7 +17,7 @@ achievements: an identity for all tests, a positive certificate on a family, and
 as the aperture grows. A contribution reports its unit: the aperture through which all profiles
 are positive, or the rate $\sigma$ of a floor $\mu(A)\ge-Ce^{2\sigma A}$ (= strip $\tfrac12+\sigma$).
 
-**Four pillars.** (1) A positive half-line gauge would certify positivity; the two-moment law
+**Four ideas.** (1) A positive half-line gauge would certify positivity; the two-moment law
 excludes it. (2) Subtracting the pole gives a gauge-independent zero form whose radical is the
 theta span; what remains is a signed jump energy plus a calibrated variance. (3) Null sequences
 forbid removing a Hardy weight, a prime rate, or any fraction of the variance. (4) Window gauges
@@ -25,16 +25,16 @@ give explicit floors at small aperture; a single bounded window carries no width
 
 | Programme | Connection |
 |---|---|
-| [arithmetic-positivity-theory](../arithmetic-positivity-theory/README.md) | Theta source, Weil–Markov–pole split, grid tents carrying the $3/10$ window |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Positivity vs observation scale, blind directions, width |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Same odd theta gauges (`oddProfile`), collar transport, light-cone budget |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Prime side as incidences and centred divisor energies |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Ground-energy floor → lag bound → zero strip |
-| [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Pays reflected prime conductances; odd window to $181/500$ |
-| [ArithmeticContinuationAndCriticalEnergy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Exact shell-flux law, strict decrease and unique contact of $\mu$ |
-| [ArithmeticCompensationTheory](../ArithmeticCompensationTheory/README.md) | Floor-loss transport bounds |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | All-parity critical deficit identity; Sobolev floors |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Non-Z-type obstruction = frustration on prime-sum edges |
+| arithmetic-positivity-theory | Theta source, Weil–Markov–pole split, grid tents carrying the $3/10$ window |
+| BiScaleUncertainty | Positivity vs observation scale, blind directions, width |
+| TransHorizonIncidenceMechanics | Same odd theta gauges (`oddProfile`), collar transport, light-cone budget |
+| BezoutValuationIncidence | Prime side as incidences and centred divisor energies |
+| SquareRootThreshold | Ground-energy floor → lag bound → zero strip |
+| ArithmeticIncidencePositivity | Pays reflected prime conductances; odd window to $181/500$ |
+| ArithmeticContinuationAndCriticalEnergy | Exact shell-flux law, strict decrease and unique contact of $\mu$ |
+| ArithmeticCompensationTheory | Floor-loss transport bounds |
+| ArithmeticCastelnuovoSeveri | All-parity critical deficit identity; Sobolev floors |
+| ArithmeticOrientationTheory | Non-Z-type obstruction = frustration on prime-sum edges |
 
 Routes: ACT is itself a live route — for one fixed shift $a>0$, RH ⇔ the pole-free variation
 inequality on even compact $C^2$ profiles. RW uses $\mu(A)$, its floors and ceiling; SRT reads the
@@ -166,23 +166,17 @@ Lean entry points: `markovEnergy`, `zeroForm`, `fullZeroForm`, `twoSidedGenerato
 
 ## 5. Pillar theorems
 
-1. Folded sufficiency (`markovEnergy_phiDoob_eq_groundRemainder_add_potential`, `riemannHypothesis_of_foldedSupersolution`).
-2. Two-moment law (`exists_origin_and_infinity_windows_foldedGenerator_lt_potential`).
-3. Gauge-independent zero form; theta radical (`riemannHypothesis_iff_forall_odd_zeroForm_nonneg`,
-   `abs_markovEnergy_add_harmonicPlateau_sub_le`, `exists_abs_markovEnergy_translatePlateau_sub_le`,
+1. **Folded sufficiency** (`riemannHypothesis_of_foldedSupersolution`).
+2. **Two-moment law**: no positive folded supersolution (`exists_origin_and_infinity_windows_foldedGenerator_lt_potential`).
+3. **Gauge-independent zero form, theta radical** (`riemannHypothesis_iff_forall_odd_zeroForm_nonneg`,
    `riemannHypothesis_iff_forall_fullZeroForm_nonneg`, `riemannHypothesis_iff_forall_nonneg_cone`).
-4. Single-shift completeness (`riemannHypothesis_iff_forall_poleFreeVariationInequality`,
-   `riemannHypothesis_iff_forall_smearedGauge_jumpForm_nonneg`).
-5. Archimedean Z-type and light-cone law (`archReflectedDifferenceEnergy_le_two_mul_archSameSideEnergy`,
-   `zeroForm_shiftedGroundState_eq_antisymmetric_weilJumpDensity_add_prime`,
-   `riemannHypothesis_iff_forall_prime_le_antisymmetric_weilJumpDensity`).
-6. Criticality (`riemannHypothesis_iff_nonneg_and_no_hardyWeight`, `riemannHypothesis_iff_isLeast_primeRate`,
-   `exists_zeroForm_lt_mul_varianceEnergy`, `tendsto_capacityRatio_spanPlateau`).
-7. Ground-energy path (`riemannHypothesis_iff_tendsto_ccmRestrictedWeilGroundEnergy_zero`,
+4. **Single-shift completeness** (`riemannHypothesis_iff_forall_poleFreeVariationInequality`).
+5. **Archimedean Z-type and light-cone law**: every failure lives on prime anti-diagonals
+   (`riemannHypothesis_iff_forall_prime_le_antisymmetric_weilJumpDensity`).
+6. **Criticality** (`riemannHypothesis_iff_nonneg_and_no_hardyWeight`, `riemannHypothesis_iff_isLeast_primeRate`).
+7. **Ground-energy path** (`riemannHypothesis_iff_tendsto_ccmRestrictedWeilGroundEnergy_zero`,
    `exists_ccmRestrictedWeilGroundEnergy_le_doubleExp`).
-8. Small-aperture floors (`fullZeroForm_ge_of_support_le_threeTenths`, `windowFloor_eq_suzukiMainTerm`,
-   `one_thirtieth_le_ccmRestrictedWeilGroundEnergy`).
-9. Selectivity (`exists_even_shiftedPairZeroForm_neg`).
+8. **Small-aperture floors** (`fullZeroForm_ge_of_support_le_threeTenths`, `windowFloor_eq_suzukiMainTerm`).
 
 ---
 
@@ -239,16 +233,10 @@ Lean entry points: `markovEnergy`, `zeroForm`, `fullZeroForm`, `twoSidedGenerato
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: ground-state algebra in arbitrary gauges (folded, two-sided, general); equation of motion
-of $\Theta$ and exact sources; moment laws at both ends; zero forms, theta radical, cone criterion;
-criticality calculus (plateau/Lorentz null sequences); light-cone antisymmetric law; window gauges
-(plateau, quadratic, quartic, curved), even fold, fold costs, hub Poincaré; ground-energy floors,
-ceiling and transport.
-
-To build: signed gauge with global nodal-remainder control; quotient coercivity; all-profile window
-past $\frac12\log2$; arithmetic Harnack across prime shifts; $H^1\to L^2$ passage for the path.
+Signed gauge with global nodal-remainder control; quotient coercivity; all-profile window past
+$\frac12\log2$; arithmetic Harnack across prime shifts; $H^1\to L^2$ passage for the path.
 
 ---
 

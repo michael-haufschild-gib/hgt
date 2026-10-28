@@ -20,6 +20,7 @@ namespace GaloisForLFunctions.ArithmeticCountingPositivity
 
 open GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
   GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
+  GaloisForLFunctions.ArithmeticElectrostatics
   GaloisForLFunctions.ArithmeticEffectivityTheory
 
 /-- The count of multiples retains its exact harmonic weight. -/
@@ -103,15 +104,17 @@ theorem a_nontrivial_multiplicative_twin_has_a_positive_gap :
         |gaugeMertensSum ω y - Real.log y| ≤ Real.log 4 + 4 + Real.log 3 := by
   refine ⟨finiteFlip {3}, finiteFlip_isSignGauge {3}, ?_, ?_, ?_⟩
   · simp only [finiteFlip, prod_singleton, Nat.prime_three.factorization_self, pow_one]
-  · convert singleFlip_hasHyperplaneGap (p := 3) le_rfl using 1 <;> norm_num <;> ring
+  · convert singleFlip_hasHyperplaneGap (p := 3) le_rfl using 1
+    norm_num
+    ring
   · have h := (finiteFlip_matching (F := {3}) (by
       intro p hp
       rcases mem_singleton.mp hp with rfl
       exact Nat.prime_three)).2
     intro y hy
     have h' := h y hy
-    simpa only [one_mul, sum_singleton, Nat.cast_ofNat, show (3 : ℝ) - 1 = 2 by norm_num,
-      mul_div_cancel_left₀ _ (by norm_num : (2 : ℝ) ≠ 0)] using h'
+    have he : (2 : ℝ) * (Real.log 3 / ((3 : ℝ) - 1)) = Real.log 3 := by ring
+    simpa only [one_mul, sum_singleton, Nat.cast_ofNat, he] using h'
 
 /-- No gap threshold below `2 log 2`, even with multiplicativity and polar matching,
 selects the untwisted source: arbitrarily sparse prime flips pass that threshold. -/

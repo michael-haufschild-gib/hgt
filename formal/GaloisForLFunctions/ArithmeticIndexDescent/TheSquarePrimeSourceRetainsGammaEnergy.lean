@@ -32,7 +32,8 @@ theorem integrable_core_gammaDensity {a : ℝ} (u : SuzukiRestrictedWeilCore a) 
   rw [coreSchwartz_coe]
   exact integrable_archSymbol_sub_zero_mul_normSq_fourier
     (hcont.integrable_of_hasCompactSupport hc) (hcont.memLp_of_hasCompactSupport hc)
-    (integrable_gammaHardy_normSq_fourier_ofReal (u.smooth.of_le (by norm_num)) u.hasCompactSupport)
+    (integrable_gammaHardy_normSq_fourier_ofReal
+      (u.smooth.of_le (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) u.hasCompactSupport)
 
 /-- The Gamma increment is the original jump energy, without any archimedean mass shift. -/
 theorem integral_core_gammaDensity {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
@@ -72,8 +73,9 @@ theorem integral_core_spectralDensity {a : ℝ} (u : SuzukiRestrictedWeilCore a)
 
 theorem norm_integral_coreSchwartz_sq {a : ℝ} (u : SuzukiRestrictedWeilCore a) :
     ‖∫ x : ℝ, suzukiRestrictedWeilCoreSchwartz u x‖ ^ 2 = (∫ x : ℝ, u x) ^ 2 := by
-  have hi := u.continuous.integrable_of_hasCompactSupport u.hasCompactSupport
-  have he : (∫ x : ℝ, (u x : ℂ)) = ((∫ x : ℝ, u x) : ℂ) := by
+  have hi : Integrable (u : ℝ → ℝ) :=
+    u.continuous.integrable_of_hasCompactSupport u.hasCompactSupport
+  have he : (∫ x : ℝ, (u x : ℂ)) = (((∫ x : ℝ, u x) : ℝ) : ℂ) := by
     rw [← Complex.ofRealCLM_apply,
       ← ContinuousLinearMap.integral_comp_comm Complex.ofRealCLM hi]
     rfl
@@ -110,6 +112,7 @@ theorem squarePrimeSource_gamma_gap_core {a : ℝ} (u : SuzukiRestrictedWeilCore
       (eulerConstant_le_gammaIncrement_sub_squarePrimeRegular _) (sq_nonneg _)
   have hi := integral_mono ((integrable_spectralDensity U).const_mul _)
     (hG.sub hR) hp
+  simp only [Pi.sub_apply] at hi
   rw [integral_const_mul, integral_sub hG hR] at hi
   change Real.eulerMascheroniConstant * (∫ ξ, ‖𝓕 (suzukiRestrictedWeilCoreSchwartz u : ℝ → ℂ) ξ‖ ^ 2) ≤ _ at hi
   rw [integral_core_spectralDensity, integral_core_gammaDensity] at hi
@@ -138,6 +141,7 @@ theorem exists_squarePrime_retained_gamma_core :
       (sq_nonneg ‖𝓕 (U : ℝ → ℂ) ξ‖)
     nlinarith only [h]
   have hi := integral_mono ((hG.const_mul δ).add (hρ.const_mul _)) (hG.sub hR) hp
+  simp only [Pi.add_apply, Pi.sub_apply] at hi
   rw [integral_add (hG.const_mul δ) (hρ.const_mul _), integral_const_mul,
     integral_const_mul, integral_sub hG hR] at hi
   change δ * (∫ ξ, gammaIncrementSymbol (2 * Real.pi * ξ) *

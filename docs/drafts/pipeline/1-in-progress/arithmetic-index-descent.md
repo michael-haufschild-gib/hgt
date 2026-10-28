@@ -30,6 +30,13 @@ Determine which of the following advances are already in the corpus, then pursue
 
 ## Evidence and status
 
+The requested five-step square-source completion is complete: literal even-power boundary
+identity, logarithmic Xi edge growth, retained Gamma energy, compact-BV/complete-profile
+transfer, and the uniform `A+1` index bound after adding only odd higher-power mixed terms.
+All eight new modules passed their direct Lean checks with standard endpoint dependencies.
+The final form is exactly `Gamma-P_even-B_odd`; the full Weil programme remains in progress.
+The entries below preserve the earlier research milestones and their status at that point.
+
 The foundational README is in place. The energy–work modules, source radical/range theorem,
 actual section projection, singular inertia calculus and locally bounded source kernel have
 passed individual Lean checks with standard endpoint axioms. The closed source threshold and
@@ -871,3 +878,29 @@ Complete five endpoints: (1) literal all-even-power Fourier/Abel identity with h
 Passed pole/regular-limit scratch promoted to TheSquarePrimeBoundaryHasItsMeanPole; actual-source audit pending. Xi edge and literal Dirichlet prototypes remain unchecked.
 
 Formalized `TheXiEdgeFieldHasLogarithmicGrowth`: actual43346 passed. Line-conjugate pairs retain their ordinate, giving the window lower bound `(N(T+h)-N(T-h))/(2*(1+h^2))` and eventual positive `c*log T` growth. Standard endpoint dependencies only. `TheSquarePrimeBoundaryHasItsMeanPole`: direct actual36811 clean; first dependency82445 passed. Pole limit and regular dominated convergence now formalized. Both wired. Other four requested endpoints remain under active formalization; complete candidate sources exist, not yet certified.
+
+Formalized `TheSquarePrimeSourceIsItsBoundaryPairing` (actual84818, first olean74995), `TheSquarePrimeBoundaryRetainsGammaEnergy` (actual44595, first olean19990), and `TheSquarePrimeSourceRetainsGammaEnergy` (actual13629). The literal compact-smooth even source equals its regular Fourier boundary plus exactly half its squared real ordinary mean. Original Gamma minus that source plus mean pole has the full Euler-constant L2 gap, and simultaneously retains one uniform delta Gamma plus gamma/2 L2 gap. All endpoint dependency prints standard. Requested items1–3 are complete on the smooth domain; BV/complete-profile transfer and the disjoint odd higher-power A+1 index remain pending actual checks.
+
+Formalized `TheSquarePrimeEstimateHoldsOnCompleteProfiles`: actual57515 passed clean first attempt, five standard endpoint dependency prints. The same pole-preserving smoothing has common support, ordinary-mean convergence, correlation convergence and a common finite square-prime cutoff. Both source inequalities pass to every compact BV function and every original complete cell profile, with one universal retained Gamma share. Requested items1–4 complete. Disjoint odd higher-power mixed payment and A+1 combined index remain in progress.
+
+Formalized `OddHigherPrimePowerMixedTailsAreGammaSmall`: actual79898 passed clean first attempt, five standard endpoint dependency reports. Only odd exponents>=3 occur; explicit physical-correlations identity, even-exponent exclusion, absolute summability, exact head subtraction and arbitrary uniform original-Gamma tail payment are proved. The final combined source A+1 negative-dimension theorem remains the sole mathematical endpoint awaiting actual check.
+
+**All five requested endpoints completed.** `SquaresAndOddHigherMixedPowersHaveUniformFiniteIndex`
+passed direct actual check92879 on its first attempt. Its finite-head coercivity, actual mean
+linearity and uniform negative-dimension theorem report only `propext`, `Classical.choice`,
+and `Quot.sound`. First odd-source dependency check90645 also passed. The final module is wired
+into the umbrella; no umbrella build was run.
+
+For `F=completePairProfile q d X`, the square source leaves one universal positive Gamma share
+and `gamma/2` times the original L2 mass. The share pays all odd-exponent>=3 mixed detail tails.
+On the kernel of the first `A` detail coordinates and the actual ordinary mean,
+`Gamma(F)-P_even(F)-B_odd(d,q;X)>=0`. The readout is injective on every strictly negative real
+subspace, giving `dim W<=A+1` with one `A` for every horizon and finite profile family.
+Both complete-profile components are retained; even powers occur only in `P_even`.
+
+The literal Fourier identity is proved on compact smooth cores, and both source inequalities
+hold on every compact BV real function. The first-prime terms, odd higher-power pure coarse
+and pure detail blocks, original archimedean mass term and original polar terms are outside
+the combined theorem. The encompassing programme remains in progress. The result and its
+mathematical interpretation are recorded in `docs/reports/review-2710/astra2.md`; exact check
+records are in `logs/arithmetic-index-descent-checks.json`.

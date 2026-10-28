@@ -25,7 +25,7 @@ def harmonicCorrelation (ω : ℕ → ℝ) (N : ℕ) : ℝ :=
   gaugeHarmonicSum ω N / gaugeHarmonicSum (fun _ => 1) N
 
 /-- Harmonic variance is the squared Euclidean distance to the pole line. -/
-theorem harmonicVar_poleGauge_poleResidual {N : ℕ} (hN : 1 ≤ N) (y : ℕ → ℝ) :
+theorem harmonicVar_poleGauge_poleResidual {N : ℕ} (_hN : 1 ≤ N) (y : ℕ → ℝ) :
     harmonicVar 0 N (poleGauge y) = ∑ n ∈ Icc 1 N, poleResidual N y n ^ 2 := by
   have hm : wMean (Icc 1 N) (fun n => 1 / (n : ℝ)) (poleGauge y) = poleCoord N y := by
     unfold wMean poleCoord gaugeHarmonicSum
@@ -128,7 +128,7 @@ theorem gaugeWitness_attains_variance_bound {ω : ℕ → ℝ}
   change H - S ^ 2 / H - ((H - S / H * S) / H) ^ 2 * H =
     (S / H) ^ 2 * (H - S ^ 2 / H)
   field_simp [hH.ne']
-  <;> ring
+  ring
 
 /-- The prime-gap estimate is uniform over sign gauges, including gauges that vary with `N`. -/
 theorem eventually_prime_gap_ge_squared_correlation {ε : ℝ} (hε : 0 < ε) :

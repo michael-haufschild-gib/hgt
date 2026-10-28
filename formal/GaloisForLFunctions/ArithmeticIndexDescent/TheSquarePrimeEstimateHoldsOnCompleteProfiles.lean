@@ -39,10 +39,10 @@ theorem tendsto_poleSmooth_mean {f : ℝ → ℝ} (hf : Integrable f) :
     (poleNormalizer_tendsto.inv₀ (by norm_num : (1 : ℝ) ≠ 0)).mul_const (∫ x : ℝ, f x)
 
 private theorem poleSmooth_contDiff_infty {f : ℝ → ℝ} (hf : MemLp f 2 volume) (n : ℕ) :
-    ContDiff ℝ ∞ (poleSmooth f n) := by
-  have hs : ContDiff ℝ ∞ (smooth f n) :=
+    ContDiff ℝ (⊤ : ℕ∞) (poleSmooth f n) := by
+  have hs : ContDiff ℝ (⊤ : ℕ∞) (smooth f n) :=
     (mollifier_compact n).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ)
-      (show ContDiff ℝ ∞ (CHMDDoobGraph.mollifier n) from (WeilOneSided.narrowBump n).contDiff_normed)
+      (show ContDiff ℝ (⊤ : ℕ∞) (CHMDDoobGraph.mollifier n) from (WeilOneSided.narrowBump n).contDiff_normed)
       (hf.locallyIntegrable (by norm_num))
   exact contDiff_const.mul hs
 

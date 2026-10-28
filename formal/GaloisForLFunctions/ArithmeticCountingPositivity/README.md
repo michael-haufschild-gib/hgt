@@ -102,6 +102,105 @@ dependencies have passed the Lean kernel. Existing corpus results remain owned b
 their original programmes; this programme should import them rather than rename
 them as new contributions.
 
+### The pole-angle transfer
+
+For `H_N = sum_{n<=N} 1/n`, `S_N = sum_{n<=N} omega(n)/n` and a sign gauge
+`omega(n)^2 = 1`, set `c_N = S_N/H_N`. Every vector `x` on the fixed harmonic
+hyperplane satisfies
+
+`Var_{1/n}(sqrt(n) omega(n) x_n) >= c_N^2 sum x_n^2`.
+
+The projection of the gauged pole onto the original pole hyperplane attains
+this geometric bound. Combining it with the corpus's sharp multiplicative
+Poincaré inequality gives, for every positive `epsilon` and every sufficiently
+large `N`,
+
+`P_N(omega x) <= (log N - gamma - (2 log 2)c_N^2 + epsilon) sum x_n^2`.
+
+The horizon is uniform over **all** sign gauges, including gauges depending on
+`N`. No limit of the harmonic correlation is required. This is a quantitative
+way to convert a signed harmonic count into a paid prime gap. Its domain is
+the atomic prime form; carrying that payment into the complete overlapping
+Weil form remains a separate analytic problem.
+
+Lean: `harmonicCorrelation_sq_mul_mass_le_variance`,
+`gaugeWitness_attains_variance_bound`,
+`eventually_prime_gap_ge_squared_correlation` in
+[`HarmonicCorrelationPaysThePrimeGap.lean`](HarmonicCorrelationPaysThePrimeGap.lean).
+
+### Prime parity as an exact counting producer
+
+Let `omega_p(n) = (-1)^(v_p(n))`. Every negative coordinate is `p` times a
+positive coordinate, with harmonic weight divided by `p`. Writing `S_N` for
+its signed harmonic count gives the exact identity
+
+`p(H_N - S_N) = H_floor(N/p) + S_floor(N/p)`.
+
+The right side counts positive parity fibres inside a smaller interval. Its
+monotonicity yields
+
+`S_N/H_N >= (p-1)/(p+1)`.
+
+The excess is itself a count:
+
+`(p+1)S_N - (p-1)H_N = sum_{N/p < n <= N} (1+omega_p(n))/n`.
+
+It lies between zero and `2(1+log p)`, so `S_N/H_N` tends exactly to
+`(p-1)/(p+1)`. The pole-angle transfer pays the unconditional gap
+
+`2 log 2 ((p-1)/(p+1))^2`.
+
+This is a concrete passage from arithmetic pairing to an energy inequality.
+At `p=2` it pays `2 log 2/9`, whereas the Liouville twist at every prime has
+zero positive hyperplane gap. The counting floor is sharp; optimality of the
+resulting arithmetic gap is a different question.
+
+Lean: `prime_parity_pairing`, `prime_parity_boundary_identity`,
+`prime_parity_boundary_bounds`, `primeFlip_harmonicCorrelation_tendsto`,
+`primeFlip_hasHyperplaneGap`, `two_adic_parity_has_gap_but_liouville_does_not` in
+[`PrimeParityPairing.lean`](PrimeParityPairing.lean).
+
+### A positive gap is weaker than selection
+
+For every `a < 2 log 2`, a nontrivial single-prime flip has hyperplane gap at
+least `a`, is completely multiplicative, and has the same polar matching
+coefficient as the untwisted source. Its negative coefficients lie among
+multiples of a prime of arbitrarily large size; the elementary count
+`sum_{p|n, n<=N} 1/n = H_floor(N/p)/p` already suffices to prove this statement.
+
+Thus separating zeta from Liouville by a positive margin does not identify
+zeta among multiplicative twins. A transfer mechanism must retain further
+source information, such as the finite-part rigidity studied by
+Renormalized Arithmetic Potential Theory. Whether the **maximal** gap
+`2 log 2` itself is rigid among completely multiplicative gauges remains
+open; the squared-angle lower bound does not settle it.
+
+Lean: `harmonicMass_multiples`,
+`every_submaximal_gap_has_a_nontrivial_multiplicative_twin` in
+[`SparsePrimeFlipsRetainPositiveGaps.lean`](SparsePrimeFlipsRetainPositiveGaps.lean).
+
+### The boundary is a failure of the complete sign
+
+The actual arithmetic weights `lambda_p(n) = omega_p(n) Lambda(n)` satisfy
+`|lambda_p(n)| = Lambda(n)`. Each nevertheless has a compactly supported `C²`
+test whose complete Weil functional is negative. Gamma, both poles and every
+prime-power contribution remain in that functional.
+
+The proof uses full-cone uniqueness: a full-Weil-positive weight must equal
+`Lambda` at every integer at least two. But `lambda_p(p) = -log p`, with
+`log p > 0`. Combining this with the preceding count proves that **no fixed
+gap threshold below `2 log 2`, even together with multiplicativity and polar
+matching, forces complete Weil positivity**.
+
+The positive survivor is the exact parity count and its paid gap. It supplies
+a useful energy estimate while locating a missing ingredient in any proposed
+transfer: the transfer must read more of the source than these data.
+
+Lean: `primeFlip_exists_negative_complete_test`,
+`prime_parity_gap_and_complete_source_failure`,
+`near_maximal_gaps_do_not_force_weil_positivity` in
+[`NearMaximalGapsDoNotForceWeilPositivity.lean`](NearMaximalGapsDoNotForceWeilPositivity.lean).
+
 ## 5. Relation to the rest of the research
 
 | Programme | Interface |
@@ -110,6 +209,8 @@ them as new contributions.
 | [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Orbit correlation, Toeplitz index, orientation and finite-support receivers |
 | [ArithmeticCorrespondencePositivity](../ArithmeticCorrespondencePositivity/README.md) | Sparse annihilators and the precise lattice requirement of Stepanov's mechanism |
 | [SelectiveMultiscaleArithmeticPositivity](../SelectiveMultiscaleArithmeticPositivity/README.md) | Selective discrete margin and the continuous multiscale transfer problem |
+| [RenormalizedArithmeticPotentialTheory](../RenormalizedArithmeticPotentialTheory/README.md) | Sharp multiplicative Poincaré inequality, prime-defect identity and finite-prime gauge constructions |
+| [MultiplicativePositivityGeometry](../MultiplicativePositivityGeometry/README.md) | Arithmetic positive definiteness on the boundary and its limits as an interior forcing mechanism |
 | [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Actual prime incidence, atomic forms and allocation of surplus |
 | [SignedArithmeticHodgeTheory](../SignedArithmeticHodgeTheory/README.md) | Complete source coordinates, Gamma payments and cross-level interactions |
 | [ArithmeticIndexDescent](../ArithmeticIndexDescent/README.md) | Uniform index bounds for prime layers and the first-layer obstruction |
@@ -137,6 +238,8 @@ of what information their positivity preserves.
    despite the failure of uniform exponential graph control?
 7. Can counting pay the first prime layer with a uniformly finite residual
    index, or pay the pole complement beyond the Robin–Euler threshold?
+8. Is the maximal discrete gap rigid among multiplicative gauges? A positive
+   gap, and even every fixed threshold below the maximum, is not rigid.
 
 ## 7. Traps and countermodels
 
@@ -144,6 +247,7 @@ of what information their positivity preserves.
 |---|---|
 | A Gram representation settles the Weil sign | Prove equality with the literal complete form; an unrelated positive form is insufficient |
 | Multiplicativity breaks parity | Liouville is completely multiplicative; specify additional compatibility |
+| A positive selective gap identifies the source | Single-prime flips have gaps arbitrarily close to `2 log 2` and preserve polar matching |
 | Positive arithmetic weights select zeta | Test scalings, mixtures, golden data and Beurling systems |
 | Finite counts or ranks retain signs | Record exact correlations and the information lost under reweighting |
 | A fixed arithmetic mode controls a full spectrum | Bound its orthogonal complement uniformly |

@@ -351,3 +351,75 @@ Success criteria should be tied to explicit theorems:
 The selectivity tests should be applied to objects satisfying the construction's stated assumptions: the relevant sign twins, finite-prime flips, shifted pairs, planted quartets, pole-budget relaxations, finite-field fake data and escape models. A counterexample that violates the construction's pole or completion assumptions is not a refutation. A proposed mechanism that accepts a matching counterexample must explain what additional arithmetic property it will use.
 
 I would give the signed-overlap/index problem primary attention, keep the explicit surplus problem as the main source of measurable analytic progress, and maintain transverse-work extinction as an independent route against exceptions. The advances already made suggest that a breakthrough is most likely to come from a new **joint arithmetic inequality** preserving information across a transfer. The report's proposed field is a way to construct and organize such inequalities. Its decisive contribution would be the first new payment theorem on the actual source, not the terminology.
+
+**Formalized follow-up: the full square layer and disjoint odd higher mixed powers.** The five requested steps now give a uniform upper index bound for a specified infinite-prime partial source. Write
+
+\[
+ F=C(q,X)+D(d,X),\qquad
+ P_{\mathrm{even}}(F)=2\sum_n\frac{\Lambda(n)}n\operatorname{Corr}_F(2\log n),
+\]
+
+where `C` and `D` are the original complete-cell average and detail profiles, and let `Gamma` denote the positive Gamma jump energy `levyEnergy`. The constant `gamma` below is Euler's constant.
+
+For every real compact smooth core, the literal identity is
+
+\[
+ P_{\mathrm{even}}(F)
+ =\int_{\mathbb R}2\operatorname{Re}\mathrm{Reg}(1+4\pi i\xi)
+       |\widehat F(\xi)|^2\,d\xi
+   +\frac12\left|\int F\right|^2,
+\]
+
+with Fourier convention `exp(-2*pi*i*x*xi)` and `Reg` the regular part of `-zeta'/zeta`. Absolute Dirichlet summation gives the damped arithmetic Fourier identity. Compact correlation support removes damping from the literal sum. Dominated convergence handles the regular boundary, and the omitted pole is exactly half a Poisson kernel. Its contribution is exactly half the squared ordinary mean.
+
+Line-conjugate zero pairs preserve their ordinate and satisfy a width-free lower bound. With `N(T)` counting positive-ordinate Xi zeros with multiplicity, the resulting field estimate is
+
+\[
+ \operatorname{Re}\frac{\xi'}{\xi}(1+iT)
+ \ge \frac{N(T+h)-N(T-h)}{2(1+h^2)}\qquad(0\le h\le T).
+\]
+
+The existing fixed-window zero count therefore gives an unconditional eventual bound `Re(xi'/xi)(1+iT)>=c*log(T)` with one `c>0`. Combining this with the logarithmic digamma upper bound retains a positive fraction of the original Gamma symbol. Continuity and the already proved scalar gap handle the bounded-frequency interval.
+
+Consequently, both inequalities hold for every compact BV real function, including every complete cell profile:
+
+\[
+ \Gamma(F)-P_{\mathrm{even}}(F)+\frac12\left|\int F\right|^2
+ \ge \gamma\|F\|_2^2,
+\]
+
+\[
+ \Gamma(F)-P_{\mathrm{even}}(F)+\frac12\left|\int F\right|^2
+ \ge \delta\Gamma(F)+\frac\gamma2\|F\|_2^2
+ \quad\text{for one uniform }\delta>0.
+\]
+
+The transfer uses the same pole-preserving smoothing throughout. Its support lies in one fixed enlarged interval; its ordinary mean converges by the exact convolution integral; its L2 mass, Gamma energy and correlations converge by the established source theorems. One common finite cutoff in the square-prime sum then preserves the literal arithmetic source in the limit. The Fourier identity above is stated on smooth cores; the inequalities are proved on compact BV functions.
+
+Let `B_odd(d,q;X)` be the sum of the two actual coarse–detail correlations at `p^k`, over every prime and only odd exponents `k>=3`, with coefficient `2*log(p)/p^(k/2)`. Even exponents contribute zero to this added source. The established summable higher-power budget supplies
+
+\[
+ |B_{\mathrm{odd}}(d_{\ge A},q;X)|
+ \le \frac{C_{\ge3}}{\kappa_A}\,\Gamma(F),\qquad
+ \kappa_A\ge\log A,
+\]
+
+where `C_(>=3)` is the finite Gamma budget over all primes and powers of exponent at least three. Choosing a fixed `A>exp(C_(>=3)/delta)` spends at most the retained `delta*Gamma(F)` on the odd mixed tail. On the kernel of the finite detail head,
+
+\[
+ \Gamma(F)-P_{\mathrm{even}}(F)-B_{\mathrm{odd}}(d,q;X)
+ +\frac12\left|\int F\right|^2
+ \ge\frac\gamma2\|F\|_2^2.
+\]
+
+For any finite real profile family, the first `A` detail coordinates and its actual ordinary mean form a linear readout into `R^(A+1)`. The source form is nonnegative on the readout's kernel. Restricting the readout to any strictly negative subspace is therefore injective, giving
+
+\[
+ \dim W\le A+1.
+\]
+
+The same `A` works for every complete horizon and every finite profile family. The argument uses the one-dimensional range of the mean readout; it does not require a uniform bound for that functional as support grows. Coefficient relations are allowed: strict negativity supplies the injectivity needed by the dimension comparison.
+
+The implementation is in [the literal boundary identity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSquarePrimeSourceIsItsBoundaryPairing.lean), [the logarithmic Xi bound](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheXiEdgeFieldHasLogarithmicGrowth.lean), [physical Gamma coercivity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSquarePrimeSourceRetainsGammaEnergy.lean), [the BV and complete-profile transfer](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSquarePrimeEstimateHoldsOnCompleteProfiles.lean), [the disjoint odd higher source](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/OddHigherPrimePowerMixedTailsAreGammaSmall.lean), and [the uniform A+1 theorem](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/SquaresAndOddHigherMixedPowersHaveUniformFiniteIndex.lean). Actual-file checks and endpoint dependency reports are recorded in `logs/arithmetic-index-descent-checks.json` and the associated audit logs.
+
+The mathematical gain is a source payment for the divergent square layer through its regular Fourier boundary, with its pole retained as one readout and enough Gamma energy left to pay the disjoint odd mixed tail. The resulting index bound concerns `Gamma-P_even-B_odd`. The full Weil form also contains its original archimedean mass term, first-prime terms, the pure coarse and pure detail blocks at odd higher powers, and original polar terms. These additional blocks are outside this theorem. The new bound advances the proposed arithmetic index descent mechanism on an explicitly identified infinite-prime source.

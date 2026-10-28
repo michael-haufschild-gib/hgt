@@ -194,6 +194,14 @@ blind.
    — the relative width at that scale times `log N`. Hence
    `levyEnergy f_x ≥ ‖g‖² Σ_m x_m² (log(1/w) − 8e^{5/2} w m (1 + log(N + 1)))`.
 
+The literal density also has global inverse-square increment control:
+`ω(a)−ω(b) ≤ 19(b−a)/a²` for `0<a≤b`, hence
+`ω(s−w)−ω(s+w) ≤ 38w/(s−w)²` for `0≤w<s`
+(`archLevyDensity_sub_le_quadratic`, `archLevyDensity_window_sub_le`).
+Separating the exponential numerator and denominator variations proves these
+bounds directly. They control the error when replacing an actual atom cross
+integral by its center density, including signed common profiles.
+
 ### C. The joint estimate
 
 5. **The tilt.** With `r(n) = 1 + n/N` the down tower of the row at `m` loses the fraction

@@ -63,12 +63,17 @@
 - **What 70% needs.**
   - Through A-F plus robust CGG with `c = 19/27`: `p ≤ 0.0026N`. That input alone gives at least `99.47%` of zeros on the line, so it is stronger than the target.
   - Through the horizontal-charge receiver of `zeta23-beyond-bandwidth-one-proportion`: `h E_h + R_deep ≤ (3/20)N` at `h ≍ 1/log T` gives `N₀ ≥ (7/10)N`. The algebra is that of `three_quarters_line_of_shallowEnergy_and_deepCount` with `3/20` in place of `1/8`. The source estimate is open.
-- **Status.** Lean: `formal/GaloisForLFunctions/RHTower/ValueMomentsCannotSeparateReflectedPairs.lean`. The file check passes and the axioms are `propext`, `Classical.choice`, `Quot.sound`. The two paper tools of the 2026-09-26 verdict (robust CGG lemma, codimension-robust rank bound) are not formalized.
+- **Paper tools formalized [Lean].** Both 2026-09-26 tools are proved, in corrected form.
+  - *Robust CGG* (`RHTower/OffLineAnnihilatingWeightsCountCriticalZeros.lean`). The weights `x ↦ ⟪u_ρ, x⟫` vanishing at both members of all `p` pairs form a subspace `W` of codimension `≤ 2p` (`finrank_le_finrank_offLineAnnihilator_add`). On `W` every moment with `F(0,0) = 0` equals the critical moment (`moment_ofFunctionals_eq_critPart`, the identities `ΠGΠ = ΠPΠ`, `Πs = Πs_on`), and `|S₁|² ≤ #{simple critical}·Re S₂` (`norm_firstMoment_sq_le_card_simple_crit`). Correction: the LP input `s₁ ≥ c(N − 2p)` is not part of the lemma. `W` depends on the unknown off-line zeros, and no inequality bounds the ratio restricted to `W` by the unrestricted CGG ratio.
+  - *Codimension-robust rank bound* (`RHTower/RankTraceBoundAfterRemovingABlock.lean`). Let `G` be Hermitian, `rank P ≤ r`, and `range(G − P)` of dimension `≤ k`. Then `tr G − Σ_{i<k} λᵢ(G) ≤ √(r‖G‖²_F)` (`rtrace_sub_topEigenvalueSum_le`), and `(tr G − Σ_{i<k} λᵢ)² ≤ r‖G‖²_F` when the base is `≥ 0` (`sq_rtrace_sub_topEigenvalueSum_le`). Corrections: `P ⪰ 0` is not needed. The squared form as stated on 2026-09-26 is false without the sign condition: `G = Q = diag(−5, 0)`, `P = 0`, `k = 1`.
+  - Supporting lemmas: Ky Fan's upper bound for rank-`k` projections (`re_trace_mul_projection_le`, from von Neumann's trace inequality); Hermitian rank–trace `(tr A)² ≤ rank A·‖A‖²_F`; Frobenius contraction under compression; enlargement of a rank-`≤ k` projection to rank `k`.
+- **Status.** Lean: `RHTower/ValueMomentsCannotSeparateReflectedPairs.lean`, `RHTower/OffLineAnnihilatingWeightsCountCriticalZeros.lean`, `RHTower/RankTraceBoundAfterRemovingABlock.lean`. All three file checks pass, and the axioms are `propext`, `Classical.choice`, `Quot.sound`. They are wired into the `RHTower` umbrella, which was not compiled.
 
 ## Relation to RH
 A proportion result: it does not decide RH (individual-zeros gate). It is the strongest frontier-moving candidate found in the route-1 / HF loops.
 
 ## Log
+- 2026-10-28 — robust CGG lemma and codimension-robust rank bound formalized, with corrected statements.
 - 2026-10-28 — re-examined for 70%: value-moment mimicry and the defect-repaired CGG bound formalized; FALSE confirmed.
 - 2026-09-26 — refinement FALSE quantitatively (Simonič constants; the needed input is ≈ 95% of zeros on the line); project closed.
 - 2026-09-26 — Phase 4: FALSE as an improvement mechanism. A-F's off-line extremal survives robust CGG; the improvement needs near-line pair density `p ≤ 0.026N`.

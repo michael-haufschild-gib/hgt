@@ -70,6 +70,50 @@ As primes grow, these certified gaps approach `2 log 2`. Therefore no fixed
 threshold strictly below `2 log 2`, even together with multiplicativity and
 polar matching, selects the untwisted source.
 
+### Stronger parity pairing [PROVED HERE]
+
+For a prime `p`, put `omega(n)=(-1)^{v_p(n)}`. Its negative coordinates are
+exactly `p` times its positive coordinates. The inverse pairing divides a
+negative coordinate by `p`, preserves the cutoff, and multiplies harmonic
+weight by `p`. Therefore
+
+`p(H_N-S_N) = H_{floor(N/p)}+S_{floor(N/p)} <= H_N+S_N`.
+
+The last inequality counts the nonnegative summands `(1+omega(n))/n` on a
+larger interval. Rearrangement gives the sharper floor
+
+`S_N/H_N >= (p-1)/(p+1)`
+
+for every positive horizon. Thus the gap paid by this count is
+
+`(2 log 2)((p-1)/(p+1))^2`.
+
+In particular the prime-two flip, unlike the Liouville flip at every prime,
+retains gap `2 log 2/9`. The exact excess over the correlation floor is the
+positive boundary count
+
+`(p+1)S_N-(p-1)H_N = sum_{N/p < n <= N} (1+omega(n))/n`.
+
+It lies between zero and `2(1+log p)`, by the corpus harmonic interval
+bound. Dividing by `(p+1)H_N` proves that the harmonic correlation tends
+exactly to `(p-1)/(p+1)`. This is sharpness of the counting floor, not a
+claim that the resulting arithmetic gap lower bound is optimal.
+
+This stronger branch was separately checked against the finite-flip and
+harmonic-correlation searches. Existing finite-part theorems concern prime
+Mertens sums and do not supply this finite-horizon pairing identity.
+
+### Complete-source obstruction [PROVED HERE]
+
+For the actual arithmetic weight `lambda_p(n)=omega_p(n) Lambda(n)`,
+`|lambda_p(n)|=Lambda(n)` and `lambda_p(p)=-log p`. The corpus's unconditional
+full-cone uniqueness theorem says a full-Weil-positive weight must equal
+`Lambda` at every `n>=2`. Since `log p>0`, `lambda_p` is not full-Weil-positive.
+Thus the near-maximal-gap examples fail the literal complete Weil sign, not
+merely a proposed source-identification rule. This conjunction is new; the
+full-cone uniqueness theorem itself is an imported result whose transitive
+axioms must be checked before the conjunction is accepted.
+
 ## Novelty audit
 
 The corpus already proves the sharp untwisted gap, zero Liouville gap,
@@ -80,6 +124,13 @@ intermediate harmonic correlation and sparse-prime hyperplane gaps did not
 surface the uniform squared-angle transfer or its near-maximal nontrivial
 multiplicative counterexamples. No claim of novelty relative to all literature
 is made.
+
+External context: comparison of multiplicative mean values is classical;
+[Tenenbaum, *On effective mean-values of arithmetic functions*](https://arxiv.org/abs/2507.10483)
+discusses that theory. The contribution here is the uniform transfer of a
+literal harmonic count into the corpus's sharp prime-form gap and the
+complete-source counterexample it yields, not a claim to have invented
+multiplicative mean values or the elementary projection inequality.
 
 ## No-go closure
 

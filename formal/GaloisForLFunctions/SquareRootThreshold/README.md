@@ -28,17 +28,17 @@ exponential slack.
 
 | Programme | Connection |
 |---|---|
-| [arithmetic-positivity-theory](../arithmetic-positivity-theory/README.md) | Complete test families; tent detection goes through SRT visibility |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Packet envelopes, blind directions, observation vs receiver |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Möbius receiver damping = zero width |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Arithmetic inside windows, source-specific Gram estimates |
-| [ArithmeticCriticalityTheory](../ArithmeticCriticalityTheory/README.md) | Ground energy $\mu(A)$; Rayleigh bridge to lag floors |
-| [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Allocation losses graded by width; odd window to $181/500$ |
-| [ArithmeticContinuationAndCriticalEnergy](../ArithmeticContinuationAndCriticalEnergy/README.md) | $\mu$ strictly decreasing; unique contact aperture |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Hodge-type sign; prime-tower negative squares; all-parity Sobolev floors |
-| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md) | Open problem 1: prime pairs beyond $X=T$ |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | `widthDictionary_tfae`; Nyquist rank bound |
-| [ArithmeticLocalDivisorGeometry](../ArithmeticLocalDivisorGeometry/README.md) | Detector costs vs local zero movement |
+| arithmetic-positivity-theory | Complete test families; tent detection goes through SRT visibility |
+| BiScaleUncertainty | Packet envelopes, blind directions, observation vs receiver |
+| TransHorizonIncidenceMechanics | Möbius receiver damping = zero width |
+| BezoutValuationIncidence | Arithmetic inside windows, source-specific Gram estimates |
+| ArithmeticCriticalityTheory | Ground energy $\mu(A)$; Rayleigh bridge to lag floors |
+| ArithmeticIncidencePositivity | Allocation losses graded by width; odd window to $181/500$ |
+| ArithmeticContinuationAndCriticalEnergy | $\mu$ strictly decreasing; unique contact aperture |
+| ArithmeticCastelnuovoSeveri | Hodge-type sign; prime-tower negative squares; all-parity Sobolev floors |
+| TransThresholdPairCorrelation | Open problem 1: prime pairs beyond $X=T$ |
+| ArithmeticOrientationTheory | `widthDictionary_tfae`; Nyquist rank bound |
+| ArithmeticLocalDivisorGeometry | Detector costs vs local zero movement |
 | Others (SSIC, ACT-comp, SAEI) | Bounded certificates, flux/forcing, source signs before receivers |
 
 ---
@@ -121,18 +121,18 @@ cluster*.
     to the points $s=0,1$.
 
 ### Windows and heights
-14–17. **Slice factorization, height averaging, windowed Gram identity, minimum-aperture
+14. **Slice factorization, height averaging, windowed Gram identity, minimum-aperture
     resolution.** Windowed forms are height averages of localized forms. Threshold-localized
     variance: sub-threshold core silent; even ($2$-adic) sector diagonal at every bandwidth; odd
     sector diagonal through the doubled threshold $rX\le1$; trans-threshold neighbour counts cancel
     the degree weight.
 
 ### Prime side
-18. **Height phase** $(m/n)^{iT}$ of prime pairs changes sign (upper-bound sieves lose it).
-19. **Windowed mean zero.** For $2r\le\log2$ the windowed mean of $\Pi_f$ is exactly 0.
-20. **Kronecker alignment costs height**: coherent prime excursion $B$ ⇒ negative form or
+15. **Height phase** $(m/n)^{iT}$ of prime pairs changes sign (upper-bound sieves lose it).
+16. **Windowed mean zero.** For $2r\le\log2$ the windowed mean of $\Pi_f$ is exactly 0.
+17. **Kronecker alignment costs height**: coherent prime excursion $B$ ⇒ negative form or
     $\log(1+2\pi|\xi|)\gtrsim(B-C_f)/\|f\|^2$.
-21. **One parameter decides the line.** RH ⇔ $\Re P\ge0$ on difference tests at all lags $v\ge V$
+18. **One parameter decides the line.** RH ⇔ $\Re P\ge0$ on difference tests at all lags $v\ge V$
     (any $V$), each lag reading one dyadic prime window. With box-spline bumps
     $B_w=U_{w/4}^{\star4}$ **every** width decides (transform $(\sin z/z)^4$ vanishes only on the real
     axis); smooth bumps decide for all but countably many widths. Same for every primitive
@@ -141,51 +141,51 @@ cluster*.
     off-line lattice the family is a comb meeting the crystal at the threshold.
 
 ### Finite lag ranges
-22. **Record-potential law** (effective Landau): positivity on $[0,V]$ bounds every exponent's
+19. **Record-potential law** (effective Landau): positivity on $[0,V]$ bounds every exponent's
     coefficient by archimedean/pole terms + the potential of the others; Fejér windows raise decay;
     grid aliasing explains chains.
-23. **For $\zeta$: hiding needs twins, twins need triples, clusters collapse.** Local zero count ⇒
+20. **For $\zeta$: hiding needs twins, twins need triples, clusters collapse.** Local zero count ⇒
     every loud near-top record has a companion within $O(\log\log\gamma/V)$; isolated twins add
     coherently; hiding clusters have exponentially small geometric-mean radius.
-24. **Explicit lags.** Near-top zeros seen at $V_w\asymp(\log\gamma_0)^2\log\log\gamma_0/\delta_0$
+21. **Explicit lags.** Near-top zeros seen at $V_w\asymp(\log\gamma_0)^2\log\log\gamma_0/\delta_0$
     (modulated) or $V_0(w,\eta,\delta_0)$ (unmodulated); every finite right set gives $P_v<0$ at some
     $v\le V_0$.
-25. **Horizon law.** $P_v\ge0$ on $[0,V]$ forces depth gaps and escape to larger height and smaller
+22. **Horizon law.** $P_v\ge0$ on $[0,V]$ forces depth gaps and escape to larger height and smaller
     amplitude beyond `boxHorizon`.
-38. **Companion law** for the unmodulated family from the local zero count alone (Legendre records).
+23. **Companion law** for the unmodulated family from the local zero count alone (Legendre records).
     *Smooth detection:* every off-line zero has a $C^\infty$ negative witness at aperture
     $\le C(4+|\Im\rho|)^2/|\Re\rho-\frac12|^2$.
 
 ### The lag face and its neighbours
-26. **Unconditional envelopes.** $P_v\ge-|\varphi(0)|-(W+S_2)e^{v/2-\sqrt v/10}$ (dlVP); VK gives
+24. **Unconditional envelopes.** $P_v\ge-|\varphi(0)|-(W+S_2)e^{v/2-\sqrt v/10}$ (dlVP); VK gives
     $e^{v/2-v^{ex}}$, $ex<3/5$. Rate stays ½.
-27. **Rayleigh bridge.** $2\|\kappa_w\|^2\mu(v/2+w)\le\Re P_v$; $\mu\ge-Ce^{2\sigma A}$ ⇒ width $\le\sigma$. Odd
+25. **Rayleigh bridge.** $2\|\kappa_w\|^2\mu(v/2+w)\le\Re P_v$; $\mu\ge-Ce^{2\sigma A}$ ⇒ width $\le\sigma$. Odd
     windows transfer directly: $\Re P_{w,v}\ge\frac1{500}\|\kappa_w\|^2$ for $v/2+w\le181/500$ — the first
     prime atom is paid on the family; the second prime window $\log3/2$ is beyond reach.
-28. **The window prime polynomial reads $S(T)$**; $S(T)$ is unbounded unconditionally ⇒ no
+26. **The window prime polynomial reads $S(T)$**; $S(T)$ is unbounded unconditionally ⇒ no
     finite-rank bounded-spectral-shift models.
-29. **Width = lag rate = heat time.** `zetaZeroWidth` $\le\sigma$ ⇔ $P_v\ge-Ce^{\sigma v}$; de Bruijn–Newman
+27. **Width = lag rate = heat time.** `zetaZeroWidth` $\le\sigma$ ⇔ $P_v\ge-Ce^{\sigma v}$; de Bruijn–Newman
     $H_t$ real-rooted for $t\ge$ width$^2/2$.
-30. **Near-top zeros and contact.** Negative $P_v$ ⇒ $\mu(v/2+w)<0$; visibility lags decompose as
+28. **Near-top zeros and contact.** Negative $P_v$ ⇒ $\mu(v/2+w)<0$; visibility lags decompose as
     numerator$/\delta_0$ + drift and invert to excluded depths; cluster-robust exclusion of depth
     $\ge1/R$ below `zetaClusterHorizonHeight` $=\exp(R/(10^5A_0\log^2R))-306$ under window positivity.
-31. **Width bounds the energy-normalised floor** (Stieltjes against the Chebyshev error; $H^1$ datum).
-32. **Graded incidence ledger.** Allocation failing by $Ce^{2\sigma r}$ still certifies $\tfrac12+\sigma$; rate
+29. **Width bounds the energy-normalised floor** (Stieltjes against the Chebyshev error; $H^1$ datum).
+30. **Graded incidence ledger.** Allocation failing by $Ce^{2\sigma r}$ still certifies $\tfrac12+\sigma$; rate
     0 is RH; polynomial/log losses free; bounded-aperture windows report nothing.
-33–35. **Sampling.** $\sum_q|\Phi(z_q)|^2\le M(2a+2\pi)e^{2\pi}e^{2\sigma a}\int|f|^2$ on locally bounded
+31. **Sampling.** $\sum_q|\Phi(z_q)|^2\le M(2a+2\pi)e^{2\pi}e^{2\sigma a}\int|f|^2$ on locally bounded
     points (depth cost $e^{2\sigma a}$ vs density cost); unconditional floor in the archimedean
     normalisation $\Re W\ge-C(a)\int|\mathcal Ff|^2\log(|y|+3)$: the Weil form is never unbounded below
     in its own normalisation.
-36. **Width = ground-energy rate unless off-line zeros cluster.** Under `OffLineCopiesLocallyBounded M`,
+32. **Width = ground-energy rate unless off-line zeros cluster.** Under `OffLineCopiesLocallyBounded M`,
     $\mu(A)\ge-M(2A+2\pi)e^{2\pi}e^{2\sigma A}$; dichotomy: exponent = width, or unbounded clustering at
     exponential heights; one-aperture unsigned sampling bound ⇔ all apertures.
-37. **Prime tail coupling.** RH ⇔ $\Re\Pi_f\le\Re A_f$ at every aperture/profile/height ⇔ $2\times2$
+33. **Prime tail coupling.** RH ⇔ $\Re\Pi_f\le\Re A_f$ at every aperture/profile/height ⇔ $2\times2$
     pole compression; freezing the archimedean–pole side at height 0 fails, so under RH the finite
     primes must cancel the pole; Bagchi strong recurrence ⇔ the criterion; density-zero bad heights.
-39. **One aperture.** RW, ACT, OWU, EWU, AIP, APT and the SRT window measure one number — window
+34. **One aperture.** RW, ACT, OWU, EWU, AIP, APT and the SRT window measure one number — window
     positivity of $\hat Z$ — with explicit one-way and two-way arrows (parity split; odd window = OWU
     capacity; even blind minimum = even polar ground energy below $\log2$).
-40. **One zero width.** PBM, WL, TT, HCF, SZ, TH, RW/HF, FU/MC, PA, LA readings all equal
+35. **One zero width.** PBM, WL, TT, HCF, SZ, TH, RW/HF, FU/MC, PA, LA readings all equal
     `zetaZeroWidth`; none bounds it.
 
 ### Arithmetic inside one lag window
@@ -195,39 +195,34 @@ $p\in\{2,3\}$ and paid with lag discount $e^{-(v-2w)}$; low-order multiplicative
 to order $\sim2(v-2w)/\log3$ (sharp).
 
 ### Single heights and calibrations
-41. **A radius-$R$ certificate reads only primes $<e^{2R}$**: the $3/10$ certificate holds for every
+36. **A radius-$R$ certificate reads only primes $<e^{2R}$**: the $3/10$ certificate holds for every
     prime weight; the $181/500$ odd window reads exactly the prime 2.
-42. **Phase-selective single-height law.** Retaining the signed prime polynomial at one height removes
+37. **Phase-selective single-height law.** Retaining the signed prime polynomial at one height removes
     the prime cost where phases are favourable; height-uniform coefficient 4 is optimal.
-43. **Function-field calibration.** Weil positivity at $a$ ⇔ zero negative index of the span Gram;
+38. **Function-field calibration.** Weil positivity at $a$ ⇔ zero negative index of the span Gram;
     purity ⇔ lag positivity at the teeth; golden fake curve positive exactly to $\log5/2$.
-44. **Every height.** Head-conditioned decoupling: rough mean square unchanged under head return
+39. **Every height.** Head-conditioned decoupling: rough mean square unchanged under head return
     kernels; strip points damp rough variance by $y^{-2\delta}$.
 
 ---
 
 ## 5. Pillar theorems
 
-1. Square-root threshold (`RHTower.offLineLattice_weil_positive_iff`).
-2. Toeplitz law and mimicry (`profileConfig_weil_nonneg_iff`).
-3. Faithfulness (`lag_weil_eq_iff_symmMult_eq`, `eq_zetaZeroConfig_of_lag_weil_eq`).
-4. One parameter decides and measures (`zeta_onLine_iff_lag_primeWindow_nonneg`,
-   `zeta_re_le_iff_lag_primeWindow_ge_neg_exp`, `riemannHypothesis_iff_lag_splinePrimeWindow_nonneg`).
-5. Finite-range visibility (`zeta_near_top_visible_at_polylog_lag`, `one_param_horizon_law`,
-   `zeta_companion_law`, `exists_smooth_weil_negative_quadratic_aperture`).
-6. Rayleigh bridge (`two_mul_ccmRestrictedWeilGroundEnergy_le_re_lagPrimeWindowRHS`,
-   `ccmRestrictedWeilGroundEnergy_neg_of_near_top_zero`).
-7. Width dictionaries (`zetaZeroWidth_le_iff_lag_primeWindow_ge_neg_exp`,
-   `riemannHeat_zeros_real_of_half_sq_zetaZeroWidth_le`; modules `TheRoutesMeasureOneZeroWidth`,
-   `TheRoutesMeasureOneAperture`).
-8. Width bounds the floor; archimedean floor; clustering dichotomy
-   (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, `neg_clusterFloorConst_le_ccmRestrictedWeilGroundEnergy`,
+1. **Square-root threshold** (`RHTower.offLineLattice_weil_positive_iff`).
+2. **Toeplitz law and mimicry** (`profileConfig_weil_nonneg_iff`).
+3. **Faithfulness** of the lag family (`eq_zetaZeroConfig_of_lag_weil_eq`).
+4. **One parameter decides and measures**: RH ⇔ $P_v\ge0$ for $v\ge V$; width $\le\sigma$ ⇔ $P_v\ge-Ce^{\sigma v}$
+   (`zeta_onLine_iff_lag_primeWindow_nonneg`, `zetaZeroWidth_le_iff_lag_primeWindow_ge_neg_exp`,
+   `riemannHypothesis_iff_lag_splinePrimeWindow_nonneg`).
+5. **Finite-range visibility** (`zeta_near_top_visible_at_polylog_lag`, `zeta_companion_law`,
+   `exists_smooth_weil_negative_quadratic_aperture`).
+6. **Rayleigh bridge** ground energy ↔ lag floor (`two_mul_ccmRestrictedWeilGroundEnergy_le_re_lagPrimeWindowRHS`).
+7. **One aperture, one width**: all route readings equal window positivity of $\hat Z$ / `zetaZeroWidth`
+   (modules `TheRoutesMeasureOneAperture`, `TheRoutesMeasureOneZeroWidth`).
+8. **Width bounds the floor; clustering dichotomy** (`exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`,
    `polarGroundEnergyRate_eq_zetaZeroWidth_or_offLineCopies_cluster`).
-9. Graded ledger (`zetaZeroWidth_le_of_gradedIncidenceAllocation`).
-10. Prime tail coupling (`riemannHypothesis_iff_primePolynomial_le_archPart`,
-    `primePolynomial_le_archPart_iff_poleCompression`, `exists_archPart_zero_lt_primePolynomial`).
-11. Excluded depth below a height (`zeta_abs_re_sub_half_lt_of_hodgeIndex`, `zetaContactAperture_le_of_offLine_zero`).
-12. Function-field calibration (`curveConfig_weil_nonneg_iff_unitary_of_card_le`, `curveConfig_lagTest_nonneg_iff_unitary`).
+9. **Prime tail coupling** (`riemannHypothesis_iff_primePolynomial_le_archPart`, `exists_archPart_zero_lt_primePolynomial`).
+10. **Function-field calibration** (`curveConfig_weil_nonneg_iff_unitary_of_card_le`).
 
 ---
 
@@ -288,16 +283,10 @@ heights ($c<4$) vs bad-height density; record which weights each window certific
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: lag representation, Poisson on lattices, Toeplitz/Carathéodory–Fejér; two-point minors,
-Ingham windows; one-parameter lag family (smooth and box-spline); record-potential law, explicit
-lags, horizon and companion laws; Rayleigh bridge; width and aperture dictionaries; graded ledger;
-sampling on locally bounded points; excluded-depth inversions; threshold-localized variance;
-window incidence laws; function-field calibration.
-
-To build: a single-height prime estimate using height phases beyond $X=T$; control of zeros beyond
-every finite horizon; the $L^2$ width arrow without local sampling.
+A single-height prime estimate using height phases beyond $X=T$; control of zeros beyond every
+finite horizon; the $L^2$ width arrow without local sampling.
 
 ---
 

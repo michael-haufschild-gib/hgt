@@ -29,6 +29,24 @@ theorem oddHigherPrimePowerMixedTerm_even (pk : Nat.Primes × ℕ)
 def oddHigherPrimePowerMixedSource (d q : ℕ → ℝ) (X : ℕ) : ℝ :=
   ∑' pk : Nat.Primes × ℕ, oddHigherPrimePowerMixedTerm pk d q X
 
+/-- The odd higher-power source is literally the sum of both original physical mixed correlations. -/
+theorem oddHigherPrimePowerMixedSource_eq_integrals (d q : ℕ → ℝ) (X : ℕ) :
+    oddHigherPrimePowerMixedSource d q X = ∑' pk : Nat.Primes × ℕ,
+      if Odd (pk.2 + 3) then
+        (2 * ArithmeticFunction.vonMangoldt (higherPrimePowerIndex pk) /
+          Real.sqrt (higherPrimePowerIndex pk)) *
+        ((∫ u, haarSectionProfile d X u *
+          averageSectionProfile q X (u + Real.log (higherPrimePowerIndex pk))) +
+          ∫ u, averageSectionProfile q X u *
+            haarSectionProfile d X (u + Real.log (higherPrimePowerIndex pk))) else 0 := by
+  unfold oddHigherPrimePowerMixedSource
+  apply tsum_congr
+  intro pk
+  unfold oddHigherPrimePowerMixedTerm
+  split_ifs
+  · exact integerMixedSource_eq_integrals (higherPrimePowerIndex pk) d q X X
+  · rfl
+
 theorem summable_norm_oddHigherPrimePowerMixed (d q : ℕ → ℝ) (X : ℕ) :
     Summable (fun pk : Nat.Primes × ℕ => ‖oddHigherPrimePowerMixedTerm pk d q X‖) := by
   apply Summable.of_nonneg_of_le (fun pk => norm_nonneg _) (fun pk => ?_)
@@ -108,6 +126,7 @@ theorem exists_oddHigherPrimePower_gamma_small_tail {δ : ℝ} (hδ : 0 < δ) :
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.oddHigherPrimePowerMixedTerm_even
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.oddHigherPrimePowerMixedSource_eq_integrals
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.summable_norm_oddHigherPrimePowerMixed
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.oddHigherPrimePowerMixedSource_sub_head
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_oddHigherPrimePower_gamma_small_tail
