@@ -69,16 +69,18 @@ CHMDQuotientWeilForm two-pole classification remains part of the source data.
 
 ## Quantitative growing-mode Gram target
 
-For the actual normalized Ramanujan pole profiles v_m, seek the uniform finite
-family estimate
+For the actual normalized Ramanujan pole profiles v_m, the formalized uniform finite
+family estimate is
 
 |sum_(n=1)^N (sum_(m in S) c_m v_m(n))^2
   - log N * sum_(m in S) c_m^2|
  <= (1+2*sum_(m in S) m^2) * sum_(m in S) c_m^2,
 
-for positive conductors and N>=1. Complete-period orthogonality and bounded
-periodic partial sums provide a candidate proof; the precise statement is not
-yet formalized. This targets the Gram part of growing-mode transfer only.
+for every finite positive-conductor set and every natural horizon N.
+GrowingRamanujanFamiliesHaveAUniformGramBudget proves it by complete-period
+orthogonality, Abel summation and finite Cauchy–Schwarz. The exact harmonic
+normalizer has constant 2*sum_m m^2. This controls the Gram part of growing-mode
+transfer only.
 Prime-matrix residual, modal complement and Gamma/pole comparison remain distinct.
 
 ## Conductor-explicit prime residual target
@@ -103,3 +105,32 @@ The input contains only finite prime arithmetic and the proved Mertens remainder
 no conductor-uniform convergence or complement sign is assumed. These estimates
 remain research targets until formalized. They do not identify a complete modal
 source or transfer Gamma and both poles.
+
+## Horizon-uniform arithmetic error target
+
+Seek an absolute bound on
+B_N=sum_(n<=N) (|MertensSum(floor(N/n))-log(floor(N/n))+gamma|
++1/floor(N/n))^2/n.
+
+The existing Chebyshev error bound and its explicit inverse-log-square
+majorant imply a candidate Mertens remainder bound C/log(y). The exact Euler
+integral identifies the tail constant. A finite positive-integer head then gives
+f(y)^2<=D/(1+log(y)^2). Floor roundoff compares this profile with the summable
+Wiener Lorentzian kernel. The existing bound_sum_log' applied to the constant
+arithmetic sequence should yield B_N<=3D*(1+2*pi^2).
+
+This would give an absolute residual budget for growing conductor families.
+Distinct eigenvalue labels still require energy separation; a wider-window
+spectral count could use dimension instead. Neither conclusion supplies the
+modal complement or continuous Gamma and pole transfer.
+
+## Local source-capture target
+
+The exact totient bound suggests
+sum_(n<=L) |sum_(m in S) a_m v_m(n)|^2
+<=H_L*(sum_(m in S) phi(m))*(sum_(m in S) a_m^2).
+Combined with the proved global Gram lower estimate, this measures the fraction
+of normalized modal mass in each fixed integer window. Extract the positive
+readout bound and approximation cost before any route-retirement claim.
+The topology here is the literal prime-matrix l2 normalization; no claim about
+every full-Weil completion follows.

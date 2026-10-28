@@ -23,8 +23,9 @@ Three constructions supply concrete starting points.
   graph. Their complement contains an infinite null radical. Its nonnegativity is open; a strict
   lower bound on the whole complement is false.
 * Ramanujan profiles give actual prime-matrix quasimodes and distinct spectral points for each
-  fixed finite conductor packet. Growing-conductor errors, a modal complement and comparison
-  with Gamma and both poles remain separate requirements.
+  fixed finite conductor packet. One explicit Gram budget controls arbitrary finite conductor
+  families. Prime residuals, a modal complement and comparison with Gamma and both poles remain
+  separate requirements.
 
 There is also a canonical nonnegative critical source energy. Its finiteness detects finite
 off-line support; its sharp smallness threshold detects RH. Known index costs bound it from
@@ -257,10 +258,28 @@ For conductor \(m\), the actual mode is
  E_m=\gamma+\log m+\operatorname{tameDifferent}(m).
 \]
 
-The prime matrix has trial energy \(\log N-E_m\). A source-compatible comparison must control
-the Gram error, matrix residual, continuous Gamma and polar images, and the orthogonal
-complement on the same growing family. Choosing an arbitrarily slow diagonal sequence from
-fixed-mode limits does not establish source completeness.
+The prime matrix has trial energy \(\log N-E_m\). Write
+\(F_{S,N}a(n)=\sum_{m\in S}a_m v_m(n)\) on \(1\le n\le N\), for any finite set of positive
+conductors \(S\). The programme proves the simultaneous estimate
+
+\[
+\left|\|F_{S,N}a\|_2^2-\log N\sum_{m\in S}a_m^2\right|
+\le\left(1+2\sum_{m\in S}m^2\right)\sum_{m\in S}a_m^2.
+\]
+
+With the exact harmonic normalizer \(H_N\), the constant is \(2\sum_{m\in S}m^2\).
+[GrowingRamanujanFamiliesHaveAUniformGramBudget](GrowingRamanujanFamiliesHaveAUniformGramBudget.lean)
+proves both bounds. Complete-period orthogonality and Abel summation first give the entry
+bound \(2ml\). Summing those bounds and applying Cauchy–Schwarz controls every coefficient
+vector with one constant. The Gram cost is \((1+2\sum_{m\in S}m^2)/\log N\), with all
+family and horizon dependence explicit. For conductors at most \(M\), this cost is
+\(O(M^3/\log N)\).
+
+A source-compatible comparison must also control the matrix residual, continuous Gamma and
+polar images, and the orthogonal complement on the same growing family. The Gram estimate
+supplies none of those separate bounds. Choosing an arbitrarily slow diagonal sequence from
+fixed-mode limits does not establish source completeness. Distinct spectral labels also require
+comparison with the separation of their adjunction energies.
 
 ### Critical-work control
 
@@ -293,9 +312,10 @@ These are imported mathematical foundations, not new contributions of this progr
 | Source synthesis beyond narrow spacing | [TheSecondOrderSynthesis](../SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean) |
 
 The trial-correction estimates, whole-family operator bounds, exact radical retention and
-quantitative source-scale bounds with faithful completed-aperture transport are formalized
-contributions of this programme. Complete signed block payment, growing-mode transfer and
-arithmetic upper control of critical work remain research targets.
+quantitative source-scale bounds with faithful completed-aperture transport, and simultaneous
+Ramanujan Gram budgets are formalized contributions of this programme. Complete signed block
+payment, growing-mode residual and complement transfer, and arithmetic upper control of critical
+work remain research targets.
 
 ## Questions and open topics
 

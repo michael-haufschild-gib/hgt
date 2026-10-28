@@ -27,7 +27,7 @@ Conjecture only. No completed paper proof, Lean theorem, or full mixed Weil sign
 
 - 2026-10-28 — Opened after the general simultaneous Gamma variance, mean-graph, and exterior bound passed exact Lean audits.
 
-`LogCellGammaRemainderRows.lean` passed its exact final check and both transitive audits: `gammaCellNearUpperRemainder_le` bounds the complete upper near row by `6*exp(1/2)`; `gammaCellNearLowerRemainder_le` bounds the lower near row by `2*exp(1/2)`, independently of source index. Four forward and two backward monotone shifts telescope; inverse-width and Gamma bounds control the endpoint readings. Audit log: `/tmp/acs-logcell-gamma-remainder-rows-final.log`. Only standard axioms; no warnings.
+[Nearby endpoint losses](../3-formalized/acs-gamma-near-row-remainders.md), in `LogCellGammaRemainderRows.lean`, passed the exact final check and both transitive audits: `gammaCellNearUpperRemainder_le` bounds the complete upper near row by `6*exp(1/2)`; `gammaCellNearLowerRemainder_le` bounds the lower near row by `2*exp(1/2)`, independently of source index. Four forward and two backward monotone shifts telescope; inverse-width and Gamma bounds control the endpoint readings. Audit log: `/tmp/acs-logcell-gamma-remainder-rows-final.log`. Only standard axioms; no warnings.
 
 Adjacent, distant, exterior, and integrated-kernel recovery remain open. `/tmp/acs-gamma-interval-remainder.lean` contains unverified exact tail rows, a triangular first-moment formula, and the complete exterior averaging-loss identity; verification is underway.
 

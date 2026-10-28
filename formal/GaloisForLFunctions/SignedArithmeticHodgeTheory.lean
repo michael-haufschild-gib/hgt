@@ -5,9 +5,12 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.TranslationPreservesWeilE
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.BoundedWindowsAdmitSourceCompatibleScaleTransport
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.CompletedAperturesCarryTheLiteralScaleTransport
 
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.GrowingRamanujanFamiliesHaveAUniformGramBudget
+
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
 
 Certified signed residual calculus and faithful scale transport on the actual
-arithmetic source, with explicit graph growth under unbounded translation.
+arithmetic source, with explicit graph growth under unbounded translation and
+quantitative Gram control for growing Ramanujan conductor families.
 -/

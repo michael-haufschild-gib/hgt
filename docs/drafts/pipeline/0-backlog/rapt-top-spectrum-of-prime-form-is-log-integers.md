@@ -31,8 +31,10 @@ like `1/log N`.
 Lower bounds: product valuation modes `Π_{p|m} ψ_{p, v_p(m)}(v_p(n)) n^{−1/2}`, with
 `ψ_{p,k} = 1_{j ≥ k} − (p − 1)^{−1} 1_{j = k − 1}` (exact eigenvectors of the valuation tower),
 and the finite-`Q` horizon-defect limit (`tendsto_sieveHorizonDefect_adjunction`). Upper bounds: a
-sharp Poincaré inequality on the complement of the first `k − 1` modes; RP29 gives `k = 2` with a
-non-sharp gap.
+sharp Poincaré inequality on the complement of the first `k − 1` modes. `k = 2` is proved (RP37,
+`eventually_atomicWeilForm_below_pole_two_log_two`): `E_2 = γ + 2 log 2 = E(2)`, with the two-scale
+Poincaré inequality (finite-prime chain ⊕ tensorized rough fibres) as the template for `k ≥ 3`.
 
 ## Log
 - 2026-10-28 — created in 0-backlog.
+- 2026-10-28 — `k = 2` formalized (RP37).

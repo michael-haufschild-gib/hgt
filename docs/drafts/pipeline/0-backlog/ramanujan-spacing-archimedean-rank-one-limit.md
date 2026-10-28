@@ -205,3 +205,12 @@ to `(integral g*exp(-u/2))*sum a(n)/n` and
 `(integral g*exp(u/2))*sum a(n)`. After dilation, the atom factors divided by w
 tend to integral phi. Ordinary and logarithmic periodic means then give the
 claimed product limit. Exact integration and finite-sum adapters remain.
+
+A stronger, separately audited conjecture is recorded in
+`complete-weil-spacing-ramanujan-spectral-law.md`. An exact harmonic-row
+calculation suggests that the two pole terms cancel the large archimedean row
+on the pole vector, while periodic zero-mean profiles have bounded row residual.
+If proved for the actual atom integrals, this would upgrade the present form
+limit to full-Weil quasimodes and, at a fixed small width ratio, spectral
+exhaustion. The weaker form limit would be supporting content of that single
+contribution, not an additional count. Both remain unproved and uncounted.

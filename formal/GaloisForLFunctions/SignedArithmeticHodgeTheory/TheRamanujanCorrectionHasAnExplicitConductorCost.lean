@@ -12,6 +12,7 @@ is bounded by `4 sqrt(phi(m)) log(m) / y`, uniformly in the row index.
 noncomputable section
 
 open Finset
+open scoped BigOperators
 
 namespace GaloisForLFunctions.SignedArithmeticHodgeTheory
 

@@ -36,8 +36,8 @@ pole-orthogonal complement it stays ≥ 0.79 at `c = 0.9`.
 
 - [x] Top of the prime form sharp, all vectors (Lean, RAPT).
 - [x] Hodge index with sharp gap on single-prime class spans (Lean, RAPT).
-- [ ] Global gap (C4): Poincaré inequality for the multiplicative walk (measure `1/m` on `[1, N]`,
-      rates `Λ(t)/t` up, `Λ(t)` down); numerically gap ≈ 1.24–1.30, Efron–Stein constant ≈ 1.26–1.31.
+- [x] Global gap (C4), sharp: `P_N ≤ (log N − γ − 2 log 2 + ε)|x|²` on the pole complement,
+      attained by the 2-adic step (Lean, RAPT RP37).
 - [ ] Exact archimedean self-energy constant and cross kernel with tilted weights.
 - [ ] Twin failure: needs cancellation in `Σ_m λ(m)λ(m+j)` (two-point Chowla type) for the Liouville
       pole; open.

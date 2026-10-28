@@ -262,6 +262,92 @@ theorem abs_gevreySynth_sub_le (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSup
         rw [div_pow, mul_pow, div_eq_mul_inv _ ((n₀ : ℝ) ^ p), ← inv_pow]
         ring
 
+/-- The supremum error of the Gevrey synthesis of order `2m + 2`. -/
+def gevErr (M b A B s k : ℝ) (A0 : ℝ) (m n₀ : ℕ) : ℝ :=
+  M * A * (((2 * m + 2 : ℕ) : ℝ) ^ s * (b + B * k + (2 * m + 2 : ℕ)) / n₀) ^ (2 * m + 2) +
+    M * b * (1 / k) * A0
+
+/-- **The Gevrey synthesis as a perturbation**: for Gevrey profile and test, the atomic test of
+level `n₀ B` with the weights `F(log n − c)/n` is the translate of `F + D`, `D` a `C²` test
+supported in `[−(R+1), R+1]` with `|D| ≤ gevErr` and Lipschitz constant `emLip`. -/
+theorem exists_gevreySynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ ∞ F) (hFR : SupportedIn R F) (hM0 : 0 ≤ M)
+    (hb : 0 ≤ b) (hB : 0 ≤ B) (hs : 0 ≤ s)
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * B ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {k : ℝ} (hk : 1 ≤ k) (m : ℕ) :
+    ∃ (x : ℕ → ℝ) (D : ℝ → ℝ),
+      atomicTest (n₀ * blockSize R) x (dilate k φ) =
+        (fun u => F (u - (Real.log n₀ + R)) + D (u - (Real.log n₀ + R))) ∧
+      ContDiff ℝ 2 D ∧ SupportedIn (R + 1) D ∧
+      (∀ u, |D u| ≤ gevErr M b A B s k (∫ s, |φ s|) m n₀) ∧
+      ∀ u v, |D u - D v| ≤ emLip (fun l => M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
+        (fun q => ∫ s, |iteratedDeriv q φ s|) k n₀ * |u - v| := by
+  have hn₀1 : 1 ≤ n₀ := by omega
+  have hB1 : 1 ≤ n₀ * blockSize R := Nat.one_le_iff_ne_zero.mpr
+    (Nat.mul_ne_zero (by omega) (by have := one_le_blockSize R; omega))
+  obtain ⟨N, hNB⟩ : ∃ N : ℕ, n₀ * blockSize R = N + 1 := ⟨n₀ * blockSize R - 1, by omega⟩
+  have hN : Real.log n₀ + 2 * R < Real.log (1 + N) := by
+    have := log_lt_log_block hn₀1 R
+    rw [hNB] at this
+    push_cast at this
+    rwa [add_comm (N : ℝ) 1] at this
+  have hFs : ∀ t, t ∉ Icc (-R) R → F t = 0 := fun t ht => hFR t (by
+    simp only [mem_Icc, not_and_or, not_le] at ht
+    rcases ht with ht | ht
+    · exact lt_of_lt_of_le (by linarith) (neg_le_abs t)
+    · exact lt_of_lt_of_le ht (le_abs_self t))
+  obtain ⟨x, D, hx, hD2, hDR, hsup, hlip⟩ := exists_emSynthesis_of hφ hφ1 hφint hF hFR hM
+    (fun l => by positivity) hn₀ hk fun r => by
+      rw [hNB]
+      exact abs_gevreySynth_sub_le hφ (hasCompactSupport_of_vanishes hφ1) hF hFs hM0 hb hB hs hM hA
+        hn₀ hN hk m r
+  refine ⟨x, D, hx, hD2, hDR, fun u => (hsup u).trans (le_of_eq ?_), hlip⟩
+  unfold gevErr
+  simp
+
 end Synthesis
+
+/-! ### Overlap growth beyond `(log log N)^s` -/
+
+section Growth
+
+/-- **Gevrey overlap growth of class `s`**: dilations `κ_N → ∞` whose overlap ratio `N/κ_N` beats
+`(log log κ_N)^s`. -/
+def OverlapGrowthGevrey (s : ℝ) (κ : ℕ → ℝ) : Prop :=
+  Tendsto κ atTop atTop ∧
+    Tendsto (fun N : ℕ => ((N : ℝ) / κ N) / Real.log (Real.log (κ N)) ^ s) atTop atTop
+
+/-- The Lévy bound tends to `0` when `e → 0`, `log k · e² → 0` and `L_D/k` converges. -/
+theorem tendsto_synthLevy_of {R' a : ℝ} {e LD k : ℕ → ℝ} (he : Tendsto e atTop (𝓝 0))
+    (hlog : Tendsto (fun n => Real.log (k n) * e n ^ 2) atTop (𝓝 0))
+    (hLD : Tendsto (fun n => LD n * (1 / k n)) atTop (𝓝 a)) :
+    Tendsto (fun n => synthLevy R' (e n) (LD n) (k n)) atTop (𝓝 0) := by
+  have hV := ((hLD.mul he).const_mul (Real.exp (1 / 2) * (2 * R'))).add
+    (((hlog.const_mul 2).add ((he.pow 2).const_mul levyLipConstant)).const_mul (2 * R'))
+  simp only [mul_zero, zero_mul, add_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+    zero_pow] at hV
+  refine hV.congr fun n => ?_
+  unfold synthLevy
+  ring
+
+/-- `(log x)^r / x → 0` along `n ↦ nB`. -/
+theorem tendsto_log_rpow_div {r : ℝ} {B : ℕ} (hB : 1 ≤ B) :
+    Tendsto (fun n : ℕ => Real.log ((n * B : ℕ) : ℝ) ^ r / (n : ℝ)) atTop (𝓝 0) := by
+  have hx : Tendsto (fun n : ℕ => ((n * B : ℕ) : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.comp
+      (tendsto_atTop_mono (fun n => Nat.le_mul_of_pos_right n hB) tendsto_id)
+  have ho := ((isLittleO_log_rpow_rpow_atTop r one_pos).tendsto_div_nhds_zero.comp hx).const_mul
+    (B : ℝ)
+  rw [mul_zero] at ho
+  refine ho.congr' ?_
+  filter_upwards [eventually_ge_atTop 1] with n hn
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hB0 : (0 : ℝ) < B := by exact_mod_cast hB
+  simp only [Function.comp, Real.rpow_one]
+  push_cast
+  field_simp
+
+end Growth
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

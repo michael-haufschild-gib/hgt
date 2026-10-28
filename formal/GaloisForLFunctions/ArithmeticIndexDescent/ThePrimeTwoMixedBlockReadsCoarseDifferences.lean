@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.ArithmeticIndexDescent
 
 open ArithmeticCastelnuovoSeveri.LogCells BiarithmeticGaugeGeometry HTGeometry
 
-private theorem adjacent_logCellWidths {a : ℕ} (ha : 1 ≤ a) :
+theorem adjacent_logCellWidths {a : ℕ} (ha : 1 ≤ a) :
     logCellWidth (2 * a) + logCellWidth (2 * a + 1) = logCellWidth a := by
   calc
     _ = Real.log ((2 * a + 2 : ℕ) : ℝ) - Real.log ((2 * a : ℕ) : ℝ) := by
@@ -65,6 +65,15 @@ theorem inner_coarseAtom_coarseSection (q : ℕ → ℝ) {a X : ℕ}
   · intro hn
     exact False.elim (hn (Finset.mem_Icc.mpr ⟨ha, haX⟩))
 
+theorem inner_coarseAtom_coarseSection_of_gt (q : ℕ → ℝ) {a X : ℕ}
+    (ha : 1 ≤ a) (hXa : X < a) :
+    inner ℂ (coarseAtom a) (coarseSection q X) = 0 := by
+  rw [coarseSection, inner_sum]
+  apply Finset.sum_eq_zero
+  intro b hb
+  have hab : a ≠ b := by have := (Finset.mem_Icc.mp hb).2; omega
+  rw [inner_smul_right, inner_coarseAtom ha (Finset.mem_Icc.mp hb).1, if_neg hab, mul_zero]
+
 /-- The prime-two translation lands in the actual adjacent pair-average cells. -/
 theorem halfLineRightShift_two_haarAtom {a : ℕ} (ha : 1 ≤ a) :
     halfLineRightShift (Real.log 2) (haarAtom a) =
@@ -86,6 +95,14 @@ theorem inner_shift_two_haarAtom_coarseSection (q : ℕ → ℝ) {a X : ℕ}
     Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
   rw [← mul_assoc, (haarCoeff_mass a).1, ← mul_assoc, (haarCoeff_mass a).2]
   ring
+
+theorem inner_shift_two_haarAtom_coarseSection_of_gt (q : ℕ → ℝ) {a X : ℕ}
+    (ha : 1 ≤ a) (hXa : X < 2 * a) :
+    (inner ℂ (halfLineRightShift (Real.log 2) (haarAtom a)) (coarseSection q X)).re = 0 := by
+  rw [halfLineRightShift_two_haarAtom ha, inner_sub_left, inner_smul_left, inner_smul_left,
+    inner_coarseAtom_coarseSection_of_gt q (by omega : 1 ≤ 2 * a) hXa,
+    inner_coarseAtom_coarseSection_of_gt q (by omega : 1 ≤ 2 * a + 1) (by omega)]
+  simp
 
 /-- The entire surviving mixed block retains its signed adjacent differences. -/
 theorem inner_shift_two_haarSection_coarseSection (d q : ℕ → ℝ) {Y X : ℕ}
@@ -124,6 +141,31 @@ theorem primeTwoMixedSource_eq (d q : ℕ → ℝ) {Y X : ℕ} (hYX : 2 * Y + 1 
         ∑ a ∈ Finset.Icc 1 Y, haarMass a * d a * (q (2 * a) - q (2 * a + 1)) := by
   rw [primeTwoMixedSource, inner_shift_coarseSection_haarSection q d X Y (by norm_num : 2 ≤ 2),
     add_zero, inner_shift_two_haarSection_coarseSection d q hYX]
+
+/-- An odd complete horizon retains the whole prime-two block with no terminal remainder. -/
+theorem primeTwoMixedSource_odd_horizon (d q : ℕ → ℝ) (Y : ℕ) :
+    primeTwoMixedSource d q (2 * Y + 1) (2 * Y + 1) =
+      primeTwoMixedSource d q Y (2 * Y + 1) := by
+  have hzero (Z : ℕ) := inner_shift_coarseSection_haarSection q d (2 * Y + 1) Z
+    (by norm_num : 2 ≤ 2)
+  unfold primeTwoMixedSource
+  rw [hzero, hzero, add_zero, add_zero]
+  congr 1
+  unfold haarSection
+  rw [map_sum, map_sum, sum_inner, sum_inner, Complex.re_sum, Complex.re_sum]
+  symm
+  apply Finset.sum_subset
+  · intro a ha
+    exact Finset.mem_Icc.mpr ⟨(Finset.mem_Icc.mp ha).1, by have := (Finset.mem_Icc.mp ha).2; omega⟩
+  · intro a ha hnot
+    have ha1 := (Finset.mem_Icc.mp ha).1
+    have hYa : Y < a := by
+      by_contra h
+      exact hnot (Finset.mem_Icc.mpr ⟨ha1, le_of_not_gt h⟩)
+    rw [map_smul, inner_smul_left]
+    simp only [Complex.conj_ofReal, Complex.mul_re, Complex.ofReal_re,
+      Complex.ofReal_im, zero_mul, sub_zero]
+    rw [inner_shift_two_haarAtom_coarseSection_of_gt q ha1 (by omega), mul_zero]
 
 private theorem signed_young {ε : ℝ} (hε : 0 < ε) (d q ell : ℝ) :
     |2 * ell * d * q| ≤ ε * d ^ 2 + (ell ^ 2 / ε) * q ^ 2 := by
@@ -172,4 +214,5 @@ end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.inner_shift_two_haarSection_coarseSection
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.primeTwoMixedSource_eq
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.primeTwoMixedSource_odd_horizon
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.abs_primeTwoMixedSource_le_variation

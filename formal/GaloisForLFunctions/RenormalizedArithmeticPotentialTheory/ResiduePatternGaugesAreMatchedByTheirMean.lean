@@ -177,7 +177,7 @@ theorem sum_zmod_eq_units_add [NeZero q] (F : ZMod q → ℝ) :
   have hmap : univ.filter (fun a : ZMod q => IsUnit a) =
       univ.map ⟨((↑) : (ZMod q)ˣ → ZMod q), Units.val_injective⟩ := by
     ext a
-    simp only [mem_filter, mem_univ, true_and, mem_map, Function.Embedding.coeFn_mk]
+    simp only [mem_filter, mem_univ, true_and, Finset.mem_map]
     exact ⟨fun h => ⟨h.unit, h.unit_spec⟩, fun ⟨u, hu⟩ => hu ▸ u.isUnit⟩
   rw [← sum_filter_add_sum_filter_not univ IsUnit, hmap, sum_map]
   rfl
@@ -189,8 +189,8 @@ def primeClassKappa (q : ℕ) [NeZero q] (f : ZMod q → ℝ) : ℝ :=
 /-- The **finite-part constant** of the pattern:
 `α_f = Σ_u f(u) c_u + Σ_{a ∉ (ℤ/q)ˣ} f(a) ν_a + R_∞`. -/
 def primeClassAlpha (q : ℕ) [NeZero q] (f : ZMod q → ℝ) : ℝ :=
-  ∑ u : (ZMod q)ˣ, f u * classMertensConstant q u +
-    ∑ a ∈ univ.filter (fun a : ZMod q => ¬ IsUnit a), f a * ⨆ y, classMertensSum q a y +
+  (∑ u : (ZMod q)ˣ, f u * classMertensConstant q u) +
+    (∑ a ∈ univ.filter (fun a : ZMod q => ¬ IsUnit a), f a * ⨆ y, classMertensSum q a y) +
     ∑' t, primeClassCorrection q f t
 
 /-- **The Mertens error of a residue pattern converges**: `A_{ε_f}(y) − κ_f log y → α_f`. -/
@@ -244,3 +244,5 @@ theorem exists_abs_primeClassGaugeForm_finitePart_le [NeZero q] (hf : ∀ a, f a
     (abs_primeClassKappa_le hf) (tendsto_primeClassMertensError hf) hη
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.exists_abs_primeClassGaugeForm_finitePart_le
