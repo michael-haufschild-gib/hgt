@@ -313,3 +313,22 @@ pi-system. A finite signed/complex measure uniqueness argument then makes all
 measurable-set integrals zero and hence the vector zero. This avoids assuming
 compactness or an unproved product-basis interface. The exact indicator formulas,
 generating-system statement, and measure uniqueness adapters still need Lean.
+
+Corpus-first API inspection found the mathlib endpoint
+`Integrable.ae_eq_zero_of_forall_setIntegral_eq_zero` in
+`MeasureTheory/Function/AEEqOfIntegral.lean` (statement/source inspected).
+It converts zero integrals on all measurable sets into a.e. zero. The search
+also found `lintegral_eq_lintegral_of_isPiSystem` for nonnegative functions;
+its statement requires the actual generating pi-system and finite integral.
+A Bochner-integral pi-system adapter or positive/negative-part reduction is
+still needed before these APIs discharge the cylinder-density proof.
+
+For local basis calculations, the explicit mode at k>=1 is zero below k-1,
+-B at k-1, and A above, where B=p^(k-1)/sqrt(phi(p^k)) and A=(p-1)B.
+The existing geometric singleton and tail masses directly give mean zero,
+squared norm one, and orthogonality of different k. The positive jump operator
+acts by (k+1/(p-1))*log(p): below k-1 its upward tail cancels; at k-1 the
+upward sum contributes -p*B/(p-1) and the downward sum -(k-1)*B;
+above k-1 only the jump to k-1 and the k-1 lower states contribute.
+These finite/geometric identities can discharge the actual local generator
+rather than defining it spectrally. They are unverified steps within this card.

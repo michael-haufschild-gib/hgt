@@ -160,3 +160,22 @@ constant and a proved consequence for the actual prime operator. Refreshed
 corpus searches for tame-conductor counting and periodic additive truncation
 returned neighboring Euler and density results, with no matching theorem among
 the inspected results; this is not an exhaustive absence claim.
+
+The exact product probability carrier for a possible expectation formula is
+already available: `HTGeometry.primeValuationMeasure` uses independent geometric
+laws with occupancy 1/p. Its sector, independence, infinite-support and local-tail
+sources were inspected in the completion audit. The prospective constant G(1)
+can be identified with the expectation of exp(-sum_p 1_(v_p>0)*log(p)/(p-1))
+after proving convergence of that nonnegative additive sum and the integral
+limit. This carrier construction and independence are existing baseline.
+
+The critical heat threshold has a simpler lower-bound route than the full
+counting law. For prime p, E(p)=gamma+log(p)+log(p)/(p-1), while
+log(p)/(p-1)<=1. Hence, for 0<t<=1,
+`exp(-t*E(p))>=exp(-t*(gamma+1))/p`.
+The corpus's divergent prime reciprocal sum forces divergence of the heat sum
+already on prime labels. For t>1 the lower bound E(n)>=gamma+log(n) gives
+summability by the ordinary p-series. For t<=0, properness gives divergence
+as well. These are proposed exact proof steps for the actual identified
+operator, still requiring Lean and the completion interface; no abstract
+prescribed-spectrum trace is being counted.

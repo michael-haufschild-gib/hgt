@@ -117,3 +117,9 @@ theorem exists_eq_zero_of_periodic {f : ℕ → ℂ} (hmul : ∀ m n, f (m * n) 
   rw [show k + q + 1 = k + 1 + q by ring, hper (k + 1) (by omega), hper k hk]
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms eq_one_of_ratio_periodic
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms succConn_periodic_iff_euler
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms exists_eq_zero_of_periodic

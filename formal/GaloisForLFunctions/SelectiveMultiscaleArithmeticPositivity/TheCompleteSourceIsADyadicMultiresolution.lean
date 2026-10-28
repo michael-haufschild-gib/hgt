@@ -143,13 +143,16 @@ theorem sum_logCell_multiresolution (L : ℕ) (c : ℕ → ℝ) :
       have := Nat.one_le_two_pow (n := L); rw [pow_succ]; omega
     rw [h2, sum_logCell_rg_step, ih (coarseCoeff c), translate_sum, sum_range_succ']
     simp only [translate_translate, Nat.cast_succ, Nat.cast_zero, zero_mul, translate_zero]
-    rw [add_comm (c 1 • logCell 1 + _) _, add_assoc]
-    congr 1
-    · refine sum_congr rfl fun j hj => ?_
-      have hjL := mem_range.mp hj
-      rw [show Real.log 2 + j * Real.log 2 = (j + 1) * Real.log 2 by ring, levelPart, levelPart,
-        Function.iterate_succ_apply, show L + 1 - 1 - (j + 1) = L - 1 - j by omega]
-    · rw [levelPart, Function.iterate_zero_apply, show L + 1 - 1 - 0 = L by omega]
+    have hlev0 : levelPart c (L + 1) 0 =
+        c 1 • logCell 1 + ∑ a ∈ Icc 1 (2 ^ L - 1), detailCoeff c a • logDetail a := by
+      rw [levelPart, Function.iterate_zero_apply, show L + 1 - 1 - 0 = L by omega]
+    have hlev : ∀ x ∈ range L, translate (Real.log 2 + x * Real.log 2)
+        (levelPart (coarseCoeff c) L x) = translate ((x + 1) * Real.log 2) (levelPart c (L + 1) (x + 1)) := by
+      intro x _
+      rw [show Real.log 2 + x * Real.log 2 = (x + 1) * Real.log 2 by ring, levelPart, levelPart,
+        Function.iterate_succ_apply, show L + 1 - 1 - (x + 1) = L - 1 - x by omega]
+    rw [hlev0, sum_congr rfl hlev]
+    abel
 
 /-! ### The level-Toeplitz law -/
 
