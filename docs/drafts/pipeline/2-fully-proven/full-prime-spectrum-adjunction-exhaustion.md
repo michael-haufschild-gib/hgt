@@ -636,3 +636,8 @@ coordinate evaluation uses the actual `PiLp.projₗ` linear projection.
 The valuation-moment scratch passed with only propext, Classical.choice,
 Quot.sound in its transitive audit. Source installed; first required olean is
 building for the box-tail adapter. Two of sixteen scratch modules now pass.
+
+The rough-defect variance adapter passed. Its actual prime-power edge injection
+and the `C/log(Q)` variance estimate have a clean transitive audit. Source
+installed; first required olean builds for the smooth/rough projection adapter.
+Three of sixteen scratch modules pass. Spectral exhaustion remains unverified.

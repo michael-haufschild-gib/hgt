@@ -22,9 +22,9 @@ Three constructions supply concrete starting points.
 * Narrow arithmetic sections admit a bounded Weil-orthogonal projection in the complete source
   graph. Their complement contains an infinite null radical. Its nonnegativity is open; a strict
   lower bound on the whole complement is false.
-* Ramanujan profiles give actual prime-matrix quasimodes with distinct renormalized energies.
-  Fixed-conductor convergence leaves growing-conductor errors, a modal complement and the
-  comparison with Gamma and both poles.
+* Ramanujan profiles give actual prime-matrix quasimodes and distinct spectral points for each
+  fixed finite conductor packet. Growing-conductor errors, a modal complement and comparison
+  with Gamma and both poles remain separate requirements.
 
 There is also a canonical nonnegative critical source energy. Its finiteness detects finite
 off-line support; its sharp smallness threshold detects RH. Known index costs bound it from
@@ -188,6 +188,27 @@ out every form-preserving quotient or a different topology with separately prove
 pole comparisons. They also do not assert that each individual fixed translation lacks a
 bounded extension on the whole graph.
 
+### Transport on bounded source windows
+
+The positive replacement keeps aperture and translation range explicit. For fixed \(R,T\ge0\),
+there is \(C\ge1\), uniform over all compact source profiles supported in \([-R,R]\) and all
+\(|t|\le T\), such that
+
+\[
+\|x_t\|^2\le C\|x_0\|^2,
+\qquad
+\|x_0\|^2\le C\|x_t\|^2.
+\]
+
+[BoundedWindowsAdmitSourceCompatibleScaleTransport](BoundedWindowsAdmitSourceCompatibleScaleTransport.lean)
+proves both bounds. The upper estimate uses a maximum of the exact theta mass weight on the
+enlarged aperture, the bounded full Weil pairing and a global ordinary-mass bound in the
+graph norm. Applying that estimate to inverse translation gives the lower bound.
+
+This supplies a faithful local comparison for arbitrary profiles, with no sign premise and
+no restriction on their two polar moments. Its constants are not uniform as the windows and
+translation ranges exhaust the source. A renormalization argument must carry those costs.
+
 ### Signed block payment
 
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
@@ -238,14 +259,15 @@ These are imported mathematical foundations, not new contributions of this progr
 | High Haar full-form floor | [HaarCellEffectivity](../ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean) |
 | Mean-zero Gamma payment | [GammaMeanZeroCoercivity](../ArithmeticCastelnuovoSeveri/GammaMeanZeroCoercivity.lean) |
 | Actual Ramanujan prime quasimodes | [TheRamanujanPoleProfilesArePrimeQuasimodes](../RenormalizedArithmeticPotentialTheory/TheRamanujanPoleProfilesArePrimeQuasimodes.lean) |
+| Distinct spectral points for fixed finite conductor packets | [TheFullPrimeMatrixRealizesFiniteAdjunctionPackets](../RenormalizedArithmeticPotentialTheory/TheFullPrimeMatrixRealizesFiniteAdjunctionPackets.lean) |
 | Prime gap on the harmonic pole hyperplane | [ThePrimeFormHasASpectralGapBelowItsPole](../RenormalizedArithmeticPotentialTheory/ThePrimeFormHasASpectralGapBelowItsPole.lean) |
 | Canonical critical source energy | [TheCriticalSourceRateHasACanonicalEnergy](../ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean) |
 | Source synthesis beyond narrow spacing | [TheSecondOrderSynthesis](../SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean) |
 
 The trial-correction estimates, whole-family operator bounds, exact radical retention and
-quantitative source-scale bounds are formalized contributions of this programme. Complete
-signed block payment, growing-mode transfer and arithmetic upper control of critical work
-remain research targets.
+quantitative source-scale bounds with their two-sided bounded-window replacement are formalized
+contributions of this programme. Complete signed block payment, growing-mode transfer and
+arithmetic upper control of critical work remain research targets.
 
 ## Questions and open topics
 

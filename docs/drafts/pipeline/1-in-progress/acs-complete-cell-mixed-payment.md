@@ -37,14 +37,16 @@ for every compact BV source, without local mean-zero restrictions. This pays loc
 
 ## Next remainder conjecture
 
-For product weights `w≥m≥0`, `v≥n≥0`, the four nonnegative product pieces from `w=m+(w-m)` and `v=n+(v-n)` retain the additional term `m*n*|I|*|J|*(mean_I(f)-mean_J(g))²` alongside both variance charges. `IntervalVarianceRemainder.lean` passed its exact final audit with three clean axiom prints: exact variance identity, strengthened product-kernel inequality, and exponential consequence. `GammaVarianceRemainder.lean` prepares their Gamma-series extension and exterior-point mean-displacement term; that extension is not yet checked.
+For product weights `w≥m≥0`, `v≥n≥0`, the four nonnegative product pieces from `w=m+(w-m)` and `v=n+(v-n)` retain the additional term `m*n*|I|*|J|*(mean_I(f)-mean_J(g))²` alongside both variance charges. `IntervalVarianceRemainder.lean` passed its exact final audit with three clean axiom prints: exact variance identity, strengthened product-kernel inequality, and exponential consequence. `GammaVarianceRemainder.lean` passed its exact final check and both transitive axiom audits. It proves the full Gamma-series extension and exterior-point mean-displacement term.
 
 `/tmp/acs-gamma-mean-variance-capacity.lean` prepares the coherent strengthening
 
 `Σ_i log(1/w_i) V_i(f) + (1/2) Σ_ij w_i*w_j*k(max(b_j-a_i,b_i-a_j))*(mean_i(f)-mean_j(f))² ≤ levyEnergy f`.
 
-The extra term is an explicit graph on the actual interval means, not the entire coarse Gamma energy. The extended-integral theorem also retains `2 Σ_i ∫_F w_i*(mean_i(f)-f(y))²*gammaFarCharge_i(y)`, where `F` is the family complement; the displayed real graph inequality is its weaker corollary. The candidate combines the three-term pair estimate with the full exterior mean-displacement charge. The Gamma-series and finite-family extensions remain unchecked.
+The extra term is an explicit graph on the actual interval means, not the entire coarse Gamma energy. The extended-integral theorem also retains `2 Σ_i ∫_F w_i*(mean_i(f)-f(y))²*gammaFarCharge_i(y)`, where `F` is the family complement; the displayed real graph inequality is its weaker corollary. The candidate combines the three-term pair estimate with the full exterior mean-displacement charge. The Gamma-series extension passed; the finite-family extension remains unchecked. The complete-cell specialization is prepared in `/tmp/acs-complete-cell-mean-graph.lean`, retaining arbitrary original coefficients and the mean graph alongside logarithmic detail payment.
 
 ## Log
 
 - 2026-10-28 — Opened after the full balanced-cell floor and smooth effectivity passed exact Lean audits.
+
+The pending finite-family candidate now also retains the exterior term in its real inequality, using the exact finite extended integral. Its finiteness is derived from the original compact-BV Gamma energy; no new integrability assumption is added. Candidate declaration: `levyEnergy_ge_log_variance_add_mean_graph_add_exterior`.

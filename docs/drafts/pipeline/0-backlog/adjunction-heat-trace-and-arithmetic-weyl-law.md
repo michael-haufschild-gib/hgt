@@ -149,3 +149,14 @@ not only a lower count: first take the actual horizon limit at a non-arithmetic
 threshold T, then let T tend to infinity. No joint growing-window limit or
 interchange of those limits is justified by the present arguments. The counting
 law, corrected Euler constant, and any trace identification remain unproved.
+
+A further literature check located Tenenbaum--Verwee,
+[Effective Erdos--Wintner Theorems](https://www.mathnet.ru/eng/tm4162).
+Only its abstract was inspected: existence of limiting distributions for real
+additive functions and effective errors are established general theory. Thus
+additive-prime truncation and statistical independence cannot themselves count
+as novelty. The proposed contribution still requires the specific corrected
+constant and a proved consequence for the actual prime operator. Refreshed
+corpus searches for tame-conductor counting and periodic additive truncation
+returned neighboring Euler and density results, with no matching theorem among
+the inspected results; this is not an exhaustive absence claim.

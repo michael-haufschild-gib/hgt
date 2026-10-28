@@ -86,7 +86,8 @@ private def apertureCoreScaleLinear (a : SuzukiPositiveAperture) (t : ℝ) :
       change (apertureRepresentative a p).1 u + (apertureRepresentative a q).1 u = 0
       rw [apertureRepresentative_support a p u hu,
         apertureRepresentative_support a q u hu, add_zero]
-    · simp only [realTestGraphLift_add, apertureRepresentative_lift]
+    · simpa only [realTestGraphLift_add, apertureRepresentative_lift] using
+        (apertureGraphCore a).subtype.map_add p q
   map_smul' c p := by
     change translatedSourceGraph (apertureRepresentative a (c • p)) t =
       c • translatedSourceGraph (apertureRepresentative a p) t
@@ -96,7 +97,8 @@ private def apertureCoreScaleLinear (a : SuzukiPositiveAperture) (t : ℝ) :
     · intro u hu
       change c * (apertureRepresentative a p).1 u = 0
       rw [apertureRepresentative_support a p u hu, mul_zero]
-    · simp only [realTestGraphLift_smul, apertureRepresentative_lift]
+    · simpa only [realTestGraphLift_smul, apertureRepresentative_lift] using
+        (apertureGraphCore a).subtype.map_smul c p
 
 private theorem apertureCoreScaleLinear_bound (a : SuzukiPositiveAperture) (t : ℝ) :
     ∃ C : ℝ, ∀ p : apertureGraphCore a, ‖apertureCoreScaleLinear a t p‖ ≤ C * ‖p‖ := by
@@ -152,7 +154,7 @@ theorem apertureScaleTransport_test (a : SuzukiPositiveAperture) (t : ℝ)
 theorem weilForm_apertureScaleTransport (a : SuzukiPositiveAperture) (t : ℝ)
     (p : apertureGraphCompletion a) :
     weilForm (apertureScaleTransport a t p) = weilForm p := by
-  apply (denseRange_apertureGraphCoreInclusion a).induction_on p
+  refine (denseRange_apertureGraphCoreInclusion a).induction_on p ?_ ?_
   · exact isClosed_eq (continuous_weilForm.comp (apertureScaleTransport a t).continuous)
       (continuous_weilForm.comp continuous_subtype_val)
   · intro q
@@ -165,7 +167,7 @@ theorem exists_apertureScaleTransport_norm_bound (a : SuzukiPositiveAperture) (T
       ‖apertureScaleTransport a t p‖ ^ 2 ≤ C * ‖p‖ ^ 2 := by
   obtain ⟨C, hC, hbound⟩ := exists_boundedWindow_scaleTransport a.1 T
   refine ⟨C, hC, fun t ht p => ?_⟩
-  apply (denseRange_apertureGraphCoreInclusion a).induction_on p
+  refine (denseRange_apertureGraphCoreInclusion a).induction_on p ?_ ?_
   · exact isClosed_le ((apertureScaleTransport a t).continuous.norm.pow 2)
       ((continuous_norm.pow 2).const_mul C)
   · intro q
@@ -182,7 +184,7 @@ theorem exists_apertureScaleTransport_two_sided_bound (a : SuzukiPositiveApertur
         ‖p‖ ^ 2 ≤ C * ‖apertureScaleTransport a t p‖ ^ 2 := by
   obtain ⟨C, hC, hbound⟩ := exists_boundedWindow_two_sided_scaleTransport a.1 T
   refine ⟨C, hC, fun t ht p => ?_⟩
-  apply (denseRange_apertureGraphCoreInclusion a).induction_on p
+  refine (denseRange_apertureGraphCoreInclusion a).induction_on p ?_ ?_
   · exact (isClosed_le ((apertureScaleTransport a t).continuous.norm.pow 2)
       ((continuous_norm.pow 2).const_mul C)).inter
       (isClosed_le (continuous_norm.pow 2)
@@ -234,19 +236,21 @@ private def shiftedApertureCore (a : SuzukiPositiveAperture) (t : ℝ)
   smooth := u.smooth.comp (contDiff_id.sub contDiff_const)
   supportRadius := u.supportRadius + |t|
   supportRadius_nonneg := add_nonneg u.supportRadius_nonneg (abs_nonneg t)
-  supportRadius_lt_aperture := add_lt_add_right u.supportRadius_lt_aperture _
+  supportRadius_lt_aperture := by
+    change u.supportRadius + |t| < a.1 + |t|
+    linarith only [u.supportRadius_lt_aperture]
   support_subset := by
     intro x hx
     have hu := u.support_subset hx
     have htri : |x| ≤ |x - t| + |t| := by
       simpa only [sub_add_cancel] using abs_add_le (x - t) t
-    exact abs_le.mp (htri.trans (add_le_add_right (abs_le.mpr hu) _))
+    exact abs_le.mp (htri.trans (add_le_add (abs_le.mpr hu) le_rfl))
 
 /-- Completed translation lands in the corresponding enlarged source aperture. -/
 theorem apertureScaleTransport_mem_target (a : SuzukiPositiveAperture) (t : ℝ)
     (p : apertureGraphCompletion a) :
     apertureScaleTransport a t p ∈ apertureGraphCompletion (scaleTargetAperture a t) := by
-  apply (denseRange_apertureGraphCoreInclusion a).induction_on p
+  refine (denseRange_apertureGraphCoreInclusion a).induction_on p ?_ ?_
   · exact (isClosed_apertureGraphCompletion (scaleTargetAperture a t)).preimage
       (apertureScaleTransport a t).continuous
   · intro q
@@ -261,7 +265,7 @@ theorem graphFourierReadout_apertureScaleTransport (a : SuzukiPositiveAperture) 
     (p : apertureGraphCompletion a) (z : ℂ) (hz : |z.im| ≤ 1 / 2) :
     graphFourierReadout (apertureScaleTransport a t p) z =
       Complex.exp (Complex.I * z * (t : ℂ)) * graphFourierReadout p z := by
-  apply (denseRange_apertureGraphCoreInclusion a).induction_on p
+  refine (denseRange_apertureGraphCoreInclusion a).induction_on p ?_ ?_
   · exact isClosed_eq
       ((continuous_graphFourierReadout hz).comp (apertureScaleTransport a t).continuous)
       (continuous_const.mul ((continuous_graphFourierReadout hz).comp continuous_subtype_val))

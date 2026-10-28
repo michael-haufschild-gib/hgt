@@ -205,3 +205,11 @@ completion profile: it concerns an external tensor of a summable Hadamard
 corona class. Neither supplies the physical ground-state embeddings or the
 actual maximal-domain adjunction completion required here. Their terminology
 and generic constructions remain excluded baselines.
+
+The ground-state search also surfaced
+`RHTower/CHMDHarmonicGroundPotentialAndMaximalDomainPrimeShiftForm.lean`.
+Its first 200 lines were inspected: it identifies the theta-ground potential
+and bounded prime-shift form on the continuous theta mass carrier. It does not
+supply the discrete geometric-vacuum embeddings targeted here. A comparison
+between these two actual carriers would need a separate proved map; matching
+prime-shift terminology does not provide one.

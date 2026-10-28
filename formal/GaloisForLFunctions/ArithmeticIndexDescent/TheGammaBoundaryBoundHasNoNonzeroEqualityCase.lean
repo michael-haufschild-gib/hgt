@@ -91,7 +91,6 @@ theorem integrable_sq_mul_gammaBoundarySchurWeight_iff (c : ℂ) :
     apply not_integrable_gammaBoundarySchurWeight_sq
     refine (hi.const_mul (1 / ‖c‖ ^ 2)).congr ?_
     filter_upwards [] with t
-    change (1 / ‖c‖ ^ 2) * ‖c * (gammaBoundarySchurWeight t : ℂ)‖ ^ 2 = _
     rw [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs,
       ← mul_assoc, one_div_mul_cancel hcn.ne', one_mul]
   · rintro rfl

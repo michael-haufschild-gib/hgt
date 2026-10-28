@@ -676,3 +676,22 @@ This would retain a nonnegative shape-dependent reserve inside the original
 arithmetic cross block. It would neither prove a cumulative signed payment nor
 permit spending one global pole or one old mass independently at many cuts.
 No implementation or formal theorem for this transfer exists yet.
+
+The actual-source reserve transfer is now implemented in candidate
+`TheOrderedWeilSourceRetainsItsGammaSquareReserve.lean`, including exact
+profile maps, norm preservation, literal collar transfer, exponential tilt,
+nonnegative reserve and the original centered-source identity with that reserve.
+It remains UNVERIFIED/UNWIRED. The reserve dependency passed direct60654 and
+necessary olean29082. The centered-source dependency passed direct3416 but needs
+its first olean for this actual importer. Equality-rigidity direct20296 is the
+sole running owned compiler; the transfer check must follow sequentially.
+
+### Gamma quadratic equality — formalized
+
+Mandatory actual final97625 passed without warnings. All three endpoint
+dependency prints contain only propext, Classical.choice and Quot.sound.
+The exact weight has reciprocal upper/lower square bounds and is not L2;
+vanishing quadratic reserve forces the zero L2 profile. Every nonzero profile
+has a strict quadratic deficit. Wired, foundational README/checks updated,
+completed rigidity API scratch removed. No equality-module olean is needed.
+Uniform gaps, norm sharpness and mixed equality classification are not claimed.

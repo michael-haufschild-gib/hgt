@@ -670,7 +670,7 @@ An explicit arctangent primitive proves both integrability and normalization.
 Weighted Cauchy–Schwarz and Tonelli then give
 \(\|H_\Gamma\|_{L^2\to L^2}\le\pi/2\) for the existing boundary operator,
 improving its inherited upper bound by four. This is an upper norm estimate;
-neither norm equality nor an \(L^2\) eigenvector is asserted. The displayed
+norm equality remains a separate question. The displayed
 profile and full-source bounds above retain their previously proved constants.
 Kernel normalization supplies no sign for the remaining prime and pole terms.
 
@@ -691,6 +691,23 @@ quadratic deficit from \(\pi/2\) as this same square energy. Thus a mixed
 estimate can retain profile-dependent reserve rather than spending the whole
 norm bound. The identity supplies neither a uniform strict gap nor a signed
 prime-surplus estimate.
+
+Equality in the quadratic bound is now classified. The weight satisfies
+\(w(t)^2=e^{-t}/(1-e^{-2t})\), with
+\(e^{-1}/(2t)\le w(t)^2\le1/t\) on \((0,1]\); the upper bound holds on
+the whole positive ray. Its square is therefore not integrable at zero.
+If the quadratic reserve vanishes, positivity of the kernel forces
+\(f(s)/w(s)=f(t)/w(t)\) almost everywhere. Fubini fixes this ratio to one
+constant, and square integrability forces that constant to vanish. Hence
+
+\[
+ \Re\langle f,H_\Gamma f\rangle=\frac\pi2\|f\|_2^2
+ \quad\Longleftrightarrow\quad f=0.
+\]
+
+Each nonzero profile leaves a strict quadratic reserve. This statement is
+pointwise in the profile: it gives no uniform margin over growing families,
+and does not settle sharpness of the operator norm bound.
 
 The actual finite prime horizon and both pole moments then give one constant \(C_R\)
 for every boundary in a fixed window \([-R,R]\):
@@ -1268,6 +1285,7 @@ Quantitative pillars supplied by this programme:
 | Touching Gamma supports | The literal half-line operator gives a gap-independent square-mass bound for signed compact profiles; the exact C² spectral collar identity retains the original Gamma normalization | `TouchingSupportsHaveBoundedGammaInteraction` |
 | Exact Gamma boundary weight | An explicit arctangent primitive gives the exact Schur row and the actual boundary operator norm bound `π/2` | `GammaBoundaryHasAnExactSchurWeight` |
 | Exact mixed Gamma reserve | The unused `π/4` two-mass bound is an integrable weighted square difference on the original half-line `L²` carrier | `TheGammaBoundaryReserveIsAnExactSquare` |
+| Gamma equality rigidity | The critical Schur weight is not square integrable; only the zero actual `L²` vector attains the quadratic `π/2` bound | `TheGammaBoundaryBoundHasNoNonzeroEqualityCase` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |
