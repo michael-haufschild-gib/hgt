@@ -21,6 +21,8 @@ variable {ι : Type*} [Fintype ι] {N : ℕ} (hN : 1 ≤ N)
   {w : ℝ} (hw0 : 0 < w) (hw : w ≤ fullSectionRatio * atomSpacing N)
   (f : ι → arithmeticSectionTests N w)
 
+include hN hw0 hw
+
 /-- A finite narrow section span has a unique actual Weil-orthogonal projection of every test. -/
 theorem arithmeticSection_exists_unique_projection (g : realTests) :
     ∃! p : realTests,
@@ -177,18 +179,19 @@ theorem arithmeticSectionProjection_minimizes_with_square_gap
   rw [← hd] at hporth
   have hqorth := arithmeticSectionProjection_orthogonal hN hw0 hw f c g
   have horth : realWeilForm (p - q) (g - p) = 0 := by
-    rw [map_sub, LinearMap.sub_apply]
+    rw [map_sub realWeilForm p q, LinearMap.sub_apply]
     exact sub_eq_zero.mpr (hporth.trans hqorth.symm)
   have hsum : g - q = (g - p) + (p - q) := by abel
   have henergy : realWeilForm (g - q) (g - q) =
       realWeilForm (g - p) (g - p) + realWeilForm (p - q) (p - q) := by
-    rw [hsum, map_add, LinearMap.add_apply, map_add, map_add,
-      realWeilForm_symm (g - p) (p - q), horth]
+    rw [hsum]
+    simp only [map_add, LinearMap.add_apply]
+    rw [realWeilForm_symm (g - p) (p - q), horth]
     ring
   change realWeilForm (g - p) (g - p) + (∫ u, (p.1 u - q.1 u) ^ 2) ≤
     realWeilForm (g - q) (g - q)
   rw [henergy]
-  exact add_le_add_left hfloor _
+  exact add_le_add le_rfl hfloor
 
 end GaloisForLFunctions.ArithmeticIndexDescent
 

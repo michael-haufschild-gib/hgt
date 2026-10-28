@@ -59,6 +59,7 @@ and Q3 (the gauge charge of a positive form). In wall terms it is Wall 14 (the d
 | [ArithmeticPolarization](../ArithmeticPolarization/README.md), [ConjugateDiagonalGeometry](../ConjugateDiagonalGeometry/README.md) | `W`, `D`, `Δ`, the Hecke defect | the place of the prime form among regularized families |
 | [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md), [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | the scaling surface, Hodge index, `𝔽_q` calibration, the pole plane | the renormalized reading of `Δ² = 2 − 2g` |
 | [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md) | the gauge torus, square-class blindness, sign twins | gauge behaviour of the matching between places |
+| [SpacingScaleHarmonicAnalysis](../SpacingScaleHarmonicAnalysis/README.md) | the stability law at a fixed fraction `c₀δ_N` of the spacing (tilted weight `1 + n/N`); the critical exponent of the overlap regime | the counterterm calculus it matches: the covariant `log N + O(1)`, the constant-one self-energy, the finite parts |
 | `RHTower` | Mertens' first theorem; Mertens' theorem with Euler's constant | — |
 
 RAPT does not re-prove what these programmes own; it imports them and proves the laws that join
@@ -109,14 +110,25 @@ survival cone containing the degree-zero cycles.
 4. *What does covariance cost?* A Hecke-covariant renormalized prime form has a scalar diagonal. Its
    least positive counterterm on orders `≤ N` is `log N + O(1)`: the anomaly `log #ker[N]` of `[N]`,
    with constant one. This is the size of the archimedean self-energy `log(1/ε)` of an atom at the
-   atomic spacing `ε ≍ 1/N` (§9.1). With it the archimedean Lévy gain, whose constant is also one,
-   pays the prime place at widths `c δ_N/N`. Keeping the self-intersection, the anomalous torsion renormalization, costs
-   between `½ log N` and `log N` more.
+   atomic spacing `ε ≍ 1/N` (§9.1). The archimedean self-energy has constant one as well. With the
+   interaction of the atoms in absolute value it pays the prime place down to width `δ_N/(C log N)`
+   (RP18). With the tilted weight `1 + n/N` it pays down to a fixed fraction `c₀δ_N` of the spacing
+   (SSHA). Keeping
+   the self-intersection, the anomalous torsion renormalization, costs between `½ log N` and
+   `log N` more.
 5. *What is the finite part?* On the polar hyperplane of uniform profiles, the renormalized prime
    form is the scalar `−2γ`, up to `o(1)` per unit mass. In Weil's form, where `P` enters with a
    minus sign, the renormalized prime place is positive there. On the `p`-adic classes the finite
    part is `−2γ_p · 1 + log p (K_{p^{−1/2}} − 1)`, with `γ_p = γ + log p/(p − 1)`: the tower form of `p`
-   (AIT), the local Hodge index, now as the finite part of a renormalization.
+   (AIT), the local Hodge index, now as the finite part of a renormalization. For any finite prime
+   set `Q`, the density-normalized class finite part is the sum of its transverse tower forms
+   minus `2γ_Q · 1`, with the shared constant `γ_Q = γ + Σ_{p∈Q} log p/(p−1)`.
+   Matching the scalar `log M` leaves the actual operator
+   `A_Q = diag(log n) − P_Q + γ_Q · 1` on `ℓ²` of the positive `Q`-supported integers.
+   Its complete Blaschke product basis has simple energies
+   `γ + log m + tameDifferent(m) = γ + 2 log m − selfIntersection(m)`.
+   This diagonalization identifies the entire maximal logarithmic domain;
+   `A_Q + (1−γ)·1` has a compact inverse.
 6. *Is the matching of the places gauge blind?* No. Each place's counterterm is gauge blind, but
    their matching is not: the prime place of `ζ` diverges along the archimedean polar direction
    with coefficient `+1`, the Liouville twin with coefficient `−1`.
@@ -148,6 +160,7 @@ archimedean place and the pole are open (§9.1).
 | class-wise profile | `Σ_{j ≤ J} Σ_i c_{ji} w_j^{(M_i)}` | `classProfile` |
 | Hecke shift | `(T_t x)(n) = x(n/t)` on multiples of `t` | `heckeShift` |
 | tensor counterterm | `C(x) = Σ_{j ≤ J} δ_j^{−1} ℓ_j(x)²` | `tensorCounterterm` |
+| matched finite-sieve operator | `A_Q = diag(log n) − P_Q + γ_Q · 1` on the maximal logarithmic domain in `ℓ²(S_Q)` | `sieveAdjunctionOperator` |
 | Liouville pole vector | `λ(n) n^{−1/2}`, `λ = (−1)^Ω` | `liouvilleSign`, `liouvilleTrunc` |
 
 ### 3.2 Renormalization data
@@ -233,7 +246,9 @@ the place that pays.
 9. **The covariant counterterm is `log N + O(1)`** (`row_le`, `row_ge`, `poleVector_eigen`,
    `atomicWeilForm_le_log`, `atomicWeilForm_poleVector_ge`, `log_sub_le_of_atomicWeilForm_le`,
    `covariantCounterterm_sandwich`). The pole vector is an approximate eigenvector with eigenvalue
-   `log N`, coordinatewise.
+   `log N`, coordinatewise. Its finite part is sharp (`covariantCounterterm_sharp`): the tilted pole
+   `n^{−1/2}(1 + ηn/N)` is a Collatz–Wielandt vector, so `P_N ≤ (log N − γ + o(1))|·|²` on every
+   vector, and the pole attains it: `κ_cov(N) = log N − γ + o(1)`.
 10. **The anomaly costs half a logarithm** (`totient_mul_le`, `poleVector_mul_kernel_le`,
    `torsionPairing_torsionTest_ge`, `sum_log_div_ge`, `sum_tameDifferent_div_le`,
    `torsionCounterterm_ge`, `anomaly_cost`). By `φ(mt) ≤ t φ(m)` the torsion pairing dominates `P`
@@ -297,41 +312,78 @@ the place that pays.
     `F_p(1_N) = −2N d_p + O(1)`. So `F_p + c ≥ 0` on every depth iff `c ≥ 2d_p`: the prime finite
     part is nonnegative on the classes of `p` iff `√p log p ≤ γ(p − 1)`. This fails at `p = 2` and
     holds for `p ≥ 2^16` (numerically exactly for `p ≥ 47`).
+19. **The archimedean place pays the tower deficit** (`sum_cross_le_valuation`,
+    `towerFinitePart_add_valuation_ge`, `eventually_atomicWeilForm_classCombination_le`). The
+    archimedean self-energy is uniform in the classes; against it the prime form keeps the
+    valuation potential `j log p`, and `F_p + Σ_j j log p b_j² ≥ (γ + γ_p)|b|²`. Hence
+    `P_M ≤ (log M − γ + η)|·|²` on every `p`-class combination: the pole is the extremal class profile.
+20. **Hodge index on the classes** (`eventually_isHyperbolic_classHodgeGram`,
+    `eventually_atomicWeilForm_classCombination_sharpGap_le`). On the span of the class pole vectors of
+    depth `≤ J`, `P_M − (log M − γ − η)` has at most one positive square; on the polar hyperplane the
+    gap is `p log p/(p − 1)` at every depth. The valuation tower operator is exactly solvable
+    (`towerOp_pole`, `towerOp_step`): spectrum `{γ} ∪ {γ_p + k log p : k ≥ 1}`, eigenvectors the pole
+    profile and the valuation steps.
 
 ### F. Stability
 
-19. **The matched stability law** (`markovEnergy_atomicTest_ge_matched`, `matchedAtomicGain_nonneg`,
+21. **The matched stability law** (`markovEnergy_atomicTest_ge_matched`, `matchedAtomicGain_nonneg`,
     `atomicWidth_le_matchedAtomicWidth`, `markovEnergy_atomicTest_nonneg_matched`). The archimedean
     Lévy gain `e^{−1/2} log(δ_N/(2w))` of an atomic test pays the covariant counterterm
     `log N + O(1)`. So the Markov form (archimedean minus prime) is nonnegative at every width
     `w ≤ (δ_N/4) N^{−e^{1/2}} e^{−C}`, half the exponent needed with the bound `2 log N` (AES).
 
-20. **The self-energy has constant one** (`archLevyDensity_ge_of_le`,
+22. **The self-energy has constant one** (`archLevyDensity_ge_of_le`,
     `levyEnergy_ge_of_disjoint_shifts_sharp`, `levyEnergy_atomicTest_ge_sharp`,
     `markovEnergy_atomicTest_nonneg_sharp`, `sharpAtomicWidth_ge`). On the shifts `x ≤ δ_N/2`
     that separate atoms the Lévy density is `ω(x) ≥ e^{−δ_N/4}/(2x)`, so the gain is
     `e^{−δ_N/4} log(δ_N/(2w))`, constant `1 − O(1/N)`. Against the covariant counterterm this
     gives nonnegativity at every width `w ≤ c δ_N/N`. The remaining factor `N` is `1/δ_N`: the
     self-energy is counted relative to the spacing because the longer shifts make atoms overlap.
+23. **The stability law reaches the spacing up to a logarithm** (`integral_sub_shift_sq`,
+    `abs_bumpPairing_le`, `bumpPairing_eq_zero`, `archLevyDensity_le`, `archLevyDensity_ge_sub`,
+    `archLevyDensity_mul_cross_le`, `integral_crossMajorant_le`, `sum_erase_inv_abs_sub_le`,
+    `sum_crossCoeff_le`, `levyEnergy_atomicTest_ge_cross`, `markovEnergy_atomicTest_nonneg_logSpacing`).
+    Keep every shift `s ∈ (w, 1]`. Then `‖f − f(· + s)‖² = 2‖f‖² − 2Σ x_m x_n c_{mn}(s)`, the
+    self-energy is the full `log(1/w) − 1/2`, and the atoms interact only at `s ≈ log(n/m)`, where
+    `ω(s) ≤ 2/(3 log(n/m)) + 1`. Each pair costs `2w` in `s`. Since `|log n − log m| ≥ |n − m|/N`,
+    the interaction is a Hilbert-type kernel of norm `≤ 4wN((4/3)H_N + 1)`. At width
+    `w ≤ e^{−C₁}/(N(1 + log N))` it is bounded, the self-energy exceeds `log N + C₁`, and the Markov
+    form of every atomic test is nonnegative.
 
 ### G. Gauge
 
-21. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
+24. **The twisted Mertens sum** (`sum_one_add_liouville_le`, `liouvilleMertensSum_le`,
     `neg_le_liouvilleMertensSum`). `Σ_{t ≤ y} λ(t)Λ(t)/t = −log y + O(1)`: the even prime powers are
     summable.
-22. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
+25. **Dirichlet's hyperbola identity** (`sum_divisors_div_swap`). The divisor part of a row averages
     to its Mertens part.
-23. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
+26. **The spectral ends** (`abs_atomicWeilForm_le`, `atomicWeilForm_liouvillePole_le`,
     `atomicWeilForm_spectrum_ends`). `|P_N| ≤ log N + O(1)`. The pole vector reaches the top and the
     Liouville pole vector the bottom, `−log N + O(1)`.
-24. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
+27. **The polar divergence flips** (`primeBilinear_liouvilleTrunc_eq`,
     `abs_primeBilinear_liouvilleTrunc_add_le`, `abs_liouvilleForm_stepProfile_add_le`). On uniform
     profiles `P(λx) = −ℓ(x)² + O(|c|-mass)`.
-25. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
+28. **The matching law** (`IsSignGauge`, `sum_weilPrimeKernel_gauge`, `primeBilinear_gaugeTrunc_eq`,
     `abs_primeBilinear_gaugeTrunc_sub_le`, `abs_gaugeForm_stepProfile_sub_le`, `euler_matching`,
     `liouville_matching`, `finiteFlip_matching`). If `A_ε(y) = κ log y + O(1)`, then
     `P(εx) = κ ℓ(x)² + O(|c|-mass)` on uniform profiles. The Euler gauge has `κ = 1`, Liouville
     `κ = −1`, and every gauge flipping finitely many primes `κ = 1`.
+29. **Mertens' theorem for characters** (`norm_sum_antitone_mul_le`, `norm_LFunction_sub_partial_le`,
+    `norm_LFunction_one_sub_partial_le`, `norm_charLogSum_le`, `charLogSum_eq`,
+    `exists_norm_charMertensSum_le`). For `χ ≠ 1` mod `q`, Abel summation gives
+    `‖L(σ, χ) − Σ_{n<M} χ(n)n^{−σ}‖ ≤ 2q/M` for `σ > 1`, and continuity of `L(·, χ)` carries it to
+    `σ = 1`. The hyperbola identity writes `Σ_{n ≤ M} χ(n) log n/n`, which is `O(q)`, as
+    `L(1, χ) A_χ(M) + O(q)`. With `L(1, χ) ≠ 0`, `A_χ(M) = Σ_{t ≤ M} χ(t)Λ(t)/t` is bounded.
+30. **Characters are invisible to polar matching** (`charGauge_isSignGauge`,
+    `charGauge_mul_vonMangoldt`, `charGauge_matching`, `abs_charGaugeForm_stepProfile_le`). For a
+    real `χ ≠ 1` mod a prime `ℓ`, the gauge `ε(n) = χ(n/ℓ^{v_ℓ(n)})` is a sign gauge with
+    `A_ε = Re A_χ + O(1)`, so its matching coefficient is `κ = 0`. The gauged step profiles have no
+    polar divergence: the horizon counterterm is blind to characters.
+31. **Mertens' theorem in residue classes** (`totient_mul_classMertensSum_eq`,
+    `abs_principalMertensSum_sub_log_le`, `exists_abs_classMertensSum_sub_le`). Orthogonality gives
+    `φ(q) A(y; r) = Σ_χ χ(r^{−1}) A_χ(y)`. The principal term is Mertens' sum without the powers of
+    the primes dividing `q`, and the others are `O(1)`. So every unit class carries
+    `A(y; r) = log y/φ(q) + O(1)`: the same divergence, the prime place does not separate them.
 
 ---
 
@@ -341,7 +393,7 @@ the place that pays.
 |---|---|---|
 | **RP1 Coupled survival** | partner-kernel inclusion; survival equations; rank `≥ #prime`; prime survival `≤ rank` of the partner; rank one pays one matched direction; for the torsion germ, coupled to any partner | `coupling_mulVec_eq_zero`, `card_le_rank_coupled`, `finrank_primeSurvival_le_rank`, `primeSurvival_rankOne`, `coupled_torsion_survival`, `coupled_lattice_primeSurvival_le_one` |
 | **RP2 The archimedean place pays the arithmetic point** | joint counterterm `= [[1, e₁𝟙ᵀ], [𝟙e₁ᵀ, 𝟙𝟙ᵀ]]`; prime survival `ℝ e₁`; matched survival of the joint germ | `jointGram_eq`, `primeSurvival_jointGram`, `jointGerm_survival` |
-| **RP3 The covariant counterterm is the anomaly** | covariance ⇔ constant diagonal; `log N − log 8 − 4 ≤ κ_cov(N) ≤ log N + log 4 + 4`; the pole vector is an approximate eigenvector | `renormalizedPrimeForm_covariant_iff`, `heckeCovariant_iff_const`, `poleVector_eigen`, `covariantCounterterm_sandwich` |
+| **RP3 The covariant counterterm is the anomaly** | covariance ⇔ constant diagonal; `log N − log 8 − 4 ≤ κ_cov(N) ≤ log N + log 4 + 4`, sharpened to `κ_cov(N) = log N − γ + o(1)`; the pole vector is extremal | `renormalizedPrimeForm_covariant_iff`, `heckeCovariant_iff_const`, `poleVector_eigen`, `covariantCounterterm_sandwich`, `covariantCounterterm_sharp` |
 | **RP4 The anomaly costs half a logarithm** | `κ_tor(N) ≥ (3/2) log N − C`; `κ_tor − (log N + log 4 + 4) ≥ ½ log N − C` | `torsionCounterterm_ge`, `anomaly_cost` |
 | **RP5 Horizon polarity** | on uniform step profiles `P_N = ℓ² + O(|c|-mass)`; no divergence on `ℓ = 0` | `abs_atomicWeilForm_stepProfile_sub_le`, `abs_atomicWeilForm_stepProfile_le_of_polar` |
 | **RP6 Orbital divergence** | every class combination has `P ≥ (log M − C)|x|²`; the horizon counterterm has unbounded rank | `atomicWeilForm_classCombination_ge`, `horizonCounterterm_rank_unbounded` |
@@ -356,6 +408,11 @@ the place that pays.
 | **RP15 The anomaly costs at most one logarithm** | `κ_tor(N) ≤ 2 log N + log 4 + 4 + 2C_e`; the window `[(3/2) log N − C₁, 2 log N + C₂]` | `renormalizesAt_two_log`, `torsionCounterterm_window`, `anomaly_cost_window` |
 | **RP16 The sign of the tower finite part** | `F_p + c|·|² ≥ 0` on every depth iff `c ≥ 2d_p`, `d_p = √p log p/(p − 1) − γ`; `d_2 > 0`, `d_p ≤ 0` for `p ≥ 2^16` | `towerFinitePart_add_nonneg_iff`, `towerFinitePart_nonneg_iff`, `towerDeficit_two_pos`, `towerDeficit_nonpos` |
 | **RP17 The self-energy has constant one** | Lévy gain `e^{−δ_N/4} log(δ_N/(2w))`; the Markov form of every atomic test of width `≤ sharpAtomicWidth N` is nonnegative, and `sharpAtomicWidth N ≥ c δ_N/N` | `levyEnergy_atomicTest_ge_sharp`, `markovEnergy_atomicTest_nonneg_sharp`, `sharpAtomicWidth_ge` |
+| **RP18 The stability law reaches the spacing up to a logarithm** | the Markov form of every atomic test of width `w ≤ e^{−C₁}/(N(1 + log N))` is nonnegative; quantitatively `M(f) ≥ (2θ′(0) + log(1/w) − ½ − 4wN((4/3)H_N + 1) − log N − log 4 − 4)‖f‖²` | `markovEnergy_atomicTest_nonneg_logSpacing`, `markovEnergy_atomicTest_ge_cross` |
+| **RP19 Mertens' theorem for characters** | for `χ ≠ 1`, `A_χ(y) = Σ_{t ≤ y} χ(t)Λ(t)/t` is bounded | `exists_norm_charMertensSum_le` |
+| **RP20 Characters are invisible to polar matching** | real character gauges mod a prime are sign gauges with matching coefficient `0`; their step profiles carry no polar divergence | `charGauge_matching`, `abs_charGaugeForm_stepProfile_le` |
+| **RP21 Mertens' theorem in residue classes** | for `r` a unit mod `q`, `Σ_{t ≤ y, t ≡ r} Λ(t)/t = log y/φ(q) + O(1)` | `exists_abs_classMertensSum_sub_le` |
+| **RP22 The torsion counterterm is the golden ratio** | `φ log N − C₁ ≤ κ_tor(N) ≤ φ log N + C₂` for every `N ≥ 1`; `diag(log n) + P_N ≤ φ(log N + log 4 + 4)`, attained up to `O(1)` by `x_n = φ^{ω(n)}/√n` | `torsionCounterterm_golden`, `diag_add_atomicWeilForm_le_golden_log`, `diag_add_atomicWeilForm_goldenTest_ge` |
 
 ---
 
@@ -374,12 +431,14 @@ The twelve questions of the report (§4.4), in RAPT's terms.
    the degree-zero classes. Its prime component is computed: the positive scalar `+2γ` in Weil's
    form on uniform profiles (RP10), and minus the tower form of `p` on the classes (RP12). Its sign
    is decided prime by prime (RP16): nonnegative on the classes of `p` iff `√p log p ≤ γ(p − 1)`,
-   with the exact deficit `2d_p` at the small primes. The archimedean and polar components are
-   open (§9.1). *Answer:* the admissible regulator is the
+   with the exact deficit `2d_p` at the small primes. Matched against the archimedean self-energy
+   the deficit disappears: the valuation potential `j log p` pays it, and the class profiles have
+   prime finite part at most that of the pole (§4 item 19). The archimedean cross terms and the
+   polar component remain open (§9.1). *Answer:* the admissible regulator is the
    horizon, its metric is the tensor counterterm, and its prime finite part is the local tower form.
 2. **Does the anomaly cancel?** Yes, in two ways. Removing the self-intersection, as Weil's prime
    sum does, gives a covariant renormalized form. Covariance then forces a scalar counterterm,
-   `log N + O(1)` with constant one (RP3). Keeping the anomaly costs at least `½ log N` (RP4) and at
+   `log N − γ + o(1)` with constant one (RP3). Keeping the anomaly costs at least `½ log N` (RP4) and at
    most `log N + O(1)` (RP15).
    At the horizon the cocycle disappears altogether: the tensor counterterm and the finite part are
    exactly invariant under `[p]` (RP9). The degree of `[p]` scales the orbit densities instead of
@@ -453,42 +512,72 @@ prime form; pole vectors, the polar functional, step profiles and their Gram; `p
 vectors, prime-power sums, class masses and the class Gram; the tensor law; Liouville signs, the
 twisted Mertens sum and Dirichlet's hyperbola identity; telescoping bounds for `Σ log n/n`.
 
-**To build.** The archimedean self-energy of an atom with constant one at width `ε ≍ 1/N`; Mertens'
-theorem for characters; the tensor law for several primes at once.
+Also built: the Hecke excess and its summability over prime powers; the tower deficit and the
+Kac–Murdock–Szegő extremal profile; the sharp two-sided Lévy density, bump pairings, the cross
+majorant and the Hilbert-type row bound for the archimedean interaction of atoms; the archimedean
+self-energy with constant one; Abel summation with decreasing weights and Mertens' theorem for
+characters; character gauges; the equivalence of Gårding inequalities with finite-rank survival.
+
+Mertens' theorem in residue classes is built as well.
+
+**To build.** The class-wise horizon counterterm on the unit classes mod `q`; the finite part
+of the matching in the overlap regime beyond the spacing
+(the spacing itself is reached in SSHA).
 
 ---
 
 ## 9. Open research topics
 
-1. **The matched stability law at the atomic spacing.** At width `ε = c/N` the archimedean
-   self-energy `log(1/ε)` and the covariant counterterm `log N + O(1)` agree to `O(1)`. Is
-   `arch_ε + pole − P_N ≥ 0` on atomic tests for some fixed `c`? This is the sharpened central
-   conjecture. All divergences are now computed; the statement concerns `O(1)` finite parts. The
-   matched law holds at widths `c δ_N/N` with constant-one self-energy (RP13, RP17). The remaining
-   factor `N` is exactly the spacing: the self-energy is counted relative to `δ_N` because the shifts
-   beyond `δ_N/2` make atoms overlap. Closing it needs the archimedean interaction of distinct atoms,
-   `≈ log(1/|log m − log n|)`, against the prime form and the pole.
-2. **Who pays the tower deficit.** The sign of the prime finite part on the classes is decided
-   (RP16): it is nonnegative on the classes of `p` iff `d_p = √p log p/(p − 1) − γ ≤ 0`, and
-   otherwise exactly `2d_p` is missing on the uniform class profile. The small primes (`p ≤ 43`)
-   carry a deficit. Compute the archimedean and polar finite parts on the classes of `p` and decide
-   whether they cover `2d_p`.
-3. **Characters at the horizon.** Profiles twisted by a non-principal character should have bounded
-   prime form, with finite part `−L′/L(1, χ)`. This needs Mertens' theorem for characters, and would
-   identify the survival cone on residue classes mod `q` with the character space.
-4. **The exact torsion constant.** The continuum model predicts `κ_tor(N) ∼ (e/(e − 1)) log N`. The
-   proven window is `[3/2, 2]` (RP4, RP15). Closing it needs the joint extremal problem of the
-   diagonal `c(n) ≈ log n` and Weil's form: the top of `P_N` sits on the pole profile, whose mass
-   is spread uniformly in `log n`, while the diagonal is largest at `n ≈ N`.
+1. **Beyond the atomic spacing.** At width `ε = c/N` the archimedean self-energy `log(1/ε)` and the
+   covariant counterterm `log N + O(1)` agree to `O(1)`. With the interaction of the atoms in
+   absolute value, the Markov form is nonnegative down to width `δ_N/(C log N)` (RP18). There the
+   absolute interaction kernel `w/|log n − log m|` is bounded; at width `cδ_N` it has norm
+   `≍ c log N`. The spacing itself is reached in
+   [SpacingScaleHarmonicAnalysis](../SpacingScaleHarmonicAnalysis/README.md)
+   (`markovEnergy_atomicTest_nonneg_spacing`): the tilted Schur weight `1 + n/N` lets the down tower
+   of the prime form pay the archimedean cross kernel row by row. The Markov form is nonnegative at
+   widths `≤ c₀δ_N`, and `Re W + 2S² ≥ 0` there, a rank-one pole correction. The open question
+   moves into the overlap regime `w ≫ δ_N`. There SSHA's critical-exponent law ties positivity at
+   widths `N^{−θ}`, `θ < 1`, to RH. In RAPT terms this asks which finite part, signed interaction
+   plus pole, keeps the matching through the overlaps. In the separated regime the finite part is
+   computed: at width `w = c/N` the Markov ground energy is `2θ′(0) + log(1/c) + κ_L(φ) + γ + O(c)`,
+   the Robin constant of the atom plus the Euler constant of the pole
+   (`TheFinitePartOfTheMarkovFormAtTheSpacing`); the archimedean cross terms are paid in mean
+   square by the pole defect, not row by row.
+2. **Who pays the tower deficit.** *Answered:* the archimedean place. Its self-energy is uniform
+   in the classes, while the horizon counterterm of class `j` is `log(M/p^j)`; the difference, the
+   valuation potential `j log p`, covers `2d_p` with margin: `F_p + V_p ≥ (γ + γ_p)|b|²`, the pole is
+   the ground state, `P_M ≤ (log M − γ + η)|·|²` on class combinations, with a Hodge index on their
+   span. For every finite prime set `Q`, the actual matched operator on all supported integers
+   has a complete explicit basis, simple energies `γ + log m + tameDifferent(m)`, and compact
+   shifted inverse. The normalized horizon defect of each fixed finite class vector `b` is
+   exactly `−Re ⟨b,A_Q b⟩`. Open: the archimedean cross terms of distinct atoms on class profiles
+   and passage to all primes.
+3. **Characters at the horizon.** Mertens' theorem for characters (RP19) and in residue classes
+   (RP21) are proved, and real character gauges mod a prime have no polar divergence (RP20). Open:
+   the finite part `−L′/L(1, χ)` (convergence of `A_χ`, not only boundedness), complex characters
+   through the Hermitian prime form, and the class-wise counterterm. On the unit classes mod `q` the
+   horizon counterterm should be the rank-one `(q/φ(q)) ℓ(x)²`, unlike the unbounded rank on the
+   `p`-adic classes. The remaining input is the elementary asymptotics of `Σ_{m ≡ a} 1/m` and
+   `Σ_{m ≡ a} log(M/m)/m`.
+4. **The exact torsion constant.** *Answered* (RP22): `κ_tor(N) = φ log N + O(1)`,
+   `φ = (1 + √5)/2`, for every `N`. The continuum model's `e/(e − 1)` is wrong: it spreads the
+   charges uniformly in `log n`, while the extremal charges `φ^{ω(n)}` are multiplicative, so each
+   prime factor raises the charge by `φ`. The anomaly costs exactly `(φ − 1) log N = log N/φ`.
+   Open: the `O(1)` term, and the analogue for twisted torsion pairings.
 5. **Matching coefficients of natural gauges.** The matching law (RP11) turns any asymptotic
    `A_ε(y) = κ log y + O(1)` into a horizon divergence `κ ℓ²`. For a gauge flipping a set of primes of
-   logarithmic density `ϑ`, `κ = 1 − 2ϑ`. Compute `κ` for the sign patterns of real characters
-   (Chebotarev densities), and decide whether an error `o(log y)` instead of `O(1)` still gives the
-   law.
-6. **Several primes at once.** The tensor law and its covariance are proved for the classes of one
-   prime `p`. For a finite set of primes `Q` the classes are `{n : n = d k, (k, Q) = 1}`, indexed by
-   the `Q`-parts `d`. The expected counterterm is `Σ_d δ_d^{−1} ℓ_d²` with `δ_d = (1/d) Π_{p ∈ Q}(1 − 1/p)`,
-   covariant under every `[q]`, `q ∈ Q`. This is the full orbit decomposition of `μ_{Q^∞}`.
+   logarithmic density `ϑ`, `κ = 1 − 2ϑ`. Real characters mod a prime have `κ = 0` (RP20). Compute
+   `κ` for Chebotarev sign patterns, and decide whether an error `o(log y)` instead of `O(1)` still
+   gives the law.
+6. **Several primes at once.** *Answered for every finite prime set `Q`:* each finite family
+   of classes `{n : n = d k, (k, Q) = 1}`, indexed by the `Q`-parts `d`, has counterterm
+   `Σ_d δ_d^{−1} ℓ_d²`, where `δ_d = (1/d) Π_{p∈Q}(1−1/p)`. It is covariant under every
+   supported Hecke shift; its survival space is exactly the common kernel of the class charges.
+   The law holds for arbitrary signed finite class-wise step profiles with independent cutoffs.
+   Its finite part has one shared Euler constant `γ_Q` and the exact transverse tower interaction.
+   The boundary estimate is uniform in raw class orders; the density-normalized limit fixes a
+   finite class family. Passing to all primes or growing normalized class families remains open.
 
 ---
 
@@ -506,10 +595,11 @@ its present state:
 * The prime finite part is computed: `−2γ` on the uniform survival cone (RP10), the tower form of
   `p` with the local Euler constant on the classes (RP12).
 * Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
-  `κ = 1` for finitely many flips.
+  `κ = 1` for finitely many flips, `κ = 0` for real characters mod a prime.
 * Q6 is answered through RP2, RP3 and RP5.
-* The central conjecture is replaced by the matched stability law (§9.1). It holds at widths
-  `c δ_N/N` (RP17); the atomic spacing itself is open.
+* The central conjecture is replaced by the matched stability law (§9.1). RAPT proves it at widths
+  `δ_N/(C log N)` (RP18). SSHA proves it at a fixed fraction `c₀δ_N` of the spacing. The overlap
+  regime is open.
 
 A contribution is an unconditional Lean theorem about an object of §3. It names its **regulator**,
 its **counterterm** with rank and survival cone, its **anomaly**, and the **place** that pays. It
@@ -539,8 +629,20 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheFinitePartIsEulersConstant` | Mertens with Euler's constant; roundoff; the finite part of the pole Gram; `−2γ` on step profiles and on the polar hyperplane |
 | `TheFinitePartIsTheTowerForm` | the local Mertens theorem and local Euler constant; class masses; exact rows inside and across classes; the finite part on the classes is the tower form |
 | `TheMatchedStabilityLaw` | AES's stability law at atomic resolution with the covariant counterterm; the matched width `δ_N N^{−e^{1/2}}` |
+| `TheStabilityLawReachesTheSpacingUpToALogarithm` | shift expansion and bump pairings; two-sided Lévy density; cross majorant; Hilbert-type rows; stability at width `δ_N/(C log N)` |
 | `TheSelfEnergyHasConstantOne` | sharp Lévy density on short shifts; Lévy gain with constant `1 − O(1/N)`; nonnegativity at width `c δ_N/N` |
 | `TheSignOfTheTowerFinitePart` | the tower deficit; the KMS bound and the uniform class profile; the sign law; `p = 2` and large `p` |
+| `TheArchimedeanPlacePaysTheTowerDeficit` | the valuation Gram in the stability regime; class masses descend by `p`; `F_p + Σ j log p b_j² ≥ (γ + γ_p)|b|²`; `P_M ≤ (log M − γ + η)|·|²` on `p`-class combinations, sharp at the pole |
+| `TheMatchedPrimePlaceHasAHodgeIndexOnTheClasses` | the valuation inequality with its Laplacian; gap `g_J log p` on the polar hyperplane; `P_M − (log M − γ − η)` has one positive square on the class span |
+| `ThePoleIsTheTopOfThePrimeForm` | weighted Schur test; rows of `√n` (Chebyshev up, `½ log m` down); the tilted pole as Collatz–Wielandt vector; the covariant counterterm is `log N − γ + o(1)` |
+| `TheValuationTowerIsExactlySolvable` | the valuation tower operator: pole ground state `γ`, valuation steps with eigenvalues `γ_p + k log p`; the deeper-class slack; the sharp gap `p log p/(p − 1)` on the polar hyperplane at every depth |
+| `TheDeficitOfThePrimeFormIsADirichletEnergy` | ground-state identity `P_N + D_N = Σ (A(⌊N/n⌋) + log n) x_n²` with the pole defect `D_N = Σ Λ(t)(x_{mt} − x_m/√t)²`; the defect pays the top atoms; `P_N + (1 − ε) D_N ≤ (log N − γ + ε)|·|²` without tilt; the Hodge index modulo every prime `p` on the whole space (gap `(1 + 1/p) log p` off the ladder poles) |
+| `TheFinitePartOfTheMarkovFormAtTheSpacing` | the Lévy energy of an atomic test with its diagonal kept; pair windows `≤ 2w(1/|log(n/m)| + 1)`; the cross terms paid in mean square by the pole defect; the Markov ground energy at width `w ≤ δ_N/2`, `wN ≤ 1/(64e²)`, is `2θ′(0) + log(1/(wN)) + κ_L(φ) + γ + O(wN) + o(1)`, attained by the pole |
+| `TheArchimedeanFinitePartIsMinusLogTwoPi` | `2θ′(0) + 2c_∞ + γ = −log 2π` (with SSHA `archRobinConstant_eq`); the Markov ground energy at the spacing in closed form, `log(1/(2π wN)) + β(φ)/‖φ‖² + O(wN) + o(1)` |
+| `TheTorsionCountertermIsTheGoldenRatio` | the golden split `a² ≤ φ²(a − b)² + φ b²` on the prime-power edges; `diag(log n) + P_N ≤ φ Σ (A(⌊N/n⌋) + log n) x_n²`; the golden vector `φ^{ω(n)}/√n` and its mean co-height from the Chebyshev identity; non-coprime edges carry the tame different; `κ_tor(N) = φ log N + O(1)` |
 | `TheLiouvilleGaugeFlipsThePolarDivergence` | Liouville signs; the twisted Mertens sum; Dirichlet's hyperbola; spectral ends; the polar flip |
+| `MertensTheoremForCharacters` | Abel summation with decreasing weights; partial sums of `L(1, χ)`; the logarithmic sum; the hyperbola identity; `A_χ = O(1)` |
+| `MertensTheoremInResidueClasses` | orthogonality; the principal Mertens sum; `A(y; r) = log y/φ(q) + O(1)` |
+| `CharactersAreInvisibleToPolarMatching` | the character gauge; matching coefficient `0`; no horizon divergence on gauged step profiles |
 | `PolarMatchingReadsTheDensityOfTheGauge` | sign gauges; gauged rows and pole Gram; the matching law; Euler, Liouville and finite-flip instances |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |

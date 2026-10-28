@@ -33,13 +33,40 @@ restricted instance. Neither is an RH proof without the remaining bridges.
 
 The decisive parameter of the atomic test families `f_x = Σ_{n≤N} x_n g(·−log n)` is the
 **overlap ratio** `K = w/δ_N`, `δ_N = log(1 + 1/N)`, of the bump width to the spacing of the
-atoms. Up to a fixed ratio `c₀` the archimedean self-energy pays the prime form and the pole, for
-every bounded twist of the coefficients alike; at unbounded overlap (fixed width) positivity of
+atoms. Up to a fixed ratio the archimedean self-energy pays the prime form and, through the tilt
+of the prime rows, the pole, for every bounded twist of the coefficients alike
+(`TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing`); at unbounded overlap (fixed width) positivity of
 the atomic Weil Grams is RH (SpacingScaleHarmonicAnalysis). In the language of this programme
 the separated regime is the **stability regime** of a Metzler form and bounded overlap is the
 **trickle-down regime**. The programme's central conjecture is the trickle-down inequality for
 `ζ`'s Euler-gauge intersection form at every fixed overlap ratio, uniformly in `N`; uniformity
-in `K` is RH.
+in `K` is RH. Beyond `K = 1` the conjecture is a trickle-down inequality with a gap rather than a
+Metzler one: no gauge of the atomic basis is Metzler there.
+
+## Questions
+
+1. **Hodge index without a surface.** Which forms on the atoms `log n` come from Lorentzian
+   objects built from local factors and the scale map? The Euler-product Hessian is Lorentzian
+   for every nonnegative local datum and is not the Weil pairing; the atomic intersection form of
+   `ζ` has a negative diagonal and is reached only by identification, and its Hodge index is a
+   trickle-down inequality.
+2. **The sign as a hypothesis.** What is the positivity locus of the gauge torus? Modulo the
+   archimedean characters `n^{iτ}` it is the Euler point: the sign is a gauge fixing by the
+   archimedean place along the successor. On the atomic family the Metzler sign rejects every twin
+   that flips a prime of the horizon, while hyperbolicity alone does not.
+3. **Transfer.** Which operations preserve the signature, and is the Euler product one? Pullback,
+   domination, conditionally negative sums and products in disjoint variables do; sums do not. For
+   Metzler forms local-to-global is `(TD)`, a sum-closed condition, and polar gluing prices a sum
+   exactly. The Euler product preserves the Lorentzian property and is blind to the Euler point.
+4. **Realization.** What replaces Frobenius? Over `ℤ` no conformal map: dilations are boosts. Over
+   `𝔽_q` the trickle-down inequality is a square-root count, a finite piece of the ladder decides,
+   and the local factor at `p` is Lorentzian exactly when RH over `𝔽_p` holds for it. Over `ℤ`, at a
+   fixed fraction of the spacing, the archimedean self-energy distributed by the tilt of the prime
+   rows supplies `(TD_π)` and pays the polar dispersion.
+5. **The critical regime.** What happens at the spacing scale? The Metzler sign holds exactly up
+   to overlap ratio one; the Hodge index, `(TD_π)` and hyperbolic links hold up to a fixed ratio
+   `c★`; a uniform margin stops at `K√(log N)`. Between `c★` and one the open content is `(TD_π)`
+   for a connected Metzler form; beyond one no gauge of the atoms is Metzler.
 
 ## Objects and language
 
@@ -105,6 +132,18 @@ the form requires.
 mechanism does not exclude every geometry. Extract the sharp boundary or the positive
 construction it exposes.
 
+## Tools
+
+- Degree-two signature calculus: reverse Cauchy–Schwarz, domination, pullback, CND closure.
+- The block Hodge index theorem: with a hyperbolic pole plane, one positive square ⇔ nonnegative
+  polar defect `2(d·H)(d·V) − d²`.
+- The Metzler Hodge index theorem, its weighted and quantitative forms, and hyperbolic links.
+- Gauge rigidity: unimodular rigidity of nonnegative entries, odd triangles, pole-row fixing.
+- Polar gluing with its exact dispersion, and reflection splitting with the optimal repair.
+- The Markov pairing of atoms: separation, the overlap law, tilted per-atom margins.
+- Frobenius ladders, square-root counts and finite-depth criteria for curve data.
+- Lorentzian polynomials in coefficient form and the Turán layer of `ξ`.
+
 ## Core theory
 
 ### Degree-two signature calculus
@@ -156,6 +195,120 @@ curve datum has a positive weight with positive image and connected support. Hen
 over `𝔽_q` the content of Weil's theorem is the trickle-down inequality, and integral
 nonnegative counts, the functional equation and Bézout do not construct it.
 
+[TheTrickleDownInequalityIsTheSquareRootCount](TheTrickleDownInequalityIsTheSquareRootCount.lean):
+what does construct it is a count. Every span class lives on some ladder, so `(TD_π)` on every
+Frobenius ladder ⇔ `|β_i| = 1` ⇔ the one-sided Lefschetz bound `N_k ≥ q^k + 1 − C q^{k/2}` for all
+`k` (`forall_weightedTrickleDown_iff_exists_pointCount_ge`); the golden datum fails every such
+bound. For `y² = f(x)`, `f` squarefree of odd degree over a finite field of odd characteristic, the
+counts are point cardinalities over the extensions of every degree and the datum is unitary by
+Stepanov's count, so every ladder satisfies `(TD_π)` and its weighted Gram has hyperbolic links
+(`hyperelliptic_weightedTrickleDown`, `hyperelliptic_hasHyperbolicLinks`). This is Weil's theorem
+for these curves as a trickle-down statement with no surface: the local-to-global inequality is
+paid by an auxiliary function with many zeros, the input a construction over `ℤ` must replace.
+
+[TheLocalFactorTricklesDownByRamanujan](TheLocalFactorTricklesDownByRamanujan.lean): a finite piece
+of the ladder decides. If `H, V, Γ_0, …, Γ_{2g−1}` has the Hodge index, the span defect is a
+nonnegative Toeplitz form of size `2g` on complex classes too, which forces `|β_i| = 1`; so
+`(TD_π)` holds on every ladder (`forall_weightedTrickleDown_of_isHyperbolic`). For a local factor
+`1 − aT + qT²` (genus one) the first ladder has the Hodge index iff `|a| ≤ 2√q`
+(`frobeniusGram_one_isHyperbolic_iff`); depth zero never decides, the golden fake passes it
+(`golden_depth_one_sharp`). The Kloosterman
+sum is real, and by Weil's bound `|K(a)| ≤ 2√p` the Kloosterman factor `1 + K(a)T + pT²` is such a
+datum: every ladder is Metzler, satisfies `(TD_π)` and has hyperbolic links
+(`kloosterman_trickleDown`). The local Lorentzian input at a prime is the Riemann hypothesis over
+`𝔽_p` for its local factor; with the Euler-product closure, which is Lorentzian for every
+nonnegative local datum, the content of the Hodge index over `ℤ` lies entirely in the
+local-to-global step.
+
+### The atomic family of `ζ`
+
+[TheAtomicFormIsMetzlerBelowTheSpacing](TheAtomicFormIsMetzlerBelowTheSpacing.lean): the Markov
+pairing `M(f, d)`, polar form of `M = 2θ′(0)‖·‖² + levyEnergy − primeSum`, is symmetric and bilinear
+on compactly supported `C²` tests, so `M(f_x) = Σ x_m x_n M(g_m, g_n)` on atomic tests. For a
+nonnegative bump supported in `[0, w]` and atoms at log-distance `> w`, `M(g_m, g_n) ≤ 0`: the
+overlap vanishes, the Lévy cross integrand is pointwise `≤ 0`, and the prime pairing is a sum of
+nonnegative terms. Hence for `w < δ_N` the Gram of `H, V, g₁, …, g_N` — pole plane, pole row
+`(∫ g_n e^{−u/2}, ∫ g_n e^{u/2})`, atom block `−M(g_m, g_n)` — is Metzler, connected through `H`, and
+has an explicit positive weight with positive image. Its polar defect is Weil's form, so Weil
+positivity on the separated atomic family ⇔ hyperbolicity ⇔ `(TD_π)`
+(`weilQuad_finAtomicTest_nonneg_iff_weightedTrickleDown`). The sign hypothesis is a theorem for
+`ζ` below the spacing; the content left there is the trickle-down inequality itself.
+
+[TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing](TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing.lean):
+at a fixed fraction of the spacing that content is a theorem. The row-by-row estimate of the
+stability law gives `M(f) ≥ ‖g‖² Σ_m μ_m x_m²` with a per-atom margin, and at `w ≤ c★δ_N` the tilted
+prime rows give `μ_m ≥ 1 + (m/8N) log m` (`one_add_le_atomMargin`): the margin grows along the atoms
+that carry the pole moment. The pole term of Weil's form is `2AB`, `A = ∫ f e^{−u/2}`,
+`B = ∫ f e^{u/2}`; weighted Cauchy–Schwarz with `Σ 1/(mμ_m) ≤ 1 + log N` and
+`Σ m/μ_m ≤ 16N²/(1 + log N)` gives `A²B² ≤ 16e^w(wN)²‖g‖⁴X²`, `X = Σ μ_m x_m²`, so the pole costs at
+most the margin (`sq_mul_poleMoments_le`, `two_mul_abs_poleMoments_le_margin`). Hence Weil's form is
+nonnegative on every *signed* atomic test at every width `w ≤ c★δ_N`, uniformly in `N`
+(`weilQuad_atomicTest_nonneg`), and the atomic intersection form of `ζ`, pole plane included, has
+one positive square, satisfies `(TD_π)`, and its weighted Gram has hyperbolic links
+(`atomicIntersectionGram_isHyperbolic`, `weightedTrickleDown_atomicIntersectionGram`,
+`hasHyperbolicLinks_atomicIntersectionGram`). The central conjecture holds at every overlap ratio
+`K ≤ c★`, inside the stability regime. The proof is twist-blind (`twin_markov_add_pole_nonneg`).
+
+[TheUniformMarginPaysThePoleOnlyUpToARootLogarithm](TheUniformMarginPaysThePoleOnlyUpToARootLogarithm.lean):
+the tilt is necessary. By the rank-two bound `2(a·d)(b·d) ≥ (a·b − ‖a‖‖b‖)‖d‖²`, sharp at
+`d = ‖b‖a − ‖a‖b`, the margin model (pole plane, pole rows `a, b`, atom block `−m·1`) has one
+positive square iff `‖a‖‖b‖ − a·b ≤ m` (`marginModel_isHyperbolic_iff`). The atomic pole rows are
+`a_n = n^{−1/2}α`, `b_n = n^{1/2}β`, so the gap is `αβ(√(H_N S_N) − N) ≥ αβN(√(log(N + 1)/2) − 1)`;
+at a fixed overlap ratio and fixed uniform margin the model fails for all large `N`
+(`not_isHyperbolic_marginModel_eventually`). A uniform margin stops at `K√(log N) ≍ μ`; the pole is
+paid by the growth of the margin along `(n^{1/2})`.
+
+[TheOverlapFrustratesTheMetzlerGauge](TheOverlapFrustratesTheMetzlerGauge.lean): beyond the
+spacing the sign of the atom block changes. For a narrow nonnegative Lipschitz bump with
+`κ = 2θ′(0) + log(1/(2w)) > 0`, polarization `4M(a, b) = M(a + b) − M(a − b)` shows that atoms at
+log-distance `s ≤ w` meet *positively* once the Lévy cost of `g − g(·−s)`, explicitly
+`4e^{1/2}K²w²s + O(s²)`, is below `κ‖g‖²` (`markovPair_shift_pos`). Three such atoms form a negative
+triangle of `−M`, and a negative triangle admits no unimodular nonnegative gauge
+(`not_nonneg_gauge_of_neg_triangle`). Hence at fixed width, for every large `N`, no gauge makes the
+atomic form Metzler (`atomicMarkovGram_frustrated_eventually`). The Metzler property is a theorem
+below the spacing and fails in every gauge at unbounded overlap; a trickle-down certificate there
+needs coordinates other than atoms.
+
+[TheMetzlerThresholdOfTheOverlapRatioIsOne](TheMetzlerThresholdOfTheOverlapRatioIsOne.lean): the
+threshold is exactly the spacing. The **overlap law** (`markovPair_shift_ge`): for a nonnegative
+`K`-Lipschitz `C²` bump in `[0, w]`, `2w < log 2`, and `0 ≤ s ≤ w`,
+
+\[
+ M(g, g(\cdot - s)) \ge \big(2\theta'(0) + \log\tfrac{1}{2w}\big)\langle g, g(\cdot - s)\rangle
+ - 2e^{1/2} K w \|g\|_1 .
+\]
+
+Beyond the joint support the mixed Lévy integrand is `2ω(y)⟨g, g(·−s)⟩`, so overlapping atoms meet
+with their overlap times the self-energy, with constant one. Separated atoms meet *strictly*
+negatively (`markovPair_atom_neg`), and a triangle with one negative and two positive entries
+admits no unimodular nonnegative gauge (`not_nonneg_gauge_of_odd_triangle`). For the bump
+`g₁(·/(Kδ_N))` of a Lipschitz `C²` profile positive on `(0, 1)` the atomic form is Metzler for
+`K < 1`, and for every `K > 1` and all large `N` the overlapping atoms `N − 1, N` and the separated
+atom `1` form an odd triangle, so no unimodular gauge makes it Metzler
+(`metzlerThreshold_overlapRatio`). The sign hypothesis holds for `ζ`'s atomic form exactly up to
+atomic resolution. Beyond it the gap on the primitive hyperplane, which Perron–Frobenius supplies
+for connected Metzler forms, must be proved directly; quantitative trickle-down
+(`qf_le_of_approxTrickleDown`) needs nothing else.
+
+[TheAtomicMetzlerPropertyIsSelective](TheAtomicMetzlerPropertyIsSelective.lean): the sign hypothesis
+selects the Euler point on the actual atomic family. The pole row is untouched by a twist of the
+prime place and is strictly positive, so a nonnegative unimodular gauge is constant on the atoms
+(`gauge_eq_of_poleRow`). For separated atoms only the lag `log p` meets the pair `(1, p)`, so the
+twisted prime pairing is exactly `ω(p)(log p/√p)‖g‖²` while the Lévy cross energy is at most
+`2wω(log p − w)‖g‖²`. Hence a real twin with `ω(p) = −1` at a prime `p ≤ N` has no Metzler gauge
+below the spacing (`not_exists_nonneg_gauge_twinAtomicIntersectionGram`), while `ω ≡ 1` gives
+`ζ`'s Metzler Gram.
+
+[HyperbolicityIsBlindTheSignIsNot](HyperbolicityIsBlindTheSignIsNot.lean): the twisted Markov
+pairing is symmetric and bilinear, so the polar defect of a twin's Gram is the twin's Weil form
+`M_ω(f) + 2AB` (`polarDefect_twin`). The stability law and the pole estimate are twist-blind, so at
+every width `w ≤ c★δ_N` every completely multiplicative sign twin has a hyperbolic atomic
+intersection Gram (`twinAtomicIntersectionGram_isHyperbolic`). For the Liouville twin
+`λ(n) = (−1)^{Ω(n)}`, whose Dirichlet series `ζ(2s)/ζ(s)` has a pole on the critical line, the Gram
+is hyperbolic at those widths and admits no Metzler gauge for `N ≥ 2`, while `ζ`'s is Metzler
+(`liouville_isHyperbolic_and_not_metzler`). Where the Hodge index of the atomic family is a
+theorem it carries no arithmetic; the sign hypothesis is the part that sees the Euler point.
+
 ### Conformal symmetry
 
 [FrobeniusIsConformalHeckeIsABoost](FrobeniusIsConformalHeckeIsABoost.lean): over `𝔽_q`, `(F×1)^*`
@@ -191,6 +344,18 @@ symmetric form of the normalized local data, hence Lorentzian for every nonnegat
 The product closure cannot distinguish the Euler point from other nonnegative Euler products,
 and it contains neither the Γ-term, the pole plane nor the diagonal.
 
+### Renormalized prime-place data
+
+[TheTowerDeficitIsARowSum](TheTowerDeficitIsARowSum.lean): the tower finite part
+`F_p = 2γ_p|b|² + log p(|b|² − K_q(b))` of RAPT has matrix `2γ_p` on the diagonal and
+`−log p·q^{|i−j|}` off it, so `−F_p` is Metzler. The Kac–Murdock–Szegő row is at most
+`(1 + q)/(1 − q)`, hence every row sum of `−F_p` is at most `2d_p` (`rowSum_neg_towerMatrix_le`),
+and `F_p + c|·|² ≥ 0` on every depth iff `c` dominates every row sum
+(`towerFinitePart_add_nonneg_iff_rowSum`): the sign law `c ≥ 2d_p` is the row-sum law of the
+stability regime with weight `1`. The prime-place links of a renormalized decomposition are
+therefore Metzler forms whose only obstruction is a positive row sum `2d_p` at the small primes,
+to be cancelled by the row sums of the other places.
+
 ### Polar gluing and its exact price
 
 [PolarGluingAndDispersion](PolarGluingAndDispersion.lean): for forms `Q_i` sharing a positive
@@ -207,6 +372,16 @@ preserves the total polar row, adds reserves exactly, is associative, decomposes
 between-group corrections and commutes with pullback. It constructs a hyperbolic form; an
 arithmetic application must identify or pay `C_e` in the actual pairing. The calibration
 `Q_{±t,r} = [[1, ±t], [±t, t² − r]]`: each plane hyperbolic iff `r ≥ 0`, their sum iff `r ≥ t²`.
+
+[TheTiltedMarginPaysThePolarDispersion](TheTiltedMarginPaysThePolarDispersion.lean): for `ζ` the
+dispersion is paid in the stability regime. The atomic intersection form is exactly the tilted
+diagonal model plus the residual `‖g‖² diag(μ) − M`, which the row-by-row stability law makes
+negative semidefinite (`atomicIntersectionGram_eq_tiltedModel_add`, `qf_residual_nonpos`). The
+model is the sum of source-defined atom pieces — the share `J/N` of the pole plane, the pole
+couplings of one atom and its tilted margin — each with `Q_m[H + V] = 2/N` (`sum_atomPiece`). At
+`w ≤ c★δ_N` the model has one positive square, so the dispersion of the local polar rows at the
+anchor `H + V` is at most the sum of the local reserves (`polarDispersion_le_sum_anchorReserve`):
+the archimedean self-energy, distributed by the tilt of the prime rows, pays it.
 
 ### Reflection splitting and the optimal repair
 
@@ -231,25 +406,41 @@ real-rootedness.
 
 **Trickle-down for `ζ`.** Decide whether `ζ`'s Euler-gauge atomic intersection form, completed by
 its pole plane, is Metzler with connected support and positive image at bounded overlap, and
-whether it satisfies `(TD_π)` — or quantitative trickle-down with a gap — uniformly in `N`. The
-stability regime `K ≤ c₀` is the base case. A proof would be selective by construction: at level
-`N` no twin flipping a prime `≤ N` admits a Metzler gauge.
+whether it satisfies `(TD_π)` — or quantitative trickle-down with a gap — uniformly in `N`. Below
+the spacing (`K < 1`) the Metzler, connectivity and positive-image conditions are theorems and the
+question is exactly `(TD_π)`; in the stability regime `K ≤ c₀` the atom block is negative
+semidefinite, and for `K ≤ c★` its coupling to the pole plane is paid by the tilted margin, so the
+central conjecture is a theorem there (`weilQuad_atomicTest_nonneg`). Between `c★` and the spacing
+the Metzler structure holds and `(TD_π)` is open. There the Markov form loses positivity along the
+pole vector `(n^{−1/2})`, the top of the prime form with finite part `−γ`
+(RenormalizedArithmeticPotentialTheory), which is the `H`-row of the pole plane: the pole term pays
+exactly that direction, and only in the Euler gauge. The remaining content is a gap of the Markov
+form on the complement of the pole vector, coupled to the pole plane through the `V`-row `(n^{1/2})`
+along which the tilted margin grows. For `K > 1` no gauge of the atoms is Metzler, so the question
+becomes (TD) with a proved primitive gap, or `(TD_π)` in another basis. A proof through the Metzler
+structure is selective by construction: at level `N` no twin flipping a prime `≤ N` admits a
+Metzler gauge.
 
-**The Metzler property beyond atomic resolution.** At overlap the entries of the intersection
-form include the overlap Gram, the archimedean cross terms of overlapping atoms and the non-ratio
-prime lags. Determine their signs in the Euler gauge, a gauge in which they are nonnegative, or
-the obstruction to one.
+**The Metzler property beyond atomic resolution.** Decided for gauges of the atomic basis: the
+threshold overlap ratio is exactly `K = 1` for every profile positive on `(0, 1)`. Open: a natural
+non-atomic basis — differences, wavelets, Hecke orbits — in which the overlapping form is Metzler,
+or a direct proof of the primitive gap `Q ≤ (1 − g)D` on the constraint hyperplane at a fixed
+overlap ratio `K > 1`, which together with approximate (TD) is all quantitative trickle-down
+needs.
 
 **Renormalized links.** Build links of the atomic intersection form from source-defined local
-pieces: the horizon finite parts of the prime place (tower forms `−2γ_p + log p(K_q − 1)` with the
-sign law `c ≥ 2d_p`, `d_p = √p log p/(p−1) − γ`), the archimedean jump Laplacian and the pole plane.
+pieces: the horizon finite parts of the prime place (tower forms `−2γ_p + log p(K_q − 1)`, Metzler
+with row sums `≤ 2d_p`, the sign law being exactly the row-sum law), the archimedean jump Laplacian
+(row sums zero) and the pole plane.
 Account for who pays the deficits `2d_p` at the small primes. The first useful result is an exact
 link decomposition with a residual controlled by quantitative trickle-down on an explicit
 overlap family.
 
 **Arithmetic polar compatibility.** Find a decomposition of the complete intersection form whose
 anchors and reserves are source-defined, and determine whether the infinite-place cross energy,
-section relations or the successor connection pay the polar dispersion.
+section relations or the successor connection pay the polar dispersion. In the stability regime
+the tilted archimedean margin pays it for the atom pieces; open beyond `c★`, where the margin is
+no longer positive and the payment must come from cross terms.
 
 **Coherent multiscale assembly.** Construct decompositions whose anchors and restriction maps
 respect the gluing calculus, separate within-block and between-block costs, and seek bounds
@@ -257,7 +448,9 @@ uniform under refinement.
 
 **Selectivity calibration.** For each certificate, identify the bounded twist (multiplicative or
 not) and the fake curve datum on which it fails, and the term — pole, non-ratio lag, finite part
-or successor phase — that distinguishes `ζ`.
+or successor phase — that distinguishes `ζ`. Calibrated so far: the Metzler sign fails for every
+twin flipping a prime of the horizon; the margin certificate of the stability regime fails for no
+sign twin, the Liouville twin included; over `𝔽_q` the square-root count fails for the golden datum.
 
 **Conformal dynamics and reflection.** Study maps with `TᵀQT = λQ` and reflection forms on the
 affine algebra arising from arithmetic constructions. A boost on an indefinite fibre does not
@@ -291,7 +484,9 @@ exclude an off-line zero. Average rarity alone cannot.
 | Every prime piece is positive, so the global form has Hodge index | Specify the forms, their common pole allocation, and the dispersion or cross-term payment |
 | Subtracting a positive correction proves the original signature | It proves the signature of a different form; identify the target or prove the domination |
 | Nonnegative coefficients and connectivity imply Hodge index | The golden datum passes both; the trickle-down inequality is the content |
-| Stability-regime positivity is a Hodge index | It holds for every bounded twist; the trickle-down regime is open |
+| Stability-regime positivity carries the arithmetic | It holds for every bounded twist; the trickle-down regime is open |
+| A proved Hodge index on an atomic family is arithmetic | At a fixed fraction of the spacing it holds at the Liouville point; only the Metzler sign rejects that twin |
+| Beyond the spacing a better gauge restores the Metzler sign | For `K > 1` an odd triangle of atoms frustrates every unimodular gauge; change the basis or prove the gap |
 | A positive Euler product gives the arithmetic sign | Its Hessian is Lorentzian for every nonnegative local datum and is not the Weil pairing |
 | A Hecke dilation can play the role of Frobenius | Dilations are isometries; Weil uses a conformal factor `q` |
 | The scale map is the archimedean place | A substitution is not an identity with the completed Γ-term and finite part |

@@ -38,7 +38,7 @@ def mixedCellRemainder (c d : ℕ → ℝ) (A X m : ℕ) : ℝ :=
 theorem cellMass_nonneg (c : ℕ → ℝ) {A : ℕ} (hA : 1 ≤ A) (X : ℕ) :
     0 ≤ cellMass c A X :=
   sum_nonneg fun a ha => mul_nonneg (logCellWidth_pos (hA.trans (mem_Icc.mp ha).1)).le
-    (sq_nonneg _)
+    (sq_nonneg (c a))
 
 theorem cellShiftCorr_eq_spine_add_remainder (c d : ℕ → ℝ) {A : ℕ} (hA : 1 ≤ A)
     (X : ℕ) {m : ℕ} (hm : 1 ≤ m) :
@@ -59,14 +59,14 @@ def blockEnergy (d : ℕ → ℝ) (a m : ℕ) : ℝ :=
   ∑ j ∈ range m, ((a * m + j : ℕ) : ℝ) * (d (a * m + j + 1) - d (a * m + j)) ^ 2
 
 theorem blockEnergy_nonneg (d : ℕ → ℝ) (a m : ℕ) : 0 ≤ blockEnergy d a m :=
-  sum_nonneg fun j _ => mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
+  sum_nonneg fun j _ => mul_nonneg (Nat.cast_nonneg (a * m + j)) (sq_nonneg _)
 
 private theorem sub_eq_sum_diff (d : ℕ → ℝ) (n r : ℕ) :
     d (n + r) - d n = ∑ j ∈ range r, (d (n + j + 1) - d (n + j)) := by
   induction r with
   | zero => simp
   | succ r ih =>
-    rw [sum_range_succ, ← ih]
+    rw [Finset.sum_range_succ, ← ih]
     rw [show n + (r + 1) = n + r + 1 by omega]
     ring
 

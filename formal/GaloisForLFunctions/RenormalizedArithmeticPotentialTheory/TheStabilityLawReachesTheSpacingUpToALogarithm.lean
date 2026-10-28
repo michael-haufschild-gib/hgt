@@ -291,7 +291,7 @@ theorem abs_sub_div_le_abs_log_sub {m n N : ℕ} (hm : m ∈ Icc 1 N) (hn : n �
 /-- `H_N ≤ 1 + log N`. -/
 theorem harmonicSum_le_one_add_log (N : ℕ) : harmonicSum N ≤ 1 + Real.log N := by
   have h := harmonic_le_one_add_log N
-  simp_rw [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast] at h
+  simp_rw [_root_.harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast] at h
   simpa [harmonicSum, one_div] using h
 
 /-- Reindexing a sum of reciprocals into the harmonic sum. -/

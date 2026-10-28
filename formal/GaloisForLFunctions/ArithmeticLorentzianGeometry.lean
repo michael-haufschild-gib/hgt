@@ -4,11 +4,22 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHodgeIndexTricklesDow
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheSignIsAGaugeFixing
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheMetzlerDichotomy
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheFrobeniusLadderIsMetzler
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheTrickleDownInequalityIsTheSquareRootCount
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheLocalFactorTricklesDownByRamanujan
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheSuccessorConnectionIsTheArchimedeanGaugeField
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.LorentzianPolynomialsAndTheTuranLayer
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.FrobeniusIsConformalHeckeIsABoost
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.LocalFactorsAndTheEulerProductClosure
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheAtomicFormIsMetzlerBelowTheSpacing
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheUniformMarginPaysThePoleOnlyUpToARootLogarithm
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheOverlapFrustratesTheMetzlerGauge
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheMetzlerThresholdOfTheOverlapRatioIsOne
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheAtomicMetzlerPropertyIsSelective
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.HyperbolicityIsBlindTheSignIsNot
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheTowerDeficitIsARowSum
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.PolarGluingAndDispersion
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheTiltedMarginPaysThePolarDispersion
 
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHalfDefectIsTheOptimalHodgeRepair
 
@@ -18,8 +29,11 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHalfDefectIsTheOptima
 Umbrella for the combinatorial Hodge theory of the affine monoid of the integers: hyperbolic and
 Lorentzian forms at degree two, domination and closure; the Hodge index of the scaling surface as
 reverse Cauchy–Schwarz and the nef shift; the trickle-down theorem and the Metzler Hodge index
-theorem; common gauge fixing by the archimedean place along the successor; and polar gluing,
-its dispersion cost, associative assembly and compatibility with linear restriction; the coherent
-half-defect Frobenius repair with optimal rank and exact pole-preserving Hodge threshold.
-See `ArithmeticLorentzianGeometry/README.md`.
+theorem; calibration over finite fields, where the trickle-down inequality is the square-root
+count; common gauge fixing by the archimedean place along the successor; the atomic intersection
+form of `ζ` — Metzler exactly up to the spacing, hyperbolic with `(TD_π)` and hyperbolic links at a
+fixed fraction of it, blind to sign twins where the sign is not; renormalized prime-place rows;
+polar gluing, its dispersion cost, associative assembly and compatibility with linear restriction;
+the coherent half-defect Frobenius repair with optimal rank and exact pole-preserving Hodge
+threshold. See `ArithmeticLorentzianGeometry/README.md`.
 -/

@@ -301,11 +301,12 @@ Frobenius ladder, and successor transversality.
 1. **A covariant regulator with a nontrivial null cone.** A family of positive pairings on torsion
    cycles, Hecke covariant up to tame ramification, whose counterterm is not a multiple of the
    identity. By the survival law this is exactly what a sign through the limit requires.
-2. **Sharp asymptotics of the archimedean constants.** Pillar XVII is exact, and
-   `E_φ ≥ ‖φ‖²(γ₀ + e^{−1/2} log((1−δ)/δ))` is proved. Show `E_φ = ‖φ‖² log(1/δ) + O(‖φ‖²)` with coefficient
-   `1` (the jump weight is `≍ 1/y` near `0` and `Φ` vanishes beyond `δ`) and
-   `K_φ(c) = (∫φ)² e^{c/2}/sinh c + O(δ)`; then the tower inequality on the polar hyperplane at the widest
-   admissible atoms `δ ≍ 1/M` is the sharp form of the question.
+2. **Sharp asymptotics of the archimedean constants.** *Answered in SSHA*
+   (`TheRobinConstantOfAnAtom`, `TheArchimedeanPairingOfTwoAtoms`): `E_φ = (log(1/δ) + κ_L(φ))‖φ‖² + O(δ)‖φ‖²`
+   with the exact constant `κ_L(φ) = 2c_∞ + β(φ)/‖φ‖²`, and the cross pairing of atoms at distance
+   `c > δ` is `(∫φ)² ω(c) + O((ω(c − δ) − ω(c + δ))(∫|φ|)²)`, `2ω(c) = e^{c/2}/sinh c`. The tower
+   inequality on the polar hyperplane at the widest admissible atoms `δ ≍ 1/M` remains the sharp form of
+   the question.
 3. **Arithmetic Riemann–Roch on torsion orbits.** The lattice `𝓞_{ℚ(ζ_n)}` with its trace form has a
    theta `h⁰` whose Riemann–Roch defect is `½ log|d|`, the self-intersection of Pillar IV; a section
    functor on the scaling surface with this defect is the `F3` question of the review.

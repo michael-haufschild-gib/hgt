@@ -207,7 +207,27 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     shapes and signs (`IndependentSeparatedSections.lean`). Mixed correlations are assigned to
     their separate masses; symmetry converts the prime interactions into row bounds. The entire
     linear carrier has RR, ampleness, and Hodge index, including non-ratio prime interactions.
-    Full-source coverage beyond this span restriction remains open.
+    Full-source effectivity beyond this span restriction remains open.
+    **Complete logarithmic-cell prime transfer:** every real compact $C^2$ test is recovered
+    by complete cell sections and arithmetic divisibility forms. The actual quadratic $L^2$
+    prime energy converges to the existing `RHTower.primeSum` at order $1/N$, retaining all
+    prime powers and signed successor terms (`CompletePrimeSourceTransfer.lean`). Compactness
+    derives the support horizon, and smoothness supplies uniform mass and derivative bounds.
+    **Complete source transfer:** one complete cell system for each finite family of real compact
+    $C^2$ sources recovers the original `zetaZeroConfig.W` on every linear combination and all
+    polarized Gram entries (`CompleteWeilSourceTransfer.lean`). The form depends only on finite
+    cell coefficients and retains square mass, full Gamma Lévy energy, every prime translation,
+    and both pole moments. The profiles converge in $L^2$; bounded variation pays their entire
+    jump-error energy at order $1/N$. Identification with the actual cell vectors and compatibility
+    with linear synthesis are exact.
+    **Smooth complete-cell sections:** one positive convolution operator preserves exact Hecke
+    subdivision and both pole degrees. The resulting compact $C^2$ sections have dimension $X$
+    on the first $X$ whole cells, at every smoothing scale (`SmoothArithmeticCellSections.lean`).
+    Regularization contracts the entire Gamma jump energy and recovers it in the limit.
+    The original `zetaZeroConfig.W` on these smooth profiles converges to the existing
+    `finiteCellWeil c 0 1 X`, retaining every prime translation and both signed pole terms
+    (`SmoothFiniteCellArithmeticForm.lean`). Full-source effectivity and the signed
+    Gamma–prime–pole index bound remain open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

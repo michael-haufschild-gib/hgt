@@ -17,9 +17,13 @@ ratio** `ϱ = w/δ_N`. Its organizing sentence:
 > estimate between two kernels that live on different vectors: the archimedean cross kernel, large
 > only at the top scale, and the prime kernel, large only across scales. A Schur weight tilted
 > across scales separates them, and Weil's form is nonnegative up to the pole on every atomic test
-> of width `c₀δ_N`, for every `N`. On the atomic families of one fixed bump — unbounded overlap —
-> positivity is the Riemann hypothesis. The arithmetic gauge is invisible to the Markov form on
-> every family closed under `|·|`, and reaches the prime form only through non-ratio lags.*
+> of width `c₀δ_N`, for every `N`; without the pole it fails at every width `cδ_N`, `c > e/(2π)`.
+> As soon as the overlap ratio beats `√(log N)` — at every polynomially larger width `N^{−θ}`,
+> `θ < 1`, and already at overlap `(log N)^{1/2+ε}` — narrow atoms synthesize every fixed test and
+> positivity is the Riemann hypothesis: the critical exponent is one, and RH is the statement that
+> the pole remains the only negative square. The arithmetic gauge is invisible to the Markov form
+> on every family closed under `|·|`, reaches the prime form only through non-ratio lags, and once
+> the overlap beats `√(log N)` it is seen by exactly the twists that fail somewhere.*
 
 Namespace `GaloisForLFunctions.SpacingScaleHarmonicAnalysis`; umbrella
 `SpacingScaleHarmonicAnalysis.lean`. Everything is unconditional; RH and its partial forms appear
@@ -42,7 +46,7 @@ polynomials at zero ordinates, B3.24).
 | Programme | What SSHA takes | What SSHA adds |
 |---|---|---|
 | [ArithmeticElectrostatics](../ArithmeticElectrostatics/README.md) | atomic tests, the atomic Weil prime form, `primeSum = (∫g²) P_N` below the spacing, the coupled form `Re W = M + 2C² − 2S²`, the stability law at width `N^{−O(1)}`, twins at atomic resolution | stability at a fixed fraction of the spacing; gauge blindness of the whole law |
-| [RenormalizedArithmeticPotentialTheory](../RenormalizedArithmeticPotentialTheory/README.md) | the covariant counterterm `log N + O(1)` and its exact Schur rows | the finite part of the matched renormalization; tilted rows paying the archimedean cross kernel |
+| [RenormalizedArithmeticPotentialTheory](../RenormalizedArithmeticPotentialTheory/README.md) | the covariant counterterm `log N + O(1)` and its exact Schur rows; the finite part `2θ′(0) + log(1/(wN)) + κ_L + γ` of the Markov form at `wN ≤ 1/(64e²)`, the pole defect as a Dirichlet energy | tilted rows paying the archimedean cross kernel at a fixed fraction of the spacing; the exact Robin constant `2c_∞ = 2 log 2 + π/2` and the failure of the finite part beyond `e^{β/‖φ‖²}/(2π)` |
 | [ArithmeticIntersectionTheory](../ArithmeticIntersectionTheory/README.md) | tower coordinates, gauge blindness of the finite intersection | the archimedean side at width `cδ_N`; where non-ratio lags enter |
 | [RenormalizedBiarithmeticGeometry](../RenormalizedBiarithmeticGeometry/README.md) | regulators, counterterms, survival cones | a counterterm that is paid by the other place rather than survived |
 | [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md) | sign twins, square-class blindness | the diamagnetic inequality; the non-ratio lag law |
@@ -50,6 +54,7 @@ polynomials at zero ordinates, B3.24).
 | `RHTower` (Weil–Markov) | `archForm = 2θ′(0)‖f‖² + levyEnergy`, `markovEnergy = archForm − primeSum`, the Markov property, Mertens' first theorem | the Lévy density bound `ω(y) ≥ 1/(2y)` with constant one |
 | `HTGeometry`, `RHTower/Sieve` | harmonic row sums, Hilbert inequalities, mean values of Dirichlet polynomials | the atomic family as band-limited Dirichlet polynomials |
 | [SquareRootThreshold](../SquareRootThreshold/README.md), [SelectivePositivityAndThresholdLaws](../SelectivePositivityAndThresholdLaws/README.md) | aperture positivity, the zero width as an unbounded-aperture property, Liouville failure at `23/40` | the reading of bounded overlap as a finite-aperture problem |
+| [ArithmeticLorentzianGeometry](../ArithmeticLorentzianGeometry/README.md) | the Metzler sign of the atomic form below the spacing, its threshold at overlap ratio one, frustration beyond it; trickle-down as the remaining content of positivity | the analytic inputs it builds on: Lévy form and Markov pairing, the stability law as its base case, the universal threshold and the correction rank beyond it |
 | [ArithmeticCriticalityTheory](../ArithmeticCriticalityTheory/README.md) | supersolutions of arithmetic jump operators | a supersolution at the spacing: the tilt `1 + n/N` |
 
 ---
@@ -109,6 +114,10 @@ the zeros it can see and positivity becomes a statement about zeros.
 | log-gap | `s_{mn} = log n − log m` | `logGap` |
 | Dirichlet polynomial | `D_x(z) = Σ x_n e^{iz log n}`; `h_{f_x} = h_g D_x` | `dirichletPoly`, `paperFT_atomicTest` |
 | atom positions | `{log n : n ≥ 1}` | `logShifts` |
+| dilated profile | `φ_k(s) = k φ(ks)` of a `C²` profile `φ` supported in `[−1, 1]`, `∫ φ = 1` | `dilate`, `VanishesOff` |
+| overlap growth | widths `1/κ_N`, `κ_N → ∞`, `(κ_N/N)² log κ_N → 0` | `OverlapGrowth` |
+| pole vector | `x_n = n^{−1/2}`, the top of the prime form | `atomicWeilForm_poleVector` |
+| plateau profile | smooth, `1` on `[η, 1 − η]`, `0` off `[0, 1]` | `plateau` |
 
 ### 3.2 The forms and kernels
 
@@ -127,11 +136,17 @@ the zeros it can see and positivity becomes a statement about zeros.
 | gauge factor | `ω(k) − ω(m) ω(n)` | `gaugeFactor_eq_zero_of_ratio` |
 | pole moments | `C(f) = ∫ f cosh(u/2)`, `S(f) = ∫ f sinh(u/2)`; `Re W = M + 2C² − 2S²` | `re_W_atomicTest_eq` (AES) |
 | constants | `c₁ = 1/(32 e^{5/2})`, `C = 2(log 4 + 4) + 1`, `c₀ = c₁ e^{−(C + 2\|θ′(0)\|)}` | `spacingRatio`, `spacingConstant`, `spacingWidthRatio` |
+| Weil's form on real tests | `Q(f) = Re W(f, f)`; for a twist `\|λ\| ≤ Λ`, `Q_λ` | `weilQuad`, `weilQuadTw` |
+| Markov form on real tests | `M(g) = Q(g) − 2 m₋(g) m₊(g)`, `m_∓(g) = ∫ g e^{∓u/2}` | `markovQuad`, `poleMomentNeg`, `poleMomentPos` |
+| Robin constants | `2c_∞ = 2∫_0^1(ω − 1/(2y)) + 2∫_1^∞ ω = 2 log 2 + π/2`; shape term `β(φ) = ∫_0^1 ‖φ − φ(·+y)‖²/(2y)`; `κ_L(φ) = 2c_∞ + β(φ)/‖φ‖²` | `archRobinConstant`, `bumpRobin`, `profileRobin` |
+| synthesis errors | supremum `M(k/n₀)‖φ′‖₁ + L‖φ‖₁/k`, Lipschitz and Lévy bounds | `synthErr`, `synthLip`, `synthLevy`, `weilErr` |
 
 ### 3.3 Words
 
 *Below / at / beyond the spacing*: `ϱ → 0` polynomially, `ϱ` a fixed constant `< 1`, `ϱ > 1`.
-*Unbounded overlap*: `ϱ → ∞` with `N`, in particular a fixed width. *Diagonal* and *cross* parts of a
+*Unbounded overlap*: `ϱ → ∞` with `N`, in particular a fixed width. *Overlap growth*: widths
+`1/κ_N → 0` with `(κ_N/N)² log κ_N → 0`, the overlap ratio beating `√(log N)` (`OverlapGrowth`).
+*Alias ripple*: the part of a synthesis at the frequencies `≍ N` of the atom lattice. *Diagonal* and *cross* parts of a
 form on the atomic family. *Ratio lag*: a prime-sum lag `log k` with `n = km`; *non-ratio lag*:
 `|log k − s_{mn}| ≤ w` with `n ≠ km`. *Concentrated* vector: carried by one dyadic block;
 *spread* vector: comparable mass on many blocks. *Nyquist margin*: `log(1/(wN))`, the finite part
@@ -206,16 +221,54 @@ blind.
     logarithm of a common denominator. So the spline-orbit law of AOG holds on the atomic families
     of one fixed bump: RH iff every Gram of translates `B(· − log n)` of the cubic spline is
     positive semidefinite, and the largest negative index of these Grams counts the right zeros.
-12. **Overlap is aperture.** At ratio `ϱ` the atoms near the top scale form, after translation,
-    approximations of `w`-smooth tests of aperture `≈ log ϱ`. Bounded overlap is therefore a
-    finite-aperture problem, and finite-aperture positivity holds for configurations with off-line
-    zeros (SRT); unbounded overlap reaches every test.
+    The same holds for the spline `U_w^{⋆4}` of every fixed width `w > 0`.
+12. **Narrow atoms synthesize wide tests.** Put the cell weights `x_n = ∫_{cell} F` of a fixed test
+    `F` on the atoms `log n`, `n ≍ n₀`, which have gaps `≤ 1/n₀`. Against a dilated profile `φ_k` of
+    width `1/k` the synthesis `S` satisfies `‖S − F‖_∞ ≤ M (k/n₀)‖φ′‖₁ + L‖φ‖₁/k` — each cell carries
+    the `L¹` norm of `φ_k′`, not its supremum — and `Lip(S) = O(k)`. So the Lévy energy of `S − F` is
+    `O((k/n₀ + 1/k)² log k)`.
+13. **Weil's form is continuous in the Lévy norm.** In Lévy form each piece of `Q(f) = Re W(f, f)` is
+    controlled by a norm of `f`: `L²`, the Lévy energy (Cauchy–Schwarz by the discriminant), the
+    finitely many prime lags meeting a window, `L¹` for the pole moments. Together with 12: as soon as
+    `k → ∞` and `(k/n₀)² log k → 0` the atoms reproduce `Q(F)` up to `o(1)` — under overlap growth.
+    A twisted explicit formula `|λ| ≤ Λ` differs from `ζ`'s by finitely many lags on a window, so the
+    same holds for every twin.
+14. **The alias ripple pays `log N`.** The synthesis error `S − F` of 12 is a ripple at the
+    frequencies `≍ N` of the atom lattice, of relative size `O(1/ϱ)` by the cell bound, and the Lévy
+    bound charges it `log N` per unit mass. So the synthesis converges in Weil's form once
+    `ϱ ≫ √(log N)`. At bounded ratio the atoms covering an interval of length `2a` near the top have
+    relative overlap between `ϱe^{−2a}` and `ϱ`, so they reach aperture `≈ (1/2) log ϱ`, but only
+    with a ripple of fixed relative size whose Lévy bound grows like `log N`: synthesis does not
+    reduce bounded overlap to a finite-aperture problem.
+15. **The pole is the correction.** `M(g) = Q(g) − 2 m₋(g) m₊(g)` with `m_∓ = ∫ g e^{∓u/2}`; the
+    product `m₋m₊` is translation invariant, and the pole hyperplane `m₋ = 0` is a translation
+    invariant hyperplane on which `M = Q`. So the synthesis carries both `M` and the hyperplane to
+    the atomic families: a pole-free negative test is synthesized and moved back into the
+    hyperplane by a vanishing multiple of a synthesized bump. Under overlap growth the Markov form
+    inherits its unconditional negative square, and a second one exactly when RH fails.
 
 ### F. The dictionary
 
-13. **Atomic tests are Dirichlet polynomials.** `h_{f_x}(z) = h_g(z) D_x(z)`. The zero-side term of
+16. **Atomic tests are Dirichlet polynomials.** `h_{f_x}(z) = h_g(z) D_x(z)`. The zero-side term of
     `ρ` in `W(f_x, f_x)` is `m_ρ h_g(γ_ρ) conj h_g(γ̄_ρ) · D_x(γ_ρ) conj D_x(γ̄_ρ)`, and for a zero on
     the line it is `m_ρ |h_g(γ_ρ)|² |D_x(γ_ρ)|² ≥ 0`.
+17. **One zero weighs at most the overlap ratio.** The two Dirichlet factors of a zero read the
+    weights against `n^{σ}` and `n^{−σ}`, `σ = Re ρ − ½`; by Cauchy–Schwarz their product is at most
+    `‖x‖² ((Σ n^{2|σ|})(Σ n^{−2|σ|}))^{1/2}`, and comparing the power sums with `∫ t^{±2|σ|}` gives
+    `(N + 1)/√(1 − 4σ²)`. The bump factors cost `e^{2|σ| r}‖g‖₁²`. Relative to the diagonal energy of
+    a dilated profile the weight is the overlap ratio times `1/(2√(β(1 − β)))`.
+
+### G. The finite part
+
+18. **The pole vector reads the finite part.** On `x_n = n^{−1/2}` the prime form is
+    `2Σ_{n≤N} log n/n = log² N + O(1)`, since `Σ_{d∣n} Λ(d) = log n`; the diagonal is
+    `H_N (2θ′(0) + log(1/w) + κ_L(φ) + O(w))` with `H_N = log N + γ + o(1)`, and for nonnegative
+    weights and bump the cross correlations only lower the Lévy energy. At `w = cδ_N` the `log² N`
+    cancel and the Rayleigh quotient is `(log(1/c) + κ_L(φ) + 2θ′(0) + γ) log N`, where
+    `2θ′(0) + γ = −(3 log 2 + π/2 + log π)` and Euler's constant cancels. The closed
+    antiderivative of `ω` gives `2c_∞ = 2 log 2 + π/2`, so the finite part is
+    `log(1/c) + β(φ)/‖φ‖² − log(2π)`: the threshold is `c = e^{β(φ)/‖φ‖²}/(2π)`, and a plateau
+    profile has `β(φ)/‖φ‖² → 1`.
 
 ---
 
@@ -230,9 +283,16 @@ blind.
 | **SH4 Stability at the spacing** | `M ≥ (2θ′(0) + log(1/(wN)) − C)‖f‖²` at `w ≤ c₁δ_N`; `M ≥ 0`, `Re W + 2S² ≥ 0` at `w ≤ c₀δ_N`; the same for every twin (`re_W_add_sinh_sq_nonneg_spacing`, `twinMarkov_atomicTest_nonneg_spacing`) | `TheStabilityLawAtTheSpacingScale` |
 | **SH4′ Universality** | the law holds for every real twist `\|ω\| ≤ 1`, multiplicative or not, and every real bump (`twistedPrimeSum_atomicTest_le`, `twistedMarkov_atomicTest_nonneg_spacing_of_abs_le`) | `TheSpacingScaleLawIsUniversal` |
 | **SH5 Diamagnetic inequality** | `archForm f − twistedPrimeSum ω f ≥ levyMarkovForm \|f\|`; `ζ` is the ground state (`diamagnetic_inequality`, `twinMarkov_ge_of_markov_ge`) | `TheDiamagneticInequality` |
-| **SH6 Unbounded overlap** | RH iff all spline Grams on `{log n}` are PSD; negative index = right zeros (`riemannHypothesis_iff_splineAtomic_negIndex_eq_zero`, `zeta_splineAtomic_negIndex_law`) | `UnboundedOverlapIsTheRiemannHypothesis` |
+| **SH6 Unbounded overlap** | RH iff all spline Grams on `{log n}` are PSD, at every fixed width; negative index = right zeros (`riemannHypothesis_iff_splineAtomic_negIndex_eq_zero_of_width`, `zeta_splineAtomic_negIndex_law_of_width`) | `UnboundedOverlapIsTheRiemannHypothesis` |
 | **SH7 Non-ratio lags** | the overlap calculus; the gauge defect lives on non-ratio lags; none below the spacing, some within `4δ_N` (`twistedPrimeSum_sub_primeSum_gauge_eq`, `nonRatio_lag_vanishes_below_spacing`, `exists_nonRatio_pair`) | `TheGaugeEntersThroughNonRatioLags` |
 | **SH8 Dictionary** | `h_{f_x} = h_g D_x`; zero terms factor; on-line zeros are squares (`paperFT_atomicTest`, `Wsummand_atomicTest_onLine`) | `TheAtomicFamilyIsADirichletPolynomial` |
+| **SH9 Lévy continuity** | `Q(f + d) ≤ Q(f) + O(‖d‖₂ + √levy d + ‖d‖₁)` on a window; `levy d ≤ e^{1/2}Kδ‖d‖₁ + (2 log(1/δ) + C₁)‖d‖₂²` (`weilQuad_add_le`, `levyEnergy_le_lipschitz`) | `WeilsFormIsContinuousInTheLevyNorm` |
+| **SH10 Log-lattice synthesis** | the cell lemma `\|S − ∫F φ(· − t)\| ≤ ‖F‖_∞ h ‖φ′‖₁`; the explicit bound `Q(atomic synthesis) ≤ Q(F) + Err(n₀, k)` (`abs_cellSum_sub_le`, `exists_atomicTest_weilQuad_le`) | `TheLogLatticeSynthesizesWideTests`, `TheCriticalExponent` |
+| **SH11 Overlap law** | for every `C²` profile and every width `1/κ_N` of overlap growth: RH iff for all large `N` Weil's form is nonnegative on the atomic families of width `1/κ_N`; in particular at widths `N^{−θ}`, `0 < θ < 1`, and at overlap ratio `(log N)^α`, `α > 1/2` (`riemannHypothesis_iff_atomicFamilies_nonneg_of_growth`, `riemannHypothesis_iff_atomicFamilies_nonneg`, `riemannHypothesis_iff_atomicFamilies_nonneg_log`) | `TheCriticalExponent` |
+| **SH12 Gauge visibility** | for every twist `\|λ\| ≤ Λ` the same law with `Q_λ`; a twist is negative on the atomic families of every width of overlap growth for infinitely many `N` iff it is not Weil positive — unconditionally so for Liouville, every `cΛ` with `−1 ≤ c < 1`, every quadratic mixture `Λ(1 − t + tχ)`; under RH `ζ` separates from all of them there (`weilPositive_iff_atomicFamilies_nonneg`, `atomicFamilies_negative_iff`, `liouville_atomicFamilies_negative`, `scaled_atomicFamilies_negative`, `quadraticMix_atomicFamilies_negative`, `riemannHypothesis_imp_liouville_separation`) | `TheGaugeBecomesVisibleAtTheCriticalExponent` |
+| **SH13 One negative square** | `M = Q − 2m₋m₊`, `M(u + iv) = M(u) + M(v)`; under overlap growth `M < 0` on some atomic test for infinitely many `N`, unconditionally (`ζ` itself): the threshold of the Markov law lies between `c₀` and overlap growth; and RH iff for all large `N`, `M ≥ 0` on the atomic tests in the pole hyperplane `m₋ = 0` (`markovQuad_eq`, `markovEnergy_eq_re_add_im`, `markov_atomicFamilies_negative`, `markovThreshold_bracket`, `riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg`) | `ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold` |
+| **SH14 Weight of one zero** | `(Σ_{n≤N} n^a)(Σ_{n≤N} n^{−a}) ≤ (N+1)²/(1 − a²)`; for a bump in `[−r, r]` the term of a zero `ρ`, `σ = Re ρ − ½`, is at most `m_ρ (e^{\|σ\|r}‖g‖₁)² ‖x‖² (N+1)/√(1 − 4σ²)`; for a dilated profile, relative to the diagonal energy, at most `m_ρ e^{2\|σ\|/k}(‖φ‖₁²/‖φ‖₂²)((N+1)/k)/(2√(β(1−β)))` (`sum_rpow_mul_sum_rpow_neg_le`, `norm_Wsummand_atomicTest_le`, `norm_Wsummand_atomicTest_dilate_le`) | `TheWeightOfOneZero` |
+| **SH15 The Markov form fails inside the separated regime** | `P_N(n^{−1/2}) = 2Σ_{n≤N} log n/n`; for `x, g ≥ 0` below the spacing `levyEnergy f_x ≤ ‖x‖² levyEnergy g`; `2c_∞ = 2 log 2 + π/2`; `2θ′(0) + γ = −(3 log 2 + π/2 + log π)`; on the pole vector `M < 0` for all large `N` once `c > e^{β(φ)/‖φ‖²}/(2π)`, and plateau profiles give every `c ∈ (e/(2π), 1)` (`atomicWeilForm_poleVector`, `levyEnergy_atomicTest_le`, `archRobinConstant_eq`, `markovQuad_poleVector_neg_of_threshold`, `markov_poleVector_negative_inside_separated`) | `TheMarkovFormFailsInsideTheSeparatedRegime` |
 
 ---
 
@@ -242,25 +302,39 @@ The questions of the report (§4.4), as SSHA answers them.
 
 1. **How far does the archimedean place pay the prime place?** *To a fixed fraction of the
    spacing.* `Re W + 2S² ≥ 0` on every atomic test of width `≤ c₀δ_N`, for every `N`, with a
-   rank-one correction (SH4) — B3.25 holds with `c = c₀`. On the atomic families of one fixed bump,
-   where the overlap ratio is unbounded, positivity is RH (SH6). Between them lies bounded overlap,
-   a finite-aperture problem (§4.E). The critical width is therefore the spacing: the endpoint
-   exponent `θ = 1` is unconditional, the endpoint `θ = 0` is RH; the intermediate exponents are
-   open topic 2.
+   rank-one correction (SH4) — B3.25 holds with `c = c₀`. The correction is needed inside the
+   separated regime: the Markov form alone is negative on the pole vector at width `cδ_N` for every
+   `c > e/(2π) ≈ 0.43` (SH15). *The critical exponent is `θ* = 1`*
+   (B3.26): for every `θ < 1`, positivity of Weil's form on the atomic families of width `N^{−θ}` for
+   all large `N` is the Riemann hypothesis (SH11), as it is at every fixed width (SH6) — and so it
+   is at overlap ratio `(log N)^{1/2+ε}`. So there is no positivity statement weaker than RH once the
+   overlap ratio beats `√(log N)`; what remains is the window `c₀ < ϱ ≲ √(log N)`, where the alias
+   ripple of every synthesis costs `log N` (§4.E) and the gauge question is open. *The universal
+   threshold is bracketed and the correction rank is exactly located* (SH13): the Markov law
+   `M ≥ 0` holds for every twist up to `c₀δ_N` and fails — for `ζ` itself, unconditionally — once the
+   overlap ratio beats `√(log N)`; there the Markov form has a negative square, and RH is the
+   statement that it has only one, the pole.
 2. **What is the base over `ℤ`?** At the spacing, a Schur weight: the tilt `1 + n/N` is a positive
    structure across all prime ladders on which the tower forms and the archimedean cross kernel sum
    with bounded loss (SH3, SH4). It is not Hecke covariant and need not be: it enters as a similarity
    of the Schur test, while the counterterm it serves — `log(1/w)` — is scalar and covariant. A base
    beyond the spacing is open.
-3. **When does a form see the gauge?** The Markov form never favours `ζ` on a family closed under
-   `|·|` (SH5), and the spacing-scale law is gauge blind (SH4). The prime form sees the gauge only
-   through non-ratio lags (SH7), absent below the spacing and present at overlap ratio of order
-   one. A form margin in `ζ`'s favour must therefore come from the pole — the one anti-Markovian
-   term — on signed tests, or from non-ratio lags in the overlap regime. Whether the coefficient
-   margin `2 log² p` becomes such a form margin is open topic 4.
+3. **When does a form see the gauge?** *Once the overlap ratio beats `√(log N)`.* The Markov form never favours
+   `ζ` on a family closed under `|·|` (SH5), and at the spacing every twist — multiplicative or
+   not — satisfies the stability law with `ζ`'s constants (SH4, SH4′). The prime form sees the gauge
+   only through non-ratio lags (SH7), absent below the spacing. Under overlap growth the twisted
+   form is positive on the atomic families iff it is positive on all tests
+   (SH12): every twist that is not Weil positive is seen there — the Liouville twin, every scaling
+   `cΛ` with `c < 1`, every quadratic mixture `Λ(1 − t + tχ)` — while `ζ` holds there iff RH. So
+   the source's coefficient margin becomes a form margin exactly where positivity becomes
+   RH-strength, and on `ζ`'s side that margin is the Riemann hypothesis. What remains is bounded
+   overlap ratio — open topic 3.
 4. **Does an off-line zero force alignment inside the strip?** The dictionary (SH8) writes every
    atomic test as a band-limited Dirichlet polynomial whose zero-side terms factor and are squares
-   on the line. The interior implication itself is open topic 5.
+   on the line, and each zero weighs at most the overlap ratio times the diagonal energy, an
+   off-line zero at most `1/(2√(β(1 − β)))` times more, uniformly in its height and in `N` (SH14).
+   At the spacing no single zero can carry more than a fixed fraction of an atomic test. The
+   interior implication itself is open topic 4.
 5. **Which covariant regulator has a nontrivial null cone?** None is needed at the spacing: the
    divergence is paid by the archimedean place with a scalar, covariant counterterm and leaves the
    positive finite part `log(1/(wN)) − O(1)`.
@@ -285,8 +359,15 @@ The questions of the report (§4.4), as SSHA answers them.
 | Power weights `n^{−1/2+α}` tilt enough | At `m` with many small prime factors the down tower stays `≈ log m` |
 | Stability at the spacing sees zeros, so it is RH | It is a theorem; it sees zeros up to height `≍ N` with a positive Nyquist margin |
 | A fixed-width family is still "near the spacing" | Its overlap ratio is unbounded, and positivity on it is RH |
+| Widths shrinking like `N^{−θ}` stay cheap | For every `θ < 1` the atoms synthesize every fixed test; positivity is RH |
+| RH-strength needs polynomial overlap | Overlap ratio `(log N)^{1/2+ε}` already synthesizes every fixed test |
+| At bounded ratio the atoms reproduce smooth tests of aperture `≈ log ϱ` | Only up to an alias ripple of fixed relative size, whose Lévy bound grows like `log N` |
+| The synthesis error is the Lipschitz constant of the bump | It is the `L¹` norm of its derivative, cell by cell: `O(k/n₀)`, not `O(k²/n₀)` |
 | Gauge selectivity can come from the Markov form | `ζ` is its ground state; only the pole is anti-Markovian |
 | Twins differ from `ζ` on every lag | The gauge factor vanishes on ratio lags; only non-ratio lags carry it |
+| The rank-one pole correction of the stability law is an artifact of the method | The Markov form alone fails on the pole vector at width `cδ_N` for every `c > e/(2π)` |
+| The Markov law fails beyond the spacing because of arithmetic | It fails for `ζ` itself once the overlap beats `√(log N)`; RH says the failure has rank one |
+| A twin positive at the spacing is positive beyond it | Liouville is stable at width `c₀δ_N` and fails at every width of overlap growth |
 
 ---
 
@@ -303,45 +384,61 @@ windowed autocorrelations and pair windows; the cross-kernel row; the tilted Sch
 rows; the spacing-scale constants and law; the Lévy–Markov form and the diamagnetic inequality;
 closure of atomic tests under `|·|`; translation invariance of Weil Grams and the transfer of the
 rational Hecke orbit to the atom positions; lag forms, the gauge factor and the non-ratio lag law;
-the Dirichlet-polynomial factorization of atomic tests.
+the Dirichlet-polynomial factorization of atomic tests; Weil's quadratic form on real tests and its
+continuity in the Lévy norm; Cauchy–Schwarz for the Lévy energy; the Lévy bound for Lipschitz
+perturbations; the cell lemma, log-lattice nodes, dilated profiles and the synthesis of a fixed test
+with explicit error; the asymptotics of the synthesis errors; twisted quadratic forms, their
+reduction to `ζ`'s on a window and their continuity; overlap growth and its two scales; the Markov
+form on real tests, its real/imaginary splitting, translation invariance and continuity; the
+corrected synthesis into the pole hyperplane; power sums against `∫ t^{±a}`, the Dirichlet factor by
+Cauchy–Schwarz and the bump factor at complex frequencies; the exact self-energy of an atom
+`levyEnergy(φ(·/w)) = (log(1/w) + κ_L(φ))‖φ(·/w)‖² + O(w)` and the archimedean pairing
+`ω(s)(∫g)² + O(w)` of two separated atoms (`TheRobinConstantOfAnAtom`,
+`TheArchimedeanPairingOfTwoAtoms`); the archimedean Robin constant `2c_∞ = 2 log 2 + π/2`; the
+prime form of the pole vector; plateau profiles with shape term `β(φ)/‖φ‖² → 1`.
 
-**To build.** The exact Robin constant `lim (levyEnergy g/‖g‖² − log(1/w))` of a bump profile; the
-critical constant; a quantitative aperture embedding of
-bounded overlap; Riemann sums on the log-lattice with continuity of `W`; the weight of a single zero
-at the spacing.
+**To build.** The cross-term density of the pole vector (the critical constant); the alias
+fraction carried by a bounded overlap ratio; a large sieve over the zeros.
 
 ---
 
 ## 9. Open research topics
 
-1. **The critical constant.** The largest `c*` with `Re W + (rank-one) ≥ 0` on all atomic tests of
-   width `cδ_N` for every `N`. On the pole vector the finite part of `M` is
-   `log(1/c) + κ_0(g) + γ + o(1)` with `κ_0(g) = 2θ′(0) + C_φ`, so `M` alone is expected to fail
-   inside the separated regime; the pole decides whether `Re W + 2S²` does.
-2. **Intermediate exponents.** For `w = N^{−θ}`, `0 < θ < 1`, the log-lattice Riemann sums of a
-   narrow bump approximate any fixed smooth test near scales `n ≫ N^θ`, and `W` is continuous in
-   the log-Sobolev norm; this indicates that positivity for all large `N` is RH for every `θ < 1`.
-   A formal proof needs the continuity of `W` under these sums.
-3. **Bounded overlap.** Positivity at fixed ratio `ϱ > 1`: the exact aperture `a(ϱ)` carried by the
-   ratio, and positivity for `log ϱ` below the certified apertures.
-4. **Gauge margin in the overlap regime.** A signed test at bounded overlap separating `ζ` from every
-   twin flipping a prime `≤ p_N`, with margin bounded below, built from non-ratio lags; the
-   Liouville twin at overlap ratio `e^{23/40}`.
-5. **Interior anti-alignment.** Read the outward reserve of an off-line zero as a large value of the
+1. **The critical constant.** The Markov form alone has its critical constant inside the separated
+   regime: `c₀ ≤ c*_M ≤ e/(2π)` (SH4, SH15). On the pole vector the finite part is
+   `log(1/c) + β(φ)/‖φ‖² − log(2π)` up to the archimedean cross terms, which only help; RAPT proves
+   the matching two-sided law `M ≈ (log(1/(2πwN)) + β(φ)/‖φ‖² ± ε + O(wN))‖f‖²`, the lower bound for
+   all `x` at `wN ≤ 1/(64e²)` (`TheArchimedeanFinitePartIsMinusLogTwoPi`). Open: `c*_M` itself — the cross-term density on the pole vector and the
+   profile minimizing `β(φ)/‖φ‖²` — and the critical constant of `Re W + 2S²`, where the pole
+   decides.
+2. **The window `c₀ < ϱ ≲ √(log N)`.** The sharp threshold: the alias fraction `A(ϱ)` of the
+   best synthesis (for smooth profiles `Σ_{j≠0} |φ̂(2πjϱ)|²`, far below the cell bound `1/ϱ²`) and
+   whether RH-strength begins at `A(ϱ) log N ≍ 1`. At fixed `ϱ`: does the alias self-energy make
+   Weil's form of every twist positive on the atomic tests of bounded aperture for large `N` — a
+   Nyquist penalty — and what survives across all scales.
+3. **Gauge margin at bounded overlap.** Under overlap growth a twin is seen iff it fails somewhere
+   (SH12). At bounded overlap ratio: a signed test separating `ζ` from every twin flipping a prime
+   `≤ p_N`, with margin bounded below, built from non-ratio lags — first the Liouville twin at
+   overlap ratio `≈ e^{23/40}`.
+4. **Interior anti-alignment.** Read the outward reserve of an off-line zero as a large value of the
    band-limited Dirichlet polynomial `D_x` at its ordinate, through the factorized zero terms.
-6. **A covariant base beyond the spacing.** A Hecke-covariant tilt surviving overlap.
-7. **Weight of one zero.** A bound for a single zero-side term on the atomic family at the spacing in
-   terms of `wN`, uniform in the zero.
+5. **A covariant base beyond the spacing.** A Hecke-covariant tilt surviving overlap.
+6. **Many zeros at once.** A large-sieve bound for the zero-side terms of the zeros in a window of
+   height `T`: the zeros as a frame for the Dirichlet polynomials of length `N`, with frame constants
+   as functions of `wN` and `T/N`.
 
 ---
 
 ## 10. Success criteria and contribution standards
 
 SSHA succeeds when the regimes below, at and beyond the spacing are separated by proved laws —
-unconditional positivity with matched constants at the spacing, RH-strength at unbounded overlap,
-an exact account of bounded overlap — and when the place where the gauge enters Weil's form is
-located exactly. The first two and the location of the gauge are proved; bounded overlap and the
-form margin are the open core.
+unconditional positivity with matched constants at the spacing, RH-strength at every polynomial
+overlap, an exact account of bounded overlap — and when the place where the gauge enters Weil's
+form is located exactly. The first two (with RH-strength from overlap `(log N)^{1/2+ε}` on), the
+location of the gauge (non-ratio lags, visible under overlap growth to exactly the twists that are
+not Weil positive) and the correction rank (needed already at `cδ_N`, `c > e/(2π)`; beyond the
+threshold one negative square unconditionally, only one iff RH) are proved; the window `c₀ < ϱ ≲ √(log N)` and the form margin there are the open
+core.
 
 A contribution is an unconditional Lean theorem about the atomic family or its overlap. It states
 its **width regime** (`ϱ`), its **correction rank**, its **constants** (matched or not), and whether
@@ -349,5 +446,5 @@ it is **gauge blind**; it separates identities from signs; it says what it gives
 and every no-go records its positive survivor.
 
 Principles: match the constants first; the spacing is the Nyquist scale; separate concentrated and
-spread vectors; tilt weights across scales, not within them; overlap is aperture; the pole is the
-only anti-Markovian term; the gauge lives on non-ratio lags; a reformulation is not a reduction.
+spread vectors; tilt weights across scales, not within them; overlap is aperture plus alias; the
+pole is the only anti-Markovian term; the gauge lives on non-ratio lags; a reformulation is not a reduction.

@@ -3,6 +3,9 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonCount
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIsEulersConstant
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.PolarMatchingReadsTheDensityOfTheGauge
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIsTheTowerForm
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTorsionCountertermIsAtMostTwoLogarithms
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheSignOfTheTowerFinitePart
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheStabilityLawReachesTheSpacingUpToALogarithm
 
 /-!
 # The laws of renormalized arithmetic potential theory
@@ -27,6 +30,12 @@ One statement collecting the laws of the programme, each in its sharp form.
    (`exists_abs_atomicWeilForm_stepProfile_finitePart_le`).
 10. **Across `p`-adic classes the Gram is one prime power** (`primeBilinear_classPole_cross_eq`): the
     off-diagonal of the tower form.
+11. **The anomaly costs at most one logarithm**: `2 log N + C` renormalizes the torsion pairing
+    (`renormalizesAt_two_log`).
+12. **The sign law of the tower finite part**: it is nonnegative on all classes of `p` iff
+    `√p log p ≤ γ(p − 1)` (`towerFinitePart_nonneg_iff`).
+13. **The stability law reaches the spacing up to a logarithm**: the Markov form of every atomic test
+    of width `≤ e^{−C₁}/(N(1 + log N))` is nonnegative (`markovEnergy_atomicTest_nonneg_logSpacing`).
 -/
 
 noncomputable section
@@ -84,7 +93,16 @@ theorem renormalized_arithmetic_potential_theory_laws :
         ∑ i, ∑ j, |c i| * |c j| * (η * harmonicSum (min (M i) (M j)) + C)) ∧
     -- across `p`-adic classes the Gram is one prime power
     (∀ p : ℕ, p.Prime → ∀ {j j' : ℕ}, j < j' → ∀ M : ℕ,
-      primeBilinear M (classPole p j' M) (classPole p j M) = Real.log p * classMass p j' M) :=
+      primeBilinear M (classPole p j' M) (classPole p j M) = Real.log p * classMass p j' M) ∧
+    -- the anomaly costs at most one logarithm
+    (∀ N : ℕ, RenormalizesAt N (2 * Real.log N + (Real.log 4 + 4 + 2 * excessConstant))) ∧
+    -- the sign law of the tower finite part
+    (∀ p : ℕ, p.Prime →
+      ((∀ (N : ℕ) (b : ℕ → ℝ), 0 ≤ towerFinitePart p N b) ↔ towerDeficit p ≤ 0)) ∧
+    -- the stability law reaches the spacing up to a logarithm
+    (∀ {g : ℝ → ℝ} {w : ℝ}, ContDiff ℝ 2 g → HasCompactSupport g →
+      (∀ u, u ∉ Set.Icc 0 w → g u = 0) → ∀ {N : ℕ}, 1 ≤ N → 0 < w → w ≤ logSpacingWidth N →
+        ∀ x : ℕ → ℝ, 0 ≤ RHTower.markovEnergy (fun u => (atomicTest N x g u : ℂ))) :=
   ⟨fun _ _ hv => primeSurvival_rankOne hv,
     heckeCovariant_iff_const,
     fun _ hN => covariantCounterterm_sandwich hN,
@@ -94,6 +112,10 @@ theorem renormalized_arithmetic_potential_theory_laws :
     fun _ hN => atomicWeilForm_spectrum_ends hN,
     fun _ hF => finiteFlip_matching hF,
     fun _ hη => exists_abs_atomicWeilForm_stepProfile_finitePart_le hη,
-    fun _ hp _ _ hjj M => primeBilinear_classPole_cross_eq hp hjj M⟩
+    fun _ hp _ _ hjj M => primeBilinear_classPole_cross_eq hp hjj M,
+    renormalizesAt_two_log,
+    fun _ hp => towerFinitePart_nonneg_iff hp,
+    fun hg hgc hgsupp _ hN hw0 hw x =>
+      markovEnergy_atomicTest_nonneg_logSpacing hg hgc hgsupp hN hw0 hw x⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

@@ -15,13 +15,13 @@ relations, so its mixed block lies in its range. All negative squares belong
 to the Gram of the actual residual tests.
 -/
 
-open Matrix MeasureTheory
+open Matrix MeasureTheory RHTower Zeta23
 
 noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticIndexDescent
 
-open ArithmeticCastelnuovoSeveri ArithmeticElectrostatics HTGeometry RHTower
+open ArithmeticCastelnuovoSeveri ArithmeticElectrostatics HTGeometry
 
 /-- Complex mixed Gram of the complete real Weil pairing. -/
 def complexWeilMixed {ι κ : Type*} (f : ι → realTests) (g : κ → realTests) : Matrix ι κ ℂ :=
@@ -86,7 +86,7 @@ theorem hermQuad_complexWeilMixed_ofReal {ι : Type*} [Fintype ι]
   simp only [hermQuad, dotProduct, Matrix.mulVec, complexWeilMixed, realWeilMixed,
     Pi.star_apply, Complex.star_def, Complex.conj_ofReal, Complex.mul_re,
     Complex.ofReal_re, Complex.ofReal_im, Complex.re_sum, Complex.im_sum,
-    zero_mul, sub_zero, Finset.sum_const_zero, mul_zero]
+    zero_mul, sub_zero, mul_zero]
 
 /-- Narrow arithmetic section Grams have no negative square even for complex coefficients. -/
 theorem negIndex_arithmeticSection_eq_zero {n : ℕ} {N : ℕ} (hN : 1 ≤ N)
@@ -106,7 +106,11 @@ theorem negIndex_arithmeticSection_eq_zero {n : ℕ} {N : ℕ} (hN : 1 ≤ N)
   intro x
   have hsplit := hermQuad_map_ofReal_eq_add
     (realWeilMixed (fun i => (f i).1) (fun i => (f i).1)) x
-  change hermQuad (complexWeilMixed (fun i => (f i).1) (fun i => (f i).1)) x = _ at hsplit
+  change hermQuad (complexWeilMixed (fun i => (f i).1) (fun i => (f i).1)) x =
+    hermQuad (complexWeilMixed (fun i => (f i).1) (fun i => (f i).1))
+      (fun i => ((x i).re : ℂ)) +
+    hermQuad (complexWeilMixed (fun i => (f i).1) (fun i => (f i).1))
+      (fun i => ((x i).im : ℂ)) at hsplit
   rw [hsplit, hermQuad_complexWeilMixed_ofReal, hermQuad_complexWeilMixed_ofReal]
   exact add_nonneg (hreal fun i => (x i).re) (hreal fun i => (x i).im)
 

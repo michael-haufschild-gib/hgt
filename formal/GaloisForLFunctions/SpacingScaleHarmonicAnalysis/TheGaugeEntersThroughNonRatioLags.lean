@@ -213,4 +213,60 @@ theorem exists_nonRatio_pair {N : ℕ} (hN : 3 ≤ N) :
     linarith
   linarith
 
+/-! ### Finitely many lags -/
+
+/-- **Only finitely many lags meet the atoms**: for `log k > log N + w` every lag form of order `k`
+vanishes, since the log-ratios of atoms `≤ N` lie in `[−log N, log N]`. -/
+theorem lagForm_eq_zero_of_log_lt (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw : 0 ≤ w)
+    {N k : ℕ} (hk : Real.log N + w < Real.log k) (x : ℕ → ℝ) : lagForm g N k x = 0 := by
+  unfold lagForm
+  refine sum_eq_zero fun m hm => sum_eq_zero fun n hn => ?_
+  obtain ⟨hm1, hmN⟩ := mem_Icc.mp hm
+  obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
+  have hlm : 0 ≤ Real.log m := Real.log_natCast_nonneg m
+  have hln : 0 ≤ Real.log n := Real.log_natCast_nonneg n
+  have hmN' : Real.log m ≤ Real.log N :=
+    Real.log_le_log (by exact_mod_cast (show 0 < m by omega)) (by exact_mod_cast hmN)
+  have hnN' : Real.log n ≤ Real.log N :=
+    Real.log_le_log (by exact_mod_cast (show 0 < n by omega)) (by exact_mod_cast hnN)
+  rw [bumpCorr_eq_zero hgsupp (t := -Real.log k - (Real.log n - Real.log m)) (by
+      rw [abs_of_neg (by linarith)]; linarith),
+    bumpCorr_eq_zero hgsupp (t := Real.log k - (Real.log n - Real.log m)) (by
+      rw [abs_of_pos (by linarith)]; linarith), add_zero, mul_zero]
+
+/-- The lag sums of an atomic test are finite: their terms vanish beyond `k ≥ ⌈N e^w⌉ + 1`. -/
+theorem summable_lagForm (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw : 0 ≤ w) (N : ℕ)
+    (x : ℕ → ℝ) (c : ℕ → ℝ) : Summable fun k : ℕ => c k * lagForm g N k x := by
+  refine summable_of_ne_finset_zero (s := range (⌈(N : ℝ) * Real.exp w⌉₊ + 1)) fun k hk => ?_
+  simp only [mem_range, not_lt] at hk
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (show 0 < k by omega)
+  have hbig : (N : ℝ) * Real.exp w < k := by
+    have := Nat.le_ceil ((N : ℝ) * Real.exp w)
+    have h2 : ((⌈(N : ℝ) * Real.exp w⌉₊ + 1 : ℕ) : ℝ) ≤ k := by exact_mod_cast hk
+    push_cast at h2
+    linarith
+  rcases Nat.eq_zero_or_pos N with hN | hN
+  · -- no atoms
+    subst hN
+    simp [lagForm]
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hlog : Real.log N + w < Real.log k := by
+    rw [← Real.log_exp w, ← Real.log_mul hN0.ne' (Real.exp_pos w).ne']
+    exact Real.log_lt_log (by positivity) hbig
+  rw [lagForm_eq_zero_of_log_lt hgsupp hw hlog, mul_zero]
+
+/-- **The gauge defect identity, unconditionally**: the summability premises of
+`twistedPrimeSum_sub_primeSum_gauge_eq` hold for every bump supported in `[0, w]`. -/
+theorem twistedPrimeSum_sub_primeSum_gauge_eq_of_supp (hω : ∀ a b, ω (a * b) = ω a * ω b)
+    (hsign : ∀ n, 0 < n → ω n = 1 ∨ ω n = -1) (hg : Continuous g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw : 0 ≤ w) (N : ℕ) (x : ℕ → ℝ) :
+    twistedPrimeSum ω (atomicTest N x g) - primeSum (atomicTest N (fun n => ω n * x n) g) =
+      ∑' k : ℕ, vonMangoldtAtom k * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        (ω k - ω m * ω n) * x m * x n *
+          ((if m = k * n then 0 else bumpCorr g (-Real.log k - (Real.log n - Real.log m))) +
+            (if n = k * m then 0 else bumpCorr g (Real.log k - (Real.log n - Real.log m)))) :=
+  twistedPrimeSum_sub_primeSum_gauge_eq hω hsign hg hgc N x
+    (summable_lagForm hgsupp hw N x fun k => ω k * vonMangoldtAtom k)
+    (summable_lagForm hgsupp hw N _ fun k => vonMangoldtAtom k)
+
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

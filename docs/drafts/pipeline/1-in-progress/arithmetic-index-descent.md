@@ -30,11 +30,14 @@ Determine which of the following advances are already in the corpus, then pursue
 
 ## Evidence and status
 
-The foundational README is in place. Four modules have passed dependency-producing Lean checks:
-index-energy comparison, source-work detection, the exact finiteness classification, and strict
-energy surplus. Their printed endpoint axioms contain only the standard logical axioms. Final
-direct audits remain. Existing local section positivity, polar gluing, spline index laws,
-source-work exhaustion and matrix inertia are reused explicitly.
+The foundational README is in place. The energy–work modules, source radical/range theorem,
+actual section projection, singular inertia calculus and locally bounded source kernel have
+passed individual Lean checks with standard endpoint axioms. The closed source threshold and
+common finite stratum have passed their direct final audits; the dependency-producing modules
+still need direct final audits. The literal residual-index bridge and uniform projection-cost
+bound are now checked. Canonical source completion has passed its dependency-producing check;
+its source-work transfer has passed its direct final check. Existing local section positivity,
+polar gluing, spline index laws, source-work exhaustion and matrix inertia are reused explicitly.
 
 No missing analytic estimate may be introduced as a hypothesis to obtain the desired endpoint.
 General structural theorems must expose their conditions and discharge them in actual arithmetic
@@ -52,20 +55,21 @@ positive survivor and formalizes it when ready.
 
 - `TheIndexIsPaidByTransverseEnergy.lean`: the distinct transverse energy bounds every finite
   smooth Weil Gram's negative index; the pole plane adds one to the corresponding intersection
-  positive index. The module has passed its dependency-producing Lean check; a final direct audit
-  remains.
+  positive index. The module has passed its required direct final audit with standard endpoint
+  axioms.
 - `TheArithmeticSourcePaysTheIndex.lean`: select one multiplicity copy per support point to compare
   distinct and copied energy. Ordered damping/taper limits turn each finite index witness into a
-  finite arithmetic source-work witness. Dependency-producing check passed; final direct audit remains.
+  finite arithmetic source-work witness. Required direct final audit passed with standard endpoint axioms.
 - `BoundedSourceWork.lean`: the angular kernel is bounded rowwise by the summable Cauchy height
   weight. Finite off-line support therefore gives finite copied energy; the reverse follows from
-  the distinct-energy bound. Dependency-producing check passed; final direct audit remains.
+  the distinct-energy bound. Required direct final audit passed with standard endpoint axioms.
 - `TheWorkAndIndexHaveTheSameFiniteStratum.lean`: the fixed spline integer-log index is uniformly
   bounded iff damped source work is eventually bounded. Both are exactly finite off-line support.
   Direct final check passed; wired into umbrella. This is a finiteness classification, not an extinction theorem.
 - `SingularRefinement.lean`: for a mixed block `B=A X`, triangular congruence gives all three
   inertia additivity laws without inverting `A`; the Schur complement is independent of the lift
-  `X`. Draft, not yet checked. Arithmetic range compatibility and payment remain separate duties.
+  `X`. Dependency-producing check passed with standard endpoint axioms; final direct audit remains.
+  Actual section range compatibility is proved in the source module. Complement payment remains open.
 
 ## Strict energy margin: checked argument
 
@@ -84,7 +88,7 @@ That module also proves RH iff damped source work is cofinally at most two. Conj
 There is no claimed uniform extra margin: the displayed surplus can tend to zero.
 
 The exact strict-energy proof has passed Lean in `TheEnergyStrictlyExceedsTheIndex.lean`.
-Its direct final audit remains. The central arithmetic upper
+Its direct final audit has passed with standard endpoint axioms. The central arithmetic upper
 estimate, signed-overlap payment, exhaustive descent, signed prime surplus, terminal exclusion and
 finite-field realization remain open programme tasks.
 
@@ -93,17 +97,240 @@ finite-field realization remain open programme tasks.
 The narrow-section floor `W >= L2` implies that a section Gram null vector synthesizes the
 zero test. It therefore annihilates all mixed Weil entries against arbitrary ambient tests.
 Factoring each mixed functional through the old Gram range and extending it linearly gives
-`B=A X` even for redundant section presentations. This is drafted in
-`ArithmeticSectionsHaveOnlyPresentationRadicals.lean`; it has not yet passed Lean.
+`B=A X` even for redundant section presentations.
+`ArithmeticSectionsHaveOnlyPresentationRadicals.lean` has passed its dependency-producing check;
+all printed endpoints have standard axioms only. It is wired; its final direct audit remains.
 The signed Schur complement remains to be bounded arithmetically.
 
-## Source projection: proposed positive survivor
+## Source projection: checked positive survivor
 
 The range theorem gives a unique actual projected section P(g), despite nonunique coefficients.
 The projection is linear and idempotent. Its residual satisfies the exact identity
 `W(g-Pg,h-Ph)=W(g,h)-W(Pg,Ph)`. The removed energy is nonnegative from the existing
 arithmetic square-mass floor; therefore removing a positive section cannot improve a negative
-witness. It isolates the signed obstruction rather than paying it. These statements are drafted
-in `ArithmeticSectionProjection.lean`, awaiting Lean checks. The next matrix application should
-identify the complexified real pairing with the actual Weil Gram, then identify its residual
-Gram with the singular Schur complement and transport negative index exactly.
+witness. It isolates the signed obstruction rather than paying it. The residual energy also
+minimizes over the old span, with excess at least the actual squared L2 error. These statements
+passed the dependency-producing check of `ArithmeticSectionProjection.lean`; all four printed
+endpoints use only standard axioms. Its final direct audit remains. The actual matrix application
+has also passed its dependency-producing check in `TheSectionComplementCarriesAllNegativeSquares.lean`:
+complexification is the literal complete Weil Gram, and the actual residual Gram carries exactly
+the negative index of the old-section extension. Its direct final audit remains.
+
+## Checked source upper estimate for projection cost
+
+For a fixed actual smooth compact test g and fixed support window [-R,R], the exact source
+averaging identity constructs a continuous complete kernel K_g. Compactness gives a finite
+constant C(g,R) with |W(p,g)| <= C(g,R) integral|p| for every real test p in that window.
+Both pole moments, prime terms and Gamma are retained. Smoothness supplies Gamma integrability.
+
+The source section floor then gives W(P_F g,P_F g) <= 2 R C(g,R)^2 uniformly over all finite
+section families F in the window, including redundant families. This is an actual source
+upper bound on Schur cost, with window dependence. Uniformity as R and arithmetic
+resolution grow remains a separate research question.
+
+## Fixed-window source completion: checked construction
+
+For each actual compact real C2 ambient test g, source averaging gives a continuous complete
+kernel K_g. Its bound on a fixed window controls |W(p,g)| by C times L1(p). Combining the
+arithmetic section floor and support Cauchy–Schwarz gives a uniform bound for W(P_F g,P_F g)
+over every finite section family F in fixed (N,w), with no coefficient conditioning assumption.
+`TheSourceKernelIsLocallyBounded.lean` has passed its dependency-producing check with standard
+endpoint axioms. `TheProjectionCostIsBoundedOnEachWindow.lean` also passed its first
+dependency-producing check, with a standard endpoint axiom list. Both are wired; final direct
+audits remain.
+
+Direct the finite subsets of the entire narrow section space by
+inclusion. Their actual projection energies increase and are uniformly bounded. The difference
+of two nested projections has Weil energy equal to the energy increment and square mass at most
+that increment. The finite projections form a Cauchy net in square mass, and every
+finite mixed residual Gram converges to a canonical source complement. Polarization of
+the limiting energies supplies all mixed entries and a symmetric positive semidefinite bilinear
+removal form. The residual annihilates the entire old section space on both sides. Each limiting
+negative square is detected at sufficiently large finite refinements. These statements passed
+the dependency-producing check of `TheSectionProjectionHasACanonicalLimit.lean`, with standard
+endpoint axioms; it is wired and needs its direct final audit. Existing generic Hilbert monotone-projection
+convergence and finite-Gram index stability are tools, not new arithmetic results.
+
+This target completes a fixed positive arithmetic source space. It does not establish a bound
+uniform under growing N, identify the resulting complement as positive, or exhaust the
+fixed-spline integer-log tests. Those remain distinct producer problems.
+
+The checked `TheCompletedSourceComplementIsPaidByWork.lean` transfers the completed finite index
+through actual smooth residual witnesses into the strict transverse-energy and ordered finite
+source-work bounds. Its direct final check passed with standard endpoint axioms; it is wired.
+Exact eventual index equality and sharper compact-support dual-energy estimates are now proved
+below. An explicit L2 limit object remains a further construction.
+
+## Source cost and width: current formalization targets
+
+The exact-cell kernel-energy bound has passed its dependency-producing Lean check and is wired.
+The fixed-pattern shrinking, retained-reserve and exact-index theorems have passed their direct
+final checks and are wired.
+
+- `TheSourceKernelEnergyBoundsTheSchurCost.lean` retains the exact cell union
+  `U = union_{1<=n<=N} [log n,log n+w]`. Compact-support Cauchy–Schwarz gives
+  `W(p,g)^2 <= integral(p^2) * integral_U |K_g|^2`. For the actual projection,
+  `W(p,g)=W(p,p)>=integral(p^2)`, hence finite and completed removal cost at most
+  `integral_U |K_g|^2`. The residual is bounded below by `W(g,g)` minus this cost.
+  This is an upper estimate from the combined full source kernel, with cancellation retained
+  before squaring. All printed endpoint axioms are standard; its direct final audit remains.
+  It does not control growth in `N`.
+- `ShrinkingCellsRemoveVanishingEnergy.lean` uses `volume(U)<=N*w` and a common kernel bound
+  on `[0,log N+1]` to prove completed removal is `O(w)` at fixed `N`. The residual therefore
+  returns to the original diagonal as widths shrink. The quantified statement covers the
+  entire profile space, independently of presentation dimension. It is not an obstruction to
+  a programme that also grows or translates its arithmetic pattern. Direct final check passed;
+  all three printed endpoint axiom lists are standard.
+- `ThePolePaymentRetainsTheUnusedWidthReserve.lean` keeps the unrounded pole charge
+  `w*N*(exp(w)+1)`. At width at most fraction `a` of the full allowance, the full form retains
+  `(1-a)/8` of the weighted profile reserve beyond square mass. Positive retained reserve
+  requires a reduced width; the full-width source floor alone supplies no such surplus.
+  Direct final check passed with standard endpoint axioms; wired and explained in the README.
+- `TheCompletedIndexIsReachedAtAFiniteStage.lean` uses actual quadratic order to bound every
+  finite residual index by the completed index. Combined with the existing eventual reverse
+  comparison, this gives exact eventual equality for each fixed finite probe family. Direct
+  final check passed with standard endpoint axioms; wired and explained in the README.
+
+The base index-energy module has now passed its required direct final audit. Remaining final
+audits and individual draft checks are tracked in `logs/arithmetic-index-descent-checks.json`.
+
+## Adaptive source extension: established
+
+For fixed narrow `V(N,w)` and any centre `b` outside its exact compact cell union,
+the source constructs `delta0>0` such that every smaller new width and every pair
+of old/new independently chosen profiles satisfy
+
+`W(p+g,p+g) >= (1-epsilon)*mass(p)+mass(g)`.
+
+Old widths remain fixed. The theorem covers the entire infinite old profile space,
+not merely a selected finite basis. `AnAdditionalCellPreservesTheOldSections.lean`
+passed its direct final audit79528 with standard axioms and is wired.
+
+The mechanism is fully source-derived:
+
+1. Separation removes all short Gamma cross jumps; the remaining Levy tail is integrable.
+2. A common bounded window gives a profile-independent finite prime horizon.
+3. Window Cauchy–Schwarz pays both pole moments.
+4. The combined bound is `|W(p,g)|<=C*(mass(p)+mass(g))`, with actual
+   `C=2R*exp(R)+sum_{2<=n<N} Lambda(n)/sqrt(n)+integral_d^infinity omega`.
+5. Rescaling yields `2|W(p,g)|<=epsilon*mass(p)+4(C+1)^2/epsilon*mass(g)`.
+6. The inherited single-cell logarithmic gain pays any fixed new charge, uniformly
+   under translation. The exact extension retains `W(p,p)` before using the old floor.
+
+`SeparatedSupportsRemoveTheGammaSingularity`, `BoundedWindowsHaveFinitePrimeInteraction`,
+`TheSeparatedMixedSourceIsBounded`, `EveryShortCellPaysAnyFixedMassCharge`, and
+`AShortNewCellPaysItsOwnInteraction` passed their necessary dependency checks with
+standard endpoint axioms and are wired. Their mandatory direct final audits remain.
+No new discovery of the inherited single-cell logarithmic gain is claimed.
+
+Stronger inherited tools remain relevant: the actual Gamma boundary operator has
+norm at most `2*pi`; `CHMDSharpSpatialCut` supplies uniform full-graph sharp-cut
+bounds and exact aperture admission. A vanishing support gap is not itself a Gamma
+wall. Cumulative signed assembly and exhaustive approximation remain separate.
+
+## Fixed-width iteration: established
+
+`FixedCellWidthsSupportNestedPositiveSections.lean` passed its direct final audit31715,
+with standard axioms for both generic and arithmetic endpoints, and is wired. One
+unused simp-argument warning remains; no linter was disabled.
+
+For any strictly increasing centres `b_n`, construct one sequence `0<w_n<=1` such
+that every finite prefix of arbitrary independent real compact C² profiles supported
+in those cells satisfies `W(sum,sum)>=mass(sum)`. In particular this holds at
+`b_n=log(n+1)`, with all previously chosen widths fixed forever.
+
+Canonical envelopes `e_n=min(1,(b_(n+1)-b_n)/2)` give compact old unions excluding
+the next centre. Their window and gap determine the source extension threshold
+independently of the actual width choices. Choose each actual width below its
+envelope, gap and threshold. The decreasing reserve `a_n=1+1/(n+1)` pays every
+old-mass loss, and exact disjoint mass addition preserves the prefix floor `a_N`.
+
+This discharges the iteration positivity input rather than assuming it. No lower
+bound comparable to local spacing is obtained. No fixed-spline exhaustion follows;
+the theorem also works for arbitrary increasing real centres, so its mechanism does
+not by itself supply new critical prime cancellation.
+
+## Actual completed projection
+
+The corpus already has the complete CHMD source graph and a literal C² lift.
+`testLift_energy`, `testLift_add`, `testLift_sub` identify its signed Markov energy
+and linear operations. `weilForm_compactLift` identifies the full Weil diagonal,
+poles included, after inverse Doob conversion. The graph norm identity and
+Cauchy–Schwarz on its global polar directions give a fixed-window bound
+`||testLift(f)||^2 <= W(f,f)+C(R)*mass(f)`. The theta kernel is continuous and
+strictly positive, so the weighted source mass is bounded by ordinary mass on
+the fixed window. On arithmetic sections, `mass<=W`; hence projection-energy
+increments control the actual complete graph norm.
+
+Construct the literal graph limit of the existing finite-section net, identify
+its full Weil energy with `sectionCompletionEnergy`, and its polarized pairing
+with `sectionCompletionPair`. This is stronger than a square-mass Cauchy claim
+and uses no global positivity assumption. The general compact C² CCM admission
+and actual aperture norm comparison are also inherited; they can subsequently
+identify the same limit in the exact aperture domain. No such new limit theorem
+is claimed until formalization is complete.
+
+The graph norm bridge `TheGraphNormIsControlledBySectionEnergy.lean` passed its
+necessary dependency check4350 with standard endpoint axioms and is wired. Its
+direct final audit remains. The actual graph limit, closed-carrier coercivity,
+residual identification and closure orthogonality are fully drafted in
+`TheSectionProjectionConvergesInTheSourceGraph.lean`; first direct check is running.
+Those limit conclusions are not yet promoted.
+
+### Retained-reserve dual payment — proof target
+
+For width fraction a≤1, the proved full source floor is the sum of cell masses with weights A_n=1+(1-a)*sectionReserveWeight(N,n)/8. Apply the exact combined source-kernel representation separately to each literal shifted profile. Local Cauchy–Schwarz followed by Young gives 2W(p,g)≤Σ A_n M_n+Σ D_n/A_n, where D_n is kernel square energy on the exact n-th cell. For the actual finite projection p, W(p,g)=W(p,p) and the weighted floor is at most W(p,p), hence W(p,p)≤Σ D_n/A_n. Take the existing energy supremum for the completed projection and retain the resulting signed residual lower bound. No mixed-bound premise or inverse coefficient Gram is introduced. This is a draft target until Lean passes.
+
+### Literal graph completion — established
+
+TheSectionProjectionConvergesInTheSourceGraph passed direct final audit38472 with only standard axioms. The net over all finite subsets of the actual arithmetic section space converges in the existing complete SourceGraph. Its original full Weil diagonal and mixed readings equal sectionCompletionEnergy and sectionCompletionPair; literal graph residuals realize completedSectionResidualForm and are orthogonal to the entire closed old source carrier. Coercivity also extends to that closure. This resolves fixed-space realization, not growing-window exhaustion.
+
+### Bounded projection on the entire original graph — proof target
+
+Use the literal C² lift as a linear map and let K be the closure of its arithmetic-section range. The already proved arithmetic graph coercivity makes the compression of the actual bounded Weil operator to K invertible by the inherited real Hilbert coercive-inverse theorem. Define P=incl_K*(compression)^(-1)*orthProj_K*T. Prove range in K, Weil-orthogonality of x-Px to K, identity on K, idempotence and exact residual pairing. Uniqueness from the arithmetic coercivity identifies P(Jg) with the existing finite-subset graph limit for every compact C² test g. No ambient positivity is assumed; the global signed residual remains. This is a source-domain extension of existing Hilbert machinery, not a new abstract inversion theorem. Status: target only.
+
+### Retained-reserve dual payment — established
+
+TheUnusedReserveReducesTheSourceCost direct audit79428 passed with standard axioms. The actual finite and completed removal cost is at most Σ_n D_n/[1+(1-a)*sectionReserveWeight(N,n)/8]. The completed residual retains W(g,g) minus that explicit cost. Exact disjoint-cell integration proves the new cost is no larger than the previous exact-union energy; at a=1 they coincide. All kernels combine primes, Gamma and both poles before squaring.
+
+### Concrete complete-cell index capture — proof target
+
+ACS CompleteWeilSourceTransfer already supplies one common logarithmic cell system recovering all mixed Weil entries of every finite compact C² family. Identify its polarized real limit with realWeilForm, complexify entrywise, and apply the established finite-index persistence theorem. The result should be unconditional: every finite smooth Weil negative index is at most the complete-cell index at all sufficiently late stages, on the actual common cell system. No source upper index is supplied or assumed. The distinction from generic descent is that the full arithmetic convergence premise is discharged by the existing cell source theorem. Status: draft target.
+
+### Complete-cell index capture — established
+
+TheCompleteCellsCaptureEveryFiniteIndex passed direct audit80785 with standard axioms. One actual common logarithmic cell system recovers all mixed full Weil entries of every finite compact C² family, and at every sufficiently late stage its complexified complete-cell Gram has at least the original Weil negative index. The convergence premise is discharged by the actual source transfer. This does not provide the missing upper index budget or exclude extra vanishing negative directions in approximants.
+
+### A strict reserve at the original full width — proof target
+
+Put r=fullSectionRatio, C=r*(exp(r)+1), rho=1/8-C. Existing geometry gives r<1 and r*(exp(1)+1)<=1/8, hence rho>0. For every originally allowed width, w*N<=r and w<=r, so the actual pole charge is <=C. The unrounded source theorem then gives W>=mass+rho*sectionReserve even at full width. Since sectionReserve>=mass on disjoint cells, this supplies the uniform actual mass floor W>=(1+rho)*mass without shrinking the space. Exact source Cauchy–Schwarz should improve finite/completed removal to D_U/(1+rho). This is a proposed sharpening of the previously rounded pole payment, not an independent positivity assumption. Corpus searches found the definition and existing rounded/unrounded estimates but no strict full-width statement. Status: unproved target.
+
+### Bounded full-graph projection — established
+
+TheClosedSectionHasABoundedWeilProjection passed direct audit48797 with standard axioms. The actual closed arithmetic carrier admits a unique bounded Weil projection on all SourceGraph vectors. It fixes that carrier, is idempotent, agrees with sectionGraphProjection on literal compact C² tests and retains exact full signed Schur subtraction. The coercivity premise of generic Hilbert inversion is discharged by the actual arithmetic source floor. Global residual sign/index remains open.
+
+### Strict reserve at original full width — established
+
+TheFullWidthStillRetainsArithmeticReserve passed direct audit81963, standard axioms. rho=1/8-r*(exp(r)+1)>0 with r=fullSectionRatio; no extra width shrinkage. The original complete source form retains rho*sectionReserve beyond mass and hence a uniform mass floor1+rho. Every finite and completed old-profile projection costs at most D_U/(1+rho). This improves the previously rounded full-width bound; aperture-dependent graph constants and the exhaustive critical-sign problem remain.
+
+### Real-scale work and increment classification — proof target
+
+Use the proved monotonicity of the actual completed source work and its natural-scale ENNReal limit to show every scale is bounded above by total copied energy. On the finite-energy stratum, convert the natural-scale limit to a real limit and squeeze all real scales. Therefore doubled-scale increments vanish. Conversely the existing annular quantum escape forces infinite off-line support to have arbitrarily high increments at least21/100. Aim to prove finite off-line support iff increments tend to zero iff eventually increments are below21/100. This is an unconditional classification, not a proof of a source upper estimate.
+
+Further target: retain all sixteen ordered pairs in the four-copy off-line conjugate/reflection packet. At its own height, the exact source increment should be at least39/50 times one plus its positive diagonal angle. This would give a closed local quantum and distinguish eventual control from all-scale exclusion. No result claimed until Lean passes.
+
+### Moving arithmetic bands and source decoupling — proof target
+
+Take profiles supported in [0,w], vanishing for n<N/2, with original full allowed width. Translate their arithmetic section by -log N. The carrier lies in the fixed window [-log2,1]. The strict source reserve rho gives the growing mass floor A_N=1+rho*(1+(1+log N)/2). Apply the exact combined source-kernel square bound on this fixed window: A_N*W(p,g)^2 <= D_window(g)*W(p,p). Consequently every energy-normalized band section couples uniformly to a fixed compact probe by O((log N)^(-1/2)); an actual orthogonal projection costs O((log N)^(-1)). This would describe a growing arithmetic family, unlike fixed-N support shrinkage. The positive survivor is the explicit source coupling estimate and its rate. It does not rule out wider signed overlap families or other exhaustions. Status: proof target, not yet Lean formalized.
+
+### Real-scale increment classification — established
+
+VanishingScaleIncrementsCharacterizeFiniteSupport passed direct19465, all endpoints standard axioms, wired. Every real-scale source reading is at most total copied energy; finite off-line support gives the real-scale limit equal to that energy. Finite support iff doubled increments tend to zero iff they are eventually below21/100 at every real scale. This is a classification, not an arithmetic upper estimate.
+
+### Quadratically rescaled work increments — proof target
+
+Normalize the exact rational damping difference by R^2. Its fixed-height limit is3*gamma^2/2. The full quartet payment should then force eventual R^2*DeltaW>48 whenever any off-line zero exists, using height gap4 and its strictly positive diagonal angle. Arbitrarily high off-line zeros should force this rescaled work to infinity. On finite off-line support, use the actual finite Laurent-source rows to obtain a finite source moment limit, with all exterior fields retained. Aim for a three-way rate law: zero under RH, finite limit>48 for nonempty finite exceptions, infinity for infinite exceptions. This is a proposed source forcing/classification theorem, not a source upper estimate. Status: unproved; corpus searches and formalization required.
+
+### Full quartet scale quantum — established
+
+EveryOffLineQuartetCostsAStrictScaleQuantum passed direct21606, standard axioms, wired. All sixteen ordered pair interactions of the four conjugate/reflection copies give exact lower payment2*(hS-hR)*(1+angle). At own height the source increment is strictly above39/50. Eventual closed control at39/50 iff finite off-line support; all-scale closed control iffRH. No source upper estimate supplied.

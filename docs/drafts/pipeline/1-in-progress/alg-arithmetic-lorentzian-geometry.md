@@ -11,20 +11,34 @@ Folder `formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/`, umbrella
 `ArithmeticLorentzianGeometry.lean`, README = foundational doc. Answer Q1–Q5 of fable2 §4, build
 the tools listed there, record no-go survivors.
 
-## Module plan (status: todo / done)
-DONE: LorentzianFormsAtDegreeTwo, TheHodgeIndexOfTheScalingSurfaceIsHyperbolicity, TheHodgeIndexTricklesDown (all clean, wired in umbrella).
-1. LorentzianForms — degree-2: hyperbolic ⇔ revCS ⇔ no PD plane ⇔ NSD on hyperplane; Loewner
-   domination; pullback; product of nonneg linear forms; sums fail; CND ⇒ hyperbolic; CND sums.
-2. TheArithmeticHodgeIndexIsHyperbolic — hermPosIndex ≤ 1 ⇔ complex revCS; RH ⇔ revCS for scaling
-   surface cycles (via ACS riemannHypothesis_iff_one_positive_square); nef shift trap.
-3. TheHodgeIndexTricklesDown — 3-tensor, hyperbolic links ⇒ Q[v] ≤ (Qv)ᵀD⁻¹(Qv); connected ⇒ posIndex ≤ 1.
-4. TheSignIsAGaugeFixing — twisted prime kernel = gauge conjugate of Euler; pairwise-positive kernel
-   forces constant gauge; nonneg gauge for both ⇔ ε(p)=1 on primes ≤ N.
-5. LorentzianPolynomials — coefficient definition, bivariate ⇔ ULC, disjoint products, derivatives.
-6. Multiplicative closure blindness (Beurling/fake datum).
-7. 𝔽_q calibration of trickle-down on Frobenius ladder (OQ3).
-8. Successor defect of atomic prime form (M2 lemma).
-9. Torus positivity locus mod archimedean characters; eventual successor flatness ⇒ Euler.
+## Status
+All modules compile cleanly (`lake --old env lean`), are wired into the umbrella, and their main
+theorems depend on standard axioms only. Co-editor modules: PolarGluingAndDispersion,
+TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — keep their text.
+
+- Calculus and theorems: LorentzianFormsAtDegreeTwo, TheHodgeIndexOfTheScalingSurfaceIsHyperbolicity,
+  TheHodgeIndexTricklesDown, TheMetzlerDichotomy, LorentzianPolynomialsAndTheTuranLayer.
+- Gauge and sign: TheSignIsAGaugeFixing, TheSuccessorConnectionIsTheArchimedeanGaugeField,
+  LocalFactorsAndTheEulerProductClosure, FrobeniusIsConformalHeckeIsABoost.
+- 𝔽_q calibration: TheFrobeniusLadderIsMetzler; TheTrickleDownInequalityIsTheSquareRootCount (TD_π on
+  all ladders ⇔ square-root count; hyperelliptic curves trickle down via Stepanov);
+  TheLocalFactorTricklesDownByRamanujan (depth 2g−1 decides; genus one: depth one ⇔ |a| ≤ 2√q,
+  depth zero never decides; Kloosterman factor trickles down by Weil's bound).
+- Atomic family of ζ: TheAtomicFormIsMetzlerBelowTheSpacing; TheOverlapFrustratesTheMetzlerGauge;
+  TheMetzlerThresholdOfTheOverlapRatioIsOne (overlap law; threshold exactly K = 1);
+  TheHodgeIndexHoldsAtAFixedFractionOfTheSpacing (tilted margin μ_m ≥ 1 + (m/8N) log m pays the pole:
+  signed Weil positivity, Hodge index, TD_π, links at K ≤ c★, uniformly in N; twist-blind);
+  TheUniformMarginPaysThePoleOnlyUpToARootLogarithm (uniform margins fail at fixed K);
+  TheTiltedMarginPaysThePolarDispersion (Gram = tilted model + NSD residual; dispersion ≤ reserves);
+  TheAtomicMetzlerPropertyIsSelective; HyperbolicityIsBlindTheSignIsNot (every sign twin hyperbolic
+  at K ≤ c★; Liouville twin hyperbolic, not Metzler); TheTowerDeficitIsARowSum.
+
+## Open
+- Window c★ < K < 1: TD_π for the Metzler Gram; the Markov form loses positivity along the pole
+  vector n^{−1/2} (top of P_N, RAPT), paid by the pole term only in the Euler gauge; needed: a gap on
+  its complement (cf. card selective-positivity-on-separated-atoms, gate C4).
+- K > 1: primitive gap, or a non-atomic Metzler basis.
+- Conformal correspondence with λ ≠ 1; product closure of Lorentzian polynomials; exhaustion.
 
 ## Findings so far
 - Degree 2: Lorentzian = Hodge index (no gain); nef shift makes any finite Gram nonneg (trap).
@@ -39,6 +53,3 @@ DONE: LorentzianFormsAtDegreeTwo, TheHodgeIndexOfTheScalingSurfaceIsHyperbolicit
 - Metzler Hodge index (Lean): connected Metzler Q, D=Q1>0: hyperbolic ⇔ Q[v] ≤ Σ(Qv)_i²/D_i ⇔ hyperbolic links;
   diagonal unrestricted. Converts one-positive-square (not sum-closed) into NSD of Q − QD⁻¹Q (sum-closed).
   Euler-point intersection Gram is Metzler in canonical coords (P+J ≥ 0, pole row ≥ 0); twins are not in any gauge.
-
-## Log
-- 2026-10-27 — created; README first draft written.
