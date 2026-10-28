@@ -1169,6 +1169,30 @@ the original coefficients and horizon. The factor at two retains its
 sharper even-lag constant. The finite prime set cannot be enlarged to all
 primes by summing these constants.
 
+### All cubes and higher prime powers
+
+The exponent threshold changes the summation problem. The literal critical
+coefficients satisfy
+
+\[
+ C_{\ge3}=\sum_p\sum_{k\ge3}\frac{4\log p}{p^{k/2}}<\infty.
+\]
+
+Consequently the entire mixed source over these powers is absolutely
+summable and obeys
+
+\[
+ |\mathcal B_{\ge3}(d_{\ge A},q;X)|
+ \le \frac{C_{\ge3}}{\kappa_A}\Gamma(F).
+\]
+
+One detail cutoff therefore approximates this infinite-prime source with
+arbitrarily small relative error, uniformly in all original coefficients
+and complete horizons. Exact head subtraction identifies that error with
+the literal omitted detail tail. This removes the mixed contribution of
+cubes and higher powers from the nonsummable part of the problem. Prime
+and square layers, pure coarse contributions and poles remain separate.
+
 ### Polar compatibility
 
 For symmetric `Q_i` with a common anchor `e` and `a_i=Q_i[e]>0`, put
@@ -1691,6 +1715,7 @@ Quantitative pillars supplied by this programme:
 | Entire prime-two mixed Euler factor | All powers are absolutely summable in original Gamma energy; one fixed detail head gives arbitrary relative accuracy uniformly in every horizon | `TheEntirePrimeTwoEulerMixedSourceIsGammaSmall` |
 | Entire Euler mixed index | Gamma minus the entire prime-two mixed Euler source has one finite upper negative-dimension bound across every horizon and finite real profile family | `ThePrimeTwoEulerMixedFormHasUniformFiniteIndex` |
 | Finite collections of complete Euler factors | Exact coefficient sums and the odd-detail correction give one arbitrary-accuracy detail cutoff for every fixed finite prime set, retaining all its powers | `EveryFixedEulerMixedSourceIsGammaSmall` |
+| All cubes and higher prime powers | The summable critical coefficient budget over every prime gives a uniform Gamma-small mixed tail and finite-detail approximation | `AllHigherPrimePowerMixedTailsAreGammaSmall` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

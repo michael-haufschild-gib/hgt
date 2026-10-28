@@ -55,12 +55,17 @@ theorem logCellHaar_high_detail_tail_le (t : ℝ) {A : ℕ} (hA : 1 ≤ A)
     (∑' i : ℕ × ℕ+, if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0) ≤
       32 * levyEnergy f / (1 + Real.log (A : ℝ)) := by
   have hs : Summable (fun i : ℕ × ℕ+ =>
-      if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0) :=
-    (summable_readout_squares t hv hc).indicator {i | A ≤ (i.2 : ℕ)}
-  have hswap := hs.comp_injective Prod.swap_injective
+      if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0) := by
+    simpa only [indicator_apply, mem_setOf_eq] using
+      (summable_readout_squares t hv hc).indicator {i | A ≤ (i.2 : ℕ)}
+  have hswap : Summable (fun i : ℕ+ × ℕ =>
+      if A ≤ (i.1 : ℕ) then logCellHaarReadout t (i.2, i.1) f ^ 2 else 0) :=
+    hs.comp_injective Prod.swap_injective
   have he : (∑' i : ℕ × ℕ+, if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0) =
       ∑' a : ℕ+, if A ≤ (a : ℕ) then logCellHaarOrbitEnergy t a f else 0 := by
-    rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq, hswap.tsum_prod]
+    rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq]
+    change (∑' i : ℕ+ × ℕ, if A ≤ (i.1 : ℕ) then logCellHaarReadout t (i.2, i.1) f ^ 2 else 0) = _
+    rw [hswap.tsum_prod]
     apply tsum_congr
     intro a
     by_cases ha : A ≤ (a : ℕ)
@@ -74,7 +79,7 @@ def logCellHaarAnalysis (t : ℝ) (f : ℝ → ℝ)
     (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     lp (fun _ : ℕ × ℕ+ => ℂ) 2 :=
   ⟨fun i => (logCellHaarReadout t i f : ℂ), memℓp_gen (by
-    simpa only [Complex.norm_real, Real.norm_eq_abs, Real.rpow_two, sq_abs] using
+    simpa [Real.rpow_two] using
       summable_readout_squares t hv hc)⟩
 
 /-- A generator cutoff keeps every level of each label below the cutoff. -/
@@ -84,7 +89,8 @@ def logCellHaarOrbitHead (A : ℕ) :
 
 theorem logCellHaarOrbitHead_apply (A : ℕ) (x : lp (fun _ : ℕ × ℕ+ => ℂ) 2)
     (j : ℕ) (a : ℕ+) :
-    logCellHaarOrbitHead A x (j, a) = if (a : ℕ) < A then x (j, a) else 0 := rfl
+    logCellHaarOrbitHead A x (j, a) = if (a : ℕ) < A then x (j, a) else 0 := by
+  simp only [logCellHaarOrbitHead, lpCoordinateProjection_apply, indicator_apply, mem_setOf_eq]
 
 /-- The actual analysis error is small with no cutoff on translation levels. -/
 theorem norm_logCellHaarAnalysis_sub_orbitHead_sq_le (t : ℝ) {A : ℕ} (hA : 1 ≤ A)
@@ -96,6 +102,8 @@ theorem norm_logCellHaarAnalysis_sub_orbitHead_sq_le (t : ℝ) {A : ℕ} (hA : 1
       lpCoordinateProjection {i | A ≤ (i.2 : ℕ)} (logCellHaarAnalysis t f hv hc) := by
     apply lp.ext
     funext i
+    simp only [lp.coeFn_sub, Pi.sub_apply, logCellHaarOrbitHead,
+      lpCoordinateProjection_apply, indicator_apply, mem_setOf_eq]
     change (logCellHaarReadout t i f : ℂ) -
         (if (i.2 : ℕ) < A then (logCellHaarReadout t i f : ℂ) else 0) =
       if A ≤ (i.2 : ℕ) then (logCellHaarReadout t i f : ℂ) else 0
@@ -105,6 +113,7 @@ theorem norm_logCellHaarAnalysis_sub_orbitHead_sq_le (t : ℝ) {A : ℕ} (hA : 1
       ({i : ℕ × ℕ+ | A ≤ (i.2 : ℕ)}.indicator
         (fun j => ‖logCellHaarAnalysis t f hv hc j‖ ^ 2)) i =
       if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0 := by
+    simp only [indicator_apply, mem_setOf_eq]
     change (if A ≤ (i.2 : ℕ) then ‖(logCellHaarReadout t i f : ℂ)‖ ^ 2 else 0) = _
     simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs]
   simp_rw [hterms]

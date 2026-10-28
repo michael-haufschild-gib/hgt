@@ -101,10 +101,12 @@ private theorem physical_coordinate_tail_norm (f : ℝ → ℝ)
   let z := physicalLogCellCoordinates f hv hc -
     lpCoordinateProjection {i | retainedLogCellGenerator A i.2} (physicalLogCellCoordinates f hv hc)
   have hzNone (j : ℕ) : z (j, none) = 0 := by
-    change _ - (if True then _ else _) = _
-    simp
+    simp only [z, lp.coeFn_sub, Pi.sub_apply, lpCoordinateProjection_apply,
+      indicator_apply, mem_setOf_eq, retainedLogCellGenerator, if_true, sub_self]
   have hzSome (j : ℕ) (a : ℕ+) :
       ‖z (j, some a)‖ ^ 2 = if A ≤ (a : ℕ) then logCellHaarReadout 0 (j, a) f ^ 2 else 0 := by
+    simp only [z, lp.coeFn_sub, Pi.sub_apply, lpCoordinateProjection_apply,
+      indicator_apply, mem_setOf_eq, retainedLogCellGenerator]
     change ‖physicalLogCellCoordinates f hv hc (j, some a) -
       (if (a : ℕ) < A then physicalLogCellCoordinates f hv hc (j, some a) else 0)‖ ^ 2 = _
     rw [physicalLogCellCoordinates_detail]

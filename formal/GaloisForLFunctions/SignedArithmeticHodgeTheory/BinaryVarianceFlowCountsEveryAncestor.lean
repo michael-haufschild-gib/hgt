@@ -1,7 +1,8 @@
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.DyadicVarianceSplitsIntoTheLiteralHaarReadout
 import Mathlib.Data.Nat.Log
 
-/-!+# Counting ancestors without spending a variance twice
+/-!
+# Counting ancestors without spending a variance twice
 
 Summing exact variance conservation along a complete level orbit gives a binary
 flow on generator labels. Its tail above twice a threshold, together with the
@@ -23,19 +24,22 @@ private def positiveExtension (F : ℕ+ → ℝ) (a : ℕ) : ℝ :=
   if ha : 0 < a then F ⟨a, ha⟩ else 0
 
 private theorem positiveExtension_coe (F : ℕ+ → ℝ) (a : ℕ+) :
-    positiveExtension F a = F a := by simp only [positiveExtension, a.pos, dif_pos]
+    positiveExtension F a = F a := by
+  rw [positiveExtension, dif_pos a.pos]
+  congr 1
+  exact PNat.eq rfl
 
 private theorem positiveExtension_summable {F : ℕ+ → ℝ} (hF : Summable F) :
     Summable (positiveExtension F) := by
-  apply PNatBlock.summable_pnat_iff.mp
+  apply (PNatBlock.summable_pnat_iff (positiveExtension F)).mp
   simpa only [positiveExtension_coe] using hF
 
 private def labelTail (F : ℕ → ℝ) (M : ℕ) : ℝ :=
   ∑' a, if M ≤ a then F a else 0
 
 private theorem labelTail_summable {F : ℕ → ℝ} (hF : Summable F) (M : ℕ) :
-    Summable (fun a => if M ≤ a then F a else 0) :=
-  hF.indicator {a | M ≤ a}
+    Summable (fun a => if M ≤ a then F a else 0) := by
+  simpa only [indicator_apply, mem_setOf_eq] using hF.indicator {a | M ≤ a}
 
 private theorem labelTail_nonneg {F : ℕ → ℝ} (hF : ∀ a, 0 ≤ F a) (M : ℕ) :
     0 ≤ labelTail F M := by
@@ -68,10 +72,13 @@ private theorem labelTail_flow {F G : ℕ → ℝ}
     apply tsum_congr
     intro a
     simp only [Fin.sum_univ_two, Fin.val_zero, Fin.val_one, Nat.add_zero]
-    have he : 2 * M ≤ a * 2 ↔ M ≤ a := by omega
-    have ho : 2 * M ≤ a * 2 + 1 ↔ M ≤ a := by omega
-    simp only [he, ho, C, Nat.mul_comm a 2]
-    split_ifs <;> simp
+    change (if 2 * M ≤ a * 2 then F (a * 2) else 0) +
+      (if 2 * M ≤ a * 2 + 1 then F (a * 2 + 1) else 0) = C a
+    by_cases ha : M ≤ a
+    · rw [if_pos (by omega), if_pos (by omega)]
+      simp only [C, if_pos ha, Nat.mul_comm a 2]
+    · rw [if_neg (by omega), if_neg (by omega)]
+      simp only [C, if_neg ha, add_zero]
   rw [hchildren, labelTail, ← (labelTail_summable hsG M).tsum_add hsC]
   apply Summable.tsum_le_tsum _ ((labelTail_summable hsG M).add hsC)
     (labelTail_summable hsF M)
@@ -120,12 +127,12 @@ private theorem sum_ancestor_weight_le {F G : ℕ → ℝ}
     (∑ a ∈ T, ((Nat.log 2 (a : ℕ) + 1 : ℕ) : ℝ) * G a) ≤ labelTail F 1 := by
   classical
   let L := ∑ a ∈ T, (Nat.log 2 (a : ℕ) + 1)
-  have hL (a : ℕ+) (ha : a ∈ T) : Nat.log 2 (a : ℕ) + 1 ≤ L :=
-    Finset.single_le_sum (fun _ _ => Nat.zero_le _) ha
+  have hL (a : ℕ+) (ha : a ∈ T) : Nat.log 2 (a : ℕ) + 1 ≤ L := by
+    exact Finset.single_le_sum (fun b _ => Nat.zero_le (Nat.log 2 (b : ℕ) + 1)) ha
   have hthreshold (r : ℕ) :
       (∑ a ∈ T, if 2 ^ r ≤ (a : ℕ) then G a else 0) ≤ labelTail G (2 ^ r) := by
     have hsum : Summable (fun a : ℕ+ => if 2 ^ r ≤ (a : ℕ) then G a else 0) :=
-      PNatBlock.summable_pnat_iff.mpr (labelTail_summable hsG (2 ^ r))
+      (PNatBlock.summable_pnat_iff _).mpr (labelTail_summable hsG (2 ^ r))
     calc
       _ ≤ ∑' a : ℕ+, if 2 ^ r ≤ (a : ℕ) then G a else 0 :=
         hsum.sum_le_tsum T (fun a _ => by
@@ -168,16 +175,21 @@ private theorem parent_variance_rows (t : ℝ) {f : ℝ → ℝ}
     (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     (∀ a : ℕ+, Summable (fun j => logCellDyadicParentVariance t (j, a) f)) ∧
       Summable (fun a => logCellParentVarianceOrbit t a f) := by
-  have h := (summable_parent_variances t hv hc).comp_injective Prod.swap_injective
-  exact (summable_prod_of_nonneg (fun i : ℕ+ × ℕ =>
-    intervalVariance_nonneg _ _ _)).mp h
+  have h : Summable (fun i : ℕ+ × ℕ => logCellDyadicParentVariance t (i.2, i.1) f) :=
+    (summable_parent_variances t hv hc).comp_injective Prod.swap_injective
+  exact (summable_prod_of_nonneg
+    (f := fun i : ℕ+ × ℕ => logCellDyadicParentVariance t (i.2, i.1) f)
+    (fun _ => intervalVariance_nonneg _ _ _)).mp h
 
 private theorem readout_rows (t : ℝ) {f : ℝ → ℝ}
     (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     (∀ a : ℕ+, Summable (fun j => logCellHaarReadout t (j, a) f ^ 2)) ∧
       Summable (fun a => logCellHaarOrbitEnergy t a f) := by
-  have h := (summable_readout_squares t hv hc).comp_injective Prod.swap_injective
-  exact (summable_prod_of_nonneg (fun i : ℕ+ × ℕ => sq_nonneg _)).mp h
+  have h : Summable (fun i : ℕ+ × ℕ => logCellHaarReadout t (i.2, i.1) f ^ 2) :=
+    (summable_readout_squares t hv hc).comp_injective Prod.swap_injective
+  exact (summable_prod_of_nonneg
+    (f := fun i : ℕ+ × ℕ => logCellHaarReadout t (i.2, i.1) f ^ 2)
+    (fun _ => sq_nonneg _)).mp h
 
 /-- Exact variance conservation produces a binary flow after retaining every level. -/
 theorem logCellHaarOrbitEnergy_flow (t : ℝ) (a : ℕ+) {f : ℝ → ℝ}
@@ -190,8 +202,11 @@ theorem logCellHaarOrbitEnergy_flow (t : ℝ) (a : ℕ+) {f : ℝ → ℝ}
   have hD := (readout_rows t hv hc).1
   have hDs : Summable (fun j => logCellHaarReadout t (j + 1, a) f ^ 2) :=
     (summable_nat_add_iff 1).mpr (hD a)
-  have hs := tsum_congr (fun j => logCellDyadicParentVariance_split t j a
-    (memLp_compact_bv hv hc))
+  have hs : (∑' j, logCellDyadicParentVariance t (j + 1, a) f) =
+      ∑' j, (logCellDyadicParentVariance t (j, dyadicLeftCell a) f +
+        logCellDyadicParentVariance t (j, dyadicRightCell a) f +
+        logCellHaarReadout t (j + 1, a) f ^ 2) :=
+    tsum_congr (fun j => logCellDyadicParentVariance_split t j a (memLp_compact_bv hv hc))
   rw [((hV (dyadicLeftCell a)).add (hV (dyadicRightCell a))).tsum_add hDs,
     (hV (dyadicLeftCell a)).tsum_add (hV (dyadicRightCell a))] at hs
   have hVa := (hV a).tsum_eq_zero_add
@@ -227,23 +242,26 @@ theorem sum_logCellAncestorWeight_orbit_le (t : ℝ) (T : Finset ℕ+)
   have hsF := positiveExtension_summable (parent_variance_rows t hv hc).2
   have hsG := positiveExtension_summable (readout_rows t hv hc).2
   have hflow (a : ℕ) (ha : 1 ≤ a) : G a + F (2 * a) + F (2 * a + 1) ≤ F a := by
-    simpa only [G, F, positiveExtension, dif_pos (show 0 < a by omega),
-      dif_pos (show 0 < 2 * a by omega), dif_pos (show 0 < 2 * a + 1 by omega),
-      dyadicLeftCell, dyadicRightCell] using
-      logCellHaarOrbitEnergy_flow t ⟨a, ha⟩ hv hc
+    let p : ℕ+ := ⟨a, ha⟩
+    change G (p : ℕ) + F (dyadicLeftCell p : ℕ) + F (dyadicRightCell p : ℕ) ≤ F (p : ℕ)
+    simp only [G, F, positiveExtension_coe]
+    exact logCellHaarOrbitEnergy_flow t p hv hc
   have h := sum_ancestor_weight_le hF hG hsF hsG hflow T
-  simp only [G, positiveExtension_coe, ← logCellAncestorWeight] at h
-  apply h.trans
+  have h' : (∑ a ∈ T, logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) ≤ labelTail F 1 := by
+    simpa only [G, positiveExtension_coe, logCellAncestorWeight] using h
+  apply h'.trans
   have htail : labelTail F 1 = ∑' a : ℕ+, logCellParentVarianceOrbit t a f := by
     rw [labelTail, ← PNatBlock.tsum_pnat _ (by simp)]
     apply tsum_congr
     intro a
-    rw [if_pos a.pos]
+    rw [if_pos (show 1 ≤ (a : ℕ) by have := a.pos; omega)]
     exact positiveExtension_coe _ a
   rw [htail]
-  have hs := (summable_parent_variances t hv hc).comp_injective Prod.swap_injective
+  have hs : Summable (fun i : ℕ+ × ℕ => logCellDyadicParentVariance t (i.2, i.1) f) :=
+    (summable_parent_variances t hv hc).comp_injective Prod.swap_injective
   rw [show (∑' a : ℕ+, logCellParentVarianceOrbit t a f) =
       ∑' i : ℕ × ℕ+, logCellDyadicParentVariance t i f by
+    unfold logCellParentVarianceOrbit
     rw [← hs.tsum_prod]
     exact (Equiv.prodComm ℕ+ ℕ).tsum_eq _]
   exact Real.tsum_le_of_sum_le (fun _ => intervalVariance_nonneg _ _ _)
@@ -257,7 +275,9 @@ theorem one_add_log_le_two_ancestorWeight (a : ℕ+) :
     (by exact_mod_cast hp : (a : ℝ) < ((2 ^ (Nat.log 2 (a : ℕ) + 1) : ℕ) : ℝ))
   rw [Nat.cast_pow, Nat.cast_ofNat, Real.log_pow] at hl
   have htwo : Real.log 2 ≤ 1 := by
-    simpa using Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+    have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+    norm_num at h
+    exact h
   have hw : 1 ≤ logCellAncestorWeight a := by unfold logCellAncestorWeight; norm_cast; omega
   have hmul := mul_le_mul_of_nonneg_left htwo (logCellAncestorWeight_pos a).le
   change Real.log (a : ℝ) < logCellAncestorWeight a * Real.log 2 at hl
@@ -290,17 +310,23 @@ theorem sum_ancestor_weight_readout_sq_le (t : ℝ) (S : Finset (ℕ × ℕ+))
     summable_of_sum_le hw0 (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
   have hs : Summable (fun i : ℕ+ × ℕ =>
       logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2) := by
-    apply (summable_prod_of_nonneg (fun i =>
-      mul_nonneg (logCellAncestorWeight_pos i.1).le (sq_nonneg _))).mpr
+    apply (summable_prod_of_nonneg
+      (f := fun i : ℕ+ × ℕ => logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2)
+      (fun i => mul_nonneg (logCellAncestorWeight_pos i.1).le (sq_nonneg _))).mpr
     constructor
     · intro a
-      exact ((readout_rows t hv hc).1 a).mul_left _
-    · simpa only [tsum_mul_left, ← logCellHaarOrbitEnergy] using hsRows
-  have hsp := hs.comp_injective Prod.swap_injective
+      change Summable (fun j : ℕ => logCellAncestorWeight a * logCellHaarReadout t (j, a) f ^ 2)
+      exact ((readout_rows t hv hc).1 a).mul_left (logCellAncestorWeight a)
+    · simpa only [tsum_mul_left, logCellHaarOrbitEnergy] using hsRows
+  have hsp : Summable (fun i : ℕ × ℕ+ => logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) :=
+    hs.comp_injective Prod.swap_injective
   have hsum : (∑' i : ℕ × ℕ+, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) ≤
       16 * levyEnergy f := by
-    rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq, hs.tsum_prod]
-    simp only [tsum_mul_left, ← logCellHaarOrbitEnergy]
+    rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq]
+    change (∑' i : ℕ+ × ℕ, logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2) ≤ _
+    rw [hs.tsum_prod]
+    simp only [tsum_mul_left]
+    change (∑' a, logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) ≤ _
     exact Real.tsum_le_of_sum_le hw0 (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
   exact (hsp.sum_le_tsum S (fun i _ =>
     mul_nonneg (logCellAncestorWeight_pos i.2).le (sq_nonneg _))).trans hsum
