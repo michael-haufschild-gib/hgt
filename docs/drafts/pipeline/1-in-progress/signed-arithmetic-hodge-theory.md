@@ -297,3 +297,17 @@ an assumption available to the programme.
 
 These five items are the current requested deliverables. They do not include
 proving the complete Weil sign or the critical-energy upper bound.
+
+### Ancestor payment by tail flow
+
+Use P(M)=sum of actual parent variances with label a>=M and Q(M)=sum of
+normalized Haar readout squares with label a>=M, over all levels. Exact
+variance splitting and even/odd child reindexing target
+
+Q(M)+P(2M)<=P(M).
+
+Summing at M=2^r telescopes. A detail with label a occurs at exactly
+1+Nat.log(2,a) thresholds. Thus the desired logarithmic square-function
+bound follows without assuming summability of depth-weighted variances.
+Readout squares must first be identified with the existing translated Haar
+profiles and their exact masses.

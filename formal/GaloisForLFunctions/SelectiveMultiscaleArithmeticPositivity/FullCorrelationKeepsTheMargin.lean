@@ -207,12 +207,14 @@ theorem hasHyperplaneGap_two_mul_log_two_of_correlation {ω : ℕ → ℝ} (hω 
       have h2 := sq_nonneg (|α| * |a| - t * (B * |z n|))
       have e2 : (|α| * |a| - t * (B * |z n|)) ^ 2 =
           α ^ 2 * a ^ 2 - 2 * (|α| * |a|) * (B * |z n|) * t + t ^ 2 * B ^ 2 * z n ^ 2 := by
-        rw [sub_sq, mul_pow, mul_pow, sq_abs, sq_abs, mul_pow, mul_pow, sq_abs]; ring
+        calc (|α| * |a| - t * (B * |z n|)) ^ 2 = |α| ^ 2 * |a| ^ 2 -
+              2 * (|α| * |a|) * (B * |z n|) * t + t ^ 2 * B ^ 2 * |z n| ^ 2 := by ring
+          _ = _ := by rw [sq_abs, sq_abs, sq_abs]
       rw [e2] at h2
       have h3 : 2 * (|α| * |a|) * (B * |z n|) * t ≤
           (α ^ 2 * a ^ 2 / t + t * B ^ 2 * z n ^ 2) * t := by
-        rw [add_mul, div_mul_cancel₀ _ ht.ne']
-        nlinarith
+        rw [add_mul (α ^ 2 * a ^ 2 / t), div_mul_cancel₀ _ ht.ne']
+        linarith
       linarith [le_of_mul_le_mul_right h3 ht]
     rw [hsplit, mul_sum]
     calc ∑ n ∈ Icc 1 N,
@@ -278,7 +280,7 @@ theorem hasHyperplaneGap_two_mul_log_two_of_eventually_eq_one {ω : ℕ → ℝ}
         refine sum_le_sum_of_subset_of_nonneg (fun n hn => ?_) (fun n _ _ => by positivity)
         simp only [mem_filter, mem_Icc] at hn ⊢
         omega
-      _ = C := by rw [mul_sum]; exact sum_congr rfl fun n _ => by ring
+      _ = C := by simp only [C, mul_sum]; exact sum_congr rfl fun n _ => by ring
   -- `H_N → ∞`
   have hHtop : Tendsto (fun N : ℕ => ∑ n ∈ Icc 1 N, (1 : ℝ) / n) atTop atTop := by
     refine tendsto_atTop_mono (fun N => ?_) (Real.tendsto_log_atTop.comp

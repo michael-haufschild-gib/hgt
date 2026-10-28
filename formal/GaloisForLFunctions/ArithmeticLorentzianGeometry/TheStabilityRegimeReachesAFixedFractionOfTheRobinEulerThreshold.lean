@@ -447,7 +447,9 @@ theorem eventually_weilQuad_windowTest_nonneg_sharp {ε : ℝ} (hε : 0 < ε) (h
           2 * gammaHardyPhaseRate 0 + archRobinConstant + β + γ - ε - a - 1 / 25 := by
         have := Real.log_le_log hK0 (hKK.trans hK4)
         rwa [Real.log_exp] at this
-      rw [one_div, Real.log_inv]
+      have e : Real.log (1 / (w * N)) = -Real.log (w * N) := by
+        rw [one_div (w * (N : ℝ)), Real.log_inv]
+      rw [e]
       linarith
     have hcost : sharpCostX * (w * N) ≤ a := by
       have h := mul_le_mul_of_nonneg_left (hKK.trans hK3) sharpCostX_pos.le
@@ -470,3 +472,17 @@ theorem eventually_weilQuad_windowTest_nonneg_sharp {ε : ℝ} (hε : 0 < ε) (h
   linarith
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms eventually_weilQuad_windowTest_nonneg_sharp
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms two_mul_abs_poleMoments_windowTest_le_sharp
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms eventually_upWeight_le
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms eventually_edgeWeight_le
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms levyEnergy_windowTest_ge_sharp
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms sq_vRow_le_split
+open GaloisForLFunctions.ArithmeticLorentzianGeometry in
+#print axioms eventually_markovEnergy_windowTest_ge_sharp

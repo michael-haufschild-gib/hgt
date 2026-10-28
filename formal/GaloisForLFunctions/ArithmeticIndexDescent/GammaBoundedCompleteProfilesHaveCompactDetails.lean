@@ -130,7 +130,11 @@ theorem totallyBounded_gammaUnitDetails : TotallyBounded gammaUnitDetails := by
     refine ⟨haarSection (fun a => if a < A then d a else 0) X,
       haarSection_head_mem_span d A X, ?_⟩
     have h := (cellGammaWeight_mul_norm_haar_head_error_sq_le_gamma q d hA1 X).trans (hE.trans hcap)
-    have hs := (mul_le_mul_left (cellGammaWeight_pos hA1)).mp h
+    have hs : ‖haarSection d X - haarSection (fun a => if a < A then d a else 0) X‖ ^ 2 ≤ ε ^ 2 := by
+      calc
+        _ ≤ (cellGammaWeight A * ε ^ 2) / cellGammaWeight A :=
+          (le_div_iff₀ (cellGammaWeight_pos hA1)).mpr (by simpa only [mul_comm] using h)
+        _ = _ := by field_simp [(cellGammaWeight_pos hA1).ne']
     nlinarith only [hs, norm_nonneg (haarSection d X - haarSection (fun a => if a < A then d a else 0) X), hε]
 
 /-- A genuine compact set in the original L² space contains every unit-Gamma complete-profile detail. -/

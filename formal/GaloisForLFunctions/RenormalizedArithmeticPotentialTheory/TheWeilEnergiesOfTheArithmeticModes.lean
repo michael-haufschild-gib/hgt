@@ -40,7 +40,7 @@ theorem sum_Icc_one_eq_sum_range (f : ℕ → ℝ) (N : ℕ) :
     ∑ n ∈ Icc 1 N, f n = ∑ i ∈ range N, f (i + 1) := by
   induction N with
   | zero => simp
-  | succ N ih => rw [sum_range_succ, ← ih, Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1)]
+  | succ N ih => rw [Finset.sum_range_succ, ← ih, Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1)]
 
 /-- The partial sums of a `q`-periodic sequence of mean zero are bounded by `2qB`. -/
 theorem abs_sum_range_succ_periodic_le {q : ℕ} (hq : 1 ≤ q) {B : ℝ} (ψ : ℕ → ℝ)
