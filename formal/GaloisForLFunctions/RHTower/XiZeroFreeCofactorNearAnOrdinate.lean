@@ -210,8 +210,9 @@ theorem sum_xiCopiesOver (Z : Finset ℂ) (h : ℂ → ℂ) :
 /-- The divisor of `ξ` on a ball agrees with the global divisor inside the ball. -/
 theorem divisor_xi_ball_eq {c : ℂ} {R : ℝ} {ρ : ℂ} (hρ : ρ ∈ ball c R) :
     MeromorphicOn.divisor xi (ball c R) ρ = MeromorphicOn.divisor xi Set.univ ρ := by
-  have han : AnalyticOnNhd ℂ xi Set.univ := fun z _ => xi_differentiable.analyticAt z
-  rw [(han.mono (Set.subset_univ _)).divisor_apply hρ, han.divisor_apply (Set.mem_univ ρ)]
+  have hmer : ∀ U : Set ℂ, MeromorphicOn xi U := fun U z _ =>
+    (xi_differentiable.analyticAt z).meromorphicAt
+  rw [MeromorphicOn.divisor_apply (hmer _) hρ, MeromorphicOn.divisor_apply (hmer _) (Set.mem_univ ρ)]
 
 /-- **The zero-free cofactor of `ξ` near an ordinate.**  For large `T`, with `c = 2 + iT`, the
 zeros of `ξ` in `B(c, 8)` have total multiplicity `≤ C log T`, and the cofactor `g` of
@@ -232,10 +233,16 @@ theorem exists_xi_cofactor_near_ordinate :
   obtain ⟨C₃, hC₃0, hC₃⟩ := exists_norm_logDeriv_xi_two_line_le
   refine ⟨36 * C₁ + C₃ + 57 * C₂, by positivity, ?_⟩
   have hwin : ∀ᶠ T : ℝ in atTop, ∀ k : Fin 9, ∀ F : Finset XiZeroCopy,
-      (∀ q ∈ F, |(q.1 : ℂ).im - (T - 8 + 2 * k)| ≤ 1) →
-        (F.card : ℝ) ≤ C₁ * Real.log (T - 8 + 2 * k) := by
+      (∀ q ∈ F, |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1) →
+        (F.card : ℝ) ≤ C₁ * Real.log (T - 7 + 2 * k) := by
     refine Filter.eventually_all.2 fun k => ?_
-    exact (tendsto_atTop_add_const_right _ _ tendsto_id).eventually hC₁
+    have h := (tendsto_atTop_add_const_right atTop ((-7 : ℝ) + 2 * ((k : ℕ) : ℝ))
+      tendsto_id).eventually hC₁
+    filter_upwards [h] with T hT
+    have e : T - 7 + 2 * ((k : ℕ) : ℝ) = id T + ((-7 : ℝ) + 2 * ((k : ℕ) : ℝ)) := by
+      simp only [id]; ring
+    rw [e]
+    exact hT
   filter_upwards [hwin, hC₂, hC₃, Filter.eventually_ge_atTop (16 : ℝ)]
     with T hwinT hC₂T hC₃T hT16
   set c : ℂ := (2 : ℂ) + (T : ℂ) * I with hcdef
@@ -282,7 +289,7 @@ theorem exists_xi_cofactor_near_ordinate :
   -- the zero count
   have hcount : (F.card : ℝ) ≤ 36 * C₁ * Real.log T := by
     have hcover : F ⊆ Finset.univ.biUnion (fun k : Fin 9 =>
-        F.filter (fun q => |(q.1 : ℂ).im - (T - 8 + 2 * k)| ≤ 1)) := by
+        F.filter (fun q => |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1)) := by
       intro q hq
       have hmem : (q.1 : ℂ) ∈ ball c 8 := by
         have := (mem_xiCopiesOver.mp (hFdef ▸ hq))
@@ -296,6 +303,8 @@ theorem exists_xi_cofactor_near_ordinate :
       set u : ℝ := (q.1 : ℂ).im - T + 8 with hu
       have hu0 : 0 < u := by rw [hu]; linarith [abs_lt.mp hlt]
       have hu16 : u < 16 := by rw [hu]; linarith [abs_lt.mp hlt]
+      have hTk : ∀ k : ℕ, (q.1 : ℂ).im - (T - 7 + 2 * (k : ℝ)) = u - (2 * k + 1) := by
+        intro k; rw [hu]; ring
       set k : ℕ := ⌊u / 2⌋₊ with hk
       have hk8 : k < 9 := by
         rw [hk, Nat.floor_lt (by positivity)]
@@ -306,10 +315,10 @@ theorem exists_xi_cofactor_near_ordinate :
       have hlt2 := Nat.lt_floor_add_one (u / 2)
       rw [← hk] at hfl hlt2
       simp only [Fin.val_mk]
-      rw [abs_le]
+      rw [hTk, abs_le]
       constructor <;> linarith
     have hcard := (Finset.card_le_card hcover).trans Finset.card_biUnion_le
-    have hk : ∀ k : Fin 9, ((F.filter (fun q => |(q.1 : ℂ).im - (T - 8 + 2 * k)| ≤ 1)).card : ℝ)
+    have hk : ∀ k : Fin 9, ((F.filter (fun q => |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1)).card : ℝ)
         ≤ C₁ * (2 * Real.log T) := by
       intro k
       refine (hwinT k _ fun q hq => (Finset.mem_filter.mp hq).2).trans ?_
@@ -318,12 +327,12 @@ theorem exists_xi_cofactor_near_ordinate :
       have hpos : 0 < T - 8 + 2 * (k : ℝ) := by
         have : (0 : ℝ) ≤ k := Nat.cast_nonneg _
         linarith
-      calc Real.log (T - 8 + 2 * k) ≤ Real.log (T ^ 2) := by
+      calc Real.log (T - 7 + 2 * k) ≤ Real.log (T ^ 2) := by
             refine Real.log_le_log hpos ?_
             nlinarith
         _ = 2 * Real.log T := by rw [Real.log_pow]; norm_num
     calc (F.card : ℝ) ≤ ∑ k : Fin 9,
-          ((F.filter (fun q => |(q.1 : ℂ).im - (T - 8 + 2 * k)| ≤ 1)).card : ℝ) := by
+          ((F.filter (fun q => |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1)).card : ℝ) := by
           exact_mod_cast hcard
       _ ≤ ∑ _k : Fin 9, C₁ * (2 * Real.log T) := Finset.sum_le_sum fun k _ => hk k
       _ = 18 * C₁ * Real.log T := by simp; ring

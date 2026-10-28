@@ -239,9 +239,10 @@ The manifest `/tmp/WeilRamanujan-draft-manifest.json` records the active
 forty-two-module graph. Each verified scratch endpoint has a retained
 transitive axiom report in `logs/complete-weil-spacing-axioms-2026-10-28.log`;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
-Twenty support modules are scratch verified and installed; twenty-five retained
-endpoint axiom reports are clean. First required oleans are built through module
-twenty. These twenty modules are imported by their owner umbrellas; no umbrella
+Twenty-one support modules are scratch verified and installed; twenty-seven
+retained endpoint axiom reports are clean. First required oleans are built
+through module twenty; the shifted harmonic-row dependency is being generated.
+The first twenty modules are imported by their owner umbrellas; no umbrella
 was compiled. The SSHA density increment bound is documented in its README.
 Final installed-source checks without output generation remain outstanding.
 The three main endpoints are still unchecked:
@@ -281,7 +282,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 18 | `RenormalizedArithmeticPotentialTheory/TheAtomCrossReplacementHasUniformErrors` | Scratch verified; installed; first required olean built |
 | 19 | `RenormalizedArithmeticPotentialTheory/TheCenterCollarIsPaidByTheTopAtoms` | Scratch verified; installed; first required olean built |
 | 20 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper` | Scratch verified; installed; first required olean built |
-| 21 | `HTGeometry/FiniteShiftedHarmonicAbelBounds` | Unchecked scratch |
+| 21 | `HTGeometry/FiniteShiftedHarmonicAbelBounds` | Scratch verified; installed |
 | 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Unchecked scratch |
 | 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Unchecked scratch |
 | 24 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionHasBoundedPoleResidual` | Unchecked scratch |
@@ -304,6 +305,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 41 | `RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | Unchecked scratch |
 | 42 | `RenormalizedArithmeticPotentialTheory/TheSimpleCompleteWeilEigenlinesConvergeToRamanujanLines` | Unchecked scratch |
 
-Next unresolved checks: periodic rows, pole moments, projection/coercivity,
-then spectral assembly.
+The shifted Abel bounds and periodic interval-sum bound now pass Lean.
+Next unresolved checks: their complete center-row assembly, pole moments,
+projection/coercivity, then spectral assembly.
 No unchecked draft is a proved theorem or a completed contribution.

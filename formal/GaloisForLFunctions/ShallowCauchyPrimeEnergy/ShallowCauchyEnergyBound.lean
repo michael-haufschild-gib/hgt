@@ -153,7 +153,7 @@ theorem card_xiRightUpperWindow_eq_shallow_add_deep (h T : ℝ) :
   have hdeep_eq : xiDeepRightUpperWindow h T =
       (xiRightUpperWindow T).filter (fun p => ¬ (xiRightCenteredZero p.1).re ≤ h) := by
     unfold xiDeepRightUpperWindow
-    exact Finset.filter_congr fun _ _ => not_lt.symm.not_left
+    exact Finset.filter_congr fun _ _ => not_le.symm
   have hsum := Finset.sum_filter_add_sum_filter_not (xiRightUpperWindow T)
     (fun p : XiRightUpperZeroCopy => (xiRightCenteredZero p.1).re ≤ h) (fun _ => (1 : ℕ))
   simp only [Finset.sum_const, smul_eq_mul, mul_one] at hsum
@@ -560,6 +560,7 @@ theorem exists_xiShallowCauchyEnergy_one_div_log_le :
   have hh_64 : 1 / Real.log T ≤ 1 / 64 := by
     rw [div_le_div_iff₀ hL0 (by norm_num)]
     linarith
+  have hLne : Real.log T ≠ 0 := hL0.ne'
   have hmax : max κ₂ (2 * (1 / Real.log T) * Real.log T) = κ₂ := by
     have h2 : 2 * (1 / Real.log T) * Real.log T = 2 := by field_simp
     rw [h2]

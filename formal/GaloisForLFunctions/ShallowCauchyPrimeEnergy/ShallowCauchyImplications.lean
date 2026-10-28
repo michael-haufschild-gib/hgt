@@ -613,7 +613,6 @@ theorem exists_arbitrary_deepFraction_with_linear_shallowEnergy_budget :
       _ = (ε / 2) * (16 * Real.pi * C_deep / ε) := by
           have hεne : ε ≠ 0 := hε.ne'
           field_simp
-          ring
       _ ≤ (ε / 2) * α := mul_le_mul_of_nonneg_left hα_lb (by positivity)
   have hlog_sub : ∀ᶠ T : ℝ in atTop,
       8 * Real.pi * C_deep * Real.log T ≤ (ε / 2) * T := by

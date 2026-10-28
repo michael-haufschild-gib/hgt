@@ -350,9 +350,8 @@ theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefOnGroup p)
   obtain ⟨r, hr, h1⟩ := hp.map_one_eq
   refine (Nat.cast_le.mpr ?_).trans
     (hermNegIndex_gram_le_negIndex _ (testFamily (κ := κ) u N))
-  have hcard : Fintype.card (Fin κ) = κ := Fintype.card_fin κ
-  rw [← hcard]
-  refine card_le_hermNegIndex_of_forall_neg _ (testMatrix χ ω u N).mulVecLin fun a ha => ?_
+  refine (Fintype.card_fin κ).symm.le.trans
+    (card_le_hermNegIndex_of_forall_neg _ (testMatrix χ ω u N).mulVecLin fun a ha => ?_)
   set c := testMatrix χ ω u N *ᵥ a with hc
   rw [Matrix.mulVecLin_apply, hermQuad_gram_add, hermQuad_gram_sum]
   -- the pair terms

@@ -99,7 +99,7 @@ theorem hermQuad_nonneg_of_hermNegIndex_eq_zero {ι : Type*} [Fintype ι] {H : M
 
 /-- The quadratic form at `e_i + z e_j`. -/
 theorem dotProduct_single_add_single {ι : Type*} [Fintype ι] [DecidableEq ι] (H : Matrix ι ι ℂ)
-    {i j : ι} (hij : i ≠ j) (z : ℂ) :
+    (i j : ι) (z : ℂ) :
     star (Pi.single i 1 + Pi.single j z) ⬝ᵥ H *ᵥ (Pi.single i 1 + Pi.single j z) =
       H i i + H i j * z + conj z * H j i + conj z * H j j * z := by
   have hcol : ∀ (k : ι) (w : ℂ), H *ᵥ Pi.single k w = fun a => H a k * w := fun k w => by
@@ -128,7 +128,7 @@ theorem norm_add_conj_le_of_hermNegIndex_eq_zero {ι : Type*} [Fintype ι] [Deci
   set z : ℂ := -(conj S / (‖S‖ : ℂ)) with hz_def
   have hq := hermQuad_nonneg_of_hermNegIndex_eq_zero h (Pi.single i 1 + Pi.single j z)
   unfold hermQuad at hq
-  rw [dotProduct_single_add_single H hij z] at hq
+  rw [dotProduct_single_add_single H i j z] at hq
   have hzz : conj z * z = 1 := by
     rw [hz_def, map_neg, map_div₀, Complex.conj_conj, Complex.conj_ofReal, neg_mul_neg,
       div_mul_div_comm, mul_comm S, ← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq]
@@ -267,7 +267,7 @@ theorem not_dyadicPositive_and_of_unbounded {lam lam' : ℕ → ℝ} {f : ℝ �
 
 /-- A nonnegative nonzero `C²` generator has autocorrelation bounded below near the origin. -/
 theorem exists_re_weilTest_ge {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
-    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) :
+    (hfc : HasCompactSupport (cx f)) (hne : ∃ x, f x ≠ 0) :
     ∃ r > 0, ∃ c > 0, ∀ x : ℝ, |x| ≤ r → c ≤ (EF.weilTest (cx f) (cx f) x).re := by
   have hcont : Continuous fun x => (EF.weilTest (cx f) (cx f) x).re :=
     Complex.continuous_re.comp (EF.weilTest_contDiff hf hf.continuous hfc).continuous
@@ -326,5 +326,183 @@ theorem primeMass_ge_window {u : ℕ → ℝ} (hu : ∀ n, 2 ≤ n → 0 ≤ u n
   refine this.trans (mul_le_mul_of_nonneg_left ?_ hwn)
   simp only [ArithmeticCastelnuovoSeveri.translate] at hk2 ⊢
   linarith
+
+/-! ### Growth of the mass along the lags -/
+
+/-- Integers in `[x, y]`: at least `y − x − 1` of them. -/
+theorem le_card_Icc_ceil_floor {x y : ℝ} (hx : 0 ≤ x) :
+    y - x - 1 ≤ ((Finset.Icc ⌈x⌉₊ ⌊y⌋₊).card : ℝ) := by
+  rw [Nat.card_Icc]
+  rcases le_or_gt ⌈x⌉₊ (⌊y⌋₊ + 1) with h | h
+  · rw [Nat.cast_sub h]
+    push_cast
+    have h1 := Nat.ceil_lt_add_one hx
+    rcases le_or_gt 0 y with hy | hy
+    · have h2 := Nat.lt_floor_add_one y
+      linarith
+    · have : ⌊y⌋₊ = 0 := Nat.floor_of_nonpos hy.le
+      rw [this]; push_cast; linarith [Nat.cast_nonneg (α := ℝ) ⌈x⌉₊]
+  · rw [Nat.sub_eq_zero_of_le h.le, Nat.cast_zero]
+    have h1 : (⌊y⌋₊ : ℝ) + 1 < ⌈x⌉₊ := by exact_mod_cast h
+    have h2 : (⌈x⌉₊ : ℝ) < x + 1 := Nat.ceil_lt_add_one hx
+    rcases le_or_gt 0 y with hy | hy
+    · have h3 := Nat.lt_floor_add_one y
+      linarith
+    · linarith
+
+/-- `e^{δx} − B` exceeds every bound along `x = d log 2`. -/
+theorem exists_nat_lt_exp {A δ B M R : ℝ} (hA : 0 < A) (hδ : 0 < δ) :
+    ∃ d : ℕ, 1 ≤ d ∧ R < (d : ℝ) * Real.log 2 ∧
+      M < A * Real.exp (δ * ((d : ℝ) * Real.log 2)) - B := by
+  have hl : 0 < Real.log 2 := Real.log_pos one_lt_two
+  obtain ⟨d, hd⟩ := exists_nat_gt (max 1 (max (R / Real.log 2) ((M + B) / (A * δ * Real.log 2))))
+  have hd1 : (1 : ℝ) < d := lt_of_le_of_lt (le_max_left _ _) hd
+  have hdR : R / Real.log 2 < d := lt_of_le_of_lt ((le_max_left _ _).trans (le_max_right _ _)) hd
+  have hdM : (M + B) / (A * δ * Real.log 2) < d :=
+    lt_of_le_of_lt ((le_max_right _ _).trans (le_max_right _ _)) hd
+  refine ⟨d, by exact_mod_cast hd1.le, ?_, ?_⟩
+  · rwa [div_lt_iff₀ hl] at hdR
+  · have hexp := Real.add_one_le_exp (δ * ((d : ℝ) * Real.log 2))
+    have hAδ : 0 < A * δ * Real.log 2 := by positivity
+    rw [div_lt_iff₀ hAδ] at hdM
+    nlinarith
+
+/-- The window `[e^{D − r}, e^{D + r}]` of integers. -/
+theorem mem_logWindow {D r : ℝ} (hDr : r < D) {n : ℕ}
+    (hn : n ∈ Finset.Icc ⌈Real.exp (D - r)⌉₊ ⌊Real.exp (D + r)⌋₊) :
+    2 ≤ n ∧ |Real.log n - D| ≤ r ∧ (n : ℝ) ≤ Real.exp (D + r) := by
+  obtain ⟨h1, h2⟩ := Finset.mem_Icc.mp hn
+  have hlo : Real.exp (D - r) ≤ n := (Nat.le_ceil _).trans (by exact_mod_cast h1)
+  have hhi : (n : ℝ) ≤ Real.exp (D + r) :=
+    (Nat.cast_le.mpr h2).trans (Nat.floor_le (Real.exp_pos _).le)
+  have hone : 1 < Real.exp (D - r) := Real.one_lt_exp.mpr (by linarith)
+  have hn2 : 2 ≤ n := by
+    have : 1 < (n : ℝ) := lt_of_lt_of_le hone hlo
+    have : 1 < n := by exact_mod_cast this
+    omega
+  have hnpos : (0 : ℝ) < n := by positivity
+  refine ⟨hn2, abs_le.mpr ⟨?_, ?_⟩, hhi⟩
+  · have := Real.log_le_log (Real.exp_pos _) hlo
+    rw [Real.log_exp] at this; linarith
+  · have := Real.log_le_log hnpos hhi
+    rw [Real.log_exp] at this; linarith
+
+/-! ### Brun–Titchmarsh and short-interval PNT do not decide the sign -/
+
+/-- The perturbation `ε n^{−η}` changes the partial sums on `(a, b]` by at most `ε (b − a) a^{−η}`:
+every statement on prime sums in intervals that tolerates a relative error `o(1)` holds for `λ` and
+for `λ + ε n^{−η}` alike. -/
+theorem sum_perturbation_Ioc_le (lam : ℕ → ℝ) {ε η : ℝ} (hε : 0 ≤ ε) (hη : 0 ≤ η) {a b : ℕ}
+    (ha : 1 ≤ a) :
+    0 ≤ ∑ n ∈ Finset.Ioc a b, (lam n + ε * (n : ℝ) ^ (-η)) - ∑ n ∈ Finset.Ioc a b, lam n ∧
+      ∑ n ∈ Finset.Ioc a b, (lam n + ε * (n : ℝ) ^ (-η)) - ∑ n ∈ Finset.Ioc a b, lam n ≤
+        ε * ((b : ℝ) - a) * (a : ℝ) ^ (-η) := by
+  rw [Finset.sum_add_distrib, add_sub_cancel_left]
+  refine ⟨Finset.sum_nonneg fun n _ => mul_nonneg hε (Real.rpow_nonneg (Nat.cast_nonneg _) _), ?_⟩
+  have hterm : ∀ n ∈ Finset.Ioc a b, ε * (n : ℝ) ^ (-η) ≤ ε * (a : ℝ) ^ (-η) := by
+    intro n hn
+    have hna : a < n := (Finset.mem_Ioc.mp hn).1
+    refine mul_le_mul_of_nonneg_left ?_ hε
+    exact Real.rpow_le_rpow_of_nonpos (by exact_mod_cast ha) (by exact_mod_cast hna.le)
+      (neg_nonpos.mpr hη)
+  refine (Finset.sum_le_sum hterm).trans ?_
+  rw [Finset.sum_const, Nat.card_Ioc, nsmul_eq_mul]
+  rcases le_or_gt a b with hab | hab
+  · rw [Nat.cast_sub hab]; ring_nf; rfl
+  · rw [Nat.sub_eq_zero_of_le hab.le, Nat.cast_zero, zero_mul]
+    have : (b : ℝ) - a ≤ 0 := by have : (b : ℝ) < a := by exact_mod_cast hab
+                                   linarith
+    have hpos : 0 ≤ ε * (a : ℝ) ^ (-η) := mul_nonneg hε (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+    nlinarith
+
+/-- **`λ` and `λ + ε n^{−η}` are never both dyadic positive** along a nonnegative generator, for
+`0 < η < 1/2`. The difference has dyadic mass `≥ c ε (1 − e^{−2r}) 2^{(1/2 − η)d} − cε`. -/
+theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
+    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) {ε η : ℝ}
+    (hε : 0 < ε) (hη : 0 < η) (hη2 : η < 1 / 2) :
+    ¬ (DyadicPositive lam (cx f) ∧
+      DyadicPositive (fun n => lam n + ε * (n : ℝ) ^ (-η)) (cx f)) := by
+  obtain ⟨r, hr, c, hc, hk⟩ := exists_re_weilTest_ge hf hfc hne
+  refine not_dyadicPositive_and_of_unbounded hf0 hfc
+    (fun n _ => le_add_of_nonneg_right (mul_nonneg hε.le (Real.rpow_nonneg (Nat.cast_nonneg _) _)))
+    fun M => ?_
+  set δ : ℝ := 1 / 2 - η
+  have hδ : 0 < δ := by simp only [δ]; linarith
+  have hA : 0 < c * ε * (1 - Real.exp (-(2 * r))) := by
+    have : Real.exp (-(2 * r)) < 1 := Real.exp_lt_one_of_neg (by linarith)
+    have : 0 < 1 - Real.exp (-(2 * r)) := by linarith
+    positivity
+  obtain ⟨d, hd1, hdr, hdM⟩ := exists_nat_lt_exp (B := c * ε) (M := M) (R := r) hA hδ
+  refine ⟨d, hd1, lt_of_lt_of_le hdM ?_⟩
+  set D : ℝ := (d : ℝ) * Real.log 2
+  set W := Finset.Icc ⌈Real.exp (D - r)⌉₊ ⌊Real.exp (D + r)⌋₊
+  have hu : ∀ n, 2 ≤ n → 0 ≤ lam n + ε * (n : ℝ) ^ (-η) - lam n := fun n _ => by
+    rw [add_sub_cancel_left]; exact mul_nonneg hε.le (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+  have hwin := primeMass_ge_window hu hf0 hfc hk D W fun n hn =>
+    ⟨(mem_logWindow hdr hn).1, (mem_logWindow hdr hn).2.1⟩
+  refine le_trans ?_ hwin
+  -- each weight is at least `ε e^{−(1/2 + η)(D + r)}`
+  have hlow : ∀ n ∈ W, ε * Real.exp (-(1 / 2 + η) * (D + r)) ≤
+      (lam n + ε * (n : ℝ) ^ (-η) - lam n) / Real.sqrt n := by
+    intro n hn
+    obtain ⟨h2, -, hhi⟩ := mem_logWindow hdr hn
+    have hnpos : (0 : ℝ) < n := by have : (2 : ℝ) ≤ n := by exact_mod_cast h2
+                                    linarith
+    rw [add_sub_cancel_left, Real.sqrt_eq_rpow, mul_div_assoc, ← Real.rpow_sub hnpos]
+    refine mul_le_mul_of_nonneg_left ?_ hε.le
+    have e : Real.exp (-(1 / 2 + η) * (D + r)) = Real.exp (D + r) ^ (-η - 1 / 2) := by
+      rw [← Real.exp_mul]; congr 1; ring
+    rw [e]
+    exact Real.rpow_le_rpow_of_nonpos hnpos hhi (by linarith)
+  have hsum : (W.card : ℝ) * (ε * Real.exp (-(1 / 2 + η) * (D + r))) ≤
+      ∑ n ∈ W, (lam n + ε * (n : ℝ) ^ (-η) - lam n) / Real.sqrt n := by
+    rw [← nsmul_eq_mul, ← Finset.sum_const]; exact Finset.sum_le_sum hlow
+  have hcard := le_card_Icc_ceil_floor (x := Real.exp (D - r)) (y := Real.exp (D + r))
+    (Real.exp_pos _).le
+  -- the window count times the weight
+  have hE : 0 ≤ ε * Real.exp (-(1 / 2 + η) * (D + r)) := by positivity
+  have hmain : c * ε * (1 - Real.exp (-(2 * r))) * Real.exp (δ * D) - c * ε ≤
+      c * ((Real.exp (D + r) - Real.exp (D - r) - 1) * (ε * Real.exp (-(1 / 2 + η) * (D + r)))) := by
+    have e1 : Real.exp (D + r) * Real.exp (-(1 / 2 + η) * (D + r)) = Real.exp (δ * (D + r)) := by
+      rw [← Real.exp_add]; congr 1; simp only [δ]; ring
+    have e2 : Real.exp (D - r) * Real.exp (-(1 / 2 + η) * (D + r)) =
+        Real.exp (δ * (D + r)) * Real.exp (-(2 * r)) := by
+      rw [← Real.exp_add, ← Real.exp_add]; congr 1; simp only [δ]; ring
+    have e3 : Real.exp (δ * D) ≤ Real.exp (δ * (D + r)) :=
+      Real.exp_le_exp.mpr (by nlinarith)
+    have e4 : Real.exp (-(1 / 2 + η) * (D + r)) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (by nlinarith [Real.log_pos one_lt_two])
+    have h1e : 0 ≤ 1 - Real.exp (-(2 * r)) := by
+      have : Real.exp (-(2 * r)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+      linarith
+    have : (Real.exp (D + r) - Real.exp (D - r) - 1) * (ε * Real.exp (-(1 / 2 + η) * (D + r))) =
+        ε * (Real.exp (δ * (D + r)) * (1 - Real.exp (-(2 * r))) -
+          Real.exp (-(1 / 2 + η) * (D + r))) := by
+      rw [show (Real.exp (D + r) - Real.exp (D - r) - 1) * (ε * Real.exp (-(1 / 2 + η) * (D + r)))
+          = ε * (Real.exp (D + r) * Real.exp (-(1 / 2 + η) * (D + r)) -
+            Real.exp (D - r) * Real.exp (-(1 / 2 + η) * (D + r)) -
+              Real.exp (-(1 / 2 + η) * (D + r))) by ring, e1, e2]
+      ring
+    rw [this]
+    have := mul_le_mul_of_nonneg_right e3 h1e
+    nlinarith [mul_le_mul_of_nonneg_left this (by positivity : 0 ≤ c * ε)]
+  calc c * ε * (1 - Real.exp (-(2 * r))) * Real.exp (δ * D) - c * ε
+      ≤ c * ((Real.exp (D + r) - Real.exp (D - r) - 1) *
+          (ε * Real.exp (-(1 / 2 + η) * (D + r)))) := hmain
+    _ ≤ c * ((W.card : ℝ) * (ε * Real.exp (-(1 / 2 + η) * (D + r)))) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hcard hE) hc.le
+    _ ≤ c * ∑ n ∈ W, (lam n + ε * (n : ℝ) ^ (-η) - lam n) / Real.sqrt n :=
+        mul_le_mul_of_nonneg_left hsum hc.le
+
+/-- **The von Mangoldt weight and its `n^{−η}` perturbation** share all interval statements up to
+relative error `O(a^{−η})` (`sum_perturbation_Ioc_le`), yet at most one of them is dyadic positive
+along any nonnegative generator. -/
+theorem not_dyadicPositive_vonMangoldt_and_perturbed {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
+    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) {ε η : ℝ}
+    (hε : 0 < ε) (hη : 0 < η) (hη2 : η < 1 / 2) :
+    ¬ (DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (cx f) ∧
+      DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + ε * (n : ℝ) ^ (-η))
+        (cx f)) :=
+  not_dyadicPositive_and_perturbed _ hf hfc hf0 hne hε hη hη2
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
