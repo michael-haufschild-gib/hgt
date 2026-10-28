@@ -30,6 +30,7 @@ pairing of the difference `u = λ' − λ` alone (`lagW_sub`). This gives:
 * **Selectivity** (`not_towerPositive_liouvilleTwin_and_vonMangoldt`): `Λ` and its Liouville twin
   are never both tower positive along a nonnegative generator; their difference `2 log p` on the
   primes has mass of order `e^{dℓ/2}` by the prime number theorem.
+-/
 
 open Complex Filter Topology MeasureTheory Matrix
 open scoped ComplexConjugate

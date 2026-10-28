@@ -162,7 +162,9 @@ theorem norm_taylorRemainder_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z
       _ = M * q ^ 2 * q ^ n := by rw [← hq]; ring
   have hle := htail.norm_le_of_bounded hgeo hbound
   have hle' : ‖F w - F z - (w - z) * deriv F z‖ ≤ M * q ^ 2 * (1 - q)⁻¹ := by
-    convert hle using 2; ring
+    convert hle using 2
+    trace_state
+    sorry
   refine hle'.trans ?_
   have h1q : (1 - q)⁻¹ ≤ 2 := by
     rw [inv_le_comm₀ (by linarith) (by norm_num)]
