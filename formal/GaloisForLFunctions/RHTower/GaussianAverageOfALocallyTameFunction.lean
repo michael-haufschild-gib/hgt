@@ -157,14 +157,13 @@ theorem norm_taylorRemainder_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z
     calc ((n + 2)! : ℝ)⁻¹ * (‖w - z‖ ^ (n + 2) * ‖iteratedDeriv (n + 2) F z‖)
         ≤ ((n + 2)! : ℝ)⁻¹ * (‖w - z‖ ^ (n + 2) * ((n + 2)! * M / ρ ^ (n + 2))) := by
           gcongr
-      _ = M * q ^ 2 * q ^ n := by
-          rw [hq, div_pow]
-          field_simp
-          ring
+      _ = M * (‖w - z‖ / ρ) ^ (n + 2) := by
+          rw [div_pow]; field_simp
+      _ = M * q ^ 2 * q ^ n := by rw [← hq]; ring
   have hle := htail.norm_le_of_bounded hgeo hbound
-  have hrem : F w - (F z + (w - z) * deriv F z) = F w - F z - (w - z) * deriv F z := by ring
-  rw [hrem] at hle
-  refine hle.trans ?_
+  have hle' : ‖F w - F z - (w - z) * deriv F z‖ ≤ M * q ^ 2 * (1 - q)⁻¹ := by
+    convert hle using 2; ring
+  refine hle'.trans ?_
   have h1q : (1 - q)⁻¹ ≤ 2 := by
     rw [inv_le_comm₀ (by linarith) (by norm_num)]
     linarith
@@ -212,7 +211,7 @@ theorem norm_integral_gaussDensity_mul_sub_le {F : ℂ → ℂ} (hF : Differenti
   -- the pointwise bound on the Taylor remainder along the vertical line
   set G : ℝ → ℂ := fun u => F (z - I * u) - F z - (-(I * u)) * deriv F z with hG
   set phi : ℝ → ℝ := fun u => 6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))
-      + (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|)) with hφ
+      + (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|)) with hphi
   have hphi1 : ∀ u, 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|)) :=
     fun u => by positivity
   have hphi0 : ∀ u, 0 ≤ 6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|)) := fun u => by positivity

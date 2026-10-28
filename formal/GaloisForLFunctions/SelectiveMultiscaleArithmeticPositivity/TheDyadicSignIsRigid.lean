@@ -7,29 +7,29 @@ import GaloisForLFunctions.RHTower.ThetaPrimeScheduleSpectralObservation
 /-!
 # The dyadic sign of one generator is rigid
 
-Weil's form on the dyadic tower `g, T_{log 2} g, T_{2 log 2} g, …` of one generator is a Toeplitz
-form in the lag (`weilGram_tower_apply`): the entry of levels `i, j` is `W_λ(T_{(i−j) log 2} k)`,
-`k = g ⋆ g̃`. Positivity of the single window `{0, d}` bounds the symmetrized lag correlation by the
-diagonal (`norm_lagSym_le`): `‖W(T_{−D}k) + conj W(T_D k)‖ ≤ 2 Re W(k)`, `D = d log 2`.
+Weil's form on the tower `g, T_ℓ g, T_{2ℓ} g, …` of one generator (`ℓ = log 2` for the dyadic
+tower, `ℓ = log p` for the Hecke tower of `p`) is a Toeplitz form in the lag
+(`weilGram_tower_apply`): the entry of levels `i, j` is `W_λ(T_{(i−j)ℓ} k)`, `k = g ⋆ g̃`. Positivity
+of the single window `{0, d}` bounds the symmetrized lag correlation by the diagonal
+(`norm_lagSym_le`): `‖W(T_{−D}k) + conj W(T_D k)‖ ≤ 2 Re W(k)`, `D = dℓ`.
 
 Two weights share the archimedean and pole terms, so their lag correlations differ by the prime
 pairing of the difference `u = λ' − λ` alone (`lagW_sub`). This gives:
 
-* **Rigidity** (`primeMass_add_le_of_dyadicPositive`): if `λ` and `λ'` are both dyadic positive
-  along `g`, the dyadic prime mass of `u` at every lag is at most `2 Re W_λ(k) + 2 Re W_{λ'}(k)`.
+* **Rigidity** (`primeMass_add_le_of_towerPositive`): if `λ` and `λ'` are both positive along the
+  tower of `g`, the prime mass of `u` at every lag is at most `2 Re W_λ(k) + 2 Re W_{λ'}(k)`.
 * For a nonnegative generator and a one-signed difference the prime mass is a sum of nonnegative
-  terms, so unbounded mass along the lags excludes that both weights are dyadic positive
-  (`not_dyadicPositive_and_of_unbounded`). The failing window is `{0, d}` at the first lag where
-  the mass exceeds the two diagonals.
+  terms, so unbounded mass along the lags excludes that both weights are tower positive
+  (`not_towerPositive_and_of_unbounded`). The failing window is `{0, d}` at the first lag where the
+  mass exceeds the two diagonals.
 * **Brun–Titchmarsh and short-interval prime number theorems do not decide the sign**
-  (`not_dyadicPositive_vonMangoldt_and_perturbed`): `Λ` and `Λ + ε n^{−η}`, `0 < η < 1/2`, are
-  never both dyadic positive, although their partial sums on every interval `(a, b]` differ by at
-  most `ε (b − a) a^{−η}` (`sum_perturbation_Ioc_le`). Any statement on primes in intervals that is
+  (`not_towerPositive_and_perturbed`): `λ` and `λ + ε n^{−η}`, `0 < η < 1/2`, are never both tower
+  positive, although their partial sums on every interval `(a, b]` differ by at most
+  `ε (b − a) a^{−η}` (`sum_perturbation_Ioc_le`). Any statement on primes in intervals that is
   stable under a relative error `o(1)` holds for both.
-* **Selectivity** (`not_dyadicPositive_vonMangoldt_and_liouvilleTwin`): `Λ` and its Liouville twin
-  are never both dyadic positive along a nonnegative generator; their difference `2 log p` on the
-  primes has dyadic mass of order `2^{d/2}` by the prime number theorem.
--/
+* **Selectivity** (`not_towerPositive_liouvilleTwin_and_vonMangoldt`): `Λ` and its Liouville twin
+  are never both tower positive along a nonnegative generator; their difference `2 log p` on the
+  primes has mass of order `e^{dℓ/2}` by the prime number theorem.
 
 open Complex Filter Topology MeasureTheory Matrix
 open scoped ComplexConjugate
@@ -45,10 +45,13 @@ local notation "Tr" => ArithmeticCastelnuovoSeveri.translate
 
 /-! ### Dyadic towers and their lag correlations -/
 
-/-- Dyadic positivity of a weight along a generator: every finite window of the `T_{log 2}`-tower
-has a Weil Gram matrix without negative squares. -/
-def DyadicPositive (lam : ℕ → ℝ) (g : ℝ → ℂ) : Prop :=
-  ∀ K : Finset ℤ, hermNegIndex (weilGram lam fun k : K => Tr ((k : ℤ) * Real.log 2) g) = 0
+/-- Positivity of a weight along the tower `T_{kℓ} g`, `k ∈ ℤ`: every finite window has a Weil Gram
+matrix without negative squares. At `ℓ = log p` this is the Hecke tower of the prime `p`. -/
+def TowerPositive (lam : ℕ → ℝ) (g : ℝ → ℂ) (ℓ : ℝ) : Prop :=
+  ∀ K : Finset ℤ, hermNegIndex (weilGram lam fun k : K => Tr ((k : ℤ) * ℓ) g) = 0
+
+/-- Dyadic positivity: positivity along the tower of the prime two. -/
+abbrev DyadicPositive (lam : ℕ → ℝ) (g : ℝ → ℂ) : Prop := TowerPositive lam g (Real.log 2)
 
 /-- The lag correlation `W_λ(T_s k)`, `k = g ⋆ g̃`. -/
 def lagW (lam : ℕ → ℝ) (g : ℝ → ℂ) (s : ℝ) : ℂ :=
@@ -159,10 +162,10 @@ theorem norm_add_conj_le_of_hermNegIndex_eq_zero {ι : Type*} [Fintype ι] [Deci
   rw [hsplit, hcross, hdiag] at hq
   linarith
 
-/-- **One window bounds the lag**: if `λ` is dyadic positive along `g`, then for every lag
-`d`, `‖W(T_{−D}k) + conj W(T_D k)‖ ≤ 2 Re W(k)`, `D = d log 2`. -/
-theorem norm_lagSym_le {lam : ℕ → ℝ} {g : ℝ → ℂ} (h : DyadicPositive lam g) (d : ℤ) :
-    ‖lagW lam g (-((d : ℝ) * Real.log 2)) + conj (lagW lam g ((d : ℝ) * Real.log 2))‖ ≤
+/-- **One window bounds the lag**: if `λ` is positive along the tower of `g` at scale `ℓ`, then for
+every lag `d`, `‖W(T_{−D}k) + conj W(T_D k)‖ ≤ 2 Re W(k)`, `D = dℓ`. -/
+theorem norm_lagSym_le {lam : ℕ → ℝ} {g : ℝ → ℂ} {ℓ : ℝ} (h : TowerPositive lam g ℓ) (d : ℤ) :
+    ‖lagW lam g (-((d : ℝ) * ℓ)) + conj (lagW lam g ((d : ℝ) * ℓ))‖ ≤
       2 * (lagW lam g 0).re := by
   classical
   set K : Finset ℤ := {0, d}
@@ -211,14 +214,14 @@ theorem re_lagW_sub (lam lam' : ℕ → ℝ) {g : ℝ → ℂ} (hgc : HasCompact
   refine tsum_congr fun n => ?_
   rw [Complex.re_ofReal_mul, Complex.add_re]
 
-/-- **Rigidity of the dyadic sign.** If two weights are dyadic positive along `g`, the dyadic prime
+/-- **Rigidity of the tower sign.** If two weights are positive along the tower of `g`, the prime
 mass of their difference at every lag is bounded by the two diagonals. -/
-theorem primeMass_add_le_of_dyadicPositive {lam lam' : ℕ → ℝ} {g : ℝ → ℂ}
-    (hgc : HasCompactSupport g) (h : DyadicPositive lam g) (h' : DyadicPositive lam' g) (d : ℤ) :
-    primeMass (fun n => lam' n - lam n) g (-((d : ℝ) * Real.log 2)) +
-        primeMass (fun n => lam' n - lam n) g ((d : ℝ) * Real.log 2) ≤
+theorem primeMass_add_le_of_towerPositive {lam lam' : ℕ → ℝ} {g : ℝ → ℂ} {ℓ : ℝ}
+    (hgc : HasCompactSupport g) (h : TowerPositive lam g ℓ) (h' : TowerPositive lam' g ℓ) (d : ℤ) :
+    primeMass (fun n => lam' n - lam n) g (-((d : ℝ) * ℓ)) +
+        primeMass (fun n => lam' n - lam n) g ((d : ℝ) * ℓ) ≤
       2 * ((lagW lam g 0).re + (lagW lam' g 0).re) := by
-  set D : ℝ := (d : ℝ) * Real.log 2
+  set D : ℝ := (d : ℝ) * ℓ
   set S := lagW lam g (-D) + conj (lagW lam g D)
   set S' := lagW lam' g (-D) + conj (lagW lam' g D)
   have hre : (S' - S).re = -(primeMass (fun n => lam' n - lam n) g (-D) +
@@ -247,18 +250,18 @@ theorem primeMass_nonneg {u : ℕ → ℝ} (hu : ∀ n, 2 ≤ n → 0 ≤ u n) {
   · exact ArithmeticCorrespondencePositivity.re_weilTest_nonneg hf _
 
 /-- **Unbounded mass excludes a pair.** For a nonnegative generator and weights `λ ≤ λ'`, if the
-dyadic prime mass of `λ' − λ` is unbounded along the lags, `λ` and `λ'` are not both dyadic
-positive. -/
-theorem not_dyadicPositive_and_of_unbounded {lam lam' : ℕ → ℝ} {f : ℝ → ℝ}
+prime mass of `λ' − λ` is unbounded along the lags `dℓ`, `λ` and `λ'` are not both positive along
+the tower. -/
+theorem not_towerPositive_and_of_unbounded {lam lam' : ℕ → ℝ} {f : ℝ → ℝ} {ℓ : ℝ}
     (hf : ∀ x, 0 ≤ f x) (hfc : HasCompactSupport (cx f)) (hu : ∀ n, 2 ≤ n → lam n ≤ lam' n)
     (hunb : ∀ M : ℝ, ∃ d : ℕ, 1 ≤ d ∧
-      M < primeMass (fun n => lam' n - lam n) (cx f) ((d : ℝ) * Real.log 2)) :
-    ¬ (DyadicPositive lam (cx f) ∧ DyadicPositive lam' (cx f)) := by
+      M < primeMass (fun n => lam' n - lam n) (cx f) ((d : ℝ) * ℓ)) :
+    ¬ (TowerPositive lam (cx f) ℓ ∧ TowerPositive lam' (cx f) ℓ) := by
   rintro ⟨h, h'⟩
   obtain ⟨d, -, hM⟩ := hunb (2 * ((lagW lam (cx f) 0).re + (lagW lam' (cx f) 0).re))
-  have hb := primeMass_add_le_of_dyadicPositive hfc h h' (d : ℤ)
+  have hb := primeMass_add_le_of_towerPositive hfc h h' (d : ℤ)
   have hn := primeMass_nonneg (u := fun n => lam' n - lam n)
-    (fun n hn => sub_nonneg.mpr (hu n hn)) hf (-(((d : ℤ) : ℝ) * Real.log 2))
+    (fun n hn => sub_nonneg.mpr (hu n hn)) hf (-(((d : ℤ) : ℝ) * ℓ))
   push_cast at hb hn
   linarith
 
@@ -347,20 +350,19 @@ theorem le_card_Icc_ceil_floor {x y : ℝ} (hx : 0 ≤ x) :
       linarith
     · linarith
 
-/-- `e^{δx} − B` exceeds every bound along `x = d log 2`. -/
-theorem exists_nat_lt_exp {A δ B M R : ℝ} (hA : 0 < A) (hδ : 0 < δ) :
-    ∃ d : ℕ, 1 ≤ d ∧ R < (d : ℝ) * Real.log 2 ∧
-      M < A * Real.exp (δ * ((d : ℝ) * Real.log 2)) - B := by
-  have hl : 0 < Real.log 2 := Real.log_pos one_lt_two
-  obtain ⟨d, hd⟩ := exists_nat_gt (max 1 (max (R / Real.log 2) ((M + B) / (A * δ * Real.log 2))))
+/-- `A e^{δx} − B` exceeds every bound along `x = dℓ`. -/
+theorem exists_nat_lt_exp {A δ B M R ℓ : ℝ} (hA : 0 < A) (hδ : 0 < δ) (hl : 0 < ℓ) :
+    ∃ d : ℕ, 1 ≤ d ∧ R < (d : ℝ) * ℓ ∧
+      M < A * Real.exp (δ * ((d : ℝ) * ℓ)) - B := by
+  obtain ⟨d, hd⟩ := exists_nat_gt (max 1 (max (R / ℓ) ((M + B) / (A * δ * ℓ))))
   have hd1 : (1 : ℝ) < d := lt_of_le_of_lt (le_max_left _ _) hd
-  have hdR : R / Real.log 2 < d := lt_of_le_of_lt ((le_max_left _ _).trans (le_max_right _ _)) hd
-  have hdM : (M + B) / (A * δ * Real.log 2) < d :=
+  have hdR : R / ℓ < d := lt_of_le_of_lt ((le_max_left _ _).trans (le_max_right _ _)) hd
+  have hdM : (M + B) / (A * δ * ℓ) < d :=
     lt_of_le_of_lt ((le_max_right _ _).trans (le_max_right _ _)) hd
   refine ⟨d, by exact_mod_cast hd1.le, ?_, ?_⟩
   · rwa [div_lt_iff₀ hl] at hdR
-  · have hexp := Real.add_one_le_exp (δ * ((d : ℝ) * Real.log 2))
-    have hAδ : 0 < A * δ * Real.log 2 := by positivity
+  · have hexp := Real.add_one_le_exp (δ * ((d : ℝ) * ℓ))
+    have hAδ : 0 < A * δ * ℓ := by positivity
     rw [div_lt_iff₀ hAδ] at hdM
     nlinarith
 
@@ -407,15 +409,16 @@ theorem sum_perturbation_Ioc_le (lam : ℕ → ℝ) {ε η : ℝ} (hε : 0 ≤ �
   ring_nf
   rfl
 
-/-- **`λ` and `λ + ε n^{−η}` are never both dyadic positive** along a nonnegative generator, for
-`0 < η < 1/2`. The difference has dyadic mass `≥ c ε (1 − e^{−2r}) 2^{(1/2 − η)d} − cε`. -/
-theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
-    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) {ε η : ℝ}
-    (hε : 0 < ε) (hη : 0 < η) (hη2 : η < 1 / 2) :
-    ¬ (DyadicPositive lam (cx f) ∧
-      DyadicPositive (fun n => lam n + ε * (n : ℝ) ^ (-η)) (cx f)) := by
+/-- **`λ` and `λ + ε n^{−η}` are never both positive along a tower** of a nonnegative generator,
+for `0 < η < 1/2` and any scale `ℓ > 0`. The difference has mass
+`≥ c ε (1 − e^{−2r}) e^{(1/2 − η)dℓ} − cε` at the lag `dℓ`. -/
+theorem not_towerPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
+    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) {ε η ℓ : ℝ}
+    (hε : 0 < ε) (hη : 0 < η) (hη2 : η < 1 / 2) (hℓ : 0 < ℓ) :
+    ¬ (TowerPositive lam (cx f) ℓ ∧
+      TowerPositive (fun n => lam n + ε * (n : ℝ) ^ (-η)) (cx f) ℓ) := by
   obtain ⟨r, hr, c, hc, hk⟩ := exists_re_weilTest_ge hf hfc hne
-  refine not_dyadicPositive_and_of_unbounded hf0 hfc
+  refine not_towerPositive_and_of_unbounded hf0 hfc
     (fun n _ => le_add_of_nonneg_right (mul_nonneg hε.le (Real.rpow_nonneg (Nat.cast_nonneg _) _)))
     fun M => ?_
   set δ : ℝ := 1 / 2 - η
@@ -424,9 +427,9 @@ theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (
     have : Real.exp (-(2 * r)) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
     have : 0 < 1 - Real.exp (-(2 * r)) := by linarith
     positivity
-  obtain ⟨d, hd1, hdr, hdM⟩ := exists_nat_lt_exp (B := c * ε) (M := M) (R := r) hA hδ
+  obtain ⟨d, hd1, hdr, hdM⟩ := exists_nat_lt_exp (B := c * ε) (M := M) (R := r) hA hδ hℓ
   refine ⟨d, hd1, lt_of_lt_of_le hdM ?_⟩
-  set D : ℝ := (d : ℝ) * Real.log 2
+  set D : ℝ := (d : ℝ) * ℓ
   set W := Finset.Icc ⌈Real.exp (D - r)⌉₊ ⌊Real.exp (D + r)⌋₊
   have hu : ∀ n, 2 ≤ n → 0 ≤ lam n + ε * (n : ℝ) ^ (-η) - lam n := fun n _ => by
     rw [add_sub_cancel_left]; exact mul_nonneg hε.le (Real.rpow_nonneg (Nat.cast_nonneg _) _)
@@ -463,7 +466,7 @@ theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (
     have e3 : Real.exp (δ * D) ≤ Real.exp (δ * (D + r)) :=
       Real.exp_le_exp.mpr (by nlinarith)
     have e4 : Real.exp (-(1 / 2 + η) * (D + r)) ≤ 1 :=
-      Real.exp_le_one_iff.mpr (by nlinarith [Real.log_pos one_lt_two])
+      Real.exp_le_one_iff.mpr (by nlinarith)
     have h1e : 0 ≤ 1 - Real.exp (-(2 * r)) := by
       have : Real.exp (-(2 * r)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
       linarith
@@ -501,7 +504,7 @@ theorem not_dyadicPositive_vonMangoldt_and_perturbed {f : ℝ → ℝ} (hf : Con
     ¬ (DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (cx f) ∧
       DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + ε * (n : ℝ) ^ (-η))
         (cx f)) :=
-  not_dyadicPositive_and_perturbed _ hf hfc hf0 hne hε hη hη2
+  not_towerPositive_and_perturbed _ hf hfc hf0 hne hε hη hη2 (Real.log_pos one_lt_two)
 
 /-! ### Selectivity: the Liouville twin -/
 
@@ -513,16 +516,17 @@ theorem vonMangoldt_sub_liouvilleTwin_prime {p : ℕ} (hp : p.Prime) :
     ArithmeticFunction.vonMangoldt_apply_prime hp]
   ring
 
-/-- **`Λ` and its Liouville twin are never both dyadic positive** along a nonnegative generator.
-The difference `2 log p` on the primes of the window `(e^{D − r}, e^{D + r}]` has mass at least
-`c (e^{2r} − 1) e^{D/2 − 3r/2}` once the prime number theorem holds there to relative accuracy
-`(e^{2r} − 1)/(2(e^{2r} + 1))`. -/
-theorem not_dyadicPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
-    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) :
-    ¬ (DyadicPositive ArithmeticCorrespondencePositivity.liouvilleTwin (cx f) ∧
-      DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (cx f)) := by
+/-- **`Λ` and its Liouville twin are never both positive along a tower** of a nonnegative
+generator, at any scale `ℓ > 0`. The difference `2 log p` on the primes of the window
+`(e^{D − r}, e^{D + r}]` has mass at least `c (e^{2r} − 1) e^{D/2 − 3r/2}` once the prime number
+theorem holds there to relative accuracy `(e^{2r} − 1)/(2(e^{2r} + 1))`. -/
+theorem not_towerPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
+    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) {ℓ : ℝ}
+    (hℓ : 0 < ℓ) :
+    ¬ (TowerPositive ArithmeticCorrespondencePositivity.liouvilleTwin (cx f) ℓ ∧
+      TowerPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (cx f) ℓ) := by
   obtain ⟨r, hr, c, hc, hk⟩ := exists_re_weilTest_ge hf hfc hne
-  refine not_dyadicPositive_and_of_unbounded hf0 hfc
+  refine not_towerPositive_and_of_unbounded hf0 hfc
     (fun n _ => ArithmeticCorrespondencePositivity.liouvilleTwin_le n) fun M => ?_
   set C : ℝ := Real.exp (2 * r)
   have hC1 : 1 < C := Real.one_lt_exp_iff.mpr (by linarith)
@@ -533,9 +537,9 @@ theorem not_dyadicPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf :
     have : 0 < C - 1 := by linarith
     positivity
   obtain ⟨d, hd1, hdR, hdM⟩ := exists_nat_lt_exp (B := 0) (M := M)
-    (R := r + Real.log (max X₀ 1)) hA (by norm_num : (0 : ℝ) < 1 / 2)
+    (R := r + Real.log (max X₀ 1)) hA (by norm_num : (0 : ℝ) < 1 / 2) hℓ
   refine ⟨d, hd1, lt_of_lt_of_le hdM ?_⟩
-  set D : ℝ := (d : ℝ) * Real.log 2
+  set D : ℝ := (d : ℝ) * ℓ
   set x : ℝ := Real.exp (D - r)
   have hx0 : 0 ≤ x := (Real.exp_pos _).le
   have hCx : C * x = Real.exp (D + r) := by
@@ -614,5 +618,13 @@ theorem not_dyadicPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf :
   refine le_trans ?_ hsum
   rw [← htheta]
   exact mul_le_mul_of_nonneg_left hθ (by positivity)
+
+/-- **Selectivity on the dyadic tower**: `Λ` and its Liouville twin are never both dyadic
+positive along a nonnegative generator. -/
+theorem not_dyadicPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
+    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) :
+    ¬ (DyadicPositive ArithmeticCorrespondencePositivity.liouvilleTwin (cx f) ∧
+      DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (cx f)) :=
+  not_towerPositive_liouvilleTwin_and_vonMangoldt hf hfc hf0 hne (Real.log_pos one_lt_two)
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
