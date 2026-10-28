@@ -237,8 +237,10 @@ theorem riemannHypothesis_iff_dyadicPositive_poleFree_small {ε : ℝ} (hε : 0 
     rw [← rightZeros_zeta_eq_empty_iff]
     by_contra hne
     obtain ⟨ρ, hρ⟩ := Set.nonempty_iff_ne_empty.mpr hne
-    have h1 : ((1 : ℕ) : ℕ∞) ≤ (outerEig zetaZeroConfig (Real.log (2 : ℕ))).encard :=
-      by exact_mod_cast Set.one_le_encard_iff_nonempty.mpr ⟨frobEig (Real.log (2 : ℕ)) ρ, ρ, hρ, rfl⟩
+    have hne' : (outerEig zetaZeroConfig (Real.log (2 : ℕ))).Nonempty :=
+      ⟨frobEig (Real.log (2 : ℕ)) ρ, ρ, hρ, rfl⟩
+    have h1 : ((1 : ℕ) : ℕ∞) ≤ (outerEig zetaZeroConfig (Real.log (2 : ℕ))).encard := by
+      rw [Nat.cast_one]; exact Set.one_le_encard_iff_nonempty.mpr hne'
     obtain ⟨g, hg, hgs, hp1, hp2, K, hK⟩ := hlaw.mpr h1
     have h0 := hpos g hg hgs hp1 hp2 K
     simp only [Nat.cast_ofNat] at hK h0

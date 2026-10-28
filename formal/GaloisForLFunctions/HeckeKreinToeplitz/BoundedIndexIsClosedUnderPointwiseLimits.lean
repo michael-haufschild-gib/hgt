@@ -33,8 +33,8 @@ theorem hermQuad_add (A B : Matrix ι ι ℂ) (x : ι → ℂ) :
 /-- The Hermitian form is bounded by the entrywise `ℓ¹` norm times the squared sup norm. -/
 theorem abs_hermQuad_le (D : Matrix ι ι ℂ) (x : ι → ℂ) :
     |hermQuad D x| ≤ (∑ a, ∑ b, ‖D a b‖) * ‖x‖ ^ 2 := by
-  rw [hermQuad, sq, sum_mul, ← Real.norm_eq_abs]
-  refine (norm_re_le_norm _).trans ?_
+  rw [hermQuad, sq, sum_mul]
+  refine (Complex.abs_re_le_norm _).trans ?_
   simp only [dotProduct, mulVec, Pi.star_apply]
   refine (norm_sum_le _ _).trans (sum_le_sum fun a _ => ?_)
   rw [mul_sum, sum_mul]
@@ -68,8 +68,9 @@ theorem exists_linearMap_neg (H : Matrix ι ι ℂ) :
 theorem eventually_le_hermNegIndex {β : Type*} {l : Filter β} {H : β → Matrix ι ι ℂ}
     {H₀ : Matrix ι ι ℂ} (hH : ∀ a b, Tendsto (fun n => H n a b) l (𝓝 (H₀ a b))) :
     ∀ᶠ n in l, hermNegIndex H₀ ≤ hermNegIndex (H n) := by
-  obtain ⟨L, hL⟩ := exists_linearMap_neg H₀
   set m := hermNegIndex H₀
+  obtain ⟨L, hL⟩ : ∃ L : (Fin m → ℂ) →ₗ[ℂ] (ι → ℂ), ∀ a, a ≠ 0 → hermQuad H₀ (L a) < 0 :=
+    exists_linearMap_neg H₀
   rcases Nat.eq_zero_or_pos m with hm | hm
   · exact Eventually.of_forall fun n => by rw [hm]; exact Nat.zero_le _
   set S : Set (Fin m → ℂ) := sphere 0 1
@@ -93,8 +94,8 @@ theorem eventually_le_hermNegIndex {β : Type*} {l : Filter β} {H : β → Matr
   have hδ : 0 < δ := neg_pos.mpr (hL a₀ ha₀ne)
   set C := ‖L a₁‖
   have hsum : Tendsto (fun n => ∑ a, ∑ b, ‖H n a b - H₀ a b‖) l (𝓝 0) := by
-    have := tendsto_finset_sum (univ : Finset ι) fun a _ =>
-      tendsto_finset_sum (univ : Finset ι) fun b _ => ((hH a b).sub_const (H₀ a b)).norm
+    have := tendsto_finsetSum (univ : Finset ι) fun a _ =>
+      tendsto_finsetSum (univ : Finset ι) fun b _ => ((hH a b).sub_const (H₀ a b)).norm
     simpa using this
   filter_upwards [hsum.eventually (gt_mem_nhds (div_pos hδ (by positivity : (0:ℝ) < C ^ 2 + 1)))]
     with n hn
