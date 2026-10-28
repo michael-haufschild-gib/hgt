@@ -1,6 +1,8 @@
 # Signed Successor Arithmetic (SSA)
 
-**One question.** The successor `n ↦ n+1` is the one structure of `ℤ` a Beurling system lacks. How does
+Namespace `GaloisForLFunctions.SignedSuccessorArithmetic`; umbrella `SignedSuccessorArithmetic.lean`.
+
+**Question.** The successor `n ↦ n+1` is the one structure of `ℤ` a Beurling system lacks. How does
 it produce signed cancellation in multiplicative data — at what strength, at a single scale, with
 positivity inherited from a count rather than from analysis?
 
@@ -18,7 +20,7 @@ RH walls ask for.
 `−½ ≤ ε < ½`, bounded at `ε = ½` and above — its threshold is set by the pole, not the zeros. The
 **size-truncated** form is the one that is the receiver.
 
-Everything is unconditional. Namespace `GaloisForLFunctions.SignedSuccessorArithmetic`; umbrella `SignedSuccessorArithmetic.lean`.
+Everything is unconditional.
 
 ---
 
@@ -30,15 +32,15 @@ source estimates could feed them, and tests proposed entry points of the success
 
 | Programme | Interface |
 |---|---|
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Classes I (Beurling-universal), II (sign-blind), III (Bézout-selective) of conservation laws; SSA floors are Class III laws with constants |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Successor incidence, pronic Gram, hypercube Dirichlet form, damping receiver; SSA settles the hypercube phase diagram and identifies the receiver form |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | `𝔽_q` calibration; SSA calibrates on the successor side (Jacobi, Kloosterman) |
-| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md), [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Integer invariants; SSA's doubled-agreement count quantizes the two-scale deficit; AOG's heat-collision count is another |
-| [SquareRootThreshold](../SquareRootThreshold/README.md), [ScaleSignedIncidenceCriticality](../ScaleSignedIncidenceCriticality/README.md) | Scale needed for transfer; blindness of bounded readings |
-| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md) | Coalescent prime surplus: cleanest additive test bed |
-| [SignedArithmeticEnergyIncidence](../SignedArithmeticEnergyIncidence/README.md) | Möbius signs through quadratic forms; damping chain bounded at half damping |
-| [ArithmeticDefectRigidity](../ArithmeticDefectRigidity/README.md) | Fixed successor observations vanish on normalized escape; signed moving cofactor work survives |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Adversarial models every SSA statement is tested against |
+| TransHorizonIncidenceMechanics | Classes I (Beurling-universal), II (sign-blind), III (Bézout-selective) of conservation laws; SSA floors are Class III laws with constants |
+| BezoutValuationIncidence | Successor incidence, pronic Gram, hypercube Dirichlet form, damping receiver; SSA settles the hypercube phase diagram and identifies the receiver form |
+| ArithmeticCastelnuovoSeveri | `𝔽_q` calibration; SSA calibrates on the successor side (Jacobi, Kloosterman) |
+| ArithmeticOrientationGeometry, ArithmeticOrientationTheory | Integer invariants; SSA's doubled-agreement count quantizes the two-scale deficit; AOG's heat-collision count is another |
+| SquareRootThreshold, ScaleSignedIncidenceCriticality | Scale needed for transfer; blindness of bounded readings |
+| TransThresholdPairCorrelation | Coalescent prime surplus: cleanest additive test bed |
+| SignedArithmeticEnergyIncidence | Möbius signs through quadratic forms; damping chain bounded at half damping |
+| ArithmeticDefectRigidity | Fixed successor observations vanish on normalized escape; signed moving cofactor work survives |
+| BiScaleUncertainty | Adversarial models every SSA statement is tested against |
 
 `RHTower` supplies PNT with error (`RHTower.Sieve.chebyshevTheta_sub_id_isBigO`), Sonin space and
 dilations, Ramanujan step vectors, receiver dampings; `HTGeometry` the half-line Mellin unitary
@@ -152,13 +154,16 @@ of the conductor, where the twin's free value enters. *Bias*: mean successor sig
 
 ## 5. Pillar theorems
 
-1. Cocycle characterization (`exists_cmSign_iff_primeCocycle`).
-2. One-third floor, exact and sharp (`one_third_log_floor`, `one_third_floor_sharp`, `odd_shift_floor_sharp`, `lag_two_quarter_floor`).
-3. Quantization (`twoScaleDeficit_eq`, `abs_succCorr_legTwin_add_div_le`, `zeroDefect_two_eq_neg_one`).
-4. `𝔽_q` counts (`norm_sq_charSuccCorr`, `sum_normSq_kloosterman`).
-5. Hypercube phase diagram (`hypercubeDilationDirichletForm_unbounded`, `hypercubeDilationDirichletForm_half_bounded`, `not_bddAbove_hypercubeTwinDilationDirichletForm_half`).
-6. Size-truncated form is the receiver (`sizeHypercubeForm_eq_head_add_tail`, `riemannHypothesis_of_cofinal_bounded_spectral_moebiusPolySq`, `sizeHypercubeForm_half_bounded`).
-7. Forward-dilated sieve equation and Möbius uniqueness (`eq_moebiusReal_of_sieve_functional_equation`).
+1. **Cocycle characterization** (`exists_cmSign_iff_primeCocycle`).
+2. **One-third floor, exact and sharp** (`one_third_log_floor`, `one_third_floor_sharp`, `lag_two_quarter_floor`).
+3. **Quantization** (`twoScaleDeficit_eq`, `zeroDefect_two_eq_neg_one`).
+4. **$\mathbb F_q$ counts** (`norm_sq_charSuccCorr`).
+5. **Hypercube phase diagram**: pole-driven divergence below ½, sign split at ½
+   (`hypercubeDilationDirichletForm_unbounded`, `hypercubeDilationDirichletForm_half_bounded`,
+   `not_bddAbove_hypercubeTwinDilationDirichletForm_half`).
+6. **Size-truncated form is the receiver** (`sizeHypercubeForm_eq_head_add_tail`,
+   `riemannHypothesis_of_cofinal_bounded_spectral_moebiusPolySq`).
+7. **Sieve functional equation and Möbius uniqueness** (`eq_moebiusReal_of_sieve_functional_equation`).
 
 ---
 
@@ -200,14 +205,11 @@ of the conductor, where the twin's free value enters. *Bias*: mean successor sig
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: successor sign calculus; counts with defects; logarithmic floors (1/3, odd shifts, lag two,
-complex); twin constructions; finite-field calibration; periodic bookkeeping; prime windows and alignment;
-spectral form of dilation Grams; hypercube phase diagram tools (step-weight decay, pole-free subset
-log-Euler bounds, two-squares cosine majorant); size-truncated receiver identification; forward-dilated
-primitives, sieve functional equation, Möbius uniqueness. To build: size-truncated forms against `1/ζ` in
-`½ < σ ≤ 1`; balanced Kloosterman forms.
+Size-truncated forms against $1/\zeta$ in $\tfrac12<\sigma\le1$ (bound of the interior forward-dilated
+integral below half damping); a square-root-scale successor estimate with explicit receiver transfer;
+balanced Kloosterman forms.
 
 ---
 

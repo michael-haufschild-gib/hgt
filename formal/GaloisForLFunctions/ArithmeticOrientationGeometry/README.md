@@ -1,6 +1,8 @@
 # Arithmetic Orientation Geometry (AOG)
 
-**One question.** Weil got the sign of the explicit formula for a curve from the geometry of the
+Namespace `GaloisForLFunctions.ArithmeticOrientationGeometry`; umbrella `ArithmeticOrientationGeometry.lean`.
+
+**Question.** Weil got the sign of the explicit formula for a curve from the geometry of the
 Frobenius graph: Castelnuovo–Severi on the plane of graph and diagonal is the Hasse–Weil bound. The
 scaling flow of `ℤ` has graphs, Lefschetz numbers and adjunction of the same shape, but no proof that
 its graphs satisfy that inequality. What geometry could supply it, which arithmetic structures can
@@ -10,8 +12,6 @@ AOG is the geometry of the **scaling correspondence**. Basic object: a cycle wit
 scales. Basic invariant: the **orbit correlation** `c_x(g) = δ(ψ_g x, x)`, the primitive part of the
 Lefschetz number. A cycle is **oriented** when `|c_x(g)| ≤ c_x(0)` at every scale. Everything is
 unconditional; RH appears only inside equivalences.
-
-Namespace `GaloisForLFunctions.ArithmeticOrientationGeometry`; umbrella `ArithmeticOrientationGeometry.lean`.
 
 ---
 
@@ -26,16 +26,16 @@ give a second index formula; one explicit orbit (the cubic spline) decides RH. A
 
 | Programme | Interface |
 |---|---|
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Polar/scaling surface, λ-ring, Hecke cycles, Lefschetz–adjunction; AOG abstracts to every scaling datum and works per orbit |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Frustration, readings, Wiener algebra, width functor |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Two-bump tests = Weil planes; bounded orbit correlation has no top pole (`eq_zero_of_norm_tsum_exp_le`); negativity rate = maximal depth |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Translated-pairing envelope law (`translated_pairing_envelope_law`) = prime-side self-upgrade |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Bézout-selective conservation laws |
+| ArithmeticCastelnuovoSeveri | Polar/scaling surface, λ-ring, Hecke cycles, Lefschetz–adjunction; AOG abstracts to every scaling datum and works per orbit |
+| ArithmeticOrientationTheory | Frustration, readings, Wiener algebra, width functor |
+| SquareRootThreshold | Two-bump tests = Weil planes; bounded orbit correlation has no top pole (`eq_zero_of_norm_tsum_exp_le`); negativity rate = maximal depth |
+| BiScaleUncertainty | Translated-pairing envelope law (`translated_pairing_envelope_law`) = prime-side self-upgrade |
+| TransHorizonIncidenceMechanics | Bézout-selective conservation laws |
 | ACT, AIP, SAEI | Supersolutions, shared allocation, frustration (mechanism class 2) |
 | ACCE, ACompT | Signed-flux identities, ceiling (mechanism class 3) |
-| [ArithmeticLocalDivisorGeometry](../ArithmeticLocalDivisorGeometry/README.md) | Local multiplicities, heat normalization; collision budgets ↔ second index formula |
-| [SignedSuccessorArithmetic](../SignedSuccessorArithmetic/README.md), [ArithmeticDefectRigidity](../ArithmeticDefectRigidity/README.md) | Additive and cofactor compatibility of the actual Möbius source |
-| [DilutionCrystallizationPincer](../DilutionCrystallizationPincer/README.md) | Rate excess localized to collapsed clusters at doubly exponential height |
+| ArithmeticLocalDivisorGeometry | Local multiplicities, heat normalization; collision budgets ↔ second index formula |
+| SignedSuccessorArithmetic, ArithmeticDefectRigidity | Additive and cofactor compatibility of the actual Möbius source |
+| DilutionCrystallizationPincer | Rate excess localized to collapsed clusters at doubly exponential height |
 
 ---
 
@@ -210,15 +210,10 @@ with a supersolution (collar + signed prime atoms); (3) signed-flux conservation
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: scaling data and Weil planes; correspondence algebra with Rosati and Hecke graphs; configuration
-scaling data; orientation theorem, rates, self-improvement; explicit spline orbit; seen configurations
-and index laws; orbit and family surfaces with RR criteria; theta `h⁰`; Euler-factor tail law; archimedean
-segment orientation; correctors and damping automorphisms; heat-collision index; battery models (golden,
-curve shifted pair, clusters); Turán readings on curves.
-
-To build: surface `h⁰` with independent RR; ℤ-side quantitative readings; shifted pair over `ℤ`.
+Surface $h^0$ with an RR proof independent of the sign; quantitative readings over `ℤ` analogous to Turán;
+a source bound on the heat-collision index; Bézout-selective orbit laws.
 
 ---
 

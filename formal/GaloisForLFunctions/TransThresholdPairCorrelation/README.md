@@ -1,6 +1,8 @@
 # Trans-Threshold Pair Correlation (TTPC)
 
-**One question.** The explicit-formula Gram matrix of a band-limited test at height `T` certifies a
+Namespace `GaloisForLFunctions.TransThresholdPairCorrelation`; umbrella `TransThresholdPairCorrelation.lean`.
+
+**Question.** The explicit-formula Gram matrix of a band-limited test at height `T` certifies a
 proportion `2 − κ` of zeros on the line, `κ` its normalized Frobenius norm. Below prime cutoff `X = T`
 Montgomery–Vaughan kills every off-diagonal prime pair and the method stops at `2/3`. What signed
 information about prime pairs beyond `X = T` lowers `κ`, and how much is needed for `3/4`?
@@ -9,8 +11,6 @@ Parameter: **bandwidth** `λ`, `X = (T/2π)^λ`. Objects: off-diagonal prime-pai
 norm, the mixed Dirichlet mean values they reduce to, the form factor `F(α)` on `α > 1`. Target:
 `2 − κ(λ)`. A zero-proportion programme, not an RH route. Everything is unconditional;
 `RHTower.PrimeSurplusFourThirds` and `CoalescentSurplusAtMost β` appear only as premises.
-
-Namespace `GaloisForLFunctions.TransThresholdPairCorrelation`; umbrella `TransThresholdPairCorrelation.lean`.
 
 ---
 
@@ -22,16 +22,16 @@ Hilbert inequality controls. Unit: `(λ, 2 − κ(λ))`, or the share of the `1/
 
 | Programme | Interface |
 |---|---|
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Rank–trace inertia: `(2−κ)N` and no evaluation-Gram functional does better (coalescence blind spot at `λ=1`). Two routes to `3/4`: zero-side slack or prime surplus at `4/3`. TTPC is the engine of the second; ACS turns budgets into proportions (`CoalescentSurplusAndTransThresholdProportionLaws`) |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Phase transition of `L²` Hilbert methods at `X = T`; TTPC is its open problem made finite |
-| [ScaleSignedIncidenceCriticality](../ScaleSignedIncidenceCriticality/README.md) | `2/3` as a resolution limit: double zero and coalescing pair share a shadow |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Its band `|ξ| ≤ √N` is `λ = 2` |
-| [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Single-height prime-ratio Schur constant; close-pair kernel is its height average |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Sieve parity barrier: close pairs bounded only by size, factor two off |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Log-free large sieve; balanced-scale statistics need signed prime-row input too |
-| [arithmetic-positivity-theory](../arithmetic-positivity-theory/README.md) | Needs single-height prime saving; TTPC needs the height average at longer length |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Nyquist rank bound reads `N ≍ T` as a section count |
-| [SignedArithmeticEnergyIncidence](../SignedArithmeticEnergyIncidence/README.md) | Same mean-value diagonal `X ≍ T` cuts the damping chain at half damping; shared tool, different obstruction |
+| ArithmeticCastelnuovoSeveri | Rank–trace inertia: `(2−κ)N` and no evaluation-Gram functional does better (coalescence blind spot at `λ=1`). Two routes to `3/4`: zero-side slack or prime surplus at `4/3`. TTPC is the engine of the second; ACS turns budgets into proportions (`CoalescentSurplusAndTransThresholdProportionLaws`) |
+| SquareRootThreshold | Phase transition of `L²` Hilbert methods at `X = T`; TTPC is its open problem made finite |
+| ScaleSignedIncidenceCriticality | `2/3` as a resolution limit: double zero and coalescing pair share a shadow |
+| BiScaleUncertainty | Its band `|ξ| ≤ √N` is `λ = 2` |
+| ArithmeticIncidencePositivity | Single-height prime-ratio Schur constant; close-pair kernel is its height average |
+| TransHorizonIncidenceMechanics | Sieve parity barrier: close pairs bounded only by size, factor two off |
+| BezoutValuationIncidence | Log-free large sieve; balanced-scale statistics need signed prime-row input too |
+| arithmetic-positivity-theory | Needs single-height prime saving; TTPC needs the height average at longer length |
+| ArithmeticOrientationTheory | Nyquist rank bound reads `N ≍ T` as a section count |
+| SignedArithmeticEnergyIncidence | Same mean-value diagonal `X ≍ T` cuts the damping chain at half damping; shared tool, different obstruction |
 
 `RHTower` owns the Gram infrastructure: wide trace, surplus split, diagonal constant
 (`RHTower.diagonal_main_le`), prime–pole cross bound (`RHTower.abs_Mform_PX_PiX_params43_le`), conditional
@@ -139,20 +139,34 @@ for a Jackson width `b`: `|log(n/m)| < 4b` / rest. Budget: `1/18` of `(aL)²Tℓ
     (`odd_offDiag_fejer_sum_eq_zero_of_le_two_div_b`); a quadratic bound `β ≤ Bδ²/(1+δ)²` gives gain
     `(3B²+7B+3)/(9(B+1)²(3B+2))` at `δ* = 1/(3B+2)`, half kept after collar (`narrowStrip_optimal_delta_gain`,
     `narrowStrip_collar_preserves_gain`).
+15. **Parity-locked Ramanujan stabilizer.** On even shifts $2r$: $c_2=+1$ merges with $c_1$, $c_q(2r)=c_{2q}(2r)=c_q(r)$
+    for odd $q$, $4\mid n$ drops out. The mod-4 split doubles every odd-modulus stabilizer weight with a
+    nonnegative top-octave bonus, and the whole parity-locked singular series still transfers to the
+    negative Ward–Mertens repulsion $-\hat\Omega(0)\sum_{q\text{ odd}}\mu^2(q)/\varphi(q)$. The actual odd/even-shift
+    coalescent sum = stabilizer model + **centred stabilizer discrepancy** (`oddEvenShiftPrimeCoalSum_eq_stabilizerModel_add_discrepancy`):
+    the open input is that discrepancy.
+16. **Multiplicity refinement.** Keeping the multiplicity excess in the rank–trace inequality upgrades the
+    certificate to simple critical zeros minus off-line multiple mass, with
+    $S_{\rm off}+2M_{\rm off}\le(7/36+\varepsilon)N+$ prime coalescent surplus.
+17. **Parity twins.** For $\{q,2q\}$ the Cesàro Gram survival cone is $\{0\}$ on all shifts but a rank-one line
+    on even shifts; renormalized limits are closed-form; pole-node completion relocates the full-rank
+    counterterm $\operatorname{diag}\varphi(m)$ from $-\log(1-r)$ to $\log u$; the cyclotomic-harmonic kernel is PSD.
+    Midpoint centring swaps even/odd Weil sectors with no cross term, giving coercive short-cycle positivity
+    $\Re W(g-T_{\log2}g)\ge\frac1{1000}\|g-T_{\log2}g\|^2$ for symmetric $g$ in a small window.
 
 ---
 
 ## 5. Pillar theorems
 
-1. Sine part nonsingular; cosine part = mixed Dirichlet mean value (`abs_AminusSin_le`, `ppOffDiagFourier_eq_primeDirichlet_integral`).
-2. Archimedean end effect `X`-free (`exists_abs_endForm_mu_mu_le`).
-3. Budget = form-factor bound; Fejér and Rudnick–Sarnak barriers (`primeSurplusRatio_bridge`, `fejer_shifted_bound_gap`, `higherMoment_rudnick_sarnak_cap`).
-4. Height averaging leaves only the coalescent band (`abs_avg_ppOffDiag_sub_close_le`).
-5. **Smooth-window certificate at `4/3`** (`zeta_coalescent_certificate`).
-6. **Reduction to odd primes at even shifts** (`coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost`, `eventually_primeCoalescentSurplus_eq_oddEvenShift`).
-7. Calibration: the budget needs repulsion (`calibration_five_models_four_thirds`, `hl_coalescent_deficit_integral`).
-8. Signed lobe cancellation and Ramanujan pole cancellation (`sum_Icc_abs_cosTransform_ge_inner_lobe`, `trapezoidal_ramanujan_cos_eq`).
-9. Narrow-strip exchange rate (`narrowStrip_beats_two_thirds_iff`, `narrowStrip_optimal_delta_gain`).
+1. **Sine part nonsingular; cosine part = mixed Dirichlet mean value** (`abs_AminusSin_le`, `ppOffDiagFourier_eq_primeDirichlet_integral`).
+2. **Budget = form-factor bound; Fejér and Rudnick–Sarnak barriers** (`primeSurplusRatio_bridge`, `fejer_shifted_bound_gap`,
+   `higherMoment_rudnick_sarnak_cap`).
+3. **Smooth-window certificate at 4/3** (`zeta_coalescent_certificate`, `zeta_coalescent_certificate_simple_and_offLineMultiple`).
+4. **Reduction to odd primes at even shifts** (`coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost`).
+5. **Calibration: the budget needs repulsion** (`calibration_five_models_four_thirds`).
+6. **Signed lobe and Ramanujan pole cancellation; parity-locked transfer** (`trapezoidal_ramanujan_cos_eq`,
+   `abs_sum_full_evenShift_singularSeries_cosTransform_add_le`).
+7. **Narrow-strip exchange rate** (`narrowStrip_beats_two_thirds_iff`).
 
 ---
 
@@ -175,6 +189,7 @@ for a Jackson width `b`: `|log(n/m)| < 4b` / rest. Budget: `1/18` of `(aL)²Tℓ
 | Close-pair threshold prime-blind | Odd integers double it to `2/b` |
 | Pair correlation beyond `α = 1` is a separate input | Equivalent (under RH) to prime-pair correlations with power-saving error |
 | Zero-side slack below `3/4` | Refuted at every `λ ∈ (0,3/4)` (`ArithmeticCastelnuovoSeveri.not_three_quarters_zeroSideSlack_of_lt_three_quarters`) |
+| Even-shift restriction loses the repulsion | Parity-locked singular series keeps the full Ward–Mertens slope |
 | Mollifiers instead of `λ > 1` | CGG optimum `1 − (1+θ)^{−3}`; `3/4` needs `θ ≥ 4^{1/3} − 1` (`RHTower.CGGMollifier.three_quarters_le_iff`) |
 
 ---
@@ -185,7 +200,7 @@ for a Jackson width `b`: `|log(n/m)| < 4b` / rest. Budget: `1/18` of `(aL)²Tℓ
    profile, one `0 < η < 1/3` — odd primes at even shifts within `T^{−1+η}`. Every intermediate β is a result.
 2. **Signed sieve transfer**: carry the trapezoidal lobe cancellation to `1_ℙ(m)1_ℙ(m+2r)`; size-only sieves
    diverge on the inner lobe.
-3. **Singular-series error**: unconditional additive-divisor control of prime-pair correlation minus its
+3. **Stabilizer discrepancy / singular-series error**: unconditional additive-divisor control of prime-pair correlation minus its
    truncated HL singular series, integrated against the signed coalescent kernel, below the budget,
    uniformly in the moving cutoff (pointwise upper sieves, unweighted counts and non-uniform asymptotics
    do not pay it).
@@ -195,13 +210,10 @@ for a Jackson width `b`: `|log(n/m)| < 4b` / rest. Budget: `1/18` of `(aL)²Tℓ
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: parity splitting; second-moment tail reduction and exact mean-value identity; bilinear end-effect
-split; Jackson weights; height averaging; Fejér/Lorentz mean squares; smooth grid weights; form-factor
-calculus; coalescent linearization and Frullani calculus; narrow-strip calculus and 2-adic collar;
-smooth-window certificate; prime-power elimination and parity-halved 2D Selberg; trapezoidal
-Dirichlet–Ramanujan transfer. To build: the bounds of open problems 1, 3, 4.
+A signed estimate for the centred stabilizer discrepancy on odd primes at even shifts; a sieve transfer
+that keeps lobe signs; a finite-sum → form-factor transfer on $(1,1+\delta]$.
 
 ---
 

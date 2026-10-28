@@ -111,6 +111,20 @@ normalization of the mixed count, capture of gauge coordinates by the two
 actual simple eigenlines, and this finite constrained quadratic estimate.
 These exact inequalities form a viable proof plan, not a discharged theorem.
 
+For normalization, use `u_m,N=c_m(n)/sqrt(phi(m)n H_N)` rather than changing
+the exact mixed-count limit to logarithmic normalization. The unit gauge
+`v_N=omega_p(n)/sqrt(n H_N)` then has inner product
+`(mixed_count/H_N)/sqrt(phi(m))` with `u_m,N` exactly. The corpus's raw
+Ramanujan norm and residual limits, divided by `H_N/log N ->1`, give
+`||u_m,N||^2 ->1` and a vanishing residual. Projection onto a simple actual
+window therefore has vanishing norm error. Its squared coordinate against
+the gauge is exactly `inner(v_N,P_N u_m,N)^2/||P_N u_m,N||^2`, tending to the
+square of the count limit. This avoids any choice of eigenvector orientations.
+
+The universal upper bound is already in the corpus:
+`SelectiveMultiscaleArithmeticPositivity.le_two_mul_log_two_of_hasHyperplaneGap_of_mul_self_eq_one`.
+Do not duplicate it; once the lower bound is proved, it establishes exactness.
+
 ## Positive survivor already available
 
 For every prime `p`, the parity count pays gap

@@ -1,6 +1,8 @@
 # Arithmetic Local Divisor Geometry (ALDG)
 
-**One question.** What independently proved property of the theta/Euler source forces the local
+Namespace `GaloisForLFunctions.ArithmeticLocalDivisorGeometry`; umbrella `ArithmeticLocalDivisorGeometry.lean`.
+
+**Question.** What independently proved property of the theta/Euler source forces the local
 divisor of the completed zeta function into the coefficient cone? Equivalent endpoints ask for an
 arithmetic bound on collision charge, cancellation of the Ward cap, or zeroth-order contact at the
 Ward heat threshold.
@@ -11,8 +13,6 @@ It never defines admissible objects by imposing the sign. Its local algebra appl
 configurations too; excluding them for the actual source is the open arithmetic problem. The central
 source inequality is unproved; factorization, reconstruction, polynomial positivity criteria and
 model classification do not establish it.
-
-Namespace `GaloisForLFunctions.ArithmeticLocalDivisorGeometry`; umbrella `ArithmeticLocalDivisorGeometry.lean`.
 
 ---
 
@@ -25,12 +25,12 @@ multiplicities vary with height. ALDG is the theory of that polynomial.
 
 | Programme | Interface |
 |---|---|
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Source effectivity and Hodge sign; here the sign is read through local factors |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Repairing ideals; ALDG keeps multiplicity and local factors beyond spectral support |
-| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Orbit correlations; heat-collision index `2(D+E)` is the dynamical count matching ALDG's collision budgets |
-| [ArithmeticCompensationTheory](../ArithmeticCompensationTheory/README.md) | Normalizations must retain the signed quantity on moving supports (height, degree, radius, heat) |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Fixed-depth vs eventual-height vs global-width quantifiers also govern heated local factors |
-| [SignedArithmeticEnergyIncidence](../SignedArithmeticEnergyIncidence/README.md) | Single signed budget discipline for Gram-minor certificates |
+| ArithmeticCastelnuovoSeveri | Source effectivity and Hodge sign; here the sign is read through local factors |
+| ArithmeticOrientationTheory | Repairing ideals; ALDG keeps multiplicity and local factors beyond spectral support |
+| ArithmeticOrientationGeometry | Orbit correlations; heat-collision index `2(D+E)` is the dynamical count matching ALDG's collision budgets |
+| ArithmeticCompensationTheory | Normalizations must retain the signed quantity on moving supports (height, degree, radius, heat) |
+| SquareRootThreshold | Fixed-depth vs eventual-height vs global-width quantifiers also govern heated local factors |
+| SignedArithmeticEnergyIncidence | Single signed budget discipline for Gram-minor certificates |
 | `RHTower` | Actual Xi, Ward caps, finite-head/heat transfers, collision laws, threshold criteria (`XiWardGlobalCapAndFiniteHeadArithmetic.lean`) |
 | `HTGeometry` | Polynomial heat products, contour root multisets, Newton inversion, holomorphic local factors (`PolynomialHeatProduct.lean`, `OffLinePairDetectionNewtonSharp.lean`) |
 
@@ -197,13 +197,10 @@ disappearing nonreal multiplicity (four-unit normalization); the Ward cap is wei
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: pair/linear/binomial repair laws; central transitions; universal reflectors; heat semigroup, dilation,
-Hermite normalization, first heat times; masked-pair threshold and contact index; Hermite root edge, Sonin
-identity, barrier, extremizers, edge asymptotics, optimal heat; root-radius heat cone; exact source local
-factors and source Hermite obstruction; counting-based large-height head repair.
-To build: a source sign certificate (Newton combinations, collision charge or Ward cap) at detector scale.
+A source sign certificate (Newton combinations, collision charge or Ward cap) at detector scale
+$\delta_0^2/\log t$; configuration-sensitive head repair closing the $R$-vs-$\delta^2$ gap.
 
 ---
 
