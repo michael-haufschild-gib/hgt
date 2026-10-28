@@ -46,9 +46,11 @@ theorem add_sq_le_twenty (a b : ℝ) : (a + b) ^ 2 ≤ 21 / 20 * a ^ 2 + 21 * b 
 /-- `log x ≥ 2.35` for `x ≥ 11`: `log 11 = 3 log 2 + log (11/8) ≥ 3 log 2 + 3/11`. -/
 theorem log_ge_of_eleven_le {x : ℝ} (hx : 11 ≤ x) : 2.35 ≤ Real.log x := by
   have hl2 := Real.log_two_gt_d9
-  have h11 : Real.log 11 = 3 * Real.log 2 + Real.log (11 / 8) := by
-    rw [← Real.log_pow, ← Real.log_mul (by norm_num) (by norm_num)]
-    norm_num
+  have h11 : Real.log ((2 : ℝ) ^ 3 * (11 / 8)) = 3 * Real.log 2 + Real.log (11 / 8) := by
+    rw [Real.log_mul (by norm_num) (by norm_num), Real.log_pow]
+    push_cast; ring
+  have h11' : (2 : ℝ) ^ 3 * (11 / 8) = 11 := by norm_num
+  rw [h11'] at h11
   have h118 : 1 - (11 / 8 : ℝ)⁻¹ ≤ Real.log (11 / 8) := Real.one_sub_inv_le_log_of_pos (by norm_num)
   have hmono : Real.log 11 ≤ Real.log x := Real.log_le_log (by norm_num) hx
   rw [h11] at hmono
@@ -220,7 +222,7 @@ theorem twisted_assembly
     (hη : 0 < η) (hη1 : η ≤ 1)
     (hp : 11 ≤ p) (hℓ : 2.35 ≤ ℓ)
     (hW : 0 ≤ W) (hVp : 0 ≤ Vp) (hG : 0 < G) (hH : 0 < H) (hDS : 0 ≤ DS) (hDL : 0 ≤ DL)
-    (hL : 0 < L) (hZX : 0 ≤ ZX) (hlM : 1 ≤ lM) (hbG : bG ≤ lam)
+    (hL : 0 < L) (hM : 0 ≤ M) (hZX : 0 ≤ ZX) (hlM : 1 ≤ lM) (hbG : bG ≤ lam)
     (he₂0 : 0 ≤ e₂) (he₂ : e₂ ≤ 1 / 20)
     (h1 : (lam - η / 4) * W + G * ((ℓ * lM - bG) * Vp / (1 + e₂)) ≤ DS + DL)
     (h2 : Zsq ≤ W + Y ^ 2 / H)
@@ -242,12 +244,7 @@ theorem twisted_assembly
   have hcp0 : 0 < cp ^ 2 := by positivity
   obtain ⟨Err, hErr⟩ : ∃ E : ℝ, E = (1 + L) ^ 3 * W / (G * H) + (2 * DS + 2 * M * W) / L :=
     ⟨_, rfl⟩
-  have hErr0 : 0 ≤ Err := by
-    rw [hErr]
-    have : 0 ≤ (2 * DS + 2 * M * W) / L := by
-      rw [hErr] at *
-      exact div_nonneg (by nlinarith [mul_nonneg hW (show (0:ℝ) ≤ 2 by norm_num)]) hL.le
-    positivity
+  have hErr0 : 0 ≤ Err := by rw [hErr]; positivity
   have hHErr : H * Err = (1 + L) ^ 3 * W / G + H * ((2 * DS + 2 * M * W) / L) := by
     rw [hErr]; field_simp
   have hAerr : Av ^ 2 + Ah ^ 2 ≤ H * Err := by rw [hHErr]; linarith
@@ -325,11 +322,10 @@ theorem two_scale_arith {g ε τ κ L M W U DS DL ρ cU Tmax : ℝ} (hε : 0 < �
     · have h1 : (g - ε / 2) * κ ≤ Tmax * κ := mul_le_mul_of_nonneg_right (by linarith) h.le
       linarith
   have hUL : 2 * (g * U) * (g - ε / 2) ≤ g * (1 - τ) * DL := by
-    have h1 := mul_le_mul_of_nonneg_left hU
-      (show 0 ≤ 2 * g * (g - ε / 2) by have : 0 ≤ g - ε / 2 := by linarith
-                                        positivity)
+    have hge : 0 ≤ g - ε / 2 := by linarith
+    have h1 := mul_le_mul_of_nonneg_left hU (mul_nonneg (mul_nonneg (by norm_num) hg0.le) hge)
     have h2 := mul_le_mul_of_nonneg_right hκ' (show 0 ≤ g * DL by positivity)
-    nlinarith
+    linarith
   have hnum : (g - ε / 2) * ((1 + τ) ^ 2 + g * τ) ≤ g * (1 - τ) := by
     have hb : τ * (g ^ 2 + 4 * g) ≤ ε / 2 := by
       have h1 : g ^ 2 + 4 * g ≤ Tmax ^ 2 + 4 * Tmax := by nlinarith
@@ -363,8 +359,9 @@ theorem one_le_ladderMass {p : ℕ} (J : ℕ) : 1 ≤ ladderMass p J := by
 
 theorem ladderMass_le_two {p : ℕ} (hp : 2 ≤ p) (J : ℕ) : ladderMass p J ≤ 2 := by
   have hp0 : (0 : ℝ) < p := by exact_mod_cast (show 0 < p by omega)
+  have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp
   have hq1 : 1 / (p : ℝ) ≤ 1 / 2 := by
-    rw [div_le_div_iff₀ hp0 (by norm_num)]; exact_mod_cast (by linarith : (2 : ℝ) ≤ 2 * p)
+    rw [div_le_div_iff₀ hp0 (by norm_num)]; linarith
   have hq0 : 0 ≤ 1 / (p : ℝ) := by positivity
   have := geom_sum_Ico_le_of_lt_one (m := 0) (n := J + 1) hq0 (by linarith)
   rw [← range_eq_Ico, pow_zero] at this
@@ -387,6 +384,8 @@ theorem signMass_ge {p : ℕ} (hp : 2 ≤ p) (J : ℕ) :
   have hp0 : (0 : ℝ) < p := by linarith
   have hp1' : (p : ℝ) - 1 ≠ 0 := by linarith
   have hp1'' : (p : ℝ) + 1 ≠ 0 := by linarith
+  have h1p : (1 : ℝ) - p ≠ 0 := sub_ne_zero.mpr (ne_of_lt hp1)
+  have h1p' : (-1 : ℝ) - p ≠ 0 := ne_of_lt (by linarith)
   have hq : (1 / (p : ℝ)) ≠ 1 := by
     rw [Ne, div_eq_one_iff_eq hp0.ne']; intro h; linarith
   have hq' : (-1 / (p : ℝ)) ≠ 1 := by
@@ -398,12 +397,14 @@ theorem signMass_ge {p : ℕ} (hp : 2 ≤ p) (J : ℕ) :
     calc b ≤ |b| := le_abs_self b
       _ = a := by
         rw [hb, ha, abs_pow, abs_div, abs_neg, abs_one, abs_of_pos hp0]
+  have e0 : 1 / (p : ℝ) - 1 = (1 - p) / p := by field_simp
+  have e0' : -1 / (p : ℝ) - 1 = (-1 - p) / p := by field_simp
   have e1 : ((p : ℝ) - 1) / ((p : ℝ) + 1) * ((a - 1) / (1 / (p : ℝ) - 1)) =
       (p : ℝ) * (1 - a) / ((p : ℝ) + 1) := by
-    field_simp
+    rw [e0, div_div_eq_mul_div, div_mul_div_comm, div_eq_div_iff (by positivity) hp1'']
     ring
   have e2 : (b - 1) / (-1 / (p : ℝ) - 1) = (p : ℝ) * (1 - b) / ((p : ℝ) + 1) := by
-    field_simp
+    rw [e0', div_div_eq_mul_div, div_eq_div_iff h1p' hp1'']
     ring
   rw [e1, e2]
   apply div_le_div_of_nonneg_right _ (by linarith)
@@ -481,7 +482,8 @@ theorem sum_smoothBox_eq_ladders {J Q p : ℕ} (hp : p ∈ (range Q).filter Nat.
       by_cases hqp : q = p
       · subst hqp; rw [Finsupp.erase_same]; exact Nat.zero_le _
       · rw [Finsupp.erase_ne hqp]; exact h3 q
-    · have := h3 p; omega
+    · show a.factorization p < J + 1
+      have := h3 p; omega
   · rintro ⟨u, i⟩ h
     rw [mem_sigma, mem_filter] at h
     obtain ⟨⟨hu, hpu⟩, -⟩ := h

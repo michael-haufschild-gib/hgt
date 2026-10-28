@@ -16,9 +16,13 @@ eigenvalues `p^{ρ−½}`:
 * **Index law** (`zeta_poleFree_small_tower_law`): for every prime `p` and every `ε > 0`, some
   window of the tower of some pole-free `C²` generator supported in `[−ε, ε]` carries `n` negative
   squares of Weil's form iff `ζ` has at least `n` distinct outer eigenvalues `p^{ρ−½}`.
-* **The sign is RH** (`riemannHypothesis_iff_dyadicPositive_poleFree_small`): RH holds iff
-  `Λ` is dyadic positive along every pole-free `C²` generator supported in `[−ε, ε]`, for one
-  (every) `ε > 0`.
+* **The sign is RH** (`riemannHypothesis_iff_towerPositive_poleFree_small`,
+  `riemannHypothesis_iff_dyadicPositive_poleFree_small`): RH holds iff `Λ` is positive along the
+  `p`-tower of every pole-free `C²` generator supported in `[−ε, ε]`, for one (every) prime `p` and
+  one (every) `ε > 0`.
+* **Under RH the twins fail** (`not_towerPositive_liouvilleTwin_of_riemannHypothesis`,
+  `not_towerPositive_perturbed_of_riemannHypothesis`): with `TheDyadicSignIsRigid`, the Liouville
+  twin and every `n^{−η}` perturbation of `Λ` fail on the tower of every nonnegative generator.
 
 So selective Toeplitz positivity on the pole complement with one generator and one prime has no
 intermediate content at any overlap: the support length of the generator, measured against
@@ -222,28 +226,80 @@ theorem zeta_poleFree_small_tower_law {p : ℕ} (hp : p.Prime) {ε : ℝ} (hε :
   · rwa [← hw]
   · rwa [hw]
 
-/-- **The dyadic sign on the pole complement is RH at every overlap.** For every `ε > 0`, RH holds
-iff `Λ` is dyadic positive along every pole-free `C²` generator supported in `[−ε, ε]`. -/
-theorem riemannHypothesis_iff_dyadicPositive_poleFree_small {ε : ℝ} (hε : 0 < ε) :
+/-- **The tower sign on the pole complement is RH at every prime and every overlap.** For every
+prime `p` and every `ε > 0`, RH holds iff `Λ` is positive along the `p`-tower of every pole-free `C²`
+generator supported in `[−ε, ε]`. -/
+theorem riemannHypothesis_iff_towerPositive_poleFree_small {p : ℕ} (hp : p.Prime) {ε : ℝ}
+    (hε : 0 < ε) :
     RiemannHypothesis ↔ ∀ g : ℝ → ℂ, ContDiff ℝ 2 g → tsupport g ⊆ Set.Icc (-ε) ε →
       paperFT g (I / 2) = 0 → paperFT g (-(I / 2)) = 0 →
-        DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) g := by
-  have hlaw := zeta_poleFree_small_tower_law Nat.prime_two hε 1
+        TowerPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) g (Real.log p) := by
+  have hlaw := zeta_poleFree_small_tower_law hp hε 1
   constructor
   · intro hRH g hg hgs _ _ K
     have hgc : HasCompactSupport g := isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs
-    exact (riemannHypothesis_iff_onePrime_towers Nat.prime_two).mp hRH g hg hgc K
+    exact (riemannHypothesis_iff_onePrime_towers hp).mp hRH g hg hgc K
   · intro hpos
     rw [← rightZeros_zeta_eq_empty_iff]
     by_contra hne
     obtain ⟨ρ, hρ⟩ := Set.nonempty_iff_ne_empty.mpr hne
-    have hne' : (outerEig zetaZeroConfig (Real.log (2 : ℕ))).Nonempty :=
-      ⟨frobEig (Real.log (2 : ℕ)) ρ, ρ, hρ, rfl⟩
-    have h1 : ((1 : ℕ) : ℕ∞) ≤ (outerEig zetaZeroConfig (Real.log (2 : ℕ))).encard := by
+    have hne' : (outerEig zetaZeroConfig (Real.log p)).Nonempty :=
+      ⟨frobEig (Real.log p) ρ, ρ, hρ, rfl⟩
+    have h1 : ((1 : ℕ) : ℕ∞) ≤ (outerEig zetaZeroConfig (Real.log p)).encard := by
       rw [Nat.cast_one]; exact Set.one_le_encard_iff_nonempty.mpr hne'
     obtain ⟨g, hg, hgs, hp1, hp2, K, hK⟩ := hlaw.mpr h1
     have h0 := hpos g hg hgs hp1 hp2 K
-    simp only [Nat.cast_ofNat] at hK h0
     omega
 
+/-- **The dyadic sign on the pole complement is RH at every overlap.** -/
+theorem riemannHypothesis_iff_dyadicPositive_poleFree_small {ε : ℝ} (hε : 0 < ε) :
+    RiemannHypothesis ↔ ∀ g : ℝ → ℂ, ContDiff ℝ 2 g → tsupport g ⊆ Set.Icc (-ε) ε →
+      paperFT g (I / 2) = 0 → paperFT g (-(I / 2)) = 0 →
+        DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) g := by
+  simpa using riemannHypothesis_iff_towerPositive_poleFree_small Nat.prime_two hε
+
+/-! ### Under RH the twins fail on every tower -/
+
+/-- Under RH `Λ` is positive along the tower of every `C²` compactly supported generator. -/
+theorem towerPositive_vonMangoldt_of_riemannHypothesis (hRH : RiemannHypothesis) {p : ℕ}
+    (hp : p.Prime) {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
+    TowerPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) g (Real.log p) :=
+  (riemannHypothesis_iff_onePrime_towers hp).mp hRH g hg hgc
+
+/-- **Under RH the Liouville twin fails on every Hecke tower** of every nonnegative nonzero `C²`
+generator, although it dominates `ζ` on each nonnegative test
+(`ArithmeticCorrespondencePositivity.weilPositive_nonneg_transfers`). -/
+theorem not_towerPositive_liouvilleTwin_of_riemannHypothesis (hRH : RiemannHypothesis) {p : ℕ}
+    (hp : p.Prime) {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f)) (hfc : HasCompactSupport (cx f))
+    (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) :
+    ¬ TowerPositive ArithmeticCorrespondencePositivity.liouvilleTwin (cx f) (Real.log p) :=
+  fun h => not_towerPositive_liouvilleTwin_and_vonMangoldt hf hfc hf0 hne
+    (Real.log_pos (by exact_mod_cast hp.one_lt))
+    ⟨h, towerPositive_vonMangoldt_of_riemannHypothesis hRH hp hf hfc⟩
+
+/-- **Under RH no `n^{−η}` perturbation of `Λ` is tower positive** along a nonnegative generator,
+`0 < η < 1/2`, at any prime. -/
+theorem not_towerPositive_perturbed_of_riemannHypothesis (hRH : RiemannHypothesis) {p : ℕ}
+    (hp : p.Prime) {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f)) (hfc : HasCompactSupport (cx f))
+    (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) {ε η : ℝ} (hε : 0 < ε) (hη : 0 < η)
+    (hη2 : η < 1 / 2) :
+    ¬ TowerPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + ε * (n : ℝ) ^ (-η)) (cx f)
+      (Real.log p) :=
+  fun h => not_towerPositive_and_perturbed _ hf hfc hf0 hne hε hη hη2
+    (Real.log_pos (by exact_mod_cast hp.one_lt))
+    ⟨towerPositive_vonMangoldt_of_riemannHypothesis hRH hp hf hfc, h⟩
+
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity
+
+open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
+#print axioms riemannHypothesis_iff_towerPositive_poleFree_small
+open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
+#print axioms zeta_poleFree_small_tower_law
+open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
+#print axioms not_towerPositive_liouvilleTwin_of_riemannHypothesis
+open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
+#print axioms not_towerPositive_perturbed_of_riemannHypothesis
+open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
+#print axioms not_towerPositive_liouvilleTwin_and_vonMangoldt
+open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity in
+#print axioms sum_perturbation_Ioc_le
