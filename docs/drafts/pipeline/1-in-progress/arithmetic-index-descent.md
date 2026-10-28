@@ -863,3 +863,9 @@ TheSquarePrimeBoundaryHasAGammaGap actual96557 PASSED clean, three standard endp
 FiniteEulerMixedFormsHaveUniformFiniteIndex actual47073 PASSED clean, endpoint standard dependency report. For each fixed finite prime set, Gamma minus its entire literal mixed Euler source has one uniform upper negative-dimension bound at every complete horizon and for every finite real profile family. First genericEuler olean31693 passed for this actual importer. Wired/README/checks. The index bound depends on the prime set and does not address its pure coarse source or the full Weil form.
 
 AllHigherPrimePowerMixedFormsHaveUniformFiniteIndex actual82747 PASSED clean, endpoint standard dependency report. One fixed detail head bounds every strictly negative real subspace for Gamma minus the mixed source over every prime and all exponents at least three, uniformly in all complete horizons and finite original profile families. First higher-source olean50461 passed for this importer. Wired/README/checks. The prime and square layers, pure coarse contributions and full Weil index remain open payments.
+
+### Square-source completion and retained Gamma index — requested work
+
+Complete five endpoints: (1) literal all-even-power Fourier/Abel identity with half the original squared mean and Euler-constant L2 floor; (2) unconditional c logT lower bound for the Xi field on Re s=1; (3) square-source gap retains delta times original Gamma plus gamma/2 mass; (4) transfer to compact BV and complete cells using the existing smoothing; (5) one finite detail head plus mean bounds negative dimension by A+1 after adding only odd higher-power mixed terms. All are required. Full first-prime/coarse/archimedean/polar completion remains a separate open problem.
+
+Passed pole/regular-limit scratch promoted to TheSquarePrimeBoundaryHasItsMeanPole; actual-source audit pending. Xi edge and literal Dirichlet prototypes remain unchecked.

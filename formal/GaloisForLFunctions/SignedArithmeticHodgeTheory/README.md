@@ -366,6 +366,16 @@ Telescoping at powers of two counts exactly \(1+\lfloor\log_2a\rfloor\)
 ancestors. All required summability follows from the joint \(16\Gamma\)
 bound. Gamma is evaluated on the original profile, with all coarse means free.
 
+[HighGeneratorTailsAreSmallAcrossAllLevels](HighGeneratorTailsAreSmallAcrossAllLevels.lean)
+proves, for every natural cutoff \(A\ge1\),
+\[
+\sum_{j\ge0,\ a\ge A}c_{j,a}^2
+\le\frac{32\Gamma(f)}{1+\log A}.
+\]
+The corresponding projection in the actual Haar analysis space has this
+squared norm error. It retains every dyadic level of each generator below
+the cutoff. Its Gamma budget belongs to the original source.
+
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
 is smaller than the available diagonal reserve, with explicit treatment of the coarse residual.
@@ -589,8 +599,8 @@ Gamma/pole transfer, and arithmetic upper control of critical work remain resear
 
 ## Questions and open topics
 
-1. Can cross-level interactions of the complete-cell multiresolution be paid jointly, leaving
-   finitely many \(\log2\)-orbit generators? Can a bounded-index version be proved first?
+1. Can the full-Weil mixed interactions between levels and arithmetic lags be paid jointly
+   using the proved all-level Gamma allocation? Can a bounded-index version be proved first?
 2. Which twin-selective arithmetic inequality controls those generator orbits with Gamma and
    both poles retained? How far can the discrete prime gap be transferred beyond narrow spacing?
 3. Which prime or theta law bounds canonical critical energy above, retaining exterior rows?

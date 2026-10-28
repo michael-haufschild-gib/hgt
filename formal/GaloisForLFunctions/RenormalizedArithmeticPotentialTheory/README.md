@@ -61,7 +61,7 @@ and Q3 (the gauge charge of a positive form). In wall terms it is Wall 14 (the d
 | [BiarithmeticGaugeGeometry](../BiarithmeticGaugeGeometry/README.md) | the gauge torus, square-class blindness, sign twins | gauge behaviour of the matching between places |
 | [SpacingScaleHarmonicAnalysis](../SpacingScaleHarmonicAnalysis/README.md) | the stability law at a fixed fraction `c₀δ_N` of the spacing (tilted weight `1 + n/N`); the critical exponent of the overlap regime | the counterterm calculus it matches: the covariant `log N + O(1)`, the constant-one self-energy, the finite parts |
 | `RHTower` | Mertens' first theorem; Mertens' theorem with Euler's constant | — |
-| `ArtinMertens` | the Frobenius density theorem in Mertens form: `Σ_{p ≤ y} φ(Frob_p) log p/p ∼ ⟨φ, 1⟩ log y` for every division-constant class function `φ` | the matching coefficient of non-abelian Chebotarev patterns |
+| `ArtinMertens` | Mertens' theorem for rational Artin characters: `Σ_{p ≤ y} φ(Frob_p) log p/p = ⟨φ, 1⟩ log y + O(1)` for every division-constant class function `φ` | the matching coefficient of non-abelian Chebotarev patterns |
 
 RAPT does not re-prove what these programmes own; it imports them and proves the laws that join
 them.
@@ -433,7 +433,8 @@ the place that pays.
     is conjugate to `⟨g⟩`), the pattern `p ↦ f(Frob_p)` has logarithmic mean `⟨f, 1⟩`: the degree-one
     primes of the fixed fields `L^H` count the cosets fixed by Frobenius, their Mertens sums are
     `∼ log y`, and Artin induction spans the division-constant functions by the permutation
-    characters. Ramified primes divide `disc L` and cost `O(1)`. So `κ = ⟨f, 1⟩` (RP60).
+    characters. Ramified primes divide `disc L` and cost `O(1)`. So `κ = ⟨f, 1⟩` (RP60). With Weber's
+    power-saving ideal count the Mertens error is bounded, and the law holds at mass scale.
 
 ---
 
@@ -481,7 +482,7 @@ the place that pays.
 | **RP38 Residue-pattern gauges are matched by their mean** | for every `±1` pattern `f` on `ℤ/q`, the gauge `ε_f(p^k) = f(p mod q)^k` has `A_{ε_f}(y) − κ_f log y → α_f` with `κ_f = φ(q)^{−1} Σ_{u ∈ (ℤ/q)ˣ} f(u)` and `α_f = Σ_u f(u) c_u + Σ_{a ∉ (ℤ/q)ˣ} f(a) ν_a + R_∞` (proper prime powers absolutely summable); so `P_N(ε_f x) = κ_f ℓ² + 2α_f\|x\|² + o(mass)`: the abelian Chebotarev patterns are matched by their mean | `tendsto_primeClassMertensError`, `exists_abs_primeClassGaugeForm_finitePart_le`, `gaugeMertensSum_primeClassGauge_eq` |
 | **RP39 The top spectrum of the prime form is exhausted by the integers** | for `T, ε > 0`, eventually in `N`, `P_N(x) ≤ (log N − γ − T + ε)\|x\|²` on the orthogonal complement of at most `#{m : log m + d(m) < T}` vectors (`d` the tame different); with the Ramanujan spectral points (`eventually_fullPrimeMatrix_eigenvalue_near`) the spectrum of `P_N` within bounded distance of `log N − γ` is `log N − γ − {log m + d(m)} + o(1)`. Mechanism: the truncated `p`-ladder is exactly solvable (`ψ_k = 1_{j≥k} − c_k 1_{j=k−1}`, `λ_k = log p (k + c_k)`), the finite prime box has the product spectrum `λ(m) → log m + d(m)` with a penalty-free Poincaré inequality on the complement of its low modes, and the two scales of RP37 carry it to `[1, N]` | `ladForm_ladMode`, `ladExpansion`, `boxSpectral`, `smoothVar_mul_le_of_orthogonal`, `eventually_mul_sum_sq_le_poleDefect`, `eventually_atomicWeilForm_le_of_modes` |
 | **RP40 The Weil energies of the arithmetic modes** | for a nonnegative Lipschitz profile `φ` on `[0, 1]`, a conductor `m ≥ 2` and an overlap ratio `0 < K < 1/4`, the arithmetic mode `f_N` (the Ramanujan pole profile `c_m(n)/√(φ(m) n)` with atoms of width `K/N`) has `W(f_N)/‖f_N‖² → log(1/K) − log 2π + β(φ)/‖φ‖² + log m + d(m)`. Mechanism: on mean-zero periodic profiles the archimedean cross terms of distinct atoms are `O(wN‖g‖²)` (the cross kernel `Ω` is nonnegative, decreasing and `≤ 2w‖g‖²(1/t + 1)`, and double Abel summation makes the periodic pair sum linear in `N`); the pole moments are bounded sums; the prime form is the Ramanujan eigenvalue; the finite part is `−log 2π` | `abs_sum_periodicPair_le`, `levyEnergy_atomicTest_eq_cross`, `abs_levyEnergy_atomicTest_sub_le_of_periodic`, `abs_weilQuad_atomicTest_periodic_sub_le`, `tendsto_weilQuad_arithmeticMode` |
-| **RP60 Non-abelian Chebotarev patterns are matched by their mean** | for a Galois number field `L`, any choice of Frobenius elements at `p ∤ disc L` and any sign function `f` on `Gal(L/ℚ)` constant on divisions, the pattern `g(p) = f(Frob_p)` has `Σ_{p ≤ y} g(p) log p/p = ⟨f, 1⟩ log y + o(log y)`, so `A_{ε_g}(y)/log y → ⟨f, 1⟩` and `\|P_N(ε_g x) − ⟨f, 1⟩ ℓ²\| ≤ (η log N + C_η) · mass`. Mechanism: Frobenius density theorem in Mertens form (soft Mertens over number fields from ideal counting; `\|H\| n_{L^H}(p) = #{g : g⁻¹ Frob_p g ∈ H}`; Artin induction) | `tendsto_chebotarevPattern_div_log`, `tendsto_gaugeMertensSum_chebotarevPattern_div_log`, `gaugeForm_chebotarevPattern_soft` |
+| **RP60 Non-abelian Chebotarev patterns are matched by their mean** | for a Galois number field `L`, any choice of Frobenius elements at `p ∤ disc L` and any sign function `f` on `Gal(L/ℚ)` constant on divisions, the pattern `g(p) = f(Frob_p)` has `Σ_{p ≤ y} g(p) log p/p = ⟨f, 1⟩ log y + O(1)`, so `\|A_{ε_g}(y) − ⟨f, 1⟩ log y\|` is bounded and `\|P_N(ε_g x) − ⟨f, 1⟩ ℓ²\| ≤ C · mass`. Mechanism: Frobenius density theorem in Mertens form with bounded error (Weber's `I_K(s) = c_K s + O(s^{1−1/n})` from lattice points in dilates of the Lipschitz norm ball; `\|H\| n_{L^H}(p) = #{g : g⁻¹ Frob_p g ∈ H}`; Artin induction) | `tendsto_chebotarevPattern_div_log`, `exists_abs_gaugeMertensSum_chebotarevPattern_sub_le`, `exists_abs_gaugeForm_chebotarevPattern_sub_le` |
 
 ---
 
@@ -671,7 +672,8 @@ transfer of the Mertens error to the horizon remainder, and summation by parts a
    iff that error is bounded in logarithmic mean. Every sign pattern of the primes by residues mod
    `q`, so every abelian Chebotarev pattern, has `κ` equal to its mean over `(ℤ/q)ˣ` and a computed
    finite part (RP38). *Answered at leading order:* every Chebotarev pattern `f(Frob_p)` with `f`
-   constant on divisions of `Gal(L/ℚ)` has `κ = ⟨f, 1⟩` and the soft law (RP60). Open: their finite
+   constant on divisions of `Gal(L/ℚ)` has `κ = ⟨f, 1⟩`, a bounded Mertens error and the mass-scale
+   law (RP60). Open: their finite
    part, which needs the Mertens constant (the prime ideal theorem for Artin `L`-functions), and
    patterns not constant on divisions, which need Hecke `L`-functions.
 6. **Several primes at once.** *Answered for every finite prime set `Q`:* each finite family
@@ -786,7 +788,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `MertensTheoremInResidueClassesWithItsConstant` | the non-coprime prime powers; the principal limit `−γ − Q_q`; the class constants through `−L′/L(1, χ)` |
 | `ResiduePatternGaugesAreMatchedByTheirMean` | residue-pattern gauges; Mertens decomposition; proper prime powers; non-unit classes; `κ_f`, `α_f` and the horizon law |
 | `TheMatchingCoefficientIsTheLogarithmicDensity` | prime-sign gauges; primes and proper prime powers; density gives matching; `κ = 1 − 2ϑ` for flipped density `ϑ` |
-| `NonAbelianChebotarevPatternsAreMatchedByTheirMean` | Chebotarev patterns `f(Frob_p)`; ramified primes bounded; `κ = ⟨f, 1⟩` and the soft law for division-constant `f` |
+| `NonAbelianChebotarevPatternsAreMatchedByTheirMean` | Chebotarev patterns `f(Frob_p)`; ramified primes bounded; `κ = ⟨f, 1⟩`, bounded Mertens error and the mass-scale law for division-constant `f` |
 | `ClassHarmonicSumsHaveConstants` | Euler's constant with a rate; Cauchy with a rate; shifted classes; the class constants `d_a`; `L_a` to second order |
 | `TheFinitePartOnResidueClasses` | the residue Gram as class Mertens sums; floors; the logarithmic model Gram to `O(1)`; the residue finite-part law |
 | `TheResidueFinitePartIsDiagonalizedByCharacters` | spectral values `β_χ`; conjugate characters; class constants as a character transform; Fourier inversion; diagonalization |

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheDyadicDetailsAreTheLiteralBalancedHaarSources
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.EveryFiniteCellSourceHasFiniteDyadicCoordinates
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.DyadicVarianceSplitsIntoTheLiteralHaarReadout
-import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SmoothFiniteCellArithmeticForm
+import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 /-!
 # Physical source realization of all dyadic Haar coordinates

@@ -116,7 +116,7 @@
 
 - **Path:** Off-line first moment / mollified mean square → no off-line zeros.
 - **Obstruction:** Moment bounds do not imply pointwise vanishing. Gate floor exp(5R/3); fixed a>0,b₁=1,abs(b_d)≤1,length≤T^θ,0<θ<1 gives mean-square excess≥(1−θ)e^(−2a)T/16 [L]. Under assumed CGG main terms, polynomial mollifier optimum is `1−(1+θ)⁻³`; Feng orthogonal enlargement gives no gain, and θ=4/7 yields `988/1331<3/4` [L]. This is algebra conditional on the main terms, not a zero theorem.
-- **Survivor:** Near-line density and sharp mollifier floors/optima. Census on (T,2T] [L]: (2/3−ε)N+M_off≤N₀ˢ; ≥(4/5−ε) of zero ordinates critical; ≥3/4 of zero copies within 4/log T of the line; the 3/4 problem is a bound on simple off-line zeros near the line. Proportions, not individual zeros.
+- **Survivor:** Near-line density and sharp mollifier floors/optima. Census on (T,2T] [L], built on the imported Alpöge–Furman `Zeta23` theorems: (HD(1)−ε)N+M_off≤N₀ˢ, HD(1)=3/2−cot(1/√2)/√2=0.6725…, hence off-line copies≤(1−HD(1)+ε)N; ≥(4/5−ε) of zero ordinates critical; ≥3/4 of zero copies within 4/log T of the line; the 3/4 problem is a bound on simple off-line zeros near the line. Proportions, not individual zeros.
 - **Needs:** θ→1 or unbounded coefficients outside this class; even improved density needs individual-zero control.
 - **E:** R:MollifiedGateConstantFloor; R:MollifiedMeanSquareGaussianPrimeFloor; R:SelbergExponentialNearLineDensity; R:ZetaCGGMollifierOptimum; R:Zeta23OffLineMultipleExclusion; R:Zeta23SimpleOffLineNearLine; R:Zeta23CriticalOrdinateCensus.
 

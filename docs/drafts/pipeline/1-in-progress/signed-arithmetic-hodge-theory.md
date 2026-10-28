@@ -158,12 +158,11 @@ complete orthogonal dyadic coordinates. Prime two acts along
 nearest-neighbour chains at fixed Haar index. This supplies exact multiscale
 source coordinates before any sign assertion.
 
-A separate Gamma square-function estimate must pay all levels from one reserve.
-The candidate mechanism assigns each pair of points to its least common
-ancestor in the actual logarithmic-cell tree and uses the existing two-interval
-mean/variance inequality. Summing per-level Gamma bounds is not a proof of this
-joint estimate. All-prime couplings and the selective generator-orbit sign are
-further obligations.
+One Gamma reserve pays all parent variances through disjoint sibling rectangles.
+Exact variance flow and ancestor counting give logarithmic square-function
+control across every level. High generator labels have total square mass at
+most32 Gamma/(1+log A). All-prime mixed couplings and the selective
+generator-orbit sign remain distinct obligations.
 
 ### Completed logarithmic-cell clock
 
@@ -286,8 +285,9 @@ an assumption available to the programme.
 2. Finite nested-parent sum<=16 Gamma: final-audited and integrated.
 3. Logarithmically weighted actual Haar readouts: final-audited and integrated;
    exact ancestor weights cost16 Gamma, natural-logarithmic weights cost32 Gamma.
-4. All-level high-generator tail bound: retain complete translation orbits
-   of finitely many low generators.
+4. All-level high-generator tail bound: square-function and analysis-space
+   norm estimates are final-audited. Physical source identification retains
+   complete translation orbits of finitely many low generators.
 5. Compactness boundary: one-level detail compactness and an explicit
    infinite orthogonal translated Haar family with uniformly bounded Gamma.
 

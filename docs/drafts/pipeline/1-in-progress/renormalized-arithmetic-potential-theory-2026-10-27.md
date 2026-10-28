@@ -59,8 +59,9 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
   Mertens error, horizon law `κ_f ℓ² + 2α_f|x|² + o(mass)`.
 - RP26 extension: every prime sign pattern of logarithmic density has the soft law; flipped density `ϑ`
   gives `κ = 1 − 2ϑ`.
-- RP60 non-abelian Chebotarev patterns `f(Frob_p)`, `f` division-constant on `Gal(L/ℚ)`: `κ = ⟨f, 1⟩` and
-  the soft law (`NonAbelianChebotarevPatternsAreMatchedByTheirMean`, via `ArtinMertens`).
+- RP60 non-abelian Chebotarev patterns `f(Frob_p)`, `f` division-constant on `Gal(L/ℚ)`: `κ = ⟨f, 1⟩`,
+  bounded Mertens error, mass-scale law (`NonAbelianChebotarevPatternsAreMatchedByTheirMean`, via
+  `ArtinMertens`).
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke

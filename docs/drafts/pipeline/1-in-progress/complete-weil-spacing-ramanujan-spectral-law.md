@@ -17,7 +17,7 @@ on arbitrary Weil tests, unbounded overlap, or RH.
 
 ## Gates
 
-- [ ] Exact carrier and normalization
+- [x] Exact carrier and normalization
 - [ ] Dependency-closed paper proof of row estimates, quasimodes, and spectral exhaustion
 - [ ] Lean realization, individual foreground checks, transitive axioms, umbrella wiring
 
@@ -499,7 +499,7 @@ The support graph now has thirty modules: three scratch-verified and installed, 
 
 Five support modules are now scratch-verified, installed, and supplied with first required oleans: the harmonic tail moments, finite/reversed Abel adapter, actual complete-Weil carrier, exact collar harmonic kernel, and finite harmonic row identities. Seven retained endpoint axiom reports are clean. Thirty-four total drafts are recorded in the manifest. The new unchecked assembly `TheCompleteWeilMatrixHasRamanujanQuasimodes` combines the exact matrix decomposition with all three norm error limits; its dependencies and endpoint have not yet passed Lean. Full-range coercivity and spectral exhaustion remain to assemble.
 
-Seven support modules now pass scratch Lean verification and have their first required oleans; the new verified modules are `SpacingScaleHarmonicAnalysis/TheArchimedeanDensityHasQuadraticIncrementControl` and `HTGeometry/FiniteWeightedGroundStateBound`. Nine retained transitive endpoint reports are clean. The manifest records forty-two drafts. The full remaining argument is now drafted through tunable center coercivity, complete-Weil coercivity with defect coefficient `(1-c)/4`, bounded-energy finite coordinates, exact bounded spectral counts, and simple eigenline convergence. These assemblies and their remaining dependencies are unchecked. Final source audits and integration remain. No web searches or novelty audits are part of this work.
+Ten support modules now pass scratch Lean verification and are installed. `TheFullWeilMatrixSplitsAtTheSpacing` proves the exact complete normalized entries with prime, self, cross-integral, and both pole-product terms. Its first required olean is being generated; the preceding nine are present. Twelve retained transitive endpoint reports are clean. The missing existing `TheUniformMarginPaysThePoleOnlyUpToARootLogarithm` dependency compiled successfully without source changes. The manifest `/tmp/WeilRamanujan-draft-manifest.json` records forty-two drafts. The remaining estimates and all three spectral endpoints are unchecked; final source audits and integration remain. No web searches or novelty audits are part of this work.
 
 ### Complete assembly drafted; Lean verification incomplete
 

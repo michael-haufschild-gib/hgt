@@ -1,15 +1,21 @@
 # Route-unification ledger
 
-Status: 28 October 2026, corpus commit `d47ab4b5d`. **The 31 live routes and 18 candidate branches are faces of three core problems: the selective critical sign (U1), source-complete Weil positivity (U2) and independent faithful forcing (U3).** New this edition: U1 and U2 are joined entry by entry. Every separated off-diagonal entry of the complete Weil form is a centered prime-error integral, so U1 is the off-diagonal of U2. In addition, several routes turn out to be faces of one problem — positivity on Hecke-translation orbits.
+Status: 28 October 2026, corpus commit `389e3f1d10`. **The 31 live routes and 18 candidate branches are faces of three core problems: the selective critical sign (U1), source-complete Weil positivity (U2) and independent faithful forcing (U3).**
 
-[Route obstacles](route-obstacles.md) · [summary and priorities](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [frontier map](../rh-current-frontier-map.md). Evidence: corpus searches and Lean statements; no builds. **[S]** = recent working source (committed on 28 October 2026, or unfinished); per-item status in the frontier map. [Working log](../../../logs/review-2810-refresh-2026-10-28.log).
+This edition adds three unifications:
+
+1. **Selectivity is common to all three problems by theorem.** No twin-blind input reaches an RH-complete family. The one quantified selective input is the \(2\log2\) margin.
+2. **Hecke orbits join U1 and U2 at the level of a spectral measure.** Along a \(T_{\log p}\)-orbit, U2 cross-level entries are U1 prime-error sequences, and orbit positivity is Toeplitz positivity of the zero measure on the circle (inference).
+3. **A finite-support stratum crosses all clusters.** Critical energy, subtracted lag, cosine defects, heat-flow nonreal counts and complete-form index are equivalent receivers of finite off-line support, each at least as hard as a fixed strip.
+
+[Route obstacles](route-obstacles.md) · [summary and priorities](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [frontier map](../rh-current-frontier-map.md). Evidence: corpus searches and Lean statements; no builds. **[S]** = working source as in the frontier map; **(inference)** = conclusion of this review, not a Lean theorem. [Working log](../../../logs/review-2810-v2-research-2026-10-28.md).
 
 ## What "the same problem" means
 
 | Relation | Meaning | What it does not mean |
 |---|---|---|
-| **E — Endpoint equivalence** | Two stated conditions are both equivalent to RH, or to each other, in source. | A usable estimate or construction between the producers. |
-| **T — Proved source transfer** | An identity, approximation or inequality carries the actual source from one formulation to another, within its hypotheses. | Extension to growing supports, primes, degrees or another norm. |
+| **E — Endpoint equivalence** | Two stated conditions are both equivalent to RH, or to each other. | A usable estimate between the producers. |
+| **T — Proved source transfer** | An identity, approximation or inequality carries the actual source from one formulation to another within its hypotheses. | Extension to growing supports, primes, degrees or another norm. |
 | **S — Structural similarity** | Two approaches face the same kind of sign, exhaustion or faithfulness problem. | A theorem identifying their objects. |
 
 At the E level all RH criteria are equivalent almost tautologically. Unification is meaningful only through T-bridges and a shared unproved producer.
@@ -18,139 +24,189 @@ At the E level all RH criteria are equivalent almost tautologically. Unification
 
 | Problem | The one missing statement | Faces (routes) | Wall |
 |---|---|---|---|
-| **U1 — Selective critical sign** | A bound on the actual signed prime/Möbius discrepancy at the critical scale, in some receiver currency. | WL, FU, RP, MC, LI, PM, JAS, CTF, PBM, RB; work faces of HF/SRT. Via the Chebyshev identity, also the off-diagonal of every U2 route. | 1 |
-| **U2 — Source-complete positivity** | Positivity, or index zero, of the complete Weil form, with Gamma and both poles, on a source-complete family. | RW, TT, HF, CHMD, SZ, EWU, OWU, SRT, ACT, AIP, ACS; through exact sign receivers also PA, LA, TH, WD, HCF. | 1 and 3 |
+| **U1 — Selective critical sign** | A bound on the actual signed prime/Möbius discrepancy at the critical scale, in some receiver currency. | WL, FU, RP, MC, LI, PM, JAS, CTF, PBM, RB; prime-error faces of HF/SRT/AIP. Via the Chebyshev identity, the off-diagonal of every U2 route. | 1 |
+| **U2 — Source-complete positivity** | Positivity, or index zero, of the complete Weil form, with Gamma and both poles, on a source-complete family. | RW, TT, HF, CHMD, SZ, EWU, OWU, SRT, ACT, AIP, ACS; via sign receivers also PA, LA, TH, WD, HCF. | 1 and 3 |
 | **U3 — Independent faithful forcing** | A source-built structure whose proved property supplies U1 or U2. | TG, RN, XN, BAG, GTA, all 17 candidates and PW-B; geometric faces of HF/ACS. | 14 |
 
-The walls ask different questions of the same problems: Wall 1 the estimate, Wall 3 its transfer, Wall 14 its source of force. Each core problem meets all three walls.
+Each core problem meets all three walls: Wall 1 asks for the estimate, Wall 3 for its transfer, Wall 14 for its source of force.
 
-**One cross-cutting requirement binds all three: selectivity.** Every proved positive family on the complete or atomic source is twin-blind — it also holds for bounded twists \(|\lambda|\le\Lambda\) — while the Liouville twin is not Weil-positive. A producer for any core problem must therefore use a property \(\Lambda\) has and its twins lack. Grouping routes by *where* their selective input enters is the most informative unification.
+**Two cross-cutting requirements bind all three problems.**
+
+- **Selectivity (theorem).** A bounded weight is atomic-positive at a root iff RH holds and the weight is \(\Lambda\). Every producer must use a property \(\Lambda\) has and its bounded twists lack.
+- **Parity (inference).** Majorant information \(|\lambda|\le\Lambda\) is consistent with the Liouville twin, exactly as sieve information is consistent with the parity-twisted sequence. A producer must be parity-breaking.
+
+[Selection](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/PositivityAtEveryRootSelectsTheVonMangoldtWeight.lean).
 
 ## Strongest unifications
 
-### A. U1 and U2 meet entry by entry (T, new)
+### A. U1 and U2 meet entry by entry (T)
 
-For ordered tests (\(\operatorname{supp}f<b<\operatorname{supp}g\)) and every \(c\) [S]:
-
+For ordered tests (\(\operatorname{supp}f<b<\operatorname{supp}g\)) and every \(c\):
 \[
-W(f,g)=-\int_0^\infty\big(e^h-\psi(e^h)-c\big)\,\Omega'_{f,g}(h)\,dh-\Gamma_{\rm tail}(f,g),\qquad\Omega_{f,g}(h)=e^{-h/2}\mathrm{corr}_{f,g}(h).
+W(f,g)=-\int_0^\infty\big(e^h-\psi(e^h)-c\big)\,q'_{f,g}(h)\,dh-\Gamma_{\rm tail}(f,g).
 \]
+The Gamma tail decays like \(\pi e^{-2\,\mathrm{gap}}\), and on the pole hyperplane only the prime comb is left. So WL/FU/RP/PBM (prime-error histories) and HF/ACS/AIP/RW/OWU (complete form) ask for the same signed quantity in different test-function norms. The pole product, which alone grows across scales, is cancelled by the prime main term \(e^h\). That is where \(\Lambda\) differs from the Liouville twin (prime sum \(\approx-e^h\)) and from character twists (\(o(e^h)\)).
 
-The Gamma tail contains a nonnegative square reserve. The diagonal of the complete form carries Gamma and pole reserves; its separated off-diagonal is the Chebyshev error \(e^h-\psi(e^h)\) tested against correlation derivatives. Hence:
+[Chebyshev identity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheOrderedWeilSourceIsACenteredChebyshevDefect.lean), [separated levels](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/SeparatedLevelsCoupleThroughTheChebyshevError.lean).
 
-- WL/FU/RP/PBM (prime-error histories) and HF/ACS/AIP/RW/OWU (complete form) ask for the **same signed quantity**, in different test-function norms.
-- The pole product, which alone grows across scales, is cancelled exactly by the prime main term. This is the place where \(\Lambda\) differs from the Liouville twin (prime sum \(\approx -e^h\)) and from character twists (\(o(e^h)\)). Finite prime flips keep the main term. They are identified by the prime finite part, where \(\zeta\) is the unique matched maximizer, and they fail positivity only through local witnesses.
+### B. One selective margin serves every U2 route (T, new)
 
-[Chebyshev identity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheOrderedWeilSourceIsACenteredChebyshevDefect.lean), [square reserve](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheOrderedWeilSourceRetainsItsGammaSquareReserve.lean).
+RW, HF, ACS, AIP, OWU, EWU, SRT, SZ, CHMD and ACT all reduce, on atomic or complete sources, to the same form.
 
-### B. Full Weil sign, parity, incidence, Hodge and effectivity share one complete source (E + T)
+- Its pole hyperplane is the discrete harmonic hyperplane \(\sum x_n/\sqrt n=0\).
+- On that hyperplane the prime form of \(\zeta\) has gap exactly \(2\log2\) and the Liouville twin's gap is \(0\).
+- At every width the atomic sign is the Markov gap on \(p=0\) plus one affine scalar [S].
+- The sharp selective Gårding inequality turns the margin into a reserve \(c_0(2\log2-\eta)\) at narrow widths.
 
-RW minimizes the full form; SZ obtains it as a first variation; EWU/OWU are even/odd weight-uniqueness forms; AIP is its joint allocation; ACT reaches its odd sign from one shift; HF/ACS phrase it as Hodge/effectivity/index; TT/CHMD give theta/Doob/wave coordinates. All are E-equivalent, and they share one T-carrier:
+These routes therefore share not only an endpoint but a single quantified selective input and a single open transfer: carrying the margin past the Robin–Euler point ([Q1](obstacles-summary.md#q1)).
 
-- complete logarithmic cells recover every mixed entry;
-- smoothing preserves both pole moments;
-- complete cells capture every finite index.
+[Margin](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheSelectiveMarginIsTwoLogTwo.lean), [Gårding](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheSelectiveGardingInequality.lean), [gap and scalar](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar.lean).
 
-That carrier is now a dyadic multiresolution of itself [S]. Average cells are \(\log2\)-translates; Gamma pays every adjacent difference; high details carry a horizon-uniform floor. The common residual is therefore the \(T_{\log2}\)-orbits of finitely many generators (cell 1 and low details) plus cross-level couplings. [Complete transfer](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/CompleteWeilSourceTransfer.lean), [Gamma payment](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/CompleteCellVariancePayment.lean), [self-similarity](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellCoarseSplitting.lean), [floor](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean).
+### C. Atomic families (T)
 
-Pole neutrality, mean zero, oddness and a generic codimension-one constraint remain different conditions. A sign on one hyperplane does not transfer to another by dropping the pole.
+SRT, AIP, HF and ACS share one atomic receiver, now valid at widths \((\log\log N)^\alpha/N\) for every \(\alpha>1\).
 
-### C. Atomic families at every root (T)
+- The Markov form is negative under overlap growth unconditionally.
+- The Liouville twin, scalings \(c\Lambda\) and quadratic mixtures are negative at every root.
+- Narrow positivity holds up to a quarter of the Robin–Euler threshold [S].
 
-SRT, AIP, HF and ACS share one atomic receiver. RH holds iff the full form is eventually nonnegative on atomic families at any overlap growth of finite order — widths \((\log N)^\alpha/N\) for any \(\alpha>0\) [S]. The same transfer law applies to every "stable form". The Markov form is negative at every root unconditionally, and on the pole hyperplane its nonnegativity at every root is RH. The Liouville twin, scalings \(c\Lambda\) and quadratic mixtures are negative at every root. Narrow positivity holds at \(K_\star\delta_N\), where the prime-form defect pays the pole [S]. The proved and the needed regimes are now separated only by bounded versus unbounded polylog overlap. [Every root](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheOverlapLawAtEveryRoot.lean), [gauge](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheGaugeAtEveryRoot.lean), [pole defect](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/ThePoleDefectPaysThePole.lean).
+The proved and needed regimes are separated by bounded versus \((\log\log N)^{1+\varepsilon}\) overlap. The \(\alpha=1\) edge is a quasi-analyticity boundary of the synthesis (inference).
 
-### D. Hecke-translation orbits (S, new)
+[Denjoy–Carleman](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheDenjoyCarlemanProfiles.lean), [quarter](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheStabilityRegimeReachesAQuarterOfTheRobinEulerThreshold.lean).
 
-Six results describe one phenomenon: the behaviour of the Weil form along orbits of a single Hecke dilation \(T_{\log p}\).
+### D. Hecke orbits and Toeplitz symbols (T + S, extended)
+
+These results describe one phenomenon: a quadratic form along the orbit of one Hecke dilation is a Toeplitz form, and its positivity is a statement about a spectral measure on the circle.
 
 | Face | Result |
 |---|---|
-| ACS self-similarity | Average cell \(=T_{\log2}\)(cell); complete cells are orbits of finitely many generators. |
-| SAHT translation escape | \(W\) is constant along every orbit, while the graph norm exceeds every exponential. |
-| ALG isometric ladders | Decaying Toeplitz ladders are hyperbolic at all depths iff every finite form is nonpositive; a positive block repeats. |
-| ACP Stepanov mechanism | \(1-T_p^N\) annihilates a zero symbol iff the zero is critical and on a height lattice. Sparse auxiliaries vanish to order below their term count. |
+| ACS/SMAP self-similarity | \(C_{2a}+C_{2a+1}=T_{\log2}C_a\); every twisted Weil pairing is level-Toeplitz. |
+| SAHT level matrix | Prime two is the unilateral shift on every generator chain; translation keeps \(W\) and escapes every exponential graph bound. |
+| SMAP level couplings | Pole \(2AB\cosh\): rank two, hyperbolic; Gamma \(\pi4^{-(d-1)}\); touching uniform; prime part a Chebyshev sequence. |
+| LI / ALG Cayley ladder | RH iff the Cayley–Li Toeplitz ladder is negative semidefinite on primitive vectors; its couplings never decay [S]. |
+| ALG isometric ladders | Decaying Toeplitz ladders are hyperbolic at all depths iff every finite form is nonpositive. |
+| ACP Stepanov mechanism | \(1-T_p^N\) kills a zero symbol iff the zero is critical and on a height lattice. |
+| HCF grids | One prime grid aliases a nonreal pair to a positive atom; two grids decide. |
 | PL / one-prime receivers | One-shift similitude and one-prime strip criteria are RH-type. |
-| RAPT one-prime towers | Primitive gap \(p\log p/(p-1)\), equal to \(2\log2\) at \(p=2\) — the conjectured sharp all-prime gap. |
+| RAPT one-prime towers | Primitive gap \(p\log p/(p-1)\), equal to \(2\log2\) at \(p=2\): the sharp all-prime gap. |
 
-On a single orbit, cross entries are Toeplitz in the orbit index. Their positivity is a one-prime orbit condition, and off-line zeros make the entries grow exponentially. Q1 of the [summary](obstacles-summary.md#q1) asks whether the complete source reduces to finitely many such orbits. This is an S-level unification; the identification theorems belong to the individual modules. [Ladders](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/AnIsometricLadderCarriesNoPositiveSquare.lean), [translation escape](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/TranslationPreservesWeilEnergyButEscapesEveryExponentialGraphBound.lean), [Stepanov mechanism](../../../formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/SparseAnnihilatorsAndTheStepanovMechanism.lean).
+**Unifying statement (inference).** Along a \(T_{\log2}\)-orbit, the explicit formula writes \(d\mapsto W(f,T_{d\log2}g)\) as a sum over zeros of \(2^{d(\rho-1/2)}\). Toeplitz positivity of the orbit is therefore positivity of the zero measure pushed to the circle by \(\gamma\mapsto\gamma\log2\), and boundedness of the orbit sequence excludes every visible off-line zero.
 
-### E. Möbius admission, Haar approximation and chronological residuals (E + T)
+- LI's Cayley ladder is the same statement in Li coordinates.
+- HCF's aliasing is the Hankel (heat) version, where growth is allowed and one grid is not enough.
+- Stepanov's mechanism is the lattice case.
 
-MC, PM and CTF share actual Möbius arithmetic; BVI supplies readout, pronic and rate identities. CTF's residual is \((1-\Lambda\text{-readout})^2+\text{centered energy}\). PM's criterion is positive gauge mass \(\inf_dd\,K(d,d)\) for every escape state. The common unpaid input is complete signed energy at small damping. Record-minimum escape limits have positive diagonals but may still have zero gauge mass. [Visibility criterion](../../../formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/RHIsTheVisibilityOfEveryEscapeState.lean), [record minima](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/RecordMinimaForceInfiniteCofactorLimits.lean).
+The finite-generator reduction of U2 lands exactly here. It is a reformulation of RH in one-prime Toeplitz form, not a reduction of difficulty.
 
-### F. Width, rate, field and work currencies (E + T)
+[Multiresolution](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheCompleteSourceIsADyadicMultiresolution.lean), [level matrix](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/ArithmeticTranslationsHaveAnExactDyadicLevelMatrix.lean), [Cayley ladder](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/RHIsReflectionPositivityOfTheCayleyLadder.lean), [Stepanov](../../../formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/SparseAnnihilatorsAndTheStepanovMechanism.lean), [aliasing](../../../formal/GaloisForLFunctions/RHTower/HeatGridAliasingBoundary.lean).
 
-Fixed-strip conditions \(\Theta\le1-\theta\) have many exact readings: escaped Möbius rates, all-test Hecke-defect caps, theta-prefix growth, \(\operatorname{Re}\xi'/\xi\ge0\) on half-planes, and (for \(\Theta<1\)) Vaughan convolution power savings. Source work is stratified:
+### E. The finite-support stratum (E + T, new)
 
+The following are each equivalent to finite off-line support, and each forces \(\Theta<1\):
+
+| Face | Routes | Statement |
+|---|---|---|
+| Canonical critical energy | HF, SRT, ACS | \(\mathcal E_{\rm crit}<\infty\); bounded work; \(\Delta\mathcal W\to0\) |
+| Complete-form index | HF, ACS, AIP | Uniformly bounded spline / complete-cell negative index |
+| Subtracted prime lag | WL | Lag minus finitely many exponentials bounded on one side |
+| Xi cosine-shift defects | Supporting (Backlund–Lindelöf converse) | Uniformly bounded defects |
+| Heat flow | WD, LA | Nonreal zero counts of \(H_t\) bounded as \(t\downarrow0\); horizon \(2\pi e^{(27/40+\varepsilon)/t}\) proved |
+
+This is a T-bridge between U1 (lag), U2 (index, work) and the heat routes at the intermediate stratum, where none existed before. The finite-index chain of [Q2](obstacles-summary.md#q2) is its most concrete producer target.
+
+[Index exit](../../../formal/GaloisForLFunctions/ArithmeticOrientationGeometry/TheIndexExit.lean), [subtracted lag](../../../formal/GaloisForLFunctions/RHTower/FiniteOffLineConverse.lean), [heat count](../../../formal/GaloisForLFunctions/RHTower/DeBruijnNonrealCountRightLimit.lean), [canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean).
+
+### F. Width, rate, strip and work currencies (E + T)
+
+Fixed-strip conditions \(\Theta\le\frac12+c\) have exact one-sided readings in escaped Möbius rates, all-test Hecke-defect caps, theta-prefix growth, \(\operatorname{Re}\xi'/\xi\ge0\) on half-planes, Vaughan power savings, the Möbius-divisor Abel moment and its quotient head at any cutoff, and Suzuki finite-contact residuals. Work is stratified:
 \[
-\text{bounded work}\iff\Delta\mathcal W\to0\iff\mathcal E_{\rm crit}<\infty\iff\text{finite off-line support};\qquad\mathcal E_{\rm crit}\le Q_*\iff\mathrm{RH}.
+\mathcal E_{\rm crit}\le Q_*\iff\mathrm{RH}\ \Longrightarrow\ \mathcal E_{\rm crit}<\infty\iff\text{finite support}\ \Longrightarrow\ \Theta<1.
 \]
+The thresholds \(2\), \(39/50\) and \(Q_*=1294047/2000\) belong to different normalizations.
 
-A finite index \(k\) costs \(\mathcal E_{\rm crit}\ge\max\{I_*k,50k^2-3k/2\}\), a quantitative T-bridge between U1 work and U2 index. The thresholds \(2\), \(39/50\) and \(Q_*=1294047/2000\) belong to different normalizations and are not interchangeable. [Vaughan strips](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/UniformVaughanPowerBoundsAreFixedStrips.lean), [canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean).
+[Abscissa laws](../../../formal/GaloisForLFunctions/RHTower/QuasiRHQuotientHeadAndFiniteContactAbscissaLaw.lean), [Vaughan strips](../../../formal/GaloisForLFunctions/BezoutValuationIncidence/UniformVaughanPowerBoundsAreFixedStrips.lean).
 
-### G. Heat, Jensen, Ward, moment and seam formulations (E + T)
+### G. Counting faces (S, new)
 
-LA and WD share finite-head/heat coefficient geometry; TH and HCF expose moment/grid signs; PA exposes all-order passivity. HJ's reflection residual equals SEC's seam charge, and all-divisor vanishing matches HCF's two-grid sign. The Xi Jensen family satisfies Laguerre on \(s\ge0\); Lorentzian closure is exactly the nonnegative-Hessian class. None of this supplies all-degree real-rootedness. [HJ/SEC](../../../formal/GaloisForLFunctions/RHTower/PrimeTailSeedHurwitzReflection.lean), [two grids](../../../formal/GaloisForLFunctions/RHTower/XiGaussianHeatTwoPrimeSourceSampling.lean).
+Four results locate zeros by counting rather than by positivity:
 
-### H. Adjunction, prime modes and gauge finite parts (T)
+- over \(\mathbb F_q\), trickle-down on every Frobenius ladder is equivalent to the one-sided square-root count, proved for hyperelliptic curves by Stepanov;
+- over \(\mathbb Z\), the one-sided \(\psi\) count \(\psi(x)-x\le C\sqrt x\log^2x\) is equivalent to RH (WL);
+- the Alpöge–Furman inertia method counts critical zeros through Sylvester signatures;
+- canonical energy pays each off-line quartet a quantum (AID).
+
+They share the structure "a count at square-root precision, or a signature count, replaces a sign". Only over \(\mathbb F_q\) is the count produced.
+
+[Count](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheTrickleDownInequalityIsTheSquareRootCount.lean), [hyperelliptic RH](../../../formal/GaloisForLFunctions/RHTower/HyperellipticRiemannHypothesis.lean), [census](../../../formal/GaloisForLFunctions/RHTower/Zeta23SimpleCriticalDensity.lean).
+
+### H. Möbius admission, Haar approximation and chronological residuals (E + T)
+
+MC, PM and CTF share actual Möbius arithmetic; BVI supplies readout, pronic and rate identities. CTF's residual is \((1-\Lambda\text{-readout})^2\) plus centered energy, and PM's criterion is positive gauge mass for every escape state. The common unpaid input is complete signed energy at small damping. [Visibility criterion](../../../formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/RHIsTheVisibilityOfEveryEscapeState.lean).
+
+### I. Heat, Jensen, Ward, moment and seam formulations (E + T)
+
+LA and WD share finite-head/heat coefficient geometry; TH and HCF expose moment/grid signs; PA exposes all-order passivity. HJ's reflection residual equals SEC's seam charge, and all-divisor vanishing matches HCF's two-grid sign. The heat-flow reality horizon now ties WD/LA to the finite-support stratum (E).
+
+### J. Adjunction, prime modes and gauge finite parts (T)
 
 RAPT links finite-prime adjunction to the actual prime matrix:
 
-- Ramanujan profiles are quasimodes at \(\log N-E_m\), and fixed packets are actual eigenvalues.
-- The prime form has a uniform gap on the pole hyperplane, where Liouville reaches the ceiling.
-- Each finite prime set has gap \(2\log2\).
-- \(\chi\)-twisted poles read \(2\operatorname{Re}(-L'/L(1,\chi))\) [S]. This ties RAPT's horizon finite parts to the value of \(L'/L\) at \(s=1\), the same object that governs MC/ACG character gauges.
-- Among matched sign gauges with convergent Mertens error, \(\zeta\) uniquely maximizes the finite part [S]. This is a selectivity classification of gauges, with \(\zeta\) as the extremal case.
+- the bounded spectrum equals the adjunction spectrum, with converging eigenlines [S];
+- arithmetic modes have spacing-scale Weil energies \(\log(K_m/K)\), the pole at the Robin–Euler ratio and the first excitation at four times it [S];
+- the \(\chi\)-twisted poles read \(2\operatorname{Re}(-L'/L(1,\chi))\), the object that governs MC/ACG character gauges;
+- Chebotarev sign patterns are matched by their group mean.
 
-The link to complete-cell positivity stays S until Gamma, both continuous poles and the mode complement are paid. [Spectral packets](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFullPrimeMatrixRealizesFiniteAdjunctionPackets.lean), [twisted pole](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheTwistedPoleReadsTheLogarithmicDerivative.lean).
+The link to complete positivity is through B and Q1.
+
+[Mode energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheWeilEnergiesOfTheArithmeticModes.lean), [spectral counts](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheBoundedPrimeSpectrumIsTheAdjunctionSpectrum.lean).
 
 ## Complete live-route crosswalk
 
-"Selective input" names where a \(\Lambda\)-specific property enters, or must enter, the route.
+"Selective input" names where a \(\Lambda\)-specific property enters, or must enter, the route. "Stratum" gives the strongest intermediate the route exposes below its RH endpoint.
 
-| Route | Core problem / cluster | Distinct producer obligation | Selective input |
-|---|---|---|---|
-| **WL** | U1; prime-error energy | Adverse cross-work; keep RH apart from genus saturation | Signed \(\psi(x)-x\) (main-term cancellation) |
-| **FU** | U1; Abel moment | Entire scheduled history | Signed prime channels |
-| **RP** | U1; history floor | High-LCM/moving-core debt | Signed hyperbola/LCM identities |
-| **MC** | U1; Möbius cancellation | Moving-scale \(\mu\) at every strict half-power | Actual \(\mu\), not typical gauges |
-| **LI** | U1; prime–Gamma floor | Literal primitive with outside terms | Signed clock |
-| **PM** | U1; escape visibility | Positive gauge mass for every escape state | Actual Möbius cofactors |
-| **JAS** | U1; prime budget | Logarithmic to half-power budget | Prime-product sign |
-| **CTF** | U1; approximation residual | Readout and centered energy together | \(-\mu_N\) readout alignment |
-| **PBM** | U1; regularized series | Pole-subtracted cancellation to \(\sigma>1/2\) | Actual coefficients |
-| **RB** | U1; extremal remainder | Saturated extremizers | Divisor arithmetic |
-| **RW** | U2; ground energy | Cumulative aperture relaxation | Must enter the low/polar modes |
-| **TT** | U2; odd/covariance | Nonlocal reflected-prime correlation | Signed reflected primes |
-| **HF** | U2 + U1 work + U3 geometry | Complete residual sign or work ceiling | Must enter the generator orbits (Q1/Q2) |
-| **CHMD** | U2; wave/Doob | Residual sign modulo the Weil radical | Primitive defect |
-| **SZ** | U2; first variation | Low/mixed modes on a complete family | Must enter the low modes |
-| **EWU** | U2; even blind minimum | All-aperture low/mixed payment | Weight rigidity (\(\lambda=\Lambda\)) |
-| **OWU** | U2; odd weight | All-aperture odd sign | Small-radius witnesses; twisted poles |
-| **SRT** | U2 + U1 bridge | Sign at any unbounded polylog overlap, or work ceiling | Twins negative at every root; must be used |
-| **ACT** | U2; one-shift | One shift paying every profile | Must enter the exterior primes |
-| **AIP** | U2; joint allocation | Coarse/cross-level allocation | Must enter the low/cross-level residual |
-| **ACS** | U2 + U3 effectivity | RI/height/chirality or complete index zero | Must enter the coarse residual |
-| **PA** | U2 (moment); passivity | All-order/all-shift sign | Prime–archimedean trace |
-| **LA** | U2 (heat); coefficient signs | All-height/all-degree heads | Xi coefficients |
-| **TH** | U2 (moment); Hankel | Signed vectors at common time | Theta moments |
-| **WD** | U2 (heat); caps | Cap extinction as heat shrinks | Actual divisor |
-| **HCF** | U2 (heat); two grids | Both grids, all degrees | Literal \(\log2\)/\(\log3\) grids |
-| **TG** | U3; trace cap | Positive residual and integer trace below one | Euler/Gaussian source |
-| **RN** | U3; renewal | Directed boundary work | Theta renewal |
-| **XN** | U3; Newton discs | Covering with paid curvature | Xi jets |
-| **BAG** | U3; recurrence | Return at every right-strip point | Euler product universality |
-| **GTA** | U3; transverse decay | Rank-uniform decay | Theta Schur charge |
+| Route | Core problem / cluster | Distinct producer obligation | Selective input | Stratum below RH |
+|---|---|---|---|---|
+| **WL** | U1; prime-error energy | Adverse cross-work | Main-term cancellation \(e^h-\psi(e^h)\) | Subtracted lag [≥QRH] |
+| **FU** | U1; Abel moment | Entire scheduled history | Signed prime channels | — |
+| **RP** | U1; history floor | High-LCM/moving-core debt | Signed hyperbola/LCM identities | — |
+| **MC** | U1; Möbius cancellation | Moving-scale \(\mu\) at every strict half-power | Actual \(\mu\) | Any power saving [≥QRH] |
+| **LI** | U1 + D; prime–Gamma floor, Cayley ladder | Literal primitive; ladder sign | Signed clock | — |
+| **PM** | U1; escape visibility | Positive gauge mass for every escape state | Actual Möbius cofactors | Exterior tightness [open] |
+| **JAS** | U1; prime budget | Logarithmic to half-power budget | Prime-product sign | — |
+| **CTF** | U1; approximation residual | Readout and centered energy together | \(-\mu_N\) readout alignment | — |
+| **PBM** | U1; regularized series | Cancellation to \(\sigma>1/2\) | Actual coefficients | Fixed abscissa \(<1\) [≥QRH] |
+| **RB** | U1; extremal remainder | Saturated extremizers | Divisor arithmetic | — |
+| **RW** | U2; ground energy | Cumulative aperture relaxation | Margin on low/polar modes (B) | — |
+| **TT** | U2; odd/covariance | Nonlocal reflected-prime correlation | Signed reflected primes | — |
+| **HF** | U2 + U1 + U3 | Complete residual sign or work ceiling | Margin (B); main-term cancellation across levels (A, D) | Finite index, \(\mathcal E_{\rm crit}<\infty\) [≥QRH] |
+| **CHMD** | U2; wave/Doob | Residual sign modulo the Weil radical | Primitive defect | — |
+| **SZ** | U2; first variation | Sign on factorial/grid tent patterns | Must enter low modes | — |
+| **EWU** | U2; even blind minimum | All-aperture low/mixed payment | Weight rigidity | — |
+| **OWU** | U2; odd weight | All-aperture odd sign | Radius-\(23/40\) witnesses; twisted poles | Conductor/forcing [open] |
+| **SRT** | U2 + U1 | Sign at unbounded overlap, or work ceiling | Margin (B) | Fixed overlap past Robin–Euler [open] |
+| **ACT** | U2; one-shift | One shift paying every profile | Exterior primes | — |
+| **AIP** | U2; allocation | Coarse/cross-level allocation | Margin (B); Chebyshev cross-level work | Selective overlap step [open] |
+| **ACS** | U2 + U3 | RI/height/chirality or complete index zero | Margin (B) | Finite index [≥QRH] |
+| **PA** | U2 (moment) | All-order/all-shift sign | Prime–archimedean trace | — |
+| **LA** | U2 (heat) | All-height/all-degree heads | Xi coefficients | Heat horizon [≥QRH] |
+| **TH** | U2 (moment) | Signed vectors at common time | Theta moments | — |
+| **WD** | U2 (heat) | Cap extinction | Actual divisor | Bounded nonreal count [≥QRH] |
+| **HCF** | U2 (heat) + D | Both grids, all degrees | Two literal prime grids | — |
+| **TG** | U3; trace cap | Positive residual and integer trace below one | Euler/Gaussian source | — |
+| **RN** | U3; renewal | Directed boundary work | Theta renewal | — |
+| **XN** | U3; Newton discs | Covering with paid curvature | Xi jets | — |
+| **BAG** | U3; recurrence | Return at every right-strip point | Euler-product universality | — |
+| **GTA** | U3; transverse decay | Rank-uniform decay | Theta Schur charge | — |
 
 **Strongest shared programmes.**
 
-- The U2 complete-source cluster (RW, HF, ACS, AIP, OWU, SRT, CHMD, SZ, EWU) now has one concrete target: the generator orbits and cross-level couplings of the multiresolution.
-- The U1 cluster (WL, FU, RP, PBM, MC, PM, CTF) supplies exactly the signed quantity that pays those couplings.
-- Heat/moment routes (LA, TH, WD, HCF, PA) keep separate quantifiers and are not reducible to the complete-cell problem without a T-bridge.
+- The U2 cluster (RW, HF, ACS, AIP, OWU, SRT, CHMD, SZ, EWU, ACT) has one quantified selective input and one open transfer, Q1.
+- The finite-support stratum (HF, ACS, AIP, WL, WD, LA) has one concrete producer target, Q2.
+- The U1 cluster supplies the prime-error sequences that are the cross-level couplings of U2, and the Toeplitz view (D) shows these cannot be paid as summable costs.
 
 ## Candidate crosswalk
 
-The 17 standalone candidates and PW-B are U3 producers whose landing is unproved; their family membership is S until a source landing exists.
+The 17 standalone candidates and PW-B are U3 producers whose landing is unproved. By the selection theorem, each landing must fail for the Liouville twin.
 
 | Candidate | Intended landing | What prevents merger into a live producer |
 |---|---|---|
@@ -167,9 +223,9 @@ The 17 standalone candidates and PW-B are U3 producers whose landing is unproved
 | **PCS** | U3→U1; chronological energy | The co-shift defect survives. |
 | **PTR** | U3→real-rooted Xi | No prime-faithful lossless port without zeros. |
 | **RFHM** | U3→U1/U2; grade orientation | Support entropy forgets the grade. |
-| **SC** | U3→U2; cross-fibre index | Wall value unselected. |
+| **SC** | U3→U2; cross-fibre index | Wall value unselected; a finite cross-fibre index would land in the finite-support stratum (E). |
 | **SEC** | U3→U2; seam sign | Asymptotic seam smallness is nonselective. |
-| **W1C** | U3→real-rooted Xi | No arithmetic ferromagnetic limit. |
+| **W1C** | U3→real-rooted Xi | No arithmetic ferromagnetic limit; the Bohr-torus Lee–Yang lift is the natural landing (crystalline seed of 2.7). |
 | **WBF** | U3→U2; certificates | No arithmetic coupling or uniform-depth landing. |
 | **PW-B** | U3→U1; PM complete energy | Zero-indexed action; extinction chain unproved. |
 
@@ -178,26 +234,27 @@ The 17 standalone candidates and PW-B are U3 producers whose landing is unproved
 | Tempting identification | Correct distinction |
 |---|---|
 | Every RH receiver is one programme | Endpoint equivalence is E; producers differ. |
-| \(W\), the collided form \(D\) and the prime-only form are interchangeable | \(D\) is positive but its invariance is the problem; prime-only forms omit Gamma/poles. |
-| Twin-blind positive families can be completed to full positivity | They hold for the Liouville twin, which is not Weil-positive; a selective input is required. |
-| Finite-part identification of \(\zeta\) is a positivity input | \(\zeta\) is the unique *maximizer* of the matched prime finite part, hence the hardest member on step profiles. |
-| The Chebyshev identity makes U2 easier than U1 | It shows they are the same signed quantity in different norms. |
-| Pole products across scales are harmless | They grow like \(2^{\lvert j-k\rvert/2}\) and are cancelled only by the prime main term. |
-| Finite negative index means RH | Bounded index means finite off-line support. |
-| Vanishing work increments mean no exceptions | A finite exceptional set also has vanishing increments. |
-| \(A_Q\) is the Xi operator | Fixed packets are actual prime-matrix eigenvalues, not Xi zeros. |
-| All Hodge/TD formulations share one input | Overlap frustrates gauges; Lorentzian closure has an exact restricted scope. |
-| Local hyperbolic pieces sum to global hyperbolicity | Mixed terms and polar dispersion must be paid. |
-| Narrow sections, complete cells and atomic families are one exhaustion | Narrow sections are positive but non-dense; complete cells capture every index; atomic families are RH-complete only at unbounded overlap. |
-| The every-root receiver lowers the difficulty to bounded overlap | Positivity at any fixed overlap ratio is not RH-complete; the receiver needs unbounded (polylog) overlap. |
-| Curves over finite fields can donate Weil positivity | The archimedean continuum cannot arise from finite places (walls 14.36). |
+| \(W\), the collided form \(D\) and the prime-only form are interchangeable | \(D\) is positive but its invariance is the problem; prime-only forms omit Gamma and poles. |
+| Twin-blind positive families can be completed to full positivity | Impossible on RH-complete families by the selection theorem. |
+| The maximal margin \(2\log2\) selects \(\zeta\) | Finite coefficient flips keep it; the margin is selective against Liouville, not unique. |
+| Finite-part identification of \(\zeta\) is a positivity input | \(\zeta\) maximizes the matched finite part, which makes it the hardest member. |
+| Reducing the complete form to finitely many \(\log2\)-orbits lowers the difficulty | Orbit positivity is Toeplitz positivity of the zero measure on the circle (inference). |
+| Cross-level prime couplings are summable under a strong enough input | Under RH they are almost periodic and bounded, not decaying (inference). |
+| Hyperbolicity of the atomic Gram is arithmetic | It holds for every completely multiplicative sign twin; only the Metzler sign is selective. |
+| Finite negative index means RH | It means finite off-line support, which is [≥QRH], not RH. |
+| Finite off-line support is weaker than any quasi-RH | It implies \(\Theta<1\). |
+| The \(\alpha=1\) atomic receiver is a computation away | It needs compactly supported quasi-analytic profiles, which do not exist (inference). |
+| The \(2/3\) census is a route to RH | Proportions do not exclude individual zeros; the census needs a new main term even for \(70\%\). |
+| Regular integer counts force RH | Over-regular Beurling systems have off-line zeros; the functional equation excludes them. |
+| \(A_Q\) is the Xi operator | Adjunction energies are prime-matrix eigenvalues, not Xi zeros. |
+| Curves over finite fields can donate Weil positivity | The archimedean continuum cannot arise from finite places. |
 | Simple zeros, Chowla and pair correlation are weaker than RH | Logical relations differ; some budgets force RH plus extra assertions. |
 
 ## How to organize research around the unification
 
-1. **One complete-source programme** for RW/HF/ACS/AIP/OWU/SRT/CHMD/SZ/EWU, built in multiresolution coordinates (Q1).
-2. **One selective-input programme** joining the U1 cluster (signed prime error, Möbius) with RAPT's constrained margins (pole-hyperplane gap, twisted poles) to pay the generator orbits (Q2).
-3. **One energy programme** for an upper bound on \(\mathcal E_{\rm crit}\) (Q3).
-4. **Independent-construction experiments** for U3, sharing fidelity and selectivity tests without premature identification.
+1. **One selective-positivity programme** for the U2 cluster: carry the \(2\log2\) margin past the Robin–Euler point (Q1).
+2. **One finite-support programme** joining HF/ACS/AIP (first-layer compactness), WL (subtracted lag) and WD/LA (heat horizon). Every result is checked against its implication \(\Theta<1\) (Q2).
+3. **One counting programme** joining the inertia census, the \(\mathbb F_q\) count-to-positivity theorems and a search for a \(\mathbb Z\)-Stepanov construction (Q3 and 2.7).
+4. **Independent-construction experiments** for U3, each tested against the selectivity battery and the parity criterion.
 
 No route is promoted because its final condition was renamed, and no candidate is retired because another route reaches the same endpoint.

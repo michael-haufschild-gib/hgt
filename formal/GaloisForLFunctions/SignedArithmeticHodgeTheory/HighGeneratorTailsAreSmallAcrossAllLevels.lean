@@ -46,6 +46,7 @@ theorem logCellHaar_high_orbit_tail_le (t : ℝ) {A : ℕ} (hA : 1 ≤ A)
   Real.tsum_le_of_sum_le
     (f := fun a : ℕ+ => if A ≤ (a : ℕ) then logCellHaarOrbitEnergy t a f else 0)
     (fun a => by
+    change 0 ≤ if A ≤ (a : ℕ) then logCellHaarOrbitEnergy t a f else 0
     split_ifs
     · exact tsum_nonneg (fun _ => sq_nonneg _)
     · rfl)

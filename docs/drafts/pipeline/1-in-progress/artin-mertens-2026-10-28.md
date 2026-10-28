@@ -65,11 +65,17 @@ Programme folder: `formal/GaloisForLFunctions/ArtinMertens/`.
       (`exists_abs_primeMertens_sub_log_le`); propagation `TheFrobeniusDensityTheoremWithBoundedError`
       (`exists_abs_frobMertens_sub_le`: `Σ φ(Frob_p) log p/p = ⟨φ, 1⟩ log x + O(1)` for division-constant
       `φ`; `exists_abs_frobMertens_divisionIndicator_sub_le`).
-- [ ] S8 non-rational `φ`: Brauer induction + Hecke `L`-functions of intermediate fields
-      (ray-class characters, `L(1, ψ) ≠ 0`, Mertens for Hecke characters)
+- [ ] S8 non-rational `φ` (full Chebotarev in Mertens form). Dedekind zeta functions see only rational
+      characters, so Galois-conjugate characters need new input. CFT-free route (Chebotarev's):
+      (a) ray-class lattice counts with power saving over any number field `F` (S7 for cosets of
+          `m·J` and the units `≡ 1 mod m`), equal densities ⇒ `Σ_{N𝔞 ≤ x} χ(N𝔞) = O(x^{1−δ})`;
+      (b) `L_F(1, χ∘N) ≠ 0` (product with `ζ_{F(ζ_m)}`; Frobenius in `F(ζ_m)/F` is `N𝔭 mod m`,
+          `IsArithFrobAt.apply_of_pow_eq_one`; real `χ` is the hard case);
+      (c) Mertens `O(1)` for `χ∘N` over `F`; (d) Chebotarev's cyclotomic crossing for cyclic `E/F`;
+      (e) Deuring reduction to cyclic subgroups.
 
-- [x] RAPT: Chebotarev patterns `f(Frob_p)` with division-constant `f` have `κ = ⟨f, 1⟩` and the soft
-      law (RP60, `NonAbelianChebotarevPatternsAreMatchedByTheirMean`)
+- [x] RAPT: Chebotarev patterns `f(Frob_p)` with division-constant `f` have `κ = ⟨f, 1⟩`, bounded
+      Mertens error and the mass-scale law (RP60, `NonAbelianChebotarevPatternsAreMatchedByTheirMean`)
 
 ## Approach
 Elementary Mertens over number fields from ideal counting, then Frobenius bookkeeping to pass from
@@ -81,3 +87,5 @@ case and needs Hecke theory that neither Mathlib nor the corpus has.
 ## Log
 - 2026-10-28 — created; Mathlib survey: Dedekind zeta + residue, ideal-counting limit (no error
   term), arithmetic Frobenius; no Artin/Hecke L, Brauer induction, or prime-ideal Mertens.
+- 2026-10-28 — S1–S7 formalized: `Σ_{p ≤ x, p ∤ disc} φ(Frob_p) log p/p = ⟨φ, 1⟩ log x + O(1)` for every
+  division-constant `φ` (rational Artin characters); RAPT RP60 bridge.

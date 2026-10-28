@@ -113,7 +113,9 @@ orbit.
 | Pole projection | \(x-(\ell(x)/H_N)u\), \(\ell(x)=\sum x_n/\sqrt n\), \(H_N=\sum1/n\) | `poleProj`, `harmonicSum`, `harmonicMass` |
 | Dyadic shift | \((Sx)_{2m}=x_m\), odd entries \(0\): the atomic form of \(T_{\log2}\) | `dyadicShift` |
 | Level orbit, pole pairing | \(\sum_jc_jf(\cdot-s_j)\); \(A(f)B(g)+A(g)B(f)\) | `levelOrbit`, `polePairing` |
-| Sign gauge, harmonic correlation | \(\omega^2=1\); \(S_N(\omega)/H_N\) with \(S_N=\sum_{n\le N}\omega(n)/n\) | `hasHyperplaneGap_two_mul_log_two_of_correlation` |
+| Sign gauge, harmonic correlation | \(\omega^2=1\); \(S_N(\omega)/H_N\) with \(S_N=\sum_{n\le N}\omega(n)/n\), \(H_N=S_N(1)\) | `gaugeHarmonicSum` |
+| Ceiling witness | \((\omega_n-S_N/H_N)\,n^{-1/2}\): the gauge's top projected onto the pole hyperplane | `gaugeWitness` |
+| Pole splitting | \(y=\alpha b+z\), \(\alpha=\langle y,b\rangle/H_N\), \(z\perp b\) | `poleCoord`, `poleResidual` |
 | Copy of a real test | \(\varphi(\cdot-t)\) as a real test | `shiftTest` |
 | Adjunction energy | \(E_m=\gamma+\log m+\tau(m)\), \(\tau\) the tame different | `ramanujanAdjunctionEnergy` |
 | Complete cell, translation | \(C_a=1_{[\log a,\log(a+1))}\), \(T_tf=f(\cdot-t)\) | `logCell`, `translate` |

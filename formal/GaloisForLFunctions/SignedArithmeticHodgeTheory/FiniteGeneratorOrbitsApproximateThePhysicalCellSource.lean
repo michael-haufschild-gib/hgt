@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.HighGeneratorTailsAreSmallAcrossAllLevels
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.DyadicHaarCoordinatesReadTheOriginalSource
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SmoothFiniteCellArithmeticForm
 
 /-!
 # Physical approximation by finitely many complete generator orbits
@@ -40,9 +41,9 @@ theorem finite_retainedLogCellGenerators (A : ℕ) :
 
 /-- The original-cell orthogonal cutoff retaining entire low-generator orbits. -/
 def logCellGeneratorHead (A : ℕ) : CellH →L[ℂ] CellH :=
-  logCellDyadicCoordinates.symm.toContinuousLinearMap ∘L
+  (logCellDyadicCoordinates.symm : CoordH →L[ℂ] CellH) ∘L
     lpCoordinateProjection {i | retainedLogCellGenerator A i.2} ∘L
-      logCellDyadicCoordinates.toContinuousLinearMap
+      (logCellDyadicCoordinates : CellH →L[ℂ] CoordH)
 
 theorem logCellDyadicCoordinates_generatorHead (A : ℕ) (x : CellH) :
     logCellDyadicCoordinates (logCellGeneratorHead A x) =
@@ -127,6 +128,7 @@ private theorem physical_coordinate_tail_norm (f : ℝ → ℝ)
     cases o with
     | none => exact False.elim (hi (by rw [hzNone, norm_zero, zero_pow (by norm_num : 2 ≠ 0)]))
     | some a => exact ⟨(j, a), rfl⟩
+  change ‖z‖ ^ 2 = _
   rw [HilbertSchmidt.lp_norm_sq_eq, ← hι.tsum_eq hsupp]
   exact tsum_congr (fun i => hzSome i.1 i.2)
 
