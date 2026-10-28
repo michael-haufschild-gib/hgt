@@ -87,7 +87,8 @@ theorem exp_abs_mul_le_abs_polePairing_shift (f : ℝ → ℝ) (s t : ℝ) :
       |polePairing (fun u => f (u - s)) (fun u => f (u - t))| := by
   rw [polePairing_shift, show 2 * poleMomentA f * poleMomentB f * Real.cosh ((t - s) / 2) =
       (poleMomentA f * poleMomentB f) * (2 * Real.cosh ((t - s) / 2)) by ring,
-    abs_mul (poleMomentA f * poleMomentB f), abs_of_pos (by positivity : 0 < 2 * Real.cosh ((t - s) / 2))]
+    abs_mul (poleMomentA f * poleMomentB f),
+    abs_of_pos (by positivity : 0 < 2 * Real.cosh ((t - s) / 2))]
   refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
   have h := exp_abs_le_two_mul_cosh ((t - s) / 2)
   rwa [abs_div, abs_two] at h
@@ -214,7 +215,8 @@ theorem exists_poleMomentA_levelOrbit_eq_zero {ι : Type*} (S : Finset ι) (s : 
 
 /-- **The two-level pole plane is hyperbolic**: for distinct shifts `s ≠ t` the pole term of the
 coefficients `(1, −1)` is negative, `(e^{−s/2} − e^{−t/2})(e^{s/2} − e^{t/2}) < 0`, while that of
-`(1, 0)` is `1`. So with `A(f)B(f) ≠ 0` the pole term takes both signs on the plane of two copies. -/
+`(1, 0)` is `1`. So with `A(f)B(f) ≠ 0` the pole term takes both signs on the plane of two
+copies. -/
 theorem poleQuad_twoLevels_neg {s t : ℝ} (hst : s ≠ t) :
     (Real.exp (-(s / 2)) - Real.exp (-(t / 2))) * (Real.exp (s / 2) - Real.exp (t / 2)) < 0 := by
   rcases lt_or_gt_of_ne hst with h | h

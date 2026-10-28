@@ -221,8 +221,8 @@ theorem isGreatest_signGauge_hyperplaneGap :
   ⟨⟨fun _ => 1, fun _ => one_mul 1, zeta_hasHyperplaneGap_two_mul_log_two⟩,
     fun _ ⟨_, hω, hg⟩ => le_two_mul_log_two_of_hasHyperplaneGap_of_mul_self_eq_one hω hg⟩
 
-/-- **Damping is not selectivity**: the zero weight has every hyperplane gap, so the extremal problem
-is posed among sign gauges. -/
+/-- **Damping is not selectivity**: the zero weight has every hyperplane gap, so the extremal
+problem is posed among sign gauges. -/
 theorem hasHyperplaneGap_zero_weight (g : ℝ) : HasHyperplaneGap (fun _ => 0) g := fun ε hε => by
   refine ⟨⌈Real.exp (Real.eulerMascheroniConstant + g)⌉₊, fun N hN x _ => ?_⟩
   have hN' : Real.exp (Real.eulerMascheroniConstant + g) ≤ N :=

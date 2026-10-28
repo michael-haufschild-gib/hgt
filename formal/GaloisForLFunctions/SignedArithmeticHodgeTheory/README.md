@@ -313,6 +313,22 @@ This is Hilbert orthogonality in the closed logarithmic-cell subspace.
 Joint Gamma estimates across levels and full-Weil mixed bounds remain separate.
 The cell completion is not identified with the entire continuous source graph.
 
+### Gamma allocation on the dyadic tree
+
+For adjacent intervals with widths \(L,R\), the exact variance identity is
+\[
+V_{\rm parent}=V_{\rm left}+V_{\rm right}
+ +\frac{LR}{L+R}(\mu_{\rm left}-\mu_{\rm right})^2.
+\]
+If \(L+R\le1\), the original Gamma charge on their ordered sibling rectangle
+is at least \(\min(L,R)V_{\rm parent}/(2(L+R))\).
+Each logarithmic child has at least one quarter of its parent's width.
+[TheSiblingGammaChargePaysItsParentVariance](TheSiblingGammaChargePaysItsParentVariance.lean)
+therefore proves that every actual logarithmic sibling rectangle pays
+\(V_{\rm parent}/8\), at every real translate. The complete-cell theorem
+allows all coarse means, detail coefficients and horizons. No mean-zero
+restriction on the parent source enters this estimate.
+
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
 is smaller than the available diagonal reserve, with explicit treatment of the coarse residual.

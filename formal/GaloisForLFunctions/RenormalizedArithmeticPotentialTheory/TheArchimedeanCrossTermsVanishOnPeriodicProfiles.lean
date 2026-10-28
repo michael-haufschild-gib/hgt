@@ -245,7 +245,7 @@ theorem levyEnergy_atomicTest_eq_cross (hg : ContDiff ℝ 2 g) (hgc : HasCompact
 `|L(f_x) − |x|² L(g)| ≤ 168 q B² (wN) ‖g‖²`. -/
 theorem abs_levyEnergy_atomicTest_sub_le_of_periodic (hg : ContDiff ℝ 2 g)
     (hgc : HasCompactSupport g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hg0 : ∀ u, 0 ≤ g u)
-    {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w) (hw : 4 * w ≤ atomSpacing N) {q : ℕ} (hq : 1 ≤ q) {B : ℝ}
+    {N : ℕ} (hw0 : 0 < w) (hw : 4 * w ≤ atomSpacing N) {q : ℕ} (hq : 1 ≤ q) {B : ℝ}
     (ψ : ℕ → ℝ) (hper : ∀ n, ψ (n + q) = ψ n) (hmean : ∑ r ∈ range q, ψ r = 0)
     (hB : ∀ n, |ψ n| ≤ B) :
     |levyEnergy (atomicTest N (fun n => ψ n / Real.sqrt n) g) -

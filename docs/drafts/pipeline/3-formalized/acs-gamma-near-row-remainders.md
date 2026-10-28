@@ -71,9 +71,17 @@ The endpoint losses are nonnegative, so a finite subset costs no more than its c
 
 This holds after every common real translation. Distinct cell interiors are disjoint. Their finite sum of kernel integrals therefore equals the integral over their union, which lies inside the two separated half-lines supplied by `logCell_distant_subset`. Each half-line costs at most the fixed Gamma tail, and integration over the source interval supplies its actual width. No cardinality or horizon factor is introduced. All four modules have eleven clean standard-axiom audits.
 
+## Actual touching rows
+
+[LogCellGammaBoundaryRows.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/LogCellGammaBoundaryRows.lean) passed its exact project check and all three transitive audits without warnings. Log: `/tmp/acs-logcell-gamma-boundary-finite-final.log`.
+
+`gamma_logCell_upper_adjacent_le` bounds the upper touching error by `ofReal((3/2)*exp(1/2)*wₐ)`. `gamma_logCell_lower_adjacent_le` bounds the lower touching error by `ofReal((5/2)*exp(1/2)*wₐ)`; the empty lower cell at `a=1` is included. Consequently `gamma_logCell_adjacent_sum_le` bounds any finite touching row by `ofReal(4*exp(1/2)*wₐ)`.
+
+Each pair error is bounded by the complete exterior averaging loss plus its far-charge width product. The checked exterior loss contributes `exp(1/2)*wₐ`; the adjacent width bounds contribute respectively `exp(1/2)*wₐ/2` and `3*exp(1/2)*wₐ/2`. The finite row is a subset of the two adjacent indices. All five modules have fourteen clean standard-axiom audits.
+
 ## Remaining parent obligation
 
-Nearby and distant integrated rows are formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are also formalized. The touching row, complete row assembly, and final energy comparison remain on the parent card. Full mixed prime and pole payment remains open.
+Nearby, distant, and touching integrated rows are formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are also formalized. Complete row assembly and final energy comparison remain on the parent card. Full mixed prime and pole payment remains open.
 
 ## Log
 

@@ -90,7 +90,7 @@ theorem eventually_exists_gauge_ceiling_witness {ω : ℕ → ℝ} (hω : ∀ n,
   set L := Real.log N
   have hSL : S ^ 2 ≤ η * L := by
     have h := hN₄ N hN4
-    rw [Set.mem_Iic, div_le_iff₀ hηL] at h
+    rw [div_le_iff₀ hηL] at h
     exact h
   have hb2 : ∀ n ∈ Icc 1 N, b n ^ 2 = 1 / n := fun n hn => by
     simp only [b, truncPole, if_pos (mem_Icc.mp hn).2, poleVector_sq]
@@ -134,7 +134,7 @@ theorem eventually_exists_gauge_ceiling_witness {ω : ℕ → ℝ} (hω : ∀ n,
     ring
   have hSH : S ^ 2 / H < H := by
     rw [div_lt_iff₀ hH0]
-    nlinarith [mul_lt_mul_of_pos_right (show η < L by linarith) hηL,
+    linarith [mul_lt_mul_of_pos_right (show η < L by linarith) hηL,
       mul_le_mul hHL hHL hηL.le hH0.le]
   have hxpos : 0 < ∑ n ∈ Icc 1 N, x n ^ 2 := by rw [hxsq]; linarith
   refine ⟨x, horth, hxpos, ?_⟩
@@ -197,18 +197,20 @@ theorem eventually_exists_gauge_ceiling_witness {ω : ℕ → ℝ} (hω : ∀ n,
     rw [e]
     refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg S)
     rw [div_le_iff₀ hH0]
-    nlinarith [mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ H by linarith) hC₀]
+    linarith [mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ H by linarith) hC₀]
   have hT2 : 2 * (|s| * ((L + γ) * |S| + B * H)) ≤ S ^ 2 * (3 + 2 * γ) + B ^ 2 := by
     have habs : |s| = |S| / H := by rw [abs_div, abs_of_pos hH0]
     have e : |s| * ((L + γ) * |S| + B * H) = S ^ 2 * ((L + γ) / H) + B * |S| := by
-      rw [habs, ← sq_abs S]; field_simp; ring
+      rw [habs, ← sq_abs S]; field_simp
     rw [e]
     have h1 : (L + γ) / H ≤ 1 + γ := by
       rw [div_le_iff₀ hH0]
-      nlinarith [mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ H by linarith) hγ.le]
+      linarith [mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ H by linarith) hγ.le]
     have h2 : S ^ 2 * ((L + γ) / H) ≤ S ^ 2 * (1 + γ) := mul_le_mul_of_nonneg_left h1 (sq_nonneg S)
     have h3 : 2 * (B * |S|) ≤ S ^ 2 + B ^ 2 := by
-      nlinarith [sq_nonneg (B - |S|), sq_abs S]
+      have h := sq_nonneg (B - |S|)
+      rw [sub_sq, sq_abs] at h
+      linarith
     linarith
   have hκS : S ^ 2 * κ ≤ ε / 4 * L := by
     have := mul_le_mul_of_nonneg_right hSL hκ.le
@@ -288,6 +290,6 @@ theorem frequently_harmonicSum_sq_ge_of_hasHyperplaneGap {ω : ℕ → ℝ} (hω
   obtain ⟨hlt, h1⟩ := hN₀ N hN
   have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast h1)
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (div_nonneg (sq_nonneg _) hL.le), div_lt_iff₀ hL]
-  linarith
+  linarith [mul_pos hδ hL]
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity

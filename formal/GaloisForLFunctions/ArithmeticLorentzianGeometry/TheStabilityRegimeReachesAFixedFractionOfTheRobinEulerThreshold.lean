@@ -122,7 +122,10 @@ theorem two_mul_abs_poleMoments_windowTest_le_split (hG : ∀ n, ContDiff ℝ 2 
     rw [abs_mul]
     have := mul_le_mul hA hB (abs_nonneg _) (by positivity)
     have e : Real.sqrt w * S₁ * (Real.exp (w / 2) * Real.sqrt w * S₂) =
-        w * Real.exp (w / 2) * (S₁ * S₂) := by rw [← hsw]; ring
+        w * Real.exp (w / 2) * (S₁ * S₂) := by
+      calc Real.sqrt w * S₁ * (Real.exp (w / 2) * Real.sqrt w * S₂) =
+          (Real.sqrt w * Real.sqrt w) * (Real.exp (w / 2) * (S₁ * S₂)) := by ring
+        _ = w * Real.exp (w / 2) * (S₁ * S₂) := by rw [hsw]; ring
     linarith
   have hamgm : 2 * (S₁ * S₂) ≤ ρ' * S₁ ^ 2 + S₂ ^ 2 / ρ' := by
     have h : ρ' * S₁ ^ 2 + S₂ ^ 2 / ρ' - 2 * (S₁ * S₂) = (ρ' * S₁ - S₂) ^ 2 / ρ' := by
@@ -172,14 +175,14 @@ theorem eventually_edgeWeight_le {b η : ℝ} (hb0 : 0 < b) (hb : b < 1) (hη : 
     have h := Nat.le_ceil (1 / (b * η))
     have : (⌈1 / (b * η)⌉₊ : ℝ) ≤ N := by exact_mod_cast (show ⌈1 / (b * η)⌉₊ ≤ N by omega)
     rw [div_le_iff₀ (by positivity)] at h
-    nlinarith
+    nlinarith [mul_le_mul_of_nonneg_right this (mul_pos hb0 hη).le]
   unfold edgeWeight
   -- the two parts
   have e1 : (N : ℝ) * (N + 1) / (2 * b * Real.log N) ≤
       (1 / (2 * b) + η / 2) * ((N : ℝ) ^ 2 / Real.log N) := by
     rw [div_le_iff₀ (by positivity)]
     have : (1 / (2 * b) + η / 2) * ((N : ℝ) ^ 2 / Real.log N) * (2 * b * Real.log N) =
-        (1 + b * η) * N ^ 2 := by field_simp; ring
+        (1 + b * η) * N ^ 2 := by field_simp
     rw [this]
     nlinarith
   have e2 : (N : ℝ) * ((N : ℝ) ^ b / Real.log 2) ≤ η / 2 * ((N : ℝ) ^ 2 / Real.log N) := by
@@ -263,5 +266,207 @@ theorem eventually_upWeight_le {b ζ η : ℝ} (hb0 : 0 < b) (hb : b < 1) (hζ :
   have h4 : (1 + ζ) * (Q * (c ^ 2 + δ * (c ^ 2 + 4 * c + 2))) + δ * Q =
       Q * ((1 + ζ) * c ^ 2 + δ * K) := by simp only [K]; ring
   nlinarith [mul_le_mul_of_nonneg_left hδK hQ.le]
+
+/-! ### Weil positivity at a fixed fraction of the Robin–Euler threshold -/
+
+/-- The edge constant `1/(2b) + η` at `b = 9/10`, `η = 1/100`. -/
+def sharpCE : ℝ := 1 / (2 * (9 / 10)) + 1 / 100
+
+/-- The up-row constant `(1 + ζ)B_ψ²/b² + η` at `b = 9/10`, `ζ = 1/10`, `η = 1/100`. -/
+def sharpCU : ℝ := (1 + 1 / 10) * (psiConstant / (9 / 10)) ^ 2 + 1 / 100
+
+/-- The pole cost on `|y|²`, `e^{1/100}(ρ(1 + η) + (1 + 1/θ) C_U/ρ)` at `θ = 4`, `ρ = 4`. -/
+def sharpPoleX : ℝ := Real.exp (1 / 100) * (4 * (1 + 1 / 100) + (1 + 1 / 4) * sharpCU / 4)
+
+/-- The pole cost on the defect, `e^{1/100}(1 + θ) C_E/ρ`. -/
+def sharpPoleD : ℝ := Real.exp (1 / 100) * ((1 + 4) * sharpCE / 4)
+
+/-- The linear cost on `|y|²`: cross penalty at `λ = 1/2`, `κ = 1/10`, plus the pole. -/
+def sharpCostX : ℝ := crossConstant (1 / 2) (1 / 10) + sharpPoleX
+
+/-- The linear cost on the defect. -/
+def sharpCostD : ℝ := 2 * (1 + 1 / (1 / 2)) / (1 - 1 / 10) + sharpPoleD
+
+/-- The fraction `K★_sharp(β, ε, a)` of the spacing. -/
+def sharpFraction (β ε a : ℝ) : ℝ :=
+  min (min (1 / 10) (1 / (2 * sharpCostD)))
+    (min (a / sharpCostX)
+      (Real.exp (2 * gammaHardyPhaseRate 0 + archRobinConstant + β + γ - ε - a - 1 / 25)))
+
+theorem sharpCE_pos : 0 < sharpCE := by unfold sharpCE; norm_num
+
+theorem sharpCU_pos : 0 < sharpCU := by unfold sharpCU; positivity
+
+theorem sharpCostX_pos : 0 < sharpCostX := by
+  unfold sharpCostX sharpPoleX crossConstant
+  have := psiConstant_pos
+  have := sharpCU_pos
+  have := Real.log_nonneg (show (1 : ℝ) ≤ 2 by norm_num)
+  positivity
+
+theorem sharpCostD_pos : 0 < sharpCostD := by
+  unfold sharpCostD sharpPoleD; have := sharpCE_pos; positivity
+
+theorem sharpFraction_pos (β ε a : ℝ) (ha : 0 < a) : 0 < sharpFraction β ε a := by
+  have := sharpCostX_pos
+  have := sharpCostD_pos
+  unfold sharpFraction
+  exact lt_min (lt_min (by norm_num) (by positivity)) (lt_min (by positivity) (Real.exp_pos _))
+
+/-- **The pole bound at the sharp constants**: if `log N ≥ 100`, the two weights obey their
+asymptotic bounds and `w ≤ 1/50`, then `2|AB| ≤ wN (sharpPoleX |y|² + sharpPoleD D_N(y))`. -/
+theorem two_mul_abs_poleMoments_windowTest_le_sharp (hG : ∀ n, ContDiff ℝ 2 (G n))
+    (hGsupp : ∀ n u, u ∉ Set.Icc 0 w → G n u = 0) (hw0 : 0 < w) (hw : w ≤ 1 / 50) {N : ℕ}
+    (hN : 2 ≤ N) (hLN : 100 ≤ Real.log N)
+    (hEN : edgeWeight N (9 / 10) ≤ sharpCE * ((N : ℝ) ^ 2 / Real.log N))
+    (hUN : (1 + 1 / 10) * upWeight N (9 / 10) + (1 + 1 / (1 / 10)) ≤
+      sharpCU * ((N : ℝ) ^ 2 / Real.log N)) :
+    2 * |(∫ u, windowTest N G u * Real.exp (-(u / 2))) * ∫ u, windowTest N G u * Real.exp (u / 2)| ≤
+      w * N * (sharpPoleX * ∑ n ∈ Icc 1 N, windowNorm G n ^ 2 +
+        sharpPoleD * poleDefect N (windowNorm G)) := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hlogN : 0 < Real.log N := by linarith
+  have hP := two_mul_abs_poleMoments_windowTest_le_split hG hGsupp hw0 hN
+    (b := 9 / 10) (θ := 4) (ζ := 1 / 10) (ρ' := 4 * N / Real.log N) (by norm_num) (by norm_num)
+    (by norm_num) (by positivity)
+  set X := ∑ n ∈ Icc 1 N, windowNorm G n ^ 2
+  set D := poleDefect N (windowNorm G)
+  have hX : 0 ≤ X := sum_nonneg fun _ _ => sq_nonneg _
+  have hD : 0 ≤ D := poleDefect_nonneg N _
+  set Q := (N : ℝ) ^ 2 / Real.log N
+  have hρ : 0 < 4 * N / Real.log N := by positivity
+  have hstuff : (1 + 4) * edgeWeight N (9 / 10) * D +
+      (1 + 1 / 4) * ((1 + 1 / 10) * upWeight N (9 / 10) + (1 + 1 / (1 / 10))) * X ≤
+      ((1 + 4) * sharpCE * D + (1 + 1 / 4) * sharpCU * X) * Q := by
+    have h1 : (1 + 4) * edgeWeight N (9 / 10) * D ≤ (1 + 4) * (sharpCE * Q) * D :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hEN (by norm_num)) hD
+    have h2 : (1 + 1 / 4) * ((1 + 1 / 10) * upWeight N (9 / 10) + (1 + 1 / (1 / 10))) * X ≤
+        (1 + 1 / 4) * (sharpCU * Q) * X :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hUN (by norm_num)) hX
+    linarith
+  have hdiv : ((1 + 4) * edgeWeight N (9 / 10) * D +
+      (1 + 1 / 4) * ((1 + 1 / 10) * upWeight N (9 / 10) + (1 + 1 / (1 / 10))) * X) /
+        (4 * N / Real.log N) ≤ ((1 + 4) * sharpCE * D + (1 + 1 / 4) * sharpCU * X) * N / 4 := by
+    rw [div_le_iff₀ hρ]
+    have e : ((1 + 4) * sharpCE * D + (1 + 1 / 4) * sharpCU * X) * N / 4 * (4 * N / Real.log N) =
+        ((1 + 4) * sharpCE * D + (1 + 1 / 4) * sharpCU * X) * Q := by
+      simp only [Q]; field_simp
+    rw [e]; exact hstuff
+  have hfirst : 4 * N / Real.log N * (1 + Real.log N) * X ≤ 4 * (1 + 1 / 100) * N * X := by
+    refine mul_le_mul_of_nonneg_right ?_ hX
+    rw [div_mul_eq_mul_div, div_le_iff₀ hlogN]; nlinarith
+  have hexp : Real.exp (w / 2) ≤ Real.exp (1 / 100) := Real.exp_le_exp.mpr (by linarith)
+  have hd0 : 0 ≤ N * (4 * (1 + 1 / 100) * X + ((1 + 4) * sharpCE * D +
+      (1 + 1 / 4) * sharpCU * X) / 4) := by
+    have := sharpCE_pos; have := sharpCU_pos; positivity
+  refine hP.trans ?_
+  calc w * Real.exp (w / 2) * (4 * N / Real.log N * (1 + Real.log N) * X +
+        ((1 + 4) * edgeWeight N (9 / 10) * D +
+          (1 + 1 / 4) * ((1 + 1 / 10) * upWeight N (9 / 10) + (1 + 1 / (1 / 10))) * X) /
+            (4 * N / Real.log N))
+      ≤ w * Real.exp (w / 2) * (N * (4 * (1 + 1 / 100) * X +
+          ((1 + 4) * sharpCE * D + (1 + 1 / 4) * sharpCU * X) / 4)) :=
+        mul_le_mul_of_nonneg_left (by nlinarith) (by positivity)
+    _ ≤ w * Real.exp (1 / 100) * (N * (4 * (1 + 1 / 100) * X +
+          ((1 + 4) * sharpCE * D + (1 + 1 / 4) * sharpCU * X) / 4)) :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hexp hw0.le) hd0
+    _ = w * N * (sharpPoleX * X + sharpPoleD * D) := by
+        simp only [sharpPoleX, sharpPoleD]; ring
+
+/-- **Weil positivity at a fixed fraction of the Robin–Euler threshold.** For `0 < ε ≤ 1/2` and
+`a > 0`, eventually in `N`: for every `β`, every width `0 < w ≤ K★_sharp(β, ε, a) δ_N` and every
+window test whose profiles have shape term `β(G_n) ≥ β‖G_n‖²`, Weil's form is nonnegative. -/
+theorem eventually_weilQuad_windowTest_nonneg_sharp {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1 / 2)
+    {a : ℝ} (ha : 0 < a) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ β w : ℝ, 0 < w → w ≤ sharpFraction β ε a * atomSpacing N →
+      ∀ G : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 2 (G n)) → (∀ n u, u ∉ Set.Icc 0 w → G n u = 0) →
+      (∀ n, β * ∫ u, G n u ^ 2 ≤ bumpRobin (G n) w) → 0 ≤ weilQuad (windowTest N G) := by
+  obtain ⟨N₁, hN₁⟩ := eventually_markovEnergy_windowTest_ge_sharp hε (κ := 1 / 10) (by norm_num)
+    (by norm_num) (lam := 1 / 2) (by norm_num)
+  have hE := eventually_edgeWeight_le (b := 9 / 10) (η := 1 / 100) (by norm_num) (by norm_num)
+    (by norm_num)
+  have hU := eventually_upWeight_le (b := 9 / 10) (ζ := 1 / 10) (η := 1 / 100) (by norm_num)
+    (by norm_num) (by norm_num) (by norm_num)
+  have hL : ∀ᶠ N : ℕ in atTop, (100 : ℝ) ≤ Real.log N :=
+    (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 100
+  obtain ⟨N₂, hN₂⟩ := eventually_atTop.mp (hE.and (hU.and (hL.and (eventually_ge_atTop 50))))
+  refine ⟨max N₁ N₂, fun N hN β w hw0 hw G hG hGsupp hβ => ?_⟩
+  obtain ⟨hEN, hUN, hLN, hN50⟩ := hN₂ N (le_trans (le_max_right _ _) hN)
+  have hN1 : 1 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hδ := atomSpacing_pos hN1
+  have hδN : atomSpacing N * N ≤ 1 := by
+    have h := atomSpacing_le_inv hN1
+    calc atomSpacing N * N ≤ 1 / N * N := mul_le_mul_of_nonneg_right h hN0.le
+      _ = 1 := by field_simp
+  have hKs := sharpFraction_pos β ε a ha
+  have hK1 : sharpFraction β ε a ≤ 1 / 10 := (min_le_left _ _).trans (min_le_left _ _)
+  have hK2 : sharpFraction β ε a ≤ 1 / (2 * sharpCostD) := (min_le_left _ _).trans (min_le_right _ _)
+  have hK3 : sharpFraction β ε a ≤ a / sharpCostX := (min_le_right _ _).trans (min_le_left _ _)
+  have hK4 : sharpFraction β ε a ≤
+      Real.exp (2 * gammaHardyPhaseRate 0 + archRobinConstant + β + γ - ε - a - 1 / 25) :=
+    (min_le_right _ _).trans (min_le_right _ _)
+  have hKK : w * N ≤ sharpFraction β ε a := by
+    calc w * N ≤ sharpFraction β ε a * atomSpacing N * N := mul_le_mul_of_nonneg_right hw hN0.le
+      _ = sharpFraction β ε a * (atomSpacing N * N) := by ring
+      _ ≤ sharpFraction β ε a * 1 := mul_le_mul_of_nonneg_left hδN hKs.le
+      _ = sharpFraction β ε a := mul_one _
+  have hK0 : 0 < w * N := by positivity
+  have hw10 : w ≤ 1 / 10 * atomSpacing N := hw.trans (mul_le_mul_of_nonneg_right hK1 hδ.le)
+  have hwsmall : w ≤ 1 / 500 := by
+    have h1 : w * N ≤ 1 / 10 := hKK.trans hK1
+    have h2 : (50 : ℝ) ≤ N := by exact_mod_cast hN50
+    nlinarith
+  have hM := hN₁ N (le_trans (le_max_left _ _) hN) w hw0 hw10 G hG hGsupp β hβ
+  have hP := two_mul_abs_poleMoments_windowTest_le_sharp hG hGsupp hw0 (by linarith) (by omega)
+    hLN hEN hUN
+  -- Weil's form is the Markov form plus the pole term
+  have hf := contDiff_windowTest hG N
+  have hfc := hasCompactSupport_windowTest hGsupp N
+  have hW : weilQuad (windowTest N G) = markovEnergy (fun u => (windowTest N G u : ℂ)) +
+      2 * ((∫ u, windowTest N G u * Real.exp (-(u / 2))) *
+        ∫ u, windowTest N G u * Real.exp (u / 2)) := by
+    rw [weilQuad_eq hf hfc, add_sub_assoc, two_mul_cosh_sq_sub_sinh_sq_eq hf.continuous hfc,
+      markovEnergy_ofReal_eq_archForm_sub_primeSum hf hfc, archForm_eq_levyEnergy hf hfc]
+    ring
+  rw [hW]
+  -- the two coefficients beat the pole costs
+  have hc₀ : sharpPoleD * (w * N) ≤ 1 - ε - 2 * (1 + 1 / (1 / 2)) / (1 - 1 / 10) * (w * N) := by
+    have h := mul_le_mul_of_nonneg_left (hKK.trans hK2) sharpCostD_pos.le
+    have e : sharpCostD * (1 / (2 * sharpCostD)) = 1 / 2 := by
+      have := sharpCostD_pos; field_simp
+    rw [e] at h
+    unfold sharpCostD at h
+    linarith
+  have hφ₀ : sharpPoleX * (w * N) ≤ 2 * gammaHardyPhaseRate 0 + Real.log (1 / (w * N)) +
+      archRobinConstant + β + γ - ε - Real.exp (1 / 2) / 2 * w -
+      crossConstant (1 / 2) (1 / 10) * (w * N) := by
+    have hlog : -(2 * gammaHardyPhaseRate 0 + archRobinConstant + β + γ - ε - a - 1 / 25) ≤
+        Real.log (1 / (w * N)) := by
+      have h6 : Real.log (w * N) ≤
+          2 * gammaHardyPhaseRate 0 + archRobinConstant + β + γ - ε - a - 1 / 25 := by
+        have := Real.log_le_log hK0 (hKK.trans hK4)
+        rwa [Real.log_exp] at this
+      rw [one_div, Real.log_inv]
+      linarith
+    have hcost : sharpCostX * (w * N) ≤ a := by
+      have h := mul_le_mul_of_nonneg_left (hKK.trans hK3) sharpCostX_pos.le
+      have e : sharpCostX * (a / sharpCostX) = a := by
+        have := sharpCostX_pos; field_simp
+      rwa [e] at h
+    have hew : Real.exp (1 / 2) / 2 * w ≤ 1 / 25 := by
+      have := exp_half_lt_two
+      nlinarith
+    unfold sharpCostX at hcost
+    linarith
+  set X := ∑ n ∈ Icc 1 N, windowNorm G n ^ 2
+  set D := poleDefect N (windowNorm G)
+  have hX : 0 ≤ X := sum_nonneg fun _ _ => sq_nonneg _
+  have hD : 0 ≤ D := poleDefect_nonneg N _
+  set P := (∫ u, windowTest N G u * Real.exp (-(u / 2))) * ∫ u, windowTest N G u * Real.exp (u / 2)
+  have hPabs := neg_abs_le P
+  have h1 := mul_nonneg hX (sub_nonneg.mpr hφ₀)
+  have h2 := mul_nonneg hD (sub_nonneg.mpr hc₀)
+  linarith
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

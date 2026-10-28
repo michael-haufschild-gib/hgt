@@ -58,6 +58,7 @@ theorem intervalVariance_adjacent_eq {a b c : ℝ} (hab : a < b) (hbc : b < c)
   have hs := integral_adjacent hab hbc
     ((hfl.sub (memLp_const (intervalMean a c f))).integrable_sq)
     ((hfr.sub (memLp_const (intervalMean a c f))).integrable_sq)
+  simp only [Pi.sub_apply] at hs
   change _ = intervalVariance a c f at hs
   rw [hl, hr] at hs
   rw [← hs, hmean]

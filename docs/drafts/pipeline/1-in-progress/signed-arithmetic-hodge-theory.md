@@ -283,3 +283,17 @@ TheSelectiveMarginIsTwoLogTwo identifies the sharp discrete hyperplane margin
 retained-defect conditions. These source statements are read, not independently
 built here. Their full-cell, all-level and continuous-pole comparison is not
 an assumption available to the programme.
+
+### Concrete multiscale Gamma deliverables
+
+1. Local sibling Gamma estimate: final-audited and integrated.
+2. Finite nested-parent sum<=16 Gamma: draft requiring audit.
+3. Logarithmically weighted actual Haar coordinates: prove through ancestor
+   counts and exact variance identities.
+4. All-level high-generator tail bound: retain complete translation orbits
+   of finitely many low generators.
+5. Compactness boundary: one-level detail compactness and an explicit
+   infinite orthogonal translated Haar family with uniformly bounded Gamma.
+
+These five items are the current requested deliverables. They do not include
+proving the complete Weil sign or the critical-energy upper bound.
