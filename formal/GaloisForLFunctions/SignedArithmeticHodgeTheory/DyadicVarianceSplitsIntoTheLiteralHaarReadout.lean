@@ -40,7 +40,9 @@ private theorem raw_shift_mul_indicator (s : ℝ) (n : ℕ) (f : ℝ → ℝ) :
 private theorem integrable_raw_shift_mul (s : ℝ) (n : ℕ) {f : ℝ → ℝ}
     (hf : MemLp f 2 volume) : Integrable (fun x => rawCell n (x - s) * f x) := by
   rw [raw_shift_mul_indicator]
-  exact ((hf.restrict _).integrable one_le_two).integrable_indicator measurableSet_Ico
+  have hfi : IntegrableOn f (Ico (s + Real.log (n : ℝ))
+      (s + Real.log ((n + 1 : ℕ) : ℝ))) := (hf.restrict _).integrable one_le_two
+  exact hfi.integrable_indicator measurableSet_Ico
 
 private theorem integral_raw_shift_mul (s : ℝ) (n : ℕ) (hn : 1 ≤ n) (f : ℝ → ℝ) :
     (∫ x, rawCell n (x - s) * f x) = logCellWidth n *
@@ -66,7 +68,7 @@ theorem integral_translated_haarProfile_mul (t : ℝ) (i : ℕ × ℕ+)
   simp only [← mul_assoc, (haarCoeff_mass i.2).1, (haarCoeff_mass i.2).2,
     logCellHaarReadout, logCellSiblingLeft, logCellSiblingMiddle, logCellSiblingRight,
     Nat.add_assoc]
-  rw [← mul_assoc, ← pow_two, Real.sq_sqrt (haarMass_pos ha).le]
+  rw [← pow_two, Real.sq_sqrt (haarMass_pos ha).le]
   ring
 
 /-- The actual normalized readout square is the parallel-mass mean term. -/
@@ -177,3 +179,4 @@ end GaloisForLFunctions.SignedArithmeticHodgeTheory
 
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.logCellHaarReadout_sq_le_variance
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.logCellDyadicParentVariance_split
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.integral_translated_haarProfile_mul

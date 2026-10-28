@@ -91,7 +91,7 @@ The upper-near, lower-near, distant, and adjacent filters cover `S.erase a`. Fin
 
 ## Remaining parent obligation
 
-The entire integrated pair-error row is formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are also formalized. Transfer to actual complete-pair rows, exterior finiteness, and final energy comparison remain on the parent card. Full mixed prime and pole payment remains open.
+The entire integrated pair-error row is formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md), [actual coarse-source accounting, complete-pair row transfer, and exterior finiteness](acs-coarse-gamma-accounting.md) are also formalized. Final energy comparison remains on the parent card. Full mixed prime and pole payment remains open.
 
 ## Log
 

@@ -248,7 +248,7 @@ theorem levyEnergy_windowTest_ge_masses (hG : ∀ n, ContDiff ℝ 2 (G n))
 /-- **The cross penalty from a pair bound.** If a nonnegative array `V` has
 `V_mn + V_nm ≤ y_m y_n · 2w(1/(2(1 − κ)|log(n/m)|) + 1)` for `m ≠ n`, then
 `2 Σ_{m ≠ n} V_mn ≤ wN [(2(1 + 1/λ)/(1 − κ)) D_N(y) + L_λ,κ |y|²]`. -/
-theorem two_mul_sum_cross_le {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w) {κ : ℝ} (hκ0 : 0 ≤ κ)
+theorem two_mul_sum_cross_le {N : ℕ} (hN : 1 ≤ N) (hw0 : 0 < w) {κ : ℝ}
     (hκ : κ ≤ 1 / 2) {lam : ℝ} (hlam : 0 < lam) {y : ℕ → ℝ} (hy0 : ∀ n, 0 ≤ y n)
     (V : ℕ → ℕ → ℝ)
     (hV : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m ≠ n → V m n + V n m ≤
@@ -377,8 +377,11 @@ theorem levyEnergy_windowTest_ge_fubini (hG : ∀ n, ContDiff ℝ 2 (G n))
     have h2 := integral_abs_profile_le hG hGsupp hw0 n
     have hsw : Real.sqrt w * Real.sqrt w = w := Real.mul_self_sqrt hw0.le
     calc (∫ v, |G m v|) * (∫ v, |G n v|) ≤ (Real.sqrt w * y m) * (Real.sqrt w * y n) :=
-          mul_le_mul h1 h2 (integral_nonneg fun _ => abs_nonneg _) (by positivity)
-      _ = w * (y m * y n) := by rw [← hsw]; ring
+          mul_le_mul h1 h2 (integral_nonneg fun _ => abs_nonneg _)
+            (mul_nonneg (Real.sqrt_nonneg _) (hy0 m))
+      _ = w * (y m * y n) := by
+          rw [show Real.sqrt w * y m * (Real.sqrt w * y n) =
+            (Real.sqrt w * Real.sqrt w) * (y m * y n) by ring, hsw]
   -- `W_mn + W_nm ≤ y_m y_n · w(1/(2(1 − κ)|log(n/m)|) + 1)`
   have hWW : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m ≠ n → 2 * W m n + 2 * W n m ≤
       y m * y n * (2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|) + 1)) := by
@@ -429,7 +432,7 @@ theorem levyEnergy_windowTest_ge_fubini (hG : ∀ n, ContDiff ℝ 2 (G n))
           (1 / (2 * (1 - κ) * (Real.log n - Real.log m)) + 1) * (w * (y m * y n)) :=
         mul_le_mul_of_nonneg_right h3 (by positivity)
       nlinarith
-  have hcross := two_mul_sum_cross_le hN hw0 hκ0 hκ hlam hy0 (fun m n => 2 * W m n) hWW
+  have hcross := two_mul_sum_cross_le hN hw0 hκ hlam hy0 (fun m n => 2 * W m n) hWW
   have e : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else 2 * W m n) =
       2 * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else W m n) := by
     rw [mul_sum]; refine sum_congr rfl fun m _ => ?_
@@ -437,5 +440,61 @@ theorem levyEnergy_windowTest_ge_fubini (hG : ∀ n, ContDiff ℝ 2 (G n))
     split_ifs <;> ring
   rw [e] at hcross
   linarith
+
+/-! ### The Markov form at the halved cross penalty -/
+
+/-- **The Markov form of a window test at the halved cross penalty.** For `ε > 0`,
+`0 ≤ κ ≤ 1/2`, `λ > 0`, eventually in `N`: every window test at `w ≤ κ δ_N` with shape term
+`β(G_n) ≥ β‖G_n‖²` has `M(f) ≥ φ₀ |y|² + c₀ D_N(y)`, where
+`φ₀ = 2θ′(0) + log(1/(wN)) + 2c_∞ + β + γ − ε − (e^{1/2}/2) w − (L_λ,κ/2) wN` and
+`c₀ = 1 − ε − ((1 + 1/λ)/(1 − κ)) wN`. -/
+theorem eventually_markovEnergy_windowTest_ge_fubini {ε : ℝ} (hε : 0 < ε) {κ : ℝ} (hκ0 : 0 ≤ κ)
+    (hκ : κ ≤ 1 / 2) {lam : ℝ} (hlam : 0 < lam) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ w : ℝ, 0 < w → w ≤ κ * atomSpacing N →
+      ∀ G : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 2 (G n)) → (∀ n u, u ∉ Set.Icc 0 w → G n u = 0) →
+      ∀ β : ℝ, (∀ n, β * ∫ u, G n u ^ 2 ≤ bumpRobin (G n) w) →
+        (2 * gammaHardyPhaseRate 0 + Real.log (1 / (w * N)) + archRobinConstant + β +
+            Real.eulerMascheroniConstant - ε - Real.exp (1 / 2) / 2 * w -
+            crossConstant lam κ / 2 * (w * N)) * (∑ n ∈ Icc 1 N, windowNorm G n ^ 2) +
+          (1 - ε - (1 + 1 / lam) / (1 - κ) * (w * N)) * poleDefect N (windowNorm G) ≤
+          markovEnergy (fun u => (windowTest N G u : ℂ)) := by
+  obtain ⟨N₁, hN₁⟩ := eventually_atomicWeilForm_add_poleDefect_le hε
+  refine ⟨max N₁ 1, fun N hN w hw0 hw G hG hGsupp β hβ => ?_⟩
+  have hN1 : 1 ≤ N := le_trans (le_max_right _ _) hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hδ := atomSpacing_pos hN1
+  have hδ1 := atomSpacing_le_one hN1
+  have hw2 : w ≤ atomSpacing N / 2 := by nlinarith
+  have hw' : w < atomSpacing N := by linarith
+  have hw1 : w ≤ 1 := by linarith
+  have hf := contDiff_windowTest hG N
+  have hfc := hasCompactSupport_windowTest hGsupp N
+  rw [markovEnergy_ofReal_eq_archForm_sub_primeSum hf hfc, archForm_eq_levyEnergy hf hfc,
+    integral_windowTest_sq hG hGsupp hw']
+  have hy : ∑ n ∈ Icc 1 N, ∫ u, G n u ^ 2 = ∑ n ∈ Icc 1 N, windowNorm G n ^ 2 :=
+    sum_congr rfl fun n _ => (windowNorm_sq G n).symm
+  rw [hy]
+  have hlevy := levyEnergy_windowTest_ge_fubini hG hGsupp hN1 hw0 hκ0 hκ hw hlam
+  have hP := hN₁ N (le_trans (le_max_left _ _) hN) (windowNorm G)
+  have hprime := primeSum_windowTest_le hG hGsupp hw'
+  have hself : (Real.log (1 / w) + archRobinConstant + β - Real.exp (1 / 2) / 2 * w) *
+      (∑ n ∈ Icc 1 N, windowNorm G n ^ 2) ≤ ∑ m ∈ Icc 1 N, levyEnergy (G m) := by
+    rw [mul_sum]
+    refine sum_le_sum fun n _ => ?_
+    rw [windowNorm_sq]
+    have h1 := levyEnergy_profile_ge_shape (hG n) (hGsupp n) hw0 hw1
+    have h2 := hβ n
+    nlinarith
+  have hlog : Real.log (1 / (w * N)) = Real.log (1 / w) - Real.log N := by
+    rw [one_div, Real.log_inv, Real.log_mul hw0.ne' hN0.ne', one_div, Real.log_inv]; ring
+  have hκ1 : 0 < 1 - κ := by linarith
+  have e : w * N / 2 * (2 * (1 + 1 / lam) / (1 - κ) * poleDefect N (windowNorm G) +
+      crossConstant lam κ * ∑ n ∈ Icc 1 N, windowNorm G n ^ 2) =
+      (1 + 1 / lam) / (1 - κ) * (w * N) * poleDefect N (windowNorm G) +
+        crossConstant lam κ / 2 * (w * N) * ∑ n ∈ Icc 1 N, windowNorm G n ^ 2 := by
+    field_simp
+  rw [e] at hlevy
+  rw [hlog]
+  nlinarith
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

@@ -53,6 +53,9 @@ Programme folder: `formal/GaloisForLFunctions/ArtinMertens/`.
           normAtAllPlaces⁻¹'(expMapBasis '' paramSet)`; `u = exp(x_{w₀}) ∈ [0,1]` makes the map
           `(u, x_i, θ_w, signs) ↦ (±u Π|η_i|_w^{x_i}, u Π|η_i|_w^{x_i} e^{iθ_w})` Lipschitz on a closed box;
           frontier ⊆ image of the box faces (`subset_interior_normLeOne`, `closure_normLeOne_subset`).
+      Done: (A)+(B) `LatticePointsInADomainWithLipschitzBoundary` (`abs_ncard_mul_covolume_sub_le`,
+      `exists_abs_ncard_smul_sub_le`); (C) `TheFrontierOfTheNormBallIsLipschitz`
+      (`frontier_normLeOne_subset`, `exists_lipschitzOnWith_boundaryParam`, `card_paramIndex`).
       (D) class-wise count = lattice points in `s^{1/n}·normLeOne` (`card_isPrincipal_dvd_norm_le`;
           Mathlib's class bijections are private: reprove) ⇒ `I_K(s) = c_K s + O(s^{1−1/n})`.
       (E) Mertens `O(1)`: `L(x) ≥ I(x) log x − Σ_j I(x/e^j)`, `Σ_{N𝔭^k ≤ x} log N𝔭 (N𝔭^k)^{δ−1} = O(x^δ)`

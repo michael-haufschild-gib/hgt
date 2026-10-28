@@ -1079,6 +1079,30 @@ particular the prime-two bound improves to `2*ell/kappa_A` relative to the
 original Gamma energy. This even-lag estimate supplies the summation bound
 for the complete prime-two Euler factor below.
 
+### Every integer prime lag
+
+For odd lags the detail-to-detail term survives, but its exact incidence
+`(2a+1)m=2b+1` forces `b>=a`. A high input detail therefore reads only high
+target details. Half-line shifts are contractions in the original `L²`
+space, so Cauchy–Schwarz and the original pair-variance charge give
+
+\[
+ \kappa_A|\operatorname{Re}\langle S_{\log m}D_{\ge A},D\rangle|
+ \le\Gamma(F).
+\]
+
+The exact mixed source is the translated full-profile probe minus this
+detail correction. Consequently, for every integer `m>=2`,
+
+\[
+ |B_m(d_{\ge A},q;X)|\le\frac{2c_m}{\kappa_A}\Gamma(F),
+ \qquad c_m=\frac{2\Lambda(m)}{\sqrt m}.
+\]
+
+Both orientations, arbitrary original coefficients and every horizon are
+retained. This bound permits summing any convergent coefficient family;
+the critical coefficient budget over all primes is not convergent.
+
 ### The entire prime-two mixed Euler source
 
 All powers of two retain the even-lag payment. Their literal critical
@@ -1121,6 +1145,29 @@ bound includes all powers of two and does not require an odd horizon.
 The pure coarse Euler contribution, the other primes and the polar terms
 remain separate components of the full Weil form. This theorem supplies no
 upper index bound for their combination.
+
+### Every fixed finite collection of Euler factors
+
+For each prime `p`, the literal critical coefficients have total
+
+\[
+ S_p=\sum_{k\ge1}\frac{2\Lambda(p^k)}{\sqrt{p^k}}
+     =\frac{2\log p}{\sqrt p-1}.
+\]
+
+The every-integer estimate gives, for the entire mixed Euler source at `p`,
+
+\[
+ |\mathcal B_{(p)}(d_{\ge A},q;X)|
+ \le\frac{2S_p}{\kappa_A}\Gamma(F).
+\]
+
+For any fixed finite prime set `P`, all powers of all its primes share the
+same bound with `C(P)=sum_(p in P) 2S_p`. Exact head subtraction and a choice
+`A>exp(C(P)/delta)` give uniform relative accuracy `delta`, independently of
+the original coefficients and horizon. The factor at two retains its
+sharper even-lag constant. The finite prime set cannot be enlarged to all
+primes by summing these constants.
 
 ### Polar compatibility
 
@@ -1639,9 +1686,11 @@ Quantitative pillars supplied by this programme:
 | Quantitative prime-two tail decay | The actual full odd-horizon mixed tail and finite-head error are bounded by `(1+ell²)/log(A)` times original Gamma energy | `ThePrimeTwoMixedTailHasLogarithmicDecay` |
 | Uniform translated detail probes | Every real translate of the original complete profile satisfies the reciprocal-width Gamma bound; the first cell also gives a bound for the whole detail pairing | `TranslatedDetailsAreUniformlySmallInGammaEnergy` |
 | Compact detail carrier | Unit-Gamma complete profiles have details in a fixed compact subset of original half-line L², with explicit reciprocal-width finite-head error | `GammaBoundedCompleteProfilesHaveCompactDetails` |
+| Every integer mixed lag | Exact upward detail incidence and shift contractivity pay the odd correction; every integer lag has an inverse-capacity bound in the original Gamma profile | `EveryIntegerPrimeLagHasGammaSmallMixedTails` |
 | Every even-lag mixed source | Parity identifies each literal even-lag mixed block with the translated original complete profile, giving Gamma-small tails at every horizon | `EveryEvenPrimeLagHasGammaSmallMixedTails` |
 | Entire prime-two mixed Euler factor | All powers are absolutely summable in original Gamma energy; one fixed detail head gives arbitrary relative accuracy uniformly in every horizon | `TheEntirePrimeTwoEulerMixedSourceIsGammaSmall` |
 | Entire Euler mixed index | Gamma minus the entire prime-two mixed Euler source has one finite upper negative-dimension bound across every horizon and finite real profile family | `ThePrimeTwoEulerMixedFormHasUniformFiniteIndex` |
+| Finite collections of complete Euler factors | Exact coefficient sums and the odd-detail correction give one arbitrary-accuracy detail cutoff for every fixed finite prime set, retaining all its powers | `EveryFixedEulerMixedSourceIsGammaSmall` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

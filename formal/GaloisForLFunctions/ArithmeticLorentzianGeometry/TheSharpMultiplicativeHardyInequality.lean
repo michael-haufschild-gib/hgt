@@ -14,8 +14,11 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.ThePoleDefectControlsThe
 * **The split** (`log_gt_of_rpow_lt`): `n > N^b ⇒ log n > b log N`.
 * **The edge weight** (`sum_div_log_le_split`):
   `Σ_{n ≤ N} n/log n ≤ N(N + 1)/(2b log N) + N·N^b/log 2`.
-* **The up-rows** (`mul_upRow_le_split`, `sum_mul_upRow_sq_le_split`):
-  `m R_m ≤ B_ψ N/(b log N) + N^b` and `Σ_m m R_m² ≤ (B_ψ N/(b log N) + N^b)²(1 + log N)`.
+* **The up-rows** (`mul_upRow_le_sum`, `mul_upRow_le_split`, `sum_mul_upRow_sq_le_split`):
+  `m R_m ≤ m ψ(N/m)/(b log N) + N^b`, hence `m R_m ≤ B_ψ N/(b log N) + N^b` and
+  `Σ_m m R_m² ≤ (B_ψ N/(b log N) + N^b)²(1 + log N)`.
+* **Any up-row bound** (`sq_vRow_le_of_upRow_le`): the Hardy inequality below holds with `U_N`
+  replaced by any bound on `Σ_m m R_m²`.
 * **The sharp Hardy inequality** (`sq_vRow_le_split`): for `θ, ζ > 0`,
   `(Σ √n x_n)² ≤ (1 + θ) E_N D_N(x) + (1 + 1/θ)((1 + ζ) U_N + 1 + 1/ζ) |x|²`, with `E_N`, `U_N`
   the two weights above. Eventually in `N`, `E_N ≤ (1/(2b) + η) N²/log N` and
@@ -82,9 +85,10 @@ theorem sum_div_log_le_split {N : ℕ} (hN : 2 ≤ N) {b : ℝ} (hb0 : 0 < b) :
     _ = N * (N + 1) / (2 * b * Real.log N) + N * ((N : ℝ) ^ b / Real.log 2) := by
         rw [sum_Icc_natCast]; field_simp
 
-/-- **The up-rows at the split**: `m R_m ≤ B_ψ N/(b log N) + N^b`. -/
-theorem mul_upRow_le_split {N m : ℕ} (hN : 2 ≤ N) (hm : m ∈ Icc 1 N) {b : ℝ} (hb0 : 0 < b) :
-    (m : ℝ) * upRow N m ≤ psiConstant * N / (b * Real.log N) + (N : ℝ) ^ b := by
+/-- **The up-rows at the split, with the prime sum**: `m R_m ≤ m ψ(N/m)/(b log N) + N^b`. -/
+theorem mul_upRow_le_sum {N m : ℕ} (hN : 2 ≤ N) (hm : m ∈ Icc 1 N) {b : ℝ} (hb0 : 0 < b) :
+    (m : ℝ) * upRow N m ≤
+      (m : ℝ) * (∑ t ∈ Icc 1 (N / m), Λ t) / (b * Real.log N) + (N : ℝ) ^ b := by
   obtain ⟨hm1, hmN⟩ := Finset.mem_Icc.mp hm
   have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
   have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
@@ -124,10 +128,6 @@ theorem mul_upRow_le_split {N m : ℕ} (hN : 2 ≤ N) (hm : m ∈ Icc 1 N) {b : 
     rw [sum_add_distrib, mul_sum]
     congr 1
     exact sum_congr rfl fun t _ => by ring
-  have hq1 : (1 : ℝ) ≤ ((N / m : ℕ) : ℝ) := by exact_mod_cast Nat.div_pos hmN hm1
-  have hcheb : ∑ t ∈ Icc 1 (N / m), Λ t ≤ psiConstant * ((N / m : ℕ) : ℝ) := by
-    rw [sum_vonMangoldt_Icc_eq_psi]; exact psi_le_psiConstant hq1
-  have hdiv : (m : ℝ) * ((N / m : ℕ) : ℝ) ≤ N := by exact_mod_cast Nat.mul_div_le N m
   have hcount : (m : ℝ) * ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0) ≤ s := by
     rw [← Finset.sum_filter, sum_const, nsmul_eq_mul, mul_one]
     have hsub : (Icc 1 (N / m)).filter (fun t => m * t ≤ s) ⊆ Icc 1 (s / m) := fun t h => by
@@ -139,22 +139,33 @@ theorem mul_upRow_le_split {N m : ℕ} (hN : 2 ≤ N) (hm : m ∈ Icc 1 N) {b : 
     have : (m : ℝ) * (((Icc 1 (N / m)).filter (fun t => m * t ≤ s)).card : ℝ) ≤ m * (s / m : ℕ) :=
       mul_le_mul_of_nonneg_left (by exact_mod_cast hc) hm0.le
     exact this.trans (by exact_mod_cast Nat.mul_div_le s m)
-  have hB := psiConstant_pos
+  have h3 := mul_le_mul_of_nonneg_left hsum hm0.le
+  have e1 : (m : ℝ) * (1 / (b * Real.log N) * ∑ t ∈ Icc 1 (N / m), Λ t +
+      ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0)) =
+      (m : ℝ) * (∑ t ∈ Icc 1 (N / m), Λ t) / (b * Real.log N) +
+        m * ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0) := by ring
+  rw [e1] at h3
+  linarith
+
+/-- **The up-rows at the split**: `m R_m ≤ B_ψ N/(b log N) + N^b`. -/
+theorem mul_upRow_le_split {N m : ℕ} (hN : 2 ≤ N) (hm : m ∈ Icc 1 N) {b : ℝ} (hb0 : 0 < b) :
+    (m : ℝ) * upRow N m ≤ psiConstant * N / (b * Real.log N) + (N : ℝ) ^ b := by
+  obtain ⟨hm1, hmN⟩ := Finset.mem_Icc.mp hm
+  have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm1
+  have hq1 : (1 : ℝ) ≤ ((N / m : ℕ) : ℝ) := by exact_mod_cast Nat.div_pos hmN hm1
+  have hcheb : ∑ t ∈ Icc 1 (N / m), Λ t ≤ psiConstant * ((N / m : ℕ) : ℝ) := by
+    rw [sum_vonMangoldt_Icc_eq_psi]; exact psi_le_psiConstant hq1
+  have hdiv : (m : ℝ) * ((N / m : ℕ) : ℝ) ≤ N := by exact_mod_cast Nat.mul_div_le N m
   have h1 : (m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t ≤ psiConstant * N :=
     calc (m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t ≤ m * (psiConstant * (N / m : ℕ)) :=
           mul_le_mul_of_nonneg_left hcheb hm0.le
       _ = psiConstant * (m * (N / m : ℕ)) := by ring
-      _ ≤ psiConstant * N := mul_le_mul_of_nonneg_left hdiv hB.le
-  have h2 : 1 / (b * Real.log N) * ((m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t) ≤
-      1 / (b * Real.log N) * (psiConstant * N) := mul_le_mul_of_nonneg_left h1 (by positivity)
-  have h3 := mul_le_mul_of_nonneg_left hsum hm0.le
-  have e1 : (m : ℝ) * (1 / (b * Real.log N) * ∑ t ∈ Icc 1 (N / m), Λ t +
-      ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0)) =
-      1 / (b * Real.log N) * ((m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t) +
-        m * ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0) := by ring
-  have e2 : 1 / (b * Real.log N) * (psiConstant * N) = psiConstant * N / (b * Real.log N) := by
-    ring
-  rw [e1] at h3
+      _ ≤ psiConstant * N := mul_le_mul_of_nonneg_left hdiv psiConstant_pos.le
+  have h2 := mul_upRow_le_sum hN hm hb0
+  have h3 : (m : ℝ) * (∑ t ∈ Icc 1 (N / m), Λ t) / (b * Real.log N) ≤
+      psiConstant * N / (b * Real.log N) :=
+    div_le_div_of_nonneg_right h1 (by positivity)
   linarith
 
 /-- **The up-row weight**: `Σ_m m R_m² ≤ (B_ψ N/(b log N) + N^b)²(1 + log N)`. -/
@@ -189,13 +200,14 @@ def edgeWeight (N : ℕ) (b : ℝ) : ℝ :=
 def upWeight (N : ℕ) (b : ℝ) : ℝ :=
   (psiConstant * N / (b * Real.log N) + (N : ℝ) ^ b) ^ 2 * (1 + Real.log N)
 
-/-- **The sharp multiplicative Hardy inequality.** For `N ≥ 2`, `b, θ, ζ > 0`,
-`(Σ √n x_n)² ≤ (1 + θ) E_N D_N(x) + (1 + 1/θ)((1 + ζ) U_N + 1 + 1/ζ) |x|²`. -/
-theorem sq_vRow_le_split {N : ℕ} (hN : 2 ≤ N) {b : ℝ} (hb0 : 0 < b) {θ ζ : ℝ} (hθ : 0 < θ)
-    (hζ : 0 < ζ) (x : ℕ → ℝ) :
+/-- **The Hardy inequality with any bound on the up-row weight.** For `N ≥ 2`, `b, θ, ζ > 0`
+and `Σ_m m R_m² ≤ U`,
+`(Σ √n x_n)² ≤ (1 + θ) E_N D_N(x) + (1 + 1/θ)((1 + ζ) U + 1 + 1/ζ) |x|²`. -/
+theorem sq_vRow_le_of_upRow_le {N : ℕ} (hN : 2 ≤ N) {b : ℝ} (hb0 : 0 < b) {θ ζ U : ℝ}
+    (hθ : 0 < θ) (hζ : 0 < ζ) (hUb : ∑ m ∈ Icc 1 N, (m : ℝ) * upRow N m ^ 2 ≤ U) (x : ℕ → ℝ) :
     (∑ n ∈ Icc 1 N, Real.sqrt n * x n) ^ 2 ≤
       (1 + θ) * edgeWeight N b * poleDefect N x +
-        (1 + 1 / θ) * ((1 + ζ) * upWeight N b + (1 + 1 / ζ)) * ∑ n ∈ Icc 1 N, x n ^ 2 := by
+        (1 + 1 / θ) * ((1 + ζ) * U + (1 + 1 / ζ)) * ∑ n ∈ Icc 1 N, x n ^ 2 := by
   set D := poleDefect N x
   set X := ∑ n ∈ Icc 1 N, x n ^ 2
   have hD := poleDefect_nonneg N x
@@ -205,12 +217,10 @@ theorem sq_vRow_le_split {N : ℕ} (hN : 2 ≤ N) {b : ℝ} (hb0 : 0 < b) {θ ζ
       (Finset.mem_Icc.mpr ⟨le_rfl, by omega⟩)
   have hE := (sq_edgePart_le N x).trans
     (mul_le_mul_of_nonneg_left (sum_div_log_le_split hN hb0) hD)
-  have hU := (sq_upPart_le N x).trans
-    (mul_le_mul_of_nonneg_left (sum_mul_upRow_sq_le_split hN hb0) hX)
+  have hU := (sq_upPart_le N x).trans (mul_le_mul_of_nonneg_left hUb hX)
   rw [vRow_eq (by omega) x]
   set e := edgePart N x
   set u := ∑ m ∈ Icc 1 N, Real.sqrt m * x m * upRow N m
-  -- `(e + v)² ≤ (1 + θ)e² + (1 + 1/θ)v²` and `(x₁ + u)² ≤ (1 + ζ)u² + (1 + 1/ζ)x₁²`
   have hsplit : ∀ {c : ℝ}, 0 < c → ∀ p q : ℝ, (p + q) ^ 2 ≤ (1 + c) * p ^ 2 + (1 + 1 / c) * q ^ 2 :=
     fun {c} hc p q => by
       have h : (1 + c) * p ^ 2 + (1 + 1 / c) * q ^ 2 - (p + q) ^ 2 = (c * p - q) ^ 2 / c := by
@@ -224,15 +234,22 @@ theorem sq_vRow_le_split {N : ℕ} (hN : 2 ≤ N) {b : ℝ} (hb0 : 0 < b) {θ ζ
   have hEw : e ^ 2 ≤ edgeWeight N b * D := by
     simp only [edgeWeight]; linarith [mul_comm D (N * (N + 1) / (2 * b * Real.log N) +
       N * ((N : ℝ) ^ b / Real.log 2))]
-  have hUw : u ^ 2 ≤ upWeight N b * X := by
-    simp only [upWeight]; linarith [mul_comm X ((psiConstant * N / (b * Real.log N) +
-      (N : ℝ) ^ b) ^ 2 * (1 + Real.log N))]
-  have h3 : (x 1 + u) ^ 2 ≤ ((1 + ζ) * upWeight N b + (1 + 1 / ζ)) * X := by
+  have hUw : u ^ 2 ≤ U * X := by linarith [mul_comm X U]
+  have h3 : (x 1 + u) ^ 2 ≤ ((1 + ζ) * U + (1 + 1 / ζ)) * X := by
     have hζ' : 0 ≤ 1 + 1 / ζ := by positivity
     nlinarith [mul_le_mul_of_nonneg_left hUw (by linarith : (0 : ℝ) ≤ 1 + ζ),
       mul_le_mul_of_nonneg_left hx1 hζ']
   have h4 := mul_le_mul_of_nonneg_left h3 hθ'
   have h5 := mul_le_mul_of_nonneg_left hEw (by linarith : (0 : ℝ) ≤ 1 + θ)
   nlinarith
+
+/-- **The sharp multiplicative Hardy inequality.** For `N ≥ 2`, `b, θ, ζ > 0`,
+`(Σ √n x_n)² ≤ (1 + θ) E_N D_N(x) + (1 + 1/θ)((1 + ζ) U_N + 1 + 1/ζ) |x|²`. -/
+theorem sq_vRow_le_split {N : ℕ} (hN : 2 ≤ N) {b : ℝ} (hb0 : 0 < b) {θ ζ : ℝ} (hθ : 0 < θ)
+    (hζ : 0 < ζ) (x : ℕ → ℝ) :
+    (∑ n ∈ Icc 1 N, Real.sqrt n * x n) ^ 2 ≤
+      (1 + θ) * edgeWeight N b * poleDefect N x +
+        (1 + 1 / θ) * ((1 + ζ) * upWeight N b + (1 + 1 / ζ)) * ∑ n ∈ Icc 1 N, x n ^ 2 := by
+  exact sq_vRow_le_of_upRow_le hN hb0 hθ hζ (sum_mul_upRow_sq_le_split hN hb0) x
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

@@ -42,4 +42,8 @@ All six transitive axiom audits contain only `propext`, `Classical.choice`, `Quo
 
 ## Remaining parent obligation
 
-A universal width bound for the actual error rows is still unproved. Consequently full coarse Gamma recovery and full signed Gamma–prime–pole payment remain open. This theorem asserts the exact source accounting above only.
+[CompleteCellGammaUniformRows.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/CompleteCellGammaUniformRows.lean) now proves `completePairGammaErrorRow_le`: every actual row is at most `ofReal(completePairGammaRowConstant*logCellWidth a)`, with `completePairGammaRowConstant=13*exp(1/2)+2*gammaTailMass(log(3/2))`. `completePairGammaRowConstant_nonneg` proves nonnegativity; `completePairExteriorCharge_ne_top` proves every retained exterior charge finite for arbitrary signed coefficients and horizon.
+
+The complete pairs are exactly the `log 2` translate of the logarithmic partition. Removing the zero diagonal identifies their finite pair row with the checked uniform row. The family exterior is contained in each pair complement, so the checked exterior averaging-loss bound adds `exp(1/2)` per source width. Each weighted far charge is bounded by a finite actual exterior-kernel integral; a finite sum remains finite before conversion to real numbers.
+
+The exact project check and all three transitive axiom audits passed without warnings, with only `propext`, `Classical.choice`, `Quot.sound`. Log: `/tmp/acs-complete-cell-gamma-uniform-rows-final.log`. Final real coarse-energy recovery remains on the parent card. Full signed Gamma–prime–pole payment remains open.

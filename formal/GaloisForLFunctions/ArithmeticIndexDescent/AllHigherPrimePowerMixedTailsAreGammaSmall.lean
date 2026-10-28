@@ -38,7 +38,16 @@ def higherPrimePowerIndex (pk : Nat.Primes × ℕ) : ℕ := (pk.1 : ℕ) ^ (pk.2
 
 theorem higherPrimePowerIndex_injective : Function.Injective higherPrimePowerIndex := by
   rintro ⟨p, k⟩ ⟨q, l⟩ h
-  obtain ⟨hpq, hkl⟩ := Nat.Prime.pow_inj p.property q.property h
+  change (p : ℕ) ^ (k + 3) = (q : ℕ) ^ (l + 3) at h
+  have hpdivpow : (p : ℕ) ∣ (q : ℕ) ^ (l + 3) := by
+    rw [← h]
+    exact dvd_pow_self (p : ℕ) (by omega)
+  have hpq : (p : ℕ) = (q : ℕ) :=
+    (Nat.prime_dvd_prime_iff_eq p.property q.property).mp
+      (p.property.dvd_of_dvd_pow hpdivpow)
+  have hkl : k + 3 = l + 3 := by
+    apply Nat.pow_right_injective p.property.two_le
+    simpa only [hpq] using h
   exact Prod.ext (Subtype.ext hpq) (by omega)
 
 theorem two_le_higherPrimePowerIndex (pk : Nat.Primes × ℕ) : 2 ≤ higherPrimePowerIndex pk := by

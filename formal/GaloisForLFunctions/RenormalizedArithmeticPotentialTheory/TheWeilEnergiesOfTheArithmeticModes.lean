@@ -6,18 +6,19 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanF
 /-!
 # The Weil energies of the arithmetic modes
 
-On a periodic profile of mean zero, `x_n = ψ(n)/√n`, Weil's form of an atomic test below the spacing
-is the self-energy of the atoms minus the prime form. The archimedean cross terms are
-`O(wN ‖g‖²)` (`TheArchimedeanCrossTermsVanishOnPeriodicProfiles`), and the pole term is
-`O(e^{w/2} (∫g)²)` because `Σ ψ(n)/n` and `Σ ψ(n)` are bounded (`abs_weilQuad_atomicTest_periodic_sub_le`).
+On a periodic profile of mean zero, `x_n = ψ(n)/√n`, Weil's form of an atomic test below a quarter
+of the spacing is the self-energy of the atoms minus the prime form, up to `O(wN‖g‖² + e^{w/2}(∫g)²)`
+(`abs_weilQuad_atomicTest_periodic_sub_le`). The archimedean cross terms are `O(wN‖g‖²)`
+(`TheArchimedeanCrossTermsVanishOnPeriodicProfiles`). The pole term is `O(e^{w/2}(∫g)²)` because
+`Σ ψ(n)/n` and `Σ ψ(n)` are bounded.
 
-For the Ramanujan modes of conductor `m ≥ 2` the prime form is known to `o(log N)` (the Ramanujan
-quasimodes). This gives the Weil energy of the arithmetic modes at overlap ratio `K = w/δ_N`
-(`tendsto_weilQuad_ramanujanMode`):
-`W(f)/‖f‖² → log(1/K) − log 2π + β(φ)/‖φ‖² + log m + d(m)`, with `d` the tame different and
-`β(φ)/‖φ‖²` the shape constant of the profile. So the `m`-th arithmetic mode is positive exactly
-below the overlap ratio `m e^{d(m)} e^{β(φ)/‖φ‖²}/(2π)`: the pole's Robin–Euler threshold multiplied
-by `m e^{d(m)}`.
+The **arithmetic mode** of conductor `m` is the atomic test of the Ramanujan pole profile
+`c_m(n)/√(φ(m) n)` with a profile `φ` dilated to width `w = K/N`. For `m ≥ 2` its prime form is
+`(log N − γ − log m − d(m))|x|² + o(|x|²)` (the Ramanujan quasimodes), and `|x|² ~ log N`. At every
+overlap ratio `0 < K < 1/4` this gives (`tendsto_weilQuad_arithmeticMode`)
+`W(f_N)/‖f_N‖² → log(1/K) − log 2π + β(φ)/‖φ‖² + log m + d(m) = log(K_m/K)`,
+with `d` the tame different and `K_m = m e^{d(m)} e^{β(φ)/‖φ‖²}/(2π)`. This is the Robin–Euler ratio
+`e^{β(φ)/‖φ‖²}/(2π)` of the pole multiplied by `m e^{d(m)}`.
 -/
 
 noncomputable section
@@ -337,7 +338,7 @@ theorem abs_weilQuad_arithmeticMode_div_sub_le {φ : ℝ → ℝ} (hφ : ContDif
           X * w * (8 * m ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2) * (Real.exp (w / 2) * w) := by ring
     _ ≤ X * (168 * m * B ^ 2 * K * (w * ∫ u, φ u ^ 2)) +
           X * w * (8 * m ^ 2 * B ^ 2 * (∫ u, φ u) ^ 2) * Real.exp (1 / 2) :=
-        add_le_add_left (mul_le_mul_of_nonneg_left hexp hc) _
+        add_le_add le_rfl (mul_le_mul_of_nonneg_left hexp hc)
     _ = _ := by linear_combination (-(X * w)) * hD
 
 /-- **The Weil energies of the arithmetic modes.** For a nonnegative Lipschitz profile `φ` on

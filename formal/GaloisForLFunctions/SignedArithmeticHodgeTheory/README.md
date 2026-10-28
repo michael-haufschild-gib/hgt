@@ -340,6 +340,17 @@ Here \(f\) is any compactly supported real source of bounded variation and
 disjoint across labels and levels. Each spends at most its share of the
 symmetric difference integral, whose mass is \(2\Gamma(f)\).
 
+[DyadicVarianceSplitsIntoTheLiteralHaarReadout](DyadicVarianceSplitsIntoTheLiteralHaarReadout.lean)
+identifies the normalized readout
+\(c_{j,a}=\sqrt{m_a}(\mu_L-\mu_R)\) with the integral against the existing
+translated `haarProfile`, divided by \(\sqrt{m_a}\). The actual variances obey
+\[
+V_{j+1,a}=V_{j,2a}+V_{j,2a+1}+c_{j+1,a}^2,
+\qquad c_{0,a}^2\le V_{0,a}.
+\]
+The child intervals, physical mass and source means are exact. No orthogonality
+with respect to the signed Weil form is asserted by this variance identity.
+
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
 is smaller than the available diagonal reserve, with explicit treatment of the coarse residual.

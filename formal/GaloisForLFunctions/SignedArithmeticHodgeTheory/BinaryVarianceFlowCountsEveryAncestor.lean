@@ -41,7 +41,9 @@ private theorem labelTail_nonneg {F : ℕ → ℝ} (hF : ∀ a, 0 ≤ F a) (M : 
     0 ≤ labelTail F M := by
   apply tsum_nonneg
   intro a
-  split_ifs <;> positivity
+  split_ifs
+  · exact hF a
+  · rfl
 
 private theorem labelTail_flow {F G : ℕ → ℝ}
     (hF : ∀ a, 0 ≤ F a) (hG : ∀ a, 0 ≤ G a)
@@ -50,7 +52,11 @@ private theorem labelTail_flow {F G : ℕ → ℝ}
     {M : ℕ} (hM : 1 ≤ M) :
     labelTail G M + labelTail F (2 * M) ≤ labelTail F M := by
   let C : ℕ → ℝ := fun a => if M ≤ a then F (2 * a) + F (2 * a + 1) else 0
-  have hC0 (a : ℕ) : 0 ≤ C a := by dsimp [C]; split_ifs <;> positivity
+  have hC0 (a : ℕ) : 0 ≤ C a := by
+    dsimp only [C]
+    split_ifs
+    · exact add_nonneg (hF _) (hF _)
+    · rfl
   have hCle (a : ℕ) : C a ≤ if M ≤ a then F a else 0 := by
     dsimp only [C]
     split_ifs with ha
@@ -122,7 +128,10 @@ private theorem sum_ancestor_weight_le {F G : ℕ → ℝ}
       PNatBlock.summable_pnat_iff.mpr (labelTail_summable hsG (2 ^ r))
     calc
       _ ≤ ∑' a : ℕ+, if 2 ^ r ≤ (a : ℕ) then G a else 0 :=
-        hsum.sum_le_tsum T (fun a _ => by split_ifs <;> positivity)
+        hsum.sum_le_tsum T (fun a _ => by
+          split_ifs
+          · exact hG a
+          · rfl)
       _ = labelTail G (2 ^ r) := PNatBlock.tsum_pnat _ (by
         rw [if_neg (by have := pow_pos (by norm_num : 0 < (2 : ℕ)) r; omega)])
   calc
@@ -140,7 +149,7 @@ private theorem summable_parent_variances (t : ℝ) {f : ℝ → ℝ}
   summable_of_sum_le (fun _ => intervalVariance_nonneg _ _ _)
     (fun S => sum_logCellDyadicParentVariance_le t S hv hc)
 
-private theorem summable_readout_squares (t : ℝ) {f : ℝ → ℝ}
+theorem summable_readout_squares (t : ℝ) {f : ℝ → ℝ}
     (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     Summable (fun i : ℕ × ℕ+ => logCellHaarReadout t i f ^ 2) :=
   Summable.of_nonneg_of_le (fun _ => sq_nonneg _)
@@ -270,8 +279,51 @@ theorem sum_log_weight_haar_orbit_le (t : ℝ) (T : Finset ℕ+)
       (tsum_nonneg (fun _ => sq_nonneg _))
   linarith only [hw, h]
 
+/-- Logarithmic ancestor weights control arbitrary finite selections of actual level coordinates. -/
+theorem sum_ancestor_weight_readout_sq_le (t : ℝ) (S : Finset (ℕ × ℕ+))
+    {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
+    (∑ i ∈ S, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) ≤
+      16 * levyEnergy f := by
+  have hw0 (a : ℕ+) : 0 ≤ logCellAncestorWeight a * logCellHaarOrbitEnergy t a f :=
+    mul_nonneg (logCellAncestorWeight_pos a).le (tsum_nonneg (fun _ => sq_nonneg _))
+  have hsRows : Summable (fun a => logCellAncestorWeight a * logCellHaarOrbitEnergy t a f) :=
+    summable_of_sum_le hw0 (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
+  have hs : Summable (fun i : ℕ+ × ℕ =>
+      logCellAncestorWeight i.1 * logCellHaarReadout t (i.2, i.1) f ^ 2) := by
+    apply (summable_prod_of_nonneg (fun i =>
+      mul_nonneg (logCellAncestorWeight_pos i.1).le (sq_nonneg _))).mpr
+    constructor
+    · intro a
+      exact ((readout_rows t hv hc).1 a).mul_left _
+    · simpa only [tsum_mul_left, ← logCellHaarOrbitEnergy] using hsRows
+  have hsp := hs.comp_injective Prod.swap_injective
+  have hsum : (∑' i : ℕ × ℕ+, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2) ≤
+      16 * levyEnergy f := by
+    rw [← (Equiv.prodComm ℕ+ ℕ).tsum_eq, hs.tsum_prod]
+    simp only [tsum_mul_left, ← logCellHaarOrbitEnergy]
+    exact Real.tsum_le_of_sum_le hw0 (fun T => sum_logCellAncestorWeight_orbit_le t T hv hc)
+  exact (hsp.sum_le_tsum S (fun i _ =>
+    mul_nonneg (logCellAncestorWeight_pos i.2).le (sq_nonneg _))).trans hsum
+
+/-- The original Gamma reserve bounds the logarithmic Haar square function on any finite family. -/
+theorem sum_log_weight_readout_sq_le (t : ℝ) (S : Finset (ℕ × ℕ+))
+    {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
+    (∑ i ∈ S, (1 + Real.log (i.2 : ℝ)) * logCellHaarReadout t i f ^ 2) ≤
+      32 * levyEnergy f := by
+  have h := sum_ancestor_weight_readout_sq_le t S hv hc
+  have hw : (∑ i ∈ S, (1 + Real.log (i.2 : ℝ)) * logCellHaarReadout t i f ^ 2) ≤
+      2 * ∑ i ∈ S, logCellAncestorWeight i.2 * logCellHaarReadout t i f ^ 2 := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_le_sum
+    intro i _
+    rw [← mul_assoc]
+    exact mul_le_mul_of_nonneg_right (one_add_log_le_two_ancestorWeight i.2) (sq_nonneg _)
+  linarith only [hw, h]
+
 end GaloisForLFunctions.SignedArithmeticHodgeTheory
 
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.logCellHaarOrbitEnergy_flow
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.sum_logCellAncestorWeight_orbit_le
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.sum_log_weight_haar_orbit_le
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.sum_ancestor_weight_readout_sq_le
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.sum_log_weight_readout_sq_le
