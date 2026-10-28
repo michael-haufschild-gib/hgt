@@ -112,6 +112,7 @@ theorem exists_abs_ncard_rayClassIdeals_sub_le_of_class (c : RayClassGroup 𝔪)
       (ZLattice.covolume Λ volume * torsionOrder K) = rayDensity 𝔪 := by
     rw [hcov, rayDensity]
     field_simp
+    rfl
   have := abs_sub_le_of_lattice_bound hcov0 htor0 h'
   rwa [hκ] at this
 

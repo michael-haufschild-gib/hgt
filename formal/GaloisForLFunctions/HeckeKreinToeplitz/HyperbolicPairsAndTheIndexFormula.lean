@@ -363,7 +363,6 @@ theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefOnGroup p)
         -(ω j * (χ j u ^ N * phase χ ω u N j)) * (a j * conj (a j)) by rw [map_neg]; ring,
       mul_pow_mul_phase hω, Complex.mul_conj, Complex.normSq_eq_norm_sq]
     simp only [← Complex.ofReal_neg, ← Complex.ofReal_mul, Complex.ofReal_re]
-    push_cast
     ring
   rw [sum_congr rfl hpair]
   -- the positive part
@@ -404,6 +403,96 @@ theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefOnGroup p)
     · exact mul_lt_mul_of_pos_right (hN l) (by positivity [norm_pos_iff.mpr hl])
   linarith
 
+/-- Orientation of the `j`-th pair: flip `χ ↔ χ†` when `|χ(u)| ≤ 1`. -/
+def flipIndex (χ : Fin κ → G →* ℂ) (u : G) : Fin κ ⊕ Fin κ → Fin κ ⊕ Fin κ :=
+  Sum.elim (fun j => if 1 < ‖χ j u‖ then Sum.inl j else Sum.inr j)
+    fun j => if 1 < ‖χ j u‖ then Sum.inr j else Sum.inl j
+
+theorem flipIndex_flipIndex (χ : Fin κ → G →* ℂ) (u : G) (m : Fin κ ⊕ Fin κ) :
+    flipIndex χ u (flipIndex χ u m) = m := by
+  rcases m with j | j <;> by_cases h : 1 < ‖χ j u‖ <;> simp [flipIndex, h]
+
+/-- **Lower half of the index formula.** If one element `u` separates the pairs, a
+positive-definite kernel plus `κ` hyperbolic pairs has at least `κ` negative squares. -/
+theorem le_negIndex_of_separated {p : G → ℂ} (hp : IsPosDefOnGroup p)
+    (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0) (u : G)
+    (hne : ∀ j, ‖χ j u‖ ≠ 1) (hsep : Function.Injective (nodes χ u)) :
+    (κ : ℕ∞) ≤ negIndex (fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) := by
+  classical
+  set χ' : Fin κ → G →* ℂ := fun j => if 1 < ‖χ j u‖ then χ j else reflectChar (χ j)
+  set ω' : Fin κ → ℂ := fun j => if 1 < ‖χ j u‖ then ω j else conj (ω j)
+  have hk : (fun g => p g + ∑ j, pairKernel (χ' j) (ω' j) g) =
+      fun g => p g + ∑ j, pairKernel (χ j) (ω j) g := by
+    funext g
+    congr 1
+    refine sum_congr rfl fun j _ => ?_
+    by_cases h : 1 < ‖χ j u‖
+    · simp only [χ', ω', h, if_true]
+    · simp only [χ', ω', h, if_false, pairKernel_reflectChar]
+  rw [← hk]
+  have hnodes : nodes χ' u = nodes χ u ∘ flipIndex χ u := by
+    funext m
+    rcases m with j | j <;> by_cases h : 1 < ‖χ j u‖ <;>
+      simp [nodes, flipIndex, χ', h, reflectChar_reflectChar]
+  refine le_negIndex_of_separated_out hp χ' ω' (fun j => ?_) u (fun j => ?_) ?_
+  · by_cases h : 1 < ‖χ j u‖
+    · simp only [ω', h, if_true]; exact hω j
+    · simp only [ω', h, if_false]; exact (map_ne_zero_iff _ (RingHom.injective _)).mpr (hω j)
+  · by_cases h : 1 < ‖χ j u‖
+    · simpa only [χ', h, if_true] using h
+    · simp only [χ', h, if_false]
+      rw [norm_reflectChar]
+      exact one_lt_inv₀ (norm_pos_iff.mpr (map_ne_zero _ _)) |>.mpr
+        (lt_of_le_of_ne (not_lt.mp h) (hne j))
+  · rw [hnodes]
+    exact hsep.comp (Function.LeftInverse.injective (flipIndex_flipIndex χ u))
+
+/-- **The Krein–Langer index formula.** A positive-definite kernel plus `κ` hyperbolic pairs
+separated at one element has exactly `κ` negative squares. -/
+theorem negIndex_add_sum_pairKernel_eq {p : G → ℂ} (hp : IsPosDefOnGroup p)
+    (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0) (u : G)
+    (hne : ∀ j, ‖χ j u‖ ≠ 1) (hsep : Function.Injective (nodes χ u)) :
+    negIndex (fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) = κ :=
+  le_antisymm ((negIndex_add_sum_pairKernel_le hp χ ω).trans (by simp))
+    (le_negIndex_of_separated hp χ ω hω u hne hsep)
+
 end LowerBound
+
+/-! ### One pair -/
+
+theorem reflectChar_ne_of_norm_ne_one {χ : G →* ℂ} {u : G} (h : ‖χ u‖ ≠ 1) :
+    reflectChar χ u ≠ χ u := fun he => by
+  have := congrArg norm he
+  rw [norm_reflectChar] at this
+  have hpos : 0 < ‖χ u‖ := norm_pos_iff.mpr (map_ne_zero _ _)
+  have hsq : ‖χ u‖ * ‖χ u‖ = 1 := by
+    calc ‖χ u‖ * ‖χ u‖ = ‖χ u‖⁻¹ * ‖χ u‖ := by rw [this]
+      _ = 1 := inv_mul_cancel₀ hpos.ne'
+  exact h (by nlinarith)
+
+/-- **A pair is never paid.** A positive-definite kernel plus one hyperbolic pair with
+non-unitary character has exactly one negative square, however large the positive part. -/
+theorem negIndex_add_pairKernel_eq_one {p : G → ℂ} (hp : IsPosDefOnGroup p) {χ : G →* ℂ}
+    (hχ : ¬ IsUnitaryChar χ) {ω : ℂ} (hω : ω ≠ 0) :
+    negIndex (fun g => p g + pairKernel χ ω g) = 1 := by
+  obtain ⟨u, hu⟩ : ∃ u, ‖χ u‖ ≠ 1 := by
+    by_contra h
+    exact hχ fun u => not_not.mp fun hu => h ⟨u, hu⟩
+  have hsep : Function.Injective (nodes (fun _ : Fin 1 => χ) u) := by
+    have hne := reflectChar_ne_of_norm_ne_one hu
+    intro m m' hm
+    rcases m with i | i <;> rcases m' with i' | i' <;>
+      simp only [nodes, Sum.elim_inl, Sum.elim_inr] at hm <;>
+      simp [Subsingleton.elim i i', hne, hne.symm] at hm ⊢
+  have := negIndex_add_sum_pairKernel_eq hp (fun _ : Fin 1 => χ) (fun _ => ω) (fun _ => hω) u
+    (fun _ => hu) hsep
+  simpa using this
+
+/-- For a unitary character and `Re ω ≥ 0` the pair kernel is positive definite. -/
+theorem negIndex_pairKernel_of_unitary {χ : G →* ℂ} (hχ : IsUnitaryChar χ) {ω : ℂ}
+    (hω : 0 ≤ ω.re) : negIndex (pairKernel χ ω) = 0 :=
+  negIndex_eq_zero_iff.mpr fun n x c => by
+    rw [hermQuad_gram_pairKernel_of_unitary hχ]
+    exact mul_nonneg (mul_nonneg zero_le_two hω) (Complex.normSq_nonneg _)
 
 end GaloisForLFunctions.HeckeKreinToeplitz

@@ -1,0 +1,29 @@
+Prime-parity Ramanujan coordinates
+
+Canonical source check from formal/:
+lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/PrimeParityRamanujanCoordinates.lean
+Exit 0; no diagnostics.
+SHA256 4c45a094f5f0dd92844fd78b28e78ebaf47ef4c6ddceec9aa045192d5381d877
+
+Direct-source transitive axiom audit:
+'GaloisForLFunctions.ArithmeticCountingPositivity.gaugeHarmonicSum_multiples' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.gaugeHarmonicSum_divisibility' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityRamanujanSum_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParity_decimation_error' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParity_decimation_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityRamanujanSum_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityRamanujanSum_tendsto_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

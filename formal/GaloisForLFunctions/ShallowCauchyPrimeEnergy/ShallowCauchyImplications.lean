@@ -1,7 +1,6 @@
 import GaloisForLFunctions.ShallowCauchyPrimeEnergy.ShallowCauchyEnergyBound
 import GaloisForLFunctions.RHTower.XiReciprocalSlicePositiveDensity
 import GaloisForLFunctions.RHTower.SelbergExponentialNearLineDensityLong
-import GaloisForLFunctions.RHTower.ZetaLineLogMeanLittlewoodBudget
 
 /-!
 # Unconditional implications of the prime-side shallow Cauchy energy bound
@@ -38,7 +37,7 @@ namespace RHTower
 /-- Eventual linear comparison `T log T ≤ 8π · N(T, 2T)` from the Riemann–von Mangoldt formula. -/
 theorem eventually_T_mul_log_le_eight_pi_mul_Ncount :
     ∀ᶠ T : ℝ in atTop, T * Real.log T ≤ 8 * Real.pi * (Zeta23.Ncount T (2 * T) : ℝ) := by
-  obtain ⟨CR, T₁, hRvM⟩ := paperInputs_zeta.RvM.main
+  obtain ⟨CR, T₁, hRvM⟩ := Zeta23.riemannVonMangoldt_zeta.main
   filter_upwards [eventually_ge_atTop
     (max (max T₁ (8 * Real.pi * (|CR| + 1))) (2 * Real.pi * Real.exp 5))] with T hT
   have hT₁ : T₁ ≤ T := le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hT
@@ -143,7 +142,7 @@ theorem sum_sq_multiplicity_le_shift_mul_finiteOfflineCauchyEnergy
 /-- Close-pair multiplicity correlation (`|γ_j − γ_k| ≤ K h`) of `h`-shallow modes is bounded by
 `((16 + K²) / 8) · h · finiteOfflineCauchyEnergy`. -/
 theorem sum_closePairs_le_shift_mul_finiteOfflineCauchyEnergy
-    {n : ℕ} {h K : ℝ} (hh : 0 < h) (hK : 0 ≤ K)
+    {n : ℕ} {h K : ℝ} (hh : 0 < h)
     {a gamma : Fin n → ℝ} (m : Fin n → ℕ)
     (ha : ∀ j, 0 < a j) (hale : ∀ j, a j ≤ h) :
     (∑ p ∈ (Finset.univ ×ˢ Finset.univ).filter
@@ -259,7 +258,7 @@ theorem exists_shallow_zetaZeros_sq_multiplicity_and_closePairs_le :
       field_simp
     linarith
   refine ⟨(sum_sq_multiplicity_le_shift_mul_finiteOfflineCauchyEnergy hh0 _ ha0 hre_le).trans
-    hscaled, fun K hK => ?_⟩
+    hscaled, fun K _ => ?_⟩
   have hfilt : (Finset.univ ×ˢ Finset.univ).filter
       (fun p : Fin n × Fin n => |(ρ p.1).im - (ρ p.2).im| ≤ K / Real.log T) =
     (Finset.univ ×ˢ Finset.univ).filter
@@ -267,7 +266,8 @@ theorem exists_shallow_zetaZeros_sq_multiplicity_and_closePairs_le :
     refine Finset.filter_congr fun p _ => ?_
     rw [mul_one_div]
   rw [hfilt]
-  have hcp := sum_closePairs_le_shift_mul_finiteOfflineCauchyEnergy hh0 hK
+  have hcp := sum_closePairs_le_shift_mul_finiteOfflineCauchyEnergy (K := K) hh0
+    (a := fun j => (ρ j).re - 1 / 2) (gamma := fun j => (ρ j).im)
     (fun j => (analyticOrderAt riemannZeta (ρ j)).toNat) ha0 hre_le
   have hm := mul_le_mul_of_nonneg_left hscaled
     (show 0 ≤ (16 + K ^ (2 : ℕ)) / 8 by positivity)
@@ -487,8 +487,6 @@ theorem exists_card_xiDeepRightUpperWindow_exponential_le :
       refine Finset.mem_biUnion.mpr ⟨w, hw_Z, ?_⟩
       dsimp [fibZ]
       rw [dif_pos hw_xi, mem_xiZeroCopyFiber]
-      ext
-      rfl
     have hcard_nat : D_mid.card ≤ ∑ w ∈ Z_deep, (analyticOrderAt riemannZeta w).toNat := by
       calc D_mid.card
           ≤ (Z_deep.biUnion fibZ).card := Finset.card_le_card hsub_fib
@@ -613,6 +611,7 @@ theorem exists_arbitrary_deepFraction_with_linear_shallowEnergy_budget :
       _ = (ε / 2) * (16 * Real.pi * C_deep / ε) := by
           have hεne : ε ≠ 0 := hε.ne'
           field_simp
+          norm_num
       _ ≤ (ε / 2) * α := mul_le_mul_of_nonneg_left hα_lb (by positivity)
   have hlog_sub : ∀ᶠ T : ℝ in atTop,
       8 * Real.pi * C_deep * Real.log T ≤ (ε / 2) * T := by
@@ -694,3 +693,16 @@ theorem exists_arbitrary_deepFraction_with_linear_shallowEnergy_budget :
 end RHTower
 
 end
+
+#print axioms RHTower.lorentz_pairSum_eq_integral_windowNarrowSum_sq
+#print axioms RHTower.exists_dyadicZeroWindow_lorentzPairSum_le
+#print axioms RHTower.exists_uniform_xiShallowCauchyEnergy_le
+#print axioms RHTower.exists_xiShallowCauchyEnergy_one_div_log_le
+#print axioms RHTower.exists_finiteOfflineCauchyEnergy_xiRightUpper_one_div_log_le
+#print axioms RHTower.exists_finiteOfflineCauchyEnergy_zetaZeros_one_div_log_le
+#print axioms RHTower.exists_xiShallowCauchyEnergy_one_div_log_le_mul_Ncount
+#print axioms RHTower.exists_criticalScale_xiShallowCauchyEnergy_saturation
+#print axioms RHTower.exists_shallow_zetaZeros_sq_multiplicity_and_closePairs_le
+#print axioms RHTower.exists_card_xiDeepRightUpperWindow_exponential_le
+#print axioms RHTower.exists_shallowCauchyEnergy_and_exponential_deepWindow_le
+#print axioms RHTower.exists_arbitrary_deepFraction_with_linear_shallowEnergy_budget

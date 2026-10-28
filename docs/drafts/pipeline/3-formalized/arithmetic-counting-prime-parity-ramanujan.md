@@ -1,8 +1,8 @@
 # Prime parity has no coprime Ramanujan coordinates
 
 - **ID:** ACP-PARITY-RAMANUJAN
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization immediately follows)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean checked)
 - **Source:** ../1-in-progress/arithmetic-counting-maximal-gap-rigidity.md
 
 ## Statement
@@ -55,8 +55,29 @@ error before passing to a limit.
 
 - [x] Exact finite count and closed paper proof.
 - [x] Corpus search before mathlib lookup.
-- [ ] Lean leaf check and transitive axiom audit.
-- [ ] Umbrella and foundational README updated.
+- [x] Lean leaf check and transitive axiom audit.
+- [x] Umbrella and foundational README updated.
+
+## Lean verification
+
+`ArithmeticCountingPositivity/PrimeParityRamanujanCoordinates.lean` proves:
+
+- `gaugeHarmonicSum_multiples` and `gaugeHarmonicSum_divisibility`;
+- `primeParityRamanujanSum_eq`;
+- `primeParity_decimation_error` and `primeParity_decimation_tendsto`;
+- `primeParityRamanujanSum_tendsto` and `primeParityRamanujanSum_tendsto_zero`.
+
+The exact divisor identity and general limit also include conductor zero,
+where both sides vanish by the empty divisor sum. The nontrivial vanishing
+theorem uses `m>=2` and `not p|m` exactly as in the paper statement.
+
+The final canonical command
+`lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/PrimeParityRamanujanCoordinates.lean`
+exited zero without diagnostics. All seven declarations have transitive axioms
+only `propext`, `Classical.choice`, `Quot.sound`. Its olean was written solely
+for the subsequent harmonic spectral-coordinate module. The programme umbrella
+imports the leaf; no umbrella was compiled. Audit output and source hash are in
+`arithmetic-counting-prime-parity-ramanujan-audit.txt`.
 
 ## Subsequent conjecture
 

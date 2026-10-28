@@ -48,10 +48,10 @@ The next bridge is the harmonic Ramanujan coordinate of prime parity:
 an exact Mobius divisor identity and bounded decimation error imply that all
 nontrivial conductors coprime to the flipped prime have zero limiting
 correlation. Its closed proof is in
-`../2-fully-proven/arithmetic-counting-prime-parity-ramanujan.md`. All seven
+`../3-formalized/arithmetic-counting-prime-parity-ramanujan.md`. All seven
 theorems in `PrimeParityRamanujanCoordinates.lean` now pass the kernel and
-transitive axiom audit. Its olean is being written because the next harmonic
-normalization module imports it. Canonical final source check remains.
+transitive axiom audit. Its olean was written because the next harmonic
+normalization module imports it. The canonical final source check also passed.
 
 `arithmetic-counting-maximal-gap-rigidity.md` records the still-unproved exact
 endpoint. A two-mode spectral reduction now isolates its remaining analytic
@@ -88,9 +88,21 @@ finite arithmetic construction or README is finished.
   helper). These two scratch files have not been compiled yet.
 - `/tmp/acp-ramanujan-check.log` records seven successful axiom audits;
   `/tmp/acp-build-ramanujan.log` records its successful olean command. The
-  fifth leaf still needs its final canonical check.
+  fifth leaf passed its final canonical check without diagnostics.
 - The missing imported `TheSimplePrimeEigenlinesConvergeToRamanujanLines`
-  olean is now being built alone, for the harmonic spectral bridge.
+  olean has built successfully alone, for the harmonic spectral bridge.
+- `/tmp/acp-normalized-check.lean` now contains the full spectral-coordinate
+  bridge: 14 public theorems, spectral projection error and norm limits,
+  the orientation-independent squared coordinate, and actual simple
+  eigenline coordinates. Its paper card is
+  `../2-fully-proven/arithmetic-counting-harmonic-spectral-coordinates.md`.
+  This scratch file is now checking. It includes all axiom commands.
+- `/tmp/acp-maximal-check.lean` imports the intended
+  `HarmonicParitySpectralCoordinates` leaf and the complete-source obstruction.
+  It now contains the homogeneous two-mode helper, arithmetic separation/count,
+  full constrained matrix bound, gauge translation, exact gap classification
+  for primes at least 41, and complete-source counterexample. It is an
+  uncompiled draft. Do not promote the maximal-gap conjecture yet.
 - The first four theorem axiom log is `/tmp/acp-axiom-audit.log`. Canonical logs
   are `/tmp/acp-final-correlation.log`, `/tmp/acp-final-sparse.log`,
   `/tmp/acp-final-parity.log`, `/tmp/acp-final-complete.log`. These are all finished.

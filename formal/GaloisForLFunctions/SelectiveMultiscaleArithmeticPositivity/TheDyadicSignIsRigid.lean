@@ -112,7 +112,7 @@ theorem dotProduct_single_add_single {ι : Type*} [Fintype ι] [DecidableEq ι] 
 
 /-- **The `2 × 2` window bound**: `‖H_{ij} + conj H_{ji}‖ ≤ Re H_{ii} + Re H_{jj}`. -/
 theorem norm_add_conj_le_of_hermNegIndex_eq_zero {ι : Type*} [Fintype ι] [DecidableEq ι]
-    {H : Matrix ι ι ℂ} (h : hermNegIndex H = 0) {i j : ι} (hij : i ≠ j) :
+    {H : Matrix ι ι ℂ} (h : hermNegIndex H = 0) (i j : ι) :
     ‖H i j + conj (H j i)‖ ≤ (H i i).re + (H j j).re := by
   set S := H i j + conj (H j i) with hS_def
   have hii : 0 ≤ (H i i).re := by
@@ -160,16 +160,15 @@ theorem norm_add_conj_le_of_hermNegIndex_eq_zero {ι : Type*} [Fintype ι] [Deci
   linarith
 
 /-- **One window bounds the lag**: if `λ` is dyadic positive along `g`, then for every lag
-`d ≠ 0`, `‖W(T_{−D}k) + conj W(T_D k)‖ ≤ 2 Re W(k)`, `D = d log 2`. -/
-theorem norm_lagSym_le {lam : ℕ → ℝ} {g : ℝ → ℂ} (h : DyadicPositive lam g) {d : ℤ} (hd : d ≠ 0) :
+`d`, `‖W(T_{−D}k) + conj W(T_D k)‖ ≤ 2 Re W(k)`, `D = d log 2`. -/
+theorem norm_lagSym_le {lam : ℕ → ℝ} {g : ℝ → ℂ} (h : DyadicPositive lam g) (d : ℤ) :
     ‖lagW lam g (-((d : ℝ) * Real.log 2)) + conj (lagW lam g ((d : ℝ) * Real.log 2))‖ ≤
       2 * (lagW lam g 0).re := by
   classical
   set K : Finset ℤ := {0, d}
   have h0 : (0 : ℤ) ∈ K := by simp [K]
   have hd' : d ∈ K := by simp [K]
-  have hij : (⟨0, h0⟩ : K) ≠ ⟨d, hd'⟩ := fun e => hd (congrArg Subtype.val e).symm
-  have hb := norm_add_conj_le_of_hermNegIndex_eq_zero (h K) hij
+  have hb := norm_add_conj_le_of_hermNegIndex_eq_zero (h K) ⟨0, h0⟩ ⟨d, hd'⟩
   simp only [weilGram_tower_apply, Int.cast_zero, zero_sub, sub_zero, sub_self, zero_mul,
     neg_mul] at hb
   linarith
@@ -215,8 +214,7 @@ theorem re_lagW_sub (lam lam' : ℕ → ℝ) {g : ℝ → ℂ} (hgc : HasCompact
 /-- **Rigidity of the dyadic sign.** If two weights are dyadic positive along `g`, the dyadic prime
 mass of their difference at every lag is bounded by the two diagonals. -/
 theorem primeMass_add_le_of_dyadicPositive {lam lam' : ℕ → ℝ} {g : ℝ → ℂ}
-    (hgc : HasCompactSupport g) (h : DyadicPositive lam g) (h' : DyadicPositive lam' g) {d : ℤ}
-    (hd : d ≠ 0) :
+    (hgc : HasCompactSupport g) (h : DyadicPositive lam g) (h' : DyadicPositive lam' g) (d : ℤ) :
     primeMass (fun n => lam' n - lam n) g (-((d : ℝ) * Real.log 2)) +
         primeMass (fun n => lam' n - lam n) g ((d : ℝ) * Real.log 2) ≤
       2 * ((lagW lam g 0).re + (lagW lam' g 0).re) := by
@@ -232,8 +230,8 @@ theorem primeMass_add_le_of_dyadicPositive {lam lam' : ℕ → ℝ} {g : ℝ →
     ring
   have hle : -(S' - S).re ≤ ‖S'‖ + ‖S‖ :=
     (neg_le_abs _).trans ((Complex.abs_re_le_norm _).trans (norm_sub_le _ _))
-  have h1 := norm_lagSym_le h hd
-  have h2 := norm_lagSym_le h' hd
+  have h1 := norm_lagSym_le h d
+  have h2 := norm_lagSym_le h' d
   rw [hre, neg_neg] at hle
   linarith
 
@@ -257,9 +255,8 @@ theorem not_dyadicPositive_and_of_unbounded {lam lam' : ℕ → ℝ} {f : ℝ �
       M < primeMass (fun n => lam' n - lam n) (cx f) ((d : ℝ) * Real.log 2)) :
     ¬ (DyadicPositive lam (cx f) ∧ DyadicPositive lam' (cx f)) := by
   rintro ⟨h, h'⟩
-  obtain ⟨d, hd1, hM⟩ := hunb (2 * ((lagW lam (cx f) 0).re + (lagW lam' (cx f) 0).re))
-  have hd : ((d : ℤ)) ≠ 0 := by exact_mod_cast (show d ≠ 0 by omega)
-  have hb := primeMass_add_le_of_dyadicPositive hfc h h' hd
+  obtain ⟨d, -, hM⟩ := hunb (2 * ((lagW lam (cx f) 0).re + (lagW lam' (cx f) 0).re))
+  have hb := primeMass_add_le_of_dyadicPositive hfc h h' (d : ℤ)
   have hn := primeMass_nonneg (u := fun n => lam' n - lam n)
     (fun n hn => sub_nonneg.mpr (hu n hn)) hf (-(((d : ℤ) : ℝ) * Real.log 2))
   push_cast at hb hn
@@ -393,7 +390,7 @@ theorem mem_logWindow {D r : ℝ} (hDr : r < D) {n : ℕ}
 every statement on prime sums in intervals that tolerates a relative error `o(1)` holds for `λ` and
 for `λ + ε n^{−η}` alike. -/
 theorem sum_perturbation_Ioc_le (lam : ℕ → ℝ) {ε η : ℝ} (hε : 0 ≤ ε) (hη : 0 ≤ η) {a b : ℕ}
-    (ha : 1 ≤ a) :
+    (ha : 1 ≤ a) (hab : a ≤ b) :
     0 ≤ ∑ n ∈ Finset.Ioc a b, (lam n + ε * (n : ℝ) ^ (-η)) - ∑ n ∈ Finset.Ioc a b, lam n ∧
       ∑ n ∈ Finset.Ioc a b, (lam n + ε * (n : ℝ) ^ (-η)) - ∑ n ∈ Finset.Ioc a b, lam n ≤
         ε * ((b : ℝ) - a) * (a : ℝ) ^ (-η) := by
@@ -406,14 +403,9 @@ theorem sum_perturbation_Ioc_le (lam : ℕ → ℝ) {ε η : ℝ} (hε : 0 ≤ �
     exact Real.rpow_le_rpow_of_nonpos (by exact_mod_cast ha) (by exact_mod_cast hna.le)
       (neg_nonpos.mpr hη)
   refine (Finset.sum_le_sum hterm).trans ?_
-  rw [Finset.sum_const, Nat.card_Ioc, nsmul_eq_mul]
-  rcases le_or_gt a b with hab | hab
-  · rw [Nat.cast_sub hab]; ring_nf; rfl
-  · rw [Nat.sub_eq_zero_of_le hab.le, Nat.cast_zero, zero_mul]
-    have hba : (b : ℝ) < a := by exact_mod_cast hab
-    have : (b : ℝ) - a ≤ 0 := by linarith
-    have hpos : 0 ≤ ε * (a : ℝ) ^ (-η) := mul_nonneg hε (Real.rpow_nonneg (Nat.cast_nonneg _) _)
-    nlinarith
+  rw [Finset.sum_const, Nat.card_Ioc, nsmul_eq_mul, Nat.cast_sub hab]
+  ring_nf
+  rfl
 
 /-- **`λ` and `λ + ε n^{−η}` are never both dyadic positive** along a nonnegative generator, for
 `0 < η < 1/2`. The difference has dyadic mass `≥ c ε (1 − e^{−2r}) 2^{(1/2 − η)d} − cε`. -/
@@ -429,7 +421,7 @@ theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (
   set δ : ℝ := 1 / 2 - η
   have hδ : 0 < δ := by simp only [δ]; linarith
   have hA : 0 < c * ε * (1 - Real.exp (-(2 * r))) := by
-    have : Real.exp (-(2 * r)) < 1 := Real.exp_lt_one.mpr (by linarith)
+    have : Real.exp (-(2 * r)) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
     have : 0 < 1 - Real.exp (-(2 * r)) := by linarith
     positivity
   obtain ⟨d, hd1, hdr, hdM⟩ := exists_nat_lt_exp (B := c * ε) (M := M) (R := r) hA hδ
@@ -484,8 +476,14 @@ theorem not_dyadicPositive_and_perturbed (lam : ℕ → ℝ) {f : ℝ → ℝ} (
               Real.exp (-(1 / 2 + η) * (D + r))) by ring, e1, e2]
       ring
     rw [this]
-    have := mul_le_mul_of_nonneg_right e3 h1e
-    nlinarith [mul_le_mul_of_nonneg_left this (by positivity : 0 ≤ c * ε)]
+    have hce : 0 ≤ c * ε := by positivity
+    have h5 := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right e3 h1e) hce
+    have h6 := mul_le_mul_of_nonneg_left e4 hce
+    have e5 : c * (ε * (Real.exp (δ * (D + r)) * (1 - Real.exp (-(2 * r))) -
+        Real.exp (-(1 / 2 + η) * (D + r)))) = c * ε * (Real.exp (δ * (D + r)) *
+          (1 - Real.exp (-(2 * r)))) - c * ε * Real.exp (-(1 / 2 + η) * (D + r)) := by ring
+    rw [e5]
+    nlinarith
   calc c * ε * (1 - Real.exp (-(2 * r))) * Real.exp (δ * D) - c * ε
       ≤ c * ((Real.exp (D + r) - Real.exp (D - r) - 1) *
           (ε * Real.exp (-(1 / 2 + η) * (D + r)))) := hmain
@@ -504,5 +502,116 @@ theorem not_dyadicPositive_vonMangoldt_and_perturbed {f : ℝ → ℝ} (hf : Con
       DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ) + ε * (n : ℝ) ^ (-η))
         (cx f)) :=
   not_dyadicPositive_and_perturbed _ hf hfc hf0 hne hε hη hη2
+
+/-! ### Selectivity: the Liouville twin -/
+
+/-- On a prime the von Mangoldt weight exceeds its Liouville twin by `2 log p`. -/
+theorem vonMangoldt_sub_liouvilleTwin_prime {p : ℕ} (hp : p.Prime) :
+    (ArithmeticFunction.vonMangoldt p : ℝ) - ArithmeticCorrespondencePositivity.liouvilleTwin p =
+      2 * Real.log p := by
+  rw [ArithmeticCorrespondencePositivity.liouvilleTwin, ArithmeticFunction.cardFactors_apply_prime hp,
+    ArithmeticFunction.vonMangoldt_apply_prime hp]
+  ring
+
+/-- **`Λ` and its Liouville twin are never both dyadic positive** along a nonnegative generator.
+The difference `2 log p` on the primes of the window `(e^{D − r}, e^{D + r}]` has mass at least
+`c (e^{2r} − 1) e^{D/2 − 3r/2}` once the prime number theorem holds there to relative accuracy
+`(e^{2r} − 1)/(2(e^{2r} + 1))`. -/
+theorem not_dyadicPositive_liouvilleTwin_and_vonMangoldt {f : ℝ → ℝ} (hf : ContDiff ℝ 2 (cx f))
+    (hfc : HasCompactSupport (cx f)) (hf0 : ∀ x, 0 ≤ f x) (hne : ∃ x, f x ≠ 0) :
+    ¬ (DyadicPositive ArithmeticCorrespondencePositivity.liouvilleTwin (cx f) ∧
+      DyadicPositive (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (cx f)) := by
+  obtain ⟨r, hr, c, hc, hk⟩ := exists_re_weilTest_ge hf hfc hne
+  refine not_dyadicPositive_and_of_unbounded hf0 hfc
+    (fun n _ => ArithmeticCorrespondencePositivity.liouvilleTwin_le n) fun M => ?_
+  set C : ℝ := Real.exp (2 * r)
+  have hC1 : 1 < C := Real.one_lt_exp_iff.mpr (by linarith)
+  set ε₀ : ℝ := (C - 1) / (2 * (C + 1))
+  have hε₀ : 0 < ε₀ := by simp only [ε₀]; exact div_pos (by linarith) (by linarith)
+  obtain ⟨X₀, hX₀⟩ := Filter.eventually_atTop.mp (RHTower.chebyshevTheta_eventually_relative hε₀)
+  have hA : 0 < c * (C - 1) * Real.exp (-(3 * r / 2)) := by
+    have : 0 < C - 1 := by linarith
+    positivity
+  obtain ⟨d, hd1, hdR, hdM⟩ := exists_nat_lt_exp (B := 0) (M := M)
+    (R := r + Real.log (max X₀ 1)) hA (by norm_num : (0 : ℝ) < 1 / 2)
+  refine ⟨d, hd1, lt_of_lt_of_le hdM ?_⟩
+  set D : ℝ := (d : ℝ) * Real.log 2
+  set x : ℝ := Real.exp (D - r)
+  have hx0 : 0 ≤ x := (Real.exp_pos _).le
+  have hCx : C * x = Real.exp (D + r) := by
+    simp only [C, x]; rw [← Real.exp_add]; congr 1; ring
+  have hxX : X₀ ≤ x := by
+    have hlog : Real.log (max X₀ 1) < D - r := by linarith
+    have : max X₀ 1 < x := by
+      rw [← Real.exp_log (lt_of_lt_of_le one_pos (le_max_right X₀ 1))]
+      exact Real.exp_lt_exp.mpr hlog
+    exact (le_max_left _ _).trans this.le
+  have hCxX : X₀ ≤ C * x := hxX.trans (le_mul_of_one_le_left hx0 hC1.le)
+  set W := RHTower.multiplicativePrimeWindow x C
+  have hDr : r < D := by
+    have : 0 ≤ Real.log (max X₀ 1) := Real.log_nonneg (le_max_right _ _)
+    linarith
+  have hmem : ∀ p ∈ W, p.Prime ∧ |Real.log p - D| ≤ r ∧ (p : ℝ) ≤ Real.exp (D + r) := by
+    intro p hp
+    obtain ⟨hpr, hlo, hhi⟩ := RHTower.mem_multiplicativePrimeWindow hx0 (by linarith) hp
+    rw [hCx] at hhi
+    have hppos : (0 : ℝ) < p := by exact_mod_cast hpr.pos
+    refine ⟨hpr, abs_le.mpr ⟨?_, ?_⟩, hhi⟩
+    · have := Real.log_le_log (Real.exp_pos _) hlo.le
+      rw [Real.log_exp] at this; linarith
+    · have := Real.log_le_log hppos hhi
+      rw [Real.log_exp] at this; linarith
+  have hu : ∀ n, 2 ≤ n → 0 ≤ (ArithmeticFunction.vonMangoldt n : ℝ) -
+      ArithmeticCorrespondencePositivity.liouvilleTwin n :=
+    fun n _ => sub_nonneg.mpr (ArithmeticCorrespondencePositivity.liouvilleTwin_le n)
+  have hwin := primeMass_ge_window hu hf0 hfc hk D W fun p hp =>
+    ⟨(hmem p hp).1.two_le, (hmem p hp).2.1⟩
+  refine le_trans ?_ hwin
+  -- each prime of the window carries `2 log p / √p ≥ 2 e^{−(D + r)/2} log p`
+  have hlow : ∀ p ∈ W, 2 * Real.exp (-((D + r) / 2)) * Real.log p ≤
+      ((ArithmeticFunction.vonMangoldt p : ℝ) - ArithmeticCorrespondencePositivity.liouvilleTwin p) /
+        Real.sqrt p := by
+    intro p hp
+    obtain ⟨hpr, -, hhi⟩ := hmem p hp
+    rw [vonMangoldt_sub_liouvilleTwin_prime hpr]
+    have hsq : Real.sqrt p ≤ Real.exp ((D + r) / 2) := by
+      rw [show Real.exp ((D + r) / 2) = Real.sqrt (Real.exp (D + r)) by
+        rw [Real.sqrt_eq_rpow, ← Real.exp_mul]; congr 1; ring]
+      exact Real.sqrt_le_sqrt hhi
+    have hsp : 0 < Real.sqrt p := Real.sqrt_pos.mpr (by exact_mod_cast hpr.pos)
+    have hlogp : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hpr.one_lt.le)
+    rw [le_div_iff₀ hsp, Real.exp_neg]
+    have hE : 0 < Real.exp ((D + r) / 2) := Real.exp_pos _
+    rw [show 2 * (Real.exp ((D + r) / 2))⁻¹ * Real.log p * Real.sqrt p =
+      2 * Real.log p * (Real.sqrt p / Real.exp ((D + r) / 2)) by field_simp]
+    have : Real.sqrt p / Real.exp ((D + r) / 2) ≤ 1 := (div_le_one hE).mpr hsq
+    nlinarith
+  have hsum : 2 * Real.exp (-((D + r) / 2)) * ∑ p ∈ W, Real.log p ≤
+      ∑ p ∈ W, ((ArithmeticFunction.vonMangoldt p : ℝ) -
+        ArithmeticCorrespondencePositivity.liouvilleTwin p) / Real.sqrt p := by
+    rw [Finset.mul_sum]; exact Finset.sum_le_sum hlow
+  have htheta : Chebyshev.theta (C * x) - Chebyshev.theta x = ∑ p ∈ W, Real.log p :=
+    RHTower.theta_sub_eq_sum_primeWindow hx0 hC1.le
+  -- the prime number theorem on the window
+  have hθ1 := hX₀ (C * x) hCxX
+  have hθ2 := hX₀ x hxX
+  have hθ : x * ((C - 1) / 2) ≤ Chebyshev.theta (C * x) - Chebyshev.theta x := by
+    have e : ε₀ * (C + 1) = (C - 1) / 2 := by
+      simp only [ε₀]; field_simp; ring
+    have h1 := (abs_le.mp hθ1).1
+    have h2 := (abs_le.mp hθ2).2
+    nlinarith
+  have hexp : Real.exp (-((D + r) / 2)) * x = Real.exp (D / 2 - 3 * r / 2) := by
+    simp only [x]; rw [← Real.exp_add]; congr 1; ring
+  have hfinal : c * (C - 1) * Real.exp (-(3 * r / 2)) * Real.exp (1 / 2 * D) - 0 =
+      c * (2 * Real.exp (-((D + r) / 2)) * (x * ((C - 1) / 2))) := by
+    rw [sub_zero, show c * (2 * Real.exp (-((D + r) / 2)) * (x * ((C - 1) / 2))) =
+      c * (C - 1) * (Real.exp (-((D + r) / 2)) * x) by ring, hexp, ← Real.exp_add]
+    congr 2; ring
+  rw [hfinal]
+  refine mul_le_mul_of_nonneg_left ?_ hc.le
+  refine le_trans ?_ hsum
+  rw [← htheta]
+  exact mul_le_mul_of_nonneg_left hθ (by positivity)
 
 end GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity

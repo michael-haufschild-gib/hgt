@@ -15,13 +15,16 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
 `formal/GaloisForLFunctions/ClassFieldTheory/` (second), each with its umbrella.
 
 ## Gates — Hecke L-functions
-- [ ] HL1 moduli; ideals coprime to `𝔪`; `K_𝔪` (elements prime to `𝔪`), the ray group `K^{𝔪,1}_+`;
+- [x] HL1 moduli; ideals coprime to `𝔪`; `K_𝔪` (elements prime to `𝔪`), the ray group `K^{𝔪,1}_+`;
       reduction `K_𝔪 → (𝓞/𝔪)ˣ × {±1}^{𝔪∞}` with kernel `K^{𝔪,1}_+`; `Cl_𝔪 = I^𝔪/P_𝔪`; map to `Cl_K`
-      surjective with finite kernel ⇒ `Cl_𝔪` finite
-- [ ] HL2 ray class characters on integral ideals; multiplicativity; orthogonality
+      surjective with finite kernel ⇒ `Cl_𝔪` finite — `finite_rayClassGroup`,
+      `toClassGroup_surjective`, `range_rayResidueClass`
+- [x] HL2 ray class characters on integral ideals; multiplicativity; convergence for `Re s > 1` —
+      `heckeValue_mul`, `lSeriesSummable_heckeCoeff`
 - [ ] HL3 `L(s, ψ)`: absolute convergence `Re s > 1`, Euler product over prime ideals, `ψ = 1` vs `ζ_K`
-- [ ] HL4 ray-class ideal counts with power saving and equal densities (ArtinMertens S7 for lattice
-      cosets, sign sub-cones of `normLeOne`, units `U_𝔪`)
+- [x] HL4 ray-class ideal counts with power saving and equal densities —
+      `exists_abs_ncard_rayClassIdeals_sub_le` (`#{𝔞 ∈ c : N𝔞 ≤ x} = κ_𝔪 x + O(x^{1−1/n})`, one
+      `κ_𝔪` for all `c`); `exists_norm_sum_heckeCoeff_le` (`Σ_{N𝔞≤x} ψ(𝔞) = O(x^{1−1/n})`, `ψ ≠ 1`)
 - [ ] HL5 continuation to `Re s > 1 − 1/n`; holomorphic at `1` for `ψ ≠ 1`; residue for `ψ = 1`
 - [ ] HL6 `L(1, ψ) ≠ 0` for non-real `ψ` (product of all `L(s, ψ)` has `|·| ≥ 1`); Mertens for Hecke
       characters; real `ψ` after CFT

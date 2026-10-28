@@ -338,10 +338,14 @@ theorem exists_xi_cofactor_near_ordinate :
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
           push_cast
           ring
-      _ ≤ 36 * C₁ * Real.log T := by nlinarith [hlogT, hC₁0]
+      _ ≤ 36 * C₁ * Real.log T := by
+          have hp : 0 ≤ C₁ * Real.log T := by positivity
+          linarith
   refine ⟨Z, m, g, hZball, hzeroZ, ?_, hg, hg0, heq, ?_⟩
   · rw [hcardF]
-    nlinarith [hcount, hC₃0, hC₂0, hlogT]
+    have hp3 : 0 ≤ C₃ * Real.log T := by positivity
+    have hp2 : 0 ≤ C₂ * Real.log T := by positivity
+    linarith
   -- the logarithmic derivative of the cofactor
   have hPne : ∀ s, (∀ ρ ∈ Z, s ≠ ρ) → (∏ ρ ∈ Z, (s - ρ) ^ m ρ) ≠ 0 :=
     fun s hs => Finset.prod_ne_zero_iff.mpr fun ρ hρ => pow_ne_zero _ (sub_ne_zero.mpr (hs ρ hρ))
@@ -364,10 +368,10 @@ theorem exists_xi_cofactor_near_ordinate :
     have h1 := hlogsplit s hs hxs
     rw [logDeriv_xi_eq_partialFraction hxs] at h1
     have h2 : ∑ ρ ∈ Z, (m ρ : ℂ) / (s - ρ) = ∑ q ∈ F, (s - (q.1 : ℂ))⁻¹ := by
-      rw [← hsumF]
+      rw [← hsumF (fun ρ => (s - ρ)⁻¹)]
       exact Finset.sum_congr rfl fun ρ _ => by rw [div_eq_mul_inv]
     rw [h2] at h1
-    linear_combination h1
+    linear_combination (-1 : ℂ) * h1
   have hcball : c ∈ ball c 8 := mem_ball_self (by norm_num)
   -- the cofactor at the Euler point
   have hgc : ‖deriv g c / g c‖ ≤ C₃ * Real.log T + 36 * C₁ * Real.log T := by
@@ -432,17 +436,24 @@ theorem exists_xi_cofactor_near_ordinate :
         57 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2))) :=
       (hweight.subtype _).mul_left 57
     have htail : ‖∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ ≤ 57 * C₂ * Real.log T := by
-      refine (norm_tsum_le_tsum_norm (hsub.of_norm_bounded hDbound)).trans ?_
-      refine (hsub.tsum_le_tsum_of_inj id Function.injective_id (fun _ _ => ?_) hDbound
-        (hsub.of_norm_bounded hDbound).norm |>.symm.le.trans ?_) |>.trans ?_
-      · exact le_rfl
-      · exact le_rfl
-      rw [tsum_mul_left]
+      have hnormsum : Summable (fun q : ↑((F : Set XiZeroCopy)ᶜ) => ‖D q‖) :=
+        Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hDbound hsub
       have hle : ∑' q : ↑((F : Set XiZeroCopy)ᶜ),
           (1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2)
           ≤ ∑' q : XiZeroCopy, (1 : ℝ) / (1 + (T - (q.1 : ℂ).im) ^ 2) :=
-        hweight.tsum_subtype_le _ _ (fun q => by positivity)
-      nlinarith [hC₂T.2, hle]
+        Summable.tsum_subtype_le (fun q : XiZeroCopy => (1 : ℝ) / (1 + (T - (q.1 : ℂ).im) ^ 2))
+          ((F : Set XiZeroCopy)ᶜ) (fun q => by positivity) hweight
+      calc ‖∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ ≤ ∑' q : ↑((F : Set XiZeroCopy)ᶜ), ‖D q‖ :=
+            norm_tsum_le_tsum_norm hnormsum
+        _ ≤ ∑' q : ↑((F : Set XiZeroCopy)ᶜ),
+              57 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2)) :=
+            Summable.tsum_le_tsum hDbound hnormsum hsub
+        _ = 57 * ∑' q : ↑((F : Set XiZeroCopy)ᶜ),
+              (1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2) := tsum_mul_left
+        _ ≤ 57 * (C₂ * Real.log T) := by
+            gcongr
+            exact hle.trans hC₂T.2
+        _ = 57 * C₂ * Real.log T := by ring
     calc ‖deriv g s / g s‖ = ‖deriv g c / g c + ∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ := by
           rw [← hdiff]; ring_nf
       _ ≤ ‖deriv g c / g c‖ + ‖∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ := norm_add_le _ _
@@ -451,7 +462,7 @@ theorem exists_xi_cofactor_near_ordinate :
   intro s hs
   by_cases hxs : xi s ≠ 0
   · exact hbound_off s hs hxs
-  · push_neg at hxs
+  · push Not at hxs
     have hs8 : s ∈ ball c 8 := ball_subset_ball (by norm_num) hs
     have hcont : ContinuousAt (fun w => ‖deriv g w / g w‖) s := by
       have hga : AnalyticAt ℂ g s := hg s hs8
@@ -465,7 +476,7 @@ theorem exists_xi_cofactor_near_ordinate :
         with w hw hws
       refine hbound_off w hw.1 fun hxw => ?_
       have hwZ : w ∈ Z := (hzeroZ w (ball_subset_ball (by norm_num) hw.1)).mp hxw
-      exact hw.2 (by simp [Finset.mem_erase, hwZ, hws])
+      exact hw.2 (Finset.mem_coe.mpr (Finset.mem_erase.mpr ⟨hws, hwZ⟩))
     exact le_of_tendsto (hcont.tendsto.mono_left nhdsWithin_le_nhds) hev
 
 end
