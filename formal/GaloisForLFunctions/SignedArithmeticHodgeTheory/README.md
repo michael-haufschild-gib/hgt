@@ -209,6 +209,34 @@ This supplies a faithful local comparison for arbitrary profiles, with no sign p
 no restriction on their two polar moments. Its constants are not uniform as the windows and
 translation ranges exhaust the source. A renormalization argument must carry those costs.
 
+### Faithful transport on completed apertures
+
+Let \(H_A\) be the existing graph completion of the smooth source core on aperture \(A>0\).
+Literal translation extends to a bounded linear, injective map
+
+\[
+T_{A,t}:H_A\longrightarrow H_{A+|t|}\subset H.
+\]
+
+For every bounded shift range, the same upper and lower graph bounds hold uniformly on all of
+\(H_A\). The map agrees with translation of every smooth test representative and satisfies
+
+\[
+\begin{aligned}
+W(T_{A,t}p,T_{A,t}q)&=W(p,q),\\
+\widehat{T_{A,t}p}(z)&=e^{izt}\widehat p(z)
+\quad\text{for }|\operatorname{Im}z|\le\tfrac12.
+\end{aligned}
+\]
+
+The evaluations at \(-i/2\) and \(i/2\) retain the two pole factors \(e^{t/2}\) and
+\(e^{-t/2}\). The construction takes place before any radical quotient.
+[CompletedAperturesCarryTheLiteralScaleTransport](CompletedAperturesCarryTheLiteralScaleTransport.lean)
+proves these statements by extending the bounded core map along its dense inclusion, then
+passing the actual form and readout identities by continuity. It reuses the existing CHMD
+aperture spaces. Uniformity under unbounded aperture or translation growth is a separate
+arithmetic requirement, constrained by the escape bounds above.
+
 ### Signed block payment
 
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
@@ -265,7 +293,7 @@ These are imported mathematical foundations, not new contributions of this progr
 | Source synthesis beyond narrow spacing | [TheSecondOrderSynthesis](../SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean) |
 
 The trial-correction estimates, whole-family operator bounds, exact radical retention and
-quantitative source-scale bounds with their two-sided bounded-window replacement are formalized
+quantitative source-scale bounds with faithful completed-aperture transport are formalized
 contributions of this programme. Complete signed block payment, growing-mode transfer and
 arithmetic upper control of critical work remain research targets.
 

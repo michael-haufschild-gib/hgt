@@ -205,7 +205,8 @@ theorem gamma_coherent_mean_variance_farCharge {ι : Type*} [Fintype ι] (a b : 
       change M i * (∫⁻ y in I i, W i y) + M i * (∫⁻ y in I i, W i y) + C i i ≤ _
       have hC : C i i = 0 := gammaMeanPairCharge_self (a i) (b i) f
       rw [hz, mul_zero, add_zero, hC]
-      exact bot_le
+      simpa only [add_zero] using
+        (show (0 : ℝ≥0∞) ≤ ∫⁻ x in I i, ∫⁻ y in I i, gammaDifference f x y from bot_le)
     · exact gamma_mean_pair_ge (hab i) (hab j) (hsep i j hij) hfm
         (hf.restrict _) (hf.restrict _)
   have hfree (i : ι) : B i + R i ≤ ∫⁻ x in I i, ∫⁻ y in F, gammaDifference f x y := by
@@ -253,16 +254,18 @@ theorem gamma_coherent_mean_variance_farCharge {ι : Type*} [Fintype ι] (a b : 
     _ ≤ ∫⁻ x, ∫⁻ y, gammaDifference f x y :=
       sum_blocks_le_lintegral hIm hpd hm (gammaDifference_comm f)
 
-/-- Local logarithmic variance and a positive graph of actual means coexist in the original energy. -/
-theorem levyEnergy_ge_log_variance_add_mean_graph {ι : Type*} [Fintype ι] (a b : ι → ℝ)
+/-- Local variance, the mean graph, and exterior mean displacement coexist in the original energy. -/
+theorem levyEnergy_ge_log_variance_add_mean_graph_add_exterior {ι : Type*} [Fintype ι] (a b : ι → ℝ)
     (hab : ∀ i, a i < b i) (hw : ∀ i, b i - a i ≤ 1)
     (hsep : ∀ i j, i ≠ j → b i ≤ a j ∨ b j ≤ a i)
     {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     (∑ i, Real.log (1 / (b i - a i)) * intervalVariance (a i) (b i) f) +
-        (1 / 2) * (∑ i, ∑ j, gammaMeanPairEnergy (a i) (b i) (a j) (b j) f) ≤
+        (1 / 2) * (∑ i, ∑ j, gammaMeanPairEnergy (a i) (b i) (a j) (b j) f) +
+        (∑ i, gammaExteriorMeanCharge (a i) (b i) (⋃ j, Ioo (a j) (b j))ᶜ f).toReal ≤
       levyEnergy f := by
   let S := ∑ i, Real.log (1 / (b i - a i)) * intervalVariance (a i) (b i) f
   let E := ∑ i, ∑ j, gammaMeanPairEnergy (a i) (b i) (a j) (b j) f
+  let R := ∑ i, gammaExteriorMeanCharge (a i) (b i) (⋃ j, Ioo (a j) (b j))ᶜ f
   have hm (i : ι) : 0 ≤ intervalVariance (a i) (b i) f := intervalVariance_nonneg _ _ _
   have hl (i : ι) : 0 ≤ Real.log (1 / (b i - a i)) :=
     Real.log_nonneg ((one_le_div (sub_pos.mpr (hab i))).mpr (hw i))
@@ -271,8 +274,14 @@ theorem levyEnergy_ge_log_variance_add_mean_graph {ι : Type*} [Fintype ι] (a b
     Finset.sum_nonneg fun j _ => gammaMeanPairEnergy_nonneg (hab i) (hab j) f
   have hfull := gamma_coherent_mean_variance_farCharge a b hab hsep
     (HTGeometry.measurable_of_boundedVariation_univ hv) (memLp_compact_bv hv hc)
-  have h := le_trans le_self_add hfull
-  rw [gammaDifference_eq_two_levyEnergy hv hc] at h
+  rw [gammaDifference_eq_two_levyEnergy hv hc] at hfull
+  have hR : R ≠ ⊤ := by
+    intro hr
+    have hbound : (2 : ℝ≥0∞) * R ≤ 2 * ENNReal.ofReal (levyEnergy f) :=
+      le_trans le_add_self hfull
+    have htop : (2 : ℝ≥0∞) * R = ⊤ := by rw [hr]; norm_num
+    rw [htop] at hbound
+    exact (ENNReal.mul_ne_top (by norm_num) ENNReal.ofReal_ne_top) (top_le_iff.mp hbound)
   have hsmall : ENNReal.ofReal S ≤
       ∑ i, ENNReal.ofReal (intervalVariance (a i) (b i) f) *
         ∫⁻ y, gammaFarCharge (a i) (b i) y := by
@@ -292,17 +301,33 @@ theorem levyEnergy_ge_log_variance_add_mean_graph {ι : Type*} [Fintype ι] (a b
     rw [ENNReal.ofReal_sum_of_nonneg fun j _ => gammaMeanPairEnergy_nonneg (hab i) (hab j) f]
     rfl
   have htwo : ENNReal.ofReal (2 : ℝ) = (2 : ℝ≥0∞) := by norm_num
-  have htotal : ENNReal.ofReal (2 * S + E) ≤ ENNReal.ofReal (2 * levyEnergy f) := by
-    rw [ENNReal.ofReal_add (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hS) hE,
+  have htotal : ENNReal.ofReal (2 * S + E + 2 * R.toReal) ≤ ENNReal.ofReal (2 * levyEnergy f) := by
+    rw [ENNReal.ofReal_add
+        (add_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hS) hE)
+        (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) ENNReal.toReal_nonneg),
+      ENNReal.ofReal_add (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hS) hE,
       ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2),
-      ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), htwo, hEe]
-    exact (add_le_add_right (mul_le_mul_right hsmall 2) _).trans h
+      ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2),
+      ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), htwo, hEe, ENNReal.ofReal_toReal hR]
+    exact (add_le_add (add_le_add (mul_le_mul_right hsmall 2) le_rfl) le_rfl).trans hfull
   have hreal := (ENNReal.ofReal_le_ofReal_iff
     (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) (levyEnergy_nonneg_bv hv hc))).mp htotal
-  change S + (1 / 2) * E ≤ _
+  change S + (1 / 2) * E + R.toReal ≤ _
   linarith only [hreal]
 
+/-- Discarding the nonnegative exterior term retains simultaneous variance and mean-graph payment. -/
+theorem levyEnergy_ge_log_variance_add_mean_graph {ι : Type*} [Fintype ι] (a b : ι → ℝ)
+    (hab : ∀ i, a i < b i) (hw : ∀ i, b i - a i ≤ 1)
+    (hsep : ∀ i j, i ≠ j → b i ≤ a j ∨ b j ≤ a i)
+    {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
+    (∑ i, Real.log (1 / (b i - a i)) * intervalVariance (a i) (b i) f) +
+        (1 / 2) * (∑ i, ∑ j, gammaMeanPairEnergy (a i) (b i) (a j) (b j) f) ≤
+      levyEnergy f := by
+  have h := levyEnergy_ge_log_variance_add_mean_graph_add_exterior a b hab hw hsep hv hc
+  exact le_trans (le_add_of_nonneg_right ENNReal.toReal_nonneg) h
+
 #print axioms gamma_coherent_mean_variance_farCharge
+#print axioms levyEnergy_ge_log_variance_add_mean_graph_add_exterior
 #print axioms levyEnergy_ge_log_variance_add_mean_graph
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.IntervalVariance

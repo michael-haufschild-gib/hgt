@@ -709,6 +709,20 @@ Each nonzero profile leaves a strict quadratic reserve. This statement is
 pointwise in the profile: it gives no uniform margin over growing families,
 and does not settle sharpness of the operator norm bound.
 
+The critical boundary can be approached within the actual carrier. For
+\(a>0\), the vector \(f_a=1_{(a,1]}w\) belongs to the original half-line
+`L²` space and has the exact square mass
+
+\[
+ \|f_a\|_2^2=\int_a^1w(t)^2\,dt
+ \ge\frac{e^{-1}}2\log(1/a),\qquad 0<a\le1.
+\]
+
+In particular, \(a=e^{-(n+1)}\) gives masses at least
+\(e^{-1}(n+1)/2\). These are literal compactly supported indicator profiles.
+Their divergent mass alone does not establish a near-critical Rayleigh value;
+the lost interaction across both cutoff boundaries must also be controlled.
+
 The actual finite prime horizon and both pole moments then give one constant \(C_R\)
 for every boundary in a fixed window \([-R,R]\):
 
@@ -780,6 +794,33 @@ Taking absolute values only after cancellation bounds the full cross term by
 required derivative-weighted discrepancy; it does not bound it uniformly.
 Independent centering on different lag intervals would create boundary terms.
 The prime number theorem alone supplies no exhaustive signed index budget.
+
+The Gamma square reserve transfers to this original arithmetic identity.
+The actual half-line profiles are represented by
+\(F(s)=e^{-2s}f(b-s)\) and \(G(t)=e^{-2t}g(b+t)\) for positive \(s,t\).
+Translation, reflection and restriction preserve their full square masses:
+\(\|F\|_2^2=M_b^-(f)\) and \(\|G\|_2^2=M_b^+(g)\), where these are the
+left and right boundary masses above. Let \(\mathcal R_b(f,g)\) be the exact
+mixed Gamma square integral of \(F,G\). Then
+
+\[
+ \begin{aligned}
+ T_\Gamma(f,g)
+   &=\frac\pi4\bigl(M_b^-(f)+M_b^+(g)\bigr)-\mathcal R_b(f,g),\\
+ W(f,g)
+   &=-\int_0^\infty(E(h)-c)q'(h)\,dh
+     -\frac\pi4\bigl(M_b^-(f)+M_b^+(g)\bigr)+\mathcal R_b(f,g),
+ \end{aligned}
+ \qquad \mathcal R_b(f,g)\ge0.
+\]
+
+These identities use the same original tests, source normalization and global
+pairing. Dropping only the nonnegative reserve gives a signed lower bound
+that leaves the arithmetic discrepancy intact. When either input is zero,
+the reserve refunds the entire displayed mass allocation. Its retention is
+therefore relevant to extension costs that would otherwise charge old mass
+at every step. A cumulative allocation across many cuts and a quantitative
+bound on the signed Chebyshev pairing are still required.
 
 ### Polar compatibility
 
@@ -1286,10 +1327,12 @@ Quantitative pillars supplied by this programme:
 | Exact Gamma boundary weight | An explicit arctangent primitive gives the exact Schur row and the actual boundary operator norm bound `π/2` | `GammaBoundaryHasAnExactSchurWeight` |
 | Exact mixed Gamma reserve | The unused `π/4` two-mass bound is an integrable weighted square difference on the original half-line `L²` carrier | `TheGammaBoundaryReserveIsAnExactSquare` |
 | Gamma equality rigidity | The critical Schur weight is not square integrable; only the zero actual `L²` vector attains the quadratic `π/2` bound | `TheGammaBoundaryBoundHasNoNonzeroEqualityCase` |
+| Actual boundary truncations | Compact indicator truncations lie in the original `L²` carrier, retain exact square mass and have an explicit logarithmic mass lower bound | `TruncatedGammaWeightsHaveLogarithmicMass` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |
 | Centered arithmetic source | The literal ordered mixed Weil form equals centered Chebyshev error against the derivative of its own lag profile, minus the localized Gamma tail | `TheOrderedWeilSourceIsACenteredChebyshevDefect` |
+| Gamma reserve in the original source | Actual translated and reflected tilted tests retain a nonnegative square reserve inside the centered Weil identity, with exact `π/4` boundary-mass allocation | `TheOrderedWeilSourceRetainsItsGammaSquareReserve` |
 | Arbitrary short-cell charge | The inherited logarithmic section gain, with the full pole cost retained, pays every fixed mass charge below a profile-independent and translation-independent threshold | `EveryShortCellPaysAnyFixedMassCharge` |
 | Exact-diagonal extension | A constructed new width pays the full interaction, retaining `W(p,p)-epsilon*mass(p)` and any prescribed new-mass coefficient without an old sign premise | `AShortNewCellPaysItsOwnInteraction` |
 | Adaptive arithmetic extension | At every exterior centre, a new small cell preserves any chosen fraction below one of the entire old section floor, with old widths fixed and arbitrary new profiles | `AnAdditionalCellPreservesTheOldSections` |

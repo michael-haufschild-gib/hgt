@@ -695,3 +695,40 @@ vanishing quadratic reserve forces the zero L2 profile. Every nonzero profile
 has a strict quadratic deficit. Wired, foundational README/checks updated,
 completed rigidity API scratch removed. No equality-module olean is needed.
 Uniform gaps, norm sharpness and mixed equality classification are not claimed.
+
+### Gamma square reserve on the original arithmetic source — formalized
+
+Mandatory actual direct22913 passed without warnings. Four endpoint dependency
+prints show only propext, Classical.choice and Quot.sound. The literal shifted,
+reflected and tilted C2 profiles preserve their actual square masses; their
+Gamma pairing equals the original ordered collar. Consequently
+ W=-integral(E-c)q'-pi/4*(leftBoundaryMass+rightBoundaryMass)+reserve,
+with the reserve nonnegative and defined by the same actual L2 profiles.
+The resulting signed lower bound retains the Chebyshev discrepancy. Wired,
+foundational README and checks updated. No transfer olean needed yet. Cumulative
+allocation, the arithmetic upper/sign budget and exhaustive index remain open.
+
+### Quantitative Gamma boundary calibration — in progress
+
+Actual indicator truncations of the exact Schur weight have a candidate
+logarithmic mass theorem. Four power rectangles give a proposed uniform
+reserve bound of 16 and hence sharp norm pi/2 on the original half-line
+operator. The two candidate sources remain unverified and unwired.
+This would rule out uniform one-cut improvement while retaining explicit
+near-critical profiles as the positive survivor.
+
+A complementary target is mixed equality rigidity: zero mixed reserve forces
+both profiles to vanish. Applied to the pair ((pi/2) f, H f), this should prove
+strict norm inequality for every nonzero f, while sharpness would show the gap
+is not uniform. A two-cut compact-product argument remains a later research
+target, with the actual compactness and arithmetic source assembly still missing.
+
+### Literal truncated Gamma weights — formalized
+
+Actual final52260 passed without warnings, with three standard endpoint
+dependency prints. The compact indicator of the exact weight is an actual
+half-line L2 vector, its norm is exactly its interval square integral, and
+its mass is at least exp(-1)/2 times log(1/a). Exponential inner cutoffs give
+a linearly growing sequence of masses. Wired; the reserve bound and sharp norm
+remain unverified candidates. The separate mixed equality/strict norm source
+is also complete but unverified and unwired.

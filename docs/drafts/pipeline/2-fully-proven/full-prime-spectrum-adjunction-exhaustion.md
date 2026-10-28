@@ -646,3 +646,30 @@ The exact smooth/rough horizon partition passed with a clean transitive audit.
 It is installed; its first required olean builds for the conditional-mean
 projection adapter. All first four scratch modules pass. Twelve remain
 unverified, as do the final actual-source audits and exhaustion endpoints.
+
+The conditional-mean adapter passed with a clean transitive audit. Its scaled
+rough defects sum exactly to the full defect, and its physical squared error is
+bounded by C/log(Q) times that defect. Source installed; first required olean
+builds for the finite Ramanujan approximation module. Five scratch modules pass;
+eleven remain unverified. The full exhaustion result is still uncounted.
+
+The gcd/Ramanujan scratch's first check failed only at simplification of
+nonzero gcd/modulus conditions in the divisor-set identity. Replaced the step
+by explicit forward and reverse membership implications. Retry follows;
+failed-check axiom output was not retained as audit evidence. Five modules
+remain verified, with all five first required oleans now complete.
+
+The gcd/Ramanujan retry passed with only the three standard logical axioms.
+The explicit divisor-membership proof closed the local error. Source installed;
+first required olean builds for the valuation-box adapter. Six of sixteen
+scratch modules pass. All five preceding first dependency builds are complete.
+
+The valuation-box adapter's first check found one ambiguous name: `min_zero`
+collides with `Finset.min_zero`. Qualified the order lemma as `_root_.min_zero`.
+The retry follows. Failed-check axiom output is excluded from audit evidence;
+the six preceding sources and their first dependency builds remain verified.
+
+The valuation-box retry passed with a clean transitive audit. Source installed;
+first required olean builds for the box-tail estimate. Seven of sixteen scratch
+modules pass. The explicit gcd modulus and its finite Ramanujan conductor set
+are now verified; mass capture and the spectral endpoints remain unverified.

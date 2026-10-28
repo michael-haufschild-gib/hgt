@@ -1,0 +1,29 @@
+# Selective Multiscale Arithmetic Positivity (SMAP) programme
+
+- **ID:** smap
+- **Stage:** 1-in-progress
+- **Type:** THEOREM (Lean) programme
+- **Source:** docs/reports/review-2810/obstacles-summary.md §2.5; Q1–Q3
+- **Statement:** Develop selective (twin-separating) positivity for the Weil form on complete, self-similar arithmetic sources.
+
+## Goal
+Pillar theorems in `formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/`:
+1. Selectivity necessity / selection at every root (twin-blind atomic positivity impossible).
+2. Pole-hyperplane identity for atomic tests (discrete Σx/√n ↔ continuous ∫f e^{-u/2}).
+3. Selective positivity window: ζ ≥ 0, Liouville < 0 on pole-hyperplane atomic tests beyond Robin–Euler.
+4. Dyadic multiresolution decomposition + level-Toeplitz law.
+5. RG index law (Haynsworth) + block-dominance criterion.
+6. Prime-2 bottleneck (p log p/(p−1) increasing).
+
+## Gates
+- [x] 0 → 1  in-progress
+- [ ] 1 → 2  paper proofs per pillar
+- [ ] 2 → 3  Lean modules audited with `lake --old env lean`
+
+## Approach
+Reuse: SSHA atomic families (`atomicTest`, every-root theorems), ALG `ThePoleDefectPaysThePole`
+(`eventually_markovEnergy_ge_defect`), RAPT pole gap (`ThePrimeFormHasASpectralGapBelowItsPole`),
+RAPT Liouville separation, ACS `HaarCellCoarseSplitting`, SAHT translation invariance.
+
+## Log
+- 2026-10-28 — created; README first draft written.

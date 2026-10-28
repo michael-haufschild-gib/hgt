@@ -35,20 +35,16 @@ for every compact BV source, without local mean-zero restrictions. This pays loc
 
 `CompleteCellVariancePayment.lean` passed its exact final audit, including four clean transitive axiom prints. It retains independent average and detail coefficients on every pair and identifies them with arbitrary original cell coefficients. `cellPairSum_levyEnergy_ge` proves `Σ log(a)*haarMass(a)*(u(a)-v(a))² ≤ levyEnergy(Σ u(a)*rawCell(2a)+v(a)*rawCell(2a+1))` for arbitrary signed `u,v` and every finite horizon. No pair average is suppressed.
 
-## Next remainder conjecture
+## Checked mean and exterior remainder
 
-For product weights `w≥m≥0`, `v≥n≥0`, the four nonnegative product pieces from `w=m+(w-m)` and `v=n+(v-n)` retain the additional term `m*n*|I|*|J|*(mean_I(f)-mean_J(g))²` alongside both variance charges. `IntervalVarianceRemainder.lean` passed its exact final audit with three clean axiom prints: exact variance identity, strengthened product-kernel inequality, and exponential consequence. `GammaVarianceRemainder.lean` passed its exact final check and both transitive axiom audits. It proves the full Gamma-series extension and exterior-point mean-displacement term.
+[Simultaneous Gamma payment](../3-formalized/acs-gamma-detail-mean-boundary-payment.md) passed exact project checks and ten clean transitive axiom audits. `IntervalVarianceRemainder.lean` proves the product-weight splitting; `GammaVarianceRemainder.lean` proves its full Gamma-series and exterior-point consequences. `GammaMeanVarianceCapacity.lean` proves the coherent finite-family bound and the real inequality
 
-`/tmp/acs-gamma-mean-variance-capacity.lean` prepares the coherent strengthening
+`Σ_i log(1/w_i) V_i(f) + (1/2) Σ_ij w_i*w_j*k(max(b_j-a_i,b_i-a_j))*(mean_i(f)-mean_j(f))² + Σ_i ∫_F w_i*(mean_i(f)-f(y))²*gammaFarCharge_i(y) ≤ levyEnergy f`.
 
-`Σ_i log(1/w_i) V_i(f) + (1/2) Σ_ij w_i*w_j*k(max(b_j-a_i,b_i-a_j))*(mean_i(f)-mean_j(f))² ≤ levyEnergy f`.
+The exterior sum is proved finite before conversion to real numbers. All three terms coexist in the original energy; no local mean-zero or exterior-vanishing premise appears. The explicit mean graph is not identified with the entire coarse Gamma energy.
 
-The extra term is an explicit graph on the actual interval means, not the entire coarse Gamma energy. The extended-integral theorem also retains `2 Σ_i ∫_F w_i*(mean_i(f)-f(y))²*gammaFarCharge_i(y)`, where `F` is the family complement; the displayed real graph inequality is its weaker corollary. The candidate combines the three-term pair estimate with the full exterior mean-displacement charge. The Gamma-series extension passed; the finite-family extension remains unchecked. The complete-cell specialization is prepared in `/tmp/acs-complete-cell-mean-graph.lean`, retaining arbitrary original coefficients and the mean graph alongside logarithmic detail payment.
+`CompleteCellMeanGraph.lean` passed its exact project check and both transitive axiom audits. It retains arbitrary original cell coefficients, logarithmic detail payment, the full mean graph, and an explicit exterior charge depending only on the actual pair averages. Its source is proved zero almost everywhere outside the interval family. [Coarse Gamma recovery](acs-coarse-gamma-recovery.md) tracks the remaining comparison with the entire original coarse energy; prime and pole coupling remain unpaid.
 
 ## Log
 
 - 2026-10-28 — Opened after the full balanced-cell floor and smooth effectivity passed exact Lean audits.
-
-The pending finite-family candidate now also retains the exterior term in its real inequality, using the exact finite extended integral. Its finiteness is derived from the original compact-BV Gamma energy; no new integrability assumption is added. Candidate declaration: `levyEnergy_ge_log_variance_add_mean_graph_add_exterior`.
-
-The concrete candidate now keeps an explicit boundary charge depending only on the pair averages. The complete-cell source vanishes almost everywhere on the family complement, so this charge is the actual far-end kernel integral of width times average squared. Both the finite-family real exterior estimate and concrete specialization remain unverified.

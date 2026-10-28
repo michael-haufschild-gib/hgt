@@ -71,7 +71,7 @@ All five exact files passed `lake --old env lean <module>.lean`, with no warning
 
 ## Remaining parent obligation
 
-Full mixed Weil payment remains open. The proposed additional graph of differences of interval means and exterior mean-displacement charge have separate unchecked Lean candidates and are not part of this theorem.
+Full mixed Weil payment remains open. [Simultaneous mean and boundary payment](acs-gamma-detail-mean-boundary-payment.md) now proves the stronger Gamma estimate, retaining both the graph of actual means and exterior mean displacement.
 
 ## Log
 

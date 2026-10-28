@@ -44,7 +44,7 @@ mechanism of the corpus stops at a threshold, and the thresholds line up there. 
 scale: Q1 of the report (how far the archimedean place pays the prime place, B3.25, B3.26), Q2 at
 and beyond the spacing (gauge selectivity, B3.16), and the harmonic-analysis face of Q3 (prime
 polynomials at zero ordinates, B3.24). Of the report's work items it owns the Lévy synthesis (W22:
-SH9–SH11, SH18–SH20), the universal threshold (W26: SH4′, SH16) and the overlap bookkeeping (W12: SH7, SH17,
+SH9–SH11, SH18–SH21), the universal threshold (W26: SH4′, SH16) and the overlap bookkeeping (W12: SH7, SH17,
 with the Markov Gram at every width and its overlap law from ALG, `levyMarkovForm_atomicTest_eq`,
 `markovPair_shift_ge`),
 and it supplies Arithmetic Lorentzian Geometry with the separated law, the threshold and the overlap
@@ -323,6 +323,7 @@ blind.
 | **SH18 Second-order synthesis** | on a cell `|∫_p^q G − (q − p)(G(p) + G(q))/2| ≤ (5/4)(q − p)² ∫_p^q |G″|`; the trapezoid synthesis on the log-lattice is within `(5/4)(1/n₀)²(M₂‖φ‖₁ + 2Lk‖φ′‖₁ + Mk²‖φ″‖₁) + L‖φ‖₁/k` of `F` with Lipschitz constant `O(k)`; for every `C²` profile RH iff the atomic families are eventually nonnegative under overlap growth of order `4`, in particular at overlap ratio `(log N)^α`, `α > 1/4` (`abs_integral_sub_trap_le_two`, `abs_trapSum_sub_integral_le`, `exists_atomicTest_weilQuad_le_two`, `riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo`, `riemannHypothesis_iff_atomicFamilies_nonneg_log_quarter`) |
 | **SH19 The overlap law at every root** | `(d/ds)^j[s⁻¹H(log s)] = s^{−(j+1)}T_j(log s)`, `T_{j+1} = T_j′ − (j+1)T_j`, `‖T_p‖₁ ≤ (p+1)! Σ_{i≤p} ‖H^{(i)}‖₁`; Euler–Maclaurin on the log-lattice: `|Σ_n F(log n − c)/n · φ_k(r + c − log n) − (F ∗ φ_k)(r)| ≤ C_p(F, φ)(k/n₀)^p` for every even `p`; a negative `C²` test has a negative smooth mollification; for every smooth profile and every `q`, RH iff the atomic families are eventually nonnegative under overlap growth of order `q` — at overlap ratio `(log N)^α` for every `α > 0` (`hasDerivAt_logTowerS`, `abs_sum_logTowerS_sub_integral_le`, `abs_emSynth_dilate_sub_le`, `exists_atomicTest_weilQuad_le_em`, `exists_smooth_weilQuad_neg`, `riemannHypothesis_iff_atomicFamilies_nonneg_of_growthPow`, `riemannHypothesis_iff_atomicFamilies_nonneg_log_pos`) |
 | **SH20 The gauge at every root** | a *stable form* — translation invariant, moved by `Err(e, V) → 0` under a `C²` perturbation of supremum `e` and Lévy bound `V` — is nonnegative on all tests iff it is eventually nonnegative on the atomic families of overlap growth of any order, for every smooth profile; Weil's form, every twist `\|λ\| ≤ Λ` and the Markov form are stable; so a twist is seen at overlap `(log N)^ε` iff it is not Weil positive (Liouville, `cΛ`, quadratic mixtures; under RH `ζ` separates from them there), and `M < 0` on some atomic test for infinitely many `N`, unconditionally (`StableForm`, `nonneg_iff_atomicFamilies_nonneg_of_stable`, `atomicFamilies_negative_iff_of_growthPow`, `riemannHypothesis_imp_liouville_separation_of_growthPow`, `markov_atomicFamilies_negative_of_growthPow`) |
+| **SH21 The pole at every root** | for `m₋(F) = 0`, `m₋(h) > 0` and small `D₁, D₂`, `F + D₁ − t(h + D₂)` lies in the pole hyperplane with `\|t\| ≤ 2e^{R′/2}‖D₁‖₁/m₋(h)`; synthesizing a pole-free negative test and a bump with the same weights and correcting: for every smooth profile and every overlap growth of finite order, RH iff for all large `N` the Markov form is nonnegative on the atomic tests in the pole hyperplane (`exists_pole_correction`, `comb_perturbation`, `exists_smooth_poleFree_markov_neg`, `frequently_poleHyperplane_markov_neg`, `riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg_of_growthPow`) |
 
 ---
 
@@ -344,8 +345,8 @@ The questions of the report (§4.4), as SSHA answers them.
    of every synthesis costs `log N` (§4.E) and the gauge question is open. *The universal
    threshold is bracketed and the correction rank is exactly located* (SH13, SH20): the Markov law
    `M ≥ 0` holds for every twist up to `c₀δ_N` and fails — for `ζ` itself, unconditionally — once the
-   overlap ratio grows like a power of `log N`; there the Markov form has a negative square, and
-   under overlap growth RH is the statement that it has only one, the pole. The universal threshold `K_univ` — the largest ratio
+   overlap ratio grows like a power of `log N`; there the Markov form has a negative square, and RH
+   is the statement that it has only one, the pole (SH13 under overlap growth, SH21 at every root). The universal threshold `K_univ` — the largest ratio
    at which `Re W_ω + 2S² ≥ 0` for every twist `|ω| ≤ 1`, uniformly in `N` — satisfies
    `c₀ ≤ K_univ < ∞` (SH4′, SH16): a wide dipole on the atoms `1, 2` with vanishing cosh moment, read
    against the sign twist aligned with its lag correlations, has negative archimedean form and a
@@ -445,7 +446,7 @@ change of variables `s = e^t`, Euler–Maclaurin summation on the log-lattice, t
 tower and the Leibniz bound; the Euler–Maclaurin synthesis with its supremum and Lipschitz bounds;
 the generic motion of Weil's form under a Lipschitz perturbation; mollification to smooth tests;
 overlap growth of every order; stable forms and the transfer of their signs to the atomic
-families.
+families; the correction of a synthesis into the pole hyperplane by a synthesized bump.
 
 **To build.** The cross-term density of the pole vector (the critical constant); the archimedean
 cross kernel of overlapping atoms with constants, to close the joint estimate at a fixed `K`; the

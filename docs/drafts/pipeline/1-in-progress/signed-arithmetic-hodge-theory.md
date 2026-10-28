@@ -66,3 +66,39 @@ on the source aperture and translation range.
 
 Do not identify the signed-source radical with the full Weil radical. The
 CHMDQuotientWeilForm two-pole classification remains part of the source data.
+
+## Quantitative growing-mode Gram target
+
+For the actual normalized Ramanujan pole profiles v_m, seek the uniform finite
+family estimate
+
+|sum_(n=1)^N (sum_(m in S) c_m v_m(n))^2
+  - log N * sum_(m in S) c_m^2|
+ <= (1+2*sum_(m in S) m^2) * sum_(m in S) c_m^2,
+
+for positive conductors and N>=1. Complete-period orthogonality and bounded
+periodic partial sums provide a candidate proof; the precise statement is not
+yet formalized. This targets the Gram part of growing-mode transfer only.
+Prime-matrix residual, modal complement and Gamma/pole comparison remain distinct.
+
+## Conductor-explicit prime residual target
+
+For a prime p and horizon y>=1, the reciprocal Mangoldt mass on p-powers
+beyond y should be bounded by 2 log(p)/y. Complete geometric mass minus the
+first floor(log_p y) powers proves this directly. Summing only over conductor
+primes gives the proposed normalized correction bound
+
+4 sqrt(phi(m)) A_m / y, where A_m=sum_(p|m) log(p).
+
+With e(y)=MertensSum(y)-log(y)+EulerGamma and
+f(y)=|e(y)|+1/y, the literal normalized Ramanujan row residual should satisfy
+
+|residual_m(N,n)| <= sqrt(phi(m)) (1+4 A_m) f(floor(N/n))/sqrt(n).
+
+This would give one explicit finite-family squared residual budget
+(sum_m phi(m)(1+4 A_m)^2) * sum_(n<=N) f(floor(N/n))^2/n.
+The harmonic-quotient theorem proves the second factor is o(log N).
+The input contains only finite prime arithmetic and the proved Mertens remainder;
+no conductor-uniform convergence or complement sign is assumed. These estimates
+remain research targets until formalized. They do not identify a complete modal
+source or transfer Gamma and both poles.

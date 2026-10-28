@@ -4,7 +4,7 @@
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Source:** formalized full-prime Ramanujan quasimodes; SSHA separated-atom pairing and Robin constant
-- **Statement:** On every fixed finite Ramanujan packet, the spacing-scale archimedean cross correction has rank one, with opposite net pole corrections in the Markov and complete Weil forms.
+- **Statement:** On every fixed finite Ramanujan packet, the spacing-scale archimedean cross correction has rank at most one, with opposite net pole corrections in the Markov and complete Weil forms.
 - **Count:** uncounted; no completed paper proof or Lean formalization
 
 ## Goal
@@ -111,3 +111,25 @@ exhaustion. The archimedean cross operator may create large rows near the top of
 the horizon, even when its average on a fixed pole profile has a finite limit.
 Any spectral upgrade must control those boundary corrections separately. The
 present candidate claims only the actual mixed-form limit stated above.
+
+The full source of `TheRamanujanPoleProfilesAreAsymptoticallyOrthonormal.lean`
+was reread for the periodic input. Its public `tendsto_periodic_harmonic_mean`
+transfers the complete-period mean to logarithmic averaging, and
+`periodMean_normalizedRamanujanMode_mul` gives exact normalized orthogonality.
+Its ordinary-mean helper is private; the proof uses the existing
+`abs_sum_range_le_of_periodic` zero-mean bound, which is the stronger useful
+input for a uniform shifted-correlation error. Periodic averaging itself is
+already proved baseline.
+
+A concrete route for the still-unproved summed replacement bound avoids
+logarithmic derivative estimates. The shifted weighted density is
+`omega(log(n/j)-v)/sqrt(n*j)=exp(v/2)*n/(n^2-exp(2v)*j^2)`.
+For |v|<=w=c/N, n>j, and c<1/2, the proposed elementary exponential bound
+`exp(w)-1<=2w` gives
+`n-exp(w)*j >= (1-2c)*(n-j)`.
+Clearing the two positive denominators should bound the difference between
+v=w and v=-w by `C_c*w*n/(n-j)^2`. Summing inverse squares then gives
+`C_c*w*N^2`; multiplying by the bump's squared absolute integral gives the
+required `O(w^3*N^2)` error. The fixed constant may depend on c and the profile,
+which is sufficient for this fixed-ratio limit. These inequalities and all
+finite-sum reindexings still need exact proofs.

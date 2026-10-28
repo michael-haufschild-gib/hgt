@@ -23,6 +23,7 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheSecondOrderSynthesis
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheEulerMaclaurinSynthesis
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheOverlapLawAtEveryRoot
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGaugeAtEveryRoot
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleAtEveryRoot
 
 /-!
 # Arithmetic Harmonic Analysis at the Spacing Scale
@@ -50,7 +51,7 @@ Umbrella for the harmonic analysis of Weil's form on the atomic family
 * the Euler–Maclaurin synthesis with weights `F(log n − c)/n` is accurate to every order for smooth
   profiles: positivity is RH at overlap `(log N)^ε` for every `ε > 0`, every stable form (Weil's,
   its bounded twists, the Markov form) transfers there, every twist that fails somewhere is seen
-  there, and the Markov form has a negative square there unconditionally.
+  there, and the Markov form has a negative square there unconditionally and only one iff RH.
 
 See `SpacingScaleHarmonicAnalysis/README.md`.
 -/

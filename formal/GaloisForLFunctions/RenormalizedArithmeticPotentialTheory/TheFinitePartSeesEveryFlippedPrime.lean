@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartIsTwiceTheMertensLimit
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartSeparatesZetaFromItsLiouvilleTwin
 
 /-!
 # The finite part sees every flipped prime
@@ -23,6 +23,9 @@ finite part.
   every sign gauge with matching coefficient `1` and a convergent Mertens error
   `A_ε(y) − log y → α`, `α ≤ −γ`, with equality only for `ε = 1`; so
   `P_N(εx) − P_N(x) = 2(α + γ)|x|² + o(mass)` with `α + γ < 0` for every such twin.
+
+* **The mirror** (`liouvilleLimit_le_and_eq_iff`): every sign gauge with `κ = −1` and a convergent
+  Mertens error `A_ε(y) + log y → α` has `α ≥ γ + τ`, with equality only for `ε = λ`.
 
 So among the twins of `ζ` matched to the same polar divergence, `ζ` is the unique maximizer of the
 finite part, and each flipped prime lowers it by at least `4 log p/p`. Matching cannot select `ζ`
@@ -228,7 +231,7 @@ theorem finitePartLimit_le_and_eq_iff {ε : ℕ → ℝ} (hε : IsSignGauge ε) 
     have hzero : ∀ y, gaugeDeficit ε y = 0 := fun y => sum_eq_zero fun t ht => by
       rw [h1 t (mem_Icc.mp ht).1, sub_self, zero_mul, zero_div]
     have hD' : Tendsto (gaugeDeficit ε) atTop (𝓝 0) := by
-      simp only [hzero]
+      rw [show gaugeDeficit ε = fun _ => 0 from funext hzero]
       exact tendsto_const_nhds
     have := tendsto_nhds_unique hD hD'
     linarith
@@ -261,5 +264,103 @@ theorem exists_abs_gaugeForm_sub_zetaForm_sub_le {ε : ℕ → ℝ} (hε : IsSig
   have h2' := h2.trans (hmono C₂ (le_max_right _ _))
   rw [abs_le] at h1' h2' ⊢
   constructor <;> nlinarith [h1'.1, h1'.2, h2'.1, h2'.2]
+
+/-! ### The mirror: the Liouville twin minimizes the anti-matched finite part -/
+
+/-- `ε(1) = 1`, from `ε(1) = ε(1)²` and `ε(1)² = 1`. -/
+theorem IsSignGauge.one {ε : ℕ → ℝ} (hε : IsSignGauge ε) : ε 1 = 1 := by
+  have hm := hε.mul (one_ne_zero) (one_ne_zero)
+  have hs := hε.mul_self (one_ne_zero)
+  rw [one_mul] at hm
+  linarith
+
+/-- `ε(p^k) = ε(p)^k`. -/
+theorem IsSignGauge.pow {ε : ℕ → ℝ} (hε : IsSignGauge ε) {p : ℕ} (hp : p ≠ 0) (k : ℕ) :
+    ε (p ^ k) = ε p ^ k := by
+  induction k with
+  | zero => rw [pow_zero, pow_zero, hε.one]
+  | succ k ih => rw [pow_succ, hε.mul (pow_ne_zero k hp) hp, ih, pow_succ]
+
+/-- Two sign gauges agreeing at every prime agree on every positive integer. -/
+theorem IsSignGauge.eq_of_prime {ε ε' : ℕ → ℝ} (hε : IsSignGauge ε) (hε' : IsSignGauge ε')
+    (h : ∀ p : ℕ, p.Prime → ε p = ε' p) : ∀ n : ℕ, 1 ≤ n → ε n = ε' n := by
+  have hprod : IsSignGauge (fun n => ε n * ε' n) := by
+    refine ⟨fun {m n} hm hn => ?_, fun {n} hn => ?_⟩
+    · simp only [hε.mul hm hn, hε'.mul hm hn]
+      ring
+    · show ε n * ε' n * (ε n * ε' n) = 1
+      rw [show ε n * ε' n * (ε n * ε' n) = (ε n * ε n) * (ε' n * ε' n) by ring,
+        hε.mul_self hn, hε'.mul_self hn, one_mul]
+  have h1 := hprod.eq_one_of_prime fun p hp => by
+    show ε p * ε' p = 1
+    rw [h p hp, hε'.mul_self hp.ne_zero]
+  intro n hn
+  have h2 : ε n * ε' n = 1 := h1 n hn
+  calc ε n = ε n * (ε' n * ε' n) := by rw [hε'.mul_self (by omega), mul_one]
+    _ = (ε n * ε' n) * ε' n := by ring
+    _ = ε' n := by rw [h2, one_mul]
+
+/-- On a prime power a sign gauge dominates Liouville: `λ(t) ≤ ε(t)` when `Λ(t) ≠ 0`, so the
+anti-matched deficit `Σ (ε(t) − λ(t))Λ(t)/t` has non-negative terms. -/
+theorem liouvilleGap_term_nonneg {ε : ℕ → ℝ} (hε : IsSignGauge ε) (t : ℕ) :
+    0 ≤ (ε t - liouvilleSign t) * Λ t / t := by
+  by_cases hΛ : Λ t = 0
+  · simp [hΛ]
+  obtain ⟨p, k, hp, hk, rfl⟩ := (isPrimePow_nat_iff t).mp (vonMangoldt_ne_zero_iff.mp hΛ)
+  rw [hε.pow hp.ne_zero, liouvilleSign_prime_pow hp]
+  have hsq : ε p * ε p = 1 := hε.mul_self hp.ne_zero
+  have hle : ((-1 : ℝ)) ^ k ≤ ε p ^ k := by
+    rcases (mul_self_eq_one_iff.mp hsq) with h | h
+    · rw [h, one_pow]
+      rcases neg_one_pow_eq_or ℝ k with h' | h' <;> rw [h']
+      norm_num
+    · rw [h]
+  exact div_nonneg (mul_nonneg (by linarith) vonMangoldt_nonneg) (Nat.cast_nonneg _)
+
+/-- **The Liouville twin minimizes the anti-matched finite part**: if a sign gauge has
+`A_ε(y) + log y → α`, then `α ≥ γ + τ`, with equality exactly for `ε = λ` on positive integers. -/
+theorem liouvilleLimit_le_and_eq_iff {ε : ℕ → ℝ} (hε : IsSignGauge ε) {α : ℝ}
+    (hE : Tendsto (gaugeMertensError ε (-1)) atTop (𝓝 α)) :
+    γ + liouvilleEvenLimit ≤ α ∧
+      (α = γ + liouvilleEvenLimit ↔ ∀ n : ℕ, 1 ≤ n → ε n = liouvilleSign n) := by
+  set W : ℕ → ℝ := fun y => ∑ t ∈ Icc 1 y, (ε t - liouvilleSign t) * Λ t / t with hWdef
+  have hW : Tendsto W atTop (𝓝 (α - (γ + liouvilleEvenLimit))) := by
+    refine (hE.sub tendsto_liouvilleMertensError).congr fun y => ?_
+    show gaugeMertensError ε (-1) y - gaugeMertensError liouvilleSign (-1) y =
+      ∑ t ∈ Icc 1 y, (ε t - liouvilleSign t) * Λ t / t
+    rw [gaugeMertensError, gaugeMertensError, gaugeMertensSum, gaugeMertensSum,
+      sub_sub_sub_cancel_right, ← sum_sub_distrib]
+    exact sum_congr rfl fun t _ => by ring
+  have hWmono : Monotone W := monotone_nat_of_le_succ fun y => by
+    simp only [hWdef]
+    rw [sum_Icc_succ_top (by omega)]
+    linarith [liouvilleGap_term_nonneg hε (y + 1)]
+  have hW0 : 0 ≤ α - (γ + liouvilleEvenLimit) :=
+    ge_of_tendsto hW (Eventually.of_forall fun y => sum_nonneg fun t _ =>
+      liouvilleGap_term_nonneg hε t)
+  refine ⟨by linarith, ⟨fun hα => ?_, fun h1 => ?_⟩⟩
+  · have hle : ∀ y, W y ≤ 0 := by
+      intro y
+      have := hWmono.ge_of_tendsto hW y
+      rw [hα, sub_self] at this
+      exact this
+    refine hε.eq_of_prime liouville_matching.1 fun p hp => ?_
+    have hzero : W p = 0 :=
+      le_antisymm (hle p) (sum_nonneg fun t _ => liouvilleGap_term_nonneg hε t)
+    have hterm := (Finset.sum_eq_zero_iff_of_nonneg (fun t _ => liouvilleGap_term_nonneg hε t)).mp
+      hzero p (mem_Icc.mpr ⟨hp.one_le, le_rfl⟩)
+    rw [vonMangoldt_apply_prime hp] at hterm
+    have hl : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+    rcases (div_eq_zero_iff.mp hterm) with h | h
+    · rcases mul_eq_zero.mp h with h' | h'
+      · linarith
+      · linarith
+    · linarith
+  · have hzero : W = fun _ => 0 := funext fun y => sum_eq_zero fun t ht => by
+      rw [h1 t (mem_Icc.mp ht).1, sub_self, zero_mul, zero_div]
+    rw [hzero] at hW
+    have := tendsto_nhds_unique hW tendsto_const_nhds
+    linarith
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

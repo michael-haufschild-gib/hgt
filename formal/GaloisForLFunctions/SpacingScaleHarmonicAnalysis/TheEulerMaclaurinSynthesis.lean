@@ -728,7 +728,8 @@ the weights `F(log n − c)/n` and width `1/k` is the translate by `c = log n₀
 `D` is a `C²` test supported in `[−(R+1), R+1]` with `|D| ≤ emErr` and Lipschitz constant `emLip`:
 the error is of order `(k/n₀)^{2m+2}` for every `m`. -/
 theorem exists_emSynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
-    (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ ∞ F) (hFR : SupportedIn R F) (hM : ∀ l t, |iteratedDeriv l F t| ≤ M l) (hM0 : ∀ l, 0 ≤ M l)
+    (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ ∞ F) (hFR : SupportedIn R F)
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M l) (hM0 : ∀ l, 0 ≤ M l)
     {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {k : ℝ} (hk : 1 ≤ k) (m : ℕ) :
     ∃ (x : ℕ → ℝ) (D : ℝ → ℝ),
       atomicTest (n₀ * blockSize R) x (dilate k φ) =

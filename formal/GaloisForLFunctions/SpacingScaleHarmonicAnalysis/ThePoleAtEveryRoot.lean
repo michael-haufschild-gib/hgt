@@ -4,7 +4,8 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGaugeAtEveryRoot
 # The pole is the only negative square at every root
 
 On the pole hyperplane `m₋ = 0` the Markov form is Weil's form, so RH is the statement that the
-Markov form is nonnegative there (`riemannHypothesis_iff_forall_exp_neg_half_moment_zero_markovEnergy_nonneg`).
+Markov form is nonnegative there
+(`riemannHypothesis_iff_forall_exp_neg_half_moment_zero_markovEnergy_nonneg`).
 The Euler–Maclaurin synthesis carries this to the atomic families at every root: a pole-free test
 `G` and a fixed bump `h` with `m₋(h) > 0` are synthesized with the same weights, and subtracting
 `t` times the synthesized bump, `t = m₋(D_G)/m₋(h + D_h)`, moves the atomic test into the pole
@@ -263,7 +264,7 @@ theorem frequently_poleHyperplane_markov_neg (hφ : ContDiff ℝ ∞ φ) (hφ1 :
     tendsto_atTop_mono (fun n => Nat.le_mul_of_pos_right n hB) tendsto_id
   set C := 2 * (Real.exp ((R + 1) / 2) * (2 * (R + 1))) / poleMomentNeg h
   obtain ⟨hE, hV⟩ := tendsto_comb (R' := R + 1) (C := C) (Mh := Mh 0) (Lh := Mh 1)
-    (hκ.1.comp hNB) he₁ he₂ hlog hℓ₁ hℓ₂
+    (k := fun n => κ (n * B)) (hκ.1.comp hNB) he₁ he₂ hlog hℓ₁ hℓ₂
   have h1 := (hErr _ _ hE hV).eventually (gt_mem_nhds (show (0 : ℝ) < -markovQuad G by linarith))
   have hc0 : 0 < poleMomentNeg h / 2 / (Real.exp ((R + 1) / 2) * (2 * (R + 1))) := by
     have := Real.exp_pos ((R + 1) / 2); positivity
@@ -339,7 +340,8 @@ theorem riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg_of_growthPow
     exact hQu
   obtain ⟨G, hG, hGc, hG0, hGneg⟩ := exists_smooth_poleFree_markov_neg hφ hφ1 hφint hu huc hu0 hMu
   obtain ⟨N, ⟨x, hx0, hxM⟩, hN⟩ :=
-    ((frequently_poleHyperplane_markov_neg hφ hφ1 hφint hκ hG hGc hG0 hGneg).and_eventually H).exists
+    ((frequently_poleHyperplane_markov_neg hφ hφ1 hφint hκ hG hGc hG0 hGneg).and_eventually
+      H).exists
   exact absurd (hN x hx0) (not_le.mpr hxM)
 
 end EveryRoot

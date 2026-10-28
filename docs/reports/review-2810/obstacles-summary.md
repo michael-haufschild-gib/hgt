@@ -1,183 +1,232 @@
 # Research frontier: work, open problems and next questions
 
-Status: 28 October 2026. **The main gap is an arithmetic sign or upper bound on a complete source.** Complete-cell transfer, closed positive-section projection, fixed-prime adjunction and sharp overlap obstructions make that gap substantially more concrete. They do not close an RH route.
+Status: 28 October 2026, corpus commit `d47ab4b5d`. **RH remains open. The missing input is one selective arithmetic inequality on a complete source.** The corpus now pins down where that inequality must act. Its positive families are proved by twin-blind estimates, and the unpaid residual is a structured, self-similar object.
 
-This summary combines all 31 live routes, 17 standalone candidates and PW-B. [Route-by-route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence comes from corpus searches and direct Lean-source inspection; no builds or fresh kernel certification. [Working evidence](../../../logs/review-2810-research.log).
+This summary covers all 31 live routes, the 17 standalone candidates and PW-B. Companions: [route-by-route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence comes from corpus searches and Lean-statement inspection; no builds. **[S]** = recent working source (committed on 28 October 2026, or unfinished); per-item status in the frontier map. Research record: [working log](../../../logs/review-2810-refresh-2026-10-28.log).
 
 ## What the corpus establishes
 
-There are three principal destinations, not fifty unrelated final problems:
+There are three destinations, not fifty unrelated problems:
 
-1. **Critical arithmetic bounds:** actual signed prime/Möbius histories, approximation energies, rates, or source-work ceilings.
-2. **Complete Weil sign:** full, even, odd, incidence, Hodge, effectivity and atomic formulations, with exact source terms and quantifiers.
-3. **Independent forcing constructions:** an arithmetic geometry, operator, dynamics or source law whose independently proved structure supplies one of the first two destinations.
+1. **Critical signed arithmetic control:** prime/Möbius histories, approximation energies, regularized series, source work.
+2. **Complete Weil positivity:** full, even, odd, incidence, Hodge, effectivity, atomic and moment formulations.
+3. **Independent forcing:** a geometric, spectral, dynamical or information structure whose proved property supplies 1 or 2.
 
-The first two have many exact RH-equivalent receivers. The third has useful objects and exact diagnostics, but no complete independent forcing mechanism. An equivalence between destinations does not construct a bridge between proposed producers.
+Eight results define the present frontier:
 
-The following results determine the priorities:
+- **The complete source is self-similar** [S]. Complete logarithmic cells recover every mixed Weil entry. On them, the Gamma energy pays every adjacent-pair difference with pair averages present. Each average cell is the original cell translated by \(\log 2\), so complete cells are a dyadic multiresolution of themselves. Details above one fixed index carry a horizon-uniform full-form floor. [Gamma payment](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/CompleteCellVariancePayment.lean), [self-similarity](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellCoarseSplitting.lean), [floor](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean).
+- **Mixed entries are prime-error integrals** [S]. For ordered tests,
+  \[
+  W(f,g)=-\int_0^\infty\big(e^h-\psi(e^h)-c\big)\,\Omega_{f,g}'(h)\,dh-\Gamma_{\rm tail}(f,g),
+  \]
+  with a nonnegative Gamma square reserve inside the tail. The Gamma boundary bound \(\pi/2\) is an identity with an exact square reserve and no nonzero equality case. [Chebyshev identity](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheOrderedWeilSourceIsACenteredChebyshevDefect.lean), [reserve](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheOrderedWeilSourceRetainsItsGammaSquareReserve.lean).
+- **The atomic receiver holds at every root** [S]. RH is equivalent to eventual positivity on atomic families of width \((\log N)^\alpha/N\) for any single \(\alpha>0\); the earlier threshold was \(\alpha>1/4\). The Liouville twin, the scalings \(c\Lambda\) (\(c<1\)) and quadratic mixtures are negative at every root, and so is the Markov form. On the pole hyperplane, RH is Markov nonnegativity at every root. [Every root](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheOverlapLawAtEveryRoot.lean), [gauge](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheGaugeAtEveryRoot.lean).
+- **Narrow positivity at an explicit fraction** [S]. The prime-form defect pays the pole, and \(W\ge0\) on all atomic tests at \(w\le K_\star(\varphi)\delta_N\). The finite-part component of \(K_\star\) is within \(e^{2+2\varepsilon}\) of the Robin–Euler point where the Markov form fails. [Pole defect](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/ThePoleDefectPaysThePole.lean).
+- **Prime-form selectivity is constrained, not global** [S]. A uniform gap \(g>0\) holds on the pole hyperplane, where Liouville reaches the ceiling. For each fixed finite prime set the valuation chain has gap \(2\log2\). The all-prime sharp gap is stated as a Poincaré inequality whose proof is unfinished. Twisted poles read \(2\operatorname{Re}(-L'/L(1,\chi))\). Among sign gauges matched to \(\zeta\)'s divergence, \(\zeta\) uniquely maximizes the prime-form finite part, with each flipped prime costing at least \(4\log p/p\); \(\zeta\) is thus identified but is the hardest member. [Gap](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePrimeFormHasASpectralGapBelowItsPole.lean), [twisted pole](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheTwistedPoleReadsTheLogarithmicDerivative.lean), [flipped primes](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFinitePartSeesEveryFlippedPrime.lean).
+- **Actual prime modes exist** [S]. Ramanujan profiles are quasimodes at \(\log N-E_m\), and every fixed finite conductor packet is realized by actual eigenvalues. [Spectral packets](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFullPrimeMatrixRealizesFiniteAdjunctionPackets.lean).
+- **Critical energy separates finite support from RH** [S]. \(\mathcal E_{\rm crit}<\infty\) iff off-line support is finite; \(\mathcal E_{\rm crit}\le Q_*=1294047/2000\) iff RH. [Canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean).
+- **Selectivity is localized.** This is an inference from proof hypotheses. Every proved positive family is twin-blind: the high-detail prime bound is an absolute Young/Schur estimate, Gamma payments contain no primes, and the narrow sign holds for twins. The Liouville twin is not Weil-positive, so its negative directions sit in the unpaid coarse, low and cross-level residual. That residual is where the missing inequality must use a property of \(\Lambda\).
 
-- **Complete transfer and a proper projected carrier are available.** Complete cells recover every mixed Weil entry. Fixed widths control the full source graph; the chosen unbounded carrier has a bounded projection, is proper and leaves an infinite null radical in its complement. Residual nonnegativity remains open. [Projection and scope](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheUnboundedCellCarrierHasAWeilProjection.lean).
-- **High Haar sections have full-form positivity.** Prime logarithmic cost \(1/\sqrt2\), Gamma coefficient 1 and bounded pole loss give one fixed lower index above which every finite signed Haar section has a unit rough-Weil floor, independent of upper horizon. Coarse and mixed-scale completion remains research. [Full Haar floor](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean).
-- **Synthesis and local obstacles are explicit.** Second-order transfer reaches \(w_N=(\log N)^\alpha/N\), \(\alpha>1/4\). Bounded-overlap rows, coverage deficits, Robin–Euler instability and beyond-spacing gauge frustration constrain extensions. [Synthesis](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean), [rows](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheRowsAtBoundedOverlap.lean), [stability](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheStabilityRegimeEndsAtTheRobinEulerThreshold.lean).
-- **Adjunction has an actual fixed-mode prime bridge.** Ramanujan profiles have asymptotically orthonormal Gram and quasimode energy \(\log N-E_m\), with distinct \(E_m=\gamma+\log m+\operatorname{tameDifferent}(m)\). The assembled declarations are working source. Growing-mode control, complementary energy and full Gamma/pole coupling remain open. [Quasimodes](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanPoleProfilesArePrimeQuasimodes.lean), [distinct energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanAdjunctionEnergiesAreDistinct.lean).
-- **Constrained prime selectivity is established.** A uniform gap separates Euler/Liouville on the same harmonic pole hyperplane. Their step-profile finite parts also differ by an explicit positive main term, with absolute-profile errors. Neither supplies complete continuous Weil sign. [Uniform gap](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePoleHyperplaneSeparatesZetaFromItsLiouvilleTwin.lean), [finite parts](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFinitePartSeparatesZetaFromItsLiouvilleTwin.lean).
-- **Critical work has a canonical monotone limit.** \(K(R)=R^2(\mathcal W(2R)-\mathcal W(R))\uparrow\mathcal E_{\rm crit}\). Finite energy is equivalent to finite off-line support; \(\mathcal E_{\rm crit}\le Q_*=1294047/2000\) is equivalent to RH. Finite Weil index \(k\) costs at least \(\max\{I_*k,50k^2-3k/2\}\), \(I_*=Q_*/2\). Arithmetic upper control is missing. [Canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean).
-- **Generic Lorentzian closure has a precise scope.** It produces exactly entrywise-nonnegative Lorentzian Hessians; the stated prime Ramanujan local factors cannot supply its inputs. Xi Jensen Laguerre inequalities hold on the nonnegative half-line, without full real-rootedness. [Closure](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheClosureProducesExactlyTheLorentzianForms.lean), [local factors](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/RamanujanAndLorentzianMeetOnlyAtTheWeilBound.lean), [Xi half-line](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine.lean).
+## 2.1 Tasks that are just work
 
-## 2.1 Work with established mathematical ingredients
+"Just work" means the ingredients exist. A finite sign task delivers a certified enclosure, not a guaranteed sign.
 
-“Just work” means the task can be executed using available mathematics. For a finite sign problem, the guaranteed deliverable is a rigorous enclosure or conditional certificate, not a guarantee that the desired sign is true. No item below includes an unproved uniform extrapolation.
-
-| ID | Concrete task / deliverable | Routes or frameworks served | Boundary of the task |
+| ID | Task / deliverable | Serves | Boundary |
 |---|---|---|---|
-| W01 | Build finite complete-cell mixed Grams, including all active prime translations, Gamma, mass and two pole coordinates. | HF, ACS, AIP, RW, SRT | Fixed support and finite probe family; positivity is a separate result. |
-| W02 | Instantiate pole-preserving smoothing and explicit L²/L¹/Lévy errors for specified tests. | ACS, HF, AIP, SZ, CHMD | Existing fixed-support transfer, not a uniform growing-aperture estimate. |
-| W03 | Compute finite section projections, Schur residuals, radicals and source-kernel cost bounds. | AID, HF, ACS, CHMD | A positive block can be removed exactly; the complement retains negative directions. |
-| W04 | Evaluate the explicit bounded-overlap Schur rows and finite profile/gauge Grams, distinguishing Markov, full Weil, corrected-twist and pole-hyperplane forms. | SSHA, ALG, SRT, OWU, AIP | Row control is established; a growing-overlap signed margin is not. |
-| W05 | Evaluate finite-prime/class adjunction modes and the fourteen raw tower deficits at primes≤43. | RAPT, ACS, HF | Valuation payment is proved for every fixed prime; all raw tower finite parts are nonnegative exactly at primes≥47. |
-| W06 | Apply sharp prime ceiling, Dirichlet-defect and golden torsion estimates to prescribed finite vectors. | RAPT, AIT, ALG | Prime-only and torsion forms remain distinct from full Weil energy. |
-| W07 | Assemble complete seed/drift/history/cross-block/endpoint ledgers for specified schedules. | FU, RP, LI, TT, PA | Exact signed accounting; no claim of cofinal cancellation. |
-| W08 | Compute finite Möbius, pronic and Báez–Duarte rows with readout and centered energy reported separately. | MC, PM, CTF, BVI, JAS | Finite-row optimization; no unproved small-damping/global tail bound. |
-| W09 | Instantiate known fixed-modulus, below-diagonal, low-LCM and finite-prime dispersion estimates. | MC, RP, PM, CTF, arithmetic compensation | Preserve the allowed parameter range and all endpoint costs. |
-| W10 | Translate supplied width/strip/rate estimates between existing receivers, with normalizations stated. | MC, WL, SRT, HF, BVI, AOT | Transport a supplied bound; producing a better bound is research. |
-| W11 | Evaluate fixed compact cofactor Grams, effective pole orders and residue costs. | PM, WL, MC | Compact-window classification; no exterior tightness or simplicity assertion. |
-| W12 | Certify finite-aperture ground-energy, blind-minimum and shell-relaxation bounds. | RW, EWU, OWU, ACT | A finite window does not decide all apertures. |
-| W13 | Extend finite prime-collar and joint allocation bookkeeping with favorable terms and shared reserves retained. | AIP, OWU, ACT, TT | A finite collar calculation may leave an explicit unpaid remainder. |
-| W14 | Compute finite heat/Jensen/Hankel heads and both Gaussian grids; apply the actual Xi half-line Laguerre inequality and established tail bounds. | LA, TH, WD, HCF | No negative-half-line or all-degree real-rootedness inference; preserve coefficient normalization and common-time quantifiers. |
-| W15 | Evaluate finite Newton-disc margins, Ward caps, renewal resolvents and projection/transgression traces. | XN, WD, RN, TG | Local certificates, not a covering, all-disc or extinction theorem. |
-| W16 | Calculate finite-rank Schur charges and fixed compact recurrence approximations. | GTA, BAG | Rank dependence and possible target-zero exceptions remain explicit. |
-| W17 | Enumerate finite Robin/Nicolas extremal ranges and apply established fixed-valuation-defect margins. | RB | No conclusion about increasingly prime-saturated extremizers. |
-| W18 | Evaluate theta-prefix readings, finite source-work integrals and finite canonical pair-energy lower sums with explicit truncation scope. | CDG, AES, AID, HF, SRT | Critical exterior rows belong to the full energy; finite lower sums do not enclose its unknown upper tail. |
-| W19 | Transport exact residual identities among HJ, SEC and HCF; compute finite jets, fibres and seams. | HJ, SEC, HCF | No assumed residual vanishing or all-order Fock boundedness. |
-| W20 | Calculate finite cycle traces, framed curvatures, repair defects, rotation-algebra jets and cross-fibre coordinates. | APF, BSH, CDC, IRK, SC | Test proposed source identifications; do not treat calibration as forcing. |
-| W21 | Glue roots on established zero-free charts; evaluate corrected contours, finite jet histories and predeclared likelihood contrasts. | DR, EGC, EWJ, FEL | Global continuation, outer orientation and cofinal balance remain research. |
-| W22 | Calculate source evaluations, co-shift defects and phase/grade observables in the admitted carriers. | MSC, PCS, RFHM | Preserve the discarded defect; no false intertwining with invertible dilation. |
-| W23 | Analyze proposed finite photonic/Ising realizations, certificate streams and admitted cusp actions. | PTR, W1C, WBF, PW-B | Exact finite transfer data; independent Xi landing and uniform-depth limits remain research. |
-| W24 | Use known finite-net/cycle recovery and tolerant-incidence bounds on specified energy/support classes. | EWU, HF, BVI, PM, CTF | Keep source-dependent inverse costs; finite injectivity is not uniform coercivity. |
-| W25 | Reconcile external theorems/announcements with local statements and constants; identify exact missing imports. | MC, ACG, LA, pair correlation, shared | Literature intake can be completed; acceptance or formalization of a new claimed proof is not assumed. |
-| W26 | Evaluate a numerical lower-index threshold for the proved Haar full-form floor and instantiate fixed-family pole-preserving smoothing. | ACS, AIP, HF | Rough floor is uniform in upper horizon; complete coarse/mixed-scale positivity remains research. |
-| W27 | Calculate fixed-modulus residue/character finite parts and fixed-BV horizon errors using variation budgets and −L′/L(1,χ). | RAPT, ACG | Formula and fixed-profile asymptotics exist; growing modulus/variation and uniform signed mass control remain unpaid. |
-| W28 | Instantiate the Ramanujan residual and Gram estimates for a specified finite conductor set; apply the Hermitian residual-to-eigenvalue lemma. | RAPT, HF, ACS | Fixed-mode landing is supplied; no growing-conductor completeness or full-Weil spectral interpretation. |
-| W29 | Instantiate fixed-width graph-coercive sections and the unbounded-carrier projection/cost identity on specified sources. | AID, CHMD, HF, ACS | Carrier is proper; its complementary infinite radical prevents a strict residual floor. |
-| W30 | Apply the pole-hyperplane prime gap and its Liouville separation to finite source comparisons. | RAPT, AIP, OWU | The discrete harmonic constraint is not automatically the continuous full-Weil pole constraint. |
+| W01 | Build finite complete-cell Grams in multiresolution coordinates: \(\log2\)-orbits of cell 1, details at each level, low details \(a<A\), all cross-level blocks; Gamma and both poles retained. | HF, ACS, AIP, RW, SRT | Exact algebra; sign of the result is separate. |
+| W02 | Compute a numerical lower index \(A\) for the Haar full-form floor; instantiate fixed-family pole-preserving smoothing. | ACS, AIP, HF | Floor is twin-blind; low details remain. |
+| W03 | Compute the level-Toeplitz symbol \(\theta\mapsto\sum_m e^{im\theta}W(f,T_{m\log2}g)\) for the finite generator set (cell 1, low details) on pole-neutral spans. | HF, ACS, AIP | Positivity of the symbol is an RH-type statement (see Q1); computing it is not. |
+| W04 | Evaluate the ordered Chebyshev integral for specified block pairs, using explicit \(\psi(x)-x\) data, Vinogradov–Korobov and explicit error bounds; tabulate cross-level coupling sizes. | HF, ACS, AIP, WL, CHMD | Unconditional bounds grow like \(e^{h/2}\) up to a subexponential saving. |
+| W05 | Instantiate the every-root receiver in the SRT/AIP/HF interfaces; compute \(K_\star(\varphi)\) for standard profiles; compute atomic Grams at overlap ratios between \(K_\star\) and \((\log N)^\alpha\). | SRT, AIP, HF, ACS | Finite \(N\) computations do not decide the eventual sign. |
+| W06 | Projections, Schur residuals, radicals, source-kernel costs and bounded-window scale-transport constants for specified sources. | AID, SAHT, CHMD, HF | Constants are window-dependent; no uniform transport. |
+| W07 | Bounded-overlap Schur rows and profile/gauge Grams, separating Markov, full Weil, corrected-twist and pole-hyperplane forms. | SSHA, ALG, SRT, OWU, AIP | Rows grow with overlap. |
+| W08 | Formalize the paper-stage full-prime spectrum adjunction-exhaustion proof sitting at the fully-proven stage of the pipeline. | RAPT, HF, ACS | Required by project rules; content not inspected here. |
+| W09 | Ramanujan residual/Gram estimates and the Hermitian residual lemma for specified conductor sets; tower deficits at \(p\le43\). | RAPT, HF, ACS | Fixed finite sets only. |
+| W10 | Gauge finite parts for given moduli: \(-L'/L(1,\chi)\) values, BV horizon errors, Liouville separation constants. | RAPT, ACG, OWU | Absolute-profile errors; no uniform signed mass control. |
+| W11 | Seed/drift/history/cross-block/endpoint ledgers for specified schedules. | FU, RP, LI, TT, PA | Exact accounting, no cofinal cancellation. |
+| W12 | Finite Möbius, pronic, Vaughan and Báez–Duarte rows, readout and centered energy reported separately. | MC, PM, CTF, BVI, JAS | No small-damping tail bound. |
+| W13 | Apply known fixed-modulus, below-diagonal, low-LCM and finite-prime dispersion estimates. | MC, RP, PM, CTF | Keep parameter ranges and endpoint costs. |
+| W14 | Translate supplied strip/rate bounds through the escaped, Hecke-defect, theta-prefix and Vaughan dictionaries; reconcile the external \(7/8\) claim. | MC, WL, SRT, HF, BVI | Transport of a supplied bound only. |
+| W15 | Compact cofactor Grams, effective pole orders, record-minimum diagonals. | PM, WL, MC | Compact classification is not tightness. |
+| W16 | Certified finite-aperture ground-energy, blind-minimum and shell-relaxation bounds. | RW, EWU, OWU, ACT | Finite windows do not decide all apertures. |
+| W17 | Finite prime-collar and joint-allocation bookkeeping with shared reserves. | AIP, OWU, ACT, TT | May leave an explicit unpaid remainder. |
+| W18 | Finite heat/Jensen/Hankel heads, both Gaussian grids, half-line Laguerre data; extend certified first-atom quadrature. | LA, TH, WD, HCF, PA | No all-degree inference. |
+| W19 | Newton-disc margins, Ward caps, renewal resolvents, transgression traces. | XN, WD, RN, TG | Local certificates only. |
+| W20 | Finite-rank Schur charges; compact recurrence approximations. | GTA, BAG | Rank and target-zero exceptions explicit. |
+| W21 | Finite Robin/Nicolas extremal ranges with fixed-defect margins. | RB | No conclusion for saturated extremizers. |
+| W22 | Theta-prefix readings, finite source-work integrals, finite lower sums of canonical pair energy. | AES, CDG, AID, HF, SRT | Lower sums do not bound the upper tail. |
+| W23 | HJ/SEC/HCF residual transport; finite jets, fibres and seams. | HJ, SEC, HCF | No residual vanishing assumed. |
+| W24 | Candidate finite calculations: cycle traces, curvatures, repair defects, jets, contours, likelihood contrasts, co-shift defects, finite photonic/Ising stacks, certificate streams, cusp actions. | All 17 candidates and PW-B | Calibration is not forcing. |
+| W25 | Finite-net and cycle recovery on stated energy/support classes. | EWU, HF, BVI, PM, CTF | Finite injectivity is not uniform coercivity. |
+| W26 | Literature intake: local constants versus published theorems; external announcements. | MC, ACG, LA, pair correlation | Acceptance of new external proofs is not assumed. |
 
-Established ingredients include complete mixed-entry transfer, fixed-support pole-preserving smoothing, bounded section projection, fixed-width full-graph coercivity, finite index capture, second-order synthesis, bounded-overlap Schur rows, coherent mean-zero Gamma and Haar pole payment, a horizon-uniform high-Haar full-form floor, finite-sieve adjunction, fixed-mode prime transfer, prime pole-gap selectivity, BV/character finite-part laws, and canonical critical-energy monotonicity. Their stated uniformity limits determine the research queue.
+## 2.2 Open mathematical obstacles
 
-In particular, **derive interior short-prime alignment from a zero's reserve** is not routine explicit-formula bookkeeping. The known exterior estimate lives at \(\sigma>1\); moving it into the strip requires a new argument retaining poles, zeros and signs.
+### (a) RH-equivalent endpoints — no one has a solution
 
-## 2.2 Open mathematical obstacles and research topics
+| ID | Missing result | Routes |
+|---|---|---|
+| O1 | Critical signed prime/Möbius cancellation in any receiver currency: lag energy, Abel moment, history floor, strict half-power, regularized convergence, extremal remainder, approximation residual, half-power prime budget. Via the Chebyshev identity this is also the content of separated mixed entries of the complete form. | WL, FU, RP, MC, LI, PBM, RB, JAS, CTF |
+| O2 | Positivity of the complete Weil form on a source-complete family. Equivalent forms: complete-cell index zero, residual nonnegativity, full/even/odd/allocation/Hodge/effectivity sign, atomic positivity at any unbounded polylog overlap. | RW, HF, SZ, EWU, OWU, AIP, ACS, TT, CHMD, ACT, SRT |
+| O3 | Simultaneous all-degree/all-height heat, moment or coefficient signs with a common parameter. | PA, LA, TH, WD, HCF, SEC |
+| O4 | Visibility of every escape state (positive gauge mass), cofinal admission, vanishing approximation error. | PM, CTF, MC, EWJ, PCS |
+| O5 | Rank-uniform transverse decay; all-point recurrence; covering Newton discs; integer trace cap; directed renewal orientation. | GTA, BAG, XN, TG, RN |
+| O6 | \(\mathcal E_{\rm crit}\le Q_*\), or cofinal source work \(\le2\). | HF, SRT, ACS |
 
-The table distinguishes RH-equivalent endpoints from intermediate project problems. “Open” describes the current mathematical input, not a claim that an exhaustive search of all mathematics has proved its absence.
+### (b) Stronger than RH
 
-| ID | Missing mathematical result | Why existing work stops short | Status / affected routes |
+| ID | Statement | Note |
+|---|---|---|
+| S1 | Abel-slope genus saturation; linear Mertens energy budget | RH plus simple zeros and residue summability. |
+| S2 | Matching-profile signed pair surplus at the stated strength; strong uniform correlations | Not implied by RH. |
+
+Use these only when the extra strength buys something.
+
+### (c) Intermediate open problems — no known solution, possibly solvable without RH
+
+| ID | Missing result | Why current work stops | Payoff |
 |---|---|---|---|
-| O01 | Actual critical-rate signed prime/Möbius cancellation: complete histories, regularized series, pronic energy, or extremal divisor remainder. | Absolute values, fixed periods and separate diagonal estimates retain too much mass or discard cancellation. VK decay does not reach every positive power. | RH-equivalent endpoints; WL, FU, RP, MC, LI, PBM, RB, JAS. |
-| O02 | Complete full/even/odd Weil positivity, or source-complete residual/index-zero bound. | Known positive sections leave a complement; source completeness captures negative directions as well as positive ones. | RH-equivalent; RW, HF, SZ, EWU, OWU, AIP, ACS, TT, CHMD, ACT, SRT. |
-| O03 | Simultaneous all-degree/all-height sign with the required common heat/shift parameter. | Half-line Xi Laguerre and generic Lorentzian closure leave the negative-half-line, low/head and arbitrary signed sectors uncontrolled. | RH-sufficient/equivalent receivers; PA, LA, TH, HCF, WD, SEC. |
-| O04 | Cofinal admission, tightness or vanishing global approximation error as damping tends to zero. | Local completeness and compact residue laws allow mass to escape to the origin, high height or growing order. | RH-equivalent endpoints; PM, CTF, MC, EWJ, PCS. |
-| O05 | Growing-conductor/modal-complement control and full-source convergence, including Gamma and both poles. | Fixed-mode full-prime quasimodes, finite-Q spectra and BV finite parts do not control jointly growing carriers, variation or errors. | Project research; a complete positive version would close HF/ACS/AIP. |
-| O06 | Coarse and mixed-scale signed residual payment reaching a complete source or overlap family. | High Haar full-form floors and bounded-overlap rows are proved; coverage, gauge frustration and a proper projected carrier prevent a free exhaustion. | Intermediate extensions unresolved; complete all-coefficient sign is RH-equivalent. |
-| O07 | Arithmetic upper bounds on canonical critical energy or other sufficient source-work/index currencies. | Monotone convergence and linear/quadratic index costs are lower-payment laws. Critical exterior rows remain in the energy. | Finite energy gives finite off-line support; energy≤1294047/2000 gives RH. HF, ACS, SRT. |
-| O08 | Extend constrained arithmetic gauge selectivity to the source-complete signed form and moving-scale correlations. | The prime pole gap separates Euler/Liouville; leading matching still admits finite flips, and no complete continuous sign follows. | Project research; MC, PM, CTF, AIP, RAPT, ACG. Fixed-form Chowla has a separate external claim. |
-| O09 | A source-side mechanism controlling the particular ordinates of possible off-line zeros. | Density/proportion results and power-saving alignment counts still permit exceptions; the current conductor horizon misses the forcing range. | Project research leading to RH/strip bounds; HF, WL, SRT, OWU, pair-correlation programmes. |
-| O10 | Independent arithmetic effectivity, polarization, orientation or pre-divisor descent. | Counts and identities can hold for impure models; calibrated descent or invariant positive forms can encode the desired conclusion. | Unconstructed producer; ACS, HF, TG, BSH, CDC, APF, IRK, SC, WBF. |
-| O11 | A faithful spectral/physical/dynamical realization with an independently proved forcing property. | Existing finite carriers have capacity/gap obstructions; some converses use unknown Xi zeros; positivity may not imply real spectrum. | Unconstructed producer; RN, XN, PTR, W1C, RFHM, PW-B, MSC, PCS. |
-| O12 | Rank-uniform transverse decay or actual all-point self-recurrence. | Fixed-rank convergence and zero-free-target recurrence leave the exact exceptional directions untreated. | RH-equivalent endpoints; GTA, BAG. |
-| O13 | Stronger auxiliary conjectures: full simplicity, certain residue-summability budgets, matching-profile signed pair surplus and stronger uniform correlations. | These assertions are not supplied by RH alone or by current proportions; their exact strength differs. | Separate research. Use only when their benefit justifies a stronger target. |
+| I1 | **Block dominance of the complete multiresolution.** Pay cross-level couplings (surviving prime orientation, Gamma, poles) by per-level reserves, leaving finitely many \(\log2\)-orbit generators. | High details are paid level by level. Cross-level entries are Chebyshev integrals: pole products growing like \(2^{\lvert j-k\rvert/2}\) are cancelled only up to the prime error \(e^h-\psi(e^h)\). | Reduces O2 to one-prime orbit positivity of a finite generator set. A bounded-index version gives finite off-line support. |
+| I2 | **Selective transfer.** A full-form inequality using a twin-selective input — pole-hyperplane gap, Chebyshev main-term cancellation, character finite parts — on coarse/low sections with Gamma and both continuous poles. | All proved positive families are twin-blind; the gap is prime-only and lives on a discrete harmonic hyperplane. | Necessary for any complete positivity proof. |
+| I3 | **Finite canonical critical energy** (an upper bound on \(K(R)\)). | Only monotonicity and lower index costs are proved. | Finite off-line support. |
+| I4 | **Sharp all-prime gap \(2\log2\)** on the pole hyperplane, i.e. Poincaré constant \(2\log2\) for the multiplicative walk. | Fixed-\(Q\) gap proved. The all-prime statement is in Lean with an unfinished proof; two-scale decomposition, fibres and rough-defect control are done. | Quantitative selective margin for I2. |
+| I5 | **Growing-conductor and complement control** of the prime matrix: bulk spectral law, adjunction heat trace / Weyl law. | Only fixed packets are realized. | Spectral producer for I1/I2. |
+| I6 | **Full positivity at fixed overlap beyond \(K_\star\)**; the Metzler endpoint \(\rho=1\). | Robin–Euler limits the Markov mechanism, not the full form. | Extends the proved regime toward polylog overlap. |
+| I7 | **A fixed zero-free strip \(\Theta<1\)**: a power saving in any escaped or Vaughan dictionary. | Classical open problem. An external \(7/8\) claim is pending intake. | Fixes the first rung of all rate dictionaries. |
+| I8 | **Exterior tightness**; exclusion of infinite-height escape. | Record minima give positive diagonals but allow zero gauge mass. | PM progress short of O4. |
+| I9 | **Conductor/forcing compatibility** for companion-cluster detectors. | No common aperture range. | OWU/SRT detection. |
+| I10 | **Independent faithful constructions** for each candidate (U3). | Calibrations, zero-indexed objects, capacity/gap obstructions. | Candidate promotion. |
+| I11 | **Classification of twin-selective invariants** of the full form. | Leading polar matching is blind. On step profiles the prime finite part classifies sign gauges with convergent Mertens error (\(\zeta\) the unique matched maximizer, Liouville the unique anti-matched minimizer), but this makes \(\zeta\) extremal rather than positive. | Identifies which input I2 must use. |
 
-These are shared obligations. A new name for O02, O04 or O10 does not constitute a new route unless it provides a different arithmetic producer.
-
-### External mathematical status
-
-RH remains [unsolved](https://www.claymath.org/millennium/Riemann-Hypothesis/). However, the September 2026 [quasi-RH manuscript](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-September-30-2026/paper.pdf) claims the Dirichlet zero-free half-plane \(\Re s>7/8\). This is an external claimed proof, not a local theorem or a result verified by this review. The fixed \(7/8\) target belongs in literature reconciliation; moving all the way to \(1/2\) remains the RH frontier.
-
-The September 2026 [ordinary two-point manuscript](https://github.com/openai/math/blob/main/preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026/final.pdf) claims logarithmically saving **ordinary fixed-affine-form** Liouville correlations. Its stated constants need not be uniform for growing forms. Thus “natural two-point Chowla has no proposed solution” is inaccurate, while the moving-profile, modulus and horizon estimates needed here remain unpaid. The established [logarithmic theorem](https://arxiv.org/abs/1509.05422) is a different input.
-
-Published [Lorentzian theory](https://arxiv.org/abs/1902.03719), the [0.22 de Bruijn–Newman upper bound](https://arxiv.org/abs/1904.12438), and [simple-critical-zero proportion results](https://arxiv.org/abs/2609.02882) should likewise be separated from local formalization coverage and from stronger desired consequences. None licenses a silent upgrade to all-degree real-rootedness or zero exceptions.
+"No known solution" refers to the corpus and the literature consulted. I7 is a well-known open problem in the literature, apart from the pending external claim.
 
 ## 2.3 The three questions to answer next
 
 <a id="q1"></a>
-### Q1. Can the positive high-Haar family control the coarse and mixed-scale residual on a complete source?
+### Q1. Does the complete Weil form reduce to finitely many \(\log2\)-orbits?
 
-**Exact object:** the original full Weil form after removing a paid high Haar block or projected positive section, retaining every mixed entry, Gamma reserve and both poles. The high-Haar rough-Weil floor is uniform in upper horizon. The fixed unbounded carrier has a bounded projection but is proper; its complement includes an infinite radical.
+**Exact object.** Write \(T=T_{\log2}\). By the proved splitting, complete cells \(1,\dots,M\) decompose as
 
-**First useful answer:** a quantitative mixed-block/Schur inequality for an enlarging family that pays cross-scale interactions without spending Gamma reserve twice. Identify the remaining coarse source and treat null directions explicitly. A stronger sufficient answer would prove nonnegative residual on complete cells or a synthesis schedule \((\log N)^\alpha/N\), \(\alpha>1/4\). Strict positivity of the entire graph complement is not a valid target.
+\[
+\bigoplus_{j\ge0}T^j(\text{cell }1)\;\oplus\;\bigoplus_{j\ge0}T^j\,\mathrm{Det}(1..\lfloor M/2^{j+1}\rfloor),
+\]
 
-**Required mechanism:** retain signed overlap and full poles. Schur rows price a cost to beat; small fixed overlap lacks universal coverage. Beyond-spacing diagonal Metzler gauges and universal all-twist positivity are obstructed. Ordinary mean-zero and exact pole neutrality remain different constraints.
+where \(\mathrm{Det}(a)\) is the balanced detail of pair \((2a,2a+1)\) and \(T^j(\text{cell }1)\) is the dyadic cell \([j\log2,(j+1)\log2)\). \(W\) is \(T\)-invariant, so:
 
-**Why first:** it puts an established full-form positive family against the shared unpaid residual of RW/HF/ACS/AIP/OWU/SRT. Another local Gamma or pole payment does not cross that boundary. [Haar floor](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean), [projection and radical](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheUnboundedCellCarrierHasAWeilProjection.lean), [rows](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheRowsAtBoundedOverlap.lean).
+- diagonal blocks are level-independent;
+- high details \(a\ge A\) carry the twin-blind floor;
+- the finitely many generators \(G=\{\text{cell }1\}\cup\{\mathrm{Det}(a):a<A\}\) recur at every level;
+- cross-level blocks are Toeplitz in the level difference, \(W(T^jf,T^kg)=W(f,T^{k-j}g)\).
+
+For separated supports each cross entry is the Chebyshev integral. The pole product alone would grow like \(2^{(k-j)/2}\); the prime main term cancels it, leaving \(e^h-\psi(e^h)\) tested against \(\Omega'\). The size is polynomial in the level gap under RH, and \(e^{h/2}\) times a subexponential saving unconditionally.
+
+**First useful answer.** Three pieces:
+
+1. The decomposition theorem and finite Grams (W01, W03).
+2. A bound on couplings between high details at different levels, and between high details and the generator orbits, by the per-level reserves \(\log(a)h_a\) plus the Gamma square reserve, on pole-neutral sections. This is the research step.
+3. A precise statement of what remains: positivity of the generator-orbit Toeplitz form. That is a one-prime orbit condition on a *finite* set, of the same type as the corpus's one-prime and one-shift receivers.
+
+**Payoff.** Complete-cell positivity, an infinite-dimensional problem, becomes a finite-generator orbit problem plus a cross-scale payment. If the payment leaves a bounded index, AID converts it into finite off-line support.
+
+**Why first.** It uses only proved structure: Gamma detail payment, self-similarity, the floor, translation invariance and the Chebyshev identity. It attacks the residual that all complete-form routes share (RW, HF, ACS, AIP, OWU, SRT, CHMD, SZ, EWU).
 
 <a id="q2"></a>
-### Q2. Can growing Ramanujan mode families and the pole gap yield a full-Weil comparison with a controlled complement?
+### Q2. Which twin-selective inequality controls the generator orbits?
 
-**Exact object:** \(v_m(n)=c_m(n)/\sqrt{\phi(m)n}\) in the actual finite prime matrix, with energy \(\log N-E_m\), \(E_m=\gamma+\log m+\operatorname{tameDifferent}(m)\). Completed rows, fixed-conductor tails, asymptotic orthonormality, quasimode residuals and distinct energy labels are available.
+**Exact object.** The generator-orbit Toeplitz form of Q1, or equivalently the coarse/low residual of the complete source. Since every proved positive family is twin-blind, this is where \(\Lambda\) must differ from its twins.
 
-**First useful answer:** quantitative Gram and residual estimates for an explicit growing conductor set \(m\le M(N)\), plus an upper bound on complementary source energy in the needed norm. Couple conductor growth, class variation and horizon, then compare Gamma and both continuous pole moments on the same vectors. A slowly growing diagonal schedule alone follows from fixed-mode limits; sufficient coverage and a paid complement are the research target.
+**Candidate inputs.**
 
-**Required mechanism:** retain the prime gap's exact harmonic pole constraint. Its Euler/Liouville separation and the explicit finite-part difference have different error norms. BV/character finite parts retain variation/modulus costs. Raw tower sign is nonnegative exactly at primes \(p\ge47\), and valuation potential pays all smaller primes; fixed-prime payment is closed.
+- **The pole-hyperplane prime gap:** \(g>0\) proved; \(2\log2\) for each finite prime set; all-prime \(2\log2\) conjectured. The value \(2\log2\) is the one-prime tower gap \(p\log p/(p-1)\) at \(p=2\), the same prime that generates the multiresolution.
+- **Main-term cancellation in the Chebyshev identity.** For \(\Lambda\), \(e^h-\psi(e^h)=o(e^h)\). A twin's prime sum does not reproduce the main term \(e^h\): Liouville gives \(-e^h\), nonprincipal character mixtures \(o(e^h)\), \(c\Lambda\) gives \(ce^h\). The pole is left uncancelled in its cross entries. Finite prime flips do reproduce the main term. They are identified by the finite part, where \(\zeta\) is the unique maximizer and therefore the hardest case, and they fail positivity only through local witnesses such as the radius-181/500 odd witness against the 2-flip.
+- **Character finite parts** \(2\operatorname{Re}(-L'/L(1,\chi))\).
 
-**Why second:** actual arithmetic modes offer a spectral producer for Q1. Distinct trial energies are not a complete spectrum, and a growing finite set is not source exhaustion. [Quasimodes](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanPoleProfilesArePrimeQuasimodes.lean), [Gram limits](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheRamanujanPoleProfilesAreAsymptoticallyOrthonormal.lean), [gap](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePrimeFormHasASpectralGapBelowItsPole.lean), [BV laws](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheHorizonLawsHoldForProfilesOfBoundedVariation.lean).
+**First useful answer.** A full-form lower bound on pole-neutral sections of the cell-1 orbit and the low details, in which the prime defect pays the pole beyond the spacing scale. This is the \(K_\star\) mechanism moved to coarse scale, with the gap compensating the negative Markov finite part beyond the Robin–Euler point. Quantify how much overlap the gap buys. A weaker but useful answer is an exact identification of the twin's negative directions inside the generator orbits.
+
+**Why second.** Q1 without a selective input cannot succeed. The Liouville twin satisfies every twin-blind estimate and still fails.
 
 <a id="q3"></a>
-### Q3. What arithmetic upper estimate controls canonical critical energy, including its critical exterior rows?
+### Q3. What arithmetic upper estimate bounds the canonical critical energy?
 
-**Exact object:** \(K(R)=R^2(\mathcal W(2R)-\mathcal W(R))\uparrow\mathcal E_{\rm crit}\in[0,\infty]\). Its nonnegative pair-energy representation includes off-line/critical interactions. Entrywise nonnegativity is not a PSD-kernel theorem; the alternative finite-support source moment has signed summands.
+**Exact object.** \(K(R)=R^2(\mathcal W(2R)-\mathcal W(R))\uparrow\mathcal E_{\rm crit}\in[0,\infty]\). This is a nonnegative pair energy including off-line/critical exterior interactions. Its finite-support value \((3/2)\sum\gamma_\rho^2d_\rho F_\rho\) has signed summands.
 
-**First useful answer:** a finite upper bound on \(K\), equivalently \(\mathcal E_{\rm crit}<\infty\), would prove finite off-line support. Bounded unscaled work, vanishing increments or eventual \(\Delta\mathcal W\le39/50\) also give that intermediate conclusion. None removes a finite exceptional set.
+**First useful answer.** Any finite upper bound on \(K\), equivalently \(\mathcal E_{\rm crit}<\infty\), proves finite off-line support. Bounded \(\mathcal W\), \(\Delta\mathcal W\to0\) and eventual \(\Delta\mathcal W\le39/50\) are equivalent intermediate forms. The RH endpoint is \(\mathcal E_{\rm crit}\le Q_*=1294047/2000\); a finite nonempty exceptional set gives a value strictly above \(Q_*\).
 
-**RH endpoint:** \(\mathcal E_{\rm crit}\le Q_*=1294047/2000\), equivalently cofinally \(K\le Q_*\). Finite nonempty support gives a limit strictly above \(Q_*\); infinite support gives infinity. Other exact endpoints include cofinal \(\mathcal W\le2\) and the all-scale increment bound.
+**Required mechanism.** An upper estimate from prime/theta structure that keeps critical exterior rows. Lower index costs \(I_*k\) and \(50k^2-3k/2\) convert such an estimate into an index ceiling but do not produce it. A conservation law of virial type, equating \(\mathcal E_{\rm crit}\) with a source moment that arithmetic can bound, is the natural shape. The interior reserve-to-alignment step is unproved.
 
-**Required mechanism:** an upper estimate from actual prime/theta structure retaining the complete source and counterterms. Lower costs \(I_*k\) and \(50k^2-3k/2\), \(I_*=Q_*/2\), convert such a bound into an index ceiling but do not produce it. Monotonicity and the canonical limit are established. Interior reserve-to-alignment remains an unproved input.
+**Why third.** It is an independent route to a historic intermediate theorem, with an exact threshold for removing the last exception. It does not depend on Q1/Q2.
 
-**Why third:** this is a distinct route to a substantial intermediate theorem, with an exact threshold for excluding the last exception. [Canonical energy](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean), [quadratic cost](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSourceBudgetMakesTheIndexCostQuadratic.lean), [classification](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCriticalRateClassifiesAllOffLineSupport.lean).
+## 2.4 A wildly different route?
 
-These are alternative producers: Q2 can feed Q1; Q3 targets a different arithmetic upper bound.
+**No route was found that avoids all three walls.** The reason is structural:
 
-## 2.4 Would a new field of mathematics be needed?
+- Any proof must use a property that separates \(\zeta\) from its twins. Davenport–Heilbronn-type functions, Beurling/golden curve data and the Liouville twin share the functional equation, growth and many positivity properties, yet violate RH. That is the selectivity wall.
+- The proof must act at the critical scale, where the corpus shows every exact criterion is a sign or size statement about the same signed source. That is the critical-estimate wall.
+- It must survive exhaustion of an infinite source. That is the transfer wall.
 
-**No result here proves that a new field is necessary.** A sufficiently sharp arithmetic estimate inside existing analytic number theory could close a receiver. Classical operator theory, Hodge theory, Lorentzian polynomials, renormalization and harmonic analysis already explain much of the corpus. The difficulty is their faithful combination on this particular signed arithmetic source.
+A route that imports positivity from a field where RH-type theorems are proved must realize \(\zeta\) faithfully inside that field — the realization wall.
 
-A coherent new programme would nevertheless be justified: **signed arithmetic Hodge theory with source-compatible renormalization**. This is a proposed research language, not an established field or theorem. Its subject would be how arithmetic incidence, archimedean singular energy and polar constraints jointly create—or fail to create—an index bound under infinite exhaustion.
+Four directions far from the current routes were examined:
 
-### Objects and language
+1. **Approximation by curves over finite fields.** Weil's theorem would supply positivity for free. In the natural normalization, every nonnegative combination of curve explicit-formula distributions is supported on \(\{\pm\log(\text{prime powers})\}\cup\{0\}\), exactly the support of \(\Lambda\) — a striking match. But \(\zeta\)'s zero-side distribution has a nonzero continuous part (pole minus archimedean density) on \((0,\log2)\), which no such limit can produce. Dilating the curves removes this obstruction, but their atoms leave \(\log(\text{prime powers})\), and the approximation becomes one of \(\zeta\)'s zero side, which is circular. The archimedean place cannot arise from finite places, so this route collapses into the realization wall (new face 14.36).
+2. **Measure rigidity of higher-rank multiplicative actions.** An off-line zero gives a non-unitary character \(n^{\rho-1/2}\), not an invariant probability measure. The positive-definite and affine-group rigidity that does apply is already the APD programme.
+3. **Interlacing families / barrier methods** (Marcus–Spielman–Srivastava). Real-rootedness of averages needs a common interlacer, and the cosine family defining \(\Xi\) has none. What remains merges with LA/ALG.
+4. **Modular or conformal bootstrap.** Its linear-functional positivity is Weil's explicit-formula positivity in other coordinates (U2).
 
-The primary objects should be actual logarithmic-cell, balanced Haar, valuation-class and residue-class source spaces, complete Weil mixed forms, Gamma/Lévy energies and the two pole coordinates. Alongside them belong finite-prime adjunction operators, actual Ramanujan pole quasimodes and their complements, fixed pole hyperplanes, source-graph domains, signed overlap blocks, successor connections, closed-section residuals and canonical critical energy. Its off-line/critical exterior interactions are part of the object. Class decompositions must retain their different counterterm ranks and error norms.
+If a genuinely new route exists, it would need a structure in which **selectivity is automatic**: one where only Euler products with the exact simple pole can be realized, and realization itself forces positivity. No candidate structure with that property is known.
 
-A useful statement would specify five pieces together: **source, form, domain, exhaustion and error currency**. For example, a fixed-conductor quasimode carries its actual residual and Gram error; a growing-mode claim must also control its complement. A pole-gap statement names the fixed hyperplane and the Gamma/pole comparison still required. A residual is attached to the projection that produced it. A positivity statement names the pole constraint and coefficient class. This prevents a positive surrogate from silently replacing the original form.
+## 2.5 Would the obstacles in 2.2 need a new field of mathematics?
 
-Morphisms should preserve the relevant mixed pairings and pole coordinates, with any failure recorded as an explicit defect. They need not all be isometries or positive maps. The point is to control the defect, not erase it by definition. Null radicals must be retained or quotiented through a proved form-preserving map; they cannot be treated as negative energy or forced into a false strict floor. Arithmetic Hecke dilation, successor transport, refinement and sieve enlargement are distinct operations and should not be conflated.
+**Assessment.** The RH-equivalent endpoints (a) are not reachable by the mechanisms the corpus has assembled. Every proved positivity is twin-blind, being absolute, prime-free or local. Every selective statement is either RH-equivalent or prime-only. What is missing is a mechanism class that turns arithmetic selectivity (the Euler product and the exact pole) into quantitative signed control at the critical scale on a complete, self-similar source. Whether this counts as a new field or a new theorem inside analytic number theory cannot be decided from the corpus. It is at least a new *kind* of inequality: no existing discipline proves selective positivity of a renormalized quadratic form under infinite exhaustion.
 
-### Mechanisms worth developing
+### What the field would be about
 
-| Proposed tool | Mathematical purpose | Test against current obstacles |
+**Selective multiscale arithmetic positivity.** Its subject is the Weil form as a translation-invariant quadratic form on the complete multiplicative source. It has three energy sources — finite places (primes), the archimedean place (Gamma) and the pole — and a renormalization group generated by integer dilations. It asks when such a form is positive, and why only for \(\Lambda\).
+
+### Objects
+
+- Complete logarithmic-cell sources and their dyadic multiresolution; generator orbits under \(T_{\log p}\).
+- The Weil form \(W=\Gamma+\text{poles}-P\), its twins \(W_\lambda\) (\(|\lambda|\le\Lambda\)), and the null radical.
+- Reserves: Gamma interval-variance and square reserves, the prime Dirichlet defect \(D_N\), per-level detail floors.
+- Discrepancy measures: \((e^h-\psi(e^h))\,dh\) against correlation derivatives \(\Omega'_{f,g}\).
+- Spectral objects: finite-sieve adjunction operators, Ramanujan modes, the pole hyperplane.
+- Global invariants: canonical critical energy and the index.
+
+### Language
+
+- A **selective inequality** is one that fails for some bounded twin.
+- A **reserve** is a nonnegative quantity that pays exactly once.
+- An **RG step** coarse-grains by a Hecke dilation, with the defect it creates recorded.
+- An **exhaustion statement** names its source, form, domain, growth parameter and error currency together.
+
+### Mechanisms it must discover
+
+| Mechanism | Purpose | Test |
 |---|---|---|
-| Signed block Hodge inequalities | Combine paid Haar/Gamma blocks with coarse and mixed-scale residuals. | Must allocate shared reserve once and handle frustrated overlap in the original Weil form. |
-| Source-compatible Schur/adjunction calculus | Compare actual Ramanujan modes, finite-prime adjunction and complete residuals. | Must control growing-mode Gram/residual errors, modal complements and polar dispersion. |
-| Uniform renormalized form convergence | Compare growing prime sets, class depth and horizons in a fixed source topology. | Must prevent ground-mode/domain escape and retain both pole moments. |
-| Arithmetic gauge selection | Extend the fixed pole-hyperplane prime gap to full signed-source control. | Must preserve the established Euler/Liouville separation while addressing other gauges and continuous pole constraints. |
-| Defect-to-work inequalities | Bound canonical critical energy above from arithmetic. | Must retain critical exterior rows and add upper control beyond known monotonicity and index lower costs. |
-| Selective localization | Couple local probes to actual exceptional ordinates without losing the signed source. | Must overcome the conductor/forcing gap or replace that detector. |
+| Selective Gårding inequality | \(W\ge\text{reserve}-C\cdot\text{selective defect}\), where the defect vanishes in the limit for \(\Lambda\) and not for twins | Must fail for Liouville, \(c\Lambda\), quadratic mixtures, golden data |
+| RG monotonicity of the index | Show coarse-graining by \(T_2\) cannot create negative squares once details are paid | Must respect translation escape and nonsummable pole couplings |
+| Cross-scale almost-orthogonality | A Cotlar–Stein/Schur lemma for *forms*: cross-level blocks paid by geometric decay in level difference | Must use Chebyshev main-term cancellation at large separation |
+| Discrete-to-continuous pole transfer | Move the prime gap from \(\sum x_n/\sqrt n=0\) to the continuous pole moments | Must recover the \(K_\star\) mechanism at spacing scale |
+| Virial/conservation law | Bound \(\mathcal E_{\rm crit}\) above by a source moment | Must keep critical exterior rows |
+| Spectral exhaustion | Control growing conductor families and their complement | Must match the adjunction energies \(E_m\) and the Weyl law |
 
-### Questions such a theory must answer
+### Questions it must answer
 
-- Which signed overlap patterns admit an arithmetic index bound even when every diagonal Metzler gauge fails?
-- Which growing families of actual Ramanujan quasimodes control a complete source, and what energy remains in their complement?
-- How do successor transport and non-ratio lags distinguish gauges at the level of a full form rather than at the level of a coefficient defect?
-- What joint inequality pays prime interactions, archimedean self-energy and pole dispersion exactly once?
-- Which arithmetic conservation, cancellation or compactness law bounds the established monotone critical energy **above**, including its critical exterior rows?
-- Can a local estimate be made exhaustive without shrinking away its coupling to each fixed source?
+- What is the minimal twin-selective quantity, and is it the pole-hyperplane gap, Chebyshev main-term cancellation, or something not yet named?
+- Does the negative index of the complete form flow monotonically under dyadic renormalization?
+- Why is the conjectural sharp prime gap \(2\log2\), and why does the same prime 2 generate the self-similarity?
+- Which conservation law bounds critical energy from above?
+- How does the archimedean place couple to the finite places along the RG flow? Gamma variance pays \(\log(1/\text{width})\), and cell widths at level \(a\) are \(\approx1/a\).
+- In which topology does exhaustion preserve inequalities, given that no exponential renormalization gives uniform graph control?
 
-Generic Lorentzian closure alone cannot be this theory: its Hessian class is already exactly characterized, and the stated Ramanujan local polynomials are inadmissible inputs. A useful arithmetic construction must supply signed/block geometry or a faithful change of coordinates with its defects paid. The actual half-line Xi Laguerre law is a consistency check, not the missing all-degree real-rootedness theorem.
+### Criteria it must meet
 
-### Criteria for mathematical success
+1. **Independence.** Built from arithmetic data, never from zero-indexed objects.
+2. **Fidelity.** All mixed entries, Gamma, both poles and multiplicities. Prime-only, collided and complete forms are kept apart.
+3. **Selectivity.** Every sufficient hypothesis fails for the battery: Liouville twin, scalings, quadratic mixtures, golden curve, Davenport–Heilbronn-type functions.
+4. **Exhaustion.** Uniformity exactly in the growing parameters.
+5. **Calibration.** Reproduce Weil's proof over \(\mathbb F_q\) (Frobenius graph positivity), the narrow \(K_\star\) regime, the finite-\(Q\) gap and the Haar floor, without demanding the false all-overlap Metzler gauge or pure-Markov sign.
+6. **A new inequality.** A paid sign, index ceiling or energy upper bound — not another equivalence.
+7. **Formal closure.** Unconditional Lean statements with every input discharged.
 
-1. **Independent construction.** Start with arithmetic data, not a zero-indexed object whose desired positivity is a premise.
-2. **Full fidelity.** Recover actual mixed Weil/prime-theta quantities, including poles, Gamma terms and multiplicities. Clearly separate prime-only, collided and complete forms.
-3. **A new inequality.** Supply a paid sign, residual bound, index ceiling or work upper bound. Another identity or equivalent criterion is not sufficient.
-4. **Correct exhaustion.** State and prove uniformity in exactly the variables that grow; fixed-Q and fixed-test results are not a substitute.
-5. **Selectivity in the claimed domain.** Explain why an impure golden curve, sign twin, synthetic hidden cluster or escaped source cannot satisfy the proposed sufficient hypotheses. Models outside those hypotheses need not be excluded.
-6. **Compatibility with known limits.** Recover finite-field Gram polarization, paid Haar/Gamma estimates, the fixed prime pole gap and established narrow-spacing/valuation results without demanding the false all-overlap gauge or pure-Markov sign.
-7. **Unconditional formal closure.** Any proposed theorem must eventually be formalized with its actual inputs discharged; an assumption binder or interface cannot hide the new mathematics.
-
-The first evidence of a successful theory would be a theorem answering a substantive part of Q1, Q2 or Q3. A new vocabulary, an elegant operator with the wrong source, or a larger catalogue of equivalent RH criteria would not establish it.
+**First evidence of success** would be a theorem answering a substantive part of Q1, Q2 or Q3. The minimal convincing instance is a selective inequality on the cell-1 orbit that the Liouville twin violates.

@@ -258,7 +258,12 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     $\sum_i\log(1/w_i)\int_{I_i}(f-\operatorname{mean}_{I_i}f)^2\leq\operatorname{levyEnergy}(f)$
     (`GammaVarianceCoercivity.lean`). In original complete-cell coordinates this pays
     $\sum_a\log(a)M_a(u_a-v_a)^2$ for arbitrary signed coefficients on both cells of every
-    pair (`CompleteCellVariancePayment.lean`). Full mixed Weil payment and full-source effectivity remain open.
+    pair (`CompleteCellVariancePayment.lean`). Simultaneously, the energy retains a positive graph
+    on actual interval means and their displacement from the exterior source, with finiteness
+    derived from compact BV energy (`GammaMeanVarianceCapacity.lean`). The exact complete-cell
+    specialization retains both original coefficients and expresses both extra charges solely
+    through their weighted pair averages (`CompleteCellMeanGraph.lean`). Full mixed Weil payment
+    and full-source effectivity remain open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear
     readings (plus mass) gives Bézout; exact effectivity needs infinitely many degrees; arithmetic

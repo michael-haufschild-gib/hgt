@@ -8,9 +8,9 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleIsTheOnlyNegative
 The Euler–Maclaurin synthesis (`TheOverlapLawAtEveryRoot`) carries every form that is translation
 invariant and continuous under small Lipschitz perturbations — a *stable form* — from fixed tests
 to the atomic families of overlap growth of any order. Weil's form, its bounded twists and the
-Markov form are stable, so the statements of the critical exponent (`TheGaugeBecomesVisibleAtTheCriticalExponent`,
-`ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold`) hold at overlap ratio `(log N)^ε` for smooth
-profiles.
+Markov form are stable, so the statements of the critical exponent
+(`TheGaugeBecomesVisibleAtTheCriticalExponent`, `ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold`)
+hold at overlap ratio `(log N)^ε` for smooth profiles; the pole hyperplane is `ThePoleAtEveryRoot`.
 
 * **Stable forms** (`StableForm`, `stableForm_weilQuad`, `stableForm_weilQuadTw`,
   `stableForm_markovQuad`).
@@ -77,7 +77,8 @@ theorem stableForm_weilQuadTw {lam : ℕ → ℝ}
       gcongr
     linarith
 
-/-- The Markov form is stable: the pole moments cost `2(e^{R′/2}(|m₋| + |m₊|)‖D‖₁ + e^{R′}‖D‖₁²)`. -/
+/-- The Markov form is stable: the pole moments cost
+`2(e^{R′/2}(|m₋| + |m₊|)‖D‖₁ + e^{R′}‖D‖₁²)`. -/
 theorem stableForm_markovQuad : StableForm markovQuad := by
   refine ⟨fun f hf hfc c => markovQuad_comp_sub hf hfc c, fun F hF hFc R' hR' hFR => ?_⟩
   set m := |poleMomentNeg F| + |poleMomentPos F|
@@ -102,8 +103,8 @@ section Transfer
 
 variable {Φ : (ℝ → ℝ) → ℝ} {φ : ℝ → ℝ}
 
-/-- **Smooth negative tests for a stable form**: a stable form negative on a `C²` test is negative on
-a smooth one, its mollification by a dilated smooth profile. -/
+/-- **Smooth negative tests for a stable form**: a stable form negative on a `C²` test is negative
+on a smooth one, its mollification by a dilated smooth profile. -/
 theorem exists_smooth_neg_of_stable (hΦ : StableForm Φ) (hφ : ContDiff ℝ ∞ φ)
     (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
     (hgc : HasCompactSupport g) (hneg : Φ g < 0) :
@@ -220,7 +221,8 @@ theorem atomicFamilies_negative_iff_of_growthPow {lam : ℕ → ℝ}
   have h := weilPositive_iff_atomicFamilies_nonneg_of_growthPow hlam hφ hφ1 hφint hκ
   have hreal : WeilPositiveFull lam ↔
       ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g → 0 ≤ weilQuadTw lam g :=
-    ⟨fun hW g hg hgc => hW _ (Complex.ofRealCLM.contDiff.comp hg) (hgc.comp_left Complex.ofReal_zero),
+    ⟨fun hW g hg hgc => hW _ (Complex.ofRealCLM.contDiff.comp hg)
+      (hgc.comp_left Complex.ofReal_zero),
       fun hpos => WeilSpectral.weilPositiveFull_of_real hpos⟩
   rw [hreal, h, Filter.not_eventually]
   simp only [not_forall, not_le]

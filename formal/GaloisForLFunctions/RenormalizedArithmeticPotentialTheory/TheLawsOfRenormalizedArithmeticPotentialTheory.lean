@@ -13,6 +13,8 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTowerDeficit
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCharacterMertensLimitIsTheLogarithmicDerivative
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartSeparatesZetaFromItsLiouvilleTwin
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheResidueFinitePartIsDiagonalizedByCharacters
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTwistedPoleReadsTheLogarithmicDerivative
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartSeesEveryFlippedPrime
 
 /-!
 # The laws of renormalized arithmetic potential theory
@@ -65,6 +67,10 @@ One statement collecting the laws of the programme, each in its sharp form.
 23. **The residue finite part is diagonalized by characters**: on the unit classes the finite part
     is `c_{a⁻¹b} S_a + c_{b⁻¹a} S_b`, and every character is an eigenvector with eigenvalue
     `2 Re β_χ` (`exists_abs_residueGram_finitePart_le`, `sum_residueFinitePart_mul_char`).
+24. **The twisted pole reads `−L′/L(1, χ)`**: `P_N(Re χ · u^{(M)}) = 2 Re β_χ |x|² + o(mass)` for
+    `χ ≠ 1` (`exists_abs_atomicWeilForm_charPole_sub_le`).
+25. **`ζ` maximizes the finite part**: among sign gauges with `κ = 1` and a convergent Mertens error,
+    the limit satisfies `α ≤ −γ`, with equality only for `ε = 1` (`finitePartLimit_le_and_eq_iff`).
 -/
 
 noncomputable section
@@ -196,7 +202,17 @@ theorem renormalized_arithmetic_potential_theory_laws :
     (∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (a : (ZMod q)ˣ),
       ∑ b : (ZMod q)ˣ, ((classMertensConstant q ↑(a⁻¹ * b) +
           classMertensConstant q ↑(b⁻¹ * a) : ℝ) : ℂ) * χ b =
-        ((2 * (residueSpectralValue χ).re : ℝ) : ℂ) * χ a) :=
+        ((2 * (residueSpectralValue χ).re : ℝ) : ℂ) * χ a) ∧
+    -- the twisted pole reads the logarithmic derivative
+    (∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q), χ ≠ 1 → ∀ η > 0, ∃ C : ℝ,
+      ∀ M N : ℕ, 1 ≤ M → M ≤ N →
+        |atomicWeilForm N (charPole χ M) -
+            2 * (residueSpectralValue χ).re * ∑ n ∈ Icc 1 N, charPole χ M n ^ 2| ≤
+          η * harmonicSum M + C) ∧
+    -- ζ maximizes the finite part among matched gauges
+    (∀ ε : ℕ → ℝ, IsSignGauge ε → ∀ α : ℝ, Tendsto (gaugeMertensError ε 1) atTop (𝓝 α) →
+      α ≤ -Real.eulerMascheroniConstant ∧
+        (α = -Real.eulerMascheroniConstant ↔ ∀ n : ℕ, 1 ≤ n → ε n = 1)) :=
   ⟨fun _ _ hv => primeSurvival_rankOne hv,
     heckeCovariant_iff_const,
     fun _ hN => covariantCounterterm_sandwich hN,
@@ -223,6 +239,8 @@ theorem renormalized_arithmetic_potential_theory_laws :
     fun _ hη => exists_abs_liouvilleForm_sub_zetaForm_sub_le hη,
     fun _ _ _ hr => tendsto_classMertensSum_sub hr,
     fun _ _ _ _ ha hb _ hη => exists_abs_residueGram_finitePart_le ha hb hη,
-    fun _ _ χ a => sum_residueFinitePart_mul_char χ a⟩
+    fun _ _ χ a => sum_residueFinitePart_mul_char χ a,
+    fun _ _ χ hχ _ hη => exists_abs_atomicWeilForm_charPole_sub_le χ hχ hη,
+    fun _ hε _ hE => finitePartLimit_le_and_eq_iff hε hE⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
