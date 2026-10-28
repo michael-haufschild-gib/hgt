@@ -1033,6 +1033,26 @@ horizon restriction. The two variance bounds are used separately, each at cost
 `Gamma(F)`, before division by two. Summing this lag estimate against the full
 prime comb still requires an arithmetic bound on the combined terms.
 
+### Compactness of the actual detail carrier
+
+The same reciprocal-width charge controls the norm of the actual detail
+projection, uniformly over the original coarse coefficients and horizon:
+
+\[
+ \kappa_A\|D(d,X)-D(d_{<A},X)\|_2^2\le\Gamma(F),\qquad
+ \kappa_1\|D(d,X)\|_2^2\le\Gamma(F).
+\]
+
+Each head belongs to the fixed finite real span of the original Haar atoms
+with indices below `A`. Since `kappa_A` tends to infinity, the details of all
+complete profiles with `Gamma(F)<=1` form a totally bounded subset of the
+original half-line `L²` space. Its closure is compact. Coarse coefficients
+and horizons may vary throughout this family; the argument never assumes a
+Gamma bound for the isolated or truncated detail profile.
+
+This supplies a concrete compact carrier for refinement errors. It does not
+give compactness of whole profiles or control of their coarse source.
+
 ### Every even prime lag
 
 Write `B_m(d,q;X)` for both actual mixed Hilbert pairings, multiplied by the
@@ -1090,6 +1110,13 @@ from retaining only detail indices below `A`. For every `delta>0`, one fixed
 `q,d` and every horizon. No estimate for the Gamma energy of a truncated
 profile is assumed. This is uniform finite-coordinate approximation of the
 entire signed mixed Euler source, with no cutoff on its powers.
+
+This gives an actual uniform index bound. On any finite real family of complete
+profiles, form `Gamma(F)-B_(2)(d,q;X)`. Choose the common tail cutoff with
+`delta=1`. The form is nonnegative on the kernel of the first `A` detail
+readings, so every strictly negative subspace injects into those readings.
+Its dimension is at most `A`, independently of the family and horizon. The
+bound includes all powers of two and does not require an odd horizon.
 
 The pure coarse Euler contribution, the other primes and the polar terms
 remain separate components of the full Weil form. This theorem supplies no
@@ -1611,8 +1638,10 @@ Quantitative pillars supplied by this programme:
 | Merged-cell variance payment | The original Gamma energy bounds logarithmically weighted adjacent coarse differences, with arbitrary original detail retained | `MergedCellVariancePaysCoarseDifferences` |
 | Quantitative prime-two tail decay | The actual full odd-horizon mixed tail and finite-head error are bounded by `(1+ell²)/log(A)` times original Gamma energy | `ThePrimeTwoMixedTailHasLogarithmicDecay` |
 | Uniform translated detail probes | Every real translate of the original complete profile satisfies the reciprocal-width Gamma bound; the first cell also gives a bound for the whole detail pairing | `TranslatedDetailsAreUniformlySmallInGammaEnergy` |
+| Compact detail carrier | Unit-Gamma complete profiles have details in a fixed compact subset of original half-line L², with explicit reciprocal-width finite-head error | `GammaBoundedCompleteProfilesHaveCompactDetails` |
 | Every even-lag mixed source | Parity identifies each literal even-lag mixed block with the translated original complete profile, giving Gamma-small tails at every horizon | `EveryEvenPrimeLagHasGammaSmallMixedTails` |
 | Entire prime-two mixed Euler factor | All powers are absolutely summable in original Gamma energy; one fixed detail head gives arbitrary relative accuracy uniformly in every horizon | `TheEntirePrimeTwoEulerMixedSourceIsGammaSmall` |
+| Entire Euler mixed index | Gamma minus the entire prime-two mixed Euler source has one finite upper negative-dimension bound across every horizon and finite real profile family | `ThePrimeTwoEulerMixedFormHasUniformFiniteIndex` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

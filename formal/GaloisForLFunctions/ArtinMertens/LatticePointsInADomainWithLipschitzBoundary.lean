@@ -80,6 +80,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 def latticeCell : Set E :=
   ZSpan.fundamentalDomain ((Module.Free.chooseBasis ℤ L).ofZLatticeBasis ℝ L)
 
+omit [MeasurableSpace E] [BorelSpace E] in
 theorem isBounded_latticeCell : IsBounded (latticeCell L) := ZSpan.fundamentalDomain_isBounded _
 
 theorem measurableSet_latticeCell : MeasurableSet (latticeCell L) :=
@@ -89,21 +90,22 @@ theorem covolume_eq_measureReal_latticeCell :
     ZLattice.covolume L μ = μ.real (latticeCell L) :=
   ZLattice.covolume_eq_measure_fundamentalDomain L μ (ZLattice.isAddFundamentalDomain _ μ)
 
+omit [MeasurableSpace E] [BorelSpace E] in
 theorem span_latticeBasis :
     Submodule.span ℤ (range ((Module.Free.chooseBasis ℤ L).ofZLatticeBasis ℝ L)) = L := by
   rw [Module.Basis.ofZLatticeBasis_span]
 
+omit [MeasurableSpace E] [BorelSpace E] in
 /-- Every point lies in the cell of some lattice point. -/
 theorem exists_sub_mem_latticeCell (x : E) : ∃ v ∈ L, x - v ∈ latticeCell L := by
   obtain ⟨v, hv, -⟩ := ZSpan.exist_unique_vadd_mem_fundamentalDomain
     ((Module.Free.chooseBasis ℤ L).ofZLatticeBasis ℝ L) x
-  have hvL : (v : E) ∈ L := by
-    have := v.2
-    rwa [span_latticeBasis] at this
+  have hvL : (v : E) ∈ L := (span_latticeBasis L).le v.2
   refine ⟨-(v : E), L.neg_mem hvL, ?_⟩
   rw [sub_neg_eq_add, add_comm]
   exact hv
 
+omit [MeasurableSpace E] [BorelSpace E] in
 /-- The cells of distinct lattice points are disjoint. -/
 theorem eq_of_sub_mem_latticeCell {x v w : E} (hv : v ∈ L) (hw : w ∈ L)
     (hxv : x - v ∈ latticeCell L) (hxw : x - w ∈ latticeCell L) : v = w := by
@@ -124,6 +126,7 @@ theorem eq_of_sub_mem_latticeCell {x v w : E} (hv : v ∈ L) (hw : w ∈ L)
   have := congrArg Subtype.val (h₁.trans h₂.symm)
   simpa using this
 
+omit [MeasurableSpace E] [BorelSpace E] [IsZLattice ℝ L] in
 theorem finite_inter_lattice {Y : Set E} (hY : IsBounded Y) : (Y ∩ (L : Set E)).Finite :=
   Metric.finite_isBounded_inter_isClosed
     (isDiscrete_iff_discreteTopology.mpr ‹DiscreteTopology L›) hY
@@ -263,7 +266,7 @@ theorem exists_faceGrid_near {ι : Type*} [Fintype ι] [DecidableEq ι] {i₀ : 
         rw [div_le_iff₀ hN']
         linarith
       have hhi : y i - (⌊(N : ℝ) * y i⌋₊ : ℝ) / N ≤ 1 / N := by
-        rw [sub_le_iff_le_add, div_add_div_same, le_div_iff₀ hN']
+        rw [sub_le_iff_le_add, ← add_div, le_div_iff₀ hN']
         linarith
       rw [abs_sub_le_iff]
       exact ⟨hhi, by linarith [one_div_nonneg.mpr hN'.le]⟩
@@ -374,8 +377,10 @@ theorem exists_abs_ncard_smul_sub_le {ι J : Type*} [Fintype ι] [DecidableEq ι
   have hlipt : ∀ j, LipschitzOnWith (⟨t, ht0.le⟩ * M) (fun y => t • φ j y) (Icc 0 1) := by
     intro j
     refine LipschitzOnWith.of_dist_le_mul fun a ha b hb => ?_
-    rw [dist_smul₀, Real.norm_eq_abs, abs_of_pos ht0, NNReal.coe_mul, NNReal.coe_mk, mul_assoc]
-    exact mul_le_mul_of_nonneg_left ((hφ j).dist_le_mul a ha b hb) ht0.le
+    rw [dist_smul₀, Real.norm_eq_abs, abs_of_pos ht0, NNReal.coe_mul]
+    calc t * dist (φ j a) (φ j b) ≤ t * (M * dist a b) :=
+          mul_le_mul_of_nonneg_left ((hφ j).dist_le_mul a ha b hb) ht0.le
+      _ = _ := (mul_assoc t (M : ℝ) (dist a b)).symm
   have hthick := measureReal_cthickening_iUnion_image_cubeFace_le μ hlipt i₀ hc hdpos
   have hbdd : IsBounded (⋃ j, (fun y => t • φ j y) '' cubeFace (i₀ j) (c j)) := by
     refine isBounded_iUnion.mpr fun j => ?_
@@ -391,9 +396,10 @@ theorem exists_abs_ncard_smul_sub_le {ι J : Type*} [Fintype ι] [DecidableEq ι
     have h := Nat.ceil_lt_add_one (div_nonneg (NNReal.coe_nonneg (⟨t, ht0.le⟩ * M)) hdpos.le)
     have hMd : 0 ≤ (M : ℝ) / d := div_nonneg M.2 hdpos.le
     have hmul : ((⟨t, ht0.le⟩ * M : ℝ≥0) : ℝ) / d = t * ((M : ℝ) / d) := by
-      rw [NNReal.coe_mul, NNReal.coe_mk, mul_div_assoc]
+      rw [NNReal.coe_mul]
+      exact mul_div_assoc t (M : ℝ) d
     rw [hmul] at h
-    push_cast
+    rw [Nat.cast_add, Nat.cast_ofNat, hmul]
     nlinarith
   calc |(((t • Y) ∩ (L : Set E)).ncard : ℝ) * ZLattice.covolume L μ -
           t ^ finrank ℝ E * μ.real Y|

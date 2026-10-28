@@ -133,8 +133,11 @@ survival cone containing the degree-zero cycles.
    The same energies occur in the full integer prime matrices: the Ramanujan
    profiles `u_m(n)=c_m(n)/√(φ(m)n)` have squared norm asymptotic to `log N`
    and squared residual `o(log N)` at `log N−γ−log m−tameDifferent(m)`.
-   Every fixed finite conductor packet therefore gives distinct actual spectral
-   points at these offsets, with any prescribed eventual accuracy.
+   Bounded mass and prime defect admit uniform approximation by a fixed finite
+   Ramanujan span, independent of the horizon. Consequently every threshold away
+   from the adjunction energies has the exact eventual spectral count, including
+   multiplicity. Each fixed energy is eventually represented by one simple eigenline,
+   whose projection captures the logarithmically normalized Ramanujan profile.
 6. *Is the matching of the places gauge blind?* No. Each place's counterterm is gauge blind, but
    their matching is not: the prime place of `ζ` diverges along the archimedean polar direction
    with coefficient `+1`, the Liouville twin with coefficient `−1`.
@@ -629,8 +632,10 @@ transfer of the Mertens error to the horizon remainder, and summation by parts a
    gap exactly `2 log 2`: the top of `P_N` on its complement is `log N − γ − 2 log 2 + o(1)`,
    attained by the 2-adic step (RP29, RP37). Within any bounded distance of `log N − γ` the
    spectrum is exhausted by the integers, `log N − γ − (log m + d(m)) + o(1)` (RP39).
-   Ramanujan profiles give norm quasimodes on the full horizon, and every fixed
-   finite conductor packet produces distinct actual eigenvalues near `log N−E(m)`.
+   Uniform finite Ramanujan approximation at bounded defect supplies exact eventual
+   counts below every threshold outside the adjunction energies, retaining multiplicity.
+   Each isolated arithmetic energy has one eventual simple eigenline, and its spectral
+   projection converges to the normalized Ramanujan profile.
    Open: the archimedean cross terms of distinct atoms on class profiles.
 3. **Characters at the horizon.** *Answered.* Mertens' theorem for
    characters (RP19) and in residue classes (RP21) are proved. On the unit classes mod `q` the

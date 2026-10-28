@@ -17,9 +17,12 @@ on arbitrary Weil tests, unbounded overlap, or RH.
 
 ## Gates
 
-- [ ] Exact carrier and normalization; full corpus and primary-literature novelty audit
+- [ ] Exact carrier and normalization
 - [ ] Dependency-closed paper proof of row estimates, quasimodes, and spectral exhaustion
 - [ ] Lean realization, individual foreground checks, transitive axioms, umbrella wiring
+
+Current scope excludes novelty audits and web searches, per user instruction.
+Earlier audit notes below are historical; no further novelty gate applies to this work.
 
 ## Exact proposed carrier and energies
 
@@ -155,7 +158,7 @@ full-Weil Ramanujan spectral law returned existing prime spectra, pole rows,
 and overlap/harmonic-hyperplane results; no matching theorem was identified
 among those inspected statements. This is not an exhaustive novelty claim.
 The small-aperture Suzuki and numerical-study exclusions on the packet-form
-card remain relevant, but a dedicated external audit is still required.
+card are historical context; further external audit is excluded from this task.
 
 Further primary-source audit: Groskin, [A finite Guinand--Weil dictionary and
 archimedean tail order](https://arxiv.org/html/2607.02828v3), introduction and
@@ -374,7 +377,7 @@ These row and transfer inequalities still require their exact Lean proofs.
 ### Stronger conjecture exposed by the row argument: the entire separated regime
 
 The original small-c exhaustion restriction may be removable. This is a
-strengthened conjecture requiring a fresh paper and novelty audit, not a proved
+strengthened conjecture requiring a complete paper proof and Lean verification, not a proved
 extension. The proposed final range is **0<c<1**, with w=c/N<atomSpacing(N)
 eventually. The existing exact prime and mass interfaces must be checked and,
 where their stated half-spacing restriction is stronger than their mechanism,
@@ -485,3 +488,7 @@ Eighteen unchecked scratch modules now cover the following support graph. None i
 The last two assemblies give the exact uniform quadratic-form cost and bounded unnormalized pole-profile residual for the actual cross-integral replacement. The complete center action on mean-zero periodic profiles, pole-moment error, full-range coercivity, and spectral assembly remain to formalize.
 
 Two further unchecked drafts complete the current twenty-module support inventory: `TheCenterCollarIsPaidByTheTopAtoms` and `TheCompleteWeilTrialEnergiesAreSimpleAndProper`. The former keeps the diagonal `n(H_N+1)` through weighted Schur and reduces it to the top-atom potential plus three masses. The latter reuses ALG `sq_integral_abs_le` and SMAP `ramanujanAdjunctionEnergy_sub_one_ge`; both exact source statements were inspected. The elementary lower bound `1<=2*log(2)` suffices, since the profile charge shift is strictly below one. Needed foreign dependency oleans exist; their axioms will be audited transitively through the new endpoints. None of these twenty drafts is installed or checked.
+
+### Formalization checkpoint
+
+`HTGeometry/HarmonicTailSquareIdentity.lean` is installed after successful scratch verification. Both square-moment endpoints have clean transitive axiom reports (only `propext`, `Classical.choice`, `Quot.sound`), retained in `logs/complete-weil-spacing-axioms-2026-10-28.log`. Its first required olean is built for `HarmonicCenterBoundaryBounds`; final source audit remains. Twenty other support drafts are unchecked, including the new `FiniteShiftedHarmonicAbelBounds` adapter. The full spectral theorem remains unproved. No novelty audit or web search is being performed.

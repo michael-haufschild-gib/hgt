@@ -79,9 +79,19 @@ This holds after every common real translation. Distinct cell interiors are disj
 
 Each pair error is bounded by the complete exterior averaging loss plus its far-charge width product. The checked exterior loss contributes `exp(1/2)*wₐ`; the adjacent width bounds contribute respectively `exp(1/2)*wₐ/2` and `3*exp(1/2)*wₐ/2`. The finite row is a subset of the two adjacent indices. All five modules have fourteen clean standard-axiom audits.
 
+## Complete finite pair-error row
+
+[LogCellGammaUniformRows.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/LogCellGammaUniformRows.lean) passed its exact project check and transitive audit without warnings. Log: `/tmp/acs-logcell-gamma-uniform-rows-final.log`.
+
+`gamma_logCell_pairRow_le` proves, for every positive source index `a`, finite family of positive indices `S`, and common real translation, that
+
+`Σ_(b∈S.erase a) Rₐᵦ ≤ ofReal((12*exp(1/2)+2*gammaTailMass(log(3/2)))*wₐ)`.
+
+The upper-near, lower-near, distant, and adjacent filters cover `S.erase a`. Finite nonnegative sum subadditivity permits overlaps. Their checked bounds contribute respectively `6*exp(1/2)`, `2*exp(1/2)`, two fixed Gamma tails, and `4*exp(1/2)` per source width. This proves the complete pair-error row without a horizon factor. All six modules have fifteen clean standard-axiom audits.
+
 ## Remaining parent obligation
 
-Nearby, distant, and touching integrated rows are formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are also formalized. Complete row assembly and final energy comparison remain on the parent card. Full mixed prime and pole payment remains open.
+The entire integrated pair-error row is formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are also formalized. Transfer to actual complete-pair rows, exterior finiteness, and final energy comparison remain on the parent card. Full mixed prime and pole payment remains open.
 
 ## Log
 

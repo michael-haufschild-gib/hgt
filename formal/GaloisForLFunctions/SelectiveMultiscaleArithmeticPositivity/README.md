@@ -78,7 +78,8 @@ exceeds \(2\log2\): the conductor-2 Ramanujan mode is the unique first excitatio
 (pillars 6, 7). So the selective margin is \(2\log2\), and no sign gauge has a larger one: \(\zeta\) is
 extremal among its sign twins. A positive margin is carried by correlation with the pole: a sign
 gauge whose harmonic sums \(\sum_{n\le N}\omega(n)/n\) are \(o(\sqrt{\log N})\) sits at the
-ceiling (pillar 8). The prime 2 is the bottleneck, and the same prime generates the
+ceiling, while one that agrees with \(\zeta\) on a set of full harmonic density keeps the whole
+\(2\log2\) (pillar 8). The prime 2 is the bottleneck, and the same prime generates the
 self-similarity of the complete source.
 
 **Multiscale structure is exact.** Two adjacent complete cells fill the translate of one cell by
@@ -209,13 +210,20 @@ signed Chebyshev error along the dyadic orbit.
    - `hasHyperplaneGap_zero_weight`: damped weights are excluded, since the zero weight has every gap;
    - `eventually_poleDefect_ge_offPole_sharp`, `eventually_weilQuad_atomicTest_ge_sharp`: the
      selective Poincaré and Gårding inequalities with reserve \(2\log2-\eta\).
-8. **A margin needs harmonic correlation** (`AMarginNeedsHarmonicCorrelation`):
-   - `eventually_exists_gauge_ceiling_witness`: if \(S_N(\omega)=\sum_{n\le N}\omega(n)/n\) satisfies
-     \(S_N^2=o(\log N)\), the gauge's projected top reaches the ceiling \(\log N-\gamma\);
+8. **Harmonic correlation decides the margin** (`AMarginNeedsHarmonicCorrelation`,
+   `FullCorrelationKeepsTheMargin`). Write \(S_N(\omega)=\sum_{n\le N}\omega(n)/n\) and
+   \(H_N=\sum_{n\le N}1/n\):
+   - `eventually_exists_gauge_ceiling_witness`: if \(S_N^2=o(\log N)\), the gauge's projected top
+     reaches the ceiling \(\log N-\gamma\);
    - `not_hasHyperplaneGap_of_harmonicSum_small`, `not_hasHyperplaneGap_of_abs_harmonicSum_le`:
      such a sign gauge, in particular one with bounded harmonic sums, has margin \(0\);
    - `frequently_harmonicSum_sq_ge_of_hasHyperplaneGap`: a positive margin forces
-     \(S_N(\omega)^2\ge c\log N\) infinitely often.
+     \(S_N^2\ge c\log N\) infinitely often;
+   - `atomicWeilForm_smul_truncPole_add`, `sq_sum_mul_truncPole_le`: pole polarization, and the
+     misalignment cost \((\sum y_nb_n)^2\le|y|^2\cdot2(H_N-S_N)\) on the hyperplane \(y\perp\omega b\);
+   - `hasHyperplaneGap_two_mul_log_two_of_correlation`: if \(S_N/H_N\to1\), the margin is the full
+     \(2\log2\);
+   - `hasHyperplaneGap_two_mul_log_two_of_eventually_eq_one`: finite flips of \(\zeta\) keep it.
 9. **A level is paid by its reserve** (`ALevelIsPaidByItsReserve`):
    - `two_mul_add_ge_of_reserve` and `rg_step`: paying a coupling, and one RG step;
    - `rgMargin_ge` and `rgMargin_pos`: summable couplings keep a uniform margin under infinite
@@ -290,7 +298,8 @@ most
 | The separation on the hyperplane is a sign separation | At spacing scale it is a uniform *margin* (`exists_liouville_weilQuad_add_le_of_harmonic`); narrow regimes are positive for twins too. Sign separation appears at unbounded overlap (every root) |
 | \(\zeta\) is the minimum of its gauge orbit | Only on nonnegative atomic tests; on the pole hyperplane the Liouville twin lies below (`exists_liouville_weilQuad_lt_of_harmonic`) |
 | The pole hyperplane gap can be made large | Every uniform gap of \(\zeta\) is at most \(2\log2\) (`le_two_mul_log_two_of_hasHyperplaneGap`), and \(2\log2\) is attained (`isGreatest_zeta_hyperplaneGap`). No sign gauge does better (`isGreatest_signGauge_hyperplaneGap`) |
-| A sign pattern close to \(\zeta\)'s at most primes keeps a margin | The margin sees only the harmonic correlation \(\sum\omega(n)/n\); once it is \(o(\sqrt{\log N})\) the margin is \(0\) (`not_hasHyperplaneGap_of_harmonicSum_small`) |
+| A sign pattern close to \(\zeta\)'s at most primes keeps a margin | The margin reads the harmonic correlation over integers, not primes. Once \(\sum_{n\le N}\omega(n)/n=o(\sqrt{\log N})\) the margin is \(0\) (`not_hasHyperplaneGap_of_harmonicSum_small`). Flipping one prime in a completely multiplicative gauge already moves \(S_N/H_N\) below \(1\) |
+| \(\zeta\) is the only weight with the full margin | Every sign gauge agreeing with \(1\) on a set of full harmonic density has it, finite flips included (`hasHyperplaneGap_two_mul_log_two_of_correlation`). The margin selects \(\zeta\) against decorrelated twins, not against nearby ones |
 | A larger gap means a more selective weight | Damping enlarges the gap without selecting anything: the zero weight has every gap (`hasHyperplaneGap_zero_weight`). Gaps compare only among sign gauges |
 | The discrete and continuous pole constraints differ | On atomic tests they coincide up to the nonzero factor \(A(g)\) |
 | The pole is harmless across scales | Pole couplings of level copies are \(2A(f)B(f)\cosh\) of half the shift (`polePairing_shift`), growing like \(2^{\lvert j-k\rvert/2}\); only \(\Lambda\)'s prime main term cancels them (AID Chebyshev identity). On the pole hyperplane they vanish identically, because the hyperplane is renormalization invariant (`harmonicSum_dyadicShift`) |
@@ -310,7 +319,8 @@ most
    - Positivity at a root selects exactly \(\Lambda\), so no twin-blind quantity works there.
    - On the pole hyperplane the prime-form gap is selective. It is exactly \(2\log2\) for \(\zeta\),
      exactly \(0\) for the Liouville twin, and at most \(2\log2\) for every sign gauge. It is \(0\)
-     for every sign gauge with harmonic sums \(o(\sqrt{\log N})\).
+     for every sign gauge with harmonic sums \(o(\sqrt{\log N})\), and \(2\log2\) for every sign
+     gauge with \(S_N/H_N\to1\).
    - Matched finite flips keep the main term and are separated only by local witnesses (SP, OWU).
    - On complete cells the high-detail floor is twin-blind, so selectivity must act on the low and
      cross-level residual.
@@ -390,7 +400,8 @@ most
 - pole moments of level orbits, the cosh law and the hyperbolic signature of the pole across levels;
 - the exact hyperplane gaps of \(\zeta\) and of sign gauges, and the sharp Poincaré and Gårding
   inequalities;
-- the ceiling witness of a sign gauge and the harmonic-correlation criterion for a zero margin;
+- the ceiling witness of a sign gauge, pole polarization, the misalignment cost, and the two
+  harmonic-correlation criteria (zero margin, full margin);
 - shifted real tests, boundary-mass decay, and the three-part split of separated couplings
   (Gamma, pole, Chebyshev).
 
@@ -415,11 +426,10 @@ most
    Gamma symbol plus the Chebyshev increments near \(2^m\). Positivity of that symbol is the
    single-orbit question. An exact prime tower is Toeplitz-blind (ACS), and the two-prime torus is a
    Bochner equivalent of RH (ArithmeticPositiveDuality), so a positive answer must use the windows.
-4. **Rigidity of the maximal margin.** Among sign gauges the margin lies in \([0,2\log2]\), with
-   \(\zeta\) at the top (pillar 7). Every gauge with harmonic sums \(o(\sqrt{\log N})\) is at the
-   bottom (pillar 8). Which gauges attain \(2\log2\)? Is the margin a function of the harmonic
-   correlation \(S_N(\omega)/H_N\) alone, and is \(\zeta\) the unique completely multiplicative
-   gauge at the top?
+4. **The margin at intermediate correlation.** Among sign gauges the margin lies in
+   \([0,2\log2]\). It is \(2\log2\) when \(S_N/H_N\to1\) and \(0\) when \(S_N^2=o(\log N)\)
+   (pillars 7, 8). What is it when \(S_N/H_N\to\rho\in(0,1)\), as for a completely multiplicative
+   gauge flipping finitely many primes? Is it a function of \(\rho\) alone?
 5. **A virial identity for critical energy.** An upper side for AID's canonical energy.
 6. **Selective input on the low and cross-level residual.** The high-detail floor is twin-blind
    (pillar 10), so the complete-source sign is decided by the low details \(a<A\), the generator

@@ -57,6 +57,10 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
   K★(φ,ε) = min(overlap bounds, 1/(A+2c_P√e), e^{2θ′(0)+κ_L+γ−ε−2}) ∈ [1e-4, 6e-4] for κ_L ≥ −2,
   ε ≤ 1/8 (vs c★ ≈ 1e-11).
   Mechanism: pole defect pays the pole (no tilt). Gap to Robin–Euler threshold = Chebyshev A.
+- Sharp stability regime (TheArchimedeanCrossEnergyIsOneSided, TheSharpMultiplicativeHardyInequality,
+  TheStabilityRegimeReachesAFixedFractionOfTheRobinEulerThreshold): one-sided Lévy windows, sharp
+  rows, λ-top payment (B_ψ = log 4 + 4/e), N^b-split Hardy (eventually sharp weights), ρN/log N pole
+  pairing ⇒ Weil ≥ 0 on window tests at K★_sharp ≈ 0.067 (plateau) / 0.048 (all profiles), eventually.
 - WeilsFormIsPositiveOnEveryTestNearTheLogarithms: window tests Σ G_n(· − log n), arbitrary C²
   profiles in [0, w]; orthogonality, prime sum = Weil kernel × window Gram ≤ P_N(y), y_n = ‖G_n‖;
   Lévy diag with pair windows; self-energy ≥ (log(1/w) + 2c_∞ − O(w))‖G‖²; eventually in N, Weil

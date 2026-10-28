@@ -27,6 +27,11 @@ Current `(L_X, L_D, P_X, P_D) = (1517, 236, 107, 54)`. Targets:
   `θ = √β` ⇒ `P_X ≈ 2√(2)B ≈ 4`, `P_D ≈ 0.5`.
 - A4 Assembly: explicit `K★_sharp(ε, κ_min)`.
 
+**Status A:** done (Lean). Constants realized: `L_D ≈ 6.7`, `L_X ≈ 16.4`, pole `7.6` (X), `0.71` (D);
+`K★_sharp = min(1/10, 1/(2C_D), a/C_X, e^{T−ε−a−1/25})`, `C_X ≈ 24`, `C_D ≈ 7.4`, `T = log K_RE`:
+≈ 0.067 plateau, ≈ 0.048 all profiles (`eventually_weilQuad_windowTest_nonneg_sharp`). Remaining
+factor ≈ 6 to `K_RE`: PNT up-row (B_ψ² → 1), Fubini ‖·‖₁ windows (factor 2), λ/κ tuning.
+
 ## Phase B — exact reduction (all `K`)
 `W ≥ 0` on atomic tests ⇔ `M ≥ 0` on the pole complement `Σ x_n/√n = 0` ∧ `M(x) + 2B(x) ≥ 0` on
 `Σ x_n/√n = 1` (H-row of an atomic test is exactly `(∫g e^{−v/2}) n^{−1/2}`).
@@ -39,4 +44,4 @@ along the pole direction ≈ `log(K_RE/K) + c_φK` (> 0 up to `K = 1` for platea
 complement it depends on the explicit gap. Outcome not known before computation.
 
 ## Log
-- 2026-10-28 — created; Phase A started.
+- 2026-10-28 — created; Phase A done.

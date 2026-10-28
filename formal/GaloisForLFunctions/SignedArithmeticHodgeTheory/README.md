@@ -310,7 +310,7 @@ Prime two shifts each generator chain by one level. The matrix describes the
 source action; its entries carry no asserted sign.
 
 This is Hilbert orthogonality in the closed logarithmic-cell subspace.
-Joint Gamma estimates across levels and full-Weil mixed bounds remain separate.
+Joint Gamma payment is available for all parent variances. Full-Weil mixed bounds remain separate.
 The cell completion is not identified with the entire continuous source graph.
 
 ### Gamma allocation on the dyadic tree
@@ -328,6 +328,17 @@ therefore proves that every actual logarithmic sibling rectangle pays
 \(V_{\rm parent}/8\), at every real translate. The complete-cell theorem
 allows all coarse means, detail coefficients and horizons. No mean-zero
 restriction on the parent source enters this estimate.
+
+[OneGammaReservePaysAllDyadicParentVariances](OneGammaReservePaysAllDyadicParentVariances.lean)
+proves, for every finite set \(S\subset\mathbb N\times\mathbb N_{>0}\),
+\[
+\sum_{(j,a)\in S}V_{[t+j\log2+\log(2a),\,t+j\log2+\log(2a+2)]}(f)
+\le16\Gamma(f).
+\]
+Here \(f\) is any compactly supported real source of bounded variation and
+\(t\) any real translation. The actual sibling rectangles are pairwise
+disjoint across labels and levels. Each spends at most its share of the
+symmetric difference integral, whose mass is \(2\Gamma(f)\).
 
 For a decomposition \(x=\sum_j x_j+r\), diagonal lower bounds are useful only with a simultaneous
 bound for all mixed terms. The target is a source-defined matrix or operator bound whose norm
@@ -353,10 +364,10 @@ joint reserve allocation; the one-prime estimate does not supply the coarse-gene
 also bounds the correlation of a high-detail section with any real translate
 of its original complete profile by \(\Gamma(f)/\log A\), for \(A>1\).
 The bound is uniform in translation and retains all original coarse coefficients.
-It remains a single-level estimate. A candidate joint proof partitions pairs
-of points by their unique dyadic sibling rectangle, pays each parent variance
-once, and counts the ancestors of every finer detail. The root mean orbits
-remain a separate arithmetic sector.
+It remains a single-level estimate. The joint parent-variance bound partitions
+pairs of points by their unique dyadic sibling rectangle. Ancestor counting
+must connect it to weighted detail coordinates. The root mean orbits remain
+a separate arithmetic sector.
 
 [GammaBoundedCompleteProfilesHaveCompactDetails](../ArithmeticIndexDescent/GammaBoundedCompleteProfilesHaveCompactDetails.lean)
 places the actual single-level detail projections of all unit-Gamma complete

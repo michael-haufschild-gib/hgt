@@ -1,26 +1,26 @@
 # Spectral exhaustion by torsion-adjunction energies
 
 - **ID:** full-prime-spectrum-adjunction-exhaustion
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Source:** Ramanujan full-matrix quasimodes; harmonic rough-number tensorization; prime-defect Dirichlet form
 - **Statement:** Every bounded energy window of `log(N) I-P_N` converges, with multiplicity, to the simple energies `gamma+log(m)+tameDifferent(m)`.
-- **Count:** uncounted due concurrent overlap; all sixteen scratch and final actual-source checks pass; umbrella wiring remains
+- **Count:** uncounted infrastructure due previously recorded concurrent overlap; formalization and integration complete
 
 ## Goal
 
-The finite-packet quasimode project provides actual nearby eigenvalues for each
-fixed conductor. It does not exclude additional bounded-energy branches. The
-proposed theorem would identify the entire bounded-energy spectrum and its
-eigenvectors, thereby determining every fixed ordered eigenvalue asymptotic.
-The optimal pole gap would be a consequence, not a separately counted numerical
-improvement. No full Weil positivity or RH implication is asserted.
+The actual renormalized prime matrix has the exact eventual arithmetic spectral
+count below every threshold outside the adjunction energies. Each positive conductor
+has an isolating window containing one eventual simple eigenline, whose projection
+captures its normalized Ramanujan profile. Uniform approximation of every bounded-mass,
+bounded-defect vector by a fixed finite Ramanujan span supplies the compactness input.
+No full Weil positivity or RH implication is asserted.
 
 ## Gates
 
-- [ ] Final corpus novelty/significance reassessment after the concurrent finite-box upper-count route; prior primary-literature exclusions remain recorded.
+- Existing uncounted decision retained. No further novelty audit, as instructed.
 - [x] Dependency-closed paper proof of compactness, exact spectral counts, and simple eigenlines.
-- [ ] Exact Lean realization, direct source checks, transitive axioms, umbrella wiring.
+- [x] Exact Lean realization, sixteen final direct source checks, eighteen transitive axiom reports, umbrella wiring.
 
 ## Existing input inspected
 
@@ -803,3 +803,7 @@ identifies a genuinely separate nontrivial theorem. No no-go is asserted.
 All sixteen final direct actual-source checks passed with empty diagnostics. Eighteen retained transitive endpoint reports contain only `propext`, `Classical.choice`, and `Quot.sound`. The installed sources match their successful scratch proofs, and the code scan found no prohibited mechanisms or raised limits. Evidence: `logs/full-prime-spectrum-exhaustion-source-audit-2026-10-28.log` and `logs/full-prime-spectrum-exhaustion-axioms-2026-10-28.log`.
 
 The user cleared the goal before umbrella wiring, foundational documentation updates, card transition, and scratch cleanup. No owned compiler remains active. Preserve this uncounted package and its evidence; no significant-contribution count was added.
+
+### Integration completed
+
+All sixteen modules are wired into their mathematical-owner umbrellas without compiling either umbrella. Foundational README descriptions now state uniform finite-span compactness, exact multiplicity counts, and simple eigenline convergence. The actual sources are unchanged from the successful final audits. Owned exhaustion scratch files and temporary check/search outputs are cleaned after preserving the source and axiom logs. The previously recorded uncounted decision remains unchanged; no additional novelty audit was performed.

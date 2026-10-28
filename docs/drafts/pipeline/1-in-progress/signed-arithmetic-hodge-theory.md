@@ -253,13 +253,13 @@ min(L,R)/(2D) * Var(parent) <= Gamma(sibling rectangle).
 The proof compares the complete uniform pair-difference integral with the
 constant kernel 1/(2D), retaining both child variances and the mean square.
 For actual logarithmic cells min(L,R)>=D/4, including at every real translate,
-so each sibling rectangle pays Var(parent)/8. This local result is a target;
-joint rectangle allocation and ancestor counting remain separate obligations.
+so each sibling rectangle pays Var(parent)/8. This local result is formalized
+and final-audited in TheSiblingGammaChargePaysItsParentVariance.
 
-### Joint nested variance target
+### Joint nested variance bound
 
 For any finite set S of dyadic level / positive parent labels and any common
-real translation t, target
+real translation t, the proved bound is
 
 sum_(j,a in S) Var_[t+j log2+log(2a), t+j log2+log(2a+2)](f) <=16 Gamma(f).
 
@@ -268,7 +268,8 @@ The integer labels floor(exp(x-t)) and floor(exp(y-t)) determine their unique
 sibling level and parent. The existing DyadicSibling.level_unique theorem
 therefore pays the whole finite family using one product-measure integral.
 The Gamma normalization is the proved identity: symmetric pair mass=2 Gamma.
-This target still requires Lean proof. It is a joint variance estimate, not
+OneGammaReservePaysAllDyadicParentVariances passes its individual final audit
+with standard axioms only. It is a joint variance estimate, not
 a complete signed-Weil bound; ancestor counting must connect it to logarithmic
 weights on the complete Haar coordinates.
 
@@ -287,7 +288,7 @@ an assumption available to the programme.
 ### Concrete multiscale Gamma deliverables
 
 1. Local sibling Gamma estimate: final-audited and integrated.
-2. Finite nested-parent sum<=16 Gamma: draft requiring audit.
+2. Finite nested-parent sum<=16 Gamma: final-audited and integrated.
 3. Logarithmically weighted actual Haar coordinates: prove through ancestor
    counts and exact variance identities.
 4. All-level high-generator tail bound: retain complete translation orbits

@@ -1,7 +1,8 @@
 import GaloisForLFunctions.ArithmeticIndexDescent.TheEntirePrimeTwoEulerMixedSourceIsGammaSmall
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FiniteConfigurationPontryaginLaw
 
-/-!+# Uniform finite index for the entire mixed Euler factor at two
+/-!
+# Uniform finite index for the entire mixed Euler factor at two
 
 One finite set of detail readings controls the negative dimension of Gamma
 minus the full mixed Euler source. The bound is independent of the complete

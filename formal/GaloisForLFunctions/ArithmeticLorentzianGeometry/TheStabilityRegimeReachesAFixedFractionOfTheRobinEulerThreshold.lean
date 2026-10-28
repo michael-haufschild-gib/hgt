@@ -472,17 +472,3 @@ theorem eventually_weilQuad_windowTest_nonneg_sharp {ε : ℝ} (hε : 0 < ε) (h
   linarith
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms eventually_weilQuad_windowTest_nonneg_sharp
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms two_mul_abs_poleMoments_windowTest_le_sharp
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms eventually_upWeight_le
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms eventually_edgeWeight_le
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms levyEnergy_windowTest_ge_sharp
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms sq_vRow_le_split
-open GaloisForLFunctions.ArithmeticLorentzianGeometry in
-#print axioms eventually_markovEnergy_windowTest_ge_sharp
