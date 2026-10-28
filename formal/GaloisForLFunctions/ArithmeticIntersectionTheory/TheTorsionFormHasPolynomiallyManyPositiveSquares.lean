@@ -427,8 +427,8 @@ theorem renormalizedTorsionForm_pos_on_span {M N : ℕ} (hM : 3 ≤ M)
     by_contra hnS
     apply hn
     unfold armVector
-    rw [if_neg (fun h => hnS (h ▸ hqC.1)),
-      sum_eq_zero fun p hp => if_neg (fun h => hnS (h ▸ hqC.2 p hp))]
+    rw [if_neg (fun (h : n = q) => hnS (by rw [h]; exact hqC.1)),
+      sum_eq_zero fun p hp => if_neg (fun (h : n = q * p) => hnS (by rw [h]; exact hqC.2 p hp))]
     ring
   · intro a ha
     rw [renormalizedTorsionForm_eq_bilinear, torsionBilinear_sum_left]

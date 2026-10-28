@@ -207,6 +207,7 @@ hyperbolic Hecke correspondences that glue the levels.
 | XVI. The square-root price | summing the local tower bounds costs `238 √M`; the joint structure costs `log M` | `TheSquareRootPriceOfSeparateTowers` |
 | XVII. RH in tower coordinates | `Re(archimedean + polar) = E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n) − Σ_{m<n} x_m x_n K_φ`; under RH, `‖φ‖² Σ_p Q_p + Σ_{m<n} x_m x_n K_φ ≤ E_φ|x|² + 2αβ(Σ x/√n)(Σ x√n)` | `TheHodgeIndexInTowerCoordinates` |
 | XVIII. Base and successor | ladder kernels of distinct primes have disjoint supports, Frobenius towers of places overlap; the successor is transverse to every ladder except at `1 → 2` | `TheBaseAndTheSuccessor` |
+| XIX. Positive squares on boxes | at a prime base `q` the anti-pole `δ_q − Σ_p δ_{qp}/(2√p)` pairs the base against the first rung of every ladder through it, `R ≥ ½ Σ log p/p − log q`; anti-poles at the primes of `(M, Q₀M]` with arms in `(Q₀M, N/(Q₀M)]` are `R`-orthogonal; for `N ≥ (Q₀M)⁵` the positive index on `[1, N]` is `≥ M/log M` | `TheTorsionFormHasPolynomiallyManyPositiveSquares` |
 
 ---
 
@@ -311,9 +312,11 @@ Frobenius ladder, and successor transversality.
    theta `h⁰` whose Riemann–Roch defect is `½ log|d|`, the self-intersection of Pillar IV; a section
    functor on the scaling surface with this defect is the `F3` question of the review.
 4. **The discriminant for all `n`.** `I(n,n) = log|d_{ℚ(ζ_n)}|` beyond prime powers.
-5. **Indices on boxes.** Pillar XIV bounds the positive index by `2` on each ladder; the positive
-   index of the renormalized torsion form on the box `[1, N]`, where the ladders of different primes
-   interact.
+5. **Indices on boxes.** *Answered in growth* (Pillar XIX): the positive index of the renormalized
+   torsion form on `[1, N]` is at least `c N^{1/5}/log N`, against `≤ 2` per ladder; positive squares
+   sit at the shared bases of the ladders of different primes. Numerically it is `≈ N^{0.38}`
+   (6, 9, 14, 18, 23 at `N` = 100, 300, 1000, 2000, 4000), and the anti-pole heuristic gives bases up to
+   `N^{α*}`, `2α* + α* log(1/α*) = 1` (`α* ≈ 0.32`). Open: the exact exponent and an upper bound.
 6. **Thresholds as weights.** Pillar XVI puts the square-root threshold at the cost of paying the
    towers separately. A weight filtration of log-atom cycles by `log(1/δ)/log M`, with the self-energy on
    one side and the tower sum on the other.

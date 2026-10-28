@@ -19,7 +19,7 @@ conditions on its coefficients: nonnegative, M-convex support, hyperbolic quadra
 * **The Hessian trickles down** (`isHyperbolic_hess`): for `x > 0` the Hessian `∇²f(x)` has one
   positive square. Reverse Cauchy–Schwarz in each link gives the weighted trickle-down
   inequality `(TD_x)`; the Hessian is entrywise nonnegative, and M-convexity of the support makes
-  it connected on the variables that occur (`activeHess_isConnectedSupport`); the weighted Metzler
+  it connected on the variables that occur (`mconvex_path`); the weighted Metzler
   Hodge index theorem concludes. By continuity the same holds at every `x ≥ 0`
   (`isHyperbolic_hess_of_nonneg`).
 
@@ -48,12 +48,14 @@ theorem mem_degSet {m : ℕ} {α : ι →₀ ℕ} : α ∈ degSet m ↔ Finsupp.
 /-- The monomial `x^α`. -/
 def mono (x : ι → ℝ) (α : ι →₀ ℕ) : ℝ := ∏ i, x i ^ α i
 
+omit [DecidableEq ι] in
 theorem mfact_eq_prod (α : ι →₀ ℕ) : mfact α = ∏ i, ((α i)! : ℝ) := by
   rw [mfact, Finsupp.prod_fintype _ _ (fun _ => by simp)]
 
 theorem mfact_pos (α : ι →₀ ℕ) : 0 < mfact α := by
   rw [mfact_eq_prod]; exact prod_pos fun i _ => by positivity
 
+omit [Fintype ι] in
 theorem single_apply_eq (i l : ι) : (Finsupp.single i 1 : ι →₀ ℕ) l = if i = l then 1 else 0 :=
   Finsupp.single_apply
 
@@ -359,9 +361,11 @@ section Step
 
 variable {n : ℕ}
 
+omit [DecidableEq ι] in
 theorem qf_smul' (a : ℝ) (M : Matrix ι ι ℝ) (v : ι → ℝ) : qf (a • M) v = a * qf M v := by
   simp [qf, bil, smul_mulVec, dotProduct_smul]
 
+omit [DecidableEq ι] in
 theorem qf_sum' (M : ι → Matrix ι ι ℝ) (v : ι → ℝ) : qf (∑ i, M i) v = ∑ i, qf (M i) v := by
   simp [qf, bil, Matrix.sum_mulVec, dotProduct_sum]
 
@@ -416,6 +420,7 @@ end Step
 
 /-! ### The Hessian theorem -/
 
+omit [DecidableEq ι] in
 theorem bil_eq_sum (M : Matrix ι ι ℝ) (u v : ι → ℝ) :
     bil M u v = ∑ j, ∑ k, u j * M j k * v k := by
   simp only [bil, dotProduct, mulVec, mul_sum, mul_assoc]
@@ -511,7 +516,7 @@ theorem isHyperbolic_hess_succ {n : ℕ} (hc : IsLorentzianPoly (n + 3) c)
         linarith
       obtain ⟨α, -, hα⟩ := exists_of_hess_pos (pos_of_mul_pos_left hk (hx k).le)
       refine ⟨_, hα, ?_⟩
-      simp only [Finsupp.add_apply, Finsupp.single_apply, if_pos rfl]
+      simp only [Finsupp.add_apply, Finsupp.single_apply]
       split_ifs <;> omega
   -- the variables of one monomial are pairwise joined by nonzero Hessian entries
   have hclique : ∀ γ ∈ {γ | c γ ≠ 0}, ∀ p q, 1 ≤ γ p → 1 ≤ γ q → w p = w q := by

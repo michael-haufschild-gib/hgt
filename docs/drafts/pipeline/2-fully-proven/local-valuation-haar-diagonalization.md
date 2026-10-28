@@ -249,106 +249,85 @@ with the full Weil-test carrier is claimed. Compatible completion through prime
 ground states is a separate backlog conjecture:
 `docs/drafts/pipeline/0-backlog/coherent-prime-ground-state-completion.md`.
 
-## Lean implementation checkpoint
+## Lean realization
 
-- `HTGeometry/HardyBlaschkeMonomialBasis.lean` passed its scratch check and
-  first dependency olean build. It uses `HardyLeakageRankOne` and
-  `HilbertSchmidtMatrix` for the complete geometric-complement/Blaschke basis.
-- `HTGeometry/HardyGeometricResolvent.lean` passed its scratch check and its
-  first dependency build. It constructs
-  `R=(I+q U)/(1-q^2)` from the actual Blaschke multiplier, proves the inverse
-  equations and coefficient recurrences, and identifies the bounded
-  self-adjoint `R+R*-I` with the geometric KMS matrix. This equivalent
-  construction avoids an unnecessary second inverse operator.
-- `HTGeometry/HardyBlaschkeNumberModes.lean` passed its scratch check and first
-  dependency olean build. It contains the squared-resolvent
-  recurrence, adjoint kernel identity, exact Blaschke/KMS coefficients, and
-  number-domain proofs through bounded images.
-- `HTGeometry/ClosedEigenbasisDomain.lean` passed its scratch check and first
-  dependency olean build. It gives the full graph/domain and
-  self-adjointness argument for a complete real eigenbasis. The existing
-  `LinearPMapBoundedUnitaryTransport` already supplies bounded-perturbation
-  closedness and unitary transport, so those helpers will be reused.
-- `HTGeometry/HardyNumberMinusKMS.lean` defines the actual maximal-number-domain
-  bounded perturbation and assembles local eigenmodes, domain equivalence, and
-  self-adjointness. Scratch check and first dependency olean build passed.
-- `HTGeometry/LpProductUnitary.lean` proves tensor unitaries, product Hilbert bases,
-  and bounded fibre operators on actual product coordinates. It reuses
-  `LpTwoCurry`, `LpFamilyIsometry`, `WoldThermofieldStandardForm`, and Mathlib's
-  `lp.mapCLM` (located after corpus search). Scratch and first dependency
-  olean build passed.
-- `HTGeometry/LpFiniteProductUnitary.lean` proves finite product-basis assembly by
-  empty/option induction. Scratch and first dependency olean build passed.
-  `RAPT/TheAdjunctionEnergySeparatesValuations.lean` proves strict local rational
-  weights, injectivity of their prime-log sum, and nonnegativity/logarithmic bounds
-  for the tame different. Scratch check and first required dependency build passed.
-- `RAPT/TheSieveClassesAreValuationCoordinates.lean` proves the exact
-  `SieveSupported`/exponent-function equivalence, its logarithmic degree, and
-  off-prime coordinate agreement. Scratch and first dependency build passed.
-  `HTGeometry/ClosedEigenbasisPositiveInverse.lean` proves actual graph inverse
-  equations and compactness from proper positive eigenvalues. Scratch check
-  and first required dependency build passed.
-- `HTGeometry/HardyNumberSpectrum.lean` reindexes the local basis by natural labels.
-  Scratch and first dependency build passed.
-- `HTGeometry/LpFiniteCoordinateOperator.lean` proves exact coordinate-fibre matrix
-  and product-basis actions. Scratch and first dependency build passed.
-  `HTGeometry/FiniteBlaschkeNumberOperator.lean` assembles finite weighted local
-  operators on their actual maximal domain. Scratch check and first required
-  dependency build passed, including complete spectral-domain equivalence and
-  self-adjointness.
-- `RAPT/TheSieveExcitationsHaveAdjunctionEnergy.lean` proves exact prime-ground
-  cancellation, the tame-different label, simple arithmetic energies, and properness.
-  Scratch check and first required dependency build passed.
-  `/tmp/TheTowerNumberFormIsAWeightedSquareSum.lean` drafts the finite square identity.
-  `RAPT/TheFiniteSieveHorizonDefectHasTheClassEnergy.lean` proves the actual matched
-  horizon limit in original class coordinates. Scratch check passed; its first
-  required dependency build is active. The finite-square draft awaits checking.
-- `RAPT/TheSievePrimeKernelIsABoundedOperator.lean` proves the exact bounded,
-  self-adjoint extension of the literal prime kernel on all supported integers.
-  Its matrix identification uses the full off-prime valuation equivalence;
-  that equivalence has been added to the valuation-coordinate scratch draft.
-  Fibre matrix evaluation is isolated in `HTGeometry/LpGeometricCoordinateKernel.lean`
-  to keep Hardy-space coercions out of the arithmetic comparison. An explicit
-  equality identifies singleton vectors formed with different equality instances.
-  Scratch check and first required dependency build passed; the refactored
-  arithmetic kernel comparison passed after the same singleton normalization
-  was supplied for the finite exponent-function index. Its first dependency
-  olean build passed.
-- `RAPT/TheSieveOperatorHasTheAdjunctionEigenbasis.lean` proves the actual
-  transported operator, original maximal log domain, explicit product coefficients,
-  literal kernel action, simple arithmetic energies, and full spectral domain.
-  Scratch check and first required dependency build passed. It also proves
-  every actual eigenvector lies on its one-dimensional basis line, and every
-  nonzero eigenvector has an energy from the arithmetic list.
-- `RAPT/TheAdjunctionResolventIsCompact.lean` proves the positive shifted operator,
-  reciprocal basis inverse, both actual-domain inverse equations, and compactness.
-  Scratch check passed. Sixteen transitive endpoint reports use only `propext`,
-  `Classical.choice`, and `Quot.sound`; saved in
-  `logs/local-valuation-adjunction-axioms-2026-10-28.log`. No olean is needed for this leaf.
-- `RAPT/TheSieveHorizonDefectIsTheAdjunctionOperator.lean` proves the exact finite
-  Hilbert quadratic form and its actual horizon limit, with final statement
-  quantified over a finite set of supported classes and arbitrary real coefficients.
-  Scratch check passed. Both endpoint axiom reports use only `propext`,
-  `Classical.choice`, and `Quot.sound`; appended to the persistent audit log.
-  No olean is needed for this leaf. The finite weighted-square identity is checking.
-- `HTGeometry/HardyBlaschkeCoefficients.lean` proves the closed normalized ground
-  and excitation coefficient formulas from the existing Szego-kernel norm identity.
-  Scratch check and first required dependency build passed.
-  This exposes the precise coefficients of the product basis stated above.
-- Inspected: `HardyDiskModelSpace`, `HardyBeurlingInvariantSubspace`,
-  `BoundedResolventNeumann`, `MaximalRealDiagonalSelfAdjoint`,
-  `DiagonalCompactOperator`, `HistoryTensorOperators`,
-  `TheTowerFormOfAPrime`, `ThePrimeKernelIsASumOfTransverseTowers`,
-  `TheDifferentOfATorsionOrbit`, and the formalized finite-sieve package.
-- `HilbertBasis.mkOfOrthogonalEqBot` and `IsSelfAdjoint.isClosed` were located
-  in Mathlib after corpus search. New uses must pass scratch checks before
-  repository insertion. The dependency oleans listed above exist.
-- Generic helpers and the local finite identity are not separate contributions.
-  The main actual operator and complete spectral-domain theorem are checked in
-  scratch. Compact inverse and horizon bridge have passed scratch and their
-  endpoint axiom audits. The finite-square check, final actual-source checks,
-  and umbrella wiring remain; the contribution is uncounted.
+All twenty-two implementation sources passed scratch checks. Nineteen endpoint
+transitive axiom reports contain exactly `propext`, `Classical.choice`, and
+`Quot.sound`; evidence is preserved in
+`logs/local-valuation-adjunction-axioms-2026-10-28.log`.
+Final direct actual-source checks remain in progress, recorded individually in
+`logs/local-valuation-adjunction-source-audit-2026-10-28.log`.
+Both umbrellas import the finished sources without an umbrella compilation.
+No prohibited proof mechanism or raised elaboration limit occurs in these sources.
+The contribution remains uncounted until every final check passes.
 
-- [x] 0 -> 1: explicit operator, actual horizon bridge, corpus novelty audit.
-- [x] Paper proof above closes the local and finite-prime domains and inputs.
-- [ ] Exact Lean formalization and final audit.
+### Actual arithmetic endpoints
+
+All following declarations are in namespace
+`GaloisForLFunctions.RenormalizedArithmeticPotentialTheory`.
+
+- `TheSievePrimeKernelIsABoundedOperator.lean`:
+  `sievePrimeOperator_single` identifies every literal Weil-kernel matrix entry;
+  `sievePrimeOperator_isSelfAdjoint` proves the bounded extension self-adjoint.
+- `TheSieveOperatorHasTheAdjunctionEigenbasis.lean`:
+  `sieveAdjunctionBasis_coefficients` gives the explicit complete product basis;
+  `sieveAdjunctionOperator_domain` and `sieveAdjunctionOperator_apply` identify
+  the original maximal log domain and literal operator action;
+  `sieveAdjunctionOperator_isSelfAdjoint` and `sieveAdjunctionOperator_basis`
+  prove self-adjointness and the exact arithmetic eigenvector equations;
+  `sieveAdjunctionOperator_spectral_domain` and
+  `sieveAdjunctionOperator_spectral_action` identify the entire spectral domain/action;
+  `matchedSieveEnergy_injective`, `sieveAdjunctionOperator_eigenvector_line`, and
+  `sieveAdjunctionOperator_eigenvalue_mem_range` prove simplicity and exhaust point eigenvalues;
+  `matchedSieveEnergy_eq_selfIntersection` gives the torsion-adjunction expression.
+- `TheAdjunctionResolventIsCompact.lean`:
+  `sieveAdjunctionInverse_mem_domain`, `shiftedSieveAdjunctionOperator_inverse`,
+  and `sieveAdjunctionInverse_shiftedOperator` prove both actual-domain inverse equations;
+  `sieveAdjunctionInverse_basis` gives the reciprocal eigenvalues;
+  `sieveAdjunctionInverse_isCompact` proves compactness.
+- `TheFiniteSieveHorizonDefectHasTheClassEnergy.lean`:
+  `tendsto_sieveProfile_matched_defect` computes the matched limit in original class coordinates.
+- `TheSieveHorizonDefectIsTheAdjunctionOperator.lean`:
+  `inner_sieveClassVector_adjunction` identifies the actual finite Hilbert form;
+  `tendsto_sieveHorizonDefect_adjunction` proves its exact horizon-defect limit
+  for every finite set of supported classes and arbitrary real coefficients.
+- `TheTowerNumberFormIsAWeightedSquareSum.lean`:
+  `towerNumberForm_eq_weighted_squares` proves the finite ground/excitation square identity
+  for every real parameter, including degenerate values.
+
+### Supporting construction
+
+The arithmetic coordinate and label modules are
+`TheAdjunctionEnergySeparatesValuations.lean`,
+`TheSieveClassesAreValuationCoordinates.lean`, and
+`TheSieveExcitationsHaveAdjunctionEnergy.lean`.
+They prove exact unique-factorization coordinates, logarithmic degree, rational
+prime-log separation, Euler-ground cancellation, and proper positive shifted energies.
+
+The thirteen `HTGeometry` modules are
+`HardyBlaschkeMonomialBasis.lean`, `HardyGeometricResolvent.lean`,
+`ClosedEigenbasisDomain.lean`, `HardyBlaschkeNumberModes.lean`,
+`HardyNumberMinusKMS.lean`, `LpProductUnitary.lean`,
+`LpFiniteProductUnitary.lean`, `HardyNumberSpectrum.lean`,
+`LpFiniteCoordinateOperator.lean`, `FiniteBlaschkeNumberOperator.lean`,
+`HardyBlaschkeCoefficients.lean`, `ClosedEigenbasisPositiveInverse.lean`, and
+`LpGeometricCoordinateKernel.lean`.
+They construct the actual local resolvent/KMS operator and complete basis,
+identify the closed operator graph from complete eigenvectors, assemble finite
+product coordinates, and prove the actual compact inverse through those coordinates.
+Generic helpers and finite algebra are supporting work, not separate contributions.
+
+Corpus inputs inspected include `HardyDiskModelSpace`,
+`HardyBeurlingInvariantSubspace`, `HardyLeakageRankOne`,
+`MaximalRealDiagonalSelfAdjoint`, `LinearPMapBoundedUnitaryTransport`,
+`DiagonalCompactOperator`, `LpTwoCurry`, `LpFamilyIsometry`,
+`TheTowerFormOfAPrime`, `ThePrimeKernelIsASumOfTransverseTowers`,
+`TheDifferentOfATorsionOrbit`, and the finite-sieve horizon package.
+Mathlib was consulted only after corpus search; new uses passed scratch checks
+before repository insertion. Only first oleans required by dependent files were built.
+
+- [x] Explicit actual operator and horizon bridge; corpus novelty audit.
+- [x] Dependency-closed paper proof above.
+- [x] Exact Lean realization and nineteen clean transitive endpoint axiom audits.
+- [x] Umbrella wiring and foundational README update.
+- [ ] Final direct actual-source checks and scratch cleanup.

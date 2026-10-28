@@ -37,7 +37,7 @@ theorem movingBandFloor_pos (N : ℕ) : 0 < movingBandFloor N := by
   positivity
 
 private theorem fullWidth_lt_one_and_spacing {N : ℕ} (hN : 1 ≤ N)
-    {w : ℝ} (hw0 : 0 < w) (hw : w ≤ fullSectionRatio * atomSpacing N) :
+    {w : ℝ} (hw : w ≤ fullSectionRatio * atomSpacing N) :
     w < 1 ∧ w < atomSpacing N := by
   have hr : fullSectionRatio < 1 := by
     linarith only [fullSectionRatio_le_half_spacing, spacingRatio_lt_half]
@@ -49,7 +49,7 @@ private theorem fullWidth_lt_one_and_spacing {N : ℕ} (hN : 1 ≤ N)
     simpa only [div_eq_mul_inv, one_mul] using h
   have hwN := (le_div_iff₀ hN0).mp hwdiv
   refine ⟨?_, ?_⟩
-  · nlinarith only [hwN, hw0, hN1, hr]
+  · nlinarith only [hwN, hN1, hr]
   · exact hw.trans_lt (by simpa only [one_mul] using
       mul_lt_mul_of_pos_right hr (atomSpacing_pos hN))
 
@@ -58,14 +58,14 @@ theorem movingArithmeticBand_mass_floor {N : ℕ} (hN : 1 ≤ N) {w : ℝ}
     (hw0 : 0 < w) (hw : w ≤ fullSectionRatio * atomSpacing N)
     (G : ℕ → ℝ → ℝ) (hg : ∀ n, ContDiff ℝ 2 (G n))
     (hs : ∀ n u, u ∉ Icc 0 w → G n u = 0)
-    (hband : ∀ n, (n : ℝ) < (N : ℝ) / 2 → G n = 0) :
+    (hband : ∀ n : ℕ, (n : ℝ) < (N : ℝ) / 2 → G n = 0) :
     movingBandFloor N * sectionMass (movingArithmeticBandTest N G hg hs).1 ≤
       realWeilForm (movingArithmeticBandTest N G hg hs) (movingArithmeticBandTest N G hg hs) := by
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hlog := Real.log_natCast_nonneg N
   have hmass := integral_arithmeticSection_sq (fun n => (hg n).continuous)
     (fun n => profile_hasCompactSupport (hs n)) hs
-    (fullWidth_lt_one_and_spacing hN hw0 hw).2
+    (fullWidth_lt_one_and_spacing hN hw).2
   have hreserve : (1 + (1 + Real.log N) / 2) * sectionMass (arithmeticSection N G) ≤
       sectionReserve N G := by
     change (1 + (1 + Real.log N) / 2) * (∫ u, arithmeticSection N G u ^ 2) ≤ _
@@ -102,11 +102,11 @@ theorem movingArithmeticBand_eq_zero_off_window {N : ℕ} (hN : 1 ≤ N) {w : �
     (hw0 : 0 < w) (hw : w ≤ fullSectionRatio * atomSpacing N)
     (G : ℕ → ℝ → ℝ) (hg : ∀ n, ContDiff ℝ 2 (G n))
     (hs : ∀ n u, u ∉ Icc 0 w → G n u = 0)
-    (hband : ∀ n, (n : ℝ) < (N : ℝ) / 2 → G n = 0)
+    (hband : ∀ n : ℕ, (n : ℝ) < (N : ℝ) / 2 → G n = 0)
     (u : ℝ) (hu : u ∉ Icc (-Real.log 2) 1) :
     (movingArithmeticBandTest N G hg hs).1 u = 0 := by
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
-  have hw1 := (fullWidth_lt_one_and_spacing hN hw0 hw).1
+  have hw1 := (fullWidth_lt_one_and_spacing hN hw).1
   change (∑ n ∈ Finset.Icc 1 N, G n (u - (-Real.log N) - Real.log n)) = 0
   apply Finset.sum_eq_zero
   intro n hn
@@ -129,7 +129,7 @@ theorem movingArithmeticBand_source_coupling {N : ℕ} (hN : 1 ≤ N) {w : ℝ}
     (hw0 : 0 < w) (hw : w ≤ fullSectionRatio * atomSpacing N)
     (G : ℕ → ℝ → ℝ) (hg : ∀ n, ContDiff ℝ 2 (G n))
     (hs : ∀ n u, u ∉ Icc 0 w → G n u = 0)
-    (hband : ∀ n, (n : ℝ) < (N : ℝ) / 2 → G n = 0) (g : realTests) :
+    (hband : ∀ n : ℕ, (n : ℝ) < (N : ℝ) / 2 → G n = 0) (g : realTests) :
     movingBandFloor N * realWeilForm (movingArithmeticBandTest N G hg hs) g ^ 2 ≤
       sourceKernelEnergy (Icc (-Real.log 2) 1) g *
         realWeilForm (movingArithmeticBandTest N G hg hs) (movingArithmeticBandTest N G hg hs) := by
@@ -169,7 +169,7 @@ theorem movingArithmeticBand_unit_energy_pairing_tendsto_zero (g : realTests)
       ∀ hw : w ≤ fullSectionRatio * atomSpacing N,
       ∀ G : ℕ → ℝ → ℝ, ∀ hg : ∀ n, ContDiff ℝ 2 (G n),
       ∀ hs : ∀ n u, u ∉ Icc 0 w → G n u = 0,
-      (∀ n, (n : ℝ) < (N : ℝ) / 2 → G n = 0) →
+      (∀ n : ℕ, (n : ℝ) < (N : ℝ) / 2 → G n = 0) →
       realWeilForm (movingArithmeticBandTest N G hg hs) (movingArithmeticBandTest N G hg hs) ≤ 1 →
       |realWeilForm (movingArithmeticBandTest N G hg hs) g| < ε := by
   let D := sourceKernelEnergy (Icc (-Real.log 2) 1) g

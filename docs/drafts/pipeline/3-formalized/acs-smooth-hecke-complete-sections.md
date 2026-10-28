@@ -1,8 +1,8 @@
 # Smooth complete arithmetic sections with exact pole degrees
 
 - **ID:** acs-smooth-hecke-complete-sections
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Route:** ACS: source sections → Riemann–Roch and ampleness → Hodge index → RH.
 - **Statement:** Complete logarithmic cells admit injective realization in the original compact C² test carrier, preserving exact Hecke subdivision and both pole moments, and recovering the original full arithmetic form.
 
@@ -49,23 +49,14 @@ Namespace: `GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells`.
 
 ## Verification
 
-The four sources have passed Lean checking through their checked drafts or required dependency builds. Seventeen principal transitive axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. All four modules are imported by the ACS umbrella; the umbrella is not compiled.
+All four modules passed plain exact-file checks from `formal/` with `lake --old env lean`, exit 0, no warnings. Seventeen principal transitive axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. No placeholders, new axioms, trusted-computation shortcuts, or raised resource limits occur in these modules.
 
-Final plain exact-project-file checks remain before promotion:
-
-- [ ] `PolePreservingSmoothing.lean`
-- [ ] `SmoothArithmeticCellSections.lean`
-- [ ] `SmoothCompleteWeilTransfer.lean`
-- [x] `SmoothFiniteCellArithmeticForm.lean` — exit 0; all three audits standard-only.
+All four modules are imported by the ACS umbrella; the umbrella was not compiled. The card moved directly from stage 1 to stage 3 after verification.
 
 ## Remaining ACS blockers
 
 Full-source effectivity and the signed Gamma–prime–pole index bound remain open on `acs-complete-cell-index-payment`. The construction closes smooth realization and exact arithmetic compatibility; no positivity of arbitrary complete-cell forms is asserted.
 
-## Working state
-
-Owned checked drafts: `/tmp/acs-polar-mollifier-api.lean`, `/tmp/acs-polar-smoothing-draft.lean`, `/tmp/acs-polar-smoothing-extension.lean`, `/tmp/acs-smooth-cells-draft.lean`, `/tmp/acs-smooth-weil-draft.lean`, `/tmp/acs-smooth-finite-form-draft.lean`. Remove these and the owned ACS check logs after the final audits.
-
 ## Log
 
-- 2026-10-28 — Constructed and checked all four modules. Final plain exact-file audits pending; no stage-2 card created.
+- 2026-10-28 — Formalized smooth complete-cell realization, exact Hecke and pole compatibility, dimension, and the original full-form limit. All final audits passed; promoted directly from stage 1 to stage 3.

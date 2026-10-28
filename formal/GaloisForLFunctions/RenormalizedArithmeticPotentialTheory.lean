@@ -17,6 +17,15 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanP
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheMatchedPrimePlaceHasAHodgeIndexOnTheClasses
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.ThePoleIsTheTopOfThePrimeForm
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheValuationTowerIsExactlySolvable
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheAdjunctionEnergySeparatesValuations
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheSieveClassesAreValuationCoordinates
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheSieveExcitationsHaveAdjunctionEnergy
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheSievePrimeKernelIsABoundedOperator
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheSieveOperatorHasTheAdjunctionEigenbasis
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFiniteSieveHorizonDefectHasTheClassEnergy
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheAdjunctionResolventIsCompact
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheSieveHorizonDefectIsTheAdjunctionOperator
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTowerNumberFormIsAWeightedSquareSum
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheDeficitOfThePrimeFormIsADirichletEnergy
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartOfTheMarkovFormAtTheSpacing
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanFinitePartIsMinusLogTwoPi
@@ -41,7 +50,8 @@ covariance, the covariant counterterm `log N + O(1)` and the cost of the anomaly
 regulator, its polar divergence on uniform profiles, its unbounded rank on the torsion orbits, the
 tensor law joining the two and its Hecke covariance without anomaly; the finite part `−2γ` on
 uniform profiles and the tower forms on classes of any finite prime sieve, with one shared Euler
-constant and a signed step-profile law; the spectral ends of the atomic prime
+constant and a signed step-profile law; the actual matched finite-sieve operator, its complete
+Blaschke basis, simple torsion-adjunction energies and compact shifted inverse; the spectral ends of the atomic prime
 form, the Liouville flip of the polar divergence and the matching law for sign gauges; the matched
 stability law at atomic resolution; the laws in one statement.
 See `RenormalizedArithmeticPotentialTheory/README.md`.

@@ -27,3 +27,5 @@ Prove the signed index estimate on the source-complete cells constructed in `Com
 ## Log
 
 - 2026-10-28 — Opened after formalizing full finite-source transfer. Investigating actual signed payment; no new sign claim is certified.
+
+- 2026-10-28 — [Smooth complete-cell realization](../3-formalized/acs-smooth-hecke-complete-sections.md) is formalized and audited. Exact source realization and arithmetic compatibility are available; full signed index payment remains open.
