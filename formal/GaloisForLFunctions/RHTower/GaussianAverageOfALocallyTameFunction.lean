@@ -77,7 +77,9 @@ theorem integrable_gaussDensity_mul_sq_mul_exp_abs {t : ℝ} (ht : 0 < t) (c : �
       (((integrable_gaussDensity_mul_rexp' ht _).add
         (integrable_gaussDensity_mul_rexp' ht _)).const_mul _)
   refine hmaj.mono' ?_ (Eventually.of_forall fun u => ?_)
-  · exact ((continuous_gaussDensity_aux ht).mul (by fun_prop)).aestronglyMeasurable
+  · have hcont : Continuous fun u : ℝ => gaussDensity t u := by
+      unfold gaussDensity; fun_prop
+    exact (hcont.mul (by fun_prop)).aestronglyMeasurable
   · have hg := (gaussDensity_pos ht u).le
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     calc gaussDensity t u * (u ^ 2 * Real.exp (c * |u|))
@@ -95,15 +97,18 @@ theorem integral_gaussDensity_mul_sq_mul_exp_abs_le {t : ℝ} (ht : 0 < t) (c : 
     linarith
   have hp := integral_gaussDensity_mul_rexp ht (2 * c)
   have hm := integral_gaussDensity_mul_rexp ht (-(2 * c))
-  have hi4 := (integrable_gaussDensity_mul_pow ht 4).div_const (2 * t)
+  have hi4 : Integrable (fun u : ℝ => gaussDensity t u * u ^ 4 / (2 * t)) :=
+    (integrable_gaussDensity_mul_pow ht 4).div_const (2 * t)
   have hip := integrable_gaussDensity_mul_rexp' ht (2 * c)
   have him := integrable_gaussDensity_mul_rexp' ht (-(2 * c))
+  have hg : Integrable (fun u : ℝ => t / 2 * (gaussDensity t u * Real.exp (u * (2 * c))
+      + gaussDensity t u * Real.exp (u * (-(2 * c))))) := (hip.add him).const_mul _
   calc ∫ u : ℝ, gaussDensity t u * (u ^ 2 * Real.exp (c * |u|))
       ≤ ∫ u : ℝ, (gaussDensity t u * u ^ 4 / (2 * t)
           + t / 2 * (gaussDensity t u * Real.exp (u * (2 * c))
             + gaussDensity t u * Real.exp (u * (-(2 * c))))) := by
         refine integral_mono (integrable_gaussDensity_mul_sq_mul_exp_abs ht c)
-          (hi4.add ((hip.add him).const_mul _)) fun u => ?_
+          (hi4.add hg) fun u => ?_
         have hg := (gaussDensity_pos ht u).le
         calc gaussDensity t u * (u ^ 2 * Real.exp (c * |u|))
             ≤ gaussDensity t u * (u ^ 4 / (2 * t)
@@ -112,8 +117,8 @@ theorem integral_gaussDensity_mul_sq_mul_exp_abs_le {t : ℝ} (ht : 0 < t) (c : 
           _ = _ := by ring
     _ = 12 * t ^ 2 / (2 * t) + t / 2 * (Real.exp (t * (2 * c) ^ 2)
           + Real.exp (t * (-(2 * c)) ^ 2)) := by
-        rw [integral_add hi4 ((hip.add him).const_mul _), integral_div, h4,
-          integral_const_mul, integral_add hip him, hp, hm]
+        rw [integral_add hi4 hg, integral_div, h4, integral_const_mul, integral_add hip him,
+          hp, hm]
     _ ≤ 7 * t * Real.exp (4 * c ^ 2 * t) := by
         have he : Real.exp (t * (2 * c) ^ 2) = Real.exp (4 * c ^ 2 * t) := by ring_nf
         have he' : Real.exp (t * (-(2 * c)) ^ 2) = Real.exp (4 * c ^ 2 * t) := by ring_nf
