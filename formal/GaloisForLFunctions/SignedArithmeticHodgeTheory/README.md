@@ -273,6 +273,21 @@ constructs the Hilbert basis \(\{e_1\}\cup\{d_a:a\ge1\}\) of \(K\).
 The two weighted coordinate equations determine each cell pair, proving that
 these readouts leave no missing wandering direction.
 
+The inverse pair rotation is finite:
+
+\[
+e_{2a}=\alpha_aW_2e_a+\beta_ad_a,\qquad
+e_{2a+1}=\beta_aW_2e_a-\alpha_ad_a.
+\]
+
+[EveryFiniteCellSourceHasFiniteDyadicCoordinates](EveryFiniteCellSourceHasFiniteDyadicCoordinates.lean)
+uses induction on the integer label to prove that every finite cell source
+has an exact finite expansion in \(W_2^je_1\) and \(W_2^jd_a\). It constructs
+the complete Hilbert basis and an isometric coordinate map indexed by
+\(\mathbb N\times(\{*\}\sqcup\mathbb N_{>0})\). Each coordinate is the inner
+product with its literal generator. The finite expansion theorem permits
+finite source identities before invoking any continuity of an unbounded form.
+
 This is Hilbert orthogonality in the closed logarithmic-cell subspace.
 Joint Gamma estimates across levels and full-Weil mixed bounds remain separate.
 The cell completion is not identified with the entire continuous source graph.
@@ -296,6 +311,15 @@ fraction of Gamma energy, uniformly in the horizon. Its Gamma energy is evaluate
 complete source, with all coarse coefficients free. Finitely many detail coordinates therefore
 approximate this mixed term. Summing such estimates across primes or levels still requires one
 joint reserve allocation; the one-prime estimate does not supply the coarse-generator sign.
+
+[TranslatedDetailsAreUniformlySmallInGammaEnergy](../ArithmeticIndexDescent/TranslatedDetailsAreUniformlySmallInGammaEnergy.lean)
+also bounds the correlation of a high-detail section with any real translate
+of its original complete profile by \(\Gamma(f)/\log A\), for \(A>1\).
+The bound is uniform in translation and retains all original coarse coefficients.
+It remains a single-level estimate. A candidate joint proof partitions pairs
+of points by their unique dyadic sibling rectangle, pays each parent variance
+once, and counts the ancestors of every finer detail. The root mean orbits
+remain a separate arithmetic sector.
 
 ### Renormalized adjunction
 
@@ -496,6 +520,9 @@ intermediate statement must state precisely which endpoint remains open.
   contains a nontrivial Weil radical.
 * Ordinary mean zero, the discrete harmonic pole constraint and two continuous exponential
   moments are different conditions.
+* The sparse Euler-label shift sends \(e_m\) to \(e_{2m}\). The complete-cell
+  clock sends it to \(\alpha_me_{2m}+\beta_me_{2m+1}\). A pole-hyperplane theorem
+  for the first map cannot be assigned to the second without a source comparison.
 * Shared Gamma reserve cannot be spent separately on every block. Summed estimates must
   account for each source term exactly once.
 * Fixed support, fixed conductor and fixed profile variation do not supply uniform growing

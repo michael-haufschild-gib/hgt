@@ -422,3 +422,29 @@ The ground shift alpha<1 remains below every nontrivial arithmetic excitation
 needs its own exact proof or a checked existing lemma. All other energies
 retain the established injectivity. This is one stronger target for the same
 prospective contribution, not a numerical improvement counted separately.
+
+Exact separation check: AES `primeSum_atomicTest` and RAPT
+`integral_sub_shift_sq_atomicTest_eq` already assume only w<atomSpacing(N);
+SSHA `levyEnergy_atom_pair` assumes only w<s. Their source statements and
+relevant proofs were inspected. Thus their half-spacing relaxation is not an
+outstanding gap: the full separated range is already supported by these inputs.
+The identity for the synthesized mass still needs its exact named interface.
+
+New programme baseline: SMAP README was read through its questions/tools, and
+`TheConductorTwoIsTheFirstExcitation.lean` was inspected. Its
+`ramanujanAdjunctionEnergy_sub_one_ge` proves the sharp first excitation
+2*log(2), attained only at conductor two. It imports the completed quasimodes.
+Its selective gap-transfer and Garding results are baseline, not a new claim
+here. The proper shifted-energy ordering can reuse that exact gap. The
+finite weighted Schur proof in HTGeometry was also inspected; a variable
+diagonal version or existing ground-state identity is needed for the n-weighted
+center row. The scalar Schur theorem alone would lose this essential weight.
+
+Further exact baseline reuse: SMAP `TheSelectiveGardingInequality` was
+inspected through `harmonicSum_poleProj`, `sum_sq_poleProj`, and
+`poleDefect_sub_pole`. It already proves the projection and defect invariance
+needed above. The new unchecked generic support draft
+`/tmp/FiniteWeightedGroundStateBound.lean` retains the exact variable Schur
+row potential; it is an adapter of the inspected weighted-AMGM argument.
+No full-Weil Liouville sign claim is being inferred from global mean
+cancellation: the required local harmonic convolution is a separate input.

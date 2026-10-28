@@ -81,7 +81,9 @@ generates the self-similarity of the complete source.
 of level details (pillar 9), and every translation-invariant form has level-Toeplitz Grams. A
 level is paid when its coupling to the coarser part costs less than its detail reserve, and
 summable costs keep positivity under infinite refinement (pillar 7). The pole hyperplane is invariant
-under the dyadic step, so on it the pole couplings between levels vanish (pillar 10).
+under the dyadic step, so on it the pole couplings between levels vanish (pillar 10). Off it they
+grow like \(2^{|k-j|/2}\) and form one hyperbolic plane (pillar 11): the pole is never a summable
+level cost, and one linear condition removes it.
 
 ---
 
@@ -207,6 +209,17 @@ under the dyadic step, so on it the pole couplings between levels vanish (pillar
       invariant;
     - `weilQuad_twoLevel_eq_markov`: multiresolution combinations of hyperplane tests are hyperplane
       tests, and their pole term vanishes.
+11. **The pole couples the levels hyperbolically** (`ThePoleCouplesTheLevelsHyperbolically`):
+    - `polePairing_shift`: the pole pairing of two copies of a generator is
+      \(2A(f)B(f)\cosh((t-s)/2)\), so between dyadic levels it grows like \(2^{|k-j|/2}\);
+    - `polePairing_shift_eq_zero_iff`: all pole couplings vanish iff \(A(f)B(f)=0\);
+    - `weilQuad_levelOrbit_eq`: on a level orbit \(F=\sum_jc_jf(\cdot-s_j)\) the pole term is the
+      rank-two form \(2A(f)B(f)(\sum_jc_je^{-s_j/2})(\sum_jc_je^{s_j/2})\);
+    - `exists_poleMomentA_levelOrbit_eq_zero`, `poleTerm_twoLevels_opposite`: it is negative on at
+      most one direction of coefficients, and two levels of a generator with \(A(f)B(f)\ne0\) span a
+      hyperbolic plane;
+    - `poleMomentA_levelOrbit_eq_zero_iff`: the orbit lies on the pole hyperplane iff
+      \(\sum_jc_j2^{-j/2}=0\), the harmonic hyperplane of the atoms at \(2^j\).
 
 ---
 
@@ -293,6 +306,7 @@ under the dyadic step, so on it the pole couplings between levels vanish (pillar
 - complete cells, translations, the doubled cell, the RG step and the multiresolution;
 - orbit pairings and the level-Toeplitz law;
 - the dyadic shift of atomic weights and its action on Weil's form, mass and the harmonic coordinate.
+- pole moments of level orbits, the cosh law and the hyperbolic signature of the pole across levels.
 
 **To build:**
 

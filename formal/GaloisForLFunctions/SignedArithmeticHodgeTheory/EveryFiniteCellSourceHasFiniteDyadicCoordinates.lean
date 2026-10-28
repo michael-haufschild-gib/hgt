@@ -132,7 +132,7 @@ theorem orthonormal_logCellDyadicOrbit : Orthonormal ℂ logCellDyadicOrbit := b
   by_cases hjk : j = k
   · subst k
     simp only [ite_true, Prod.mk.injEq, true_and]
-  · simp only [if_neg hjk, Prod.mk.injEq, hjk, false_and, if_false]
+  · simp only [Prod.mk.injEq, hjk, false_and, if_false]
 
 /-- Finite-source exhaustion yields the complete Hilbert coordinate space. -/
 theorem logCellDyadicFiniteSpan_dense : logCellDyadicFiniteSpan.topologicalClosure = ⊤ := by
@@ -142,7 +142,10 @@ theorem logCellDyadicFiniteSpan_dense : logCellDyadicFiniteSpan.topologicalClosu
     exact single_mem_logCellDyadicFiniteSpan n
   have h := Submodule.topologicalClosure_mono hspan
   have hfull : (Submodule.span ℂ (Set.range e)).topologicalClosure = ⊤ := by
-    simpa only [HilbertSchmidt.lpBasis_apply] using (HilbertSchmidt.lpBasis ℕ+).dense_span
+    have he : ⇑(HilbertSchmidt.lpBasis ℕ+) = e := by
+      funext n
+      exact HilbertSchmidt.lpBasis_apply n
+    simpa only [he] using (HilbertSchmidt.lpBasis ℕ+).dense_span
   rw [hfull] at h
   exact le_antisymm le_top h
 

@@ -130,4 +130,234 @@ theorem natDegree_dcPoly_lt (hr : 1 ≤ r) (n : ℕ) : (dcPoly r n).natDegree < 
 
 end Glue
 
+/-! ### The weights `(j!)^{1/r}` -/
+
+section Weights
+
+variable {r : ℕ}
+
+/-- The weight `w_j = (j!)^{1/r}`. -/
+def dcW (r j : ℕ) : ℝ := (j.factorial : ℝ) ^ ((r : ℝ)⁻¹)
+
+/-- `W_D(Q) = Σ_{j<D} |c_j| (j!)^{1/r}`. -/
+def dcNorm (r D : ℕ) (p : ℝ[X]) : ℝ := ∑ j ∈ Finset.range D, |p.coeff j| * dcW r j
+
+theorem dcW_nonneg (r j : ℕ) : 0 ≤ dcW r j := by unfold dcW; positivity
+
+theorem dcNorm_nonneg (r D : ℕ) (p : ℝ[X]) : 0 ≤ dcNorm r D p :=
+  Finset.sum_nonneg fun j _ => mul_nonneg (abs_nonneg _) (dcW_nonneg r j)
+
+/-- `t^j e^{−t^r} ≤ (j!)^{1/r}`: its `r`-th power is at most `(t^r)^j e^{−t^r} ≤ j!`. -/
+theorem pow_mul_exp_neg_pow_le (hr : 1 ≤ r) {t : ℝ} (ht : 0 ≤ t) (j : ℕ) :
+    t ^ j * Real.exp (-(t ^ r)) ≤ dcW r j := by
+  have hr0 : r ≠ 0 := by omega
+  set y := t ^ j * Real.exp (-(t ^ r))
+  have hy : 0 ≤ y := by positivity
+  have htr : 0 ≤ t ^ r := pow_nonneg ht r
+  have hyr : y ^ r ≤ (j.factorial : ℝ) := by
+    have e : y ^ r = (t ^ r) ^ j * Real.exp ((r : ℝ) * (-(t ^ r))) := by
+      simp only [y, mul_pow, ← pow_mul, Real.exp_nat_mul]
+      ring_nf
+    have h1 : Real.exp ((r : ℝ) * (-(t ^ r))) ≤ Real.exp (-(t ^ r)) := by
+      rw [Real.exp_le_exp]
+      have : (1 : ℝ) ≤ r := by exact_mod_cast hr
+      nlinarith
+    have h2 := Real.pow_div_factorial_le_exp (t ^ r) htr j
+    have hf : (0 : ℝ) < (j.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos j
+    rw [div_le_iff₀ hf] at h2
+    have h3 : (t ^ r) ^ j * Real.exp (-(t ^ r)) ≤ (j.factorial : ℝ) := by
+      rw [Real.exp_neg, ← div_eq_mul_inv, div_le_iff₀ (Real.exp_pos _)]
+      linarith [mul_comm (Real.exp (t ^ r)) (j.factorial : ℝ)]
+    rw [e]
+    exact (mul_le_mul_of_nonneg_left h1 (pow_nonneg htr j)).trans h3
+  rw [← Real.pow_rpow_inv_natCast hy hr0]
+  exact Real.rpow_le_rpow (pow_nonneg hy r) hyr (by positivity)
+
+/-- `|Q(t)| e^{−t^r} ≤ W_D(Q)` for `t ≥ 0` and `deg Q < D`. -/
+theorem abs_eval_mul_exp_neg_pow_le (hr : 1 ≤ r) {p : ℝ[X]} {D : ℕ} (hD : p.natDegree < D)
+    {t : ℝ} (ht : 0 ≤ t) : |p.eval t| * Real.exp (-(t ^ r)) ≤ dcNorm r D p := by
+  rw [eval_eq_sum_range' hD, dcNorm]
+  refine (mul_le_mul_of_nonneg_right (Finset.abs_sum_le_sum_abs _ _) (Real.exp_pos _).le).trans ?_
+  rw [Finset.sum_mul]
+  refine Finset.sum_le_sum fun j _ => ?_
+  rw [abs_mul, abs_pow, abs_of_nonneg ht, mul_assoc]
+  exact mul_le_mul_of_nonneg_left (pow_mul_exp_neg_pow_le hr ht j) (abs_nonneg _)
+
+theorem dcW_succ (r i : ℕ) : dcW r (i + 1) = ((i : ℝ) + 1) ^ ((r : ℝ)⁻¹) * dcW r i := by
+  unfold dcW
+  rw [Nat.factorial_succ, Nat.cast_mul, Real.mul_rpow (by positivity) (by positivity)]
+  push_cast; ring_nf
+
+/-- `w_{i+m} ≤ (i+m)^{m/r} w_i`, since `(i+m)! ≤ (i+m)^m i!`. -/
+theorem dcW_add_le (r i m : ℕ) :
+    dcW r (i + m) ≤ (((i + m : ℕ) : ℝ) ^ m) ^ ((r : ℝ)⁻¹) * dcW r i := by
+  unfold dcW
+  have h1 : (i + m).factorial ≤ i.factorial * (i + m) ^ m := by
+    have := Nat.factorial_mul_descFactorial (n := i + m) (k := m) (by omega)
+    rw [Nat.add_sub_cancel] at this
+    rw [← this]
+    exact Nat.mul_le_mul_left _ (Nat.descFactorial_le_pow _ _)
+  have h2 : ((i + m).factorial : ℝ) ≤ (i.factorial : ℝ) * ((i + m : ℕ) : ℝ) ^ m := by
+    exact_mod_cast h1
+  calc ((i + m).factorial : ℝ) ^ ((r : ℝ)⁻¹) ≤ ((i.factorial : ℝ) * ((i + m : ℕ) : ℝ) ^ m) ^
+        ((r : ℝ)⁻¹) := Real.rpow_le_rpow (by positivity) h2 (by positivity)
+    _ = _ := by rw [Real.mul_rpow (by positivity) (by positivity)]; ring
+
+/-- `(x^{r+1})^{1/r} = x^{1 + 1/r}`. -/
+theorem pow_succ_rpow_inv {x : ℝ} (hx : 0 ≤ x) (hr : 1 ≤ r) :
+    (x ^ (r + 1)) ^ ((r : ℝ)⁻¹) = x ^ (1 + (r : ℝ)⁻¹) := by
+  have hr0 : (r : ℝ) ≠ 0 := by
+    have : (1 : ℝ) ≤ r := by exact_mod_cast hr
+    positivity
+  rw [← Real.rpow_natCast, ← Real.rpow_mul hx]
+  congr 1
+  push_cast
+  field_simp
+
+/-- The coefficients of `r X^{r+1} Q − X² Q′`: `|q_j| ≤ r|c_{j−r−1}| [j ≥ r+1] + (j−1)|c_{j−1}| [j ≥ 2]`. -/
+theorem abs_coeff_dcStep_le (p : ℝ[X]) (j : ℕ) :
+    |(C (r : ℝ) * X ^ (r + 1) * p - X ^ 2 * derivative p).coeff j| ≤
+      (if r + 1 ≤ j then (r : ℝ) * |p.coeff (j - (r + 1))| else 0) +
+        (if 2 ≤ j then |p.coeff (j - 1)| * ((j : ℝ) - 1) else 0) := by
+  rw [coeff_sub, mul_assoc, coeff_C_mul, coeff_X_pow_mul', coeff_X_pow_mul']
+  refine (abs_sub _ _).trans (add_le_add ?_ ?_)
+  · split_ifs <;> simp [abs_mul]
+  · split_ifs with h
+    · rw [coeff_derivative, abs_mul, show j - 2 + 1 = j - 1 by omega]
+      refine mul_le_mul_of_nonneg_left (le_of_eq ?_) (abs_nonneg _)
+      rw [abs_of_nonneg (by positivity), Nat.cast_sub h]
+      ring
+    · simp
+
+/-- The shifted sum of the `r X^{r+1} Q` part. -/
+theorem sum_dcStep_A (p : ℝ[X]) (D : ℕ) :
+    ∑ j ∈ Finset.range (D + (r + 1)),
+        (if r + 1 ≤ j then (r : ℝ) * |p.coeff (j - (r + 1))| else 0) * dcW r j =
+      ∑ i ∈ Finset.range D, (r : ℝ) * |p.coeff i| * dcW r (i + (r + 1)) := by
+  rw [add_comm D (r + 1), Finset.sum_range_add]
+  rw [Finset.sum_eq_zero fun j hj => by
+    rw [if_neg (by have := Finset.mem_range.mp hj; omega), zero_mul], zero_add]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [if_pos (by omega), show r + 1 + i - (r + 1) = i by omega, add_comm (r + 1) i]
+
+/-- The shifted sum of the `X² Q′` part. -/
+theorem sum_dcStep_B {p : ℝ[X]} {D : ℕ} (hD : p.natDegree < D) :
+    ∑ j ∈ Finset.range (D + (r + 1)),
+        (if 2 ≤ j then |p.coeff (j - 1)| * ((j : ℝ) - 1) else 0) * dcW r j =
+      ∑ i ∈ Finset.range D, |p.coeff i| * (i : ℝ) * dcW r (i + 1) := by
+  rw [show D + (r + 1) = D + r + 1 by omega, Finset.sum_range_succ']
+  rw [if_neg (by omega), zero_mul, add_zero, Finset.sum_range_add]
+  rw [Finset.sum_eq_zero (s := Finset.range r) fun k _ => by
+    rw [coeff_eq_zero_of_natDegree_lt (by omega : p.natDegree < D + k + 1 - 1)]
+    split_ifs <;> simp, add_zero]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  split_ifs with h
+  · rw [show i + 1 - 1 = i by omega]; push_cast; ring
+  · have : i = 0 := by omega
+    subst this; simp
+
+/-- **One step of the recursion**: `W_{D+r+1}(r X^{r+1} Q − X² Q′) ≤ (r+1)(D+r)^{1+1/r} W_D(Q)`. -/
+theorem dcNorm_step_le (hr : 1 ≤ r) {p : ℝ[X]} {D : ℕ} (hD : p.natDegree < D) :
+    dcNorm r (D + (r + 1)) (C (r : ℝ) * X ^ (r + 1) * p - X ^ 2 * derivative p) ≤
+      ((r : ℝ) + 1) * ((D : ℝ) + r) ^ (1 + (r : ℝ)⁻¹) * dcNorm r D p := by
+  set s := 1 + (r : ℝ)⁻¹
+  have hDr : (0 : ℝ) < (D : ℝ) + r := by
+    have : (1 : ℝ) ≤ r := by exact_mod_cast hr
+    positivity
+  have hstep : dcNorm r (D + (r + 1)) (C (r : ℝ) * X ^ (r + 1) * p - X ^ 2 * derivative p) ≤
+      ∑ i ∈ Finset.range D, ((r : ℝ) * |p.coeff i| * dcW r (i + (r + 1)) +
+        |p.coeff i| * (i : ℝ) * dcW r (i + 1)) := by
+    unfold dcNorm
+    rw [Finset.sum_add_distrib, ← sum_dcStep_A p D, ← sum_dcStep_B hD, ← Finset.sum_add_distrib]
+    refine Finset.sum_le_sum fun j _ => ?_
+    rw [← add_mul]
+    exact mul_le_mul_of_nonneg_right (abs_coeff_dcStep_le p j) (dcW_nonneg r j)
+  refine hstep.trans ?_
+  unfold dcNorm
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun i hi => ?_
+  have hiD : i < D := Finset.mem_range.mp hi
+  have hw := dcW_nonneg r i
+  have hc := abs_nonneg (p.coeff i)
+  -- the shift by `r + 1`
+  have h1 : dcW r (i + (r + 1)) ≤ ((D : ℝ) + r) ^ s * dcW r i := by
+    refine (dcW_add_le r i (r + 1)).trans (mul_le_mul_of_nonneg_right ?_ hw)
+    rw [pow_succ_rpow_inv (by positivity) hr]
+    refine Real.rpow_le_rpow (by positivity) ?_ (by positivity)
+    have : (i : ℝ) + 1 ≤ D := by exact_mod_cast hiD
+    push_cast; linarith
+  -- the shift by `1`
+  have h2 : (i : ℝ) * dcW r (i + 1) ≤ ((D : ℝ) + r) ^ s * dcW r i := by
+    rw [dcW_succ]
+    have hiDr : (i : ℝ) ≤ (D : ℝ) + r := by
+      have : (i : ℝ) + 1 ≤ D := by exact_mod_cast hiD
+      have : (0 : ℝ) ≤ r := Nat.cast_nonneg r
+      linarith
+    have hi1 : ((i : ℝ) + 1) ^ ((r : ℝ)⁻¹) ≤ ((D : ℝ) + r) ^ ((r : ℝ)⁻¹) := by
+      refine Real.rpow_le_rpow (by positivity) ?_ (by positivity)
+      have : (i : ℝ) + 1 ≤ D := by exact_mod_cast hiD
+      have : (0 : ℝ) ≤ r := Nat.cast_nonneg r
+      linarith
+    have hs : ((D : ℝ) + r) ^ s = ((D : ℝ) + r) * ((D : ℝ) + r) ^ ((r : ℝ)⁻¹) := by
+      rw [Real.rpow_add hDr, Real.rpow_one]
+    rw [hs]
+    have := mul_le_mul hiDr hi1 (by positivity) hDr.le
+    calc (i : ℝ) * (((i : ℝ) + 1) ^ ((r : ℝ)⁻¹) * dcW r i)
+        = (i : ℝ) * ((i : ℝ) + 1) ^ ((r : ℝ)⁻¹) * dcW r i := by ring
+      _ ≤ ((D : ℝ) + r) * ((D : ℝ) + r) ^ ((r : ℝ)⁻¹) * dcW r i :=
+          mul_le_mul_of_nonneg_right this hw
+  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg r
+  calc (r : ℝ) * |p.coeff i| * dcW r (i + (r + 1)) + |p.coeff i| * (i : ℝ) * dcW r (i + 1)
+      = (r : ℝ) * |p.coeff i| * dcW r (i + (r + 1)) + |p.coeff i| * ((i : ℝ) * dcW r (i + 1)) := by
+        ring
+    _ ≤ (r : ℝ) * |p.coeff i| * (((D : ℝ) + r) ^ s * dcW r i) +
+        |p.coeff i| * (((D : ℝ) + r) ^ s * dcW r i) :=
+        add_le_add (mul_le_mul_of_nonneg_left h1 (by positivity))
+          (mul_le_mul_of_nonneg_left h2 hc)
+    _ = ((r : ℝ) + 1) * ((D : ℝ) + r) ^ s * (|p.coeff i| * dcW r i) := by ring
+
+/-- `W(Q_n) ≤ ((r+1)^{2+1/r})^n (n!)^{1+1/r}`. -/
+theorem dcNorm_dcPoly_le (hr : 1 ≤ r) (n : ℕ) :
+    dcNorm r (n * (r + 1) + 1) (dcPoly r n) ≤
+      (((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)) ^ n * (n.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) := by
+  induction n with
+  | zero => simp [dcNorm, dcPoly, dcW]
+  | succ n ih =>
+    have h := dcNorm_step_le hr (natDegree_dcPoly_lt hr n)
+    rw [show n * (r + 1) + 1 + (r + 1) = (n + 1) * (r + 1) + 1 by ring] at h
+    simp only [dcPoly]
+    refine h.trans ?_
+    have hr1 : (0 : ℝ) < (r : ℝ) + 1 := by positivity
+    have hD : ((n * (r + 1) + 1 : ℕ) : ℝ) + r = ((n : ℝ) + 1) * ((r : ℝ) + 1) := by
+      push_cast; ring
+    rw [hD, Real.mul_rpow (by positivity) hr1.le]
+    have hK : ((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹) = ((r : ℝ) + 1) * ((r : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹) := by
+      rw [show (2 : ℝ) + (r : ℝ)⁻¹ = 1 + (1 + (r : ℝ)⁻¹) by ring, Real.rpow_add hr1, Real.rpow_one]
+    have hfac : ((n + 1).factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) =
+        ((n : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹) * (n.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) := by
+      rw [Nat.factorial_succ, Nat.cast_mul, Real.mul_rpow (by positivity) (by positivity)]
+      push_cast; ring
+    have h0 := dcNorm_nonneg r (n * (r + 1) + 1) (dcPoly r n)
+    calc ((r : ℝ) + 1) * (((n : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹) * ((r : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹)) *
+          dcNorm r (n * (r + 1) + 1) (dcPoly r n)
+        ≤ ((r : ℝ) + 1) * (((n : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹) * ((r : ℝ) + 1) ^ (1 + (r : ℝ)⁻¹)) *
+          ((((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)) ^ n * (n.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹)) :=
+          mul_le_mul_of_nonneg_left ih (by positivity)
+      _ = _ := by rw [pow_succ, hfac, hK]; ring
+
+/-- **`E_r` is Gevrey of class `1 + 1/r`**: `|E_r^{(n)}| ≤ ((r+1)^{2+1/r})^n (n!)^{1+1/r}`. -/
+theorem abs_iteratedDeriv_glueR_le (hr : Odd r) (n : ℕ) (x : ℝ) :
+    |iteratedDeriv n (glueR r) x| ≤
+      (((r : ℝ) + 1) ^ (2 + (r : ℝ)⁻¹)) ^ n * (n.factorial : ℝ) ^ (1 + (r : ℝ)⁻¹) := by
+  have hr1 : 1 ≤ r := hr.pos
+  rcases le_or_gt x 0 with hx | hx
+  · rw [iteratedDeriv_glueR_of_nonpos hr n hx, abs_zero]; positivity
+  · rw [iteratedDeriv_glueR_eqOn hr1 n hx]
+    unfold dcDeriv
+    rw [abs_mul, abs_of_pos (Real.exp_pos _)]
+    exact (abs_eval_mul_exp_neg_pow_le hr1 (natDegree_dcPoly_lt hr1 n)
+      (inv_nonneg.mpr hx.le)).trans (dcNorm_dcPoly_le hr1 n)
+
+end Weights
+
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

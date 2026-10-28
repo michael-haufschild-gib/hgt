@@ -8,6 +8,8 @@ import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheHaarFloorI
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ALevelIsPaidByItsReserve
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheCompleteSourceIsADyadicMultiresolution
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleHyperplaneIsRenormalizationInvariant
+import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleCouplesTheLevelsHyperbolically
+import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.SeparatedLevelsCoupleThroughTheChebyshevError
 
 /-!
 # Selective Multiscale Arithmetic Positivity
@@ -17,6 +19,8 @@ selection of `Λ` by atomic positivity at every root; the pole hyperplane as the
 the full-form separation of `ζ` from its Liouville twin there; the selective Gårding inequality; the
 conductor-two excitation and the two-sided selective margin; the twin-blindness of the high-detail
 Haar floor; the renormalization calculus of a refinement level; the dyadic multiresolution of the
-complete source with its level-Toeplitz law; and the renormalization invariance of the pole
-hyperplane. See `SelectiveMultiscaleArithmeticPositivity/README.md`.
+complete source with its level-Toeplitz law; the renormalization invariance of the pole
+hyperplane; the hyperbolic pole coupling between levels; and the Chebyshev coupling of separated
+levels with its geometrically decaying Gamma cost. See
+`SelectiveMultiscaleArithmeticPositivity/README.md`.
 -/

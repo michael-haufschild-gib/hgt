@@ -1,10 +1,10 @@
-# Uniform nearby Gamma endpoint losses
+# Uniform nearby Gamma replacement losses
 
 - **ID:** acs-gamma-near-row-remainders
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** [coarse Gamma recovery](../1-in-progress/acs-coarse-gamma-recovery.md)
-- **Statement:** Both nearby nonadjacent rows of logarithmic-cell endpoint losses have universal bounds, independent of source index.
+- **Statement:** Both nearby nonadjacent logarithmic-cell rows have universal endpoint and integrated replacement-loss bounds, independent of source index, finite subset, and common translation.
 
 ## Exact result
 
@@ -33,14 +33,6 @@ For the lower row set `G_0=0` and `G_b=k(log a-log(min(b,a-2)+1))` for positive 
 
 Exact project check: `lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/LogCellGammaRemainderRows.lean`. Both transitive audits contain only `propext`, `Classical.choice`, `Quot.sound`; no warnings. Log: `/tmp/acs-logcell-gamma-remainder-rows-final.log`. Umbrella import is wired; no umbrella build.
 
-## Remaining parent obligation
-
-These discrete endpoint bounds do not yet recover the integrated coarse Gamma energy. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) are now formalized. Finite row assembly and the final energy comparison remain on the parent card. Mixed prime and pole payment is also open.
-
-## Log
-
-- 2026-10-28 — Both exact Lean proofs audited; recorded directly in stage 3.
-
 ## Adjacent and distant cell geometry
 
 [LogCellGammaRowGeometry.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/LogCellGammaRowGeometry.lean) passed its exact project check and four transitive axiom audits, without warnings. Log: `/tmp/acs-logcell-gamma-row-geometry-final.log`.
@@ -67,4 +59,12 @@ For any common translation `s`, let `Rₐᵦ` be the actual integrated farthest-
 
 The endpoint losses are nonnegative, so a finite subset costs no more than its complete nearby row. An explicit finite reindexing identifies the upper interval with the already checked shifted range; the lower subset sits inside the checked filtered row. The actual pair-error endpoint inequality then gives each integrated term, and exact common-translation invariance removes `s`. All sums pass through `ofReal` only after their real summands are proved nonnegative.
 
-`gammaCellNearUpper_subset_le` and `gammaCellNearLower_subset_le` prove the intermediate real endpoint-row estimates. All three modules now have ten clean standard-axiom audits. The distant row, touching row, and full row assembly remain open.
+`gammaCellNearUpper_subset_le` and `gammaCellNearLower_subset_le` prove the intermediate real endpoint-row estimates. All three modules have ten clean standard-axiom audits.
+
+## Remaining parent obligation
+
+The nearby integrated rows are formalized. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are also formalized. The distant row, touching row, complete row assembly, and final energy comparison remain on the parent card. Full mixed prime and pole payment remains open.
+
+## Log
+
+- 2026-10-28 — Exact project checks and transitive audits passed; recorded directly in stage 3.

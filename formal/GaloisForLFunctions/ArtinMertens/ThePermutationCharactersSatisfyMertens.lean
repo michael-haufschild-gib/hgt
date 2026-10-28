@@ -104,10 +104,12 @@ theorem degreeOneMertens_eq {frob : ℕ → G} (hfrob : IsFrobeniusChoice L frob
   simp only [mem_filter] at hp
   rw [permChar_frob_eq hfrob H hp.1.2 hp.2]
 
+omit [Fintype G] [IsGaloisGroup G ℚ L] in
 theorem ramifiedMertens_nonneg (H : Subgroup G) (x : ℕ) : 0 ≤ ramifiedMertens (L := L) H x :=
   sum_nonneg fun p _ => mul_nonneg (Nat.cast_nonneg _)
     (div_nonneg (Real.log_natCast_nonneg p) (Nat.cast_nonneg p))
 
+omit [Fintype G] [IsGaloisGroup G ℚ L] in
 /-- **Ramified primes are a bounded error**: they divide `disc L ≠ 0`, so lie below `|disc L|`. -/
 theorem ramifiedMertens_le (H : Subgroup G) (x : ℕ) :
     ramifiedMertens (L := L) H x ≤ ramifiedMertens (L := L) H (discr L).natAbs := by

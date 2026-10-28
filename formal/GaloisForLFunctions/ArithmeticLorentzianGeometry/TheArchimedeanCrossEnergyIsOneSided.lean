@@ -267,9 +267,9 @@ theorem div_mul_one_add_log_le {N m : ℕ} (hm1 : 1 ≤ m) (hmN : m ≤ N) :
   have hlog : Real.log (N + 1) - Real.log m ≤ Real.log 2 + Real.log (1 / u) := by
     rw [← Real.log_mul (by norm_num) (by positivity), ← Real.log_div (by positivity) hm0.ne']
     refine Real.log_le_log (by positivity) ?_
-    rw [hu, one_div_div, div_le_iff₀ hm0]
     have : (1 : ℝ) ≤ N := by exact_mod_cast (show 1 ≤ N by omega)
-    nlinarith
+    rw [hu, one_div_div, show (2 : ℝ) * (N / m) = 2 * N / m by ring]
+    exact div_le_div_of_nonneg_right (by linarith) hm0.le
   -- `u log(1/u) ≤ 1 − u`
   have hent : u * Real.log (1 / u) ≤ 1 - u := by
     have h := Real.log_le_sub_one_of_pos (show 0 < 1 / u by positivity)
@@ -310,7 +310,9 @@ theorem levyEnergy_windowTest_ge_sharp (hG : ∀ n, ContDiff ℝ 2 (G n))
   -- the symmetric kernel `k_mn = 2w(1/(2(1 − κ)|log(n/m)|) + 1)`
   set k : ℕ → ℕ → ℝ := fun m n =>
     2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|) + 1)
-  have hk0 : ∀ m n, 0 ≤ k m n := fun m n => by simp only [k]; positivity
+  have hk0 : ∀ m n, 0 ≤ k m n := fun m n =>
+    mul_nonneg (by positivity) (add_nonneg (one_div_nonneg.mpr
+      (mul_nonneg (mul_nonneg two_pos.le hκ1.le) (abs_nonneg _))) zero_le_one)
   have hks : ∀ m n, k n m = k m n := fun m n => by simp only [k, abs_sub_comm]
   -- `W_mn + W_nm ≤ k_mn`: one of the two windows lies left of the origin
   have hWW : ∀ m ∈ Icc 1 N, ∀ n ∈ Icc 1 N, m ≠ n → W m n + W n m ≤ k m n := by
@@ -325,29 +327,29 @@ theorem levyEnergy_windowTest_ge_sharp (hG : ∀ n, ContDiff ℝ 2 (G n))
       have hsw : 0 < s - w := by linarith
       have h1 := archLevyDensity_le_inv_add_one hsw
       have h2 : 1 / (2 * (s - w)) ≤ 1 / (2 * (1 - κ) * s) :=
-        one_div_le_one_div_of_le (by positivity) (by nlinarith)
+        one_div_le_one_div_of_le (mul_pos (mul_pos two_pos hκ1) (by linarith)) (by nlinarith)
       nlinarith
-    have hs2 : 2 * w ≤ |Real.log n - Real.log m| := by
-      have := mul_le_mul_of_nonneg_right hκ hsep.le.trans' le_rfl |>.trans' le_rfl
-      nlinarith [abs_nonneg (Real.log n - Real.log m)]
+    have hs2 : 2 * w ≤ |Real.log n - Real.log m| := by linarith
     rcases le_or_gt (Real.log n - Real.log m) 0 with hneg | hposs
-    · -- `n < m`: the window of `(m, n)` is left, that of `(n, m)` right
-      rw [abs_of_nonpos hneg] at hwsep hs2
+    · -- `n < m`: the window of `(m, n)` is left of the origin, that of `(n, m)` right
+      have e : |Real.log n - Real.log m| = Real.log m - Real.log n := by
+        rw [abs_of_nonpos hneg]; ring
+      rw [e] at hwsep hs2
       have h1 : W m n = 0 := window_integral_eq_zero_of_neg hw0 (by linarith)
       have h2 : W n m ≤ 2 * w * archLevyDensity (Real.log m - Real.log n - w) :=
-        window_integral_le_of_pos hw0 (by linarith)
-      have h3 := hpos (Real.log m - Real.log n) (by linarith) (by linarith)
-      simp only [k]
-      rw [abs_of_nonpos hneg]
-      rw [show -(Real.log n - Real.log m) = Real.log m - Real.log n by ring] at h3 ⊢
+        window_integral_le_of_pos hw0 hs2
+      have h3 := hpos (Real.log m - Real.log n) hs2 hwsep
+      show W m n + W n m ≤ 2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|) + 1)
+      rw [e]
       linarith
-    · rw [abs_of_pos hposs] at hwsep hs2
+    · have e : |Real.log n - Real.log m| = Real.log n - Real.log m := abs_of_pos hposs
+      rw [e] at hwsep hs2
       have h1 : W n m = 0 := window_integral_eq_zero_of_neg hw0 (by linarith)
       have h2 : W m n ≤ 2 * w * archLevyDensity (Real.log n - Real.log m - w) :=
         window_integral_le_of_pos hw0 hs2
       have h3 := hpos (Real.log n - Real.log m) hs2 hwsep
-      simp only [k]
-      rw [abs_of_pos hposs]
+      show W m n + W n m ≤ 2 * w * (1 / (2 * (1 - κ) * |Real.log n - Real.log m|) + 1)
+      rw [e]
       linarith
   -- symmetrize the window sum
   set S := ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if m = n then 0 else |y m| * |y n| * W m n)

@@ -75,7 +75,7 @@ For any `F⊆Iᶜ`, with `0<w=|I|≤1`, `gamma_interval_exterior_subset_defect_l
 
 ## Remaining parent obligation
 
-The interval averaging loss, separated tails, and symmetric finite-error estimate are formalized. Recovering the entire coarse Gamma energy still requires uniform logarithmic-cell row bounds and exact accounting for the actual coarse source. Full mixed Weil positivity remains open.
+The interval averaging loss, separated tails, symmetric finite-error estimate, and [actual coarse-source accounting](acs-coarse-gamma-accounting.md) are formalized. Recovering the entire coarse Gamma energy still requires uniform complete logarithmic-cell row bounds and the final real comparison. Full mixed Weil positivity remains open.
 
 ## Log
 

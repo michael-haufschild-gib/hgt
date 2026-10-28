@@ -188,10 +188,11 @@ graph. No full-form positivity follows from Hilbert orthogonality alone.
 For each positive a, set alpha_a=sqrt(ell_(2a)/ell_a) and
 beta_a=sqrt(ell_(2a+1)/ell_a). The target generator is
 beta_a*e_(2a)-alpha_a*e_(2a+1), together with e_1.
-Prove their orthonormality and completeness in K from the exact two-coordinate
-rotation and alpha_a^2+beta_a^2=1. Construct the Hilbert basis in Lean, then
-combine it with complete orthogonal levels to obtain a literal coordinate
-isometry indexed by N x (Option N+). Pay the embedding-to-balanced-Haar
+BalancedCellDetailsFormTheWanderingBasis proves orthonormality and completeness
+in K from the exact two-coordinate rotation and alpha_a^2+beta_a^2=1.
+EveryFiniteCellSourceHasFiniteDyadicCoordinates constructs the complete orbit
+Hilbert basis and literal coordinate isometry indexed by N x (Option N+).
+Both modules pass final no-olean audits with standard axioms only. Pay the embedding-to-balanced-Haar
 normalization explicitly before invoking Gamma estimates for those atoms.
 
 ### Arithmetic action in complete levels
@@ -209,10 +210,33 @@ It supplies no selective sign or joint Gamma cost without additional proofs.
 
 ### Finite source exhaustion before form limits
 
-Prove e_(2a)=alpha_a W e_a+beta_a d_a and
+EveryFiniteCellSourceHasFiniteDyadicCoordinates proves
+e_(2a)=alpha_a W e_a+beta_a d_a and
 e_(2a+1)=beta_a W e_a-alpha_a d_a. The algebraic span of all W^j generators
-is W-invariant. Strong induction in the integer coordinate then places every
+is W-invariant. Strong induction in the integer coordinate places every
 standard cell vector, hence every finite compact cell profile, in this
 algebraic span. This is stronger domain information than Hilbert density:
 Gamma and the full Weil form can be evaluated on exact finite expansions
 without an unproved passage through infinite sums.
+
+### Physical balanced-Haar normalization
+
+Prove sqrt(haarMass a)*U(d_a)=haarAtom a using the existing physical Haar
+source and its mass. The scalar square-root identities follow from positive
+cell widths and the exact parent-width telescope. Transport this equality
+through every literal iterated log2 shift. This is the required comparison
+before applying physical Gamma estimates to the new coefficient coordinates.
+
+### One Gamma reserve for the complete tree
+
+The exact target is a single bound on the weighted squared physical detail
+readouts over all levels. Existing gamma_twoInterval_mean_variance_ge and
+archLevyDensity_ge_inv_two_mul suggest the local estimate
+Gamma(sibling rectangle)>=Var(parent)/8, since each actual child has at least
+one quarter of its parent's logarithmic width and each parent width is <=log2.
+DyadicSiblingPartition supplies uniqueness of the integer sibling rectangle.
+Adapt it to the actual physical interval pairs, sum disjoint rectangles once,
+and count how many parent variances contain each detail. The resulting weight
+should be comparable to 1+log(a). Root cell means remain a distinct sector.
+All constants, domain restrictions and the Gamma pair-integral normalization
+must be carried in the Lean statements.

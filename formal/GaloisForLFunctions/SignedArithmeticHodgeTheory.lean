@@ -15,11 +15,13 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.RamanujanFamiliesHaveAnEx
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.BoundedPrimeEnergyEscapesEveryFixedIntegerWindow
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheLogCellClockHasACompleteWanderingDecomposition
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.BalancedCellDetailsFormTheWanderingBasis
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.EveryFiniteCellSourceHasFiniteDyadicCoordinates
 
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
 
 Certified signed residual calculus and faithful scale transport on the actual
 arithmetic source, with explicit graph growth under unbounded translation and
-quantitative Gram and prime-residual budgets for actual Ramanujan families.
+quantitative Gram and prime-residual budgets for actual Ramanujan families,
+and complete weighted dyadic coordinates of the literal logarithmic-cell source.
 -/
