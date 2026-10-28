@@ -434,6 +434,7 @@ the place that pays.
 | **RP35 The residue finite part is diagonalized by characters** | for units `a, b`: `⟨w_a^{(M)}, P w_b^{(M')}⟩ = (q/φ(q)) S_a(M) S_b(M') + c_{a⁻¹b} S_a(M) + c_{b⁻¹a} S_b(M) + O(η H_M + C_η)`; the finite-part matrix `F_{ab} = c_{a⁻¹b} + c_{b⁻¹a}` has every character as eigenvector, `Σ_b F_{ab} χ(b) = 2 Re β_χ · χ(a)`, `β_χ = −L′/L(1, χ)` (`χ ≠ 1`), `β_1 = −γ − Q_q`; inputs: class constants `q S_a(M) = log M + d_a + O(1/M)`, `L_a` to second order; the twisted pole `Re χ(n) u^{(M)}_n` has `P_N(x) = 2 Re(−L′/L(1, χ))\|x\|² + o(mass)` for every `χ ≠ 1` | `exists_abs_residueGram_finitePart_le`, `sum_residueFinitePart_mul_char`, `sum_classMertensConstant_mul_char`, `exists_classHarmonic_constant`, `exists_abs_atomicWeilForm_charPole_sub_le` |
 | **RP36 The finite part sees every flipped prime; ζ maximizes it** | a twin flipping a finite prime set `F` has `A_{ε_F}(y) − log y → −γ − δ_F` with `δ_F ≥ 2 log p/p` for each `p ∈ F`; on every uniform profile `P_N(ε_F x) − P_N(x) = −2δ_F\|x\|² + o(mass)`. Rigidity: every sign gauge with `κ = 1` and `A_ε(y) − log y → α` has `α ≤ −γ`, with equality only for `ε = 1`, so `ζ` is the unique maximizer of the finite part among its matched twins; mirror: every gauge with `κ = −1` and `A_ε(y) + log y → α` has `α ≥ γ + τ`, with equality only for Liouville | `exists_abs_finiteFlipForm_sub_zetaForm_add_le`, `two_mul_log_div_le_finiteFlipLimit`, `finitePartLimit_le_and_eq_iff`, `exists_abs_gaugeForm_sub_zetaForm_sub_le`, `liouvilleLimit_le_and_eq_iff` |
 | **RP37 The gap below the pole is `2 log 2`, carried by the 2-adic step** | for every `ε > 0`, eventually in `N`: `D_N(x) ≥ (2 log 2 − ε) Var_{1/n}(√n x)` for every `x`, so `P_N(x) ≤ (log N − γ − 2 log 2 + ε)\|x\|²` on `x ⊥ n^{−1/2}`; the 2-adic step `(1_{2∣n} − E_N/H_N)/√n` has `D_N = log 2 · E_N ≤ 2 log 2 \|x\|²` for every `N` and `P_N ≥ (log N − γ − 2 log 2 − ε)\|x\|²`. Mechanism: the finitely-many-prime valuation chain has gap `→ 2 log 2` (sharp ladder `log p Σ_{j ≤ J} p^{−j}`, Efron–Stein on boxes, halo paid by `log a`); `[1, N] = ⊔_a a · R(Q, N/a)` with the rough fibres tensorized at cost `K/log Q`, and the fibre means compared by Jensen with shell error `(1 + log t)/F(N/X)` | `eventually_smoothVar_le_smoothEnergy`, `two_scale_le`, `eventually_mul_harmonicVar_le_poleDefect`, `eventually_atomicWeilForm_le_two_log_two`, `poleDefect_twoAdicStep`, `eventually_atomicWeilForm_below_pole_two_log_two` |
+| **RP38 Residue-pattern gauges are matched by their mean** | for every `±1` pattern `f` on `ℤ/q`, the gauge `ε_f(p^k) = f(p mod q)^k` has `A_{ε_f}(y) − κ_f log y → α_f` with `κ_f = φ(q)^{−1} Σ_{u ∈ (ℤ/q)ˣ} f(u)` and `α_f = Σ_u f(u) c_u + Σ_{a ∉ (ℤ/q)ˣ} f(a) ν_a + R_∞` (proper prime powers absolutely summable); so `P_N(ε_f x) = κ_f ℓ² + 2α_f\|x\|² + o(mass)`: the abelian Chebotarev patterns are matched by their mean | `tendsto_primeClassMertensError`, `exists_abs_primeClassGaugeForm_finitePart_le`, `gaugeMertensSum_primeClassGauge_eq` |
 
 ---
 
@@ -613,8 +614,10 @@ transfer of the Mertens error to the horizon remainder, and summation by parts a
    Chebotarev patterns `(d/p)` are real characters. *Answered:* an error `o(log y)` keeps the law at
    leading order, `|P_N(εx) − κℓ²| ≤ (η log N + C_η) · mass` (RP26). The transfer law identifies the
    remainder exactly as the harmonic convolution of the Mertens error, so the mass-scale law holds
-   iff that error is bounded in logarithmic mean. Open: `κ` for non-abelian Chebotarev patterns,
-   which needs Mertens' theorem for Artin `L`-functions.
+   iff that error is bounded in logarithmic mean. Every sign pattern of the primes by residues mod
+   `q`, so every abelian Chebotarev pattern, has `κ` equal to its mean over `(ℤ/q)ˣ` and a computed
+   finite part (RP38). Open: `κ` for non-abelian Chebotarev patterns, which needs Mertens' theorem
+   for Artin `L`-functions.
 6. **Several primes at once.** *Answered for every finite prime set `Q`:* each finite family
    of classes `{n : n = d k, (k, Q) = 1}`, indexed by the `Q`-parts `d`, has counterterm
    `Σ_d δ_d^{−1} ℓ_d²`, where `δ_d = (1/d) Π_{p∈Q}(1−1/p)`. It is covariant under every
@@ -646,8 +649,9 @@ its present state:
   `ℓ`, for character gauges (RP31). On the unit residue classes the finite part is diagonalized by
   the characters mod `q`, with eigenvalues `2 Re(−L′/L(1, χ))` (RP34, RP35).
 * Q8 has a theorem-level answer: the matching law for every sign gauge, `κ = −1` for Liouville,
-  `κ = 1` for finitely many flips, `κ = 0` for every character `χ ≠ 1` (RP20, RP25); an error
-  `o(log y)` keeps the law at leading order (RP26); residue classes are invisible (RP24).
+  `κ = 1` for finitely many flips, `κ = 0` for every character `χ ≠ 1` (RP20, RP25), `κ` = the mean
+  of the pattern for every abelian Chebotarev pattern (RP38); an error `o(log y)` keeps the law at
+  leading order (RP26); residue classes are invisible (RP24).
 * Q6 is answered through RP2, RP3 and RP5.
 * The central conjecture is replaced by the matched stability law (§9.1). RAPT proves it at widths
   `δ_N/(C log N)` (RP18). SSHA proves it at a fixed fraction `c₀δ_N` of the spacing. The overlap
@@ -717,6 +721,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheFinitePartSeparatesZetaFromItsLiouvilleTwin` | the even prime-power limit `τ`; the Liouville Mertens limit; the Liouville finite part; separation from `ζ` on the polar hyperplane |
 | `TheFinitePartSeesEveryFlippedPrime` | the flip deficit and its limit `δ_F`; every flipped prime counts; the twin's Mertens limit; separation from `ζ`; rigidity: `ζ` uniquely maximizes the finite part among matched gauges, Liouville uniquely minimizes it among anti-matched ones |
 | `MertensTheoremInResidueClassesWithItsConstant` | the non-coprime prime powers; the principal limit `−γ − Q_q`; the class constants through `−L′/L(1, χ)` |
+| `ResiduePatternGaugesAreMatchedByTheirMean` | residue-pattern gauges; Mertens decomposition; proper prime powers; non-unit classes; `κ_f`, `α_f` and the horizon law |
 | `ClassHarmonicSumsHaveConstants` | Euler's constant with a rate; Cauchy with a rate; shifted classes; the class constants `d_a`; `L_a` to second order |
 | `TheFinitePartOnResidueClasses` | the residue Gram as class Mertens sums; floors; the logarithmic model Gram to `O(1)`; the residue finite-part law |
 | `TheResidueFinitePartIsDiagonalizedByCharacters` | spectral values `β_χ`; conjugate characters; class constants as a character transform; Fourier inversion; diagonalization |

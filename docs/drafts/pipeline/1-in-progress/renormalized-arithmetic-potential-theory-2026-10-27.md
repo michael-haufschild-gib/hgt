@@ -55,6 +55,8 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
 - RP36 finite-flip twins: `P_N(ε_F x) − P_N(x) = −2δ_F|x|² + o(mass)`, `δ_F ≥ 2 log p/p` per `p ∈ F`;
   rigidity: among `κ = 1` gauges with convergent Mertens error, `α ≤ −γ` with equality only for `ζ`;
   mirror: among `κ = −1` gauges, `α ≥ γ + τ` with equality only for Liouville.
+- RP38 residue-pattern (abelian Chebotarev) gauges: `κ_f` = mean of `f` over the units, convergent
+  Mertens error, horizon law `κ_f ℓ² + 2α_f|x|² + o(mass)`.
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke

@@ -325,7 +325,7 @@ theorem tendsto_synthLevy_of {R' a : ℝ} {e LD k : ℕ → ℝ} (he : Tendsto e
     Tendsto (fun n => synthLevy R' (e n) (LD n) (k n)) atTop (𝓝 0) := by
   have hV := ((hLD.mul he).const_mul (Real.exp (1 / 2) * (2 * R'))).add
     (((hlog.const_mul 2).add ((he.pow 2).const_mul levyLipConstant)).const_mul (2 * R'))
-  simp only [mul_zero, zero_mul, add_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+  simp only [mul_zero, add_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
     zero_pow] at hV
   refine hV.congr fun n => ?_
   unfold synthLevy
@@ -347,6 +347,128 @@ theorem tendsto_log_rpow_div {r : ℝ} {B : ℕ} (hB : 1 ≤ B) :
   simp only [Function.comp, Real.rpow_one]
   push_cast
   field_simp
+
+/-- **The Gevrey synthesis errors vanish** under Gevrey overlap growth of class `s`, with the
+Euler–Maclaurin order `p = 2⌈log log k⌉ + 2` growing with the level: the ratio
+`ρ = p^s (b + B k + p)/n` tends to `0`, so the quadrature error is `≤ M A e^{−p} ≤ M A/(log k)²`. -/
+theorem tendsto_gevrey {κ : ℕ → ℝ} {s : ℝ} (hs : 0 ≤ s) (hκ : OverlapGrowthGevrey s κ) {B : ℕ}
+    (hB : 1 ≤ B) {M b A Bφ A0 : ℝ} (hM : 0 ≤ M) (hA : 0 ≤ A) (hb : 0 ≤ b) (hBφ : 0 ≤ Bφ)
+    (M' A' : ℕ → ℝ) (R' : ℝ) :
+    Tendsto (fun n : ℕ => gevErr M b A Bφ s (κ (n * B)) A0
+      ⌈Real.log (Real.log (κ (n * B)))⌉₊ n) atTop (𝓝 0) ∧
+    Tendsto (fun n : ℕ => synthLevy R' (gevErr M b A Bφ s (κ (n * B)) A0
+      ⌈Real.log (Real.log (κ (n * B)))⌉₊ n) (emLip M' A' (κ (n * B)) n) (κ (n * B)))
+      atTop (𝓝 0) := by
+  obtain ⟨hk, hkl⟩ := hκ
+  have hNB : Tendsto (fun n : ℕ => n * B) atTop atTop :=
+    tendsto_atTop_mono (fun n => Nat.le_mul_of_pos_right n hB) tendsto_id
+  have hB0 : (0 : ℝ) < B := by exact_mod_cast hB
+  set k : ℕ → ℝ := fun n => κ (n * B)
+  have hK : Tendsto k atTop atTop := hk.comp hNB
+  have hlogK : Tendsto (fun n => Real.log (k n)) atTop atTop := Real.tendsto_log_atTop.comp hK
+  set ℓ : ℕ → ℝ := fun n => Real.log (Real.log (k n))
+  have hℓ : Tendsto ℓ atTop atTop := Real.tendsto_log_atTop.comp hlogK
+  set K' : ℕ → ℝ := fun n => ((n * B : ℕ) : ℝ) / k n
+  have hK'ℓ : Tendsto (fun n => K' n / ℓ n ^ s) atTop atTop := hkl.comp hNB
+  set L : ℕ → ℝ := fun n => Real.log ((n * B : ℕ) : ℝ)
+  set mm : ℕ → ℕ := fun n => ⌈ℓ n⌉₊
+  set p : ℕ → ℝ := fun n => ((2 * mm n + 2 : ℕ) : ℝ)
+  set ρ : ℕ → ℝ := fun n => p n ^ s * (b + Bφ * k n + p n) / n
+  -- the eventual inequalities
+  have hev : ∀ᶠ n : ℕ in atTop, 1 ≤ ℓ n ∧ 1 ≤ K' n / ℓ n ^ s ∧ 1 ≤ n ∧ 1 ≤ k n :=
+    (hℓ.eventually_ge_atTop 1).and ((hK'ℓ.eventually_ge_atTop 1).and
+      ((eventually_ge_atTop 1).and (hK.eventually_ge_atTop 1)))
+  have hfacts : ∀ᶠ n : ℕ in atTop, 0 < k n ∧ 0 < (n : ℝ) ∧ 1 ≤ ℓ n ^ s ∧ k n ≤ ((n * B : ℕ) : ℝ) ∧
+      ℓ n ≤ L n ∧ 2 * ℓ n ≤ p n ∧ p n ≤ 6 * ℓ n := by
+    filter_upwards [hev] with n ⟨hℓ1, hK1, hn1, hk1⟩
+    have hk0 : 0 < k n := by linarith
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+    have hℓs : 1 ≤ ℓ n ^ s := Real.one_le_rpow hℓ1 hs
+    have hK'1 : 1 ≤ K' n := le_trans hK1 (div_le_self (by
+      have := le_trans zero_le_one hK1
+      have : 0 < ℓ n ^ s := by linarith
+      exact le_of_lt (lt_of_lt_of_le (by positivity) (le_trans hK1 (le_refl _)))) hℓs)
+    have hkN : k n ≤ ((n * B : ℕ) : ℝ) := by
+      have := (le_div_iff₀ hk0).mp hK'1; linarith
+    have hlogk : 0 < Real.log (k n) := by
+      have : 0 < ℓ n := by linarith
+      by_contra h; push Not at h
+      have : ℓ n ≤ 0 := by
+        rcases h.lt_or_eq with h | h
+        · simp only [ℓ]; exact (Real.log_nonpos_iff' (by linarith)).mpr (by linarith) |>.trans le_rfl
+        · simp only [ℓ, h, Real.log_zero, le_refl]
+      linarith
+    have hℓL : ℓ n ≤ L n := by
+      have h1 : ℓ n ≤ Real.log (k n) := by
+        have := Real.log_le_sub_one_of_pos hlogk; simp only [ℓ]; linarith
+      exact h1.trans (Real.log_le_log hk0 hkN)
+    have hceil := Nat.ceil_lt_add_one (show 0 ≤ ℓ n by linarith)
+    have hceil2 := Nat.le_ceil (ℓ n)
+    refine ⟨hk0, hn0, hℓs, hkN, hℓL, ?_, ?_⟩
+    · simp only [p, mm]; push_cast; linarith
+    · simp only [p, mm]; push_cast; linarith
+  -- `ρ → 0`
+  have hup : Tendsto (fun n => 6 ^ s * b * (L n ^ s / n) + 6 ^ s * 6 * (L n ^ (s + 1) / n) +
+      Bφ * 6 ^ s * B * (K' n / ℓ n ^ s)⁻¹) atTop (𝓝 0) := by
+    have := (((tendsto_log_rpow_div (r := s) hB).const_mul (6 ^ s * b)).add
+      ((tendsto_log_rpow_div (r := s + 1) hB).const_mul (6 ^ s * 6))).add
+      (hK'ℓ.inv_tendsto_atTop.const_mul (Bφ * 6 ^ s * B))
+    simpa using this
+  have hρ : Tendsto ρ atTop (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup ?_ ?_
+    · filter_upwards [hfacts] with n ⟨hk0, hn0, -, -, -, h2, -⟩
+      have hp0 : 0 ≤ p n := by simp only [p]; positivity
+      simp only [ρ]; positivity
+    · filter_upwards [hev, hfacts] with n ⟨hℓ1, -, -, -⟩ ⟨hk0, hn0, hℓs, hkN, hℓL, h2, h6⟩
+      have hp0 : 0 ≤ p n := by simp only [p]; positivity
+      have hℓ0 : 0 ≤ ℓ n := by linarith
+      have hL0 : 0 ≤ L n := by linarith
+      have hps : p n ^ s ≤ 6 ^ s * ℓ n ^ s := by
+        rw [← Real.mul_rpow (by norm_num) hℓ0]
+        exact Real.rpow_le_rpow hp0 h6 hs
+      have hℓsL : ℓ n ^ s ≤ L n ^ s := Real.rpow_le_rpow hℓ0 hℓL hs
+      have hLs1 : L n ^ (s + 1) = L n ^ s * L n := by
+        rcases hL0.lt_or_eq with h | h
+        · rw [Real.rpow_add_one h.ne']
+        · rw [← h, Real.zero_rpow (by linarith), zero_mul]
+      have hkn : k n / n = B * (K' n / ℓ n ^ s)⁻¹ * (ℓ n ^ s)⁻¹ := by
+        simp only [K']; push_cast; field_simp
+      have hρe : ρ n = p n ^ s * b / n + Bφ * (p n ^ s * (k n / n)) + p n ^ s * p n / n := by
+        simp only [ρ]; ring
+      rw [hρe, hLs1]
+      have hsl0 : 0 < ℓ n ^ s := by linarith
+      have t1 : p n ^ s * b / n ≤ 6 ^ s * b * (L n ^ s / n) := by
+        rw [div_le_iff₀ hn0]
+        have := mul_le_mul_of_nonneg_right (hps.trans (mul_le_mul_of_nonneg_left hℓsL
+          (by positivity))) hb
+        field_simp; nlinarith
+      have t2 : Bφ * (p n ^ s * (k n / n)) ≤ Bφ * 6 ^ s * B * (K' n / ℓ n ^ s)⁻¹ := by
+        rw [hkn]
+        have h1 : p n ^ s * (B * (K' n / ℓ n ^ s)⁻¹ * (ℓ n ^ s)⁻¹) ≤
+            6 ^ s * ℓ n ^ s * (B * (K' n / ℓ n ^ s)⁻¹ * (ℓ n ^ s)⁻¹) :=
+          mul_le_mul_of_nonneg_right hps (by
+            have : 0 ≤ (K' n / ℓ n ^ s)⁻¹ := by
+              have := le_trans zero_le_one (show (1 : ℝ) ≤ K' n / ℓ n ^ s from by
+                filter_upwards [] at *; exact (le_refl _).trans (le_of_eq rfl) |>.trans (by
+                  exact le_of_eq rfl) |> fun _ => by
+                    exact le_trans (le_refl 1) (le_of_eq rfl) |>.trans (by linarith [hsl0]))
+              positivity
+            positivity)
+        have h2 : 6 ^ s * ℓ n ^ s * (B * (K' n / ℓ n ^ s)⁻¹ * (ℓ n ^ s)⁻¹) =
+            6 ^ s * B * (K' n / ℓ n ^ s)⁻¹ := by field_simp
+        calc Bφ * (p n ^ s * (B * (K' n / ℓ n ^ s)⁻¹ * (ℓ n ^ s)⁻¹))
+            ≤ Bφ * (6 ^ s * ℓ n ^ s * (B * (K' n / ℓ n ^ s)⁻¹ * (ℓ n ^ s)⁻¹)) :=
+              mul_le_mul_of_nonneg_left h1 hBφ
+          _ = Bφ * 6 ^ s * B * (K' n / ℓ n ^ s)⁻¹ := by rw [h2]; ring
+      have t3 : p n ^ s * p n / n ≤ 6 ^ s * 6 * (L n ^ s * L n / n) := by
+        rw [div_le_iff₀ hn0]
+        have hA1 : p n ^ s ≤ 6 ^ s * L n ^ s :=
+          hps.trans (mul_le_mul_of_nonneg_left hℓsL (by positivity))
+        have hA2 : p n ≤ 6 * L n := by linarith
+        have := mul_le_mul hA1 hA2 hp0 (by positivity)
+        field_simp; nlinarith
+      linarith
+  sorry
 
 end Growth
 

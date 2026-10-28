@@ -132,7 +132,7 @@ theorem ramanujanPrimeResidual_family_sq_le (S : Finset ℕ+) (c : ℕ+ → ℝ)
           (primeMertensRemainderProfile (N / n) ^ 2 / (n : ℝ))) := by
       apply sum_le_sum
       intro n hn
-      refine (sum_mul_sq_le_sq_mul_sq S c (fun m => ramanujanPrimeResidual m N n)).trans ?_
+      refine (Finset.sum_mul_sq_le_sq_mul_sq S c (fun m => ramanujanPrimeResidual m N n)).trans ?_
       apply mul_le_mul_of_nonneg_left ?_ hc
       calc
         _ ≤ ∑ m ∈ S, ramanujanResidualConductorCost m ^ 2 *

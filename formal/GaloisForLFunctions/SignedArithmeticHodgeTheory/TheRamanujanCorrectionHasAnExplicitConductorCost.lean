@@ -58,7 +58,7 @@ private theorem prime_geometric_remainder {p : ℕ} (hp : p.Prime) (K : ℕ) :
   induction K with
   | zero => simp
   | succ K ih =>
-    rw [sum_range_succ, ← sub_sub, ih, pow_succ]
+    rw [Finset.sum_range_succ, ← sub_sub, ih, pow_succ]
     field_simp
     ring
 
@@ -160,7 +160,6 @@ theorem abs_normalizedRamanujan_correction_le {m n y : ℕ}
         Real.sqrt (m.totient : ℝ) := by rw [Real.sq_sqrt hφ.le]
     _ = _ := by
       field_simp [hsqrt, hy0]
-      ring
 
 end GaloisForLFunctions.SignedArithmeticHodgeTheory
 

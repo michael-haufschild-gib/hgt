@@ -15,6 +15,7 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartSe
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheResidueFinitePartIsDiagonalizedByCharacters
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheTwistedPoleReadsTheLogarithmicDerivative
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFinitePartSeesEveryFlippedPrime
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.ResiduePatternGaugesAreMatchedByTheirMean
 
 /-!
 # The laws of renormalized arithmetic potential theory
@@ -71,6 +72,9 @@ One statement collecting the laws of the programme, each in its sharp form.
     `χ ≠ 1` (`exists_abs_atomicWeilForm_charPole_sub_le`).
 25. **`ζ` maximizes the finite part**: among sign gauges with `κ = 1` and a convergent Mertens error,
     the limit satisfies `α ≤ −γ`, with equality only for `ε = 1` (`finitePartLimit_le_and_eq_iff`).
+26. **Residue-pattern gauges are matched by their mean**: a `±1` pattern `f` on `ℤ/q` gives a gauge
+    whose Mertens error `A_ε − κ_f log` converges, `κ_f` the mean of `f` over the units
+    (`tendsto_primeClassMertensError`).
 -/
 
 noncomputable section
@@ -212,7 +216,11 @@ theorem renormalized_arithmetic_potential_theory_laws :
     -- ζ maximizes the finite part among matched gauges
     (∀ ε : ℕ → ℝ, IsSignGauge ε → ∀ α : ℝ, Tendsto (gaugeMertensError ε 1) atTop (𝓝 α) →
       α ≤ -Real.eulerMascheroniConstant ∧
-        (α = -Real.eulerMascheroniConstant ↔ ∀ n : ℕ, 1 ≤ n → ε n = 1)) :=
+        (α = -Real.eulerMascheroniConstant ↔ ∀ n : ℕ, 1 ≤ n → ε n = 1)) ∧
+    -- residue-pattern gauges are matched by their mean
+    (∀ (q : ℕ) [NeZero q] (f : ZMod q → ℝ), (∀ a, f a * f a = 1) →
+      Tendsto (gaugeMertensError (primeClassGauge q f) (primeClassKappa q f)) atTop
+        (𝓝 (primeClassAlpha q f))) :=
   ⟨fun _ _ hv => primeSurvival_rankOne hv,
     heckeCovariant_iff_const,
     fun _ hN => covariantCounterterm_sandwich hN,
@@ -241,6 +249,7 @@ theorem renormalized_arithmetic_potential_theory_laws :
     fun _ _ _ _ ha hb _ hη => exists_abs_residueGram_finitePart_le ha hb hη,
     fun _ _ χ a => sum_residueFinitePart_mul_char χ a,
     fun _ _ χ hχ _ hη => exists_abs_atomicWeilForm_charPole_sub_le χ hχ hη,
-    fun _ hε _ hE => finitePartLimit_le_and_eq_iff hε hE⟩
+    fun _ hε _ hE => finitePartLimit_le_and_eq_iff hε hE,
+    fun _ _ _ hf => tendsto_primeClassMertensError hf⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

@@ -693,3 +693,10 @@ every mass-bounded, defect-bounded vector at every horizon. Source installed;
 its first olean builds for the matrix-energy adapter. Nine of sixteen scratch
 modules pass. The remaining seven include the actual spectral endpoints; all
 final actual-source checks and umbrella wiring remain.
+
+All nine first dependency builds passed. The generic Gram certificate's first
+check exposed inner-product orientation, an unavailable square-sum lemma, and
+missing finite-set/scalar annotations. The scratch now uses explicit real inner
+symmetry, the already available finite Cauchy--Schwarz theorem with a constant
+one vector, and explicit annotations. Retry follows; failed-check axiom output
+is excluded. Nine scratch modules remain verified.

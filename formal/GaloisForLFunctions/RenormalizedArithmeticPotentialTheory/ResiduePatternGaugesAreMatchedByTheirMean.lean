@@ -244,5 +244,3 @@ theorem exists_abs_primeClassGaugeForm_finitePart_le [NeZero q] (hf : ∀ a, f a
     (abs_primeClassKappa_le hf) (tendsto_primeClassMertensError hf) hη
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
-
-#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.exists_abs_primeClassGaugeForm_finitePart_le
