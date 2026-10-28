@@ -47,9 +47,27 @@ Tonelli on the triangle `0<x<t<w` gives `∫_(0,w)∫_(x,w) k(t)=∫_(0,w) t*k(t
 
 Exact project check passed with no warnings: `lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/GammaIntervalRemainder.lean`. All twelve transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`. Log: `/tmp/acs-gamma-interval-remainder-final.log`. Umbrella import is wired; umbrella was not compiled.
 
+## Actual pair kernels
+
+[GammaPairRemainder.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/GammaPairRemainder.lean) also passes its exact project check and nine clean transitive audits, without warnings. Log: `/tmp/acs-gamma-pair-remainder-final.log`.
+
+For ordered disjoint intervals `I=(a,b)`, `J=(c,d)`, the actual interaction is exactly its integrated source-row defect plus `|I|*∫_J gammaFarCharge_I`. Even when they touch, it is bounded by that same defect plus `|I|*|J|*k(|I|)`. With a positive gap, the farthest-endpoint replacement loss is at most `|I|*|J|*[k(c-b)-k(d-a)]`. Monotonicity proves these pointwise bounds before integration. Both the interaction and endpoint loss are symmetric and invariant under common translation.
+
+The exact decomposition holds against any set, including the full exterior (`gamma_interval_set_kernel_eq_defect_add_far`). `gammaIntervalPairDefect_le_endpoints` connects the checked discrete rows directly to integrated kernels; `gammaIntervalKernel_le_defect_add_width` retains the entire touching loss. Together, both modules have twenty-one clean axiom audits.
+
+## Finite symmetric error
+
+[GammaFiniteError.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/GammaFiniteError.lean) passes its exact project check and four clean transitive audits, without warnings. Log: `/tmp/acs-gamma-finite-error-final.log`.
+
+Set `Rᵢᵢ=0` and let `Rᵢⱼ` be the actual integrated farthest-endpoint replacement error off the diagonal. For every finite interval family and arbitrary real coefficients,
+
+`Σᵢⱼ (qᵢ-qⱼ)² Rᵢⱼ ≤ 4*Σᵢ qᵢ²*Σⱼ Rᵢⱼ`.
+
+Symmetry and `(u-v)²≤2(u²+v²)` prove this directly in nonnegative extended integrals. Diagonal coefficient differences vanish. `gammaFinitePairDefect_weighted_kernel_le` also proves that each actual weighted kernel is at most its retained mean edge plus this explicit error, without assuming a row bound. All three modules now have twenty-five clean axiom audits.
+
 ## Remaining parent obligation
 
-The complete interval averaging loss and separated tail rows are formalized. Recovering the entire coarse Gamma energy still requires finite logarithmic-cell row accounting and the final symmetric quadratic-form estimate. Full mixed Weil positivity remains open.
+The interval averaging loss, separated tails, and symmetric finite-error estimate are formalized. Recovering the entire coarse Gamma energy still requires uniform logarithmic-cell row bounds and exact accounting for the actual coarse source. Full mixed Weil positivity remains open.
 
 ## Log
 

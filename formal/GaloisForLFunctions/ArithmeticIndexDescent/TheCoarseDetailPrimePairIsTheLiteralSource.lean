@@ -126,6 +126,37 @@ theorem inner_shift_coarse_haar_profiles (d q : ℕ → ℝ) (Y X : ℕ) (t : �
     (halfLineExtend_averageSectionProfile q X)
     (fun _ hx => haarSectionProfile_zero_neg d Y hx) t
 
+theorem inner_shift_coarse_profile (q : ℕ → ℝ) (X : ℕ) (t : ℝ) :
+    (inner ℂ (halfLineRightShift t (coarseSection q X)) (coarseSection q X)).re =
+      ∫ x, averageSectionProfile q X x * averageSectionProfile q X (x + t) :=
+  inner_shift_real_representatives _ _ _ _ (coarseSection_coeFn q X)
+    (halfLineExtend_averageSectionProfile q X)
+    (fun _ hx => averageSectionProfile_zero_neg q X hx) t
+
+/-- The sum of both actual Hilbert sections realizes the entire complete-cell profile. -/
+theorem inner_shift_completePairProfile (q d : ℕ → ℝ) (X : ℕ) (t : ℝ) :
+    (inner ℂ (halfLineRightShift t (coarseSection q X + haarSection d X))
+      (coarseSection q X + haarSection d X)).re =
+        ∫ x, completePairProfile q d X x * completePairProfile q d X (x + t) := by
+  have hrep : ((coarseSection q X + haarSection d X : L²₊) : ℝ → ℂ) =ᵐ[halfLineMeasure]
+      fun x => (completePairProfile q d X x : ℂ) := by
+    filter_upwards [Lp.coeFn_add (coarseSection q X) (haarSection d X),
+      coarseSection_coeFn q X, haarSection_coeFn d X] with x hadd hc hd
+    rw [hadd]
+    simp only [Pi.add_apply, hc, hd, completePairProfile, Complex.ofReal_add]
+  have hz (x : ℝ) (hx : x < 0) : completePairProfile q d X x = 0 := by
+    rw [completePairProfile, averageSectionProfile_zero_neg q X hx,
+      haarSectionProfile_zero_neg d X hx, add_zero]
+  have he : (halfLineExtend (coarseSection q X + haarSection d X) : ℝ → ℂ) =ᵐ[volume]
+      fun x => (completePairProfile q d X x : ℂ) := by
+    refine (halfLineExtend_coeFn _).trans
+      ((indicator_ae_eq_of_halfLine hrep).trans (Eventually.of_forall ?_))
+    intro x
+    by_cases hx : x ∈ Ici (0 : ℝ)
+    · exact indicator_of_mem hx _
+    · simp only [indicator_of_notMem hx, hz x (lt_of_not_ge hx), Complex.ofReal_zero]
+  exact inner_shift_real_representatives _ _ _ _ hrep he hz t
+
 /-- The mixed coefficient is exactly the sum of both original prime-two correlations. -/
 theorem primeTwoMixedSource_eq_integrals (d q : ℕ → ℝ) (Y X : ℕ) :
     primeTwoMixedSource d q Y X =
@@ -133,6 +164,21 @@ theorem primeTwoMixedSource_eq_integrals (d q : ℕ → ℝ) (Y X : ℕ) :
         ((∫ x, haarSectionProfile d Y x * averageSectionProfile q X (x + Real.log 2)) +
           ∫ x, averageSectionProfile q X x * haarSectionProfile d Y (x + Real.log 2)) := by
   rw [primeTwoMixedSource, inner_shift_haar_coarse_profiles, inner_shift_coarse_haar_profiles]
+
+/-- Subtracting the two diagonal prime-two terms leaves exactly the actual mixed block. -/
+theorem primeTwoMixedSource_eq_polarized_integral (d q : ℕ → ℝ) (X : ℕ) :
+    (2 * ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) *
+        (∫ x, completePairProfile q d X x * completePairProfile q d X (x + Real.log 2)) -
+      (2 * ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) *
+        (∫ x, averageSectionProfile q X x * averageSectionProfile q X (x + Real.log 2)) -
+      (2 * ArithmeticFunction.vonMangoldt 2 / Real.sqrt 2) *
+        (∫ x, haarSectionProfile d X x * haarSectionProfile d X (x + Real.log 2)) =
+      primeTwoMixedSource d q X X := by
+  rw [← inner_shift_completePairProfile, ← inner_shift_coarse_profile,
+    ← inner_shift_haarSectionProfile, primeTwoMixedSource, map_add,
+    inner_add_left, inner_add_right, inner_add_right]
+  simp only [Complex.add_re]
+  ring
 
 /-- Original Gamma energy pays the literal mixed prime-two integrals above a fixed detail index. -/
 theorem exists_high_detail_gamma_pays_original_primeTwo :
@@ -169,5 +215,6 @@ theorem exists_original_primeTwo_gamma_small_tail {δ : ℝ} (hδ : 0 < δ) :
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.primeTwoMixedSource_eq_integrals
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.primeTwoMixedSource_eq_polarized_integral
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_high_detail_gamma_pays_original_primeTwo
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_original_primeTwo_gamma_small_tail

@@ -7,6 +7,7 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheFrobeniusLadderIsMetz
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheTrickleDownInequalityIsTheSquareRootCount
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheLocalFactorTricklesDownByRamanujan
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheSuccessorConnectionIsTheArchimedeanGaugeField
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.APeriodicSuccessorHolonomyIsFlat
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.LorentzianPolynomialsAndTheTuranLayer
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.FrobeniusIsConformalHeckeIsABoost
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.AnIsometricLadderCarriesNoPositiveSquare
@@ -45,7 +46,8 @@ Lorentzian forms at degree two, domination and closure; the Hodge index of the s
 reverse Cauchy–Schwarz and the nef shift; the trickle-down theorem and the Metzler Hodge index
 theorem; calibration over finite fields, where the trickle-down inequality is the square-root
 count; isometric ladders, which hold their Hodge index only in the stability regime; common gauge
-fixing by the archimedean place along the successor; Lorentzian polynomials —
+fixing by the archimedean place along the successor, whose holonomy is periodic on the torus
+only at the Euler point; Lorentzian polynomials —
 the Hessian and mixed-Hessian trickle-down (Alexandrov–Fenchel, Khovanskii–Teissier), closure
 under differentiation, nonnegative substitution and products, the Euler product closure at every
 nonnegative point, the M-convexity of mixed-Lorentzian supports (the mixed and coefficient classes

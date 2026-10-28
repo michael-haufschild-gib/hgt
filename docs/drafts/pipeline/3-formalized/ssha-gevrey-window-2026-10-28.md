@@ -1,18 +1,18 @@
 # The Gevrey window: RH-strength at overlap ratio (log log N)^s
 
 - **ID:** ssha-gevrey
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) → Lean
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** SSHA README open topic 2 / To build; parent card spacing-scale-harmonic-analysis-2026-10-27
-- **Statement:** For a smooth profile φ in [−1,1], ∫φ = 1, with ∫|φ^{(q)}| ≤ A B^q (q!)^s (s ≥ 1), and dilations κ_N → ∞ with (N/κ_N)/(log log κ_N)^s → ∞: RH iff Weil's form is eventually nonnegative on the atomic families of width 1/κ_N. An explicit Gevrey-2 profile exists, so overlap ratio ≫ (log log N)² suffices.
+- **Statement:** For a smooth profile φ in [−1,1], ∫φ = 1, with ∫|φ^{(q)}| ≤ A B^q (q!)^s (s ≥ 0), and dilations κ_N → ∞ with (N/κ_N)/(log log κ_N)^s → ∞: RH iff Weil's form is eventually nonnegative on the atomic families of width 1/κ_N. An explicit Gevrey-2 profile exists, so overlap ratio ≫ (log log N)² suffices.
 
 ## Goal
 Narrow the open window of SH19 ((log N)^ε) to (log log N)^s.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  paper proof below
-- [ ] 2 → 3  Lean
+- [x] 1 → 2  paper proof below
+- [x] 2 → 3  Lean: `TheGevreyWindow.lean`, `TheGevreyProfile.lean` (`riemannHypothesis_iff_atomicFamilies_nonneg_of_gevrey`, `riemannHypothesis_iff_gevreyProfile_nonneg_loglog`); axioms propext, Classical.choice, Quot.sound
 
 ## Paper proof
 1. Tower, refined: if ‖H^{(j)}‖₁ ≤ C j!^s X^j for all j, then ‖T_p^{(j)}‖₁ ≤ C (j+p)!^s X^j Π_{i≤p}(X+i)

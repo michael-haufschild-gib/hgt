@@ -784,13 +784,12 @@ theorem roughHarmonic_mul_smoothEnergy_le {Q N X : ℕ} (hX1 : 1 ≤ X) (hXN : X
 /-! ### 6. The two scales together -/
 
 /-- **The two-scale inequality.** For `2 ≤ X ≤ N`, if the fibre means `h` of `y` satisfy
-`g₁ Var_X(h) ≤ E_X(h)` on the `Q`-smooth chain of `[1, X]` and `2 M_Q ≤ log X`, then with `F = F(N)`,
+`g₁ Var_X(h) ≤ E_X(h)` on the `Q`-smooth chain of `[1, X]`, then with `F = F(N)`,
 `G = F(N/X)`, `U = Σ_a V_a/a` and `c` the mean of `h` on `[1, X]`:
 `g₁ (1 − 2M_Q/log X) Σ_n (y_n − c)²/n ≤ g₁ U + (F/G)((1 + η) D_S + (1 + 1/η)(8 L_Q/G) U)
 + (2 g₁/log X) D_S`. -/
 theorem two_scale_le {Q N X : ℕ} (hX : 2 ≤ X) (hXN : X ≤ N) {g₁ η : ℝ} (hg₁ : 0 < g₁) (hη : 0 < η)
-    (y : ℕ → ℝ) (hA : g₁ * smoothVar Q X (fibreMean Q N y) ≤ smoothEnergy Q X (fibreMean Q N y))
-    (hL : 2 * ladderConstant Q ≤ Real.log X) :
+    (y : ℕ → ℝ) (hA : g₁ * smoothVar Q X (fibreMean Q N y) ≤ smoothEnergy Q X (fibreMean Q N y)) :
     g₁ * ((1 - 2 * ladderConstant Q / Real.log X) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) *
       (y n - wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N y)) ^ 2) ≤
       g₁ * ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * harmonicVar Q (N / a) (fun b => y (a * b)) +
@@ -809,11 +808,6 @@ theorem two_scale_le {Q N X : ℕ} (hX : 2 ≤ X) (hXN : X ≤ N) {g₁ η : ℝ
   set F := roughHarmonic Q N
   have hL0 : 0 < L := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
   have hF0 : 0 ≤ F := roughHarmonic_nonneg Q N
-  have hV : harmonicVar 0 N y ≤ W := by
-    have := wVar_le (s := Icc 1 N) (w := fun n : ℕ => 1 / (n : ℝ)) (v := y)
-      (fun n _ => by positivity) c
-    rw [harmonicVar, roughInterval_zero]
-    exact this
   -- total variance over the fibres of the smooth part
   have hfib : ∀ a ∈ smoothSet Q N, ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * (y (a * b) - c) ^ 2 =
       harmonicVar Q (N / a) (fun b => y (a * b)) + roughHarmonic Q (N / a) * (h a - c) ^ 2 :=
@@ -892,10 +886,8 @@ theorem two_scale_le {Q N X : ℕ} (hX : 2 ≤ X) (hXN : X ≤ N) {g₁ η : ℝ
     have e : 1 / L * (2 * DS + 2 * M * W) = 2 / L * DS + 2 * M / L * W := by ring
     rw [e] at h1
     linarith
-  have hM0 : 0 ≤ 1 - 2 * M / L := by
-    rw [sub_nonneg, div_le_one hL0]; exact hL
   calc g₁ * ((1 - 2 * M / L) * W) ≤ g₁ * (U + F * smoothVar Q X h + 2 / L * DS) :=
-        mul_le_mul_of_nonneg_left (by nlinarith) hg₁.le
+        mul_le_mul_of_nonneg_left hW2 hg₁.le
     _ = g₁ * U + g₁ * (F * smoothVar Q X h) + 2 * g₁ / L * DS := by ring
     _ ≤ _ := by linarith [hFsv]
 
@@ -1061,7 +1053,7 @@ theorem eventually_mul_harmonicVar_le_poleDefect {ε : ℝ} (hε : 0 < ε) :
   obtain ⟨K, hK, hKt⟩ := exists_harmonicVar_le_glauberForm_rough
   obtain ⟨Q, hQ2, hκ⟩ := exists_cutoff_div_log_le K
   obtain ⟨X₀, hX₀⟩ := eventually_smoothVar_le_smoothEnergy Q (show 0 < ε / 2 by linarith)
-  obtain ⟨X, hXX₀, hX2, hML, h2L, h2ML⟩ := exists_horizon (ladderConstant_nonneg Q) hτ0
+  obtain ⟨X, hXX₀, hX2, hML, h2L, -⟩ := exists_horizon (ladderConstant_nonneg Q) hτ0
     (le_trans (min_le_left _ _) (by norm_num)) X₀
   obtain ⟨N₀, hXN₀, hN₀⟩ := eventually_le_roughHarmonic_div (show 1 ≤ Q by omega)
     (show 1 ≤ X by omega) ((1 + Real.log X) / min (1 / 2 : ℝ) (ε / 24) +
@@ -1073,7 +1065,7 @@ theorem eventually_mul_harmonicVar_le_poleDefect {ε : ℝ} (hε : 0 < ε) :
     (logSum_nonneg Q) hL0.le
     (by have := roughHarmonic_sub_div_le Q N (show 1 ≤ X by omega); linarith) (hN₀ N hN)
     (min_le_left _ _)
-  have hcore := two_scale_le hX2 hXN hg₁ hτ0 (poleGauge x) (hX₀ X hXX₀ _) h2ML
+  have hcore := two_scale_le hX2 hXN hg₁ hτ0 (poleGauge x) (hX₀ X hXX₀ _)
   have hU := sum_fibreVar_le hK.le hKt hQ2 N (poleGauge x)
   have hVW : harmonicVar 0 N (poleGauge x) ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge x n -
       wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge x))) ^ 2 := by

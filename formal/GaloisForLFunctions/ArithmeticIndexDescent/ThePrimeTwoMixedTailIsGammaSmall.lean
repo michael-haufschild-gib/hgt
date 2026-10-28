@@ -93,8 +93,10 @@ theorem primeTwoMixedSource_add_details (d e q : ℕ → ℝ) (Y : ℕ) :
     primeTwoMixedSource (fun a => d a + e a) q (2 * Y + 1) (2 * Y + 1) =
       primeTwoMixedSource d q (2 * Y + 1) (2 * Y + 1) +
         primeTwoMixedSource e q (2 * Y + 1) (2 * Y + 1) := by
-  simp only [primeTwoMixedSource_odd_horizon,
-    primeTwoMixedSource_eq _ _ (le_refl (2 * Y + 1))]
+  simp only [primeTwoMixedSource_odd_horizon]
+  rw [primeTwoMixedSource_eq (fun a => d a + e a) q (le_refl (2 * Y + 1)),
+    primeTwoMixedSource_eq d q (le_refl (2 * Y + 1)),
+    primeTwoMixedSource_eq e q (le_refl (2 * Y + 1))]
   rw [← mul_add, ← Finset.sum_add_distrib]
   congr 1
   apply Finset.sum_congr rfl

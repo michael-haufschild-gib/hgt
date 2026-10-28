@@ -5,7 +5,7 @@
 - **Type:** THEOREM
 - **Source:** Ramanujan full-matrix quasimodes; harmonic rough-number tensorization; prime-defect Dirichlet form
 - **Statement:** Every bounded energy window of `log(N) I-P_N` converges, with multiplicity, to the simple energies `gamma+log(m)+tameDifferent(m)`.
-- **Count:** uncounted; eleven of sixteen scratch modules pass; endpoint checks and final actual-source audits remain
+- **Count:** uncounted; fourteen of sixteen scratch modules pass; endpoint checks and final actual-source audits remain
 
 ## Goal
 
@@ -708,3 +708,42 @@ The matrix-energy scratch first check failed only at PiLp.projₗ: its dependent
 The matrix-energy adapter retry passed with clean transitive axioms. The constant real family closes the coordinate-projection API issue. Actual source installed; its first required olean supports the bounded-energy coordinate certificate. Eleven scratch modules pass, with the preceding ten dependency builds complete. Five scratches and all final actual-source checks remain.
 
 All eleven first dependency builds passed. The bounded-energy coordinate scratch found only a companion norm-limit simplification error: the conditional remained `if True`. Replaced simultaneous simplification by an explicit `rw [if_pos rfl]` before the norm identity. Retry follows; no report from the failed file is retained, even though its certificate endpoint had a clean report. Eleven modules remain verified.
+
+The normalized-coordinate certificate retry passed without warnings, with only the standard three logical axioms. Its normalized Gram and residual limits, norm limit, and uniform 1/18 detecting-coordinate mass are checked. Source installed; first required olean supports the spectral-count assembly. Twelve scratch modules pass; four and all final actual-source checks remain.
+
+The arithmetic-sublevel scratch first check found local errors only in the positive threshold-gap helper: an unavailable empty-membership name, substitution deleting the outer variable, and a reversed addition inequality API. Replaced them by empty-set simplification, explicit substitution of the inner variable, and targeted linear arithmetic. Finiteness itself elaborated; failed-file reports are excluded. Retry follows. Twelve modules and twelve first dependency builds pass.
+
+### Properness check and refreshed baseline
+
+The arithmetic-energy finite-sublevel scratch passed its retry, was installed,
+and has a clean transitive endpoint audit. First required olean and the final
+actual-source audit remain. Three endpoint/generic-window drafts remain unchecked.
+The refreshed corpus search surfaced
+`TheFinitePrimeChainHasTheSpectrumOfTheIntegers.lean`; its introduction and
+`boxSpectral` endpoint were inspected. It establishes the finite smooth-box
+product-mode penalty inequality. This is baseline; it does not assert the
+full-integer horizon compactness, exact eventual counts, or simple actual
+eigenline convergence targeted here.
+
+Concurrent novelty audit: the new, externally edited
+`TheTopSpectrumOfThePrimeFormIsExhaustedByTheIntegers.lean` was searched and
+read in full as it stood. Its introduction announces a related upper-count
+inequality via box modes; the file currently ends after helper lemmas, without
+that advertised endpoint. Thus the introduction is not proof evidence.
+The finite-box spectral inequality itself is existing baseline. The overlapping
+route must be reassessed before counting this candidate. Uniform approximation
+of every bounded-defect vector by a fixed Ramanujan span is an additional
+structural conclusion of our package, beyond a spectral upper count.
+Two completed search outputs remain for cleanup:
+`/tmp/Exhaustion-new-top-spectrum-search.json` and
+`/tmp/Exhaustion-concurrent-novelty-search.json`.
+
+The generic Hermitian-window scratch first check failed only in the rank
+certificate's linear-map scalar laws and unfolding a local normalized vector.
+Added the identity ring-hom rewrite and explicit local unfolding. Overlap and
+projection estimates elaborated, but no failed-file axiom reports were retained.
+The retry is active; this module remains unverified.
+
+The generic Hermitian-window retry passed and is installed. Its three audited
+endpoints use only the standard three axioms. Two endpoint drafts remain; no
+contribution count changes until final source checks and novelty reassessment.

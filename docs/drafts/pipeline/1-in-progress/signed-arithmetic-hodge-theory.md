@@ -102,30 +102,27 @@ For arbitrary real coefficients a_m, it proves
 sum_n (sum_m a_m residual_m(N,n))^2
 <= (sum_m a_m^2) * (sum_m phi(m)(1+4 log(m))^2)
   * sum_(n<=N) f(floor(N/n))^2/n.
-The harmonic-quotient theorem proves the second factor is o(log N).
+The harmonic-quotient theorem proves the final arithmetic factor is o(log N).
 The input contains only finite prime arithmetic and the proved Mertens remainder;
 no conductor-uniform convergence or complement sign is assumed. Module 9,
 OneArithmeticRemainderControlsEveryRamanujanResidual, passes its final audit
 and has standard transitive axioms. The bounds do not identify a complete modal
 source or transfer Gamma and both poles.
 
-## Horizon-uniform arithmetic error target
+## Horizon-uniform arithmetic error
 
-Seek an absolute bound on
-B_N=sum_(n<=N) (|MertensSum(floor(N/n))-log(floor(N/n))+gamma|
-+1/floor(N/n))^2/n.
+Module 10, TheArithmeticResidualBudgetIsUniformInTheHorizon, proves an absolute
+bound B_N<=B at every natural horizon. The global Mertens decay gives
+f(y)<=C/(1+log y). Exact floor roundoff compares its square with twice the
+summable Wiener logarithmic kernel, whose mass is at most 1+2*pi^2.
+Thus B=2C^2*(1+2*pi^2) pays all horizons.
 
-The existing Chebyshev error bound and its explicit inverse-log-square
-majorant imply a candidate Mertens remainder bound C/log(y). The exact Euler
-integral identifies the tail constant. A finite positive-integer head then gives
-f(y)^2<=D/(1+log(y)^2). Floor roundoff compares this profile with the summable
-Wiener Lorentzian kernel. The existing bound_sum_log' applied to the constant
-arithmetic sequence should yield B_N<=3D*(1+2*pi^2).
-
-This would give an absolute residual budget for growing conductor families.
-Distinct eigenvalue labels still require energy separation; a wider-window
-spectral count could use dimension instead. Neither conclusion supplies the
-modal complement or continuous Gamma and pole transfer.
+For every finite family and all coefficients, the squared residual is at most
+B*(sum_m phi(m)*(1+4log m)^2)*(sum_m a_m^2).
+The final individual Lean audit passes, with standard transitive axioms.
+Distinct eigenvalue labels still require energy separation. These estimates
+control prime-matrix approximation, not the full-Weil complement or continuous
+Gamma and pole transfer.
 
 ## Local source-capture target
 
@@ -137,3 +134,13 @@ of normalized modal mass in each fixed integer window. Extract the positive
 readout bound and approximation cost before any route-retirement claim.
 The topology here is the literal prime-matrix l2 normalization; no claim about
 every full-Weil completion follows.
+
+## Actual bounded-energy source capture
+
+The existing TheRenormalizedPrimeEnergyControlsTheDefect proves uniform finite
+Ramanujan approximation on every bounded actual renormalized-prime-energy
+sublevel. Combine this with local-modal mass control and the Gram lower bound
+to determine whether unit vectors in each such sublevel lose all mass on every
+fixed integer window. This is a source-transfer boundary in the literal
+integer-coordinate norm. Retain its quantitative local readout and approximation
+costs; it does not determine Gamma, both poles or the full Weil sign.

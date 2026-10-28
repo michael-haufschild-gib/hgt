@@ -789,3 +789,39 @@ Three continuation sources are candidates, not established results: Gamma
 mean-graph payment, literal physical-integral transfer, and arbitrarily small
 Gamma-relative high-detail tails. The all-prime mixed source and cumulative
 full-form Schur payment remain open.
+
+### Actual Gamma mean-graph payment of prime two — formalized
+
+Mandatory actual final86354 passed clean. All four endpoint dependency prints
+contain only propext, Classical.choice and Quot.sound. The retained mean graph
+controls exactly the adjacent variation read by the surviving prime2 orientation.
+With ell=vonMangoldt(2)/sqrt(2), one graph payment yields the explicit constant
+C2=1+4*ell^2/exp(-1/2). Gamma energy minus the entire absolute mixed block retains
+sum(log(a)*mass(a)*d(a)^2)-C2*sum_(a<=Y)mass(a)*d(a)^2 at full odd horizon2Y+1.
+A fixed lower detail index therefore makes Gamma pay the block while all coarse
+coefficients remain arbitrary. Wired; foundational README/checks updated.
+
+The original physical-integral transfer, arbitrary relative tail smallness and
+uniform negative-dimension bound remain unverified candidates. The current
+proved theorem compares actual half-line prime vectors and actual complete BV
+Gamma profiles with identical coefficients. It does not pay the other primes,
+pure coarse prime form or poles. Main programme objective remains open.
+
+### Arbitrarily small mixed prime-two tails — formalized
+
+Mandatory actual88991 passed clean, three standard endpoint dependency prints.
+An arbitrary positive graph share delta gives detail charge C2/delta. A single
+A>exp(C2/delta^2) makes the high-detail mixed block at most delta times the
+ORIGINAL UNTRUNCATED complete-profile Gamma energy, uniformly in odd horizon
+and arbitrary coarse/detail coefficients. Exact additivity identifies the tail
+with the difference from the finite low-detail head. This proves uniform finite
+coordinate approximation in the actual Gamma form. Wired/docs/checks updated.
+
+The physical polarized-integral transfer and uniform real negative-dimension
+bound for Gamma minus prime2 mixed are candidates pending direct checks.
+Translated-block variance could sharpen the tail rate and extend fixed lag,
+but remains research rather than a proved general integer-lag theorem.
+
+- Formalized `TheCoarseDetailPrimePairIsTheLiteralSource`: actual coarse/complete representatives, both mixed physical correlations, literal polarized prime-two source identity, and physical Gamma-tail payment. Direct actual-source audit16150 passed with standard dependencies. Full all-prime/index questions remain open.
+
+- Formalized `ThePrimeTwoMixedFormHasUniformFiniteIndex`: one fixed low-detail readout bounds every strictly negative real subspace for original Gamma minus signed prime-two mixed source, uniformly in odd horizon and finite complete-profile family. Direct actual-source audit63538 passed with standard dependencies. This is an actual partial-source upper index bound; full Weil index remains open.

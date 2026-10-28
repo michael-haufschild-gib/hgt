@@ -1,7 +1,7 @@
 # Ramanujan spectral law for the complete Weil form at the spacing
 
 - **ID:** complete-weil-spacing-ramanujan-spectral-law
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** full-prime Ramanujan quasimodes; bounded-defect finite-span approximation; exact archimedean atom pairing; actual two-pole rows
 - **Statement:** The complete normalized Weil matrix has Ramanujan quasimodes at every fixed separated width ratio, and its bounded spectrum is exhausted by their explicit simple energies at a sufficiently small fixed ratio.
@@ -228,3 +228,72 @@ term, and of the two signed center lags only the positive one meets the Levy
 integral. Reindexing Fin N by i+1 gives PrimeHorizonIndex N and therefore the
 same actual carrier used in the prime spectral package. This exact equality,
 including its factor two, remains an explicit Lean obligation.
+
+Further corpus baseline: RAPT `TheArchimedeanPlacePaysTheArithmeticPoint.lean`
+was inspected through its joint-germ definitions and matched Cesaro counterterm.
+It already identifies conductor one as the unique periodic mode coupled to a
+constant archimedean mode. This algebraic rank-one mechanism is excluded novelty.
+The present target still requires the literal atom-integral matrix, cancellation
+of its boundary rows, actual norm residuals, and bounded spectral exhaustion.
+
+The row argument naturally has a stronger intermediate form for every fixed
+periodic a, not only individual Ramanujan modes. Split a=mean(a)+b, with b of
+mean zero. The exact pole row and the shifted Abel bounds give
+`norm(B_N*(a(n)/sqrt(n))-alpha*mean(a)*s)<=C_a` uniformly in N.
+The actual atom-pair and pole-factor errors obey the same uniform bound.
+After division by sqrt(log N), the actual off-diagonal archimedean-plus-pole
+correction therefore tends in norm to alpha times the constant periodic
+component. This supplies the full residual control missing from a scalar
+rank-one form limit. Applying it to each Ramanujan mode would then reduce the
+full-Weil quasimode theorem to the already proved prime residual theorem.
+The generic periodic row statement and its transfer remain unformalized and
+are support for the same single spectral contribution.
+
+The exact harmonic-tail first and second moments now have an unchecked draft
+`/tmp/HarmonicTailSquareIdentity.lean`. It uses the standard rational harmonic
+numbers cast to reals and the common reciprocal increment; no computation or
+new analytic premise is involved. It is support for this candidate, not a
+separate contribution. The full matrix proof remains incomplete.
+
+An unchecked finite/reversed Abel adapter is retained at
+`/tmp/FiniteReversedAbelBounds.lean`. It reuses the existing quantitative Abel
+inequality after truncating the sequence, then reflects a finite interval.
+These elementary adapters are baseline support, not a separate contribution.
+Completed API outputs retained for cleanup:
+`/tmp/WeilRamanujan-harmonic-reversal-mathlib-search.json`,
+`/tmp/WeilRamanujan-interval-reflection-search.json`,
+`/tmp/WeilRamanujan-interval-subtraction-search.json`,
+`/tmp/WeilRamanujan-interval-reflection-mathlib-search.json`, and
+`/tmp/WeilRamanujan-interval-subtraction-mathlib-search.json`.
+
+A direct carrier adapter can define the complete matrix on `PrimeHorizonIndex N`
+by the literal `markovPair(atom g n,atom g j)` plus the two products of actual
+exponential atom moments. The explicit bijection `n -> n-1` to `Fin N` then
+identifies it entrywise with the existing ALG Gram and pole rows. This avoids
+assuming any matrix model for Weil's form; the existing `polarDefect_atomic`
+identity can be transported by the same finite reindexing. The adapter and its
+quadratic identity remain unproved.
+
+The exact scalar assembly has now been checked on paper. Put
+`G=integral(g^2)`, `Gpm=integral(g*exp(plus/minus u/2))`,
+`T_N=s outer t+t outer s`, and let X_N have zero diagonal and actual atom
+cross integrals off the diagonal. At separated supports the literal matrix is
+
+`W_N=(2*gammaHardyPhaseRate(0)+levyEnergy(g)/G) I
+       -P_N-X_N/G+(Gminus*Gplus/G)*T_N`.
+
+The pair theorem `levyEnergy_atom_pair` confirms the off-diagonal coefficient
+minus one: its quadratic cross contribution is minus twice the cross integral.
+The two actual exponential moments give the displayed rank-two term exactly.
+The scalar diagonal minus log(N) tends to sigma-gamma, so the prime energy
+E(m)=gamma+log(m)+tame(m) gives precisely lambda_m after adding the rank-one
+limit. The carrier equality still requires Lean; no model matrix is assumed.
+
+More explicitly, the inspected defect and pole inequalities give eventually
+`W_N[x]>=a_phi_c*norm(x)^2+(1/2)*D_N(x)` for the proposed small c, where a
+valid fixed scalar is
+`a_phi_c=2*rate(0)+log(1/c)+profileRobin(phi)+gamma-1/4
+ -exp(1/2)/2-markovCrossConstant*c-2*poleConstant*exp(1/2)*c`.
+Here w<=1 and wN=c. Thus the existing uniform finite-Ramanujan approximation
+applies to every bounded-energy vector, with no sign restriction on phi.
+This scalar is only a coercivity aid, not a claimed sharp constant.

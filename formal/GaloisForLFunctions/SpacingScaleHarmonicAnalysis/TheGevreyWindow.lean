@@ -9,7 +9,8 @@ profile and the test are of Gevrey class `s` — `‖φ^{(q)}‖₁ ≤ A B^q (q
 explicit, `C_p ≲ (p^s)^p`, and an order growing with `N` brings the window down to `(log log N)^s`.
 
 * **The tower in Gevrey class** (`integral_abs_iteratedDeriv_logTower_le_gevrey`): if
-  `‖H^{(j)}‖₁ ≤ C (j!)^s X^j`, then `‖T_p^{(j)}‖₁ ≤ C ((j+p)!)^s X^j Π_{i≤p}(X + i)`. The lower-order
+  `‖H^{(j)}‖₁ ≤ C (j!)^s X^j`, then `‖T_p^{(j)}‖₁ ≤ C ((j+p)!)^s X^j Π_{i≤p}(X + i)`. The
+  lower-order
   terms of `T_{p+1} = T_p′ − (p+1)T_p` cost a factor `X + p + 1`, not a factorial.
 * **Leibniz in Gevrey class** (`integral_abs_iteratedDeriv_mul_le_gevrey`): `l!(i−l)! ≤ i!` and the
   binomial theorem give `‖(F(· − c) G(a − ·))^{(i)}‖₁ ≤ M A (i!)^s (b + B′)^i`.
@@ -54,7 +55,8 @@ theorem abs_bernoulli_div_factorial_le (m : ℕ) :
   rw [div_le_iff₀ hP]
   have hz0 : 0 ≤ dqptZetaEven (m + 1) := by
     have := dqpt_one_le_zetaEven (k := m + 1) (by omega); linarith
-  nlinarith [mul_le_mul_of_nonneg_left hz (by positivity : (0 : ℝ) ≤ 2 * ((2 * m + 2).factorial : ℝ))]
+  nlinarith [mul_le_mul_of_nonneg_left hz
+    (by positivity : (0 : ℝ) ≤ 2 * ((2 * m + 2).factorial : ℝ))]
 
 /-! ### The tower in Gevrey class -/
 
@@ -88,9 +90,9 @@ theorem integral_abs_iteratedDeriv_logTower_succ_le (hH : ContDiff ℝ ∞ H) {�
 `‖T_p^{(j)}‖₁ ≤ C ((j+p)!)^s X^j Π_{i<p}(X + i + 1)`. -/
 theorem integral_abs_iteratedDeriv_logTower_le_gevrey (hH : ContDiff ℝ ∞ H) {α β : ℝ}
     (hHs : ∀ t, t ∉ Icc α β → H t = 0) {C X s : ℝ} (hC : 0 ≤ C) (hX : 0 ≤ X) (hs : 0 ≤ s)
-    (hHb : ∀ j, ∫ t, |iteratedDeriv j H t| ≤ C * ((Nat.factorial j : ℕ) : ℝ) ^ s * X ^ j) (p : ℕ) :
+    (hHb : ∀ j, ∫ t, |iteratedDeriv j H t| ≤ C * (j.factorial : ℝ) ^ s * X ^ j) (p : ℕ) :
     ∀ j : ℕ, ∫ t, |iteratedDeriv j (logTower H p) t| ≤
-      C * ((Nat.factorial (j + p) : ℕ) : ℝ) ^ s * X ^ j *
+      C * ((j + p).factorial : ℝ) ^ s * X ^ j *
         ∏ i ∈ Finset.range p, (X + ((i : ℝ) + 1)) := by
   induction p with
   | zero => intro j; simpa [logTower] using hHb j
@@ -100,7 +102,7 @@ theorem integral_abs_iteratedDeriv_logTower_le_gevrey (hH : ContDiff ℝ ∞ H) 
     have h2 := ih j
     set P := ∏ i ∈ Finset.range p, (X + ((i : ℝ) + 1))
     have hP : 0 ≤ P := Finset.prod_nonneg fun i _ => by positivity
-    have hmono : ((Nat.factorial (j + p) : ℕ) : ℝ) ^ s ≤ ((Nat.factorial (j + (p + 1)) : ℕ) : ℝ) ^ s :=
+    have hmono : ((j + p).factorial : ℝ) ^ s ≤ ((Nat.factorial (j + (p + 1)) : ℕ) : ℝ) ^ s :=
       Real.rpow_le_rpow (by positivity)
         (by exact_mod_cast Nat.factorial_le (by omega)) hs
     have he : j + 1 + p = j + (p + 1) := by omega
@@ -117,14 +119,15 @@ theorem integral_abs_iteratedDeriv_logTower_le_gevrey (hH : ContDiff ℝ ∞ H) 
           have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmono hC)
             (mul_nonneg (pow_nonneg hX j) hP)
           nlinarith
-      _ = C * ((Nat.factorial (j + (p + 1)) : ℕ) : ℝ) ^ s * X ^ j * (P * (X + ((p : ℝ) + 1))) := by ring
+      _ = C * ((Nat.factorial (j + (p + 1)) : ℕ) : ℝ) ^ s * X ^ j * (P * (X + ((p : ℝ) + 1))) := by
+          ring
 
 end Tower
 
 /-! ### Leibniz in Gevrey class -/
 
 theorem factorial_rpow_mul_le {s : ℝ} (hs : 0 ≤ s) {i l : ℕ} (hl : l ≤ i) :
-    ((Nat.factorial l : ℕ) : ℝ) ^ s * ((Nat.factorial (i - l) : ℕ) : ℝ) ^ s ≤ ((Nat.factorial i : ℕ) : ℝ) ^ s := by
+    (l.factorial : ℝ) ^ s * ((i - l).factorial : ℝ) ^ s ≤ (i.factorial : ℝ) ^ s := by
   rw [← Real.mul_rpow (by positivity) (by positivity)]
   refine Real.rpow_le_rpow (by positivity) ?_ hs
   exact_mod_cast Nat.le_of_dvd (Nat.factorial_pos i) (Nat.factorial_mul_factorial_dvd_factorial hl)
@@ -134,36 +137,36 @@ theorem factorial_rpow_mul_le {s : ℝ} (hs : 0 ≤ s) {i l : ℕ} (hl : l ≤ i
 theorem integral_abs_iteratedDeriv_mul_le_gevrey {F G : ℝ → ℝ} (hF : ContDiff ℝ ∞ F)
     (hG : ContDiff ℝ ∞ G) (hGc : HasCompactSupport G) {M b A B' s : ℝ} (hM0 : 0 ≤ M)
     (hb : 0 ≤ b) (hB' : 0 ≤ B') (hs : 0 ≤ s)
-    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q G t| ≤ A * B' ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s) (c a : ℝ) (i : ℕ) :
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M * b ^ l * (l.factorial : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q G t| ≤ A * B' ^ q * (q.factorial : ℝ) ^ s) (c a : ℝ) (i : ℕ) :
     ∫ t, |iteratedDeriv i (fun t => F (t - c) * G (a - t)) t| ≤
-      M * A * ((Nat.factorial i : ℕ) : ℝ) ^ s * (b + B') ^ i := by
+      M * A * (i.factorial : ℝ) ^ s * (b + B') ^ i := by
   refine (integral_abs_iteratedDeriv_mul_le hF hG hGc hM c a i).trans ?_
   unfold leibnizBound
   rw [add_pow, Finset.mul_sum]
   refine Finset.sum_le_sum fun l hl => ?_
   have hli : l ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hl)
   have hfac := factorial_rpow_mul_le hs hli
-  have h1 : (i.choose l : ℝ) * (M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) *
+  have h1 : (i.choose l : ℝ) * (M * b ^ l * (l.factorial : ℝ) ^ s) *
       (∫ s', |iteratedDeriv (i - l) G s'|) ≤
-      (i.choose l : ℝ) * (M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) *
-        (A * B' ^ (i - l) * ((Nat.factorial (i - l) : ℕ) : ℝ) ^ s) :=
+      (i.choose l : ℝ) * (M * b ^ l * (l.factorial : ℝ) ^ s) *
+        (A * B' ^ (i - l) * ((i - l).factorial : ℝ) ^ s) :=
     mul_le_mul_of_nonneg_left (hA (i - l)) (by positivity)
   refine h1.trans ?_
   have hA0 : 0 ≤ A := by
     have := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 G t)).trans (hA 0)
     simpa using this
-  have : (i.choose l : ℝ) * (M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) *
-      (A * B' ^ (i - l) * ((Nat.factorial (i - l) : ℕ) : ℝ) ^ s) =
+  have : (i.choose l : ℝ) * (M * b ^ l * (l.factorial : ℝ) ^ s) *
+      (A * B' ^ (i - l) * ((i - l).factorial : ℝ) ^ s) =
       M * A * ((i.choose l : ℝ) * b ^ l * B' ^ (i - l)) *
-        (((Nat.factorial l : ℕ) : ℝ) ^ s * ((Nat.factorial (i - l) : ℕ) : ℝ) ^ s) := by ring
+        ((l.factorial : ℝ) ^ s * ((i - l).factorial : ℝ) ^ s) := by ring
   rw [this]
   have hc : 0 ≤ M * A * ((i.choose l : ℝ) * b ^ l * B' ^ (i - l)) := by positivity
   calc M * A * ((i.choose l : ℝ) * b ^ l * B' ^ (i - l)) *
-        (((Nat.factorial l : ℕ) : ℝ) ^ s * ((Nat.factorial (i - l) : ℕ) : ℝ) ^ s)
-      ≤ M * A * ((i.choose l : ℝ) * b ^ l * B' ^ (i - l)) * ((Nat.factorial i : ℕ) : ℝ) ^ s :=
+        ((l.factorial : ℝ) ^ s * ((i - l).factorial : ℝ) ^ s)
+      ≤ M * A * ((i.choose l : ℝ) * b ^ l * B' ^ (i - l)) * (i.factorial : ℝ) ^ s :=
         mul_le_mul_of_nonneg_left hfac hc
-    _ = M * A * ((Nat.factorial i : ℕ) : ℝ) ^ s * (b ^ l * B' ^ (i - l) * (i.choose l : ℝ)) := by ring
+    _ = M * A * (i.factorial : ℝ) ^ s * (b ^ l * B' ^ (i - l) * (i.choose l : ℝ)) := by ring
 
 /-! ### The Gevrey synthesis error -/
 
@@ -173,18 +176,20 @@ variable {φ F : ℝ → ℝ} {R M b A B s : ℝ}
 
 /-- `(p!)^s ≤ (p^s)^p`. -/
 theorem factorial_rpow_le (p : ℕ) {s : ℝ} (hs : 0 ≤ s) :
-    ((Nat.factorial p : ℕ) : ℝ) ^ s ≤ ((p : ℝ) ^ s) ^ p := by
+    (p.factorial : ℝ) ^ s ≤ ((p : ℝ) ^ s) ^ p := by
   rw [← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg p), mul_comm,
     Real.rpow_mul (Nat.cast_nonneg p), Real.rpow_natCast]
   exact Real.rpow_le_rpow (by positivity) (by exact_mod_cast Nat.factorial_le_pow p) hs
 
-/-- **The Gevrey synthesis error**: for a Gevrey profile `‖φ^{(q)}‖₁ ≤ A B^q (q!)^s` and a Gevrey test
+/-- **The Gevrey synthesis error**: for a Gevrey profile `‖φ^{(q)}‖₁ ≤ A B^q (q!)^s` and a Gevrey
+test
 `|F^{(l)}| ≤ M b^l (l!)^s` supported in `[−R, R]`, the Euler–Maclaurin synthesis of order
 `p = 2m + 2` is within `M A (p^s (b + Bk + p)/n₀)^p` of `F ∗ φ_k`. -/
 theorem abs_gevreySynth_sub_le (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
     (hF : ContDiff ℝ ∞ F) (hFs : ∀ t, t ∉ Icc (-R) R → F t = 0) (hM0 : 0 ≤ M) (hb : 0 ≤ b)
-    (hB : 0 ≤ B) (hs : 0 ≤ s) (hM : ∀ l t, |iteratedDeriv l F t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * B ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s) {n₀ N : ℕ}
+    (hB : 0 ≤ B) (hs : 0 ≤ s)
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M * b ^ l * (l.factorial : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * B ^ q * (q.factorial : ℝ) ^ s) {n₀ N : ℕ}
     (hn₀ : 2 ≤ n₀) (hN : Real.log n₀ + 2 * R < Real.log (1 + N)) {k : ℝ} (hk : 1 ≤ k) (m : ℕ)
     (r : ℝ) :
     |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ) (r + (Real.log n₀ + R)) -
@@ -205,7 +210,7 @@ theorem abs_gevreySynth_sub_le (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSup
   have hA0 : 0 ≤ A := by
     have := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
     simpa using this
-  have hψA : ∀ q, ∫ t, |iteratedDeriv q (dilate k φ) t| ≤ A * (B * k) ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s :=
+  have hψA : ∀ q, ∫ t, |iteratedDeriv q (dilate k φ) t| ≤ A * (B * k) ^ q * (q.factorial : ℝ) ^ s :=
     fun q => by
       rw [integral_abs_iteratedDeriv_dilate hφ hk0, mul_pow]
       have := mul_le_mul_of_nonneg_left (hA q) (pow_nonneg hk0.le q)
@@ -230,7 +235,7 @@ theorem abs_gevreySynth_sub_le (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSup
     simp only [H]
     ring_nf
   -- the tower of `H` in Gevrey class
-  have hHb : ∀ j, ∫ t, |iteratedDeriv j H t| ≤ M * A * ((Nat.factorial j : ℕ) : ℝ) ^ s * X ^ j := fun j =>
+  have hHb : ∀ j, ∫ t, |iteratedDeriv j H t| ≤ M * A * (j.factorial : ℝ) ^ s * X ^ j := fun j =>
     integral_abs_iteratedDeriv_mul_le_gevrey hF hψ hψc hM0 hb (by positivity) hs hM hψA c (r + c) j
   have htower := integral_abs_iteratedDeriv_logTower_le_gevrey hH hHs (by positivity) hX hs hHb p 0
   simp only [iteratedDeriv_zero, zero_add, pow_zero, mul_one] at htower
@@ -249,7 +254,7 @@ theorem abs_gevreySynth_sub_le (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSup
   have hfac := factorial_rpow_le p hs
   have hT : ∫ t, |logTower H p t| ≤ M * A * ((p : ℝ) ^ s) ^ p * (X + p) ^ p := by
     refine htower.trans ?_
-    have h1 : M * A * ((Nat.factorial p : ℕ) : ℝ) ^ s ≤ M * A * ((p : ℝ) ^ s) ^ p :=
+    have h1 : M * A * (p.factorial : ℝ) ^ s ≤ M * A * ((p : ℝ) ^ s) ^ p :=
       mul_le_mul_of_nonneg_left hfac (by positivity)
     exact mul_le_mul h1 hprod (Finset.prod_nonneg fun i _ => by positivity) (by positivity)
   have hT0 : 0 ≤ ∫ t, |logTower H p t| := integral_nonneg fun t => abs_nonneg _
@@ -273,15 +278,15 @@ supported in `[−(R+1), R+1]` with `|D| ≤ gevErr` and Lipschitz constant `emL
 theorem exists_gevreySynthesis (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
     (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ ∞ F) (hFR : SupportedIn R F) (hM0 : 0 ≤ M)
     (hb : 0 ≤ b) (hB : 0 ≤ B) (hs : 0 ≤ s)
-    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * B ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M * b ^ l * (l.factorial : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * B ^ q * (q.factorial : ℝ) ^ s)
     {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {k : ℝ} (hk : 1 ≤ k) (m : ℕ) :
     ∃ (x : ℕ → ℝ) (D : ℝ → ℝ),
       atomicTest (n₀ * blockSize R) x (dilate k φ) =
         (fun u => F (u - (Real.log n₀ + R)) + D (u - (Real.log n₀ + R))) ∧
       ContDiff ℝ 2 D ∧ SupportedIn (R + 1) D ∧
       (∀ u, |D u| ≤ gevErr M b A B s k (∫ s, |φ s|) m n₀) ∧
-      ∀ u v, |D u - D v| ≤ emLip (fun l => M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
+      ∀ u v, |D u - D v| ≤ emLip (fun l => M * b ^ l * (l.factorial : ℝ) ^ s)
         (fun q => ∫ s, |iteratedDeriv q φ s|) k n₀ * |u - v| := by
   have hn₀1 : 1 ≤ n₀ := by omega
   have hB1 : 1 ≤ n₀ * blockSize R := Nat.one_le_iff_ne_zero.mpr
@@ -621,7 +626,8 @@ section GevreyTests
 
 variable {φ g : ℝ → ℝ}
 
-/-- The derivatives of a mollification fall on the mollifier: `(g ∗ φ_m)^{(l)} = g ∗ (φ_m)^{(l)}`. -/
+/-- The derivatives of a mollification fall on the mollifier:
+`(g ∗ φ_m)^{(l)} = g ∗ (φ_m)^{(l)}`. -/
 theorem iteratedDeriv_mollify (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ) (hg : Continuous g)
     {m : ℝ} (hm : 0 < m) (l : ℕ) :
     iteratedDeriv l (mollify g φ m) = fun x => ∫ t, g t * iteratedDeriv l (dilate m φ) (x - t) := by
@@ -645,9 +651,9 @@ theorem iteratedDeriv_mollify (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ
 `|(g ∗ φ_m)^{(l)}| ≤ M_g A (B m)^l (l!)^s`. -/
 theorem abs_iteratedDeriv_mollify_le (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
     (hg : Continuous g) {Mg : ℝ} (hgM : ∀ t, |g t| ≤ Mg) {m : ℝ} (hm : 0 < m) {A Bφ s : ℝ}
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
     (l : ℕ) (x : ℝ) :
-    |iteratedDeriv l (mollify g φ m) x| ≤ Mg * A * (Bφ * m) ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s := by
+    |iteratedDeriv l (mollify g φ m) x| ≤ Mg * A * (Bφ * m) ^ l * (l.factorial : ℝ) ^ s := by
   have hMg : 0 ≤ Mg := (abs_nonneg _).trans (hgM 0)
   have hψ : ContDiff ℝ ∞ (iteratedDeriv l (dilate m φ)) := by
     rw [iteratedDeriv_eq_iterate]; exact (contDiff_dilate_smooth hφ m).iterate_deriv l
@@ -659,7 +665,7 @@ theorem abs_iteratedDeriv_mollify_le (hφ : ContDiff ℝ ∞ φ) (hφ1 : Vanishe
   have := mul_le_mul_of_nonneg_left (hA l) (mul_nonneg hMg (pow_nonneg hm.le l))
   calc Mg * (m ^ l * ∫ t, |iteratedDeriv l φ t|) = Mg * m ^ l * ∫ t, |iteratedDeriv l φ t| := by
         ring
-    _ ≤ Mg * m ^ l * (A * Bφ ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) := this
+    _ ≤ Mg * m ^ l * (A * Bφ ^ l * (l.factorial : ℝ) ^ s) := this
     _ = _ := by rw [mul_pow]; ring
 
 end GevreyTests
@@ -674,10 +680,10 @@ variable {Φ : (ℝ → ℝ) → ℝ} {φ : ℝ → ℝ} {A Bφ s : ℝ}
 on a smooth Gevrey test, its mollification by a dilated Gevrey profile. -/
 theorem exists_gevrey_neg_of_stable (hΦ : StableForm Φ) (hφ : ContDiff ℝ ∞ φ)
     (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hBφ : 0 ≤ Bφ)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
     {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (hneg : Φ g < 0) :
     ∃ (G : ℝ → ℝ) (M b : ℝ), ContDiff ℝ ∞ G ∧ HasCompactSupport G ∧ 0 ≤ M ∧ 0 ≤ b ∧
-      (∀ l t, |iteratedDeriv l G t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) ∧ Φ G < 0 := by
+      (∀ l t, |iteratedDeriv l G t| ≤ M * b ^ l * (l.factorial : ℝ) ^ s) ∧ Φ G < 0 := by
   obtain ⟨R, Mg, L, hR, hgR, hgM, hgL⟩ := exists_test_bounds hg hgc
   obtain ⟨Err, hErr, hle⟩ := hΦ.2 g hg hgc (R + 1) (by linarith)
     (fun u hu => hgR u (by linarith))
@@ -702,10 +708,10 @@ theorem exists_gevrey_neg_of_stable (hΦ : StableForm Φ) (hφ : ContDiff ℝ �
 growth**, for every Gevrey profile of the same class. -/
 theorem frequently_atomicTest_neg_of_stable_gevrey (hΦ : StableForm Φ) (hφ : ContDiff ℝ ∞ φ)
     (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
     {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) {G : ℝ → ℝ} (hG : ContDiff ℝ ∞ G)
     (hGc : HasCompactSupport G) {M b : ℝ} (hM0 : 0 ≤ M) (hb : 0 ≤ b)
-    (hGM : ∀ l t, |iteratedDeriv l G t| ≤ M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s)
+    (hGM : ∀ l t, |iteratedDeriv l G t| ≤ M * b ^ l * (l.factorial : ℝ) ^ s)
     (hneg : Φ G < 0) :
     ∃ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ, Φ (atomicTest N x (dilate (κ N) φ)) < 0 := by
   have hG2 : ContDiff ℝ 2 G := hG.of_le (natCast_le_infty 2)
@@ -719,7 +725,7 @@ theorem frequently_atomicTest_neg_of_stable_gevrey (hΦ : StableForm Φ) (hφ : 
   have hB : 1 ≤ B := one_le_blockSize R
   obtain ⟨he, hV⟩ := tendsto_gevrey hs hκ hB (M := M) (b := b) (A := A) (Bφ := Bφ)
     (A0 := ∫ s, |φ s|) (mul_nonneg hM0 hA0) hb hBφ
-    (fun l => M * b ^ l * ((Nat.factorial l : ℕ) : ℝ) ^ s) (fun q => ∫ s, |iteratedDeriv q φ s|)
+    (fun l => M * b ^ l * (l.factorial : ℝ) ^ s) (fun q => ∫ s, |iteratedDeriv q φ s|)
     (R + 1)
   have h1 := (hErr _ _ he hV).eventually (gt_mem_nhds (show (0 : ℝ) < -Φ G by linarith))
   have hNB : Tendsto (fun n : ℕ => n * B) atTop atTop :=
@@ -743,7 +749,7 @@ eventually nonnegative on the atomic families of width `1/κ_N`. -/
 theorem nonneg_iff_atomicFamilies_nonneg_of_stable_gevrey (hΦ : StableForm Φ)
     (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s)
     (hBφ : 0 ≤ Bφ)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
     {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) :
     (∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g → 0 ≤ Φ g) ↔
       ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ, 0 ≤ Φ (atomicTest N x (dilate (κ N) φ)) := by
@@ -777,7 +783,7 @@ variable {φ : ℝ → ℝ} {A Bφ s : ℝ} {κ : ℕ → ℝ}
 width `1/κ_N`. -/
 theorem riemannHypothesis_iff_atomicFamilies_nonneg_of_gevrey (hφ : ContDiff ℝ ∞ φ)
     (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
     (hκ : OverlapGrowthGevrey s κ) :
     RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
       0 ≤ weilQuad (atomicTest N x (dilate (κ N) φ)) :=
@@ -790,7 +796,7 @@ overlap growth iff it is not Weil positive. -/
 theorem atomicFamilies_negative_iff_of_gevrey {lam : ℕ → ℝ}
     (hlam : ∀ n, |lam n| ≤ ArithmeticFunction.vonMangoldt n) (hφ : ContDiff ℝ ∞ φ)
     (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
     (hκ : OverlapGrowthGevrey s κ) :
     (∃ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ,
       weilQuadTw lam (atomicTest N x (dilate (κ N) φ)) < 0) ↔ ¬ WeilPositiveFull lam := by
@@ -807,7 +813,7 @@ theorem atomicFamilies_negative_iff_of_gevrey {lam : ℕ → ℝ}
 infinitely many `N`, unconditionally. -/
 theorem markov_atomicFamilies_negative_of_gevrey (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
     (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
-    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * ((Nat.factorial q : ℕ) : ℝ) ^ s)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
     (hκ : OverlapGrowthGevrey s κ) :
     ∃ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ, markovQuad (atomicTest N x (dilate (κ N) φ)) < 0 := by
   obtain ⟨g, hg, hgc, hneg⟩ := exists_markovQuad_neg
@@ -816,11 +822,81 @@ theorem markov_atomicFamilies_negative_of_gevrey (hφ : ContDiff ℝ ∞ φ) (h�
   exact frequently_atomicTest_neg_of_stable_gevrey stableForm_markovQuad hφ hφ1 hφint hs hBφ hA hκ
     hG hGc hM0 hb hGM hGneg
 
-/-- Widths `(log log N)^α/N`, `α > s` — overlap ratio `(log log N)^α` — have Gevrey overlap growth of
-class `s`. -/
+/-- Widths `(log log N)^α/N`, `α > s` — overlap ratio `(log log N)^α` — have Gevrey overlap
+growth of class `s`. -/
 theorem overlapGrowthGevrey_loglog {α : ℝ} (hs : 0 ≤ s) (hα : s < α) :
     OverlapGrowthGevrey s fun N : ℕ => (N : ℝ) / Real.log (Real.log N) ^ α := by
-  sorry
+  have hα0 : 0 < α := by linarith
+  have hlog : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hll : Tendsto (fun N : ℕ => Real.log (Real.log N)) atTop atTop :=
+    Real.tendsto_log_atTop.comp hlog
+  -- `N/(log N)^α → ∞`
+  have hκlog : Tendsto (fun N : ℕ => (N : ℝ) / Real.log N ^ α) atTop atTop := by
+    have ho := (isLittleO_log_rpow_rpow_atTop α one_pos).tendsto_div_nhds_zero
+    have hpos : ∀ᶠ y : ℝ in atTop, 0 < Real.log y ^ α / y ^ (1 : ℝ) := by
+      filter_upwards [eventually_gt_atTop 1] with y hy
+      exact div_pos (Real.rpow_pos_of_pos (Real.log_pos hy) α) (by positivity)
+    have hinv := (tendsto_nhdsWithin_iff.mpr ⟨ho, hpos⟩).inv_tendsto_nhdsGT_zero
+    refine (hinv.comp tendsto_natCast_atTop_atTop).congr' ?_
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    simp only [Function.comp, Real.rpow_one, Pi.inv_apply, inv_div]
+  have hκ : Tendsto (fun N : ℕ => (N : ℝ) / Real.log (Real.log N) ^ α) atTop atTop := by
+    refine tendsto_atTop_mono' atTop ?_ hκlog
+    filter_upwards [hll.eventually_ge_atTop 1, eventually_ge_atTop 1] with N h1 hN
+    have hN0 : (0 : ℝ) ≤ N := Nat.cast_nonneg N
+    have hl0 : 0 < Real.log N := by
+      by_contra h
+      push Not at h
+      have : Real.log (Real.log N) ≤ 0 := by
+        rcases h.lt_or_eq with h' | h'
+        · have := Real.log_nonneg (show (1 : ℝ) ≤ N by exact_mod_cast hN); linarith
+        · rw [h', Real.log_zero]
+      linarith
+    have hle : Real.log (Real.log N) ≤ Real.log N :=
+      (Real.log_le_sub_one_of_pos hl0).trans (by linarith)
+    exact div_le_div_of_nonneg_left hN0 (Real.rpow_pos_of_pos (by linarith) α)
+      (Real.rpow_le_rpow (by linarith) hle hα0.le)
+  refine ⟨hκ, ?_⟩
+  have hup : Tendsto (fun N : ℕ => Real.log (Real.log N) ^ (α - s)) atTop atTop :=
+    (tendsto_rpow_atTop (by linarith)).comp hll
+  refine tendsto_atTop_mono' atTop ?_ hup
+  filter_upwards [hll.eventually_ge_atTop 1, eventually_ge_atTop 1, hκ.eventually_ge_atTop 1,
+    (Real.tendsto_log_atTop.comp (Real.tendsto_log_atTop.comp hκ)).eventually_ge_atTop 1]
+    with N h1 hN hk1 h2
+  set a := Real.log (Real.log N)
+  set κN := (N : ℝ) / a ^ α
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have ha0 : 0 < a := by linarith
+  have ha : 1 ≤ a ^ α := Real.one_le_rpow h1 hα0.le
+  have hratio : (N : ℝ) / κN = a ^ α := by simp only [κN]; field_simp
+  have hκN : κN ≤ N := div_le_self hN0.le ha
+  have hlogκ : 0 < Real.log κN := by
+    by_contra h
+    push Not at h
+    have : Real.log (Real.log κN) ≤ 0 :=
+      Real.log_nonpos (Real.log_nonneg hk1) (by linarith)
+    simp only [Function.comp] at h2
+    linarith
+  have hc_le : Real.log (Real.log κN) ≤ a :=
+    Real.log_le_log hlogκ (Real.log_le_log (by linarith) hκN)
+  have hc1 : 1 ≤ Real.log (Real.log κN) := by simpa [Function.comp] using h2
+  have hcs : Real.log (Real.log κN) ^ s ≤ a ^ s := Real.rpow_le_rpow (by linarith) hc_le hs
+  have hcs0 : 0 < Real.log (Real.log κN) ^ s := Real.rpow_pos_of_pos (by linarith) s
+  show a ^ (α - s) ≤ (N : ℝ) / κN / Real.log (Real.log κN) ^ s
+  rw [hratio, Real.rpow_sub ha0]
+  exact div_le_div_of_nonneg_left (by positivity) hcs0 hcs
+
+/-- **The log-log overlap law**: for a Gevrey profile of class `s` and every `α > s`, RH holds iff
+for all large `N` Weil's form is nonnegative on the atomic families of width `(log log N)^α/N`,
+overlap ratio `(log log N)^α`. -/
+theorem riemannHypothesis_iff_atomicFamilies_nonneg_loglog {α : ℝ} (hφ : ContDiff ℝ ∞ φ)
+    (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hα : s < α) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s) :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      0 ≤ weilQuad (atomicTest N x (dilate ((N : ℝ) / Real.log (Real.log N) ^ α) φ)) :=
+  riemannHypothesis_iff_atomicFamilies_nonneg_of_gevrey hφ hφ1 hφint hs hBφ hA
+    (overlapGrowthGevrey_loglog hs hα)
 
 end Window
 

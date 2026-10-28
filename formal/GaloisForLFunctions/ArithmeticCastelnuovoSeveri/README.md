@@ -262,7 +262,13 @@ with sharp involution, convolution, centred scaling flow, Hasse jets at Xi zeros
     on actual interval means and their displacement from the exterior source, with finiteness
     derived from compact BV energy (`GammaMeanVarianceCapacity.lean`). The exact complete-cell
     specialization retains both original coefficients and expresses both extra charges solely
-    through their weighted pair averages (`CompleteCellMeanGraph.lean`). Full mixed Weil payment
+    through their weighted pair averages (`CompleteCellMeanGraph.lean`). Replacing an interval's
+    actual Gamma interaction by its far-end charge loses exactly twice the first kernel moment
+    below its width, at most $e^{1/2}$ times that width when it is at most one
+    (`GammaIntervalRemainder.lean`). Integrated pair losses retain the exact touching defect and
+    are bounded by their endpoint drops across positive gaps (`GammaPairRemainder.lean`);
+    both nearby nonadjacent logarithmic rows have universal bounds
+    (`LogCellGammaRemainderRows.lean`). Full mixed Weil payment
     and full-source effectivity remain open.
 14. **Finite readings cannot supply Bézout.** Weil Rayleigh quotients are unbounded in every
     finite-reading kernel (smooth unit-mass witnesses in `SmoothFiniteReadingKernels.lean`), so no reserve from finitely many linear

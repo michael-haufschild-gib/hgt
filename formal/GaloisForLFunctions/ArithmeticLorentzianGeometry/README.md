@@ -55,8 +55,10 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    trickle-down inequality.
 2. **The sign as a hypothesis.** What is the positivity locus of the gauge torus? Modulo the
    archimedean characters `n^{iτ}` it is the Euler point: the sign is a gauge fixing by the
-   archimedean place along the successor. On the atomic family the Metzler sign rejects every twin
-   that flips a prime of the horizon, while hyperbolicity alone does not.
+   archimedean place along the successor. A periodic successor holonomy is flat on the torus, so
+   Dirichlet characters, whose holonomy is periodic, lie off it, and every other torus point has
+   aperiodic holonomy. On the atomic family the Metzler sign rejects every twin that flips a prime
+   of the horizon, while hyperbolicity alone does not.
 3. **Transfer.** Which operations preserve the signature, and is the Euler product one? Pullback,
    domination, conditionally negative sums and products in disjoint variables do; sums do not. For
    Metzler forms local-to-global is `(TD)`, a sum-closed condition, and polar gluing prices a sum
@@ -180,8 +182,10 @@ construction it exposes.
   square along the pole vector.
 - The multiplicative Hardy inequality `(Σ√n x_n)² ≤ C_H(N²/log N)(D_N + |x|²)`: the pole defect
   controls the `V`-row and pays the pole term.
-- Exchange in a Lorentzian form (`Q_{ai}, Q_{jk} > 0 ⇒ Q_{aj} > 0` or `Q_{ak} > 0`) and the
-  M-convexity of mixed-Lorentzian supports.
+- Exchange in a Lorentzian form (`Q_{ai}, Q_{jk} > 0 ⇒ Q_{aj} > 0` or `Q_{ak} > 0`), the
+  M-convexity of mixed-Lorentzian supports and log-concavity of coefficients along exchange
+  directions.
+- Holonomy rigidity of the successor connection: periodic on the torus ⇒ flat.
 - The Cayley reflection formula `Q_K[c] = −2 Re Σ_a m_a p_c(w_a) p_c(w_a⁻¹)` on primitive vectors,
   and depth-one probes `Q[e_n − e_0] = 2ℓ(0) − 2ℓ(n)`.
 
@@ -475,6 +479,16 @@ in the gauge `conj χ` the archimedean kernel on the edge `(n, n+1)` carries the
 successor connection, nonnegative on `[1, N]` iff the prime phases through `N + 1` are trivial.
 The successor shift itself raises and lowers the atomic prime form on nonnegative profiles; its
 connection, not a monotonicity, is the usable object.
+
+[APeriodicSuccessorHolonomyIsFlat](APeriodicSuccessorHolonomyIsFlat.lean): a completely
+multiplicative function without zeros whose successor ratio is periodic is `≡ 1`. Periodicity
+gives `f(n + q) = c f(n)`, at `n = mq` this becomes `f(m + 1) = c f(m)`, and `f(4) = f(2)²` forces
+`c = 1` (`eq_one_of_ratio_periodic`). On the torus the successor connection is periodic iff `ω` is
+the Euler point (`succConn_periodic_iff_euler`). A periodic completely multiplicative function
+other than `1` — a nontrivial Dirichlet character — must vanish somewhere
+(`exists_eq_zero_of_periodic`). Holonomy separates the Dirichlet characters, whose holonomy is
+periodic but which leave the torus, from the torus points, whose holonomy is aperiodic away from
+the Euler point.
 
 ### Local factors and the Euler-product closure
 

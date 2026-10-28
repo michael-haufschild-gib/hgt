@@ -24,8 +24,9 @@ Three constructions supply concrete starting points.
   lower bound on the whole complement is false.
 * Ramanujan profiles give actual prime-matrix quasimodes and distinct spectral points for each
   fixed finite conductor packet. One explicit Gram budget controls arbitrary finite conductor
-  families, and one arithmetic remainder controls their prime residuals with explicit conductor
-  cost. A modal complement and comparison with Gamma and both poles remain separate requirements.
+  families, and one horizon-independent constant controls their prime residuals with explicit
+  conductor cost. Bounded renormalized prime-energy sets admit uniform finite Ramanujan approximation.
+  Comparison with the full source graph, Gamma and both poles remains a separate requirement.
 
 There is also a canonical nonnegative critical source energy. Its finiteness detects finite
 off-line support; its sharp smallness threshold detects RH. Known index costs bound it from
@@ -249,6 +250,17 @@ The first substantive target is a coherent family of Haar and coarse blocks with
 allocation, both poles and an error uniform in the family size. A complete all-coefficient
 nonnegative result would establish the complete Weil sign and therefore RH.
 
+Complete logarithmic cells have a dyadic multiresolution: the cell at index one and the low
+details recur along translations by \(\log2\), while high details have a proved full-form floor.
+The remaining task includes cross-level interactions and the finite generator orbits.
+The corpus supplies a useful one-prime estimate:
+[ThePrimeTwoMixedTailIsGammaSmall](../ArithmeticIndexDescent/ThePrimeTwoMixedTailIsGammaSmall.lean)
+bounds the high-detail tail of the actual prime-two mixed form by any prescribed positive
+fraction of Gamma energy, uniformly in the horizon. Its Gamma energy is evaluated on the
+complete source, with all coarse coefficients free. Finitely many detail coordinates therefore
+approximate this mixed term. Summing such estimates across primes or levels still requires one
+joint reserve allocation; the one-prime estimate does not supply the coarse-generator sign.
+
 ### Renormalized adjunction
 
 For conductor \(m\), the actual mode is
@@ -316,14 +328,39 @@ Here \(P_N\) is the literal prime matrix and \(v_{m,N}\) is the profile restrict
 [OneArithmeticRemainderControlsEveryRamanujanResidual](OneArithmeticRemainderControlsEveryRamanujanResidual.lean)
 proves this from the exact prime-row identity, the correction estimate, the square-root totient
 bound on normalized modes, and the proved Mertens theorem. The same \(B_N\) applies to every
-conductor and coefficient family. Growing-family control therefore has two explicit costs:
-\((1+2\sum m^2)/\log N\) for the Gram matrix and
-\(B_N\sum C_m^2/\log N\) for the residual. An absolute bound on \(B_N\) is a further target.
-This budget measures finite prime-matrix approximation in \(\ell^2\).
+conductor and coefficient family.
 
-A source-compatible comparison must also control continuous Gamma and polar images and the
-orthogonal complement on the same growing family. Choosing an arbitrarily slow diagonal sequence from
-fixed-mode limits does not establish source completeness. Distinct spectral labels also require
+The arithmetic budget is bounded at every horizon: there exists \(B>0\), independent of
+\(N,S,a\), such that
+
+\[
+B_N\le B,\qquad
+\left\|\sum_{m\in S}a_m r_{m,N}\right\|_2^2
+\le B\left(\sum_{m\in S}\phi(m)(1+4\log m)^2\right)
+       \left(\sum_{m\in S}a_m^2\right).
+\]
+
+[TheArithmeticResidualBudgetIsUniformInTheHorizon](TheArithmeticResidualBudgetIsUniformInTheHorizon.lean)
+proves this bound. The corpus's global Mertens decay gives \(b(y)\le C/(1+\log y)\).
+Exact floor roundoff bounds the corresponding squared profile by twice the Wiener logarithmic
+kernel. That kernel is summable and has total mass at most \(1+2\pi^2\), yielding
+\(B=2C^2(1+2\pi^2)\). Summability is proved before comparing a finite sum with its infinite sum.
+
+Growing-family control therefore has two explicit costs:
+\((1+2\sum m^2)/\log N\) for the Gram matrix and
+\(B\sum\phi(m)(1+4\log m)^2/\log N\) for the squared residual.
+These budgets measure finite prime-matrix approximation in \(\ell^2\).
+
+On each fixed renormalized prime-energy sublevel, the corpus proves uniform approximation by a
+finite Ramanujan span, with any prescribed error.
+[TheRenormalizedPrimeEnergyControlsTheDefect](../RenormalizedArithmeticPotentialTheory/TheRenormalizedPrimeEnergyControlsTheDefect.lean)
+proves this for the actual horizon matrices. This supplies a prime-side completeness statement
+on bounded energy sets. It does not supply uniform constants as the energy window grows or
+identify the full continuous source.
+
+A source-compatible comparison must control continuous Gamma, polar images and the full-form
+complement on the same growing family. Choosing an arbitrarily slow diagonal sequence from
+fixed-mode limits does not establish those comparisons. Distinct spectral labels also require
 comparison with the separation of their adjunction energies.
 
 ### Critical-work control
@@ -352,6 +389,7 @@ These are imported mathematical foundations, not new contributions of this progr
 | Mean-zero Gamma payment | [GammaMeanZeroCoercivity](../ArithmeticCastelnuovoSeveri/GammaMeanZeroCoercivity.lean) |
 | Actual Ramanujan prime quasimodes | [TheRamanujanPoleProfilesArePrimeQuasimodes](../RenormalizedArithmeticPotentialTheory/TheRamanujanPoleProfilesArePrimeQuasimodes.lean) |
 | Distinct spectral points for fixed finite conductor packets | [TheFullPrimeMatrixRealizesFiniteAdjunctionPackets](../RenormalizedArithmeticPotentialTheory/TheFullPrimeMatrixRealizesFiniteAdjunctionPackets.lean) |
+| Uniform finite Ramanujan approximation on bounded prime-energy sets | [TheRenormalizedPrimeEnergyControlsTheDefect](../RenormalizedArithmeticPotentialTheory/TheRenormalizedPrimeEnergyControlsTheDefect.lean) |
 | Prime gap on the harmonic pole hyperplane | [ThePrimeFormHasASpectralGapBelowItsPole](../RenormalizedArithmeticPotentialTheory/ThePrimeFormHasASpectralGapBelowItsPole.lean) |
 | Canonical critical source energy | [TheCriticalSourceRateHasACanonicalEnergy](../ArithmeticIndexDescent/TheCriticalSourceRateHasACanonicalEnergy.lean) |
 | Source synthesis beyond narrow spacing | [TheSecondOrderSynthesis](../SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean) |
@@ -359,24 +397,23 @@ These are imported mathematical foundations, not new contributions of this progr
 The trial-correction estimates, whole-family operator bounds, exact radical retention and
 quantitative source-scale bounds with faithful completed-aperture transport, and simultaneous
 Ramanujan Gram and family-residual budgets are formalized contributions of this programme.
-Complete signed block payment, quantitative growing-family schedules with complement and
+Complete signed block payment, quantitative growing-family schedules with full-form complement and
 Gamma/pole transfer, and arithmetic upper control of critical work remain research targets.
 
 ## Questions and open topics
 
-1. Which signed overlapping block families admit a uniformly paid mixed interaction without a
-   diagonal Metzler gauge? What coarse complement do those families leave?
-2. Which enlarging arithmetic corrections make the certified stationarity error uniformly
-   small? How can nested section removals control the sign outside the retained radical?
-3. Which explicit growing Ramanujan families control a useful source domain? What quantitative
-   complement estimate survives the Gamma and continuous two-pole comparison?
-4. Which counterterms yield convergence in a topology strong enough to preserve mixed Weil
+1. Can cross-level interactions of the complete-cell multiresolution be paid jointly, leaving
+   finitely many \(\log2\)-orbit generators? Can a bounded-index version be proved first?
+2. Which twin-selective arithmetic inequality controls those generator orbits with Gamma and
+   both poles retained? How far can the discrete prime gap be transferred beyond narrow spacing?
+3. Which prime or theta law bounds canonical critical energy above, retaining exterior rows?
+   Can it first exclude infinitely many off-line zeros without presupposing their absence?
+4. Which enlarging arithmetic corrections make stationarity uniformly small, and which growing
+   Ramanujan families control a useful full-source domain? What complement estimate survives
+   the Gamma and continuous two-pole comparison?
+5. Which counterterms yield convergence in a topology strong enough to preserve mixed Weil
    pairings? How do conductor, class variation and horizon constrain one another?
-5. Can arithmetic gauge selection on a discrete pole hyperplane survive a faithful transfer to
-   the full continuous form?
-6. Which prime or theta law bounds critical energy above? Can it first exclude infinitely many
-   off-line zeros without presupposing their absence?
-7. Can selective localization see every possible exceptional ordinate with affordable conductor
+6. Can selective localization see every possible exceptional ordinate with affordable conductor
    and inverse costs?
 
 These questions include intermediate theorems as well as RH-strength endpoints. A proof of an

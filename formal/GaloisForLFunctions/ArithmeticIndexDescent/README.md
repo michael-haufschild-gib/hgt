@@ -885,9 +885,79 @@ not the whole coarse mass. For every positive `epsilon`,
 At a common odd horizon `X=2Y+1`, all detail indices above `Y` translate
 beyond the coarse support, so the same formula accounts for the entire mixed
 block without a terminal remainder. Both coarse and detail coefficients remain
-arbitrary. This is an exact partial-source identity and an adjustable payment;
-it does not supply an all-prime estimate or preserve the whole coarse Weil form
-through a Schur elimination.
+arbitrary.
+
+The adjacent differences occur in the mean graph already retained by ACS's
+complete-cell Gamma theorem. Its edge from `2a` to `2a+1` has conductance
+`m_a h_a k(h_a)`, where `h_a=logCellWidth(a)` and `k` is the original Gamma
+density. The bound `h k(h)>=exp(-1/2)/2` for `0<h<=1` gives
+
+\[
+ \frac{e^{-1/2}}4 V(q,Y)\le\frac12 G(q,X),\qquad
+ V(q,Y)=\sum_{a\le Y}m_a(q_{2a}-q_{2a+1})^2.
+\]
+
+Thus, for `C₂=1+4 ell²/exp(-1/2)`,
+
+\[
+ |B_2|\le C_2 M(d,Y)+\frac12G(q,X),\qquad
+ \Gamma(q+d)-|B_2|\ge
+ \sum_{a\le X}(\log a)m_ad_a^2-C_2M(d,Y),\quad X=2Y+1.
+\]
+
+Here `Gamma(q+d)` is the literal `levyEnergy(completePairProfile q d X)`.
+The simultaneous ACS variance, graph and exterior theorem pays this mixed block
+with one use of the graph. Choosing a fixed integer `A>exp(C₂)` makes Gamma
+pay the whole block whenever detail coefficients below `A` vanish; every coarse
+coefficient remains arbitrary. The proof keeps the actual half-line prime vectors
+and the actual Gamma profile with the same coefficients.
+
+The payment admits an arbitrarily small graph share. For every `delta>0`,
+
+\[
+ |B_2|\le\frac{C_2}{\delta}M(d,Y)+\delta\frac12G(q,X).
+\]
+
+Choose `A>exp(C₂/delta²)` and retain only details with `a>=A`. The logarithmic
+detail reserve absorbs their first charge. Crucially, the resulting bound uses
+the Gamma energy of the **original untruncated** profile:
+
+\[
+ |B_2(d_{\ge A},q;X)|\le\delta\Gamma(q+d),\qquad X=2Y+1.
+\]
+
+Exact linearity in the detail coefficients then gives a finite-coordinate
+approximation of the actual mixed form:
+
+\[
+ |B_2(d,q;X)-B_2(d_{<A},q;X)|\le\delta\Gamma(q+d).
+\]
+
+One threshold works for every horizon and every pair of coefficient sequences.
+No boundedness of coefficient truncation in Gamma energy is assumed. The finite
+head reads only finitely many detail coordinates and their adjacent coarse
+differences.
+
+The physical source identification is exact. The actual coarse Hilbert vector
+has `averageSectionProfile` as its real representative, and the complete vector
+has `completePairProfile` as its representative. Consequently `B₂` equals the
+literal prime-two correlation of the complete profile minus its separate coarse
+and detail diagonal correlations. Equivalently, it is `2 Lambda(2)/sqrt(2)` times
+the sum of the two ordered mixed integrals. Both the fixed-threshold payment and
+the arbitrarily small tail estimate hold for these original integrals.
+
+This yields an unconditional index bound for the actual partial form
+`Gamma(q+d)-B₂(d,q)`. One fixed integer `A` bounds the dimension of every strictly
+negative real subspace, uniformly over odd cell horizons and every finite family
+of complete profiles. Vanishing of the finitely many low-detail readings forces
+nonnegativity by the proved tail estimate. Restricting those readings to any
+negative subspace is therefore injective. The form retains arbitrary coarse
+coefficients; the bound concerns Gamma minus this mixed prime-two contribution.
+
+This payment uses the complete diagonal Gamma energy, so the sharp scalar
+boundary norm `pi/2` does not obstruct it. It supplies neither an all-prime estimate
+nor retention of the whole coarse Weil form through Schur elimination. Pure coarse
+prime terms, other primes and the pole terms still require their own joint payment.
 
 ### Polar compatibility
 
@@ -1398,6 +1468,10 @@ Quantitative pillars supplied by this programme:
 | Mixed Gamma norm rigidity | Zero mixed reserve forces both inputs to vanish; every nonzero vector has strict norm deficit below `π/2` | `TheGammaBoundaryOperatorHasNoNormMaximizer` |
 | Sharp Gamma norm and near-critical profiles | Actual cutoff reserves are at most `16` while masses diverge, proving norm exactly `π/2` and explicit near-critical Rayleigh vectors | `BoundaryTruncationLosesOnlyBoundedGammaEnergy` |
 | Actual prime-two mixed differences | The full mixed block at odd horizons reads adjacent coarse differences, with an adjustable weighted-square payment | `ThePrimeTwoMixedBlockReadsCoarseDifferences` |
+| Gamma payment of the prime-two mixed block | One retained mean graph and an explicit constant detail charge pay the actual mixed block with every coarse coefficient arbitrary | `TheGammaMeanGraphPaysThePrimeTwoMixedBlock` |
+| Gamma-small prime-two tails | A fixed finite detail head approximates the mixed form with arbitrarily small error relative to the original untruncated Gamma energy, uniformly in horizon | `ThePrimeTwoMixedTailIsGammaSmall` |
+| Literal prime-two source transfer | The actual Hilbert mixed block equals the two physical correlations and the polarized difference of the complete, coarse and detail prime-two terms | `TheCoarseDetailPrimePairIsTheLiteralSource` |
+| Uniform partial-source index | Every strictly negative real subspace for original Gamma minus the signed prime-two mixed term has dimension bounded by one fixed finite number of low-detail readings | `ThePrimeTwoMixedFormHasUniformFiniteIndex` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

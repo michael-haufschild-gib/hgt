@@ -1,27 +1,25 @@
-# Unit residue classes share one horizon polar charge
+# Residue horizon charges on all gcd strata
 
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Source:** RAPT characters at the horizon; BVI arithmetic-progression harmonic remainders
-- **Count:** uncounted; novelty, paper, Lean, and endpoint audits remain
+- **Count:** uncounted; unit-residue special case is existing baseline; only the all-gcd-strata extension remains prospective
 
-## Proposed target
+## Revised target and baseline
 
-For a positive modulus q, write
+The original unit-residue target is already proved in
+`RenormalizedArithmeticPotentialTheory/TheHorizonCountertermIsBlindToResidueClasses.lean`.
+Its module statement, residue Gram endpoint, step-profile expansion, and polar
+survival endpoint were inspected. In particular,
+`exists_abs_atomicWeilForm_unitClassProfile_sub_le` covers arbitrary signed
+unit-class profiles with independent integer cutoffs, with the sharper
+harmonic-minimum error. This special case cannot count as new work.
 
-`w_(a,M)(n)=1_(1<=n<=M, n mod q=a)/sqrt(n)`
-
-for a unit residue a. For any finite signed combination
-`x=sum_r c_r w_(a_r,M_r)` with independently chosen `M_r<=N`, conjecture
-
-`|B_N(x,x)-(q/phi(q))*ell_N(x)^2|`
-` <= K_q*(H_N+1)*(sum_r |c_r|)^2`,
-
-where `ell_N(x)=sum_(1<=n<=N) x(n)/sqrt(n)`, with a constant depending only on q.
-The counterterm should have rank one on all unit classes together, with exact
-survival hyperplane `ell_N(x)=0`. This addresses RAPT section 9.3 and its missing
-class-wise unit-residue counterterm; it is distinct from the full-rank valuation
-counterterm already formalized for a finite sieve.
+The remaining proposed target is the full gcd-stratum counterterm stated below,
+including non-unit residues, cross-stratum error control, and the exact leading
+energy cost of the non-unit-invariant part of a fixed periodic profile. Its
+significance and novelty still need audit; it is not automatically a separate
+contribution merely because it generalizes the existing unit result.
 
 ## Corpus leads checked
 
@@ -40,7 +38,7 @@ counterterm already formalized for a finite sieve.
 - Corpus queries for unit-residue horizon counterterms and harmonic progression
   remainders found these inputs and the programme's open question, not the target.
 
-## Possible stronger classification, not yet audited
+## All-gcd-strata classification, still unproved
 
 For all residue classes modulo q, group polar charges by `gcd(n,q)=d`, for d|q.
 The candidate counterterm is
@@ -61,8 +59,7 @@ decomposition. That orbit classification is baseline, not proposed novelty.
 It supplies the finite algebraic carrier; the missing result is its identification
 with the actual prime horizon divergence, including all independent cutoffs.
 
-No dependency-closed paper proof or Lean implementation yet. The current finite-
-prime adjunction-spectrum package remains the active formalization task.
+No dependency-closed paper proof or Lean implementation of the all-gcd-strata extension yet. The full-prime spectral-exhaustion package remains the active formalization task.
 
 ## Mechanism to audit
 
@@ -97,3 +94,33 @@ then costs only O_q(log B), uniformly in the smaller cutoff. The uniform
 logarithmic harmonic sum is already handled by `HTGeometry/LogHarmonicFinitePart`.
 This supplies a concrete route for the two elementary asymptotics named in
 RAPT section 9.3 without introducing a new analytic hypothesis.
+
+A substantive consequence of the full gcd-stratum counterterm would classify
+fixed periodic pole profiles by their energy scale. For q-periodic a, let R_q a
+be its average over each unit orbit, equivalently each gcd stratum modulo q.
+The proposed full counterterm and the ordinary harmonic periodic mean would give
+
+`(log(N)*sum_(n<=N)a(n)^2/n-P_N(a/sqrt(n),a/sqrt(n)))/(log N)^2
+ -> mean_q((a-R_q a)^2)`.
+
+Indeed the gcd charge on stratum d is asymptotic to
+`log(N)/q * sum_(r mod q,gcd(r,q)=d)a(r)`, and its coefficient
+q/phi(q/d) gives exactly mean_q((R_q a)^2). Subtract from mean_q(a^2).
+For nonzero a, a positive right side forces normalized energy to diverge
+linearly with log N. If a is unit-invariant, finite divisor-to-Ramanujan
+inversion expresses it in conductors dividing q, and the already proved
+prime quasimodes give its finite weighted adjunction-energy limit.
+This would identify the entire fixed-periodic bounded-energy carrier, including
+an exact leading cost for its complement. It belongs to the same proposed
+horizon classification, not another contribution count.
+
+This is a quadratic-form assertion. A compressed leading form alone does not
+give a full-vector residual estimate or eigenvalues for the nonradial modes;
+no such operator or spectral upgrade is claimed. Arbitrary independent cutoff
+control remains part of the main conjecture and must still be proved.
+
+The later targeted search also returned `TheArchimedeanPlacePaysTheArithmeticPoint.lean`.
+Its joint-germ definitions and counterterm statement were inspected. They concern
+a periodic Abel/Cauchy germ and its matched arithmetic-point coupling, rather
+than the literal spacing-scale Weil matrix. That finite periodic orthogonality
+and matched-rank-one mechanism are baseline for the separate full-Weil candidate.

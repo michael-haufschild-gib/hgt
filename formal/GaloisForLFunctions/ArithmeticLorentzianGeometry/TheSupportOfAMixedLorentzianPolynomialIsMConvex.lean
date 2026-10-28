@@ -23,6 +23,8 @@ operations of the mixed class.
   quadratic derivatives `∂^α p` are mixed derivatives along coordinate directions
   (`exists_unitList`), so **the two classes coincide**
   (`isMixedLorentzian_iff_isLorentzianPolynomial`).
+* **Log-concavity along exchange directions** (`IsLorentzianPoly.quadDeriv_minor`): the `2 × 2`
+  principal minors of every quadratic derivative are nonpositive.
 * **Closure in coefficient form**: products (`IsLorentzianPolynomial.mul`), nonnegative
   substitutions (`IsLorentzianPolynomial.subst`) and directional derivatives
   (`IsLorentzianPolynomial.differentiate`) of Lorentzian polynomials are Lorentzian, and so is the
@@ -396,6 +398,19 @@ directions force the M-convex support. -/
 theorem isMixedLorentzian_iff_isLorentzianPolynomial {d : ℕ} {p : MvPolynomial ι ℝ} :
     IsMixedLorentzian d p ↔ IsLorentzianPolynomial d p :=
   ⟨IsMixedLorentzian.isLorentzianPolynomial, IsLorentzianPolynomial.isMixedLorentzian⟩
+
+/-- **Log-concavity along exchange directions.** For a Lorentzian polynomial in coefficient form the
+`2 × 2` principal minors of each quadratic derivative are nonpositive:
+`a_{μ+2e_i} a_{μ+2e_j} ≤ a_{μ+e_i+e_j}²` with `a_β = β! c_β`. -/
+theorem IsLorentzianPoly.quadDeriv_minor {d : ℕ} {c : (ι →₀ ℕ) → ℝ} (hc : IsLorentzianPoly d c)
+    {μ : ι →₀ ℕ} (hμ : Finsupp.degree μ + 2 = d) (i j : ι) :
+    quadDeriv c μ i i * quadDeriv c μ j j ≤ quadDeriv c μ i j ^ 2 := by
+  have hnn : ∀ r s, 0 ≤ quadDeriv c μ r s := fun r s => by
+    simp only [quadDeriv, Matrix.of_apply]; exact mul_nonneg (mfact_pos _).le (hc.1 _)
+  rcases (hnn i i).lt_or_eq with hii | hii
+  · have h := hc.2.2.2 μ hμ (Pi.single i 1) (Pi.single j 1) (by rwa [qf, bil_single_single])
+    rwa [qf, qf, bil_single_single, bil_single_single, bil_single_single] at h
+  · rw [← hii, zero_mul]; positivity
 
 /-! ### Closure in coefficient form -/
 

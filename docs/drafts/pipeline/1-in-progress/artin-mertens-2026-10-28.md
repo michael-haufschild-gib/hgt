@@ -15,8 +15,9 @@ Programme folder: `formal/GaloisForLFunctions/ArtinMertens/`.
 
 ## Gates
 - [x] 0 → 1  in-progress: route fixed below
-- [ ] S1 ideal von Mangoldt: `log N𝔞 = Σ_{𝔭^k ∣ 𝔞} log N𝔭`; hyperbola identity
+- [x] S1 ideal von Mangoldt: `log N𝔞 = Σ_{𝔭^k ∣ 𝔞} log N𝔭`; hyperbola identity
       `Σ_{N𝔞 ≤ x} log N𝔞 = Σ_{N𝔭^k ≤ x} log N𝔭 · I_K(x/N𝔭^k)`
+      (`TheIdealVonMangoldtIdentity`: `sum_primePowersLe_dvd_eq`, `sum_log_absNorm_idealsLe_eq`)
 - [ ] S2 Chebyshev bound for prime ideals: `ψ_K(x) ≤ [K:ℚ] ψ(x) = O(x)`
 - [ ] S3 soft Mertens for `K`: `A_K(x) = log x + o(log x)` from Mathlib's
       `tendsto_norm_le_div_atTop`, S1, S2

@@ -67,6 +67,9 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
   ladders NSD on primitive ⇔ ladders entrywise ≥ 0 (via corpus Li criterion); under RH Lorentzian;
   2λ_n never → 0 (ladder dichotomy + subexp Li). 𝔽_q: ℓ(n) = 2(2g − Σβ^n), sign = sharp Weil bound,
   reflection positivity ⇔ unitary; golden fails.
+- APeriodicSuccessorHolonomyIsFlat: nonvanishing completely multiplicative f with periodic successor
+  ratio ≡ 1; torus: periodic succConn ⇔ Euler point; periodic CM f ≠ 1 vanishes somewhere
+  (Dirichlet characters leave the torus). Plus IsLorentzianPoly.quadDeriv_minor (2×2 minors ≤ 0).
 - Topic 9 answered: RamanujanAndLorentzianMeetOnlyAtTheWeilBound (Lorentzian ⇒ a_1 ≥ d√q,
   Ramanujan ⇒ a_1 ≤ d√q; equality only for (1+√qT)^d; never at a prime; elliptic: Lorentzian ⇔
   a² ≥ 4p).

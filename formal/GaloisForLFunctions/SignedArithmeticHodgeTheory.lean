@@ -10,6 +10,7 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.GrowingRamanujanFamiliesH
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheRamanujanCorrectionHasAnExplicitConductorCost
 
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.OneArithmeticRemainderControlsEveryRamanujanResidual
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheArithmeticResidualBudgetIsUniformInTheHorizon
 
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization

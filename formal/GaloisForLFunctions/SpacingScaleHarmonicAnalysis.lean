@@ -24,6 +24,8 @@ import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheEulerMaclaurinSynthes
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheOverlapLawAtEveryRoot
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGaugeAtEveryRoot
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleAtEveryRoot
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyWindow
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyProfile
 
 /-!
 # Arithmetic Harmonic Analysis at the Spacing Scale
@@ -51,7 +53,10 @@ Umbrella for the harmonic analysis of Weil's form on the atomic family
 * the Euler–Maclaurin synthesis with weights `F(log n − c)/n` is accurate to every order for smooth
   profiles: positivity is RH at overlap `(log N)^ε` for every `ε > 0`, every stable form (Weil's,
   its bounded twists, the Markov form) transfers there, every twist that fails somewhere is seen
-  there, and the Markov form has a negative square there unconditionally and only one iff RH.
+  there, and the Markov form has a negative square there unconditionally and only one iff RH;
+* for Gevrey profiles of class `s` an Euler–Maclaurin order `2⌈log log k⌉ + 2` brings the window to
+  `(log log N)^s`; the explicit profile `c E(1+x)E(1−x)` is Gevrey of class `2`, so positivity is RH
+  at overlap `(log log N)^α` for every `α > 2`.
 
 See `SpacingScaleHarmonicAnalysis/README.md`.
 -/

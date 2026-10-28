@@ -152,8 +152,8 @@ theorem sum_primePowersLe_dvd_eq {I : Ideal (𝓞 K)} (hI : I ≠ ⊥) {x : ℕ}
     ext k
     simp only [mem_filter, mem_Icc]
     omega
-  rw [hfilt, sum_const, Nat.card_Icc, nsmul_eq_mul, Nat.add_sub_cancel]
-  rfl
+  rw [hfilt]
+  simp
 
 /-- Multiples of a non-zero ideal `Q` of norm `≤ x` correspond to ideals of norm `≤ ⌊x/NQ⌋`. -/
 theorem card_filter_dvd_idealsLe {Q : Ideal (𝓞 K)} (hQ : Q ≠ ⊥) (x : ℕ) :

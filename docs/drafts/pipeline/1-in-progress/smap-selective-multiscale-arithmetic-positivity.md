@@ -32,3 +32,9 @@ RAPT Liouville separation, ACS `HaarCellCoarseSplitting`, SAHT translation invar
   only in prime form); ThePoleHyperplaneSeparatesTheFullWeilForms (gap-paid ζ bound; Liouville below ζ by uniform
   margin; ζ not minimum of gauge orbit on hyperplane); TheConductorTwoIsTheFirstExcitation (E_m − E_1 ≥ 2log2,
   equality iff m=2; hyperplane prime gap ≤ 2log2). Next: RG/Schur calculus; dyadic multiresolution + level-Toeplitz.
+- 2026-10-28 — Lean (checked, clean): ALevelIsPaidByItsReserve (level payment, rg_step, rgMargin recursion,
+  Schur transparency, block dominance); TheCompleteSourceIsADyadicMultiresolution (doubled cell, RG step,
+  multiresolution, level-Toeplitz); TheHyperplaneGapIsTheSelectiveMargin (ζ gap ∈ (0,2log2], Liouville none);
+  TheHaarFloorIsTwinBlind (high-detail floor for every |ω|≤1 with same index). Umbrella + MainTheorems wired.
+  README foundational version written. Open: coarse selective transfer, cross-level coupling costs,
+  generator-orbit symbols, sharp gap lower bound, virial upper bound.

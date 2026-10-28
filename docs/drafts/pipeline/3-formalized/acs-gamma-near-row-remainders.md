@@ -35,7 +35,7 @@ Exact project check: `lake --old env lean GaloisForLFunctions/ArithmeticCastelnu
 
 ## Remaining parent obligation
 
-These discrete endpoint bounds do not yet recover the integrated coarse Gamma energy. Whole-interval averaging loss, remaining row regions, and the final energy comparison remain on the parent card. Mixed prime and pole payment is also open.
+These discrete endpoint bounds do not yet recover the integrated coarse Gamma energy. [Whole-interval averaging loss and its integrated-pair decomposition](acs-gamma-interval-averaging-loss.md) are now formalized. Finite row assembly and the final energy comparison remain on the parent card. Mixed prime and pole payment is also open.
 
 ## Log
 

@@ -36,6 +36,7 @@ private def lowDetailReadout {n : ℕ} (d : Fin n → ℕ → ℝ) (A : ℕ) :
   map_smul' c x := by
     funext a
     simp only [Pi.smul_apply, smul_eq_mul, mul_assoc, Finset.mul_sum]
+    rfl
 
 /-- A fixed number of actual low detail readings bounds every negative subspace. -/
 theorem exists_uniform_primeTwoGamma_negative_dimension :
