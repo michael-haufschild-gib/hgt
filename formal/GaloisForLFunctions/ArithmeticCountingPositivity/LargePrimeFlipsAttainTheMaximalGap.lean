@@ -1094,12 +1094,74 @@ theorem roughHarmonic_mul_smoothVar_le {Q N X : ℕ} (hXN : X ≤ N) (y : ℕ �
 
 /-! ### 7. The twisted Poincaré inequality -/
 
+/-- **The twisted smooth-energy bound in its final form**: with the horizon in range,
+`E_X(h) ≥ g₁ V + Z`, where `Z = (log p · W_p(X) − g_X) V_p(h⁰)/(1 + e₂)` is nonnegative and at
+most `2 log p · V`. -/
+theorem smoothEnergy_ge_twisted {p Q X : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q).filter Nat.Prime)
+    (hX2 : 2 ≤ X) {g₁ : ℝ} (hg₁0 : 0 < g₁)
+    (hcoef : g₁ * (1 + 16 * logSum Q / Real.log X) ≤ boxGap X -
+      4 * logSum Q / Real.sqrt (Real.sqrt X) - 16 * logSum Q * ladderConstant Q / Real.log X)
+    (h : ℕ → ℝ) :
+    0 ≤ (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) /
+        (1 + 16 * logSum Q / Real.log X) ∧
+      (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) /
+        (1 + 16 * logSum Q / Real.log X) ≤ 2 * Real.log p * smoothVar Q X h ∧
+      g₁ * smoothVar Q X h + (Real.log p * ladderMass p X - boxGap X) *
+        pFibreVar X Q p (zeroExt Q X h) / (1 + 16 * logSum Q / Real.log X) ≤
+          smoothEnergy Q X h := by
+  have hlp0 : 0 ≤ Real.log p := Real.log_natCast_nonneg p
+  have hX1 : 1 ≤ X := by omega
+  have hL0 : 0 < Real.log X := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
+  have hV0 : 0 ≤ smoothVar Q X h := wVar_nonneg fun _ _ => by positivity
+  have hVp0 := pFibreVar_nonneg X Q p (zeroExt Q X h)
+  have hlM2 := ladderMass_le_two hp.two_le X
+  have hlM1 := one_le_ladderMass (p := p) X
+  have he₂0 : 0 ≤ 16 * logSum Q / Real.log X := by
+    have := logSum_nonneg Q; positivity
+  have h1e : 0 < 1 + 16 * logSum Q / Real.log X := by linarith
+  have hgap := boxGap_le_ladder hp hX1
+  have hES := smoothVar_mul_add_le_smoothEnergy hX2 hpmem h
+  refine ⟨div_nonneg (mul_nonneg (by linarith) hVp0) h1e.le, ?_, ?_⟩
+  · rw [div_le_iff₀ h1e, ← sum_smoothBox_zeroExt_sq]
+    have h1 := pFibreVar_le (J := X) hpmem (zeroExt Q X h)
+    have hbg : 0 < boxGap X := by
+      rw [boxGap]
+      have : (1 / 2 : ℝ) ^ (X + 1) < 1 := pow_lt_one₀ (by norm_num) (by norm_num) (by omega)
+      have := Real.log_pos (show (1 : ℝ) < 2 by norm_num)
+      nlinarith
+    have h3 : 0 ≤ Real.log p * ladderMass p X := by positivity
+    have hS0 : 0 ≤ ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
+      sum_nonneg fun a _ => by positivity
+    have h4 : Real.log p * ladderMass p X ≤ Real.log p * 2 := mul_le_mul_of_nonneg_left hlM2 hlp0
+    calc (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h)
+        ≤ Real.log p * ladderMass p X * pFibreVar X Q p (zeroExt Q X h) :=
+          mul_le_mul_of_nonneg_right (by linarith) hVp0
+      _ ≤ Real.log p * ladderMass p X * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
+          mul_le_mul_of_nonneg_left h1 h3
+      _ ≤ Real.log p * 2 * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
+          mul_le_mul_of_nonneg_right h4 hS0
+      _ = 2 * Real.log p * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 := by ring
+      _ ≤ 2 * Real.log p * (∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2) *
+            (1 + 16 * logSum Q / Real.log X) :=
+          le_mul_of_one_le_right (by positivity) (by linarith)
+  · have e : (1 + 16 * logSum Q / Real.log X) * (g₁ * smoothVar Q X h +
+        (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) /
+          (1 + 16 * logSum Q / Real.log X)) =
+        g₁ * (1 + 16 * logSum Q / Real.log X) * smoothVar Q X h +
+          (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) := by
+      field_simp; ring
+    refine le_of_mul_le_mul_left ?_ h1e
+    rw [e]
+    have := mul_le_mul_of_nonneg_right hcoef hV0
+    linarith
+
 /-- **The two-scale inequality with the `p`-sector term.** With the cutoff `Q > p`, the horizon
 `X` and the rough mass at the horizon in range, every `z` satisfies
 `(2 log 2 − η/4) W + G Z ≤ D_N(z)`, where `W` is the centred second moment of the pole gauge,
 `G` the rough mass at the horizon and `Z` the paid `p`-sector excess. -/
 theorem two_scale_twisted {p Q X N : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q).filter Nat.Prime)
-    (hQ2 : 2 ≤ Q) (hX2 : 2 ≤ X) (hXN : X ≤ N) {η ε g₁ Tmax τ K : ℝ} (hη : 0 < η) (hεdef : ε = η / 4)
+    (hQ2 : 2 ≤ Q) (hX2 : 2 ≤ X) (hXN : X ≤ N) {η ε g₁ Tmax τ K : ℝ} (hη : 0 < η) (hη1 : η ≤ 1)
+    (hεdef : ε = η / 4)
     (hg₁def : g₁ = 2 * Real.log 2 - ε / 2) (hTdef : Tmax = 2 * Real.log 2 + 2 * Real.log p)
     (hτ0 : 0 < τ) (hτ1 : τ ≤ 1 / 2) (hτT : τ * (Tmax ^ 2 + 4 * Tmax) ≤ ε / 2)
     (hK : 0 < K) (hKt : ∀ Q X : ℕ, ∀ f : ℕ → ℝ, harmonicVar Q X f ≤ K * glauberForm Q X f)
@@ -1126,56 +1188,12 @@ theorem two_scale_twisted {p Q X N : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q
   set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h with hc
   have hV0 : 0 ≤ smoothVar Q X h := wVar_nonneg fun _ _ => by positivity
   have hW0 : 0 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 := sum_nonneg fun n _ => by positivity
-  have hVp0 := pFibreVar_nonneg X Q p (zeroExt Q X h)
-  have hlM2 := ladderMass_le_two hp.two_le X
-  have he₂0 : 0 ≤ 16 * logSum Q / Real.log X := by
-    have := logSum_nonneg Q; positivity
-  have h1e : 0 < 1 + 16 * logSum Q / Real.log X := by linarith
-  have hG1 : 1 ≤ roughHarmonic Q (N / X) :=
-    one_le_roughHarmonic Q ((Nat.le_div_iff_mul_le (by omega)).mpr (by omega))
-  -- (A) the twisted smooth-chain bound
-  have hES := smoothVar_mul_add_le_smoothEnergy hX2 hpmem h
+  obtain ⟨hZ0, hZV, hA'⟩ := smoothEnergy_ge_twisted hp hpmem hX2 hg₁0 hcoef h
   obtain ⟨Z, hZdef⟩ : ∃ Z : ℝ, Z =
       (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) /
         (1 + 16 * logSum Q / Real.log X) := ⟨_, rfl⟩
-  have hgap := boxGap_le_ladder hp hX1
-  have hZ0 : 0 ≤ Z := by
-    rw [hZdef]; exact div_nonneg (mul_nonneg (by linarith) hVp0) h1e.le
-  have hZV : Z ≤ 2 * Real.log p * smoothVar Q X h := by
-    rw [hZdef, div_le_iff₀ h1e, ← sum_smoothBox_zeroExt_sq]
-    have h1 := pFibreVar_le (J := X) hpmem (zeroExt Q X h)
-    have hbg : 0 < boxGap X := by
-      rw [boxGap]
-      have : (1 / 2 : ℝ) ^ (X + 1) < 1 := pow_lt_one₀ (by norm_num) (by norm_num) (by omega)
-      have := Real.log_pos (show (1 : ℝ) < 2 by norm_num)
-      nlinarith
-    have h3 : 0 ≤ Real.log p * ladderMass p X := by
-      have := one_le_ladderMass (p := p) X; positivity
-    have hS0 : 0 ≤ ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
-      sum_nonneg fun a _ => by positivity
-    calc (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h)
-        ≤ Real.log p * ladderMass p X * pFibreVar X Q p (zeroExt Q X h) :=
-          mul_le_mul_of_nonneg_right (by linarith) hVp0
-      _ ≤ Real.log p * ladderMass p X * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 :=
-          mul_le_mul_of_nonneg_left h1 h3
-      _ ≤ 2 * Real.log p * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 := by
-          apply mul_le_mul_of_nonneg_right _ hS0
-          nlinarith
-      _ ≤ 2 * Real.log p * (∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2) *
-            (1 + 16 * logSum Q / Real.log X) := by
-          have h0 : 0 ≤ 2 * Real.log p * ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * zeroExt Q X h a ^ 2 := by
-            positivity
-          nlinarith
-  have hA' : g₁ * smoothVar Q X h + Z ≤ smoothEnergy Q X h := by
-    have e : (1 + 16 * logSum Q / Real.log X) * (g₁ * smoothVar Q X h + Z) =
-        g₁ * (1 + 16 * logSum Q / Real.log X) * smoothVar Q X h +
-          (Real.log p * ladderMass p X - boxGap X) * pFibreVar X Q p (zeroExt Q X h) := by
-      rw [hZdef]; field_simp; ring
-    refine le_of_mul_le_mul_left ?_ h1e
-    rw [e]
-    have := mul_le_mul_of_nonneg_right hcoef hV0
-    linarith
-  -- (B) the two-scale inequality with the shifted constant
+  rw [← hZdef] at hZ0 hZV hA' ⊢
+  -- the two-scale inequality with the shifted constant
   obtain ⟨g₁', hg₁'def⟩ : ∃ g : ℝ, g = g₁ + Z / smoothVar Q X h := ⟨_, rfl⟩
   have hZVdiv : Z / smoothVar Q X h ≤ 2 * Real.log p := by
     by_cases hV : smoothVar Q X h = 0
@@ -1201,7 +1219,7 @@ theorem two_scale_twisted {p Q X N : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q
   have hW := two_scale_arith hε0 (by rw [hg₁'def, hg₁def]; linarith) hg₁'T hτ0 hτ1 hτT hML h2L
     hW0 (sum_nonneg fun a _ => mul_nonneg (by positivity) (harmonicVar_nonneg _ _ _))
     (walkEnergy_nonneg _ _ _) (walkEnergy_nonneg _ _ _) hρ hcU' hκ hU hcore
-  -- (C) `W ≥ G V`, hence `(Z/V) W ≥ G Z`
+  -- `W ≥ G V`, hence `(Z/V) W ≥ G Z`
   have hWV := roughHarmonic_mul_smoothVar_le (Q := Q) hXN y
   rw [← hh, ← hc] at hWV
   have hGZ : roughHarmonic Q (N / X) * Z ≤ Z / smoothVar Q X h *
@@ -1213,7 +1231,7 @@ theorem two_scale_twisted {p Q X N : ℕ} (hp : p.Prime) (hpmem : p ∈ (range Q
     · calc roughHarmonic Q (N / X) * Z = Z / smoothVar Q X h *
             (roughHarmonic Q (N / X) * smoothVar Q X h) := by field_simp; ring
         _ ≤ _ := mul_le_mul_of_nonneg_left hWV hZVdiv0
-  rw [← hZdef, ← walkEnergy_small_add_large Q N z, ← hy]
+  rw [← walkEnergy_small_add_large Q N z, ← hy]
   have : g₁' - ε / 2 = 2 * Real.log 2 - η / 4 + Z / smoothVar Q X h := by
     rw [hg₁'def, hg₁def, hεdef]; ring
   rw [this, add_mul] at hW
@@ -1276,9 +1294,6 @@ theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : 
   have hfib : ∀ a ∈ smoothSet Q N, ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * y (a * b) =
       roughHarmonic Q (N / a) * h a := fun a ha =>
     sum_fibre_eq_roughHarmonic_mul (mem_smoothSet.mp ha).1 (mem_smoothSet.mp ha).2.1 y
-  have hfib1 : ∀ a ∈ smoothSet Q N, ∑ b ∈ roughInterval Q (N / a), 1 / (b : ℝ) * (1 : ℝ) =
-      roughHarmonic Q (N / a) := fun a _ => by
-    rw [roughHarmonic]; exact sum_congr rfl fun b _ => by rw [mul_one]
   have hzero : ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) *
       (finiteFlip {p} a * (roughHarmonic Q (N / a) * h a)) = 0 := by
     rw [sum_flip_poleGauge_eq] at hz
@@ -1289,15 +1304,14 @@ theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : 
       ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (finiteFlip {p} a * roughHarmonic Q (N / a)) := by
     have := sum_one_div_mul_eq_smooth_rough Q N (finiteFlip {p}) (fun _ => 1) hflip
     simp only [mul_one] at this
-    rw [← sum_congr rfl fun a ha => by rw [hfib1 a ha]]
-    rw [← this]
-    exact sum_congr rfl fun n _ => by ring
+    rw [show ∑ n ∈ Icc 1 N, finiteFlip {p} n / n =
+      ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * finiteFlip {p} n from sum_congr rfl fun n _ => by ring]
+    simpa only [roughHarmonic] using this
   have hHN : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) =
       ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * roughHarmonic Q (N / a) := by
     have := sum_one_div_mul_eq_smooth_rough Q N (fun _ => 1) (fun _ => 1) hone
     simp only [mul_one, one_mul] at this
-    rw [this]
-    exact sum_congr rfl fun a ha => by rw [hfib1 a ha]
+    simpa only [roughHarmonic] using this
   have hY : ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * y n =
       ∑ a ∈ smoothSet Q N, 1 / (a : ℝ) * (roughHarmonic Q (N / a) * h a) := by
     have := sum_one_div_mul_eq_smooth_rough Q N (fun _ => 1) y hone
@@ -1474,8 +1488,8 @@ theorem twisted_poincare_at_horizon {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 �
   have hX1 : 1 ≤ X := by omega
   have hN1 : 1 ≤ N := le_trans hX1 hXN
   have hL0 : 0 < Real.log X := Real.log_pos (by exact_mod_cast (show 1 < X by omega))
-  have h1 := two_scale_twisted hp hpmem hQ2 hX2 hXN hη hεdef hg₁def hTdef hτ0 hτ1 hτT hK hKt hκ
-    hML h2L hcoef hGr z
+  have h1 := two_scale_twisted hp hpmem hQ2 hX2 hXN hη hη1 hεdef hg₁def hTdef hτ0 hτ1 hτT hK hKt
+    hκ hML h2L hcoef hGr z
   obtain ⟨A, B, P, Av, Ah, Bv, Bh, h3, h4, hS, h5A, h5B, hAv, hBv, hAh, hBh, hP, hGZX⟩ :=
     constraint_data (Q := Q) (X := X) hp hp11 hpQ hX2 hXN z hz
   have hH1 : 1 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by

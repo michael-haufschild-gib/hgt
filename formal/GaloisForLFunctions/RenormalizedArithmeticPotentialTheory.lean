@@ -132,3 +132,4 @@ stability law at atomic resolution; the laws in one statement.
 See `RenormalizedArithmeticPotentialTheory/README.md`.
 -/
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCompleteWeilSelfEnergyHasItsFinitePart
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCenterCorrectionSelectsTheConstantRamanujanMode

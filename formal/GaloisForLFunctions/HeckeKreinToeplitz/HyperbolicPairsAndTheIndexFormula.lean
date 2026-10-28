@@ -34,7 +34,6 @@ negative definite on a `κ`-dimensional space. A positive-definite part never pa
 open Complex Matrix Finset Filter
 open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry
-open GaloisForLFunctions.ArithmeticPositiveDuality (IsPosDefOnGroup)
 
 noncomputable section
 
@@ -158,10 +157,8 @@ theorem hermQuad_gram_sum {J : Type*} (s : Finset J) (k : J → G → ℂ) (x : 
 /-- **Upper half of the index formula.** A positive-definite kernel plus `κ` hyperbolic pairs has
 at most `κ` negative squares. -/
 theorem negIndex_add_sum_pairKernel_le {J : Type*} [Fintype J] {p : G → ℂ}
-    (hp : IsPosDefOnGroup p) (χ : J → G →* ℂ) (ω : J → ℂ) :
+    (hp : IsPosDefKernel p) (χ : J → G →* ℂ) (ω : J → ℂ) :
     negIndex (fun u => p u + ∑ j, pairKernel (χ j) (ω j) u) ≤ Fintype.card J := by
-  have hp0 := negIndex_eq_zero_iff.mp
-    ((isPosDefOnGroup_iff_negIndex_eq_zero (isHermKernel_of_isPosDefOnGroup hp)).mp hp)
   rw [negIndex_le_iff]
   intro n x
   refine Nat.cast_le.mpr (ArithmeticCastelnuovoSeveri.negIndex_le_card_of_nonneg_on_ker _
@@ -170,7 +167,7 @@ theorem negIndex_add_sum_pairKernel_le {J : Type*} [Fintype J] {p : G → ℂ}
   have : ∀ j ∈ (univ : Finset J), hermQuad (gram (pairKernel (χ j) (ω j)) x) c = 0 := fun j _ => by
     rw [hermQuad_gram_pairKernel, hc j]; simp
   rw [sum_congr rfl this, sum_const_zero, add_zero]
-  exact hp0 n x c
+  exact hp.hermQuad_nonneg x c
 
 /-! ### The lower bound -/
 
@@ -198,22 +195,17 @@ theorem card_le_hermNegIndex_of_forall_neg (H : Matrix ι ι ℂ) (L : (J → �
   exact this
 
 /-- A positive-definite kernel has Toeplitz form at most `p(1) (Σ|c_a|)²`. -/
-theorem hermQuad_gram_le_of_isPosDef {p : G → ℂ} (hp : IsPosDefOnGroup p) (x : ι → G)
+theorem hermQuad_gram_le_of_isPosDef {p : G → ℂ} (hp : IsPosDefKernel p) (x : ι → G)
     (c : ι → ℂ) : hermQuad (gram p x) c ≤ (p 1).re * (∑ a, ‖c a‖) ^ 2 := by
-  obtain ⟨r, hr, h1⟩ := hp.map_one_eq
-  have hb : ∀ g, ‖p g‖ ≤ r := fun g => by
-    have h := hp.normSq_le g
-    rw [h1, Complex.ofReal_re, Complex.normSq_eq_norm_sq] at h
-    exact (pow_le_pow_iff_left₀ (norm_nonneg _) hr two_ne_zero).mp h
-  rw [hermQuad_gram, h1, Complex.ofReal_re]
+  rw [hermQuad_gram]
   refine (Complex.re_le_norm _).trans ((norm_sum_le _ _).trans ?_)
   calc ∑ a, ‖∑ b, conj (c a) * p ((x a)⁻¹ * x b) * c b‖
-      ≤ ∑ a, ∑ b, ‖c a‖ * r * ‖c b‖ := by
+      ≤ ∑ a, ∑ b, ‖c a‖ * (p 1).re * ‖c b‖ := by
         refine sum_le_sum fun a _ => (norm_sum_le _ _).trans (sum_le_sum fun b _ => ?_)
         rw [norm_mul, norm_mul, Complex.norm_conj]
         gcongr
-        exact hb _
-    _ = r * (∑ a, ‖c a‖) ^ 2 := by
+        exact hp.norm_le _
+    _ = (p 1).re * (∑ a, ‖c a‖) ^ 2 := by
         rw [sq, sum_mul_sum, mul_sum]
         refine sum_congr rfl fun a _ => ?_
         rw [mul_sum]
@@ -335,7 +327,7 @@ theorem norm_testMatrix_le {χ : Fin κ → G →* ℂ} {ω : Fin κ → ℂ} (h
     exact hle _ _
 
 /-- **Lower half of the index formula**, for pairs oriented outward at `u`. -/
-theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefOnGroup p)
+theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefKernel p)
     (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0) (u : G)
     (hout : ∀ j, 1 < ‖χ j u‖) (hsep : Function.Injective (nodes χ u)) :
     (κ : ℕ∞) ≤ negIndex (fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) := by
@@ -347,7 +339,7 @@ theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefOnGroup p)
     have ht := (tendsto_pow_atTop_atTop_of_one_lt (hout j)).const_mul_atTop hω'
     exact ht.eventually_gt_atTop K₀
   obtain ⟨N, hN⟩ := hev.exists
-  obtain ⟨r, hr, h1⟩ := hp.map_one_eq
+  have hr : 0 ≤ (p 1).re := (norm_nonneg _).trans (hp.norm_le 1)
   refine (Nat.cast_le.mpr ?_).trans
     (hermNegIndex_gram_le_negIndex _ (testFamily (κ := κ) u N))
   refine (Fintype.card_fin κ).symm.le.trans
@@ -383,15 +375,13 @@ theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefOnGroup p)
     simpa using this
   have hpd : hermQuad (gram p (testFamily u N)) c ≤ K₀ * ∑ j, ‖a j‖ ^ 2 := by
     refine (hermQuad_gram_le_of_isPosDef hp _ c).trans ?_
-    rw [h1, Complex.ofReal_re]
-    have hpre : (p 1).re = r := by rw [h1, Complex.ofReal_re]
-    calc r * (∑ s, ‖c s‖) ^ 2
-        ≤ r * ((((κ + κ : ℕ) + (κ + κ : ℕ) : ℝ) * T) ^ 2 * (∑ j, ‖a j‖) ^ 2) := by
+    calc (p 1).re * (∑ s, ‖c s‖) ^ 2
+        ≤ (p 1).re * ((((κ + κ : ℕ) + (κ + κ : ℕ) : ℝ) * T) ^ 2 * (∑ j, ‖a j‖) ^ 2) := by
           rw [← mul_pow]
           gcongr
-      _ ≤ r * ((((κ + κ : ℕ) + (κ + κ : ℕ) : ℝ) * T) ^ 2 * (κ * ∑ j, ‖a j‖ ^ 2)) := by
+      _ ≤ (p 1).re * ((((κ + κ : ℕ) + (κ + κ : ℕ) : ℝ) * T) ^ 2 * (κ * ∑ j, ‖a j‖ ^ 2)) := by
           gcongr
-      _ = K₀ * ∑ j, ‖a j‖ ^ 2 := by simp only [K₀, hpre]; ring
+      _ = K₀ * ∑ j, ‖a j‖ ^ 2 := by simp only [K₀]; ring
   -- some coordinate is nonzero
   obtain ⟨l, hl⟩ : ∃ l, a l ≠ 0 := by
     by_contra h
@@ -414,7 +404,7 @@ theorem flipIndex_flipIndex (χ : Fin κ → G →* ℂ) (u : G) (m : Fin κ ⊕
 
 /-- **Lower half of the index formula.** If one element `u` separates the pairs, a
 positive-definite kernel plus `κ` hyperbolic pairs has at least `κ` negative squares. -/
-theorem le_negIndex_of_separated {p : G → ℂ} (hp : IsPosDefOnGroup p)
+theorem le_negIndex_of_separated {p : G → ℂ} (hp : IsPosDefKernel p)
     (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0) (u : G)
     (hne : ∀ j, ‖χ j u‖ ≠ 1) (hsep : Function.Injective (nodes χ u)) :
     (κ : ℕ∞) ≤ negIndex (fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) := by
@@ -449,7 +439,7 @@ theorem le_negIndex_of_separated {p : G → ℂ} (hp : IsPosDefOnGroup p)
 
 /-- **The Krein–Langer index formula.** A positive-definite kernel plus `κ` hyperbolic pairs
 separated at one element has exactly `κ` negative squares. -/
-theorem negIndex_add_sum_pairKernel_eq {p : G → ℂ} (hp : IsPosDefOnGroup p)
+theorem negIndex_add_sum_pairKernel_eq {p : G → ℂ} (hp : IsPosDefKernel p)
     (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0) (u : G)
     (hne : ∀ j, ‖χ j u‖ ≠ 1) (hsep : Function.Injective (nodes χ u)) :
     negIndex (fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) = κ :=
@@ -472,7 +462,7 @@ theorem reflectChar_ne_of_norm_ne_one {χ : G →* ℂ} {u : G} (h : ‖χ u‖ 
 
 /-- **A pair is never paid.** A positive-definite kernel plus one hyperbolic pair with
 non-unitary character has exactly one negative square, however large the positive part. -/
-theorem negIndex_add_pairKernel_eq_one {p : G → ℂ} (hp : IsPosDefOnGroup p) {χ : G →* ℂ}
+theorem negIndex_add_pairKernel_eq_one {p : G → ℂ} (hp : IsPosDefKernel p) {χ : G →* ℂ}
     (hχ : ¬ IsUnitaryChar χ) {ω : ℂ} (hω : ω ≠ 0) :
     negIndex (fun g => p g + pairKernel χ ω g) = 1 := by
   obtain ⟨u, hu⟩ : ∃ u, ‖χ u‖ ≠ 1 := by

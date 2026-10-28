@@ -290,7 +290,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 25 | `HTGeometry/SymmetricFormGroundProjection` | Scratch verified; installed; first required olean built |
 | 26 | `HTGeometry/HermitianLowerSpectralWindows` | Scratch verified; installed; first required olean built |
 | 27 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilSelfEnergyHasItsFinitePart` | Scratch verified; installed; first required olean built |
-| 28 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionSelectsTheConstantRamanujanMode` | Unchecked scratch |
+| 28 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionSelectsTheConstantRamanujanMode` | Scratch verified; installed |
 | 29 | `HTGeometry/FiniteTwoPoleKernelBounds` | Unchecked scratch |
 | 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Unchecked scratch |
 | 31 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasAnExactErrorDecomposition` | Unchecked scratch |
@@ -306,7 +306,6 @@ The superseded owned center modules and their build artifacts were removed.
 | 41 | `RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | Unchecked scratch |
 | 42 | `RenormalizedArithmeticPotentialTheory/TheSimpleCompleteWeilEigenlinesConvergeToRamanujanLines` | Unchecked scratch |
 
-The analytic estimates, projection identity, lower spectral-window bounds, and
-self-energy finite part through row 27 pass Lean. Remaining checks cover mode
-transfers, two-pole matrix assembly, coercivity, and spectral assembly.
-No unchecked draft is a proved theorem or a completed contribution.
+Unchecked rows above identify the remaining Lean checks. The actual matrix
+assembly, coercivity, and three spectral endpoints must pass before the full
+statement is marked proved. No unchecked draft is a completed contribution.

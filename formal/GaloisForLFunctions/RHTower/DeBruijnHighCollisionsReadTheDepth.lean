@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.DeBruijnNonrealCountRightLimit
 import GaloisForLFunctions.RHTower.DeBruijnNewmanEnergyTransition
 import GaloisForLFunctions.RHTower.LindelofCosineFiniteDefectDepth
+import GaloisForLFunctions.RHTower.DeBruijnNewmanStrictBound
+import GaloisForLFunctions.RHTower.KiKimLeeLargeHeightReality
 
 /-!
 # The high collisions of the de Bruijn–Newman flow read the depth of the zeros
@@ -21,6 +23,8 @@ Split the nonreal zeros of `H_t` (`riemannHeat t`) at a height `h > 0`: the **hi
   (`eventually_exists_highZeros`), so a uniform high count at every height forces the zeros to
   approach the line.
 
+At bound zero this is RH (`riemannHypothesis_iff_highCount_zero`).
+
 Hence (`zerosApproachLine_iff_highCount`, `lindelof_of_highCount`): a `t`-uniform bound on the high
 collisions at every height is exactly the statement that the zeros approach the line, which is
 the Lindelöf hypothesis together with finiteness of the nonreal zeros of every cosine shift. A
@@ -36,7 +40,7 @@ noncomputable section
 
 namespace RHTower.DeBruijn
 
-open RHTower.BacklundConverse RHTower.CosineDefectBudget
+open RHTower.BacklundConverse RHTower.CosineDefectBudget RHTower.LindelofSparse
 
 /-- The high zeros of `H_t` (`Im w ≥ h`) number at most `B`, with multiplicity. -/
 def HighCountLE (t h B : ℝ) : Prop :=
@@ -106,12 +110,10 @@ theorem exists_highCount_le_of_zerosApproachLine (hZ : ZerosApproachLine) {h : �
       nlinarith
     calc ∑ q ∈ T', max ((xiSpectralPoint q).im ^ 2 - 2 * t - h ^ 2 / 2) 0
         = ∑ q ∈ T'.filter (· ∈ hD.toFinset),
-            max ((xiSpectralPoint q).im ^ 2 - 2 * t - h ^ 2 / 2) 0 := by
-          rw [Finset.sum_filter]
-          refine Finset.sum_congr rfl fun q hq => ?_
-          split_ifs with hqD
-          · rfl
-          · exact hoff q hq hqD
+            max ((xiSpectralPoint q).im ^ 2 - 2 * t - h ^ 2 / 2) 0 :=
+          (Finset.sum_filter_of_ne fun q hq hne => by
+            by_contra hqD
+            exact hne (hoff q hq hqD)).symm
       _ ≤ ∑ q ∈ T'.filter (· ∈ hD.toFinset), (xiSpectralPoint q).im ^ 2 :=
           Finset.sum_le_sum fun q _ => max_le (by nlinarith [ht]) (sq_nonneg _)
       _ ≤ K := Finset.sum_le_sum_of_subset_of_nonneg
@@ -259,5 +261,35 @@ theorem highCount_iff_lindelof_and_cosShiftXi_finite_nonreal :
       LindelofCriticalLine ∧
         ∀ h : ℝ, 0 < h → {z : ℂ | cosShiftXi h z = 0 ∧ z.im ≠ 0}.Finite := by
   rw [← zerosApproachLine_iff_highCount, zerosApproachLine_iff_lindelof_and_cosShiftXi_finite_nonreal]
+
+/-- **No high collisions at any time and height is RH.** -/
+theorem riemannHypothesis_iff_highCount_zero :
+    RiemannHypothesis ↔ ∀ h : ℝ, 0 < h → ∀ t : ℝ, 0 < t → HighCountLE t h 0 := by
+  constructor
+  · intro hRH h hh t ht Z hZ
+    have hZe : Z = ∅ := Finset.eq_empty_of_forall_notMem fun w hw => by
+      have := (riemannHeat_zeros_real_simple_of_riemannHypothesis hRH ht (hZ w hw).1).1
+      linarith [(hZ w hw).2]
+    simp [hZe]
+  · intro h0
+    refine riemannHypothesis_iff_riemannHeat_zero_real.mpr fun z hz => ?_
+    by_contra hne
+    -- move the zero to the upper half-plane by evenness
+    obtain ⟨w, hw0, hwim⟩ : ∃ w : ℂ, riemannHeat 0 w = 0 ∧ 0 < w.im := by
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · exact ⟨-z, by rw [riemannHeat_neg le_rfl]; exact hz, by rw [Complex.neg_im]; linarith⟩
+      · exact ⟨z, hz, hgt⟩
+    have hE : ∀ e ∈ ({w} : Finset ℂ), riemannHeat 0 e = 0 ∧ 2 * (w.im / 2) ≤ e.im := by
+      intro e he
+      rw [Finset.mem_singleton.mp he]
+      exact ⟨hw0, by linarith⟩
+    obtain ⟨s, ⟨Z, hZ, hsum⟩, hs0⟩ :=
+      ((eventually_exists_highZeros (by positivity) hE).and self_mem_nhdsWithin).exists
+    have hle := h0 (w.im / 2) (by positivity) s hs0 Z hZ
+    have h1 := one_le_zeroMult_riemannHeat le_rfl hw0
+    rw [Finset.sum_singleton] at hsum
+    have hsumR : (1 : ℝ) ≤ ∑ z ∈ Z, (zeroMult (riemannHeat s) z : ℝ) := by
+      exact_mod_cast h1.trans hsum
+    linarith
 
 end RHTower.DeBruijn

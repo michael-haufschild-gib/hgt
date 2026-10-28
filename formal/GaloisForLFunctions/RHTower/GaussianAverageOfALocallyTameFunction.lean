@@ -240,8 +240,8 @@ theorem norm_vertical_remainder_le_small (hF : Differentiable ℂ F) (ha : 1 ≤
       ≤ 2 * (‖F z‖ * 8) * (a ^ 2 * u ^ 2 / 4) := by gcongr; exact exp_two_le_eight
     _ = ‖F z‖ * (4 * (a ^ 2 * u ^ 2)) := by ring
     _ ≤ ‖F z‖ * (6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))) := by
-        gcongr
-        nlinarith
+        apply mul_le_mul_of_nonneg_left _ hN
+        nlinarith [mul_le_mul_of_nonneg_left hexp hE]
 
 /-- The crude remainder bound `‖G‖ ≤ ‖F(z − iu)‖ + ‖F(z)‖ + 4a|u| ‖F(z)‖`. -/
 theorem norm_vertical_remainder_le_crude (hF : Differentiable ℂ F) (ha : 1 ≤ a)
@@ -354,7 +354,8 @@ theorem integrable_gaussDensity_mul_tameWeight {t : ℝ} (ht : 0 < t) (a b B lam
   have h1 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht a).const_mul (6 * a ^ 2)
   have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht (b + lam)).const_mul
     ((B + 1 + 4 * a) * Real.exp (-lam))
-  exact (h1.add h2).congr (Eventually.of_forall fun u => by simp only [tameWeight]; ring)
+  exact (h1.add h2).congr (Eventually.of_forall fun u => by
+    simp only [tameWeight, Pi.add_apply]; ring)
 
 theorem integral_gaussDensity_mul_tameWeight_le {t : ℝ} (ht : 0 < t) {a b B lam : ℝ}
     (ha : 0 ≤ a) (hB : 0 ≤ B) :
@@ -407,7 +408,7 @@ theorem integral_gaussDensity_mul_sub_eq {F : ℂ → ℂ} {z : ℂ} {t : ℝ} (
   have hintgu : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * (u : ℂ)) := by
     have h := integrable_gaussDensity_mul_pow ht 1
     simp only [pow_one] at h
-    exact h.ofReal.congr (Eventually.of_forall fun u => by push_cast; ring)
+    exact h.ofReal.congr (Eventually.of_forall fun u => by simp only [Complex.ofReal_mul])
   have hA : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u)
       - F z * (gaussDensity t u : ℂ)) := hint.sub (hintg.const_mul _)
   have hB : Integrable (fun u : ℝ => I * deriv F z * ((gaussDensity t u : ℂ) * (u : ℂ))) :=
