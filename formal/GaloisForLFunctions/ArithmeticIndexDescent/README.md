@@ -1193,6 +1193,37 @@ the literal omitted detail tail. This removes the mixed contribution of
 cubes and higher powers from the nonsummable part of the problem. Prime
 and square layers, pure coarse contributions and poles remain separate.
 
+### The regular square boundary
+
+Let `psi` denote the digamma function and let `Reg(s)` be the regular part
+of `-zeta'(s)/zeta(s)`, so that the omitted pole is `1/(s-1)`. In angular
+frequency define
+
+\[
+ G(t)=\operatorname{Re}\psi(\tfrac14+it/2)-\psi(\tfrac14),
+ \qquad R_2(t)=2\operatorname{Re}\mathrm{Reg}(1+2it).
+\]
+
+`G` is the original Gamma jump symbol. Duplication, reflection and the
+completed Xi factorization give, for `t` nonzero,
+
+\[
+ G(t)-R_2(t)=\gamma+\log(4\pi)+\frac\pi2
+ -\frac{\pi}{2\cosh(\pi t)}-\frac{2}{1+4t^2}
+ +2\operatorname{Re}\frac{\xi'}{\xi}(1+2it).
+\]
+
+Every term has its literal normalization. The Xi field is nonnegative
+unconditionally on this zero-free edge. The elementary scalar terms then
+give `G(t)-R_2(t)>=gamma>1/2` for every real `t`, with zero treated using
+`Reg(1)=-gamma`.
+
+This is a proved symbol comparison. A physical square-prime bound still
+requires the Fourier/Abel identification with
+`2*sum_n Lambda(n)/n*Corr_F(2*log(n))` and restoration of its pole. Omitting
+that distributional pole would change the form. The full archimedean
+normalization also contains its original mass term beyond the jump energy.
+
 ### Polar compatibility
 
 For symmetric `Q_i` with a common anchor `e` and `a_i=Q_i[e]>0`, put
@@ -1716,6 +1747,7 @@ Quantitative pillars supplied by this programme:
 | Entire Euler mixed index | Gamma minus the entire prime-two mixed Euler source has one finite upper negative-dimension bound across every horizon and finite real profile family | `ThePrimeTwoEulerMixedFormHasUniformFiniteIndex` |
 | Finite collections of complete Euler factors | Exact coefficient sums and the odd-detail correction give one arbitrary-accuracy detail cutoff for every fixed finite prime set, retaining all its powers | `EveryFixedEulerMixedSourceIsGammaSmall` |
 | All cubes and higher prime powers | The summable critical coefficient budget over every prime gives a uniform Gamma-small mixed tail and finite-detail approximation | `AllHigherPrimePowerMixedTailsAreGammaSmall` |
+| Regular square-prime boundary | Exact digamma and Xi decomposition proves a positive gap below the original Gamma jump symbol at every frequency | `TheSquarePrimeBoundaryHasAGammaGap` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |
 | Ordered pole cancellation | The first Gamma exponential cancels its precise polar product in the full mixed Weil form; the remaining Gamma tail costs exponentially localized boundary masses | `TheOrderedGammaTailRetainsPolarCancellation` |

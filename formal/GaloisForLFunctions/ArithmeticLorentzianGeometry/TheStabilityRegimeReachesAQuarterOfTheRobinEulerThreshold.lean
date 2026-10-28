@@ -19,7 +19,7 @@ Together (`eventually_weilQuad_windowTest_nonneg_quarter`): eventually in `N`, W
 nonnegative on every window test of shape `β(G_n) ≥ β‖G_n‖²` at every width
 `w ≤ K★_q(β, ε, a) δ_N`, `K★_q = min(3/20, (3/4)/C_D, a/C_X, exp(2θ′(0) + 2c_∞ + β + γ − ε − a − 1/25))`,
 `C_X ≈ 10.5`, `C_D ≈ 7.0`. This is `≈ 0.108` of the spacing for plateau profiles, a quarter of the
-Robin–Euler threshold `≈ 0.43`, and `≈ 0.066` for every profile, against `≈ 0.16`. With absolute
+Robin–Euler threshold `≈ 0.43`, and `≈ 0.072` for every profile, against `≈ 0.16`. With absolute
 values on the pole term, the linear costs (Lévy loss and pole) keep this method below about half
 of the threshold even with optimal constants.
 -/

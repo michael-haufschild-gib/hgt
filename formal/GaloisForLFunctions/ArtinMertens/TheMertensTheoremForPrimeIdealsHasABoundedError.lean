@@ -117,7 +117,7 @@ theorem sum_mul_log_ge_of_count {β : Type*} (s : Finset β) (q : β → ℕ) (v
     have h2 : (∑ k ∈ Icc 1 m, ∑ b ∈ s.filter (fun b => q b = k), v b) * (1 / m) ≤ B := by
       rw [mul_one_div, div_le_iff₀ hm0]
       exact hA m
-    have hlogm : Real.log ((m + 1 : ℕ) : ℝ) - Real.log m ≥ 0 := by
+    have hlogm : 0 ≤ Real.log ((m + 1 : ℕ) : ℝ) - Real.log m := by
       rw [sub_nonneg]
       exact Real.log_le_log hm0 (by push_cast; linarith)
     nlinarith
@@ -246,7 +246,7 @@ theorem exists_abs_primeMertens_sub_log_le :
           nlinarith
   have hψ : primeChebyshev K x ≤ D * x := (primeChebyshev_le x).trans_eq (by rw [hDdef]; ring)
   -- the hyperbola identity, term by term
-  have hid := sum_log_absNorm_idealsLe_eq K x
+  have hid := sum_log_absNorm_idealsLe_eq (K := K) x
   have hterm : ∀ pk ∈ primePowersLe K x,
       c * x * (Real.log (absNorm pk.1) / (absNorm pk.1 ^ pk.2 : ℕ)) - c * Real.log (absNorm pk.1) -
         B₀ * (x : ℝ) ^ σ * (Real.log (absNorm pk.1) * (((absNorm pk.1 ^ pk.2 : ℕ) : ℝ) ^ (-σ))) ≤
@@ -261,7 +261,7 @@ theorem exists_abs_primeMertens_sub_log_le :
     set q : ℕ := absNorm pk.1 ^ pk.2
     set w := Real.log (absNorm pk.1)
     have hw : 0 ≤ w := log_absNorm_nonneg _
-    have ht := Nat.cast_div_le (α := ℝ) (m := x) (n := q)
+    have ht : ((x / q : ℕ) : ℝ) ≤ (x : ℝ) / q := Nat.cast_div_le
     have ht' := RHTower.Mertens.cast_div_lt x q hq
     have hrp : ((x / q : ℕ) : ℝ) ^ σ ≤ (x : ℝ) ^ σ * (q : ℝ) ^ (-σ) := by
       rw [Real.rpow_neg hq0.le, ← div_eq_mul_inv, ← Real.div_rpow hx0.le hq0.le]
