@@ -61,8 +61,12 @@ endpoint for primes at least 41. That draft and its separate two-mode helper
 have been removed. Preserve the other researcher's valuation-box work.
 
 The retained independent contribution is the exact bridge from parity counts
-to squared coordinates on actual prime eigenlines. It is useful beyond the
-maximal-gap application and must be finished on its own mathematical merits.
+to squared coordinates on actual prime eigenlines. It is now formalized in
+`HarmonicParitySpectralCoordinates.lean`: all 14 public theorems pass the
+transitive axiom audit, and the canonical installed-source check exited zero
+without diagnostics. Its paper and durable audit are in
+`../3-formalized/arithmetic-counting-harmonic-spectral-coordinates.md` and
+the adjacent audit file. This closes six own leaves, with 49 public theorems.
 
 Existing worktree contains other researchers' changes; preserve them. The source report
 is being updated concurrently: its inertia/mollifier proposal has changed into
@@ -77,39 +81,51 @@ finite arithmetic construction or README is finished.
 
 ## Verification handoff
 
-- Successful own oleans: `HarmonicCorrelationPaysThePrimeGap` and
-  `SparsePrimeFlipsRetainPositiveGaps`, built only because subsequent own modules import them.
-- `PrimeParityPairing.lean` now compiles and has its olean for the obstruction
-  module. Its exact count, boundary error, harmonic limit and prime-two gap
-  comparison are proved. Full-cone uniqueness has standard axioms only.
-- All four initial leaves are wired into the own umbrella, and that umbrella
-  is imported by `MainTheorems.lean`. No umbrella was compiled.
-- The first batch is closed: all four canonical leaf checks exited zero
-  without diagnostics. `arithmetic-counting-pole-angle.md` is now in
-  `3-formalized`, with the durable audit report beside it.
-  The failed-rule card with its strongest positive survivor is now in
-  `5-failed/arithmetic-counting-submaximal-gap-selection.md`.
-- Next exact proof: `/tmp/acp-normalized-check.lean` (unit parity constraint,
-  common harmonic normalization, exact mixed inner product, norm and residual
-  limits, and actual eigenline coordinates).
-- `/tmp/acp-ramanujan-check.log` records seven successful axiom audits;
-  `/tmp/acp-build-ramanujan.log` records its successful olean command. The
-  fifth leaf passed its final canonical check without diagnostics.
-- The missing imported `TheSimplePrimeEigenlinesConvergeToRamanujanLines`
-  olean has built successfully alone, for the harmonic spectral bridge.
-- `/tmp/acp-normalized-check.lean` now contains the full spectral-coordinate
-  bridge: 14 public theorems, spectral projection error and norm limits,
-  the orientation-independent squared coordinate, and actual simple
-  eigenline coordinates. Its paper card is
-  `../2-fully-proven/arithmetic-counting-harmonic-spectral-coordinates.md`.
-  Its first check found only local algebra/rewrite issues, now corrected for
-  another check. It includes all axiom commands. Do not accept the earlier
-  failed audit's `sorryAx` entries; only a completely successful check counts.
-- The abandoned `/tmp/acp-maximal-check.lean` and `/tmp/acp-two-mode-check.lean`
-  were removed at the user's direction. Do not resume that endpoint or
-  substitute it for the stronger valuation-box branch.
-- The first four theorem axiom log is `/tmp/acp-axiom-audit.log`. Canonical logs
-  are `/tmp/acp-final-correlation.log`, `/tmp/acp-final-sparse.log`,
-  `/tmp/acp-final-parity.log`, `/tmp/acp-final-complete.log`. These are all finished.
-- Research scope remains all source-report mechanisms and questions. Do not
-  treat this first contribution as completion of the programme.
+- Six own leaves are installed, individually checked, axiom-audited, and
+  wired into `ArithmeticCountingPositivity.lean`. That umbrella is imported
+  by `MainTheorems.lean`; no umbrella was compiled.
+- Durable proof and audit records are the three `3-formalized` cards
+  `arithmetic-counting-pole-angle.md`,
+  `arithmetic-counting-prime-parity-ramanujan.md`, and
+  `arithmetic-counting-harmonic-spectral-coordinates.md`, with their adjacent
+  `-audit.txt` files. All final canonical checks exited zero without
+  diagnostics; all theorem audits have only the three standard axioms.
+- Own oleans exist for `HarmonicCorrelationPaysThePrimeGap`,
+  `SparsePrimeFlipsRetainPositiveGaps`, `PrimeParityPairing`, and
+  `PrimeParityRamanujanCoordinates`, because later own leaves import them.
+  Neither the complete-Weil obstruction nor the spectral-coordinate leaf
+  required its own olean. The missing imported
+  `TheSimplePrimeEigenlinesConvergeToRamanujanLines` olean was built alone.
+- Completed scratch files and transient logs have been removed after their
+  evidence was preserved in the durable audit records. The abandoned
+  maximal-gap and two-mode drafts are also removed. Do not recreate the
+  redundant prime-41 endpoint.
+- The active extension is on
+  `../2-fully-proven/arithmetic-counting-finite-flip-exhaustion.md`.
+  Corpus searches found no arbitrary finite-prime harmonic law; the
+  existing finite-flip Mertens matching law is distinct. Its closed
+  bounded-error recurrence proof is on
+  `../2-fully-proven/arithmetic-counting-finite-prime-density.md`.
+- `/tmp/acp-finite-density-check.lean` contains the complete first draft:
+  product density, exact prime-insertion recurrence, bounded error, exact
+  limit, and paid gap. Its first check 3693 exited one: two unfolding issues,
+  the renamed triangle inequality, and a neighborhood-order orientation.
+  These are fixed. Check session 36694 is running, with log
+  `/tmp/acp-finite-density-check.log`. Resume that handle before starting
+  another Lean process. No new theorem from this draft is yet accepted.
+- `/tmp/acp-finite-exhaustion-check.lean` contains the subsequent five-theorem
+  draft: exact agreement with Liouville below the cutoff, eventual pointwise
+  equality, positive matched finite stages, and failure of a uniform positive
+  gap even on a cofinal rectangle of prime cutoffs and horizons. It imports
+  the future `FinitePrimeFlipsHavePositiveHarmonicDensity.lean`; finish and
+  audit that source, then build its first required olean before checking
+  the exhaustion draft. Its paper card has moved to `2-fully-proven`.
+- Corpus and mathlib leads used for that draft were inspected in source:
+  `ArithmeticFunction.cardFactors_eq_sum_factorization`,
+  `Nat.support_factorization`, `Finset.prod_pow_eq_pow_sum`,
+  `Nat.mem_primeFactors`, `Nat.mem_primesBelow`, and `atomicWeilForm_congr`.
+  The positive count must be finished before closing the exhaustion
+  obstruction. Failed search calls were retried with exact names; no
+  missing lemma is being treated as a proved input.
+- Research scope remains all source-report mechanisms and questions. No
+  part of the current batch completes the full programme.

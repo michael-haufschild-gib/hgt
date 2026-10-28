@@ -291,9 +291,9 @@ The superseded owned center modules and their build artifacts were removed.
 | 26 | `HTGeometry/HermitianLowerSpectralWindows` | Scratch verified; installed; first required olean built |
 | 27 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilSelfEnergyHasItsFinitePart` | Scratch verified; installed; first required olean built |
 | 28 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionSelectsTheConstantRamanujanMode` | Scratch verified; installed; first required olean built |
-| 29 | `HTGeometry/FiniteTwoPoleKernelBounds` | Scratch verified; installed |
-| 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Unchecked scratch |
-| 31 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasAnExactErrorDecomposition` | Unchecked scratch |
+| 29 | `HTGeometry/FiniteTwoPoleKernelBounds` | Scratch verified; installed; first required olean built |
+| 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Scratch verified; installed; first required olean built |
+| 31 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasAnExactErrorDecomposition` | Scratch verified; installed |
 | 32 | `RenormalizedArithmeticPotentialTheory/HorizonKernelEuclideanIdentities` | Unchecked scratch |
 | 33 | `RenormalizedArithmeticPotentialTheory/TheWeilReplacementErrorsVanishOnRamanujanModes` | Unchecked scratch |
 | 34 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasRamanujanQuasimodes` | Unchecked scratch |

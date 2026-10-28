@@ -17,9 +17,9 @@ class; transfer = closedness of bounded index; local-to-global = aliasing law on
 namespace `GaloisForLFunctions.HeckeKreinToeplitz`. README there is the foundational document.
 
 ## Work items (state)
-1. Kernels on a group, Gram, negative index `κ(k) : ℕ∞`, restriction, covariance — TODO
-2. Reflected pair kernels; exact index formula `κ(p + Σ ω_j h_{χ_j}) = J` under separation — TODO
-3. Closedness of `{κ ≤ n}` under pointwise convergence (transfer) — TODO
+1. Kernels on a group, Gram, negative index `κ(k) : ℕ∞`, restriction, covariance — DONE (`KernelsOnGroupsAndTheirNegativeIndex`)
+2. Reflected pair kernels; exact index formula `κ(p + Σ ω_j h_{χ_j}) = J` under separation — DONE (`HyperbolicPairsAndTheIndexFormula`); arithmetic version on `ℚ_{>0}` DONE (`LogarithmicCharactersAndTheArithmeticIndexFormula`)
+3. Closedness of `{κ ≤ n}` under pointwise convergence (transfer) — DONE (`BoundedIndexIsClosedUnderPointwiseLimits`)
 4. Aliasing law on subgroups; two primes never alias arithmetic pairs — TODO
 5. `𝔽_q` calibration: curve kernel on `ℤ`, index = outer eigenvalue pairs; golden datum κ = 1 — TODO
 6. Arithmetic instance: Weil orbit kernel on `ℚ_{>0}`, KL class ⇔ finitely many right zeros — TODO

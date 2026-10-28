@@ -71,6 +71,11 @@ precision — do not conflate the two.
    decimated parity counts $S_{\lfloor N/d\rfloor}$ with bounded boundary errors; normalized by $H_N$ it tends to
    $\frac{p-1}{p+1}\sum_{d\mid m}\mu(m/d)\,\omega_p(d)$, hence to 0 for every conductor $m\ge2$ coprime to $p$. A prime flip is visible only at
    conductors divisible by $p$.
+6. **Counts determine actual eigenline coordinates.** Normalize both the parity constraint and the conductor-$m$ Ramanujan mode by
+   $\sqrt{H_N}$. The mixed count is their exact inner product. The Ramanujan residual tends to zero, so projection onto its isolated
+   prime eigenline changes that inner product by $o(1)$. The squared coordinate of the unit parity constraint therefore tends to
+   $\left(\frac{p-1}{p+1}\frac{\sum_{d\mid m}\mu(m/d)\omega_p(d)}{\sqrt{\varphi(m)}}\right)^2$.
+   This identifies a multiplicative constraint inside the actual finite spectrum; it does not bound its full orthogonal complement.
 
 ---
 
@@ -85,6 +90,9 @@ precision — do not conflate the two.
    matching, forces complete positivity (`primeFlip_exists_negative_complete_test`, `near_maximal_gaps_do_not_force_weil_positivity`).
 5. **Harmonic Ramanujan coordinates of prime parity** (`gaugeHarmonicSum_divisibility`, `primeParityRamanujanSum_tendsto`,
    `primeParityRamanujanSum_tendsto_zero`).
+6. **Counting-to-eigenline bridge** (`primeParityHorizonVector_inner`, `tendsto_primeParityWindowCoordinateSq`,
+   `exists_primeParity_eigenline_coordinates`): exact harmonic counts determine orientation-independent coordinates on actual simple
+   prime eigenlines.
 
 **Pillar obligations** (targets, not theorems): count before sign (an integer-side construction with square-root error);
 arithmetic selection on overlapping complete sources; uniform mixed-term control through exhaustion; a displacement-sensitive
@@ -112,7 +120,8 @@ Battery: Liouville twin, scaled $\Lambda$, quadratic mixtures, golden curve, ove
 
 ## 6. Open problems
 
-1. **Rigidity of the maximal gap** $2\log2$ among completely multiplicative gauges (every threshold below it is not rigid).
+1. **Exact gap classification** among completely multiplicative gauges: determine the gaps of small-prime and multiple-prime flips,
+   and the information beyond a maximal gap needed to select the source.
 2. **Selective overlap transfer**: carry the discrete hyperplane gap into continuous atomic families beyond the Robin–Euler threshold, paying the
    affine pole direction separately.
 3. **Arithmetic Herglotz theory**: Toeplitz positivity from prime-side data with Gamma and poles.

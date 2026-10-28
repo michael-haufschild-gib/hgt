@@ -4,21 +4,21 @@ import GaloisForLFunctions.HTGeometry.AnalyticBallFinsetFactorization
 /-!
 # The zero-free cofactor of `ξ` near an ordinate
 
-Let `c = 2 + iT`.  On the ball `B(c, 8)` write `ξ = P · g`, with `P(s) = ∏_ρ (s − ρ)^{m_ρ}` over
+Let `c = 2 + iT`.  On the ball `B(c, 12)` write `ξ = P · g`, with `P(s) = ∏_ρ (s − ρ)^{m_ρ}` over
 the zeros of `ξ` in the ball (with multiplicity) and `g` analytic and zero-free.  For large `T`
 (`exists_xi_cofactor_near_ordinate`):
 
 * the zeros in the ball have total multiplicity `≤ C log T`;
-* the cofactor has `‖g′/g‖ ≤ C log T` on `B(c, 7)`.
+* the cofactor has `‖g′/g‖ ≤ C log T` on `B(c, 11)`.
 
 **Proof.**  The partial fraction `ξ′/ξ(s) = Σ_q ((q − 1/2)⁻¹ + (s − q)⁻¹)` over the zero copies
 (`logDeriv_xi_eq_partialFraction`) and the factorization give
-`g′/g(s) − g′/g(c) = Σ_{q ∉ B(c,8)} ((s − q)⁻¹ − (c − q)⁻¹)`.  For `s ∈ B(c, 7)` each term is at
-most `57/(1 + (T − Im q)²)`, and the weighted local density
+`g′/g(s) − g′/g(c) = Σ_{q ∉ B(c,12)} ((s − q)⁻¹ − (c − q)⁻¹)`.  For `s ∈ B(c, 11)` each term is at
+most `133/(1 + (T − Im q)²)`, and the weighted local density
 (`exists_tsum_weighted_density_le`) bounds the sum by `C log T`.  At the Euler point,
 `‖ξ′/ξ(c)‖ ≤ C log T` (`exists_norm_logDeriv_xi_two_line_le`) and every zero lies at distance
 `≥ 1` from `c`.  The zero count is the local density `N(t+1) − N(t) = O(log t)`
-(`exists_card_near_xi_zeros_le`) over nine unit windows.
+(`exists_card_near_xi_zeros_le`) over twelve unit windows.
 -/
 
 open Complex Metric Filter Topology
@@ -137,16 +137,16 @@ theorem exists_divisor_ball_factorization {f : ℂ → ℂ} {c : ℂ} {R : ℝ}
 
 /-! ## The cofactor near an ordinate -/
 
-/-- A zero copy outside `B(c, 8)`, `c = 2 + iT`, and a point of `B(c, 7)`: the difference of the
-two partial-fraction terms is at most `57/(1 + (T − Im q)²)`. -/
+/-- A zero copy outside `B(c, 12)`, `c = 2 + iT`, and a point of `B(c, 11)`: the difference of the
+two partial-fraction terms is at most `133/(1 + (T − Im q)²)`. -/
 theorem norm_inv_sub_sub_inv_sub_le {T : ℝ} {s q : ℂ}
-    (hs : s ∈ ball ((2 : ℂ) + (T : ℂ) * I) 7) (hq : q ∉ ball ((2 : ℂ) + (T : ℂ) * I) 8) :
-    ‖(s - q)⁻¹ - ((2 : ℂ) + (T : ℂ) * I - q)⁻¹‖ ≤ 57 / (1 + (T - q.im) ^ 2) := by
+    (hs : s ∈ ball ((2 : ℂ) + (T : ℂ) * I) 11) (hq : q ∉ ball ((2 : ℂ) + (T : ℂ) * I) 12) :
+    ‖(s - q)⁻¹ - ((2 : ℂ) + (T : ℂ) * I - q)⁻¹‖ ≤ 133 / (1 + (T - q.im) ^ 2) := by
   set c : ℂ := (2 : ℂ) + (T : ℂ) * I with hcdef
-  have hsc : ‖s - c‖ < 7 := by simpa [dist_eq_norm] using hs
-  have hqc : 8 ≤ ‖q - c‖ := by simpa [dist_eq_norm] using hq
+  have hsc : ‖s - c‖ < 11 := by simpa [dist_eq_norm] using hs
+  have hqc : 12 ≤ ‖q - c‖ := by simpa [dist_eq_norm] using hq
   have hcq : ‖c - q‖ = ‖q - c‖ := norm_sub_rev c q
-  have hsq : ‖q - c‖ / 8 ≤ ‖s - q‖ := by
+  have hsq : ‖q - c‖ / 12 ≤ ‖s - q‖ := by
     have := norm_sub_norm_le (q - c) (s - c)
     rw [show q - c - (s - c) = q - s by ring, norm_sub_rev q s] at this
     linarith
@@ -156,24 +156,24 @@ theorem norm_inv_sub_sub_inv_sub_le {T : ℝ} {s q : ℂ}
   have hdiff : (s - q)⁻¹ - (c - q)⁻¹ = (c - s) / ((s - q) * (c - q)) := by
     rw [inv_sub_inv (norm_pos_iff.mp hsq0) (norm_pos_iff.mp hcq0)]
     ring_nf
-  have hcs : ‖c - s‖ ≤ 7 := by rw [norm_sub_rev]; exact hsc.le
-  have hbound : ‖(s - q)⁻¹ - (c - q)⁻¹‖ ≤ 56 / ‖q - c‖ ^ 2 := by
+  have hcs : ‖c - s‖ ≤ 11 := by rw [norm_sub_rev]; exact hsc.le
+  have hbound : ‖(s - q)⁻¹ - (c - q)⁻¹‖ ≤ 132 / ‖q - c‖ ^ 2 := by
     rw [hdiff, norm_div, norm_mul, hcq]
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith [mul_le_mul_of_nonneg_right hsq hqc0.le]
-  -- `‖q − c‖² ≥ max(64, (T − Im q)²) ≥ (64/65)(1 + (T − Im q)²)`
+  -- `‖q − c‖² ≥ max(144, (T − Im q)²) ≥ (144/145)(1 + (T − Im q)²)`
   have him : (T - q.im) ^ 2 ≤ ‖q - c‖ ^ 2 := by
     have h := Complex.abs_im_le_norm (q - c)
     have him' : (q - c).im = q.im - T := by rw [hcdef]; simp
     rw [him'] at h
     have : |T - q.im| ≤ ‖q - c‖ := by rw [abs_sub_comm]; exact h
     nlinarith [abs_nonneg (T - q.im), sq_abs (T - q.im)]
-  have hden : (64 / 65 : ℝ) * (1 + (T - q.im) ^ 2) ≤ ‖q - c‖ ^ 2 := by
+  have hden : (144 / 145 : ℝ) * (1 + (T - q.im) ^ 2) ≤ ‖q - c‖ ^ 2 := by
     nlinarith [sq_nonneg (T - q.im)]
-  calc ‖(s - q)⁻¹ - (c - q)⁻¹‖ ≤ 56 / ‖q - c‖ ^ 2 := hbound
-    _ ≤ 56 / ((64 / 65 : ℝ) * (1 + (T - q.im) ^ 2)) :=
+  calc ‖(s - q)⁻¹ - (c - q)⁻¹‖ ≤ 132 / ‖q - c‖ ^ 2 := hbound
+    _ ≤ 132 / ((144 / 145 : ℝ) * (1 + (T - q.im) ^ 2)) :=
         div_le_div_of_nonneg_left (by norm_num) (by positivity) hden
-    _ ≤ 57 / (1 + (T - q.im) ^ 2) := by
+    _ ≤ 133 / (1 + (T - q.im) ^ 2) := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
         nlinarith [sq_nonneg (T - q.im)]
 
@@ -215,31 +215,31 @@ theorem divisor_xi_ball_eq {c : ℂ} {R : ℝ} {ρ : ℂ} (hρ : ρ ∈ ball c R
   rw [MeromorphicOn.divisor_apply (hmer _) hρ, MeromorphicOn.divisor_apply (hmer _) (Set.mem_univ ρ)]
 
 /-- **The zero-free cofactor of `ξ` near an ordinate.**  For large `T`, with `c = 2 + iT`, the
-zeros of `ξ` in `B(c, 8)` have total multiplicity `≤ C log T`, and the cofactor `g` of
-`ξ = ∏ (s − ρ)^{m_ρ} · g` has `‖g′/g‖ ≤ C log T` on `B(c, 7)`. -/
+zeros of `ξ` in `B(c, 12)` have total multiplicity `≤ C log T`, and the cofactor `g` of
+`ξ = ∏ (s − ρ)^{m_ρ} · g` has `‖g′/g‖ ≤ C log T` on `B(c, 11)`. -/
 theorem exists_xi_cofactor_near_ordinate :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∃ (Z : Finset ℂ) (m : ℂ → ℕ) (g : ℂ → ℂ),
-      (∀ ρ ∈ Z, ρ ∈ ball ((2 : ℂ) + (T : ℂ) * I) 8) ∧
-      (∀ z ∈ ball ((2 : ℂ) + (T : ℂ) * I) 8, xi z = 0 ↔ z ∈ Z) ∧
+      (∀ ρ ∈ Z, ρ ∈ ball ((2 : ℂ) + (T : ℂ) * I) 12) ∧
+      (∀ z ∈ ball ((2 : ℂ) + (T : ℂ) * I) 12, xi z = 0 ↔ z ∈ Z) ∧
       ((∑ ρ ∈ Z, m ρ : ℕ) : ℝ) ≤ C * Real.log T ∧
-      AnalyticOnNhd ℂ g (ball ((2 : ℂ) + (T : ℂ) * I) 8) ∧
-      (∀ z ∈ ball ((2 : ℂ) + (T : ℂ) * I) 8, g z ≠ 0) ∧
+      AnalyticOnNhd ℂ g (ball ((2 : ℂ) + (T : ℂ) * I) 12) ∧
+      (∀ z ∈ ball ((2 : ℂ) + (T : ℂ) * I) 12, g z ≠ 0) ∧
       Set.EqOn xi (fun z => (∏ ρ ∈ Z, (z - ρ) ^ m ρ) * g z)
-        (ball ((2 : ℂ) + (T : ℂ) * I) 8) ∧
-      ∀ s ∈ ball ((2 : ℂ) + (T : ℂ) * I) 7, ‖deriv g s / g s‖ ≤ C * Real.log T := by
+        (ball ((2 : ℂ) + (T : ℂ) * I) 12) ∧
+      ∀ s ∈ ball ((2 : ℂ) + (T : ℂ) * I) 11, ‖deriv g s / g s‖ ≤ C * Real.log T := by
   classical
   obtain ⟨C₁, hC₁0, hC₁⟩ := exists_card_near_xi_zeros_le
   obtain ⟨C₂, hC₂0, hC₂⟩ := exists_tsum_weighted_density_le
   obtain ⟨C₃, hC₃0, hC₃⟩ := exists_norm_logDeriv_xi_two_line_le
-  refine ⟨36 * C₁ + C₃ + 57 * C₂, by positivity, ?_⟩
-  have hwin : ∀ᶠ T : ℝ in atTop, ∀ k : Fin 9, ∀ F : Finset XiZeroCopy,
-      (∀ q ∈ F, |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1) →
-        (F.card : ℝ) ≤ C₁ * Real.log (T - 7 + 2 * k) := by
+  refine ⟨48 * C₁ + C₃ + 133 * C₂, by positivity, ?_⟩
+  have hwin : ∀ᶠ T : ℝ in atTop, ∀ k : Fin 12, ∀ F : Finset XiZeroCopy,
+      (∀ q ∈ F, |(q.1 : ℂ).im - (T - 11 + 2 * k)| ≤ 1) →
+        (F.card : ℝ) ≤ C₁ * Real.log (T - 11 + 2 * k) := by
     refine Filter.eventually_all.2 fun k => ?_
-    have h := (tendsto_atTop_add_const_right atTop ((-7 : ℝ) + 2 * ((k : ℕ) : ℝ))
+    have h := (tendsto_atTop_add_const_right atTop ((-11 : ℝ) + 2 * ((k : ℕ) : ℝ))
       tendsto_id).eventually hC₁
     filter_upwards [h] with T hT
-    have e : T - 7 + 2 * ((k : ℕ) : ℝ) = id T + ((-7 : ℝ) + 2 * ((k : ℕ) : ℝ)) := by
+    have e : T - 11 + 2 * ((k : ℕ) : ℝ) = id T + ((-11 : ℝ) + 2 * ((k : ℕ) : ℝ)) := by
       simp only [id]; ring
     rw [e]
     exact hT
@@ -247,18 +247,18 @@ theorem exists_xi_cofactor_near_ordinate :
     with T hwinT hC₂T hC₃T hT16
   set c : ℂ := (2 : ℂ) + (T : ℂ) * I with hcdef
   have hlogT : 0 < Real.log T := Real.log_pos (by linarith)
-  have han8 : AnalyticOnNhd ℂ xi (closedBall c 8) := fun z _ => xi_differentiable.analyticAt z
+  have han8 : AnalyticOnNhd ℂ xi (closedBall c 12) := fun z _ => xi_differentiable.analyticAt z
   have hxic : xi c ≠ 0 := xi_ne_zero_of_one_le_re (by rw [hcdef]; simp)
   obtain ⟨hfin, g, hg, hg0, heq⟩ := exists_divisor_ball_factorization han8 (by norm_num) hxic
   set Z : Finset ℂ := hfin.toFinset with hZdef
-  set m : ℂ → ℕ := fun ρ => (MeromorphicOn.divisor xi (ball c 8) ρ).toNat with hmdef
-  have hZball : ∀ ρ ∈ Z, ρ ∈ ball c 8 := fun ρ hρ =>
-    (MeromorphicOn.divisor xi (ball c 8)).supportWithinDomain (hfin.mem_toFinset.mp hρ)
-  have hfb : AnalyticOnNhd ℂ xi (ball c 8) := fun z _ => xi_differentiable.analyticAt z
-  have hzeroZ : ∀ z ∈ ball c 8, xi z = 0 ↔ z ∈ Z := by
+  set m : ℂ → ℕ := fun ρ => (MeromorphicOn.divisor xi (ball c 12) ρ).toNat with hmdef
+  have hZball : ∀ ρ ∈ Z, ρ ∈ ball c 12 := fun ρ hρ =>
+    (MeromorphicOn.divisor xi (ball c 12)).supportWithinDomain (hfin.mem_toFinset.mp hρ)
+  have hfb : AnalyticOnNhd ℂ xi (ball c 12) := fun z _ => xi_differentiable.analyticAt z
+  have hzeroZ : ∀ z ∈ ball c 12, xi z = 0 ↔ z ∈ Z := by
     intro z hz
-    have hzs : z ∈ ball c 8 ∩ xi ⁻¹' {0} ↔ z ∈ Function.support
-        (MeromorphicOn.divisor xi (ball c 8)) := by
+    have hzs : z ∈ ball c 12 ∩ xi ⁻¹' {0} ↔ z ∈ Function.support
+        (MeromorphicOn.divisor xi (ball c 12)) := by
       rw [hfb.meromorphicNFOn.zero_set_eq_divisor_support
         (HTGeometry.meromorphicOrderAt_ne_top_of_analytic_ball hfb
           (mem_ball_self (by norm_num)) hxic)]
@@ -281,32 +281,32 @@ theorem exists_xi_cofactor_near_ordinate :
     simp only [mul_one, Finset.sum_const, nsmul_eq_mul, mul_one] at h1
     exact_mod_cast h1
   -- copies outside `F` lie outside the ball
-  have hout : ∀ q : XiZeroCopy, q ∉ F → (q.1 : ℂ) ∉ ball c 8 := by
+  have hout : ∀ q : XiZeroCopy, q ∉ F → (q.1 : ℂ) ∉ ball c 12 := by
     intro q hq hmem
     apply hq
     rw [hFdef, mem_xiCopiesOver]
     exact (hzeroZ _ hmem).mp (xi_eq_zero_of_mem_divisor_support q.1)
   -- the zero count
-  have hcount : (F.card : ℝ) ≤ 36 * C₁ * Real.log T := by
-    have hcover : F ⊆ Finset.univ.biUnion (fun k : Fin 9 =>
-        F.filter (fun q => |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1)) := by
+  have hcount : (F.card : ℝ) ≤ 48 * C₁ * Real.log T := by
+    have hcover : F ⊆ Finset.univ.biUnion (fun k : Fin 12 =>
+        F.filter (fun q => |(q.1 : ℂ).im - (T - 11 + 2 * k)| ≤ 1)) := by
       intro q hq
-      have hmem : (q.1 : ℂ) ∈ ball c 8 := by
+      have hmem : (q.1 : ℂ) ∈ ball c 12 := by
         have := (mem_xiCopiesOver.mp (hFdef ▸ hq))
         exact hZball _ this
-      have hlt : |(q.1 : ℂ).im - T| < 8 := by
+      have hlt : |(q.1 : ℂ).im - T| < 12 := by
         have h := Complex.abs_im_le_norm ((q.1 : ℂ) - c)
         have him : ((q.1 : ℂ) - c).im = (q.1 : ℂ).im - T := by rw [hcdef]; simp
         rw [him] at h
-        have : ‖(q.1 : ℂ) - c‖ < 8 := by simpa [dist_eq_norm] using hmem
+        have : ‖(q.1 : ℂ) - c‖ < 12 := by simpa [dist_eq_norm] using hmem
         linarith
-      set u : ℝ := (q.1 : ℂ).im - T + 8 with hu
+      set u : ℝ := (q.1 : ℂ).im - T + 12 with hu
       have hu0 : 0 < u := by rw [hu]; linarith [abs_lt.mp hlt]
-      have hu16 : u < 16 := by rw [hu]; linarith [abs_lt.mp hlt]
-      have hTk : ∀ k : ℕ, (q.1 : ℂ).im - (T - 7 + 2 * (k : ℝ)) = u - (2 * k + 1) := by
+      have hu16 : u < 24 := by rw [hu]; linarith [abs_lt.mp hlt]
+      have hTk : ∀ k : ℕ, (q.1 : ℂ).im - (T - 11 + 2 * (k : ℝ)) = u - (2 * k + 1) := by
         intro k; rw [hu]; ring
       set k : ℕ := ⌊u / 2⌋₊ with hk
-      have hk8 : k < 9 := by
+      have hk8 : k < 12 := by
         rw [hk, Nat.floor_lt (by positivity)]
         push_cast
         linarith
@@ -317,28 +317,31 @@ theorem exists_xi_cofactor_near_ordinate :
       rw [hTk, abs_le]
       constructor <;> linarith
     have hcard := (Finset.card_le_card hcover).trans Finset.card_biUnion_le
-    have hk : ∀ k : Fin 9, ((F.filter (fun q => |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1)).card : ℝ)
+    have hk : ∀ k : Fin 12, ((F.filter (fun q => |(q.1 : ℂ).im - (T - 11 + 2 * k)| ≤ 1)).card : ℝ)
         ≤ C₁ * (2 * Real.log T) := by
       intro k
       refine (hwinT k _ fun q hq => (Finset.mem_filter.mp hq).2).trans ?_
       gcongr
-      have hk9 : (k : ℝ) < 9 := by exact_mod_cast k.2
-      have hpos : 0 < T - 7 + 2 * (k : ℝ) := by
+      have hk9 : (k : ℝ) < 12 := by exact_mod_cast k.2
+      have hpos : 0 < T - 11 + 2 * (k : ℝ) := by
         have : (0 : ℝ) ≤ k := Nat.cast_nonneg _
         linarith
-      calc Real.log (T - 7 + 2 * k) ≤ Real.log (T ^ 2) := by
-            refine Real.log_le_log hpos ?_
-            nlinarith
+      have hTT : (16 : ℝ) * 15 ≤ T * (T - 1) :=
+        mul_le_mul hT16 (by linarith) (by norm_num) (by linarith)
+      have hle2 : T - 11 + 2 * (k : ℝ) ≤ T ^ 2 := by
+        have : T ^ 2 = T * (T - 1) + T := by ring
+        linarith
+      calc Real.log (T - 11 + 2 * k) ≤ Real.log (T ^ 2) := Real.log_le_log hpos hle2
         _ = 2 * Real.log T := by rw [Real.log_pow]; norm_num
-    calc (F.card : ℝ) ≤ ∑ k : Fin 9,
-          ((F.filter (fun q => |(q.1 : ℂ).im - (T - 7 + 2 * k)| ≤ 1)).card : ℝ) := by
+    calc (F.card : ℝ) ≤ ∑ k : Fin 12,
+          ((F.filter (fun q => |(q.1 : ℂ).im - (T - 11 + 2 * k)| ≤ 1)).card : ℝ) := by
           exact_mod_cast hcard
-      _ ≤ ∑ _k : Fin 9, C₁ * (2 * Real.log T) := Finset.sum_le_sum fun k _ => hk k
-      _ = 18 * C₁ * Real.log T := by
+      _ ≤ ∑ _k : Fin 12, C₁ * (2 * Real.log T) := Finset.sum_le_sum fun k _ => hk k
+      _ = 24 * C₁ * Real.log T := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
           push_cast
           ring
-      _ ≤ 36 * C₁ * Real.log T := by
+      _ ≤ 48 * C₁ * Real.log T := by
           have hp : 0 ≤ C₁ * Real.log T := by positivity
           linarith
   refine ⟨Z, m, g, hZball, hzeroZ, ?_, hg, hg0, heq, ?_⟩
@@ -349,7 +352,7 @@ theorem exists_xi_cofactor_near_ordinate :
   -- the logarithmic derivative of the cofactor
   have hPne : ∀ s, (∀ ρ ∈ Z, s ≠ ρ) → (∏ ρ ∈ Z, (s - ρ) ^ m ρ) ≠ 0 :=
     fun s hs => Finset.prod_ne_zero_iff.mpr fun ρ hρ => pow_ne_zero _ (sub_ne_zero.mpr (hs ρ hρ))
-  have hlogsplit : ∀ s ∈ ball c 8, xi s ≠ 0 →
+  have hlogsplit : ∀ s ∈ ball c 12, xi s ≠ 0 →
       logDeriv xi s = (∑ ρ ∈ Z, (m ρ : ℂ) / (s - ρ)) + deriv g s / g s := by
     intro s hs hxs
     have hsZ : ∀ ρ ∈ Z, s ≠ ρ := fun ρ hρ hsρ =>
@@ -361,7 +364,7 @@ theorem exists_xi_cofactor_near_ordinate :
     rw [logDeriv_apply, hev.deriv_eq, hev.eq_of_nhds, ← logDeriv_apply,
       logDeriv_mul (f := fun z => ∏ ρ ∈ Z, (z - ρ) ^ m ρ) (g := g) s (hPne s hsZ) (hg0 s hs)
         hPd hgd, HTGeometry.logDeriv_finset_prod_pow hsZ, logDeriv_apply]
-  have hpf : ∀ s ∈ ball c 8, xi s ≠ 0 →
+  have hpf : ∀ s ∈ ball c 12, xi s ≠ 0 →
       deriv g s / g s = (∑' q : XiZeroCopy, ((((q.1 : ℂ)) - 1 / 2)⁻¹ + (s - (q.1 : ℂ))⁻¹))
         - ∑ q ∈ F, (s - (q.1 : ℂ))⁻¹ := by
     intro s hs hxs
@@ -372,16 +375,16 @@ theorem exists_xi_cofactor_near_ordinate :
       exact Finset.sum_congr rfl fun ρ _ => by rw [div_eq_mul_inv]
     rw [h2] at h1
     linear_combination (-1 : ℂ) * h1
-  have hcball : c ∈ ball c 8 := mem_ball_self (by norm_num)
+  have hcball : c ∈ ball c 12 := mem_ball_self (by norm_num)
   -- the cofactor at the Euler point
-  have hgc : ‖deriv g c / g c‖ ≤ C₃ * Real.log T + 36 * C₁ * Real.log T := by
+  have hgc : ‖deriv g c / g c‖ ≤ C₃ * Real.log T + 48 * C₁ * Real.log T := by
     have h1 := hlogsplit c hcball hxic
     have hc' : deriv g c / g c = logDeriv xi c - ∑ ρ ∈ Z, (m ρ : ℂ) / (c - ρ) := by
       rw [h1]; ring
     rw [hc']
     refine (norm_sub_le _ _).trans ?_
     have hfirst : ‖logDeriv xi c‖ ≤ C₃ * Real.log T := hC₃T
-    have hsecond : ‖∑ ρ ∈ Z, (m ρ : ℂ) / (c - ρ)‖ ≤ 36 * C₁ * Real.log T := by
+    have hsecond : ‖∑ ρ ∈ Z, (m ρ : ℂ) / (c - ρ)‖ ≤ 48 * C₁ * Real.log T := by
       refine (norm_sum_le _ _).trans ?_
       have hterm : ∀ ρ ∈ Z, ‖(m ρ : ℂ) / (c - ρ)‖ ≤ (m ρ : ℝ) := by
         intro ρ hρ
@@ -402,10 +405,10 @@ theorem exists_xi_cofactor_near_ordinate :
       exact hcount
     linarith
   -- the bound away from the zeros
-  have hbound_off : ∀ s ∈ ball c 7, xi s ≠ 0 →
-      ‖deriv g s / g s‖ ≤ (36 * C₁ + C₃ + 57 * C₂) * Real.log T := by
+  have hbound_off : ∀ s ∈ ball c 11, xi s ≠ 0 →
+      ‖deriv g s / g s‖ ≤ (48 * C₁ + C₃ + 133 * C₂) * Real.log T := by
     intro s hs hxs
-    have hs8 : s ∈ ball c 8 := ball_subset_ball (by norm_num) hs
+    have hs8 : s ∈ ball c 12 := ball_subset_ball (by norm_num) hs
     set D : XiZeroCopy → ℂ := fun q => (s - (q.1 : ℂ))⁻¹ - (c - (q.1 : ℂ))⁻¹ with hD
     have hsumS := summable_xiPartialFractionTerm hxs
     have hsumC := summable_xiPartialFractionTerm hxic
@@ -424,7 +427,7 @@ theorem exists_xi_cofactor_near_ordinate :
     have hweight : Summable (fun q : XiZeroCopy => (1 : ℝ) / (1 + (T - (q.1 : ℂ).im) ^ 2)) :=
       hC₂T.1
     have hDbound : ∀ q : ↑((F : Set XiZeroCopy)ᶜ),
-        ‖D q‖ ≤ 57 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2)) := by
+        ‖D q‖ ≤ 133 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2)) := by
       intro q
       have hq : (q : XiZeroCopy) ∉ F := q.2
       have := norm_inv_sub_sub_inv_sub_le (T := T) hs (hout q hq)
@@ -433,9 +436,9 @@ theorem exists_xi_cofactor_near_ordinate :
       rw [mul_one_div]
       exact this
     have hsub : Summable (fun q : ↑((F : Set XiZeroCopy)ᶜ) =>
-        57 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2))) :=
-      (hweight.subtype _).mul_left 57
-    have htail : ‖∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ ≤ 57 * C₂ * Real.log T := by
+        133 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2))) :=
+      (hweight.subtype _).mul_left 133
+    have htail : ‖∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ ≤ 133 * C₂ * Real.log T := by
       have hnormsum : Summable (fun q : ↑((F : Set XiZeroCopy)ᶜ) => ‖D q‖) :=
         Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hDbound hsub
       have hle : ∑' q : ↑((F : Set XiZeroCopy)ᶜ),
@@ -446,31 +449,31 @@ theorem exists_xi_cofactor_near_ordinate :
       calc ‖∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ ≤ ∑' q : ↑((F : Set XiZeroCopy)ᶜ), ‖D q‖ :=
             norm_tsum_le_tsum_norm hnormsum
         _ ≤ ∑' q : ↑((F : Set XiZeroCopy)ᶜ),
-              57 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2)) :=
+              133 * ((1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2)) :=
             Summable.tsum_le_tsum hDbound hnormsum hsub
-        _ = 57 * ∑' q : ↑((F : Set XiZeroCopy)ᶜ),
+        _ = 133 * ∑' q : ↑((F : Set XiZeroCopy)ᶜ),
               (1 : ℝ) / (1 + (T - ((q : XiZeroCopy).1 : ℂ).im) ^ 2) := tsum_mul_left
-        _ ≤ 57 * (C₂ * Real.log T) := by
+        _ ≤ 133 * (C₂ * Real.log T) := by
             gcongr
             exact hle.trans hC₂T.2
-        _ = 57 * C₂ * Real.log T := by ring
+        _ = 133 * C₂ * Real.log T := by ring
     calc ‖deriv g s / g s‖ = ‖deriv g c / g c + ∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ := by
           rw [← hdiff]; ring_nf
       _ ≤ ‖deriv g c / g c‖ + ‖∑' q : ↑((F : Set XiZeroCopy)ᶜ), D q‖ := norm_add_le _ _
-      _ ≤ (36 * C₁ + C₃ + 57 * C₂) * Real.log T := by nlinarith [hgc, htail]
+      _ ≤ (48 * C₁ + C₃ + 133 * C₂) * Real.log T := by nlinarith [hgc, htail]
   -- extend to the zeros by continuity
   intro s hs
   by_cases hxs : xi s ≠ 0
   · exact hbound_off s hs hxs
   · push Not at hxs
-    have hs8 : s ∈ ball c 8 := ball_subset_ball (by norm_num) hs
+    have hs8 : s ∈ ball c 12 := ball_subset_ball (by norm_num) hs
     have hcont : ContinuousAt (fun w => ‖deriv g w / g w‖) s := by
       have hga : AnalyticAt ℂ g s := hg s hs8
       exact (hga.deriv.continuousAt.div hga.continuousAt (hg0 s hs8)).norm
-    have hev : ∀ᶠ w in 𝓝[≠] s, ‖deriv g w / g w‖ ≤ (36 * C₁ + C₃ + 57 * C₂) * Real.log T := by
-      have hopen : IsOpen ((ball c 7) ∩ (((Z.erase s : Finset ℂ) : Set ℂ)ᶜ)) :=
+    have hev : ∀ᶠ w in 𝓝[≠] s, ‖deriv g w / g w‖ ≤ (48 * C₁ + C₃ + 133 * C₂) * Real.log T := by
+      have hopen : IsOpen ((ball c 11) ∩ (((Z.erase s : Finset ℂ) : Set ℂ)ᶜ)) :=
         isOpen_ball.inter (Finset.finite_toSet _).isClosed.isOpen_compl
-      have hmem : s ∈ (ball c 7) ∩ (((Z.erase s : Finset ℂ) : Set ℂ)ᶜ) :=
+      have hmem : s ∈ (ball c 11) ∩ (((Z.erase s : Finset ℂ) : Set ℂ)ᶜ) :=
         ⟨hs, by simp⟩
       filter_upwards [nhdsWithin_le_nhds (hopen.mem_nhds hmem), self_mem_nhdsWithin]
         with w hw hws

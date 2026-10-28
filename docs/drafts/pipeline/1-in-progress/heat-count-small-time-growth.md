@@ -156,9 +156,9 @@ Corollary: `N(t) ≤ A t^{−a}` ⇒ `#{depth ≥ δ, ordinate ≤ T} ≪ (log T
 6. *Counting.* A `δ`-separated subfamily of `F` gives disjoint discs, hence `N(t) ≥ #F/(C log X)`.
 
 Stages:
-- A1 local factorization and the `g′/g` bound;
-- A2 Gaussian comparison, including tail growth;
-- A3 Rouché, radius choice and counting;
+- A1 local factorization and the `g′/g` bound: **done** — `RHTower/XiZeroFreeCofactorNearAnOrdinate.lean` (`exists_xi_cofactor_near_ordinate`, ball radius 12, bound on radius 11; file check passes).
+- A2 Gaussian comparison: **generic lemma done** — `RHTower/GaussianAverageOfALocallyTameFunction.lean` (`norm_integral_gaussDensity_mul_sub_le`; tail `B‖F(z)‖e^{b|u|}e^{u²/8t}`; file check passes). Still to do: the `XiC` instance (ratio via Grönwall on the cofactor, tail via `norm_xiLine_le_far` and reflection).
+- A3 Rouché, radius choice and counting.
 - A4 rung-2 corollary.
 
 ## Survivors to formalize (not dependency-closed)

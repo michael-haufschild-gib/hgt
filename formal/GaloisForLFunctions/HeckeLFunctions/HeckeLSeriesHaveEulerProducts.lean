@@ -37,7 +37,9 @@ variable (𝔪 : Modulus K) (ψ : HeckeCharacter 𝔪)
 /-- The ideal summand, viewed as a multiplicative map on nonzero ideals. -/
 def heckeIdealTerm (s : ℂ) : (Ideal (𝓞 K))⁰ →* ℂ where
   toFun I := heckeValue 𝔪 ψ I * (Ideal.absNorm (I : Ideal (𝓞 K)) : ℂ) ^ (-s)
-  map_one' := by simp
+  map_one' := by
+    change heckeValue 𝔪 ψ 1 * (Ideal.absNorm (1 : Ideal (𝓞 K)) : ℂ) ^ (-s) = 1
+    rw [heckeValue_one, map_one, Nat.cast_one, Complex.one_cpow, mul_one]
   map_mul' I J := by
     simp only [Submonoid.coe_mul, heckeValue_mul, map_mul, Nat.cast_mul]
     rw [Complex.natCast_mul_natCast_cpow]
@@ -110,7 +112,8 @@ theorem heckeL_eq_tsum_ideals {s : ℂ} (hs : 1 < s.re) :
     (hasSum_subtype_iff_of_support_subset hsupport).mp
       (summable_norm_heckeIdealTerm 𝔪 ψ hs).of_norm.hasSum
   have hgroup := hall.tsum_fiberwise Ideal.absNorm
-  have hterm (n : ℕ) : (∑' I : Ideal.absNorm ⁻¹' {n}, f I) =
+  have hterm (n : ℕ) :
+      (∑' I : (Ideal.absNorm : Ideal (𝓞 K) → ℕ) ⁻¹' {n}, f I.1) =
       LSeries.term (heckeCoeff 𝔪 ψ) s n := by
     letI : Fintype {I : Ideal (𝓞 K) // Ideal.absNorm I = n} :=
       (Ideal.finite_setOf_absNorm_eq n).fintype
@@ -128,7 +131,8 @@ theorem heckeL_eq_tsum_ideals {s : ℂ} (hs : 1 < s.re) :
       apply Finset.sum_congr rfl
       intro I hI
       simp only [f, mem_idealsOfNorm.mp hI, Complex.cpow_neg, div_eq_mul_inv]
-  exact (hgroup.congr hterm).tsum_eq
+  rw [funext hterm] at hgroup
+  exact hgroup.tsum_eq
 
 /-- The prime-ideal Euler product converges to the Hecke L-series on `Re s > 1`. -/
 theorem heckeL_eulerProduct_hasProd {s : ℂ} (hs : 1 < s.re) :
@@ -148,5 +152,35 @@ theorem heckeL_eulerProduct_tprod {s : ℂ} (hs : 1 < s.re) :
       (1 - heckeValue 𝔪 ψ v.asIdeal * (Ideal.absNorm v.asIdeal : ℂ) ^ (-s))⁻¹ =
       heckeL 𝔪 ψ s :=
   (heckeL_eulerProduct_hasProd 𝔪 ψ hs).tprod_eq
+
+/-- Every local Euler denominator is nonzero in the half-plane of absolute convergence. -/
+theorem heckeEulerDenominator_ne_zero {s : ℂ} (hs : 1 < s.re)
+    (v : HeightOneSpectrum (𝓞 K)) : 1 - heckePrimeTerm 𝔪 ψ s v ≠ 0 := by
+  intro h
+  have hterm : heckePrimeTerm 𝔪 ψ s v = 1 := (sub_eq_zero.mp h).symm
+  have hnorm := norm_heckePrimeTerm_lt_one 𝔪 ψ hs v
+  rw [hterm, norm_one] at hnorm
+  exact lt_irrefl _ hnorm
+
+/-- The product of the Euler denominators is the reciprocal of the Hecke L-series. -/
+theorem heckeEulerDenominatorProduct_mul_heckeL {s : ℂ} (hs : 1 < s.re) :
+    (∏' v : HeightOneSpectrum (𝓞 K), (1 - heckePrimeTerm 𝔪 ψ s v)) * heckeL 𝔪 ψ s = 1 := by
+  have hsum : Summable (fun v => ‖-heckePrimeTerm 𝔪 ψ s v‖) := by
+    simpa only [norm_neg] using summable_norm_heckePrimeTerm 𝔪 ψ hs
+  have hprod : Multipliable (fun v => 1 - heckePrimeTerm 𝔪 ψ s v) := by
+    simpa only [sub_eq_add_neg] using multipliable_one_add_of_summable hsum
+  have h := hprod.hasProd.mul (heckeL_eulerProduct_hasProd 𝔪 ψ hs)
+  have hlocal (v : HeightOneSpectrum (𝓞 K)) :
+      (1 - heckePrimeTerm 𝔪 ψ s v) * (1 - heckePrimeTerm 𝔪 ψ s v)⁻¹ = 1 :=
+    mul_inv_cancel₀ (heckeEulerDenominator_ne_zero 𝔪 ψ hs v)
+  simp only [hlocal] at h
+  exact h.unique hasProd_one
+
+/-- Hecke L-series do not vanish in their half-plane of absolute convergence. -/
+theorem heckeL_ne_zero {s : ℂ} (hs : 1 < s.re) : heckeL 𝔪 ψ s ≠ 0 := by
+  intro hzero
+  have h := heckeEulerDenominatorProduct_mul_heckeL 𝔪 ψ hs
+  rw [hzero, mul_zero] at h
+  exact zero_ne_one h
 
 end GaloisForLFunctions.HeckeLFunctions

@@ -1382,7 +1382,6 @@ theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : 
   have h5B : B = Bv + Bh := by
     rw [hBdef, ← sum_filter_add_sum_filter_not (smoothSet Q N) (fun a => a ≤ X), hset, hBvdef,
       hBhdef]
-    congr 1
     have e : ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (roughHarmonic Q (N / a) * (h a - c)) =
         roughHarmonic Q (N / X) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) +
           ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
@@ -1390,27 +1389,35 @@ theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : 
       rw [mul_sum, ← sum_add_distrib]
       exact sum_congr rfl fun a _ => by ring
     rw [e, hmean0, mul_zero, zero_add]
+    congr 1
+    exact sum_congr rfl fun a _ => by simp
   -- the error bounds
   have hsq1 : ∀ a, finiteFlip {p} a ^ 2 ≤ 1 := fun a => by
     rw [sq, singleFlip_mul_self]
   have hsq2 : ∀ a, (fun _ : ℕ => (1 : ℝ)) a ^ 2 ≤ 1 := fun _ => by norm_num
-  have hWV := roughHarmonic_mul_smoothVar_le (Q := Q) hXN y
-  rw [← hh, ← hc, smoothVar, wVar, ← hc] at hWV
+  have hWV : roughHarmonic Q (N / X) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 ≤
+      ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 := by
+    have := roughHarmonic_mul_smoothVar_le (Q := Q) hXN y
+    rw [← hh, ← hc] at this
+    simpa only [smoothVar, wVar, ← hc] using this
   have hvar : ∀ s : ℕ → ℝ, (∀ a, s a ^ 2 ≤ 1) →
       (∑ a ∈ smoothSet Q X, 1 / (a : ℝ) *
         (s a * ((roughHarmonic Q (N / a) - roughHarmonic Q (N / X)) * (h a - c)))) ^ 2 ≤
       (1 + Real.log X) ^ 3 * (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) /
         roughHarmonic Q (N / X) := by
     intro s hs
-    rw [le_div_iff₀ hG0]
-    have := sum_var_sq_le (Q := Q) hX1 hXN s h hs c
-    calc _ ≤ (1 + Real.log X) ^ 3 * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 := this
-      _ = (1 + Real.log X) ^ 3 * (roughHarmonic Q (N / X) *
-            ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2) / roughHarmonic Q (N / X) := by
-          field_simp
-      _ ≤ _ := by
-          rw [div_mul_eq_mul_div, mul_div_assoc', le_div_iff₀ hG0, div_mul_cancel₀ _ hG0.ne']
-          exact mul_le_mul_of_nonneg_left hWV (by positivity)
+    have h1 := sum_var_sq_le (Q := Q) hX1 hXN s h hs c
+    have h2 : (1 + Real.log X) ^ 3 * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2 ≤
+        (1 + Real.log X) ^ 3 * (∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2) /
+          roughHarmonic Q (N / X) := by
+      rw [le_div_iff₀ hG0]
+      calc (1 + Real.log X) ^ 3 * (∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2) *
+            roughHarmonic Q (N / X)
+          = (1 + Real.log X) ^ 3 * (roughHarmonic Q (N / X) *
+              ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - c) ^ 2) := by ring
+        _ ≤ (1 + Real.log X) ^ 3 * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (y n - c) ^ 2 :=
+            mul_le_mul_of_nonneg_left hWV (by positivity)
+    exact h1.trans h2
   have hhalo : ∀ s : ℕ → ℝ, (∀ a, s a ^ 2 ≤ 1) →
       (∑ a ∈ (smoothSet Q N).filter (fun a => ¬ a ≤ X), 1 / (a : ℝ) *
         (s a * (roughHarmonic Q (N / a) * (h a - c)))) ^ 2 ≤
@@ -1462,8 +1469,11 @@ theorem constraint_data {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 ≤ p) (hpQ : 
           exact mul_le_mul_of_nonneg_left this (by positivity)
       _ ≤ _ := sum_le_sum_of_subset_of_nonneg hsub fun a _ _ => by
           have := roughHarmonic_nonneg Q (N / a); positivity
-  exact ⟨A, B, P, Av, Ah, Bv, Bh, h3, h4, hS, h5A, h5B, hvar _ hsq1, hvar _ hsq2, hhalo _ hsq1,
-    hhalo _ hsq2, hP, hGZX⟩
+  refine ⟨A, B, P, Av, Ah, Bv, Bh, h3, h4, hS, h5A, h5B, ?_, ?_, ?_, ?_, hP, hGZX⟩
+  · rw [hAvdef]; exact hvar _ hsq1
+  · rw [hBvdef]; exact hvar _ hsq2
+  · rw [hAhdef]; exact hhalo _ hsq1
+  · rw [hBhdef]; exact hhalo _ hsq2
 
 /-- **The twisted Poincaré inequality at a horizon.** With all parameters in range, every `z`
 orthogonal to the flipped pole satisfies `(2 log 2 − η)|z|² ≤ D_N(z)`. -/
@@ -1512,12 +1522,13 @@ theorem twisted_poincare_at_horizon {p Q X N : ℕ} (hp : p.Prime) (hp11 : 11 �
   have hbig1 : 2 * Real.log 2 * 150 * ((1 + Real.log X) ^ 3 / (roughHarmonic Q (N / X) *
       ∑ n ∈ Icc 1 N, 1 / (n : ℝ))) ≤ η / 4 := by
     rw [div_le_iff₀ hη] at hGbig
-    have hGH : roughHarmonic Q (N / X) ≤ roughHarmonic Q (N / X) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
-      have := mul_le_mul_of_nonneg_left hH1 hG0.le
-      linarith
+    have hGH : roughHarmonic Q (N / X) ≤ roughHarmonic Q (N / X) * ∑ n ∈ Icc 1 N, 1 / (n : ℝ) :=
+      le_mul_of_one_le_right hG0.le hH1
+    have h1 : roughHarmonic Q (N / X) * η ≤
+        roughHarmonic Q (N / X) * (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) * η :=
+      mul_le_mul_of_nonneg_right hGH hη.le
     rw [mul_div_assoc', div_le_iff₀ (by positivity)]
-    have : 0 ≤ η / 4 := by positivity
-    nlinarith
+    linarith
   have hW0 : 0 ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) * (poleGauge z n -
       wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) (fibreMean Q N (poleGauge z))) ^ 2 :=
     sum_nonneg fun n _ => by positivity
@@ -1634,6 +1645,7 @@ theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 �
     have := mul_le_mul_of_nonneg_left he₂log (show 0 ≤ (1 : ℝ) by norm_num)
     have hε2 : 0 ≤ ε / 2 * (16 * LQ / L) := by positivity
     nlinarith
+  have hLη : 0 ≤ L * η := by positivity
   have hbig2 : 2 * Real.log 2 * 150 * (2 * M / L) ≤ η / 4 := by
     have h2400 : 2400 * (2 * Real.log 2) * M / η ≤ L := by linarith
     rw [div_le_iff₀ hη] at h2400
@@ -1658,7 +1670,9 @@ theorem eventually_primeFlip_poleDefect_ge {p : ℕ} (hp : p.Prime) (hp11 : 11 �
   have hGbig : 4 * (2 * Real.log 2) * 150 * (1 + L) ^ 3 / η ≤ roughHarmonic Q (N / X) := by
     have : 0 ≤ (1 + L) / τ + 16 * (1 + 1 / τ) * LQ / g₁ := by positivity
     linarith
-  subst hLdef hMdef hLQdef
+  rw [hLdef] at hML h2L hcoef he₂ hGr hGbig hbig2 hbig3
+  rw [hMdef] at hML hcoef hbig2
+  rw [hLQdef] at hcoef he₂ hGr
   exact twisted_poincare_at_horizon hp hp11 hpmem hQ2 hX2 hXN hη hη1 hεdef hg₁def hTdef hτ0 hτ1
     hτT hK hKt hκ hML h2L hcoef he₂ hGr hGbig hbig2 hbig3 z hz
 

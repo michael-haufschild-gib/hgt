@@ -46,9 +46,7 @@ theorem eventually_le_hermNegIndex {β : Type*} {l : Filter β} {H : β → Matr
   set U : Matrix ι ι ℂ := (hH₀.eigenvectorUnitary : Matrix ι ι ℂ)
   set S : Matrix ι (Fin s.card) ℂ := U.submatrix id f
   set c : Fin s.card → ℝ := fun j => hH₀.eigenvalues (f j)
-  have hcneg : ∀ j, c j < 0 := fun j => by
-    have := (s.equivFin.symm j).2
-    simpa [s] using this
+  have hcneg : ∀ j, c j < 0 := fun j => (Finset.mem_filter.mp (s.equivFin.symm j).2).2
   have hcomp : ∀ M : Matrix ι ι ℂ, Sᴴ * M * S = (Uᴴ * M * U).submatrix f f := fun M => by
     rw [submatrix_mul _ _ f id f Function.bijective_id, submatrix_mul _ _ f id id
       Function.bijective_id, submatrix_id_id, conjTranspose_submatrix]
@@ -87,7 +85,7 @@ theorem isHermKernel_of_tendsto {β : Type*} {l : Filter β} [l.NeBot] {k : β �
     {k₀ : G → ℂ} (hk : ∀ g, Tendsto (fun n => k n g) l (𝓝 (k₀ g)))
     (hh : ∀ᶠ n in l, IsHermKernel (k n)) : IsHermKernel k₀ := fun u =>
   tendsto_nhds_unique (hk u⁻¹) (((continuous_conj.tendsto _).comp (hk u)).congr'
-    (hh.mono fun n hn => (hn u).symm))
+    (hh.mono fun _ hn => (hn u).symm))
 
 /-- **Transfer: bounded index is closed under pointwise limits.** If Hermitian kernels `k_n`
 converge pointwise to `k` and eventually `κ(k_n) ≤ m`, then `κ(k) ≤ m`. -/

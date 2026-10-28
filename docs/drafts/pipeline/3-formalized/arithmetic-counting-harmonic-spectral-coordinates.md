@@ -1,8 +1,8 @@
 # Harmonic counts determine actual prime-parity spectral coordinates
 
 - **ID:** ACP-HARMONIC-SPECTRAL-COORDINATES
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean checked)
 - **Parent:** ../1-in-progress/arithmetic-counting-positivity.md
 
 ## Statement
@@ -69,8 +69,16 @@ It is not a claim to a new abstract spectral projection theorem.
 
 - [x] Closed paper argument with the actual matrix and normalization specified.
 - [x] Corpus leads inspected before mathlib lookup.
-- [ ] All exact Lean declarations checked and axioms audited.
-- [ ] Final leaf audit, umbrella and README.
+- [x] All 14 exact Lean declarations checked and axioms audited; only `propext`, `Classical.choice`, `Quot.sound`.
+- [x] Final leaf audit, umbrella and README.
+
+The checked source is installed as
+`ArithmeticCountingPositivity/HarmonicParitySpectralCoordinates.lean` and
+wired into the own umbrella. The foundational README states the coordinate
+law and its scope. The final installed-source check exited zero without diagnostics. The
+transitive axiom log and source hash are in
+`arithmetic-counting-harmonic-spectral-coordinates-audit.txt`. No olean or
+umbrella build was needed for this leaf.
 
 ## Scope
 

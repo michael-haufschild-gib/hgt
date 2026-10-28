@@ -6,8 +6,9 @@
 - **Source:** user goal 2026-10-28; ArtinMertens S8 (non-rational Artin characters)
 - **Statement:** for a number field `K` and a modulus `𝔪 = 𝔪₀ 𝔪∞`: the ray class group `Cl_𝔪` is finite;
   every character `ψ` of `Cl_𝔪` has an L-function `L(s, ψ) = Σ_𝔞 ψ(𝔞) N𝔞^{−s}` with Euler product,
-  continuation to `Re s > 1 − 1/n`, a pole at `s = 1` exactly for `ψ = 1`, and `L(1, ψ) ≠ 0` for
-  `ψ ≠ 1`; for every finite abelian `L/K` the Artin map gives `Cl_𝔪/H ≅ Gal(L/K)` (reciprocity), and
+  meromorphic continuation to the complex plane, the completed functional equation for primitive
+  characters, a pole at `s = 1` exactly for `ψ = 1`, and `L(1, ψ) ≠ 0` for `ψ ≠ 1`;
+  for every finite abelian `L/K` the Artin map gives `Cl_𝔪/H ≅ Gal(L/K)` (reciprocity), and
   every congruence subgroup `H` is the norm group of an abelian extension (existence).
 
 ## Goal
@@ -28,8 +29,8 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
 - [x] HL5 continuation to `Re s > 1 − 1/n`; holomorphic at `1` for `ψ ≠ 1`; residue for `ψ = 1` —
       `differentiableOn_heckeLCont`, `exists_norm_heckeL_le`, `heckeL_one_eq`,
       `tendsto_sub_one_mul_heckeL_one` (via `HTGeometry.BoundedPartialSums.contLSeries`)
-- [ ] HL6 `L(1, ψ) ≠ 0` for non-real `ψ` (product of all `L(s, ψ)` has `|·| ≥ 1`); Mertens for Hecke
-      characters; real `ψ` after CFT
+- [ ] HL6 `L(1, ψ) ≠ 0` for non-real `ψ` by Euler-factor positivity; real `ψ` by full continuation
+      and Landau positivity after HL7; Mertens for Hecke characters
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform)
 
 ## Gates — class field theory
@@ -63,3 +64,31 @@ then use unique ideal factorization and the existing
 The trivial character must also be compared with Dedekind zeta by deleting the finitely many
 Euler factors in the finite modulus. No analytic continuation or reciprocity premise is to be
 introduced. Existing HL1, HL2, HL4 and HL5 sources were inspected; HL6, HL7 and CFT remain open.
+
+- `NonzeroIdealsArePrimeExponentVectors.lean`: compiled successfully. Defines
+  `primeExponentsIdealEquiv`, with inverse identities and valuation readback.
+- `HeckeLSeriesHaveEulerProducts.lean`: compiled successfully. Includes
+  absolute convergence over individual ideals, equality with the coefficient series, the
+  prime-ideal Euler product and nonvanishing on `Re s > 1`.
+- `TheTrivialCharacterRemovesTheModulusEulerFactors.lean`: compiled successfully.
+  Compares the unit-modulus series with Dedekind zeta
+  and removes precisely the finite-modulus Euler factors.
+- Audited reused inputs `HTGeometry.hasProd_inv_one_sub_nome` and
+  `lSeriesSummable_heckeCoeff`: only `propext`, `Classical.choice`, `Quot.sound`.
+- The new factorization equivalence, ideal summability, coefficient/ideal sum equality,
+  prime-ideal Euler product, nonvanishing on `Re s > 1`, and finite Euler-factor deletion theorem
+  also passed `#print axioms` with only those three standard axioms.
+- Source audit found no positivity theorem for `heckeDensity` or `rayDensity`. The existing
+  residue limit alone does not certify a genuine pole. `TheTrivialCharacterHasAPositiveResidue.lean`
+  now derives the explicit Euler-corrected residue and its positivity; awaiting compilation.
+
+## Next analytic input
+
+For HL6, the corpus search did not find general Hecke nonvanishing at one. Mathlib
+`NumberTheory/LSeries/Nonvanishing.lean` supplies the Dirichlet-character model:
+`norm_LSeries_product_ge_one` uses the local `3 + 4 cos θ + cos 2θ ≥ 0` inequality and
+summable logarithms. Its generic local logarithm lemma is private. Adapt the mechanism to the
+actual prime-ideal Euler factors, then combine with the existing continuation and residue
+bounds for characters with `ψ ^ 2 ≠ 1`. This is a next proof obligation, not a completed theorem.
+The requested ordering is Hecke first, CFT second. Real-character nonvanishing therefore needs
+the analytic route through HL7 and Landau positivity; it must not be postponed to reciprocity.

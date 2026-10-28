@@ -11,10 +11,10 @@ variance `2t`.  Suppose `F` is *tame at `z` with rate `a ≥ 1`*,
 
   `‖F(w)‖ ≤ ‖F(z)‖ e^{a‖w − z‖}`   for `‖w − z‖ ≤ 2`,
 
-and has a *vertical tail* `‖F(z − iu)‖ ≤ B ‖F(z)‖ e^{b|u|}` for `|u| > 1`.  Then for every
-`λ ≥ 0` (`norm_integral_gaussDensity_mul_sub_le`)
+and has a *vertical tail* `‖F(z − iu)‖ ≤ B ‖F(z)‖ e^{b|u|} e^{u²/8t}` for `|u| > 1`.  Then for
+every `λ ≥ 0` (`norm_integral_gaussDensity_mul_sub_le`)
 
-  `‖∫ g_t(u) F(z − iu) du − F(z)‖ ≤ 7t ‖F(z)‖ (6a² e^{4a²t} + (B + 1 + 4a) e^{−λ + 4(b+λ)²t})`.
+  `‖∫ g_t(u) F(z − iu) du − F(z)‖ ≤ t ‖F(z)‖ (42a² e^{4a²t} + 20(B + 1 + 4a) e^{−λ + 8(b+λ)²t})`.
 
 So the average stays within a small multiple of `‖F(z)‖` once `t ≪ a^{−2}` and the tail is paid
 by the Gaussian.
@@ -24,8 +24,9 @@ Taylor remainder `G(w) = F(w) − F(z) − (w − z) F′(z)` along `w = z − i
 * Cauchy's estimates on the circle of radius `2/a` give
   `‖G(w)‖ ≤ (e²/2) a² ‖w − z‖² ‖F(z)‖` for `‖w − z‖ ≤ 1/a` (`norm_taylorRemainder_le`).
   Directly, `‖G(z − iu)‖ ≤ 6 a² u² e^{a|u|} ‖F(z)‖` for `|u| ≤ 1`.
-* For `|u| > 1` the tail gives `‖G(z − iu)‖ ≤ (B + 1 + 4a) u² e^{b|u|} ‖F(z)‖`.
-* The Gaussian moment `∫ g_t u² e^{c|u|} ≤ 7t e^{4c²t}`
+* For `|u| > 1` the tail gives `‖G(z − iu)‖ ≤ (B + 1 + 4a) u² e^{b|u|} e^{u²/8t} ‖F(z)‖`.
+* `g_t(u) e^{u²/8t} = √2 g_{2t}(u)` (`gaussDensity_mul_exp_sq_eq`), and the Gaussian moment
+  `∫ g_t u² e^{c|u|} ≤ 7t e^{4c²t}`
   (`integral_gaussDensity_mul_sq_mul_exp_abs_le`) follows from
   `u² e^{c|u|} ≤ u⁴/(2t) + (t/2)(e^{2cu} + e^{−2cu})`, the fourth moment `12t²`, and
   `∫ g_t e^{xu} = e^{tx²}`.
@@ -128,6 +129,65 @@ theorem integral_gaussDensity_mul_sq_mul_exp_abs_le {t : ℝ} (ht : 0 < t) (c : 
         rw [this]
         nlinarith
 
+/-- `g_t(u) e^{u²/8t} = √2 · g_{2t}(u)`. -/
+theorem gaussDensity_mul_exp_sq_eq {t : ℝ} (ht : 0 < t) (u : ℝ) :
+    gaussDensity t u * Real.exp (u ^ 2 / (8 * t)) = Real.sqrt 2 * gaussDensity (2 * t) u := by
+  unfold gaussDensity
+  have hpos : 0 < 4 * Real.pi * t := by positivity
+  have hsplit : (4 * Real.pi * (2 * t)) ^ (-(1 / 2 : ℝ))
+      = (2 : ℝ) ^ (-(1 / 2 : ℝ)) * (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) := by
+    rw [show 4 * Real.pi * (2 * t) = 2 * (4 * Real.pi * t) by ring,
+      Real.mul_rpow (by norm_num) hpos.le]
+  have h2 : Real.sqrt 2 * (2 : ℝ) ^ (-(1 / 2 : ℝ)) = 1 := by
+    rw [Real.sqrt_eq_rpow, ← Real.rpow_add (by norm_num)]; norm_num
+  rw [hsplit, mul_assoc, ← Real.exp_add]
+  have hexp : -(u ^ 2 / (4 * t)) + u ^ 2 / (8 * t) = -(u ^ 2 / (4 * (2 * t))) := by
+    field_simp; ring
+  rw [hexp]
+  calc (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * Real.exp (-(u ^ 2 / (4 * (2 * t))))
+      = (Real.sqrt 2 * (2 : ℝ) ^ (-(1 / 2 : ℝ))) * ((4 * Real.pi * t) ^ (-(1 / 2 : ℝ))
+          * Real.exp (-(u ^ 2 / (4 * (2 * t))))) := by rw [h2, one_mul]
+    _ = _ := by ring
+
+theorem integrable_gaussDensity_mul_sq_mul_exp_abs_mul_exp_sq {t : ℝ} (ht : 0 < t) (c : ℝ) :
+    Integrable (fun u : ℝ => gaussDensity t u
+      * (u ^ 2 * Real.exp (c * |u|) * Real.exp (u ^ 2 / (8 * t)))) := by
+  refine ((integrable_gaussDensity_mul_sq_mul_exp_abs (by positivity : 0 < 2 * t) c).const_mul
+    (Real.sqrt 2)).congr (Eventually.of_forall fun u => ?_)
+  have := gaussDensity_mul_exp_sq_eq ht u
+  simp only
+  rw [show gaussDensity t u * (u ^ 2 * Real.exp (c * |u|) * Real.exp (u ^ 2 / (8 * t)))
+      = (gaussDensity t u * Real.exp (u ^ 2 / (8 * t))) * (u ^ 2 * Real.exp (c * |u|)) by ring,
+    this]
+  ring
+
+/-- `∫ g_t(u) u² e^{c|u|} e^{u²/8t} du ≤ 20t e^{8c²t}`. -/
+theorem integral_gaussDensity_mul_sq_mul_exp_abs_mul_exp_sq_le {t : ℝ} (ht : 0 < t) (c : ℝ) :
+    ∫ u : ℝ, gaussDensity t u * (u ^ 2 * Real.exp (c * |u|) * Real.exp (u ^ 2 / (8 * t)))
+      ≤ 20 * t * Real.exp (8 * c ^ 2 * t) := by
+  have heq : (fun u : ℝ => gaussDensity t u
+      * (u ^ 2 * Real.exp (c * |u|) * Real.exp (u ^ 2 / (8 * t))))
+      = fun u => Real.sqrt 2 * (gaussDensity (2 * t) u * (u ^ 2 * Real.exp (c * |u|))) := by
+    funext u
+    have := gaussDensity_mul_exp_sq_eq ht u
+    rw [show gaussDensity t u * (u ^ 2 * Real.exp (c * |u|) * Real.exp (u ^ 2 / (8 * t)))
+        = (gaussDensity t u * Real.exp (u ^ 2 / (8 * t))) * (u ^ 2 * Real.exp (c * |u|)) by ring,
+      this]
+    ring
+  rw [heq, integral_const_mul]
+  have h := integral_gaussDensity_mul_sq_mul_exp_abs_le (by positivity : 0 < 2 * t) c
+  have hs : Real.sqrt 2 ≤ 71 / 50 := by
+    rw [Real.sqrt_le_left (by norm_num)]; norm_num
+  have hE : 0 ≤ 7 * (2 * t) * Real.exp (4 * c ^ 2 * (2 * t)) := by positivity
+  calc Real.sqrt 2 * ∫ u : ℝ, gaussDensity (2 * t) u * (u ^ 2 * Real.exp (c * |u|))
+      ≤ Real.sqrt 2 * (7 * (2 * t) * Real.exp (4 * c ^ 2 * (2 * t))) :=
+        mul_le_mul_of_nonneg_left h (Real.sqrt_nonneg 2)
+    _ ≤ 71 / 50 * (7 * (2 * t) * Real.exp (4 * c ^ 2 * (2 * t))) :=
+        mul_le_mul_of_nonneg_right hs hE
+    _ ≤ 20 * t * Real.exp (8 * c ^ 2 * t) := by
+        rw [show 4 * c ^ 2 * (2 * t) = 8 * c ^ 2 * t by ring]
+        nlinarith [Real.exp_pos (8 * c ^ 2 * t)]
+
 /-! ## The second-order Taylor remainder -/
 
 /-- Cauchy's estimate for the second-order Taylor remainder: if `‖F‖ ≤ M` on the circle of radius
@@ -175,13 +235,14 @@ theorem norm_taylorRemainder_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z
 /-! ## The Gaussian average -/
 
 /-- The weight bounding the Taylor remainder along the vertical line through `z`. -/
-def tameWeight (a b B lam u : ℝ) : ℝ :=
+def tameWeight (t a b B lam u : ℝ) : ℝ :=
   6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|))
-    + (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|))
+    + (B + 1 + 4 * a) * Real.exp (-lam)
+      * (u ^ 2 * Real.exp ((b + lam) * |u|) * Real.exp (u ^ 2 / (8 * t)))
 
 section Tame
 
-variable {F : ℂ → ℂ} {z : ℂ} {a b B lam : ℝ}
+variable {F : ℂ → ℂ} {z : ℂ} {t a b B lam : ℝ}
 
 theorem exp_two_le_eight : Real.exp 2 ≤ 8 := by
   have := Real.exp_one_lt_d9
@@ -289,52 +350,65 @@ theorem norm_vertical_remainder_le_middle (hF : Differentiable ℂ F) (ha : 1 �
   nlinarith [mul_le_mul_of_nonneg_left hexp (by positivity : (0 : ℝ) ≤ x ^ 2)]
 
 /-- The remainder for `|u| > 1`. -/
-theorem norm_vertical_remainder_le_large (hF : Differentiable ℂ F) (ha : 1 ≤ a) (hb : 0 ≤ b)
-    (hB : 0 ≤ B) (hlam : 0 ≤ lam)
+theorem norm_vertical_remainder_le_large (hF : Differentiable ℂ F) (ht : 0 < t) (ha : 1 ≤ a)
+    (hb : 0 ≤ b) (hB : 0 ≤ B) (hlam : 0 ≤ lam)
     (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖))
-    (htail : ∀ u : ℝ, 1 < |u| → ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|))
+    (htail : ∀ u : ℝ, 1 < |u| →
+      ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|) * Real.exp (u ^ 2 / (8 * t)))
     {u : ℝ} (hu : 1 < |u|) :
     ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
-      ≤ ‖F z‖ * ((B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
+      ≤ ‖F z‖ * ((B + 1 + 4 * a) * Real.exp (-lam)
+          * (u ^ 2 * Real.exp ((b + lam) * |u|) * Real.exp (u ^ 2 / (8 * t)))) := by
   have hcrude := norm_vertical_remainder_le_crude hF ha hloc u
   have htl := htail u hu
   have hN := norm_nonneg (F z)
+  set E : ℝ := Real.exp (u ^ 2 / (8 * t)) with hEdef
+  have hE1 : 1 ≤ E := Real.one_le_exp (by positivity)
   have hu2 : |u| ≤ u ^ 2 := by rw [← sq_abs]; nlinarith
   have hu1 : 1 ≤ u ^ 2 := by rw [← sq_abs]; nlinarith
   have hexpb : 1 ≤ Real.exp (b * |u|) := Real.one_le_exp (by positivity)
   have hshift : Real.exp (b * |u|) ≤ Real.exp (-lam) * Real.exp ((b + lam) * |u|) := by
     rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by nlinarith)
   have hcoef : 0 ≤ B + 1 + 4 * a := by linarith
+  set P : ℝ := Real.exp (b * |u|) * E with hPdef
+  have hP1 : 1 ≤ P := by rw [hPdef]; nlinarith
   calc ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
-      ≤ B * ‖F z‖ * Real.exp (b * |u|) + ‖F z‖ + 4 * a * |u| * ‖F z‖ := by linarith
-    _ ≤ ‖F z‖ * ((B + 1 + 4 * a) * u ^ 2 * Real.exp (b * |u|)) := by
-        have e1 : B * ‖F z‖ * Real.exp (b * |u|) ≤ ‖F z‖ * (B * u ^ 2 * Real.exp (b * |u|)) := by
+      ≤ B * ‖F z‖ * P + ‖F z‖ + 4 * a * |u| * ‖F z‖ := by
+        have : B * ‖F z‖ * Real.exp (b * |u|) * E = B * ‖F z‖ * P := by rw [hPdef]; ring
+        linarith
+    _ ≤ ‖F z‖ * ((B + 1 + 4 * a) * u ^ 2 * P) := by
+        have e1 : B * ‖F z‖ * P ≤ ‖F z‖ * (B * u ^ 2 * P) := by
           have := mul_le_mul_of_nonneg_left hu1 (mul_nonneg (mul_nonneg hB hN)
-            (Real.exp_pos (b * |u|)).le)
+            (by linarith : (0 : ℝ) ≤ P))
           nlinarith
-        have e2 : ‖F z‖ ≤ ‖F z‖ * (u ^ 2 * Real.exp (b * |u|)) := by
-          have : 1 ≤ u ^ 2 * Real.exp (b * |u|) := by nlinarith
+        have e2 : ‖F z‖ ≤ ‖F z‖ * (u ^ 2 * P) := by
+          have : 1 ≤ u ^ 2 * P := by nlinarith
           nlinarith
-        have e3 : 4 * a * |u| * ‖F z‖ ≤ ‖F z‖ * (4 * a * u ^ 2 * Real.exp (b * |u|)) := by
+        have e3 : 4 * a * |u| * ‖F z‖ ≤ ‖F z‖ * (4 * a * u ^ 2 * P) := by
           have h4a : 0 ≤ 4 * a := by linarith
           have := mul_le_mul_of_nonneg_left hu2 (mul_nonneg h4a hN)
-          have := mul_le_mul_of_nonneg_left hexpb (mul_nonneg (mul_nonneg h4a hN) (sq_nonneg u))
+          have := mul_le_mul_of_nonneg_left hP1 (mul_nonneg (mul_nonneg h4a hN) (sq_nonneg u))
           nlinarith
         nlinarith
-    _ ≤ ‖F z‖ * ((B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
+    _ ≤ ‖F z‖ * ((B + 1 + 4 * a) * Real.exp (-lam)
+          * (u ^ 2 * Real.exp ((b + lam) * |u|) * E)) := by
         apply mul_le_mul_of_nonneg_left _ hN
-        have := mul_le_mul_of_nonneg_left hshift (mul_nonneg hcoef (sq_nonneg u))
+        have hE0 : 0 ≤ E := by linarith
+        have := mul_le_mul_of_nonneg_left hshift (mul_nonneg (mul_nonneg hcoef (sq_nonneg u)) hE0)
+        rw [hPdef]
         nlinarith
 
 /-- The pointwise remainder bound `‖G(u)‖ ≤ ‖F(z)‖ φ(u)`. -/
-theorem norm_vertical_remainder_le (hF : Differentiable ℂ F) (ha : 1 ≤ a) (hb : 0 ≤ b)
-    (hB : 0 ≤ B) (hlam : 0 ≤ lam)
+theorem norm_vertical_remainder_le (hF : Differentiable ℂ F) (ht : 0 < t) (ha : 1 ≤ a)
+    (hb : 0 ≤ b) (hB : 0 ≤ B) (hlam : 0 ≤ lam)
     (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖))
-    (htail : ∀ u : ℝ, 1 < |u| → ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|)) (u : ℝ) :
-    ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖ ≤ ‖F z‖ * tameWeight a b B lam u := by
+    (htail : ∀ u : ℝ, 1 < |u| →
+      ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|) * Real.exp (u ^ 2 / (8 * t))) (u : ℝ) :
+    ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖ ≤ ‖F z‖ * tameWeight t a b B lam u := by
   have hN := norm_nonneg (F z)
   have h0 : 0 ≤ 6 * a ^ 2 * (u ^ 2 * Real.exp (a * |u|)) := by positivity
-  have h1 : 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam) * (u ^ 2 * Real.exp ((b + lam) * |u|)) := by
+  have h1 : 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam)
+      * (u ^ 2 * Real.exp ((b + lam) * |u|) * Real.exp (u ^ 2 / (8 * t))) := by
     have : 0 ≤ B + 1 + 4 * a := by linarith
     positivity
   rw [tameWeight, mul_add]
@@ -344,43 +418,45 @@ theorem norm_vertical_remainder_le (hF : Differentiable ℂ F) (ha : 1 ≤ a) (h
       nlinarith [mul_nonneg hN h1]
     · have := norm_vertical_remainder_le_middle hF ha hloc hua hu1
       nlinarith [mul_nonneg hN h1]
-  · have := norm_vertical_remainder_le_large hF ha hb hB hlam hloc htail hu1
+  · have := norm_vertical_remainder_le_large hF ht ha hb hB hlam hloc htail hu1
     nlinarith [mul_nonneg hN h0]
 
 end Tame
 
 theorem integrable_gaussDensity_mul_tameWeight {t : ℝ} (ht : 0 < t) (a b B lam : ℝ) :
-    Integrable (fun u : ℝ => gaussDensity t u * tameWeight a b B lam u) := by
+    Integrable (fun u : ℝ => gaussDensity t u * tameWeight t a b B lam u) := by
   have h1 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht a).const_mul (6 * a ^ 2)
-  have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht (b + lam)).const_mul
+  have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs_mul_exp_sq ht (b + lam)).const_mul
     ((B + 1 + 4 * a) * Real.exp (-lam))
   exact (h1.add h2).congr (Eventually.of_forall fun u => by
     simp only [tameWeight, Pi.add_apply]; ring)
 
 theorem integral_gaussDensity_mul_tameWeight_le {t : ℝ} (ht : 0 < t) {a b B lam : ℝ}
     (ha : 0 ≤ a) (hB : 0 ≤ B) :
-    ∫ u : ℝ, gaussDensity t u * tameWeight a b B lam u ≤
-      7 * t * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
-        + (B + 1 + 4 * a) * Real.exp (-lam + 4 * (b + lam) ^ 2 * t)) := by
+    ∫ u : ℝ, gaussDensity t u * tameWeight t a b B lam u ≤
+      t * (42 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
+        + 20 * (B + 1 + 4 * a) * Real.exp (-lam + 8 * (b + lam) ^ 2 * t)) := by
   have h1 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht a).const_mul (6 * a ^ 2)
-  have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs ht (b + lam)).const_mul
+  have h2 := (integrable_gaussDensity_mul_sq_mul_exp_abs_mul_exp_sq ht (b + lam)).const_mul
     ((B + 1 + 4 * a) * Real.exp (-lam))
-  have heq : (fun u : ℝ => gaussDensity t u * tameWeight a b B lam u) = fun u =>
+  have heq : (fun u : ℝ => gaussDensity t u * tameWeight t a b B lam u) = fun u =>
       6 * a ^ 2 * (gaussDensity t u * (u ^ 2 * Real.exp (a * |u|)))
         + (B + 1 + 4 * a) * Real.exp (-lam)
-          * (gaussDensity t u * (u ^ 2 * Real.exp ((b + lam) * |u|))) := by
+          * (gaussDensity t u * (u ^ 2 * Real.exp ((b + lam) * |u|)
+            * Real.exp (u ^ 2 / (8 * t)))) := by
     funext u; simp only [tameWeight]; ring
   rw [heq, integral_add h1 h2, integral_const_mul, integral_const_mul]
   have hc : 0 ≤ (B + 1 + 4 * a) * Real.exp (-lam) := by
     have : 0 ≤ B + 1 + 4 * a := by linarith
     positivity
   have hA := integral_gaussDensity_mul_sq_mul_exp_abs_le ht a
-  have hB' := integral_gaussDensity_mul_sq_mul_exp_abs_le ht (b + lam)
+  have hB' := integral_gaussDensity_mul_sq_mul_exp_abs_mul_exp_sq_le ht (b + lam)
   calc 6 * a ^ 2 * (∫ u : ℝ, gaussDensity t u * (u ^ 2 * Real.exp (a * |u|)))
         + (B + 1 + 4 * a) * Real.exp (-lam)
-          * (∫ u : ℝ, gaussDensity t u * (u ^ 2 * Real.exp ((b + lam) * |u|)))
+          * (∫ u : ℝ, gaussDensity t u * (u ^ 2 * Real.exp ((b + lam) * |u|)
+            * Real.exp (u ^ 2 / (8 * t))))
       ≤ 6 * a ^ 2 * (7 * t * Real.exp (4 * a ^ 2 * t))
-        + (B + 1 + 4 * a) * Real.exp (-lam) * (7 * t * Real.exp (4 * (b + lam) ^ 2 * t)) := by
+        + (B + 1 + 4 * a) * Real.exp (-lam) * (20 * t * Real.exp (8 * (b + lam) ^ 2 * t)) := by
         gcongr
     _ = _ := by rw [Real.exp_add]; ring
 
@@ -423,32 +499,34 @@ theorem integral_gaussDensity_mul_sub_eq {F : ℂ → ℂ} {z : ℂ} {t : ℝ} (
   ring
 
 /-- **The Gaussian average of a locally tame function.**  If `‖F(w)‖ ≤ ‖F(z)‖ e^{a‖w − z‖}` on
-`‖w − z‖ ≤ 2` and `‖F(z − iu)‖ ≤ B ‖F(z)‖ e^{b|u|}` for `|u| > 1`, then for every `λ ≥ 0`
-`‖∫ g_t(u) F(z − iu) du − F(z)‖ ≤ 7t ‖F(z)‖ (6a² e^{4a²t} + (B + 1 + 4a) e^{−λ + 4(b+λ)²t})`. -/
+`‖w − z‖ ≤ 2` and `‖F(z − iu)‖ ≤ B ‖F(z)‖ e^{b|u|} e^{u²/8t}` for `|u| > 1`, then for every
+`λ ≥ 0`, `‖∫ g_t(u) F(z − iu) du − F(z)‖ ≤ t ‖F(z)‖ (42a² e^{4a²t}
++ 20(B + 1 + 4a) e^{−λ + 8(b+λ)²t})`. -/
 theorem norm_integral_gaussDensity_mul_sub_le {F : ℂ → ℂ} (hF : Differentiable ℂ F) {z : ℂ}
     {t a b B lam : ℝ} (ht : 0 < t) (ha : 1 ≤ a) (hb : 0 ≤ b) (hB : 0 ≤ B) (hlam : 0 ≤ lam)
     (hloc : ∀ w ∈ closedBall z 2, ‖F w‖ ≤ ‖F z‖ * Real.exp (a * ‖w - z‖))
-    (htail : ∀ u : ℝ, 1 < |u| → ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|))
+    (htail : ∀ u : ℝ, 1 < |u| →
+      ‖F (z - I * u)‖ ≤ B * ‖F z‖ * Real.exp (b * |u|) * Real.exp (u ^ 2 / (8 * t)))
     (hint : Integrable (fun u : ℝ => (gaussDensity t u : ℂ) * F (z - I * u))) :
     ‖(∫ u : ℝ, (gaussDensity t u : ℂ) * F (z - I * u)) - F z‖ ≤
-      7 * t * ‖F z‖ * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
-        + (B + 1 + 4 * a) * Real.exp (-lam + 4 * (b + lam) ^ 2 * t)) := by
+      t * ‖F z‖ * (42 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
+        + 20 * (B + 1 + 4 * a) * Real.exp (-lam + 8 * (b + lam) ^ 2 * t)) := by
   rw [integral_gaussDensity_mul_sub_eq ht hint]
   have hN := norm_nonneg (F z)
-  have hmaj : Integrable (fun u : ℝ => ‖F z‖ * (gaussDensity t u * tameWeight a b B lam u)) :=
+  have hmaj : Integrable (fun u : ℝ => ‖F z‖ * (gaussDensity t u * tameWeight t a b B lam u)) :=
     (integrable_gaussDensity_mul_tameWeight ht a b B lam).const_mul _
   calc ‖∫ u : ℝ, (gaussDensity t u : ℂ) * (F (z - I * u) - F z - (-(I * u)) * deriv F z)‖
-      ≤ ∫ u : ℝ, ‖F z‖ * (gaussDensity t u * tameWeight a b B lam u) := by
+      ≤ ∫ u : ℝ, ‖F z‖ * (gaussDensity t u * tameWeight t a b B lam u) := by
         refine norm_integral_le_of_norm_le hmaj (Eventually.of_forall fun u => ?_)
         rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (gaussDensity_pos ht u)]
-        have := norm_vertical_remainder_le hF ha hb hB hlam hloc htail u
+        have := norm_vertical_remainder_le hF ht ha hb hB hlam hloc htail u
         calc gaussDensity t u * ‖F (z - I * u) - F z - (-(I * u)) * deriv F z‖
-            ≤ gaussDensity t u * (‖F z‖ * tameWeight a b B lam u) :=
+            ≤ gaussDensity t u * (‖F z‖ * tameWeight t a b B lam u) :=
               mul_le_mul_of_nonneg_left this (gaussDensity_pos ht u).le
           _ = _ := by ring
-    _ = ‖F z‖ * ∫ u : ℝ, gaussDensity t u * tameWeight a b B lam u := integral_const_mul _ _
-    _ ≤ ‖F z‖ * (7 * t * (6 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
-        + (B + 1 + 4 * a) * Real.exp (-lam + 4 * (b + lam) ^ 2 * t))) :=
+    _ = ‖F z‖ * ∫ u : ℝ, gaussDensity t u * tameWeight t a b B lam u := integral_const_mul _ _
+    _ ≤ ‖F z‖ * (t * (42 * a ^ 2 * Real.exp (4 * a ^ 2 * t)
+        + 20 * (B + 1 + 4 * a) * Real.exp (-lam + 8 * (b + lam) ^ 2 * t))) :=
         mul_le_mul_of_nonneg_left (integral_gaussDensity_mul_tameWeight_le ht (by linarith) hB) hN
     _ = _ := by ring
 

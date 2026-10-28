@@ -99,9 +99,9 @@ survival cone), anomaly, and paying place.
    remainder is the harmonic convolution of the Mertens error.
 5. **Residue classes and characters**: the horizon reads valuations, not residues (rank one on unit classes mod $q$); a class
    function is seen only through its mean; the finite part is diagonalized by characters with eigenvalues $2\Re(-L'/L(1,\chi))$.
-6. **Prime spectral exhaustion**: the pole gap is exactly $2\log2$ (2-adic step). Finite Ramanujan spans uniformly approximate
-   bounded-defect sublevels. For $\log N\,I-P_N$, this gives eventual exact counts, including multiplicity, from limiting energies
-   $\gamma+\log m+d(m)$, and convergence of simple eigenlines to Ramanujan profiles.
+6. **Prime spectral exhaustion**: the limiting pole gap is exactly $2\log2$ (2-adic step). Finite Ramanujan spans uniformly approximate
+   bounded-defect sublevels. For $\log N\,I-P_N$, exact counts with multiplicity hold eventually at thresholds outside the limiting
+   energies $\gamma+\log m+d(m)$; simple eigenlines converge to Ramanujan profiles.
 7. **Atomic stability**: Lévy self-energy with constant one; Markov form nonnegative down to $\delta_N/(C\log N)$ with absolute
    interaction; at width $c/N$ the ground energy is $2\theta'(0)+\log(1/c)+\kappa_L(\varphi)+\gamma+O(c)$ (Robin constant + Euler constant).
 8. **Complete Weil matrix at the spacing**: exact separation into common self-energy, full prime kernel, literal archimedean
@@ -123,7 +123,7 @@ survival cone), anomaly, and paying place.
 6. **Tower deficit changes sign between 43 and 47**; the archimedean valuation potential pays it (`towerDeficit_eq_div_sinh`).
 7. **Matched operator $A_Q$**: complete basis, simple energies, compact resolvent (modules `TheSieveOperatorHasTheAdjunctionEigenbasis`,
    `TheAdjunctionResolventIsCompact`; `sieveAdjunctionInverse_isCompact`).
-8. **Spectral gap $2\log2$, exact counts and simple eigenlines** (`exists_poleDefect_ge`,
+8. **Limiting gap $2\log2$, exact counts and simple eigenlines** (`exists_poleDefect_ge`,
    `eventually_fullPrime_spectral_count_eq`, `exists_simple_fullPrime_eigenline`).
 9. **Gauge selectivity**: matching coefficient = density of the gauge; finite part sees every flipped prime and $\zeta$ maximizes it;
    pole hyperplane and finite part separate $\zeta$ from Liouville (`liouville_matching`, `exists_pole_hyperplane_separates_liouville`).
