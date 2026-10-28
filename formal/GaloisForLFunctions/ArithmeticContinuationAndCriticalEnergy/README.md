@@ -27,16 +27,16 @@ width unit: a budget on $(a_0,c]$ is the strip $\Theta\le\tfrac12+a_0$.
 
 | Programme | Connection |
 |---|---|
-| [arithmetic-positivity-theory](../arithmetic-positivity-theory/README.md) | Fixes source and complete energy |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Blind models; recovery vs stable estimates |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Owns the finite-horizon receiver and damping admission |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Markov derivative, divisor identities, pronic geometry, damping chain |
-| [ArithmeticCriticalityTheory](../ArithmeticCriticalityTheory/README.md) | Aperture path $\mu(A)$ and its doubly exponential ceiling |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Damping threshold = width; partial transport = strip |
-| [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Local window certificates; signed prime–polar decomposition |
-| [ArithmeticCompensationTheory](../ArithmeticCompensationTheory/README.md) | Coupled flux–forcing budgets; positive-part failure; adapted energies; floor-loss laws |
-| [ArithmeticDefectRigidity](../ArithmeticDefectRigidity/README.md) | Forcing–cofactor cancellation in the same receiver; uses exact pronic dilation blocks |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Cofinal admission = damping unit; damping preserves residue-mode signs (magnitude is the issue) |
+| arithmetic-positivity-theory | Fixes source and complete energy |
+| BiScaleUncertainty | Blind models; recovery vs stable estimates |
+| TransHorizonIncidenceMechanics | Owns the finite-horizon receiver and damping admission |
+| BezoutValuationIncidence | Markov derivative, divisor identities, pronic geometry, damping chain |
+| ArithmeticCriticalityTheory | Aperture path $\mu(A)$ and its doubly exponential ceiling |
+| SquareRootThreshold | Damping threshold = width; partial transport = strip |
+| ArithmeticIncidencePositivity | Local window certificates; signed prime–polar decomposition |
+| ArithmeticCompensationTheory | Coupled flux–forcing budgets; positive-part failure; adapted energies; floor-loss laws |
+| ArithmeticDefectRigidity | Forcing–cofactor cancellation in the same receiver; uses exact pronic dilation blocks |
+| ArithmeticOrientationTheory | Cofinal admission = damping unit; damping preserves residue-mode signs (magnitude is the issue) |
 | Others (SSIC, ACS, SAEI) | Observation sign-preservation; effectivity; signed incidence kernel |
 
 Routes: RW uses the compensated width floor, aperture transport, shell flux and rate equalities;
@@ -161,32 +161,32 @@ class); stability (quantitative, in the receiver norm); selectivity (proved reas
 22. **Paid vs unpaid.** Scalar first moment uniformly paid; renormalisation neutral; residual has a
     linear cusp from a critical zero — positive work escapes every fixed horizon.
 23. **Function-field calibration.** Over $\mathbb F_q[T]$ the centred prefix is exactly constant.
+24. **Short/long modulus split.** For every cutoff $D$ the centred divisor prefix is a short sawtooth
+    (moduli $\le D$) plus the integral of an integrable **long-modulus Möbius quadrature function**
+    whose integer samples count hyperbola incidences, with the harmonic tail kept signed. At $D=\sqrt n$
+    the short head has bounded pronic energy for every $\varepsilon\in(0,1)$ (exponent $(1-\varepsilon)/2$):
+    **the whole obligation is the long-modulus quadrature.** Incomplete dilation fibres cost at most
+    $CD/p$ in the mixed pronic pairing, uniformly in the horizon.
 
 ---
 
 ## 5. Pillar theorems
 
-1. Master inequality and transport (`scaledEnergy_add_budget_le`, `Admits.of_linearContinuation`, `Admits.of_osgoodContinuation`).
-2. Exact derivative (`hasDerivAt_dampedMobiusEnergy`, `two_mul_signedDampingWork_eq_markov`).
-3. Averaged budget = admission (`averagedContinuation_iff_admits`,
+1. **Master inequality and transport** (`scaledEnergy_add_budget_le`, `Admits.of_osgoodContinuation`).
+2. **Exact derivative** (`hasDerivAt_dampedMobiusEnergy`, `two_mul_signedDampingWork_eq_markov`).
+3. **Averaged budget = admission; pointwise strictly stronger** (`averagedContinuation_iff_admits`,
    `riemannHypothesis_iff_cofinal_averagedDampingContinuation`, `exists_admits_everywhere_not_linearContinuation`).
-4. Partial deliverable and threshold (`zetaZeroAbscissa_le_half_add_of_partial_dampingContinuation`,
-   `sInf_averagedContinuationThresholds_eq_zetaZeroAbscissa_sub_half`, `signedAveragedContinuation_tfae`).
-5. Both ends paid (`tendsto_dampedMobiusEnergy_nhdsGT_zero`, `riemannHypothesis_of_no_interior_bump`,
-   `riemannHypothesis_of_signedWork_single_sign_change`).
-6. Sign is an angle (`riemannHypothesis_of_relative_tangent_stability`,
-   `admits_iff_bounded_double_integral_tangentCorrelation`, `riemannHypothesis_of_second_tangent_pairing_ge`).
-7. Relative-precision prime-pair cancellation (`admits_iff_relative_precision_inv_T_primePair`).
-8. Self-improving identity and block energy (`singleDamping_admission_tfae`,
-   `pronicNorm_sq_le_dilationStepEnergy`, `admits_majorantEnergy_iff_half_lt`).
-9. Zero translation (`analyticOrderAt_le_analyticOrderAt_sub_of_mem_receiverDampings`).
-10. Aperture shell flow (`strictAnti_ccmRestrictedWeilGroundEnergy`, `riemannHypothesis_iff_sum_frozen_relaxation_le`,
-    `not_exists_subtrivial_exp_floor_frozenFamily`).
-11. Rate equalities (`groundEnergyRate_eq_polarGroundEnergyRate`, `compensatedWidthFloor_half`,
-    `formGroundEnergyRate_eq_zetaZeroWidth`, `birmanSchwingerNormRate_eq_zetaZeroWidth`,
-    `exists_uncompensated_pairedMinusEnergy_bound_iff`).
-12. Obstruction faces and stable observation (`obstructingTerms_positive_interval_tfae`,
-    `dilationStepObservation_two_sided_stability`, `exists_dilationStepObservation_vk_band_and_parityTwin_separation`).
+4. **Threshold = width** (`sInf_averagedContinuationThresholds_eq_zetaZeroAbscissa_sub_half`, `signedAveragedContinuation_tfae`).
+5. **Both ends paid; escape is an interior bump** (`tendsto_dampedMobiusEnergy_nhdsGT_zero`, `riemannHypothesis_of_no_interior_bump`).
+6. **Relative-precision prime-pair cancellation** (`admits_iff_relative_precision_inv_T_primePair`).
+7. **Self-improving identity and block energy** (`singleDamping_admission_tfae`, `admits_majorantEnergy_iff_half_lt`).
+8. **Aperture shell flow** (`strictAnti_ccmRestrictedWeilGroundEnergy`, `riemannHypothesis_iff_sum_frozen_relaxation_le`,
+   `not_exists_subtrivial_exp_floor_frozenFamily`).
+9. **Rate equalities** (`groundEnergyRate_eq_polarGroundEnergyRate`, `formGroundEnergyRate_eq_zetaZeroWidth`,
+   `compensatedWidthFloor_half`).
+10. **Obstruction faces and stable observation** (`obstructingTerms_positive_interval_tfae`,
+    `dilationStepObservation_two_sided_stability`).
+11. **Short/long split** (`pmPowerDampedCenteredDivisorPrefix_eq_short_add_quadrature`, `sum_pmShortModulusSawtooth_sqrt_pronic_le`).
 
 ---
 
@@ -223,29 +223,23 @@ class); stability (quantitative, in the receiver norm); selectivity (proved reas
 4. **Relative-precision prime-pair cancellation** at a fixed damping below ½: which prime-pair
    information, at which height?
 5. **A contraction for sector compensation** for the actual Möbius row below ½.
-6. **Quantitative prime-shell control.** Bound the signed new-prime correlation along ground states to
+6. **Long-modulus quadrature.** Bound the pronic energy of the long-modulus Möbius quadrature at
+   one fixed $\varepsilon<\tfrac12$ (the square-root head is already paid).
+7. **Quantitative prime-shell control.** Bound the signed new-prime correlation along ground states to
    exclude contact or give a graded floor (respecting the doubly exponential ceiling); the threshold
    ladder reduces RH to summed frozen relaxation.
-7. **$L^2$ rate equality.** Polar = full is proved; form-domain rates = width is proved; whether the
+8. **$L^2$ rate equality.** Polar = full is proved; form-domain rates = width is proved; whether the
    physical-$L^2$ rate equals the width without a non-clustering input.
-8. **Selectivity against sign-reading models** (shifted pair, Beurling with off-line zero, Liouville twist).
-9. **Function-field defect.** Quantify the deviation of the number-field centred prefix from a constant
+9. **Selectivity against sign-reading models** (shifted pair, Beurling with off-line zero, Liouville twist).
+10. **Function-field defect.** Quantify the deviation of the number-field centred prefix from a constant
    at a fixed damping.
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: energy families and admission hierarchy; master inequality (linear, Osgood, superlinear;
-discrete relative/additive; affine envelope; contractive dyadic cutoff transport); work identities
-and five obstruction faces; tangent autocorrelation calculus; dilation calculus (composition,
-inversion, contraction, window means, positive core, Hardy/block energy, $O_q$); prime-pair/polar/level
-coordinates; aperture bridges (polarisation $E_\pm$, compensated floors, shell flux, strict decrease,
-frozen-prime split, threshold ladder, rate equalities); calibrations (majorant, parity twin,
-function field, escape family).
-
-To build: a horizon-free signed-deviation bound below ½; a source-derived prime-shell bound; a
-contraction for sector compensation.
+A horizon-free signed-deviation bound below ½; a long-modulus quadrature estimate; a source-derived
+prime-shell bound; a contraction for sector compensation.
 
 ---
 

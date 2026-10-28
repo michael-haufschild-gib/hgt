@@ -43,3 +43,4 @@
 - formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/README.md
 - formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/README.md
 - formal/GaloisForLFunctions/ArithmeticCountingPositivity/README.md
+- formal/GaloisForLFunctions/HeckeKreinToeplitz/README.md

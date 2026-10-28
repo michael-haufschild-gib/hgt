@@ -32,16 +32,28 @@ obstructions. Give every new inequality an explicit scope and positive survivor.
 
 ## Current evidence
 
-First foundational README written. `HarmonicCorrelationPaysThePrimeGap.lean`
-has compiled successfully: uniform squared-correlation prime-gap bound and
-sharpness of its underlying projection inequality. Its two analytic inputs
-have transitive axiom sets exactly `propext`, `Classical.choice`, `Quot.sound`.
-`SparsePrimeFlipsRetainPositiveGaps.lean` also compiles: every threshold below
-`2 log 2` admits a nontrivial completely multiplicative prime flip with that
-gap and untwisted polar matching. The sharper parity-pairing count and the
-complete-Weil obstruction are being formalized in the same folder.
-The dependency-closed paper proof is on
-`../2-fully-proven/arithmetic-counting-pole-angle.md`.
+Foundational README and four-module first contribution written. The uniform
+squared-correlation transfer, its sharp geometric projection bound, exact
+prime-parity pairing, bounded boundary error, exact harmonic density and
+positive prime-two gap are proved. Every submaximal threshold admits a
+nontrivial completely multiplicative prime flip with untwisted polar matching
+but a negative test for the literal complete Weil functional.
+
+All 28 theorem axiom audits passed with only `propext`, `Classical.choice`,
+and `Quot.sound`. Final canonical checks on the first three leaves have no
+diagnostics; the fourth is running. The final check caught a singleton-sum
+simplification in the prime-three example, now fixed and rechecked.
+
+The next bridge is the harmonic Ramanujan coordinate of prime parity:
+an exact Mobius divisor identity and bounded decimation error imply that all
+nontrivial conductors coprime to the flipped prime have zero limiting
+correlation. Its closed proof is in
+`../2-fully-proven/arithmetic-counting-prime-parity-ramanujan.md`, with Lean
+formalization started in `/tmp/acp-ramanujan-check.lean`.
+
+`arithmetic-counting-maximal-gap-rigidity.md` records the still-unproved exact
+endpoint. A two-mode spectral reduction now isolates its remaining analytic
+and linear-algebra obligations. No maximal-gap claim is yet asserted.
 
 Existing worktree contains other researchers' changes; preserve them. The source report
 is being updated concurrently: its inertia/mollifier proposal has changed into
@@ -61,9 +73,17 @@ finite arithmetic construction or README is finished.
 - `PrimeParityPairing.lean` now compiles and has its olean for the obstruction
   module. Its exact count, boundary error, harmonic limit and prime-two gap
   comparison are proved. Full-cone uniqueness has standard axioms only.
-- Remaining: check the complete-source obstruction module; audit all new axioms; run final canonical
-  `lake --old env lean <file>` on each finished leaf; finish umbrella imports;
-  move the individual theorem card to `3-formalized`; create the failed-rule
-  card with its positive survivor; update README mathematical pillars.
+- All four initial leaves are wired into the own umbrella, and that umbrella
+  is imported by `MainTheorems.lean`. No umbrella was compiled.
+- Remaining first batch: finish the complete-source canonical check; move
+  `arithmetic-counting-pole-angle.md` to `3-formalized`; preserve the audit log.
+  The failed-rule card with its strongest positive survivor is now in
+  `5-failed/arithmetic-counting-submaximal-gap-selection.md`.
+- Next exact proofs: `/tmp/acp-ramanujan-check.lean` (seven mixed-count
+  declarations) and `/tmp/acp-two-mode-check.lean` (finite constrained-energy
+  helper). Neither scratch file has been compiled yet; no parallel Lean process.
+- The first four theorem axiom log is `/tmp/acp-axiom-audit.log`. Canonical logs
+  are `/tmp/acp-final-correlation.log`, `/tmp/acp-final-sparse.log`,
+  `/tmp/acp-final-parity.log`, `/tmp/acp-final-complete.log`. The last is active.
 - Research scope remains all source-report mechanisms and questions. Do not
   treat this first contribution as completion of the programme.

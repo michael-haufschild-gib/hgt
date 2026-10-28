@@ -1,6 +1,9 @@
 # Arithmetic Compensation Theory (ACCC)
 
-**One question.** When several exact arithmetic descriptions belong to the same source, what
+Namespace `GaloisForLFunctions.ArithmeticCompensationTheory`; umbrella
+`ArithmeticCompensationTheory.lean`.
+
+**Question.** When several exact arithmetic descriptions belong to the same source, what
 signed critical-norm estimates do their compatibility conditions force that none of the
 descriptions forces separately?
 
@@ -9,9 +12,6 @@ descriptions of one source. Separately divergent pieces can cancel to leading or
 still exceeds the critical norm. The task: identify the coherent part, retain its mixed terms, and
 estimate the absolute remainder with constants independent of the cutoff. **Relative cancellation
 is the starting point, not admission.**
-
-Namespace `GaloisForLFunctions.ArithmeticCompensationTheory`; umbrella
-`ArithmeticCompensationTheory.lean`.
 
 ---
 
@@ -29,15 +29,15 @@ exponent, log saving, aperture decay, resolution threshold); identities and crit
 
 | Programme | Interface |
 |---|---|
-| [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Cross-prime comb aggregate: ACCC proves it is $\sim4e^{2r}$ (AIP's polynomial target fails); comb = translation/resolvent |
-| [ArithmeticContinuationAndCriticalEnergy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Owns admission and averaged budgets; ACCC adds positive-part failure, core debt limit, adverse first cell, adapted energies |
-| [ArithmeticCriticalityTheory](../ArithmeticCriticalityTheory/README.md) | Gaussian ceiling of $\mu(A)$ read as a forced loss rate |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Centred prime row: ACCC widens the range to $Q\le P^{30/17-\delta}$ and the balanced regime |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Graded floor dictionary used as scoring rule |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Schur residual algebra; selectivity test models |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md), [ScaleSignedIncidenceCriticality](../ScaleSignedIncidenceCriticality/README.md) | Recovery needs stability; origin loss |
-| [ArithmeticDefectRigidity](../ArithmeticDefectRigidity/README.md) | Next step after the blow-up profile: paid power subtraction, antipodal cofactor |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Floors must respect doubly exponential decay; correctors are readings until built from source terms |
+| ArithmeticIncidencePositivity | Cross-prime comb aggregate: ACCC proves it is $\sim4e^{2r}$ (AIP's polynomial target fails); comb = translation/resolvent |
+| ArithmeticContinuationAndCriticalEnergy | Owns admission and averaged budgets; ACCC adds positive-part failure, core debt limit, adverse first cell, adapted energies |
+| ArithmeticCriticalityTheory | Gaussian ceiling of $\mu(A)$ read as a forced loss rate |
+| BezoutValuationIncidence | Centred prime row: ACCC widens the range to $Q\le P^{30/17-\delta}$ and the balanced regime |
+| SquareRootThreshold | Graded floor dictionary used as scoring rule |
+| BiScaleUncertainty | Schur residual algebra; selectivity test models |
+| TransHorizonIncidenceMechanics, ScaleSignedIncidenceCriticality | Recovery needs stability; origin loss |
+| ArithmeticDefectRigidity | Next step after the blow-up profile: paid power subtraction, antipodal cofactor |
+| ArithmeticOrientationTheory | Floors must respect doubly exponential decay; correctors are readings until built from source terms |
 | Others (APT, ACS, SAEI) | Weil–Markov–pole target; effectivity; signed incidence kernel |
 
 Feeds AIP, MC, RW, ACT, BVI; supplies no source-derived zero-rate bound. `RHTower` supplies PNT via
@@ -140,30 +140,30 @@ source class, with which damping/aperture dependence.
 23. **Centred prime row** on $P^{1+\delta}\le Q\le P^{30/17-\delta}$ and the balanced regime $P\le Q\le BP$; centring keeps
     100% of the omitted-residue-class term, cancelled by `omittedClassCorrector`; a power saving in the
     short-window mean square ⇔ crossing below half damping.
+24. **Multi-modulus Kloosterman dispersion.** Unitary Parseval equates the linear-phase and
+    Kloosterman energies of each reciprocity kernel; Farey separation across primes $\le Q_0$ makes the
+    packet $\sum_pa_pW_K(p,\cdot)$ a two-sided **quasi-isometry** on every window of length $K$ (error
+    $Q_0^2$): log-free dispersion, but also an unconditional $p^4$-order non-cancellation floor.
+    Prime pronic Gram bilinear forms get full square-root dispersion in both variables. CRT
+    orthogonality lets one packet corrector cancel the omitted-class bias at every $p\in S$ at once,
+    keeping the $17/30$ block-mass bound.
 
 ---
 
 ## 5. Pillar theorems
 
-1. Comb is a translation (`exists_odd_smooth_family_sharp_comb_rate`).
-2. Comb resolvent law (`tendsto_combEnergy_div_combMass_sq_horizonEnergy`, `horizonEnergy_pos`,
-   `exists_abs_combEnergy_div_sub_horizonEnergy_le`, `horizonEnergy_add_four_mul_horizonEnergy_deriv`).
-3. Pythagorean law and actual rate (`norm_add_sq_eq_compensation`, `pmCompleteHeadEnergy_eq_compensation`,
-   `exists_compensationDefect_le_inv_log_pow`, `exists_twoScaleCompleteShiftEnergy_le_pow_saving`).
-4. Compensated ledger graded by width (`exists_abs_primeShift_sub_polar_le`,
-   `exists_fullZeroForm_ge_deLaValleePoussin_poleTiltedSobolev`,
-   `zetaZeroWidth_le_iff_forall_gt_reflectedPrimePolarCost_le_poleTiltedSobolev`,
+1. **The comb is a translation / resolvent, sharp rate $4e^{2r}$** (`exists_odd_smooth_family_sharp_comb_rate`,
+   `tendsto_combEnergy_div_combMass_sq_horizonEnergy`, `horizonEnergy_add_four_mul_horizonEnergy_deriv`).
+2. **Pythagorean law and actual rate** (`norm_add_sq_eq_compensation`, `exists_twoScaleCompleteShiftEnergy_le_pow_saving`).
+3. **Compensated ledger graded by width** (`zetaZeroWidth_le_iff_forall_gt_reflectedPrimePolarCost_le_poleTiltedSobolev`,
    `riemannHypothesis_iff_forall_pos_reflectedPrimePolarCost_le_poleTiltedSobolev`).
-5. Signed recovery strictly weaker than positive part (`exists_admitted_monotone_not_positivePartContinuation`).
-6. Core debt and first cell (`tendsto_integral_workCore_logZeta`, `tendsto_signedDampingWork_one`).
-7. Forced aperture loss (`not_relative_step_transport`, `exists_le_floorLoss_of_floor`).
-8. Correctors (`adaptedEnergy_dampedMobiusEnergy_iff_admits`, `bezoutCorrectedEnergy_comparison`,
-   `riemannHypothesis_iff_cofinal_bezoutCorrected_loss`).
-9. Function-field calibration (`curveCombEnergy_ge`, `weil_iff_cofinal_curveReceiverEnergy`).
-10. Origins and blow-ups (`pronicEnergy_shift_le`, `forall_admitted_drift_admitted_iff`,
-    `admits_or_escapesToHorizon`, `pronicEnergy_rowDilate_sandwich`).
-11. Balanced regime (`exists_abs_rowBilinear_centredPrimeRow_le_of_range`,
-    `exists_balanced_centredPrimeBlock_rowBilinear_le`, `primePowerWindowSaving_iff_receiverDampingRate_lt_half`).
+4. **Signed budget strictly weaker than positive part** (`exists_admitted_monotone_not_positivePartContinuation`).
+5. **Forced aperture loss** (`exists_le_floorLoss_of_floor`).
+6. **Correctors = admission** (`adaptedEnergy_dampedMobiusEnergy_iff_admits`, `riemannHypothesis_iff_cofinal_bezoutCorrected_loss`).
+7. **Function-field calibration** (`weil_iff_cofinal_curveReceiverEnergy`).
+8. **Blow-up escapes to the horizon** (`admits_or_escapesToHorizon`, `forall_admitted_drift_admitted_iff`).
+9. **Balanced regime** (`primePowerWindowSaving_iff_receiverDampingRate_lt_half`,
+   `eventually_packetCorrectedPrimeBlock_seventeenThirtieths`).
 
 ---
 
@@ -184,6 +184,7 @@ source class, with which damping/aperture dependence.
 | $30/17$ range covers balanced scales | Needs the short-window mean-square transfer |
 | Subtract a smooth prime main term and call the remainder estimated | The remainder is the zero-width problem relocated |
 | Integer comb is uniformly coercive | Narrow bumps defeat it; curves differ |
+| Averaging Kloosterman packets over moduli cancels them | Two-sided quasi-isometry: dispersion is exact, no sub-diagonal saving |
 
 ---
 
@@ -210,15 +211,11 @@ absolute, energy vs signed charge, criterion vs arithmetic producer distinct.
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Horizon concentration and horizon law (qualitative and at dlVP rate); comb resolvent law and
-resolvent identity; compensated prime–polar and full-ledger residuals; curve-model combs and
-receivers (annihilator filters, coefficient calculus); compensation coordinates and two-scale
-transition calculus; budget hierarchy and lacunary countermodel; adapted energies and Bézout
-correctors; aperture loss-rate calculus; origin calculus; source growth bounds and normalized
-blow-up profiles; length-uniform short windows, block-mass elimination, omitted-class corrector.
-Compatibility identities used as constraints (owned by ACCE/BVI): tangent law, prime-dilation form,
+A second representation of the prime–polar pairing with exponent $<\tfrac12$; a corrector below ½
+built from independently estimated terms; a signed prime-shell estimate for graded aperture floors.
+Compatibility identities to use as constraints (owned by ACCE/BVI): tangent law, prime-dilation form,
 inversion law, $D^fD^g=D^{f*g}$, Möbius-dilation form of the tangent.
 
 ---

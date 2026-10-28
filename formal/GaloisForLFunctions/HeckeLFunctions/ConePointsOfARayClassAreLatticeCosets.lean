@@ -137,7 +137,7 @@ theorem exists_rayClassIdeal_iff {x : ℝ} {γ : 𝓞 K} (hγ0 : algebraMap (�
         ⟨idealUnit h𝔟0, (idealUnit_mem_idealGroup_iff 𝔪 h𝔟0).mpr h𝔟⟩)⁻¹) h1
       simp only [mul_inv_cancel_right] at h2
       exact h2.symm
-    · rw [hI, map_mul, Nat.cast_mul] at hx
+    · rw [hI, map_mul, Nat.cast_mul, mul_comm] at hx
       exact le_of_mul_le_mul_right hx hN𝔟
 
 end GaloisForLFunctions.HeckeLFunctions

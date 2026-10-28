@@ -30,17 +30,17 @@ and their signed balance with the pole — expressed through one two-pole Chebys
 
 | Programme | Connection |
 |---|---|
-| [arithmetic-positivity-theory](../arithmetic-positivity-theory/README.md) | Source families; Weil–Markov–pole form; grid-tent transfer of AIP windows |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Autocorrelation constraints, blind models |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Finite identities vs uniform payment; nine moduli seen from the sieve side |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Valuations, divisor Gram tools; sign-blindness of period forms |
-| [ArithmeticCriticalityTheory](../ArithmeticCriticalityTheory/README.md) | Gauges, ground-state representations, zero form, light-cone law |
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Graded ledger → lag rate → width; odd windows transfer to $P_v$ |
-| [ArithmeticCompensationTheory](../ArithmeticCompensationTheory/README.md) | Raw comb energy is $\sim4e^{2r}$ (sharp); translation/resolvent of the comb |
-| [SignedArithmeticEnergyIncidence](../SignedArithmeticEnergyIncidence/README.md) | Sine-train capacities; local allocation with frustration |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Product pairs are the only frustrating edges; one square per tower |
-| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md), [SignedSuccessorArithmetic](../SignedSuccessorArithmetic/README.md) | Signed form vs absolute majorant; which observations keep orientation |
-| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md) | Close prime pairs = height-averaged prime-ratio correlations (the replacement hypothesis) |
+| arithmetic-positivity-theory | Source families; Weil–Markov–pole form; grid-tent transfer of AIP windows |
+| BiScaleUncertainty | Autocorrelation constraints, blind models |
+| TransHorizonIncidenceMechanics | Finite identities vs uniform payment; nine moduli seen from the sieve side |
+| BezoutValuationIncidence | Valuations, divisor Gram tools; sign-blindness of period forms |
+| ArithmeticCriticalityTheory | Gauges, ground-state representations, zero form, light-cone law |
+| SquareRootThreshold | Graded ledger → lag rate → width; odd windows transfer to $P_v$ |
+| ArithmeticCompensationTheory | Raw comb energy is $\sim4e^{2r}$ (sharp); translation/resolvent of the comb |
+| SignedArithmeticEnergyIncidence | Sine-train capacities; local allocation with frustration |
+| ArithmeticOrientationTheory | Product pairs are the only frustrating edges; one square per tower |
+| ArithmeticOrientationGeometry, SignedSuccessorArithmetic | Signed form vs absolute majorant; which observations keep orientation |
+| TransThresholdPairCorrelation | Close prime pairs = height-averaged prime-ratio correlations (the replacement hypothesis) |
 | Others (ACCE, SSIC, ACS) | Extension of local certificates; signed info across scales; effectivity |
 
 Three levels must stay separate: comparison of scalar weights, an integrated energy inequality,
@@ -152,6 +152,10 @@ $A$ at a progression of lags. *Resonant direction*: train of disjoint bump copie
 14. **Overlapping strips of 2 and 3.** Wide and harmonic folds pay both atoms through $r=23/40$ with
     $(1/62)\int_{S_2}F^2$ spare; **odd-part payment ends before $\log2$** (linear profile counterexample,
     quotient $\to12-16\log2<\sqrt2\log2$).
+    **Nine-modulus window.** At $r=2\log2$ the prime powers among the relevant shifts $[2,15]$ are
+    exactly the nine moduli, so prime charge and comb energy reduce to them with zero error. From
+    $r=23/40$ on, smooth odd tests separate $\zeta$ from the Liouville-twisted weight (Catalan pair
+    $(8,9)$ carries opposite signs; Liouville ground eigenvalue $<-3/10$ and antitone).
 15. **Global shared-surplus allocation.** Light cone shares the pool; every other atom is charged to
     its strip mass $m_n(F)$. What remains is paying strip masses — the prime–polar problem.
 
@@ -216,25 +220,22 @@ $A$ at a progression of lags. *Resonant direction*: train of disjoint bump copie
 
 ## 5. Pillar theorems
 
-1. Lattice skeleton positive (`skeletonEnergy_nonneg`, `totalLatticeCrossingKernel_pos_iff`).
-2. Atom vs pole and the unpaid axis (`totalAntiDiagonalKernel_pos_forall_iff`,
-   `totalAntiDiagonalKernel_pos_imp_near_axis`, `forall_logConcave_collarAtomMass_lt_iff`,
-   `exists_collarAtomMass_lt_collarPolarMass_shiftedGroundState_iff`).
-3. Each atom pays its own strip; odd-part-only payment fails at the first prime
+1. **Lattice skeleton positive** (`skeletonEnergy_nonneg`, `totalLatticeCrossingKernel_pos_iff`).
+2. **Atom vs pole; the unpaid axis; nine moduli** (`totalAntiDiagonalKernel_pos_forall_iff`,
+   `totalAntiDiagonalKernel_pos_imp_near_axis`, `forall_logConcave_collarAtomMass_lt_iff`).
+3. **Each atom pays its own strip; odd-part payment fails at the first prime**
    (`two_mul_primePowerShift_le_stripSurplus`, `not_forall_oddPart_le_stripSurplus_logTwo`).
-4. Odd positivity past the first prime (`fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`);
-   two-prime strips through $23/40$ (`two_mul_primeTwoThreeShifts_le_stripSurplus_twentyThreeFortieths`).
-5. Global allocation is RH (`fullZeroForm_eq_incidenceLedger`, `riemannHypothesis_iff_globalIncidenceAllocation`).
-6. Light cone and capacity (`exists_squareRoot_lightCone_allocation`, `exists_payableOddPartFamily_log_lower_bound`,
-   `sum_le_of_isPayableOddPartFamily`, `exists_bipolarEdgeTent_signed_thinBand_sharing_fails`).
-7. Tower laws and twins (`sub_one_mul_twistedTowerCharge_le`, `geoLagCharge_alternatingTrain_eq`).
-8. Chebyshev ledger and source rigidity (`sum_vonMangoldt_sub_polar_eq_chebyshev`,
-   `sum_vonMangoldt_sub_polar_eq_criticalScalePrefix`, `eq_of_lagPrefix_eq`).
-9. Spectral symbol (`chebyshev_pairing_eq_spectral`, `chebyshev_pairing_ge_of_symbol_ge`).
-10. Reflected-prime/polar ledger (`fullZeroForm_eq_reflectedPrimePolarLedger`,
-    `reflectedPrimePolarCost_eq_chebyshevTwoPoleDefect_Ioc`, `gradedIncidenceAllocation_half_seventyFive`).
-11. Bump bridge (`tendsto_gaugeArchJump_singleBump_div_mul_log`,
-    `tendsto_calibratedSignedJumpEnergy_latticeBumpProfile_netAtom`).
+4. **Odd positivity past the first prime** (`fullZeroForm_ge_of_odd_support_le_threeHundredSixtyTwoThousandths`).
+5. **Global allocation is RH** (`fullZeroForm_eq_incidenceLedger`, `riemannHypothesis_iff_globalIncidenceAllocation`).
+6. **Light cone and logarithmic capacity** (`exists_squareRoot_lightCone_allocation`, `sum_le_of_isPayableOddPartFamily`).
+7. **Tower laws read the sign of $A(\log p)$** (`sub_one_mul_twistedTowerCharge_le`, `geoLagCharge_alternatingTrain_eq`).
+8. **Chebyshev ledger, source rigidity, spectral symbol** (`sum_vonMangoldt_sub_polar_eq_chebyshev`,
+   `eq_of_lagPrefix_eq`, `chebyshev_pairing_eq_spectral`).
+9. **Reflected-prime/polar ledger at rate ½** (`fullZeroForm_eq_reflectedPrimePolarLedger`,
+   `gradedIncidenceAllocation_half_seventyFive`).
+10. **Bump bridge** (`tendsto_calibratedSignedJumpEnergy_latticeBumpProfile_netAtom`).
+11. **Liouville selectivity from $23/40$** (`smooth_odd_selectivity_of_ge_twentyThreeFortieths`,
+    `nineModulusCollar_selectivity_package`).
 
 ---
 
@@ -287,18 +288,11 @@ $A$ at a progression of lags. *Resonant direction*: train of disjoint bump copie
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: pair kernel and classifications (lattice, anti-diagonal, integrated gauge families); odd fold,
-micro-fold Harnack, Schur lending, curved/quartic surplus potentials; shared-surplus allocation
-(shells, chains, light cone, capacity); exact ledger and graded forms; translate calculus (tower,
-bi-tower, resonant/alternating/bi-lattice trains, divisor-lattice Gram); Chebyshev ledger (lag Abel
-summation, calibrations, source rigidity, ladder, quadratic gap, Euler comb payment, spectral
-symbol); continuum and bump bridges.
-
-To build: a joint budget for all strips + pole + remainder; a lower bound on the signed spectral
-symbol; a compensated correlation kernel with a Schur bound; a signed first-power prime–polar
-estimate with half-power weights.
+A joint budget for all strips + pole + remainder; a lower bound on the signed spectral symbol; a
+compensated correlation kernel with a Schur bound; a signed first-power prime–polar estimate with
+half-power weights.
 
 ---
 

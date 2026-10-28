@@ -26,19 +26,19 @@ $\Lambda$ from each single-index perturbation.
 
 | Programme | What SSIC prices there |
 |---|---|
-| [SquareRootThreshold](../SquareRootThreshold/README.md) | Lattice models, Nyquist laws, visibility witnesses, width dictionary |
-| [ArithmeticCriticalityTheory](../ArithmeticCriticalityTheory/README.md) | Bounded-aperture certificates; $\mu(A)$ sign vs magnitude; two-aperture ratio |
-| [BiScaleUncertainty](../BiScaleUncertainty/README.md) | Node-critical blind cones; packet rates; window-extreme twist blindness |
-| [TransHorizonIncidenceMechanics](../TransHorizonIncidenceMechanics/README.md) | Parity collisions; finite observer vs uniform payment; quarter law |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Cross-scale Gram readings in the exponent unit $\theta$ |
-| [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Allocation and comb readings: signs vs sizes |
-| [ArithmeticContinuationAndCriticalEnergy](../ArithmeticContinuationAndCriticalEnergy/README.md) | Pointwise vs averaged vs horizon-uniform budgets; rate equalities |
-| [ArithmeticCompensationTheory](../ArithmeticCompensationTheory/README.md) | Whether energy changes preserve signed information |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Formal signature criteria vs effectivity data |
-| [SignedArithmeticEnergyIncidence](../SignedArithmeticEnergyIncidence/README.md) | Information lost by absolute majorants |
-| [TransThresholdPairCorrelation](../TransThresholdPairCorrelation/README.md) | Two-thirds barrier = resolution limit of the reading $(\hat A,N)$ |
-| [ArithmeticOrientationTheory](../ArithmeticOrientationTheory/README.md) | Builds orientation-faithful readings; SSIC refutation theorem = reading entry of the width dictionary |
-| [arithmetic-positivity-theory](../arithmetic-positivity-theory/README.md) | Complete source families; readings must keep what their receiver needs |
+| SquareRootThreshold | Lattice models, Nyquist laws, visibility witnesses, width dictionary |
+| ArithmeticCriticalityTheory | Bounded-aperture certificates; $\mu(A)$ sign vs magnitude; two-aperture ratio |
+| BiScaleUncertainty | Node-critical blind cones; packet rates; window-extreme twist blindness |
+| TransHorizonIncidenceMechanics | Parity collisions; finite observer vs uniform payment; quarter law |
+| BezoutValuationIncidence | Cross-scale Gram readings in the exponent unit $\theta$ |
+| ArithmeticIncidencePositivity | Allocation and comb readings: signs vs sizes |
+| ArithmeticContinuationAndCriticalEnergy | Pointwise vs averaged vs horizon-uniform budgets; rate equalities |
+| ArithmeticCompensationTheory | Whether energy changes preserve signed information |
+| ArithmeticCastelnuovoSeveri | Formal signature criteria vs effectivity data |
+| SignedArithmeticEnergyIncidence | Information lost by absolute majorants |
+| TransThresholdPairCorrelation | Two-thirds barrier = resolution limit of the reading $(\hat A,N)$ |
+| ArithmeticOrientationTheory | Builds orientation-faithful readings; SSIC refutation theorem = reading entry of the width dictionary |
+| arithmetic-positivity-theory | Complete source families; readings must keep what their receiver needs |
 
 Module `RHTower/DeciderBarrier.lean` contains related collision tools.
 
@@ -145,26 +145,18 @@ not resolve payment; window extremes are twist-invariant.
 
 ## 5. Pillar theorems
 
-1. Dichotomy (`not_resolves_of_separating_collapse`, `forall_not_of_resolves_of_invisible`,
-   `not_riemannHypothesis_of_resolves_of_invisible`).
-2. Floor theorem (`resolutionLimit_eq_of_mem_shadow_of_max`).
-3. Aperture certificate blind in every unit (`resolutionLimit_width_aperturePositivity`,
-   `theFloorIsUnitIndependent`, `resolutionLimit_width_fullPositivity`).
-4. Depth = complete dilation invariant (`dilationEquiv_iff_sdDepth_eq`, `resolutionLimit_sdDepth_scaleDepthReading`).
-5. Square-root precision law (`theDeficitBudgetLaw`, `sInf_rateSet`).
-6. Magnitudes faithful where signs are blind (`depthFromBands_eq`, `resolutionFloor_eq_resolutionLimit_bandPairReading`,
-   `threeBandsDefeatTheMass`, `theDichotomyOfSignAndMagnitude`).
-7. Hiding laws (`theReachLaw`, `theFreeRegimeIsSharp`).
-8. Refutation finite, confirmation not (`riemannHypothesis_iff_no_radiusReading_refutes`,
-   `theNodeFaceAsymmetry`, `theReductionDichotomy`).
-9. Cofinal rate invariance (`rateBoundsOn_eq_rateBounds`, `not_certifies_rateBoundsBelow`).
-10. Pronic Gram limits (`resolutionLimit_typeIIGramReading_eq_two`, `centredPrimeRow_bypasses_resolutionLimit_two`).
-11. Band recipe (`riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`).
-12. Parity fatality (`strictlyFatalAt_evenFlip_iff_pole_and_evenPart`, `strictlyFatalAt_compl_residueFlip_half_iff`).
-13. Rate readings (`five_rate_currencies_of_zeta`, `le_resolutionFloor_width_deficitAndCount`).
-14. Counterexample design (`dilutedReading_iff_bandEnergy_le`, `counterexample_primeSide_obstructions`).
-15. Policies (`certifies_sdDepth_adaptiveReading_iff`, `resolutionLimit_sdDepth_chebyshevSchedule_eq_half`).
-16. Comb charge (`resolutionInterval_combChargeVal_scalarCombEnergyReading`, `sq_combCharge_le_mass_mul_horizonResidualEnergy`).
+1. **Collapse–resolution dichotomy and floor theorem** (`not_resolves_of_separating_collapse`,
+   `not_riemannHypothesis_of_resolves_of_invisible`, `resolutionLimit_eq_of_mem_shadow_of_max`).
+2. **Aperture certificates are blind in every unit** (`resolutionLimit_width_aperturePositivity`, `theFloorIsUnitIndependent`).
+3. **Depth = complete dilation invariant** (`dilationEquiv_iff_sdDepth_eq`).
+4. **Square-root precision law** (`theDeficitBudgetLaw`, `sInf_rateSet`).
+5. **Magnitudes are faithful where signs are blind** (`resolutionFloor_eq_resolutionLimit_bandPairReading`,
+   `theDichotomyOfSignAndMagnitude`).
+6. **Refutation is finite, confirmation is not** (`riemannHypothesis_iff_no_radiusReading_refutes`, `theNodeFaceAsymmetry`).
+7. **Pronic Gram limits** (`resolutionLimit_typeIIGramReading_eq_two`, `centredPrimeRow_bypasses_resolutionLimit_two`).
+8. **Band recipe for $\zeta$** (`riemannHypothesis_iff_forall_zetaTwoApertureRatio_le_one`).
+9. **Rate readings of $\zeta$ = width** (`five_rate_currencies_of_zeta`).
+10. **Parity fatality window** (`strictlyFatalAt_compl_residueFlip_half_iff`).
 
 ---
 
@@ -208,13 +200,10 @@ and bands against unknowns (one index per unknown).
 
 ---
 
-## 8. Tools
+## 8. Tools to build
 
-Built: readings, shadows, collapses, `Invisible` closure lemmas; refinement/factorisation; limits,
-floors, intervals; witness families (lattices, crystals, dilution, node collapses, imported parity
-pairs); band recipes and precision budget; reach law; cofinal rate readings; pronic Gram readings in
-$\theta$; two-aperture ratio for $\zeta$; fatality–neutrality calculus; rate readings for $\zeta$; counterexample
-design; policies; incidence-ledger comb shadows.
+Exhaustive repair classification for a specified reading class; a scale-matched schedule for $\zeta$
+with its precision cost; rate readings for non-convex profiles.
 
 ---
 
