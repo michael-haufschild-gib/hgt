@@ -59,7 +59,7 @@ theorem card_idealSet_norm_le_eq (J : (Ideal (𝓞 K))⁰) (T : ℝ) :
   refine Nat.card_congr ((Equiv.subtypeSubtypeEquivSubtypeInter (· ∈ idealSet K J)
     fun x => mixedEmbedding.norm x ≤ T).trans (Equiv.subtypeEquivRight fun x => ?_))
   simp only [mem_idealSet, mem_inter_iff, mem_setOf_eq, SetLike.mem_coe, mem_idealLattice,
-    FractionalIdeal.coe_mk0, FractionalIdeal.mem_coe, FractionalIdeal.mem_coeIdeal]
+    FractionalIdeal.coe_mk0, FractionalIdeal.mem_coeIdeal]
   constructor
   · rintro ⟨⟨hx, a, ha, rfl⟩, hT⟩
     exact ⟨⟨hx, hT⟩, _, ⟨a, ha, rfl⟩, rfl⟩
@@ -123,9 +123,16 @@ theorem card_class_mul_torsionOrder_eq {C : ClassGroup (𝓞 K)} {J : (Ideal (�
     card_idealSet_norm_le_eq, setOf_norm_le_eq_smul hT]
 
 /-- Dividing a lattice-count estimate by `covol · torsion`. -/
-theorem abs_sub_le_of_abs_mul_sub_le {X a T v q C₁ E : ℝ} (hq : 0 < q) (hT : T = a * q / v)
-    (hv : 0 < v) (h : |X * v - T * q| ≤ C₁ * E) : |X - a * q / v * 1| ≤ C₁ / v * E := by
-  sorry
+theorem abs_sub_le_of_lattice_bound {X NJ vol cov tor s C₁ sα NJα : ℝ} (hcov : 0 < cov)
+    (htor : 0 < tor) (h : |X * tor * cov - s * NJ * vol| ≤ C₁ * (sα * NJα)) :
+    |X - NJ * vol / (cov * tor) * s| ≤ C₁ * NJα / (cov * tor) * sα := by
+  have hD : 0 < cov * tor := mul_pos hcov htor
+  have heq : X - NJ * vol / (cov * tor) * s = (X * tor * cov - s * NJ * vol) / (cov * tor) := by
+    field_simp
+  rw [heq, abs_div, abs_of_pos hD, div_le_iff₀ hD]
+  calc |X * tor * cov - s * NJ * vol| ≤ C₁ * (sα * NJα) := h
+    _ = C₁ * NJα / (cov * tor) * sα * (cov * tor) := by
+        field_simp
 
 /-- **Weber's theorem for one ideal class**: `#{I ∈ C : N I ≤ s} = a_C s + O(s^{1−1/n})`. -/
 theorem exists_abs_card_class_sub_le (C : ClassGroup (𝓞 K)) :
@@ -160,7 +167,7 @@ theorem exists_abs_card_class_sub_le (C : ClassGroup (𝓞 K)) :
       Real.mul_rpow hs0.le (by positivity)]
   have h := hC₁ _ ht1
   rw [htn, htn1, ← card_class_mul_torsionOrder_eq hJ hs0] at h
-  sorry
+  exact abs_sub_le_of_lattice_bound hcov0 htor0 h
 
 /-- **Weber's theorem**: `I_K(s) = c_K s + O(s^{1−1/n})`, `c_K` the residue of `ζ_K`. -/
 theorem exists_abs_card_norm_le_sub_le :

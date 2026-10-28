@@ -43,22 +43,35 @@ private theorem firstHaarTranslationOrbit_eq (j : ℕ) :
       logCellEmbedding (logCellDyadicOrbit (j, some (1 : ℕ+))) :=
   (sqrt_haarMass_smul_logCellEmbedding_detail_pow 1 j).symm
 
+/-- The actual translated Haar sources form an infinite orthogonal family of fixed positive mass. -/
+theorem inner_firstHaarTranslationOrbit (j k : ℕ) :
+    inner ℂ (firstHaarTranslationOrbit j) (firstHaarTranslationOrbit k) =
+      if j = k then (haarMass 1 : ℂ) else 0 := by
+  have hU : inner ℂ
+      (logCellEmbedding (logCellDyadicOrbit (j, some (1 : ℕ+))))
+      (logCellEmbedding (logCellDyadicOrbit (k, some (1 : ℕ+)))) =
+      inner ℂ (logCellDyadicOrbit (j, some (1 : ℕ+)))
+        (logCellDyadicOrbit (k, some (1 : ℕ+))) :=
+    LinearIsometry.inner_map_map logCellIsometry _ _
+  rw [firstHaarTranslationOrbit_eq, firstHaarTranslationOrbit_eq,
+    inner_smul_left, inner_smul_right, Complex.conj_ofReal, hU,
+    orthonormal_iff_ite.mp orthonormal_logCellDyadicOrbit]
+  by_cases hjk : j = k
+  · subst k
+    simp only [ite_true, mul_one, ← Complex.ofReal_mul, ← pow_two,
+      Real.sq_sqrt (haarMass_pos (le_refl 1)).le]
+  · simp only [Prod.mk.injEq, hjk, false_and, if_false, mul_zero]
+
 /-- Distinct levels retain a fixed positive physical L² separation. -/
 theorem dist_firstHaarTranslationOrbit_sq {j k : ℕ} (hjk : j ≠ k) :
     dist (firstHaarTranslationOrbit j) (firstHaarTranslationOrbit k) ^ 2 = 2 * haarMass 1 := by
-  have hidx : (j, some (1 : ℕ+)) ≠ (k, some (1 : ℕ+)) := by
-    intro h; exact hjk (congrArg Prod.fst h)
-  have hi := orthonormal_iff_ite.mp orthonormal_logCellDyadicOrbit
   have hnorm := inner_self_eq_norm_sq (𝕜 := ℂ)
-    (logCellDyadicOrbit (j, some (1 : ℕ+)) - logCellDyadicOrbit (k, some (1 : ℕ+)))
-  simp only [inner_sub_left, inner_sub_right, hi, ite_true, if_neg hidx, if_neg hidx.symm] at hnorm
-  have hnorm' : ‖logCellDyadicOrbit (j, some (1 : ℕ+)) -
-      logCellDyadicOrbit (k, some (1 : ℕ+))‖ ^ 2 = 2 := by
-    simpa using hnorm.symm
-  rw [dist_eq_norm, firstHaarTranslationOrbit_eq, firstHaarTranslationOrbit_eq,
-    ← smul_sub, ← map_sub, norm_smul, norm_logCellEmbedding_apply, mul_pow,
-    Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _),
-    Real.sq_sqrt (haarMass_pos (le_refl 1)).le, hnorm', mul_comm]
+    (firstHaarTranslationOrbit j - firstHaarTranslationOrbit k)
+  simp only [inner_sub_left, inner_sub_right, inner_firstHaarTranslationOrbit,
+    ite_true, if_neg hjk, if_neg hjk.symm, sub_zero, zero_sub,
+    Complex.sub_re, Complex.neg_re, Complex.ofReal_re] at hnorm
+  rw [dist_eq_norm]
+  linarith only [hnorm]
 
 theorem firstHaarTranslationOrbit_injective : Function.Injective firstHaarTranslationOrbit := by
   intro j k he
@@ -118,4 +131,5 @@ end GaloisForLFunctions.SignedArithmeticHodgeTheory
 
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.isCompact_singleLevelGammaDetailEnvelope
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.not_totallyBounded_firstHaarTranslationOrbit
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.inner_firstHaarTranslationOrbit
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.levyEnergy_firstHaarTranslatedProfile

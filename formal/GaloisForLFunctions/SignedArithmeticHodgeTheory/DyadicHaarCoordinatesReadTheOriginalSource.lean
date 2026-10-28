@@ -75,8 +75,7 @@ theorem halfLineExtend_haarAtom_pow_coeFn (a : ℕ+) (j : ℕ) :
     (halfLineExtend ((halfLineRightShift (Real.log 2) ^ j) (haarAtom a)) : ℝ → ℂ) =ᵐ[volume]
       fun x => (haarProfile a (x - j * Real.log 2) : ℂ) := by
   induction j with
-  | zero => simpa only [pow_zero, one_apply, Nat.cast_zero, zero_mul, sub_zero] using
-      halfLineExtend_haarAtom_coeFn a
+  | zero => simpa using halfLineExtend_haarAtom_coeFn a
   | succ j ih =>
     rw [pow_succ', mul_apply_eq_comp]
     refine (halfLineExtend_rightShift_coeFn (Real.log_nonneg (by norm_num)) _).trans ?_
