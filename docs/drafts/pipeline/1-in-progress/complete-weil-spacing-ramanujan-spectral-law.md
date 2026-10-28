@@ -241,10 +241,11 @@ The manifest `/tmp/WeilRamanujan-draft-manifest.json` records the active
 forty-two-module graph. Each verified scratch endpoint has a retained
 transitive axiom report in `logs/complete-weil-spacing-axioms-2026-10-28.log`;
 only `propext`, `Classical.choice`, and `Quot.sound` are allowed.
-Twenty-two support modules are scratch verified and installed; twenty-eight
+Twenty-three support modules are scratch verified and installed; twenty-nine
 retained endpoint axiom reports are clean. First required oleans are built
-through module twenty-two. All twenty-two are imported by their owner umbrellas;
-no umbrella was compiled. The complete mean-zero center-row assembly is under check. The SSHA density increment bound is documented in its README.
+through module twenty-two; the complete mean-zero center-row dependency is
+being generated. These twenty-three modules are imported by their owner
+umbrellas; no umbrella was compiled. The SSHA density increment bound is documented in its README.
 Final installed-source checks without output generation remain outstanding.
 The three main endpoints are still unchecked:
 
@@ -285,7 +286,7 @@ The superseded owned center modules and their build artifacts were removed.
 | 20 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper` | Scratch verified; installed; first required olean built |
 | 21 | `HTGeometry/FiniteShiftedHarmonicAbelBounds` | Scratch verified; installed; first required olean built |
 | 22 | `RenormalizedArithmeticPotentialTheory/ThePoleMomentsHaveQuadraticDilationError` | Scratch verified; installed; first required olean built |
-| 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Unchecked scratch |
+| 23 | `RenormalizedArithmeticPotentialTheory/TheMeanZeroCenterRowsAreUniformlyBounded` | Scratch verified; installed |
 | 24 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionHasBoundedPoleResidual` | Unchecked scratch |
 | 25 | `HTGeometry/SymmetricFormGroundProjection` | Unchecked scratch |
 | 26 | `HTGeometry/HermitianLowerSpectralWindows` | Unchecked scratch |
@@ -306,7 +307,8 @@ The superseded owned center modules and their build artifacts were removed.
 | 41 | `RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | Unchecked scratch |
 | 42 | `RenormalizedArithmeticPotentialTheory/TheSimpleCompleteWeilEigenlinesConvergeToRamanujanLines` | Unchecked scratch |
 
-The shifted Abel bounds, periodic interval-sum bound, and quadratic two-pole
-product error now pass Lean. Next unresolved checks: complete center-row and
-two-pole matrix assemblies, projection/coercivity, then spectral assembly.
+The shifted Abel bounds, complete mean-zero center-row square bound, and
+quadratic two-pole product error now pass Lean. Next unresolved checks: the
+ground center residual, two-pole matrix assembly, projection/coercivity, and
+spectral assembly.
 No unchecked draft is a proved theorem or a completed contribution.
