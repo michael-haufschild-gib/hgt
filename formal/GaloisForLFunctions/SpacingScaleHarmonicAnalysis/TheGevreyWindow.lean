@@ -532,7 +532,7 @@ theorem gevrey_lip_tendsto {κ : ℕ → ℝ} {s : ℝ} (hs : 0 ≤ s) {B : ℕ}
             (Real.log (Real.log (κ (n * B))) ^ s)⁻¹
           ≤ B * (((n * B : ℕ) : ℝ) / κ (n * B) / Real.log (Real.log (κ (n * B))) ^ s)⁻¹ * 1 :=
             mul_le_mul_of_nonneg_left this (by positivity)
-        _ = _ := by simp only [Function.comp, mul_one]
+        _ = _ := by rw [mul_one]; rfl
   have := ((tendsto_const_nhds (x := M' 0 * A' 1)).add
     ((hkn0.pow 2).const_mul (emConst M' (fun q => A' (q + 1)) 0))).add (hinv.const_mul (M' 1))
   simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero] at this

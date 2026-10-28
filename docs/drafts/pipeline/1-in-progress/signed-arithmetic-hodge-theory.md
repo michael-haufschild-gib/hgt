@@ -12,11 +12,13 @@ Actual real Weil tests and their source-graph completion; proved positive arithm
 and Weil projections; full mixed pairing and both poles; Ramanujan prime modes; canonical critical
 source energy. Programme: formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/.
 
-## First research question
+## Certified section removal
 
-Determine the exact optimal energy after correction by an arithmetic positive section.
-Extract quantitative distance, mixed-charge and nested-removal laws. Instantiate them on the
-actual unbounded fixed-log-cell carrier, preserving its residual radical.
+The actual unbounded fixed-log-cell carrier has exact trial-energy minimization,
+quadratic stationarity error bounds, one operator budget for a whole coefficient
+family, and exact retention of the full Weil radical. Modules 1–3 formalize
+these statements. Small stationarity on an exhaustive arithmetic family and
+nonnegativity of the residual remain separate research problems.
 
 ## Method and proof obligations
 
@@ -32,19 +34,18 @@ Foundational exposition: programme README.md.
 Working evidence and continuation state: logs/signed-arithmetic-hodge-research.log.
 No proof is classified as complete until formalized.
 
-## Source-compatible scaling question
+## Source-compatible scaling boundary
 
-Determine how exact Weil translation isometry interacts with the complete source graph norm.
-The source mass weight is cosh(u/2)/Phi(u), so compact-source translations may retain their
-Weil value while their graph size diverges. Seek a quantitative escape theorem for every
-nonzero compact test, with exact pole scaling and a positive aperture-dependent comparison.
-This tests whether dyadic coarse renormalization can use a single uniform graph topology.
+Every nonzero compact source has graph growth at every exponential rate under
+translation, while its full Weil value stays fixed. Modules 4–5 prove this
+boundary and its positive replacement: uniform two-sided graph comparisons on
+explicitly bounded source windows and translation ranges.
 No blanket claim of unboundedness of each fixed translation is made without proof.
 
-## Scalar renormalization question
+## Scalar renormalization boundary
 
-For a nonzero compact source f, combine full-Weil translation invariance and
-all-rate source-graph escape. Seek a bound, uniform in every scalar amplitude a,
+For every nonzero compact source f, module 4 proves the bound, uniform in
+every scalar amplitude a,
 
 c exp(B |t|) |W(a tau_t f)| <= |W(f)| ||a tau_t f||_graph^2.
 
@@ -54,20 +55,19 @@ A positive replacement uses two-sided comparisons on explicitly bounded source
 windows and bounded translation ranges. It does not assert a global bounded
 action of every fixed translation on the complete graph.
 
-## Completed aperture transport target
+## Completed aperture transport
 
-Use the existing CHMD apertureGraphCore and apertureGraphCompletion. The proved
-bounded-window estimate should extend literal compact-source translation to a
-bounded linear map from the completed aperture a into the completed aperture
- a+|t|. On smooth representatives the map must be the original translated test;
-on the completion it must preserve the full mixed Weil form and transport both
-pole coordinates by their exact exponential factors. Constants remain dependent
-on the source aperture and translation range.
+Module 6 uses the existing CHMD apertureGraphCore and apertureGraphCompletion
+to extend literal compact-source translation to an injective bounded linear map
+from completed aperture a into completed aperture a+|t|. It preserves the full
+mixed Weil form and transports all strip Fourier readouts, including both pole
+coordinates with their exact exponential factors. Constants depend on source
+aperture and translation range.
 
 Do not identify the signed-source radical with the full Weil radical. The
 CHMDQuotientWeilForm two-pole classification remains part of the source data.
 
-## Quantitative growing-mode Gram target
+## Quantitative growing-mode Gram budget
 
 For the actual normalized Ramanujan pole profiles v_m, the formalized uniform finite
 family estimate is
@@ -85,25 +85,26 @@ Prime-matrix residual, modal complement and Gamma/pole comparison remain distinc
 
 ## Conductor-explicit prime residual target
 
-For a prime p and horizon y>=1, the reciprocal Mangoldt mass on p-powers
-beyond y should be bounded by 2 log(p)/y. Complete geometric mass minus the
-first floor(log_p y) powers proves this directly. Summing only over conductor
-primes gives the proposed normalized correction bound
+Module 8 proves that the reciprocal Mangoldt mass on p-powers beyond y>=1
+is at most 2 log(p)/y. Subtracting the first floor(log_p y) powers from the
+complete geometric bound proves this directly. Summing conductor primes gives
+the formalized normalized correction bound
 
 4 sqrt(phi(m)) log(m) / y. The squarefree conductor part divides m,
 so sum_(p|m) log(p)<=log(m).
 
 With e(y)=MertensSum(y)-log(y)+EulerGamma and
-f(y)=|e(y)|+1/y, the literal normalized Ramanujan row residual should satisfy
+f(y)=|e(y)|+1/y, module 9 proves the literal normalized Ramanujan row residual bound
 
 |residual_m(N,n)| <= sqrt(phi(m)) (1+4 log(m)) f(floor(N/n))/sqrt(n).
 
-This would give one explicit finite-family squared residual budget
+It gives the formalized finite-family squared residual budget
 (sum_m phi(m)(1+4 log(m))^2) * sum_(n<=N) f(floor(N/n))^2/n.
 The harmonic-quotient theorem proves the second factor is o(log N).
 The input contains only finite prime arithmetic and the proved Mertens remainder;
-no conductor-uniform convergence or complement sign is assumed. These estimates
-remain research targets until formalized. They do not identify a complete modal
+no conductor-uniform convergence or complement sign is assumed. Module 9,
+OneArithmeticRemainderControlsEveryRamanujanResidual, passes its final audit
+and has standard transitive axioms. The bounds do not identify a complete modal
 source or transfer Gamma and both poles.
 
 ## Horizon-uniform arithmetic error target

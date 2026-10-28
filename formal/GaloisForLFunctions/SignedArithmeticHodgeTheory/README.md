@@ -24,8 +24,8 @@ Three constructions supply concrete starting points.
   lower bound on the whole complement is false.
 * Ramanujan profiles give actual prime-matrix quasimodes and distinct spectral points for each
   fixed finite conductor packet. One explicit Gram budget controls arbitrary finite conductor
-  families. Prime residuals, a modal complement and comparison with Gamma and both poles remain
-  separate requirements.
+  families, and one arithmetic remainder controls their prime residuals with explicit conductor
+  cost. A modal complement and comparison with Gamma and both poles remain separate requirements.
 
 There is also a canonical nonnegative critical source energy. Its finiteness detects finite
 off-line support; its sharp smallness threshold detects RH. Known index costs bound it from
@@ -275,9 +275,54 @@ vector with one constant. The Gram cost is \((1+2\sum_{m\in S}m^2)/\log N\), wit
 family and horizon dependence explicit. For conductors at most \(M\), this cost is
 \(O(M^3/\log N)\).
 
-A source-compatible comparison must also control the matrix residual, continuous Gamma and
-polar images, and the orthogonal complement on the same growing family. The Gram estimate
-supplies none of those separate bounds. Choosing an arbitrarily slow diagonal sequence from
+The arithmetic row correction also has an explicit conductor cost. For positive row and
+complementary horizon \(n,y\),
+
+\[
+\left|\operatorname{corr}_{m,y}(n)
+ +(\log m+\operatorname{tameDifferent}(m))u_m(n)\right|
+\le\frac{4\sqrt{\phi(m)}\log m}{y},
+\qquad u_m(n)=\sqrt n\,v_m(n).
+\]
+
+Here \(\operatorname{corr}_{m,y}(n)\) is the literal upward and downward prime-row correction
+`poleProfileCorrection` from the exact prime-matrix action.
+[TheRamanujanCorrectionHasAnExplicitConductorCost](TheRamanujanCorrectionHasAnExplicitConductorCost.lean)
+proves the bound. The reciprocal Mangoldt tail on the powers of a prime \(p\) is at most
+\(2\log p/y\). Only conductor primes contribute, and their logarithms sum to at most
+\(\log m\). This pays the correction uniformly in every row, without relying on fixed-conductor
+tail convergence.
+
+The complete residual admits one shared arithmetic budget. Set
+
+\[
+\begin{aligned}
+b(y)&=\left|\sum_{t=1}^y\frac{\Lambda(t)}t-\log y+\gamma\right|+\frac1y,\\
+B_N&=\sum_{n=1}^N\frac{b(\lfloor N/n\rfloor)^2}{n},\\
+C_m&=\sqrt{\phi(m)}(1+4\log m),\\
+r_{m,N}&=P_Nv_{m,N}-(\log N-E_m)v_{m,N}.
+\end{aligned}
+\]
+
+Here \(P_N\) is the literal prime matrix and \(v_{m,N}\) is the profile restricted to
+\(1,\ldots,N\). For every finite positive-conductor family and every real coefficient vector,
+
+\[
+\left\|\sum_{m\in S}a_m r_{m,N}\right\|_2^2
+\le B_N\left(\sum_{m\in S}C_m^2\right)\left(\sum_{m\in S}a_m^2\right),
+\qquad \frac{B_N}{\log N}\longrightarrow0.
+\]
+
+[OneArithmeticRemainderControlsEveryRamanujanResidual](OneArithmeticRemainderControlsEveryRamanujanResidual.lean)
+proves this from the exact prime-row identity, the correction estimate, the square-root totient
+bound on normalized modes, and the proved Mertens theorem. The same \(B_N\) applies to every
+conductor and coefficient family. Growing-family control therefore has two explicit costs:
+\((1+2\sum m^2)/\log N\) for the Gram matrix and
+\(B_N\sum C_m^2/\log N\) for the residual. An absolute bound on \(B_N\) is a further target.
+This budget measures finite prime-matrix approximation in \(\ell^2\).
+
+A source-compatible comparison must also control continuous Gamma and polar images and the
+orthogonal complement on the same growing family. Choosing an arbitrarily slow diagonal sequence from
 fixed-mode limits does not establish source completeness. Distinct spectral labels also require
 comparison with the separation of their adjunction energies.
 
@@ -313,9 +358,9 @@ These are imported mathematical foundations, not new contributions of this progr
 
 The trial-correction estimates, whole-family operator bounds, exact radical retention and
 quantitative source-scale bounds with faithful completed-aperture transport, and simultaneous
-Ramanujan Gram budgets are formalized contributions of this programme. Complete signed block
-payment, growing-mode residual and complement transfer, and arithmetic upper control of critical
-work remain research targets.
+Ramanujan Gram and family-residual budgets are formalized contributions of this programme.
+Complete signed block payment, quantitative growing-family schedules with complement and
+Gamma/pole transfer, and arithmetic upper control of critical work remain research targets.
 
 ## Questions and open topics
 

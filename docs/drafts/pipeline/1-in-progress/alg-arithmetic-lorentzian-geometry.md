@@ -57,6 +57,16 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
   K★(φ,ε) = min(overlap bounds, 1/(A+2c_P√e), e^{2θ′(0)+κ_L+γ−ε−2}) ∈ [1e-4, 6e-4] for κ_L ≥ −2,
   ε ≤ 1/8 (vs c★ ≈ 1e-11).
   Mechanism: pole defect pays the pole (no tilt). Gap to Robin–Euler threshold = Chebyshev A.
+- TheSupportOfAMixedLorentzianPolynomialIsMConvex: exchange in Lorentzian forms (Q_ai, Q_jk > 0 ⇒
+  Q_aj or Q_ak > 0); mixed-Lorentzian supports are M-convex (induction: common variable → ∂_k;
+  coprime → ∂_{e_a+e_k} then common-variable exchange); mixed = coefficient class; products,
+  substitutions, derivatives, Euler product ∘ scale map Lorentzian in coefficient form.
+- RHIsReflectionPositivityOfTheCayleyLadder (topic 10 / Q4): Cayley ladder (ℓ(|i−j|)),
+  ℓ(n) = Re Σ m(2 − w^n − w^{−n}); reflection formula Q[c] = −2 Re Σ m p_c(w)p_c(w⁻¹) on Σc = 0;
+  shift = multiplication by w (reflected pairing invariant, evaluation conformal |w|²). ζ: RH ⇔
+  ladders NSD on primitive ⇔ ladders entrywise ≥ 0 (via corpus Li criterion); under RH Lorentzian;
+  2λ_n never → 0 (ladder dichotomy + subexp Li). 𝔽_q: ℓ(n) = 2(2g − Σβ^n), sign = sharp Weil bound,
+  reflection positivity ⇔ unitary; golden fails.
 - Topic 9 answered: RamanujanAndLorentzianMeetOnlyAtTheWeilBound (Lorentzian ⇒ a_1 ≥ d√q,
   Ramanujan ⇒ a_1 ≤ d√q; equality only for (1+√qT)^d; never at a prime; elliptic: Lorentzian ⇔
   a² ≥ 4p).
@@ -70,8 +80,9 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
 - Adapted (local-spacing) atomic families: widths c·log(1+1/n) cover fraction c of [0, log(N+1)];
   ratio 1 is their Nyquist rate; adapted Gram Metzler for c < 1 (Lean). Hodge index / TD_π at
   c < 1 open.
-- Mixed ⇒ coefficient Lorentzian (M-convex support of mixed-Lorentzian polynomials; Minkowski sums
-  of M-convex sets) — needed only to iterate products inside the coefficient class.
+- Topic 10, dynamical part: a reflection-positive functional built from the source (prime +
+  archimedean data) whose Cayley ladder is the Li ladder; candidate: KMS states of the Toeplitz
+  algebra of ℕ ⋊ ℕ^× (Laca–Raeburn window 1 ≤ β ≤ 2 ↔ critical strip of ζ(β−1)), reflection β ↦ 3 − β.
 
 ## Findings so far
 - Degree 2: Lorentzian = Hodge index (no gain); nef shift makes any finite Gram nonneg (trap).

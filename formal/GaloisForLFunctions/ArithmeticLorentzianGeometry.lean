@@ -16,6 +16,7 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHessianOfALorentzianP
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheMixedHessiansOfALorentzianPolynomialAreHyperbolic
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheLorentzianClassIsClosedUnderNonnegativeSubstitution
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheEulerProductOfLorentzianLocalFactorsIsLorentzian
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheSupportOfAMixedLorentzianPolynomialIsMConvex
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheClosureProducesExactlyTheLorentzianForms
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.RamanujanAndLorentzianMeetOnlyAtTheWeilBound
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheJensenPolynomialsOfXiSatisfyLaguerreOnTheHalfLine
@@ -47,8 +48,11 @@ count; isometric ladders, which hold their Hodge index only in the stability reg
 fixing by the archimedean place along the successor; Lorentzian polynomials —
 the Hessian and mixed-Hessian trickle-down (Alexandrov–Fenchel, Khovanskii–Teissier), closure
 under differentiation, nonnegative substitution and products, the Euler product closure at every
-nonnegative point, the characterization of its Hessians as exactly the Lorentzian forms, the rigidity of Ramanujan local factors at the Weil bound, and Laguerre's
-inequality on the half-line for the Jensen polynomials of `ξ`; the atomic
+nonnegative point, the M-convexity of mixed-Lorentzian supports (the mixed and coefficient classes
+coincide), the characterization of its Hessians as exactly the Lorentzian forms, the rigidity of
+Ramanujan local factors at the Weil bound, and Laguerre's inequality on the half-line for the
+Jensen polynomials of `ξ`; reflection positivity in Cayley coordinates, where RH is the
+negativity of the Li ladder on primitive vectors and equivalently its Metzler sign; the atomic
 intersection form of `ζ` — Metzler exactly up to the spacing, hyperbolic with `(TD_π)` and
 hyperbolic links at a fixed fraction of it — eventually in `N` at the fraction where the pole
 defect, through the multiplicative Hardy inequality, pays the pole — blind to sign twins where

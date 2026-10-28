@@ -7,10 +7,14 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.CompletedAperturesCarryTh
 
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.GrowingRamanujanFamiliesHaveAUniformGramBudget
 
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheRamanujanCorrectionHasAnExplicitConductorCost
+
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.OneArithmeticRemainderControlsEveryRamanujanResidual
+
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
 
 Certified signed residual calculus and faithful scale transport on the actual
 arithmetic source, with explicit graph growth under unbounded translation and
-quantitative Gram control for growing Ramanujan conductor families.
+quantitative Gram and prime-residual budgets for actual Ramanujan families.
 -/

@@ -27,3 +27,8 @@ RAPT Liouville separation, ACS `HaarCellCoarseSplitting`, SAHT translation invar
 
 ## Log
 - 2026-10-28 — created; README first draft written.
+- 2026-10-28 — Lean (checked, clean): PositivityAtEveryRootSelectsTheVonMangoldtWeight (selection at every root,
+  twin-blind impossibility); ThePoleHyperplaneIsTheHarmonicHyperplane (pole moments = harmonic sums; twins differ
+  only in prime form); ThePoleHyperplaneSeparatesTheFullWeilForms (gap-paid ζ bound; Liouville below ζ by uniform
+  margin; ζ not minimum of gauge orbit on hyperplane); TheConductorTwoIsTheFirstExcitation (E_m − E_1 ≥ 2log2,
+  equality iff m=2; hyperplane prime gap ≤ 2log2). Next: RG/Schur calculus; dyadic multiresolution + level-Toeplitz.

@@ -63,7 +63,9 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    exactly. For polynomials the mixed Hessians of a Lorentzian polynomial trickle down, so the
    class is closed under differentiation, nonnegative substitution and products: the Euler
    product of Lorentzian local factors, composed with any nonnegative scale map, has one positive
-   square at every nonnegative point. The closure is blind to the Euler point.
+   square at every nonnegative point. Signature along all nonnegative directions forces an
+   M-convex support, so this mixed class is the class of Lorentzian polynomials in coefficient
+   form. The closure is blind to the Euler point.
 4. **Realization.** What replaces Frobenius? Over `ℤ` no conformal map: dilations are boosts, and a
    ladder of isometric translates with decaying couplings holds its Hodge index only in the
    stability regime, so its positive square must come from the pole plane or from couplings that
@@ -73,7 +75,11 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    `𝔽_p` holds for it. The local polynomial itself is Lorentzian only at the Weil bound, hence
    never at a prime: Ramanujan and Lorentzian are opposite inequalities. Over `ℤ`, at a
    fixed fraction of the spacing, the archimedean self-energy distributed by the tilt of the prime
-   rows supplies `(TD_π)` and pays the polar dispersion.
+   rows supplies `(TD_π)` and pays the polar dispersion. In Cayley coordinates `w = 1 − 1/s` the
+   functional equation is the reflection `w ↦ 1/w̄` and multiplication by `w` acts on the Li
+   ladder: it preserves the reflected pairing, and is conformal with factor `|w_ρ|²` on the
+   evaluation at each zero. RH is reflection positivity of this ladder, and equivalently its Metzler
+   sign; the trickle-down content sits inside the sign.
 5. **The critical regime.** What happens at the spacing scale? The Metzler sign holds exactly up
    to overlap ratio one; the Hodge index, `(TD_π)` and hyperbolic links hold up to a fixed ratio
    `c★`, and eventually in `N` up to the fraction `K★(φ, ε)` at which the pole defect pays the
@@ -112,6 +118,7 @@ entries. Both depend on the coordinates.
 | Lorentzian polynomials, mixed derivatives `∂_{v_1}⋯∂_{v_m}`, mixed Hessians | Signature certificates of higher degree and their closure operations |
 | Isometric and conformal ladders `(λ^{min(i,j)} a_{|i−j|})` | Separate symmetries that can host the positive square from those that cannot |
 | Covered measure of an atomic family | Measure what a family of tests can approximate |
+| Cayley points `w_ρ = 1 − 1/ρ`, Li couplings `ℓ(n) = Re Σ_ρ m_ρ(2 − w_ρ^n − w_ρ^{−n})`, Cayley ladder `(ℓ(|i−j|))` | The functional equation as the reflection `w ↦ 1/w̄`; RH as reflection positivity |
 
 Real quadratic and Hermitian forms have distinct APIs. Complex test spaces retain conjugation
 and Hermitian inertia; a real calculation is not automatically its complex analogue.
@@ -173,6 +180,10 @@ construction it exposes.
   square along the pole vector.
 - The multiplicative Hardy inequality `(Σ√n x_n)² ≤ C_H(N²/log N)(D_N + |x|²)`: the pole defect
   controls the `V`-row and pays the pole term.
+- Exchange in a Lorentzian form (`Q_{ai}, Q_{jk} > 0 ⇒ Q_{aj} > 0` or `Q_{ak} > 0`) and the
+  M-convexity of mixed-Lorentzian supports.
+- The Cayley reflection formula `Q_K[c] = −2 Re Σ_a m_a p_c(w_a) p_c(w_a⁻¹)` on primitive vectors,
+  and depth-one probes `Q[e_n − e_0] = 2ℓ(0) − 2ℓ(n)`.
 
 ## Core theory
 
@@ -423,6 +434,32 @@ prime pairing of fixed-width atoms along a `p`-ladder does not decay: at lag `k 
 the integers within `e^{±w}` of `p^k`, of total weight `≍ wp^{k/2}`
 by the prime number theorem — the conformal weight of the pole plane, met by the pole term.
 
+[RHIsReflectionPositivityOfTheCayleyLadder](RHIsReflectionPositivityOfTheCayleyLadder.lean): over
+`ℤ` the role of Frobenius is played by multiplication by the Cayley point. For a weighted
+configuration `(m_a, w_a)`, the Cayley ladder is the Toeplitz ladder of the Li couplings
+`ℓ(n) = Re Σ_a m_a(2 − w_a^n − w_a^{−n})` (`cayleyLadder`). With `p_c(z) = Σ c_i z^i`, the
+reflection formula `Q_K[c] = Re Σ_a m_a(2(Σc)² − 2 p_c(w_a) p_c(w_a⁻¹))` (`qf_cayleyLadder_eq`)
+makes the ladder, on primitive vectors, `−2 Re` of the pairing of `p_c` with its reflection under
+`w ↦ 1/w̄`. On the unit circle the reflection is conjugation, and `−Q_K[c] = Σ_a 2m_a|p_c(w_a)|²`
+(`hasSum_evaluation_of_unitary`). The shift `c ↦ (0, c)` multiplies `p_c` by `z`
+(`cayleyPoly_shift`). It preserves every reflected pairing (`cayleyPairing_shift`), and it is
+conformal with factor `|w_a|²` for the evaluation at `w_a` (`norm_cayleyPoly_shift`). Depth-one
+probes give `Q_{n+1}[e_n − e_0] = 2ℓ(0) − 2ℓ(n)` (`qf_toeplitzLadder_last_sub_zero`). For `ζ`,
+`w_ρ = 1 − 1/ρ` and `ℓ(n)` is the paired Li coefficient `2λ_n` (`liCoupling_xi`). With Li's
+criterion from the corpus, RH holds iff every Cayley ladder of `ζ` is negative semidefinite on
+primitive vectors (`riemannHypothesis_iff_cayleyLadder_nonpos`), iff every ladder is entrywise
+nonnegative (`riemannHypothesis_iff_cayleyLadder_nonneg`); under RH every ladder is Lorentzian
+(`isLorentzian_cayleyLadder_of_rh`). On this ladder the Metzler sign implies the Hodge index: the
+trickle-down step is contained in Li positivity. The couplings never decay
+(`not_tendsto_xiLiPaired_re_zero`). If `2λ_n → 0`, Li's criterion with exponential slack gives RH;
+every ladder is then hyperbolic, and a decaying isometric ladder would have to be negative
+semidefinite, which fails at depth two because `2λ_1 > 0`. Over `𝔽_q` the same ladder on the
+normalized eigenvalues has `ℓ(n) = 2(2g − Σβ_i^n)` (`liCoupling_curveDatum`). Its sign at depth
+`n` is the Weil bound `N_n ≥ q^n + 1 − 2g q^{n/2}` with the sharp constant
+(`liCoupling_nonneg_iff_pointCount_ge`). Reflection positivity of every ladder is RH for the
+curve (`unitary_iff_cayleyLadder_nonpos`), and the golden datum fails it
+(`golden_not_cayleyLadder_nonpos`).
+
 ### Gauge fixing and the successor
 
 [TheSignIsAGaugeFixing](TheSignIsAGaugeFixing.lean): for `N ≥ 6` and relative prime weight `t ≥ 2`,
@@ -559,6 +596,21 @@ factors after a nonnegative substitution are Lorentzian (`isLorentzian_hessAt_pr
 form with a negative entry is never such a Hessian (`not_exists_hessAt_of_neg`). Hessians of the
 closure carry the Lorentzian signature and nothing else.
 
+[TheSupportOfAMixedLorentzianPolynomialIsMConvex](TheSupportOfAMixedLorentzianPolynomialIsMConvex.lean):
+the mixed class needs no support hypothesis. In a Lorentzian form, `Q_{ai} > 0` and `Q_{jk} > 0`
+force `Q_{aj} > 0` or `Q_{ak} > 0`, since otherwise `e_a + t e_i` and `e_j + e_k` span a positive
+definite plane for small `t` (`IsHyperbolic.exchange`); for a quadratic this is the exchange
+property of its support. In higher degree, monomials sharing a variable `x_k` exchange inside
+`∂_k p` (`exchange_of_common`). For coprime monomials `x^μ x_a x_i` and `x^ν x_k`, the exchange in
+`∂_{e_a+e_k} p` either lands on the target or produces `x^μ x_j x_k`, which shares `x^μ` with the
+first monomial (`exchange_disjoint`). By induction on the degree the support of every
+mixed-Lorentzian polynomial is M-convex (`IsMixedLorentzian.isMConvex`), so the two classes
+coincide (`isMixedLorentzian_iff_isLorentzianPolynomial`). Products, nonnegative substitutions
+and derivatives of Lorentzian polynomials are Lorentzian in coefficient form
+(`IsLorentzianPolynomial.mul`, `IsLorentzianPolynomial.subst`,
+`IsLorentzianPolynomial.differentiate`), and so is the Euler product of Lorentzian local factors
+composed with the scale map (`isLorentzianPolynomial_prod_subst`).
+
 ### The Turán layer
 
 [LorentzianPolynomialsAndTheTuranLayer](LorentzianPolynomialsAndTheTuranLayer.lean): a bivariate
@@ -642,6 +694,13 @@ create a positive invariant metric, and an isometric ladder with decaying coupli
 positive square. Construct a conformal correspondence with `λ ≠ 1`, or a trickle-down structure
 that supplies the Hasse–Weil inequality without one; the growth `wp^{k/2}` of the prime pairing
 along `p`-ladders — the main term of the prime number theorem — is the candidate conformal weight.
+In Cayley coordinates the reflection exists and RH is its positivity on the Li ladder, but the
+ladder is built from the zeros. Open: a reflection-positive functional built from the source —
+the prime and archimedean data — whose Cayley ladder is the Li ladder. The candidate is the
+dynamical layer: the KMS states of the Toeplitz algebra of `ℕ ⋊ ℕ^×` under the scaling dynamics,
+with their behaviour under the reflection `β ↦ 3 − β`. By Laca–Raeburn these states are unique
+for `1 ≤ β ≤ 2`, the window that corresponds to the critical strip of `ζ(β − 1)`, which is their
+partition function beyond it.
 
 **Arithmetic elimination of reflection-odd classes.** Seek section, incidence or effectivity
 identities that exclude the odd sector for actual arithmetic objects without assuming purity, and
@@ -658,12 +717,10 @@ single atomic family is exhaustive only when `K` grows at least like `log N`: a 
 either let the overlap grow with `N` or assemble tests across levels, where positivity does not
 add.
 
-**Higher-degree lifts and stability.** Products, nonnegative substitutions and derivatives are
-closed in the mixed class. Open: that a mixed-Lorentzian polynomial has M-convex support, which
-makes the two classes equal and closes the coefficient class under products (an M-convex
-Minkowski-sum statement); a Lorentzian lift of the Weil pairing through the closure, with the
-Γ-term, pole plane and diagonal identified; an arithmetic operation producing the factorially
-normalized Newton inequalities or real stability.
+**Higher-degree lifts and stability.** The mixed and coefficient classes coincide and are closed
+under products, nonnegative substitutions and derivatives. Open: a Lorentzian lift of the Weil
+pairing through the closure, with the Γ-term, pole plane and diagonal identified; an arithmetic
+operation producing the factorially normalized Newton inequalities or real stability.
 
 **Exceptional extinction.** Combine geometric defects with the energy and work theories of AES
 and AID: a source estimate below the closed quantum of transverse energy or damped work would
@@ -682,7 +739,7 @@ exclude an off-line zero. Average rarity alone cannot.
 | Beyond the spacing a better gauge restores the Metzler sign | For `K > 1` an odd triangle of atoms frustrates every unimodular gauge; change the basis or prove the gap |
 | A positive Euler product gives the arithmetic sign | Its Hessian is Lorentzian for every nonnegative local datum and is not the Weil pairing |
 | The local L-factor at a prime is Lorentzian because of RH over `𝔽_p` | RH makes its Frobenius ladder trickle down; the polynomial is Lorentzian only at the Weil bound, never at a prime |
-| Mixed-Lorentzian products are Lorentzian in coefficient form | The closure is proved for the mixed class; M-convexity of a product's support is a separate statement |
+| Li positivity is a weak sign condition | On the Cayley ladder of `ζ` the Metzler sign is equivalent to RH: the trickle-down content sits inside the sign |
 | A Hecke dilation can play the role of Frobenius | Dilations are isometries; Weil uses a conformal factor `q`, and an isometric ladder with decaying couplings carries no positive square |
 | The scale map is the archimedean place | A substitution is not an identity with the completed Γ-term and finite part |
 | A nef shift repairs the arithmetic form | It changes coordinates; a regulator subtraction changes the form |
@@ -706,6 +763,7 @@ exclude an off-line zero. Average rarity alone cannot.
 | ArithmeticEffectivityTheory; ArithmeticOrientationGeometry | Counting, Riemann–Roch growth, Weil planes, Rosati signs |
 | IncommensurableGaborPinching | Structural Gram slack discarded by scalar estimates |
 | HTGeometry | Inertia, Schur complements and projection identities |
+| RHTower (Li criterion) | Cayley images of the zeros, paired Li coefficients, Li's criterion with exponential slack |
 
 ## Success criteria
 

@@ -127,7 +127,7 @@ coordinates. Normalized Ramanujan modes should then form the product excitation
 basis in that probability-space completion. The finite local completed row is
 a reversible jump generator, since
 `mu_p(v)*p^(-a)=mu_p(v+a)` for upward step a and downward rate one.
-Its negative has the local adjunction energies. Extending this to an actual
+The positive operator obtained by negating the Markov generator should have the local adjunction energies. Extending this to an actual
 closed all-prime form, and identifying any profinite-Haar realization, remains
 unproved.
 
@@ -237,3 +237,55 @@ finite-excitation basis remains necessary. A corpus search for a Ramanujan/Haar
 prime-jump generator returned continuous Weil/Doob forms and divisor-jump
 operators; no matching geometric-valuation generator was identified among the
 inspected statements. This is a lead, not a completed novelty audit.
+
+A concrete probability-space route can use bounded valuation-cylinder functions
+as a dense core. The positive local generator displayed above has finite upward
+geometric rate, and its downward rate grows only linearly in v; geometric
+valuation moments control both its form and its L2 action on bounded cylinders.
+The finite-prime ground transform must still prove exact equality to A_Q-gamma.
+Completeness of finite Ramanujan products would then make that core essentially
+self-adjoint; the claimed closure cannot be supplied as an assumed interface.
+
+The local energy also suggests a conditional-variance representation. Let E_K
+be conditional expectation for the partition v=0,...,K-1 and the tail v>=K;
+E_0 is expectation onto constants. The k-th nonconstant radial Haar mode is
+fixed by E_K exactly when k<=K. Its energy is
+log(p)*(k+1/(p-1)), so the proposed exact form identity is
+
+`<f,L_p f>=log(p)*(p/(p-1)*norm(f-E_0 f)^2
+                         +sum_(K>=1)norm(f-E_K f)^2)`.
+
+On finite Haar sums this follows by finite orthogonality; extending by monotone
+nonnegative sums would identify the closed form. Each term is a conditional
+variance, suggesting a direct Markov-contraction proof and a reversible
+all-prime semigroup after the carrier and core identities are proved.
+This is an unverified mechanism within the same completion candidate, not a
+separate contribution or a generic hierarchical-Laplacian novelty claim.
+
+A later source search found the exact required measure already in the corpus:
+`HTGeometry/PrimeValuationSector.lean`, inspected through its cylinder and
+zero-point results, defines `primeValuationLaw(p)=geometricMeasure(1-1/p)` and
+`primeValuationMeasure=Measure.infinitePi primeValuationLaw` with probability
+instances. Its cylinder masses are exactly the sieve density. Reuse this
+carrier; construction of the geometric product measure is excluded baseline.
+This supersedes the need to adapt the different Euler-activation measure.
+The physical finite-prime unitary, complete Ramanujan basis, actual closed
+adjunction generator and domain intertwining remain the intended new content.
+
+The same search also surfaced `PoissonEulerSobolevNaturalCone.lean` (local-law
+section inspected): its valuation probabilities use p^(-2r) for r>1/2 and
+belong to a normalizable counting-space vector. That is a different parameter
+regime; the critical product carrier above is the appropriate existing object.
+`FieldOnePadicCyclicHaarQuadrature.lean` was inspected through its finite cyclic
+quadrature and Fourier definitions. It supplies literal normalized p-adic Haar
+and exact finite-level integration, useful for a later proved radial-Haar map;
+that map is still absent here.
+
+The exact-measure use search also found `HTGeometry/PrimeValuationInfiniteSupport.lean`
+and `PrimeValuationLevelStructure.lean`, both read in full. Almost-sure infinite
+prime support, nullity of all ordinary-integer valuation vectors, exact local
+tail probability p^(-m), and almost-sure finite repeated-prime support are
+already proved. They supersede the earlier merely proposed carrier distinction;
+none counts as new here. The remaining sector source supplies measure-preserving
+coordinate evaluations and independence. These give concrete measure inputs
+for the desired L2 basis and generator without changing probability laws.

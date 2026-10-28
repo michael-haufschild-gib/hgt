@@ -57,6 +57,8 @@ Answer Q2 of the report (coupled renormalization) and its gauge face with theore
   mirror: among `κ = −1` gauges, `α ≥ γ + τ` with equality only for Liouville.
 - RP38 residue-pattern (abelian Chebotarev) gauges: `κ_f` = mean of `f` over the units, convergent
   Mertens error, horizon law `κ_f ℓ² + 2α_f|x|² + o(mass)`.
+- RP26 extension: every prime sign pattern of logarithmic density has the soft law; flipped density `ϑ`
+  gives `κ = 1 − 2ϑ`.
 
 ## No-go closure
 - **Killing theorem:** condition (i) of the central conjecture (bounded counterterm rank on Hecke

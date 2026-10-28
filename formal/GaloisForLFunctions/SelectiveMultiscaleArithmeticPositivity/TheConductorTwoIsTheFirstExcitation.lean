@@ -225,7 +225,7 @@ theorem eventually_exists_harmonic_atomicWeilForm_ge {ε : ℝ} (hε : 0 < ε) :
   obtain ⟨a, b, hab, hℓ⟩ : ∃ a b : ℝ, 0 < a ^ 2 + b ^ 2 ∧ a * ℓ ⇑(e i) + b * ℓ ⇑(e j) = 0 := by
     by_cases h0 : ℓ ⇑(e i) = 0
     · exact ⟨1, 0, by norm_num, by rw [h0]; ring⟩
-    · exact ⟨ℓ ⇑(e j), -ℓ ⇑(e i), by positivity, by ring⟩
+    · exact ⟨ℓ ⇑(e j), -ℓ ⇑(e i), by nlinarith [mul_self_pos.mpr h0, sq_nonneg (ℓ ⇑(e j))], by ring⟩
   obtain ⟨hQ, hM⟩ := quadratic_eigenvector_plane hij a b
   set v := a • ⇑(e i) + b • ⇑(e j)
   refine ⟨horizonExtend v, ?_, ?_, ?_⟩
