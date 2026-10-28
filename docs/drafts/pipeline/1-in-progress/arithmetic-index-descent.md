@@ -421,3 +421,19 @@ a bounded original-form projection. Prove the exact signed Schur identity on the
 whole graph. This removes the fixed-aperture restriction from the current
 projection construction. The residual sign, a comparable-spacing width bound,
 and exhaustive transfer remain independent open arithmetic questions.
+
+### Fixed carriers pay the complete graph mass — formalized
+
+`FixedCellsControlTheCompleteSourceGraph.lean` proves one fixed width sequence
+for every continuous spatial weight omega>=1 and every increasing centre sequence.
+Every independently profiled prefix satisfies weighted square mass<=full Weil
+energy. Specializing omega to `1+(B/epsilon)*rho`, with the exact inverse Doob
+mass density rho and the proved full polar graph charge B, gives
+`||Jf||²<=(1+epsilon)W(f,f)` uniformly across all prefixes. Integer-log centres
+have an unconditional factor-two realization. No hidden source norm, mixed bound,
+width comparability or density assumption is present.
+
+Full scratch7493 and mandatory actual direct74617 passed; four printed endpoints
+use only propext, Classical.choice and Quot.sound. Actual source wired; foundational
+README/checks updated. Removed weighted scratch. The uniform-closure/projection
+target above remains in its separate draft until checked.

@@ -816,7 +816,7 @@ theorem tendsto_synth_two {κ : ℕ → ℝ} (hκ : OverlapGrowthTwo κ) {B : �
       simp only [E, C]; ring
     have hLDe : synthLipTwo A1 A2 M L (K n) n * (1 / K n) =
         M * A1 + L * A1 * h + M * A2 * (h * K n) + L * (1 / K n) := by
-      unfold synthLipTwo; field_simp
+      unfold synthLipTwo; simp only [h]; field_simp; ring
     have hLD0 : 0 ≤ synthLipTwo A1 A2 M L (K n) n * (1 / K n) := by
       rw [hLDe]; positivity
     have hLDG : synthLipTwo A1 A2 M L (K n) n * (1 / K n) ≤ G n := by
@@ -870,5 +870,85 @@ theorem overlapGrowthTwo_log {α : ℝ} (hα : 1 / 4 < α) :
     exact mul_le_mul_of_nonneg_left hlk (Real.rpow_nonneg hl0.le _)
 
 end Asymptotics
+
+/-! ### The overlap law at the fourth root -/
+
+section FourthRoot
+
+open ArithmeticElectrostatics
+
+variable {φ : ℝ → ℝ}
+
+/-- **The overlap law at the fourth root**: for every `C²` profile `φ` supported in `[−1, 1]` with
+`∫ φ = 1` and every dilation sequence `κ` whose overlap ratio `N/κ_N` beats `(log κ_N)^{1/4}`, RH
+holds iff for all large `N` Weil's form is nonnegative on every atomic test
+`Σ_{n ≤ N} x_n φ_κ(· − log n)` of width `1/κ_N`. -/
+theorem riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo {κ : ℕ → ℝ}
+    (hκ : OverlapGrowthTwo κ) (hφ : ContDiff ℝ 2 φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      0 ≤ weilQuad (atomicTest N x (dilate (κ N) φ)) := by
+  constructor
+  · intro hRH
+    filter_upwards [hκ.1.eventually_gt_atTop 0] with N hk x
+    obtain ⟨h2, hc⟩ := atomicTest_dilate_mem hφ hφ1 hk N x
+    exact RHTower.WeilSpectral.riemannHypothesis_iff_real_weilPositive.mp hRH _ h2 hc
+  · intro H
+    by_contra hRH
+    rw [RHTower.WeilSpectral.riemannHypothesis_iff_real_weilPositive] at hRH
+    push Not at hRH
+    obtain ⟨g, hg, hgc, hneg⟩ := hRH
+    change weilQuad g < 0 at hneg
+    -- a radius and bounds on `g, g′, g″`
+    obtain ⟨R0, hR0⟩ := hgc.isCompact.isBounded.subset_closedBall 0
+    set R := max R0 0
+    have hR : 0 ≤ R := le_max_right _ _
+    have hgR : SupportedIn R g := fun u hu => by
+      refine image_eq_zero_of_notMem_tsupport fun hmem => ?_
+      have := hR0 hmem
+      rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at this
+      linarith [le_max_left R0 0]
+    obtain ⟨-, -, hg1c, hg2c⟩ := profile_derivs hg
+    obtain ⟨M, hM⟩ := hgc.exists_bound_of_continuous hg.continuous
+    obtain ⟨L, hL⟩ := hgc.deriv.exists_bound_of_continuous hg1c
+    obtain ⟨M2, hM2⟩ := hgc.deriv.deriv.exists_bound_of_continuous hg2c
+    have hM' : ∀ t, |g t| ≤ M := fun t => by simpa [Real.norm_eq_abs] using hM t
+    have hL' : ∀ t, |deriv g t| ≤ L := fun t => by simpa [Real.norm_eq_abs] using hL t
+    have hM2' : ∀ t, |deriv (deriv g) t| ≤ M2 := fun t => by simpa [Real.norm_eq_abs] using hM2 t
+    -- the synthesis errors vanish
+    set B := blockSize R
+    have hB : 1 ≤ B := by
+      have h := Nat.le_ceil (1 + Real.exp (2 * R))
+      have : (1 : ℝ) ≤ B := by
+        have := Real.exp_pos (2 * R)
+        simp only [B, blockSize] at h ⊢
+        linarith
+      exact_mod_cast this
+    obtain ⟨he, hV⟩ := tendsto_synth_two hκ hB (integral_nonneg fun s => abs_nonneg (φ s))
+      (integral_nonneg fun s => abs_nonneg (deriv φ s))
+      (integral_nonneg fun s => abs_nonneg (deriv (deriv φ) s)) ((abs_nonneg _).trans (hM' 0))
+      ((abs_nonneg _).trans (hL' 0)) ((abs_nonneg _).trans (hM2' 0)) (by linarith : (0 : ℝ) ≤ R + 3)
+    have hErr := tendsto_weilErr g (R + 3) he hV
+    have h1 := hErr.eventually (gt_mem_nhds (show (0 : ℝ) < -weilQuad g by linarith))
+    have hNB : Tendsto (fun n : ℕ => n * B) atTop atTop :=
+      tendsto_atTop_mono (fun n => Nat.le_mul_of_pos_right n hB) tendsto_id
+    have h2 := hNB.eventually H
+    have h3 := hNB.eventually (hκ.1.eventually_ge_atTop 1)
+    obtain ⟨n, hn1, hn2, hk, hn3⟩ := (h1.and (h2.and (h3.and (eventually_ge_atTop 1)))).exists
+    obtain ⟨x, hx⟩ :=
+      exists_atomicTest_weilQuad_le_two hφ hφ1 hφint hg hgc hR hgR hM' hL' hM2' hn3 hk
+    have := hn2 x
+    linarith
+
+/-- **The logarithmic overlap law at the fourth root**: for every `α > 1/4`, RH holds iff for all
+large `N` Weil's form is nonnegative on the atomic families of width `(log N)^α/N`, overlap ratio
+`(log N)^α`. -/
+theorem riemannHypothesis_iff_atomicFamilies_nonneg_log_quarter {α : ℝ} (hα : 1 / 4 < α)
+    (hφ : ContDiff ℝ 2 φ) (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1) :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      0 ≤ weilQuad (atomicTest N x (dilate ((N : ℝ) / Real.log N ^ α) φ)) :=
+  riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo (overlapGrowthTwo_log hα) hφ hφ1 hφint
+
+end FourthRoot
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

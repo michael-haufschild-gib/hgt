@@ -85,6 +85,16 @@ make these bounded-energy vectors uniformly close to a finite Ramanujan span.
    expectation contracts that same box-complement norm because the box is
    measurable in the conditioning variables.
 
+   Existing exact interfaces were checked in
+   `TheDeficitOfThePrimeFormIsADirichletEnergy.lean`: `sum_edges_eq_sum_divisors`
+   reindexes all edges by their top; `log_mul_ladderDefect_le` bounds one
+   prime's edge defect by D_N. The new quasimode support theorem
+   `sum_divisors_primePower_mangoldt` counts the prime-supported divisor atoms,
+   while `sum_dvd_vonMangoldt_div_le` bounds the reciprocal bottom-edge mass.
+   Thus the moment estimate can reuse exact existing reindexing. A coarser
+   bound with D_N in place of each D_p suffices after summing the finitely many
+   small primes; no sharp aggregate constant is needed for compactness.
+
 The two orthogonal errors add: conditional variance plus the discarded
 conditional mean. First choose P large, then a valuation cutoff L large.
 The remaining space has dimension independent of N. Its vectors are linear

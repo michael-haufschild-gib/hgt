@@ -572,6 +572,38 @@ Choose the actual new width below its envelope, gap and source threshold. The re
 `a_N=1+1/(N+1)` pays loss `a_n-a_(n+1)>0` at step `n`; the new diagonal pays `a_(n+1)`.
 Exact disjoint mass addition then proves the stronger prefix floor `a_N` throughout the induction.
 
+The same arithmetic extension pays any prescribed continuous spatial weight
+\(\omega\ge1\), even when it is unbounded. Choose a bound \(c_n\) for \(\omega\) on
+\([b_n-1,b_n+1]\), and make the new diagonal pay \(a_{n+1}c_n\) times ordinary mass.
+The old loss is at most its weighted mass loss. Exact weighted mass addition then gives
+one fixed width sequence satisfying
+
+\[
+ \int f(u)^2\omega(u)\,du\le W(f,f)
+ \quad\text{for every independently profiled finite prefix }f.
+\]
+
+This removes aperture dependence from a restricted carrier's complete graph bound.
+The exact source mass of the inverse Doob lift is
+
+\[
+ \|(Jf)_{\mathrm{source}}\|^2
+ =\int f(u)^2\rho(u)\,du,\qquad
+ \rho(u)=\frac{\cosh(u/2)}{\operatorname{riemannKernelReal}(u)}.
+\]
+
+Put \(B=2(1+\|\tanh(\cdot/2)\|_{\mathrm{mass}}^2)\). The original full polar identity
+gives \(\|Jf\|^2\le W(f,f)+B\|(Jf)_{\mathrm{source}}\|^2\). For any
+\(\varepsilon>0\), choose \(\omega=1+(B/\varepsilon)\rho\). Weighted payment yields
+
+\[
+ \|Jf\|^2\le(1+\varepsilon)W(f,f)
+\]
+
+on all prefixes of one fixed carrier. In particular, integer logarithms admit fixed positive
+widths with the universal factor two. No graph-mass estimate or mixed-form sign is assumed;
+the chosen widths pay the actual source density and both global pole rows.
+
 These widths need not be comparable to the arithmetic spacing. The result uses local coercivity
 and a finite mixed-source payment, and also holds for nonarithmetic increasing centres. It
 therefore establishes stable assembly on a restricted domain; it does not supply the critical
@@ -1091,6 +1123,7 @@ Quantitative pillars supplied by this programme:
 | Adaptive arithmetic extension | At every exterior centre, a new small cell preserves any chosen fraction below one of the entire old section floor, with old widths fixed and arbitrary new profiles | `AnAdditionalCellPreservesTheOldSections` |
 | Nested fixed-width positive sections | One width sequence at `log(n+1)` supports every finite independently profiled prefix with full Weil form at least square mass; earlier widths never change | `FixedCellWidthsSupportNestedPositiveSections` |
 | Actual graph coercivity | The C² inverse Doob lift preserves the full Weil diagonal; on a fixed window, the arithmetic section floor controls its complete source-graph norm | `TheGraphNormIsControlledBySectionEnergy` |
+| Uniform graph coercivity on a fixed carrier | A single width sequence pays any continuous spatial weight; the exact inverse Doob mass gives a full graph bound with any factor above one across every finite prefix | `FixedCellsControlTheCompleteSourceGraph` |
 | Literal graph completion | The full finite-subset projection net converges in the existing complete source graph; its original Weil pairings equal the completed removal and residual forms, with residual orthogonal to the whole closed old carrier | `TheSectionProjectionConvergesInTheSourceGraph` |
 | Weighted source cost | Unused arithmetic reserve divides each exact cell's source-kernel energy by its mass weight; the resulting smaller cost bounds finite and completed removal and the signed residual | `TheUnusedReserveReducesTheSourceCost` |
 | Complete-cell index capture | One common actual logarithmic grid eventually carries every negative square of a fixed finite smooth Weil family; all mixed-entry convergence premises are discharged from the source | `TheCompleteCellsCaptureEveryFiniteIndex` |
@@ -1110,7 +1143,8 @@ have controlled weighted kernel tails and sampling errors. In particular, estima
 prime–pole cancellation before squaring. The fixed-window estimate does not answer these questions.
 
 **Quantitative adaptive carriers.** Single-cell extension and a nested infinite family with
-fixed widths are established. Quantify the widths and enlargement costs.
+fixed widths are established. A prescribed spatial weight can also be paid on one such family,
+giving a uniform complete-graph bound across all its prefixes. Quantify the widths and enlargement costs.
 Determine whether widths can remain comparable to local logarithmic spacing when the global
 pole directions are retained as an index cost. The current absolute mixed bounds supply no such
 width lower bound. A controlled family must then approximate the required tests in the completed

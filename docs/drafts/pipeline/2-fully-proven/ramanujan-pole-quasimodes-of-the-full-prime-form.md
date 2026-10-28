@@ -286,7 +286,7 @@ scratch and its transitive axiom audit (propext, Classical.choice, Quot.sound);
 its first required olean passed. The uniform-tail module also passes its
 scratch check and transitive endpoint audit; its first required olean passed.
 The logarithmic Gram/norm module now also passes scratch, with both transitive
-endpoint audits clean; its first required olean is in progress. Four arithmetic
+endpoint audits clean; its first required olean passed. Four arithmetic
 sources remain unchecked:
 
 - `ThePrimeRowsReadPoleProfiles.lean`: literal arbitrary-profile row identity.

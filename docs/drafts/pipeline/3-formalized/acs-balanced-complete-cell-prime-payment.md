@@ -52,7 +52,7 @@ All three exact project files passed `lake --old env lean` without warnings. Fou
 
 ## Scope
 
-This discharges the prime estimate for a concrete signed source subspace of complete cells. It does not prove the Gamma lower bound, pole payment, positivity of the full Weil form, or full-source effectivity. Those remain on the parent card. This card went directly from active Lean work to stage 3; no paper-only stage-2 result was parked.
+This discharges the prime estimate for a concrete signed source subspace of complete cells. The matching Gamma bound is now checked in [coherent mean-zero Gamma payment](acs-coherent-mean-zero-gamma-payment.md). Pole payment and positivity of the full Weil form remain on the parent card; full-source effectivity remains open. This card went directly from active Lean work to stage 3; no paper-only stage-2 result was parked.
 
 ## Log
 

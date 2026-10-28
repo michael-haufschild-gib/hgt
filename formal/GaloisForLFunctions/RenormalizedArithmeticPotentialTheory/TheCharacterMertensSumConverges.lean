@@ -19,12 +19,12 @@ number theorem for characters, `ψ(x, χ) = O(x e^{−ρ (log x)^{1/10}})`
 * **Convergence** (`tendsto_charMertensSum`): for `χ ≠ 1`, `A_χ(y) → α_χ = Σ_n ψ(n, χ)/(n(n + 1))`.
 * **The finite part of a character gauge** (`exists_abs_charGaugeForm_stepProfile_finitePart_le`):
   for a real character `χ ≠ 1` mod a prime `ℓ`, the gauge `ε(n) = χ(n')` has a convergent Mertens
-  sum, `A_ε(y) → α_ε = Re α_χ + Σ_{k ≥ 1} log ℓ/ℓ^k`, and on uniform step profiles
-  `P_N(εx) = 2α_ε |x|² + o(mass)`.
+  sum, `A_ε(y) → α_ε`, the sum of `Re α_χ` and the limit of `Σ_{t ≤ y, ℓ ∣ t} Λ(t)/t`, and on
+  uniform step profiles `P_N(εx) = 2α_ε |x|² + o(mass)`.
 
 So a character gauge has matching coefficient `0` and finite part `2α_ε`: its horizon form is a
-scalar `2α_ε` on the uniform profiles, read off the Mertens limit of the character, the value of
-`−L′/L(1, χ)` corrected by the powers of `ℓ`.
+scalar `2α_ε` on the uniform profiles, read off the Mertens limit of the character, corrected by
+the powers of `ℓ`.
 -/
 
 noncomputable section
@@ -197,7 +197,7 @@ theorem tendsto_primePowerMertens (hℓ : ℓ.Prime) :
     exact sum_dvd_vonMangoldt_div_le hℓ (Icc 1 y)
 
 /-- **The finite part of a character gauge**: for a real character `χ ≠ 1` mod a prime `ℓ`, the
-gauge `ε(n) = χ(n')` has `A_ε(y) → α_ε = Re α_χ + Σ_{k ≥ 1} log ℓ/ℓ^k`, and for every `η > 0`
+gauge `ε(n) = χ(n')` has `A_ε(y) → α_ε = Re α_χ + lim_y Σ_{t ≤ y, ℓ ∣ t} Λ(t)/t`, and for every `η > 0`
 there is `C` with `|P_N(εx) − 2α_ε|x|²| ≤ Σ_{i,j} |c_i| |c_j| (η H_{min(M_i, M_j)} + C)` on uniform
 step profiles. -/
 theorem exists_abs_charGaugeForm_stepProfile_finitePart_le (hℓ : ℓ.Prime)
