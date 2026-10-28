@@ -43,7 +43,9 @@ theorem logCellHaar_high_orbit_tail_le (t : ℝ) {A : ℕ} (hA : 1 ≤ A)
     {f : ℝ → ℝ} (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) :
     (∑' a : ℕ+, if A ≤ (a : ℕ) then logCellHaarOrbitEnergy t a f else 0) ≤
       32 * levyEnergy f / (1 + Real.log (A : ℝ)) :=
-  Real.tsum_le_of_sum_le (fun a => by
+  Real.tsum_le_of_sum_le
+    (f := fun a : ℕ+ => if A ≤ (a : ℕ) then logCellHaarOrbitEnergy t a f else 0)
+    (fun a => by
     split_ifs
     · exact tsum_nonneg (fun _ => sq_nonneg _)
     · rfl)
@@ -58,8 +60,12 @@ theorem logCellHaar_high_detail_tail_le (t : ℝ) {A : ℕ} (hA : 1 ≤ A)
       if A ≤ (i.2 : ℕ) then logCellHaarReadout t i f ^ 2 else 0) := by
     refine ((summable_readout_squares t hv hc).indicator {i | A ≤ (i.2 : ℕ)}).congr fun i => ?_
     by_cases hi : A ≤ (i.2 : ℕ)
-    · rw [if_pos hi, Set.indicator_of_mem hi]
-    · rw [if_neg hi, Set.indicator_of_notMem hi]
+    · rw [if_pos hi]
+      exact _root_.Set.indicator_of_mem (s := {i : ℕ × ℕ+ | A ≤ (i.2 : ℕ)}) hi
+        (fun i => logCellHaarReadout t i f ^ 2)
+    · rw [if_neg hi]
+      exact _root_.Set.indicator_of_notMem (s := {i : ℕ × ℕ+ | A ≤ (i.2 : ℕ)}) hi
+        (fun i => logCellHaarReadout t i f ^ 2)
   have hswap : Summable (fun i : ℕ+ × ℕ =>
       if A ≤ (i.1 : ℕ) then logCellHaarReadout t (i.2, i.1) f ^ 2 else 0) :=
     hs.comp_injective (i := fun p : ℕ+ × ℕ => (p.2, p.1))

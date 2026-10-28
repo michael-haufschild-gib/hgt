@@ -81,6 +81,12 @@ TheHalfDefectIsTheOptimalHodgeRepair; the README's extended scope is theirs — 
 - Topic 9 answered: RamanujanAndLorentzianMeetOnlyAtTheWeilBound (Lorentzian ⇒ a_1 ≥ d√q,
   Ramanujan ⇒ a_1 ≤ d√q; equality only for (1+√qT)^d; never at a prime; elliptic: Lorentzian ⇔
   a² ≥ 4p).
+- Stability regime to K_RE/4 (Lean): Fubini mass bound on window correlations halves the cross
+  penalty; PNT up-row (B_ψ² → 1); eventually_weilQuad_windowTest_nonneg_quarter at ≈ 0.108 δ_N
+  (plateau), ≈ 0.072 δ_N (all profiles). Absolute-value pole payment has a ceiling ≈ K_RE/2.
+- Exact reduction (Lean): W ≥ 0 on atomic tests ⇔ M ≥ 0 on Σx_n/√n = 0 ∧ M + 2a₀B ≥ 0 on
+  Σx_n/√n = 1, every width; beyond K_RE, W ≥ 0 forces M to have exactly one negative direction
+  transversal to the pole complement. Crossing card: alg-beyond-the-robin-euler-threshold.
 
 ## Open
 - Window c★ < K < 1: TD_π for the Metzler Gram; the Markov form loses positivity along the pole

@@ -32,9 +32,20 @@ Current `(L_X, L_D, P_X, P_D) = (1517, 236, 107, 54)`. Targets:
 ≈ 0.067 plateau, ≈ 0.048 all profiles (`eventually_weilQuad_windowTest_nonneg_sharp`). Remaining
 factor ≈ 6 to `K_RE`: PNT up-row (B_ψ² → 1), Fubini ‖·‖₁ windows (factor 2), λ/κ tuning.
 
+**Status A′:** done (Lean). Fubini `∫|c_mn| ≤ ‖G_m‖₁‖G_n‖₁` halves the cross penalty; PNT up-row
+`Σ m R_m² ≤ ((1+η)²/b² + o(1)) N²/log N`; `λ = 1/4, κ = 3/20, b = 19/20, θ = 2, ρ = 3/2`:
+`C_X ≈ 10.5`, `C_D ≈ 7.0`, `K★_q ≈ 0.108` plateau (= K_RE/4), `≈ 0.072` all profiles
+(`eventually_weilQuad_windowTest_nonneg_quarter`). Ceiling of the absolute-value method:
+`log(K_RE/K) ≥ K·C_X` with `C_X` bounded below by the Lévy loss and the pole cost ⇒ `K ≲ K_RE/2`.
+
 ## Phase B — exact reduction (all `K`)
 `W ≥ 0` on atomic tests ⇔ `M ≥ 0` on the pole complement `Σ x_n/√n = 0` ∧ `M(x) + 2B(x) ≥ 0` on
 `Σ x_n/√n = 1` (H-row of an atomic test is exactly `(∫g e^{−v/2}) n^{−1/2}`).
+
+**Status B:** done (Lean, TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar):
+`forall_add_two_mul_nonneg_iff`, `forall_weilQuad_atomicTest_nonneg_iff` (every width, `M + 2a₀B`
+on `p = 1`), `eventually_markovEnergy_pole_neg_and_gap` (beyond `K_RE`: `M(pole) < 0`, `p(pole) =
+H_N > 0`, and `W ≥ 0` ⇒ `M ≥ 0` on `p = 0`, so exactly one negative direction).
 
 ## Phase C — beyond `K_RE`
 Pole gauge `z_n = √n x_n = c·1 + z⊥`: pole term `2a₀b₀(c² N H_N + c H_N Σ z⊥)`, positive on `c`.
@@ -45,3 +56,4 @@ complement it depends on the explicit gap. Outcome not known before computation.
 
 ## Log
 - 2026-10-28 — created; Phase A done.
+- 2026-10-28 — A′ (Fubini, PNT, tuning) and B done; next: Phase C.

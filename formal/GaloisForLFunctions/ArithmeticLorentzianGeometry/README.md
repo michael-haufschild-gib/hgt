@@ -86,12 +86,16 @@ Metzler one: no gauge of the atomic basis is Metzler there.
    to overlap ratio one. The Hodge index, `(TD_π)` and hyperbolic links hold up to a fixed ratio
    `c★`, and eventually in `N` up to the fraction `K★(φ, ε)` at which the pole defect pays the
    pole. At `K★_∞(ε)` Weil positivity holds for every `C²` test supported in the windows
-   `[log n, log n + w]`, whatever its profile. With sharp constants the same mechanism reaches
-   `K★_sharp ≈ 0.067` for plateau profiles and `≈ 0.048` for every profile. That is about a sixth
-   of the Robin–Euler threshold. A uniform margin stops at `K√(log N)`. The atom
-   block leaves the stability regime at the Robin–Euler threshold `exp(2θ′(0) + κ_L(φ) + γ)`,
-   where the pole vector carries a positive square of `−M`. Between `c★` and one the open content
-   is `(TD_π)` for a connected Metzler form; beyond one no gauge of the atoms is Metzler.
+   `[log n, log n + w]`, whatever its profile. With sharp constants, the Fubini bound on window
+   pairs and the prime number theorem the same mechanism reaches `≈ 0.108` of the spacing for
+   plateau profiles, a quarter of the Robin–Euler threshold, and `≈ 0.072` for every profile.
+   Paying the pole term in absolute value cannot pass about half of that threshold. A uniform
+   margin stops at `K√(log N)`. The atom block leaves the stability regime at the Robin–Euler
+   threshold `exp(2θ′(0) + κ_L(φ) + γ)`, where the pole vector carries a positive square of `−M`.
+   At every width, Weil positivity on the atomic tests is exactly a gap of `M` on the pole
+   complement `Σ x_n/√n = 0` and one scalar condition along the pole. Between `c★` and one the
+   open content is `(TD_π)` for a connected Metzler form; beyond one no gauge of the atoms is
+   Metzler.
 
 ## Objects and language
 
@@ -193,6 +197,10 @@ construction it exposes.
   the decomposition of every test supported near the logarithms into windows.
 - The sharp stability toolkit: one-sided pair windows, sharp Lévy rows, the λ-parametrized
   top-atom payment, the `N^b`-split Hardy inequality and the `ρN/log N` pairing of the pole rows.
+- The mass bound for window correlations `∫|c_mn| ≤ ‖G_m‖₁‖G_n‖₁`, and the up-row bound of the
+  multiplicative Hardy inequality under the prime number theorem.
+- The rank-two reduction: `Q + 2AB ≥ 0` iff `Q ≥ 0` on `ker A` and `Q + 2B ≥ 0` on `{A = 1}`. For
+  atomic tests `A` is the pole functional `Σ x_n/√n` at every width.
 - The Cayley reflection formula `Q_K[c] = −2 Re Σ_a m_a p_c(w_a) p_c(w_a⁻¹)` on primitive vectors,
   and depth-one probes `Q[e_n − e_0] = 2ℓ(0) − 2ℓ(n)`.
 
@@ -423,9 +431,28 @@ nonnegative Weil form at every width `w ≤ K★_sharp(β, ε, a) δ_N`
 (`eventually_weilQuad_windowTest_nonneg_sharp`), where
 `K★_sharp = min(1/10, 1/(2C_D), a/C_X, exp(2θ′(0) + 2c_∞ + β + γ − ε − a − 1/25))`,
 `C_X ≈ 24`, `C_D ≈ 7.4`. That is about `0.067` of the spacing for plateau profiles and about `0.048`
-for every profile, against a Robin–Euler threshold of `≈ 0.43`, respectively `≈ 0.16`. The rest of
-the stability regime is constants again, at most a factor of about six; beyond `K_RE` the mechanism
-must change.
+for every profile, against a Robin–Euler threshold of `≈ 0.43`, respectively `≈ 0.16`.
+
+[TheCrossEnergyOfTwoWindowsIsBoundedByTheirMasses](TheCrossEnergyOfTwoWindowsIsBoundedByTheirMasses.lean),
+[TheStabilityRegimeReachesAQuarterOfTheRobinEulerThreshold](TheStabilityRegimeReachesAQuarterOfTheRobinEulerThreshold.lean):
+two more losses are removable.
+- The correlation of two windows has total mass `∫|c_mn| ≤ ‖G_m‖₁‖G_n‖₁ ≤ w y_m y_n` (Fubini,
+  `integral_abs_pairCorr_le`). Since `ω` is decreasing, a pair at lag `s ≥ 2w` costs at most
+  `ω(s − w)‖G_m‖₁‖G_n‖₁` (`integral_levy_abs_pairCorr_le`), and the cross penalty halves
+  (`levyEnergy_windowTest_ge_fubini`).
+- With `ψ(x) ≤ (1 + η)x` beyond some `X₀` (the prime number theorem), the up-rows of the low atoms
+  obey `mR_m ≤ (1 + η)N/(b log N) + N^b`. The high atoms `N/m < X₀` form a harmonic tail of bounded
+  size, so `Σ m R_m² ≤ ((1 + η)²/b² + o(1))N²/log N` (`sum_mul_upRow_sq_le_pnt`,
+  `eventually_upWeightPNT_le`): Chebyshev's `B_ψ² ≈ 8.2` becomes `1`.
+
+With `λ = 1/4`, `κ = 3/20`, `b = 19/20`, `θ = 2`, `ρ = 3/2`: eventually in `N` Weil's form is
+nonnegative on every window test of shape `β` at every width `w ≤ K★_q(β, ε, a) δ_N`
+(`eventually_weilQuad_windowTest_nonneg_quarter`), with `C_X ≈ 10.5`, `C_D ≈ 7.0` in place of
+`24` and `7.4`. That is `≈ 0.108` of the spacing for plateau profiles, a quarter of `K_RE`, and
+`≈ 0.072` for every profile. The method has a ceiling. Positivity needs
+`log(K_RE/K) − ε ≥ K·C_X`, and `C_X` keeps the Lévy loss and the pole cost even with optimal
+constants, so lower-bounding `M` and paying `|2AB|` stays below about `K_RE/2`. The rest of the
+window needs the sign of the pole term.
 
 [TheOverlapRatioIsTheCoveredMeasure](TheOverlapRatioIsTheCoveredMeasure.lean): an atomic test
 vanishes off `⋃_n [log n, log n + w]`, of measure at most `Nw ≤ K` since `Nδ_N ≤ 1`
@@ -453,6 +480,23 @@ weight `π` has `(−M)π ≤ 0` (`eventually_not_stability_atomBlock`): the ato
 positive square along the pole vector. Beyond the Robin–Euler threshold `exp(2θ′(0) + κ_L(φ) + γ)`
 the Hodge index needs the pole plane to absorb that square, and it is exactly `(TD_π)`; the
 stability regime cannot be extended there by sharper constants.
+
+[TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar](TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar.lean):
+what exactly must hold beyond it? For an atomic test `f_x = Σ x_n g(· − log n)` the `H`-row is the
+pole functional at every width, overlapping atoms included:
+`∫ f_x e^{−u/2} = a₀ p(x)`, `a₀ = ∫ g e^{−v/2}`, `p(x) = Σ_{n ≤ N} x_n/√n`
+(`integral_atomicTest_mul_exp_neg_half`). A quadratic plus a rank-two term is nonnegative iff
+the quadratic is nonnegative on the kernel of one factor and the affine slice `{A = 1}` carries
+`Q + 2B ≥ 0` (`forall_add_two_mul_nonneg_iff`). Hence Weil positivity on the atomic family is
+exactly
+- `M(f_x) ≥ 0` on the pole complement `p = 0`, and
+- `M(f_x) + 2a₀ B(f_x) ≥ 0` on the hyperplane `p = 1`: one scalar, the infimum of a quadratic on an
+  affine hyperplane
+(`forall_weilQuad_atomicTest_nonneg_iff`). Beyond the Robin–Euler threshold the pole vector has
+`M < 0` and `p = H_N > 0`. So if Weil's form is nonnegative on the family, `M` has exactly one
+negative direction, transversal to the pole complement (`eventually_markovEnergy_pole_neg_and_gap`).
+The crossing of `K_RE` is therefore a gap of the prime form below its pole on `p = 0`, and one
+scalar inequality along `p = 1` that the pole term pays.
 
 [HyperbolicityIsBlindTheSignIsNot](HyperbolicityIsBlindTheSignIsNot.lean): the twisted Markov
 pairing is symmetric and bilinear, so the polar defect of a twin's Gram is the twin's Weil form
@@ -705,7 +749,12 @@ question is exactly `(TD_π)`; in the stability regime `K ≤ c₀` the atom blo
 semidefinite, and for `K ≤ c★` its coupling to the pole plane is paid by the tilted margin, so the
 central conjecture is a theorem there (`weilQuad_atomicTest_nonneg`). Between `c★` and the spacing
 the Metzler structure holds and `(TD_π)` is open; beyond the Robin–Euler threshold the atom block
-is provably outside the stability regime, so no row-sum argument reaches the window. There the
+is provably outside the stability regime, so no row-sum argument reaches the window. At every
+width the question is exactly a gap of `M` on the pole complement `Σ x_n/√n = 0` and one scalar
+condition on `Σ x_n/√n = 1` (`forall_weilQuad_atomicTest_nonneg_iff`). Inside the stability regime
+Weil positivity on window tests reaches `K_RE/4` for plateau profiles
+(`eventually_weilQuad_windowTest_nonneg_quarter`), and
+paying the pole term in absolute value has a ceiling near `K_RE/2`. Beyond the threshold the
 Markov form loses positivity along the pole vector `(n^{−1/2})`, the top of the prime form with
 finite part `−γ`
 (RenormalizedArithmeticPotentialTheory), which is the `H`-row of the pole plane: the pole term pays
@@ -799,7 +848,7 @@ exclude an off-line zero. Average rarity alone cannot.
 | Subtracting a positive correction proves the original signature | It proves the signature of a different form; identify the target or prove the domination |
 | Nonnegative coefficients and connectivity imply Hodge index | The golden datum passes both; the trickle-down inequality is the content |
 | Stability-regime positivity carries the arithmetic | It holds for every bounded twist; the trickle-down regime is open |
-| Sharper constants extend the stability regime to the spacing | They reach a fixed fraction of the Robin–Euler threshold (now about a sixth); there the atom block acquires a positive square along the pole vector and the mechanism must change |
+| Sharper constants extend the stability regime to the spacing | They reach a quarter of the Robin–Euler threshold, and paying the pole term in absolute value stops near half of it; at the threshold the atom block acquires a positive square along the pole vector and the mechanism must change |
 | A proved Hodge index on an atomic family is arithmetic | At a fixed fraction of the spacing it holds at the Liouville point; only the Metzler sign rejects that twin |
 | Beyond the spacing a better gauge restores the Metzler sign | For `K > 1` an odd triangle of atoms frustrates every unimodular gauge; change the basis or prove the gap |
 | A positive Euler product gives the arithmetic sign | Its Hessian is Lorentzian for every nonnegative local datum and is not the Weil pairing |

@@ -65,8 +65,10 @@ theorem inner_firstHaarTranslationOrbit (j k : ℕ) :
 /-- Distinct levels retain a fixed positive physical L² separation. -/
 theorem dist_firstHaarTranslationOrbit_sq {j k : ℕ} (hjk : j ≠ k) :
     dist (firstHaarTranslationOrbit j) (firstHaarTranslationOrbit k) ^ 2 = 2 * haarMass 1 := by
-  have hnorm := inner_self_eq_norm_sq (𝕜 := ℂ)
-    (firstHaarTranslationOrbit j - firstHaarTranslationOrbit k)
+  have hnorm : (inner ℂ (firstHaarTranslationOrbit j - firstHaarTranslationOrbit k)
+      (firstHaarTranslationOrbit j - firstHaarTranslationOrbit k)).re =
+      ‖firstHaarTranslationOrbit j - firstHaarTranslationOrbit k‖ ^ 2 :=
+    inner_self_eq_norm_sq (𝕜 := ℂ) _
   simp only [inner_sub_left, inner_sub_right, inner_firstHaarTranslationOrbit,
     ite_true, if_neg hjk, if_neg hjk.symm, sub_zero, zero_sub,
     Complex.sub_re, Complex.neg_re, Complex.ofReal_re] at hnorm
@@ -97,9 +99,13 @@ theorem not_totallyBounded_firstHaarTranslationOrbit :
     have hjk : j = k := by
       by_contra hne
       have hd := dist_firstHaarTranslationOrbit_sq hne
-      have hnn := dist_nonneg (x := firstHaarTranslationOrbit j) (y := firstHaarTranslationOrbit k)
+      have hnn : 0 ≤ dist (firstHaarTranslationOrbit j) (firstHaarTranslationOrbit k) := dist_nonneg
       have hs := Real.sq_sqrt hm.le
-      nlinarith only [hd, hy, hnn, hs, Real.sqrt_nonneg (haarMass 1), hm]
+      have hp := mul_pos (sub_pos.mpr hy)
+        (show 0 < Real.sqrt (haarMass 1) +
+          dist (firstHaarTranslationOrbit j) (firstHaarTranslationOrbit k) by
+          linarith only [hnn, Real.sqrt_pos.mpr hm])
+      nlinarith only [hd, hs, hp, hm]
     simpa only [hjk] using hyT
   exact (infinite_range_of_injective firstHaarTranslationOrbit_injective).not_finite (hTfin.subset hsub)
 

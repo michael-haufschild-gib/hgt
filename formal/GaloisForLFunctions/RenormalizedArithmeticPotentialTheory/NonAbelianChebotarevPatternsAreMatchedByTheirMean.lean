@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArtinMertens.TheFrobeniusDensityTheoremInMertensForm
+import GaloisForLFunctions.ArtinMertens.TheFrobeniusDensityTheoremWithBoundedError
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheMatchingCoefficientIsTheLogarithmicDensity
 
 /-!
@@ -11,9 +11,12 @@ logarithmic mean `⟨f, 1⟩ = |G|⁻¹ Σ_σ f(σ)` (`tendsto_chebotarevPattern
 `ε_g` has polar matching coefficient `κ = ⟨f, 1⟩`
 (`tendsto_gaugeMertensSum_chebotarevPattern_div_log`) and obeys the soft law
 `|P_N(ε_g x) − ⟨f, 1⟩ ℓ(x)²| ≤ (η log N + C_η) · mass` (`gaugeForm_chebotarevPattern_soft`).
+With the bounded-error form `Σ_{p ≤ y} g(p) log p/p = ⟨f, 1⟩ log y + O(1)` the Mertens error of `ε_g`
+is bounded (`exists_abs_gaugeMertensSum_chebotarevPattern_sub_le`) and the law holds at mass scale:
+`|P_N(ε_g x) − ⟨f, 1⟩ ℓ(x)²| ≤ C · mass` (`exists_abs_gaugeForm_chebotarevPattern_sub_le`).
 
-The input is the Frobenius density theorem in Mertens form (`ArtinMertens`); the ramified primes
-divide `disc L ≠ 0` and contribute a bounded amount.
+The input is the Frobenius density theorem in Mertens form, with bounded error (`ArtinMertens`); the
+ramified primes divide `disc L ≠ 0` and contribute a bounded amount.
 -/
 
 noncomputable section
@@ -116,5 +119,47 @@ theorem gaugeForm_chebotarevPattern_soft {frob : ℕ → G} (hfrob : IsFrobenius
         (η * Real.log N + C) * ∑ i, ∑ j, |c i| * |c j| * harmonicSum (min (M i) (M j)) :=
   gaugeForm_primeSignGauge_soft (chebotarevPattern_mul_self frob hf)
     (tendsto_chebotarevPattern_div_log hfrob hfd)
+
+/-- **Bounded Mertens error**: `|A_{ε_g}(y) − ⟨f, 1⟩ log y| ≤ K` for all `y ≥ 1`. -/
+theorem exists_abs_gaugeMertensSum_chebotarevPattern_sub_le {frob : ℕ → G}
+    (hfrob : IsFrobeniusChoice L frob) {f : G → ℝ} (hf : ∀ σ, f σ * f σ = 1)
+    (hfd : IsDivisionConstant f) :
+    ∃ K : ℝ, ∀ y : ℕ, 1 ≤ y →
+      |gaugeMertensSum (primeSignGauge (chebotarevPattern L frob f)) y -
+        classMean f * Real.log y| ≤ K := by
+  obtain ⟨C, hC⟩ := exists_abs_frobMertens_sub_le hfrob hfd
+  have hC0 : 0 ≤ C := (abs_nonneg _).trans (hC 2 le_rfl)
+  refine ⟨C + ∑ p ∈ ((Icc 1 (discr L).natAbs).filter Nat.Prime).filter
+    (fun p : ℕ => (p : ℤ) ∣ discr L), Real.log p / p + (8 + RHTower.Mertens.mertensTail),
+    fun y hy => ?_⟩
+  have hfr : |frobMertens L frob f y - classMean f * Real.log y| ≤ C := by
+    rcases Nat.lt_or_ge y 2 with h | h
+    · obtain rfl : y = 1 := by omega
+      simpa [frobMertens, Finset.filter_singleton, Nat.not_prime_one] using hC0
+    · exact hC y h
+  have hram0 : 0 ≤ ∑ p ∈ ((Icc 1 y).filter Nat.Prime).filter (fun p : ℕ => (p : ℤ) ∣ discr L),
+      Real.log p / p := sum_nonneg fun p _ =>
+    div_nonneg (Real.log_natCast_nonneg p) (Nat.cast_nonneg p)
+  have hram := ramifiedLogSum_le L y
+  have hR := abs_le.mp (abs_primeSignRemainder_le (chebotarevPattern_mul_self frob hf) y)
+  have hfr' := abs_le.mp hfr
+  rw [gaugeMertensSum_primeSignGauge_eq, sum_chebotarevPattern_eq, abs_le]
+  constructor <;> linarith [hR.1, hR.2, hfr'.1, hfr'.2]
+
+/-- **The mass-scale law for Chebotarev patterns**: there is `C` with
+`|P_N(ε_g x) − ⟨f, 1⟩ ℓ(x)²| ≤ C Σ_{i,j} |c_i| |c_j| H_{min(M_i, M_j)}` on step profiles. -/
+theorem exists_abs_gaugeForm_chebotarevPattern_sub_le {frob : ℕ → G}
+    (hfrob : IsFrobeniusChoice L frob) {f : G → ℝ} (hf : ∀ σ, f σ * f σ = 1)
+    (hfd : IsDivisionConstant f) :
+    ∃ C : ℝ, ∀ {k N : ℕ} (c : Fin k → ℝ) (M : Fin k → ℕ), (∀ i, M i ≤ N) → (∀ i, 1 ≤ M i) →
+      |atomicWeilForm N (fun n => primeSignGauge (chebotarevPattern L frob f) n *
+          stepProfile c M n) - classMean f * polarFunctional N (stepProfile c M) ^ 2| ≤
+        C * ∑ i, ∑ j, |c i| * |c j| * harmonicSum (min (M i) (M j)) := by
+  obtain ⟨K, hK⟩ := exists_abs_gaugeMertensSum_chebotarevPattern_sub_le hfrob hf hfd
+  have hκ : |classMean f| ≤ 1 := abs_kappa_le_of_tendsto (chebotarevPattern_mul_self frob hf)
+    (tendsto_chebotarevPattern_div_log hfrob hfd)
+  exact ⟨2 * K + 2 * Real.log 2 + 4, fun c M hM hM1 =>
+    abs_gaugeForm_stepProfile_sub_le (primeSignGauge_isSignGauge (chebotarevPattern_mul_self frob hf))
+      hκ hK c M hM hM1⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

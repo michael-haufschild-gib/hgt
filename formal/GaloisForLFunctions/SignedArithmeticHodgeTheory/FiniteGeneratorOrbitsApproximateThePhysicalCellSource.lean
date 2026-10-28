@@ -72,14 +72,15 @@ theorem logCellGeneratorHead_orbit (A : ℕ) (i : ℕ × Option ℕ+) :
     funext k
     by_cases hk : k = i
     · subst k
-      simp only [lpCoordinateProjection_apply, indicator_of_mem hi]
+      simp only [lpCoordinateProjection_apply, Set.indicator_apply, Set.mem_setOf_eq, if_pos hi]
     · simp [lpCoordinateProjection_apply, indicator_apply, lp.single_apply, hk, hk.symm]
   · rw [map_zero]
     apply lp.ext
     funext k
     by_cases hk : k = i
     · subst k
-      simp only [lpCoordinateProjection_apply, indicator_of_notMem hi, lp.coeFn_zero, Pi.zero_apply]
+      simp only [lpCoordinateProjection_apply, Set.indicator_apply, Set.mem_setOf_eq,
+        if_neg hi, lp.coeFn_zero, Pi.zero_apply]
     · simp [lpCoordinateProjection_apply, indicator_apply, lp.single_apply, hk, hk.symm]
 
 theorem logCellGeneratorHead_root (A j : ℕ) :

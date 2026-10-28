@@ -95,6 +95,8 @@ theorem sqrt_mass_wholeLineLogCellOrbit_coeFn (a : ℕ+) (j : ℕ) :
       wholeLineLogCellEmbedding (logCellDyadicOrbit (j, some a)) =
       halfLineExtend ((halfLineRightShift (Real.log 2) ^ j) (haarAtom a)) := by
     rw [wholeLineLogCellEmbedding, ContinuousLinearMap.comp_apply, ← map_smul]
+    change halfLineExtend ((Real.sqrt (haarMass a) : ℂ) •
+      logCellEmbedding ((logCellShift 2 ^ j) (logCellDyadicDetail a))) = _
     exact congrArg halfLineExtend (sqrt_haarMass_smul_logCellEmbedding_detail_pow a j)
   have h := Lp.coeFn_smul (Real.sqrt (haarMass a) : ℂ)
     (wholeLineLogCellEmbedding (logCellDyadicOrbit (j, some a)))

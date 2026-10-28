@@ -40,8 +40,10 @@ private theorem labelTail_summable {F : ℕ → ℝ} (hF : Summable F) (M : ℕ)
     Summable (fun a => if M ≤ a then F a else 0) := by
   refine (hF.indicator {a | M ≤ a}).congr fun a => ?_
   by_cases ha : M ≤ a
-  · rw [if_pos ha, Set.indicator_of_mem ha]
-  · rw [if_neg ha, Set.indicator_of_notMem ha]
+  · rw [if_pos ha]
+    exact _root_.Set.indicator_of_mem (s := {a : ℕ | M ≤ a}) ha F
+  · rw [if_neg ha]
+    exact _root_.Set.indicator_of_notMem (s := {a : ℕ | M ≤ a}) ha F
 
 private theorem labelTail_nonneg {F : ℕ → ℝ} (hF : ∀ a, 0 ≤ F a) (M : ℕ) :
     0 ≤ labelTail F M := by

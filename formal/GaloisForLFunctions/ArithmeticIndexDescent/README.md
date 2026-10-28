@@ -1169,6 +1169,14 @@ the original coefficients and horizon. The factor at two retains its
 sharper even-lag constant. The finite prime set cannot be enlarged to all
 primes by summing these constants.
 
+The same cutoff supplies a genuine upper index bound for this partial
+source: for every fixed `P`, one `A` bounds the dimension of every strictly
+negative real subspace of `Gamma-B_P`, uniformly in all complete horizons
+and finite profile families. The first `A` detail coordinates are injective
+on such a subspace, because their common kernel has nonnegative form.
+The bound depends on `P`; it has no asserted uniformity as the prime set
+grows.
+
 ### All cubes and higher prime powers
 
 The exponent threshold changes the summation problem. The literal critical
@@ -1192,6 +1200,12 @@ and complete horizons. Exact head subtraction identifies that error with
 the literal omitted detail tail. This removes the mixed contribution of
 cubes and higher powers from the nonsummable part of the problem. Prime
 and square layers, pure coarse contributions and poles remain separate.
+
+For `Gamma-B_(>=3)` this supplies one finite upper bound on every strictly
+negative real subspace, uniform in horizon and finite original profile
+family. It covers infinitely many primes with one fixed detail readout.
+The result follows from the actual tail payment: a vector whose finite
+detail head vanishes has nonnegative partial-source form.
 
 ### The regular square boundary
 
@@ -1746,7 +1760,9 @@ Quantitative pillars supplied by this programme:
 | Entire prime-two mixed Euler factor | All powers are absolutely summable in original Gamma energy; one fixed detail head gives arbitrary relative accuracy uniformly in every horizon | `TheEntirePrimeTwoEulerMixedSourceIsGammaSmall` |
 | Entire Euler mixed index | Gamma minus the entire prime-two mixed Euler source has one finite upper negative-dimension bound across every horizon and finite real profile family | `ThePrimeTwoEulerMixedFormHasUniformFiniteIndex` |
 | Finite collections of complete Euler factors | Exact coefficient sums and the odd-detail correction give one arbitrary-accuracy detail cutoff for every fixed finite prime set, retaining all its powers | `EveryFixedEulerMixedSourceIsGammaSmall` |
+| Finite Euler collections have finite mixed index | For each fixed prime set, one detail readout bounds all negative dimensions of Gamma minus its complete mixed Euler source, uniformly in horizon | `FiniteEulerMixedFormsHaveUniformFiniteIndex` |
 | All cubes and higher prime powers | The summable critical coefficient budget over every prime gives a uniform Gamma-small mixed tail and finite-detail approximation | `AllHigherPrimePowerMixedTailsAreGammaSmall` |
+| Infinite-prime higher-power mixed index | Gamma minus all mixed powers of exponent at least three has one uniform upper negative-dimension bound at every complete horizon | `AllHigherPrimePowerMixedFormsHaveUniformFiniteIndex` |
 | Regular square-prime boundary | Exact digamma and Xi decomposition proves a positive gap below the original Gamma jump symbol at every frequency | `TheSquarePrimeBoundaryHasAGammaGap` |
 | Full separated-source payment | Prime, Gamma and both pole contributions yield an adjustable old-mass charge with a finite reciprocal new-mass charge | `TheSeparatedMixedSourceIsBounded` |
 | Full touching-cell payment | A gap-independent ordered-window source bound pays any old-mass allowance; a sufficiently short adjacent cell retains the exact old diagonal and any prescribed new charge | `TouchingCellsPayTheFullMixedSource` |

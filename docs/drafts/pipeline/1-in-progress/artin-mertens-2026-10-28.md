@@ -42,13 +42,13 @@ Programme folder: `formal/GaloisForLFunctions/ArtinMertens/`.
       `Σ φ(Frob_p) log p/p ∼ ⟨φ, 1⟩ log y` (Frobenius density theorem, Mertens form)
       (`TheFrobeniusDensityTheoremInMertensForm`: `mem_permSpan_of_isDivisionConstant`,
       `tendsto_frobMertens_div_log`, `tendsto_frobMertens_divisionIndicator_div_log`)
-- [ ] S7 error term: Weber `I_K(x) = c_K x + O(x^{1−1/n})` ⇒ `O(1)` in S3, S5, S6. Mathlib has only
+- [x] S7 error term: Weber `I_K(x) = c_K x + O(x^{1−1/n})` ⇒ `O(1)` in S3, S5, S6. Mathlib has only
       the limit (box-integral Riemann sums, no rate). Route:
-      (A) lattice count: `|#(Λ ∩ Y)·covol − vol Y| ≤ vol(cthickening d (∂Y))`, `d` = diameter of a
-          fundamental cell (cells of interior points stay inside; segment crossing hits `∂Y`); scaled:
-          error `t^n vol(cthickening (d/t) ∂Y)`.
-      (B) `vol(cthickening ε S) ≤ N_ε(S) vol(ball 2ε)` (HTGeometry `le_encard_of_isCover_of_measure_le`)
-          and `N_ε(φ''[0,1]^{n−1}) ≤ N_{ε/M}([0,1]^{n−1})` (`externalCoveringNumber_image_le`) ⇒ `O(ε)`.
+      (A) lattice count: `|#(Λ ∩ Y)·covol − vol Y| ≤ vol(cthickening d (∂Y))`, `d` bounds a fundamental
+          cell (cells of lattice points of `Y` stay in `Y ∪ (∂Y)_d`; segment crossing hits `∂Y`).
+      (B) the `d`-thickening of `M`-Lipschitz images of cube faces is covered by
+          `(⌈M/d⌉ + 2)^{n−1}` balls of radius `3d` (grid of spacing `≤ d/M`); for `t·Y` the maps are
+          `tM`-Lipschitz, so the error is `O(t^{n−1})`.
       (C) `∂(normLeOne K)` ⊆ finitely many Lipschitz images of `[0,1]^{n−1}`: `normLeOne =
           normAtAllPlaces⁻¹'(expMapBasis '' paramSet)`; `u = exp(x_{w₀}) ∈ [0,1]` makes the map
           `(u, x_i, θ_w, signs) ↦ (±u Π|η_i|_w^{x_i}, u Π|η_i|_w^{x_i} e^{iθ_w})` Lipschitz on a closed box;
@@ -58,8 +58,13 @@ Programme folder: `formal/GaloisForLFunctions/ArtinMertens/`.
       (`frontier_normLeOne_subset`, `exists_lipschitzOnWith_boundaryParam`, `card_paramIndex`).
       (D) class-wise count = lattice points in `s^{1/n}·normLeOne` (`card_isPrincipal_dvd_norm_le`;
           Mathlib's class bijections are private: reprove) ⇒ `I_K(s) = c_K s + O(s^{1−1/n})`.
-      (E) Mertens `O(1)`: `L(x) ≥ I(x) log x − Σ_j I(x/e^j)`, `Σ_{N𝔭^k ≤ x} log N𝔭 (N𝔭^k)^{δ−1} = O(x^δ)`
-          (dyadic, Chebyshev S2) ⇒ `A_K(x) = log x + O(1)`; S4a/S5/S6 differences already bounded.
+      (E) Mertens `O(1)` via Abel summation (majorization against decreasing weights, `log` lower
+          bound) and `σ = 1 − 1/(n+1)`.
+      Done: (D) `TheIdealCountHasAPowerSavingErrorTerm` (`exists_abs_card_norm_le_sub_le`,
+      `exists_abs_idealCount_sub_le`); (E) `TheMertensTheoremForPrimeIdealsHasABoundedError`
+      (`exists_abs_primeMertens_sub_log_le`); propagation `TheFrobeniusDensityTheoremWithBoundedError`
+      (`exists_abs_frobMertens_sub_le`: `Σ φ(Frob_p) log p/p = ⟨φ, 1⟩ log x + O(1)` for division-constant
+      `φ`; `exists_abs_frobMertens_divisionIndicator_sub_le`).
 - [ ] S8 non-rational `φ`: Brauer induction + Hecke `L`-functions of intermediate fields
       (ray-class characters, `L(1, ψ) ≠ 0`, Mertens for Hecke characters)
 
