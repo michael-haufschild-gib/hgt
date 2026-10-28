@@ -458,3 +458,6 @@ theorem eventually_atomicWeilForm_le_of_modes {T ε : ℝ} (hT : 0 < T) (hε : 0
   nlinarith
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.eventually_atomicWeilForm_le_of_modes
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.boxSpectral

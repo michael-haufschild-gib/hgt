@@ -288,6 +288,7 @@ theorem abs_div_sub_one_lt_of_squeeze {A L c ε δ C₁ C₂ l : ℝ} (hc : 0 < 
   have hδ : 0 < δ := by linarith
   have k1 : ε * (c * L) ≤ δ / 10 * (c * L) := mul_le_mul_of_nonneg_right hεδ (by positivity)
   have k2 : 0 ≤ ε * (c * l) := by positivity
+  have k6 : 0 ≤ c * l := by positivity
   have k3 : 0 ≤ ε * (c * δ * L) := by positivity
   have k4 : 0 < c * δ * L := by positivity
   have k5 : ε * (c * δ * L) ≤ 1 / 10 * (c * δ * L) := mul_le_mul_of_nonneg_right hε1 k4.le

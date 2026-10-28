@@ -297,3 +297,10 @@ valid fixed scalar is
 Here w<=1 and wN=c. Thus the existing uniform finite-Ramanujan approximation
 applies to every bounded-energy vector, with no sign restriction on phi.
 This scalar is only a coercivity aid, not a claimed sharp constant.
+
+The literal full-Weil carrier now has an unchecked scratch draft,
+`/tmp/TheFullWeilMatrixIsTheActualAtomicForm.lean`: the Markov Gram plus both
+pole products, its exact polar-defect identity, the positive-integer/Fin index
+bijection, and equality of its Euclidean form to the actual synthesized Weil
+functional. It is not installed, checked, or counted. This is source transport,
+not the new spectral conclusion.

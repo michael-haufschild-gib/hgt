@@ -52,7 +52,7 @@ theorem primeHorizonWindowMass_le_approximation_cost {L N : ℕ} (hLN : L ≤ N)
       rw [hext]
       nlinarith only [sq_nonneg (primeHorizonExtension x n - 2 * primeHorizonExtension v n)]
     _ = 2 * primeHorizonWindowMass L (x - v) + 2 * primeHorizonWindowMass L v := by
-      rw [sum_add_distrib, ← mul_sum, ← mul_sum]
+      simp only [primeHorizonWindowMass, sum_add_distrib, ← mul_sum]
     _ ≤ _ := add_le_add
       (mul_le_mul_of_nonneg_left (primeHorizonWindowMass_le_norm_sq hLN (x - v)) zero_le_two)
       le_rfl

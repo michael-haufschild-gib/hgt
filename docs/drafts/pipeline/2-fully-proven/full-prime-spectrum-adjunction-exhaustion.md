@@ -747,3 +747,10 @@ The retry is active; this module remains unverified.
 The generic Hermitian-window retry passed and is installed. Its three audited
 endpoints use only the standard three axioms. Two endpoint drafts remain; no
 contribution count changes until final source checks and novelty reassessment.
+
+The first actual-count scratch check failed in a zero-power simplification of
+the residual limit: the exponent needed an explicit natural-number type.
+The rank/count proof otherwise elaborated. Added that annotation, replaced a
+deprecated negation tactic, and started the retry. Its failed-file axiom report
+was excluded. The matching normalization in the eigenline draft was repaired
+before its first check. Verified count remains fourteen scratch modules.
