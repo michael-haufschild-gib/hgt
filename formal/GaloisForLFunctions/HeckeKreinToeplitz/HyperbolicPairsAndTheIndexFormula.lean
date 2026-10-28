@@ -392,12 +392,11 @@ theorem le_negIndex_of_separated_out {p : G → ℂ} (hp : IsPosDefOnGroup p)
           gcongr
       _ ≤ r * ((((κ + κ : ℕ) + (κ + κ : ℕ) : ℝ) * T) ^ 2 * (κ * ∑ j, ‖a j‖ ^ 2)) := by
           gcongr
-      _ = K₀ * ∑ j, ‖a j‖ ^ 2 := by rw [hpre]; ring
+      _ = K₀ * ∑ j, ‖a j‖ ^ 2 := by simp only [K₀, hpre]; ring
   -- some coordinate is nonzero
   obtain ⟨l, hl⟩ : ∃ l, a l ≠ 0 := by
     by_contra h
-    push_neg at h
-    exact ha (funext h)
+    exact ha (funext fun j => not_not.mp fun hj => h ⟨j, hj⟩)
   have hneg : ∑ j, -(2 * ‖ω j‖ * ‖χ j u‖ ^ N * ‖a j‖ ^ 2) < -(K₀ * ∑ j, ‖a j‖ ^ 2) := by
     rw [sum_neg_distrib, neg_lt_neg_iff, mul_sum]
     refine sum_lt_sum (fun j _ => ?_) ⟨l, mem_univ l, ?_⟩
