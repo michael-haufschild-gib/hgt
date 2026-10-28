@@ -339,3 +339,40 @@ The finite expansion is also established external baseline: Toth--Haukkanen,
 Sections 2.3--4. The gcd-function Ramanujan basis and Möbius description were
 checked in the primary text through Proposition 2 and its proof. Neither this
 algebra nor its Lean adapter is a separately counted contribution.
+
+The exact box-to-gcd adapter has an unverified draft,
+`/tmp/ValuationBoxesAreFiniteRamanujanSpans.lean`. The modulus is constructed
+from the existing bundled-prime exponent vector, so its prime valuations are
+exactly L below P and zero elsewhere. The inspected `Nat.factorization_gcd`
+then truncates each retained valuation by `min(v,L)`. Box membership is
+preserved, and inside the box the gcd equals the existing smooth part.
+Together with the preceding finite expansion, this gives one fixed conductor
+set for every truncated smooth-part profile, independently of N and x.
+
+The unverified valuation-tail adapter is
+`/tmp/PrimeValuationBoxesCaptureBoundedDefect.lean`. It sets
+`B_P=sum_(p<P)(2/log(p)+2/(p-1))` and derives
+`mass_(outside box)<=B_P*(D+mass)/L` from the exact moment inequality.
+For `mass<=1`, `D<=K`, and any eta>0, choose P with
+`log(P)>2C(K+1)/eta`, then L with `L>2B_P(K+1)/eta`.
+The conditional error and discarded tail are each at most eta/2. The gcd-span
+identity supplies coefficients in the fixed conductor set dividing the box
+modulus. Thus these inputs would prove uniform finite-Ramanujan approximation
+at every horizon; their Lean checks and final assembly remain.
+
+The complete approximation assembly has an unverified scratch draft,
+`/tmp/BoundedPrimeDefectHasFiniteRamanujanApproximation.lean`. For every
+K>=0 and eta>0 it selects a fixed finite positive conductor set S such that
+every horizon vector with squared mass at most one and defect at most K has
+squared distance at most eta from its Ramanujan pole-profile span. It uses
+the pointwise truncation inequality and the explicit prime and valuation
+cutoffs above. All nine support drafts still require sequential checks;
+none is installed, audited, or counted.
+
+The generic finite Gram estimate has an unverified scratch draft,
+`/tmp/FiniteGramApproximationCertificate.lean`. Entrywise proximity to identity
+gives a one-half synthesis lower bound. A unit vector within distance one-half
+of the span then has squared coordinate mass at least 1/18 by Cauchy--Schwarz.
+The inspected `ChronologicalHalfTailGram.lean` already uses this perturbation
+mechanism, and `GreedyCourantFischer.lean` supplies the rank-nullity argument.
+These are baseline supporting linear algebra, not separate contributions.

@@ -497,4 +497,435 @@ theorem boxGap_mul_boxVar_le {J : ℕ} (hJ : 1 ≤ J) (Q : ℕ) (f : ℕ → ℝ
         mul_le_mul_of_nonneg_right hW (boxLadderVar_nonneg _ _ _ _)
     _ ≤ ladderEnergy p u J f := by linarith
 
+/-! ### 4. Truncation at `X` -/
+
+/-- The `Q`-smooth numbers of `[1, X]`. -/
+def smoothSet (Q X : ℕ) : Finset ℕ := (Icc 1 X).filter fun a => ∀ p ∈ a.primeFactors, p < Q
+
+/-- The harmonic variance on the `Q`-smooth numbers of `[1, X]`. -/
+def smoothVar (Q X : ℕ) (h : ℕ → ℝ) : ℝ := wVar (smoothSet Q X) (fun a => 1 / (a : ℝ)) h
+
+/-- The Dirichlet form of the `Q`-smooth valuation chain on `[1, X]`. -/
+def smoothEnergy (Q X : ℕ) (h : ℕ → ℝ) : ℝ :=
+  ∑ p ∈ (range Q).filter Nat.Prime, ∑ u ∈ (smoothSet Q X).filter (fun u => ¬ p ∣ u),
+    ∑ i ∈ range (X + 1), ∑ j ∈ range (X + 1),
+      if i < j ∧ u * p ^ j ≤ X then
+        Real.log p / ((u * p ^ j : ℕ) : ℝ) * (h (u * p ^ j) - h (u * p ^ i)) ^ 2 else 0
+
+theorem mem_smoothSet {Q X a : ℕ} :
+    a ∈ smoothSet Q X ↔ 1 ≤ a ∧ a ≤ X ∧ ∀ p ∈ a.primeFactors, p < Q := by
+  simp [smoothSet, and_assoc]
+
+theorem smoothSet_subset_smoothBox (Q X : ℕ) : smoothSet Q X ⊆ smoothBox X Q := fun a ha => by
+  obtain ⟨h1, h2, h3⟩ := mem_smoothSet.mp ha
+  exact mem_smoothBox.mpr ⟨h1, h3, fun p => (Nat.factorization_lt p (by omega)).le.trans h2⟩
+
+/-- The `p`-ladders of the smooth numbers of `[1, X]`. -/
+theorem sum_smoothSet_eq_ladders {Q X p : ℕ} (hp : p.Prime) (hpQ : p < Q) (φ : ℕ → ℝ) :
+    ∑ a ∈ smoothSet Q X, φ a = ∑ u ∈ (smoothSet Q X).filter (fun u => ¬ p ∣ u),
+      ∑ i ∈ (range (X + 1)).filter (fun i => u * p ^ i ≤ X), φ (u * p ^ i) := by
+  rw [sum_sigma']
+  symm
+  refine sum_nbij' (fun x => x.1 * p ^ x.2)
+    (fun a => ⟨a / p ^ a.factorization p, a.factorization p⟩) ?_ ?_ ?_ ?_ ?_
+  · rintro ⟨u, i⟩ h
+    rw [mem_sigma, mem_filter, mem_filter, mem_range] at h
+    obtain ⟨⟨hu, -⟩, -, hle⟩ := h
+    obtain ⟨h1, -, h3⟩ := mem_smoothSet.mp hu
+    refine mem_smoothSet.mpr ⟨Nat.one_le_iff_ne_zero.mpr (mul_ne_zero (by omega)
+      (pow_ne_zero _ hp.ne_zero)), hle, fun q hq => ?_⟩
+    rw [Nat.primeFactors_mul (by omega) (pow_ne_zero _ hp.ne_zero), mem_union] at hq
+    rcases hq with hq | hq
+    · exact h3 q hq
+    · have hq' := Nat.mem_primeFactors.mp hq
+      have := (Nat.prime_dvd_prime_iff_eq hq'.1 hp).mp (hq'.1.dvd_of_dvd_pow hq'.2.1)
+      omega
+  · intro a ha
+    obtain ⟨h1, h2, h3⟩ := mem_smoothSet.mp ha
+    rw [mem_sigma, mem_filter, mem_filter, mem_range]
+    refine ⟨⟨mem_smoothSet.mpr ⟨Nat.ordCompl_pos p (by omega), ?_, fun q hq => ?_⟩,
+      Nat.not_dvd_ordCompl hp (by omega)⟩, ?_, ?_⟩
+    · exact (Nat.div_le_self _ _).trans h2
+    · exact h3 q (Nat.mem_primeFactors.mpr ⟨(Nat.mem_primeFactors.mp hq).1,
+        (Nat.mem_primeFactors.mp hq).2.1.trans (Nat.ordCompl_dvd a p), by omega⟩)
+    · show a.factorization p < X + 1
+      have := Nat.factorization_lt p (show a ≠ 0 by omega); omega
+    · show a / p ^ a.factorization p * p ^ a.factorization p ≤ X
+      rw [mul_comm, Nat.ordProj_mul_ordCompl_eq_self]; exact h2
+  · rintro ⟨u, i⟩ h
+    rw [mem_sigma, mem_filter, mem_filter] at h
+    dsimp only at h
+    obtain ⟨⟨hu, hpu⟩, -⟩ := h
+    have hu0 : u ≠ 0 := by have := (mem_smoothSet.mp hu).1; omega
+    have hfac : (u * p ^ i).factorization p = i := by
+      rw [Nat.factorization_mul hu0 (pow_ne_zero _ hp.ne_zero), Finsupp.add_apply,
+        hp.factorization_pow, Finsupp.single_eq_same, Nat.factorization_eq_zero_of_not_dvd hpu,
+        zero_add]
+    dsimp only
+    rw [hfac, Nat.mul_div_cancel _ (pow_pos hp.pos i)]
+  · intro a _
+    dsimp only
+    rw [mul_comm, Nat.ordProj_mul_ordCompl_eq_self]
+  · intro _ _
+    rfl
+
+/-- `log a = Σ_{p < Q} v_p(a) log p` on the `Q`-smooth numbers. -/
+theorem log_eq_sum_factorization {Q a : ℕ} (ha : 1 ≤ a) (hs : ∀ p ∈ a.primeFactors, p < Q) :
+    Real.log a = ∑ p ∈ (range Q).filter Nat.Prime, (a.factorization p : ℝ) * Real.log p := by
+  have hprod : (∏ p ∈ a.primeFactors, p ^ a.factorization p : ℕ) = a := by
+    have := Nat.prod_factorization_pow_eq_self (show a ≠ 0 by omega)
+    rwa [Finsupp.prod, Nat.support_factorization] at this
+  have hlog : Real.log a = ∑ p ∈ a.primeFactors, (a.factorization p : ℝ) * Real.log p := by
+    conv_lhs => rw [← hprod]
+    push_cast
+    rw [Real.log_prod (fun p hp => pow_ne_zero _ (by exact_mod_cast
+      (Nat.prime_of_mem_primeFactors hp).ne_zero))]
+    exact sum_congr rfl fun p _ => by rw [Real.log_pow]
+  rw [hlog]
+  refine sum_subset (fun p hp => mem_filter.mpr ⟨mem_range.mpr (hs p hp),
+    Nat.prime_of_mem_primeFactors hp⟩) fun p _ hp => ?_
+  rw [Nat.factorization_eq_zero_of_not_dvd (fun h => hp (Nat.mem_primeFactors.mpr
+    ⟨(mem_filter.mp ‹_›).2, h, by omega⟩)), Nat.cast_zero, zero_mul]
+
+/-- The ladder constant `M_Q = Σ_{p < Q} log p/(p − 1)`. -/
+def ladderConstant (Q : ℕ) : ℝ := ∑ p ∈ (range Q).filter Nat.Prime, Real.log p / ((p : ℝ) - 1)
+
+theorem ladderConstant_nonneg (Q : ℕ) : 0 ≤ ladderConstant Q :=
+  sum_nonneg fun p hp => div_nonneg (Real.log_natCast_nonneg p)
+    (by have := (mem_filter.mp hp).2.one_lt; have : (1 : ℝ) < p := by exact_mod_cast this
+        linarith)
+
+/-- `Σ_{i < j ≤ X, u p^j ≤ X} p^{−j} ≤ p^{−i}/(p − 1)`. -/
+theorem sum_up_ladder_le {p u X i : ℕ} (hp : p.Prime) (hu : 1 ≤ u) :
+    ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ j ≤ X then 1 / ((u * p ^ j : ℕ) : ℝ) else 0) ≤
+      1 / ((u * p ^ i : ℕ) : ℝ) * (1 / ((p : ℝ) - 1)) := by
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
+  have hr0 : (0 : ℝ) ≤ 1 / p := by positivity
+  have hr1 : (1 : ℝ) / p < 1 := by rw [div_lt_one (by linarith)]; exact hp1
+  have hu0 : (0 : ℝ) < u := by exact_mod_cast hu
+  calc ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ j ≤ X then 1 / ((u * p ^ j : ℕ) : ℝ) else 0)
+      ≤ ∑ j ∈ range (X + 1), (if i < j then 1 / ((u * p ^ j : ℕ) : ℝ) else 0) :=
+        sum_le_sum fun j _ => by
+          split_ifs with h1 h2 <;> first | exact le_rfl | (exact absurd h1.1 h2) | positivity
+    _ ≤ ∑ j ∈ range (i + 1 + X), (if i < j then 1 / ((u * p ^ j : ℕ) : ℝ) else 0) :=
+        sum_le_sum_of_subset_of_nonneg (range_subset_range.mpr (by omega))
+          fun j _ _ => by split_ifs <;> positivity
+    _ = ∑ k ∈ range X, 1 / ((u * p ^ i : ℕ) : ℝ) * ((1 / (p : ℝ)) * (1 / (p : ℝ)) ^ k) := by
+        rw [Finset.sum_range_add]
+        have h0 : ∑ j ∈ range (i + 1), (if i < j then 1 / ((u * p ^ j : ℕ) : ℝ) else 0) = 0 :=
+          sum_eq_zero fun j hj => if_neg (by have := mem_range.mp hj; omega)
+        rw [h0, zero_add]
+        refine sum_congr rfl fun k _ => ?_
+        rw [if_pos (by omega)]
+        push_cast
+        rw [pow_add, pow_succ, one_div_pow]
+        field_simp
+    _ = 1 / ((u * p ^ i : ℕ) : ℝ) * ((1 / (p : ℝ)) * ∑ k ∈ range X, (1 / (p : ℝ)) ^ k) := by
+        rw [mul_sum, mul_sum]
+    _ ≤ 1 / ((u * p ^ i : ℕ) : ℝ) * ((1 / (p : ℝ)) * (1 / (1 - 1 / p))) := by
+        refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hr0) (by positivity)
+        have := geom_sum_Ico_le_of_lt_one (m := 0) (n := X) hr0 hr1
+        rwa [← range_eq_Ico, pow_zero] at this
+    _ = 1 / ((u * p ^ i : ℕ) : ℝ) * (1 / ((p : ℝ) - 1)) := by
+        congr 1
+        have : (p : ℝ) - 1 ≠ 0 := by linarith
+        field_simp
+
+/-- One prime of the halo bound, ladder by ladder. -/
+theorem halo_ladder_aux {Q X p : ℕ} (hp : p ∈ (range Q).filter Nat.Prime) (u : ℕ → ℝ) :
+    ∑ a ∈ smoothSet Q X, Real.log p * (1 / (a : ℝ) * (a.factorization p : ℝ) * u a ^ 2) ≤
+      2 * (∑ v ∈ (smoothSet Q X).filter (fun v => ¬ p ∣ v), ∑ i ∈ range (X + 1),
+        ∑ j ∈ range (X + 1), if i < j ∧ v * p ^ j ≤ X then
+          Real.log p / ((v * p ^ j : ℕ) : ℝ) * (u (v * p ^ j) - u (v * p ^ i)) ^ 2 else 0) +
+      2 * (Real.log p / ((p : ℝ) - 1)) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * u a ^ 2 := by
+  obtain ⟨hpQ, hpp⟩ := mem_filter.mp hp
+  have hpQ' := mem_range.mp hpQ
+  have hlp : 0 ≤ Real.log p := Real.log_natCast_nonneg p
+  rw [sum_smoothSet_eq_ladders hpp hpQ',
+    sum_smoothSet_eq_ladders hpp hpQ' (fun a => 1 / (a : ℝ) * u a ^ 2), mul_sum, mul_sum,
+    ← sum_add_distrib]
+  refine sum_le_sum fun v hv => ?_
+  obtain ⟨hvS, hpv⟩ := mem_filter.mp hv
+  have hv1 := (mem_smoothSet.mp hvS).1
+  have hv0 : v ≠ 0 := by omega
+  -- the valuation along the ladder
+  have hval : ∀ i : ℕ, ((v * p ^ i).factorization p : ℝ) = i := fun i => by
+    rw [Nat.factorization_mul hv0 (pow_ne_zero _ hpp.ne_zero), Finsupp.add_apply,
+      hpp.factorization_pow, Finsupp.single_eq_same, Nat.factorization_eq_zero_of_not_dvd hpv,
+      zero_add]
+  set x : ℕ → ℝ := fun i => u (v * p ^ i)
+  -- `i x_i² ≤ Σ_{l < i} (2(x_i − x_l)² + 2x_l²)`
+  have hpt : ∀ i : ℕ, (i : ℝ) * x i ^ 2 ≤ ∑ l ∈ range i, (2 * (x i - x l) ^ 2 + 2 * x l ^ 2) := by
+    intro i
+    calc (i : ℝ) * x i ^ 2 = ∑ _l ∈ range i, x i ^ 2 := by rw [sum_const, card_range, nsmul_eq_mul]
+      _ ≤ _ := sum_le_sum fun l _ => by nlinarith [sq_nonneg (x i - 2 * x l)]
+  -- the energy and mass parts of the ladder
+  have hE : ∑ i ∈ (range (X + 1)).filter (fun i => v * p ^ i ≤ X),
+      Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ) * ∑ l ∈ range i, 2 * (x i - x l) ^ 2) =
+      2 * ∑ l ∈ range (X + 1), ∑ i ∈ range (X + 1),
+        (if l < i ∧ v * p ^ i ≤ X then
+          Real.log p / ((v * p ^ i : ℕ) : ℝ) * (u (v * p ^ i) - u (v * p ^ l)) ^ 2 else 0) := by
+    rw [sum_filter]
+    simp only [mul_sum]
+    rw [sum_comm]
+    refine sum_congr rfl fun i hi => ?_
+    split_ifs with hiX
+    · rw [← sum_range_add_sum_Ico _ (show i ≤ X + 1 by have := mem_range.mp hi; omega)]
+      have hrest : ∑ l ∈ Ico i (X + 1), 2 * (if l < i ∧ v * p ^ i ≤ X then
+          Real.log p / ((v * p ^ i : ℕ) : ℝ) * (u (v * p ^ i) - u (v * p ^ l)) ^ 2 else 0) = 0 :=
+        sum_eq_zero fun l hl => by rw [if_neg (by have := (mem_Ico.mp hl).1; omega), mul_zero]
+      rw [hrest, add_zero]
+      refine sum_congr rfl fun l hl => ?_
+      rw [if_pos ⟨mem_range.mp hl, hiX⟩]
+      simp only [x]; ring
+    · exact (sum_eq_zero fun l _ => by rw [if_neg (fun h => hiX h.2), mul_zero]).symm
+  have hM : ∑ i ∈ (range (X + 1)).filter (fun i => v * p ^ i ≤ X),
+      Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ) * ∑ l ∈ range i, 2 * x l ^ 2) ≤
+      2 * (Real.log p / ((p : ℝ) - 1)) * ∑ i ∈ (range (X + 1)).filter (fun i => v * p ^ i ≤ X),
+        1 / ((v * p ^ i : ℕ) : ℝ) * u (v * p ^ i) ^ 2 := by
+    rw [sum_filter, sum_filter, mul_sum]
+    have hswap : ∑ i ∈ range (X + 1), (if v * p ^ i ≤ X then
+        Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ) * ∑ l ∈ range i, 2 * x l ^ 2) else 0) =
+        ∑ l ∈ range (X + 1), 2 * x l ^ 2 * (Real.log p * ∑ i ∈ range (X + 1),
+          (if l < i ∧ v * p ^ i ≤ X then 1 / ((v * p ^ i : ℕ) : ℝ) else 0)) := by
+      have : ∀ i ∈ range (X + 1), (if v * p ^ i ≤ X then
+          Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ) * ∑ l ∈ range i, 2 * x l ^ 2) else 0) =
+          ∑ l ∈ range (X + 1), (if l < i ∧ v * p ^ i ≤ X then
+            2 * x l ^ 2 * (Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ))) else 0) := by
+        intro i hi
+        split_ifs with hiX
+        · rw [← sum_range_add_sum_Ico _ (show i ≤ X + 1 by have := mem_range.mp hi; omega)]
+          have hrest : ∑ l ∈ Ico i (X + 1), (if l < i ∧ v * p ^ i ≤ X then
+              2 * x l ^ 2 * (Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ))) else 0) = 0 :=
+            sum_eq_zero fun l hl => if_neg (by have := (mem_Ico.mp hl).1; omega)
+          rw [hrest, add_zero, mul_sum, mul_sum]
+          exact sum_congr rfl fun l hl => by rw [if_pos ⟨mem_range.mp hl, hiX⟩]; ring
+        · exact (sum_eq_zero fun l _ => if_neg (fun h => hiX h.2)).symm
+      rw [sum_congr rfl this, sum_comm]
+      refine sum_congr rfl fun l _ => ?_
+      rw [mul_sum, mul_sum]
+      exact sum_congr rfl fun i _ => by split_ifs <;> ring
+    rw [hswap]
+    refine sum_le_sum fun l _ => ?_
+    by_cases hlX : v * p ^ l ≤ X
+    · rw [if_pos hlX]
+      have hup := sum_up_ladder_le (X := X) (i := l) hpp hv1
+      have := mul_le_mul_of_nonneg_left hup hlp
+      have hx : 0 ≤ 2 * x l ^ 2 := by positivity
+      calc 2 * x l ^ 2 * (Real.log p * ∑ i ∈ range (X + 1),
+            (if l < i ∧ v * p ^ i ≤ X then 1 / ((v * p ^ i : ℕ) : ℝ) else 0))
+          ≤ 2 * x l ^ 2 * (Real.log p * (1 / ((v * p ^ l : ℕ) : ℝ) * (1 / ((p : ℝ) - 1)))) :=
+            mul_le_mul_of_nonneg_left this hx
+        _ = 2 * (Real.log p / ((p : ℝ) - 1)) * (1 / ((v * p ^ l : ℕ) : ℝ) * u (v * p ^ l) ^ 2) := by
+            simp only [x]; ring
+    · rw [if_neg hlX]
+      have : ∑ i ∈ range (X + 1), (if l < i ∧ v * p ^ i ≤ X then 1 / ((v * p ^ i : ℕ) : ℝ) else 0) = 0 :=
+        sum_eq_zero fun i _ => if_neg fun h => hlX (le_trans (Nat.mul_le_mul_left v
+          (Nat.pow_le_pow_right hpp.pos h.1.le)) h.2)
+      rw [this]
+      simp
+  -- assemble the ladder
+  calc ∑ i ∈ (range (X + 1)).filter (fun i => v * p ^ i ≤ X),
+        Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ) * ((v * p ^ i).factorization p : ℝ) * u (v * p ^ i) ^ 2)
+      ≤ ∑ i ∈ (range (X + 1)).filter (fun i => v * p ^ i ≤ X),
+        (Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ) * ∑ l ∈ range i, 2 * (x i - x l) ^ 2) +
+          Real.log p * (1 / ((v * p ^ i : ℕ) : ℝ) * ∑ l ∈ range i, 2 * x l ^ 2)) := by
+        refine sum_le_sum fun i _ => ?_
+        rw [hval, ← mul_add, ← mul_add, ← sum_add_distrib]
+        refine mul_le_mul_of_nonneg_left ?_ hlp
+        rw [mul_assoc]
+        exact mul_le_mul_of_nonneg_left (hpt i) (by positivity)
+    _ ≤ 2 * ∑ l ∈ range (X + 1), ∑ i ∈ range (X + 1),
+          (if l < i ∧ v * p ^ i ≤ X then
+            Real.log p / ((v * p ^ i : ℕ) : ℝ) * (u (v * p ^ i) - u (v * p ^ l)) ^ 2 else 0) +
+        2 * (Real.log p / ((p : ℝ) - 1)) * ∑ i ∈ (range (X + 1)).filter (fun i => v * p ^ i ≤ X),
+          1 / ((v * p ^ i : ℕ) : ℝ) * u (v * p ^ i) ^ 2 := by
+        rw [sum_add_distrib, hE]
+        exact add_le_add le_rfl hM
+
+/-- **The halo pays its mass**: `Σ (1/a) log a · u_a² ≤ 2E(u) + 2M_Q Σ (1/a) u_a²`. -/
+theorem sum_log_mul_sq_le_smoothEnergy (Q X : ℕ) (u : ℕ → ℝ) :
+    ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * Real.log a * u a ^ 2 ≤
+      2 * smoothEnergy Q X u + 2 * ladderConstant Q * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * u a ^ 2 := by
+  have hlog : ∀ a ∈ smoothSet Q X, 1 / (a : ℝ) * Real.log a * u a ^ 2 =
+      ∑ p ∈ (range Q).filter Nat.Prime, Real.log p * (1 / (a : ℝ) * (a.factorization p : ℝ) * u a ^ 2) :=
+    fun a ha => by
+      obtain ⟨h1, -, h3⟩ := mem_smoothSet.mp ha
+      rw [log_eq_sum_factorization h1 h3, mul_sum, sum_mul]
+      exact sum_congr rfl fun p _ => by ring
+  have hper : ∀ p ∈ (range Q).filter Nat.Prime,
+      ∑ a ∈ smoothSet Q X, Real.log p * (1 / (a : ℝ) * (a.factorization p : ℝ) * u a ^ 2) ≤
+        2 * (∑ v ∈ (smoothSet Q X).filter (fun v => ¬ p ∣ v), ∑ i ∈ range (X + 1),
+          ∑ j ∈ range (X + 1), if i < j ∧ v * p ^ j ≤ X then
+            Real.log p / ((v * p ^ j : ℕ) : ℝ) * (u (v * p ^ j) - u (v * p ^ i)) ^ 2 else 0) +
+        2 * (Real.log p / ((p : ℝ) - 1)) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * u a ^ 2 := by
+    intro p hp
+    exact halo_ladder_aux hp u
+  calc ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * Real.log a * u a ^ 2
+      = ∑ p ∈ (range Q).filter Nat.Prime, ∑ a ∈ smoothSet Q X,
+          Real.log p * (1 / (a : ℝ) * (a.factorization p : ℝ) * u a ^ 2) := by
+        rw [sum_congr rfl hlog, sum_comm]
+    _ ≤ ∑ p ∈ (range Q).filter Nat.Prime,
+        (2 * (∑ v ∈ (smoothSet Q X).filter (fun v => ¬ p ∣ v), ∑ i ∈ range (X + 1),
+          ∑ j ∈ range (X + 1), if i < j ∧ v * p ^ j ≤ X then
+            Real.log p / ((v * p ^ j : ℕ) : ℝ) * (u (v * p ^ j) - u (v * p ^ i)) ^ 2 else 0) +
+        2 * (Real.log p / ((p : ℝ) - 1)) * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * u a ^ 2) :=
+        sum_le_sum hper
+    _ = 2 * smoothEnergy Q X u + 2 * ladderConstant Q * ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * u a ^ 2 := by
+        rw [sum_add_distrib, ← mul_sum, ← sum_mul, ← mul_sum]
+        rfl
+
+
+/-! ### 5. Zero extension and the gap -/
+
+/-- The zero extension of `h − mean` from `[1, X]`. -/
+def zeroExt (Q X : ℕ) (h : ℕ → ℝ) (n : ℕ) : ℝ :=
+  if n ≤ X then h n - wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h else 0
+
+theorem smoothVar_le_boxVar (Q X : ℕ) (h : ℕ → ℝ) : smoothVar Q X h ≤ boxVar X Q (zeroExt Q X h) := by
+  set c := wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h
+  set c' := wMean (smoothBox X Q) (fun a => 1 / (a : ℝ)) (zeroExt Q X h)
+  calc smoothVar Q X h ≤ ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (h a - (c + c')) ^ 2 :=
+        wVar_le (fun a _ => by positivity) _
+    _ = ∑ a ∈ smoothSet Q X, 1 / (a : ℝ) * (zeroExt Q X h a - c') ^ 2 :=
+        sum_congr rfl fun a ha => by
+          rw [zeroExt, if_pos (mem_smoothSet.mp ha).2.1]; ring
+    _ ≤ ∑ a ∈ smoothBox X Q, 1 / (a : ℝ) * (zeroExt Q X h a - c') ^ 2 :=
+        sum_le_sum_of_subset_of_nonneg (smoothSet_subset_smoothBox Q X) fun a _ _ => by positivity
+    _ = boxVar X Q (zeroExt Q X h) := rfl
+
+/-- The boundary of `[1, X]` in the box: edges `a → a p^k` with `a ≤ X < a p^k`. -/
+def smoothBoundary (Q X : ℕ) (h : ℕ → ℝ) : ℝ :=
+  ∑ p ∈ (range Q).filter Nat.Prime, ∑ u ∈ (smoothSet Q X).filter (fun u => ¬ p ∣ u),
+    ∑ i ∈ range (X + 1), ∑ j ∈ range (X + 1),
+      if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then Real.log p / ((u * p ^ j : ℕ) : ℝ) *
+        (h (u * p ^ i) - wMean (smoothSet Q X) (fun a => 1 / (a : ℝ)) h) ^ 2 else 0
+
+/-- **The extension costs only the boundary**: `E_box(h⁰) ≤ E_X(h) + boundary`. -/
+theorem boxEnergy_zeroExt_le (Q X : ℕ) (h : ℕ → ℝ) :
+    boxEnergy X Q (zeroExt Q X h) ≤ smoothEnergy Q X h + smoothBoundary Q X h := by
+  rw [boxEnergy, smoothEnergy, smoothBoundary, ← sum_add_distrib]
+  refine sum_le_sum fun p hp => ?_
+  have hpp := (mem_filter.mp hp).2
+  -- ladders based above `X` carry nothing
+  have hsub : (smoothSet Q X).filter (fun u => ¬ p ∣ u) ⊆ (smoothBox X Q).filter (fun u => ¬ p ∣ u) :=
+    fun u hu => mem_filter.mpr ⟨smoothSet_subset_smoothBox Q X (mem_filter.mp hu).1,
+      (mem_filter.mp hu).2⟩
+  rw [← sum_subset hsub fun u hu hu' => ?_, ← sum_add_distrib]
+  · refine sum_le_sum fun u hu => ?_
+    have hu1 := (mem_smoothSet.mp (mem_filter.mp hu).1).1
+    rw [ladderEnergy, ← sum_add_distrib]
+    refine sum_le_sum fun i _ => ?_
+    rw [← sum_add_distrib]
+    refine sum_le_sum fun j _ => ?_
+    have hmono : ∀ {i j : ℕ}, i < j → u * p ^ i ≤ u * p ^ j := fun hij =>
+      Nat.mul_le_mul_left u (Nat.pow_le_pow_right hpp.pos hij.le)
+    by_cases hij : i < j
+    · by_cases hjX : u * p ^ j ≤ X
+      · rw [if_pos hij, if_pos ⟨hij, hjX⟩, if_neg (fun h => absurd h.2.2 (not_lt.mpr hjX)),
+          add_zero, zeroExt, zeroExt, if_pos hjX, if_pos ((hmono hij).trans hjX)]
+        ring_nf; exact le_rfl
+      · by_cases hiX : u * p ^ i ≤ X
+        · rw [if_pos hij, if_neg (fun h => hjX h.2), if_pos ⟨hij, hiX, not_le.mp hjX⟩, zero_add,
+            zeroExt, zeroExt, if_neg hjX, if_pos hiX]
+          ring_nf; exact le_rfl
+        · rw [if_pos hij, if_neg (fun h => hjX h.2), if_neg (fun h => hiX h.2.1), add_zero,
+            zeroExt, zeroExt, if_neg hjX, if_neg hiX, sub_self, sq, mul_zero, mul_zero]
+    · rw [if_neg hij, if_neg (fun h => hij h.1), if_neg (fun h => hij h.1), add_zero]
+  · -- `u ∈ box \ [1, X]`: `u > X`
+    obtain ⟨huB, hpu⟩ := mem_filter.mp hu
+    have hnot : ¬ u ≤ X := fun hle => hu' (mem_filter.mpr ⟨mem_smoothSet.mpr
+      ⟨(mem_smoothBox.mp huB).1, hle, (mem_smoothBox.mp huB).2.1⟩, hpu⟩)
+    refine sum_eq_zero fun i _ => sum_eq_zero fun j _ => ?_
+    have hle : ∀ k, ¬ u * p ^ k ≤ X := fun k hk => hnot ((Nat.le_mul_of_pos_right u
+      (pow_pos hpp.pos k)).trans hk)
+    split_ifs
+    · rw [zeroExt, zeroExt, if_neg (hle j), if_neg (hle i), sub_self, sq, mul_zero, mul_zero]
+    · rfl
+
+/-- `p^{−k} ≤ √(a/X) (1/√p)^k` when `X < a p^k`. -/
+theorem inv_pow_le_sqrt {p a X k : ℕ} (hp : 2 ≤ p) (hX : 1 ≤ X) (hk : X < a * p ^ k) :
+    1 / (p : ℝ) ^ k ≤ Real.sqrt ((a : ℝ) / X) * (1 / Real.sqrt p) ^ k := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast (show 0 < p by omega)
+  have hX0 : (0 : ℝ) < X := by exact_mod_cast hX
+  set r := Real.sqrt (p : ℝ)
+  have hr0 : 0 < r := Real.sqrt_pos.mpr hp0
+  have hr2 : r ^ 2 = p := Real.sq_sqrt hp0.le
+  have hpk : (p : ℝ) ^ k = (r ^ k) ^ 2 := by rw [← pow_mul, mul_comm, pow_mul, hr2]
+  have hrk : 0 < r ^ k := pow_pos hr0 k
+  have hak : 1 / (p : ℝ) ^ k ≤ (a : ℝ) / X := by
+    rw [div_le_div_iff₀ (by positivity) hX0, one_mul]
+    have : (X : ℝ) < a * p ^ k := by exact_mod_cast hk
+    linarith
+  have hsq : 1 / r ^ k ≤ Real.sqrt ((a : ℝ) / X) := by
+    have : Real.sqrt (1 / (p : ℝ) ^ k) = 1 / r ^ k := by
+      rw [hpk, one_div, Real.sqrt_inv, Real.sqrt_sq hrk.le, one_div]
+    rw [← this]
+    exact Real.sqrt_le_sqrt hak
+  calc 1 / (p : ℝ) ^ k = 1 / r ^ k * (1 / r ^ k) := by rw [hpk, sq, one_div_mul_one_div]
+    _ ≤ Real.sqrt ((a : ℝ) / X) * (1 / r ^ k) :=
+        mul_le_mul_of_nonneg_right hsq (by positivity)
+    _ = Real.sqrt ((a : ℝ) / X) * (1 / r) ^ k := by rw [one_div_pow]
+
+/-- The boundary weight of a point `a = u p^i ≤ X`: `Σ_{j > i, X < u p^j} log p/(u p^j) ≤
+4 (log p/a) √(a/X)`. -/
+theorem sum_boundary_weight_le {p u X i : ℕ} (hp : p.Prime) (hu : 1 ≤ u) (hX : 1 ≤ X) :
+    ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+      Real.log p / ((u * p ^ j : ℕ) : ℝ) else 0) ≤
+      4 * (Real.log p / ((u * p ^ i : ℕ) : ℝ)) * Real.sqrt (((u * p ^ i : ℕ) : ℝ) / X) := by
+  have hp2 := hp.two_le
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hlp : 0 ≤ Real.log p := Real.log_natCast_nonneg p
+  set q := 1 / Real.sqrt (p : ℝ)
+  have hq0 : 0 ≤ q := by positivity
+  have hq1 : q ≤ 3 / 4 := by
+    have h2 : (4 / 3 : ℝ) ≤ Real.sqrt p := by
+      rw [show (4 / 3 : ℝ) = Real.sqrt ((4 / 3) ^ 2) by rw [Real.sqrt_sq (by norm_num)]]
+      have h2' : (2 : ℝ) ≤ p := by exact_mod_cast hp2
+      exact Real.sqrt_le_sqrt (by nlinarith)
+    rw [div_le_iff₀ (by positivity)]; nlinarith
+  set B := Real.log p / ((u * p ^ i : ℕ) : ℝ) * Real.sqrt (((u * p ^ i : ℕ) : ℝ) / X)
+  have hB : 0 ≤ B := by positivity
+  calc ∑ j ∈ range (X + 1), (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+        Real.log p / ((u * p ^ j : ℕ) : ℝ) else 0)
+      ≤ ∑ j ∈ range (i + (X + 1)), (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+        Real.log p / ((u * p ^ j : ℕ) : ℝ) else 0) :=
+        sum_le_sum_of_subset_of_nonneg (range_subset_range.mpr (by omega))
+          fun j _ _ => by split_ifs <;> positivity
+    _ = ∑ k ∈ range (X + 1), (if 0 < k ∧ u * p ^ i ≤ X ∧ X < u * p ^ (i + k) then
+        Real.log p / ((u * p ^ (i + k) : ℕ) : ℝ) else 0) := by
+        rw [Finset.sum_range_add]
+        have h0 : ∑ j ∈ range i, (if i < j ∧ u * p ^ i ≤ X ∧ X < u * p ^ j then
+            Real.log p / ((u * p ^ j : ℕ) : ℝ) else 0) = 0 :=
+          sum_eq_zero fun j hj => if_neg (by have := mem_range.mp hj; omega)
+        rw [h0, zero_add]
+        refine sum_congr rfl fun k _ => ?_
+        congr 1
+        exact propext ⟨fun h => ⟨by omega, h.2⟩, fun h => ⟨by omega, h.2⟩⟩
+    _ ≤ ∑ k ∈ range (X + 1), B * q ^ k := by
+        refine sum_le_sum fun k _ => ?_
+        split_ifs with hk
+        · have hkey := inv_pow_le_sqrt (a := u * p ^ i) (k := k) hp2 hX
+            (by rw [mul_assoc, ← pow_add]; exact hk.2.2)
+          have e : Real.log p / ((u * p ^ (i + k) : ℕ) : ℝ) =
+              Real.log p / ((u * p ^ i : ℕ) : ℝ) * (1 / (p : ℝ) ^ k) := by
+            push_cast; rw [pow_add]; field_simp
+          rw [e]
+          calc Real.log p / ((u * p ^ i : ℕ) : ℝ) * (1 / (p : ℝ) ^ k)
+              ≤ Real.log p / ((u * p ^ i : ℕ) : ℝ) *
+                (Real.sqrt (((u * p ^ i : ℕ) : ℝ) / X) * q ^ k) :=
+                mul_le_mul_of_nonneg_left hkey (by positivity)
+            _ = B * q ^ k := by simp only [B]; ring
+        · positivity
+    _ = B * ∑ k ∈ range (X + 1), q ^ k := by rw [mul_sum]
+    _ ≤ B * 4 := by
+        refine mul_le_mul_of_nonneg_left ?_ hB
+        have := geom_sum_Ico_le_of_lt_one (m := 0) (n := X + 1) hq0 (by linarith)
+        rw [← range_eq_Ico, pow_zero] at this
+        refine this.trans ?_
+        rw [div_le_iff₀ (by linarith)]; linarith
+    _ = 4 * (Real.log p / ((u * p ^ i : ℕ) : ℝ)) * Real.sqrt (((u * p ^ i : ℕ) : ℝ) / X) := by
+        simp only [B]; ring
+
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+

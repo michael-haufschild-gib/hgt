@@ -4,7 +4,7 @@ import GaloisForLFunctions.RHTower.CHMDStage6PolarDoubleZeroAndContinuumLogMomen
 /-!
 # Pole cancellation across an ordered source boundary
 
-The first Gamma exponential is exactly one global polar cross term. The
+The first Gamma exponential is exactly one polar term of the ordered cross block. The
 remaining Gamma tail is the original boundary kernel conjugated by exponential
 distance weights. Its mixed loss is therefore localized near the boundary;
 the surviving global pole and signed prime interaction remain explicit.
@@ -134,7 +134,7 @@ theorem sourceGammaCollar_eq_pole_add_tail {f g : ℝ → ℝ} {b : ℝ}
     _ = _ := by rw [integral_exp_neg_half_sourceCollar_of_ordered
       hf.continuous hfc hg.continuous hgc hleft hright]
 
-/-- One global pole cross term cancels before the actual prime and Gamma source is estimated. -/
+/-- One ordered polar product cancels before the actual prime and Gamma source is estimated. -/
 theorem realWeilForm_ordered_pole_cancellation (f g : realTests) {b : ℝ}
     (hleft : ∀ u, b ≤ u → f.1 u = 0) (hright : ∀ u, u ≤ b → g.1 u = 0) :
     realWeilForm f g = poleB f.1 * poleA g.1 -

@@ -467,6 +467,344 @@ theorem abs_emSynth_sub_conv_le (hF : ContDiff ℝ ∞ F) (hFs : ∀ t, t ∉ Ic
     (htower.trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun i _ => hleib i)
       (by positivity))) (by positivity)) (by positivity))
 
+/-- `‖(φ_k)^{(q)}‖₁ = k^q ‖φ^{(q)}‖₁` for the dilate `φ_k = k φ(k·)`. -/
+theorem integral_abs_iteratedDeriv_dilate {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) {k : ℝ} (hk : 0 < k)
+    (q : ℕ) : ∫ s, |iteratedDeriv q (dilate k φ) s| = k ^ q * ∫ s, |iteratedDeriv q φ s| := by
+  have hφk : ContDiff ℝ ∞ fun s => φ (k * s) := hφ.comp (contDiff_const.mul contDiff_id)
+  have e : iteratedDeriv q (dilate k φ) = dilate k fun s => k ^ q * iteratedDeriv q φ s := by
+    funext s
+    have h1 := iteratedDeriv_const_mul (n := q) (x := s) k (contDiffAt_of_smooth hφk q s)
+    rw [iteratedDeriv_comp_const_mul (hφ.of_le (natCast_le_infty q)) k] at h1
+    exact h1
+  rw [e, integral_abs_dilate hk]
+  simp_rw [abs_mul, abs_pow, abs_of_pos hk]
+  exact integral_const_mul _ _
+
+theorem leibnizBound_pow_le {M A : ℕ → ℝ} (hM : ∀ l, 0 ≤ M l) (hA : ∀ q, 0 ≤ A q) {k : ℝ}
+    (hk : 1 ≤ k) (i : ℕ) :
+    leibnizBound M (fun q => k ^ q * A q) i ≤ k ^ i * leibnizBound M A i := by
+  unfold leibnizBound
+  rw [Finset.mul_sum]
+  refine Finset.sum_le_sum fun l _ => ?_
+  have hkl : k ^ (i - l) ≤ k ^ i := pow_le_pow_right₀ hk (Nat.sub_le i l)
+  have h0 : 0 ≤ (i.choose l : ℝ) * M l * A (i - l) := by have := hM l; have := hA (i - l); positivity
+  calc (i.choose l : ℝ) * M l * (k ^ (i - l) * A (i - l))
+      = k ^ (i - l) * ((i.choose l : ℝ) * M l * A (i - l)) := by ring
+    _ ≤ k ^ i * ((i.choose l : ℝ) * M l * A (i - l)) := mul_le_mul_of_nonneg_right hkl h0
+
+theorem leibnizBound_nonneg {M A : ℕ → ℝ} (hM : ∀ l, 0 ≤ M l) (hA : ∀ q, 0 ≤ A q) (i : ℕ) :
+    0 ≤ leibnizBound M A i :=
+  Finset.sum_nonneg fun l _ => by have := hM l; have := hA (i - l); positivity
+
+theorem emConst_nonneg {M A : ℕ → ℝ} (hM : ∀ l, 0 ≤ M l) (hA : ∀ q, 0 ≤ A q) (m : ℕ) :
+    0 ≤ emConst M A m := by
+  unfold emConst
+  have := Finset.sum_nonneg fun i (_ : i ∈ Finset.range (2 * m + 2 + 1)) =>
+    leibnizBound_nonneg hM hA i
+  positivity
+
+/-- **The synthesis error at order `p = 2m + 2`**: with `c = log n₀ + R`, `n₀ ≥ 2`, atoms of width
+`1/k`, `k ≥ 1`, the Euler–Maclaurin synthesis is within `emConst · (k/n₀)^p` of `F ∗ φ_k`. -/
+theorem abs_emSynth_dilate_sub_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (hF : ContDiff ℝ ∞ F) (hFs : ∀ t, t ∉ Icc (-R) R → F t = 0)
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M l) (hM0 : ∀ l, 0 ≤ M l) {n₀ N : ℕ} (hn₀ : 2 ≤ n₀)
+    (hN : Real.log n₀ + 2 * R < Real.log (1 + N)) {k : ℝ} (hk : 1 ≤ k) (m : ℕ) (r : ℝ) :
+    |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ) (r + (Real.log n₀ + R)) -
+        ∫ v, F v * dilate k φ (r - v)| ≤
+      emConst M (fun q => ∫ s, |iteratedDeriv q φ s|) m * (k / n₀) ^ (2 * m + 2) := by
+  have hk0 : 0 < k := by linarith
+  have hn0 : (1 : ℝ) < n₀ := by exact_mod_cast hn₀
+  have hψ : ContDiff ℝ ∞ (dilate k φ) := contDiff_const.mul (hφ.comp (contDiff_const.mul contDiff_id))
+  have hψc : HasCompactSupport (dilate k φ) := by
+    have : dilate k φ = fun s => k * φ (k * s) := rfl
+    rw [this]
+    exact (hφc.comp_smul hk0.ne').mul_left
+  set A : ℕ → ℝ := fun q => ∫ s, |iteratedDeriv q φ s|
+  have hA : ∀ q, 0 ≤ A q := fun q => integral_nonneg fun s => abs_nonneg _
+  have h := abs_emSynth_sub_conv_le hF hFs hM hψ hψc (c := Real.log n₀ + R)
+    (by rw [add_sub_cancel_right]; exact Real.log_pos hn0) (by linarith) m r
+  simp_rw [integral_abs_iteratedDeriv_dilate hφ hk0] at h
+  rw [add_sub_cancel_right, Real.exp_neg, Real.exp_log (by linarith)] at h
+  refine h.trans (le_of_eq_of_le rfl ?_)
+  set p := 2 * m + 2
+  have hsum : ∑ i ∈ Finset.range (p + 1), leibnizBound M (fun q => k ^ q * A q) i ≤
+      k ^ p * ∑ i ∈ Finset.range (p + 1), leibnizBound M A i := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun i hi => (leibnizBound_pow_le hM0 hA hk i).trans ?_
+    exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hk (Nat.lt_succ_iff.mp
+      (Finset.mem_range.mp hi))) (leibnizBound_nonneg hM0 hA i)
+  have hB : 0 ≤ |((bernoulli (2 * m + 2) : ℚ) : ℝ)| / ((2 * m + 2).factorial : ℝ) := by positivity
+  calc |((bernoulli (2 * m + 2) : ℚ) : ℝ)| / ((2 * m + 2).factorial : ℝ) *
+        ((n₀ : ℝ)⁻¹ ^ p * (((p + 1).factorial : ℝ) *
+          ∑ i ∈ Finset.range (p + 1), leibnizBound M (fun q => k ^ q * A q) i))
+      ≤ |((bernoulli (2 * m + 2) : ℚ) : ℝ)| / ((2 * m + 2).factorial : ℝ) *
+        ((n₀ : ℝ)⁻¹ ^ p * (((p + 1).factorial : ℝ) *
+          (k ^ p * ∑ i ∈ Finset.range (p + 1), leibnizBound M A i))) := by
+        gcongr
+    _ = emConst M A m * (k / n₀) ^ p := by
+        unfold emConst
+        rw [div_pow, div_eq_mul_inv (k ^ p), ← inv_pow]
+        ring
+
+/-- The derivative of a translated atomic test is the atomic test of the derivative. -/
+theorem hasDerivAt_atomicTest {g : ℝ → ℝ} (hg : Differentiable ℝ g) (N : ℕ) (x : ℕ → ℝ)
+    (c r : ℝ) :
+    HasDerivAt (fun r => atomicTest N x g (r + c)) (atomicTest N x (deriv g) (r + c)) r := by
+  unfold atomicTest
+  refine HasDerivAt.fun_sum fun n _ => ?_
+  have := ((hg (r + c - Real.log n)).hasDerivAt.comp r
+    (((hasDerivAt_id r).add_const c).sub_const (Real.log n))).const_mul (x n)
+  simpa using this
+
+/-- **The Lipschitz bound of the synthesis**: `|S′| ≤ k (M₀ ‖φ′‖₁ + emConst′ (k/n₀)²)`. -/
+theorem abs_emSynth_deriv_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (hF : ContDiff ℝ ∞ F) (hFs : ∀ t, t ∉ Icc (-R) R → F t = 0)
+    (hM : ∀ l t, |iteratedDeriv l F t| ≤ M l) (hM0 : ∀ l, 0 ≤ M l) {n₀ N : ℕ} (hn₀ : 2 ≤ n₀)
+    (hN : Real.log n₀ + 2 * R < Real.log (1 + N)) {k : ℝ} (hk : 1 ≤ k) (r : ℝ) :
+    |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (deriv (dilate k φ)) (r + (Real.log n₀ + R))| ≤
+      k * (M 0 * (∫ s, |deriv φ s|) +
+        emConst M (fun q => ∫ s, |iteratedDeriv (q + 1) φ s|) 0 * (k / n₀) ^ 2) := by
+  have hk0 : 0 < k := by linarith
+  have hn0 : (1 : ℝ) < n₀ := by exact_mod_cast hn₀
+  have hψ : ContDiff ℝ ∞ (dilate k φ) := contDiff_const.mul (hφ.comp (contDiff_const.mul contDiff_id))
+  have hψc : HasCompactSupport (dilate k φ) := by
+    have : dilate k φ = fun s => k * φ (k * s) := rfl
+    rw [this]
+    exact (hφc.comp_smul hk0.ne').mul_left
+  have hψ' : ContDiff ℝ ∞ (deriv (dilate k φ)) := (contDiff_infty_iff_deriv.mp hψ).2
+  set A' : ℕ → ℝ := fun q => ∫ s, |iteratedDeriv (q + 1) φ s|
+  have hA' : ∀ q, 0 ≤ A' q := fun q => integral_nonneg fun s => abs_nonneg _
+  have h := abs_emSynth_sub_conv_le hF hFs hM hψ' hψc.deriv (c := Real.log n₀ + R)
+    (by rw [add_sub_cancel_right]; exact Real.log_pos hn0) (by linarith) 0 r
+  have hP : ∀ q, ∫ s, |iteratedDeriv q (deriv (dilate k φ)) s| = k * (k ^ q * A' q) := fun q => by
+    rw [← iteratedDeriv_succ', integral_abs_iteratedDeriv_dilate hφ hk0, pow_succ]
+    simp only [A']; ring
+  simp_rw [hP] at h
+  rw [add_sub_cancel_right, Real.exp_neg, Real.exp_log (by linarith)] at h
+  have hsum : ∑ i ∈ Finset.range (2 * 0 + 2 + 1), leibnizBound M (fun q => k * (k ^ q * A' q)) i ≤
+      k * (k ^ 2 * ∑ i ∈ Finset.range (2 * 0 + 2 + 1), leibnizBound M A' i) := by
+    rw [Finset.mul_sum, Finset.mul_sum]
+    refine Finset.sum_le_sum fun i hi => ?_
+    have e : leibnizBound M (fun q => k * (k ^ q * A' q)) i =
+        k * leibnizBound M (fun q => k ^ q * A' q) i := by
+      unfold leibnizBound; rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun l _ => by ring
+    rw [e]
+    refine mul_le_mul_of_nonneg_left ((leibnizBound_pow_le hM0 hA' hk i).trans ?_) hk0.le
+    exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hk (Nat.lt_succ_iff.mp
+      (Finset.mem_range.mp hi))) (leibnizBound_nonneg hM0 hA' i)
+  -- the convolution term
+  have hconv : |∫ v, F v * deriv (dilate k φ) (r - v)| ≤ M 0 * (k * ∫ s, |deriv φ s|) := by
+    have hFM : ∀ t, |F t| ≤ M 0 := fun t => by simpa using hM 0 t
+    have h1 := abs_integral_mul_le_sup_mul hFM
+      (hψ'.continuous.integrable_of_hasCompactSupport hψc.deriv) r
+    have h2 := hP 0
+    simp only [iteratedDeriv_zero, pow_zero, one_mul, A', zero_add, iteratedDeriv_one] at h2
+    rwa [h2] at h1
+  have hB : 0 ≤ |((bernoulli (2 * 0 + 2) : ℚ) : ℝ)| / ((2 * 0 + 2).factorial : ℝ) := by positivity
+  have hEM : |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (deriv (dilate k φ))
+      (r + (Real.log n₀ + R)) - ∫ v, F v * deriv (dilate k φ) (r - v)| ≤
+      k * (emConst M A' 0 * (k / n₀) ^ 2) := by
+    refine h.trans ?_
+    calc |((bernoulli (2 * 0 + 2) : ℚ) : ℝ)| / ((2 * 0 + 2).factorial : ℝ) *
+          ((n₀ : ℝ)⁻¹ ^ (2 * 0 + 2) * (((2 * 0 + 2 + 1).factorial : ℝ) *
+            ∑ i ∈ Finset.range (2 * 0 + 2 + 1), leibnizBound M (fun q => k * (k ^ q * A' q)) i))
+        ≤ |((bernoulli (2 * 0 + 2) : ℚ) : ℝ)| / ((2 * 0 + 2).factorial : ℝ) *
+          ((n₀ : ℝ)⁻¹ ^ (2 * 0 + 2) * (((2 * 0 + 2 + 1).factorial : ℝ) *
+            (k * (k ^ 2 * ∑ i ∈ Finset.range (2 * 0 + 2 + 1), leibnizBound M A' i)))) := by
+          gcongr
+      _ = k * (emConst M A' 0 * (k / n₀) ^ 2) := by
+          unfold emConst
+          rw [div_pow, div_eq_mul_inv (k ^ 2), ← inv_pow]
+          ring
+  have := abs_sub_abs_le_abs_sub (atomicTest (N + 1) (emWeights F (Real.log n₀ + R))
+    (deriv (dilate k φ)) (r + (Real.log n₀ + R))) (∫ v, F v * deriv (dilate k φ) (r - v))
+  nlinarith
+
 end Synthesis
+
+/-! ### The motion of Weil's form -/
+
+section Perturbation
+
+open ArithmeticElectrostatics
+
+/-- **A small perturbation moves Weil's form by `weilErr`**: a `C²` perturbation `D` supported in
+`[−R′, R′]` with `|D| ≤ e` and Lipschitz constant `L_D` moves `weilQuad F` by at most
+`weilErr F R′ e (synthLevy R′ e L_D k)` for every `k ≥ 1`. -/
+theorem weilQuad_add_le_of_lip {F D : ℝ → ℝ} {R' e LD k : ℝ} (hF : ContDiff ℝ 2 F)
+    (hFc : HasCompactSupport F) (hFR : SupportedIn R' F) (hD : ContDiff ℝ 2 D)
+    (hDR : SupportedIn R' D) (hR' : 0 ≤ R') (he : ∀ u, |D u| ≤ e)
+    (hLD : ∀ u v, |D u - D v| ≤ LD * |u - v|) (hk : 1 ≤ k) :
+    weilQuad (fun u => F u + D u) ≤ weilQuad F + weilErr F R' e (synthLevy R' e LD k) := by
+  have hk0 : 0 < k := by linarith
+  have hDc : HasCompactSupport D := hasCompactSupport_of_vanishes hDR
+  have he0 : 0 ≤ e := (abs_nonneg _).trans (he 0)
+  have hN1 := integral_abs_le_of_bound hD.continuous hDc he hDR hR'
+  have hN2 : ∫ u, D u ^ 2 ≤ 2 * R' * e ^ 2 := by
+    have := integral_sq_le_of_bound hD.continuous hDc he
+    nlinarith
+  have hLD0 : 0 ≤ LD := by
+    have := hLD 1 0
+    simp only [sub_zero, abs_one, mul_one] at this
+    linarith [abs_nonneg (D 1 - D 0)]
+  have hLev : levyEnergy D ≤ synthLevy R' e LD k := by
+    have h := levyEnergy_le_lipschitz hD hDc hLD (δ := 1 / k) (one_div_pos.mpr hk0)
+      (by rw [div_le_one hk0]; exact hk)
+    rw [one_div_one_div] at h
+    have hlogk : 0 ≤ Real.log k := Real.log_nonneg hk
+    have hC1 := levyLipConstant_nonneg
+    have hb1 : Real.exp (1 / 2) * LD * (1 / k) * (∫ u, |D u|) ≤
+        Real.exp (1 / 2) * LD * (1 / k) * (2 * R' * e) :=
+      mul_le_mul_of_nonneg_left hN1
+        (mul_nonneg (mul_nonneg (Real.exp_pos _).le hLD0) (one_div_pos.mpr hk0).le)
+    have hb2 : (2 * Real.log k + levyLipConstant) * (∫ u, D u ^ 2) ≤
+        (2 * Real.log k + levyLipConstant) * (2 * R' * e ^ 2) :=
+      mul_le_mul_of_nonneg_left hN2 (by linarith)
+    unfold synthLevy
+    linarith
+  have hsqD : Real.sqrt (∫ u, D u ^ 2) ≤ Real.sqrt (2 * R') * e := by
+    rw [← Real.sqrt_sq he0, ← Real.sqrt_mul (by positivity)]
+    exact Real.sqrt_le_sqrt (by linarith)
+  exact (weilQuad_add_le hF hFc hD hDc hFR hDR).trans (add_le_add le_rfl
+    (weilErr_mono (F := F) hsqD hN2 hLev (integral_nonneg fun u => abs_nonneg _) hN1))
+
+end Perturbation
+
+/-! ### The Euler–Maclaurin synthesis bound -/
+
+section SynthesisBound
+
+open ArithmeticElectrostatics
+
+variable {φ F : ℝ → ℝ} {M : ℕ → ℝ} {R : ℝ}
+
+/-- The supremum error `emConst (k/n₀)^{2m+2} + M₁ ‖φ‖₁/k` of the order-`(2m+2)` synthesis. -/
+def emErr (M A : ℕ → ℝ) (m : ℕ) (k : ℝ) (n₀ : ℕ) : ℝ :=
+  emConst M A m * (k / n₀) ^ (2 * m + 2) + M 1 * (1 / k) * A 0
+
+/-- The Lipschitz constant `k (M₀ ‖φ′‖₁ + emConst′ (k/n₀)²) + M₁` of its error. -/
+def emLip (M A : ℕ → ℝ) (k : ℝ) (n₀ : ℕ) : ℝ :=
+  k * (M 0 * A 1 + emConst M (fun q => A (q + 1)) 0 * (k / n₀) ^ 2) + M 1
+
+theorem log_lt_log_block {n₀ : ℕ} (hn₀ : 1 ≤ n₀) (R : ℝ) :
+    Real.log n₀ + 2 * R < Real.log ((n₀ * blockSize R : ℕ) : ℝ) := by
+  have hn : (0 : ℝ) < n₀ := by exact_mod_cast hn₀
+  have hB : 1 + Real.exp (2 * R) ≤ blockSize R := Nat.le_ceil _
+  have hB0 : (0 : ℝ) < blockSize R := by linarith [Real.exp_pos (2 * R)]
+  push_cast
+  rw [Real.log_mul hn.ne' hB0.ne']
+  have : 2 * R < Real.log (blockSize R) := by
+    rw [← Real.log_exp (2 * R)]
+    exact Real.log_lt_log (Real.exp_pos _) (by linarith)
+  linarith
+
+/-- **The Euler–Maclaurin synthesis bound**: for a smooth profile `φ` and a smooth test `F`
+supported in `[−R, R]` with `|F^{(l)}| ≤ M_l`, the atoms of level `n₀ B`, `n₀ ≥ 2`, of width `1/k`
+synthesize `F` up to a motion `weilErr F (R+1) e (synthLevy (R+1) e L k)` of Weil's form, with
+`e = emErr`, `L = emLip`: the error is of order `(k/n₀)^{2m+2}` for every `m`. -/
+theorem exists_atomicTest_weilQuad_le_em (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) (hF : ContDiff ℝ ∞ F) (hFc : HasCompactSupport F) (hR : 0 ≤ R)
+    (hFR : SupportedIn R F) (hM : ∀ l t, |iteratedDeriv l F t| ≤ M l) (hM0 : ∀ l, 0 ≤ M l)
+    {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {k : ℝ} (hk : 1 ≤ k) (m : ℕ) :
+    ∃ x : ℕ → ℝ, weilQuad (atomicTest (n₀ * blockSize R) x (dilate k φ)) ≤ weilQuad F +
+      weilErr F (R + 1) (emErr M (fun q => ∫ s, |iteratedDeriv q φ s|) m k n₀)
+        (synthLevy (R + 1) (emErr M (fun q => ∫ s, |iteratedDeriv q φ s|) m k n₀)
+          (emLip M (fun q => ∫ s, |iteratedDeriv q φ s|) k n₀) k) := by
+  have hk0 : 0 < k := by linarith
+  have hn₀1 : 1 ≤ n₀ := by omega
+  have hB : 1 ≤ n₀ * blockSize R := by
+    have : 1 ≤ blockSize R := by
+      have h := Nat.le_ceil (1 + Real.exp (2 * R))
+      have : (1 : ℝ) ≤ blockSize R := by
+        have := Real.exp_pos (2 * R); simp only [blockSize] at h ⊢; linarith
+      exact_mod_cast this
+    nlinarith
+  obtain ⟨N, hNB⟩ : ∃ N : ℕ, n₀ * blockSize R = N + 1 := ⟨n₀ * blockSize R - 1, by omega⟩
+  have hN : Real.log n₀ + 2 * R < Real.log (1 + N) := by
+    have := log_lt_log_block hn₀1 R
+    rw [hNB] at this
+    push_cast at this
+    rwa [add_comm (N : ℝ) 1] at this
+  have hφc : HasCompactSupport φ := hasCompactSupport_of_vanishes hφ1
+  have hψ : ContDiff ℝ ∞ (dilate k φ) :=
+    contDiff_const.mul (hφ.comp (contDiff_const.mul contDiff_id))
+  have hFs : ∀ t, t ∉ Icc (-R) R → F t = 0 := fun t ht => hFR t (by
+    simp only [mem_Icc, not_and_or, not_le] at ht
+    rcases ht with ht | ht
+    · exact lt_of_lt_of_le (by linarith) (neg_le_abs t)
+    · exact lt_of_lt_of_le ht (le_abs_self t))
+  have hF1 : ∀ t, HasDerivAt F (deriv F t) t := fun t =>
+    (hF.differentiable (by simp) t).hasDerivAt
+  have hFL : ∀ u v, |F u - F v| ≤ M 1 * |u - v| :=
+    abs_sub_le_of_hasDerivAt hF1 fun t => by simpa using hM 1 t
+  -- the two halves of the supremum error, and the Lipschitz bound of the synthesis
+  have h1 := abs_emSynth_dilate_sub_le hφ hφc hF hFs hM hM0 hn₀ hN hk m
+  have h2 : ∀ r, |(∫ v, F v * dilate k φ (r - v)) - F r| ≤ M 1 * (1 / k) * ∫ s, |φ s| := by
+    intro r
+    have := abs_integral_mul_sub_le hF.continuous hψ.continuous
+      (hasCompactSupport_of_vanishes fun s hs => dilate_vanishes hφ1 hk0 hs)
+      (by rw [integral_dilate hk0, hφint]) (fun s hs => dilate_vanishes hφ1 hk0 hs) hFL r
+    rwa [integral_abs_dilate hk0] at this
+  have hS : ∀ u v, |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+      (u + (Real.log n₀ + R)) - atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+      (v + (Real.log n₀ + R))| ≤ k * (M 0 * (∫ s, |deriv φ s|) +
+        emConst M (fun q => ∫ s, |iteratedDeriv (q + 1) φ s|) 0 * (k / n₀) ^ 2) * |u - v| :=
+    abs_sub_le_of_hasDerivAt (fun r => hasDerivAt_atomicTest
+      (hψ.differentiable (by simp)) (N + 1) (emWeights F (Real.log n₀ + R)) _ r)
+      fun r => abs_emSynth_deriv_le hφ hφc hF hFs hM hM0 hn₀ hN hk r
+  have hA0 : (fun q => ∫ s, |iteratedDeriv q φ s|) 0 = ∫ s, |φ s| := by simp
+  have hA1 : (fun q => ∫ s, |iteratedDeriv q φ s|) 1 = ∫ s, |deriv φ s| := by simp
+  set S : ℝ → ℝ := fun r => atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+    (r + (Real.log n₀ + R))
+  set D : ℝ → ℝ := fun r => S r - F r
+  have hsup : ∀ r, |D r| ≤ emErr M (fun q => ∫ s, |iteratedDeriv q φ s|) m k n₀ := by
+    intro r
+    calc |D r| = |(S r - ∫ v, F v * dilate k φ (r - v)) +
+          ((∫ v, F v * dilate k φ (r - v)) - F r)| := by simp only [D]; ring_nf
+      _ ≤ _ := (abs_add_le _ _).trans (by
+          unfold emErr; rw [hA0]; linarith [h1 r, h2 r])
+  have hlip : ∀ u v, |D u - D v| ≤ emLip M (fun q => ∫ s, |iteratedDeriv q φ s|) k n₀ *
+      |u - v| := by
+    intro u v
+    have e : D u - D v = (S u - S v) - (F u - F v) := by simp only [D]; ring
+    rw [e]
+    refine (abs_sub _ _).trans ?_
+    have := add_le_add (hS u v) (hFL u v)
+    unfold emLip
+    rw [hA1]
+    linarith
+  -- the support
+  have hDsupp : SupportedIn (R + 1) D := by
+    intro r hr
+    have hS0 : S r = 0 := by
+      simp only [S, atomicTest]
+      refine Finset.sum_eq_zero fun n _ => ?_
+      by_cases hn : |Real.log n - (Real.log n₀ + R)| ≤ R
+      · have hk1 : 1 / k ≤ 1 := by rw [div_le_one hk0]; exact hk
+        rw [dilate_vanishes hφ1 hk0 (by
+          have := abs_sub_abs_le_abs_sub r (Real.log n - (Real.log n₀ + R))
+          rw [show r + (Real.log n₀ + R) - Real.log n = r - (Real.log n - (Real.log n₀ + R)) by
+            ring]
+          linarith), mul_zero]
+      · push Not at hn
+        rw [emWeights, hFR _ hn, mul_zero, zero_mul]
+    simp only [D, hS0, hFR r (by linarith), sub_zero]
+  have hD2 : ContDiff ℝ 2 D :=
+    ((contDiff_atomicTest (hψ.of_le (natCast_le_infty 2)) (N + 1)
+      (emWeights F (Real.log n₀ + R))).comp (contDiff_id.add contDiff_const)).sub
+      (hF.of_le (natCast_le_infty 2))
+  have hFR1 : SupportedIn (R + 1) F := fun u hu => hFR u (by linarith)
+  refine ⟨emWeights F (Real.log n₀ + R), ?_⟩
+  have hx : atomicTest (n₀ * blockSize R) (emWeights F (Real.log n₀ + R)) (dilate k φ) =
+      fun u => F (u - (Real.log n₀ + R)) + D (u - (Real.log n₀ + R)) := by
+    funext u
+    simp only [D, S, hNB, sub_add_cancel]
+    ring
+  rw [hx, weilQuad_comp_sub (fun u => F u + D u)]
+  exact weilQuad_add_le_of_lip (hF.of_le (natCast_le_infty 2)) hFc hFR1 hD2 hDsupp
+    (by linarith) hsup hlip hk
+
+end SynthesisBound
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

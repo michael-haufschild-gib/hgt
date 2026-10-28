@@ -48,7 +48,7 @@ theorem log_mul_nonneg {m t : ℕ} (hm : 1 ≤ m) (ht : 1 ≤ t) : 0 ≤ Real.lo
     nlinarith)
 
 theorem upRow_nonneg {N m : ℕ} (hm : 1 ≤ m) : 0 ≤ upRow N m :=
-  sum_nonneg fun t ht => div_nonneg ArithmeticFunction.vonMangoldt_nonneg
+  sum_nonneg fun _ ht => div_nonneg ArithmeticFunction.vonMangoldt_nonneg
     (log_mul_nonneg hm (Finset.mem_Icc.mp ht).1)
 
 /-! ### The decomposition -/
@@ -205,8 +205,23 @@ theorem sum_div_log_le {N : ℕ} (hN : 3 ≤ N) :
             have := mul_le_mul hsN hLs hL.le (Real.sqrt_nonneg _)
             nlinarith [hN0]
           nlinarith
-        rw [mul_add, div_add_div _ _ hL.ne' (by linarith), div_le_div_iff₀ (by positivity) hL]
-        nlinarith [mul_pos hN0 hN0]
+        have hl2' : 0 < Real.log 2 := by linarith
+        have h2 : (N : ℝ) * s ≤ 2 * N ^ 2 / Real.log N := by
+          rw [le_div_iff₀ hL]; linarith
+        have hQ : 0 ≤ (N : ℝ) ^ 2 / Real.log N := by positivity
+        have h3 : (N : ℝ) * (s / Real.log 2) ≤ 3 * N ^ 2 / Real.log N := by
+          rw [show (N : ℝ) * (s / Real.log 2) = N * s / Real.log 2 by ring, div_le_iff₀ hl2',
+            show 3 * (N : ℝ) ^ 2 / Real.log N * Real.log 2 =
+              3 * Real.log 2 * ((N : ℝ) ^ 2 / Real.log N) by ring]
+          have h2' : (N : ℝ) * s ≤ 2 * ((N : ℝ) ^ 2 / Real.log N) := by
+            rw [show 2 * ((N : ℝ) ^ 2 / Real.log N) = 2 * N ^ 2 / Real.log N by ring]; exact h2
+          have h6 := mul_le_mul_of_nonneg_right hl2.le hQ
+          linarith
+        have h4 : (N : ℝ) * (2 * N / Real.log N) = 2 * N ^ 2 / Real.log N := by ring
+        have h5 : 5 * (N : ℝ) ^ 2 / Real.log N = 2 * N ^ 2 / Real.log N + 3 * N ^ 2 / Real.log N := by
+          ring
+        rw [mul_add, h4, h5]
+        linarith
 
 /-- **The up-rows are `O(N/log N)`**: `m R_m ≤ 2BN/log N + √N`, `B = log 4 + 4`. -/
 theorem mul_upRow_le {N m : ℕ} (hN : 2 ≤ N) (hm : 1 ≤ m) :
@@ -238,8 +253,13 @@ theorem mul_upRow_le {N m : ℕ} (hN : 2 ≤ N) (hm : 1 ≤ m) :
       have hpos : 0 < Real.log ((m : ℝ) * t) := by linarith
       rw [add_zero, div_le_div_iff₀ hpos hL]
       nlinarith
-  have hsum := sum_le_sum hterm
-  rw [sum_add_distrib, ← sum_div, ← mul_sum] at hsum
+  have hsum : upRow N m ≤ 2 / Real.log N * ∑ t ∈ Icc 1 (N / m), Λ t +
+      ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0) := by
+    unfold upRow
+    refine (sum_le_sum hterm).trans (le_of_eq ?_)
+    rw [sum_add_distrib, mul_sum]
+    congr 1
+    exact sum_congr rfl fun t _ => by ring
   -- Chebyshev for the first part
   have hcheb := SpacingScaleHarmonicAnalysis.sum_vonMangoldt_Icc_le (N / m)
   have hdiv : (m : ℝ) * ((N / m : ℕ) : ℝ) ≤ N := by exact_mod_cast Nat.mul_div_le N m
@@ -256,19 +276,22 @@ theorem mul_upRow_le {N m : ℕ} (hN : 2 ≤ N) (hm : 1 ≤ m) :
       mul_le_mul_of_nonneg_left (by exact_mod_cast hc) hm0.le
     exact this.trans (by exact_mod_cast Nat.mul_div_le s m)
   have hB : 0 ≤ Real.log 4 + 4 := by have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num); linarith
-  calc (m : ℝ) * upRow N m
-      ≤ m * (2 * ∑ t ∈ Icc 1 (N / m), Λ t / Real.log N +
-          ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0)) :=
-        mul_le_mul_of_nonneg_left hsum hm0.le
-    _ = 2 / Real.log N * (m * ∑ t ∈ Icc 1 (N / m), Λ t) +
-          m * ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0) := by ring
-    _ ≤ 2 / Real.log N * ((Real.log 4 + 4) * N) + s := by
-        gcongr
-        calc (m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t ≤ m * ((Real.log 4 + 4) * (N / m : ℕ)) :=
-              mul_le_mul_of_nonneg_left hcheb hm0.le
-          _ = (Real.log 4 + 4) * (m * (N / m : ℕ)) := by ring
-          _ ≤ (Real.log 4 + 4) * N := mul_le_mul_of_nonneg_left hdiv hB
-    _ = 2 * (Real.log 4 + 4) * N / Real.log N + s := by ring
+  have h1 : (m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t ≤ (Real.log 4 + 4) * N :=
+    calc (m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t ≤ m * ((Real.log 4 + 4) * (N / m : ℕ)) :=
+          mul_le_mul_of_nonneg_left hcheb hm0.le
+      _ = (Real.log 4 + 4) * (m * (N / m : ℕ)) := by ring
+      _ ≤ (Real.log 4 + 4) * N := mul_le_mul_of_nonneg_left hdiv hB
+  have h2 : 2 / Real.log N * ((m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t) ≤
+      2 / Real.log N * ((Real.log 4 + 4) * N) := mul_le_mul_of_nonneg_left h1 (by positivity)
+  have h3 := mul_le_mul_of_nonneg_left hsum hm0.le
+  have e1 : (m : ℝ) * (2 / Real.log N * ∑ t ∈ Icc 1 (N / m), Λ t +
+      ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0)) =
+      2 / Real.log N * ((m : ℝ) * ∑ t ∈ Icc 1 (N / m), Λ t) +
+        m * ∑ t ∈ Icc 1 (N / m), (if m * t ≤ s then (1 : ℝ) else 0) := by ring
+  have e2 : 2 / Real.log N * ((Real.log 4 + 4) * N) = 2 * (Real.log 4 + 4) * N / Real.log N := by
+    ring
+  rw [e1] at h3
+  linarith
 
 /-- **The up-row weights**: `Σ_m m R_m² ≤ (16B² + 16) N²/log N` for `N ≥ 3`. -/
 theorem sum_mul_upRow_sq_le {N : ℕ} (hN : 3 ≤ N) :
@@ -313,7 +336,7 @@ theorem sum_mul_upRow_sq_le {N : ℕ} (hN : 3 ≤ N) :
         have hlogsq : Real.log N ^ 2 ≤ 4 * N := by nlinarith [Real.sqrt_nonneg (N : ℝ)]
         rw [le_div_iff₀ hL]
         have e : (2 * B * N / Real.log N) ^ 2 * Real.log N ^ 2 = 4 * B ^ 2 * N ^ 2 := by
-          field_simp
+          field_simp; ring
         nlinarith [mul_le_mul_of_nonneg_right hR2 (by positivity : (0 : ℝ) ≤ 2 * Real.log N ^ 2),
           sq_nonneg B]
 
@@ -356,7 +379,8 @@ theorem sq_vRow_le {N : ℕ} (hN : 3 ≤ N) (x : ℕ → ℝ) :
     refine hU.trans (mul_le_mul_of_nonneg_left ?_ hX)
     simp only [Q]; rw [mul_div_assoc] at hU'; exact hU'
   have hB : 0 ≤ B ^ 2 := sq_nonneg B
-  nlinarith [mul_le_mul_of_nonneg_left hQ1 hX, mul_nonneg hD hQ.le, mul_nonneg hX (by linarith : 0 ≤ Q),
+  have hQ0 : 0 ≤ Q := by linarith
+  nlinarith [mul_le_mul_of_nonneg_left hQ1 hX, mul_nonneg hD hQ0, mul_nonneg hX hQ0,
     mul_nonneg (mul_nonneg hB hX) (by linarith : (0 : ℝ) ≤ Q)]
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry

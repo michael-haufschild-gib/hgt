@@ -523,6 +523,10 @@ the completed form; neither its sign nor its cancellation against the prime
 Hankel term may be assumed. A signed prime-discrepancy estimate is still required
 for an exhaustive index bound. No theorem about this split has been claimed here.
 
+Rank one here describes a single ordered cross block. Assembling many cuts does
+not make the surviving ordered kernel one global rank-one quadratic form. Index
+accounting must retain the original global pole form and every mixed entry.
+
 ### Full touching-cell source payment — formalized
 
 `TouchingCellsPayTheFullMixedSource.lean` passed mandatory actual direct85405,
@@ -538,3 +542,43 @@ restriction is removed. Cumulative whole-old-mass losses, useful width lower
 bounds and the exhaustive signed index remain open. Exact Gamma Schur weighting
 and retained pole cancellation are separate research targets, not inputs to this
 formalized result.
+
+### Exact Gamma Schur weight — formalized
+
+`GammaBoundaryHasAnExactSchurWeight.lean` passed mandatory actual direct92764.
+All three endpoint dependency prints contain only propext, Classical.choice and
+Quot.sound; no warnings. The exact weighted row is (pi/2)w(s), and weighted
+Cauchy–Schwarz/Tonelli improves the norm bound of the existing actual Gamma
+boundary operator from 2pi to pi/2. This proves an upper bound, not norm equality.
+No L2 eigenvector or sign of the full source is inferred. Wired into the own
+umbrella; foundational README and checks updated.
+
+The next actual cancellation module requires the full touching-source olean.
+Its emission is running as sole owned Lean session56263; no existing olean was
+rebuilt. The ordered-block pole cancellation remains unchecked until its own
+mandatory direct audit.
+
+### Ordered source discrepancy — next research target
+
+The actual ordered mixed source after first-Gamma cancellation is
+B(f)A(g) minus the actual prime source minus the exponentially localized Gamma
+tail. Put C(h)=integral f(u)g(u+h)du and q(h)=exp(-h/2)C(h). For compact C2
+profiles ordered about b, q is C1, compactly supported and zero for h<=0.
+The surviving pole is integral_0^infinity exp(h)q(h)dh; the ordered prime source
+is sum Lambda(n)q(log n), with no factor2. Lag Abel summation gives their
+difference as integral (psi(exp(h))-exp(h))q'(h)dh. All finite horizons and
+regularity must be derived from the actual profiles. The full Weil cross term
+should therefore equal this signed discrepancy minus the localized Gamma tail.
+
+Corpus lead inspected: ArithmeticIncidencePositivity/LagChebyshevAbelSummation
+provides generic exact lag Abel summation, integrability, one-pole error split,
+constant/affine centering and autocorrelation derivative calculus. The proposed
+contribution is transfer to the literal ordered C2 mixed Weil source, not a new
+generic Abel identity. CHMDStage6 supplies exact exponential mixed-moment
+factorization. The actual prime normalization was read in
+BoundedWindowsHaveFinitePrimeInteraction. Ordered crossCorr must retain its
+orientation; mixed profiles cannot be replaced by a diagonal model.
+
+The centered defect bound depends on variation against q', not an assumed
+critical-scale estimate. It will not by itself bound the global negative index.
+No proof or new positivity result is claimed before the actual Lean audit.

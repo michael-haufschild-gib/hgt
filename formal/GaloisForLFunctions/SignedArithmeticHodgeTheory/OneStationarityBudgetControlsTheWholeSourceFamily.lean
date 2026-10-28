@@ -10,11 +10,15 @@ at once and incurs no separate charge for each matrix entry.
 
 noncomputable section
 
+open scoped InnerProductSpace
 open RHTower RHTower.CHMDDoobGraph RHTower.CHMDPolar
 
 namespace GaloisForLFunctions.SignedArithmeticHodgeTheory
 
 open ArithmeticIndexDescent
+
+local instance : NormedSpace ℝ closedFixedLogCellGraph :=
+  closedFixedLogCellGraph.normedSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -47,9 +51,8 @@ theorem family_energy_error_le_opNorm (F : E →L[ℝ] SourceGraph)
       2 * ‖familyStationarity F U‖ ^ 2 * ‖c‖ ^ 2 := by
   have h := (familyStationarity F U).le_opNorm c
   have hs : ‖familyStationarity F U c‖ ^ 2 ≤
-      (‖familyStationarity F U‖ * ‖c‖) ^ 2 := by
-    nlinarith only [h, norm_nonneg (familyStationarity F U c),
-      mul_nonneg (norm_nonneg (familyStationarity F U)) (norm_nonneg c)]
+      (‖familyStationarity F U‖ * ‖c‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) h 2
   calc
     _ ≤ 2 * ‖familyStationarity F U c‖ ^ 2 := (family_energy_error_bounds F U c).2
     _ ≤ 2 * (‖familyStationarity F U‖ * ‖c‖) ^ 2 :=
@@ -82,7 +85,7 @@ theorem family_mixed_error_le_opNorm (F : E →L[ℝ] SourceGraph)
         (‖familyStationarity F U‖ * ‖d‖) := by
       have h := mul_le_mul hc hd (norm_nonneg _)
         (mul_nonneg (norm_nonneg _) (norm_nonneg _))
-      nlinarith only [h]
+      simpa only [mul_assoc] using mul_le_mul_of_nonneg_left h (by norm_num : (0 : ℝ) ≤ 2)
     _ = _ := by ring
 
 end GaloisForLFunctions.SignedArithmeticHodgeTheory

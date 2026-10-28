@@ -75,7 +75,9 @@ theorem weighted_variance_moments {a b m : ℝ} (hab : a < b) (hm : 0 ≤ m)
     have hfun : (fun x => (f x - t) ^ 2 * w x) =
         fun x => (f x ^ 2 * w x - (2 * t) * (f x * w x)) + t ^ 2 * w x := by
       funext x; ring
-    rw [hfun, integral_add (hf2wi.sub (hfwi.const_mul (2 * t))) (hwi.const_mul (t ^ 2)),
+    have hi : IntegrableOn (fun x => f x ^ 2 * w x - (2 * t) * (f x * w x)) (Ioo a b) :=
+      hf2wi.sub (hfwi.const_mul (2 * t))
+    rw [hfun, integral_add hi (hwi.const_mul (t ^ 2)),
       integral_sub hf2wi (hfwi.const_mul (2 * t)), integral_const_mul, integral_const_mul] at hlow
     nlinarith only [hlow]
   have hzero := key 0
@@ -114,8 +116,10 @@ theorem productWeight_twoInterval_variance_le {a b c d m n : ℝ}
     have hfun : (fun y => (f x - g y) ^ 2 * (w x * v y)) =
         fun y => (f x ^ 2 * w x) * v y - (2 * (f x * w x)) * (g y * v y) +
           w x * (g y ^ 2 * v y) := by funext y; ring
-    rw [hfun, integral_add ((hvi.const_mul (f x ^ 2 * w x)).sub
-        (hgvi.const_mul (2 * (f x * w x)))) (hg2vi.const_mul (w x)),
+    have hi : IntegrableOn (fun y => (f x ^ 2 * w x) * v y -
+        (2 * (f x * w x)) * (g y * v y)) (Ioo c d) :=
+      (hvi.const_mul (f x ^ 2 * w x)).sub (hgvi.const_mul (2 * (f x * w x)))
+    rw [hfun, integral_add hi (hg2vi.const_mul (w x)),
       integral_sub (hvi.const_mul (f x ^ 2 * w x)) (hgvi.const_mul (2 * (f x * w x))),
       integral_const_mul, integral_const_mul, integral_const_mul]
     change _ = V * (f x ^ 2 * w x) - (2 * G) * (f x * w x) + Q * w x
@@ -124,7 +128,9 @@ theorem productWeight_twoInterval_variance_le {a b c d m n : ℝ}
       (∫ x in Ioo a b, ∫ y in Ioo c d, (f x - g y) ^ 2 * (w x * v y)) =
         V * P - 2 * G * F + Q * W := by
     simp_rw [hinner]
-    rw [integral_add ((hf2wi.const_mul V).sub (hfwi.const_mul (2 * G))) (hwi.const_mul Q),
+    have hi : IntegrableOn (fun x => V * (f x ^ 2 * w x) - (2 * G) * (f x * w x)) (Ioo a b) :=
+      (hf2wi.const_mul V).sub (hfwi.const_mul (2 * G))
+    rw [integral_add hi (hwi.const_mul Q),
       integral_sub (hf2wi.const_mul V) (hfwi.const_mul (2 * G)),
       integral_const_mul, integral_const_mul, integral_const_mul]
   have hW : 0 ≤ W := setIntegral_nonneg measurableSet_Ioo fun x hx => hm.trans (hwmin x hx)

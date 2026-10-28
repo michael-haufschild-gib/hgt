@@ -431,6 +431,7 @@ the place that pays.
 | **RP32 The pole hyperplane separates `ζ` from its Liouville twin** | on `Σ x_n/√n = 0`: `P_N(x) ≤ (log N − γ − g + ε)|x|²`, while `P_N(λx) ≥ (log N − γ − ε)|x|²` at some `x ≠ 0`; a margin `g` uniform in `N`, carried by the pole term | `exists_pole_hyperplane_separates_liouville`, `abs_sum_liouvilleSign_div_le`, `atomicWeilForm_truncPole_add` |
 | **RP33 The finite part separates ζ from its Liouville twin** | `A_λ(y) + log y → γ + τ`, `τ = lim Σ_{t ≤ y} (1 + λ(t))Λ(t)/t ≥ (log 2)/2`; `P_N(λx) = −ℓ² + 2(γ + τ)\|x\|² + o(mass)`; on `ℓ = 0`, `P_N(λx) − P_N(x) = 2(2γ + τ)\|x\|² + o(mass)` with `2γ + τ > 0` | `tendsto_liouvilleMertensError`, `exists_abs_liouvilleForm_stepProfile_finitePart_le`, `exists_abs_liouvilleForm_sub_zetaForm_sub_le` |
 | **RP34 Mertens' theorem in residue classes with its constant** | for `r` a unit mod `q`, `Σ_{t ≤ y, t ≡ r} Λ(t)/t = log y/φ(q) + c_r + o(1)` with `φ(q) c_r = −γ − Q_q + Re Σ_{χ ≠ 1} χ(r⁻¹)(−L′/L(1, χ))`, `Q_q = lim Σ_{t ≤ y, (t,q) > 1} Λ(t)/t` | `tendsto_classMertensSum_sub`, `classMertensConstant_eq`, `tendsto_principalMertensSum_sub_log` |
+| **RP35 The residue finite part is diagonalized by characters** | for units `a, b`: `⟨w_a^{(M)}, P w_b^{(M')}⟩ = (q/φ(q)) S_a(M) S_b(M') + c_{a⁻¹b} S_a(M) + c_{b⁻¹a} S_b(M) + O(η H_M + C_η)`; the finite-part matrix `F_{ab} = c_{a⁻¹b} + c_{b⁻¹a}` has every character as eigenvector, `Σ_b F_{ab} χ(b) = 2 Re β_χ · χ(a)`, `β_χ = −L′/L(1, χ)` (`χ ≠ 1`), `β_1 = −γ − Q_q`; inputs: class constants `q S_a(M) = log M + d_a + O(1/M)`, `L_a` to second order | `exists_abs_residueGram_finitePart_le`, `sum_residueFinitePart_mul_char`, `sum_classMertensConstant_mul_char`, `exists_classHarmonic_constant` |
 
 ---
 
@@ -588,8 +589,11 @@ transfer of the Mertens error to the horizon remainder, and summation by parts a
    gauge with a convergent Mertens error `A_ε − κ log → α` has finite part `2α` (RP30). A real
    character gauge mod `ℓ` thus has horizon form `2(Re(−L′/L(1, χ)) + c_ℓ)|x|² + o(mass)`, where
    `c_ℓ` is the limit of `Σ_{t ≤ y, ℓ ∣ t} Λ(t)/t`: the horizon reads the logarithmic derivative of
-   `L(s, χ)` at `s = 1`, as it reads `−2γ` from `ζ`. Open: the finite part on residue-class
-   profiles, which needs the constants of Mertens' theorem in each class.
+   `L(s, χ)` at `s = 1`, as it reads `−2γ` from `ζ`. On the residue-class profiles the finite part
+   is the convolution by the class Mertens constants (RP34, RP35); it is diagonalized by the
+   characters mod `q`, with eigenvalues `2 Re(−L′/L(1, χ))` and `2(−γ − Q_q)` on the trivial
+   character. The residue classes are invisible to the divergence and fully visible to the finite
+   part.
 4. **The exact torsion constant.** *Answered* (RP22): `κ_tor(N) = φ log N + O(1)`,
    `φ = (1 + √5)/2`, for every `N`. The continuum model's `e/(e − 1)` is wrong: it spreads the
    charges uniformly in `log n`, while the extremal charges `φ^{ω(n)}` are multiplicative, so each
@@ -700,4 +704,7 @@ matching is gauge charged; identities first, sign last; a reformulation is not a
 | `TheCharacterMertensLimitIsTheLogarithmicDerivative` | Abel weights; Abel's theorem for `χΛ`; `α_χ = −L′/L(1, χ)` |
 | `TheFinitePartSeparatesZetaFromItsLiouvilleTwin` | the even prime-power limit `τ`; the Liouville Mertens limit; the Liouville finite part; separation from `ζ` on the polar hyperplane |
 | `MertensTheoremInResidueClassesWithItsConstant` | the non-coprime prime powers; the principal limit `−γ − Q_q`; the class constants through `−L′/L(1, χ)` |
+| `ClassHarmonicSumsHaveConstants` | Euler's constant with a rate; Cauchy with a rate; shifted classes; the class constants `d_a`; `L_a` to second order |
+| `TheFinitePartOnResidueClasses` | the residue Gram as class Mertens sums; floors; the logarithmic model Gram to `O(1)`; the residue finite-part law |
+| `TheResidueFinitePartIsDiagonalizedByCharacters` | spectral values `β_χ`; conjugate characters; class constants as a character transform; Fourier inversion; diagonalization |
 | `TheLawsOfRenormalizedArithmeticPotentialTheory` | the laws in one statement, `renormalized_arithmetic_potential_theory_laws` |
