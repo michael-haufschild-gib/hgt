@@ -1,283 +1,137 @@
-# Arithmetic Counting Positivity
+# Arithmetic Counting Positivity (ACountP)
 
-**Central problem.** Produce positivity from arithmetic counts, with multiplicativity
-selecting the untwisted source. A positive representation assumed at the outset does
-not solve this problem. Neither does an identity that transfers an unproved sign.
+Namespace `GaloisForLFunctions.ArithmeticCountingPositivity`; umbrella `ArithmeticCountingPositivity.lean`.
 
-Over finite fields, an independently proved point count can supply the Hodge
-inequality. Over the integers, the complete Weil form has an exact arithmetic
-description, but its global sign remains unproved. This programme studies what a
-count must retain to produce that sign: arithmetic incidence, signed correlations,
-the archimedean contribution, and the two poles.
+**Question.** Produce positivity from arithmetic **counts**, with multiplicativity selecting the untwisted source. A positive
+representation assumed at the outset does not solve this; neither does an identity transferring an unproved sign. Over $\mathbb F_q$ an
+independently proved point count supplies the Hodge inequality. Over $\mathbb Z$ the complete Weil form has an exact arithmetic
+description but no proved sign. What must a count retain to produce it — arithmetic incidence, signed correlations, the
+archimedean term, the two poles?
 
-Namespace: `GaloisForLFunctions.ArithmeticCountingPositivity`.
-Umbrella: `ArithmeticCountingPositivity.lean`.
+---
 
-## 1. Motivation and scope
+## 1. Place in the research
 
-The explicit formula separates the complete form into Gamma, poles, and the prime
-source. Replacing signed arithmetic by a majorant discards information that
-distinguishes the von Mangoldt source from its Liouville twist. Multiplicativity
-alone also permits that twist. A successful count must use a compatibility that
-changes under twisting, and prove an inequality from that compatibility.
+The explicit formula splits the complete form into Gamma, poles and prime source. Majorants discard what distinguishes $\Lambda$ from
+its Liouville twist; multiplicativity alone permits that twist. A successful count must use a compatibility that changes under
+twisting and prove an inequality from it. Starting point: the discrete multiplicative walk has sharp harmonic-hyperplane gap
+$2\log2$, the Liouville twin gap $0$ (RAPT/SMAP). Open passage: discrete energy → continuous overlapping sources → source-complete exhaustion.
 
-The discrete multiplicative walk provides a concrete starting point: its sharp
-gap on the harmonic hyperplane is `2 log 2`, while the Liouville twin has zero gap.
-The unresolved passage is from discrete energy to continuous overlapping sources
-and then to a source-complete exhaustion. Finite-field counting, arithmetic
-incidence, and signature counts are complementary models of how to make that
-passage without assuming the desired positivity.
+ACountP owns **independent counting constructions** and exact tests of what information their positivity preserves.
 
-The programme includes RH-strength endpoints. A finite counting theorem, a
-calibration, and an exhaustion theorem are distinct results; none substitutes for
-the others. RH, finite off-line support, and the complete overlap transfer remain
-open until their arithmetic inputs are proved.
+| Programme | Interface |
+|---|---|
+| ArithmeticCastelnuovoSeveri | Intersection theory, effectivity, section counts, finite-field calibration |
+| ArithmeticOrientationGeometry | Orbit correlation, Toeplitz index, finite-support receivers |
+| ArithmeticCorrespondencePositivity | Sparse annihilators; lattice requirement of Stepanov's mechanism |
+| SelectiveMultiscaleArithmeticPositivity | Selective discrete margin; multiscale transfer |
+| RenormalizedArithmeticPotentialTheory | Sharp multiplicative Poincaré inequality, prime-defect identity, finite-prime gauges |
+| MultiplicativePositivityGeometry | Arithmetic positive definiteness on the boundary and its interior limits |
+| ArithmeticIncidencePositivity | Prime incidence, atomic forms, surplus allocation |
+| SignedArithmeticHodgeTheory, ArithmeticIndexDescent | Complete source coordinates; uniform index bounds for prime layers; first-layer obstruction |
+| BezoutValuationIncidence | Divisor incidence and correlations unavailable in Beurling systems |
+| ArithmeticEffectivityTheory | Counting as effectivity; Stepanov over $\mathbb Z$ reaches only the base |
+
+---
 
 ## 2. Objects and language
 
 | Object | Information retained |
 |---|---|
-| Complete Weil form `W = Gamma + poles - P` | Both poles, every prime power, all mixed entries and multiplicities |
-| Twisted forms `W_lambda` | Which steps distinguish the actual arithmetic source from bounded twins |
-| Multiplicative incidence and walk energy | Divisibility, prime-power edges, harmonic mass and signed edge correlations |
-| Auxiliary sections | An explicit arithmetic construction, vanishing orders, dimension and complexity |
-| Orbit Toeplitz forms | Every difference of translation indices, including cross-level entries |
-| Signature counts | Positive and negative indices, trace and Frobenius energy, with multiplicities specified |
-| Exhaustions | Source maps, domains, growing parameters, topology and uniform error bounds |
+| Complete Weil form $W=\Gamma+\text{poles}-P$ | Both poles, every prime power, all mixed entries, multiplicities |
+| Twisted forms $W_\lambda$ | Which steps distinguish the actual source from bounded twins |
+| Multiplicative incidence, walk energy | Divisibility, prime-power edges, harmonic mass, signed edge correlations |
+| Sign gauge $\omega$, harmonic count $S_N=\sum\omega(n)/n$, $H_N=\sum1/n$, angle $c_N=S_N/H_N$ | Correlation of a gauge with the pole |
+| Prime parity gauge $\omega_p(n)=(-1)^{v_p(n)}$ | The simplest non-Liouville completely multiplicative flip |
+| Auxiliary sections | Explicit construction, vanishing orders, dimension, complexity |
+| Orbit Toeplitz forms; signature counts | Every index difference; positive/negative indices, trace, Frobenius energy |
+| Exhaustions | Source maps, domains, growing parameters, topology, uniform errors |
 
-A **selective inequality** fails for at least one specified bounded twin. A
-**parity-breaking input** changes under Liouville twisting. These are necessary
-tests, not sufficient conditions for RH. A **counting producer** constructs the
-objects being counted and proves their bound independently of the output sign.
-A **receiver** translates an already supplied bound into a sign or index bound.
-An **arithmetic Herglotz theorem** would be a producer for a particular
-prime-generated Toeplitz form, beyond the abstract equivalence between positive
-definiteness and positive representing measures.
+A **selective inequality** fails for a specified bounded twin; a **parity-breaking input** changes under Liouville twisting (necessary,
+not sufficient). A **counting producer** constructs what it counts and proves its bound independently of the output sign; a
+**receiver** translates a supplied bound into a sign. An **arithmetic Herglotz theorem** would produce Toeplitz positivity for a
+prime-generated form from arithmetic. Finite incidence counts are exact; a count supplying the Weil sign must reach square-root
+precision — do not conflate the two.
 
-Finite incidence cardinalities are exact counts. A count that supplies the
-complete Weil sign must additionally reach square-root precision in the relevant
-arithmetic error. These uses of the word count must not be conflated.
+---
 
-## 3. Mechanisms and tools to develop
+## 3. Mechanisms
 
-1. **Counting and signed incidence.** Derive positive quadratic forms from explicit
-   arithmetic fibres, retain their exact mixed entries, and identify which
-   correlations change under multiplicative twists. Classify the information
-   lost by using only cardinalities, ranks or absolute values.
-2. **Selective overlap transfer.** Carry the discrete harmonic-complement gap into
-   continuous atomic families beyond the Robin–Euler threshold. Pay the affine
-   pole direction separately. An eigenvalue calculation on fixed arithmetic
-   modes does not bound their whole complement.
-3. **Arithmetic Herglotz theory.** Construct Toeplitz positivity from prime-side
-   data including Gamma and poles. A zero-indexed positive measure cannot serve
-   as the independent construction.
-4. **Auxiliary vanishing over the integers.** Replace the finite-field lattice
-   annihilator by arithmetic sections whose complexity and vanishing can both
-   be controlled. Any sieve-based proposal must expose its parity-sensitive
-   input before an asymptotic count is claimed.
-5. **Finite-rank renormalization.** Produce a uniform index ceiling for the
-   complete source. Finite-prime or higher-power estimates must retain their
-   dependence on the remaining first prime layer. The endpoint is finite
-   off-line support, which already implies a fixed zero-free strip.
-6. **Exact inertia counting.** Separate a reflected pair from two critical
-   points by an arithmetic observable sensitive to displacement. Trace and
-   Frobenius bounds must control the actual signed form rather than replace
-   it by an unsigned value moment.
+1. **Pole-angle transfer.** On the harmonic hyperplane $\operatorname{Var}_{1/n}(\sqrt n\,\omega(n)x_n)\ge c_N^2\sum x_n^2$ (attained by the gauged pole's projection); with the
+   sharp multiplicative Poincaré inequality, eventually and **uniformly over all sign gauges** (even $N$-dependent ones):
+   $P_N(\omega x)\le(\log N-\gamma-(2\log2)c_N^2+\varepsilon)\sum x_n^2$. A signed harmonic count pays a prime gap.
+2. **Prime parity pairing (exact counting producer).** Negative coordinates of $\omega_p$ are $p$ times positive ones:
+   $p(H_N-S_N)=H_{\lfloor N/p\rfloor}+S_{\lfloor N/p\rfloor}$; hence $S_N/H_N\ge(p-1)/(p+1)$, with excess $(p+1)S_N-(p-1)H_N=\sum_{N/p<n\le N}(1+\omega_p(n))/n\in[0,2(1+\log p)]$, so
+   $c_N\to(p-1)/(p+1)$ and the unconditional gap is $2\log2((p-1)/(p+1))^2$ (at $p=2$: $2\log2/9$; Liouville: 0).
+3. **Sparse flips keep near-maximal gaps.** $\sum_{p\mid n,n\le N}1/n=H_{\lfloor N/p\rfloor}/p$: a single flip at a large prime has gap $\ge a$ for any $a<2\log2$, is completely
+   multiplicative and keeps polar matching.
+4. **Full-cone uniqueness kills them.** A full-Weil-positive weight equals $\Lambda$ on $n\ge2$; $\omega_p\Lambda$ has $-\log p$ at $p$, so each has a compact $C^2$ test with
+   negative complete Weil functional (Gamma, poles, all prime powers retained).
+5. **Ramanujan coordinates of prime parity.** Divisibility incidence writes the conductor-$m$ harmonic count as a finite Möbius sum of
+   decimated parity counts $S_{\lfloor N/d\rfloor}$ with bounded boundary errors; normalized by $H_N$ it tends to
+   $\frac{p-1}{p+1}\sum_{d\mid m}\mu(m/d)\,\omega_p(d)$, hence to 0 for every conductor $m\ge2$ coprime to $p$. A prime flip is visible only at
+   conductors divisible by $p$.
 
-## 4. Foundational pillars and their obligations
+---
 
-The programme is organized around the following mathematical pillars. A named
-target in this table is an obligation, not a theorem asserted by this README.
+## 4. Pillar theorems
 
-| Pillar | Established input in the corpus | Required advance |
-|---|---|---|
-| Count before sign | Finite-field square-root counts and Hodge-index dictionary; hyperelliptic Stepanov construction | An independent integer-side construction with the required error |
-| Arithmetic selection | Atomic selection theorem; sharp untwisted and Liouville gaps | An inequality paid by the selective input on overlapping complete sources |
-| Exact local-to-global assembly | Complete-cell and orbit identities | Uniform control of every mixed term through exhaustion |
-| Signature rather than assumed positivity | Rank–trace census and finite-index receivers | A new displacement-sensitive bound or uniform complete-source index ceiling |
-| Obstruction with positive content | Lattice annihilator and parity obstructions | A sharp survivor: classification, retained energy, replacement count or invariant |
+1. **Pole-angle transfer** (`harmonicCorrelation_sq_mul_mass_le_variance`, `gaugeWitness_attains_variance_bound`,
+   `eventually_prime_gap_ge_squared_correlation`).
+2. **Prime parity pairing and its paid gap** (`prime_parity_pairing`, `prime_parity_boundary_bounds`, `primeFlip_harmonicCorrelation_tendsto`,
+   `primeFlip_hasHyperplaneGap`, `two_adic_parity_has_gap_but_liouville_does_not`).
+3. **A positive gap is weaker than selection** (`harmonicMass_multiples`, `every_submaximal_gap_has_a_nontrivial_multiplicative_twin`).
+4. **Near-maximal gaps do not force Weil positivity**: no fixed gap threshold below $2\log2$, even with multiplicativity and polar
+   matching, forces complete positivity (`primeFlip_exists_negative_complete_test`, `near_maximal_gaps_do_not_force_weil_positivity`).
+5. **Harmonic Ramanujan coordinates of prime parity** (`gaugeHarmonicSum_divisibility`, `primeParityRamanujanSum_tendsto`,
+   `primeParityRamanujanSum_tendsto_zero`).
 
-New pillar theorems belong here only after their precise statements and transitive
-dependencies have passed the Lean kernel. Existing corpus results remain owned by
-their original programmes; this programme should import them rather than rename
-them as new contributions.
+**Pillar obligations** (targets, not theorems): count before sign (an integer-side construction with square-root error);
+arithmetic selection on overlapping complete sources; uniform mixed-term control through exhaustion; a displacement-sensitive
+signature bound or uniform complete-source index ceiling; obstructions with positive content.
 
-### The pole-angle transfer
+---
 
-For `H_N = sum_{n<=N} 1/n`, `S_N = sum_{n<=N} omega(n)/n` and a sign gauge
-`omega(n)^2 = 1`, set `c_N = S_N/H_N`. Every vector `x` on the fixed harmonic
-hyperplane satisfies
+## 5. Traps
 
-`Var_{1/n}(sqrt(n) omega(n) x_n) >= c_N^2 sum x_n^2`.
-
-The projection of the gauged pole onto the original pole hyperplane attains
-this geometric bound. Combining it with the corpus's sharp multiplicative
-Poincaré inequality gives, for every positive `epsilon` and every sufficiently
-large `N`,
-
-`P_N(omega x) <= (log N - gamma - (2 log 2)c_N^2 + epsilon) sum x_n^2`.
-
-The horizon is uniform over **all** sign gauges, including gauges depending on
-`N`. No limit of the harmonic correlation is required. This is a quantitative
-way to convert a signed harmonic count into a paid prime gap. Its domain is
-the atomic prime form; carrying that payment into the complete overlapping
-Weil form remains a separate analytic problem.
-
-Lean: `harmonicCorrelation_sq_mul_mass_le_variance`,
-`gaugeWitness_attains_variance_bound`,
-`eventually_prime_gap_ge_squared_correlation` in
-[`HarmonicCorrelationPaysThePrimeGap.lean`](HarmonicCorrelationPaysThePrimeGap.lean).
-
-### Prime parity as an exact counting producer
-
-Let `omega_p(n) = (-1)^(v_p(n))`. Every negative coordinate is `p` times a
-positive coordinate, with harmonic weight divided by `p`. Writing `S_N` for
-its signed harmonic count gives the exact identity
-
-`p(H_N - S_N) = H_floor(N/p) + S_floor(N/p)`.
-
-The right side counts positive parity fibres inside a smaller interval. Its
-monotonicity yields
-
-`S_N/H_N >= (p-1)/(p+1)`.
-
-The excess is itself a count:
-
-`(p+1)S_N - (p-1)H_N = sum_{N/p < n <= N} (1+omega_p(n))/n`.
-
-It lies between zero and `2(1+log p)`, so `S_N/H_N` tends exactly to
-`(p-1)/(p+1)`. The pole-angle transfer pays the unconditional gap
-
-`2 log 2 ((p-1)/(p+1))^2`.
-
-This is a concrete passage from arithmetic pairing to an energy inequality.
-At `p=2` it pays `2 log 2/9`, whereas the Liouville twist at every prime has
-zero positive hyperplane gap. The counting floor is sharp; optimality of the
-resulting arithmetic gap is a different question.
-
-Lean: `prime_parity_pairing`, `prime_parity_boundary_identity`,
-`prime_parity_boundary_bounds`, `primeFlip_harmonicCorrelation_tendsto`,
-`primeFlip_hasHyperplaneGap`, `two_adic_parity_has_gap_but_liouville_does_not` in
-[`PrimeParityPairing.lean`](PrimeParityPairing.lean).
-
-### A positive gap is weaker than selection
-
-For every `a < 2 log 2`, a nontrivial single-prime flip has hyperplane gap at
-least `a`, is completely multiplicative, and has the same polar matching
-coefficient as the untwisted source. Its negative coefficients lie among
-multiples of a prime of arbitrarily large size; the elementary count
-`sum_{p|n, n<=N} 1/n = H_floor(N/p)/p` already suffices to prove this statement.
-
-Thus separating zeta from Liouville by a positive margin does not identify
-zeta among multiplicative twins. A transfer mechanism must retain further
-source information, such as the finite-part rigidity studied by
-Renormalized Arithmetic Potential Theory. Whether the **maximal** gap
-`2 log 2` itself is rigid among completely multiplicative gauges remains
-open; the squared-angle lower bound does not settle it.
-
-Lean: `harmonicMass_multiples`,
-`every_submaximal_gap_has_a_nontrivial_multiplicative_twin` in
-[`SparsePrimeFlipsRetainPositiveGaps.lean`](SparsePrimeFlipsRetainPositiveGaps.lean).
-
-### The boundary is a failure of the complete sign
-
-The actual arithmetic weights `lambda_p(n) = omega_p(n) Lambda(n)` satisfy
-`|lambda_p(n)| = Lambda(n)`. Each nevertheless has a compactly supported `C²`
-test whose complete Weil functional is negative. Gamma, both poles and every
-prime-power contribution remain in that functional.
-
-The proof uses full-cone uniqueness: a full-Weil-positive weight must equal
-`Lambda` at every integer at least two. But `lambda_p(p) = -log p`, with
-`log p > 0`. Combining this with the preceding count proves that **no fixed
-gap threshold below `2 log 2`, even together with multiplicativity and polar
-matching, forces complete Weil positivity**.
-
-The positive survivor is the exact parity count and its paid gap. It supplies
-a useful energy estimate while locating a missing ingredient in any proposed
-transfer: the transfer must read more of the source than these data.
-
-Lean: `primeFlip_exists_negative_complete_test`,
-`prime_parity_gap_and_complete_source_failure`,
-`near_maximal_gaps_do_not_force_weil_positivity` in
-[`NearMaximalGapsDoNotForceWeilPositivity.lean`](NearMaximalGapsDoNotForceWeilPositivity.lean).
-
-## 5. Relation to the rest of the research
-
-| Programme | Interface |
+| Temptation | Correction |
 |---|---|
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | Intersection theory, effectivity, section counts and finite-field calibration |
-| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Orbit correlation, Toeplitz index, orientation and finite-support receivers |
-| [ArithmeticCorrespondencePositivity](../ArithmeticCorrespondencePositivity/README.md) | Sparse annihilators and the precise lattice requirement of Stepanov's mechanism |
-| [SelectiveMultiscaleArithmeticPositivity](../SelectiveMultiscaleArithmeticPositivity/README.md) | Selective discrete margin and the continuous multiscale transfer problem |
-| [RenormalizedArithmeticPotentialTheory](../RenormalizedArithmeticPotentialTheory/README.md) | Sharp multiplicative Poincaré inequality, prime-defect identity and finite-prime gauge constructions |
-| [MultiplicativePositivityGeometry](../MultiplicativePositivityGeometry/README.md) | Arithmetic positive definiteness on the boundary and its limits as an interior forcing mechanism |
-| [ArithmeticIncidencePositivity](../ArithmeticIncidencePositivity/README.md) | Actual prime incidence, atomic forms and allocation of surplus |
-| [SignedArithmeticHodgeTheory](../SignedArithmeticHodgeTheory/README.md) | Complete source coordinates, Gamma payments and cross-level interactions |
-| [ArithmeticIndexDescent](../ArithmeticIndexDescent/README.md) | Uniform index bounds for prime layers and the first-layer obstruction |
-| [BezoutValuationIncidence](../BezoutValuationIncidence/README.md) | Divisor incidence and arithmetic correlations unavailable in arbitrary Beurling systems |
-
-These programmes supply geometry, receivers and local estimates. Arithmetic
-Counting Positivity owns independent counting constructions and the exact tests
-of what information their positivity preserves.
-
-## 6. Research questions
-
-1. Why does the smallest prime determine both the dyadic generator and the
-   sharp selective gap? Which counting identity singles out this scale?
-2. What positive, quantitative content survives the parity barrier? Is the
-   surviving quantity the harmonic-complement gap or a stronger invariant?
-3. What replaces Frobenius's lattice spectrum for an integer-side auxiliary
-   vanishing construction?
-4. Which arithmetic observable distinguishes reflected pairs at depth of order
-   `1 / log T`, where value moments and pair-correlation information can lose
-   their displacement?
-5. What arithmetic structure explains the heat-flow reality horizon
-   `exp((27/40 + epsilon) / t)` and could control its degeneration as `t` tends
-   to zero?
-6. Which topology preserves the complete inequalities under source exhaustion
-   despite the failure of uniform exponential graph control?
-7. Can counting pay the first prime layer with a uniformly finite residual
-   index, or pay the pole complement beyond the Robin–Euler threshold?
-8. Is the maximal discrete gap rigid among multiplicative gauges? A positive
-   gap, and even every fixed threshold below the maximum, is not rigid.
-
-## 7. Traps and countermodels
-
-| Temptation | Required correction |
-|---|---|
-| A Gram representation settles the Weil sign | Prove equality with the literal complete form; an unrelated positive form is insufficient |
-| Multiplicativity breaks parity | Liouville is completely multiplicative; specify additional compatibility |
-| A positive selective gap identifies the source | Single-prime flips have gaps arbitrarily close to `2 log 2` and preserve polar matching |
-| Positive arithmetic weights select zeta | Test scalings, mixtures, golden data and Beurling systems |
-| Finite counts or ranks retain signs | Record exact correlations and the information lost under reweighting |
+| A Gram representation settles the sign | Prove equality with the literal complete form |
+| Multiplicativity breaks parity | Liouville is completely multiplicative |
+| A positive selective gap identifies the source | Single-prime flips have gaps arbitrarily close to $2\log2$ and keep polar matching |
+| Positive arithmetic weights select $\zeta$ | Test scalings, mixtures, golden data, Beurling systems |
+| Finite counts or ranks retain signs | Record exact correlations and what reweighting loses |
 | A fixed arithmetic mode controls a full spectrum | Bound its orthogonal complement uniformly |
-| Finite-horizon positivity passes to the limit | State and prove the topology, error currency and uniformity |
-| Positive measures explain arithmetic Herglotz | Construct their positivity from arithmetic, without using zeros as input |
-| A conditional interface closes a proof | Discharge its mathematical input; do not store a missing estimate in a structure field |
-| A no-go completes a route | Extract and formalize its strongest nontrivial positive survivor |
+| Finite-horizon positivity passes to the limit | State the topology, error currency, uniformity |
+| Positive measures explain arithmetic Herglotz | Positivity must come from arithmetic, not zeros |
+| A no-go completes a route | Extract its positive survivor |
 
-The battery consists of the Liouville twin, scaled von Mangoldt sources,
-quadratic mixtures, the golden curve, Beurling over-regular systems and
-Davenport–Heilbronn functions. A sufficient mechanism must identify the step
-that excludes each applicable model. Elementary tools valid on the battery are
-still useful, but must not be advertised as sufficient mechanisms.
+Battery: Liouville twin, scaled $\Lambda$, quadratic mixtures, golden curve, over-regular Beurling systems, Davenport–Heilbronn.
 
-## 8. Contribution and success criteria
+---
 
-A contribution supplies a new unconditional count, paid sign, energy bound,
-index ceiling or sharp structural classification. It identifies its arithmetic
-construction, the complete domain of validity, exact dependence on growing
-parameters, its battery behaviour and its relation to an open mechanism.
-Numerical experiments, renamed results, equivalences and hypotheses containing
-the desired estimate do not meet the producer criterion.
+## 6. Open problems
 
-Formal closure requires ordinary kernel-checked Lean proofs, audited transitive
-axioms, no unproved analytic inputs and no trusted computation shortcuts. Each
-finished module is wired into this programme's umbrella. Research records and
-unproved arguments belong in pipeline cards rather than this foundational text.
+1. **Rigidity of the maximal gap** $2\log2$ among completely multiplicative gauges (every threshold below it is not rigid).
+2. **Selective overlap transfer**: carry the discrete hyperplane gap into continuous atomic families beyond the Robin–Euler threshold, paying the
+   affine pole direction separately.
+3. **Arithmetic Herglotz theory**: Toeplitz positivity from prime-side data with Gamma and poles.
+4. **Integer-side auxiliary vanishing**: arithmetic sections replacing the Frobenius lattice annihilator with controlled complexity and
+   vanishing; parity-sensitive input exposed before any sieve count.
+5. **Finite-rank renormalization**: a uniform index ceiling for the complete source, retaining the first prime layer (endpoint: finite
+   off-line support ⇒ a fixed zero-free strip).
+6. **Exact inertia counting**: an observable separating a reflected pair from two critical points at depth $\asymp1/\log T$.
+7. **Structural questions**: why the smallest prime fixes both the dyadic generator and the sharp gap; what survives the parity barrier;
+   the heat-flow reality horizon $\exp((27/40+\varepsilon)/t)$ as $t\to0$; a topology preserving complete inequalities under exhaustion.
 
-First decisive success is selective positivity past the Robin–Euler point, a
-new unconditional census bound from displacement-sensitive arithmetic, or a
-uniform finite-index bound for the complete source. Full success also requires
-the integer-side counting producer, arithmetic Herglotz construction, faithful
-exhaustion, and answers to the structural questions above.
+## 7. Tools to build
+
+Signed incidence counts with exact mixed entries; selective overlap transfer; arithmetic Herglotz constructions; integer-side
+auxiliary sections; displacement-sensitive inertia counts.
+
+## 8. Contribution standard
+
+A new unconditional count, paid sign, energy bound, index ceiling or sharp classification, with its arithmetic construction,
+domain, growing-parameter dependence, battery behaviour and relation to an open mechanism. First decisive success: selective
+positivity past the Robin–Euler point, a new displacement-sensitive census bound, or a uniform finite-index bound for the complete
+source.

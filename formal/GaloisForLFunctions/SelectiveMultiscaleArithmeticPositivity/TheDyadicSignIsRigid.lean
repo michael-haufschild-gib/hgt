@@ -136,20 +136,23 @@ theorem norm_add_conj_le_of_hermNegIndex_eq_zero {ι : Type*} [Fintype ι] [Deci
     field_simp
     push_cast
     ring
+  have hzS : z * S = -((‖S‖ : ℝ) : ℂ) := by
+    have hS0 : ((‖S‖ : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hSpos.ne'
+    rw [hz_def, neg_mul, div_mul_eq_mul_div, mul_comm (conj S), Complex.mul_conj,
+      Complex.normSq_eq_norm_sq]
+    field_simp
+    push_cast
+    ring
   have hcross : (H i j * z + conj z * H j i).re = -‖S‖ := by
     have e : H i j * z + conj z * H j i = z * S + (conj z * H j i - z * conj (H j i)) := by
       rw [hS_def]; ring
     have him : (conj z * H j i - z * conj (H j i)).re = 0 := by
       have : z * conj (H j i) = conj (conj z * H j i) := by simp [map_mul, mul_comm]
       rw [this, Complex.sub_re, Complex.conj_re, sub_self]
-    rw [e, Complex.add_re, him, add_zero, hz_def, neg_mul, Complex.neg_re, div_mul_eq_mul_div,
-      mul_comm (conj S), ← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq,
-      Complex.div_ofReal_re]
-    push_cast
-    rw [Complex.ofReal_re]
-    field_simp
+    rw [e, Complex.add_re, him, add_zero, hzS, Complex.neg_re, Complex.ofReal_re]
   have hdiag : (conj z * H j j * z).re = (H j j).re := by
-    rw [mul_comm (conj z), mul_assoc, mul_comm (H j j), ← mul_assoc, mul_comm z, hzz, one_mul]
+    have : conj z * H j j * z = (conj z * z) * H j j := by ring
+    rw [this, hzz, one_mul]
   have hsplit : (H i i + H i j * z + conj z * H j i + conj z * H j j * z).re =
       (H i i).re + (H i j * z + conj z * H j i).re + (conj z * H j j * z).re := by
     simp only [Complex.add_re]; ring
@@ -184,9 +187,12 @@ theorem lagW_sub (lam lam' : ℕ → ℝ) {g : ℝ → ℂ} (hgc : HasCompactSup
         (Tr s (EF.weilTest g g) (Real.log n) + Tr s (EF.weilTest g g) (-Real.log n)) := by
   have hk := hasCompactSupport_translate_weilTest hgc s
   unfold lagW
-  rw [weilFullFunctional_eq_sub lam' hk, weilFullFunctional_eq_sub lam hk,
-    ← (summable_primeAtoms _ hk).tsum_sub (summable_primeAtoms _ hk), ← tsum_neg]
-  rw [show ∀ a b c : ℂ, a - b - (a - c) = -(b - c) from fun a b c => by ring, ← tsum_neg]
+  rw [weilFullFunctional_eq_sub lam' hk, weilFullFunctional_eq_sub lam hk]
+  have hsub := (summable_primeAtoms (fun n => if 2 ≤ n then
+      (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) / Real.sqrt n else 0) hk).tsum_sub
+    (summable_primeAtoms (fun n => if 2 ≤ n then
+      (lam' n - (ArithmeticFunction.vonMangoldt n : ℝ)) / Real.sqrt n else 0) hk)
+  rw [show ∀ L A B : ℂ, L - B - (L - A) = A - B from fun _ _ _ => by ring, ← hsub, ← tsum_neg]
   congr 1
   funext n
   by_cases hn : 2 ≤ n

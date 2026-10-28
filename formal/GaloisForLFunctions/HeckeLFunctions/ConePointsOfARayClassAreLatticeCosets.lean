@@ -141,7 +141,6 @@ theorem exists_rayClassIdeal_iff {x : ℝ} {γ : 𝓞 K} (hγ0 : algebraMap (�
       exact le_of_mul_le_mul_right hx hN𝔟
 
 omit [NumberField K] in
-omit [NumberField K] in
 variable (𝔪) in
 /-- Every residue modulo `𝔪₀` has a representative in `𝔟` when `𝔟 + 𝔪₀ = (1)`. -/
 theorem exists_mem_mk_eq (h𝔟 : 𝔟 ⊔ 𝔪.fin = ⊤) (ρ : 𝓞 K ⧸ 𝔪.fin) :
@@ -160,9 +159,11 @@ variable (𝔪) in
 def residueRep (h𝔟 : 𝔟 ⊔ 𝔪.fin = ⊤) (ρ : 𝓞 K ⧸ 𝔪.fin) : 𝓞 K :=
   (exists_mem_mk_eq 𝔪 h𝔟 ρ).choose
 
+omit [NumberField K] in
 theorem residueRep_mem (ρ : 𝓞 K ⧸ 𝔪.fin) : residueRep 𝔪 h𝔟 ρ ∈ 𝔟 :=
   (exists_mem_mk_eq 𝔪 h𝔟 ρ).choose_spec.1
 
+omit [NumberField K] in
 theorem mk_residueRep (ρ : 𝓞 K ⧸ 𝔪.fin) :
     Ideal.Quotient.mk 𝔪.fin (residueRep 𝔪 h𝔟 ρ) = ρ :=
   (exists_mem_mk_eq 𝔪 h𝔟 ρ).choose_spec.2
@@ -201,7 +202,6 @@ def conePoints (𝔟 : Ideal (𝓞 K)) (g : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf
   {a | a ∈ fundamentalCone K ∧ ∃ γ : 𝓞 K, mixedEmbedding K (γ : K) = a ∧
     (Ideal.absNorm (Ideal.span {γ}) : ℝ) ≤ T ∧ ElemCond 𝔪 𝔟 g γ}
 
-omit [NumberField K] in
 omit [NumberField K] in
 /-- `γ` determines its data `g`. -/
 theorem elemCond_unique {g g' : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf → ℤˣ)} {γ : 𝓞 K}
@@ -265,7 +265,6 @@ theorem ncard_conePoints {g : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf → ℤˣ)} {
   rw [conePoints_eq_image h𝔟0 h𝔟 hT, ncard_image_of_injective _ (add_right_injective _)]
 
 include h𝔟0 h𝔟 in
-include h𝔟0 h𝔟 in
 theorem finite_conePoints {g : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf → ℤˣ)} {T : ℝ} (hT : 0 < T) :
     (conePoints 𝔪 𝔟 g T).Finite := by
   rw [conePoints_eq_image h𝔟0 h𝔟 hT]
@@ -274,7 +273,10 @@ theorem finite_conePoints {g : (𝓞 K ⧸ 𝔪.fin)ˣ × (𝔪.inf → ℤˣ)} 
 
 noncomputable instance : Fintype (rayHom 𝔪).range := Fintype.ofFinite _
 
-noncomputable instance : Fintype (rayHom 𝔪).range := Fintype.ofFinite _
+variable (𝔪) in
+/-- The residue/sign data `g ∈ rayHom(K_𝔪)` lying over the ray class `d`. -/
+def dataFiber (d : RayClassGroup 𝔪) : Finset (rayHom 𝔪).range :=
+  Finset.univ.filter fun g => rayResidueClass 𝔪 g = d
 
 /-- **Ray class cone points split by their data**: with `T = x N𝔟`, the cone points
 `e(γ)`, `(γ) = 𝔞𝔟`, `𝔞 ∈ c`, `N𝔞 ≤ x`, are the disjoint union over `g ∈ rayHom(K_𝔪)` with
@@ -282,12 +284,11 @@ noncomputable instance : Fintype (rayHom 𝔪).range := Fintype.ofFinite _
 theorem setOf_rayClassIdeals_eq_biUnion (x : ℝ) :
     {a : mixedSpace K | a ∈ integerSet K ∧ ∃ γ : 𝓞 K, mixedEmbedding K γ = a ∧
         ∃ I ∈ rayClassIdeals 𝔪 c x, Ideal.span {γ} = I * 𝔟} =
-      ⋃ g ∈ ((Finset.univ.filter fun g : (rayHom 𝔪).range => rayResidueClass 𝔪 g =
-          c * rayClass 𝔪 ⟨idealUnit h𝔟0, (idealUnit_mem_idealGroup_iff 𝔪 h𝔟0).mpr h𝔟⟩ :
-            Finset _) : Set _),
+      ⋃ g ∈ (dataFiber 𝔪 (c * rayClass 𝔪
+          ⟨idealUnit h𝔟0, (idealUnit_mem_idealGroup_iff 𝔪 h𝔟0).mpr h𝔟⟩) : Set (rayHom 𝔪).range),
         conePoints 𝔪 𝔟 g.1 (x * Ideal.absNorm 𝔟) := by
   ext a
-  simp only [mem_setOf_eq, mem_iUnion, Finset.coe_filter, Finset.mem_univ, true_and,
+  simp only [mem_setOf_eq, mem_iUnion, dataFiber, Finset.coe_filter, Finset.mem_univ, true_and,
     exists_prop, mem_integerSet, conePoints]
   constructor
   · rintro ⟨⟨hcone, -⟩, γ, rfl, h⟩
@@ -313,8 +314,8 @@ theorem setOf_rayClassIdeals_eq_biUnion (x : ℝ) :
 theorem ncard_rayClassIdeals_mul_torsionOrder_eq_sum
     (h𝔟c : ClassGroup.mk K (idealUnit h𝔟0) = (toClassGroup 𝔪 c)⁻¹) {x : ℝ} (hx : 0 < x) :
     (rayClassIdeals 𝔪 c x).ncard * torsionOrder K =
-      ∑ g ∈ (Finset.univ.filter fun g : (rayHom 𝔪).range => rayResidueClass 𝔪 g =
-          c * rayClass 𝔪 ⟨idealUnit h𝔟0, (idealUnit_mem_idealGroup_iff 𝔪 h𝔟0).mpr h𝔟⟩),
+      ∑ g ∈ dataFiber 𝔪 (c * rayClass 𝔪
+          ⟨idealUnit h𝔟0, (idealUnit_mem_idealGroup_iff 𝔪 h𝔟0).mpr h𝔟⟩),
         ((-mixedEmbedding K (residueRep 𝔪 h𝔟 g.1.1 : K) +ᵥ
           ((x * Ideal.absNorm 𝔟) ^ ((finrank ℚ K : ℝ)⁻¹)) • signedNormBall 𝔪.inf g.1.2) ∩
             (idealLattice K (idealUnit (mul_ne_zero 𝔪.fin_ne_bot h𝔟0)) :

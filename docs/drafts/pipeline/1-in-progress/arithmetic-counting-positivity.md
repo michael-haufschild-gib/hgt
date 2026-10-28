@@ -40,16 +40,18 @@ nontrivial completely multiplicative prime flip with untwisted polar matching
 but a negative test for the literal complete Weil functional.
 
 All 28 theorem axiom audits passed with only `propext`, `Classical.choice`,
-and `Quot.sound`. Final canonical checks on the first three leaves have no
-diagnostics; the fourth is running. The final check caught a singleton-sum
+and `Quot.sound`. All four canonical check logs have no diagnostics; the fourth
+finished successfully. The final check caught a singleton-sum
 simplification in the prime-three example, now fixed and rechecked.
 
 The next bridge is the harmonic Ramanujan coordinate of prime parity:
 an exact Mobius divisor identity and bounded decimation error imply that all
 nontrivial conductors coprime to the flipped prime have zero limiting
 correlation. Its closed proof is in
-`../2-fully-proven/arithmetic-counting-prime-parity-ramanujan.md`, with Lean
-formalization started in `/tmp/acp-ramanujan-check.lean`.
+`../2-fully-proven/arithmetic-counting-prime-parity-ramanujan.md`. All seven
+theorems in `PrimeParityRamanujanCoordinates.lean` now pass the kernel and
+transitive axiom audit. Its olean is being written because the next harmonic
+normalization module imports it. Canonical final source check remains.
 
 `arithmetic-counting-maximal-gap-rigidity.md` records the still-unproved exact
 endpoint. A two-mode spectral reduction now isolates its remaining analytic
@@ -75,15 +77,19 @@ finite arithmetic construction or README is finished.
   comparison are proved. Full-cone uniqueness has standard axioms only.
 - All four initial leaves are wired into the own umbrella, and that umbrella
   is imported by `MainTheorems.lean`. No umbrella was compiled.
-- Remaining first batch: finish the complete-source canonical check; move
+- Remaining first batch: recover an explicit successful exit for the first
+  leaf's canonical check (its earlier terminal result was lost at compaction); move
   `arithmetic-counting-pole-angle.md` to `3-formalized`; preserve the audit log.
   The failed-rule card with its strongest positive survivor is now in
   `5-failed/arithmetic-counting-submaximal-gap-selection.md`.
-- Next exact proofs: `/tmp/acp-ramanujan-check.lean` (seven mixed-count
-  declarations) and `/tmp/acp-two-mode-check.lean` (finite constrained-energy
-  helper). Neither scratch file has been compiled yet; no parallel Lean process.
+- Next exact proofs: `/tmp/acp-normalized-check.lean` (unit parity constraint,
+  common harmonic normalization, exact mixed inner product, norm and residual
+  limits) and `/tmp/acp-two-mode-check.lean` (homogeneous finite constrained-energy
+  helper). These two scratch files have not been compiled yet.
+- `/tmp/acp-ramanujan-check.log` now records seven successful axiom audits;
+  `/tmp/acp-build-ramanujan.log` is the active olean command.
 - The first four theorem axiom log is `/tmp/acp-axiom-audit.log`. Canonical logs
   are `/tmp/acp-final-correlation.log`, `/tmp/acp-final-sparse.log`,
-  `/tmp/acp-final-parity.log`, `/tmp/acp-final-complete.log`. The last is active.
+  `/tmp/acp-final-parity.log`, `/tmp/acp-final-complete.log`. These are all finished.
 - Research scope remains all source-report mechanisms and questions. Do not
   treat this first contribution as completion of the programme.

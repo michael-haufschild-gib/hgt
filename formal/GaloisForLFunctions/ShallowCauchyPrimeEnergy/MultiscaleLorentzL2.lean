@@ -1193,8 +1193,9 @@ theorem exists_dyadicZeroWindow_lorentzPairSum_le :
           (windowNarrowSum (dyadicZeroWindow T) (fun q => (q.1 : ℂ).im) (R₀ / 2) t) ^ (2 : ℕ)) ≤
         (11 * C₁ + 2) * (R₀ * Real.log T) ^ (2 : ℕ) * T := by
     have h5 := integral_le_five_pieces
-      (integrable_windowNarrowSum_sq (dyadicZeroWindow T) _ hr0)
-      (fun _ => sq_nonneg _) hT0
+      (integrable_windowNarrowSum_sq (dyadicZeroWindow T) (fun q => (q.1 : ℂ).im) hr0)
+      (fun t => sq_nonneg (windowNarrowSum (dyadicZeroWindow T) (fun q => (q.1 : ℂ).im) (R₀ / 2) t))
+      hT0
     linarith [h5, hIic, hIcc1, hIcc2, hIcc3, hIci]
   rw [lorentz_pairSum_eq_integral_windowNarrowSum_sq (dyadicZeroWindow T)
     (fun q => (q.1 : ℂ).im) hR₀]
