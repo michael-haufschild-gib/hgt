@@ -30,12 +30,13 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   locality is twin-blind.
 * **Local constituents and ceilings.** The Poisson law of the Euler factor, the zero-or-infinity law
   for axis-supported kernels, the Riemann–Roch ceiling, the exact atomic ceiling `N log q` over
-  `𝔽_q[T]`, and the index as the number of exceptional waves of a count.
+  `𝔽_q[T]` and its second rung, and the index as the number of exceptional waves of a count.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
   the global law over `ℤ`; compressions as receivers; the Bézout ledger of both producers and its
   multiplicity caps; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index
   zero; the parity twin over `ℤ` is a vertical shift on one prime tower, on no two primes, and in the
-  Bohr closure; pointwise-closed statements that hold for every vertical shift hold for the twin.
+  Bohr closure; pointwise-closed statements that hold for every vertical shift hold for every unitary
+  twist, the flips `ω_p` included.
 * **Completion.** Continuity of the index off the discriminant and its three degenerations; Nyquist
   windows that grow without bound along fine towers; the heat-collision mass as twice the wave number
   of the prime-side count.

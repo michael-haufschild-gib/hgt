@@ -74,3 +74,15 @@ Indeed, Young optimization yields `E/M≥rd−2√(Ad)−R`, with `d=D/M`;
 its intersection with `E/M=f` is d*. Equality there would certify sharpness
 for the displayed family. This refinement, its actual-matrix transfer, and its
 maximal positive c-range remain unformalized. No stronger range is claimed.
+
+The candidate tail completes the scalar optimization: for `a*≤e<r`, the floor
+is `−R−e−A/(r−e)`, attained at `D/M=A/(r−e)²`. For `e≥r`, no finite lower
+floor survives the Young family. If R>0, the tail is negative, so every positive
+certificate belongs to the first regime. These claims require formalization.
+
+Conductor-one minimality extends to every positive c with α<1: the next
+Ramanujan energy is separated by at least 2 log 2>1. Thus the natural domain is
+`1≤c<1/q₀`, within the geometric perturbation range because the profile integral
+bounds give q₀>4/5. On this domain f decreases and d* increases. The proposed
+maximal range is the interval ending at the unique zero of
+`f(c)−2000(c−1)(1+d*(c))`; existence, uniqueness and matrix transfer remain open.

@@ -74,7 +74,8 @@ theorem eventually_elevenFlip_negative_variable {H : ℕ → ℕ} (hH : Tendsto 
     field_simp [hN0.ne', hr0.ne', hlog.ne'] <;> ring
   rw [hscale] at hb
   have hlt := hb.trans_lt huN
-  exact (div_lt_zero_iff_of_pos (mul_pos hw hlog)).mp hlt
+  have h := (div_lt_iff₀ (mul_pos hw hlog)).mp hlt
+  simpa only [zero_mul] using h
 
 private theorem floor_subhorizon_tendsto {θ : ℝ} (hθ : 0 < θ) :
     Tendsto (fun N : ℕ => ⌊θ * (N : ℝ)⌋₊) atTop atTop := by
@@ -124,7 +125,7 @@ theorem eventually_elevenFlip_negative_of_ratio {c : ℝ} (hc : (99 / 100 : ℝ)
   rw [atomicTest_zero_padding hHN]
   have hwidth : (c * ((H N : ℝ) / N)) / H N = c / N := by
     have hH0 : (H N : ℝ) ≠ 0 := by exact_mod_cast (show H N ≠ 0 by omega)
-    field_simp [hH0]
+    field_simp [hH0] <;> ring
   simpa only [hwidth] using hneg
 
 /-- The requested ratio-two eleven-flip decision holds at every sufficiently large horizon. -/

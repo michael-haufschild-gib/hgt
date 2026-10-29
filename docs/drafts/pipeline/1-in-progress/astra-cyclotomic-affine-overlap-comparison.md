@@ -59,3 +59,17 @@ The existing general `OverlapGrowthSuperGevrey` receiver is stronger than its di
 `c_N = L*(log L)^2*log(log L)`, `L=log(log N)`.
 
 The final factor diverges, so it should satisfy the exact existing growth criterion; it is little-o of `L*(log L)^beta` for every beta>2. This is a genuine but smaller improvement than the proposed new-profile schedule `L*log L*(loglog L)^beta`. The latter still requires a new Denjoy–Carleman construction. Corpus novelty search is in progress; neither improvement is yet claimed formalized.
+
+## One-sided source domination
+
+The absolute error estimate uses the full residue norm. That does not impose the same cost on lower bounds: non-unit prime powers contribute nonnegatively to every Gram packet. The stronger paper statement is
+
+`eventually N, for every F>=0, (log B-log A-epsilon)*kappa_q(F) <= residuePrimeWindow q F A B N`.
+
+Proof: each residue indicator has nonnegative actual mass and nonnegative unit mean. A zero mean requires no estimate; a positive mean permits the strict margin epsilon times that mean by the existing limit. Finitely many indicators share one horizon, and every nonnegative pattern is their nonnegative linear combination. Applying this to norm squares yields an operator lower bound in the unit Gram itself, uniform in all feature and coefficient families, including height-dependent choices. Draft added to `PrimeResidueWindowsControlEveryGramPacket.lean`; check pending.
+
+Next exact specialization: identify the unit mean of actual primitive-phase prefix packets with their cyclotomic Gram energy divided by phi(q). Existing root-power enumeration and residue/units decompositions supply the finite identification. This would transport the newly completed Gram into a concrete actual prime-prefix form. It would still not identify that form with the complete Weil correction.
+
+## Moving windows and variation
+
+The finite-part Mertens limit should also provide one horizon controlling every pair of endpoints above it. The existing `RHTower.Sieve.abs_sum_mul_le_of_bounded_partial_bv` can then transport this bound to envelopes varying with prime height, with an explicit endpoint-plus-variation cost. This is a proposed next theorem, not a proved full-Weil comparison.

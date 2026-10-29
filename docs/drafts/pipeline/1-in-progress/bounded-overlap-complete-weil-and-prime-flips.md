@@ -68,8 +68,10 @@ settle a fixed overlap ratio. These are leads pending source and dependency chec
    `(101/121)²<7/10`, `-log(r)≤1/99`, and tail cost `<1/40`
    make this strictly negative. This is an analytic argument, not a numerical experiment.
    The finite packet limit and the literal twisted-prime correction still need to be assembled
-   and checked. Integer-multiple horizons give exact padding to both requested rational ratios;
-   infinitely many negative witnesses already refute eventual nonnegativity.
+   and checked. Integer-multiple horizons give exact padding to both requested rational ratios.
+   Uniform Ramanujan quasimodes through touching also give a variable-width packet limit;
+   rounding the sub-horizon then yields eventual negativity for every fixed `c≥99/100`.
+   That stronger transfer is drafted but not yet checked.
    This construction does not prove zeta positivity at ratio two or classify all primes.
 4. At ratio two the candidate completed mode energy subtracts
    `2 μ(m)/totient(m) * integral_(1/2)^1 (G(u)/M)/u du` from the separated energy.
@@ -102,6 +104,7 @@ operator bridges has yet been formalized here.
 ## Proof and Lean status
 
 `elevenTrialUpperMargin_neg` passed Lean with only `propext`, `Classical.choice`, and
-`Quot.sound`. `PrimeSquareTrial.lean` also compiled, including its exact Ramanujan expansion
-and harmonic correlation. Draft tail, packet, and complete-form bridges remain under
+`Quot.sound`. `PrimeSquareTrial.lean` and `PrimeFlipTail.lean` also compiled, including the
+exact Ramanujan expansion, harmonic correlation, finite full-tail bound, and its limit.
+Draft variable packet and complete-form bridges remain under
 verification. All required mathematical conclusions remain open.

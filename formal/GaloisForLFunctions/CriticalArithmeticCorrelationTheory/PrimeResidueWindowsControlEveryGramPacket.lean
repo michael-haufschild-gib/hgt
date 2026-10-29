@@ -132,10 +132,10 @@ The coefficient vector and the feature family may both depend on height. -/
 theorem eventually_primeWindow_all_Gram_packets {ι : Type*} {q : ℕ} [NeZero q]
     {A B : ℕ} (hA : 0 < A) (hAB : A ≤ B) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ N : ℕ in atTop, ∀ (s : Finset ι) (v : ι → ZMod q → ℝ) (x : ι → ℝ),
-      |residuePrimeWindow q (fun r => (∑ i ∈ s, x i * v i r) ^ 2) A B N -
-          primeClassKappa q (fun r => (∑ i ∈ s, x i * v i r) ^ 2) *
+      |residuePrimeWindow q (fun r => (∑ i ∈ s, x i * v i r) ^ (2 : ℕ)) A B N -
+          primeClassKappa q (fun r => (∑ i ∈ s, x i * v i r) ^ (2 : ℕ)) *
             (Real.log B - Real.log A)| ≤
-        ε * ∑ r : ZMod q, (∑ i ∈ s, x i * v i r) ^ 2 := by
+        ε * ∑ r : ZMod q, (∑ i ∈ s, x i * v i r) ^ (2 : ℕ) := by
   filter_upwards [eventually_residuePrimeWindow_uniform (q := q) hA hAB hε] with N hN
   intro s v x
   calc

@@ -67,10 +67,11 @@ theorem arithmeticOverlapGram_quadratic_nonneg {ι : Type*} (s : Finset ι)
     intro j hj
     exact ((continuous_arithmeticOverlapGram m).continuousAt.tendsto.comp
       ((ht i hi).prodMk_nhds (ht j hj))).const_mul (a i * a j)
-  apply le_of_tendsto hlim
+  apply neg_nonpos.mp
+  apply le_of_tendsto hlim.neg
   filter_upwards [eventually_ge_atTop 1] with N hN
-  exact arithmeticOverlapGram_rational_quadratic_nonneg s hm (by omega) a
-    (fun i => ⌊x i * (N : ℝ)⌋₊)
+  exact neg_nonpos.mpr (arithmeticOverlapGram_rational_quadratic_nonneg s hm (by omega) a
+    (fun i => ⌊x i * (N : ℝ)⌋₊))
 
 /-- On zero-total-mass coefficients, the raw distance form is minus twice
 its centered Gram form. -/

@@ -46,3 +46,11 @@ This is a finite arithmetic operator theorem. It is not an identification with t
 `AllDivisorConductorsRecoverTheDiscreteBridge.lean` is certified. Summing primitive energies over all orders dividing Q gives the full root energy. Removing order one gives `k*(Q-k)` for k<=Q; centering gives the exact mixed kernel `Q*min(i,j)-i*j`. Its quadratic form is nonnegative for arbitrary real coefficients and every finite family of prefix lengths in [0,Q]. Both printed capstones use only the standard axioms listed above. The module is wired into the CACT umbrella.
 
 This completes omitted cyclic frequencies. It does not assert coercivity for a single primitive order, nor a comparison with the full Weil source.
+
+## Actual prime-source comparison
+
+`PrimeResidueWindowsControlEveryGramPacket.lean` is certified and wired into CACT. One residue-error mass tends to zero and controls every signed pattern, hence every finite real or complex Gram packet, uniformly over feature families and coefficients chosen after the height.
+
+A stronger one-sided result is also certified: actual prime-window Gram forms dominate `(log B-log A-epsilon)` times their unit-mean Gram, at one common fixed-conductor horizon. Non-unit prime powers contribute nonnegatively and impose no extra penalty in this lower bound. The full residue norm remains necessary for the stated absolute error estimate. All five printed capstones use only the standard axioms.
+
+These are actual source theorems, including prime powers. They do not identify the completed Weil correction with the Gram packet, and give no growing-conductor rate.

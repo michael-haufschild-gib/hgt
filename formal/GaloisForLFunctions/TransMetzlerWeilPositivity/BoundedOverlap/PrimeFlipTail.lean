@@ -115,9 +115,11 @@ theorem primeSquareFlipRow_le {p : ℕ} (hp : p.Prime) (n y : ℕ) :
   have htail := mul_le_mul_of_nonneg_left (primePower_tail_after_square hp (Icc 1 y))
     (by norm_num : (0 : ℝ) ≤ 2)
   change primeSquareFlipRow p n y ≤ _ at h
-  calc
-    _ ≤ _ := h
-    _ ≤ _ := add_le_add_left (by simpa only [mul_div_assoc] using htail) _
+  have ht : 2 * (∑ t ∈ Icc 1 y,
+      if p ∣ t ∧ t ≠ p ∧ t ≠ p ^ 2 then Λ t / (t : ℝ) else 0) ≤
+      2 * Real.log p / ((p : ℝ) ^ 2 * ((p : ℝ) - 1)) := by
+    simpa only [mul_div_assoc] using htail
+  exact h.trans (add_le_add le_rfl ht)
 
 /-- Pole coordinates remove both square-root edge weights exactly. -/
 theorem atomicWeilForm_pole_profile_edges (F : ℕ → ℝ) (N : ℕ) :

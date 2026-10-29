@@ -261,7 +261,7 @@ theorem exists_uniform_nairIntegral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
         ring
       _ = (C₀ : ℝ) / (Nat.lcmUpto (n + 1) : ℕ) := by
         rw [← mul_sum, hc]
-        simp only [Nat.lcmUpto, id_eq]
+        simp only [Nat.lcmUpto]
         ring
 
 /-- The least positive integral in a fixed nonzero ideal is attained and differs from the
@@ -276,7 +276,7 @@ theorem exists_isLeast_nairIntegral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
   refine ⟨C₀, hC₀, fun n hn => ?_⟩
   obtain ⟨P₀, hP₀, hdegP₀, hintP₀⟩ := hC n hn
   let d : ℝ := Nat.lcmUpto (n + 1)
-  have hd : 0 < d := by exact_mod_cast Nat.lcmUpto_pos (n + 1)
+  have hd : 0 < d := by dsimp [d]; exact_mod_cast Nat.lcmUpto_pos (n + 1)
   let T : ℤ → Prop := fun z => 0 < z ∧ ∃ P : ℤ[X],
     Q ∣ P ∧ P.natDegree ≤ n ∧ nairIntegral P = (z : ℝ) / d
   obtain ⟨z, ⟨hz, P, hP, hdegP, hintP⟩, hmin⟩ :=

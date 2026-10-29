@@ -278,8 +278,12 @@ fails.
     shift. Weil positivity is pointwise-closed, since each compactly supported test reads finitely
     many weights; so its selectivity lives in the terms that do not move with the weights, the pole
     and the Gamma factor (on a one-prime window the shift by `π/log 2` already equals the twin, which
-    the window refutes: `not_forall_odd_threeHundredSixtyTwoThousandths_re_weilFullFunctional_liouvilleTwist_nonneg`). This makes battery criterion 4 precise: a selective input is not
-    pointwise-closed or not invariant under vertical shifts.
+    the window refutes:
+    `not_forall_odd_threeHundredSixtyTwoThousandths_re_weilFullFunctional_liouvilleTwist_nonneg`).
+    This makes battery criterion 4 precise: a selective input is not pointwise-closed or not invariant
+    under vertical shifts. The same holds for every completely multiplicative twist unimodular at the
+    primes, since Kronecker reaches any phases: the single flips `ω_p` and the cofinite flips are
+    pointwise limits of shifts as well.
 16. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
@@ -356,9 +360,11 @@ fails.
 8. *The parity twin is geometric only in the Bohr closure* (`shift_pow_eq_neg_one_pow`,
    `shiftChar_primeElt_zpow`, `shiftChar_eq_neg_one_subsingleton`, `exists_shiftChar_near_neg_one`).
 9. *Pointwise-closed statements are twin-blind* (`exists_shifts_tendsto_liouville`,
-   `liouvilleTwin_mem_of_isClosed`, `exists_shift_not_mem_of_selective`): a statement on the weights,
-   closed for pointwise convergence, that holds for every vertical shift of `a` holds for its Liouville
-   twin; a selective one fails for some vertical shift.
+   `liouvilleTwin_mem_of_isClosed`, `exists_shift_not_mem_of_selective`,
+   `exists_shifts_tendsto_unitaryTwist`, `unitaryTwist_mem_of_isClosed`, `flip_mem_of_isClosed`): a
+   statement on the weights, closed for pointwise convergence, that holds for every vertical shift of
+   `a` holds for every unitary completely multiplicative twist of `a`, in particular for the flips
+   `ω_p`, the cofinite flips and the Liouville twin.
 
 **D. Completion.**
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
@@ -485,6 +491,15 @@ fails.
    a limit of shifts on every finite set of primes (`exists_shiftChar_near_neg_one`): it lives in the
    Bohr closure of the vertical shifts. *Open:* a family over `ℤ`, beyond vertical shifts, on which
    the twin acts and to which a producer applies.
+
+9. **Which input selects `ζ` against the flips `ω_p`?** Not a pointwise-closed, shift-invariant
+   one. Every completely multiplicative twist unimodular at the primes is a pointwise limit of
+   vertical shifts (`exists_shifts_tendsto_unitaryTwist`), so a closed condition on the weights that
+   holds for all shifts of `Λ` holds for `ω_p Λ`, for every cofinite flip and for `λ Λ`
+   (`flip_mem_of_isClosed`). A selective input must read infinitely many weights non-uniformly or
+   contain terms that do not move with the weights under a shift: the pole and the Gamma factor.
+   This is the positive form of battery criterion 4. *Open:* the propagation of the pole's
+   selectivity from bounded overlap to overlap `log log N` (Q1 of §2.2).
 
 ---
 

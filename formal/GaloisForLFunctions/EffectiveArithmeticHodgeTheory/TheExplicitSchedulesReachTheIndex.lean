@@ -27,6 +27,27 @@ positive semidefinite iff there is no zero right of the critical line. Deciding 
   whose `L²`, Lévy and moment norms stay bounded.
 * **Gram convergence** (`tendsto_weilGram_of_perturbation`). Translates of `F_i + D_{n,i}` have Weil
   Gram matrices converging entrywise to that of the `F_i`, by polarization.
+* **Compression and the upper half** (`hermNegIndex_le_atomicGram`, `hermNegIndex_atomicGram_le`).
+  The Gram matrix of finitely many real atomic tests at horizon `N` is a compression of the atomic
+  Gram matrix, and HKT's receiver bound caps the latter by `κ(K_ζ)` at every width.
+* **Sources** (`exists_spline_family`, `exists_gevrey_family`). The integer translates of the cubic
+  spline carry every `m ≤ κ(K_ζ)`; mollifying them by the dilated profile keeps `m` negative squares
+  (lower semicontinuity of the index) and makes them Gevrey of the profile's class.
+* **Synthesis in Gram norm reaches the index** (`eventually_le_hermNegIndex_of_synthesis`). Any
+  atomic synthesis of a negative family whose errors vanish in the synthesis norms makes the atomic
+  Gram matrices carry its negative squares; the regularity class enters only through the synthesis.
+* **Residue classes** (`eventually_le_hermNegIndex_atomicGram_residue`, `eventually_of_residues`).
+  The Euler–Maclaurin synthesis lives on horizons `nB`, `B = blockSize R`; on the class
+  `N = nB + ρ` the schedule `κ(· + ρ)` still has Gevrey overlap growth, the synthesized family is
+  embedded at horizon `N`, and finitely many classes cover all large `N`.
+* **The theorems** (`eventually_le_hermNegIndex_atomicGram`, `tendsto_hermNegIndex_atomicGram`,
+  `dcProfile_atomicGram_reaches_index`). For a Gevrey-`s` profile and a schedule of Gevrey overlap
+  growth the indices of the atomic Gram matrices converge to `κ(K_ζ)` in `ℕ∞`; for every `α > 1` the
+  Denjoy–Carleman profile at width `(log log N)^α/N` does it.
+
+This is a transfer statement: the topology of entrywise convergence of finite Gram matrices carries
+the index from smooth tests to the atomic sections along the explicit schedule. It uses no
+selectivity input; the upper half is a zero-side statement about `ζ`.
 -/
 
 open MeasureTheory Set Filter Topology Finset Complex
@@ -606,6 +627,45 @@ theorem eventually_of_residues {P : ℕ → Prop} {B : ℕ} (hB : 0 < B)
   have := hn₀ (N % B) hρ (N / B) (h1.trans h2)
   rwa [Nat.div_add_mod' N B] at this
 
+/-- **Synthesis in Gram norm reaches the index.** Let finitely many real `C²` tests `G_i`, supported
+in `[−R′, R′]`, carry `m` negative squares. Suppose that for large `j` the atomic tests at horizon
+`H_j ≤ N_j` and width `1/k_j` with coefficients `X_{j,i}` are translates of `G_i + D_{j,i}`, with
+perturbations obeying common bounds `e_j → 0` and `synthLevy R′ e_j L_j k_j → 0`. Then the atomic
+Gram matrices at horizon `N_j` eventually carry `m` negative squares. The regularity class of the
+profile enters only through the existence of such a synthesis. -/
+theorem eventually_le_hermNegIndex_of_synthesis (hφ : ContDiff ℝ 2 φ) (hφ1 : VanishesOff φ)
+    {n : ℕ} {G : Fin n → ℝ → ℝ} {R' : ℝ} (hR' : 0 ≤ R') (hG2 : ∀ i, ContDiff ℝ 2 (G i))
+    (hGR : ∀ i, SupportedIn R' (G i)) {m : ℕ}
+    (hm : m ≤ hermNegIndex (weilGram Λw fun i => cx (G i))) {H N : ℕ → ℕ}
+    (hHN : ∀ j, H j ≤ N j) {k : ℕ → ℝ} (X : ℕ → Fin n → ℕ → ℝ) (Dn : ℕ → Fin n → ℝ → ℝ)
+    (c e LD : ℕ → ℝ)
+    (hsyn : ∀ᶠ j in atTop, 1 ≤ k j ∧ ∀ i,
+      atomicTest (H j) (X j i) (dilate (k j) φ) = (fun u => G i (u - c j) + Dn j i (u - c j)) ∧
+      ContDiff ℝ 2 (Dn j i) ∧ SupportedIn R' (Dn j i) ∧ (∀ u, |Dn j i u| ≤ e j) ∧
+      ∀ u v, |Dn j i u - Dn j i v| ≤ LD j * |u - v|)
+    (he : Tendsto e atTop (𝓝 0))
+    (hV : Tendsto (fun j => synthLevy R' (e j) (LD j) (k j)) atTop (𝓝 0)) :
+    ∀ᶠ j in atTop, m ≤ hermNegIndex (atomicGram (dilate (k j) φ) (N j)) := by
+  have hGc : ∀ i, HasCompactSupport (G i) := fun i => hasCompactSupport_of_vanishes (hGR i)
+  have hconv := tendsto_weilGram_of_perturbation (F := G) hR' hG2 hGc hGR
+    (A := fun j i => atomicTest (H j) (X j i) (dilate (k j) φ)) (Dn := Dn) (c := c) (e := e)
+    (LD := LD) (k := k) (hsyn.mono fun j hj i => (hj.2 i).1)
+    (hsyn.mono fun j hj i => by
+      obtain ⟨-, h2, hR1, hsup, hlip⟩ := hj.2 i
+      exact ⟨h2, hR1, hsup, hlip, hj.1⟩)
+    he hV
+  have hev := HeckeKreinToeplitz.eventually_le_hermNegIndex (weilGram_cx_isHermitian hG2 hGc)
+    hconv
+  filter_upwards [hev, hsyn] with j hj hj2
+  have hk0 : 0 < k j := by linarith [hj2.1]
+  refine hm.trans (hj.trans ?_)
+  have hext : (fun i => cx (atomicTest (H j) (X j i) (dilate (k j) φ))) =
+      fun i => cx (atomicTest (N j) (fun l => if l ≤ H j then X j i l else 0)
+        (dilate (k j) φ)) := by
+    funext i; rw [atomicTest_extend (hHN j)]
+  rw [hext]
+  exact hermNegIndex_le_atomicGram hφ hφ1 hk0 _
+
 /-- **One residue class.** Fix a Gevrey family carrying `m` negative squares, supported in
 `[−R, R]`, and a residue `ρ` modulo `B = blockSize R`. Along `N = nB + ρ` the Euler–Maclaurin
 synthesis of the family at level `n` and width `1/κ_N` converges in Gram matrix, so the atomic
@@ -627,8 +687,6 @@ theorem eventually_le_hermNegIndex_atomicGram_residue (hφ : ContDiff ℝ ∞ φ
   have hA0 : 0 ≤ A := by
     have := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
     simpa using this
-  have hG2 : ∀ i, ContDiff ℝ 2 (G i) := fun i => (hG i).of_le (natCast_le_infty 2)
-  have hGc : ∀ i, HasCompactSupport (G i) := fun i => hasCompactSupport_of_vanishes (hGR i)
   set A0 := ∫ s, |φ s|
   set Mseq : ℕ → ℝ := fun l => M * b ^ l * (l.factorial : ℝ) ^ s
   set Aseq : ℕ → ℝ := fun q => ∫ s, |iteratedDeriv q φ s|
@@ -649,29 +707,14 @@ theorem eventually_le_hermNegIndex_atomicGram_residue (hφ : ContDiff ℝ ∞ φ
     (R + 1)
   have hk : Tendsto k atTop atTop := hκρ.1.comp
     (tendsto_atTop_mono (fun j => Nat.le_mul_of_pos_right j hB) tendsto_id)
-  have hgood : ∀ᶠ j in atTop, 2 ≤ j ∧ 1 ≤ k j :=
-    (eventually_ge_atTop 2).and (hk.eventually_ge_atTop 1)
-  have hconv := tendsto_weilGram_of_perturbation (F := G) (R' := R + 1) (by linarith) hG2 hGc
-    (fun i => supportedIn_mono (hGR i) (by linarith)) (A := fun j i => atomicTest (j * B) (X j i) (dilate (k j) φ))
-    (Dn := Dn) (c := fun j => Real.log j + R)
-    (e := fun j => gevErr M b A Bφ s (k j) A0 (gevOrder (k j)) j)
-    (LD := fun j => emLip Mseq Aseq (k j) j) (k := k)
-    (hgood.mono fun j hj i => (hXD j i hj.1 hj.2).1)
-    (hgood.mono fun j hj i => by
-      obtain ⟨-, h2, hR1, hsup, hlip⟩ := hXD j i hj.1 hj.2
-      exact ⟨h2, hR1, hsup, hlip, hj.2⟩)
-    he hV
-  have hev := HeckeKreinToeplitz.eventually_le_hermNegIndex (weilGram_cx_isHermitian hG2 hGc)
-    hconv
-  filter_upwards [hev, hgood] with j hj hj2
-  have hk0 : 0 < k j := by linarith [hj2.2]
-  refine hm.trans (hj.trans ?_)
-  have hext : (fun i => cx (atomicTest (j * B) (X j i) (dilate (k j) φ))) =
-      fun i => cx (atomicTest (j * B + ρ) (fun l => if l ≤ j * B then X j i l else 0)
-        (dilate (k j) φ)) := by
-    funext i; rw [atomicTest_extend (Nat.le_add_right _ ρ)]
-  rw [hext]
-  exact hermNegIndex_le_atomicGram (hφ.of_le (natCast_le_infty 2)) hφ1 hk0 _
+  refine eventually_le_hermNegIndex_of_synthesis (hφ.of_le (natCast_le_infty 2)) hφ1
+    (R' := R + 1) (by linarith) (fun i => (hG i).of_le (natCast_le_infty 2))
+    (fun i => supportedIn_mono (hGR i) (by linarith)) hm (H := fun j => j * B)
+    (N := fun j => j * B + ρ) (fun j => Nat.le_add_right _ ρ) X Dn (fun j => Real.log j + R)
+    (fun j => gevErr M b A Bφ s (k j) A0 (gevOrder (k j)) j) (fun j => emLip Mseq Aseq (k j) j)
+    ?_ he hV
+  filter_upwards [eventually_ge_atTop 2, hk.eventually_ge_atTop 1] with j hj2 hk1
+  exact ⟨hk1, fun i => hXD j i hj2 hk1⟩
 
 /-- **The explicit schedules reach the index.** For a Gevrey profile of class `s` and a dilation
 schedule of Gevrey overlap growth, every `m ≤ κ(K_ζ)` is eventually carried by the atomic Gram
@@ -731,6 +774,3 @@ theorem dcProfile_atomicGram_reaches_index {α : ℝ} (hα : 1 < α) :
 end Schedules
 
 end GaloisForLFunctions.EffectiveArithmeticHodgeTheory
-
-#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.dcProfile_atomicGram_reaches_index
-#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.tendsto_hermNegIndex_atomicGram
