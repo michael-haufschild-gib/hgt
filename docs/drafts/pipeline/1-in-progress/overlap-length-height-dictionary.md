@@ -39,7 +39,7 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Raw transform has factor `w`; conventional polynomial has weights `√n x_n` at `1/2-iz`; no hard cutoff | Checked, axiom-audited, umbrella wired: `TheNormalizedAtomicTransform` |
 | Paired-lattice density `log T/(2π)` gives sharp cutoff `X²=T`, with negative-test converse | Checked, axiom-audited, umbrella wired: `DensityMatchedLengthHeightBoundary` |
 | Every nonpolar reference energy is `E_m(1)-log c`; exact crossings; actual diagonal error `O(c/N)` for `0<c≤N` | Audit pending: `OverlapForcesNewRamanujanTerms` |
-| Census cutoff `(T/(2π))^λ`, physical overlap `(T/(2π))^(λ-1)/(2π)` | Audit pending: `CensusLengthHeightCoordinates` |
+| Census cutoff `(T/(2π))^λ`, physical overlap `(T/(2π))^(λ-1)/(2π)` | Checked, axiom-audited, umbrella wired: `CensusLengthHeightCoordinates` |
 | Actual complete matrix at height `N/c`; fixed-`c` positivity for `0<c<1+δ_*` | Audit pending: `CompleteWeilLengthHeight` |
 | Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Audit pending: `SuperGevreyLengthHeight` |
 | Exact asymmetric shell radii and onset `N log((N+1)/N)<1`; eventual absence at each fixed `c<1` | Kernel checked, axiom-audited; final direct check pending: `ExactSuccessorShellWindows` |
@@ -121,6 +121,11 @@ overlap `cM/N`. The corpus's uniform positivity through touching should therefor
 this block whenever `M` is sufficiently large and `cM≤N`. This supplies a genuine Schur
 reduction to the remaining coordinates, with every mixed prime, Gamma, and polar entry
 retained. It does not identify additive edges with a vertex block or prove the residual sign.
+
+**Higher-shell conjecture.** Among integer pairs `1≤a≤N`, `b≥a+k`, the minimum
+logarithmic separation is `log(N+k)-log N`, attained at `(N,N+k)`. Thus gap at least
+`k` enters exactly at `c=N log(1+k/N)`, which tends to `k`. This would classify
+finite-horizon shell boundaries at every overlap, beyond the first-shell calculation.
 
 ## No-go closure
 

@@ -33,7 +33,7 @@ def primeResidueWindowErrorMass (q : ℕ) [NeZero q] (A B N : ℕ) : ℝ :=
 
 theorem primeResidueWindowErrorMass_nonneg (q : ℕ) [NeZero q] (A B N : ℕ) :
     0 ≤ primeResidueWindowErrorMass q A B N :=
-  sum_nonneg fun r _ => abs_nonneg _
+  sum_nonneg fun _ _ => abs_nonneg _
 
 private theorem residuePrimeWindow_eq_indicator_sum {q : ℕ} [NeZero q]
     (F : ZMod q → ℝ) (A B N : ℕ) :
@@ -51,7 +51,7 @@ private theorem residuePrimeWindow_eq_indicator_sum {q : ℕ} [NeZero q]
     intro r
     by_cases hr : r = (k : ZMod q)
     · subst r
-      simp only [primeResidueIndicator, if_pos rfl, one_mul]
+      simp [primeResidueIndicator, mul_div_assoc]
     · simp only [primeResidueIndicator, if_neg hr, if_neg (Ne.symm hr),
         zero_mul, zero_div, mul_zero]
   simp_rw [he]
@@ -107,7 +107,8 @@ theorem tendsto_primeResidueWindowErrorMass {q : ℕ} [NeZero q]
     have ht := ((tendsto_residuePrimeWindow (primeResidueIndicator r) hA hAB).sub_const
       (primeClassKappa q (primeResidueIndicator r) * (Real.log B - Real.log A))).abs
     simpa only [sub_self, abs_zero, primeResidueWindowError] using ht
-  simpa only [primeResidueWindowErrorMass, sum_const_zero] using
+  change Tendsto (fun N => ∑ r : ZMod q, |primeResidueWindowError q A B N r|) atTop (𝓝 0)
+  simpa only [sum_const_zero] using
     tendsto_finsetSum (univ : Finset (ZMod q)) (fun r _ => h r)
 
 /-- One horizon controls every signed reading, including patterns chosen
@@ -118,7 +119,7 @@ theorem eventually_residuePrimeWindow_uniform {q : ℕ} [NeZero q]
       |residuePrimeWindow q F A B N -
           primeClassKappa q F * (Real.log B - Real.log A)| ≤
         ε * ∑ r : ZMod q, |F r| := by
-  filter_upwards [(tendsto_primeResidueWindowErrorMass hA hAB).eventually
+  filter_upwards [(tendsto_primeResidueWindowErrorMass (q := q) hA hAB).eventually
     (gt_mem_nhds hε)] with N hN
   intro F
   exact (abs_residuePrimeWindow_sub_unitMean_le F A B N).trans
@@ -133,7 +134,7 @@ theorem eventually_primeWindow_all_Gram_packets {ι : Type*} {q : ℕ} [NeZero q
           primeClassKappa q (fun r => (∑ i ∈ s, x i * v i r) ^ 2) *
             (Real.log B - Real.log A)| ≤
         ε * ∑ r : ZMod q, (∑ i ∈ s, x i * v i r) ^ 2 := by
-  filter_upwards [eventually_residuePrimeWindow_uniform hA hAB hε] with N hN
+  filter_upwards [eventually_residuePrimeWindow_uniform (q := q) hA hAB hε] with N hN
   intro s v x
   simpa only [abs_sq] using hN (fun r => (∑ i ∈ s, x i * v i r) ^ 2)
 
@@ -148,7 +149,7 @@ theorem eventually_primeWindow_all_complex_Gram_packets {ι : Type*}
           primeClassKappa q (fun r => Complex.normSq (∑ i ∈ s, x i * v i r)) *
             (Real.log B - Real.log A)| ≤
         ε * ∑ r : ZMod q, Complex.normSq (∑ i ∈ s, x i * v i r) := by
-  filter_upwards [eventually_residuePrimeWindow_uniform hA hAB hε] with N hN
+  filter_upwards [eventually_residuePrimeWindow_uniform (q := q) hA hAB hε] with N hN
   intro s v x
   simpa only [abs_of_nonneg (Complex.normSq_nonneg _)] using
     hN (fun r => Complex.normSq (∑ i ∈ s, x i * v i r))

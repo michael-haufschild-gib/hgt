@@ -39,7 +39,7 @@ theorem eventually_affineRamanujanPrimeWindow_uniform {q : ℕ} (hq : 0 < q)
   have hqR : (0 : ℝ) < q := by exact_mod_cast hq
   have hφ : (0 : ℝ) < q.totient := by exact_mod_cast Nat.totient_pos.mpr hq
   have hM : 0 < (q : ℝ) * q.totient := mul_pos hqR hφ
-  filter_upwards [eventually_residuePrimeWindow_uniform hA hAB (div_pos hε hM)] with N hN
+  filter_upwards [eventually_residuePrimeWindow_uniform (q := q) hA hAB (div_pos hε hM)] with N hN
   intro n h
   have hb := hN (affineRamanujanResidue q n h)
   rw [← affineRamanujanPrimeWindow_eq_residue, primeClassKappa_affineRamanujanResidue] at hb

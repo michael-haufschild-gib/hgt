@@ -18,13 +18,17 @@ Search the local Lean corpus before source selection or Mathlib lookup. Work thr
 
 1. Pending source study: the cyclotomic curvature can enter an exact positive matrix identity for affine residue averages, providing an operator-level arithmetic survivor before the analytic comparison.
 
-## Paper status
+## Paper and Lean status
 
-No new proof yet.
+Certified: exact integer-grid Gram completion, cyclotomic divisibility classification of its radical, and completion by divisor conductors to the discrete bridge. Capstone axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Completed modules are wired into the CACT umbrella; no umbrella build.
 
-## Lean status
+Drafts under check: the actual residue error controls all real and complex Gram packets, and actual affine prime windows converge uniformly in both affine parameters.
 
-No new module yet.
+Paper proof and Lean draft: rational refinement replaces the signed Möbius weights by positive conductor completion. For `m>1`, `L>0`,
+
+`L² A_m(k/L) = sum_{e | mL, e/gcd(e,L)=m} E_e(k)`.
+
+The same identity holds for every mixed entry of the centered Gram. Its proof uses Möbius inversion and the exact divisor/gcd dilation equivalence already in the corpus. This is not yet certified. Extending the identity to all real points requires continuity or a direct real Hilbert realization.
 
 ## Broader implications
 

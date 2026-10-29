@@ -28,6 +28,22 @@ def weightedDownwardDivisorFiber (g : ℝ → ℝ) (m ℓ : ℕ) : ℝ :=
   ∑ k ∈ ℓ.divisors, vonMangoldtAtom k * Real.sqrt ((m : ℝ) / (ℓ / k : ℕ)) *
     bumpCorr g (Real.log k - (Real.log m - Real.log (ℓ / k : ℕ)))
 
+/-- Every nonzero Mangoldt term in the successor product is a genuine non-ratio
+edge inside the atom horizon. The divisor `1` has zero Mangoldt coefficient. -/
+theorem successor_divisor_in_horizon {N k : ℕ} (hN : 1 ≤ N)
+    (hk : k ∈ (N + 1).divisors) (hk1 : k ≠ 1) :
+    (N + 1) / k ∈ Icc 1 N ∧ N ≠ k * ((N + 1) / k) := by
+  have hkpos := Nat.pos_of_mem_divisors hk
+  have hkdvd := Nat.dvd_of_mem_divisors hk
+  have hqpos : 0 < (N + 1) / k :=
+    Nat.div_pos (Nat.le_of_dvd (by omega) hkdvd) hkpos
+  have hprod : k * ((N + 1) / k) = N + 1 := by
+    rw [Nat.mul_comm, Nat.div_mul_cancel hkdvd]
+  have hk2 : 2 ≤ k := by omega
+  have hq : (N + 1) / k ≤ N := by
+    nlinarith only [hprod, hk2, hqpos, hN]
+  exact ⟨mem_Icc.mpr ⟨hqpos, hq⟩, by omega⟩
+
 /-- The exact divisor sum leaves one autocorrelation value and the charge `log ℓ`. -/
 theorem weightedDownwardDivisorFiber_eq (g : ℝ → ℝ) {m ℓ : ℕ}
     (hm : 0 < m) (hℓ : 0 < ℓ) :
@@ -57,11 +73,16 @@ theorem weightedDownwardDivisorFiber_eq (g : ℝ → ℝ) {m ℓ : ℕ}
       simp only [vonMangoldtAtom_eq_zero_of_lt_two (by norm_num : 1 < 2),
         ArithmeticFunction.vonMangoldt_apply_one, zero_mul]
     have hk2 : 2 ≤ k := by omega
+    have hsqrt : Real.sqrt ((m : ℝ) / (ℓ / k : ℕ)) =
+        Real.sqrt k * Real.sqrt ((m : ℝ) / ℓ) := by
+      rw [← Real.sqrt_mul hk0.le]
+      congr 1
+      rw [← hprod]
+      field_simp
     have hweight : vonMangoldtAtom k * Real.sqrt ((m : ℝ) / (ℓ / k : ℕ)) =
         ArithmeticFunction.vonMangoldt k * Real.sqrt ((m : ℝ) / ℓ) := by
-      rw [vonMangoldtAtom_eq hk2, ← hprod, Real.sqrt_div hm0.le,
-        Real.sqrt_div hm0.le, Real.sqrt_mul hk0.le,
-        div_mul_div_comm, mul_div_assoc]
+      rw [vonMangoldtAtom_eq hk2, hsqrt, ← mul_assoc,
+        div_mul_cancel₀ _ (Real.sqrt_pos.mpr hk0).ne']
     rw [hweight]
     ring
   rw [weightedDownwardDivisorFiber, sum_congr rfl hterm, ← sum_mul,
@@ -117,7 +138,7 @@ theorem plateauSuccessorFiber_eq {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N)
   ring
 
 private theorem nat_succ_real_atTop :
-    Tendsto (fun N : ℕ => (N + 1 : ℕ) : ℕ → ℝ) atTop atTop := by
+    Tendsto (fun N : ℕ => ((N + 1 : ℕ) : ℝ)) atTop atTop := by
   apply tendsto_atTop_mono' atTop _ tendsto_natCast_atTop_atTop
   exact Eventually.of_forall fun N => by exact_mod_cast Nat.le_succ N
 
@@ -133,7 +154,7 @@ private theorem tendsto_sqrt_nat_div_succ :
     push_cast
     field_simp
     ring
-  have hratio := h.congr (fun N => heq N)
+  have hratio := Filter.Tendsto.congr heq h
   simpa only [Real.sqrt_one] using hratio.sqrt
 
 /-- The exact positive coefficient of logarithmic growth at every fixed overlap above one. -/

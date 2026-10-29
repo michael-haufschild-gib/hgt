@@ -469,6 +469,7 @@ theorem heatLocalizedVerticalEnergy_hasDerivWithinAt_of_simple
   exact hder
 
 #print axioms exists_compact_simple_riemannHeat_zeros_forward
+#print axioms simple_heat_zero_velocity_eq_exterior
 #print axioms heatLocalizedVerticalEnergy_hasDerivWithinAt_of_simple
 
 end

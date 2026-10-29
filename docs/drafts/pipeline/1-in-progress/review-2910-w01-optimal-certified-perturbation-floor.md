@@ -48,3 +48,29 @@ The spectral-floor argument uses adjunction energies strictly above 1/20 but sta
 Consequently the optimum of these three displayed inequalities does not yet certify the largest
 reach of the underlying analytic proof. Generalize its reference floor before closing W01;
 also retain the c-dependence of the charge reserve when auditing the coercivity constants.
+
+## Parameter-dependent refinement to formalize
+
+At width `c/N`, write `α=c q₀`, `r=1−α`, `ψ=psiConstant`,
+`s=completeWeilSelfFinitePart φ c`, and `f=completeWeilAdjunctionEnergy φ c 1`.
+The prime-form deficit theorem permits arbitrarily small positive ε. Keeping the
+center's Young parameter λ therefore gives the limiting coercivity coefficients
+
+`aλ=r−α/λ`, `Bλ=1276c²+α((1+λ)ψ+15)−s`.
+
+The ε-loss is `ε(D+M)` and must be retained until the final eventual estimate.
+For `c≤1.001`, the existing adjunction proof shows conductor 1 lies below every
+other positive conductor. The finite-approximation argument should thus supply
+every reference floor strictly below f, with the actual conductor-1 quasimode
+certifying its optimality.
+
+Set `R=1276c²+α(ψ+15)−s`, `A=α²ψ`, and `q=R+f`.
+For `r>0`, `A>0`, and `q≥0`, optimizing the entire Young family gives
+
+`d*=(√A+√(A+rq))²/r²`, `a*=r−√A/√d*`.
+
+The candidate optimized perturbation floor is `f−e(1+d*)` for `0≤e≤a*`.
+Indeed, Young optimization yields `E/M≥rd−2√(Ad)−R`, with `d=D/M`;
+its intersection with `E/M=f` is d*. Equality there would certify sharpness
+for the displayed family. This refinement, its actual-matrix transfer, and its
+maximal positive c-range remain unformalized. No stronger range is claimed.

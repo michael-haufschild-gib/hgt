@@ -65,9 +65,13 @@ theorem elevenPacket_energy (φ : ℝ → ℝ) (c : ℝ) :
       completeWeilSelfFinitePart φ c + 4 * Real.log 11 / 11 +
         completeWeilPoleShift φ c * (101 / 121 : ℝ) ^ 2 := by
   have htd11 : tameDifferent 11 = Real.log 11 / 10 := by
-    simpa using (tameDifferent_prime_pow (p := 11) (k := 1) (by norm_num) (by norm_num))
+    have h := tameDifferent_prime_pow (p := 11) (k := 1) (by norm_num) (by norm_num)
+    norm_num at h
+    exact h
   have htd121 : tameDifferent 121 = Real.log 11 / 10 := by
-    simpa using (tameDifferent_prime_pow (p := 11) (k := 2) (by norm_num) (by norm_num))
+    have h := tameDifferent_prime_pow (p := 11) (k := 2) (by norm_num) (by norm_num)
+    norm_num at h
+    exact h
   have hlog121 : Real.log (121 : ℝ) = 2 * Real.log 11 := by
     rw [show (121 : ℝ) = 11 ^ (2 : ℕ) by norm_num, Real.log_pow]
     norm_num

@@ -70,3 +70,27 @@
 - `count_iff_sub_mem_sqrtClass_of_successor`: whenever `u-successorWeight ∈ sqrtClass`, `Count(a) ↔ a-u ∈ sqrtClass`. Source: `ArithmeticOfSquareRootPrecision/TheSuccessorEntersOnlyModuloTheSquareRootClass.lean:58`.
 - `complexCount_iff`: a complex count is exactly Count for the real part together with square-root-scale partial sums for the imaginary part. Source: `ArithmeticOfSquareRootPrecision/EveryRealGaugeHasAComplexCountLift.lean:35`.
 - `deciding_input_necessary_properties` assumes a predicate S on **all real arithmetic weights**, with `∀a, S(a) → Count(a)`. It proves Liouville rejection, separation under nonzero `ε n^(−η)` for `0≤η<1/2`, failure of finite-prefix determination, and square-root-class differences between two S-weights. It is not a classification of every possible RH proof. Source: `ArithmeticOfSquareRootPrecision/TheDecidingInputTheorem.lean:50`.
+# Theta kernels and rectangular source defects
+
+- `RHTower/Hedenmalm/HedenmalmCenterMixedCorrelationAngle.lean:232`, `thetaCuspCenterMixedThreePointMatrices_posSemidef`: for every `0 < a < 1/2` and nonnegative adjacent gaps, the actual theta center-mixed three-node matrix is positive semidefinite. `ThetaCusp/ThetaCuspCenterMixedThreePositiveOrientationLaw.lean:77` removes ordering restrictions on the three nodes.
+- `ThetaCusp/ThetaCuspCenterMixedFourPointEvenGlobal.lean:282`, `thetaCuspCenterMixedFourPlusBlock_posSemidef`: the even block of the equispaced four-node matrix is positive semidefinite for every admissible center parameter and every nonnegative spacing. This is one parity block, not full four-node positivity.
+- `ThetaCusp/ThetaCuspEvenFourFixedGlobal.lean:93`, `thetaCuspCenterMixedSignedHankel_seven_even_posSemidef`: the even-index `4 × 4` principal block of the order-seven signed Hankel matrix is positive semidefinite for every `0 < a < 1/2`.
+- `Suzuki/SuzukiRectangularWardDefectBoundedness.lean:26`: the rectangular Ward defect is `Re(xiScrewWindowCurvature L (log n)) - sourceEnergy n`. At any fixed `L > 0`, a nonnegative source energy and an eventual uniform lower bound for this defect imply RH (:33). Under false RH, every nonnegative source energy gives a defect below every real bound at arbitrarily large admissible mesh indices (:62). Cofinal unboundedness below is weaker than convergence to minus infinity.
+
+# Source transport and domain obstructions
+
+- `CCM/CCMFirstClockPhaseNaturalTransportRigidity.lean:216`: on a finite injective prime-power packet, a real matrix preserves the actual source and commutes with all physical phase diagonals if and only if it is the identity. Signed matrices are included.
+- `CCM/CCMFirstClockBarycentricOrientationCompleteness.lean:85`: for nonnegative finite weights of positive total mass, an oriented source-faithful Markov transport exists exactly when the original weighted phase scalar is nonnegative. Universal completed first-clock feasibility is equivalent to RH (:220).
+- `Suzuki/SuzukiCoherentResponseGainNoGo.lean:115`: the depth-fused source response is bounded by `C(h)` times the bare prime amplitude divided by `p+1`, uniformly in positive aperture. For every proposed uniform recovery constant, a prime at its moving wall violates sharp-source recovery (:217), although the rectangular gate is exactly one there (:171).
+- `Suzuki/SuzukiCoherentSharpSourceDomainNoGo.lean:56`: a constant multiple of the bare critical prime amplitude is square summable if and only if that constant is zero.
+- `Suzuki/SuzukiCofinalPositiveFinitePartNoGo.lean:217`: every real linear functional on all prime-coordinate functions extending the finite critical source sums is unbounded below on the nonnegative coordinate cone. This domain-specific obstruction does not exclude a completed signed form on a restricted domain.
+- `TransMetzlerWeilPositivity/SuperGevreyCriticalGrowth.lean:1229`: `superGevreyRatio β N = log(log N) * log(log(log N))^β`; the Steklov atomic-family positivity equivalence uses every `β > 2` (:1349).
+
+# Complete signed theta hierarchy and first-clock lower bounds
+
+- `ThetaCusp/ThetaCuspCenterMixedSeventhRankStrict.lean:70`: the full `7 × 7` signed center-mixed Hankel section is positive definite for every `0 < a < 1/2`.
+- `ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness.lean:131,216,230`: the signed jet is `s_a(2n)=(-1)^n k_a^(2n)(0)`, `s_a(2n+1)=0`; `H_a,N(i,j)=s_a(i+j)`. Membership of every admissible `s_a` in the complete Hankel cone is equivalent to RH. Fixed-rank positivity and all-rank positivity have different quantifiers.
+- `CCM/CCMFirstClockTailLowerBoundCompleteness.lean:22,1089`: RH is equivalent to existence of `C ≥ 0`, `A ≥ π/2` such that the actual source sine coefficient at aperture `L/2`, frequency `2π/L`, is at least `-C` for every `L ≥ A`. Under false RH it is unbounded below on every tail (:1102).
+- `Suzuki/SuzukiWallFieldLightConeKernelCompletion.lean:134,421`: the reflected wall current plus the negative-light Gram equals the positive-light Gram, including every finite prime-power and height packet. Both light matrices are positive semidefinite; their difference need not be.
+- `TransThresholdPairCorrelation/ParitySensitiveRamanujanStabilizerTransfer.lean:836`: the actual odd/even prime coalescent sum equals its stabilizer model plus its signed discrepancy, with every cutoff and weight retained.
+

@@ -538,4 +538,86 @@ theorem atomFq_neg_on_span {N : ℕ} {Q : F[X]} (hQ : Q.Monic) (hQN : Q.natDegre
       nlinarith [sq_nonneg (t * V * a + t * U * b)]
   nlinarith
 
+omit [DecidableEq F] in
+theorem poleVec_sq (f : F[X]) : poleVec f ^ 2 = ((Fintype.card F : ℝ)⁻¹) ^ f.natDegree := by
+  have hq : (0 : ℝ) ≤ Fintype.card F := Nat.cast_nonneg _
+  rw [poleVec, ← pow_mul, mul_comm, pow_mul, inv_pow, Real.sq_sqrt hq]
+
+theorem sum_monicLE (N : ℕ) (g : F[X] → ℝ) :
+    ∑ f ∈ monicLE N, g f = ∑ d ∈ range (N + 1), ∑ f ∈ monicDeg (F := F) d, g f := by
+  refine sum_biUnion fun d _ d' _ hdd' => Finset.disjoint_left.mpr fun f hf hf' => hdd' ?_
+  exact (mem_monicDeg.mp hf).2.symm.trans (mem_monicDeg.mp hf').2
+
+/-- `|v|² = N + 1`: each degree contributes `q^d · q^{−d}`. -/
+theorem sum_poleVec_sq (N : ℕ) : ∑ f ∈ monicLE (F := F) N, poleVec f ^ 2 = N + 1 := by
+  have hq : (Fintype.card F : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  rw [sum_monicLE]
+  have : ∀ d ∈ range (N + 1), ∑ f ∈ monicDeg (F := F) d, poleVec f ^ 2 = 1 := fun d _ => by
+    rw [sum_congr rfl fun f hf => by rw [poleVec_sq, (mem_monicDeg.mp hf).2], sum_const,
+      card_monicDeg, nsmul_eq_mul]
+    push_cast
+    rw [← mul_pow, mul_inv_cancel₀ hq, one_pow]
+  rw [sum_congr rfl this, sum_const, card_range, nsmul_eq_mul, mul_one]
+  push_cast; ring
+
+/-- The number of monic multiples of `Q` of degree `d ≥ deg Q` is `q^{d − deg Q}`. -/
+theorem card_dvd_monicDeg {Q : F[X]} (hQ : Q.Monic) (d : ℕ) :
+    (((monicDeg (F := F) d).filter fun f => Q ∣ f).card : ℝ) =
+      if Q.natDegree ≤ d then (Fintype.card F : ℝ) ^ (d - Q.natDegree) else 0 := by
+  have h := sum_dvd_monicDeg (F := F) (fun _ => (1 : ℂ)) (fun _ _ _ _ => (mul_one 1).symm) hQ 1 d
+  simp only [pow_one, one_mul, sum_const, nsmul_eq_mul, mul_one, degSumW_one] at h
+  have hC : (((monicDeg (F := F) d).filter fun f => Q ∣ f).card : ℂ) =
+      ((if Q.natDegree ≤ d then (Fintype.card F : ℝ) ^ (d - Q.natDegree) else 0 : ℝ) : ℂ) := by
+    rw [h]; split_ifs <;> push_cast <;> rfl
+  exact_mod_cast hC
+
+/-- `|u_Q|² = (N + 1 − deg Q) q^{−deg Q}`. -/
+theorem sum_divVec_sq (N : ℕ) {Q : F[X]} (hQ : Q.Monic) :
+    ∑ f ∈ monicLE N, divVec Q f ^ 2 =
+      ((N + 1 - Q.natDegree : ℕ) : ℝ) * ((Fintype.card F : ℝ)⁻¹) ^ Q.natDegree := by
+  have hq : (Fintype.card F : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  rw [sum_monicLE]
+  have hd : ∀ d ∈ range (N + 1), ∑ f ∈ monicDeg (F := F) d, divVec Q f ^ 2 =
+      if Q.natDegree ≤ d then ((Fintype.card F : ℝ)⁻¹) ^ Q.natDegree else 0 := fun d _ => by
+    have h1 : ∑ f ∈ monicDeg (F := F) d, divVec Q f ^ 2 =
+        ∑ f ∈ (monicDeg (F := F) d).filter (fun f => Q ∣ f), ((Fintype.card F : ℝ)⁻¹) ^ d := by
+      rw [sum_filter]
+      refine sum_congr rfl fun f hf => ?_
+      rw [divVec]
+      split_ifs <;> simp [poleVec_sq, (mem_monicDeg.mp hf).2]
+    rw [h1, sum_const, nsmul_eq_mul, card_dvd_monicDeg hQ]
+    split_ifs with hle
+    · rw [inv_pow, inv_pow, ← div_eq_mul_inv, div_eq_iff (pow_ne_zero _ hq), inv_mul_eq_div,
+        eq_div_iff (pow_ne_zero _ hq), ← pow_add, Nat.sub_add_cancel hle]
+    · ring
+  rw [sum_congr rfl hd, ← sum_filter, sum_const, nsmul_eq_mul]
+  congr 2
+  rw [show (range (N + 1)).filter (fun d => Q.natDegree ≤ d) = Ico Q.natDegree (N + 1) by
+    ext d; simp only [mem_filter, mem_range, mem_Ico]; omega, Nat.card_Ico]
+
+/-- **The second rung over `𝔽_q`.** For monic `Q` of degree `1 ≤ e ≤ N` and
+`D < N − e (N + 1) / (N + 1 − (N + 1 − e) q^{−e})`, the atomic kernel `D·1 − P_N` is negative definite
+on the span of the pole vector and `u_Q`: at least two negative squares. As `N → ∞` the threshold is
+`N − e q^e/(q^e − 1)`, so the index-one window has width at most `(|Q|/(|Q| − 1)) log |Q|`; over `ℤ`
+with `Q = 2` this is the margin `2 log 2`. -/
+theorem atomFq_two_negative_squares {N : ℕ} {Q : F[X]} (hQ : Q.Monic) (hQ1 : 1 ≤ Q.natDegree)
+    (hQN : Q.natDegree ≤ N) {D : ℝ}
+    (hD : D < N - Q.natDegree * ((N : ℝ) + 1) / (((N : ℝ) + 1) -
+      ((N + 1 - Q.natDegree : ℕ) : ℝ) * ((Fintype.card F : ℝ)⁻¹) ^ Q.natDegree))
+    {a b : ℝ} (hab : a ≠ 0 ∨ b ≠ 0) :
+    D * ∑ f ∈ monicLE N, (a * poleVec f + b * divVec Q f) ^ 2 -
+      ∑ f ∈ monicLE N, ∑ g ∈ monicLE N, primeKernelFq N f g * (a * poleVec f + b * divVec Q f) *
+        (a * poleVec g + b * divVec Q g) < 0 := by
+  have hq1 : (1 : ℝ) < Fintype.card F := by exact_mod_cast Fintype.one_lt_card
+  have hQinv : ((Fintype.card F : ℝ)⁻¹) ^ Q.natDegree < 1 :=
+    pow_lt_one₀ (inv_nonneg.mpr (by linarith)) (inv_lt_one_of_one_lt₀ hq1) (by omega)
+  have hUV : ∑ f ∈ monicLE N, divVec Q f ^ 2 < ∑ f ∈ monicLE (F := F) N, poleVec f ^ 2 := by
+    rw [sum_divVec_sq N hQ, sum_poleVec_sq]
+    have hle : ((N + 1 - Q.natDegree : ℕ) : ℝ) ≤ N + 1 := by
+      exact_mod_cast (Nat.sub_le (N + 1) Q.natDegree)
+    have h0 : 0 ≤ ((Fintype.card F : ℝ)⁻¹) ^ Q.natDegree := by positivity
+    nlinarith
+  refine atomFq_neg_on_span hQ hQN hUV ?_ hab
+  rwa [sum_divVec_sq N hQ, sum_poleVec_sq]
+
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

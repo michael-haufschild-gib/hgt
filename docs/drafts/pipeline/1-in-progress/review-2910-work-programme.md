@@ -39,7 +39,7 @@ No row is complete merely because a related theorem already exists or a weaker c
 | W14 | Slack on [3/4,1), 70%/75% displacement thresholds, actual-Gram negative-part credit. | Complete: exact model thresholds and actual projected displacement credit, [proof and audit](../3-formalized/review-2910-w14-displacement-credit.md). |
 | W15 | Gabor-pinching slack optimization. | Open. |
 | W16 | Compact-time heat counts, 2/3-horizon constants, near-axis count tables. | Open. |
-| W17 | Localized heat-energy evolution from pair/exterior forces and forward simplicity. | Source helpers inspected; finite-packet and actual evolution composition underway. [Card](review-2910-w17-localized-heat-energy.md). |
+| W17 | Localized heat-energy evolution from pair/exterior forces and forward simplicity. | Actual simple-time derivative, finite-packet flux, collision-continuous observables and global comparison proved; dissipation capstone and final audits remain. [Card](review-2910-w17-localized-heat-energy.md). |
 | W18 | Ordered Chebyshev block-pair integrals with certified ψ and VK bounds. | Open. |
 | W19 | Projections, Schur residuals, radicals, bounded-window transport constants. | Open. |
 | W20 | Fixed-conductor Ramanujan residual/Gram estimates; infinite-pattern greatest gaps. | Open. |

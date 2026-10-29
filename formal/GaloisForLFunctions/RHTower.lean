@@ -28234,7 +28234,10 @@ import GaloisForLFunctions.RHTower.Heat.HeatLocalCofactor
 import GaloisForLFunctions.RHTower.Heat.HeatExteriorForce
 import GaloisForLFunctions.RHTower.Heat.HeatForwardSimpleZeros
 import GaloisForLFunctions.RHTower.Heat.LocalizedHeatPairForce
+import GaloisForLFunctions.RHTower.Heat.LocalizedHeatPacketFlux
 import GaloisForLFunctions.RHTower.Heat.HeatZeroSumContinuity
+import GaloisForLFunctions.RHTower.Heat.HeatLocalizedZeroObservables
+import GaloisForLFunctions.RHTower.Heat.HeatLocalizedEnergyEvolution
 import GaloisForLFunctions.RHTower.Heat.HeatReverseGaussian
 import GaloisForLFunctions.RHTower.Heat.HeatRelativeGlobalBounds
 import GaloisForLFunctions.RHTower.Heat.HeatGaussianQuadraticError
@@ -28250,3 +28253,4 @@ import GaloisForLFunctions.RHTower.InfiniteSymmetry.ThePolarDivisorIsTheZeroSet
 import GaloisForLFunctions.RHTower.InfiniteSymmetry.TheChamberIsSilentOnTheStrip
 import GaloisForLFunctions.RHTower.InfiniteSymmetry.TheCuspidalPairIsAReceiver
 import GaloisForLFunctions.RHTower.InfiniteSymmetry.ConfinementIsTheSquareRootCount
+import GaloisForLFunctions.RHTower.CensusLengthHeightCoordinates

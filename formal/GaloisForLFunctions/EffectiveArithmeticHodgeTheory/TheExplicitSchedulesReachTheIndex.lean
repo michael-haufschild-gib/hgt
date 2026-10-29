@@ -167,7 +167,7 @@ def weilErrBound (a l c R e V : ℝ) : ℝ :=
     4 * Real.cosh (R / 2) ^ 2 * (2 * R * e) ^ 2
 
 /-- `weilErr` is dominated by its majorant. -/
-theorem weilErr_le_bound {G : ℝ → ℝ} {a l c R e V : ℝ} (hR : 0 ≤ R) (he : 0 ≤ e) (hV : 0 ≤ V)
+theorem weilErr_le_bound {G : ℝ → ℝ} {a l c R e V : ℝ} (hR : 0 ≤ R) (he : 0 ≤ e)
     (ha : Real.sqrt (∫ u, G u ^ 2) ≤ a) (hl : Real.sqrt (RHTower.levyEnergy G) ≤ l)
     (hc : |RHTower.coshHalfMoment G| + |RHTower.sinhHalfMoment G| ≤ c) :
     weilErr G R e V ≤ weilErrBound a l c R e V := by
@@ -233,7 +233,6 @@ theorem tendsto_weilQuad_add (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
     filter_upwards [hev] with n ⟨⟨hD2, hDR, hDe, hDL, hk⟩, hs1, hv1, hm1⟩
     obtain ⟨hDc, hsqD, -, hLev, -, hN1⟩ := perturbation_norms hD2 hDR hR' hDe hDL hk
     have he0 : 0 ≤ e n := (abs_nonneg _).trans (hDe 0)
-    have hV0 : 0 ≤ V n := (levyEnergy_nonneg' _).trans hLev
     set G : ℝ → ℝ := fun u => F u + Dn n u
     have hG2 : ContDiff ℝ 2 G := hF.add hD2
     have hGc : HasCompactSupport G := hFc.add hDc
@@ -260,7 +259,7 @@ theorem tendsto_weilQuad_add (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
       have : 2 * (Real.cosh (R' / 2) * ∫ u, |Dn n u|) ≤ 2 * (Real.cosh (R' / 2) * (2 * R' * e n)) :=
         by gcongr
       simp only [c]; linarith
-    have := weilErr_le_bound hR' he0 hV0 ha hl hc
+    have := weilErr_le_bound (V := V n) hR' he0 ha hl hc
     linarith
   have hlim_up : Tendsto (fun n => weilQuad F + weilErr F R' (e n) (V n)) atTop
       (𝓝 (weilQuad F)) := by
@@ -356,7 +355,11 @@ theorem tendsto_weilGram_of_perturbation {ι : Type*} {F : ι → ℝ → ℝ} {
     funext u; rw [hAn i, hAn j]; ring
   rw [show weilGram Λw (fun a => cx (A n a)) i j =
       RHTower.weilFullFunctional Λw (EF.weilTest (cx (A n i)) (cx (A n j))) from rfl,
-    weilPair_real_eq hAi2 hAic hAj2 hAjc, e1, e2, weilQuad_comp_sub, weilQuad_comp_sub]
+    weilPair_real_eq hAi2 hAic hAj2 hAjc, e1, e2]
+  have t1 := weilQuad_comp_sub (fun v => F i v + F j v + (Dn n i v + Dn n j v)) (c n)
+  have t2 := weilQuad_comp_sub (fun v => F i v - F j v + (Dn n i v - Dn n j v)) (c n)
+  beta_reduce at t1 t2 ⊢
+  rw [t1, t2]
 
 end Gram
 

@@ -40,3 +40,9 @@ First module checked and its olean generated solely for the new importing module
 ## Limits and continuation
 
 This is a finite arithmetic operator theorem. It is not an identification with the complete Weil overlap operator. Continued work is tracked in ../1-in-progress/astra-cyclotomic-affine-overlap-comparison.md: conductor completion, actual source comparison, rational refinement and the remaining complete-form transfer.
+
+## Conductor completion
+
+`AllDivisorConductorsRecoverTheDiscreteBridge.lean` is certified. Summing primitive energies over all orders dividing Q gives the full root energy. Removing order one gives `k*(Q-k)` for k<=Q; centering gives the exact mixed kernel `Q*min(i,j)-i*j`. Its quadratic form is nonnegative for arbitrary real coefficients and every finite family of prefix lengths in [0,Q]. Both printed capstones use only the standard axioms listed above. The module is wired into the CACT umbrella.
+
+This completes omitted cyclic frequencies. It does not assert coercivity for a single primitive order, nor a comparison with the full Weil source.

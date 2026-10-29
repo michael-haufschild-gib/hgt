@@ -44,7 +44,7 @@ theorem moebius_dilated_divisor_sum {m L : ℕ} (hm : 0 < m) (hL : 0 < L)
     rw [← sum_filter]
     congr 1
     rw [mul_comm L d, Nat.divisors_filter_dvd_of_dvd (Nat.mul_pos hm hL).ne'
-      (Nat.mul_dvd_mul_right L (Nat.dvd_of_mem_divisors hd))]
+      (Nat.mul_dvd_mul_right (Nat.dvd_of_mem_divisors hd) L)]
   calc
     _ = ∑ d ∈ m.divisors, ∑ e ∈ (m * L).divisors,
         (μ (m / d) : ℝ) * (if e ∣ L * d then F e else 0) := by
@@ -59,12 +59,12 @@ theorem moebius_dilated_divisor_sum {m L : ℕ} (hm : 0 < m) (hL : 0 < L)
         (moebius_dvd_projector hm (e / Nat.gcd e L))
       simpa only [sum_mul, mul_ite, mul_one, mul_zero, ite_mul, one_mul,
         zero_mul, eq_comm] using h
-    _ = _ := (sum_filter _ _ _).symm
+    _ = _ := (sum_filter _ _).symm
 
 private theorem scaled_fract_remainder {d L : ℕ} (hd : 0 < d) (hL : 0 < L) (k : ℕ) :
     (L : ℝ) ^ 2 * ((d : ℝ) ^ 2 * Int.fract (((k : ℝ) / L) / d) *
       (1 - Int.fract (((k : ℝ) / L) / d))) =
-      (k % (d * L) : ℕ) * ((d * L : ℕ) - (k % (d * L) : ℕ) : ℝ) := by
+      (k % (d * L) : ℕ) * (((d * L : ℕ) : ℝ) - (k % (d * L) : ℕ)) := by
   have hdR : (d : ℝ) ≠ 0 := by exact_mod_cast hd.ne'
   have hLR : (L : ℝ) ≠ 0 := by exact_mod_cast hL.ne'
   rw [div_div, mul_comm (L : ℝ) d, ← Nat.cast_mul,
@@ -84,7 +84,7 @@ theorem arithmeticOverlapCurvature_rational_refinement {m L : ℕ}
     rw [sum_divisors_moebius hm0, if_neg (by omega)]
   calc
     _ = ∑ d ∈ m.divisors, (μ (m / d) : ℝ) *
-        ((k % (d * L) : ℕ) * ((d * L : ℕ) - (k % (d * L) : ℕ) : ℝ)) := by
+        ((k % (d * L) : ℕ) * (((d * L : ℕ) : ℝ) - (k % (d * L) : ℕ))) := by
       rw [arithmeticOverlapCurvature, mul_sum]
       refine sum_congr rfl fun d hd => ?_
       have hs := scaled_fract_remainder (Nat.pos_of_mem_divisors hd) hL k

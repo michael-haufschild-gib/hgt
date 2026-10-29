@@ -124,3 +124,7 @@ theorem tendsto_bandwidth_fixed_overlap {c : ℝ} (hc : 0 < c) :
   exact (bandwidth_height_eq hX hc).symm
 
 end GaloisForLFunctions.SpacingScaleHarmonicAnalysis.LengthHeight
+
+#print axioms GaloisForLFunctions.SpacingScaleHarmonicAnalysis.LengthHeight.bandwidth_eq_one_add_log_overlap
+#print axioms GaloisForLFunctions.SpacingScaleHarmonicAnalysis.LengthHeight.log_height_sub_log_length
+#print axioms GaloisForLFunctions.SpacingScaleHarmonicAnalysis.LengthHeight.tendsto_bandwidth_fixed_overlap

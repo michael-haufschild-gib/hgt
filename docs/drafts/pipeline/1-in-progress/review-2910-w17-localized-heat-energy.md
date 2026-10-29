@@ -110,3 +110,10 @@ controlled right derivatives on short punctured forward intervals satisfy the
 integrated bound on the entire interval. The initial endpoint needs no derivative.
 Its scratch check also verifies bounded-limit integration and the upper-right-slope
 consequence of a continuous integral majorant. Final leaf audit remains pending.
+
+`Heat/HeatLocalizedZeroObservables.lean` proves continuity through collisions,
+summability for compact horizontal support, eventual exact recovery of the full
+nonreal count at each fixed finite packet, the degree bound on truncated counts,
+and domination of packet energy by the outer cutoff. Its four transitive axiom
+audits contain only the three standard axioms. Both supporting modules have
+oleans for the dissipation capstone; final plain checks remain pending.

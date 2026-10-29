@@ -62,11 +62,12 @@ absorption/counting step must still be proved.
 
 ## Status
 
-The active draft `RHTower/Heat/HeatLocalizedEnergyEvolution.lean` contains
-work on the regular-part velocity identity, full complex zero motion,
-local simple-zero branches, and compact forward simplicity. Those additions
-have not passed a Lean check and are not exported by the umbrella. The
-folder move preserved this draft; it did not certify these claims.
+`RHTower/Heat/HeatLocalizedEnergyEvolution.lean` now proves the regular-part
+velocity identity, full complex zero motion, local simple-zero branches,
+compact forward simplicity, and the derivative of the actual weighted sum at
+simple times. The direct check passed; terminal axiom audits were standard-only.
+The collision-compatible dissipation capstone is still being formalized; see
+[the active integration card](review-2910-w17-localized-heat-energy.md).
 
 For the derivative identification, choose disjoint isolating disks around
 the finitely many zeros in a zero-free enclosing circle. At simple zeros,

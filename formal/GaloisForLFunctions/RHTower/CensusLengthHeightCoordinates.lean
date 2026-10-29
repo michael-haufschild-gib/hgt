@@ -48,7 +48,6 @@ theorem census_physical_bandwidth (P : Params) {T : ℝ} (hT : 1 < T) :
   rw [bandwidth, Params.X, Real.log_exp, Params.L, Zeta23.l,
     Real.log_div (zero_lt_one.trans hT).ne' (by positivity : (2 * Real.pi : ℝ) ≠ 0)]
   field_simp [(Real.log_pos hT).ne']
-  ring
 
 theorem tendsto_census_physical_bandwidth (P : Params) :
     Tendsto (fun T : ℝ => bandwidth (P.X T) T) atTop (𝓝 P.lam) := by
@@ -56,8 +55,9 @@ theorem tendsto_census_physical_bandwidth (P : Params) :
     tendsto_const_nhds.div_atTop Real.tendsto_log_atTop
   have h : Tendsto (fun T : ℝ => P.lam * (1 - Real.log (2 * Real.pi) / Real.log T))
       atTop (𝓝 P.lam) := by
+    have h1 : Tendsto (fun _ : ℝ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
     simpa only [sub_zero, mul_one] using
-      (tendsto_const_nhds.sub hr).const_mul P.lam
+      (h1.sub hr).const_mul P.lam
   apply h.congr'
   filter_upwards [eventually_gt_atTop (1 : ℝ)] with T hT
   exact (census_physical_bandwidth P hT).symm
@@ -68,19 +68,19 @@ theorem census_overlap_le_one_iff (P : Params) {T : ℝ} (hT : 2 * Real.pi < T) 
   have hC : (0 : ℝ) < 2 * Real.pi := by positivity
   have hT0 := hC.trans hT
   have hb : 1 < T / (2 * Real.pi) := (one_lt_div hC).mpr hT
-  rw [overlap_le_one_iff hT0,
+  rw [overlap_le_one_iff hT0, Params.X,
     ← Real.log_le_log_iff (Real.exp_pos (P.L T)) hT0,
-    Params.X, Real.log_exp, Params.L, Zeta23.l, le_div_iff₀ (Real.log_pos hb)]
+    Real.log_exp, Params.L, Zeta23.l, le_div_iff₀ (Real.log_pos hb)]
 
-theorem census_overlap_at_bandwidth_one (P : Params) (hλ : P.lam = 1)
+theorem census_overlap_at_bandwidth_one (P : Params) (hlam : P.lam = 1)
     {T : ℝ} (hT : 0 < T) : overlap (P.X T) T = 1 / (2 * Real.pi) := by
-  rw [census_overlap_eq P hT, hλ, sub_self, Real.rpow_zero]
+  rw [census_overlap_eq P hT, hlam, sub_self, Real.rpow_zero]
 
 /-- At census bandwidth `4/3`, physical overlap has power `1/3` with its exact constant. -/
-theorem census_overlap_at_four_thirds (P : Params) (hλ : P.lam = 4 / 3)
+theorem census_overlap_at_four_thirds (P : Params) (hlam : P.lam = 4 / 3)
     {T : ℝ} (hT : 0 < T) :
     overlap (P.X T) T = (T / (2 * Real.pi)) ^ (1 / 3 : ℝ) / (2 * Real.pi) := by
-  rw [census_overlap_eq P hT, hλ]
+  rw [census_overlap_eq P hT, hlam]
   congr 2
   ring
 
