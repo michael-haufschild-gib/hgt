@@ -45,6 +45,19 @@ therefore legitimate. No limiting or spectral premise is used.
 - Bound the sum of rectangle remainders by the existing boundary measure.
 - Specialize to actual Haar profiles and check the exact Lean modules.
 
+Sources under direct verification:
+
+- `GammaMeanZeroCrossingBound.lean`: actual rectangle measures, both-sign
+  pair inequality, and summed boundary-remainder cost.
+- `GammaFiniteMeanZeroOffDiagonal.lean`: exact Gamma assembly and absolute
+  error, first in original remainders and then in width mass.
+- `TheHaarGammaCrossTermsCostOnlyMass.lean`: actual signed Haar sections,
+  exact boundary cost, pair-width bound, and ordinary square-mass bound.
+
+The concrete Haar statements have no mathematical premises. Generic
+support, regularity, mean-zero, and boundedness inputs are discharged
+from the existing profile theorems.
+
 This controls all signed Gamma cross terms in ordinary mass, rather
 than their logarithmically weighted diagonal size. It would not by itself
 pay the full prime/Gamma head or close ACS. The full divisor-square defect

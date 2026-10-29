@@ -77,7 +77,10 @@ ideal-count/logarithmic hyperbola proof.
 3. Completed scratch: weighted ideal multiplication and actual hyperbola
    identity, all three transitive axiom audits standard-only. Final direct
    source audit passes; [proof](../3-formalized/hecke-harmonic-sums-satisfy-the-ideal-hyperbola-identity.md).
-4. Prove the power-weighted Chebyshev estimate with its actual exponent.
+4. Completed scratch: power-weighted Chebyshev estimate, with a standard
+   transitive axiom audit. Final module
+   `ArtinMertens/PrimePowerWeightsHavePowerBounds.lean` is under its
+   direct source audit; [proof](../3-formalized/prime-power-weights-have-power-bounds.md).
 5. Assemble the nontrivial and trivial Mertens statements and audit them.
 
 No Mertens result on this card is yet claimed. Convergence to an exact
@@ -98,19 +101,21 @@ source audit passes. Its required consumer olean is not built yet.
 module. No new grouping or Abel-comparison proof is needed.
 `RHTower.Sieve.sum_rpow_neg_le_of_lt_one` gives
 `sum log N(p)*(N(p)^k)^(-sigma)=O(x^(1-sigma))`, for `0<sigma<1`.
-Both source proofs have been inspected. This scratch is under its first
-complete check. An earlier check was stopped immediately because it
-briefly overlapped the previous final audit; no conclusion came from it.
+Both source proofs have been inspected. The complete scratch passes
+without warnings; both the new weighted bound and the existing full
+prime-ideal Mertens theorem have standard-only transitive axiom audits.
+Its final source audit is running. The required consumer olean is not
+built yet.
 
-`/tmp/HeckeNontrivialMertensScratch.lean` is the complete written consumer.
+`/tmp/HeckeMertensScratch.lean` contains both complete written consumers.
+The nontrivial-character proof
 It substitutes the harmonic approximation into the exact hyperbola sum,
 uses the weighted prime-power bound, and divides by the proved actual
 nonzero `heckeLCont(1,psi)`. It remains uncompiled pending the two arithmetic
 modules. Its imports also justify building the now-finalized nonvanishing
 module's olean, which is not built yet.
 
-`/tmp/HeckeTrivialMertensScratch.lean` is the complete written trivial
-consumer. `heckeValue_one_prime` identifies the deleted mass exactly.
+For the trivial character, `heckeValue_one_prime` identifies the deleted mass exactly.
 The bad primes lie in the finite set of nonzero prime ideals of norm at
 most `N(m.fin)`. Each geometric prime-power row contributes at most
 `2*log N(p)`, using `HTGeometry.geom_sum_range_le`. The existing full

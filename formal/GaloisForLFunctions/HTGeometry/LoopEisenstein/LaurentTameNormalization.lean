@@ -61,8 +61,10 @@ private theorem residue_constant (a : Fˣ) :
         ⟨laurentConstantUnit F a, constant_mem_valuation_kernel F a⟩) = a := by
   apply Units.ext
   rw [Units.coe_map, tameResHom_val]
-  simpa only [PowerSeries.constantCoeff_C] using
-    ABHN.laurentSeriesResidueFieldEquiv_residue_powerSeries F (PowerSeries.C (a : F))
+  change ABHN.laurentSeriesResidueFieldEquiv F
+    (IsLocalRing.residue _
+      (ABHN.laurentPowerSeriesEquivValuedInteger F (PowerSeries.C (a : F)))) = (a : F)
+  rw [ABHN.laurentSeriesResidueFieldEquiv_residue_powerSeries, PowerSeries.constantCoeff_C]
 
 /-- The tame symbol of a constant and `X` is the constant itself. -/
 theorem laurentTameSymbol_constant_X (a : Fˣ) :
