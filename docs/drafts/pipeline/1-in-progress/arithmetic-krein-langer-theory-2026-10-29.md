@@ -44,15 +44,15 @@ locality, and must not duplicate HKT modules.
   `TheIndexIsContinuousOffTheDiscriminant`, `TheParityFormOfTheGlobalLaw`,
   `TheIndexIsTheNumberOfExceptionalWaves`, `CompressionsAreReceivers`,
   `FineTowersDecideEveryOrbitKernel`, `LocalityIsTwinBlind`, `TheCollisionMassIsTheWaveNumber`,
-  `IsolatedDeepZerosAreSeenByAlmostEveryPrime`, `IntegralityProducesLinearCounts` (Bézout ledger,
+  `AttainedDepthIsSeenByAlmostEveryPrime`, `IntegralityProducesLinearCounts` (Bézout ledger,
   binomial multiplicity cap, divisibility is parity-blind), `StepanovsOrderOverTheFiniteField`,
   `TheParityTwinIsGeometricOnlyInTheBohrClosure`, `PointwiseClosedStatementsAreTwinBlind`.
 
 ## Open (RH/LH-deep, recorded in README §9)
 Producer over ℤ; Lindelöf bridge from the kernel; a geometric parity twin beyond vertical shifts;
 selective transfer past Robin–Euler; two-sided coalescent pair theory; prime-tower locality when the depth supremum
-is unattained or attained infinitely often (finite attainment and fine towers are settled; the
-collision law is read from one minimal count).
+is unattained (attained depth and fine towers are settled; the collision law is read from one
+minimal count).
 
 ## Log
 - 2026-10-29 — created; README draft written; sixteen modules proved; README revised.

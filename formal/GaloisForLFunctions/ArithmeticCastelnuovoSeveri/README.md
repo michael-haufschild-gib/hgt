@@ -301,6 +301,10 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     normalized abstract blocks, not within the prescribed arithmetic evaluation family. Full Gram
     coalescence also holds for arbitrary real vectors (`CoalescenceDoesNotRequireOrthogonality`).
     The studied sub-threshold profiles exceed $2/3$; the $3/4$ criteria require spectral slack or surplus (TTPC).
+    `DisplacementThresholdsAcrossBandwidths` gives exact 70% and 75% model thresholds for
+    $\lambda\in[3/4,1)$. `ProjectedDisplacementPaysNegativePartCredit` bounds the actual zeta
+    Gram's negative spectral mass by imaginary evaluation energy projected away from its real
+    span. This observable can vanish and supplies no displacement-free census gain.
 28. **Which data force the sign over $\mathbb F_q$**: Rosati invariance ⇔ pole-subtracted Hasse–Weil ⇔
     forward light-cone Bézout; genus one: Hasse = degree positivity of $\mathbb Z[F]$, which Hecke scales lack.
 

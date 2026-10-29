@@ -42,7 +42,7 @@ not be mistaken for the proof. No external theorem has been accepted or imported
 - [x] OpenAI introduction, solution entry and final assembly source read.
 - [ ] External continuation argument and transitive proof audit.
 - [ ] CGL remaining leaf audits and density capstone.
-- [ ] Symbolic exponent calibration and proof that the density envelope alone permits a singleton.
+- [x] Symbolic exponent calibration and proof that the density envelope alone permits a singleton.
 - [ ] Local zero-exclusion theorem, if the separate source argument survives audit.
 
 This correction does not finish W10 and does not refute either paper.
@@ -58,4 +58,12 @@ At σ=7/8, the exponents are 15/52 for q=1, 7/24 in the uniform all-moduli
 envelope, and 1/4 for a density-hypothesis envelope. All are positive, so these
 upper envelopes permit a singleton zero count at every sufficiently large height.
 The existing `DensityEnvelopeNoGo` supplies the latter obstruction for arbitrary
-nonnegative density exponent and logarithmic loss. Formalization in progress.
+nonnegative density exponent and logarithmic loss.
+
+`RHTower/ChenGuptaLiModulusCrossover.lean` proves
+`cglZeroDensityFirstTerm_le_second_iff`, `cgl_conductor_one_bounds`,
+`cgl_conductor_one_envelope_permits_singleton`, and
+`density_exponents_at_seven_eighths`. The direct leaf check passed; the three
+terminal axiom audits returned only `propext`, `Classical.choice`, and `Quot.sound`.
+Root umbrella import wired. This closes the algebraic density calibration,
+not the separate continuation argument or W10.

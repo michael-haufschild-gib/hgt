@@ -15,9 +15,10 @@ A nonreal conjugate pair contributes exactly `−4w(x)`.
 `Heat/HeatExteriorForce.exists_uniform_riemannHeat_exterior_force` supplies the
 actual packet `|Re z−X|≤2`, its degree at most `C log X`, and a real-symmetric
 exterior field Q with `|Im Q(z)|≤C log X |Im z|`.
-`Heat/HeatLocalizedEnergyEvolution` proves the velocity and local simple branches,
-then compact-region forward simplicity after every positive time. It currently
-ends before the energy derivative or evolution estimate.
+`Heat/HeatLocalizedEnergyEvolution` contains draft proofs of the velocity and local
+simple branches, then compact-region forward simplicity after every positive time.
+These additions still require a direct Lean audit. The file currently ends before
+the energy derivative or evolution estimate.
 `Heat/HeatZeroSumContinuity` proves collision-continuity of the weighted energy.
 
 ## Paper calculation and remaining proof obligations
@@ -39,6 +40,10 @@ does not finish this task. For the integrated form, a continuous outer cutoff
 majorizes the radius-two squared-height sum. Forward simplicity supplies each
 short punctured time interval; continuity handles its initial collision.
 
+The earlier [energy-flux card](wd-heat-localized-energy-flux.md) remains the detailed
+source ledger. In particular, forward simplicity does not imply finitely many
+collisions; collision passage must use continuity and local one-sided comparison.
+
 ## Gates
 
 - [x] Corpus search and source statements read.
@@ -46,3 +51,29 @@ short punctured time interval; continuity handles its initial collision.
 - [ ] Actual localized energy derivative on simple intervals.
 - [ ] Collision-compatible local/integrated evolution theorem.
 - [ ] Direct leaf checks, transitive axiom audit, umbrella wiring.
+
+## Derivative and collision construction plan
+
+Use the actual radius-two packet S at a simple time. Choose disjoint isolating
+balls and the proved actual simple-zero branch for each member. The compact set
+`closedBall X 2` minus those open balls has no initial zeros; compact-open heat
+continuity excludes future zeros there. Every zero carrying the radius-one weight
+lies in this compact ball, so the actual weighted tsum is exactly the finite
+branch sum for small nonnegative increments. This identifies its right derivative
+without a root-path premise. The radius-two packet may meet the enclosing circle;
+only the support of the weight, not all packet members, must lie inside it.
+
+The exterior bound is needed only where w or its derivative is nonzero. Set the
+auxiliary exterior field to zero outside the inner window when applying the finite
+packet lemma. This avoids requiring the source field estimate on the whole packet.
+
+For collision passage, replace the discontinuous nonreal indicator temporarily
+by a continuous function `u(y)` with `0≤u≤1` and `u(0)=0`, for example
+`min(1,y²/ε²)`. Its actual weighted zero sum is continuous by the same compact
+multiplicity-conservation theorem. Choose a continuous outer cutoff at least one
+on the radius-two window. Then the derivative majorant is continuous at collisions.
+Apply the simple-time comparison on each short punctured future interval and pass
+to its initial endpoint by continuity; local one-sided comparison gives global
+finite-time comparison. Finally monotone convergence as ε tends to zero recovers
+the integrated weighted nonreal count. Neither finite collision count nor a
+uniform simplicity interval is assumed.

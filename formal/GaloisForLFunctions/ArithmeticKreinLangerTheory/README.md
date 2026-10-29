@@ -219,15 +219,18 @@ fails.
    consecutive-integer towers are fine and do not. The two-prime lattice contains fine towers
    `⟨p^a q^b⟩` (`exists_fine_twoPrime`), and single such towers carry the index
    (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`): the two-prime law is the fine-tower law.
-10. **Attained deep zeros are seen by almost every prime.** For one test and infinitely many zeros,
-    suppose the largest depth `D > 0` is attained by finitely many zeros, all others strictly
-    shallower (no gap needed). Along a tower, the orbit kernel divided by `e^{n·D·scale}` is the
-    unimodular top sum plus a remainder tending to `0` by dominated convergence (Tannery's theorem), so
-    non-cancellation at the top makes the kernel unbounded wherever the top nodes are distinct
-    (`not_bounded_orbitKernel_pow`). Two zeros alias at
-    most at one prime, so all but finitely many prime towers fail positivity
-    (`finite_primes_posDef_of_isolated_depth`); for `ζ` with the cubic spline
-    (`zeta_finite_primes_posDef_of_isolated_depth`).
+10. **An attained depth is seen by almost every prime.** For one test and infinitely many zeros,
+    suppose the largest depth `D > 0` is attained, by finitely or infinitely many zeros. Along a tower,
+    divide the orbit kernel by `e^{n·D·scale}`: the normalized nodes have modulus `≤ 1`, with equality
+    exactly at depth `D`. If the kernel is bounded along the tower, its Cesàro means against `w̄^n`
+    tend to `0`; termwise they tend to the weights with node `w` (Tannery's theorem), so the total
+    weight at every top node vanishes (`tsum_weight_node_eq_zero_of_bounded`). At a positive prime
+    tower the weight of a deepest zero `ρ₀` is therefore cancelled by the zeros aliasing with it there.
+    A zero aliases with `ρ₀` at most at one prime, so the alias sets are disjoint pieces of a summable
+    mass, and only finitely many carry `|W_{ρ₀}|` (`finite_of_disjoint_mass`): all but finitely many
+    prime towers fail positivity (`finite_primes_posDef_of_attained_depth`); for `ζ`, whenever the
+    infimum of the real parts of the zeros is attained below `½`
+    (`zeta_finite_primes_posDef_of_attained_depth`).
 11. **Locality is twin-blind.** A unitary character `ω` translates Krein–Langer data:
     `ω·h_{χ,a} = h_{ωχ,a}` (`pairKernel_twist`), reflection commutes with the twist
     (`reflectChar_twistChar`), and tower faithfulness is invariant (`isTowerFaithful_twist`). So the tower
@@ -290,10 +293,10 @@ fails.
    `negIndex_orbitKernel_eq_iSup_consecutive`, `negIndex_zetaKernel_eq_iSup_consecutive`,
    `riemannHypothesis_iff_zetaKernel_consecutive`): for orbit kernels, with any number of pairs, the
    consecutive-integer towers decide positivity and carry the whole index.
-6. *Coarse towers with attained depth* (`not_isPosDefKernel_orbitKernel_zpowers`,
-   `finite_primes_posDef_of_isolated_depth`, `zeta_finite_primes_posDef_of_isolated_depth`): with any
-   number of zeros, a largest depth attained by finitely many zeros is seen by all but finitely many
-   prime towers.
+6. *Coarse towers with attained depth* (`tsum_weight_node_eq_zero_of_bounded`,
+   `not_isPosDefKernel_of_node_weight_ne_zero`, `finite_primes_posDef_of_attained_depth`,
+   `zeta_finite_primes_posDef_of_attained_depth`): with any number of zeros, an attained largest depth
+   is seen by all but finitely many prime towers.
 
 **B. Local constituents and ceilings.**
 1. *Poisson law* (`isPosDefKernel_poissonKernel`, `isPosDefKernel_eulerKernel`, `isPosDefKernel_twist`).
@@ -352,7 +355,7 @@ fails.
 | The prime towers decide because two primes do for `ζ` | Only for tower-faithful spectra; on `ℤ²` a Krein–Langer kernel of index `2` vanishes on both axes |
 | Cyclic locality is a general fact | It holds for the Krein–Langer class and fails for finite-support kernels with a signed spectrum |
 | A cyclic subgroup always carries the whole index | Only without torsion aliasing; otherwise it carries at least one square |
-| Prime towers cannot decide infinite spectra | They do when the largest depth is attained by finitely many zeros; what remains is an unattained or infinitely attained supremum |
+| Prime towers cannot decide infinite spectra | They do whenever the largest depth is attained; what remains is an unattained supremum |
 | Locality needs finitely many pairs | For orbit kernels the fine towers `⟨(n+2)/(n+1)⟩` decide with any number of pairs; the archimedean place supplies the continuity |
 | A Stepanov certificate is an annihilating compressor | Over `𝔽_q` the characteristic polynomial annihilates the trace kernel and certifies nothing; Euler-factor compressors are index-neutral over `ℤ` |
 | Local constituents are positive | The local kernel `L_p` is; the constituent `log p·δ₀ − L_p` is not, and finitely many places have infinite index |
@@ -468,7 +471,8 @@ counts (`quadTwist`, `twistCount`); parity classes (`parityCount`, `oddClassSum`
 (`frobCharPoly`, `eulerNodes`, `eulerCoeffs`); fine grids and consecutive ratios
 (`hermQuad_nonneg_of_fine_zpowers`, `consecutiveRatio`); the Bézout ledger in both rings
 (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`); the hyperelliptic trace kernel
-(`hypTraceKernel`); vertical shifts (`shiftChar`).
+(`hypTraceKernel`); vertical shifts (`shiftChar`); Cesàro means of powers and disjoint masses
+(`tendsto_cesaro_pow`, `finite_of_disjoint_mass`).
 
 To build:
 
@@ -479,7 +483,7 @@ To build:
 | Selective transfer to overlap | the pole carrier of the index-one window at overlapping widths | Q1; fails for Liouville |
 | Geometric parity twin | a family over `ℤ` on which the Liouville twist acts as a symmetry; settled for vertical shifts: one prime tower yes, two primes no, the Bohr closure yes | reproduces the twist tower over `𝔽_q` |
 | Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one (owned by `TransThresholdPairCorrelation`) | Q2; fails for parity-twisted models |
-| Coarse-tower locality for infinite spectra | prime towers for kernels with infinitely many pairs; built when the largest depth is attained by finitely many zeros (`finite_primes_posDef_of_isolated_depth`) | recovers the finite case and the fine-tower law |
+| Coarse-tower locality for infinite spectra | prime towers for kernels with infinitely many pairs; built when the largest depth is attained (`finite_primes_posDef_of_attained_depth`) | recovers the finite case and the fine-tower law |
 
 ---
 
@@ -491,11 +495,11 @@ To build:
 2. **Ring-level inputs**: Bézout relations as local-to-global data. The ledger is proved in both rings;
    open is an integer auxiliary of size `O(x)` with multiplicity growing on a positive proportion of
    the counted primes (binomial auxiliaries are capped at one above `√N`).
-3. **Prime-tower locality when the depth supremum is not attained, or attained infinitely often**
-   (fine towers decide in general; prime towers decide when the largest depth is attained by finitely
-   many zeros). The obstruction is a natural boundary: along a tower the generating function
-   `Σ_n K(u^n) z^n = Σ_ρ W_ρ/(1 − ν_ρ z)` has poles accumulating on the circle `|z| = e^{−D·scale u}`,
-   so boundedness inside the unit disc no longer reaches the poles outside it.
+3. **Prime-tower locality when the depth supremum is not attained** (fine towers decide in general;
+   prime towers decide whenever the largest depth is attained). With an unattained supremum every top
+   Bohr coefficient is empty, and the obstruction is a natural boundary: along a tower the generating
+   function `Σ_n K(u^n) z^n = Σ_ρ W_ρ/(1 − ν_ρ z)` has poles accumulating on the circle
+   `|z| = e^{−D·scale u}`, so boundedness inside the unit disc no longer reaches the poles outside it.
 4. **A direct Lindelöf bridge** from a count with finitely many waves.
 5. **Collision rates off the finite stratum**: the growth rate of collision mass as `t ↓ 0` against
    the growth of the fine-tower indices.

@@ -10,7 +10,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersDecideEveryOrbi
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.LocalityIsTwinBlind
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheCollisionMassIsTheWaveNumber
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FiniteSupportMakesAlmostEveryPrimeDecideZeta
-import GaloisForLFunctions.ArithmeticKreinLangerTheory.IsolatedDeepZerosAreSeenByAlmostEveryPrime
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.AttainedDepthIsSeenByAlmostEveryPrime
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.IntegralityProducesLinearCounts
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.StepanovsOrderOverTheFiniteField
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityTwinIsGeometricOnlyInTheBohrClosure
@@ -24,7 +24,7 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
 * **Locality.** The cyclic Hasse principle on every group, separation without torsion aliasing, the
   failure of coordinate towers on `ℤ²` and of cyclic subgroups outside the class; tower-faithful
   spectra, logarithmic spectra and the prime towers of `ℚ_{>0}`; fine towers deciding every orbit
-  kernel through the archimedean place; isolated deep zeros seen by almost every prime tower;
+  kernel through the archimedean place; an attained depth seen by almost every prime tower;
   locality is twin-blind.
 * **Local constituents and ceilings.** The Poisson law of the Euler factor, the zero-or-infinity law
   for axis-supported kernels, the Riemann–Roch ceiling, and the index as the number of exceptional

@@ -1,0 +1,39 @@
+# Effective arithmetic Hodge theory of 𝔾_m(ℚ) (EAHT)
+
+- **ID:** eaht-programme
+- **Stage:** 1-in-progress
+- **Type:** THEOREM (Lean) programme
+- **Source:** docs/reports/review-2910/fable2.md §7
+- **Statement:** the effective chapter of the field whose chapters are HKT, AKL, ASRP, AET, AIT, ACS:
+  finite sections of the Weil kernel (heights, lengths, overlaps), what they carry, and the
+  topology in which they reach the index.
+
+## Goal
+Build `formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/` with umbrella and README; prove the
+accessible first theorems of fable2 §7.8 and answer the §7.7 topics with theorems or no-gos with
+positive survivors. Do not duplicate HKT/AKL/ASRP modules.
+
+## Gates
+- [x] 0 → 1  scope fixed, README first draft
+- [ ] modules below proved and wired into the umbrella
+
+## Module plan
+1. Effective completion: Gevrey/Denjoy–Carleman schedules `(log log N)^α/N` reach the whole index
+   (HKT open). Route: Gram-matrix convergence of synthesized families (polarization + two-sided
+   Lévy perturbation), linear Euler–Maclaurin weights, real negative subspace of the spline Grams,
+   HKT receiver bound for the upper half.
+2. Hasse principle with heights: towers `⟨u⟩` with `log u < π/T` certify height `T`
+   (`deepSparse_tower_law` at general `ℓ`); explicit `u ∈ ⟨2,3⟩` by Dirichlet; among any
+   `binom(κ_T,2)+1` primes one certifies; `κ_T ≤` zero count.
+3. Bandwidth dictionary (Fourier side of atomic families).
+4. Arithmetic Stepanov ceiling (integer Chebyshev barrier / multiplicity at controlled size).
+
+## Leads checked (exist; do not redo)
+- `ArithmeticCastelnuovoSeveri.deepSparse_tower_law` holds for every `ℓ > 0`.
+- `HeckeKreinToeplitz.hermNegIndex_weilGram_le_negIndex_zetaKernel` (upper half for any real test).
+- `SpacingScaleHarmonicAnalysis.exists_gevreySynthesis`, `weilQuad_add_le`, `levyEnergy_add_le`.
+- `ArithmeticCastelnuovoSeveri.hermQuad_weilGram`.
+- `RHTower.exists_xiZeroCount_upper_bound` (`≤ c T log T`).
+
+## Log
+- 2026-10-29 — created; README first draft written.

@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
 import GaloisForLFunctions.HeckeKreinToeplitz.AllButFinitelyManyPrimesSeeTheWholeIndex
+import GaloisForLFunctions.HeckeKreinToeplitz.TheFiniteIndexStratumOfZetaIsLindelofDeep
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.RiemannRochForZAndTheReflectedPrimePolarLedger
 import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Analysis.Asymptotics.SpecificAsymptotics
 
@@ -28,7 +30,9 @@ disjoint pieces of size `≥ |W_{ρ₀}|` (`finite_of_disjoint_mass`).
 
 **For `ζ`** (`zeta_finite_primes_posDef_of_attained_depth`): if the real parts of the zeros attain
 their infimum and it is `< ½`, the Weil kernel is positive definite on only finitely many prime
-towers. What remains open is an infimum that is not attained.
+towers. Hence RH is equivalent to positivity on infinitely many prime towers whenever the least real
+part is attained (`riemannHypothesis_iff_infinite_primes_posDef_of_attained`); this contains the
+finite-support stratum. What remains open is an infimum that is not attained.
 -/
 
 open Complex Finset Filter Topology
@@ -213,6 +217,129 @@ theorem tsum_weight_node_eq_zero_of_bounded {u : HeckeLattice} (hu : 0 < scale h
   simp only [hzv, div_eq_one_iff_eq hv0, hνdef, hWdef]
   split_ifs <;> simp
 
+/-- **A tower with a nonzero top coefficient sees a negative square.** -/
+theorem not_isPosDefKernel_of_node_weight_ne_zero {u : HeckeLattice}
+    (hu : 0 < scale heckeLogScale u) {v : ℂ} (hv : ‖v‖ = Real.exp (D * scale heckeLogScale u))
+    (hne : ∑' ρ : Z.carrier, (if logChar heckeLogScale (1 / 2 - (ρ : ℂ)) u = v then
+      Z.Wsummand (cx f) (cx f) ρ else 0) ≠ 0) :
+    ¬ IsPosDefKernel (orbitKernel Z f ∘ zpowersHom _ u) := fun hpd =>
+  hne (tsum_weight_node_eq_zero_of_bounded hZ hf hD hmax hu
+    ⟨((orbitKernel Z f ∘ zpowersHom _ u) 1).re, fun n => by
+      have := hpd.norm_le (Multiplicative.ofAdd (n : ℤ))
+      simpa [zpowersHom_apply] using this⟩ hv)
+
+/-- **Almost every prime tower sees an attained depth.** If a zero `ρ₀` of maximal depth `D > 0`
+has nonzero weight, the orbit kernel is positive definite on only finitely many prime towers. -/
+theorem finite_primes_posDef_of_attained_depth {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.carrier)
+    (hdep : 1 / 2 - ρ₀.re = D) (hW₀ : Z.Wsummand (cx f) (cx f) ρ₀ ≠ 0) :
+    {p : Nat.Primes | IsPosDefKernel (orbitKernel Z f ∘ zpowersHom _ (primeElt p.2))}.Finite := by
+  classical
+  set W : ℂ → ℂ := fun ρ => Z.Wsummand (cx f) (cx f) ρ with hWdef
+  -- the zeros aliasing with `ρ₀` at `p`: disjoint over the primes
+  set A : Nat.Primes → Set Z.carrier := fun p =>
+    {ρ | (ρ : ℂ) ≠ ρ₀ ∧ zeroChar ρ (primeElt p.2) = zeroChar ρ₀ (primeElt p.2)} with hAdef
+  have hdisj : ∀ p q, p ≠ q → Disjoint (A p) (A q) := fun p q hpq =>
+    Set.disjoint_left.mpr fun ρ hp hq =>
+      hpq (Subtype.ext (eq_of_alias_of_alias hp.1 p.2 q.2 hp.2 hq.2))
+  have hsumW := summable_norm_Wsummand Z hZ (cx_contDiff hf.1) (cx_hasCompactSupport hf.2)
+    (cx_contDiff hf.1) (cx_hasCompactSupport hf.2)
+  refine (finite_of_disjoint_mass hdisj (b := fun ρ : Z.carrier => ‖W ρ‖) (fun _ => norm_nonneg _)
+    hsumW (norm_pos_iff.mpr hW₀)).subset fun p hp => ?_
+  -- at a positive tower the alias set of `p` cancels the weight of `ρ₀`
+  have hlog : 0 < scale heckeLogScale (primeElt p.2) := by
+    rw [scale_primeElt]; exact Real.log_pos (by exact_mod_cast p.2.one_lt)
+  set v := logChar heckeLogScale (1 / 2 - ρ₀) (primeElt p.2) with hvdef
+  have hv : ‖v‖ = Real.exp (D * scale heckeLogScale (primeElt p.2)) := by
+    rw [hvdef, norm_logChar, ← hdep]
+    norm_num
+  have hzero := tsum_weight_node_eq_zero_of_bounded hZ hf hD hmax hlog
+    ⟨((orbitKernel Z f ∘ zpowersHom _ (primeElt p.2)) 1).re, fun n => by
+      have := (show IsPosDefKernel _ from hp).norm_le (Multiplicative.ofAdd (n : ℤ))
+      simpa [zpowersHom_apply] using this⟩ hv
+  have hνinv : ∀ ρ : ℂ, logChar heckeLogScale (1 / 2 - ρ) (primeElt p.2) =
+      (zeroChar ρ (primeElt p.2))⁻¹ := fun ρ => by
+    show _ = (logChar heckeLogScale (ρ - 1 / 2) (primeElt p.2))⁻¹
+    rw [← logChar_neg_apply, neg_sub]
+  have hcond : ∀ ρ : ℂ, logChar heckeLogScale (1 / 2 - ρ) (primeElt p.2) = v ↔
+      zeroChar ρ (primeElt p.2) = zeroChar ρ₀ (primeElt p.2) := fun ρ => by
+    rw [hvdef, hνinv, hνinv, inv_inj]
+  have hsplit : ∀ ρ : Z.carrier,
+      (if logChar heckeLogScale (1 / 2 - (ρ : ℂ)) (primeElt p.2) = v then W ρ else 0) =
+        (if ρ = ⟨ρ₀, hρ₀⟩ then W ρ₀ else 0) + (A p).indicator (fun ρ : Z.carrier => W ρ) ρ :=
+    fun ρ => by
+      by_cases h0 : ρ = ⟨ρ₀, hρ₀⟩
+      · subst h0
+        rw [if_pos rfl, if_pos rfl, Set.indicator_of_notMem (fun h => h.1 rfl), add_zero]
+      · have h0' : (ρ : ℂ) ≠ ρ₀ := fun h => h0 (Subtype.ext h)
+        rw [if_neg h0, zero_add]
+        by_cases ha : zeroChar ρ (primeElt p.2) = zeroChar ρ₀ (primeElt p.2)
+        · rw [if_pos ((hcond ρ).mpr ha), Set.indicator_of_mem (show ρ ∈ A p from ⟨h0', ha⟩)]
+        · rw [if_neg fun h => ha ((hcond ρ).mp h),
+            Set.indicator_of_notMem (show ρ ∉ A p from fun h => ha h.2)]
+  have hsumI : Summable ((A p).indicator fun ρ : Z.carrier => W ρ) :=
+    (hsumW.of_norm).indicator _
+  have hsum0 : Summable fun ρ : Z.carrier => if ρ = ⟨ρ₀, hρ₀⟩ then W ρ₀ else 0 :=
+    (hasSum_ite_eq _ _).summable
+  rw [tsum_congr hsplit, hsum0.tsum_add hsumI, tsum_ite_eq] at hzero
+  show ‖W ρ₀‖ ≤ ∑' ρ, (A p).indicator (fun ρ : Z.carrier => ‖W ρ‖) ρ
+  rw [eq_neg_of_add_eq_zero_left hzero, norm_neg]
+  refine (norm_tsum_le_tsum_norm hsumI.norm).trans (le_of_eq (tsum_congr fun ρ => ?_))
+  exact norm_indicator_eq_indicator_norm (f := fun ρ : Z.carrier => W ρ) (a := ρ)
+
 end AttainedDepth
 
+/-! ### The Weil kernel of `ζ` -/
+
+/-- The cubic spline sees every zero of `ζ` off the critical line. -/
+theorem zeta_Wsummand_ne_zero_of_left {ρ : ℂ} (hρ : ρ ∈ zetaZeroConfig.carrier) (hre : ρ.re < 1 / 2) :
+    zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) ρ ≠ 0 := by
+  have hR : reflect ρ ∈ seenRightZeros zetaZeroConfig cubicSpline := by
+    rw [seenRightZeros_cubicSpline]
+    exact ⟨zetaZeroConfig.reflect_mem ρ hρ, by simp [reflect]; linarith⟩
+  have hs : Sees cubicSpline ρ := by
+    have := sees_reflect hR.2.2
+    rwa [show reflect (reflect ρ) = ρ by simp [reflect]] at this
+  obtain ⟨h1, h2⟩ := hs
+  simp only [ZeroConfig.Wsummand]
+  refine mul_ne_zero (mul_ne_zero ?_ h1) ((_root_.map_ne_zero _).mpr h2)
+  have := zetaZeroConfig.one_le_mult ρ hρ
+  exact_mod_cast (by omega : zetaZeroConfig.mult ρ ≠ 0)
+
+/-- **For `ζ`: an attained infimum of the real parts below `½` fails positivity on almost every
+prime tower.** If some zero `ρ₀` with `Re ρ₀ < ½` has the least real part among all zeros, the Weil
+kernel is positive definite on only finitely many prime towers. -/
+theorem zeta_finite_primes_posDef_of_attained_depth {ρ₀ : ℂ}
+    (hρ₀ : ρ₀ ∈ zetaZeroConfig.carrier) (hre : ρ₀.re < 1 / 2)
+    (hmin : ∀ ρ ∈ zetaZeroConfig.carrier, ρ₀.re ≤ ρ.re) :
+    {p : Nat.Primes | IsPosDefKernel (zetaKernel ∘ zpowersHom _ (primeElt p.2))}.Finite :=
+  finite_primes_posDef_of_attained_depth temperedConfig_zetaZeroConfig cubicSpline_mem_realTests
+    (D := 1 / 2 - ρ₀.re) (by linarith) (fun ρ hρ => by have := hmin ρ hρ; linarith) hρ₀ rfl
+    (zeta_Wsummand_ne_zero_of_left hρ₀ hre)
+
+/-- **Infinitely many prime towers decide RH whenever the least real part is attained.** If every
+zero left of the line lies above a zero of least real part, then RH holds iff the Weil kernel is
+positive definite on infinitely many prime towers. -/
+theorem riemannHypothesis_iff_infinite_primes_posDef_of_attained
+    (hatt : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re < 1 / 2 →
+      ∃ ρ₀ ∈ zetaZeroConfig.carrier, ∀ ρ' ∈ zetaZeroConfig.carrier, ρ₀.re ≤ ρ'.re) :
+    RiemannHypothesis ↔
+      {p : Nat.Primes | IsPosDefKernel (zetaKernel ∘ zpowersHom _ (primeElt p.2))}.Infinite := by
+  constructor
+  · intro hRH
+    have hpos := (isPosDefKernel_iff isHermKernel_zetaKernel).mpr
+      (riemannHypothesis_iff_negIndex_zetaKernel_eq_zero.mp hRH)
+    exact Set.infinite_univ.mono fun p _ => hpos.comp _
+  · intro hinf
+    by_contra hRH
+    rw [ArithmeticCastelnuovoSeveri.riemannHypothesis_iff_rightZeros_zeta_eq_empty] at hRH
+    obtain ⟨σ, hσ, hσre⟩ := Set.nonempty_iff_ne_empty.mpr hRH
+    -- the reflection of a right zero lies left of the line
+    have hl : reflect σ ∈ zetaZeroConfig.carrier := zetaZeroConfig.reflect_mem σ hσ
+    have hlre : (reflect σ).re < 1 / 2 := by simp [reflect]; linarith
+    obtain ⟨ρ₀, hρ₀, hmin⟩ := hatt _ hl hlre
+    exact hinf (zeta_finite_primes_posDef_of_attained_depth hρ₀ ((hmin _ hl).trans_lt hlre) hmin)
+
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms riemannHypothesis_iff_infinite_primes_posDef_of_attained
