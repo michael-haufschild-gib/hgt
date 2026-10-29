@@ -68,7 +68,6 @@ theorem dirichletPoly_highBand_mass {N : ℕ} (hN : 0 < N) (x : ℕ → ℝ) :
       congr 1
       push_cast
       field_simp [Complex.ofReal_ne_zero.mpr Real.pi_ne_zero]
-      ring
     simp only [he]
     exact sum_coe_sort S (fun n => (x n : ℂ) * Complex.exp (Complex.I * t * (Real.log n : ℂ)))
   have hend : (N : ℝ) + 100 * N = 101 * N := by ring

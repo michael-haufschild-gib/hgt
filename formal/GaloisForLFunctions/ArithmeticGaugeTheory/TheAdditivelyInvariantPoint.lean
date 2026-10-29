@@ -140,17 +140,18 @@ theorem dirichletCharacter_eq_one_of_periodic_gauge {q : ℕ} [NeZero q]
     χ = 1 := by
   have htriv := twist_eq_one_of_eventually_periodic (dirichletGauge χ) hr hper
   ext u
+  -- A positive representative `n + q` of the unit `u`.
   obtain ⟨n, hn⟩ := ZMod.natCast_zmod_surjective (u : ZMod q)
-  have hcop : Nat.Coprime n q := by
-    rw [← ZMod.isUnit_iff_coprime, hn]
+  have hm : ((n + q : ℕ) : ZMod q) = u := by
+    rw [Nat.cast_add, ZMod.natCast_self, add_zero, hn]
+  have hcop : Nat.Coprime (n + q) q := by
+    rw [← ZMod.isUnit_iff_coprime, hm]
     exact u.isUnit
-  have hn0 : n ≠ 0 := by
-    rintro rfl
-    rw [Nat.coprime_zero_left] at hcop
-    subst hcop
-    exact absurd rfl (NeZero.ne 1)
-  have h := twist_dirichletGauge χ hn0 hcop
-  rw [htriv n hn0, hn] at h
+  have hm0 : n + q ≠ 0 := by
+    have := NeZero.ne q
+    omega
+  have h := twist_dirichletGauge χ hm0 hcop
+  rw [htriv (n + q) hm0, hm] at h
   rw [MulChar.one_apply_coe]
   exact h.symm
 

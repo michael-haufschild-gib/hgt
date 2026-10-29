@@ -43,7 +43,8 @@ theorem atomDilate_profile_normalization (φ : ℝ → ℝ) {a b w : ℝ}
   funext u
   dsimp only [atomDilate, unitIntervalProfile]
   congr 1
-  field_simp [(sub_pos.mpr hab).ne', hw.ne'] <;> ring
+  field_simp [(sub_pos.mpr hab).ne', hw.ne']
+  ring
 
 /-- All logarithmic atoms undergo the same translation, so every coefficient vector is retained. -/
 theorem atomicTest_profile_normalization (φ : ℝ → ℝ) {a b w : ℝ}
@@ -72,7 +73,9 @@ theorem integral_atomicTest_sq_profile_normalization (φ : ℝ → ℝ) {a b w :
       ∫ u, atomicTest N x
         (atomDilate (unitIntervalProfile φ a b) ((b - a) * w)) u ^ 2 := by
   rw [atomicTest_profile_normalization φ hab hw N x]
-  exact integral_sub_right_eq_self _ _
+  exact integral_sub_right_eq_self (μ := volume)
+    (fun u : ℝ => atomicTest N x
+      (atomDilate (unitIntervalProfile φ a b) ((b - a) * w)) u ^ 2) (a * w)
 
 /-- One atom's mass is preserved, hence so is normalization by coefficient mass. -/
 theorem integral_atomDilate_sq_profile_normalization (φ : ℝ → ℝ) {a b w : ℝ}
@@ -80,7 +83,8 @@ theorem integral_atomDilate_sq_profile_normalization (φ : ℝ → ℝ) {a b w :
     (∫ u, atomDilate φ w u ^ 2) =
       ∫ u, atomDilate (unitIntervalProfile φ a b) ((b - a) * w) u ^ 2 := by
   rw [atomDilate_profile_normalization φ hab hw]
-  exact integral_sub_right_eq_self _ _
+  exact integral_sub_right_eq_self (μ := volume)
+    (fun u : ℝ => atomDilate (unitIntervalProfile φ a b) ((b - a) * w) u ^ 2) (a * w)
 
 /-- The atom-mass-normalized complete quadratic form is independent of profile support coordinates. -/
 theorem normalized_weilQuad_profile_normalization (φ : ℝ → ℝ) {a b w : ℝ}
