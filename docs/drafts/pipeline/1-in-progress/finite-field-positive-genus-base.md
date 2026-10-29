@@ -86,12 +86,13 @@ is a linear equivalence `k≃H⁰(Ω)`, proving geometric genus one directly.
 - [x] Concrete finite field and curve selected; relevant corpus machinery located.
 - [x] `ArithmeticEffectivityTheory/FiniteFieldEllipticBase.lean`: actual finite-field
   Weierstrass curve, discriminant one, fraction field, transcendence degree one; leaf check passed.
-- [ ] Nonsingularity and positive-genus certificate.
+- [x] Nonsingularity and positive-genus certificate.
 - [x] `FiniteFieldEllipticCharts.lean`: actual coordinates and cubic relation; norm-degree
   product/addition laws; infinity regularity subalgebra; intersection of the two chart rings
   is exactly the constants; homogeneous chart-cover theorem. Full scratch check passed.
-- [ ] `FiniteFieldEllipticDifferentials.lean`: actual Kähler images on both charts,
+- [x] `FiniteFieldEllipticDifferentials.lean`: actual Kähler images on both charts,
   nonzero `dy`, equality of global forms with `k dy`, and dimension one.
+  `chart_overlap` identifies both localizations on the overlap. Complete scratch check passed.
 - [x] `pointsEquiv` and `card_points`: actual projective points over every extension,
   identified with affine solutions plus infinity.
 - [x] `ArithmeticEffectivityTheory/FiniteFieldEllipticZeta.lean`: point-count ghost identity,
@@ -107,8 +108,10 @@ in an unproved interface.
 
 `FiniteFieldEllipticBase.lean` passed its source check and has an olean for the dependent leaves.
 `FiniteFieldEllipticZeta.lean` is copied from the fully passing `/tmp/hgt_finite_zeta.lean`.
-`FiniteFieldEllipticCharts.lean` is copied from the fully passing
-`/tmp/hgt_finite_genus_norm.lean`; its olean is being built for the differential leaf.
-The differential proof draft is `/tmp/hgt_finite_differentials.lean`.
-No umbrella edit or final transitive axiom audit yet. All own `/tmp/hgt_finite_*` files
+`FiniteFieldEllipticCharts.lean` passed its source olean compilation.
+`FiniteFieldEllipticDifferentials.lean` is copied from the fully passing
+`/tmp/hgt_finite_differentials.lean`; its olean is being built for the capstone.
+`FiniteFieldPositiveGenusBase.lean` is the capstone, imported by the existing
+`ArithmeticEffectivityTheory.lean` umbrella. Zeta olean, capstone check, final leaf checks,
+and transitive axiom audit remain. All own `/tmp/hgt_finite_*` files
 must be removed after the final audit. Preserve unrelated concurrent worktree edits.

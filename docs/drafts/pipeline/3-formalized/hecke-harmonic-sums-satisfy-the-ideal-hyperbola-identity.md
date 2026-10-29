@@ -38,5 +38,5 @@ identity, norm regrouping, and actual hyperbola theorem have transitive
 axiom sets `[propext, Classical.choice, Quot.sound]`.
 The module is wired into the Hecke umbrella. Its final direct source audit
 `lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeHarmonicSumsSatisfyTheIdealHyperbolaIdentity.lean`
-is still running with no output yet. Both nontrivial and trivial Mertens consumers
+passes without warnings. Both nontrivial and trivial Mertens consumers
 are written; its required olean is not built yet.

@@ -37,7 +37,10 @@ theorem summable_criticalEulerTailWeight_of_two_le {r : ℕ} (hr : 2 ≤ r) :
     Summable (criticalEulerTailWeight r) := by
   have hinj : Function.Injective (fun pk : Nat.Primes × ℕ => (pk.1, pk.2 + (r - 2))) := by
     intro a b h
-    exact Prod.ext (congrArg Prod.fst h) (Nat.add_right_cancel (congrArg Prod.snd h))
+    have hp : a.1 = b.1 := congrArg (fun pk : Nat.Primes × ℕ => pk.1) h
+    have hk : a.2 + (r - 2) = b.2 + (r - 2) :=
+      congrArg (fun pk : Nat.Primes × ℕ => pk.2) h
+    exact Prod.ext hp (Nat.add_right_cancel hk)
   have hs := (summable_xiMassPrimePowerCriticalWeight_high.mul_left 2).comp_injective hinj
   refine hs.congr fun pk => ?_
   change 2 * xiMassPrimePowerCriticalWeight pk.1 (pk.2 + (r - 2) + 2) =
@@ -80,8 +83,9 @@ theorem summable_criticalEulerTailWeight_iff (r : ℕ) :
       intro p q h
       exact congrArg Prod.fst h
     have hslice := hs.comp_injective hinj
+    change Summable (fun p : Nat.Primes => 2 * xiMassPrimePowerCriticalWeight p (0 + r)) at hslice
     apply two_le_of_summable_criticalEuler_slice r
-    simpa only [Function.comp_apply, criticalEulerTailWeight, zero_add] using hslice
+    simpa only [zero_add] using hslice
   · exact summable_criticalEulerTailWeight_of_two_le
 
 /-- The first-prime coefficients alone already prevent absolute coefficient summation. -/

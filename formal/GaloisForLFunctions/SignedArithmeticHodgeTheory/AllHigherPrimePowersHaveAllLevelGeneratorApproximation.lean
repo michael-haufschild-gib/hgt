@@ -97,6 +97,43 @@ private theorem abs_higherEulerTerm_head_error_le (pk : PP) (f : ℝ → ℝ)
   exact mul_le_mul_of_nonneg_left (abs_allLevel_translation_head_error_le f hv hc _ hA)
     (criticalEulerTailWeight_nonneg 2 pk)
 
+/-- The full family of coefficientwise correlation errors is absolutely summable. -/
+theorem summable_abs_higherEuler_head_error (f : ℝ → ℝ)
+    (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) {A : ℕ} (hA : 1 ≤ A) :
+    Summable (fun pk : PP =>
+      |w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
+          (realSourceLp f hv hc) -
+        w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
+          (realSourceLp f hv hc - wholeLineGeneratorTail A (realSourceLp f hv hc))|) :=
+  Summable.of_nonneg_of_le (fun _ => abs_nonneg _)
+    (fun pk => abs_higherEulerTerm_head_error_le pk f hv hc hA)
+    ((summable_criticalEulerTailWeight_of_two_le (by norm_num : 2 ≤ 2)).mul_right
+      (96 * levyEnergy f / (1 + Real.log (A : ℝ))))
+
+/-- One Gamma budget controls the sum of absolute changes in every higher-power correlation. -/
+theorem tsum_abs_higherEuler_head_error_le (f : ℝ → ℝ)
+    (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) {A : ℕ} (hA : 1 ≤ A) :
+    (∑' pk : PP,
+      |w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
+          (realSourceLp f hv hc) -
+        w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
+          (realSourceLp f hv hc - wholeLineGeneratorTail A (realSourceLp f hv hc))|) ≤
+      higherEulerCoefficientTotal * (96 * levyEnergy f / (1 + Real.log (A : ℝ))) := by
+  have ht (pk : PP) :
+      | |w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
+          (realSourceLp f hv hc) -
+        w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
+          (realSourceLp f hv hc - wholeLineGeneratorTail A (realSourceLp f hv hc))| | ≤
+        w₃ pk * (96 * levyEnergy f / (1 + Real.log (A : ℝ))) := by
+    rw [abs_abs]
+    exact abs_higherEulerTerm_head_error_le pk f hv hc hA
+  have h := RHTower.abs_tsum_le_tsum_of_abs_le
+    ((summable_criticalEulerTailWeight_of_two_le (by norm_num : 2 ≤ 2)).mul_right
+      (96 * levyEnergy f / (1 + Real.log (A : ℝ))))
+    ht
+  rw [tsum_mul_right] at h
+  exact (le_abs_self _).trans h
+
 /-- All higher powers of all primes share one original-source all-level Gamma budget. -/
 theorem abs_wholeLineHigherEuler_head_error_le (f : ℝ → ℝ)
     (hv : BoundedVariationOn f univ) (hc : HasCompactSupport f) {A : ℕ} (hA : 1 ≤ A) :
@@ -233,6 +270,7 @@ end GaloisForLFunctions.SignedArithmeticHodgeTheory
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.higherEulerWeight_eq
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.summable_norm_wholeLineHigherEuler
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.hasSum_wholeLineHigherEuler
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.tsum_abs_higherEuler_head_error_le
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.abs_wholeLineHigherEulerTruncation_head_error_le
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.summable_norm_original_higherEuler_integrals
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.abs_wholeCell_higherEuler_head_error_le

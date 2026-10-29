@@ -9,6 +9,8 @@ Prove that the complete correlation contribution has all-level generator
 head error at most96 H Gamma(f)/(1+log A), uniformly in every original
 finite cell profile, horizon and finite prime-power truncation. All retained
 generator families keep their entire translation orbits.
+The stronger target bounds the sum of absolute coefficientwise correlation
+changes by the same quantity, before any cancellation between Euler terms.
 
 ## Arithmetic boundary
 

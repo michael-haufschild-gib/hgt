@@ -118,7 +118,7 @@ theorem haarSectionProfile_gamma_error_le_mass (d : ℕ → ℝ) (X : ℕ) :
         ∑ a ∈ Finset.Icc 1 X, d a ^ 2 * levyEnergy (haarProfile a)| ≤
       16 * Real.exp (1 / 2) * ∫ x, haarSectionProfile d X x ^ 2 := by
   refine (haarSectionProfile_gamma_error_le_width d X).trans ?_
-  rw [integral_haarSectionProfile_sq, mul_assoc, Finset.mul_sum, Finset.mul_sum]
+  rw [integral_haarSectionProfile_sq, Finset.mul_sum, Finset.mul_sum]
   apply Finset.sum_le_sum
   intro a ha
   have hw := logCellWidth_le_sixteen_haarMass (Finset.mem_Icc.mp ha).1

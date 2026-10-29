@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.EllipticReparamCurrent
 import GaloisForLFunctions.HTGeometry.TranscendenceDegreeOneVariable
 
 /-!
-# A base field of genus one
+# A complex function field of genus one
 
 The meromorphic function field of `ℂ / (ℤ + iℤ)` is a concrete complex field of
 transcendence degree one. Its geometric genus is the dimension of global holomorphic

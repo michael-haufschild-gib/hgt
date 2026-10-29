@@ -253,6 +253,13 @@ theorem sum_mul_eq_zero_of_classWeight [Fintype J] (ψ : J → G →* ℂ) (w : 
 
 /-! ### The cyclic Hasse principle -/
 
+/-- The reflected value of `e·a` paired against `ā`: for `|e| = 1`,
+`c̄ · conj((conj(e a))⁻¹ · ā) = conj(c e)`. -/
+theorem conj_mul_reflect_eq {a e c : ℂ} (ha : a ≠ 0) (he : ‖e‖ = 1) :
+    conj c * conj ((conj (e * a))⁻¹ * conj a) = conj (c * e) := by
+  rw [map_mul (starRingEnd ℂ) e a, mul_inv, mul_assoc,
+    inv_mul_cancel₀ ((_root_.map_ne_zero _).mpr ha), mul_one, inv_conj_of_norm_eq_one he, map_mul]
+
 /-- **Some cyclic subgroup carries a negative square.** A positive-definite kernel plus a nonempty
 family of hyperbolic pairs, with non-unitary characters, distinct nodes and nonzero weights, has a
 negative square on some cyclic subgroup. -/
@@ -293,6 +300,7 @@ theorem exists_one_le_negIndex_zpowers [Fintype J] {p : G → ℂ} (hp : IsPosDe
     (univ.filter fun mm : (J ⊕ J) × (J ⊕ J) => ¬ IsTorsionAliased (ν mm.1) (ν mm.2))
     (fun mm => (quotChar (ν mm.1) (ν mm.2)).ker) (fun mm hmm => (mem_filter.mp hmm).2) g
   set u := g * h with hu
+  clear_value u
   have hal : ∀ m m', ν m u = ν m' u → IsTorsionAliased (ν m) (ν m') := fun m m' he => by
     by_contra hna
     exact hgood (m, m') (mem_filter.mpr ⟨mem_univ _, hna⟩) (mem_ker_quotChar.mpr he)
@@ -360,28 +368,29 @@ theorem exists_one_le_negIndex_zpowers [Fintype J] {p : G → ℂ} (hp : IsPosDe
       exact (mem_filter.mp hm').2
     set φ : ℂ → ℂ := fun z => conj (z * conj (χ j₀ u)) with hφ
     have hval : ∀ m ∈ T, c m.swap * φ (ν m.swap u) = conj (c m * η m u) := fun m hm => by
-      have hη1 : ‖η m u‖ = 1 := norm_quotChar_eq_one (mem_filter.mp hm).2 u
       have hνm : ν m u = η m u * χ j₀ u := by
         simp only [hη, quotChar_apply]
-        rw [mul_assoc, inv_mul_cancel₀ (map_ne_zero (ν m₀) u), mul_one]
+        rw [show χ j₀ u = ν m₀ u from rfl, mul_assoc, inv_mul_cancel₀ (map_ne_zero (ν m₀) u),
+          mul_one]
       have hsw : ν m.swap u = (conj (ν m u))⁻¹ := by
-        rw [hν, node_swap, reflectChar_apply, map_inv_eq_inv, map_inv₀, ← hν]
-      rw [hφ, hsw, hνm, map_mul, mul_inv, mul_assoc,
-        inv_mul_cancel₀ ((_root_.map_ne_zero _).mpr (map_ne_zero (χ j₀) u)), mul_one,
-        inv_conj_of_norm_eq_one hη1, hc, nodeWeight_swap, ← hc, map_mul]
+        rw [hν, node_swap, reflectChar_apply, map_inv_eq_inv, map_inv₀]
+      rw [show c m.swap = conj (c m) from nodeWeight_swap ω m, hsw, hνm]
+      exact conj_mul_reflect_eq (map_ne_zero (χ j₀) u) (norm_quotChar_eq_one (mem_filter.mp hm).2 u)
     apply hFu
-    have h1 := (key _ hout hcl φ).trans (sum_mul_eq_zero_of_classWeight ψ w u hcw _)
-    rw [sum_image fun a _ b _ hab => Sum.swap_injective hab, sum_congr rfl hval, ← map_sum,
-      map_eq_zero] at h1
-    exact h1
+    have h1 := (key (T.image Sum.swap) hout hcl φ).trans
+      (sum_mul_eq_zero_of_classWeight ψ w u hcw
+        fun z => if ∃ m ∈ T.image Sum.swap, ν m u = z then φ z else 0)
+    rw [sum_image fun a _ b _ hab => Sum.swap_injective hab, sum_congr rfl hval, ← map_sum] at h1
+    exact (map_eq_zero_iff _ (RingHom.injective _)).mp h1
   · -- the class is outward at `u`
     have hout : ∀ m ∈ T, 1 < ‖ν m u‖ := fun m hm => by rw [hTnorm m hm]; exact hgt
     have hcl : ∀ j, ∀ m ∈ T, ν (o j) u = ν m u → o j ∈ T := fun j m hm he =>
       mem_filter.mpr ⟨mem_univ _, (hal _ _ he).trans (mem_filter.mp hm).2⟩
     apply hFu
     calc ∑ m ∈ T, c m * η m u = ∑ m ∈ T, c m * (fun z => z * (χ j₀ u)⁻¹) (ν m u) := rfl
-      _ = _ := key T hout hcl _
-      _ = 0 := sum_mul_eq_zero_of_classWeight ψ w u hcw _
+      _ = _ := key T hout hcl fun z => z * (χ j₀ u)⁻¹
+      _ = 0 := sum_mul_eq_zero_of_classWeight ψ w u hcw
+        fun z => if ∃ m ∈ T, ν m u = z then z * (χ j₀ u)⁻¹ else 0
 
 /-- **The cyclic Hasse principle.** A positive-definite kernel plus hyperbolic pairs (non-unitary
 characters, distinct nodes, nonzero weights) that is positive definite on every cyclic subgroup has

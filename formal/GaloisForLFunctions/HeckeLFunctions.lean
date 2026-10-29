@@ -60,6 +60,9 @@ Finite ordinary-class recombination extends the full series meromorphically to t
 Entire divided differences remove the apparent poles for nontrivial characters; comparison with
 the ideal-counting residue gives the trivial character a genuine simple pole at one and no others.
 The global function agrees with the counting continuation on their common half-plane.
+For nontrivial characters, harmonic ideal sums approach the value at one with a power saving,
+and their logarithmically weighted versions remain bounded. The weighted ideal von Mangoldt
+identity gives the exact prime-power hyperbola formula for these sums.
 -/
 import GaloisForLFunctions.HeckeLFunctions.HeckeThetaHasMellinContinuation
 import GaloisForLFunctions.HeckeLFunctions.HeckeThetaIsJointlyContinuous

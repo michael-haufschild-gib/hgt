@@ -40,6 +40,7 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform) —
       full-plane meromorphic continuation and exact pole classification are now proved;
       primitive Gauss/conductor normalization and dual-character identification remain open
+      ([arithmetic obligations](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md))
 
 ## Gates — class field theory
 - [ ] CFT1 Artin map on ideals prime to the ramification of an abelian `L/K`

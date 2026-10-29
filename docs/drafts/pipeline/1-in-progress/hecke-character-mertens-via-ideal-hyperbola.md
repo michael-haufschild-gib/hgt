@@ -76,7 +76,7 @@ ideal-count/logarithmic hyperbola proof.
    audit; [proof](../3-formalized/hecke-harmonic-sums-have-power-saving-tails.md).
 3. Completed scratch: weighted ideal multiplication and actual hyperbola
    identity, all three transitive axiom audits standard-only. Final direct
-   source audit is running; [proof](../3-formalized/hecke-harmonic-sums-satisfy-the-ideal-hyperbola-identity.md).
+   source audit passes; [proof](../3-formalized/hecke-harmonic-sums-satisfy-the-ideal-hyperbola-identity.md).
 4. Prove the power-weighted Chebyshev estimate with its actual exponent.
 5. Assemble the nontrivial and trivial Mertens statements and audit them.
 
@@ -90,15 +90,17 @@ being inferred from these bounds.
 multiplication bijection, weighted ideal von Mangoldt identity, exact
 norm grouping, actual harmonic hyperbola formula, and prime-power weight
 bound. It passes without warnings and is finalized as
-`HeckeHarmonicSumsSatisfyTheIdealHyperbolaIdentity.lean`, currently under
-its final direct source audit. Its required consumer olean is not built yet.
+`HeckeHarmonicSumsSatisfyTheIdealHyperbolaIdentity.lean`; its final direct
+source audit passes. Its required consumer olean is not built yet.
 
 `/tmp/HeckeWeightedChebyshevScratch.lean` now reuses
 `ArtinMertens.sum_log_mul_rpow_neg_le` from the same bounded-error
 module. No new grouping or Abel-comparison proof is needed.
 `RHTower.Sieve.sum_rpow_neg_le_of_lt_one` gives
 `sum log N(p)*(N(p)^k)^(-sigma)=O(x^(1-sigma))`, for `0<sigma<1`.
-Both source proofs have been inspected. This scratch remains uncompiled.
+Both source proofs have been inspected. This scratch is under its first
+complete check. An earlier check was stopped immediately because it
+briefly overlapped the previous final audit; no conclusion came from it.
 
 `/tmp/HeckeNontrivialMertensScratch.lean` is the complete written consumer.
 It substitutes the harmonic approximation into the exact hyperbola sum,

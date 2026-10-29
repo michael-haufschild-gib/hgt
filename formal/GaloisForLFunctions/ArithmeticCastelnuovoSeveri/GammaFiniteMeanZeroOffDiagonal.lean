@@ -22,7 +22,8 @@ private theorem integrable_rectangle_fst_sq {a b c d : ℝ}
     Integrable (fun p : ℝ × ℝ => f p.1 ^ 2) (gammaRectangleMeasure a b c d) := by
   apply integrable_gammaRectangle_of_bound hab hw ((hf.comp measurable_fst).pow_const 2) D
   intro p
-  simpa only [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)] using hb p.1
+  simpa only [Real.norm_eq_abs, Function.comp_apply, abs_of_nonneg (sq_nonneg (f p.1))]
+    using hb p.1
 
 private theorem intervals_disjoint_of_separated {ι : Type*} (L U : ι → ℝ)
     (hsep : ∀ i j, i ≠ j → U i ≤ L j ∨ U j ≤ L i) :

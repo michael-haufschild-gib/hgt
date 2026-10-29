@@ -115,6 +115,12 @@ def upperRoot : Multiplicative (LaurentSeries F) →* LoopSL2 F :=
 def lowerRoot : Multiplicative (LaurentSeries F) →* LoopSL2 F :=
   SL2SymbolExtension.lowerRoot (laurentTameHom F)
 
+theorem upperRoot_injective : Function.Injective (upperRoot F) :=
+  SL2SymbolExtension.upperRoot_injective (laurentTameHom F)
+
+theorem lowerRoot_injective : Function.Injective (lowerRoot F) :=
+  SL2SymbolExtension.lowerRoot_injective (laurentTameHom F)
+
 /-- The coroot section of the Laurent torus. -/
 def diagonalSection (a : (LaurentSeries F)ˣ) : LoopSL2 F :=
   SL2SymbolExtension.sectionOf (laurentTameHom F) (sl2Diagonal a)
@@ -124,6 +130,15 @@ theorem diagonalSection_mul (a b : (LaurentSeries F)ˣ) :
     diagonalSection F a * diagonalSection F b =
       centralEmbedding F (laurentTameSymbol F a b)⁻¹ * diagonalSection F (a * b) := by
   have h := SL2SymbolExtension.diagonal_section_mul (laurentTameHom F) a b
+  rw [laurentTameHom_symbol] at h
+  exact h
+
+/-- The commutator on the Laurent torus is the inverse square of the tame symbol. -/
+theorem diagonalSection_commutator (a b : (LaurentSeries F)ˣ) :
+    diagonalSection F a * diagonalSection F b *
+      (diagonalSection F a)⁻¹ * (diagonalSection F b)⁻¹ =
+      centralEmbedding F ((laurentTameSymbol F a b)⁻¹ * (laurentTameSymbol F a b)⁻¹) := by
+  have h := SL2SymbolExtension.diagonal_section_commutator (laurentTameHom F) a b
   rw [laurentTameHom_symbol] at h
   exact h
 
