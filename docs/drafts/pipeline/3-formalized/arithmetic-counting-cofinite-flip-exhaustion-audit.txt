@@ -1,0 +1,48 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/CofinitePrimeFlipsHaveZeroGap.lean
+SHA256: 96cd27634eb78d15e30ee9eaf27fa8c21a798dc2da845c4d4c77008a144afd51
+
+Scratch audit (exit 0):
+  cd formal
+  lake --old env lean /tmp/acp-cofinite-exhaustion-check.lean
+
+Canonical installed-source audit (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/CofinitePrimeFlipsHaveZeroGap.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.cofiniteFlip_mul_self' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.cofiniteFlip_isSignGauge' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.cofiniteFlip_harmonic_recurrence' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.cofiniteFlip_harmonicSum_abs_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.isGreatest_cofiniteFlip_hyperplaneGap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.cofiniteFlip_harmonicCorrelation_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipLiouvilleDistanceSq_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipLiouvilleDistanceSq_error_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_finiteFlipLiouvilleDistanceSq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finitePrimeExhaustion_distance_eventually_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finitePrimeExhaustion_two_harmonic_limits' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.cofinitePrimeExhaustion_eventually_eq_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

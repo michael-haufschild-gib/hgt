@@ -144,6 +144,18 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     floor on balanced tails beyond a fixed index, uniform in horizon, and RR/ample/Hodge on smooth
     versions of every dimension. Pair averages: the average→detail prime block vanishes and
     $\Gamma(g)+\sum\log(a)M_ad_a^2\le\Gamma(f)+C\int g^2$ (coarse source inherits Gamma payment).
+    Homogeneous recovery removes the additive mass error at a fixed multiplicative cost:
+    $\Gamma(g)+\Gamma(h)\le C\Gamma(f)$, uniformly in horizon. Moreover,
+    $\Gamma(f)$ is equivalent to $\Gamma(g)+\sum_a\log(1/w_a)M_ad_a^2$
+    (`ArithmeticIndexDescent.CompleteCellAveragesAreBoundedInGammaEnergy`).
+    For odd powers of exponent at least three, the mixed and pure-detail blocks combine into
+    $P_{\rm odd}(f)-P_{\rm odd}(g)=\sum_mw_m\operatorname{Re}\langle T_mh,f\rangle$.
+    A fixed detail head makes this entire difference Gamma-small; jointly with the full even-power
+    source it has uniform negative dimension at most $A+1$
+    (`ArithmeticIndexDescent.OddHigherPrimePowersPayTheirWholeDetailBlock`). The paid form retains
+    a positive multiple of coarse Gamma plus weighted detail mass after a fixed head
+    (`exists_squareOddHigherRefinement_coarse_detail_reserve`). The coarse odd source,
+    first-prime source and actual polar/archimedean terms remain unpaid.
 17. **Finite readings cannot supply Bézout**: Weil Rayleigh quotients are unbounded in every
     finite-reading kernel; arithmetic majorants give Bézout + ampleness but break RR.
 18. **Hecke–Lefschetz rigidity.** Hecke correspondences are isometries; RH ⇔ $T_2$ maps the open positive

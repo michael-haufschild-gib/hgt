@@ -3,6 +3,8 @@ import GaloisForLFunctions.RHTower.DeBruijnNewmanEnergyTransition
 import GaloisForLFunctions.RHTower.LindelofCosineFiniteDefectDepth
 import GaloisForLFunctions.RHTower.DeBruijnNewmanStrictBound
 import GaloisForLFunctions.RHTower.KiKimLeeLargeHeightReality
+import GaloisForLFunctions.RHTower.DeBruijnNewmanEnergyUnitTime
+import GaloisForLFunctions.RHTower.DeBruijnStripThreshold
 
 /-!
 # The high collisions of the de Bruijn–Newman flow read the depth of the zeros
@@ -24,6 +26,12 @@ Split the nonreal zeros of `H_t` (`riemannHeat t`) at a height `h > 0`: the **hi
   approach the line.
 
 At bound zero this is RH (`riemannHypothesis_iff_highCount_zero`).
+
+* **Two-sided depth law** (`highCount_le_card_deepCopies`, `card_deepCopies_le_of_highCount`):
+  with `D(y)` the number of zeros of `Ξ` of depth `> y` (with multiplicity), every uniform bound `B`
+  on the zeros of `H_t` with `Im ≥ h` satisfies `D(2h) ≤ B`, and `B = D(h/2)/(2h²)` is a uniform
+  bound. So the least uniform high count lies between `D(2h)` and `D(h/2)/(2h²)`: it is the depth
+  counting function of `Ξ`, up to rescaling the depth by `4` and the weight `1/(2h²)`.
 
 Hence (`zerosApproachLine_iff_highCount`, `lindelof_of_highCount`): a `t`-uniform bound on the high
 collisions at every height is exactly the statement that the zeros approach the line, which is
@@ -291,5 +299,138 @@ theorem riemannHypothesis_iff_highCount_zero :
     have hsumR : (1 : ℝ) ≤ ∑ z ∈ Z, (zeroMult (riemannHeat s) z : ℝ) := by
       exact_mod_cast h1.trans hsum
     linarith
+
+/-! ### The two-sided depth law -/
+
+/-- Zeros of `Ξ` have depth at most `1/2`. -/
+theorem sq_im_xiSpectralPoint_le (q : XiZeroCopy) : (xiSpectralPoint q).im ^ 2 ≤ 1 / 4 := by
+  have h := abs_im_le_half_of_riemannHeat_eq_zero_of_nonneg le_rfl
+    (by rw [riemannHeat_zero_eq_XiC]; exact XiC_xiSpectralPoint_eq_zero q)
+  have h0 := abs_nonneg (xiSpectralPoint q).im
+  nlinarith [sq_abs (xiSpectralPoint q).im]
+
+/-- **Upper half of the depth law.** If only finitely many zeros of `Ξ` are deeper than `h/2`,
+the zeros of `H_t` with `Im ≥ h` number at most `D(h/2)/(2h²)` at every time `t > 0`. -/
+theorem highCount_le_card_deepCopies {h : ℝ} (hh : 0 < h) (hD : (deepCopies (h / 2)).Finite)
+    {t : ℝ} (ht : 0 < t) : HighCountLE t h (hD.toFinset.card / (2 * h ^ 2)) := by
+  classical
+  intro Z hZ
+  rcases le_or_gt (1 / 8) t with ht8 | ht8
+  · -- all zeros are real from `t = 1/8` on
+    have hZe : Z = ∅ := Finset.eq_empty_of_forall_notMem fun w hw => by
+      have := riemannHeat_zeros_real ht8 (hZ w hw).1
+      linarith [(hZ w hw).2]
+    rw [hZe, Finset.sum_empty]
+    positivity
+  · set K : ℝ := ∑ q ∈ hD.toFinset, (xiSpectralPoint q).im ^ 2
+    have hK : ∀ T : Finset XiZeroCopy, ∑ q ∈ T.filter (fun q => 0 < (xiSpectralPoint q).im),
+        max ((xiSpectralPoint q).im ^ 2 - 2 * t - h ^ 2 / 2) 0 ≤ K := by
+      intro T
+      set T' := T.filter (fun q => 0 < (xiSpectralPoint q).im)
+      have hoff : ∀ q ∈ T', q ∉ hD.toFinset →
+          max ((xiSpectralPoint q).im ^ 2 - 2 * t - h ^ 2 / 2) 0 = 0 := by
+        intro q hq hqD
+        rw [Set.Finite.mem_toFinset] at hqD
+        have hle : (xiSpectralPoint q).im ≤ h / 2 := not_lt.mp hqD
+        have hpos : 0 < (xiSpectralPoint q).im := (Finset.mem_filter.mp hq).2
+        refine max_eq_right ?_
+        nlinarith
+      calc ∑ q ∈ T', max ((xiSpectralPoint q).im ^ 2 - 2 * t - h ^ 2 / 2) 0
+          = ∑ q ∈ T'.filter (· ∈ hD.toFinset),
+              max ((xiSpectralPoint q).im ^ 2 - 2 * t - h ^ 2 / 2) 0 :=
+            (Finset.sum_filter_of_ne fun q hq hne => by
+              by_contra hqD
+              exact hne (hoff q hq hqD)).symm
+        _ ≤ ∑ q ∈ T'.filter (· ∈ hD.toFinset), (xiSpectralPoint q).im ^ 2 :=
+            Finset.sum_le_sum fun q _ => max_le (by nlinarith [ht]) (sq_nonneg _)
+        _ ≤ K := Finset.sum_le_sum_of_subset_of_nonneg
+            (fun q hq => (Finset.mem_filter.mp hq).2) fun _ _ _ => sq_nonneg _
+    have hE := riemannHeat_upper_energy_le_of_le_one ht (by linarith)
+      (by positivity : 0 ≤ h ^ 2 / 2) hK Z
+    have hterm : ∀ w ∈ Z, (zeroMult (riemannHeat t) w : ℝ) * (h ^ 2 / 2) ≤
+        (zeroMult (riemannHeat t) w : ℝ) * max ((max w.im 0) ^ 2 - h ^ 2 / 2) 0 := by
+      intro w hw
+      have hwim := (hZ w hw).2
+      have hm : max w.im 0 = w.im := max_eq_left (hh.le.trans hwim)
+      refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
+      rw [hm]
+      exact le_max_of_le_left (by nlinarith)
+    have hsum := (Finset.sum_le_sum hterm).trans hE
+    rw [← Finset.sum_mul] at hsum
+    have hK4 : K ≤ hD.toFinset.card / 4 := by
+      calc K ≤ ∑ _q ∈ hD.toFinset, (1 / 4 : ℝ) :=
+            Finset.sum_le_sum fun q _ => sq_im_xiSpectralPoint_le q
+        _ = hD.toFinset.card / 4 := by rw [Finset.sum_const, nsmul_eq_mul]; ring
+    rw [le_div_iff₀ (by positivity)]
+    nlinarith
+
+/-- The copies of a finite union of fibres of `xiSpectralPoint` are counted by the multiplicities
+of their points. -/
+theorem card_eq_sum_zeroMult_image {F : Finset XiZeroCopy}
+    (hF : ∀ q ∈ F, ∀ q' : XiZeroCopy, xiSpectralPoint q' = xiSpectralPoint q → q' ∈ F) :
+    F.card = ∑ e ∈ F.image xiSpectralPoint, zeroMult (riemannHeat 0) e := by
+  classical
+  rw [Finset.card_eq_sum_card_image xiSpectralPoint]
+  refine Finset.sum_congr rfl fun e he => ?_
+  obtain ⟨q₀, hq₀, rfl⟩ := Finset.mem_image.mp he
+  have hfib : {q ∈ F | xiSpectralPoint q = xiSpectralPoint q₀} =
+      ({q₀.1} : Finset XiDivisorSupport).sigma fun _ => Finset.univ := by
+    ext q
+    simp only [Finset.mem_filter, Finset.mem_sigma, Finset.mem_singleton, Finset.mem_univ, and_true]
+    rw [xiSpectralPoint_eq_iff]
+    constructor
+    · exact fun h => h.2
+    · intro h
+      exact ⟨hF q₀ hq₀ q ((xiSpectralPoint_eq_iff q q₀).mpr h), h⟩
+  rw [hfib, Finset.card_sigma, Finset.sum_singleton, Finset.card_univ, Fintype.card_fin,
+    zeroMult_riemannHeat_zero_xiSpectralPoint]
+
+/-- **Lower half of the depth law.** A uniform bound `B` on the zeros of `H_t` with `Im ≥ h`
+bounds the number of zeros of `Ξ` deeper than `2h`, which is therefore finite. -/
+theorem card_deepCopies_le_of_highCount {h B : ℝ} (hh : 0 < h)
+    (hB : ∀ t : ℝ, 0 < t → HighCountLE t h B) :
+    ∃ hD : (deepCopies (2 * h)).Finite, (hD.toFinset.card : ℝ) ≤ B := by
+  classical
+  have hfin : (deepCopies (2 * h)).Finite := by
+    by_contra hinf
+    have himg := infinite_image_deepCopies hinf
+    obtain ⟨E, hEsub, hEcard⟩ := himg.exists_subset_card_eq (⌈B⌉₊ + 1)
+    have hE : ∀ e ∈ E, riemannHeat 0 e = 0 ∧ 2 * h ≤ e.im := by
+      intro e he
+      obtain ⟨q, hq, rfl⟩ := hEsub he
+      exact ⟨by rw [riemannHeat_zero_eq_XiC]; exact XiC_xiSpectralPoint_eq_zero q, le_of_lt hq⟩
+    obtain ⟨s, ⟨Z, hZ, hsum⟩, hs0⟩ :=
+      ((eventually_exists_highZeros hh hE).and self_mem_nhdsWithin).exists
+    have hle := hB s hs0 Z hZ
+    have hcard : (E.card : ℝ) ≤ ∑ e ∈ E, (zeroMult (riemannHeat 0) e : ℝ) := by
+      rw [Finset.card_eq_sum_ones, Nat.cast_sum]
+      exact Finset.sum_le_sum fun e he => by
+        exact_mod_cast one_le_zeroMult_riemannHeat le_rfl (hE e he).1
+    have hsumR : ∑ e ∈ E, (zeroMult (riemannHeat 0) e : ℝ) ≤
+        ∑ z ∈ Z, (zeroMult (riemannHeat s) z : ℝ) := by exact_mod_cast hsum
+    rw [hEcard] at hcard
+    push_cast at hcard
+    have := Nat.le_ceil B
+    linarith
+  refine ⟨hfin, ?_⟩
+  set F := hfin.toFinset
+  have hclosed : ∀ q ∈ F, ∀ q' : XiZeroCopy, xiSpectralPoint q' = xiSpectralPoint q → q' ∈ F := by
+    intro q hq q' hq'
+    rw [Set.Finite.mem_toFinset] at hq ⊢
+    show 2 * h < (xiSpectralPoint q').im
+    rw [hq']; exact hq
+  set E := F.image xiSpectralPoint
+  have hE : ∀ e ∈ E, riemannHeat 0 e = 0 ∧ 2 * h ≤ e.im := by
+    intro e he
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp he
+    rw [Set.Finite.mem_toFinset] at hq
+    exact ⟨by rw [riemannHeat_zero_eq_XiC]; exact XiC_xiSpectralPoint_eq_zero q, le_of_lt hq⟩
+  obtain ⟨s, ⟨Z, hZ, hsum⟩, hs0⟩ :=
+    ((eventually_exists_highZeros hh hE).and self_mem_nhdsWithin).exists
+  have hle := hB s hs0 Z hZ
+  rw [card_eq_sum_zeroMult_image hclosed]
+  push_cast
+  exact (by exact_mod_cast hsum : (∑ e ∈ E, (zeroMult (riemannHeat 0) e : ℝ)) ≤
+    ∑ z ∈ Z, (zeroMult (riemannHeat s) z : ℝ)).trans hle
 
 end RHTower.DeBruijn

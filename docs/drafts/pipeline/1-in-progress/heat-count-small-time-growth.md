@@ -86,18 +86,9 @@ So depth `δ` at ordinate `x` survives until `t ≈ δ / log x`, and is absorbed
   - `→ 15/104`: Guth–Maynard, with (S).
 
 ## Necessity: what is provable
-Zero dynamics `ż_k = 2 Σ_{j≠k} 1/(z_k − z_j)` give, for the window energy `E = Σ_k φ(x_k) y_k²`,
-`dE/ds = −4 Σ_{pairs} φ̄ (y_k − y_j)²/|z_k − z_j|² + (φ′-flux)`.
-
-Each pair term is `≤ 1`, and a zero has at most `C log x` partners `j` with
-`min(1, Δy²/Δx²)` not small.
-
-**(N₂) Polylog rate [paper; needs the inputs below].**
-- With local counts `#zeros of H_s in a window of length L ≤ C L log x`, uniformly in `s ≤ 1/8`, we get `dE/ds ≥ −C L log² x`.
-- A depth-`δ` zero then keeps a nonreal zero in its window until `t = c δ²/(L log² x)`.
-- Hence `N_off(δ, [X, 2X]) ≤ C L log X · N(c δ²/(L log² X))`.
-- **Rung 2 ⇒ polylog density:** `N(t) ≤ C t^{−A}` ⇒ `N_off(δ, X) ≪_δ (log X)^{2A+1}`.
-- Rung 1 gives nothing at this rate: `e^{o(1/t)}` with `1/t ≍ log² X` is superpolynomial.
+**(N₂) Polylog rate [Lean, static proof below].** `N_off(δ, [X, 2X]) ≤ C log X · N(c δ²/log⁴ X)`.
+- **Rung 2 ⇒ polylog density:** `N(t) ≤ A t^{−a}` ⇒ `N_off(δ, [X, 2X]) = O((log X)^{4a+1})`.
+- Rung 1 gives nothing at this rate: `e^{o(1/t)}` with `1/t ≍ log⁴ X` is superpolynomial.
 
 **(N₁) Mean-field rate, needed for rung 1 [OPEN].** Rung 1 ⇒ sub-power density needs
 survival `≥ c(δ)/log X`. Every energy or threshold functional tried fails at the same point,
@@ -116,11 +107,13 @@ All lose at least a factor `(log x)^{1/m}` or `e^{c√(log log x)}`. That factor
 
 Physically the crowd is harmless: zeros at depth `≥ θ` survive `≍ θ²/log x` on their own. The missing ingredient is an argument that charges crowd drains to the crowd.
 
-**Infrastructure gaps (corpus and Mathlib):**
-- zero ODE for `H_s` or for `polyHeat s (xiRealApprox n)`, with collisions;
+**Inputs a dynamics proof of (N₁) would need:**
+- zero ODE for `H_s`, with collisions;
 - local zero counts for `H_s` uniform in `s`;
-- flux control (horizontal velocities, with symmetrised near-field terms);
-- two-sided Hurwitz convergence of compactly supported zero sums (the corpus has one side).
+- flux control (horizontal velocities, with symmetrised near-field terms).
+
+Zero dynamics give `dE/ds = −4 Σ_{pairs} φ̄ (y_k − y_j)²/|z_k − z_j|² + (φ′-flux)` for the window
+energy `E = Σ φ(x_k) y_k²`.  Each pair term is `≤ 1`, which is where the crowding loss enters.
 
 A static contour version (Hermite/Gram negative index from `∮ G H′/H`) fails: real zeros' Gram mass swamps the pair's negative eigenvalue.
 
@@ -131,6 +124,26 @@ The pointwise threshold is `c > sup_w θ_w`, where `θ_w` solves `(c − w)² = 
 - **`2/3` [paper check].** Add `μ(11/18) ≤ 1/9`, from the exponent pair `(1/9, 13/18) = A(2/7, 4/7) = ABA(1/6, 2/3)` (two `B`-processes). The profile is then tight at `c = 2/3`: at `w = 0` (slope `1/2`) and at `w = 1/3` on the chord `(5/7, 1/14)–(1, 0)`. Every `c > 2/3` works. This needs van der Corput's `B`-process (Poisson summation with stationary phase), which the corpus lacks; `ExponentPairSelfDuality` is bookkeeping only.
 - **`4·13/84 = 13/21`:** Bourgain; out of reach.
 - **`1/2 + ε`:** counting instead of pointwise reality. Bad ordinates are controlled by mean values of `ζ` in the strip. `1/2` is the Euler-anchor barrier.
+
+## Exponent `2/3`: the build plan (chosen 2026-10-28)
+Target: `μ(11/18) ≤ 1/9`, then the horizon threshold `2/3 + ε` (numerically checked: with the profile
+`(1/2,1/6)–(11/18,1/9)–(5/7,1/14)–(1,0)`, `min_w (c−w)² − 4cμ(1/2+w)` is `0` at `c = 2/3` and
+positive for `c > 2/3`).
+
+Why the `B`-process is unavoidable:
+- Optimising the corpus derivative tests (Kuzmin–Landau, second to `k`-th) block by block gives
+  `μ(11/18) ≤ 0.11728`, the chord value, for blocks up to `N = t`.
+- With the approximate functional equation the dual sum gives `1/9`, but the direct sum over
+  `N ≤ √t` still gives `0.11728`.
+
+So `1/9` needs `(1/9, 13/18) = A(2/7, 4/7)`, `(2/7, 4/7) = B(1/14, 11/14)`: Weyl-difference the block, then apply `B` to the differenced sums, then the fourth derivative test.
+
+Lemma chain, none of it in the corpus:
+1. truncated Poisson summation: `Σ_{a<n≤b} e(f(n)) = Σ_{α−η<ν<β+η} ∫_a^b e(f(x) − νx)dx + O(log(β−α+2))`, for monotone `f′` (Titchmarsh 4.7);
+2. stationary phase with explicit error, for `f″ ≍ λ₂` and `|f‴| ≪ λ₃` (Titchmarsh 4.6);
+3. the `B`-process lemma (Titchmarsh 4.9), with explicit constants;
+4. the zeta block at `σ = 11/18`: Weyl differencing with `H ≍ N^{?}`, `B` on each differenced sum, and the fourth derivative test on the transformed sums. The result is `block ≪ t^{1/9} N^{11/18}` up to logs;
+5. the profile point `μ(11/18) ≤ 1/9` in `KiKimLeeInteriorLindelofHorizon`'s strip exponent, and re-run the threshold to get `2/3 + ε`.
 
 ## (N₂) static proof — the build plan (chosen 2026-10-28)
 Any polylog survival rate gives rung 2 ⇒ polylog density. A static Rouché argument at each deep zero
@@ -155,21 +168,21 @@ Corollary: `N(t) ≤ A t^{−a}` ⇒ `#{depth ≥ δ, ordinate ≤ T} ≪ (log T
 5. *Rouché* (`exists_zero_mem_ball_of_norm_sub_lt`). `H_t` vanishes in `B(ζ, r)`, so it has a nonreal zero, since `r ≤ δ/2`.
 6. *Counting.* A `δ`-separated subfamily of `F` gives disjoint discs, hence `N(t) ≥ #F/(C log X)`.
 
-Stages:
-- A1 local factorization and the `g′/g` bound: **done** — `RHTower/XiZeroFreeCofactorNearAnOrdinate.lean` (`exists_xi_cofactor_near_ordinate`, ball radius 12, bound on radius 11; file check passes).
-- A2 Gaussian comparison: **generic lemma done** — `RHTower/GaussianAverageOfALocallyTameFunction.lean` (`norm_integral_gaussDensity_mul_sub_le`; tail `B‖F(z)‖e^{b|u|}e^{u²/8t}`; file check passes). Still to do: the `XiC` instance (ratio via Grönwall on the cofactor, tail via `norm_xiLine_le_far` and reflection).
-- A3 Rouché, radius choice and counting.
-- A4 rung-2 corollary.
+Status: **(N₂) formalized** (file checks pass; wired into `RHTower.lean`; umbrella not compiled).
+- `RHTower/XiZeroFreeCofactorNearAnOrdinate.lean` — `exists_xi_cofactor_near_ordinate`: on `B(2+iT, 12)`, `ξ = ∏(s−ρ)^{m_ρ}·g`, `Σ m_ρ ≤ C log T`, `‖g′/g‖ ≤ C log T` on `B(2+iT, 11)`.
+- `RHTower/GaussianAverageOfALocallyTameFunction.lean` — `norm_integral_gaussDensity_mul_sub_le`: if `‖F(w)‖ ≤ ‖F(z)‖e^{a‖w−z‖}` (`‖w−z‖ ≤ 2`) and `‖F(z−iu)‖ ≤ B‖F(z)‖e^{b|u|}e^{u²/8t}` (`|u| > 1`), then `‖∫g_t(u)F(z−iu)du − F(z)‖ ≤ t‖F(z)‖(42a²e^{4a²t} + 20(B+1+4a)e^{−λ+8(b+λ)²t})`.
+- `RHTower/HeatFlowNearADeepXiZero.lean` — `norm_riemannHeat_sub_XiC_lt`: `‖H_t(z) − Ξ(z)‖ < ‖Ξ(z)‖` for `t ≤ 1/(1000A²)`, `A = Σ m_ρ/‖σ(z)−ρ‖ + K + log Im σ(z) + 3`.
+- `RHTower/DeepOffLineZerosAreCountedByTheHeatFlow.lean`:
+  - `exists_card_deep_le_mul_nonrealZeroCount`: `#{copies, ordinate ∈ [X,2X], |β−1/2| ≥ δ} ≤ C log X · N(t)` for `t ≤ δ²/(C log⁴ X)`;
+  - `polylog_deep_density_of_polynomial_nonrealZeroCount`: `N(t) ≤ A t^{−a}` ⇒ that count is `O((log X)^{4a+1})`.
 
 ## Survivors to formalize (not dependency-closed)
-- (N), the necessity reduction. It certifies that rung 1 is at least as hard as sub-power density. Needs:
-  - zero dynamics of `H_t`, via the polynomial approximants `xiRealApprox` and Hurwitz counting on boxes;
-  - uniform local zero counts for `H_s` in unit windows;
-  - flux control for a weighted window energy.
+- (N₁), the mean-field necessity (rung 1 ⇒ sub-power density): open on paper (threshold crowding).
 - (S), the sufficiency transfer. Needs:
   - interior anchors with small-value control;
   - mean values of `ζ` in the strip.
 
 ## Log
+- 2026-10-29 — (N₂) formalized: rung 2 ⇒ polylog deep density (static Rouché, no zero dynamics).
 - 2026-10-28 — necessity: polylog rate (N₂) on paper; mean-field rate (N₁) open (threshold crowding); exponent routes mapped (`2/3` needs `μ(11/18) ≤ 1/9`).
 - 2026-10-28 — created; dictionary `κ = sup_w w E(1/2+w)` found (paper sketch); rung 1 identified with sub-power density.

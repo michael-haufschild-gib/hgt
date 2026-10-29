@@ -53,9 +53,9 @@ theorems in `PrimeParityRamanujanCoordinates.lean` now pass the kernel and
 transitive axiom audit. Its olean was written because the next harmonic
 normalization module imports it. The canonical final source check also passed.
 
-The valuation-box branch is formalizing the maximal-gap theorem for primes
+The valuation-box branch has formalized the maximal-gap theorem for primes
 at least 11 in `LargePrimeFlipsAttainTheMaximalGap.lean`; its paper card is
-`../2-fully-proven/arithmetic-counting-maximal-gap-rigidity.md`. The user
+`../3-formalized/arithmetic-counting-maximal-gap-rigidity.md`. The user
 confirmed this as the intended endpoint and rejected the redundant independent
 endpoint for primes at least 41. That draft and its separate two-mode helper
 have been removed. Preserve the other researcher's valuation-box work.
@@ -73,7 +73,9 @@ The arbitrary finite-prime count is also formalized:
 the exact insertion recurrence, bounded error, limit and paid gap. Its six
 public theorems and final canonical source check passed. Its first required
 olean built for the exhaustion leaf. There are now seven closed own leaves
-and 55 audited public theorems.
+and 55 audited public theorems. The subsequent exhaustion leaf has also
+passed all five axiom audits and its final canonical source check, closing
+eight own leaves and 60 public theorems.
 
 Existing worktree contains other researchers' changes; preserve them. The source report
 is being updated concurrently: its inertia/mollifier proposal has changed into
@@ -88,68 +90,117 @@ finite arithmetic construction or README is finished.
 
 ## Verification handoff
 
-- Seven own leaves are installed, individually checked, axiom-audited, and
-  wired into `ArithmeticCountingPositivity.lean`. That umbrella is imported
-  by `MainTheorems.lean`; no umbrella was compiled.
-- Durable proof and audit records are the four `3-formalized` cards
-  `arithmetic-counting-pole-angle.md`,
-  `arithmetic-counting-prime-parity-ramanujan.md`,
-  `arithmetic-counting-harmonic-spectral-coordinates.md`, and
-  `arithmetic-counting-finite-prime-density.md`, with their adjacent
-  `-audit.txt` files. All final canonical checks exited zero without
-  diagnostics; all theorem audits have only the three standard axioms.
-- Own oleans exist for `HarmonicCorrelationPaysThePrimeGap`,
-  `SparsePrimeFlipsRetainPositiveGaps`, `PrimeParityPairing`,
-  `PrimeParityRamanujanCoordinates`, and
-  `FinitePrimeFlipsHavePositiveHarmonicDensity`, because later own leaves import them.
-  Neither the complete-Weil obstruction nor the spectral-coordinate leaf
-  required its own olean. The missing imported
-  `TheSimplePrimeEigenlinesConvergeToRamanujanLines` olean was built alone.
-- Completed scratch files and transient logs have been removed after their
-  evidence was preserved in the durable audit records. The abandoned
-  maximal-gap and two-mode drafts are also removed. Do not recreate the
-  redundant prime-41 endpoint.
-- The active extension is on
-  `../2-fully-proven/arithmetic-counting-finite-flip-exhaustion.md`.
-  Corpus searches found no arbitrary finite-prime harmonic law; the
-  existing finite-flip Mertens matching law is distinct. Its closed
-  bounded-error recurrence proof is on
-  `../3-formalized/arithmetic-counting-finite-prime-density.md`.
-- Finite-prime density scratch 36694, canonical check 17250 and first olean
-  build 22689 all exited zero. No diagnostics; six axiom audits contain
-  only the standard three axioms. Its completed scratch and logs can be
-  cleaned once the exhaustion batch is closed; durable evidence is saved.
-- `/tmp/acp-finite-exhaustion-check.lean` contains the subsequent five-theorem
-  draft: exact agreement with Liouville below the cutoff, eventual pointwise
-  equality, positive matched finite stages, and failure of a uniform positive
-  gap even on a cofinal rectangle of prime cutoffs and horizons. It imports
-  the finished `FinitePrimeFlipsHavePositiveHarmonicDensity.lean`.
-  Scratch check 43315 exited zero, with all five transitive axiom audits
-  standard. Installed as `FinitePrimeExhaustionLosesUniformGaps.lean`, wired
-  into the umbrella and README. Final canonical check 7214 is running,
-  with log `/tmp/acp-final-finite-exhaustion.log`. Resume this handle before
-  starting another Lean process. Its paper card remains in `2-fully-proven`
-  until that final check succeeds. No own olean is needed.
-- Corpus and mathlib leads used for that draft were inspected in source:
-  `ArithmeticFunction.cardFactors_eq_sum_factorization`,
-  `Nat.support_factorization`, `Finset.prod_pow_eq_pow_sum`,
-  `Nat.mem_primeFactors`, `Nat.mem_primesBelow`, and `atomicWeilForm_congr`.
-  The positive count must be finished before closing the exhaustion
-  obstruction. Failed search calls were retried with exact names; no
-  missing lemma is being treated as a proved input.
-- The next nonredundant use of the spectral bridge is on
-  `../2-fully-proven/arithmetic-counting-small-prime-gap-boundary.md`:
-  `g <= p log(p)/(p+3)` for every gap of a single-prime flip. The closed
-  paper proof uses the actual squared spectral coordinates and existing
-  `quadratic_eigenvector_plane`. Its strict bound below `2 log 2` for primes
-  2, 3, 5, 7 would complement the other researcher's prime-11 lower theorem.
-  Corpus searches found no such upper bound.
-- `/tmp/acp-small-prime-boundary-check.lean` is the complete unverified
-  draft of that closed proof. It has two public endpoints: the upper bound
-  and the positive-but-nonmaximal gap for primes below 11. It imports
-  `HarmonicParitySpectralCoordinates`; once canonical check 7214 finishes,
-  build that missing own olean exactly once (only if absent), then check
-  this scratch. Do not rebuild any existing dependency olean. The actual
-  prime-11 module is neither imported nor modified.
-- Research scope remains all source-report mechanisms and questions. No
-  part of the current batch completes the full programme.
+- Fourteen own leaves are installed, individually checked, axiom-audited and
+  wired into `ArithmeticCountingPositivity.lean`, with 100 public theorems.
+  That umbrella is imported by `MainTheorems.lean`; no umbrella was compiled.
+- Eleven own stage-three cards and adjacent `-audit.txt` files preserve proofs,
+  exact commands, installed-source hashes and actual transitive axiom output:
+  `arithmetic-counting-pole-angle`, `arithmetic-counting-prime-parity-ramanujan`,
+  `arithmetic-counting-harmonic-spectral-coordinates`,
+  `arithmetic-counting-finite-prime-density`,
+  `arithmetic-counting-finite-flip-exhaustion`, and
+  `arithmetic-counting-small-prime-gap-boundary`, and
+  `arithmetic-counting-parity-spectral-mass`, and
+  `arithmetic-counting-cofinite-flip-exhaustion`, and
+  `arithmetic-counting-parity-secular-data`, and
+  `arithmetic-counting-finite-secular-criterion`, and
+  `arithmetic-counting-parity-resolvent-limit`.
+  Every final source check exited zero without diagnostics. All 100 audits
+  use only `propext`, `Classical.choice`, `Quot.sound`.
+- The small-prime leaf proves every gap is at most `p log(p)/(p+3)`,
+  excludes maximality for primes below eleven, and combines with the
+  independent large-prime theorem to prove maximal-gap attainment iff
+  `11 <= p`. Its scratch check 49297 and canonical check 78204 both exited
+  zero. Its paper is now in stage three and its durable audit is saved.
+- Preserve the other researcher's `LargePrimeFlipsAttainTheMaximalGap.lean`
+  and its stage-three card. Its existing olean was imported, not rebuilt.
+  The combined cutoff equivalence passed its own transitive axiom audit.
+  The user rejected the redundant prime-41 endpoint; do not recreate it.
+- Own required oleans exist for the angle, sparse-flip, parity-pairing,
+  Ramanujan-count, spectral-coordinate and finite-density leaves. The
+  spectral-coordinate build 55169 exited zero with no diagnostics. No
+  olean was needed for the small-prime upper-bound leaf.
+- The spectral mass paper is formalized in
+  `../3-formalized/arithmetic-counting-parity-spectral-mass.md`.
+  The exact finite Ramanujan profile equals parity outside `p^K | n`,
+  and equals `c_p(-1)^K` on that fibre. Its normalized squared error is
+  `((1+c_p^2) H_floor(N/p^K)-2c_p S_p(floor(N/p^K)))/(p^K H_N)`.
+  Therefore it is at most `4p/(p+1)^2 * p^(-K)` uniformly over positive
+  horizons, and converges to that bound as the horizon grows. The proof
+  uses the existing multiplier trichotomy and exact divisibility counts.
+- The parity-tower scratch passed check 19175 with all eight
+  transitive axiom audits standard, including exact coefficient mass and
+  its limit one. The installed leaf is
+  `PrimeParityIsExhaustedByItsRamanujanTower.lean`. Its canonical source
+  check 25706 exited zero without diagnostics. The umbrella and README
+  are wired, the durable audit is saved and the paper is in stage three.
+  Its scratch and logs are cleaned. Its first required olean subsequently
+  passed build 66596 for the secular-data leaf.
+- The cofinite paper is `../3-formalized/arithmetic-counting-cofinite-flip-exhaustion.md`.
+  It proves the explicit bound `|S_(Liouville * finiteFlip F)(N)| <= 2/c_F`,
+  the resulting harmonic squared-distance limit two, and greatest gap
+  exactly zero from the existing bounded-correlation criterion. The
+  finite-exhaustion olean build 25795 passed. Scratch formalization
+  `/tmp/acp-cofinite-exhaustion-check.lean` passed check 9093, with all
+  twelve transitive axiom audits standard. The installed leaf is
+  `CofinitePrimeFlipsHaveZeroGap.lean`, wired into the umbrella and README.
+  Its final source check 93963 exited zero without diagnostics. The
+  durable audit is saved, its paper promoted, and scratch/logs cleaned.
+  This closes eleven own leaves and 83 audited public theorems.
+- The exact-gap target now has a dependency-complete stage-two paper:
+  `../2-fully-proven/arithmetic-counting-small-prime-secular-gap.md`.
+  It identifies the greatest gap for every prime as the minimum of the
+  secular root and `2 log 2`, and for primes below eleven as the root itself.
+  Its eight-endpoint Lean draft remains unverified.
+- `TheParityTowerHasAUniqueSecularRoot.lean` has five audited public endpoints:
+  exact tower energy, coefficient squares, unit mass, unique root and strict
+  two-mode upper bound. Scratch 71369 and canonical 68241 passed; its first
+  required olean build 41368 passed. Stage-three paper and durable evidence
+  are `arithmetic-counting-parity-secular-data` and its adjacent audit.
+- `FiniteReciprocalMassControlsTheHyperplane.lean` has six audited public
+  endpoints: diagonal iff, reciprocal tail bound, negative witness,
+  distinguished-index iff, Hermitian iff and eventual packet-limit principle.
+  Scratch 7621, canonical 76613 and first required olean 42625 passed.
+  Stage-three paper and evidence are `arithmetic-counting-finite-secular-criterion`.
+  Both leaves are wired into the umbrella/README; their scratch/logs are cleaned.
+- `TheParityTowerDeterminesTheFiniteResolvent.lean` has six audited public
+  endpoints: explicit Möbius coefficient, actual eigenline sequences at
+  horizons N+1, unique ground spectral count, strict energy monotonicity,
+  first-excitation lower bound, and convergence of the entire actual finite
+  resolvent to the parity secular series. Its private packet lemma controls
+  every omitted eigenline by omitted squared mass divided by a denominator gap.
+  Scratch check 99113 and canonical check 10211 passed with standard axioms
+  and no warnings. Stage-three paper and durable evidence are
+  `arithmetic-counting-parity-resolvent-limit`. Umbrella/README are wired,
+  and scratch/check logs cleaned. The coefficient calculation reuses
+  `TransHorizonIncidenceMechanics.mul_moebius_apply_prime_pow`.
+  Its first required olean build 60848 passed with no diagnostics; durable
+  evidence is saved and its log cleaned. The first required small-prime
+  boundary olean build is running in session 5632, log
+  `/tmp/acp-small-prime-boundary-olean.log`. Resume before another Lean
+  command, then check the final exact-gap draft. Both dependencies were
+  confirmed missing before their first builds.
+- The eight-endpoint final draft is `/tmp/acp-exact-parity-gap-check.lean`.
+  It proves greatest gap `min (2 log 2) (primeParitySecularRoot p)`, classifies
+  every real gap, locates the root below the ceiling iff p<11, gives the
+  exact small-prime greatest gap, makes the two-mode upper bound strict,
+  and states the normalized root equation as
+  `HasSum (4/(phi(p^(k+1))*(D_(k+1)-alpha))) (1/alpha)`.
+  The sign isometry, finite resolvent iff, root signs, endpoint attainment,
+  and necessary upper bound are all written but unverified. Two imports
+  require the new resolvent olean and small-prime boundary olean. The third
+  bounded-variation source import has an existing olean; never rebuild it.
+  The rewritten paper is now in stage two; the old stage-one target and
+  temporary paper were removed after promotion. Do not claim these final
+  eight endpoints pass yet.
+- The next finite-set generalization is recorded as a conjecture in
+  `../0-backlog/arithmetic-counting-finite-prime-secular-gap.md`. It targets
+  the explicit smooth-conductor weights `c_F^2 4^omega(m)/phi(m)` and an
+  exact finite-set root. It has neither a closed paper proof nor Lean proof;
+  finish the current eight-endpoint single-prime audit first.
+- The newer source report was fully reread in chunks. It now emphasizes
+  arithmetic Krein--Langer theory, coalescent pair counts, index-carrying
+  completion and structural precision, alongside selective transfer and
+  integer-side auxiliary counts. Other researchers own the HKT and full
+  separated-Weil spectral branches. The original counting programme stays
+  active; finite-count and prime-spectrum results do not finish it.

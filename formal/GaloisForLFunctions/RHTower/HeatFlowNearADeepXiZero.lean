@@ -136,7 +136,9 @@ theorem xiLine_eq_xi_add (s : ℂ) (u : ℝ) :
     xiLine s.im (s.re - 1 / 2 + u) = xi (s + u) := by
   rw [xiLine]
   congr 1
-  apply Complex.ext <;> simp <;> ring
+  apply Complex.ext
+  · simp; ring
+  · simp
 
 theorem norm_xiLine_neg (X w : ℝ) : ‖xiLine X (-w)‖ = ‖xiLine X w‖ := by
   rw [xiLine, xiLine, xi_half_sub_eq_conj, Complex.norm_conj]
@@ -234,15 +236,19 @@ theorem norm_XiC_vertical_le {c : ℂ} {T : ℝ} (hc : c = 2 + (T : ℂ) * I) {Z
       have h := Complex.abs_re_le_norm (sz - c)
       have hre' : (sz - c).re = sz.re - 2 := by rw [hc]; simp
       rw [hre'] at h
-      rw [abs_lt] at h ⊢
-      constructor <;> linarith [abs_lt.mp (lt_of_le_of_lt h hszc)]
+      have h2 := abs_lt.mp (lt_of_le_of_lt h hszc)
+      rw [abs_lt]
+      constructor <;> linarith [h2.1, h2.2]
     set w : ℝ := sz.re - 1 / 2 + u with hw
     have hwabs1 : 9 / 2 ≤ |w| := by
-      have := abs_sub_abs_le_abs_sub u (-(sz.re - 1 / 2))
-      rw [show u - -(sz.re - 1 / 2) = w by rw [hw]; ring, abs_neg] at this
+      have h1 : u = w + -(sz.re - 1 / 2) := by rw [hw]; ring
+      have h2 : |u| ≤ |w| + |-(sz.re - 1 / 2)| := by
+        conv_lhs => rw [h1]
+        exact abs_add_le _ _
+      rw [abs_neg] at h2
       linarith
     have hwabs2 : |w| ≤ |u| + 4 := by
-      have := abs_add (sz.re - 1 / 2) u
+      have := abs_add_le (sz.re - 1 / 2) u
       rw [← hw] at this
       linarith
     have hfar := norm_xiLine_le_far_abs (X := X) hX ht ht1 hwabs1 (by linarith) hwabs2
@@ -306,6 +312,120 @@ theorem norm_XiC_vertical_le {c : ℂ} {T : ℝ} (hc : c = 2 + (T : ℂ) * I) {Z
                 * Real.exp (u ^ 2 / (8 * t)) := by ring
             _ ≤ (Real.exp (8 * a) * ‖xi sz‖) * Real.exp ((a + Real.log X + 2) * |u|)
                 * Real.exp (u ^ 2 / (8 * t)) := by gcongr
+
+/-- The numerical inequality behind the comparison: for `A ≥ 1` and `t A² ≤ 1/1000`, the error
+factor of `norm_integral_gaussDensity_mul_sub_le` with `λ = 1/(32t)` is at most `1/5`. -/
+theorem heat_error_factor_le {A t : ℝ} (hA : 1 ≤ A) (ht : 0 < t) (htA : t * A ^ 2 ≤ 1 / 1000) :
+    t * (42 * A ^ 2 * Real.exp (4 * A ^ 2 * t)
+      + 20 * (Real.exp (8 * A) + 1 + 4 * A)
+        * Real.exp (-(1 / (32 * t)) + 8 * (A + 1 / (32 * t)) ^ 2 * t)) ≤ 1 / 5 := by
+  have hA2 : 1 ≤ A ^ 2 := by nlinarith
+  have ht1 : t ≤ 1 / 1000 := by nlinarith
+  have he1 : Real.exp (4 * A ^ 2 * t) ≤ 3 := by
+    have h4 : 4 * A ^ 2 * t ≤ 1 := by nlinarith
+    calc Real.exp (4 * A ^ 2 * t) ≤ Real.exp 1 := Real.exp_le_exp.mpr h4
+      _ ≤ 3 := by have := Real.exp_one_lt_d9; linarith
+  have hpart1 : t * (42 * A ^ 2 * Real.exp (4 * A ^ 2 * t)) ≤ 126 / 1000 := by
+    have : t * (42 * A ^ 2 * Real.exp (4 * A ^ 2 * t)) = 42 * (t * A ^ 2) * Real.exp (4 * A ^ 2 * t) := by
+      ring
+    rw [this]
+    have hnn : 0 ≤ t * A ^ 2 := by positivity
+    calc 42 * (t * A ^ 2) * Real.exp (4 * A ^ 2 * t) ≤ 42 * (1 / 1000) * 3 := by gcongr
+      _ = 126 / 1000 := by norm_num
+  have hexpo : -(1 / (32 * t)) + 8 * (A + 1 / (32 * t)) ^ 2 * t
+      = 8 * A ^ 2 * t + A / 2 - 3 / (128 * t) := by
+    field_simp; ring
+  have hinv : 1000 * A ^ 2 ≤ 1 / t := by
+    rw [le_div_iff₀ ht]; nlinarith
+  have h3 : 23 * A ^ 2 ≤ 3 / (128 * t) := by
+    have : 3 / (128 * t) = 3 / 128 * (1 / t) := by field_simp
+    rw [this]; nlinarith
+  have hsum : 8 * A + (8 * A ^ 2 * t + A / 2 - 3 / (128 * t)) ≤ 0 := by nlinarith
+  have hB : Real.exp (8 * A) + 1 + 4 * A ≤ 3 * Real.exp (8 * A) := by
+    have h1 : 1 ≤ Real.exp (8 * A) := Real.one_le_exp (by linarith)
+    have h2 : 8 * A + 1 ≤ Real.exp (8 * A) := Real.add_one_le_exp _
+    linarith
+  have hpart2 : t * (20 * (Real.exp (8 * A) + 1 + 4 * A)
+      * Real.exp (-(1 / (32 * t)) + 8 * (A + 1 / (32 * t)) ^ 2 * t)) ≤ 60 / 1000 := by
+    rw [hexpo]
+    have hE : (Real.exp (8 * A) + 1 + 4 * A) * Real.exp (8 * A ^ 2 * t + A / 2 - 3 / (128 * t))
+        ≤ 3 := by
+      calc (Real.exp (8 * A) + 1 + 4 * A) * Real.exp (8 * A ^ 2 * t + A / 2 - 3 / (128 * t))
+          ≤ 3 * Real.exp (8 * A) * Real.exp (8 * A ^ 2 * t + A / 2 - 3 / (128 * t)) := by
+            gcongr
+        _ = 3 * Real.exp (8 * A + (8 * A ^ 2 * t + A / 2 - 3 / (128 * t))) := by
+            rw [Real.exp_add]; ring
+        _ ≤ 3 * Real.exp 0 := by gcongr
+        _ = 3 := by simp
+    calc t * (20 * (Real.exp (8 * A) + 1 + 4 * A)
+          * Real.exp (8 * A ^ 2 * t + A / 2 - 3 / (128 * t)))
+        = 20 * t * ((Real.exp (8 * A) + 1 + 4 * A)
+          * Real.exp (8 * A ^ 2 * t + A / 2 - 3 / (128 * t))) := by ring
+      _ ≤ 20 * (1 / 1000) * 3 := by gcongr
+      _ = 60 / 1000 := by norm_num
+  rw [mul_add]
+  linarith
+
+/-- **The heat flow stays close to `Ξ`.**  With `a = Σ m_ρ/‖σ(z) − ρ‖ + K`, `X = Im σ(z)` and
+`A = a + log X + 3`, if `t ≤ 1/(1000 A²)` then `‖H_t(z) − Ξ(z)‖ < ‖Ξ(z)‖`. -/
+theorem norm_riemannHeat_sub_XiC_lt {c : ℂ} {T : ℝ} (hc : c = 2 + (T : ℂ) * I) {Z : Finset ℂ}
+    {m : ℂ → ℕ} {g : ℂ → ℂ} {K : ℝ}
+    (hg : AnalyticOnNhd ℂ g (ball c 11)) (hg0 : ∀ z ∈ ball c 11, g z ≠ 0)
+    (heq : EqOn xi (fun z => (∏ ρ ∈ Z, (z - ρ) ^ m ρ) * g z) (ball c 11))
+    (hK : ∀ s ∈ ball c 11, ‖deriv g s / g s‖ ≤ K) (hK0 : 0 ≤ K)
+    (hzero : ∀ s ∈ ball c 11, xi s = 0 → s ∈ Z) {z : ℂ}
+    (hz : 1 / 2 + I * z ∈ ball c (5 / 2)) (hZ : ∀ ρ ∈ Z, 1 / 2 + I * z ≠ ρ)
+    (hX : 200 ≤ (1 / 2 + I * z).im) {t : ℝ} (ht : 0 < t)
+    (htA : t ≤ 1 / (1000 * (∑ ρ ∈ Z, (m ρ : ℝ) / ‖(1 / 2 + I * z) - ρ‖ + K
+      + Real.log (1 / 2 + I * z).im + 3) ^ 2)) :
+    ‖riemannHeat t z - XiC z‖ < ‖XiC z‖ := by
+  set sz : ℂ := 1 / 2 + I * z with hsz
+  set a : ℝ := ∑ ρ ∈ Z, (m ρ : ℝ) / ‖sz - ρ‖ + K with ha
+  set X : ℝ := sz.im with hXdef
+  set A : ℝ := a + Real.log X + 3 with hAdef
+  have ha0 : 0 ≤ a := by
+    have : 0 ≤ ∑ ρ ∈ Z, (m ρ : ℝ) / ‖sz - ρ‖ := Finset.sum_nonneg fun _ _ => by positivity
+    linarith
+  have hlogX : 0 ≤ Real.log X := Real.log_nonneg (by linarith)
+  have hA1 : 1 ≤ A := by linarith
+  have htA2 : t * A ^ 2 ≤ 1 / 1000 := by
+    have hpos : 0 < 1000 * A ^ 2 := by positivity
+    rw [le_div_iff₀ hpos] at htA
+    linarith
+  have ht1 : t ≤ 1 := by nlinarith
+  have hsz11 : sz ∈ ball c 11 := ball_subset_ball (by norm_num) hz
+  have hF0 : XiC z ≠ 0 := by
+    rw [XiC_eq_xi]
+    intro h0
+    exact hZ sz (hzero sz hsz11 h0) rfl
+  have hloc : ∀ w ∈ closedBall z 2, ‖XiC w‖ ≤ ‖XiC z‖ * Real.exp (A * ‖w - z‖) := by
+    intro w hw
+    refine (XiC_tame_of_cofactor hg hg0 heq hK (ball_subset_ball (by norm_num) hz) hZ w hw).trans ?_
+    gcongr
+    linarith
+  have htail : ∀ u : ℝ, 1 < |u| → ‖XiC (z - I * u)‖
+      ≤ Real.exp (8 * A) * ‖XiC z‖ * Real.exp (A * |u|) * Real.exp (u ^ 2 / (8 * t)) := by
+    intro u hu
+    refine (norm_XiC_vertical_le hc hg hg0 heq hK hK0 hz hZ hX ht ht1 u hu).trans ?_
+    have h1 : Real.exp (8 * a) ≤ Real.exp (8 * A) := Real.exp_le_exp.mpr (by linarith)
+    have h2 : Real.exp ((a + Real.log X + 2) * |u|) ≤ Real.exp (A * |u|) :=
+      Real.exp_le_exp.mpr (by nlinarith [abs_nonneg u])
+    gcongr
+  have hmain := norm_integral_gaussDensity_mul_sub_le (F := XiC) XiC_differentiable ht hA1
+    (by linarith : (0 : ℝ) ≤ A) (Real.exp_pos (8 * A)).le (by positivity : (0 : ℝ) ≤ 1 / (32 * t))
+    hloc htail (integrable_gaussDensity_mul_XiC ht z)
+  rw [← riemannHeat_eq_integral_gaussian_XiC ht z] at hmain
+  have hfac := heat_error_factor_le hA1 ht htA2
+  have hN : 0 < ‖XiC z‖ := norm_pos_iff.mpr hF0
+  calc ‖riemannHeat t z - XiC z‖
+      ≤ t * ‖XiC z‖ * (42 * A ^ 2 * Real.exp (4 * A ^ 2 * t)
+        + 20 * (Real.exp (8 * A) + 1 + 4 * A)
+          * Real.exp (-(1 / (32 * t)) + 8 * (A + 1 / (32 * t)) ^ 2 * t)) := hmain
+    _ = ‖XiC z‖ * (t * (42 * A ^ 2 * Real.exp (4 * A ^ 2 * t)
+        + 20 * (Real.exp (8 * A) + 1 + 4 * A)
+          * Real.exp (-(1 / (32 * t)) + 8 * (A + 1 / (32 * t)) ^ 2 * t))) := by ring
+    _ ≤ ‖XiC z‖ * (1 / 5) := mul_le_mul_of_nonneg_left hfac hN.le
+    _ < ‖XiC z‖ := by linarith
 
 end
 

@@ -99,7 +99,16 @@ reserve. *Descent* transports the specified form, never a corrected one. *Exhaus
 13. **Squares**: the even-power source equals its regular Fourier boundary plus half the squared mean; the boundary has a uniform Gamma gap
     ($G-R_2\ge\delta G+\gamma/2$, via digamma/Xi decomposition and logarithmic Xi edge growth); on complete profiles
     $\Gamma-P_{\rm even}-B_{\rm odd}+\tfrac12|\int F|^2\ge\tfrac\gamma2\|F\|^2$ after a fixed detail cutoff, so negative index $\le A+1$ uniformly.
-    **Outside this theorem**: the first-prime terms, archimedean mass term, pure coarse/detail blocks at odd higher powers, and the poles.
+    This also holds with $B_{\rm odd}$ replaced by the whole source difference
+    $P_{\rm odd}(F)-P_{\rm odd}(g)$, including the pure-detail diagonal: integer incidence makes this difference
+    exactly $\sum_m w_m\operatorname{Re}\langle T_mh,F\rangle$ for $F=g+h$.
+    Actual pair averaging and detail extraction satisfy
+    $\Gamma(g)+\Gamma(h)\le C\Gamma(F)$ uniformly in horizon, without an additive mass error.
+    With $D=\sum_a\log(1/w_a)M_ad_a^2$, the paid form therefore retains
+    $\eta(\Gamma(g)+D)+(\gamma_E/2)\|F\|^2$ for some fixed $\eta>0$ after one fixed detail head
+    (`exists_squareOddHigherRefinement_coarse_detail_reserve`). This is a multiplicative energy
+    comparison, not a coefficient-one splitting or full-Weil sign theorem.
+    **Outside these theorems**: the first-prime terms, archimedean mass term, pure coarse odd higher-power source, and the actual Weil poles.
 
 ### E. Source-defined carriers and centred identities
 14. **Cell payments**: separated and touching cells pay the full mixed source with adjustable old/new mass charges; a short new cell pays
@@ -123,7 +132,10 @@ reserve. *Descent* transports the specified form, never a corrected one. *Exhaus
 5. **Sharp Gamma boundary** (`GammaBoundaryHasAnExactSchurWeight`, `BoundaryTruncationLosesOnlyBoundedGammaEnergy`).
 6. **Uniform finite index of Gamma minus squares and odd higher mixed powers** (`exists_uniform_squareOddHigherGamma_negative_dimension`;
    modules `TheSquarePrimeEstimateHoldsOnCompleteProfiles`, `AllHigherPrimePowerMixedFormsHaveUniformFiniteIndex`,
-   `FiniteEulerMixedFormsHaveUniformFiniteIndex`).
+   `FiniteEulerMixedFormsHaveUniformFiniteIndex`). The joint mixed-plus-detail extension is
+   `exists_uniform_squareOddHigherRefinement_negative_dimension` in `OddHigherPrimePowersPayTheirWholeDetailBlock`.
+   Homogeneous coarse/detail recovery and the retained arithmetic reserve are in
+   `CompleteCellAveragesAreBoundedInGammaEnergy`.
 7. **Carrier constructions** (`FixedCellWidthsSupportNestedPositiveSections`, `TheClosedSectionHasABoundedWeilProjection`,
    `TheUnboundedCellCarrierHasAWeilProjection`).
 8. **Centred Chebyshev identity with Gamma reserve** (`TheOrderedWeilSourceIsACenteredChebyshevDefect`, `TheOrderedWeilSourceRetainsItsGammaSquareReserve`).

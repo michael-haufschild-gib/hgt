@@ -1,0 +1,41 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeParityIsExhaustedByItsRamanujanTower.lean
+SHA256: 8d3454e5bc45d3d4c5eba23f83aff89ab23af8e5381304b907cd264fe63c95e3
+
+Scratch audit (exit 0):
+  cd formal
+  lake --old env lean /tmp/acp-parity-tower-check.lean
+
+Canonical installed-source audit (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/PrimeParityIsExhaustedByItsRamanujanTower.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTowerProfile_value' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTowerVector_eq_ramanujan' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTower_error_sq_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTower_error_sq_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_primeParityTower_error_sq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTower_coefficient_mass' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_primeParityTower_coefficient_mass' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTower_uniform_exhaustion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+Subsequent required dependency build (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeParityIsExhaustedByItsRamanujanTower.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeParityIsExhaustedByItsRamanujanTower.ilean GaloisForLFunctions/ArithmeticCountingPositivity/PrimeParityIsExhaustedByItsRamanujanTower.lean
+Required because the arithmetic parity secular-data leaf imports this module.

@@ -339,8 +339,8 @@ theorem abs_qStarValue_sub_le {κ₂ κ₃ κ₄ κ₂' κ₃' κ₄' ε : ℝ} 
   have e : qStarValue κ₂' κ₃' κ₄' - qStarValue κ₂ κ₃ κ₄ =
       64 / 49 * (-(κ₄' - κ₄) + 4 * (κ₃' - κ₃) - 23 / 4 * (κ₂' - κ₂)) := by
     unfold qStarValue; ring
-  rw [e, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 64 / 49)]
-  refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+  rw [e, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 64 / 49), mul_assoc]
+  refine mul_le_mul_of_nonneg_left ?_ (by norm_num : (0 : ℝ) ≤ 64 / 49)
   calc |-(κ₄' - κ₄) + 4 * (κ₃' - κ₃) - 23 / 4 * (κ₂' - κ₂)|
       ≤ |-(κ₄' - κ₄)| + |4 * (κ₃' - κ₃)| + |23 / 4 * (κ₂' - κ₂)| := by
         refine (abs_sub _ _).trans ?_

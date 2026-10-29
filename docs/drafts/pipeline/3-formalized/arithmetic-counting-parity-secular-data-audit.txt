@@ -1,0 +1,31 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/TheParityTowerHasAUniqueSecularRoot.lean
+SHA256: de0bc126d930af44773f08ed0fc588e0fc83e0228681a9048a8ccd931d8fa94f
+
+Scratch audit (exit 0; two unused simp arguments removed before canonical check):
+  cd formal
+  lake --old env lean /tmp/acp-parity-secular-data-check.lean
+
+Canonical installed-source audit (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/TheParityTowerHasAUniqueSecularRoot.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTowerEnergy_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParityTowerCoefficient_sq_succ' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.hasSum_primeParityTowerCoefficient_sq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParitySecularRoot_spec' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParitySecularRoot_unique' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean for the actual finite-resolvent leaf (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/TheParityTowerHasAUniqueSecularRoot.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/TheParityTowerHasAUniqueSecularRoot.ilean GaloisForLFunctions/ArithmeticCountingPositivity/TheParityTowerHasAUniqueSecularRoot.lean

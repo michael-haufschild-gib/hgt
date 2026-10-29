@@ -77,8 +77,9 @@ The checked source is installed as
 wired into the own umbrella. The foundational README states the coordinate
 law and its scope. The final installed-source check exited zero without diagnostics. The
 transitive axiom log and source hash are in
-`arithmetic-counting-harmonic-spectral-coordinates-audit.txt`. No olean or
-umbrella build was needed for this leaf.
+`arithmetic-counting-harmonic-spectral-coordinates-audit.txt`. No umbrella
+was compiled. The first required olean was subsequently built successfully
+for the small-prime upper-bound leaf, which imports these coordinates.
 
 ## Scope
 

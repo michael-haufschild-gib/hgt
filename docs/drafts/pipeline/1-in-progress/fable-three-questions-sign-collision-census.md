@@ -47,7 +47,9 @@ So the subexponential/polynomial targets are statements about the near-axis coun
 Lean (compiled): `RHTower/DeBruijnHighCollisionsReadTheDepth.lean` — `highCount_le_of_energy`,
 `exists_highCount_le_of_zerosApproachLine`, `eventually_exists_highZeros`,
 `zerosApproachLine_of_highCount`, `zerosApproachLine_iff_highCount`, `lindelof_of_highCount`,
-`highCount_iff_lindelof_and_cosShiftXi_finite_nonreal`, `riemannHypothesis_iff_highCount_zero`.
+`highCount_iff_lindelof_and_cosShiftXi_finite_nonreal`, `riemannHypothesis_iff_highCount_zero`,
+two-sided depth law `highCount_le_card_deepCopies` (uniform bound `D(h/2)/(2h²)`) and
+`card_deepCopies_le_of_highCount` (`D(2h) ≤ B`).
 
 ## Q-III — higher inertia census
 
@@ -60,9 +62,37 @@ Answer (paper):
   (fully distinct 3- and 4-cycle terms vanish). Value of `q*`: `16/21 > 3/4`.
 - Optimality: block model with simple pairs of overlap `√2/4` (`16/21` of zeros) and coalesced pairs
   (`5/21`) matches all four moments; so `16/21` is exactly the best degree-≤4 certificate.
-- Remaining input for `ζ`: the 3- and 4-level correlation sums at bandwidth `λ → 1⁻`.
+- With `κ₂ = 4/3, κ₃ = 2`: `q⋆` reaches `3/4` iff `κ₄ ≤ 2503/768`; sine kernel `κ₄ = 2496/768`.
 
-Lean: TODO.
+Lean (compiled): `ArithmeticCastelnuovoSeveri/HigherInertiaCertifiesSixteenTwentyFirsts.lean` —
+`sum_le_of_isInertiaCertificate`, `sum_eigenvalues₀_le_of_isInertiaCertificate`,
+`sum_eigenvalues₀_le_card_of_columns`, `isInertiaCertificate_rankTrace`,
+`isInertiaCertificate_qStar`, `sum_qStar_eq_moments`, `qStar_moments_le_card_of_columns`,
+`qStar_value_sineMoments`, `extremalDiag_moments`, `three_quarters_le_qStarValue_iff`,
+`abs_qStarValue_sub_le`, `witness_moments`, `le_sixteen_twentyFirsts_of_valid`, `sum_qStar_witness`.
+
+Final answer (range obstruction): the `k`-th Gram moment at bandwidth `λ` is a `k`-level correlation
+whose cycle test function has `Σ|ξ_i| ≤ 2λ` for `k = 3` but up to `4λ` for `k = 4` (alternating edge
+frequencies). Inside the correlation range `Σ|ξ| < 2` the cubic moment exists for `λ < 1` and equals
+the blind-spot value `2` at `λ → 1`; the quartic moment exists only for `λ < 1/2`, where the rank cap
+gives at most `λ`. Hence order-≤4 inertia from in-range correlations certifies exactly `2/3`; `16/21`
+needs the beyond-threshold fourth moment `κ₄ = 13/4` at `λ → 1`, and `3/4` needs `κ₄ ≤ 2503/768`.
+- Prime side (paper): with `Ĝ = A + E`, `A ≈ λ⁻¹ I`, `κ₃ = λ⁻² + 1 + tr E³/N` (triples are exact
+  prime-power coincidences, negligible), `κ₄ = λ⁻³ + 2/λ + tr E⁴/N`; the pair-pair diagonal of
+  `tr E⁴/N` is `(4/15)λ` (patterns: `4(L − max)₊ + 8(L − y − y')₊` against `yy'`), exact for `λ < 1/2`.
+  At `λ = 1` the sine kernel has `c₄ = 1/4 = 4/15 − 1/60`: the `−1/60` is the off-diagonal
+  (products `n₁n₃ ≈ n₂n₄ > T`) — beyond threshold, as in the CUE high range `x + y > N`.
+- Sine-kernel moments (paper, cross-checked): `κ₃ = 2` (CUE: `E[p_a p_b p̄_{a+b}] = (a+b−N)_+ = 0`),
+  `κ₄ = 13/4` (`c₄ = 7/60 + 2/15`, fully distinct cycles vanish).
+- Lean: `ArithmeticCastelnuovoSeveri/TheBlindSpotIsExactThroughThirdOrder.lean` —
+  `triangle_variation_le`, `square_variation_le`, `square_variation_attained`,
+  `sum_le_card_of_isInertiaCertificate`, `blindSpot_moments`, `blindSpot_value`,
+  `cubic_value_le_two_thirds`, `quartic_value_le`, `neg_coeff_of_beats_two_thirds`,
+  `qStar_value_diagonal`.
+- Zeta23's `Z.Gz P T = P.Gp T` makes every power trace prime-side; the cubic `ζ` moment is an
+  in-range Zeta23-§5-scale computation, but it carries no census information (blind spot).
 
 ## Log
 - 2026-10-28 — created; Q-I and Q-III paper answers drafted.
+- 2026-10-28 — Q-I, Q-II, Q-III certificate formalized and wired.
+- 2026-10-29 — Q-II two-sided depth law; Q-III range obstruction and third-order blind spot formalized.

@@ -2,7 +2,7 @@
 
 - **ID:** complete-weil-spacing-ramanujan-spectral-law
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM (Lean)
 - **Source:** full-prime Ramanujan quasimodes; bounded-defect finite-span approximation; exact archimedean atom pairing; actual two-pole rows
 - **Statement:** For every fixed `0<c<1`, the actual complete normalized Weil matrix at width `w=c/N` has Ramanujan norm quasimodes, eventual exact bounded spectral counts, and convergence of its simple eigenlines to Ramanujan lines.
 - **Count:** uncounted; one full spectral package, with its support results and weaker packet-form corollaries included.
@@ -10,16 +10,18 @@
 ## Gates
 
 - [x] Exact actual carrier, normalization, and separated entries verified in Lean
-- [ ] All analytic estimates and the assembled paper argument verified in Lean
-- [ ] Ramanujan norm quasimodes, exact bounded spectral counts, simple eigenline convergence
+- [x] All analytic estimates and the assembled paper argument verified in Lean
+- [x] Ramanujan norm quasimodes of the actual complete matrix for every `0<c<1`
+- [x] Exact bounded spectral counts and simple eigenline convergence
 - [ ] Final individual source checks, transitive axiom checks, umbrella imports, foundational documentation, scratch cleanup
 
 No novelty audits or web searches are part of this task, per user instruction.
 README integration must remain crisp and foundational; proof details, module
 inventories, and verification history stay on this card and in audit logs.
-The complete spectral statement remains unproved until its Lean endpoints pass.
-The argument below records the exact intended theorem and constants; generic
-support hypotheses must be discharged on the literal matrix.
+All three complete spectral endpoints pass Lean with clean transitive axioms.
+The argument below records the theorem and constants; all generic support
+hypotheses are discharged on the literal matrix. Final installed-source checks
+and integration remain before the stage transition.
 
 ## Exact carrier and conclusion
 
@@ -55,7 +57,7 @@ exactly one eigenvalue eventually; its eigenvalue tends to `lambda_m`, and its
 spectral projection captures `v_(m,N)` in norm. The claim concerns this
 shrinking-atom family, without an assertion of arbitrary-test Weil positivity.
 
-## Assembled argument; Lean verification incomplete
+## Assembled argument; endpoints verified
 
 ### 1. Literal matrix decomposition
 
@@ -175,7 +177,7 @@ The elementary two-pole kernel bounds then imply
 
 All raw profile residuals above are uniformly bounded. Division by
 `sqrt(log(N))` makes them vanish. Combining them with the existing prime norm
-residual and the self-error limit proves the intended full-Weil quasimode.
+residual and the self-error limit proves the full-Weil norm quasimode.
 
 ### 6. Coercivity for every strict width ratio
 
@@ -246,11 +248,11 @@ olean generation. Verified modules are imported by their owner
 umbrellas; no umbrella was compiled. The SSHA density increment bound is
 documented in its README. Final installed-source checks without output
 generation remain outstanding.
-The three main endpoints are still unchecked:
+Main endpoints:
 
-- `tendsto_completeWeilMatrix_ramanujan_residual_norm`
-- `eventually_completeWeil_spectral_count_eq`
-- `exists_simple_completeWeil_eigenline`
+- [x] `tendsto_completeWeilMatrix_ramanujan_residual_norm` — scratch verified and installed; clean axioms
+- [x] `eventually_completeWeil_spectral_count_eq` — scratch verified and installed; clean axioms
+- [x] `exists_simple_completeWeil_eigenline` — scratch verified and installed; clean axioms
 
 The initial combined import check exposed an existing collision between ACS
 `TheScalingSurface.localPair` and `DistinctEffectiveCyclesMeetNonnegatively.localPair`
@@ -260,6 +262,13 @@ has no path through the incompatible branch. Static checks of all three owner
 umbrellas likewise find no incompatible branch, both with and without the new
 direct imports. Foreign sources were unchanged.
 The superseded owned center modules and their build artifacts were removed.
+Prospective wiring of all forty-two modules was also checked against the actual
+local import headers: no cycle involving an active module was found. This
+structural check did not compile an umbrella; its record is in
+`logs/complete-weil-spacing-source-audit-2026-10-28.log`. Individual installed-source
+checks are in progress.
+
+Final installed-source checks: 12/42.
 
 | # | Owner/module | Current verification |
 |---|---|---|
@@ -295,17 +304,17 @@ The superseded owned center modules and their build artifacts were removed.
 | 30 | `RenormalizedArithmeticPotentialTheory/TheTwoPoleReplacementHasUniformErrors` | Scratch verified; installed; first required olean built |
 | 31 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasAnExactErrorDecomposition` | Scratch verified; installed; first required olean built |
 | 32 | `RenormalizedArithmeticPotentialTheory/HorizonKernelEuclideanIdentities` | Scratch verified; installed; first required olean built |
-| 33 | `RenormalizedArithmeticPotentialTheory/TheWeilReplacementErrorsVanishOnRamanujanModes` | Scratch verified; installed |
-| 34 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasRamanujanQuasimodes` | Unchecked scratch |
-| 35 | `RenormalizedArithmeticPotentialTheory/ThePoleProjectionIsTheEuclideanGroundProjection` | Unchecked scratch |
-| 36 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionIsBoundedOnThePole` | Unchecked scratch |
-| 37 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionRetainsThePrimeDefect` | Unchecked scratch |
-| 38 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilEnergyControlsThePrimeDefect` | Unchecked scratch |
-| 39 | `RenormalizedArithmeticPotentialTheory/BoundedCompleteWeilEnergyHasFiniteRamanujanCoordinates` | Unchecked scratch |
-| 40 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixRealizesFiniteAdjunctionPackets` | Unchecked scratch |
-| 41 | `RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | Unchecked scratch |
-| 42 | `RenormalizedArithmeticPotentialTheory/TheSimpleCompleteWeilEigenlinesConvergeToRamanujanLines` | Unchecked scratch |
+| 33 | `RenormalizedArithmeticPotentialTheory/TheWeilReplacementErrorsVanishOnRamanujanModes` | Scratch verified; installed; first required olean built |
+| 34 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixHasRamanujanQuasimodes` | Scratch verified; installed; first required olean built |
+| 35 | `RenormalizedArithmeticPotentialTheory/ThePoleProjectionIsTheEuclideanGroundProjection` | Scratch verified; installed; first required olean built |
+| 36 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionIsBoundedOnThePole` | Scratch verified; installed; first required olean built |
+| 37 | `RenormalizedArithmeticPotentialTheory/TheCenterCorrectionRetainsThePrimeDefect` | Scratch verified; installed; first required olean built |
+| 38 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilEnergyControlsThePrimeDefect` | Scratch verified; installed; first required olean built |
+| 39 | `RenormalizedArithmeticPotentialTheory/BoundedCompleteWeilEnergyHasFiniteRamanujanCoordinates` | Scratch verified; installed; first required olean built |
+| 40 | `RenormalizedArithmeticPotentialTheory/TheCompleteWeilMatrixRealizesFiniteAdjunctionPackets` | Scratch verified; installed; first required olean built |
+| 41 | `RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | Scratch verified; installed; first required olean built |
+| 42 | `RenormalizedArithmeticPotentialTheory/TheSimpleCompleteWeilEigenlinesConvergeToRamanujanLines` | Scratch verified; installed |
 
-Unchecked rows above identify the remaining Lean checks. The actual matrix
-assembly, coercivity, and three spectral endpoints must pass before the full
-statement is marked proved. No unchecked draft is a completed contribution.
+All forty-two modules and the three spectral endpoints are verified and installed.
+Final checks of the installed source files, foundational documentation, card
+transition, and owned scratch cleanup remain.

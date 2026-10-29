@@ -3,7 +3,7 @@
 - **ID:** ACP-FINITE-PRIME-DENSITY
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean checked)
-- **Parent:** ../2-fully-proven/arithmetic-counting-finite-flip-exhaustion.md
+- **Parent:** arithmetic-counting-finite-flip-exhaustion.md
 - **Statement:** For every finite set of primes `F`, the signed harmonic count has mean `c_F=prod_{p in F}(p-1)/(p+1)>0` with uniformly bounded error, and pays hyperplane gap `(2 log 2)c_F^2`.
 
 ## Exact statement
@@ -73,4 +73,4 @@ Installed as `ArithmeticCountingPositivity/FinitePrimeFlipsHavePositiveHarmonicD
 and wired into the own umbrella. Final installed-source check exited zero without diagnostics. The adjacent
 `arithmetic-counting-finite-prime-density-audit.txt` preserves the source hash
 and all six transitive axiom reports.
-Its first olean will be needed by the already written exhaustion leaf.
+Its first required olean was built successfully for the exhaustion leaf.

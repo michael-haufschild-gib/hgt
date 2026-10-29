@@ -1,8 +1,8 @@
 # Rank–trace sharpness: abstract frames versus arithmetic evaluations
 
 - **ID:** rank-trace-orthogonality-scope-audit
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean); scope audit
 - **Source:** review of `rankTrace_tight_at_two_thirds`
 - **Statement:** Exact coalescence of abstract reflection blocks persists for arbitrary real
   evaluation families; the orthogonal extremizer does not establish sharpness for zeta evaluations.
@@ -14,7 +14,7 @@ evaluation family. Preserve the valid rank–trace inequality and repair overbro
 ## Gates
 - [x] 0 → 1: inspected constructors, consumers, and actual `evalVec`/`blockData` definitions.
 - [x] 1 → 2: dependency-closed paper proof of arbitrary-frame coalescence and explicit example.
-- [ ] 2 → 3: Lean compilation and transitive `#print axioms` audit.
+- [x] 2 → 3: Lean compilation and transitive `#print axioms` audit.
 
 ## Findings
 `ZeroBlockData` stores multiplicities, vectors, and a conjugation-compatible involution. It has no
@@ -30,7 +30,7 @@ these extremal constructors. Its broader analytic proof is outside this scope re
 
 Source evidence:
 - `formal/.lake/packages/Zeta23/Zeta23/ZeroSide.lean`: `ZeroBlockData` (line 161),
-  `evalVec` (line 810), and `blockData` (line 823).
+  `evalVec` (line 808), and `blockData` (line 823).
 - `formal/.lake/packages/Zeta23/Zeta23/ZeroSide/Mult.lean`: `ZeroBlockData.mult_two` (line 130).
 - `formal/GaloisForLFunctions/RHTower/Zeta23SimpleCriticalDensity.lean`:
   `two_thirds_simpleCritical_epsilon` (line 89).
@@ -68,7 +68,7 @@ Frobenius norm `232/25`. Counts differ (`4` versus `2`); correlations remain in 
 
 ## No-go closure
 - **Rejected inference:** abstract orthogonal extremizers imply an arithmetic sharpness barrier
-  for the prescribed zeta evaluation family. No realization theorem establishes that transfer.
+  for the prescribed zeta evaluation family. These results supply no realization theorem for that transfer.
 - **Strongest positive survivor:** equality of the full Gram matrices and total counts, with
   different fixed-label counts, for every real family, including nonorthogonal normalized families.
 - **New insight:** coalescence indistinguishability is independent of orthogonality; the specific
@@ -79,8 +79,24 @@ Frobenius norm `232/25`. Counts differ (`4` versus `2`); correlations remain in 
   `counts_coalescedPairFrameData`, `blockA_correlatedPairFrame`, and
   `nonorthogonal_coalescence_example`. Scratch and source compilation passed without warnings;
   the new module's olean was emitted for its import by the original module. The original module's
-  source check passed. New declarations' transitive axiom audit remains pending. Existing declarations
-  and proofs in all four edited modules were compared after stripping comments: unchanged.
+  source check passed. All five new theorems depend only on `propext`, `Classical.choice`, and
+  `Quot.sound`. Existing declarations and proofs in all four edited modules were compared after
+  stripping comments: unchanged. No rank–trace route is retired; only the unsupported transfer
+  of abstract sharpness to arithmetic sharpness is withdrawn.
+
+## Verification
+- New module compiled with `lake --old env lean -o ... -i ...` for its new import by
+  `TheTwoThirdsConstantIsPairCorrelation.lean`; exit 0, no warnings.
+- Original module checked with
+  `lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheTwoThirdsConstantIsPairCorrelation.lean`;
+  exit 0, no warnings.
+- Transitive axiom audit passed for all five new theorems and the four existing declarations
+  named above. Exact output: [audit log](rank-trace-orthogonality-scope-audit.txt).
+- The three other edited Lean modules have comment-only changes. The umbrella gained one import;
+  it was not compiled. `git diff --check` passed.
+- Arithmetic realization of the coordinate extremizer remains unproved by these results.
 
 ## Log
 - 2026-10-28 — audit opened; retain finite model theorem, correct arithmetic scope, formalize survivor.
+- 2026-10-28 — arbitrary-frame survivor and normalized nonorthogonal example formalized;
+  source checks and transitive axiom audits passed; moved to 3-formalized.

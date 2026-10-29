@@ -1,0 +1,28 @@
+Finite prime exhaustion loses uniform gaps
+
+Canonical source check from formal/:
+lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeExhaustionLosesUniformGaps.lean
+Exit 0; no diagnostics.
+SHA256 5627a38b21f9b37d8737ff6850eb64cb87af49b69ce3f275e70c3a5e3c77f37b
+
+Direct-source transitive axiom audit:
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlip_eq_liouville_of_primeFactors_subset' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlip_primesBelow_eq_liouville' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finitePrimeExhaustion_eventually_eq_liouville' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finitePrimeExhaustion_each_stage_matched_positive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finitePrimeExhaustion_no_uniform_positive_gap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+Subsequent required dependency build (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeExhaustionLosesUniformGaps.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeExhaustionLosesUniformGaps.ilean GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeExhaustionLosesUniformGaps.lean
+Required because the cofinite-flip exhaustion leaf imports this module.

@@ -219,7 +219,7 @@ zeros of `ξ` in `B(c, 12)` have total multiplicity `≤ C log T`, and the cofac
 `ξ = ∏ (s − ρ)^{m_ρ} · g` has `‖g′/g‖ ≤ C log T` on `B(c, 11)`. -/
 theorem exists_xi_cofactor_near_ordinate :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∃ (Z : Finset ℂ) (m : ℂ → ℕ) (g : ℂ → ℂ),
-      (∀ ρ ∈ Z, ρ ∈ ball ((2 : ℂ) + (T : ℂ) * I) 12) ∧
+      (∀ ρ ∈ Z, ρ ∈ ball ((2 : ℂ) + (T : ℂ) * I) 12) ∧ (∀ ρ ∈ Z, 1 ≤ m ρ) ∧
       (∀ z ∈ ball ((2 : ℂ) + (T : ℂ) * I) 12, xi z = 0 ↔ z ∈ Z) ∧
       ((∑ ρ ∈ Z, m ρ : ℕ) : ℝ) ≤ C * Real.log T ∧
       AnalyticOnNhd ℂ g (ball ((2 : ℂ) + (T : ℂ) * I) 12) ∧
@@ -344,7 +344,15 @@ theorem exists_xi_cofactor_near_ordinate :
       _ ≤ 48 * C₁ * Real.log T := by
           have hp : 0 ≤ C₁ * Real.log T := by positivity
           linarith
-  refine ⟨Z, m, g, hZball, hzeroZ, ?_, hg, hg0, heq, ?_⟩
+  have hm1 : ∀ ρ ∈ Z, 1 ≤ m ρ := by
+    intro ρ hρ
+    have hne : MeromorphicOn.divisor xi (ball c 12) ρ ≠ 0 := by
+      simpa [Function.mem_support] using hfin.mem_toFinset.mp hρ
+    have h0 : 0 ≤ MeromorphicOn.divisor xi (ball c 12) ρ :=
+      HTGeometry.divisor_nonneg_of_analytic_ball hfb ρ
+    show 1 ≤ (MeromorphicOn.divisor xi (ball c 12) ρ).toNat
+    omega
+  refine ⟨Z, m, g, hZball, hm1, hzeroZ, ?_, hg, hg0, heq, ?_⟩
   · rw [hcardF]
     have hp3 : 0 ≤ C₃ * Real.log T := by positivity
     have hp2 : 0 ≤ C₂ * Real.log T := by positivity

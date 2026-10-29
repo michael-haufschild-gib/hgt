@@ -1,10 +1,10 @@
 # Small-prime flips lie below the maximal gap
 
 - **ID:** ACP-SMALL-PRIME-GAP-BOUNDARY
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization follows)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** ../1-in-progress/arithmetic-counting-positivity.md
-- **Statement:** For a prime `p`, every hyperplane gap of its single-prime flip is at most `p log(p)/(p+3)`; primes below 11 therefore have positive but nonmaximal gaps.
+- **Statement:** For a prime `p`, every hyperplane gap of its single-prime flip is at most `p log(p)/(p+3)`; primes below 11 therefore have positive but nonmaximal gaps. Together with the formalized large-prime lower bound, maximal-gap attainment is equivalent to `11 <= p`.
 
 ## Contribution and ownership
 
@@ -78,10 +78,16 @@ parity count simultaneously gives the positive lower gap
 ## Positive boundary
 
 The count gives a nontrivial interval for the admissible gap and proves that
-prime two, three, five and seven cannot attain the maximal margin. Combined
-with a completed prime-11 lower theorem, this determines the exact prime
-cutoff for attainment. The present proof is independent of that unfinished
-branch and will be audited on its own.
+prime two, three, five and seven cannot attain the maximal margin.
+The large-prime branch has now been promoted to
+`../3-formalized/arithmetic-counting-maximal-gap-rigidity.md`, and its olean
+exists. Combining its theorem with this upper bound gives
+`HasHyperplaneGap (finiteFlip {p}) (2 * Real.log 2) <-> 11 <= p`
+for every prime `p`: the forward implication excludes `p<11`, and the
+reverse implication is the existing large-prime theorem. The upper bound
+itself uses no large-prime lower bound. All three public endpoints,
+including the combined classification, passed Lean and the transitive
+axiom audit with only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Corpus audit
 
@@ -95,5 +101,21 @@ and closure of inequalities under limits. Their statements were inspected.
 
 - [x] Exact witness, all source identifications, and closed paper proof.
 - [x] Corpus search before mathlib; existing tools reused.
-- [ ] Lean proof and transitive axiom audit.
-- [ ] Canonical source check, umbrella, README, scratch cleanup.
+- [x] Lean proof and transitive axiom audit.
+- [x] Canonical source check, umbrella, README, scratch cleanup.
+
+## Formal closure
+
+Module: `ArithmeticCountingPositivity/SmallPrimeFlipsLieBelowTheMaximalGap.lean`.
+
+- `primeFlip_hyperplaneGap_le_prime_log_div`: every gap is at most `p log(p)/(p+3)`.
+- `smallPrimeFlip_has_positive_but_not_maximal_gap`: positive counted gap and
+  failure of the maximal gap for every prime below eleven.
+- `primeFlip_hasHyperplaneGap_two_mul_log_two_iff`: maximal-gap attainment
+  is equivalent to `11 <= p` for every prime.
+
+The canonical direct source check exited zero with no diagnostics. The
+adjacent `arithmetic-counting-small-prime-gap-boundary-audit.txt` records
+the exact commands, installed-source SHA256 and actual axiom output.
+The leaf is wired into its umbrella and foundational README. No umbrella
+was compiled and no olean was needed for this leaf.

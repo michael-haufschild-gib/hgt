@@ -121,7 +121,7 @@ survivor).
   total multiplicity, with different fixed-label counts, on arbitrary real families),
   `nonorthogonal_coalescence_example` (unit vectors with inner product `3/5`, trace `4`,
   Frobenius square `232/25`). The orthogonal coordinate examples establish abstract sharpness,
-  not arithmetic realizability.
+  not arithmetic realizability. See [scope audit](../3-formalized/rank-trace-orthogonality-scope-audit.md).
 
 - `TheTwoThirdsConstantIsPairCorrelation`: `rtrace_spanGram`, `frobSq_spanGram_eq_diag_add_offDiag`
   (`𝔽_q` calibration of trace and Frobenius norm into adjunction diagonal + Lefschetz pair
@@ -249,6 +249,23 @@ proof gives no aperture. Explicit apertures exist only for finitely many right z
 pairs).
 
 ## Open core
+Homogeneous coarse recovery is now formalized:
+`Γ(g)+Γ(h)≤CΓ(g+h)` uniformly in all complete-pair horizons, with no additive
+coarse-mass error. The paid even-power plus odd-detail form retains a positive
+multiple of `Γ(g)+Σ log(1/w_a)M_a d_a²` after a fixed detail head.
+See [paper proof and Lean validation](../3-formalized/acs-homogeneous-gamma-coarse-recovery.md).
+This supplies a multiplicative Gamma comparison; the full first-prime,
+coarse odd, finite-head, and actual polar/archimedean signed payment remains open.
+
+The complete-cell source has a further unconditional payment:
+`ArithmeticIndexDescent.OddHigherPrimePowersPayTheirWholeDetailBlock` proves
+that the full even-power source and every odd higher-power term involving
+details share one Gamma reserve, with uniform negative dimension at most
+`A+1`. The exact term is `P_odd(F)-P_odd(g)`, so the coarse odd source remains.
+See [paper proof and Lean validation](../3-formalized/acs-odd-higher-detail-payment.md).
+This removes the odd higher-power detail diagonal from the unpaid blocks;
+it does not give a full Weil index bound.
+
 The scaling-surface Hodge index is RH-equivalent (`scalingSurface_hodgeIndex_iff`,
 `riemannHypothesis_iff_exists_effectivity`). On `scalingSubsurface (oddRealTestsAt r)`,
 `strictCoupledArithmeticCone` satisfies `AmpleAxiom` unconditionally at every degree `r > 0` without

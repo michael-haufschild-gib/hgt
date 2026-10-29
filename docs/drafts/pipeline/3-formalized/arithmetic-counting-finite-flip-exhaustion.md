@@ -1,8 +1,8 @@
 # Finite prime exhaustion loses uniform positive gaps
 
 - **ID:** ACP-FINITE-FLIP-EXHAUSTION
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization follows)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean checked)
 - **Parent:** ../1-in-progress/arithmetic-counting-positivity.md
 - **Source:** obstacles-summary.md, parity and exhaustion questions
 - **Statement:** Every finite-prime cutoff is multiplicative, matched and positively gapped, but the cutoffs stabilize to Liouville on each fixed horizon and admit no positive gap with a cutoff-uniform horizon bound.
@@ -20,7 +20,7 @@ horizon `1<=n<=N`, equality holds whenever `Q>N`.
 
 ## Positive finite stages
 
-The companion closed proof in `../3-formalized/arithmetic-counting-finite-prime-density.md`
+The companion closed proof in `arithmetic-counting-finite-prime-density.md`
 gives the exact positive harmonic density
 
 `c_Q=prod_{p<Q, p prime}(p-1)/(p+1)`
@@ -75,8 +75,12 @@ congruence is an existing corpus lemma.
 - [x] Corpus search before mathlib; imported statements inspected.
 - [x] Companion finite-prime density formalized, canonically checked, and axiom-audited.
 - [x] All five exhaustion theorems pass Lean and transitive axiom checks, with only the three standard axioms.
-- [ ] Canonical source checks, umbrella, README, scratch cleanup.
+- [x] Canonical source checks, umbrella, README, scratch cleanup.
 
 Installed as `ArithmeticCountingPositivity/FinitePrimeExhaustionLosesUniformGaps.lean`
 and wired into the own umbrella and foundational README. Final installed-source
-check is running; no own olean is needed by the next leaf.
+check exited zero without diagnostics. The adjacent
+`arithmetic-counting-finite-flip-exhaustion-audit.txt` preserves the source
+hash and all five axiom reports. Its first olean was subsequently built
+because the cofinite-flip exhaustion leaf imports it; that exact-module
+build exited zero without diagnostics. No umbrella was compiled.

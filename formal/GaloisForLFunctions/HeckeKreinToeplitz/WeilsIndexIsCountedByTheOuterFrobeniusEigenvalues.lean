@@ -141,7 +141,7 @@ theorem traceKernel_eq (n : Multiplicative ℤ) :
   -- the inner eigenvalues are the reflections of the outer ones
   have hinner : ∑ i ∈ univ.filter (fun i => ‖D.β i‖ < 1), f i =
       ∑ i ∈ outer D, f (reflectPerm D i) := by
-    refine (sum_equiv (reflectPerm D) (fun i => ?_) fun i _ => rfl).symm
+    refine (sum_equiv (reflectPerm D) (fun i => ?_) fun _ _ => rfl).symm
     simp only [outer, mem_filter, mem_univ, true_and, norm_β_reflectPerm, inv_lt_one₀ (hpos i)]
   rw [traceKernel, hsplit, hinner, ← sum_add_distrib]
   congr 1
@@ -152,7 +152,7 @@ theorem traceKernel_eq (n : Multiplicative ℤ) :
 /-- The unitary part of the trace kernel is positive definite. -/
 theorem isPosDefKernel_unitaryPart :
     IsPosDefKernel fun n => ∑ i ∈ univ.filter (fun i => ‖D.β i‖ = 1), valChar (D.β i) n :=
-  isPosDefKernel_finset_sum _ fun i hi =>
+  isPosDefKernel_finset_sum _ fun _ hi =>
     isPosDefKernel_of_unitary (isUnitaryChar_valChar (mem_filter.mp hi).2)
 
 theorem valChar_β_ofAdd_one (i : ι) : valChar (D.β i) (Multiplicative.ofAdd 1) = D.β i :=
@@ -234,7 +234,7 @@ theorem negIndex_golden_traceKernel : negIndex (traceKernel goldenDatum) = 1 := 
     fin_cases i
     · simp only [Fin.zero_eta, outer, mem_filter, mem_univ, true_and, mem_singleton, hβ0,
         Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.goldenRatio_pos]
-      exact iff_of_true Real.one_lt_goldenRatio rfl
+      exact iff_of_true Real.one_lt_goldenRatio trivial
     · simp only [Fin.mk_one, outer, mem_filter, mem_univ, true_and, mem_singleton, hβ1,
         Complex.norm_real, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr Real.goldenRatio_pos)]
       exact iff_of_false (not_lt.mpr (inv_le_one_of_one_le₀ Real.one_lt_goldenRatio.le))

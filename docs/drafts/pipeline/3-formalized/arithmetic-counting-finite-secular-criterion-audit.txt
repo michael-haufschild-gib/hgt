@@ -1,0 +1,34 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/FiniteReciprocalMassControlsTheHyperplane.lean
+SHA256: b852ef1cb1e1be01aba357d3caab4ef3f47d7d12f6c4b228a04ed81e524eab95
+
+Scratch audit (exit 0; deprecated not_imp name qualified as Classical.not_imp before canonical check):
+  cd formal
+  lake --old env lean /tmp/acp-finite-secular-criterion-check.lean
+
+Canonical installed-source audit (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/FiniteReciprocalMassControlsTheHyperplane.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.diagonal_hyperplane_nonneg_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.reciprocal_mass_le_packet_add_tail' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_negative_diagonal_on_hyperplane' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.one_negative_diagonal_nonneg_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.hermitian_hyperplane_bound_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_of_eventual_packet_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean for the actual finite-resolvent leaf (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FiniteReciprocalMassControlsTheHyperplane.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FiniteReciprocalMassControlsTheHyperplane.ilean GaloisForLFunctions/ArithmeticCountingPositivity/FiniteReciprocalMassControlsTheHyperplane.lean

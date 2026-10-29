@@ -1,4 +1,4 @@
-# A submaximal prime gap does not select complete Weil positivity
+# Even the maximal prime gap does not select complete Weil positivity
 
 - **ID:** ACP-SUBMAXIMAL-SELECTION
 - **Stage:** 5-failed
@@ -27,6 +27,13 @@ Lean: `near_maximal_gaps_do_not_force_weil_positivity` and
 `primeFlip_exists_negative_complete_test` in
 `ArithmeticCountingPositivity/NearMaximalGapsDoNotForceWeilPositivity.lean`.
 
+The endpoint is now also ruled out: every prime `p>=11` gives a nontrivial
+flip with greatest gap exactly `2log 2`, the same polar matching and an
+actual negative complete-Weil test. This is
+`maximal_gap_does_not_select_the_source` in
+`LargePrimeFlipsAttainTheMaximalGap.lean`, with paper
+`../3-formalized/arithmetic-counting-maximal-gap-rigidity.md`.
+
 ## Strongest positive survivor
 
 The count retains useful energy rather than merely detecting a failure:
@@ -43,6 +50,13 @@ The count retains useful energy rather than merely detecting a failure:
 4. The prime-two flip retains gap `2log 2/9`, although Liouville has no
    positive hyperplane gap. Selectivity against Liouville is therefore
    strictly weaker than selection among multiplicative sources.
+5. The exact cutoff is eleven. Every prime-flip gap is at most
+   `p log p/(p+3)`, strictly below the maximum for p<11; combined with
+   the large-prime theorem, maximal-gap attainment holds iff p>=11.
+6. The parity constraint has a complete arithmetic spectral measure:
+   squared mass `c_p^2` at the ground and `4c_p^2/phi(p^k)` on each
+   positive p-power. Its finite tower approximations have the sharp error
+   `4p/((p+1)^2 p^K)` uniformly over every positive integer horizon.
 
 Paper proof: `../3-formalized/arithmetic-counting-pole-angle.md`. Lean survivors:
 `eventually_prime_gap_ge_squared_correlation`,
@@ -56,12 +70,19 @@ containing only `propext`, `Classical.choice`, and `Quot.sound`. Canonical
 source checks and the durable audit report accompany the formalized paper
 card. No unproved analytic estimate is stored in the survivor's hypotheses.
 
+Survivors 5 and 6 have dependency-closed proofs and Lean formalizations in
+`../3-formalized/arithmetic-counting-small-prime-gap-boundary.md` and
+`../3-formalized/arithmetic-counting-parity-spectral-mass.md`. Their three
+and eight public endpoints respectively passed canonical source checks
+and transitive axiom audits. The combined cutoff equivalence also audits
+the imported large-prime endpoint transitively with only standard axioms.
+
 ## New insight and remaining boundary
 
 Counting can pay a selective gap without recovering the source information
-needed by the complete form. A transfer using only a fixed submaximal gap and
-leading polar matching cannot be valid for the whole multiplicative class.
-The construction leaves the maximal gap and the full producer mechanisms
-open; neither the programme nor the exact endpoint is retired by this card.
-The separate maximal-gap card investigates whether arithmetic spectral
-coordinates expose a stronger obstruction.
+needed by the complete form. A transfer using only the prime-hyperplane gap,
+even its exact maximum, and leading polar matching cannot be valid for the
+whole multiplicative class. The sharp cutoff and complete parity spectral
+measure identify what survives this obstruction. Exact gap values below
+eleven and the full producer mechanisms remain open. The separate secular
+gap card develops the former from these counted coordinates.
