@@ -8,7 +8,8 @@
 - **Chosen constants:** complex numbers. This misses the requested finite-field constants.
 - **Scope correction:** the construction below is valid but does **not** satisfy the requested
   arithmetic base field. Its complex analytic curve has no finite-field point-count zeta function.
-  The replacement is tracked by `finite-field-positive-genus-base`.
+  The replacement is formalized in
+  [finite-field-positive-genus-base](finite-field-positive-genus-base.md).
 - **Exact target:** the meromorphic function field of `C / (Z + i Z)`, with transcendence
   degree one over `C` and genus one, defined as the dimension of global holomorphic one-forms.
 

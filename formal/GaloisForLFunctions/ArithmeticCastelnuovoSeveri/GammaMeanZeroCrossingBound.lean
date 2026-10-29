@@ -234,9 +234,14 @@ theorem abs_gammaRectangle_pair_le_remainders_of_le {a b c d : ℝ}
     linarith only [hx.2, hy.1, hbc]
   have hiG' : Integrable (fun p : ℝ × ℝ => g p.2 ^ 2) (gammaRectangleMeasure a b c d) :=
     integrable_gammaRectangle_swap hd.symm hiG
-  have hiC := integrable_mul_of_sq_integrable
+  have hiC : Integrable (fun p : ℝ × ℝ => f p.1 * g p.2)
+      (gammaRectangleMeasure a b c d) := integrable_mul_of_sq_integrable
     (hf.comp measurable_fst).aestronglyMeasurable
     (hg.comp measurable_snd).aestronglyMeasurable hiF hiG'
+  have hiSum : Integrable (fun p : ℝ × ℝ => f p.1 ^ 2 + g p.2 ^ 2)
+      (gammaRectangleMeasure a b c d) := hiF.add hiG'
+  have hiTwice : Integrable (fun p : ℝ × ℝ => 2 * (f p.1 * g p.2))
+      (gammaRectangleMeasure a b c d) := hiC.const_mul 2
   have hminus : Integrable (fun p : ℝ × ℝ => (f p.1 - g p.2) ^ 2)
       (gammaRectangleMeasure a b c d) := by
     refine ((hiF.add hiG').sub (hiC.const_mul 2)).congr ?_
@@ -259,13 +264,14 @@ theorem abs_gammaRectangle_pair_le_remainders_of_le {a b c d : ℝ}
       (gammaRectangleFarMeasure c d a b) := by simpa only [neg_sq] using hiGF
   have hhigh := gammaRectangle_far_le_energy hab hbc hcd hf hg.neg hf2 hg2.neg
     hf0 hneg0 hiFF hiGFneg hplus
+  simp only [Pi.neg_apply, neg_sq] at hhigh
   have heminus : (∫ p : ℝ × ℝ, (f p.1 - g p.2) ^ 2 ∂gammaRectangleMeasure a b c d) =
       (∫ p : ℝ × ℝ, f p.1 ^ 2 ∂gammaRectangleMeasure a b c d) +
         (∫ p : ℝ × ℝ, g p.2 ^ 2 ∂gammaRectangleMeasure a b c d) -
         2 * ∫ p : ℝ × ℝ, f p.1 * g p.2 ∂gammaRectangleMeasure a b c d := by
     have he : (fun p : ℝ × ℝ => (f p.1 - g p.2) ^ 2) =
         fun p => (f p.1 ^ 2 + g p.2 ^ 2) - 2 * (f p.1 * g p.2) := by funext p; ring
-    rw [he, integral_sub (hiF.add hiG') (hiC.const_mul 2),
+    rw [he, integral_sub hiSum hiTwice,
       integral_add hiF hiG', integral_const_mul]
   have heplus : (∫ p : ℝ × ℝ, (f p.1 - -g p.2) ^ 2 ∂gammaRectangleMeasure a b c d) =
       (∫ p : ℝ × ℝ, f p.1 ^ 2 ∂gammaRectangleMeasure a b c d) +
@@ -273,7 +279,7 @@ theorem abs_gammaRectangle_pair_le_remainders_of_le {a b c d : ℝ}
         2 * ∫ p : ℝ × ℝ, f p.1 * g p.2 ∂gammaRectangleMeasure a b c d := by
     have he : (fun p : ℝ × ℝ => (f p.1 - -g p.2) ^ 2) =
         fun p => (f p.1 ^ 2 + g p.2 ^ 2) + 2 * (f p.1 * g p.2) := by funext p; ring
-    rw [he, integral_add (hiF.add hiG') (hiC.const_mul 2),
+    rw [he, integral_add hiSum hiTwice,
       integral_add hiF hiG', integral_const_mul]
   have hF := integral_add_measure hiFR hiFF
   have hG := integral_add_measure hiGR hiGF

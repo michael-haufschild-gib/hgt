@@ -47,11 +47,11 @@ Consequence (inference): an input that decides the sign must be parity-sensitive
 - Under overlap growth the Markov form is negative unconditionally, and RH is Markov nonnegativity on the pole hyperplane [L]. [Pole](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold.lean).
 - **At every width,** \(W\ge0\) on atomic tests iff \(M\ge0\) on the pole complement \(p=0\) and \(M+2a_0B\ge0\) on the affine hyperplane \(p=1\). Beyond the Robin–Euler threshold the Markov form has exactly one negative direction, the pole vector. [Gap and one scalar](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar.lean).
 
-### 4. Narrow positivity reaches a quarter of the Robin–Euler threshold; the separated regime is being mapped
+### 4. A smooth plateau gives full positivity at every fixed separated width
 
 - Eventually \(W\ge0\) on every window test \(\sum_nG_n(\cdot-\log n)\) with arbitrary \(C^2\) shapes at widths \(w\le K_\star\delta_N\): \(K_\star\approx0.108\) of the spacing for plateau profiles (a quarter of the Robin–Euler ratio \(\approx0.43\)), \(\approx0.072\) for every profile. With absolute values on the pole term the method stays below about half the threshold. [Quarter](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheStabilityRegimeReachesAQuarterOfTheRobinEulerThreshold.lean).
 - **Arithmetic modes.** For the Ramanujan profile of conductor \(m\ge2\) at width \(K/N\), \(0<K<\tfrac14\): \(W(f_N)/\|f_N\|^2\to\log(K_m/K)\), \(K_m=m\,e^{d(m)}e^{\beta(\varphi)/\|\varphi\|^2}/(2\pi)\), with \(d(m)=\sum_{p\mid m}\log p/(p-1)\). The pole sits at the Robin–Euler ratio \(K_1\) and the first excitation at \(4K_1\) [S]. [Mode energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheWeilEnergiesOfTheArithmeticModes.lean).
-- **The whole separated regime \(0<c<1\).** The normalized complete Weil matrix splits exactly into common self-energy, the literal prime kernel, the archimedean cross integral and the two pole products [L]. On Ramanujan modes the complete trial energies are simple and proper at every strictly separated width ratio; the pole mode is shifted by its squared charge, which is at most the width ratio and stays below the first excitation [L]. Tools that identify the actual bottom spectrum from trial vectors are working source [S]. [Splitting](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixSplitsAtTheSpacing.lean), [trial energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper.lean), [self-energy](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheCompleteWeilSelfEnergyHasItsFinitePart.lean), [lower windows](../../../formal/GaloisForLFunctions/HTGeometry/HermitianLowerSpectralWindows.lean).
+- **The whole separated regime \(0<c<1\).** The complete matrix splits into self-energy, the literal prime kernel, the archimedean cross integral and both pole products [L]. Every bounded spectral window is exhausted, with multiplicity, by the arithmetic adjunction energies [S]. For each \(b<2-\log(2\pi)\), one smooth plateau has every complete-Weil eigenvalue at least \(b\), eventually at each fixed \(c\in(0,1)\) [S]. Taking \(b>0\) gives positivity of the whole matrix. The plateau can retain arbitrarily near unit square mass; the horizon depends on \(c\). This proves a sign where the Markov form can be negative, while touching, overlap and RH-complete exhaustion remain open. [Splitting](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixSplitsAtTheSpacing.lean), [complete spectral counts](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum.lean), [plateau positivity](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean), [shape and charge limits](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ThePlateauShapeAndChargeHaveTheirIndicatorLimits.lean).
 
 ### 5. The prime form has a known bottom spectrum
 
@@ -61,6 +61,7 @@ Below \(\log N-\gamma\), the spectrum of \(P_N\) within distance \(T\) comes onl
 
 - Complete logarithmic cells recover every mixed Weil entry and form a dyadic multiresolution, \(C_{2a}+C_{2a+1}=T_{\log2}C_a\); prime two acts as the unilateral shift on every generator chain [L]. [Multiresolution](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheCompleteSourceIsADyadicMultiresolution.lean), [level matrix](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/ArithmeticTranslationsHaveAnExactDyadicLevelMatrix.lean).
 - Gamma pays all logarithmic detail mass, a mean graph on pair averages and all dyadic parent variances. Balanced sections above one index carry a full-form floor uniformly in the horizon, for every twist \(|\omega|\le1\), Liouville included [L]. [Floor](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean), [twin-blind](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheHaarFloorIsTwinBlind.lean).
+- **Signed Haar Gamma cross terms [S].** For the actual one-level Haar section \(h=\sum_a d_a h_a\), the full diagonal error satisfies \(\left|\Gamma(h)-\sum_a d_a^2\Gamma(h_a)\right|\le16e^{1/2}\|h\|_2^2\), including low indices. Mean cancellation and disjoint target rectangles pay each boundary remainder once. This supplies an ordinary-mass error; paying it jointly with the exact diagonal, arithmetic potential and poles is separate. It is not an upper Gamma bound for the all-level generator projection. [Boundary cost](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarGammaCrossTermsCostOnlyMass.lean).
 - **Uniform finite index, layer by layer [L].** Gamma minus each of the following has negative dimension bounded independently of horizon and family:
   - the all-prime mixed block with exponents \(k\ge3\);
   - the whole signed prime-two Euler mixed source;
@@ -69,8 +70,16 @@ Below \(\log N-\gamma\), the spectrum of \(P_N\) within distance \(T\) comes onl
 
   [Squares and odd powers](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/SquaresAndOddHigherMixedPowersHaveUniformFiniteIndex.lean), [square source](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSquarePrimeSourceRetainsGammaEnergy.lean), [edge field](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheXiEdgeFieldHasLogarithmicGrowth.lean), [k≥3](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/AllHigherPrimePowerMixedFormsHaveUniformFiniteIndex.lean), [prime two](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheGammaMeanGraphPaysThePrimeTwoMixedBlock.lean).
 - **What remains:** the first prime layer \(k=1\) over all primes, where the absolute constant \(\sum_p\log p/\sqrt p\) diverges; odd-power diagonal blocks; finite detail heads; the coarse error; the actual poles and archimedean mass. Uniform finite index of the complete form is equivalent to finite off-line support, so the last layer carries an [FS] statement, at least as hard as the Lindelöf hypothesis (§9).
-- **All real lags and fixed finite Euler families [K].** For the original finite cell source, retain root and all labels \(a<A\) at every dyadic level. Every real-lag correlation has head error at most \(96\Gamma(f)/(1+\log A)\). For a fixed finite prime set \(P\), the complete critical Euler correlation error is at most \(96C_P\Gamma(f)/(1+\log A)\), where \(C_P=\sum_{p\in P}2\log p/(\sqrt p-1)\). Absolute convergence includes every prime power. One \(A>\exp(96C_P/\delta)\) works for every profile and horizon. Odd-prime commutation is unnecessary; original Gamma pays both projected probes. The constants do not supply a summable all-prime allocation. [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean).
+- **All real lags and fixed finite Euler families [K].** For the original finite cell source, retain root and all labels \(a<A\) at every dyadic level. Every real-lag correlation has head error at most \(96\Gamma(f)/(1+\log A)\). For a fixed finite prime set \(P\), the complete critical Euler correlation error is at most \(96C_P\Gamma(f)/(1+\log A)\), where \(C_P=\sum_{p\in P}2\log p/(\sqrt p-1)\). Absolute convergence includes every prime power. One \(A>\exp(96C_P/\delta)\) works for every profile and horizon. Odd-prime commutation is unnecessary; original Gamma pays both projected probes. The complete-power constants are not summable over all primes; the higher-power sector has the separate finite budget below. [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean).
 
+- **All primes, exponents \(k\ge3\) [K].** Put \(H=\sum_{p,k\ge3}2\log p/p^{k/2}<\infty\), with \(p\) prime. For \(C_t(f)=\int f(x)f(x+t)\,dx\) and \(Q_A=U(1-P_A)U^*\), the sum of absolute coefficientwise changes is
+  \[
+  \sum_{p,k\ge3}\frac{2\log p}{p^{k/2}}
+    |C_{k\log p}(f)-C_{k\log p}(f-Q_Af)|
+  \le\frac{96H\Gamma(f)}{1+\log A}.
+  \]
+  The complete correlation is absolutely convergent on whole-line \(L^2\), with its directed finite-sum limit and original-source integral identity. One \(A>\exp(96H/\delta)\) pays the complete source and every finite selection by \(\delta\Gamma(f)\), uniformly in all finite cell profiles and horizons. Every generator orbit remains. General BV profiles retain their noncell component. [All-prime higher-power theorem](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/AllHigherPrimePowersHaveAllLevelGeneratorApproximation.lean).
+- **Exact method boundary [K].** The literal coefficient tail beginning at exponent \(r+1\) is summable iff \(r\ge2\). The prime and square masses \(\sum_p2\log p/\sqrt p\), \(\sum_p2\log p/p\) both diverge. This rejects absolute coefficient payment for those two layers; it does not assert divergence of actual compact-source correlations. Existing compensated square/finite-index statements above concern their stated one-level source. Transferring the signed compensation through the full generator projection, with Gamma and both poles, remains separate. [Coefficient classification](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/CriticalEulerCoefficientMassStartsAtCubes.lean).
 - Finitely many full generator orbits approximate cell sources in \(L^2\), but one Haar generator has an infinite orthogonal orbit of fixed Gamma energy: approximation is not compactness [L]. [Orbits](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteGeneratorOrbitsApproximateThePhysicalCellSource.lean), [noncompact](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/CompactDetailsDoNotMakeTranslationOrbitsCompact.lean).
 
 ### 7. Cross-level couplings: three paid, one is the one-prime Toeplitz problem
@@ -84,7 +93,7 @@ Below \(\log N-\gamma\), the spectrum of \(P_N\) within distance \(T\) comes onl
 
 [Pole](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/ThePoleCouplesTheLevelsHyperbolically.lean), [separated](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/SeparatedLevelsCoupleThroughTheChebyshevError.lean), [touching](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TouchingLevelsCoupleUniformly.lean).
 
-The prime part is the open coupling. By the explicit formula, \(d\mapsto W(f,T_{d\log2}g)\) is a sum over zeros of \(2^{d(\rho-1/2)}\): almost periodic with positive mean square under RH, exponential otherwise, never summable (inference). Positivity of the generator-orbit form is the one-prime tower positivity of §2, which is RH at every generator size [S]. The proved finite-generator approximation controls L² and fixed finite Euler families. Upgrading it to the complete Weil form remains necessary; the retained-orbit sign does not follow from the approximation.
+The prime part is the open coupling. By the explicit formula, \(d\mapsto W(f,T_{d\log2}g)\) is a sum over zeros of \(2^{d(\rho-1/2)}\): almost periodic with positive mean square under RH, exponential otherwise, never summable (inference). Positivity of the generator-orbit form is the one-prime tower positivity of §2, which is RH at every generator size [S]. The proved finite-generator approximation controls L², fixed finite Euler families and the all-prime exponent≥3 sector. Upgrading it to the complete Weil form remains necessary; the retained-orbit sign does not follow from the approximation.
 
 ### 8. Ordered entries are centered Chebyshev integrals
 
@@ -215,20 +224,20 @@ Each entry gives the current state, then A (just work) and B (open). Full source
 
 ### HF — Arithmetic Hodge positivity
 
-**Current:** Full Hodge/Weil sign, zero Hecke defect and small enough source work are exact receivers. The complete source is a multiresolution with Gamma-paid details and a twin-blind high-detail floor; every prime layer except \(k=1\) has uniform finite index (§6); every fixed finite Euler family has all-level generator approximation [K] (§6); cross-level prime couplings are the one-prime Toeplitz problem (§7); canonical critical energy has exact finiteness and RH thresholds (§9); the margin \(2\log2\) is sharp but does not select \(\zeta\) at its maximum (§1).
+**Current:** Full Hodge/Weil sign, zero Hecke defect and small enough source work are exact receivers. The complete source is a multiresolution with Gamma-paid details and a twin-blind high-detail floor; every prime layer except \(k=1\) has uniform finite index (§6); every fixed finite Euler family and all primes with exponents≥3 have all-level generator approximation [K] (§6); cross-level prime couplings are the one-prime Toeplitz problem (§7); canonical critical energy has exact finiteness and RH thresholds (§9); the margin \(2\log2\) is sharp but does not select \(\zeta\) at its maximum (§1).
 
 **A:** Finite complete-cell Grams in multiresolution coordinates; explicit detail-head sizes for the finite-index bounds; source-kernel cost transport; distinct-index and multiplicity energies kept apart.
 
 **B:**
 - Complete residual nonnegativity, complete-cell index zero, or an arithmetic upper bound on work at an RH threshold **[RH]**.
 - Uniform finite index of the complete form, or finite \(\mathcal E_{\rm crit}\) **[FS]**.
-- Selective positivity in the separated regime beyond the Robin–Euler ratio **[open]** (Q1).
+- Complete-form transfer through touching and into overlap **[open]** (Q1); fixed separated plateau positivity has a source proof [S].
 
 [Index capture](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCompleteCellsCaptureEveryFiniteIndex.lean), [work threshold](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSourceWorkHasAClosedQuantumThreshold.lean).
 
 ### CHMD — Causal hyperbolic–modular duality
 
-**Current:** Wave/Doob receivers; the supported maximal graph equals the completed aperture core; the bounded carrier projection has residual radical equal to the Weil radical. Translation keeps \(W\) and escapes every exponential graph bound. Ordered entries are Chebyshev integrals; finite generator orbits approximate cell sources in \(L^2\) and every fixed finite Euler correlation family [K], but are not compact.
+**Current:** Wave/Doob receivers; the supported maximal graph equals the completed aperture core; the bounded carrier projection has residual radical equal to the Weil radical. Translation keeps \(W\) and escapes every exponential graph bound. Ordered entries are Chebyshev integrals; finite generator orbits approximate cell sources in \(L^2\), every fixed finite Euler correlation family and the all-prime higher-power sector [K], but are not compact.
 
 **A:** Domain/cutoff theorems on fixed sources; the signed residual with the primitive defect; bounded-window scale transport.
 
@@ -364,13 +373,13 @@ Each entry gives the current state, then A (just work) and B (open). Full source
 
 ### SRT — Lag localization and atomic visibility
 
-**Current:** Every-width lag bounds and atomic receivers at widths \((\log\log N)^\alpha/N\), \(\alpha>1\) (§3); full positivity at \(K_\star\delta_N\) (§4); for any prime and \(\varepsilon>0\), positivity on all towers of every pole-free generator supported in \([-\varepsilon,\varepsilon]\) is RH [S] (§2).
+**Current:** Every-width lag bounds and atomic receivers at widths \((\log\log N)^\alpha/N\), \(\alpha>1\) (§3); eventual full matrix positivity for one smooth plateau at every fixed \(0<c<1\) [S] (§4); for any prime and \(\varepsilon>0\), positivity on all towers of every pole-free generator supported in \([-\varepsilon,\varepsilon]\) is RH [S] (§2).
 
 **A:** Instantiate fixed-width detectors; compute atomic Grams between \(K_\star\) and the first excitation, keeping Markov, full and pole-hyperplane forms apart.
 
 **B:**
 - An actual late-lag bound, an all-generator tower bound, or full sign at unbounded overlap **[RH]**.
-- Full sign at a fixed separated ratio beyond the Robin–Euler point **[open]** (Q1).
+- Touching/overlap transfer of the complete-matrix floor, with width and horizon controlled together **[open]** (Q1).
 - An \(\alpha=1\) receiver: a quasi-analyticity boundary of the synthesis (inference), not a task.
 
 [Lag receiver](../../../formal/GaloisForLFunctions/SquareRootThreshold/EveryWidthDecidesTheCriticalLine.lean).
@@ -385,15 +394,15 @@ Each entry gives the current state, then A (just work) and B (open). Full source
 
 ### AIP — Arithmetic incidence allocation
 
-**Current:** Global joint allocation is exactly the odd sign. The route has complete-cell transfer and the \((\log\log N)^{1+\varepsilon}\) receiver; the finite-index chain; \(\Lambda\)-selection and the margin; the reduction "atomic sign iff Markov sign on \(p=0\) plus one affine scalar"; the separated-regime trial energies (§4). The beyond-spacing Metzler gauge is obstructed.
+**Current:** Global joint allocation is exactly the odd sign. The route has complete-cell transfer and the \((\log\log N)^{1+\varepsilon}\) receiver; the finite-index chain; \(\Lambda\)-selection and the margin; the reduction "atomic sign iff Markov sign on \(p=0\) plus one affine scalar"; eventual full separated matrix positivity for a smooth plateau [S] (§4). The beyond-spacing Metzler gauge is obstructed.
 
 **A:** Complete incidence matrices in multiresolution coordinates with every successor, Gamma and polar term; touching-level costs against the available margin.
 
-**B:** Signed allocation on source-complete cells or an RH-complete family **[RH]**; the selective separated-regime step **[open]** (Q1). [Allocation criterion](../../../formal/GaloisForLFunctions/ArithmeticIncidencePositivity/GlobalIncidenceAllocationCondition.lean).
+**B:** Signed allocation on source-complete cells or an RH-complete family **[RH]**; touching/overlap transfer with every mixed charge retained **[open]** (Q1). [Allocation criterion](../../../formal/GaloisForLFunctions/ArithmeticIncidencePositivity/GlobalIncidenceAllocationCondition.lean).
 
 ### ACS — Arithmetic effectivity
 
-**Current:** Source RR, effectivity, Rosati-height and chirality receivers coexist with complete-cell realization and index capture. Weighted coarse Gamma recovery and logarithmic detail payment share one horizon-independent error; the square-plus-odd layers have uniform finite index (§6). On every signed Haar section, rooted divisor squares give D≥log(2)·mass/12 and both original poles leave D+P≥D/8≥mass/144, including the whole head. Joint Gamma/central-mass payment of the exact arithmetic diagonal remains open. One prime tower sees every outer eigenvalue (§2).
+**Current:** Source RR, effectivity, Rosati-height and chirality receivers coexist with complete-cell realization and index capture. Weighted coarse Gamma recovery and logarithmic detail payment share one horizon-independent error; the square-plus-odd layers have uniform finite index (§6). On every signed Haar section, rooted divisor squares give D≥log(2)·mass/12 and both original poles leave D+P≥D/8≥mass/144, including the whole head. The full one-level Haar Gamma cross-error is at most \(16e^{1/2}\) times mass [S]. Joint payment of this error, the exact arithmetic diagonal and central mass remains open; a mass bound alone supplies no absorption into the much smaller displayed reserve. One prime tower sees every outer eigenvalue (§2).
 
 **A:** Transport fixed source families into complete smooth cells; compute projection and finite-sieve data.
 
@@ -430,9 +439,9 @@ A candidate lacks an independent source construction or its landing. Every promo
 |---|---|---|
 | SMAP | Selection theorem; margins \(2\log2\)/\(0\); multiresolution and level couplings; selective Gårding; one-prime tower sign is RH at every generator size [S]; precision rigidity [S] | Selective positivity where overlap begins; the signed cross-level prime coupling |
 | ACP (counting positivity) | Gap \(\ge(2\log2)c_N^2\); parity fibre counts; submaximal [L] and maximal [S] gaps attained by failing multiplicative twins | A selective input beyond the gap |
-| AID, SAHT, ACS cells | Square-plus-odd and \(k\ge3\) finite index; Chebyshev identity; Gamma reserve; canonical critical energy; all-level L² and fixed finite Euler approximation [K]; one-prime tower law | \(k=1\) layer ([FS]); residual sign; upper bound on \(\mathcal E_{\rm crit}\) |
-| RAPT | Sharp gap; adjunction spectrum; mode energies; exact separated-regime splitting and simple/proper trial energies | Actual bottom spectrum past Robin–Euler; growing conductors |
-| SSHA, ALG | Atomic receivers to \((\log\log N)^{1+\varepsilon}\); quarter-Robin–Euler positivity; gap/scalar reduction; Metzler selectivity; count-based local-to-global over \(\mathbb F_q\) | Full sign beyond Robin–Euler; local-to-global over \(\mathbb Z\) |
+| AID, SAHT, ACS cells | Square-plus-odd and \(k\ge3\) finite index; Chebyshev identity; Gamma reserve; canonical critical energy; all-level L², fixed Euler and all-prime higher-power approximation [K]; one-prime tower law | \(k=1\) layer ([FS]); residual sign; upper bound on \(\mathcal E_{\rm crit}\) |
+| RAPT, CACT | Sharp gap; exact bounded complete spectrum [S]; smooth-plateau positivity of the whole matrix at each fixed \(c<1\) [S] | Touching/overlap and growing-conductor control; RH-complete exhaustion |
+| SSHA, ALG | Atomic receivers to \((\log\log N)^{1+\varepsilon}\); narrow arbitrary-shape positivity; gap/scalar reduction; Metzler selectivity; count-based local-to-global over \(\mathbb F_q\) | Full sign on overlapping/RH-complete families; local-to-global over \(\mathbb Z\) |
 | HKT | Krein–Langer index formula on groups; index closed under pointwise limits [S] | An arithmetic positive part and an index ceiling for \(\zeta\)'s kernel |
 | SCP | Shallow Cauchy energy \(O(N)\) at depth \(1/\log T\); squared multiplicities; joint shallow/deep budget | A displacement-sensitive constant |
 | Zeta23 (external), IGP, TTPC | \(2/3\), \(HD(1)\), \(0.8876\) simple-or-critical; exchange rate; \(3/4\) reduction; coalescent anatomy | A two-sided trans-threshold pair estimate |

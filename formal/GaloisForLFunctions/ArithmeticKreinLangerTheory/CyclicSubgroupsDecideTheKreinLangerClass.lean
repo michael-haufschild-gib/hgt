@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HeckeKreinToeplitz.LocalityFailsButAlmostEveryPrimeDecides
 import GaloisForLFunctions.HeckeKreinToeplitz.StepanovCompressionsAndTheAnnihilationLaw
+import GaloisForLFunctions.HeckeKreinToeplitz.WeilsIndexIsCountedByTheOuterFrobeniusEigenvalues
 import Mathlib.GroupTheory.CosetCover
 
 /-!
@@ -380,7 +381,7 @@ theorem exists_one_le_negIndex_zpowers [Fintype J] {p : G → ℂ} (hp : IsPosDe
     have h1 := (key (T.image Sum.swap) hout hcl φ).trans
       (sum_mul_eq_zero_of_classWeight ψ w u hcw
         fun z => if ∃ m ∈ T.image Sum.swap, ν m u = z then φ z else 0)
-    rw [sum_image fun a _ b _ hab => Sum.swap_injective hab, sum_congr rfl hval, ← map_sum] at h1
+    rw [sum_image fun a _ b _ hab => Sum.swap_leftInverse.injective hab, sum_congr rfl hval, ← map_sum] at h1
     exact (map_eq_zero_iff _ (RingHom.injective _)).mp h1
   · -- the class is outward at `u`
     have hout : ∀ m ∈ T, 1 < ‖ν m u‖ := fun m hm => by rw [hTnorm m hm]; exact hgt
@@ -449,5 +450,211 @@ theorem negIndex_zpowers_eq_of_not_aliased {κ : ℕ} {p : G → ℂ} (hp : IsPo
         rw [reflectChar_valChar_ofAdd_one (map_ne_zero _ _), reflectChar_apply, map_inv_eq_inv,
           map_inv₀]
     rw [this]; exact hsep
+
+/-! ### Two elementary positive-definite kernels -/
+
+theorem isPosDefKernel_zero : IsPosDefKernel (0 : G → ℂ) :=
+  ⟨fun u => by simp, fun n x c => by simp [hermQuad_gram]⟩
+
+/-- A nonnegative multiple of a positive-definite kernel is positive definite. -/
+theorem IsPosDefKernel.ofReal_mul {k : G → ℂ} (hk : IsPosDefKernel k) {t : ℝ} (ht : 0 ≤ t) :
+    IsPosDefKernel fun u => (t : ℂ) * k u := by
+  refine ⟨fun u => by
+    show (t : ℂ) * k u⁻¹ = conj ((t : ℂ) * k u)
+    rw [hk.1 u, map_mul, Complex.conj_ofReal], fun n x c => ?_⟩
+  have h := hk.hermQuad_nonneg x c
+  rw [hermQuad_gram] at h ⊢
+  have : (∑ a, ∑ b, conj (c a) * ((t : ℂ) * k ((x a)⁻¹ * x b)) * c b) =
+      (t : ℂ) * ∑ a, ∑ b, conj (c a) * k ((x a)⁻¹ * x b) * c b := by
+    rw [mul_sum]
+    refine sum_congr rfl fun a _ => ?_
+    rw [mul_sum]
+    exact sum_congr rfl fun b _ => by ring
+  rw [this, Complex.re_ofReal_mul]
+  exact mul_nonneg ht h
+
+/-! ### Coordinate towers do not decide the Krein–Langer class -/
+
+/-- The character `(a, b) ↦ x^a y^b` of `ℤ²`. -/
+def latticeChar (x y : ℂ) (hx : x ≠ 0) (hy : y ≠ 0) : Multiplicative (ℤ × ℤ) →* ℂ where
+  toFun v := x ^ (Multiplicative.toAdd v).1 * y ^ (Multiplicative.toAdd v).2
+  map_one' := by simp
+  map_mul' a b := by
+    simp only [toAdd_mul, Prod.fst_add, Prod.snd_add, zpow_add₀ hx, zpow_add₀ hy]; ring
+
+theorem latticeChar_apply (x y : ℂ) (hx : x ≠ 0) (hy : y ≠ 0) (v : Multiplicative (ℤ × ℤ)) :
+    latticeChar x y hx hy v = x ^ (Multiplicative.toAdd v).1 * y ^ (Multiplicative.toAdd v).2 :=
+  rfl
+
+/-- The characters `(2, 1)` and `(2, −1)`: they agree on the first axis and are unitary on the
+second. -/
+def coordChar : Fin 2 → Multiplicative (ℤ × ℤ) →* ℂ :=
+  ![latticeChar 2 1 two_ne_zero one_ne_zero, latticeChar 2 (-1) two_ne_zero (by norm_num)]
+
+/-- The cancelling weights `i, −i`. -/
+def coordWeight : Fin 2 → ℂ := ![I, -I]
+
+/-- The coordinate kernel `h_{(2,1),i} + h_{(2,−1),−i}` on `ℤ²`. -/
+def coordinateKernel : Multiplicative (ℤ × ℤ) → ℂ :=
+  fun g => (0 : Multiplicative (ℤ × ℤ) → ℂ) g + ∑ j, pairKernel (coordChar j) (coordWeight j) g
+
+theorem neg_one_zpow_neg (b : ℤ) : (-1 : ℂ) ^ (-b) = (-1) ^ b := by
+  rcases Int.even_or_odd b with h | h
+  · rw [h.neg_one_zpow, h.neg.neg_one_zpow]
+  · rw [h.neg_one_zpow, h.neg.neg_one_zpow]
+
+/-- **The coordinate kernel in closed form**: `2i·sinh(a log 2)·(1 − (−1)^b)`. -/
+theorem coordinateKernel_apply (v : Multiplicative (ℤ × ℤ)) :
+    coordinateKernel v = I * ((2 : ℂ) ^ (Multiplicative.toAdd v).1 -
+      (2 : ℂ) ^ (-(Multiplicative.toAdd v).1)) * (1 - (-1) ^ (Multiplicative.toAdd v).2) := by
+  simp only [coordinateKernel, Pi.zero_apply, zero_add, Fin.sum_univ_two, pairKernel,
+    reflectChar_apply, coordChar, coordWeight, Matrix.cons_val_zero, Matrix.cons_val_one,
+    latticeChar_apply, toAdd_inv, Prod.fst_neg, Prod.snd_neg, one_zpow, mul_one, map_mul,
+    map_zpow₀, Complex.conj_I, map_neg, map_ofNat, map_one, neg_one_zpow_neg]
+  ring
+
+theorem coordinateKernel_eq_zero_of_even {v : Multiplicative (ℤ × ℤ)}
+    (h : Even (Multiplicative.toAdd v).2) : coordinateKernel v = 0 := by
+  rw [coordinateKernel_apply, h.neg_one_zpow, sub_self, mul_zero]
+
+theorem coordinateKernel_eq_zero_of_fst {v : Multiplicative (ℤ × ℤ)}
+    (h : (Multiplicative.toAdd v).1 = 0) : coordinateKernel v = 0 := by
+  rw [coordinateKernel_apply, h]; simp
+
+/-- The two coordinate axes of `ℤ²`. -/
+def axis₁ : Multiplicative ℤ →* Multiplicative (ℤ × ℤ) :=
+  AddMonoidHom.toMultiplicative (AddMonoidHom.inl ℤ ℤ)
+
+def axis₂ : Multiplicative ℤ →* Multiplicative (ℤ × ℤ) :=
+  AddMonoidHom.toMultiplicative (AddMonoidHom.inr ℤ ℤ)
+
+/-- **Locality fails inside the Krein–Langer class.** The coordinate kernel is two separated
+hyperbolic pairs, so it has index `2`; it vanishes on the index-two subgroup `b ∈ 2ℤ` and on both
+coordinate axes, which therefore see no negative square at all. -/
+theorem coordinate_locality_fails :
+    negIndex coordinateKernel = 2 ∧
+      (∀ v, Even (Multiplicative.toAdd v).2 → coordinateKernel v = 0) ∧
+      negIndex (coordinateKernel ∘ axis₁) = 0 ∧ negIndex (coordinateKernel ∘ axis₂) = 0 := by
+  set u : Multiplicative (ℤ × ℤ) := Multiplicative.ofAdd (1, 1)
+  have hval : nodes coordChar u = Sum.elim ![2, -2] ![1 / 2, -1 / 2] := by
+    funext m
+    rcases m with j | j <;> fin_cases j <;>
+      simp [nodes, coordChar, latticeChar_apply, reflectChar_apply, u, Complex.conj_ofNat]
+    norm_num
+  have hne : ∀ j, ‖coordChar j u‖ ≠ 1 := fun j => by
+    fin_cases j <;> norm_num [coordChar, latticeChar_apply, u]
+  have hsep : Function.Injective (nodes coordChar u) := by
+    rw [hval]
+    intro m m' h
+    rcases m with j | j <;> rcases m' with j' | j' <;> fin_cases j <;> fin_cases j' <;>
+      first | rfl | norm_num at h
+  have hω : ∀ j, coordWeight j ≠ 0 := fun j => by fin_cases j <;> simp [coordWeight]
+  refine ⟨?_, fun v hv => coordinateKernel_eq_zero_of_even hv, ?_, ?_⟩
+  · exact negIndex_add_sum_pairKernel_eq isPosDefKernel_zero coordChar coordWeight hω u hne hsep
+  · have : coordinateKernel ∘ axis₁ = 0 := funext fun n =>
+      coordinateKernel_eq_zero_of_even (by simp [axis₁])
+    rw [this]; exact isPosDefKernel_zero.negIndex_eq_zero
+  · have : coordinateKernel ∘ axis₂ = 0 := funext fun n =>
+      coordinateKernel_eq_zero_of_fst (by simp [axis₂])
+    rw [this]; exact isPosDefKernel_zero.negIndex_eq_zero
+
+/-! ### Outside the class, cyclic subgroups do not decide -/
+
+/-- The six neighbours `±e₁, ±e₂, ±(e₁ + e₂)` of the origin. -/
+def starSet : Finset (ℤ × ℤ) := {(1, 0), (0, 1), (1, 1), (-1, 0), (0, -1), (-1, -1)}
+
+/-- The star profile `δ₀ − ½ 1_{starSet}` on `ℤ²`. -/
+def starProfile (w : ℤ × ℤ) : ℂ := if w = 0 then 1 else if w ∈ starSet then -1 / 2 else 0
+
+/-- The star kernel on `ℤ²`. -/
+def starKernel (v : Multiplicative (ℤ × ℤ)) : ℂ := starProfile (Multiplicative.toAdd v)
+
+/-- The discrete Laplacian kernel `δ₀ − ½(δ₁ + δ₋₁)` on `ℤ`. -/
+def lapKernel (n : Multiplicative ℤ) : ℂ :=
+  if Multiplicative.toAdd n = 0 then 1
+  else if Multiplicative.toAdd n = 1 ∨ Multiplicative.toAdd n = -1 then -1 / 2 else 0
+
+/-- The Laplacian kernel is half the autocorrelation of `δ₀ − δ₁`, hence positive definite. -/
+theorem isPosDefKernel_lapKernel : IsPosDefKernel lapKernel := by
+  have h := (isPosDefKernel_delta (G := Multiplicative ℤ)).compress
+    ![1, Multiplicative.ofAdd 1] ![1, -1]
+  have heq : lapKernel = fun n => ((1 / 2 : ℝ) : ℂ) *
+      compress (deltaKernel (Multiplicative ℤ)) ![1, Multiplicative.ofAdd 1] ![1, -1] n := by
+    funext n
+    rw [← ofAdd_toAdd n]
+    generalize Multiplicative.toAdd n = k
+    simp only [lapKernel, compress, Fin.sum_univ_two, deltaKernel, Matrix.cons_val_zero,
+      Matrix.cons_val_one, toAdd_ofAdd, inv_one, one_mul, mul_one, ← ofAdd_neg, ← ofAdd_add,
+      ofAdd_eq_one, map_one, map_neg]
+    split_ifs <;> first | (exfalso; omega) | norm_num
+  rw [heq]
+  exact IsPosDefKernel.ofReal_mul h (by norm_num)
+
+theorem ne_zero_of_mem_starSet {w : ℤ × ℤ} (hw : w ∈ starSet) : w ≠ 0 := by
+  simp only [starSet, mem_insert, mem_singleton] at hw
+  rcases hw with rfl | rfl | rfl | rfl | rfl | rfl <;> decide
+
+/-- A multiple of a star vector is a star vector only for the multipliers `±1`. -/
+theorem zsmul_mem_starSet_iff {w : ℤ × ℤ} (hw : w ∈ starSet) (k : ℤ) :
+    k • w ∈ starSet ↔ k = 1 ∨ k = -1 := by
+  simp only [starSet, mem_insert, mem_singleton] at hw
+  rcases hw with rfl | rfl | rfl | rfl | rfl | rfl <;>
+    simp only [starSet, mem_insert, mem_singleton, Prod.smul_mk, smul_eq_mul, Prod.mk.injEq] <;>
+    omega
+
+/-- Only star vectors have star multiples. -/
+theorem mem_starSet_of_zsmul_mem {w : ℤ × ℤ} {k : ℤ} (h : k • w ∈ starSet) : w ∈ starSet := by
+  obtain ⟨w₁, w₂⟩ := w
+  simp only [starSet, mem_insert, mem_singleton, Prod.smul_mk, smul_eq_mul, Prod.mk.injEq] at h ⊢
+  have hk : k = 1 ∨ k = -1 := by
+    rcases h with ⟨h1, -⟩ | ⟨-, h2⟩ | ⟨h1, -⟩ | ⟨h1, -⟩ | ⟨-, h2⟩ | ⟨h1, -⟩
+    · exact Int.eq_one_or_neg_one_of_mul_eq_one h1
+    · exact Int.eq_one_or_neg_one_of_mul_eq_one h2
+    · exact Int.eq_one_or_neg_one_of_mul_eq_one h1
+    · exact Int.eq_one_or_neg_one_of_mul_eq_neg_one h1
+    · exact Int.eq_one_or_neg_one_of_mul_eq_neg_one h2
+    · exact Int.eq_one_or_neg_one_of_mul_eq_neg_one h1
+  rcases hk with rfl | rfl <;> omega
+
+/-- **Every cyclic restriction of the star kernel is positive definite**: it is the constant `1`,
+the delta kernel, or the Laplacian kernel. -/
+theorem negIndex_starKernel_zpowers (u : Multiplicative (ℤ × ℤ)) :
+    negIndex (starKernel ∘ zpowersHom _ u) = 0 := by
+  set w := Multiplicative.toAdd u with hw
+  have hval : ∀ n, (starKernel ∘ zpowersHom _ u) n =
+      starProfile (Multiplicative.toAdd n • w) := fun n => by
+    simp [starKernel, zpowersHom_apply, toAdd_zpow, hw]
+  by_cases h0 : w = 0
+  · have : starKernel ∘ zpowersHom _ u = ⇑(1 : Multiplicative ℤ →* ℂ) := by
+      funext n; rw [hval, h0, smul_zero]; simp [starProfile]
+    rw [this]
+    exact (isPosDefKernel_of_unitary fun _ => by simp).negIndex_eq_zero
+  · have hz : ∀ k : ℤ, k • w = 0 ↔ k = 0 := fun k => by
+      rw [smul_eq_zero]; tauto
+    by_cases hS : w ∈ starSet
+    · have : starKernel ∘ zpowersHom _ u = lapKernel := by
+        funext n
+        simp only [hval, starProfile, lapKernel, hz, zsmul_mem_starSet_iff hS]
+      rw [this]; exact isPosDefKernel_lapKernel.negIndex_eq_zero
+    · have : starKernel ∘ zpowersHom _ u = deltaKernel (Multiplicative ℤ) := by
+        funext n
+        have hns : Multiplicative.toAdd n • w ∉ starSet := fun h => hS (mem_starSet_of_zsmul_mem h)
+        simp only [hval, starProfile, deltaKernel, hz, hns, if_false, toAdd_eq_zero]
+      rw [this]; exact isPosDefKernel_delta.negIndex_eq_zero
+
+/-- **Cyclic locality fails outside the Krein–Langer class.** The star kernel is positive definite
+on every cyclic subgroup of `ℤ²`, yet on the four points `0, e₁, e₂, e₁ + e₂` its Toeplitz form at
+the all-ones vector is `−1`. -/
+theorem cyclic_locality_fails_off_class :
+    (∀ u, negIndex (starKernel ∘ zpowersHom _ u) = 0) ∧ negIndex starKernel ≠ 0 := by
+  refine ⟨negIndex_starKernel_zpowers, fun h => ?_⟩
+  have h4 := negIndex_eq_zero_iff.mp h 4
+    ![Multiplicative.ofAdd (0, 0), Multiplicative.ofAdd (1, 0), Multiplicative.ofAdd (0, 1),
+      Multiplicative.ofAdd (1, 1)] fun _ => 1
+  rw [hermQuad_gram] at h4
+  simp only [Fin.sum_univ_four, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+    Matrix.cons_val_three, map_one, one_mul, mul_one, starKernel, toAdd_mul, toAdd_inv,
+    toAdd_ofAdd, starProfile, starSet] at h4
+  norm_num at h4
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

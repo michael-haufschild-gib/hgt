@@ -16,7 +16,8 @@ open MeasureTheory Filter Topology
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
-open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics RHTower
+open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
+open _root_.RHTower (archLevyDensity)
 
 /-- The Robin density is integrable because it is dominated by the Lévy density. -/
 theorem integrableOn_robinDensity {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
@@ -27,7 +28,7 @@ theorem integrableOn_robinDensity {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
       have := hg.continuous
       fun_prop
     exact hc.stronglyMeasurable.integral_prod_right'
-  have hi := (integrableOn_levyIntegrand hg hgc).mono_set
+  have hi := (_root_.RHTower.integrableOn_levyIntegrand hg hgc).mono_set
     (show Set.Ioc (0 : ℝ) 1 ⊆ Set.Ioi 0 from Set.Ioc_subset_Ioi_self)
   refine hi.mono' (hQm.measurable.div (measurable_const.mul measurable_id)).aestronglyMeasurable ?_
   refine (ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall fun y hy => ?_)
@@ -39,8 +40,7 @@ theorem integrableOn_robinDensity {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
       mul_le_mul_of_nonneg_right (archLevyDensity_ge_inv_two_mul hy.1 hy.2) hQ
 
 /-- Autocorrelation is bounded by the overlap of the two unit supports. -/
-theorem integral_plateau_mul_shift_le {η y : ℝ} (hη : 0 < η)
-    (hy0 : 0 ≤ y) (hy1 : y ≤ 1) :
+theorem integral_plateau_mul_shift_le {η y : ℝ} (hη : 0 < η) (hy1 : y ≤ 1) :
     (∫ u, plateau η u * plateau η (u + y)) ≤ 1 - y := by
   have heq : (∫ u, plateau η u * plateau η (u + y)) =
       ∫ u in Set.Icc 0 (1 - y), plateau η u * plateau η (u + y) := by
@@ -54,7 +54,11 @@ theorem integral_plateau_mul_shift_le {η y : ℝ} (hη : 0 < η)
   have hc : Continuous fun u => plateau η u * plateau η (u + y) := by
     have := (contDiff_plateau η).continuous
     fun_prop
-  have hle := setIntegral_mono_on hc.integrableOn_Icc continuous_const.integrableOn_Icc
+  have hi : IntegrableOn (fun u => plateau η u * plateau η (u + y)) (Set.Icc 0 (1 - y)) :=
+    hc.integrableOn_Icc
+  have hi1 : IntegrableOn (fun _ : ℝ => (1 : ℝ)) (Set.Icc 0 (1 - y)) :=
+    continuous_const.integrableOn_Icc
+  have hle := setIntegral_mono_on hi hi1
     measurableSet_Icc (fun u (_ : u ∈ Set.Icc 0 (1 - y)) =>
       (mul_le_mul (plateau_le_one u) (plateau_le_one (u + y))
         (plateau_nonneg (u + y)) zero_le_one).trans_eq (one_mul 1))
@@ -75,7 +79,7 @@ theorem bumpRobin_plateau_ge {η δ : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2)
       dsimp [Q]
       rw [integral_sub_shift_sq_eq (contDiff_plateau η).continuous (hasCompactSupport_plateau hη)]
       linarith only [integral_plateau_sq_ge hη hη2,
-        integral_plateau_mul_shift_le hη hy0.le hy.2]
+        integral_plateau_mul_shift_le hη hy.2]
     have hdiv : 2 * η / y ≤ 2 * η / δ :=
       div_le_div_of_nonneg_left (by positivity) hδ hy.1.le
     have hsmall : 1 - 2 * η / y ≤ Q y / (2 * y) := by
@@ -101,7 +105,7 @@ theorem bumpRobin_plateau_ge {η δ : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2)
 /-- The plateau carries almost the full charge of its unit support. -/
 theorem integral_plateau_ge {η : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2) :
     1 - 2 * η ≤ ∫ u, plateau η u := by
-  have hi := (contDiff_plateau η).continuous.integrable_of_hasCompactSupport
+  have hi : Integrable (plateau η) := (contDiff_plateau η).continuous.integrable_of_hasCompactSupport
     (hasCompactSupport_plateau hη)
   have h := le_integral_of_eq_one_on hi (fun u => plateau_nonneg u)
     (a := η) (b := 1 - η) (by linarith) (fun u hu => plateau_eq_one hη hu)
@@ -165,3 +169,5 @@ theorem exists_plateau_completed_robin_margin :
   exists_plateau_completed_shape_gt RHTower.log_two_pi_lt_two
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_plateau_completed_robin_margin

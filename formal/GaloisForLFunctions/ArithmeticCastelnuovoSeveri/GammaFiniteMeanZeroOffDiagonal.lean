@@ -96,14 +96,16 @@ private theorem gammaKernel_ae_fst {P : ℝ → Prop} (h : ∀ᵐ x ∂volume, P
     ∀ᵐ p ∂gammaKernelMeasure, P p.1 := by
   unfold gammaKernelMeasure
   apply (ae_withDensity_iff measurable_gammaKernel).mpr
-  have hp : ∀ᵐ p ∂volume.prod volume, P p.1 := Measure.quasiMeasurePreserving_fst.ae h
+  have hp : ∀ᵐ (p : ℝ × ℝ) ∂(volume : Measure ℝ).prod (volume : Measure ℝ), P p.1 :=
+    Measure.quasiMeasurePreserving_fst.ae h
   exact hp.mono fun _ hp _ => hp
 
 private theorem gammaKernel_ae_snd {P : ℝ → Prop} (h : ∀ᵐ x ∂volume, P x) :
     ∀ᵐ p ∂gammaKernelMeasure, P p.2 := by
   unfold gammaKernelMeasure
   apply (ae_withDensity_iff measurable_gammaKernel).mpr
-  have hp : ∀ᵐ p ∂volume.prod volume, P p.2 := Measure.quasiMeasurePreserving_snd.ae h
+  have hp : ∀ᵐ (p : ℝ × ℝ) ∂(volume : Measure ℝ).prod (volume : Measure ℝ), P p.2 :=
+    Measure.quasiMeasurePreserving_snd.ae h
   exact hp.mono fun _ hp _ => hp
 
 private theorem product_eq_rectangle_indicator_ae {a b c d : ℝ} {f g : ℝ → ℝ}
@@ -133,7 +135,8 @@ theorem gammaKernel_mixed_eq_neg_two_rectangle {a b c d : ℝ}
   have hiF := integrable_rectangle_fst_sq hab hw hf hbF (c := c) (d := d)
   have hiG : Integrable (fun p : ℝ × ℝ => g p.2 ^ 2) (gammaRectangleMeasure a b c d) :=
     integrable_gammaRectangle_swap hd.symm (integrable_rectangle_fst_sq hcd hw' hg hbG)
-  have hiP := integrable_mul_of_sq_integrable
+  have hiP : Integrable (fun p : ℝ × ℝ => f p.1 * g p.2)
+      (gammaRectangleMeasure a b c d) := integrable_mul_of_sq_integrable
     (hf.comp measurable_fst).aestronglyMeasurable (hg.comp measurable_snd).aestronglyMeasurable hiF hiG
   have hind := product_eq_rectangle_indicator_ae hsf hsg
   have hiP' : Integrable (fun p : ℝ × ℝ => f p.1 * g p.2) gammaKernelMeasure := by
@@ -142,7 +145,9 @@ theorem gammaKernel_mixed_eq_neg_two_rectangle {a b c d : ℝ}
       apply (integrable_indicator_iff (measurableSet_Ioo.prod measurableSet_Ioo)).mpr
       simpa only [IntegrableOn, ← gammaRectangleMeasure_eq_restrict hd] using hiP
     exact hi.congr hind.symm
-  have hiS := integrable_gammaKernel_swap hiP'
+  have hiS : Integrable (fun p : ℝ × ℝ => f p.2 * g p.1) gammaKernelMeasure :=
+    integrable_gammaKernel_swap hiP'
+  have hiN : Integrable (fun p : ℝ × ℝ => -(f p.1 * g p.2)) gammaKernelMeasure := hiP'.neg
   have hzero : ∀ᵐ x ∂volume, f x * g x = 0 := by
     filter_upwards [hsf, hsg] with x hx hy
     by_cases hi : x ∈ Ioo a b
@@ -160,7 +165,7 @@ theorem gammaKernel_mixed_eq_neg_two_rectangle {a b c d : ℝ}
   have hswap := integral_gammaKernel_swap (fun p : ℝ × ℝ => f p.1 * g p.2)
   change (∫ p : ℝ × ℝ, f p.2 * g p.1 ∂gammaKernelMeasure) =
     ∫ p : ℝ × ℝ, f p.1 * g p.2 ∂gammaKernelMeasure at hswap
-  rw [integral_congr_ae hexp, integral_sub hiP'.neg hiS, integral_neg, hswap, hrect]
+  rw [integral_congr_ae hexp, integral_sub hiN hiS, integral_neg, hswap, hrect]
   ring
 
 /-- Exact assembly retains every off-diagonal rectangle of the original Gamma source. -/
@@ -189,6 +194,7 @@ theorem levyEnergy_sum_eq_diagonal_sub_rectangles {ι : Type*} [Fintype ι]
     have he (p : ℝ × ℝ) : ((∑ i, f i p.1) - ∑ i, f i p.2) ^ 2 =
         ∑ i, ∑ j, (f i p.1 - f i p.2) * (f j p.1 - f j p.2) := by
       simp only [← Finset.sum_sub_distrib, pow_two, Finset.sum_mul, Finset.mul_sum]
+      exact Finset.sum_comm
     simp_rw [he]
     rw [integral_finsetSum _ fun i _ => integrable_finsetSum _ (fun j _ => hi i j)]
     apply Finset.sum_congr rfl

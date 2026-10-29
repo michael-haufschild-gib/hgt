@@ -73,7 +73,8 @@ coordinates unless stored separately.
 5. **Gamma allocation on the dyadic tree**: exact parent variance identity $V_{\rm parent}=V_{\rm left}+V_{\rm right}+\dots$ gives joint Gamma payment of all
    parent variances and logarithmic Haar tails across all levels. Whole generator cutoffs split every dyadic correlation exactly;
    the complete prime-two Euler contribution has one original-source Gamma budget. Orthogonal tail localization and Gamma
-   translation invariance pay every real-lag correlation and each fixed finite Euler family. Full-Weil mixed bounds remain separate.
+   translation invariance pay every real-lag correlation, each fixed finite Euler family, and jointly every cube and higher power
+   of every prime. Prime and square absolute coefficient masses diverge; full-Weil signed transfer remains separate.
 6. **Renormalized adjunction**: growing Ramanujan families have one Gram budget $(1+2\sum_{m\in S}m^2)/\log N$; prime-row corrections cost
    $C_m=\sqrt{\varphi(m)}(1+4\log m)$; one Mertens-type remainder $B_N$, bounded uniformly in $N$, controls every Ramanujan residual.
 7. **Local capture and escape**: modal families lose normalized mass on every fixed integer window ($\le K_{S,L}/(\log N-D_S)$); every bounded
@@ -139,8 +140,30 @@ absolute convergence for each prime on whole-line $L^2$, equality with the origi
 \]
 for every finite original cell source. Choosing $A>\exp(96C_P/\delta)$, with $C_P$ the displayed coefficient sum, gives
 error at most $\delta\Gamma(f)$ for every source and horizon. Every prime power and every retained dyadic level is included.
-No odd-prime commutation is assumed. The constants do not give a summable all-prime allocation, and the retained spaces remain
+No odd-prime commutation is assumed. The complete-power constants are not summable over all primes, and the retained spaces remain
 infinite-dimensional.
+
+The all-prime higher-power sector has finite total coefficient mass
+\[
+H=\sum_{p\text{ prime}}\sum_{k\ge3}\frac{2\log p}{p^{k/2}}<\infty.
+\]
+[AllHigherPrimePowersHaveAllLevelGeneratorApproximation](AllHigherPrimePowersHaveAllLevelGeneratorApproximation.lean)
+proves absolute convergence of its complete correlation on whole-line $L^2$, directed finite-sum convergence, and the stronger
+joint error estimate
+\[
+\sum_p\sum_{k\ge3}\frac{2\log p}{p^{k/2}}
+ \left|C_{k\log p}(f)-C_{k\log p}(f-Q_Af)\right|
+\le\frac{96H\Gamma(f)}{1+\log A}.
+\]
+This bounds the complete source and every finite prime-power selection before cancellation. For actual finite cell sources,
+one $A>\exp(96H/\delta)$ gives error at most $\delta\Gamma(f)$ simultaneously for every profile, horizon and finite selection.
+All retained generator orbits remain intact. General BV profiles retain their noncell component.
+
+[CriticalEulerCoefficientMassStartsAtCubes](CriticalEulerCoefficientMassStartsAtCubes.lean) gives the sharp boundary:
+the coefficient tail beginning at exponent $r+1$ is summable exactly when $r\ge2$.
+Both $\sum_p2\log p/\sqrt p$ and $\sum_p2\log p/p$ diverge. This classifies the absolute-coefficient method; it does not
+assert divergence of actual compact-source correlations or exclude signed prime–pole compensation. The higher-power theorem
+is its positive survivor, with the literal physical source and one original Gamma reserve.
 
 ---
 
@@ -161,9 +184,11 @@ infinite-dimensional.
 
 ## 6. Open problems
 
-1. **Joint full-Weil payment** using the all-level Gamma allocation: control growing prime families, continuous Gamma interactions and
-   polar terms together. Every fixed finite Euler family has uniform all-level generator approximation with an explicit prime-set
-   cost; a summable all-prime allocation and a full-form bounded-index theorem remain open.
+1. **Joint full-Weil payment** using the all-level Gamma allocation: transfer the first-prime and square layers with their signed
+   compensation, continuous Gamma interactions and polar terms. Every fixed finite Euler family and the complete all-prime
+   higher-power sector have uniform all-level generator approximation. The existing one-level square-pole and coarse/detail
+   estimates do not supply this full projection transfer. Uniform upper Gamma control of the all-level cutoff is a possible
+   intermediate target, not an assumed input. A full-form bounded-index theorem remains open.
 2. **Twin-selective control of generator orbits** with Gamma and both poles; transfer of the discrete prime gap beyond narrow spacing.
 3. **Arithmetic upper bound on $\mathcal E_{\rm crit}$** retaining exterior rows (finiteness ⇒ finite off-line support; $\mathcal E_{\rm crit}\le1294047/2000$ ⇔ RH).
 4. **Growing Ramanujan families** controlling a useful full-source domain, with a complement estimate surviving Gamma and the continuous

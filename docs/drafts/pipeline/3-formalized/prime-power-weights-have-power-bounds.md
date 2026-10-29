@@ -3,7 +3,7 @@
 - **ID:** prime-power-weights-have-power-bounds
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Hecke Mertens programme](../1-in-progress/hecke-character-mertens-via-ideal-hyperbola.md)
+- **Source:** [Hecke Mertens programme](hecke-character-mertens-via-ideal-hyperbola.md)
 - **Lean:** `GaloisForLFunctions/ArtinMertens/PrimePowerWeightsHavePowerBounds.lean`
 - **Statement:** For every number field and `0<sigma<1`, there is `B>=0` such that `sum_(N(p)^k<=N) log N(p)*(N(p)^k)^(-sigma) <= B*N^(1-sigma)` for every integer `N>=1`.
 
@@ -23,4 +23,5 @@ The complete scratch passes without warnings. The new theorem and the
 existing `exists_abs_primeMertens_sub_log_le` both have transitive axiom
 sets `[propext, Classical.choice, Quot.sound]`.
 The module is wired into the ArtinMertens umbrella. Its final direct
-source audit is pending. The Hecke Mertens consumer is written.
+source audit with `lake --old env lean` passes without warnings.
+The required olean is generated for the written Hecke Mertens consumer.

@@ -63,6 +63,8 @@ The global function agrees with the counting continuation on their common half-p
 For nontrivial characters, harmonic ideal sums approach the value at one with a power saving,
 and their logarithmically weighted versions remain bounded. The weighted ideal von Mangoldt
 identity gives the exact prime-power hyperbola formula for these sums.
+Nonvanishing at one then bounds the prime-power and prime-ideal Mertens sums for nontrivial
+characters. For the trivial character, both sums are `log N + O(1)`.
 -/
 import GaloisForLFunctions.HeckeLFunctions.HeckeThetaHasMellinContinuation
 import GaloisForLFunctions.HeckeLFunctions.HeckeThetaIsJointlyContinuous
@@ -81,3 +83,4 @@ import GaloisForLFunctions.HeckeLFunctions.QuadraticHeckeProductsHavePositiveOcc
 import GaloisForLFunctions.HeckeLFunctions.HeckeLFunctionsDoNotVanishOnTheLineReOne
 import GaloisForLFunctions.HeckeLFunctions.HeckeHarmonicSumsHavePowerSavingTails
 import GaloisForLFunctions.HeckeLFunctions.HeckeHarmonicSumsSatisfyTheIdealHyperbolaIdentity
+import GaloisForLFunctions.HeckeLFunctions.HeckeCharactersSatisfyMertensBounds

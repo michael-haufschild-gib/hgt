@@ -3,7 +3,7 @@
 - **ID:** hecke-harmonic-sums-have-power-saving-tails
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Mertens programme](../1-in-progress/hecke-character-mertens-via-ideal-hyperbola.md)
+- **Source:** [Mertens programme](hecke-character-mertens-via-ideal-hyperbola.md)
 - **Lean:** `GaloisForLFunctions/HeckeLFunctions/HeckeHarmonicSumsHavePowerSavingTails.lean`
 - **Statement:** For every nontrivial ray class character and `delta=1/(2[K:Q])>0`, the actual harmonic ideal sums satisfy `|L(1,psi)-Spsi(N)| <= C*(N+1)^(-delta)`. Their logarithmically weighted counterparts are uniformly bounded.
 

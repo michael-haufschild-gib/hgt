@@ -29,8 +29,20 @@ The subsequent Mathlib search located
 `NumberTheory/DirichletCharacter/GaussSum.lean`:
 `gaussSum_mulShift_of_isPrimitive` is also specialized to `ZMod N`.
 `NumberTheory/GaussSum.lean` has the general finite-ring
-`gaussSum_mulShift_eq` for a unit shift. Its full statement and the
-primitive nonunit argument still need source inspection before reuse.
+`gaussSum_mulShift_eq` for a unit shift. Both sources have now been read:
+the general unit identity is finite reindexing; the rational primitive
+argument derives quotient-character descent from a nonzero Gauss sum
+and a congruence kernel. General norm identities in the Gauss-sum source
+are field-specialized, so they do not supply the ideal-quotient result.
+
+The corpus quotient-unit query did not locate a general finite-ring
+lifting theorem. Subsequent Mathlib leads include the rational
+`ZMod.unitsMap_surjective` and
+`IsLocalRing.surjective_units_map_of_local_ringHom`. The latter lifts
+units along a surjective local homomorphism; its proof is inspected.
+Applying it to an arbitrary ideal quotient still requires an actual
+local decomposition or a separate lifting proof. These search results
+are leads, not an assertion that a general theorem is absent.
 
 ## Candidate finite-ring mechanism
 
@@ -65,6 +77,23 @@ as an unexplained analytic or arithmetic interface.
 5. Assemble the completed reflection with the exact discriminant,
    conductor and parity factors, and audit the root number.
 
-No new Lean scratch is written for this card. Finish the Mertens consumer
-checks before starting this arithmetic formalization. Class field theory
+HL6, including both forms of the Mertens bounds, is now fully audited.
+No new Lean scratch is yet written for this card. This arithmetic
+functional-equation work is the next Hecke gate; class field theory
 still follows the completed Hecke programme.
+
+## Finite-ring unit-lifting route
+
+For a finite commutative ring, a positive power `e=r^n` of every element
+can be chosen idempotent. If a ring homomorphism sends `r` to a unit,
+then it sends `e` to one. The element `r*e+(1-e)` is a unit lifting the
+same image, with inverse `r^(n-1)*e+(1-e)`. Expanding the product and
+using `e^2=e` proves the inverse identity. This would lift units along
+every surjective ring homomorphism with finite source, avoiding a new
+Chinese-remainder decomposition.
+
+The corpus query on finite idempotent powers has been run; its leads
+only concerned powers of elements already known idempotent. A Mathlib
+search for the positive idempotent-power existence theorem is the next
+step before implementing this lifting argument. The construction has
+not yet been checked in Lean.

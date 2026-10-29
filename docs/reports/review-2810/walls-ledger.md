@@ -14,7 +14,7 @@
 
 The families interlock:
 
-- The selective margin of Wall 1 is proved only at narrow widths; carrying it into the separated regime and to overlap is a Wall 3 problem.
+- A smooth plateau has a positive complete-matrix floor at every fixed separated width [S]; carrying that sign through touching and overlap is a Wall 3 problem.
 - The cross-level prime couplings of Wall 3 are Wall 1 prime-error sequences, and their positivity is one-prime tower positivity, which is RH.
 - Over \(\mathbb F_q\) the Wall 14 forcing is a count; over \(\mathbb Z\) the corresponding count is a Wall 1 estimate.
 - Precision rigidity forces any deciding input to act at unbounded aperture, which is Wall 3 (inference).
@@ -35,24 +35,24 @@ Here \(W\) is the full Weil form, \(D\) the positive collided form and \(\mathfr
 5. **[RH]**: equivalent to RH.
 6. **[RH+]**: stronger than RH.
 
-## Where the walls changed
+## Principal wall boundaries
 
-| Face | Change | Current content |
+| Face | Status | Current content |
 |---|---|---|
 | **1.18 Gauge selection** | **Margin not selective at its maximum** | Gap \(\ge(2\log2)c_N^2\) uniformly over gauges [L]. Submaximal gaps are attained by failing multiplicative twins [L]. Single-prime flips \(p\ge11\) attain \(2\log2\) exactly and fail complete positivity [S]. |
-| **1.26 Finite-support stratum** | **Raised to LH** | Finite support \(\Rightarrow\) zeros approach the line \(\Rightarrow\) LH \(\wedge\) \(\Theta<1\) [L]. All finite-support receivers are [FS]. |
+| **1.26 Finite-support stratum** | **Implies LH** | Finite support \(\Rightarrow\) zeros approach the line \(\Rightarrow\) LH \(\wedge\) \(\Theta<1\) [L]. All finite-support receivers are [FS]. |
 | **1.27 Critical-line census** | **Priced** | Exact exchange rate beyond bandwidth one [L]: \(70\%\) needs \(E(1/9)\le4\); \(3/4\) needs twice GUE on \((1,4/3]\). \(\ge0.8876\) simple or critical [L]. |
-| **1.29 Precision rigidity** | **New** | \(\lambda\) and \(\lambda+\varepsilon n^{-\eta}\), \(\eta<\tfrac12\), never both tower-positive; interval statements stable under relative error \(o(1)\) cannot decide the sign [S]. |
-| **1.30 Census parity** | **New (inference)** | Trans-threshold prime pairs enter with a signed kernel whose Poisson term cancels only against the exact Hardy–Littlewood term [L]; one-sided sieves give nothing, two-sided asymptotics are parity problems. |
+| **1.29 Precision rigidity** | **Exact obstruction** | \(\lambda\) and \(\lambda+\varepsilon n^{-\eta}\), \(\eta<\tfrac12\), never both tower-positive; interval statements stable under relative error \(o(1)\) cannot decide the sign [S]. |
+| **1.30 Census parity** | **Boundary (inference)** | Trans-threshold prime pairs enter with a signed kernel whose Poisson term cancels only against the exact Hardy–Littlewood term [L]; one-sided sieves give nothing, two-sided asymptotics are parity problems. |
 | **1.31 Shallow energy constant** | **Order closed; constant open** | \(hE_h=O(N)\) at depth \(1/\log T\) [L]; the majorant counts all zeros; \(70\%\) needs \(hE_h+R_{\rm deep}\le\tfrac3{20}N\). |
-| **1.32 Prime-free existence form** | **New receiver** | RH iff for every aperture some real weights make \(\zeta\)'s full Weil functional nonnegative up to that aperture [L]; its dual is the blind cone of EWU. |
-| **3.31 Dyadic self-similarity** | **Inference → theorem** | Positivity on one prime's towers is RH for one fixed prime [L] and for pole-free generators of arbitrarily small support [S]. |
+| **1.32 Prime-free existence form** | **Exact receiver** | RH iff for every aperture some real weights make \(\zeta\)'s full Weil functional nonnegative up to that aperture [L]; its dual is the blind cone of EWU. |
+| **3.31 Dyadic self-similarity** | **Exact receiver** | Positivity on one prime's towers is RH for one fixed prime [L] and for pole-free generators of arbitrarily small support [S]. |
 | **3.35 Uniform finite-index chain** | **Square layer closed; last layer is [FS]** | \(\operatorname{ind}(\Gamma-S_2-M_{\rm odd})\le A+1\) with the square pole restored [L]. Remaining: \(k=1\), odd diagonals, heads, coarse error, poles; completing it is finite support, hence LH. |
-| **3.38 Separated-regime spectrum** | **New; trial layer closed** | Exact splitting of the complete matrix at the spacing; simple, proper trial energies at every \(0<c<1\) [L]. Open: the actual bottom spectrum past Robin–Euler. |
-| **3.39 Index topology** | **New boundary** | Bounded negative index passes to pointwise kernel limits [S]; \(L^2\) limits of tests do not carry it. |
+| **3.38 Separated-regime spectrum** | **Fixed-width full sign supplied [S]** | Exact bounded complete-spectrum counts; one smooth plateau gives a positive full-matrix floor at every fixed \(0<c<1\). No uniform horizon as \(c\uparrow1\), touching/overlap estimate or complete-source exhaustion. |
+| **3.39 Index topology** | **Boundary** | Bounded negative index passes to pointwise kernel limits [S]; \(L^2\) limits of tests do not carry it. |
 | **14.39 Heat-flow horizon** | **Split** | High collisions bounded uniformly in \(t\) iff zeros approach the line [S]; the near-axis count is the flow's own content. |
-| **14.41 Krein–Langer structure** | **New boundary** | Positive kernel plus \(\kappa\) separated hyperbolic pairs has index exactly \(\kappa\); a positive part never pays a pair [S]. Finite index is a structure, not a smallness. |
-| **14.42 Tensor amplification over \(\mathbb Z\)** | **New boundary (inference)** | The tensor square of the prime error, \((\psi(x)-x)^2\), returns WL's mean-square receiver with abscissa \(2\Theta\). Deligne's extra input is local purity on a base with known cohomology, i.e. 14.37. |
+| **14.41 Krein–Langer structure** | **Boundary** | Positive kernel plus \(\kappa\) separated hyperbolic pairs has index exactly \(\kappa\); a positive part never pays a pair [S]. Finite index is a structure, not a smallness. |
+| **14.42 Tensor amplification over \(\mathbb Z\)** | **Boundary (inference)** | The tensor square of the prime error, \((\psi(x)-x)^2\), returns WL's mean-square receiver with abscissa \(2\Theta\). Deligne's extra input is local purity on a base with known cohomology, i.e. 14.37. |
 
 "Closed" means the stated question is answered, never that a route is closed. "Open" means an input is missing. "Boundary" means a proved limitation with a positive survivor.
 
@@ -63,7 +63,7 @@ Here \(W\) is the full Weil form, \(D\) the positive collided form and \(\mathfr
 | **1.0 Fixed-strip first rung** | Open [≥QRH]; external claim | All strip dictionaries read \(\Theta\): escaped, Hecke-defect, theta-prefix, Vaughan, quotient-head at any cutoff, Suzuki finite contact. Density envelopes never force vanishing [L]. The Chen–Gupta–Li \(7/8\) claim has no capstone; its threshold is not extracted. |
 | **1.1 Critical signed cancellation** | Open [RH] | Lag, Abel, history, regularized-series and one-sided \(\psi\) receivers need the actual signed bound. The RP history has an RH-equivalent linear floor and an unconditional cofinal linear escape: no sublinear floor exists. |
 | **1.2 Axis orientation** | Open [RH] | Ward caps, winding and Newton margins detect; extinction or all-disc orientation missing. |
-| **1.3 Complete Weil positivity** | Open [RH] | High details, narrow sections, separated-regime trial energies and complete-cell realization known; index zero on the complete source not. |
+| **1.3 Complete Weil positivity** | Open [RH] | High details, complete-cell realization and fixed separated full-matrix positivity [S] are supplied; index zero on the complete source is not. |
 | **1.4 Arithmetic cone membership** | Open [RH] | Identification and rigidity say what the source is, not that it is positive. |
 | **1.5 Contrast equality** | Open [RH] | BSY/Jensen/Li identities keep a defect whose vanishing needs arithmetic. |
 | **1.6 Required uniformity** | Open | Fixed rank/order/height and orthant positivity leave the simultaneous receiver unproved. |
@@ -129,20 +129,22 @@ Evidence: [lag](../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCr
 | **3.27 Complete residual** | Exact boundary | Bounded projection; residual radical = Weil radical; complete cells capture every finite index. |
 | **3.28 All-prime/class exhaustion** | Gap closed; bulk open | Fixed packets and bounded spectrum realized; growing conductors, complement and Gamma/pole coupling open. |
 | **3.29 Valuation versus residue classes** | Exact boundary | Residue counterterm rank one; character finite parts \(-L'/L(1,\chi)\). |
-| **3.30 Balanced Haar completion** | Details closed | Gamma pays details and a mean graph; twin-blind floor above index \(A\). |
+| **3.30 Balanced Haar completion** | Detail and cross-error estimates supplied | Gamma pays details and a mean graph; twin-blind floor above index \(A\). The signed one-level Gamma diagonal error costs at most \(16e^{1/2}\) times ordinary mass, including low indices [S]. Joint diagonal/arithmetic/pole absorption and all-level upper Gamma control remain separate. |
 | **3.31 Dyadic self-similarity** | Exact structure; reduction is RH | Complete cells are \(T_{\log2}\)-orbits of finitely many generators plus paid details. Positivity on one prime's towers is RH for one fixed prime [L], also for pole-free generators supported in \([-\varepsilon,\varepsilon]\) [S]. |
 | **3.32 Cross-level coupling** | Three parts closed; one is 3.31 | Pole hyperbolic and removable; Gamma \(\pi4^{-(d-1)}\); touching uniform. The Chebyshev part is almost periodic under RH and never a summable cost (inference); its positivity is 3.31. |
 | **3.33 Renormalization topology** | Boundary | No exponential amplitude renormalization gives uniform graph control. |
 | **3.34 Gamma boundary rigidity** | Closed | Norm \(\pi/2\), exact square reserve, no maximizer, no uniform gap [S]. |
 | **3.35 Uniform finite-index chain** | Closed except the last layer [FS] | \(k\ge3\), prime two, finite \(P\), and the full even-power source with odd mixed powers \(k\ge3\) [L]. Remaining: \(k=1\) over all primes, odd diagonals, heads, coarse error, poles. |
-| **3.36 Orbit approximation versus compactness** | L² and fixed-Euler tails paid; noncompactness exact | All real-lag errors are ≤\(96\Gamma/(1+\log A)\); complete finite Euler families cost \(96C_P\Gamma/(1+\log A)\), uniformly across levels and horizons [K]. One Haar orbit is noncompact. Growing-prime and complete-form transfer remain open. |
+| **3.36 Orbit approximation versus compactness** | L², fixed-Euler and all-prime higher-power tails paid; noncompactness exact | All real-lag errors are ≤\(96\Gamma/(1+\log A)\). Fixed Euler families cost \(96C_P\Gamma/(1+\log A)\); all primes with exponents≥3 jointly cost \(96H\Gamma/(1+\log A)\), even summing absolute termwise errors and uniformly over finite selections [K]. Prime and square coefficient masses diverge [K]; signed/polar transfer of those layers remains. One retained Haar orbit is noncompact; full-form sign and index do not follow. |
 | **3.37 Quasi-analytic boundary** | Boundary (inference) | \(\alpha=1\) would need compactly supported profiles of quasi-analytic class; Denjoy–Carleman excludes them. |
-| **3.38 Separated-regime spectrum** | Trial layer closed; bottom spectrum open | Exact splitting at the spacing; simple, proper trial energies at every \(c<1\); pole charge below the first excitation [L]. Lower spectral windows [S]. |
+| **3.38 Separated-regime spectrum** | Fixed-width full sign supplied [S] | Bounded actual spectral counts equal arithmetic counts. One plateau gives floor \(b\) for any \(b<2-\log(2\pi)\) at every fixed \(0<c<1\), eventually in a horizon depending on \(c\). Touching/overlap remains open. |
 | **3.39 Index topology** | Boundary [S] | Bounded index is closed under pointwise kernel limits; atomic and truncated families converge in that topology; the Weil form is not continuous on \(L^2\) of tests. |
 
 Evidence: [Denjoy–Carleman](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheDenjoyCarlemanProfiles.lean), [gap and scalar](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar.lean), [multiresolution](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheCompleteSourceIsADyadicMultiresolution.lean), [one prime](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/OnePrimeSeesTheWholeDefectOfZeta.lean), [pole-free generators](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheDyadicSignOfAPoleFreeGeneratorIsRH.lean), [pole coupling](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/ThePoleCouplesTheLevelsHyperbolically.lean), [separated levels](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/SeparatedLevelsCoupleThroughTheChebyshevError.lean), [square plus odd index](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/SquaresAndOddHigherMixedPowersHaveUniformFiniteIndex.lean), [noncompact orbit](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/CompactDetailsDoNotMakeTranslationOrbitsCompact.lean), [matrix splitting](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixSplitsAtTheSpacing.lean), [trial energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheCompleteWeilTrialEnergiesAreSimpleAndProper.lean), [index closure](../../../formal/GaloisForLFunctions/HeckeKreinToeplitz/BoundedIndexIsClosedUnderPointwiseLimits.lean), [escape visibility](../../../formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/RHIsTheVisibilityOfEveryEscapeState.lean).
 
-The all-level correlation bounds use orthogonal tail localization and Gamma translation invariance: [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean) [K]. They close fixed-factor approximation inside Wall 3, without supplying the selective sign of Wall 1.
+The all-level correlation bounds use orthogonal tail localization and Gamma translation invariance: [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean), [all-prime higher powers](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/AllHigherPrimePowersHaveAllLevelGeneratorApproximation.lean) [K]. Here \(H=\sum_{p,k\ge3}2\log p/p^{k/2}<\infty\). The [exact coefficient threshold](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/CriticalEulerCoefficientMassStartsAtCubes.lean) [K] isolates the prime and square layers as the obstruction to absolute coefficient payment. Divergent coefficients do not refute source-dependent convergence or signed compensation. These are scoped transfer results inside Wall 3; the selective sign of Wall 1 remains open.
+
+The one-level mass error is [signed Haar Gamma boundary payment](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarGammaCrossTermsCostOnlyMass.lean) [S]. The fixed separated full sign is [smooth-plateau matrix positivity](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean) [S]; its horizon dependence prevents an inference of touching/overlap uniformity.
 
 ## Wall 14 — Realization and forcing
 
@@ -179,7 +181,7 @@ The all-level correlation bounds use orthogonal tail localization and Gamma tran
 | **14.29 Arithmetic base across primes** | Construction boundary | Closure gives exactly nonnegative Lorentzian Hessians; Ramanujan local factors excluded; decaying isometric ladders carry no positive square. |
 | **14.30 Zero moments** | Closed identification | Zero moments are Rosati-type pairings. |
 | **14.31 Horizon finite part** | Local payment closed; gap closed | Raw threshold \(p\ge47\); valuation payment for every prime; sharp all-prime gap \(2\log2\). |
-| **14.32 Actual trickle-down** | Narrow regime extended | \(K_\star\) up to a quarter of Robin–Euler; method cap about half; beyond Robin–Euler the open content is the gap on \(p=0\) plus one scalar (3.38). |
+| **14.32 Actual trickle-down** | Scoped forcing; overlap open | Narrow arbitrary-shape control and fixed separated full-matrix plateau positivity [S] are supplied. A source-faithful mechanism for touching/overlap or complete-source sign remains missing (3.38). |
 | **14.33 Conformal replacement** | Open beyond tested maps | Hecke dilation has factor one; power/successor maps are not conformal. |
 | **14.34 Overlap frustration** | Obstruction | \(\rho<1\) Metzler; \(\rho>1\) frustrated; \(\rho=1\) open. |
 | **14.35 Adjunction versus Xi** | Fidelity boundary | Adjunction energies are actual prime-matrix eigenvalues; not Xi zeros. |
@@ -197,12 +199,12 @@ Evidence: [count](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeomet
 
 | Excluded shortcut | Strongest survivor | Replacement question |
 |---|---|---|
-| Twin-blind positivity on RH-complete families | Selection theorem; exact margins \(2\log2\)/\(0\) | A parity-breaking input paying the separated regime (Q1). |
+| Twin-blind positivity on RH-complete families | Selection theorem; exact margins \(2\log2\)/\(0\) | Fixed separated plateau positivity [S]; signed transfer to overlap still needs its own estimate (Q1). |
 | Maximal margin as a selector of \(\zeta\) | Margin paid by harmonic correlation; maximal gap shared by \(\omega_p\), \(p\ge11\) [S] | An input that sees every prime's sign. |
 | Interval-stable prime information (Brun–Titchmarsh, short-interval PNT) as a sign input | Precision rigidity: \(\Lambda+\varepsilon n^{-\eta}\) fails along every nonnegative tower [S] | A structural input (Euler product and functional equation used as identities). |
 | Narrow generators as a way to shorten towers | Tower positivity is RH at every generator size [S] | None; the tower must be unbounded. |
-| Pure Markov positivity beyond the spacing | Markov negative under overlap; RH iff pole-hyperplane Markov sign; gap/scalar reduction | The gap on \(p=0\) beyond Robin–Euler (3.38). |
-| Absolute pole costs in narrow positivity | Quarter of Robin–Euler; method cap about half | A signed treatment of the pole term. |
+| Pure Markov positivity beyond the spacing | Markov negative under overlap; RH iff pole-hyperplane Markov sign; gap/scalar reduction | The complete matrix can be positive at every fixed separated width [S]; keep its signed pole contribution through overlap. |
+| Absolute pole costs in narrow positivity | Quarter of Robin–Euler; method cap about half | The signed pole charge yields a positive plateau floor throughout strict separation [S]; horizon uniformity and overlap remain open. |
 | Summable cross-level costs on generator orbits | Gamma and touching costs summable; pole removable | One-prime tower positivity, which is RH. |
 | Absolute payment of all prime layers | Uniform finite index for every layer except \(k=1\), square pole included | The last layer is [FS], hence LH-strength. |
 | Positive-part repair of a finite index | Krein–Langer index formula: separated pairs keep their index [S] | A structural index ceiling from local data. |
@@ -222,7 +224,7 @@ Evidence: [count](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeomet
 
 ## Consequences for priorities
 
-- [Q1](obstacles-summary.md#q1) targets **1.18 / 1.24 / 3.26 / 3.38 / 14.32**: selective positivity in the separated regime past Robin–Euler.
+- [Q1](obstacles-summary.md#q1) targets **1.18 / 1.24 / 3.26 / 3.38 / 14.32**: signed full-form transfer from strict separation through touching and overlap.
 - [Q2](obstacles-summary.md#q2) targets **1.27 / 1.30**: the two-sided pair energy at bandwidth \(10/9\).
 - [Q3](obstacles-summary.md#q3) targets **1.0**: the threshold of the only available vanishing mechanism.
 - **1.26 / 3.35 / 14.39** (finite support) are LH-level; they are not near-term priorities, and any claimed progress must be checked against the LH implication.

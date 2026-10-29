@@ -37,9 +37,8 @@ theorem summable_criticalEulerTailWeight_of_two_le {r : ℕ} (hr : 2 ≤ r) :
     Summable (criticalEulerTailWeight r) := by
   have hinj : Function.Injective (fun pk : Nat.Primes × ℕ => (pk.1, pk.2 + (r - 2))) := by
     intro a b h
-    have hp : a.1 = b.1 := congrArg (fun pk : Nat.Primes × ℕ => pk.1) h
-    have hk : a.2 + (r - 2) = b.2 + (r - 2) :=
-      congrArg (fun pk : Nat.Primes × ℕ => pk.2) h
+    have hp := congrArg (fun pk : Nat.Primes × ℕ => pk.1) h
+    have hk := congrArg (fun pk : Nat.Primes × ℕ => pk.2) h
     exact Prod.ext hp (Nat.add_right_cancel hk)
   have hs := (summable_xiMassPrimePowerCriticalWeight_high.mul_left 2).comp_injective hinj
   refine hs.congr fun pk => ?_

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.SmoothPlateausRecoverTheCompletedRobinMargin
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ThePlateauShapeAndChargeHaveTheirIndicatorLimits
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum
 import Mathlib.Analysis.Matrix.PosDef
 
@@ -14,7 +14,7 @@ for each fixed width ratio below one. No horizon uniformity in that ratio is ass
 noncomputable section
 
 open MeasureTheory Filter Topology Finset
-open scoped Classical
+open scoped Classical RealInnerProductSpace
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
@@ -68,17 +68,23 @@ theorem eventually_completeWeil_eigenvalues_ge_of_lt_one
     exact mem_filter.mpr ⟨mem_univ _, lt_of_not_ge hi⟩
   simpa only [hzero, not_mem_empty] using himem
 
-/-- A single smooth plateau gives any strict spectral floor below `2 - log (2π)`.
-The profile is independent of the separated width ratio; the horizon may depend on it. -/
-theorem exists_plateau_eventually_completeWeil_eigenvalues_ge {b : ℝ}
-    (hb : b < 2 - Real.log (2 * Real.pi)) :
+/-- Almost all of the unit support's mass can be retained with any strict spectral
+floor below `2 - log (2π)`. The profile is independent of the width ratio. -/
+theorem exists_near_unit_plateau_eventually_completeWeil_eigenvalues_ge {b ε : ℝ}
+    (hb : b < 2 - Real.log (2 * Real.pi)) (hε : 0 < ε) :
     ∃ η : ℝ, 0 < η ∧ η < 1 / 2 ∧
+      1 - ε < (∫ u, plateau η u ^ 2) ∧
       ∀ c : ℝ, 0 < c → c < 1 →
         ∀ᶠ N : ℕ in atTop, ∀ i : PrimeHorizonIndex N,
           b ≤ completeWeilEigenvalue (plateau η) c N i := by
-  obtain ⟨η, hη, hη2, hshape⟩ := exists_plateau_completed_shape_gt
-    (a := b + Real.log (2 * Real.pi)) (by linarith only [hb])
-  refine ⟨η, hη, hη2, fun c hc0 hc1 => ?_⟩
+  have hshape := tendsto_plateau_completed_margin.eventually (lt_mem_nhds hb)
+  have hmass := tendsto_integral_plateau_sq.eventually
+    (lt_mem_nhds (show 1 - ε < 1 by linarith only [hε]))
+  have hsmall : ∀ᶠ η : ℝ in 𝓝[>] 0, η < 1 / 2 :=
+    nhdsWithin_le_nhds (gt_mem_nhds (by norm_num))
+  obtain ⟨η, hmargin, hmassη, hη2, hη⟩ :=
+    (hshape.and (hmass.and (hsmall.and self_mem_nhdsWithin))).exists
+  refine ⟨η, hη, hη2, hmassη, fun c hc0 hc1 => ?_⟩
   have hM : 0 < ∫ u, plateau η u ^ 2 :=
     lt_of_lt_of_le (by linarith only [hη2]) (integral_plateau_sq_ge hη hη2.le)
   apply eventually_completeWeil_eigenvalues_ge_of_lt_one (contDiff_plateau η)
@@ -86,7 +92,35 @@ theorem exists_plateau_eventually_completeWeil_eigenvalues_ge {b : ℝ}
   have hfloor := completed_shape_le_completeWeilAdjunctionEnergy_one
     (contDiff_plateau η).continuous (fun _ hu => plateau_eq_zero hη hu) hM hc0 hc1.le
   simp only [completeWeilPoleShift, one_mul] at hfloor
-  linarith only [hshape, hfloor]
+  linarith only [hmargin, hfloor]
+
+/-- A single smooth plateau gives the same spectral floor at every fixed separated
+width ratio. The horizon may depend on that ratio. -/
+theorem exists_plateau_eventually_completeWeil_eigenvalues_ge {b : ℝ}
+    (hb : b < 2 - Real.log (2 * Real.pi)) :
+    ∃ η : ℝ, 0 < η ∧ η < 1 / 2 ∧
+      ∀ c : ℝ, 0 < c → c < 1 →
+        ∀ᶠ N : ℕ in atTop, ∀ i : PrimeHorizonIndex N,
+          b ≤ completeWeilEigenvalue (plateau η) c N i := by
+  obtain ⟨η, hη, hη2, _, hall⟩ :=
+    exists_near_unit_plateau_eventually_completeWeil_eigenvalues_ge hb (ε := 1) zero_lt_one
+  exact ⟨η, hη, hη2, hall⟩
+
+/-- The same margin controls every vector of the literal completed quadratic form. -/
+theorem exists_plateau_eventually_completeWeilEnergy_ge {b : ℝ}
+    (hb : b < 2 - Real.log (2 * Real.pi)) :
+    ∃ η : ℝ, 0 < η ∧ η < 1 / 2 ∧
+      ∀ c : ℝ, 0 < c → c < 1 →
+        ∀ᶠ N : ℕ in atTop, ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
+          b * ‖x‖ ^ 2 ≤ completeWeilEnergy (plateau η) c N x := by
+  obtain ⟨η, hη, hη2, hall⟩ := exists_plateau_eventually_completeWeil_eigenvalues_ge hb
+  refine ⟨η, hη, hη2, fun c hc0 hc1 => ?_⟩
+  filter_upwards [hall c hc0 hc1] with N hN
+  intro x
+  rw [completeWeilEnergy, HTGeometry.hermitianEnergy_eq_sum,
+    ← (completeWeilMatrix_isHermitian (plateau η) c N).eigenvectorBasis.sum_sq_inner_left x,
+    mul_sum]
+  exact sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hN i) (sq_nonneg _)
 
 /-- The literal complete Weil matrix is eventually positive definite at every fixed
 strictly separated width, for one nonnegative smooth compact profile. -/

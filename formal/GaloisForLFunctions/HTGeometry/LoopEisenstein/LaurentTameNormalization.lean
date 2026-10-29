@@ -75,6 +75,13 @@ theorem laurentTameSymbol_constant_X (a : Fˣ) :
         (constant_mem_valuation_kernel F a), tameVal_X, zpow_one]
   exact residue_constant F a
 
+/-- Every coefficient unit is attained by the Laurent tame homomorphism. -/
+theorem laurentTameHom_surjective : Function.Surjective (laurentTameHom F) := by
+  intro z
+  refine ⟨milnorSym2 (LaurentSeries F) (laurentConstantUnit F z.toMul) (laurentXUnit F), ?_⟩
+  rw [laurentTameHom_symbol, laurentTameSymbol_constant_X]
+  rfl
+
 /-- Constant and degree coroot lifts have the expected inverse-square commutator. -/
 theorem constant_X_diagonal_commutator (a : Fˣ) :
     LoopSL2.diagonalSection F (laurentConstantUnit F a) *
@@ -83,6 +90,23 @@ theorem constant_X_diagonal_commutator (a : Fˣ) :
       (LoopSL2.diagonalSection F (laurentXUnit F))⁻¹ =
       LoopSL2.centralEmbedding F (a⁻¹ * a⁻¹) := by
   rw [LoopSL2.diagonalSection_commutator, laurentTameSymbol_constant_X]
+
+/-- The constant/degree commutator vanishes exactly for coefficient units of square one. -/
+theorem constant_X_diagonal_commutator_eq_one_iff (a : Fˣ) :
+    LoopSL2.diagonalSection F (laurentConstantUnit F a) *
+      LoopSL2.diagonalSection F (laurentXUnit F) *
+      (LoopSL2.diagonalSection F (laurentConstantUnit F a))⁻¹ *
+      (LoopSL2.diagonalSection F (laurentXUnit F))⁻¹ = 1 ↔ a * a = 1 := by
+  rw [constant_X_diagonal_commutator]
+  constructor
+  · intro h
+    have hi : a⁻¹ * a⁻¹ = 1 := LoopSL2.centralEmbedding_injective F
+      (h.trans (map_one (LoopSL2.centralEmbedding F)).symm)
+    simpa using congrArg (fun u : Fˣ => u⁻¹) hi
+  · intro h
+    have hi : a⁻¹ * a⁻¹ = 1 := by
+      simpa using congrArg (fun u : Fˣ => u⁻¹) h
+    rw [hi, map_one]
 
 end
 

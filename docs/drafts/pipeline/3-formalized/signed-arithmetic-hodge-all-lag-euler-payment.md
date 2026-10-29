@@ -53,6 +53,9 @@ Exact odd-prime commutation is neither asserted nor needed.
 
 No Gamma contraction under projection is assumed. The whole-line complement
 of the cell space is retained for general profiles; only actual cell sources
-have the finite-generator interpretation. Finite-prime bounds do not give a
-summable allocation over all primes. Continuous Gamma/pole interactions and
-the retained-orbit sign remain full-Weil research obligations.
+have the finite-generator interpretation. The complete-power coefficient
+cost is not summable over all primes. The [higher-power theorem](signed-arithmetic-hodge-infinite-prime-power-payment.md)
+pays every prime jointly for exponents at least three and classifies the
+divergent prime/square coefficient boundary. Signed transfer of those first
+two layers, continuous Gamma/pole interactions and retained-orbit sign
+remain full-Weil research obligations.

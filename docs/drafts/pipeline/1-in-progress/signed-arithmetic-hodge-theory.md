@@ -385,6 +385,40 @@ assumed. For arbitrary BV profiles, f-Q_A f retains the noncell component;
 the finite-generator interpretation applies to actual cell sources.
 
 Both modules pass individual Lean checks and transitive-axiom audits, using
-only propext, Classical.choice and Quot.sound. The coefficient costs do not
-provide a summable all-prime allocation. Full Gamma/pole comparison and
+only propext, Classical.choice and Quot.sound. The complete-power coefficient
+costs are not summable over all primes. Full Gamma/pole comparison and
 retained-orbit signs remain research problems.
+
+### All-prime higher-power payment and exact coefficient boundary
+
+CriticalEulerCoefficientMassStartsAtCubes proves that the literal critical
+coefficient tail beginning at exponent r+1 is summable exactly when r>=2.
+Both first-prime and square-prime coefficient masses diverge. This is a
+boundary of absolute coefficient payment, not a divergence theorem for
+compact-source correlations or an obstruction to signed pole compensation.
+
+AllHigherPrimePowersHaveAllLevelGeneratorApproximation pays the complete
+all-prime source for exponents k>=3. Put H=sum_(p,k>=3)2log(p)/p^(k/2).
+It proves absolute convergence on whole-line L2, directed finite-sum
+convergence, and the literal original BV integral formula. The sum of
+absolute coefficientwise head changes is at most
+
+96 H Gamma(f)/(1+log A).
+
+The same reserve pays the complete source and every finite selection.
+One A>exp(96 H/delta) gives delta Gamma(f) error for all original finite
+cell profiles, horizons and finite prime-power selections. All retained
+generator levels remain. Arbitrary BV profiles retain their noncell component.
+
+Both modules pass their final individual Lean and transitive-axiom audits;
+all printed capstones use only propext, Classical.choice and Quot.sound.
+The [formalized card](../3-formalized/signed-arithmetic-hodge-infinite-prime-power-payment.md)
+records the positive theorem and sharp coefficient boundary together.
+
+The remaining source-transfer question concerns the first-prime and square
+layers with signed compensation, Gamma and both poles. Existing one-level
+coarse/detail Gamma comparisons and the O(mass) signed Haar cross-error do
+not assert Gamma stability of the full all-level generator projection.
+A uniform upper Gamma estimate for that projection is a possible intermediate
+target. It is not used by the higher-power theorem and is not assumed in the
+programme. Retained-orbit signs and complete-form bounded index remain open.

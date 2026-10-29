@@ -30,6 +30,8 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.GeneratorOrbitCutoffsRedu
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.OneGammaReserveControlsTheDyadicEulerTail
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.EveryTranslationHasAnAllLevelGammaTailBound
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.FiniteEulerFactorsHaveAllLevelGeneratorApproximation
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.CriticalEulerCoefficientMassStartsAtCubes
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.AllHigherPrimePowersHaveAllLevelGeneratorApproximation
 
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
@@ -41,6 +43,9 @@ complete weighted dyadic coordinates of the literal logarithmic-cell source,
 joint Gamma allocation over all levels, physical approximation by finite
 generator families with their full level orbits, and the exact L² compactness
 boundary between individual levels and complete translation orbits. Original
-Gamma energy pays the generator error at every real lag and in every fixed
-finite family of complete critical Euler correlations.
+Gamma energy pays the generator error at every real lag, in every fixed
+finite family of complete critical Euler correlations, and jointly over
+all primes and exponents at least three. Absolute coefficient summability
+holds exactly for tails beginning at cubes; prime and square layers require
+a different payment mechanism.
 -/

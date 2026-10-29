@@ -60,7 +60,7 @@ RW, HF, ACS, AIP, OWU, EWU, SRT, SZ, CHMD and ACT all reduce, on atomic or compl
 - At every width the atomic sign is the Markov gap on \(p=0\) plus one affine scalar.
 - The sharp selective Gårding inequality turns the margin into a reserve \(c_0(2\log2-\eta)\) at narrow widths.
 
-These routes share one quantified input and one open transfer, the separated-regime step ([Q1](obstacles-summary.md#q1)). The margin is only the first layer of selectivity: it is parity-selective (Liouville fails) but not \(\zeta\)-selective (\(\omega_p\), \(p\ge11\), share it). The second layer must see every prime's sign at square-root precision and unbounded aperture. That layer is RH-strength (inference).
+These routes share the quantified margin and a positive complete-matrix plateau theorem at each fixed separated width [S]. Their open transfer crosses touching and overlap ([Q1](obstacles-summary.md#q1)). The margin is only the first layer of selectivity: it is parity-selective (Liouville fails) but not \(\zeta\)-selective (\(\omega_p\), \(p\ge11\), share it). The second layer must see every prime's sign at square-root precision and unbounded aperture. That layer is RH-strength (inference).
 
 [Margin](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheSelectiveMarginIsTwoLogTwo.lean), [harmonic correlation](../../../formal/GaloisForLFunctions/ArithmeticCountingPositivity/HarmonicCorrelationPaysThePrimeGap.lean), [gap and scalar](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar.lean).
 
@@ -70,12 +70,14 @@ SRT, AIP, HF and ACS share one atomic receiver, valid at widths \((\log\log N)^\
 
 - The Markov form is negative under overlap growth unconditionally.
 - The Liouville twin, scalings \(c\Lambda\) and quadratic mixtures are negative at every root.
-- Narrow positivity holds up to a quarter of the Robin–Euler ratio.
-- The complete matrix splits exactly at the spacing, and Ramanujan trial energies are simple and proper at every separated ratio [L].
+- Arbitrary-shape narrow positivity holds up to a quarter of the Robin–Euler ratio.
+- Exact bounded spectral counts identify the bottom of the complete matrix [S]. For each \(b<2-\log(2\pi)\), one smooth plateau has every eigenvalue at least \(b\), eventually at every fixed \(0<c<1\) [S]. The profile can retain nearly unit mass; the horizon depends on \(c\).
 
-The proved and needed regimes are separated by bounded versus \((\log\log N)^{1+\varepsilon}\) overlap. The \(\alpha=1\) edge is a quasi-analyticity boundary of the synthesis (inference).
+Strictly separated positivity has no uniform touching/overlap conclusion. The RH receivers require a source-complete limit, including the families with \((\log\log N)^{1+\varepsilon}\) overlap. A schedule approaching \(c=1\) from below is not itself such an exhaustion. The \(\alpha=1\) edge is a quasi-analyticity boundary of the stated synthesis (inference).
 
 [Denjoy–Carleman](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheDenjoyCarlemanProfiles.lean), [quarter](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheStabilityRegimeReachesAQuarterOfTheRobinEulerThreshold.lean), [splitting](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFullWeilMatrixSplitsAtTheSpacing.lean).
+
+[Complete spectral counts](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum.lean), [full separated plateau sign](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean) [S].
 
 ### D. Hecke towers, Toeplitz symbols and RH (T)
 
@@ -87,18 +89,18 @@ A quadratic form along the orbit of one Hecke dilation is a Toeplitz form. Its p
 | SMAP pole-free generators | The same with generators supported in \([-\varepsilon,\varepsilon]\), any \(\varepsilon>0\) [S]. |
 | ACS/SMAP self-similarity | \(C_{2a}+C_{2a+1}=T_{\log2}C_a\); every twisted Weil pairing is level-Toeplitz. |
 | SAHT level matrix | Prime two is the unilateral shift on every generator chain. |
-| SAHT whole-orbit projection | Every real lag has original-Gamma head error ≤\(96\Gamma/(1+\log A)\); each fixed finite Euler family costs the exact coefficient sum times this bound [K]. All levels remain; no full-Weil transfer is implied. |
+| SAHT whole-orbit projection | Every real lag has original-Gamma head error ≤\(96\Gamma/(1+\log A)\). Each fixed finite Euler family and the complete all-prime exponent≥3 sector cost their finite coefficient mass times this bound [K]. The higher-power estimate pays the sum of absolute termwise errors and every finite selection. All levels remain; no full-Weil transfer is implied. |
 | SMAP level couplings | Pole rank two and removable; Gamma \(\pi4^{-(d-1)}\); touching uniform; prime part a Chebyshev sequence. |
 | LI / ALG Cayley ladder | RH iff the Cayley–Li Toeplitz ladder is negative semidefinite on primitive vectors; couplings never decay [S]. |
 | ACP Stepanov mechanism | \(1-T_p^N\) kills a zero symbol iff the zero is critical and on a height lattice. |
 | HCF grids | One prime grid aliases a nonreal pair to a positive atom; two grids decide. |
 | HKT | Positive kernel plus separated hyperbolic pairs: index exactly the number of pairs [S]. |
 
-**Unifying statement.** Along a \(T_{\log p}\)-tower, the explicit formula writes the lag sequence as a sum over zeros of \(p^{d(\rho-1/2)}\). Off-line zeros are hyperbolic characters, and positivity is their absence. LI's ladder is the same statement in Li coordinates. HCF's aliasing and the Stepanov lattice criterion are the one-prime aliasing that a second prime removes. The finite-generator approximation is a proved transfer for L² and fixed finite Euler correlations. A reduction of U2 still needs complete-form transfer and a sign theorem on the retained orbits; neither follows from their finite generator count.
+**Unifying statement.** Along a \(T_{\log p}\)-tower, the explicit formula writes the lag sequence as a sum over zeros of \(p^{d(\rho-1/2)}\). Off-line zeros are hyperbolic characters, and positivity is their absence. LI's ladder is the same statement in Li coordinates. HCF's aliasing and the Stepanov lattice criterion are the one-prime aliasing that a second prime removes. The finite-generator approximation is a proved transfer for L², fixed finite Euler correlations and the all-prime higher-power sector. A reduction of U2 still needs complete-form transfer and a sign theorem on the retained orbits; neither follows from their finite generator count.
 
 [One prime](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/OnePrimeSeesTheWholeDefectOfZeta.lean), [pole-free generators](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheDyadicSignOfAPoleFreeGeneratorIsRH.lean), [Cayley ladder](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/RHIsReflectionPositivityOfTheCayleyLadder.lean), [Stepanov](../../../formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/SparseAnnihilatorsAndTheStepanovMechanism.lean), [Krein–Langer](../../../formal/GaloisForLFunctions/HeckeKreinToeplitz/HyperbolicPairsAndTheIndexFormula.lean).
 
-The shared approximation mechanism is [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean) and [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean) [K]. It connects the complete-cell and finite-Euler descriptions through the same projection; it does not identify their missing global sign with an already-paid tail.
+The shared approximation mechanism is [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean) and [all-prime higher powers](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/AllHigherPrimePowersHaveAllLevelGeneratorApproximation.lean) [K]. They use the same projection and original Gamma reserve. The [coefficient threshold](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/CriticalEulerCoefficientMassStartsAtCubes.lean) [K] shows why the first-prime and square layers need a different payment mechanism. AID's one-level compensated square estimate is not the all-level source comparison. The common missing obligations are signed transfer with both poles and the full-form sign on the retained orbits, not higher-power coefficient summation.
 
 ### E. The finite-support stratum is Krein–Langer finiteness at the Lindelöf level (E + T)
 
@@ -152,10 +154,10 @@ RAPT links finite-prime adjunction to the actual prime matrix:
 
 - the bounded spectrum equals the adjunction spectrum, with converging eigenlines [S];
 - arithmetic modes have spacing-scale Weil energies \(\log(K_m/K)\), with the pole at the Robin–Euler ratio and the first excitation at four times it [S];
-- in the separated regime the complete trial energies are simple and proper [L];
+- the bounded complete spectrum equals the arithmetic spectrum [S], giving full separated plateau positivity at each fixed width [S];
 - the \(\chi\)-twisted poles read \(2\operatorname{Re}(-L'/L(1,\chi))\), the object that governs MC/ACG character gauges.
 
-The link to complete positivity is through B and Q1. [Mode energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheWeilEnergiesOfTheArithmeticModes.lean), [spectral counts](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheBoundedPrimeSpectrumIsTheAdjunctionSpectrum.lean).
+The link to fixed separated full-matrix positivity is proved in source [S]. Q1 asks for the further complete-form transfer through touching and overlap. [Mode energies](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheWeilEnergiesOfTheArithmeticModes.lean), [complete spectral counts](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum.lean).
 
 ### K. Parity and precision are one obstruction in three coordinates (S)
 
@@ -189,12 +191,12 @@ RH holds iff for every aperture some real weights, of any sign and growth, make 
 | **RB** | U1; extremal remainder | Saturated extremizers | Divisor arithmetic | — |
 | **RW** | U2; ground energy | Cumulative aperture relaxation | Margin on low/polar modes (B) | — |
 | **TT** | U2; odd/covariance | Nonlocal reflected-prime correlation | Signed reflected primes | — |
-| **HF** | U2 + U1 + U3 | Complete residual sign or work ceiling | Margin (B); main-term cancellation across levels (A, D) | Finite index, \(\mathcal E_{\rm crit}<\infty\) [FS]; separated step [open] |
+| **HF** | U2 + U1 + U3 | Complete residual sign or work ceiling | Margin (B); main-term cancellation across levels (A, D) | Finite index, \(\mathcal E_{\rm crit}<\infty\) [FS]; touching/overlap transfer [open] |
 | **CHMD** | U2; wave/Doob | Residual sign modulo the Weil radical | Primitive defect | — |
 | **SZ** | U2; first variation | Sign on factorial/grid tent patterns | Must enter low modes | — |
 | **EWU** | U2 + L; even blind minimum | All-aperture low/mixed payment | Weight rigidity | — |
 | **OWU** | U2; odd weight | All-aperture odd sign | Radius-\(23/40\) witnesses (finite aperture) | Conductor/forcing [open] |
-| **SRT** | U2 + U1 + D | All-generator tower sign or late-lag bound | Margin (B) | Separated step [open] |
+| **SRT** | U2 + U1 + D | All-generator tower sign or late-lag bound | Margin (B) | Touching/overlap transfer [open] |
 | **ACT** | U2; one-shift | One shift paying every profile | Exterior primes | — |
 | **AIP** | U2; allocation | Coarse/cross-level allocation | Margin (B); Chebyshev cross-level work | Separated step [open] |
 | **ACS** | U2 + U3 + D | RI/height/chirality or complete index zero | Margin (B); one-prime towers | Finite index [FS] |
@@ -211,7 +213,7 @@ RH holds iff for every aperture some real weights, of any sign and growth, make 
 
 **Strongest shared programmes.**
 
-- The U2 cluster (RW, HF, ACS, AIP, OWU, SRT, CHMD, SZ, EWU, ACT) has one measured selective input and one open transfer, the separated-regime step (Q1).
+- The U2 cluster (RW, HF, ACS, AIP, OWU, SRT, CHMD, SZ, EWU, ACT) shares a measured margin and fixed separated plateau positivity [S]; the open transfer concerns touching, overlap and source exhaustion (Q1).
 - The finite-support stratum (HF, ACS, AIP, WL, WD, LA) is one Krein–Langer problem at the Lindelöf level.
 - U1 supplies the prime-error sequences that are the cross-level couplings of U2, and the tower view (D) shows their positivity is RH.
 - The census shares the parity coordinate with U1 and U2 (K).
@@ -252,7 +254,7 @@ The 17 standalone candidates and PW-B are U3 producers whose landing is unproved
 | Short-interval prime statistics can decide tower or Weil positivity | Precision rigidity: \(\Lambda+\varepsilon n^{-\eta}\) shares them and fails [S]. |
 | Narrow generator support shortens the tower problem | Tower positivity is RH at every generator size [S]. |
 | Finite-part identification of \(\zeta\) is a positivity input | \(\zeta\) maximizes the matched finite part, which makes it the hardest member. |
-| Finite-generator approximation proves the complete-form sign | The proved transfer covers L² and fixed finite Euler families. Complete-form transfer remains open; finite generator count retains infinitely many level directions. |
+| Finite-generator approximation proves the complete-form sign | The proved transfer covers L², fixed finite Euler families and all-prime higher powers. Complete-form transfer remains open; finite generator count retains infinitely many level directions. |
 | Cross-level prime couplings are summable under a strong enough input | Under RH they are almost periodic and bounded, not decaying (inference). |
 | Hyperbolicity of the atomic Gram is arithmetic | It holds for every completely multiplicative sign twin; only the Metzler sign is selective. |
 | A positive correction can repair a finite index | A positive part never pays a hyperbolic pair [S]. |
@@ -272,7 +274,7 @@ The 17 standalone candidates and PW-B are U3 producers whose landing is unproved
 
 ## How to organize research around the unification
 
-1. **One selective-positivity programme** for the U2 cluster: the separated-regime step past Robin–Euler (Q1), tested against Liouville and the \(\omega_p\) flips.
+1. **One selective-positivity programme** for the U2 cluster: full-form transfer through touching and overlap (Q1), tested against Liouville and the \(\omega_p\) flips.
 2. **One parity programme** joining the census (two-sided coalescent pairs, Q2), the precision rigidity of towers and the selection theorem. Every proposed input is run through the full battery.
 3. **One vanishing-mechanism programme** for fixed strips: the Chen–Gupta–Li detector threshold (Q3). Density work feeds it but cannot replace it.
 4. **One Krein–Langer programme** at the Lindelöf level joining HF/ACS/AIP (first-layer compactness), WL (subtracted lag), WD/LA (heat counts) and HKT (index structure). Every result is checked against its implication LH \(\wedge\) \(\Theta<1\).

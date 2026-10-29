@@ -3,7 +3,7 @@
 - **ID:** hecke-harmonic-sums-satisfy-the-ideal-hyperbola-identity
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Mertens programme](../1-in-progress/hecke-character-mertens-via-ideal-hyperbola.md)
+- **Source:** [Mertens programme](hecke-character-mertens-via-ideal-hyperbola.md)
 - **Lean:** `GaloisForLFunctions/HeckeLFunctions/HeckeHarmonicSumsSatisfyTheIdealHyperbolaIdentity.lean`
 - **Statement:** The actual logarithmic harmonic sum equals `sum_(N(p)^k<=N) psi(p)^k log N(p)/N(p)^k * Spsi(floor(N/N(p)^k))`.
 
@@ -38,5 +38,5 @@ identity, norm regrouping, and actual hyperbola theorem have transitive
 axiom sets `[propext, Classical.choice, Quot.sound]`.
 The module is wired into the Hecke umbrella. Its final direct source audit
 `lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeHarmonicSumsSatisfyTheIdealHyperbolaIdentity.lean`
-passes without warnings. Both nontrivial and trivial Mertens consumers
-are written; its required olean is not built yet.
+passes without warnings. Its required olean is generated for the written
+nontrivial and trivial Mertens consumers.

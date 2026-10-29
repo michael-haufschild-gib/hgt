@@ -210,7 +210,8 @@ coefficient bounds, actual degree-rotation exponents, and Gaussian domination.
 | Infinite affine Weyl group and action | Formalized; actual `DihedralGroup 0`, faithful root action, dual weight action |
 | Absolute convergence of affine Weyl expansion | Formalized; `summable_norm_weylTerm`, `hasSum_weylTerm` |
 | Locally uniform convergence of this expansion | Still open |
-| Completed central loop group and arithmetic subgroup | Still open |
+| Formal Laurent central extension | Formalized; exact kernel `Fˣ`, both root splittings, inverse tame-symbol torus defect |
+| Garland completion comparison and arithmetic subgroup | Still open |
 | Group-level Iwasawa coordinates and degree rotation | Still open; weight-space calculation alone does not construct them |
 | Arithmetic coset Eisenstein series and its convergence | Still open |
 | Unipotent quotient measure and constant-term integral | Still open |
@@ -235,8 +236,18 @@ Corpus leads, with statements inspected:
   integer-valued valuation. This is a possible central-extension ingredient, not
   a loop-group construction or an Iwasawa theorem.
 
-Next work must supply a valid rank-one central-extension construction (for example,
-determinant lines or a genuine highest-weight construction) and its completion.
+The [rank-one Kubota construction](../3-formalized/garland-sl2-kubota-central-extension.md) now
+supplies a direct alternative. Its Milnor-valued cocycle identity, exact central
+extension, injective root splittings, and inverse-symbol torus defect have Lean
+proofs. The actual Laurent tame map constructs the extension by the coefficient
+field's units. Constant/uniformizer normalization and all final source/axiom
+audits passed. This does not yet identify the algebraic group with Garland's
+completed Chevalley model or construct its arithmetic series.
+
+The next [degree-rotation construction](garland-loop-degree-rotation.md) uses
+the existing coefficientwise Laurent scaling automorphism, proves preservation
+of valuation and residue, then lifts it through the actual tame cocycle.
+
 Do not instantiate the stable Steinberg centrality theorem outside its hypotheses.
 
 ## Work log
@@ -254,3 +265,8 @@ Do not instantiate the stable Steinberg centrality theorem outside its hypothese
   `AffineA1Weights`, and `AffineA1WeylSum`. No umbrella or full build was run.
   Both umbrellas are wired. Owned scratch files were removed; unrelated work was
   preserved. This goal turn is **progress**, not a wait or blocked turn.
+- 2026-10-29: Constructed and audited the rank-one Laurent central extension in
+  five additional modules. The Kubota cocycle, exact central kernel, injective
+  root groups, inverse tame torus defect, and constant/degree commutator are
+  formalized. Saved axiom audit contains only the three standard axioms. Full
+  objective remains active; degree rotation is in progress.

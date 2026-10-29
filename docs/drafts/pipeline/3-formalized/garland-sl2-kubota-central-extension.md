@@ -1,8 +1,8 @@
 # Rank-one loop central extension by the Kubota cocycle
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** Construct a central extension of `SL₂(F((t)))` by `Fˣ` using the
   inverse tame-symbol class, with no assumed cocycle identity or injectivity input.
 
@@ -81,10 +81,35 @@ For a constant unit `a∈Fˣ` and the Laurent uniformizer `X`, the valuation and
 residue formulas give `T{a,X}=a`. The diagonal section therefore has central
 commutator `a⁻²` at `diag(a,a⁻¹)` and `diag(X,X⁻¹)`. This also tests the
 central-extension orientation against the loop-root normalization.
+Every coefficient unit is therefore in the image of the tame homomorphism.
+Injectivity of the central embedding also gives the exact criterion: this
+constant/degree commutator is the identity if and only if `a²=1`.
 
-## Exact status
+## Lean declaration map
 
-Paper argument complete; Lean construction in progress. No statement here counts
-as formally established until its declaration and transitive axiom audit exist.
-This extension alone does not construct Iwasawa coordinates, the arithmetic
-Eisenstein series, its convergence, or its constant-term integral.
+All declarations lie in `GaloisForLFunctions.HTGeometry.LoopEisenstein`.
+Modules below are under `formal/GaloisForLFunctions/HTGeometry/LoopEisenstein/`.
+
+| Module | Certified result |
+| --- | --- |
+| `SL2KubotaCocycle.lean` | `kubota_symbol_defect`, `kubotaCocycle_identity`; all Bruhat boundary cases discharged |
+| `SL2SymbolExtension.lean` | Actual group instance; `projection_surjective`, `centralEmbedding_injective`, `centralEmbedding_commute`, `projection_ker_eq_range` |
+| `SL2RootSplittings.lean` | Both root homomorphisms and their injectivity; `diagonal_section_mul`, `diagonal_section_commutator` |
+| `LaurentSL2Extension.lean` | Actual `laurentTameHom`, `LoopSL2 F`; exact central kernel and root splittings; `LoopSL2.diagonalSection_mul`, `LoopSL2.diagonalSection_commutator` |
+| `LaurentTameNormalization.lean` | `laurentTameSymbol_constant_X`, `laurentTameHom_surjective`, `constant_X_diagonal_commutator`, `constant_X_diagonal_commutator_eq_one_iff` |
+
+## Verification and exact scope
+
+All five final source audits exited 0 without warnings, each separately using
+`lake --old env lean GaloisForLFunctions/HTGeometry/LoopEisenstein/<Module>.lean`.
+No umbrella or full build. The programme umbrella imports all five leaves.
+The [saved transitive axiom audit](garland-sl2-kubota-central-extension-audit.txt)
+checks all main results and the concrete `ℚ` and `ℝ` group instances. Every
+printed dependency set is exactly `propext`, `Classical.choice`, `Quot.sound`.
+No placeholder, added axiom, trusted computation, or raised elaboration limit.
+
+**Formalized:** the algebraic central extension of `SL₂(F((X)))` by `Fˣ`,
+its actual tame normalization, and its injective root subgroups.
+**Still open in the parent:** the Garland completion comparison, degree rotation,
+Iwasawa coordinates, arithmetic subgroup and Eisenstein coset series,
+convergence of that series, and the constant-term integral/unfolding.

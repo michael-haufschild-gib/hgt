@@ -8,3 +8,6 @@ import GaloisForLFunctions.HTGeometry.LoopEisenstein.SL2SymbolExtension
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.SL2RootSplittings
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.LaurentSL2Extension
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.LaurentTameNormalization
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.LaurentRotation
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2Rotation
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.RealDegreeRotation

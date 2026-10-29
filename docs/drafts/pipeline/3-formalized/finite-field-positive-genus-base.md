@@ -1,8 +1,8 @@
 # A finite-field elliptic function field and its zeta zeros
 
 - **ID:** `finite-field-positive-genus-base`
-- **Stage:** 1-in-progress
-- **Type:** CLASSICAL BRIDGE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / CLASSICAL BRIDGE
 - **Target:** the nonsingular projective cubic `Y²Z = X³ − XZ²` over `F₃`, its actual
   function field, genus one, and its point-count zeta function with two numerator zeros.
 - **Correction:** `HTGeometry/PositiveGenusBaseField.lean` has complex constants and does
@@ -24,7 +24,7 @@ https://www.jmilne.org/math/Books/EC2.pdf. A nonsingular projective plane cubic 
 its zeta function is `P(T)/((1−T)(1−qT))`, with `deg P=2` and reciprocal roots of norm `√q`.
 Verdict: **BRIDGE**, no claim of new mathematics.
 
-## Exact paper proof and formalization plan
+## Exact paper proof `[PROVED HERE]`
 
 Set `k=F₃` and `f=X³−X`. Its derivative is `−1`, so `f` is squarefree; its degree is three.
 The short Weierstrass model with `a₄=−1`, other coefficients zero, has discriminant
@@ -38,17 +38,6 @@ roots and `|ωᵢ|=√3`. Consequently `P(T)=∏ᵢ(1−ωᵢT)` has degree two 
 `Z(T)=P(T)/((1−T)(1−3T))`. The identity `T Z'(T)=Z(T)Σₙ≥₁N_nTⁿ` and constant term
 one identify this with the actual point-count zeta series, not an unrelated spectral datum.
 Its numerator zeros have modulus `1/√3`, hence neither pole cancels.
-
-For a direct differential certificate of genus, use the charts `Z≠0` and `Y≠0`.
-On the first, `dy` freely generates regular differentials since `∂(y²−x³+x)/∂x=1`.
-On the second write `t=X/Y`, `u=Z/Y`, so `t³−tu²−u=0`. Set
-`η=(1+tu)dt−t²du`. The relation gives `dt=(1−tu)η` and `du=−u²η`;
-on the overlap `η=dy`. Thus the canonical sheaf is trivial. Regular global coefficients
-are constants: for `a(x)+b(x)y`, the degree of its norm is
-`max(2 deg a, 2 deg b+3)`, already proved in mathlib. The infinity valuation has
-`v(x)=−2`, `v(y)=−3`, so regularity there forces `b=0` and `a` constant.
-This makes the full regular differential space one-dimensional. Chart gluing and its
-valuation identification still require formalization; they are not assumed as hypotheses.
 
 ### Direct chart certificate
 
@@ -75,7 +64,7 @@ all chart functions, by the Leibniz rule and algebra generation, not just the di
 coordinate differentials. Their intersection is consequently `k dy`.
 
 Finally `dy≠0`: the assignments `x↦(x,y)` and `y↦(y,1)` into the dual numbers
-respect `y²−x³+x=0`, since the linear coefficient is `3y=0`. They give a derivation
+respect `y²−x³+x=0`, since the linear coefficient is `3y−3x²y=0`. They give a derivation
 of `A` with `δ(y)=1`, which extends by the quotient rule to `K`. The universal
 property of Kähler differentials sends `dy` to one. Thus multiplication by `dy`
 is a linear equivalence `k≃H⁰(Ω)`, proving geometric genus one directly.
@@ -89,29 +78,60 @@ is a linear equivalence `k≃H⁰(Ω)`, proving geometric genus one directly.
 - [x] Nonsingularity and positive-genus certificate.
 - [x] `FiniteFieldEllipticCharts.lean`: actual coordinates and cubic relation; norm-degree
   product/addition laws; infinity regularity subalgebra; intersection of the two chart rings
-  is exactly the constants; homogeneous chart-cover theorem. Full scratch check passed.
+  is exactly the constants; homogeneous chart-cover theorem. Source compilation passed.
 - [x] `FiniteFieldEllipticDifferentials.lean`: actual Kähler images on both charts,
   nonzero `dy`, equality of global forms with `k dy`, and dimension one.
-  `chart_overlap` identifies both localizations on the overlap. Complete scratch check passed.
+  `chart_overlap` identifies both localizations on the overlap. Source compilation passed.
 - [x] `pointsEquiv` and `card_points`: actual projective points over every extension,
   identified with affine solutions plus infinity.
 - [x] `ArithmeticEffectivityTheory/FiniteFieldEllipticZeta.lean`: point-count ghost identity,
   uniqueness, rationality, numerator degree/root count two, zero modulus `1/√3`, and
-  noncancellation at `1,1/3`. Complete scratch check passed; final leaf audit pending.
-- [ ] Foreground leaf checks and transitive axiom audit; umbrella import.
+  noncancellation at `1,1/3`. Source compilation and transitive axiom audit passed.
+- [x] `FiniteFieldPositiveGenusBase.lean`: unconditional combined certificate,
+  `numerator_degree_eq_twice_genus`, and `zeta_zero_count_eq_twice_genus`.
+- [x] Foreground leaf checks and transitive axiom audit; umbrella import.
 
-No numerical experiments or finite point enumeration. All stated inputs must be discharged
-symbolically. Do not replace geometric genus by a renamed root count or hide chart regularity
-in an unproved interface.
+No numerical experiments or finite point enumeration. The geometric genus is independently
+proved from all regular Kähler differentials; the root count then equals twice that genus.
+No chart regularity or counting input is supplied through an unproved interface.
 
-## Working state
+## Lean certificate and validation
 
-`FiniteFieldEllipticBase.lean` passed its source check and has an olean for the dependent leaves.
-`FiniteFieldEllipticZeta.lean` is copied from the fully passing `/tmp/hgt_finite_zeta.lean`.
-`FiniteFieldEllipticCharts.lean` passed its source olean compilation.
-`FiniteFieldEllipticDifferentials.lean` is copied from the fully passing
-`/tmp/hgt_finite_differentials.lean`; its olean is being built for the capstone.
-`FiniteFieldPositiveGenusBase.lean` is the capstone, imported by the existing
-`ArithmeticEffectivityTheory.lean` umbrella. Zeta olean, capstone check, final leaf checks,
-and transitive axiom audit remain. All own `/tmp/hgt_finite_*` files
-must be removed after the final audit. Preserve unrelated concurrent worktree edits.
+Modules: `formal/GaloisForLFunctions/ArithmeticEffectivityTheory/FiniteFieldEllipticBase.lean`,
+`FiniteFieldEllipticCharts.lean`, `FiniteFieldEllipticDifferentials.lean`,
+`FiniteFieldEllipticZeta.lean`, and `FiniteFieldPositiveGenusBase.lean`.
+Namespace: `GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase`.
+
+`positiveGenusBaseField_spec` has no parameters, premises, or extra typeclass assumptions.
+It certifies constants of cardinality three, an elliptic curve, its function field of
+transcendence degree one, geometric genus one, and its actual point-count zeta series.
+The numerator has degree and root count `2 * geometricGenus`; roots are counted with
+multiplicity. Each root gives a zero of `zetaFunction` of modulus `1/√3` with nonzero
+denominator.
+
+All four dependency modules passed source compilation; their oleans were created only for
+the dependent modules. The capstone passed the final foreground, non-output check from
+`formal/`, with exit 0 and no diagnostics:
+
+```sh
+lake --old env lean GaloisForLFunctions/ArithmeticEffectivityTheory/FiniteFieldPositiveGenusBase.lean
+```
+
+The independent transitive audit copied the capstone source, synthesized the field,
+constant algebra, finiteness, characteristic, and elliptic instances, and checked 28
+declarations with `#print axioms`. Every declaration, including
+`positiveGenusBaseField_spec`, reports only `[propext, Classical.choice, Quot.sound]`.
+The audit exited 0. Its complete output is preserved in
+[finite-field-positive-genus-base-audit.txt](finite-field-positive-genus-base-audit.txt).
+
+The existing `ArithmeticEffectivityTheory.lean` umbrella imports the capstone. No full or
+umbrella build, existing-olean rebuild, proof placeholder, new axiom, kernel bypass, or
+increased Lean limit was used.
+
+## Outcome
+
+The requested arithmetic base is available: the function field of
+`Y²Z = X³ − XZ²` over `F₃`, with independently proved genus one and its point-count
+zeta function. Its numerator has exactly `2g=2` zeros counted with multiplicity.
+This supplies the arithmetic zeros that a separate series may inherit as poles;
+inheritance by a particular series requires its own identity with this zeta function.

@@ -9,6 +9,9 @@ The meromorphic function field of `ℂ / (ℤ + iℤ)` is a concrete complex fie
 transcendence degree one. Its geometric genus is the dimension of global holomorphic
 one-forms, proved to be one by elliptic Liouville.
 
+The finite-field elliptic function field and its point-count zeta function are constructed in
+`ArithmeticEffectivityTheory.FiniteFieldPositiveGenusBase`.
+
 Forms are represented on the covering plane by holomorphic maps into its complex cotangent
 space. Translation invariance is precisely descent: the derivative of every deck translation
 is the identity. Thus regularity is imposed everywhere on the compact quotient, including

@@ -34,9 +34,11 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
       `differentiableOn_heckeLCont`, `exists_norm_heckeL_le`, `heckeL_one_eq`,
       `tendsto_sub_one_mul_heckeL_one` (via `HTGeometry.BoundedPartialSums.contLSeries`),
       `heckeDensity_eq_dedekindZeta_residue_mul`, `heckeDensity_pos`
-- [ ] HL6 nonvanishing on `Re s ≥ 1` is proved for every character, away from the trivial pole —
+- [x] HL6 nonvanishing on `Re s ≥ 1` for every character, away from the trivial pole —
       `heckeLFunction_ne_zero_of_one_le_re`, `heckeLCont_one_ne_zero`, `heckeLCont_ne_zero`;
-      Mertens bounds for Hecke characters remain open
+      prime-power and prime-ideal Mertens sums are bounded for nontrivial characters and
+      `log N+O(1)` for the trivial character — `exists_norm_heckePrimeMertensSum_le`,
+      `exists_norm_heckePrimeMertensSum_one_sub_log_le`
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform) —
       full-plane meromorphic continuation and exact pole classification are now proved;
       primitive Gauss/conductor normalization and dual-character identification remain open
@@ -566,5 +568,11 @@ including the trivial character away from its pole. Five transitive axiom
 audits are standard-only; the final direct source check passes without
 warnings. The module is wired into the umbrella. See
 [the proof card](../3-formalized/real-hecke-characters-nonvanishing-by-positive-occupations.md).
-HL6 now requires the Mertens bounds recorded on
-[the hyperbola card](hecke-character-mertens-via-ideal-hyperbola.md).
+HL6 is now complete. `HeckeCharactersSatisfyMertensBounds.lean` proves
+bounded prime-power and prime-ideal sums for nontrivial characters, and
+`log N+O(1)` for the trivial character. All seven main transitive axiom
+audits are standard-only; the final direct source audit passes without
+warnings. Supporting harmonic tails, exact weighted ideal hyperbola,
+and weighted prime-power bounds also pass their final audits. See
+[the Mertens proof](../3-formalized/hecke-character-mertens-via-ideal-hyperbola.md).
+The remaining Hecke gate is the primitive completed functional equation.

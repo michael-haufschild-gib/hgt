@@ -93,7 +93,15 @@ theorem haarGamma_error_and_boundary_bounds (d : ℕ → ℝ) (X : ℕ) :
   have hcost : (∑ i : S, ∑ j : S, ∫ p : ℝ × ℝ, f i p.1 ^ 2
       ∂gammaRectangleRemainderMeasure (L i) (U i) (L j) (U j)) =
       haarGammaBoundaryCost d X := by
-    simp only [f, L, U, S, Finset.sum_coe_sort, haarGammaBoundaryCost]
+    let R : ℕ → ℕ → ℝ := fun a b => ∫ p : ℝ × ℝ, (d a * haarProfile a p.1) ^ 2
+      ∂gammaRectangleRemainderMeasure
+        (Real.log ((2 * a : ℕ) : ℝ)) (Real.log ((2 * a + 2 : ℕ) : ℝ))
+        (Real.log ((2 * b : ℕ) : ℝ)) (Real.log ((2 * b + 2 : ℕ) : ℝ))
+    change (∑ i : S, ∑ j : S, R i j) = ∑ a ∈ S, ∑ b ∈ S, R a b
+    calc
+      _ = ∑ i : S, ∑ b ∈ S, R i b :=
+        Finset.sum_congr rfl fun i _ => Finset.sum_coe_sort S (R i)
+      _ = _ := Finset.sum_coe_sort S (fun a => ∑ b ∈ S, R a b)
   constructor
   · have he := abs_levyEnergy_sum_sub_diagonal_le_remainders L U (fun i : S => d i ^ 2) f
       hab hw hsep hv hc hsv hsc hmean hb hs
@@ -101,8 +109,9 @@ theorem haarGamma_error_and_boundary_bounds (d : ℕ → ℝ) (X : ℕ) :
   · rw [← hcost, ← Finset.sum_coe_sort S (fun a => logCellWidth a * d a ^ 2), Finset.mul_sum]
     apply Finset.sum_le_sum
     intro i _
+    have hm : Measurable (f i) := measurable_const.mul (measurable_haarProfile i)
     have he := sum_gammaRectangle_remainder_sq_le (hab i) (hw i) L U hd
-      (measurable_const.mul (measurable_haarProfile i)) (sq_nonneg (d i)) (hb i)
+      hm (sq_nonneg (d i)) (hb i)
     simpa only [hwidth, mul_assoc] using he
 
 /-- The full signed Gamma error is controlled by ordinary pair-width mass. -/

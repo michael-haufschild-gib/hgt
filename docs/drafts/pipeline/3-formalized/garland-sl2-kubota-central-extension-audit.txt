@@ -1,0 +1,78 @@
+LoopSL2 ℚ : Type
+LoopSL2 ℝ : Type
+SL2SymbolExtension.instGroup
+SL2SymbolExtension.instGroup
+GaloisForLFunctions.HTGeometry.LoopEisenstein.kubotaCocycle_identity.{u_1} {K : Type u_1} [Field K] (g h k : SL2 K) :
+  kubotaCocycle g h + kubotaCocycle (g * h) k = kubotaCocycle g (h * k) + kubotaCocycle h k
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.projection_surjective.{u_1} (F : Type u_1) [Field F] :
+  Function.Surjective ⇑(LoopSL2.projection F)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.centralEmbedding_injective.{u_1} (F : Type u_1) [Field F] :
+  Function.Injective ⇑(LoopSL2.centralEmbedding F)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.centralEmbedding_mem_center.{u_1} (F : Type u_1) [Field F]
+  (u : Fˣ) : (LoopSL2.centralEmbedding F) u ∈ Subgroup.center (LoopSL2 F)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.projection_ker_eq_range.{u_1} (F : Type u_1) [Field F] :
+  (LoopSL2.projection F).ker = (LoopSL2.centralEmbedding F).range
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.upperRoot.{u_1} (F : Type u_1) [Field F] :
+  Multiplicative (LaurentSeries F) →* LoopSL2 F
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.lowerRoot.{u_1} (F : Type u_1) [Field F] :
+  Multiplicative (LaurentSeries F) →* LoopSL2 F
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.diagonalSection_mul.{u_1} (F : Type u_1) [Field F]
+  (a b : (LaurentSeries F)ˣ) :
+  LoopSL2.diagonalSection F a * LoopSL2.diagonalSection F b =
+    (LoopSL2.centralEmbedding F) (laurentTameSymbol F a b)⁻¹ * LoopSL2.diagonalSection F (a * b)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameHom_surjective.{u_1} (F : Type u_1) [Field F] :
+  Function.Surjective ⇑(laurentTameHom F)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_constant_X.{u_1} (F : Type u_1) [Field F] (a : Fˣ) :
+  laurentTameSymbol F (laurentConstantUnit F a) (laurentXUnit F) = a
+GaloisForLFunctions.HTGeometry.LoopEisenstein.constant_X_diagonal_commutator_eq_one_iff.{u_1} (F : Type u_1) [Field F]
+  (a : Fˣ) :
+  LoopSL2.diagonalSection F (laurentConstantUnit F a) * LoopSL2.diagonalSection F (laurentXUnit F) *
+          (LoopSL2.diagonalSection F (laurentConstantUnit F a))⁻¹ *
+        (LoopSL2.diagonalSection F (laurentXUnit F))⁻¹ =
+      1 ↔
+    a * a = 1
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.kubota_symbol_defect' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.kubotaCocycle_identity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.SL2SymbolExtension.projection_ker_eq_range' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.projection_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.centralEmbedding_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.centralEmbedding_mem_center' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.projection_ker_eq_range' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.upperRoot_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.lowerRoot_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.diagonalSection_mul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.diagonalSection_commutator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameHom_surjective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_constant_X' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.constant_X_diagonal_commutator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.constant_X_diagonal_commutator_eq_one_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

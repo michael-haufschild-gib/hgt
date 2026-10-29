@@ -48,9 +48,11 @@ therefore legitimate. No limiting or spectral premise is used.
 Sources under direct verification:
 
 - `GammaMeanZeroCrossingBound.lean`: actual rectangle measures, both-sign
-  pair inequality, and summed boundary-remainder cost.
+  pair inequality, and summed boundary-remainder cost. Clean direct
+  `lake --old env lean` check passed.
 - `GammaFiniteMeanZeroOffDiagonal.lean`: exact Gamma assembly and absolute
-  error, first in original remainders and then in width mass.
+  error, first in original remainders and then in width mass. Clean direct
+  `lake --old env lean` check passed.
 - `TheHaarGammaCrossTermsCostOnlyMass.lean`: actual signed Haar sections,
   exact boundary cost, pair-width bound, and ordinary square-mass bound.
 

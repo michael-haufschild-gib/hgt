@@ -24,9 +24,11 @@ The following results define the present frontier (sources in the [route report]
 - **One-prime tower positivity is RH** for one fixed prime [L] and for pole-free generators of arbitrarily small support [S]. Its negative index counts distinct outer eigenvalues \(p^{\rho-1/2}\) [L].
 - **Precision rigidity** [S]: \(\lambda\) and \(\lambda+\varepsilon n^{-\eta}\) are never both tower-positive, although they agree on every interval up to relative error \(o(1)\).
 - **Atomic receivers** reach \((\log\log N)^{1+\varepsilon}\) overlap. At every width the sign splits into a gap on the pole complement plus one affine scalar.
-- **Narrow positivity** reaches a quarter of the Robin–Euler ratio. The complete Weil matrix splits exactly at the spacing, and Ramanujan-mode trial energies are simple and proper at every separated ratio [L].
+- **Separated positivity [S]**: for every \(b<2-\log(2\pi)\), one smooth plateau has every complete-Weil eigenvalue at least \(b\), eventually at each fixed \(0<c<1\). A positive \(b\) gives full matrix positivity. The profile can retain arbitrarily near unit mass; the horizon depends on \(c\). Touching and overlap remain outside the theorem. [Complete matrix positivity](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean).
 - **All-level finite-Euler approximation [K]**: original Gamma pays every real-lag head error by \(96\Gamma(f)/(1+\log A)\), and every fixed finite Euler family by \(96C_P\Gamma(f)/(1+\log A)\). All prime powers and all retained levels remain; one cutoff works for every cell profile and horizon. [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean).
+- **All-prime higher-power payment [K]**: \(H=\sum_{p,k\ge3}2\log p/p^{k/2}<\infty\), and the sum of absolute coefficientwise head errors is at most \(96H\Gamma(f)/(1+\log A)\). One cutoff pays the complete source and every finite selection, uniformly over cell profiles and horizons. Coefficient summability begins exactly at cubes; both prime and square coefficient masses diverge. This is a method boundary, not divergence of compact-source correlations. [Joint estimate](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/AllHigherPrimePowersHaveAllLevelGeneratorApproximation.lean), [sharp threshold](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/CriticalEulerCoefficientMassStartsAtCubes.lean).
 - **Finite-index chain**: every prime layer except the first, including the full even-power source with its pole, has uniform finite index [L].
+- **One-level Haar Gamma cross-error [S]** is at most \(16e^{1/2}\) times ordinary mass, including the whole head. Its exact boundary remainders are available for joint payment. This does not assert Gamma stability of the generator cutoff across all levels. [Signed boundary cost](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarGammaCrossTermsCostOnlyMass.lean).
 - **Finite off-line support** \(\Rightarrow\) zeros approach the line \(\Rightarrow\) LH \(\wedge\) \(\Theta<1\) [L]. In the heat flow, uniform high-collision counts are equivalent to zeros approaching the line, so the flow's own content is the near-axis count [S].
 - **Census**: \(\ge HD(1)+10^{-8}\) simple critical zeros, and \(\ge0.8876\) of zero copies simple or critical [L]. The exchange rate beyond bandwidth one is exact [L].
 - **Shallow Cauchy energy** at depth \(1/\log T\) is \(O(N)\) [L], with a majorant that counts all zeros.
@@ -38,10 +40,10 @@ The following results define the present frontier (sources in the [route report]
 
 | ID | Task / deliverable | Serves | Boundary |
 |---|---|---|---|
-| W01 | Finite atomic Grams at width ratios \(c\) from \(K_\star\) through the Robin–Euler ratio \(K_1\approx0.43\), \(4K_1\) and up to \(1\). Report the Markov form on \(p=0\) and the affine scalar on \(p=1\) separately, for \(\zeta\), the Liouville twin and the flips \(\omega_{11},\omega_{13}\). | Q1; AIP, SRT, HF, ACS | Finite \(N\) locates failure points; it does not decide the eventual sign. |
-| W02 | Finish the separated-regime spectral law: complete trial energies on Ramanujan modes for all \(0<c<1\), and identification of the actual bottom spectrum through lower spectral windows. | Q1; RAPT | The mode law is proved for \(K<1/4\); the trial layer at every \(c<1\). |
-| W03 | Instantiate fixed-Euler all-level cutoffs using \(A>\exp(96C_P/\delta)\); evaluate detail-head sizes in the other finite-index theorems. | HF, ACS, AIP | The all-level cutoff formula is proved [K]; the all-prime \(k=1\) layer stays [FS]. |
-| W04 | Evaluate the explicit all-level coefficient cost \(96C_P=96\sum_{p\in P}2\log p/(\sqrt p-1)\) along growing prime sets against the shared reserve. | HF, ACS; 2.3 | Fixed-P approximation is proved [K]; the cost does not yield all-prime summability. |
+| W01 | Finite atomic Grams near \(c=1\) and in overlap. Report the Markov form on \(p=0\) and the affine scalar on \(p=1\) separately, for \(\zeta\), Liouville and the flips \(\omega_{11},\omega_{13}\). | Q1; AIP, SRT, HF, ACS | Finite enclosures diagnose mixed costs; separated positivity is supplied [S], while finite checks do not decide overlap sign. |
+| W02 | Instantiate the bounded complete-spectrum count and plateau floor for specified fixed \(c<1\), energy windows and conductor packets; track the explicit constants available in their estimates. | Q1; RAPT | The spectral identification and full separated matrix sign have source proofs [S]. Uniformity as \(c\uparrow1\) is not an instantiation. |
+| W03 | Instantiate all-level cutoffs \(A>\exp(96C_P/\delta)\) for fixed Euler families and \(A>\exp(96H/\delta)\) for every prime with exponent≥3; evaluate detail-head sizes in the other finite-index theorems. | HF, ACS, AIP | The higher-power cutoff pays every finite selection and the full series [K]. Complete first-layer finite-index closure still has [FS] strength. |
+| W04 | Separate the finite-prime coefficient ledger into \(2\log p/\sqrt p\), \(2\log p/p\) and the higher-power budget \(H\); evaluate the first two costs on specified prime sets. | HF, ACS; 2.3 | Higher powers share one finite all-prime budget [K]. Summability of the first two coefficient layers is false [K]; signed/polar compensation is a research task, not a numerical tail estimate. |
 | W05 | Prove "finite off-line support \(\iff\) bounded tower index at two primes with incommensurable logarithms" from the one-prime tower law: pigeonhole on one prime's eigenvalue classes, distinctness of the second prime's phases. | 2.3; HKT, ACS | Short composition of proved theorems. |
 | W06 | Tabulate \(d\mapsto W(f,T_{d\log2}g)\) for the cell-1 generator with certified \(\psi\) data, to document the almost-periodic cross-level profile. | WL, HF, CHMD, AIP | No sign. |
 | W07 | Complete multiresolution Grams: \(\log2\)-orbits, details, cross-level blocks, Gamma and both poles. | HF, ACS, AIP, RW, SRT | Exact algebra. |
@@ -111,7 +113,7 @@ Each item is equivalent to finitely many off-line zeros, and therefore implies t
 
 | ID | Missing result | Why current work stops | Payoff |
 |---|---|---|---|
-| I1 | **Selective separated-regime step.** \(W\ge0\) on atomic families at a fixed width ratio \(c\in(K_1,1)\), beyond Robin–Euler: \(M\ge0\) on \(p=0\) through the \(2\log2\) gap, and the affine scalar on \(p=1\). | Narrow positivity keeps absolute values on the pole term and stops below about half the threshold; the bottom of the actual spectrum past \(K_1\) is not identified. | First positivity of the full form where the Markov form is negative, using an input the Liouville twin lacks (Q1). |
+| I1 | **Touching and overlap transfer.** Control the complete Weil form on a stated family through \(c=1\) and into overlap, retaining the signed pole contribution and every mixed block. | One plateau has a positive floor at every fixed \(c<1\) [S], but the horizon may depend on \(c\); there is no touching/overlap estimate or RH-complete exhaustion. | A source-faithful bridge between separated positivity and the overlapping receivers (Q1). |
 | I2 | **Metzler endpoint** \(\rho=1\) and signed/block replacements of the frustrated gauge. | Gauges frustrate for \(\rho>1\). | Hodge structure through the spacing. |
 | I3 | **Growing-conductor spectral control** of the prime matrix. | Only fixed packets and bounded-energy counts are proved. | Spectral producer for I1 and F1. |
 | I4 | **Trans-threshold pair energy.** \(E(\delta)\le4\) at \(\delta=1/9\): the Cesàro pair-correlation energy on \((1,10/9]\) at four times its GUE value. | The prime side is a signed pair sum in the coalescent band; one-sided sieves control nothing; two-sided asymptotics meet parity (inference). Under RH the classical bound \(\int_b^{b+1}F\ll1\) gives only \(E(\delta)\ll1/\delta\). | \(70\%\) of zeros simple and critical (Q2). |
@@ -121,6 +123,7 @@ Each item is equivalent to finitely many off-line zeros, and therefore implies t
 | I8 | **Independent faithful constructions** for each candidate. | Calibrations, zero-indexed objects, capacity/gap obstructions. | Candidate promotion. |
 | I9 | **Local-to-global by counting over \(\mathbb Z\):** an auxiliary object playing Stepanov's role without a lattice spectrum. | Sparse annihilators kill only critical lattice symbols; sieve information is parity-blind. | A non-positivity source of positivity (2.7). |
 | I10 | **Threshold of the Chen–Gupta–Li detector** as a function of its inputs, and its \(\zeta\)-only (\(q=1\)) value. | The intake has no capstone; the threshold has not been extracted (W08). | An improved quasi-RH (Q3). |
+| I11 | **All-level signed transfer for the prime and square layers**, preserving square-pole compensation and the original Gamma reserve. | One-level coarse/detail Gamma estimates and compensated square bounds do not supply uniform control of the entire generator projection. A bound on its Gamma energy is a possible intermediate target, not an established input or a proved necessary condition. | Complete-form comparison of finite-generator orbit approximations. A bound strong enough to settle the complete finite-index problem has [FS] strength; the full sign has [RH] strength. |
 
 "No known solution" refers to the corpus and the literature consulted.
 
@@ -134,7 +137,7 @@ The only setting where the first two have ever been obtained together is over \(
 
 ## 2.3 Can we prove that off-line zeros, if any, are finitely many?
 
-**Verdict: no, and the corpus now shows why this is a historic-scale target. A proof of finiteness would also prove the Lindelöf hypothesis and a quasi-RH.**
+**Finiteness remains open. A proof would also establish the Lindelöf hypothesis and a quasi-RH.**
 
 **The strata are exact [L].**
 \[
@@ -198,7 +201,7 @@ If the height aspect suffices and the dependence is monotone, \(\zeta\)-specific
 
 ## 2.5 Can we prove that at least 70% of zeros lie on the critical line?
 
-**Verdict: not with any input the corpus or the literature has. The corpus now prices \(70\%\) exactly, and both priced inputs meet the parity barrier.**
+**Neither identified input for \(70\%\) is available in the corpus or literature consulted; both meet the parity barrier.**
 
 **Where the census is [L].**
 
@@ -230,7 +233,7 @@ The shallow Cauchy energy \(E_h\) charges every off-line copy within depth \(h\)
 \[
 hE_h+R_{\rm deep}\le\kappa N\ \Longrightarrow\ N_0\ge(1-2\kappa)N .
 \]
-\(70\%\) is \(\kappa=3/20\). The corpus proves \(hE_h=O(N)\) at \(h=1/\log T\) [L], but through a Lorentzian pair sum over all zeros of the window, so the constant cannot distinguish critical from off-line zeros. The missing input is the same displacement-sensitive estimate, now with a small constant. [Shallow energy](../../../formal/GaloisForLFunctions/ShallowCauchyPrimeEnergy/ShallowCauchyEnergyBound.lean).
+\(70\%\) is \(\kappa=3/20\). The corpus proves \(hE_h=O(N)\) at \(h=1/\log T\) [L], but through a Lorentzian pair sum over all zeros of the window, so the constant cannot distinguish critical from off-line zeros. The missing input is a displacement-sensitive estimate with a sufficiently small constant. [Shallow energy](../../../formal/GaloisForLFunctions/ShallowCauchyPrimeEnergy/ShallowCauchyEnergyBound.lean).
 
 **Closed alternatives.**
 
@@ -242,27 +245,27 @@ hE_h+R_{\rm deep}\le\kappa N\ \Longrightarrow\ N_0\ge(1-2\kappa)N .
 
 ## 2.6 The three questions to answer next
 
-Fixed finite Euler approximation supplies quantitative transfer for actual cell sources. It leaves the three sign and arithmetic-estimate questions below open; the noncell component of a general BV source is retained.
+Fixed finite Euler approximation and all-prime higher-power payment supply quantitative transfer for actual cell sources. They leave the sign and arithmetic-estimate questions below open; general BV sources retain their noncell component. The prime and square layers require signed transfer, while all retained generator families still contain infinitely many level directions.
 
 <a id="q1"></a>
-### Q1. Is the complete Weil form positive in the separated regime past the Robin–Euler ratio?
+### Q1. What complete-form estimate carries separated positivity through touching and into overlap?
 
-**Exact object.** Atomic families \(f_x=\sum_{n\le N}x_ng(\cdot-\log n)\) at a fixed width ratio \(c\in(K_1,1)\), \(K_1\approx0.43\): atoms are disjoint, the Markov form is negative, and at every width
+**Exact object.** Atomic families \(f_x=\sum_{n\le N}x_ng(\cdot-\log n)\), with widths \(c/N\), retaining the prime kernel, Gamma, both poles and all cross terms. For every \(0<b<2-\log(2\pi)\), a single smooth plateau already satisfies
 \[
-W\ge0\iff M\ge0\text{ on }\textstyle\sum x_n/\sqrt n=0\ \text{ and }\ M+2a_0B\ge0\text{ on }\textstyle\sum x_n/\sqrt n=1 .
+\forall c\in(0,1),\quad \exists N_0(c)\quad \forall N\ge N_0(c),\quad
+W_{c,N}(x)\ge b\|x\|^2\quad\text{for every }x
 \]
+[S]. Its square mass can be chosen arbitrarily close to one. This is a full matrix theorem, not only a trial-mode bound. [Plateau theorem](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean).
 
-**Why now.** The corpus has the exact separated-regime matrix (self-energy + prime kernel + archimedean cross integral + two pole products) and simple, proper Ramanujan trial energies at every \(c<1\); the pole mode is shifted by a charge below the first excitation [L]. The conductor-two mode energy \(\log(4K_1/c)\) predicts positivity on \(p=0\) throughout the separated regime, since \(4K_1>1\) for plateau profiles, while the Liouville twin (gap \(0\)) must fail there (inference).
-
-**Caveat.** The flips \(\omega_p\), \(p\ge11\), share the maximal margin [S], so a positive answer is Liouville-selective, not \(\zeta\)-selective. It is a first step, not an RH reduction.
+**Missing estimate.** Control the dependence on the separation gap, and the mixed terms at touching and overlap, in a norm that preserves the complete form. A fixed \(c>1\) theorem would be an intermediate result. An RH-complete family still requires a proved exhaustion, such as the existing receivers at \((\log\log N)^\alpha/N\), \(\alpha>1\); a slowly chosen schedule \(c_N\uparrow1\) alone does not supply it.
 
 **First useful answer.** One of:
 
-- a proof of \(M\ge0\) on \(p=0\) at some \(c>K_1\), with the pole term kept signed;
-- the affine scalar at the same \(c\);
-- a computed counterexample (W01–W02) showing where the mode picture fails.
+- a quantitative mixed-block estimate that absorbs the cost of touching or a stated amount of overlap into the positive plateau floor;
+- a full-form comparison from those overlapping atoms to an index-carrying complete-source family, with all growth parameters explicit;
+- a rigorous obstruction and strongest positive replacement identifying which term exhausts the floor.
 
-**Payoff.** The first theorem in which a selective input pays the full form where the Markov form is negative. A negative answer is equally decisive: the discrete margin would not survive the passage to the separated regime.
+**Payoff.** A bridge from a proved positive full matrix to a source family capable of seeing additional index. The maximal margin is also shared by some prime-flip twins, so every eventual RH claim still needs the full selectivity battery. Neither finite generator count nor separated positivity provides that conclusion.
 
 <a id="q2"></a>
 ### Q2. Is the Cesàro pair energy on \((1,10/9]\) at most four times its GUE value?
@@ -290,7 +293,7 @@ W\ge0\iff M\ge0\text{ on }\textstyle\sum x_n/\sqrt n=0\ \text{ and }\ M+2a_0B\ge
 
 **Why these three.**
 
-- Q1 tests whether the U2 programme's selective input can pay the full form at all.
+- Q1 tests whether a positive complete form survives the transfer from strict separation to overlap and source exhaustion.
 - Q2 tests the same parity question in the counting world, where the payoff is a concrete census.
 - Q3 is the only lever on a fixed strip.
 - None depends on the others.
@@ -325,20 +328,20 @@ Three mechanisms far from every corpus route and candidate were examined. Search
 
 **The most different mechanism the corpus does own** is counting before positivity (Stepanov). Over \(\mathbb F_q\) it proves RH for hyperelliptic curves with no positivity input, and trickle-down on every Frobenius ladder is equivalent to a one-sided square-root count [L]. Its \(\mathbb Z\) analogue is the WL count \(\psi(x)-x\le C\sqrt x\log^2x\). The engine, a sparse annihilator, needs a lattice spectrum, and over \(\mathbb Z\) only critical lattice zeros are annihilated [L]. That is I9.
 
-**Conclusion: none.** The new information is negative but sharp. The classical "wildly different" ideas (tensor amplification, modular certificates, expected-polynomial real-rootedness) each reduce to a corpus wall at an identifiable point. The two points they reach most often are the local-to-global step and a faithful construction.
+The classical "wildly different" ideas (tensor amplification, modular certificates, expected-polynomial real-rootedness) each reduce to a corpus wall at an identifiable point. The two points they reach most often are the local-to-global step and a faithful construction.
 
 ## 2.8 Would the obstacles in 2.2 need a new field of mathematics?
 
-**A new field is a possible research programme, not a mathematical necessity established by these results.** Existing Hilbert-space projections, dyadic variance identities and Gamma translation invariance prove all-level approximation for every fixed finite Euler family [K]. The unresolved tasks concern growing prime families, the complete form and the selective sign. Six constraints locate that gap:
+**A new field is a possible research programme, not a mathematical necessity established by these results.** Hilbert-space projections, dyadic variance identities, Gamma translation invariance and coefficient summability prove all-level approximation for every fixed finite Euler family and jointly for every prime with exponent≥3 [K]. Existing spectral methods also supply full separated plateau positivity [S]. The unresolved tasks concern signed prime/square transfer, the complete form, overlap and the selective sign. Six constraints locate that gap:
 
 1. The selective input must be parity-breaking (selection theorem) and square-root-precise (precision rigidity), and act at unbounded aperture.
-2. The proved selective margin is shared by some single-prime flips. Its size alone cannot supply the full arithmetic sign.
+2. The proved selective margin is shared by some single-prime flips. Its size alone cannot supply the full arithmetic sign. Fixed separated full-matrix plateau positivity [S] supplies a concrete positive section; extending it to overlap still needs a complete-form estimate.
 3. The finite-field constructions supply concrete models for arithmetic forcing through counts, geometry and lattice-spectrum annihilation. Their transfer to the actual integer source remains unproved.
-4. Complete Weil couplings on a prime tower carry the zero characters. Summability of each Euler factor’s coefficients does not establish summability or positivity of those complete-form lag sequences.
-5. The proved index-limit theorem uses pointwise kernel convergence [S]. L² and fixed-Euler approximation alone do not control the complete Weil form or both poles.
+4. Complete Weil couplings on a prime tower carry the zero characters. All-prime higher-power coefficients are summable, while prime and square coefficient masses diverge [K]. Neither fact establishes summability or positivity of complete-form lag sequences; signed source-dependent compensation remains possible.
+5. The proved index-limit theorem uses pointwise kernel convergence [S]. L², fixed-Euler and higher-power approximation alone do not control the complete Weil form or both poles. One-level Gamma bounds do not automatically iterate to uniform full-generator Gamma control.
 6. Finite off-line support implies LH. A finite-index conclusion therefore requires arithmetic input beyond the proved approximation estimates.
 
-The corpus supplies no theorem turning the available local signs into the required global sign over \(\mathbb Z\). A dedicated theory should organize that missing transfer without treating established finite-factor compression as open. The need for a new field, rather than a new theorem within existing mathematics, remains speculative.
+The corpus supplies no theorem turning the available local signs into the required global sign over \(\mathbb Z\). A dedicated theory should organize that missing transfer while using the established finite-factor and all-prime higher-power approximation laws. The need for a new field, rather than a new theorem within existing mathematics, remains speculative.
 
 ### What the field would be about
 
@@ -362,7 +365,7 @@ Analytic estimates would verify local inputs and quantitative transfer; the glob
 - Hecke towers and their Toeplitz symbols on the circle; the Cayley–Li ladder.
 - Square-root counts: one-sided point/prime counts; Sylvester inertia of explicit-formula Grams; auxiliary objects vanishing to high order at primes.
 - Local factors as positive-definite kernels on \(\mathbb Q_v^\times\), and the archimedean factor.
-- The whole-line projection \(Q_A=U(1-P_A)U^*\), original-source Gamma energy, complete generator orbits and finite Euler coefficient masses \(C_P\). Their approximation laws are proved; their complete-form and growing-prime comparisons are separate.
+- The whole-line projection \(Q_A=U(1-P_A)U^*\), original-source Gamma energy, complete generator orbits, finite Euler masses \(C_P\), the all-prime higher-power mass \(H\), and the compensated prime/square sources. Their proved approximation laws isolate the missing signed transfer rather than an undifferentiated all-prime tail.
 
 ### Language
 
@@ -375,12 +378,12 @@ Analytic estimates would verify local inputs and quantitative transfer; the glob
 
 | Tool | Purpose | Test |
 |---|---|---|
-| Selective transfer to the separated regime | Turn the \(2\log2\) gap into full positivity past Robin–Euler | Q1; must fail for Liouville; may hold for \(\omega_p\) |
+| Signed transfer through touching and overlap | Preserve the proved positive complete-matrix floor while paying every mixed block and pole | Q1; state the growing width and horizon together; test Liouville and prime-flip twins |
 | Arithmetic Krein–Langer theorem | Index of the Weil kernel from local data | Reproduce index zero over \(\mathbb F_q\); fail for Davenport–Heilbronn and over-regular Beurling systems; imply LH whenever it gives finite index |
 | Stepanov over \(\mathbb Z\) | An auxiliary construction for one-sided prime counts at square-root precision without a lattice spectrum | Reproduce hyperelliptic RH; be parity-breaking |
 | Two-sided coalescent pair theory | Prime-pair asymptotics beyond bandwidth one, on average, at bounded constant | Q2; reproduce \(E\approx1\) on Hardy–Littlewood models; fail for parity-twisted models |
 | Index-carrying completion | A completion of test spaces on which the Weil kernel is continuous for index | Agree with pointwise kernel limits [S]; reproduce the tower law |
-| Prime-set-uniform Gamma allocation | Extend fixed-factor projection estimates to growing prime families with Gamma and both poles retained | Pay the explicit coefficient growth through a proved signed mechanism; preserve every translation level |
+| Signed prime/square Gamma allocation | Transfer the first two prime layers and their compensation through the all-level projection, keeping Gamma and both poles | Recover the proved higher-power budget; pay the divergent first-two-layer coefficient costs through a source-dependent signed mechanism; preserve every level |
 | Structural precision | Use the Euler product and functional equation as identities, so that \(n^{-\eta}\) perturbations fail | Precision battery |
 
 ### Questions it must answer
@@ -389,7 +392,7 @@ Analytic estimates would verify local inputs and quantitative transfer; the glob
 - Why does finite off-line support imply LH, and is there a direct local-to-global argument for that implication?
 - What replaces Frobenius's lattice spectrum in a \(\mathbb Z\)-Stepanov argument?
 - In which completion of the test space does the Weil kernel carry its index to the limit?
-- What signed arithmetic estimate replaces the divergent all-prime sum of finite-Euler coefficient costs?
+- Which signed source estimate pays the prime and square layers after the all-prime higher powers have their finite budget, and how does it survive the full generator projection?
 - Why is the prime \(2\) both the multiresolution generator and the bottleneck of the margin?
 - What arithmetic quantity governs the near-axis collisions of the heat flow?
 
@@ -413,6 +416,6 @@ Analytic estimates would verify local inputs and quantitative transfer; the glob
 
 **First evidence of success** would be one of:
 
-- a positive answer to Q1 that fails visibly for the Liouville twin;
+- a touching/overlap transfer in Q1 with an explicit full-form error budget and a measured selectivity boundary;
 - a bound \(E(1/9)\le4\) (Q2) from an input that also fails for the parity-twisted model;
 - an index ceiling for the Weil kernel on two prime towers obtained from local data.

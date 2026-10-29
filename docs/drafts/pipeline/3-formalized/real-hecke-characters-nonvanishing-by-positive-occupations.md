@@ -54,6 +54,8 @@ input is assumed. The new module uses default elaboration limits and is
 wired into the Hecke umbrella. Its final direct source check
 `lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeLFunctionsDoNotVanishOnTheLineReOne.lean`
 passes without warnings. No umbrella was compiled.
+Its olean is generated for the written Mertens consumer.
 
-Mertens bounds, the primitive completed functional equation, and class
-field theory remain separate open programme gates.
+The [Mertens bounds](hecke-character-mertens-via-ideal-hyperbola.md) are
+now formalized. The primitive completed functional equation and class
+field theory remain open programme gates.

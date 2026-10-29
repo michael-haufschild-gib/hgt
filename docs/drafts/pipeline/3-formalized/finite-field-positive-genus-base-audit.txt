@@ -1,0 +1,89 @@
+FractionRing.field curve.toAffine.CoordinateRing
+OreLocalization.instAlgebra
+Finite.of_fintype Constants
+ZMod.charP 3
+instIsEllipticConstantsCurve
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.discriminant_eq_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.functionField_trdeg_eq_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.cubic_squarefree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.pointsEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.card_points' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.relation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.poleDegree_add' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.mem_both_charts_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.projective_chart_cover' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.graph_relation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.dy_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.chart_overlap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.chartForms_eq_span' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.affineForms_eq_line' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.infinityForms_eq_line' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.regularForms_eq_span' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.geometricGenus_eq_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.datum_pointCount' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.extensionPointCount_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.zeta_hasGhost' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.zeta_unique' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.numerator_degree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.numerator_root_count' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.numerator_zero_norm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.zeta_rational' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.reciprocal_numerator_nonzero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.numerator_root_is_zeta_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.positiveGenusBaseField_spec' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

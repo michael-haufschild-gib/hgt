@@ -120,10 +120,10 @@ theorem tsum_abs_higherEuler_head_error_le (f : ℝ → ℝ)
           (realSourceLp f hv hc - wholeLineGeneratorTail A (realSourceLp f hv hc))|) ≤
       higherEulerCoefficientTotal * (96 * levyEnergy f / (1 + Real.log (A : ℝ))) := by
   have ht (pk : PP) :
-      | |w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
+      abs (abs (w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
           (realSourceLp f hv hc) -
         w₃ pk * wholeLineTranslationCorrelation (Real.log (higherPrimePowerIndex pk))
-          (realSourceLp f hv hc - wholeLineGeneratorTail A (realSourceLp f hv hc))| | ≤
+          (realSourceLp f hv hc - wholeLineGeneratorTail A (realSourceLp f hv hc)))) ≤
         w₃ pk * (96 * levyEnergy f / (1 + Real.log (A : ℝ))) := by
     rw [abs_abs]
     exact abs_higherEulerTerm_head_error_le pk f hv hc hA
