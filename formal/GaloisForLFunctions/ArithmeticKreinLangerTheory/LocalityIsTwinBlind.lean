@@ -92,6 +92,3 @@ theorem twin_finite_towers_negIndex_ne {ω : G →* ℂ} (hω : IsUnitaryChar ω
   exact finite_towers_negIndex_ne (isPosDefKernel_twist hω hp) _ a ha u (isTowerFaithful_twist hω hF)
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms twin_finite_towers_negIndex_ne

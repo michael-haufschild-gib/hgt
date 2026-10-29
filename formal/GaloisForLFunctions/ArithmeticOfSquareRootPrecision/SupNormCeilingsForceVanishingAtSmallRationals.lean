@@ -45,14 +45,17 @@ theorem exists_int_eq_pow_mul_aeval (P : ℤ[X]) {n : ℕ} (hP : P.natDegree ≤
 theorem aeval_eq_zero_or_le_abs (P : ℤ[X]) {n : ℕ} (hP : P.natDegree ≤ n) (a : ℤ) {b : ℕ}
     (hb : 0 < b) : aeval ((a : ℝ) / b) P = 0 ∨ 1 / (b : ℝ) ^ n ≤ |aeval ((a : ℝ) / b) P| := by
   obtain ⟨z, hz⟩ := exists_int_eq_pow_mul_aeval P hP a hb
-  have hbn : (0 : ℝ) < (b : ℝ) ^ n := by have : (0 : ℝ) < b := by exact_mod_cast hb; positivity
+  have hb' : (0 : ℝ) < b := by exact_mod_cast hb
+  have hbn : (0 : ℝ) < (b : ℝ) ^ n := pow_pos hb' n
   rcases eq_or_ne z 0 with rfl | hz0
   · left
     simpa [hbn.ne'] using hz
   · right
     have h1 : (1 : ℝ) ≤ |(z : ℝ)| := by exact_mod_cast Int.one_le_abs hz0
-    rw [div_le_iff₀ hbn, ← abs_of_pos hbn, ← abs_mul, abs_of_pos hbn, mul_comm, hz]
-    exact h1
+    rw [div_le_iff₀ hbn]
+    calc (1 : ℝ) ≤ |(z : ℝ)| := h1
+      _ = |aeval ((a : ℝ) / b) P| * (b : ℝ) ^ n := by
+          rw [← hz, abs_mul, abs_of_pos hbn, mul_comm]
 
 /-- **Forced vanishing**: a sup-norm ceiling below `b^{−n}` on `[0, 1]` forces `P(a/b) = 0` at every
 `a/b ∈ [0, 1]`. -/
@@ -102,6 +105,7 @@ theorem eventually_vanish_of_supCeiling {θ : ℝ} (hθ : θ < 1) (C : ℝ) :
   rw [one_div, ← Real.exp_log (by positivity : (0 : ℝ) < 2 ^ n), ← Real.exp_neg, Real.exp_lt_exp,
     Real.log_pow]
   push_cast at hn ⊢
+  have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   linarith
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision

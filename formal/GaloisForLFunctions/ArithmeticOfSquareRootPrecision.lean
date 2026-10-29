@@ -8,6 +8,9 @@ import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.IntegerDirichletPolyn
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheLiouvilleTwinIsARatioOfHorizonTorsions
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.WherePrecisionIsLost
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.CurvesCalibrateThePrecisionExponent
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheGaugeStabilizerOfTheCount
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.ThePrecisionLedgerOfTheCount
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.SupNormCeilingsForceVanishingAtSmallRationals
 
 /-!
 # Arithmetic of Square-Root Precision
@@ -17,5 +20,6 @@ count; the count for `Λ` in each half and its exponent; the battery as a classi
 deciding-input theorem and the precision-blindness of producers; the integrality lattice of the
 horizon and the integrality exponent; integer Dirichlet polynomials at arithmetic points; the
 Liouville twin as a ratio of horizon torsions; the Chebyshev ledger of where precision is lost;
-calibration of precision exponents on curve data. See `ArithmeticOfSquareRootPrecision/README.md`.
+calibration of precision exponents on curve data; the gauge stabilizer of the count; the precision
+ledger; the vanishing forced by sup-norm ceilings. See `ArithmeticOfSquareRootPrecision/README.md`.
 -/

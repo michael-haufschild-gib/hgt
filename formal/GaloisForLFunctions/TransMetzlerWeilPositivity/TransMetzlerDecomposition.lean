@@ -23,7 +23,7 @@ perturbation:
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Finset Matrix RHTower
+open MeasureTheory Filter Topology Finset Matrix RHTower
 open scoped Real RealInnerProductSpace
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
@@ -206,7 +206,7 @@ theorem abs_sum_overlapping_pairs_le {N : ℕ} {w B : ℝ}
         rw [card_singleton] at hc
         exact_mod_cast hc
       rwa [← sum_filter, sum_const, nsmul_eq_mul, mul_one]
-    · refine sum_eq_zero fun j hj => ?_
+    · refine le_of_eq (sum_eq_zero fun j hj => ?_)
       split_ifs with h
       · exfalso
         exact h3n (top_adjacent_of_log_gap_le hN hn hj h.1 hw h.2).2.1
@@ -245,9 +245,8 @@ theorem abs_sum_overlapping_pairs_le {N : ℕ} {w B : ℝ}
         mul_le_mul_of_nonneg_left
           (sum_le_sum fun n hn => mul_le_mul_of_nonneg_left (hrow n hn) (sq_nonneg _)) hB
     _ = 2 * B * ∑ n ∈ Icc 1 N, if N < 3 * n then a n ^ 2 else 0 := by
-        rw [mul_assoc, mul_sum, mul_sum]
-        refine congrArg (B * ·) (sum_congr rfl fun n _ => ?_)
-        split_ifs <;> ring
+        simp only [mul_sum]
+        exact sum_congr rfl fun n _ => by split_ifs <;> ring
 
 /-! ### Reference operator `transMetzlerMainMatrix` and Ramanujan quasimodes -/
 
@@ -404,8 +403,19 @@ theorem transMetzlerMainMatrix_isHermitian (w cStar : ℝ) (N : ℕ) :
     exact separatedCrossErrorKernel_comm _ w j n
   have h1 : ((Real.log N + completeWeilSelfFinitePart transMetzlerProfile cStar -
       Real.eulerMascheroniConstant) •
-      (1 : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ)).IsHermitian :=
-    Matrix.isHermitian_one.smul_real _
+      (1 : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ)).IsHermitian := by
+    apply Matrix.IsHermitian.ext
+    intro n j
+    change ((Real.log N + completeWeilSelfFinitePart transMetzlerProfile cStar -
+        Real.eulerMascheroniConstant) •
+        (1 : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ)) j n =
+      ((Real.log N + completeWeilSelfFinitePart transMetzlerProfile cStar -
+        Real.eulerMascheroniConstant) •
+        (1 : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ)) n j
+    simp only [Matrix.smul_apply, Matrix.one_apply, smul_eq_mul]
+    by_cases h : j = n
+    · subst h; rfl
+    · rw [if_neg h, if_neg (Ne.symm h)]
   exact (((h1.sub (fullPrimeMatrix_isHermitian N)).add
     (fullWeilCenterMatrix_isHermitian _ N)).sub hsep).add
       (poleMomentErrorMatrix_isHermitian _ w N)
@@ -516,7 +526,18 @@ theorem tendsto_transMetzlerMainMatrix_ramanujan_residual_norm
     have hrow := sum_sq_twoPoleKernel_poleProfile_le hA N
       (fun j _ => abs_normalizedRamanujanMode_le hm j)
       (poleMomentErrorCoeff transMetzlerProfile (w N))
-    simp only [mul_assoc, ← mul_sum, ramanujanPoleProfile] at hrow ⊢
+    have hrew : (∑ n ∈ Icc 1 N,
+        (∑ j ∈ Icc 1 N, poleMomentErrorCoeff transMetzlerProfile (w N) *
+          (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) *
+            ramanujanPoleProfile m j) ^ 2) =
+      ∑ n ∈ Icc 1 N, (poleMomentErrorCoeff transMetzlerProfile (w N) *
+        ∑ j ∈ Icc 1 N, (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) *
+          (normalizedRamanujanMode m j / Real.sqrt j)) ^ 2 := by
+      refine sum_congr rfl fun n _ => ?_
+      rw [mul_sum]
+      congr 1
+      exact sum_congr rfl fun j _ => by simp only [ramanujanPoleProfile, mul_assoc]
+    rw [hrew]
     calc (∑ n ∈ Icc 1 N, (poleMomentErrorCoeff transMetzlerProfile (w N) *
           ∑ j ∈ Icc 1 N, (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) *
             (normalizedRamanujanMode m j / Real.sqrt j)) ^ 2)
@@ -561,23 +582,9 @@ theorem tendsto_transMetzlerMainMatrix_ramanujan_residual_norm
       LinearMap.smul_apply, identity_toEuclideanLin_apply]
     module
   rw [hdecomp]
-  have h1 := norm_add_le
-    (-(Matrix.toEuclideanLin (fullPrimeMatrix N) (normalizedRamanujanHorizonVector m N) -
-        (Real.log N - ramanujanAdjunctionEnergy m) • normalizedRamanujanHorizonVector m N))
-    (Matrix.toEuclideanLin
-      (fullWeilCenterMatrix (completeWeilPoleShift transMetzlerProfile cStar) N)
-      (normalizedRamanujanHorizonVector m N) -
-      (if m = 1 then completeWeilPoleShift transMetzlerProfile cStar else 0) •
-        normalizedRamanujanHorizonVector m N)
-  rw [norm_neg] at h1
-  have h2 := norm_sub_le _ (Matrix.toEuclideanLin
-    (horizonKernelMatrix
-      (separatedCrossErrorKernel (atomDilate transMetzlerProfile (w N)) (w N)) N)
-    (normalizedRamanujanHorizonVector m N))
-  have h3 := norm_add_le _ (Matrix.toEuclideanLin
-    (poleMomentErrorMatrix transMetzlerProfile (w N) N)
-    (normalizedRamanujanHorizonVector m N))
-  linarith only [h1, h2, h3]
+  refine (norm_add_le _ _).trans (add_le_add ((norm_sub_le _ _).trans (add_le_add ?_ le_rfl)) le_rfl)
+  refine (norm_add_le _ _).trans ?_
+  rw [norm_neg]
 
 /-! ### Tight non-ratio prime form bound via overlap length -/
 
@@ -620,6 +627,8 @@ theorem abs_nonRatio_term_transMetzler_le {N k m n : ℕ} {w δ₀ : ℝ}
       have hover : |SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
           (Real.log k - (Real.log n - Real.log m))| ≤
           w - |Real.log k - (Real.log n - Real.log m)| := by
+        change |bumpAutocorr (atomDilate transMetzlerProfile w)
+          (Real.log k - (Real.log n - Real.log m))| ≤ _
         simpa only [one_pow, one_mul] using
           abs_bumpAutocorr_le_overlap_length hg.continuous hgsupp zero_le_one
             (fun u => by
@@ -976,9 +985,9 @@ theorem levyMixed_atom_eq_shift {g : ℝ → ℝ} {n j : ℕ}
 /-- For any strictly separated pair `w < |Real.log j - Real.log n|`, the mixed Lévy integral is
 minus `atomCrossTerm g |Real.log j - Real.log n|`. -/
 theorem integral_levyMixed_atom_of_lt_abs_log {g : ℝ → ℝ} {w : ℝ} {n j : ℕ}
-    (hsupp : ∀ u, u ∉ Icc 0 w → g u = 0) (hn : 1 ≤ n) (hj : 1 ≤ j)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hn : 1 ≤ n) (hj : 1 ≤ j)
     (hw0 : 0 ≤ w) (hws : w < |Real.log j - Real.log n|) :
-    (∫ y in Ioi 0, levyMixed (atom g n) (atom g j) y) =
+    (∫ y in Set.Ioi 0, levyMixed (atom g n) (atom g j) y) =
       -atomCrossTerm g |Real.log j - Real.log n| := by
   have hnj : n ≠ j := by
     intro h; subst h; rw [sub_self, abs_zero] at hws; linarith only [hw0, hws]
@@ -988,44 +997,50 @@ theorem integral_levyMixed_atom_of_lt_abs_log {g : ℝ → ℝ} {w : ℝ} {n j :
 
 /-- Bilinear expansion of `levyEnergy (atomicTest N a g)` at arbitrary width. -/
 theorem levyEnergy_atomicTest_eq_sum {g : ℝ → ℝ} {w : ℝ}
-    (hg : ContDiff ℝ 2 g) (hgsupp : ∀ u, u ∉ Icc 0 w → g u = 0) (N : ℕ) (a : ℕ → ℝ) :
+    (hg : ContDiff ℝ 2 g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (N : ℕ) (a : ℕ → ℝ) :
     levyEnergy (atomicTest N a g) =
       ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
-        a n * a j * ∫ y in Ioi 0, levyMixed (atom g n) (atom g j) y := by
+        a n * a j * ∫ y in Set.Ioi 0, levyMixed (atom g n) (atom g j) y := by
   have hf : ContDiff ℝ 2 (atomicTest N a g) := contDiff_atomicTest hg N a
   have hfc : HasCompactSupport (atomicTest N a g) := hasCompactSupport_atomicTest hgsupp N a
   have hda (k : ℕ) : ContDiff ℝ 2 (atom g k) := contDiff_atom hg k
   have hdca (k : ℕ) : HasCompactSupport (atom g k) := hasCompactSupport_atom hgsupp k
   have hright (d : ℝ → ℝ) (hd : ContDiff ℝ 2 d) (hdc : HasCompactSupport d) :
-      (∫ y in Ioi 0, levyMixed d (atomicTest N a g) y) =
-        ∑ j ∈ Icc 1 N, a j * ∫ y in Ioi 0, levyMixed d (atom g j) y := by
+      (∫ y in Set.Ioi 0, levyMixed d (atomicTest N a g) y) =
+        ∑ j ∈ Icc 1 N, a j * ∫ y in Set.Ioi 0, levyMixed d (atom g j) y := by
     have hpt (y : ℝ) : levyMixed d (atomicTest N a g) y =
         ∑ j ∈ Icc 1 N, a j * levyMixed d (atom g j) y := by
-      unfold levyMixed atomicTest
-      have heq (u : ℝ) :
-          (d u - d (u + y)) *
-              ((∑ j ∈ Icc 1 N, a j * atom g j u) -
-                ∑ j ∈ Icc 1 N, a j * atom g j (u + y)) =
-            ∑ j ∈ Icc 1 N, a j * ((d u - d (u + y)) * (atom g j u - atom g j (u + y))) := by
-        rw [← sum_sub_distrib, mul_sum]
-        exact sum_congr rfl fun j _ => by ring
-      simp_rw [heq]
-      rw [integral_finsetSum _ fun j _ =>
-        (integrable_sub_shift_mul hd.continuous hdc (hda j).continuous y).const_mul (a j),
-        mul_sum]
-      exact sum_congr rfl fun j _ => by rw [integral_const_mul]; ring
+      rw [atomicTest_eq_sum_atom]
+      unfold levyMixed
+      have hint_eq : (∫ u, (d u - d (u + y)) *
+          ((∑ j ∈ Icc 1 N, a j * atom g j u) -
+            ∑ j ∈ Icc 1 N, a j * atom g j (u + y))) =
+          ∑ j ∈ Icc 1 N, a j * ∫ u, (d u - d (u + y)) * (atom g j u - atom g j (u + y)) := by
+        have hcongr : (∫ u, (d u - d (u + y)) *
+            ((∑ j ∈ Icc 1 N, a j * atom g j u) -
+              ∑ j ∈ Icc 1 N, a j * atom g j (u + y))) =
+            ∫ u, ∑ j ∈ Icc 1 N,
+              a j * ((d u - d (u + y)) * (atom g j u - atom g j (u + y))) := by
+          refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+          rw [← sum_sub_distrib, mul_sum]
+          exact sum_congr rfl fun j _ => by ring
+        rw [hcongr, integral_finsetSum _ fun j _ =>
+          (integrable_sub_shift_mul hd.continuous hdc (hda j).continuous y).const_mul (a j)]
+        exact sum_congr rfl fun j _ => integral_const_mul _ _
+      rw [hint_eq, mul_sum]
+      exact sum_congr rfl fun j _ => by ring
     simp_rw [hpt]
     rw [integral_finsetSum _ fun j _ =>
       (integrableOn_levyMixed hd hdc (hda j) (hdca j)).const_mul (a j)]
     exact sum_congr rfl fun j _ => integral_const_mul _ _
   have hsym (f₁ f₂ : ℝ → ℝ) :
-      (∫ y in Ioi 0, levyMixed f₁ f₂ y) = ∫ y in Ioi 0, levyMixed f₂ f₁ y := by
+      (∫ y in Set.Ioi 0, levyMixed f₁ f₂ y) = ∫ y in Set.Ioi 0, levyMixed f₂ f₁ y := by
     refine setIntegral_congr_fun measurableSet_Ioi fun y _ => ?_
     unfold levyMixed
     congr 1
     exact integral_congr_ae (Eventually.of_forall fun u => mul_comm _ _)
   have hself : levyEnergy (atomicTest N a g) =
-      ∫ y in Ioi 0, levyMixed (atomicTest N a g) (atomicTest N a g) y := by
+      ∫ y in Set.Ioi 0, levyMixed (atomicTest N a g) (atomicTest N a g) y := by
     unfold levyEnergy levyMixed
     simp only [← sq]
   rw [hself, hright (atomicTest N a g) hf hfc]
@@ -1322,6 +1337,16 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
           ∫ u, (atomDilate transMetzlerProfile (2 * w) u -
             atomDilate transMetzlerProfile (2 * w) (u + y)) ^ 2) (Ioi 0) :=
       integrableOn_levyIntegrand hg2 hgc2
+    have hL2_short : IntegrableOn
+        (fun y => archLevyDensity y *
+          ∫ u, (atomDilate transMetzlerProfile (2 * w) u -
+            atomDilate transMetzlerProfile (2 * w) (u + y)) ^ 2) (Ioc 0 (2 * w)) :=
+      hL2_int.mono_set fun y hy => hy.1
+    have hL2_long : IntegrableOn
+        (fun y => archLevyDensity y *
+          ∫ u, (atomDilate transMetzlerProfile (2 * w) u -
+            atomDilate transMetzlerProfile (2 * w) (u + y)) ^ 2) (Ioi (2 * w)) :=
+      hL2_int.mono_set fun y hy => lt_trans h2w_pos hy
     have hfar2 : ∀ y ∈ Ioi (2 * w),
         archLevyDensity y *
           (∫ u, (atomDilate transMetzlerProfile (2 * w) u -
@@ -1331,17 +1356,796 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
       rw [ArithmeticElectrostatics.integral_sq_sub_shift_of_disjoint hg2.continuous hgc2
         (bump_mul_shift_eq_zero hgsupp2 hy)]
       ring
-    have hmono := setIntegral_mono_set hL2_int
-      (Eventually.of_forall fun y => mul_nonneg
-        (by by_cases hy0 : 0 < y
-            · exact (archLevyDensity_pos hy0).le
-            · unfold archLevyDensity
-              have : 1 - Real.exp (-2 * y) ≤ 0 := by
-                have := Real.exp_le_exp.mpr (show 0 ≤ -2 * y by linarith only [hy0])
-                rw [Real.exp_zero] at this; linarith only [this]
-              exact div_nonpos_iff.mpr (Or.inr ⟨(Real.exp_pos _).le, this⟩) ∨ True |>.elim
-                (fun _ => sorry) (fun _ => sorry))
-        (Eventually.of_forall fun y => sorry))
-      (Ioi_subset_Ioi (by positivity : (0 : ℝ) ≤ 2 * w)).eventuallyLE
-    all_goals sorry
-  all_goals sorry
+    have hshort_nonneg : 0 ≤ ∫ y in Ioc 0 (2 * w),
+        archLevyDensity y *
+          ∫ u, (atomDilate transMetzlerProfile (2 * w) u -
+            atomDilate transMetzlerProfile (2 * w) (u + y)) ^ 2 :=
+      setIntegral_nonneg measurableSet_Ioc fun y hy =>
+        mul_nonneg (archLevyDensity_pos hy.1).le (integral_sub_shift_sq_nonneg y)
+    have hlong_eq : (∫ y in Ioi (2 * w),
+        archLevyDensity y *
+          ∫ u, (atomDilate transMetzlerProfile (2 * w) u -
+            atomDilate transMetzlerProfile (2 * w) (u + y)) ^ 2) =
+        (2 * ∫ u, atomDilate transMetzlerProfile (2 * w) u ^ 2) *
+          ∫ y in Ioi (2 * w), archLevyDensity y := by
+      rw [setIntegral_congr_fun measurableSet_Ioi hfar2, integral_const_mul]
+    have hlevy_ge : (2 * ∫ u, atomDilate transMetzlerProfile (2 * w) u ^ 2) *
+          (∫ y in Ioi (2 * w), archLevyDensity y) ≤
+        levyEnergy (atomDilate transMetzlerProfile (2 * w)) := by
+      unfold levyEnergy
+      rw [hsplit, setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi hL2_short hL2_long,
+        hlong_eq]
+      linarith only [hshort_nonneg]
+    have hlevy_le := levyEnergy_atom_le hg2 hgc2 hgsupp2 h2w_pos h2w1 (by positivity) hLip2
+    have hM2_ge : w ≤ ∫ u, atomDilate transMetzlerProfile (2 * w) u ^ 2 := by
+      rw [integral_atomDilate_sq h2w_pos]
+      have hφ := integral_transMetzlerProfile_sq_ge
+      nlinarith only [hφ, hw0]
+    have hA2_le : (∫ u, |atomDilate transMetzlerProfile (2 * w) u|) ≤ 2 * w := by
+      rw [integral_abs_atomDilate h2w_pos]
+      have hI1 := integral_abs_plateau_le etaZero_pos
+      nlinarith only [hI1, hw0]
+    have he2 : Real.exp (1 / 2 : ℝ) ≤ 2 := by
+      have he1 := Real.exp_one_lt_d9
+      have hsq : Real.exp (1 / 2 : ℝ) * Real.exp (1 / 2 : ℝ) = Real.exp 1 := by
+        rw [← Real.exp_add]; norm_num
+      nlinarith only [he1, hsq, Real.exp_pos (1 / 2 : ℝ)]
+    have herr2 : Real.exp (1 / 2) * (8000 / (2 * w)) * (2 * w) *
+        (∫ u, |atomDilate transMetzlerProfile (2 * w) u|) ≤
+        32000 * ∫ u, atomDilate transMetzlerProfile (2 * w) u ^ 2 := by
+      have hsimp : Real.exp (1 / 2) * (8000 / (2 * w)) * (2 * w) = Real.exp (1 / 2) * 8000 := by
+        field_simp [h2w_pos.ne']
+      rw [hsimp]
+      have hA2_0 : 0 ≤ ∫ u, |atomDilate transMetzlerProfile (2 * w) u| :=
+        integral_nonneg fun _ => abs_nonneg _
+      nlinarith only [he2, hA2_le, hA2_0, hM2_ge, Real.exp_pos (1 / 2 : ℝ)]
+    have hlog2w : Real.log (1 / (2 * w)) ≤ Real.log N := by
+      apply Real.log_le_log (by positivity)
+      rw [div_le_iff₀ h2w_pos]
+      have h := (div_le_iff₀ (by positivity : (0 : ℝ) < 2 * N)).mp hw_lo
+      linarith only [h]
+    have hcomb : (2 * (∫ y in Ioi (2 * w), archLevyDensity y)) *
+        (∫ u, atomDilate transMetzlerProfile (2 * w) u ^ 2) ≤
+        (Real.log N + selfEnergyConstant + 32000) *
+          (∫ u, atomDilate transMetzlerProfile (2 * w) u ^ 2) := by
+      have hlog_mul := mul_le_mul_of_nonneg_right hlog2w hM2_pos.le
+      nlinarith only [hlevy_ge, hlevy_le, herr2, hlog_mul]
+    exact le_of_mul_le_mul_right hcomb hM2_pos
+  have hlong_eq : (∫ y in Ioi (2 * w),
+      levyMixed (atomDilate transMetzlerProfile w)
+        (fun u => atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|)) y) =
+      SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+        |Real.log j - Real.log n| * (2 * ∫ y in Ioi (2 * w), archLevyDensity y) := by
+    rw [setIntegral_congr_fun measurableSet_Ioi hlong_pt, integral_const_mul]
+    ring
+  have hcorr_le : |SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+        |Real.log j - Real.log n|| /
+      (∫ u, atomDilate transMetzlerProfile w u ^ 2) ≤ 3 * δ₀ := by
+    have hover : |SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+        |Real.log j - Real.log n|| ≤ w - |Real.log j - Real.log n| := by
+      simpa only [one_pow, one_mul, abs_abs] using
+        abs_bumpAutocorr_le_overlap_length hg.continuous hgsupp zero_le_one
+          (fun u => by
+            rw [atomDilate, abs_of_nonneg (transMetzlerProfile_nonneg _)]
+            exact transMetzlerProfile_le_one _)
+          (by rwa [abs_abs])
+    have hw_sub : w - |Real.log j - Real.log n| ≤ δ₀ / (N : ℝ) := by
+      have hsub := sub_le_sub hw_hi hs_ge
+      have hring : (1 + δ₀) / (N : ℝ) - 1 / (N : ℝ) = δ₀ / (N : ℝ) := by ring
+      rwa [hring] at hsub
+    rw [div_le_iff₀ hM_pos]
+    have h3 := mul_le_mul_of_nonneg_left hM_3N (show 0 ≤ 3 * δ₀ by positivity)
+    have hsimp : 3 * δ₀ * (1 / (3 * (N : ℝ))) = δ₀ / (N : ℝ) := by field_simp [hN0.ne']
+    rw [hsimp] at h3
+    exact hover.trans (hw_sub.trans h3)
+  have htail_nonneg : 0 ≤ 2 * ∫ y in Ioi (2 * w), archLevyDensity y :=
+    mul_nonneg (by norm_num)
+      (setIntegral_nonneg measurableSet_Ioi fun y hy =>
+        (archLevyDensity_pos (lt_trans h2w_pos hy)).le)
+  have hlong_div : |(∫ y in Ioi (2 * w),
+      levyMixed (atomDilate transMetzlerProfile w)
+        (fun u => atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|)) y)| /
+      (∫ u, atomDilate transMetzlerProfile w u ^ 2) ≤
+      3 * δ₀ * (Real.log N + selfEnergyConstant + 32000) := by
+    rw [hlong_eq, abs_mul, abs_of_nonneg htail_nonneg, mul_div_right_comm]
+    exact mul_le_mul hcorr_le htail_density htail_nonneg (by positivity)
+  calc |(∫ y in Ioc 0 (2 * w), _) + (∫ y in Ioi (2 * w), _)| /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2)
+      ≤ (|∫ y in Ioc 0 (2 * w), _| + |∫ y in Ioi (2 * w), _|) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) :=
+        div_le_div_of_nonneg_right (abs_add_le _ _) hM_pos.le
+    _ = |∫ y in Ioc 0 (2 * w), _| / (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+          |∫ y in Ioi (2 * w), _| / (∫ u, atomDilate transMetzlerProfile w u ^ 2) :=
+        add_div _ _ _
+    _ ≤ 64000 + 3 * δ₀ * (Real.log N + selfEnergyConstant + 32000) :=
+        add_le_add hshort_div hlong_div
+    _ = _ := by ring
+
+/-- Exact entry formula for `normalizedFullWeilHorizonMatrix` at arbitrary atom width. -/
+theorem normalizedFullWeilHorizonMatrix_apply_unconditional
+    {g : ℝ → ℝ} (hG : (∫ u, g u ^ 2) ≠ 0) (N : ℕ) (n j : PrimeHorizonIndex N) :
+    normalizedFullWeilHorizonMatrix g N n j =
+      markovPair (atom g n) (atom g j) / (∫ u, g u ^ 2) +
+      ((∫ u, g u * Real.exp (-(u / 2))) * (∫ u, g u * Real.exp (u / 2)) /
+        (∫ u, g u ^ 2)) * arithmeticPoleKernel n j := by
+  rw [normalizedFullWeilHorizonMatrix, fullWeilHorizonMatrix, atomicWeilGram, atomicMarkovGram]
+  simp only [Matrix.of_apply, primeHorizonFinEquiv_val_add_one,
+    atomPoleRow_primeHorizonFinEquiv_zero, atomPoleRow_primeHorizonFinEquiv_one,
+    arithmeticPoleKernel]
+  field_simp [hG]
+  ring
+
+/-- Complete quadratic-form perturbation bound between `normalizedFullWeilHorizonMatrix` and
+`transMetzlerMainMatrix` past the touching ratio: every error is controlled by
+`(2000 * δ₀ + C_short / log(N / 3)) * (poleDefect N a + ‖x‖²)`. -/
+theorem exists_perturbation_bound_transMetzler :
+    ∃ C_short : ℝ, 0 ≤ C_short ∧
+      ∀ {N : ℕ} (_hN : 27 ≤ N) {w cStar δ₀ : ℝ}
+        (_hδ0 : 0 ≤ δ₀) (_hδ4 : δ₀ ≤ 1 / 4) (_hcStar : 1 / 2 ≤ cStar)
+        (_hw_lo : 1 / (2 * (N : ℝ)) ≤ w) (_hw_hi : w ≤ (1 + δ₀) / (N : ℝ))
+        (_hdrift : |w * (N : ℝ) - cStar| ≤ 2 / (N : ℝ))
+        (x : EuclideanSpace ℝ (PrimeHorizonIndex N)),
+        |⟪Matrix.toEuclideanLin
+            (normalizedFullWeilHorizonMatrix (atomDilate transMetzlerProfile w) N) x, x⟫ -
+          ⟪Matrix.toEuclideanLin (transMetzlerMainMatrix w cStar N) x, x⟫| ≤
+          (2000 * δ₀ + C_short / Real.log ((N : ℝ) / 3)) *
+            (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+  refine ⟨2156 + 96 * |gammaHardyPhaseRate 0| + 48 * (selfEnergyConstant + 96001),
+    by positivity, ?_⟩
+  intro N hN w cStar δ₀ hδ0 hδ4 hcStar hw_lo hw_hi hdrift x
+  have hN16 : 16 ≤ N := by omega
+  have hN1 : 1 ≤ N := by omega
+  have hN27 : (27 : ℝ) ≤ N := by exact_mod_cast hN
+  have hN0 : (0 : ℝ) < N := by linarith only [hN27]
+  have hN3_gt : 1 < (N : ℝ) / 3 := by linarith only [hN27]
+  have hlogN3_pos : 0 < Real.log ((N : ℝ) / 3) := Real.log_pos hN3_gt
+  have hlogN3_le_N : Real.log ((N : ℝ) / 3) ≤ N :=
+    (Real.log_le_sub_one_of_pos (by positivity)).trans (by linarith only [hN27])
+  have hinvN_le_log : 1 / (N : ℝ) ≤ 1 / Real.log ((N : ℝ) / 3) :=
+    one_div_le_one_div_of_le hlogN3_pos hlogN3_le_N
+  have hlogN_le_two : Real.log (N : ℝ) ≤ 2 * Real.log ((N : ℝ) / 3) := by
+    have hsq : (N : ℝ) ≤ ((N : ℝ) / 3) ^ (2 : ℕ) := by nlinarith only [hN27]
+    have hl := Real.log_le_log hN0 hsq
+    rw [Real.log_pow] at hl
+    norm_num at hl
+    exact hl
+  have hw0 : 0 < w := lt_of_lt_of_le (by positivity) hw_lo
+  have hw_54 : w ≤ 5 / (4 * (N : ℝ)) := by
+    refine hw_hi.trans ?_
+    rw [div_le_div_iff₀ hN0 (by positivity)]
+    nlinarith only [hδ4, hN0]
+  have hw1 : w ≤ 1 := by
+    refine hw_54.trans ?_
+    rw [div_le_one (by positivity)]; linarith only [hN27]
+  obtain ⟨hg, hgsupp, hgc⟩ := atomDilate_facts contDiff_transMetzlerProfile
+    (fun u hu => transMetzlerProfile_eq_zero hu) hw0
+  have hM : ∫ u, atomDilate transMetzlerProfile w u ^ 2 = w * ∫ u, transMetzlerProfile u ^ 2 :=
+    integral_atomDilate_sq hw0
+  have hM_pos : 0 < ∫ u, atomDilate transMetzlerProfile w u ^ 2 := by
+    rw [hM]; exact mul_pos hw0 integral_transMetzlerProfile_sq_pos
+  have hcharge_w : (∫ u, atomDilate transMetzlerProfile w u) ^ 2 /
+      (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+      w * completeWeilPoleShift transMetzlerProfile 1 := by
+    have hint : (∫ u, atomDilate transMetzlerProfile w u) = w * ∫ u, transMetzlerProfile u := by
+      simpa only [atomDilate, smul_eq_mul, abs_of_pos hw0] using
+        MeasureTheory.Measure.integral_comp_div transMetzlerProfile w
+    rw [hint, hM, completeWeilPoleShift]
+    field_simp [hw0.ne', integral_transMetzlerProfile_sq_pos.ne']
+  -- Step 1: Expand `<W_N x, x>` into Markov + pole forms
+  have hW_mat : normalizedFullWeilHorizonMatrix (atomDilate transMetzlerProfile w) N =
+      horizonKernelMatrix (fun n j =>
+        markovPair (atom (atomDilate transMetzlerProfile w) n)
+          (atom (atomDilate transMetzlerProfile w) j) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+        ((∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2))) *
+          (∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2)) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2)) * arithmeticPoleKernel n j) N := by
+    ext n j
+    exact normalizedFullWeilHorizonMatrix_apply_unconditional hM_pos.ne' N n j
+  have hW_inner : ⟪Matrix.toEuclideanLin
+      (normalizedFullWeilHorizonMatrix (atomDilate transMetzlerProfile w) N) x, x⟫ =
+      (2 * gammaHardyPhaseRate 0 *
+          (∫ u, atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w) u ^ 2) +
+        levyEnergy (atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w)) -
+        primeSum (atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w))) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+      ((∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2))) *
+        (∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2)) /
+        (∫ u, atomDilate transMetzlerProfile w u ^ 2)) *
+        ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+          primeHorizonExtension x n * primeHorizonExtension x j * arithmeticPoleKernel n j := by
+    rw [hW_mat, horizonKernelMatrix_inner]
+    have hdist (n j : ℕ) :
+        primeHorizonExtension x n * primeHorizonExtension x j *
+          (markovPair (atom (atomDilate transMetzlerProfile w) n)
+            (atom (atomDilate transMetzlerProfile w) j) /
+              (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+          ((∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2))) *
+            (∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2)) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2)) * arithmeticPoleKernel n j) =
+        (primeHorizonExtension x n * primeHorizonExtension x j *
+          markovPair (atom (atomDilate transMetzlerProfile w) n)
+            (atom (atomDilate transMetzlerProfile w) j)) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+        ((∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2))) *
+          (∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2)) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2)) *
+          (primeHorizonExtension x n * primeHorizonExtension x j * arithmeticPoleKernel n j) := by
+      ring
+    simp only [hdist, sum_add_distrib, ← sum_div, ← mul_sum]
+    rw [← levyMarkovForm_atomicTest_eq hg hgsupp hw0.le N (primeHorizonExtension x)]
+    rfl
+  -- Step 2: Expand each Markov piece into diagonal + separated + overlapping parts
+  have hgram_split :
+      (∫ u, atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w) u ^ 2) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+        ‖x‖ ^ 2 +
+          ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+            primeHorizonExtension x n * primeHorizonExtension x j *
+              (if n = j then 0
+                else SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+                  (-(Real.log j - Real.log n)) /
+                    (∫ u, atomDilate transMetzlerProfile w u ^ 2)) := by
+    rw [integral_atomicTest_sq_eq_gram hg.continuous hgc N (primeHorizonExtension x), sum_div]
+    have hdiag (n : ℕ) (hn : n ∈ Icc 1 N) :
+        (∑ j ∈ Icc 1 N, primeHorizonExtension x n * primeHorizonExtension x j *
+          SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+            (-(Real.log j - Real.log n))) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+          primeHorizonExtension x n ^ 2 +
+            ∑ j ∈ Icc 1 N, primeHorizonExtension x n * primeHorizonExtension x j *
+              (if n = j then 0
+                else SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+                  (-(Real.log j - Real.log n)) /
+                    (∫ u, atomDilate transMetzlerProfile w u ^ 2)) := by
+      rw [sum_eq_diag_add hn, sub_self, neg_zero, bumpCorr_zero]
+      have h1 : primeHorizonExtension x n * primeHorizonExtension x n *
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+          primeHorizonExtension x n ^ 2 * (∫ u, atomDilate transMetzlerProfile w u ^ 2) := by ring
+      rw [h1, add_div, mul_div_cancel_right₀ _ hM_pos.ne', sum_div]
+      congr 1
+      refine sum_congr rfl fun j _ => ?_
+      split_ifs <;> ring
+    rw [sum_congr rfl hdiag, sum_add_distrib, sum_primeHorizonExtension_sq]
+  have hlevy_split :
+      levyEnergy (atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w)) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+        (levyEnergy (atomDilate transMetzlerProfile w) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2)) * ‖x‖ ^ 2 -
+          ⟪Matrix.toEuclideanLin
+            (horizonKernelMatrix
+              (separatedCrossErrorKernel (atomDilate transMetzlerProfile w) w) N) x, x⟫ -
+          (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+            primeHorizonExtension x n * primeHorizonExtension x j *
+              (w * completeWeilPoleShift transMetzlerProfile 1 * archimedeanCenterKernel n j)) +
+          ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+            primeHorizonExtension x n * primeHorizonExtension x j *
+              (if n = j ∨ w < |Real.log j - Real.log n| then 0
+                else (∫ y in Ioi 0,
+                  levyMixed (atom (atomDilate transMetzlerProfile w) n)
+                    (atom (atomDilate transMetzlerProfile w) j) y) /
+                  (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+                  w * completeWeilPoleShift transMetzlerProfile 1 *
+                    archimedeanCenterKernel n j) := by
+    rw [levyEnergy_atomicTest_eq_sum hg hgsupp N (primeHorizonExtension x),
+      horizonKernelMatrix_inner, sum_div]
+    have hrow (n : ℕ) (hn : n ∈ Icc 1 N) :
+        (∑ j ∈ Icc 1 N, primeHorizonExtension x n * primeHorizonExtension x j *
+          ∫ y in Ioi 0, levyMixed (atom (atomDilate transMetzlerProfile w) n)
+            (atom (atomDilate transMetzlerProfile w) j) y) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+        (levyEnergy (atomDilate transMetzlerProfile w) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2)) * primeHorizonExtension x n ^ 2 -
+          (∑ j ∈ Icc 1 N, primeHorizonExtension x n * primeHorizonExtension x j *
+            separatedCrossErrorKernel (atomDilate transMetzlerProfile w) w n j) -
+          (∑ j ∈ Icc 1 N, primeHorizonExtension x n * primeHorizonExtension x j *
+            (w * completeWeilPoleShift transMetzlerProfile 1 * archimedeanCenterKernel n j)) +
+          ∑ j ∈ Icc 1 N, primeHorizonExtension x n * primeHorizonExtension x j *
+            (if n = j ∨ w < |Real.log j - Real.log n| then 0
+              else (∫ y in Ioi 0,
+                levyMixed (atom (atomDilate transMetzlerProfile w) n)
+                  (atom (atomDilate transMetzlerProfile w) j) y) /
+                (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+                w * completeWeilPoleShift transMetzlerProfile 1 *
+                  archimedeanCenterKernel n j) := by
+      rw [sum_div, ← mul_sum, sum_primeHorizonExtension_sq] at *
+      rw [← sub_add, ← sub_add]
+      have hterm (j : ℕ) (hj : j ∈ Icc 1 N) :
+          (primeHorizonExtension x n * primeHorizonExtension x j *
+              ∫ y in Ioi 0, levyMixed (atom (atomDilate transMetzlerProfile w) n)
+                (atom (atomDilate transMetzlerProfile w) j) y) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+          (if n = j then (levyEnergy (atomDilate transMetzlerProfile w) /
+              (∫ u, atomDilate transMetzlerProfile w u ^ 2)) * primeHorizonExtension x n ^ 2 else 0) -
+            primeHorizonExtension x n * primeHorizonExtension x j *
+              separatedCrossErrorKernel (atomDilate transMetzlerProfile w) w n j -
+            primeHorizonExtension x n * primeHorizonExtension x j *
+              (w * completeWeilPoleShift transMetzlerProfile 1 * archimedeanCenterKernel n j) +
+            primeHorizonExtension x n * primeHorizonExtension x j *
+              (if n = j ∨ w < |Real.log j - Real.log n| then 0
+                else (∫ y in Ioi 0,
+                  levyMixed (atom (atomDilate transMetzlerProfile w) n)
+                    (atom (atomDilate transMetzlerProfile w) j) y) /
+                  (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+                  w * completeWeilPoleShift transMetzlerProfile 1 *
+                    archimedeanCenterKernel n j) := by
+        by_cases hnj : n = j
+        · subst j
+          have hself : (∫ y in Ioi 0,
+              levyMixed (atom (atomDilate transMetzlerProfile w) n)
+                (atom (atomDilate transMetzlerProfile w) n) y) =
+              levyEnergy (atomDilate transMetzlerProfile w) := by
+            simp only [levyMixed, ← sq]
+            exact levyEnergy_translate (Real.log n)
+          have hnw : ¬(w < |Real.log (n : ℝ) - Real.log n|) := by
+            rw [sub_self, abs_zero]; exact not_lt.mpr hw0.le
+          rw [hself, if_pos rfl, if_pos (Or.inl rfl), separatedCrossErrorKernel, if_neg hnw,
+            archimedeanCenterKernel_self]
+          ring
+        · rw [if_neg hnj]
+          by_cases hws : w < |Real.log j - Real.log n|
+          · rw [if_pos (Or.inr hws), separatedCrossErrorKernel, if_pos hws,
+              integral_levyMixed_atom_of_lt_abs_log hgsupp (mem_Icc.mp hn).1 (mem_Icc.mp hj).1
+                hw0.le hws, atomCrossErrorKernel, if_neg hnj, hcharge_w]
+            ring
+          · rw [if_neg (fun h => h.elim hnj hws), separatedCrossErrorKernel, if_neg hws]
+            ring
+      rw [sum_congr rfl hterm, sum_add_distrib, sum_sub_distrib, sum_sub_distrib,
+        sum_ite_eq, if_pos hn]
+    rw [sum_congr rfl hrow, sum_add_distrib, sum_sub_distrib, sum_sub_distrib,
+      ← mul_sum, sum_primeHorizonExtension_sq]
+  have hprime_split :
+      primeSum (atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w)) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) =
+        ⟪Matrix.toEuclideanLin (fullPrimeMatrix N) x, x⟫ +
+          nonRatioForm (atomDilate transMetzlerProfile w) N (primeHorizonExtension x) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) := by
+    rw [primeSum_atomicTest_eq_ratio_add hg.continuous hgc hgsupp hw0.le N
+        (primeHorizonExtension x),
+      add_div, mul_div_cancel_left₀ _ hM_pos.ne', atomicWeilForm_primeHorizonExtension]
+  have hpole_split :
+      ((∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2))) *
+        (∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2)) /
+        (∫ u, atomDilate transMetzlerProfile w u ^ 2)) *
+        (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+          primeHorizonExtension x n * primeHorizonExtension x j * arithmeticPoleKernel n j) -
+      (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+        primeHorizonExtension x n * primeHorizonExtension x j *
+          (w * completeWeilPoleShift transMetzlerProfile 1 * archimedeanCenterKernel n j)) =
+      ⟪Matrix.toEuclideanLin (poleMomentErrorMatrix transMetzlerProfile w N) x, x⟫ +
+        ⟪Matrix.toEuclideanLin
+          (fullWeilCenterMatrix (completeWeilPoleShift transMetzlerProfile cStar) N) x, x⟫ +
+        ((w * N - cStar) * completeWeilPoleShift transMetzlerProfile 1) *
+          ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix 1 N) x, x⟫ := by
+    have hexp_neg : atomExponentialMoment (atomDilate transMetzlerProfile w) (-(1 / 2)) =
+        ∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2)) := by
+      unfold atomExponentialMoment; congr 1; funext u; congr 2; ring
+    have hexp_pos : atomExponentialMoment (atomDilate transMetzlerProfile w) (1 / 2) =
+        ∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2) := by
+      unfold atomExponentialMoment; congr 1; funext u; congr 2; ring
+    have hcoeff : ((∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2))) *
+        (∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2)) /
+        (∫ u, atomDilate transMetzlerProfile w u ^ 2)) =
+        poleMomentErrorCoeff transMetzlerProfile w +
+          w * completeWeilPoleShift transMetzlerProfile 1 := by
+      unfold poleMomentErrorCoeff; rw [hexp_neg, hexp_pos]; ring
+    have hshift_cStar : completeWeilPoleShift transMetzlerProfile cStar =
+        cStar * completeWeilPoleShift transMetzlerProfile 1 := by
+      unfold completeWeilPoleShift; ring
+    change _ =
+      ⟪Matrix.toEuclideanLin (horizonKernelMatrix
+        (fun n j => poleMomentErrorCoeff transMetzlerProfile w * arithmeticPoleKernel n j) N) x, x⟫ +
+      ⟪Matrix.toEuclideanLin (horizonKernelMatrix
+        (fun n j => (completeWeilPoleShift transMetzlerProfile cStar / N) *
+          (arithmeticPoleKernel n j - archimedeanCenterKernel n j)) N) x, x⟫ +
+      ((w * N - cStar) * completeWeilPoleShift transMetzlerProfile 1) *
+        ⟪Matrix.toEuclideanLin (horizonKernelMatrix
+          (fun n j => (1 / (N : ℝ)) *
+            (arithmeticPoleKernel n j - archimedeanCenterKernel n j)) N) x, x⟫
+    rw [hcoeff, hshift_cStar, horizonKernelMatrix_inner, horizonKernelMatrix_inner,
+      horizonKernelMatrix_inner]
+    simp only [mul_sum]
+    rw [← sum_sub_distrib, ← sum_add_distrib, ← sum_add_distrib]
+    refine sum_congr rfl fun n _ => ?_
+    rw [← sum_sub_distrib, ← sum_add_distrib, ← sum_add_distrib]
+    refine sum_congr rfl fun j _ => ?_
+    field_simp [hN0.ne']
+    ring
+  -- Step 3: Exact difference `<W_N x, x> - <H_N^main x, x>`
+  have hdiff_eq :
+      ⟪Matrix.toEuclideanLin
+          (normalizedFullWeilHorizonMatrix (atomDilate transMetzlerProfile w) N) x, x⟫ -
+        ⟪Matrix.toEuclideanLin (transMetzlerMainMatrix w cStar N) x, x⟫ =
+      (2 * gammaHardyPhaseRate 0 +
+          levyEnergy (atomDilate transMetzlerProfile w) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+          Real.log N -
+          (completeWeilSelfFinitePart transMetzlerProfile cStar -
+            Real.eulerMascheroniConstant)) * ‖x‖ ^ 2 +
+      2 * gammaHardyPhaseRate 0 *
+        (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+          primeHorizonExtension x n * primeHorizonExtension x j *
+            (if n = j then 0
+              else SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+                (-(Real.log j - Real.log n)) /
+                  (∫ u, atomDilate transMetzlerProfile w u ^ 2))) +
+      ((w * N - cStar) * completeWeilPoleShift transMetzlerProfile 1) *
+        ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix 1 N) x, x⟫ -
+      nonRatioForm (atomDilate transMetzlerProfile w) N (primeHorizonExtension x) /
+        (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+      (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+        primeHorizonExtension x n * primeHorizonExtension x j *
+          (if n = j ∨ w < |Real.log j - Real.log n| then 0
+            else (∫ y in Ioi 0,
+              levyMixed (atom (atomDilate transMetzlerProfile w) n)
+                (atom (atomDilate transMetzlerProfile w) j) y) /
+              (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+              w * completeWeilPoleShift transMetzlerProfile 1 *
+                archimedeanCenterKernel n j)) := by
+    have hW2 : ⟪Matrix.toEuclideanLin
+        (normalizedFullWeilHorizonMatrix (atomDilate transMetzlerProfile w) N) x, x⟫ =
+        2 * gammaHardyPhaseRate 0 *
+          ((∫ u, atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w) u ^ 2) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2)) +
+        levyEnergy (atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w)) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+        primeSum (atomicTest N (primeHorizonExtension x) (atomDilate transMetzlerProfile w)) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+        ((∫ u, atomDilate transMetzlerProfile w u * Real.exp (-(u / 2))) *
+          (∫ u, atomDilate transMetzlerProfile w u * Real.exp (u / 2)) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2)) *
+          ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+            primeHorizonExtension x n * primeHorizonExtension x j * arithmeticPoleKernel n j := by
+      rw [hW_inner]; ring
+    rw [hW2, hgram_split, hlevy_split, hprime_split, transMetzlerMainMatrix_inner_eq]
+    unfold renormalizedPrimeEnergy
+    linarith only [hpole_split]
+  -- Step 4: Bound each of the five perturbation pieces
+  have hpsi_le : psiConstant ≤ 4 := by
+    unfold psiConstant
+    have hlog4 : Real.log 4 < (7 : ℝ) / 5 := by
+      have h4 : Real.log (4 : ℝ) = 2 * Real.log 2 := by
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]; norm_num
+      linarith only [h4, Real.log_two_lt_d9]
+    have he_gt2 : (2 : ℝ) ≤ Real.exp 1 := by linarith only [Real.add_one_le_exp (1 : ℝ)]
+    have hdiv : 4 / Real.exp 1 ≤ 2 := by
+      rw [div_le_iff₀ (Real.exp_pos 1)]; linarith only [he_gt2]
+    linarith only [hlog4, hdiv]
+  have hpd0 : 0 ≤ poleDefect N (primeHorizonExtension x) := poleDefect_nonneg _ _
+  have hnorm0 : 0 ≤ ‖x‖ ^ 2 := sq_nonneg _
+  have hsum0 : 0 ≤ poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2 := add_nonneg hpd0 hnorm0
+  -- Piece 1: Diagonal self-energy + `log(cStar / (w * N))` scalar drift
+  have hpiece1 : |(2 * gammaHardyPhaseRate 0 +
+        levyEnergy (atomDilate transMetzlerProfile w) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+        Real.log N -
+        (completeWeilSelfFinitePart transMetzlerProfile cStar -
+          Real.eulerMascheroniConstant)) * ‖x‖ ^ 2| ≤
+      (6 / Real.log ((N : ℝ) / 3)) * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+    have hself := abs_levyEnergy_atomDilate_sub_le contDiff_transMetzlerProfile
+      (fun u hu => transMetzlerProfile_eq_zero hu) integral_transMetzlerProfile_sq_pos
+      hw0 hw1 abs_transMetzlerProfile_sub_le
+    have hself_div : |levyEnergy (atomDilate transMetzlerProfile w) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+          (Real.log (1 / w) + profileRobin transMetzlerProfile)| ≤
+        Real.exp (1 / 2) / 2 * w := by
+      have heq : levyEnergy (atomDilate transMetzlerProfile w) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+            (Real.log (1 / w) + profileRobin transMetzlerProfile) =
+          (levyEnergy (atomDilate transMetzlerProfile w) -
+            (Real.log (1 / w) + profileRobin transMetzlerProfile) *
+              ∫ u, atomDilate transMetzlerProfile w u ^ 2) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) := by
+        field_simp [hM_pos.ne']
+      rw [heq, abs_div, abs_of_pos hM_pos, div_le_iff₀ hM_pos]
+      exact hself
+    have hfp := finitePart_profileRobin_eq transMetzlerProfile
+    have hwN_pos : 0 < w * N := mul_pos hw0 hN0
+    have hwN_half : 1 / 2 ≤ w * N := (div_le_iff₀ hN0).mp (by simpa only [mul_comm] using hw_lo)
+    have hlog_id : Real.log (1 / w) - Real.log N = -Real.log (w * N) := by
+      rw [one_div, Real.log_inv, Real.log_mul hw0.ne' hN0.ne']; ring
+    have hcfp : completeWeilSelfFinitePart transMetzlerProfile cStar =
+        -Real.log (2 * Real.pi) - Real.log cStar +
+          bumpRobin transMetzlerProfile 1 / (∫ u, transMetzlerProfile u ^ 2) := by
+      have hc0 : 0 < cStar := by linarith only [hcStar]
+      rw [completeWeilSelfFinitePart, one_div, Real.log_inv,
+        Real.log_mul (by positivity : (2 * Real.pi : ℝ) ≠ 0) hc0.ne']
+      ring
+    have hlog_drift : |Real.log cStar - Real.log (w * N)| ≤ 4 / (N : ℝ) := by
+      have hc0 : 0 < cStar := by linarith only [hcStar]
+      rcases le_total cStar (w * N) with hle | hle
+      · rw [abs_of_nonpos (sub_nonpos.mpr (Real.log_le_log hc0 hle)), neg_sub]
+        have h1 : Real.log (w * N) - Real.log cStar ≤ (w * N - cStar) / cStar := by
+          rw [← Real.log_div hwN_pos.ne' hc0.ne']
+          refine (Real.log_le_sub_one_of_pos (div_pos hwN_pos hc0)).trans_eq ?_
+          field_simp [hc0.ne']
+        have h2 : (w * N - cStar) / cStar ≤ 2 * (w * N - cStar) := by
+          rw [div_le_iff₀ hc0]
+          have hsub0 : 0 ≤ w * N - cStar := sub_nonneg.mpr hle
+          nlinarith only [hcStar, hsub0]
+        have h3 := (abs_le.mp hdrift).2
+        linarith only [h1, h2, h3]
+      · rw [abs_of_nonneg (sub_nonneg.mpr (Real.log_le_log hwN_pos hle))]
+        have h1 : Real.log cStar - Real.log (w * N) ≤ (cStar - w * N) / (w * N) := by
+          rw [← Real.log_div hc0.ne' hwN_pos.ne']
+          refine (Real.log_le_sub_one_of_pos (div_pos hc0 hwN_pos)).trans_eq ?_
+          field_simp [hwN_pos.ne']
+        have h2 : (cStar - w * N) / (w * N) ≤ 2 * (cStar - w * N) := by
+          rw [div_le_iff₀ hwN_pos]
+          have hsub0 : 0 ≤ cStar - w * N := sub_nonneg.mpr hle
+          nlinarith only [hwN_half, hsub0]
+        have h3 := (abs_le.mp hdrift).1
+        linarith only [h1, h2, h3]
+    have he2 : Real.exp (1 / 2 : ℝ) ≤ 2 := by
+      have he1 := Real.exp_one_lt_d9
+      have hsq : Real.exp (1 / 2 : ℝ) * Real.exp (1 / 2 : ℝ) = Real.exp 1 := by
+        rw [← Real.exp_add]; norm_num
+      nlinarith only [he1, hsq, Real.exp_pos (1 / 2 : ℝ)]
+    have hw_bound : Real.exp (1 / 2) / 2 * w ≤ 2 / (N : ℝ) := by
+      have hw_2 : w ≤ 2 / (N : ℝ) := hw_54.trans (by
+        rw [div_le_div_iff₀ (by positivity) hN0]; linarith only [hN0])
+      nlinarith only [he2, hw0, hw_2, Real.exp_pos (1 / 2 : ℝ)]
+    have hscal_eq : 2 * gammaHardyPhaseRate 0 +
+          levyEnergy (atomDilate transMetzlerProfile w) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+          Real.log N -
+          (completeWeilSelfFinitePart transMetzlerProfile cStar -
+            Real.eulerMascheroniConstant) =
+        (levyEnergy (atomDilate transMetzlerProfile w) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+          (Real.log (1 / w) + profileRobin transMetzlerProfile)) +
+        (Real.log cStar - Real.log (w * N)) := by
+      rw [hcfp]; linarith only [hfp, hlog_id]
+    have hscal_le : |2 * gammaHardyPhaseRate 0 +
+          levyEnergy (atomDilate transMetzlerProfile w) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+          Real.log N -
+          (completeWeilSelfFinitePart transMetzlerProfile cStar -
+            Real.eulerMascheroniConstant)| ≤ 6 / Real.log ((N : ℝ) / 3) := by
+      rw [hscal_eq]
+      have htri := (abs_add_le _ _).trans (add_le_add (hself_div.trans hw_bound) hlog_drift)
+      have h6N : 2 / (N : ℝ) + 4 / (N : ℝ) = 6 * (1 / (N : ℝ)) := by ring
+      have h6log : 6 * (1 / (N : ℝ)) ≤ 6 / Real.log ((N : ℝ) / 3) := by
+        rw [show 6 / Real.log ((N : ℝ) / 3) = 6 * (1 / Real.log ((N : ℝ) / 3)) by ring]
+        exact mul_le_mul_of_nonneg_left hinvN_le_log (by norm_num)
+      exact htri.trans (by rw [h6N]; exact h6log)
+    rw [abs_mul, abs_of_nonneg hnorm0]
+    have hmul := mul_le_mul_of_nonneg_left (show ‖x‖ ^ 2 ≤
+      poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2 by linarith only [hpd0])
+      (by positivity : 0 ≤ 6 / Real.log ((N : ℝ) / 3))
+    exact (mul_le_mul_of_nonneg_right hscal_le hnorm0).trans hmul
+  -- Piece 2: Off-diagonal `L²` overlap
+  have htop_sum := sum_sq_top_third_le hN16 (primeHorizonExtension x)
+  rw [sum_primeHorizonExtension_sq] at htop_sum
+  have htop_sum4 : (∑ n ∈ Icc 1 N, if N < 3 * n then primeHorizonExtension x n ^ 2 else 0) ≤
+      (24 / Real.log ((N : ℝ) / 3)) * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+    have hcoef_pos : 0 ≤ 6 / Real.log ((N : ℝ) / 3) := by positivity
+    have h1 : poleDefect N (primeHorizonExtension x) + psiConstant * ‖x‖ ^ 2 ≤
+        4 * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+      nlinarith only [hpsi_le, hpd0, hnorm0]
+    have h2 := mul_le_mul_of_nonneg_left h1 hcoef_pos
+    calc _ ≤ _ := htop_sum
+      _ ≤ 6 / Real.log ((N : ℝ) / 3) * (4 * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2)) := h2
+      _ = _ := by ring
+  have hpiece2 : |2 * gammaHardyPhaseRate 0 *
+      (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+        primeHorizonExtension x n * primeHorizonExtension x j *
+          (if n = j then 0
+            else SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+              (-(Real.log j - Real.log n)) /
+                (∫ u, atomDilate transMetzlerProfile w u ^ 2)))| ≤
+      (96 * |gammaHardyPhaseRate 0| / Real.log ((N : ℝ) / 3)) *
+        (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+    have hover_gram := abs_sum_overlapping_pairs_le hN16 hw_54 zero_le_one
+      (fun n j => if n = j then 0
+        else SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+          (-(Real.log j - Real.log n)) / (∫ u, atomDilate transMetzlerProfile w u ^ 2))
+      (fun n _ j _ h => by
+        rcases h with rfl | hws
+        · simp only [ite_true]
+        · split_ifs with hnj
+          · rfl
+          · rw [bumpCorr_neg, bumpCorr_eq_zero hgsupp hws, zero_div])
+      (fun n _ j _ hnj _ => by
+        rw [if_neg hnj, abs_div, abs_of_pos hM_pos, div_le_one hM_pos]
+        exact abs_bumpCorr_le hg.continuous hgc _)
+      (primeHorizonExtension x)
+    rw [abs_mul, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
+    have h1 := mul_le_mul_of_nonneg_left hover_gram
+      (by positivity : 0 ≤ 2 * |gammaHardyPhaseRate 0|)
+    have h2 := mul_le_mul_of_nonneg_left htop_sum4
+      (by positivity : 0 ≤ 4 * |gammaHardyPhaseRate 0|)
+    calc _ ≤ 2 * |gammaHardyPhaseRate 0| *
+          (2 * 1 * ∑ n ∈ Icc 1 N, if N < 3 * n then primeHorizonExtension x n ^ 2 else 0) := h1
+      _ = 4 * |gammaHardyPhaseRate 0| *
+          ∑ n ∈ Icc 1 N, if N < 3 * n then primeHorizonExtension x n ^ 2 else 0 := by ring
+      _ ≤ 4 * |gammaHardyPhaseRate 0| *
+          ((24 / Real.log ((N : ℝ) / 3)) * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2)) := h2
+      _ = _ := by ring
+  -- Piece 3: Center width-drift
+  have hpiece3 : |((w * N - cStar) * completeWeilPoleShift transMetzlerProfile 1) *
+      ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix 1 N) x, x⟫| ≤
+      (50 / Real.log ((N : ℝ) / 3)) * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+    have hq0_le : completeWeilPoleShift transMetzlerProfile 1 ≤ 1 := by
+      simpa only [one_mul] using completeWeilPoleShift_le contDiff_transMetzlerProfile.continuous
+        (fun u hu => transMetzlerProfile_eq_zero hu) integral_transMetzlerProfile_sq_pos zero_le_one
+    have hq0_nonneg : 0 ≤ completeWeilPoleShift transMetzlerProfile 1 :=
+      completeWeilPoleShift_nonneg transMetzlerProfile zero_le_one
+    have hcoef_le : |(w * N - cStar) * completeWeilPoleShift transMetzlerProfile 1| ≤
+        2 / Real.log ((N : ℝ) / 3) := by
+      rw [abs_mul, abs_of_nonneg hq0_nonneg]
+      have h1 : |w * N - cStar| * completeWeilPoleShift transMetzlerProfile 1 ≤ 2 / (N : ℝ) := by
+        nlinarith only [hdrift, hq0_le, abs_nonneg (w * N - cStar)]
+      exact h1.trans (by
+        rw [show 2 / (N : ℝ) = 2 * (1 / (N : ℝ)) by ring,
+          show 2 / Real.log ((N : ℝ) / 3) = 2 * (1 / Real.log ((N : ℝ) / 3)) by ring]
+        exact mul_le_mul_of_nonneg_left hinvN_le_log (by norm_num))
+    have hc1_le := (abs_fullWeilCenterMatrix_one_inner_le hN1 x).trans (by
+      show 2 * poleDefect N (primeHorizonExtension x) + (2 * psiConstant + 15) * ‖x‖ ^ 2 ≤
+        25 * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2)
+      nlinarith only [hpsi_le, hpd0, hnorm0])
+    rw [abs_mul]
+    calc _ ≤ (2 / Real.log ((N : ℝ) / 3)) *
+          (25 * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2)) :=
+        mul_le_mul hcoef_le hc1_le (abs_nonneg _) (by positivity)
+      _ = _ := by ring
+  -- Piece 4: Non-ratio prime form
+  have hpiece4 : |nonRatioForm (atomDilate transMetzlerProfile w) N (primeHorizonExtension x) /
+        (∫ u, atomDilate transMetzlerProfile w u ^ 2)| ≤
+      (1050 * δ₀ + 2100 / Real.log ((N : ℝ) / 3)) *
+        (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+    rw [abs_div, abs_of_pos hM_pos]
+    have hnr := abs_nonRatioForm_transMetzler_le hN16 hδ0 hδ4 hw_lo hw_hi (primeHorizonExtension x)
+    rw [sum_primeHorizonExtension_sq] at hnr
+    refine hnr.trans ?_
+    refine mul_le_mul_of_nonneg_right ?_ hsum0
+    have h2log : 2 / (N : ℝ) ≤ 2 / Real.log ((N : ℝ) / 3) := by
+      rw [show 2 / (N : ℝ) = 2 * (1 / (N : ℝ)) by ring,
+        show 2 / Real.log ((N : ℝ) / 3) = 2 * (1 / Real.log ((N : ℝ) / 3)) by ring]
+      exact mul_le_mul_of_nonneg_left hinvN_le_log (by norm_num)
+    linarith only [h2log]
+  -- Piece 5: Overlapping adjacent `levyMixed` + center collar
+  have hpiece5 : |∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+      primeHorizonExtension x n * primeHorizonExtension x j *
+        (if n = j ∨ w < |Real.log j - Real.log n| then 0
+          else (∫ y in Ioi 0,
+            levyMixed (atom (atomDilate transMetzlerProfile w) n)
+              (atom (atomDilate transMetzlerProfile w) j) y) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+            w * completeWeilPoleShift transMetzlerProfile 1 *
+              archimedeanCenterKernel n j)| ≤
+      (288 * δ₀ + 48 * (selfEnergyConstant + 96001) / Real.log ((N : ℝ) / 3)) *
+        (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+    have hsec0 : 0 ≤ selfEnergyConstant := by
+      unfold selfEnergyConstant
+      have h2 : Real.exp (-2 : ℝ) < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
+      have hden : 0 < 1 - Real.exp (-2 : ℝ) := by linarith only [h2]
+      positivity
+    have hB_pos : 0 ≤ 3 * δ₀ * Real.log N + 3 * δ₀ * (selfEnergyConstant + 32000) + 64001 := by
+      have hl0 : 0 ≤ Real.log (N : ℝ) := Real.log_natCast_nonneg N
+      positivity
+    have hover_levy := abs_sum_overlapping_pairs_le hN16 hw_54 hB_pos
+      (fun n j => if n = j ∨ w < |Real.log j - Real.log n| then 0
+        else (∫ y in Ioi 0,
+          levyMixed (atom (atomDilate transMetzlerProfile w) n)
+            (atom (atomDilate transMetzlerProfile w) j) y) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+          w * completeWeilPoleShift transMetzlerProfile 1 * archimedeanCenterKernel n j)
+      (fun n _ j _ h => if_pos h)
+      (fun n hn j hj hnj hlog => by
+        rw [if_neg (fun h => h.elim hnj (not_lt.mpr hlog))]
+        have hlm := abs_integral_levyMixed_adjacent_le hN16 hδ0 hδ4 hw_lo hw_hi hn hj hnj hlog
+        have hs_ge := (top_adjacent_of_log_gap_le hN16 hn hj hnj hw_54 hlog).2.2.2
+        have hs_pos : 0 < |Real.log j - Real.log n| := lt_of_lt_of_le (by positivity) hs_ge
+        have hnz : n ≠ 0 := by have := (mem_Icc.mp hn).1; omega
+        have hjz : j ≠ 0 := by have := (mem_Icc.mp hj).1; omega
+        have hq0_le : completeWeilPoleShift transMetzlerProfile 1 ≤ 1 := by
+          simpa only [one_mul] using completeWeilPoleShift_le contDiff_transMetzlerProfile.continuous
+            (fun u hu => transMetzlerProfile_eq_zero hu) integral_transMetzlerProfile_sq_pos
+            zero_le_one
+        have hq0_nonneg : 0 ≤ completeWeilPoleShift transMetzlerProfile 1 :=
+          completeWeilPoleShift_nonneg transMetzlerProfile zero_le_one
+        have hck_le : w * completeWeilPoleShift transMetzlerProfile 1 *
+            archimedeanCenterKernel n j ≤ 1 := by
+          rw [archimedeanCenterKernel, if_neg (by simp only [hnj, hnz, hjz, or_self, not_false_eq_true])]
+          have hd := ArithmeticIncidencePositivity.archLevyDensity_le_inv hs_pos
+          have hinv_s : 1 / (2 * |Real.log j - Real.log n|) ≤ (N : ℝ) / 2 := by
+            rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+            have h := (div_le_iff₀ hN0).mp hs_ge
+            linarith only [h]
+          have hω_le : archLevyDensity |Real.log j - Real.log n| ≤ (N : ℝ) / 2 + 1 / 4 :=
+            hd.trans (by linarith only [hinv_s])
+          have hwq_le : w * completeWeilPoleShift transMetzlerProfile 1 ≤ 5 / (4 * (N : ℝ)) := by
+            have := mul_le_mul_of_nonneg_left hq0_le hw0.le
+            linarith only [this, hw_54]
+          calc w * completeWeilPoleShift transMetzlerProfile 1 *
+                archLevyDensity |Real.log j - Real.log n|
+              ≤ (5 / (4 * (N : ℝ))) * ((N : ℝ) / 2 + 1 / 4) :=
+                mul_le_mul hwq_le hω_le (archLevyDensity_pos hs_pos).le (by positivity)
+            _ = 5 / 8 + 5 / (16 * (N : ℝ)) := by field_simp [hN0.ne']; ring
+            _ ≤ 1 := by
+                have : 5 / (16 * (N : ℝ)) ≤ 3 / 8 := by
+                  rw [div_le_div_iff₀ (by positivity) (by norm_num)]; linarith only [hN27]
+                linarith only [this]
+        have hck0 : 0 ≤ w * completeWeilPoleShift transMetzlerProfile 1 *
+            archimedeanCenterKernel n j :=
+          mul_nonneg (mul_nonneg hw0.le hq0_nonneg) (archimedeanCenterKernel_nonneg n j)
+        refine (abs_add_le _ _).trans ?_
+        rw [abs_of_nonneg hck0]
+        linarith only [hlm, hck_le])
+      (primeHorizonExtension x)
+    have hmul_top := (hover_levy.trans (mul_le_mul_of_nonneg_left htop_sum4 (by positivity)))
+    refine hmul_top.trans ?_
+    refine mul_le_mul_of_nonneg_right ?_ hsum0
+    have hcoef_log : 2 * (3 * δ₀ * Real.log N) * (24 / Real.log ((N : ℝ) / 3)) ≤ 288 * δ₀ := by
+      have h1 : Real.log (N : ℝ) * (24 / Real.log ((N : ℝ) / 3)) ≤ 48 := by
+        rw [mul_div_assoc', div_le_iff₀ hlogN3_pos]
+        linarith only [hlogN_le_two]
+      have h2 := mul_le_mul_of_nonneg_left h1 (show 0 ≤ 6 * δ₀ by positivity)
+      linarith only [h2]
+    have hδ_c : 3 * δ₀ * (selfEnergyConstant + 32000) + 64001 ≤ selfEnergyConstant + 96001 := by
+      nlinarith only [hδ4, hsec0]
+    have hcoef_const : 2 * (3 * δ₀ * (selfEnergyConstant + 32000) + 64001) *
+        (24 / Real.log ((N : ℝ) / 3)) ≤
+        48 * (selfEnergyConstant + 96001) / Real.log ((N : ℝ) / 3) := by
+      have h1 := mul_le_mul_of_nonneg_right hδ_c (show 0 ≤ 48 / Real.log ((N : ℝ) / 3) by positivity)
+      linarith only [h1]
+    linarith only [hcoef_log, hcoef_const]
+  -- Combine all 5 perturbation bounds
+  rw [hdiff_eq]
+  have ht1 := abs_add_le
+    ((2 * gammaHardyPhaseRate 0 +
+      levyEnergy (atomDilate transMetzlerProfile w) /
+        (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+      Real.log N -
+      (completeWeilSelfFinitePart transMetzlerProfile cStar - Real.eulerMascheroniConstant)) *
+        ‖x‖ ^ 2)
+    (2 * gammaHardyPhaseRate 0 *
+      ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+        primeHorizonExtension x n * primeHorizonExtension x j *
+          (if n = j then 0
+            else SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+              (-(Real.log j - Real.log n)) /
+                (∫ u, atomDilate transMetzlerProfile w u ^ 2)))
+  have ht2 := abs_add_le _ (((w * N - cStar) * completeWeilPoleShift transMetzlerProfile 1) *
+    ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix 1 N) x, x⟫)
+  have ht3 := abs_sub_le _ (nonRatioForm (atomDilate transMetzlerProfile w) N
+    (primeHorizonExtension x) / (∫ u, atomDilate transMetzlerProfile w u ^ 2))
+  have ht4 := abs_add_le _ (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+    primeHorizonExtension x n * primeHorizonExtension x j *
+      (if n = j ∨ w < |Real.log j - Real.log n| then 0
+        else (∫ y in Ioi 0,
+          levyMixed (atom (atomDilate transMetzlerProfile w) n)
+            (atom (atomDilate transMetzlerProfile w) j) y) /
+          (∫ u, atomDilate transMetzlerProfile w u ^ 2) +
+          w * completeWeilPoleShift transMetzlerProfile 1 * archimedeanCenterKernel n j))
+  have hsum5 : |⟪Matrix.toEuclideanLin
+          (normalizedFullWeilHorizonMatrix (atomDilate transMetzlerProfile w) N) x, x⟫ -
+        ⟪Matrix.toEuclideanLin (transMetzlerMainMatrix w cStar N) x, x⟫| ≤
+      (1338 * δ₀ +
+        (2156 + 96 * |gammaHardyPhaseRate 0| + 48 * (selfEnergyConstant + 96001)) /
+          Real.log ((N : ℝ) / 3)) *
+        (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) := by
+    rw [hdiff_eq] at *
+    have hcoeff_eq :
+        (6 / Real.log ((N : ℝ) / 3)) +
+        (96 * |gammaHardyPhaseRate 0| / Real.log ((N : ℝ) / 3)) +
+        (50 / Real.log ((N : ℝ) / 3)) +
+        (1050 * δ₀ + 2100 / Real.log ((N : ℝ) / 3)) +
+        (288 * δ₀ + 48 * (selfEnergyConstant + 96001) / Real.log ((N : ℝ) / 3)) =
+        1338 * δ₀ +
+          (2156 + 96 * |gammaHardyPhaseRate 0| + 48 * (selfEnergyConstant + 96001)) /
+            Real.log ((N : ℝ) / 3) := by ring
+    have hadd := add_le_add (add_le_add (add_le_add (add_le_add hpiece1 hpiece2) hpiece3) hpiece4) hpiece5
+    simp only [← add_mul] at hadd
+    rw [hcoeff_eq] at hadd
+    linarith only [ht1, ht2, ht3, ht4, hadd]
+  refine hsum5.trans (mul_le_mul_of_nonneg_right ?_ hsum0)
+  linarith only [hδ0]
+
+end GaloisForLFunctions.TransMetzlerWeilPositivity
+
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.top_adjacent_of_log_gap_le
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.tendsto_transMetzlerMainMatrix_ramanujan_residual_norm
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.abs_nonRatioForm_transMetzler_le
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_perturbation_bound_transMetzler

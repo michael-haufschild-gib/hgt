@@ -15,7 +15,7 @@ open MeasureTheory Set
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 open SpacingScaleHarmonicAnalysis
-open _root_.RHTower (archLevyDensity)
+open _root_.RHTower (archLevyDensity archLevyDensity_pos)
 
 private theorem integrable_mixed_shift_prod {f g : ℝ → ℝ}
     (hf : Continuous f) (hfc : HasCompactSupport f)

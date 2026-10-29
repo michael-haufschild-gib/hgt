@@ -70,8 +70,13 @@ character outside B, or any arithmetic convergence. The determinant-norm
 comparison and intersection control are separately open in
 [the metric card](garland-determinant-metric-iwasawa.md).
 
-`VertexParabolics` is written but unchecked. It defines both actual
-parabolics, proves the reduction-kernel shift criterion, and factors each
-parabolic into Borel times its actual simple subgroup. The finite real input must
-pass its axiom audit, and the rank-one batch must pass its final source
-and dependency audits, before this result is promoted.
+`VertexParabolics`, `VertexGeneration`, and `RealIwasawaExistence` are written
+but unchecked. They define both actual
+parabolics, prove the reduction-kernel shift criterion, factor each
+parabolic into Borel times its actual simple subgroup, and prove generation
+using affine Bruhat. The last module defines the actual subgroup generated
+by simple rotations and central signs, proves parabolic factorizations,
+and applies induction over the two parabolics. The finite real input passed
+its transitive audit with only `propext`, `Classical.choice`, and `Quot.sound`;
+the scratch log is `/tmp/garland-iwasawa-input-audit.txt`.
+The rank-one batch is undergoing final source and dependency audits.

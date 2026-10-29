@@ -692,3 +692,10 @@ and four main transitive axiom audits pass; see
 [the dual class Mellin proof](../3-formalized/hecke-dual-class-kernels-have-exact-mellin-integrals.md).
 Actual dual unit averaging, infinite Mellin exchange, and completed
 reflection remain under verification.
+
+Actual dual unit averaging now unfolds absolutely over fractional ideal
+classes, with exact zero-mode subtraction, regulator, and torsion
+factors. Final direct source and three main transitive axiom audits pass;
+see [dual unit unfolding](../3-formalized/hecke-dual-unit-orbits-unfold-over-the-log-space.md).
+The infinite dual Mellin exchange and completed reflection remain under
+verification.

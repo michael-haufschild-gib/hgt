@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
+import GaloisForLFunctions.HTGeometry.DiscreteValuedCompletion
+import GaloisForLFunctions.HTGeometry.DiscreteValuationHaar
+import GaloisForLFunctions.HTGeometry.DedekindIdealNorm
 import GaloisForLFunctions.HTGeometry.AntipodalKernelExtension
 import GaloisForLFunctions.HTGeometry.RealPositiveKernelComplexification
 import GaloisForLFunctions.HTGeometry.BoundedKernelReindexing

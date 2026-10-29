@@ -50,8 +50,8 @@ local-mean and exterior-support conditions. The exact stopping-grid endpoints,
 widths<=1 and adjacent width ratios<=3 are verified.
 
 The finite padded-grid specialization is verified, including its exterior
-and zero-boundary-mean conditions. The actual local-mean identification,
-final head-plus-tail theorem and even-power consequence await Lean audits. The proposed
+and zero-boundary-mean conditions. The actual local-mean identification and finite support facts are verified.
+The final head-plus-tail specialization and even-power consequence await Lean audits. The proposed
 universal constant is K=2+96 exp(2). No actual-head Gamma bound is certified
 until those source and boundary obligations pass.
 

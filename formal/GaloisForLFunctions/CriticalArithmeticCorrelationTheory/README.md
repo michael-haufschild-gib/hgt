@@ -99,6 +99,7 @@ The following are foundations to use, not new claims of this programme.
 |---|---|---|
 | Ordered Weil–Chebyshev identity | Separated mixed entries are exact centered prime-error integrals with completion | ArithmeticIndexDescent |
 | Complete bounded spectral counts | Fixed separated profiles have an exhaustive arithmetic description of bounded spectrum | RenormalizedArithmeticPotentialTheory |
+| Positivity beyond touching | A fixed smooth profile has eventually positive complete matrices at `c=1+10⁻¹⁸`, and at every fixed smaller positive ratio | TransMetzlerWeilPositivity |
 | Whole-orbit dyadic tail | One original Gamma reserve pays every power of the dyadic clock | SignedArithmeticHodgeTheory |
 | Parity-compatible stabilizer decomposition | Actual coalescent prime pairs equal their Ramanujan model plus a signed centered discrepancy | TransThresholdPairCorrelation |
 | Polynomial-prefix collided metric | Finite arithmetic sources uniformly recover the positive metric on growing normalized families | ConjugateDiagonalGeometry |
@@ -142,7 +143,7 @@ readings before the outer cutoff is removed. The estimate is not selective enoug
 exceptions: its positive envelope includes critical zeros. The constant annular target requires
 additional signed arithmetic information.
 
-## Completed positivity up to strict separation
+## Complete positivity through touching
 
 Let `φ_η` be the smooth unit-interval plateau from SpacingScaleHarmonicAnalysis,
 with transition width `η`. Write `M_η = ∫φ_η²`, `I_η = ∫φ_η`, and
@@ -169,26 +170,38 @@ limit while keeping every profile smooth. The charge term is essential:
 `B_η/M_η + I_η²/M_η - log(2π)` tends to the positive number `2-log(2π)`.
 
 For every `b < 2-log(2π)` and every `ε > 0`, one can choose a single plateau
-with `M_η > 1-ε` such that, for each fixed `0<c<1`, **every eigenvalue** of its
-actual normalized complete Weil matrix eventually exceeds or equals `b`.
-Consequently the entire quadratic form is bounded below by `b‖x‖²`, and one
-profile gives eventual positive definiteness at every strictly separated ratio.
-The horizon may depend on `c`; the profile does not.
+with `M_η > 1-ε` and a single horizon `N₀` such that, for every `N≥N₀` and
+every `0<c≤1`, **every eigenvalue** of its actual normalized complete Weil
+matrix is at least `b`. Consequently the entire quadratic form is bounded
+below by `b‖x‖²`. Taking `b>0` gives simultaneous positive definiteness through
+the touching ratio. Both the profile and the horizon are independent of `c`.
 
-The proof combines the completed conductor-one energy
-`B_η/M_η-log(2πc)+c I_η²/M_η`, the inequality `-log c ≥ 1-c`, and the exhaustive
-bounded-spectrum theorem of RenormalizedArithmeticPotentialTheory. Thus the
-result controls the full matrix, rather than only selected trial modes. The
-near-unit mass condition prevents a narrow profile from supplying positivity
-merely by discarding most of the nominal support.
+The completed conductor-one energy is
+`B_η/M_η-log(2πc)+c I_η²/M_η`. The inequality `-log c ≥ 1-c` bounds it below
+by its endpoint value. Strict charge deficit supplies one prime-defect reserve
+throughout `(0,1]`; this confines every bounded-energy vector to one finite
+Ramanujan family. The actual norm residuals of that family vanish with one
+horizon, including the non-ratio boundary prime correction. A hypothetical
+low eigenvector would have both a definite coordinate mass in this family
+and arbitrarily small coordinates against every member, a contradiction.
+The result therefore controls the full matrix. Near-unit mass prevents a
+narrow profile from supplying positivity by discarding most nominal support.
 
 The statements are in
 [SmoothPlateausRecoverTheCompletedRobinMargin](SmoothPlateausRecoverTheCompletedRobinMargin.lean),
 [ThePlateauShapeAndChargeHaveTheirIndicatorLimits](ThePlateauShapeAndChargeHaveTheirIndicatorLimits.lean),
-and [SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive](SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean).
-They do not establish the endpoint `c=1`, a uniform positivity horizon as `c` approaches one,
-or positivity on an exhausting overlapping family. No global optimality of the
-constant `2-log(2π)` over all profiles is asserted.
+and [OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching](OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching.lean).
+The last result strengthens
+[SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive](SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean)
+by including the endpoint and moving the horizon quantifier before the width
+ratio. The horizon can still depend on the chosen profile and on `b`.
+
+Touching refers to the nominal spacing scale. Distinct internal integer log
+gaps exceed `1/N`, so these actual supports remain disjoint at `c=1`. At an
+index `n` their local coverage fraction is about `n/N`; persistent holes below
+the top of the horizon prevent this family from exhausting compact tests.
+Neither RH nor positivity on an exhausting overlapping family follows. No
+global optimality of `2-log(2π)` over all profiles is asserted.
 
 ## Growing conductor families with a square-root horizon
 
@@ -299,9 +312,9 @@ constant on `[0,1]`. Its variance gives
 q_\phi=\frac{(\int\phi)^2}{M}<1.
 \]
 
-Keeping the actual charge `c qφ` in the center estimate, rather than replacing
-it by `c`, yields a single real floor `aφ` such that, for every fixed `0<c<1`,
-eventually in `N`,
+Keeping the actual charge `c qφ` in the center estimate yields a single real
+floor `aφ` and a single horizon such that, simultaneously for every `0<c≤1`
+and all subsequent `N`,
 
 \[
 a_\phi\|x\|^2+\frac{1-q_\phi}{4}D_N(x)
@@ -309,17 +322,19 @@ a_\phi\|x\|^2+\frac{1-q_\phi}{4}D_N(x)
 \quad\text{for every }x.
 \]
 
-Both constants are independent of `c`; the eventual horizon may still depend
-on it. The floor need not be positive. These results are in
+Both constants and the horizon are independent of `c`. The floor need not be
+positive. The cross and initial charge results are in
 [BoundaryVanishingControlsTheTouchingAutocorrelation](BoundaryVanishingControlsTheTouchingAutocorrelation.lean),
 [EndpointDecayRemovesTheCrossKernelGapLoss](EndpointDecayRemovesTheCrossKernelGapLoss.lean),
 [TheTouchingCrossMatrixHasAUniformErrorBudget](TheTouchingCrossMatrixHasAUniformErrorBudget.lean),
 and [TheChargeDeficitKeepsAUniformPrimeReserve](TheChargeDeficitKeepsAUniformPrimeReserve.lean).
+The simultaneous complete reserve is in
+[OnePrimeDefectReserveCoversEveryRatioThroughTouching](OnePrimeDefectReserveCoversEveryRatioThroughTouching.lean).
 
-The endpoint cross estimate alone does not supply a full endpoint source
-decomposition. Non-ratio prime lags can enter through products outside the
-integer horizon and must be retained. Genuine support overlap also changes the
-atom Gram matrix. Furthermore, the charge reserve tends to zero when plateaus
+The complete source decomposition retains non-ratio prime lags through products
+outside the integer horizon; the next section describes their exact geometry.
+Genuine support overlap also changes the atom Gram matrix. Furthermore, the
+charge reserve tends to zero when plateaus
 approach the unit indicator; uniformity in a fixed profile does not imply
 uniform spectral exhaustion in that profile limit.
 
@@ -369,18 +384,24 @@ all coefficient vectors. The exact classification and source identity are in
 the quantitative and uniform eventual bounds are in
 [TheBoundaryPrimeStarVanishesAfterNormalization](TheBoundaryPrimeStarVanishesAfterNormalization.lean).
 
-This supplies the missing arithmetic error estimate at the endpoint. A full
-endpoint positivity theorem still requires the complete source decomposition,
-its scalar error bounds, and the exhaustive spectral transfer. Beyond ratio
-one, additional integer interactions and the overlapping atom Gram must be
-handled together; the single-star classification no longer applies.
+The exact complete decomposition in
+[TheCompleteWeilMatrixKeepsItsBoundaryCorrection](TheCompleteWeilMatrixKeepsItsBoundaryCorrection.lean)
+combines this correction with the original self term, center, cross error, and
+both poles. Its sign is retained. Uniform scalar errors, finite arithmetic
+coordinate detection, and the complete norm-quasimode theorem then supply the
+positivity result above. Beyond ratio one, additional integer interactions and
+the overlapping atom Gram must be handled together; the single-star
+classification no longer applies.
 
 ## Questions and tools to develop
 
-**Arithmetic overlap analysis.** What new low modes appear when atom supports touch? Derive and
-estimate the complete remaining operator, including pole and Gamma terms. A fixed-ratio theorem
-must state whether its horizon is uniform as the ratio changes. The ultimate family must exhaust
-the source.
+**Arithmetic overlap analysis.** What new low modes appear as overlap grows? The surrounding
+TransMetzlerWeilPositivity programme already crosses ratio one with an explicit profile and a
+prime-defect perturbation estimate. The remaining targets include general profile dependence,
+successor corrections at larger ratios, and exhaustion. Derive and estimate the complete
+remaining operator, including pole and Gamma terms and the non-diagonal atom Gram. A fixed-ratio
+theorem must state whether its horizon is uniform as the ratio changes. The ultimate family
+must exhaust the source.
 
 **Mixed prime-action estimates.** Which additive–multiplicative relations allow a joint signed
 bound with one energy reserve? Quantify projection and commutator errors. Fixed-prime absolute
@@ -428,7 +449,8 @@ every finite exceptional configuration.
 ArithmeticCastelnuovoSeveri and ArithmeticOrientationGeometry provide the geometric and index
 languages. ArithmeticIndexDescent and SignedArithmeticHodgeTheory expose paid blocks and the
 remaining complete source. RenormalizedArithmeticPotentialTheory resolves the separated
-arithmetic spectrum. TransThresholdPairCorrelation and ShallowCauchyPrimeEnergy provide census
+arithmetic spectrum. TransMetzlerWeilPositivity supplies an actual first-overlap perturbation
+and positivity theorem. TransThresholdPairCorrelation and ShallowCauchyPrimeEnergy provide census
 receivers and collision costs. ConjugateDiagonalGeometry supplies source-built positive metrics.
 ArithmeticCountingPositivity and ArithmeticCorrelationGeometry explain source selection and its
 limits. ArithmeticEffectivityTheory supplies count mechanisms and their current boundary.

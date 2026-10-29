@@ -315,8 +315,8 @@ passed. Its olean is required by the actual-place module; never rebuild it.
 `FiniteFieldEllipticLocalFields.lean` applies it to the actual finite and infinity places,
 identifies their completed residue fields, and constructs the full adele ring as the
 product of finite adeles and the infinity completion. Its scratch source and transitive
-axiom audit passed with only `[propext, Classical.choice, Quot.sound]`. Its olean is
-being compiled for `/tmp/hgt_ff_adele_haar.lean`.
+axiom audit passed with only `[propext, Classical.choice, Quot.sound]`. Its production
+olean compilation also passed; the adele-Haar draft imports it.
 
 For full additive Haar measure, the integral product is compact by Tychonoff and open
 by the restricted-product topology. Every finite adele has finitely many nonintegral
@@ -326,7 +326,9 @@ dilates indexed by the countable affine ring. They are sigma-compact, as is the 
 adele ring after adjoining the infinity completion. Haar measure normalized to give
 the integral product mass one is therefore sigma-finite. This is ambient Haar measure;
 the rational quotient's covolume and the unipotent quotient measure still require proof.
-Lean draft: `/tmp/hgt_ff_adele_haar.lean`, not yet checked.
+Lean draft: `/tmp/hgt_ff_adele_haar.lean`. Initial checks exposed missing countability
+instances and a completion-wrapper typeclass bridge. These are being repaired;
+ambient Haar measure is not yet reported as verified.
 
 ## Local rank-one integral `[PAPER PROOF]`
 
@@ -353,7 +355,12 @@ Haar measure. Its identification with an Iwasawa character still requires the
 rank-one matrix calculation. The product of these integrals is the required global
 zeta quotient only after proving the closed-point Euler product and the global
 measure normalization. None of those later identities is assumed here. Lean status:
-not yet formalized. The corpus's `FieldOnePadicHaarScaling` supplies the same
+the residue-index and uniformizer-scaling argument is now formalized in
+`HTGeometry/DiscreteValuationHaar.lean`, with scratch and production olean checks
+passing and an axiom audit containing only `[propext, Classical.choice, Quot.sound]`.
+The shell partition and exact shell measures are drafted in
+`/tmp/hgt_discrete_valuation_shells.lean`; their first check is running. The integral
+and Iwasawa identification remain open. The corpus's `FieldOnePadicHaarScaling` supplies the same
 residue-index argument for `Q_p`; generalize the proof rather than transport a
 characteristic-zero field to the present completions.
 
@@ -377,6 +384,9 @@ at infinity. Therefore `N((a))=3^(poleDegree(a))`. Factoring `(a)` into prime
 powers turns this into the finite-place part of the product formula; adjoining
 the degree-one infinity valuation gives product one. The exact finite-support
 valuation formulation still needs its factorization proof in Lean.
+The characteristic-independent multiplicative norm is now checked in
+`HTGeometry/DedekindIdealNorm.lean`. The actual affine principal-norm calculation
+is drafted in `/tmp/hgt_ff_ideal_norm.lean`, awaiting its two dependency oleans.
 
 ## Finite coordinates on affine Bruhat cells `[PAPER PROOF]`
 

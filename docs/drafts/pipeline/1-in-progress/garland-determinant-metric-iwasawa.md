@@ -7,6 +7,11 @@
   spherical character, and prove real Iwasawa decomposition for the actual
   formal Laurent central extension.
 
+**Current role:** alternative/general-rank route. For the concrete affine
+A₁ target, the [compact–Borel normal-form argument](garland-compact-borel-intersection.md)
+offers direct algebraic intersection control and is being pursued first.
+No determinant comparison or metric theorem has been assumed or retired.
+
 ## Evidence and current gap
 
 The affine Bruhat theorem and positive Borel coordinates are formalized.

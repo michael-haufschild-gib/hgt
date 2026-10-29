@@ -82,8 +82,13 @@ subgroup maps, the exact central correction, elementary multiplication,
 full homomorphism law, injectivity, and root/coroot restrictions.
 `SL2DiagonalRescaling` and `ConstantSL2Embedding` passed their dependency
 builds cleanly. `AffineSL2Kubota` also passed cleanly, including the exact
-correction on all lower-root cases. `AffineSL2Embedding` is being checked;
-`SimpleRankOneEmbeddings` remains unchecked. Scratch verification
+correction on all lower-root cases. `AffineSL2Embedding` and
+`SimpleRankOneEmbeddings` also passed cleanly. All five modules are wired
+into the umbrella. Final direct source checks passed for
+`SL2DiagonalRescaling` and `ConstantSL2Embedding`; `AffineSL2Kubota` is
+being checked. `AffineSL2Embedding`, `SimpleRankOneEmbeddings`, and the
+transitive audit remain. The audit scratch is
+`/tmp/GarlandRankOneAudit.lean`. Scratch verification
 confirmed the field instance of finite maximal spectrum needed for
 four-factor generation. The oriented affine simple embedding is written
 using Weyl conjugation followed by the sign rescaling. These rank-one
