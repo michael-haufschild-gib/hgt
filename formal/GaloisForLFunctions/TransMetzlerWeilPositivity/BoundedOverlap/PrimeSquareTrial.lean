@@ -84,7 +84,8 @@ theorem ramanujan_primeSquare_indicator {p n : ℕ} (hp : p.Prime) (hn : 0 < n) 
     (if p ^ 2 ∣ n then ((p ^ 2 : ℕ) : ℝ) else 0) at h
   have h1 : ramanujanLagCoefficient 1 n = 1 := by
     simpa using (ramanujanLagCoefficient_of_dvd (one_dvd n))
-  simpa [sum_range_succ, h1] using h
+  norm_num [Finset.sum_range_succ, h1] at h
+  simpa only [mul_ite, mul_one, mul_zero] using h
 
 /-- The trial has an explicit expansion supported on `1`, `p`, and `p²`. -/
 theorem primeSquareTrial_ramanujan {p n : ℕ} (hp : p.Prime) (hn : 0 < n) :

@@ -108,7 +108,8 @@ theorem exists_integer_shell_iff {N : ℕ} (hN : 2 ≤ N) (c : ℝ) :
     by_cases hc : 1 ≤ c
     · exact (firstExteriorOverlap_lt_one hN1).le.trans hc
     have hgap1 := hgap.trans (div_le_div_of_nonneg_right (not_le.mp hc).le hN0.le)
-    obtain ⟨rfl, rfl⟩ := small_integer_log_gap_forces_boundary hN ha hb hne hgap1
+    obtain ⟨haN, hbN⟩ := small_integer_log_gap_forces_boundary hN ha hb hne hgap1
+    rw [haN, hbN] at hgap
     have hlog : 0 ≤ Real.log (N + 1 : ℕ) - Real.log N :=
       sub_nonneg.mpr (Real.log_le_log hN0 (by exact_mod_cast Nat.le_succ N))
     rw [abs_of_nonneg hlog] at hgap

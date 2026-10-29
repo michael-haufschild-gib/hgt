@@ -443,4 +443,99 @@ theorem primeKernelFq_divVec {N : ℕ} {Q : F[X]} (hQ : Q.Monic) {m : F[X]} (hm 
   push_cast
   ring
 
+/-- **Two negative squares below the second rung.** Let `Q` be monic of degree `e ≤ N`,
+`V = |v|²` and `U = |u_Q|² < V`. If `D < N − e V/(V − U)`, the form `D·1 − P_N` is negative definite
+on the span of the pole vector `v` and `u_Q`. -/
+theorem atomFq_neg_on_span {N : ℕ} {Q : F[X]} (hQ : Q.Monic) (hQN : Q.natDegree ≤ N)
+    (hUV : ∑ f ∈ monicLE N, divVec Q f ^ 2 < ∑ f ∈ monicLE (F := F) N, poleVec f ^ 2) {D : ℝ}
+    (hD : D < N - Q.natDegree * (∑ f ∈ monicLE (F := F) N, poleVec f ^ 2) /
+      ((∑ f ∈ monicLE (F := F) N, poleVec f ^ 2) - ∑ f ∈ monicLE N, divVec Q f ^ 2))
+    {a b : ℝ} (hab : a ≠ 0 ∨ b ≠ 0) :
+    D * ∑ f ∈ monicLE N, (a * poleVec f + b * divVec Q f) ^ 2 -
+      ∑ f ∈ monicLE N, ∑ g ∈ monicLE N, primeKernelFq N f g * (a * poleVec f + b * divVec Q f) *
+        (a * poleVec g + b * divVec Q g) < 0 := by
+  set V := ∑ f ∈ monicLE (F := F) N, poleVec f ^ 2 with hV
+  set U := ∑ f ∈ monicLE N, divVec Q f ^ 2 with hU
+  set e : ℝ := Q.natDegree with he
+  set v : F[X] → ℝ := poleVec with hvdef
+  set u : F[X] → ℝ := divVec Q with hudef
+  have hQmem : Q ∈ monicLE N := mem_monicLE.mpr ⟨hQ, hQN⟩
+  have hU0 : 0 < U := by
+    have h1 : divVec Q Q ^ 2 ≤ U :=
+      single_le_sum (f := fun f => divVec Q f ^ 2) (fun _ _ => sq_nonneg _) hQmem
+    have h2 : 0 < divVec Q Q ^ 2 := by
+      rw [divVec, if_pos dvd_rfl]; exact pow_pos (poleVec_pos Q) 2
+    linarith
+  have hvu : ∀ f, v f * u f = u f ^ 2 := fun f => by
+    simp only [hvdef, hudef, divVec]; split_ifs <;> ring
+  -- `P v = N v` and `u · P u = (N − e) u²`
+  have hPv : ∀ f ∈ monicLE N, ∑ g ∈ monicLE N, primeKernelFq N f g * v g = N * v f :=
+    fun f hf => primeKernelFq_poleVec hf
+  have hPu : ∀ f ∈ monicLE N, u f * ∑ g ∈ monicLE N, primeKernelFq N f g * u g =
+      ((N : ℝ) - e) * u f ^ 2 := fun f hf => by
+    by_cases hQf : Q ∣ f
+    · rw [primeKernelFq_divVec hQ hf hQf]; ring
+    · simp only [hudef, divVec, if_neg hQf]; ring
+  have hcross : ∑ f ∈ monicLE N, v f * ∑ g ∈ monicLE N, primeKernelFq N f g * u g = N * U := by
+    calc ∑ f ∈ monicLE N, v f * ∑ g ∈ monicLE N, primeKernelFq N f g * u g
+        = ∑ g ∈ monicLE N, u g * ∑ f ∈ monicLE N, primeKernelFq N g f * v f := by
+          simp only [mul_sum]
+          rw [sum_comm]
+          exact sum_congr rfl fun g _ => sum_congr rfl fun f _ => by
+            rw [primeKernelFq_symm]; ring
+      _ = ∑ g ∈ monicLE N, N * u g ^ 2 := sum_congr rfl fun g hg => by
+          rw [hPv g hg, ← hvu]; ring
+      _ = N * U := by rw [← mul_sum]
+  -- the two quadratic forms on the span
+  have hnorm : ∑ f ∈ monicLE N, (a * v f + b * u f) ^ 2 = a ^ 2 * V + 2 * a * b * U + b ^ 2 * U := by
+    have : ∀ f, (a * v f + b * u f) ^ 2 = a ^ 2 * v f ^ 2 + 2 * a * b * u f ^ 2 + b ^ 2 * u f ^ 2 :=
+      fun f => by rw [← hvu]; ring
+    simp only [this, sum_add_distrib, ← mul_sum]
+  have hquad : ∑ f ∈ monicLE N, ∑ g ∈ monicLE N, primeKernelFq N f g * (a * v f + b * u f) *
+      (a * v g + b * u g) = a ^ 2 * (N * V) + 2 * a * b * (N * U) + b ^ 2 * (((N : ℝ) - e) * U) := by
+    have hrow : ∀ f ∈ monicLE N, ∑ g ∈ monicLE N, primeKernelFq N f g * (a * v f + b * u f) *
+        (a * v g + b * u g) = a ^ 2 * (N * v f ^ 2) + a * b * (v f * ∑ g ∈ monicLE N,
+          primeKernelFq N f g * u g) + a * b * (N * u f ^ 2) + b ^ 2 * (((N : ℝ) - e) * u f ^ 2) := by
+      intro f hf
+      have h1 : ∑ g ∈ monicLE N, primeKernelFq N f g * (a * v f + b * u f) * (a * v g + b * u g) =
+          (a * v f + b * u f) * (a * ∑ g ∈ monicLE N, primeKernelFq N f g * v g +
+            b * ∑ g ∈ monicLE N, primeKernelFq N f g * u g) := by
+        simp only [mul_sum, ← sum_add_distrib]
+        exact sum_congr rfl fun g _ => by ring
+      rw [h1, hPv f hf]
+      have h2 := hPu f hf
+      have h3 := hvu f
+      linear_combination b ^ 2 * h2 + a * b * N * h3
+    rw [sum_congr rfl hrow]
+    simp only [sum_add_distrib, ← mul_sum]
+    rw [hcross]
+    ring
+  rw [hnorm, hquad]
+  -- `D·|x|² − xᵀPx = −(s a² V + 2 s a b U + (s − e) b² U)` with `s = N − D`
+  have hVU : 0 < V - U := by linarith
+  have hV0 : 0 < V := by linarith
+  have he0 : 0 ≤ e := Nat.cast_nonneg _
+  set t : ℝ := (N : ℝ) - D with ht
+  have hts : e * V < t * (V - U) := by
+    have := (div_lt_iff₀ hVU).mp (show e * V / (V - U) < t by rw [ht]; linarith)
+    linarith
+  have ht0 : 0 < t := by nlinarith
+  have hgap : 0 < (t - e) * V - t * U := by nlinarith
+  have hB : 0 < t * a ^ 2 * V + 2 * t * a * b * U + (t - e) * b ^ 2 * U := by
+    have key : t * V * (t * a ^ 2 * V + 2 * t * a * b * U + (t - e) * b ^ 2 * U) =
+        (t * V * a + t * U * b) ^ 2 + t * U * ((t - e) * V - t * U) * b ^ 2 := by ring
+    have htV : 0 < t * V := mul_pos ht0 hV0
+    rcases hab with ha | hb
+    · by_cases hb : b = 0
+      · subst hb
+        have : 0 < a ^ 2 := (pow_pos (abs_pos.mpr ha) 2).trans_eq (sq_abs a)
+        nlinarith
+      · have : 0 < t * U * ((t - e) * V - t * U) * b ^ 2 :=
+          mul_pos (mul_pos (mul_pos ht0 hU0) hgap) ((pow_pos (abs_pos.mpr hb) 2).trans_eq (sq_abs b))
+        nlinarith [sq_nonneg (t * V * a + t * U * b)]
+    · have : 0 < t * U * ((t - e) * V - t * U) * b ^ 2 :=
+        mul_pos (mul_pos (mul_pos ht0 hU0) hgap) ((pow_pos (abs_pos.mpr hb) 2).trans_eq (sq_abs b))
+      nlinarith [sq_nonneg (t * V * a + t * U * b)]
+  nlinarith
+
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

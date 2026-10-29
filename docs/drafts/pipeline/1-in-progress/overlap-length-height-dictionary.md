@@ -53,6 +53,14 @@ Remaining mathematical obligations: actual divisor-shell row growth; the self-en
 growing overlap; whether the full matrix admits the proposed additive/shell Schur decomposition.
 Entrywise signs and disjoint edge supports alone do not supply such a block decomposition.
 
+**Aperture qualification.** A profile supported in `[a,b]` gives total atomic support
+`[aw,log N+bw]`; centered aperture is `(log N+(b-a)w)/2`, with outer prime cutoff
+`N exp((b-a)w)`. Plateau profiles use `[0,1]`, whereas `VanishesOff` in the completeness
+theorems uses `[-1,1]`. The scale coordinate `c=Nw` must retain that profile convention.
+Moreover SRT quantifies over all tests in an aperture, while atomic positivity quantifies over
+one fixed-profile finite-dimensional family. A support inclusion does not place SRT's negative
+witness inside that atomic family.
+
 **Next row conjecture.** At every fixed `c>1`, the normalized downward divisor fiber from
 row `N` to product `N+1`, for the explicit plateau profile, is asymptotic to
 `(bumpCorr φ (1/c)/∫φ²) log(N+1)`, with strictly positive coefficient. This is the corpus's

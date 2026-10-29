@@ -12,7 +12,7 @@ correlation can be retained with its sign before bounding the entire tail.
 
 noncomputable section
 
-open Finset
+open Finset Filter Topology
 open scoped ArithmeticFunction.Moebius
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap
@@ -211,6 +211,41 @@ theorem primeSquareTrial_prime_correction_le {p : ℕ} (hp : p.Prime) (N : ℕ) 
     exact sum_congr rfl fun m _ => by ring
   rw [htail]
   ring
+
+/-- The exact upper bound furnished by the first prime and the complete tail. -/
+def primeSquareFlipBound (p N : ℕ) : ℝ :=
+  (4 * Real.log p / p) *
+    (-gaugeHarmonicSum (fun _ => 1) (N / p) +
+      (2 / (p : ℝ) ^ 2) * gaugeHarmonicSum (fun _ => 1) ((N / p) / p ^ 2)) +
+  (4 * Real.log p / ((p : ℝ) ^ 2 * ((p : ℝ) - 1))) * gaugeHarmonicSum (fun _ => 1) N
+
+/-- Fixed decimation preserves the logarithmic harmonic mass. -/
+theorem tendsto_gaugeHarmonicSum_natDiv_div_log {d : ℕ} (hd : 0 < d) :
+    Tendsto (fun N : ℕ => gaugeHarmonicSum (fun _ => 1) (N / d) / Real.log N)
+      atTop (𝓝 1) := by
+  refine (_root_.RHTower.tendsto_harmonic_natDiv_div_log hd).congr fun N => ?_
+  rw [harmonic_eq_sum_Icc]
+  push_cast
+  simp only [gaugeHarmonicSum, one_div]
+
+/-- The first prime cancels `4 log p / p`; the remaining cost begins at the prime cube. -/
+theorem tendsto_primeSquareFlipBound {p : ℕ} (hp : p.Prime) :
+    Tendsto (fun N : ℕ => primeSquareFlipBound p N / Real.log N) atTop
+      (𝓝 (-4 * Real.log p / p +
+        4 * Real.log p * (2 / (p : ℝ) ^ 3 + 1 / ((p : ℝ) ^ 2 * ((p : ℝ) - 1))))) := by
+  have h1 := tendsto_gaugeHarmonicSum_natDiv_div_log hp.pos
+  have h2 := tendsto_gaugeHarmonicSum_natDiv_div_log (mul_pos hp.pos (pow_pos hp.pos 2))
+  have h0 : Tendsto (fun N : ℕ => gaugeHarmonicSum (fun _ => 1) N / Real.log N)
+      atTop (𝓝 1) := by
+    simpa only [Nat.div_one] using tendsto_gaugeHarmonicSum_natDiv_div_log (by norm_num : 0 < (1 : ℕ))
+  have h := (h1.neg.add (h2.const_mul (2 / (p : ℝ) ^ 2))).const_mul (4 * Real.log p / p)
+  have hsum := h.add (h0.const_mul (4 * Real.log p / ((p : ℝ) ^ 2 * ((p : ℝ) - 1))))
+  convert hsum using 1
+  · funext N
+    rw [primeSquareFlipBound, Nat.div_div_eq_div_mul]
+    ring
+  · congr 1
+    ring
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap
 
