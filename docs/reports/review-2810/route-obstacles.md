@@ -43,7 +43,7 @@ Consequence (inference): an input that decides the sign must be parity-sensitive
 ### 3. Atomic receivers reach \((\log\log N)^{1+\varepsilon}\) overlap
 
 - RH holds iff \(W\ge0\) eventually on atomic families of width \((\log\log N)^\alpha/N\), for every \(\alpha>1\) (Denjoy–Carleman profiles of class \(1+1/r\)); also for \(\alpha>2\) with an explicit Gevrey-2 profile [L]. [Denjoy–Carleman](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheDenjoyCarlemanProfiles.lean), [Gevrey](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheGevreyProfile.lean).
-- **The receiver stops at \(\alpha=1\) (inference).** A window \((\log\log N)^s\) needs a compactly supported profile of Gevrey class \(s\); class \(1\) is quasi-analytic, and Denjoy–Carleman excludes compact support.
+- **Profile-class boundary [S].** Nonzero smooth compactly supported Gevrey profiles exist exactly at order \(s>1\). This blocks the stated Gevrey-window construction at \(\alpha=1\); it does not prove that every possible endpoint or bounded-overlap receiver fails. [Exact class boundary](../../../formal/GaloisForLFunctions/HeckeKreinToeplitz/TheReceiversEndAtTheQuasiAnalyticBoundary.lean).
 - Under overlap growth the Markov form is negative unconditionally, and RH is Markov nonnegativity on the pole hyperplane [L]. [Pole](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold.lean).
 - **At every width,** \(W\ge0\) on atomic tests iff \(M\ge0\) on the pole complement \(p=0\) and \(M+2a_0B\ge0\) on the affine hyperplane \(p=1\). Beyond the Robin–Euler threshold the Markov form has exactly one negative direction, the pole vector. [Gap and one scalar](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/TheHodgeIndexIsAGapOnThePoleComplementAndOneScalar.lean).
 
@@ -61,7 +61,7 @@ Below \(\log N-\gamma\), the spectrum of \(P_N\) within distance \(T\) comes onl
 
 - Complete logarithmic cells recover every mixed Weil entry and form a dyadic multiresolution, \(C_{2a}+C_{2a+1}=T_{\log2}C_a\); prime two acts as the unilateral shift on every generator chain [L]. [Multiresolution](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheCompleteSourceIsADyadicMultiresolution.lean), [level matrix](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/ArithmeticTranslationsHaveAnExactDyadicLevelMatrix.lean).
 - Gamma pays all logarithmic detail mass, a mean graph on pair averages and all dyadic parent variances. Balanced sections above one index carry a full-form floor uniformly in the horizon, for every twist \(|\omega|\le1\), Liouville included [L]. [Floor](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarCellEffectivity.lean), [twin-blind](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheHaarFloorIsTwinBlind.lean).
-- **Signed Haar Gamma cross terms [S].** For the actual one-level Haar section \(h=\sum_a d_a h_a\), the full diagonal error satisfies \(\left|\Gamma(h)-\sum_a d_a^2\Gamma(h_a)\right|\le16e^{1/2}\|h\|_2^2\), including low indices. Mean cancellation and disjoint target rectangles pay each boundary remainder once. This supplies an ordinary-mass error; paying it jointly with the exact diagonal, arithmetic potential and poles is separate. It is not an upper Gamma bound for the all-level generator projection. [Boundary cost](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarGammaCrossTermsCostOnlyMass.lean).
+- **Signed Haar Gamma cross terms [L].** For the actual one-level Haar section \(h=\sum_a d_a h_a\), the full diagonal error satisfies \(\left|\Gamma(h)-\sum_a d_a^2\Gamma(h_a)\right|\le16e^{1/2}\|h\|_2^2\), including low indices. Mean cancellation and disjoint target rectangles pay each boundary remainder once. All three exact files passed direct Lean checks. This supplies an ordinary-mass error; paying it jointly with the exact diagonal, arithmetic potential and poles is separate. It is not an upper Gamma bound for the all-level generator projection. [Boundary cost](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarGammaCrossTermsCostOnlyMass.lean).
 - **Uniform finite index, layer by layer [L].** Gamma minus each of the following has negative dimension bounded independently of horizon and family:
   - the all-prime mixed block with exponents \(k\ge3\);
   - the whole signed prime-two Euler mixed source;
@@ -380,7 +380,7 @@ Each entry gives the current state, then A (just work) and B (open). Full source
 **B:**
 - An actual late-lag bound, an all-generator tower bound, or full sign at unbounded overlap **[RH]**.
 - Touching/overlap transfer of the complete-matrix floor, with width and horizon controlled together **[open]** (Q1).
-- An \(\alpha=1\) receiver: a quasi-analyticity boundary of the synthesis (inference), not a task.
+- An \(\alpha=1\) or bounded-overlap receiver by another synthesis **[open]**. The Gevrey-class obstruction applies to the stated construction, not every possible endpoint receiver.
 
 [Lag receiver](../../../formal/GaloisForLFunctions/SquareRootThreshold/EveryWidthDecidesTheCriticalLine.lean).
 

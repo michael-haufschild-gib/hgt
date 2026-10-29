@@ -576,3 +576,34 @@ warnings. Supporting harmonic tails, exact weighted ideal hyperbola,
 and weighted prime-power bounds also pass their final audits. See
 [the Mertens proof](../3-formalized/hecke-character-mertens-via-ideal-hyperbola.md).
 The remaining Hecke gate is the primitive completed functional equation.
+
+### Finite conductors and general Gauss identities completed
+
+Four audited modules now supply finite-ring unit lifting, quotient-character
+descent, the full primitive Gauss transform and exact Gauss norm, and
+canonical primitive conductors. The actual finite Hecke character has a
+constructed nonzero integral conductor dividing its modulus, a unique
+primitive character on the conductor quotient, and an exact descent
+criterion for every divisor modulus. All main transitive audits have
+standard axioms only; all four final direct source checks pass without
+warnings, and the modules are wired into their umbrellas. See
+[actual finite Hecke conductors](../3-formalized/hecke-finite-characters-have-primitive-conductors.md)
+and [finite-ring Gauss transforms](../3-formalized/primitive-finite-ring-characters-have-gauss-transforms.md).
+
+The next arithmetic step identifies the existing finite theta coefficients
+with Gauss sums of their actual trace characters, then proves the ideal
+support and inverse-Hecke-character formula needed for the dual series.
+The completed primitive functional equation remains open; CFT still
+follows the completed Hecke programme.
+
+`HeckeFiniteFourierCoefficientsAreGaussSums.lean` now constructs the
+actual residue trace character for every dual-theta frequency and
+identifies the existing finite coefficient with its Gauss sum. At the
+finite conductor it proves inverse-character scaling, exact nonvanishing,
+and squared norm zero or the modulus norm. Its primitive criterion is
+the concrete condition `ra∈dual(b) → r∈m` for algebraic integers `r`.
+All five main transitive audits have standard axioms only; final direct
+source audit passes without warnings. See
+[the proof](../3-formalized/hecke-finite-fourier-coefficients-are-gauss-sums.md).
+Arithmetic ideal support, dual Hecke-character identification, and the
+normalized completed reflection remain open.

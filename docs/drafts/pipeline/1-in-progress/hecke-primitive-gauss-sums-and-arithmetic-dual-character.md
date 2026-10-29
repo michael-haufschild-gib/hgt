@@ -56,15 +56,18 @@ coefficient at `a` to vanish. Unit shifts give the inverse character.
 Finite Parseval then determines the Gauss norm once the additive trace
 pairing is proved nondegenerate.
 
-This is a proposed mechanism, not a formalized theorem. For the actual
-Hecke application, primitivity must be tied to the finite conductor and
-the trace pairing must be constructed and audited. Neither may be left
-as an unexplained analytic or arithmetic interface.
+The finite-ring mechanism is now formalized, including the exact Gauss
+norm. The proof uses additive orthogonality at one in place of Parseval:
+the full transform gives the reciprocal Gauss product directly. For the
+actual Hecke application, primitivity must still be tied to the finite
+conductor and the trace pairing must be constructed and audited. Neither
+may be left as an unexplained analytic or arithmetic interface.
 
 ## Arithmetic obligations
 
-1. Define the finite conductor and primitive characters, with the
-   necessary quotient-unit descent and minimality statements.
+1. **Done for the actual finite Hecke residue character:** define its
+   finite conductor and primitive quotient character, prove uniqueness,
+   quotient-unit descent, and the exact conductor divisibility criterion.
 2. Prove the primitive finite Fourier transform over the actual ideal
    quotient and its trace-dual module, including nonunit vanishing and
    Gauss norm.
@@ -77,10 +80,9 @@ as an unexplained analytic or arithmetic interface.
 5. Assemble the completed reflection with the exact discriminant,
    conductor and parity factors, and audit the root number.
 
-HL6, including both forms of the Mertens bounds, is now fully audited.
-No new Lean scratch is yet written for this card. This arithmetic
-functional-equation work is the next Hecke gate; class field theory
-still follows the completed Hecke programme.
+HL6, including both forms of the Mertens bounds, is fully audited.
+This arithmetic functional-equation work is the next Hecke gate;
+class field theory still follows the completed Hecke programme.
 
 ## Finite-ring unit-lifting route
 
@@ -88,12 +90,143 @@ For a finite commutative ring, a positive power `e=r^n` of every element
 can be chosen idempotent. If a ring homomorphism sends `r` to a unit,
 then it sends `e` to one. The element `r*e+(1-e)` is a unit lifting the
 same image, with inverse `r^(n-1)*e+(1-e)`. Expanding the product and
-using `e^2=e` proves the inverse identity. This would lift units along
+using `e^2=e` proves the inverse identity. This lifts units along
 every surjective ring homomorphism with finite source, avoiding a new
 Chinese-remainder decomposition.
 
-The corpus query on finite idempotent powers has been run; its leads
-only concerned powers of elements already known idempotent. A Mathlib
-search for the positive idempotent-power existence theorem is the next
-step before implementing this lifting argument. The construction has
-not yet been checked in Lean.
+Both statements are now formalized and audited in
+`HTGeometry/FiniteRingUnitsLiftThroughQuotients.lean`:
+`FiniteRing.exists_pos_pow_idempotent`, `exists_unit_map_eq`, and
+`units_map_surjective`. The proof uses a finite collision of powers and
+the explicit complementary-idempotent construction above. Transitive
+axioms are standard only; final direct source audit passed. Full proof:
+[finite-ring unit lifting](../3-formalized/finite-ring-units-lift-through-quotients.md).
+
+The consumer `HTGeometry/PrimitiveFiniteRingCharactersHaveGaussTransforms.lean`
+is also finalized and audited. It defines pullback on unit characters,
+proves quotient descent equivalent to triviality on the congruence kernel,
+defines standard primitivity by absence of nonzero quotient descent, and
+proves the full Gauss transform, reciprocal product, and exact squared
+norm. All five main transitive audits have standard axioms only. Full
+proof and exact declarations:
+[primitive finite-ring Gauss transforms](../3-formalized/primitive-finite-ring-characters-have-gauss-transforms.md).
+
+## Canonical finite-ring conductor
+
+Unit lifting applies even to a ring map that is not surjective, provided
+the chosen element has unit image. This gives a useful congruence
+decomposition: if `u-1∈I+J`, write `u-1=x+y` with `x∈I`, `y∈J`.
+The element `1+y` has unit image in `R/I × R/J`, namely `(u,1)`.
+Lift that image to a unit `w`; then `w≡1 (mod J)` and
+`u w⁻¹≡1 (mod I)`. Hence descent through both ideals implies descent
+through their sum.
+
+There are finitely many ideals, so the sum of all descent ideals is
+itself a descent ideal and is their unique greatest element. The
+character on that quotient is unique and primitive: any further
+quotient descent pulls back to a larger descent ideal.
+
+The construction is finalized in
+`HTGeometry/FiniteRingCharactersHavePrimitiveConductors.lean`.
+It includes the exact ideal criterion
+`factorsThrough_iff_le_conductorIdeal`, the unique primitive character
+`conductorCharacter`, and a transport theorem for every surjective ring
+map whose kernel is the conductor ideal. All four main transitive
+audits have standard axioms only; final source audit passed without
+warnings. Full proof:
+[finite-ring primitive conductors](../3-formalized/finite-ring-characters-have-primitive-conductors.md).
+
+The Hecke consumer is now finalized and audited:
+`HeckeLFunctions/HeckeFiniteCharactersHavePrimitiveConductors.lean`.
+It pulls the canonical ideal back to `𝓞 K`, proves it nonzero and dividing
+the original modulus, constructs the unique primitive character directly
+on that integral quotient, and proves the exact descent criterion for
+every divisor modulus. All four main transitive audits have standard
+axioms only; final direct source audit passed without warnings. Full proof:
+[actual finite Hecke conductors](../3-formalized/hecke-finite-characters-have-primitive-conductors.md).
+
+## Actual trace-character bridge in progress
+
+A scratch consumer now constructs the additive character associated to
+each frequency in the actual trace-dual ideal. Representatives in the
+coprime ideal differ by the modulus-product ideal, whose pairing with
+the frequency has integral trace. This proves well-definedness and
+additivity, and identifies the existing finite theta coefficient with
+an actual Gauss sum. Multiplication of a frequency by an algebraic
+integer should then give the inverse finite-character factor.
+
+The general Gauss strengthening is now finalized in
+`HTGeometry/PrimitiveGaussSumsDetectPrimitiveAdditiveCharacters.lean`:
+for primitive multiplicative characters, Gauss nonvanishing is equivalent
+to additive primitivity, with squared norm exactly zero or the ring
+cardinality. It uses a principal ideal annihilated by an imprimitive
+additive character and the congruence-unit argument. All three transitive
+audits have standard axioms only; final source audit passed. Full proof:
+[Gauss sums detect additive primitivity](../3-formalized/primitive-gauss-sums-detect-primitive-additive-characters.md).
+
+The actual trace-character module passes all five main transitive
+axiom audits with standard axioms only. It is finalized as
+`HeckeLFunctions/HeckeFiniteFourierCoefficientsAreGaussSums.lean` and
+wired into the Hecke umbrella; its final direct source audit passes
+without warnings. Full proof:
+[actual Hecke Fourier coefficients](../3-formalized/hecke-finite-fourier-coefficients-are-gauss-sums.md).
+It constructs the trace character, identifies the actual theta
+coefficient with its Gauss sum, proves inverse finite-character scaling,
+and gives exact nonvanishing and squared-norm criteria.
+
+It also proves the concrete intermediate kernel description:
+the trace character attached to `a∈dual(𝔪₀𝔟)` is trivial exactly when
+`a∈dual(𝔟)`. Consequently it is primitive exactly when every algebraic
+integer `r` satisfying `ra∈dual(𝔟)` lies in `𝔪₀`.
+The next arithmetic task is to convert this annihilator criterion into
+coprimality of the associated integral ideal and then identify its
+Hecke character value. The general Dedekind ideal-colon criterion below
+is now finalized in `HTGeometry/DedekindIdealQuotientsDetectCoprimality.lean`.
+Its transitive axiom audit is standard only, and its final direct source
+audit passes without warnings. Full proof:
+[ideal quotients detect coprimality](../3-formalized/dedekind-ideal-quotients-detect-coprimality.md).
+
+Checked arithmetic sources for the next step:
+
+- `HeckeThetaHasAFiniteFourierTransform.lean` defines the actual phase,
+  residue coefficient, and dual-frequency sum. `residueIdealRemainder`
+  proves that two representatives in a coprime ideal differ by the
+  modulus-product ideal.
+- `NumberFieldIdealTraceDuality.lean` proves actual lattice/trace-dual
+  identification using a rational trace-dual basis.
+- Mathlib `RingTheory/DedekindDomain/Different.lean`, read through the
+  fractional-dual identities, supplies `FractionalIdeal.mem_dual`,
+  `dual_eq_mul_inv`, `dual_mul_self`, `dual_dual`, and `dual_le_dual`.
+  In particular `dual(I)=dual(1)*I⁻¹` is available for the arithmetic
+  support calculation; it need not be reproved.
+- `Complex.exp_eq_one_iff` and `exp_int_mul_two_pi_mul_I` identify the
+  trace phase kernel with integral rational traces. Their sources are
+  inspected, and the trace phase kernel equivalence now passes its
+  verification in the actual trace-character module.
+
+## Arithmetic support calculation to formalize
+
+Write `D=dual(1)` for the codifferent fractional ideal. For
+`a∈dual(𝔪₀𝔟)`, the fractional ideal
+`F=(a)𝔪₀𝔟D⁻¹` is integral, since
+`dual(𝔪₀𝔟)=D(𝔪₀𝔟)⁻¹`. Let `I` be the corresponding integral ideal.
+Then `ra∈dual(𝔟)` is equivalent to `rI⊆𝔪₀`. Thus the concrete
+annihilator above is the ideal quotient `(𝔪₀:I)`.
+
+For a nonzero ideal `m` in a Dedekind domain, `(m:I)=m` exactly when
+`m+I=(1)`. One proof avoids a new prime-factorization calculation.
+Put `J=m+I`, which is nonzero. The fractional ideal `N=mJ⁻¹` is
+integral because `m≤J`, and `NI≤m`. If `(m:I)=m`, then `N≤m`;
+cancelling the nonzero `m` gives `J⁻¹≤1`, forcing `J=(1)`.
+Conversely, when `m+I=(1)`, any element sending `I` into `m` also
+sends `m` into `m`, hence sends `m+I` into `m` and lies in `m`.
+
+The relevant Mathlib leads are now inspected:
+`FractionalIdeal.le_one_iff_exists_coeIdeal` converts an integral
+fractional ideal to an ordinary ideal, and
+`FractionalIdeal.not_inv_le_one_of_ne_bot` rules out `J⁻¹≤1` for
+a nonzero proper ideal. The Dedekind criterion is formalized and audited.
+A written Hecke consumer constructs the integral frequency ideal and
+identifies its colon ideal with the actual trace annihilator; that
+consumer still requires verification. The inverse Hecke coefficient
+and global root number remain open.

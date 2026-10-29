@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.ShiftPartialSummation
 import Mathlib.NumberTheory.Harmonic.Bounds
+import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 
 /-!
 # Harmonic mass from a delayed counting lower bound
@@ -74,7 +75,7 @@ theorem harmonic_mass_ge_of_delayed_prefix (f : ℕ → ℝ) (hf : ∀ i, 0 ≤ 
   have hhead : (∑ i ∈ H, C / ((i : ℝ) + 1)) ≤ C * (harmonic K : ℝ) := by
     rw [harmonic_real_eq, mul_sum]
     have hsub : H ⊆ range K := fun i hi => mem_range.mpr (mem_filter.mp hi).2
-    have h := sum_le_sum_of_subset_of_nonneg hsub
+    have h := sum_le_sum_of_subset_of_nonneg (f := fun i : ℕ => C / ((i : ℝ) + 1)) hsub
       (fun i (_ : i ∈ range K) _ => div_nonneg hC (by positivity))
     simpa only [mul_one_div] using h
   have hsplit : (∑ i ∈ range N, g i / ((i : ℝ) + 1)) +
@@ -89,4 +90,23 @@ theorem harmonic_mass_ge_of_delayed_prefix (f : ℕ → ℝ) (hf : ∀ i, 0 ≤ 
     · simp only [g, if_neg hKi, if_pos (lt_of_not_ge hKi), zero_div, zero_add, mul_one_div]
   nlinarith only [hhead, hsplit, hweighted]
 
+/-- A delayed counting bound gives the logarithm of the ratio of horizons,
+with no additional constant loss. -/
+theorem logarithmic_mass_ge_of_delayed_prefix (f : ℕ → ℝ) (hf : ∀ i, 0 ≤ f i)
+    {C : ℝ} (hC : 0 ≤ C) (K : ℕ)
+    (hprefix : ∀ N : ℕ, ((N : ℝ) - K) * C ≤ ∑ i ∈ range N, f i) (N : ℕ) :
+    (Real.log ((N : ℝ) + 1) - Real.log ((K : ℝ) + 1)) * C ≤
+      ∑ i ∈ range N, f i / ((i : ℝ) + 1) := by
+  by_cases hKN : K ≤ N
+  · have hmono := Real.strictMono_eulerMascheroniSeq.monotone hKN
+    simp only [Real.eulerMascheroniSeq] at hmono
+    exact (mul_le_mul_of_nonneg_right (by linarith only [hmono]) hC).trans
+      (harmonic_mass_ge_of_delayed_prefix f hf hC K hprefix N)
+  · have hlog : Real.log ((N : ℝ) + 1) ≤ Real.log ((K : ℝ) + 1) :=
+      Real.log_le_log (by positivity) (by exact_mod_cast (show N + 1 ≤ K + 1 by omega))
+    exact (mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.mpr hlog) hC).trans
+      (sum_nonneg fun i _ => div_nonneg (hf i) (by positivity))
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.logarithmic_mass_ge_of_delayed_prefix

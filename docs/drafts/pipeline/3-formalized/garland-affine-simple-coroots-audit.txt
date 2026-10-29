@@ -1,0 +1,39 @@
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.affineCoroot_eq_central_finite.{u_1} (F : Type u_1) [Field F]
+  (a : Fˣ) : (LoopSL2.affineCoroot F) a = (LoopSL2.centralEmbedding F) a * (LoopSL2.finiteCoroot F) a⁻¹
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.cartanEmbedding_injective.{u_1} (F : Type u_1) [Field F] :
+  Function.Injective ⇑(LoopSL2.cartanEmbedding F)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.simpleCoroots_eq_cartan.{u_1} (F : Type u_1) [Field F]
+  (a b : Fˣ) : (LoopSL2.affineCoroot F) a * (LoopSL2.finiteCoroot F) b = (LoopSL2.cartanEmbedding F) (a, b / a)
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.sl2WeylLower_relative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.kubotaCocycle_weylLower_relative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.SL2SymbolExtension.weylLower_eq_rootWord' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.SL2SymbolExtension.weylLower_relative' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_constants' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.finiteCoroot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.affineCoroot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.affineCoroot_eq_central_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.cartanEmbedding' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.cartanEmbedding_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.simpleCoroots_eq_cartan' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

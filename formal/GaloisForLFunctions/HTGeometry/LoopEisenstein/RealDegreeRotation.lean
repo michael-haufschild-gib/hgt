@@ -44,8 +44,12 @@ def degreeRotation (r : ℝ) : ExtendedLoopSL2 ℝ := SemidirectProduct.inr (rea
 theorem degreeRotation_conjugation (r : ℝ) (g : LoopSL2 ℝ) :
     degreeRotation r * SemidirectProduct.inl g * (degreeRotation r)⁻¹ =
       SemidirectProduct.inl (LoopSL2.rotation (realDegreeUnit r) g) := by
-  simpa only [degreeRotation, map_inv] using
+  have h :=
     (SemidirectProduct.inl_aut (φ := LoopSL2.rotationAction) (realDegreeUnit r) g).symm
+  have hact : (LoopSL2.rotationAction (realDegreeUnit r)) g =
+      LoopSL2.rotation (realDegreeUnit r) g := rfl
+  rw [hact, map_inv] at h
+  exact h
 
 /-- Real affine root groups have precisely their expected degree eigenvalue. -/
 theorem degreeRotation_realRootElement (r : ℝ) (β : AffineA1.Root) (a : ℝ) :

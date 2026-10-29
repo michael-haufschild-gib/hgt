@@ -67,16 +67,45 @@ Centering at the common boundary gives exact first distance moment M*w/2;
 the two exponential functionals then have summable normalized squares.
 This pays the poles from the actual arithmetic defect without removing a head.
 
+## Checked signed Gamma interaction
+
+[The full off-diagonal Gamma bound](../3-formalized/acs-haar-gamma-off-diagonal-mass.md)
+now gives, for every signed section and horizon,
+
+`abs(Gamma(h)−sum_a d_a² Gamma(H_a))
+ ≤ haarGammaBoundaryCost(d,X)
+ ≤ exp(1/2)*sum_a logCellWidth(a)*d_a²
+ ≤ 16 exp(1/2)*integral h²`.
+
+Both signs of each mean-zero pair are paid by the actual positive
+rectangle remainders. Disjoint target intervals spend each row remainder
+once; exact finite assembly keeps the original Gamma normalization.
+The three source files passed clean direct Lean checks. No low index or
+touching pair is omitted. This removes logarithmic growth from the entire
+signed Gamma interaction; its ordinary-mass cost still needs joint payment
+with the full divisor-square defect and central mass.
+
 ## Investigation
 
 Seek a direct shared Gamma–prime payment on all actual Haar cells, keeping
 the now-paid original poles. Retain the full divisor-square defect when
 comparing with its exact logarithmic/outgoing potential; its scalar floor
 alone discards useful arithmetic energy. The sharp bound `P≥−7mass/144`
-is available without spending a Gamma share. Corpus searches still supply
-only individual-cell archimedean positivity and weighted signed Gamma
-payment, not the required all-head joint inequality. An all-head conclusion
+is available without spending a Gamma share. The exact boundary cost now
+controls the full signed Gamma error in ordinary mass. The required
+all-head joint inequality remains open. An all-head conclusion
 must preserve cross terms, not combine separate diagonal inequalities.
+
+One candidate joint comparison uses the actual divisor-square generator.
+With `n_a=2a+1`, investigate the coordinates `u_a=sqrt(n_a)*d_a`
+and weight `pi_a=M_a/n_a`. The proposed edge expression is
+`Lambda(m)*pi_b*(u_a−u_b)^2` when `n_a*m=n_b`.
+The comparison model has geometric prime parameter `q=1/p`; the existing
+critical `primeBlaschkeParameter=1/sqrt(p)` is a different parameter.
+`HTGeometry.HardyNumberSpectrum` supplies a basis for general `q`.
+The exact mass change and any outgoing boundary completion must be proved
+before using that model to pay the original Gamma boundary cost. This is
+an investigation of the full signed head inequality, not a proved bridge.
 
 No all-head positivity claim is established. No numerical experiment,
 web search, novelty check, or axiom check is authorized. If this target

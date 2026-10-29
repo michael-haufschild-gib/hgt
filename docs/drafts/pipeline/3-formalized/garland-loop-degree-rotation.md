@@ -1,8 +1,8 @@
 # Degree rotation on the Laurent central extension
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** An actual action of `Fˣ` on `LoopSL2 F` induced by `X↦qX`, fixing
   the center, with the expected action on each affine real-root subgroup.
 
@@ -48,5 +48,17 @@ corresponding to the already proved weight exponent.
 
 ## Status
 
-Paper proof complete; Lean formalization pending. No Iwasawa, arithmetic-series,
+Paper proof and Lean formalization complete. No Iwasawa, arithmetic-series,
 or constant-term theorem is claimed by this construction.
+
+| Module | Main declarations |
+| --- | --- |
+| `LaurentRotation` | `laurentRotation_valuation`, `laurentResidue_eq_coeff_zero`, `laurentTameSymbol_rotation` |
+| `LoopSL2Rotation` | `LoopSL2.rotation`, `LoopSL2.rotationAction`, `LoopSL2.rotation_centralEmbedding`, `LoopSL2.rotation_realRootElement`, `ExtendedLoopSL2` |
+| `RealDegreeRotation` | `range_realDegreeUnit`, `degreeRotation_conjugation`, `degreeRotation_realRootElement`, `degreeRotation_ne_one` |
+
+All three modules passed final direct source checks with `lake --old env lean`,
+without warnings. The saved [transitive axiom audit](garland-loop-degree-rotation-audit.txt)
+contains only `propext`, `Classical.choice`, and `Quot.sound`. It also checks the
+actual semidirect-product group instances over `ℚ` and `ℝ`. Umbrella imports
+are wired; no umbrella build was run.

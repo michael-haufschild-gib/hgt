@@ -429,14 +429,11 @@ theorem exists_separating_of_not_aliased {κ : ℕ} (χ : Fin κ → G →* ℂ)
   · rw [one_mul]; exact eq_reflectChar_of_norm_eq_one h1
   · rw [one_mul]; rcases m with j | j <;> rcases m' with j' | j' <;> exact he
 
-/-- **One cyclic subgroup carries the whole index** when no two nodes are torsion-aliased. -/
-theorem negIndex_zpowers_eq_of_not_aliased {κ : ℕ} {p : G → ℂ} (hp : IsPosDefKernel p)
-    (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0)
-    (hA : ∀ m m', m ≠ m' → ¬ IsTorsionAliased (node χ m) (node χ m')) :
-    ∃ u : G, negIndex ((fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) ∘ zpowersHom G u) = κ ∧
-      negIndex (fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) = κ := by
-  obtain ⟨u, hne, hsep⟩ := exists_separating_of_not_aliased χ hA
-  refine ⟨u, ?_, negIndex_add_sum_pairKernel_eq hp χ ω hω u hne hsep⟩
+/-- **A separating element's cyclic subgroup carries the whole index.** -/
+theorem negIndex_zpowers_eq_of_separated {κ : ℕ} {p : G → ℂ} (hp : IsPosDefKernel p)
+    (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0) (u : G) (hne : ∀ j, ‖χ j u‖ ≠ 1)
+    (hsep : Function.Injective (nodes χ u)) :
+    negIndex ((fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) ∘ zpowersHom G u) = κ := by
   rw [comp_add_sum_pairKernel]
   simp only [comp_zpowersHom]
   refine negIndex_add_sum_pairKernel_eq (hp.comp _) _ ω hω (Multiplicative.ofAdd 1)
@@ -450,6 +447,16 @@ theorem negIndex_zpowers_eq_of_not_aliased {κ : ℕ} {p : G → ℂ} (hp : IsPo
         rw [reflectChar_valChar_ofAdd_one (map_ne_zero _ _), reflectChar_apply, map_inv_eq_inv,
           map_inv₀]
     rw [this]; exact hsep
+
+/-- **One cyclic subgroup carries the whole index** when no two nodes are torsion-aliased. -/
+theorem negIndex_zpowers_eq_of_not_aliased {κ : ℕ} {p : G → ℂ} (hp : IsPosDefKernel p)
+    (χ : Fin κ → G →* ℂ) (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0)
+    (hA : ∀ m m', m ≠ m' → ¬ IsTorsionAliased (node χ m) (node χ m')) :
+    ∃ u : G, negIndex ((fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) ∘ zpowersHom G u) = κ ∧
+      negIndex (fun g => p g + ∑ j, pairKernel (χ j) (ω j) g) = κ := by
+  obtain ⟨u, hne, hsep⟩ := exists_separating_of_not_aliased χ hA
+  exact ⟨u, negIndex_zpowers_eq_of_separated hp χ ω hω u hne hsep,
+    negIndex_add_sum_pairKernel_eq hp χ ω hω u hne hsep⟩
 
 /-! ### Two elementary positive-definite kernels -/
 

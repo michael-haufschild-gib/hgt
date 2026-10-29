@@ -1,8 +1,8 @@
 # Pay the entire signed Haar Gamma cross term in ordinary mass
 
 - **ID:** acs-haar-gamma-off-diagonal-mass
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Route:** ACS: full-source effectivity → Hodge index → RH.
 - **Parent:** [signed Haar head payment](../1-in-progress/acs-low-haar-head-payment.md)
 - **Target:** A horizon-independent ordinary-mass bound for
@@ -27,8 +27,8 @@ remainder of each I_i. The checked remainder-mass estimate is
 `integral_(I_i×I_i^c) (K−Far_i)≤exp(1/2)*width(I_i)`.
 
 For f_i=d_i H_i, use `H_i²≤1` and `width(I_i)≤16 M_i`. Consequently `abs(Gamma(h)−sum_i d_i² Gamma(H_i))≤16 exp(1/2)*mass(h)`.
-The principal statement should retain the sharper individual boundary
-charges before this final scalar bound.
+The principal statement retains the sharper individual boundary charges
+before this final scalar bound.
 
 Every profile is compact BV. Its Gamma energy is finite; boundedness and
 the finite crossing-kernel mass make every off-diagonal product absolutely
@@ -37,15 +37,7 @@ measures are positive submeasures of the crossing measure, so the same
 integrability holds for all subtractions. Finite Fubini and sums above are
 therefore legitimate. No limiting or spectral premise is used.
 
-## Formalization tasks
-
-- Convert the existing ENNReal two-interval inequality to the signed
-  cross pairing, preserving finite-integrability witnesses.
-- Prove exact finite assembly of the Gamma cross terms.
-- Bound the sum of rectangle remainders by the existing boundary measure.
-- Specialize to actual Haar profiles and check the exact Lean modules.
-
-Sources under direct verification:
+## Exact Lean results
 
 - `GammaMeanZeroCrossingBound.lean`: actual rectangle measures, both-sign
   pair inequality, and summed boundary-remainder cost. Clean direct
@@ -55,13 +47,33 @@ Sources under direct verification:
   `lake --old env lean` check passed.
 - `TheHaarGammaCrossTermsCostOnlyMass.lean`: actual signed Haar sections,
   exact boundary cost, pair-width bound, and ordinary square-mass bound.
+  Clean direct `lake --old env lean` check passed.
+
+The concrete declarations, in namespace
+`GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells`, are:
+
+- `haarGamma_error_and_boundary_bounds`: the absolute Gamma error is at
+  most `haarGammaBoundaryCost`, itself at most
+  `exp(1/2)*sum_a logCellWidth(a)*d_a²`.
+- `haarSectionProfile_gamma_error_le_width`: the pair-width specialization.
+- `haarSectionProfile_gamma_error_le_mass`: the full ordinary-mass bound
+  `abs(Gamma(h)−sum_a d_a² Gamma(H_a))≤16 exp(1/2)*integral h²`.
+
+The generic exact assembly is
+`MeanZeroIntervals.levyEnergy_sum_eq_diagonal_sub_rectangles`; the retained
+boundary estimate is
+`MeanZeroIntervals.abs_levyEnergy_sum_sub_diagonal_le_remainders`.
 
 The concrete Haar statements have no mathematical premises. Generic
 support, regularity, mean-zero, and boundedness inputs are discharged
 from the existing profile theorems.
 
+All three exact files passed direct checks. Only the two dependency
+artifacts required by importing modules were generated. Imports are wired
+into the ACS umbrella; no umbrella or full build was run.
+
 This controls all signed Gamma cross terms in ordinary mass, rather
-than their logarithmically weighted diagonal size. It would not by itself
+than their logarithmically weighted diagonal size. It does not by itself
 pay the full prime/Gamma head or close ACS. The full divisor-square defect
 and both original poles must remain in the subsequent joint comparison.
 

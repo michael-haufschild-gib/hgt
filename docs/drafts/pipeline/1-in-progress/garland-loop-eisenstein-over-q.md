@@ -211,8 +211,13 @@ coefficient bounds, actual degree-rotation exponents, and Gaussian domination.
 | Absolute convergence of affine Weyl expansion | Formalized; `summable_norm_weylTerm`, `hasSum_weylTerm` |
 | Locally uniform convergence of this expansion | Still open |
 | Formal Laurent central extension | Formalized; exact kernel `Fˣ`, both root splittings, inverse tame-symbol torus defect |
+| Rational-to-real central loop embedding | Paper proof complete; two Lean modules written, awaiting compilation |
 | Garland completion comparison and arithmetic subgroup | Still open |
-| Group-level Iwasawa coordinates and degree rotation | Still open; weight-space calculation alone does not construct them |
+| Group-level degree rotation | Formalized; tame-cocycle-preserving action, semidirect product, every positive real contraction, affine-root scaling |
+| Affine simple coroots and Cartan coordinates | Formalized; actual root words, `h₀(a)=z(a)h₁(a⁻¹)`, injective central/finite torus |
+| Actual Weyl conjugation on Cartan and degree rotation | Still open; root/weight formulas and simple-coroot normalization are proved separately |
+| Positive power-series subgroup splitting | Formalized and audited; injective `LoopSL2.positiveEmbedding`, both root restrictions |
+| Group-level Iwasawa coordinates | Still open |
 | Arithmetic coset Eisenstein series and its convergence | Still open |
 | Unipotent quotient measure and constant-term integral | Still open |
 | Bruhat unfolding identifying that integral with `weylSum` | Still open |
@@ -244,9 +249,25 @@ field's units. Constant/uniformizer normalization and all final source/axiom
 audits passed. This does not yet identify the algebraic group with Garland's
 completed Chevalley model or construct its arithmetic series.
 
-The next [degree-rotation construction](garland-loop-degree-rotation.md) uses
-the existing coefficientwise Laurent scaling automorphism, proves preservation
-of valuation and residue, then lifts it through the actual tame cocycle.
+The [degree-rotation construction](../3-formalized/garland-loop-degree-rotation.md)
+is formalized and audited. Coefficientwise Laurent scaling preserves valuation,
+residue, and the actual tame cocycle, giving a central-fixing action and the
+rotation semidirect product. Its action on all affine real-root elements agrees
+with their degree labels. Positive real contractions cover exactly `(0,1)`.
+
+The [simple-coroot construction](../3-formalized/garland-affine-simple-coroots.md)
+proves `h₀(a)=z(a)h₁(a⁻¹)` from the actual root words. Its Cartan embedding is
+injective, identifying the central sign and coordinates in the affine weight
+model. The [positive-loop splitting](../3-formalized/garland-positive-loop-splitting.md)
+constructs the lift of `SL₂(F[[X]])` using the actual tame cocycle and elementary
+generation over the power-series ring. Its projection is faithful and it agrees
+with both canonical root embeddings. All five source checks and the transitive
+axiom audit passed.
+
+The [rational coefficient embedding](garland-rational-loop-embedding.md) and
+[positive Iwahori coordinates](garland-positive-iwahori.md) are the next concrete
+group inputs. Their paper proofs record the scope precisely; neither is being
+used as an assumed Iwasawa or arithmetic-series theorem.
 
 Do not instantiate the stable Steinberg centrality theorem outside its hypotheses.
 
@@ -270,3 +291,14 @@ Do not instantiate the stable Steinberg centrality theorem outside its hypothese
   root groups, inverse tame torus defect, and constant/degree commutator are
   formalized. Saved axiom audit contains only the three standard axioms. Full
   objective remains active; degree rotation is in progress.
+- 2026-10-29: Degree rotation completed in three further modules. Final direct
+  source checks and saved transitive axiom audit passed. Iwasawa decomposition,
+  arithmetic-series convergence, and constant-term unfolding remain open.
+- 2026-10-29: The Weyl-word symbol identity and affine simple coroots completed
+  in two further modules. The Cartan torus is injective. Final direct source
+  checks and the saved transitive axiom audit passed; positive-loop splitting
+  is the next group-level dependency.
+- 2026-10-29: Positive-loop splitting completed in five modules. The explicit
+  bottom-row correction satisfies both elementary multiplication laws, hence
+  defines an injective homomorphism on the full power-series matrix group.
+  Final individual source checks and the saved axiom audit passed.

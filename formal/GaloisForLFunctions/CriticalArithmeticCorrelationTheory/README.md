@@ -142,6 +142,101 @@ readings before the outer cutoff is removed. The estimate is not selective enoug
 exceptions: its positive envelope includes critical zeros. The constant annular target requires
 additional signed arithmetic information.
 
+## Completed positivity up to strict separation
+
+Let `φ_η` be the smooth unit-interval plateau from SpacingScaleHarmonicAnalysis,
+with transition width `η`. Write `M_η = ∫φ_η²`, `I_η = ∫φ_η`, and
+`B_η = bumpRobin(φ_η,1)`. Then
+
+\[
+M_\eta\longrightarrow1,\qquad I_\eta\longrightarrow1,\qquad
+B_\eta\longrightarrow1,
+\qquad
+\frac{B_\eta+I_\eta^2}{M_\eta}\longrightarrow2
+\quad(\eta\downarrow0).
+\]
+
+The lower estimate comes from support overlap: the autocorrelation at shift
+`0 ≤ y ≤ 1` is at most `1-y`. Integrating the nonnegative Robin density only
+over `[δ,1]` gives
+
+\[
+B_\eta\ge(1-\delta)(1-2\eta/\delta).
+\]
+
+Together with the existing upper estimate, this proves the exact indicator
+limit while keeping every profile smooth. The charge term is essential:
+`B_η/M_η + I_η²/M_η - log(2π)` tends to the positive number `2-log(2π)`.
+
+For every `b < 2-log(2π)` and every `ε > 0`, one can choose a single plateau
+with `M_η > 1-ε` such that, for each fixed `0<c<1`, **every eigenvalue** of its
+actual normalized complete Weil matrix eventually exceeds or equals `b`.
+Consequently the entire quadratic form is bounded below by `b‖x‖²`, and one
+profile gives eventual positive definiteness at every strictly separated ratio.
+The horizon may depend on `c`; the profile does not.
+
+The proof combines the completed conductor-one energy
+`B_η/M_η-log(2πc)+c I_η²/M_η`, the inequality `-log c ≥ 1-c`, and the exhaustive
+bounded-spectrum theorem of RenormalizedArithmeticPotentialTheory. Thus the
+result controls the full matrix, rather than only selected trial modes. The
+near-unit mass condition prevents a narrow profile from supplying positivity
+merely by discarding most of the nominal support.
+
+The statements are in
+[SmoothPlateausRecoverTheCompletedRobinMargin](SmoothPlateausRecoverTheCompletedRobinMargin.lean),
+[ThePlateauShapeAndChargeHaveTheirIndicatorLimits](ThePlateauShapeAndChargeHaveTheirIndicatorLimits.lean),
+and [SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive](SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean).
+They do not establish the endpoint `c=1`, uniformity as `c` approaches one,
+or positivity on an exhausting overlapping family. No global optimality of the
+constant `2-log(2π)` over all profiles is asserted.
+
+## Growing conductor families with a square-root horizon
+
+For `Q ≥ 2`, arbitrary real coefficients `a_m`, and every integer horizon `N`,
+let
+
+\[
+F_a(n)=\sum_{m=1}^{Q}a_m\,
+\frac{c_m(n)}{\sqrt{\varphi(m)n}},
+\qquad A=\sum_{m=1}^{Q}a_m^2,
+\qquad K=Q(Q-1).
+\]
+
+Here `c_m(n)` is the actual Ramanujan sum, not a statistical model. The whole
+family obeys
+
+\[
+(H_N-H_K)A\le\sum_{n=1}^{N}F_a(n)^2,
+\]
+
+and, independently of the ordering of `N` and `K`,
+
+\[
+\bigl(\log(N+1)-\log(K+1)\bigr)A
+\le\sum_{n=1}^{N}F_a(n)^2.
+\]
+
+In particular, `log(N+1)-2log Q` is a lower frame constant. The exact logarithmic
+constant is positive once `N>Q(Q-1)`. No conductor is held fixed while the
+horizon grows, and the bound applies simultaneously to every coefficient vector.
+
+The arithmetic step resolves each normalized Ramanujan sum into primitive roots.
+Disjoint exact orders make the root coefficient square mass equal to `A`.
+The existing two-sided large-sieve theorem then gives ordinary cumulative mass
+at least `(N-K)A`. Nonnegativity improves this to the positive part of that
+bound. Summation by parts compares it with constant mass delayed until `K`,
+yielding the harmonic loss `H_K`. Monotonicity of `H_n-log(n+1)` supplies the
+logarithmic version without an additional constant loss.
+
+[GrowingRamanujanFamiliesHaveASquareRootHorizon](GrowingRamanujanFamiliesHaveASquareRootHorizon.lean)
+contains the actual packet and family bounds;
+[HarmonicMassFollowsDelayedCounting](HarmonicMassFollowsDelayedCounting.lean)
+contains the general transfer. This improves lower frame control beyond the
+previous whole-family error proportional to `sum m²`. It does not give a
+matching upper frame estimate, a small prime residual at the same growing
+cutoff, or a sign estimate for the completed Weil form. Those require further
+arithmetic cancellation.
+
 ## Questions and tools to develop
 
 **Arithmetic overlap analysis.** What new low modes appear when atom supports touch? Derive and

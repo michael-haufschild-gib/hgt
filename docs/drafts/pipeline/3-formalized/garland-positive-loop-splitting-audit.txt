@@ -1,0 +1,56 @@
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding.{u_1} (F : Type u_1) [Field F] :
+  PowerSeriesSL2 F →* LoopSL2 F
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.projection_positiveEmbedding.{u_1} (F : Type u_1) [Field F]
+  (g : PowerSeriesSL2 F) : (LoopSL2.projection F) ((LoopSL2.positiveEmbedding F) g) = (powerSeriesSL2Map F) g
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding_injective.{u_1} (F : Type u_1) [Field F] :
+  Function.Injective ⇑(LoopSL2.positiveEmbedding F)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding_upper.{u_1} (F : Type u_1) [Field F]
+  (s : PowerSeries F) :
+  (LoopSL2.positiveEmbedding F) (GaloisForLFunctions.HTGeometry.FiniteRingSl2.upper s) =
+    (LoopSL2.upperRoot F) (Multiplicative.ofAdd ((HahnSeries.ofPowerSeries ℤ F) s))
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding_lower.{u_1} (F : Type u_1) [Field F]
+  (s : PowerSeries F) :
+  (LoopSL2.positiveEmbedding F) (GaloisForLFunctions.HTGeometry.FiniteRingSl2.lower s) =
+    (LoopSL2.lowerRoot F) (Multiplicative.ofAdd ((HahnSeries.ofPowerSeries ℤ F) s))
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_powerSeriesUnit_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_principalUnit_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.powerSeriesSL2_four_factors' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.powerSeriesRowCorrection_upper' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_lower_shear' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_initial_shear' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_zero_shear' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.powerSeriesRowCorrection_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveSection_mul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.projection_positiveEmbedding' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding_upper' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

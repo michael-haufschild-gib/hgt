@@ -66,7 +66,7 @@ theorem eventually_completeWeil_eigenvalues_ge_of_lt_one
   by_contra hi
   have himem : i ∈ completeWeilSpectralSublevel φ c N T := by
     exact mem_filter.mpr ⟨mem_univ _, lt_of_not_ge hi⟩
-  simpa only [hzero, not_mem_empty] using himem
+  simp [hzero] at himem
 
 /-- Almost all of the unit support's mass can be retained with any strict spectral
 floor below `2 - log (2π)`. The profile is independent of the width ratio. -/
@@ -117,7 +117,8 @@ theorem exists_plateau_eventually_completeWeilEnergy_ge {b : ℝ}
   refine ⟨η, hη, hη2, fun c hc0 hc1 => ?_⟩
   filter_upwards [hall c hc0 hc1] with N hN
   intro x
-  rw [completeWeilEnergy, HTGeometry.hermitianEnergy_eq_sum,
+  rw [completeWeilEnergy,
+    HTGeometry.hermitianEnergy_eq_sum (completeWeilMatrix_isHermitian (plateau η) c N),
     ← (completeWeilMatrix_isHermitian (plateau η) c N).eigenvectorBasis.sum_sq_inner_left x,
     mul_sum]
   exact sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hN i) (sq_nonneg _)
@@ -143,3 +144,6 @@ theorem exists_plateau_eventually_completeWeilMatrix_posDef :
   exact hb0.trans_le (hN i)
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_plateau_eventually_completeWeilMatrix_posDef
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_plateau_eventually_completeWeilEnergy_ge

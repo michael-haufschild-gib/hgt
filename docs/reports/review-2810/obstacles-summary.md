@@ -133,7 +133,7 @@ Each item is equivalent to finitely many off-line zeros, and therefore implies t
 - square-root precision;
 - control at unbounded aperture, or an independent construction.
 
-The only setting where the first two have ever been obtained together is over \(\mathbb F_q\), from geometry (Weil, Deligne, Stepanov).
+Finite-field geometry supplies concrete models combining the first two: Weil, Deligne and Stepanov. The corpus has no corresponding source-complete forcing theorem for the integer Weil form.
 
 ## 2.3 Can we prove that off-line zeros, if any, are finitely many?
 

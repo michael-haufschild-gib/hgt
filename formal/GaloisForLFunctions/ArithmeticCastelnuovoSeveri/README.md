@@ -159,8 +159,13 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     $D_X+P(h)\ge D_X/8\ge\int h^2/144$ for every signed section,
     including its whole head (`TheHaarArithmeticReservePaysBothPoles`).
     The exact shared-boundary distance moment makes both exponential
-    functionals summable in Haar mass. The full signed Gamma/central-mass
-    comparison with the logarithmic/outgoing diagonal remains open.
+    functionals summable in Haar mass. Every signed Gamma cross term now
+    shares one ordinary-mass budget:
+    $|\Gamma(h)-\sum_a d_a^2\Gamma(H_a)|\le16e^{1/2}\int h^2$
+    (`TheHaarGammaCrossTermsCostOnlyMass`). The stronger bound retains
+    the original positive rectangle remainders, including touching cells
+    and index one. The joint signed Gamma/central-mass comparison with
+    the logarithmic/outgoing arithmetic diagonal remains open.
     Pair averages: the average→detail prime block vanishes and
     $\Gamma(g)+\sum\log(a)M_ad_a^2\le\Gamma(f)+C\int g^2$ (coarse source inherits Gamma payment).
     Homogeneous recovery removes the additive mass error at a fixed multiplicative cost:
