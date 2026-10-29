@@ -2,7 +2,7 @@
 
 **RH open. 31 live routes; 17 standalone candidates; PW-B candidate sub-branch.**
 
-**Corpus checkpoint:** `93770bddeb8ac729a483342c1943324dfb01f14e`.
+**Corpus checkpoint:** `b2b53f63c404363a93853dc4eb4c0aafcefd9bef`.
 
 **Evidence:** [L] integrated Lean source inspected, not a fresh kernel audit; [S] working/unintegrated/unfinished source, not certified closure; [K] individual Lean check and transitive-axiom audit with only standard axioms; [P] paper only; [E] external claim, not locally validated.
 **Classes:** live = source observable + proved RH-sufficient receiver + explicit open estimate; candidate = missing independent source mechanism/landing; support = tools feeding routes. A receiver does not prove its input.
