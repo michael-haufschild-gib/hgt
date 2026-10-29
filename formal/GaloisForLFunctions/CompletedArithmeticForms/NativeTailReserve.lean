@@ -78,6 +78,48 @@ private theorem nativeBalancedHead_det_tendsto (N s : ℕ) :
   have hc : Continuous (Matrix.det : Matrix (Fin N) (Fin N) ℝ → ℝ) := continuous_id.matrix_det
   exact hc.continuousAt.tendsto.comp hentry
 
+/-- The complete tail retains half the entire Gamma head and spends at most half more. -/
+theorem nativeBalancedHead_relative_posDef_eventually (N s : ℕ) :
+    let G := finiteHankelMatrix
+      (scaledGammaMoment (gaussianMoment s) 16 ((s : ℝ) + 1 / 2)) N
+    ∀ᶠ x : ℝ in atTop,
+      (finiteHankelMatrix (nativeBalancedMoment s x) N - (1 / 2 : ℝ) • G).PosDef ∧
+      ((3 / 2 : ℝ) • G - finiteHankelMatrix (nativeBalancedMoment s x) N).PosDef := by
+  let G := finiteHankelMatrix
+    (scaledGammaMoment (gaussianMoment s) 16 ((s : ℝ) + 1 / 2)) N
+  have hG := scaledGammaHankel_posDef (gaussianMoment_pos' s)
+    (show (0 : ℝ) < 16 by positivity) (show (0 : ℝ) < (s : ℝ) + 1 / 2 by positivity) N
+  have hhalf : ((1 / 2 : ℝ) • G).PosDef := hG.smul (by positivity)
+  have hlo : ∀ᶠ x : ℝ in atTop,
+      (finiteHankelMatrix (nativeBalancedMoment s x) N - (1 / 2 : ℝ) • G).PosDef := by
+    apply posDef_eventually_of_tendsto hhalf
+      (Filter.Eventually.of_forall fun x => ?_)
+    · rw [Matrix.IsHermitian]
+      ext i j
+      simp [G, finiteHankelMatrix, add_comm]
+    · intro i j
+      change Tendsto (fun x => nativeBalancedMoment s x (i.val + j.val) -
+        (1 / 2 : ℝ) * G i j) atTop (𝓝 ((1 / 2 : ℝ) * G i j))
+      have h := (nativeBalancedMoment_tendsto s (i.val + j.val)).sub
+        (tendsto_const_nhds (x := (1 / 2 : ℝ) * G i j))
+      have he : G i j - (1 / 2 : ℝ) * G i j = (1 / 2 : ℝ) * G i j := by ring
+      exact he ▸ h
+  have hhi : ∀ᶠ x : ℝ in atTop,
+      ((3 / 2 : ℝ) • G - finiteHankelMatrix (nativeBalancedMoment s x) N).PosDef := by
+    apply posDef_eventually_of_tendsto hhalf
+      (Filter.Eventually.of_forall fun x => ?_)
+    · rw [Matrix.IsHermitian]
+      ext i j
+      simp [G, finiteHankelMatrix, add_comm]
+    · intro i j
+      change Tendsto (fun x => (3 / 2 : ℝ) * G i j -
+        nativeBalancedMoment s x (i.val + j.val)) atTop (𝓝 ((1 / 2 : ℝ) * G i j))
+      have h := (tendsto_const_nhds (x := (3 / 2 : ℝ) * G i j)).sub
+        (nativeBalancedMoment_tendsto s (i.val + j.val))
+      have he : (3 / 2 : ℝ) * G i j - G i j = (1 / 2 : ℝ) * G i j := by ring
+      exact he ▸ h
+  exact hlo.and hhi
+
 /-- The complete native successor has the exact Gamma reserve at every fixed order and shift. -/
 theorem nativeBalancedSuccessor_tendsto (N s : ℕ) :
     Tendsto (nativeBalancedSuccessor N s) atTop (𝓝 (nativeGammaReserve N s)) := by
@@ -114,5 +156,6 @@ theorem nativeBalancedSuccessor_eventual_bounds (N s : ℕ) :
 
 #print axioms nativeBalancedSuccessor_tendsto
 #print axioms nativeBalancedSuccessor_eventual_bounds
+#print axioms nativeBalancedHead_relative_posDef_eventually
 
 end GaloisForLFunctions.CompletedArithmeticForms

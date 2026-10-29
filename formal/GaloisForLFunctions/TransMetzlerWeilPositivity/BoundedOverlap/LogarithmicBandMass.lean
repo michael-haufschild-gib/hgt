@@ -37,7 +37,7 @@ theorem normalized_log_gap {N n j : ℕ} (hN : 0 < N)
       exact hg
   rw [← sub_div, abs_div, abs_of_pos (mul_pos two_pos Real.pi_pos)]
   have h := div_le_div_of_nonneg_right hlog (mul_pos two_pos Real.pi_pos).le
-  convert h using 1 <;> ring
+  simpa only [div_div, mul_comm (N : ℝ) (2 * Real.pi)] using h
 
 /-- Every coefficient vector retains a fixed mass in a band proportional to its horizon. -/
 theorem dirichletPoly_highBand_mass {N : ℕ} (hN : 0 < N) (x : ℕ → ℝ) :

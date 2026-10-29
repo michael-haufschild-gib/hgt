@@ -55,6 +55,36 @@ This bounds the literal omitted tail; the source upper estimate at the inner cut
 
 Lean: `CompletedArithmeticForms/DivisorCovariance.lean`.
 
+## Native source error scale
+
+At source scale `q≥2k+6` and `x>0`, the complete Gaussian-normalized signed moment
+and its first-atom value satisfy
+
+`|σ_k(x)−σ_k^(1)(x)|≤27·24^(2k) q^k ε(x)`,
+
+where `ε(x)=regimeOneLikelihoodScale x` has an explicit exponentially decreasing
+upper envelope. This is an all-order bound with visible order dependence, rather
+than an assertion about a truncated theta source.
+
+Lean: `ThetaCuspEffectiveTailScale.abs_thetaCuspNativeScaledEvenJet_sub_first_le_effective`.
+
+## Gauge variance and the actual census point
+
+Distinct ordered unequal prime pairs have distinct ratios. Consequently the gauge
+mean of the twisted coalescent source vanishes and its gauge variance is exactly
+the sum of squared pair weights. At bandwidth `4/3` the normalized variance obeys
+
+`∫|S_T(x)|² dx ≤ (1536/π²)(log T)³ T^(1+η) = o(N(T,2T)²)` for `η<1`.
+
+The actual prime surplus is the value `S_T(0)`. Haar-small exceptional sets do not
+bound this prescribed point. The missing arithmetic information must distinguish
+the actual additive prime correlations from multiplicative gauge twists.
+
+Lean: `ArithmeticCorrelationGeometry/TheCoalescentSurplusIsPureGaugeCharge.lean`,
+`integral_normSq_twistedPrimeCoalSum`,
+`twistedPrimeCoalescentSurplus_meanSquare_isLittleO`, and
+`twistedPrimeCoalescentSurplus_zero`.
+
 ## Source boundaries
 
 - Fixed-modulus averaging controls all residue packets; growing conductors and cross-annulus

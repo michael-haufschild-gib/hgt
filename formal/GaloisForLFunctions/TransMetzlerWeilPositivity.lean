@@ -12,6 +12,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.FixedOverlapHasLogarithmic
 import GaloisForLFunctions.TransMetzlerWeilPositivity.CompleteWeilLengthHeight
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyLengthHeight
 import GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap.ElevenFlipAtEveryHorizon
+import GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap.LogarithmicBandMass
 
 /-!
 # Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram

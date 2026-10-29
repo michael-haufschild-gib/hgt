@@ -50,7 +50,7 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Every finite plateau overlap Gram is strictly positive at every positive width | Audit pending: `ThePlateauOverlapGramIsNondegenerate` |
 | Growing overlap destroys every uniform lower comparison with coefficient mass | Audit pending: `GrowingOverlapHasNoUniformGramFloor` |
 | The actual plateau successor fiber is positive exactly when `N log(1+1/N)<c` | Audit pending: `TheSuccessorFiberHasAnExactOpenThreshold` |
-| Normalizing profile support from `[a,b]` to `[0,1]` multiplies overlap by `b-a` and preserves the complete form | Audit pending: `ProfileNormalizationPreservesTheCompleteForm` |
+| Normalizing profile support from `[a,b]` to `[0,1]` multiplies overlap by `b-a` and preserves the complete form | Checked, axiom-audited, umbrella wired: `ProfileNormalizationPreservesTheCompleteForm` |
 
 Here `δ_*=1/107520002048050000`; the existing certified floor is
 `1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of that fixed-reserve estimate,

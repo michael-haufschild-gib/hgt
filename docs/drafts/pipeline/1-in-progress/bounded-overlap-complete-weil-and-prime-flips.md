@@ -364,6 +364,9 @@ exact Ramanujan expansion, harmonic correlation, finite full-tail bound, and its
 `ElevenFlipAtEveryHorizon.lean` passed the required no-olean check, including
 `eventually_elevenFlip_negative_two` and `eventually_elevenFlip_negative_cZero`.
 The final repeat check after removing two redundant tactics also passed.
+`LogarithmicBandMass.lean` passed its final no-olean check with the same three standard
+axioms. It proves that every real coefficient vector retains at least
+`48*N*sum_(n=1..N) x_n²` of Dirichlet-polynomial squared mass on `[N,101*N]`.
 
 Thus the requested eleven-flip decisions are answered for `transMetzlerProfile`:
 both ratios are eventually negative on an explicit atomic coefficient vector.
@@ -373,14 +376,18 @@ The upper limiting energy, divided by `(c/N)*log(H_N)*M`, is strictly negative.
 This includes Gamma, both poles, and every prime power.
 
 The main zeta positivity claim at ratio two, its explicit horizon, and the full
-all-prime threshold classification are still unproved. The active goal is not complete.
+all-prime threshold classification are still unproved. Overall goal remains incomplete
+and is paused at the user's request.
 
 ## Pause checkpoint
 
 The user requested completion of started Lean work and formalization of completed
 paper proofs, followed by a pause. The eleven-flip proof is extracted into
 `../3-formalized/bounded-overlap-eleven-flip-negativity.md` with its checked Lean declarations.
-`LogarithmicBandMass.lean` is the remaining started file under final verification.
+All nine started Lean modules in `BoundedOverlap/` are finished and checked. The final
+eleven-flip and band-mass declarations passed their axiom audits; both modules are
+imported by the umbrella. No unfinished Lean draft or completed paper proof remains
+from this work. Owned scratch files have been removed.
 The core and threshold sections above are conjectural arguments, not completed
 paper proofs awaiting a ceremonial Lean wrapper.
 

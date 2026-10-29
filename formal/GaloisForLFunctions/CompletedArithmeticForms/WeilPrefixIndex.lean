@@ -86,7 +86,8 @@ theorem eventually_completeWeil_negative_subspace_dim_le_tail :
     have hzero : ∀ n : HorizonTail M N, x.val n.val = 0 := fun n => congrFun hx n
     have hneg := hW x x.property hx0
     rw [completeWeil_quad_eq_prefix hMN c x hzero] at hneg
-    have hnonneg := hprefix.posSemidef.2 (fun n => x.val (horizonPrefixMap hMN n))
+    have hnonneg := hprefix.posSemidef.dotProduct_mulVec_nonneg
+      (fun n => x.val (horizonPrefixMap hMN n))
     simp only [star_trivial] at hnonneg
     exact not_lt_of_ge hnonneg hneg
   have hdim := LinearMap.finrank_le_finrank_of_injective hinj

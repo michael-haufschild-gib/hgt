@@ -38,6 +38,16 @@ and successor. Determinants converge, the limiting head determinant is positive,
 exact determinant quotient gives the stated limit. Consequently the balanced native reserve
 lies between `C_(N,s)/2` and `3C_(N,s)/2` on a cofinal ray.
 
+The comparison holds for the entire quadratic form. Writing `A_(N,s)(x)` for the
+balanced native head and `G_(N,s)` for its Gamma limit, both
+
+`A_(N,s)(x)−G_(N,s)/2` and `3G_(N,s)/2−A_(N,s)(x)`
+
+are positive definite on a cofinal ray. Each difference converges entrywise to the
+positive definite matrix `G_(N,s)/2`. Openness of finite-dimensional positive
+definiteness proves the assertion. Thus one tail threshold controls every vector
+in the fixed head, including all mixed entries, in the full Gamma norm.
+
 The order and shift are fixed before choosing that ray. This is a quantitative reserve for
 the literal native tail; it does not control the compact source region or an exhaustion in rank.
 

@@ -44,7 +44,7 @@ private theorem mesh_gap_pos {N : ℕ} {k : ℕ → ℕ}
 
 private theorem mesh_period_pos {N : ℕ} {k : ℕ → ℕ}
     (hN : 0 < N) (hk : StrictMonoOn k (Set.Iic N)) (h0 : k 0 = 0) : 0 < k N := by
-  have h := hk (Nat.zero_le N) le_rfl hN
+  have h := hk (Nat.zero_le N) (Nat.le_refl N) hN
   simpa only [h0] using h
 
 private theorem mesh_nodes_interior {N : ℕ} {k : ℕ → ℕ}
@@ -54,7 +54,7 @@ private theorem mesh_nodes_interior {N : ℕ} {k : ℕ → ℕ}
   rcases mem_Ico.mp hi with ⟨hi0, hiN⟩
   have hleft := hk (Nat.zero_le N) hiN.le hi0
   rw [h0] at hleft
-  exact mem_Ico.mpr ⟨hleft, hk hiN.le le_rfl hiN⟩
+  exact mem_Ico.mpr ⟨hleft, hk hiN.le (Nat.le_refl N) hiN⟩
 
 theorem meshKernel_symm (N : ℕ) (k : ℕ → ℕ) (i j : ℕ) :
     meshKernel N k i j = meshKernel N k j i := by
@@ -62,15 +62,16 @@ theorem meshKernel_symm (N : ℕ) (k : ℕ → ℕ) (i j : ℕ) :
 
 theorem meshKernel_zero (N : ℕ) (k : ℕ → ℕ) (h0 : k 0 = 0) (j : ℕ) :
     meshKernel N k 0 j = 0 := by
-  simp [meshKernel, h0, min_eq_left (Nat.cast_nonneg (k j) : (0 : ℝ) ≤ k j)]
+  simp [meshKernel, h0]
 
 theorem meshKernel_endpoint {N : ℕ} {k : ℕ → ℕ}
     (hN : 0 < N) (hk : StrictMonoOn k (Set.Iic N)) (h0 : k 0 = 0)
     {j : ℕ} (hj : j ≤ N) : meshKernel N k N j = 0 := by
-  have hle : (k j : ℝ) ≤ k N := by exact_mod_cast hk.monotoneOn hj le_rfl hj
+  have hle : (k j : ℝ) ≤ k N := by exact_mod_cast hk.monotoneOn hj (Nat.le_refl N) hj
   have hQ : (k N : ℝ) ≠ 0 := by exact_mod_cast (mesh_period_pos hN hk h0).ne'
   rw [meshKernel, min_eq_right hle]
   field_simp
+  ring
 
 /-- A kernel column has a unit source under the arithmetic slope difference. -/
 theorem meshKernel_difference {N : ℕ} {k : ℕ → ℕ}
@@ -95,18 +96,18 @@ theorem meshKernel_difference {N : ℕ} {k : ℕ → ℕ}
       min_eq_left (hm (r := i - 1) (s := j) (by omega) hjN.le (by omega)),
       min_eq_left (hm (r := i + 1) (s := j) (by omega) hjN.le (by omega))]
     field_simp
-    <;> ring
+    ring
   · simp only [meshDifference, meshSlope, hpred, meshKernel, ite_true, min_self,
       min_eq_left (hm (r := i - 1) (s := i) (by omega) hiN.le (by omega)),
       min_eq_right (hm (r := i) (s := i + 1) hiN.le (by omega) (by omega))]
     field_simp
-    <;> ring
+    ring
   · simp only [meshDifference, meshSlope, hpred, meshKernel, if_neg (ne_of_gt hji),
       min_eq_right (hm hjN.le hiN.le hji.le),
       min_eq_right (hm (r := j) (s := i - 1) hjN.le (by omega) (by omega)),
       min_eq_right (hm (r := j) (s := i + 1) hjN.le (by omega) (by omega))]
     field_simp
-    <;> ring
+    ring
 
 private theorem meshSlope_sum {ι : Type*} (s : Finset ι) (k : ℕ → ℕ)
     (f : ι → ℕ → ℝ) (a : ι → ℝ) (i : ℕ) :
@@ -122,7 +123,8 @@ theorem meshPotential_difference {N : ℕ} {k : ℕ → ℕ}
     meshDifference k (meshPotential N k a) i = a i := by
   have hlin : meshDifference k (meshPotential N k a) i =
       ∑ j ∈ Ico 1 N, meshDifference k (fun r => meshKernel N k r j) i * a j := by
-    simp only [meshDifference, meshPotential, meshSlope_sum, sub_mul, sum_sub_distrib]
+    change meshDifference k (fun r => ∑ j ∈ Ico 1 N, meshKernel N k r j * a j) i = _
+    simp only [meshDifference, meshSlope_sum, sub_mul, sum_sub_distrib]
   rw [hlin]
   have he : (∑ j ∈ Ico 1 N, meshDifference k (fun r => meshKernel N k r j) i * a j) =
       ∑ j ∈ Ico 1 N, (if i = j then (1 : ℝ) else 0) * a j :=
@@ -174,7 +176,7 @@ theorem mesh_unique {N : ℕ} {k : ℕ → ℕ}
   have hspan : (k N : ℝ) - k 0 ≠ 0 := by
     apply ne_of_gt
     apply sub_pos.mpr
-    exact_mod_cast hk (Nat.zero_le N) le_rfl hN
+    exact_mod_cast hk (Nat.zero_le N) (Nat.le_refl N) hN
   have hs : meshSlope k u 0 = 0 := (mul_eq_zero.mp hend.symm).resolve_right hspan
   intro i hi
   have h := ha i hi
@@ -208,7 +210,7 @@ private theorem mesh_green_identity (N : ℕ) (k : ℕ → ℕ) (b : ℕ → ℝ
       (∑ i ∈ Icc 1 N, b i * meshDifference k b i) +
         b (N + 1) * meshSlope k b N - b 0 * meshSlope k b 0 := by
   induction N with
-  | zero => simp [meshDirichletEnergy, meshSlope] <;> ring
+  | zero => simp [meshDirichletEnergy, meshSlope]; ring
   | succ N ih =>
     rw [meshDirichletEnergy, Finset.sum_range_succ]
     change meshDirichletEnergy (N + 1) k b +
@@ -336,10 +338,11 @@ private theorem mesh_edge_square_mass {N : ℕ} (hN : 0 < N) (b : ℕ → ℝ)
     (∑ i ∈ range N, (b (i + 1) ^ 2 + b i ^ 2)) = 2 * ∑ i ∈ Ico 1 N, b i ^ 2 := by
   have hs : (∑ i ∈ range N, b (i + 1) ^ 2) = ∑ i ∈ range N, b i ^ 2 := by
     have he : (∑ i ∈ range N, b i ^ 2) - (∑ i ∈ range N, b (i + 1) ^ 2) = 0 := by
-      simpa [sum_sub_distrib, hb0, hbN] using Finset.sum_range_sub' (fun i => b i ^ 2) N
+      simpa only [sum_sub_distrib, hb0, hbN, sub_self] using
+        Finset.sum_range_sub' (fun i => b i ^ 2) N
     exact (sub_eq_zero.mp he).symm
   have hi : (∑ i ∈ Ico 1 N, b i ^ 2) = ∑ i ∈ range N, b i ^ 2 := by
-    rw [sum_Ico_eq_sub hN]
+    rw [sum_Ico_eq_sub (fun i => b i ^ 2) hN]
     simp [hb0]
   rw [sum_add_distrib, hs, hi]
   ring
@@ -386,7 +389,6 @@ theorem meshGram_gap_coercive {N : ℕ} {k : ℕ → ℕ}
   rw [hs] at hD
   have he (A : ℝ) : (4 / δ) * ((δ / 4) ^ 2 * A) = (δ / 4) * A := by
     field_simp
-    <;> ring
   rw [he] at hD
   linarith only [hS, hD]
 
