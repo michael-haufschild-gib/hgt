@@ -38,15 +38,14 @@ namespace GaloisForLFunctions.ArithmeticKreinLangerTheory
 
 /-! ### Fine grids decide continuous kernels -/
 
-/-- **Fine grids decide continuous kernels.** If `t ↦ k(e^t)` is continuous and `k` has nonnegative
-Toeplitz forms on the cyclic subgroups `⟨e^{s_n}⟩`, `s_n → 0`, `s_n ≠ 0`, then every Toeplitz form of
-`k` is nonnegative. -/
-theorem hermQuad_nonneg_of_fine_zpowers {k : Multiplicative ℝ → ℂ}
+/-- **Rounding to fine grids.** If `t ↦ k(e^t)` is continuous and `s_n → 0`, `s_n ≠ 0`, every finite
+family has grid families in `⟨e^{s_n}⟩` whose Gram matrices converge entrywise to its Gram matrix. -/
+theorem exists_tendsto_gram_grid {k : Multiplicative ℝ → ℂ}
     (hc : Continuous fun t : ℝ => k (Multiplicative.ofAdd t)) {s : ℕ → ℝ}
-    (hs : Tendsto s atTop (𝓝 0)) (hs0 : ∀ n, s n ≠ 0)
-    (h : ∀ n (m : ℕ) (y : Fin m → Multiplicative ℤ) (c : Fin m → ℂ),
-      0 ≤ hermQuad (gram (k ∘ zpowersHom _ (Multiplicative.ofAdd (s n))) y) c)
-    {m : ℕ} (x : Fin m → Multiplicative ℝ) (c : Fin m → ℂ) : 0 ≤ hermQuad (gram k x) c := by
+    (hs : Tendsto s atTop (𝓝 0)) (hs0 : ∀ n, s n ≠ 0) {m : ℕ} (x : Fin m → Multiplicative ℝ) :
+    ∃ y : ℕ → Fin m → Multiplicative ℤ, ∀ a b, Tendsto
+      (fun n => gram (k ∘ zpowersHom _ (Multiplicative.ofAdd (s n))) (y n) a b) atTop
+        (𝓝 (gram k x a b)) := by
   set t : Fin m → ℝ := fun a => Multiplicative.toAdd (x a)
   set N : ℕ → Fin m → ℤ := fun n a => round (t a / s n)
   -- the rounded grid points converge to the original points
@@ -62,34 +61,45 @@ theorem hermQuad_nonneg_of_fine_zpowers {k : Multiplicative ℝ → ℂ}
       simpa [Function.comp_def] using this
     exact tendsto_sub_nhds_zero_iff.mp (squeeze_zero_norm (fun n => by
       rw [Real.norm_eq_abs]; exact hb n) h0)
-  -- the forms on the grids are nonnegative
-  have hpos : ∀ n, 0 ≤ hermQuad (gram k fun a => Multiplicative.ofAdd ((N n a : ℝ) * s n)) c :=
-    fun n => by
-      have := h n m (fun a => Multiplicative.ofAdd (N n a)) c
-      convert this using 2
-      ext a b
-      simp only [gram, Function.comp_apply, zpowersHom_apply]
-      congr 1
-      apply Multiplicative.toAdd.injective
-      simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd, toAdd_zpow]
-      ring
-  -- the Gram entries converge
-  have hentry : ∀ a b, Tendsto (fun n => k ((Multiplicative.ofAdd ((N n a : ℝ) * s n))⁻¹ *
-      Multiplicative.ofAdd ((N n b : ℝ) * s n))) atTop (𝓝 (k ((x a)⁻¹ * x b))) := fun a b => by
-    have hlim := ((hgrid b).sub (hgrid a))
-    have := (hc.tendsto _).comp hlim
-    convert this using 2 with n
-    · simp only [Function.comp_apply]
-      congr 1
-      apply Multiplicative.toAdd.injective
-      simp [toAdd_mul, toAdd_inv]; ring
-    · congr 1
-      apply Multiplicative.toAdd.injective
-      simp [toAdd_mul, toAdd_inv, t]; ring
-  refine ge_of_tendsto (x := (atTop : Filter ℕ)) ?_ (Eventually.of_forall hpos)
-  simp only [hermQuad_gram]
+  refine ⟨fun n a => Multiplicative.ofAdd (N n a), fun a b => ?_⟩
+  have := (hc.tendsto _).comp ((hgrid b).sub (hgrid a))
+  convert this using 2 with n
+  · simp only [gram, Function.comp_apply, zpowersHom_apply]
+    congr 1
+    apply Multiplicative.toAdd.injective
+    simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd, toAdd_zpow, smul_eq_mul]
+    push_cast; ring
+  · simp only [gram]
+    congr 1
+    apply Multiplicative.toAdd.injective
+    simp [toAdd_mul, toAdd_inv, t]; ring
+
+/-- **Fine grids decide continuous kernels.** If `t ↦ k(e^t)` is continuous and `k` has nonnegative
+Toeplitz forms on the cyclic subgroups `⟨e^{s_n}⟩`, `s_n → 0`, `s_n ≠ 0`, then every Toeplitz form of
+`k` is nonnegative. -/
+theorem hermQuad_nonneg_of_fine_zpowers {k : Multiplicative ℝ → ℂ}
+    (hc : Continuous fun t : ℝ => k (Multiplicative.ofAdd t)) {s : ℕ → ℝ}
+    (hs : Tendsto s atTop (𝓝 0)) (hs0 : ∀ n, s n ≠ 0)
+    (h : ∀ n (m : ℕ) (y : Fin m → Multiplicative ℤ) (c : Fin m → ℂ),
+      0 ≤ hermQuad (gram (k ∘ zpowersHom _ (Multiplicative.ofAdd (s n))) y) c)
+    {m : ℕ} (x : Fin m → Multiplicative ℝ) (c : Fin m → ℂ) : 0 ≤ hermQuad (gram k x) c := by
+  obtain ⟨y, hy⟩ := exists_tendsto_gram_grid hc hs hs0 x
+  refine ge_of_tendsto (x := (atTop : Filter ℕ)) ?_ (Eventually.of_forall fun n => h n m (y n) c)
+  simp only [hermQuad]
   exact (Complex.continuous_re.tendsto _).comp (tendsto_finsetSum _ fun a _ =>
-    tendsto_finsetSum _ fun b _ => (tendsto_const_nhds.mul (hentry a b)).mul tendsto_const_nhds)
+    (tendsto_const_nhds.mul (tendsto_finsetSum _ fun b _ => (hy a b).mul tendsto_const_nhds)))
+
+/-- **Fine grids carry the index.** For a continuous kernel, every finite family's negative index is
+eventually attained on the fine cyclic subgroups. -/
+theorem eventually_le_negIndex_fine {k : Multiplicative ℝ → ℂ}
+    (hc : Continuous fun t : ℝ => k (Multiplicative.ofAdd t)) {s : ℕ → ℝ}
+    (hs : Tendsto s atTop (𝓝 0)) (hs0 : ∀ n, s n ≠ 0) {m : ℕ} (x : Fin m → Multiplicative ℝ)
+    (hH : (gram k x).IsHermitian) :
+    ∀ᶠ n in atTop, (hermNegIndex (gram k x) : ℕ∞) ≤
+      negIndex (k ∘ zpowersHom _ (Multiplicative.ofAdd (s n))) := by
+  obtain ⟨y, hy⟩ := exists_tendsto_gram_grid hc hs hs0 x
+  filter_upwards [eventually_le_hermNegIndex hH hy] with n hn
+  exact (Nat.cast_le.mpr hn).trans (hermNegIndex_gram_le_negIndex _ _)
 
 /-! ### Orbit kernels are continuous -/
 

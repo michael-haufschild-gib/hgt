@@ -166,7 +166,7 @@ theorem levyEnergy_interval_average_le {ι : Type*} [Fintype ι]
         zero_mul, gammaMeanPairCharge_self, mul_zero, le_refl]
     · have hk := comparable_gamma_rectangle (hab i) (hab j) (hw i) (hw j)
         (hsep i j hij) ⟨htouch i j, htouch j i⟩ ⟨hgap i j, hgap j i⟩
-      refine (mul_le_mul_left hk (ENNReal.ofReal ((q i - q j) ^ 2))).trans_eq ?_
+      refine (mul_le_mul_right hk (ENNReal.ofReal ((q i - q j) ^ 2))).trans_eq ?_
       rw [← ENNReal.ofReal_mul (sq_nonneg _)]
       dsimp only [C, gammaMeanPairCharge, gammaMeanPairEnergy, q]
       rw [← ENNReal.ofReal_mul stoppingGammaKernelConstant_pos.le]
@@ -198,7 +198,7 @@ theorem levyEnergy_interval_average_le {ι : Type*} [Fintype ι]
         apply lintegral_congr_ae
         filter_upwards [hfz] with y hy
         rw [hy, sub_zero]
-      refine (mul_le_mul_left hrow (ENNReal.ofReal ((q i) ^ 2))).trans_eq ?_
+      refine (mul_le_mul_right hrow (ENNReal.ofReal ((q i) ^ 2))).trans_eq ?_
       rw [he, ENNReal.ofReal_mul (sub_pos.mpr (hab i)).le]
       ring
   have hzero : (∫⁻ x in F, ∫⁻ y in F, gammaDifference g x y) = 0 := by
@@ -229,7 +229,7 @@ theorem levyEnergy_interval_average_le {ι : Type*} [Fintype ι]
     refine le_trans ?_ hcapacity
     change G + 2 * E ≤ _ + G + 2 * E
     exact add_le_add (le_add_self) le_rfl
-  have hbound := hupper.trans (mul_le_mul_left hlower C)
+  have hbound := hupper.trans (mul_le_mul_right hlower C)
   have hΓ : 0 ≤ levyEnergy f := by
     rw [← norm_levyVector_sq f hfv hfc]
     exact sq_nonneg _

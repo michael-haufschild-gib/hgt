@@ -149,6 +149,16 @@ theory, and dominated convergence. No arithmetic unfolding theorem is used.
 
 ## Working state
 
+- Arithmetic drafts: `/tmp/hgt_ff_infinity_valuation.lean` constructs the actual
+  valuation, DVR, parameter, and equality with `infinityRegular`. Core valuation and
+  uniformizer proofs checked; an auxiliary cast-order proof was corrected and awaits
+  the next check. `/tmp/hgt_ff_pole_reduction.lean` proves leading-term cancellation
+  through the linear polynomial encoding and is currently checking. The dependent
+  `/tmp/hgt_ff_infinity_residue.lean` is drafted, not checked.
+- A simultaneous two-index strengthening of the full-sum theorem is in
+  `/tmp/hgt_ff_weyl_noncancellation.lean`; its final finite maximum step awaits checking.
+  The existing production theorem for each index is already checked and axiom-audited.
+
 - The existing `AffineA1FiniteFieldCoefficients` olean was missing and has now been
   compiled for the new dependent modules. Compilation passed; do not rebuild it.
 - `/tmp/hgt_ff_zeta_bounds.lean` passed its foreground check, exit 0, no diagnostics.
@@ -189,10 +199,12 @@ theory, and dominated convergence. No arithmetic unfolding theorem is used.
 
 ## Arithmetic construction: rational subfield and finite adeles `[PAPER PROOF]`
 
-Lean status: `FiniteFieldEllipticGlobalField.lean` passed its identical scratch check,
-exit 0 without diagnostics. The actual extension degree, separability, finite residue
-fields, finite adeles, and injective diagonal map are proved. Olean and axiom audit
-remain pending; the integral closure has not yet been identified with the affine ring.
+Lean status: `FiniteFieldEllipticGlobalField.lean` passed its identical scratch check
+and production olean compilation, exit 0 without diagnostics. The actual extension
+degree, separability, finite residue fields, finite adeles, and injective diagonal map
+are proved. Its olean is required by the integral-closure module; never rebuild it.
+The axiom audit remains pending. `FiniteFieldEllipticIntegralClosure.lean` now proves
+the identification with the affine ring as recorded below.
 
 The actual affine coordinate ring `A` has the already proved free `F₃[X]` basis
 `(1,y)`. Its polynomial algebra map is injective, and therefore extends uniquely
@@ -265,5 +277,8 @@ of `x³−x` forces `b` to be a unit. Hence `q∈F₃[x]` and `z∈A`.
 Conversely `A` is finite over `F₃[x]`, so all its elements are integral.
 
 This elementary trace/norm argument avoids assuming normality of the curve or
-an unproved smooth-to-normal bridge. Its Lean proof is still required before
-using the identification in the Euler product or the adelic quotient measure.
+an unproved smooth-to-normal bridge. Its Lean proof now passes: the identical scratch
+source for `FiniteFieldEllipticIntegralClosure.lean` checked with exit 0 and no diagnostics.
+It proves `isIntegral_iff_coordinateRing_image`, the actual Dedekind instance, and
+`coordinateRingEquivRingOfIntegers`, compatible with their maps into the function field.
+The transitive axiom audit remains pending. Euler product and quotient measure remain open.

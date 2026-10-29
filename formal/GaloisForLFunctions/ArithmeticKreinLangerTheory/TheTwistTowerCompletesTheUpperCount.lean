@@ -257,6 +257,3 @@ theorem unitary_iff_twistedBaseChanges_upper :
     ← pow_mul]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms unitary_iff_twistedBaseChanges_upper

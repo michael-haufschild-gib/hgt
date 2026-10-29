@@ -42,11 +42,11 @@ def CountAtPrecision (θ : ℝ) : Prop :=
 def LowerCountAtPrecision (θ : ℝ) : Prop :=
   ∃ C : ℝ, ∀ k : ℕ, D.q ^ k + 1 - C * (D.q ^ θ) ^ k ≤ D.pointCount k
 
-theorem q_pos : 0 < D.q := by linarith [D.one_lt_q]
+theorem curve_q_pos : 0 < D.q := by linarith [D.one_lt_q]
 
 /-- `q^θ = √q · q^{θ − ½}`. -/
 theorem rpow_eq_sqrtq_mul (θ : ℝ) : D.q ^ θ = D.sqrtq * D.q ^ (θ - 1 / 2) := by
-  rw [CurveDatum.sqrtq, Real.sqrt_eq_rpow, ← Real.rpow_add D.q_pos]; ring_nf
+  rw [CurveDatum.sqrtq, Real.sqrt_eq_rpow, ← Real.rpow_add (curve_q_pos D)]; ring_nf
 
 /-- **The precision law.** Every modulus `≤ q^{θ − ½}` gives the count at precision `θ`. -/
 theorem countAtPrecision_of_norm_le {θ : ℝ} (h : ∀ i, ‖D.β i‖ ≤ D.q ^ (θ - 1 / 2)) :
@@ -55,7 +55,7 @@ theorem countAtPrecision_of_norm_le {θ : ℝ} (h : ∀ i, ‖D.β i‖ ≤ D.q 
   have hs : 0 ≤ D.sqrtq ^ k := pow_nonneg D.sqrtq_pos.le k
   have ht := D.abs_trace_le h k
   rw [show D.pointCount k - D.q ^ k - 1 = -(D.sqrtq ^ k * D.trace k) by unfold CurveDatum.pointCount; ring,
-    abs_neg, abs_mul, abs_of_nonneg hs, rpow_eq_sqrtq_mul, mul_pow]
+    abs_neg, abs_mul, abs_of_nonneg hs, rpow_eq_sqrtq_mul D, mul_pow]
   calc D.sqrtq ^ k * |D.trace k| ≤ D.sqrtq ^ k * (Fintype.card ι * (D.q ^ (θ - 1 / 2)) ^ k) :=
         mul_le_mul_of_nonneg_left ht hs
     _ = Fintype.card ι * (D.sqrtq ^ k * (D.q ^ (θ - 1 / 2)) ^ k) := by ring
@@ -64,10 +64,10 @@ theorem countAtPrecision_of_norm_le {θ : ℝ} (h : ∀ i, ‖D.β i‖ ≤ D.q 
 theorem norm_le_of_lowerCountAtPrecision {θ : ℝ} (h : LowerCountAtPrecision D θ) :
     ∀ i, ‖D.β i‖ ≤ D.q ^ (θ - 1 / 2) := by
   obtain ⟨C, hC⟩ := h
-  refine norm_le_of_re_sum_pow_le D.β (Real.rpow_pos_of_pos D.q_pos _) (C := C) fun k => ?_
+  refine norm_le_of_re_sum_pow_le D.β (Real.rpow_pos_of_pos (curve_q_pos D) _) (C := C) fun k => ?_
   have hs : 0 < D.sqrtq ^ k := pow_pos D.sqrtq_pos k
   have hk := hC k
-  rw [rpow_eq_sqrtq_mul, mul_pow] at hk
+  rw [rpow_eq_sqrtq_mul D, mul_pow] at hk
   unfold CurveDatum.pointCount at hk
   rw [← CurveDatum.powerSum, D.powerSum_eq_trace, Complex.ofReal_re]
   have : D.sqrtq ^ k * D.trace k ≤ D.sqrtq ^ k * (C * (D.q ^ (θ - 1 / 2)) ^ k) := by nlinarith
@@ -81,23 +81,23 @@ theorem countAtPrecision_imp_lower {θ : ℝ} (h : CountAtPrecision D θ) :
 /-- **The precision law**: count at precision `θ` ⟺ every `‖β_i‖ ≤ q^{θ − ½}`. -/
 theorem countAtPrecision_iff (θ : ℝ) :
     CountAtPrecision D θ ↔ ∀ i, ‖D.β i‖ ≤ D.q ^ (θ - 1 / 2) :=
-  ⟨fun h => D.norm_le_of_lowerCountAtPrecision (D.countAtPrecision_imp_lower h),
-    D.countAtPrecision_of_norm_le⟩
+  ⟨fun h => (norm_le_of_lowerCountAtPrecision D) ((countAtPrecision_imp_lower D) h),
+    (countAtPrecision_of_norm_le D)⟩
 
 /-- **One half suffices**: the lower count at precision `θ` ⟺ every `‖β_i‖ ≤ q^{θ − ½}`. -/
 theorem lowerCountAtPrecision_iff (θ : ℝ) :
     LowerCountAtPrecision D θ ↔ ∀ i, ‖D.β i‖ ≤ D.q ^ (θ - 1 / 2) :=
-  ⟨D.norm_le_of_lowerCountAtPrecision,
-    fun h => D.countAtPrecision_imp_lower (D.countAtPrecision_of_norm_le h)⟩
+  ⟨(norm_le_of_lowerCountAtPrecision D),
+    fun h => (countAtPrecision_imp_lower D) ((countAtPrecision_of_norm_le D) h)⟩
 
-theorem β_ne_zero (i : ι) : D.β i ≠ 0 := right_ne_zero_of_mul_eq_one (D.β_fePerm i)
+theorem curve_β_ne_zero (i : ι) : D.β i ≠ 0 := right_ne_zero_of_mul_eq_one (D.β_fePerm i)
 
 /-- The modulus condition in logarithmic form. -/
 theorem norm_le_rpow_iff_log {θ : ℝ} (i : ι) :
     ‖D.β i‖ ≤ D.q ^ (θ - 1 / 2) ↔ 1 / 2 + Real.log ‖D.β i‖ / Real.log D.q ≤ θ := by
   have hq : 0 < Real.log D.q := Real.log_pos D.one_lt_q
-  rw [← Real.log_le_log_iff (norm_pos_iff.mpr (D.β_ne_zero i)) (Real.rpow_pos_of_pos D.q_pos _),
-    Real.log_rpow D.q_pos, ← le_sub_iff_add_le', div_le_iff₀ hq]
+  rw [← Real.log_le_log_iff (norm_pos_iff.mpr (curve_β_ne_zero D i)) (Real.rpow_pos_of_pos (curve_q_pos D) _),
+    Real.log_rpow (curve_q_pos D), ← le_sub_iff_add_le', div_le_iff₀ hq]
 
 /-- **The precision exponent of a curve datum**:
 `inf {θ : count at precision θ} = ½ + max_i log ‖β_i‖ / log q`. -/
@@ -119,13 +119,13 @@ theorem precisionExponent_eq [Nonempty ι] :
 reciprocal modulus. -/
 theorem half_le_precisionExponent [Nonempty ι] :
     1 / 2 ≤ sInf {θ : ℝ | CountAtPrecision D θ} := by
-  rw [D.precisionExponent_eq]
+  rw [(precisionExponent_eq D)]
   have hq : 0 < Real.log D.q := Real.log_pos D.one_lt_q
   obtain ⟨i⟩ := (inferInstance : Nonempty ι)
   have hprod : ‖D.β (D.fePerm i)‖ * ‖D.β i‖ = 1 := by rw [← norm_mul, D.β_fePerm i, norm_one]
   have hlog : Real.log ‖D.β (D.fePerm i)‖ + Real.log ‖D.β i‖ = 0 := by
-    rw [← Real.log_mul (norm_ne_zero_iff.mpr (D.β_ne_zero _)) (norm_ne_zero_iff.mpr
-      (D.β_ne_zero i)), hprod, Real.log_one]
+    rw [← Real.log_mul (norm_ne_zero_iff.mpr (curve_β_ne_zero D _)) (norm_ne_zero_iff.mpr
+      (curve_β_ne_zero D i)), hprod, Real.log_one]
   have h1 := Finset.le_sup' (fun i => Real.log ‖D.β i‖) (mem_univ i)
   have h2 := Finset.le_sup' (fun i => Real.log ‖D.β i‖) (mem_univ (D.fePerm i))
   have hmax : 0 ≤ univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖ := by
@@ -138,7 +138,7 @@ theorem countAtPrecision_half_iff : CountAtPrecision D (1 / 2) ↔ ∀ i, ‖D.�
   rw [countAtPrecision_iff, sub_self, Real.rpow_zero]
   refine ⟨fun h i => le_antisymm (h i) ?_, fun h i => (h i).le⟩
   have hprod : ‖D.β (D.fePerm i)‖ * ‖D.β i‖ = 1 := by rw [← norm_mul, D.β_fePerm i, norm_one]
-  have h0 : 0 < ‖D.β i‖ := norm_pos_iff.mpr (D.β_ne_zero i)
+  have h0 : 0 < ‖D.β i‖ := norm_pos_iff.mpr (curve_β_ne_zero D i)
   nlinarith [h (D.fePerm i)]
 
 /-- The exponent is `½` iff the datum is unitary. -/
@@ -149,7 +149,7 @@ theorem precisionExponent_eq_half_iff [Nonempty ι] :
   constructor
   · intro h
     have hle : (univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖) ≤ 0 := by
-      rw [D.precisionExponent_eq] at h
+      rw [(precisionExponent_eq D)] at h
       have : (univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖) / Real.log D.q = 0 := by linarith
       rw [div_eq_zero_iff] at this
       rcases this with h0 | h0
@@ -162,15 +162,15 @@ theorem precisionExponent_eq_half_iff [Nonempty ι] :
     have := div_nonpos_of_nonpos_of_nonneg this hq.le
     linarith
   · intro h
-    refine le_antisymm ?_ D.half_le_precisionExponent
+    refine le_antisymm ?_ (half_le_precisionExponent D)
     exact csInf_le ⟨1 / 2, fun θ hθ => by
-      have := D.half_le_precisionExponent
-      rw [D.precisionExponent_eq] at this
+      have := (half_le_precisionExponent D)
+      rw [(precisionExponent_eq D)] at this
       rw [Set.mem_setOf_eq, countAtPrecision_iff] at hθ
       have hle : (univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖) / Real.log D.q ≤ θ - 1 / 2 := by
         rw [div_le_iff₀ hq, Finset.sup'_le_iff]
         intro i _
-        have := (D.norm_le_rpow_iff_log i).mp (hθ i)
+        have := ((norm_le_rpow_iff_log D) i).mp (hθ i)
         rw [← le_sub_iff_add_le', div_le_iff₀ hq] at this
         exact this
       linarith⟩ h
@@ -188,19 +188,14 @@ theorem golden_norm_le_iff {θ : ℝ} :
     (∀ i, ‖goldenDatum.β i‖ ≤ goldenDatum.q ^ (θ - 1 / 2)) ↔ goldenRatio ≤ (5 : ℝ) ^ (θ - 1 / 2) := by
   have hq : goldenDatum.q = 5 := rfl
   have h0 : ‖goldenDatum.β 0‖ = goldenRatio := by
-    simp [goldenDatum, Complex.norm_real, abs_of_pos goldenRatio_pos]
+    show ‖((goldenRatio : ℝ) : ℂ)‖ = goldenRatio
+    rw [Complex.norm_real, Real.norm_of_nonneg goldenRatio_pos.le]
   have h1 : ‖goldenDatum.β 1‖ = goldenRatio⁻¹ := by
-    simp [goldenDatum, Complex.norm_real, abs_of_pos (inv_pos.mpr goldenRatio_pos)]
-  rw [hq]
-  constructor
-  · intro h; rw [← h0]; exact h 0
-  · intro h i
-    fin_cases i
-    · rw [show ((0 : Fin 2)) = 0 from rfl, h0]; exact h
-    · rw [show ((1 : Fin 2)) = 1 from rfl, h1]
-      exact (inv_le_one_of_one_le₀ one_lt_goldenRatio.le).trans (one_le_goldenRatio_le h)
-where
-  one_le_goldenRatio_le {t : ℝ} (h : goldenRatio ≤ t) : 1 ≤ t := one_lt_goldenRatio.le.trans h
+    show ‖((goldenRatio⁻¹ : ℝ) : ℂ)‖ = goldenRatio⁻¹
+    rw [Complex.norm_real, Real.norm_of_nonneg (inv_pos.mpr goldenRatio_pos).le]
+  rw [hq, Fin.forall_fin_two, h0, h1]
+  refine ⟨fun h => h.1, fun h => ⟨h, ?_⟩⟩
+  exact (inv_le_one_of_one_le₀ one_lt_goldenRatio.le).trans (one_lt_goldenRatio.le.trans h)
 
 /-- **The golden datum counts at precision `θ` iff `θ ≥ ½ + log φ / log 5`.** -/
 theorem golden_countAtPrecision_iff (θ : ℝ) :

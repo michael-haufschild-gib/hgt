@@ -15,7 +15,7 @@ open Finset
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
-open BezoutValuationIncidence RenormalizedArithmeticPotentialTheory
+open BezoutValuationIncidence RenormalizedArithmeticPotentialTheory ArithmeticEffectivityTheory
 
 private theorem sum_window_eq_range (f : ℕ → ℝ) (A N : ℕ) :
     (∑ n ∈ Icc (A + 1) (A + N), f n) = ∑ i ∈ range N, f (A + i + 1) := by
@@ -116,7 +116,39 @@ theorem ramanujanPoleProfile_dyadic_twoSided_frame {Q A : ℕ}
   obtain ⟨hlo, hup⟩ := abs_le.mp hb
   constructor <;> linarith only [hlo, hup, hlC, huC]
 
+/-- One open dyadic annulus has no proper divisibility edge. Its frame geometry
+therefore does not retain the prime transport between scales. -/
+theorem weilPrimeKernel_eq_zero_on_dyadic_annulus {A m n : ℕ}
+    (hm : m ∈ Icc (A + 1) (2 * A)) (hn : n ∈ Icc (A + 1) (2 * A)) :
+    weilPrimeKernel m n = 0 := by
+  have hdiv : ∀ u ∈ Icc (A + 1) (2 * A), ∀ v ∈ Icc (A + 1) (2 * A),
+      ¬ (u ∣ v ∧ u ≠ v) := by
+    intro u hu v hv
+    rintro ⟨⟨k, rfl⟩, hne⟩
+    have hu' := mem_Icc.mp hu
+    have hv' := mem_Icc.mp hv
+    have hk : 2 ≤ k := by
+      by_contra h
+      rcases (show k = 0 ∨ k = 1 by omega) with hk | hk
+      · subst k
+        simp only [mul_zero] at hv'
+        omega
+      · subst k
+        exact hne (mul_one u).symm
+    have hmul := Nat.mul_le_mul_left u hk
+    nlinarith only [hu'.1, hv'.2, hmul]
+  simp only [weilPrimeKernel, if_neg (hdiv m hm n hn), if_neg (hdiv n hn m hm)]
+
+/-- The literal prime compression to one dyadic annulus is zero for every
+signed coefficient vector; any prime energy transfer must cross its boundary. -/
+theorem dyadic_annulus_prime_quadratic_eq_zero (A : ℕ) (x : ℕ → ℝ) :
+    (∑ n ∈ Icc (A + 1) (2 * A), ∑ j ∈ Icc (A + 1) (2 * A),
+      x n * x j * weilPrimeKernel n j) = 0 := by
+  exact sum_eq_zero fun n hn => sum_eq_zero fun j hj => by
+    rw [weilPrimeKernel_eq_zero_on_dyadic_annulus hn hj, mul_zero]
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_ramanujanPoleProfile_annular_gram_discrepancy_le
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ramanujanPoleProfile_dyadic_twoSided_frame
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.dyadic_annulus_prime_quadratic_eq_zero
