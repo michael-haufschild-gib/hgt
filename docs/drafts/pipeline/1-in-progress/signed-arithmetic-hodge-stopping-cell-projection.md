@@ -60,7 +60,8 @@ TheMixedSquareSourceHasUniformSmallTails.
 Lean check and dependency audit. It proves the terminal-label bounds and exact
 orthogonal projection of every original cell onto its normalized stopping cell.
 
-`GeneratorCutoffsAreLogarithmicBlockAverages.lean` is drafted: exact square-root
+`GeneratorCutoffsAreLogarithmicBlockAverages.lean` passes its individual Lean
+check and standard transitive-axiom audit: exact square-root
 block matrix, common stopping ancestor across each block, positive averaging
 weights summing to one, and support below twice the original label.
 `ActualGeneratorHeadsPreserveTheSourceMean.lean` is drafted: explicit finite real
@@ -75,7 +76,7 @@ tail supplies a bound for the complete even-power source head error by
  + C_epsilon*32 Gamma(original)/(1+log A).
 
 One constant precedes every finite source family, horizon and cutoff. These
-three drafts are not accepted proofs until their individual Lean checks pass.
+two physical-source drafts are not accepted proofs until their individual Lean checks pass.
 
 Uniform all-level Gamma stability remains unproved. Research findings and
 continuation state are recorded in logs/signed-arithmetic-hodge-research.log.

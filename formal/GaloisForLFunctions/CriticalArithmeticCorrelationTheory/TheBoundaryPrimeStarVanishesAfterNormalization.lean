@@ -235,6 +235,34 @@ theorem abs_normalized_nonRatioForm_uniform_up_to_touching {φ : ℝ → ℝ} {B
       _ ≤ A * 2 := mul_le_mul_of_nonneg_left hcinv hA
       _ = _ := by dsimp only [A]; ring
 
+/-- Every actual smooth nonzero profile supplies its own uniform boundary-source budget. -/
+theorem exists_uniform_nonRatio_budget {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2) :
+    ∃ D : ℝ, 0 < D ∧ ∀ c : ℝ, 0 < c → c ≤ 1 → ∀ N : ℕ, 2 ≤ N → ∀ x : ℕ → ℝ,
+      |nonRatioForm (atomDilate φ (c / N)) N x| / (∫ u, atomDilate φ (c / N) u ^ 2) ≤
+        (D * Real.log (N + 1 : ℕ) / N) * ∑ m ∈ Icc 1 N, x m ^ 2 := by
+  have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc hsupp
+  obtain ⟨L, hL, hLip⟩ := ArithmeticCriticalityTheory.exists_lipschitz_bound_of_compactSupport
+    (hφ.of_le (by norm_num)) hφc
+  let B : ℝ := 1 + 2 * L
+  have hB : 0 < B := by dsimp only [B]; positivity
+  have hm : φ (-1) = 0 := hsupp (-1) (by norm_num)
+  have hheight : ∀ u, |φ u| ≤ B := by
+    intro u
+    by_cases hu : u ∈ Set.Icc 0 1
+    · have h := hLip (-1) u
+      have hu0 : 0 ≤ u + 1 := by linarith only [hu.1]
+      simp only [hm, sub_zero, sub_neg_eq_add, abs_of_nonneg hu0] at h
+      calc
+        _ ≤ L * (u + 1) := h
+        _ ≤ L * 2 := mul_le_mul_of_nonneg_left (by linarith only [hu.2]) hL
+        _ ≤ B := by dsimp only [B]; linarith
+    · rw [hsupp u hu, abs_zero]
+      exact hB.le
+  refine ⟨4 * B ^ 2 / (∫ u, φ u ^ 2), by positivity, ?_⟩
+  intro c hc0 hc1 N hN x
+  exact abs_normalized_nonRatioForm_uniform_up_to_touching hφ hsupp hM hB.le hheight hc0 hc1 hN x
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_nonRatioForm_at_touching_le
@@ -242,3 +270,5 @@ end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_normalized_nonRatioForm_at_touching_le
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_normalized_nonRatioForm_uniform_up_to_touching
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_uniform_nonRatio_budget

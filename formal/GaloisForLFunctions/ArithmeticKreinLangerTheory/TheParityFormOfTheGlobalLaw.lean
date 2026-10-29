@@ -140,7 +140,9 @@ theorem liouvilleExpSum_eq_harmonic_sub_oddClass {t : ℝ} (ht : 0 < t) :
   unfold liouvilleExpCoeff
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
-  · rcases liouville_eq_one_or_neg_one hn.ne' with h | h <;> simp [h] <;> ring
+  · rcases liouville_eq_one_or_neg_one hn.ne' with h | h
+    · simp [h]
+    · simp [h]; ring
 
 /-- **One parity class is the global law.** RH holds iff for every `ε ∈ (0, ½)` the odd class has
 the upper count `O(t) ≤ (H(t) + C t^{½−ε})/2` for all small `t > 0`. -/
@@ -160,3 +162,8 @@ theorem negIndex_zetaKernel_eq_zero_iff_oddClass_upper :
   rw [← riemannHypothesis_iff_negIndex_zetaKernel_eq_zero, riemannHypothesis_iff_oddClass_upper]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms negIndex_zetaKernel_eq_zero_iff_oddClass_upper
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms riemannHypothesis_iff_parityClasses_upper

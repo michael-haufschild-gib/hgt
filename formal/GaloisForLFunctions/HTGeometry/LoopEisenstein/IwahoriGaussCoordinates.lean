@@ -70,14 +70,19 @@ theorem gaussMatrix_factorization (g : PowerSeriesSL2 F) (a : (PowerSeries F)ˣ)
   have hu : (a : PowerSeries F) * ((a⁻¹ : (PowerSeries F)ˣ) : PowerSeries F) = 1 := by simp
   have hc : (g 1 0 * ((a⁻¹ : (PowerSeries F)ˣ) : PowerSeries F)) * (a : PowerSeries F) = g 1 0 := by
     simp [mul_assoc]
-  apply Matrix.SpecialLinearGroup.ext
+  apply Subtype.ext
+  rw [gaussMatrix_entries]
+  apply Matrix.ext
   intro i j
   fin_cases i <;> fin_cases j
-  · rw [gaussMatrix_zero_zero]
-    exact ha
-  · rw [gaussMatrix_zero_one, ← mul_assoc, hu, one_mul]
-  · rw [gaussMatrix_one_zero, hc]
-  · rw [gaussMatrix_one_one, hc]
+  · exact ha
+  · change (a : PowerSeries F) * (((a⁻¹ : (PowerSeries F)ˣ) : PowerSeries F) * g 0 1) = g 0 1
+    rw [← mul_assoc, hu, one_mul]
+  · exact hc
+  · change (g 1 0 * ((a⁻¹ : (PowerSeries F)ˣ) : PowerSeries F)) * (a : PowerSeries F) *
+        (((a⁻¹ : (PowerSeries F)ˣ) : PowerSeries F) * g 0 1) +
+      ((a⁻¹ : (PowerSeries F)ˣ) : PowerSeries F) = g 1 1
+    rw [hc]
     -- The determinant equation determines the remaining lower-right entry.
     have hd := Matrix.SpecialLinearGroup.det_coe g
     rw [Matrix.det_fin_two, ← ha] at hd

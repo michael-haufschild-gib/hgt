@@ -272,6 +272,13 @@ gives `LoopSL2 ℚ →* LoopSL2 ℝ`, with exact center/root compatibility.
 [Positive Iwahori coordinates](garland-positive-iwahori.md) are in progress.
 Neither construction supplies an assumed Iwasawa or arithmetic-series theorem.
 
+For the subsequent global matrix decomposition, corpus search found
+`SmithNormalFormDVR.exists_smithNormalForm` over an actual discrete valuation
+ring. Its statement and clearing proof were inspected. Mathlib supplies the
+`IsDiscreteValuationRing (PowerSeries F)` instance. The specialization and
+transitive axiom audit remain to be checked before use. This is a lead for
+matrix decomposition, not an existing Iwahori–Bruhat or Iwasawa theorem.
+
 Do not instantiate the stable Steinberg centrality theorem outside its hypotheses.
 
 ## Work log
@@ -305,6 +312,6 @@ Do not instantiate the stable Steinberg centrality theorem outside its hypothese
   bottom-row correction satisfies both elementary multiplication laws, hence
   defines an injective homomorphism on the full power-series matrix group.
   Final individual source checks and the saved axiom audit passed.
-- 2026-10-29: Coefficient-field functoriality completed in two modules, including
+- 2026-10-29: Coefficient-field embeddings completed in two modules, including
   the faithful rational-to-real central loop embedding. Both final direct
   source checks and the saved transitive axiom audit passed.

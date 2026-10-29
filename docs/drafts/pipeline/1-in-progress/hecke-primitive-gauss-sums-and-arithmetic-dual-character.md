@@ -299,7 +299,9 @@ The next written consumers are:
 - `/tmp/HeckeDualCoefficientCharacterScratch.lean`: principal-ideal
   transformation of associated ideals, prime-to-modulus multipliers,
   sign-corrected character invariance, and the actual inverse-Hecke-value
-  formula for the unit base; not yet checked.
+  formula for every coprime base ideal; not yet checked. It now includes
+  exact base-change ideal multiplication, an actual nonzero unit-residue
+  element of each base ideal, and both supported and unsupported cases.
 
 The support module's consumer olean has been built. The first scratch
 imports the finalized actual Gauss module; the second imports the

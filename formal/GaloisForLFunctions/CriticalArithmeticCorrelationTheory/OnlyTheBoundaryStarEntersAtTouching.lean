@@ -106,8 +106,8 @@ theorem nonRatioLag_eq_boundary_star {g : ℝ → ℝ} {N k : ℕ} (hN : 2 ≤ N
       nonRatio_up_term_eq_boundary hN hsupp hk hm hn]
     dsimp only [d]
     by_cases hmN : m = N <;> by_cases hnN : n = N <;>
-      simp only [hmN, hnN, and_self, and_true, and_false, false_and,
-        true_and, ite_true, ite_false] <;> split_ifs <;> ring
+      simp only [hmN, hnN, false_and, true_and, ite_true, ite_false,
+        add_zero, zero_add, mul_zero] <;> split_ifs <;> ring
   unfold nonRatioLag
   have he : (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n *
       ((if m = k * n then 0 else bumpCorr g (-Real.log k - (Real.log n - Real.log m))) +
