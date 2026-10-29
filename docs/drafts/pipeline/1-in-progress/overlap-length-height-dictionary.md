@@ -41,7 +41,7 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Every nonpolar reference energy is `E_m(1)-log c`; exact crossings; actual diagonal error `O(c/N)` for `0<c≤N` | Audit pending: `OverlapForcesNewRamanujanTerms` |
 | Census cutoff `(T/(2π))^λ`, physical overlap `(T/(2π))^(λ-1)/(2π)` | Checked, axiom-audited, umbrella wired: `CensusLengthHeightCoordinates` |
 | Actual complete matrix at height `N/c`; fixed-`c` positivity for `0<c<1+δ_*` | Checked, axiom-audited, umbrella wired: `CompleteWeilLengthHeight` |
-| Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Audit pending: `SuperGevreyLengthHeight` |
+| Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Audit pending: `SuperGevreyLengthHeight`; dependency `SuperGevreyCriticalGrowth` fails compilation |
 | Exact asymmetric shell radii and onset `N log((N+1)/N)<1`; eventual absence at each fixed `c<1` | Kernel checked, axiom-audited; final direct check pending: `ExactSuccessorShellWindows` |
 | Actual successor divisor fiber divided by `log(N+1)` tends to a positive coefficient for every fixed `c>1` | Checked, axiom-audited, umbrella wired: `FixedOverlapHasLogarithmicDivisorRows` |
 | Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Audit pending: `TheAtomicApertureRetainsTheProfileWidth` |
@@ -52,6 +52,11 @@ Here `δ_*=1/107520002048050000`; the existing certified floor is
 `1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of the certified estimates,
 not a classification of the actual matrix sign. The revised report already states this range
 and the exact Steklov overlap schedule.
+
+The Steklov receiver is not yet dependency-closed: direct compilation of
+`SuperGevreyCriticalGrowth` fails in its moving-average construction and synthesis estimates.
+Its printed receiver audit therefore contains `sorryAx` from elaboration errors. The proposed
+length-height transport cannot be certified until this dependency is repaired and re-audited.
 
 Remaining mathematical obligations: complete divisor-shell row decomposition; the self-energy loss along
 growing overlap; whether the full matrix admits the proposed additive/shell Schur decomposition.

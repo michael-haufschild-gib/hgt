@@ -55,7 +55,7 @@ private theorem steklovAvg_eq_primitive_sub {f : ℝ → ℝ} (hf : Continuous f
     have h := intervalIntegral.integral_comp_add_left f x (a := -a) (b := a)
     rwa [show x + -a = x - a by ring] at h
   rw [hcomp]
-  have hadj := intervalIntegral.integral_add_adjacent_intervals
+  have hadj := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
     (hf.intervalIntegrable 0 (x - a)) (hf.intervalIntegrable (x - a) (x + a))
   linarith
 
@@ -69,9 +69,11 @@ theorem hasDerivAt_steklovAvg {f : ℝ → ℝ} (hf : Continuous f) {a : ℝ} (h
     funext fun z => steklovAvg_eq_primitive_sub hf a z
   rw [heq]
   have hd1 : HasDerivAt (fun z => F (z + a)) (f (x + a)) x := by
-    simpa only [mul_one] using (hFd (x + a)).comp x ((hasDerivAt_id x).add_const a)
+    simpa only [Function.comp_def, id_eq, mul_one] using
+      (hFd (x + a)).comp x ((hasDerivAt_id x).add_const a)
   have hd2 : HasDerivAt (fun z => F (z - a)) (f (x - a)) x := by
-    simpa only [mul_one] using (hFd (x - a)).comp x ((hasDerivAt_id x).sub_const a)
+    simpa only [Function.comp_def, id_eq, mul_one] using
+      (hFd (x - a)).comp x ((hasDerivAt_id x).sub_const a)
   exact (hd1.sub hd2).const_mul (2 * a)⁻¹
 
 theorem deriv_steklovAvg_eq_sub {f : ℝ → ℝ} (hf : Continuous f) {a : ℝ} (ha : 0 < a) (x : ℝ) :
@@ -103,12 +105,13 @@ theorem deriv_steklovAvg {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) {a : ℝ} (
   rw [deriv_steklovAvg_eq_sub hf.continuous ha]
   unfold steklovAvg
   congr 1
-  have hdf : Differentiable ℝ f := hf.differentiable (by exact_mod_cast ENat.coe_lt_top 1)
+  have hdf : Differentiable ℝ f := hf.differentiable (by simp)
   have hdc : Continuous (deriv f) := hf.continuous_deriv (natCast_le_infty 1)
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (f := fun t => f (x + t)) (f' := fun t => deriv f (x + t)) (a := -a) (b := a)
-    (fun t _ => by simpa only [mul_one] using (hdf (x + t)).hasDerivAt.comp t
-      ((hasDerivAt_id t).const_add x))
+    (fun t _ => by
+      simpa only [Function.comp_def, id_eq, mul_one] using
+        ((hdf (x + t)).hasDerivAt.comp t ((hasDerivAt_id t).const_add x)))
     ((hdc.comp (continuous_const.add continuous_id)).intervalIntegrable (-a) a)
   rw [hftc, show x + -a = x - a by ring]
 
@@ -126,7 +129,7 @@ theorem abs_steklovAvg_le {f : ℝ → ℝ} {B a : ℝ} (ha : 0 < a)
     (hB : ∀ x, |f x| ≤ B) (x : ℝ) :
     |steklovAvg a f x| ≤ B := by
   unfold steklovAvg
-  rw [abs_mul, abs_of_pos (inv_pos.mpr (by positivity : 0 < 2 * a)), Real.norm_eq_abs.symm]
+  rw [abs_mul, abs_of_pos (inv_pos.mpr (by positivity : 0 < 2 * a)), ← Real.norm_eq_abs]
   have hint : ‖∫ t in (-a)..a, f (x + t)‖ ≤ B * |a - (-a)| :=
     intervalIntegral.norm_integral_le_of_norm_le_const fun t _ => by
       rw [Real.norm_eq_abs]; exact hB (x + t)
@@ -154,13 +157,12 @@ theorem abs_steklovAvg_sub_self_le {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) {
     rw [intervalIntegral.integral_const, smul_eq_mul, show a - (-a) = 2 * a by ring]
     field_simp [ha.ne']
   have heq : steklovAvg a f x - f x = (2 * a)⁻¹ * ∫ t in (-a)..a, (f (x + t) - f x) := by
-    unfold steklovAvg
-    rw [← hconst, ← mul_sub, ← intervalIntegral.integral_sub
+    rw [intervalIntegral.integral_sub
       ((hf.continuous.comp (continuous_const.add continuous_id)).intervalIntegrable (-a) a)
-      intervalIntegrable_const]
-    rw [hconst]
+      intervalIntegrable_const, mul_sub, hconst]
+    rfl
   rw [heq, abs_mul, abs_of_pos (inv_pos.mpr (by positivity : 0 < 2 * a)), ← Real.norm_eq_abs]
-  have hdf : Differentiable ℝ f := hf.differentiable (by exact_mod_cast ENat.coe_lt_top 1)
+  have hdf : Differentiable ℝ f := hf.differentiable (by simp)
   have hmv : ∀ t ∈ Set.uIoc (-a) a, ‖f (x + t) - f x‖ ≤ M * a := by
     intro t ht
     rw [Set.uIoc_of_le (by linarith : -a ≤ a)] at ht
@@ -211,7 +213,8 @@ theorem integral_steklovAvg {f : ℝ → ℝ} {R a : ℝ} (hf : Continuous f) (h
   have hcont_avg : Continuous (steklovAvg a f) :=
     continuous_iff_continuousAt.mpr fun x => (hasDerivAt_steklovAvg hf ha x).continuousAt
   have hsupp_avg : SupportedIn (R + a) (steklovAvg a f) := supportedIn_steklovAvg ha hsupp
-  rw [integral_eq_intervalIntegral_of_supportedIn hsupp_avg (by linarith) (by dsimp [L]; linarith),
+  rw [integral_eq_intervalIntegral_of_supportedIn (L := L) hsupp_avg
+      (by linarith) (by dsimp only [L]; linarith),
     integral_eq_intervalIntegral_of_supportedIn hsupp hR (show R < R + 1 by linarith)]
   set F : ℝ → ℝ := fun y => ∫ u in (0 : ℝ)..y, f u
   have hFc : Continuous F :=
@@ -294,7 +297,7 @@ private def steklovTel (m : ℕ) : ℝ :=
 
 theorem steklovRadius_pos (m : ℕ) : 0 < steklovRadius m := by
   unfold steklovRadius
-  have hm3 : (1 : ℝ) < (m : ℝ) + 3 := by positivity
+  have hm3 : (1 : ℝ) < (m : ℝ) + 3 := by linarith only [Nat.cast_nonneg (R := ℝ) m]
   have hlog : 0 < Real.log ((m : ℝ) + 3) := Real.log_pos hm3
   positivity
 
@@ -319,7 +322,6 @@ private theorem steklovRadius_le_tel_sub (m : ℕ) :
     push_cast
     rw [show (m : ℝ) + 1 + 2 = (m : ℝ) + 3 by ring]
     field_simp [hl2.ne', hl3.ne']
-    ring
   rw [htel, steklovRadius]
   have hnum : (1 : ℝ) = (1 / ((m : ℝ) + 3)) * ((m : ℝ) + 3) := by field_simp [hm3.ne']
   calc 1 / (4 * ((m : ℝ) + 3) * Real.log ((m : ℝ) + 3) ^ 2)
@@ -343,7 +345,8 @@ theorem sum_Ico_steklovRadius_le {K M : ℕ} (hKM : K ≤ M) :
     _ ≤ steklovTel K := by
         have hpos : 0 ≤ steklovTel M := by
           unfold steklovTel
-          have : 0 < Real.log ((M : ℝ) + 2) := Real.log_pos (by positivity)
+          have : 0 < Real.log ((M : ℝ) + 2) :=
+            Real.log_pos (by linarith only [Nat.cast_nonneg (R := ℝ) M])
           positivity
         linarith
     _ = 1 / (4 * Real.log ((K : ℝ) + 2)) := rfl
@@ -369,7 +372,8 @@ theorem dcLogWeight_zero : dcLogWeight 0 = 1 := by
 theorem dcLogWeight_pos (q : ℕ) : 0 < dcLogWeight q := by
   unfold dcLogWeight
   have hfac : (0 : ℝ) < q.factorial := by exact_mod_cast Nat.factorial_pos q
-  have hlog : 0 < Real.log ((q : ℝ) + 3) := Real.log_pos (by positivity)
+  have hlog : 0 < Real.log ((q : ℝ) + 3) :=
+    Real.log_pos (by linarith only [Nat.cast_nonneg (R := ℝ) q])
   positivity
 
 private theorem one_le_log_add_three (q : ℕ) : 1 ≤ Real.log ((q : ℝ) + 3) := by
@@ -408,7 +412,8 @@ theorem dcLogWeight_mul_le {i l : ℕ} (hl : l ≤ i) :
       Real.log (((i - l : ℕ) : ℝ) + 3) ^ (2 * (i - l)) ≤ Real.log ((i : ℝ) + 3) ^ (2 * i) := by
     calc Real.log ((l : ℝ) + 3) ^ (2 * l) * Real.log (((i - l : ℕ) : ℝ) + 3) ^ (2 * (i - l))
         ≤ Real.log ((i : ℝ) + 3) ^ (2 * l) * Real.log ((i : ℝ) + 3) ^ (2 * (i - l)) :=
-          mul_le_mul hp1 hp2 (by positivity) (by positivity)
+          mul_le_mul hp1 hp2 (pow_nonneg (le_trans zero_le_one (one_le_log_add_three _)) _)
+            (pow_nonneg (le_trans zero_le_one (one_le_log_add_three i)) _)
       _ = Real.log ((i : ℝ) + 3) ^ (2 * i) := by
           rw [← pow_add, show 2 * l + 2 * (i - l) = 2 * i by omega]
   calc ((l.factorial : ℝ) * Real.log ((l : ℝ) + 3) ^ (2 * l)) *
@@ -417,7 +422,10 @@ theorem dcLogWeight_mul_le {i l : ℕ} (hl : l ≤ i) :
           (Real.log ((l : ℝ) + 3) ^ (2 * l) *
             Real.log (((i - l : ℕ) : ℝ) + 3) ^ (2 * (i - l))) := by ring
     _ ≤ (i.factorial : ℝ) * Real.log ((i : ℝ) + 3) ^ (2 * i) :=
-        mul_le_mul hfac hp_mul (by positivity) (by positivity)
+        mul_le_mul hfac hp_mul
+          (mul_nonneg (pow_nonneg (le_trans zero_le_one (one_le_log_add_three l)) _)
+            (pow_nonneg (le_trans zero_le_one (one_le_log_add_three (i - l))) _))
+          (Nat.cast_nonneg _)
 
 theorem dcLogWeight_le_pow (p : ℕ) :
     dcLogWeight p ≤ ((p : ℝ) * Real.log ((p : ℝ) + 3) ^ 2) ^ p := by
@@ -490,7 +498,8 @@ theorem abs_steklovBase_le (x : ℝ) : |steklovBase x| ≤ steklovBaseSup := by
   simp only [iteratedDeriv_zero, pow_zero, Nat.factorial_zero, Nat.cast_one,
     Real.one_rpow, mul_one] at hb
   rw [abs_mul, abs_mul, abs_of_pos two_pos, abs_of_nonneg hc0]
-  linarith
+  simpa only [mul_one] using
+    mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hb hc0) (by norm_num : (0 : ℝ) ≤ 2)
 
 /-- Iterated Steklov approximation sequence: `steklovSeq 0 = steklovBase`,
 `steklovSeq (m + 1) = steklovAvg (steklovRadius m) (steklovSeq m)`. -/
@@ -506,7 +515,8 @@ theorem contDiff_steklovSeq (m : ℕ) : ContDiff ℝ ∞ (steklovSeq m) := by
 theorem supportedIn_steklovSeq_sum (m : ℕ) :
     SupportedIn (1 / 2 + ∑ j ∈ Finset.range m, steklovRadius j) (steklovSeq m) := by
   induction m with
-  | zero => simpa using supportedIn_steklovBase
+  | zero => simpa only [Finset.range_zero, Finset.sum_empty, add_zero, steklovSeq] using
+      supportedIn_steklovBase
   | succ m ih =>
     rw [Finset.sum_range_succ, ← add_assoc]
     exact supportedIn_steklovAvg (steklovRadius_pos m) ih
@@ -637,7 +647,8 @@ theorem steklovDCProfile_vanishesOff : VanishesOff steklovDCProfile := by
   intro x hx
   have hpt : ∀ y, Tendsto (fun m => steklovSeq m y) atTop (𝓝 (steklovDCProfile y)) := by
     intro y
-    simpa only [iteratedDeriv_zero] using (tendstoUniformly_steklovDerivLimit 0).tendsto_at y
+    simpa only [iteratedDeriv_zero, steklovDCProfile] using
+      (tendstoUniformly_steklovDerivLimit 0).tendsto_at y
   exact HTGeometry.eq_zero_of_tendsto_of_forall_eq_zero (J := Set.Icc (-1 : ℝ) 1) hpt
     (fun m y hy => supportedIn_one_steklovSeq m y (by
       simp only [Set.mem_Icc, not_and_or, not_le] at hy
@@ -678,7 +689,7 @@ theorem integral_steklovDCProfile : ∫ x, steklovDCProfile x = 1 := by
     rw [show (2 : ℝ) - (-2) = 4 by norm_num, abs_of_pos (by norm_num : (0 : ℝ) < 4)] at hle
     linarith
   exact tendsto_nhds_unique htend
-    (tendsto_const_nhds.congr fun m => (hseq_int m).symm)
+    (Filter.Tendsto.congr (fun m => (hseq_int m).symm) tendsto_const_nhds)
 
 theorem abs_iteratedDeriv_steklovDCProfile_le (q : ℕ) (x : ℝ) :
     |iteratedDeriv q steklovDCProfile x| ≤ steklovBaseSup * 12 ^ q * dcLogWeight q := by
@@ -1300,6 +1311,7 @@ theorem overlapGrowthSuperGevrey_of_two_lt {β : ℝ} (hβ : 2 < β) :
     eventually_ge_atTop 1, hκ.eventually_ge_atTop 2,
     (Real.tendsto_log_atTop.comp (Real.tendsto_log_atTop.comp hκ)).eventually_ge_atTop 2,
     hκ_lll.eventually_ge_atTop 1] with N hll2 hlll2 hN1 hκ2 hκll2 hκlll1
+  dsimp only [Function.comp_def] at hκll2 hκlll1
   set cN := superGevreyRatio β N
   have hcN1 : 1 ≤ cN := by
     unfold superGevreyRatio

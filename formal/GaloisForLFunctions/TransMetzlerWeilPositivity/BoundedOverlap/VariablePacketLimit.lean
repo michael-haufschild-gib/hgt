@@ -30,10 +30,10 @@ private theorem tendsto_adjunction_variable (φ : ℝ → ℝ) (m : ℕ)
     (ramanujanAdjunctionEnergy m)).sub_const Real.eulerMascheroniConstant
   by_cases hm : m = 1
   · simpa only [completeWeilAdjunctionEnergy, completeWeilSelfFinitePart,
-      completeWeilPoleShift, if_pos hm] using
+      completeWeilPoleShift, if_pos hm, Pi.div_apply] using
       hs.add ((hr.mul_const ((∫ u, φ u) ^ 2)).div_const (∫ u, φ u ^ 2))
   · simpa only [completeWeilAdjunctionEnergy, completeWeilSelfFinitePart,
-      if_neg hm, add_zero] using hs
+      if_neg hm, add_zero, Pi.div_apply] using hs
 
 /-- Every mixed packet entry has the same limit along a convergent strict ratio. -/
 theorem tendsto_completeWeilMatrix_ramanujan_inner_variable {φ : ℝ → ℝ}
@@ -53,7 +53,7 @@ theorem tendsto_completeWeilMatrix_ramanujan_inner_variable {φ : ℝ → ℝ}
     apply tendsto_order.2
     constructor
     · intro a ha
-      exact eventually_of_forall fun N => ha.trans_le (norm_nonneg _)
+      exact Filter.Eventually.of_forall fun N => ha.trans_le (norm_nonneg _)
     · intro b hb
       filter_upwards [hH.eventually (eventually_completeWeil_ramanujan_residual_small_uniformly
         hφ hsupp hM hm (half_pos hb)), hr.eventually (lt_mem_nhds hc0),
@@ -64,11 +64,11 @@ theorem tendsto_completeWeilMatrix_ramanujan_inner_variable {φ : ℝ → ℝ}
         completeWeilAdjunctionEnergy φ (r N) m • normalizedRamanujanHorizonVector m (H N),
         normalizedRamanujanHorizonVector l (H N)⟫) atTop (𝓝 0) := by
     apply squeeze_zero_norm (fun N => norm_inner_le_norm _ _)
-    simpa only [zero_mul] using hres.mul
+    simpa only [zero_mul, Function.comp_apply] using hres.mul
       ((tendsto_normalizedRamanujanHorizonVector_norm hl).comp hH)
   have hmain := (tendsto_adjunction_variable φ m hr hc0).mul
     ((tendsto_normalizedRamanujanHorizonVector_gram hm hl).comp hH)
-  simpa only [inner_sub_left, real_inner_smul_left, sub_add_cancel, zero_add,
+  simpa only [Function.comp_apply, inner_sub_left, real_inner_smul_left, sub_add_cancel, zero_add,
     mul_ite, mul_one, mul_zero] using herr.add hmain
 
 private theorem packet_diagonal_sum (S : Finset ℕ) (b e : ℕ → ℝ) :

@@ -20,15 +20,15 @@ Search the local Lean corpus before source selection or Mathlib lookup. Work thr
 
 ## Paper and Lean status
 
-Certified: exact integer-grid Gram completion, cyclotomic divisibility classification of its radical, and completion by divisor conductors to the discrete bridge. Capstone axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Completed modules are wired into the CACT umbrella; no umbrella build.
+Certified: exact integer-grid Gram completion, cyclotomic divisibility classification of its radical, completion by divisor conductors to the discrete bridge, and simultaneous actual prime-source comparison for all real and complex Gram packets. The source module also proves a lower bound in the unit Gram itself, with no non-unit penalty. Capstone axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. Completed modules are wired into the CACT umbrella; no umbrella build.
 
-Drafts under check: the actual residue error controls all real and complex Gram packets, and actual affine prime windows converge uniformly in both affine parameters.
+Drafts awaiting checks: actual affine prime windows uniform in both parameters; actual primitive-phase prefix Gram domination; the identity with the existing prime-block jump energy; real-variable Gram positivity and its exact unit-cell minimum kernel; the smaller fixed-profile synthesis endpoint.
 
 Paper proof and Lean draft: rational refinement replaces the signed Möbius weights by positive conductor completion. For `m>1`, `L>0`,
 
 `L² A_m(k/L) = sum_{e | mL, e/gcd(e,L)=m} E_e(k)`.
 
-The same identity holds for every mixed entry of the centered Gram. Its proof uses Möbius inversion and the exact divisor/gcd dilation equivalence already in the corpus. This is not yet certified. Extending the identity to all real points requires continuity or a direct real Hilbert realization.
+The same identity holds for every mixed entry of the centered Gram. Its proof uses Möbius inversion and the exact divisor/gcd dilation equivalence already in the corpus. Its targeted Lean check is active. A paper proof and separate Lean draft extend positivity to all nonnegative real points by continuity and common-grid approximation.
 
 ## Broader implications
 

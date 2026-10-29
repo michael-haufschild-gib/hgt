@@ -141,7 +141,10 @@ here.
    count. An error law $O(E)$ with $x^{1/2+\kappa}=O(E)$ is inherited by a weight failing the count.
 10. **The integrality lattice.** $\{\int_0^1P:P\in\mathbb Z[x],\deg P\le n\}=d_{n+1}^{-1}\mathbb Z$, by Bézout
    over the horizon ($u/a+v/b=1/\operatorname{lcm}(a,b)$, iterated). The least positive Nair integral is
-   $1/d_{n+1}$, and $\psi(n+1)=\max_P\log(1/\int_0^1P)$.
+   $1/d_{n+1}$, and $\psi(n+1)=\max_P\log(1/\int_0^1P)$. In every fixed nonzero ideal
+   $Q\mathbb Z[x]$, the least positive integral lies between $1/d_N$ and $C_Q/d_N$ once
+   $N\ge2\deg Q+1$, with a fixed positive integer $C_Q$. Fixed divisibility therefore preserves
+   both integrality halves at admissible scales, their complete power-scale sets and their exponents.
 11. **The integrality exponent is the zero width.** The Siegel half and the Liouville half are the
     lower and upper halves of the count at the same scale. Both hold at $x^\theta$, $\theta>\Theta$, and
     both fail at every $\theta<\Theta$. Square-root integrality in either half is RH; a zero-free strip
@@ -333,6 +336,8 @@ Open, with what the theory already proves about each:
 
 1. **The constructive limit of integrality (integer Chebyshev problem).** The floor is exact and the
    exponent is $\Theta$; sup-norm certificates at precision $\theta<1$ must vanish at $0,\tfrac12,1$.
+   Any fixed polynomial vanishing pattern preserves that exponent and both square-root criteria;
+   its cost in the log-floor is bounded independently of the horizon.
    Determine the precision reachable by auxiliaries certified through $\sup_{[0,1]}\lvert P\rvert$ or
    $\int_0^1\lvert P\rvert$ (expected: linear with constant $<1$, since the integer Chebyshev constant of
    $[0,1]$ exceeds $e^{-1}$), and design a ceiling that keeps sign cancellation. A ceiling that reaches

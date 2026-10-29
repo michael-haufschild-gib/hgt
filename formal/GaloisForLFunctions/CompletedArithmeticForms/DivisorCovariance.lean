@@ -57,8 +57,8 @@ theorem cumulativeEnergy_completion (c : ℕ → ℝ) (T : ℕ) :
   rw [divisorGramEnergy_eq_cumulativeEnergy, Ico_one_succ] at h
   push_cast at h
   have hT0 : (T : ℝ) + 1 ≠ 0 := by positivity
-  apply (eq_div_iff hT0).mp
-  field_simp
+  apply mul_right_cancel₀ hT0
+  rw [add_mul, div_mul_cancel₀ _ hT0]
   nlinarith only [h]
 
 /-- Accumulation controls both weighted coefficient mass and weighted square mass. -/
