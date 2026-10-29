@@ -1,8 +1,8 @@
 # Fixed polynomial ideals preserve integrality precision
 
 - **ID:** asrp-fixed-polynomial-ideal-preserves-integrality-precision
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** ASRP open topic 1, constructive integrality and forced rational zeros.
 - **Statement:** For each nonzero `Q ∈ ℤ[X]`, a fixed positive integer `C_Q` satisfies: for every `N≥2 deg(Q)+1`, some multiple of `Q` of degree at most `N-1` has Nair integral exactly `C_Q/d_N`. The least positive integral consequently lies between `1/d_N` and `C_Q/d_N`.
 
@@ -14,7 +14,7 @@ Give the exact precision of the integrality floor after imposing any fixed polyn
 
 - [x] Source and attack identified; corpus search found the unrestricted lattice only.
 - [x] Dependency-closed constructive paper proof.
-- [ ] Exact theorem formalized and audited.
+- [x] Exact theorem formalized and audited.
 
 ## Proof [PROVED HERE]
 
@@ -42,4 +42,16 @@ The construction preserves signed integrals; it does not supply a height, sup-no
 
 ## Novelty boundary
 
-The unrestricted lattice and the sup-norm forced-root theorem already exist. This conjecture concerns the whole ideal `Q ℤ[X]` with a uniform loss independent of the horizon, not sharper constants for an existing auxiliary.
+The unrestricted lattice and the sup-norm forced-root theorem already exist. Corpus searches for fixed polynomial ideals, moment denominators and vanishing-constrained integral lattices found no uniform ideal theorem. The new input concerns the whole ideal `Q ℤ[X]` with a uniform loss independent of the horizon. Global novelty is not claimed.
+
+## Lean
+
+Module: `ArithmeticOfSquareRootPrecision/FixedPolynomialIdealsRetainIntegralityPrecision.lean`.
+
+- `exists_uniform_nairIntegral_multiple`: one positive numerator works at every sufficiently large horizon.
+- `exists_isLeast_nairIntegral_multiple`: attained constrained floor and both bounds.
+- `idealSiegelHalf_iff`, `idealLiouvilleHalf_iff`: equivalence at admissible scales.
+- `ideal_integrality_exponents_eq_zeroReSup`: both exponents remain the zero width, with exact power-scale sets proved separately.
+- `riemannHypothesis_iff_idealSiegelHalf`, `riemannHypothesis_iff_idealLiouvilleHalf`: both square-root criteria.
+
+Direct check passed: `lake --old env lean GaloisForLFunctions/ArithmeticOfSquareRootPrecision/FixedPolynomialIdealsRetainIntegralityPrecision.lean`. Five main theorem audits use only `propext`, `Classical.choice`, `Quot.sound`; evidence: `logs/asrp-fixed-ideal-axioms.txt`. Umbrella import added; umbrella not compiled. Counted as one contribution.

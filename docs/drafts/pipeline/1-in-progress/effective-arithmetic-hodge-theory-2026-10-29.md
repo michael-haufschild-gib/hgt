@@ -28,6 +28,18 @@ positive survivors. Do not duplicate HKT/AKL/ASRP modules.
 3. Bandwidth dictionary (Fourier side of atomic families).
 4. Arithmetic Stepanov ceiling (integer Chebyshev barrier / multiplicity at controlled size).
 
+## Proved (axiom audit clean, wired into the umbrella)
+- `TheHassePrincipleWithHeights` (pillar B).
+- `TheExplicitSchedulesReachTheIndex` (pillar A, Gevrey and Denjoy–Carleman schedules; generic
+  `eventually_le_hermNegIndex_of_synthesis`).
+
+## Open / blocked
+- A′ Steklov schedules: `tendsto_dcLogSynthesis` and `abs_iteratedDeriv_mollify_le_dcLogWeight` are
+  `private` in `TransMetzlerWeilPositivity/SuperGevreyCriticalGrowth.lean`; once public, the
+  instance is `eventually_le_hermNegIndex_of_synthesis` + `exists_dcLogSynthesis`.
+- Bandwidth dictionary (C), shell symbol (E), flip threshold (F): being developed in SSHA, CACT and
+  TM/BoundedOverlap by other agents; do not duplicate.
+
 ## Leads checked (exist; do not redo)
 - `ArithmeticCastelnuovoSeveri.deepSparse_tower_law` holds for every `ℓ > 0`.
 - `HeckeKreinToeplitz.hermNegIndex_weilGram_le_negIndex_zetaKernel` (upper half for any real test).
@@ -36,4 +48,4 @@ positive survivors. Do not duplicate HKT/AKL/ASRP modules.
 - `RHTower.exists_xiZeroCount_upper_bound` (`≤ c T log T`).
 
 ## Log
-- 2026-10-29 — created; README first draft written.
+- 2026-10-29 — created; README first draft written; pillars A and B proved.

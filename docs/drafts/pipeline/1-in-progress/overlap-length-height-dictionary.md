@@ -46,7 +46,7 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Actual successor divisor fiber divided by `log(N+1)` tends to a positive coefficient for every fixed `c>1` | Checked, axiom-audited, umbrella wired: `FixedOverlapHasLogarithmicDivisorRows` |
 | Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Audit pending: `TheAtomicApertureRetainsTheProfileWidth` |
 | Paid coordinate prefix at overlap `cM/N≤1`; exact Schur reduction retaining every mixed entry | Audit pending: `APositivePrefixGivesTheExactSchurReduction` |
-| Gap `k` first becomes geometrically eligible at `N log(1+k/N)`, tending to `k` | Audit pending: `ExactHigherShellThresholds` |
+| Gap `k` first becomes geometrically eligible at `N log(1+k/N)`, tending to `k` | Checked, axiom-audited, umbrella wired: `ExactHigherShellThresholds` |
 
 Here `δ_*=1/107520002048050000`; the existing certified floor is
 `1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of the certified estimates,
@@ -131,10 +131,10 @@ this block whenever `M` is sufficiently large and `cM≤N`. This supplies a genu
 reduction to the remaining coordinates, with every mixed prime, Gamma, and polar entry
 retained. It does not identify additive edges with a vertex block or prove the residual sign.
 
-**Higher-shell conjecture.** Among integer pairs `1≤a≤N`, `b≥a+k`, the minimum
+**Higher-shell classification.** Among integer pairs `1≤a≤N`, `b≥a+k`, the minimum
 logarithmic separation is `log(N+k)-log N`, attained at `(N,N+k)`. Thus gap at least
-`k` enters exactly at `c=N log(1+k/N)`, which tends to `k`. This would classify
-finite-horizon shell boundaries at every overlap, beyond the first-shell calculation.
+`k` enters exactly at `c=N log(1+k/N)`, which tends to `k`. This classifies
+finite-horizon geometric shell boundaries at every overlap, beyond the first-shell calculation.
 
 ## No-go closure
 
@@ -144,3 +144,12 @@ depth and the negative-witness converse. The survivor is checked and axiom-audit
 The unchanged separated reference is also unsuitable as an all-overlap positive reference;
 its positive survivor is the exact per-conductor crossing law and finite negative-family theorem.
 
+
+**Overlap-Gram conjectures.** For the explicit plateau, synthesis is injective at every
+positive width: isolate the least nonzero coefficient immediately to the right of its
+logarithmic center, before the next center. Hence every finite overlap Gram is positive
+definite. Nevertheless a growing overlap cannot have a uniform coefficient-mass lower bound:
+the adjacent difference of atoms at `N,N+1`, normalized by twice one atom's mass, has squared
+mass `1-bumpCorr φ(firstExteriorOverlap N/c_N)/∫φ²`, tending to zero when `c_N→∞`.
+These are distinct obligations: finite-dimensional nondegeneracy and failure of a uniform norm
+comparison. Neither gives a sign for the complete Weil form.

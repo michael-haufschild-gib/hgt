@@ -71,7 +71,6 @@ private theorem scaled_fract_remainder {d L : ℕ} (hd : 0 < d) (hL : 0 < L) (k 
     Int.fract_div_natCast_eq_div_natCast_mod]
   push_cast
   field_simp [hdR, hLR]
-  <;> ring
 
 /-- The rational-grid curvature is exactly a sum of positive primitive
 energies at the lifted conductors. -/
@@ -100,7 +99,7 @@ theorem arithmeticOverlapCurvature_rational_refinement {m L : ℕ}
       simp only [mul_sub, sum_sub_distrib, ← sum_mul, hz, zero_mul, sub_zero]
     _ = _ := moebius_dilated_divisor_sum hm0 hL _
 
-/-- Centering the signed arithmetic distance gives its candidate Gram kernel. -/
+/-- The centered arithmetic curvature kernel. -/
 def arithmeticOverlapGram (m : ℕ) (x y : ℝ) : ℝ :=
   (arithmeticOverlapCurvature m x + arithmeticOverlapCurvature m y -
     arithmeticOverlapCurvature m |x - y|) / 2

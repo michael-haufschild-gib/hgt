@@ -54,3 +54,11 @@ This completes omitted cyclic frequencies. It does not assert coercivity for a s
 A stronger one-sided result is also certified: actual prime-window Gram forms dominate `(log B-log A-epsilon)` times their unit-mean Gram, at one common fixed-conductor horizon. Non-unit prime powers contribute nonnegatively and impose no extra penalty in this lower bound. The full residue norm remains necessary for the stated absolute error estimate. All five printed capstones use only the standard axioms.
 
 These are actual source theorems, including prime powers. They do not identify the completed Weil correction with the Gram packet, and give no growing-conductor rate.
+
+## Positive conductor lift under rational refinement
+
+`RationalRefinementCompletesTheCyclotomicGram.lean` passed Lean with standard axioms only. For m>1, L>0,
+
+`L² A_m(k/L) = sum_{e | mL, e/gcd(e,L)=m} E_e(k)`.
+
+The same equality holds for every mixed entry of the centered Gram. Möbius inversion after dilation has only coefficients zero and one. Hence every finite rational-grid quadratic form is nonnegative for arbitrary real coefficients. Finer resolution adds primitive conductors; it does not preserve the original finite feature dimension. The module is wired into CACT. A final direct audit will include removal of an unreachable tactic.

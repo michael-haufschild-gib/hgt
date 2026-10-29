@@ -93,7 +93,7 @@ theorem arithmeticOverlapCurvature_conditional_quadratic_eq {ι : Type*}
   ring
 
 /-- The real arithmetic distance kernel is conditionally negative. -/
-theorem arithmeticOverlapCurvature_conditional_quadratic_nonpos {ι : Type*}
+theorem arithmeticOverlapCurvature_conditional_quadratic_nonpos_of_nonneg {ι : Type*}
     (s : Finset ι) {m : ℕ} (hm : 1 < m) (a : ι → ℝ) (x : ι → ℝ)
     (hx : ∀ i ∈ s, 0 ≤ x i) (ha : ∑ i ∈ s, a i = 0) :
     (∑ i ∈ s, ∑ j ∈ s,
@@ -101,6 +101,23 @@ theorem arithmeticOverlapCurvature_conditional_quadratic_nonpos {ι : Type*}
   rw [arithmeticOverlapCurvature_conditional_quadratic_eq s m a x ha]
   exact mul_nonpos_of_nonpos_of_nonneg (by norm_num)
     (arithmeticOverlapGram_quadratic_nonneg s hm a x hx)
+
+/-- Translation moves every finite configuration into the nonnegative
+axis, so conditional negativity holds for arbitrary real points. -/
+theorem arithmeticOverlapCurvature_conditional_quadratic_nonpos {ι : Type*}
+    (s : Finset ι) {m : ℕ} (hm : 1 < m) (a : ι → ℝ) (x : ι → ℝ)
+    (ha : ∑ i ∈ s, a i = 0) :
+    (∑ i ∈ s, ∑ j ∈ s,
+      a i * a j * arithmeticOverlapCurvature m |x i - x j|) ≤ 0 := by
+  let R : ℝ := ∑ i ∈ s, |x i|
+  have hx (i : ι) (hi : i ∈ s) : 0 ≤ x i + R := by
+    have hb : |x i| ≤ R := single_le_sum (fun j _ => abs_nonneg (x j)) hi
+    have hn := (neg_le_abs (x i)).trans hb
+    linarith only [hn]
+  have h := arithmeticOverlapCurvature_conditional_quadratic_nonpos_of_nonneg
+    s hm a (fun i => x i + R) hx ha
+  have he : ∀ i j, (x i + R) - (x j + R) = x i - x j := fun _ _ => by ring
+  simpa only [he] using h
 
 /-- On the first unit cell the curvature is exactly linear, with slope
 equal to the number of primitive roots. -/

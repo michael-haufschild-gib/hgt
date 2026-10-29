@@ -256,13 +256,28 @@ the regulator anomaly (AIT).
   `binom(κ_T, 2) + 1` primes one tower carries them all (`ncard_heightBlindPrimes_le`,
   `exists_prime_certifies_height`).
 
+- **A. The explicit schedules reach the index** (`TheExplicitSchedulesReachTheIndex`). On real `C²`
+  compactly supported tests Weil's form is real and symmetric, so `W(f, g) = (Q(f + g) − Q(f − g))/4`
+  (`weilPair_real_eq`), and `Q` is two-sided continuous under synthesis errors whose sup and Lévy
+  bounds vanish (`tendsto_weilQuad_add`); hence Gram matrices of synthesized families converge
+  entrywise (`tendsto_weilGram_of_perturbation`). The atomic Gram matrix
+  `G_N = (W(φ_κ(· − log m), φ_κ(· − log n)))_{m,n≤N}` has at most `κ(K_ζ)` negative squares at
+  every width (`hermNegIndex_atomicGram_le`), and **any** atomic synthesis of a negative family with
+  vanishing errors makes it carry those squares (`eventually_le_hermNegIndex_of_synthesis`). For a
+  Gevrey-`s` profile and a schedule `κ` of Gevrey overlap growth, `hermNegIndex G_N → κ(K_ζ)` in
+  `ℕ∞` (`tendsto_hermNegIndex_atomicGram`); for every `α > 1` the Denjoy–Carleman profile at width
+  `(log log N)^α/N` does it (`dcProfile_atomicGram_reaches_index`). Deciding and reaching coincide
+  for every synthesis-based receiver: the negative family is synthesized in Gram norm, not one test
+  at a time.
+
 Targets:
 
-- **A. Effective completion.** The atomic families of the proven receiver schedules (Gevrey-`s`
-  profiles at `c_N ≫ (log log N)^s`; the Steklov profile at `(log log N)(log log log N)^β`,
-  `β > 2`) reach the whole index: their indices are at most `κ(K_ζ)` at every `N` and eventually
-  at least every `m ≤ κ(K_ζ)`; the slowest schedule that reaches it; a signed transfer between the
-  plateau and the Steklov profile.
+- **A′. The slowest schedule that reaches the index.** The Steklov schedules
+  `(log log N)(log log log N)^β`, `β > 2`, and `L(log L)²log log L`, `L = log log N`, instantiate
+  `eventually_le_hermNegIndex_of_synthesis` once their logarithmic Denjoy–Carleman synthesis bounds
+  are available outside their module; below the quasi-analytic rate a synthesis must use the
+  arithmetic of `{log n}` (Möbius or Ramanujan cell weights) rather than Riemann sums of one
+  profile; a signed transfer between the plateau and the Steklov profile.
 - **C. The bandwidth dictionary.** The Fourier transform of an atomic family is the profile window
   times a Dirichlet polynomial of length `N`; overlap `c` at horizon `N` is height `N/c`, with the
   normalization of the critical-line evaluation fixed.
@@ -284,7 +299,7 @@ Targets:
 
 | Trap | Truth |
 |---|---|
-| Deciding RH is reaching the index | A schedule can decide `κ = 0` and still undercount `κ`; reaching is the stronger statement |
+| Deciding RH is reaching the index | Reaching is the stronger statement; for synthesis-based receivers the two coincide (§7.2 A), because the negative family is synthesized in Gram norm |
 | One prime certifies every height | One prime tower aliases; the Diophantine question is which prime, and fine towers inside `⟨2, 3⟩` certify height `T` explicitly |
 | Bounded overlap suffices | A tempered single-pair configuration is negative at every fixed overlap; the overlap must grow, and the Weil kernel's density is what makes growth work |
 | A finer prime-side statement separates `ζ` from twins | Sign twins have congruent atomic prime forms; selectivity lives in the pole and the archimedean place |
@@ -302,7 +317,12 @@ Targets:
 ## 9. Questions the programme answers
 
 1. **W3: in which topology do sections carry the index, and how fast must the schedule grow?**
+   Entrywise convergence of finite Gram matrices, fed by synthesis in the sup and Lévy norms. Every
+   schedule along which a Riemann-sum synthesis works reaches the index, not only decides RH; the
+   Gevrey and Denjoy–Carleman schedules `(log log N)^α/N`, `α > 1`, do. Open: the slowest schedule.
 2. **Hasse principle with heights: which section certifies all zeros of height at most `T`?**
+   Every tower of scale `ℓ < π/T`, sharply; explicitly the tower of `3^k/2^j` with `k = O(T)`; among
+   prime towers, one of any `binom(κ_T, 2) + 1` primes. Open: a specific prime.
 3. **Bandwidth: how do overlap, length and height translate, and where is the threshold?**
 4. **W14: what can an auxiliary over `ℤ` certify, and where is precision lost?**
 5. **W1: which statements of the theory are selective, and at which scale does selectivity first
@@ -315,13 +335,15 @@ Targets:
 
 ## 10. Tools
 
-To build: effective index carriers for finite exponential sums; bilinear continuity of Weil's form
-in the Lévy norm and Gram-matrix convergence of synthesized families; the bandwidth dictionary; a
+To build: effective index carriers for finite exponential sums; the bandwidth dictionary; a
 signed symbol calculus for the completed shell operator on Ramanujan packets, with composition and
 elimination rules that keep the Schur cost; the flip test on the atomic complete form; constrained
 inversion of the factorial identity; ceilings for integer auxiliaries.
 
-Built: certifying towers of given height in `⟨2, 3⟩` (`TheHassePrincipleWithHeights`).
+Built: certifying towers of given height in `⟨2, 3⟩` (`TheHassePrincipleWithHeights`); the
+polarization of Weil's form on real tests, its two-sided continuity in the synthesis norms,
+Gram-matrix convergence of synthesized families, the compression of real atomic families into the
+atomic Gram matrix, and the transfer from synthesis to index (`TheExplicitSchedulesReachTheIndex`).
 
 ---
 
