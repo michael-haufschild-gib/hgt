@@ -22,6 +22,15 @@ eigenvector has that eigenvalue as the top of its quadratic form (`sum_mul_le_of
 Schur's test). So `D·1 − P_N ≥ 0` iff `D ≥ N log q`: the Robin–Euler ceiling over `𝔽_q` is `N log q`
 with no error term. Over `ℤ` the ceiling is `log N − γ`; Euler's constant is the archimedean defect of
 Mertens' theorem.
+
+**The second rung** (`primeKernelFq_divVec`, `atomFq_two_negative_squares`). For monic `Q`, the pole
+vector restricted to the multiples of `Q` satisfies `P_N u_Q = (N − deg Q) u_Q` on those multiples:
+forward prime powers keep `Q`, and the divisors `h ∣ m` with `Q ∣ m/h` are the divisors of `m/Q`. On
+the span of `v` and `u_Q` the form is then explicit, with `|v|² = N + 1` and
+`|u_Q|² = (N + 1 − deg Q) q^{−deg Q}`, and it is negative definite for
+`D < N − e (N + 1)/(N + 1 − (N + 1 − e) q^{−e})`, `e = deg Q`. As `N → ∞` the threshold tends to
+`N − e q^e/(q^e − 1)`: the index-one window has width at most `(|Q|/(|Q| − 1)) log |Q|`, which at
+`|Q| = 2` is the margin `2 log 2` of the window over `ℤ`.
 -/
 
 open Polynomial Finset
@@ -621,6 +630,3 @@ theorem atomFq_two_negative_squares {N : ℕ} {Q : F[X]} (hQ : Q.Monic) (hQ1 : 1
   rwa [sum_divVec_sq N hQ, sum_poleVec_sq]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms atomFq_two_negative_squares

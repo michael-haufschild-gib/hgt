@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheIntegralityLatticeOfTheHorizon
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheIntegralityExponentIsTheZeroWidth
 import GaloisForLFunctions.HTGeometry.ContinuousSquareIntegralPositive
 
 /-!
@@ -11,7 +12,7 @@ horizon period. Denominator cofactors isolate the leading coefficient from the l
 
 noncomputable section
 
-open Polynomial Finset intervalIntegral
+open Polynomial Finset intervalIntegral Filter Topology
 
 namespace GaloisForLFunctions.ArithmeticOfSquareRootPrecision
 
@@ -143,7 +144,7 @@ private theorem exists_positive_integral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
     ∃ H : ℤ[X], ∃ K : ℤ, Q ∣ H ∧ H.natDegree ≤ 2 * Q.natDegree ∧
       0 < K ∧ nairIntegral H = (K : ℝ) := by
   have hdeg : (Q * Q).natDegree ≤ 2 * Q.natDegree := by
-    simpa only [two_mul] using natDegree_mul_le Q Q
+    simpa only [two_mul] using (natDegree_mul_le (p := Q) (q := Q))
   obtain ⟨K, hK⟩ := ArithmeticEffectivityTheory.exists_int_eq_lcmUpto_mul_integral
     (Q * Q) hdeg
   let d : ℤ := Nat.lcmUpto (2 * Q.natDegree + 1)
@@ -169,7 +170,8 @@ private theorem exists_multiple_nairIntegral_eq_residue (Q H : ℤ[X]) (K : ℤ)
     dvd_sub (dvd_mul_of_dvd_right (dvd_mul_right Q (X ^ j)) _) (dvd_mul_of_dvd_right hH _),
     (natDegree_sub_le _ _).trans (max_le_max ?_ ?_), ?_⟩
   · exact (natDegree_C_mul_le _ _).trans
-      ((natDegree_mul_le _ _).trans (Nat.add_le_add_left (natDegree_X_pow_le j) _))
+      ((natDegree_mul_le (p := Q) (q := X ^ j)).trans
+        (Nat.add_le_add_left (natDegree_X_pow_le j) _))
   · exact (natDegree_C_mul_le _ _).trans hdegH
   · rw [nairIntegral_sub, nairIntegral_C_mul, nairIntegral_C_mul,
       nairIntegral_mul_X_pow, hintH, Int.cast_mul]
@@ -218,7 +220,7 @@ private theorem exists_uniform_reciprocal_multiples {Q : ℤ[X]} (hQ : Q ≠ 0) 
     · have := (mem_Icc.mp hk).2
       omega
     · rw [nairIntegral_C_mul, hintP, hj]
-      push_cast
+      simp only [Int.cast_mul, Int.cast_natCast]
       have hσ' : (σ : ℝ) * (A : ℝ) = (|A| : ℤ) := by exact_mod_cast hσ
       change (σ : ℝ) * (d : ℝ) * ((K : ℝ) * (A : ℝ) / k) =
         (K : ℝ) * (|A| : ℤ) * (d : ℝ) / k
@@ -256,5 +258,82 @@ theorem exists_uniform_nairIntegral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
         rw [← mul_sum, hc]
         simp only [Nat.lcmUpto, id_eq]
         ring
+
+/-- The Siegel existence criterion with the auxiliary restricted to the ideal `(Q)`. -/
+def IdealSiegelHalf (Q : ℤ[X]) (φ : ℝ → ℝ) : Prop :=
+  ∃ C₀ : ℝ, ∀ᶠ n : ℕ in atTop, ∃ P : ℤ[X], Q ∣ P ∧ P.natDegree ≤ n ∧
+    0 < nairIntegral P ∧
+      nairIntegral P ≤ Real.exp (-((n + 1 : ℕ) : ℝ) + C₀ * φ (n + 1 : ℕ))
+
+/-- The Liouville lower-bound criterion restricted to the ideal `(Q)`. -/
+def IdealLiouvilleHalf (Q : ℤ[X]) (φ : ℝ → ℝ) : Prop :=
+  ∃ C₀ : ℝ, ∀ᶠ n : ℕ in atTop, ∀ P : ℤ[X], Q ∣ P → P.natDegree ≤ n →
+    0 < nairIntegral P →
+      Real.exp (-((n + 1 : ℕ) : ℝ) - C₀ * φ (n + 1 : ℕ)) ≤ nairIntegral P
+
+private theorem uniform_numerator_exp (C₀ : ℤ) (hC₀ : 0 < C₀) (N : ℕ) :
+    (C₀ : ℝ) / (Nat.lcmUpto N : ℕ) =
+      Real.exp (Real.log (C₀ : ℝ) - Chebyshev.psi N) := by
+  rw [Real.exp_sub, Real.exp_log (by exact_mod_cast hC₀), Chebyshev.psi_eq_log_lcmUpto,
+    Real.exp_log (by exact_mod_cast Nat.lcmUpto_pos N)]
+
+/-- Fixed polynomial divisibility preserves the Siegel half at every admissible scale. -/
+theorem idealSiegelHalf_iff {Q : ℤ[X]} (hQ : Q ≠ 0) {φ : ℝ → ℝ}
+    (hφ : AdmissibleScale φ) : IdealSiegelHalf Q φ ↔ SiegelHalf φ := by
+  constructor
+  · rintro ⟨C₀, hC₀⟩
+    exact ⟨C₀, hC₀.mono fun n ⟨P, _, hP, hpos, hle⟩ => ⟨P, hP, hpos, hle⟩⟩
+  · intro hs
+    obtain ⟨B, hB⟩ := (siegelHalf_iff φ).mp hs
+    obtain ⟨C₀, hC₀, hC⟩ := exists_uniform_nairIntegral_multiple hQ
+    have hlog : 0 ≤ Real.log (C₀ : ℝ) :=
+      Real.log_nonneg (by exact_mod_cast (show (1 : ℤ) ≤ C₀ by omega))
+    refine ⟨B + Real.log (C₀ : ℝ), ?_⟩
+    filter_upwards [hB, tendsto_succ_cast_atTop.eventually hφ.eventually_one_le,
+      eventually_ge_atTop (2 * Q.natDegree)] with n hn hφn hdeg
+    obtain ⟨P, hP, hdegP, hint⟩ := hC n hdeg
+    refine ⟨P, hP, hdegP, ?_, ?_⟩
+    · rw [hint]
+      exact div_pos (by exact_mod_cast hC₀) (by exact_mod_cast Nat.lcmUpto_pos _)
+    · rw [hint, uniform_numerator_exp C₀ hC₀]
+      apply Real.exp_le_exp.mpr
+      have hmul := mul_le_mul_of_nonneg_left hφn hlog
+      nlinarith only [hn, hmul]
+
+/-- Fixed polynomial divisibility preserves the Liouville half at every admissible scale. -/
+theorem idealLiouvilleHalf_iff {Q : ℤ[X]} (hQ : Q ≠ 0) {φ : ℝ → ℝ}
+    (hφ : AdmissibleScale φ) : IdealLiouvilleHalf Q φ ↔ LiouvilleHalf φ := by
+  constructor
+  · rintro ⟨B, hB⟩
+    obtain ⟨C₀, hC₀, hC⟩ := exists_uniform_nairIntegral_multiple hQ
+    have hlog : 0 ≤ Real.log (C₀ : ℝ) :=
+      Real.log_nonneg (by exact_mod_cast (show (1 : ℤ) ≤ C₀ by omega))
+    apply (liouvilleHalf_iff φ).mpr
+    refine ⟨B + Real.log (C₀ : ℝ), ?_⟩
+    filter_upwards [hB, tendsto_succ_cast_atTop.eventually hφ.eventually_one_le,
+      eventually_ge_atTop (2 * Q.natDegree)] with n hn hφn hdeg
+    obtain ⟨P, hP, hdegP, hint⟩ := hC n hdeg
+    have hpos : 0 < nairIntegral P := by
+      rw [hint]
+      exact div_pos (by exact_mod_cast hC₀) (by exact_mod_cast Nat.lcmUpto_pos _)
+    have hbound := hn P hP hdegP hpos
+    rw [hint, uniform_numerator_exp C₀ hC₀] at hbound
+    have hexp := Real.exp_le_exp.mp hbound
+    have hmul := mul_le_mul_of_nonneg_left hφn hlog
+    nlinarith only [hexp, hmul]
+  · rintro ⟨B, hB⟩
+    exact ⟨B, hB.mono fun n hn P _ hdeg hpos => hn P hdeg hpos⟩
+
+/-- Every fixed nonzero polynomial ideal has the same square-root Siegel criterion: RH. -/
+theorem riemannHypothesis_iff_idealSiegelHalf {Q : ℤ[X]} (hQ : Q ≠ 0) :
+    RiemannHypothesis ↔ IdealSiegelHalf Q sqrtScale := by
+  rw [idealSiegelHalf_iff hQ admissibleScale_sqrtScale,
+    riemannHypothesis_iff_siegelHalf_sqrtScale]
+
+/-- Every fixed nonzero polynomial ideal has the same square-root Liouville criterion: RH. -/
+theorem riemannHypothesis_iff_idealLiouvilleHalf {Q : ℤ[X]} (hQ : Q ≠ 0) :
+    RiemannHypothesis ↔ IdealLiouvilleHalf Q sqrtScale := by
+  rw [idealLiouvilleHalf_iff hQ admissibleScale_sqrtScale,
+    riemannHypothesis_iff_liouvilleHalf_sqrtScale]
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision

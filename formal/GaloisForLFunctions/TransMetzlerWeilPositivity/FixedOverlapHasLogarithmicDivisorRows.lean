@@ -135,18 +135,19 @@ theorem plateauSuccessorFiber_eq {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N)
     field_simp
   rw [hlag]
   field_simp [hc.ne', hN0.ne']
-  ring
 
 private theorem nat_succ_real_atTop :
     Tendsto (fun N : ℕ => ((N + 1 : ℕ) : ℝ)) atTop atTop := by
   apply tendsto_atTop_mono' atTop _ tendsto_natCast_atTop_atTop
-  exact Eventually.of_forall fun N => by exact_mod_cast Nat.le_succ N
+  exact Eventually.of_forall fun N => by
+    change (N : ℝ) ≤ ((N + 1 : ℕ) : ℝ)
+    exact_mod_cast Nat.le_succ N
 
 private theorem tendsto_sqrt_nat_div_succ :
     Tendsto (fun N : ℕ => Real.sqrt ((N : ℝ) / (N + 1 : ℕ))) atTop (𝓝 1) := by
-  have h : Tendsto (fun N : ℕ => 1 - 1 / (N + 1 : ℕ)) atTop (𝓝 1) := by
+  have h : Tendsto (fun N : ℕ => (1 : ℝ) - 1 / (N + 1 : ℕ)) atTop (𝓝 1) := by
     simpa only [sub_zero] using tendsto_const_nhds.sub
-      (show Tendsto (fun N : ℕ => 1 / (N + 1 : ℕ)) atTop (𝓝 0) from
+      (show Tendsto (fun N : ℕ => (1 : ℝ) / (N + 1 : ℕ)) atTop (𝓝 0) from
         tendsto_const_nhds.div_atTop nat_succ_real_atTop)
   have heq : ∀ N : ℕ, 1 - 1 / (N + 1 : ℕ) = (N : ℝ) / (N + 1 : ℕ) := by
     intro N
@@ -174,7 +175,6 @@ theorem tendsto_plateauSuccessorFiber_div_log {c : ℝ} (hc : 0 < c) :
   rw [plateauSuccessorFiber_eq hc hN]
   dsimp only [Function.comp_def]
   field_simp
-  ring
 
 /-- One non-ratio divisor fiber already diverges at every fixed overlap `c>1`. -/
 theorem plateauSuccessorFiber_atTop {c : ℝ} (hc : 1 < c) :

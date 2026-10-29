@@ -121,7 +121,10 @@ theorem superGevrey_ratio_at_height_equivalent {β : ℝ} (hβ : 2 < β) :
   have hlll := hll.log loglog_nat_atTop
   have hquot := (isEquivalent_iff_tendsto_one
     (logloglog_nat_atTop.eventually_ne_atTop 0)).mp hlll
-  have hp := hquot.rpow_const (Or.inl (one_ne_zero : (1 : ℝ) ≠ 0))
+  have hp : Tendsto (fun N : ℕ =>
+      (Real.log (Real.log (Real.log (superGevreyHeight β N))) /
+        Real.log (Real.log (Real.log N))) ^ β) atTop (𝓝 ((1 : ℝ) ^ β)) :=
+    hquot.rpow_const (Or.inl (one_ne_zero : (1 : ℝ) ≠ 0))
   rw [Real.one_rpow] at hp
   have hHlll := Real.tendsto_log_atTop.comp (Real.tendsto_log_atTop.comp
     (Real.tendsto_log_atTop.comp (superGevreyHeight_atTop hβ)))

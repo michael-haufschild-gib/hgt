@@ -266,6 +266,11 @@ fails.
     exact eigenvector with eigenvalue `N log q`. A nonnegative symmetric kernel with a positive
     eigenvector has that eigenvalue as the top of its form (Schur's test), so the ceiling is exactly
     `N log q`. Euler's constant in the ceiling over `ℤ` is the archimedean defect of Mertens' theorem.
+    The second rung is exact in the same way: the pole vector cut down to the multiples of a monic `Q`
+    is an eigenvector of energy `N − deg Q` on those multiples, because the divisors `h ∣ m` with
+    `Q ∣ m/h` are the divisors of `m/Q`. Its span with the pole vector carries two negative squares
+    below `N − e q^e/(q^e − 1) + o(1)`, so the index-one window over `𝔽_q[T]` has width at most
+    `(|Q|/(|Q| − 1)) log |Q|` for the smallest `|Q| = q`; at `|Q| = 2` this is the `2 log 2` of `ℤ`.
 15. **Pointwise-closed statements are twin-blind.** Both `n ↦ n^{iτ}` and `λ` are completely
     multiplicative, so the Kronecker times with `p^{iτ_m} → −1` give `n^{iτ_m} → λ(n)` for every `n`:
     the twin `λ a` is a pointwise limit of the shifts `a(n) n^{iτ}`. A set of weights closed for
@@ -319,6 +324,9 @@ fails.
 4. *The exact function-field ceiling* (`powerSumW_one_eq`, `sum_primePower_weight_eq`,
    `primeKernelFq_poleVec`, `sum_mul_le_of_pos_eigenvector`, `atomFq_nonneg_iff`): on monic
    polynomials of degree `≤ N` over `𝔽_q`, `D·1 − P_N ≥ 0` iff `D ≥ N log q`.
+   *The second rung* (`primeKernelFq_divVec`, `atomFq_neg_on_span`, `atomFq_two_negative_squares`):
+   two negative squares below `N − e(N + 1)/(N + 1 − (N + 1 − e)q^{−e})` (units of `log q`), for any
+   monic `Q` of degree `e`.
 5. *Wave formula* (`card_le_of_bounded_sub_waves`, `exists_waves_bounded`, `negIndex_eq_card_waves`):
    the index is the least number of exceptional waves of a bounded count along a separating tower;
    minimal counts are rigid: their waves are the outer nodes with the pair weights
@@ -525,7 +533,9 @@ To build:
    uniform in the truncation (equivalent to finite support; LH-deep).
 7. **The atomic index ladder over `𝔽_q`**: the function-field analogue of the index-one window and of
    the margin `2 log 2`. The top rung is exact (`atomFq_nonneg_iff`: the ceiling is `N log q`, no
-   `γ`); open are the second eigenvalue of `P_N` over `𝔽_q[T]` and the width of the index-one window.
+   `γ`), and two negative squares are certified below `N − q/(q − 1) + o(1)`
+   (`atomFq_two_negative_squares`). Open is the matching upper bound: positivity on the pole hyperplane
+   above that threshold, which would make the window width exactly `(q/(q − 1)) log q`.
 
 ---
 

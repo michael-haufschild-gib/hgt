@@ -94,3 +94,10 @@
 - `Suzuki/SuzukiWallFieldLightConeKernelCompletion.lean:134,421`: the reflected wall current plus the negative-light Gram equals the positive-light Gram, including every finite prime-power and height packet. Both light matrices are positive semidefinite; their difference need not be.
 - `TransThresholdPairCorrelation/ParitySensitiveRamanujanStabilizerTransfer.lean:836`: the actual odd/even prime coalescent sum equals its stabilizer model plus its signed discrepancy, with every cutoff and weight retained.
 
+# Theta successors, cluster positivity, and count averages
+
+- `ThetaCusp/ThetaCuspCenterMixedSixPointCluster.lean:85`: for every `0 < a < 1/2`, one positive diameter bound makes every injective six-node packet positive definite. The bound is uniform over relative node spacings.
+- `ThetaCusp/ThetaCuspCenterMixedSuccessorSource.lean:76`: when the actual signed Hankel section of order `n` is positive definite, its successor is positive semidefinite exactly when `∫_(0,∞) r sinh(a r) thetaCuspNativeSuccessorSource(a,n,r/2) dr ≥ 0`. Order-seven strictness supplies the head premise at `n = 7`.
+- `RHTower/LiEvenCrossActualClockTerminalHistory.lean:248`: the actual guarded-zero set is finite unconditionally, not merely bounded.
+- `RHTower/NormalizedChebyshevCesaroAndSqrtRieszBridge.lean:592`: `S(M)=Σ_(2≤n<M) (ψ(n)-n)/√n`. A global upper bound `S(M) ≤ C M` is equivalent to RH (:801), as is a global lower bound `-C M ≤ S(M)` (:836).
+
