@@ -68,10 +68,10 @@ theorem hermQuad_nonneg_of_fine_zpowers {k : Multiplicative ℝ → ℂ}
       have := h n m (fun a => Multiplicative.ofAdd (N n a)) c
       convert this using 2
       ext a b
-      simp only [gram, Function.comp_apply, zpowersHom_apply, toAdd_ofAdd]
+      simp only [gram, Function.comp_apply, zpowersHom_apply]
       congr 1
       apply Multiplicative.toAdd.injective
-      simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd, toAdd_zpow, smul_eq_mul]
+      simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd, toAdd_zpow]
       push_cast; ring
   -- the Gram entries converge
   have hentry : ∀ a b, Tendsto (fun n => k ((Multiplicative.ofAdd ((N n a : ℝ) * s n))⁻¹ *
@@ -188,8 +188,3 @@ theorem riemannHypothesis_iff_zetaKernel_consecutive :
       cubicSpline_mem_realTests h).negIndex_eq_zero
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms riemannHypothesis_iff_zetaKernel_consecutive
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms isPosDefKernel_orbitKernel_of_consecutive

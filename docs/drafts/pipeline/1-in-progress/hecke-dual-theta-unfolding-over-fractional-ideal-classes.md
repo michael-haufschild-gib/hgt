@@ -102,8 +102,8 @@ The existing class weight and Poisson scalar then cancel the base norm
 and character factors exactly, yielding the completed reflection recorded
 on the parent card.
 
-No fractional orbit equivalence, dual Mellin exchange, or normalized
-reflection is yet claimed as formalized here. Raw completed zero-mode
+The fractional orbit equivalence is now formalized. Dual Mellin exchange
+and normalized reflection remain open. Raw completed zero-mode
 cancellation remains on its separate active card.
 
 The full fractional orbit construction is now written in
@@ -113,7 +113,9 @@ with global units, and exact generator/orbit norms. After correcting an
 embedding-coercion rewrite and product extensionality, both main
 transitive axiom audits pass with standard axioms only. The permanent
 source is `HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`;
-its final direct source audit is pending. This is a reusable construction
+its final direct source audit passes without warnings. See
+[the completed orbit proof](../3-formalized/fractional-ideal-elements-are-class-unit-orbits.md).
+This is a reusable construction
 for every invertible fractional ideal, independent of the Hecke Fourier
 coefficients. It also proves countability of the inverse-class ideal index.
 
@@ -122,6 +124,9 @@ the proposed permanent orbit module and the finalized coefficient and
 discriminant-norm modules. It identifies the selected orbit generator's
 frequency ideal with the orbit index and specializes both the exact norm
 and the inverse-character coefficient. This consumer is not yet compiled.
+It now also proves the exact ordinary-class law
+`[J_b]⁻¹=[J_1]⁻¹[b]` directly from `J_b*b=J_1`, and constructs the
+resulting class permutation `c↦[J_1]⁻¹c⁻¹`.
 
 The field-element Mellin extension is written in
 `/tmp/HeckeFieldElementMellinScratch.lean`. It uses the actual parity kernel
@@ -165,9 +170,9 @@ translation tile formulas. It has not yet been compiled.
 - `HeckeConductorsAndParitiesAreInvariantUnderInversion.lean`: finalized;
   final source audit and main transitive axiom audits pass. Its generic
   conductor dependency is finalized and has its consumer olean built.
-- `HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`: complete
-  scratch passed both main transitive audits; permanent-source check
-  running, consumer olean pending.
+- `HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`: finalized;
+  final source and both main transitive axiom audits pass. Required
+  consumer olean is built.
 - `/tmp/HeckeDualFractionalClassScratch.lean`: written; needs the orbit,
   inverse-coefficient, and trace-dual-norm consumer oleans before checking.
 - `/tmp/HeckeFieldElementMellinScratch.lean`: written, unchecked; imports
@@ -178,6 +183,43 @@ translation tile formulas. It has not yet been compiled.
   imports existing unit-domain and absolute-periodization infrastructure.
 
 The inverse-coefficient and trace-dual-norm sources have passed final
-audits; only their required consumer oleans remain to be produced.
+audits. The inverse-coefficient consumer olean is built; the trace-dual
+norm consumer olean is building.
 No dual class Mellin identity or completed functional equation is yet
 claimed from the unchecked files above.
+
+## Actual-family unfolding after the queued checks
+
+For each dual class ideal `I`, let
+`F_I(x)=F_b(g_I)*heckeParityKernel(ψ,-weightedProfile(x),t,g_I)`.
+For a lattice point `l`, choose the unit corresponding to `(1,l)` under
+the proved torsion/log-lattice equivalence. The map
+`(I,l)↦u_l*g_I` into the actual trace-dual ideal is injective by the new
+fractional orbit equivalence. Composing the existing dual Gaussian
+majorant with this injection gives a summable majorant on `(I,l)`.
+On the unit domain, the bound for `-weightedProfile(x)` follows from
+the existing absolute coordinate bound. The drafted negative-profile
+covariance identifies its summand with `F_I(x+l)`.
+
+Remove the actual zero term from the dual theta sum, reindex nonzero
+frequencies by the class/unit equivalence, and reindex units by torsion
+times the logarithm lattice. Covariance makes the torsion coordinate
+constant, yielding its exact cardinality `torsionOrder K`. Apply the
+joint-family unfolding theorem to obtain
+
+```
+dualAverage(t) - regulator*dualZeroMode
+  = torsionOrder * sum_I integral_over_logSpace F_I.
+```
+
+The queued field-element Mellin proof now also contains Haar-negation
+invariance, so these whole-space negative-profile integrals reduce to
+the positive-profile Mellin formula with the same sign and norm factors.
+The exact dual generator norm and coefficient then give the common
+Gauss/base/fractional-norm factor times the inverse-character ideal term.
+Absolute ideal-series convergence supplies the remaining Mellin exchange.
+
+For comparison with the dual weak-pair continuation on all `Re(s)>1`,
+follow the proved primal argument: parity degree zero gives the weak
+pair's real-part inequality; nonzero parity gives a strong pair and hence
+its Mellin identity at every argument. Apply this to the symmetric pair.

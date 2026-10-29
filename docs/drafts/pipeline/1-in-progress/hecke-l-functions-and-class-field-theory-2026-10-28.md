@@ -647,3 +647,10 @@ the reusable `FiniteRingConductorsAreInvariantUnderInversion.lean`.
 The finite conductor, infinite sign component, Gamma factor, and both
 Mellin normalizations agree for the inverse character. Both final source
 audits pass without warnings; all main transitive audits are standard only.
+
+`HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean` now gives the
+actual nonzero fractional-ideal orbit equivalence, countable integral
+class index, and exact field-norm formula for every unit orbit. Both main
+transitive audits are standard only; final source audit passes without
+warnings. Its specialization to dual Hecke frequencies and the actual
+dual Mellin unfolding remain under verification.

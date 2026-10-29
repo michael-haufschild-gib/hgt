@@ -231,3 +231,19 @@ The remaining residue-field identification needs proof: equal-degree numerator
 and denominator have a unique scalar leading-coefficient ratio, since the two
 possible leading weights `2 deg p` and `2 deg q+3` have opposite parity. Subtracting
 that scalar lowers degree. This will identify the residue field with `F₃`.
+
+## Identifying finite places with the affine curve `[PAPER PROOF]`
+
+The integral closure `O` above equals the actual affine coordinate ring `A`.
+Write an integral element of `K` uniquely as `z=p+qy`, with `p,q∈F₃(x)`.
+Quadratic conjugation sends `y` to `−y` and preserves integrality over `F₃[x]`.
+Thus `2p=z+σz` and `p²−(x³−x)q²=zσz` are integral over `F₃[x]`.
+The base polynomial ring is integrally closed and `2` is a unit, so `p∈F₃[x]`
+and `(x³−x)q²∈F₃[x]`. Write `q=a/b` in coprime polynomial terms. Then
+`b²|(x³−x)a²`, whence coprimality gives `b²|(x³−x)`. The proved squarefreeness
+of `x³−x` forces `b` to be a unit. Hence `q∈F₃[x]` and `z∈A`.
+Conversely `A` is finite over `F₃[x]`, so all its elements are integral.
+
+This elementary trace/norm argument avoids assuming normality of the curve or
+an unproved smooth-to-normal bridge. Its Lean proof is still required before
+using the identification in the Euler product or the adelic quotient measure.

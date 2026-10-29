@@ -32,8 +32,9 @@ theorem sl2_pivot_upper_left (g : SL2 K) (a : Kˣ) (ha : g 0 0 = (a : K)) :
   fin_cases i <;> fin_cases j <;>
     simp [sl2Lower, sl2Upper, sl2Diagonal, Matrix.SpecialLinearGroup.coe_mul,
       Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two, ha, Units.val_inv_eq_inv_val, a.ne_zero]
-  field_simp
-  linear_combination hd
+  all_goals field_simp
+  all_goals ring_nf
+  all_goals linear_combination hd
 
 /-- Eliminate about the lower-right entry using an upper and a lower shear. -/
 theorem sl2_pivot_lower_right (g : SL2 K) (a : Kˣ) (ha : g 1 1 = (a : K)) :
@@ -45,8 +46,9 @@ theorem sl2_pivot_lower_right (g : SL2 K) (a : Kˣ) (ha : g 1 1 = (a : K)) :
   fin_cases i <;> fin_cases j <;>
     simp [sl2Lower, sl2Upper, sl2Diagonal, Matrix.SpecialLinearGroup.coe_mul,
       Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two, ha, Units.val_inv_eq_inv_val, a.ne_zero]
-  field_simp
-  linear_combination hd
+  all_goals field_simp
+  all_goals ring_nf
+  all_goals linear_combination hd
 
 /-- Eliminate about the lower-left entry using two upper shears. -/
 theorem sl2_pivot_lower_left (g : SL2 K) (a : Kˣ) (ha : g 1 0 = (a : K)) :
@@ -58,8 +60,9 @@ theorem sl2_pivot_lower_left (g : SL2 K) (a : Kˣ) (ha : g 1 0 = (a : K)) :
   fin_cases i <;> fin_cases j <;>
     simp [sl2Upper, sl2WeylLower, Matrix.SpecialLinearGroup.coe_mul,
       Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two, ha, Units.val_inv_eq_inv_val, a.ne_zero]
-  field_simp
-  linear_combination -hd
+  all_goals field_simp
+  all_goals ring_nf
+  all_goals linear_combination -hd
 
 /-- Eliminate about the upper-right entry using two lower shears. -/
 theorem sl2_pivot_upper_right (g : SL2 K) (a : Kˣ) (ha : g 0 1 = (a : K)) :
@@ -71,8 +74,9 @@ theorem sl2_pivot_upper_right (g : SL2 K) (a : Kˣ) (ha : g 0 1 = (a : K)) :
   fin_cases i <;> fin_cases j <;>
     simp [sl2Lower, sl2WeylLower, Matrix.SpecialLinearGroup.coe_mul,
       Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two, ha, Units.val_inv_eq_inv_val, a.ne_zero]
-  field_simp
-  linear_combination -hd
+  all_goals field_simp
+  all_goals ring_nf
+  all_goals linear_combination -hd
 
 end
 

@@ -89,12 +89,12 @@ arithmetic lattice, measure, or Eisenstein convergence by itself.
 
 ## Implementation checkpoint
 
-`LaurentIwahoriCriteria` contains the valuation criterion, integral matrix
-recovery, both permitted shear families, and actual monomial/unit splitting.
-Its first check exposed an implicit matrix coercion at the determinant; that
-step is now explicit, with the finite matrix simplification corrected.
-Recheck pending. `SL2PivotReduction` contains all four elimination identities;
-its first check requires expanding the residual vector-matrix multiplication
-before the field identities. `IwahoriBruhatExistence` contains the double-coset
-relation, monomial normalization, and exhaustive valuation pivot cases; it is
-not yet checked and its final existence theorem remains to be added.
+`LaurentIwahoriCriteria` compiles without warnings at ordinary limits,
+including exact Iwahori valuation membership and Laurent-unit factorization.
+`SL2PivotReduction` contains all four elimination identities; remaining
+checks concern the normalization of their elementary field equalities.
+`IwahoriBruhatExistence` contains the complete existence proof, valuation
+pivot case split, and double-coset normalization, awaiting its dependencies
+and first check. `MatrixValuationContent` and `IwahoriLatticeChain` contain
+the entry-valuation bounds and adjacent-lattice preservation; neither has
+been checked yet. Uniqueness and the central lift remain to be implemented.
