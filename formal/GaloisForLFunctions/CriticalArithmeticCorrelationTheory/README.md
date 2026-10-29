@@ -393,6 +393,53 @@ positivity result above. Beyond ratio one, additional integer interactions and
 the overlapping atom Gram must be handled together; the single-star
 classification no longer applies.
 
+## A conductor-uniform arithmetic curvature floor
+
+For a nontrivial conductor `m>1`, define the literal primitive-root energy
+and its real arithmetic curvature by
+
+\[
+P_m(k)=\sum_{\zeta\text{ primitive of order }m}
+ \left|\sum_{j=0}^{k-1}\zeta^j\right|^2,
+\qquad
+A_m(t)=\sum_{d\mid m}\mu(m/d)d^2
+ \{t/d\}(1-\{t/d\}).
+\]
+
+Finite root orthogonality and Möbius inversion give the exact identity
+
+\[
+P_m(k)=\sum_{d\mid m}\mu(m/d)(k\bmod d)(d-k\bmod d).
+\]
+
+The constant mode cancels for `m>1`. On every real cell `k+u`, with
+`k≥0` an integer and `0≤u<1`, the same cancellation removes the quadratic
+coefficient and gives
+
+\[
+A_m(k+u)=(1-u)P_m(k)+uP_m(k+1).
+\]
+
+The prefix energy vanishes exactly when `m` divides `k`. Otherwise the
+geometric prefix is a nonzero cyclotomic integer. Its nonzero integral norm
+has absolute value at least one; its embeddings run through all primitive
+roots. Applying the arithmetic–geometric mean to their squared magnitudes
+therefore proves `P_m(k)≥φ(m)`. Consecutive integers cannot both be conductor
+multiples. Interpolation consequently yields the simultaneous bound
+
+\[
+\frac{A_m(t)}{\varphi(m)}\ge\{t\}(1-\{t\})\ge0
+\qquad(m>1,\ t\ge0).
+\]
+
+The exact identities and vanishing classification are in
+[PrimitiveRootPrefixEnergyIsAMobiusQuadraticRemainder](PrimitiveRootPrefixEnergyIsAMobiusQuadraticRemainder.lean).
+The norm argument and conductor-uniform floor are in
+[CyclotomicNormGivesAConductorUniformCurvatureFloor](CyclotomicNormGivesAConductorUniformCurvatureFloor.lean).
+These are finite arithmetic theorems. Identifying an integral of this
+curvature with a complete overlapping spectral symbol, and realizing that
+symbol in the full operator with an exhaustive norm estimate, remain open.
+
 ## Questions and tools to develop
 
 **Arithmetic overlap analysis.** What new low modes appear as overlap grows? The surrounding

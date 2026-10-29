@@ -88,7 +88,8 @@ theorem finiteCompletion_approx_integer (v : FinitePlace)
     exact (div_le_one₀ (zero_lt_iff.mpr ((Valuation.ne_zero_iff _).mpr hD))).mpr hcd
   refine ⟨c, ?_⟩
   have h := add_mem hz hzc
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 /-- Every finite adele differs from an actual rational function by an integral adele. -/
 theorem finiteAdele_exists_integral_difference (a : FiniteAdeles) :

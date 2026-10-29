@@ -14,9 +14,10 @@ Gamma factors, primal class-series Mellin identities, primal finite class
 recombination, and global ordinary-L continuation are formalized. The
 actual primitive Fourier coefficients are now identified with inverse
 Hecke ideal values, and their Gauss norms and discriminant normalization
-are proved. Actual dual Mellin unfolding is also finalized. Remaining
-obligations are dual class recombination, completed removable values, and normalized
-reflection. Their complete drafts are under verification on the
+are proved. Actual dual Mellin unfolding, completed removable values,
+and exact arithmetic normalization are also finalized. Remaining
+obligations are dual class recombination and normalized reflection.
+Their existing complete draft is under verification on the
 [dual unfolding card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
 
 ## Search leads checked
@@ -82,8 +83,10 @@ and audited. Neither is an assumed arithmetic interface.
    class/unit orbits, actual dual unit unfolding, infinite Mellin exchange,
    and identification with the symmetric continuation are finalized; see
    [the dual Mellin proof](../3-formalized/hecke-dual-averaged-mellin-is-the-inverse-class-series.md).
-5. Assemble the completed reflection with the exact discriminant,
-   conductor and parity factors, and audit the root number.
+5. **Normalization done; reflection under verification:** exact discriminant,
+   conductor and parity cancellation and unit root-number norm are finalized
+   in `HeckeCompletionFactorsHaveExactArithmeticNormalization`. The existing
+   finite class recombination and global reflection draft remains to be checked.
 
 HL6, including both forms of the Mertens bounds, is fully audited.
 This arithmetic functional-equation work is the next Hecke gate;

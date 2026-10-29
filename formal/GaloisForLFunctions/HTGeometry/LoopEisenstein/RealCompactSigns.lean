@@ -189,7 +189,7 @@ theorem enlargedSimpleCompact_sup : enlargedSimpleCompact false ⊔ enlargedSimp
       exact Subgroup.mem_sup_left (rotation_mem_enlargedSimpleCompact false ⟨k, hk⟩)
     · rintro g ⟨k, hk, rfl⟩
       exact Subgroup.mem_sup_right (rotation_mem_enlargedSimpleCompact true ⟨k, hk⟩)
-  · apply Subgroup.closure_le.2
+  · apply (Subgroup.closure_le _).2
     intro g hg
     have he : g = centralEmbedding ℝ (-1) := Set.mem_singleton_iff.1 hg
     rw [he]

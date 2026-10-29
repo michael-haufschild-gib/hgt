@@ -82,7 +82,7 @@ theorem sum_vonMangoldt_mul_ramanujan_eq_log_sub_jet (m : ℕ) {n : ℕ} (hn : 0
     exact sum_congr rfl fun a _ => by split_ifs <;> ring
   rw [he, sum_vonMangoldt_quotient_filter hn hd0]
   by_cases hdn : d ∣ n
-  · rw [if_pos hdn]
+  · simp only [if_pos hdn]
     have hnd : 0 < n / d := Nat.div_pos (Nat.le_of_dvd hn hdn) hd0
     have hlog : Real.log (n / d : ℕ) + Real.log d = Real.log n := by
       rw [← Real.log_mul (by exact_mod_cast hnd.ne') (by exact_mod_cast hd0.ne'),

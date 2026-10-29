@@ -15,9 +15,10 @@ theory work or additional theorem development is authorized in this closeout.
 
 Arithmetic coefficients, fractional class/unit orbits, actual dual unit
 unfolding, exact class Mellin integrals, infinite Mellin exchange, and
-symmetric theta-continuation identification are finalized. Scalar/class
-recombination, completed removable values, and global reflection have
-complete drafts but remain under verification. **HL7 remains open. Class field theory has not begun.**
+symmetric theta-continuation identification, completed removable values,
+and arithmetic normalization are finalized. Finite class recombination
+and global reflection have a complete draft under verification.
+**HL7 remains open. Class field theory has not begun.**
 
 Every finalized module below passes its final direct source audit without
 warnings. Its recorded transitive axiom audits contain only `propext`,
@@ -154,7 +155,7 @@ in `HeckeDualAveragedMellinIsTheInverseClassSeries`. Both main transitive
 axiom audits and the final direct source audit pass without warnings.
 See [the exact averaged Mellin proof](../3-formalized/hecke-dual-averaged-mellin-is-the-inverse-class-series.md).
 
-## Exact global scalar — draft
+## Exact global scalar — formalized
 
 Write `D=|disc K|`, `N=Norm(m)`, `B=Norm(b)`, `delta=D*N`, and
 `d=parityDegree`. The factors are
@@ -175,14 +176,16 @@ Cψ (-i)^d delta^s/(N sqrt(D)).
 After multiplying by `delta^((1-s)/2)` and extracting the inverse
 completion factor `delta^(s/2)`, the remaining scalar is
 `Wψ=Cψ(-i)^d/sqrt(N)`. The proved Gauss norm gives `||Wψ||=1`.
-All scalar identities are drafted, not yet verified, in
-`/tmp/HeckeCompletedReflectionFactorsScratch.lean`.
+All scalar identities are finalized in
+`HeckeCompletionFactorsHaveExactArithmeticNormalization`. Its final direct
+source audit and all three main transitive axiom audits pass without
+warnings. See [the exact scalar proof](../3-formalized/hecke-completion-factors-have-exact-arithmetic-normalization.md).
 
 Checked sources include `Complex.inv_cpow`, `Complex.mul_cpow_ofReal_nonneg`,
 `Complex.ofReal_cpow`, `NumberField.discr_ne_zero`, and `Nat.cast_natAbs`.
-New uses remain in scratch until verified.
+Their normalization uses are now verified in the finalized Lean module.
 
-## Completed removable values and global reflection — drafts
+## Completed removable values and the remaining reflection draft
 
 Raw completed-theta numerators must be treated before reciprocal Gamma
 removal. The [completed residue card](../3-formalized/hecke-unramified-character-descent-and-residue-cancellation.md)
@@ -217,20 +220,17 @@ Finalized with consumer oleans built:
 - `HeckeConductorsAndParitiesAreInvariantUnderInversion`
 - `HeckeCompletedThetaResiduesCancel`
 - `HeckeGammaCompletedFunctionsHaveRemovableValues`
+- `HeckeCompletionFactorsHaveExactArithmeticNormalization`
 
 Finalized, required consumer olean pending:
 - `HeckeDualAveragedMellinIsTheInverseClassSeries`.
 
 Current check:
-- `/tmp/HeckeCompletedReflectionFactorsScratch.lean`: corrected check running.
-  The first check required unfolding four local real-valued norm aliases
-  before `exact_mod_cast`; all other proof steps elaborated. The
-  completed-function dependency's consumer olean passed.
+- `HeckeDualAveragedMellinIsTheInverseClassSeries`: final required consumer
+  olean being built for the already written primitive functional-equation
+  module. The scalar-normalization consumer olean passed.
 
 Unchecked complete drafts and intended module names:
-- `/tmp/HeckeCompletedReflectionFactorsScratch.lean` →
-  `HeckeCompletionFactorsHaveExactArithmeticNormalization`; imports the
-  exact dual class Mellin module.
 - `/tmp/HeckePrimitiveCompletedFunctionalEquationScratch.lean` →
   `PrimitiveHeckeLFunctionsHaveCompletedFunctionalEquation`; imports
   dual averaged Mellin, arithmetic normalization, and completed removable

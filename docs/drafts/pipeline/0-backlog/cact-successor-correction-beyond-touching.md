@@ -46,6 +46,35 @@ positive margin tending to zero as overlap grows. It does not prove the
 actual-source asymptotic, and the indicator is not a smooth admissible test.
 No numerical experiment has been used.
 
+The previously drafted integral-symbol programme is also deferred. Its proposed identities are
+
+```
+E_1(c) = integral_(c,infinity) fract(t)*(1-fract(t))/t^2 dt,
+E_m(c) = sum_(d|m) d*mu(m/d)*E_1(c/d)/phi(m)
+       = integral_(c,infinity) A_m(t)/t^2 dt / phi(m),
+A_m(t) = sum_(d|m) d^2*mu(m/d)*fract(t/d)*(1-fract(t/d)).
+```
+
+These are unproved candidate symbol identities, not completed paper proofs.
+The finite curvature and cyclotomic norm results are separate Lean modules;
+they do not identify a complete overlapping operator with this symbol.
+Conductor one alone retains the positive charge term; nontrivial conductors
+have zero mean. No implementation of the integral or operator bridges is
+part of the current closure work.
+
+The earlier alternative Fourier description
+`A_m(t) = (m^2/pi^2) * sum_(k>=1, gcd(k,m)=1) (1-cos(2*pi*k*t/m))/k^2`
+is also an unformalized conjectural extension, not a premise of the finite
+curvature results. The earlier triangular Ramanujan expansion
+`P_m(k)=k*phi(m)+2*sum_(1<=h<k)(k-h)*c_m(h)` was not part of those drafted
+modules and is likewise outside the closure scope.
+
+The earlier distant-pair proposal is deferred as well: a normalized width
+comparison of order `C_phi*(w-v)*(1/s+1)`, followed by a whole-form bound
+`C_phi*(c-1)*(D_N+mass)`, remains unproved. The existing draft only supplies
+the absolute-mass continuity of the separated scalar cross term. Continuous
+compact-weight extensions of the prime-window limits likewise remain open.
+
 ## Existing first crossing
 
 The corpus already proves genuine first-overlap complete positivity for an explicit smooth profile in `TransMetzlerWeilPositivity.TransMetzlerPositivity`, including `c=1+10^-18`. Existence of a first crossing is therefore not a new target here. The open questions concern general profile dependence, larger overlap, actual successor norm residuals, and exhaustion.

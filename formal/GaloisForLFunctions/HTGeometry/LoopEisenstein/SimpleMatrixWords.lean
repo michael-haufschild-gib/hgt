@@ -36,7 +36,7 @@ theorem simpleMatrixEmbedding_false_hasLeadAt (g : SL2 F) :
 theorem simpleMatrixEmbedding_true_hasLeadAt (g : SL2 F) :
     MatrixHasLeadAt F (simpleMatrixEmbedding F true g) (-1) (topRowMatrix F 0 (g 1 0)) := by
   have h := affineConstantSL2Map_hasLeadAt F (sl2Swap F g)
-  have he : (sl2Swap F g) 0 1 = g 1 0 := by rw [coe_sl2Swap]
+  have he : (sl2Swap F g) 0 1 = g 1 0 := by rw [coe_sl2Swap]; rfl
   rw [he] at h
   exact h
 
@@ -54,6 +54,7 @@ private theorem affine_head_boundary_aux (n : ℕ) :
     cases L with
     | nil =>
       refine ⟨1, by omega, 0, a 1 0, Or.inr ha, ?_⟩
+      change MatrixHasLeadAt F _ (-1) _
       simpa only [simpleMatrixWord_cons, simpleMatrixWord_nil, mul_one] using
         simpleMatrixEmbedding_true_hasLeadAt F a
     | cons p tail =>
@@ -69,6 +70,7 @@ private theorem affine_head_boundary_aux (n : ℕ) :
         | nil =>
           refine ⟨1, by omega, a 1 0 * c 1 0, a 1 0 * c 1 1,
             Or.inl (mul_ne_zero ha hc), ?_⟩
+          change MatrixHasLeadAt F _ (-1) _
           rw [add_zero, topRowMatrix_zero_mul] at hAC
           simpa only [simpleMatrixWord_cons, simpleMatrixWord_nil, mul_one,
             Matrix.SpecialLinearGroup.coe_mul] using hAC
@@ -130,8 +132,9 @@ theorem alternating_simpleMatrixWord_not_mem_iwahori (L : List (Bool × SL2 F))
     | false =>
       cases tail with
       | nil =>
-        simpa only [simpleMatrixWord_cons, simpleMatrixWord_nil, mul_one] using
-          constant_nontriangular_not_mem_iwahori F a (hred (false, a) List.mem_cons_self)
+        rw [simpleMatrixWord_cons, simpleMatrixWord_nil, mul_one]
+        change constantLaurentSL2Map F a ∉ laurentIwahori F
+        exact constant_nontriangular_not_mem_iwahori F a (hred (false, a) List.mem_cons_self)
       | cons q rest =>
         rcases q with ⟨j, b⟩
         cases j with

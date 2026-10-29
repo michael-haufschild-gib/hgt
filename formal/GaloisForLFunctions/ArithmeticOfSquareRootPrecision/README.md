@@ -170,8 +170,11 @@ here.
 18. **The Stirling error splits.** With $F(t)=t\log t-t$: $\log\lfloor y\rfloor!=F(y)+G(y)+h(y)$, where
     $G(y)=\log\lfloor y\rfloor!-F(\lfloor y\rfloor)$ is monotone with $0\le G\le1+\tfrac12\log y$ and
     $h(y)=F(\lfloor y\rfloor)-F(y)\in[-\log y,0]$ is a sawtooth. Hence
-    $|\psi(n)-I_n(F)-I_n(h)|\le3(1+\tfrac12\log n)\max_{k\le n}|M(k)|$: all remaining precision of
-    Chebyshev's method lives in the inversion of the smooth term and of the sawtooth.
+    $|\psi(n)-I_n(F)-I_n(h)|\le3(1+\tfrac12\log n)\max_{k\le n}|M(k)|$. The smooth term inverts exactly
+    to the Möbius moments, $I_x(F)=x((\log x-1)m(x)-\ell(x))$ with $m=\sum\mu(k)/k$,
+    $\ell=\sum\mu(k)\log k/k$, and the sawtooth inverts to at most $n\log n-\log n!<n$. So $\psi(n)$ is
+    computed, up to $O(\log n\max|M|)$, from three arithmetic quantities: the two Möbius moments, the
+    sawtooth inversion and the Mertens function.
 19. **Tower positivity is precision-exact.** Index zero of every tower kernel along one prime implies
     the count, passes the deciding-input tests, and has stabilizer $\{0\}$: $\Lambda+\delta$ is tower
     positive iff RH and $\delta=0$ on $n\ge2$. $\Lambda+1/n$ satisfies the count iff RH and is never tower
@@ -225,8 +228,9 @@ here.
     `riemannHypothesis_iff_monotone_inversion`).
 18. **Precision-exactness of tower positivity** (`count_of_towerIndexZero`, `towerIndexZero_add_iff`,
     `count_and_not_towerIndexZero_add_inv`).
-19. **The Stirling split** (`psi_eq_inversionOp_log_factorial`, `monotoneOn_stirlingMonotone`,
-    `sawtooth_bounds`, `abs_psi_sub_smooth_sub_sawtooth_le`).
+19. **The Stirling split and the arithmetic ledger** (`psi_eq_inversionOp_log_factorial`,
+    `monotoneOn_stirlingMonotone`, `sawtooth_bounds`, `inversionOp_stirlingMain`,
+    `abs_inversionOp_sawtooth_lt`, `abs_psi_sub_moments_sub_sawtooth_le`).
 
 ---
 
@@ -288,7 +292,7 @@ the battery classification, the majorant/minorant principle and the gauge stabil
 dictionary; the deciding-input theorem; precision-blindness of producers; the integrality lattice and
 exponent; the transcendence toolkit on integer Dirichlet polynomials; the sup-norm vanishing law; the
 separation of prime logarithms and the two-prime non-aliasing law; the twin's reciprocal torsion; the
-Chebyshev ledger, the monotone inversion law and the Stirling split; the precision-exactness of
+Chebyshev ledger, the monotone inversion law, the Stirling split and the arithmetic ledger; the precision-exactness of
 tower positivity; curve precision exponents; the TFAE ledger.
 
 Open, with what the theory already proves about each:
@@ -296,7 +300,7 @@ Open, with what the theory already proves about each:
 | Tool | Status |
 |---|---|
 | A precision-preserving ceiling for Siegel auxiliaries | A ceiling at precision $\theta<1$ is a zero-free strip (`zeroReSup_lt_one_iff_siegelHalf`); sup-norm ceilings must vanish at $0,\tfrac12,1$; must keep sign cancellation |
-| Inversion of the Stirling error | Split proved: the monotone part inverts at Mertens precision; the smooth term $F$ and the sawtooth $h$ (amplitude $\log y$) are the remaining inversions |
+| Inversion of the Stirling error | Built as an exact ledger: monotone part at Mertens precision, smooth term $=$ Möbius moments, sawtooth $<n$; open is the cancellation of $\mu$ against the sawtooth below linear size |
 | Precision of finite index on two towers (HKT) | Index zero is precision-exact; finite index is Lindelöf-deep, its stabilizer is open |
 | Precision of the Hecke defect (CDG) | The defect is a zero-side object; a weight-parametrized collided form is needed first |
 | Successor precision | Over-regular Beurling systems must fail; no formal Beurling model in the corpus yet |
@@ -318,9 +322,9 @@ Open, with what the theory already proves about each:
 3. **Precision of positivity beyond towers.** Tower positivity is precision-exact. Classify the
    precision classes of the other positivity theorems (apertures, atomic tests, the separated regime)
    and of finite index; every twin-blind theorem has the twin in its class.
-4. **Inversion of the sawtooth.** The Stirling error splits into a monotone part, inverted at Mertens
-   precision, and the sawtooth $h(y)=F(\lfloor y\rfloor)-F(y)$; determine the precision at which $\mu$
-   cancels against $h(x/k)$ and against the smooth term $F(x/k)$.
+4. **Inversion of the sawtooth.** The ledger reduces Chebyshev's method to the Möbius moments, the
+   Mertens function and $\sum_k\mu(k)h(n/k)$ with the sawtooth $h(y)=F(\lfloor y\rfloor)-F(y)$; determine
+   the precision at which $\mu$ cancels against $h(n/k)$.
 5. **The successor as a precision source.** Over-regular Beurling systems have integer counts at
    square-root precision and prime counts without it; isolate the identity of $\mathbb Z$ (the exact
    count $\lfloor x\rfloor$, precision $0$) that excludes them.

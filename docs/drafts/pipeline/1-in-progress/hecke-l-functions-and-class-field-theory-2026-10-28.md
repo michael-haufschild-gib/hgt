@@ -47,10 +47,11 @@ begin CFT or add new theorem work during this closeout.
       `exists_norm_heckePrimeMertensSum_one_sub_log_le`
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform) —
       full-plane continuation, exact pole classification, primitive finite Gauss/conductor
-      arithmetic, inverse-character Fourier coefficients, and actual dual Mellin unfolding
-      are proved. Finite dual class recombination and completed reflection remain under verification
+      arithmetic, inverse-character Fourier coefficients, actual dual Mellin unfolding,
+      completed removable values, and exact arithmetic normalization are proved.
+      Finite dual class recombination and completed reflection remain under verification
       ([dual analytic obligations](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md));
-      raw completed removable values are tracked separately
+      raw completed removable values are formalized separately
       ([completed residue cancellation](../3-formalized/hecke-unramified-character-descent-and-residue-cancellation.md))
 
 ## Gates — class field theory
