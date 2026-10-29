@@ -295,7 +295,7 @@ central group, and ordinary real Iwasawa supplies their Borel–rotation factors
 [compact–Borel intersection proof](garland-compact-borel-intersection.md)
 uses alternating words and Laurent boundary coefficients to control central
 and finite torus coordinates. The
-[determinant-metric route](garland-determinant-metric-iwasawa.md) remains an
+[determinant-metric route](../0-backlog/garland-determinant-metric-iwasawa.md) remains an
 alternative for more general root data.
 
 Do not instantiate the stable Steinberg centrality theorem outside its hypotheses.

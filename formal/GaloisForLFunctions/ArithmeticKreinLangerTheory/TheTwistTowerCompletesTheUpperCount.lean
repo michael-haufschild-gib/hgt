@@ -28,6 +28,9 @@ for the quadratic twists of all `2`-power base changes (`twistCount D (2^j) m`, 
 `𝔽_{q^{2^j m}}` of the twist of the base change to `𝔽_{q^{2^j}}`) are equivalent to RH: writing
 `k = 2^j m` with `m` odd, the twist count at `(2^j, m)` is the curve's lower count at `k`.
 
+**The golden datum on the battery** (`golden_battery`). It attains the genus ceiling, satisfies the
+upper count, and fails the twist tower.
+
 **Twisted base changes** (`baseChange`, `twistCount_eq_pointCount`,
 `unitary_iff_twistedBaseChanges_upper`). The twist count is the point count of an actual datum, the
 quadratic twist of the base change to `𝔽_{q^{2^j}}`; on zeta functions the twist is the vertical shift
@@ -255,5 +258,20 @@ theorem unitary_iff_twistedBaseChanges_upper :
     D.q ^ 2 ^ j from rfl, show (quadTwist (baseChange D (2 ^ j) (pow_pos two_pos j))).sqrtq =
     (baseChange D (2 ^ j) (pow_pos two_pos j)).sqrtq from rfl, sqrtq_baseChange, ← pow_mul,
     ← pow_mul]
+
+/-! ### The golden datum on the battery -/
+
+/-- **The golden datum on the battery over `𝔽_q`.** It attains the Riemann–Roch ceiling (index one at
+genus one), satisfies the upper count with constant `0`, and fails the twist tower for every
+constant: positive data, the genus ceiling and an upper count do not give index zero; the twist
+tower does detect it. -/
+theorem golden_battery :
+    2 * negIndex (traceKernel goldenDatum) = Fintype.card (Fin 2) ∧
+      (∀ k : ℕ, goldenDatum.pointCount k ≤ goldenDatum.q ^ k + 1) ∧
+      ¬ ∃ C : ℝ, ∀ j m : ℕ, twistCount goldenDatum (2 ^ j) m ≤
+        goldenDatum.q ^ (2 ^ j * m) + 1 + C * goldenDatum.sqrtq ^ (2 ^ j * m) :=
+  ⟨golden_attains_ceiling, goldenDatum_upper_lefschetz_bound_and_real_zero.1,
+    fun h => goldenDatum_upper_lefschetz_bound_and_real_zero.2.1
+      ((unitary_iff_twistTower_upper goldenDatum).mpr h)⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

@@ -48,10 +48,12 @@ theorem one_le_prod_primitive_prefix_norm {m k : ℕ} (hm : 1 < m) (hkm : ¬ m �
   have hcoe : (β : K) = ∑ j ∈ range k, zetaN m ^ j := by
     change (algebraMap (𝓞 K) K) β = _
     simp only [β, map_sum, map_pow]
+    rfl
   have hβ : β ≠ 0 := by
     intro hz
     have hzero := congrArg (fun z : 𝓞 K => (z : K)) hz
     rw [hcoe] at hzero
+    change (∑ j ∈ range k, zetaN m ^ j) = (0 : K) at hzero
     have h := geom_sum_mul (zetaN m) k
     rw [hzero, zero_mul] at h
     exact hkm ((zetaN_spec m).dvd_of_pow_eq_one k (sub_eq_zero.mp h.symm))
@@ -83,7 +85,7 @@ theorem totient_le_primitiveRootPrefixEnergy {m k : ℕ} (hm : 1 < m) (hkm : ¬ 
   have hp2 : 1 ≤ ∏ ζ ∈ primitiveRoots m ℂ,
       Complex.normSq (∑ j ∈ range k, ζ ^ j) := by
     simp_rw [← Complex.sq_norm]
-    rw [← prod_pow]
+    rw [prod_pow]
     nlinarith only [hp]
   have hb := card_le_sum_of_one_le_prod (primitiveRoots m ℂ)
     (fun ζ => Complex.normSq (∑ j ∈ range k, ζ ^ j))

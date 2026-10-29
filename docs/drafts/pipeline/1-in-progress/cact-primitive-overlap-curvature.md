@@ -65,3 +65,16 @@ It explains primitive-frequency selection but is not needed if the finite proof 
 `PrimitiveRootPrefixEnergyIsAMobiusQuadraticRemainder.lean` is an unchecked draft of the finite root-energy calculation, Möbius inversion, nonnegativity, and strict positivity off conductor multiples. The draft also cancels the constant mode for nontrivial conductors and states the resulting signed divisor-sum positivity. The draft now also includes exact real-cell interpolation and its positivity consequences. The fractional-part identification and a global nonnegative bound are now drafted too; the integral identity and symbol matching remain open. Integer quantization gives a draft lower bound of one off conductor multiples. A sharper lower bound by the totient should follow from the integral cyclotomic norm and arithmetic–geometric mean; the surrounding corpus supplies the exact embedding and norm tools. `CyclotomicNormGivesAConductorUniformCurvatureFloor.lean` now drafts this stronger step and the resulting totient-normalized curvature floor. Both files remain unchecked. Corpus searches211–224 inspected existing primitive, covariance, Fourier, and Ramanujan identities. No numerical experiments were used.
 
 Even a proof of all displayed symbol identities would leave separate obligations: realize the symbol in the actual overlapping complete Weil operator; control smooth approximation; prove an exhaustive low-energy description with the required conductor and overlap uniformity. Positivity of selected arithmetic modes is not positivity of the full operator and does not imply RH.
+
+## Matching the arithmetic excitation
+
+The conductor-one charge term is present only for `m=1`; nontrivial Ramanujan modes have mean zero. The proposed Möbius transform respects this because `sum_(d|m) mu(m/d)=0` for `m>1`.
+
+The logarithmic totient identity can be connected directly to the existing exact prime-row theorem. Expanding the literal divisor formula gives
+
+\[
+\sum_{a\mid n}\Lambda(a)c_m(n/a)
+=\log n\,c_m(n)-\sum_{d\mid m,\ d\mid n}d\mu(m/d)\log d.
+\]
+
+At `n=m`, every upward correction vanishes. The existing completed row theorem then identifies the last sum with `phi(m)(log(m)+tameDifferent(m))`. This is a finite source identity to formalize, not an additional analytic premise. The existing uniform correction-tail theorem already bounds the downward correction at every row; that boundedness is not a new result.

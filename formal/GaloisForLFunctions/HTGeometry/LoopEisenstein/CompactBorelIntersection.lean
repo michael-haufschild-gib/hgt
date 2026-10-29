@@ -65,9 +65,8 @@ theorem projection_enlargedSimpleWord (L : List (Σ i, enlargedSimpleCompact i))
     projection ℝ (L.map (fun p => (p.2 : LoopSL2 ℝ))).prod =
       simpleMatrixWord ℝ (L.map enlargedSimpleSource) := by
   rw [map_list_prod, simpleMatrixWord, List.map_map, List.map_map]
-  congr 1
-  apply List.map_congr_left
-  intro p _
+  apply congrArg (fun f : (Σ i, enlargedSimpleCompact i) → SL2 (LaurentSeries ℝ) => (L.map f).prod)
+  funext p
   exact projection_enlargedSimpleSource p
 
 /-- Every nonempty reduced alternating rotation word lies outside the positive Borel. -/

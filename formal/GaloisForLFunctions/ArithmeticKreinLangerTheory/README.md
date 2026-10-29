@@ -274,7 +274,9 @@ fails.
 2. *Continuity off the discriminant* (`eventually_negIndex_eq_of_tendsto`).
 3. *The degenerations* (`vanishing_weight_drops_index`, `collision_drops_index`, HKT `coalescence_law`).
 4. *Collisions count exceptional waves* (`Wsummand_ne_zero_of_rightZero`,
-   `zetaKernel_eq_onLine_add_pairs_fin`, `waveNumber_collision_law`).
+   `zetaKernel_eq_onLine_add_pairs_fin`, `waveNumber_collision_law`, `minimal_count_reads_multiplicities`,
+   `xiMult_eq_mult`, `collision_mass_from_minimal_count`, `tendsto_collisionMass_iff_consecutive`,
+   `bounded_heat_iff_consecutive_bounded`).
 
 ---
 
@@ -348,8 +350,12 @@ fails.
    where a node reaches the unit circle (§4.7). The multiplicities are prime-side too: a count bounded
    after exactly `κ` waves uses one wave per right zero, with amplitude `m_ρ |ĝ(γ_ρ)| |ĝ(γ̄_ρ)|`
    (`minimal_count_reads_multiplicities`), so the zero multiplicities `m_ρ` are the minimal count's
-   amplitudes divided by the spline factors. *Open:* the identification of `m_ρ` with the `ξ`-orders
-   in `E`, within the corpus.
+   amplitudes divided by the spline factors. Since the order of `ξ` is the multiplicity of the zero of
+   `ζ` (`xiMult_eq_mult`), the whole collision mass `2(κ + Σ(m_ρ − 1))` is read off one minimal count
+   (`collision_mass_from_minimal_count`). Off the finite stratum the collision mass diverges exactly
+   when the indices on the consecutive-integer towers are unbounded
+   (`tendsto_collisionMass_iff_consecutive`), and the heat counts are bounded exactly when those
+   indices are (`bounded_heat_iff_consecutive_bounded`).
 
 ---
 
@@ -385,8 +391,8 @@ To build:
 3. **Prime-tower locality for infinite spectra**: one test, infinitely many prime towers, infinitely
    many pairs (the fine towers decide; the coarse prime towers alias).
 4. **A direct Lindelöf bridge** from a count with finitely many waves.
-5. **The multiplicity bridge**: identify the zero multiplicities read off minimal counts with the
-   `ξ`-orders of the collision law.
+5. **Collision rates off the finite stratum**: the growth rate of collision mass as `t ↓ 0` against
+   the growth of the fine-tower indices.
 6. **Finite-level ceilings**: index bounds for height or integer truncations from prime-side data,
    uniform in the truncation (equivalent to finite support; LH-deep).
 7. **The atomic index ladder over `𝔽_q`**: the function-field analogue of the index-one window and of

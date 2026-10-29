@@ -8,6 +8,11 @@
 
 ## Current status
 
+User paused the larger programme and authorized finishing existing work
+only. The three already written completion, scalar-normalization, and
+functional-equation drafts below form the closure scope. No class field
+theory work or additional theorem development is authorized in this closeout.
+
 Arithmetic coefficients, fractional class/unit orbits, actual dual unit
 unfolding, exact class Mellin integrals, infinite Mellin exchange, and
 symmetric theta-continuation identification are finalized. Scalar/class
@@ -180,14 +185,17 @@ New uses remain in scratch until verified.
 ## Completed removable values and global reflection — drafts
 
 Raw completed-theta numerators must be treated before reciprocal Gamma
-removal. The [completed residue card](hecke-unramified-character-descent-and-residue-cancellation.md)
+removal. The [completed residue card](../3-formalized/hecke-unramified-character-descent-and-residue-cancellation.md)
 tracks physical cancellation by ordinary-class orthogonality and dual
 cancellation by the proved ordinary L-pole coefficient plus nonvanishing
 of Gamma at one. Entire divided differences supply both removable values.
 Raw residue cancellation is finalized in `HeckeCompletedThetaResiduesCancel`;
 its final direct source audit and both transitive axiom audits pass. See
 [the residue proof](../3-formalized/hecke-completed-theta-residues-cancel.md).
-The corrected-completion draft remains unchecked.
+The corrected completion is finalized in
+`HeckeGammaCompletedFunctionsHaveRemovableValues`; its final source audit
+and both transitive axiom audits pass. See
+[the removable-value construction](../3-formalized/hecke-gamma-completed-functions-have-removable-values.md).
 
 Finite class recombination uses the proved permutation and the exact
 scalar above. The final draft defines the pole-cleared entire function
@@ -207,18 +215,19 @@ Finalized with consumer oleans built:
 - `HeckeDualUnitOrbitsUnfoldOverTheLogSpace`
 - `HeckeDualClassKernelsHaveExactMellinIntegrals`
 - `HeckeConductorsAndParitiesAreInvariantUnderInversion`
+- `HeckeCompletedThetaResiduesCancel`
+- `HeckeGammaCompletedFunctionsHaveRemovableValues`
 
 Finalized, required consumer olean pending:
 - `HeckeDualAveragedMellinIsTheInverseClassSeries`.
 
 Current check:
-- `HeckeCompletedThetaResiduesCancel`: consumer olean being built for the
-  already written Gamma-completed continuation draft. Final source audit passed.
+- `/tmp/HeckeCompletedReflectionFactorsScratch.lean`: corrected check running.
+  The first check required unfolding four local real-valued norm aliases
+  before `exact_mod_cast`; all other proof steps elaborated. The
+  completed-function dependency's consumer olean passed.
 
 Unchecked complete drafts and intended module names:
-- `/tmp/HeckeGammaCompletedContinuationScratch.lean` →
-  `HeckeGammaCompletedFunctionsHaveRemovableValues`; imports residue
-  cancellation.
 - `/tmp/HeckeCompletedReflectionFactorsScratch.lean` →
   `HeckeCompletionFactorsHaveExactArithmeticNormalization`; imports the
   exact dual class Mellin module.

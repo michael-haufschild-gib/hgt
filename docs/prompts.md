@@ -391,10 +391,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 previously we had created these documents:
-- docs/reports/review-2810/walls-ledger.md
-- docs/reports/review-2810/route-obstacles.md
-- docs/reports/review-2810/route-unification-ledger.md
-- docs/reports/review-2810/obstacles-summary.md
+- docs/reports/review-2910/walls-ledger.md
+- docs/reports/review-2910/route-obstacles.md
+- docs/reports/review-2910/route-unification-ledger.md
+- docs/reports/review-2910/obstacles-summary.md
   
 also we have:
 - docs/reports/rh-current-frontier-map.md
@@ -420,7 +420,7 @@ do not rely only on these markdown files which are partly outdated. use the sear
 
 the reports are not diaries or history log, but status quo reports.
 
-create the new reports in folder docs/reports/review-2910/
+replace the  reports in folder docs/reports/review-2910/
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -448,7 +448,7 @@ Read the following documents:
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
 3. Unification of the routes: docs/reports/review-2910/route-unification-ledger.md
 4. Hard obstacles: docs/reports/review-2910/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2810/walls-ledger.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2910/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
     
@@ -461,13 +461,12 @@ Keep a log file in logs/ for your research to note down facts and findings, sinc
 The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls or destroy a wall?
 2. Do you see any approach for an RH proof that is wildly different to all the routes and candidates we have so far, going a wildly different way not even touching the walls the existing routes face?
-3. Do you see any opportunity to prove that if there are offline zeros there can only finite many offline zeros?
-4. Do you see any opportunity to prove Quasi-RH with improved values other to 1/8 < ... < 7/8?
-5. Do you see any opportunity to prove that at least 75% of zeros lie on the critical line?
-6. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
-7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+3. Do you see any opportunity to prove Quasi-RH with improved values other to 1/8 < ... < 7/8?
+4. Do you see any opportunity to prove that at least 75% of zeros lie on the critical line?
+5. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
+6. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2910/astra.md
+Write a report in docs docs/reports/review-2910/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -475,9 +474,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read fully docs/reports/review-2910/obstacles-summary.md
+read fully docs/reports/review-2910/fable.md
 
-the document describes in "## 7. What new field could supply the tools?" a new field/research programme "critical arithmetic correlation theory".
+the document describes in "## 8. Question 6 — the field that would supply the tools" a new field/research programme "Arithmetic of square-root precision".
 
 Your task: develop this new field / programme.
 
@@ -559,13 +558,22 @@ always look at the big picture, try to understand what all our research is tryin
 Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
 ## argon do task
-read: docs/reports/review-2810/obstacles-summary.md
+read: docs/reports/review-2910/breakthrough-question.md
 
-your task: the document asks a question in "### Q3. Is there a prime-side bound for the shallow Cauchy energy at depth \(1/\log T\)?"
+your task: the document asks you to answer one question and prove it "Where does Weil positivity leave the unconditional world? Cross the Metzler threshold: prove that the complete Weil form of ζ is eventually nonnegative on the atomic families of one fixed overlap ratio \(c>1\), and locate the overlap ratio at which the zeros of ζ first enter."
  
 answer the question, find a complete solution and unconditionally formalize it and its implications in lean.
 
-We are not interested in estimates, critieras, nogos. We accept only a full answer/solution to the posed question.
+We are not interested in estimates, criterias what the answer could be like, nogos - we accept only a full and final answer/solution to the posed question.
+
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
+
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -579,6 +587,7 @@ We are not interested in estimates, critieras, nogos. We accept only a full answ
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 
+Put all lean code for the answer into its own subfolder.
 
 Do not edit the md document.
 

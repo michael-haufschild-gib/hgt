@@ -65,7 +65,7 @@ private theorem sum_nthRoots_conj_pow_mul_pow {d i j : ℕ} (hd : 0 < d)
       omega
     · rintro rfl
       simpa only [Nat.sub_add_cancel hi.le] using (dvd_refl d)
-  rw [he]
+  simp only [he]
 
 private theorem nthRoots_prefix_energy_of_le {d r : ℕ} (hd : 0 < d) (hr : r ≤ d) :
     (∑ ζ ∈ nthRootsFinset d (1 : ℂ), Complex.normSq (∑ j ∈ range r, ζ ^ j)) =
@@ -75,6 +75,9 @@ private theorem nthRoots_prefix_energy_of_le {d r : ℕ} (hd : 0 < d) (hr : r �
   simp_rw [Complex.normSq_eq_conj_mul_self]
   simp only [map_sum, sum_mul, mul_sum]
   calc
+    _ = ∑ ζ ∈ nthRootsFinset d (1 : ℂ), ∑ i ∈ range r,
+        ∑ j ∈ range r, conj (ζ ^ i) * ζ ^ j :=
+      sum_congr rfl fun ζ _ => sum_comm
     _ = ∑ i ∈ range r, ∑ ζ ∈ nthRootsFinset d (1 : ℂ),
         ∑ j ∈ range r, conj (ζ ^ i) * ζ ^ j := sum_comm
     _ = ∑ i ∈ range r, ∑ j ∈ range r,

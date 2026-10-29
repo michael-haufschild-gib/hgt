@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsTheNumberOfExceptionalWaves
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersDecideEveryOrbitKernel
 import GaloisForLFunctions.HeckeKreinToeplitz.HeatCollisionsCountTheIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
 import GaloisForLFunctions.RHTower.XiZeroCountingFunction
@@ -30,6 +31,10 @@ zero multiplicities, and with them the excess `E`, are read off the amplitudes o
 The order of `ξ` at a zero is its multiplicity as a zero of `ζ`, so the heat-collision mass after
 small times, `2(κ + Σ(m_ρ − 1))`, is determined by a minimal count: its number of waves and their
 amplitudes.
+
+**Off the finite stratum** (`tendsto_collisionMass_iff_consecutive`, `bounded_heat_iff_consecutive_bounded`).
+The collision mass diverges exactly when the indices of the Weil kernel on the consecutive-integer
+towers are unbounded, and the heat counts are bounded exactly when those indices are.
 -/
 
 open Complex Finset Filter Topology Zeta23
@@ -184,7 +189,29 @@ theorem collision_mass_from_minimal_count (h : negIndex zetaKernel < ⊤) :
   refine sum_congr rfl fun j _ => ?_
   rw [xiMult_eq_mult (hfin.mem_toFinset.mp (hfin.toFinset.equivFin.symm j).2).1]
 
-end GaloisForLFunctions.ArithmeticKreinLangerTheory
+/-! ### Off the finite stratum -/
 
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms collision_mass_from_minimal_count
+/-- **Collisions diverge exactly when the fine towers do.** The heat-collision mass tends to `∞` as
+`t ↓ 0` iff the indices of the Weil kernel on the consecutive-integer towers are unbounded. -/
+theorem tendsto_collisionMass_iff_consecutive :
+    Tendsto collisionMassAfter (𝓝[>] (0 : ℝ)) atTop ↔
+      ⨆ n, negIndex (zetaKernel ∘ zpowersHom _ (consecutiveRatio n)) = ⊤ := by
+  rw [← negIndex_zetaKernel_eq_iSup_consecutive]
+  constructor
+  · intro ht
+    by_contra hne
+    obtain ⟨hfin, -, hev⟩ := eventually_collisionMassAfter_eq_index (lt_top_iff_ne_top.mpr hne)
+    obtain ⟨t, ht1, ht2⟩ := (hev.and (ht.eventually_gt_atTop
+      (2 * (hfin.toFinset.card + ∑ ρ ∈ hfin.toFinset, (xiMult ρ - 1))))).exists
+    omega
+  · exact tendsto_collisionMassAfter_of_negIndex_eq_top
+
+/-- **Bounded heat counts are bounded fine-tower indices.** The nonreal zero counts of the heat flow
+are uniformly bounded iff the indices of the Weil kernel on the consecutive-integer towers are. -/
+theorem bounded_heat_iff_consecutive_bounded :
+    (∃ M : ℕ, ∀ t, 0 < t → nonrealZeroCount t ≤ M) ↔
+      ⨆ n, negIndex (zetaKernel ∘ zpowersHom _ (consecutiveRatio n)) < ⊤ := by
+  rw [← negIndex_zetaKernel_eq_iSup_consecutive]
+  exact ((zetaKernel_finiteIndex_tfae Nat.prime_two Nat.prime_three (by norm_num)).out 0 3).symm
+
+end GaloisForLFunctions.ArithmeticKreinLangerTheory

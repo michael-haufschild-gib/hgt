@@ -1,6 +1,6 @@
 # Successor corrections beyond touching
 
-Status: exploratory derivation. No new actual-source limit or positivity theorem.
+Status: deferred conjectural programme. No paper proof of the proposed source law, integral symbol identity, or exhaustive overlap positivity is claimed. Existing finite-source drafts are being closed separately; this card authorizes no new implementation.
 
 ## Concrete candidate law
 
@@ -31,7 +31,7 @@ Weighted PNT in each fixed residue class should then give the stated integral.
 The old separated energies therefore cannot be reused unchanged. Every step
 needs an exact identity and a full norm estimate for the literal source.
 
-## A symbolic consistency check
+## Unproved model identities to investigate
 
 For the unit indicator, `G(u)=1-u` on `[0,1]`. At an integer ratio `K≥1`,
 
@@ -41,18 +41,14 @@ The proposed completed ground energy reduces to
 
 `2[log Γ(K)-(K-1/2)log K+K-(1/2)log(2π)]`,
 
-twice the classical Stirling remainder. This algebraic reduction suggests a
+the expression twice the classical Stirling remainder. This proposed identification suggests a
 positive margin tending to zero as overlap grows. It does not prove the
 actual-source asymptotic, and the indicator is not a smooth admissible test.
 No numerical experiment has been used.
 
-## First attainable target
+## Existing first crossing
 
-Prove actual complete positivity on a fixed interval `0<c≤1+δ` for one smooth
-near-unit plateau and some `δ>0`. Keep `δ` smaller than the profile's strict
-charge deficit. A refined adjacent-lag bound may absorb the new boundary
-cost into the prime defect. The full spectral argument then needs the
-corrected arithmetic modes, not just their trial energies.
+The corpus already proves genuine first-overlap complete positivity for an explicit smooth profile in `TransMetzlerWeilPositivity.TransMetzlerPositivity`, including `c=1+10^-18`. Existence of a first crossing is therefore not a new target here. The open questions concern general profile dependence, larger overlap, actual successor norm residuals, and exhaustion.
 
 ## Obligations
 
@@ -88,4 +84,4 @@ a bounded error. This relative-continuity statement is unproved.
 Searches153–161 investigate novelty. Existing separated spectral statements,
 exact all-width lag calculus, and finite successor-fiber identities are leads;
 none inspected so far establishes this proposed source law. The endpoint
-chain and annular frame draft are separate active formalizations.
+chain is formalized; the finite arithmetic and annular source modules are separate results. The actual larger-overlap law and the integral symbol matching remain open.

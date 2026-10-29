@@ -16,11 +16,11 @@ theorem was found in the earlier corpus search. Searches for lowest Laurent
 coefficients and alternating-word arguments found exact reusable leads:
 `HahnLeadingCoefficient.coeffAt_mul_of_vanishing_below` and its lower-bound
 companion, and `RHTower.deningerExists_letterProd` for an actual amalgamated
-free product. Their proofs were inspected; transitive audits are pending.
-The amalgam theorem may replace minimal-word selection by taking an actual
+free product. Their proofs were inspected and transitive audits passed.
+The amalgam theorem supplies word reduction by taking an actual
 pushout of the two enlarged rotation subgroups over M and mapping it into
-the constructed loop group. Surjectivity onto K must be proved; injectivity
-must not be presumed. This is the
+the constructed loop group. Its range contains both enlarged groups, hence
+contains K; injectivity is not presumed. This is the
 rank-one affine amalgam/normal-form argument, with no novelty claim.
 
 A further exact-name corpus search found
@@ -109,15 +109,16 @@ mathematical claim.
 
 ## Reduction of arbitrary words
 
-Every element of K has a finite word in factors from K₀ or K₁; inverses
-remain in the same subgroup. For g∈K\M choose a representation of minimal
-word length. Adjacent factors cannot lie in the same Kᵢ, since they could
-be merged. No factor can lie in M: if there is a neighboring factor it
-can be absorbed into that neighbor because M lies in both subgroups;
-a one-factor word in M would contradict g∉M. The minimal word is
-therefore nonempty, alternating, and has every factor outside M.
-The preceding coefficient argument gives g∉B. Together with M⊂B∩K,
-this proves B∩K=M.
+Form the actual amalgamated pushout of the subtype inclusions M→Kᵢ.
+These inclusions are injective. Its universal homomorphism into the loop
+group restricts to the inclusion on each Kᵢ, so its range contains K.
+Every g∈K therefore has a preimage in that pushout. The audited
+`deningerExists_letterProd` theorem writes this preimage either as an
+element of M or as a nonempty alternating list of factors outside M.
+Mapping the list into the loop group preserves its product and its
+factor indices. The coefficient argument puts the second possibility
+outside B. Thus g∈K∩B forces g∈M. Together with M⊂B∩K this proves
+B∩K=M, without assuming that the pushout map is injective.
 
 ## Spherical-character consequence
 
@@ -130,6 +131,11 @@ left B-equivariant and right K-invariant, on the actual central loop group.
 
 ## Status and remaining exact obligations
 
+The parent programme is paused. Closure scope is the nine already started
+modules on this card: finish proofs, direct source checks, transitive
+audits, umbrella imports, and scratch cleanup. Do not begin arithmetic,
+degree-extension, determinant-comparison, or additional research work.
+
 Paper argument recorded. `SimpleCompactBorel`, `RealCompactSigns`,
 `SimpleMatrixWords`, `CompactBorelIntersection`, `RealBorelCharacters`, and
 `RealSphericalFunction` are written but unchecked. They include the exact
@@ -137,12 +143,10 @@ simple Borel intersections, sign-torus inclusions, generation by enlarged
 simple rotation groups, alternating-word boundary coefficients, intrinsic
 Borel weight characters, and the factorization-independent spherical
 function with left Borel and right compact transformation laws.
-`RealRotationMatrices` passed its scratch check and is installed; its
-dependency build is running. Scratch proofs for `MatrixLaurentLeading` and
-`SubgroupAlternatingWords` are written in `/tmp/Garland*.lean`, pending
-checks before installation. The existing finite rotation characterization
-has been inspected. Remaining work: finish those checks and input audits;
-formalize the alternating-word coefficient calculation and word reduction;
-construct the actual Borel torus homomorphism and its spherical extension.
+`RealRotationMatrices`, `MatrixLaurentLeading`, and `SubgroupAlternatingWords`
+are installed and passed clean dependency builds. `SimpleCompactBorel` is
+undergoing its dependency check. Input axiom audits passed. Remaining work:
+check and fix the six written consumers, run final direct checks and
+transitive audits, wire all nine modules, and remove owned scratch files.
 Only then can this card move to formalized. Arithmetic subgroup, series,
 measure, convergence, and ξ constant-term unfolding remain open.

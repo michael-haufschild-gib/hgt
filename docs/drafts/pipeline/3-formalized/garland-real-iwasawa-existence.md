@@ -68,7 +68,7 @@ This proves existence only. It does not assert uniqueness of Borel torus
 coordinates, compactness of an infinite-dimensional group, a spherical
 character outside B, or any arithmetic convergence. Intersection control
 is separately open in [its own card](../1-in-progress/garland-compact-borel-intersection.md).
-The [determinant-norm route](../1-in-progress/garland-determinant-metric-iwasawa.md) remains
+The [determinant-norm route](../0-backlog/garland-determinant-metric-iwasawa.md) remains
 an alternative for more general root data.
 
 All three modules passed clean dependency builds and final direct source

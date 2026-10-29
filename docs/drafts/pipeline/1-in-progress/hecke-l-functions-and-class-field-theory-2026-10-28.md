@@ -15,6 +15,12 @@
 Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
 `formal/GaloisForLFunctions/ClassFieldTheory/` (second), each with its umbrella.
 
+The user paused the programme and authorized closing existing work only.
+Closeout covers the already written completed-continuation, arithmetic
+normalization, and primitive functional-equation drafts. Stop after their
+formalization, final audits, umbrella wiring, and scratch cleanup. Do not
+begin CFT or add new theorem work during this closeout.
+
 ## Gates — Hecke L-functions
 - [x] HL1 moduli; ideals coprime to `𝔪`; `K_𝔪` (elements prime to `𝔪`), the ray group `K^{𝔪,1}_+`;
       surjective reduction `K_𝔪 → (𝓞/𝔪)ˣ × {±1}^{𝔪∞}` with kernel `K^{𝔪,1}_+`; `Cl_𝔪 = I^𝔪/P_𝔪`; map to `Cl_K`
@@ -45,7 +51,7 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
       are proved. Finite dual class recombination and completed reflection remain under verification
       ([dual analytic obligations](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md));
       raw completed removable values are tracked separately
-      ([completed residue cancellation](hecke-unramified-character-descent-and-residue-cancellation.md))
+      ([completed residue cancellation](../3-formalized/hecke-unramified-character-descent-and-residue-cancellation.md))
 
 ## Gates — class field theory
 - [ ] CFT1 Artin map on ideals prime to the ramification of an abelian `L/K`

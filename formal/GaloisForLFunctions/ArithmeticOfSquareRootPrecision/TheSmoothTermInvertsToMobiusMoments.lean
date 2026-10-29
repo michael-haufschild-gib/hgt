@@ -52,9 +52,8 @@ theorem sum_log_div_eq (n : ℕ) :
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
-  rw [← sum_log_eq_log_factorial, ← sum_sub_distrib.symm.trans (by rfl : _ = _)]
-  · rw [sum_congr rfl fun k hk => Real.log_div hn0.ne'
-      (by exact_mod_cast (Nat.pos_of_mem_Ioc hk).ne' : ((k : ℕ) : ℝ) ≠ 0), sum_sub_distrib,
+  rw [← sum_log_eq_log_factorial, sum_congr rfl fun k hk => Real.log_div hn0.ne'
+      (by have := (mem_Ioc.mp hk).1; positivity : ((k : ℕ) : ℝ) ≠ 0), sum_sub_distrib,
       sum_const, Nat.card_Ioc, Nat.sub_zero, nsmul_eq_mul]
 
 /-- **The sawtooth inversion is at most linear**: `|I_n(h)| ≤ n log n − log n! < n`. -/

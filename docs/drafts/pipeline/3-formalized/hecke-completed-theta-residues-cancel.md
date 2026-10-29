@@ -3,7 +3,7 @@
 - **ID:** hecke-completed-theta-residues-cancel
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Completed residue cancellation](../1-in-progress/hecke-unramified-character-descent-and-residue-cancellation.md)
+- **Source:** [Completed residue cancellation](hecke-unramified-character-descent-and-residue-cancellation.md)
 - **Statement:** Both raw completed-theta zero-mode numerators vanish at their polar points for every nontrivial finite-order Hecke character, before multiplication by reciprocal Gamma.
 
 ## Proof

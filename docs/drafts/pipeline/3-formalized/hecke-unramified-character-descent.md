@@ -3,7 +3,7 @@
 - **ID:** hecke-unramified-character-descent
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Descent and residue cancellation](../1-in-progress/hecke-unramified-character-descent-and-residue-cancellation.md)
+- **Source:** [Descent and residue cancellation](hecke-unramified-character-descent-and-residue-cancellation.md)
 - **Statement:** Trivial finite weight and zero real parity give an actual ordinary class character with the original Hecke character as pullback; nontrivial finite weight gives an entire actual unit-theta Mellin transform.
 
 ## Proof

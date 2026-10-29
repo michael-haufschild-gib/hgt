@@ -1,9 +1,9 @@
 # Unramified descent and completed Hecke residue cancellation
 
 - **ID:** hecke-unramified-character-descent-and-residue-cancellation
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Source:** [Hecke programme](hecke-l-functions-and-class-field-theory-2026-10-28.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Source:** [Hecke programme](../1-in-progress/hecke-l-functions-and-class-field-theory-2026-10-28.md)
 - **Statement:** Cancel both raw completed-theta residues for nontrivial characters and construct the Gamma-completed continuation with its removable values.
 
 ## Finalized
@@ -25,21 +25,23 @@ Gamma at one. Both main transitive axiom audits are standard only; final
 direct source audit passes without warnings. See
 [the completed residue proof](../3-formalized/hecke-completed-theta-residues-cancel.md).
 
-## Remaining completion
+## Completed removable values
 
-`/tmp/HeckeGammaCompletedContinuationScratch.lean` contains the complete
-unchecked divided-difference construction. Write the raw expression as
+`HeckeGammaCompletedFunctionsHaveRemovableValues` contains the complete
+verified divided-difference construction. Write the raw expression as
 `R(s) - (2/n)P(s)/s + (2/n)Q(s)/(s-1)` when parity is zero.
 Replacing the varying numerators by divided differences gives an entire
 regular part plus the constant residues `-(2/n)P(0)` and `(2/n)Q(1)`.
 The proved cancellations make the completion entire for nontrivial
 characters, including zero and one. Nonzero parity has no zero modes.
 
-The draft proves agreement with the actual theta expression away from
+The module proves agreement with the actual theta expression away from
 zero and one, Gamma times the ideal series on `Re(s)>1`, meromorphy,
 nontrivial-character entireness, and recovery of the ordinary entire
 function by reciprocal Gamma through analytic uniqueness. The residue
-module's olean is being built for this already written consumer.
+module's olean passed. Both main transitive axiom audits are standard only;
+the final direct source audit passes without warnings. See
+[the completed construction](../3-formalized/hecke-gamma-completed-functions-have-removable-values.md).
 
 Primitive scalar normalization, class recombination, and global
-reflection remain on the [dual analytic card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
+reflection remain on the [dual analytic card](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
