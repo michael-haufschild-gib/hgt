@@ -156,7 +156,7 @@ Finitely many off-line zeros means only finitely many zeros at every depth \(h>0
 **Openings, ranked.**
 
 1. **Krein–Langer finiteness (cleanest).** On a group, a positive-definite kernel plus \(\kappa\) hyperbolic character pairs has index exactly \(\kappa\) when the pairs are separated, and a positive part never pays a pair [S]. On one prime's towers the index is the number of distinct outer eigenvalues \(p^{\rho-1/2}\) [L]; two primes remove aliasing (W05). So finiteness is the statement that the Weil kernel on two prime towers is *positive-definite modulo finitely many exponential characters*. In AID terms this is the last layer of the finite-index chain: relative compactness of the first prime layer against Gamma, where absolute payment diverges like \(\sum_p\log p/\sqrt p\). A signed payment needs "prime error minus finitely many \(x^\rho/\rho\) is \(O(\sqrt x\log^2x)\)".
-2. **Heat flow.** Ki–Kim–Lee finiteness holds for each \(t>0\), with an explicit reality horizon \(2\pi e^{(27/40+\varepsilon)/t}\) [S]. Uniformity as \(t\downarrow0\) splits into an LH-level high count and the near-axis count. No mechanism controls backward-heat collisions at all heights.
+2. **Heat flow.** Ki–Kim–Lee finiteness holds for each \(t>0\); for \(0<t\le1/8\), the reality horizon is \(\max\{X_0,2\pi e^{(2/3+\varepsilon)/t}\}\) [S]. Uniformity as \(t\downarrow0\) splits into an LH-level high count and the near-axis count. No mechanism controls backward-heat collisions at all heights.
 3. **Critical energy.** An upper bound of virial type on \(K(R)=R^2(\mathcal W(2R)-\mathcal W(R))\). The virial laws of finite configurations exist [L]; no arithmetic conservation law bounds the actual source.
 
 **What does not work.**

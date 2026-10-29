@@ -661,3 +661,23 @@ ideal indices, proves their exact norm and inverse-character coefficient,
 and constructs the ordinary-class permutation. All three main transitive
 audits are standard only; final source audit passes without warnings.
 Actual dual Mellin unfolding and the completed reflection remain open.
+
+The exact parity-kernel Mellin formula now applies to every nonzero field
+element, including fractional trace-dual generators. It includes joint
+absolute integrability, exact norm masses, and Haar-negation invariance.
+Final source and five main transitive axiom audits pass; see
+[the field-element Mellin proof](../3-formalized/hecke-field-element-kernels-have-exact-mellin-integrals.md).
+The dual class sum and primitive completed functional equation remain open.
+
+Actual dual-kernel unit covariance is finalized: finite Fourier and
+infinite parity factors cancel, with positive unit-log translation in
+the dual negative profile. Final direct source and both transitive axiom
+audits pass. See [unit covariance](../3-formalized/hecke-dual-theta-kernels-are-unit-covariant.md).
+Infinite dual unfolding and the completed functional equation remain open.
+
+Generic absolute unfolding for countable families over the actual unit-log
+lattice is finalized. One paired summable majorant gives integrability,
+summable whole-space masses, and exact complex unfolding. Final source
+and transitive axiom audits pass; see
+[family unfolding](../3-formalized/number-field-log-periodizations-have-absolute-unfolding.md).
+The actual dual application is drafted and awaiting its dependency checks.

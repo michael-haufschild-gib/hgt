@@ -5,30 +5,35 @@
 - **Type:** CONJECTURE
 - **Route:** ACS: full-source effectivity → Hodge index → RH.
 - **Parent:** [joint Haar payment](acs-haar-subcritical-divisor-operator.md)
-- **Target:** Pay the actual signed Gamma/central-mass remainder and
-  valuation completion cost from the retained divisor reserve, with
+- **Target:** Pay the actual signed Gamma/central-mass remainder from
+  the retained divisor reserve, with
   every low index and both original poles present.
 
 ## Source mechanism
 
-The exact Gamma off-diagonal is minus the signed rectangle pairing.
-The corpus gives a positive exponential expansion of its Levy density.
-For two equally oriented balanced Haar cells, the four-point mixed
-kernel difference is nonpositive. Centering at the two internal cell
-boundaries cancels the one-variable terms by the exact zero means.
-This should prove that the original Gamma matrix has nonnegative
-off-diagonal entries, including touching cells.
+The actual Gamma off-diagonal is minus the signed rectangle pairing.
+`TheHaarGammaCrossTermsArePositive` proves its full summable expansion
+`J_ab=sum_k U_a(2k+1/2)*V_b(2k+1/2)>=0` for a<b. The two Laplace
+moments have proved signs, and original rectangle integrability pays
+the complete series even when cells touch.
 
-The resulting exact signed graph has a positive row potential minus
-an additive difference-square form. The original arithmetic defect
-has a positive divisor difference-square form with a charged absent
-root. The target is their joint payment, preserving the row potential,
-cell-weight correction and Euler-minus-outgoing completion cost.
+`TheHaarGammaDebtIsAnAdditiveGraph` proves the exact signed graph in
+`u_a=sqrt(2a+1)*d_a` and the full original identity
+`W(h)+G_X(u)=D_X+P(h)+sum_a V_X(a)*u_a^2`, with nonnegative graph
+energy G_X and explicit signed potential V_X. Both original pole moments
+and outgoing charges remain. The arithmetic defect has a positive
+divisor difference-square form with a charged absent root. The target
+is their joint payment, preserving the signed potential, cell-weight
+correction and Euler-minus-outgoing completion cost.
+
+The exact full-Weil identity uses D_X directly. The additional valuation
+completion cost T_Q must be retained if the occupation representation
+is used to estimate D_X.
 
 ## Required work
 
-1. Prove the actual Gamma sign and signed graph decomposition, including
-   all integrability and touching-boundary claims.
+1. Completed in Lean: actual Gamma sign, complete Laplace series and
+   signed graph/full-Weil decomposition, including touching boundaries.
 2. Compare the additive graph with the rooted divisor graph using an
    explicit allocation. A generic path certificate would only restate
    the missing inequalities; its supersolution and packing conditions

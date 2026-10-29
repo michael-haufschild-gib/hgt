@@ -49,3 +49,23 @@ concerns precisely the nontrivial unramified ordinary-class characters.
 No normalized completed residue identity is assumed. Primitive Gauss
 normalization, conductor scaling, and the arithmetic dual-character
 identification remain independent functional-equation obligations.
+
+## Verification draft
+
+`/tmp/HeckeCompletedThetaResidueCancellationScratch.lean` now defines
+the two raw completed numerators, proves their entireness, identifies
+each base ideal's descended class value and zero-parameter weight, and
+cancels both residues for every nontrivial character. Physical
+cancellation uses the actual descended character sum. Dual cancellation
+uses the already proved ordinary pole coefficient and nonvanishing of
+Gamma at one. This draft is unchecked; the divided-difference completed
+function still needs construction after these identities are verified.
+
+The complete divided-difference construction is drafted separately in
+`/tmp/HeckeGammaCompletedContinuationScratch.lean`, importing the residue
+cancellation module. It retains both explicit constant pole coefficients,
+proves agreement with the actual theta expression away from zero and one,
+and targets global meromorphy and nontrivial-character entireness. Its
+last theorem recovers the ordinary entire L-function by reciprocal Gamma
+using analytic uniqueness, including removable values. This is unchecked;
+it authorizes the residue module's consumer olean after finalization.

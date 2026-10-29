@@ -16,7 +16,8 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 
 ## Gates
 - [x] 0 → 1  scope fixed, README first draft
-- [ ] modules below proved and wired into the umbrella
+- [x] modules 1–10 proved, umbrella `ArithmeticOfSquareRootPrecision.lean`
+- [ ] modules 11–13 (gauge stabilizer, ledger, sup-norm vanishing) compiled and wired
 
 ## Module plan
 1. `PrecisionClassesAndTheCount` — partial sums, precision classes, count, stabilizer law, power
@@ -32,6 +33,11 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 8. `TheLiouvilleTwinHasReciprocalTorsion`.
 9. `WherePrecisionIsLost` — Chebyshev transform, Stirling precision, inversion amplification.
 10. `CurvesCalibrateThePrecisionExponent`.
+11. `TheGaugeStabilizerOfTheCount` — lower half monotone; a ≤ Λ: Count ⇔ RH ∧ Λ − a ∈ 𝒬; sign and
+    torus gauges: Count ⇔ RH ∧ gauge distance O(√x log² x).
+12. `ThePrecisionLedgerOfTheCount` — TFAE in eight currencies; Θ three readings; strip three readings.
+13. `SupNormCeilingsForceVanishingAtSmallRationals` — b^n P(a/b) ∈ ℤ; sup-norm ceilings at precision
+    θ < 1 force P(0) = P(½) = P(1) = 0.
 
 ## Leads checked (exist; do not redo)
 - Exponent law Θ: `RHTower.chebyshevPsi_sub_exponent_law`, one-sided lower power bound ⇒ zeros:

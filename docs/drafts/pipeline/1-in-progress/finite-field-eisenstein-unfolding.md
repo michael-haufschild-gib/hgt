@@ -52,6 +52,10 @@ continuation of the full Eisenstein family. Track this distinction explicitly.
   this supplies reusable combinatorics, not the finite-field arithmetic unfolding.
 - Existing loop-group sources construct the actual Laurent central extension, root
   splittings, degree rotation, simple coroots, positive-loop splitting, and field maps.
+- The corpus now also supplies the actual affine Bruhat decomposition and uniqueness:
+  `LoopSL2.exists_unique_bruhat` in `LoopBruhatDecomposition.lean`, obtained from the
+  full Laurent-matrix Iwahori double-coset theorem. This supplies the Bruhat labels,
+  but not yet the finite root-coordinate parametrization needed for integration.
 - The arithmetic series, finite-field adelic quotient measure, Iwasawa/Bruhat integration,
   and full-sum noncancellation are not supplied by the preceding card.
 
@@ -150,14 +154,20 @@ theory, and dominated convergence. No arithmetic unfolding theorem is used.
 ## Working state
 
 - Arithmetic drafts: `/tmp/hgt_ff_infinity_valuation.lean` constructs the actual
-  valuation, DVR, parameter, and equality with `infinityRegular`. Core valuation and
-  uniformizer proofs checked; an auxiliary cast-order proof was corrected and awaits
-  the next check. `/tmp/hgt_ff_pole_reduction.lean` proves leading-term cancellation
-  through the linear polynomial encoding and is currently checking. The dependent
-  `/tmp/hgt_ff_infinity_residue.lean` is drafted, not checked.
-- A simultaneous two-index strengthening of the full-sum theorem is in
-  `/tmp/hgt_ff_weyl_noncancellation.lean`; its final finite maximum step awaits checking.
-  The existing production theorem for each index is already checked and axiom-audited.
+  valuation, DVR, parameter, and equality with `infinityRegular`. The complete source
+  passed, exit 0 with no diagnostics, and is now
+  `FiniteFieldEllipticInfinityValuation.lean`; its olean compilation also passed for
+  the dependent residue-field module. Never rebuild that olean.
+  `FiniteFieldEllipticPoleReduction.lean` proves leading-term cancellation
+  through the linear polynomial encoding. Its scratch and dependent olean checks passed.
+  `FiniteFieldEllipticInfinityResidue.lean` proves the infinity residue-field equivalence
+  with `F₃` and exact cardinality three. Its scratch check and transitive axiom audit
+  passed: only `[propext, Classical.choice, Quot.sound]` for the cardinality,
+  uniformizer, valuation-ring identification, and pole-degree cancellation.
+- The simultaneous two-index strengthening `finiteFieldWeylSum_simultaneous_integral_poles`
+  is now in the production full-sum module. Its scratch source and transitive axiom audit
+  passed with only `[propext, Classical.choice, Quot.sound]`. One threshold works for
+  both Frobenius indices, with each root's exact multiplicity.
 
 - The existing `AffineA1FiniteFieldCoefficients` olean was missing and has now been
   compiled for the new dependent modules. Compilation passed; do not rebuild it.
@@ -282,3 +292,74 @@ source for `FiniteFieldEllipticIntegralClosure.lean` checked with exit 0 and no 
 It proves `isIntegral_iff_coordinateRing_image`, the actual Dedekind instance, and
 `coordinateRingEquivRingOfIntegers`, compatible with their maps into the function field.
 The transitive axiom audit remains pending. Euler product and quotient measure remain open.
+
+## Completion preserves the local arithmetic `[PAPER PROOF]`
+
+For an integer-valued nontrivial valuation, completion extends the valuation
+without changing values on the original field. The induced map of valuation
+rings is local, hence its map on residue fields is injective. It is surjective:
+given a completed valuation integer, density supplies an original-field element
+whose difference has value less than one; the ultrametric inequality makes that
+element integral, and their residues agree. Thus completion preserves residue
+cardinality. Its integer ring remains a DVR because the value group is discrete
+and nontrivial. The complete DVR with finite residue field is locally compact:
+each finite quotient by a power of a uniformizer is finite, and these quotients
+give total boundedness of the integer ring. Completeness gives compactness.
+This proves that the actual finite-place and infinity completions are local fields
+once the already established finite residue results are applied. The generic valued-field
+completion proof and explicit `WithVal` transport are now in
+`HTGeometry/DiscreteValuedCompletion.lean`. Both scratch and production olean checks
+passed. Its olean is required by the actual-place module; never rebuild it.
+`/tmp/hgt_ff_local_fields.lean` applies it to the actual finite and infinity places,
+identifies their completed residue fields, and constructs the full adele ring as the
+product of finite adeles and the infinity completion. This dependent draft is not checked.
+
+## Local rank-one integral `[PAPER PROOF]`
+
+Let `k` be any of the actual completions, `O` its compact open valuation ring,
+`π` a uniformizer, and `q=|O/πO|`. Normalize additive Haar measure by `μ(O)=1`.
+The residue homomorphism is surjective with kernel `πO`; hence that kernel has
+additive index `q`. Its cosets partition `O`, and translation invariance gives
+`μ(πO)=q⁻¹`. Multiplication by `π` scales additive Haar measure by a constant
+(uniqueness of Haar measure); evaluating on `O` identifies that constant as `q⁻¹`.
+Consequently `μ(π⁻ⁿO)=qⁿ` for every integer `n`.
+
+Normalize the absolute value by `|π|=q⁻¹`. The disjoint measurable partition
+`k=O ⊔ ⋃_{n≥1}{x:|x|=qⁿ}` has shell measures `qⁿ−qⁿ⁻¹`. For `Re(s)>0`,
+the spherical rank-one integrand `φ_s(x)=max(1,|x|)^(−s−1)` is constant one
+on `O` and `q^(−n(s+1))` on the nth shell. Its absolute integral is bounded
+by the convergent geometric series `1+(1−q⁻¹)Σ_{n≥1}q^(−n Re(s))`.
+Countable additivity of the integral therefore gives
+
+`∫_k φ_s(x) dμ(x) = 1+(1−q⁻¹)Σ_{n≥1}q^(−ns)`
+`                       = (1−q^(−s−1))/(1−q^(−s))`.
+
+This is the local intertwining factor, proved from the actual residue index and
+Haar measure. Its identification with an Iwasawa character still requires the
+rank-one matrix calculation. The product of these integrals is the required global
+zeta quotient only after proving the closed-point Euler product and the global
+measure normalization. None of those later identities is assumed here. Lean status:
+not yet formalized. The corpus's `FieldOnePadicHaarScaling` supplies the same
+residue-index argument for `Q_p`; generalize the proof rather than transport a
+characteristic-zero field to the present completions.
+
+## Ideal norms in positive characteristic `[PAPER PROOF]`
+
+For any infinite Dedekind domain `A`, put `N(I)=|A/I|`, with value zero for an
+infinite quotient. Chinese remainders give multiplicativity for coprime ideals.
+For a nonzero prime `P`, each successive quotient `Pⁿ/Pⁿ⁺¹` is one-dimensional
+over `A/P`; thus `N(Pⁿ)=N(P)ⁿ`. Unique ideal factorization gives full
+multiplicativity. Infinitude gives `N(0)=0`, and `N(A)=1`. This proof works
+in positive characteristic. Mathlib's bundled `Ideal.absNorm` unnecessarily
+requires a free `Z`-module, so the argument must be exposed with the weaker
+and applicable infinitude hypothesis.
+
+For the actual elliptic coordinate ring, the proved basis `(1,y)` over `F₃[x]`
+identifies `A/I` with the direct sum of polynomial quotients by the nonzero
+Smith coefficients of any nonzero ideal `I`. Hence it is a finite-dimensional
+`F₃`-vector space. For a nonzero principal ideal `(a)`, the determinant/Smith
+identity gives `dim_F₃ A/(a)=deg Norm_F₃[x](a)`, already equal to its pole degree
+at infinity. Therefore `N((a))=3^(poleDegree(a))`. Factoring `(a)` into prime
+powers turns this into the finite-place part of the product formula; adjoining
+the degree-one infinity valuation gives product one. The exact finite-support
+valuation formulation still needs its factorization proof in Lean.

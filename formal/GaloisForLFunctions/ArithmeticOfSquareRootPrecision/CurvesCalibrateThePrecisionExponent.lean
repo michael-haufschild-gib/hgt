@@ -126,10 +126,11 @@ theorem half_le_precisionExponent [Nonempty ι] :
   have hlog : Real.log ‖D.β (D.fePerm i)‖ + Real.log ‖D.β i‖ = 0 := by
     rw [← Real.log_mul (norm_ne_zero_iff.mpr (curve_β_ne_zero D _)) (norm_ne_zero_iff.mpr
       (curve_β_ne_zero D i)), hprod, Real.log_one]
-  have h1 := Finset.le_sup' (fun i => Real.log ‖D.β i‖) (mem_univ i)
-  have h2 := Finset.le_sup' (fun i => Real.log ‖D.β i‖) (mem_univ (D.fePerm i))
-  have hmax : 0 ≤ univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖ := by
-    simp only at h1 h2; linarith
+  have h1 : Real.log ‖D.β i‖ ≤ univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖ :=
+    Finset.le_sup' (fun i => Real.log ‖D.β i‖) (mem_univ i)
+  have h2 : Real.log ‖D.β (D.fePerm i)‖ ≤ univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖ :=
+    Finset.le_sup' (fun i => Real.log ‖D.β i‖) (mem_univ (D.fePerm i))
+  have hmax : 0 ≤ univ.sup' univ_nonempty fun i => Real.log ‖D.β i‖ := by linarith
   have := div_nonneg hmax hq.le
   linarith
 
@@ -215,11 +216,14 @@ theorem golden_tendsto_pointCount_div :
       1 + (1 / 5) ^ k - (√5 * goldenRatio / 5) ^ k - (√5 * goldenRatio⁻¹ / 5) ^ k := by
     intro k
     rw [CurveDatum.pointCount, goldenDatum_trace, hq, hs]
+    generalize goldenRatio = φ
+    generalize √5 = r
+    simp only [div_pow, mul_pow, one_pow]
     field_simp
     ring
   have hr1 : √5 * goldenRatio / 5 < 1 := by
     rw [div_lt_one (by norm_num)]
-    have h5 : √5 < 2.25 := by
+    have h5 : √5 < 2.24 := by
       rw [Real.sqrt_lt' (by norm_num)]; norm_num
     have hφ : goldenRatio < 1.62 := by
       rw [goldenRatio]; linarith

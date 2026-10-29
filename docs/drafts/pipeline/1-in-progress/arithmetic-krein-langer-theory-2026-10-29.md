@@ -42,11 +42,13 @@ locality, and must not duplicate HKT modules.
 - `CyclicSubgroupsDecideTheKreinLangerClass`, `TowerFaithfulSpectraAreDecidedByAlmostEveryTower`,
   `LocalConstituentsMeetOnlyAtTheIdentity`, `TheTwistTowerCompletesTheUpperCount`,
   `TheIndexIsContinuousOffTheDiscriminant`, `TheParityFormOfTheGlobalLaw`,
-  `TheIndexIsTheNumberOfExceptionalWaves`.
+  `TheIndexIsTheNumberOfExceptionalWaves`, `CompressionsAreReceivers`,
+  `FineTowersDecideEveryOrbitKernel`.
 
 ## Open (RH/LH-deep, recorded in README §9)
 Producer over ℤ; Lindelöf bridge from the kernel; near-axis collision quantity; selective transfer
-past Robin–Euler; two-sided coalescent pair theory; cyclic locality for infinite spectra.
+past Robin–Euler; two-sided coalescent pair theory; coarse (prime) tower locality for infinite
+spectra (fine towers are settled).
 
 ## Log
-- 2026-10-29 — created; README draft written; seven modules proved.
+- 2026-10-29 — created; README draft written; nine modules proved; README revised.

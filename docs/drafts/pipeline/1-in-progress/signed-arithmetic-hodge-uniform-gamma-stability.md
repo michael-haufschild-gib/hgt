@@ -42,8 +42,63 @@ false pointwise claim at an exposed nonzero boundary. Compare the complete
 energy of the actual block averages with the existing original-source mean
 graph and exterior charges. The quadratic triangle bound then pays the tail.
 
-The kernel comparison, partition geometry and source identification each need
-their own proofs and Lean formalization. The programme is not yet a proof.
+## Proof status
+
+Kernel comparison is verified with C=32 exp(2). The generic finite interval
+average estimate Gamma(g)<=C Gamma(f) is verified under explicit geometric,
+local-mean and exterior-support conditions. The exact stopping-grid endpoints,
+widths<=1 and adjacent width ratios<=3 are verified.
+
+The finite padded-grid specialization is verified, including its exterior
+and zero-boundary-mean conditions. The actual local-mean identification,
+final head-plus-tail theorem and even-power consequence await Lean audits. The proposed
+universal constant is K=2+96 exp(2). No actual-head Gamma bound is certified
+until those source and boundary obligations pass.
+
+The drafted consequence substitutes this constant into the complete even-power
+head estimate. For every delta>0 it chooses one cutoff A0 before all finite
+sources and horizons; every A>=A0 should give error<=delta Gamma(original).
+
+## Mathematical argument
+
+Write k(s)=exp(-s/2)/(1-exp(-2s)). For 0<s<=t<=7s and
+t-s<=2, the geometric-series inequality 1-r^7<=7(1-r) gives
+k(s)<=7 exp(1) k(t). The bound 1<=2 exp(1) t k(t), for 0<t<=2,
+pays integrated touching-boundary defects with far-end rectangle charges.
+Together these give the uniform rectangle constant C=32 exp(2).
+
+The padded grid starts at -log(2), reaches zero after one cell, follows the
+original log cells up to log(A), and then repeats the widths log(a+1)-log(a)
+for A<=a<2A at every dyadic translate. Reciprocal bounds for log-cell widths
+give adjacent ratios<=3. An intervening neighbor pays both endpoint widths
+for every nonadjacent pair. A nonzero row separated from a padded exterior
+has the same width-scale gap.
+
+Each translated block indicator is the square-root block-length multiple of
+a normalized retained cell. The generator projection fixes this indicator.
+Self-adjointness equates its pairing with the original source and the head,
+so the two profiles have the same integral on each block. The explicit
+physical-height formula makes the head constant there. Therefore the head
+is the original interval mean, including on every translated stopping cell.
+
+Both profiles are finite compact BV sources, vanish below zero and vanish
+above finite explicit endpoints. Choose the right grid boundary above both
+support endpoints plus one. Since every width is at most one, the last cell
+has zero original mean; the initial negative cell does too. All geometric,
+mean and support conditions of the averaged-kernel theorem are then actual
+properties of these sources.
+
+The exact averaged-energy decomposition consists of mean-pair rectangles
+and twice the exterior rows. Each is at most C times its far-end charge.
+The simultaneous original-source mean-variance capacity inequality pays their
+sum once, giving Gamma(h)<=C Gamma(f). The quadratic triangle inequality
+gives Gamma(t)<=2 Gamma(f)+2 Gamma(h). Consequently
+Gamma(h)+Gamma(t)<=(2+3C)Gamma(f)=(2+96 exp(2))Gamma(f).
+
+For the complete even-power source, choose its signed compensation parameter
+as epsilon/K. This gives error<=(epsilon+C_epsilon/(1+log A))Gamma(f).
+Choosing A0 above exp(2 C_epsilon/delta), with epsilon=delta/2, pays the full
+error by delta Gamma(f), uniformly for every A>=A0 and every finite source.
 
 ## Scope
 

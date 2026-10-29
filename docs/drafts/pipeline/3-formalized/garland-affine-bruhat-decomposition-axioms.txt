@@ -1,0 +1,33 @@
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.mem_laurentIwahori' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentUnit_monomial_factor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.sl2_pivot_upper_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.sl2_pivot_lower_left' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.exists_iwahori_bruhat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.matrixValuationContent_mul_left_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.iwahoriLatticeProfile_factors' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.integerWeylProfile_injective' depends on axioms: [propext, Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.exists_unique_iwahori_bruhat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.mem_positiveBorel_iff_projection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.exists_unique_bruhat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LoopSL2.exists_unique_bruhat ℚ : ∀ (g : LoopSL2 ℚ), ∃! w, LoopSL2.borelEquivalent ℚ g (LoopSL2.affineWeylLift ℚ w)
+LoopSL2.exists_unique_bruhat ℝ : ∀ (g : LoopSL2 ℝ), ∃! w, LoopSL2.borelEquivalent ℝ g (LoopSL2.affineWeylLift ℝ w)

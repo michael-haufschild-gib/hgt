@@ -1,8 +1,8 @@
 # Iwahori double cosets for the actual Laurent SL₂ group
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** Prove the affine Bruhat decomposition of the full Laurent
   matrix group, then lift it through the actual central extension.
 
@@ -83,27 +83,31 @@ Projection gives uniqueness of the lifted double-coset representative.
 With `N_m=D(X^-m)` and the canonical finite Weyl lift, these are precisely
 the two families of the actual infinite dihedral affine Weyl group.
 
-Paper proof recorded; Lean implementation and local dependency verification
-pending. This supplies no compact subgroup, archimedean Iwasawa theorem,
+Paper proof and exact Lean formalization are complete. This supplies no compact subgroup, archimedean Iwasawa theorem,
 arithmetic lattice, measure, or Eisenstein convergence by itself.
 
-## Implementation checkpoint
+## Formalization and audit
 
-The first six modules compile cleanly at ordinary limits, with current
-dependency oleans: `LaurentIwahoriCriteria`, `SL2PivotReduction`,
+All seven modules passed final individual `lake --old env lean` source
+checks at ordinary limits: `LaurentIwahoriCriteria`, `SL2PivotReduction`,
 `IwahoriBruhatExistence`, `MatrixValuationContent`, `IwahoriLatticeChain`,
-and `IwahoriBruhatUniqueness`. In particular the complete
-`exists_unique_iwahori_bruhat` theorem is proved for the full formal Laurent
-matrix group. No final direct-source or transitive axiom audit has yet
-been performed for this batch.
+`IwahoriBruhatUniqueness`, and `LoopBruhatDecomposition`. All are wired into
+the umbrella; no umbrella build was run.
 
-`LoopBruhatDecomposition` contains the exact Borel-preimage criterion and
-complete existence/uniqueness lift to the actual central extension; it has
-not yet been checked. Its previously missing `PositiveBorelCoordinates`
-olean is being emitted for this written consumer. The seven new Bruhat
-modules are not yet wired into the umbrella.
+| Exact result | Lean declaration |
+| --- | --- |
+| Entrywise Iwahori valuation criterion | `mem_laurentIwahori` |
+| Monomial times power-series unit | `laurentUnit_monomial_factor` |
+| Four determinant-one pivot reductions | `sl2_pivot_upper_left`, `sl2_pivot_lower_left`, `sl2_pivot_upper_right`, `sl2_pivot_lower_right` |
+| Existence of affine matrix representatives | `exists_iwahori_bruhat` |
+| Integral multiplication preserves matrix content | `matrixValuationContent_mul_left_eq`, `matrixValuationContent_mul_right_eq` |
+| Three lattice invariants survive both factors | `iwahoriLatticeProfile_factors` |
+| Profiles distinguish every affine Weyl element | `integerWeylProfile_injective` |
+| Unique Laurent matrix double-coset label | `exists_unique_iwahori_bruhat` |
+| Full inverse image of the matrix Iwahori | `LoopSL2.mem_positiveBorel_iff_projection` |
+| Unique double-coset label in the central extension | `LoopSL2.exists_unique_bruhat` |
 
-Next: check `LoopBruhatDecomposition`; final direct source checks of all
-seven modules; transitive axiom audit including rational and real
-`LoopSL2.exists_unique_bruhat`; umbrella imports; promote this exact card.
+The transitive audit contains only `propext`, `Classical.choice`, and
+`Quot.sound`. Both rational and real specializations typecheck. Saved audit:
+[garland-affine-bruhat-decomposition-axioms.txt](garland-affine-bruhat-decomposition-axioms.txt).
 The arithmetic Eisenstein series remains open after this algebraic result.

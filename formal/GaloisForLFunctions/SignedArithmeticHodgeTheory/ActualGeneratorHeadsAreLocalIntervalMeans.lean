@@ -57,12 +57,16 @@ private theorem logCellSet_disjoint {n m : ℕ+} (h : n ≠ m) :
   intro x hn hm
   have hne : (n : ℕ) ≠ (m : ℕ) := fun he => h (PNat.eq he)
   rcases lt_or_gt_of_ne hne with hnm | hmn
-  · have he : Real.log (((n : ℕ) + 1 : ℕ) : ℝ) ≤ Real.log (m : ℝ) :=
+  · have he : Real.log ((n : ℝ) + 1) ≤ Real.log (m : ℝ) :=
       Real.log_le_log (by positivity) (by exact_mod_cast hnm)
     exact (not_lt_of_ge (he.trans hm.1)) hn.2
-  · have he : Real.log (((m : ℕ) + 1 : ℕ) : ℝ) ≤ Real.log (n : ℝ) :=
+  · have he : Real.log ((m : ℝ) + 1) ≤ Real.log (n : ℝ) :=
       Real.log_le_log (by positivity) (by exact_mod_cast hmn)
     exact (not_lt_of_ge (he.trans hn.1)) hm.2
+
+private theorem rawCell_eq_logCellSet (n : ℕ+) :
+    rawCell (n : ℕ) = (logCellSet n).indicator (fun _ => (1 : ℝ)) := by
+  simp only [rawCell, logCellSet, Nat.cast_add, Nat.cast_one]
 
 /-- The finite Hilbert coordinate divided by square-root width is the literal cell height. -/
 theorem finiteLogCellProfile_eq_physicalHeight {ι : Type*} [Fintype ι]
@@ -81,12 +85,12 @@ theorem finiteLogCellProfile_eq_physicalHeight {ι : Type*} [Fintype ι]
         rw [inner_smul_right, lp.inner_single_left, RCLike.inner_apply, map_one, mul_one]
         by_cases hi : n i = m
         · subst m
-          simp only [lp.single_apply, Pi.single_same, rawCell,
+          simp only [lp.single_apply, Pi.single_apply, ite_true, rawCell_eq_logCellSet,
             indicator_of_mem hx, Complex.ofReal_one, mul_one, Complex.ofReal_mul]
         · have hix : x ∉ logCellSet (n i) := fun hix =>
             (disjoint_left.mp (logCellSet_disjoint hi)) hix hx
           have hmi : m ≠ n i := Ne.symm hi
-          simp only [lp.single_apply, Pi.single_eq_of_ne hmi, rawCell,
+          simp only [lp.single_apply, Pi.single_eq_of_ne hmi, rawCell_eq_logCellSet,
             indicator_of_notMem hix, Complex.ofReal_zero, mul_zero]
   rw [logCellPhysicalHeight, hcoord]
   have hs : (Real.sqrt (logCell m) : ℂ) ≠ 0 := by
@@ -109,10 +113,12 @@ theorem finiteLogCellProfile_block (j : ℕ) (a : ℕ+) :
   rw [hend] at h
   rw [finiteLogCellProfile, Complex.ofReal_sum]
   simp only [one_mul]
+  change (∑ r : Fin (2 ^ j), (rawCell ((a : ℕ) * 2 ^ j + (r : ℕ)) x : ℂ)) = _
   rw [Fin.sum_univ_eq_sum_range]
   convert h.symm using 1 <;>
     simp only [logCellDyadicBlockCell, dyadicBlockLeft, dyadicBlockRight, rawCell,
-      logCellSet, RHTower.coe_toPNat, indicator_apply, apply_ite, Complex.ofReal_one, Complex.ofReal_zero]
+      logCellSet, RHTower.coe_toPNat, Nat.cast_add, Nat.cast_one,
+      indicator_apply, apply_ite, Complex.ofReal_one, Complex.ofReal_zero]
 
 /-- The indicator coordinates are the square-root length multiple of the normalized translated cell. -/
 theorem finiteLogCellVector_block (j : ℕ) (a : ℕ+) :
@@ -162,8 +168,8 @@ theorem integral_actualGeneratorHead_block {ι : Type*} [Fintype ι]
       ← inner_real_profiles b (finiteLogCellProfile n c)
       (finiteLogCellProfile_bv _ _) (finiteLogCellProfile_compact _ _)
       (finiteLogCellProfile_bv n c) (finiteLogCellProfile_compact n c)]
-    rw [realSourceLp_actualGeneratorHead, realSourceLp_finiteLogCellProfile,
-      realSourceLp_finiteLogCellProfile, ← U.adjoint_inner_right, ← U.adjoint_inner_right,
+    simp only [realSourceLp_actualGeneratorHead, realSourceLp_finiteLogCellProfile]
+    rw [← wholeLineLogCellEmbedding.adjoint_inner_right, ← wholeLineLogCellEmbedding.adjoint_inner_right,
       wholeLineLogCellEmbedding_adjoint_self, wholeLineLogCellEmbedding_adjoint_self,
       ← inner_logCellGeneratorHead, hv]
   have hmul (f : ℝ → ℝ) : (fun x => b x * f x) =
@@ -183,7 +189,7 @@ private theorem exists_cell_in_dyadicBlock (j : ℕ) (a : ℕ+) {x : ℝ}
   have hz : finiteLogCellProfile (logCellDyadicBlockCell j a) (fun _ => 1) x = 0 := by
     apply Finset.sum_eq_zero
     intro r _
-    rw [rawCell, indicator_of_notMem (hn r), mul_zero]
+    rw [rawCell_eq_logCellSet, indicator_of_notMem (hn r), mul_zero]
   rw [finiteLogCellProfile_block, indicator_of_mem hx] at hz
   norm_num at hz
 
@@ -248,7 +254,7 @@ theorem finiteLogCellProfile_zero_of_neg {ι : Type*} [Fintype ι]
     intro h
     have hn := Real.log_nonneg (by exact_mod_cast (n i).pos : (1 : ℝ) ≤ (n i))
     exact (not_le_of_gt hx) (hn.trans h.1)
-  rw [rawCell, indicator_of_notMem hi, mul_zero]
+  rw [rawCell_eq_logCellSet, indicator_of_notMem hi, mul_zero]
 
 /-- A finite source vanishes beyond an explicit finite sum of its right endpoints. -/
 theorem exists_finiteLogCellProfile_zero_above {ι : Type*} [Fintype ι]
@@ -258,11 +264,16 @@ theorem exists_finiteLogCellProfile_zero_above {ι : Type*} [Fintype ι]
   intro x hx
   apply Finset.sum_eq_zero
   intro i hi
+  have hnonneg (k : ι) : 0 ≤ Real.log (((n k : ℕ) + 1 : ℕ) : ℝ) :=
+    Real.log_nonneg (by exact_mod_cast (show 1 ≤ (n k : ℕ) + 1 by omega))
   have hle : Real.log (((n i : ℕ) + 1 : ℕ) : ℝ) ≤
       ∑ i, Real.log (((n i : ℕ) + 1 : ℕ) : ℝ) :=
-    Finset.single_le_sum (fun k _ => Real.log_nonneg (by exact_mod_cast (show 1 ≤ (n k : ℕ) + 1 by omega))) hi
-  have hn : x ∉ logCellSet (n i) := fun h => (not_lt_of_ge (hle.trans hx)) h.2
-  rw [rawCell, indicator_of_notMem hn, mul_zero]
+    Finset.single_le_sum (fun k _ => hnonneg k) hi
+  have hn : x ∉ logCellSet (n i) := by
+    intro h
+    apply (not_lt_of_ge (hle.trans hx))
+    simpa only [Nat.cast_add, Nat.cast_one] using h.2
+  rw [rawCell_eq_logCellSet, indicator_of_notMem hn, mul_zero]
 
 end GaloisForLFunctions.SignedArithmeticHodgeTheory
 

@@ -246,5 +246,21 @@ theorem finiteFieldWeylSum_integral_rotation_poles (i : FrobeniusIndex) :
   rw [hd.2, ← arithmeticZetaRatio_order_at_zero _ (arithmeticPoleParameter_zero i)]
   exact (arithmeticPoleParameter_spec i).2
 
+/-- One integral-rotation threshold works simultaneously for both Frobenius indices. -/
+theorem finiteFieldWeylSum_simultaneous_integral_poles :
+    ∃ d₀ : ℕ, ∀ d : ℕ, d₀ ≤ d → ∀ i : FrobeniusIndex,
+      0 < (d : ℝ) * Real.log 3 ∧
+      meromorphicOrderAt (fun z => finiteFieldWeylSum (levelFourParameter z) 0 0
+        (Real.log ((d : ℝ) * Real.log 3))) (arithmeticPoleParameter i) =
+        -((numerator.rootMultiplicity (zetaCoordinate (arithmeticPoleParameter i + 1)) : ℤ) :
+          WithTop ℤ) ∧
+      meromorphicOrderAt (fun z => finiteFieldWeylSum (levelFourParameter z) 0 0
+        (Real.log ((d : ℝ) * Real.log 3))) (arithmeticPoleParameter i) < 0 := by
+  classical
+  choose n hn using finiteFieldWeylSum_integral_rotation_poles
+  refine ⟨Finset.univ.sup n, fun d hd i => hn i d ?_⟩
+  exact (Finset.le_sup (f := n) (Finset.mem_univ i)).trans hd
+
 end
 end GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1
+

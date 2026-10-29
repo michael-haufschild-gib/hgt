@@ -199,10 +199,16 @@ fails.
 9. **Fine towers decide every orbit kernel.** An orbit kernel is a continuous function of the
    logarithmic scale (`continuous_realOrbitKernel`). Cyclic subgroups `⟨u⟩` with `u → 1` are fine grids
    of `ℝ`; rounding points to them and passing to the limit gives positivity from positivity on the
-   grids (`hermQuad_nonneg_of_fine_zpowers`). So the towers `⟨(n+2)/(n+1)⟩` of consecutive-integer ratios
+   grids (`hermQuad_nonneg_of_fine_zpowers`), and every finite family's index is eventually attained on
+   them (`eventually_le_negIndex_fine`). So the towers `⟨(n+2)/(n+1)⟩` of consecutive-integer ratios
    decide every orbit kernel, with any number of pairs (`isPosDefKernel_orbitKernel_of_consecutive`),
-   and RH is positivity of the Weil kernel on them (`riemannHypothesis_iff_zetaKernel_consecutive`).
-   Prime towers are coarse grids and alias; consecutive-integer towers are fine and do not.
+   carry its whole index (`negIndex_orbitKernel_eq_iSup_consecutive`), count the right zeros of `ζ`
+   (`negIndex_zetaKernel_eq_iSup_consecutive`), and RH is positivity of the Weil kernel on them
+   (`riemannHypothesis_iff_zetaKernel_consecutive`); on the finite stratum every fine enough tower
+   carries exactly the index (`eventually_negIndex_fine_eq`). Prime towers are coarse grids and alias;
+   consecutive-integer towers are fine and do not. The two-prime lattice contains fine towers
+   `⟨p^a q^b⟩` (`exists_fine_twoPrime`), and single such towers carry the index
+   (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`): the two-prime law is the fine-tower law.
 10. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
@@ -225,9 +231,13 @@ fails.
    and its sharpness (`unitary_tower_defeat`, `aliased_tower_defeat`); logarithmic spectra are
    tower-faithful (`isTowerFaithful_logChar`); on `ℚ_{>0}` any exponents with nonzero real parts are
    decided by infinitely many primes (`negIndex_eq_zero_of_posDef_on_infinitely_many_primes`).
-5. *Fine towers* (`hermQuad_nonneg_of_fine_zpowers`, `continuous_realOrbitKernel`,
-   `isPosDefKernel_orbitKernel_of_consecutive`, `riemannHypothesis_iff_zetaKernel_consecutive`): for orbit
-   kernels, with any number of pairs, the consecutive-integer towers decide.
+5. *Fine towers* (`hermQuad_nonneg_of_fine_zpowers`, `eventually_le_negIndex_fine`,
+   `continuous_realOrbitKernel`, `isPosDefKernel_orbitKernel_of_fine`, `negIndex_orbitKernel_eq_iSup_fine`,
+   `eventually_negIndex_fine_eq`, `negIndex_orbitKernel_eq_iSup_twoPrime_towers`,
+   `isPosDefKernel_orbitKernel_of_consecutive`,
+   `negIndex_orbitKernel_eq_iSup_consecutive`, `negIndex_zetaKernel_eq_iSup_consecutive`,
+   `riemannHypothesis_iff_zetaKernel_consecutive`): for orbit kernels, with any number of pairs, the
+   consecutive-integer towers decide positivity and carry the whole index.
 
 **B. Local constituents and ceilings.**
 1. *Poisson law* (`isPosDefKernel_poissonKernel`, `isPosDefKernel_eulerKernel`, `isPosDefKernel_twist`).
@@ -241,7 +251,8 @@ fails.
 **C. Producers and parity.**
 1. *Twin invariance over `𝔽_q`* (`negIndex_traceKernel_quadTwist`, `pointCount_add_quadTwist_of_odd`).
 2. *One twist does not complete* (`one_twist_does_not_complete`); *the twist tower completes*
-   (`unitary_iff_twistTower_upper`).
+   (`unitary_iff_twistTower_upper`), stated through the quadratic twists of the `2`-power base changes
+   (`baseChange`, `twistCount_eq_pointCount`, `unitary_iff_twistedBaseChanges_upper`).
 3. *Parity form over `ℤ`* (`riemannHypothesis_iff_parityClasses_upper`); *one class suffices*
    (`riemannHypothesis_iff_oddClass_upper`, `negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
 4. *Compressions are receivers* (`compress_traceKernel_charPoly`, `hat_euler_eq_zero_iff`,
@@ -295,16 +306,22 @@ fails.
    (`negIndex_eq_card_waves`), so the off-line zeros in every unit height window are eventually absent:
    Backlund's form of LH (HKT `lindelof_of_negIndex_zetaKernel_lt_top`). *Open:* a proof from the kernel
    that bounds `ζ` on the line by the positive part.
-4. **In which completion does the Weil kernel carry its index to the limit?** Pointwise convergence of
-   Krein–Langer data off the discriminant (`eventually_negIndex_eq_of_tendsto`); the index drops exactly
-   by vanishing weights, collisions and coalescence.
+4. **In which completion does the Weil kernel carry its index to the limit?** Two answers. Along
+   data: pointwise convergence of Krein–Langer data off the discriminant
+   (`eventually_negIndex_eq_of_tendsto`); the index drops exactly by vanishing weights, collisions and
+   coalescence. Along the group: the archimedean completion, read through fine cyclic grids; the
+   consecutive-integer towers carry the whole index of every orbit kernel
+   (`negIndex_orbitKernel_eq_iSup_consecutive`).
 5. **Why do two primes suffice, and which arithmetic property makes locality hold?** The spectrum is
    logarithmic: one real logarithm reads every character, so unitarity is tower-independent and two
    incommensurable scales separate any two characters (`isTowerFaithful_logChar`). Cyclic subgroups
    decide every Krein–Langer kernel (`negIndex_eq_zero_of_forall_zpowers`); coordinate towers decide
    only faithful spectra (`coordinate_locality_fails`, `aliased_tower_defeat`). With infinitely many
    pairs the archimedean place takes over: the fine towers `⟨(n+2)/(n+1)⟩` decide every orbit kernel
-   (`isPosDefKernel_orbitKernel_of_consecutive`).
+   (`isPosDefKernel_orbitKernel_of_consecutive`). Two primes suffice because the lattice they generate
+   contains fine towers, whose indices have the whole index as supremum
+   (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`), attained exactly on the finite stratum
+   (`eventually_negIndex_fine_eq`).
 6. **What arithmetic quantity governs the near-axis collisions of the heat flow?** Collision mass is
    `2(κ + E)` on the finite stratum (HKT); near the axis the index drops by coalescence, the part of
    the discriminant where a node reaches the unit circle (§4.7). *Open:* a prime-side expression.

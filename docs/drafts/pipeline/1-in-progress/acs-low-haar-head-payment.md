@@ -85,6 +85,20 @@ touching pair is omitted. This removes logarithmic growth from the entire
 signed Gamma interaction; its ordinary-mass cost still needs joint payment
 with the full divisor-square defect and central mass.
 
+## Exact signed Gamma graph
+
+`TheHaarGammaCrossTermsArePositive` proves a summable positive Laplace
+series for every original cross-entry, including touching pairs.
+`TheHaarGammaDebtIsAnAdditiveGraph` proves, for all signed d and horizons,
+
+`W(h)+G_X(u)=D_X+P(h)+sum_a V_X(a)*u_a^2`,
+
+where `u_a=sqrt(2a+1)*d_a`, `G_X=(1/2)*sum_(a,b)K_ab*(u_a-u_b)^2>=0`,
+and V_X retains the exact Gamma diagonal, central mass, logarithmic
+potential and outgoing charge. Both original poles remain in P.
+Every displayed identity has passed Lean. V_X remains signed; the
+combined right side has not been shown to pay G_X.
+
 ## Investigation
 
 Seek a direct shared Gamma–prime payment on all actual Haar cells, keeping

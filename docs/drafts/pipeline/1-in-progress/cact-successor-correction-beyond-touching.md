@@ -67,6 +67,24 @@ corrected arithmetic modes, not just their trial energies.
 6. Produce a smooth profile with positive corrected ground margin and exhaust
    the complete low spectrum.
 
+A potentially shorter first crossing uses relative form continuity. Prove,
+for the actual normalized complete forms and one fixed smooth profile,
+
+`|W_{c,N}(x)-W_{1,N}(x)| ≤ C ω(c-1)(D_N(x)+‖x‖²)`, with `ω(δ)→0`,
+
+uniformly in `N`. Combining endpoint bounds `W_1≥b‖x‖²` and
+`W_1≥a‖x‖²+εD_N`, when `Cω(c-1)<ε`, gives
+`W_c≥[b-Cω(c-1)((b-a)/ε+1)]‖x‖²`. This would prove positivity at
+some genuine overlap without first identifying its full spectrum.
+
+The analytic obligation is substantial: normalized ratio-prime terms cancel,
+but the new near-neighbor Gram and non-ratio terms require small relative
+bounds. The top-atom potential `(n/N)log n` is already paid by the prime defect.
+Near overlapping archimedean pairs must retain the cancellation inside the
+Lévy integral; the separate cross integral need not exist there. Self, pole,
+and far-cross differences must have a modulus tending to zero, not merely
+a bounded error. This relative-continuity statement is unproved.
+
 Searches153–161 investigate novelty. Existing separated spectral statements,
 exact all-width lag calculus, and finite successor-fiber identities are leads;
 none inspected so far establishes this proposed source law. The endpoint

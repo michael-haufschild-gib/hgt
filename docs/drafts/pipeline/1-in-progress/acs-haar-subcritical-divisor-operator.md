@@ -52,24 +52,18 @@ spectral criterion is not the target. The fixed-ratio separated-matrix
 theorem supplies no uniform touching limit or payment for this source.
 No web search, novelty checks, numerical experiments, or axiom checks.
 
-## Next joint comparison to investigate
+## Exact Gamma graph; joint comparison remains open
 
-The corpus gives the exact positive exponential series
-`archLevyDensity(t)=sum_k exp(-(2k+1/2)*t)` for `t>0`
-(`RHTower.ArchimedeanAnomaly.archLevyDensity_eq_tsum`). Its four-point mixed difference
-on two ordered intervals is nonpositive term by term. Combined with the
-actual two-piece balanced Haar profiles, this suggests that their Gamma
-off-diagonal matrix entries are nonnegative. This sign is not yet proved
-here. A useful next target is a comparison of the resulting additive
-graph energy with the retained multiplicative divisor form, including
-the ground-state diagonal and the exact boundary charge. A sign theorem
-alone would not pay the signed source.
-
-The same module already proves `completelyMonotone_archLevyDensity`,
-including nonnegative second derivative. Either its four-point
-exponential identity or two integrations against nonnegative Haar
-primitives can supply the proposed cross-term sign. These are leads,
-not completed Gamma/arithmetic comparisons.
+`TheHaarGammaCrossTermsArePositive` now proves the complete summable
+positive Laplace expansion of each actual Gamma cross-entry, including
+touching pairs. `TheHaarGammaDebtIsAnAdditiveGraph` retains every signed
+coefficient in the exact original identity
+`W(h)+G_X(u)=D_X+P(h)+sum_a V_X(a)*u_a^2`, where
+`u_a=sqrt(2a+1)*d_a`, G_X is a nonnegative additive graph energy and
+V_X is the explicit signed diagonal including the original outgoing
+charge. These identities have passed Lean; no positivity of V_X or
+payment of G_X is claimed. The next target is their combined comparison
+with the retained multiplicative divisor form and boundary charge.
 
 `SignedArithmeticEnergyIncidence.FrustrationIsPaidAlongCanonicalPaths`
 supplies the exact signed ground-state decomposition and shared-edge

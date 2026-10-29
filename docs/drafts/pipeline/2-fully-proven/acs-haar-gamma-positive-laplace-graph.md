@@ -2,7 +2,7 @@
 
 - **ID:** acs-haar-gamma-positive-laplace-graph
 - **Stage:** 2-fully-proven; direct Lean formalization in progress
-- **Type:** THEOREM (paper), `[PROVED HERE]`
+- **Type:** PAPER ARGUMENT; proof status pending successful Lean checks
 - **Route:** ACS: full-source effectivity → Hodge index → RH.
 - **Parent:** [joint signed graph payment](../1-in-progress/acs-haar-gamma-signed-graph-payment.md)
 
@@ -27,7 +27,7 @@ Every finite signed section has exactly
 `Gamma(sum_a d_a H_a)=sum_a Gamma(H_a)*d_a^2+sum_(a,b) J_ab*d_a*d_b`.
 
 For `n_a=2a+1`, `u_a=sqrt(n_a)*d_a` and
-`K_ab=J_ab/sqrt(n_a*n_b)`, this becomes
+`K_ab=J_ab/(sqrt(n_a)*sqrt(n_b))`, this becomes
 
 `Gamma(h)=sum_a (Gamma(H_a)/n_a+sum_b K_ab)*u_a^2
           -(1/2)*sum_(a,b) K_ab*(u_a-u_b)^2`.
@@ -59,8 +59,8 @@ charge. The signed potential V_X is retained without a positivity claim.
    kernel expansion is `k(y-x)=sum_k exp(-r_k*(y-x))`.
    The actual rectangle measure is finite even when the cells touch.
    Since the Haar profiles are bounded, `abs(H_a(x)*H_b(y))*k(y-x)`
-   is integrable. Tonelli identifies it with the sum of the absolute
-   exponential integrands, justifying the full integral-series exchange.
+   is integrable. It is the sum of the absolute exponential integrands;
+   dominated convergence justifies the full integral-series exchange.
 3. Each exponential separates into exp(r_k*x)exp(-r_k*y). Fubini gives
    its integral as `-U_a(r_k)*V_b(r_k)`. Thus the negative rectangle
    pairing has the displayed summable nonnegative series. Symmetry of
@@ -84,3 +84,24 @@ additive graph energy. It does not pay that energy, its row potential,
 the central mass or the valuation completion cost. The joint graph
 payment card remains in progress. No web search, novelty check,
 numerical experiment or axiom check is used.
+
+## Exact Lean correspondence
+
+Namespace: `GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells`.
+All three modules belong to `ArithmeticCastelnuovoSeveri/`.
+
+| Claim | Module | Declaration |
+|---|---|---|
+| Increasing-weight moment sign | `HaarLaplaceMoments` | `haarProfile_moment_nonpos_of_monotone` |
+| Both exponential moment signs | `HaarLaplaceMoments` | `haarLaplaceLeft_nonneg`, `haarLaplaceRight_nonneg` |
+| Exponential integrability and original cell restriction | `HaarLaplaceMoments` | `integrable_haarProfile_mul_exp`, `setIntegral_haarProfile_mul_eq` |
+| Actual symmetry and zero diagonal | `TheHaarGammaCrossTermsArePositive` | `haarGammaCoupling_symm`, `haarGammaCoupling_self` |
+| Full summable positive expansion, including touching | `TheHaarGammaCrossTermsArePositive` | `haarGammaCoupling_hasSum`, `haarGammaCoupling_nonneg` |
+| Exact signed Gamma matrix | `TheHaarGammaDebtIsAnAdditiveGraph` | `haarSectionProfile_gamma_eq_matrix` |
+| Symmetric nonnegative graph weights and energy | `TheHaarGammaDebtIsAnAdditiveGraph` | `haarGammaGraphWeight_symm`, `haarGammaGraphWeight_nonneg`, `haarGammaGraphEnergy_nonneg` |
+| Exact Gamma row potential minus graph | `TheHaarGammaDebtIsAnAdditiveGraph` | `haarSectionProfile_gamma_eq_row_sub_graph` |
+| Full original Weil identity | `TheHaarGammaDebtIsAnAdditiveGraph` | `haarSectionProfile_roughWeil_add_graph_eq` |
+
+Every declaration has passed Lean. Final direct audits are pending;
+the graph module's redundant tactics were removed after its first pass.
+The three imports are wired into the ACS umbrella; the umbrella is not compiled.

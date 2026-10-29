@@ -174,18 +174,18 @@ translation tile formulas. It has not yet been compiled.
   consumer olean is built.
 - `HeckeLFunctions/HeckeDualFrequenciesHaveClassGenerators.lean`: finalized;
   final source check and all three main transitive axiom audits pass.
-  No consumer olean built yet.
-- `/tmp/HeckeFieldElementMellinScratch.lean`: first check exposed a
-  dependent rewrite, real-to-complex absolute-value casts, and an omitted
-  explicit Haar measure. The second check leaves only the `Units.mk0`
-  projection match in the kernel exponential identity; the concrete
-  helper equality is now simplified before rewriting. Third check
-  running. All other declarations elaborate, but their main proofs are
-  not counted as formalized until this dependency is closed.
-- `/tmp/HeckeDualUnitCovarianceScratch.lean`: written, unchecked; its
-  inverse-coefficient dependency is built.
-- `/tmp/HeckeUnitDomainFamilyUnfoldingScratch.lean`: written, unchecked;
-  imports existing unit-domain and absolute-periodization infrastructure.
+  A consumer is written in `/tmp/HeckeDualClassMellinScratch.lean`;
+  its required olean is built.
+- `HeckeFieldElementKernelsHaveExactMellinIntegrals.lean`: finalized; final
+  direct source check passes without warnings, and all five main
+  transitive axiom audits are standard only. Its consumer olean is built.
+- `HeckeDualThetaKernelsAreUnitCovariant.lean`: finalized; final direct
+  source audit passes without warnings, and both main transitive axiom
+  audits are standard only. Its consumer olean is built.
+- `HTGeometry/NumberFieldLogPeriodizationsHaveAbsoluteUnfolding.lean`:
+  finalized; final direct source audit passes without warnings and its
+  main transitive axiom audit is standard only. Required consumer olean
+  is queued.
 
 The inverse-coefficient and trace-dual-norm sources have passed final
 audits, and both required consumer oleans are built.
@@ -227,3 +227,153 @@ For comparison with the dual weak-pair continuation on all `Re(s)>1`,
 follow the proved primal argument: parity degree zero gives the weak
 pair's real-part inequality; nonzero parity gives a strong pair and hence
 its Mellin identity at every argument. Apply this to the symmetric pair.
+
+The consumer `/tmp/HeckeDualClassMellinScratch.lean` is now written.
+It combines the actual generator coefficient with its exact fractional
+norm, obtaining the inverse-character ideal term times
+`Cψ ψ(b)Norm(J_b)^(-s)`. Its joint Mellin-density formula gives absolute
+integrability, exact norm mass, summability over the ideal class for
+`Re(s)>1`, and the exact Gamma integral. It remains unchecked until the
+field-element and unit-covariance imports are finalized. This written
+consumer requires their oleans and the dual-class-generator olean.
+
+`/tmp/HeckeDualUnitUnfoldingScratch.lean` now contains the complete actual
+family unfolding draft: nonzero-frequency reindexing, absolute
+class/unit and class/log convergence, exact torsion factor, one joint
+unit-domain majorant, whole-log absolute unfolding, zero-mode subtraction,
+and conversion to positive logarithmic coordinates by Haar negation.
+This is unchecked. It is the written consumer requiring the generic
+family-unfolding module's olean after that module is finalized.
+
+The field-element Mellin extension is finalized; see
+[the exact field-element proof](../3-formalized/hecke-field-element-kernels-have-exact-mellin-integrals.md).
+The earlier unverified scratch status is superseded by its successful
+final source and transitive axiom audits.
+
+The final analytic assembly is drafted in
+`/tmp/HeckeDualAveragedMellinScratch.lean`: joint-to-radial absolute mass
+bounds, infinite Mellin exchange, the exact inverse-character dual class
+series, and comparison with the symmetric actual weak-pair continuation
+on `Re(s)>1`. This remains unchecked and is a written consumer of the
+queued class-Mellin, actual unit-unfolding, and inversion-invariance
+modules. It does not yet perform finite class recombination or global
+completed pole correction.
+
+The actual dual kernel covariance is finalized; see
+[the unit-covariance proof](../3-formalized/hecke-dual-theta-kernels-are-unit-covariant.md).
+This supersedes its earlier unchecked scratch status.
+
+## Exact scalar cancellation for global recombination
+
+Write `D=|disc K|`, `N=Norm(m)`, `B=Norm(b)`, `delta=D*N`, and
+`d=parityDegree`. The actual factors have the following product for
+an inverse-class base representative:
+
+```
+weight_b(1-s) = psi(b)^(-1) B^(1-s),
+PoissonScalar_b = (-i)^d/(N B sqrt(D)),
+dualMellinFactor_b(s) = Cpsi psi(b) (delta B)^s.
+```
+
+Positive real complex-power multiplicativity and addition cancel both
+base factors exactly. The common product is
+
+```
+Cpsi (-i)^d delta^s/(N sqrt(D)).
+```
+
+This form avoids premature splitting of the discriminant/conductor
+powers. Multiplying by `delta^((1-s)/2)` and comparing with the inverse
+completion factor `delta^(s/2)` leaves
+`Cpsi (-i)^d/sqrt(N)`. The already proved normalized Gauss norm and
+`||-i||=1` give root-number norm one. These identities are queued for
+formalization after the analytic consumers; no normalized reflection
+is claimed yet.
+
+Checked source APIs for the queued symmetric-pair comparison:
+`IsStrongFEPair.symm` and `WeakFEPair.symm` in Mathlib
+`NumberTheory/LSeries/AbstractFuncEq.lean`. Positive real inverse powers
+can use `Complex.inv_cpow` with the nonnegative real argument equal to
+zero, hence unequal to pi. `NumberField.discr_ne_zero` is the checked
+source for discriminant positivity.
+
+The generic family unfolding is finalized; see
+[absolute family unfolding](../3-formalized/number-field-log-periodizations-have-absolute-unfolding.md).
+This supersedes its earlier unchecked scratch status. The actual dual
+Gaussian consumer remains unchecked until its required imports are built.
+
+The scalar assembly is now drafted in
+`/tmp/HeckeCompletedReflectionFactorsScratch.lean`: completion norm and
+entire nonzero completion factor, actual normalized root number with
+norm one, exact dual fractional-norm power, arithmetic Poisson scalar,
+base-character/base-norm cancellation, and the final conductor scaling
+identity. It is unchecked and imports the queued exact dual-class
+Mellin module. Positive-real inverse-power and square-root identities
+are being verified in this scratch before permanent use.
+
+## Final primitive reflection draft
+
+`/tmp/HeckePrimitiveCompletedFunctionalEquationScratch.lean` now contains
+class-fiber reindexing under the explicit dual permutation, finite class
+recombination, the corrected conductor-scaled completion, and initial
+right-half-plane reflection. To extend across the plane, it defines the
+pole-cleared entire function from the regular part and the two constant
+pole coefficients **before** totalized division. Analytic uniqueness
+then gives global pole-cleared reflection, reflection away from the two
+possible poles, and reflection at every point for nontrivial characters.
+This is unchecked and imports the queued dual Mellin, scalar, and
+completed removable-value modules. HL7 remains open until the full chain
+passes final source and transitive axiom audits.
+
+The dual-generator, arbitrary-field Mellin, and dual unit-covariance
+consumer oleans are built. The first check of
+`/tmp/HeckeDualClassMellinScratch.lean` is now running.
+
+The dual class Mellin scratch check verifies its exact coefficient,
+norm masses, summability, and integral formula with standard axioms.
+Its sole error is pointwise rewriting beneath an unapplied function in
+`Integrable`; an explicit eta-expanded lambda now exposes the density.
+The corrected source is promoted to
+`HeckeDualClassKernelsHaveExactMellinIntegrals.lean` for its final direct
+check, with an added transitive audit of joint integrability. It is not
+yet counted as finalized or wired into the umbrella.
+
+## Current verification dependency graph
+
+Finalized and built for their written consumers:
+- `HeckeDualFrequenciesHaveClassGenerators`
+- `HeckeFieldElementKernelsHaveExactMellinIntegrals`
+- `HeckeDualThetaKernelsAreUnitCovariant`
+
+Finalized, with required consumer oleans still pending:
+- `HTGeometry/NumberFieldLogPeriodizationsHaveAbsoluteUnfolding`
+- `HeckeConductorsAndParitiesAreInvariantUnderInversion`
+
+Current final source check:
+- `HeckeDualClassKernelsHaveExactMellinIntegrals` (the single eta-expansion correction).
+
+Unchecked complete drafts and intended module names:
+- `/tmp/HeckeDualUnitUnfoldingScratch.lean` →
+  `HeckeDualUnitOrbitsUnfoldOverTheLogSpace`.
+- `/tmp/HeckeDualAveragedMellinScratch.lean` →
+  `HeckeDualAveragedMellinIsTheInverseClassSeries`; imports both preceding
+  dual analytic modules and inversion invariance.
+- `/tmp/HeckeCompletedThetaResidueCancellationScratch.lean` →
+  `HeckeCompletedThetaResiduesCancel`; imports the already built global
+  ordinary L-continuation.
+- `/tmp/HeckeGammaCompletedContinuationScratch.lean` →
+  `HeckeGammaCompletedFunctionsHaveRemovableValues`; imports residue
+  cancellation.
+- `/tmp/HeckeCompletedReflectionFactorsScratch.lean` →
+  `HeckeCompletionFactorsHaveExactArithmeticNormalization`; imports
+  the exact dual class Mellin module.
+- `/tmp/HeckePrimitiveCompletedFunctionalEquationScratch.lean` →
+  `PrimitiveHeckeLFunctionsHaveCompletedFunctionalEquation`; imports
+  dual averaged Mellin, arithmetic normalization, and completed removable
+  values.
+
+Each finished dependency needs an olean only for the written consumers
+listed here. Final source audits and transitive axiom audits precede
+finalized status. No umbrella compilation is needed. The parent goal
+remains active: finish finite-order Hecke L-functions before starting
+class field theory.

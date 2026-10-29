@@ -166,6 +166,18 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     the original positive rectangle remainders, including touching cells
     and index one. The joint signed Gamma/central-mass comparison with
     the logarithmic/outgoing arithmetic diagonal remains open.
+    Every actual Gamma cross-entry also has a summable positive Laplace
+    expansion, including touching cells (`TheHaarGammaCrossTermsArePositive`).
+    With $u_a=\sqrt{2a+1}\,d_a$ and
+    $K_{ab}=J_{ab}/(\sqrt{2a+1}\sqrt{2b+1})\ge0$, the complete signed form is
+    $\Gamma(h)=\sum_a[\Gamma(H_a)/(2a+1)+\sum_bK_{ab}]u_a^2-G_X(u)$,
+    where $G_X(u)=\tfrac12\sum_{a,b}K_{ab}(u_a-u_b)^2\ge0$.
+    The original Weil form therefore satisfies
+    $W(h)+G_X(u)=D_X+P(h)+\sum_aV_X(a)u_a^2$
+    (`TheHaarGammaDebtIsAnAdditiveGraph`). The explicit potential
+    $V_X(a)=[\Gamma(H_a)+(2\operatorname{gammaHardyPhaseRate}(0)-\log(2a+1))M_a-O_X(a)]/(2a+1)
+      +\sum_bK_{ab}$ remains signed. Joint payment must control this
+    potential and the graph energy together, retaining both original poles.
     The actual signed divisor source also has complete valuation coordinates:
     with $x_a=d_a/\sqrt{2a+1}$ and $w_a=(2a+1)M_a\ge1/2$,
     $D_X+T_Q=\tfrac12\sum_e E_Q(e)|\widehat x(e)|^2+R_X$

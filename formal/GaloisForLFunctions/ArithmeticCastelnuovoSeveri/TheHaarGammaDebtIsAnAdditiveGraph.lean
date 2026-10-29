@@ -141,7 +141,7 @@ private theorem haarGamma_diagonal_ground (d : ℕ → ℝ) (a : ℕ) :
       (levyEnergy (haarProfile a) / ((2 * a + 1 : ℕ) : ℝ)) * haarGroundCoordinate d a ^ 2 := by
   have hn : (0 : ℝ) < ((2 * a + 1 : ℕ) : ℝ) := by positivity
   rw [haarGroundCoordinate, mul_pow, Real.sq_sqrt hn.le]
-  field_simp [hn.ne'] <;> ring
+  field_simp [hn.ne']
 
 private theorem haarGamma_cross_ground (d : ℕ → ℝ) (a b : ℕ) :
     haarGammaCoupling a b * d a * d b =
@@ -151,7 +151,7 @@ private theorem haarGamma_cross_ground (d : ℕ → ℝ) (a b : ℕ) :
   have hb : Real.sqrt ((2 * b + 1 : ℕ) : ℝ) ≠ 0 :=
     (Real.sqrt_pos.mpr (by positivity : (0 : ℝ) < ((2 * b + 1 : ℕ) : ℝ))).ne'
   rw [haarGammaGraphWeight, haarGroundCoordinate, haarGroundCoordinate]
-  field_simp [ha, hb] <;> ring
+  field_simp [ha, hb]
 
 /-- Exact signed Gamma decomposition in the original divisor ground coordinates. -/
 theorem haarSectionProfile_gamma_eq_row_sub_graph (d : ℕ → ℝ) (X : ℕ) :
@@ -213,7 +213,8 @@ theorem haarSectionProfile_roughWeil_add_graph_eq (d : ℕ → ℝ) (X : ℕ) :
     have hn : (0 : ℝ) < ((2 * a + 1 : ℕ) : ℝ) := by positivity
     dsimp only [haarWeilGroundPotential, haarGammaRowPotential]
     simp only [haarGroundCoordinate, mul_pow, Real.sq_sqrt hn.le]
-    field_simp [hn.ne'] <;> ring
+    field_simp [hn.ne']
+    ring
   have hsum : (∑ a ∈ Finset.Icc 1 X,
       haarWeilGroundPotential X a * haarGroundCoordinate d a ^ 2) =
       (∑ a ∈ Finset.Icc 1 X, haarGammaRowPotential X a * haarGroundCoordinate d a ^ 2) +

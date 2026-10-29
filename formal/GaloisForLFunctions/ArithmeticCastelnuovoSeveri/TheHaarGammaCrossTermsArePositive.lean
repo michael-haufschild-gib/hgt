@@ -170,8 +170,11 @@ theorem haarGammaCoupling_hasSum {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
         (fun y : ℝ => haarProfile b y * Real.exp (-r * y))
     rw [hprod, setIntegral_haarProfile_mul_eq ha,
       setIntegral_haarProfile_mul_eq hb]
-    change -( _ * _) = (-_) * _
-    ring
+    change -((∫ x, haarProfile a x * Real.exp (r * x)) *
+        (∫ x, haarProfile b x * Real.exp (-r * x))) =
+      (-(∫ x, haarProfile a x * Real.exp (r * x))) *
+        (∫ x, haarProfile b x * Real.exp (-r * x))
+    exact (neg_mul _ _).symm
   have hout : -(∫ p, H p ∂μ) = haarGammaCoupling a b := by
     rw [← hR]
     rfl

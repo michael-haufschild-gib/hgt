@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HeckeKreinToeplitz.TheArchimedeanCompletionCarriesTheSameIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.TheFiniteIndexStratumOfZetaIsLindelofDeep
+import GaloisForLFunctions.HeckeKreinToeplitz.BoundedIndexIsClosedUnderPointwiseLimits
+import GaloisForLFunctions.HeckeKreinToeplitz.FiniteIndexIsPositiveMinusFiniteRank
 
 /-!
 # Fine towers decide every orbit kernel
@@ -18,12 +20,21 @@ continuous in `log` has nonnegative Toeplitz forms on the cyclic subgroups gener
 orbit kernel `t ↦ Σ_ρ e^{−t(ρ−½)} W_ρ` converges uniformly on compact sets, since zeros lie in the
 strip and the Weil summands are absolutely summable.
 
-**Consecutive-integer towers decide** (`isPosDefKernel_orbitKernel_of_consecutive`,
-`riemannHypothesis_iff_zetaKernel_consecutive`). For every tempered configuration and real test, the
-orbit kernel on `ℚ_{>0}` is positive definite iff it is positive definite on each cyclic subgroup
-`⟨(n+2)/(n+1)⟩`; for `ζ` this is RH. Prime towers are coarse grids (spacing `log p ≥ log 2`) and
+**Consecutive-integer towers decide and carry the index** (`isPosDefKernel_orbitKernel_of_consecutive`,
+`negIndex_orbitKernel_eq_iSup_consecutive`, `riemannHypothesis_iff_zetaKernel_consecutive`). For every
+tempered configuration and real test, the orbit kernel on `ℚ_{>0}` is positive definite iff it is
+positive definite on each cyclic subgroup `⟨(n+2)/(n+1)⟩`, and its index, finite or not, is the
+supremum of its indices there (`eventually_le_negIndex_fine`: every finite family's index is eventually
+attained on the fine grids); on the finite stratum every fine enough tower carries exactly the index
+(`eventually_negIndex_fine_eq`). For `ζ` the towers count the right zeros
+(`negIndex_zetaKernel_eq_iSup_consecutive`), and positivity on them is RH. Prime towers are coarse grids (spacing `log p ≥ log 2`) and
 alias; the towers of consecutive-integer ratios are fine and do not. Cyclic locality holds for the
 arithmetic kernels with any number of pairs, through the archimedean place.
+
+**Two primes suffice because they contain fine towers** (`exists_fine_twoPrime`,
+`negIndex_orbitKernel_eq_iSup_twoPrime_towers`). The lattice of two distinct primes contains elements
+`p^a q^b` of arbitrarily small positive scale, and single cyclic towers through them carry the index:
+the two-prime law is the fine-tower law.
 -/
 
 open Complex Finset Filter Topology Zeta23
@@ -67,8 +78,8 @@ theorem exists_tendsto_gram_grid {k : Multiplicative ℝ → ℂ}
   · simp only [gram, Function.comp_apply, zpowersHom_apply]
     congr 1
     apply Multiplicative.toAdd.injective
-    simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd, toAdd_zpow, smul_eq_mul]
-    push_cast; ring
+    simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd, toAdd_zpow]
+    ring
   · simp only [gram]
     congr 1
     apply Multiplicative.toAdd.injective
@@ -84,10 +95,14 @@ theorem hermQuad_nonneg_of_fine_zpowers {k : Multiplicative ℝ → ℂ}
       0 ≤ hermQuad (gram (k ∘ zpowersHom _ (Multiplicative.ofAdd (s n))) y) c)
     {m : ℕ} (x : Fin m → Multiplicative ℝ) (c : Fin m → ℂ) : 0 ≤ hermQuad (gram k x) c := by
   obtain ⟨y, hy⟩ := exists_tendsto_gram_grid hc hs hs0 x
-  refine ge_of_tendsto (x := (atTop : Filter ℕ)) ?_ (Eventually.of_forall fun n => h n m (y n) c)
-  simp only [hermQuad]
-  exact (Complex.continuous_re.tendsto _).comp (tendsto_finsetSum _ fun a _ =>
-    (tendsto_const_nhds.mul (tendsto_finsetSum _ fun b _ => (hy a b).mul tendsto_const_nhds)))
+  have hpos : ∀ n, 0 ≤ (∑ a, ∑ b, (starRingEnd ℂ) (c a) *
+      gram (k ∘ zpowersHom _ (Multiplicative.ofAdd (s n))) (y n) a b * c b).re := fun n => by
+    have := h n m (y n) c
+    rwa [hermQuad_gram] at this
+  rw [hermQuad_gram]
+  exact ge_of_tendsto (x := (atTop : Filter ℕ)) ((Complex.continuous_re.tendsto _).comp
+    (tendsto_finsetSum _ fun a _ => tendsto_finsetSum _ fun b _ =>
+      (tendsto_const_nhds.mul (hy a b)).mul tendsto_const_nhds)) (Eventually.of_forall hpos)
 
 /-- **Fine grids carry the index.** For a continuous kernel, every finite family's negative index is
 eventually attained on the fine cyclic subgroups. -/
@@ -138,6 +153,68 @@ theorem continuous_realOrbitKernel (Z : ZeroConfig) (hZ : TemperedConfig Z) {f :
   exact hon.continuousAt (Ioo_mem_nhds (by rw [hT]; linarith [neg_abs_le t₀])
     (by rw [hT]; linarith [le_abs_self t₀]))
 
+/-! ### Fine towers of `ℚ_{>0}` -/
+
+/-- On a tower `⟨u⟩` the orbit kernel is the archimedean kernel on the grid `ℤ · log u`. -/
+theorem orbitKernel_comp_zpowers (Z : ZeroConfig) (f : ℝ → ℝ) (u : HeckeLattice) :
+    orbitKernel Z f ∘ zpowersHom _ u = realOrbitKernel Z f ∘
+      zpowersHom _ (Multiplicative.ofAdd (scale heckeLogScale u)) := by
+  funext v
+  simp only [Function.comp_apply, zpowersHom_apply, ← realOrbitKernel_comp_heckeLogScale,
+    map_zpow]
+  rfl
+
+theorem gram_orbitKernel_eq_real (Z : ZeroConfig) (f : ℝ → ℝ) {m : ℕ} (x : Fin m → HeckeLattice) :
+    gram (orbitKernel Z f) x = gram (realOrbitKernel Z f) fun a => heckeLogScale (x a) := by
+  ext a b
+  simp only [gram, ← realOrbitKernel_comp_heckeLogScale, Function.comp_apply, map_mul, map_inv]
+
+section Fine
+
+variable (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ → ℝ} (hf : f ∈ realTests)
+  {u : ℕ → HeckeLattice} (hu : Tendsto (fun n => scale heckeLogScale (u n)) atTop (𝓝 0))
+  (hu0 : ∀ n, scale heckeLogScale (u n) ≠ 0)
+include hZ hf hu hu0
+
+/-- **Fine towers decide every orbit kernel.** On a tempered configuration, an orbit kernel positive
+definite on the towers `⟨u_n⟩` of a sequence with scales `→ 0` is positive definite. -/
+theorem isPosDefKernel_orbitKernel_of_fine
+    (h : ∀ n, IsPosDefKernel (orbitKernel Z f ∘ zpowersHom _ (u n))) :
+    IsPosDefKernel (orbitKernel Z f) := by
+  refine ⟨isHermKernel_orbitKernel Z f, fun m x c => ?_⟩
+  rw [gram_orbitKernel_eq_real]
+  exact hermQuad_nonneg_of_fine_zpowers (continuous_realOrbitKernel Z hZ hf) hu hu0
+    (fun n _ y c => by rw [← orbitKernel_comp_zpowers]; exact (h n).hermQuad_nonneg y c) _ c
+
+/-- **Fine towers carry the whole index.** The index of every orbit kernel on a tempered
+configuration, finite or not, is the supremum of its indices on the towers of a fine sequence. -/
+theorem negIndex_orbitKernel_eq_iSup_fine :
+    negIndex (orbitKernel Z f) = ⨆ n, negIndex (orbitKernel Z f ∘ zpowersHom _ (u n)) := by
+  refine le_antisymm ?_ (iSup_le fun n => negIndex_comp_le _ _)
+  rw [negIndex_le_iff]
+  intro m x
+  have hH : (gram (realOrbitKernel Z f) fun a => heckeLogScale (x a)).IsHermitian := by
+    rw [← gram_orbitKernel_eq_real]; exact gram_isHermitian (isHermKernel_orbitKernel Z f) x
+  obtain ⟨n, hn⟩ := (eventually_le_negIndex_fine (continuous_realOrbitKernel Z hZ hf) hu hu0 _
+    hH).exists
+  rw [gram_orbitKernel_eq_real]
+  exact hn.trans (by rw [← orbitKernel_comp_zpowers]; exact le_iSup (fun n =>
+    negIndex (orbitKernel Z f ∘ zpowersHom _ (u n))) n)
+
+/-- **On the finite stratum every fine enough tower carries exactly the index.** -/
+theorem eventually_negIndex_fine_eq (hfin : negIndex (orbitKernel Z f) < ⊤) :
+    ∀ᶠ n in atTop, negIndex (orbitKernel Z f ∘ zpowersHom _ (u n)) = negIndex (orbitKernel Z f) := by
+  obtain ⟨m, x, hx⟩ := exists_hermNegIndex_gram_eq_negIndex hfin
+  have hH : (gram (realOrbitKernel Z f) fun a => heckeLogScale (x a)).IsHermitian := by
+    rw [← gram_orbitKernel_eq_real]; exact gram_isHermitian (isHermKernel_orbitKernel Z f) x
+  filter_upwards [eventually_le_negIndex_fine (continuous_realOrbitKernel Z hZ hf) hu hu0 _ hH]
+    with n hn
+  refine le_antisymm (negIndex_comp_le _ _) ?_
+  rw [← hx, gram_orbitKernel_eq_real, orbitKernel_comp_zpowers]
+  exact hn
+
+end Fine
+
 /-! ### Consecutive-integer towers -/
 
 /-- The consecutive-integer ratio `(n+2)/(n+1)` as an element of `ℚ_{>0}`. -/
@@ -162,29 +239,26 @@ theorem tendsto_scale_consecutiveRatio :
   simp only [scale_consecutiveRatio]
   simpa [Function.comp_def] using (Real.continuousAt_log one_ne_zero).tendsto.comp h
 
-/-- **Consecutive-integer towers decide every orbit kernel.** On a tempered configuration, an orbit
-kernel positive definite on every cyclic subgroup `⟨(n+2)/(n+1)⟩` is positive definite. -/
-theorem isPosDefKernel_orbitKernel_of_consecutive (Z : ZeroConfig) (hZ : TemperedConfig Z)
-    {f : ℝ → ℝ} (hf : f ∈ realTests)
-    (h : ∀ n, IsPosDefKernel (orbitKernel Z f ∘ zpowersHom _ (consecutiveRatio n))) :
-    IsPosDefKernel (orbitKernel Z f) := by
-  refine ⟨isHermKernel_orbitKernel Z f, fun m x c => ?_⟩
-  have hreal : ∀ (n m : ℕ) (y : Fin m → Multiplicative ℤ) (c : Fin m → ℂ),
-      0 ≤ hermQuad (gram (realOrbitKernel Z f ∘ zpowersHom _
-        (Multiplicative.ofAdd (scale heckeLogScale (consecutiveRatio n)))) y) c := by
-    intro n m y c
-    have := (h n).hermQuad_nonneg y c
-    convert this using 3
-    funext v
-    simp only [Function.comp_apply, zpowersHom_apply, ← realOrbitKernel_comp_heckeLogScale,
-      map_zpow]
-    rfl
-  have := hermQuad_nonneg_of_fine_zpowers (continuous_realOrbitKernel Z hZ hf)
-    tendsto_scale_consecutiveRatio (fun n => (scale_consecutiveRatio_pos n).ne') hreal
-    (fun a => heckeLogScale (x a)) c
-  convert this using 2
-  ext a b
-  simp only [gram, ← realOrbitKernel_comp_heckeLogScale, Function.comp_apply, map_mul, map_inv]
+/-- **Consecutive-integer towers decide every orbit kernel.** -/
+theorem isPosDefKernel_orbitKernel_of_consecutive (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ → ℝ}
+    (hf : f ∈ realTests) (h : ∀ n, IsPosDefKernel (orbitKernel Z f ∘ zpowersHom _ (consecutiveRatio n))) :
+    IsPosDefKernel (orbitKernel Z f) :=
+  isPosDefKernel_orbitKernel_of_fine Z hZ hf tendsto_scale_consecutiveRatio
+    (fun n => (scale_consecutiveRatio_pos n).ne') h
+
+/-- **Consecutive-integer towers carry the whole index.** -/
+theorem negIndex_orbitKernel_eq_iSup_consecutive (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ → ℝ}
+    (hf : f ∈ realTests) :
+    negIndex (orbitKernel Z f) =
+      ⨆ n, negIndex (orbitKernel Z f ∘ zpowersHom _ (consecutiveRatio n)) :=
+  negIndex_orbitKernel_eq_iSup_fine Z hZ hf tendsto_scale_consecutiveRatio
+    (fun n => (scale_consecutiveRatio_pos n).ne')
+
+/-- **The consecutive-integer towers count the right zeros of `ζ`**: the index of the Weil kernel,
+the number of zeros right of the critical line, is the supremum of its indices on them. -/
+theorem negIndex_zetaKernel_eq_iSup_consecutive :
+    negIndex zetaKernel = ⨆ n, negIndex (zetaKernel ∘ zpowersHom _ (consecutiveRatio n)) :=
+  negIndex_orbitKernel_eq_iSup_consecutive _ temperedConfig_zetaZeroConfig cubicSpline_mem_realTests
 
 /-- **RH is positivity of the Weil kernel on the consecutive-integer towers.** -/
 theorem riemannHypothesis_iff_zetaKernel_consecutive :
@@ -196,5 +270,28 @@ theorem riemannHypothesis_iff_zetaKernel_consecutive :
   · intro h
     exact (isPosDefKernel_orbitKernel_of_consecutive _ temperedConfig_zetaZeroConfig
       cubicSpline_mem_realTests h).negIndex_eq_zero
+
+/-! ### Two primes contain fine towers -/
+
+/-- **The two-prime lattice contains fine towers.** For distinct primes there is a sequence
+`p^{a_n} q^{b_n}` with positive scales tending to `0`. -/
+theorem exists_fine_twoPrime {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
+    ∃ u : ℕ → HeckeLattice, (∀ n, u n ∈ twoPrimeLattice hp hq) ∧
+      Tendsto (fun n => scale heckeLogScale (u n)) atTop (𝓝 0) ∧
+        ∀ n, 0 < scale heckeLogScale (u n) := by
+  choose h hpos hlt using fun n : ℕ => twoPrime_small hp hq hpq (1 / ((n : ℝ) + 1)) (by positivity)
+  refine ⟨fun n => (h n : HeckeLattice), fun n => (h n).2, ?_, hpos⟩
+  exact squeeze_zero (fun n => (hpos n).le) (fun n => (hlt n).le)
+    tendsto_one_div_add_atTop_nhds_zero_nat
+
+/-- **Two primes suffice because they contain fine towers.** The index of every orbit kernel on a
+tempered configuration is the supremum of its indices on single cyclic towers `⟨p^a q^b⟩` inside the
+lattice of two distinct primes. -/
+theorem negIndex_orbitKernel_eq_iSup_twoPrime_towers (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ → ℝ}
+    (hf : f ∈ realTests) {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
+    ∃ u : ℕ → HeckeLattice, (∀ n, u n ∈ twoPrimeLattice hp hq) ∧
+      negIndex (orbitKernel Z f) = ⨆ n, negIndex (orbitKernel Z f ∘ zpowersHom _ (u n)) := by
+  obtain ⟨u, hmem, hu, hpos⟩ := exists_fine_twoPrime hp hq hpq
+  exact ⟨u, hmem, negIndex_orbitKernel_eq_iSup_fine Z hZ hf hu fun n => (hpos n).ne'⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

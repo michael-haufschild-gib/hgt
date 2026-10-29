@@ -218,6 +218,8 @@ coefficient bounds, actual degree-rotation exponents, and Gaussian domination.
 | Actual Weyl conjugation on Cartan and degree rotation | Formalized and audited; quadratic central shift, finite reflection, intrinsic complex characters, exact affine-weight comparison |
 | Positive power-series subgroup splitting | Formalized and audited; injective `LoopSL2.positiveEmbedding`, both root restrictions |
 | Positive Iwahori and unipotent coordinates | Formalized and audited; full Gauss equivalence, exact unipotent kernel, unique central/finite/unipotent Borel factors |
+| Affine Bruhat decomposition of the actual central extension | Formalized and audited; `LoopSL2.exists_unique_bruhat`, unique infinite-dihedral double-coset label |
+| Two simple rank-one subgroups | Finite embedding and affine corrected section written; Lean checks in progress |
 | Group-level Iwasawa coordinates | Still open |
 | Arithmetic coset Eisenstein series and its convergence | Still open |
 | Unipotent quotient measure and constant-term integral | Still open |
@@ -280,9 +282,16 @@ ring. Its statement and clearing proof were inspected. Mathlib supplies the
 `IsDiscreteValuationRing (PowerSeries F)` instance. The specialization and
 transitive axiom audit remain unchecked and this theorem is not imported by
 the current construction. A direct rank-two
-[Iwahori–Bruhat proof](garland-affine-bruhat-decomposition.md) is recorded
-using four pivot cases and lattice-chain valuation invariants; formalization
-is in progress. Neither route supplies an Iwasawa theorem.
+[Iwahori–Bruhat proof](../3-formalized/garland-affine-bruhat-decomposition.md)
+is formalized and audited, using four pivot cases and lattice-chain valuation
+invariants. Its exact central lift gives unique affine Weyl labels over both
+the rationals and reals. The
+[two simple rank-one subgroups](garland-simple-rank-one-subgroups.md) are
+the next dependency. These results do not yet supply an Iwasawa theorem.
+The subsequent [Iwasawa existence proof](garland-real-iwasawa-existence.md)
+uses two vertex parabolics and finite-dimensional real Iwasawa. Its separate
+[determinant-metric dependency](garland-determinant-metric-iwasawa.md)
+records the still-open control of central and finite torus coordinates.
 
 Do not instantiate the stable Steinberg centrality theorem outside its hypotheses.
 
