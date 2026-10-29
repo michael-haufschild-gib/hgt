@@ -67,11 +67,10 @@ settle a fixed overlap ratio. These are leads pending source and dependency chec
    Elementary bounds `log(2π)>9/5`, `log(11)<5/2`,
    `(101/121)²<7/10`, `-log(r)≤1/99`, and tail cost `<1/40`
    make this strictly negative. This is an analytic argument, not a numerical experiment.
-   The finite packet limit and the literal twisted-prime correction still need to be assembled
-   and checked. Integer-multiple horizons give exact padding to both requested rational ratios.
-   Uniform Ramanujan quasimodes through touching also give a variable-width packet limit;
-   rounding the sub-horizon then yields eventual negativity for every fixed `c≥99/100`.
-   That stronger transfer is drafted but not yet checked.
+   The finite packet limit, literal twisted-prime correction, and variable-width transfer
+   have now passed Lean with only `propext`, `Classical.choice`, and `Quot.sound`.
+   Rounding the sub-horizon gives eventual negativity for every fixed `c≥99/100`,
+   including both requested ratios `cZero` and `2`.
    This construction does not prove zeta positivity at ratio two or classify all primes.
 4. At ratio two the candidate completed mode energy subtracts
    `2 μ(m)/totient(m) * integral_(1/2)^1 (G(u)/M)/u du` from the separated energy.
@@ -360,7 +359,18 @@ identification and uniform error estimates are proved.
 `elevenTrialUpperMargin_neg` passed Lean with only `propext`, `Classical.choice`, and
 `Quot.sound`. `PrimeSquareTrial.lean` and `PrimeFlipTail.lean` also compiled, including the
 exact Ramanujan expansion, harmonic correlation, finite full-tail bound, and its limit.
-`VariablePacketLimit.lean` also compiled with the three standard axioms: the actual
-complete finite-packet limit survives a varying ratio converging strictly below one
-and an arbitrary horizon tending to infinity. The remaining complete-form and
-negative-witness bridges are under verification. All required conclusions remain open.
+`VariablePacketLimit.lean`, `ElevenPacket.lean`, `PrimeFlipCompleteForm.lean`, and
+`ElevenFlipNegativity.lean` also compiled with the three standard axioms.
+`ElevenFlipAtEveryHorizon.lean` passed the required no-olean check, including
+`eventually_elevenFlip_negative_two` and `eventually_elevenFlip_negative_cZero`.
+Removing two redundant tactics is followed by a final repeat check.
+
+Thus the requested eleven-flip decisions are answered for `transMetzlerProfile`:
+both ratios are eventually negative on an explicit atomic coefficient vector.
+For fixed `c≥99/100`, put `H_N=floor((99/(100*c))*N)` and use
+`x_n=(1-2*1_(11|n)+2*1_(121|n))/sqrt(n)` for `n≤H_N`, zero otherwise.
+The upper limiting energy, divided by `(c/N)*log(H_N)*M`, is strictly below
+`-271/12375`. This includes Gamma, both poles, and every prime power.
+
+The main zeta positivity claim at ratio two, its explicit horizon, and the full
+all-prime threshold classification are still unproved. The active goal is not complete.

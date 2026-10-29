@@ -11,6 +11,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.TheFixedProfileReachesAnIt
 import GaloisForLFunctions.TransMetzlerWeilPositivity.FixedOverlapHasLogarithmicDivisorRows
 import GaloisForLFunctions.TransMetzlerWeilPositivity.CompleteWeilLengthHeight
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyLengthHeight
+import GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap.ElevenFlipAtEveryHorizon
 
 /-!
 # Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram

@@ -50,6 +50,7 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Every finite plateau overlap Gram is strictly positive at every positive width | Audit pending: `ThePlateauOverlapGramIsNondegenerate` |
 | Growing overlap destroys every uniform lower comparison with coefficient mass | Audit pending: `GrowingOverlapHasNoUniformGramFloor` |
 | The actual plateau successor fiber is positive exactly when `N log(1+1/N)<c` | Audit pending: `TheSuccessorFiberHasAnExactOpenThreshold` |
+| Normalizing profile support from `[a,b]` to `[0,1]` multiplies overlap by `b-a` and preserves the complete form | Audit pending: `ProfileNormalizationPreservesTheCompleteForm` |
 
 Here `δ_*=1/107520002048050000`; the existing certified floor is
 `1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of that fixed-reserve estimate,
@@ -73,6 +74,13 @@ theorems uses `[-1,1]`. The scale coordinate `c=Nw` must retain that profile con
 Moreover SRT quantifies over all tests in an aperture, while atomic positivity quantifies over
 one fixed-profile finite-dimensional family. A support inclusion does not place SRT's negative
 witness inside that atomic family.
+
+For `d=b-a>0`, set `ψ(v)=φ(a+dv)`. Then `φ(u/w)=ψ((u-aw)/(dw))`.
+Every synthesized test is therefore a common translate of the normalized-profile test at
+width `dw`. Translation preserves both its complete Weil value and squared mass.
+Consequently the support-normalized overlap is `dc`, with height `T/d`.
+For symmetric support `[-1,1]`, this is overlap `2c`; a literal touching constant requires
+the profile-support convention to be fixed.
 
 **Proved row law.** At every fixed `c>1`, the normalized downward divisor fiber from
 row `N` to product `N+1`, for the explicit plateau profile, is asymptotic to

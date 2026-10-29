@@ -124,13 +124,12 @@ theorem golden_card_rightPoles :
   have h := golden_attains_ceiling
   rw [negIndex_traceKernel_eq_card_rightPoles] at h
   simp only [Fintype.card_fin] at h
-  exact_mod_cast (by
-    have : (2 : ℕ∞) * (((univ.filter fun i => -(1 / 2 : ℝ) <
-        (poleParameter ArithmeticCastelnuovoSeveri.goldenDatum i).re).image
-        (poleParameter ArithmeticCastelnuovoSeveri.goldenDatum)).card : ℕ∞) = (2 * 1 : ℕ) := by
-      rw [h]; norm_num
-    exact_mod_cast this : 2 * ((univ.filter fun i => -(1 / 2 : ℝ) <
-        (poleParameter ArithmeticCastelnuovoSeveri.goldenDatum i).re).image
-        (poleParameter ArithmeticCastelnuovoSeveri.goldenDatum)).card = 2 * 1) |> Nat.eq_of_mul_eq_mul_left (by norm_num)
+  have h2 : 2 * ((univ.filter fun i => -(1 / 2 : ℝ) <
+      (poleParameter ArithmeticCastelnuovoSeveri.goldenDatum i).re).image
+      (poleParameter ArithmeticCastelnuovoSeveri.goldenDatum)).card = 2 := by exact_mod_cast h
+  omega
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms golden_card_rightPoles

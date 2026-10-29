@@ -454,7 +454,7 @@ theorem towerQuot_vanishes {a : ℕ → ℂ} {N p : ℕ} (hp : p.Prime) (ha0 : �
       (fun i' hi' => hj i' (Finset.mem_range.mpr hi')) i hi
 
 /-- The tower quotient of a nonzero polynomial vanishing along `p` is nonzero. -/
-theorem towerQuot_ne_zero {a : ℕ → ℂ} {N p : ℕ} (hp : p.Prime) (ha0 : ∀ n, N < n → a n = 0)
+theorem towerQuot_ne_zero {a : ℕ → ℂ} {N p : ℕ} (hp : p.Prime)
     (hne : ∃ n ∈ Icc 1 N, a n ≠ 0) (hF0 : ∀ n, N / p < n → towerQuot a p n = 0) :
     ∃ n ∈ Icc 1 (N / p), towerQuot a p n ≠ 0 := by
   by_contra hall
@@ -503,7 +503,7 @@ theorem prod_pow_le_of_vanishesAlong {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime
     have hp := hS p hpS
     obtain ⟨mp, hmp'⟩ : ∃ mp, mult p = mp + 1 := ⟨mult p - 1, by omega⟩
     obtain ⟨hF0, hFp, hFq⟩ := towerQuot_vanishes hp ha0 (hmp' ▸ hvan p hpS)
-    have hFne := towerQuot_ne_zero hp ha0 hne hF0
+    have hFne := towerQuot_ne_zero hp hne hF0
     set mult' := Function.update mult p mp
     have hsum : ∑ q ∈ S, mult' q + 1 = ∑ q ∈ S, mult q := by
       rw [← Finset.add_sum_erase _ _ hpS, ← Finset.add_sum_erase _ _ hpS]

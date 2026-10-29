@@ -51,6 +51,17 @@ by their arithmetic gap. Both endpoint gaps remain. Restricting to sparse indice
 changes the inverse from ordinary second differences to differences of adjacent slopes.
 The cost requires no interpolation values at omitted integer indices.
 
+If every arithmetic gap is at least `δ>0`, then
+
+`D_k(b)≤(4/δ)Σ_(1≤i<N)b_i²`,
+
+`(δ/4)Σ_(1≤i<N)a_i²≤F_k(a)`.
+
+For the first bound apply `(u−v)²≤2u²+2v²` on each edge; each interior value occurs
+twice and the endpoint values vanish. For the second, use the exact Schur bound with
+`b_i=δa_i/4` on the interior and zero at both endpoints. The reciprocal-gap cost gives
+the improved coefficient reserve directly.
+
 ## Dependencies
 
 - `divisorGramEnergy_packetCoefficient` and positivity of `divisorGramEnergy`.

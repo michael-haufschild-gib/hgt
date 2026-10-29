@@ -71,7 +71,7 @@ theorem eventually_elevenFlip_negative_variable {H : ℕ → ℕ} (hH : Tendsto 
       ((r N / H N) * (∫ u, transMetzlerProfile u ^ 2) * primeSquareFlipBound 11 (H N)) /
         ((r N / H N) * Real.log (H N)) =
       (∫ u, transMetzlerProfile u ^ 2) * (primeSquareFlipBound 11 (H N) / Real.log (H N)) := by
-    field_simp [hN0.ne', hr0.ne', hlog.ne'] <;> ring
+    field_simp [hN0.ne', hr0.ne', hlog.ne']
   rw [hscale] at hb
   have hlt := hb.trans_lt huN
   have h := (div_lt_iff₀ (mul_pos hw hlog)).mp hlt
@@ -125,7 +125,7 @@ theorem eventually_elevenFlip_negative_of_ratio {c : ℝ} (hc : (99 / 100 : ℝ)
   rw [atomicTest_zero_padding hHN]
   have hwidth : (c * ((H N : ℝ) / N)) / H N = c / N := by
     have hH0 : (H N : ℝ) ≠ 0 := by exact_mod_cast (show H N ≠ 0 by omega)
-    field_simp [hH0] <;> ring
+    field_simp [hH0]
   simpa only [hwidth] using hneg
 
 /-- The requested ratio-two eleven-flip decision holds at every sufficiently large horizon. -/

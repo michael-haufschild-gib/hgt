@@ -115,8 +115,8 @@ from `formal/`. The printed declarations cover their transitive dependencies.
 | TM/ZeroSideStratum | 6 | Pending |
 | TM/LiouvilleTwinSelectivity | 5 | Pending |
 | CACT/OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching | 3 | Pending |
-| ACS/TheHaarPrimeEdgesRetainTheirGammaReserve | 4 | Pending |
-| HTGeometry/LoopEisenstein/RealSphericalFunction | 5 | Pending |
+| ACS/TheHaarPrimeEdgesRetainTheirGammaReserve | 4 | Passed; standard axioms only |
+| HTGeometry/LoopEisenstein/RealSphericalFunction | 5 | Passed; standard axioms only |
 | AKLT/CyclicSubgroupsDecideTheKreinLangerClass | 4 | Pending |
 | AKLT/TowerFaithfulSpectraAreDecidedByAlmostEveryTower | 4 | Pending |
 | AKLT/LocalConstituentsMeetOnlyAtTheIdentity | 3 | Pending |

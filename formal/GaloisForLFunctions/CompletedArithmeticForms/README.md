@@ -190,6 +190,29 @@ source energy at the inner-cutoff strength required by the Euler-deletion criter
 See [DivisorCovariance](DivisorCovariance.lean), particularly `cumulativeEnergy_completion`,
 `cumulativeEnergy_schur_bound`, and `fullErrorEnergy_truncation_bounds`.
 
+## Arithmetic packets and an actual prime-source estimate
+
+For arbitrary interior arithmetic nodes $k_i$, aggregate colliding coefficients as
+$A_r=\sum_{k_i=r}a_i$. The complete packet energy is exactly $E_Q(A)$. Its radical consists
+of the packets with every aggregate $A_r=0$. Distinct indices preserve the coefficient square
+mass and the quarter reserve. This specifies the precise information retained by arithmetic
+compression. See [FinitePackets](FinitePackets.lean).
+
+For a finite prime block $S\subset(P,2P]$, restrict to packets satisfying
+$\sum_{p\in S}a_p=\sum_{p\in S}a_p\log p=0$ and put $Q=2P+2$.
+Let $\mathcal P_S(a)$ be the actual energy-centered pronic prime-packet form. The complete
+first-jump source identity gives $E_Q(A)/Q\le\mathcal P_S(a)$, hence
+$$
+\sum_{p\in S}a_p^2\le4\mathcal P_S(a),\qquad
+2\sum_{p\in S}a_pb(p)-\mathcal P_S(a)\le D_Q(b^0).
+$$
+Here $b^0$ agrees with $b$ at interior integer coordinates and vanishes at both endpoints.
+The estimate retains the actual source's unequal-prime terms and pays an arbitrary coupling
+by an explicit variation norm. Its domain constraints are the two stated arithmetic moments.
+Identifying a complete Weil remainder with such a coupling remains a separate source problem.
+See [PrimePacketSchur](PrimePacketSchur.lean), particularly `divisorGramEnergy_le_primePacket`,
+`primePacket_coefficient_reserve`, and `primePacket_schur_bound`.
+
 ## Place in the research
 
 | Programme | Connection |

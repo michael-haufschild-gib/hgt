@@ -79,28 +79,42 @@ def dirPolys (N : ℕ) : Submodule ℂ (ℕ → ℂ) where
   zero_mem' := ⟨rfl, fun _ _ => rfl⟩
   smul_mem' := fun c a ha => ⟨by simp [ha.1], fun n hn => by simp [ha.2 n hn]⟩
 
-/-- **`h⁰(N, 0) = N`**: Dirichlet polynomials of length `N` are their `N` coefficients. -/
+/-- Dirichlet polynomials of length `N` are their `N` coefficients. -/
+def dirPolysEquiv (N : ℕ) : dirPolys N ≃ₗ[ℂ] (Fin N → ℂ) where
+  toFun a i := (a : ℕ → ℂ) ((i : ℕ) + 1)
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  invFun v := ⟨fun n => if h : 1 ≤ n ∧ n ≤ N then v ⟨n - 1, by omega⟩ else 0,
+    ⟨by simp, fun n hn => dif_neg fun h => by omega⟩⟩
+  left_inv a := by
+    refine Subtype.ext (funext fun n => ?_)
+    show (if h : 1 ≤ n ∧ n ≤ N then (a : ℕ → ℂ) (n - 1 + 1) else 0) = (a : ℕ → ℂ) n
+    split_ifs with h
+    · rw [Nat.sub_add_cancel h.1]
+    · rcases Nat.eq_zero_or_pos n with rfl | hn
+      · exact a.2.1.symm
+      · have : N < n := by
+          by_contra hc
+          exact h ⟨hn, not_lt.mp hc⟩
+        exact (a.2.2 n this).symm
+  right_inv v := by
+    funext i
+    show (if h : 1 ≤ (i : ℕ) + 1 ∧ (i : ℕ) + 1 ≤ N then v ⟨(i : ℕ) + 1 - 1, by omega⟩ else 0) = v i
+    rw [dif_pos ⟨Nat.le_add_left 1 _, i.2⟩]
+    exact congrArg v (Fin.ext (by simp))
+
+instance (N : ℕ) : FiniteDimensional ℂ (dirPolys N) :=
+  Module.Finite.equiv (dirPolysEquiv N).symm
+
+/-- **`h⁰(N, 0) = N`**: the box-class size. -/
 theorem finrank_dirPolys (N : ℕ) : Module.finrank ℂ (dirPolys N) = N := by
-  let e : dirPolys N ≃ₗ[ℂ] (Fin N → ℂ) :=
-    { toFun := fun a i => (a : ℕ → ℂ) ((i : ℕ) + 1)
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl
-      invFun := fun v => ⟨fun n => if h : 1 ≤ n ∧ n ≤ N then v ⟨n - 1, by omega⟩ else 0,
-        ⟨by simp, fun n hn => by rw [dif_neg (by omega)]⟩⟩
-      left_inv := fun a => by
-        refine Subtype.ext (funext fun n => ?_)
-        simp only
-        split_ifs with h
-        · congr 1; omega
-        · rcases Nat.eq_zero_or_pos n with rfl | hn
-          · exact a.2.1.symm
-          · exact (a.2.2 n (by omega)).symm
-      right_inv := fun v => by
-        funext i
-        simp only
-        rw [dif_pos ⟨by omega, by omega⟩]
-        congr 1 }
-  rw [e.finrank_eq, Module.finrank_fin_fun]
+  rw [(dirPolysEquiv N).finrank_eq, Module.finrank_fin_fun]
+
+theorem sections_le_dirPolys (N : ℕ) (S : Finset ℕ) (m : ℕ → ℕ) : sections N S m ≤ dirPolys N :=
+  fun _ ha => ⟨ha.1, ha.2.1⟩
+
+instance (N : ℕ) (S : Finset ℕ) (m : ℕ → ℕ) : FiniteDimensional ℂ (sections N S m) :=
+  Submodule.finiteDimensional_of_le (sections_le_dirPolys N S m)
 
 theorem sections_eq_dirPolys {N : ℕ} {S : Finset ℕ} {m : ℕ → ℕ} (hm : ∀ p ∈ S, m p = 0) :
     sections N S m = dirPolys N := by
@@ -221,8 +235,8 @@ def sectionsEquivQuot {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) {N p k : ℕ}
     {m : ℕ → ℕ} (hm : m p = k + 1) :
     sections N S m ≃ₗ[ℂ] sections (N / p) S (Function.update m p k) :=
   LinearEquiv.ofLinear
-    ((towerQuotLin p).restrict fun a ha => towerQuot_mem_sections hS hpS hm ha)
-    ((eulerMulLin p).restrict fun F hF => eulerMul_mem_sections hS hpS hm hF)
+    ((towerQuotLin p).restrict fun _ ha => towerQuot_mem_sections hS hpS hm ha)
+    ((eulerMulLin p).restrict fun _ hF => eulerMul_mem_sections hS hpS hm hF)
     (LinearMap.ext fun F => Subtype.ext (funext fun n =>
       towerQuot_eulerMul (hS p hpS) F.2.1 n))
     (LinearMap.ext fun a => Subtype.ext (funext fun n =>
@@ -258,10 +272,11 @@ theorem finrank_sections {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) :
         Finset.sum_congr rfl fun q hq => Function.update_of_ne (Finset.ne_of_mem_erase hq) _ _]
       ring
     have hprod : ∏ q ∈ S, q ^ m q = p * ∏ q ∈ S, q ^ Function.update m p mp q := by
-      rw [← Finset.mul_prod_erase _ _ hpS, ← Finset.mul_prod_erase _ _ hpS,
-        Function.update_self, hmp', pow_succ,
+      have h' : ∏ q ∈ S.erase p, q ^ Function.update m p mp q = ∏ q ∈ S.erase p, q ^ m q :=
         Finset.prod_congr rfl fun q hq => by
-          rw [Function.update_of_ne (Finset.ne_of_mem_erase hq)]]
+          rw [Function.update_of_ne (Finset.ne_of_mem_erase hq)]
+      rw [← Finset.mul_prod_erase _ _ hpS, ← Finset.mul_prod_erase _ _ hpS, h',
+        Function.update_self, hmp', pow_succ]
       ring
     rw [(sectionsEquivQuot hS hpS hmp').finrank_eq, ih _ _ (by omega), hprod,
       Nat.div_div_eq_div_mul]

@@ -23,7 +23,7 @@ No row is complete merely because a related theorem already exists or a weaker c
 
 | ID | Required scope | Status / evidence |
 |---|---|---|
-| W01 | Maximal reach of the Trans-Metzler perturbation scheme; certified floor as a function of overlap. | Exact optimum of the current three displayed bounds formalized and audited; reference-floor and analytic-constant improvements remain. [Card](review-2910-w01-optimal-certified-perturbation-floor.md). |
+| W01 | Maximal reach of the Trans-Metzler perturbation scheme; certified floor as a function of overlap. | Complete: exact reference energy and full Young-family boundary; actual floor 1/400 at c=1+10⁻¹⁶. Three final leaf checks, eighteen standard-only axiom audits. [Proof and audit](../3-formalized/review-2910-w01-optimal-certified-perturbation-floor.md). |
 | W02 | Single-prime flips p≥11 and cofinite flips: fixed-ratio positivity or negative atomic witnesses. | Open. |
 | W03 | Optimize Robin–Euler profile threshold and narrow twin survival; decide sharp transition. | Open. |
 | W04 | Steklov weights q!(log q)^((1+ε)q), receiver β>1, exact quasi-analytic edge. | Open. |

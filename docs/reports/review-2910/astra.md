@@ -548,3 +548,44 @@ Second, **the domain and the quantifiers belong to the theorem**. The Suzuki ext
 Third, **precision is attached to the observable**. Exact source rigidity is appropriate for complete tower positivity. The count permits $\mathcal Q$-perturbations. The census permits an aggregate surplus. Euler deletion permits adaptive outer cutoffs but measures growth at the inner cutoff. A useful transfer theorem states what each operation preserves and what it costs.
 
 A foundational result for this programme would prove one of the comparison inequalities in the table directly from the actual source, with a reusable mechanism and its full parameter range. The top three questions supply concrete tests: a theta successor compensation, a macroscopic completed overlap comparison, and a signed census estimate. The broader field would be built from such theorems; neither a name nor an abstract realization supplies their missing inequalities.
+
+## Formalization follow-up: what was proved, and what remains unpaid
+
+The follow-up proves an arithmetic Gram structure and fixed-conductor source transfers. **It does not prove a new positivity range for the actual complete Weil operator.** The complete-form decomposition subtracts the non-ratio prime form. A lower bound for an auxiliary positive prime Gram does not discharge that adverse term.
+
+For primitive-root prefix energy $E_m$, the centered kernel
+
+$$K_m(i,j)=\frac{E_m(i)+E_m(j)-E_m(|i-j|)}2$$
+
+is an exact Gram, retaining every mixed coefficient. Its radical consists precisely of prefix polynomials divisible by $\Phi_m$. Completing the nontrivial divisor conductors of $Q$ gives $Q\min(i,j)-ij$. On prime-supported packets this is exactly $Q$ times the existing pronic cumulative-jump energy; the connection to the prime-block bridge is an identity.
+
+Rational refinement has the positive conductor decomposition
+
+$$L^2 A_m(k/L)=\sum_{\substack{e\mid mL\\e/\gcd(e,L)=m}} E_e(k),\qquad m>1,\ L>0.$$
+
+The same identity holds entrywise for the centered Gram. Continuity extends positivity to arbitrary nonnegative real positions; translation gives conditional negativity of the raw distance kernel on arbitrary real configurations. On $[0,1]$, the normalized centered kernel is exactly $\min(x,y)$. Finer rational resolution introduces higher conductors explicitly.
+
+For the literal von Mangoldt source, finite residue decomposition gives one horizon controlling every signed residue reading, hence every finite real or complex Gram packet at a fixed conductor. Coefficients and features may depend on height. Non-unit prime powers require a full-residue norm in the stated absolute comparison, but have favorable sign in the lower bound. The actual primitive-phase prefix form dominates $(\log B-\log A-\varepsilon)/\varphi(q)$ times its full primitive Gram, uniformly over finite real coefficient packets and prefix lengths. Fixed-$q$ affine Ramanujan windows are also uniform in both affine parameters.
+
+These transfers provide **no growing-conductor rate**. They do not identify the auxiliary prime-prefix form with the signed non-ratio correction. The outstanding theorem must bound the actual complete expression, including complementary coefficient directions, Gamma, both poles, and the required conductor/overlap growth. The arithmetic identities are substantive structural results; the fixed-conductor uniformizations are supporting consequences of existing residue Mertens theory. Neither constitutes destruction of the complete-operator wall.
+
+The already-written secondary proof uses the same explicit Steklov profile at
+
+$$c_N=L(\log L)^2\log\log L,\qquad L=\log\log N.$$
+
+This schedule is little-o of every previously displayed $L(\log L)^\beta$, $\beta>2$. Its existing RH receiver equivalence is formalized with the profile inputs discharged. This closes that synthesis calculation; it supplies no arithmetic positivity. No further receiver programme was developed.
+
+| Formalized statement | Lean source |
+|---|---|
+| Exact primitive Gram and conditional-negative distance form | [TheArithmeticCurvatureHasAnExactGramCompletion](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheArithmeticCurvatureHasAnExactGramCompletion.lean) |
+| Radical classified by cyclotomic divisibility | [CyclotomicDivisibilityClassifiesTheOverlapGramRadical](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/CyclotomicDivisibilityClassifiesTheOverlapGramRadical.lean) |
+| Divisor completion gives the discrete bridge | [AllDivisorConductorsRecoverTheDiscreteBridge](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/AllDivisorConductorsRecoverTheDiscreteBridge.lean) |
+| Positive conductor lift under rational refinement | [RationalRefinementCompletesTheCyclotomicGram](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/RationalRefinementCompletesTheCyclotomicGram.lean) |
+| Real Gram positivity and exact unit-cell minimum kernel | [TheRealOverlapCurvatureIsConditionallyNegative](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheRealOverlapCurvatureIsConditionallyNegative.lean) |
+| Uniform source comparison and unit-Gram domination | [PrimeResidueWindowsControlEveryGramPacket](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/PrimeResidueWindowsControlEveryGramPacket.lean) |
+| Uniformity in both actual affine parameters | [ActualAffinePrimeWindowsAreUniformInTheirParameters](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ActualAffinePrimeWindowsAreUniformInTheirParameters.lean) |
+| Literal prime-prefix specialization | [ActualPrimePrefixesDominateTheirCyclotomicGram](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ActualPrimePrefixesDominateTheirCyclotomicGram.lean) |
+| Exact identity with prime-block jump energy | [CyclotomicCompletionIsThePrimeBlockJumpEnergy](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/CyclotomicCompletionIsThePrimeBlockJumpEnergy.lean) |
+| Closure of the existing smaller-synthesis paper proof | [TheFixedProfileReachesAnIteratedLogEndpoint](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/TheFixedProfileReachesAnIteratedLogEndpoint.lean) |
+
+Three failed claims produced precise positive replacements: raw scalar curvature is not a positive translation kernel, so centering and conditional negativity are essential; a single primitive conductor has a genuine radical, so arbitrary-packet coercivity needs conductor completion; and the full-residue penalty in a two-sided estimate is unnecessary for a one-sided Gram lower bound. The completed proofs above establish those replacements. Moving-endpoint/BV transport, a coprime-frequency Fourier realization, and a real-point radical classification remain conjectures, not completed paper proofs or formalized claims.

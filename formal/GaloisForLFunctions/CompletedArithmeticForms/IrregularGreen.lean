@@ -331,6 +331,65 @@ theorem meshSchur_bound {N : ℕ} {k : ℕ → ℕ}
   rw [← meshSchur_completion hN hk h0 a b hb0 hbN] at h
   linarith only [h]
 
+private theorem mesh_edge_square_mass {N : ℕ} (hN : 0 < N) (b : ℕ → ℝ)
+    (hb0 : b 0 = 0) (hbN : b N = 0) :
+    (∑ i ∈ range N, (b (i + 1) ^ 2 + b i ^ 2)) = 2 * ∑ i ∈ Ico 1 N, b i ^ 2 := by
+  have hs : (∑ i ∈ range N, b (i + 1) ^ 2) = ∑ i ∈ range N, b i ^ 2 := by
+    have he : (∑ i ∈ range N, b i ^ 2) - (∑ i ∈ range N, b (i + 1) ^ 2) = 0 := by
+      simpa [sum_sub_distrib, hb0, hbN] using Finset.sum_range_sub' (fun i => b i ^ 2) N
+    exact (sub_eq_zero.mp he).symm
+  have hi : (∑ i ∈ Ico 1 N, b i ^ 2) = ∑ i ∈ range N, b i ^ 2 := by
+    rw [sum_Ico_eq_sub hN]
+    simp [hb0]
+  rw [sum_add_distrib, hs, hi]
+  ring
+
+/-- A positive minimum arithmetic gap bounds the inverse in the coefficient norm. -/
+theorem meshDirichletEnergy_le_coefficientMass {N : ℕ} (hN : 0 < N) (k : ℕ → ℕ)
+    (b : ℕ → ℝ) (hb0 : b 0 = 0) (hbN : b N = 0) {δ : ℝ} (hδ : 0 < δ)
+    (hgap : ∀ i ∈ range N, δ ≤ (k (i + 1) : ℝ) - k i) :
+    meshDirichletEnergy N k b ≤ (4 / δ) * ∑ i ∈ Ico 1 N, b i ^ 2 := by
+  calc
+    _ ≤ ∑ i ∈ range N, (2 / δ) * (b (i + 1) ^ 2 + b i ^ 2) := by
+      apply sum_le_sum
+      intro i hi
+      have hsq : (b (i + 1) - b i) ^ 2 ≤ 2 * (b (i + 1) ^ 2 + b i ^ 2) := by
+        nlinarith only [sq_nonneg (b (i + 1) + b i)]
+      calc
+        _ ≤ (b (i + 1) - b i) ^ 2 / δ :=
+          div_le_div_of_nonneg_left (sq_nonneg _) hδ (hgap i hi)
+        _ ≤ (2 * (b (i + 1) ^ 2 + b i ^ 2)) / δ :=
+          div_le_div_of_nonneg_right hsq hδ.le
+        _ = _ := by ring
+    _ = _ := by rw [← mul_sum, mesh_edge_square_mass hN b hb0 hbN]; ring
+
+/-- Arithmetic spacing strengthens the coefficient reserve by its minimum gap. -/
+theorem meshGram_gap_coercive {N : ℕ} {k : ℕ → ℕ}
+    (hN : 0 < N) (hk : StrictMonoOn k (Set.Iic N)) (h0 : k 0 = 0)
+    (a : ℕ → ℝ) {δ : ℝ} (hδ : 0 < δ)
+    (hgap : ∀ i ∈ range N, δ ≤ (k (i + 1) : ℝ) - k i) :
+    (δ / 4) * (∑ i ∈ Ico 1 N, a i ^ 2) ≤ meshGram N k a := by
+  let b : ℕ → ℝ := fun i => (δ / 4) * interiorExtension N a i
+  have hb0 : b 0 = 0 := by simp [b, interiorExtension]
+  have hbN : b N = 0 := by simp [b, interiorExtension]
+  have hp : (∑ i ∈ Ico 1 N, a i * b i) = (δ / 4) * ∑ i ∈ Ico 1 N, a i ^ 2 := by
+    rw [mul_sum]
+    refine sum_congr rfl fun i hi => ?_
+    simp only [b, interiorExtension, if_pos hi]
+    ring
+  have hs : (∑ i ∈ Ico 1 N, b i ^ 2) = (δ / 4) ^ 2 * ∑ i ∈ Ico 1 N, a i ^ 2 := by
+    rw [mul_sum]
+    exact sum_congr rfl fun i hi => by simp only [b, interiorExtension, if_pos hi, mul_pow]
+  have hS := meshSchur_bound hN hk h0 a b hb0 hbN
+  rw [hp] at hS
+  have hD := meshDirichletEnergy_le_coefficientMass hN k b hb0 hbN hδ hgap
+  rw [hs] at hD
+  have he (A : ℝ) : (4 / δ) * ((δ / 4) ^ 2 * A) = (δ / 4) * A := by
+    field_simp
+    <;> ring
+  rw [he] at hD
+  linarith only [hS, hD]
+
 /-- The reciprocal-gap payment is attained and cannot be reduced uniformly. -/
 theorem meshSchurCost_isGreatest {N : ℕ} {k : ℕ → ℕ}
     (hN : 0 < N) (hk : StrictMonoOn k (Set.Iic N)) (h0 : k 0 = 0)
@@ -351,5 +410,6 @@ theorem meshSchurCost_isGreatest {N : ℕ} {k : ℕ → ℕ}
 #print axioms meshGram_eq_completed
 #print axioms meshSchur_completion
 #print axioms meshSchurCost_isGreatest
+#print axioms meshGram_gap_coercive
 
 end GaloisForLFunctions.CompletedArithmeticForms

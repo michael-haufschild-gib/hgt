@@ -74,3 +74,23 @@ The module is wired into CACT. This is arithmetic-kernel positivity; the actual 
 `ActualPrimePrefixesDominateTheirCyclotomicGram.lean` passed its final direct audit with only the standard axioms. `primeClassKappa_arithmeticPrefixResidueEnergy` identifies the exact unit mean with the complete primitive Gram divided by the totient. `eventually_actualPrimePrefixGram_dominates` transfers that identity to the literal von Mangoldt source, uniformly over all finite real coefficient packets and all prefix lengths, including height-dependent choices. The conductor and multiplicative window remain fixed. The module is wired into CACT.
 
 The complete Weil form subtracts its non-ratio prime term; this auxiliary lower bound does not supply the missing complete-form comparison.
+
+## Moving affine parameters
+
+`ActualAffinePrimeWindowsAreUniformInTheirParameters.lean` proves `eventually_affineRamanujanPrimeWindow_uniform`. One horizon controls both affine parameters simultaneously at fixed conductor and multiplicative window. The residue-pattern norm is bounded by `q*phi(q)`; applying the common source estimate at tolerance `epsilon/(q*phi(q))` proves the result. Its final direct audit passed with only the standard axioms. The module is wired into CACT.
+
+## Exact prime-block identity
+
+`CyclotomicCompletionIsThePrimeBlockJumpEnergy.lean` proves `completedCyclotomicGram_eq_primePacketJumpEnergy`. For a prime-supported packet below `Q`, the full divisor-conductor Gram equals
+
+`Q * sum_{n<Q} primePacketJumpSum(S,a,n)^2 / (n*(n+1))`.
+
+Proof: interchange the finite sums, apply the completed mixed kernel `Q*min(p,q)-p*q`, and use the existing exact pronic jump-energy identity. No moment cancellation hypothesis is required. The capstone passed Lean with only the standard axioms; an unused trailing tactic was removed before the final audit. The module is wired into CACT.
+
+## Closure of the existing synthesis proof
+
+`TransMetzlerWeilPositivity/TheFixedProfileReachesAnIteratedLogEndpoint.lean` proves `overlapGrowthSuperGevrey_endpoint`, `endpointSuperGevreyRatio_isLittleO`, and `riemannHypothesis_iff_steklovDCProfile_nonneg_endpoint`.
+
+Put `L=log(log N)`, `u=log L`, and `c=L*u^2*log u`. Eventually `1<=c<=L*u^3`, so the existing cubic schedule gives `N/c -> infinity`. Since `N/c<=N`, monotonicity of the iterated logarithms bounds the receiver's denominator at `N/c` by `L*u^2`. Its growth quotient is therefore at least `log u -> infinity`. Finally, `c/(L*u^beta)=log u/u^(beta-2) -> 0` for every `beta>2`. The already constructed Steklov profile discharges every profile input in the existing receiver theorem.
+
+Both printed capstones passed Lean with only the standard axioms. Two unused trailing tactics were removed before the final audit. The module is wired into the TransMetzlerWeilPositivity umbrella. This closes an existing paper proof; it is not a positivity result for the actual arithmetic form.

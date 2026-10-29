@@ -117,7 +117,7 @@ Overlap is \(X/T\) and bandwidth is \(\log X/\log T\). A fixed overlap above one
 | Statement | Overlap \(X/T\) | Status |
 |---|---|---|
 | Montgomery pair correlation | \(\to0\) (\(\lambda<1\)) | classical |
-| Complete positivity | fixed \(c<1+\delta_*\) | proved |
+| Complete positivity | fixed \(c<c_*\), \(c_*>1+10^{-16}\) | proved |
 | RH (atomic receiver) | \(L(\log L)^2\log\log L\) | RH-equivalent |
 | \(70\%\) census | \(\asymp T^{1/9}\) (\(\lambda=10/9\)) | open |
 | \(75\%\) census | \(\asymp T^{1/3}\) (\(\lambda=4/3\)) | open |
@@ -330,14 +330,14 @@ Each entry gives the state, then **A** (just work) and **B** (open, tagged).
 **State.**
 
 - Hodge sign, zero Hecke defect and small source work are exact receivers.
-- Complete positivity on atomic families holds for \(0<c<1+\delta_*\) and is selective against the Liouville twin and \(\omega_{11}\) (§2). The perturbative scheme is saturated, and its method ends at pole charge one.
+- Complete positivity on atomic families holds for \(0<c<c_*\), \(c_*>1+10^{-16}\), and is selective against the Liouville twin and \(\omega_{11}\) (§2). The optimized Young family is exact at \(c_*\) for its constants, and its method ends at pole charge one.
 - Growing overlap brings successor shells and nonpolar \(-\log c\) losses; atom norms degenerate; the Schur reduction is exact (§3).
 - The complete source carries a multiresolution and the Haar identity, with finite index on every layer except \(k=1\) (§8).
 - Cyclotomic Gram completion, exact Dirichlet–Schur cost and actual prime-prefix domination hold for fixed conductors and windows [K/S].
 
 **A.**
 
-- Sharper operator-level constants for the three Trans-Metzler estimates, up to the charge barrier \(c<1/\alpha(1)\).
+- Sharper operator-level constants for the optimized Young family (the coefficients \(2000\) and \(1276c^2\), the plateau estimates), moving \(c_*\) toward the charge barrier \(c<1/q_0\).
 - Numerical spectra of the complete matrix at fixed \(c\in(1,3]\) in conductor coordinates.
 - Exact first-shell calculus (§3).
 - The Schur complement on computed ranges.
@@ -347,7 +347,7 @@ Each entry gives the state, then **A** (just work) and **B** (open, tagged).
 
 - Positivity at the RH overlap, complete-cell index zero, residual sign, or work ceiling **[RH]**.
 - Uniform finite index, or finite \(\mathcal E_{\rm crit}\) **[FS]**.
-- Positivity at every fixed \(c>1+\delta_*\) and its uniformity in \(c\); what repays \(-\log c\) on nonpolar conductors; a synthesized-mass floor **[open]**.
+- Positivity at every fixed \(c\ge c_*\) and its uniformity in \(c\); what repays \(-\log c\) on nonpolar conductors; a synthesized-mass floor **[open]**.
 
 [Trans-Metzler](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/TransMetzlerPositivity.lean), [index capture](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheCompleteCellsCaptureEveryFiniteIndex.lean).
 
@@ -519,7 +519,7 @@ Each entry gives the state, then **A** (just work) and **B** (open, tagged).
 
 - Every-width lag receivers.
 - Atomic RH receivers at \(L(\log L)^\beta\), \(\beta>2\) [L] and \(L(\log L)^2\log\log L\) [S]; explicit schedules reach the index [L].
-- Complete positivity for \(c<1+\delta_*\); Liouville and \(\omega_{11}\) witnesses [S].
+- Complete positivity for \(c<c_*\) [K]; Liouville and \(\omega_{11}\) witnesses [S].
 - Integer atoms and fine two-prime towers carry the index; tower positivity is precision-exact.
 
 **A.** Full-index exhaustion at the Steklov schedule; remove the \(\log\log L\) factor with weaker Denjoy–Carleman weights; flips \(\omega_p\) for other \(p\).
@@ -610,7 +610,7 @@ Pointwise-closed shift-invariant statements are twin-blind, so no landing can be
 
 | Programme | Contribution | Unresolved input |
 |---|---|---|
-| TM | Positivity for \(c<1+\delta_*\); saturation; reference floor to the charge barrier; Liouville and \(\omega_{11}\) witnesses; RH receivers; Schur reduction; zero side | Positivity across the first successor shell; nonpolar repayment; synthesized-mass floor |
+| TM | Positivity for \(c<c_*\); exact Young-family boundary; reference floor to the charge barrier; Liouville and \(\omega_{11}\) witnesses; RH receivers; Schur reduction; zero side | Positivity across the first successor shell; nonpolar repayment; synthesized-mass floor |
 | HKT, AKLT, EAHT | Index; global and parity laws; heights and carriers; attained depth; locality; Bohr-closure twin; function-field ceiling; producer ledger | An index ceiling from structure; a producer finer than divisibility |
 | ASRP | Precision classes; deciding input; finite aperture; random signs; Chebyshev ledger; integrality | Signed square-root control of moments, sawtooth and Mertens |
 | ACG (gauge torus) | Typicality except for the pole; comeager-null exceptional set; gauge charge; finite gauge subgroups | Gauge charge at the point \(0\) |
