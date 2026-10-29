@@ -139,7 +139,9 @@ private theorem weighted_zero_clusters_error_le
       refine Finset.sum_congr rfl fun a ha => ?_
       rw [← Finset.sum_mul, ← Nat.cast_sum, hcount a ha, mul_comm]
 
-private theorem continuous_heatWeightedZeroSum_clamped_of_support
+/-- A continuous weight supported in a uniformly bounded region of the actual zero
+sets gives a continuous weighted sum, including through collisions and at time zero. -/
+theorem continuous_heatWeightedZeroSum_clamped_of_support
     {Ψ : ℂ → ℝ} (hΨ : Continuous Ψ) (R₀ : ℝ)
     (hsupport : ∀ s : ℝ, 0 ≤ s → ∀ z : ℂ, riemannHeat s z = 0 → R₀ ≤ ‖z‖ → Ψ z = 0) :
     Continuous (fun t : ℝ => heatWeightedZeroSum Ψ (max t 0)) := by

@@ -61,9 +61,26 @@ The existing `DensityEnvelopeNoGo` supplies the latter obstruction for arbitrary
 nonnegative density exponent and logarithmic loss.
 
 `RHTower/ChenGuptaLiModulusCrossover.lean` proves
-`cglZeroDensityFirstTerm_le_second_iff`, `cgl_conductor_one_bounds`,
+`cglZeroDensityFirstTerm_le_second_iff`, `cgl_source_power_eq_iff`,
+`cgl_source_power_lt_iff`, `cgl_conductor_one_bounds`,
 `cgl_conductor_one_envelope_permits_singleton`, and
-`density_exponents_at_seven_eighths`. The direct leaf check passed; the three
+`density_exponents_at_seven_eighths`. The direct leaf check passed; the four
 terminal axiom audits returned only `propext`, `Classical.choice`, and `Quot.sound`.
 Root umbrella import wired. This closes the algebraic density calibration,
 not the separate continuation argument or W10.
+
+## Separate continuation criterion: source read
+
+Read the pinned OpenAI paper's section “From a common signal to a zero-free
+half-plane.” Its argument is a Mellin/Fourier continuation criterion for the common
+rightmost-zero abscissa β* of all primitive finite-order Hecke characters over
+`Q(√−3)`. If the low probe saves against a chosen σ₀ and its difference from a
+Gaussian-smoothed reciprocal signal saves uniformly against β*, the signal's Mellin
+transform continues the reciprocal to `Re s>β*−ε*`. The saving ε* must be uniform
+in the target character; implied constants and starting heights need not be.
+Rapid decay at zero comes from moving the contour to arbitrary fixed lines to the
+right of 2. Fourier inversion identifies the continued reciprocal without crossing
+any zeros. This reduction does not itself prove either required probe estimate.
+The source uses `(σ₀,C(s))=(11/12,s−2/3)` and `(7/8,s−11/16)` in its two stages.
+There is no CGL density exponent in the criterion; any proposed threshold substitution
+must first be justified inside the separate probe estimates.

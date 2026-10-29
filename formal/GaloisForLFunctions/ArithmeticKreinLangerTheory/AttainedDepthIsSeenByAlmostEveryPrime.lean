@@ -340,6 +340,3 @@ theorem riemannHypothesis_iff_infinite_primes_posDef_of_attained
     exact hinf (zeta_finite_primes_posDef_of_attained_depth hρ₀ ((hmin _ hl).trans_lt hlre) hmin)
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms riemannHypothesis_iff_infinite_primes_posDef_of_attained

@@ -47,10 +47,20 @@ collisions; collision passage must use continuity and local one-sided comparison
 ## Gates
 
 - [x] Corpus search and source statements read.
-- [ ] Symmetrized finite-packet inequality with conjugate dissipation.
+- [x] Symmetrized finite-packet inequality with conjugate dissipation; direct final audit pending.
 - [ ] Actual localized energy derivative on simple intervals.
 - [ ] Collision-compatible local/integrated evolution theorem.
 - [ ] Direct leaf checks, transitive axiom audit, umbrella wiring.
+
+`Heat/LocalizedHeatPacketFlux.lean` now proves the exact reciprocal-field identity,
+the pair dissipation bound, the exterior bound and their sum. Its olean was built
+because the evolution file imports it; both terminal axiom audits returned only
+`propext`, `Classical.choice`, and `Quot.sound`. The final plain check remains.
+
+The original evolution draft failed its first direct audit at coercions and
+underconstrained continuity goals. Those sites are repaired. A proof of actual
+finite-branch derivative identification has been appended and is being checked;
+it is not yet certified. No evolution theorem has been marked complete.
 
 ## Derivative and collision construction plan
 
@@ -77,3 +87,10 @@ to its initial endpoint by continuity; local one-sided comparison gives global
 finite-time comparison. Finally monotone convergence as ε tends to zero recovers
 the integrated weighted nonreal count. Neither finite collision count nor a
 uniform simplicity interval is assumed.
+
+For the pointwise upper right-Dini estimate, a stronger shortcut is available:
+at each fixed time the local packet is finite, so one truncated indicator already
+equals the full nonreal indicator on that packet. The integrated continuous
+majorant for this fixed truncation then gives the full count at the initial time
+by continuity. This avoids assuming regularity of the discontinuous count while
+retaining its entire conjugate dissipation coefficient.

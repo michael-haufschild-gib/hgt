@@ -1,7 +1,8 @@
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.Tactic
 
-/-!+# Length, height, overlap, and aperture
+/-!
+# Length, height, overlap, and aperture
 
 For polynomial length `X` and spectral height `T`, overlap is `X/T` and bandwidth is
 `log X / log T`. A fixed overlap greater than one still has limiting bandwidth one.

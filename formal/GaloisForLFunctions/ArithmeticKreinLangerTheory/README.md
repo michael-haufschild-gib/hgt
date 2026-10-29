@@ -230,7 +230,10 @@ fails.
     mass, and only finitely many carry `|W_{ρ₀}|` (`finite_of_disjoint_mass`): all but finitely many
     prime towers fail positivity (`finite_primes_posDef_of_attained_depth`); for `ζ`, whenever the
     infimum of the real parts of the zeros is attained below `½`
-    (`zeta_finite_primes_posDef_of_attained_depth`).
+    (`zeta_finite_primes_posDef_of_attained_depth`). So RH is equivalent to positivity on infinitely
+    many prime towers whenever the least real part is attained
+    (`riemannHypothesis_iff_infinite_primes_posDef_of_attained`), a stratum containing finite
+    support.
 11. **Locality is twin-blind.** A unitary character `ω` translates Krein–Langer data:
     `ω·h_{χ,a} = h_{ωχ,a}` (`pairKernel_twist`), reflection commutes with the twist
     (`reflectChar_twistChar`), and tower faithfulness is invariant (`isTowerFaithful_twist`). So the tower
@@ -295,8 +298,8 @@ fails.
    consecutive-integer towers decide positivity and carry the whole index.
 6. *Coarse towers with attained depth* (`tsum_weight_node_eq_zero_of_bounded`,
    `not_isPosDefKernel_of_node_weight_ne_zero`, `finite_primes_posDef_of_attained_depth`,
-   `zeta_finite_primes_posDef_of_attained_depth`): with any number of zeros, an attained largest depth
-   is seen by all but finitely many prime towers.
+   `zeta_finite_primes_posDef_of_attained_depth`, `riemannHypothesis_iff_infinite_primes_posDef_of_attained`):
+   with any number of zeros, an attained largest depth is seen by all but finitely many prime towers.
 
 **B. Local constituents and ceilings.**
 1. *Poisson law* (`isPosDefKernel_poissonKernel`, `isPosDefKernel_eulerKernel`, `isPosDefKernel_twist`).
@@ -421,7 +424,9 @@ fails.
    (`isPosDefKernel_orbitKernel_of_consecutive`). Two primes suffice because the lattice they generate
    contains fine towers, whose indices have the whole index as supremum
    (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`), attained exactly on the finite stratum
-   (`eventually_negIndex_fine_eq`).
+   (`eventually_negIndex_fine_eq`). Single prime towers suffice as well whenever the largest depth is
+   attained: then all but finitely many of them fail positivity
+   (`finite_primes_posDef_of_attained_depth`).
 6. **What arithmetic quantity governs the near-axis collisions of the heat flow?** The wave number
    of the prime-side count. Each Weil-kernel value is the explicit-formula functional of the spline and
    its translate, pole terms minus the von Mangoldt sum plus the Gamma term

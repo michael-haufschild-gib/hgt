@@ -1,7 +1,8 @@
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.OverlapCoordinates
 import GaloisForLFunctions.SquareRootThreshold.PositionAndDepthShareOneNyquistAperture
 
-/-!+# The length-height boundary of the density-matched paired lattice
+/-!
+# The length-height boundary of the density-matched paired lattice
 
 The paired lattice has density `L/π`. Matching the leading density `log T/(2π)` sets
 `L = log T/2`. Its sharp indistinguishability aperture `L/2` therefore corresponds to
@@ -13,12 +14,14 @@ These are exact statements about the lattice configurations, not estimates for z
 
 noncomputable section
 
+set_option autoImplicit false
+
 open Set MeasureTheory
 open scoped Real
 
 namespace GaloisForLFunctions.SquareRootThreshold
 
-open SpacingScaleHarmonicAnalysis.LengthHeight Zeta23
+open SpacingScaleHarmonicAnalysis.LengthHeight Zeta23 _root_.RHTower
 
 /-- Period parameter giving the paired lattice density `log T/(2π)`. -/
 def densityMatchedPeriod (T : ℝ) : ℝ := Real.log T / 2

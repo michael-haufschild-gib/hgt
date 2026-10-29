@@ -5,7 +5,8 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationOfACycle
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheCriticalExponent
 import GaloisForLFunctions.HTGeometry.CompactFourierEntire
 
-/-!+# The normalized atomic transform
+/-!
+# The normalized atomic transform
 
 At width `w = c/N = 1/T`, the unnormalized atom contributes the factor
 `w h_φ(wz)`. The unit-mass dilation contributes `h_φ(z/T)`. Both multiply the same
@@ -14,6 +15,8 @@ The Fourier window has no hard height cutoff when the compact profile has nonzer
 -/
 
 noncomputable section
+
+set_option autoImplicit false
 
 open MeasureTheory Finset Zeta23
 open scoped Real ComplexConjugate
@@ -34,7 +37,9 @@ theorem dirichletPoly_eq_mellinPolynomial (N : ℕ) (x : ℕ → ℝ) (z : ℂ) 
   refine sum_congr rfl fun n hn => ?_
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
   have hsqrt : (Real.sqrt n : ℂ) = Complex.exp ((Real.log n : ℂ) / 2) := by
-    rw [← Real.exp_log hn0, ← Real.exp_half, Complex.ofReal_exp]
+    have hs : Real.sqrt n = Real.exp (Real.log n / 2) := by
+      rw [Real.exp_half, Real.exp_log hn0]
+    rw [hs, Complex.ofReal_exp]
     push_cast
     rfl
   rw [Complex.ofReal_mul, hsqrt]
@@ -58,15 +63,20 @@ theorem paperFT_atomDilate {w : ℝ} (hw : 0 < w) (φ : ℝ → ℝ) (z : ℂ) :
 
 theorem hasCompactSupport_atomDilate {w : ℝ} (hw : w ≠ 0) {φ : ℝ → ℝ}
     (hφ : HasCompactSupport φ) : HasCompactSupport (atomDilate φ w) := by
-  simpa only [atomDilate, div_eq_mul_inv] using
-    hφ.comp_homeomorph (Homeomorph.mulRight₀ w⁻¹ (inv_ne_zero hw))
+  have hc := hφ.comp_homeomorph (Homeomorph.mulRight₀ w⁻¹ (inv_ne_zero hw))
+  change HasCompactSupport (fun u => φ (u * w⁻¹)) at hc
+  change HasCompactSupport (fun u => φ (u / w))
+  simpa only [div_eq_mul_inv] using hc
 
 /-- Exact raw atomic transform; no restriction to the critical line is used. -/
 theorem paperFT_atomicTest_atomDilate {φ : ℝ → ℝ} (hφ : Continuous φ)
     (hφc : HasCompactSupport φ) {w : ℝ} (hw : 0 < w) (N : ℕ) (x : ℕ → ℝ) (z : ℂ) :
     paperFT (cx (atomicTest N x (atomDilate φ w))) z =
       (w : ℂ) * paperFT (cx φ) ((w : ℂ) * z) * dirichletPoly N x z := by
-  rw [paperFT_atomicTest (hφ.comp (continuous_id.div_const w))
+  have hg : Continuous (atomDilate φ w) := by
+    unfold atomDilate
+    fun_prop
+  rw [paperFT_atomicTest hg
     (hasCompactSupport_atomDilate hw.ne' hφc), paperFT_atomDilate hw]
 
 /-- Unit-mass dilation removes precisely the dilation Jacobian. -/
@@ -75,9 +85,11 @@ theorem paperFT_massPreservingDilate {T : ℝ} (hT : 0 < T) (φ : ℝ → ℝ) (
   have heq : cx (dilate T φ) = fun u => (T : ℂ) * cx (atomDilate φ T⁻¹) u := by
     funext u
     simp only [cx, dilate, atomDilate, div_inv_eq_mul, mul_comm u T, Complex.ofReal_mul]
-  rw [heq, paperFT]
-  simp_rw [mul_assoc]
-  rw [integral_const_mul, ← paperFT, paperFT_atomDilate (inv_pos.mpr hT)]
+  have hlin : paperFT (cx (dilate T φ)) z =
+      (T : ℂ) * paperFT (cx (atomDilate φ T⁻¹)) z := by
+    rw [heq]
+    simp only [paperFT, mul_assoc, integral_const_mul]
+  rw [hlin, paperFT_atomDilate (inv_pos.mpr hT)]
   have hTc : (T : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hT.ne'
   push_cast
   rw [← mul_assoc, mul_inv_cancel₀ hTc, one_mul]
@@ -91,7 +103,10 @@ theorem paperFT_atomicTest_at_height {φ : ℝ → ℝ} (hφ : Continuous φ)
       paperFT (cx φ) (z / (T : ℂ)) * dirichletPoly N x z := by
   have hc : HasCompactSupport (dilate T φ) :=
     (hφc.comp_homeomorph (Homeomorph.mulLeft₀ T hT.ne')).mul_left
-  rw [paperFT_atomicTest (continuous_const.mul (hφ.comp (continuous_const.mul continuous_id))) hc,
+  have hg : Continuous (dilate T φ) := by
+    unfold dilate
+    fun_prop
+  rw [paperFT_atomicTest hg hc,
     paperFT_massPreservingDilate hT]
 
 /-- A compact profile of nonzero mass has nonzero Fourier values at arbitrarily large heights. -/
@@ -99,9 +114,9 @@ theorem exists_paperFT_ne_zero_above {φ : ℝ → ℝ} (hφ : Continuous φ)
     (hφc : HasCompactSupport φ) (hmass : (∫ u, φ u) ≠ 0) (B : ℝ) :
     ∃ t : ℝ, B < t ∧ paperFT (cx φ) (t : ℂ) ≠ 0 := by
   by_contra h
-  push_neg at h
+  push Not at h
   have hd : Differentiable ℂ (paperFT (cx φ)) :=
-    RHTower.EvenSector.differentiable_paperFT_of_compact
+    _root_.RHTower.EvenSector.differentiable_paperFT_of_compact
       (Complex.continuous_ofReal.comp hφ) (hφc.comp_left Complex.ofReal_zero)
   have hz := HTGeometry.entire_eq_zero_of_vanishing_on_real_interval
     (t₀ := B + 2) hd (show (0 : ℝ) < 1 by norm_num)

@@ -29,3 +29,11 @@ No new module yet.
 ## Broader implications
 
 To be established after identifying an exact unconditional theorem. Full RH, a macroscopic complete-form positivity theorem, and a synthesis improvement remain open until their actual inputs are proved.
+
+## First mathematical outcome
+
+The uncentered kernel E_m(|i-j|) is not positive semidefinite: E_m(0)=0 and E_m(1)=phi(m)>0. This kills only the naive scalar-to-kernel lift.
+
+Positive survivor, paper argument ready for immediate formalization: put v_k(zeta)=sum_{j<k}zeta^j over primitive m-th roots. Prefix subtraction is a unit rotation of a shorter prefix, hence ||v_i-v_j||²=E_m(|i-j|). The centered kernel (E_m(i)+E_m(j)-E_m(|i-j|))/2 is the actual real Gram kernel. Its full quadratic form is the sum of squared weighted primitive-root prefixes. The uncentered form equals twice total coefficient mass times its weighted moment minus twice that square energy. In particular it is conditionally negative, with an exact equality criterion.
+
+This is not yet a complete-Weil comparison. It determines the required centering and sign and retains all finite mixed entries. Next: classify the radical, test conductor-uniform coercivity after unit averaging, and transfer actual finite arithmetic averages before considering growing horizons.
