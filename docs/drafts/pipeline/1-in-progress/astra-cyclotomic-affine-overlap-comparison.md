@@ -1,6 +1,6 @@
 # Cyclotomic positivity and the complete affine overlap operator
 
-Status: closing the existing formalization batch at the user's request. The complete-Weil comparison remains open. No new research branches.
+Status: all ten existing proof modules are formalized, audited, and wired. The complete-Weil comparison remains open. No new research branches.
 
 ## Objective and boundary
 
@@ -14,16 +14,16 @@ All CACT paths below are in `formal/GaloisForLFunctions/CriticalArithmeticCorrel
 
 | Existing paper result | Lean module | Status |
 |---|---|---|
-| Exact prefix-distance and centered Gram identities | `TheArithmeticCurvatureHasAnExactGramCompletion` | Certified; final direct audit queued |
+| Exact prefix-distance and centered Gram identities | `TheArithmeticCurvatureHasAnExactGramCompletion` | Final direct audit passed |
 | Radical exactly classified by cyclotomic divisibility | `CyclotomicDivisibilityClassifiesTheOverlapGramRadical` | Direct audit passed |
-| Divisor completion gives `Q*min(i,j)-i*j` | `AllDivisorConductorsRecoverTheDiscreteBridge` | Certified; final direct audit queued |
-| Uniform signed source comparison and unit-Gram lower bound | `PrimeResidueWindowsControlEveryGramPacket` | Certified; final direct audit queued |
-| Positive conductor lift under rational refinement | `RationalRefinementCompletesTheCyclotomicGram` | Certified; final direct audit queued after removing an unused tactic |
+| Divisor completion gives `Q*min(i,j)-i*j` | `AllDivisorConductorsRecoverTheDiscreteBridge` | Final direct audit passed |
+| Uniform signed source comparison and unit-Gram lower bound | `PrimeResidueWindowsControlEveryGramPacket` | Final direct audit passed |
+| Positive conductor lift under rational refinement | `RationalRefinementCompletesTheCyclotomicGram` | Final direct audit passed |
 | Real Gram positivity, conditional negativity, exact unit-cell kernel | `TheRealOverlapCurvatureIsConditionallyNegative` | Final direct audit passed; wired |
-| Both affine parameters may move with height | `ActualAffinePrimeWindowsAreUniformInTheirParameters` | Draft awaiting audit |
-| Exact identity with existing prime-block jump energy | `CyclotomicCompletionIsThePrimeBlockJumpEnergy` | Draft awaiting audit |
-| Literal prime-prefix form dominates its full primitive Gram | `ActualPrimePrefixesDominateTheirCyclotomicGram` | Direct audit active |
-| Smaller schedule for the already constructed Steklov profile | `TransMetzlerWeilPositivity/TheFixedProfileReachesAnIteratedLogEndpoint` | Existing draft awaiting audit; no further receiver research |
+| Both affine parameters may move with height | `ActualAffinePrimeWindowsAreUniformInTheirParameters` | Final direct audit passed |
+| Exact identity with existing prime-block jump energy | `CyclotomicCompletionIsThePrimeBlockJumpEnergy` | Final direct audit passed |
+| Literal prime-prefix form dominates its full primitive Gram | `ActualPrimePrefixesDominateTheirCyclotomicGram` | Final direct audit passed |
+| Smaller schedule for the already constructed Steklov profile | `TransMetzlerWeilPositivity/TheFixedProfileReachesAnIteratedLogEndpoint` | Final direct audit passed; no further receiver research |
 
 ## Exact mathematical content
 
@@ -43,7 +43,7 @@ The same positive conductor decomposition holds entrywise for centered Grams. Co
 
 The actual residue masses supply one error tending to zero at fixed conductor and multiplicative window. This controls every signed pattern and every finite real or complex Gram packet, with coefficients and features allowed to depend on height. For lower bounds, non-unit prime powers are nonnegative: one horizon dominates `(log B-log A-epsilon)` times the unit Gram without an extra non-unit penalty. Prefix-phase specialization identifies that unit Gram exactly with the complete primitive Gram divided by `phi(q)`.
 
-The already-written synthesis calculation uses the same Steklov profile at `c_N=L*(log L)^2*log(log L)`, `L=log(log N)`. It is smaller than every previously displayed `L*(log L)^beta`, `beta>2`. This is receiver work, not arithmetic positivity; it is being closed only to finish the existing paper proof.
+The already-written synthesis calculation uses the same Steklov profile at `c_N=L*(log L)^2*log(log L)`, `L=log(log N)`. It is smaller than every previously displayed `L*(log L)^beta`, `beta>2`. This closes the existing receiver paper proof; it supplies no arithmetic positivity.
 
 ## Failed conjectures and positive survivors
 

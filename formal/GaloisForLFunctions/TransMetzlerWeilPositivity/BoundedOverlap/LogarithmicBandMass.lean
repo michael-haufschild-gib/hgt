@@ -2,7 +2,8 @@ import GaloisForLFunctions.HTGeometry.MontgomeryVaughanIntervalMeanSquare
 import GaloisForLFunctions.SquareRootThreshold.WindowedMeanValueDiagonalLaw
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheAtomicFamilyIsADirichletPolynomial
 
-/-!+# A high-frequency mass bound for logarithmic atoms
+/-!
+# A high-frequency mass bound for logarithmic atoms
 
 The logarithms of integers through `N` are `1/N`-separated. The interval
 Montgomery–Vaughan inequality therefore retains `48 N` times coefficient
@@ -57,7 +58,7 @@ theorem dirichletPoly_highBand_mass {N : ℕ} (hN : 0 < N) (x : ℕ → ℝ) :
     ring
   have hmass : (∑ n : S, ‖(x n : ℂ)‖ ^ 2) = ∑ n ∈ Icc 1 N, x n ^ 2 := by
     simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs]
-    exact sum_attach S (fun n => x n ^ 2)
+    exact sum_coe_sort S (fun n => x n ^ 2)
   have hpoly (t : ℝ) :
       (∑ n : S, (x n : ℂ) * mvExp (Real.log (n : ℕ) / (2 * Real.pi)) t) =
         dirichletPoly N x t := by
@@ -69,9 +70,10 @@ theorem dirichletPoly_highBand_mass {N : ℕ} (hN : 0 < N) (x : ℕ → ℝ) :
       field_simp [Complex.ofReal_ne_zero.mpr Real.pi_ne_zero]
       ring
     simp only [he]
-    exact sum_attach S (fun n => (x n : ℂ) * Complex.exp (Complex.I * t * (Real.log n : ℂ)))
-  simp only [hcost, hmass, hpoly] at h
-  convert h using 1 <;> ring
+    exact sum_coe_sort S (fun n => (x n : ℂ) * Complex.exp (Complex.I * t * (Real.log n : ℂ)))
+  have hend : (N : ℝ) + 100 * N = 101 * N := by ring
+  have hcoef : 100 * (N : ℝ) - 52 * N = 48 * N := by ring
+  simpa only [hcost, hmass, hpoly, hend, hcoef] using h
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap
 

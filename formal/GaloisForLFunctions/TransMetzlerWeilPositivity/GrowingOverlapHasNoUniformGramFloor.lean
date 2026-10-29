@@ -178,7 +178,7 @@ private theorem tendsto_succ_div_nat :
   filter_upwards [eventually_ge_atTop (1 : ℕ)] with N hN
   have hN0 : (N : ℝ) ≠ 0 := (show (0 : ℝ) < N by exact_mod_cast hN).ne'
   push_cast
-  field_simp
+  field_simp [hN0] <;> ring
 
 /-- Growing overlap makes adjacent logarithmic centers indistinguishable at profile scale. -/
 theorem tendsto_adjacentProfileLag {c : ℕ → ℝ} (hc : Tendsto c atTop atTop) :
@@ -188,7 +188,7 @@ theorem tendsto_adjacentProfileLag {c : ℕ → ℝ} (hc : Tendsto c atTop atTop
   filter_upwards [eventually_ge_atTop (1 : ℕ), hc.eventually_gt_atTop 0] with N hN hcN
   have hN0 : (N : ℝ) ≠ 0 := (show (0 : ℝ) < N by exact_mod_cast hN).ne'
   dsimp only [adjacentProfileLag, firstExteriorOverlap]
-  field_simp [hN0, hcN.ne']
+  field_simp [hN0, hcN.ne'] <;> ring
 
 /-- At every overlap schedule tending to infinity, a coefficient vector of squared mass two
 has vanishing atom-normalized synthesized mass. -/

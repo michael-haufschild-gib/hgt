@@ -18,6 +18,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.PointwiseClosedStatements
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersHaveUnboundedNyquistWindows
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.ChebyshevsProducerPassesTheIntegerChebyshevCap
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.ThePolarDivisorCountsTheIndex
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -31,7 +32,8 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   locality is twin-blind.
 * **Local constituents and ceilings.** The Poisson law of the Euler factor, the zero-or-infinity law
   for axis-supported kernels, the Riemann–Roch ceiling, the exact atomic ceiling `N log q` over
-  `𝔽_q[T]` and its second rung, and the index as the number of exceptional waves of a count.
+  `𝔽_q[T]` and its second rung, the index as the number of exceptional waves of a count, and as the
+  number of pole classes of the affine Weyl sum right of the critical hyperplane.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
   the global law over `ℤ`; compressions as receivers; the Bézout ledger of both producers and its
   multiplicity caps; Chebyshev's divisibility producer past the integer Chebyshev cap; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index

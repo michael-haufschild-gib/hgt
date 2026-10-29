@@ -10,7 +10,7 @@ of nonpolar conductors has negative reference energy at a sufficiently large ove
 This classifies the continuation of the reference formula. The identification of that formula
 with actual complete-Weil quasimodes was proved in the separated regime; extending it to growing
 overlap requires the new archimedean overlaps and non-ratio prime terms.
-The actual normalized diagonal retains this logarithmic loss whenever `c/N≤1`;
+The normalized archimedean self-energy retains this logarithmic loss whenever `c/N≤1`;
 its Robin remainder is at most `(exp(1/2)/2)c/N` without a separation restriction.
 -/
 
@@ -62,7 +62,7 @@ theorem exists_overlap_all_nonpolar_reference_energies_negative (φ : ℝ → �
       single_le_sum (fun n _ => abs_nonneg (completeWeilAdjunctionEnergy φ 1 n)) hm
     linarith only [le_abs_self (completeWeilAdjunctionEnergy φ 1 m), hterm]
 
-/-- The complete diagonal's scalar finite part does not require separated atoms. -/
+/-- The archimedean self-energy's scalar finite part does not require separated atoms. -/
 theorem completeWeil_self_scalar_identity_all_widths (φ : ℝ → ℝ) {c : ℝ}
     (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) :
     2 * gammaHardyPhaseRate 0 + Real.log (1 / (c / N)) + profileRobin φ - Real.log N =

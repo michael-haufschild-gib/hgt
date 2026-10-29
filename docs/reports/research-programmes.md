@@ -51,3 +51,4 @@
 - formal/GaloisForLFunctions/TransMetzlerWeilPositivity/README.md
 - formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/README.md
 - formal/GaloisForLFunctions/CompletedArithmeticForms/README.md
+- formal/GaloisForLFunctions/ArithmeticGaugeTheory/README.md

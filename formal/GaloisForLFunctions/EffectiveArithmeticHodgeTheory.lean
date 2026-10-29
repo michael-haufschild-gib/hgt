@@ -2,6 +2,7 @@ import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheHassePrincipleWithH
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheExplicitSchedulesReachTheIndex
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.IndexCarriersOfFiniteSpectra
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheBezoutTheoremOfTheMultiplicativeGroup
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheRiemannRochTheoremOfTheMultiplicativeGroup
 
 /-!
 # Effective Arithmetic Hodge Theory of the multiplicative group of `ℚ`
@@ -21,6 +22,9 @@ the Weil kernel and what they carry.
 * **Bézout.** The Frobenius progressions `2πiℤ/log p` are the points of `𝔾_m(ℚ)`: a nonzero
   Dirichlet polynomial of length `N` vanishing to order `m_p` along them has `∏ p^{m_p} ≤ N`,
   attained by the Euler factors; the zero estimate of arithmetic Stepanov.
+* **Riemann–Roch.** The sections of length `N` vanishing to orders `m_p` along the progressions form
+  a space of dimension `⌊N/∏p^{m_p}⌋`; multiplication by the Euler factor and the tower quotient
+  are inverse isomorphisms between consecutive divisors.
 
 See `EffectiveArithmeticHodgeTheory/README.md`.
 -/

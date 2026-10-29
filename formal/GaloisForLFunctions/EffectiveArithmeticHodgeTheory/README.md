@@ -244,18 +244,6 @@ the regulator anomaly (AIT).
 
 ### 7.2 Of this folder
 
-- **B. The Hasse principle with heights** (`TheHassePrincipleWithHeights`). The height filtration
-  `κ_T = #{ρ : Re ρ > ½, |Im ρ| ≤ T}` is finite, monotone, at most `2N(0, T) + c₀`, and exhausts the
-  index: `κ(K_ζ) = sup_T κ_T` (`negIndex_zetaKernel_eq_iSup_heightIndex`). On a tower of scale `ℓ`
-  with `ℓT < π` no two points of ordinate at most `T` alias, and `π` is sharp
-  (`injOn_frobEig_of_mul_lt_pi`, `exists_alias_of_pi_le`); such a tower has a window carrying `κ_T`
-  negative squares of the prime-side Gram matrix (`exists_window_certifies_height`). The tower of
-  `3^k/2^j` with `k ≤ ⌊T log 2/π⌋ + 1`, `k ≤ j ≤ 2k`, `0 < |log(3^k/2^j)| < π/T`, certifies height
-  `T` with a generator of logarithmic height `O(T)` (`twoPrime_tower_certifies_height`). At most
-  `binom(κ_T, 2)` prime towers fail to separate the right zeros below `T`, so among any
-  `binom(κ_T, 2) + 1` primes one tower carries them all (`ncard_heightBlindPrimes_le`,
-  `exists_prime_certifies_height`).
-
 - **A. The explicit schedules reach the index** (`TheExplicitSchedulesReachTheIndex`). On real `C²`
   compactly supported tests Weil's form is real and symmetric, so `W(f, g) = (Q(f + g) − Q(f − g))/4`
   (`weilPair_real_eq`), and `Q` is two-sided continuous under synthesis errors whose sup and Lévy
@@ -269,7 +257,24 @@ the regulator anomaly (AIT).
   `(log log N)^α/N` does it (`dcProfile_atomicGram_reaches_index`). Deciding and reaching coincide
   for every synthesis-based receiver: the negative family is synthesized in Gram norm, not one test
   at a time.
-
+- **B. The Hasse principle with heights** (`TheHassePrincipleWithHeights`). The height filtration
+  `κ_T = #{ρ : Re ρ > ½, |Im ρ| ≤ T}` is finite, monotone, at most `2N(0, T) + c₀`, and exhausts the
+  index: `κ(K_ζ) = sup_T κ_T` (`negIndex_zetaKernel_eq_iSup_heightIndex`). On a tower of scale `ℓ`
+  with `ℓT < π` no two points of ordinate at most `T` alias, and `π` is sharp
+  (`injOn_frobEig_of_mul_lt_pi`, `exists_alias_of_pi_le`); such a tower has a window carrying `κ_T`
+  negative squares of the prime-side Gram matrix (`exists_window_certifies_height`). The tower of
+  `3^k/2^j` with `k ≤ ⌊T log 2/π⌋ + 1`, `k ≤ j ≤ 2k`, `0 < |log(3^k/2^j)| < π/T`, certifies height
+  `T` with a generator of logarithmic height `O(T)` (`twoPrime_tower_certifies_height`). At most
+  `binom(κ_T, 2)` prime towers fail to separate the right zeros below `T`, so among any
+  `binom(κ_T, 2) + 1` primes one tower carries them all (`ncard_heightBlindPrimes_le`,
+  `exists_prime_certifies_height`).
+- **C. The bandwidth dictionary** (built in SSHA: `OverlapCoordinates`, `TheNormalizedAtomicTransform`).
+  The Fourier transform of an atomic family at unit-mass width `1/T` is the profile window times a
+  Dirichlet polynomial of length `N`, at every complex spectral argument
+  (`paperFT_atomicTest_at_height`); overlap `c = N/T`, bandwidth `log N/log T = 1 + log c/log T`
+  (`bandwidth_eq_one_add_log_overlap`); a fixed overlap has limiting bandwidth one
+  (`tendsto_bandwidth_fixed_overlap`); a compact profile of nonzero mass has nonzero window values
+  at arbitrarily large heights (`exists_paperFT_ne_zero_above`), so the height cut is soft.
 - **C′. Index carriers of finite spectra** (`IndexCarriersOfFiniteSpectra`). A family carries a
   finite set `S` of characters when its evaluation matrix has full row rank; then the Gram matrix of
   every Hermitian exponential sum over `S` on it has exactly the index of the sum
@@ -290,14 +295,15 @@ the regulator anomaly (AIT).
   (`towerQuot_sub`, `towerQuot_eq_zero`); the derivative identity `dirDeriv_quot` lowers the order
   on the progression of `p` and keeps it on the others, which meet it only at `s = 0` because
   `log q/log p` is irrational (`cpow_neg_frobPoint_ne_one`).
-
-- **C. The bandwidth dictionary** (built in SSHA: `OverlapCoordinates`, `TheNormalizedAtomicTransform`).
-  The Fourier transform of an atomic family at unit-mass width `1/T` is the profile window times a
-  Dirichlet polynomial of length `N`, at every complex spectral argument
-  (`paperFT_atomicTest_at_height`); overlap `c = N/T`, bandwidth `log N/log T = 1 + log c/log T`
-  (`bandwidth_eq_one_add_log_overlap`); a fixed overlap has limiting bandwidth one
-  (`tendsto_bandwidth_fixed_overlap`); a compact profile of nonzero mass has nonzero window values
-  at arbitrarily large heights (`exists_paperFT_ne_zero_above`), so the height cut is soft.
+- **D″. The Riemann–Roch theorem of `𝔾_m(ℚ)`** (`TheRiemannRochTheoremOfTheMultiplicativeGroup`).
+  The sections of length `N` with divisor `m` (Dirichlet polynomials vanishing to order `m_p` along
+  the progression of each `p ∈ S`) form a space of dimension
+  `h⁰(N, m) = ⌊N/∏_{p∈S} p^{m_p}⌋` (`finrank_sections_eq`): multiplication by `1 − p^{−s}` and
+  the tower quotient are inverse isomorphisms from length `⌊N/p⌋`, divisor `m − e_p`, to length
+  `N`, divisor `m` (`sectionsEquivQuot`), and with no conditions `h⁰(N, 0) = N`, the box-class size
+  (`finrank_dirPolys`). A nonzero section exists iff `∏ p^{m_p} ≤ N` (`sections_ne_bot_iff`). The
+  section count is defined without any sign and obeys `h⁰ = ⌊e^{deg}⌋`, `deg = log N − Σ m_p log p`:
+  the exact Riemann–Roch of the base, linear in `e^{deg}`.
 
 Targets:
 
@@ -373,8 +379,7 @@ Targets:
 
 ## 10. Tools
 
-To build: the bandwidth dictionary; a
-signed symbol calculus for the completed shell operator on Ramanujan packets, with composition and
+To build: a signed symbol calculus for the completed shell operator on Ramanujan packets, with composition and
 elimination rules that keep the Schur cost; the flip test on the atomic complete form; constrained
 inversion of the factorial identity; ceilings for integer auxiliaries.
 
@@ -393,10 +398,12 @@ atomic Gram matrix, and the transfer from synthesis to index (`TheExplicitSchedu
 
 1. **Converse Krein–Langer on `Γ`.** A common invariant negative subspace for all prime translations of
    the Pontryagin space of a finite-index kernel.
-2. **Arithmetic Stepanov.** Auxiliaries in `ℤ[Γ]` with `p`-adic multiplicity; an arithmetic zero
-   estimate; the flatness identity playing `x^q = x`; the odd-class upper count at a power precision.
+2. **Arithmetic Stepanov.** The zero estimate is proved and exact (§7.2 D, D″); open are the
+   existence half, an identity on the primes playing `x^q = x` that makes vanishing along Frobenius
+   progressions cheap, and the odd-class upper count at a power precision.
 3. **Quadratic Riemann–Roch on the scaling surface.** A section count of box-class size `N` defined
-   without the sign, with Riemann inequality and subquadratic degree-zero growth.
+   without the sign, with Riemann inequality and subquadratic degree-zero growth. The base has one,
+   exact (§7.2 D″: `h⁰(N, m) = ⌊N/∏p^{m_p}⌋`); open is a surface over it whose `χ` is quadratic.
 4. **Covariant regulators on the characteristic circle.** A regulator of the diagonal with nontrivial
    null cone; Riemann–Roch on torsion orbits with defect `½ log|d|`.
 5. **Index-carrying completion with explicit schedules.** The slowest schedule that reaches the index;
@@ -442,8 +449,9 @@ and the theorems that tie the chapters together.
 theorem reaching the index along an explicit schedule (W3); the complete form positive at one
 macroscopic overlap with the flip threshold computed (W1); and a produced count at some power
 precision for one parity class (W14), which by the parity form of the global law and the integrality
-exponent is a zero-free strip. The section certifying every zero below a given height, with explicit
-size, is proved.
+exponent is a zero-free strip. The transfer theorem is proved for the Gevrey and Denjoy–Carleman
+schedules (§7.2 A); the section certifying every zero below a given height, with explicit size, is
+proved (§7.2 B); the zero estimate of the producer is proved and exact (§7.2 D, D″).
 
 **A contribution** is an unconditional theorem that names its scale (height, length, overlap,
 aperture), its section and its topology; computes, bounds or structures the index there; says what it

@@ -17,11 +17,11 @@ because its umbrella lists an import or a nearby theorem compiles.
 
 ## Gates
 
-- [ ] Identify every named component's actual terminal statements and imports.
+- [x] Identify every named component's actual terminal statements and imports.
 - [ ] Resolve missing dependencies individually; preserve existing oleans.
 - [ ] Check affected terminal leaves directly and inspect transitive axioms.
 - [ ] Wire all finished imports and reconcile source documentation.
-- [ ] Record exact surviving conclusions and remaining mathematical boundaries.
+- [x] Record exact surviving conclusions and remaining mathematical boundaries.
 
 ## Mathematical scope of the integrated results
 
@@ -112,7 +112,7 @@ from `formal/`. The printed declarations cover their transitive dependencies.
 
 | Leaf | Terminal audits | Result |
 |---|---:|---|
-| TM/ZeroSideStratum | 6 | Pending |
+| TM/ZeroSideStratum | 6 | Passed; standard axioms only |
 | TM/LiouvilleTwinSelectivity | 5 | Pending |
 | CACT/OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching | 3 | Pending |
 | ACS/TheHaarPrimeEdgesRetainTheirGammaReserve | 4 | Passed; standard axioms only |

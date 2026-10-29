@@ -363,14 +363,35 @@ exact Ramanujan expansion, harmonic correlation, finite full-tail bound, and its
 `ElevenFlipNegativity.lean` also compiled with the three standard axioms.
 `ElevenFlipAtEveryHorizon.lean` passed the required no-olean check, including
 `eventually_elevenFlip_negative_two` and `eventually_elevenFlip_negative_cZero`.
-Removing two redundant tactics is followed by a final repeat check.
+The final repeat check after removing two redundant tactics also passed.
 
 Thus the requested eleven-flip decisions are answered for `transMetzlerProfile`:
 both ratios are eventually negative on an explicit atomic coefficient vector.
 For fixed `c≥99/100`, put `H_N=floor((99/(100*c))*N)` and use
 `x_n=(1-2*1_(11|n)+2*1_(121|n))/sqrt(n)` for `n≤H_N`, zero otherwise.
-The upper limiting energy, divided by `(c/N)*log(H_N)*M`, is strictly below
-`-271/12375`. This includes Gamma, both poles, and every prime power.
+The upper limiting energy, divided by `(c/N)*log(H_N)*M`, is strictly negative.
+This includes Gamma, both poles, and every prime power.
 
 The main zeta positivity claim at ratio two, its explicit horizon, and the full
 all-prime threshold classification are still unproved. The active goal is not complete.
+
+## Pause checkpoint
+
+The user requested completion of started Lean work and formalization of completed
+paper proofs, followed by a pause. The eleven-flip proof is extracted into
+`../3-formalized/bounded-overlap-eleven-flip-negativity.md` with its checked Lean declarations.
+`LogarithmicBandMass.lean` is the remaining started file under final verification.
+The core and threshold sections above are conjectural arguments, not completed
+paper proofs awaiting a ceremonial Lean wrapper.
+
+An alternative constructive core route was considered but not started in Lean:
+use an exponentially tilted, box-smoothed positive profile containing `1+cos(K*u)`.
+For a box radius `a` with `K*a` an odd multiple of `pi`, the unsmoothed transform is
+proportional to `K²*sin(a*z)/(z*(z²-K²))` and has only real zeros. A small box convolution
+gives C² regularity; exponential tilt removes real Fourier zeros. A band near `K`
+may retain a lower Fourier bound independent of `K`, while the Robin quotient grows
+like `log K`. Height and mass remain bounded. This could make the low-prefix mass
+reserve large enough to pay a full Schur cost at ratio two using only elementary
+prime bounds, avoiding existential residue-class constants in the core horizon.
+The uniform constants, support construction, and complete-form Schur estimate were
+not completed. Do not treat this route as a proved profile or a solution.

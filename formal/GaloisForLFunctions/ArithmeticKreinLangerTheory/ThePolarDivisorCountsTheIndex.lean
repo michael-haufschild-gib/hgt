@@ -130,6 +130,3 @@ theorem golden_card_rightPoles :
   omega
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms golden_card_rightPoles

@@ -289,7 +289,7 @@ Not valid are improvements of numbers, nogos, redressing existing knowledge in n
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 read fully:
-formal/GaloisForLFunctions/ConjugateDiagonalGeometry/README.md
+formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/README.md
 
 on every turn: 
 research, derive, formalize a significant contribution to the field that significantly helps to either:
@@ -343,7 +343,7 @@ find an opportunity to "connect the dots" between different parts of our lean co
 - discharge a significant hypotheses or premise anywhere in the lean corpus
 - prove a significant theorem that brings us closer to a proof of that there can max finite many offline zeros
 
-Not valid are mere improvements of numbers, nogos, redressing existing knowledge in new language, or anything that does not clearly count as significant progress.
+Not valid are mere improvements of numbers, nogos, more receivers, redressing existing knowledge in new language, or anything that does not clearly count as significant progress - controlling positivity and signs.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -405,12 +405,10 @@ create new versions of the reviews to reflect the current status quo and frontie
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
-   2.3 Do you see any opportunity to prove that if there are offline zeros there can only finite many offline zeros?
-   2.4 Do you see any opportunity to prove Quasi-RH with improved values other to 1/8 < ... < 7/8?
-   2.5 Do you see any opportunity to prove that at least 70% of zeros lie on the critical line?
-   2.6 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
-   2.7 suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
-   2.8 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.3 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
+   2.4 suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
+   2.5 suggest if you see any opportunity to make a breakthrough in the real hard questions our proof routes face, weil positivitiy, positivity bounds, etc. Not more receivers, not more optimizing some number, not more lower bounds on this or that, a real breakthrough that opens our research for significant progress and new discoveries.
+   2.6 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 5. correct any issue you have identified in docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md
@@ -466,7 +464,7 @@ The questions for you to answer:
 5. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 6. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2910/fable.md
+Write a report in docs docs/reports/review-2910/astra.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -474,9 +472,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read fully docs/reports/review-2910/fable.md
+read fully docs/reports/review-2910/obstacles-summary.md
 
-the document describes in "## 8. Question 6 — the field that would supply the tools" a new field/research programme "Arithmetic of square-root precision".
+the document describes under "## 2.6 Would the obstacles in 2.2 need a new field of mathematics?" a new field/research programme "arithmetic gauge theory of the ring \(\mathbb Z\)".
 
 Your task: develop this new field / programme.
 
@@ -557,10 +555,13 @@ always look at the big picture, try to understand what all our research is tryin
 
 Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
-## argon do task
-read: docs/reports/review-2910/breakthrough-question.md
+## argon do breakthrough
 
-your task: the document asks you to answer one question and prove it "Where does Weil positivity leave the unconditional world? Cross the Metzler threshold: prove that the complete Weil form of ζ is eventually nonnegative on the atomic families of one fixed overlap ratio \(c>1\), and locate the overlap ratio at which the zeros of ζ first enter."
+do not use the hgtl7 skill.
+
+read: docs/reports/review-2910/breakthrough-question-2.md
+
+your task: the document asks you to answer one question and prove it: "What does bounded overlap know? Prove that the complete Weil form of ζ is eventually nonnegative on the atomic families at the overlap ratio \(c=2\), by a mechanism that pays the successor pairs \((kn,kn\pm1)\) at their full weight; and determine, for the single-prime flips \(\omega_p\), the overlap ratio \(c^*(p)\) at which their complete form first fails, so that the arithmetic content of bounded overlap is known: parity only, or every prime's sign?"
  
 answer the question, find a complete solution and unconditionally formalize it and its implications in lean.
 
@@ -585,20 +586,31 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
-
 Put all lean code for the answer into its own subfolder.
-
-Do not edit the md document.
 
 ## argon single task open question
 
+do not use the hgtl7 skill
 
-read and understand docs/reports/review-2810/fable.md
- 
-work through every question in the "## 7. Question 6: the three questions" section one question at a time. 
+read and understand docs/reports/review-2910/fable2.md
 
-for each turn/open question: find and fully formalize a definite and complete and final answer/solution for the question. find a definite, final answer/solution, not just criterias or nogos. formalize every consequence and collary of this answer/solution and see where it can be applied to the rest of our corpus to advance the research.
+in "### 1.3 A dictionary the ledgers imply but do not state (inference)" it speask of a "dictionary the ledgers imply but do not state" 
+
+formalize this dictionary and its implications for the rest of our lean corpus.
+
+supporting docs:
+- docs/reports/review-2910/walls-ledger.md
+- docs/reports/review-2910/route-obstacles.md
+- docs/reports/review-2910/route-unification-ledger.md
+  
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
+
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

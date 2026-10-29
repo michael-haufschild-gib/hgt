@@ -38,6 +38,25 @@ prime-pairing matrix minus the exact-ratio kernel. Its existing operator estimat
 The existing logarithmic weighted-divisor-fiber law alone does not prove this conjecture:
 its Schur weights are different from the Euclidean norm used here.
 
+## Finite-row proof target
+
+Write `N_Y=2Y!-1`, `Mφ=∫φ²`, and
+`q(c,N)=bumpCorr φ(firstExteriorOverlap N/c)/Mφ`.
+For every prime `p≤Y`, set `n_p=2(Y!/p)`. The negative-shift term at prime `p`
+in the literal prime pairing is
+`(log p/√p) w bumpCorr φ(firstExteriorOverlap N_Y/c)`.
+Every other term is nonnegative. Since the exact-ratio kernel on `(N_Y,n_p)` is zero,
+division by atom mass `wMφ` gives
+`fullWeilNonRatioMatrix φ c N_Y (N_Y,n_p) ≥ q(c,N_Y) log p/√p`.
+
+The distinct indices `n_p` therefore give the exact finite-horizon lower bound
+`‖A_Y e_(N_Y)‖² ≥ q(c,N_Y)² Σ_(p≤Y)(log p)²/p`, using symmetry of the actual matrix.
+For `c>1`, continuity and `firstExteriorOverlap N→1` give
+`q(c,N_Y)→bumpCorr φ(1/c)/Mφ>0`. The existing explicit prime-sum estimate then forces
+`‖A_Y e_(N_Y)‖→∞`, while `‖e_(N_Y)‖=1` and `N_Y≥Y`.
+This proves the proposed cofinal obstruction once these exact entry and finite-sum identities
+are kernel checked. No claim about the complete matrix follows by discarding its other terms.
+
 ## Candidate sharp boundary
 
 The corpus already proves that the actual correction tends to zero in operator action,

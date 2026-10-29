@@ -275,7 +275,13 @@ fails.
     `Q ∣ m/h` are the divisors of `m/Q`. Its span with the pole vector carries two negative squares
     below `N − e q^e/(q^e − 1) + o(1)`, so the index-one window over `𝔽_q[T]` has width at most
     `(|Q|/(|Q| − 1)) log |Q|` for the smallest `|Q| = q`; at `|Q| = 2` this is the `2 log 2` of `ℤ`.
-15. **Pointwise-closed statements are twin-blind.** Both `n ↦ n^{iτ}` and `λ` are completely
+15. **The polar divisor counts the index.** The continued affine `A₁` Weyl sum of a curve datum has
+    its poles in the band `−1 < Re s < 0` at the shifted zeros; the pole of the eigenvalue `β_i` has
+    real part `−1/2 + log|β_i|/log q`. So the pole classes right of `Re s = −1/2` are the distinct outer
+    eigenvalues, and their number is the Krein–Langer index of the trace kernel. Polar-divisor
+    spectral theory is the index theory of the trace kernel read through infinite symmetry: confining
+    the divisor is index zero, which over `𝔽_q` the twist tower of upper counts produces.
+16. **Pointwise-closed statements are twin-blind.** Both `n ↦ n^{iτ}` and `λ` are completely
     multiplicative, so the Kronecker times with `p^{iτ_m} → −1` give `n^{iτ_m} → λ(n)` for every `n`:
     the twin `λ a` is a pointwise limit of the shifts `a(n) n^{iτ}`. A set of weights closed for
     pointwise convergence that contains every shift contains the twin; a selective one excludes some
@@ -288,7 +294,7 @@ fails.
     under vertical shifts. The same holds for every completely multiplicative twist unimodular at the
     primes, since Kronecker reaches any phases: the single flips `ω_p` and the cofinite flips are
     pointwise limits of shifts as well.
-16. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+17. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -335,7 +341,12 @@ fails.
    *The second rung* (`primeKernelFq_divVec`, `atomFq_neg_on_span`, `atomFq_two_negative_squares`):
    two negative squares below `N − e(N + 1)/(N + 1 − (N + 1 − e)q^{−e})` (units of `log q`), for any
    monic `Q` of degree `e`.
-5. *Wave formula* (`card_le_of_bounded_sub_waves`, `exists_waves_bounded`, `negIndex_eq_card_waves`):
+5. *The polar index formula* (`re_poleParameter`, `neg_half_lt_re_poleParameter_iff`,
+   `negIndex_traceKernel_eq_card_rightPoles`, `polarConfinement_iff_negIndex_eq_zero`,
+   `polarConfinement_iff_twistTower_upper`, `golden_card_rightPoles`): the index of a curve datum's
+   trace kernel is the number of pole classes of its continued affine Weyl sum right of the critical
+   hyperplane.
+6. *Wave formula* (`card_le_of_bounded_sub_waves`, `exists_waves_bounded`, `negIndex_eq_card_waves`):
    the index is the least number of exceptional waves of a bounded count along a separating tower;
    minimal counts are rigid: their waves are the outer nodes with the pair weights
    (`nodeCoeff_outer_eq_sum_waves`, `minimal_waves_eq_outerNodes`).
@@ -537,8 +548,8 @@ The tools §2.8 asks for, with what is built and what is open:
 | Index ceiling over `ℤ` | bound `κ(K_ζ)` before any count | Riemann–Roch ceiling over `𝔽_q` (`two_mul_negIndex_traceKernel_le`); the exact atomic ceiling `N log q` over `𝔽_q[T]` (`atomFq_nonneg_iff`) and its second rung (`atomFq_two_negative_squares`); local data give `0` or `∞` (`negIndex_localAssembly_eq_top`); the index is the wave number of a count (`negIndex_eq_card_waves`) | genus ceiling attained by the golden datum (`golden_attains_ceiling`) | a finite bound on the wave number from prime-side data; finiteness for `ζ` is LH-deep |
 | Large-overlap renormalization | positivity of the complete form uniformly in overlap | pointwise-closed statements are twin-blind (`liouvilleTwin_mem_of_isClosed`): selectivity at any overlap must come from terms that do not move with the weights | — | the fixed-ratio floor and the flips `ω_p` belong to `TransMetzlerWeilPositivity` and `SelectiveMultiscaleArithmeticPositivity`; a non-perturbative theory is open |
 | Geometric parity twin | a family over `ℤ` on which the Liouville twist is a symmetry | vertical shifts: the twin on each prime tower (`shiftChar_primeElt_zpow`), on no two primes (`shiftChar_eq_neg_one_subsingleton`), in the Bohr closure (`exists_shiftChar_near_neg_one`, `exists_shifts_tendsto_liouville`) | the `𝔽_q` twist tower reproduced (`unitary_iff_twistTower_upper`, `shift_pow_eq_neg_one_pow`) | a family beyond vertical shifts to which a producer applies |
-| Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | — (owned by `TransThresholdPairCorrelation`) | — | open (Q2 of §2.2) |
-| Polar-divisor spectral theory | constrain the poles of infinite-rank Eisenstein series | — | — | open |
+| Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | the selectivity constraint: a pair statement that is pointwise-closed in the weights and holds for every vertical shift of `Λ` holds for every flip and for the Liouville twin (`flip_mem_of_isClosed`), so a theory that fails for parity-twisted models is not pointwise-closed or not shift-invariant | — | the asymptotics themselves (owned by `TransThresholdPairCorrelation`; Q2 of §2.2) |
+| Polar-divisor spectral theory | constrain the poles of infinite-rank Eisenstein series | the polar index formula: the index of the trace kernel is the number of pole classes of the continued affine Weyl sum right of `Re s = −1/2` (`negIndex_traceKernel_eq_card_rightPoles`); confinement is index zero and is produced by the twist tower (`polarConfinement_iff_negIndex_eq_zero`, `polarConfinement_iff_twistTower_upper`); over `ℤ` confinement is RH (`RHTower.InfiniteSymmetry`) | genus one: the golden datum has exactly one right pole class (`golden_card_rightPoles`); split hyperelliptic curves, elliptic ones included, have index zero by counting (`stepanov_order_hyperelliptic`) | an infinite-rank analogue over `ℤ` whose polar divisor is constrained by something other than the lower count |
 | Index-carrying completion | a completion in which the Weil kernel is continuous for the index | continuity off the discriminant and its three degenerations (`eventually_negIndex_eq_of_tendsto`, `vanishing_weight_drops_index`, `collision_drops_index`); the archimedean completion read through fine towers (`negIndex_orbitKernel_eq_iSup_fine`, `negIndex_orbitKernel_eq_iSup_consecutive`) | agrees with pointwise limits; reproduces the tower law (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`) and the Nyquist law, whose windows grow without bound along fine towers (`exists_scale_injective_logChar`) | collision rates off the finite stratum |
 | Coarse-tower locality | prime towers for infinite spectra | attained depth (`finite_primes_posDef_of_attained_depth`); the finite stratum | recovers the finite case and the fine-tower law | an unattained depth supremum |
 

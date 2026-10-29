@@ -44,7 +44,7 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Checked, axiom-audited, umbrella wired: `SuperGevreyLengthHeight` |
 | Exact asymmetric shell radii and onset `N log((N+1)/N)<1`; eventual absence at each fixed `c<1` | Kernel checked, axiom-audited; final direct check pending: `ExactSuccessorShellWindows` |
 | Actual successor divisor fiber divided by `log(N+1)` tends to a positive coefficient for every fixed `c>1` | Checked, axiom-audited, umbrella wired: `FixedOverlapHasLogarithmicDivisorRows` |
-| Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Audit pending: `TheAtomicApertureRetainsTheProfileWidth` |
+| Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Checked, axiom-audited, umbrella wired: `TheAtomicApertureRetainsTheProfileWidth` |
 | Paid coordinate prefix at overlap `cM/N≤1`; exact Schur reduction retaining every mixed entry | Audit pending: `APositivePrefixGivesTheExactSchurReduction` |
 | Gap `k` first becomes geometrically eligible at `N log(1+k/N)`, tending to `k` | Checked, axiom-audited, umbrella wired: `ExactHigherShellThresholds` |
 | Every finite plateau overlap Gram is strictly positive at every positive width | Audit pending: `ThePlateauOverlapGramIsNondegenerate` |
