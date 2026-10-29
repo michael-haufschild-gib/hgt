@@ -3,7 +3,7 @@
 - **ID:** logarithmic-gaussian-mellin-integrals
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Hecke archimedean Mellin integrals](../1-in-progress/hecke-archimedean-mellin-integrals.md)
+- **Source:** [Hecke archimedean Mellin integrals](hecke-archimedean-mellin-integrals.md)
 - **Statement:** The logarithmic density `exp(2zu)*exp(-c*exp(2u))` is absolutely integrable for `c>0`, `Re z>0`, with integral `c^(-z)*Gamma(z)/2`; real and complex place specializations and finite-product integrals follow exactly.
 
 ## Dependency-closed proof

@@ -12,8 +12,8 @@ Declaration namespaces remain unchanged.
 | Persistence and counting | `HeatMeanFieldPersistence`, `HeatMeanFieldZeroDensity`, `HeatShrinkingWindow`, `HeatZeroDisplacement`, `HeatUniformDepthZeroDensity` |
 | Collisions and energy | `HeatExteriorForce`, `HeatForwardSimpleZeros`, `LocalizedHeatPairForce`, `HeatZeroSumContinuity` |
 
-`HeatLocalizedEnergyEvolution.lean` is unfinished research, preserved from
-the paused proof task. It is not exported by the umbrella. Its open work
+`HeatLocalizedEnergyEvolution.lean` is unfinished research.
+It is not exported by the umbrella. Its open work
 is recorded in the [energy-flux card](../../../../docs/drafts/pipeline/1-in-progress/wd-heat-localized-energy-flux.md).
 
 Finished modules are imported directly by

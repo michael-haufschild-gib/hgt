@@ -1,0 +1,24 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsFullArithmeticResolvent.lean
+SHA256: bc319fc691c944a3ffe04285dfa88013f600aae7ac75c55647247b4e1c89f2b8
+
+Scratch audit (session 37381, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-all-pattern-resolvent-limit-check.lean
+
+Canonical installed-source audit (session 79210, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsFullArithmeticResolvent.lean
+
+Scratch declarations are identical to installed source; only the audit
+#print axioms commands were removed. Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.summable_primeSetConductorResolvent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_primeSetFiniteResolvent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean (session 38089, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsFullArithmeticResolvent.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsFullArithmeticResolvent.ilean GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsFullArithmeticResolvent.lean
+Required by the actual positive-density exact cutoff-gap draft.

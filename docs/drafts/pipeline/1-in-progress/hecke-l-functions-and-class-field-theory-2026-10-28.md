@@ -34,10 +34,12 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
       `differentiableOn_heckeLCont`, `exists_norm_heckeL_le`, `heckeL_one_eq`,
       `tendsto_sub_one_mul_heckeL_one` (via `HTGeometry.BoundedPartialSums.contLSeries`),
       `heckeDensity_eq_dedekindZeta_residue_mul`, `heckeDensity_pos`
-- [ ] HL6 nonquadratic nonvanishing on `Re s ≥ 1` is proved —
-      `heckeLCont_ne_zero_of_sq_ne_one`; still open: real nontrivial characters at `1`
-      (full continuation and Landau positivity after HL7), and Mertens for Hecke characters
-- [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform)
+- [ ] HL6 nonvanishing on `Re s ≥ 1` is proved for every character, away from the trivial pole —
+      `heckeLFunction_ne_zero_of_one_le_re`, `heckeLCont_one_ne_zero`, `heckeLCont_ne_zero`;
+      Mertens bounds for Hecke characters remain open
+- [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform) —
+      full-plane meromorphic continuation and exact pole classification are now proved;
+      primitive Gauss/conductor normalization and dual-character identification remain open
 
 ## Gates — class field theory
 - [ ] CFT1 Artin map on ideals prime to the ramification of an abelian `L/K`
@@ -483,3 +485,71 @@ standard-only; final direct source audit passed without warnings. Card:
 `3-formalized/hecke-radial-logarithmic-jacobian.md`.
 The Gamma-factor and actual kernel/ideal-series identification remain active
 on `hecke-archimedean-mellin-integrals.md`; full HL7 is not yet closed.
+
+The Gamma and principal-ideal coefficient bridges are now complete:
+`HeckeGammaFactorsAreArchimedeanMellinIntegrals.lean` proves the actual
+Gamma product, convergence, exact normalization `1/(degree*2^unitRank)`,
+nonvanishing on `Re s>0`, and entire reciprocal.
+`HeckeThetaWeightsArePrincipalIdealCharacters.lean` identifies finite
+weights times parity signs with principal-ideal Hecke values, including
+noncoprime zeros, and gives the chosen inverse-class generator coefficient.
+Both final source audits passed without warnings; eight main transitive
+axiom checks are standard-only. Stage-3 cards record their exact statements.
+The actual element Mellin identity is now written in
+`/tmp/HeckeElementMellinScratch.lean`, awaiting its first check after the
+Gamma dependency olean finishes. Absolute ideal-series exchange, ordinary
+class residue cancellation, primitive Gauss/conductor normalization, HL6
+real-character nonvanishing, and CFT remain open.
+
+
+Actual element and ideal-class Mellin unfolding are now fully formalized in
+`HeckeElementKernelsHaveExactMellinIntegrals.lean` and
+`HeckeUnitAveragedMellinIsTheIdealClassSeries.lean`. Exact norm-integral
+factorization gives summable absolute class masses and justifies the infinite
+exchange. The continued unit-theta transform agrees with its inverse-class
+ideal series on the full `Re s>1` domain. Both direct audits passed; nine
+main transitive axiom checks are standard-only.
+
+`UnramifiedHeckeCharactersDescendToIdealClasses.lean` is also finalized:
+actual ordinary-class descent, nontrivial class-character orthogonality,
+and entire unit theta transforms for nontrivial finite weight. Its three
+axiom audits and direct source check passed. All modules are wired into the
+Hecke umbrella. The new active global-continuation card records finite
+class recombination and removable-pole construction. Primitive functional
+equation normalization, real-character HL6, and CFT remain unfinished.
+
+### Finite global class recombination
+
+The actual absolutely convergent ideal series now partitions by ordinary
+class using integral inverse-class representatives prime to the modulus.
+`HeckeLSeriesAreFiniteSumsOfClassThetaTransforms.lean` identifies the
+normalized finite theta sum with `GammaFactor * heckeL` on `Re s>1`.
+Its entire reciprocal Gamma product gives the actual L-continuation;
+nontrivial finite weight or nonzero parity makes it entire immediately.
+The complete scratch and three axiom audits pass with standard axioms only;
+the required consumer olean has been built. See
+[the proof card](../3-formalized/hecke-l-series-as-finite-class-theta-sums.md).
+The unramified removable-pole proof remains under verification.
+
+For real-character nonvanishing, a positive occupation expansion of the
+product with the trivial character is recorded on
+[the Landau card](../3-formalized/real-hecke-characters-nonvanishing-by-positive-occupations.md).
+It uses one doubled-frequency particle at a negative prime and two ordinary
+particles at a positive prime, giving coefficient one for every occupation.
+The general-frequency Landau theorem already supports arbitrary index types.
+
+### Global continuation completed
+
+[Full global continuation](../3-formalized/hecke-global-continuation-from-ordinary-classes.md)
+is formalized in `HeckeLFunctionsHaveGlobalContinuation.lean`. The actual
+`heckeLFunction` agrees with the original series on `Re s>1`, is meromorphic
+on all of `C`, and is entire for every nontrivial character. The trivial
+character has meromorphic order `-1` at one, exact residue `heckeDensity`,
+and no other poles. Entire divided differences fill the removable theta
+quotients; comparison with the older near-one continuation identifies the
+residue without circularity. The identity theorem identifies both
+continuations throughout the old half-plane and transfers nonquadratic
+nonvanishing. Seven main transitive axiom audits are standard-only, and
+the final direct source audit passes without warnings. The module is wired
+into the umbrella. The remaining HL7 work is the primitive completed
+functional equation, including finite Gauss and conductor normalization.

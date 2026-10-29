@@ -71,7 +71,9 @@ coordinates unless stored separately.
    sources; every finite cell source has a finite dyadic expansion; integer translations act by a triangular level matrix (prime two
    shifts levels by one).
 5. **Gamma allocation on the dyadic tree**: exact parent variance identity $V_{\rm parent}=V_{\rm left}+V_{\rm right}+\dots$ gives joint Gamma payment of all
-   parent variances (full-Weil mixed bounds remain separate).
+   parent variances and logarithmic Haar tails across all levels. Whole generator cutoffs split every dyadic correlation exactly;
+   the complete prime-two Euler contribution has one original-source Gamma budget. Orthogonal tail localization and Gamma
+   translation invariance pay every real-lag correlation and each fixed finite Euler family. Full-Weil mixed bounds remain separate.
 6. **Renormalized adjunction**: growing Ramanujan families have one Gram budget $(1+2\sum_{m\in S}m^2)/\log N$; prime-row corrections cost
    $C_m=\sqrt{\varphi(m)}(1+4\log m)$; one Mertens-type remainder $B_N$, bounded uniformly in $N$, controls every Ramanujan residual.
 7. **Local capture and escape**: modal families lose normalized mass on every fixed integer window ($\le K_{S,L}/(\log N-D_S)$); every bounded
@@ -98,6 +100,47 @@ coordinates unless stored separately.
 6. **Local capture cost and escape of bounded prime energy** (`RamanujanFamiliesHaveAnExplicitLocalCaptureCost`,
    `BoundedPrimeEnergyEscapesEveryFixedIntegerWindow`).
 
+For the actual complete-cell clock $W_2$, the generator cutoff $P_A$ retains the root and every Haar label $a<A$ at every level.
+[GeneratorOrbitCutoffsReduceTheDyadicClock](GeneratorOrbitCutoffsReduceTheDyadicClock.lean) proves $P_AW_2^k=W_2^kP_A$ and
+\[
+\langle W_2^kx,x\rangle-\langle W_2^kP_Ax,P_Ax\rangle
+=\langle W_2^k(x-P_Ax),x-P_Ax\rangle.
+\]
+Thus every head–tail dyadic correlation vanishes exactly. Let $E_2$ denote the complete physical correlation sum with weights
+$2\Lambda(2^{k+1})/\sqrt{2^{k+1}}$ and literal translations by $\log(2^{k+1})$.
+[OneGammaReserveControlsTheDyadicEulerTail](OneGammaReserveControlsTheDyadicEulerTail.lean) proves absolute convergence and, for
+every finite original cell profile $f$ and $A\ge1$,
+\[
+|E_2(f)-E_2(P_Af)|\le
+\frac{64\log2}{\sqrt2-1}\frac{\Gamma(f)}{1+\log A}.
+\]
+Here $P_Af$ means the physical image of the cutoff applied to the source's exact cell coordinates. One finite generator set makes
+this error at most $\delta\Gamma(f)$ for every profile and horizon, for any $\delta>0$. Entire translation orbits remain; neither
+Gamma contraction under projection nor a coarse-source norm bound is assumed. This controls the full prime-two correlation
+contribution across all levels. It does not determine the complete Weil sign or the sign on the retained generator orbits.
+
+For every real lag $t$, write $C_t(f)=\int f(x)f(x+t)\,dx$ and
+$Q_A=U(1-P_A)U^*$ on whole-line $L^2$.
+[EveryTranslationHasAnAllLevelGammaTailBound](EveryTranslationHasAnAllLevelGammaTailBound.lean) proves
+\[
+|C_t(f)-C_t(f-Q_Af)|\le\frac{96\Gamma(f)}{1+\log A}
+\]
+for every compact real BV source. The identity $\langle Q_Af,g\rangle=\langle Q_Af,Q_Ag\rangle$ pays each mixed
+probe from both original Gamma budgets; translating the original source preserves its Gamma. For general profiles the noncell
+component remains in $f-Q_Af$. For actual finite cell sources this is exactly $UP_AU^*f$.
+
+Let $E_P$ sum the complete critical Euler correlations over a fixed finite prime set $P$.
+[FiniteEulerFactorsHaveAllLevelGeneratorApproximation](FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean) proves
+absolute convergence for each prime on whole-line $L^2$, equality with the original profile-integral series, and
+\[
+|E_P(f)-E_P(UP_AU^*f)|\le
+96\left(\sum_{p\in P}\frac{2\log p}{\sqrt p-1}\right)\frac{\Gamma(f)}{1+\log A}
+\]
+for every finite original cell source. Choosing $A>\exp(96C_P/\delta)$, with $C_P$ the displayed coefficient sum, gives
+error at most $\delta\Gamma(f)$ for every source and horizon. Every prime power and every retained dyadic level is included.
+No odd-prime commutation is assumed. The constants do not give a summable all-prime allocation, and the retained spaces remain
+infinite-dimensional.
+
 ---
 
 ## 5. Traps
@@ -117,8 +160,9 @@ coordinates unless stored separately.
 
 ## 6. Open problems
 
-1. **Joint full-Weil payment** of mixed interactions between dyadic levels and arithmetic lags using the all-level Gamma allocation; first a
-   bounded-index version.
+1. **Joint full-Weil payment** using the all-level Gamma allocation: control growing prime families, continuous Gamma interactions and
+   polar terms together. Every fixed finite Euler family has uniform all-level generator approximation with an explicit prime-set
+   cost; a summable all-prime allocation and a full-form bounded-index theorem remain open.
 2. **Twin-selective control of generator orbits** with Gamma and both poles; transfer of the discrete prime gap beyond narrow spacing.
 3. **Arithmetic upper bound on $\mathcal E_{\rm crit}$** retaining exterior rows (finiteness ⇒ finite off-line support; $\mathcal E_{\rm crit}\le1294047/2000$ ⇔ RH).
 4. **Growing Ramanujan families** controlling a useful full-source domain, with a complement estimate surviving Gamma and the continuous

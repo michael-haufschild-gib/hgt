@@ -438,3 +438,46 @@ consumer of that planned module and the finished Jacobian. It defines the
 actual place parities, standard Gamma product, independent logarithmic
 kernel, and proposed normalization `1/(degree*2^unitRank)` using finite-product
 Fubini. These Gamma results are not yet certified; see their active card.
+
+The scalar logarithmic Gamma integrals, actual character Gamma product,
+and exact normalization `1/(degree*2^unitRank)` are now formalized. The
+Gamma product's right-half-plane nonvanishing and entire reciprocal are
+also audited. The principal-ideal coefficient bridge is finalized,
+including noncoprime zeros and the actual inverse-class generators.
+Modules: `HTGeometry/LogarithmicGaussianMellin.lean`,
+`HeckeLFunctions/HeckeGammaFactorsAreArchimedeanMellinIntegrals.lean`, and
+`HeckeLFunctions/HeckeThetaWeightsArePrincipalIdealCharacters.lean`.
+Their stage-3 cards supersede the earlier uncompiled scratch statuses.
+The current sole unfinished owned Lean scratch is
+`/tmp/HeckeElementMellinScratch.lean`; it proposes the actual element
+Mellin identity, joint integrability, and Fubini evaluation. Its first
+check waits for the Gamma dependency olean. Ideal-series exchange and
+primitive functional-equation normalization remain open.
+
+
+Actual element and ideal-class Mellin unfolding are now fully formalized in
+`HeckeElementKernelsHaveExactMellinIntegrals.lean` and
+`HeckeUnitAveragedMellinIsTheIdealClassSeries.lean`. Exact norm-integral
+factorization gives summable absolute class masses and justifies the infinite
+exchange. The continued unit-theta transform agrees with its inverse-class
+ideal series on the full `Re s>1` domain. Both direct audits passed; nine
+main transitive axiom checks are standard-only.
+
+`UnramifiedHeckeCharactersDescendToIdealClasses.lean` is also finalized:
+actual ordinary-class descent, nontrivial class-character orthogonality,
+and entire unit theta transforms for nontrivial finite weight. Its three
+axiom audits and direct source check passed. All modules are wired into the
+Hecke umbrella. The new active global-continuation card records finite
+class recombination and removable-pole construction. Primitive functional
+equation normalization, real-character HL6, and CFT remain unfinished.
+
+The global class sum and full-plane meromorphic continuation are now
+formalized; see
+[the global continuation proof](../3-formalized/hecke-global-continuation-from-ordinary-classes.md).
+Every nontrivial ray character has an entire L-function; the trivial
+character has exactly a simple pole at one with the positive residue
+already identified arithmetically. Both new global modules pass final
+direct source audits and standard-only transitive axiom checks. The
+primitive completed functional equation, finite Gauss/conductor
+normalization, and exact arithmetic dual-character identification remain
+open on this broader theta programme.

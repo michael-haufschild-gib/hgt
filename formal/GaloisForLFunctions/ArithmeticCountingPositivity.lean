@@ -43,6 +43,12 @@ import GaloisForLFunctions.ArithmeticCountingPositivity.PositiveEulerDensityIsEx
 
 import GaloisForLFunctions.ArithmeticCountingPositivity.InfinitePrimeCountsHaveAZeroOrUnitConductorMass
 
+import GaloisForLFunctions.ArithmeticCountingPositivity.EveryPrimePatternHasActualConductorCoordinates
+
+import GaloisForLFunctions.ArithmeticCountingPositivity.PrimeCountsDetermineEveryBoundedSpectralMass
+
+import GaloisForLFunctions.ArithmeticCountingPositivity.EveryPrimePatternHasItsFullArithmeticResolvent
+
 /-!
 # Arithmetic Counting Positivity
 

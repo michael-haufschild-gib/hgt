@@ -62,6 +62,24 @@ absorption/counting step must still be proved.
 
 ## Status
 
+The active draft `RHTower/Heat/HeatLocalizedEnergyEvolution.lean` contains
+work on the regular-part velocity identity, full complex zero motion,
+local simple-zero branches, and compact forward simplicity. Those additions
+have not passed a Lean check and are not exported by the umbrella. The
+folder move preserved this draft; it did not certify these claims.
+
+For the derivative identification, choose disjoint isolating disks around
+the finitely many zeros in a zero-free enclosing circle. At simple zeros,
+local count one gives unique actual branches. The full complex motion
+estimate gives their right derivatives `H''/H'`. On the compact complement
+of the disks, the initial function has a positive modulus minimum;
+compact-open heat continuity therefore excludes extra nearby zeros.
+The actual weighted sum is consequently a finite branch sum and can be
+differentiated. Compact forward simplicity will discharge the temporary
+simple-configuration condition on a right interval after every positive
+time. Continuity at the starting time remains essential for collision
+passage; right isolation alone is not a finite-collision claim.
+
 `HeatExteriorForce.exists_uniform_riemannHeat_exterior_force` is formalized;
 the final plain Lean check passed without errors or warnings. The
 localized-energy evolution theorem and the full WD arithmetic upper-bound

@@ -44,7 +44,8 @@ Final plain Lean check passed without errors or warnings:
 
 `lake --old env lean GaloisForLFunctions/RHTower/Heat/LocalizedHeatPairForce.lean`
 
-The module is wired into `RHTower.lean`; the umbrella was not compiled.
+The module is wired into `RHTower.lean` and remains exported by
+`HTGeometry.lean`; neither umbrella was compiled.
 This is a proved calculus and pair-force estimate for the stated cutoff
 class. It does not assume or assert an evolution equation for the actual
 heat-zero measure. Applying it to that measure and passing through

@@ -292,6 +292,44 @@ precision — do not conflate the two.
    Ramanujan coefficients. Unit conductor mass and vanishing fixed
    coefficients are established before any all-pattern eigenline transfer.
 
+32. **Every prime pattern has actual conductor coordinates.** On horizon
+   $N$, the full sign equals its cutoff $F_N$, so its actual normalized
+   constraint vector has norm one and the literal mixed inner product.
+   The all-pattern harmonic mean makes this inner product tend to
+   $a_P(m)$ for every fixed conductor. The common quasimode residual and
+   unit vector norm transfer the limit to the actual energy-window
+   projection. Eventual singleton windows then give actual eigenline
+   sequences with energy tending to $E_m$ and squared coordinate tending
+   to $a_P(m)^2$. No positive-density assumption is used. At zero density
+   each fixed actual conductor coordinate vanishes, despite unit norm at
+   every positive horizon. Exhausting a whole bounded energy window also
+   requires the exact spectral count.
+
+
+33. **Bounded spectral mass is exactly counted.** For every regular energy
+   threshold $T$, the actual squared constraint mass below $T$ tends to
+   $\sum_{E_m<T}a_P(m)^2$. The selected conductor lines eventually fill
+   the entire actual sublevel: their distinct energy limits give
+   injectivity, and the exact spectral count gives equal cardinality.
+   Proper arithmetic energy sublevels supply regular thresholds above
+   any bound. Monotonicity then covers all thresholds at zero density:
+   $c=0$ exactly when actual mass escapes every bounded energy window.
+   Unit horizon norm makes this a statement about escaped mass, beyond
+   vanishing on selected fixed conductors.
+
+
+34. **Every prime pattern has a full actual resolvent limit.** For
+   $0<s<2\log2$, the whole finite scalar reading tends to
+   $\sum_{m\ge1}a_P(m)^2/(E_m-\gamma-s)$, an absolutely summable series.
+   At positive density, unit conductor mass exhausts the reading through
+   finite packets. At zero density, the unique ground count separates
+   every actual denominator from zero by a fixed $\rho>0$. Escape of
+   bounded-window mass and unit total mass give
+   $|R_N(s)|\le M_N(\gamma+T)/\rho+1/(T-s)$ for $T>s$.
+   First the bounded-window term vanishes, then the reciprocal bound
+   tends to zero. Thus the full zero-density reading tends to zero;
+   its eventual sign and optimal gap require further information.
+
 ---
 
 ## 4. Pillar theorems
@@ -435,6 +473,25 @@ precision — do not conflate the two.
    density is the exact summability threshold, and the counted normalized
    mass is either zero or one.
 
+32. **Actual conductor-coordinate transfer for every prime pattern**
+   (`primeSetHorizonVector_norm_sq`, `primeSetHorizonVector_inner`,
+   `tendsto_primeSetHorizonVector_inner`, `tendsto_primeSetWindowCoordinateSq`,
+   `exists_primeSet_eigenline_coordinates`, `exists_primeSet_conductor_eigenline`).
+   Actual eigenlines realize the counted energy and squared mass even at
+   zero Euler density.
+
+33. **Whole bounded-window mass and exact escape boundary**
+   (`exists_regular_adjunction_threshold_gt`,
+   `tendsto_primeSetBoundedSpectralMass`,
+   `primeSet_bounded_spectral_mass_vanishes_iff`). The complete actual
+   sublevel has its counted conductor mass; zero density is exactly
+   escape from every bounded energy window.
+
+34. **Full actual resolvent for every prime pattern**
+   (`summable_primeSetConductorResolvent`, `tendsto_primeSetFiniteResolvent`).
+   The absolutely summable normalized conductor series is the limit of
+   the complete actual reading, with positive and zero density both covered.
+
 **Pillar obligations** (targets, not theorems): count before sign (an integer-side construction with square-root error);
 arithmetic selection on overlapping complete sources; uniform mixed-term control through exhaustion; a displacement-sensitive
 signature bound or uniform complete-source index ceiling; obstructions with positive content.
@@ -477,8 +534,11 @@ Battery: Liouville twin, scaled $\Lambda$, quadratic mixtures, golden curve, ove
    prime cutoffs holds exactly at positive Euler density, with an exact squared
    distance formula. The harmonic conductor coefficients have total squared
    mass one at positive density and zero at zero density, with a sharp
-   unnormalized summability criterion. All-pattern eigenline and optimal-gap
-   transfer require further work. Selection among arbitrary multiplicative weights
+   unnormalized summability criterion. Actual conductor eigenline transfer is
+   proved for every pattern. The whole actual bounded spectral mass has its
+   counted limit, and zero density is exactly escape from every bounded
+   energy window. The complete actual resolvent now has its counted limit
+   for every pattern. Optimal-gap and cutoff-gap transfer require further work. Selection among arbitrary multiplicative weights
    remains open.
    Every finite prime set has an attained greatest gap characterized by its explicit secular
    signs and unique interior root. Proper inclusion strictly decreases a submaximal larger-set

@@ -1,0 +1,83 @@
+GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.range_godementParameter :
+  Set.range godementParameter = {lam | 1 < lam.1.re ∧ 1 < lam.2.re}
+GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.xiDenominator_ne_zero (p : ℂ × ℂ) (w : Weyl) :
+  xiDenominator (godementParameter p) w ≠ 0
+GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.rootArgument_weightAct (w : Weyl) (L : Weight) (β : Root) :
+  rootArgument ((weightAct w L).level - (weightAct w L).finite, (weightAct w L).finite) β =
+    rootArgument (L.level - L.finite, L.finite) (act w⁻¹ β)
+GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.summable_norm_weylTerm (p : ℂ × ℂ) (t z r : ℝ) :
+  Summable fun w => ‖weylTerm p t z r w‖
+GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.hasSum_weylTerm (p : ℂ × ℂ) (t z r : ℝ) :
+  HasSum (weylTerm p t z r) (weylSum p t z r)
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.act_mul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.act_plus_zero_injective' depends on axioms: [propext,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.translation_eq_simple_zpow' depends on axioms: [propext,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.reflection_eq_simple_zpow' depends on axioms: [propext,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.mem_inversions' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.Root.positive_iff_coroot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.Root.coroot_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.range_godementParameter' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.xiDenominator_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.xiNumerator_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.xiCoefficient_mul_denominator' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.xiCoefficient_translation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.xiCoefficient_reflection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.inversions_translation_card' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.inversions_reflection_card' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.xiCoefficient_norm_le_exp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.weightAct_mul' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.weightAct_quadratic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.rootArgument_weightAct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.norm_exp_weylExponent_translation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.norm_exp_weylExponent_reflection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.weylTerm_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.summable_norm_weylTerm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.hasSum_weylTerm' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.weylSum_eq_two_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

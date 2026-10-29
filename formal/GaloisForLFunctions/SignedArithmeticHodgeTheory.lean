@@ -26,6 +26,10 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.HighGeneratorTailsAreSmal
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.DyadicHaarCoordinatesReadTheOriginalSource
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.CompactDetailsDoNotMakeTranslationOrbitsCompact
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.FiniteGeneratorOrbitsApproximateThePhysicalCellSource
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.GeneratorOrbitCutoffsReduceTheDyadicClock
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.OneGammaReserveControlsTheDyadicEulerTail
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.EveryTranslationHasAnAllLevelGammaTailBound
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.FiniteEulerFactorsHaveAllLevelGeneratorApproximation
 
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
@@ -36,5 +40,7 @@ quantitative Gram and prime-residual budgets for actual Ramanujan families,
 complete weighted dyadic coordinates of the literal logarithmic-cell source,
 joint Gamma allocation over all levels, physical approximation by finite
 generator families with their full level orbits, and the exact L² compactness
-boundary between individual levels and complete translation orbits.
+boundary between individual levels and complete translation orbits. Original
+Gamma energy pays the generator error at every real lag and in every fixed
+finite family of complete critical Euler correlations.
 -/

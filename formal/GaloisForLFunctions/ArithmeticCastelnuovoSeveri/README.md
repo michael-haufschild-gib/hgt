@@ -142,7 +142,26 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     (only odd multipliers $(2a+1)m=2b+1$ couple); Gamma pays $\sum_a\log(a)M_ac_a^2$ (mean-zero/variance
     coercivity $\sum\log(1/w_i)\int_{I_i}(f-\bar f)^2\le\Gamma(f)$); pole $\ge-2\sum M_ac_a^2$. Hence a unit-mass
     floor on balanced tails beyond a fixed index, uniform in horizon, and RR/ample/Hodge on smooth
-    versions of every dimension. Pair averages: the average→detail prime block vanishes and
+    versions of every dimension. Every individual Haar cell, including index one,
+    now has original Weil energy at least one tenth of its exact mass
+    (`EveryHaarCellHasPositiveWeilEnergy`). Exact interval polarization pays
+    the central archimedean mass; centering the exponential weights pays
+    both poles; the actual prime self-interaction vanishes. Signed sums of
+    distinct low-index cells still require their cross terms.
+    On every signed Haar section, exact divisor-square completion gives
+    $D_X=Q_X+\sum_a\Lambda(2a+1)M_ad_a^2\ge(\log2/12)\sum_aM_ad_a^2$,
+    with no removed head (`TheHaarPrimeDefectHasAUniformMassFloor`). Here
+    $D_X=\sum_a[\log(2a+1)M_a+O_X(a)]d_a^2-\operatorname{haarPrimeEnergy}$,
+    and the exact outgoing charge obeys
+    $O_X(a)\le2M_a\sum_{m=2}^{2X+1}\Lambda(m)/m^2$
+    (`TheHaarPrimeSourceRetainsItsDivisorSquares`). Both original poles now
+    obey $P(h)\ge-7\int h^2/144$ and leave
+    $D_X+P(h)\ge D_X/8\ge\int h^2/144$ for every signed section,
+    including its whole head (`TheHaarArithmeticReservePaysBothPoles`).
+    The exact shared-boundary distance moment makes both exponential
+    functionals summable in Haar mass. The full signed Gamma/central-mass
+    comparison with the logarithmic/outgoing diagonal remains open.
+    Pair averages: the average→detail prime block vanishes and
     $\Gamma(g)+\sum\log(a)M_ad_a^2\le\Gamma(f)+C\int g^2$ (coarse source inherits Gamma payment).
     Homogeneous recovery removes the additive mass error at a fixed multiplicative cost:
     $\Gamma(g)+\Gamma(h)\le C\Gamma(f)$, uniformly in horizon. Moreover,

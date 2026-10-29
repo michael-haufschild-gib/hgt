@@ -1,8 +1,8 @@
 # Every individual complete Haar cell has positive original Weil energy
 
 - **ID:** acs-every-haar-cell-positive
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Route:** ACS: full-source effectivity → Hodge index → RH.
 - **Parent:** [finite Haar head payment](../1-in-progress/acs-low-haar-head-payment.md)
 - **Statement:** For every integer a≥1, `roughWeil (haarProfile a) ≥ haarMass a / 10`.
@@ -19,7 +19,7 @@ of a signed combination of distinct Haar cells: their cross terms remain.
 
 - [x] Source and statement fixed; no analytic input assumed.
 - [x] Dependency-closed paper proof below, `[PROVED HERE]`.
-- [ ] Exact Lean file checks; formalization in progress directly.
+- [x] Both exact Lean files passed direct `lake --old env lean` checks.
 
 No axiom checks, numerical experiments, web search or novelty checks.
 
@@ -105,5 +105,11 @@ Every step applies to every a≥1. `[PROVED HERE]`
   normalized Gamma identity, actual archimedean floor, centered pole
   payment, prime diagonal vanishing and `haarProfile_roughWeil_ge`.
 
-Direct checks are still pending. Paper status is not a valid formal proof.
-The all-head signed theorem and full ACS remain open.
+Both modules passed direct Lean checks. The first module's missing olean
+was built only for the second module's import. The second module's olean
+was subsequently built only for `TheHaarArithmeticReservePaysBothPoles`.
+Both modules are wired into their owning umbrella, which was not compiled.
+No axiom checks were run.
+
+The all-head signed theorem and full ACS remain open. Individual positive
+diagonals do not imply that a matrix of mixed Weil pairings is nonnegative.

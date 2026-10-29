@@ -1,12 +1,12 @@
 # Hecke theta weights equal principal-ideal character values
 
 - **ID:** hecke-theta-weights-as-principal-ideal-characters
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Hecke archimedean Mellin integrals](hecke-archimedean-mellin-integrals.md)
 - **Statement:** For every nonzero algebraic integer, its finite theta weight times the actual real sign character equals its principal-ideal Hecke value, including the noncoprime zero case.
 
-## Dependency-closed proof to formalize
+## Proof
 
 When the residue is a unit, `not_mem_of_isUnit_mk` excludes every bad prime.
 `mk0_mem_primeToUnits` constructs its actual prime-to field unit.
@@ -26,12 +26,22 @@ character to the parity-sign product. Applied to the chosen inverse-class
 generator, `span_inverseClassGenerator` and `heckeValue_mul` identify the
 coefficient with `heckeValue(I)*heckeValue(b)` without a coprimality premise.
 
-All named inputs have been source-checked in the existing corpus. No Lean
-proof of this bridge is yet claimed.
+## Lean verification
 
-`/tmp/HeckePrincipalThetaWeightScratch.lean` contains the complete proposed
-coefficient bridge and is awaiting its first compile. It also proves the
-sign/magnitude decomposition of every nonzero real embedding and the full
-actual real monomial. The chosen-generator corollary proves its field
-nonvanishing internally using `inverseClassGenerator_mem_ne_zero`; it does
-not retain a generator nonvanishing premise.
+Module: `HeckeLFunctions/HeckeThetaWeightsArePrincipalIdealCharacters.lean`.
+
+- `real_embedding_eq_sign_mul_place` and
+  `heckeRealMonomial_eq_sign_mul_placeProduct` split real embeddings into
+  their actual sign character and positive place magnitudes.
+- `integralHeckeWeight_mul_infiniteSign_eq_heckeValue` and
+  `integralHeckeWeight_mul_parities_eq_heckeValue` prove the principal-ideal
+  coefficient identity, including the noncoprime zero case.
+- `inverseClassGenerator_ne_zero_in_field` proves the actual chosen
+  generator's nonvanishing.
+- `inverseClassGenerator_heckeCoefficient` identifies the class coefficient
+  as `heckeValue(I)*heckeValue(b)`.
+
+Three transitive axiom audits returned only `propext`, `Classical.choice`,
+and `Quot.sound`. Final direct source audit passed without warnings:
+`lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeThetaWeightsArePrincipalIdealCharacters.lean`.
+Wired into the Hecke umbrella; umbrella not compiled.

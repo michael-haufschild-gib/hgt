@@ -1,0 +1,39 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasActualConductorCoordinates.lean
+SHA256: f9898795baf2e721a2ca92bd39874351c440c57bd8a798fb250300493d8640b7
+
+Scratch audit (session 77312, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-all-pattern-actual-conductor-coordinates-check.lean
+
+Canonical installed-source audit (session 90772, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasActualConductorCoordinates.lean
+
+Scratch declarations are identical to installed source; only the audit
+#print axioms commands were removed. Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetHorizonVector_norm_sq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetHorizonVector_inner' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_primeSetHorizonVector_inner' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_primeSetWindowCoordinateSq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_primeSet_eigenline_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_primeSet_conductor_eigenline' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean (session 37330):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasActualConductorCoordinates.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasActualConductorCoordinates.ilean GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasActualConductorCoordinates.lean
+The process finished with no diagnostics and both artifacts present. Its
+import was validated by bounded-spectral-mass scratch 46546, exit 0, with
+standard transitive axioms. The original session exit response was not
+preserved across compaction. No existing olean was rebuilt.

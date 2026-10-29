@@ -184,7 +184,7 @@ theorem exists_heckeThetaClassLog_unitDomain_majorant (ψ : HeckeCharacter 𝔪)
     heckeThetaKernel_torsionLogLattice] using h
 
 /-- The chosen nonzero generators embed the inverse ideal class in a countable number field. -/
-private theorem inverseClassIntegralIdeals_countable (b : (Ideal (𝓞 K))⁰) :
+theorem inverseClassIntegralIdeals_countable (b : (Ideal (𝓞 K))⁰) :
     Countable (inverseClassIntegralIdeals b) := by
   letI : Countable K := Countable.of_equiv _ (Module.finBasis ℚ K).equivFun.symm.toEquiv
   letI : Countable (𝓞 K) := Subtype.countable

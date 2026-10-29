@@ -70,7 +70,7 @@ theorem four_haarMass_le_width {a : ℕ} (ha : 1 ≤ a) :
   have hu := logCellWidth_pos (show 1 ≤ 2 * a by omega)
   have hv := logCellWidth_pos (show 1 ≤ 2 * a + 1 by omega)
   rw [← logCellWidth_pair_sum ha, haarMass]
-  rw [mul_div_assoc, div_le_iff₀ (add_pos hu hv)]
+  rw [← mul_div_assoc, div_le_iff₀ (add_pos hu hv)]
   nlinarith only [sq_nonneg (logCellWidth (2 * a) - logCellWidth (2 * a + 1))]
 
 /-- Exact balanced energy per unit mass is the sum of both half-cell finite parts minus
@@ -89,7 +89,6 @@ theorem haarProfile_gamma_div_mass {a : ℕ} (ha : 1 ≤ a) :
     rawCell_levyEnergy_eq_intervalGammaCost ha, ← logCellWidth_pair_sum ha]
   unfold haarLeftCoeff haarRightCoeff haarMass
   field_simp [hu.ne', hv.ne', hw.ne']
-  ring
 
 private theorem phase_zero_value :
     2 * gammaHardyPhaseRate 0 =
@@ -121,7 +120,9 @@ theorem haarProfile_archimedean_finite_part {a : ℕ} (ha : 1 ≤ a) :
     rw [Real.log_mul (by positivity : 2 * Real.pi ≠ 0) (haarMass_pos ha).ne',
       Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) Real.pi_pos.ne',
       Real.log_div (haarMass_pos ha).ne' (by norm_num),
-      show Real.log 4 = 2 * Real.log 2 from by rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]]
+      show Real.log 4 = 2 * Real.log 2 from by
+        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+        norm_num]
     ring
   rw [hlog, phase_zero_value]
   linarith only [h]
@@ -165,17 +166,24 @@ private theorem abs_haarProfile_moment_of_range {a : ℕ} (ha : 1 ≤ a)
   have h := abs_haarProfile_moment_le ha hf ((l + u) / 2) ((u - l) / 2)
     (fun x hx => abs_le.mpr ⟨by linarith only [(hb x hx).1],
       by linarith only [(hb x hx).2]⟩)
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 private theorem sqrt_pair_oscillation_product {a : ℕ} (ha : 1 ≤ a) :
     (Real.sqrt ((2 * a + 2 : ℕ) : ℝ) - Real.sqrt ((2 * a : ℕ) : ℝ)) *
       ((Real.sqrt ((2 * a : ℕ) : ℝ))⁻¹ - (Real.sqrt ((2 * a + 2 : ℕ) : ℝ))⁻¹) ≤ 1 / 4 := by
+  have ha0 : 0 < a := by omega
   have hs : 0 < Real.sqrt ((2 * a : ℕ) : ℝ) := Real.sqrt_pos.mpr (by positivity)
   have ht : 0 < Real.sqrt ((2 * a + 2 : ℕ) : ℝ) := Real.sqrt_pos.mpr (by positivity)
-  have hs2 := Real.sq_sqrt (show (0 : ℝ) ≤ ((2 * a : ℕ) : ℝ) by positivity)
-  have ht2 := Real.sq_sqrt (show (0 : ℝ) ≤ ((2 * a + 2 : ℕ) : ℝ) by positivity)
+  have hs2 : Real.sqrt ((2 * a : ℕ) : ℝ) ^ 2 = 2 * (a : ℝ) := by
+    rw [Real.sq_sqrt (by positivity)]
+    push_cast
+    rfl
+  have ht2 : Real.sqrt ((2 * a + 2 : ℕ) : ℝ) ^ 2 = 2 * (a : ℝ) + 2 := by
+    rw [Real.sq_sqrt (by positivity)]
+    push_cast
+    rfl
   have ha1 : (1 : ℝ) ≤ a := by exact_mod_cast ha
-  push_cast at hs2 ht2
   have hst : Real.sqrt ((2 * a : ℕ) : ℝ) ≤ Real.sqrt ((2 * a + 2 : ℕ) : ℝ) := by
     nlinarith only [hs, ht, hs2, ht2]
   have hbound : Real.sqrt ((2 * a + 2 : ℕ) : ℝ) ≤
@@ -197,6 +205,7 @@ private theorem sqrt_pair_oscillation_product {a : ℕ} (ha : 1 ≤ a) :
 theorem haarProfile_pole_ge_mass_sq {a : ℕ} (ha : 1 ≤ a) :
     -(haarMass a ^ 2 / 2) ≤
       2 * coshHalfMoment (haarProfile a) ^ 2 - 2 * sinhHalfMoment (haarProfile a) ^ 2 := by
+  have ha0 : 0 < a := by omega
   have hlo : (0 : ℝ) < ((2 * a : ℕ) : ℝ) := by positivity
   have hhi : (0 : ℝ) < ((2 * a + 2 : ℕ) : ℝ) := by positivity
   have hs := Real.sqrt_pos.mpr hlo
@@ -209,8 +218,13 @@ theorem haarProfile_pole_ge_mass_sq {a : ℕ} (ha : 1 ≤ a) :
       Real.exp_le_exp.mpr (by linarith only [hx.1])
     have hu : Real.exp (x / 2) ≤ Real.exp (Real.log ((2 * a + 2 : ℕ) : ℝ) / 2) :=
       Real.exp_le_exp.mpr (by linarith only [hx.2])
-    rw [Real.exp_half, Real.exp_log hlo] at hl
-    rw [Real.exp_half, Real.exp_log hhi] at hu
+    have helo : Real.exp (Real.log ((2 * a : ℕ) : ℝ) / 2) = Real.sqrt ((2 * a : ℕ) : ℝ) := by
+      rw [Real.exp_half, Real.exp_log hlo]
+    have hehi : Real.exp (Real.log ((2 * a + 2 : ℕ) : ℝ) / 2) =
+        Real.sqrt ((2 * a + 2 : ℕ) : ℝ) := by
+      rw [Real.exp_half, Real.exp_log hhi]
+    rw [helo] at hl
+    rw [hehi] at hu
     exact ⟨hl, hu⟩
   have hp := abs_haarProfile_moment_of_range ha
     (show Continuous (fun x : ℝ => Real.exp (x / 2)) by fun_prop) hrange
@@ -268,7 +282,7 @@ theorem primeSum_haarProfile_eq_zero {a : ℕ} (ha : 1 ≤ a) :
     · rw [Finset.sum_eq_single a]
       · simp only [c, if_pos rfl, if_neg hne, mul_zero]
       · intro j _hj hja
-        simp only [c, if_neg hja, mul_zero]
+        simp only [c, if_neg hja, mul_zero, zero_mul]
       · intro hn
         exact False.elim (hn hmem)
     · intro b _hb hba

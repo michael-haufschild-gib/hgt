@@ -116,6 +116,24 @@ The count retains useful energy rather than merely detecting a failure:
     one there and zero at zero density. Finite divisibility counts identify
     the coefficients as actual mixed harmonic means.
 
+18. Every arbitrary prime pattern has actual conductor eigenline
+    coordinates with the counted limits. Exact unit horizon norm and
+    quasimode projection transfer apply even at zero density, where each
+    fixed actual conductor coordinate vanishes. No fixed-support limit
+    theorem is applied to a growing prime family.
+
+19. Exact bounded spectral counts turn selected conductor coordinates into
+    the whole actual bounded-window mass. Zero Euler density is exactly
+    escape of the unit horizon mass from every bounded energy window.
+    The classification covers thresholds coinciding with arithmetic
+    energies as well as regular ones.
+
+20. The complete actual finite resolvent converges to the counted
+    normalized conductor series for every prime pattern. Positive density
+    is exhausted by unit conductor packets; zero density is controlled by
+    bounded mass escape and a reciprocal high-energy tail. The latter
+    proves an absolute zero limit without claiming its eventual sign.
+
 Paper proof: `../3-formalized/arithmetic-counting-pole-angle.md`. Lean survivors:
 `eventually_prime_gap_ge_squared_correlation`,
 `gaugeWitness_attains_variance_bound`, `prime_parity_pairing`,
@@ -198,6 +216,21 @@ Survivor 17 is formalized in
 `../3-formalized/arithmetic-counting-infinite-conductor-mass-boundary.md`
 and `InfinitePrimeCountsHaveAZeroOrUnitConductorMass.lean`. All six
 endpoints passed standard-axiom and canonical source audits.
+
+Survivor 18 is formalized in
+`../3-formalized/arithmetic-counting-all-pattern-actual-conductor-coordinates.md`
+and `EveryPrimePatternHasActualConductorCoordinates.lean`. All six
+endpoints passed standard-axiom and canonical source audits.
+
+Survivor 19 is formalized in
+`../3-formalized/arithmetic-counting-all-pattern-bounded-spectral-mass.md`
+and `PrimeCountsDetermineEveryBoundedSpectralMass.lean`. All three
+endpoints passed standard-axiom and canonical source audits.
+
+Survivor 20 is formalized in
+`../3-formalized/arithmetic-counting-all-pattern-resolvent-limit.md` and
+`EveryPrimePatternHasItsFullArithmeticResolvent.lean`. Both endpoints
+passed standard-axiom and canonical source audits.
 
 ## New insight and remaining boundary
 

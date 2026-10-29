@@ -340,3 +340,51 @@ squared pairwise distance2 haarMass(1), and constant original Gamma energy.
 Its full orbit is not totally bounded. This boundary is formalized with
 standard axioms only: finite generator families retain infinitely many
 orthogonal level directions, rather than producing compactness across levels.
+
+### Complete prime-two Euler payment across all levels
+
+GeneratorOrbitCutoffsReduceTheDyadicClock proves that the actual generator
+cutoff P_A commutes with every W_2 power. Selected and omitted generator
+families have zero cross correlations at every dyadic lag. The exact head
+error is the tail's own correlation, bounded by its squared norm.
+
+OneGammaReserveControlsTheDyadicEulerTail proves absolute convergence of the
+literal physical Euler series, including the original whole-cell correlation
+integrals. The critical coefficient sum is2 log(2)/(sqrt(2)-1). For every
+finite original cell profile f and every A>=1,
+
+abs(E_2(f)-E_2(P_A f))<=64 log(2)/(sqrt(2)-1)*Gamma(f)/(1+log A).
+
+Every prescribed positive fraction of Gamma admits one generator cutoff,
+independent of the profile and horizon. All retained generators keep all
+levels. Both modules pass individual final Lean and standard transitive-axiom
+audits. The exact dyadic splitting gives constant32 before the Euler weight
+sum. Full-Weil sign on the retained generator orbits is a separate obligation.
+
+### All real lags and complete finite Euler families
+
+EveryTranslationHasAnAllLevelGammaTailBound constructs the whole-line high
+projection Q_A=U(1-P_A)U*. Orthogonality gives
+inner(Q_A f,g)=inner(Q_A f,Q_A g), bounded in norm by
+16*(Gamma(f)+Gamma(g))/(1+log A). Literal translation preserves original
+Gamma, so each source–tail correlation costs32 Gamma(f)/(1+log A).
+The tail–tail term has the same bound. Hence removing Q_A f changes every
+real-lag correlation by at most96 Gamma(f)/(1+log A).
+
+FiniteEulerFactorsHaveAllLevelGeneratorApproximation proves absolute
+convergence of every complete prime Euler correlation on whole-line L2 and
+its exact original-profile integral formula. For a fixed finite prime set P,
+the entire Euler-family head error is at most
+
+96*(sum_(p in P) 2 log(p)/(sqrt(p)-1))*Gamma(f)/(1+log A).
+
+One A makes this <=delta Gamma(f), uniformly in every finite original cell
+profile and horizon. All prime powers and every retained generator level
+remain. No odd-prime commutation or projected-source Gamma contraction is
+assumed. For arbitrary BV profiles, f-Q_A f retains the noncell component;
+the finite-generator interpretation applies to actual cell sources.
+
+Both modules pass individual Lean checks and transitive-axiom audits, using
+only propext, Classical.choice and Quot.sound. The coefficient costs do not
+provide a summable all-prime allocation. Full Gamma/pole comparison and
+retained-orbit signs remain research problems.

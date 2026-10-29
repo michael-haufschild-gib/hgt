@@ -67,3 +67,8 @@ Final direct source audit passed without warnings:
 
 The module is wired into the Hecke umbrella; no umbrella was compiled.
 The radial Mellin/Gamma exchange and Hecke ideal-series identification remain open.
+
+The existing `inverseClassIntegralIdeals_countable` theorem is now public
+for the actual class Mellin consumer; its proof is unchanged. A fresh
+direct source audit passed without warnings. The module's first olean is
+being built solely for that written consumer.

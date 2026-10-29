@@ -72,5 +72,5 @@ The module is wired into the geometry umbrella; no umbrella was compiled.
 The substitution `t=exp(2q)` supplies an additional factor two in the Mellin
 integral. Its existing corpus theorem is source-checked, but the actual Hecke
 kernel application, Gamma evaluation, and ideal-series exchange belong to
-[the active archimedean Mellin card](../1-in-progress/hecke-archimedean-mellin-integrals.md).
+[the formalized archimedean Mellin card](hecke-archimedean-mellin-integrals.md).
 These are not claimed by the Jacobian module.

@@ -44,8 +44,13 @@ private theorem second_div_first_eq_twice_regular_part
       ((hR.tendsto.mono_left nhdsWithin_le_nhds).congr' hregular.symm)
   have hjet := _root_.HTGeometry.iteratedDeriv_dslope_self_eq_iteratedDeriv_succ_div
     hp.analyticAt 1
+  have htwo : iteratedDeriv 2 f a = deriv (deriv f) a := by
+    calc
+      iteratedDeriv 2 f a = deriv (iteratedDeriv 1 f) a :=
+        congrFun (iteratedDeriv_succ (n := 1) (f := f)) a
+      _ = deriv (deriv f) a := by rw [iteratedDeriv_one]
   have hdg : deriv (dslope f a) a = deriv (deriv f) a / 2 := by
-    simpa only [iteratedDeriv_succ (n := 1), iteratedDeriv_one, Nat.cast_one,
+    simpa only [iteratedDeriv_one, htwo, Nat.cast_one,
       one_add_one_eq_two] using hjet
   rw [logDeriv_apply, dslope_same, hdg] at hvalue
   calc
@@ -165,7 +170,8 @@ private theorem exists_norm_zero_motion_le {t : ℝ} (ht : 0 ≤ t) {a : ℂ}
     refine hdist.trans ?_
     dsimp only [D]
     rw [div_mul_eq_mul_div, div_le_div_iff₀ hb hb]
-    have hsq : h ^ 2 ≤ h := by nlinarith only [hh0, hh1]
+    have hsq : h ^ 2 ≤ h := by
+      simpa only [pow_two, mul_one] using mul_le_mul_of_nonneg_left hh1 hh0
     have hnum : 2 * (h * ‖F a‖ + K * h ^ 2) ≤ 2 * (‖F a‖ + K) * h := by
       nlinarith only [mul_le_mul_of_nonneg_left hsq hK]
     exact mul_le_mul_of_nonneg_right hnum hb.le
@@ -206,7 +212,7 @@ private theorem exists_unique_heat_zero_of_count_one {s r : ℝ} {a : ℂ}
   have hsingleton : Z = {z} := by
     ext w
     simp only [Finset.mem_singleton]
-    exact ⟨fun hw => Finset.card_le_one.mp hcard hw hz, fun hw => hw ▸ hz⟩
+    exact ⟨fun hw => Finset.card_le_one.mp hcard w hw z hz, fun hw => hw ▸ hz⟩
   refine ⟨z, hZb z hz, ?_, ?_⟩
   · simpa only [hsingleton, Finset.sum_singleton] using hsum
   · intro w hw
@@ -301,6 +307,22 @@ theorem exists_compact_simple_riemannHeat_zeros_forward {t : ℝ} (ht : 0 < t)
   intro s hts hs z hz hzero
   obtain ⟨a, ha, hza⟩ := mem_iUnion₂.mp (hT hz)
   exact hsimple a s hts (by linarith only [hs, hηδ a ha]) z hza hzero
+
+private theorem eventually_heat_nonzero_on_compact {t : ℝ} (ht : 0 ≤ t)
+    {K : Set ℂ} (hK : IsCompact K)
+    (hnz : ∀ z ∈ K, riemannHeat t z ≠ 0) :
+    ∀ᶠ s in 𝓝 t, ∀ z ∈ K, riemannHeat (max s 0) z ≠ 0 := by
+  have hc := (differentiable_riemannHeat ht).continuous.norm.continuousOn
+  obtain ⟨δ, hδ, hmin⟩ := hK.exists_forall_le' hc
+    (fun z hz => norm_pos_iff.mpr (hnz z hz))
+  have hconv := tendstoLocallyUniformly_riemannHeat_clamped_nhds t
+  rw [max_eq_left ht] at hconv
+  have hu := (tendstoLocallyUniformly_iff_forall_isCompact.mp hconv) K hK
+  rw [Metric.tendstoUniformlyOn_iff] at hu
+  filter_upwards [hu δ hδ] with s hs z hz hzero
+  have hlt : ‖riemannHeat t z‖ < δ := by
+    simpa only [hzero, dist_zero_right] using hs z hz
+  exact (not_lt_of_ge (hmin z hz)) hlt
 
 end
 

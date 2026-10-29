@@ -34,18 +34,48 @@ give
 `Gamma(h)/M + 2*gammaHardyPhaseRate(0)
  ≥ 1−gamma_E−log(2*pi*M)−w^2/16−5*w^3/192`.
 
-For the actual pairs, w≤log(2) and M≤w/4. Mean zero and support width w
-also bound the adverse pole product by `−w^3*exp(w)*M/8`. These estimates
-are intended to establish a positive diagonal without excluding any
-coefficient index. The prime diagonal of one Haar atom is exactly zero.
-All statements in this paragraph remain under formalization; positivity
-of arbitrary signed sums still requires the cross-pair terms.
+For the actual pairs, w≤log(2) and M≤w/4. Centering both exponential
+weights bounds the actual pole by `−haarMass(a)^2/2`. The prime diagonal
+of one Haar atom is exactly zero. The
+[formalized diagonal proof](../3-formalized/acs-every-haar-cell-positive.md)
+gives `roughWeil(haarProfile a)≥haarMass(a)/10` for every a≥1, including
+the first cell. Both exact Lean file checks passed. Positivity of arbitrary
+signed sums still requires the cross-pair terms; this card remains open.
+
+## Checked arithmetic reserve on the entire head and tail
+
+[Divisor squares and their uniform mass floor](../3-formalized/acs-haar-prime-ground-state.md)
+retain every actual prime edge. With n_a=2a+1, the exact incoming charge is
+`(log(n_a)−Lambda(n_a))*M_a`, because the odd root one is absent. Completing
+each edge square gives
+
+`D_X(d)=sum_a [log(n_a)*M_a+O_X(a)]*d_a²−haarPrimeEnergy(d,X)
+       =Q_X(d)+sum_a Lambda(n_a)*M_a*d_a²
+       ≥ (log(2)/12)*sum_a M_a*d_a²`.
+
+Here Q_X is the original nonnegative divisor-square sum and O_X is the
+exact outgoing charge with inverse-square multiplier budget. Both direct
+Lean module checks passed. No arithmetic head is removed in this floor.
+It does not prove the parent Weil sign: the original Gamma/central-mass
+and retained arithmetic terms still require a joint comparison with this exact diagonal.
+
+[Pole payment](../3-formalized/acs-haar-prime-defect-pays-poles.md) now has a
+clean direct Lean check. For every signed section and every horizon,
+`P≥−7mass/144`, `D_X+P≥D_X/8`, and `D_X+P≥mass/144`.
+Both original pole moments and every low-index coefficient remain.
+Centering at the common boundary gives exact first distance moment M*w/2;
+the two exponential functionals then have summable normalized squares.
+This pays the poles from the actual arithmetic defect without removing a head.
 
 ## Investigation
 
-Seek a direct shared Gamma–prime–pole payment on all actual Haar cells.
-Examine the exact Gamma kernel on mean-zero pairs, exact outgoing prime
-rows, and the actual two exponential moments. An all-head conclusion
+Seek a direct shared Gamma–prime payment on all actual Haar cells, keeping
+the now-paid original poles. Retain the full divisor-square defect when
+comparing with its exact logarithmic/outgoing potential; its scalar floor
+alone discards useful arithmetic energy. The sharp bound `P≥−7mass/144`
+is available without spending a Gamma share. Corpus searches still supply
+only individual-cell archimedean positivity and weighted signed Gamma
+payment, not the required all-head joint inequality. An all-head conclusion
 must preserve cross terms, not combine separate diagonal inequalities.
 
 No all-head positivity claim is established. No numerical experiment,

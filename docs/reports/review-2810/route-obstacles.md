@@ -391,7 +391,7 @@ Each entry gives the current state, then A (just work) and B (open). Full source
 
 ### ACS — Arithmetic effectivity
 
-**Current:** Source RR, effectivity, Rosati-height and chirality receivers coexist with complete-cell realization and index capture. Weighted coarse Gamma recovery and logarithmic detail payment share one horizon-independent error; the square-plus-odd layers have uniform finite index (§6). One prime tower sees every outer eigenvalue (§2).
+**Current:** Source RR, effectivity, Rosati-height and chirality receivers coexist with complete-cell realization and index capture. Weighted coarse Gamma recovery and logarithmic detail payment share one horizon-independent error; the square-plus-odd layers have uniform finite index (§6). On every signed Haar section, rooted divisor squares give D≥log(2)·mass/12 and both original poles leave D+P≥D/8≥mass/144, including the whole head. Joint Gamma/central-mass payment of the exact arithmetic diagonal remains open. One prime tower sees every outer eigenvalue (§2).
 
 **A:** Transport fixed source families into complete smooth cells; compute projection and finite-sieve data.
 

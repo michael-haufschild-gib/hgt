@@ -1,8 +1,8 @@
 # Every prime pattern has actual conductor coordinates
 
 - **ID:** ACP-ALL-PATTERN-ACTUAL-CONDUCTOR-COORDINATES
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; immediate formalization)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** ../1-in-progress/arithmetic-counting-positivity.md
 - **Lean target:** EveryPrimePatternHasActualConductorCoordinates.lean
 - **Input:** ../3-formalized/arithmetic-counting-infinite-conductor-mass-boundary.md
@@ -107,10 +107,20 @@ The immediate full six-endpoint draft is
 /tmp/acp-all-pattern-actual-conductor-coordinates-check.lean. It imports
 the new infinite conductor-mass leaf and the existing finite-coordinate
 leaf. The mass leaf passed its canonical and standard-axiom audits. Its first
-olean is now required by this actual draft. No existing
+olean passed 46359, required by this actual draft. No existing
 olean is rebuilt and no numerical experiment is used.
 
 - [x] Dependency-closed paper argument, including zero coefficients.
 - [x] Immediate full Lean draft with the same six endpoints.
-- [ ] Scratch and transitive axiom audit.
-- [ ] Canonical source check, umbrella and durable evidence.
+- [x] Scratch and transitive axiom audit.
+- [x] Canonical source check, umbrella and durable evidence.
+
+## Lean endpoints and audit
+
+EveryPrimePatternHasActualConductorCoordinates.lean proves
+primeSetHorizonVector_norm_sq, primeSetHorizonVector_inner,
+tendsto_primeSetHorizonVector_inner, tendsto_primeSetWindowCoordinateSq,
+exists_primeSet_eigenline_coordinates and exists_primeSet_conductor_eigenline.
+Scratch 77312 and canonical 90772 exited zero without diagnostics. Every
+transitive audit uses only propext, Classical.choice and Quot.sound. The
+adjacent audit preserves commands, source SHA256 and actual output.

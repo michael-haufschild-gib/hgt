@@ -63,6 +63,23 @@ Prove the signed index estimate on the source-complete cells constructed in `Com
   derivative bound. The remaining exp(R) factor does not pay the uniform
   signed index target.
 
+[Every individual Haar cell](../3-formalized/acs-every-haar-cell-positive.md)
+now satisfies `roughWeil(haarProfile a)≥haarMass(a)/10` for every a≥1,
+including index one. Exact interval polarization and centered pole weights
+pay all original diagonal terms. Both direct Lean checks passed. Low-head
+combinations, head/tail cross terms and the complete signed index remain open.
+
+[Rooted divisor squares](../3-formalized/acs-haar-prime-ground-state.md)
+give a uniform arithmetic floor on all signed Haar coefficients,
+`haarPrimeLogDefect≥(log(2)/12)*mass`, retaining every prime-power edge
+and every low index. Both direct Lean checks passed. This pays the
+arithmetic defect, whose diagonal still requires a joint comparison
+with the original Gamma/central-mass terms.
+[Both original poles](../3-formalized/acs-haar-prime-defect-pays-poles.md)
+now fit inside this defect, retaining `D_X/8` and `mass/144` at every
+horizon, with all signed coefficients and every low index included.
+The final direct Lean check passed. The complete signed index is still open.
+
 ## Log
 
 - 2026-10-28 — Opened after formalizing full finite-source transfer. Investigating actual signed payment; no new sign claim is certified.

@@ -66,7 +66,7 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 Read and understand proof route ACS:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
-- docs/reports/review-2710/route-obstacles.md
+- docs/reports/review-2810/route-obstacles.md
 - formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
   
 On every turn:
@@ -97,7 +97,7 @@ Do not use web search. Do not run novelty checks.
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 
-The goal is met when route HF is fully closed and formalized unconditionally in lean.
+The goal is met when route ACS is fully closed and formalized unconditionally in lean.
 
 ## apply external paper to corpus experiment
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
@@ -405,9 +405,12 @@ create new versions of the reviews to reflect the current status quo and frontie
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
-   2.3 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
-   2.4. suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
-   2.5 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.3 Do you see any opportunity to prove that if there are offline zeros there can only finite many offline zeros?
+   2.4 Do you see any opportunity to prove Quasi-RH with improved values other to 1/8 < ... < 7/8?
+   2.5 Do you see any opportunity to prove that at least 70% of zeros lie on the critical line?
+   2.6 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
+   2.7 suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
+   2.8 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 5. correct any issue you have identified in docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md
@@ -417,14 +420,14 @@ do not rely only on these markdown files which are partly outdated. use the sear
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the existing reports in folder docs/reports/review-2810/
+create the new reports in folder docs/reports/review-2910/
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
 ## update programme README.mds
 go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
 
-__ LIST README FILES FROM ## review HERE __
+docs/reports/research-programmes.md
 
 important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
 
@@ -443,8 +446,8 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-2810/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-2810/route-obstacles.md
+3. Unification of the routes: docs/reports/review-2910/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-2910/route-obstacles.md
 5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2810/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
@@ -458,10 +461,13 @@ Keep a log file in logs/ for your research to note down facts and findings, sinc
 The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls or destroy a wall?
 2. Do you see any approach for an RH proof that is wildly different to all the routes and candidates we have so far, going a wildly different way not even touching the walls the existing routes face?
-3. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
-4. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+3. Do you see any opportunity to prove that if there are offline zeros there can only finite many offline zeros?
+4. Do you see any opportunity to prove Quasi-RH with improved values other to 1/8 < ... < 7/8?
+5. Do you see any opportunity to prove that at least 75% of zeros lie on the critical line?
+6. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
+7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2810/argon.md
+Write a report in docs docs/reports/review-2910/astra.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -469,9 +475,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-based on your report docs/reports/review-2810/obstacles-summary.md
+read fully docs/reports/review-2910/obstacles-summary.md
 
-the document describes a new field/research programme - called "signed arithmetic Hodge theory with source-compatible renormalization"
+the document describes in "## 7. What new field could supply the tools?" a new field/research programme "critical arithmetic correlation theory".
 
 Your task: develop this new field / programme.
 
@@ -553,15 +559,13 @@ always look at the big picture, try to understand what all our research is tryin
 Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
 ## argon do task
-read: 
-- docs/reports/review-2610/hard-obstacles.md
-- docs/reports/review-2610/route-unification-ledger.md
-- docs/reports/review-2610/walls-ledger.md
-- docs/reports/review-2610/questions.md
+read: docs/reports/review-2810/obstacles-summary.md
 
-your task: docs/reports/review-2610/questions.md poses 6 questions. answer them and formalize the answer in lean including its collaries.
+your task: the document asks a question in "### Q3. Is there a prime-side bound for the shallow Cauchy energy at depth \(1/\log T\)?"
+ 
+answer the question, find a complete solution and unconditionally formalize it and its implications in lean.
 
-We are not interested in estimates, improving some number, more nogos, but a complete and formalized answer for every question.
+We are not interested in estimates, critieras, nogos. We accept only a full answer/solution to the posed question.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -581,11 +585,11 @@ Do not edit the md document.
 ## argon single task open question
 
 
-read and understand formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md
+read and understand docs/reports/review-2810/fable.md
  
-work through every problem in the "Open Problems" section one problem at a time. 
+work through every question in the "## 7. Question 6: the three questions" section one question at a time. 
 
-for each turn/open problem: find and fully formalize a definite and complete and final solution for the problem. find a definite, final answer/solution, not just criterias or nogos. formalize every consequence and collary of this answer/solution and see where it can be applied to the rest of our corpus to advance the research.
+for each turn/open question: find and fully formalize a definite and complete and final answer/solution for the question. find a definite, final answer/solution, not just criterias or nogos. formalize every consequence and collary of this answer/solution and see where it can be applied to the rest of our corpus to advance the research.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -597,6 +601,7 @@ for each turn/open problem: find and fully formalize a definite and complete and
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
+Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+
 Do keep changes in the README.md informative and crips - it is a foundational document describing the programme as a whole, it is not a history log or theorem/module ledger or diary.
 
-Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.

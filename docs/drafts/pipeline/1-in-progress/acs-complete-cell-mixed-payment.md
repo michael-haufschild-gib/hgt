@@ -107,6 +107,28 @@ First-prime mixing, the coarse signed block and finite index costs remain.
 
 ## Remaining first-prime investigation
 
+The [individual Haar diagonal](../3-formalized/acs-every-haar-cell-positive.md)
+is now positive at every index: `roughWeil(haarProfile a)≥haarMass(a)/10`
+for a≥1, including the first cell. The proof retains the actual central
+mass and both poles; the full prime self-interaction is zero. Both direct
+Lean checks passed. This pays each isolated low-index direction, while
+signed head combinations and their mixed couplings still require proof.
+
+The [rooted Haar arithmetic defect](../3-formalized/acs-haar-prime-ground-state.md)
+now retains every prime edge as a divisor square and pays
+`log(2)/12` times the mass of every signed section, with no removed head.
+Its exact diagonal is `log(2a+1)*M_a+O_X(a)`, where O_X is the original
+outgoing inverse-square charge. Both direct Lean checks passed. The
+original Gamma/central-mass still requires a joint comparison with this
+diagonal for the full Weil conclusion; first-prime mixing and coarse sources remain.
+
+[Both original Haar poles](../3-formalized/acs-haar-prime-defect-pays-poles.md)
+are now paid from this defect: `P≥−7mass/144`, `D_X+P≥D_X/8`, and
+`D_X+P≥mass/144` on every signed section, including its whole head.
+The final direct Lean check passed. This keeps an actual divisor-square
+reserve after polar payment; it does not pay the complete Gamma/prime
+comparison, first-prime mixing, or the coarse source.
+
 `TheOrderedWeilSourceIsACenteredChebyshevDefect` gives the exact ordered
 mixed form as a centred Chebyshev derivative pairing minus the localized
 Gamma tail. Prime and polar terms must remain together in this comparison;

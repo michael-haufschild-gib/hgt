@@ -30,8 +30,9 @@ classes with positive densities and power saving `O(x^{1−1/n})`, and the
 continuation of `L(s, ψ)` to `Re s > 1 − 1/n` (holomorphic for `ψ ≠ 1`, `ρ_𝔪 ζ(s)` plus a holomorphic
 function for `ψ = 1`). For the trivial character, deleting the finite-modulus Euler factors from
 Dedekind zeta gives the positive residue `ρ_𝔪 = Res₁ ζ_K · ∏_{𝔭 ∣ 𝔪₀} (1 - 1/N𝔭)`.
-Summable Euler logarithms give the three-four-one inequality; combined with continuation,
-it proves that every nonquadratic character has no zeros on `Re s ≥ 1`.
+Summable Euler logarithms give the three-four-one inequality. Positive occupation expansions
+and Landau exclude quadratic zeros at one; together these prove nonvanishing for every character
+on `Re s ≥ 1`, away from the trivial pole.
 Positive signed-cone volumes and lattice counts also show that arbitrary invertible residues
 and real sign patterns have nonzero integral representatives, making the ray reduction surjective.
 Every Hecke character therefore splits on principal ideals into a finite residue character
@@ -49,6 +50,16 @@ and global units; splitting units into torsion and logarithmic lattice coordinat
 the nonzero theta as an absolutely convergent sum of lattice periodizations with exact torsion factor.
 Uniform summable Gaussian bounds justify unfolding its unit-domain average into whole-log-space
 kernel integrals indexed by the inverse ordinary ideal class.
+Each nonzero element kernel has an absolutely convergent Mellin integral with its actual
+principal-ideal character coefficient and standard Gamma product, normalized by
+`1/(degree * 2^unitRank)`. Its absolute Mellin mass separates into the norm of the ideal
+summand and a common archimedean mass.
+Absolute ideal-series convergence then justifies the infinite Mellin exchange, identifying
+each continued unit theta transform with its inverse-class Hecke series on `Re s > 1`.
+Finite ordinary-class recombination extends the full series meromorphically to the complex plane.
+Entire divided differences remove the apparent poles for nontrivial characters; comparison with
+the ideal-counting residue gives the trivial character a genuine simple pole at one and no others.
+The global function agrees with the counting continuation on their common half-plane.
 -/
 import GaloisForLFunctions.HeckeLFunctions.HeckeThetaHasMellinContinuation
 import GaloisForLFunctions.HeckeLFunctions.HeckeThetaIsJointlyContinuous
@@ -56,3 +67,12 @@ import GaloisForLFunctions.HeckeLFunctions.HeckeThetaAveragesOverTheUnitDomain
 import GaloisForLFunctions.HeckeLFunctions.NonzeroIdealElementsAreGlobalUnitOrbits
 import GaloisForLFunctions.HeckeLFunctions.HeckeThetaUnitOrbitsAreLogPeriodizations
 import GaloisForLFunctions.HeckeLFunctions.HeckeUnitOrbitsUnfoldOverTheLogSpace
+import GaloisForLFunctions.HeckeLFunctions.HeckeThetaWeightsArePrincipalIdealCharacters
+import GaloisForLFunctions.HeckeLFunctions.HeckeGammaFactorsAreArchimedeanMellinIntegrals
+import GaloisForLFunctions.HeckeLFunctions.HeckeElementKernelsHaveExactMellinIntegrals
+import GaloisForLFunctions.HeckeLFunctions.HeckeUnitAveragedMellinIsTheIdealClassSeries
+import GaloisForLFunctions.HeckeLFunctions.UnramifiedHeckeCharactersDescendToIdealClasses
+import GaloisForLFunctions.HeckeLFunctions.HeckeLSeriesAreFiniteSumsOfClassThetaTransforms
+import GaloisForLFunctions.HeckeLFunctions.HeckeLFunctionsHaveGlobalContinuation
+import GaloisForLFunctions.HeckeLFunctions.QuadraticHeckeProductsHavePositiveOccupationExpansions
+import GaloisForLFunctions.HeckeLFunctions.HeckeLFunctionsDoNotVanishOnTheLineReOne

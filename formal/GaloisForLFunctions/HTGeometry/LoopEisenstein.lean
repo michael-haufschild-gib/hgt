@@ -1,0 +1,5 @@
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1Roots
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1XiCoefficients
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1XiEstimates
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1Weights
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1WeylSum
