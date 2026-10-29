@@ -121,8 +121,8 @@ theorem two_prime_alias_bound (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
       |Δ * Real.log p - 2 * π * k₁| * Real.log q + |Δ * Real.log q - 2 * π * k₂| * Real.log p := by
     have := abs_sub (( Δ * Real.log q - 2 * π * k₂) * Real.log p)
       ((Δ * Real.log p - 2 * π * k₁) * Real.log q)
-    rw [← two_pi_mul_form_eq Δ k₁ k₂, abs_mul, abs_mul, abs_mul, abs_of_pos (by positivity : 0 < 2 * π),
-      abs_of_pos hlp, abs_of_pos hlq] at this
+    rw [← two_pi_mul_form_eq Δ k₁ k₂] at this
+    simp only [abs_mul, abs_of_pos hlp, abs_of_pos hlq, abs_of_pos Real.pi_pos, abs_two] at this
     linarith
   calc 2 * π * c * (2 + (|(k₁ : ℝ)| + |(k₂ : ℝ)|)) ^ (-C)
       = 2 * π * (c * (2 + (|(k₁ : ℝ)| + |(k₂ : ℝ)|)) ^ (-C)) := by ring

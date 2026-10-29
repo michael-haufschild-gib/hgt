@@ -98,7 +98,9 @@ private theorem two_sin_mul_sum_cos_eq (k : ℕ) (θ : ℝ) :
     2 * Real.sin (θ / 2) * (∑ j ∈ Icc 1 k, Real.cos ((j : ℝ) * θ)) =
       Real.sin (((k : ℝ) + 1 / 2) * θ) - Real.sin (θ / 2) := by
   induction k with
-  | zero => simp
+  | zero =>
+    simp only [Icc_eq_empty (by omega : ¬1 ≤ 0), sum_empty, mul_zero, Nat.cast_zero, zero_add]
+    rw [show (1 / 2 : ℝ) * θ = θ / 2 by ring, sub_self]
   | succ k ih =>
     have hIcc : Icc 1 (k + 1) = insert (k + 1) (Icc 1 k) := by
       ext j; simp only [mem_Icc, mem_insert]; omega
@@ -136,7 +138,7 @@ private theorem abel_sum_Icc (D : ℕ → ℝ) {a : ℕ} (ha : 1 ≤ a) (K : ℕ
     have hIcc : Icc a (a + (K + 1)) = insert (a + K + 1) (Icc a (a + K)) := by
       ext j; simp only [mem_Icc, mem_insert]; omega
     have hnot : a + K + 1 ∉ Icc a (a + K) := by simp only [mem_Icc]; omega
-    rw [hIcc, sum_insert hnot, ih, sum_range_succ,
+    rw [hIcc, sum_insert hnot, ih, Finset.sum_range_succ,
       show a + (K + 1) = a + K + 1 by omega, show a + K + 1 - 1 = a + K by omega]
     simp only [div_eq_mul_inv]
     ring
@@ -147,7 +149,7 @@ private theorem sum_range_inv_telescope (a K : ℕ) :
   induction K with
   | zero => simp
   | succ K ih =>
-    rw [sum_range_succ, ih, show a + (K + 1) = a + K + 1 by omega]
+    rw [Finset.sum_range_succ, ih, show a + (K + 1) = a + K + 1 by omega]
     ring
 
 /-- Uniform Fejér–Abel lower bound `-4 ≤ ∑_{d=1}^M cos(dθ)/d` for all `M : ℕ` and `θ : ℝ`. -/
@@ -247,8 +249,12 @@ theorem neg_four_le_sum_cos_div (M : ℕ) (θ : ℝ) :
               (1 / ((A + 1 + i : ℕ) : ℝ) - 1 / ((A + 1 + i + 1 : ℕ) : ℝ))| ≤
           |D (A + 1 + K) / ((A + 1 + K : ℕ) : ℝ)| + |D A / ((A + 1 : ℕ) : ℝ)| +
             |∑ i ∈ range K, D (A + 1 + i) *
-              (1 / ((A + 1 + i : ℕ) : ℝ) - 1 / ((A + 1 + i + 1 : ℕ) : ℝ))| :=
-        (abs_add_le _ _).trans (add_le_add_right (abs_sub _ _) _)
+              (1 / ((A + 1 + i : ℕ) : ℝ) - 1 / ((A + 1 + i + 1 : ℕ) : ℝ))| := by
+        have h1 := abs_add_le (D (A + 1 + K) / ((A + 1 + K : ℕ) : ℝ) - D A / ((A + 1 : ℕ) : ℝ))
+          (∑ i ∈ range K, D (A + 1 + i) *
+            (1 / ((A + 1 + i : ℕ) : ℝ) - 1 / ((A + 1 + i + 1 : ℕ) : ℝ)))
+        have h2 := abs_sub (D (A + 1 + K) / ((A + 1 + K : ℕ) : ℝ)) (D A / ((A + 1 : ℕ) : ℝ))
+        linarith only [h1, h2]
       have hsimp : (2 / δ) / ((A + 1 + K : ℕ) : ℝ) + (2 / δ) / ((A + 1 : ℕ) : ℝ) +
           (2 / δ) * (1 / ((A + 1 : ℕ) : ℝ) - 1 / ((A + 1 + K : ℕ) : ℝ)) =
           4 / (δ * ((A + 1 : ℕ) : ℝ)) := by
@@ -319,7 +325,7 @@ private theorem integral_cos_mul_cos_two_pi {d : ℕ} (hd : 1 ≤ d) (k : ℕ) :
     zero_add]
   by_cases hdk : d = k
   · subst hdk
-    simp only [m, le_rfl, if_true, Nat.sub_self, ite_true]
+    simp only [m, le_rfl, if_true, Nat.sub_self]
     ring
   · have hm0 : m ≠ 0 := by simp only [m]; split_ifs <;> omega
     rw [if_neg hm0, if_neg hdk, mul_zero]
@@ -376,10 +382,9 @@ private theorem sum_inv_abs_sub_ge (M : ℕ) (b : ℕ → ℝ) :
         (fun θ : ℝ => (1 / (d : ℝ)) * (Real.cos ((d : ℝ) * θ) * Real.cos ((k : ℝ) * θ)))
         volume 0 (2 * Real.pi) := fun d _ =>
       (by fun_prop : Continuous _).intervalIntegrable _ _
-    rw [intervalIntegral.integral_add hi1
-        (IntervalIntegrable.sum _ hi2),
+    rw [intervalIntegral.integral_add hi1 (intervalIntegrable_finsetSum _ hi2),
       intervalIntegral.integral_const_mul, integral_cos_nat_mul_two_pi,
-      intervalIntegral.integral_finset_sum hi2]
+      intervalIntegral.integral_finsetSum hi2]
     by_cases hnj : n = j
     · subst hnj
       have hk0 : k = 0 := by simp [k]
@@ -434,21 +439,21 @@ private theorem sum_inv_abs_sub_ge (M : ℕ) (b : ℕ → ℝ) :
     simp_rw [hexp]
     have hcontW : Continuous W := by
       unfold W
-      exact continuous_const.add (continuous_finset_sum _ fun d _ => by fun_prop)
+      exact continuous_const.add (continuous_finsetSum _ fun d _ => by fun_prop)
     have hint_row : ∀ n ∈ Icc 1 M, ∀ j ∈ Icc 1 M, IntervalIntegrable
         (fun θ : ℝ => (b n * b j) *
           (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ)))
         volume 0 (2 * Real.pi) := fun n _ j _ =>
       (continuous_const.mul (hcontW.mul (by fun_prop))).intervalIntegrable _ _
-    rw [intervalIntegral.integral_finset_sum fun n hn =>
-      IntervalIntegrable.sum _ fun j hj => hint_row n hn j hj]
+    rw [intervalIntegral.integral_finsetSum fun n hn =>
+      intervalIntegrable_finsetSum _ fun j hj => hint_row n hn j hj]
     have hrow : ∀ n ∈ Icc 1 M,
         (∫ θ in (0 : ℝ)..(2 * Real.pi), ∑ j ∈ Icc 1 M, (b n * b j) *
           (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ))) =
         8 * Real.pi * b n ^ 2 +
           Real.pi * ∑ j ∈ Icc 1 M, if n = j then 0 else b n * b j / |(n : ℝ) - j| := by
       intro n hn
-      rw [intervalIntegral.integral_finset_sum fun j hj => hint_row n hn j hj]
+      rw [intervalIntegral.integral_finsetSum fun j hj => hint_row n hn j hj]
       have hterm : ∀ j ∈ Icc 1 M,
           (∫ θ in (0 : ℝ)..(2 * Real.pi), (b n * b j) *
             (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ))) =
@@ -485,10 +490,10 @@ private theorem sum_inv_add_ge (M : ℕ) (b : ℕ → ℝ) :
     have hi : ∀ n ∈ Icc 1 M, ∀ j ∈ Icc 1 M,
         IntervalIntegrable (fun t : ℝ => (b n * b j) * t ^ ((n - 1) + (j - 1) + 1)) volume 0 1 :=
       fun _ _ _ _ => (by fun_prop : Continuous _).intervalIntegrable _ _
-    rw [intervalIntegral.integral_finset_sum fun n hn =>
-      IntervalIntegrable.sum _ fun j hj => hi n hn j hj]
+    rw [intervalIntegral.integral_finsetSum fun n hn =>
+      intervalIntegrable_finsetSum _ fun j hj => hi n hn j hj]
     refine sum_congr rfl fun n hn => ?_
-    rw [intervalIntegral.integral_finset_sum fun j hj => hi n hn j hj]
+    rw [intervalIntegral.integral_finsetSum fun j hj => hi n hn j hj]
     refine sum_congr rfl fun j hj => ?_
     have hn1 := (mem_Icc.mp hn).1
     have hj1 := (mem_Icc.mp hj).1
@@ -601,7 +606,10 @@ private theorem sum_Icc_inv_sq_le_two (K : ℕ) :
           _ = 1 / m - 1 / (m + 1) := by field_simp [hm0.ne', hm1_pos.ne']; ring
       rw [sum_range_inv_telescope 1 K] at htel
       have hpos : 0 ≤ 1 / ((1 + K : ℕ) : ℝ) := by positivity
-      norm_num at htel ⊢
+      have h1 : (1 : ℝ) / (1 : ℕ) ^ 2 = 1 := by norm_num
+      have h2 : (1 : ℝ) / (1 : ℕ) = 1 := by norm_num
+      rw [h1]
+      rw [h2] at htel
       linarith only [htel, hpos]
 
 /-- On any vector with `n x_n² ≤ 4` on `Icc 1 M`, the off-diagonal cross-error majorant sums to
@@ -830,10 +838,8 @@ theorem exists_bounded_hyperplane_liouville_witness {ε : ℝ} (hε : 0 < ε) :
     rw [div_div, Real.mul_self_sqrt hn0.le]
   have hHL : L ≤ H := by
     have h := log_add_one_le_harmonic M
-    rw [harmonic_eq_sum_Icc] at h
-    push_cast at h
+    rw [RHTower.harmonic_eq_sum_Icc] at h
     have : L ≤ Real.log ((M : ℝ) + 1) := Real.log_le_log (by exact_mod_cast hM1_ge) (by linarith)
-    simp only [H, one_div]
     linarith
   have hH3 : 3 ≤ H := hL3.trans hHL
   have hH0 : 0 < H := by linarith only [hH3]
@@ -924,16 +930,21 @@ theorem exists_bounded_hyperplane_liouville_witness {ε : ℝ} (hε : 0 < ε) :
       dsimp only [L, C₀] at hbot ⊢; linarith
     have h2 := mul_le_mul_of_nonneg_left h1 (sq_nonneg s)
     linarith only [h2]
-  have hcross : |∑ n ∈ Icc 1 M, (mertensSum (M / n) + Real.log n) * b n * u n| ≤
+  have hcross : |∑ n ∈ Icc 1 M,
+        (RenormalizedArithmeticPotentialTheory.mertensSum (M / n) + Real.log n) * b n * u n| ≤
       |s| * ((L + γ) * 2 + B * H) := by
-    have e : ∀ n ∈ Icc 1 M, (mertensSum (M / n) + Real.log n) * b n * u n =
+    have e : ∀ n ∈ Icc 1 M,
+        (RenormalizedArithmeticPotentialTheory.mertensSum (M / n) + Real.log n) * b n * u n =
         -s * ((L - γ) * (liouvilleSign n / n) +
-          (mertensSum (M / n) + Real.log n - (L - γ)) * (liouvilleSign n * (1 / n))) := by
+          (RenormalizedArithmeticPotentialTheory.mertensSum (M / n) + Real.log n - (L - γ)) *
+            (liouvilleSign n * (1 / n))) := by
       intro n hn
       dsimp only [u]
       have hbb : b n * b n = 1 / n := by rw [← sq, hb2 n hn]
-      have hr : (mertensSum (M / n) + Real.log n) * b n * (-s * (liouvilleSign n * b n)) =
-          -s * ((mertensSum (M / n) + Real.log n) * liouvilleSign n * (b n * b n)) := by ring
+      have hr : (RenormalizedArithmeticPotentialTheory.mertensSum (M / n) + Real.log n) *
+          b n * (-s * (liouvilleSign n * b n)) =
+          -s * ((RenormalizedArithmeticPotentialTheory.mertensSum (M / n) + Real.log n) *
+            liouvilleSign n * (b n * b n)) := by ring
       rw [hr, hbb]
       ring
     rw [sum_congr rfl e, ← mul_sum, abs_mul, abs_neg]
@@ -982,7 +993,8 @@ theorem exists_bounded_hyperplane_liouville_witness {ε : ℝ} (hε : 0 < ε) :
   calc (L - γ - ε) * ∑ n ∈ Icc 1 M, x n ^ 2 ≤ (L - γ - ε) * H :=
         mul_le_mul_of_nonneg_left hxH hcoef
     _ ≤ atomicWeilForm M b + atomicWeilForm M u +
-        2 * ∑ n ∈ Icc 1 M, (mertensSum (M / n) + Real.log n) * b n * u n := by
+        2 * ∑ n ∈ Icc 1 M,
+          (RenormalizedArithmeticPotentialTheory.mertensSum (M / n) + Real.log n) * b n * u n := by
         linarith
 
 /-! ### 5. Breakdown of the Liouville twin above the Robin–Euler ratio -/
@@ -993,8 +1005,9 @@ private theorem integral_levyMixed_atom_self (g : ℝ → ℝ) (n : ℕ) :
   refine setIntegral_congr_fun measurableSet_Ioi fun y _ => ?_
   congr 1
   rw [← integral_sub_right_eq_self (fun u => (g u - g (u + y)) ^ 2) (Real.log n)]
-  exact integral_congr_ae (Eventually.of_forall fun u => by
-    rw [sq, show u - Real.log n + y = u + y - Real.log n by ring])
+  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  dsimp only
+  rw [sq, show u - Real.log n + y = u + y - Real.log n by ring]
 
 private theorem atomicTest_eq_of_le {M N : ℕ} (hMN : M ≤ N) {x : ℕ → ℝ}
     (hx : ∀ n, n ∉ Icc 1 M → x n = 0) (g : ℝ → ℝ) :
