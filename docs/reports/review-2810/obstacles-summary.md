@@ -1,6 +1,6 @@
 # Research frontier: work, open problems and next questions
 
-Status: 28 October 2026, corpus commit `7634098771`. **RH remains open.** The corpus now pins down what the missing input must be:
+**RH remains open.** The corpus pins down what the missing input must be:
 
 - **parity-sensitive**: it must fail for the Liouville twin (selection theorem);
 - **square-root-precise**: it must fail for \(\Lambda+\varepsilon n^{-\eta}\), \(\eta<\tfrac12\), so no statement about primes in intervals that survives a relative error \(o(1)\) can supply it;
@@ -8,7 +8,7 @@ Status: 28 October 2026, corpus commit `7634098771`. **RH remains open.** The co
 
 The one quantified selective input, the spectral gap \(2\log2\) on the pole hyperplane, separates \(\zeta\) from Liouville but not from multiplicative twins that flip a single large prime. Two strata are exact: finite off-line support implies the Lindelöf hypothesis and a zero-free strip; and a \(70\%\) census needs a two-sided prime-pair estimate just beyond bandwidth one.
 
-This summary covers all 31 live routes, the 17 standalone candidates and PW-B. Companions: [route-by-route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence: corpus searches and Lean statements; no builds. **[L]**/**[S]** as in the [frontier map](../rh-current-frontier-map.md); **(inference)** = conclusion of this review, not a Lean theorem. Research record: [working log](../../../logs/review-2810-v3-research-2026-10-28.md).
+This summary covers all 31 live routes, the 17 standalone candidates and PW-B. Companions: [route-by-route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence: corpus searches and Lean statements; **[K]** includes individual Lean and transitive-axiom checks. No full or umbrella builds. **[L]**/**[S]**/**[K]** as in the [frontier map](../rh-current-frontier-map.md); **(inference)** = conclusion of this review, not a Lean theorem. Research record: [working log](../../../logs/review-2810-v3-research-2026-10-28.md).
 
 ## What the corpus establishes
 
@@ -18,13 +18,14 @@ There are three destinations:
 2. **Complete Weil positivity:** full, even, odd, incidence, Hodge, effectivity, atomic, tower and moment formulations.
 3. **Independent forcing:** a geometric, spectral, dynamical or counting structure whose proved property supplies 1 or 2.
 
-Ten results define the present frontier (sources in the [route report](route-obstacles.md#the-frontier-in-twelve-results)):
+The following results define the present frontier (sources in the [route report](route-obstacles.md#the-frontier-in-twelve-results)):
 
 - **Selection** is a theorem [L]. The margin \(2\log2\) is sharp, paid by harmonic correlation \((2\log2)c_N^2\) [L], and attained exactly by single-prime flips for every \(p\ge11\), which still fail complete positivity [S].
 - **One-prime tower positivity is RH** for one fixed prime [L] and for pole-free generators of arbitrarily small support [S]. Its negative index counts distinct outer eigenvalues \(p^{\rho-1/2}\) [L].
 - **Precision rigidity** [S]: \(\lambda\) and \(\lambda+\varepsilon n^{-\eta}\) are never both tower-positive, although they agree on every interval up to relative error \(o(1)\).
 - **Atomic receivers** reach \((\log\log N)^{1+\varepsilon}\) overlap. At every width the sign splits into a gap on the pole complement plus one affine scalar.
 - **Narrow positivity** reaches a quarter of the Robin–Euler ratio. The complete Weil matrix splits exactly at the spacing, and Ramanujan-mode trial energies are simple and proper at every separated ratio [L].
+- **All-level finite-Euler approximation [K]**: original Gamma pays every real-lag head error by \(96\Gamma(f)/(1+\log A)\), and every fixed finite Euler family by \(96C_P\Gamma(f)/(1+\log A)\). All prime powers and all retained levels remain; one cutoff works for every cell profile and horizon. [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean).
 - **Finite-index chain**: every prime layer except the first, including the full even-power source with its pole, has uniform finite index [L].
 - **Finite off-line support** \(\Rightarrow\) zeros approach the line \(\Rightarrow\) LH \(\wedge\) \(\Theta<1\) [L]. In the heat flow, uniform high-collision counts are equivalent to zeros approaching the line, so the flow's own content is the near-axis count [S].
 - **Census**: \(\ge HD(1)+10^{-8}\) simple critical zeros, and \(\ge0.8876\) of zero copies simple or critical [L]. The exchange rate beyond bandwidth one is exact [L].
@@ -39,8 +40,8 @@ Ten results define the present frontier (sources in the [route report](route-obs
 |---|---|---|---|
 | W01 | Finite atomic Grams at width ratios \(c\) from \(K_\star\) through the Robin–Euler ratio \(K_1\approx0.43\), \(4K_1\) and up to \(1\). Report the Markov form on \(p=0\) and the affine scalar on \(p=1\) separately, for \(\zeta\), the Liouville twin and the flips \(\omega_{11},\omega_{13}\). | Q1; AIP, SRT, HF, ACS | Finite \(N\) locates failure points; it does not decide the eventual sign. |
 | W02 | Finish the separated-regime spectral law: complete trial energies on Ramanujan modes for all \(0<c<1\), and identification of the actual bottom spectrum through lower spectral windows. | Q1; RAPT | The mode law is proved for \(K<1/4\); the trial layer at every \(c<1\). |
-| W03 | Explicit detail-head sizes \(A\) in the finite-index theorems (\(k\ge3\), prime two, finite \(P\), square plus odd). | HF, ACS, AIP | Bookkeeping; the \(k=1\) layer stays [FS]. |
-| W04 | First-layer constants \(C_P\) along growing prime sets against the detail reserve: locate where absolute payment fails. | HF, ACS; 2.3 | Measures the obstruction. |
+| W03 | Instantiate fixed-Euler all-level cutoffs using \(A>\exp(96C_P/\delta)\); evaluate detail-head sizes in the other finite-index theorems. | HF, ACS, AIP | The all-level cutoff formula is proved [K]; the all-prime \(k=1\) layer stays [FS]. |
+| W04 | Evaluate the explicit all-level coefficient cost \(96C_P=96\sum_{p\in P}2\log p/(\sqrt p-1)\) along growing prime sets against the shared reserve. | HF, ACS; 2.3 | Fixed-P approximation is proved [K]; the cost does not yield all-prime summability. |
 | W05 | Prove "finite off-line support \(\iff\) bounded tower index at two primes with incommensurable logarithms" from the one-prime tower law: pigeonhole on one prime's eigenvalue classes, distinctness of the second prime's phases. | 2.3; HKT, ACS | Short composition of proved theorems. |
 | W06 | Tabulate \(d\mapsto W(f,T_{d\log2}g)\) for the cell-1 generator with certified \(\psi\) data, to document the almost-periodic cross-level profile. | WL, HF, CHMD, AIP | No sign. |
 | W07 | Complete multiresolution Grams: \(\log2\)-orbits, details, cross-level blocks, Gamma and both poles. | HF, ACS, AIP, RW, SRT | Exact algebra. |
@@ -241,6 +242,8 @@ hE_h+R_{\rm deep}\le\kappa N\ \Longrightarrow\ N_0\ge(1-2\kappa)N .
 
 ## 2.6 The three questions to answer next
 
+Fixed finite Euler approximation supplies quantitative transfer for actual cell sources. It leaves the three sign and arithmetic-estimate questions below open; the noncell component of a general BV source is retained.
+
 <a id="q1"></a>
 ### Q1. Is the complete Weil form positive in the separated regime past the Robin–Euler ratio?
 
@@ -326,16 +329,16 @@ Three mechanisms far from every corpus route and candidate were examined. Search
 
 ## 2.8 Would the obstacles in 2.2 need a new field of mathematics?
 
-**Assessment: probably yes.** The obstacles are not missing estimates inside a framework. The corpus has built its own framework (selective multiscale positivity) far enough to see what it lacks. Six facts locate the gap:
+**A new field is a possible research programme, not a mathematical necessity established by these results.** Existing Hilbert-space projections, dyadic variance identities and Gamma translation invariance prove all-level approximation for every fixed finite Euler family [K]. The unresolved tasks concern growing prime families, the complete form and the selective sign. Six constraints locate that gap:
 
 1. The selective input must be parity-breaking (selection theorem) and square-root-precise (precision rigidity), and act at unbounded aperture.
-2. Analytic number theory produces parity-breaking only at logarithmic or \(o(1)\) precision (Type II sums, Matomäki–Radziwiłł-type averages). It produces square-root precision only for structured sums.
-3. Both together have been obtained only over \(\mathbb F_q\), from geometry: Weil via Riemann–Roch and Castelnuovo–Severi, Deligne via tensor powers on a base with known cohomology, Stepanov via an auxiliary polynomial with a lattice spectrum.
-4. Cross-level couplings are almost-periodic Toeplitz sequences whose symbol is the zero measure itself, so no summable-cost calculus pays them.
-5. Index bounds pass to the limit only for pointwise convergence of kernels [S], while the Weil form is not continuous on \(L^2\) of tests.
-6. Finite off-line support already contains LH, so even the intermediate stratum needs a new global mechanism.
+2. The proved selective margin is shared by some single-prime flips. Its size alone cannot supply the full arithmetic sign.
+3. The finite-field constructions supply concrete models for arithmetic forcing through counts, geometry and lattice-spectrum annihilation. Their transfer to the actual integer source remains unproved.
+4. Complete Weil couplings on a prime tower carry the zero characters. Summability of each Euler factor’s coefficients does not establish summability or positivity of those complete-form lag sequences.
+5. The proved index-limit theorem uses pointwise kernel convergence [S]. L² and fixed-Euler approximation alone do not control the complete Weil form or both poles.
+6. Finite off-line support implies LH. A finite-index conclusion therefore requires arithmetic input beyond the proved approximation estimates.
 
-No existing discipline turns local positivity at each prime and at the archimedean place into global positivity over \(\mathbb Z\) at square-root precision. Whether this is a new field or one new theorem cannot be decided from the corpus, but every candidate mechanism above lands on that local-to-global step.
+The corpus supplies no theorem turning the available local signs into the required global sign over \(\mathbb Z\). A dedicated theory should organize that missing transfer without treating established finite-factor compression as open. The need for a new field, rather than a new theorem within existing mathematics, remains speculative.
 
 ### What the field would be about
 
@@ -349,7 +352,7 @@ It would look like Weil's proof transported to a setting with an archimedean pla
 - then counting (Riemann–Roch-type square-root counts that bound the index);
 - then positivity as a consequence.
 
-Analytic estimates would enter only to verify local inputs, never to cancel signs globally.
+Analytic estimates would verify local inputs and quantitative transfer; the global sign would require an arithmetic mechanism with all source terms retained.
 
 ### Objects
 
@@ -359,6 +362,7 @@ Analytic estimates would enter only to verify local inputs, never to cancel sign
 - Hecke towers and their Toeplitz symbols on the circle; the Cayley–Li ladder.
 - Square-root counts: one-sided point/prime counts; Sylvester inertia of explicit-formula Grams; auxiliary objects vanishing to high order at primes.
 - Local factors as positive-definite kernels on \(\mathbb Q_v^\times\), and the archimedean factor.
+- The whole-line projection \(Q_A=U(1-P_A)U^*\), original-source Gamma energy, complete generator orbits and finite Euler coefficient masses \(C_P\). Their approximation laws are proved; their complete-form and growing-prime comparisons are separate.
 
 ### Language
 
@@ -376,6 +380,7 @@ Analytic estimates would enter only to verify local inputs, never to cancel sign
 | Stepanov over \(\mathbb Z\) | An auxiliary construction for one-sided prime counts at square-root precision without a lattice spectrum | Reproduce hyperelliptic RH; be parity-breaking |
 | Two-sided coalescent pair theory | Prime-pair asymptotics beyond bandwidth one, on average, at bounded constant | Q2; reproduce \(E\approx1\) on Hardy–Littlewood models; fail for parity-twisted models |
 | Index-carrying completion | A completion of test spaces on which the Weil kernel is continuous for index | Agree with pointwise kernel limits [S]; reproduce the tower law |
+| Prime-set-uniform Gamma allocation | Extend fixed-factor projection estimates to growing prime families with Gamma and both poles retained | Pay the explicit coefficient growth through a proved signed mechanism; preserve every translation level |
 | Structural precision | Use the Euler product and functional equation as identities, so that \(n^{-\eta}\) perturbations fail | Precision battery |
 
 ### Questions it must answer
@@ -384,6 +389,7 @@ Analytic estimates would enter only to verify local inputs, never to cancel sign
 - Why does finite off-line support imply LH, and is there a direct local-to-global argument for that implication?
 - What replaces Frobenius's lattice spectrum in a \(\mathbb Z\)-Stepanov argument?
 - In which completion of the test space does the Weil kernel carry its index to the limit?
+- What signed arithmetic estimate replaces the divergent all-prime sum of finite-Euler coefficient costs?
 - Why is the prime \(2\) both the multiresolution generator and the bottleneck of the margin?
 - What arithmetic quantity governs the near-axis collisions of the heat flow?
 

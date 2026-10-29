@@ -1,12 +1,12 @@
 # Research routes and their mathematical obstacles
 
-Status: 28 October 2026, corpus commit `7634098771`. **RH remains open.** The inventory is 31 live routes, 17 standalone candidates and the PW-B branch of PM. Every live route has an exact RH receiver; none has the arithmetic input that receiver needs.
+**RH remains open.** The inventory is 31 live routes, 17 standalone candidates and the PW-B branch of PM. Every live route has an exact RH receiver; none has the arithmetic input that receiver needs.
 
 Companions: [summary, open problems and next questions](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md) · [frontier map](../rh-current-frontier-map.md) · [scoped obstructions](../rh-killed-routes.md).
 
 ## How to read this report
 
-Evidence comes from corpus searches followed by reading Lean statements, module docstrings and proof structure. No builds or kernel audits were run. **[L]** and **[S]** follow the [frontier map](../rh-current-frontier-map.md): integrated source, or working source that is unintegrated, unfinished or first committed on 28 October 2026. **(inference)** marks a conclusion drawn here from proved statements; it is not a Lean theorem. Research record: [working log](../../../logs/review-2810-v3-research-2026-10-28.md).
+Evidence comes from corpus searches followed by reading Lean statements, module docstrings and proof structure. Source inspection supports the corpus-wide inventory; **[K]** marks individually kernel-checked results. No full or umbrella builds. **[L]**, **[S]** and **[K]** follow the [frontier map](../rh-current-frontier-map.md): integrated source, working or unfinished source, and individual Lean checks with standard transitive axioms, respectively. **(inference)** marks a conclusion drawn here from proved statements; it is not a Lean theorem. Research record: [working log](../../../logs/review-2810-v3-research-2026-10-28.md).
 
 Obstacles fall into two classes.
 
@@ -69,6 +69,8 @@ Below \(\log N-\gamma\), the spectrum of \(P_N\) within distance \(T\) comes onl
 
   [Squares and odd powers](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/SquaresAndOddHigherMixedPowersHaveUniformFiniteIndex.lean), [square source](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheSquarePrimeSourceRetainsGammaEnergy.lean), [edge field](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheXiEdgeFieldHasLogarithmicGrowth.lean), [k≥3](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/AllHigherPrimePowerMixedFormsHaveUniformFiniteIndex.lean), [prime two](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheGammaMeanGraphPaysThePrimeTwoMixedBlock.lean).
 - **What remains:** the first prime layer \(k=1\) over all primes, where the absolute constant \(\sum_p\log p/\sqrt p\) diverges; odd-power diagonal blocks; finite detail heads; the coarse error; the actual poles and archimedean mass. Uniform finite index of the complete form is equivalent to finite off-line support, so the last layer carries an [FS] statement, at least as hard as the Lindelöf hypothesis (§9).
+- **All real lags and fixed finite Euler families [K].** For the original finite cell source, retain root and all labels \(a<A\) at every dyadic level. Every real-lag correlation has head error at most \(96\Gamma(f)/(1+\log A)\). For a fixed finite prime set \(P\), the complete critical Euler correlation error is at most \(96C_P\Gamma(f)/(1+\log A)\), where \(C_P=\sum_{p\in P}2\log p/(\sqrt p-1)\). Absolute convergence includes every prime power. One \(A>\exp(96C_P/\delta)\) works for every profile and horizon. Odd-prime commutation is unnecessary; original Gamma pays both projected probes. The constants do not supply a summable all-prime allocation. [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean), [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean).
+
 - Finitely many full generator orbits approximate cell sources in \(L^2\), but one Haar generator has an infinite orthogonal orbit of fixed Gamma energy: approximation is not compactness [L]. [Orbits](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteGeneratorOrbitsApproximateThePhysicalCellSource.lean), [noncompact](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/CompactDetailsDoNotMakeTranslationOrbitsCompact.lean).
 
 ### 7. Cross-level couplings: three paid, one is the one-prime Toeplitz problem
@@ -82,7 +84,7 @@ Below \(\log N-\gamma\), the spectrum of \(P_N\) within distance \(T\) comes onl
 
 [Pole](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/ThePoleCouplesTheLevelsHyperbolically.lean), [separated](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/SeparatedLevelsCoupleThroughTheChebyshevError.lean), [touching](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TouchingLevelsCoupleUniformly.lean).
 
-The prime part is the open coupling. By the explicit formula, \(d\mapsto W(f,T_{d\log2}g)\) is a sum over zeros of \(2^{d(\rho-1/2)}\): almost periodic with positive mean square under RH, exponential otherwise, never summable (inference). Positivity of the generator-orbit form is the one-prime tower positivity of §2, which is RH at every generator size [S]. Reducing the complete source to finitely many orbits therefore relocates RH without weakening it.
+The prime part is the open coupling. By the explicit formula, \(d\mapsto W(f,T_{d\log2}g)\) is a sum over zeros of \(2^{d(\rho-1/2)}\): almost periodic with positive mean square under RH, exponential otherwise, never summable (inference). Positivity of the generator-orbit form is the one-prime tower positivity of §2, which is RH at every generator size [S]. The proved finite-generator approximation controls L² and fixed finite Euler families. Upgrading it to the complete Weil form remains necessary; the retained-orbit sign does not follow from the approximation.
 
 ### 8. Ordered entries are centered Chebyshev integrals
 
@@ -213,7 +215,7 @@ Each entry gives the current state, then A (just work) and B (open). Full source
 
 ### HF — Arithmetic Hodge positivity
 
-**Current:** Full Hodge/Weil sign, zero Hecke defect and small enough source work are exact receivers. The complete source is a multiresolution with Gamma-paid details and a twin-blind high-detail floor; every prime layer except \(k=1\) has uniform finite index (§6); cross-level prime couplings are the one-prime Toeplitz problem (§7); canonical critical energy has exact finiteness and RH thresholds (§9); the margin \(2\log2\) is sharp but does not select \(\zeta\) at its maximum (§1).
+**Current:** Full Hodge/Weil sign, zero Hecke defect and small enough source work are exact receivers. The complete source is a multiresolution with Gamma-paid details and a twin-blind high-detail floor; every prime layer except \(k=1\) has uniform finite index (§6); every fixed finite Euler family has all-level generator approximation [K] (§6); cross-level prime couplings are the one-prime Toeplitz problem (§7); canonical critical energy has exact finiteness and RH thresholds (§9); the margin \(2\log2\) is sharp but does not select \(\zeta\) at its maximum (§1).
 
 **A:** Finite complete-cell Grams in multiresolution coordinates; explicit detail-head sizes for the finite-index bounds; source-kernel cost transport; distinct-index and multiplicity energies kept apart.
 
@@ -226,7 +228,7 @@ Each entry gives the current state, then A (just work) and B (open). Full source
 
 ### CHMD — Causal hyperbolic–modular duality
 
-**Current:** Wave/Doob receivers; the supported maximal graph equals the completed aperture core; the bounded carrier projection has residual radical equal to the Weil radical. Translation keeps \(W\) and escapes every exponential graph bound. Ordered entries are Chebyshev integrals; finite generator orbits approximate cell sources in \(L^2\) but are not compact.
+**Current:** Wave/Doob receivers; the supported maximal graph equals the completed aperture core; the bounded carrier projection has residual radical equal to the Weil radical. Translation keeps \(W\) and escapes every exponential graph bound. Ordered entries are Chebyshev integrals; finite generator orbits approximate cell sources in \(L^2\) and every fixed finite Euler correlation family [K], but are not compact.
 
 **A:** Domain/cutoff theorems on fixed sources; the signed residual with the primitive defect; bounded-window scale transport.
 
@@ -428,7 +430,7 @@ A candidate lacks an independent source construction or its landing. Every promo
 |---|---|---|
 | SMAP | Selection theorem; margins \(2\log2\)/\(0\); multiresolution and level couplings; selective Gårding; one-prime tower sign is RH at every generator size [S]; precision rigidity [S] | Selective positivity where overlap begins; the signed cross-level prime coupling |
 | ACP (counting positivity) | Gap \(\ge(2\log2)c_N^2\); parity fibre counts; submaximal [L] and maximal [S] gaps attained by failing multiplicative twins | A selective input beyond the gap |
-| AID, SAHT, ACS cells | Square-plus-odd and \(k\ge3\) finite index; Chebyshev identity; Gamma reserve; canonical critical energy; orbit approximation; one-prime tower law | \(k=1\) layer ([FS]); residual sign; upper bound on \(\mathcal E_{\rm crit}\) |
+| AID, SAHT, ACS cells | Square-plus-odd and \(k\ge3\) finite index; Chebyshev identity; Gamma reserve; canonical critical energy; all-level L² and fixed finite Euler approximation [K]; one-prime tower law | \(k=1\) layer ([FS]); residual sign; upper bound on \(\mathcal E_{\rm crit}\) |
 | RAPT | Sharp gap; adjunction spectrum; mode energies; exact separated-regime splitting and simple/proper trial energies | Actual bottom spectrum past Robin–Euler; growing conductors |
 | SSHA, ALG | Atomic receivers to \((\log\log N)^{1+\varepsilon}\); quarter-Robin–Euler positivity; gap/scalar reduction; Metzler selectivity; count-based local-to-global over \(\mathbb F_q\) | Full sign beyond Robin–Euler; local-to-global over \(\mathbb Z\) |
 | HKT | Krein–Langer index formula on groups; index closed under pointwise limits [S] | An arithmetic positive part and an index ceiling for \(\zeta\)'s kernel |

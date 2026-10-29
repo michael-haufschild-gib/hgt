@@ -248,3 +248,9 @@ Do not instantiate the stable Steinberg centrality theorem outside its hypothese
 - 2026-10-29: Five Lean leaves built and the full affine Weyl convergence theorem
   checked. Transitive axiom audit passed with only the three standard axioms.
   Programme and finished sub-result recorded separately; full goal remains active.
+- 2026-10-29: Final source audits all exited 0, without warnings, using
+  `lake --old env lean GaloisForLFunctions/HTGeometry/LoopEisenstein/<Module>.lean`
+  separately for `AffineA1Roots`, `AffineA1XiCoefficients`, `AffineA1XiEstimates`,
+  `AffineA1Weights`, and `AffineA1WeylSum`. No umbrella or full build was run.
+  Both umbrellas are wired. Owned scratch files were removed; unrelated work was
+  preserved. This goal turn is **progress**, not a wait or blocked turn.

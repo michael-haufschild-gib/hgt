@@ -1,0 +1,42 @@
+# Arithmetic Krein–Langer theory (AKL): from local data to a global index
+
+- **ID:** akl-programme
+- **Stage:** 1-in-progress
+- **Type:** THEOREM (Lean) programme
+- **Source:** docs/reports/review-2910/obstacles-summary.md §2.8
+- **Statement:** the local-to-global part of Krein–Langer theory on `Γ = ℚ_{>0}`: locality, ceilings, producers, completion and parity; HKT is the foundation and is not restated.
+
+## Goal
+Build `formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/` with umbrella and README; prove the
+pillars that are theorems; prove no-gos with positive survivors for those that are not.
+
+Scope decision (2026-10-29): §2.8 restates HKT's agenda almost item for item; AKL owns only the
+four pillars §2.8 lists as missing (ceiling, producer, completion, parity at √-precision) plus
+locality, and must not duplicate HKT modules.
+
+## Gates
+- [x] 0 → 1  scope fixed, README first draft
+- [ ] modules below proved and wired into the umbrella
+
+## Module plan
+1. `CyclicSubgroupsDecideTheKreinLangerClass` — cyclic Hasse principle on every group (Neumann's
+   lemma + Dedekind on torsion classes); separation without torsion aliasing; ℤ² KL kernel
+   `2i sinh(v₁ log 2)(1−(−1)^{v₂})` of index 2 vanishing on both axes; non-KL kernel
+   `δ₀ − ½Σ_{e₁,e₂,e₁+e₂}(δ_w+δ_{−w})` positive on every cyclic subgroup, not on ℤ².
+2. `TowerFaithfulSpectra…` — abstract tower Hasse principle; logarithmic spectra tower-faithful.
+3. `TheEulerFactorIsAPoissonKernel` — `r^{|n|}` PD; local constituent `log p δ₀ − L_p`; twins PD;
+   finite place sets have infinite index.
+4. `𝔽_q` local-to-global — trace kernel = pole − closed points; `κ ≤ g`; golden.
+5. Twist completion over `𝔽_q` — upper counts for `D` and `β ↦ −β` force unitarity.
+6. Index continuity along non-coalescent convergence.
+
+## Leads checked (exist; do not redo)
+- One-sided real-node principle: ACS `UpperLefschetzBoundsAreBlindOnlyToRealZeros`,
+  `OneSidedLefschetzBoundsAt{One,Two}Prime(s)AreTheStrip`.
+- Subtracted-wave Landau: `RHTower/FiniteOffLineLandau`.
+- Arithmetic tower locality: HKT `negIndex_eq_zero_of_posDef_on_infinitely_many_towers`.
+- Neumann's lemma: Mathlib `Subgroup.leftCoset_cover_filter_FiniteIndex`.
+- Real zeros: `RHTower.riemannZeta_ne_zero_of_ofReal_mem_Ioo`.
+
+## Log
+- 2026-10-29 — created; README draft written.

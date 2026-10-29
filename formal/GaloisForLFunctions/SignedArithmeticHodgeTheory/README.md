@@ -119,8 +119,9 @@ this error at most $\delta\Gamma(f)$ for every profile and horizon, for any $\de
 Gamma contraction under projection nor a coarse-source norm bound is assumed. This controls the full prime-two correlation
 contribution across all levels. It does not determine the complete Weil sign or the sign on the retained generator orbits.
 
-For every real lag $t$, write $C_t(f)=\int f(x)f(x+t)\,dx$ and
-$Q_A=U(1-P_A)U^*$ on whole-line $L^2$.
+For every real lag $t$, write $C_t(F)=\operatorname{Re}\langle T_tF,F\rangle$ and
+$Q_A=U(1-P_A)U^*$ on whole-line $L^2$. On an original real profile,
+$C_t(f)=\int f(x)f(x+t)\,dx$.
 [EveryTranslationHasAnAllLevelGammaTailBound](EveryTranslationHasAnAllLevelGammaTailBound.lean) proves
 \[
 |C_t(f)-C_t(f-Q_Af)|\le\frac{96\Gamma(f)}{1+\log A}

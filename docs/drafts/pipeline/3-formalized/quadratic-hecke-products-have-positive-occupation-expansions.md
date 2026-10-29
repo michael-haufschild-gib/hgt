@@ -3,7 +3,7 @@
 - **ID:** quadratic-hecke-products-have-positive-occupation-expansions
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Real-character nonvanishing](../1-in-progress/real-hecke-characters-nonvanishing-by-positive-occupations.md)
+- **Source:** [Real-character nonvanishing](real-hecke-characters-nonvanishing-by-positive-occupations.md)
 - **Lean:** `HeckeLFunctions/QuadraticHeckeProductsHavePositiveOccupationExpansions.lean`
 - **Statement:** For an actual ray class character `psi` with square one, `heckeL(1,s)*heckeL(psi,s)` on `Re s>1` is an absolutely convergent general Dirichlet series with coefficient one for every finite occupation and nonnegative frequencies. Its particle index is nonempty.
 
@@ -58,5 +58,5 @@ No class field theory or prime-distribution assertion is used.
 Complete scratch passes without warnings. Five main transitive axiom
 audits report only `propext`, `Classical.choice`, and `Quot.sound`.
 Final direct source audit with `lake --old env lean` passes without
-warnings. The olean is built for the written Landau consumer, which
-remains under formalization.
+warnings. The olean is built for the Landau consumer, whose complete
+nonvanishing proof is now formalized on the linked source card.

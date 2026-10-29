@@ -50,6 +50,36 @@ are constants: for `a(x)+b(x)y`, the degree of its norm is
 This makes the full regular differential space one-dimensional. Chart gluing and its
 valuation identification still require formalization; they are not assumed as hypotheses.
 
+### Direct chart certificate
+
+Work inside the actual fraction field `K`. Let `A` be the existing affine coordinate ring,
+and let `B=k[x/y,1/y]⊂K` be the chart `Y≠0`. These charts cover: a projective point with
+`Y=Z=0` has `X³=0`, hence is not a projective point. Their coordinates satisfy
+`t³−tu²−u=0`; inverting `u` identifies their overlap with the localization of `A` at `y`.
+
+Write `d(a)=deg Norm(A/k[x])(a)`, using `−∞` for zero. The proved norm-degree formula
+gives `d(ab)=d(a)+d(b)`, `d(a+b)≤max(d(a),d(b))`, and
+`d(a)≤0` exactly when `a` is constant. The fractions `a/b` with `d(a)≤d(b)` form a
+subalgebra `V⊂K`: clear denominators and apply these two inequalities. Since `d(x)=2`
+and `d(y)=3`, both `t=x/y` and `u=1/y` belong to `V`, so `B⊂V`. If `a∈A` also
+lies in `V`, clearing its denominator and cancelling its finite norm degree gives
+`d(a)≤0`. Thus `A∩B=k`, without assuming an infinity valuation as an input.
+
+Use the actual universal module `Ω[K/k]`. For each chart `C`, regular rational
+differentials on that chart are the image of `Ω[C/k]→Ω[K/k]`; global regular
+differentials are the intersection of these two images. Differentiating the equation
+in characteristic three gives `dx=y dy`. The affine image is therefore `A dy`.
+On the second chart `dt=(1−tu)dy`, `du=−u²dy`, and
+`(1+tu)dt−t²du=dy`, so its image is `B dy`. These images include differentials of
+all chart functions, by the Leibniz rule and algebra generation, not just the displayed
+coordinate differentials. Their intersection is consequently `k dy`.
+
+Finally `dy≠0`: the assignments `x↦(x,y)` and `y↦(y,1)` into the dual numbers
+respect `y²−x³+x=0`, since the linear coefficient is `3y=0`. They give a derivation
+of `A` with `δ(y)=1`, which extends by the quotient rule to `K`. The universal
+property of Kähler differentials sends `dy` to one. Thus multiplication by `dy`
+is a linear equivalence `k≃H⁰(Ω)`, proving geometric genus one directly.
+
 ## Status
 
 - [x] Corrected the complex construction's scope claim.
@@ -57,11 +87,28 @@ valuation identification still require formalization; they are not assumed as hy
 - [x] `ArithmeticEffectivityTheory/FiniteFieldEllipticBase.lean`: actual finite-field
   Weierstrass curve, discriminant one, fraction field, transcendence degree one; leaf check passed.
 - [ ] Nonsingularity and positive-genus certificate.
+- [x] `FiniteFieldEllipticCharts.lean`: actual coordinates and cubic relation; norm-degree
+  product/addition laws; infinity regularity subalgebra; intersection of the two chart rings
+  is exactly the constants; homogeneous chart-cover theorem. Full scratch check passed.
+- [ ] `FiniteFieldEllipticDifferentials.lean`: actual Kähler images on both charts,
+  nonzero `dy`, equality of global forms with `k dy`, and dimension one.
 - [x] `pointsEquiv` and `card_points`: actual projective points over every extension,
   identified with affine solutions plus infinity.
-- [ ] Zeta-series identity and degree-two numerator; its zeros and noncancellation.
+- [x] `ArithmeticEffectivityTheory/FiniteFieldEllipticZeta.lean`: point-count ghost identity,
+  uniqueness, rationality, numerator degree/root count two, zero modulus `1/√3`, and
+  noncancellation at `1,1/3`. Complete scratch check passed; final leaf audit pending.
 - [ ] Foreground leaf checks and transitive axiom audit; umbrella import.
 
 No numerical experiments or finite point enumeration. All stated inputs must be discharged
 symbolically. Do not replace geometric genus by a renamed root count or hide chart regularity
 in an unproved interface.
+
+## Working state
+
+`FiniteFieldEllipticBase.lean` passed its source check and has an olean for the dependent leaves.
+`FiniteFieldEllipticZeta.lean` is copied from the fully passing `/tmp/hgt_finite_zeta.lean`.
+`FiniteFieldEllipticCharts.lean` is copied from the fully passing
+`/tmp/hgt_finite_genus_norm.lean`; its olean is being built for the differential leaf.
+The differential proof draft is `/tmp/hgt_finite_differentials.lean`.
+No umbrella edit or final transitive axiom audit yet. All own `/tmp/hgt_finite_*` files
+must be removed after the final audit. Preserve unrelated concurrent worktree edits.

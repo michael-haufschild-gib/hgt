@@ -10,9 +10,9 @@ norm(R_A f)^2<=32 Gamma(f)/(1+log A), A>=1.
 
 Removing this high tail changes every real-lag correlation by at most
 96 Gamma(f)/(1+log A). The full critical Euler correlation for a fixed finite
-prime set P has error at most96 C_P Gamma(f)/(1+log A), where
-C_P=sum_(p in P) 2 log(p)/(sqrt(p)-1). For finite
-original cell sources, f-R_A f=U P_A U* f, so this is approximation by
+prime set P has error at most 96 C_P Gamma(f)/(1+log A), where
+C_P=sum_(p in P) 2 log(p)/(sqrt(p)-1). For finite original cell sources,
+f-R_A f=U P_A U* f, so this is approximation by
 finitely many complete generator families.
 
 ## Mathematical mechanism
@@ -22,7 +22,7 @@ the two original-source tail bounds pay this pairing by
 16*(Gamma(f)+Gamma(g))/(1+log A). Translate the original profile, retaining
 its Gamma energy, to get both mixed translated-tail bounds with cost
 32 Gamma(f)/(1+log A). Shift isometry pays tail–tail correlation by the same
-cost. The exact head subtraction therefore has cost96 Gamma(f)/(1+log A),
+cost. The exact head subtraction therefore has cost 96 Gamma(f)/(1+log A),
 uniform in the real translation lag.
 
 For each prime p, the literal critical coefficient sum is

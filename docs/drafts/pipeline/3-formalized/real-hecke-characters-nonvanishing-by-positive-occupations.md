@@ -51,7 +51,9 @@ The complete scratch passes without warnings. The five exported results
 above have transitive axiom sets exactly
 `[propext, Classical.choice, Quot.sound]`. No missing arithmetic or analytic
 input is assumed. The new module uses default elaboration limits and is
-wired into the Hecke umbrella. Its final direct source check is pending.
+wired into the Hecke umbrella. Its final direct source check
+`lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeLFunctionsDoNotVanishOnTheLineReOne.lean`
+passes without warnings. No umbrella was compiled.
 
 Mertens bounds, the primitive completed functional equation, and class
 field theory remain separate open programme gates.

@@ -553,3 +553,17 @@ nonvanishing. Seven main transitive axiom audits are standard-only, and
 the final direct source audit passes without warnings. The module is wired
 into the umbrella. The remaining HL7 work is the primitive completed
 functional equation, including finite Gauss and conductor normalization.
+
+### All-character boundary nonvanishing completed
+
+`HeckeLFunctionsDoNotVanishOnTheLineReOne.lean` proves nonvanishing for
+every finite-order character on `Re s>=1`, away from the trivial pole.
+Quadratic characters at one use the actual positive occupation expansion,
+entire continuation under the contradictory zero assumption, and Landau.
+The three-four-one inequality excludes the remaining boundary zeros,
+including the trivial character away from its pole. Five transitive axiom
+audits are standard-only; the final direct source check passes without
+warnings. The module is wired into the umbrella. See
+[the proof card](../3-formalized/real-hecke-characters-nonvanishing-by-positive-occupations.md).
+HL6 now requires the Mertens bounds recorded on
+[the hyperbola card](hecke-character-mertens-via-ideal-hyperbola.md).

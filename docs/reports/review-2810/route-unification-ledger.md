@@ -1,13 +1,13 @@
 # Route-unification ledger
 
-Status: 28 October 2026, corpus commit `7634098771`. **The 31 live routes and 18 candidate branches are faces of three core problems: the selective critical sign (U1), source-complete Weil positivity (U2) and independent faithful forcing (U3).** Four facts bind them:
+**The 31 live routes and 18 candidate branches are faces of three core problems: the selective critical sign (U1), source-complete Weil positivity (U2) and independent faithful forcing (U3).** Four facts bind them:
 
 1. **Selectivity is common to all three by theorem.** No twin-blind input reaches an RH-complete family. The one measured selective input, the margin \(2\log2\), separates \(\zeta\) from the Liouville twin but is shared at its maximum by single-prime flips \(p\ge11\).
 2. **Precision is common to all three.** \(\Lambda\) and \(\Lambda+\varepsilon n^{-\eta}\) are never both tower-positive. Distribution statements stable under relative error \(o(1)\) cannot decide any of the three problems [S].
 3. **Hecke towers join U1 and U2.** Along one prime's towers, U2 cross-level entries are U1 prime-error sequences, and tower positivity is RH for one fixed prime, at every generator size.
 4. **The finite-support stratum crosses all clusters at the Lindelöf level.** Critical energy, subtracted lag, cosine defects, heat-flow nonreal counts, complete-form index and two-prime tower index all receive finite off-line support, which implies LH and a fixed strip [L].
 
-[Route obstacles](route-obstacles.md) · [summary and priorities](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [frontier map](../rh-current-frontier-map.md). Evidence: corpus searches and Lean statements; no builds. **[L]**/**[S]** as in the frontier map; **(inference)** = conclusion of this review, not a Lean theorem. [Working log](../../../logs/review-2810-v3-research-2026-10-28.md).
+[Route obstacles](route-obstacles.md) · [summary and priorities](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [frontier map](../rh-current-frontier-map.md). Evidence: corpus searches and Lean statements; **[K]** includes individual Lean and transitive-axiom checks. No full or umbrella builds. **[L]**/**[S]**/**[K]** as in the frontier map; **(inference)** = conclusion of this review, not a Lean theorem. [Working log](../../../logs/review-2810-v3-research-2026-10-28.md).
 
 ## What "the same problem" means
 
@@ -79,7 +79,7 @@ The proved and needed regimes are separated by bounded versus \((\log\log N)^{1+
 
 ### D. Hecke towers, Toeplitz symbols and RH (T)
 
-A quadratic form along the orbit of one Hecke dilation is a Toeplitz form. Its positivity is a statement about a spectral measure on the circle, and the corpus now proves that this statement is RH.
+A quadratic form along the orbit of one Hecke dilation is a Toeplitz form. Its positivity is a statement about a spectral measure on the circle, and the corpus proves that this statement is RH.
 
 | Face | Result |
 |---|---|
@@ -87,15 +87,18 @@ A quadratic form along the orbit of one Hecke dilation is a Toeplitz form. Its p
 | SMAP pole-free generators | The same with generators supported in \([-\varepsilon,\varepsilon]\), any \(\varepsilon>0\) [S]. |
 | ACS/SMAP self-similarity | \(C_{2a}+C_{2a+1}=T_{\log2}C_a\); every twisted Weil pairing is level-Toeplitz. |
 | SAHT level matrix | Prime two is the unilateral shift on every generator chain. |
+| SAHT whole-orbit projection | Every real lag has original-Gamma head error ≤\(96\Gamma/(1+\log A)\); each fixed finite Euler family costs the exact coefficient sum times this bound [K]. All levels remain; no full-Weil transfer is implied. |
 | SMAP level couplings | Pole rank two and removable; Gamma \(\pi4^{-(d-1)}\); touching uniform; prime part a Chebyshev sequence. |
 | LI / ALG Cayley ladder | RH iff the Cayley–Li Toeplitz ladder is negative semidefinite on primitive vectors; couplings never decay [S]. |
 | ACP Stepanov mechanism | \(1-T_p^N\) kills a zero symbol iff the zero is critical and on a height lattice. |
 | HCF grids | One prime grid aliases a nonreal pair to a positive atom; two grids decide. |
 | HKT | Positive kernel plus separated hyperbolic pairs: index exactly the number of pairs [S]. |
 
-**Unifying statement.** Along a \(T_{\log p}\)-tower, the explicit formula writes the lag sequence as a sum over zeros of \(p^{d(\rho-1/2)}\). Off-line zeros are hyperbolic characters, and positivity is their absence. LI's ladder is the same statement in Li coordinates. HCF's aliasing and the Stepanov lattice criterion are the one-prime aliasing that a second prime removes. The finite-generator reduction of U2 lands here: it is RH in one-prime Toeplitz form, not a reduction of difficulty.
+**Unifying statement.** Along a \(T_{\log p}\)-tower, the explicit formula writes the lag sequence as a sum over zeros of \(p^{d(\rho-1/2)}\). Off-line zeros are hyperbolic characters, and positivity is their absence. LI's ladder is the same statement in Li coordinates. HCF's aliasing and the Stepanov lattice criterion are the one-prime aliasing that a second prime removes. The finite-generator approximation is a proved transfer for L² and fixed finite Euler correlations. A reduction of U2 still needs complete-form transfer and a sign theorem on the retained orbits; neither follows from their finite generator count.
 
 [One prime](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/OnePrimeSeesTheWholeDefectOfZeta.lean), [pole-free generators](../../../formal/GaloisForLFunctions/SelectiveMultiscaleArithmeticPositivity/TheDyadicSignOfAPoleFreeGeneratorIsRH.lean), [Cayley ladder](../../../formal/GaloisForLFunctions/ArithmeticLorentzianGeometry/RHIsReflectionPositivityOfTheCayleyLadder.lean), [Stepanov](../../../formal/GaloisForLFunctions/ArithmeticCorrespondencePositivity/SparseAnnihilatorsAndTheStepanovMechanism.lean), [Krein–Langer](../../../formal/GaloisForLFunctions/HeckeKreinToeplitz/HyperbolicPairsAndTheIndexFormula.lean).
+
+The shared approximation mechanism is [all-lag bound](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/EveryTranslationHasAnAllLevelGammaTailBound.lean) and [complete finite Euler families](../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean) [K]. It connects the complete-cell and finite-Euler descriptions through the same projection; it does not identify their missing global sign with an already-paid tail.
 
 ### E. The finite-support stratum is Krein–Langer finiteness at the Lindelöf level (E + T)
 
@@ -249,7 +252,7 @@ The 17 standalone candidates and PW-B are U3 producers whose landing is unproved
 | Short-interval prime statistics can decide tower or Weil positivity | Precision rigidity: \(\Lambda+\varepsilon n^{-\eta}\) shares them and fails [S]. |
 | Narrow generator support shortens the tower problem | Tower positivity is RH at every generator size [S]. |
 | Finite-part identification of \(\zeta\) is a positivity input | \(\zeta\) maximizes the matched finite part, which makes it the hardest member. |
-| Reducing the complete form to finitely many \(\log2\)-orbits lowers the difficulty | Orbit positivity is one-prime tower positivity, which is RH. |
+| Finite-generator approximation proves the complete-form sign | The proved transfer covers L² and fixed finite Euler families. Complete-form transfer remains open; finite generator count retains infinitely many level directions. |
 | Cross-level prime couplings are summable under a strong enough input | Under RH they are almost periodic and bounded, not decaying (inference). |
 | Hyperbolicity of the atomic Gram is arithmetic | It holds for every completely multiplicative sign twin; only the Metzler sign is selective. |
 | A positive correction can repair a finite index | A positive part never pays a hyperbolic pair [S]. |

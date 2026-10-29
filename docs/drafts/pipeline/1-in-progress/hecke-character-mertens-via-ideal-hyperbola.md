@@ -58,21 +58,59 @@ actual nonzero value proves boundedness.
 
 ## Trivial character
 
-Use the unweighted ideal hyperbola identity with the actual count
-`rho*x+O(x^alpha)`. Partial summation gives the logarithmic ideal sum
-`rho*x*log x+O(x)`. The total hyperbola remainder is `O(x)` by the same
-weighted Chebyshev estimate. Dividing by `rho*x`, with `rho>0`, gives
-the claimed `log x+O(1)` prime-power Mertens formula.
+A later corpus query located the already formalized
+`ArtinMertens/TheMertensTheoremForPrimeIdealsHasABoundedError.lean`,
+whose complete source has now been inspected. Its
+`exists_abs_primeMertens_sub_log_le` proves `log x+O(1)` for all prime
+ideals. The trivial Hecke case follows by deleting the finitely many
+primes dividing the finite modulus; each deleted geometric prime-power
+sum is bounded by `log N(p)/(N(p)-1)`. There is no need to repeat the
+ideal-count/logarithmic hyperbola proof.
 
 ## Remaining obligations
 
 1. Completed: actual nonvanishing at one, including quadratic characters.
-2. Reuse or prove the power-saving harmonic tail estimate and bounded
-   logarithmic sum for the actual Hecke coefficients.
-3. Prove the weighted ideal multiplication and hyperbola identities.
+2. Completed: actual power-saving harmonic tail and bounded logarithmic
+   sum, both with standard transitive axiom audits. Final module
+   `HeckeHarmonicSumsHavePowerSavingTails.lean` passes its direct source
+   audit; [proof](../3-formalized/hecke-harmonic-sums-have-power-saving-tails.md).
+3. Completed scratch: weighted ideal multiplication and actual hyperbola
+   identity, all three transitive axiom audits standard-only. Final direct
+   source audit is running; [proof](../3-formalized/hecke-harmonic-sums-satisfy-the-ideal-hyperbola-identity.md).
 4. Prove the power-weighted Chebyshev estimate with its actual exponent.
 5. Assemble the nontrivial and trivial Mertens statements and audit them.
 
 No Mertens result on this card is yet claimed. Convergence to an exact
 Mertens constant is a stronger statement than boundedness and is not
 being inferred from these bounds.
+
+## Written arithmetic consumers
+
+`/tmp/HeckeWeightedIdealHyperbolaScratch.lean` contains the weighted
+multiplication bijection, weighted ideal von Mangoldt identity, exact
+norm grouping, actual harmonic hyperbola formula, and prime-power weight
+bound. It passes without warnings and is finalized as
+`HeckeHarmonicSumsSatisfyTheIdealHyperbolaIdentity.lean`, currently under
+its final direct source audit. Its required consumer olean is not built yet.
+
+`/tmp/HeckeWeightedChebyshevScratch.lean` now reuses
+`ArtinMertens.sum_log_mul_rpow_neg_le` from the same bounded-error
+module. No new grouping or Abel-comparison proof is needed.
+`RHTower.Sieve.sum_rpow_neg_le_of_lt_one` gives
+`sum log N(p)*(N(p)^k)^(-sigma)=O(x^(1-sigma))`, for `0<sigma<1`.
+Both source proofs have been inspected. This scratch remains uncompiled.
+
+`/tmp/HeckeNontrivialMertensScratch.lean` is the complete written consumer.
+It substitutes the harmonic approximation into the exact hyperbola sum,
+uses the weighted prime-power bound, and divides by the proved actual
+nonzero `heckeLCont(1,psi)`. It remains uncompiled pending the two arithmetic
+modules. Its imports also justify building the now-finalized nonvanishing
+module's olean, which is not built yet.
+
+`/tmp/HeckeTrivialMertensScratch.lean` is the complete written trivial
+consumer. `heckeValue_one_prime` identifies the deleted mass exactly.
+The bad primes lie in the finite set of nonzero prime ideals of norm at
+most `N(m.fin)`. Each geometric prime-power row contributes at most
+`2*log N(p)`, using `HTGeometry.geom_sum_range_le`. The existing full
+prime-ideal Mertens theorem then gives `log N+O(1)`. This scratch remains
+uncompiled. No additional counting or logarithmic-error proof is needed.

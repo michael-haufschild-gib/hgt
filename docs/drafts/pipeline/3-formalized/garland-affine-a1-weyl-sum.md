@@ -149,7 +149,8 @@ They are imported by `HTGeometry/LoopEisenstein.lean`, itself imported by
   only `propext`, `Classical.choice`, and `Quot.sound`.
 - No added axioms, placeholders, trusted computation shortcuts, or raised proof limits.
 - Final per-file command: `lake --old env lean GaloisForLFunctions/HTGeometry/LoopEisenstein/<Module>.lean`.
-- Final per-file audit completion is recorded in the parent programme's work log.
+- All five final per-file audits exited 0 without warnings; commands and completion
+  are recorded in the parent programme's work log.
 
 ## External audit
 
