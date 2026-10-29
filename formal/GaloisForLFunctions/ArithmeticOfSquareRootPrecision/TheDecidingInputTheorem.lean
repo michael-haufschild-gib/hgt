@@ -77,6 +77,16 @@ theorem not_of_stable_visible (S : (ℕ → ℝ) → Prop) (hS : ∀ a, S a → 
 
 /-! ### Upper bound for the power perturbation -/
 
+/-- `x^r = o(x^s)` for `r < s`. -/
+theorem rpow_isLittleO_rpow {r s : ℝ} (hrs : r < s) :
+    (fun x : ℝ => x ^ r) =o[atTop] fun x => x ^ s := by
+  rw [isLittleO_iff_tendsto' (by
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx h
+    exact absurd h (Real.rpow_pos_of_pos hx s).ne')]
+  refine (tendsto_rpow_neg_atTop (y := s - r) (by linarith)).congr' ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+  rw [← Real.rpow_sub hx]; ring_nf
+
 /-- `Σ_{1 ≤ n ≤ N} n^{−η} ≤ 1 + ∫₁^N t^{−η} dt`, since `t^{−η}` is decreasing. -/
 theorem sum_powerWeight_le_integral {η : ℝ} (hη : 0 ≤ η) {N : ℕ} (hN : 1 ≤ N) :
     ∑ n ∈ Ioc 0 N, powerWeight η n ≤ 1 + ∫ t in (1 : ℝ)..N, t ^ (-η) := by
@@ -116,9 +126,8 @@ theorem partialSum_powerWeight_le_rpow {η x : ℝ} (hη0 : 0 ≤ η) (hη1 : η
 /-- `Σ_{n ≤ x} n^{−η} = o(x)` for `0 < η < 1`. -/
 theorem partialSum_powerWeight_isLittleO {η : ℝ} (hη0 : 0 < η) (hη1 : η < 1) :
     partialSum (powerWeight η) =o[atTop] fun x => x := by
-  have hrp : (fun x : ℝ => x ^ (1 - η)) =o[atTop] fun x => x := by
-    have := isLittleO_rpow_rpow_atTop (r := 1 - η) (s := 1) (by linarith)
-    exact this.congr_right fun x => Real.rpow_one x
+  have hrp : (fun x : ℝ => x ^ (1 - η)) =o[atTop] fun x => x :=
+    (rpow_isLittleO_rpow (r := 1 - η) (s := 1) (by linarith)).congr_right fun x => Real.rpow_one x
   have hb : (fun x : ℝ => 1 + x ^ (1 - η) / (1 - η)) =o[atTop] fun x => x :=
     (isLittleO_const_id_atTop 1).add (hrp.const_mul_left (1 - η)⁻¹ |>.congr_left fun x => by
       rw [div_eq_inv_mul])
@@ -197,8 +206,9 @@ theorem shortIntervalLaw_add_smul_powerWeight {a : ℕ → ℝ} {α η : ℝ} (h
       have hxa : 0 < x ^ α := Real.rpow_pos_of_pos hx α
       rw [div_le_iff₀ hxa]
       have := (window_powerWeight_le hη.le hx (Real.rpow_nonneg hx.le α)).2
+      have e1 : x ^ (-η - α) * x ^ α = x ^ (-η) := by rw [← Real.rpow_add hx]; ring_nf
       have he : (x ^ (-η) + x ^ (-η - α)) * x ^ α = (x ^ α + 1) * x ^ (-η) := by
-        rw [add_mul, add_mul, one_mul, ← Real.rpow_add hx, show -η - α + α = -η by ring, mul_comm]
+        rw [add_mul, e1]; ring
       linarith
   have := ha.add (h0.const_mul ε)
   rw [mul_zero, add_zero] at this
@@ -240,7 +250,7 @@ theorem errorLaw_cannot_decide {E : ℝ → ℝ} {κ : ℝ} (hκ0 : 0 < κ) (hκ
   refine ⟨vonMangoldtWeight + (1 : ℝ) • powerWeight (1 / 2 - κ),
     errorLaw_add_smul_powerWeight (by linarith) (by linarith) ?_ hΛ 1,
     not_count_vonMangoldt_add_smul_powerWeight one_ne_zero (by linarith) (by linarith)⟩
-  simpa [show 1 - (1 / 2 - κ) = 1 / 2 + κ by ring] using hE
+  exact hE.congr_left fun x => by rw [show (1 : ℝ) - (1 / 2 - κ) = 1 / 2 + κ by ring]
 
 /-- **Producers are precision-blind.** For `ε ≠ 0` and `0 < η < ½` the weight `Λ + ε n^{−η}`
 satisfies the prime number theorem and the Guth–Maynard law at every `α ∈ (17/30, 1)`, and

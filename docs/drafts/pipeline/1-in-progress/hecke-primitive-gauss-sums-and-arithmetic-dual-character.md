@@ -290,9 +290,12 @@ The reference-frequency existence step is now formalized by
 `exists_heckeDualFrequencyIdeal_coprime` in the finalized support module.
 The next written consumers are:
 
-- `/tmp/HeckeFourierFractionScalingScratch.lean`: unit-fraction covariance
-  and transfer of actual trace characters and Fourier coefficients from
-  a coprime base ideal to the unit base. Its first check is running.
+- Unit-fraction covariance and transfer of actual trace characters and
+  Fourier coefficients to the unit base are finalized in
+  `HeckeLFunctions/HeckeFourierCoefficientsScaleByRayResidues.lean`.
+  All three main transitive axiom audits are standard only; final source
+  audit passes without warnings. Full proof:
+  [ray-residue covariance](../3-formalized/hecke-fourier-coefficients-scale-by-ray-residues.md).
 - `/tmp/HeckeReferenceGaussConstantScratch.lean`: actual reference
   frequency and ideal, corrected Gauss constant, exact norm, and unit
   normalization; not yet checked.
@@ -303,10 +306,11 @@ The next written consumers are:
   exact base-change ideal multiplication, an actual nonzero unit-residue
   element of each base ideal, and both supported and unsupported cases.
 
-The support module's consumer olean has been built. The first scratch
-imports the finalized actual Gauss module; the second imports the
-finalized support module; the third awaits both pending consumers.
-None of these scratch conclusions is yet counted as formalized.
+The support module's consumer olean has been built, and the covariance
+module's consumer olean is being built. The Gauss-constant scratch
+imports the finalized support module; the coefficient scratch awaits
+the Gauss-constant module. Neither remaining scratch conclusion is yet
+counted as formalized.
 
 ## Remaining analytic recombination and normalization
 

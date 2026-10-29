@@ -42,8 +42,12 @@ private theorem compact_finset_sum {ι : Type*} (s : Finset ι) (f : ι → ℝ 
     (hc : ∀ i, HasCompactSupport (f i)) : HasCompactSupport (fun x => ∑ i ∈ s, f i x) := by
   classical
   induction s using Finset.induction_on with
-  | empty => simpa only [Finset.sum_empty] using (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℝ))
-  | insert i s hi ih => simpa only [Finset.sum_insert hi] using (hc i).add ih
+  | empty =>
+    simp only [Finset.sum_empty]
+    exact HasCompactSupport.zero
+  | insert i s hi ih =>
+    simp only [Finset.sum_insert hi]
+    exact (hc i).add ih
 
 variable {ι : Type*} [Fintype ι]
 
@@ -57,7 +61,7 @@ def finiteLogCellVector (n : ι → ℕ+) (c : ι → ℝ) : CellH :=
 
 theorem finiteLogCellProfile_bv (n : ι → ℕ+) (c : ι → ℝ) :
     BoundedVariationOn (finiteLogCellProfile n c) univ :=
-  bv_finset_sum _ _ (fun i => bv_const_mul _ (rawCell_bv _))
+  bv_finset_sum _ _ (fun i => bv_const_mul (c i) (rawCell_bv (n i)))
 
 theorem finiteLogCellProfile_compact (n : ι → ℕ+) (c : ι → ℝ) :
     HasCompactSupport (finiteLogCellProfile n c) :=
@@ -70,7 +74,8 @@ theorem integrable_finiteLogCellProfile (n : ι → ℕ+) (c : ι → ℝ) :
 /-- The actual source integral is its logarithmic cell mass. -/
 theorem integral_finiteLogCellProfile (n : ι → ℕ+) (c : ι → ℝ) :
     (∫ x, finiteLogCellProfile n c x) = ∑ i, c i * logCell (n i) := by
-  rw [finiteLogCellProfile, integral_finsetSum _ (fun i _ => (integrable_rawCell (n i)).const_mul (c i))]
+  change (∫ x, ∑ i, c i * rawCell (n i) x) = _
+  rw [integral_finsetSum _ (fun i _ => (integrable_rawCell (n i)).const_mul (c i))]
   apply Finset.sum_congr rfl
   intro i _
   rw [integral_const_mul, integral_rawCell (n i).pos]
@@ -80,7 +85,7 @@ private theorem finiteLogCellProfile_zero_neg (n : ι → ℕ+) (c : ι → ℝ)
     finiteLogCellProfile n c x = 0 := by
   apply Finset.sum_eq_zero
   intro i _
-  have hi : x ∉ Ico (Real.log (n i)) (Real.log ((n i : ℕ) + 1)) := by
+  have hi : x ∉ Ico (Real.log (n i)) (Real.log (((n i : ℕ) + 1 : ℕ) : ℝ)) := by
     intro h
     have hn := Real.log_nonneg (by exact_mod_cast (n i).pos : (1 : ℝ) ≤ (n i))
     exact (not_le_of_gt hx) (hn.trans h.1)
@@ -120,7 +125,9 @@ theorem realSourceLp_finiteLogCellProfile (n : ι → ℕ+) (c : ι → ℝ) :
   intro x
   by_cases hx : x ∈ Ici (0 : ℝ)
   · exact indicator_of_mem hx _
-  · rw [indicator_of_notMem hx, finiteLogCellProfile_zero_neg n c (lt_of_not_ge hx), Complex.ofReal_zero]
+  · rw [indicator_of_notMem hx]
+    change 0 = (finiteLogCellProfile n c x : ℂ)
+    rw [finiteLogCellProfile_zero_neg n c (lt_of_not_ge hx), Complex.ofReal_zero]
 
 /-- Canonical positive labels for the original horizon-indexed complete-cell profile. -/
 def wholeCellSourceLabel (X : ℕ) (i : ↥(Finset.Icc 1 X)) : ℕ+ :=
@@ -137,9 +144,20 @@ theorem finiteLogCellVector_wholeCell (c : ℕ → ℝ) (X : ℕ) :
     finiteLogCellVector (wholeCellSourceLabel X) (fun i => c i.1) =
       logCellEmbedding.adjoint (cellSection c 1 X) := by
   have h := realSourceLp_finiteLogCellProfile (wholeCellSourceLabel X) (fun i => c i.1)
-  rw [finiteLogCellProfile_wholeCell, realSourceLp_wholeCellProfile] at h
-  have he := congrArg wholeLineLogCellEmbedding.adjoint h
-  simpa only [wholeLineLogCellEmbedding_adjoint_self] using he.symm
+  have he : realSourceLp (finiteLogCellProfile (wholeCellSourceLabel X) (fun i => c i.1))
+      (finiteLogCellProfile_bv _ _) (finiteLogCellProfile_compact _ _) =
+      realSourceLp (wholeCellProfile c X) (wholeCellProfile_regular c X).1
+        (wholeCellProfile_regular c X).2 := by
+    apply Lp.ext
+    filter_upwards [realSourceLp_coeFn (finiteLogCellProfile (wholeCellSourceLabel X) (fun i => c i.1))
+      (finiteLogCellProfile_bv _ _) (finiteLogCellProfile_compact _ _),
+      realSourceLp_coeFn (wholeCellProfile c X) (wholeCellProfile_regular c X).1
+        (wholeCellProfile_regular c X).2] with x hf hg
+    rw [hf, hg]
+    exact congrArg Complex.ofReal (congrFun (finiteLogCellProfile_wholeCell c X) x)
+  have hh := congrArg wholeLineLogCellEmbedding.adjoint
+    (h.symm.trans (he.trans (realSourceLp_wholeCellProfile c X)))
+  simpa only [wholeLineLogCellEmbedding_adjoint_self] using hh
 
 /-- The finite original-cell labels in all stopping blocks of the source. -/
 def stoppedLogCellLabel (A : ℕ+) (n : ι → ℕ+)
@@ -147,6 +165,7 @@ def stoppedLogCellLabel (A : ℕ+) (n : ι → ℕ+)
   logCellDyadicBlockCell (logCellStoppingAncestor A (n i.1)).1
     (logCellStoppingAncestor A (n i.1)).2 i.2
 
+omit [Fintype ι] in
 /-- Every cell in the explicit head stays below twice the label of its source cell. -/
 theorem stoppedLogCellLabel_lt_twice (A : ℕ+) (n : ι → ℕ+)
     (i : Σ k : ι, Fin (2 ^ (logCellStoppingAncestor A (n k)).1)) :
@@ -202,7 +221,9 @@ theorem finiteLogCellVector_stopped (A : ℕ+) (n : ι → ℕ+) (c : ι → ℝ
 theorem realSourceLp_actualGeneratorHead (A : ℕ+) (n : ι → ℕ+) (c : ι → ℝ) :
     realSourceLp (actualGeneratorHeadProfile A n c) (actualGeneratorHeadProfile_bv A n c)
         (actualGeneratorHeadProfile_compact A n c) = U (P A (finiteLogCellVector n c)) := by
-  rw [actualGeneratorHeadProfile, realSourceLp_finiteLogCellProfile, finiteLogCellVector_stopped]
+  change realSourceLp (finiteLogCellProfile (stoppedLogCellLabel A n) (stoppedLogCellHeight A n c))
+    (finiteLogCellProfile_bv _ _) (finiteLogCellProfile_compact _ _) = _
+  rw [realSourceLp_finiteLogCellProfile, finiteLogCellVector_stopped]
 
 /-- Every source cell preserves its literal integral through the all-level cutoff. -/
 theorem integral_actualGeneratorHead (A : ℕ+) (n : ι → ℕ+) (c : ι → ℝ) :
@@ -223,8 +244,8 @@ theorem integral_actualGeneratorHead (A : ℕ+) (n : ι → ℕ+) (c : ι → �
 theorem integral_actualGeneratorTail (A : ℕ+) (n : ι → ℕ+) (c : ι → ℝ) :
     (∫ x, actualGeneratorTailProfile A n c x) = 0 := by
   change (∫ x, finiteLogCellProfile n c x - actualGeneratorHeadProfile A n c x) = 0
-  rw [integral_sub (integrable_finiteLogCellProfile n c) (integrable_finiteLogCellProfile _ _),
-    integral_actualGeneratorHead, sub_self]
+  have hh : Integrable (actualGeneratorHeadProfile A n c) := integrable_finiteLogCellProfile _ _
+  rw [integral_sub (integrable_finiteLogCellProfile n c) hh, integral_actualGeneratorHead, sub_self]
 
 /-- The discarded real profile realizes the exact orthogonal Hilbert tail. -/
 theorem realSourceLp_actualGeneratorTail (A : ℕ+) (n : ι → ℕ+) (c : ι → ℝ) :
@@ -273,7 +294,11 @@ theorem integral_finiteLogCellProfile_sq_split (A : ℕ+) (n : ι → ℕ+) (c :
         ∫ x, actualGeneratorTailProfile A n c x ^ 2 := by
   have hh := memLp_compact_bv (actualGeneratorHeadProfile_bv A n c) (actualGeneratorHeadProfile_compact A n c)
   have ht := memLp_compact_bv (actualGeneratorTailProfile_bv A n c) (actualGeneratorTailProfile_compact A n c)
-  have hht := hh.integrable_mul ht
+  have hht : Integrable (fun x => actualGeneratorHeadProfile A n c x * actualGeneratorTailProfile A n c x) :=
+    hh.integrable_mul ht
+  have hleft : Integrable (fun x => actualGeneratorHeadProfile A n c x ^ 2 +
+      2 * (actualGeneratorHeadProfile A n c x * actualGeneratorTailProfile A n c x)) :=
+    hh.integrable_sq.add (hht.const_mul 2)
   have he : (fun x => finiteLogCellProfile n c x ^ 2) = fun x =>
       (actualGeneratorHeadProfile A n c x ^ 2 +
         2 * (actualGeneratorHeadProfile A n c x * actualGeneratorTailProfile A n c x)) +
@@ -282,7 +307,7 @@ theorem integral_finiteLogCellProfile_sq_split (A : ℕ+) (n : ι → ℕ+) (c :
     change _ = (_ + 2 * (_ * (finiteLogCellProfile n c x - actualGeneratorHeadProfile A n c x))) +
       (finiteLogCellProfile n c x - actualGeneratorHeadProfile A n c x) ^ 2
     ring
-  rw [he, integral_add (hh.integrable_sq.add (hht.const_mul 2)) ht.integrable_sq,
+  rw [he, integral_add hleft ht.integrable_sq,
     integral_add hh.integrable_sq (hht.const_mul 2), integral_const_mul,
     integral_actualGeneratorHead_mul_tail, mul_zero, add_zero]
 
@@ -303,8 +328,9 @@ private theorem norm_realSourceLp_sq (f : ℝ → ℝ)
     ‖realSourceLp f hv hc‖ ^ 2 = ∫ x, f x ^ 2 := by
   have h := inner_realSourceLp_eq_integral f f hv hc hv hc
   rw [inner_self_eq_norm_sq_to_K] at h
-  have he := congrArg Complex.re h
-  simpa only [← Complex.ofReal_pow, Complex.ofReal_re, ← pow_two] using he
+  change (‖realSourceLp f hv hc‖ : ℂ) ^ 2 = ((∫ x, f x * f x : ℝ) : ℂ) at h
+  rw [← Complex.ofReal_pow] at h
+  simpa only [← pow_two] using Complex.ofReal_injective h
 
 /-- Original Gamma controls the square mass of the literal discarded BV profile. -/
 theorem integral_actualGeneratorTail_sq_le (A : ℕ+) (n : ι → ℕ+) (c : ι → ℝ) :

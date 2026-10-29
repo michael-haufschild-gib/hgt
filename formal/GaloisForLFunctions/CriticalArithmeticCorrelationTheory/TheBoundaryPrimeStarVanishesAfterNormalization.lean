@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics ArithmeticEffectivityTheory
   RenormalizedArithmeticPotentialTheory
-open _root_.RHTower (vonMangoldtAtom vonMangoldtAtom_nonneg')
+open _root_.RHTower (vonMangoldtAtom)
 
 private theorem boundary_weight_mass_le (N : ℕ) :
     (∑ k ∈ Icc 2 (N + 1), ∑ m ∈ Icc 1 N,
@@ -77,8 +77,8 @@ theorem abs_nonRatioForm_at_touching_le {g : ℝ → ℝ} {N : ℕ} (hN : 2 ≤ 
         apply sum_le_sum
         intro m hm
         split_ifs
-        · rw [abs_mul, abs_of_nonneg (vonMangoldtAtom_nonneg' k)]
-          exact mul_le_mul_of_nonneg_left (hpair m hm) (vonMangoldtAtom_nonneg' k)
+        · rw [abs_mul, abs_of_nonneg (_root_.RHTower.vonMangoldtAtom_nonneg' k)]
+          exact mul_le_mul_of_nonneg_left (hpair m hm) (_root_.RHTower.vonMangoldtAtom_nonneg' k)
         · simp only [abs_zero, zero_mul, le_refl]
       _ = (∑ k ∈ Icc 2 (N + 1), ∑ m ∈ Icc 1 N,
           if k * m = N + 1 then vonMangoldtAtom k else 0) * S := by
@@ -102,8 +102,8 @@ private theorem touching_log_lag_bounds {N : ℕ} (hN : 1 ≤ N) :
   have hhiRatio : 1 < ((N : ℝ) + 1) / N := (one_lt_div hN0).mpr (by linarith)
   have hhi := Real.log_lt_sub_one_of_pos (div_pos hN1 hN0) (ne_of_gt hhiRatio)
   rw [Real.log_div hN1.ne' hN0.ne'] at hhi
-  have e1 : 1 - (N : ℝ) / (N + 1) = 1 / ((N : ℝ) + 1) := by field_simp
-  have e2 : ((N : ℝ) + 1) / N - 1 = 1 / (N : ℝ) := by field_simp
+  have e1 : 1 - (N : ℝ) / (N + 1) = 1 / ((N : ℝ) + 1) := by field_simp; ring
+  have e2 : ((N : ℝ) + 1) / N - 1 = 1 / (N : ℝ) := by field_simp; ring
   have hlower : 1 / ((N : ℝ) + 1) < Real.log (N + 1 : ℕ) - Real.log N := by
     push_cast
     rw [← e1]
@@ -114,7 +114,7 @@ private theorem touching_log_lag_bounds {N : ℕ} (hN : 1 ≤ N) :
   refine ⟨hpos, hupper, ?_⟩
   calc
     _ ≤ 1 / (N : ℝ) - 1 / ((N : ℝ) + 1) := sub_le_sub_left hlower.le _
-    _ = 1 / ((N : ℝ) * (N + 1)) := by field_simp
+    _ = 1 / ((N : ℝ) * (N + 1)) := by field_simp; ring
     _ ≤ 1 / (N : ℝ) ^ 2 := one_div_le_one_div_of_le (sq_pos_of_pos hN0)
       (by nlinarith only [hN0])
     _ = _ := by ring
@@ -159,7 +159,7 @@ theorem abs_normalized_nonRatioForm_at_touching_le {φ : ℝ → ℝ} {B : ℝ}
     _ = _ := by
       rw [integral_atomDilate_sq hw]
       dsimp only [w]
-      field_simp [hN0.ne', hM.ne'] <;> ring
+      field_simp [hN0.ne', hM.ne']
 
 /-- The non-ratio prime correction has one vanishing budget for every ratio up to one. -/
 theorem abs_normalized_nonRatioForm_uniform_up_to_touching {φ : ℝ → ℝ} {B : ℝ}
@@ -185,7 +185,7 @@ theorem abs_normalized_nonRatioForm_uniform_up_to_touching {φ : ℝ → ℝ} {B
       (N := N + 1) (n := N) (j := N + 1)
       (mem_Icc.mpr ⟨by omega, by omega⟩) (mem_Icc.mpr ⟨by omega, le_rfl⟩) (by omega)
     rw [abs_of_pos hd] at h
-    simpa only [Nat.cast_add, Nat.cast_one] using h
+    simpa only [d, Nat.cast_add, Nat.cast_one] using h
   have hG : 0 < ∫ u, atomDilate φ w u ^ 2 := by
     rw [integral_atomDilate_sq hw]
     exact mul_pos hw hM

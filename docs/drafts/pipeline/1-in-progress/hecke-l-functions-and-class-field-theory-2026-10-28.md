@@ -615,3 +615,10 @@ final direct source audit passes without warnings. See
 [the arithmetic support proof](../3-formalized/hecke-fourier-support-is-ideal-coprimality.md).
 Dual Hecke-character identification and normalized completed reflection
 remain open; CFT still follows the Hecke programme.
+
+`HeckeFourierCoefficientsScaleByRayResidues.lean` now extends integer
+Gauss scaling to actual unit fractions prime to the modulus and proves
+exact transfer from a base ideal to the unit base. All three main
+transitive axiom audits are standard only; final source audit passes
+without warnings. The inverse ideal-character identity is drafted and
+awaits verification with the constructed Gauss constant.

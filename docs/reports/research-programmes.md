@@ -45,5 +45,6 @@
 - formal/GaloisForLFunctions/ArithmeticCountingPositivity/README.md
 - formal/GaloisForLFunctions/HeckeKreinToeplitz/README.md
 - formal/GaloisForLFunctions/ShallowCauchyPrimeEnergy
+- formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/README.md
 - formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/README.md
 - formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/README.md

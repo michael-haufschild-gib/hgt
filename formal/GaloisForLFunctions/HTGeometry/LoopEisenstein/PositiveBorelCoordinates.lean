@@ -104,8 +104,10 @@ theorem borelCoordinateMap_injective : Function.Injective (borelCoordinateMap F)
   intro p q h
   rw [borelCoordinateMap_eq, borelCoordinateMap_eq] at h
   have hpq := positiveBorelEmbedding_injective F h
-  have hc := congrArg Prod.fst hpq
-  have hu := (iwahoriTorusUnipotentEquiv F).injective (congrArg Prod.snd hpq)
+  have hc := congrArg (fun b : Fˣ × iwahoriMatrices F => b.1) hpq
+  have hb : iwahoriTorusUnipotentEquiv F p.2 = iwahoriTorusUnipotentEquiv F q.2 :=
+    congrArg (fun b : Fˣ × iwahoriMatrices F => b.2) hpq
+  have hu := (iwahoriTorusUnipotentEquiv F).injective hb
   exact Prod.ext hc hu
 
 theorem mem_positiveBorel_iff (g : LoopSL2 F) :
