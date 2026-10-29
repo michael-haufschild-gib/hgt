@@ -1,7 +1,7 @@
 # Displacement thresholds and the credit retained by actual Grams
 
 - **ID:** review-2910-w14-displacement-credit
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM / integration
 - **Source:** W14 of the obstacles summary.
 
@@ -37,8 +37,33 @@ It can vanish despite nonzero displacement; displacement magnitude alone is insu
 
 ## Formalization gates
 
-- [ ] Generic κ,θ threshold equivalences.
-- [ ] λ∈[3/4,1) and both target specializations.
-- [ ] Positive-contraction and real-kernel lower bounds.
-- [ ] Instantiate on actual zeta evaluation Grams; expose projected displacement sum.
-- [ ] Direct leaf checks, transitive axiom audit, umbrella import.
+- [x] Generic κ,θ threshold equivalences.
+- [x] λ∈[3/4,1) and both target specializations.
+- [x] Positive-contraction and real-kernel lower bounds.
+- [x] Instantiate on actual zeta evaluation Grams; expose projected displacement sum.
+- [x] Direct leaf checks, transitive axiom audit, umbrella import.
+
+## Lean declarations and audit
+
+`ArithmeticCastelnuovoSeveri/DisplacementThresholdsAcrossBandwidths.lean`:
+`hyperbolic_pair_thresholds`, `hyperbolic_pair_bandwidth_thresholds`,
+`hyperbolic_pair_seventy_percent`, `hyperbolic_pair_three_quarters`, and
+`hyperbolic_pair_seventy_percent_at_four_thirds`.
+
+`ArithmeticCastelnuovoSeveri/ProjectedDisplacementPaysNegativePartCredit.lean`:
+`neg_trace_contraction_le_negPart`, `realKernel_trace_le_negativePart`,
+`blockQ_negativePart_credit_ge_projectedDisplacement`,
+`zetaProjectedDisplacementEnergy_eq`,
+`zeta_negativePart_credit_ge_projectedDisplacement`, and
+`zeta_zeroSideSlack_ge_projectedDisplacement`.
+
+The actual imaginary vector is written explicitly as
+`Im φ̂_T(Im ρ − i(Re ρ−1/2) − τ_k)`; no surrogate zero configuration is used.
+The normalization is `2(a(T)L(T)²)⁻¹` times the projected imaginary energy.
+Both leaves passed `lake --old env lean`; seven terminal transitive-axiom
+audits returned only `propext`, `Classical.choice`, and `Quot.sound`.
+Both imports are wired into the ACS umbrella, which was not compiled.
+
+The bound may vanish when the real evaluation span is full. It supplies a
+certified zero-side observable, not the missing positive lower bound on actual
+zeta displacement needed for a 70% or 75% census.

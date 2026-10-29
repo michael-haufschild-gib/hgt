@@ -251,7 +251,16 @@ fails.
     shift over `ℤ` is `−1` at most at one prime. Two-prime lattices carry the whole index, so no shift
     realizes the twin there. By Kronecker, since the `log p` are independent over `ℚ`, some shift is
     within `ε` of `−1` at all primes `p ≤ N`: the twin is a limit of shifts, never one.
-14. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+14. **Pointwise-closed statements are twin-blind.** Both `n ↦ n^{iτ}` and `λ` are completely
+    multiplicative, so the Kronecker times with `p^{iτ_m} → −1` give `n^{iτ_m} → λ(n)` for every `n`:
+    the twin `λ a` is a pointwise limit of the shifts `a(n) n^{iτ}`. A set of weights closed for
+    pointwise convergence that contains every shift contains the twin; a selective one excludes some
+    shift. Weil positivity is pointwise-closed, since each compactly supported test reads finitely
+    many weights; so its selectivity lives in the terms that do not move with the weights, the pole
+    and the Gamma factor (on a one-prime window the shift by `π/log 2` already equals the twin, which
+    the window refutes: `not_forall_odd_threeHundredSixtyTwoThousandths_re_weilFullFunctional_liouvilleTwist_nonneg`). This makes battery criterion 4 precise: a selective input is not
+    pointwise-closed or not invariant under vertical shifts.
+15. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -320,6 +329,10 @@ fails.
    `theta_le_log_lcm_oddPoints`, `abs_log_lcm_oddPoints_sub_theta_le`).
 8. *The parity twin is geometric only in the Bohr closure* (`shift_pow_eq_neg_one_pow`,
    `shiftChar_primeElt_zpow`, `shiftChar_eq_neg_one_subsingleton`, `exists_shiftChar_near_neg_one`).
+9. *Pointwise-closed statements are twin-blind* (`exists_shifts_tendsto_liouville`,
+   `liouvilleTwin_mem_of_isClosed`, `exists_shift_not_mem_of_selective`): a statement on the weights,
+   closed for pointwise convergence, that holds for every vertical shift of `a` holds for its Liouville
+   twin; a selective one fails for some vertical shift.
 
 **D. Completion.**
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
@@ -380,7 +393,9 @@ fails.
    Liouville twin is a vertical shift on each prime tower and on no two-prime lattice
    (`shiftChar_eq_neg_one_subsingleton`), only a limit of shifts (`exists_shiftChar_near_neg_one`).
    A producer that applies to a family closed under vertical shifts reaches the twin only through
-   that limit. *Open:* a selective count.
+   that limit, and any pointwise-closed statement it yields for all shifts holds for the twin
+   (`liouvilleTwin_mem_of_isClosed`): selectivity needs a statement that is not pointwise-closed or
+   not shift-invariant, such as one carried by the pole. *Open:* a selective count.
 3. **Why does finite index imply LH?** The passage has two steps of different kinds. The kernel step:
    finite index is a count with finitely many exceptional waves (`negIndex_eq_card_waves`), i.e.
    finitely many off-line zeros, so the zeros approach the line. The analytic step: zeros approaching
@@ -420,6 +435,25 @@ fails.
    when the indices on the consecutive-integer towers are unbounded
    (`tendsto_collisionMass_iff_consecutive`), and the heat counts are bounded exactly when those
    indices are (`bounded_heat_iff_consecutive_bounded`).
+
+7. **What replaces Riemann–Roch as a ceiling on the index before any count?** Over `𝔽_q` the ceiling
+   is finite rank: the trace kernel has `2g` nodes, so `κ ≤ g` (`two_mul_negIndex_traceKernel_le`),
+   attained by the golden datum (`golden_attains_ceiling`). Over `ℤ` local data cannot supply it:
+   each local constituent is positive definite (`isPosDefKernel_eulerKernel`), and a kernel assembled
+   from finitely many axis-supported pieces has index `0` or `∞` (`negIndex_eq_zero_or_top_of_isAxisSupported`,
+   `negIndex_localAssembly_eq_top`). A ceiling has to couple places, and the coupling quantity is the
+   wave number: the index is the least number of exceptional waves of a bounded prime-side count
+   (`negIndex_eq_card_waves`), each value of which is an explicit-formula functional
+   (`zetaKernel_eq_weilFullFunctional`). *Open:* a bound on the wave number from prime-side data;
+   finiteness alone is LH-deep (HKT `lindelof_of_negIndex_zetaKernel_lt_top`).
+8. **Is the Liouville twin geometric over `ℤ`, as the quadratic twist of base changes is over
+   `𝔽_q`?** Not as a vertical shift. Over `𝔽_q` the shift by `π/log q` is `(−1)^{deg}` at every place
+   (`shift_pow_eq_neg_one_pow`). Over `ℤ` the shift by `π/log p` is the twin on `⟨p⟩`
+   (`shiftChar_primeElt_zpow`), but every vertical shift is `−1` at most at one prime
+   (`shiftChar_eq_neg_one_subsingleton`), while two-prime lattices carry the whole index. The twin is
+   a limit of shifts on every finite set of primes (`exists_shiftChar_near_neg_one`): it lives in the
+   Bohr closure of the vertical shifts. *Open:* a family over `ℤ`, beyond vertical shifts, on which
+   the twin acts and to which a producer applies.
 
 ---
 

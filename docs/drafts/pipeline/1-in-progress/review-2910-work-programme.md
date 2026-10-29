@@ -32,14 +32,14 @@ No row is complete merely because a related theorem already exists or a weaker c
 | W07 | Actual ζ kernel: finite-support tower-Hasse theorem, infinitely many positive towers or one non-blind tower. | Complete: [proof and audit](../3-formalized/review-2910-w07-actual-zeta-tower-hasse.md). |
 | W08 | Certified translated Weil entries and Stirling smooth/sawtooth inversion tables, retaining cancellation. | Open. |
 | W09 | Complete multiresolution Grams: orbits, details, cross-level blocks, Gamma, both poles. | Open. |
-| W10 | Chen–Gupta–Li continuation/contour capstone; exponent/modulus threshold; q=1 specializations. | Open; external proof must be inspected. |
+| W10 | Chen–Gupta–Li continuation/contour capstone; exponent/modulus threshold; q=1 specializations. | Source conflation found: CGL proves density; linked OpenAI strip argument is separate. Original endpoint retained for independent audit. [Correction and plan](review-2910-w10-distinguish-density-and-zero-exclusion.md). |
 | W11 | Optimal positive-definite-majorant narrow-strip pair-energy bound; comparison with E(1/9)≤4. | Open. |
 | W12 | Explicit shallow and deep energy constants; comparison with 3/20. | Open. |
 | W13 | 70% or simple near-line off-line dichotomy with explicit forced proportion. | Complete: [proof and audit](../3-formalized/review-2910-w13-seventy-percent-near-line.md). |
-| W14 | Slack on [3/4,1), 70%/75% displacement thresholds, actual-Gram negative-part credit. | Paper argument for generic thresholds and projected imaginary-component credit. [Card](review-2910-w14-displacement-credit.md). |
+| W14 | Slack on [3/4,1), 70%/75% displacement thresholds, actual-Gram negative-part credit. | Complete: exact model thresholds and actual projected displacement credit, [proof and audit](../3-formalized/review-2910-w14-displacement-credit.md). |
 | W15 | Gabor-pinching slack optimization. | Open. |
 | W16 | Compact-time heat counts, 2/3-horizon constants, near-axis count tables. | Open. |
-| W17 | Localized heat-energy evolution from pair/exterior forces and forward simplicity. | Open. |
+| W17 | Localized heat-energy evolution from pair/exterior forces and forward simplicity. | Source helpers inspected; finite-packet and actual evolution composition underway. [Card](review-2910-w17-localized-heat-energy.md). |
 | W18 | Ordered Chebyshev block-pair integrals with certified ψ and VK bounds. | Open. |
 | W19 | Projections, Schur residuals, radicals, bounded-window transport constants. | Open. |
 | W20 | Fixed-conductor Ramanujan residual/Gram estimates; infinite-pattern greatest gaps. | Open. |
@@ -71,3 +71,5 @@ new work of this programme and must not be reverted or silently credited as veri
 - 2026-10-29 — W13 passed direct leaf check and three standard-only transitive-axiom audits;
   root umbrella import wired. General threshold theorem specializes to 70% with coefficient
   `HD(1)−2/5−1/A−ε`.
+- 2026-10-29 — W14's two leaves passed direct checks and seven standard-only axiom audits;
+  both umbrella imports wired. Actual credit may vanish; no census gain is inferred.

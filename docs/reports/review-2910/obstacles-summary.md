@@ -59,11 +59,20 @@ Coverage: 31 live routes, 18 standalone candidates, PW-B. Companions: [route rep
 | W26 | Certified finite-aperture ground energies, blind minima, finite-level feasibility, shell relaxations. | RW, EWU, OWU, ACT | Finite windows. |
 | W27 | Finite heat/Jensen/Hankel heads; both Gaussian grids; Laguerre data; the first-atom analytic tail. | LA, TH, WD, HCF, PA | No all-degree inference. |
 | W28 | Newton discs, Ward caps, renewal resolvents, transgression traces, Schur charges, compact recurrence; finite Robin, Cayley–Li and Suzuki ranges. | XN, WD, RN, TG, GTA, BAG, RB, LI, SZ | Local certificates. |
-| W29 | Constant term of the affine \(A_1\) Eisenstein series over the genus-one \(\mathbb F_3\) base: arithmetic quotient, measures, coset-sum convergence, imaginary-root correction factor; for Garland over \(\mathbb Q\): determinant metric, Bruhat refinement, arithmetic quotient. | Q3; 2.7 | Construction; the confinement input is I14. |
+| W29 | Constant term of the affine \(A_1\) Eisenstein series over the genus-one \(\mathbb F_3\) base: arithmetic quotient, measures, coset-sum convergence, imaginary-root correction factor; for Garland over \(\mathbb Q\): determinant metric, Bruhat refinement, arithmetic quotient. | 2.7 | Construction; supplies another receiver of the count (I14). |
 | W30 | Candidate calculations: cycle traces, curvatures, repair defects, jets, contours, contrasts, co-shift defects, photonic/Ising stacks, certificate streams, cusp actions. | Candidates, PW-B | Calibration is not forcing. |
 | W31 | Literature intake: Garland's Maass–Selberg relations for loop groups; the affine Gindikin–Karpelevich formula of Braverman–Kazhdan–Patnaik; Diaconu–Paşol–Popa; the integer Chebyshev problem; Stepanov–Bombieri over \(\mathbb F_q[t]\); Bui–Heath-Brown; Bourgain's DH on \(\sigma\ge25/32\). | Q2, Q3, 2.4, 2.5 | Acceptance of external proofs is not assumed. |
 
 ## 2.2 Open mathematical obstacles
+
+**Source correction to W10 and §2.4.** The `ChenGuptaLi*` intake concerns
+[arXiv:2507.08296v2](https://arxiv.org/html/2507.08296v2), whose Theorem 1.2 proves
+zero-density bounds, including the q=1 exponent 30/13. It does not claim the 7/8 strip.
+The linked [OpenAI preprint](https://github.com/openai/math/tree/main/preprints/The-Quasi-Riemann-Hypothesis-September-30-2026)
+uses a separate cubic-theta continuation argument. Statements below attributing that strip or
+a zero-free threshold to CGL are superseded by this correction. Both source intakes remain
+subject to independent proof audit; see the
+[W10 card](../../../docs/drafts/pipeline/1-in-progress/review-2910-w10-distinguish-density-and-zero-exclusion.md).
 
 ### (a) RH-equivalent endpoints
 
@@ -122,7 +131,7 @@ Each item is equivalent to finitely many off-line zeros, equivalently to RH abov
 | I11 | Independent faithful constructions for each candidate. | Calibrations, zero-indexed objects. | Candidate promotion. |
 | I12 | Whether \(\zeta\)-only inputs move the Chen–Gupta–Li threshold below \(7/8\). | Threshold not extracted (W10). | An improved quasi-RH, conditional on the external argument. |
 | I13 | Growing-conductor spectral control of the prime and complete-Weil matrices. | Only fixed packets and per-conductor eigenlines. | Profile-independent large-overlap spectra (I1). |
-| I14 | **Arithmetic confinement of the polar divisor of positive-genus affine Eisenstein series**: an input absent for the golden datum that places the Frobenius-pole hyperplanes on the critical hyperplane; then the same over \(\mathbb Q\) (Garland). | Continuation, closed-chamber holomorphy (certifies only \(\operatorname{Re}\rho\ge1\)), normalized holomorphy and the entire positive cuspidal series do not confine [S]; over \(\mathbb F_q\) confinement is RH for the curve. | The only candidate whose remaining input is a confinement law (Q3, 2.7). |
+| I14 | **Arithmetic confinement of the polar divisor of positive-genus affine Eisenstein series.** | Settled: for every strip datum confinement \(\iff\) the lower square-root point count [S]; the golden datum passes every other arithmetic test. | None beyond the count (Q2); the route ends in the global law. |
 | I15 | A many-node Gram floor from pairwise two-prime phase separation. | Baker bounds degenerate as \(\Delta\to0\). | HCF/SRT detection without aliasing. |
 
 "No known solution" refers to the corpus and the literature consulted.
@@ -229,23 +238,21 @@ The strip \(1/8<\operatorname{Re}\rho<7/8\) is the external claim for Dirichlet 
 **Payoff.** A mechanism that produces counts rather than requiring them. Q2 is the only question aimed at the producer.
 
 <a id="q3"></a>
-### Q3. Which arithmetic input confines the polar divisor of positive-genus affine Eisenstein series and fails for the golden datum?
+### Q3. Can a displacement-sensitive or two-sided coalescent input exclude simple off-line zeros at depth \(O(1/\log T)\)?
 
-**Exact object.** For every curve datum with zeros in the open critical strip, unitary or not, the complete affine \(A_1\) Weyl sum continues from the Godement half-plane and has a pole of exact multiplicity at every shifted zero; unitarity is equivalent to eventual holomorphy off \(\operatorname{Re}s=-\tfrac12\) in \(-1<\operatorname{Re}s<0\) [S]. The golden datum (\(q=5\), \(\beta=\varphi,\varphi^{-1}\)) has the same calculus and a pole at \(\operatorname{Re}s=-\tfrac12+\log\varphi/\log5\) [S].
+**Exact objects.** \(E(1/9)\le4\) gives \(70\%\); a prime surplus \(\le N/18\) at bandwidth \(4/3\) gives \(75\%\); zero-side slack \(\ge N/30\) near bandwidth one, equivalently displacement \(\eta\ge1/18\) in the displaced-pair model, gives \(70\%\) [L]. The dichotomy places every failure of \(3/4\) in simple off-line zeros within \(A/\log T\) of the line [Lean].
 
-**What is excluded [S].** Continuation and pole survival (golden datum); holomorphy on the closed positive chamber, which certifies exactly \(\operatorname{Re}\rho\ge1\); normalized (cleared) holomorphy, which holds for every datum; an entire positive cuspidal series with \(E=\Xi E^-\), where a pole of \(\Xi\) is exactly a zero of \(E^-\).
+**Why now.** All exchange rates are exact and the dichotomy localizes the obstruction. The infinite-symmetry candidate, the previous third question, is settled: confinement of its polar divisor is exactly the lower square-root count (2.7).
 
-**Question.** Which property of the actual automorphic object, absent for the golden datum, confines the poles to the critical hyperplane? Over \(\mathbb F_q\) any such input proves RH for the curve, so its calibration is a new proof of Weil's theorem through the Eisenstein series. The only known source of confinement over \(\mathbb F_q\) is geometric purity (inference).
+**First useful answer.** The best positive-definite-majorant bound for \(E(\delta)\) and its distance from \(4\) (W11); the dichotomy at \(70\%\) (W13); a lower bound for the negative-part credit \(2\operatorname{tr}Q_-\) of actual Grams in terms of displacement (W14); or a theorem that every parity-blind input leaves \(E\) unbounded.
 
-**First useful answer.** A confinement statement for the actual genus-one curve derived from the arithmetic Eisenstein series (W29) without invoking Weil's theorem; a property of the arithmetic coset sum (integrality, positivity of its terms) that fails for the golden datum; or a proof that the geometric realization over \(\mathbb F_q\) reduces confinement to purity of an associated variety, which would place the candidate in Wall 14.
+**Payoff.** A new unconditional census theorem, or the exact location of the parity barrier inside the census.
 
-**Payoff.** The only candidate whose remaining input is a confinement law rather than a signed estimate.
-
-**Why these three.** Q1 pushes the one proved selective sign toward RH. Q2 asks for the missing producer in its cleanest form. Q3 tests the only structurally different candidate, now reduced to its arithmetic confinement input. They are independent. The census (2.5) is the best intermediate milestone but shares Q2's parity obstruction.
+**Why these three.** Q1 pushes the one proved selective sign toward RH. Q2 asks for the missing producer in its cleanest form. Q3 is the counting face of the same parity obstruction, the only open estimate whose partial results are proportions. Q2 and Q3 share the parity obstruction but have different objects.
 
 ## 2.7 Is there a wildly different route?
 
-**One candidate remains, in narrowed form: arithmetic confinement of the polar divisor of positive-genus affine Eisenstein series (frontier candidate ISC-polar).** Every corpus route either bounds a signed quantity (Wall 1), builds an object whose structure forces reality (Wall 14), and must hold at every scale (Wall 3). A route outside all three would obtain zero-freeness from a structural identity: no estimate, no exhaustion, no carrier. Confinement by analytic continuation under infinite symmetry is retired [S]; what survives needs an arithmetic input that the formal calculus does not contain.
+**No wildly different route survives. The last candidate, analytic continuation by infinite symmetry, ends in the global law.** Every corpus route either bounds a signed quantity (Wall 1), builds an object whose structure forces reality (Wall 14), and must hold at every scale (Wall 3). A route outside all three would obtain zero-freeness from a structural identity: no estimate, no exhaustion, no carrier. In positive genus the infinite-symmetry calculus sees every zero exactly and places none; confinement of its polar divisor is exactly the lower square-root point count of the datum [S], which over \(\mathbb Z\) is RH.
 
 ### Analytic continuation by infinite symmetry
 
@@ -265,9 +272,9 @@ The strip \(1/8<\operatorname{Re}\rho<7/8\) is the external claim for Dirichlet 
 - Bochner-type holomorphy of the cleared (normalized) sum holds for every datum, because the normalizer carries the zeros.
 - For cuspidal series the positive series is entire (Garland–Miller–Patnaik; finite sums over function fields by Braverman–Kazhdan) and carries no nontrivial \(L\)-function in its constant term; with \(E=\Xi E^-\), a pole of \(\Xi\) is exactly a zero of \(E^-\), so zero-freeness is holomorphy and nonvanishing of the negative series, whose continuation is open.
 
-**What would make it a route.** An arithmetic confinement input that the golden datum lacks (Q3). Over \(\mathbb F_q\) it re-proves Weil's theorem through the Eisenstein series; only then is Garland's series over \(\mathbb Q\) worth its cost.
+**Confinement is the lower count [S].** For every curve datum with zeros in the strip, confinement of the polar divisor, eventual holomorphy off \(\operatorname{Re}s=-\tfrac12\) and the lower square-root point count \(N_k\ge q^k+1-Cq^{k/2}\) are equivalent. The golden datum has an integral zeta series, positive integral point counts, the functional equation, the upper square-root count, the strip condition and the exact pole calculus, and fails confinement.
 
-**Assessment (inference).** The calculus is a receiver: it sees every zero and places none. The only known confinement source over \(\mathbb F_q\) is geometric purity, which is Wall 14. The candidate lies outside the three walls only if a confinement law of a new kind exists. Record: [failed-route card](../../drafts/pipeline/5-failed/infinite-symmetry-polar-divisor.md).
+**Verdict.** The calculus is a receiver of the count, not a producer: over \(\mathbb F_q\) the count comes from geometry (Weil, Stepanov), over \(\mathbb Z\) the lower count for \(\Lambda\) is RH. The candidate (frontier ISC-polar) has no input beyond the producer problem Q2. Record: [failed-route card](../../drafts/pipeline/5-failed/infinite-symmetry-polar-divisor.md).
 
 ### Mechanisms examined and rejected
 
@@ -284,11 +291,11 @@ The strip \(1/8<\operatorname{Re}\rho<7/8\) is the external claim for Dirichlet 
 | o-minimal point counting | The primes are not definable in an o-minimal structure. |
 | Fourier quasicrystals | The archimedean continuum breaks the crystalline dual; the real-stable lift is W1C's Bohr-torus landing. |
 | Infinite symmetry in genus zero | Blind: no zeros to see; moments capped at the Lindelöf stratum. |
-| Confinement by continuation under infinite symmetry (positive genus) | A receiver: exact pole calculus for every curve datum, golden datum with an off-line pole, closed chamber certifies only \(\operatorname{Re}\rho\ge1\), cuspidal pair zero-freeness = negative-series holomorphy [S]. Survives only as arithmetic confinement (Q3). |
+| Confinement by continuation under infinite symmetry (positive genus) | A receiver: exact pole calculus for every curve datum; closed chamber certifies only \(\operatorname{Re}\rho\ge1\); cuspidal-pair zero-freeness = negative-series holomorphy; confinement \(\iff\) lower square-root count [S]. |
 
 ## 2.8 Would the obstacles in 2.2 need a new field of mathematics?
 
-**Assessment: for (a), (c), (d), I9, I10 and I14, probably yes; I1–I3, I7, I8, I12, I13 and I15 look reachable with existing tools.** The corpus has built the dictionary of the field this points to (HKT, AKLT, ASRP) far enough to see what it lacks:
+**Assessment: for (a), (c), (d), I9 and I10, probably yes; I1–I3, I7, I8, I12, I13 and I15 look reachable with existing tools.** The corpus has built the dictionary of the field this points to (HKT, AKLT, ASRP) far enough to see what it lacks:
 
 1. The selective input must be parity-breaking, square-root-precise and global; locality cannot supply it.
 2. Analytic number theory produces parity-breaking only at relative precision \(o(1)\) or on average, and square-root precision only for structured sums.
@@ -346,7 +353,6 @@ Weil's proof transported to a setting with an archimedean place, in Stepanov's o
 | Large-overlap renormalization | Positivity of the complete form uniformly in overlap | Reproduce the fixed-ratio floor; fail for the Liouville twin above \(c_{\rm RE}\); decide \(\omega_p\) (Q1) |
 | Geometric parity twin | A family of "base changes" over \(\mathbb Z\) on which the Liouville twist acts as a symmetry | Reproduce the twist tower over \(\mathbb F_q\) |
 | Two-sided coalescent pair theory | Prime-pair asymptotics beyond bandwidth one at bounded constant | Hardy–Littlewood models; fail for parity-twisted models (2.5) |
-| Arithmetic polar confinement | Confine the poles of infinite-rank Eisenstein series by an input beyond continuation | Fail for the golden datum; re-prove RH for a genus-one curve (Q3) |
 | Index-carrying completion | A completion on which the Weil kernel is continuous for index | Agree with pointwise limits; reproduce tower and Nyquist laws |
 
 ### Questions it must answer
@@ -369,4 +375,4 @@ Weil's proof transported to a setting with an archimedean place, in Stepanov's o
 7. **A new inequality.** A paid sign, index ceiling, count or energy bound, not another equivalence.
 8. **Formal closure.** Unconditional Lean statements.
 
-**First evidence of success:** fixed-ratio positivity at some \(c\ge2\), or a decision for \(\omega_{11}\); any auxiliary construction over \(\mathbb Z\) beating the sieve constant \(2\) or the integer Chebyshev constant; or an arithmetic confinement of the polar divisor that re-proves RH for one curve over a finite field.
+**First evidence of success:** fixed-ratio positivity at some \(c\ge2\), or a decision for \(\omega_{11}\); any auxiliary construction over \(\mathbb Z\) beating the sieve constant \(2\) or the integer Chebyshev constant.

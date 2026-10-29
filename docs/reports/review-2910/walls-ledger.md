@@ -56,7 +56,7 @@ W(f,g)=-\int_0^\infty\big(e^h-\psi(e^h)-c\big)\,q'_{f,g}(h)\,dh-\Gamma_{\rm tail
 | **3.41 Locality** | **Extended [S/L]** | Tempered orbit index is the supremum over consecutive-ratio towers or fine two-prime towers; axis-supported kernels on \(\mathbb Z^S\) have index \(0\) or \(\infty\); locality is twin-blind [L]. |
 | **3.39 Index topology** | **Extended [S]** | Index is continuous off the discriminant (vanishing weights, collisions, unit-circle contact). |
 | **14.39 Heat-flow horizon** | **Extended [L/S]** | On finite index the exceptional-wave number on a separating tower is \(\kappa\), and collision mass is \(2(\kappa+\sum(m_\rho-1))\). |
-| **14.45 Infinite-symmetry continuation** | **Confinement by continuation retired [S]** | For every curve datum with zeros in the strip the complete affine \(A_1\) Weyl sum has a pole of exact multiplicity at every zero; unitarity is equivalent to confinement of the poles; the golden datum has an off-line pole; the closed chamber certifies only \(\operatorname{Re}\rho\ge1\); the cuspidal pair is a receiver. Open: arithmetic confinement (ISC-polar). |
+| **14.45 Infinite-symmetry continuation** | **Ends in the global law [S]** | For every curve datum with zeros in the strip the complete affine \(A_1\) Weyl sum has a pole of exact multiplicity at every zero; confinement of the poles \(\iff\) eventual holomorphy off \(\operatorname{Re}s=-\tfrac12\) \(\iff\) the lower square-root point count; the golden datum passes every other arithmetic test and fails; the closed chamber certifies only \(\operatorname{Re}\rho\ge1\); the cuspidal pair is a receiver. |
 | **1.27 Critical-line census** | **Dichotomy [Lean]** | Either \(N_0\ge\tfrac34N\) or \(\ge(HD(1)-\tfrac12-\tfrac1A-\varepsilon)N\) simple off-line zeros lie within \(A/\log T\). |
 | **1.25 Parity form / 1.29 Precision rigidity** | **Formalized [S]** | Deciding-input theorem: any property implying the count rejects the Liouville twin, never holds for \(a\) and \(a+\varepsilon n^{-\eta}\), is not finitely determined, and its weights differ by square-root-class sequences. |
 | **3.42 Overlap growth** | **New** | See Wall 3. |
@@ -212,7 +212,7 @@ Evidence: [Trans-Metzler positivity](../../../formal/GaloisForLFunctions/TransMe
 | **14.42 Tensor amplification over \(\mathbb Z\)** | Boundary (inference) | The tensor square of the prime error is WL's mean square. |
 | **14.43 Compression** | Boundary [S] | Receivers on both sides: characteristic-polynomial annihilation over \(\mathbb F_q\), index-neutral Euler compressors over \(\mathbb Z\). A producer must vanish at the primes. |
 | **14.44 Golden calibration** | Boundary [S] | Tower data do not decide; the lattice does. |
-| **14.45 Infinite-symmetry continuation** | Receiver; arithmetic confinement open | Genus zero: blind, moment ceiling at the Lindelöf stratum [L]. Positive genus: every zero is a pole of exact multiplicity for every curve datum, unitary or not; unitarity \(\iff\) holomorphy off \(\operatorname{Re}s=-\tfrac12\); closed-chamber holomorphy certifies only \(\operatorname{Re}\rho\ge1\); a pole of the cuspidal \(L\)-ratio is a zero of the negative series [S]. Open: an arithmetic confinement input absent for the golden datum (Q3); over \(\mathbb F_q\) the only known source is purity (inference). |
+| **14.45 Infinite-symmetry continuation** | Receiver of the count | Genus zero: blind, moment ceiling at the Lindelöf stratum [L]. Positive genus: exact pole calculus for every curve datum; confinement \(\iff\) unitarity \(\iff\) the lower square-root count; closed-chamber holomorphy certifies only \(\operatorname{Re}\rho\ge1\); a pole of the cuspidal \(L\)-ratio is a zero of the negative series [S]. No input beyond the count. |
 | **14.46 Locality is twin-blind** | Boundary [L] | Unitary twists translate pair spectra and preserve tower faithfulness and the tower Hasse principle: a selective statement must enter through a count or a carrier. |
 | **14.47 Geometry of the parity twin** | Boundary [S] (inference over \(\mathbb Z\)) | Over \(\mathbb F_q\) the quadratic twist of base changes is the vertical shift \(s\mapsto s+i\pi/\log q^{2^j}\), so an upper-count producer applies to every twist. Over \(\mathbb Z\) the Liouville twist acts on prime constituents and is not a vertical shift. |
 | **14.48 Point side versus zero side** | Boundary [S] | Integer auxiliaries see integrality only at \(s\in\mathbb Z\), never at a nontrivial zero; Stepanov-type certificates must vanish at rational points. |
@@ -247,15 +247,14 @@ Evidence: [moment ceiling](../../../formal/GaloisForLFunctions/ArithmeticCasteln
 | Regular counts as forcing | Over-regular Beurling systems | Use the functional equation. |
 | Function-field or tensor amplification as imported positivity | Curves reproduce prime support; tensor square = WL mean square | A base with known cohomology. |
 | Infinite-symmetry continuation in genus zero as a zero detector | Jensen moment ceiling; zeros enter the polar divisor in positive genus | Zero-seeing in positive genus (below). |
-| Continuation under infinite symmetry as confinement (positive genus) | Exact zero detector for every curve datum; chamber certifies exactly \(\operatorname{Re}\rho\ge1\); cuspidal pair is a receiver | An arithmetic confinement input that the golden datum lacks (Q3). |
+| Continuation under infinite symmetry as confinement (positive genus) | Exact zero detector for every curve datum; chamber certifies exactly \(\operatorname{Re}\rho\ge1\); confinement \(\iff\) lower square-root count | The count itself (Q2). |
 | Detection or quantization as an upper bound | Canonical energy; quadratic index price | A virial-type upper estimate. |
 
 ## Consequences for priorities
 
 - [Q1](obstacles-summary.md#q1) targets **3.42 / 3.37 / 1.38 / 3.26**: overlap growth and flip selectivity.
 - [Q2](obstacles-summary.md#q2) targets **1.34 / 1.35 / 14.37 / 14.43 / 14.47 / 14.48**: the point-side producer.
-- [Q3](obstacles-summary.md#q3) targets **14.45**: an arithmetic confinement input for the polar divisor of positive-genus affine Eisenstein series; the continuation calculus itself is a receiver.
-- **1.27 / 1.30 / 1.31 / 1.33** (census) share the parity obstruction of Q2; the dichotomy says where any gain must come from.
+- [Q3](obstacles-summary.md#q3) targets **1.27 / 1.30 / 1.31 / 1.33**: displacement at depth \(1/\log T\) and the coalescent pair energy. **14.45** is settled: it ends in the count.
 - **1.26 / 3.35 / 14.39 / 14.41** (finite support) are LH-level and RH-hard at large height; not near-term priorities.
 
 No route is declared dead by these priorities. Finite calculations, compositions, integration and intake are [just work](obstacles-summary.md#21-tasks-that-are-just-work).

@@ -429,7 +429,7 @@ vectors,
 \[
 \frac{|\operatorname{NR}(\phi_{c/N},N,x)|}{(c/N)M}
 \le C_\phi\left(c-1+\frac1N\right)
- \left(D_N(x)+\sum_{n\le N}x_n^2\right).
+ \left(D_N(x)+\sum_{1\le n\le N}x_n^2\right).
 \]
 
 This is a bound on the literal non-ratio prime source, including every prime
@@ -453,6 +453,95 @@ genuine overlap was already proved by TransMetzlerWeilPositivity. The
 overlapping atom Gram and joint archimedean and polar contributions still
 require their own complete-form comparison; the prime estimate alone does
 not establish that comparison.
+
+## Cancelled Robin calculus and smooth profile changes
+
+Write `B_W(f)=bumpRobin(f,W)` and define the polarized finite part
+
+\[
+\mathcal B_W(f,g)=\tfrac14\bigl(B_W(f+g)-B_W(-f+g)\bigr).
+\]
+
+For `C²` functions supported in one interval `[0,w]`, with `0<w≤1`, the
+actual mixed Lévy form `𝓛(f,g)=∫₀∞ levyMixed(f,g,y)dy` satisfies
+
+\[
+\left|\mathcal L(f,g)
+ -(\log(1/w)+\kappa_{\rm arch})\int fg
+ -\mathcal B_w(f,g)\right|
+\le\frac{e^{1/2}}4w\left(\int f^2+\int g^2\right).
+\]
+
+Here `κ_arch=archRobinConstant`. Polarizing the scalar remainder keeps the
+overlap mass in the leading logarithmic term. There is no separation or
+positive-mass assumption. This expansion is in
+[TheMixedRobinExpansionSurvivesActualOverlap](TheMixedRobinExpansionSurvivesActualOverlap.lean).
+
+For arbitrary compact `C²` functions, `W≥0`, and a nonnegative Lipschitz
+bound `L` for `f-g`, factoring the difference of squared increments gives
+
+\[
+|B_W(f)-B_W(g)|\le WL(\|f\|_1+\|g\|_1).
+\]
+
+It removes the factor `1/y` before integration. The corresponding mixed
+bound is `2WL(‖f‖₁+‖g‖₁)`, uniformly over every common translation `a` in
+the pairs `(f,T_a f)` and `(g,T_a g)`, where `T_a f(u)=f(u-a)`. Both bounds
+are proved in
+[TheRobinFinitePartIsStableUnderLipschitzPerturbations](TheRobinFinitePartIsStableUnderLipschitzPerturbations.lean).
+
+A fixed `C²` unit-interval profile supplies the perturbation bound itself.
+For `φ_c(u)=φ(u/c)`, one `C>0` works throughout `1≤c≤2`:
+
+\[
+|(\phi_c-\phi)(u)-(\phi_c-\phi)(v)|
+ \le C(c-1)|u-v|,
+\qquad \|\phi_c-\phi\|_1\le6C(c-1).
+\]
+
+Boundedness and Lipschitz continuity of the first derivative produce this
+constant. The mixed Robin change then has a bound proportional to
+`W(c-1)`, uniformly in the translation, both before and after division by
+`c`. In particular, one profile-dependent `K>0` satisfies
+
+\[
+\left|\frac{\mathcal B_W(\phi_c,T_a\phi_c)}c
+ -\mathcal B_W(\phi,T_a\phi)\right|
+\le KW(c-1)
+\]
+
+for all `1≤c≤2`, `W≥0`, and real `a`.
+[SmoothDilationHasASmallLipschitzDifference](SmoothDilationHasASmallLipschitzDifference.lean)
+contains these produced profile bounds. These are scalar analytic estimates;
+the complete relative form comparison, with all overlapping Gram entries
+and pole terms paid together, remains open.
+
+## Absolute-mass continuity of separated cross terms
+
+For continuous compactly supported profiles of arbitrary sign, the actual
+autocorrelation satisfies
+
+\[
+\|G_f-G_g\|_1\le\|f-g\|_1(\|f\|_1+\|g\|_1).
+\]
+
+Factoring the integrand difference as
+`(f-g)(u)f(u+z)+g(u)(f-g)(u+z)` retains both signs. An integrable product
+envelope justifies Fubini before translation invariance gives the absolute
+mass factors. If both profiles are supported in `[0,w]` and `s>w`, then
+
+\[
+|X_f(s)-X_g(s)|
+\le\omega(s-w)\|f-g\|_1(\|f\|_1+\|g\|_1).
+\]
+
+The literal cross integral equals the full shifted-density integral;
+its autocorrelation support confines the density to positive arguments
+where it is bounded by `ω(s-w)`. These statements are proved in
+[TheSeparatedCrossTermIsContinuousInAbsoluteMass](TheSeparatedCrossTermIsContinuousInAbsoluteMass.lean).
+Strict separation is essential to this bound. It supplies scalar continuity;
+the normalized width comparison and complete relative form transfer remain
+open, including their pair summation and shared energy payment.
 
 ## A conductor-uniform arithmetic curvature floor
 
@@ -574,7 +663,7 @@ spectral exhaustion for the overlapping complete form.
 
 **Arithmetic overlap analysis.** What new low modes appear as overlap grows? The surrounding
 TransMetzlerWeilPositivity programme already crosses ratio one with an explicit profile and a
-prime-defect perturbation estimate. The remaining targets include general profile dependence,
+prime-defect perturbation estimate. The remaining targets include complete form comparisons for general profiles,
 successor corrections at larger ratios, and exhaustion. Derive and estimate the complete
 remaining operator, including pole and Gamma terms and the non-diagonal atom Gram. A fixed-ratio
 theorem must state whether its horizon is uniform as the ratio changes. The ultimate family

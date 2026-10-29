@@ -1,6 +1,6 @@
 # Successor corrections beyond touching
 
-Status: deferred conjectural programme. No paper proof of the proposed source law, integral symbol identity, or exhaustive overlap positivity is claimed. Existing finite-source drafts are being closed separately; this card authorizes no new implementation.
+Status: deferred conjectural programme. No paper proof of the proposed source law, integral symbol identity, or exhaustive overlap positivity is claimed. The finite-source and scalar analytic modules are formalized and closed; this card authorizes no new implementation.
 
 ## Concrete candidate law
 
@@ -74,13 +74,13 @@ modules and is likewise outside the closure scope.
 
 The earlier distant-pair proposal is deferred as well: a normalized width
 comparison of order `C_phi*(w-v)*(1/s+1)`, followed by a whole-form bound
-`C_phi*(c-1)*(D_N+mass)`, remains unproved. The existing draft only supplies
+`C_phi*(c-1)*(D_N+mass)`, remains unproved. The formalized scalar result supplies
 the absolute-mass continuity of the separated scalar cross term. Continuous
 compact-weight extensions of the prime-window limits likewise remain open.
 
 ## Existing first crossing
 
-The corpus already proves genuine first-overlap complete positivity for an explicit smooth profile in `TransMetzlerWeilPositivity.TransMetzlerPositivity`, including `c=1+10^-18`. Existence of a first crossing is therefore not a new target here. The open questions concern general profile dependence, larger overlap, actual successor norm residuals, and exhaustion.
+The corpus already proves genuine first-overlap complete positivity for an explicit smooth profile in `TransMetzlerWeilPositivity.TransMetzlerPositivity`, including `c=1+10^-18`. Existence of a first crossing is therefore not a new target here. The open questions concern complete form comparisons for general profiles, larger overlap, actual successor norm residuals, and exhaustion.
 
 ## Obligations
 

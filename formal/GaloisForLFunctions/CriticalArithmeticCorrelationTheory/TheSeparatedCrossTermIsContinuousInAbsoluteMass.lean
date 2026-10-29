@@ -58,6 +58,8 @@ theorem integral_abs_bumpAutocorr_sub_le {f g : ℝ → ℝ}
     rw [← integral_sub hff hgg, ← integral_add hpf hqg]
     refine abs_integral_le_integral_abs.trans (integral_mono (hff.sub hgg).abs (hpf.add hqg) ?_)
     intro u
+    change |f u * f (u + z) - g u * g (u + z)| ≤
+      |d u| * |f (u + z)| + |g u| * |d (u + z)|
     rw [show f u * f (u + z) - g u * g (u + z) =
       d u * f (u + z) + g u * d (u + z) by dsimp only [d]; ring]
     simpa only [abs_mul] using abs_add_le (d u * f (u + z)) (g u * d (u + z))
@@ -95,6 +97,9 @@ theorem atomCrossTerm_eq_full_shift_integral {g : ℝ → ℝ} {w s : ℝ}
     (fun y => (Ioi (0 : ℝ)).indicator (fun y => archLevyDensity y * bumpAutocorr g (y - s)) y) s]
   apply integral_congr_ae
   refine Filter.Eventually.of_forall fun z => ?_
+  change (Ioi (0 : ℝ)).indicator
+    (fun y => archLevyDensity y * bumpAutocorr g (y - s)) (z + s) =
+      archLevyDensity (s + z) * bumpAutocorr g z
   by_cases hz : z ∈ Icc (-w) w
   · have hpos : z + s ∈ Ioi (0 : ℝ) := by
       show 0 < z + s

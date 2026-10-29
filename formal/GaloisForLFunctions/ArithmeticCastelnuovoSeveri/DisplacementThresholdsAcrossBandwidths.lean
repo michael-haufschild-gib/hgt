@@ -12,6 +12,8 @@ For the zeta bandwidth parameter, `κ = 1/λ + λ/3` and `H(λ)=2−κ`.
 These identities describe model blocks; they do not assert a displacement of zeta zeros.
 -/
 
+noncomputable section
+
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 /-- Exact count, full-slack and off-line-slack tests for orthogonal hyperbolic pairs. -/
@@ -74,8 +76,10 @@ theorem hyperbolic_pair_bandwidth_thresholds {N p η lam θ : ℝ}
         (3 - 2 * θ - bandwidthFrobeniusConstant lam) * (1 + 2 * η)^2) := by
   have h := hyperbolic_pair_thresholds (θ := θ) hp hη
     (bandwidthFrobeniusConstant_gt_one (by linarith only [hlow]) hhigh) hfrob
-  rw [bandwidthFrobeniusConstant_sub_Hfun]
-  convert h using 1 <;> ring
+  rw [bandwidthFrobeniusConstant_sub_Hfun,
+    show θ - (2 - bandwidthFrobeniusConstant lam) =
+      θ + bandwidthFrobeniusConstant lam - 2 by ring]
+  exact h
 
 /-- At 70%, the full-slack threshold is `(5/3)(κ−13/10)`; off-line slack has a
 different threshold involving `8/5−κ`. -/
@@ -90,10 +94,10 @@ theorem hyperbolic_pair_seventy_percent {N p η κ : ℝ} (hp : 0 < p) (hη : 0 
   norm_num at hc hf ho
   have he : (7 / 10 : ℝ) + κ - 2 = κ - 13 / 10 := by ring
   rw [he] at hf ho
-  refine ⟨hc.trans ?_, hf.trans ?_, ?_⟩
+  refine ⟨hc.trans ?_, hf.trans ?_, ho.trans ?_⟩
   · constructor <;> intro h <;> linarith only [h]
   · constructor <;> intro h <;> linarith only [h]
-  · convert ho using 1 <;> ring
+  · constructor <;> intro h <;> linarith only [h]
 
 /-- The 75% thresholds with a variable Frobenius coefficient. -/
 theorem hyperbolic_pair_three_quarters {N p η κ : ℝ} (hp : 0 < p) (hη : 0 ≤ η)
@@ -106,10 +110,10 @@ theorem hyperbolic_pair_three_quarters {N p η κ : ℝ} (hp : 0 < p) (hη : 0 �
   norm_num at hc hf ho
   have he : (3 / 4 : ℝ) + κ - 2 = κ - 5 / 4 := by ring
   rw [he] at hf ho
-  refine ⟨hc.trans ?_, hf.trans ?_, ?_⟩
+  refine ⟨hc.trans ?_, hf.trans ?_, ho.trans ?_⟩
   · constructor <;> intro h <;> linarith only [h]
   · constructor <;> intro h <;> linarith only [h]
-  · convert ho using 1 <;> ring
+  · constructor <;> intro h <;> linarith only [h]
 
 /-- At the bandwidth-one limiting constant, the three 70% thresholds are
 `(1+2η)²≥10/9`, `η≥1/18`, and `(1+2η)²≥5/4`. -/
