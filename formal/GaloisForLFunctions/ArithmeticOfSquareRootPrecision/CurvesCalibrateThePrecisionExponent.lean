@@ -282,3 +282,8 @@ theorem golden_upperCount_and_not_lowerCount (θ : ℝ) :
   · rw [lowerCountAtPrecision_iff, ← countAtPrecision_iff, golden_countAtPrecision_iff]
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision
+
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.precisionExponent_eq
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.countAtPrecision_half_iff
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.hyperelliptic_countAtPrecision_half
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.golden_upperCount_and_not_lowerCount

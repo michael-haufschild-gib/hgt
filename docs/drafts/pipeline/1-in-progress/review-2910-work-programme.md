@@ -27,7 +27,7 @@ No row is complete merely because a related theorem already exists or a weaker c
 | W02 | Single-prime flips p≥11 and cofinite flips: fixed-ratio positivity or negative atomic witnesses. | Open. |
 | W03 | Optimize Robin–Euler profile threshold and narrow twin survival; decide sharp transition. | Open. |
 | W04 | Steklov weights q!(log q)^((1+ε)q), receiver β>1, exact quasi-analytic edge. | Open. |
-| W05 | Dependency-closed integration: ZeroSideStratum, LiouvilleTwinSelectivity, AKLT, ASRP, CACT touching, ACS Haar prime edges, loop spherical function. | Open; preserve existing workspace edits. |
+| W05 | Dependency-closed integration: ZeroSideStratum, LiouvilleTwinSelectivity, AKLT, ASRP, CACT touching, ACS Haar prime edges, loop spherical function. | Terminal inventory and transitive axiom audits in preparation; [integration card](review-2910-w05-dependency-closed-integration.md). |
 | W06 | Explicit head sizes in every finite-index theorem; growing-prime first-layer constants versus detail reserve. | Open. |
 | W07 | Actual ζ kernel: finite-support tower-Hasse theorem, infinitely many positive towers or one non-blind tower. | Complete: [proof and audit](../3-formalized/review-2910-w07-actual-zeta-tower-hasse.md). |
 | W08 | Certified translated Weil entries and Stirling smooth/sawtooth inversion tables, retaining cancellation. | Open. |

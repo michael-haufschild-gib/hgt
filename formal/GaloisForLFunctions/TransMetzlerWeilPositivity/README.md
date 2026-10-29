@@ -2,7 +2,7 @@
 
 Namespace `GaloisForLFunctions.TransMetzlerWeilPositivity`; umbrella `TransMetzlerWeilPositivity.lean`.
 
-**Question.** At horizon $N$ and atom width $w = c/N$ (overlap ratio $c = w/\delta_N$ against the spacing $\delta_N = \log(1 + 1/N)$), the complete Weil form of $\zeta$ on atomic families $f_x(u) = \sum_{n \le N} x_n \varphi((u - \log n)/w)$ is governed by a Metzler trickle-down inequality below $c = 1$, while for every profile strictly positive on $(0, 1)$ and every $\rho > 1$ the top-collar triangle $\{1, N - 1, N\}$ frustrates every unimodular gauge (`metzlerThreshold_overlapRatio`). **Does unconditional positivity of the complete Weil form survive strictly past the Metzler wall $c = 1$, where does selectivity against the Liouville twin first turn on, what zero-side content does a fixed overlap ratio carry, and how slowly can an RH-equivalent overlap schedule grow?**
+**Question.** At horizon $N$ and atom width $w = c/N$ (scaled width $c=Nw$; the exact spacing ratio is $w/\delta_N\to c$, where $\delta_N=\log(1+1/N)$), the complete Weil form of $\zeta$ on atomic families $f_x(u) = \sum_{n \le N} x_n \varphi((u - \log n)/w)$ is governed by a Metzler trickle-down inequality below $c = 1$, while for every profile strictly positive on $(0, 1)$ and every $\rho > 1$ the top-collar triangle $\{1, N - 1, N\}$ frustrates every unimodular gauge (`metzlerThreshold_overlapRatio`). **Does unconditional positivity of the complete Weil form survive strictly past the Metzler wall $c = 1$, where does selectivity against the Liouville twin first turn on, what zero-side content does a fixed overlap ratio carry, and how slowly can an RH-equivalent overlap schedule grow?**
 
 > Unconditional positivity of $\zeta$'s complete Weil form **crosses the Metzler threshold $c = 1$**: for the explicit smooth full-support plateau $\varphi_0 = \texttt{plateau}(1/1000)$ and explicit rational overlap ratio $c_0 = 1 + 10^{-18} > 1$ (and at exact spacing width $\rho_0 \delta_N$ with $\rho_0 = 1 + \frac{1}{2}\cdot 10^{-18} > 1$), `completeWeilMatrix φ₀ c N` is eventually positive definite on all of $(0, c_0]$ while no unimodular gauge makes the atomic Markov form Metzler. What replaces the diagonal gauge is a **convex combination of Ramanujan norm-quasimode spectral exclusion and strict-variance prime-defect coercivity**, paying both long-shift archimedean overlaps and the additive successor prime correlations $(kn, kn \pm 1)$ in the top third $3n > N$. By contrast, the Liouville twin $\lambda\Lambda$ breaks down inside the strictly separated regime at the **Robin–Euler ratio** $c_{\mathrm{RE}}(\varphi) = e^{\beta(\varphi)/\|\varphi\|_2^2}/(2\pi) < 1/2$ (approaching $e/(2\pi) \approx 0.4326 < 1$ on thin plateaus), failing at both $c = 1$ and $c_0$. On the zero side, finite off-line support bounds the atomic negative index uniformly across all $c > 0$, while the tempered countermodel `isolatedPairConfig` refutes any purely zero-side deduction of fixed-$c$ positivity without $\zeta$'s $\frac{\log T}{2\pi}$ zero density. Finally, a single fixed Steklov infinite-convolution Denjoy–Carleman profile pushes RH-complete overlap growth strictly below every Gevrey power $(\log\log N)^{1+\varepsilon}$ down to $(\log\log N)(\log\log\log N)^\beta$ for every $\beta > 2$.
 
@@ -29,11 +29,11 @@ Namespace `GaloisForLFunctions.TransMetzlerWeilPositivity`; umbrella `TransMetzl
   * **$\zeta$ (trivial gauge):** pole-matched; positive definite for all $c \in (0, c_0]$ with $c_0 = 1 + 10^{-18} > 1$.
   * **Liouville twin $\lambda\Lambda$:** anti-matched on the pole; its prime form attains $\log M - \gamma + o(1)$ on the pole-orthogonal hyperplane $\sum_{n \le M} x_n/\sqrt{n} = 0$, so its complete Weil form becomes negative at every fixed $c > c_{\mathrm{RE}}(\varphi)$ (for $\varphi_0$, every $c \ge 1/2$), while remaining nonnegative for $0 < c \le \texttt{fixedWidthRatio}$.
 
-| Overlap regime $c = w/\delta_N$ | $\zeta$ complete Weil form | Liouville twin $\lambda\Lambda$ | Zero-side stratum |
+| Scaled-width regime $c=Nw$ | $\zeta$ complete Weil form | Liouville twin $\lambda\Lambda$ | Zero-side stratum |
 |---|---|---|---|
 | $0 < c \le \texttt{fixedWidthRatio}$ | Unconditionally $\ge 0$ | Unconditionally $\ge 0$ | Universal stability |
 | $c_{\mathrm{RE}}(\varphi) < c \le 1$ ($e/(2\pi) < 1$) | Eventually `PosDef` (including $c = 1$) | Eventually $< 0$ | Pole-matching selectivity inside strict separation |
-| $1 < c \le c_0 = 1 + 10^{-18}$ | Eventually `PosDef` (frustrated Markov gauge) | Eventually $< 0$ | Unconditional trans-Metzler positivity |
+| $1 < c < c_*$, with $1+10^{-16}<c_*$ | Eventually `PosDef`; floor $1/400$ at $c=1+10^{-16}$ | Eventually $<0$ | Exact positive range of the certified Young-bound family |
 | Arbitrary fixed $c > 0$ | $\ge 0$ under RH; `hermNegIndex ≤ ncard(rightZeros)` under `FiniteOffLine` | Eventually $< 0$ for $c > c_{\mathrm{RE}}(\varphi)$ | Fails on `isolatedPairConfig` at every $c > 0$ |
 | $c_N = (\log\log N)(\log\log\log N)^\beta$ ($\beta > 2$) | Eventually $\ge 0 \iff \texttt{RiemannHypothesis}$ (one fixed profile `steklovDCProfile`) | Infinitely often $< 0$ | Full RH completeness below all Gevrey powers |
 
@@ -62,6 +62,34 @@ Crossing the Metzler threshold unconditionally:
 * `exists_gt_one_eventually_completeWeilMatrix_posDef`: unconditional existence of $c > 1$ (`cZero`) and $\varphi \in C_c^\infty(\mathbb{R})$ (`transMetzlerProfile`, positive on $(0, 1)$) with `(completeWeilMatrix φ c N).PosDef` and atomic `weilQuad ≥ 0` eventually.
 * `eventually_completeWeilMatrix_posDef_of_mem_Ioc`, `eventually_completeWeilMatrix_posDef_one`, `eventually_touching_atomSpacing_posDef`: eventual positive definiteness across all $c \in (0, c_0]$ and at exact spacing `atomSpacing N`.
 * `eventually_transMetzler_atomSpacing_posDef_and_frustrated`: simultaneous complete Weil positive definiteness and unimodular Markov gauge frustration at `rhoZero * atomSpacing N`.
+
+### `TransMetzlerReferenceFloor.lean` and `TransMetzlerYoungOptimization.lean`
+The reference floor and every center Young parameter are optimized for the existing analytic
+constants 1276 and 2000. Put $q_0=(\int\varphi_0)^2/\int\varphi_0^2$,
+$\alpha=cq_0$, $r=1-\alpha$, $\psi=\log4+4/e$,
+$s=\beta(\varphi_0)/\|\varphi_0\|_2^2-\log(2\pi c)$, and $f=s+\alpha$.
+Then
+
+$$A=\alpha^2\psi,\qquad Q=1276c^2+\alpha(\psi+16),\qquad
+L(c)=f-2000(c-1)\left(1+\frac{(\sqrt A+\sqrt{A+rQ})^2}{r^2}\right).$$
+
+On $1\le c<1/q_0$, $L$ is continuous and strictly decreasing, with a unique zero
+$c_*\in(1,(1+1/q_0)/2)$. Every floor strictly below $L(c)$ eventually holds for
+`completeWeilMatrix transMetzlerProfile c N` when $c\le c_*$. Thus the actual matrices
+are eventually positive definite for $1\le c<c_*$. Exact rational inequalities certify
+$L(1+10^{-16})\ge1/200$, hence an eventual matrix floor $1/400$ there.
+
+* `eventual_transMetzlerMainMatrix_floor_le_reference`: conductor one attains the limiting
+  reference floor, so no larger eventual reference floor is possible.
+* `transMetzler_young_positive_certificate_iff`: the entire scalar Young family certifies a
+  positive perturbed floor exactly for $1\le c<c_*$; attaining models certify optimality.
+* `eventually_completeWeilMatrix_young_floor_to_boundary`: actual matrix transfer, including
+  arbitrarily small negative floors at $c_*$.
+* `eventually_completeWeilMatrix_floor_at_explicit_young_ratio`: the explicit $1/400$ floor.
+
+The scalar optimization is proved in `HTGeometry/OptimalYoungDefectFloor.lean`. The boundary
+belongs to this certified bound family; it does not assert failure of actual positivity beyond it.
+The original `cZero` and `rhoZero` constants remain unchanged.
 
 ### `LiouvilleTwinSelectivity.lean`
 Sharp selectivity of fixed overlap ratios on the Liouville twin:

@@ -32,8 +32,11 @@ Stepanov's auxiliary has size `≈ ℓ q/2` and, through `x^q = x`, multiplicity
 point, so the ledger divides out to `q/2 + O(√q)`. Chebyshev's auxiliary `C(2n, n)` has size `n log 4`
 and multiplicity one on `(n, 2n]` (`sum_log_prime_Ioc_le`). Binomial auxiliaries cannot carry more:
 `p^m ∣ C(N, k)` forces `p^m ≤ N` (`pow_le_of_dvd_choose`), so above `√N` every multiplicity is at most
-one (`le_one_of_dvd_choose`). The producer problem over `ℤ` is an auxiliary integer of controlled size
-whose multiplicity on the counted primes grows, as Frobenius makes Stepanov's grow.
+one (`le_one_of_dvd_choose`). In a short interval `(x, x + y]` the binomial ledger
+(`sum_log_prime_short_le`) is no better than trivial up to the factor `log(x/y)/log x`
+(`log_choose_ge`), so the first rung, the sieve constant `2` on intervals `x^ε`, is out of its reach.
+The producer problem over `ℤ` is an auxiliary integer of controlled size whose multiplicity on the
+counted primes grows, as Frobenius makes Stepanov's grow.
 
 **Divisibility sees prime powers, not parity.** Over `ℤ` an auxiliary "vanishes" at an integer `n`
 when `n ∣ A`; vanishing on `S ⊆ [1, x]` is the single condition `lcm S ∣ A`, whose information
@@ -114,6 +117,38 @@ theorem sum_log_prime_Ioc_le (n : ℕ) :
   rw [← Real.log_pow]
   exact Real.log_le_log (by exact_mod_cast Nat.centralBinom_pos n)
     (by exact_mod_cast Nat.centralBinom_le_four_pow n)
+
+/-- **The binomial producer in a short interval.** For `1 ≤ y ≤ x`, every prime of `(x, x + y]`
+divides `C(x + y, y)`, so `Σ_{x<p≤x+y} log p ≤ log C(x + y, y)`. -/
+theorem sum_log_prime_short_le {x y : ℕ} (hyx : y ≤ x) :
+    ∑ p ∈ (Ioc x (x + y)).filter Nat.Prime, Real.log p ≤ Real.log ((x + y).choose y) := by
+  have h := sum_mul_log_le_log_of_dvd (Nat.choose_pos (Nat.le_add_left y x)).ne'
+    (S := (Ioc x (x + y)).filter Nat.Prime) (fun p hp => (mem_filter.mp hp).2) (fun _ => 1)
+    fun p hp => by
+      obtain ⟨hpI, hpp⟩ := mem_filter.mp hp
+      have h1 := (mem_Ioc.mp hpI).1
+      have h2 := (mem_Ioc.mp hpI).2
+      rw [pow_one, add_comm x y]
+      exact hpp.dvd_choose_add (by omega) h1 (by omega)
+  simpa only [Nat.cast_one, one_mul] using h
+
+/-- **It saves only a factor `log y / log x`.** `log C(x + y, y) ≥ y log ((x + 1)/y)`: in an interval
+of length `y = x^ε` the binomial ledger certifies no better than `(1 − ε) y log x` for the prime mass,
+against `y` for the truth and `2y` for the sieve. -/
+theorem log_choose_ge {x y : ℕ} (hy : 1 ≤ y) :
+    (y : ℝ) * Real.log (((x : ℝ) + 1) / y) ≤ Real.log ((x + y).choose y) := by
+  have hy0 : (0 : ℝ) < y := by exact_mod_cast hy
+  have hx0 : (0 : ℝ) < (x : ℝ) + 1 := by positivity
+  have hc := Nat.pow_le_choose (α := ℝ) y (x + y)
+  rw [show x + y + 1 - y = x + 1 by omega] at hc
+  push_cast at hc
+  have hf : ((y.factorial : ℕ) : ℝ) ≤ (y : ℝ) ^ y := by exact_mod_cast Nat.factorial_le_pow y
+  have hfpos : (0 : ℝ) < (y.factorial : ℕ) := by exact_mod_cast y.factorial_pos
+  have hle : (((x : ℝ) + 1) / y) ^ y ≤ (((x + y).choose y : ℕ) : ℝ) := by
+    rw [div_pow]
+    exact (div_le_div_of_nonneg_left (by positivity) hfpos hf).trans hc
+  rw [← Real.log_pow]
+  exact Real.log_le_log (by positivity) hle
 
 /-- **Binomial multiplicities are capped.** If `p^m` divides `C(N, k)` with `k ≤ N`, then
 `p^m ≤ N`. -/

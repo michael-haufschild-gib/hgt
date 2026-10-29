@@ -235,3 +235,7 @@ theorem bounded_heat_iff_consecutive_bounded :
   exact ((zetaKernel_finiteIndex_tfae Nat.prime_two Nat.prime_three (by norm_num)).out 0 3).symm
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.collision_mass_from_minimal_count
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.tendsto_collisionMass_iff_consecutive
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.bounded_heat_iff_consecutive_bounded

@@ -115,6 +115,81 @@ individual correlation asymptotics. Its window, centering, parity, and normaliza
    See [count precision](../ArithmeticOfSquareRootPrecision/PrecisionClassesAndTheCount.lean) and
    [tower rigidity](../ArithmeticOfSquareRootPrecision/TowerPositivityIsPrecisionExact.lean).
 
+## Arithmetic Green norm and exact Schur cost
+
+For a period $Q\ge1$, coefficients $a_i$ on $1\le i<Q$, and
+$P_a(\zeta)=\sum_i a_i\sum_{r<i}\zeta^r$, define the complete divisor-conductor energy
+$$
+E_Q(a)=\sum_{m\mid Q,\ m\ne1}\sum_{i,j}a_i a_jG_m(i,j).
+$$
+Its coefficient reserve has an exact positive remainder:
+$$
+4E_Q(a)=Q\left[\left(\sum_i a_i\right)^2+\sum_i a_i^2\right]
++\sum_{m\mid Q,\ m\ne1}\sum_{\zeta\ {\rm primitive}\ m}|(1+\zeta)P_a(\zeta)|^2.
+$$
+Thus the completed arithmetic Gram controls total mass and coefficient square mass simultaneously.
+Its interior radical is zero. The proof uses the complementary multiplier $1-\zeta$, whose
+Parseval energy is exactly the bracketed coefficient norm.
+See [CyclotomicCoercivity](CyclotomicCoercivity.lean), especially
+`divisorGramEnergy_completion`, `divisorGramEnergy_coercive`, and
+`divisorGramEnergy_eq_zero_iff`.
+
+The same form has a local inverse. Extend an interior coupling $b$ by $b_0=b_Q=0$, and put
+$$
+(Lb)_i=2b_i-b_{i-1}-b_{i+1},\qquad
+D_Q(b)=\sum_{0\le i<Q}(b_{i+1}-b_i)^2.
+$$
+Then $B_Q^{-1}=L/Q$ on the interior, and
+$$
+E_Q(a)-2\sum_i a_i b_i+\frac{D_Q(b)}Q
+=E_Q\left(a-\frac{Lb}Q\right)\ge0.
+$$
+Consequently
+$$
+\max_a\left(2\sum_i a_i b_i-E_Q(a)\right)=\frac{D_Q(b)}Q,
+$$
+with equality exactly at $a_i=(Lb)_i/Q$ on every interior coordinate.
+The two boundary differences belong to the cost. This gives an attained, exact payment for a
+mixed coupling in the actual completed arithmetic Gram.
+See [DirichletSchurCost](DirichletSchurCost.lean), especially
+`bridgePotential_inverse`, `bridgeSchur_completion`, and `bridgeSchurCost_isGreatest`.
+
+Application to a completed Weil block requires identification of its coupling in these coordinates
+and an arithmetic bound for this variation energy. The Green inverse alone supplies neither.
+
+## Accumulation, dual variation, and a joint truncation bound
+
+For arbitrary real increments $c_j$, let
+$$
+C_T(c)=\sum_{1\le n\le T}\frac{(\sum_{j\le n}c_j)^2}{n(n+1)}.
+$$
+The exact coordinate change $a_j=c_j/j$, $Q=T+1$, gives
+$$
+E_{T+1}(a)=(T+1)C_T(c),\qquad
+4C_T(c)=\left(\sum_{j\le T}\frac{c_j}{j}\right)^2+
+\sum_{j\le T}\frac{c_j^2}{j^2}+\frac{R_{T+1}(a)}{T+1}.
+$$
+Thus accumulation has an explicit coercive norm and a positive cyclotomic remainder.
+Its mixed-coupling payment is also local:
+$$
+2\sum_{j\le T}c_jb_j-C_T(c)\le D_{T+1}(w),\qquad
+w_j=jb_j\ (1\le j\le T),\quad w_0=w_{T+1}=0.
+$$
+Both conductor factors cancel exactly. The cost concerns variation of the weighted coupling,
+not its absolute coordinate size.
+
+For the actual Euler-deletion increments at $1\le X<M$, write $F_{X,M}$ for the full
+error energy. Its literal coordinate tail obeys the simultaneous estimate
+$$
+0\le F_{X,M}-C_T(c)\le\frac{(M+1)^2}{T+1}.
+$$
+This follows from the source bound $|1-\mathrm{modular}(X,M,n)|\le M+1$ and the
+telescoping carrier tail. It specifies a horizon large enough for any prescribed truncation
+allowance, including when the outer cutoff grows. The estimate does not bound the accumulated
+source energy at the inner-cutoff strength required by the Euler-deletion criterion.
+See [DivisorCovariance](DivisorCovariance.lean), particularly `cumulativeEnergy_completion`,
+`cumulativeEnergy_schur_bound`, and `fullErrorEnergy_truncation_bounds`.
+
 ## Place in the research
 
 | Programme | Connection |
@@ -170,7 +245,8 @@ settling the full questions.
 
 ## Tools to develop
 
-- Explicit inverse and coercivity laws for arithmetic Grams, including boundary and radical data.
+- Source residual estimates in the arithmetic Green norm; inverse and coercivity laws for partial
+  conductor families and irregular arithmetic packets, including their radicals and boundaries.
 - Native successor estimates with rank-dependent reserves and controlled degeneracy.
 - Completion theorems combining divergent signed channels on the correct domain.
 - Arithmetic covariance estimates after accumulation, with exact tail control.

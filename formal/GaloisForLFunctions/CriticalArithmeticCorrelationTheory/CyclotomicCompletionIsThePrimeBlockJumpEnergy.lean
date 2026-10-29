@@ -47,7 +47,6 @@ theorem completedCyclotomicGram_eq_primePacketJumpEnergy
       refine sum_congr rfl fun q _ => ?_
       rw [Nat.cast_min]
       field_simp [hQR]
-      <;> ring
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 

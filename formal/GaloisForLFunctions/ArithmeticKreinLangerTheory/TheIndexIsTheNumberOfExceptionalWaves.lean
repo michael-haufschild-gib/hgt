@@ -257,3 +257,6 @@ theorem negIndex_eq_card_waves {p : G → ℂ} (hp : IsPosDefKernel p) (χ : Fin
     exists_waves_bounded hp χ ω u⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.minimal_waves_eq_outerNodes
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_eq_card_waves

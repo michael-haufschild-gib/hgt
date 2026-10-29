@@ -275,3 +275,6 @@ theorem golden_battery :
       ((unitary_iff_twistTower_upper goldenDatum).mpr h)⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.unitary_iff_twistedBaseChanges_upper
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.golden_battery

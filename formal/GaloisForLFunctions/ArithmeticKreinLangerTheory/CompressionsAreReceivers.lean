@@ -168,3 +168,7 @@ theorem negIndex_compress_euler {κ : ℕ} {p₀ : HeckeLattice → ℂ} (hp₀ 
   rw [hall, card_univ, Fintype.card_fin]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.compress_traceKernel_charPoly
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.hat_euler_eq_zero_iff
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_compress_euler

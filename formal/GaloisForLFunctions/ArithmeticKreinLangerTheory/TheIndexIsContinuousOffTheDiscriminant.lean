@@ -134,3 +134,7 @@ theorem collision_drops_index {s : ℂ} (hs : 0 < s.re) :
     ring
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.eventually_negIndex_eq_of_tendsto
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.vanishing_weight_drops_index
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.collision_drops_index

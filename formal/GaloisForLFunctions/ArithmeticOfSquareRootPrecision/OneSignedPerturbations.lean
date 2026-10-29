@@ -145,3 +145,11 @@ theorem count_add_of_abscissaOfAbsConv_lt_half {a δ : ℕ → ℝ} (ha : Count 
   (count_add_iff_mem_sqrtClass ha δ).mpr (mem_sqrtClass_of_abscissaOfAbsConv_lt_half hδ h)
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision
+
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.count_add_iff_mem_sqrtClass
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.precisionExponent_vonMangoldt
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.count_signGauge_iff
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.count_torusGauge_iff
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.count_iff_of_vonMangoldt_le
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.not_count_add_of_half_lt_abscissaOfAbsConv
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.count_add_of_abscissaOfAbsConv_lt_half

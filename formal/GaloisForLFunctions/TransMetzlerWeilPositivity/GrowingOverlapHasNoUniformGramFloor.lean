@@ -1,6 +1,8 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ExplicitPlateauParameters
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ExactSuccessorShellWindows
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheUniversalThresholdIsFinite
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanCrossTermsVanishOnPeriodicProfiles
+import Mathlib.MeasureTheory.Group.Integral
 
 /-!
 # Growing overlap has no uniform coefficient-mass lower bound
@@ -97,6 +99,74 @@ theorem plateauAdjacentMassRatio_eq {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤
   field_simp [integral_transMetzlerProfile_sq_pos.ne', hw.ne']
   ring
 
+/-- The last two centers are at most `2/c` apart in profile coordinates. -/
+theorem adjacentProfileLag_le_two_div {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) :
+    adjacentProfileLag c N ≤ 2 / c := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hratio : ((N + 1 : ℕ) : ℝ) / N ≤ 2 := by
+    rw [div_le_iff₀ hN0]
+    push_cast
+    have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+    linarith only [hN1]
+  have heq : adjacentProfileLag c N =
+      firstExteriorOverlap N * (((N + 1 : ℕ) : ℝ) / N) / c := by
+    dsimp only [adjacentProfileLag, firstExteriorOverlap]
+    field_simp [hN0.ne', hc.ne'] <;> ring
+  rw [heq]
+  apply div_le_div_of_nonneg_right _ hc.le
+  have h := mul_le_mul (firstExteriorOverlap_lt_one hN).le hratio
+    (by positivity : (0 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) / N) zero_le_one
+  simpa only [one_mul] using h
+
+/-- A quantitative loss of the Gram floor: adjacent differences have normalized mass
+at most a fixed profile constant times `c⁻²`. -/
+theorem plateauAdjacentMassRatio_le_inv_sq {c : ℝ} (hc : 2 ≤ c) {N : ℕ} (hN : 1 ≤ N) :
+    plateauAdjacentMassRatio c N ≤
+      4 * (8000 : ℝ) ^ 2 / ((∫ u, transMetzlerProfile u ^ 2) * c ^ 2) := by
+  have hc0 : 0 < c := lt_of_lt_of_le (by norm_num) hc
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have ht0 : 0 ≤ adjacentProfileLag c N := by
+    apply div_nonneg _ (div_pos hc0 (by positivity)).le
+    exact sub_nonneg.mpr (Real.log_le_log hN0 (by exact_mod_cast Nat.le_succ N))
+  have ht := adjacentProfileLag_le_two_div hc0 hN
+  have ht1 : adjacentProfileLag c N ≤ 1 :=
+    ht.trans ((div_le_one hc0).mpr hc)
+  have hM := integral_transMetzlerProfile_sq_pos
+  have hmod := integral_sub_shift_sq_le_of_supp contDiff_transMetzlerProfile.continuous
+    abs_transMetzlerProfile_sub_le (fun u hu => transMetzlerProfile_eq_zero hu)
+    zero_le_one ht0
+  simp only [sub_zero] at hmod
+  have heq : plateauAdjacentMassRatio c N =
+      (∫ u, (transMetzlerProfile u -
+        transMetzlerProfile (u + adjacentProfileLag c N)) ^ 2) /
+          (2 * ∫ u, transMetzlerProfile u ^ 2) := by
+    rw [plateauAdjacentMassRatio_eq hc0 hN,
+      integral_sub_shift_sq_eq contDiff_transMetzlerProfile.continuous
+        hasCompactSupport_transMetzlerProfile]
+    change 1 - bumpCorr transMetzlerProfile (adjacentProfileLag c N) /
+        (∫ u, transMetzlerProfile u ^ 2) =
+      (2 * (∫ u, transMetzlerProfile u ^ 2) -
+        2 * bumpCorr transMetzlerProfile (adjacentProfileLag c N)) /
+          (2 * ∫ u, transMetzlerProfile u ^ 2)
+    field_simp [hM.ne'] <;> ring
+  rw [heq]
+  have hsq : adjacentProfileLag c N ^ 2 ≤ (2 / c) ^ 2 :=
+    pow_le_pow_left₀ ht0 ht 2
+  calc
+    _ ≤ ((8000 : ℝ) ^ 2 * adjacentProfileLag c N ^ 2 *
+        (1 + adjacentProfileLag c N)) / (2 * ∫ u, transMetzlerProfile u ^ 2) :=
+      div_le_div_of_nonneg_right hmod (mul_nonneg (by norm_num) hM.le)
+    _ ≤ ((8000 : ℝ) ^ 2 * adjacentProfileLag c N ^ 2 * 2) /
+        (2 * ∫ u, transMetzlerProfile u ^ 2) :=
+      div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (by linarith only [ht1])
+          (mul_nonneg (sq_nonneg _) (sq_nonneg _))) (by positivity)
+    _ = (8000 : ℝ) ^ 2 * adjacentProfileLag c N ^ 2 /
+        (∫ u, transMetzlerProfile u ^ 2) := by field_simp [hM.ne'] <;> ring
+    _ ≤ (8000 : ℝ) ^ 2 * (2 / c) ^ 2 / (∫ u, transMetzlerProfile u ^ 2) :=
+      div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hsq (sq_nonneg _)) hM.le
+    _ = _ := by field_simp <;> ring
+
 private theorem tendsto_succ_div_nat :
     Tendsto (fun N : ℕ => ((N + 1 : ℕ) : ℝ) / N) atTop (𝓝 1) := by
   have hsmall : Tendsto (fun N : ℕ => (1 : ℝ) / N) atTop (𝓝 0) :=
@@ -171,5 +241,6 @@ end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.atomicTest_adjacentDipole
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.plateauAdjacentMassRatio_eq
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.plateauAdjacentMassRatio_le_inv_sq
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.tendsto_plateauAdjacentMassRatio
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.no_uniform_plateau_atomic_mass_floor

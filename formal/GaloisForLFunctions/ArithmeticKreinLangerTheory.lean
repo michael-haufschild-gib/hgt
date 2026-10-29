@@ -17,6 +17,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityTwinIsGeometricO
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.PointwiseClosedStatementsAreTwinBlind
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersHaveUnboundedNyquistWindows
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.ChebyshevsProducerPassesTheIntegerChebyshevCap
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -33,7 +34,7 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   `𝔽_q[T]` and its second rung, and the index as the number of exceptional waves of a count.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
   the global law over `ℤ`; compressions as receivers; the Bézout ledger of both producers and its
-  multiplicity caps; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index
+  multiplicity caps; Chebyshev's divisibility producer past the integer Chebyshev cap; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index
   zero; the parity twin over `ℤ` is a vertical shift on one prime tower, on no two primes, and in the
   Bohr closure; pointwise-closed statements that hold for every vertical shift hold for every unitary
   twist, the flips `ω_p` included.

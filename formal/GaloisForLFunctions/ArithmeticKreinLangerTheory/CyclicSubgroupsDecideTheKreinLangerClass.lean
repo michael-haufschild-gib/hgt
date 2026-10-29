@@ -665,3 +665,8 @@ theorem cyclic_locality_fails_off_class :
   norm_num at h4
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_eq_zero_of_forall_zpowers
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_zpowers_eq_of_not_aliased
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.coordinate_locality_fails
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.cyclic_locality_fails_off_class

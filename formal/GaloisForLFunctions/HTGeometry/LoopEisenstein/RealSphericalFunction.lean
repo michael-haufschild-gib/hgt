@@ -109,3 +109,9 @@ theorem sphericalFunction_mul_compact (L : AffineA1.Weight) (g : LoopSL2 ℝ) (k
 end
 
 end GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2
+
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.realCompact_inf_positiveBorel
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.sphericalFunction_of_factors
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.sphericalFunction_borel_mul
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.sphericalFunction_mul_compact
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.sphericalFunction_ne_zero

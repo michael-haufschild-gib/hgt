@@ -295,3 +295,8 @@ theorem negIndex_orbitKernel_eq_iSup_twoPrime_towers (Z : ZeroConfig) (hZ : Temp
   exact ⟨u, hmem, negIndex_orbitKernel_eq_iSup_fine Z hZ hf hu fun n => (hpos n).ne'⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_orbitKernel_eq_iSup_fine
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.eventually_negIndex_fine_eq
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.riemannHypothesis_iff_zetaKernel_consecutive
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_orbitKernel_eq_iSup_twoPrime_towers

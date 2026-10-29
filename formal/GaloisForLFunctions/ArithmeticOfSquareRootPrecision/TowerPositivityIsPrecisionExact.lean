@@ -83,3 +83,10 @@ theorem count_and_not_towerIndexZero_add_inv {p : ℕ} (hp : p.Prime) :
   simp [powerWeight] at this
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision
+
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.smul_powerWeight_mem_sqrtClass_iff
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.deciding_input_necessary_properties
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.producers_are_precision_blind
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.towerIndexZero_necessary_properties
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.towerIndexZero_add_iff
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.count_and_not_towerIndexZero_add_inv

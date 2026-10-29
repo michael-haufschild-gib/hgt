@@ -96,8 +96,7 @@ private theorem affine_of_dirichletDifference_eq_zero (Q : ℕ) (b : ℕ → ℝ
     rcases k with _ | k
     · simp
     rcases k with _ | k
-    · simp only [Nat.cast_one]
-      ring
+    · ring
     have hprev := ih k (by omega) (by omega)
     have hmid := ih (k + 1) (by omega) (by omega)
     have hd := hb (k + 1) (mem_Ico.mpr ⟨by omega, by omega⟩)
@@ -149,7 +148,7 @@ private theorem finite_green_identity (b : ℕ → ℝ) (N : ℕ) :
   induction N with
   | zero => simp [dirichletEnergy]; ring
   | succ N ih =>
-    rw [dirichletEnergy, sum_range_succ]
+    rw [dirichletEnergy, Finset.sum_range_succ]
     change dirichletEnergy (N + 1) b + (b (N + 1 + 1) - b (N + 1)) ^ 2 = _
     rw [ih, sum_Icc_succ_top (by omega)]
     simp only [dirichletDifference, Nat.add_sub_cancel]
@@ -163,7 +162,7 @@ theorem sum_mul_dirichletDifference {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ)
   · omega
   have hset : Ico 1 (N + 1) = Icc 1 N := by ext i; simp
   rw [hset, finite_green_identity]
-  simp only [hb0, hbQ, zero_pow, zero_mul, mul_zero, add_zero, sub_zero]
+  simp [hb0, hbQ]
 
 /-- The quadratic arithmetic form pairs coefficients with their exact potential. -/
 theorem divisorGramEnergy_eq_sum_potential {Q : ℕ} (hQ : 0 < Q) (a : ℕ → ℝ) :
@@ -243,7 +242,8 @@ theorem bridgePotential_bridgeInverse {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ)
     bridgePotential Q (bridgeInverse Q b) i = b i := by
   have h := bridgePotential_inverse hQ (interiorExtension Q b)
     (by simp [interiorExtension]) (by simp [interiorExtension]) i (mem_Ico.mp hi).2.le
-  simpa only [bridgeInverse, interiorExtension, if_pos hi] using h
+  change bridgePotential Q (fun j => dirichletDifference (interiorExtension Q b) j / Q) i = b i
+  simpa only [interiorExtension, if_pos hi] using h
 
 theorem divisorGramEnergy_bridgeInverse {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ) :
     divisorGramEnergy Q (bridgeInverse Q b) = bridgeSchurCost Q b :=

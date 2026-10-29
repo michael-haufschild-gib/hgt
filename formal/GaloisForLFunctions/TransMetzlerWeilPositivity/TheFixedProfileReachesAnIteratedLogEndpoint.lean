@@ -108,7 +108,6 @@ theorem overlapGrowthSuperGevrey_endpoint :
     _ = c / (Real.log (Real.log N) * Real.log (Real.log (Real.log N)) ^ 2) := by
       dsimp only [c, endpointSuperGevreyRatio]
       field_simp [(zero_lt_one.trans_le hL).ne', (zero_lt_one.trans_le hu).ne']
-      <;> ring
     _ ≤ _ := div_le_div_of_nonneg_left (zero_le_one.trans hc) hdpos hden
 
 /-- The endpoint is strictly smaller than every previously displayed
@@ -133,7 +132,6 @@ theorem endpointSuperGevreyRatio_isLittleO {β : ℝ} (hβ : 2 < β) :
     dsimp only [endpointSuperGevreyRatio, superGevreyRatio]
     rw [hp]
     field_simp [hL.ne', hu.ne', (Real.rpow_pos_of_pos hu (β - 2)).ne']
-    <;> ring
   exact Asymptotics.isLittleO_of_tendsto'
     (by
       filter_upwards [endpoint_loglog_atTop.eventually_gt_atTop 0,

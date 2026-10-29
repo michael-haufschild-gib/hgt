@@ -268,3 +268,12 @@ theorem exists_intDirichlet_vanishing_on_trivial_lattice {M N : ℕ} (hM : 0 < M
           rw [← pow_succ']; congr 1; omega
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision
+
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.nairLattice_eq
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.isLeast_positive_nairIntegral
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.isGreatest_log_inv_nairIntegral
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.nairIntegral_eq_intDirichlet_one
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.one_div_lcmUpto_pow_le_abs_intDirichlet
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.exists_intDirichlet_eq_one_div_lcmUpto_pow
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.card_lt_of_intDirichlet_eq_zero
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.exists_intDirichlet_vanishing_on_trivial_lattice

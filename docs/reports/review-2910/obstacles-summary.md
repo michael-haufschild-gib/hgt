@@ -7,14 +7,14 @@ Status: 29 October 2026, corpus checkpoint `7f191801a3` plus working tree. **RH 
 - **global**: it acts on at least two primes and at unbounded overlap; locality is twin-blind;
 - **point-side**: a producer must vanish at the primes, not at the zeros, and bound one parity class from above.
 
-One unconditional fact changes the map. The complete Weil form of \(\zeta\) is positive definite on atomic families at every fixed overlap ratio \(0<c\le1+10^{-18}\), past the Metzler threshold, where its Liouville twin is negative [L/S]. RH is the same positivity at overlap \(c_N=(\log\log N)(\log\log\log N)^{\beta}\), \(\beta>2\) [L]. In this language the distance to RH is **overlap growth**.
+One unconditional fact changes the map. For one explicit plateau, the complete Weil form of \(\zeta\) is eventually positive definite at every fixed scaled width \(0<c<c_*\), with \(c_*>1+10^{-16}\); at \(c=1+10^{-16}\) its matrix floor is \(1/400\) [K]. The exact reference floor and full Young-parameter family determine \(c_*\); it is a certified-method boundary, not the actual spectral boundary. The Liouville twin is negative already for \(c\ge1/2\) [S]. RH is the same positivity at overlap \(c_N=(\log\log N)(\log\log\log N)^{\beta}\), \(\beta>2\) [L]. In this language the distance to RH is **overlap growth**.
 
-Coverage: 31 live routes, 18 standalone candidates, PW-B. Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence: corpus searches and Lean statements; no builds. **[L]**/**[S]**/**[K]** as in the [frontier map](../rh-current-frontier-map.md); **[Lean]** = statement read, integration not assessed; **(inference)** = conclusion of this review. Record: [working log](../../../logs/review-2910b-research-2026-10-29.md).
+Coverage: 31 live routes, 18 standalone candidates, PW-B. Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence: corpus searches and Lean statements, with individual Lean and transitive-axiom audits for [K] entries. **[L]**/**[S]**/**[K]** as in the [frontier map](../rh-current-frontier-map.md); **[Lean]** = statement read, integration not assessed; **(inference)** = conclusion of this review. Record: [working log](../../../logs/review-2910b-research-2026-10-29.md).
 
 ## What the corpus establishes
 
 - **Selection** [L]; the margin \(2\log2\) is sharp and shared at its maximum by single flips \(p\ge11\); finite, prime-tail, sparse and cofinite flips are classified [L]; every flip fails full Weil positivity [Lean].
-- **Selective positivity at bounded overlap**: complete positivity at every fixed \(c\in(0,1+10^{-18}]\) for one plateau [L]; the Liouville twin is negative for \(c\ge1/2\) [S]; the Markov form fails above \(e/2\pi\) [L].
+- **Selective positivity at bounded overlap**: complete positivity at every fixed \(c\in(0,c_*)\), \(c_*>1+10^{-16}\), for one plateau [K]; the Liouville twin is negative for \(c\ge1/2\) [S]; the Markov form fails above \(e/2\pi\) [L].
 - **RH-complete overlap**: \(c_N=(\log\log N)(\log\log\log N)^\beta\), \(\beta>2\), for one profile [L]; compact Gevrey-\(\le1\) profiles vanish [S]; finite support bounds the atomic index uniformly in \(c\); a tempered finite-support model is negative at every \(c\) [S].
 - **Index theory** [S]: \(\kappa(K_\zeta)=\#\)right zeros; two primes carry it; Nyquist and blind-prime laws; fine towers decide; locality is twin-blind [L]; exceptional waves count the index; index is priced by \(\mathcal E_{\rm crit}\); index zero is the one-sided \(\psi\) count, and already the odd Liouville class's upper count.
 - **Precision** [S/L]: the count has the square-root class as stabilizer, tower positivity the trivial one; integrality over \(\mathbb Z\) is exact and its exponent is \(\Theta\); sup-norm certificates must vanish at small rationals; monotone inversion runs at Mertens precision; the Stirling error splits into smooth, monotone and sawtooth parts.
@@ -118,7 +118,7 @@ Each item is equivalent to finitely many off-line zeros, equivalently to RH abov
 
 | ID | Missing result | Why current work stops | Payoff |
 |---|---|---|---|
-| I1 | **Overlap growth**: complete positivity at every fixed ratio beyond \(1+10^{-18}\), and a floor uniform in \(c\) up to \(\log\log N\). | The proof is perturbative around touching: errors \(O((wN)^2)\) against a floor \(1/25\) and a defect reserve \(\ge1/128000\). | The first non-perturbative large-overlap theory; at the super-Gevrey rate it is RH (Q1). |
+| I1 | **Overlap growth**: complete positivity beyond the certified boundary \(c_*\), and a floor uniform in \(c\) up to \(\log\log N\). | The fully optimized certified floor \(L(c)\) vanishes at \(c_*\). Scalar attainment proves the fixed Young-bound family cannot certify positivity beyond it. | The first non-perturbative large-overlap theory; at the super-Gevrey rate it is RH (Q1). |
 | I2 | **Flip selectivity at fixed ratio**: are \(\omega_p\), \(p\ge11\), and cofinite flips positive at fixed \(c\)? | No module evaluates flips on atomic complete forms. | Decides whether bounded overlap has a second selective layer beyond the pole. |
 | I3 | **Bounded-overlap completeness**: does positivity at every fixed \(c\), or at \(c_N=O(\log\log N)\), imply RH or finite support? | The synthesis needs non-quasi-analytic compact profiles; the tempered countermodel lacks \(\zeta\)'s zero density. | Locates the exact overlap at which positivity becomes RH. |
 | I4 | **Trans-threshold pair energy** \(E(1/9)\le4\). | Signed coalescent pair sum; one-sided sieves give nothing. | \(70\%\) (2.5). |
@@ -210,15 +210,15 @@ The strip \(1/8<\operatorname{Re}\rho<7/8\) is the external claim for Dirichlet 
 <a id="q1"></a>
 ### Q1. What controls the complete Weil form at large overlap?
 
-**Exact object.** Atomic families \(f_x=\sum_{n\le N}x_n\varphi(\cdot-\log n)\) at width \(c/N\). Proved: eventual positive definiteness at every fixed \(c\in(0,1+10^{-18}]\) for \(\varphi_0=\mathrm{plateau}(1/1000)\) [L]. Needed for RH: positivity at \(c_N=(\log\log N)(\log\log\log N)^\beta\), \(\beta>2\), for the Steklov profile [L].
+**Exact object.** Atomic families \(f_x=\sum_{n\le N}x_n\varphi(\cdot-\log n)\) at width \(c/N\). Proved: eventual positive definiteness at every fixed \(c\in(0,c_*)\), \(c_*>1+10^{-16}\), for \(\varphi_0=\mathrm{plateau}(1/1000)\) [K]. Needed for RH: positivity at \(c_N=(\log\log N)(\log\log\log N)^\beta\), \(\beta>2\), for the Steklov profile [L].
 
-**Why now.** It is the only programme with a proved selective sign on the full form: on \([1/2,1+10^{-18}]\) the form is positive, the Liouville twin negative, the Markov form negative. The proof is perturbative around touching. The question has three layers, in order:
+**Why now.** It is the only programme with a proved selective sign on the full form: on \([1/2,c_*)\) the form is positive, the Liouville twin negative, the Markov form negative. The proof is perturbative around touching. The question has three layers, in order:
 
-1. **Every fixed ratio** (I1): non-perturbative positivity at each fixed \(c>1+10^{-18}\), with the floor as a function of \(c\) (W01).
+1. **Every fixed ratio** (I1): non-perturbative positivity at each fixed \(c>c_*\), with the floor as a function of \(c\) (W01).
 2. **Selectivity** (I2): whether single flips \(\omega_p\) are positive at fixed \(c\) (W02). If they are, the pole is the only selective input at bounded overlap and \(\zeta\)-selectivity must come from overlap growth. If not, bounded overlap has a second selective layer.
 3. **Uniformity in \(c\)** up to \(\log\log N\) (I3), where the separated prime error of §8 of the route report must enter (inference).
 
-**First useful answer.** The largest \(c\) the present scheme reaches; a theorem or counterexample for \(\omega_{11}\) at \(c=1\); or a non-perturbative description of the complete atomic matrix at fixed large \(c\) (for example as a Toeplitz-plus-Ramanujan operator in conductor coordinates) with its spectral floor.
+**Certified answer.** W01 identifies the unique zero of the fully optimized floor and proves its exact positive-certificate range. Further targets include other-prime flip thresholds and a non-perturbative description of the complete atomic matrix at fixed large \(c\) (for example as a Toeplitz-plus-Ramanujan operator in conductor coordinates) with its spectral floor.
 
 **Payoff.** A large-overlap theory of the complete form. At the super-Gevrey rate it is RH; short of that, the location of the exact overlap where positivity becomes RH-strength.
 

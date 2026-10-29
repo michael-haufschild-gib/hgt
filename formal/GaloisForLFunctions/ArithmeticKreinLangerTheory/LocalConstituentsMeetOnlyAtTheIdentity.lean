@@ -264,3 +264,7 @@ theorem rankOne_axis_pair :
   simpa using negIndex_add_pairKernel_eq_one isPosDefKernel_zero hχ one_ne_zero
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_eq_zero_or_top_of_isAxisSupported
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_localAssembly_eq_top
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.rankOne_axis_pair

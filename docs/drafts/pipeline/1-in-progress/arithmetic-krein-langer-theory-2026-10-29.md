@@ -47,7 +47,7 @@ locality, and must not duplicate HKT modules.
   `AttainedDepthIsSeenByAlmostEveryPrime`, `IntegralityProducesLinearCounts` (Bézout ledger,
   binomial multiplicity cap, divisibility is parity-blind), `StepanovsOrderOverTheFiniteField`,
   `TheParityTwinIsGeometricOnlyInTheBohrClosure`, `PointwiseClosedStatementsAreTwinBlind`, `TheFunctionFieldCeilingIsExact` (exact ceiling and the
-  lower half of the second rung over `𝔽_q[T]`), `FineTowersHaveUnboundedNyquistWindows`.
+  lower half of the second rung over `𝔽_q[T]`), `FineTowersHaveUnboundedNyquistWindows`, `ChebyshevsProducerPassesTheIntegerChebyshevCap`.
 
 ## Open (RH/LH-deep, recorded in README §9)
 Producer over ℤ; Lindelöf bridge from the kernel; a geometric parity twin beyond vertical shifts;
@@ -57,4 +57,4 @@ is unattained (attained depth and fine towers are settled; the collision law is 
 minimal count).
 
 ## Log
-- 2026-10-29 — created; README draft written; nineteen modules in the umbrella (one by another agent); README tools table covers every §2.8 tool.
+- 2026-10-29 — created; README draft written; twenty modules in the umbrella (one by another agent); README tools table covers every §2.8 tool.

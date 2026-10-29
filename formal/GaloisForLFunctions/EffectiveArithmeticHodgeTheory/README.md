@@ -270,6 +270,35 @@ the regulator anomaly (AIT).
   for every synthesis-based receiver: the negative family is synthesized in Gram norm, not one test
   at a time.
 
+- **C′. Index carriers of finite spectra** (`IndexCarriersOfFiniteSpectra`). A family carries a
+  finite set `S` of characters when its evaluation matrix has full row rank; then the Gram matrix of
+  every Hermitian exponential sum over `S` on it has exactly the index of the sum
+  (`hermNegIndex_gram_expSum_eq_of_carries`). The window `g⁰, …, g^{|S|−1}` of an element separating
+  `S` carries it (Lagrange), and so does the box `gⁱhʲ`, `i, j < |S|`, of two commuting elements
+  separating `S` jointly (a generic linear form `χ(g) + tχ(h)` and the binomial expansion)
+  (`window_carries`, `box_carries`). On `ℚ_{>0}` any two primes separate the zero characters, so the
+  box `pⁱqʲ` of side `|S|` reads the index (`hermNegIndex_twoPrime_box_eq`).
+- **D. The Bézout theorem of `𝔾_m(ℚ)`** (`TheBezoutTheoremOfTheMultiplicativeGroup`). The points
+  are the Frobenius progressions `s_j = 2πij/log p`, where the Euler factor `1 − p^{−s}` vanishes;
+  the degree of `D(s) = Σ_{n≤N} a_n n^{−s}` is `log N`. A nonzero Dirichlet polynomial with complex
+  coefficients vanishing to order `m_p` at all but finitely many points of the progression of `p`,
+  for `p` in a finite set of primes, has `∏ p^{m_p} ≤ N`, i.e. `Σ m_p log p ≤ log N`
+  (`prod_pow_le_of_vanishesAlong`, `sum_mul_log_le_of_vanishesAlong`); `1 − p^{−s}` attains it
+  (`eulerFactor_vanishesAlong`). Vanishing on the progression is the vanishing of every `p`-tower
+  sum `Σ_k a(p^k n)` (exponential sums on `ℤ` with the distinct frequencies `log n/log p` mod `1`,
+  `fiber_sum_eq_zero`), which divides `D` by `1 − p^{−s}` with quotient of length `N/p`
+  (`towerQuot_sub`, `towerQuot_eq_zero`); the derivative identity `dirDeriv_quot` lowers the order
+  on the progression of `p` and keeps it on the others, which meet it only at `s = 0` because
+  `log q/log p` is irrational (`cpow_neg_frobPoint_ne_one`).
+
+- **C. The bandwidth dictionary** (built in SSHA: `OverlapCoordinates`, `TheNormalizedAtomicTransform`).
+  The Fourier transform of an atomic family at unit-mass width `1/T` is the profile window times a
+  Dirichlet polynomial of length `N`, at every complex spectral argument
+  (`paperFT_atomicTest_at_height`); overlap `c = N/T`, bandwidth `log N/log T = 1 + log c/log T`
+  (`bandwidth_eq_one_add_log_overlap`); a fixed overlap has limiting bandwidth one
+  (`tendsto_bandwidth_fixed_overlap`); a compact profile of nonzero mass has nonzero window values
+  at arbitrarily large heights (`exists_paperFT_ne_zero_above`), so the height cut is soft.
+
 Targets:
 
 - **A′. The slowest schedule that reaches the index.** The Steklov schedules
@@ -278,12 +307,11 @@ Targets:
   are available outside their module; below the quasi-analytic rate a synthesis must use the
   arithmetic of `{log n}` (Möbius or Ramanujan cell weights) rather than Riemann sums of one
   profile; a signed transfer between the plateau and the Steklov profile.
-- **C. The bandwidth dictionary.** The Fourier transform of an atomic family is the profile window
-  times a Dirichlet polynomial of length `N`; overlap `c` at horizon `N` is height `N/c`, with the
-  normalization of the critical-line evaluation fixed.
-- **D. Arithmetic Stepanov at its ceiling.** What auxiliaries certified by a sup norm can reach, and
-  what multiplicity a size-controlled integer auxiliary can carry; the joint inversion of the
-  Stirling triple `(F, G, h)` of `log⌊y⌋! = F + G + h` beyond the sum of its separate bounds.
+- **D′. Arithmetic Stepanov beyond Bézout.** The existence half: an identity on the primes that
+  makes vanishing along their progressions cheap, as `x^q = x` does over `𝔽_q` (by D, vanishing
+  bought by linear algebra alone costs length `∏ p^{m_p}`, which is Chebyshev's count); what
+  auxiliaries certified by a sup norm can reach; the joint inversion of the Stirling triple
+  `(F, G, h)` of `log⌊y⌋! = F + G + h` beyond the sum of its separate bounds.
 - **E. The completed shell symbol at a macroscopic overlap.** At `c = 3/2` or `c = 2`, the action of
   the finitely many successor shells on growing Ramanujan packets, computed through the affine unit
   averages and the exact divisor jet with prime, Robin, Gamma and both poles combined before any
@@ -323,11 +351,21 @@ Targets:
 2. **Hasse principle with heights: which section certifies all zeros of height at most `T`?**
    Every tower of scale `ℓ < π/T`, sharply; explicitly the tower of `3^k/2^j` with `k = O(T)`; among
    prime towers, one of any `binom(κ_T, 2) + 1` primes. Open: a specific prime.
-3. **Bandwidth: how do overlap, length and height translate, and where is the threshold?**
-4. **W14: what can an auxiliary over `ℤ` certify, and where is precision lost?**
+3. **Bandwidth: how do overlap, length and height translate, and where is the threshold?** Overlap
+   `c` at horizon `N` is length `N` at height `N/c`, exactly at every spectral argument; the
+   threshold is `c = 1`, bandwidth one, and the window is soft (§7.2 C).
+4. **W14: what can an auxiliary over `ℤ` certify, and where is precision lost?** The zero estimate
+   is exact in both rings that carry the primes: in `ℤ` the Bézout ledger `Σ m_p log p ≤ log A`
+   (AKL), in the group ring the Bézout theorem `Σ m_p log p ≤ log N` for vanishing on Frobenius
+   progressions (D), sharp at the Euler factors. Neither loses precision; the count they produce is
+   Chebyshev's because nothing makes the vanishing conditions cheap. Open: the flatness identity.
 5. **W1: which statements of the theory are selective, and at which scale does selectivity first
    appear?** In the finite sections: the flip threshold `c*(p)`.
 6. **Converse Krein–Langer on `Γ`: is finite index a Krein–Langer decomposition for every kernel?**
+   Yes for orbit kernels of tempered configurations, with infinite on-line spectral support, for
+   absolutely convergent Bohr series and for finite exponential sums (HKT); every kernel of index `κ`
+   is positive minus `κ` squares of its own translates (HKT). Open: the covariant step for arbitrary
+   kernels, a common invariant negative subspace of all prime translations.
 7. **W1 at macroscopic overlap: does the completed successor-shell symbol at `c = 3/2` or `2` carry
    the cyclotomic floor with nonnegative weight, and what pays the Schur cost?**
 
@@ -335,12 +373,16 @@ Targets:
 
 ## 10. Tools
 
-To build: effective index carriers for finite exponential sums; the bandwidth dictionary; a
+To build: the bandwidth dictionary; a
 signed symbol calculus for the completed shell operator on Ramanujan packets, with composition and
 elimination rules that keep the Schur cost; the flip test on the atomic complete form; constrained
 inversion of the factorial identity; ceilings for integer auxiliaries.
 
-Built: certifying towers of given height in `⟨2, 3⟩` (`TheHassePrincipleWithHeights`); the
+Built: index carriers of finite spectra, tower windows and two-element boxes
+(`IndexCarriersOfFiniteSpectra`); the Bézout theorem for Dirichlet polynomials along Frobenius
+progressions, the tower quotient by an Euler factor, exponential sums on `ℤ` with distinct
+frequencies (`TheBezoutTheoremOfTheMultiplicativeGroup`); certifying towers of given height in
+`⟨2, 3⟩` (`TheHassePrincipleWithHeights`); the
 polarization of Weil's form on real tests, its two-sided continuity in the synthesis norms,
 Gram-matrix convergence of synthesized families, the compression of real atomic families into the
 atomic Gram matrix, and the transfer from synthesis to index (`TheExplicitSchedulesReachTheIndex`).

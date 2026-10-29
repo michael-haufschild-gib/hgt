@@ -93,8 +93,9 @@ theorem primeSquareTrial_complete_le {g : ℝ → ℝ} {w : ℝ}
       weilQuad (atomicTest N (fun n => primeSquareTrial p n / Real.sqrt n) g) +
         (∫ u, g u ^ 2) * primeSquareFlipBound p N := by
   have heq := primeSquareTrial_complete_correction hg hgc hsupp hsep p
+  have hmass : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg (g u)
   have hle := mul_le_mul_of_nonneg_left (primeSquareTrial_prime_correction_le hp N)
-    (integral_nonneg fun u => sq_nonneg (g u))
+    hmass
   change (∫ u, g u ^ 2) * _ ≤ (∫ u, g u ^ 2) * primeSquareFlipBound p N at hle
   linarith only [heq, hle]
 

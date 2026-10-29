@@ -62,3 +62,15 @@ These are actual source theorems, including prime powers. They do not identify t
 `L² A_m(k/L) = sum_{e | mL, e/gcd(e,L)=m} E_e(k)`.
 
 The same equality holds for every mixed entry of the centered Gram. Möbius inversion after dilation has only coefficients zero and one. Hence every finite rational-grid quadratic form is nonnegative for arbitrary real coefficients. Finer resolution adds primitive conductors; it does not preserve the original finite feature dimension. The module is wired into CACT. A final direct audit will include removal of an unreachable tactic.
+
+## Real-variable extension
+
+`TheRealOverlapCurvatureIsConditionallyNegative.lean` passed its final direct audit with only the standard axioms. Continuity and common rational-grid approximation prove `arithmeticOverlapGram_quadratic_nonneg` for every finite family of nonnegative real positions. Translation gives `arithmeticOverlapCurvature_conditional_quadratic_nonpos` for arbitrary real positions and zero-total-mass coefficients. On the first unit cell, `arithmeticOverlapGram_unit_cell` identifies the kernel exactly as `phi(m)*min(x,y)`.
+
+The module is wired into CACT. This is arithmetic-kernel positivity; the actual signed complete Weil comparison remains unresolved.
+
+## Literal prime-prefix specialization
+
+`ActualPrimePrefixesDominateTheirCyclotomicGram.lean` passed its final direct audit with only the standard axioms. `primeClassKappa_arithmeticPrefixResidueEnergy` identifies the exact unit mean with the complete primitive Gram divided by the totient. `eventually_actualPrimePrefixGram_dominates` transfers that identity to the literal von Mangoldt source, uniformly over all finite real coefficient packets and all prefix lengths, including height-dependent choices. The conductor and multiplicative window remain fixed. The module is wired into CACT.
+
+The complete Weil form subtracts its non-ratio prime term; this auxiliary lower bound does not supply the missing complete-form comparison.

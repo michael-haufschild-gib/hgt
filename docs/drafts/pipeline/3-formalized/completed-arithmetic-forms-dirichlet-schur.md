@@ -1,8 +1,8 @@
 # Exact Dirichlet inverse and Schur cost of the arithmetic bridge
 
 - **ID:** completed-arithmetic-forms-dirichlet-schur
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 
 ## Statement
 
@@ -66,4 +66,15 @@ exactly. The cost is the local variation of the weighted coupling, with no omitt
 - `discreteBridge_quadratic_nonneg`.
 - Finite summation and elementary second-difference algebra.
 
-Lean formalization is required before these conclusions count as established results.
+## Lean declarations
+
+- `CompletedArithmeticForms.bridgePotential_inverse`.
+- `CompletedArithmeticForms.bridgeSchur_completion`.
+- `CompletedArithmeticForms.bridgeSchur_equality_iff`.
+- `CompletedArithmeticForms.bridgeSchurCost_isGreatest`.
+- `CompletedArithmeticForms.cumulativeEnergy_schur_bound`.
+
+Modules: `GaloisForLFunctions/CompletedArithmeticForms/DirichletSchurCost.lean` and
+`GaloisForLFunctions/CompletedArithmeticForms/DivisorCovariance.lean`.
+Both pass `lake --old env lean` without output files. The transitive axiom sets contain
+only `propext`, `Classical.choice`, and `Quot.sound`.

@@ -676,3 +676,8 @@ theorem haarWeilInteraction_prime_edge_neg {X a b m : ℕ} (ha : 1 ≤ a)
     (Real.sqrt_pos.mpr (by exact_mod_cast (by omega : 0 < m)))
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.haarPrimeGammaReserve_ge
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.haarSectionProfile_roughWeil_add_remaining_graph_eq
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.haarSectionProfile_roughWeil_eq_interaction_matrix
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.haarWeilInteraction_prime_edge_neg

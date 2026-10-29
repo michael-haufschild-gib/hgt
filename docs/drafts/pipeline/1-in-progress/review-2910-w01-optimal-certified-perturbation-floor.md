@@ -69,16 +69,17 @@ For `r>0`, `A>0`, and `q≥0`, optimizing the entire Young family gives
 
 `d*=(√A+√(A+rq))²/r²`, `a*=r−√A/√d*`.
 
-The candidate optimized perturbation floor is `f−e(1+d*)` for `0≤e≤a*`.
-Indeed, Young optimization yields `E/M≥rd−2√(Ad)−R`, with `d=D/M`;
-its intersection with `E/M=f` is d*. Equality there would certify sharpness
-for the displayed family. This refinement, its actual-matrix transfer, and its
-maximal positive c-range remain unformalized. No stronger range is claimed.
+The exact scalar perturbation floor is `f−e(1+d*)` for `0≤e≤a*`.
+Young optimization yields `E/M≥rd−2√(Ad)−R`, with `d=D/M`;
+its intersection with `E/M=f` is d*. Scalar data at this intersection satisfy
+every Young inequality and attain the floor.
 
-The candidate tail completes the scalar optimization: for `a*≤e<r`, the floor
+For `a*≤e<r`, the exact tail floor
 is `−R−e−A/(r−e)`, attained at `D/M=A/(r−e)²`. For `e≥r`, no finite lower
 floor survives the Young family. If R>0, the tail is negative, so every positive
-certificate belongs to the first regime. These claims require formalization.
+certificate belongs to the first regime. These scalar claims are formalized in
+`HTGeometry/OptimalYoungDefectFloor.lean`; its six transitive-axiom checks contain
+only the standard axioms. Final plain check remains.
 
 Conductor-one minimality extends to every positive c with α<1: the next
 Ramanujan energy is separated by at least 2 log 2>1. Thus the natural domain is
@@ -86,3 +87,22 @@ Ramanujan energy is separated by at least 2 log 2>1. Thus the natural domain is
 bounds give q₀>4/5. On this domain f decreases and d* increases. The proposed
 maximal range is the interval ending at the unique zero of
 `f(c)−2000(c−1)(1+d*(c))`; existence, uniqueness and matrix transfer remain open.
+
+The matrix transfer uses small simultaneous errors τ in the reference floor,
+prime-defect reserve and perturbation size. The resulting coefficient
+`f−τ−(e+τ)(1+(B+f)/(a−τ))` tends to the optimized floor. A nonnegative
+optimized floor forces e<a when R≥0, leaving room for these errors. The exact
+reference-energy and matrix-transfer proofs are under formal verification.
+
+For uniqueness, d* increases when r decreases and A,q increase: compare both
+Young families at the second family's minimizing parameter. Also
+`f(d)−f(c)≤d−c` for 1≤c<d, while e increases by `2000(d−c)`, so the optimized
+floor strictly decreases. It is positive at c=1 and negative at
+`c=(1+1/q₀)/2`, where e≥r contradicts the necessary condition e<a*<r.
+Continuity supplies the unique boundary. This proof requires no root computation.
+
+A rational enclosure is also under formal verification: `c*=boundary>1+10⁻¹⁶`,
+with eventual actual matrix floor `1/400` at `c=1+10⁻¹⁶`. The proposed certificate
+uses `f(1)>69/1000`, λ=256000, reserve at least `1/257000`, mass cost at most
+1026000, and ψ≤4. These are analytic and exact rational bounds, not numerical
+experiments; the stronger enclosure is not yet claimed proved.

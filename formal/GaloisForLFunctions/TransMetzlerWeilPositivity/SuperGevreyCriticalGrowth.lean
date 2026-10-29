@@ -248,38 +248,42 @@ theorem integral_steklovAvg {f : ℝ → ℝ} {R a : ℝ} (hf : Continuous f) (h
     intro y hy
     rw [Set.uIcc_of_le (by linarith : L - a ≤ L + a)] at hy
     have hyR : R + 1 ≤ y := by dsimp [L] at hy; linarith [hy.1]
-    have hadj := intervalIntegral.integral_add_adjacent_intervals
+    have hadj := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hf.intervalIntegrable 0 (R + 1)) (hf.intervalIntegrable (R + 1) y)
     have htail : (∫ u in (R + 1)..y, f u) = 0 := by
       have hz : ∀ u ∈ Set.uIcc (R + 1) y, f u = 0 := by
         intro u hu
         rw [Set.uIcc_of_le hyR] at hu
-        exact hsupp u (by rw [abs_of_pos (by linarith)]; linarith [hu.1])
+        exact hsupp u (by
+          rw [abs_of_pos (by linarith only [hu.1, hR])]
+          linarith only [hu.1])
       rw [intervalIntegral.integral_congr hz, intervalIntegral.integral_zero]
     dsimp only [F]
-    linarith
+    linarith only [hadj, htail]
   have hF_left : ∀ y ∈ Set.uIcc (-L - a) (-L + a), F y = F (-(R + 1)) := by
     intro y hy
     rw [Set.uIcc_of_le (by linarith : -L - a ≤ -L + a)] at hy
     have hyR : y ≤ -(R + 1) := by dsimp [L] at hy; linarith [hy.2]
-    have hadj := intervalIntegral.integral_add_adjacent_intervals
+    have hadj := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hf.intervalIntegrable 0 (-(R + 1))) (hf.intervalIntegrable (-(R + 1)) y)
     have htail : (∫ u in (-(R + 1))..y, f u) = 0 := by
       have hz : ∀ u ∈ Set.uIcc (-(R + 1)) y, f u = 0 := by
         intro u hu
         rw [Set.uIcc_of_ge hyR] at hu
-        exact hsupp u (by rw [abs_of_neg (by linarith)]; linarith [hu.2])
+        exact hsupp u (by
+          rw [abs_of_neg (by linarith only [hu.2, hR])]
+          linarith only [hu.2])
       rw [intervalIntegral.integral_congr hz, intervalIntegral.integral_zero]
     dsimp only [F]
-    linarith
+    linarith only [hadj, htail]
   rw [intervalIntegral.integral_congr hF_right, intervalIntegral.integral_const, smul_eq_mul,
     intervalIntegral.integral_congr hF_left, intervalIntegral.integral_const, smul_eq_mul]
   have hF_diff : F (R + 1) - F (-(R + 1)) = ∫ x in (-(R + 1))..(R + 1), f x := by
     dsimp only [F]
-    have hadj := intervalIntegral.integral_add_adjacent_intervals
+    have hadj := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hf.intervalIntegrable (-(R + 1)) 0) (hf.intervalIntegrable 0 (R + 1))
-    rw [intervalIntegral.integral_symm 0 (-(R + 1))]
-    linarith
+    rw [intervalIntegral.integral_symm 0 (-(R + 1))] at hadj
+    linarith only [hadj]
   rw [show L + a - (L - a) = 2 * a by ring, show -L + a - (-L - a) = 2 * a by ring]
   have halg : (2 * a)⁻¹ * ((∫ y in (-L + a)..(L - a), F y) + 2 * a * F (R + 1) -
       (2 * a * F (-(R + 1)) + ∫ y in (-L + a)..(L - a), F y)) = F (R + 1) - F (-(R + 1)) := by
@@ -692,7 +696,7 @@ theorem integral_steklovDCProfile : ∫ x, steklovDCProfile x = 1 := by
     have hle := intervalIntegral.norm_integral_le_of_norm_le_const (C := ε / 8)
       (f := fun x => steklovSeq m x - steklovDCProfile x) (a := -2) (b := 2) fun x _ => by
         have hx := hm x
-        simp only [iteratedDeriv_zero, Real.dist_eq, steklovDCProfile] at hx
+        simp only [iteratedDeriv_zero, Real.dist_eq] at hx
         rw [Real.norm_eq_abs, abs_sub_comm]
         exact hx.le
     rw [show (2 : ℝ) - (-2) = 4 by norm_num, abs_of_pos (by norm_num : (0 : ℝ) < 4)] at hle
@@ -876,7 +880,7 @@ theorem abs_dcLogSynth_sub_le {φ F : ℝ → ℝ} {R M b A B : ℝ}
         mul_le_mul hB1 (mul_le_mul_of_nonneg_left hT hnp) (mul_nonneg hnp hT0) zero_le_one
     _ = M * A * (((p : ℕ) : ℝ) * Real.log (((p : ℕ) : ℝ) + 3) ^ 2 *
           (X + (p : ℕ)) / n₀) ^ p := by
-        simp only [div_pow, mul_pow, div_eq_mul_inv, inv_pow]
+        simp only [mul_pow, div_eq_mul_inv, inv_pow]
         ring
 
 /-- Supremum error of the logarithmic Denjoy–Carleman synthesis of order `2m + 2`. -/

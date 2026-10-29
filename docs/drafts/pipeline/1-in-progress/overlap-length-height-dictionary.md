@@ -41,7 +41,7 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Every nonpolar reference energy is `E_m(1)-log c`; exact crossings; actual diagonal error `O(c/N)` for `0<c≤N` | Audit pending: `OverlapForcesNewRamanujanTerms` |
 | Census cutoff `(T/(2π))^λ`, physical overlap `(T/(2π))^(λ-1)/(2π)` | Checked, axiom-audited, umbrella wired: `CensusLengthHeightCoordinates` |
 | Actual complete matrix at height `N/c`; fixed-`c` positivity for `0<c<1+δ_*` | Checked, axiom-audited, umbrella wired: `CompleteWeilLengthHeight` |
-| Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Audit pending: `SuperGevreyLengthHeight`; dependency `SuperGevreyCriticalGrowth` fails compilation |
+| Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Checked, axiom-audited, umbrella wired: `SuperGevreyLengthHeight` |
 | Exact asymmetric shell radii and onset `N log((N+1)/N)<1`; eventual absence at each fixed `c<1` | Kernel checked, axiom-audited; final direct check pending: `ExactSuccessorShellWindows` |
 | Actual successor divisor fiber divided by `log(N+1)` tends to a positive coefficient for every fixed `c>1` | Checked, axiom-audited, umbrella wired: `FixedOverlapHasLogarithmicDivisorRows` |
 | Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Audit pending: `TheAtomicApertureRetainsTheProfileWidth` |
@@ -49,18 +49,18 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Gap `k` first becomes geometrically eligible at `N log(1+k/N)`, tending to `k` | Checked, axiom-audited, umbrella wired: `ExactHigherShellThresholds` |
 | Every finite plateau overlap Gram is strictly positive at every positive width | Audit pending: `ThePlateauOverlapGramIsNondegenerate` |
 | Growing overlap destroys every uniform lower comparison with coefficient mass | Audit pending: `GrowingOverlapHasNoUniformGramFloor` |
+| The actual plateau successor fiber is positive exactly when `N log(1+1/N)<c` | Audit pending: `TheSuccessorFiberHasAnExactOpenThreshold` |
 
 Here `δ_*=1/107520002048050000`; the existing certified floor is
-`1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of the certified estimates,
+`1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of that fixed-reserve estimate,
 not a classification of the actual matrix sign. The revised report already states this range
 and the exact Steklov overlap schedule.
 
-The Steklov receiver is not yet dependency-closed: direct compilation of
-`SuperGevreyCriticalGrowth` fails in its moving-average construction and synthesis estimates.
-Its printed receiver audit therefore contains `sorryAx` from elaboration errors. The proposed
-length-height transport cannot be certified until this dependency is repaired and re-audited.
-The synthesis remainder also omitted the first derivative weight `dcLogWeight 1=(log 4)^2`;
-the corrected remainder retains that constant. Its limiting estimates require verification.
+The corrected Steklov synthesis remainder retains the first derivative weight
+`dcLogWeight 1=(log 4)^2`. This changes a fixed mollification constant and preserves the
+`β>2` receiver. The profile construction, synthesis theorem, and RH equivalence compile;
+all six dependency audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The final direct check and the length-height transport both passed.
 
 Remaining mathematical obligations: complete divisor-shell row decomposition; the self-energy loss along
 growing overlap; whether the full matrix admits the proposed additive/shell Schur decomposition.
@@ -153,7 +153,19 @@ its positive survivor is the exact per-conductor crossing law and finite negativ
 positive width: isolate the least nonzero coefficient immediately to the right of its
 logarithmic center, before the next center. Hence every finite overlap Gram is positive
 definite. Nevertheless a growing overlap cannot have a uniform coefficient-mass lower bound:
-the adjacent difference of atoms at `N,N+1`, normalized by twice one atom's mass, has squared
-mass `1-bumpCorr φ(firstExteriorOverlap N/c_N)/∫φ²`, tending to zero when `c_N→∞`.
+the adjacent difference of atoms at `N,N+1`, with horizon `N+1` and width `c_N/(N+1)`,
+has squared mass normalized by twice one atom's mass equal to
+`1-bumpCorr φ(((N+1)/N) firstExteriorOverlap N/c_N)/∫φ²`, tending to zero when `c_N→∞`.
 These are distinct obligations: finite-dimensional nondegeneracy and failure of a uniform norm
 comparison. Neither gives a sign for the complete Weil form.
+
+**Actual shell onset.** Plateau autocorrelation is positive exactly on `(-1,1)` and vanishes
+at both endpoints. Consequently the normalized successor fiber is positive exactly when
+`firstExteriorOverlap N<c`. At `c=1` it is positive for every finite positive horizon;
+at each fixed `c<1` it is eventually zero. The closed geometric eligibility criterion and
+the open positivity criterion differ at their endpoint.
+
+The corpus's compact-support Lipschitz bound gives a quantitative refinement:
+`∫(φ(u)-φ(u+t))² ≤ 8000² t²(1+t)` for `t≥0`. For `N≥1,c≥2`, the adjacent
+profile lag is at most `2/c≤1`, giving normalized adjacent mass at most
+`4·8000²/(c²∫φ²)`. This rate is a further Lean obligation.

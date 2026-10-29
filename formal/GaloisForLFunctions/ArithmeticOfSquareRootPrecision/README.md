@@ -129,6 +129,11 @@ here.
    every real prime-power coefficient and can keep this signed prime current within $\log x$.
    Any finite prefix of phases may be retained. The existence of a complex count lift is therefore
    exactly the real count criterion.
+   With independent retention probabilities $q_p$, centered conjugation fluctuations always lie
+   in $\mathcal Q$ almost surely. The additional obstruction is exactly the mean sine current
+   $\sum_{p\le x}(2q_p-1)\sin(2\pi t_p)\log p=O(\sqrt x\log^2x)$.
+   For fair choices the mean vanishes: almost every conjugation has the complex count exactly
+   when its fixed real source has the real count, also with any finite phase prefix retained.
 7. **Precision exponents are abscissas.** For $\delta\ge0$, partial sums $O(x^\theta)$ give absolute
    convergence of $\sum\delta(n)n^{-s}$ on $\operatorname{Re}s>\theta$, and convergence at $\sigma$ gives
    partial sums $\le x^\sigma\sum\delta(n)n^{-\sigma}$. A one-signed perturbation is invisible when its
@@ -360,7 +365,9 @@ Open, with what the theory already proves about each:
    of the gauge distance. The complex source additionally needs square-root control of its signed
    prime sine current; every real gauge has a complex count lift by primewise conjugation, even
    with any finite phase prefix prescribed (`exists_complexCount_lift_preserving_prefix`).
-   Open: relate these fixed-real-source conjugation families to Haar-generic cancellation (ACG).
+   Independent product conjugation is classified by the mean sine current. Fair product measure
+   gives complex count lifts almost surely, including prescribed finite prefixes; every real
+   coefficient remains fixed. This supplies generic cancellation inside each real-source family.
 7. **Precision classes of index, defect and regulator.** The finite-index stratum, the Hecke defect at
    logarithmic translation, the covariant regulator on the characteristic circle.
 8. **Zero estimates with separation.** Zero counts for integer Dirichlet polynomials on vertical

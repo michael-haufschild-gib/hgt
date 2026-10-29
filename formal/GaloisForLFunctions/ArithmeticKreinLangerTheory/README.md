@@ -245,6 +245,10 @@ fails.
     gets multiplicity `≈ √q` from `x^q = x`; Chebyshev's `C(2n, n)` gets multiplicity one on `(n, 2n]`,
     and binomial auxiliaries cannot do better: `p^m ∣ C(N, k)` forces `p^m ≤ N`, so above `√N` they
     vanish simply. A producer over `ℤ` must raise multiplicity on the counted primes at controlled size.
+    Divisibility certificates are not capped by the integer Chebyshev constant, which caps sup-norm
+    certificates of integer polynomials on `[0, 1]` at `ψ(x) ≥ 0.8644 x` (classical): Chebyshev's
+    ratio `(30n)! n!/((15n)!(10n)!(6n)!)` has `log A_n = Σ Λ(d) g(⌊30n/d⌋)` with `g ∈ {0, 1}`, so
+    `log A_n ≤ ψ(30n)`, and Stirling gives `ψ(x) ≥ 0.89 x − O(log x)`.
     Divisibility cannot select a parity class: vanishing on `S ⊆ [1, x]` is `lcm S ∣ A`, worth at most
     `ψ(x)`, and the odd class, containing every prime, is worth between `θ(x)` and `ψ(x)`, within
     `2√x log x` of the primes. At square-root precision, vanishing at the primes, at the prime powers and
@@ -357,6 +361,11 @@ fails.
    `sum_log_prime_Ioc_le`) and *the binomial multiplicity cap* (`pow_le_of_dvd_choose`,
    `le_one_of_dvd_choose`); *divisibility does not see parity* (`log_lcm_le_psi`,
    `theta_le_log_lcm_oddPoints`, `abs_log_lcm_oddPoints_sub_theta_le`).
+   *The binomial ledger in short intervals* (`sum_log_prime_short_le`, `log_choose_ge`): it saves only
+   the factor `log(x/y)/log x`, so the sieve rung on intervals `x^ε` is out of its reach.
+   *Chebyshev's producer passes the integer Chebyshev cap* (`chebWeight_nonneg_le_one`,
+   `log_chebRatio_eq`, `log_chebRatio_le_psi`, `log_chebRatio_ge`, `chebConst_gt`,
+   `psi_ge_of_chebyshev`): `ψ(x) ≥ 0.89 x − O(log x)` from `(30n)! n!/((15n)!(10n)!(6n)!)`.
 8. *The parity twin is geometric only in the Bohr closure* (`shift_pow_eq_neg_one_pow`,
    `shiftChar_primeElt_zpow`, `shiftChar_eq_neg_one_subsingleton`, `exists_shiftChar_near_neg_one`).
 9. *Pointwise-closed statements are twin-blind* (`exists_shifts_tendsto_liouville`,
@@ -415,7 +424,9 @@ fails.
    (`le_one_of_dvd_choose`). As for the "rational points": for a divisibility auxiliary the primes, the
    prime powers and the odd parity class are the same points up to `2√x log x`
    (`abs_log_lcm_oddPoints_sub_theta_le`), so an auxiliary that selects a parity class must vanish in a
-   finer sense than divisibility. Spectral-side certificates do not help: they are receivers
+   finer sense than divisibility. Divisibility is not weak in size: Chebyshev's ratio passes the
+   integer Chebyshev cap of sup-norm certificates (`psi_ge_of_chebyshev`, `ψ(x) ≥ 0.89 x − O(log x)`),
+   but in short intervals binomial ledgers save only `log(x/y)/log x` (`log_choose_ge`). Spectral-side certificates do not help: they are receivers
    (`compress_traceKernel_charPoly`, `negIndex_compress_euler`); the auxiliary must vanish at the primes.
    *Open:* such an identity.
 2. **What is the positive form of the parity barrier?** Twins act on constituents by unitary twists,
@@ -522,7 +533,7 @@ The tools §2.8 asks for, with what is built and what is open:
 
 | Tool | Purpose | Built | Test status | Open |
 |---|---|---|---|---|
-| Point-side producer (Stepanov over `ℤ`) | an upper count for one parity class from an auxiliary vanishing at the primes | the Bézout ledger in both rings (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`); Chebyshev's producer as a ledger (`sum_log_prime_Ioc_le`); the binomial multiplicity cap (`le_one_of_dvd_choose`); divisibility is parity-blind (`abs_log_lcm_oddPoints_sub_theta_le`) | hyperelliptic RH reproduced in kernel form (`stepanov_order_hyperelliptic`); Liouville: divisibility producers cannot separate it | an auxiliary over `ℤ` whose order of vanishing grows on the counted primes at controlled size; beating the sieve constant `2` |
+| Point-side producer (Stepanov over `ℤ`) | an upper count for one parity class from an auxiliary vanishing at the primes | the Bézout ledger in both rings (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`); Chebyshev's producer as a ledger (`sum_log_prime_Ioc_le`); the binomial multiplicity cap (`le_one_of_dvd_choose`); divisibility is parity-blind (`abs_log_lcm_oddPoints_sub_theta_le`) | hyperelliptic RH reproduced in kernel form (`stepanov_order_hyperelliptic`); the integer Chebyshev cap passed by a divisibility producer, `ψ(x) ≥ 0.89 x − O(log x)` (`psi_ge_of_chebyshev`); Liouville: divisibility producers cannot separate it | an auxiliary over `ℤ` whose order of vanishing grows on the counted primes at controlled size; beating the sieve constant `2` on intervals `x^ε`, which binomial ledgers cannot (`log_choose_ge`) |
 | Index ceiling over `ℤ` | bound `κ(K_ζ)` before any count | Riemann–Roch ceiling over `𝔽_q` (`two_mul_negIndex_traceKernel_le`); the exact atomic ceiling `N log q` over `𝔽_q[T]` (`atomFq_nonneg_iff`) and its second rung (`atomFq_two_negative_squares`); local data give `0` or `∞` (`negIndex_localAssembly_eq_top`); the index is the wave number of a count (`negIndex_eq_card_waves`) | genus ceiling attained by the golden datum (`golden_attains_ceiling`) | a finite bound on the wave number from prime-side data; finiteness for `ζ` is LH-deep |
 | Large-overlap renormalization | positivity of the complete form uniformly in overlap | pointwise-closed statements are twin-blind (`liouvilleTwin_mem_of_isClosed`): selectivity at any overlap must come from terms that do not move with the weights | — | the fixed-ratio floor and the flips `ω_p` belong to `TransMetzlerWeilPositivity` and `SelectiveMultiscaleArithmeticPositivity`; a non-perturbative theory is open |
 | Geometric parity twin | a family over `ℤ` on which the Liouville twist is a symmetry | vertical shifts: the twin on each prime tower (`shiftChar_primeElt_zpow`), on no two primes (`shiftChar_eq_neg_one_subsingleton`), in the Bohr closure (`exists_shiftChar_near_neg_one`, `exists_shifts_tendsto_liouville`) | the `𝔽_q` twist tower reproduced (`unitary_iff_twistTower_upper`, `shift_pow_eq_neg_one_pow`) | a family beyond vertical shifts to which a producer applies |

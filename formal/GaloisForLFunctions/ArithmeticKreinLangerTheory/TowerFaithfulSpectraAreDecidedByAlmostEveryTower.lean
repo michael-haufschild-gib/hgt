@@ -221,3 +221,8 @@ theorem negIndex_eq_zero_of_posDef_on_infinitely_many_primes {p : HeckeLattice â
         (by rwa [scale_primeElt, scale_primeElt] at hab)) h).1
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.finite_towers_negIndex_ne
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.negIndex_eq_zero_of_posDef_on_infinitely_many_primes
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.unitary_tower_defeat
+#print axioms GaloisForLFunctions.ArithmeticKreinLangerTheory.aliased_tower_defeat

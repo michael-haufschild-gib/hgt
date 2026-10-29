@@ -19,18 +19,41 @@
 8. Actual Chebyshev energy or detector Gram improvements yielding specified zero strips.
 9. Quantitative source transfers without assuming the missing signs.
 
-## First source problem
+## Arithmetic comparison metric
 
 For the exact divisor-conductor kernel
 \[
 B_Q(i,j)=\sum_{m\mid Q,\ m\ne1}G_m(i,j)=Q\min(i,j)-ij,
 \qquad 0\le i,j\le Q,
 \]
-determine a coercive norm on the interior coefficients, its inverse, and the boundary coordinates.
-The arithmetic identity is established in
-`CriticalArithmeticCorrelationTheory/AllDivisorConductorsRecoverTheDiscreteBridge.lean`.
+the completed energy satisfies
+\[
+4E_Q(a)=Q\bigl[(\sum_i a_i)^2+\sum_i a_i^2\bigr]+R_Q(a),\qquad R_Q(a)\ge0.
+\]
+The interior radical is zero. The inverse is the Dirichlet second difference divided by `Q`.
+For a coupling extended by zero at both endpoints, its exact Schur cost is
+`Σ_(0≤i<Q)(b_(i+1)-b_i)²/Q`, attained at the inverse coefficient vector.
+
+Lean: `CompletedArithmeticForms/CyclotomicCoercivity.lean` and
+`CompletedArithmeticForms/DirichletSchurCost.lean`.
+
+The arithmetic estimate still required for the overlap problem identifies the actual mixed
+coupling in these coordinates and controls its Dirichlet cost together with the complete residual.
 
 A conditional complete-Weil comparison does not discharge the actual source remainder estimate.
+
+## Accumulation and simultaneous truncation
+
+For arbitrary increments, `a_j=c_j/j` identifies cumulative covariance with
+`E_(T+1)(a)/(T+1)`. Its exact positive remainder controls both the weighted mass square
+and weighted coefficient square mass. A coupling `b_j` has local variation payment
+`D_(T+1)(j b_j)` with zero boundary values.
+
+For actual Euler-deletion increments,
+`0≤fullErrorEnergy−cumulativeEnergy≤(M+1)²/(T+1)` simultaneously in `X`, `M`, and `T`.
+This bounds the literal omitted tail; the source upper estimate at the inner cutoff remains.
+
+Lean: `CompletedArithmeticForms/DivisorCovariance.lean`.
 
 ## Source boundaries
 

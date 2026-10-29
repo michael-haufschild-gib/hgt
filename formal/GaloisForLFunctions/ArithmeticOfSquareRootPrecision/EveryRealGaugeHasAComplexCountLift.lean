@@ -179,7 +179,8 @@ private theorem balancedPrimeState_eq_sum (t : ℕ → ℝ) (N : ℕ) :
     simp only [balancedPrimeState]
     split_ifs <;> ring
 
-private theorem primeSineWeight_abs_le (t : ℕ → ℝ) {n : ℕ} (hn : 1 ≤ n) :
+/-- Each prime sine coefficient is bounded by the logarithmic prime weight. -/
+theorem primeSineWeight_abs_le (t : ℕ → ℝ) {n : ℕ} (hn : 1 ≤ n) :
     |primeSineWeight t n| ≤ Real.log n := by
   have hl : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn)
   unfold primeSineWeight

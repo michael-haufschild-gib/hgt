@@ -1,8 +1,8 @@
 # Cyclotomic coercivity with an exact positive remainder
 
 - **ID:** completed-arithmetic-forms-cyclotomic-coercivity
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** The full divisor-conductor Gram controls the interior coefficient square mass
   and its total-mass square with universal factor one quarter, with an exact positive remainder.
 
@@ -41,7 +41,7 @@ Every summand of `R_Q` is nonnegative. If the interior energy vanishes, the ineq
 each `a_i=0`; conversely the zero vector has zero energy. The existing divisor completion
 `Σ_m G_m(i,j)=Q min(i,j)-ij` vanishes whenever either index is `0` or `Q`.
 
-## Arithmetic consequence to formalize
+## Accumulation consequence
 
 For `T=Q-1`, set `a_j=c_j/j`. The kernel identity
 
@@ -54,6 +54,20 @@ identifies the actual cumulative covariance with `E_Q(a)/Q`. It therefore has th
 Application to the actual Euler-deletion increments retains every unequal-pair term.
 This is a coercivity estimate; it does not supply the upper bound required by the current criterion.
 
+## Uniform truncation of the actual error energy
+
+For every `1≤X<M` and `T≥0`, the literal full Euler-deletion energy satisfies
+
+`0 ≤ fullErrorEnergy(X,M)-cumulativeEnergy(c,T) ≤ (M+1)²/(T+1)`.
+
+The source bound `|modular(X,M,n)|≤M` gives `|1-modular(X,M,n)|≤M+1` at every coordinate.
+The omitted carrier weights telescope:
+
+`Σ_(n>T) 1/(n(n+1))=1/(T+1)`.
+
+Termwise comparison proves the upper tail bound; nonnegativity proves the lower bound.
+The estimate holds simultaneously in both cutoffs and the coordinate horizon.
+
 ## Dependencies
 
 - `primitivePrefixGram_quadratic_eq`.
@@ -61,5 +75,16 @@ This is a coercivity estimate; it does not supply the upper bound required by th
 - `sum_nthRootsFinset_norm_sq`.
 - The partition of roots of unity by primitive order.
 
-All source identities are unconditional. Lean formalization is required before these new
-conclusions count as established results.
+## Lean declarations
+
+- `CompletedArithmeticForms.divisorGramEnergy_completion`.
+- `CompletedArithmeticForms.divisorGramEnergy_coercive`.
+- `CompletedArithmeticForms.divisorGramEnergy_eq_zero_iff`.
+- `CompletedArithmeticForms.cumulativeEnergy_completion`.
+- `CompletedArithmeticForms.errorIncrement_mass_le_fullErrorEnergy`.
+- `CompletedArithmeticForms.fullErrorEnergy_truncation_bounds`.
+
+Modules: `GaloisForLFunctions/CompletedArithmeticForms/CyclotomicCoercivity.lean` and
+`GaloisForLFunctions/CompletedArithmeticForms/DivisorCovariance.lean`.
+Both pass `lake --old env lean` without output files. The transitive axiom sets contain
+only `propext`, `Classical.choice`, and `Quot.sound`.

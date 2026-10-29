@@ -68,7 +68,7 @@ theorem eventually_elevenTrial_le_upper :
       (((99 / 100 : ℝ) / N) * (∫ u, transMetzlerProfile u ^ 2) * primeSquareFlipBound 11 N) /
           (((99 / 100) / N) * Real.log N) =
         (∫ u, transMetzlerProfile u ^ 2) * (primeSquareFlipBound 11 N / Real.log N) := by
-    field_simp [hN0.ne', hw.ne', hlog.ne'] <;> ring
+    field_simp [hN0.ne', hw.ne', hlog.ne']
   simpa only [hscale, elevenUpperEnergy, elevenTrialTest] using h
 
 /-- The actual complete eleven-flip form is eventually negative at ratio `99 / 100`. -/
@@ -95,8 +95,8 @@ theorem atomicTest_zero_padding {M N : ℕ} (hMN : M ≤ N) (x : ℕ → ℝ) (g
       apply (sum_subset (Icc_subset_Icc_right hMN) ?_).symm
       intro n hn hnM
       have hnot : ¬ n ≤ M := fun h => hnM (mem_Icc.mpr ⟨(mem_Icc.mp hn).1, h⟩)
-      rw [if_neg hnot, zero_mul]
-    _ = _ := sum_congr rfl fun n hn => by rw [if_pos (mem_Icc.mp hn).2]
+      simp only [if_neg hnot, zero_mul]
+    _ = _ := sum_congr rfl fun n hn => by simp only [if_pos (mem_Icc.mp hn).2]
 
 /-- Rationally related horizons transfer negative tests with exactly the same atom width. -/
 theorem frequently_elevenFlip_negative_of_padding {a b : ℕ} (ha : 0 < a) (hab : a ≤ b)

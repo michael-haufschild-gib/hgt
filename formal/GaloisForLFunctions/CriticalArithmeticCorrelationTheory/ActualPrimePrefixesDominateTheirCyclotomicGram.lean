@@ -93,7 +93,8 @@ theorem primeClassKappa_arithmeticPrefixResidueEnergy {ι : Type*} {q : ℕ} [Ne
         (q.totient : ℝ) := by
   have hq : 0 < q := Nat.pos_of_ne_zero (NeZero.ne q)
   unfold primeClassKappa arithmeticPrefixResidueEnergy
-  rw [sum_units_primitiveRoot_values (arithmeticConductorRoot_isPrimitive hq),
+  rw [sum_units_primitiveRoot_values (arithmeticConductorRoot_isPrimitive hq)
+      (fun ζ => Complex.normSq (∑ i ∈ s, a i • primitivePrefixValue ζ (k i))),
     primitivePrefixGram_quadratic_eq s hq a k]
   simp only [Complex.sq_norm]
 
@@ -111,7 +112,8 @@ theorem eventually_actualPrimePrefixGram_dominates {ι : Type*} {q : ℕ} (hq : 
   intro s a k
   have h := hN (arithmeticPrefixResidueEnergy q s a k) (fun _ => Complex.normSq_nonneg _)
   rw [primeClassKappa_arithmeticPrefixResidueEnergy, ← actualPrimePrefixGram_eq_residue] at h
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 

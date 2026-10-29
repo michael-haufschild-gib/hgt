@@ -109,3 +109,11 @@ theorem eventually_vanish_of_supCeiling {θ : ℝ} (hθ : θ < 1) (C : ℝ) :
   linarith
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision
+
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.riemannHypothesis_iff_siegelHalf_sqrtScale
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.riemannHypothesis_iff_liouvilleHalf_sqrtScale
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.siegelExponent_eq_zeroReSup
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.liouvilleExponent_eq_zeroReSup
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.zeroReSup_lt_one_iff_siegelHalf
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.zeroReSup_lt_one_iff_liouvilleHalf
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.eventually_vanish_of_supCeiling

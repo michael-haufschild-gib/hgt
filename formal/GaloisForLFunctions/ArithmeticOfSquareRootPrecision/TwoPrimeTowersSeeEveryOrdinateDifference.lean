@@ -216,3 +216,6 @@ theorem two_prime_alias_bound_in_Δ (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q
         _ ≤ D := by linarith
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision
+
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.one_prime_aliases
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.two_prime_alias_bound_in_Δ

@@ -158,3 +158,11 @@ theorem abs_psi_sub_smooth_sub_sawtooth_le {n : ℕ} (hn : 1 ≤ n) {K : ℝ}
     _ ≤ 3 * (1 + Real.log n / 2) * K := hmono
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision
+
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.eq_of_chebyshevTransform_eq
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.not_inversion_bounded
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.abs_inversionOp_le_of_monotoneOn
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.not_monotone_inversion_lt_half
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.riemannHypothesis_iff_monotone_inversion
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.sawtooth_bounds
+#print axioms GaloisForLFunctions.ArithmeticOfSquareRootPrecision.abs_psi_sub_smooth_sub_sawtooth_le

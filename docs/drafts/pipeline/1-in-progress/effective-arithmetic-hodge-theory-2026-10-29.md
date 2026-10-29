@@ -32,13 +32,18 @@ positive survivors. Do not duplicate HKT/AKL/ASRP modules.
 - `TheHassePrincipleWithHeights` (pillar B).
 - `TheExplicitSchedulesReachTheIndex` (pillar A, Gevrey and Denjoy–Carleman schedules; generic
   `eventually_le_hermNegIndex_of_synthesis`).
+- `IndexCarriersOfFiniteSpectra` (tower windows, two-element boxes, two-prime boxes).
+- `TheBezoutTheoremOfTheMultiplicativeGroup` (zero estimate along Frobenius progressions, sharp).
 
 ## Open / blocked
 - A′ Steklov schedules: `tendsto_dcLogSynthesis` and `abs_iteratedDeriv_mollify_le_dcLogWeight` are
   `private` in `TransMetzlerWeilPositivity/SuperGevreyCriticalGrowth.lean`; once public, the
   instance is `eventually_le_hermNegIndex_of_synthesis` + `exists_dcLogSynthesis`.
-- Bandwidth dictionary (C), shell symbol (E), flip threshold (F): being developed in SSHA, CACT and
-  TM/BoundedOverlap by other agents; do not duplicate.
+- Bandwidth dictionary (C): built in SSHA (`OverlapCoordinates`, `TheNormalizedAtomicTransform`).
+- Shell symbol (E), flip threshold (F): being developed in CACT and TM/BoundedOverlap by other
+  agents; do not duplicate.
+- Next: Riemann–Roch of the base (dimension of Dirichlet polynomials of length `N` vanishing to
+  orders `m_p` along Frobenius progressions is `⌊N/∏p^{m_p}⌋`).
 
 ## Leads checked (exist; do not redo)
 - `ArithmeticCastelnuovoSeveri.deepSparse_tower_law` holds for every `ℓ > 0`.

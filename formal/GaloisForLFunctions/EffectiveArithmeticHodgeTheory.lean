@@ -1,5 +1,7 @@
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheHassePrincipleWithHeights
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheExplicitSchedulesReachTheIndex
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.IndexCarriersOfFiniteSpectra
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheBezoutTheoremOfTheMultiplicativeGroup
 
 /-!
 # Effective Arithmetic Hodge Theory of the multiplicative group of `ℚ`
@@ -13,6 +15,12 @@ the Weil kernel and what they carry.
 * **Schedules.** Weil's form on real tests as a polarized quadratic form, its two-sided continuity
   under synthesis errors, Gram-matrix convergence, and the theorem that the explicit Gevrey and
   Denjoy–Carleman schedules `(log log N)^α/N`, `α > 1`, reach the index `κ(K_ζ)`.
+* **Carriers.** Families carrying a finite spectrum read the index of its exponential sums; a
+  window of `|S|` steps of a separating element and a box of side `|S|` in two jointly separating
+  commuting elements carry it; on `ℚ_{>0}` two primes always do.
+* **Bézout.** The Frobenius progressions `2πiℤ/log p` are the points of `𝔾_m(ℚ)`: a nonzero
+  Dirichlet polynomial of length `N` vanishing to order `m_p` along them has `∏ p^{m_p} ≤ N`,
+  attained by the Euler factors; the zero estimate of arithmetic Stepanov.
 
 See `EffectiveArithmeticHodgeTheory/README.md`.
 -/

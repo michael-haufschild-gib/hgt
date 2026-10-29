@@ -120,6 +120,241 @@ The actual interval `[N,101*N]` therefore retains at least
 `48*N*sum|x_n|²`. This replaces the redundant triangular-kernel draft.
 The profile multiplier and complete-form coercivity bridges remain unproved.
 
+## Core proof audit: finite modes and escaping vectors
+
+This is a proposed proof to audit, not a completed theorem. The user explicitly
+rejected helper-code accumulation as an answer. Do not add further infrastructure
+without resolving these mathematical steps and connecting them to the final statement.
+
+### Scalar sign, with its missing normalization identified
+
+Use the Fourier convention `hatφ(t)=integral φ(u)*exp(i*t*u) du`.
+Put `g=G/M` and `B=β/M`. The conductor-one candidate is
+
+`E1(c)=B-log(2*pi*c)+c*q-2*sum_(1≤h<c) integral_(h/c)^1 g(u)/u du`.
+
+Direct differentiation and Poisson summation give
+
+`E1'(c)=-1/M*sum_(k in Z, k≠0)|hatφ(2*pi*c*k)|²`.
+
+The additive constant is essential. To determine it, compare with the indicator
+autocorrelation `g0(u)=1-u` on `[0,1]`. At positive integer `L`, its energy is
+
+`2*log(Gamma L)-(2*L-1)*log L+2*L-log(2*pi)`,
+
+twice the Stirling remainder, which tends to zero. For a smooth profile,
+
+`E1(c)-Eindicator(c)=integral_0^1 (2*fract(c*u)-1)*(g(u)-(1-u))/u du`.
+
+The quotient extends continuously at zero; its derivative is integrable because
+`g` is C² and `g'(0)=0`. Cellwise mean-zero averaging gives convergence to zero.
+Hence `E1(infinity)=0`, and integrating the derivative gives a positive Fourier-tail
+representation. The relevant corpus inputs are `abs_log_Gamma_sub_stirling_le`
+and `abs_integral_mul_meanZero_le`; exact bridges are not yet formalized.
+
+Möbius inversion gives
+
+`Em(c)=sum_(d|m) d*mu(m/d)*E1(c/d)/totient(m)`.
+
+Differentiating selects primitive frequency classes. For `m>1`,
+
+`Em(c)=1/(M*totient(m))*integral_c^infinity
+  sum_(a in Z, gcd(a,m)=1)|hatφ(2*pi*s*a/m)|² ds`.
+
+The terms `a=±1` give the conductor-uniform lower bound
+`Em(c)≥2/M*integral_c^infinity |hatφ(2*pi*s)|² ds>0`.
+For `m=1`, omit `a=0`; the same lower bound holds. This uniform bound is stronger
+than checking finitely many scalar energies. Its identification with actual matrix
+quasimodes at overlap remains an explicit obligation.
+
+### A common explicit profile for the core and eleven flip
+
+A candidate avoiding the plateau resonance while retaining the negative eleven margin:
+`epsilon=10^-6`, `tau=epsilon^3`, `a=(1-6*epsilon)/2`, and
+
+`φ(u)=exp(tau*(u-1/2))*(2*a)*(unif a * upow epsilon 2)(u-1/2)`.
+
+Here `*` is convolution, and each `unif` has mass one. Four interval convolutions
+give C² regularity, support `[0,1]`, and positivity on its interior. Before the
+exponential tilt, the profile lies in `[0,1]`, equals one on
+`[6*epsilon,1-6*epsilon]`, and has Lipschitz constant at most `1/(2*epsilon)`.
+Splitting the Robin integral at `6*epsilon` bounds its small-shift part by
+`O(epsilon)` and its remaining part by `1+12*epsilon*log(1/(6*epsilon))`.
+The existing Lipschitz perturbation bound pays the tilt by `O(tau/epsilon)`.
+These bounds should give `β/M≤21/20`, the same margin used for the eleven trial.
+This profile construction and those numerical inequalities are not yet checked.
+
+Its Fourier transform has the explicit lower bound
+
+`2*sinh(a*tau)*sinh(epsilon*tau)^3 /
+  (epsilon^3*(tau²+t²)²)`.
+
+It follows by multiplying the four tilted-interval Fourier factors. The numerator
+is strictly positive. Thus the high-frequency band bound has a positive constant
+for every fixed `c`, while every successor interaction keeps its original weight.
+
+### The all-vector coercivity argument to verify
+
+Fix `c>0`, choose `0<delta<min(1,1/(4*c))`, and split at `M=floor(delta*N)`.
+All forms below use the same physical width `c/N` and atom-mass normalization.
+
+1. The low principal block is exactly the width-`c*M/N` length-`M` matrix.
+   `exists_uniform_completeWeil_primeDefect_reserve_through_touching` gives
+   `W_low≥b*D_M-C*||x_low||²`, with `b=(1-q)/4>0`.
+2. The Fourier lower bound and Montgomery–Vaughan give
+   `Gamma_high≥A(c)*log(N)*||x_high||²-C(c)*||x_high||²`, `A(c)>0`.
+   The global Gamma lower bound and the finite overlap count pay the rest of the
+   Fourier integral. The high-high prime block has only bounded prime-power ratios
+   `k≤2/delta`; its norm and the high-high pole norm are bounded independently of `N`.
+3. The actual low-high prime block has weighted upward row `O_(c,delta)(1)`
+   and downward row `O_c(log N)`, with weight `n^(-1/2)`. The upward estimate is
+   a finite union of dyadic Mangoldt windows; the downward estimate sums the exact
+   divisor identity over the finitely many integer offsets. Weighted Schur gives
+   cross norm `O_(c,delta)(sqrt(log N))`, without reducing any successor weight.
+4. The mixed Gamma kernel is bounded by `C(c)/(m-n)` across `n≤M<m`:
+   the gap exceeds twice the atom width, and
+   `omega(s-w)≤exp(w/2)*sqrt(m*n)/(m-n)`.
+   Reindexing around `M` gives a Hilbert matrix. The corpus's Hilbert bound pays
+   this block by a constant times `||x_low||*||x_high||`.
+5. The two mixed pole terms together cost `O_(c,delta)(sqrt(log N))` times the
+   product of the two coefficient norms. One Schur absorption into the high Gamma
+   reserve leaves `W≥b*D_M+(A(c)/2)*log N*||x_high||²-C*||x||²`.
+6. Splitting the literal prime defect yields
+   `D_N≤D_M+4*log N*||x_high||²+C_delta*||x||²`.
+   Therefore `W≥b_c*D_N-C_c*||x||²`, with `b_c>0`.
+
+This is the proposed mechanism paying the full shells. The finite-block identities,
+uniform row bounds, and constants must be proved for the actual form before treating
+the argument as established. It uses actual prime arithmetic and both poles.
+
+### Closing the spectral argument
+
+Bounded prime defect has a horizon-independent finite Ramanujan approximation
+(`exists_finite_ramanujan_approximation_of_poleDefect_le`). A normalized nonpositive
+eigenvector would therefore be close to one fixed finite Ramanujan span. Actual norm
+quasimodes with the uniformly positive `Em(c)` force all its coordinates in that
+span to tend to zero, a contradiction. The required norm-quasimode extension is:
+
+- Near-diagonal Gamma contributes `G(h*N/(c*n))*log N`.
+- The downward successor divisor jet contributes the matching `log n` term.
+- Their difference is supported on `n` proportional to `N`, with squared pole-profile
+  norm `O(1)`; after division by `log N` it vanishes.
+- Far Gamma and the pole center must remain paired; either alone has a logarithmic
+  row on the conductor-one profile.
+- Upward affine prime windows produce exactly the scalar correction in `Em(c)`.
+  Uniformity on `n≤N/J` follows from the corpus's affine reduced-residue theorem;
+  the remaining top interval has harmonic mass `O(log J)`, negligible after
+  normalization. Boundary shells, including the finite-horizon second shell at
+  `c=2`, must be retained and bounded using endpoint vanishing.
+
+No actual norm-quasimode theorem beyond touching has yet been proved here. An
+effective horizon also needs quantitative moduli for this extension; a mere choice
+from an eventual theorem is not an explicit bound.
+
+The row argument can be organized without a uniform prime-window limit at a fixed
+top cutoff. For each fixed `J>2*c+2`, rows `n≤N/J` have no overlapping Gamma
+neighbour and no downward non-ratio lag. Only the upward affine windows remain.
+Choose `J` using the residue-window modulus; their error is then `epsilon/sqrt(n)`.
+For `n>N/J`, keep Gamma and the downward divisor sum together. At each bounded
+integer offset `h`, their leading terms are exactly the same correlation factor
+times `log(N)` and `log(n-h)`. The difference is bounded by
+`C*(1+log(2*J))/sqrt(n)`. This top interval has bounded harmonic mass, so its
+normalized squared residual tends to zero. The reference center and both poles
+remain paired throughout.
+
+A uniform near-pair Gamma remainder follows directly on the Fourier side:
+after subtracting `log(1/w)*G(s/w)`, its absolute value is bounded by
+`C*integral |hatφ(t)|²*(1+|log |t||) dt`, independently of `s/w` and `0<w≤1`.
+The separated remainder is already bounded by `C*w²/s²` in
+`exists_profile_crossError_uniform`. Acting on a bounded periodic pole profile,
+this gives an unnormalized squared norm bounded independently of `N`; division
+by `log N` removes it. These exact bridges are still to be formalized.
+
+The corpus does contain a quantitative residue input:
+`RHTower.exists_characterChebyshevPsi_power_log` gives, for each nonprincipal
+character, `|psi_chi(x)|≤C*x*exp(-rho*(log x)^(1/10))` beyond `x0`.
+Consequently the squared affine-window errors are integrable against `dy/y`;
+an `O(1/sqrt(log N))` norm residual is available in principle. Its constants
+depend on the character Perron strip constants. Those constants are existential
+in the current source; this does not yet supply the required explicit horizon.
+
+### All-prime consequence if the actual extension closes
+
+The three-conductor trial has exact untwisted limiting energy
+
+`(1-2/p)^2*E1(c)+4*(p-2)/p²*E1(c/p)+4/p²*E1(c/p²)`.
+
+Its exact limiting flip correction should be
+
+`-4*log(p)*(p³-4*p+2)/(p²*(p²-1))<0`.
+
+The first odd power has mean correlation `-1+2/p²`; all odd powers at least three
+have mean `1-2/p+2/p²`. Summing their geometric series gives the expression above.
+Non-ratio corrections for a fixed prime power contribute only bounded harmonic
+top mass and vanish after logarithmic normalization; a geometric tail controls the
+remaining powers. Since each `E1(c/d)` tends to zero, this would prove finiteness of
+every prime-flip threshold. Quartic Fourier decay gives a coarse explicit upper
+bound of order `p^(13/7)/(log p)^(1/7)` for this profile. Uniform fixed-`c` zeta
+coercivity and the exact translation bound `O(log p/sqrt p)` for the flip perturbation
+would imply `c*(p)→infinity`. These consequences are still unproved, and the coarse
+upper bound is not claimed to be sharp threshold growth.
+
+### A sharper proposed threshold description
+
+The scalar energies satisfy, for prime `p`,
+
+`E_(m*p)(c) = (p*E_m(c/p)-E_m(c))/(p-1)` if `p` does not divide `m`,
+and `E_(m*p)(c)=E_m(c/p)` otherwise.
+
+The positive Fourier-tail representation makes every `E_m` strictly decreasing.
+Hence `E_(m*p)(c)>E_m(c)` and, in particular, `E_m(c)≥E_1(c)`.
+This improves the conductor-uniform lower bound.
+
+The limiting flip perturbation preserves the prime-to-`p` conductor `q` and acts
+identically on each chain `q*p^k`. Since `E_(q*p^k)≥E_(p^k)`, its lowest block is
+the `p`-power chain. Let `D_p` be diagonal with entries `d_0=0` and
+`d_k=(k+1/(p-1))*log(p)` for `k≥1`, and let `U_p` multiply a valuation profile
+by `(-1)^v`. The bounded flip perturbation is `U_p*D_p*U_p-D_p`.
+
+When `c<p`, every non-ground conductor in this chain is still separated, so the
+candidate completed block is exactly
+
+`self(c)*I + U_p*D_p*U_p + (E_1(c)-self(c))*P_0`.
+
+Writing `a=-self(c)`, `E=E_1(c)`, the squared coordinates of `U_p e_0` are
+
+`b_0²=(p-1)²/(p+1)²`,
+`b_k²=4*(p-1)*p^(1-k)/(p+1)²` for `k≥1`.
+
+For `0<a<d_1`, define the convergent positive series
+`S_p(a)=sum_(k≥1) b_k²/(d_k-a)`.
+The rank-one Schur calculation says positivity changes precisely when
+
+`(a+E)*(b_0²-a*S_p(a))=a`.
+
+This is a proposed exact threshold equation, pending the actual spectral-transfer
+and valuation-block proofs. It is not an established answer or a substitute for
+those proofs. The full limiting operator is strictly decreasing in `c`, and its
+conductor energy tends to infinity, so this framework would give a unique first
+zero rather than an arbitrary trial threshold.
+
+For the near-indicator profile, total variation can be bounded by `21/10`.
+The Fourier tail then gives `E_1(c)≤(Var φ)²/(12*M*c)`. Combining this with the
+three-conductor trial at `c=p/4` appears sufficient to prove `c*(p)≤p/4` for
+all `p≥11`, after checking the elementary constants. This sharper finite-prime
+bound would avoid waiting for the quartic-decay regime.
+
+For the explicit four-box tilted profile, its Fourier numerator is periodic and
+strictly positive, and `E_1(c)~D*c^(-7)` with `D>0`. The scalar Schur equation
+then predicts the sharper asymptotic
+
+`c*(p) ~ ((3*D/2)*p/log(p))^(1/7)`.
+
+At this scale `a/log(p)→1/7` and
+`S_p(a)~14/(3*p*log(p))`; the critical right side is
+`2*log(p)/(3*p)`. This asymptotic remains a conjecture until both the block
+identification and uniform error estimates are proved.
+
 ## Proof and Lean status
 
 `elevenTrialUpperMargin_neg` passed Lean with only `propext`, `Classical.choice`, and
