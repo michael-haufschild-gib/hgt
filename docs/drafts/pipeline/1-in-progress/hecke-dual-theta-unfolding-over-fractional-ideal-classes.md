@@ -175,8 +175,13 @@ translation tile formulas. It has not yet been compiled.
 - `HeckeLFunctions/HeckeDualFrequenciesHaveClassGenerators.lean`: finalized;
   final source check and all three main transitive axiom audits pass.
   No consumer olean built yet.
-- `/tmp/HeckeFieldElementMellinScratch.lean`: first check running; imports
-  the already built integral-element Mellin module.
+- `/tmp/HeckeFieldElementMellinScratch.lean`: first check exposed a
+  dependent rewrite, real-to-complex absolute-value casts, and an omitted
+  explicit Haar measure. The second check leaves only the `Units.mk0`
+  projection match in the kernel exponential identity; the concrete
+  helper equality is now simplified before rewriting. Third check
+  running. All other declarations elaborate, but their main proofs are
+  not counted as formalized until this dependency is closed.
 - `/tmp/HeckeDualUnitCovarianceScratch.lean`: written, unchecked; its
   inverse-coefficient dependency is built.
 - `/tmp/HeckeUnitDomainFamilyUnfoldingScratch.lean`: written, unchecked;

@@ -100,7 +100,8 @@ theorem haarGammaCoupling_hasSum {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
   have hiR : Integrable P (gammaRectangleMeasure (L a) (U a) (L b) (U b)) := by
     apply integrable_gammaRectangle_of_bound hlt hwidth hPm 1
     intro p
-    rw [Real.norm_eq_abs, P, abs_mul]
+    change ‖haarProfile a p.1 * haarProfile b p.2‖ ≤ 1
+    rw [Real.norm_eq_abs, abs_mul]
     exact (mul_le_mul (abs_haarProfile_le_one ha p.1) (abs_haarProfile_le_one hb p.2)
       (abs_nonneg _) (by norm_num)).trans_eq (one_mul 1)
   have hraw : Integrable (fun p : ℝ × ℝ =>
@@ -160,7 +161,14 @@ theorem haarGammaCoupling_hasSum {a b : ℕ} (ha : 1 ≤ a) (hab : a < b) :
       rw [hexp]
       dsimp only [P]
       ring
-    rw [he, integral_prod_mul, setIntegral_haarProfile_mul_eq ha,
+    have hprod : (∫ p, F k p ∂μ) =
+        (∫ x in Ioo (L a) (U a), haarProfile a x * Real.exp (r * x)) *
+          (∫ x in Ioo (L b) (U b), haarProfile b x * Real.exp (-r * x)) := by
+      rw [he]
+      exact integral_prod_mul
+        (fun x : ℝ => haarProfile a x * Real.exp (r * x))
+        (fun y : ℝ => haarProfile b y * Real.exp (-r * y))
+    rw [hprod, setIntegral_haarProfile_mul_eq ha,
       setIntegral_haarProfile_mul_eq hb]
     change -( _ * _) = (-_) * _
     ring

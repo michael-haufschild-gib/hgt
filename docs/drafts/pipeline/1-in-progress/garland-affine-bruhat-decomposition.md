@@ -89,14 +89,31 @@ arithmetic lattice, measure, or Eisenstein convergence by itself.
 
 ## Implementation checkpoint
 
-`LaurentIwahoriCriteria` compiles without warnings at ordinary limits,
-including exact Iwahori valuation membership and Laurent-unit factorization.
-`SL2PivotReduction` compiles cleanly with all four exact elimination
-identities.
-`IwahoriBruhatExistence` contains the complete existence proof, valuation
-pivot case split, and double-coset normalization, awaiting its dependencies
-and first check. `MatrixValuationContent` compiles cleanly and proves the integral-inverse
-content invariance. `IwahoriLatticeChain` now contains all three invariant
-proofs, awaiting its first check. `IwahoriBruhatUniqueness` has the exact
-integer profile definitions; profile evaluation, uniqueness, and the central
-lift remain to be completed.
+`LaurentIwahoriCriteria`, `SL2PivotReduction`, `IwahoriBruhatExistence`,
+and `MatrixValuationContent` compile cleanly at ordinary limits. Their
+current dependency oleans exist. In particular `exists_iwahori_bruhat`
+is proved for the full formal Laurent matrix group. No final direct-source
+or transitive axiom audit has yet been performed for this batch.
+
+`IwahoriLatticeChain` contains all three lattice-content invariants. Its
+first check proved the lattice-preservation calculations but found an
+ambiguous inverse coercion in two content-invariance consumers. Their
+matrix arguments now explicitly use the special-linear inverse; recheck
+is running. `IwahoriBruhatUniqueness` contains all profile evaluations,
+integer-profile injectivity, and the complete unique-representative theorem;
+it awaits its first check. The three integer-profile arithmetic implications
+passed a separate scratch Lean check using `omega`.
+
+`LoopBruhatDecomposition` contains the exact Borel-preimage criterion and
+complete existence/uniqueness lift to the actual central extension; it has
+not yet been checked. Its `PositiveBorelCoordinates` dependency has no
+emitted olean yet; emit that exact already-audited leaf when needed.
+The seven new Bruhat modules are not yet wired into the umbrella.
+
+Next checks: finish `IwahoriLatticeChain`; emit/check
+`IwahoriBruhatUniqueness` for its written consumer; emit the missing
+`PositiveBorelCoordinates` dependency; check `LoopBruhatDecomposition`.
+Then final direct source checks of all seven modules, a transitive axiom
+audit including rational and real `LoopSL2.exists_unique_bruhat`, umbrella
+imports, and promotion of this exact card. The arithmetic Eisenstein series
+remains open after this algebraic result.

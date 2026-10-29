@@ -189,7 +189,21 @@ fails.
    of the discriminant lowers it: vanishing weights (`vanishing_weight_drops_index`), colliding
    exponents with opposite weights (`collision_drops_index`), coalescence onto the line (HKT
    `coalescence_law`).
-8. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+8. **Compressions are receivers.** Over `𝔽_q` the characteristic polynomial of Frobenius, determined
+   by finitely many counts, annihilates the trace kernel outright (`compress_traceKernel_charPoly`):
+   a spectral-side certificate certifies nothing. Over `ℤ` the compressor `δ₁ − cδ_p` of one Euler
+   factor has transform `1 − c p^{ρ−½}`; it vanishes exactly on one vertical progression of spacing
+   `2π/log p` (`hat_euler_eq_zero_iff`), never on the strip when `|c| ≤ p^{−½}`, so Euler-factor
+   compressions keep the index (`negIndex_compress_euler`). A producer must vanish at the primes,
+   on the point side, as Stepanov's polynomial vanishes at the rational points.
+9. **Fine towers decide every orbit kernel.** An orbit kernel is a continuous function of the
+   logarithmic scale (`continuous_realOrbitKernel`). Cyclic subgroups `⟨u⟩` with `u → 1` are fine grids
+   of `ℝ`; rounding points to them and passing to the limit gives positivity from positivity on the
+   grids (`hermQuad_nonneg_of_fine_zpowers`). So the towers `⟨(n+2)/(n+1)⟩` of consecutive-integer ratios
+   decide every orbit kernel, with any number of pairs (`isPosDefKernel_orbitKernel_of_consecutive`),
+   and RH is positivity of the Weil kernel on them (`riemannHypothesis_iff_zetaKernel_consecutive`).
+   Prime towers are coarse grids and alias; consecutive-integer towers are fine and do not.
+10. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -211,6 +225,9 @@ fails.
    and its sharpness (`unitary_tower_defeat`, `aliased_tower_defeat`); logarithmic spectra are
    tower-faithful (`isTowerFaithful_logChar`); on `ℚ_{>0}` any exponents with nonzero real parts are
    decided by infinitely many primes (`negIndex_eq_zero_of_posDef_on_infinitely_many_primes`).
+5. *Fine towers* (`hermQuad_nonneg_of_fine_zpowers`, `continuous_realOrbitKernel`,
+   `isPosDefKernel_orbitKernel_of_consecutive`, `riemannHypothesis_iff_zetaKernel_consecutive`): for orbit
+   kernels, with any number of pairs, the consecutive-integer towers decide.
 
 **B. Local constituents and ceilings.**
 1. *Poisson law* (`isPosDefKernel_poissonKernel`, `isPosDefKernel_eulerKernel`, `isPosDefKernel_twist`).
@@ -227,6 +244,8 @@ fails.
    (`unitary_iff_twistTower_upper`).
 3. *Parity form over `ℤ`* (`riemannHypothesis_iff_parityClasses_upper`); *one class suffices*
    (`riemannHypothesis_iff_oddClass_upper`, `negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
+4. *Compressions are receivers* (`compress_traceKernel_charPoly`, `hat_euler_eq_zero_iff`,
+   `negIndex_compress_euler`).
 
 **D. Completion.**
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
@@ -242,6 +261,8 @@ fails.
 | The prime towers decide because two primes do for `ζ` | Only for tower-faithful spectra; on `ℤ²` a Krein–Langer kernel of index `2` vanishes on both axes |
 | Cyclic locality is a general fact | It holds for the Krein–Langer class and fails for finite-support kernels with a signed spectrum |
 | A cyclic subgroup always carries the whole index | Only without torsion aliasing; otherwise it carries at least one square |
+| Locality needs finitely many pairs | For orbit kernels the fine towers `⟨(n+2)/(n+1)⟩` decide with any number of pairs; the archimedean place supplies the continuity |
+| A Stepanov certificate is an annihilating compressor | Over `𝔽_q` the characteristic polynomial annihilates the trace kernel and certifies nothing; Euler-factor compressors are index-neutral over `ℤ` |
 | Local constituents are positive | The local kernel `L_p` is; the constituent `log p·δ₀ − L_p` is not, and finitely many places have infinite index |
 | More places make the index smaller | Tower-supported assemblies on two or more towers have index `0` or `∞`; finite index needs an off-axis constituent |
 | Local positivity excludes the twins | Coefficient positivity excludes the Liouville twin; positive definiteness of each constituent is twin-invariant |
@@ -261,7 +282,9 @@ fails.
    size, and Euler's criterion makes the parity class the zero set of `f^{(q−1)/2} − ε`. A single class
    count is not enough there (`one_twist_does_not_complete`); the twist tower is
    (`unitary_iff_twistTower_upper`). Over `ℤ` one class is enough, and what is missing is an identity
-   describing a parity class algebraically. *Open:* such an identity.
+   describing a parity class algebraically. Spectral-side certificates do not help: they are receivers
+   (`compress_traceKernel_charPoly`, `negIndex_compress_euler`); the auxiliary must vanish at the primes.
+   *Open:* such an identity.
 2. **What is the positive form of the parity barrier?** Twins act on constituents by unitary twists,
    so every local constituent stays positive definite (`isPosDefKernel_twist`) and over `𝔽_q` the
    global index is twin-invariant (`negIndex_traceKernel_quadTwist`). Over `ℤ` the twin breaks the
@@ -279,7 +302,9 @@ fails.
    logarithmic: one real logarithm reads every character, so unitarity is tower-independent and two
    incommensurable scales separate any two characters (`isTowerFaithful_logChar`). Cyclic subgroups
    decide every Krein–Langer kernel (`negIndex_eq_zero_of_forall_zpowers`); coordinate towers decide
-   only faithful spectra (`coordinate_locality_fails`, `aliased_tower_defeat`).
+   only faithful spectra (`coordinate_locality_fails`, `aliased_tower_defeat`). With infinitely many
+   pairs the archimedean place takes over: the fine towers `⟨(n+2)/(n+1)⟩` decide every orbit kernel
+   (`isPosDefKernel_orbitKernel_of_consecutive`).
 6. **What arithmetic quantity governs the near-axis collisions of the heat flow?** Collision mass is
    `2(κ + E)` on the finite stratum (HKT); near the axis the index drops by coalescence, the part of
    the discriminant where a node reaches the unit circle (§4.7). *Open:* a prime-side expression.
@@ -293,7 +318,9 @@ orientation of pairs and the class-vanishing lemma (`outer`, `sum_mul_eq_zero_of
 tower faithfulness (`IsTowerFaithful`); Poisson and Euler kernels (`poissonKernel`, `eulerKernel`);
 axis support and local assemblies (`IsAxisSupported`, `localAssembly`); the quadratic twist and twist
 counts (`quadTwist`, `twistCount`); parity classes (`parityCount`, `oddClassSum`); exceptional waves
-(`card_le_of_bounded_sub_waves`); limits of data (`tendsto_pairKernel`).
+(`card_le_of_bounded_sub_waves`); limits of data (`tendsto_pairKernel`); compressors
+(`frobCharPoly`, `eulerNodes`, `eulerCoeffs`); fine grids and consecutive ratios
+(`hermQuad_nonneg_of_fine_zpowers`, `consecutiveRatio`).
 
 To build:
 
@@ -303,7 +330,7 @@ To build:
 | Ring-level inputs | Bézout relations as local data | fail on over-regular Beurling systems and the golden datum |
 | Selective transfer to overlap | the pole carrier of the index-one window at overlapping widths | Q1; fails for Liouville |
 | Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | Q2; fails for parity-twisted models |
-| Cyclic locality for infinite spectra | Hasse principles for kernels with infinitely many pairs | recovers the finite case |
+| Coarse-tower locality for infinite spectra | prime towers for kernels with infinitely many pairs | recovers the finite case and the fine-tower law |
 
 ---
 
@@ -313,7 +340,8 @@ To build:
    description of a parity class; the first rung, beating the sieve's parity constant `2` on intervals
    `x^ε`.
 2. **Ring-level inputs**: Bézout relations as local-to-global data.
-3. **Cyclic and tower locality for infinite spectra**: one test, all cyclic subgroups of `ℚ_{>0}`.
+3. **Prime-tower locality for infinite spectra**: one test, infinitely many prime towers, infinitely
+   many pairs (the fine towers decide; the coarse prime towers alias).
 4. **A direct Lindelöf bridge** from a count with finitely many waves.
 5. **The near-axis count** of the heat flow in prime-side terms.
 6. **Finite-level ceilings**: index bounds for height or integer truncations from prime-side data,

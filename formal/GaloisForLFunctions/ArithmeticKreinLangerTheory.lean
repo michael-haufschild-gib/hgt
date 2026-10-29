@@ -6,6 +6,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsContinuousOffTh
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityFormOfTheGlobalLaw
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsTheNumberOfExceptionalWaves
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.CompressionsAreReceivers
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersDecideEveryOrbitKernel
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -14,7 +15,8 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
 
 * **Locality.** The cyclic Hasse principle on every group, separation without torsion aliasing, the
   failure of coordinate towers on `ℤ²` and of cyclic subgroups outside the class; tower-faithful
-  spectra, logarithmic spectra and the prime towers of `ℚ_{>0}`.
+  spectra, logarithmic spectra and the prime towers of `ℚ_{>0}`; fine towers deciding every orbit
+  kernel through the archimedean place.
 * **Local constituents and ceilings.** The Poisson law of the Euler factor, the zero-or-infinity law
   for axis-supported kernels, the Riemann–Roch ceiling, and the index as the number of exceptional
   waves of a count.

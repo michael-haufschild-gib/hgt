@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHaarGammaCrossTermsArePositive
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHaarPrimeSourceRetainsItsDivisorSquares
 
 /-!
 # The exact additive graph in the signed Haar Gamma source
@@ -188,5 +189,42 @@ theorem haarSectionProfile_gamma_eq_row_sub_graph (d : ℕ → ℝ) (X : ℕ) :
       (1 / 2 : ℝ) * ∑ a ∈ S, ∑ b ∈ S, K a b * (u a - u b) ^ 2
   rw [hrow, hexp]
   linarith only [hm]
+
+/-- The exact signed diagonal left by the original arithmetic potential and Gamma rows. -/
+def haarWeilGroundPotential (X a : ℕ) : ℝ :=
+  (levyEnergy (haarProfile a) +
+    (2 * gammaHardyPhaseRate 0 - Real.log ((2 * a + 1 : ℕ) : ℝ)) * haarMass a -
+      haarPrimeOutgoingCharge X a) / ((2 * a + 1 : ℕ) : ℝ) +
+    ∑ b ∈ Finset.Icc 1 X, haarGammaGraphWeight a b
+
+/-- The full original Weil source retains its divisor reserve, both poles, and exact
+signed potential when the adverse additive Gamma graph is moved to the left. -/
+theorem haarSectionProfile_roughWeil_add_graph_eq (d : ℕ → ℝ) (X : ℕ) :
+    roughWeil (haarSectionProfile d X) + haarGammaGraphEnergy d X =
+      haarPrimeLogDefect d X +
+        (2 * coshHalfMoment (haarSectionProfile d X) ^ 2 -
+          2 * sinhHalfMoment (haarSectionProfile d X) ^ 2) +
+        ∑ a ∈ Finset.Icc 1 X, haarWeilGroundPotential X a * haarGroundCoordinate d a ^ 2 := by
+  have hterm (a : ℕ) : haarWeilGroundPotential X a * haarGroundCoordinate d a ^ 2 =
+      haarGammaRowPotential X a * haarGroundCoordinate d a ^ 2 +
+        2 * gammaHardyPhaseRate 0 * (haarMass a * d a ^ 2) -
+        (Real.log ((2 * a + 1 : ℕ) : ℝ) * haarMass a + haarPrimeOutgoingCharge X a) *
+          d a ^ 2 := by
+    have hn : (0 : ℝ) < ((2 * a + 1 : ℕ) : ℝ) := by positivity
+    dsimp only [haarWeilGroundPotential, haarGammaRowPotential]
+    simp only [haarGroundCoordinate, mul_pow, Real.sq_sqrt hn.le]
+    field_simp [hn.ne'] <;> ring
+  have hsum : (∑ a ∈ Finset.Icc 1 X,
+      haarWeilGroundPotential X a * haarGroundCoordinate d a ^ 2) =
+      (∑ a ∈ Finset.Icc 1 X, haarGammaRowPotential X a * haarGroundCoordinate d a ^ 2) +
+        2 * gammaHardyPhaseRate 0 * (∑ a ∈ Finset.Icc 1 X, haarMass a * d a ^ 2) -
+        ∑ a ∈ Finset.Icc 1 X,
+          (Real.log ((2 * a + 1 : ℕ) : ℝ) * haarMass a + haarPrimeOutgoingCharge X a) *
+            d a ^ 2 := by
+    simp only [hterm, Finset.sum_sub_distrib, Finset.sum_add_distrib, ← Finset.mul_sum]
+  have hg := haarSectionProfile_gamma_eq_row_sub_graph d X
+  rw [roughWeil, integral_haarSectionProfile_sq, ← haarPrimeEnergy_eq_primeSum,
+    haarPrimeLogDefect, hsum]
+  linarith only [hg]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells

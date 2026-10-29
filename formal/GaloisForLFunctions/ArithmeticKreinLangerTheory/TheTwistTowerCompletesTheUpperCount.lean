@@ -28,6 +28,12 @@ for the quadratic twists of all `2`-power base changes (`twistCount D (2^j) m`, 
 `𝔽_{q^{2^j m}}` of the twist of the base change to `𝔽_{q^{2^j}}`) are equivalent to RH: writing
 `k = 2^j m` with `m` odd, the twist count at `(2^j, m)` is the curve's lower count at `k`.
 
+**Twisted base changes** (`baseChange`, `twistCount_eq_pointCount`,
+`unitary_iff_twistedBaseChanges_upper`). The twist count is the point count of an actual datum, the
+quadratic twist of the base change to `𝔽_{q^{2^j}}`; on zeta functions the twist is the vertical shift
+`s ↦ s + iπ/log q^{2^j}`. Over `𝔽_q` these shifts are geometric, so an upper-count producer applies to
+each of them.
+
 So a producer of upper counts reaches the global law only together with a parity symmetry acting on
 every base change. Over `ℤ` the parity twin (the Liouville twist) acts on the prime constituents
 tower by tower but not on the archimedean factor, and the complementary parity class of the primes
@@ -209,4 +215,48 @@ theorem unitary_iff_twistTower_upper :
       rw [hm.neg_one_pow] at this
       linarith [le_max_left C (Fintype.card ι)]
 
+/-! ### The twist tower as twisted base changes -/
+
+/-- The **base change** to `𝔽_{q^n}`: eigenvalues `β^n` over `q^n`. -/
+def baseChange (n : ℕ) (hn : 0 < n) : CurveDatum ι where
+  q := D.q ^ n
+  one_lt_q := one_lt_pow₀ D.one_lt_q hn.ne'
+  β := fun i => D.β i ^ n
+  conjPerm := D.conjPerm
+  β_conjPerm := fun i => by rw [D.β_conjPerm, map_pow]
+  fePerm := D.fePerm
+  β_fePerm := fun i => by rw [← mul_pow, D.β_fePerm, one_pow]
+
+theorem trace_baseChange (n : ℕ) (hn : 0 < n) (k : ℕ) :
+    (baseChange D n hn).trace k = D.trace (n * k) := by
+  simp only [CurveDatum.trace, CurveDatum.powerSum, baseChange, ← pow_mul]
+
+theorem sqrtq_baseChange (n : ℕ) (hn : 0 < n) : (baseChange D n hn).sqrtq = D.sqrtq ^ n := by
+  have hq : D.q ^ n = (D.sqrtq ^ n) ^ 2 := by rw [← pow_mul, mul_comm, pow_mul, D.sqrtq_sq]
+  show Real.sqrt (D.q ^ n) = D.sqrtq ^ n
+  rw [hq, Real.sqrt_sq (pow_nonneg D.sqrtq_pos.le n)]
+
+/-- **The twist count is the count of a twisted base change**: the point count of the quadratic
+twist of the base change to `𝔽_{q^n}`, over `𝔽_{q^{nm}}`. -/
+theorem twistCount_eq_pointCount (n : ℕ) (hn : 0 < n) (m : ℕ) :
+    twistCount D n m = (quadTwist (baseChange D n hn)).pointCount m := by
+  rw [pointCount_quadTwist, trace_baseChange, sqrtq_baseChange, twistCount,
+    show (baseChange D n hn).q = D.q ^ n from rfl, ← pow_mul, ← pow_mul]
+
+/-- **RH for curve data is the upper count for the twisted `2`-power base changes.** -/
+theorem unitary_iff_twistedBaseChanges_upper :
+    (∀ i, ‖D.β i‖ = 1) ↔ ∃ C : ℝ, ∀ j m : ℕ,
+      (quadTwist (baseChange D (2 ^ j) (pow_pos two_pos j))).pointCount m ≤
+        (quadTwist (baseChange D (2 ^ j) (pow_pos two_pos j))).q ^ m + 1 +
+          C * (quadTwist (baseChange D (2 ^ j) (pow_pos two_pos j))).sqrtq ^ m := by
+  rw [unitary_iff_twistTower_upper]
+  refine exists_congr fun C => forall₂_congr fun j m => ?_
+  rw [← twistCount_eq_pointCount, show (quadTwist (baseChange D (2 ^ j) (pow_pos two_pos j))).q =
+    D.q ^ 2 ^ j from rfl, show (quadTwist (baseChange D (2 ^ j) (pow_pos two_pos j))).sqrtq =
+    (baseChange D (2 ^ j) (pow_pos two_pos j)).sqrtq from rfl, sqrtq_baseChange, ← pow_mul,
+    ← pow_mul]
+
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms unitary_iff_twistedBaseChanges_upper

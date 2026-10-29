@@ -135,6 +135,8 @@ Dominated convergence for the counting measure therefore gives
 `lim_(R→∞) H_R(s₀)=N(s₀)≠0`. Continuity of the norm gives an `R₀` such that
 `H_R(s₀)≠0` for every `R≥R₀`. The local quotient order is then exactly `−m`.
 In particular this holds along `R=d log 3` for all sufficiently large integers `d`.
+There are exactly two Frobenius indices; taking the maximum of their two integer
+thresholds gives one threshold above which both indexed poles survive simultaneously.
 The projective rational point at infinity supplies the degree-one place required to
 realize those rotations; constructing that place in the adelic model remains part of
 the separate arithmetic construction, not an input assumed by the analytic theorem.
@@ -168,7 +170,9 @@ theory, and dominated convergence. No arithmetic unfolding theorem is used.
   Weyl-sum definitions, normal convergence, original-series/continuation equality,
   punctured-germ equality, and exact eventual pole orders, including integral rotations.
   Its identical scratch source passed, exit 0 with no diagnostics. The final declaration
-  is `finiteFieldWeylSum_integral_rotation_poles`; final axiom audit remains pending.
+  is `finiteFieldWeylSum_integral_rotation_poles`. The transitive axiom audit passed for
+  that theorem, `finiteFieldWeylSum_eventual_order`, chamber equality, holomorphy, and
+  absolute convergence: only `[propext, Classical.choice, Quot.sound]`.
 - `/tmp/hgt_ff_eisenstein_api.lean` is an owned API scratch file. Its check finished;
   expected unknown-name errors identified unavailable aliases. Valid APIs include
   `mul_div_mul_left`, `IsCompact.exists_bound_of_continuousOn`,
@@ -237,6 +241,16 @@ The remaining residue-field identification needs proof: equal-degree numerator
 and denominator have a unique scalar leading-coefficient ratio, since the two
 possible leading weights `2 deg p` and `2 deg q+3` have opposite parity. Subtracting
 that scalar lowers degree. This will identify the residue field with `F₃`.
+
+For the explicit cancellation lemma, linearly encode the unique affine coordinates
+`p(x)+q(x)y` by the polynomial `p(T²)+T³q(T²)`. Its degree equals the norm pole
+degree: the two nonzero summands have opposite parity of degree. This encoding
+respects subtraction and scalar multiplication (it is not a ring homomorphism).
+Thus equal non-bottom pole degrees reduce to ordinary polynomial leading-term
+cancellation. For any nonzero denominator `b` and `d(a)≤d(b)`, choose `c=0` when
+the inequality is strict; otherwise choose the ratio of these encoded leading
+coefficients. Then `d(a−cb)<d(b)`, so `v(a/b−c)<1`. Every infinity residue is
+therefore represented by a unique constant; nonzero constants have value one.
 
 ## Identifying finite places with the affine curve `[PAPER PROOF]`
 

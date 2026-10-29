@@ -35,6 +35,19 @@ For `n_a=2a+1`, `u_a=sqrt(n_a)*d_a` and
 The graph weights are nonnegative and retain the original touching
 interactions. No sign assumption is imposed on d.
 
+The original full Weil form has the exact joint identity
+
+`W(h)+G_X(u)=D_X(d)+P(h)+sum_a V_X(a)*u_a^2`,
+
+where G_X is the displayed additive graph energy, P retains both original
+pole moments, and
+
+`V_X(a)=[Gamma(H_a)+(2*gammaHardyPhaseRate(0)-log(n_a))*M_a-O_X(a)]/n_a
+          +sum_b K_ab`.
+
+Here D_X and O_X are the original logarithmic divisor defect and outgoing
+charge. The signed potential V_X is retained without a positivity claim.
+
 ## Dependency-closed paper proof
 
 1. H_a is nonnegative to the left of its internal boundary and
@@ -58,6 +71,11 @@ interactions. No sign assumption is imposed on d.
    finite quadratic form. Substitute d_a=u_a/sqrt(n_a). Symmetry of K
    turns the expansion of the difference squares into the row potential
    minus the graph energy exactly.
+5. In the original identity `W=Gamma+2*phase(0)*mass-prime+P`, use the
+   exact Haar square mass and
+   `D_X=sum_a[log(n_a)*M_a+O_X(a)]*d_a^2-prime`.
+   Substitute the Gamma graph identity and `d_a^2=u_a^2/n_a`.
+   Collecting the finite diagonal sums gives the full-Weil identity.
 
 ## Route status
 

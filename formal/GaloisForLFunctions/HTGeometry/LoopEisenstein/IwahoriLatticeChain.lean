@@ -78,7 +78,7 @@ theorem latticeConjugate_entries (M : Matrix (Fin 2) (Fin 2) (LaurentSeries F)) 
   intro i j
   fin_cases i <;> fin_cases j <;>
     simp [latticeConjugate, latticeStep, latticeStepInv, Matrix.mul_apply,
-      Matrix.vecMul, dotProduct, Fin.sum_univ_two, mul_comm, mul_left_comm, mul_assoc]
+      Matrix.vecMul, dotProduct, Fin.sum_univ_two, mul_comm, mul_assoc]
 
 theorem latticeRows_entries (M : Matrix (Fin 2) (Fin 2) (LaurentSeries F)) :
     latticeRows F M =
@@ -88,7 +88,7 @@ theorem latticeRows_entries (M : Matrix (Fin 2) (Fin 2) (LaurentSeries F)) :
   apply Matrix.ext
   intro i j
   fin_cases i <;> fin_cases j <;>
-    simp [latticeRows, latticeStepInv, Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+    simp [latticeRows, latticeStepInv, Matrix.mul_apply, Fin.sum_univ_two]
 
 theorem laurentIwahori_content_le_one {g : SL2 (LaurentSeries F)} (hg : g ∈ laurentIwahori F) :
     matrixValuationContent (laurentValuation F) g ≤ 1 :=
@@ -140,7 +140,9 @@ theorem iwahori_content_left {i : SL2 (LaurentSeries F)} (hi : i ∈ laurentIwah
     (M : Matrix (Fin 2) (Fin 2) (LaurentSeries F)) :
     matrixValuationContent (laurentValuation F) ((i : Matrix _ _ _) * M) =
       matrixValuationContent (laurentValuation F) M :=
-  matrixValuationContent_mul_left_eq _ i i⁻¹ M
+  matrixValuationContent_mul_left_eq (laurentValuation F)
+    (i : Matrix (Fin 2) (Fin 2) (LaurentSeries F))
+    ((i⁻¹ : SL2 (LaurentSeries F)) : Matrix (Fin 2) (Fin 2) (LaurentSeries F)) M
     (laurentIwahori_content_le_one F hi)
     (laurentIwahori_content_le_one F ((laurentIwahori F).inv_mem hi)) (coe_inv_mul F i)
 
@@ -148,7 +150,9 @@ theorem iwahori_content_right {i : SL2 (LaurentSeries F)} (hi : i ∈ laurentIwa
     (M : Matrix (Fin 2) (Fin 2) (LaurentSeries F)) :
     matrixValuationContent (laurentValuation F) (M * (i : Matrix _ _ _)) =
       matrixValuationContent (laurentValuation F) M :=
-  matrixValuationContent_mul_right_eq _ M i i⁻¹
+  matrixValuationContent_mul_right_eq (laurentValuation F) M
+    (i : Matrix (Fin 2) (Fin 2) (LaurentSeries F))
+    ((i⁻¹ : SL2 (LaurentSeries F)) : Matrix (Fin 2) (Fin 2) (LaurentSeries F))
     (laurentIwahori_content_le_one F hi)
     (laurentIwahori_content_le_one F ((laurentIwahori F).inv_mem hi)) (coe_mul_inv F i)
 

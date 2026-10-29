@@ -26,6 +26,47 @@ def integerWeylProfile : AffineA1.Weyl → ℤ × ℤ × ℤ
   | .r m => diagonalLatticeExponents (-(show ℤ from m))
   | .sr m => weylLatticeExponents (-(show ℤ from m))
 
+theorem diagonalLatticeExponents_injective : Function.Injective diagonalLatticeExponents := by
+  intro n m h
+  have h₀ : max (-n) n = max (-m) m := congrArg Prod.fst h
+  have h₁ : max (-n) (n + 1) = max (-m) (m + 1) := congrArg (fun p => p.2.1) h
+  omega
+
+theorem weylLatticeExponents_injective : Function.Injective weylLatticeExponents := by
+  intro n m h
+  have h₀ : max n (-n) = max m (-m) := congrArg Prod.fst h
+  have h₂ : max (n - 1) (1 - n) = max (m - 1) (1 - m) := congrArg (fun p => p.2.2) h
+  omega
+
+/-- Equality of the first and third contents separates diagonal from antidiagonal representatives. -/
+theorem diagonalLatticeExponents_ne_weyl (n m : ℤ) :
+    diagonalLatticeExponents n ≠ weylLatticeExponents m := by
+  intro h
+  have h₀ : max (-n) n = max m (-m) := congrArg Prod.fst h
+  have h₂ : max (-n) n = max (m - 1) (1 - m) := congrArg (fun p => p.2.2) h
+  omega
+
+/-- The lattice profile recovers the full infinite-dihedral Weyl element. -/
+theorem integerWeylProfile_injective : Function.Injective integerWeylProfile := by
+  intro w v h
+  cases w with
+  | r m =>
+    cases v with
+    | r n =>
+      have hmn : (m : ℤ) = (n : ℤ) :=
+        neg_injective (diagonalLatticeExponents_injective h)
+      subst n
+      rfl
+    | sr n => exact (diagonalLatticeExponents_ne_weyl (-m) (-n) h).elim
+  | sr m =>
+    cases v with
+    | r n => exact (diagonalLatticeExponents_ne_weyl (-n) (-m) h.symm).elim
+    | sr n =>
+      have hmn : (m : ℤ) = (n : ℤ) :=
+        neg_injective (weylLatticeExponents_injective h)
+      subst n
+      rfl
+
 /-- Embed the integer content exponents into the actual Laurent valuation group. -/
 def valuationProfileOfExponents (p : ℤ × ℤ × ℤ) :
     WithZero (Multiplicative ℤ) × WithZero (Multiplicative ℤ) × WithZero (Multiplicative ℤ) :=
@@ -160,6 +201,29 @@ theorem iwahoriLatticeProfile_affineWeylMatrix (w : AffineA1.Weyl) :
   cases w with
   | r m => exact iwahoriLatticeProfile_diagonal_monomial F (-(show ℤ from m))
   | sr m => exact iwahoriLatticeProfile_weyl_monomial F (-(show ℤ from m))
+
+/-- Distinct affine Weyl elements give distinct actual Iwahori double cosets. -/
+theorem iwahoriEquivalent_affineWeyl_iff (w v : AffineA1.Weyl) :
+    iwahoriEquivalent F (affineWeylMatrix F w) (affineWeylMatrix F v) ↔ w = v := by
+  constructor
+  · rintro ⟨l, hl, r, hr, h⟩
+    have hp : iwahoriLatticeProfile F (affineWeylMatrix F w) =
+        iwahoriLatticeProfile F (affineWeylMatrix F v) :=
+      (iwahoriLatticeProfile_factors F hl hr _).symm.trans
+        (congrArg (iwahoriLatticeProfile F) h)
+    rw [iwahoriLatticeProfile_affineWeylMatrix, iwahoriLatticeProfile_affineWeylMatrix] at hp
+    exact integerWeylProfile_injective (valuationProfileOfExponents_injective hp)
+  · rintro rfl
+    exact iwahoriEquivalent_refl F _
+
+/-- The full formal Laurent SL₂ group has a unique affine Weyl Iwahori double-coset representative. -/
+theorem exists_unique_iwahori_bruhat (g : SL2 (LaurentSeries F)) :
+    ∃! w : AffineA1.Weyl, iwahoriEquivalent F g (affineWeylMatrix F w) := by
+  obtain ⟨w, hw⟩ := exists_iwahori_bruhat F g
+  refine ⟨w, hw, ?_⟩
+  intro v hv
+  exact (iwahoriEquivalent_affineWeyl_iff F v w).1
+    (iwahoriEquivalent_trans F (iwahoriEquivalent_symm F hv) hw)
 
 end
 
