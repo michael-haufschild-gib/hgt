@@ -364,7 +364,10 @@ fails.
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
 2. *Continuity off the discriminant* (`eventually_negIndex_eq_of_tendsto`).
 3. *The degenerations* (`vanishing_weight_drops_index`, `collision_drops_index`, HKT `coalescence_law`).
-4. *Collisions count exceptional waves* (`zetaKernel_eq_weilFullFunctional`, `Wsummand_ne_zero_of_rightZero`,
+4. *Nyquist windows of the completion* (`injective_logChar_of_scale_mul_lt`,
+   `exists_scale_injective_logChar`): at scale `t` no two exponents closer than `2π/t` alias, and
+   fine towers separate every finite family.
+5. *Collisions count exceptional waves* (`zetaKernel_eq_weilFullFunctional`, `Wsummand_ne_zero_of_rightZero`,
    `zetaKernel_eq_onLine_add_pairs_fin`, `waveNumber_collision_law`, `minimal_count_reads_multiplicities`,
    `xiMult_eq_mult`, `collision_mass_from_minimal_count`, `tendsto_collisionMass_iff_consecutive`,
    `bounded_heat_iff_consecutive_bounded`).
@@ -500,16 +503,18 @@ counts (`quadTwist`, `twistCount`); parity classes (`parityCount`, `oddClassSum`
 (`tendsto_cesaro_pow`, `finite_of_disjoint_mass`); Schur's test with a positive eigenvector and the
 prime kernel of `𝔽_q[T]` (`sum_mul_le_of_pos_eigenvector`, `primeKernelFq`, `monicLE`, `poleVec`).
 
-To build:
+The tools §2.8 asks for, with what is built and what is open:
 
-| Tool | Purpose | Test |
-|---|---|---|
-| Arithmetic compressor (Stepanov over `ℤ`) | an upper count for the odd parity class at precision `x^{½+ε}`; first layer built (integrality at linear precision, Stepanov over `𝔽_q` at square-root precision); the hyperelliptic test passed in kernel form (`stepanov_order_hyperelliptic`) | reproduces hyperelliptic RH through the twist tower; fails for Liouville; first rung: beat the sieve constant `2` |
-| Ring-level inputs | Bézout relations as local data; the ledger built in both rings (multiplicity × mass ≤ size), binomial multiplicities capped at `p^m ≤ N` | fail on over-regular Beurling systems and the golden datum |
-| Selective transfer to overlap | the pole carrier of the index-one window at overlapping widths | Q1; fails for Liouville |
-| Geometric parity twin | a family over `ℤ` on which the Liouville twist acts as a symmetry; settled for vertical shifts: one prime tower yes, two primes no, the Bohr closure yes | reproduces the twist tower over `𝔽_q` |
-| Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one (owned by `TransThresholdPairCorrelation`) | Q2; fails for parity-twisted models |
-| Coarse-tower locality for infinite spectra | prime towers for kernels with infinitely many pairs; built when the largest depth is attained (`finite_primes_posDef_of_attained_depth`) | recovers the finite case and the fine-tower law |
+| Tool | Purpose | Built | Test status | Open |
+|---|---|---|---|---|
+| Point-side producer (Stepanov over `ℤ`) | an upper count for one parity class from an auxiliary vanishing at the primes | the Bézout ledger in both rings (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`); Chebyshev's producer as a ledger (`sum_log_prime_Ioc_le`); the binomial multiplicity cap (`le_one_of_dvd_choose`); divisibility is parity-blind (`abs_log_lcm_oddPoints_sub_theta_le`) | hyperelliptic RH reproduced in kernel form (`stepanov_order_hyperelliptic`); Liouville: divisibility producers cannot separate it | an auxiliary over `ℤ` whose order of vanishing grows on the counted primes at controlled size; beating the sieve constant `2` |
+| Index ceiling over `ℤ` | bound `κ(K_ζ)` before any count | Riemann–Roch ceiling over `𝔽_q` (`two_mul_negIndex_traceKernel_le`); the exact atomic ceiling `N log q` over `𝔽_q[T]` (`atomFq_nonneg_iff`) and its second rung (`atomFq_two_negative_squares`); local data give `0` or `∞` (`negIndex_localAssembly_eq_top`); the index is the wave number of a count (`negIndex_eq_card_waves`) | genus ceiling attained by the golden datum (`golden_attains_ceiling`) | a finite bound on the wave number from prime-side data; finiteness for `ζ` is LH-deep |
+| Large-overlap renormalization | positivity of the complete form uniformly in overlap | pointwise-closed statements are twin-blind (`liouvilleTwin_mem_of_isClosed`): selectivity at any overlap must come from terms that do not move with the weights | — | the fixed-ratio floor and the flips `ω_p` belong to `TransMetzlerWeilPositivity` and `SelectiveMultiscaleArithmeticPositivity`; a non-perturbative theory is open |
+| Geometric parity twin | a family over `ℤ` on which the Liouville twist is a symmetry | vertical shifts: the twin on each prime tower (`shiftChar_primeElt_zpow`), on no two primes (`shiftChar_eq_neg_one_subsingleton`), in the Bohr closure (`exists_shiftChar_near_neg_one`, `exists_shifts_tendsto_liouville`) | the `𝔽_q` twist tower reproduced (`unitary_iff_twistTower_upper`, `shift_pow_eq_neg_one_pow`) | a family beyond vertical shifts to which a producer applies |
+| Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | — (owned by `TransThresholdPairCorrelation`) | — | open (Q2 of §2.2) |
+| Polar-divisor spectral theory | constrain the poles of infinite-rank Eisenstein series | — | — | open |
+| Index-carrying completion | a completion in which the Weil kernel is continuous for the index | continuity off the discriminant and its three degenerations (`eventually_negIndex_eq_of_tendsto`, `vanishing_weight_drops_index`, `collision_drops_index`); the archimedean completion read through fine towers (`negIndex_orbitKernel_eq_iSup_fine`, `negIndex_orbitKernel_eq_iSup_consecutive`) | agrees with pointwise limits; reproduces the tower law (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`) and the Nyquist law, whose windows grow without bound along fine towers (`exists_scale_injective_logChar`) | collision rates off the finite stratum |
+| Coarse-tower locality | prime towers for infinite spectra | attained depth (`finite_primes_posDef_of_attained_depth`); the finite stratum | recovers the finite case and the fine-tower law | an unattained depth supremum |
 
 ---
 

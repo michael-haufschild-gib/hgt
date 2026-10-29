@@ -16,6 +16,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.StepanovsOrderOverTheFini
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityTwinIsGeometricOnlyInTheBohrClosure
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.PointwiseClosedStatementsAreTwinBlind
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersHaveUnboundedNyquistWindows
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -35,8 +36,9 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   multiplicity caps; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index
   zero; the parity twin over `ℤ` is a vertical shift on one prime tower, on no two primes, and in the
   Bohr closure; pointwise-closed statements that hold for every vertical shift hold for the twin.
-* **Completion.** Continuity of the index off the discriminant and its three degenerations; the
-  heat-collision mass as twice the wave number of the prime-side count.
+* **Completion.** Continuity of the index off the discriminant and its three degenerations; Nyquist
+  windows that grow without bound along fine towers; the heat-collision mass as twice the wave number
+  of the prime-side count.
 
 The foundation is `HeckeKreinToeplitz`. See `ArithmeticKreinLangerTheory/README.md`.
 -/

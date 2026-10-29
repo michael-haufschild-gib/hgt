@@ -46,13 +46,15 @@ locality, and must not duplicate HKT modules.
   `FineTowersDecideEveryOrbitKernel`, `LocalityIsTwinBlind`, `TheCollisionMassIsTheWaveNumber`,
   `AttainedDepthIsSeenByAlmostEveryPrime`, `IntegralityProducesLinearCounts` (Bézout ledger,
   binomial multiplicity cap, divisibility is parity-blind), `StepanovsOrderOverTheFiniteField`,
-  `TheParityTwinIsGeometricOnlyInTheBohrClosure`, `PointwiseClosedStatementsAreTwinBlind`, `TheFunctionFieldCeilingIsExact`.
+  `TheParityTwinIsGeometricOnlyInTheBohrClosure`, `PointwiseClosedStatementsAreTwinBlind`, `TheFunctionFieldCeilingIsExact` (exact ceiling and the
+  lower half of the second rung over `𝔽_q[T]`), `FineTowersHaveUnboundedNyquistWindows`.
 
 ## Open (RH/LH-deep, recorded in README §9)
 Producer over ℤ; Lindelöf bridge from the kernel; a geometric parity twin beyond vertical shifts;
-selective transfer past Robin–Euler; two-sided coalescent pair theory; prime-tower locality when the depth supremum
+selective transfer past Robin–Euler; the upper half of the second rung over `𝔽_q[T]` (spectral gap
+of `P_N` on the pole hyperplane); two-sided coalescent pair theory; prime-tower locality when the depth supremum
 is unattained (attained depth and fine towers are settled; the collision law is read from one
 minimal count).
 
 ## Log
-- 2026-10-29 — created; README draft written; eighteen modules in the umbrella (one by another agent); README revised.
+- 2026-10-29 — created; README draft written; nineteen modules in the umbrella (one by another agent); README tools table covers every §2.8 tool.

@@ -1,5 +1,5 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap.PrimeSquareTrial
-import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheMarkovAndWeilPacketFormsHaveOppositePoleShifts
+import GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap.VariablePacketLimit
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ExplicitPlateauParameters
 
 /-!
@@ -99,9 +99,11 @@ theorem tendsto_elevenTrial_weil :
       (𝓝 ((∫ u, transMetzlerProfile u ^ 2) *
         (completeWeilSelfFinitePart transMetzlerProfile (99 / 100) + 4 * Real.log 11 / 11 +
           completeWeilPoleShift transMetzlerProfile (99 / 100) * (101 / 121 : ℝ) ^ 2))) := by
-  have h := tendsto_ramanujanPacketTest_weil_adjunction contDiff_transMetzlerProfile
+  have h := tendsto_ramanujanPacketTest_weil_variable contDiff_transMetzlerProfile
     (fun u hu => transMetzlerProfile_eq_zero hu) integral_transMetzlerProfile_sq_pos
+    (r := fun _ => 99 / 100) tendsto_const_nhds
     (by norm_num : (0 : ℝ) < 99 / 100) (by norm_num : (99 / 100 : ℝ) < 1)
+    (H := fun N => N) tendsto_id
     elevenPacketConductors elevenPacketConductors_pos elevenPacketCoefficient
   simpa only [elevenPacketTest_eq, elevenPacket_energy] using h
 

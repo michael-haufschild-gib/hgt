@@ -35,7 +35,8 @@ theorem primeResidueWindowErrorMass_nonneg (q : ℕ) [NeZero q] (A B N : ℕ) :
     0 ≤ primeResidueWindowErrorMass q A B N :=
   sum_nonneg fun _ _ => abs_nonneg _
 
-private theorem residuePrimeWindow_eq_indicator_sum {q : ℕ} [NeZero q]
+/-- Exact decomposition into the masses of individual residue classes. -/
+theorem residuePrimeWindow_eq_indicator_sum {q : ℕ} [NeZero q]
     (F : ZMod q → ℝ) (A B N : ℕ) :
     residuePrimeWindow q F A B N =
       ∑ r : ZMod q, F r * residuePrimeWindow q (primeResidueIndicator r) A B N := by
@@ -57,7 +58,8 @@ private theorem residuePrimeWindow_eq_indicator_sum {q : ℕ} [NeZero q]
   simp_rw [he]
   rw [sum_ite_eq', if_pos (mem_univ _)]
 
-private theorem primeClassKappa_eq_indicator_sum {q : ℕ} [NeZero q]
+/-- The unit mean has the same finite residue-coordinate decomposition. -/
+theorem primeClassKappa_eq_indicator_sum {q : ℕ} [NeZero q]
     (F : ZMod q → ℝ) :
     primeClassKappa q F =
       ∑ r : ZMod q, F r * primeClassKappa q (primeResidueIndicator r) := by
@@ -136,9 +138,11 @@ theorem eventually_primeWindow_all_Gram_packets {ι : Type*} {q : ℕ} [NeZero q
         ε * ∑ r : ZMod q, (∑ i ∈ s, x i * v i r) ^ 2 := by
   filter_upwards [eventually_residuePrimeWindow_uniform (q := q) hA hAB hε] with N hN
   intro s v x
-  have hab : ∀ z : ℝ, |z ^ 2| = z ^ 2 := fun z => abs_of_nonneg (sq_nonneg z)
-  simpa only [hab] using
-    hN (fun r => (∑ i ∈ s, x i * v i r) ^ 2)
+  calc
+    _ ≤ ε * ∑ r : ZMod q, |(∑ i ∈ s, x i * v i r) ^ (2 : ℕ)| :=
+      hN (fun r => (∑ i ∈ s, x i * v i r) ^ (2 : ℕ))
+    _ = _ := congrArg (fun t : ℝ => ε * t)
+      (sum_congr rfl fun r _ => abs_of_nonneg (sq_nonneg (∑ i ∈ s, x i * v i r)))
 
 
 /-- The same common horizon controls complex Gram packets, including
@@ -156,6 +160,64 @@ theorem eventually_primeWindow_all_complex_Gram_packets {ι : Type*}
   simpa only [abs_of_nonneg (Complex.normSq_nonneg _)] using
     hN (fun r => Complex.normSq (∑ i ∈ s, x i * v i r))
 
+/-- Every actual residue mass is positive, including the non-unit prime powers. -/
+theorem residuePrimeWindow_nonneg {q : ℕ} (F : ZMod q → ℝ)
+    (hF : ∀ r, 0 ≤ F r) (A B N : ℕ) :
+    0 ≤ residuePrimeWindow q F A B N := by
+  unfold residuePrimeWindow
+  exact sum_nonneg fun k _ => div_nonneg
+    (mul_nonneg (hF _) ArithmeticFunction.vonMangoldt_nonneg) (Nat.cast_nonneg k)
+
+/-- For lower bounds, non-unit prime powers have the favorable sign.
+One horizon therefore dominates the unit model for every positive reading. -/
+theorem eventually_residuePrimeWindow_dominates_unitMean {q : ℕ} [NeZero q]
+    {A B : ℕ} (hA : 0 < A) (hAB : A ≤ B) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ F : ZMod q → ℝ, (∀ r, 0 ≤ F r) →
+      (Real.log B - Real.log A - ε) * primeClassKappa q F ≤
+        residuePrimeWindow q F A B N := by
+  have hi (r : ZMod q) : ∀ u, 0 ≤ primeResidueIndicator r u := by
+    intro u
+    unfold primeResidueIndicator
+    split_ifs <;> norm_num
+  have hr (r : ZMod q) : ∀ᶠ N : ℕ in atTop,
+      (Real.log B - Real.log A - ε) * primeClassKappa q (primeResidueIndicator r) ≤
+        residuePrimeWindow q (primeResidueIndicator r) A B N := by
+    have hk : 0 ≤ primeClassKappa q (primeResidueIndicator r) :=
+      div_nonneg (sum_nonneg fun u _ => hi r u) (Nat.cast_nonneg _)
+    rcases eq_or_lt_of_le hk with hz | hpos
+    · exact Filter.Eventually.of_forall fun N => by
+        rw [← hz, mul_zero]
+        exact residuePrimeWindow_nonneg _ (hi r) A B N
+    · have hlt : (Real.log B - Real.log A - ε) *
+          primeClassKappa q (primeResidueIndicator r) <
+          primeClassKappa q (primeResidueIndicator r) * (Real.log B - Real.log A) := by
+        have hprod := mul_pos hε hpos
+        nlinarith only [hprod]
+      exact ((tendsto_residuePrimeWindow (primeResidueIndicator r) hA hAB).eventually
+        (lt_mem_nhds hlt)).mono fun _ h => h.le
+  filter_upwards [Filter.eventually_all.mpr hr] with N hN
+  intro F hF
+  rw [residuePrimeWindow_eq_indicator_sum, primeClassKappa_eq_indicator_sum, mul_sum]
+  refine sum_le_sum fun r _ => ?_
+  calc
+    _ = F r * ((Real.log B - Real.log A - ε) *
+        primeClassKappa q (primeResidueIndicator r)) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (hN r) (hF r)
+
+/-- A simultaneous lower operator bound in the unit Gram itself.
+No full-residue penalty is needed, even on its null directions. -/
+theorem eventually_primeWindow_dominates_all_complex_Gram_packets {ι : Type*}
+    {q : ℕ} [NeZero q] {A B : ℕ} (hA : 0 < A) (hAB : A ≤ B)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ (s : Finset ι) (v : ι → ZMod q → ℂ) (x : ι → ℂ),
+      (Real.log B - Real.log A - ε) *
+          primeClassKappa q (fun r => Complex.normSq (∑ i ∈ s, x i * v i r)) ≤
+        residuePrimeWindow q (fun r => Complex.normSq (∑ i ∈ s, x i * v i r)) A B N := by
+  filter_upwards [eventually_residuePrimeWindow_dominates_unitMean (q := q) hA hAB hε]
+    with N hN
+  intro s v x
+  exact hN _ (fun _ => Complex.normSq_nonneg _)
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_residuePrimeWindow_sub_unitMean_le
@@ -163,3 +225,4 @@ end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_primeWindow_all_Gram_packets
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_primeWindow_all_complex_Gram_packets
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_primeWindow_dominates_all_complex_Gram_packets

@@ -731,3 +731,6 @@ theorem dcProfile_atomicGram_reaches_index {α : ℝ} (hα : 1 < α) :
 end Schedules
 
 end GaloisForLFunctions.EffectiveArithmeticHodgeTheory
+
+#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.dcProfile_atomicGram_reaches_index
+#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.tendsto_hermNegIndex_atomicGram
