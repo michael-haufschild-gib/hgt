@@ -119,7 +119,7 @@ theorem primitiveRootPrefixEnergy_conditional_quadratic_eq {ι : Type*} (s : Fin
       a i * a j * primitiveRootPrefixEnergy m (Nat.dist (k i) (k j))) =
       -2 * ∑ ζ ∈ primitiveRoots m ℂ,
         ‖∑ i ∈ s, a i • primitivePrefixValue ζ (k i)‖ ^ 2 := by
-  conv_lhs => simp_rw [primitiveRootPrefixEnergy_dist_eq hm, mul_sum]
+  simp_rw [primitiveRootPrefixEnergy_dist_eq hm, mul_sum]
   calc
     _ = ∑ i ∈ s, ∑ ζ ∈ primitiveRoots m ℂ, ∑ j ∈ s,
         a i * a j * ‖primitivePrefixValue ζ (k i) - primitivePrefixValue ζ (k j)‖ ^ 2 :=
@@ -132,7 +132,6 @@ theorem primitiveRootPrefixEnergy_conditional_quadratic_eq {ι : Type*} (s : Fin
       sum_congr rfl fun ζ _ =>
         HTGeometry.finite_pairwise_hilbert_dispersion_of_sum_eq_zero
           s a (fun i => primitivePrefixValue ζ (k i)) ha
-    _ = _ := (mul_sum _ _ _).symm
 
 /-- Conditional negative type is an exact consequence of the primitive
 prefix realization, without a spectral assumption. -/

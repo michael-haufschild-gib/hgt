@@ -257,7 +257,16 @@ fails.
     shift over `ℤ` is `−1` at most at one prime. Two-prime lattices carry the whole index, so no shift
     realizes the twin there. By Kronecker, since the `log p` are independent over `ℚ`, some shift is
     within `ε` of `−1` at all primes `p ≤ N`: the twin is a limit of shifts, never one.
-14. **Pointwise-closed statements are twin-blind.** Both `n ↦ n^{iτ}` and `λ` are completely
+14. **The function-field ceiling is exact.** Over `ℤ` the atomic kernel `D·1 − P_N` on `1, …, N`
+    loses its last negative square at `D ≈ log N − γ`, because the pole vector `n^{−1/2}` is an
+    approximate eigenvector of the prime kernel with eigenvalue `Σ_{k≤N/m} Λ(k)/k + Σ_{k∣m} Λ(k)`,
+    which Mertens evaluates as `log N − γ + o(1)`. Over `𝔽_q[T]` the Newton identity with weight `1`
+    gives the prime polynomial theorem `Σ_{d∣j} d·π_q(d) = q^j`, so Mertens' sum is exact,
+    `Σ_{1≤deg h≤M} Λ(h)/|h| = M log q`, and the divisor sum is `deg m · log q`: the pole vector is an
+    exact eigenvector with eigenvalue `N log q`. A nonnegative symmetric kernel with a positive
+    eigenvector has that eigenvalue as the top of its form (Schur's test), so the ceiling is exactly
+    `N log q`. Euler's constant in the ceiling over `ℤ` is the archimedean defect of Mertens' theorem.
+15. **Pointwise-closed statements are twin-blind.** Both `n ↦ n^{iτ}` and `λ` are completely
     multiplicative, so the Kronecker times with `p^{iτ_m} → −1` give `n^{iτ_m} → λ(n)` for every `n`:
     the twin `λ a` is a pointwise limit of the shifts `a(n) n^{iτ}`. A set of weights closed for
     pointwise convergence that contains every shift contains the twin; a selective one excludes some
@@ -266,7 +275,7 @@ fails.
     and the Gamma factor (on a one-prime window the shift by `π/log 2` already equals the twin, which
     the window refutes: `not_forall_odd_threeHundredSixtyTwoThousandths_re_weilFullFunctional_liouvilleTwist_nonneg`). This makes battery criterion 4 precise: a selective input is not
     pointwise-closed or not invariant under vertical shifts.
-15. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+16. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -307,7 +316,10 @@ fails.
    has finite index* (`negIndex_localAssembly_eq_top`); the law needs two towers (`rankOne_axis_pair`).
 3. *Riemann–Roch ceiling* (`two_mul_negIndex_traceKernel_le`), attained by the golden datum
    (`golden_attains_ceiling`).
-4. *Wave formula* (`card_le_of_bounded_sub_waves`, `exists_waves_bounded`, `negIndex_eq_card_waves`):
+4. *The exact function-field ceiling* (`powerSumW_one_eq`, `sum_primePower_weight_eq`,
+   `primeKernelFq_poleVec`, `sum_mul_le_of_pos_eigenvector`, `atomFq_nonneg_iff`): on monic
+   polynomials of degree `≤ N` over `𝔽_q`, `D·1 − P_N ≥ 0` iff `D ≥ N log q`.
+5. *Wave formula* (`card_le_of_bounded_sub_waves`, `exists_waves_bounded`, `negIndex_eq_card_waves`):
    the index is the least number of exceptional waves of a bounded count along a separating tower;
    minimal counts are rigid: their waves are the outer nodes with the pair weights
    (`nodeCoeff_outer_eq_sum_waves`, `minimal_waves_eq_outerNodes`).
@@ -477,7 +489,8 @@ counts (`quadTwist`, `twistCount`); parity classes (`parityCount`, `oddClassSum`
 (`hermQuad_nonneg_of_fine_zpowers`, `consecutiveRatio`); the Bézout ledger in both rings
 (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`); the hyperelliptic trace kernel
 (`hypTraceKernel`); vertical shifts (`shiftChar`); Cesàro means of powers and disjoint masses
-(`tendsto_cesaro_pow`, `finite_of_disjoint_mass`).
+(`tendsto_cesaro_pow`, `finite_of_disjoint_mass`); Schur's test with a positive eigenvector and the
+prime kernel of `𝔽_q[T]` (`sum_mul_le_of_pos_eigenvector`, `primeKernelFq`, `monicLE`, `poleVec`).
 
 To build:
 
@@ -511,7 +524,8 @@ To build:
 6. **Finite-level ceilings**: index bounds for height or integer truncations from prime-side data,
    uniform in the truncation (equivalent to finite support; LH-deep).
 7. **The atomic index ladder over `𝔽_q`**: the function-field analogue of the index-one window and of
-   the margin `2 log 2`.
+   the margin `2 log 2`. The top rung is exact (`atomFq_nonneg_iff`: the ceiling is `N log q`, no
+   `γ`); open are the second eigenvalue of `P_N` over `𝔽_q[T]` and the width of the index-one window.
 
 ---
 

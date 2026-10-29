@@ -30,7 +30,7 @@ theorem sum_divisors_primitiveRootPrefixEnergy {Q : ℕ} (hQ : 0 < Q) (k : ℕ) 
 
 theorem primitiveRootPrefixEnergy_one (k : ℕ) :
     primitiveRootPrefixEnergy 1 k = (k : ℝ) ^ 2 := by
-  simp [primitiveRootPrefixEnergy, Complex.normSq_natCast]
+  simp [primitiveRootPrefixEnergy, Complex.normSq_natCast, pow_two]
 
 /-- Removing the constant root leaves the exact bridge variance. -/
 theorem sum_nontrivial_divisors_primitiveRootPrefixEnergy {Q : ℕ} (hQ : 0 < Q)

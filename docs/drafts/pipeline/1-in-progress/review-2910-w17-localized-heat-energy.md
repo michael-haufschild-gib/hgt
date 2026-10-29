@@ -17,8 +17,9 @@ actual packet `|Re z−X|≤2`, its degree at most `C log X`, and a real-symmetr
 exterior field Q with `|Im Q(z)|≤C log X |Im z|`.
 `Heat/HeatLocalizedEnergyEvolution` contains draft proofs of the velocity and local
 simple branches, then compact-region forward simplicity after every positive time.
-These additions still require a direct Lean audit. The file currently ends before
-the energy derivative or evolution estimate.
+The velocity, branches, compact forward simplicity, and actual finite-branch
+energy derivative have now passed a direct Lean audit. The integrated evolution
+estimate remains unfinished.
 `Heat/HeatZeroSumContinuity` proves collision-continuity of the weighted energy.
 
 ## Paper calculation and remaining proof obligations
@@ -48,7 +49,7 @@ collisions; collision passage must use continuity and local one-sided comparison
 
 - [x] Corpus search and source statements read.
 - [x] Symmetrized finite-packet inequality with conjugate dissipation; direct final audit pending.
-- [ ] Actual localized energy derivative on simple intervals.
+- [x] Actual localized energy derivative on simple intervals.
 - [ ] Collision-compatible local/integrated evolution theorem.
 - [ ] Direct leaf checks, transitive axiom audit, umbrella wiring.
 
@@ -57,10 +58,10 @@ the pair dissipation bound, the exterior bound and their sum. Its olean was buil
 because the evolution file imports it; both terminal axiom audits returned only
 `propext`, `Classical.choice`, and `Quot.sound`. The final plain check remains.
 
-The original evolution draft failed its first direct audit at coercions and
-underconstrained continuity goals. Those sites are repaired. A proof of actual
-finite-branch derivative identification has been appended and is being checked;
-it is not yet certified. No evolution theorem has been marked complete.
+The actual finite-branch derivative identification and compact forward simplicity
+passed a direct Lean check. Both transitive axiom audits returned only `propext`,
+`Classical.choice`, and `Quot.sound`. No integrated evolution theorem has been
+marked complete.
 
 ## Derivative and collision construction plan
 
@@ -94,3 +95,11 @@ equals the full nonreal indicator on that packet. The integrated continuous
 majorant for this fixed truncation then gives the full count at the initial time
 by continuity. This avoids assuming regularity of the discontinuous count while
 retaining its entire conjugate dissipation coefficient.
+
+On a whole interval `[a,b]` with `0≤a≤b≤1/8` and `b log X≤1`, no extra
+time cutoff is required: the abstract comparison uses regular times `s<b` only.
+At each interior time `x>0`, compact forward simplicity on `closedBall X 3`
+covers the radius-two packet. The initial endpoint (including zero) is recovered
+by continuity. For the integrated full count, the truncated observables are
+bounded by `W C log X` throughout `[a,b]`, directly from the actual packet's
+multiplicity bound; dominated convergence then removes the truncation.

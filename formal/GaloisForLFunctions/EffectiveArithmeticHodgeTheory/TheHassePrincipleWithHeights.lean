@@ -348,9 +348,3 @@ theorem exists_prime_certifies_height (T : ℝ) {P : Finset ℕ} (hP : ∀ p ∈
   exact hK
 
 end GaloisForLFunctions.EffectiveArithmeticHodgeTheory
-
-#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.twoPrime_tower_certifies_height
-#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.exists_prime_certifies_height
-#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.negIndex_zetaKernel_eq_iSup_heightIndex
-#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.heightIndex_le_rvm
-#print axioms GaloisForLFunctions.EffectiveArithmeticHodgeTheory.exists_alias_of_pi_le

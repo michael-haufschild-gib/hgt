@@ -87,10 +87,10 @@ theorem imaginary_partialSum_sub_current_le (t : ℕ → ℝ) (x : ℝ) :
     Chebyshev.psi_sub_theta_eq_sum_not_prime, sum_filter]
   refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun n _ => ?_)
   by_cases hp : n.Prime
-  · simp only [complexTorusGauge, primeSineWeight, if_pos hp,
+  · simp only [complexTorusGauge, primeSineWeight, if_pos hp, if_neg (not_not.mpr hp),
       ArithmeticFunction.cardFactors_apply_prime hp, Nat.cast_one, mul_one, hp.minFac_eq,
-      ArithmeticFunction.vonMangoldt_apply_prime hp, sub_self, abs_zero]
-  · simp only [complexTorusGauge, primeSineWeight, if_neg hp, sub_zero, abs_mul,
+      ArithmeticFunction.vonMangoldt_apply_prime hp, sub_self, abs_zero, le_refl]
+  · simp only [complexTorusGauge, primeSineWeight, if_neg hp, if_pos hp, sub_zero, abs_mul,
       abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
     exact mul_le_of_le_one_left ArithmeticFunction.vonMangoldt_nonneg (Real.abs_sin_le_one _)
 
@@ -148,9 +148,9 @@ theorem torusGauge_eq_of_pointwise_conjugate {t u : ℕ → ℝ}
     (h : ∀ n, u n = t n ∨ u n = -t n) : torusGauge u = torusGauge t := by
   funext n
   unfold torusGauge
-  rcases h n.minFac with hn | hn <;> rw [hn]
-  · rfl
-  · rw [mul_neg, Real.cos_neg]
+  rcases h n.minFac with hn | hn
+  · rw [hn]
+  · rw [hn, mul_neg, Real.cos_neg]
 
 theorem torusGauge_balancedGauge (t : ℕ → ℝ) :
     torusGauge (balancedGauge t) = torusGauge t :=
@@ -161,16 +161,12 @@ private theorem primeSineWeight_balancedGauge (t : ℕ → ℝ) (n : ℕ) :
       if 0 ≤ balancedPrimeState t (n - 1) then -|primeSineWeight t n|
       else |primeSineWeight t n| := by
   by_cases hp : n.Prime
-  · have hneg : Real.sin (2 * π * (-t n)) * Real.log n = -primeSineWeight t n := by
-      simp only [primeSineWeight, if_pos hp, mul_neg, Real.sin_neg, neg_mul]
-    have hpos : Real.sin (2 * π * t n) * Real.log n = primeSineWeight t n := by
-      rw [primeSineWeight, if_pos hp]
-    simp only [primeSineWeight, if_pos hp, balancedGauge]
+  · simp only [primeSineWeight, if_pos hp, balancedGauge]
     split_ifs with hs hw hw
-    · rw [hneg, abs_of_nonneg hw]
-    · rw [hpos, abs_of_neg (lt_of_not_ge hw), neg_neg]
-    · rw [hpos, abs_of_nonneg hw]
-    · rw [hneg, abs_of_neg (lt_of_not_ge hw)]
+    · simp only [mul_neg, Real.sin_neg, neg_mul, abs_of_nonneg hw]
+    · simp only [abs_of_neg (lt_of_not_ge hw), neg_neg]
+    · simp only [abs_of_nonneg hw]
+    · simp only [mul_neg, Real.sin_neg, neg_mul, abs_of_neg (lt_of_not_ge hw)]
   · simp only [primeSineWeight, if_neg hp, abs_zero, neg_zero, ite_self]
 
 private theorem balancedPrimeState_eq_sum (t : ℕ → ℝ) (N : ℕ) :
@@ -201,7 +197,8 @@ private theorem balancedPrimeState_bound (t : ℕ → ℝ) (N : ℕ) :
     · subst N
       simp [balancedPrimeState, primeSineWeight]
     have hN0 : (0 : ℝ) < N := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hN)
-    have hs := ih.trans (Real.log_le_log hN0 (by exact_mod_cast Nat.le_succ N))
+    have hs : |balancedPrimeState t N| ≤ Real.log (N + 1 : ℕ) :=
+      ih.trans (Real.log_le_log hN0 (by exact_mod_cast Nat.le_succ N))
     have hw := primeSineWeight_abs_le t (Nat.succ_le_succ (Nat.zero_le N))
     obtain ⟨hlo, hhi⟩ := abs_le.mp hs
     have hw0 := abs_nonneg (primeSineWeight t (N + 1))
@@ -271,5 +268,34 @@ theorem exists_complexCount_lift_iff (t : ℕ → ℝ) :
   · intro hc
     exact ⟨balancedGauge t, balancedGauge_eq_or_neg t,
       (complexCount_balancedGauge_iff t).mpr hc⟩
+
+/-- A complex count lift can retain any prescribed finite prefix of the original Euler phases.
+Thus the lift can be chosen in every finite-coordinate neighborhood of that gauge. -/
+theorem exists_complexCount_lift_preserving_prefix (t : ℕ → ℝ) (N : ℕ) :
+    ∃ u : ℕ → ℝ, (∀ n, u n = t n ∨ u n = -t n) ∧
+      (∀ n ≤ N, u n = t n) ∧ torusGauge u = torusGauge t ∧
+      (ComplexCount (complexTorusGauge u) ↔ Count (torusGauge t)) := by
+  let u : ℕ → ℝ := fun n => if n ≤ N then t n else balancedGauge t n
+  have hu : ∀ n, u n = t n ∨ u n = -t n := by
+    intro n
+    dsimp only [u]
+    split_ifs
+    · exact Or.inl rfl
+    · exact balancedGauge_eq_or_neg t n
+  have hreal := torusGauge_eq_of_pointwise_conjugate hu
+  have hfinite : primeSineWeight u - primeSineWeight (balancedGauge t) ∈ sqrtClass := by
+    refine mem_sqrtClass_of_eventually_zero (N := N) fun n hn => ?_
+    have hun : u n = balancedGauge t n := if_neg (not_le.mpr hn)
+    simp only [Pi.sub_apply, primeSineWeight, hun, sub_self]
+  have hcurrent : gaugeCurrent u =O[atTop] sqrtScale := by
+    have h := (hfinite : partialSum
+      (primeSineWeight u - primeSineWeight (balancedGauge t)) =O[atTop] sqrtScale).add
+        (gaugeCurrent_balancedGauge_isBigO t)
+    refine h.congr_left fun x => ?_
+    rw [partialSum_sub]
+    exact sub_add_cancel _ _
+  refine ⟨u, hu, fun n hn => if_pos hn, hreal, ?_⟩
+  rw [complexCount_torusGauge_iff, ← and_assoc, ← count_torusGauge_iff, hreal]
+  exact and_iff_left hcurrent
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision

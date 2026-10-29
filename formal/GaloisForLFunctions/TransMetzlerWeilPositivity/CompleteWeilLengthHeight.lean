@@ -1,5 +1,6 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.OptimizedTransMetzlerFloor
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.OverlapCoordinates
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.OverlapForcesNewRamanujanTerms
 
 /-!
 # Complete Weil positivity in polynomial length and spectral height
@@ -13,7 +14,7 @@ noncomputable section
 
 set_option autoImplicit false
 
-open Filter Topology Matrix
+open Filter Topology Matrix MeasureTheory _root_.RHTower
 open scoped RealInnerProductSpace
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
@@ -61,7 +62,21 @@ theorem certified_overlap_iff_length_bound {X T : ℝ} (hT : 0 < T) :
       X < (1 + certifiedOverlapIncrement) * T :=
   div_lt_iff₀ hT
 
+/-- After the prime logarithm is removed, the actual plateau self-energy loses `log c`. -/
+theorem abs_plateau_diagonal_add_log_overlap_le {c : ℝ} (hc : 0 < c)
+    {N : ℕ} (hN : 1 ≤ N) (hcN : c ≤ N) :
+    |(2 * _root_.RHTower.gammaHardyPhaseRate 0 +
+        levyEnergy (atomDilate transMetzlerProfile (c / N)) /
+          (∫ u, atomDilate transMetzlerProfile (c / N) u ^ 2) - Real.log N) +
+      Real.log c - (completeWeilSelfFinitePart transMetzlerProfile 1 -
+        Real.eulerMascheroniConstant)| ≤ Real.exp (1 / 2) / 2 * (c / N) := by
+  have h := abs_completeWeilSelfError_le_of_width_le_one contDiff_transMetzlerProfile
+    (fun u hu => transMetzlerProfile_eq_zero hu) integral_transMetzlerProfile_sq_pos hc hN hcN
+  rw [completeWeilSelfError, completeWeilSelfFinitePart_eq_at_one_sub_log _ hc] at h
+  convert h using 1 <;> congr 1 <;> ring
+
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_completeWeilMatrixAtHeight_posDef
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_completeWeilMatrixAtHeight_floor
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.abs_plateau_diagonal_add_log_overlap_le

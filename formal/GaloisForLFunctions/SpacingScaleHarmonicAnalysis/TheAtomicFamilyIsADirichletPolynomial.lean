@@ -7,7 +7,8 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheStabilityLawAtAtomicResol
 On the zero side Weil's form samples the transform `h_f(z) = ∫ f(u) e^{izu} du` at the spectral
 points `γ_ρ = (ρ − ½)/i` of the zeros. For an atomic test the transform factors into the bump and a
 Dirichlet polynomial: the atomic family of level `N` and width `w` is the space of Dirichlet
-polynomials of length `N`, band-limited by the bump at frequencies `≲ 1/w`.
+polynomials of length `N`, weighted by the bump transform on the decay scale `1/w`.
+A nonzero compact bump does not impose a hard Fourier cutoff.
 
 * **Factorization** (`paperFT_atomicTest`): `h_{f_x}(z) = h_g(z) D_x(z)` with
   `D_x(z) = Σ_{n ≤ N} x_n e^{iz log n}`; at a zero, `D_x(γ_ρ) = Σ x_n n^{ρ − 1/2}`

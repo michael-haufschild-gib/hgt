@@ -463,7 +463,9 @@ private theorem heatLocalizedVerticalEnergy_hasDerivWithinAt_of_simple
     change 0 ≤ h at hh0
     exact hrepr h ⟨hh0, hh.le⟩
   have hder := hds.congr_of_eventuallyEq heq (hrepr 0 ⟨le_rfl, hη.le⟩)
-  simpa only [V, Finset.sum_attach] using hder
+  rw [Finset.sum_attach S (fun a : ℂ =>
+    v (a.re - X) * a.im^2 * (V a).re + 2 * w (a.re - X) * a.im * (V a).im)] at hder
+  exact hder
 
 #print axioms exists_compact_simple_riemannHeat_zeros_forward
 #print axioms heatLocalizedVerticalEnergy_hasDerivWithinAt_of_simple

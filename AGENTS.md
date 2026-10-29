@@ -2,7 +2,7 @@
 Always use the search tool for the lean corpus to find existing work, before checking mathlib.
 
 ## IMMUTABLE RULE: Documents are not your diary
-Keep status documents, route ledgers and reports crisp and to the point. They are not your diary, not a working log, not for you to document everything there is to know. Somebody must be able to read these documents and is not interested in you filling them with noise drowning out the actual relevant information.
+Keep status documents, route ledgers and reports crisp and to the point. They are not your diary, not a working log, not for you to document everything there is to know. Somebody must be able to read these documents and is not interested in you filling them with noise drowning out the actual relevant information. We care about mathematical facts only!!!
 
 ## The research pipeline (Kanban)
 Card template: docs/drafts/pipeline/_card-template.md

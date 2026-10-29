@@ -61,14 +61,17 @@ private theorem primeClassKappa_eq_indicator_sum {q : ℕ} [NeZero q]
     (F : ZMod q → ℝ) :
     primeClassKappa q F =
       ∑ r : ZMod q, F r * primeClassKappa q (primeResidueIndicator r) := by
+  have h : (∑ u : (ZMod q)ˣ, F u) =
+      ∑ r : ZMod q, F r * ∑ u : (ZMod q)ˣ, primeResidueIndicator r u := by
+    symm
+    simp only [mul_sum]
+    rw [sum_comm]
+    refine sum_congr rfl fun u _ => ?_
+    simp only [primeResidueIndicator, mul_ite, mul_one, mul_zero]
+    rw [sum_ite_eq, if_pos (mem_univ _)]
   unfold primeClassKappa
-  simp only [mul_div_assoc, ← sum_div]
-  congr 1
-  simp only [mul_sum]
-  rw [sum_comm]
-  refine sum_congr rfl fun u _ => ?_
-  simp only [primeResidueIndicator, mul_ite, mul_one, mul_zero]
-  rw [sum_ite_eq, if_pos (mem_univ _)]
+  rw [h, sum_div]
+  exact sum_congr rfl fun r _ => by ring
 
 /-- The source discrepancy is exactly the pairing with its residue errors. -/
 theorem residuePrimeWindow_sub_unitMean_eq {q : ℕ} [NeZero q]
@@ -134,8 +137,26 @@ theorem eventually_primeWindow_all_Gram_packets {ι : Type*} {q : ℕ} [NeZero q
   intro s v x
   simpa only [abs_sq] using hN (fun r => (∑ i ∈ s, x i * v i r) ^ 2)
 
+
+/-- The same common horizon controls complex Gram packets, including
+primitive-root prefix features and all their mixed coefficients. -/
+theorem eventually_primeWindow_all_complex_Gram_packets {ι : Type*}
+    {q : ℕ} [NeZero q] {A B : ℕ} (hA : 0 < A) (hAB : A ≤ B)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ (s : Finset ι) (v : ι → ZMod q → ℂ) (x : ι → ℂ),
+      |residuePrimeWindow q (fun r => Complex.normSq (∑ i ∈ s, x i * v i r)) A B N -
+          primeClassKappa q (fun r => Complex.normSq (∑ i ∈ s, x i * v i r)) *
+            (Real.log B - Real.log A)| ≤
+        ε * ∑ r : ZMod q, Complex.normSq (∑ i ∈ s, x i * v i r) := by
+  filter_upwards [eventually_residuePrimeWindow_uniform hA hAB hε] with N hN
+  intro s v x
+  simpa only [abs_of_nonneg (Complex.normSq_nonneg _)] using
+    hN (fun r => Complex.normSq (∑ i ∈ s, x i * v i r))
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_residuePrimeWindow_sub_unitMean_le
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_primeResidueWindowErrorMass
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_primeWindow_all_Gram_packets
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_primeWindow_all_complex_Gram_packets

@@ -42,17 +42,20 @@ This is achieved by choosing `u_n` equal to `t_n` or `-t_n`. Both choices preser
 
 This proves `ComplexCount(z_u) ↔ Count(Re z_t)`. Conversely, any primewise conjugate lift satisfying the complex count gives the real count by taking real parts. The image of complex count gauges under independent Euler-factor conjugation is therefore exactly the real gauge stabilizer.
 
+Any finite prefix may be restored to its original phases. This changes the prime sine weight on a finite set only, hence changes its partial sum by a bounded function. All real coefficients remain fixed, and the complex count criterion is unchanged. Thus a lift exists in every finite-coordinate neighborhood.
+
 ## Precision and calibration
 
 - **Precision class:** fixed orientation requires both `D_t=O(q)` and `J_t=O(q)`. Allowing conjugations removes the current obstruction exactly; the deficit criterion remains.
 - **Identity/ceiling:** cosine coefficients are preserved identically at every power. The ceiling is a logarithmic prime current plus the square-root proper-power mass. No integrality floor or Möbius inversion is used.
 - **Parity:** sign gauges have zero sine current. Conjugation cannot alter their source, so the Liouville twin and cofinite flips still fail; finite flips retain the existing RH-equivalent criterion.
 - **Remaining battery:** arbitrary sign gauges keep their exact flipped-mass test. Rescalings `cΛ`, additive power perturbations, and Beurling models are outside the unit-phase conjugation family; this construction does not erase their existing visible real discrepancies.
-- **Finite fields:** the operation preserves real traces, so it cannot remove an outer Frobenius mode detected by `CurvesCalibrateThePrecisionExponent.countAtPrecision_iff`; in particular the golden datum's real count and precision exponent are unchanged. The new arithmetic mechanism is coherent orientation across prime towers, whose nonprime portion already lies at square-root precision.
+- **Finite fields:** preserving real traces cannot remove an outer Frobenius mode detected by `countAtPrecision_iff` in `CurvesCalibrateThePrecisionExponent.lean`; in particular the golden datum's real count and precision exponent are unchanged. The new arithmetic mechanism is coherent orientation across prime towers, whose nonprime portion already lies at square-root precision.
 
 ## Formalization
 
 Leaf: `ArithmeticOfSquareRootPrecision/EveryRealGaugeHasAComplexCountLift.lean`.
 Main targets: `complexCount_torusGauge_iff`, `imaginary_partialSum_balancedGauge_le`,
-`complexCount_balancedGauge_iff`, `exists_complexCount_lift_iff`.
-Compilation in progress. Existing classifier and proper-power estimate audited: only `propext`, `Classical.choice`, `Quot.sound`.
+`complexCount_balancedGauge_iff`, `exists_complexCount_lift_iff`,
+`exists_complexCount_lift_preserving_prefix`.
+Final leaf check passed with `lake --old env lean GaloisForLFunctions/ArithmeticOfSquareRootPrecision/EveryRealGaugeHasAComplexCountLift.lean`. Umbrella import wired. Transitive axiom audit running.

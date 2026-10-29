@@ -1,6 +1,7 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ExplicitPlateauParameters
 
-/-!+# A strict scalar margin for a three-conductor eleven-flip trial
+/-!
+# A strict scalar margin for a three-conductor eleven-flip trial
 
 The prime-square divisibility profile has mean `101 / 121`. After cancellation
 of its first prime excitation, the remaining geometric prime-power cost fits

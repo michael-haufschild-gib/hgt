@@ -74,7 +74,9 @@ def affineRamanujanPrimeWindow (q n h A B N : ℕ) : ℝ :=
   ∑ k ∈ Ioc (A * N) (B * N),
     (ArithmeticFunction.vonMangoldt k : ℝ) / k * ramanujanLagCoefficient q (k * n + h)
 
-private theorem affineRamanujanPrimeWindow_eq_residue {q : ℕ} [NeZero q]
+/-- The affine reading is the literal residue-window source, including
+all prime powers. -/
+theorem affineRamanujanPrimeWindow_eq_residue {q : ℕ} [NeZero q]
     (n h A B N : ℕ) :
     affineRamanujanPrimeWindow q n h A B N =
       residuePrimeWindow q (affineRamanujanResidue q n h) A B N := by

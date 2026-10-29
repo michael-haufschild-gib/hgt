@@ -15,6 +15,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.IntegralityProducesLinear
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.StepanovsOrderOverTheFiniteField
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityTwinIsGeometricOnlyInTheBohrClosure
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.PointwiseClosedStatementsAreTwinBlind
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -27,8 +28,8 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   kernel through the archimedean place; an attained depth seen by almost every prime tower;
   locality is twin-blind.
 * **Local constituents and ceilings.** The Poisson law of the Euler factor, the zero-or-infinity law
-  for axis-supported kernels, the Riemann–Roch ceiling, and the index as the number of exceptional
-  waves of a count.
+  for axis-supported kernels, the Riemann–Roch ceiling, the exact atomic ceiling `N log q` over
+  `𝔽_q[T]`, and the index as the number of exceptional waves of a count.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
   the global law over `ℤ`; compressions as receivers; the Bézout ledger of both producers and its
   multiplicity caps; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index

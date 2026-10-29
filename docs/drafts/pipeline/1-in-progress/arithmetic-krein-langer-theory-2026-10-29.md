@@ -46,7 +46,7 @@ locality, and must not duplicate HKT modules.
   `FineTowersDecideEveryOrbitKernel`, `LocalityIsTwinBlind`, `TheCollisionMassIsTheWaveNumber`,
   `AttainedDepthIsSeenByAlmostEveryPrime`, `IntegralityProducesLinearCounts` (Bézout ledger,
   binomial multiplicity cap, divisibility is parity-blind), `StepanovsOrderOverTheFiniteField`,
-  `TheParityTwinIsGeometricOnlyInTheBohrClosure`, `PointwiseClosedStatementsAreTwinBlind`.
+  `TheParityTwinIsGeometricOnlyInTheBohrClosure`, `PointwiseClosedStatementsAreTwinBlind`, `TheFunctionFieldCeilingIsExact`.
 
 ## Open (RH/LH-deep, recorded in README §9)
 Producer over ℤ; Lindelöf bridge from the kernel; a geometric parity twin beyond vertical shifts;
@@ -55,4 +55,4 @@ is unattained (attained depth and fine towers are settled; the collision law is 
 minimal count).
 
 ## Log
-- 2026-10-29 — created; README draft written; sixteen modules proved; README revised.
+- 2026-10-29 — created; README draft written; eighteen modules in the umbrella (one by another agent); README revised.

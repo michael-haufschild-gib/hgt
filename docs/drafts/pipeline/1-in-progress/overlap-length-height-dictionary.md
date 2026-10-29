@@ -31,50 +31,32 @@ Dirichlet polynomial needs a coefficient reweighting and a sign change in the fr
 The identity `N = T c_N` is exact; replacing the argument `N` in `c_N` by `T` needs an asymptotic
 proof. Equal scale coordinates do not identify distinct quadratic forms or their quantifiers.
 
-## Conjecture loop
+## Results and proof obligations
 
-1. **Scale algebra checked.** `OverlapCoordinates.lean` checked successfully and its olean was
-   generated for the new dependent modules. It proves the exact bandwidth excess, fixed-overlap
-   bandwidth limit, aperture cutoff, four-thirds overlap, and `-log c` diagonal loss.
-2. **Transform normalization drafted.** `TheNormalizedAtomicTransform.lean`: raw versus unit-mass
-   dilation; critical-line coefficient reweighting; no hard Fourier cutoff. Awaiting Lean check.
-3. **Common-threshold conjecture fails at the SRT density calibration.** The actual source
-   `PositionAndDepthShareOneNyquistAperture.lean` explicitly assigns density `L/π` to its paired
-   lattice and threshold `a=L/2`. Matching `log T/(2π)` therefore gives `L=log T/2`,
-   `a=log T/4`, cutoff `X=exp(2a)` with `X²=T`. The sharp agreement and negative-witness
-   theorems in `DensityMatchedLengthHeightBoundary.lean` now pass Lean. All three main
-   declarations have only `propext`, `Classical.choice`, and `Quot.sound` as transitive axioms.
-4. **Separated-reference continuation classified on paper and drafted.** For every conductor
-   `m≠1`, `completeWeilAdjunctionEnergy φ c m = E_m(1)-log c`; sign changes exactly at
-   `c=exp(E_m(1))`. Any finite family of these modes is negative at one sufficiently large `c`.
-   `OverlapForcesNewRamanujanTerms.lean` awaits checking. This concerns the reference formula,
-   not the actual overlapping matrix. New interaction terms must change its spectrum.
-5. **Still open work:** exact successor-shell geometry and divisor row laws; actual full-form
-   positivity transport; super-Gevrey height reparameterization; census parameter comparison;
-   completed documentation, umbrella integration, and transitive axiom audits.
-6. **Census normalization:** `Zeta23.Params.X T = exp (λ log(T/(2π)))`, exactly
-   `(T/(2π))^λ`, not `T^λ`. Therefore its physical overlap is
-   `(T/(2π))^(λ-1)/(2π)`, and at `λ=4/3` equals
-   `(T/(2π))^(1/3)/(2π)`. The normalized-height overlap is `(T/(2π))^(λ-1)`.
-7. **Sharper certified plateau range already exists:** `OptimizedTransMetzlerFloor.lean`
-   proves positivity for `c=1+δ`, `0≤δ<1/107520002048050000`, and the exact certified
-   mass floor `1/25-2000δ(1+1024000(2100000+1/25))`. The report's `10^-18`
-   range is a strict subset. This is a bound from existing estimates, not the actual sign boundary.
-8. **Height reparameterization proof:** write `rβ(X)=loglog X (logloglog X)^β` and
-   `T_N=N/rβ(N)`. Existing little-o estimates give eventually `1≤rβ(N)≤(log N)^2`.
-   Hence `0≤log rβ(N)/log N≤2loglog N/log N→0`. It follows that
-   `log T_N/log N→1`; two further logarithms preserve asymptotic equivalence.
-   Positive real powers and products then give `rβ(T_N)/rβ(N)→1`.
-   Thus `N~T_N rβ(T_N)`, while exact equality remains `N=T_N rβ(N)`.
-9. **Revised §1.3 reread at user's request.** The revision now uses the certified `δ_*`
-   and exact Steklov overlap schedule. Those are no longer omissions. It adds explicit shell
-   descriptions at `c=1,3/2,2` and a Schur-complement interpretation. Still to audit:
-   finite-horizon versus eventual shell statements, asymmetric logarithmic endpoints,
-   the actual block decomposition and invertibility needed by the Schur complement.
-   The Fourier Jacobian, SRT density calibration, census `2π`, and `-log c` issues remain.
-   In particular `N log(1+1/N)<1` means the first exterior successor already enters at
-   a finite-horizon overlap below one. The positive survivor should be an exact finite-horizon
-   shell classification; fixed-`c` eventual absence is a different statement.
+| Mathematical statement | Lean status / module |
+|---|---|
+| Exact overlap and bandwidth identities; fixed overlap has limiting bandwidth one | Checked: `OverlapCoordinates` |
+| Raw transform has factor `w`; conventional polynomial has weights `√n x_n` at `1/2-iz`; no hard cutoff | Checked, axiom-audited, umbrella wired: `TheNormalizedAtomicTransform` |
+| Paired-lattice density `log T/(2π)` gives sharp cutoff `X²=T`, with negative-test converse | Checked, axiom-audited, umbrella wired: `DensityMatchedLengthHeightBoundary` |
+| Every nonpolar reference energy is `E_m(1)-log c`; exact crossings; actual diagonal error `O(c/N)` for `0<c≤N` | Audit pending: `OverlapForcesNewRamanujanTerms` |
+| Census cutoff `(T/(2π))^λ`, physical overlap `(T/(2π))^(λ-1)/(2π)` | Audit pending: `CensusLengthHeightCoordinates` |
+| Actual complete matrix at height `N/c`; fixed-`c` positivity for `0<c<1+δ_*` | Audit pending: `CompleteWeilLengthHeight` |
+| Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Audit pending: `SuperGevreyLengthHeight` |
+| Exact asymmetric shell radii and onset `N log((N+1)/N)<1`; eventual absence at each fixed `c<1` | Audit pending: `ExactSuccessorShellWindows` |
+
+Here `δ_*=1/107520002048050000`; the existing certified floor is
+`1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of the certified estimates,
+not a classification of the actual matrix sign. The revised report already states this range
+and the exact Steklov overlap schedule.
+
+Remaining mathematical obligations: actual divisor-shell row growth; the self-energy loss along
+growing overlap; whether the full matrix admits the proposed additive/shell Schur decomposition.
+Entrywise signs and disjoint edge supports alone do not supply such a block decomposition.
+
+**Next row conjecture.** At every fixed `c>1`, the normalized downward divisor fiber from
+row `N` to product `N+1`, for the explicit plateau profile, is asymptotic to
+`(bumpCorr φ (1/c)/∫φ²) log(N+1)`, with strictly positive coefficient. This is the corpus's
+weighted Schur row, with weights `n^(-1/2)`, not an assertion about an unweighted operator norm.
 
 ## Paper arguments
 
@@ -97,6 +79,34 @@ In the existing separated reference formula, the common scalar is
 subtracting its value at `c=1` gives `-log c`. Exponentiation gives the exact crossing.
 For a finite set `S`, choose `c=exp(1+Σ_(m∈S)|E_m(1)|)` to make every nonpolar energy negative.
 
+For `rβ(X)=loglog X (logloglog X)^β`, `β>2`, set `T_N=N/rβ(N)`.
+Existing little-o estimates give eventually `1≤rβ(N)≤(log N)^2`; hence
+`0≤log rβ(N)/log N≤2loglog N/log N→0`. Thus `log T_N/log N→1`.
+Two further logarithms, powers, and products give `rβ(T_N)/rβ(N)→1`.
+The exact identity is `N=T_N rβ(N)`; height substitution gives asymptotic equivalence.
+
+The exact upper and lower additive radii of a logarithmic window are
+`a(exp w-1)` and `a(1-exp(-w))`. At overlap at most one, the existing boundary-star theorem
+forces the only eligible unequal pair to be `(N,N+1)`. Its onset is
+`N log((N+1)/N)`, between `1-1/N` and `1`. This yields the exact finite-horizon existence
+criterion and the eventual absence theorem for each fixed `c<1`.
+
+For a downward divisor fiber with product `ℓ`, the Schur weight cancels `√k`:
+`(Λ(k)/√k)√(m/(ℓ/k)) = Λ(k)√(m/ℓ)`. Every divisor has the same logarithmic lag,
+so the fiber equals `√(m/ℓ) logℓ · bumpCorr g(logℓ-logm)` by `Σ_(k|ℓ)Λ(k)=logℓ`.
+For `m=N`, `ℓ=N+1`, `g=φ(·/(c/N))`, dividing by atom mass leaves
+`√(N/(N+1)) log(N+1) · bumpCorr φ(firstExteriorOverlap N/c)/∫φ²`.
+The first factor tends to one and the lag tends to `1/c`; continuity gives the conjectured
+coefficient. The explicit plateau is positive throughout `(0,1)`, so its autocorrelation
+is positive at every lag in `(0,1)`.
+
+**Successor conjecture after the fiber law.** At fixed overlap, the full downward weighted
+row should collapse to a local sum over products `ℓ`, with coefficient
+`√(m/ℓ) logℓ · bumpCorr g(logℓ-logm)`. Once the support forces `ℓ≤2N`, every divisor
+`k≥2` has quotient `ℓ/k≤N`, so horizon truncation removes no nonzero Mangoldt term.
+This would identify the leading logarithmic row exactly, rather than bound it by Chebyshev.
+Its relation to the positive archimedean overlap row is a further question about quadratic forms.
+
 ## No-go closure
 
 The literal common-threshold inference is rejected by the calibrated model calculation above.
@@ -105,7 +115,3 @@ depth and the negative-witness converse. The survivor is checked and axiom-audit
 The unchanged separated reference is also unsuitable as an all-overlap positive reference;
 its positive survivor is the exact per-conductor crossing law and finite negative-family theorem.
 
-## Log
-
-- 2026-10-29 — Read requested report and supporting ledgers; first corpus searches located existing
-  transform factorization and dilation law. Existing unrelated working-tree changes preserved.

@@ -37,3 +37,13 @@ The uncentered kernel E_m(|i-j|) is not positive semidefinite: E_m(0)=0 and E_m(
 Positive survivor, paper argument ready for immediate formalization: put v_k(zeta)=sum_{j<k}zeta^j over primitive m-th roots. Prefix subtraction is a unit rotation of a shorter prefix, hence ||v_i-v_j||²=E_m(|i-j|). The centered kernel (E_m(i)+E_m(j)-E_m(|i-j|))/2 is the actual real Gram kernel. Its full quadratic form is the sum of squared weighted primitive-root prefixes. The uncentered form equals twice total coefficient mass times its weighted moment minus twice that square energy. In particular it is conditionally negative, with an exact equality criterion.
 
 This is not yet a complete-Weil comparison. It determines the required centering and sign and retains all finite mixed entries. Next: classify the radical, test conductor-uniform coercivity after unit averaging, and transfer actual finite arithmetic averages before considering growing horizons.
+
+## Further conjectures and paper outcomes
+
+2. Fixed-conductor Gram radical. A prefix packet defines P(X)=sum_i a_i sum_{j<k_i} X^j. Its completed energy is zero iff Phi_m divides P over the reals. Across conductors, the radical is the intersection of those divisibility conditions. Draft formalization uses the existing exact Selberg recurrence theorem.
+
+3. Conductor completion. Summing over nontrivial m dividing Q gives the exact mixed kernel Q min(i,j)-ij for 0<=i,j<=Q. This is a positive way to remove omitted cyclic frequencies; conductor one contributes ij. Draft formalization records the exact formula.
+
+4. Actual source comparison. Let delta_N be the total absolute error of the actual residue masses from their logarithmic unit means. Existing residue Mertens convergence implies delta_N -> 0. Exact finite decomposition gives |window(F)-ell*kappa(F)| <= delta_N sum_r |F(r)| simultaneously for every signed F. For squared finite packets this is an operator comparison in the full residue Gram norm, uniform in both coefficients and feature family, including choices depending on N. All prime powers are retained. Draft formalization covers real and complex packets.
+
+The full residue norm is necessary: non-unit prime powers can see directions invisible to the unit-only limiting Gram. For root-prefix features, the conductor-completion identity identifies that extra norm. The next task is the exact actual-affine specialization and then the comparison with the complete Weil source. No macroscopic-overlap or RH result is claimed by these finite-source statements alone.

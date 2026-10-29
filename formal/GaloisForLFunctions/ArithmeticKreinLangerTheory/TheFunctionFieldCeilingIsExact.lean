@@ -324,4 +324,123 @@ theorem atomFq_nonneg_iff (N : ℕ) (D : ℝ) :
     (primeKernelFq_symm N) (fun f _ g _ => primeKernelFq_nonneg N f g) (fun f _ => poleVec_pos f)
     (fun _ hm => primeKernelFq_poleVec hm) D
 
+/-! ### The second rung -/
+
+/-- The pole vector restricted to the multiples of `Q`. -/
+def divVec (Q f : F[X]) : ℝ := if Q ∣ f then poleVec f else 0
+
+/-- **The multiples of `Q` carry energy `N − deg Q`.** For monic `Q ∣ m`,
+`(P_N u_Q)(m) = (N − deg Q) u_Q(m)`: forward prime powers keep the factor `Q`, and the divisors
+`h ∣ m` with `Q ∣ m/h` are exactly the divisors of `m/Q`. -/
+theorem primeKernelFq_divVec {N : ℕ} {Q : F[X]} (hQ : Q.Monic) {m : F[X]} (hm : m ∈ monicLE N)
+    (hQm : Q ∣ m) :
+    ∑ n ∈ monicLE N, primeKernelFq N m n * divVec Q n = ((N : ℝ) - Q.natDegree) * divVec Q m := by
+  obtain ⟨hmon, hmN⟩ := mem_monicLE.mp hm
+  obtain ⟨m', hm'⟩ := hQm
+  have hm'mon : m'.Monic := hQ.of_mul_monic_left (hm' ▸ hmon)
+  have hdegm : m.natDegree = Q.natDegree + m'.natDegree := by
+    rw [hm', hQ.natDegree_mul hm'mon]
+  set r : ℝ := (Real.sqrt (Fintype.card F))⁻¹ with hr
+  have hq : (0 : ℝ) < Fintype.card F := by exact_mod_cast Fintype.card_pos
+  have hr2 : r ^ 2 = (Fintype.card F : ℝ)⁻¹ := by rw [hr, inv_pow, Real.sq_sqrt hq.le]
+  have hexp : ∑ n ∈ monicLE N, primeKernelFq N m n * divVec Q n =
+      ∑ d ∈ Icc 1 N, ∑ P ∈ irrDeg (F := F) d, ∑ k ∈ Icc 1 N, (d : ℝ) * r ^ (k * d) *
+        (∑ n ∈ monicLE N, (if n = m * P ^ k then divVec Q n else 0) +
+          ∑ n ∈ monicLE N, (if m = n * P ^ k then divVec Q n else 0)) := by
+    simp only [primeKernelFq, sum_mul]
+    rw [sum_comm]; refine sum_congr rfl fun d _ => ?_
+    rw [sum_comm]; refine sum_congr rfl fun P _ => ?_
+    rw [sum_comm]; refine sum_congr rfl fun k _ => ?_
+    rw [← sum_add_distrib, mul_sum]
+    refine sum_congr rfl fun n _ => ?_
+    split_ifs <;> ring
+  -- forward prime powers keep the factor `Q`
+  have hfwd : ∀ d, ∀ P ∈ irrDeg (F := F) d, ∀ k : ℕ,
+      ∑ n ∈ monicLE N, (if n = m * P ^ k then divVec Q n else 0) =
+        if m.natDegree + k * d ≤ N then r ^ (m.natDegree + k * d) else 0 := by
+    intro d P hP k
+    obtain ⟨hPm, hPd, -⟩ := mem_irrDeg.mp hP
+    have hdeg : (m * P ^ k).natDegree = m.natDegree + k * d := by
+      rw [hmon.natDegree_mul (hPm.pow k), hPm.natDegree_pow, hPd]
+    have hQ' : Q ∣ m * P ^ k := ⟨m' * P ^ k, by rw [hm', mul_assoc]⟩
+    rw [sum_ite_eq']
+    simp only [mem_monicLE, hmon.mul (hPm.pow k), true_and, hdeg, divVec, if_pos hQ', poleVec, hr]
+  -- the divisors `h` of `m` with `Q ∣ m/h` are the divisors of `m' = m/Q`
+  have hbwd : ∀ d, ∀ P ∈ irrDeg (F := F) d, ∀ k : ℕ,
+      ∑ n ∈ monicLE N, (if m = n * P ^ k then divVec Q n else 0) =
+        if P ^ k ∣ m' then r ^ (m.natDegree - k * d) else 0 := by
+    intro d P hP k
+    obtain ⟨hPm, hPd, -⟩ := mem_irrDeg.mp hP
+    have hPk : (P ^ k).Monic := hPm.pow k
+    by_cases hdvd : P ^ k ∣ m
+    · obtain ⟨g, hg⟩ := hdvd
+      have hgm : g.Monic := hPk.of_mul_monic_left (hg ▸ hmon)
+      have hdeg : m.natDegree = k * d + g.natDegree := by
+        rw [hg, hPk.natDegree_mul hgm, hPm.natDegree_pow, hPd]
+      have hiff : ∀ n : F[X], m = n * P ^ k ↔ n = g := fun n => by
+        rw [hg, mul_comm n]
+        exact ⟨fun h => (mul_left_cancel₀ hPk.ne_zero h).symm, fun h => by rw [h]⟩
+      have hQg : Q ∣ g ↔ P ^ k ∣ m' := by
+        constructor
+        · rintro ⟨g', rfl⟩
+          refine ⟨g', mul_left_cancel₀ hQ.ne_zero ?_⟩
+          rw [← hm', hg]; ring
+        · rintro ⟨g'', hg''⟩
+          refine ⟨g'', mul_left_cancel₀ hPk.ne_zero ?_⟩
+          rw [← hg, hm', hg'']; ring
+      rw [sum_congr rfl (g := fun n => if n = g then divVec Q n else 0)
+        fun n _ => by simp only [hiff], sum_ite_eq', if_pos (mem_monicLE.mpr ⟨hgm, by omega⟩)]
+      unfold divVec
+      by_cases hQg' : Q ∣ g
+      · rw [if_pos hQg', if_pos (hQg.mp hQg')]
+        show r ^ g.natDegree = r ^ (m.natDegree - k * d)
+        congr 1
+        omega
+      · rw [if_neg hQg', if_neg fun h => hQg' (hQg.mpr h)]
+    · rw [if_neg fun h => hdvd (h.trans ⟨Q, by rw [hm', mul_comm]⟩)]
+      exact sum_eq_zero fun n _ => if_neg fun h => hdvd ⟨n, by rw [h, mul_comm]⟩
+  have hterm : ∀ d ∈ Icc 1 N, ∀ P ∈ irrDeg (F := F) d, ∀ k ∈ Icc 1 N,
+      (d : ℝ) * r ^ (k * d) *
+        (∑ n ∈ monicLE N, (if n = m * P ^ k then divVec Q n else 0) +
+          ∑ n ∈ monicLE N, (if m = n * P ^ k then divVec Q n else 0)) =
+      r ^ m.natDegree *
+        ((if k * d ≤ N - m.natDegree then (d : ℝ) * ((Fintype.card F : ℝ)⁻¹) ^ (k * d) else 0) +
+          (if P ^ k ∣ m' then (d : ℝ) else 0)) := by
+    intro d _ P hP k _
+    rw [hfwd d P hP k, hbwd d P hP k]
+    have hfw : (d : ℝ) * r ^ (k * d) *
+        (if m.natDegree + k * d ≤ N then r ^ (m.natDegree + k * d) else 0) =
+        r ^ m.natDegree *
+          (if k * d ≤ N - m.natDegree then (d : ℝ) * ((Fintype.card F : ℝ)⁻¹) ^ (k * d) else 0) := by
+      by_cases h : m.natDegree + k * d ≤ N
+      · rw [if_pos h, if_pos (by omega), ← hr2, ← pow_mul, pow_add]
+        ring_nf
+      · rw [if_neg h, if_neg (by omega)]
+        ring
+    have hbw : (d : ℝ) * r ^ (k * d) * (if P ^ k ∣ m' then r ^ (m.natDegree - k * d) else 0) =
+        r ^ m.natDegree * (if P ^ k ∣ m' then (d : ℝ) else 0) := by
+      by_cases h : P ^ k ∣ m'
+      · obtain ⟨hPm, hPd, -⟩ := mem_irrDeg.mp hP
+        have hle : k * d ≤ m.natDegree := by
+          have := natDegree_le_of_dvd h hm'mon.ne_zero
+          rw [hPm.natDegree_pow, hPd] at this
+          omega
+        rw [if_pos h, if_pos h]
+        calc (d : ℝ) * r ^ (k * d) * r ^ (m.natDegree - k * d)
+            = (d : ℝ) * r ^ (k * d + (m.natDegree - k * d)) := by rw [pow_add]; ring
+          _ = r ^ m.natDegree * d := by rw [Nat.add_sub_cancel' hle]; ring
+      · rw [if_neg h, if_neg h]
+        ring
+    rw [mul_add, hfw, hbw, mul_add]
+  rw [hexp, sum_congr rfl fun d hd => sum_congr rfl fun P hP => sum_congr rfl fun k hk =>
+    hterm d hd P hP k hk]
+  simp only [← mul_sum, sum_add_distrib]
+  rw [sum_primePower_weight_eq (Nat.sub_le N m.natDegree)]
+  have hdeg' : ∑ d ∈ Icc 1 N, ∑ P ∈ irrDeg (F := F) d, ∑ k ∈ Icc 1 N,
+      (if P ^ k ∣ m' then (d : ℝ) else 0) = m'.natDegree := by
+    exact_mod_cast (natDegree_eq_sum_irr hm'mon (by omega)).symm
+  rw [hdeg', divVec, if_pos ⟨m', hm'⟩, poleVec, ← hr, Nat.cast_sub hmN, hdegm]
+  push_cast
+  ring
+
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
