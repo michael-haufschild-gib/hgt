@@ -1240,7 +1240,7 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
           abs_integral_le_integral_abs
       _ ≤ ∫ _ in Set.Ioc 0 (2 * w), (16000 : ℝ) :=
           setIntegral_mono_on hint_short.abs
-            (integrableOn_const (by simp))
+            (integrableOn_const (by simp; exact ENNReal.mul_ne_top (by simp) ENNReal.ofReal_ne_top))
             measurableSet_Ioc hshort_pt
       _ = 32000 * w := by
           rw [setIntegral_const, smul_eq_mul, Real.volume_real_Ioc_of_le (by positivity)]

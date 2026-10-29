@@ -1,77 +1,45 @@
-# Unramified character descent and completed-theta residue cancellation
+# Unramified descent and completed Hecke residue cancellation
 
 - **ID:** hecke-unramified-character-descent-and-residue-cancellation
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** [Hecke programme](hecke-l-functions-and-class-field-theory-2026-10-28.md)
-- **Statement:** A nontrivial Hecke character with trivial finite residue character and zero real parity cancels both polar coefficients of the globally recombined completed theta transform.
+- **Statement:** Cancel both raw completed-theta residues for nontrivial characters and construct the Gamma-completed continuation with its removable values.
 
-## Completed arithmetic and ordinary L-continuation
+## Finalized
 
-`UnramifiedHeckeCharactersDescendToIdealClasses.lean` proves actual descent
-to the ordinary class group, nontriviality of the descended character,
-and the vanishing ordinary-class character sum. Zero parity degree forces
-all real sign characters to be trivial. Trivial finite weight forces the
-finite residue character to be trivial. The proved ray-to-ordinary class
-surjection then gives descent by its actual kernel description.
-See [the finalized arithmetic proof](../3-formalized/hecke-unramified-character-descent.md).
+Actual descent to the ordinary class group, nontriviality of the descended
+character, and ordinary-class orthogonality are formalized in
+`UnramifiedHeckeCharactersDescendToIdealClasses`. See
+[the descent proof](../3-formalized/hecke-unramified-character-descent.md).
 
-`HeckeLFunctionsHaveGlobalContinuation.lean` now proves the entire ordinary
-L-continuation for every nontrivial character and the exact trivial pole.
-The remaining ordinary L-residue vanishes by comparison with the already
-proved holomorphy at one. Both results pass final source audits and
-standard-only transitive axiom audits. See
-[global continuation](../3-formalized/hecke-global-continuation-from-ordinary-classes.md).
+The ordinary global continuation is entire for every nontrivial character
+and has the exact positive simple pole at one for the trivial character.
+See [global continuation](../3-formalized/hecke-global-continuation-from-ordinary-classes.md).
 
-## Remaining stronger completed-theta statement
+`HeckeCompletedThetaResiduesCancel` now cancels both raw completed
+numerators before reciprocal Gamma removal. The physical cancellation
+uses the actual base ideal class and ordinary-class character sum. The
+dual cancellation uses the proved ordinary residue and nonvanishing of
+Gamma at one. Both main transitive axiom audits are standard only; final
+direct source audit passes without warnings. See
+[the completed residue proof](../3-formalized/hecke-completed-theta-residues-cancel.md).
 
-The Gamma-removed continuation does not itself identify the two raw
-completed-theta polar sums. That stronger cancellation is useful for the
-primitive completed functional equation and remains to be formalized.
+## Remaining completion
 
-For each ordinary class `c`, the actual base ideal `B_c` is prime to the
-modulus and has class `c^-1`. If `phi` is the descended class character,
-prove `heckeValue(B_c)=phi(c^-1)`. At zero, the inverse base weights are
-therefore exactly `phi(c)`; their sum is zero. This cancels the physical
-completed-theta pole before multiplication by reciprocal Gamma.
+`/tmp/HeckeGammaCompletedContinuationScratch.lean` contains the complete
+unchecked divided-difference construction. Write the raw expression as
+`R(s) - (2/n)P(s)/s + (2/n)Q(s)/(s-1)` when parity is zero.
+Replacing the varying numerators by divided differences gives an entire
+regular part plus the constant residues `-(2/n)P(0)` and `(2/n)Q(1)`.
+The proved cancellations make the completion entire for nontrivial
+characters, including zero and one. Nonzero parity has no zero modes.
 
-At one, the raw dual scalar contributes `N(B_c)^-1`, canceling the
-base weight's `N(B_c)`. Its remaining class dependence is again `phi(c)`.
-Alternatively, use the now-proved vanishing ordinary L-pole coefficient,
-together with nonvanishing of the Gamma product at one, to obtain the
-raw dual cancellation without repeating the norm normalization.
+The draft proves agreement with the actual theta expression away from
+zero and one, Gamma times the ideal series on `Re(s)>1`, meromorphy,
+nontrivial-character entireness, and recovery of the ordinary entire
+function by reciprocal Gamma through analytic uniqueness. The residue
+module's olean is being built for this already written consumer.
 
-Entire divided differences can then fill both raw completed-theta poles.
-For nontrivial finite weight or nonzero real parity, completed entireness
-is already proved by the actual strong theta pair. This remaining card
-concerns precisely the nontrivial unramified ordinary-class characters.
-
-No normalized completed residue identity is assumed. Primitive Gauss
-normalization, conductor scaling, and the arithmetic dual-character
-identification remain independent functional-equation obligations.
-
-## Verification draft
-
-`/tmp/HeckeCompletedThetaResidueCancellationScratch.lean` now defines
-the two raw completed numerators, proves their entireness, identifies
-each base ideal's descended class value and zero-parameter weight, and
-cancels both residues for every nontrivial character. Physical
-cancellation uses the actual descended character sum. Dual cancellation
-uses the already proved ordinary pole coefficient and nonvanishing of
-Gamma at one. This draft is unchecked; the divided-difference completed
-function still needs construction after these identities are verified.
-
-The complete divided-difference construction is drafted separately in
-`/tmp/HeckeGammaCompletedContinuationScratch.lean`, importing the residue
-cancellation module. It retains both explicit constant pole coefficients,
-proves agreement with the actual theta expression away from zero and one,
-and targets global meromorphy and nontrivial-character entireness. Its
-last theorem recovers the ordinary entire L-function by reciprocal Gamma
-using analytic uniqueness, including removable values. This is unchecked;
-it authorizes the residue module's consumer olean after finalization.
-
-The residue-cancellation scratch check passes. Both main transitive axiom
-audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
-`HeckeCompletedThetaResiduesCancel.lean` now contains the verified proof;
-its final direct source audit is running. The sole correction was the
-inverse-unit coercion rewrite `Units.val_inv_eq_inv_val`.
+Primitive scalar normalization, class recombination, and global
+reflection remain on the [dual analytic card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).

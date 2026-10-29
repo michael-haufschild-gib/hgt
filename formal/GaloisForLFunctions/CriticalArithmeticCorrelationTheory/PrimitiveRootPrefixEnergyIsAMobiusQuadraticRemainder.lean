@@ -379,6 +379,32 @@ theorem arithmeticOverlapCurvature_cell_lower {m : ℕ} (hm : 1 < m) (k : ℕ)
     have hn := mul_nonneg hu0 (primitiveRootPrefixEnergy_nonneg m (k + 1))
     nlinarith only [hmul, hn, sq_nonneg (1 - u)]
 
+/-- Every nontrivial conductor dominates the same positive fractional-part
+curvature on the whole nonnegative real axis. -/
+theorem fract_mul_one_sub_fract_le_arithmeticOverlapCurvature {m : ℕ} (hm : 1 < m)
+    {t : ℝ} (ht : 0 ≤ t) :
+    Int.fract t * (1 - Int.fract t) ≤ arithmeticOverlapCurvature m t := by
+  let k : ℕ := ⌊t⌋₊
+  let u : ℝ := t - k
+  have hu0 : 0 ≤ u := sub_nonneg.mpr (Nat.floor_le ht)
+  have hu1 : u < 1 := by
+    have h := Nat.lt_floor_add_one t
+    dsimp only [u, k]
+    linarith only [h]
+  have he : t = (k : ℝ) + u := by dsimp only [u]; ring
+  have hf : Int.fract t = u := by
+    rw [he, add_comm, Int.fract_add_natCast]
+    exact Int.fract_eq_self.mpr ⟨hu0, hu1⟩
+  rw [hf, he]
+  exact arithmeticOverlapCurvature_cell_lower hm k hu0 hu1
+
+/-- The original signed fractional-part divisor expression is nonnegative,
+with no assumption about zeros or about the spectrum of an operator. -/
+theorem arithmeticOverlapCurvature_nonneg {m : ℕ} (hm : 1 < m)
+    {t : ℝ} (ht : 0 ≤ t) : 0 ≤ arithmeticOverlapCurvature m t := by
+  exact (mul_nonneg (Int.fract_nonneg t) (sub_nonneg.mpr (Int.fract_lt_one t).le)).trans
+    (fract_mul_one_sub_fract_le_arithmeticOverlapCurvature hm ht)
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.primitiveRootPrefixEnergy_eq_moebius_remainder
@@ -387,3 +413,4 @@ end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.primitiveQuadraticCell_eq_interpolation
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.primitiveQuadraticCell_pos
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.arithmeticOverlapCurvature_eq_interpolation
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.fract_mul_one_sub_fract_le_arithmeticOverlapCurvature

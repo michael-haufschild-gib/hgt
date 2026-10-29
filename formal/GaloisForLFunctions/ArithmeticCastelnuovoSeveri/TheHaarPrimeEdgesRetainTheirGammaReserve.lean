@@ -351,7 +351,8 @@ theorem haarPrimeGammaReserve_add_graph (d : ℕ → ℝ) (X : ℕ) :
   · by_cases hΛ : vonMangoldt m = 0
     · simp only [he, hΛ, ne_eq, not_true_eq_false, and_false, if_false, if_true,
         zero_mul, add_zero]
-    · simp only [if_pos ⟨he, hΛ⟩, if_pos he]
+    · have hboth : (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0 := ⟨he, hΛ⟩
+      simp only [if_pos hboth, if_pos he]
       ring
   · simp only [he, false_and, if_false, add_zero]
 
@@ -434,10 +435,10 @@ theorem haarPrimeGammaGraphEnergy_eq_ground (d : ℕ → ℝ) (X : ℕ) :
 private theorem haar_prime_multiplier_fiber (X a b : ℕ) (C : ℝ) :
     (∑ m ∈ Icc 2 (2 * X + 1),
       if (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0 then C else 0) =
-      if ∃ m ∈ Icc 2 (2 * X + 1),
+      if ∃ m ∈ Finset.Icc 2 (2 * X + 1),
         (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0 then C else 0 := by
   classical
-  by_cases h : ∃ m ∈ Icc 2 (2 * X + 1),
+  by_cases h : ∃ m ∈ Finset.Icc 2 (2 * X + 1),
       (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0
   · rw [if_pos h]
     obtain ⟨m, hm, he⟩ := h
@@ -462,7 +463,7 @@ theorem haarPrimeGammaGraphEnergy_le_graph (d : ℕ → ℝ) (X : ℕ) :
   let T : ℕ → ℕ → ℝ := fun a b =>
     haarGammaGraphWeight a b * (haarGroundCoordinate d a - haarGroundCoordinate d b) ^ 2
   let F : ℕ → ℕ → ℝ := fun a b =>
-    if ∃ m ∈ Icc 2 (2 * X + 1),
+    if ∃ m ∈ Finset.Icc 2 (2 * X + 1),
       (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0 then T a b else 0
   have hform : haarPrimeGammaGraphEnergy d X = ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F a b := by
     rw [haarPrimeGammaGraphEnergy_eq_ground, sum_comm]
@@ -479,9 +480,9 @@ theorem haarPrimeGammaGraphEnergy_le_graph (d : ℕ → ℝ) (X : ℕ) :
       dsimp only [T]
       rw [haarGammaGraphWeight_symm hb ha]
       ring
-    by_cases h : ∃ m ∈ Icc 2 (2 * X + 1),
+    by_cases h : ∃ m ∈ Finset.Icc 2 (2 * X + 1),
         (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0
-    · have hn : ¬∃ m ∈ Icc 2 (2 * X + 1),
+    · have hn : ¬∃ m ∈ Finset.Icc 2 (2 * X + 1),
           (2 * b + 1) * m = 2 * a + 1 ∧ vonMangoldt m ≠ 0 := by
         obtain ⟨m, hm, he⟩ := h
         have hab := haar_prime_edge_order ha
@@ -498,7 +499,7 @@ theorem haarPrimeGammaGraphEnergy_le_graph (d : ℕ → ℝ) (X : ℕ) :
       · exact hT
   have hrev : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F b a) =
       ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F a b := sum_comm
-  have hs : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F a b + F b a) ≤
+  have hs : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, (F a b + F b a)) ≤
       ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, T a b :=
     sum_le_sum fun a ha => sum_le_sum fun b hb =>
       hpair (mem_Icc.mp ha).1 (mem_Icc.mp hb).1
@@ -633,7 +634,7 @@ theorem haarSectionProfile_roughWeil_eq_interaction_matrix (d : ℕ → ℝ) (X 
 
 /-- Each actual prime-power entry of the full Weil matrix retains a strict negative reserve. -/
 theorem haarWeilInteraction_prime_edge_le {X a b m : ℕ} (ha : 1 ≤ a)
-    (hb : b ∈ Icc 1 X) (hm : 2 ≤ m) (he : (2 * a + 1) * m = 2 * b + 1)
+    (hb : b ∈ Finset.Icc 1 X) (hm : 2 ≤ m) (he : (2 * a + 1) * m = 2 * b + 1)
     (hΛ : vonMangoldt m ≠ 0) :
     haarWeilInteraction X a b ≤ -(Real.log 3 - Real.log 2) * haarMass b / Real.sqrt (m : ℝ) := by
   have hb1 := (mem_Icc.mp hb).1
@@ -665,7 +666,7 @@ theorem haarWeilInteraction_prime_edge_le {X a b m : ℕ} (ha : 1 ≤ a)
   linarith only [hΓ, hweight, hentry, hr, hp]
 
 theorem haarWeilInteraction_prime_edge_neg {X a b m : ℕ} (ha : 1 ≤ a)
-    (hb : b ∈ Icc 1 X) (hm : 2 ≤ m) (he : (2 * a + 1) * m = 2 * b + 1)
+    (hb : b ∈ Finset.Icc 1 X) (hm : 2 ≤ m) (he : (2 * a + 1) * m = 2 * b + 1)
     (hΛ : vonMangoldt m ≠ 0) : haarWeilInteraction X a b < 0 := by
   apply lt_of_le_of_lt (haarWeilInteraction_prime_edge_le ha hb hm he hΛ)
   have hlog : 0 < Real.log 3 - Real.log 2 :=

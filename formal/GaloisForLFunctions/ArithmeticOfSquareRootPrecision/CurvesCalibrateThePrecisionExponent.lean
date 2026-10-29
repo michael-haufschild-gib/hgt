@@ -22,6 +22,10 @@ is the size of `N_k − q^k − 1`.
 * **The golden datum is the relative-error twin** (`golden_tendsto_pointCount_div`,
   `golden_countAtPrecision_iff`): `N_k / 5^k → 1`, yet the count at precision `θ` holds iff
   `θ ≥ ½ + log φ / log 5`. Relative-error point counts cannot see the sign over `𝔽_q` either.
+* **The upper half is blind to real outer eigenvalues** (`unitary_of_upperCountAtPrecision_half`,
+  `golden_upperCount_and_not_lowerCount`): without a real outer eigenvalue an upper square-root
+  count forces unitarity, while the golden datum satisfies `N_k ≤ q^k + 1` and fails the lower half.
+  Over `ℤ` each half is RH, because `ζ` has no real zero in `(½, 1)`.
 -/
 
 noncomputable section
@@ -246,5 +250,35 @@ theorem golden_not_countAtPrecision_half : ¬ CountAtPrecision goldenDatum (1 / 
   have : 0 < Real.log goldenRatio / Real.log 5 :=
     div_pos (Real.log_pos one_lt_goldenRatio) (Real.log_pos (by norm_num))
   linarith
+
+
+/-! ### The upper half over `𝔽_q` is blind to real outer eigenvalues -/
+
+/-- The upper half of the count at precision `θ`: `N_k ≤ q^k + 1 + C (q^θ)^k` for all `k`. -/
+def UpperCountAtPrecision (θ : ℝ) : Prop :=
+  ∃ C : ℝ, ∀ k : ℕ, D.pointCount k ≤ D.q ^ k + 1 + C * (D.q ^ θ) ^ k
+
+/-- **Without a real outer eigenvalue the upper half is square-root precision**: an upper square-root
+count forces unitarity. -/
+theorem unitary_of_upperCountAtPrecision_half (hreal : ¬ D.HasRealOuterEigenvalue)
+    (h : UpperCountAtPrecision D (1 / 2)) : ∀ i, ‖D.β i‖ = 1 := by
+  obtain ⟨C, hC⟩ := h
+  refine D.unitary_of_neg_le_trace (C := C) (fun k => ?_) hreal
+  have hk := hC k
+  rw [show D.q ^ (1 / 2 : ℝ) = D.sqrtq by rw [CurveDatum.sqrtq, Real.sqrt_eq_rpow]] at hk
+  exact (D.neg_le_trace_iff_pointCount_le k C).mpr hk
+
+/-- **The golden datum passes the upper half at every precision** (`N_k ≤ q^k + 1`), and fails the
+lower half below `½ + log φ / log 5`: over `𝔽_q` the upper half is blind to the real outer eigenvalue
+`φ`. Over `ℤ` each half is RH (`upperCount_vonMangoldt_iff`, `lowerCount_vonMangoldt_iff`). -/
+theorem golden_upperCount_and_not_lowerCount (θ : ℝ) :
+    UpperCountAtPrecision goldenDatum θ ∧
+      (LowerCountAtPrecision goldenDatum θ ↔ 1 / 2 + Real.log goldenRatio / Real.log 5 ≤ θ) := by
+  refine ⟨⟨0, fun k => ?_⟩, ?_⟩
+  · have ht := goldenDatum_trace_nonneg k
+    have hs : 0 ≤ goldenDatum.sqrtq ^ k := pow_nonneg goldenDatum.sqrtq_pos.le k
+    unfold CurveDatum.pointCount
+    nlinarith
+  · rw [lowerCountAtPrecision_iff, ← countAtPrecision_iff, golden_countAtPrecision_iff]
 
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision

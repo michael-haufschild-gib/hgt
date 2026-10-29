@@ -184,8 +184,10 @@ removal. The [completed residue card](hecke-unramified-character-descent-and-res
 tracks physical cancellation by ordinary-class orthogonality and dual
 cancellation by the proved ordinary L-pole coefficient plus nonvanishing
 of Gamma at one. Entire divided differences supply both removable values.
-The residue scratch check passes with standard-only transitive axioms;
-its final source audit is running. The corrected-completion draft remains unchecked.
+Raw residue cancellation is finalized in `HeckeCompletedThetaResiduesCancel`;
+its final direct source audit and both transitive axiom audits pass. See
+[the residue proof](../3-formalized/hecke-completed-theta-residues-cancel.md).
+The corrected-completion draft remains unchecked.
 
 Finite class recombination uses the proved permutation and the exact
 scalar above. The final draft defines the pole-cleared entire function
@@ -210,9 +212,8 @@ Finalized, required consumer olean pending:
 - `HeckeDualAveragedMellinIsTheInverseClassSeries`.
 
 Current check:
-- `HeckeCompletedThetaResiduesCancel`: final direct source audit running.
-  Its scratch check passes with standard-only transitive axioms; the sole
-  correction was using `Units.val_inv_eq_inv_val` for inverse coercion.
+- `HeckeCompletedThetaResiduesCancel`: consumer olean being built for the
+  already written Gamma-completed continuation draft. Final source audit passed.
 
 Unchecked complete drafts and intended module names:
 - `/tmp/HeckeGammaCompletedContinuationScratch.lean` →

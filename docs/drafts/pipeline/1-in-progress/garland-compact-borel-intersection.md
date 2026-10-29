@@ -119,10 +119,14 @@ left B-equivariant and right K-invariant, on the actual central loop group.
 ## Status and remaining exact obligations
 
 Paper argument recorded. `SimpleCompactBorel`, `RealCompactSigns`,
-`SimpleMatrixWords`, and `RealBorelCharacters` are written but unchecked. They include the exact
+`SimpleMatrixWords`, `CompactBorelIntersection`, `RealBorelCharacters`, and
+`RealSphericalFunction` are written but unchecked. They include the exact
 simple Borel intersections, sign-torus inclusions, generation by enlarged
-simple rotation groups, alternating-word boundary coefficients, and intrinsic Borel weight characters.
-Scratch proofs for `RealRotationMatrices`, `MatrixLaurentLeading`, and
+simple rotation groups, alternating-word boundary coefficients, intrinsic
+Borel weight characters, and the factorization-independent spherical
+function with left Borel and right compact transformation laws.
+`RealRotationMatrices` passed its scratch check and is installed; its
+dependency build is running. Scratch proofs for `MatrixLaurentLeading` and
 `SubgroupAlternatingWords` are written in `/tmp/Garland*.lean`, pending
 checks before installation. The existing finite rotation characterization
 has been inspected. Remaining work: finish those checks and input audits;
