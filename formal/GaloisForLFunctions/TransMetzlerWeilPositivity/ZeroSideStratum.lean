@@ -72,7 +72,7 @@ theorem unconditional_transMetzler_positivity_interval :
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   have hw0 : 0 < c / N := div_pos hc.1 hN0
   obtain ⟨hg, hgsupp, -⟩ := atomDilate_facts contDiff_transMetzlerProfile
-    (fun u hu => transMetzlerProfile_eq_zero hu) hw0
+    (fun _ hu => transMetzlerProfile_eq_zero hu) hw0
   have hM : 0 < ∫ u, atomDilate transMetzlerProfile (c / N) u ^ 2 := by
     rw [integral_atomDilate_sq hw0]
     exact mul_pos hw0 integral_transMetzlerProfile_sq_pos

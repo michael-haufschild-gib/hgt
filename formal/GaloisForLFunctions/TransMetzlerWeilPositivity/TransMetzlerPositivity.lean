@@ -101,7 +101,7 @@ theorem eventually_transMetzlerMainMatrix_coercive
       refine div_nonneg ?_ integral_transMetzlerProfile_sq_pos.le
       unfold bumpRobin
       exact setIntegral_nonneg measurableSet_Ioc fun y hy =>
-        div_nonneg (integral_sub_shift_sq_nonneg y) (by positivity)
+        div_nonneg (integral_sub_shift_sq_nonneg y) (mul_nonneg zero_le_two hy.1.le)
     rw [hcfp]
     linarith only [h2pi, hlogc, hb0]
   -- Cross and pole error quadratic bounds
@@ -243,17 +243,11 @@ theorem eventually_transMetzlerMainMatrix_eigenvalues_ge
             completeWeilAdjunctionEnergy transMetzlerProfile cStar m •
               normalizedRamanujanHorizonVector m N‖ ^ 2 := by
       rw [div_le_iff₀ (sq_pos_of_pos (by linarith only [hgap]))]
-      have hmul := mul_le_mul_of_nonneg_left hgap_sq
-        (mul_nonneg (by norm_num : (0 : ℝ) ≤ 10000) (sq_nonneg _))
-      have hid : ‖Matrix.toEuclideanLin (transMetzlerMainMatrix (w N) cStar N)
-              (normalizedRamanujanHorizonVector m N) -
-            completeWeilAdjunctionEnergy transMetzlerProfile cStar m •
-              normalizedRamanujanHorizonVector m N‖ ^ 2 =
-          (10000 * ‖Matrix.toEuclideanLin (transMetzlerMainMatrix (w N) cStar N)
-              (normalizedRamanujanHorizonVector m N) -
-            completeWeilAdjunctionEnergy transMetzlerProfile cStar m •
-              normalizedRamanujanHorizonVector m N‖ ^ 2) * (1 / 10000) := by ring
-      linarith only [hid, hmul]
+      set R := ‖Matrix.toEuclideanLin (transMetzlerMainMatrix (w N) cStar N)
+          (normalizedRamanujanHorizonVector m N) -
+        completeWeilAdjunctionEnergy transMetzlerProfile cStar m •
+          normalizedRamanujanHorizonVector m N‖
+      nlinarith only [hgap_sq, sq_nonneg R]
     exact hinner.trans hdiv
   linarith only [hmass, hmass_le, hsmallN]
 
@@ -345,7 +339,7 @@ theorem eventually_normalizedFullWeilHorizonMatrix_posDef_of_width_near
   have hcZero_512 : cZero ≤ 1 + 1 / 512000 := by norm_num [cZero, deltaZero]
   have hc1 : cStar ≤ 1 + 1 / 512000 := hc_hi.trans hcZero_512
   have hw_simple : ∀ᶠ N : ℕ in atTop, 0 < w N ∧ w N ≤ 2 / (N : ℝ) := by
-    filter_upwards [hw, eventually_ge_atTop 1] with N ⟨hlo, hhi, -⟩ hN1
+    filter_upwards [hw, eventually_ge_atTop 1] with N ⟨hlo, hhi, _⟩ hN1
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
     refine ⟨lt_of_lt_of_le (by positivity) hlo, hhi.trans ?_⟩
     exact div_le_div_of_nonneg_right (by linarith only [hcZero_512]) hN0.le
@@ -387,7 +381,7 @@ theorem eventually_completeWeilMatrix_posDef_cZero :
   filter_upwards [eventually_ge_atTop 1] with N hN1
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   refine ⟨?_, le_rfl, ?_⟩
-  · rw [one_div_mul_eq_div]
+  · rw [show (1 : ℝ) / (2 * N) = (1 / 2) / N by ring]
     exact div_le_div_of_nonneg_right (by norm_num [cZero, deltaZero]) hN0.le
   · rw [div_mul_cancel₀ _ hN0.ne', sub_self, abs_zero]
     positivity
@@ -400,7 +394,7 @@ theorem eventually_weilQuad_atomicTest_nonneg_cZero :
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   have hw0 : 0 < cZero / (N : ℝ) := div_pos cZero_pos hN0
   obtain ⟨hg, hgsupp, -⟩ := atomDilate_facts contDiff_transMetzlerProfile
-    (fun u hu => transMetzlerProfile_eq_zero hu) hw0
+    (fun _ hu => transMetzlerProfile_eq_zero hu) hw0
   have hM : 0 < ∫ u, atomDilate transMetzlerProfile (cZero / N) u ^ 2 := by
     rw [integral_atomDilate_sq hw0]; exact mul_pos hw0 integral_transMetzlerProfile_sq_pos
   exact weilQuad_atomicTest_nonneg_of_posDef hg hgsupp hw0.le hM hpos y
@@ -417,7 +411,7 @@ theorem exists_gt_one_eventually_completeWeilMatrix_posDef :
       (∀ᶠ N : ℕ in atTop, ∀ y : ℕ → ℝ, 0 ≤ weilQuad (atomicTest N y (atomDilate φ (c / N)))) :=
   ⟨cZero, one_lt_cZero, transMetzlerProfile, contDiff_top_transMetzlerProfile,
     hasCompactSupport_transMetzlerProfile, transMetzlerProfile_nonneg,
-    fun u hu => transMetzlerProfile_eq_zero hu, fun u hu => transMetzlerProfile_pos hu,
+    fun _ hu => transMetzlerProfile_eq_zero hu, fun _ hu => transMetzlerProfile_pos hu,
     eventually_completeWeilMatrix_posDef_cZero, eventually_weilQuad_atomicTest_nonneg_cZero⟩
 
 /-- Eventual positive definiteness of `completeWeilMatrix transMetzlerProfile c N` at every fixed
@@ -441,7 +435,7 @@ theorem eventually_completeWeilMatrix_posDef_of_mem_Ioc {c : ℝ} (hc : c ∈ Se
         hc.1 (hc1.le.trans (by norm_num)) hm0
       linarith only [hmlt, hgt]
     filter_upwards [eventually_completeWeil_spectral_count_eq contDiff_transMetzlerProfile
-      (fun u hu => transMetzlerProfile_eq_zero hu) integral_transMetzlerProfile_sq_pos
+      (fun _ hu => transMetzlerProfile_eq_zero hu) integral_transMetzlerProfile_sq_pos
       hc.1 hc1 (1 / 25) hT_ne] with N hcard
     rw [hsub_empty, card_empty, card_eq_zero] at hcard
     rw [(completeWeilMatrix_isHermitian transMetzlerProfile c N).posDef_iff_eigenvalues_pos]
@@ -457,7 +451,7 @@ theorem eventually_completeWeilMatrix_posDef_of_mem_Ioc {c : ℝ} (hc : c ∈ Se
     filter_upwards [eventually_ge_atTop 1] with N hN1
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
     refine ⟨?_, div_le_div_of_nonneg_right hc.2 hN0.le, ?_⟩
-    · rw [one_div_mul_eq_div]
+    · rw [show (1 : ℝ) / (2 * N) = (1 / 2) / N by ring]
       exact div_le_div_of_nonneg_right hge hN0.le
     · rw [div_mul_cancel₀ _ hN0.ne', sub_self, abs_zero]
       positivity
@@ -506,7 +500,7 @@ theorem eventually_touching_atomSpacing_posDef :
   filter_upwards [hpos_ev, eventually_ge_atTop 1] with N hpos hN1
   have hw0 := atomSpacing_pos hN1
   obtain ⟨hg, hgsupp, -⟩ := atomDilate_facts contDiff_transMetzlerProfile
-    (fun u hu => transMetzlerProfile_eq_zero hu) hw0
+    (fun _ hu => transMetzlerProfile_eq_zero hu) hw0
   have hM : 0 < ∫ u, atomDilate transMetzlerProfile (atomSpacing N) u ^ 2 := by
     rw [integral_atomDilate_sq hw0]; exact mul_pos hw0 integral_transMetzlerProfile_sq_pos
   exact ⟨hpos, weilQuad_atomicTest_nonneg_of_posDef hg hgsupp hw0.le hM hpos⟩
@@ -569,7 +563,7 @@ theorem eventually_transMetzler_atomSpacing_posDef_and_frustrated :
     eventually_ge_atTop 1] with N hpos hfrust hN1
   have hw0 := mul_pos rhoZero_pos (atomSpacing_pos hN1)
   obtain ⟨hg, hgsupp, -⟩ := atomDilate_facts contDiff_transMetzlerProfile
-    (fun u hu => transMetzlerProfile_eq_zero hu) hw0
+    (fun _ hu => transMetzlerProfile_eq_zero hu) hw0
   have hM : 0 < ∫ u, atomDilate transMetzlerProfile (rhoZero * atomSpacing N) u ^ 2 := by
     rw [integral_atomDilate_sq hw0]; exact mul_pos hw0 integral_transMetzlerProfile_sq_pos
   exact ⟨hpos, weilQuad_atomicTest_nonneg_of_posDef hg hgsupp hw0.le hM hpos, hfrust⟩
