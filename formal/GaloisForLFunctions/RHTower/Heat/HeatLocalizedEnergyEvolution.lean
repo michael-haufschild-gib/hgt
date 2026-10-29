@@ -2,16 +2,15 @@ import GaloisForLFunctions.RHTower.Heat.HeatExteriorForce
 import GaloisForLFunctions.RHTower.Heat.HeatForwardSimpleZeros
 import GaloisForLFunctions.RHTower.Heat.HeatZeroSumContinuity
 import GaloisForLFunctions.RHTower.Heat.LocalizedHeatPairForce
-import GaloisForLFunctions.RHTower.Heat.LocalizedHeatPacketFlux
 import GaloisForLFunctions.HTGeometry.ReflectedDividedDifference
 import GaloisForLFunctions.HTGeometry.LogDerivZeroPole
 
 /-!
-# Evolution of localized vertical heat-zero energy
+# Derivatives of localized vertical heat-zero energy
 
 The regular part of the logarithmic derivative gives each simple zero's
-velocity. Pairwise symmetrization bounds horizontal cutoff flux uniformly
-as zero gaps shrink.
+velocity. Isolating disks identify the actual weighted zero sum with finitely
+many branches. Compact regions become simple on short forward intervals.
 -/
 
 open Complex Filter Topology Set Metric MeasureTheory
@@ -59,7 +58,9 @@ private theorem second_div_first_eq_twice_regular_part
     deriv (deriv f) a / deriv f a = 2 * (deriv (deriv f) a / 2 / deriv f a) := by ring
     _ = 2 * R a := by rw [hvalue]
 
-private theorem simple_heat_zero_velocity_eq_exterior
+/-- A simple heat zero moves at twice the regular part of the logarithmic
+derivative, expressed by the actual local packet and exterior field. -/
+theorem simple_heat_zero_velocity_eq_exterior
     {t X : ℝ} (ht : 0 < t) {S : Finset ℂ} {Q : ℂ → ℂ}
     (hpacket : ∀ a, a ∈ S ↔ riemannHeat t a = 0 ∧ |a.re - X| ≤ 2)
     (hQ : ∀ z, |z.re - X| ≤ 1 → |z.im| ≤ 1 / 2 →
@@ -334,7 +335,7 @@ private theorem eventually_heat_nonzero_on_compact {t : ℝ} (ht : 0 ≤ t)
 
 /-- The actual localized energy is a finite sum of simple zero branches on a
 short right interval. The complement of their isolating disks excludes new zeros. -/
-private theorem heatLocalizedVerticalEnergy_hasDerivWithinAt_of_simple
+theorem heatLocalizedVerticalEnergy_hasDerivWithinAt_of_simple
     {t X : ℝ} (ht : 0 < t) {w v : ℝ → ℝ}
     (hw : ∀ x, HasDerivAt w (v x) x)
     (hsupp : ∀ x, 1 ≤ |x| → w x = 0)

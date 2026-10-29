@@ -74,7 +74,7 @@ theorem weilPair_real_eq {f g : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasC
     funext u; simp [Fin.sum_univ_two, cx, sub_eq_add_neg]
   rw [hsp, weilFull_cx_self] at hp
   rw [hsm, weilFull_cx_self] at hm
-  simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+  simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
     map_one, map_neg, one_mul, mul_one, neg_mul, mul_neg, neg_neg] at hp hm
   -- the off-diagonal entries agree and are real
   have hfg : ContDiff ℝ 2 (cx f) := cx_contDiff hf
@@ -112,8 +112,8 @@ theorem sqrt_integral_sq_add_le (hF : Continuous F) (hFc : HasCompactSupport F)
       funext u; ring
     rw [this, integral_lin3 h1 h3 h2]
     ring
-  have hA := Real.sq_sqrt (integral_nonneg fun u => sq_nonneg (F u))
-  have hB := Real.sq_sqrt (integral_nonneg fun u => sq_nonneg (D u))
+  have hA := Real.sq_sqrt (integral_nonneg fun u => sq_nonneg (F u) : (0 : ℝ) ≤ ∫ u, F u ^ 2)
+  have hB := Real.sq_sqrt (integral_nonneg fun u => sq_nonneg (D u) : (0 : ℝ) ≤ ∫ u, D u ^ 2)
   rw [Real.sqrt_le_left (by positivity), he]
   nlinarith [le_abs_self (∫ u, F u * D u), Real.sqrt_nonneg (∫ u, F u ^ 2),
     Real.sqrt_nonneg (∫ u, D u ^ 2)]
@@ -121,8 +121,8 @@ theorem sqrt_integral_sq_add_le (hF : Continuous F) (hFc : HasCompactSupport F)
 /-- `√(L(F + D)) ≤ √(L F) + √(L D)` for the Lévy energy `L`. -/
 theorem sqrt_levyEnergy_add_le (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
     (hD : ContDiff ℝ 2 D) (hDc : HasCompactSupport D) :
-    Real.sqrt (levyEnergy fun u => F u + D u) ≤
-      Real.sqrt (levyEnergy F) + Real.sqrt (levyEnergy D) := by
+    Real.sqrt (RHTower.levyEnergy fun u => F u + D u) ≤
+      Real.sqrt (RHTower.levyEnergy F) + Real.sqrt (RHTower.levyEnergy D) := by
   have h := levyEnergy_add_le hF hFc hD hDc
   have hA := Real.sq_sqrt (levyEnergy_nonneg' F)
   have hB := Real.sq_sqrt (levyEnergy_nonneg' D)
@@ -160,7 +160,7 @@ theorem moments_add_le (hF : Continuous F) (hFc : HasCompactSupport F) (hD : Con
 
 /-- The majorant of `weilErr` in terms of bounds `a, l, c` on the base norms. -/
 def weilErrBound (a l c R e V : ℝ) : ℝ :=
-  2 * |gammaHardyPhaseRate 0| * (2 * (a * (Real.sqrt (2 * R) * e)) + 2 * R * e ^ 2) +
+  2 * |RHTower.gammaHardyPhaseRate 0| * (2 * (a * (Real.sqrt (2 * R) * e)) + 2 * R * e ^ 2) +
     (2 * (l * Real.sqrt V) + V) +
     2 * primeMass R * (2 * (a * (Real.sqrt (2 * R) * e)) + 2 * R * e ^ 2) +
     4 * Real.cosh (R / 2) * c * (2 * R * e) +
@@ -168,7 +168,7 @@ def weilErrBound (a l c R e V : ℝ) : ℝ :=
 
 /-- `weilErr` is dominated by its majorant. -/
 theorem weilErr_le_bound {G : ℝ → ℝ} {a l c R e V : ℝ} (hR : 0 ≤ R) (he : 0 ≤ e) (hV : 0 ≤ V)
-    (ha : Real.sqrt (∫ u, G u ^ 2) ≤ a) (hl : Real.sqrt (levyEnergy G) ≤ l)
+    (ha : Real.sqrt (∫ u, G u ^ 2) ≤ a) (hl : Real.sqrt (RHTower.levyEnergy G) ≤ l)
     (hc : |RHTower.coshHalfMoment G| + |RHTower.sinhHalfMoment G| ≤ c) :
     weilErr G R e V ≤ weilErrBound a l c R e V := by
   unfold weilErr weilErrBound
@@ -176,14 +176,14 @@ theorem weilErr_le_bound {G : ℝ → ℝ} {a l c R e V : ℝ} (hR : 0 ≤ R) (h
   have hch : 0 ≤ Real.cosh (R / 2) := (Real.cosh_pos _).le
   have h1 : Real.sqrt (∫ u, G u ^ 2) * (Real.sqrt (2 * R) * e) ≤ a * (Real.sqrt (2 * R) * e) :=
     mul_le_mul_of_nonneg_right ha (by positivity)
-  have h2 : Real.sqrt (levyEnergy G) * Real.sqrt V ≤ l * Real.sqrt V :=
+  have h2 : Real.sqrt (RHTower.levyEnergy G) * Real.sqrt V ≤ l * Real.sqrt V :=
     mul_le_mul_of_nonneg_right hl (Real.sqrt_nonneg _)
   have h3 : 4 * Real.cosh (R / 2) * (|RHTower.coshHalfMoment G| + |RHTower.sinhHalfMoment G|) *
       (2 * R * e) ≤ 4 * Real.cosh (R / 2) * c * (2 * R * e) := by
     have : 0 ≤ 2 * R * e := by positivity
     have := mul_le_mul_of_nonneg_left hc (by positivity : (0 : ℝ) ≤ 4 * Real.cosh (R / 2))
     nlinarith
-  have hg := abs_nonneg (gammaHardyPhaseRate 0)
+  have hg := abs_nonneg (RHTower.gammaHardyPhaseRate 0)
   nlinarith
 
 /-- The majorant vanishes with `e` and `V`. -/
@@ -193,7 +193,7 @@ theorem tendsto_weilErrBound (a l c R : ℝ) {e V : ℕ → ℝ} (he : Tendsto e
   unfold weilErrBound
   have hsV : Tendsto (fun n => Real.sqrt (V n)) atTop (𝓝 0) := by simpa using hV.sqrt
   have h := ((((((((he.const_mul (Real.sqrt (2 * R))).const_mul a).const_mul 2).add
-    ((he.pow 2).const_mul (2 * R))).const_mul (2 * |gammaHardyPhaseRate 0|)).add
+    ((he.pow 2).const_mul (2 * R))).const_mul (2 * |RHTower.gammaHardyPhaseRate 0|)).add
     (((hsV.const_mul l).const_mul 2).add hV)).add
     (((((he.const_mul (Real.sqrt (2 * R))).const_mul a).const_mul 2).add
     ((he.pow 2).const_mul (2 * R))).const_mul (2 * primeMass R))).add
@@ -214,7 +214,7 @@ theorem tendsto_weilQuad_add (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
     Tendsto (fun n => weilQuad fun u => F u + Dn n u) atTop (𝓝 (weilQuad F)) := by
   set V := fun n => synthLevy R' (e n) (LD n) (k n)
   set a := Real.sqrt (∫ u, F u ^ 2) + 1
-  set l := Real.sqrt (levyEnergy F) + 1
+  set l := Real.sqrt (RHTower.levyEnergy F) + 1
   set c := |RHTower.coshHalfMoment F| + |RHTower.sinhHalfMoment F| + 1
   -- the norms of `D_n` vanish
   have hsq : Tendsto (fun n => Real.sqrt (2 * R') * e n) atTop (𝓝 0) := by
@@ -251,9 +251,9 @@ theorem tendsto_weilQuad_add (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
     have ha : Real.sqrt (∫ u, G u ^ 2) ≤ a :=
       (sqrt_integral_sq_add_le hF.continuous hFc hD2.continuous hDc).trans
         (by simp only [a]; linarith)
-    have hl : Real.sqrt (levyEnergy G) ≤ l := by
+    have hl : Real.sqrt (RHTower.levyEnergy G) ≤ l := by
       refine (sqrt_levyEnergy_add_le hF hFc hD2 hDc).trans ?_
-      have : Real.sqrt (levyEnergy (Dn n)) ≤ Real.sqrt (V n) := Real.sqrt_le_sqrt hLev
+      have : Real.sqrt (RHTower.levyEnergy (Dn n)) ≤ Real.sqrt (V n) := Real.sqrt_le_sqrt hLev
       simp only [l]; linarith
     have hc : |RHTower.coshHalfMoment G| + |RHTower.sinhHalfMoment G| ≤ c := by
       refine (moments_add_le hF.continuous hFc hD2.continuous hDc hDR).trans ?_

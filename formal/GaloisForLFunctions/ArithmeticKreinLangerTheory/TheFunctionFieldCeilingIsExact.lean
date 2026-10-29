@@ -456,7 +456,7 @@ theorem atomFq_neg_on_span {N : ℕ} {Q : F[X]} (hQ : Q.Monic) (hQN : Q.natDegre
         (a * poleVec g + b * divVec Q g) < 0 := by
   set V := ∑ f ∈ monicLE (F := F) N, poleVec f ^ 2 with hV
   set U := ∑ f ∈ monicLE N, divVec Q f ^ 2 with hU
-  set e : ℝ := Q.natDegree with he
+  set e : ℝ := (Q.natDegree : ℝ) with he
   set v : F[X] → ℝ := poleVec with hvdef
   set u : F[X] → ℝ := divVec Q with hudef
   have hQmem : Q ∈ monicLE N := mem_monicLE.mpr ⟨hQ, hQN⟩
@@ -489,8 +489,8 @@ theorem atomFq_neg_on_span {N : ℕ} {Q : F[X]} (hQ : Q.Monic) (hQN : Q.natDegre
   -- the two quadratic forms on the span
   have hnorm : ∑ f ∈ monicLE N, (a * v f + b * u f) ^ 2 = a ^ 2 * V + 2 * a * b * U + b ^ 2 * U := by
     have : ∀ f, (a * v f + b * u f) ^ 2 = a ^ 2 * v f ^ 2 + 2 * a * b * u f ^ 2 + b ^ 2 * u f ^ 2 :=
-      fun f => by rw [← hvu]; ring
-    simp only [this, sum_add_distrib, ← mul_sum]
+      fun f => by linear_combination (2 * a * b) * hvu f
+    simp only [this, sum_add_distrib, ← mul_sum, hV, hU]
   have hquad : ∑ f ∈ monicLE N, ∑ g ∈ monicLE N, primeKernelFq N f g * (a * v f + b * u f) *
       (a * v g + b * u g) = a ^ 2 * (N * V) + 2 * a * b * (N * U) + b ^ 2 * (((N : ℝ) - e) * U) := by
     have hrow : ∀ f ∈ monicLE N, ∑ g ∈ monicLE N, primeKernelFq N f g * (a * v f + b * u f) *

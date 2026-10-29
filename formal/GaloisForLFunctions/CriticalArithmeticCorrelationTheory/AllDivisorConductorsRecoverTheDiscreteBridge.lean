@@ -25,6 +25,7 @@ theorem sum_divisors_primitiveRootPrefixEnergy {Q : ℕ} (hQ : 0 < Q) (k : ℕ) 
     (sum_nthRoots_eq_sum_divisors Q
       (fun ζ => ((Complex.normSq (∑ j ∈ range k, ζ ^ j) : ℝ) : ℂ)))
   simp only [Complex.re_sum, Complex.ofReal_re] at h
+  simp only [primitiveRootPrefixEnergy]
   rw [← h]
   exact nthRoots_prefix_energy hQ k
 

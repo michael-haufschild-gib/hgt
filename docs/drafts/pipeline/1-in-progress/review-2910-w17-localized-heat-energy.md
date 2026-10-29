@@ -103,3 +103,10 @@ covers the radius-two packet. The initial endpoint (including zero) is recovered
 by continuity. For the integrated full count, the truncated observables are
 bounded by `W C log X` throughout `[a,b]`, directly from the actual packet's
 multiplicity bound; dominated convergence then removes the truncation.
+
+The comparison proof is formalized in
+`HTGeometry/ForwardRegularIntervalComparison.lean`: continuous functions with
+controlled right derivatives on short punctured forward intervals satisfy the
+integrated bound on the entire interval. The initial endpoint needs no derivative.
+Its scratch check also verifies bounded-limit integration and the upper-right-slope
+consequence of a continuous integral majorant. Final leaf audit remains pending.

@@ -68,10 +68,20 @@ settle a fixed overlap ratio. These are leads pending source and dependency chec
    `(101/121)²<7/10`, `-log(r)≤1/99`, and tail cost `<1/40`
    make this strictly negative. This is an analytic argument, not a numerical experiment.
    The finite packet limit and the literal twisted-prime correction still need to be assembled
-   and checked. A variable-ratio version, followed by the subhorizon
-   `floor((r/c)*N)`, would imply eventual negative witnesses at both requested ratios.
+   and checked. Integer-multiple horizons give exact padding to both requested rational ratios;
+   infinitely many negative witnesses already refute eventual nonnegativity.
    This construction does not prove zeta positivity at ratio two or classify all primes.
+4. At ratio two the candidate completed mode energy subtracts
+   `2 μ(m)/totient(m) * integral_(1/2)^1 (G(u)/M)/u du` from the separated energy.
+   For the indicator limit, conductors one and two give respectively
+   `4-3*log(2)-log(2*pi)` and `log(4/pi)`, both positive. The prime successor sum
+   has twice the leading short-overlap Gamma contribution; cancelling both completely
+   would miss this finite spectral correction. Actual norm quasimodes and spectral exhaustion
+   remain unproved. A possible coercivity input is strict variance of the periodized plateau
+   for local overlap in `[1,2]`; ordinary charge variance alone does not suffice.
 
 ## Proof and Lean status
 
-No new theorem claimed. All required mathematical conclusions remain open in this card.
+`elevenTrialUpperMargin_neg` passed Lean with only `propext`, `Classical.choice`, and
+`Quot.sound`. It certifies the scalar margin only. Draft arithmetic, packet, and complete-form
+bridges remain under verification. All required mathematical conclusions remain open.

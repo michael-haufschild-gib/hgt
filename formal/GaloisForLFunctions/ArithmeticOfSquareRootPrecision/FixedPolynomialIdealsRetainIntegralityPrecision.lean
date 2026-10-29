@@ -1,12 +1,11 @@
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheIntegralityLatticeOfTheHorizon
-import Mathlib.NumberTheory.Padics.PadicVal.Basic
 
 /-!
 # The arithmetic of Nair integrals in a polynomial ideal
 
 Multiples of a fixed integer polynomial have rational moments with consecutive denominators.
 Their integral lattice is governed by the gcd of these moments after multiplication by the
-horizon period. Prime-power denominators isolate the leading coefficient from the lower terms.
+horizon period. Denominator cofactors isolate the leading coefficient from the lower terms.
 -/
 
 noncomputable section

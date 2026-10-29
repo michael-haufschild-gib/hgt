@@ -3,6 +3,7 @@
 ## Complete atomic forms
 
 - `TransMetzlerWeilPositivity.eventually_completeWeilMatrix_posDef_certified`: for each fixed real δ with `0 ≤ δ < certifiedOverlapIncrement`, the complete matrix of `transMetzlerProfile` at ratio `1 + δ` is eventually positive definite. This is a fixed-ratio theorem; its horizon may depend on δ. Source: `TransMetzlerWeilPositivity/OptimizedTransMetzlerFloor.lean:149`.
+- `certifiedOverlapIncrement_eq` identifies the increment as `1/107520002048050000`. `reference_coercivity_floor_attained` shows the associated scalar lower bound is attained under the stated abstract mass-floor, defect-coercivity and perturbation inequalities. A larger range needs stronger inputs to this certificate, not a different optimization of the same inequalities. Same module: lines 40,67.
 - `SpacingScaleHarmonicAnalysis.atomicFamilies_negative_iff`: for `|lam n| ≤ Λ(n)`, a normalized compactly supported C² profile and `OverlapGrowth κ`, infinitely recurring negative atomic tests are equivalent to failure of `WeilPositiveFull lam`. The growth and profile hypotheses belong to the statement. Source: `SpacingScaleHarmonicAnalysis/TheGaugeBecomesVisibleAtTheCriticalExponent.lean:365`.
 - `eventually_completeWeil_eigenvalues_ge_uniformly_at_touching`: for a fixed C² unit-interval profile of positive L² mass, every `b < bumpRobin φ 1 / ∫φ² + completeWeilPoleShift φ 1 - log(2π)` is an eventual lower bound for every eigenvalue, simultaneously for every `0<c≤1`. Source: `CriticalArithmeticCorrelationTheory/OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching.lean:66`.
 - `exists_finite_ramanujan_approximation_uniformly_at_touching`: one finite conductor family approximates every unit vector of complete energy at most T, uniformly over all `0<c≤1` and sufficiently large N. The family depends on profile, T and approximation error. Source: `CriticalArithmeticCorrelationTheory/OneRamanujanFamilyDetectsAllBoundedEnergiesThroughTouching.lean:43`.
@@ -14,10 +15,19 @@
 - `tendsto_plateauSuccessorFiber_div_log`: the normalized successor divisor fiber divided by log(N+1) tends to `bumpCorr transMetzlerProfile (1/c) / ∫transMetzlerProfile²` at every fixed c>0. Source: `TransMetzlerWeilPositivity/FixedOverlapHasLogarithmicDivisorRows.lean:140`.
 - For every fixed c>1 this fiber tends to +∞ (`plateauSuccessorFiber_atTop`, same module, line 159). A horizon-independent bound on all such absolute row fibers is false.
 - The eleven trial is a unit-mass Ramanujan packet on conductors 1,11,121. Its complete **untwisted** energy limit is established; the scalar completed upper margin including a prime-power tail cost <1/40 is negative. `elevenTrialUpperMargin_neg` proves that scalar margin's sign, not an eventual-negative theorem for the twisted atomic form. Sources: `TransMetzlerWeilPositivity/BoundedOverlap/ElevenPacket.lean:57,62,90`; `ElevenTrialMargin.lean:64,75`.
+- `riemannHypothesis_iff_steklovDCProfile_nonneg_superGevrey`: for β>2, RH is equivalent to eventual nonnegativity for every coefficient vector in the Steklov profile at dilation `N/superGevreyRatio(β,N)`. Source: `TransMetzlerWeilPositivity/SuperGevreyCriticalGrowth.lean:1349`.
+
+## Complete-source reserves
+
+- `exists_fullPolarNonfirst_completeGamma_reserve`: for every ε>0, one head cutoff A makes the nonfirst sub-form at least `(1−ε)Γ(F)+2 coshHalfMoment(F)²−2 sinhHalfMoment(F)²`, uniformly over every coarse sequence, detail sequence vanishing below A, and horizon. Source: `ArithmeticIndexDescent/TheFullNonfirstSourceRetainsAlmostAllGamma.lean:109`.
+- `exists_fullSquarePolar_coarse_detail_reserve` additionally controls the entire square source while retaining positive coarse Gamma, coarse mass, logarithmically weighted detail mass, ordinary detail mass, and the cosh moment. The right side retains the sinh moment and half the squared integral. Source: `ArithmeticIndexDescent/TheEntireSquareSourceSharesTheFullDetailReserve.lean:48`.
 - `ramanujanPoleProfile_dyadic_twoSided_frame`: at `Q≥2` and `A≥4Q(Q−1)`, squared packet mass on `(A,2A]` lies between 1/4 and 5/4 of squared coefficient mass. The literal prime kernel vanishes on that annulus (`weilPrimeKernel_eq_zero_on_dyadic_annulus`). Source: `CriticalArithmeticCorrelationTheory/AnnularRamanujanFamiliesHaveTwoSidedFrames.lean:93,121`.
 
 ## Height-dependent locality
 
+- `negIndex_zetaKernel = encard(rightZeros zetaZeroConfig) = 2*encard(sectorZeros zetaZeroConfig 1)`. These are counts of distinct spectral locations. Restriction to any two distinct prime directions preserves this index. Source: `HeckeKreinToeplitz/TheFiniteIndexStratumOfZetaIsLindelofDeep.lean:52,58,65`.
+- Finite complete index is equivalent to finite off-line support, uniformly bounded heated nonreal-zero counts, and all sufficiently high zeros lying on the critical line. It implies `LindelofCriticalLine`. Same module: lines 104,119.
+- `isKreinLanger_orbitKernel_iff_negIndex_lt_top`: for every tempered zero configuration Z and real test f, its orbit kernel is Krein–Langer iff it has finite negative index. No finite-total-support hypothesis occurs. Source: `HeckeKreinToeplitz/TheConverseKreinLangerTheoremForOrbitKernels.lean:30`.
 - `exists_prime_certifies_height`: among any set of more than `choose(heightIndex T,2)` primes, some prime tower has a compact C² generator and finite translate set whose Weil Gram negative index is at least `heightIndex T`. The generator and translate set are existential. Source: `EffectiveArithmeticHodgeTheory/TheHassePrincipleWithHeights.lean:320`.
 - `twoPrime_tower_certifies_height`: for T≥0, a tower of step `|log(3^k/2^j)|` carries at least `heightIndex T` negative squares, for some `0<k≤floor(T log 2/π)+1` and `k≤j≤2k`. Source: `EffectiveArithmeticHodgeTheory/TheHassePrincipleWithHeights.lean:265`.
 
@@ -38,6 +48,7 @@
 
 ## Actual theta-clock history
 
+- `liEvenCrossActualClockPrimitive_volterra`: for every t≥0, `P(t)+∫₀ᵗP(s)K(t−s)ds=tK(t)`, with K the derivative of the actual Borel kernel. Source: `RHTower/LiEvenCrossActualClockPrimitiveVolterra.lean:106`.
 - `liEvenCrossActualClockHistory_first_zero_budget_iff_pos`: the inequality `Cout(t) ≤ V(t)` at every `t > 20` with `D(t)=0` and nonnegative preceding history is equivalent to `D(t)>0` for every `t>0`. Source: `RHTower/LiEvenCrossActualClockScoreBudget.lean:182`.
 - `liEvenCrossActualClockHistory_guarded_zero_outside_excess`: at a positive zero with nonnegative preceding history, `Cout(t)-V(t)=Anear(t)-P(t) ≥ zeta(t)>0`. This is a conditional consequence of a hypothetical first zero, not a construction of such a zero.
 - `liEvenCrossActualClockScoreHistory_budget_iff_pos`: the score-weighted first-zero inequality `thc*IU(t) ≤ 303*(IK(t)+V(t))` is also equivalent to global positivity of D. Source: `RHTower/LiEvenCrossActualClockScoreBudget.lean:280`.

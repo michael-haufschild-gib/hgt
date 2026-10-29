@@ -1,8 +1,8 @@
 # Complex gauge orientation lifting
 
 - **ID:** asrp-complex-gauge-orientation-lifting
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ASRP open topic 6, complex gauge stabilizer.
 - **Statement:** Every prime torus gauge admits primewise conjugations preserving its real source at every prime power and making its imaginary partial sums square-root small. Consequently its real count holds exactly when some such complex lift satisfies the complex count.
 
@@ -14,7 +14,7 @@ Determine whether passing from a real gauge to a complex Euler source introduces
 
 - [x] In progress: source and conjecture specified; corpus searches completed.
 - [x] Dependency-closed paper proof.
-- [ ] Leaf checked with `lake --old env lean`; transitive axioms audited; umbrella wired.
+- [x] Leaf checked with `lake --old env lean`; transitive axioms audited; umbrella wired.
 
 ## Approach
 
@@ -58,4 +58,4 @@ Leaf: `ArithmeticOfSquareRootPrecision/EveryRealGaugeHasAComplexCountLift.lean`.
 Main targets: `complexCount_torusGauge_iff`, `imaginary_partialSum_balancedGauge_le`,
 `complexCount_balancedGauge_iff`, `exists_complexCount_lift_iff`,
 `exists_complexCount_lift_preserving_prefix`.
-Final leaf check passed with `lake --old env lean GaloisForLFunctions/ArithmeticOfSquareRootPrecision/EveryRealGaugeHasAComplexCountLift.lean`. Umbrella import wired. Transitive axiom audit running.
+Final leaf check passed with `lake --old env lean GaloisForLFunctions/ArithmeticOfSquareRootPrecision/EveryRealGaugeHasAComplexCountLift.lean`, exit 0, no warnings. Umbrella import wired. All five main theorems depend only on `propext`, `Classical.choice`, `Quot.sound`; audit output: `logs/asrp-complex-gauge-axioms.txt`.

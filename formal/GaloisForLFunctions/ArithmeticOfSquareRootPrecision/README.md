@@ -123,7 +123,12 @@ here.
    $\Lambda-a\in\mathcal Q$. A sign gauge passes iff RH and $\theta_F=O(\sqrt x\log^2x)$; a torus gauge
    $t$ (rotating $\Lambda(p^k)$ by $e^{2\pi ikt_p}$, real part) passes iff RH and the gauge distance
    $\sum_{p\le x}(1-\cos2\pi t_p)\log p=O(\sqrt x\log^2x)$. The count's stabilizer in the gauge torus is
-   the set of gauges at square-root distance from the arithmetic point.
+   the set of gauges at square-root distance from the arithmetic point. For the complex source,
+   the additional condition is $\sum_{p\le x}\sin(2\pi t_p)\log p=O(\sqrt x\log^2x)$.
+   Every real gauge admits a complex lift: independently conjugating whole Euler factors preserves
+   every real prime-power coefficient and can keep this signed prime current within $\log x$.
+   Any finite prefix of phases may be retained. The existence of a complex count lift is therefore
+   exactly the real count criterion.
 7. **Precision exponents are abscissas.** For $\delta\ge0$, partial sums $O(x^\theta)$ give absolute
    convergence of $\sum\delta(n)n^{-s}$ on $\operatorname{Re}s>\theta$, and convergence at $\sigma$ gives
    partial sums $\le x^\sigma\sum\delta(n)n^{-\sigma}$. A one-signed perturbation is invisible when its
@@ -347,8 +352,10 @@ Open, with what the theory already proves about each:
    count (unique factorization in the Chebyshev identity, used exactly) excludes over-regular Beurling
    systems.
 6. **Gauge geometry of the stabilizer.** The stabilizer in the gauge torus is the square-root ball
-   of the gauge distance (for real parts of rotated sources); relate it to Haar-generic square-root
-   cancellation (ACG) and to the complex gauge-rotated source itself.
+   of the gauge distance. The complex source additionally needs square-root control of its signed
+   prime sine current; every real gauge has a complex count lift by primewise conjugation, even
+   with any finite phase prefix prescribed (`exists_complexCount_lift_preserving_prefix`).
+   Open: relate these fixed-real-source conjugation families to Haar-generic cancellation (ACG).
 7. **Precision classes of index, defect and regulator.** The finite-index stratum, the Hecke defect at
    logarithmic translation, the covariant regulator on the characteristic circle.
 8. **Zero estimates with separation.** Zero counts for integer Dirichlet polynomials on vertical
