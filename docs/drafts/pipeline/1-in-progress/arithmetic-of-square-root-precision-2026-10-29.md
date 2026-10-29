@@ -16,28 +16,30 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 
 ## Gates
 - [x] 0 → 1  scope fixed, README first draft
-- [x] modules 1–10 proved, umbrella `ArithmeticOfSquareRootPrecision.lean`
-- [ ] modules 11–13 (gauge stabilizer, ledger, sup-norm vanishing) compiled and wired
+- [x] modules 1–15 proved, checked, wired into `ArithmeticOfSquareRootPrecision.lean`; axioms audited
+  (propext, Classical.choice, Quot.sound only)
+- [ ] open topics of the README §9 (ceiling, off-line vanishing, positivity precision, inversion with
+  arithmetic input, successor, index/defect/regulator precision, vertical zero estimates, structure)
 
 ## Module plan
-1. `PrecisionClassesAndTheCount` — partial sums, precision classes, count, stabilizer law, power
-   threshold at η = ½ (inclusive).
-2. `TheBatteryOfTheCount` — λΛ and cΛ visible; finite modifications, Euler-factor deletions, tower
-   flips invisible; cofinite flips visible.
-3. `TheDecidingInputTheorem` — parity, precision, aperture; producers precision-blind (PNT, GM).
-4. `PrecisionExponentIsTheZeroWidth` — θ(Λ) = Θ; one-signed exponent = abscissa.
+1. `PrecisionClassesAndTheCount` — precision classes, count, stabilizer law, power threshold at ½.
+2. `TheCountIsTheRiemannHypothesis` — each half is RH; θ(Λ) = Θ.
+3. `TheBatteryOfTheCount` — visible/invisible moves, classification.
+4. `TheDecidingInputTheorem` — parity, precision, aperture; PNT, GM, error laws precision-blind.
 5. `TheIntegralityLatticeOfTheHorizon` — {∫₀¹P} = d_{n+1}⁻¹ℤ; min⁺ = 1/d_{n+1}.
 6. `TheIntegralityExponentIsTheZeroWidth` — Siegel/Liouville halves at θ ⇔ Θ; RH ⇔ √-precise halves.
-7. `IntegerDirichletPolynomialsAtArithmeticPoints` — D(k) lattice d_N^{-k}ℤ, D(−k) ∈ ℤ,
-   Vandermonde, real zeros < N, Siegel's lemma.
-8. `TheLiouvilleTwinHasReciprocalTorsion`.
-9. `WherePrecisionIsLost` — Chebyshev transform, Stirling precision, inversion amplification.
-10. `CurvesCalibrateThePrecisionExponent`.
+7. `IntegerDirichletPolynomialsAtArithmeticPoints` — D(k) lattice, D(−k) ∈ ℤ, real zeros < N, Siegel.
+8. `TheLiouvilleTwinIsARatioOfHorizonTorsions` — A_λ(n) = 2ψ(√n) − ψ(n); reciprocal torsion.
+9. `WherePrecisionIsLost` — Chebyshev–Möbius formula, Stirling precision, inversion amplification.
+10. `CurvesCalibrateThePrecisionExponent` — exponent formula; golden; upper half blind to real zeros.
 11. `TheGaugeStabilizerOfTheCount` — lower half monotone; a ≤ Λ: Count ⇔ RH ∧ Λ − a ∈ 𝒬; sign and
     torus gauges: Count ⇔ RH ∧ gauge distance O(√x log² x).
 12. `ThePrecisionLedgerOfTheCount` — TFAE in eight currencies; Θ three readings; strip three readings.
 13. `SupNormCeilingsForceVanishingAtSmallRationals` — b^n P(a/b) ∈ ℤ; sup-norm ceilings at precision
     θ < 1 force P(0) = P(½) = P(1) = 0.
+14. `OneSignedPerturbations` — majorant/minorant principle; precision exponent = abscissa.
+15. `TwoPrimeTowersSeeEveryOrdinateDifference` — Liouville/Baker/Dirichlet separation; two-prime
+    non-aliasing at polynomial precision (uses `RHTower.Matveev.effectiveBakerBound_holds`).
 
 ## Leads checked (exist; do not redo)
 - Exponent law Θ: `RHTower.chebyshevPsi_sub_exponent_law`, one-sided lower power bound ⇒ zeros:
@@ -51,3 +53,4 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 
 ## Log
 - 2026-10-29 — created; README first draft written.
+- 2026-10-29 — modules 1–15 formalized; README rewritten on the established results.

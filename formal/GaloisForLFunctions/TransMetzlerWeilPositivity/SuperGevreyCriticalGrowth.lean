@@ -122,10 +122,9 @@ theorem iteratedDeriv_steklovAvg {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) {a 
       exact hf.iterate_deriv q
     rw [iteratedDeriv_succ, ih, deriv_steklovAvg hfq ha, ← iteratedDeriv_succ]
 
-theorem abs_steklovAvg_le {f : ℝ → ℝ} (hf : Continuous f) {B a : ℝ} (ha : 0 < a)
+theorem abs_steklovAvg_le {f : ℝ → ℝ} {B a : ℝ} (ha : 0 < a)
     (hB : ∀ x, |f x| ≤ B) (x : ℝ) :
     |steklovAvg a f x| ≤ B := by
-  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0)
   unfold steklovAvg
   rw [abs_mul, abs_of_pos (inv_pos.mpr (by positivity : 0 < 2 * a)), Real.norm_eq_abs.symm]
   have hint : ‖∫ t in (-a)..a, f (x + t)‖ ≤ B * |a - (-a)| :=
@@ -193,7 +192,7 @@ theorem supportedIn_steklovAvg {f : ℝ → ℝ} {R a : ℝ} (ha : 0 < a) (hsupp
   rw [intervalIntegral.integral_congr hzero, intervalIntegral.integral_zero, mul_zero]
 
 private theorem integral_eq_intervalIntegral_of_supportedIn {g : ℝ → ℝ} {R L : ℝ}
-    (hg : Continuous g) (hsupp : SupportedIn R g) (hR : 0 ≤ R) (hRL : R < L) :
+    (hsupp : SupportedIn R g) (hR : 0 ≤ R) (hRL : R < L) :
     (∫ x, g x) = ∫ x in (-L)..L, g x := by
   have hL0 : 0 < L := lt_of_le_of_lt hR hRL
   rw [intervalIntegral.integral_of_le (by linarith : -L ≤ L),
@@ -212,8 +211,8 @@ theorem integral_steklovAvg {f : ℝ → ℝ} {R a : ℝ} (hf : Continuous f) (h
   have hcont_avg : Continuous (steklovAvg a f) :=
     continuous_iff_continuousAt.mpr fun x => (hasDerivAt_steklovAvg hf ha x).continuousAt
   have hsupp_avg : SupportedIn (R + a) (steklovAvg a f) := supportedIn_steklovAvg ha hsupp
-  rw [integral_eq_intervalIntegral_of_supportedIn hcont_avg hsupp_avg (by linarith) (by dsimp [L]; linarith),
-    integral_eq_intervalIntegral_of_supportedIn hf hsupp hR (show R < R + 1 by linarith)]
+  rw [integral_eq_intervalIntegral_of_supportedIn hsupp_avg (by linarith) (by dsimp [L]; linarith),
+    integral_eq_intervalIntegral_of_supportedIn hsupp hR (show R < R + 1 by linarith)]
   set F : ℝ → ℝ := fun y => ∫ u in (0 : ℝ)..y, f u
   have hFc : Continuous F :=
     continuous_iff_continuousAt.mpr fun y =>
@@ -537,9 +536,7 @@ theorem abs_iteratedDeriv_steklovSeq_le :
   | m + 1, q, hq, x => by
       rcases Nat.of_le_succ hq with hle | rfl
       · rw [steklovSeq, iteratedDeriv_steklovAvg (contDiff_steklovSeq m) (steklovRadius_pos m) q]
-        have hcont : Continuous (iteratedDeriv q (steklovSeq m)) :=
-          (contDiff_steklovSeq m).continuous_iteratedDeriv q (natCast_le_infty q)
-        exact abs_steklovAvg_le hcont (steklovRadius_pos m)
+        exact abs_steklovAvg_le (steklovRadius_pos m)
           (abs_iteratedDeriv_steklovSeq_le m q hle) x
       · rw [steklovSeq, iteratedDeriv_succ,
           iteratedDeriv_steklovAvg (contDiff_steklovSeq m) (steklovRadius_pos m) m]
@@ -654,11 +651,11 @@ theorem steklovDCProfile_vanishesOff : VanishesOff steklovDCProfile := by
 
 theorem integral_steklovDCProfile : ∫ x, steklovDCProfile x = 1 := by
   have hvan : SupportedIn 1 steklovDCProfile := steklovDCProfile_vanishesOff
-  rw [integral_eq_intervalIntegral_of_supportedIn contDiff_steklovDCProfile.continuous
+  rw [integral_eq_intervalIntegral_of_supportedIn
     hvan zero_le_one (by norm_num : (1 : ℝ) < 2)]
   have hseq_int : ∀ m : ℕ, (∫ x in (-2 : ℝ)..2, steklovSeq m x) = 1 := by
     intro m
-    rw [← integral_eq_intervalIntegral_of_supportedIn (contDiff_steklovSeq m).continuous
+    rw [← integral_eq_intervalIntegral_of_supportedIn
       (supportedIn_one_steklovSeq m) zero_le_one (by norm_num : (1 : ℝ) < 2),
       integral_steklovSeq m]
   have htend : Tendsto (fun m : ℕ => ∫ x in (-2 : ℝ)..2, steklovSeq m x) atTop
@@ -1111,11 +1108,12 @@ private theorem tendsto_dcLogSynthesis {κ : ℕ → ℝ} (hκ : OverlapGrowthSu
   have hK'ℓ1 : Tendsto (fun n : ℕ => ((n * B : ℕ) : ℝ) / κ (n * B) /
       Real.log (Real.log (κ (n * B))) ^ (1 : ℝ)) atTop atTop := by
     refine tendsto_atTop_mono' atTop ?_ hKW
-    filter_upwards [hev] with n ⟨hk1, hn, hℓ9, hll1, _⟩
+    filter_upwards [hev] with n ⟨hk1, _, hℓ9, hll1, _⟩
     rw [Real.rpow_one]
     have hℓ_pos : 0 < Real.log (Real.log (κ (n * B))) := by linarith
     have hsq1 : 1 ≤ Real.log (Real.log (Real.log (κ (n * B)))) ^ 2 := by nlinarith only [hll1]
-    have hnum0 : 0 ≤ ((n * B : ℕ) : ℝ) / κ (n * B) := by positivity
+    have hnum0 : 0 ≤ ((n * B : ℕ) : ℝ) / κ (n * B) :=
+      div_nonneg (Nat.cast_nonneg _) (by linarith only [hk1])
     exact div_le_div_of_nonneg_left hnum0 hℓ_pos (le_mul_of_one_le_right hℓ_pos.le hsq1)
   have hev1 : ∀ᶠ n : ℕ in atTop, 1 ≤ κ (n * B) ∧ 1 ≤ n ∧
       1 ≤ Real.log (Real.log (κ (n * B))) ∧
@@ -1279,7 +1277,8 @@ theorem overlapGrowthSuperGevrey_of_two_lt {β : ℝ} (hβ : 2 < β) :
     have ho := (isLittleO_log_rpow_rpow_atTop (2 : ℝ) one_pos).tendsto_div_nhds_zero
     have hpos : ∀ᶠ y : ℝ in atTop, 0 < Real.log y ^ (2 : ℝ) / y ^ (1 : ℝ) := by
       filter_upwards [eventually_gt_atTop 1] with y hy
-      exact div_pos (Real.rpow_pos_of_pos (Real.log_pos hy) 2) (by positivity)
+      exact div_pos (Real.rpow_pos_of_pos (Real.log_pos hy) 2)
+        (Real.rpow_pos_of_pos (by linarith only [hy]) 1)
     have hinv := (tendsto_nhdsWithin_iff.mpr ⟨ho, hpos⟩).inv_tendsto_nhdsGT_zero
     refine (hinv.comp tendsto_natCast_atTop_atTop).congr' ?_
     filter_upwards [eventually_ge_atTop 1] with N _
@@ -1327,7 +1326,8 @@ theorem overlapGrowthSuperGevrey_of_two_lt {β : ℝ} (hβ : 2 < β) :
       Real.log (Real.log N) * Real.log (Real.log (Real.log N)) ^ 2 :=
     mul_le_mul hll_le (pow_le_pow_left₀ (by linarith) hlll_le 2) (sq_nonneg _) (by linarith)
   have hden_pos : 0 < Real.log (Real.log ((N : ℝ) / cN)) *
-      Real.log (Real.log (Real.log ((N : ℝ) / cN))) ^ 2 := by positivity
+      Real.log (Real.log (Real.log ((N : ℝ) / cN))) ^ 2 :=
+    mul_pos (by linarith only [hκll2]) (sq_pos_of_pos (by linarith only [hκlll1]))
   calc Real.log (Real.log (Real.log N)) ^ (β - 2)
       = cN / (Real.log (Real.log N) * Real.log (Real.log (Real.log N)) ^ 2) := by
           dsimp only [cN, superGevreyRatio]

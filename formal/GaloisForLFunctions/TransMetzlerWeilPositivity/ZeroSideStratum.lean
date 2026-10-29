@@ -176,8 +176,7 @@ theorem sq_nat_le_sum_rpow_mul_sum_rpow_neg (σ : ℝ) (N : ℕ) :
     sum_congr rfl hsq1, sum_congr rfl hsq2] at hcs
   exact hcs
 
-private theorem paperFT_cx_neg_I_mul_real {g : ℝ → ℝ} (hg : Continuous g)
-    (hgc : HasCompactSupport g) (α : ℝ) :
+private theorem paperFT_cx_neg_I_mul_real (g : ℝ → ℝ) (α : ℝ) :
     paperFT (cx g) (-Complex.I * (α : ℂ)) = ((∫ u, g u * Real.exp (α * u) : ℝ) : ℂ) := by
   unfold paperFT
   have heq : (fun u : ℝ => cx g u * Complex.exp (Complex.I * (-Complex.I * (α : ℂ)) * (u : ℂ))) =
@@ -212,7 +211,6 @@ theorem re_Wsummand_atomicTest_const_one_ge (Z : ZeroConfig)
   obtain ⟨hg, hgsupp, hgc⟩ := atomDilate_facts hφ hsupp hw
   have hg_nonneg : ∀ u, 0 ≤ atomDilate φ w u := fun u => hnonneg (u / w)
   have hγ : gammaOf ρ = -Complex.I * (σ : ℂ) := by
-    have hI : Complex.I * Complex.I = -1 := Complex.I_mul_I
     rw [gammaOf, div_eq_iff Complex.I_ne_zero]
     apply Complex.ext
     · simp only [σ, Complex.sub_re, Complex.one_re, Complex.div_ofNat, Complex.mul_re,
@@ -226,8 +224,8 @@ theorem re_Wsummand_atomicTest_const_one_ge (Z : ZeroConfig)
   have hγc : conj (gammaOf ρ) = -Complex.I * ((-σ : ℝ) : ℂ) := by
     rw [hγ, map_mul, map_neg, Complex.conj_I, Complex.conj_ofReal]
     push_cast; ring
-  have hFT1 := paperFT_cx_neg_I_mul_real hg.continuous hgc σ
-  have hFT2 := paperFT_cx_neg_I_mul_real hg.continuous hgc (-σ)
+  have hFT1 := paperFT_cx_neg_I_mul_real (atomDilate φ w) σ
+  have hFT2 := paperFT_cx_neg_I_mul_real (atomDilate φ w) (-σ)
   have hD1 : dirichletPoly N (fun _ => 1) (gammaOf ρ) =
       ((∑ n ∈ Icc 1 N, (n : ℝ) ^ σ : ℝ) : ℂ) := by
     rw [SpacingScaleHarmonicAnalysis.dirichletPoly_gammaOf]
@@ -372,7 +370,7 @@ theorem rightZeros_isolatedPairConfig {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ)
 private theorem integral_mul_exp_pos_of_sq_pos {g : ℝ → ℝ} {w : ℝ}
     (hg : Continuous g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
     (hgc : HasCompactSupport g) (hnonneg : ∀ u, 0 ≤ g u) (hM : 0 < ∫ u, g u ^ 2)
-    (hw : 0 < w) (α : ℝ) :
+    (α : ℝ) :
     0 < ∫ u, g u * Real.exp (α * u) := by
   obtain ⟨B, hB⟩ := hg.bounded_above_of_compact_support hgc
   set B₁ := max B 1
@@ -456,8 +454,8 @@ theorem isolatedPairConfig_atomic_negative_every_ratio {δ : ℝ} (hδ : 0 < δ)
     rw [hγ_pos, map_mul, map_neg, Complex.conj_I, Complex.conj_ofReal]; push_cast; ring
   have hconj_neg : conj (gammaOf (offLinePoint (-δ) 0)) = -Complex.I * (δ : ℂ) := by
     rw [hγ_neg, map_mul, map_neg, Complex.conj_I, Complex.conj_ofReal]; push_cast; ring
-  have hFT_pos := paperFT_cx_neg_I_mul_real hg.continuous hgc δ
-  have hFT_neg := paperFT_cx_neg_I_mul_real hg.continuous hgc (-δ)
+  have hFT_pos := paperFT_cx_neg_I_mul_real g δ
+  have hFT_neg := paperFT_cx_neg_I_mul_real g (-δ)
   have hD_pos : dirichletPoly N twoAtomWitness (-Complex.I * (δ : ℂ)) =
       ((1 - Real.exp (δ * Real.log 2) : ℝ) : ℂ) := by
     rw [dirichletPoly_twoAtomWitness hN]
@@ -495,14 +493,14 @@ theorem isolatedPairConfig_atomic_negative_every_ratio {δ : ℝ} (hδ : 0 < δ)
   rw [hvq] at hq
   have hd₁ : Disjoint (Set.range (verticalLatticePoint (Real.log 2) 0)) {offLinePoint δ 0} := by
     rw [Set.disjoint_singleton_right]
-    rintro ⟨k, hk⟩
+    rintro ⟨_, hk⟩
     have := congrArg Complex.re hk
     simp only [verticalLatticePoint, offLinePoint] at this
     linarith
   have hd₂ : Disjoint (Set.range (verticalLatticePoint (Real.log 2) 0) ∪ {offLinePoint δ 0})
       {offLinePoint (-δ) 0} := by
     rw [Set.disjoint_singleton_right]
-    rintro (⟨k, hk⟩ | hk)
+    rintro (⟨_, hk⟩ | hk)
     · have := congrArg Complex.re hk
       simp only [verticalLatticePoint, offLinePoint] at this
       linarith
@@ -521,9 +519,9 @@ theorem isolatedPairConfig_atomic_negative_every_ratio {δ : ℝ} (hδ : 0 < δ)
     rw [integral_atomDilate_sq hw]; exact mul_pos hw hM
   have hg_nonneg : ∀ u, 0 ≤ g u := fun u => hnonneg (u / w)
   have hA_pos : 0 < ∫ u, g u * Real.exp (δ * u) :=
-    integral_mul_exp_pos_of_sq_pos hg.continuous hgsupp hgc hg_nonneg hg_M hw δ
+    integral_mul_exp_pos_of_sq_pos hg.continuous hgsupp hgc hg_nonneg hg_M δ
   have hB_pos : 0 < ∫ u, g u * Real.exp (-δ * u) :=
-    integral_mul_exp_pos_of_sq_pos hg.continuous hgsupp hgc hg_nonneg hg_M hw (-δ)
+    integral_mul_exp_pos_of_sq_pos hg.continuous hgsupp hgc hg_nonneg hg_M (-δ)
   have hD_lt : (1 - Real.exp (δ * Real.log 2)) * (1 - Real.exp (-δ * Real.log 2)) < 0 := by
     have h1 : 1 < Real.exp (δ * Real.log 2) :=
       Real.one_lt_exp_iff.mpr (mul_pos hδ hL)

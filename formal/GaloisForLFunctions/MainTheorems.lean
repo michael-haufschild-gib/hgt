@@ -55,3 +55,4 @@ import GaloisForLFunctions.ArithmeticIntersectionTheory
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 import GaloisForLFunctions.IncommensurableGaborPinching
 import GaloisForLFunctions.ShallowCauchyPrimeEnergy
+import GaloisForLFunctions.TransMetzlerWeilPositivity

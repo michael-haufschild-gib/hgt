@@ -36,7 +36,7 @@ integers.
 | SquareRootThreshold | The zero width $\Theta$; ASRP identifies it with the precision exponent and with the integrality exponent |
 | ArithmeticCastelnuovoSeveri, ArithmeticLorentzianGeometry | Curve data, golden datum, one-sided power-sum bounds (`norm_le_of_re_sum_pow_le`); ASRP's calibration of precision exponents |
 | ConjugateDiagonalGeometry, RenormalizedArithmeticPotentialTheory, ArithmeticIntersectionTheory | The Hecke defect, the covariant regulator, torsion orbits: targets whose precision class is open (§9) |
-| `RHTower` | Von Koch, the exponent law $\Theta=$ order of $\psi(x)-x$ (`chebyshevPsi_sub_exponent_law`), Littlewood, PNT, Guth–Maynard short intervals |
+| `RHTower` | Von Koch, the exponent law $\Theta=$ order of $\psi(x)-x$ (`chebyshevPsi_sub_exponent_law`), Littlewood, PNT, Guth–Maynard short intervals; the effective Baker bound for prime logarithms (`Matveev.effectiveBakerBound_holds`) and the Liouville separation at the Liouville point (`LiouvillePointReachability`) |
 | `HTGeometry` | Real zeros of exponential polynomials (`card_lt_of_expPoly_eq_zero`) |
 
 ---
@@ -50,8 +50,8 @@ $x^q$, invisible to differentiation and equal to $x$ on $\mathbb F_q$.
 
 **Over $\mathbb Z$ the integers are log-orders.** $\psi(N)=\log d_N$ exactly, and integrality gives
 $d_{n+1}\int_0^1P\in\mathbb Z$ for $P\in\mathbb Z[x]$ of degree $\le n$. The classical extraction
-(Chebyshev, Nair) reaches linear precision only. The question the review of 29 October calls central
-is whether integrality over $\mathbb Z$ reaches any precision beyond linear.
+(Chebyshev, Nair) reaches linear precision only. The central question is whether integrality over
+$\mathbb Z$ reaches any precision beyond linear.
 
 **Why precision is the right invariant.** Three facts organise everything, and each is a theorem
 here.
@@ -152,11 +152,17 @@ here.
 14. **Sup-norm ceilings force vanishing.** $b^nP(a/b)\in\mathbb Z$, so a ceiling
     $\sup_{[0,1]}|P|<b^{-n}$ forces $P(a/b)=0$; every sup-norm certificate at a precision $\theta<1$
     vanishes at $0,\tfrac12,1$ for large $n$. Precise certificates are Stepanov-like.
-15. **Where precision is lost.** $T_\Lambda(n)=\log n!$ exactly; $0<\log n!-(n\log n-n)\le1+\tfrac12\log n$;
+15. **Separation of prime logarithms; two towers see every ordinate difference.** Integrality gives
+    $|a\log p-b\log q|\ge1/\max(p^a,q^b)$ (exponential in the height), Baker gives
+    $c(2+|k_1|+|k_2|)^{-C}$ (polynomial), and Dirichlet shows polynomial decay is attained. Eliminating
+    $2\pi$ from the two phase defects $e_p=\Delta\log p-2\pi k_1$, $e_q=\Delta\log q-2\pi k_2$ gives
+    $|e_p|\log q+|e_q|\log p\ge c\min(|\Delta|,(2+|\Delta|)^{-C})$ for every real $\Delta$: two prime
+    towers certify every pair of ordinates of height $\le T$ with margin polynomial in $T$.
+16. **Where precision is lost.** $T_\Lambda(n)=\log n!$ exactly; $0<\log n!-(n\log n-n)\le1+\tfrac12\log n$;
     every nonzero nonnegative perturbation moves $T$ linearly; $A(n)=\sum_{k\le n}\mu(k)T_a(\lfloor n/k\rfloor)$,
     so $\psi(n)=\sum_k\mu(k)\log\lfloor n/k\rfloor!$; the inversion operator sends some $E$ with
     $|E(y)|\le y^\theta$ to $\ge\pi(x)$, and no bound $Cx^{\theta'}$, $\theta'<1$, survives it.
-16. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
+17. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
     $\|\beta_i\|\le q^{\theta-1/2}$, already from its lower half; the precision exponent is
     $\tfrac12+\max_i\log\|\beta_i\|/\log q\ge\tfrac12$, with equality iff unitary. Odd hyperelliptic data
     have exponent $\tfrac12$ (Stepanov). The golden datum has $N_k/5^k\to1$ and exponent $\tfrac12+\log\varphi/\log5$.
@@ -198,6 +204,8 @@ here.
 14. **Sup-norm vanishing law** (`aeval_eq_zero_of_sup_lt`, `eventually_vanish_of_supCeiling`).
 15. **The ledger** (`riemannHypothesis_precision_tfae`, `zero_width_three_readings`,
     `zeroReSup_lt_one_tfae`).
+16. **Separation and non-aliasing** (`liouville_separation`, `exists_baker_separation`,
+    `exists_small_two_prime_form`, `two_prime_alias_bound_in_Δ`).
 
 ---
 
@@ -215,6 +223,7 @@ here.
 | Perturbations with $\eta\ge\tfrac12$ are a defect of the method | They are invisible to the count itself |
 | The golden datum violates integrality | It has integral counts and $N_k/5^k\to1$; its precision exponent is $\tfrac12+\log\varphi/\log5$ |
 | Integer Dirichlet polynomials certify zeros by integrality | Integrality speaks at $s\in\mathbb Z$ (pole side sharp, trivial lattice integral), not at nontrivial zeros |
+| Integrality separates prime logarithms well enough | It gives $e^{-O(H)}$; polynomial separation needs Baker, which is proved and gives two-prime certification at polynomial margin |
 | The Liouville twin is an integrality-preserving move | Its horizon value is a reciprocal group order |
 | A sieve majorant is half of a count | An upper count for any majorant of $\Lambda$ is RH; majorants lose at relative error |
 | The count is gauge invariant | Its stabilizer is the set of gauges at square-root distance |
@@ -241,6 +250,9 @@ here.
 8. **Where can integer auxiliary Dirichlet polynomials speak?** At $s\in\mathbb Z$, sharply on the
    pole side; fewer than $N$ real zeros; Siegel existence up to $N-1$ trivial conditions. *Answered;
    off-line vanishing is open problem 2.*
+9. **At what precision do prime towers separate ordinates?** One tower aliases; two towers see every
+   ordinate difference $\Delta$ with margin $c\min(|\Delta|,(2+|\Delta|)^{-C})$, by Baker; integrality
+   alone gives $e^{-O(|\Delta|)}$; Dirichlet shows the decay is genuinely polynomial. *Answered.*
 
 ---
 
@@ -250,7 +262,8 @@ Built: precision classes and the count; each half of the count for $\Lambda$; th
 the battery classification, the majorant/minorant principle and the gauge stabilizer; the abscissa
 dictionary; the deciding-input theorem; precision-blindness of producers; the integrality lattice and
 exponent; the transcendence toolkit on integer Dirichlet polynomials; the sup-norm vanishing law; the
-twin's reciprocal torsion; the Chebyshev ledger; curve precision exponents; the TFAE ledger.
+separation of prime logarithms and the two-prime non-aliasing law; the twin's reciprocal torsion; the
+Chebyshev ledger; curve precision exponents; the TFAE ledger.
 
 To build:
 
@@ -285,15 +298,15 @@ To build:
 6. **Gauge geometry of the stabilizer.** The stabilizer in the gauge torus is the square-root ball
    of the gauge distance (for real parts of rotated sources); relate it to Haar-generic square-root
    cancellation (ACG) and to the complex gauge-rotated source itself.
+7. **Precision classes of index, defect and regulator.** The finite-index stratum, the Hecke defect at
+   logarithmic translation, the covariant regulator on the characteristic circle.
 8. **Zero estimates with separation.** Zero counts for integer Dirichlet polynomials on vertical
-   segments and on two-prime supports $\{p^aq^b\}$, with Baker-type separation of $a\log p+b\log q$;
-   an explicit prime certifying all right zeros of height $\le T$ (HKT's aliasing law gives at most
-   $\binom\kappa2$ blind primes).
+   segments and on two-prime supports $\{p^aq^b\}$, using the Baker separation of
+   $a\log p+b\log q$ already proved; the transfer of the two-prime non-aliasing margin into an index
+   statement for the two-prime Weil kernel at height $T$ (HKT, AKL).
 9. **Structure.** The converse Krein–Langer theorem on $\Gamma$ beyond orbit kernels (HKT proves it
    for orbit kernels; the general Naimark fixed-point route is open) and an index-carrying completion
    with explicit schedule.
-7. **Precision classes of index, defect and regulator.** The finite-index stratum, the Hecke defect at
-   logarithmic translation, the covariant regulator on the characteristic circle.
 
 ---
 
@@ -314,6 +327,6 @@ class of ceilings or inversions cannot pass a stated precision) with its positiv
 - is unconditional, and records the positive survivor of every no-go.
 
 **Principles.** Precision is a class, not a constant. Identities are exact; precision is lost in
-extraction. A statement that survives a visible move cannot decide. Each half of the count is the
-whole count. Integrality is exact at the floor; the ceiling is the problem. Calibrate over
+extraction. A statement that survives a visible move cannot decide. Over $\mathbb Z$ each half of the
+count is the whole count. Integrality is exact at the floor; the ceiling is the problem. Calibrate over
 $\mathbb F_q$.

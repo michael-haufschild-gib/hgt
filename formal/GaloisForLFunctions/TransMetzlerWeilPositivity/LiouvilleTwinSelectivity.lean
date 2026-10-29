@@ -382,7 +382,12 @@ private theorem sum_inv_abs_sub_ge (M : ℕ) (b : ℕ → ℝ) :
         (fun θ : ℝ => (1 / (d : ℝ)) * (Real.cos ((d : ℝ) * θ) * Real.cos ((k : ℝ) * θ)))
         volume 0 (2 * Real.pi) := fun d _ =>
       (by fun_prop : Continuous _).intervalIntegrable _ _
-    rw [intervalIntegral.integral_add hi1 (intervalIntegrable_finsetSum _ hi2),
+    have hi2_sum : IntervalIntegrable
+        (fun θ : ℝ => ∑ d ∈ Icc 1 M,
+          (1 / (d : ℝ)) * (Real.cos ((d : ℝ) * θ) * Real.cos ((k : ℝ) * θ)))
+        volume 0 (2 * Real.pi) :=
+      (continuous_finsetSum _ fun d _ => by fun_prop).intervalIntegrable _ _
+    rw [intervalIntegral.integral_add hi1 hi2_sum,
       intervalIntegral.integral_const_mul, integral_cos_nat_mul_two_pi,
       intervalIntegral.integral_finsetSum hi2]
     by_cases hnj : n = j
@@ -445,8 +450,9 @@ private theorem sum_inv_abs_sub_ge (M : ℕ) (b : ℕ → ℝ) :
           (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ)))
         volume 0 (2 * Real.pi) := fun n _ j _ =>
       (continuous_const.mul (hcontW.mul (by fun_prop))).intervalIntegrable _ _
-    rw [intervalIntegral.integral_finsetSum fun n hn =>
-      intervalIntegrable_finsetSum _ fun j hj => hint_row n hn j hj]
+    rw [intervalIntegral.integral_finsetSum fun n _ =>
+      (continuous_finsetSum _ fun j _ =>
+        continuous_const.mul (hcontW.mul (by fun_prop))).intervalIntegrable _ _]
     have hrow : ∀ n ∈ Icc 1 M,
         (∫ θ in (0 : ℝ)..(2 * Real.pi), ∑ j ∈ Icc 1 M, (b n * b j) *
           (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ))) =
@@ -490,8 +496,8 @@ private theorem sum_inv_add_ge (M : ℕ) (b : ℕ → ℝ) :
     have hi : ∀ n ∈ Icc 1 M, ∀ j ∈ Icc 1 M,
         IntervalIntegrable (fun t : ℝ => (b n * b j) * t ^ ((n - 1) + (j - 1) + 1)) volume 0 1 :=
       fun _ _ _ _ => (by fun_prop : Continuous _).intervalIntegrable _ _
-    rw [intervalIntegral.integral_finsetSum fun n hn =>
-      intervalIntegrable_finsetSum _ fun j hj => hi n hn j hj]
+    rw [intervalIntegral.integral_finsetSum fun n _ =>
+      (continuous_finsetSum _ fun j _ => by fun_prop).intervalIntegrable _ _]
     refine sum_congr rfl fun n hn => ?_
     rw [intervalIntegral.integral_finsetSum fun j hj => hi n hn j hj]
     refine sum_congr rfl fun j hj => ?_
@@ -839,6 +845,7 @@ theorem exists_bounded_hyperplane_liouville_witness {ε : ℝ} (hε : 0 < ε) :
   have hHL : L ≤ H := by
     have h := log_add_one_le_harmonic M
     rw [RHTower.harmonic_eq_sum_Icc] at h
+    push_cast at h
     have : L ≤ Real.log ((M : ℝ) + 1) := Real.log_le_log (by exact_mod_cast hM1_ge) (by linarith)
     linarith
   have hH3 : 3 ≤ H := hL3.trans hHL
@@ -1049,8 +1056,9 @@ private theorem liouville_weilQuadTw_subhorizon_le {φ : ℝ → ℝ}
   have hf := contDiff_atomicTest hgc2 M x
   have hfc := hasCompactSupport_atomicTest hgsupp M x
   rw [weilQuadTw_eq_twinMarkov_add_pole liouvilleTwin hf hfc,
-    integral_atomicTest_mul_exp_neg_half hgc2.continuous hgsupp M x, horth,
-    mul_zero, mul_zero, add_zero, archForm_eq_levyEnergy hf hfc,
+    integral_atomicTest_mul_exp_neg_half hgc2.continuous hgsupp M x]
+  simp only [horth, zero_mul, mul_zero, add_zero]
+  rw [archForm_eq_levyEnergy hf hfc,
     integral_atomicTest_sq hgc2 hgc hgsupp hw_sp x,
     (twistedPrimeSum_atomicTest liouvilleTwin_mul liouvilleTwin_sign hgc2 hgc hgsupp hw_sp x).2,
     twistedAtomicWeilForm_liouvilleTwin M x]
@@ -1204,7 +1212,9 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
       weilQuadTw (fun n => liouvilleTwin n * ArithmeticFunction.vonMangoldt n)
         (atomicTest N x (atomDilate φ (w N))) < 0 := by
   have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
-  obtain ⟨_, _, K_lip, _, _, _, hLip⟩ := exists_test_bounds hφ hφc
+  obtain ⟨K_lip, hC_lip⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hφc hφ (by norm_num)
+  have hLip : ∀ u v, |φ u - φ v| ≤ (K_lip : ℝ) * |u - v| := fun u v => by
+    simpa [Real.dist_eq] using hC_lip.dist_le_mul u v
   have hRE_pos : 0 < robinEulerThreshold φ := robinEulerThreshold_pos φ
   have hc_pos : 0 < c := hRE_pos.trans hc
   -- Sub-horizon target overlap ratio `c' ∈ (robinEulerThreshold φ, 1)` with `c' ≤ c`
@@ -1235,8 +1245,8 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
       linarith only [this]
     exact Nat.le_floor h2
   have hMN_ratio : Tendsto (fun N : ℕ => (M N : ℝ) / (N : ℝ)) atTop (𝓝 θ) := by
-    have h1 : Tendsto (fun N : ℕ => (1 : ℝ) / (N : ℝ)) atTop (𝓝 0) := by
-      simpa only [one_div] using tendsto_natCast_atTop_atTop.inv_tendsto_atTop
+    have h1 : Tendsto (fun N : ℕ => (1 : ℝ) / (N : ℝ)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
     have hlow : Tendsto (fun N : ℕ => θ - 1 / (N : ℝ)) atTop (𝓝 θ) := by
       simpa using tendsto_const_nhds.sub h1
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlow tendsto_const_nhds ?_ ?_
@@ -1256,17 +1266,15 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
     refine hprod.congr' ?_
     filter_upwards [eventually_ge_atTop 1] with N hN
     have hN0 : (N : ℝ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
-    dsimp only
     field_simp [hN0]
   have hw_zero : Tendsto w atTop (𝓝 0) := by
-    have hinv : Tendsto (fun N : ℕ => (1 : ℝ) / (N : ℝ)) atTop (𝓝 0) := by
-      simpa only [one_div] using tendsto_natCast_atTop_atTop.inv_tendsto_atTop
+    have hinv : Tendsto (fun N : ℕ => (1 : ℝ) / (N : ℝ)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
     have hp := hw_lim.mul hinv
     rw [mul_zero] at hp
     refine hp.congr' ?_
     filter_upwards [eventually_ge_atTop 1] with N hN
     have hN0 : (N : ℝ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
-    dsimp only
     field_simp [hN0]
   -- Continuity of the leading coefficient as `w N * M N → c'` and `w N → 0`
   have hcoef_lim : Tendsto (fun N : ℕ =>
@@ -1302,13 +1310,12 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
     Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop.comp hM_tendsto)
   filter_upwards [hw_pos,
     hw_zero.eventually (le_mem_nhds zero_lt_one),
-    eventually_ge_atTop 1,
     hM_tendsto.eventually_ge_atTop M₀,
     (tendsto_natCast_atTop_atTop.comp hM_tendsto).eventually_gt_atTop (c₀ / (1 - c₀)),
     hwM_lim.eventually (le_mem_nhds hc₀_gt),
-    hcoef_lim.eventually (lt_mem_nhds (show -(3 * μ / 4) < -(μ / 2) by linarith only [hμ_pos])),
+    hcoef_lim.eventually (gt_mem_nhds (show -(3 * μ / 4) < -(μ / 2) by linarith only [hμ_pos])),
     hlogM_atTop.eventually_gt_atTop (2 + 2 * (C_err + 1) / μ)]
-    with N hw0 hw1 hN1 hMM₀ hM_sp hwM_c₀ hcoef_neg hlogM_big
+    with N hw0 hw1 hMM₀ hM_sp hwM_c₀ hcoef_neg hlogM_big
   simp only [Function.comp] at hM_sp hlogM_big
   have hM1 : 1 ≤ M N := hM₀1.trans hMM₀
   have hM0 : (0 : ℝ) < M N := by exact_mod_cast hM1
@@ -1366,9 +1373,8 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
 
 private theorem tendsto_atomSpacing_mul_natCast :
     Tendsto (fun N : ℕ => atomSpacing N * (N : ℝ)) atTop (𝓝 1) := by
-  have hinv : Tendsto (fun N : ℕ => (1 : ℝ) / ((N : ℝ) + 1)) atTop (𝓝 0) := by
-    simpa only [one_div] using
-      (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds).inv_tendsto_atTop
+  have hinv : Tendsto (fun N : ℕ => (1 : ℝ) / ((N : ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
   have hlow : Tendsto (fun N : ℕ => 1 - 1 / ((N : ℝ) + 1)) atTop (𝓝 1) := by
     simpa using tendsto_const_nhds.sub hinv
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlow tendsto_const_nhds ?_ ?_
@@ -1441,9 +1447,12 @@ theorem exists_plateau_liouville_weilQuadTw_neg_of_gt_exp_div_two_pi {c : ℝ}
     unfold robinEulerThreshold
     exact (Real.continuous_exp.continuousAt.tendsto.comp
       tendsto_normalized_bumpRobin_plateau).div_const (2 * Real.pi)
-  have hev := (hlim.eventually (lt_mem_nhds (lt_min hc he_lt_2pi))).and
-    ((nhdsWithin_le_nhds (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))).and self_mem_nhdsWithin)
-  obtain ⟨η, hRE_min, hη2, hη0⟩ := hev.exists
+  have hev1 : ∀ᶠ η : ℝ in 𝓝[>] 0, robinEulerThreshold (plateau η) < min c 1 :=
+    hlim.eventually (gt_mem_nhds (lt_min hc he_lt_2pi))
+  have hev2 : ∀ᶠ η : ℝ in 𝓝[>] 0, η < 1 / 2 :=
+    mem_nhdsWithin_of_mem_nhds (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))
+  have hev3 : ∀ᶠ η : ℝ in 𝓝[>] 0, 0 < η := self_mem_nhdsWithin
+  obtain ⟨η, hRE_min, hη2, hη0⟩ := (hev1.and (hev2.and hev3)).exists
   have hRE_c : robinEulerThreshold (plateau η) < c := hRE_min.trans_le (min_le_left _ _)
   have hRE_1 : robinEulerThreshold (plateau η) < 1 := hRE_min.trans_le (min_le_right _ _)
   have hc_pos : 0 < c := (by positivity : 0 < Real.exp 1 / (2 * Real.pi)).trans hc
