@@ -56,7 +56,8 @@ private theorem sum_nonRatioRow_le_defect {c : ℝ} (hc0 : 0 ≤ c) (hc2 : c ≤
     calc
       _ ≤ A + B * ((m : ℝ) / N) * (Real.log m + 1) := by
         dsimp only [A, B]
-        convert h using 1 <;> ring
+        convert h using 1
+        ring
       _ ≤ _ := by nlinarith only [mul_le_mul_of_nonneg_left hmN hB]
   have hsum : (∑ m ∈ Icc 1 N, x m ^ 2 * nonRatioRow (c / N) N m) ≤
       A * S + B * (T + S) := by
@@ -103,7 +104,7 @@ private theorem normalized_overlap_length_le {c : ℝ} (hc : 1 ≤ c)
       field_simp [hN0.ne', hN1.ne', hc0.ne']
       ring
     _ ≤ c - 1 + 1 / ((N : ℝ) + 1) := div_le_self hnum hc
-    _ ≤ _ := add_le_add_left hr _
+    _ ≤ _ := add_le_add le_rfl hr
 
 /-- An explicit profile-height constant pays the whole normalized prime correction
 by a small multiple of the actual prime defect and coefficient mass. -/
@@ -203,7 +204,8 @@ theorem exists_overlap_interval_with_small_nonRatio_cost {φ : ℝ → ℝ}
   intro c hc1 hcδ x
   have hcost : C * (c - 1 + 1 / (N : ℝ)) ≤ ε := by
     have h := mul_le_mul_of_nonneg_left (show c - 1 ≤ δ by linarith only [hcδ]) hC.le
-    nlinarith only [h, hCδ, hsmall]
+    rw [mul_add, mul_one_div]
+    linarith only [h, hCδ, hsmall]
   exact (hb c hc1 (by linarith only [hcδ, hδ1]) N hN x).trans
     (mul_le_mul_of_nonneg_right hcost
       (add_nonneg (poleDefect_nonneg N x) (sum_nonneg fun m _ => sq_nonneg _)))

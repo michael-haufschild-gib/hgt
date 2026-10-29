@@ -18,7 +18,7 @@ open MeasureTheory Finset
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 open SpacingScaleHarmonicAnalysis
-open _root_.RHTower (vonMangoldtAtom vonMangoldtAtom_nonneg' vonMangoldtAtom_eq_zero_of_lt_two)
+open _root_.RHTower (vonMangoldtAtom)
 
 /-- One integer inside the horizon suffices for a reciprocal log-gap bound. -/
 theorem inv_succ_horizon_lt_integer_log_gap {N n j : ℕ}
@@ -28,7 +28,7 @@ theorem inv_succ_horizon_lt_integer_log_gap {N n j : ℕ}
   · have h := inv_horizon_lt_integer_log_gap
       (mem_Icc.mpr ⟨(mem_Icc.mp hn).1, (mem_Icc.mp hn).2.trans (Nat.le_succ N)⟩)
       (mem_Icc.mpr ⟨hj, hjN⟩) hne
-    simpa only [Nat.cast_add, Nat.cast_one] using h
+    simpa only [Nat.cast_add, Nat.cast_one, Nat.cast_succ] using h
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
   have hnN : n < N + 1 := Nat.lt_succ_of_le (mem_Icc.mp hn).2
   have hpos : 0 < Real.log (N + 1 : ℕ) - Real.log n :=
@@ -40,7 +40,7 @@ theorem inv_succ_horizon_lt_integer_log_gap {N n j : ℕ}
   have hlog : Real.log (N + 1 : ℕ) ≤ Real.log j :=
     Real.log_le_log (by positivity) (by exact_mod_cast (not_le.mp hjN).le)
   have hgap : 1 / ((N : ℝ) + 1) < Real.log (N + 1 : ℕ) - Real.log n := by
-    simpa only [Nat.cast_add, Nat.cast_one] using h
+    simpa only [Nat.cast_add, Nat.cast_one, Nat.cast_succ] using h
   exact hgap.trans_le
     ((sub_le_sub_right hlog _).trans (le_abs_self _))
 

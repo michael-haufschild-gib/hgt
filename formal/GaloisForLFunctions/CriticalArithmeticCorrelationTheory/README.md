@@ -420,6 +420,40 @@ positivity result above. Beyond ratio one, additional integer interactions and
 the overlapping atom Gram must be handled together; the single-star
 classification no longer applies.
 
+## A small prime-defect cost for genuine overlap
+
+Every fixed `C²` profile `φ` supported in `[0,1]`, with `M=∫φ²>0`, supplies
+a constant `Cφ>0` such that, for all `1≤c≤2`, `N≥2`, and real coefficient
+vectors,
+
+\[
+\frac{|\operatorname{NR}(\phi_{c/N},N,x)|}{(c/N)M}
+\le C_\phi\left(c-1+\frac1N\right)
+ \left(D_N(x)+\sum_{n\le N}x_n^2\right).
+\]
+
+This is a bound on the literal non-ratio prime source, including every prime
+power. If one of two distinct positive integers is at most `N`, their log
+gap exceeds `1/(N+1)`. A profile bounded by `B` therefore contributes at most
+`B² max(0,w-1/(N+1))` at each such lag. Retaining this overlap length through
+the weighted Schur and divisor-row estimates produces the small factor.
+The actual prime defect pays the remaining top-row logarithm. Compact
+smoothness produces the profile-height constant, so it is not an additional
+unproved estimate.
+
+Consequently, for every `ε>0`, one `δ∈(0,1]` and one horizon work for all
+`c∈[1,1+δ]` and all coefficient vectors: the normalized correction is at
+most `ε(D_N(x)+∑x_n²)`. The row estimate is in
+[IntegerSeparationShrinksTheNonRatioPrimeRows](IntegerSeparationShrinksTheNonRatioPrimeRows.lean);
+the normalized and uniform eventual bounds are in
+[TheFirstOverlapPrimeCostHasASmallDefectCoefficient](TheFirstOverlapPrimeCostHasASmallDefectCoefficient.lean).
+
+This supplies general-profile prime control. Complete positivity at one
+genuine overlap was already proved by TransMetzlerWeilPositivity. The
+overlapping atom Gram and joint archimedean and polar contributions still
+require their own complete-form comparison; the prime estimate alone does
+not establish that comparison.
+
 ## A conductor-uniform arithmetic curvature floor
 
 For a nontrivial conductor `m>1`, define the literal primitive-root energy

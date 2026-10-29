@@ -48,7 +48,7 @@ lemma ratioDenominator_eq_zero_iff (s : ℂ) (hs : s.re < 0) :
     rwa [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hq, norm_one] at this
   have hT : 1 < ‖zetaCoord D s‖ := by
     rw [norm_zetaCoord]
-    apply Real.one_lt_exp_iff_pos.mpr
+    apply Real.one_lt_exp_iff.mpr
     nlinarith [log_q_pos D]
   nlinarith [D.one_lt_q]
 
@@ -65,7 +65,7 @@ lemma neg_multiplicity_lt_zero (s : ℂ) (hs : (numeratorPoly D).eval (zetaCoord
   have hm := rootMultiplicity_pos_of_root D s hs
   have hm' : (0 : ℤ) < ((numeratorPoly D).rootMultiplicity (zetaCoord D (s + 1)) : ℤ) := by
     exact_mod_cast hm
-  rw [← WithTop.coe_neg]
+  rw [← WithTop.LinearOrderedAddCommGroup.coe_neg]
   exact WithTop.coe_lt_coe.mpr (by omega)
 
 /-- **The receiver.** In the band `−1 < Re s < 0`, the continuation is holomorphic at `s` for all
@@ -97,7 +97,7 @@ lemma alpha_mul_zetaCoord_poleParameter (hD : StripCondition D) (i : ι) :
     D.alpha i * zetaCoord D (poleParameter D i + 1) = 1 := by
   have hl : (Real.log D.q : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (log_q_pos D).ne'
   have he : zetaCoord D (poleParameter D i + 1) = (D.alpha i)⁻¹ := by
-    rw [zetaCoord, poleParameter, sub_add_cancel, mul_div_cancel₀ _ hl, Complex.exp_neg,
+    rw [zetaCoord, poleParameter, sub_add_cancel, neg_mul, mul_div_cancel₀ _ hl, Complex.exp_neg,
       Complex.exp_log (alpha_ne_zero D hD i)]
   rw [he, mul_inv_cancel₀ (alpha_ne_zero D hD i)]
 

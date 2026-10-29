@@ -22,12 +22,15 @@ The exact divisor-convolution formula gives a leading `a(ℓ) log ℓ` term.
 It must be combined with the new `log N` times the overlapping atom Gram.
 Estimating these separately loses their cancellation.
 
-The adjoint up-lags persist throughout the harmonic bulk. Their weighted prime
-sum is expected to read the unit-orbit average
+The adjoint up-lags persist throughout the harmonic bulk. The finite unit-orbit
+average is now formalized:
 
 `average_{r∈(Z/m)×} c_m(rn+h) = c_m(n)c_m(h)/φ(m)`.
 
-Weighted PNT in each fixed residue class should then give the stated integral.
+The literal fixed integer-window prime realization is also formalized in
+`ActualPrimeWindowsDiagonalizeAffineRamanujanModes`. Continuous weighted
+transfer and the required norm estimate remain open; they would be needed
+to obtain the proposed integral correction.
 The old separated energies therefore cannot be reused unchanged. Every step
 needs an exact identity and a full norm estimate for the literal source.
 
@@ -84,8 +87,9 @@ The corpus already proves genuine first-overlap complete positivity for an expli
 1. Classify every admitted product as a bounded integer successor shift,
    including products just outside the finite horizon.
 2. Derive the exact joint archimedean-Gram and prime down-row cancellation.
-3. Prove the finite unit-orbit identity and weighted prime-residue limit using
-   existing unconditional corpus results.
+3. The finite unit-orbit identity and fixed integer-window prime-residue
+   limits are proved. Their extension to the proposed continuous weighted
+   source law and its norm control remains deferred.
 4. Control the complete residual in norm, including the boundary block and
    both pole moments.
 5. Prove uniform bounded-energy compactness for a nonzero overlap interval.

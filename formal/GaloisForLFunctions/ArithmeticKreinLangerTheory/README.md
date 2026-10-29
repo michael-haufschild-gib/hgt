@@ -31,6 +31,11 @@ Nothing in HKT is restated here. Every AKL theorem takes local data (towers, con
 input, or proves that a class of local data cannot decide the index. Everything is unconditional; RH
 appears only inside equivalences.
 
+For the actual cubic-spline kernel, `FiniteSupportMakesAlmostEveryPrimeDecideZeta` defines blind
+primes intrinsically from the right zeros. On finite support, at most `κ.choose 2` primes are blind;
+every other prime tower has the full index. Positivity on one such tower, or on infinitely many
+prime towers, is equivalent to RH. The finite-support and positivity inputs remain unproved.
+
 ---
 
 ## 1. Place in the research
@@ -226,7 +231,17 @@ fails.
     (`reflectChar_twistChar`), and tower faithfulness is invariant (`isTowerFaithful_twist`). So the tower
     Hasse principle holds verbatim for every twin (`twin_finite_towers_negIndex_ne`), including the
     Liouville character of `ℚ_{>0}`: no locality theorem is selective.
-12. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+12. **One Bézout ledger for both rings.** A producer is an auxiliary object vanishing on the counted
+    set; its size bounds multiplicity times counted mass, `Σ m_x ≤ deg P` over `𝔽_q[X]`,
+    `Σ m_p log p ≤ log A` over `ℤ`. Precision is size divided by multiplicity. Stepanov's polynomial
+    gets multiplicity `≈ √q` from `x^q = x`; Chebyshev's `C(2n, n)` gets multiplicity one on `(n, 2n]`,
+    and binomial auxiliaries cannot do better: `p^m ∣ C(N, k)` forces `p^m ≤ N`, so above `√N` they
+    vanish simply. A producer over `ℤ` must raise multiplicity on the counted primes at controlled size.
+    Divisibility cannot select a parity class: vanishing on `S ⊆ [1, x]` is `lcm S ∣ A`, worth at most
+    `ψ(x)`, and the odd class, containing every prime, is worth between `θ(x)` and `ψ(x)`, within
+    `2√x log x` of the primes. At square-root precision, vanishing at the primes, at the prime powers and
+    at one parity class are the same divisibility condition.
+13. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -285,6 +300,10 @@ fails.
 5. *The two producers and their precision* (`stepanov_parity_classes_upper`, `sum_log_prime_le`): over
    `𝔽_q` Stepanov bounds both Legendre parity classes by `q/2 + (deg h + 1)√q`; over `ℤ` integrality
    bounds the primes by `Σ_{p≤n} log p ≤ n log 4`, linear precision.
+6. *The Bézout ledger* (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`,
+   `sum_log_prime_Ioc_le`) and *the binomial multiplicity cap* (`pow_le_of_dvd_choose`,
+   `le_one_of_dvd_choose`); *divisibility does not see parity* (`log_lcm_le_psi`,
+   `theta_le_log_lcm_oddPoints`, `abs_log_lcm_oddPoints_sub_theta_le`).
 
 **D. Completion.**
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
@@ -326,7 +345,13 @@ fails.
    size, and Euler's criterion makes the parity class the zero set of `f^{(q−1)/2} − ε`. A single class
    count is not enough there (`one_twist_does_not_complete`); the twist tower is
    (`unitary_iff_twistTower_upper`). Over `ℤ` one class is enough, and what is missing is an identity
-   describing a parity class algebraically. Spectral-side certificates do not help: they are receivers
+   describing a parity class algebraically. Both producers are one Bézout ledger, multiplicity × counted
+   mass ≤ size (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`); `x^q = x` is what raises
+   Stepanov's multiplicity to `√q`, and binomial auxiliaries are capped at simple vanishing above `√N`
+   (`le_one_of_dvd_choose`). As for the "rational points": for a divisibility auxiliary the primes, the
+   prime powers and the odd parity class are the same points up to `2√x log x`
+   (`abs_log_lcm_oddPoints_sub_theta_le`), so an auxiliary that selects a parity class must vanish in a
+   finer sense than divisibility. Spectral-side certificates do not help: they are receivers
    (`compress_traceKernel_charPoly`, `negIndex_compress_euler`); the auxiliary must vanish at the primes.
    *Open:* such an identity.
 2. **What is the positive form of the parity barrier?** Twins act on constituents by unitary twists,
@@ -394,7 +419,7 @@ To build:
 | Tool | Purpose | Test |
 |---|---|---|
 | Arithmetic compressor (Stepanov over `ℤ`) | an upper count for the odd parity class at precision `x^{½+ε}`; first layer built (integrality at linear precision, Stepanov over `𝔽_q` at square-root precision) | reproduces hyperelliptic RH through the twist tower; fails for Liouville; first rung: beat the sieve constant `2` |
-| Ring-level inputs | Bézout relations as local data | fail on over-regular Beurling systems and the golden datum |
+| Ring-level inputs | Bézout relations as local data; the ledger built in both rings (multiplicity × mass ≤ size), binomial multiplicities capped at `p^m ≤ N` | fail on over-regular Beurling systems and the golden datum |
 | Selective transfer to overlap | the pole carrier of the index-one window at overlapping widths | Q1; fails for Liouville |
 | Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | Q2; fails for parity-twisted models |
 | Coarse-tower locality for infinite spectra | prime towers for kernels with infinitely many pairs | recovers the finite case and the fine-tower law |
@@ -406,7 +431,9 @@ To build:
 1. **Producer over `ℤ`**: an identity on the primes playing `x^q = x`; an algebraic or analytic
    description of a parity class; the first rung, beating the sieve's parity constant `2` on intervals
    `x^ε`.
-2. **Ring-level inputs**: Bézout relations as local-to-global data.
+2. **Ring-level inputs**: Bézout relations as local-to-global data. The ledger is proved in both rings;
+   open is an integer auxiliary of size `O(x)` with multiplicity growing on a positive proportion of
+   the counted primes (binomial auxiliaries are capped at one above `√N`).
 3. **Prime-tower locality when the depth supremum is not attained, or attained infinitely often**
    (fine towers decide in general; prime towers decide when the largest depth is attained by finitely
    many zeros). The obstruction is a natural boundary: along a tower the generating function
