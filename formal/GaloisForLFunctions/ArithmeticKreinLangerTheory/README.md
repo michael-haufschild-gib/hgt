@@ -209,7 +209,12 @@ fails.
    consecutive-integer towers are fine and do not. The two-prime lattice contains fine towers
    `⟨p^a q^b⟩` (`exists_fine_twoPrime`), and single such towers carry the index
    (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`): the two-prime law is the fine-tower law.
-10. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+10. **Locality is twin-blind.** A unitary character `ω` translates Krein–Langer data:
+    `ω·h_{χ,a} = h_{ωχ,a}` (`pairKernel_twist`), reflection commutes with the twist
+    (`reflectChar_twistChar`), and tower faithfulness is invariant (`isTowerFaithful_twist`). So the tower
+    Hasse principle holds verbatim for every twin (`twin_finite_towers_negIndex_ne`), including the
+    Liouville character of `ℚ_{>0}`: no locality theorem is selective.
+11. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -230,7 +235,8 @@ fails.
 4. *Tower Hasse principle* (`finite_towers_negIndex_ne`, `negIndex_eq_zero_of_posDef_on_infinitely_many`)
    and its sharpness (`unitary_tower_defeat`, `aliased_tower_defeat`); logarithmic spectra are
    tower-faithful (`isTowerFaithful_logChar`); on `ℚ_{>0}` any exponents with nonzero real parts are
-   decided by infinitely many primes (`negIndex_eq_zero_of_posDef_on_infinitely_many_primes`).
+   decided by infinitely many primes (`negIndex_eq_zero_of_posDef_on_infinitely_many_primes`); every
+   unitary twin is decided the same way (`twin_finite_towers_negIndex_ne`).
 5. *Fine towers* (`hermQuad_nonneg_of_fine_zpowers`, `eventually_le_negIndex_fine`,
    `continuous_realOrbitKernel`, `isPosDefKernel_orbitKernel_of_fine`, `negIndex_orbitKernel_eq_iSup_fine`,
    `eventually_negIndex_fine_eq`, `negIndex_orbitKernel_eq_iSup_twoPrime_towers`,
@@ -300,8 +306,9 @@ fails.
    so every local constituent stays positive definite (`isPosDefKernel_twist`) and over `𝔽_q` the
    global index is twin-invariant (`negIndex_traceKernel_quadTwist`). Over `ℤ` the twin breaks the
    global law only through a count, and exactly one parity class carries the law. The margin `2 log 2`
-   is the width of the window where the pole carries the first square (HKT). *Open:* a selective
-   count.
+   is the width of the window where the pole carries the first square (HKT). Locality is twin-blind
+   (`twin_finite_towers_negIndex_ne`), so selectivity can only come from a count or a carrier.
+   *Open:* a selective count.
 3. **Why does finite index imply LH?** Finite index is a count with finitely many exceptional waves
    (`negIndex_eq_card_waves`), so the off-line zeros in every unit height window are eventually absent:
    Backlund's form of LH (HKT `lindelof_of_negIndex_zetaKernel_lt_top`). *Open:* a proof from the kernel
@@ -394,7 +401,7 @@ towers. It names its local data and its global input, says what it gives over `�
 datum, names the level of the structure ladder at which it acts, and records the positive survivor of
 every no-go.
 
-**Principles.** Locality is a property of the spectrum. Local positive definiteness is twin-invariant.
+**Principles.** Locality is a property of the spectrum, and it is twin-blind. Local positive definiteness is twin-invariant.
 A positive part never pays a pair, and no finite set of towers carries a finite nonzero index.
 Upper counts are blind only to real nodes. The index is the number of exceptional waves. Finite index
 is Lindelöf-deep. Index, then count, then sign.

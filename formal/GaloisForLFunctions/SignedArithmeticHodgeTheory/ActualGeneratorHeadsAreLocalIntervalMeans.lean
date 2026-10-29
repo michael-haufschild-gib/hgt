@@ -114,11 +114,12 @@ theorem finiteLogCellProfile_block (j : ℕ) (a : ℕ+) :
   rw [finiteLogCellProfile, Complex.ofReal_sum]
   simp only [one_mul]
   change (∑ r : Fin (2 ^ j), (rawCell ((a : ℕ) * 2 ^ j + (r : ℕ)) x : ℂ)) = _
-  rw [Fin.sum_univ_eq_sum_range]
+  rw [Fin.sum_univ_eq_sum_range (fun r : ℕ => (rawCell ((a : ℕ) * 2 ^ j + r) x : ℂ))]
   convert h.symm using 1 <;>
-    simp only [logCellDyadicBlockCell, dyadicBlockLeft, dyadicBlockRight, rawCell,
+    simp only [dyadicBlockLeft, dyadicBlockRight, rawCell,
       logCellSet, RHTower.coe_toPNat, Nat.cast_add, Nat.cast_one,
       indicator_apply, apply_ite, Complex.ofReal_one, Complex.ofReal_zero]
+  split_ifs <;> rfl
 
 /-- The indicator coordinates are the square-root length multiple of the normalized translated cell. -/
 theorem finiteLogCellVector_block (j : ℕ) (a : ℕ+) :
@@ -168,6 +169,7 @@ theorem integral_actualGeneratorHead_block {ι : Type*} [Fintype ι]
       ← inner_real_profiles b (finiteLogCellProfile n c)
       (finiteLogCellProfile_bv _ _) (finiteLogCellProfile_compact _ _)
       (finiteLogCellProfile_bv n c) (finiteLogCellProfile_compact n c)]
+    dsimp only [b]
     simp only [realSourceLp_actualGeneratorHead, realSourceLp_finiteLogCellProfile]
     rw [← wholeLineLogCellEmbedding.adjoint_inner_right, ← wholeLineLogCellEmbedding.adjoint_inner_right,
       wholeLineLogCellEmbedding_adjoint_self, wholeLineLogCellEmbedding_adjoint_self,

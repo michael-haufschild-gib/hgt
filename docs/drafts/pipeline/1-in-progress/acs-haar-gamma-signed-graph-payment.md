@@ -43,6 +43,8 @@ is used to estimate D_X.
 
 ## Existing checked inputs
 
+- [Actual positive Laplace graph and full-Weil identity](../3-formalized/acs-haar-gamma-positive-laplace-graph.md):
+  every paper claim formalized; all three exact-file Lean checks passed cleanly.
 - `GammaFiniteMeanZeroOffDiagonal`: exact original rectangle expansion.
 - `GammaMeanZeroCrossingBound`: integrability at touching boundaries.
 - `RHTower.ArchimedeanAnomaly.archLevyDensity_eq_tsum` and

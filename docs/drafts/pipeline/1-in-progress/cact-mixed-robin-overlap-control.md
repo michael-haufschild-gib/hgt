@@ -23,13 +23,32 @@ Their mixed consequence keeps the cancellation that would be lost by splitting
 an overlapping pair into divergent cross integrals. At a common window of
 length `O(1/N)`, its normalized remainder is `O(1/N)`.
 
-The further missing input is uniform control of the polarized finite part as
-the width ratio changes. Adjacent pairs must also pay their leading overlap
-Gram mass using the actual prime defect. Distant pairs and pole moments have
-separate width comparisons.
+The further target is the quantitative finite-part perturbation law
+
+```
+abs(bumpRobin(f,W)-bumpRobin(g,W)) <= W*Lip(f-g)*(L1(f)+L1(g)),
+abs(mixedBumpRobin(f,shift_a f,W)-mixedBumpRobin(g,shift_a g,W))
+  <= 2*W*Lip(f-g)*(L1(f)+L1(g)).
+```
+
+The second estimate is uniform in every displacement `a`. Factoring squared
+increments cancels `1/y` before integration. The actual-dilation draft supplies
+`Lip(phi(./c)-phi)=O(c-1)` and an absolute mass bound `O(c-1)` from the fixed
+smooth profile. A bounded first derivative and a Lipschitz first derivative
+give the derivative-difference estimate. Outside a fixed compact interval both
+derivative terms vanish. The normalized mixed finite part retains this modulus
+after division by `c`.
+Adjacent pairs must also pay their leading overlap Gram mass using the actual
+prime defect. Distant pairs and pole moments have separate width comparisons.
 
 ## Inputs and status
 
 Searches180,183,187; actual source read in SSHA/TheRobinConstantOfAnAtom and
-SSHA/WeilsFormIsContinuousInTheLevyNorm. Draft formalization underway; no result
-claimed until Lean and the final individual audit pass.
+SSHA/WeilsFormIsContinuousInTheLevyNorm. Search192 found no direct matching
+Robin perturbation theorem in the displayed leads. Both
+`TheMixedRobinExpansionSurvivesActualOverlap.lean` and
+`TheRobinFinitePartIsStableUnderLipschitzPerturbations.lean` are drafted and
+unchecked. `SmoothDilationHasASmallLipschitzDifference.lean` drafts the actual
+profile producer and normalized finite-part comparison. The three form an
+import chain. No result is claimed until Lean and the final individual audit
+pass.

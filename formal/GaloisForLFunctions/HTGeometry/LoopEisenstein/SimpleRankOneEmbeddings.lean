@@ -21,7 +21,7 @@ private theorem sl2_weyl_conj_upper (s : F) :
   intro i j
   fin_cases i <;> fin_cases j <;>
     simp [sl2WeylLower, sl2Upper, sl2Lower, Matrix.SpecialLinearGroup.coe_mul,
-      Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+      Matrix.mul_apply, Fin.sum_univ_two]
 
 private theorem sl2_weyl_conj_lower (s : F) :
     MulAut.conj (sl2WeylLower (1 : Fˣ)) (sl2Lower s) = sl2Upper (-s) := by
@@ -30,7 +30,7 @@ private theorem sl2_weyl_conj_lower (s : F) :
   intro i j
   fin_cases i <;> fin_cases j <;>
     simp [sl2WeylLower, sl2Upper, sl2Lower, Matrix.SpecialLinearGroup.coe_mul,
-      Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+      Matrix.mul_apply, Fin.sum_univ_two]
 
 private theorem sl2_weyl_conj_diagonal (a : Fˣ) :
     MulAut.conj (sl2WeylLower (1 : Fˣ)) (sl2Diagonal a) = sl2Diagonal a⁻¹ := by
@@ -39,7 +39,7 @@ private theorem sl2_weyl_conj_diagonal (a : Fˣ) :
   intro i j
   fin_cases i <;> fin_cases j <;>
     simp [sl2WeylLower, sl2Diagonal, Matrix.SpecialLinearGroup.coe_mul,
-      Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+      Matrix.mul_apply, Fin.sum_univ_two]
 
 /-- Coordinate swap, including the sign correction to the determinant-one Weyl matrix. -/
 def sl2Swap : SL2 F →* SL2 F :=
@@ -85,6 +85,9 @@ namespace LoopSL2
 /-- The affine simple embedding with positive root at degree one and coroot `h₀`. -/
 def affineSimpleSL2Embedding : SL2 F →* LoopSL2 F :=
   (affineSL2Embedding F).comp (sl2Swap F)
+
+@[simp] theorem projection_affineSimpleSL2Embedding (g : SL2 F) :
+    projection F (affineSimpleSL2Embedding F g) = affineConstantSL2Map F (sl2Swap F g) := rfl
 
 theorem affineSimpleSL2Embedding_injective : Function.Injective (affineSimpleSL2Embedding F) :=
   (affineSL2Embedding_injective F).comp (sl2Swap_injective F)

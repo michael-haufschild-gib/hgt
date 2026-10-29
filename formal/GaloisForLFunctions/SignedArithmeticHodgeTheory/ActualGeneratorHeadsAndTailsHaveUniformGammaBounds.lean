@@ -1,6 +1,7 @@
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.PaddedGradedGridsHaveUniformGammaControl
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.StoppingCellsFormAUniformlyGradedPartition
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.ActualGeneratorHeadsAreLocalIntervalMeans
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.DisjointStepsHaveLogarithmicGammaCost
 
 /-!
 # One original Gamma reserve pays the actual generator head and tail
@@ -60,7 +61,7 @@ private theorem intervalMean_zero_of_zero {a b : ℝ} {f : ℝ → ℝ}
   have hi : (∫ x in Ioo a b, f x) = 0 := by
     calc
       _ = ∫ _x in Ioo a b, (0 : ℝ) := setIntegral_congr_fun measurableSet_Ioo hz
-      _ = 0 := integral_zero _ _
+      _ = 0 := by simp only [integral_zero]
   rw [intervalMean, hi, zero_div]
 
 private theorem stoppingGrid_exists_padding (A : ℕ+) (R : ℝ) :
@@ -171,7 +172,16 @@ theorem actualGeneratorHead_tail_gamma_le {ι : Type*} [Fintype ι]
   dsimp only [generatorGammaStabilityConstant]
   linarith only [hh, ht]
 
+/-- The same constant applies directly to the original horizon-indexed complete-cell source. -/
+theorem actualGeneratorHead_tail_gamma_wholeCell (A : ℕ+) (c : ℕ → ℝ) (X : ℕ) :
+    levyEnergy (actualGeneratorHeadProfile A (wholeCellSourceLabel X) (fun i => c i.1)) +
+      levyEnergy (actualGeneratorTailProfile A (wholeCellSourceLabel X) (fun i => c i.1)) ≤
+        generatorGammaStabilityConstant * levyEnergy (wholeCellProfile c X) := by
+  simpa only [finiteLogCellProfile_wholeCell] using
+    actualGeneratorHead_tail_gamma_le A (wholeCellSourceLabel X) (fun i => c i.1)
+
 end GaloisForLFunctions.SignedArithmeticHodgeTheory
 
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.actualGeneratorHead_gamma_le
 #print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.actualGeneratorHead_tail_gamma_le
+#print axioms GaloisForLFunctions.SignedArithmeticHodgeTheory.actualGeneratorHead_tail_gamma_wholeCell

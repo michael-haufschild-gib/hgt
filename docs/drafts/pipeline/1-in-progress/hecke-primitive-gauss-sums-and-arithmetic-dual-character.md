@@ -10,12 +10,14 @@
 
 Actual ideal-lattice Poisson summation, trace-ideal duality and covolumes,
 finite weighted theta inversion, parity factors, unit-domain integration,
-Gamma factors, class-series Mellin identities, finite class recombination,
-and global ordinary-L continuation are all formalized. The remaining
-functional-equation input is arithmetic: the finite Fourier coefficients
-must become the correctly normalized inverse-character coefficients.
-Ordinary L-function entireness alone does not settle cancellation of the
-raw completed-theta zero modes.
+Gamma factors, primal class-series Mellin identities, primal finite class
+recombination, and global ordinary-L continuation are formalized. The
+actual primitive Fourier coefficients are now identified with inverse
+Hecke ideal values, and their Gauss norms and discriminant normalization
+are proved. Remaining obligations are actual dual Mellin unfolding,
+dual class recombination, completed removable values, and normalized
+reflection. Their complete drafts are under verification on the
+[dual unfolding card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
 
 ## Search leads checked
 
@@ -59,9 +61,9 @@ pairing is proved nondegenerate.
 The finite-ring mechanism is now formalized, including the exact Gauss
 norm. The proof uses additive orthogonality at one in place of Parseval:
 the full transform gives the reciprocal Gauss product directly. For the
-actual Hecke application, primitivity must still be tied to the finite
-conductor and the trace pairing must be constructed and audited. Neither
-may be left as an unexplained analytic or arithmetic interface.
+actual Hecke application, primitivity is now tied to the finite conductor,
+and the actual trace pairing and its support criterion are constructed
+and audited. Neither is an assumed arithmetic interface.
 
 ## Arithmetic obligations
 
@@ -78,7 +80,8 @@ may be left as an unexplained analytic or arithmetic interface.
 4. **Coefficient identification done; analytic reindexing open:** every
    nonzero dual coefficient is the inverse actual Hecke ideal value with
    exact Gauss, sign, and base-class factors. Fractional-ideal unit orbits
-   and their dual Mellin sum are being verified on the unfolding card.
+   are finalized. Their actual dual Mellin sum is under verification on
+   the unfolding card.
 5. Assemble the completed reflection with the exact discriminant,
    conductor and parity factors, and audit the root number.
 

@@ -81,9 +81,9 @@ written, including both
 subgroup maps, the exact central correction, elementary multiplication,
 full homomorphism law, injectivity, and root/coroot restrictions.
 `SL2DiagonalRescaling` and `ConstantSL2Embedding` passed their dependency
-builds cleanly. `AffineSL2Kubota` is being checked after four elaboration
-fixes; both tame endpoint arguments and the nonzero case passed its first
-check. The remaining two modules are unchecked. Scratch verification
+builds cleanly. `AffineSL2Kubota` also passed cleanly, including the exact
+correction on all lower-root cases. `AffineSL2Embedding` is being checked;
+`SimpleRankOneEmbeddings` remains unchecked. Scratch verification
 confirmed the field instance of finite maximal spectrum needed for
 four-factor generation. The oriented affine simple embedding is written
 using Weyl conjugation followed by the sign rescaling. These rank-one

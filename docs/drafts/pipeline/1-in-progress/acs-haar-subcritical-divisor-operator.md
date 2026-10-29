@@ -54,7 +54,9 @@ No web search, novelty checks, numerical experiments, or axiom checks.
 
 ## Exact Gamma graph; joint comparison remains open
 
-`TheHaarGammaCrossTermsArePositive` now proves the complete summable
+The [formalized Gamma graph](../3-formalized/acs-haar-gamma-positive-laplace-graph.md)
+passed all three clean direct Lean checks. `TheHaarGammaCrossTermsArePositive`
+proves the complete summable
 positive Laplace expansion of each actual Gamma cross-entry, including
 touching pairs. `TheHaarGammaDebtIsAnAdditiveGraph` retains every signed
 coefficient in the exact original identity

@@ -345,12 +345,15 @@ Finalized and built for their written consumers:
 - `HeckeFieldElementKernelsHaveExactMellinIntegrals`
 - `HeckeDualThetaKernelsAreUnitCovariant`
 
-Finalized, with required consumer oleans still pending:
+Also finalized and built:
 - `HTGeometry/NumberFieldLogPeriodizationsHaveAbsoluteUnfolding`
+
+Finalized, with required consumer olean still pending:
 - `HeckeConductorsAndParitiesAreInvariantUnderInversion`
 
-Current final source check:
-- `HeckeDualClassKernelsHaveExactMellinIntegrals` (the single eta-expansion correction).
+Newly finalized; required consumer olean pending:
+- `HeckeDualClassKernelsHaveExactMellinIntegrals`: final source audit passes
+  without warnings; all four main transitive axiom audits are standard only.
 
 Unchecked complete drafts and intended module names:
 - `/tmp/HeckeDualUnitUnfoldingScratch.lean` →
@@ -377,3 +380,30 @@ listed here. Final source audits and transitive axiom audits precede
 finalized status. No umbrella compilation is needed. The parent goal
 remains active: finish finite-order Hecke L-functions before starting
 class field theory.
+
+The exact dual class Mellin module is finalized and wired; see
+[the exact dual class Mellin proof](../3-formalized/hecke-dual-class-kernels-have-exact-mellin-integrals.md).
+The eta-expansion correction passes final audit. The generic absolute
+family-unfolding olean is now building for the written actual dual
+unit-unfolding consumer.
+
+The generic family-unfolding olean is built. The first check of
+`/tmp/HeckeDualUnitUnfoldingScratch.lean` is now running, using only
+finalized, built dependencies. The exact dual-class Mellin module's
+olean and the inversion-invariance olean remain needed for later
+written consumers.
+
+The first actual dual-unfolding check exposes three local elaboration
+issues: the fractional-ideal carrier has no zero instance, product
+projections infer the wrong source product, and implicit functions in
+the continuity proof exhaust default definitional-equality heartbeats.
+The scratch now supplies the actual zero element explicitly, types all
+product projection maps, and types both continuous factors and their
+parameter map. No limits are raised. Second check is running; downstream
+axiom audits are not accepted until these dependencies pass.
+
+The second actual dual-unfolding check passes without warnings. Its three
+main transitive axiom audits are standard only. Explicit functions remove
+the continuity elaboration timeout without changing any limits. The
+source is promoted to `HeckeDualUnitOrbitsUnfoldOverTheLogSpace.lean`
+for its final direct audit; it is not yet counted as finalized.

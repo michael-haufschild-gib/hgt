@@ -87,6 +87,9 @@ with the full divisor-square defect and central mass.
 
 ## Exact signed Gamma graph
 
+The [complete proof](../3-formalized/acs-haar-gamma-positive-laplace-graph.md)
+is formalized; all three exact-file Lean checks passed without warnings.
+
 `TheHaarGammaCrossTermsArePositive` proves a summable positive Laplace
 series for every original cross-entry, including touching pairs.
 `TheHaarGammaDebtIsAnAdditiveGraph` proves, for all signed d and horizons,

@@ -213,7 +213,8 @@ Lean status: `FiniteFieldEllipticGlobalField.lean` passed its identical scratch 
 and production olean compilation, exit 0 without diagnostics. The actual extension
 degree, separability, finite residue fields, finite adeles, and injective diagonal map
 are proved. Its olean is required by the integral-closure module; never rebuild it.
-The axiom audit remains pending. `FiniteFieldEllipticIntegralClosure.lean` now proves
+The transitive axiom audit passed with only `[propext, Classical.choice, Quot.sound]`.
+`FiniteFieldEllipticIntegralClosure.lean` now proves
 the identification with the affine ring as recorded below.
 
 The actual affine coordinate ring `A` has the already proved free `F₃[X]` basis
@@ -291,7 +292,8 @@ an unproved smooth-to-normal bridge. Its Lean proof now passes: the identical sc
 source for `FiniteFieldEllipticIntegralClosure.lean` checked with exit 0 and no diagnostics.
 It proves `isIntegral_iff_coordinateRing_image`, the actual Dedekind instance, and
 `coordinateRingEquivRingOfIntegers`, compatible with their maps into the function field.
-The transitive axiom audit remains pending. Euler product and quotient measure remain open.
+The transitive axiom audit passed with only `[propext, Classical.choice, Quot.sound]`.
+Euler product and quotient measure remain open.
 
 ## Completion preserves the local arithmetic `[PAPER PROOF]`
 
@@ -310,9 +312,21 @@ once the already established finite residue results are applied. The generic val
 completion proof and explicit `WithVal` transport are now in
 `HTGeometry/DiscreteValuedCompletion.lean`. Both scratch and production olean checks
 passed. Its olean is required by the actual-place module; never rebuild it.
-`/tmp/hgt_ff_local_fields.lean` applies it to the actual finite and infinity places,
+`FiniteFieldEllipticLocalFields.lean` applies it to the actual finite and infinity places,
 identifies their completed residue fields, and constructs the full adele ring as the
-product of finite adeles and the infinity completion. This dependent draft is not checked.
+product of finite adeles and the infinity completion. Its scratch source and transitive
+axiom audit passed with only `[propext, Classical.choice, Quot.sound]`. Its olean is
+being compiled for `/tmp/hgt_ff_adele_haar.lean`.
+
+For full additive Haar measure, the integral product is compact by Tychonoff and open
+by the restricted-product topology. Every finite adele has finitely many nonintegral
+coordinates. At each such coordinate a nonzero affine integer clears its denominator;
+their product clears them all. Thus finite adeles are covered by compact denominator
+dilates indexed by the countable affine ring. They are sigma-compact, as is the full
+adele ring after adjoining the infinity completion. Haar measure normalized to give
+the integral product mass one is therefore sigma-finite. This is ambient Haar measure;
+the rational quotient's covolume and the unipotent quotient measure still require proof.
+Lean draft: `/tmp/hgt_ff_adele_haar.lean`, not yet checked.
 
 ## Local rank-one integral `[PAPER PROOF]`
 
@@ -363,3 +377,34 @@ at infinity. Therefore `N((a))=3^(poleDegree(a))`. Factoring `(a)` into prime
 powers turns this into the finite-place part of the product formula; adjoining
 the degree-one infinity valuation gives product one. The exact finite-support
 valuation formulation still needs its factorization proof in Lean.
+
+## Finite coordinates on affine Bruhat cells `[PAPER PROOF]`
+
+For the matrix Iwahori `B`, write a matrix as `[[a,b],[c,d]]`, with `a,d`
+power-series units and `c` divisible by the loop variable `t`. Every inversion
+set in affine `A₁` lies in one root string. Thus its root-coordinate group is
+an additive space of upper or lower unipotent polynomials; its dimension is
+the already proved inversion cardinality.
+
+Use left Borel cosets `B\G`, represented by `w u(q)`. For translations
+`w=diag(t⁻ᵐ,tᵐ)`, if `m≥0`, take the truncation of `b/a` in degrees
+`0≤j<2m`; right multiplication by `u(−q)` makes the upper entry divisible
+by `t^(2m)`. Conjugation by `w` then lies in `B`. If `m<0`, take the
+truncation of `c/d` in degrees `1≤j≤−2m`; the remaining lower entry is
+divisible by `t^(1−2m)`, again exactly the conjugated Iwahori condition.
+
+For `w=s diag(t⁻ᵐ,tᵐ)`, the Weyl matrix exchanges upper and lower entries.
+For `m≥0`, truncate `b/a` in degrees `0≤j≤2m`; for `m<0`, truncate `c/d`
+in degrees `1≤j<−2m`. These are precisely the four interval formulas in
+`AffineA1.inversions w`. The central extension introduces no new obstruction:
+the positive Borel is the full inverse image of the matrix Iwahori, so its
+central kernel absorbs all discrepancies between chosen lifts.
+
+Bruhat existence supplies a representative of this form for every group element.
+Bruhat uniqueness first forces equal Weyl labels. Within one label, equality
+of the left Borel cosets forces the polynomial difference `q−q'` to satisfy
+the complementary divisibility condition. Its degree bound forces it to vanish.
+Hence `B\G` is bijective with the disjoint union of the finite inversion-root
+coordinate spaces. This is the group-level parametrization needed for unfolding.
+Arithmetic restriction and the integration argument are separate. Lean status:
+the double-coset theorem is available; the truncation refinement remains to prove.

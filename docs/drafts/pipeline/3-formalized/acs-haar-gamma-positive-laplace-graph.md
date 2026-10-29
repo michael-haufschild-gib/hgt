@@ -1,8 +1,8 @@
 # The actual Haar Gamma interaction is a positive Laplace graph
 
 - **ID:** acs-haar-gamma-positive-laplace-graph
-- **Stage:** 2-fully-proven; direct Lean formalization in progress
-- **Type:** PAPER ARGUMENT; proof status pending successful Lean checks
+- **Stage:** 3-formalized
+- **Type:** THEOREM; every claim formalized and directly checked in Lean
 - **Route:** ACS: full-source effectivity → Hodge index → RH.
 - **Parent:** [joint signed graph payment](../1-in-progress/acs-haar-gamma-signed-graph-payment.md)
 
@@ -80,10 +80,11 @@ charge. The signed potential V_X is retained without a positivity claim.
 ## Route status
 
 This identifies the adverse signed Gamma term as an actual nonnegative
-additive graph energy. It does not pay that energy, its row potential,
-the central mass or the valuation completion cost. The joint graph
-payment card remains in progress. No web search, novelty check,
-numerical experiment or axiom check is used.
+additive graph energy and retains the exact signed Weil potential.
+It does not show that the combined right side pays the graph energy.
+If the valuation representation is used, its completion cost must also
+remain. The joint graph payment card stays in progress. No web search,
+novelty check, numerical experiment or axiom check is used.
 
 ## Exact Lean correspondence
 
@@ -102,6 +103,18 @@ All three modules belong to `ArithmeticCastelnuovoSeveri/`.
 | Exact Gamma row potential minus graph | `TheHaarGammaDebtIsAnAdditiveGraph` | `haarSectionProfile_gamma_eq_row_sub_graph` |
 | Full original Weil identity | `TheHaarGammaDebtIsAnAdditiveGraph` | `haarSectionProfile_roughWeil_add_graph_eq` |
 
-Every declaration has passed Lean. Final direct audits are pending;
-the graph module's redundant tactics were removed after its first pass.
-The three imports are wired into the ACS umbrella; the umbrella is not compiled.
+## Final validation
+
+All three exact-file commands passed with exit code zero and no warnings,
+run sequentially from `formal/`:
+
+```text
+lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HaarLaplaceMoments.lean
+lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarGammaCrossTermsArePositive.lean
+lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarGammaDebtIsAnAdditiveGraph.lean
+```
+
+Required dependency oleans were built only for the first two modules;
+the graph leaf has no olean. Existing oleans were not rebuilt. All three
+imports are wired into the ACS umbrella; the umbrella was not compiled.
+Axiom checks were skipped as requested. No paper-only claim remains on this card.

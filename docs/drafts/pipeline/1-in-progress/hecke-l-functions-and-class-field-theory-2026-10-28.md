@@ -40,9 +40,12 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
       `log N+O(1)` for the trivial character — `exists_norm_heckePrimeMertensSum_le`,
       `exists_norm_heckePrimeMertensSum_one_sub_log_le`
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform) —
-      full-plane meromorphic continuation and exact pole classification are now proved;
-      primitive Gauss/conductor normalization and dual-character identification remain open
-      ([arithmetic obligations](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md))
+      full-plane continuation, exact pole classification, primitive finite Gauss/conductor
+      arithmetic, and inverse-character Fourier coefficients are proved. Actual dual Mellin
+      unfolding, finite class recombination, and completed reflection remain under verification
+      ([dual analytic obligations](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md));
+      raw completed removable values are tracked separately
+      ([completed residue cancellation](hecke-unramified-character-descent-and-residue-cancellation.md))
 
 ## Gates — class field theory
 - [ ] CFT1 Artin map on ideals prime to the ramification of an abelian `L/K`
@@ -681,3 +684,11 @@ summable whole-space masses, and exact complex unfolding. Final source
 and transitive axiom audits pass; see
 [family unfolding](../3-formalized/number-field-log-periodizations-have-absolute-unfolding.md).
 The actual dual application is drafted and awaiting its dependency checks.
+
+Exact dual class Mellin integrals are finalized: actual inverse-character
+coefficients, joint absolute integrability, exact Gamma/Jacobian value,
+and summability of all absolute class masses on `Re(s)>1`. Final source
+and four main transitive axiom audits pass; see
+[the dual class Mellin proof](../3-formalized/hecke-dual-class-kernels-have-exact-mellin-integrals.md).
+Actual dual unit averaging, infinite Mellin exchange, and completed
+reflection remain under verification.

@@ -70,6 +70,8 @@ character outside B, or any arithmetic convergence. The determinant-norm
 comparison and intersection control are separately open in
 [the metric card](garland-determinant-metric-iwasawa.md).
 
-No Lean source for this batch is written yet. The finite real input must
+`VertexParabolics` is written but unchecked. It defines both actual
+parabolics, proves the reduction-kernel shift criterion, and factors each
+parabolic into Borel times its actual simple subgroup. The finite real input must
 pass its axiom audit, and the rank-one batch must pass its final source
 and dependency audits, before this result is promoted.
