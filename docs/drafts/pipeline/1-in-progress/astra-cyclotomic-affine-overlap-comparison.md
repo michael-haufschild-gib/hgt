@@ -51,3 +51,11 @@ This is not yet a complete-Weil comparison. It determines the required centering
 4. Actual source comparison. Let delta_N be the total absolute error of the actual residue masses from their logarithmic unit means. Existing residue Mertens convergence implies delta_N -> 0. Exact finite decomposition gives |window(F)-ell*kappa(F)| <= delta_N sum_r |F(r)| simultaneously for every signed F. For squared finite packets this is an operator comparison in the full residue Gram norm, uniform in both coefficients and feature family, including choices depending on N. All prime powers are retained. Draft formalization covers real and complex packets.
 
 The full residue norm is necessary: non-unit prime powers can see directions invisible to the unit-only limiting Gram. For root-prefix features, the conductor-completion identity identifies that extra norm. The next task is the exact actual-affine specialization and then the comparison with the complete Weil source. No macroscopic-overlap or RH result is claimed by these finite-source statements alone.
+
+## Secondary synthesis conjecture
+
+The existing general `OverlapGrowthSuperGevrey` receiver is stronger than its displayed power-log schedule. Keeping its already constructed profile, test the explicit endpoint schedule
+
+`c_N = L*(log L)^2*log(log L)`, `L=log(log N)`.
+
+The final factor diverges, so it should satisfy the exact existing growth criterion; it is little-o of `L*(log L)^beta` for every beta>2. This is a genuine but smaller improvement than the proposed new-profile schedule `L*log L*(loglog L)^beta`. The latter still requires a new Denjoy–Carleman construction. Corpus novelty search is in progress; neither improvement is yet claimed formalized.

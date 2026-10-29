@@ -10,11 +10,19 @@ Declaration namespaces remain unchanged.
 | Local source estimates | `HeatEulerAnchor`, `HeatLocalGrowth`, `HeatLocalZeroDensity`, `HeatLocalCofactor`, `HeatRelativeGlobalBounds` |
 | Gaussian transport | `HeatReverseGaussian`, `HeatGaussianQuadraticError`, `HeatZeroFreeWindow` |
 | Persistence and counting | `HeatMeanFieldPersistence`, `HeatMeanFieldZeroDensity`, `HeatShrinkingWindow`, `HeatZeroDisplacement`, `HeatUniformDepthZeroDensity` |
-| Collisions and energy | `HeatExteriorForce`, `HeatForwardSimpleZeros`, `LocalizedHeatPairForce`, `HeatZeroSumContinuity` |
+| Collisions and derivatives | `HeatExteriorForce`, `HeatForwardSimpleZeros`, `HeatLocalizedEnergyEvolution` |
+| Localized dissipation | `LocalizedHeatPairForce`, `LocalizedHeatPacketFlux`, `HeatZeroSumContinuity`, `HeatLocalizedZeroObservables`, `HeatLocalizedEnergyDissipation` |
 
-`HeatLocalizedEnergyEvolution.lean` is unfinished research.
-It is not exported by the umbrella. Its open work
-is recorded in the [energy-flux card](../../../../docs/drafts/pipeline/1-in-progress/wd-heat-localized-energy-flux.md).
+`HeatLocalizedEnergyDissipation` controls the actual multiplicity-weighted energy
+through collisions, including heat time zero. For a nonnegative unit-window
+cutoff bounded by W, with derivative bounded by V and Lipschitz constant M,
+
+`E_w(b) − E_w(a) + 2∫ N_w ≤ (2M+2V+4W) C log X ∫ E_outer`
+
+when `0≤a≤b≤1/8` and `b log X≤1`, for sufficiently large X. Here N_w is the
+full weighted nonreal count; the outer cutoff equals one on the radius-two
+force packet. A companion theorem bounds the upper right slope at every
+admissible initial time. Uniform small-time nonreal counts remain open.
 
 Finished modules are imported directly by
 [`../../RHTower.lean`](../../RHTower.lean).

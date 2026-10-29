@@ -1,566 +1,550 @@
-# RH research: opportunities, priorities, and the mathematics still missing
+# RH research frontier
 
-29 October 2026
+The research has several distinct source-level frontiers: positivity of complete overlapping Weil forms; positivity of signed theta derivatives at unbounded order; an exact theta-clock history budget; lower bounds for completed Suzuki and CCM currents; arithmetic index bounds; cumulative divisor covariance; and signed prime-pair estimates.
 
-**The best opportunity is a new estimate inside the existing arithmetic framework, not another RH equivalence.** The strongest opening is to turn the recently proved cyclotomic curvature and affine Ramanujan identities into a nonperturbative comparison for the complete overlapping Weil operator. The clearest numerical breakthrough target is the signed prime-pair budget for 75% simple critical zeros. For Quasi-RH, the corpus gives unusually precise targets, including an exact five-sixths detector budget, but does not supply their analytic inputs.
+Substantial unconditional statements sit immediately beside RH-equivalent conditions. The distinction is in the quantifiers and the retained source terms. Fixed overlap, fixed conductor, fixed matrix order, an existential height certificate, and a cofinal estimate are different mathematical achievements. An equivalence at the RH endpoint does not transfer an estimate between them.
 
-I do not see a credible, completely unrelated RH proof that avoids every existing obstruction. This is a conclusion about the mechanisms examined, not an impossibility claim about future mathematics. Several apparently radical alternatives are already developed, and sometimes sharply obstructed, in this corpus.
+**Complete atomic Weil positivity: an explicit range and a sharp limitation of its certificate.**
 
-## Scope and status
+For the plateau profile $\varphi_0=\mathrm{plateau}(1/1000)$, with width $w=c/N$, the complete Weil matrix is eventually positive definite for every fixed
+$$
+0<c<1+\delta_*,
+\qquad
+\delta_*=\frac1{107520002048050000}.
+$$
+For $c=1+\delta$, $0\le\delta\le\delta_*$, its asymptotic lower bound is
+$$
+F(\delta)=\frac1{25}
+-2000\delta\left[1+1024000\left(2100000+\frac1{25}\right)\right]:
+$$
+for every $\varepsilon>0$, one sufficiently large horizon gives
+$$
+\langle W_{N,c}x,x\rangle\ge(F(\delta)-\varepsilon)\|x\|^2
+\quad\text{for every }x.
+$$
+Strict positivity uses $\delta<\delta_*$. The endpoint is a boundary of this certificate, not a demonstrated spectral transition.
 
-I read the six requested reports and followed `research-programmes.md` from oldest to newest, reading the programme documents it lists. Repeated entries point to current versions, not historical snapshots. The listed ShallowCauchyPrimeEnergy directory has no README; its results were researched through the Lean search tool and source. I used `scripts/formal_tools.py research` for mathematical discovery and inspected the relevant Lean statements. No web research, builds, or proof-integrity audit was performed.
+The scalar optimization behind this bound is itself sharp. Under the three inputs
+$$
+E\ge1/25,\qquad E\ge-2100000+D/1024000,\qquad
+|F-E|\le e(D+1),\quad D\ge0,
+$$
+the lower envelope $1/25-e[1+1024000(2100000+1/25)]$ is attained. Reoptimizing these same inputs cannot produce a macroscopic overlap theorem. Such a theorem needs additional structure.
 
-The persistent record is [the research log](../../../logs/astra-rh-research.log); structured corpus-search results are saved beside it as `astra-search-*.json`. An existing version of this report was preserved in `logs/astra-report-before-this-research.txt` before replacement.
+Lean anchors: `eventually_completeWeilMatrix_posDef_certified`, `eventually_completeWeilMatrix_certified_floor`, and `reference_coercivity_floor_attained` in [OptimizedTransMetzlerFloor](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/OptimizedTransMetzlerFloor.lean); the full fixed-$c$ range in [CompleteWeilLengthHeight](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/CompleteWeilLengthHeight.lean).
 
-Throughout:
+Two further boundaries matter.
 
-- **Established** means a supplied report or an inspected Lean declaration supports the statement. It does not mean I freshly compiled it. The source reports' distinctions between integrated, working, and individually checked results still apply.
-- **Receiver** means a proved implication or equivalence whose decisive arithmetic premise remains open.
-- **Proposal** means a research target or mathematical inference here, not a newly formalized theorem.
+- The complete form is positive in part of the range where a unimodular Metzler gauge does not exist. The Liouville weight $\lambda\Lambda$ has an eventual negative atomic test for every fixed $c\ge1/2$. Thus this positivity theorem detects arithmetic information beyond the gauge mechanism. See [ExplicitPlateauParameters](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/ExplicitPlateauParameters.lean) and `eventually_liouville_weilQuadTw_neg_transMetzlerProfile` in [LiouvilleTwinSelectivity](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/LiouvilleTwinSelectivity.lean).
+- For the Steklov profile, RH is equivalent to eventual positivity for **all coefficient vectors** along
+  $$
+  c_N=(\log\log N)(\log\log\log N)^\beta,\qquad\beta>2.
+  $$
+  This is `riemannHypothesis_iff_steklovDCProfile_nonneg_superGevrey` in [SuperGevreyCriticalGrowth](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/SuperGevreyCriticalGrowth.lean). The plateau and Steklov profiles differ. Separate eventual theorems for every fixed $c$ do not give the required horizon along $c_N$.
 
-The current frontier includes the optimized overlap certificate, with strict endpoint described below. Some earlier programme summaries still list its predecessor as open. I use the later, more specific result rather than treating those older open lists as the frontier.
+The concrete overlap target is a complete-form estimate at macroscopic $c$, with a quantified horizon and a profile compatible with exhaustion. A theorem at $c=3/2$, for example, would be substantial but would not itself supply the growing-overlap theorem.
 
-## Answers at a glance
+**Critical arithmetic correlations: full Grams, exact radicals, and moving affine parameters.**
 
-| Question | Assessment |
-|---|---|
-| A new mechanism circumventing a wall? | Yes, a plausible mechanism: cyclotomic positivity of the actual affine overlap correction, transported through the complete operator. The scalar arithmetic ingredients exist; the operator comparison does not. A secondary opportunity is a slower Denjoy–Carleman synthesis schedule. |
-| A wildly different, wall-free RH route? | None I can responsibly identify. New terminology, a new positive kernel, or a statistical-mechanics realization would repeat mechanisms already present. |
-| Improved Quasi-RH? | Concrete opportunities, no completed improvement. Five-sixths requires a joint improvement of two detector Gram contributions. Three-quarters requires changing an additional part of that detector budget, or using a different source estimate. |
-| At least 75% on the line? | The best target is the actual signed coalescent surplus at bandwidth $4/3$, at most $N/18+o(N)$, with the same admissible profiles as the census. It would give 75% **simple** critical zeros. |
-| Three priorities? | Complete arithmetic overlap comparison; signed coalescent discrepancy; an independent count producer retaining sublinear, ultimately square-root, precision. |
-| A new field? | The required field is already emerging in these programmes. Its missing core is a calculus converting exact arithmetic compatibility into signed inequalities while preserving precision and simultaneous limits. Section 7 gives a concrete specification. |
+The arithmetic input extends beyond a scalar curvature floor. For
+$$
+S_k(\zeta)=\sum_{r<k}\zeta^r,\qquad
+G_m(i,j)=\operatorname{Re}\sum_{\zeta\ {\rm primitive}\ m}
+S_i(\zeta)\overline{S_j(\zeta)},
+$$
+the exact quadratic identity is
+$$
+\sum_{i,j}a_i a_jG_m(k_i,k_j)
+=\sum_{\zeta\ {\rm primitive}\ m}\left|\sum_i a_iS_{k_i}(\zeta)\right|^2.
+$$
+Its radical is classified: for $m>0$, vanishing is equivalent to divisibility of
+$$
+\sum_i a_i\sum_{r<k_i}X^r
+$$
+by $\Phi_m$. For a family of conductors, the condition holds at every conductor in that family. This identifies the null directions that any coercivity argument must handle.
 
-## 1. What the programme history has established
+There is also an exact cross-conductor completion:
+$$
+\sum_{\substack{m\mid Q\\m\ne1}}G_m(i,j)
+=Q\min(i,j)-ij,\qquad 0\le i,j\le Q.
+$$
+Thus a full divisor family recovers the discrete bridge kernel, including its off-diagonal entries. These are `primitivePrefixGram_quadratic_eq`, `primitivePrefixGram_quadratic_eq_zero_iff_cyclotomic_dvd`, and `sum_nontrivial_divisors_primitivePrefixGram` in [the Gram completion](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheArithmeticCurvatureHasAnExactGramCompletion.lean), [the radical classification](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/CyclotomicDivisibilityClassifiesTheOverlapGramRadical.lean), and [the divisor bridge](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/AllDivisorConductorsRecoverTheDiscreteBridge.lean).
 
-The programmes form a mathematical progression. Their main achievement is locating where information is lost, then replacing broad obstructions by exact boundaries and positive survivors.
+The conductor-uniform scalar floor remains useful:
+$$
+\frac{A_m(t)}{\varphi(m)}
+\ge\{t\}(1-\{t\}),\qquad m>1,\ t\ge0.
+$$
+Here
+$$
+A_m(k+u)=(1-u)G_m(k,k)+uG_m(k+1,k+1),\qquad 0\le u<1.
+$$
 
-| Stage in the requested sequence | Main advance | What survived as the hard problem |
-|---|---|---|
-| Arithmetic positivity, BiScaleUncertainty, TransHorizonIncidenceMechanics, Bézout–valuation incidence, criticality and square-root thresholds | Exact energy, aperture, damping, incidence and zero-width dictionaries; sharp thresholds for blind or absolute estimates. | Signed information from the actual Möbius/prime source at the deciding scale. |
-| Incidence positivity, continuation and compensation, Castelnuovo–Severi, signed energy incidence, trans-threshold correlation | Completed source identities, geometric and census receivers, precise accounting of poles and mixed terms. | Producing the sign or count that the identities consume. |
-| Orientation, local divisor geometry, successor arithmetic, defect rigidity, biarithmetic and positive duality | Arithmetic gauges and successor coupling become explicit; source identification and positive realizations are separated from spectral purity. | Selecting the actual source does not orient its full form. |
-| Correlation geometry, Künneth theory, correspondences, polarization, effectivity and conjugate diagonal geometry | Tensor and localization costs; positive collided metric $D$; arithmetic reconstruction of $D$ and the defect separating it from $W$. | Bounding the reflection defect, not merely computing it or finding another positive metric. |
-| Selective thresholds, electrostatics, intersection and renormalization | Local tower signs, exact counterterms, survival cones, virial identities, quantized exceptional costs. | Joint payment across places and scales; an upper bound below an exceptional quantum. |
-| Spacing analysis, Lorentzian geometry, Gabor pinching, index descent, signed Hodge theory | Spacing-scale payment, genuine census slack, complete-cell index capture, source-compatible projections and substantial joint Gamma/higher-power control. | First-prime interactions, retained coarse/orbit sign and exhaustive overlap. |
-| Selective multiscale positivity, counting positivity, Hecke–Krein–Toeplitz and arithmetic Krein–Langer theory | Exact gauge-gap classifications, index/zero/wave laws, finite-stratum structure and appropriate limit topologies. | An arithmetic index ceiling or count; finite index is already Lindelöf-strength. |
-| Square-root precision, critical arithmetic correlations, Trans-Metzler positivity | The count's exact perturbation class; where inversion loses precision; conductor-uniform finite arithmetic positivity; full Weil positivity beyond the Metzler boundary. | A nonperturbative signed comparison on a family large enough to decide RH. |
+The curvature floor uses the norm of a nonzero cyclotomic integer. See `fract_quadratic_le_normalized_arithmeticOverlapCurvature` in [CyclotomicNormGivesAConductorUniformCurvatureFloor](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/CyclotomicNormGivesAConductorUniformCurvatureFloor.lean). The full Gram and its radical give more information than this diagonal inequality.
 
-This progression rules out a diagnosis of “we lack the right equivalent formulation.” The receivers are abundant and increasingly faithful. The shortage is an inequality about the original source.
+Prime averaging also has substantial uniformity. For fixed $q>0$ and fixed natural endpoints $0<A\le B$,
+$$
+\sum_{AN<k\le BN}\frac{\Lambda(k)}k\,c_q(kn+h)
+\longrightarrow
+(\log B-\log A)\frac{c_q(n)c_q(h)}{\varphi(q)}
+$$
+**uniformly over all $n,h\in\mathbb N$**. Both may move with $N$. Moreover, one horizon controls every finite complex Gram packet on $\mathbb Z/q\mathbb Z$, with discrepancy bounded by
+$$
+\varepsilon\sum_{r\bmod q}
+\left|\sum_i x_i v_i(r)\right|^2.
+$$
+The coefficient vectors, packet size, and cross terms are included. The fixed parameter is the residue modulus.
 
-### Three core problems, but several different strengths
+Lean anchors: `eventually_affineRamanujanPrimeWindow_uniform` in [ActualAffinePrimeWindowsAreUniformInTheirParameters](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ActualAffinePrimeWindowsAreUniformInTheirParameters.lean) and `eventually_primeWindow_all_complex_Gram_packets` in [PrimeResidueWindowsControlEveryGramPacket](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/PrimeResidueWindowsControlEveryGramPacket.lean).
 
-The [unification ledger](route-unification-ledger.md) distinguishes endpoint equivalence from a proved source transfer. That distinction should govern research allocation. Saying that two statements both imply RH does not transfer an estimate between their norms, profiles, or growing parameters.
+For a fixed $C^2$ profile $\varphi$ supported on $[0,1]$, with $M=\int\varphi^2>0$, every
+$$
+b<\frac{\mathrm{bumpRobin}(\varphi,1)}M
++\mathrm{completeWeilPoleShift}(\varphi,1)-\log(2\pi)
+$$
+is eventually a lower bound for every eigenvalue, simultaneously over all $0<c\le1$. For every fixed energy cap and every squared-norm tolerance $\eta>0$, one finite Ramanujan family approximates every unit vector below that cap within $\eta$, uniformly throughout this range. See [OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching.lean) and [OneRamanujanFamilyDetectsAllBoundedEnergiesThroughTouching](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/OneRamanujanFamilyDetectsAllBoundedEnergiesThroughTouching.lean).
 
-The three core families remain:
+The remaining operator problem has precise constraints:
 
-1. **Selective arithmetic cancellation:** a sufficiently precise signed estimate involving $\Lambda$, $\mu$, or a source constructed from them.
-2. **Complete-form comparison and exhaustion:** preserve Gamma, both poles, every mixed block and the required limit while transporting that estimate.
-3. **Independent production:** an arithmetic construction that supplies the estimate without placing it in an assumption or an equivalent definition.
+- **Conductor growth and source identification.** Fixed-modulus packet uniformity must be connected to the actual logarithmic successor-shell weights, with control as the required conductor family grows.
+- **Transport between annuli.** Ramanujan packets have two-sided frame bounds $1/4$ and $5/4$ on $(A,2A]$ when $A\ge4Q(Q-1)$. The literal prime kernel within that annulus is zero. Its nontrivial action connects different annuli. See [AnnularRamanujanFamiliesHaveTwoSidedFrames](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/AnnularRamanujanFamiliesHaveTwoSidedFrames.lean).
+- **A divergent positive row contribution.** The normalized plateau successor fiber grows like a positive constant times $\log N$ for every $c>1$. Hence a horizon-independent absolute row bound cannot justify the comparison. The divergence does not disprove positivity of the completed form. See `tendsto_plateauSuccessorFiber_div_log` and `plateauSuccessorFiber_atTop` in [FixedOverlapHasLogarithmicDivisorRows](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/FixedOverlapHasLogarithmicDivisorRows.lean).
+- **Exact finite shells.** The upper shell condition is $r<a(e^w-1)$, from $|\log(a+r)-\log a|<w$, not its linearized approximation. See [ExactSuccessorShellWindows](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ExactSuccessorShellWindows.lean).
+- **Complement cost.** A positive compression must be accompanied by control of the remaining blocks. Eliminating a positive block $D$ leaves $A-BD^{-1}B^*$. The cyclotomic Gram alone does not estimate this subtraction.
 
-These are not three independent tasks in every proof. A direct count producer could avoid most atomic operator analysis. A complete source positivity construction could avoid extracting a pointwise Chebyshev bound until the end. Their common endpoint does not force identical proof mechanisms.
+There is concrete finite-flip trial mathematics as well. The $p=11$ packet on conductors $1,11,121$ has coefficient square mass one and an exact untwisted Weil-energy limit at $c=99/100$. A proposed upper-margin expression is strictly negative. These are separate statements: the untwisted limit and the scalar margin do not themselves identify that margin with the complete flipped form. The missing theorem is that source comparison. See [ElevenPacket](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/BoundedOverlap/ElevenPacket.lean) and [ElevenTrialMargin](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/BoundedOverlap/ElevenTrialMargin.lean).
 
-Several distinctions prevent overstrengthening the research problem:
+**Theta source positivity: global three-node matrices and a strict rank-seven signed hierarchy.**
 
-- A proportion theorem tolerates exceptions. A fixed strip excludes every zero beyond a specified depth. Finite index says all sufficiently high zeros are critical. RH excludes every off-line zero. These targets are not interchangeable.
-- The count tolerates a nontrivial perturbation class; full Weil positivity does not.
-- A fixed generator on a prime tower can alias. Positivity for **all generators** on a fixed prime tower is a much stronger statement and already decides RH. “Two primes are always necessary” is too broad.
-- “An auxiliary must vanish at primes” identifies the point-side obligation of a Stepanov-style construction. The compressor obstructions do not prove that every conceivable RH proof must take that form.
+Let $k_a$ be the actual center-mixed theta density, $0<a<1/2$. Every three-node matrix
+$$
+[k_a(x_i-x_j)]_{i,j<3}
+$$
+is positive semidefinite, for arbitrary real nodes. The source proof passes through global reflected correlation-angle subadditivity and positive center integration. The even block of the equispaced four-node matrix is also positive semidefinite for every spacing. This does not assert positivity of its odd block or of arbitrary four-node packets.
 
-### A particularly useful correction: count precision is not coefficient rigidity
+Lean anchors: `thetaCuspCenterMixedGramThree_posSemidef` in [ThetaCuspCenterMixedThreePositiveOrientationLaw](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedThreePositiveOrientationLaw.lean), the source theorem in [HedenmalmCenterMixedCorrelationAngle](../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmCenterMixedCorrelationAngle.lean), and `thetaCuspCenterMixedFourPlusBlock_posSemidef` in [ThetaCuspCenterMixedFourPointEvenGlobal](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedFourPointEvenGlobal.lean).
+
+A second, distinct hierarchy uses signed derivatives:
+$$
+s_a(2n)=(-1)^n k_a^{(2n)}(0),\qquad s_a(2n+1)=0,\qquad
+H_{a,N}=[s_a(i+j)]_{i,j<N}.
+$$
+The **full $H_{a,7}$ is positive definite for every $0<a<1/2$**. The complete hierarchy satisfies
+$$
+\mathrm{RH}\quad\Longleftrightarrow\quad
+\forall\,0<a<1/2,\quad s_a\text{ belongs to the complete Hankel cone}.
+$$
+The Fourier normalization and moment identification are part of this source theorem. Positivity of ordinary moments of a positive theta density is a different assertion; the alternating derivative signs above are essential.
+
+Lean anchors: `thetaCuspCenterMixedSignedHankel_seven_posDef` in [ThetaCuspCenterMixedSeventhRankStrict](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedSeventhRankStrict.lean) and `thetaCuspCenterMixedSignedJetCone_iff_riemannHypothesis` in [ThetaCuspCenterMixedSignedJetCompleteness](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness.lean).
+
+Strictness also has a spatial consequence: for each admissible $a$, one radius $\delta(a)>0$ makes **every six distinct nodes of diameter below $\delta(a)$** a positive-definite packet, with no restriction on their relative gaps. See `exists_thetaCuspCenterMixedGramSix_posDef_cluster` in [ThetaCuspCenterMixedSixPointCluster](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedSixPointCluster.lean).
+
+The successor condition is an exact source integral. Whenever $H_{a,n}>0$,
+$$
+H_{a,n+1}\succeq0
+\Longleftrightarrow
+\int_0^\infty r\sinh(ar)\,
+\mathrm{thetaCuspNativeSuccessorSource}(a,n,r/2)\,dr\ge0.
+$$
+See `thetaCuspCenterMixedSignedHankel_succ_posSemidef_iff_nativeIntegral_nonneg` in [ThetaCuspCenterMixedSuccessorSource](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspCenterMixedSuccessorSource.lean). Rank-seven strictness supplies its head premise for the next section. An all-order bound must control these native integrals and preserve the strictness required for further successor steps; the fixed-rank theorems do not supply that induction.
+
+**The actual theta clock: an exact first-zero budget with a bounded obstruction set.**
+
+For the actual Borel derivative kernel $K=B'$, let $P$ be the primitive of the clock response and
+$$
+D(t)=\int_0^t\frac{P(s)}s\,ds.
+$$
+The exact Volterra equation has coefficient one:
+$$
+P+P*K=tK.
+$$
+Its history equation is
+$$
+tD'(t)=tK(t)+
+\int_0^t D(s)\,[K(t-s)-sK'(t-s)]\,ds.
+$$
+These are source identities, with all quantities attached to the actual theta clock. See [LiEvenCrossActualClockPrimitiveVolterra](../../../formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockPrimitiveVolterra.lean) and [LiEvenCrossActualClockHistoryBarrier](../../../formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockHistoryBarrier.lean).
+
+Write $H_t(s)=K(t-s)-sK'(t-s)$, and use the source cutoff $\ell(t)=K(t)/(4K'(t))$. The exact budget decomposition is
+$$
+\begin{aligned}
+C_{\rm out}(t)&=\int_{\ell(t)}^t D(s)(-H_t(s))\,ds,\\
+V(t)&=tK(t)+\frac{K(t)}2\int_0^{\ell(t)}D(s)\,ds,\\
+A_{\rm near}(t)&=\int_0^{\ell(t)}D(s)\left(H_t(s)-\frac{K(t)}2\right)ds,\\
+P(t)&=V(t)+A_{\rm near}(t)-C_{\rm out}(t).
+\end{aligned}
+$$
+At a guarded zero $t>20$, meaning $D(t)=0$ and $D\ge0$ on $[0,t]$, the source estimates give a strictly positive excess $C_{\rm out}(t)-V(t)$. Consequently
+$$
+\left[
+\forall t>20,\ D(t)=0,\ D|_{[0,t]}\ge0
+\Rightarrow C_{\rm out}(t)\le V(t)
+\right]
+\Longleftrightarrow
+\left[\forall t>0,\ D(t)>0\right].
+$$
+See `liEvenCrossActualClockHistory_first_zero_budget_iff_pos` in [LiEvenCrossActualClockScoreBudget](../../../formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockScoreBudget.lean).
+
+The obstruction is particularly sharp. If $Z_S$ denotes the guarded-zero set, then
+$$
+\mathrm{RH}\Longleftrightarrow Z_S=\varnothing.
+$$
+Under false RH, $Z_S$ has a final point $\tau$, the first entrance into negative history. Its analytic order is odd; earlier guarded zeros have even order at least two. Yet $Z_S$ is **unconditionally finite**, hence bounded above. Therefore an eventual guarded-zero budget is unconditionally vacuous beyond some cutoff. It cannot establish RH. The needed budget must exclude every possible guarded zero, including those in the bounded region whose location is not supplied by the boundedness theorem.
+
+These are `liEvenCrossActualClockGuardedZeroSet_rh_iff`, `liEvenCrossActualClockGuardedZeroSet_ordered_of_not_rh`, `finite_liEvenCrossActualClockGuardedZeroSet`, and `exists_forall_ge_not_mem_liEvenCrossActualClockGuardedZeroSet` in [LiEvenCrossActualClockTerminalHistory](../../../formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockTerminalHistory.lean). Positive repeated Borel primitives and local terminal-mass asymptotics do not discharge this universal history budget.
+
+**Suzuki and CCM: semibounded completed sources, with precise transport obstructions.**
+
+For any fixed $L>0$, define the rectangular Ward defect
+$$
+\mathcal W_{L,E}(n)
+=\operatorname{Re}\bigl(\mathrm{xiScrewWindowCurvature}(L,\log n)\bigr)-E(n).
+$$
+For any $E(n)\ge0$, the existence of $B,N_0$ with
+$$
+\mathcal W_{L,E}(n)\ge B
+\quad(n\ge N_0,\ L\le\tfrac12\log n)
+$$
+implies RH. Under false RH, for every such $E$, every real $B$, and every $N_0$, an admissible $n\ge N_0$ has $\mathcal W_{L,E}(n)<B$. This is cofinal unboundedness below, not a claimed limit to $-\infty$.
+
+Thus exact equality with a positive Gram is stronger than the receiver requires. A source decomposition with nonnegative bulk and an endpoint term uniformly bounded below suffices. See `riemannHypothesis_of_suzukiRectangularWardDefect_eventually_bddBelow` and `riemannHypothesis_of_suzukiRectangularWardDefect_bulk_endpoint` in [SuzukiRectangularWardDefectBoundedness](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiRectangularWardDefectBoundedness.lean).
+
+There is an actual finite-source positive completion. With the bare wall field $\omega$, define
+$$
+\ell_\pm(t)=\frac{\omega(t)\pm i\omega(-t)}2.
+$$
+For every finite prime-power packet and every finite height packet,
+$$
+F_{\rm reflected}+\operatorname{Gram}(\ell_-)
+=\operatorname{Gram}(\ell_+),
+$$
+and both Gram matrices are positive semidefinite. The difference need not be positive. This is `suzukiCriticalWallReflectedCurrentPacketMatrix_add_negative_eq_positive` in [SuzukiWallFieldLightConeKernelCompletion](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiWallFieldLightConeKernelCompletion.lean).
+
+The transfer to the complete rectangular source must respect three exact obstructions:
+
+- The bare critical prime amplitude has no nonzero constant multiple in $\ell^2$. Its squared mass is the nonsummable critical prime source.
+- The depth-fused response satisfies a bound $C(h)\omega_p/(p+1)$. At the moving prime wall the sharp rectangular gate is one, and no uniform constant recovers $\omega_p$ from that response.
+- A real linear functional on **all** prime-coordinate functions extending the finite critical source sums is unbounded below on the nonnegative coordinate cone. A universally positive finite-part extension on that domain is impossible.
+
+See [SuzukiCoherentSharpSourceDomainNoGo](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoherentSharpSourceDomainNoGo.lean), [SuzukiCoherentResponseGainNoGo](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCoherentResponseGainNoGo.lean), and [SuzukiCofinalPositiveFinitePartNoGo](../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiCofinalPositiveFinitePartNoGo.lean). These statements constrain the source domain and the transfer norm. They do not exclude a completed signed estimate on a restricted domain. The target is a lower bound for the actual assembled Ward defect, with the light-channel cost and the archimedean, boundary, and mixed terms retained.
+
+The CCM first-clock source has a similarly weak exact endpoint:
+$$
+\mathrm{RH}\Longleftrightarrow
+\exists C\ge0,\ A\ge\pi/2,\ \forall L\ge A,\quad
+\mathrm{ccmPublishedSourceSineCoefficient}(L/2,2\pi/L)\ge-C.
+$$
+False RH forces this source below every constant on every tail. See `ccmFirstClockPublishedSourceEventuallyBoundedBelow_iff_rh` in [CCMFirstClockTailLowerBoundCompleteness](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean).
+
+Positive mixing is classified, rather than supplied:
+
+- On an injective finite prime-power packet, a real matrix preserving the actual source and commuting with all physical phase diagonals is exactly the identity, including when signed matrices are allowed.
+- For nonnegative weights $w$ of positive total mass, an oriented source-faithful Markov transport exists exactly when the original scalar $w\cdot s$ is nonnegative. Universal feasibility for the completed physical packets is equivalent to RH.
+
+See [CCMFirstClockPhaseNaturalTransportRigidity](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockPhaseNaturalTransportRigidity.lean) and [CCMFirstClockBarycentricOrientationCompleteness](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockBarycentricOrientationCompleteness.lean). An arbitrary positive mixer at each aperture supplies no independent estimate. The first-clock source lower bound is the mathematical obligation.
+
+**Arithmetic index descent and conjugate-diagonal geometry: substantial reserves and explicit remaining costs.**
+
+For the complete coarse/detail profile $F$, the nonfirst polar source satisfies, for every $\varepsilon>0$, after a fixed detail head,
+$$
+(1-\varepsilon)\Gamma(F)+2C(F)^2
+\le \mathcal S_{\rm nonfirst}(F)+2S(F)^2.
+$$
+The head depends on $\varepsilon$; the estimate then holds for all coarse coefficients, all permitted detail coefficients, and every section horizon. Here $\Gamma$ is the Lévy/Gamma energy and $C,S$ are the cosh and sinh half-moments.
+
+Restoring the entire square source yields a joint reserve
+$$
+c\Gamma(F_{\rm coarse})
++\frac\gamma2\|F_{\rm coarse}\|_2^2
++\frac{\mathrm{gap}}8\,\mathrm{haarLogMass}(F_{\rm detail})
++\|F_{\rm detail}\|_2^2+2C(F)^2
+\le
+\mathcal S_{\rm square}(F)+2S(F)^2+\frac12\left(\int F\right)^2
+$$
+for some $c>0$ and fixed detail head, where $\gamma$ is Euler's constant. Its exact source expansion contains
+$$
+\Gamma(F)+2\,\mathrm{gammaHardyPhaseRate}(0)\|F_{\rm detail}\|_2^2
+-(\mathrm{haarPrimeEnergy}-\mathrm{squarePrimeSource}(F_{\rm detail}))
+-\mathrm{squarePrimeSource}(F)
+-\mathrm{oddHigherPrimePowerMixedSource}
++2C(F)^2-2S(F)^2.
+$$
+This is a specific completed subform, not full Weil positivity. The remaining comparison must keep the coarse and mixed prime terms, the finite head, and the displayed mass and moment costs.
+
+Lean anchors: `exists_fullPolarNonfirst_completeGamma_reserve` in [TheFullNonfirstSourceRetainsAlmostAllGamma](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheFullNonfirstSourceRetainsAlmostAllGamma.lean); `exists_fullSquarePolar_coarse_detail_reserve` and `fullSquarePolarSourceForm_eq_source_parts` in [TheEntireSquareSourceSharesTheFullDetailReserve](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheEntireSquareSourceSharesTheFullDetailReserve.lean).
+
+There is also actual prime–polar cancellation in Gamma norm:
+$$
+|\mathrm{primeSum}(u)-(2C(u)^2-2S(u)^2)|
+\le\varepsilon e^{S/2}\bigl(\Gamma(u)+\|u\|_2^2\bigr)
+$$
+eventually in $S$, uniformly over core tests with $2\,\mathrm{supportRadius}(u)+1\le S$. The exponential factor is part of the theorem; it cannot be discarded when seeking positivity. See `eventually_primePolar_gamma_bound_core` in [TheFullPrimePolarSourceCancelsInGammaNorm](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheFullPrimePolarSourceCancelsInGammaNorm.lean).
+
+For conjugate-diagonal geometry, the positive metric $D$ has exact defect
+$$
+\mathrm{Def}_L(f)=D(T_Lf)+D(T_{-L}f)-2D(f)
+\ge4L^2\,\mathrm{depthSecondMoment}(f).
+$$
+Its explicit theta approximation is uniform in moving parameters: for fixed compact $f$, every $\varepsilon>0$, all sufficiently large $n$, and
+$$
+|\tau|\le n/2,\qquad |L|\le2\log(n+1),
+$$
+the finite theta source evaluates $\mathrm{Def}_L(\mathrm{sourceTwist}_\tau f)$ within $\varepsilon$. The arithmetic reconstruction, including this moving range, is established. A depth exclusion still needs a sufficiently small upper bound for the actual defect.
+
+See `heckeDefect_eq_second_difference` in [ZetaDepthDistribution](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/ZetaDepthDistribution.lean) and `finiteThetaSource_uniform_moving_heckeDefect` in [FiniteThetaMetric](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/FiniteThetaMetric.lean).
+
+**Index theory: classification and height localization are established; an arithmetic ceiling is a separate theorem.**
+
+The zeta orbit kernel satisfies
+$$
+\operatorname{negIndex}(K_\zeta)
+=\#\{\text{distinct right-of-line zeros}\}
+=2\,\#\{\text{zeros in the selected right-hand sector}\},
+$$
+with extended cardinalities. The count is of locations, not multiplicities. Every two-distinct-prime lattice has the same index. Finite index is equivalent to finite off-line support, a uniform finite bound for the heated nonreal-zero count, and RH above some height. It implies the critical-line Lindelöf bound.
+
+For every tempered zero configuration and every admissible real test,
+$$
+\mathrm{IsKreinLanger}(\mathrm{orbitKernel})
+\Longleftrightarrow
+\operatorname{negIndex}(\mathrm{orbitKernel})<\infty.
+$$
+There is no finite-total-spectral-support premise. These are [TheFiniteIndexStratumOfZetaIsLindelofDeep](../../../formal/GaloisForLFunctions/HeckeKreinToeplitz/TheFiniteIndexStratumOfZetaIsLindelofDeep.lean) and `isKreinLanger_orbitKernel_iff_negIndex_lt_top` in [TheConverseKreinLangerTheoremForOrbitKernels](../../../formal/GaloisForLFunctions/HeckeKreinToeplitz/TheConverseKreinLangerTheoremForOrbitKernels.lean).
+
+Height localization is also quantitative. Any finite prime set $P$ with
+$$
+|P|>\binom{\mathrm{heightIndex}(T)}2
+$$
+contains a prime whose tower, with a suitable compact $C^2$ generator and finite translation window, captures at least the entire height index. A two-prime certificate exists with
+$$
+0<k\le\left\lfloor T\log2/\pi\right\rfloor+1,\qquad
+k\le j\le2k,
+$$
+and step $|\log(3^k/2^j)|$. See `exists_prime_certifies_height` and `twoPrime_tower_certifies_height` in [TheHassePrincipleWithHeights](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/TheHassePrincipleWithHeights.lean).
+
+These are detection theorems. The generator and finite window remain existential, and the captured index is not bounded above by these statements. A source-side index ceiling, or an explicit positive family that forces one, is the remaining obligation. A uniform finite index bound for the **complete** kernel would be Lindelöf-strength; finite-index bounds for selected subforms do not supply it.
+
+**Euler deletion: a cumulative covariance problem with an inner-cutoff constraint.**
+
+For $1\le X<M$, write $L=\log(M/X)$. The actual averaged divisor coefficient is
+$$
+g_{X,M}(k)=\frac{b_M(k)-b_X(k)}L,
+$$
+where $b_Y$ is the corpus's Barban–Vehov coefficient. It satisfies $g(1)=1$, $g(k)=0$ for $1<k\le X$, and
+$$
+g(k)=\frac{\Lambda(k)-b_X(k)}L\qquad(1<k\le M).
+$$
+The modular quantity has an exact cumulative representation
+$$
+m_{X,M}(n)=\sum_{k\le n}g(k)-nH_{X,M}.
+$$
+Set $c(k)=\mathbf1_{k=1}-g(k)+H_{X,M}$, so $1-m(n)=\sum_{k\le n}c(k)$. Then
+$$
+\sum_{n=1}^T\frac{(1-m(n))^2}{n(n+1)}
+=\sum_{j,k\le T}c(j)c(k)
+\left(\frac1{\max(j,k)}-\frac1{T+1}\right).
+$$
+The full energy is this finite covariance plus the literal infinite tail. A coefficient square estimate for $g$, even with fixed-cutoff summability, is not an estimate for this cumulative covariance and its tail.
+
+These identities and the actual coefficient estimates are in [EulerDeletionAveragedDivisorCovariance](../../../formal/GaloisForLFunctions/RHTower/EulerDeletionAveragedDivisorCovariance.lean), especially `errorEnergy_eq_covariance` and `fullErrorEnergy_eq_covariance_add_tail`.
+
+The current criterion has a stringent normalization:
+$$
+\mathrm{RH}\Longleftrightarrow
+\forall\rho,\ \forall e>0,\ \exists B,\ \forall K,\ \exists X<M,\quad
+K\le X,\qquad
+|\operatorname{Re}\overline J_{X,M}(\rho)|\le B X^e.
+$$
+Here $\rho$ ranges over actual nontrivial zeros. The outer cutoff may adapt; the power scale remains the **inner** cutoff $X$. See `riemannHypothesis_iff_averagedCurrent_cofinally_subpower` in [EulerDeletionCutoffAverage](../../../formal/GaloisForLFunctions/RHTower/EulerDeletionCutoffAverage.lean).
+
+The source target is a covariance/tail estimate, or a direct current estimate, strong enough for this normalization. Enlarging $M$ and proving a bound in terms of $M^e$ does not meet it.
+
+**Count precision and exact source rigidity are different requirements.**
 
 Let
 $$
-\mathcal Q=\left\{\delta:\sum_{n\le x}\delta(n)=O(\sqrt{x}\log^2x)\right\}.
+\mathcal Q=\left\{\delta:\sum_{n\le x}\delta(n)
+=O(\sqrt x\log^2x)\right\}.
 $$
-The corpus proves that `Count(a)` is exactly $a-1\in\mathcal Q$. At a weight already satisfying Count, its additive stabilizer is $\mathcal Q$. In contrast, all-generator tower positivity at $\Lambda+\delta$ holds exactly when RH holds and $\delta(n)=0$ for $n\ge2$.
-
-Thus $\Lambda+1/n$ has Count iff RH, but is never tower-positive. Finite prime flips likewise need not be rejected by a count-level sufficient condition. They must be rejected by a claim of full positivity for the perturbed weight. This is an actual distinction in [TowerPositivityIsPrecisionExact](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TowerPositivityIsPrecisionExact.lean), especially `count_and_not_towerIndexZero_add_inv`.
-
-**Research consequence:** a count route should work modulo its permissible error class. Demanding exact source selection from it imposes a harder problem than its endpoint requires. Conversely, a positivity route cannot import that tolerance without a proved bridge.
-
-## 2. Opportunities to circumvent or break a wall
-
-### 2.1 One supposed barrier has already been bypassed
-
-The complete Weil form can be positive where no unimodular gauge makes the atomic Markov form Metzler. This is a significant conceptual result: a failed positive-basis mechanism did not obstruct the sign of the original form.
-
-For the explicit plateau $\varphi_0=\mathrm{plateau}(1/1000)$, the original theorem reaches $c=1+10^{-18}$, while the current optimized certificate proves eventual positive definiteness at every fixed
+Here $\mathrm{Count}(a)$ means $\sum_{n\le x}a(n)-x=O(\sqrt x\log^2x)$. At any weight satisfying Count, its additive stabilizer is exactly $\mathcal Q$. Finite-support perturbations and $1/n$ belong to this class. In contrast, all-generator positivity on a fixed prime tower for $\Lambda+\delta$ is equivalent to RH together with
 $$
-c=1+\delta,\qquad 0\le\delta<\delta_*=\frac1{107520002048050000},
+\delta(n)=0\qquad(n\ge2).
 $$
-in addition to the regime $0<c\le1$. The optimized asymptotic floor is
+In particular, $\Lambda+1/n$ has Count iff RH and never has this tower positivity. See [PrecisionClassesAndTheCount](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/PrecisionClassesAndTheCount.lean) and [TowerPositivityIsPrecisionExact](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TowerPositivityIsPrecisionExact.lean).
+
+The deciding-input theorem concerns a predicate $S$ on **all arithmetic weights** satisfying
 $$
-\frac1{25}-2000\delta\bigl(1+1024000(2100000+1/25)\bigr).
+\forall a,\quad S(a)\Rightarrow\mathrm{Count}(a).
 $$
-The endpoint $\delta_*$ is a boundary of this certificate, not a proved spectral transition and not an asserted positive endpoint. See `eventually_completeWeilMatrix_posDef_certified` in [OptimizedTransMetzlerFloor](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/OptimizedTransMetzlerFloor.lean).
+It imposes precision and perturbation restrictions on such a predicate. It is not a classification of every possible RH proof or a theorem that every method must construct the same arithmetic object. See `deciding_input_necessary_properties` in [TheDecidingInputTheorem](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TheDecidingInputTheorem.lean).
 
-Here $c=Nw$; the exact spacing ratio is $w/\log(1+1/N)$, asymptotic to $c$. Keeping these parameters distinct matters at touching.
-
-The mechanism is a joint use of the completed low-mode floor and a strict-variance prime-defect reserve. It retains the poles. The Liouville twin fails in part of this same range. Therefore an older statement that all proved complete-form positivity is twin-blind is no longer accurate.
-
-Improving $10^{-18}$ to $\delta_*$ improves a certificate. Moving to a macroscopic ratio, such as $3/2$, would require mathematical control that the present perturbative argument does not provide.
-
-### 2.2 Main opportunity: cyclotomic positivity of the affine overlap operator
-
-**Proposal.** Derive the complete low-energy operator at a fixed macroscopic overlap from its exact arithmetic successor shells, and use cyclotomic norm positivity before taking absolute values. This extends CACT and Trans-Metzler; it is not a newly discovered independent route.
-
-Three recent ingredients make this more concrete than a request for “better cancellation.”
-
-**First, a uniform arithmetic positive quantity already exists.** For $m>1$, put
+There is an exact integrality resource: the integrals over $[0,1]$ of integer polynomials of degree at most $n$ form
 $$
-P_m(k)=\sum_{\zeta\text{ primitive }m\text{-th root}}\left|\sum_{j=0}^{k-1}\zeta^j\right|^2,
+\frac1{\operatorname{lcm}(1,\ldots,n+1)}\mathbb Z.
 $$
+The least positive integral is the reciprocal lcm, and its logarithmic reciprocal is $\psi(n+1)$. “Positive integral” imposes no pointwise nonnegativity condition on the polynomial. This lattice does not itself construct an auxiliary with the analytic size and arithmetic vanishing needed for a new count. See `isLeast_positive_nairIntegral` in [TheIntegralityLatticeOfTheHorizon](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TheIntegralityLatticeOfTheHorizon.lean).
+
+**Simple critical zeros: an unconditional proportion and an exact $75\%$ budget.**
+
+The cumulative theorem gives, for every $\varepsilon>0$, eventually
 $$
-A_m(t)=\sum_{d\mid m}\mu(m/d)d^2\{t/d\}(1-\{t/d\}).
+N_{0,\mathrm{simple}}(T)\ge(0.67250071-\varepsilon)N(T).
+$$
+This is `simple_critical_proportion_ge_67250071` in [CriticalLineZeroProportion](../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean).
+
+At bandwidth $4/3$, the signed coalescent receiver on $[T,2T]$ is
+$$
+N_{0,\mathrm{simple}}
+\ge
+\left(\frac{29}{36}-32\pi\varepsilon_1-\varepsilon\right)N
+-\mathrm{CoalescentSurplus}(u,\eta,T)
++\mathrm{offLineMultipleMass}.
+$$
+The profile $u$, collar $\varepsilon_1$, and $\eta>0$ are the actual admissible parameters. A profile-existence theorem makes the collar loss arbitrarily small. See `zeta_coalescent_certificate_four_thirds_simple_and_offLineMultiple` and `zeta_coalescent_certificate_simple_and_offLineMultiple` in [ParitySensitiveRamanujanStabilizerTransfer](../../../formal/GaloisForLFunctions/TransThresholdPairCorrelation/ParitySensitiveRamanujanStabilizerTransfer.lean).
+
+With compatible windows and quantifiers, an upper surplus budget $bN+o(N)$ gives $29/36-b$. Therefore:
+
+| Target for simple critical zeros | Sufficient surplus coefficient |
+|---|---:|
+| Strictly more than $2/3$ | $b<5/36$ |
+| At least $70\%$ | $b\le19/180$ |
+| At least $75\%$ | $b\le1/18$ |
+
+The actual prime sum has an exact stabilizer-model-plus-discrepancy decomposition, `oddEvenShiftPrimeCoalSum_eq_stabilizerModel_add_discrepancy`. Model calibration at $4/3$ gives
+$$
+(1,0)\mapsto-1/144,\qquad
+(1,1)\mapsto0,\qquad
+(2,1)\mapsto1/16.
+$$
+More generally,
+$$
+(\Upsilon,0)\mapsto(9\Upsilon-10)/144,\qquad
+(1+\Upsilon,1)\mapsto\Upsilon/16.
+$$
+The first family reaches $1/18$ exactly when $\Upsilon\le2$; the second requires $\Upsilon\le8/9$. See `calibration_five_models_four_thirds` in [CoalescentSieveAnatomyAndModelCalibration](../../../formal/GaloisForLFunctions/TransThresholdPairCorrelation/CoalescentSieveAnatomyAndModelCalibration.lean).
+
+If the actual stabilizer model has normalized limit $-1/144$, the remaining allowance for a $75\%$ theorem is $1/16$. The displayed model calculation does not establish that limit or the discrepancy bound for actual primes. The target is the signed estimate in the receiver's own windows, uniformly for all sufficiently large heights. A different window or a favorable subsequence is insufficient. Off-line multiple mass is a positive credit in this census, not a reason to identify near-line zeros with critical-line zeros.
+
+**Quasi-RH: exact arithmetic energy targets and a separate detector budget.**
+
+Let $\Theta$ be the supremum of zero real parts, and define
+$$
+S(M)=\sum_{2\le n<M}\frac{\psi(n)-n}{\sqrt n}.
+$$
+This is the literal `chebyshevNormalizedCesaroSum` in [NormalizedChebyshevCesaroAndSqrtRieszBridge](../../../formal/GaloisForLFunctions/RHTower/NormalizedChebyshevCesaroAndSqrtRieszBridge.lean). Either $S(M)\le CM$ for all $M\ge3$, or the corresponding lower bound, is equivalent to RH. Its cumulative normalized energy is
+$$
+\mathcal E(N)=\sum_{M=2}^N\left(\frac{S(M)}M\right)^2.
 $$
 The corpus proves
 $$
-A_m(k+u)=(1-u)P_m(k)+uP_m(k+1),\qquad 0\le u<1,
+2\Theta=\inf\{r\ge1:\ \exists C\ge0,\ \forall N\ge2,\ 
+\mathcal E(N)\le CN^r\}.
 $$
-and
+In particular,
 $$
-\frac{A_m(t)}{\varphi(m)}\ge\{t\}(1-\{t\})\ge0.
+\begin{aligned}
+\{\rho:\xi(\rho)=0\}\subseteq[1/6,5/6]+i\mathbb R
+&\Longleftrightarrow
+\forall\varepsilon>0,\quad\mathcal E(N)\ll_\varepsilon N^{5/3+\varepsilon},\\
+\{\rho:\xi(\rho)=0\}\subseteq[1/4,3/4]+i\mathbb R
+&\Longleftrightarrow
+\forall\varepsilon>0,\quad\mathcal E(N)\ll_\varepsilon N^{3/2+\varepsilon}.
+\end{aligned}
 $$
-The crucial input is an actual nonzero cyclotomic integer: its norm has magnitude at least one. This gives $P_m(k)\ge\varphi(m)$ when $m\nmid k$. The lower bound is uniform in conductor, not a fixed-mode limit. See [CyclotomicNormGivesAConductorUniformCurvatureFloor](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/CyclotomicNormGivesAConductorUniformCurvatureFloor.lean), `fract_quadratic_le_normalized_arithmeticOverlapCurvature`.
+A one-sided bound for $S(j^m)/j^m$ on any fixed power mesh $m\ge1$, with exponent $c$, already gives $\Theta\le1/2+\max(0,c)$. Either an upper or a lower bound suffices. These are arithmetic source targets, not consequences of the dictionary itself. See [QuasiRHNormalizedChebyshevCesaroAndMertensActionAbscissaLaw](../../../formal/GaloisForLFunctions/RHTower/QuasiRHNormalizedChebyshevCesaroAndMertensActionAbscissaLaw.lean), especially the exact mean-square abscissa law and the two strip equivalences.
 
-**Second, the affine averaging rule is realized by actual primes.** For fixed $q,n,h,A,B$, $q,A>0$, $A\le B$, the corpus proves
+The detector Gram optimization is a different statement. For its exponent model $B(x,s;\nu,\kappa)$, with $\nu\ge0$,
 $$
-\sum_{AN<k\le BN}\frac{\Lambda(k)}k c_q(kn+h)
-\longrightarrow
-(\log B-\log A)\frac{c_q(n)c_q(h)}{\varphi(q)}.
+\exists x\ge0,s:\ B(x,s;\nu,\kappa)\le5/6
+\Longleftrightarrow
+\nu\le1/15,\qquad \kappa+4\nu\le4/3.
 $$
-This is `tendsto_affineRamanujanPrimeWindow` in [ActualPrimeWindowsDiagonalizeAffineRamanujanModes](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ActualPrimeWindowsDiagonalizeAffineRamanujanModes.lean). It supplies the arithmetic eigenvalue of an affine successor average. It does **not** yet supply a norm estimate when conductor, lag and coefficients vary together.
-
-**Third, growing conductor packets now have useful frame bounds.** On $\lparen A,2A]$, for $A\ge4Q(Q-1)$, the actual packet
+A feasible witness is
 $$
-F_a(n)=\sum_{m\le Q}a_m\frac{c_m(n)}{\sqrt{\varphi(m)n}}
+x=5/48,\quad s=1/6,\quad\nu=1/30,\quad\kappa=6/5.
 $$
-has square mass between $\frac14\sum a_m^2$ and $\frac54\sum a_m^2$. But the same source proves that the literal prime kernel compressed to one such annulus is zero: no two distinct integers there divide one another. The arithmetic transport lives **between** annuli. See [AnnularRamanujanFamiliesHaveTwoSidedFrames](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/AnnularRamanujanFamiliesHaveTwoSidedFrames.lean).
+Leaving the ordinary contribution at $\kappa=2$ prevents a five-sixths budget, regardless of the exceptional contribution. With the exceptional contribution removed, the optimized ordinary budget is $23/27$. Even the unit-Gram budget has minimum $29/36>3/4$. Thus a three-quarters result requires changing another term in this detector architecture or using a different source estimate.
 
-These results suggest the following specific mechanism:
+These are `gramProfile_five_sixths_feasible_iff`, `ordinaryGramBoundary_sharp_minimum`, and `unitGramBoundary_sharp_minimum` in [QuasiRHDetectorGramTradeoff](../../../formal/GaloisForLFunctions/RHTower/QuasiRHDetectorGramTradeoff.lean). The identity $B(17/48,1/6;1/6,2)=7/8$ is a budget evaluation. None of these optimization statements supplies the corresponding actual Gram estimate or, by itself, an unconditional zero strip.
 
-1. Organize non-ratio terms by $kn-j=r$, retaining the sign, boundary terms and actual overlap Gram. For fixed bounded overlap, only finitely many integer successor shells occur, once boundary conventions are included.
-2. Compute their action on Ramanujan packets using affine unit averages and the exact logarithmic divisor correction. Combine prime, Robin, Gamma and pole contributions **before** estimating the remainder.
-3. Identify whether the resulting completed symbol contains an integral of $A_m(t)/\varphi(m)$ with nonnegative weight. This identification is an open theorem, not a consequence of the displayed scalar positivity.
-4. Treat cross-conductor and cross-annulus interactions as part of one operator. If a paid block is $D>0$, the remaining form is $A-BD^{-1}B^*$, not $A$. A scalar positive symbol cannot pay an uncontrolled Schur subtraction.
-5. Prove a complement estimate and a norm residual on the actual source, uniform over the packet needed at that overlap. Only then infer a full-matrix lower bound.
+**The missing theorems are source-specific.**
 
-The first meaningful endpoint would be one explicit, fixed, full-support profile at $c=3/2$, or another macroscopic ratio beyond the present range, with all coefficient vectors controlled. A profile whose effective width shrinks while its nominal support grows would not answer this question.
+| Source | Mathematical obligation | Result it would support |
+|---|---|---|
+| Overlapping atomic Weil form | Completed macroscopic comparison; conductor and horizon control; profile-compatible exhaustion | Larger fixed-overlap positivity, then an RH-complete family |
+| Signed theta jets | All-order native-form or Schur-complement positivity | Complete Hankel cone and RH |
+| Actual theta-clock history | Budget at every possible guarded zero | Positive history and RH |
+| Suzuki rectangular source | Uniform lower bound after complete source assembly on the correct domain | RH |
+| CCM first-clock source | A constant lower bound on every sufficiently large physical aperture | RH |
+| Arithmetic index | Upper control of the complete index, beyond height detection | Finite off-line support and Lindelöf; index zero gives RH |
+| Euler deletion | Cumulative covariance and infinite-tail control at inner-cutoff scale | The cofinal current criterion |
+| Signed coalescent source | Actual normalized surplus at most $1/18$, with compatible windows | $75\%$ simple critical zeros |
+| Chebyshev energy / detector Gram | Actual energy estimate, or both required Gram improvements | A specified zero strip |
 
-Why this could circumvent a wall: the sign would come from exact algebraic cancellation and an integer norm, rather than an entrywise Metzler gauge or absolute payment of every prime edge. Why it may fail: the cyclotomic positive quantity may describe only a diagonal compression, or the actual off-diagonal/complement cost may consume its entire reserve. Either failure should yield an explicit residual operator or sharp obstruction, not another unnamed “error.”
 
-A further useful test is a remote prime flip $\omega_p$, $p\ge11$. Such flips attain the same maximal discrete gap $2\log2$ as zeta. Their bounded-overlap behaviour is therefore a better diagnostic than repeating the Liouville test. Failure to separate a remote flip at one fixed ratio would not refute the local theorem; it would reveal the scale at which its information becomes insufficient.
+**The top three research questions.**
 
-### 2.3 A smaller but tractable opportunity: improve the synthesis schedule
+The ranking below is a research judgment based on three criteria: an actual source, an exact remaining expression, and a substantial conclusion from a bounded intermediate theorem. It does not assign probabilities of proving RH.
 
-The established RH receiver uses one Steklov profile and
-$$
-c_N=(\log\log N)(\log\log\log N)^\beta,\qquad\beta>2.
-$$
-This is [SuperGevreyCriticalGrowth](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/SuperGevreyCriticalGrowth.lean), `riemannHypothesis_iff_steklovDCProfile_nonneg_superGevrey`.
+1. **Can the signed theta hierarchy propagate positivity through its native successor integrals?**
 
-**Proposal, not a proved extension:** construct a profile from summable radii of the shape
-$$
-a_m\asymp\frac1{m\log m(\log\log m)^{1+\eta}},\qquad\eta>0,
-$$
-with harmless shifts at small $m$. The expected derivative bound has the form
-$$
-\|\varphi^{(q)}\|_1\le C^{q+1}q!(\log q)^q(\log\log q)^{(1+\eta)q}.
-$$
-Optimizing the differentiation order suggests Fourier/synthesis decay governed by
-$$
-\exp\left[-c\frac{R}{\log R(\log\log R)^{1+\eta}}\right].
-$$
-Writing $L=\log\log N$, this points to schedules
-$$
-c_N=L\log L(\log\log L)^\beta,\qquad\beta>1+\eta.
-$$
-This is a proposed adaptation of the current construction. The derivative estimates, optimized remainder and continuity in the complete Weil norm all need proof. The existing quasi-analytic obstruction remains; this does not predict bounded-overlap synthesis.
+   For $0<a<1/2$, put
+   $$
+   I_n(a)=\int_0^\infty r\sinh(ar)\,
+   \mathrm{thetaCuspNativeSuccessorSource}(a,n,r/2)\,dr.
+   $$
+   The concrete question is whether source identities yield $I_n(a)\ge0$ whenever the preceding section is strict, with a mechanism that preserves strictness or controls the radical at subsequent steps.
 
-Its value is to reduce the amount of overlap a future arithmetic estimate must handle. It supplies no positivity. There is also a profile obligation: positivity is currently proved for a plateau, whereas the sharp receiver uses a different Steklov profile. A schedule improvement must either use a compatible profile or include a signed transfer between the profiles.
+   The first test is $I_7(a)$: the full rank-seven head is positive definite, and the successor theorem identifies exactly what an eighth section requires. A useful advance would explain the sign through a reusable source compensation, rather than furnish only another isolated numerical order. An all-order theorem would give RH; a uniform finite-order extension would enlarge an actual positive part of the deciding hierarchy.
 
-### 2.4 What would not break the main wall
+   This takes first place because the source, the signed hierarchy, the strict initial section, and the next residual are all explicit. The main uncertainty is whether the compensating structure persists with order. Neither global three-node positivity nor positivity of unsigned moments answers that question.
 
-A better scalar overlap constant, another width/index equivalence, or a new source reconstruction identity can be useful without supplying the missing estimate. In particular:
+2. **Does the cyclotomic Gram control the completed Weil operator at macroscopic overlap?**
 
-- The impressive nonfirst-source result retains nearly all original Gamma after a fixed detail head, together with the actual cosh and sinh coordinates. It does not pay the complete remaining first-prime source. See `exists_fullPolarNonfirst_completeGamma_reserve` in [TheFullNonfirstSourceRetainsAlmostAllGamma](../../../formal/GaloisForLFunctions/ArithmeticIndexDescent/TheFullNonfirstSourceRetainsAlmostAllGamma.lean).
-- Restoring the entire square source adds a genuine advance, but coarse first/odd-higher terms, coarse mass, first-prime mixing and head/moment costs still need joint payment. “Only first powers remain” is a useful slogan only after the exact residual is specified.
-- A finite number of retained Haar generators still has infinitely many translation levels. Finite-head approximation is not finite-dimensional compactness.
-- A uniform finite index of the **complete** form would imply finite off-line support, hence RH above a height and Lindelöf. It is a major theorem, not an inexpensive intermediate target.
-- Fixed-$c$ eventual positivity, even if proved separately for every $c$, does not automatically imply positivity along a prescribed growing $c_N$. The horizon may grow too fast. Nor is bounded-overlap completeness currently established.
+   Seek eventual nonnegativity at $c=3/2$ for a fixed nondegenerate profile, with quantitative dependence on conductor and horizon. The first theorem should identify the completed successor-shell action as a cyclotomic Gram contribution plus an explicit residual, account for its cyclotomic radical, and bound the cross-annulus and Schur terms in the actual coefficient norm.
 
-## 3. Is there a wildly different route avoiding the existing walls?
+   The divisor-family identity $Q\min(i,j)-ij$ supplies a concrete comparison kernel. Uniform affine averaging and arbitrary coefficient packets at fixed modulus supply the averaging input. The logarithmic row growth forces the comparison to retain signed completion; the sharp scalar certificate rules out gaining macroscopic overlap by rearranging its existing inequalities.
 
-**I do not currently see one with a concrete, independently justified producer.** The corpus is broad enough that many suggestions which sound unconventional are repetitions.
+   Success at one macroscopic ratio would establish a new complete-form positivity range. RH additionally requires a compatible profile and simultaneous control along an exhausting overlap schedule. This question ranks ahead of a generic count-construction programme because its missing operator is more tightly specified by established arithmetic structure.
 
-For example, I searched specifically for Lee–Yang/Ising constructions rather than treating them as a new statistical-mechanics route. The corpus already contains graph constructions, phase-centered receivers and restrictions on their possible limits. It proves that constant-normalized ferromagnetic graph partition functions of the stated class cannot converge locally uniformly to a zero-free entire factor times Xi. Integer-anchored field frequencies face a separate obstruction. Balanced/phase-centered constructions retain a receiver, with convergence unproved. See [IsingGraphCenteringLaw](../../../formal/GaloisForLFunctions/RHTower/IsingGraphCenteringLaw.lean) and [LeeYangIsingGraphDatum](../../../formal/GaloisForLFunctions/RHTower/LeeYangIsingGraphDatum.lean).
+3. **Can the actual signed coalescent surplus meet the $1/18$ budget?**
 
-Even the softer proposal “prove ferromagnetic inequalities for Riemann's measure, then infer Lee–Yang” is addressed. The smoothable model
-$$
-Z(t)=1+\frac34\cos t
-$$
-satisfies the stated GHS and fourth-cumulant inequalities but has nonreal zeros. Thus these inequalities do not provide real-rootedness. See [FerromagneticInequalitiesLeeYangBlind](../../../formal/GaloisForLFunctions/RHTower/FerromagneticInequalitiesLeeYangBlind.lean). This does not prohibit every statistical-mechanics construction; it prevents calling an already obstructed class a new answer.
+   Prove the surplus bound for the same admissible bandwidth-$4/3$ profiles and all sufficiently large heights. A concrete decomposition target is a proved model limit $-1/144$, together with normalized signed discrepancy at most $1/16$, including collar and truncation costs. The $19/180$ surplus threshold provides a $70\%$ checkpoint.
 
-Likewise, generic positive operators, determinant identities, heat monotonicity, tensor amplification, source rigidity, and infinite-symmetry continuation have already been separated from the arithmetic assertion that would make them decide RH. In the positive-genus affine-Eisenstein direction, pole detection is now exact even for impure curve data. The missing confinement input is substantive; continuation does not supply it.
+   This question permits exceptional zeros while retaining a simplicity requirement and a precise quantitative allowance. Its decisive uncertainty is an estimate for the actual centered prime source; model calibration and unsigned upper bounds in the displayed affine model classes do not provide it. Success gives a simple-critical census improvement without requiring a complete positivity theorem or an index ceiling.
 
-The most useful radical change of viewpoint would be **to construct a count without first constructing a positive Weil realization**. But that is the independent-producer direction already recognized by ASRP, effectivity and AKL. Its unanswered content is specific: an identity or auxiliary construction whose analytic extraction retains the cancellation lost by absolute estimates and Möbius inversion. Merely saying “a characteristic-zero Frobenius” adds no mechanism.
+The Suzuki and CCM lower bounds, the theta-clock budget, and Euler-deletion covariance remain distinct alternatives. Their exact endpoints deserve direct source estimates; no theorem above reduces them to the overlap question. For a strip-specific objective, the Chebyshev energy exponents and the detector feasibility region give concrete targets. A one-sided count construction remains valuable, with its correct error class $\mathcal Q$, but the integrality lattice alone does not identify the analytic estimate that would produce it.
 
-A new idea deserves a separate route when it provides at least one of the following:
+A route can bypass a particular obstruction by using a different source quantity or domain. The Metzler obstruction, the positive-extension obstruction, and Markov-mixing rigidity each have specified scopes. They do not classify every possible RH proof. The mathematical basis for considering different routes is this diversity of exact source problems, not a claim that an unrestricted new representation will force positivity.
 
-- a source-built inequality unavailable to current methods, with a proved transfer to the target;
-- a new invariant whose value is computed from arithmetic and forces the sign;
-- a faithful approximation by independently signed objects, with the required complete-form convergence proved.
+**The proposed field: a quantitative theory of completed arithmetic forms.**
 
-A novel object with its deciding property still assumed is a candidate, not a new proof mechanism. Conversely, none of the scoped no-go theorems rules out an unknown construction outside its hypotheses. Trans-Metzler positivity is the existing example of that distinction working productively.
+This is a proposed organizing programme. Its central problem is:
 
-## 4. Opportunities for improved Quasi-RH
+> Which relations in an explicit arithmetic or theta source produce a lower bound for its completed form, and preserve that bound through the precise compression, accumulation, or limit required by the endpoint?
 
-### 4.1 The baseline needs its stated status
+EffectiveArithmeticHodgeTheory, CriticalArithmeticCorrelationTheory, ArithmeticIndexDescent, and ArithmeticOfSquareRootPrecision supply parts of this theory. The height Hasse theorem and the orbit-kernel converse Krein–Langer theorem belong to its established foundation. The signed theta hierarchy, causal clock equations, and cumulative covariance show that its objects must extend beyond prime-lattice kernels.
 
-The supplied frontier labels the seven-eighths manuscript result **[E]: external claim, not locally validated**. The local intake contains detector ingredients and budget calculations, not a completed zero-free capstone. I therefore use $7/8$ as the requested comparison value, not as an established local premise. This is a status distinction, not an attempted verification of the external proof.
+An object should specify an actual source, its natural domain, its complete signed form, its positive comparison form, the comparison radical, and the parameter range. The endpoint determines which estimate matters: positivity, a constant lower bound, an index bound, a count modulo $\mathcal Q$, or a census allowance. These requirements cannot be replaced by a single universal sign axiom.
 
-Let
-$$
-\Theta=\sup\{\operatorname{Re}\rho:\xi(\rho)=0\}.
-$$
-A proof of $\Theta\le\theta<7/8$ would improve the requested strip, giving $1-\theta\le\operatorname{Re}\rho\le\theta$. Endpoint nonvanishing is a separate matter if one wants strict inequalities at exactly $1-\theta,\theta$.
+The key mathematical tools would be:
 
-### 4.2 Exact arithmetic targets already available
+| Tool | Established model | Missing research content |
+|---|---|---|
+| Coercivity modulo an arithmetic radical | Cyclotomic divisibility and the exact divisor bridge | Control of the actual shell residual on the quotient and on its null directions, across annuli and growing conductors |
+| Successor estimates for signed source forms | Strict rank seven and the native Schur integral | A source compensation valid as rank grows, including strictness or radical control |
+| Completion on a specified domain | Finite Suzuki light-Gram identity; impossibility of a positive extension on all coordinates | A complete source lower bound on the domain used by the rectangular receiver |
+| Estimates after accumulation | Exact Euler-deletion kernel $1/\max(j,k)-1/(T+1)$ | Arithmetic control of unequal-pair covariance and the infinite tail at inner-cutoff scale |
+| Precision-preserving source transfers | Count stabilizer $\mathcal Q$; exact tower rigidity; moving theta reconstruction | Comparisons that retain the endpoint's error tolerance and simultaneous parameter range |
+| Signed census dispersion | Stabilizer decomposition and exact model budgets | A prime-source discrepancy bound with the required centering, parity, and constant |
 
-Define the actual boundary-free sum and its cumulative energy by
-$$
-S(M)=\sum_{2\le n<M}\frac{\psi(n)-n}{\sqrt n},\qquad
-\mathcal E(N)=\sum_{2\le M\le N}\left(\frac{S(M)}M\right)^2.
-$$
-These are `chebyshevNormalizedCesaroSum` and `chebyshevNormalizedCesaroMeanSquareEnergy`. The exact abscissa law identifies the infimum of admissible energy exponents with $2\Theta$.
+Three principles make this a mathematical programme with testable content.
 
-| Desired closed strip | Sufficient one-sided bound | Equivalent energy target, for every $\varepsilon>0$ | Escaped Möbius saving |
-|---|---|---|---|
-| $[1/8,7/8]$ | $S(M)/M\ll1+M^{3/8}$ | $\mathcal E(N)\ll_\varepsilon N^{7/4+\varepsilon}$ | exponent $1/8$, up to $\varepsilon$ |
-| $[1/6,5/6]$ | $S(M)/M\ll1+M^{1/3}$ | $\mathcal E(N)\ll_\varepsilon N^{5/3+\varepsilon}$ | exponent $1/6$, up to $\varepsilon$ |
-| $[1/4,3/4]$ | $S(M)/M\ll1+M^{1/4}$ | $\mathcal E(N)\ll_\varepsilon N^{3/2+\varepsilon}$ | exponent $1/4$, up to $\varepsilon$ |
-| Critical line | a corresponding critical receiver | $\mathcal E(N)\ll_\varepsilon N^{1+\varepsilon}$ | exponent $1/2$, up to $\varepsilon$ |
-
-The $5/6$ and $3/4$ one-sided implications even allow sampling on a fixed power mesh $M=j^m$, $m\ge1$. They remain all-scale arithmetic estimates on that mesh, not finite checks. See [QuasiRHNormalizedChebyshevCesaroAndMertensActionAbscissaLaw](../../../formal/GaloisForLFunctions/RHTower/QuasiRHNormalizedChebyshevCesaroAndMertensActionAbscissaLaw.lean), especially the two strip implications and the two mean-square equivalences.
+First, **positive pieces must be compared with the original completed object**. The theta successor subtracts a Schur cost; the Suzuki reflected current is a difference of two positive Grams; index descent retains explicit polar and mass costs. Each needs its own comparison inequality. Reusing a positive reserve in two subtractions requires a joint bound.
 
-The escaped-boundary dictionary is equally precise. For $0<\vartheta\le1/2$, the appropriate $O_\varepsilon(M^{-\vartheta+\varepsilon})$ decay, where $M=(N-b)/a$, is equivalent to $\Theta\le1-\vartheta$. One dyadic multiplier already suffices. Uniform decay measured in $N$ over every multiplier is false; the escaped endpoint is the correct scale. See `growingEndpointEscapedMoebiusLaw_tfae` in [MoebiusEscapedPairingBoundaryLaw](../../../formal/GaloisForLFunctions/SelectivePositivityAndThresholdLaws/MoebiusEscapedPairingBoundaryLaw.lean).
-
-These targets show exactly how much power saving buys an improved strip. They do not themselves produce any saving. Nor does improved zero density force extinction of an individual zero: the supplied density envelopes still allow one exception.
-
-### 4.3 The detector budget gives a concrete five-sixths research problem
-
-The strongest numerical guidance comes from two inspected modules:
-
-- [QuasiRHDetectorScaleBudget](../../../formal/GaloisForLFunctions/RHTower/QuasiRHDetectorScaleBudget.lean);
-- [QuasiRHDetectorGramTradeoff](../../../formal/GaloisForLFunctions/RHTower/QuasiRHDetectorGramTradeoff.lean).
-
-Their conclusions concern the stated upper-bound model. They are not lower bounds on actual energy and are not zero-free theorems.
-
-Write the Gram profile as
-$$
-1+P^\nu+\frac{P^\kappa}{Y},\qquad
-X=Z^x,\quad Y=Z^{1-s-x},\quad P=Y/X,
-$$
-where $s$ is total slot length. After principal-signal normalization and the reflected allowance, the boundary is
-$$
-B(x,s;\nu,\kappa)=\frac56+\frac{x-s}{6}
-+\frac12\max\left(0,\nu(1-s-2x),(\kappa-1)(1-s)-(2\kappa-1)x\right)
-+\frac12\max\left(0,\frac{6s-1}{5}\right).
-$$
-The source proves the following exact statements.
+Second, **the domain and the quantifiers belong to the theorem**. The Suzuki extension no-go acts on all coordinate functions; a restricted completed domain is a different problem. The clock's finite guarded-zero set requires exclusion everywhere, whereas CCM's first-clock receiver needs only an eventual constant lower bound. Fixed-conductor uniformity over all coefficients still leaves conductor growth. These distinctions specify different estimates, not different presentations of one estimate.
 
-| Change | Budget conclusion |
-|---|---|
-| Retune the original detector scales and slot length, retaining the existing losses | Minimum remains $7/8$. A nominal gain from longer slots is paid back by a reflected-budget face. |
-| Save $\sigma$ in the original exceptional Gram exponent, at the original scales | The displayed boundary improves to $7/8-\sigma/16$, while the other terms and admissibility remain controlled. |
-| Remove the exceptional contribution but retain the ordinary $P^2/Y$ term | Optimized boundary is $23/27\approx0.851852$, still worse than $5/6$. |
-| Improve both nonunit contributions | For $\nu\ge0$, a boundary at most $5/6$ is feasible exactly when $\nu\le1/15$ and $\kappa+4\nu\le4/3$. |
-| Remove both nonunit Gram contributions, retaining principal/reflected allowances | The remaining boundary has minimum $29/36>3/4$, at the degenerate low-scale endpoint $x=0,s=1/6$. |
-
-An explicit five-sixths budget witness is
-$$
-\nu=\frac1{30},\qquad\kappa=\frac65,\qquad
-x=\frac5{48},\qquad s=\frac16,\qquad
-Y=Z^{35/48}.
-$$
-These values give **a concrete prospective estimate to research**, not a proposed proof by algebraic substitution. The unresolved task is to establish the corresponding bound for the actual detector Gram, uniformly in its moving parameters, while retaining enough of the principal signal and paying the reflected terms.
+Third, **precision is attached to the observable**. Exact source rigidity is appropriate for complete tower positivity. The count permits $\mathcal Q$-perturbations. The census permits an aggregate surplus. Euler deletion permits adaptive outer cutoffs but measures growth at the inner cutoff. A useful transfer theorem states what each operation preserves and what it costs.
 
-This identifies two useful directions:
-
-1. **A small genuine Gram saving** would move the seven-eighths budget, if the rest of the detector argument were completed at the same scales.
-2. **A five-sixths programme must attack both exceptional and ordinary Gram losses.** Improving only the exceptional-frequency estimate cannot reach that boundary in this model.
-
-The three-quarters target needs more: even ideal Gram improvements cannot overcome the retained $29/36$ floor. One must improve the principal/reflected mechanism, or prove a different source bound such as the Cesàro-energy target above.
-
-There is also a precise warning against an overly broad fourth-moment conjecture. [QuasiRHSubfieldMoment](../../../formal/GaloisForLFunctions/RHTower/QuasiRHSubfieldMoment.lean) constructs sextic characters and shift sets with fourth moments exceeding a cardinality-only $C|K||S|^2$ bound by an unbounded factor. This does not refute bounds for the actual structured detector sets. It says that any new bound must use their additional structure. Projecting away bad subspaces is useful only if one also proves how much detecting signal survives the projection.
-
-**My assessment:** five-sixths is the most concrete improved detector target supplied by the corpus. Three-quarters is a sensible target in the direct arithmetic energy language, but there is no present input establishing it. A generic logarithmic improvement, density estimate, or parameter retuning is not the missing mechanism.
-
-## 5. Opportunities for at least 75% of zeros on the critical line
-
-### 5.1 What is established, and what is not the same statistic
-
-The local census goes beyond the Montgomery–Taylor constant through Incommensurable Gabor Pinching. The inspected theorem `simple_critical_proportion_ge_67250071` gives, for every $\varepsilon>0$, eventually
-$$
-N_{0,\mathrm{simple}}(0,T)\ge(0.67250071-\varepsilon)N(0,T).
-$$
-The stronger symbolic gain is $H_D(1)+10^{-8}$. See [CriticalLineZeroProportion](../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean). This is the corpus result, including its Zeta23 foundation; no external historical benchmark was substituted for it.
-
-The supplied reports also distinguish statistics that must not be conflated with 75% on the line: “simple or critical,” distinct ordinates carrying a critical zero, and zeros within $4/\log T$ of the line. None of those statements alone answers this question. Nor does the 75% dichotomy: if 75% critical fails, it forces a substantial population of simple off-line zeros within $A/\log T$; it does not eliminate that population.
-
-### 5.2 The best target: one signed surplus, with explicit room to spare
-
-Let $N=N(T,2T)$, and let $S_{u,\eta}(T)$ be the actual coalescent surplus for an admissible smooth window, at bandwidth $4/3$. The corpus proves the stronger simple-critical certificate
-$$
-N_{0,\mathrm{simple}}(T,2T)
-\ge
-\left(\frac{29}{36}-32\pi\varepsilon_1-\varepsilon\right)N
--S_{u,\eta}(T)+M_{\mathrm{off,multiple}}(T,2T),
-$$
-where the final term is nonnegative. This is `zeta_coalescent_certificate_four_thirds_simple_and_offLineMultiple` in [ParitySensitiveRamanujanStabilizerTransfer](../../../formal/GaloisForLFunctions/TransThresholdPairCorrelation/ParitySensitiveRamanujanStabilizerTransfer.lean).
-
-Consequently, the arithmetic target
-$$
-S_{u,\eta}(T)\le\left(\frac1{18}+o(1)\right)N
-$$
-with arbitrarily small collar loss gives
-$$
-\liminf_{T\to\infty}\frac{N_{0,\mathrm{simple}}(0,T)}{N(0,T)}\ge\frac34,
-\qquad\frac{29}{36}-\frac1{18}=\frac34.
-$$
-The passage from eventual dyadic-window bounds to the cumulative bound uses the same uniform eventual statement and the zero-count asymptotic. This conclusion is stronger than the requested critical-line proportion.
-
-**Quantifiers are part of the target.** For every desired loss, choose $0<\eta<1/3$, a sufficiently small collar and an admissible profile, then prove both the certificate and the surplus estimate for that same choice and all sufficiently large heights. A favorable surplus for a different window, or only a subsequence of heights, does not plug into this receiver.
-
-The surplus can be reduced to odd prime pairs with even shifts. Proper prime powers contribute
-$$
-O(T^{-1/3+\eta})N=o(N),
-$$
-not necessarily $o(1)$ absolutely. The normalized statement and the full/prime-only equivalence are in [CoalescentPrimeReductionAndParitySieve](../../../formal/GaloisForLFunctions/TransThresholdPairCorrelation/CoalescentPrimeReductionAndParitySieve.lean).
-
-The useful hierarchy at this bandwidth is simple: a surplus bound $S\le bN+o(N)$ buys $29/36-b$. Thus $b<5/36$ beats $2/3$, $b\le19/180$ gives 70%, and $b\le1/18$ gives 75%, before any additional structural slack is credited.
-
-### 5.3 Target the centered discrepancy, not full Hardy–Littlewood
-
-There is an exact finite decomposition
-$$
-S_{\mathrm{prime}}=S_{\mathrm{Ramanujan\ model},Q}+D_Q,
-$$
-with parity retained in both terms. Its unnormalized form is `oddEvenShiftPrimeCoalSum_eq_stabilizerModel_add_discrepancy`. This is an identity about actual primes, not an assumed prime-pair asymptotic.
-
-The model calibration gives a useful measure of how much accuracy is needed. In the corpus normalization, the Hardy–Littlewood/GUE model has surplus ratio $-1/144$. Therefore, **if** the chosen model truncation and end corrections are proved to have that asymptotic, it is enough to show
-$$
-D_Q/N\le\frac1{16}+o(1),
-\qquad
--\frac1{144}+\frac1{16}=\frac1{18}.
-$$
-A strict allowance below $1/16$ would leave room for collar and truncation errors. Proving a full $o(N)$ discrepancy is unnecessary for the 75% target. Establishing the model evaluation with the selected cutoff is itself part of this programme; the finite identity alone does not establish its limiting value.
-
-This is the most promising way to weaken the required arithmetic input without weakening the desired conclusion: seek one signed weighted inequality with a substantial error allowance, rather than uniform Hardy–Littlewood for every shift.
-
-The sign must survive. A positive majorant discards the cancellation of the Poisson contribution against the precise singular-series term. In the supplied calibration, the sub-threshold positive majorant gives $8/27$ for the trans-threshold integral, where $1/9$ is required. The independent-Poisson model gives surplus $1/16$, which **misses** the budget $1/18$. An “uncorrelated” normalization with surplus zero is a different model. See [CoalescentSieveAnatomyAndModelCalibration](../../../formal/GaloisForLFunctions/TransThresholdPairCorrelation/CoalescentSieveAnatomyAndModelCalibration.lean).
-
-The research question is therefore not whether prime-pair counts can be bounded above. It is whether their **centered, parity-sensitive signed reading** can be bounded at the required constant.
-
-### 5.4 Two supporting opportunities
-
-**Optimize structural slack, and then combine it with arithmetic slack.** IGP proves that scalar trace estimates discard a real macroscopic reserve: the cosine window's zero set does not support the requisite orthogonal lattice. Better packing, more spans and joint window optimization might enlarge $10^{-8}$. This is worthwhile mathematics. There is no supplied theorem indicating that it can supply the entire gap to 75%, about $0.0774993$. A more credible role is to carry the additional pinching credit into the trans-threshold certificate, thereby relaxing its prime-surplus budget. That combined receiver must be proved; gains from different windows cannot simply be added.
-
-**Pursue a small displacement-sensitive energy budget.** The actual shallow Cauchy estimate is
-$$
-\frac1{\log T}E_{1/\log T}(T)\le C\,N(T,2T)
-$$
-for some constant $C$. It controls multiplicity and clustering but supplies no suitably small constant. See [ShallowCauchyImplications](../../../formal/GaloisForLFunctions/ShallowCauchyPrimeEnergy/ShallowCauchyImplications.lean).
-
-If $R_{\rm sh},R_{\rm deep}$ count right-half-plane zero copies, the exact reflection accounting is
-$$
-N=N_0+2(R_{\rm sh}+R_{\rm deep}).
-$$
-Hence a paid upper bound $R_{\rm sh}+R_{\rm deep}\le N/8$ would give 75% critical zeros. Small deep-tail density does not suffice while the shallow term is only $O(N)$. Different Ward/Cauchy/cubic receivers use different energy normalizations; their constants must not be transferred without the matching comparison.
-
-**Assessment:** the signed coalescent target is the leading 75% opportunity. Structural slack is a complementary source of room. Shallow energy is a second, displacement-sensitive approach, but its decisive constant remains missing. None of these estimates is currently a proof of 75%.
-
-## 6. Three open questions to prioritize
-
-I would focus the main research effort on the following three questions. They ask for new mathematical inputs with measurable intermediate outcomes, rather than another representation of RH.
-
-### Priority 1 — Does cyclotomic arithmetic control the full overlap operator at a macroscopic ratio?
-
-**Question.** Can the exact affine successor-shell source be converted into a completed operator estimate at $c=3/2$, then larger $c$, using the conductor-uniform curvature floor and retaining all mixed blocks, Gamma and both poles?
-
-The theorem to aim for initially is eventual nonnegativity of the actual complete matrices for one fixed, quantitatively nondegenerate profile at a macroscopic ratio. The method should provide a usable dependence on ratio, conductor and horizon so that an exhausting schedule is a subsequent mathematical question, not a hidden quantifier exchange.
-
-The first decisive lemma would identify the completed shell symbol and its cross-mode residual. It should explain exactly where the cyclotomic positive term enters and how the Schur cost is paid. A theorem controlling only each selected diagonal entry would leave the main question unanswered.
-
-**Why first:** the necessary source identities, positive arithmetic quantities and bounded-overlap base case now coexist. This is the closest opportunity to convert several established tools into a genuinely new positivity mechanism.
-
-**Useful failure:** a sharp negative symbol or unavoidable cross-mode term would identify which arithmetic information the current Ramanujan description loses. It would narrow the producer problem substantially.
-
-**Walls addressed:** 3.26, 3.28, 3.42 and the first-prime/polar transfer faces of Wall 1; it deliberately avoids the impossible atomic Metzler repair.
-
-### Priority 2 — Can the actual signed stabilizer discrepancy meet a census budget?
-
-**Question.** For the exact admissible bandwidth-$4/3$ windows, can one prove
-$$
-S_{\mathrm{prime}}(T)\le(1/18+o(1))N(T,2T),
-$$
-by retaining parity and singular-series cancellation? Equivalently as a proposed decomposition target, can one evaluate the selected model and bound the remaining normalized discrepancy within the $1/16$ allowance described above?
-
-A first milestone is a nontrivial constant saving in the same functional, sufficient to improve the current census. The $19/180$ budget gives a clear 70% checkpoint within the $4/3$ receiver; the narrower-band exchange-rate route may offer another checkpoint with different estimates. Those inputs should be compared by actual arithmetic difficulty, not by the numerical size of a coefficient in unrelated normalizations.
-
-**Why second:** this target is weaker than RH, permits exceptions and has a known quantitative receiver. A new signed prime-correlation estimate would also teach us what arithmetic information can survive beyond the usual threshold.
-
-**Useful failure:** characterize which class of signed dispersion estimates still collapses to a parity-blind majorant, and preserve the best constant or exact main-term cancellation it does prove.
-
-**Walls addressed:** the census and coalescence faces 1.27, 1.30, 1.31 and 1.33. No claim that the estimate alone transfers to RH without a separate source theorem.
-
-### Priority 3 — Can an independent integer-side construction retain sublinear count precision?
-
-**Question.** Can exact arithmetic identities or signed auxiliary integrals produce a one-sided bound
-$$
-\psi(x)-x\le Cx^\theta
-\quad\text{or}\quad
-\psi(x)-x\ge-Cx^\theta,\qquad\theta<1,
-$$
-without assuming a Mertens bound, an RH-equivalent sign, or a suitably small integral? A first fixed exponent is the milestone; improving it below $7/8$, then toward $1/2$, supplies a clear progression.
-
-The most concrete source to test is the exact factorial identity and its structured inversion. With
-$$
-I_n(E)=\sum_{k\le n}\mu(k)E(n/k),\qquad F(y)=y\log y-y,
-$$
-the established Stirling split gives
-$$
-\psi(n)=I_n(F)+I_n(G)+I_n(h),
-$$
-where $G$ is a small monotone remainder and $h=F(\lfloor y\rfloor)-F(y)$ is the sawtooth. Generic size control on $E$ cannot survive inversion with sublinear precision. Monotone control invokes Mertens precision. Therefore the new theorem must exploit the **joint constraints on these actual terms**, before separating them into absolute bounds.
-
-A complementary realization of the same producer question uses the attained Nair lattice:
-$$
-\min\left\{\int_0^1P>0:P\in\mathbb Z[x],\deg P\le n\right\}
-=\frac1{\operatorname{lcm}(1,\ldots,n+1)}.
-$$
-The floor is exact. What is missing is an independent analytic ceiling with signed cancellation and controlled positivity. Merely naming the minimizing polynomial computes the unknown $\psi(n+1)$ again. Generic sup-norm or divisibility arguments do not supply the requisite precision.
-
-**Why third:** this is the most serious route to a producer that need not solve the full atomic comparison problem. It uses the ring's exact arithmetic and aims at the weaker, correct quotient by the count's precision class.
-
-**Useful failure:** a sharp classification of the structured remainders or auxiliary class, with the best achievable exponent. An obstruction only for arbitrary errors is already known and should not be reproved as if it addressed the actual factorial remainder.
-
-**Walls addressed:** 1.34–1.37 and the producer faces of Wall 14.
-
-### Why these priorities differ from the existing three-question list
-
-The supplied wall ledger puts infinite-symmetry polar confinement in its third slot. I would keep that as exploratory foundational work, but put a concrete census estimate among the three main priorities. The reason is mathematical: pole survival and continuation now work for the impure calibration data too. The additional confinement principle still lacks an independent source. The census has an explicit, weaker arithmetic target and a numerical allowance.
-
-Similarly, I would not prioritize “prove finite complete index” as an easy bridge. Its equivalence to eventual RH and its Lindelöf consequence make it a much stronger endpoint than a modest census gain or a first fixed strip. None of this retires the geometric, heat-flow or confinement programmes; it changes which missing inequality receives primary attention.
-
-## 7. What new mathematics would supply the missing tools?
-
-### 7.1 A field specification: arithmetic correlation and precision theory
-
-I would develop **arithmetic correlation and precision theory**: the study of how exact additive–multiplicative relations force signed estimates, and how those estimates survive inversion, localization and limiting processes at a specified precision.
-
-This name describes a missing body of theorems, not a claim to have discovered an independent subject. CriticalArithmeticCorrelationTheory already supplies some of its finite arithmetic foundations. ArithmeticOfSquareRootPrecision supplies its distinction between identities and estimates. ArithmeticIndexDescent, SignedArithmeticHodgeTheory and the census programmes supply examples of transfers that preserve part of the needed sign. The proposed field should grow from these results.
-
-Its central question would be:
-
-> Which exact compatibility laws of arithmetic force cancellation or positivity beyond what follows from size, symmetry, local spectra and separate marginal distributions?
-
-The object of study is not an arbitrary sequence satisfying broad bounds. It is the actual source together with all the relations that constrain it: additive shifts, divisibility, prime-power structure, residue stabilizers, logarithmic weights, and the analytic completion. A theorem may start with a class of sources, but membership of the actual source must be proved independently of the desired estimate.
-
-This perspective addresses the repeated failure pattern in the ledgers. Absolute estimates forget sign. Marginal positivity forgets cross terms. Exact reconstruction forgets orientation. Weak convergence forgets escaping mass. Inversion can destroy precision. The new tools would control those losses together.
-
-### 7.2 Objects and language
-
-**Arithmetic sources with their relations.** Keep the weighted source and the actions relating its coordinates. For the prime source these include divisibility edges and affine successor edges; for the count they include the exact factorial and Möbius relations. A residue distribution alone is insufficient when the target reads correlations between residues, shifts and scales.
-
-**Complete forms with designated reserves.** A form should carry its actual coefficient space, test profile, Gram matrix, Gamma term, both polar coordinates and arithmetic interaction blocks. A reserve is a proved lower bound available in a specified norm. A transfer records how much reserve it spends. This extends the successful joint-payment results and prevents the same Gamma credit being used twice.
-
-**Precision spaces.** For a counting problem, record the allowed partial-sum error. For example, write
-$$
-\mathcal Q_{\theta,k}
-=
-\left\{\delta:
-\sum_{n\le x}\delta(n)
-=
-O\!\left(x^\theta(\log x)^k\right)
-\right\}.
-$$
-The square-root count uses a particular such class. A central problem is to determine which operations preserve these classes, which lose powers, and which preserve them only on the constrained remainders produced by arithmetic. The classification should distinguish linear error tolerance from the nonlinear requirement of complete positivity.
-
-**Signed correlation functionals.** Treat the actual weighted reading as the object, including its centering and parity. In the census this is the coalescent surplus, not the collection of unweighted prime-pair counts. In the overlap problem it is the completed successor-shell operator, not a list of diagonal eigenvalues. Different functionals can require very different amounts of correlation information.
-
-**Defect and escape data.** A proposed new construction is a matrix-valued description of what remains after projecting onto arithmetic packets. It would retain cross-mode terms, cross-annulus transport, polar coupling and mass escaping every bounded window. Such an object has not been constructed here. Its value would be a proved decomposition and convergence theorem; naming an “arithmetic defect measure” without those would add nothing.
-
-The corresponding language should make three features explicit: **which source**, **which topology or norm**, and **which simultaneous parameter range**. “Positive,” “small,” and “converges” are incomplete statements without them.
-
-### 7.3 Foundational principles it must satisfy
-
-These are requirements for the theory, not new axioms that assert its desired conclusions.
-
-1. **Arithmetic realizability.** Any correlation law used for zeta must be derived for the actual arithmetic source. A positive abstract model is a calibration until the source-to-model comparison is proved.
-
-2. **Completion before sign extraction.** The decisive estimate must retain the terms that can change sign, including the two poles and mixed blocks. Separate estimates are legitimate when their combined cost is controlled in the original norm.
-
-3. **Target-dependent precision.** A count theorem may work modulo its established error class. A complete positivity theorem must meet its stronger rigidity requirement. A census theorem need only pay an aggregate exceptional budget. The theory should exploit these differences.
-
-4. **Uniformity as mathematical content.** Fixed-conductor convergence, finite-dimensional positivity and each fixed-overlap theorem are distinct from a growing-conductor, exhaustive result. A usable theorem supplies the required joint range or proves an admissible diagonal choice.
-
-5. **Visible cancellation.** Centering, parity and the relations between terms remain present until their cancellation has been used. Triangle inequalities are applied after the relevant signed combination has been identified.
-
-6. **Graded coercivity.** A reserve may decrease as overlap, conductor or resolution grows. The goal is a sufficient lower bound relative to the actual residual and synthesis error. Requiring one positive floor at every scale would impose a stronger, sometimes false, problem.
-
-7. **Sharp calibration and positive salvage.** A failed theorem should expose the precise lost information and the strongest surviving bound. The Metzler boundary, cyclotomic floor, count stabilizer and exact detector budget illustrate what useful failures produce.
-
-These principles guide theorem design. They cannot replace the independent arithmetic estimate.
-
-### 7.4 The mathematical tools to build
-
-**A signed arithmetic symbol calculus.** Classical diagonalization is not enough here: the arithmetic operator mixes multiplicative scales and additive successor shifts. The desired calculus would compute the completed action on growing Ramanujan packets, isolate the exact divisor jet, and bound the residual in operator norm. It would include composition and elimination rules that preserve the full Schur cost.
-
-The first theorem should be modest and concrete: identify the symbol at one macroscopic overlap, and decide whether the cyclotomic curvature floor pays its residual. A general calculus is justified by such a theorem, not the other way round.
-
-**A dispersion theory for centered arithmetic functionals.** Develop estimates that use parity, singular series and signed windows jointly. The census supplies an unusually clear benchmark: model evaluation plus discrepancy at most the stated constant allowance. A successful theory would prove a useful aggregate inequality without requiring every individual prime-pair asymptotic.
-
-It must also distinguish exceptional structured sets from arbitrary sets. The finite-field fourth-moment counterexample shows why cardinality alone is not an adequate hypothesis for detector estimates.
-
-**A constrained inversion theory.** Möbius inversion on arbitrary bounded or monotone errors already encounters sharp barriers. The open object is the particular correlated tuple of main term, Stirling remainder and sawtooth arising from the factorial identity. The desired theorem would estimate their joint inversion more accurately than the sum of separate bounds.
-
-This is an opportunity for a new kind of cancellation theorem: precision follows from the relations among errors, rather than from a stronger norm bound on each error. Its first success would be a fixed sublinear one-sided count estimate, with every input derived from the arithmetic identity.
-
-**A quantitative theory of exhaustion.** Approximation theorems should track profile regularity, aperture, conductor and height together in the complete form. Denjoy–Carleman synthesis supplies one starting point. The proposed slower schedule in Section 2.3 would be a concrete advance even before an arithmetic positivity theorem reaches that schedule.
-
-**A theory of arithmetic selection and invisible perturbations.** The corpus already shows that different observables see different changes to the source. Count precision can ignore a remote finite prime change; exact full positivity cannot. Infinite prime patterns can lose all bounded-window spectral mass while retaining a nontrivial limiting question. The field should classify what each observable determines, what it cannot detect, and which additional coupling supplies the missing information.
-
-**A constructive theory of signed auxiliaries.** For the Nair and point-count directions, seek arithmetic objects with exact integrality and independently proved analytic smallness. The subject must explain how signed cancellation coexists with a controlled positive output. Integrality without an analytic ceiling, or an auxiliary defined using the unknown answer, does not satisfy the specification.
-
-### 7.5 Calibration families and criteria for success
-
-A general theorem should be tested on the calibration family appropriate to its conclusion.
-
-| Proposed conclusion | Required calibration |
-|---|---|
-| Full Weil positivity for the actual prime source | Distinguish the Liouville twin where the claimed range already separates it; eventually detect finite prime flips if the asserted family is exhaustive. |
-| Square-root count precision | Respect the proved perturbation class, including changes that a count cannot distinguish. Rejecting every such perturbation is not a necessary criterion. |
-| A 75% census | Use the same windows and normalization as the receiver; retain the difference between the Poisson and singular-series models. |
-| An improved detector estimate | Survive the actual structured set geometry while respecting the arbitrary-set fourth-moment counterexample. |
-| Spectral or polar purity from a realization | Supply an input absent from the impure calibration objects that already satisfy the weaker realization and continuation properties. |
-| A limit theorem | Track mass escape and the decisive cross terms in the topology used by its receiver. |
-
-The first successes should be new inequalities with useful scope, not a collection of equivalent definitions. Examples would be a completed macroscopic overlap bound; a signed census discrepancy improving the actual proportion; a detector Gram estimate meeting a better joint exponent budget; or a constrained inversion estimate yielding a fixed narrower strip.
-
-A broad theory would become credible when the same proved technique supplies more than one of these gains through explicit transfers. Until then, common language is useful organization, not evidence that the residual arithmetic problems have been unified.
-
-### 7.6 Research topics and sequence
-
-The field's research programme should proceed through interacting, concrete problems:
-
-- finite cyclotomic positivity and affine residue identities;
-- signed local-to-global operator comparison, including complementary modes;
-- arithmetic dispersion with parity and prescribed centering;
-- exact precision classes under inversion and auxiliary constructions;
-- joint limiting theorems with escaping mass;
-- profile regularity and the least overlap needed for synthesis;
-- quantitative interpolation between census, fixed-strip and exhaustive-sign targets, only where a source transfer is actually proved.
-
-The first three priority questions in Section 6 would serve as its test problems. They are deliberately different: one asks for a complete sign, one for a tolerable signed error, and one for a new producer. A field that supplies tools for those distinctions could change the research frontier. A field whose foundational “positivity principle” merely restates RH would leave the present walls intact.
+A foundational result for this programme would prove one of the comparison inequalities in the table directly from the actual source, with a reusable mechanism and its full parameter range. The top three questions supply concrete tests: a theta successor compensation, a macroscopic completed overlap comparison, and a signed census estimate. The broader field would be built from such theorems; neither a name nor an abstract realization supplies their missing inequalities.

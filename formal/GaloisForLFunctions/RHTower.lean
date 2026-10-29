@@ -28238,6 +28238,7 @@ import GaloisForLFunctions.RHTower.Heat.LocalizedHeatPacketFlux
 import GaloisForLFunctions.RHTower.Heat.HeatZeroSumContinuity
 import GaloisForLFunctions.RHTower.Heat.HeatLocalizedZeroObservables
 import GaloisForLFunctions.RHTower.Heat.HeatLocalizedEnergyEvolution
+import GaloisForLFunctions.RHTower.Heat.HeatLocalizedEnergyDissipation
 import GaloisForLFunctions.RHTower.Heat.HeatReverseGaussian
 import GaloisForLFunctions.RHTower.Heat.HeatRelativeGlobalBounds
 import GaloisForLFunctions.RHTower.Heat.HeatGaussianQuadraticError

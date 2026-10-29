@@ -363,4 +363,371 @@ theorem tendsto_weilGram_of_perturbation {ι : Type*} {F : ι → ℝ → ℝ} {
 
 end Gram
 
+/-! ### Atomic Gram matrices -/
+
+section Atomic
+
+open ArithmeticElectrostatics (atomicTest contDiff_atomicTest)
+
+local notation "Tr" => ArithmeticCastelnuovoSeveri.translate
+
+/-- **The atomic Gram matrix** at horizon `N` of a real profile `ψ`: the Weil Gram matrix of the
+translates `ψ(· − log n)`, `1 ≤ n ≤ N`. -/
+def atomicGram (ψ : ℝ → ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℂ :=
+  weilGram Λw fun a : Fin N => Tr (Real.log ((a : ℝ) + 1)) (cx ψ)
+
+theorem sum_Icc_one_eq_sum_fin {M : Type*} [AddCommMonoid M] (N : ℕ) (f : ℕ → M) :
+    ∑ n ∈ Icc 1 N, f n = ∑ a : Fin N, f (a + 1) := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+    rw [Finset.sum_Icc_succ_top (by omega), ih, Fin.sum_univ_castSucc]
+    simp
+
+/-- An atomic test, as a complex test, is the combination of the atoms. -/
+theorem cx_atomicTest_eq (N : ℕ) (x : ℕ → ℝ) (ψ : ℝ → ℝ) :
+    cx (atomicTest N x ψ) =
+      ∑ a : Fin N, ((x (a + 1) : ℝ) : ℂ) • Tr (Real.log ((a : ℝ) + 1)) (cx ψ) := by
+  funext u
+  simp only [cx, atomicTest, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+    ArithmeticCastelnuovoSeveri.translate]
+  push_cast
+  rw [sum_Icc_one_eq_sum_fin]
+  push_cast
+  rfl
+
+/-- Extending an atomic test by zero coefficients does not change it. -/
+theorem atomicTest_extend {N N' : ℕ} (h : N ≤ N') (x : ℕ → ℝ) (ψ : ℝ → ℝ) :
+    atomicTest N x ψ = atomicTest N' (fun j => if j ≤ N then x j else 0) ψ := by
+  funext u
+  unfold atomicTest
+  rw [← Finset.sum_subset (Finset.Icc_subset_Icc_right h) fun j hj hjN => by
+    have : ¬ j ≤ N := fun hle => hjN (Finset.mem_Icc.mpr ⟨(Finset.mem_Icc.mp hj).1, hle⟩)
+    simp [this]]
+  refine Finset.sum_congr rfl fun j hj => ?_
+  beta_reduce
+  rw [if_pos (Finset.mem_Icc.mp hj).2]
+
+/-- **Compression.** The Weil Gram matrix of finitely many real atomic tests at horizon `N` has at
+most as many negative squares as the atomic Gram matrix. -/
+theorem hermNegIndex_le_atomicGram {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) (hφ1 : VanishesOff φ)
+    {k : ℝ} (hk : 0 < k) {n N : ℕ} (x : Fin n → ℕ → ℝ) :
+    hermNegIndex (weilGram Λw fun i => cx (atomicTest N (x i) (dilate k φ))) ≤
+      hermNegIndex (atomicGram (dilate k φ) N) := by
+  set X : Matrix (Fin N) (Fin n) ℂ := fun a i => ((x i (a + 1) : ℝ) : ℂ)
+  have hψ : ContDiff ℝ 2 (dilate k φ) := contDiff_dilate hφ k
+  have hψc : HasCompactSupport (dilate k φ) := hasCompactSupport_dilate_of hφ1 hk
+  have hat : ∀ a : Fin N, ContDiff ℝ 2 (Tr (Real.log ((a : ℝ) + 1)) (cx (dilate k φ))) :=
+    fun a => ArithmeticCastelnuovoSeveri.translate_contDiff (cx_contDiff hψ) _
+  have hatc : ∀ a : Fin N, HasCompactSupport (Tr (Real.log ((a : ℝ) + 1)) (cx (dilate k φ))) :=
+    fun a => ArithmeticCastelnuovoSeveri.translate_hasCompactSupport (cx_hasCompactSupport hψc) _
+  have hA : ∀ i, ContDiff ℝ 2 (cx (atomicTest N (x i) (dilate k φ))) := fun i =>
+    cx_contDiff (atomicTest_dilate_mem hφ hφ1 hk N (x i)).1
+  have hAc : ∀ i, HasCompactSupport (cx (atomicTest N (x i) (dilate k φ))) := fun i =>
+    cx_hasCompactSupport (atomicTest_dilate_mem hφ hφ1 hk N (x i)).2
+  refine HeckeKreinToeplitz.hermNegIndex_le_of_hermQuad_eq _ _ X.mulVecLin fun y => ?_
+  rw [Matrix.mulVecLin_apply, atomicGram,
+    ArithmeticCastelnuovoSeveri.hermQuad_weilGram _ _ hat hatc,
+    ArithmeticCastelnuovoSeveri.hermQuad_weilGram _ _ hA hAc]
+  have key : (∑ a, conj (X.mulVec y a) • Tr (Real.log ((a : ℝ) + 1)) (cx (dilate k φ))) =
+      ∑ i, conj (y i) • cx (atomicTest N (x i) (dilate k φ)) := by
+    simp_rw [cx_atomicTest_eq, Finset.smul_sum, smul_smul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [← Finset.sum_smul]
+    congr 1
+    simp only [Matrix.mulVec, dotProduct, map_sum, map_mul, Complex.conj_ofReal, X]
+    exact Finset.sum_congr rfl fun i _ => mul_comm _ _
+  rw [key]
+
+/-- **The upper half.** At every width, the atomic Gram matrix has at most `κ(K_ζ)` negative
+squares (HKT's uniform receiver bound). -/
+theorem hermNegIndex_atomicGram_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) (hφ1 : VanishesOff φ)
+    {k : ℝ} (hk : 0 < k) (N : ℕ) :
+    (hermNegIndex (atomicGram (dilate k φ) N) : ℕ∞) ≤
+      HeckeKreinToeplitz.negIndex HeckeKreinToeplitz.zetaKernel :=
+  HeckeKreinToeplitz.hermNegIndex_weilGram_le_negIndex_zetaKernel
+    ⟨contDiff_dilate hφ k, hasCompactSupport_dilate_of hφ1 hk⟩ _
+
+end Atomic
+
+/-! ### The negative squares of the Weil kernel on real Gevrey families -/
+
+section Source
+
+open BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff_cubicSpline
+  hasCompactSupport_cubicSpline)
+
+theorem exists_le_of_le_iSup_nat {a : ℕ → ℕ} {m : ℕ} (h : (m : ℕ∞) ≤ ⨆ N, (a N : ℕ∞)) :
+    ∃ N, m ≤ a N := by
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · exact ⟨0, Nat.zero_le _⟩
+  have hlt : ((m - 1 : ℕ) : ℕ∞) < ⨆ N, (a N : ℕ∞) :=
+    lt_of_lt_of_le (by exact_mod_cast Nat.sub_lt hm one_pos) h
+  obtain ⟨N, hN⟩ := lt_iSup_iff.mp hlt
+  have : m - 1 < a N := by exact_mod_cast hN
+  exact ⟨N, by omega⟩
+
+/-- `SupportedIn` is monotone in the radius. -/
+theorem supportedIn_mono {R R' : ℝ} {h : ℝ → ℝ} (hh : SupportedIn R h) (hR : R ≤ R') :
+    SupportedIn R' h := fun u hu => hh u (lt_of_le_of_lt hR hu)
+
+/-- The Weil Gram matrix of real `C²` compactly supported tests is Hermitian. -/
+theorem weilGram_cx_isHermitian {ι : Type*} [Fintype ι] [DecidableEq ι] {F : ι → ℝ → ℝ}
+    (hF : ∀ i, ContDiff ℝ 2 (F i)) (hFc : ∀ i, HasCompactSupport (F i)) :
+    (weilGram Λw fun i => cx (F i)).IsHermitian := by
+  rw [ArithmeticCastelnuovoSeveri.weilGram_eq_zeroGram _ (fun i => cx_contDiff (hF i))
+    fun i => cx_hasCompactSupport (hFc i)]
+  exact ArithmeticCastelnuovoSeveri.zeroGram_isHermitian _ _
+
+/-- **Real spline families carry the index**: for every `m ≤ κ(K_ζ)` some real translates
+`B(· − log n)`, `n ≤ N`, of the cubic spline have a Weil Gram matrix with `m` negative squares. -/
+theorem exists_spline_family {m : ℕ}
+    (hm : (m : ℕ∞) ≤ HeckeKreinToeplitz.negIndex HeckeKreinToeplitz.zetaKernel) :
+    ∃ N : ℕ, m ≤ hermNegIndex (weilGram Λw fun i : Fin N =>
+      cx fun u => cubicSpline (u - Real.log ((i : ℝ) + 1))) := by
+  rw [HeckeKreinToeplitz.negIndex_zetaKernel,
+    HeckeKreinToeplitz.negIndex_zetaKernel_eq_iSup_integerAtoms] at hm
+  exact exists_le_of_le_iSup_nat hm
+
+variable {φ : ℝ → ℝ} {A Bφ s : ℝ}
+
+/-- **Gevrey families carry the index.** For every `m ≤ κ(K_ζ)` there are finitely many real
+smooth tests supported in `[−R, R]`, of Gevrey class `s` with common constants, whose Weil Gram
+matrix has `m` negative squares: mollify the spline family by the dilated profile. -/
+theorem exists_gevrey_family (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1)
+    (hBφ : 0 ≤ Bφ) (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
+    {m : ℕ} (hm : (m : ℕ∞) ≤ HeckeKreinToeplitz.negIndex HeckeKreinToeplitz.zetaKernel) :
+    ∃ (n : ℕ) (G : Fin n → ℝ → ℝ) (R M b : ℝ), 0 ≤ R ∧ 0 ≤ M ∧ 0 ≤ b ∧
+      (∀ i, ContDiff ℝ ∞ (G i)) ∧ (∀ i, SupportedIn R (G i)) ∧
+      (∀ i l t, |iteratedDeriv l (G i) t| ≤ M * b ^ l * (l.factorial : ℝ) ^ s) ∧
+      m ≤ hermNegIndex (weilGram Λw fun i => cx (G i)) := by
+  obtain ⟨n, hn⟩ := exists_spline_family hm
+  set B : Fin n → ℝ → ℝ := fun i u => cubicSpline (u - Real.log ((i : ℝ) + 1))
+  have hB2 : ∀ i, ContDiff ℝ 2 (B i) := fun i =>
+    contDiff_cubicSpline.comp (contDiff_id.sub contDiff_const)
+  have hBc : ∀ i, HasCompactSupport (B i) := fun i =>
+    hasCompactSupport_cubicSpline.comp_homeomorph (Homeomorph.subRight _)
+  -- common support radius, sup bound and Lipschitz constant
+  choose Ri Mi Li hRi hRiB hMiB hLiB using fun i => exists_test_bounds (hB2 i) (hBc i)
+  set R := ∑ i, Ri i
+  set M := ∑ i, |Mi i|
+  set L := ∑ i, |Li i|
+  have hR0 : 0 ≤ R := Finset.sum_nonneg fun i _ => hRi i
+  have hM0 : 0 ≤ M := Finset.sum_nonneg fun i _ => abs_nonneg _
+  have hL0 : 0 ≤ L := Finset.sum_nonneg fun i _ => abs_nonneg _
+  have hBR : ∀ i, SupportedIn R (B i) := fun i => supportedIn_mono (hRiB i)
+    (Finset.single_le_sum (fun j _ => hRi j) (Finset.mem_univ i))
+  have hBM : ∀ i t, |B i t| ≤ M := fun i t => (hMiB i t).trans ((le_abs_self _).trans
+    (Finset.single_le_sum (f := fun j => |Mi j|) (fun j _ => abs_nonneg _) (Finset.mem_univ i)))
+  have hBL : ∀ i u v, |B i u - B i v| ≤ L * |u - v| := fun i u v => (hLiB i u v).trans
+    (mul_le_mul_of_nonneg_right ((le_abs_self _).trans (Finset.single_le_sum
+      (f := fun j => |Li j|) (fun j _ => abs_nonneg _) (Finset.mem_univ i))) (abs_nonneg _))
+  -- the mollified families converge to the spline family
+  set A0 := ∫ s, |φ s|
+  set A1 := ∫ s, |deriv φ s|
+  obtain ⟨he, hV, -, -⟩ := tendsto_mollifyErr L A0 M A1 (R + 1)
+  have hconv := tendsto_weilGram_of_perturbation (F := B) (R' := R + 1) (by linarith) hB2 hBc
+    (fun i => supportedIn_mono (hBR i) (by linarith)) (A := fun r i => mollify (B i) φ r)
+    (Dn := fun r i x => mollify (B i) φ r x - B i x) (c := fun _ => 0)
+    (e := fun r : ℕ => L * (1 / (r : ℝ)) * A0) (LD := fun r : ℕ => M * ((r : ℝ) * A1) + L)
+    (k := fun r : ℕ => (r : ℝ))
+    (Eventually.of_forall fun r i => by funext u; simp only [sub_zero]; ring)
+    (by
+      filter_upwards [eventually_ge_atTop 1] with r hr i
+      have hr' : (1 : ℝ) ≤ r := by exact_mod_cast hr
+      obtain ⟨h2, hR, hsup, hlip⟩ := mollify_perturbation hφ hφ1 hφint (hB2 i) (hBR i) (hBM i)
+        (hBL i) hr'
+      exact ⟨h2, hR, hsup, hlip, hr'⟩)
+    he hV
+  have hev := HeckeKreinToeplitz.eventually_le_hermNegIndex (weilGram_cx_isHermitian hB2 hBc)
+    hconv
+  obtain ⟨r, hr, hr1⟩ := (hev.and (eventually_ge_atTop 1)).exists
+  have hr0 : (0 : ℝ) < r := by exact_mod_cast hr1
+  have hr1' : (1 : ℝ) ≤ r := by exact_mod_cast hr1
+  have hA0 : 0 ≤ A := by
+    have := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
+    simpa using this
+  refine ⟨n, fun i => mollify (B i) φ r, R + 1, M * A, Bφ * r, by linarith, mul_nonneg hM0 hA0,
+    mul_nonneg hBφ hr0.le, fun i => contDiff_mollify hφ hφ1 (hB2 i).continuous hr0,
+    fun i => mollify_supportedIn hφ1 (hBR i) hr1', fun i l t => ?_, hn.trans hr⟩
+  have := abs_iteratedDeriv_mollify_le hφ hφ1 (hB2 i).continuous (hBM i) hr0 hA l t
+  simpa only [mul_assoc] using this
+
+end Source
+
+/-! ### Synthesis along every residue class -/
+
+section Schedules
+
+open ArithmeticElectrostatics (atomicTest)
+
+variable {φ : ℝ → ℝ} {A Bφ s : ℝ}
+
+/-- Shifting the horizon keeps Gevrey overlap growth. -/
+theorem overlapGrowthGevrey_shift {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) (ρ : ℕ) :
+    OverlapGrowthGevrey s fun N => κ (N + ρ) := by
+  have hsh : Tendsto (fun N : ℕ => N + ρ) atTop atTop := tendsto_add_atTop_nat ρ
+  refine ⟨hκ.1.comp hsh, ?_⟩
+  have hg := hκ.2.comp hsh
+  have hK := hκ.1.comp hsh
+  have hll : Tendsto (fun N => Real.log (Real.log (κ (N + ρ)))) atTop atTop :=
+    Real.tendsto_log_atTop.comp (Real.tendsto_log_atTop.comp hK)
+  refine tendsto_atTop_mono' atTop ?_ (hg.atTop_div_const (show (0 : ℝ) < 2 by norm_num))
+  filter_upwards [hK.eventually_gt_atTop 0, hll.eventually_ge_atTop 1, eventually_ge_atTop ρ,
+    eventually_ge_atTop 1, hg.eventually_ge_atTop 0] with N hk hl hNρ hN1 hg0
+  simp only [Function.comp] at hg0 ⊢
+  have hls : 0 < Real.log (Real.log (κ (N + ρ))) ^ s := Real.rpow_pos_of_pos (by linarith) s
+  have hN : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hNρ' : (ρ : ℝ) ≤ N := by exact_mod_cast hNρ
+  push_cast at hg0 ⊢
+  have heq : (N : ℝ) / κ (N + ρ) / Real.log (Real.log (κ (N + ρ))) ^ s =
+      (N : ℝ) / (N + ρ) * (((N : ℝ) + ρ) / κ (N + ρ) / Real.log (Real.log (κ (N + ρ))) ^ s) := by
+    field_simp
+  rw [heq]
+  have hfrac : 1 / 2 ≤ (N : ℝ) / (N + ρ) := by
+    rw [div_le_div_iff₀ (by norm_num) (by positivity)]; linarith
+  nlinarith
+
+/-- If a property holds eventually along every residue class modulo `B`, it holds eventually. -/
+theorem eventually_of_residues {P : ℕ → Prop} {B : ℕ} (hB : 0 < B)
+    (h : ∀ ρ < B, ∀ᶠ n in atTop, P (n * B + ρ)) : ∀ᶠ N in atTop, P N := by
+  have h' : ∀ ρ, ∃ n₀ : ℕ, ρ < B → ∀ n ≥ n₀, P (n * B + ρ) := fun ρ => by
+    by_cases hρ : ρ < B
+    · obtain ⟨n₀, hn₀⟩ := Filter.eventually_atTop.mp (h ρ hρ)
+      exact ⟨n₀, fun _ => hn₀⟩
+    · exact ⟨0, fun h => absurd h hρ⟩
+  choose n₀ hn₀ using h'
+  refine Filter.eventually_atTop.mpr ⟨(∑ ρ ∈ range B, n₀ ρ) * B, fun N hN => ?_⟩
+  have hρ : N % B < B := Nat.mod_lt _ hB
+  have h1 : n₀ (N % B) ≤ ∑ ρ ∈ range B, n₀ ρ :=
+    Finset.single_le_sum (fun _ _ => Nat.zero_le _) (mem_range.mpr hρ)
+  have h2 : ∑ ρ ∈ range B, n₀ ρ ≤ N / B := (Nat.le_div_iff_mul_le hB).mpr hN
+  have := hn₀ (N % B) hρ (N / B) (h1.trans h2)
+  rwa [Nat.div_add_mod' N B] at this
+
+/-- **One residue class.** Fix a Gevrey family carrying `m` negative squares, supported in
+`[−R, R]`, and a residue `ρ` modulo `B = blockSize R`. Along `N = nB + ρ` the Euler–Maclaurin
+synthesis of the family at level `n` and width `1/κ_N` converges in Gram matrix, so the atomic
+Gram matrix at horizon `N` eventually carries `m` negative squares. -/
+theorem eventually_le_hermNegIndex_atomicGram_residue (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
+    {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) {n : ℕ} {G : Fin n → ℝ → ℝ} {R M b : ℝ}
+    (hR : 0 ≤ R) (hM : 0 ≤ M) (hb : 0 ≤ b) (hG : ∀ i, ContDiff ℝ ∞ (G i))
+    (hGR : ∀ i, SupportedIn R (G i))
+    (hGM : ∀ i l t, |iteratedDeriv l (G i) t| ≤ M * b ^ l * (l.factorial : ℝ) ^ s) {m : ℕ}
+    (hm : m ≤ hermNegIndex (weilGram Λw fun i => cx (G i))) (ρ : ℕ) :
+    ∀ᶠ j in atTop, m ≤ hermNegIndex (atomicGram (dilate (κ (j * blockSize R + ρ)) φ)
+      (j * blockSize R + ρ)) := by
+  set B := blockSize R
+  have hB : 1 ≤ B := SpacingScaleHarmonicAnalysis.one_le_blockSize R
+  have hκρ := overlapGrowthGevrey_shift hκ ρ
+  set k : ℕ → ℝ := fun j => κ (j * B + ρ)
+  have hA0 : 0 ≤ A := by
+    have := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
+    simpa using this
+  have hG2 : ∀ i, ContDiff ℝ 2 (G i) := fun i => (hG i).of_le (natCast_le_infty 2)
+  have hGc : ∀ i, HasCompactSupport (G i) := fun i => hasCompactSupport_of_vanishes (hGR i)
+  set A0 := ∫ s, |φ s|
+  set Mseq : ℕ → ℝ := fun l => M * b ^ l * (l.factorial : ℝ) ^ s
+  set Aseq : ℕ → ℝ := fun q => ∫ s, |iteratedDeriv q φ s|
+  -- the synthesis at every level
+  have hsyn : ∀ (j : ℕ) (i : Fin n), ∃ (x : ℕ → ℝ) (D : ℝ → ℝ), 2 ≤ j → 1 ≤ k j →
+      atomicTest (j * B) x (dilate (k j) φ) =
+          (fun u => G i (u - (Real.log j + R)) + D (u - (Real.log j + R))) ∧
+        ContDiff ℝ 2 D ∧ SupportedIn (R + 1) D ∧
+        (∀ u, |D u| ≤ gevErr M b A Bφ s (k j) A0 (gevOrder (k j)) j) ∧
+        ∀ u v, |D u - D v| ≤ emLip Mseq Aseq (k j) j * |u - v| := fun j i => by
+    by_cases hj : 2 ≤ j ∧ 1 ≤ k j
+    · obtain ⟨x, D, h⟩ := exists_gevreySynthesis hφ hφ1 hφint (hG i) (hGR i) hM hb hBφ hs
+        (hGM i) hA hj.1 hj.2 (gevOrder (k j))
+      exact ⟨x, D, fun _ _ => h⟩
+    · exact ⟨0, 0, fun h1 h2 => absurd ⟨h1, h2⟩ hj⟩
+  choose X Dn hXD using hsyn
+  obtain ⟨he, hV⟩ := tendsto_gevrey (A0 := A0) hs hκρ hB (mul_nonneg hM hA0) hb hBφ Mseq Aseq
+    (R + 1)
+  have hk : Tendsto k atTop atTop := hκρ.1.comp
+    (tendsto_atTop_mono (fun j => Nat.le_mul_of_pos_right j hB) tendsto_id)
+  have hgood : ∀ᶠ j in atTop, 2 ≤ j ∧ 1 ≤ k j :=
+    (eventually_ge_atTop 2).and (hk.eventually_ge_atTop 1)
+  have hconv := tendsto_weilGram_of_perturbation (F := G) (R' := R + 1) (by linarith) hG2 hGc
+    (fun i => supportedIn_mono (hGR i) (by linarith)) (A := fun j i => atomicTest (j * B) (X j i) (dilate (k j) φ))
+    (Dn := Dn) (c := fun j => Real.log j + R)
+    (e := fun j => gevErr M b A Bφ s (k j) A0 (gevOrder (k j)) j)
+    (LD := fun j => emLip Mseq Aseq (k j) j) (k := k)
+    (hgood.mono fun j hj i => (hXD j i hj.1 hj.2).1)
+    (hgood.mono fun j hj i => by
+      obtain ⟨-, h2, hR1, hsup, hlip⟩ := hXD j i hj.1 hj.2
+      exact ⟨h2, hR1, hsup, hlip, hj.2⟩)
+    he hV
+  have hev := HeckeKreinToeplitz.eventually_le_hermNegIndex (weilGram_cx_isHermitian hG2 hGc)
+    hconv
+  filter_upwards [hev, hgood] with j hj hj2
+  have hk0 : 0 < k j := by linarith [hj2.2]
+  refine hm.trans (hj.trans ?_)
+  have hext : (fun i => cx (atomicTest (j * B) (X j i) (dilate (k j) φ))) =
+      fun i => cx (atomicTest (j * B + ρ) (fun l => if l ≤ j * B then X j i l else 0)
+        (dilate (k j) φ)) := by
+    funext i; rw [atomicTest_extend (Nat.le_add_right _ ρ)]
+  rw [hext]
+  exact hermNegIndex_le_atomicGram (hφ.of_le (natCast_le_infty 2)) hφ1 hk0 _
+
+/-- **The explicit schedules reach the index.** For a Gevrey profile of class `s` and a dilation
+schedule of Gevrey overlap growth, every `m ≤ κ(K_ζ)` is eventually carried by the atomic Gram
+matrices `Σ_{n≤N} x_n φ_{κ_N}(· − log n)`. -/
+theorem eventually_le_hermNegIndex_atomicGram (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
+    {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) {m : ℕ}
+    (hm : (m : ℕ∞) ≤ HeckeKreinToeplitz.negIndex HeckeKreinToeplitz.zetaKernel) :
+    ∀ᶠ N in atTop, m ≤ hermNegIndex (atomicGram (dilate (κ N) φ) N) := by
+  obtain ⟨n, G, R, M, b, hR, hM, hb, hG, hGR, hGM, hGm⟩ :=
+    exists_gevrey_family hφ hφ1 hφint hBφ hA hm
+  exact eventually_of_residues (SpacingScaleHarmonicAnalysis.one_le_blockSize R) fun ρ _ =>
+    eventually_le_hermNegIndex_atomicGram_residue hφ hφ1 hφint hs hBφ hA hκ hR hM hb hG hGR hGM
+      hGm ρ
+
+/-- **The indices converge to the index of the Weil kernel**, finite or infinite. -/
+theorem tendsto_hermNegIndex_atomicGram (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ)
+    (hφint : ∫ s, φ s = 1) (hs : 0 ≤ s) (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * (q.factorial : ℝ) ^ s)
+    {κ : ℕ → ℝ} (hκ : OverlapGrowthGevrey s κ) :
+    Tendsto (fun N => (hermNegIndex (atomicGram (dilate (κ N) φ) N) : ℕ∞)) atTop
+      (𝓝 (HeckeKreinToeplitz.negIndex HeckeKreinToeplitz.zetaKernel)) := by
+  have hφ2 : ContDiff ℝ 2 φ := hφ.of_le (natCast_le_infty 2)
+  refine tendsto_order.2 ⟨fun a ha => ?_, fun a ha => ?_⟩
+  · lift a to ℕ using ha.ne_top
+    have : ((a + 1 : ℕ) : ℕ∞) ≤ HeckeKreinToeplitz.negIndex HeckeKreinToeplitz.zetaKernel := by
+      exact_mod_cast Order.add_one_le_of_lt ha
+    filter_upwards [eventually_le_hermNegIndex_atomicGram hφ hφ1 hφint hs hBφ hA hκ this]
+      with N hN
+    exact_mod_cast Nat.lt_of_succ_le hN
+  · filter_upwards [hκ.1.eventually_gt_atTop 0] with N hN
+    exact lt_of_le_of_lt (hermNegIndex_atomicGram_le hφ2 hφ1 hN N) ha
+
+/-- **The Denjoy–Carleman window reaches the index.** For every `α > 1` there is an odd `r` such
+that the atomic Gram matrices of the Denjoy–Carleman profile `φ_r` at width `(log log N)^α/N` have
+indices converging to `κ(K_ζ)`, the number of zeros of `ζ` right of the critical line. -/
+theorem dcProfile_atomicGram_reaches_index {α : ℝ} (hα : 1 < α) :
+    ∃ r : ℕ, Odd r ∧ Tendsto (fun N : ℕ => (hermNegIndex (atomicGram
+      (dilate ((N : ℝ) / Real.log (Real.log N) ^ α) (dcProfile r)) N) : ℕ∞)) atTop
+      (𝓝 (HeckeKreinToeplitz.negIndex HeckeKreinToeplitz.zetaKernel)) := by
+  set m := ⌈(α - 1)⁻¹⌉₊
+  set r := 2 * m + 1
+  have hr : Odd r := odd_two_mul_add_one m
+  have hα1 : 0 < α - 1 := by linarith
+  have hrpos : (0 : ℝ) < r := by positivity
+  have hrs : (r : ℝ)⁻¹ < α - 1 := by
+    have hm' : (α - 1)⁻¹ ≤ m := Nat.le_ceil _
+    have : (α - 1)⁻¹ < (r : ℝ) := by
+      simp only [r]; push_cast; have : (0 : ℝ) ≤ m := Nat.cast_nonneg m; linarith
+    rw [inv_lt_comm₀ hrpos hα1]; exact this
+  refine ⟨r, hr, tendsto_hermNegIndex_atomicGram (contDiff_dcProfile r) (dcProfile_vanishesOff hr)
+    (integral_dcProfile hr) (s := 1 + (r : ℝ)⁻¹) (by positivity) (by positivity)
+    (integral_abs_iteratedDeriv_dcProfile_le hr)
+    (overlapGrowthGevrey_loglog (by positivity) (by linarith))⟩
+
+end Schedules
+
 end GaloisForLFunctions.EffectiveArithmeticHodgeTheory

@@ -36,7 +36,9 @@ The existing reciprocal Bézout theorem gives integers `b_k` with `Σ_(k=1)^N b_
 
 ## Precision consequence
 
-The constrained log-floor differs from `psi(N)` by a bounded amount. Thus each constrained Siegel/Liouville half at an admissible scale is equivalent to its unrestricted half. In particular both square-root criteria remain RH-equivalent. The construction preserves signed integrals; it does not supply a height, sup-norm, or absolute-integral ceiling.
+Positive constrained integrals form a nonempty subset of `d_N⁻¹ ℤ`, so their least element is attained. Its logarithm differs from `-psi(N)` by a bounded amount. Absorbing `log C_Q` into any eventually-at-least-one scale proves equivalence of each constrained Siegel/Liouville half with its unrestricted half. Negative power scales fail: the Siegel restriction implies its unrestricted version; a restricted Liouville bound at a negative power implies one at power zero, already excluded by `Θ≥1/2`. Hence the whole power-scale sets, including their endpoints, agree; both exponents are `Θ`, and both square-root criteria remain RH-equivalent.
+
+The construction preserves signed integrals; it does not supply a height, sup-norm, or absolute-integral ceiling. Its precision and parity sensitivity are exactly those of the existing integrality halves: adding fixed vanishing constraints neither loses nor creates a deciding input. The arithmetic horizon remains `d_N`; no claim is made that characteristic-zero integration transfers to finite fields.
 
 ## Novelty boundary
 

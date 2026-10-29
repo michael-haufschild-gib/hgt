@@ -77,11 +77,31 @@ settle a fixed overlap ratio. These are leads pending source and dependency chec
    `4-3*log(2)-log(2*pi)` and `log(4/pi)`, both positive. The prime successor sum
    has twice the leading short-overlap Gamma contribution; cancelling both completely
    would miss this finite spectral correction. Actual norm quasimodes and spectral exhaustion
-   remain unproved. A possible coercivity input is strict variance of the periodized plateau
-   for local overlap in `[1,2]`; ordinary charge variance alone does not suffice.
+   remain unproved. Ordinary charge variance alone does not suffice.
+
+## Candidate mechanism for the full ladder — unproved
+
+Write `G(u)=integral φ(v)φ(v+u) dv`, `M=integral φ²`, `q=(integral φ)²/M`.
+The proposed actual conductor energy is
+`E_m(c)=self(c)+log(m)+tameDifferent(m)+1_(m=1)*c*q
+-2/(M*totient(m))*sum_(1≤h<c) c_m(h)*integral_(h/c)^1 G(u)/u du`.
+Its divisor identity should be `E_m(c)=sum_(d|m) d*μ(m/d)*E_1(c/d)/totient(m)`.
+Poisson summation suggests a positive representation by integrated squared Fourier transforms
+at nonzero primitive frequency classes. This would give positivity and decay as `c→∞`.
+The actual operator limit, its positive representation, and coercivity are separate obligations.
+
+For coercivity, the unmodified plateau has a partition-of-unity resonance at spacing `1-η`;
+strict periodization variance cannot be assumed uniformly. A candidate profile
+`exp(τ*u)*plateau(η,u)`, `τ>0` small, breaks this resonance. On each interval avoiding the
+transition layers, every periodized Fourier fibre is a nonzero geometric sum times an
+exponential. A uniform high-frequency frame bound on fixed overlap ranges could then pay
+the high block at order `log N`; Hilbert's inequality pays the low/high Gamma cross block,
+and a Schur estimate pays the full prime shells and the pole cross terms. None of these
+operator bridges has yet been formalized here.
 
 ## Proof and Lean status
 
 `elevenTrialUpperMargin_neg` passed Lean with only `propext`, `Classical.choice`, and
-`Quot.sound`. It certifies the scalar margin only. Draft arithmetic, packet, and complete-form
-bridges remain under verification. All required mathematical conclusions remain open.
+`Quot.sound`. `PrimeSquareTrial.lean` also compiled, including its exact Ramanujan expansion
+and harmonic correlation. Draft tail, packet, and complete-form bridges remain under
+verification. All required mathematical conclusions remain open.

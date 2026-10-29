@@ -35,7 +35,8 @@ theorem completedCyclotomicGram_eq_primePacketJumpEnergy
         a p * a q * primitivePrefixGram m p q :=
       sum_congr rfl fun _ _ => sum_comm
     _ = ∑ p ∈ S, ∑ q ∈ S, a p * a q *
-        ((Q : ℝ) * min (p : ℕ) (q : ℕ) - (p : ℕ) * (q : ℕ)) := by
+        ((Q : ℝ) * min ((p : ℕ) : ℝ) ((q : ℕ) : ℝ) -
+          ((p : ℕ) : ℝ) * ((q : ℕ) : ℝ)) := by
       refine sum_congr rfl fun p hp => sum_congr rfl fun q hq => ?_
       rw [← mul_sum, sum_nontrivial_divisors_primitivePrefixGram hQ
         (hS p hp).le (hS q hq).le]
@@ -45,7 +46,7 @@ theorem completedCyclotomicGram_eq_primePacketJumpEnergy
       rw [mul_sum]
       refine sum_congr rfl fun q _ => ?_
       rw [Nat.cast_min]
-      field_simp
+      field_simp [hQR]
       <;> ring
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

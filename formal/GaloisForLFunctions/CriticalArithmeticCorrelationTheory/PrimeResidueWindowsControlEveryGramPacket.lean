@@ -136,7 +136,9 @@ theorem eventually_primeWindow_all_Gram_packets {ι : Type*} {q : ℕ} [NeZero q
         ε * ∑ r : ZMod q, (∑ i ∈ s, x i * v i r) ^ 2 := by
   filter_upwards [eventually_residuePrimeWindow_uniform (q := q) hA hAB hε] with N hN
   intro s v x
-  simpa only [abs_sq] using hN (fun r => (∑ i ∈ s, x i * v i r) ^ 2)
+  have hab : ∀ z : ℝ, |z ^ 2| = z ^ 2 := fun z => abs_of_nonneg (sq_nonneg z)
+  simpa only [hab] using
+    hN (fun r => (∑ i ∈ s, x i * v i r) ^ 2)
 
 
 /-- The same common horizon controls complex Gram packets, including

@@ -43,8 +43,8 @@ theorem continuous_arithmeticOverlapCurvature (m : ℕ) :
 theorem continuous_arithmeticOverlapGram (m : ℕ) :
     Continuous (fun p : ℝ × ℝ => arithmeticOverlapGram m p.1 p.2) := by
   unfold arithmeticOverlapGram
-  exact (((continuous_arithmeticOverlapCurvature m).comp continuous_fst).add
-    ((continuous_arithmeticOverlapCurvature m).comp continuous_snd) |>.sub
+  exact ((((continuous_arithmeticOverlapCurvature m).comp continuous_fst).add
+    ((continuous_arithmeticOverlapCurvature m).comp continuous_snd)).sub
       ((continuous_arithmeticOverlapCurvature m).comp
         ((continuous_fst.sub continuous_snd).abs))).div_const 2
 

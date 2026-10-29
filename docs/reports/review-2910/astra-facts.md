@@ -101,3 +101,8 @@
 - `RHTower/LiEvenCrossActualClockTerminalHistory.lean:248`: the actual guarded-zero set is finite unconditionally, not merely bounded.
 - `RHTower/NormalizedChebyshevCesaroAndSqrtRieszBridge.lean:592`: `S(M)=Σ_(2≤n<M) (ψ(n)-n)/√n`. A global upper bound `S(M) ≤ C M` is equivalent to RH (:801), as is a global lower bound `-C M ≤ S(M)` (:836).
 
+# Touching uniformity
+
+- `CriticalArithmeticCorrelationTheory/OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching.lean:66`: for a fixed `C²` profile supported on `[0,1]` with mass `M > 0`, every `b < bumpRobin(φ,1)/M + completeWeilPoleShift(φ,1) - log(2π)` eventually bounds every eigenvalue below, simultaneously for all `0 < c ≤ 1`.
+- `CriticalArithmeticCorrelationTheory/OneRamanujanFamilyDetectsAllBoundedEnergiesThroughTouching.lean:43`: for every fixed energy cap and squared-norm tolerance `η > 0`, one finite positive-conductor family approximates every unit vector below that cap within `η`, uniformly in all `0 < c ≤ 1` and all sufficiently large horizons.
+

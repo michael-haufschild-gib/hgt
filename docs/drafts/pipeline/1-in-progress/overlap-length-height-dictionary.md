@@ -43,13 +43,17 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Actual complete matrix at height `N/c`; fixed-`c` positivity for `0<c<1+δ_*` | Audit pending: `CompleteWeilLengthHeight` |
 | Super-Gevrey overlap diverges, bandwidth tends to one, and `N~T_N rβ(T_N)` | Audit pending: `SuperGevreyLengthHeight` |
 | Exact asymmetric shell radii and onset `N log((N+1)/N)<1`; eventual absence at each fixed `c<1` | Kernel checked, axiom-audited; final direct check pending: `ExactSuccessorShellWindows` |
+| Actual successor divisor fiber divided by `log(N+1)` tends to a positive coefficient for every fixed `c>1` | Checked, axiom-audited, umbrella wired: `FixedOverlapHasLogarithmicDivisorRows` |
+| Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Audit pending: `TheAtomicApertureRetainsTheProfileWidth` |
+| Paid coordinate prefix at overlap `cM/N≤1`; exact Schur reduction retaining every mixed entry | Audit pending: `APositivePrefixGivesTheExactSchurReduction` |
+| Gap `k` first becomes geometrically eligible at `N log(1+k/N)`, tending to `k` | Audit pending: `ExactHigherShellThresholds` |
 
 Here `δ_*=1/107520002048050000`; the existing certified floor is
 `1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of the certified estimates,
 not a classification of the actual matrix sign. The revised report already states this range
 and the exact Steklov overlap schedule.
 
-Remaining mathematical obligations: actual divisor-shell row growth; the self-energy loss along
+Remaining mathematical obligations: complete divisor-shell row decomposition; the self-energy loss along
 growing overlap; whether the full matrix admits the proposed additive/shell Schur decomposition.
 Entrywise signs and disjoint edge supports alone do not supply such a block decomposition.
 
@@ -61,7 +65,7 @@ Moreover SRT quantifies over all tests in an aperture, while atomic positivity q
 one fixed-profile finite-dimensional family. A support inclusion does not place SRT's negative
 witness inside that atomic family.
 
-**Next row conjecture.** At every fixed `c>1`, the normalized downward divisor fiber from
+**Proved row law.** At every fixed `c>1`, the normalized downward divisor fiber from
 row `N` to product `N+1`, for the explicit plateau profile, is asymptotic to
 `(bumpCorr φ (1/c)/∫φ²) log(N+1)`, with strictly positive coefficient. This is the corpus's
 weighted Schur row, with weights `n^(-1/2)`, not an assertion about an unweighted operator norm.

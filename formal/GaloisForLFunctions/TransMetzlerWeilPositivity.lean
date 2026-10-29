@@ -5,6 +5,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.OptimizedTransMetzlerFloor
 import GaloisForLFunctions.TransMetzlerWeilPositivity.LiouvilleTwinSelectivity
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ZeroSideStratum
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyCriticalGrowth
+import GaloisForLFunctions.TransMetzlerWeilPositivity.FixedOverlapHasLogarithmicDivisorRows
 
 /-!
 # Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram

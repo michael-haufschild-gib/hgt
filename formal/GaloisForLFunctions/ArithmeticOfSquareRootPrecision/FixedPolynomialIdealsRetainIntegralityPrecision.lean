@@ -5,14 +5,19 @@ import GaloisForLFunctions.HTGeometry.ContinuousSquareIntegralPositive
 /-!
 # The arithmetic of Nair integrals in a polynomial ideal
 
-Multiples of a fixed integer polynomial have rational moments with consecutive denominators.
-Their integral lattice is governed by the gcd of these moments after multiplication by the
-horizon period. Denominator cofactors isolate the leading coefficient from the lower terms.
+For every nonzero `Q ∈ ℤ[X]`, a fixed positive integer `C_Q` satisfies: at every horizon
+`N ≥ 2 deg Q + 1`, some multiple of `Q` of degree below `N` has integral `C_Q / lcm(1,…,N)`.
+The least positive integral is therefore between `1 / lcm(1,…,N)` and this value.
+
+Denominator cofactors isolate a fixed leading-coefficient residue. A positive integer integral
+of a multiple of `Q²` removes the integer remainders; reciprocal Bézout combines the resulting
+moments. Fixed divisibility preserves both integrality halves at admissible scales, their
+power-scale sets, their zero-width exponents, and their square-root RH criteria.
 -/
 
 noncomputable section
 
-open Polynomial Finset intervalIntegral Filter Topology
+open Polynomial Finset intervalIntegral Filter Topology RHTower
 
 namespace GaloisForLFunctions.ArithmeticOfSquareRootPrecision
 
@@ -85,7 +90,7 @@ theorem exists_int_cofactor_mul_nairRationalMoment (Q : ℤ[X]) (j : ℕ) :
     field_simp
   refine ⟨(∑ i ∈ range m, Q.coeff i * E i) + Q.coeff m * z, ?_⟩
   unfold nairRationalMoment
-  rw [sum_range_succ, mul_add, mul_sum]
+  rw [Finset.sum_range_succ, mul_add, mul_sum]
   have hsum : (∑ i ∈ range m,
       (momentDenominatorCofactor m j : ℚ) * ((Q.coeff i : ℚ) / (j + i + 1 : ℕ))) =
         ((∑ i ∈ range m, Q.coeff i * E i : ℤ) : ℚ) := by
@@ -112,14 +117,14 @@ theorem nairIntegral_sub (P R : ℤ[X]) :
     nairIntegral (P - R) = nairIntegral P - nairIntegral R := by
   unfold nairIntegral
   simp only [map_sub]
-  exact integral_sub ((continuous_aeval P).intervalIntegrable _ _)
-    ((continuous_aeval R).intervalIntegrable _ _)
+  exact integral_sub ((Polynomial.continuous_aeval P).intervalIntegrable _ _)
+    ((Polynomial.continuous_aeval R).intervalIntegrable _ _)
 
 theorem nairIntegral_sum {ι : Type*} (s : Finset ι) (P : ι → ℤ[X]) :
     nairIntegral (∑ i ∈ s, P i) = ∑ i ∈ s, nairIntegral (P i) := by
   unfold nairIntegral
   simp only [map_sum]
-  exact integral_finsetSum fun i _ => (continuous_aeval (P i)).intervalIntegrable _ _
+  exact integral_finsetSum fun i _ => (Polynomial.continuous_aeval (P i)).intervalIntegrable _ _
 
 private theorem nairIntegral_mul_self_pos {Q : ℤ[X]} (hQ : Q ≠ 0) :
     0 < nairIntegral (Q * Q) := by
@@ -130,14 +135,14 @@ private theorem nairIntegral_mul_self_pos {Q : ℤ[X]} (hQ : Q ≠ 0) :
     simpa only [Polynomial.map_zero] using hz
   have hpoint : ∃ x ∈ Set.Ioo (0 : ℝ) 1, aeval x Q ≠ 0 := by
     by_contra hn
-    push_neg at hn
+    push Not at hn
     apply hmap
     apply Polynomial.eq_zero_of_infinite_isRoot
     refine Set.Infinite.mono ?_ (Set.Ioo_infinite (by norm_num : (0 : ℝ) < 1))
     intro x hx
-    simpa only [IsRoot, eval_map, ← aeval_def] using hn x hx
+    simpa only [Set.mem_setOf_eq, IsRoot, eval_map, ← aeval_def] using hn x hx
   obtain ⟨x, hx, hne⟩ := hpoint
-  have hpos := HTGeometry.integral_sq_pos_of_ne_zero (continuous_aeval Q) hx hne
+  have hpos := HTGeometry.integral_sq_pos_of_ne_zero (Polynomial.continuous_aeval Q) hx hne
   simpa only [nairIntegral, map_mul, pow_two] using hpos
 
 private theorem exists_positive_integral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
@@ -155,7 +160,7 @@ private theorem exists_positive_integral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
     (natDegree_C_mul_le _ _).trans hdeg, ?_, hint⟩
   have hpos : (0 : ℝ) < nairIntegral (C d * (Q * Q)) := by
     rw [nairIntegral_C_mul]
-    exact mul_pos (by exact_mod_cast Nat.lcmUpto_pos (2 * Q.natDegree + 1))
+    exact mul_pos (by dsimp [d]; exact_mod_cast Nat.lcmUpto_pos (2 * Q.natDegree + 1))
       (nairIntegral_mul_self_pos hQ)
   rw [hint] at hpos
   exact_mod_cast hpos
@@ -210,7 +215,6 @@ private theorem exists_uniform_reciprocal_multiples {Q : ℤ[X]} (hQ : Q ≠ 0) 
     have he' : (d : ℝ) = (k : ℝ) * e := by exact_mod_cast he
     rw [he']
     field_simp
-    ring
   · let j := k - Q.natDegree - 1
     have hj : j + Q.natDegree + 1 = k := by dsimp [j]; omega
     obtain ⟨P, hP, hdegP, hintP⟩ :=
@@ -240,6 +244,7 @@ theorem exists_uniform_nairIntegral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
   refine ⟨C₀, hC₀, fun n hn => ?_⟩
   obtain ⟨c, hc⟩ := exists_int_sum_div_eq_inv_lcm (Icc 1 (n + 1)) ⟨1, by simp⟩
     (f := id) fun i hi => (mem_Icc.mp hi).1
+  simp only [id_eq] at hc
   choose P hP hdegP hintP using hrecip n hn
   let R : ℕ → ℤ[X] := fun k => if hk : k ∈ Icc 1 (n + 1) then C (c k) * P k hk else 0
   have hR (k : ℕ) (hk : k ∈ Icc 1 (n + 1)) : R k = C (c k) * P k hk := dif_pos hk
@@ -258,6 +263,42 @@ theorem exists_uniform_nairIntegral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
         rw [← mul_sum, hc]
         simp only [Nat.lcmUpto, id_eq]
         ring
+
+/-- The least positive integral in a fixed nonzero ideal is attained and differs from the
+unrestricted floor by at most a constant factor independent of the horizon. -/
+theorem exists_isLeast_nairIntegral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
+    ∃ C₀ : ℤ, 0 < C₀ ∧ ∀ n : ℕ, 2 * Q.natDegree ≤ n → ∃ r : ℝ,
+      IsLeast {s : ℝ | ∃ P : ℤ[X], Q ∣ P ∧ P.natDegree ≤ n ∧
+        nairIntegral P = s ∧ 0 < s} r ∧
+      1 / (Nat.lcmUpto (n + 1) : ℕ) ≤ r ∧
+        r ≤ (C₀ : ℝ) / (Nat.lcmUpto (n + 1) : ℕ) := by
+  obtain ⟨C₀, hC₀, hC⟩ := exists_uniform_nairIntegral_multiple hQ
+  refine ⟨C₀, hC₀, fun n hn => ?_⟩
+  obtain ⟨P₀, hP₀, hdegP₀, hintP₀⟩ := hC n hn
+  let d : ℝ := Nat.lcmUpto (n + 1)
+  have hd : 0 < d := by exact_mod_cast Nat.lcmUpto_pos (n + 1)
+  let T : ℤ → Prop := fun z => 0 < z ∧ ∃ P : ℤ[X],
+    Q ∣ P ∧ P.natDegree ≤ n ∧ nairIntegral P = (z : ℝ) / d
+  obtain ⟨z, ⟨hz, P, hP, hdegP, hintP⟩, hmin⟩ :=
+    Int.exists_least_of_bdd (P := T) ⟨0, fun z hz => hz.1.le⟩
+      ⟨C₀, hC₀, P₀, hP₀, hdegP₀, hintP₀⟩
+  have hpos : 0 < (z : ℝ) / d := div_pos (by exact_mod_cast hz) hd
+  have hleast : IsLeast {s : ℝ | ∃ R : ℤ[X], Q ∣ R ∧ R.natDegree ≤ n ∧
+      nairIntegral R = s ∧ 0 < s} ((z : ℝ) / d) := by
+    refine ⟨⟨P, hP, hdegP, hintP, hpos⟩, ?_⟩
+    rintro s ⟨R, hR, hdegR, rfl, hposR⟩
+    obtain ⟨w, hw⟩ := ArithmeticEffectivityTheory.exists_int_eq_lcmUpto_mul_integral R hdegR
+    have hw' : d * nairIntegral R = (w : ℝ) := hw
+    have hwpos : 0 < w := by exact_mod_cast (hw' ▸ mul_pos hd hposR)
+    have hintR : nairIntegral R = (w : ℝ) / d :=
+      (eq_div_iff hd.ne').mpr (by simpa only [mul_comm] using hw')
+    rw [hintR]
+    exact div_le_div_of_nonneg_right
+      (by exact_mod_cast hmin w ⟨hwpos, R, hR, hdegR, hintR⟩) hd.le
+  refine ⟨(z : ℝ) / d, hleast, ?_, ?_⟩
+  · exact (isLeast_positive_nairIntegral n).2 ⟨P, hdegP, hintP, hpos⟩
+  · exact hleast.2 ⟨P₀, hP₀, hdegP₀, hintP₀,
+      div_pos (by exact_mod_cast hC₀) hd⟩
 
 /-- The Siegel existence criterion with the auxiliary restricted to the ideal `(Q)`. -/
 def IdealSiegelHalf (Q : ℤ[X]) (φ : ℝ → ℝ) : Prop :=
@@ -323,6 +364,55 @@ theorem idealLiouvilleHalf_iff {Q : ℤ[X]} (hQ : Q ≠ 0) {φ : ℝ → ℝ}
     nlinarith only [hexp, hmul]
   · rintro ⟨B, hB⟩
     exact ⟨B, hB.mono fun n hn P _ hdeg hpos => hn P hdeg hpos⟩
+
+private theorem idealLiouvilleHalf_rpow_mono {Q : ℤ[X]} {θ θ' : ℝ} (hθ : θ ≤ θ')
+    (h : IdealLiouvilleHalf Q fun x => x ^ θ) :
+    IdealLiouvilleHalf Q fun x => x ^ θ' := by
+  obtain ⟨B, hB⟩ := h
+  refine ⟨max B 0, hB.mono fun n hn P hP hdeg hpos => ?_⟩
+  have h1 : (1 : ℝ) ≤ ((n + 1 : ℕ) : ℝ) := by
+    exact_mod_cast Nat.succ_le_succ (Nat.zero_le n)
+  have hmul : B * ((n + 1 : ℕ) : ℝ) ^ θ ≤ max B 0 * ((n + 1 : ℕ) : ℝ) ^ θ' :=
+    (mul_le_mul_of_nonneg_right (le_max_left B 0)
+      (Real.rpow_nonneg (by linarith only [h1]) θ)).trans
+        (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le h1 hθ) (le_max_right B 0))
+  exact (Real.exp_le_exp.mpr (by linarith only [hmul])).trans (hn P hP hdeg hpos)
+
+/-- Fixed ideals preserve the entire Siegel power-scale set, including the endpoint. -/
+theorem idealSiegelHalf_rpow_iff {Q : ℤ[X]} (hQ : Q ≠ 0) (θ : ℝ) :
+    (IdealSiegelHalf Q fun x => x ^ θ) ↔ SiegelHalf fun x => x ^ θ := by
+  by_cases hθ : 0 ≤ θ
+  · exact idealSiegelHalf_iff hQ (admissibleScale_rpow hθ)
+  have hlt : θ < zeroReSup := lt_trans (lt_of_not_ge hθ)
+    (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1 / 2) half_le_zeroReSup)
+  constructor
+  · rintro ⟨B, hB⟩
+    exact ⟨B, hB.mono fun n ⟨P, _, hdeg, hpos, hle⟩ => ⟨P, hdeg, hpos, hle⟩⟩
+  · intro hs
+    exact (not_siegelHalf_rpow_of_lt_zeroReSup hlt hs).elim
+
+/-- Fixed ideals preserve the entire Liouville power-scale set, including the endpoint. -/
+theorem idealLiouvilleHalf_rpow_iff {Q : ℤ[X]} (hQ : Q ≠ 0) (θ : ℝ) :
+    (IdealLiouvilleHalf Q fun x => x ^ θ) ↔ LiouvilleHalf fun x => x ^ θ := by
+  by_cases hθ : 0 ≤ θ
+  · exact idealLiouvilleHalf_iff hQ (admissibleScale_rpow hθ)
+  have hzero : (0 : ℝ) < zeroReSup :=
+    lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1 / 2) half_le_zeroReSup
+  constructor
+  · intro hs
+    have hs0 := (idealLiouvilleHalf_iff hQ (admissibleScale_rpow (le_refl (0 : ℝ)))).mp
+      (idealLiouvilleHalf_rpow_mono (le_of_not_ge hθ) hs)
+    exact (not_liouvilleHalf_rpow_of_lt_zeroReSup hzero hs0).elim
+  · intro hs
+    exact (not_liouvilleHalf_rpow_of_lt_zeroReSup
+      (lt_trans (lt_of_not_ge hθ) hzero) hs).elim
+
+/-- Both integrality exponents in every nonzero fixed polynomial ideal equal the zero width. -/
+theorem ideal_integrality_exponents_eq_zeroReSup {Q : ℤ[X]} (hQ : Q ≠ 0) :
+    sInf {θ : ℝ | IdealSiegelHalf Q fun x => x ^ θ} = zeroReSup ∧
+      sInf {θ : ℝ | IdealLiouvilleHalf Q fun x => x ^ θ} = zeroReSup := by
+  simp_rw [idealSiegelHalf_rpow_iff hQ, idealLiouvilleHalf_rpow_iff hQ]
+  exact ⟨siegelExponent_eq_zeroReSup, liouvilleExponent_eq_zeroReSup⟩
 
 /-- Every fixed nonzero polynomial ideal has the same square-root Siegel criterion: RH. -/
 theorem riemannHypothesis_iff_idealSiegelHalf {Q : ℤ[X]} (hQ : Q ≠ 0) :
