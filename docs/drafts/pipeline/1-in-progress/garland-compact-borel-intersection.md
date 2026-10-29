@@ -22,6 +22,13 @@ the constructed loop group. Surjectivity onto K must be proved; injectivity
 must not be presumed. This is the
 rank-one affine amalgam/normal-form argument, with no novelty claim.
 
+A further exact-name corpus search found
+`RHTower.RealPrincipalSeriesKTypes.upperHalfPlaneStabilizer_matrix_relations`,
+`realSphericalKCircleEquiv`, and `realSphericalM_diagonal_square` (their Lean
+namespace is `GaloisForLFunctions.RHTower`). Their actual matrix proofs were
+inspected. They supply the finite rotation characterization and triangular
+square-one identity directly; transitive audit is pending.
+
 This route uses the absence of a finite braid relation in affine A₁.
 The determinant-metric construction remains a possible general-rank route;
 it is not an input to the argument below and has not been disproved.
@@ -107,10 +114,12 @@ left B-equivariant and right K-invariant, on the actual central loop group.
 
 ## Status and remaining exact obligations
 
-Paper argument recorded. No Lean module for this card exists yet.
-Remaining work: inspect and audit the finite stabilizer characterization;
-prove the precise Laurent lower-bound/product identities; formalize the
-alternating-word coefficient calculation and minimal-word reduction;
+Paper argument recorded. `SimpleCompactBorel` is written but unchecked.
+Scratch proofs for `RealRotationMatrices`, `MatrixLaurentLeading`, and
+`SubgroupAlternatingWords` are written in `/tmp/Garland*.lean`, pending
+checks before installation. The existing finite rotation characterization
+has been inspected. Remaining work: finish those checks and input audits;
+formalize the alternating-word coefficient calculation and word reduction;
 construct the actual Borel torus homomorphism and its spherical extension.
 Only then can this card move to formalized. Arithmetic subgroup, series,
 measure, convergence, and ξ constant-term unfolding remain open.

@@ -359,9 +359,14 @@ measure normalization. None of those later identities is assumed here. Lean stat
 the residue-index and uniformizer-scaling argument is now formalized in
 `HTGeometry/DiscreteValuationHaar.lean`, with scratch and production olean checks
 passing and an axiom audit containing only `[propext, Classical.choice, Quot.sound]`.
-The shell partition and exact shell measures are drafted in
-`/tmp/hgt_discrete_valuation_shells.lean`; their first check is running. The integral
-and Iwasawa identification remain open. The corpus's `FieldOnePadicHaarScaling` supplies the same
+The shell partition and exact shell measures are now formalized in
+`HTGeometry/DiscreteValuationShells.lean`. The two main axiom audits passed;
+production olean compilation passed after a comment-placement fix.
+The actual Haar integral is now proved in `HTGeometry/LocalRankOneIntegral.lean`:
+`sphericalKernel_integrable` and `integral_sphericalKernel` passed their scratch
+check and transitive axiom audits with only `[propext, Classical.choice, Quot.sound]`.
+Using `z=Q⁻ˢ`, its exact value is `(1-z/Q)/(1-z)` for `‖z‖<1`.
+The Iwasawa identification remains open. The corpus's `FieldOnePadicHaarScaling` supplies the same
 residue-index argument for `Q_p`; generalize the proof rather than transport a
 characteristic-zero field to the present completions.
 
@@ -438,3 +443,33 @@ are integral and `v(d)=1`, so the same inequality holds. Division by `d` proves
 `a-b/d` integral at every finite place. Hence every finite-adele coset modulo the
 actual diagonal field has an integral representative. This is the finite-place
 input to the global additive fundamental domain; its Lean proof is still open.
+
+## Genus-one additive fundamental domain `[PAPER PROOF; LEAN OPEN]`
+
+Write `π=x/y` at infinity and let `m∞=π O∞`. The explicit pole semigroup of
+the affine ring is `{0,2,3,4,...}`: even pole orders come from powers of `x`,
+odd orders at least three from `x^j y`, and the two basis weights show that
+order one is absent. The infinity residue field is exactly `F₃`.
+
+For any completed infinity element, a finite inverse uniformizer power bounds
+its pole. At every pole order `n≥2`, divide by an affine monomial of that pole
+order, reduce in `F₃`, and subtract the corresponding scalar multiple of the
+monomial. This strictly lowers the pole order. At order at most one, subtract
+`c π⁻¹` to become integral, then subtract its constant residue to land in `m∞`.
+Consequently every infinity element differs from an affine function by an
+element of `T∞ = ⋃_{c∈F₃}(c π⁻¹ + m∞)`.
+
+Strong approximation first makes all finite coordinates integral; the preceding
+reduction, using affine functions, preserves finite integrality. Therefore
+`F = (∏_{v finite} O_v) × T∞` meets every diagonal `K`-coset. It meets each
+coset once: a diagonal difference integral at all finite places lies in the
+affine ring (the Dedekind intersection-of-localizations theorem). Its infinity
+pole order is at most one, so it is constant. A nonzero coefficient of `π⁻¹`
+cannot be constant; once that coefficient vanishes, a constant in `m∞` is zero.
+
+The subgroup `(∏ O_v) × m∞` has index three in the full integral product,
+because reduction at infinity has residue field `F₃`. Its Haar volume is `1/3`.
+The three displayed translates are disjoint, hence `F` is compact open and has
+volume one. This gives an actual measurable fundamental domain and probability
+measure on `Adeles/K`, with no assumed covolume. These statements still require
+Lean formalization; the ambient Haar measure alone does not establish them.

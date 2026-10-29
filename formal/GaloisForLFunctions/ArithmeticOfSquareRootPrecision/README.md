@@ -31,7 +31,7 @@ integers.
 | ArithmeticEffectivityTheory | Log-torsion $\psi(N)=\log\lvert\mathbb Z/d_N\rvert$, Nair's floor (`log_inv_integral_le_psi`); ASRP proves the floor is attained and computes its exact precision |
 | HeckeKreinToeplitz, ArithmeticKreinLangerTheory | The global law is the one-sided count (`global_law_count`); precision and parity principles; Stepanov compressions. ASRP supplies the precision calculus those principles presuppose, and proves that *each* half of the count is RH |
 | SelectiveMultiscaleArithmeticPositivity | Precision rigidity of tower positivity (`not_towerPositive_and_perturbed`); ASRP proves the count-level analogue with the sharp threshold |
-| ArithmeticCorrelationGeometry, BiarithmeticGaugeGeometry | The gauge torus; ASRP computes the count's stabilizer in the sign-gauge group |
+| ArithmeticCorrelationGeometry, BiarithmeticGaugeGeometry | The gauge torus; ASRP computes the count's stabilizer in it (sign and torus gauges) |
 | ArithmeticCorrespondencePositivity | "On nonnegative tests $\zeta$ is the worst twin"; its count-level form is the monotonicity of the lower half |
 | SquareRootThreshold | The zero width $\Theta$; ASRP identifies it with the precision exponent and with the integrality exponent |
 | ArithmeticCastelnuovoSeveri, ArithmeticLorentzianGeometry | Curve data, golden datum, one-sided power-sum bounds (`norm_le_of_re_sum_pow_le`); ASRP's calibration of precision exponents |
@@ -117,36 +117,46 @@ here.
    (PNT); cofinite flips; $\Lambda+\varepsilon n^{-\eta}$, $\eta<\tfrac12$ (Littlewood: the count would make
    $\psi(x)-x$ eventually one-signed). Invisible: finite modifications, rescaled Euler factors (a prime
    tower carries $\le\log x$), $\varepsilon n^{-\eta}$ with $\eta\ge\tfrac12$.
-6. **The lower half is monotone; the gauge stabilizer.** $a\le b$ and the lower half for $a$ give it
-   for $b$. So for $a\le\Lambda$: the count for $a$ is RH and $\Lambda-a\in\mathcal Q$. For a sign
-   gauge: the count is RH and $\theta_F=O(\sqrt x\log^2x)$. The count's stabilizer in the sign-gauge
-   group is the set of square-root sparse flip sets.
-7. **The deciding-input theorem.** Every property implying the count is parity-breaking,
+6. **Order, majorants and the gauge stabilizer.** The lower half is monotone and the upper half
+   antitone in the weight. Hence an upper count for any majorant $b\ge\Lambda$, or a lower count for any
+   minorant $a\le\Lambda$, proves RH; for $a\le\Lambda$ (or $a\ge\Lambda$) the count is RH together with
+   $\Lambda-a\in\mathcal Q$. A sign gauge passes iff RH and $\theta_F=O(\sqrt x\log^2x)$; a torus gauge
+   $t$ (rotating $\Lambda(p^k)$ by $e^{2\pi ikt_p}$, real part) passes iff RH and the gauge distance
+   $\sum_{p\le x}(1-\cos2\pi t_p)\log p=O(\sqrt x\log^2x)$. The count's stabilizer in the gauge torus is
+   the set of gauges at square-root distance from the arithmetic point.
+7. **Precision exponents are abscissas.** For $\delta\ge0$, partial sums $O(x^\theta)$ give absolute
+   convergence of $\sum\delta(n)n^{-s}$ on $\operatorname{Re}s>\theta$, and convergence at $\sigma$ gives
+   partial sums $\le x^\sigma\sum\delta(n)n^{-\sigma}$. A one-signed perturbation is invisible when its
+   abscissa is $<\tfrac12$ and visible when it is $>\tfrac12$.
+8. **The deciding-input theorem.** Every property implying the count is parity-breaking,
    precision-faithful, aperture-unbounded, with stabilizer in $\mathcal Q$. Stable under the twist, or
    finitely determined, or stable under one visible move, it holds for no weight.
-8. **Producers are precision-blind.** $\Lambda+\varepsilon n^{-\eta}$, $0<\eta<\tfrac12$, satisfies PNT and
+9. **Producers are precision-blind.** $\Lambda+\varepsilon n^{-\eta}$, $0<\eta<\tfrac12$, satisfies PNT and
    the Guth–Maynard law $\psi(x+x^\alpha)-\psi(x)\sim x^\alpha$ for every $\alpha\in(17/30,1)$, and fails the
    count. An error law $O(E)$ with $x^{1/2+\kappa}=O(E)$ is inherited by a weight failing the count.
-9. **The integrality lattice.** $\{\int_0^1P:P\in\mathbb Z[x],\deg P\le n\}=d_{n+1}^{-1}\mathbb Z$, by Bézout
+10. **The integrality lattice.** $\{\int_0^1P:P\in\mathbb Z[x],\deg P\le n\}=d_{n+1}^{-1}\mathbb Z$, by Bézout
    over the horizon ($u/a+v/b=1/\operatorname{lcm}(a,b)$, iterated). The least positive Nair integral is
    $1/d_{n+1}$, and $\psi(n+1)=\max_P\log(1/\int_0^1P)$.
-10. **The integrality exponent is the zero width.** The Siegel half and the Liouville half are the
+11. **The integrality exponent is the zero width.** The Siegel half and the Liouville half are the
     lower and upper halves of the count at the same scale. Both hold at $x^\theta$, $\theta>\Theta$, and
     both fail at every $\theta<\Theta$. Square-root integrality in either half is RH; a zero-free strip
     $\Theta<1$ is integrality at a fixed precision $\theta<1$.
-11. **Integer Dirichlet polynomials at arithmetic points.** $\int_0^1P=D_P(1)$, the value at the pole.
+12. **Integer Dirichlet polynomials at arithmetic points.** $\int_0^1P=D_P(1)$, the value at the pole.
     $d_N^m D(m)\in\mathbb Z$, so a nonzero $D(m)$ is $\ge d_N^{-m}=e^{-m\psi(N)}$, and this is attained (the
     values form $d_N^{-m}\mathbb Z$). $D(-k)\in\mathbb Z$. A nonzero $D$ has fewer real zeros than nonzero
     coefficients, hence $|D(-k)|\ge1$ at some $k<N$. Siegel's lemma gives $D\ne0$ of length $N$ vanishing at
     $0,-1,\dots,-(M-1)$ with height $\le(N^M)^{M/(N-M)}$, $M<N$.
-12. **Parity in integrality.** $\sum_{m\le n}\lambda\Lambda(m)=2\psi(\lfloor\sqrt n\rfloor)-\psi(n)$, so
+13. **Parity in integrality.** $\sum_{m\le n}\lambda\Lambda(m)=2\psi(\lfloor\sqrt n\rfloor)-\psi(n)$, so
     $e^{A_\lambda(n)}=1/r_n$ with $r_n=d_n/d_{\lfloor\sqrt n\rfloor}^2\in\mathbb N$: the twin's horizon value is a
     reciprocal group order.
-13. **Where precision is lost.** $T_\Lambda(n)=\log n!$ exactly; $0<\log n!-(n\log n-n)\le1+\tfrac12\log n$;
+14. **Sup-norm ceilings force vanishing.** $b^nP(a/b)\in\mathbb Z$, so a ceiling
+    $\sup_{[0,1]}|P|<b^{-n}$ forces $P(a/b)=0$; every sup-norm certificate at a precision $\theta<1$
+    vanishes at $0,\tfrac12,1$ for large $n$. Precise certificates are Stepanov-like.
+15. **Where precision is lost.** $T_\Lambda(n)=\log n!$ exactly; $0<\log n!-(n\log n-n)\le1+\tfrac12\log n$;
     every nonzero nonnegative perturbation moves $T$ linearly; $A(n)=\sum_{k\le n}\mu(k)T_a(\lfloor n/k\rfloor)$,
     so $\psi(n)=\sum_k\mu(k)\log\lfloor n/k\rfloor!$; the inversion operator sends some $E$ with
     $|E(y)|\le y^\theta$ to $\ge\pi(x)$, and no bound $Cx^{\theta'}$, $\theta'<1$, survives it.
-14. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
+16. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
     $\|\beta_i\|\le q^{\theta-1/2}$, already from its lower half; the precision exponent is
     $\tfrac12+\max_i\log\|\beta_i\|/\log q\ge\tfrac12$, with equality iff unitary. Odd hyperelliptic data
     have exponent $\tfrac12$ (Stepanov). The golden datum has $N_k/5^k\to1$ and exponent $\tfrac12+\log\varphi/\log5$.
@@ -162,7 +172,9 @@ here.
    `riemannHypothesis_iff_precisionExponent`).
 3. **The battery classification** (`battery_classification`,
    `count_vonMangoldt_add_smul_powerWeight_iff`).
-4. **The gauge stabilizer** (`count_iff_of_le_vonMangoldt`, `count_signGauge_iff`).
+4. **Order and the gauge stabilizer** (`riemannHypothesis_of_majorant`,
+   `riemannHypothesis_of_minorant`, `count_iff_of_le_vonMangoldt`, `count_signGauge_iff`,
+   `count_torusGauge_iff`).
 5. **The deciding-input theorem** (`deciding_input_necessary_properties`, `not_of_stable_visible`).
 6. **Producers are precision-blind** (`producers_are_precision_blind`, `errorLaw_cannot_decide`).
 7. **The integrality lattice** (`nairLattice_eq`, `isLeast_positive_nairIntegral`,
@@ -178,6 +190,11 @@ here.
     `log_factorial_sub_bounds`, `not_inversion_bounded`).
 12. **Curve precision exponents** (`countAtPrecision_iff`, `precisionExponent_eq`,
     `precisionExponent_eq_half_iff`, `golden_countAtPrecision_iff`, `golden_tendsto_pointCount_div`).
+13. **Abscissa dictionary** (`abscissaOfAbsConv_le_of_partialSum_isBigO`,
+    `partialSum_isBigO_of_abscissaOfAbsConv_lt`, `not_count_add_of_half_lt_abscissaOfAbsConv`).
+14. **Sup-norm vanishing law** (`aeval_eq_zero_of_sup_lt`, `eventually_vanish_of_supCeiling`).
+15. **The ledger** (`riemannHypothesis_precision_tfae`, `zero_width_three_readings`,
+    `zeroReSup_lt_one_tfae`).
 
 ---
 
@@ -196,15 +213,18 @@ here.
 | The golden datum violates integrality | It has integral counts and $N_k/5^k\to1$; its precision exponent is $\tfrac12+\log\varphi/\log5$ |
 | Integer Dirichlet polynomials certify zeros by integrality | Integrality speaks at $s\in\mathbb Z$ (pole side sharp, trivial lattice integral), not at nontrivial zeros |
 | The Liouville twin is an integrality-preserving move | Its horizon value is a reciprocal group order |
+| A sieve majorant is half of a count | An upper count for any majorant of $\Lambda$ is RH; majorants lose at relative error |
+| The count is gauge invariant | Its stabilizer is the set of gauges at square-root distance |
 
 ---
 
 ## 7. Questions the programme answers
 
 1. **Which statements can decide the count?** Only parity-breaking, precision-faithful,
-   aperture-unbounded statements whose stabilizer lies in $\mathcal Q$ (mechanism 7). *Answered.*
-2. **Which battery moves does the count see?** The classification of mechanisms 5–6, including the
-   sign-gauge stabilizer. *Answered.*
+   aperture-unbounded statements whose stabilizer lies in $\mathcal Q$ (the deciding-input theorem).
+   *Answered.*
+2. **Which battery moves does the count see?** The battery classification, the majorant/minorant
+   principle, the gauge stabilizer and the abscissa criterion for one-signed moves. *Answered.*
 3. **What is the precision of the classical producers?** PNT, Guth–Maynard and every error law
    weaker than square root are inherited by $\Lambda+\varepsilon n^{-\eta}$: none decides. *Answered.*
 4. **How much precision does integrality over $\mathbb Z$ reach?** Exactly $\Theta$, in each half;
@@ -224,9 +244,10 @@ here.
 ## 8. Tools
 
 Built: precision classes and the count; each half of the count for $\Lambda$; the precision exponent;
-the battery classification and the gauge stabilizer; the deciding-input theorem; precision-blindness
-of producers; the integrality lattice and exponent; the transcendence toolkit on integer Dirichlet
-polynomials; the twin's reciprocal torsion; the Chebyshev ledger; curve precision exponents.
+the battery classification, the majorant/minorant principle and the gauge stabilizer; the abscissa
+dictionary; the deciding-input theorem; precision-blindness of producers; the integrality lattice and
+exponent; the transcendence toolkit on integer Dirichlet polynomials; the sup-norm vanishing law; the
+twin's reciprocal torsion; the Chebyshev ledger; curve precision exponents; the TFAE ledger.
 
 To build:
 
@@ -243,10 +264,11 @@ To build:
 ## 9. Open research topics
 
 1. **The constructive limit of integrality (integer Chebyshev problem).** The floor is exact and the
-   exponent is $\Theta$; determine the precision reachable by auxiliaries certified through
-   $\sup_{[0,1]}\lvert P\rvert$ or $\int_0^1\lvert P\rvert$ (expected: linear with constant $<1$, since the
-   integer Chebyshev constant of $[0,1]$ exceeds $e^{-1}$), and design a ceiling that keeps sign
-   cancellation. A ceiling that reaches precision $\theta<1$ proves a zero-free strip.
+   exponent is $\Theta$; sup-norm certificates at precision $\theta<1$ must vanish at $0,\tfrac12,1$.
+   Determine the precision reachable by auxiliaries certified through $\sup_{[0,1]}\lvert P\rvert$ or
+   $\int_0^1\lvert P\rvert$ (expected: linear with constant $<1$, since the integer Chebyshev constant of
+   $[0,1]$ exceeds $e^{-1}$), and design a ceiling that keeps sign cancellation. A ceiling that reaches
+   precision $\theta<1$ proves a zero-free strip.
 2. **Off-line vanishing.** A source of integer Dirichlet polynomials vanishing at one character of
    every off-line pair (HKT's arithmetic Stepanov problem). Integrality speaks only at $s\in\mathbb Z$;
    which precision class must such a source have?
@@ -257,9 +279,16 @@ To build:
 5. **The successor as a precision source.** Over-regular Beurling systems have integer counts at
    square-root precision and prime counts without it; isolate the identity of $\mathbb Z$ (the exact
    count $\lfloor x\rfloor$, precision $0$) that excludes them.
-6. **Gauge geometry of the stabilizer.** The stabilizer of the count in the full gauge torus
-   $(\mathbb R/\mathbb Z)^{\text{primes}}$, beyond sign gauges; its relation to Haar-generic square-root
-   cancellation (ACG).
+6. **Gauge geometry of the stabilizer.** The stabilizer in the gauge torus is the square-root ball
+   of the gauge distance (for real parts of rotated sources); relate it to Haar-generic square-root
+   cancellation (ACG) and to the complex gauge-rotated source itself.
+8. **Zero estimates with separation.** Zero counts for integer Dirichlet polynomials on vertical
+   segments and on two-prime supports $\{p^aq^b\}$, with Baker-type separation of $a\log p+b\log q$;
+   an explicit prime certifying all right zeros of height $\le T$ (HKT's aliasing law gives at most
+   $\binom\kappa2$ blind primes).
+9. **Structure.** The converse Krein–Langer theorem on $\Gamma$ beyond orbit kernels (HKT proves it
+   for orbit kernels; the general Naimark fixed-point route is open) and an index-carrying completion
+   with explicit schedule.
 7. **Precision classes of index, defect and regulator.** The finite-index stratum, the Hecke defect at
    logarithmic translation, the covariant regulator on the characteristic circle.
 

@@ -144,8 +144,9 @@ parity gives an actual strong pair and its symmetric strong pair.
 `IsStrongFEPair.symm` and `WeakFEPair.symm` are checked in Mathlib
 `NumberTheory/LSeries/AbstractFuncEq.lean`.
 
-This last infinite exchange and symmetric continuation comparison remain
-unchecked in `/tmp/HeckeDualAveragedMellinScratch.lean`.
+The infinite exchange and symmetric continuation comparison pass their
+scratch check without warnings; both main transitive axiom audits are
+standard only. The promoted source is undergoing its final direct audit.
 
 ## Exact global scalar — draft
 
@@ -204,12 +205,11 @@ Finalized with consumer oleans built:
 - `HeckeConductorsAndParitiesAreInvariantUnderInversion`
 
 Current check:
-- `/tmp/HeckeDualAveragedMellinScratch.lean`: first check running with all
-  required consumer oleans built.
+- `HeckeDualAveragedMellinIsTheInverseClassSeries.lean`: final direct
+  source audit running after a clean scratch check and both standard-only
+  main transitive axiom audits.
 
 Unchecked complete drafts and intended module names:
-- `/tmp/HeckeDualAveragedMellinScratch.lean` →
-  `HeckeDualAveragedMellinIsTheInverseClassSeries`.
 - `/tmp/HeckeCompletedThetaResidueCancellationScratch.lean` →
   `HeckeCompletedThetaResiduesCancel`; imports the already built global
   ordinary L-continuation.

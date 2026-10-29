@@ -10,13 +10,13 @@
 ## Dependency audit
 
 Affine Bruhat and the exact Borel-preimage theorem are formalized and
-audited. The actual finite and affine SL₂ embeddings are in progress in
+audited. The actual finite and affine SL₂ embeddings are formalized and audited in
 [the rank-one card](../3-formalized/garland-simple-rank-one-subgroups.md).
 Corpus search found `RHTower.realIwasawaB_mul_realIwasawaK`; its inspected
 proof factors a real SL₂ matrix using the upper-half-plane section and
-the stabilizer of i. Its transitive axiom audit is pending.
+the stabilizer of i. Its transitive axiom audit passed.
 Mathlib's `Subgroup.closure_induction_left` supplies precisely induction
-by a generator or its inverse on the left; its scratch check is pending.
+by a generator or its inverse on the left; its scratch check passed.
 
 ## Dependency-closed algebraic proof
 
@@ -66,12 +66,14 @@ each Pᵢ is a subgroup. The identity starts the induction. Thus G=BK.
 
 This proves existence only. It does not assert uniqueness of Borel torus
 coordinates, compactness of an infinite-dimensional group, a spherical
-character outside B, or any arithmetic convergence. The determinant-norm
-comparison and intersection control are separately open in
-[the metric card](garland-determinant-metric-iwasawa.md).
+character outside B, or any arithmetic convergence. Intersection control
+is separately open in [its own card](garland-compact-borel-intersection.md).
+The [determinant-norm route](garland-determinant-metric-iwasawa.md) remains
+an alternative for more general root data.
 
-`VertexParabolics`, `VertexGeneration`, and `RealIwasawaExistence` are written
-but unchecked. They define both actual
+`VertexParabolics` and `VertexGeneration` passed clean dependency checks.
+`RealIwasawaExistence` is written and undergoing its first source check.
+They define both actual
 parabolics, prove the reduction-kernel shift criterion, factor each
 parabolic into Borel times its actual simple subgroup, and prove generation
 using affine Bruhat. The last module defines the actual subgroup generated
@@ -79,4 +81,4 @@ by simple rotations and central signs, proves parabolic factorizations,
 and applies induction over the two parabolics. The finite real input passed
 its transitive audit with only `propext`, `Classical.choice`, and `Quot.sound`;
 the scratch log is `/tmp/garland-iwasawa-input-audit.txt`.
-The rank-one batch is undergoing final source and dependency audits.
+The rank-one batch passed all final source and dependency audits.

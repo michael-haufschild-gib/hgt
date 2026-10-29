@@ -50,7 +50,7 @@ theorem separated_of_abs_sub_ge_two {N n j : ℕ} {w : ℝ}
     max_le (by exact_mod_cast (mem_Icc.mp hn).2) (by exact_mod_cast (mem_Icc.mp hj).2)
   have hmax0 : 0 < max (n : ℝ) j := hn0.trans_le (le_max_left _ _)
   have hgap := gap_div_le_abs_log_div hn1 hj1 hnj
-  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm] at hgap
+  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (j : ℝ) n, abs_sub_comm (Real.log n) (Real.log j)] at hgap
   have h2N : 2 / (N : ℝ) ≤ |(n : ℝ) - j| / max (n : ℝ) j := by
     rw [div_le_div_iff₀ hN0 hmax0]
     nlinarith only [hd, hmaxN, hN0]
@@ -80,7 +80,7 @@ theorem separated_of_two_mul_max_le {N n j : ℕ} {w : ℝ}
     · have hR : (j : ℝ) + 1 ≤ n := by exact_mod_cast Nat.succ_le_of_lt h
       rw [abs_of_pos (by linarith only [hR])]; linarith only [hR]
   have hgap := gap_div_le_abs_log_div hn1 hj1 hnj
-  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm] at hgap
+  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (j : ℝ) n, abs_sub_comm (Real.log n) (Real.log j)] at hgap
   have h2N : 2 / (N : ℝ) ≤ |(n : ℝ) - j| / max (n : ℝ) j := by
     rw [div_le_div_iff₀ hN0 hmax0]
     nlinarith only [hd1, hmax_half, hN0]
@@ -127,7 +127,7 @@ theorem top_adjacent_of_log_gap_le {N n j : ℕ} {w : ℝ}
     · push_cast; rw [show (n : ℝ) - (n + 1) = -1 by ring]; norm_num
     · push_cast; rw [show (j : ℝ) + 1 - j = 1 by ring]; norm_num
   have hgap := gap_div_le_abs_log_div hn1 hj1 hnj
-  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm] at hgap
+  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (j : ℝ) n, abs_sub_comm (Real.log n) (Real.log j)] at hgap
   have h1N : 1 / (N : ℝ) ≤ |(n : ℝ) - j| / max (n : ℝ) j := by
     rw [div_le_div_iff₀ hN0 hmax0]
     nlinarith only [hd1, hmaxN, hN0]
@@ -199,7 +199,7 @@ theorem abs_sum_overlapping_pairs_le {N : ℕ} {w B : ℝ}
         simp only [mem_insert, mem_singleton]
         rcases hadj with rfl | rfl
         · exact Or.inr rfl
-        · exact Or.inl (Nat.add_sub_cancel _ _)
+        · exact Or.inl (by omega)
       have hcard : (((Icc 1 N).filter
           (fun j => n ≠ j ∧ |Real.log j - Real.log n| ≤ w)).card : ℝ) ≤ 2 := by
         have hc := (card_le_card hsub).trans (card_insert_le (n - 1) {n + 1})
@@ -290,6 +290,7 @@ theorem abs_separatedCrossErrorKernel_transMetzler_le {w : ℝ} {N n j : ℕ}
       rw [← abs_of_pos hM, ← abs_div]
       congr 1
       field_simp [hM.ne']
+      ring
     rw [heq]
     have hplat := plateau_crossError_le_uniform etaZero_pos (by norm_num [etaZero]) hw0 hw1 hws
     change |atomCrossTerm (atomDilate transMetzlerProfile w) |Real.log j - Real.log n| -
@@ -321,7 +322,7 @@ theorem abs_separatedCrossErrorMatrix_inner_le {w : ℝ} (hw0 : 0 < w) (hw1 : w 
       (horizonKernelMatrix (separatedCrossErrorKernel (atomDilate transMetzlerProfile w) w) N)
         x, x⟫| ≤ (1264 * (w * N) ^ 2) * ‖x‖ ^ 2 := by
   rw [horizonKernelMatrix_inner, ← sum_primeHorizonExtension_sq]
-  have h := abs_kernel_quadratic_le_of_integer_distance (K := 316 * w ^ 2) (by positivity)
+  have h := abs_kernel_quadratic_le_of_integer_distance (N := N) (K := 316 * w ^ 2) (by positivity)
     (fun n hn j hj => abs_separatedCrossErrorKernel_transMetzler_le hw0 hw1 hn hj)
     (fun n _ j _ => separatedCrossErrorKernel_comm _ w n j) (primeHorizonExtension x)
   refine h.trans_eq ?_
@@ -479,7 +480,7 @@ theorem tendsto_transMetzlerMainMatrix_ramanujan_residual_norm
         (separatedCrossErrorKernel (atomDilate transMetzlerProfile (w N)) (w N)) N)
       (horizonProfileVector (ramanujanPoleProfile m) N)‖ ^ 2 ≤ _
     rw [horizonKernelMatrix_profile_norm_sq]
-    have h := sum_sq_kernel_poleProfile_le (K := 316 * (w N) ^ 2) (by positivity)
+    have h := sum_sq_kernel_poleProfile_le (N := N) (K := 316 * (w N) ^ 2) (by positivity)
       (fun n hn j hj => abs_separatedCrossErrorKernel_transMetzler_le hw0 hw1 hn hj) hA
       (fun j _ => abs_normalizedRamanujanMode_le hm j)
     refine h.trans ?_
@@ -646,9 +647,8 @@ theorem abs_nonRatio_term_transMetzler_le {N k m n : ℕ} {w δ₀ : ℝ}
         have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
         have hmul := mul_le_mul_of_nonneg_right (hup.trans hnN) (Real.exp_pos w).le
         have hexp : Real.exp (-w) * Real.exp w = 1 := by rw [← Real.exp_add]; simp
-        push_cast
-        linarith only [hmul, show (k : ℝ) * m * Real.exp (-w) * Real.exp w =
-          (k : ℝ) * m * (Real.exp (-w) * Real.exp w) by ring, hexp]
+        rw [mul_assoc ((k : ℝ) * m), hexp, mul_one] at hmul
+        simpa only [Nat.cast_mul] using hmul
       have hn_le : (n : ℝ) ≤ (N : ℝ) * Real.exp w := by
         have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
         have h1e : (1 : ℝ) ≤ Real.exp w := by linarith only [Real.add_one_le_exp w, hw0]
@@ -671,10 +671,15 @@ theorem abs_nonRatio_term_transMetzler_le {N k m n : ℕ} {w δ₀ : ℝ}
       have ht_ge : (1 - w) / (N : ℝ) ≤ |Real.log k - (Real.log n - Real.log m)| := by
         have he_ge : 1 - w ≤ Real.exp (-w) := by linarith only [Real.add_one_le_exp (-w)]
         have hexp_inv : Real.exp (-w) / (N : ℝ) ≤ 1 / ((N : ℝ) * Real.exp w) := by
-          rw [Real.exp_neg, div_eq_mul_inv, one_div, mul_inv_rev]
+          refine le_of_eq ?_
+          rw [Real.exp_neg]
+          field_simp [hN0.ne', (Real.exp_pos w).ne']
         have h1max : 1 / ((N : ℝ) * Real.exp w) ≤ |(n : ℝ) - (k * m : ℕ)| / max (n : ℝ) (k * m : ℕ) := by
-          rw [div_le_div_iff₀ (by positivity) hmax0]
-          nlinarith only [hd1, hmax_le, hN0, Real.exp_pos w]
+          rw [div_le_div_iff₀ (by positivity) hmax0, one_mul]
+          calc max (n : ℝ) (k * m : ℕ)
+              = 1 * max (n : ℝ) (k * m : ℕ) := (one_mul _).symm
+            _ ≤ |(n : ℝ) - (k * m : ℕ)| * ((N : ℝ) * Real.exp w) :=
+                mul_le_mul hd1 hmax_le hmax0.le (by positivity)
         exact ((div_le_div_of_nonneg_right he_ge hN0.le).trans hexp_inv).trans (h1max.trans hgap)
       have hw_2N : w ≤ 2 / (N : ℝ) := by
         refine hw_hi.trans ?_
@@ -857,7 +862,7 @@ theorem abs_nonRatioForm_transMetzler_le {N : ℕ} {w δ₀ : ℝ}
       have hmN : (m : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hm).2
       have hm_div : (m : ℝ) / N ≤ 1 := (div_le_one hN0).mpr hmN
       have hlm : 0 ≤ Real.log m := Real.log_natCast_nonneg m
-      have hrow := nonRatioRow_le_of_ratio (K := 5 / 4) (by omega) hw0.le hw1
+      have hrow := nonRatioRow_le_of_ratio (N := N) (K := 5 / 4) (by omega) hw0.le hw1
         (by simpa only [div_div] using hw_54) hm1
       have hc1 : 2 * (Real.log 4 + 4) * Real.exp (5 / 2) * (5 / 4 : ℝ) ≤ 180 := by
         have hpos_l : 0 ≤ Real.log 4 + 4 := by
@@ -866,7 +871,13 @@ theorem abs_nonRatioForm_transMetzler_le {N : ℕ} {w δ₀ : ℝ}
       have hc2 : 2 * Real.exp (3 / 2) * (5 / 4 : ℝ) * ((m : ℝ) / N) * (Real.log m + 1) ≤
           12 + (45 / 4) * ((m : ℝ) / N * Real.log m) := by
         have hm0 : 0 ≤ (m : ℝ) / N := by positivity
-        nlinarith only [he32, hm_div, hm0, hlm, Real.exp_pos (3 / 2 : ℝ)]
+        have hprod_pos : 0 ≤ ((m : ℝ) / N) * (Real.log m + 1) := by positivity
+        have hstep : 2 * Real.exp (3 / 2) * (5 / 4 : ℝ) * ((m : ℝ) / N) * (Real.log m + 1) ≤
+            (45 / 4) * (((m : ℝ) / N) * (Real.log m + 1)) := by
+          rw [show 2 * Real.exp (3 / 2) * (5 / 4 : ℝ) * ((m : ℝ) / N) * (Real.log m + 1) =
+            (2 * Real.exp (3 / 2) * (5 / 4 : ℝ)) * (((m : ℝ) / N) * (Real.log m + 1)) by ring]
+          exact mul_le_mul_of_nonneg_right (by linarith only [he32]) hprod_pos
+        linarith only [hstep, hm_div]
       exact mul_le_mul_of_nonneg_left (by linarith only [hrow, hc1, hc2]) (sq_nonneg _)
     have hsum1 := sum_le_sum hpt
     have htop := sum_top_le_poleDefect_param N a zero_lt_one
@@ -874,10 +885,9 @@ theorem abs_nonRatioForm_transMetzler_le {N : ℕ} {w δ₀ : ℝ}
     have hrew : ∑ m ∈ Icc 1 N, a m ^ 2 * (192 + (45 / 4) * ((m : ℝ) / N * Real.log m)) =
         192 * (∑ m ∈ Icc 1 N, a m ^ 2) +
           (45 / 4) * ∑ m ∈ Icc 1 N, (m : ℝ) / N * Real.log m * a m ^ 2 := by
-      simp only [mul_add, sum_add_distrib, ← mul_sum]
-      congr 1
-      · rw [← sum_mul]; ring
-      · congr 1; exact sum_congr rfl fun _ _ => by ring
+      have hterm : ∀ m ∈ Icc 1 N, a m ^ 2 * (192 + (45 / 4) * ((m : ℝ) / N * Real.log m)) =
+          192 * a m ^ 2 + (45 / 4) * ((m : ℝ) / N * Real.log m * a m ^ 2) := fun _ _ => by ring
+      rw [sum_congr rfl hterm, sum_add_distrib, ← mul_sum, ← mul_sum]
     rw [hrew] at hsum1
     have hpd0 := poleDefect_nonneg N a
     have hsq0 : 0 ≤ ∑ m ∈ Icc 1 N, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
@@ -1022,6 +1032,7 @@ theorem levyEnergy_atomicTest_eq_sum {g : ℝ → ℝ} {w : ℝ}
             ∫ u, ∑ j ∈ Icc 1 N,
               a j * ((d u - d (u + y)) * (atom g j u - atom g j (u + y))) := by
           refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+          dsimp only
           rw [← sum_sub_distrib, mul_sum]
           exact sum_congr rfl fun j _ => by ring
         rw [hcongr, integral_finsetSum _ fun j _ =>
@@ -1209,10 +1220,11 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
           mul_le_mul hd (hcs_u.trans hinc) (abs_nonneg _) (by positivity)
       _ = Real.exp (1 / 2) * 8000 * w * ∫ u, |transMetzlerProfile u| := by
           field_simp [hy0.ne', hw0.ne']
+          ring
       _ ≤ 2 * 8000 * w * 1 := by
           have hw_pos := hw0.le
           have hI0 : 0 ≤ ∫ u, |transMetzlerProfile u| := integral_nonneg fun _ => abs_nonneg _
-          nlinarith only [he2, hI1, hI0, hw_pos, Real.exp_pos (1 / 2 : ℝ)]
+          exact mul_le_mul (by linarith only [he2, hw_pos]) hI1 hI0 (by positivity)
       _ = 16000 * w := by ring
   have hshort_int : |∫ y in Set.Ioc 0 (2 * w),
       levyMixed (atomDilate transMetzlerProfile w)
@@ -1223,7 +1235,8 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
             (fun u => atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|)) y| :=
           abs_integral_le_integral_abs
       _ ≤ ∫ _ in Set.Ioc 0 (2 * w), 16000 * w :=
-          setIntegral_mono_on hint_short.abs (integrableOn_const (by simp))
+          setIntegral_mono_on hint_short.abs
+            (integrableOn_const (by simp [ENNReal.mul_eq_top]))
             measurableSet_Ioc hshort_pt
       _ = 32000 * w ^ 2 := by
           rw [setIntegral_const, smul_eq_mul, Real.volume_real_Ioc_of_le (by positivity)]
@@ -1272,7 +1285,7 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
           atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|) = 0 := by
         by_cases hu : u + y ∈ Set.Icc 0 w
         · rw [hgsupp (u - |Real.log j - Real.log n|)
-            (fun h => by linarith only [hu.2, h.1, hy2w, abs_nonneg (Real.log j - Real.log n)]),
+            (fun h => by linarith only [hu.2, h.1, hy2w, hw0, abs_nonneg (Real.log j - Real.log n)]),
             mul_zero]
         · rw [hgsupp (u + y) hu, zero_mul]
       have hexp : (atomDilate transMetzlerProfile w u -
@@ -1383,7 +1396,7 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
       nlinarith only [hφ, hw0]
     have hA2_le : (∫ u, |atomDilate transMetzlerProfile (2 * w) u|) ≤ 2 * w := by
       rw [integral_abs_atomDilate h2w_pos]
-      have hI1 := integral_abs_plateau_le etaZero_pos
+      have hI1 : (∫ u, |transMetzlerProfile u|) ≤ 1 := integral_abs_plateau_le etaZero_pos
       nlinarith only [hI1, hw0]
     have he2 : Real.exp (1 / 2 : ℝ) ≤ 2 := by
       have he1 := Real.exp_one_lt_d9
@@ -1418,12 +1431,12 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
         |Real.log j - Real.log n| * (2 * ∫ y in Set.Ioi (2 * w), archLevyDensity y) := by
     rw [setIntegral_congr_fun measurableSet_Ioi hlong_pt, integral_const_mul]
     ring
-  have hcorr_le : |SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
-        |Real.log j - Real.log n| | /
+  have hcorr_le : |(SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+        |Real.log j - Real.log n|)| /
       (∫ u, atomDilate transMetzlerProfile w u ^ 2) ≤ 3 * δ₀ := by
-    have hover : |SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
-        |Real.log j - Real.log n| | ≤ w - |Real.log j - Real.log n| := by
-      change |bumpAutocorr (atomDilate transMetzlerProfile w) |Real.log j - Real.log n| | ≤ _
+    have hover : |(SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
+        |Real.log j - Real.log n|)| ≤ w - |Real.log j - Real.log n| := by
+      change |(bumpAutocorr (atomDilate transMetzlerProfile w) |Real.log j - Real.log n|)| ≤ _
       simpa only [one_pow, one_mul, abs_abs] using
         abs_bumpAutocorr_le_overlap_length hg.continuous hgsupp zero_le_one
           (fun u => by

@@ -17,6 +17,11 @@ each outer node of a pair must be one of the waves, and distinct pairs use disti
 **Attainment** (`exists_waves_bounded`). Subtracting the `κ` outer nodes with their weights leaves
 the positive part and the decaying inner nodes: bounded.
 
+**Rigidity of minimal counts** (`nodeCoeff_outer_eq_sum_waves`, `minimal_waves_eq_outerNodes`). The
+weight of each outer node is the total wave coefficient at it; a count bounded after exactly `κ`
+waves uses the outer nodes, one each, with the pair weights as coefficients. A minimal count
+determines the hyperbolic spectrum and its weights.
+
 **The index formula** (`negIndex_eq_card_waves`). Hence `κ(k)` is the least number of exceptional
 waves of a bounded count along a separating tower. For the Weil kernel of `ζ` on the finite stratum
 this is the subtracted-lag law: `ψ(x) − x` minus finitely many waves `x^ρ/ρ` is bounded by `√x log²x`
@@ -127,6 +132,80 @@ theorem card_le_of_bounded_sub_waves {p : G → ℂ} (hp : IsPosDefKernel p) (χ
   have hinj : Function.Injective f := fun j j' h =>
     outerNode_injective χ u (hsep ((hf j).symm.trans (h ▸ hf j')))
   simpa using Fintype.card_le_of_injective f hinj
+
+/-- **Merged coefficients vanish at the outer nodes.** For a count bounded after subtracting the
+waves `(v, a)`, the weight of each outer node equals the total wave coefficient at that node. -/
+theorem nodeCoeff_outer_eq_sum_waves {p : G → ℂ} (hp : IsPosDefKernel p) (χ : Fin κ → G →* ℂ)
+    (ω : Fin κ → ℂ) (u : G) (hne : ∀ j, ‖χ j u‖ ≠ 1) (hsep : Function.Injective (nodes χ u))
+    {m : ℕ} (v a : Fin m → ℂ)
+    (hb : ∃ M, ∀ n : ℕ, ‖p (u ^ n) + ∑ j, pairKernel (χ j) (ω j) (u ^ n) -
+      ∑ i, a i * v i ^ n‖ ≤ M) (j : Fin κ) :
+    nodeCoeff ω (outerNode χ u j) =
+      ∑ i ∈ univ.filter (fun i => v i = nodes χ u (outerNode χ u j)), a i := by
+  classical
+  obtain ⟨M, hM⟩ := hb
+  set ν : (Fin κ ⊕ Fin κ) ⊕ Fin m → ℂ := Sum.elim (nodes χ u) v
+  set c : (Fin κ ⊕ Fin κ) ⊕ Fin m → ℂ := Sum.elim (nodeCoeff ω) fun i => -a i
+  have hbound : ∀ n : ℕ, ‖∑ i, c i * ν i ^ n‖ ≤ M + (p 1).re := fun n => by
+    have hs : ∑ i, c i * ν i ^ n = (p (u ^ n) + ∑ j, pairKernel (χ j) (ω j) (u ^ n) -
+        ∑ i, a i * v i ^ n) - p (u ^ n) := by
+      rw [Fintype.sum_sum_type, sum_pairKernel_pow]
+      simp only [ν, c, Sum.elim_inl, Sum.elim_inr, neg_mul, sum_neg_distrib]
+      ring
+    rw [hs]
+    exact (norm_sub_le _ _).trans (add_le_add (hM n) (hp.norm_le _))
+  set w := nodes χ u (outerNode χ u j) with hw
+  have h0 := sum_coeff_eq_zero_of_norm_le ν c hbound (one_lt_norm_outerNode hne j)
+  rw [sum_filter, Fintype.sum_sum_type] at h0
+  have hleft : ∑ x : Fin κ ⊕ Fin κ, (if ν (Sum.inl x) = w then c (Sum.inl x) else 0) =
+      nodeCoeff ω (outerNode χ u j) := by
+    exact (Fintype.sum_eq_single (outerNode χ u j) fun x hx => if_neg fun h => hx (hsep h)).trans
+      (if_pos rfl)
+  have hright : ∑ i : Fin m, (if ν (Sum.inr i) = w then c (Sum.inr i) else 0) =
+      -∑ i ∈ univ.filter (fun i => v i = w), a i := by
+    rw [sum_filter, ← sum_neg_distrib]
+    refine sum_congr rfl fun i _ => ?_
+    simp only [ν, c, Sum.elim_inr]
+    split_ifs <;> simp
+  rw [hleft, hright, add_neg_eq_zero] at h0
+  exact h0
+
+/-- **The waves of a minimal count are the outer nodes with their weights.** If a count along a
+separating tower is bounded after subtracting exactly `κ` waves, the waves are the outer nodes, one
+each, and their coefficients are the pair weights: the minimal count determines the hyperbolic
+spectrum and its weights. -/
+theorem minimal_waves_eq_outerNodes {p : G → ℂ} (hp : IsPosDefKernel p) (χ : Fin κ → G →* ℂ)
+    (ω : Fin κ → ℂ) (hω : ∀ j, ω j ≠ 0) (u : G) (hne : ∀ j, ‖χ j u‖ ≠ 1)
+    (hsep : Function.Injective (nodes χ u)) (v a : Fin κ → ℂ)
+    (hb : ∃ M, ∀ n : ℕ, ‖p (u ^ n) + ∑ j, pairKernel (χ j) (ω j) (u ^ n) -
+      ∑ i, a i * v i ^ n‖ ≤ M) :
+    ∃ σ : Fin κ ≃ Fin κ, ∀ j, v (σ j) = nodes χ u (outerNode χ u j) ∧
+      a (σ j) = nodeCoeff ω (outerNode χ u j) := by
+  classical
+  have hc : ∀ j, nodeCoeff ω (outerNode χ u j) ≠ 0 := fun j => by
+    unfold outerNode; split_ifs
+    · exact hω j
+    · exact (star_ne_zero).mpr (hω j)
+  have hex : ∀ j, ∃ i, v i = nodes χ u (outerNode χ u j) := fun j => by
+    by_contra hnone
+    push Not at hnone
+    have := nodeCoeff_outer_eq_sum_waves hp χ ω u hne hsep v a hb j
+    rw [sum_eq_zero fun i hi => absurd (mem_filter.mp hi).2 (hnone i)] at this
+    exact hc j this
+  choose f hf using hex
+  have hinj : Function.Injective f := fun j j' h =>
+    outerNode_injective χ u (hsep ((hf j).symm.trans (h ▸ hf j')))
+  have hbij : Function.Bijective f := (Fintype.bijective_iff_injective_and_card f).mpr ⟨hinj, rfl⟩
+  refine ⟨Equiv.ofBijective f hbij, fun j => ⟨hf j, ?_⟩⟩
+  have hsum := nodeCoeff_outer_eq_sum_waves hp χ ω u hne hsep v a hb j
+  rw [hsum, sum_eq_single (f j)]
+  · rfl
+  · intro i hi hij
+    obtain ⟨j', rfl⟩ := hbij.2 i
+    have := (mem_filter.mp hi).2
+    rw [hf j'] at this
+    exact absurd (congrArg f (outerNode_injective χ u (hsep this))) hij
+  · intro h; exact (h (mem_filter.mpr ⟨mem_univ _, hf j⟩)).elim
 
 /-- **Attainment.** Subtracting the outer nodes with their weights leaves a bounded count. -/
 theorem exists_waves_bounded {p : G → ℂ} (hp : IsPosDefKernel p) (χ : Fin κ → G →* ℂ)

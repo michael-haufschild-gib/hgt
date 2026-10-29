@@ -8,6 +8,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsTheNumberOfExce
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.CompressionsAreReceivers
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersDecideEveryOrbitKernel
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.LocalityIsTwinBlind
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheCollisionMassIsTheWaveNumber
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -23,7 +24,8 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   waves of a count.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
   the global law over `ℤ`; compressions as receivers.
-* **Completion.** Continuity of the index off the discriminant and its three degenerations.
+* **Completion.** Continuity of the index off the discriminant and its three degenerations; the
+  heat-collision mass as twice the wave number of the prime-side count.
 
 The foundation is `HeckeKreinToeplitz`. See `ArithmeticKreinLangerTheory/README.md`.
 -/

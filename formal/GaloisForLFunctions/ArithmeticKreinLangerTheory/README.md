@@ -183,12 +183,13 @@ fails.
 6. **The index is the number of exceptional waves.** Along a separating tower, a count bounded after
    subtracting `m` waves forces each outer node to be a wave (merging frequencies, non-cancellation at
    the top modulus), so `κ ≤ m`; the outer nodes attain it (`negIndex_eq_card_waves`).
-7. **Index limits.** Lower semicontinuity is attained on one finite family
+7. **Index limits and collisions.** Lower semicontinuity is attained on one finite family
    (`eventually_le_negIndex_of_tendsto`); with the structural ceiling `κ`, the index is continuous along
    pointwise convergence of data off the discriminant (`eventually_negIndex_eq_of_tendsto`). Each part
    of the discriminant lowers it: vanishing weights (`vanishing_weight_drops_index`), colliding
    exponents with opposite weights (`collision_drops_index`), coalescence onto the line (HKT
-   `coalescence_law`).
+   `coalescence_law`). On the finite stratum the heat-collision mass is twice the wave number of the
+   prime-side count plus twice the multiplicity excess (`waveNumber_collision_law`).
 8. **Compressions are receivers.** Over `𝔽_q` the characteristic polynomial of Frobenius, determined
    by finitely many counts, annihilates the trace kernel outright (`compress_traceKernel_charPoly`):
    a spectral-side certificate certifies nothing. Over `ℤ` the compressor `δ₁ − cδ_p` of one Euler
@@ -268,6 +269,8 @@ fails.
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
 2. *Continuity off the discriminant* (`eventually_negIndex_eq_of_tendsto`).
 3. *The degenerations* (`vanishing_weight_drops_index`, `collision_drops_index`, HKT `coalescence_law`).
+4. *Collisions count exceptional waves* (`Wsummand_ne_zero_of_rightZero`,
+   `zetaKernel_eq_onLine_add_pairs_fin`, `waveNumber_collision_law`).
 
 ---
 
@@ -309,10 +312,13 @@ fails.
    is the width of the window where the pole carries the first square (HKT). Locality is twin-blind
    (`twin_finite_towers_negIndex_ne`), so selectivity can only come from a count or a carrier.
    *Open:* a selective count.
-3. **Why does finite index imply LH?** Finite index is a count with finitely many exceptional waves
-   (`negIndex_eq_card_waves`), so the off-line zeros in every unit height window are eventually absent:
-   Backlund's form of LH (HKT `lindelof_of_negIndex_zetaKernel_lt_top`). *Open:* a proof from the kernel
-   that bounds `ζ` on the line by the positive part.
+3. **Why does finite index imply LH?** The passage has two steps of different kinds. The kernel step:
+   finite index is a count with finitely many exceptional waves (`negIndex_eq_card_waves`), i.e.
+   finitely many off-line zeros, so the zeros approach the line. The analytic step: zeros approaching
+   the line is Backlund's density form of LH, and its converse to growth on the line is a statement
+   about `ζ` itself (HKT `lindelof_of_negIndex_zetaKernel_lt_top`). The kernel supplies exactly the
+   first step; no kernel identity bounds `ζ` on the line (inference). *Open:* a proof of the analytic
+   step from the positive part of the kernel.
 4. **In which completion does the Weil kernel carry its index to the limit?** Two answers. Along
    data: pointwise convergence of Krein–Langer data off the discriminant
    (`eventually_negIndex_eq_of_tendsto`); the index drops exactly by vanishing weights, collisions and
@@ -329,9 +335,13 @@ fails.
    contains fine towers, whose indices have the whole index as supremum
    (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`), attained exactly on the finite stratum
    (`eventually_negIndex_fine_eq`).
-6. **What arithmetic quantity governs the near-axis collisions of the heat flow?** Collision mass is
-   `2(κ + E)` on the finite stratum (HKT); near the axis the index drops by coalescence, the part of
-   the discriminant where a node reaches the unit circle (§4.7). *Open:* a prime-side expression.
+6. **What arithmetic quantity governs the near-axis collisions of the heat flow?** The wave number
+   of the prime-side count. On the finite stratum there is a tower along which the Weil-kernel values
+   (prime sums against translated tests) are bounded after subtracting `κ` exponential waves and only
+   after at least `κ`, and the collision mass after small times is `2(κ + E)` with `E` the
+   multiplicity excess (`waveNumber_collision_law`). Each exceptional wave of the count accounts for
+   two collisions, and the index drops by coalescence, the part of the discriminant
+   where a node reaches the unit circle (§4.7). *Open:* a prime-side expression for `E`.
 
 ---
 
@@ -367,7 +377,8 @@ To build:
 3. **Prime-tower locality for infinite spectra**: one test, infinitely many prime towers, infinitely
    many pairs (the fine towers decide; the coarse prime towers alias).
 4. **A direct Lindelöf bridge** from a count with finitely many waves.
-5. **The near-axis count** of the heat flow in prime-side terms.
+5. **The multiplicity excess** `E` of the collision law in prime-side terms (the index part is the
+   wave number).
 6. **Finite-level ceilings**: index bounds for height or integer truncations from prime-side data,
    uniform in the truncation (equivalent to finite support; LH-deep).
 7. **The atomic index ladder over `𝔽_q`**: the function-field analogue of the index-one window and of
