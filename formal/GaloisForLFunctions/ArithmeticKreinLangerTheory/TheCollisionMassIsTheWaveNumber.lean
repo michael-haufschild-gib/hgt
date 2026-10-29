@@ -235,6 +235,3 @@ theorem bounded_heat_iff_consecutive_bounded :
   exact ((zetaKernel_finiteIndex_tfae Nat.prime_two Nat.prime_three (by norm_num)).out 0 3).symm
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms zetaKernel_eq_weilFullFunctional

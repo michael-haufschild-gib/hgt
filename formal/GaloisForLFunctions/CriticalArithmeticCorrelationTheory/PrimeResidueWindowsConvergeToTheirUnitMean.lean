@@ -81,7 +81,7 @@ private theorem residuePrimeWindow_eq_sub {q A B : ℕ} (F : ZMod q → ℝ)
     intro k hk hl
     exact (not_lt_of_ge (mem_Icc.mp hk).2) (mem_Ioc.mp hl).1
   have hsum := sum_union hdisj
-    (f := fun k => F (k : ZMod q) * (ArithmeticFunction.vonMangoldt k : ℝ) / k)
+    (f := fun k : ℕ => F (k : ZMod q) * (ArithmeticFunction.vonMangoldt k : ℝ) / k)
   rw [← hset] at hsum
   change residuePrimeReading q F (B * N) =
     residuePrimeReading q F (A * N) + residuePrimeWindow q F A B N at hsum
@@ -92,7 +92,7 @@ private theorem tendsto_mul_nat_atTop {A : ℕ} (hA : 0 < A) :
   apply tendsto_atTop.mpr
   intro K
   filter_upwards [eventually_ge_atTop K] with N hN
-  exact hN.trans (by simpa only [one_mul] using
+  exact hN.trans (by simpa only [Nat.succ_eq_add_one, zero_add, one_mul] using
     Nat.mul_le_mul_right N (Nat.succ_le_of_lt hA))
 
 /-- On every fixed multiplicative window, the literal prime reading tends to

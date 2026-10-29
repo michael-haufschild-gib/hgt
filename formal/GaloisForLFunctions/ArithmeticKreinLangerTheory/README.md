@@ -287,7 +287,7 @@ fails.
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
 2. *Continuity off the discriminant* (`eventually_negIndex_eq_of_tendsto`).
 3. *The degenerations* (`vanishing_weight_drops_index`, `collision_drops_index`, HKT `coalescence_law`).
-4. *Collisions count exceptional waves* (`Wsummand_ne_zero_of_rightZero`,
+4. *Collisions count exceptional waves* (`zetaKernel_eq_weilFullFunctional`, `Wsummand_ne_zero_of_rightZero`,
    `zetaKernel_eq_onLine_add_pairs_fin`, `waveNumber_collision_law`, `minimal_count_reads_multiplicities`,
    `xiMult_eq_mult`, `collision_mass_from_minimal_count`, `tendsto_collisionMass_iff_consecutive`,
    `bounded_heat_iff_consecutive_bounded`).
@@ -357,9 +357,10 @@ fails.
    (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`), attained exactly on the finite stratum
    (`eventually_negIndex_fine_eq`).
 6. **What arithmetic quantity governs the near-axis collisions of the heat flow?** The wave number
-   of the prime-side count. On the finite stratum there is a tower along which the Weil-kernel values
-   (prime sums against translated tests) are bounded after subtracting `κ` exponential waves and only
-   after at least `κ`, and the collision mass after small times is `2(κ + E)` with `E` the
+   of the prime-side count. Each Weil-kernel value is the explicit-formula functional of the spline and
+   its translate, pole terms minus the von Mangoldt sum plus the Gamma term
+   (`zetaKernel_eq_weilFullFunctional`). On the finite stratum there is a tower along which these values
+   are bounded after subtracting `κ` exponential waves and only after at least `κ`, and the collision mass after small times is `2(κ + E)` with `E` the
    multiplicity excess (`waveNumber_collision_law`). Each exceptional wave of the count accounts for
    two collisions, and the index drops by coalescence, the part of the discriminant
    where a node reaches the unit circle (§4.7). The multiplicities are prime-side too: a count bounded
@@ -405,7 +406,9 @@ To build:
 2. **Ring-level inputs**: Bézout relations as local-to-global data.
 3. **Prime-tower locality when the depth supremum is not attained, or attained infinitely often**
    (fine towers decide in general; prime towers decide when the largest depth is attained by finitely
-   many zeros).
+   many zeros). The obstruction is a natural boundary: along a tower the generating function
+   `Σ_n K(u^n) z^n = Σ_ρ W_ρ/(1 − ν_ρ z)` has poles accumulating on the circle `|z| = e^{−D·scale u}`,
+   so boundedness inside the unit disc no longer reaches the poles outside it.
 4. **A direct Lindelöf bridge** from a count with finitely many waves.
 5. **Collision rates off the finite stratum**: the growth rate of collision mass as `t ↓ 0` against
    the growth of the fine-tower indices.

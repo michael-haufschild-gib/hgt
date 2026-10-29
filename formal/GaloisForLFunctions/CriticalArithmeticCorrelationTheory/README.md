@@ -211,7 +211,7 @@ let
 \[
 F_a(n)=\sum_{m=1}^{Q}a_m\,
 \frac{c_m(n)}{\sqrt{\varphi(m)n}},
-\qquad A=\sum_{m=1}^{Q}a_m^2,
+\qquad S=\sum_{m=1}^{Q}a_m^2,
 \qquad K=Q(Q-1).
 \]
 
@@ -219,13 +219,13 @@ Here `c_m(n)` is the actual Ramanujan sum, not a statistical model. The whole
 family obeys
 
 \[
-(H_N-H_K)A\le\sum_{n=1}^{N}F_a(n)^2,
+(H_N-H_K)S\le\sum_{n=1}^{N}F_a(n)^2,
 \]
 
 and, independently of the ordering of `N` and `K`,
 
 \[
-\bigl(\log(N+1)-\log(K+1)\bigr)A
+\bigl(\log(N+1)-\log(K+1)\bigr)S
 \le\sum_{n=1}^{N}F_a(n)^2.
 \]
 
@@ -234,9 +234,9 @@ constant is positive once `N>Q(Q-1)`. No conductor is held fixed while the
 horizon grows, and the bound applies simultaneously to every coefficient vector.
 
 The arithmetic step resolves each normalized Ramanujan sum into primitive roots.
-Disjoint exact orders make the root coefficient square mass equal to `A`.
+Disjoint exact orders make the root coefficient square mass equal to `S`.
 The existing two-sided large-sieve theorem then gives ordinary cumulative mass
-at least `(N-K)A`. Nonnegativity improves this to the positive part of that
+at least `(N-K)S`. Nonnegativity improves this to the positive part of that
 bound. Summation by parts compares it with constant mass delayed until `K`,
 yielding the harmonic loss `H_K`. Monotonicity of `H_n-log(n+1)` supplies the
 logarithmic version without an additional constant loss.

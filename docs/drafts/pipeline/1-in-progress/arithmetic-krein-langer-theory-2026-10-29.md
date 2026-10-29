@@ -43,12 +43,14 @@ locality, and must not duplicate HKT modules.
   `LocalConstituentsMeetOnlyAtTheIdentity`, `TheTwistTowerCompletesTheUpperCount`,
   `TheIndexIsContinuousOffTheDiscriminant`, `TheParityFormOfTheGlobalLaw`,
   `TheIndexIsTheNumberOfExceptionalWaves`, `CompressionsAreReceivers`,
-  `FineTowersDecideEveryOrbitKernel`, `LocalityIsTwinBlind`.
+  `FineTowersDecideEveryOrbitKernel`, `LocalityIsTwinBlind`, `TheCollisionMassIsTheWaveNumber`,
+  `IsolatedDeepZerosAreSeenByAlmostEveryPrime`.
 
 ## Open (RH/LH-deep, recorded in README §9)
 Producer over ℤ; Lindelöf bridge from the kernel; near-axis collision quantity; selective transfer
-past Robin–Euler; two-sided coalescent pair theory; coarse (prime) tower locality for infinite
-spectra (fine towers are settled).
+past Robin–Euler; two-sided coalescent pair theory; prime-tower locality when the depth supremum
+is unattained or attained infinitely often (finite attainment and fine towers are settled; the
+collision law is read from one minimal count).
 
 ## Log
-- 2026-10-29 — created; README draft written; ten modules proved; README revised.
+- 2026-10-29 — created; README draft written; twelve modules proved; README revised.

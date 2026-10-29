@@ -18,6 +18,7 @@ import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TowerPositivityIsPrec
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheStirlingErrorSplits
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheSmoothTermInvertsToMobiusMoments
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.FiniteAperturePositivityCannotDecide
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheSuccessorEntersOnlyModuloTheSquareRootClass
 
 /-!
 # Arithmetic of Square-Root Precision
@@ -31,5 +32,6 @@ calibration of precision exponents on curve data; the gauge stabilizer of the co
 ledger; the vanishing forced by sup-norm ceilings; majorants, minorants and abscissas of one-signed
 perturbations; the separation of prime logarithms and the two-prime non-aliasing law; inversion of monotone errors
 at Mertens precision, the split of the Stirling error and the arithmetic Chebyshev ledger; the precision-exactness of tower
-positivity and the window law of finite-aperture positivity. See `ArithmeticOfSquareRootPrecision/README.md`.
+positivity and the window law of finite-aperture positivity; the successor modulo the square-root
+class. See `ArithmeticOfSquareRootPrecision/README.md`.
 -/

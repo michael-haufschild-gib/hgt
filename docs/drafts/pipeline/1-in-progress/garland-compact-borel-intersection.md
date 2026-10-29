@@ -165,9 +165,10 @@ builds. `RealSphericalFunction` passed its final direct source check. All
 nine modules are wired. The unchanged, previously audited
 `RealCartanCharacters` was emitted for its written consumer. Input axiom
 audits passed. Installed scratch copies were removed. Remaining work: the
-five final direct dependency checks, transitive audit, documentation
+three final direct dependency checks, transitive audit, documentation
 promotion, and removal of the remaining owned audit scratch files.
 Final direct checks passed: `RealSphericalFunction`, `RealRotationMatrices`,
-`MatrixLaurentLeading`, `SubgroupAlternatingWords`.
+`MatrixLaurentLeading`, `SubgroupAlternatingWords`, `SimpleCompactBorel`,
+`RealCompactSigns`.
 Only then can this card move to formalized. Arithmetic subgroup, series,
 measure, convergence, and ξ constant-term unfolding remain open.
