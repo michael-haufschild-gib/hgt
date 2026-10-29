@@ -180,4 +180,81 @@ private theorem exists_multiple_nairIntegral_eq_residue (Q H : ℤ[X]) (K : ℤ)
     rw [mul_assoc, hz']
     ring
 
+private theorem exists_uniform_reciprocal_multiples {Q : ℤ[X]} (hQ : Q ≠ 0) :
+    ∃ C₀ : ℤ, 0 < C₀ ∧ ∀ n : ℕ, 2 * Q.natDegree ≤ n →
+      ∀ k ∈ Icc 1 (n + 1), ∃ P : ℤ[X], Q ∣ P ∧ P.natDegree ≤ n ∧
+        nairIntegral P = (C₀ : ℝ) / k := by
+  obtain ⟨H, K, hH, hdegH, hK, hintH⟩ := exists_positive_integral_multiple hQ
+  let A := idealMomentResidue Q
+  let d := Nat.lcmUpto Q.natDegree
+  let σ : ℤ := if 0 ≤ A then 1 else -1
+  have hA : A ≠ 0 := idealMomentResidue_ne_zero hQ
+  have hσ : σ * A = |A| := by
+    dsimp [σ]
+    split_ifs with ha
+    · simp only [one_mul, abs_of_nonneg ha]
+    · simp only [neg_one_mul, abs_of_neg (lt_of_not_ge ha)]
+  refine ⟨K * |A| * d, mul_pos (mul_pos hK (abs_pos.mpr hA))
+    (by exact_mod_cast Nat.lcmUpto_pos Q.natDegree), ?_⟩
+  intro n hn k hk
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (mem_Icc.mp hk).1
+  by_cases hkm : k ≤ Q.natDegree
+  · have hkd : k ∣ d := Finset.dvd_lcm (f := id) (mem_Icc.mpr ⟨(mem_Icc.mp hk).1, hkm⟩)
+    obtain ⟨e, he⟩ := hkd
+    refine ⟨C (|A| * e) * H, dvd_mul_of_dvd_right hH _,
+      (natDegree_C_mul_le _ _).trans (hdegH.trans hn), ?_⟩
+    rw [nairIntegral_C_mul, hintH]
+    push_cast
+    have he' : (d : ℝ) = (k : ℝ) * e := by exact_mod_cast he
+    rw [he']
+    field_simp
+    ring
+  · let j := k - Q.natDegree - 1
+    have hj : j + Q.natDegree + 1 = k := by dsimp [j]; omega
+    obtain ⟨P, hP, hdegP, hintP⟩ :=
+      exists_multiple_nairIntegral_eq_residue Q H K hH hdegH hintH j
+    refine ⟨C (σ * d) * P, dvd_mul_of_dvd_right hP _,
+      (natDegree_C_mul_le _ _).trans (hdegP.trans (max_le ?_ hn)), ?_⟩
+    · have := (mem_Icc.mp hk).2
+      omega
+    · rw [nairIntegral_C_mul, hintP, hj]
+      push_cast
+      have hσ' : (σ : ℝ) * (A : ℝ) = (|A| : ℤ) := by exact_mod_cast hσ
+      change (σ : ℝ) * (d : ℝ) * ((K : ℝ) * (A : ℝ) / k) =
+        (K : ℝ) * (|A| : ℤ) * (d : ℝ) / k
+      calc
+        _ = (K : ℝ) * ((σ : ℝ) * (A : ℝ)) * (d : ℝ) / k := by ring
+        _ = _ := by rw [hσ']
+
+/-- Every fixed nonzero polynomial ideal contains a reciprocal horizon witness with one
+positive numerator independent of the horizon. Thus fixed divisibility costs only a bounded
+factor in the integrality floor. -/
+theorem exists_uniform_nairIntegral_multiple {Q : ℤ[X]} (hQ : Q ≠ 0) :
+    ∃ C₀ : ℤ, 0 < C₀ ∧ ∀ n : ℕ, 2 * Q.natDegree ≤ n →
+      ∃ P : ℤ[X], Q ∣ P ∧ P.natDegree ≤ n ∧
+        nairIntegral P = (C₀ : ℝ) / (Nat.lcmUpto (n + 1) : ℕ) := by
+  classical
+  obtain ⟨C₀, hC₀, hrecip⟩ := exists_uniform_reciprocal_multiples hQ
+  refine ⟨C₀, hC₀, fun n hn => ?_⟩
+  obtain ⟨c, hc⟩ := exists_int_sum_div_eq_inv_lcm (Icc 1 (n + 1)) ⟨1, by simp⟩
+    (f := id) fun i hi => (mem_Icc.mp hi).1
+  choose P hP hdegP hintP using hrecip n hn
+  let R : ℕ → ℤ[X] := fun k => if hk : k ∈ Icc 1 (n + 1) then C (c k) * P k hk else 0
+  have hR (k : ℕ) (hk : k ∈ Icc 1 (n + 1)) : R k = C (c k) * P k hk := dif_pos hk
+  refine ⟨∑ k ∈ Icc 1 (n + 1), R k, ?_, ?_, ?_⟩
+  · exact Finset.dvd_sum fun k hk => by rw [hR k hk]; exact dvd_mul_of_dvd_right (hP k hk) _
+  · exact natDegree_sum_le_of_forall_le _ _ fun k hk => by
+      rw [hR k hk]
+      exact (natDegree_C_mul_le _ _).trans (hdegP k hk)
+  · rw [nairIntegral_sum]
+    calc
+      _ = ∑ k ∈ Icc 1 (n + 1), (C₀ : ℝ) * ((c k : ℝ) / k) := by
+        refine sum_congr rfl fun k hk => ?_
+        rw [hR k hk, nairIntegral_C_mul, hintP k hk]
+        ring
+      _ = (C₀ : ℝ) / (Nat.lcmUpto (n + 1) : ℕ) := by
+        rw [← mul_sum, hc]
+        simp only [Nat.lcmUpto, id_eq]
+        ring
+
 end GaloisForLFunctions.ArithmeticOfSquareRootPrecision

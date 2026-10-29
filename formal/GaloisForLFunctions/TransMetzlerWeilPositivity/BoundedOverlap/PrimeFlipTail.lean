@@ -73,9 +73,7 @@ private theorem primeSquareFlip_term_le {p : ℕ} (hp : p.Prime) (n t : ℕ) :
   · subst t
     have hflip : finiteFlip {p} p = -1 := by
       simp only [finiteFlip, prod_singleton, hp.factorization_self, pow_one]
-    simp only [hflip, if_pos rfl, ne_eq, not_true_eq_false, false_and,
-      and_false, if_false, mul_zero, add_zero, vonMangoldt_apply_prime hp]
-    ring_nf
+    norm_num [hflip, vonMangoldt_apply_prime hp]
   · rw [if_neg htp, zero_add]
     by_cases ht2 : t = p ^ 2
     · subst t
@@ -103,7 +101,7 @@ private theorem primeSquareFlip_term_le {p : ℕ} (hp : p.Prime) (n t : ℕ) :
             ((mul_le_mul_of_nonneg_left hprod hbound.1).trans (by simpa using hbound.2)) hmass
       · have hflip : finiteFlip {p} t = 1 :=
           finiteFlip_eq_one_of_coprime (by simpa only [mem_singleton, forall_eq] using hpt)
-        simp only [hflip, sub_self, zero_mul, zero_div, hpt, false_and, if_false, le_refl]
+        simp only [hflip, sub_self, zero_mul, zero_div, hpt, false_and, if_false, mul_zero, le_refl]
 
 /-- The first prime term keeps its sign; all later prime powers have one uniform tail cost. -/
 theorem primeSquareFlipRow_le {p : ℕ} (hp : p.Prime) (n y : ℕ) :
@@ -119,7 +117,7 @@ theorem primeSquareFlipRow_le {p : ℕ} (hp : p.Prime) (n y : ℕ) :
   change primeSquareFlipRow p n y ≤ _ at h
   calc
     _ ≤ _ := h
-    _ ≤ _ := by linarith only [htail]
+    _ ≤ _ := add_le_add_left (by simpa only [mul_div_assoc] using htail) _
 
 /-- Pole coordinates remove both square-root edge weights exactly. -/
 theorem atomicWeilForm_pole_profile_edges (F : ℕ → ℝ) (N : ℕ) :

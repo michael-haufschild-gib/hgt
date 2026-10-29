@@ -101,7 +101,39 @@ theorem arithmeticOverlapCurvature_conditional_quadratic_nonpos {ι : Type*}
   exact mul_nonpos_of_nonpos_of_nonneg (by norm_num)
     (arithmeticOverlapGram_quadratic_nonneg s hm a x hx)
 
+/-- On the first unit cell the curvature is exactly linear, with slope
+equal to the number of primitive roots. -/
+theorem arithmeticOverlapCurvature_unit_cell {m : ℕ} (hm : 1 < m)
+    {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
+    arithmeticOverlapCurvature m t = (m.totient : ℝ) * t := by
+  have hcard : (Polynomial.primitiveRoots m ℂ).card = m.totient :=
+    (Complex.isPrimitiveRoot_exp m (zero_lt_one.trans hm).ne').card_primitiveRoots
+  have h0 : primitiveRootPrefixEnergy m 0 = 0 := by simp [primitiveRootPrefixEnergy]
+  have h1 : primitiveRootPrefixEnergy m 1 = (m.totient : ℝ) := by
+    simp [primitiveRootPrefixEnergy, hcard]
+  rcases lt_or_eq_of_le ht.2 with hlt | rfl
+  · have h := arithmeticOverlapCurvature_eq_interpolation hm 0 ht.1 hlt
+    simpa only [Nat.cast_zero, zero_add, Nat.zero_add, h0, h1, mul_zero,
+      zero_add, mul_comm] using h
+  · simpa only [Nat.cast_one, h1, mul_one] using arithmeticOverlapCurvature_natCast hm 1
+
+/-- After totient normalization, every conductor has the same full Gram
+kernel on the unit cell: the minimum kernel. -/
+theorem arithmeticOverlapGram_unit_cell {m : ℕ} (hm : 1 < m)
+    {x y : ℝ} (hx : x ∈ Set.Icc (0 : ℝ) 1) (hy : y ∈ Set.Icc (0 : ℝ) 1) :
+    arithmeticOverlapGram m x y = (m.totient : ℝ) * min x y := by
+  have hd : |x - y| ∈ Set.Icc (0 : ℝ) 1 :=
+    ⟨abs_nonneg _, abs_le.mpr ⟨by linarith [hx.1, hy.2], by linarith [hy.1, hx.2]⟩⟩
+  rw [arithmeticOverlapGram, arithmeticOverlapCurvature_unit_cell hm hx,
+    arithmeticOverlapCurvature_unit_cell hm hy, arithmeticOverlapCurvature_unit_cell hm hd]
+  rcases le_total x y with hxy | hyx
+  · rw [min_eq_left hxy, abs_of_nonpos (sub_nonpos.mpr hxy)]
+    ring
+  · rw [min_eq_right hyx, abs_of_nonneg (sub_nonneg.mpr hyx)]
+    ring
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.arithmeticOverlapGram_quadratic_nonneg
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.arithmeticOverlapCurvature_conditional_quadratic_nonpos
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.arithmeticOverlapGram_unit_cell

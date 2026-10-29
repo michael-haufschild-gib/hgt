@@ -621,3 +621,6 @@ theorem atomFq_two_negative_squares {N : ℕ} {Q : F[X]} (hQ : Q.Monic) (hQ1 : 1
   rwa [sum_divVec_sq N hQ, sum_poleVec_sq]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms atomFq_two_negative_squares
