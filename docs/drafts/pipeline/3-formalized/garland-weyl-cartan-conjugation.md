@@ -1,8 +1,8 @@
 # Actual Weyl conjugation on the central Cartan and degree rotation
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** Identify the abstract affine weight action with conjugation by
   explicit elements of the constructed central loop group.
 
@@ -76,11 +76,28 @@ and Eisenstein-series theorem open.
 
 ## Status
 
-Paper identities recorded. `LaurentMonomialTorus`, `SL2WeylConjugation`, and
-`ExtendedCartanConjugation` compile at ordinary limits. They prove the actual
-quadratic translation and finite-reflection formulas, with injective extended
-Cartan embedding. `RealCartanCharacters` is being implemented to connect these
-identities with the existing affine weight evaluation. Final direct source
-checks and transitive axiom audit remain pending.
+All four source modules passed final direct `lake --old env lean` checks at
+ordinary limits. The transitive audit reports only `propext`,
+`Classical.choice`, and `Quot.sound`, including the intrinsic characters and
+both conjugation laws. Rational and real specializations also typecheck.
+Saved audit: [garland-weyl-cartan-conjugation-axioms.txt](garland-weyl-cartan-conjugation-axioms.txt).
+
+| Exact mathematical result | Lean declaration |
+| --- | --- |
+| Constant/monomial tame pairing | `laurentTameSymbol_constant_X_zpow` |
+| Translation of finite coroot | `LoopSL2.translationLift_conj_finiteCoroot` |
+| Quadratic central factor under rotation | `LoopSL2.rotation_translationLift` |
+| Exact finite Weyl lift | `SL2SymbolExtension.weylLower_one_conj_diagonal` |
+| Faithful three-dimensional Cartan | `extendedCartanEmbedding_injective` |
+| Actual extended translation conjugation | `translation_conj_extendedCartan` |
+| Actual extended finite reflection | `finiteWeyl_conj_extendedCartan` |
+| Intrinsic multiplicative coordinates | `extendedCartanCoordinateHom` |
+| Complex weight character | `cartanCharacter` |
+| Weight-action comparison | `cartanCharacter_translated`, `cartanCharacter_reflected` |
+| Actual contracting-degree evaluation | `cartanCharacter_positive` |
+
+Sources: `LaurentMonomialTorus`, `SL2WeylConjugation`,
+`ExtendedCartanConjugation`, and `RealCartanCharacters`, all under
+`GaloisForLFunctions.HTGeometry.LoopEisenstein` and wired into its umbrella.
 These identities do not supply global Iwasawa decomposition, an arithmetic
 lattice, or Eisenstein convergence and unfolding.

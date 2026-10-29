@@ -155,8 +155,19 @@ theory, and dominated convergence. No arithmetic unfolding theorem is used.
   is `ArithmeticEffectivityTheory/FiniteFieldEllipticZetaBounds.lean`; its olean is now
   compiled for the dependent affine coefficient module, exit 0 with no diagnostics.
   Never rebuild that olean.
-- `/tmp/hgt_ff_degree_gaussian.lean` contains uniform holomorphy and strong-rotation
-  extraction for the level-four integer series. Check after the active compiler exits.
+- `HTGeometry/LoopEisenstein/AffineDegreeGaussianSeries.lean` proves uniform holomorphy
+  and strong-rotation extraction for the level-four integer series. Both the scratch
+  check and production olean compilation passed, exit 0 without diagnostics. Its olean
+  is required by the cleared-coefficient module; never rebuild it.
+- `HTGeometry/LoopEisenstein/AffineA1FiniteFieldRegularization.lean` contains the actual
+  finite-field regularization, root-argument separation, uniform Weyl-length bounds,
+  and exact clearing identity. Scratch check passed, exit 0 without diagnostics.
+  Production olean compilation also passed, exit 0 without diagnostics. Never rebuild
+  that olean. The dependent full-sum scratch check is now running.
+- `/tmp/hgt_ff_weyl_noncancellation.lean` contains the complete Weyl-sum definitions,
+  normal convergence, original-series/continuation equality, punctured-germ equality,
+  and exact eventual pole orders, including integral rotations. It awaits the preceding
+  module; its proofs are not yet compiler-verified.
 - `/tmp/hgt_ff_eisenstein_api.lean` is an owned API scratch file. Its check finished;
   expected unknown-name errors identified unavailable aliases. Valid APIs include
   `mul_div_mul_left`, `IsCompact.exists_bound_of_continuousOn`,
@@ -170,3 +181,53 @@ theory, and dominated convergence. No arithmetic unfolding theorem is used.
   Corpus has actual general normal-local-ring DVR and finite-extension valuation
   machinery; inspect those and mathlib's adelic/function-field sources before building
   curve-specific places. Do not substitute number-field adeles without a proved transport.
+
+## Arithmetic construction: rational subfield and finite adeles `[PAPER PROOF]`
+
+The actual affine coordinate ring `A` has the already proved free `F₃[X]` basis
+`(1,y)`. Its polynomial algebra map is injective, and therefore extends uniquely
+to `F₃(X) → K=Frac(A)`. This yields the same scalar tower as the existing curve
+coordinates. The images of `(1,y)` remain linearly independent after localization.
+They span `K`: an algebraic denominator can be rationalized into a nonzero element
+of the base polynomial ring. Equivalently, for nonzero `b∈A`, its polynomial
+equation with nonzero constant term supplies `b'∈A` and nonzero `p∈F₃[X]` with
+`bb'=p`. Thus every `a/b` lies in the `F₃(X)`-span of the two basis elements.
+Hence `[K:F₃(X)]=2`.
+
+This extension is separable: the trace of one equals the extension degree, which
+is `2≠0` in characteristic three; a finite inseparable extension has identically
+zero trace. The integral closure `O` of `F₃[X]` in this proved finite separable
+extension is therefore a Dedekind domain with fraction field `K`. Its finite
+adele ring is the restricted product of the actual height-one-prime completions,
+with the diagonal embedding supplied by finiteness of the denominator support.
+No arbitrary family of local fields or assumed function-field structure is used.
+
+Every finite residue field is finite: `O` is finite over `F₃[X]`, hence finitely
+generated over `F₃`. Quotients by height-one primes are fields because `O` is
+Dedekind. Zariski's lemma makes each a finite-dimensional `F₃`-vector space,
+therefore a finite set. Nonemptiness of the finite-place set follows from
+`O` not being a field; this also proves the diagonal finite-adele map injective.
+
+Still required after this algebraic bridge: identify the omitted infinity place,
+all residue cardinalities and the curve-point Euler product; construct normalized
+global additive measure, the adelic completed loop group, Iwasawa coordinates,
+and the actual arithmetic coset sum. The finite-adele ring alone is not unfolding.
+
+## Arithmetic construction: the actual infinity valuation `[PAPER PROOF]`
+
+The already proved norm degree `d:A→WithBot ℕ` is bottom exactly at zero,
+additive on products, and subadditive on sums. Embed its finite values in `ℤ`
+and reindex additively as the ordered multiplicative group `ℤ`. This is a
+valuation `v_A:A→WithZero(Multiplicative ℤ)` with zero support. Its unique
+extension to `K=Frac(A)` satisfies `v(a/b)=v_A(a)/v_A(b)`.
+The existing calculations `d(x)=2` and `d(y)=3` therefore give
+`v(x/y)=ofAdd(−1)`. Integer powers of `x/y` realize every nonzero value, so
+this is an actual discrete nontrivial valuation of the curve field, with
+uniformizer `x/y`. Its valuation subring consists exactly of the fractions
+with numerator norm degree at most denominator norm degree, hence agrees
+with the previously constructed infinity-regular subalgebra.
+
+The remaining residue-field identification needs proof: equal-degree numerator
+and denominator have a unique scalar leading-coefficient ratio, since the two
+possible leading weights `2 deg p` and `2 deg q+3` have opposite parity. Subtracting
+that scalar lowers degree. This will identify the residue field with `F₃`.

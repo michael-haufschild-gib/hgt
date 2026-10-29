@@ -32,6 +32,7 @@ theorem integral_atom_mul_atom_at_touching {g : ℝ → ℝ} {w : ℝ} {N m n : 
     have hgap := hw.trans_lt (inv_horizon_lt_integer_log_gap hm hn hmn)
     apply integral_eq_zero_of_ae
     filter_upwards [] with u
+    change atom g m u * atom g n u = 0
     by_cases hmu : u - Real.log m ∈ Set.Icc 0 w
     · have hnu : u - Real.log n ∉ Set.Icc 0 w := by
         intro hnu
@@ -98,8 +99,8 @@ theorem markovPair_add_primePair_at_touching {g : ℝ → ℝ} {w : ℝ} {N m n 
       simp only [levyMixed, ← sq]
       change levyEnergy (atom g m) = levyEnergy g
       exact levyEnergy_translate (Real.log m)
-    rw [ite_true, markovPair, sub_add_cancel,
-      integral_atom_mul_atom_at_touching hsupp hw hm hm, ite_true, hlevy]
+    rw [if_pos rfl, markovPair, sub_add_cancel,
+      integral_atom_mul_atom_at_touching hsupp hw hm hm, if_pos rfl, hlevy]
   · rw [if_neg (ne_of_gt hnm), markovPair_comm, primePair_comm, hordered n hn m hm hnm,
       abs_sub_comm, abs_of_pos (sub_pos.mpr (Real.log_lt_log
         (by exact_mod_cast (mem_Icc.mp hn).1) (by exact_mod_cast hnm)))]

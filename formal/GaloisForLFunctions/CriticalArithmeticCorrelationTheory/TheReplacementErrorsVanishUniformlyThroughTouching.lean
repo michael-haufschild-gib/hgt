@@ -99,8 +99,10 @@ theorem eventually_fullWeilPoleError_ramanujan_small_uniformly {φ : ℝ → ℝ
       nlinarith only [hs]
     have hle := mul_le_mul_of_nonneg_left hc4
       (by positivity : 0 ≤ 4 * (atomPoleMomentErrorConstant φ) ^ 2 * A ^ 2)
-    exact (by simpa only [mul_assoc, ← mul_sum, ramanujanPoleProfile] using h).trans
-      (by simpa only [mul_one] using hle)
+    calc
+      _ ≤ 4 * (atomPoleMomentErrorConstant φ) ^ 2 * A ^ 2 * c ^ 4 := by
+        simpa only [mul_assoc, ← mul_sum, ramanujanPoleProfile] using h
+      _ ≤ _ := by simpa only [mul_one] using hle
   have h := normalized_residual_small_of_uniform_sq_bound
     (fun c N => Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c N)
       (ramanujanHorizonVector m N)) hbound hε

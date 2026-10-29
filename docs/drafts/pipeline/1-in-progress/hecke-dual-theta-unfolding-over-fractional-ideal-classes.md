@@ -13,9 +13,11 @@ in `HeckeFourierSupportIsIdealCoprimality.lean`. Unit-fraction covariance
 and exact transfer to the unit base are finalized in
 `HeckeFourierCoefficientsScaleByRayResidues.lean`.
 The corrected Gauss constant is finalized and audited in
-`HeckePrimitiveGaussConstantsHaveExactNorm.lean`. The actual inverse-Hecke coefficient formula is
-written in `/tmp/HeckeDualCoefficientCharacterScratch.lean` but is not yet
-verified. This card does not assume that draft as a proved input.
+`HeckePrimitiveGaussConstantsHaveExactNorm.lean`. The actual inverse-Hecke
+coefficient formula is finalized in
+`HeckeFourierCoefficientsAreInverseHeckeValues.lean`. All five main axiom
+audits are standard only, and the final direct source check passes without
+warnings. See [the coefficient proof](../3-formalized/hecke-fourier-coefficients-are-inverse-hecke-values.md).
 
 Existing analytic sources, inspected:
 
@@ -57,8 +59,8 @@ This avoids assuming an integral generator for a fractional principal ideal.
 
 ## Unit unfolding and Mellin value
 
-The drafted arithmetic coefficient law is
-`F_b(a)sgnψ(a)=Cψ ψ(b)ψ⁻¹(I_a)`. With it proved, the actual Gaussian
+The proved arithmetic coefficient law is
+`F_b(a)sgnψ(a)=Cψ ψ(b)ψ⁻¹(I_a)`. Thus the actual Gaussian
 Mellin density is the inverse ideal summand times
 `Cψ ψ(b)Norm(J)^(-s)` and a translated archimedean log kernel.
 Its norm integral is the ideal-summand norm times a common finite mass,
@@ -80,16 +82,22 @@ torsionOrder * Cψ * ψ(b) * Norm(J)^(-s)
   * Γψ(s)/(degree * 2^unitRank).
 ```
 
-Conductor and parity invariance under character inversion must also be
-proved before replacing `Γψ` by `Γ_(ψ⁻¹)`.
+Conductor and parity invariance under character inversion are now
+finalized in `HeckeConductorsAndParitiesAreInvariantUnderInversion.lean`,
+including equality `Γψ=Γ_(ψ⁻¹)` and both Mellin normalizations.
+Final direct source audit passes without warnings; the main transitive
+axiom audits are standard only.
 
 ## Global recombination
 
 Since `[J_b]⁻¹=[different*m]*[b]`, the inverse dual classes permute all
 ordinary classes when the original base classes do. Sum the actual class
 Mellin formulas using this permutation. The checked Mathlib different
-identities give `Norm(J_b)=1/(|disc K| Norm(m) Norm(b))`; a verification
-scratch for the general norm formula is written but not yet checked.
+identities give `Norm(J_b)=1/(|disc K| Norm(m) Norm(b))`. The general norm
+formula is finalized in
+`HTGeometry/NumberFieldTraceDualsHaveDiscriminantNorms.lean`; final direct
+source audit passes without warnings and the transitive axiom audit is
+standard only. See [the norm proof](../3-formalized/number-field-trace-duals-have-discriminant-norms.md).
 The existing class weight and Poisson scalar then cancel the base norm
 and character factors exactly, yielding the completed reflection recorded
 on the parent card.
@@ -97,3 +105,79 @@ on the parent card.
 No fractional orbit equivalence, dual Mellin exchange, or normalized
 reflection is yet claimed as formalized here. Raw completed zero-mode
 cancellation remains on its separate active card.
+
+The full fractional orbit construction is now written in
+`/tmp/HeckeFractionalUnitOrbitsScratch.lean`: principal generators,
+integral inverse-class quotient for every nonzero element, bijection
+with global units, and exact generator/orbit norms. After correcting an
+embedding-coercion rewrite and product extensionality, both main
+transitive axiom audits pass with standard axioms only. The permanent
+source is `HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`;
+its final direct source audit is pending. This is a reusable construction
+for every invertible fractional ideal, independent of the Hecke Fourier
+coefficients. It also proves countability of the inverse-class ideal index.
+
+Its written consumer `/tmp/HeckeDualFractionalClassScratch.lean` imports
+the proposed permanent orbit module and the finalized coefficient and
+discriminant-norm modules. It identifies the selected orbit generator's
+frequency ideal with the orbit index and specializes both the exact norm
+and the inverse-character coefficient. This consumer is not yet compiled.
+
+The field-element Mellin extension is written in
+`/tmp/HeckeFieldElementMellinScratch.lean`. It uses the actual parity kernel
+at any nonzero `a∈K`, with coefficient `sgnψ(a)|Norm(a)|⁻ˢ`, and proves
+the translated archimedean identity, joint integrability, exact absolute
+mass, and whole-log Mellin value. Mathlib's checked weighted-log formula
+already applies to arbitrary field elements. This scratch is not yet
+compiled and is not counted as a proved analytic dependency.
+
+`/tmp/HeckeDualUnitCovarianceScratch.lean` now contains the actual dual
+kernel, simultaneous unit/place-log covariance, and the negative-profile
+translation formula. It uses the proved Fourier covariance and global
+finite/sign relation; the expected translation is `x↦x+log(u)`.
+This scratch has not yet been compiled. The existing public
+`exists_uniform_heckeDualThetaKernel_majorant` supplies its summable bound
+uniformly on the unit domain.
+
+For the positive lattice translations in the negative-profile kernel,
+Mathlib's `IsAddFundamentalDomain.integral_eq_tsum''` directly unfolds
+`f(l+ᵥx)` and is available in `MeasureTheory/Group/FundamentalDomain.lean`.
+Its source is checked, as is the matching nonnegative formula
+`lintegral_eq_tsum''`. Together they replace an explicit negation reindex
+in both integrals, while still proving whole-space integrability before
+complex unfolding. A proposed
+joint class/lattice majorant lemma will control all class integrals at
+once, rather than exporting or copying the older private single-orbit
+helpers.
+
+That family lemma is now written in
+`/tmp/HeckeUnitDomainFamilyUnfoldingScratch.lean`. A single summable bound
+on `(class, lattice)` first bounds the sum of integral norms on the
+compact unit domain. Nonnegative fundamental-domain unfolding proves
+whole-log-space integrability for every class and summability of their
+absolute masses. Only then does complex unfolding identify the integral
+of the paired periodization with the sum of whole-space class integrals.
+The proof uses the checked `summable_prod_of_nonneg` and both positive
+translation tile formulas. It has not yet been compiled.
+
+## Verification queue
+
+- `HeckeConductorsAndParitiesAreInvariantUnderInversion.lean`: finalized;
+  final source audit and main transitive axiom audits pass. Its generic
+  conductor dependency is finalized and has its consumer olean built.
+- `HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`: complete
+  scratch passed both main transitive audits; permanent-source check
+  running, consumer olean pending.
+- `/tmp/HeckeDualFractionalClassScratch.lean`: written; needs the orbit,
+  inverse-coefficient, and trace-dual-norm consumer oleans before checking.
+- `/tmp/HeckeFieldElementMellinScratch.lean`: written, unchecked; imports
+  the already built integral-element Mellin module.
+- `/tmp/HeckeDualUnitCovarianceScratch.lean`: written, unchecked; needs
+  the inverse-coefficient olean.
+- `/tmp/HeckeUnitDomainFamilyUnfoldingScratch.lean`: written, unchecked;
+  imports existing unit-domain and absolute-periodization infrastructure.
+
+The inverse-coefficient and trace-dual-norm sources have passed final
+audits; only their required consumer oleans remain to be produced.
+No dual class Mellin identity or completed functional equation is yet
+claimed from the unchecked files above.

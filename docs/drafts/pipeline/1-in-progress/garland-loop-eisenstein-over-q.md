@@ -215,7 +215,7 @@ coefficient bounds, actual degree-rotation exponents, and Gaussian domination.
 | Garland completion comparison and arithmetic subgroup | Still open |
 | Group-level degree rotation | Formalized; tame-cocycle-preserving action, semidirect product, every positive real contraction, affine-root scaling |
 | Affine simple coroots and Cartan coordinates | Formalized; actual root words, `h₀(a)=z(a)h₁(a⁻¹)`, injective central/finite torus |
-| Actual Weyl conjugation on Cartan and degree rotation | Still open; root/weight formulas and simple-coroot normalization are proved separately |
+| Actual Weyl conjugation on Cartan and degree rotation | Formalized and audited; quadratic central shift, finite reflection, intrinsic complex characters, exact affine-weight comparison |
 | Positive power-series subgroup splitting | Formalized and audited; injective `LoopSL2.positiveEmbedding`, both root restrictions |
 | Positive Iwahori and unipotent coordinates | Formalized and audited; full Gauss equivalence, exact unipotent kernel, unique central/finite/unipotent Borel factors |
 | Group-level Iwasawa coordinates | Still open |
@@ -271,15 +271,18 @@ tame symbol and lifts faithfully to the central extension. Its specialization
 gives `LoopSL2 ℚ →* LoopSL2 ℝ`, with exact center/root compatibility.
 [Positive Iwahori coordinates](../3-formalized/garland-positive-iwahori.md)
 are formalized and audited, including unique central/finite/unipotent Borel
-coordinates. [Actual Weyl conjugation](garland-weyl-cartan-conjugation.md) is
-in progress. No Iwasawa or arithmetic-series theorem has been assumed.
+coordinates. [Actual Weyl conjugation](../3-formalized/garland-weyl-cartan-conjugation.md)
+and its intrinsic complex-character comparison are formalized and audited. No Iwasawa or arithmetic-series theorem has been assumed.
 
 For the subsequent global matrix decomposition, corpus search found
 `SmithNormalFormDVR.exists_smithNormalForm` over an actual discrete valuation
 ring. Its statement and clearing proof were inspected. Mathlib supplies the
 `IsDiscreteValuationRing (PowerSeries F)` instance. The specialization and
-transitive axiom audit remain to be checked before use. This is a lead for
-matrix decomposition, not an existing Iwahori–Bruhat or Iwasawa theorem.
+transitive axiom audit remain unchecked and this theorem is not imported by
+the current construction. A direct rank-two
+[Iwahori–Bruhat proof](garland-affine-bruhat-decomposition.md) is recorded
+using four pivot cases and lattice-chain valuation invariants; formalization
+is in progress. Neither route supplies an Iwasawa theorem.
 
 Do not instantiate the stable Steinberg centrality theorem outside its hypotheses.
 

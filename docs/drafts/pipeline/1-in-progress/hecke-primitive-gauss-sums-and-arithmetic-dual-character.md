@@ -71,12 +71,14 @@ may be left as an unexplained analytic or arithmetic interface.
 2. **Done:** prove the primitive finite Fourier transform over the actual ideal
    quotient and its trace-dual module, including nonunit vanishing and
    Gauss norm.
-3. Account for nonprincipal conductor and different ideals. A chosen
-   additive generator or auxiliary ideal must be constructed; evaluating
-   the Hecke character directly on conductor primes is invalid because
-   those ideal coefficients are zero.
-4. Reindex the actual dual fractional-ideal sums over ordinary classes,
-   identifying every coefficient with the inverse Hecke character.
+3. **Done:** construct a coprime auxiliary ideal and actual primitive
+   reference frequency without assuming principal conductor or different.
+   The corrected Gauss constant and its exact norm are proved; no ideal
+   coefficient is evaluated as a unit at a conductor prime.
+4. **Coefficient identification done; analytic reindexing open:** every
+   nonzero dual coefficient is the inverse actual Hecke ideal value with
+   exact Gauss, sign, and base-class factors. Fractional-ideal unit orbits
+   and their dual Mellin sum are being verified on the unfolding card.
 5. Assemble the completed reflection with the exact discriminant,
    conductor and parity factors, and audit the root number.
 
@@ -279,8 +281,9 @@ Cψ = τ sgnψ(a₀) ψ(I₀),
 
 All ideals on which `ψ` is evaluated are coprime to `m`; neither the
 conductor nor the different is silently treated as such. The constant
-is independent of `b` and `a`. These are paper obligations for the next
-Lean consumer, not yet claimed as formalized. Nonzero frequency is
+is independent of `b` and `a`. These identities are now formalized in
+`HeckeFourierCoefficientsAreInverseHeckeValues.lean`, with the norm in
+`HeckePrimitiveGaussConstantsHaveExactNorm.lean`. Nonzero frequency is
 required for the sign; the zero mode is handled separately. The
 unit-modulus case requires choosing nonzero representatives explicitly,
 since its singleton residue ring does not force a representative of one
@@ -302,25 +305,24 @@ The next written consumers are:
   All three main transitive axiom audits are standard only; final source
   audit passes without warnings. Full proof:
   [corrected primitive Gauss norm](../3-formalized/hecke-primitive-gauss-constants-have-exact-norm.md).
-- `/tmp/HeckeDualCoefficientCharacterScratch.lean`: principal-ideal
-  transformation of associated ideals, prime-to-modulus multipliers,
-  sign-corrected character invariance, and the actual inverse-Hecke-value
-  formula for every coprime base ideal; not yet checked. It now includes
-  exact base-change ideal multiplication, an actual nonzero unit-residue
-  element of each base ideal, and both supported and unsupported cases.
+- The actual inverse-Hecke-value formula for every coprime base ideal is
+  finalized in `HeckeLFunctions/HeckeFourierCoefficientsAreInverseHeckeValues.lean`.
+  It includes principal-ideal transformations, prime-to-modulus multipliers,
+  sign-corrected invariance, exact base-change ideal multiplication, actual
+  nonzero unit-residue elements, and both supported and unsupported cases.
+  All five main transitive axiom audits are standard only; final direct
+  source audit passes without warnings. See
+  [the coefficient proof](../3-formalized/hecke-fourier-coefficients-are-inverse-hecke-values.md).
 
 The support, covariance, and Gauss-constant consumer oleans have been
-built. The coefficient scratch's first check exposed principal-ideal
-namespace and frequency-projection errors; the exact root-level APIs
-`toPrincipalIdeal` and `coe_toPrincipalIdeal` are now checked in Mathlib
-`RingTheory/ClassGroup/Basic.lean`, and those errors are corrected for
-the next check. The scratch is not yet counted as formalized. The subsequent
-fractional-class unfolding is tracked on
+built. Principal-ideal namespace and frequency-projection errors in the
+initial coefficient draft were corrected, and its full source audit now
+passes. The subsequent fractional-class unfolding is tracked on
 [its own active card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
 
 ## Remaining analytic recombination and normalization
 
-Once the coefficient identity is audited, the nonzero dual frequencies
+With the coefficient identity audited, the nonzero dual frequencies
 must be reindexed over integral ideals in the inverse class of
 `J_b=dual(mb)` and global units. The existing orbit equivalence in
 `NonzeroIdealElementsAreGlobalUnitOrbits.lean` is for integral base
@@ -369,7 +371,8 @@ Together they give
 file `/tmp/HeckeTraceDualNormScratch.lean` now passes its transitive axiom
 audit with only the three standard axioms. Its permanent source is
 `HTGeometry/NumberFieldTraceDualsHaveDiscriminantNorms.lean`; the final
-direct source audit is pending the current coefficient check.
+direct source audit passes without warnings. See
+[the norm proof](../3-formalized/number-field-trace-duals-have-discriminant-norms.md).
 Mathlib `FractionalIdeal.absNorm_span_singleton (𝓞 K)` also gives
 `Norm((a))=|Norm_(K/ℚ)(a)|`; its source is checked for the coming orbit
 and Mellin normalization argument.
@@ -384,4 +387,11 @@ finite Hecke conductor. Finite residue restriction and its zero extension
 commute with inversion. Every real sign has order at most two, so the
 infinite sign character equals its inverse; all real, coordinate, and
 place parities, the Gamma product, and both Mellin normalizations agree.
-The scratch contains these proofs but has not yet been compiled.
+The corrected scratch passes all three main transitive axiom audits with
+standard axioms only. The reusable conductor result and Hecke-specific
+results are now separated into permanent modules
+`HTGeometry/FiniteRingConductorsAreInvariantUnderInversion.lean` and
+`HeckeLFunctions/HeckeConductorsAndParitiesAreInvariantUnderInversion.lean`.
+Both final direct source audits pass without warnings, and the generic
+module's required consumer olean is built. See
+[the completed inversion proof](../3-formalized/hecke-conductors-and-parities-are-invariant-under-inversion.md).

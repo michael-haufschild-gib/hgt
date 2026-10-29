@@ -6,7 +6,7 @@ Can one horizon control the actual complete Weil matrix simultaneously for every
 
 ## Proved source inputs
 
-The following own modules have passed Lean; individual final-audit status is recorded in `logs/critical-arithmetic-correlation/final-audits.txt`.
+The following own modules passed final individual Lean audits with standard axioms and no warnings, and are wired into the own umbrella. Exact commands/results are recorded in `logs/critical-arithmetic-correlation/final-audits.txt`. Their completed source result is recorded in `../3-formalized/cact-critical-touching-source-control.md`.
 
 - `BoundaryVanishingControlsTheTouchingAutocorrelation`: quadratic endpoint decay of autocorrelation.
 - `EndpointDecayRemovesTheCrossKernelGapLoss`: actual cross-integral error with one reciprocal-square constant for all positive support gaps.
@@ -27,11 +27,15 @@ D. `TheSelfAndPoleErrorsStayUniformAtTouching`: actual self and two-pole remaind
 E. `OnePrimeDefectReserveCoversEveryRatioThroughTouching`: one mass floor, one prime-defect fraction `(1-q)/4`, and one eventual horizon for all `0<c<=1`.
 F. `OneRamanujanFamilyDetectsAllBoundedEnergiesThroughTouching`: one finite arithmetic family detects all bounded-energy unit vectors throughout the same range.
 
-These six files are drafts, uncompiled and unwired. Required dependent oleans are justified only by their explicit imports.
+G. `TheReplacementErrorsVanishUniformlyThroughTouching`: one normalized residual horizon for the actual self, center, cross, and two-pole errors.
+H. `RamanujanQuasimodesAreUniformThroughTouching`: the complete six-term norm residual, including the boundary prime matrix, uniformly for all ratios through one.
+I. `OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching`: finite coordinate detection excludes every eigenvalue below the completed endpoint shape; a near-unit-mass plateau then gives one positivity horizon for all `0<c<=1`.
+
+These nine files are drafts, uncompiled and unwired. Required dependent oleans are justified only by their explicit imports. The prime-matrix draft also converts its actual quadratic-form budget into an operator-action budget by the Hermitian eigenbasis identity.
 
 ## Remaining spectral argument
 
-Prove Ramanujan norm residuals uniformly in `c<=1`: prime residual independent of `c`, scalar self error `O(1/N)`, center linear in bounded charge, uniformly square-bounded cross/pole errors divided by logarithmic mass, and small actual non-ratio operator. Combine the finite coordinate certificate with the conductor-one energy lower bound at `c=1` to exclude all lower eigenvalues with one horizon. No endpoint positivity claim until these steps pass Lean.
+The full argument is drafted: prime residual independent of `c`, scalar self error `O(1/N)`, center linear in bounded charge, uniformly square-bounded cross/pole errors divided by logarithmic mass, and small actual non-ratio operator. A fixed finite coordinate certificate then excludes all eigenvalues below the endpoint conductor-one energy. For a detecting set of size `k`, choose residual tolerance `delta/(6*(k+1))`; total coordinate cost is below `1/18`, contradicting detection. No endpoint positivity claim until the entire chain passes Lean.
 
 ## Boundary of the result
 

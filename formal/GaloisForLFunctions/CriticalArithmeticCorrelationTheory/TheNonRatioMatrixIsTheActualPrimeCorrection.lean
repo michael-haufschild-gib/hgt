@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheTouchingCrossMatrixHasAUniformErrorBudget
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheBoundaryPrimeStarVanishesAfterNormalization
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheRowsAtBoundedOverlap
+import Mathlib.Analysis.Matrix.Spectrum
 
 /-!
 # The actual non-ratio prime matrix
@@ -71,7 +72,7 @@ theorem primeSum_finsetSum_eq {ι : Type*} (s : Finset ι) {R : ℝ} {e : ι →
   intro i hi
   rw [primePair_comm, primePair_finsetSum_right s (he i).continuous (hec i) (heR i)
     (fun j => (he j).continuous) heR, mul_sum]
-  exact sum_congr rfl fun j _ => by rw [primePair_comm]; ring
+  exact sum_congr rfl fun j _ => by ring
 
 /-- The horizon matrix of literal prime pairings is the actual synthesized prime form. -/
 theorem horizonPrimePair_inner_eq_primeSum {g : ℝ → ℝ} {w : ℝ}

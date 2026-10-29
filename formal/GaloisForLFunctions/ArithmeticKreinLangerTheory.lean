@@ -5,6 +5,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheTwistTowerCompletesThe
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsContinuousOffTheDiscriminant
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityFormOfTheGlobalLaw
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsTheNumberOfExceptionalWaves
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.CompressionsAreReceivers
 
 /-!
 # Arithmetic Krein–Langer theory

@@ -629,3 +629,21 @@ and proves unit normalization. All three main transitive axiom audits
 are standard only; final source audit passes without warnings. The
 inverse-Hecke coefficient draft and subsequent fractional-class Mellin
 unfolding remain active; the completed functional equation is still open.
+
+`HeckeFourierCoefficientsAreInverseHeckeValues.lean` now proves the actual
+dual coefficient identity `F_b(a)sgnψ(a)=Cψψ(b)ψ⁻¹(I_a)` for every
+nonzero frequency, including vanishing outside coprime support. All five
+main transitive audits are standard only; final source audit passes
+without warnings. The general trace-dual norm identity
+`Norm(dual I)=(|disc K|Norm(I))⁻¹` is also finalized and audited in
+`HTGeometry/NumberFieldTraceDualsHaveDiscriminantNorms.lean`.
+The remaining Hecke work is the actual fractional-class dual Mellin
+unfolding, inversion of conductor/parity, completed zero-mode treatment,
+and normalized reflection. CFT still follows completion of Hecke.
+
+Conductor and real-parity invariance under inversion are now finalized
+in `HeckeConductorsAndParitiesAreInvariantUnderInversion.lean`, using
+the reusable `FiniteRingConductorsAreInvariantUnderInversion.lean`.
+The finite conductor, infinite sign component, Gamma factor, and both
+Mellin normalizations agree for the inverse character. Both final source
+audits pass without warnings; all main transitive audits are standard only.

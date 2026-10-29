@@ -1,0 +1,46 @@
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentTameSymbol_constant_X_zpow' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.translationLift_conj_finiteCoroot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.rotation_translationLift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.SL2SymbolExtension.weylLower_one_conj_diagonal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.extendedCartanEmbedding_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.translation_conj_extendedCartan' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.finiteWeyl_conj_extendedCartan' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.extendedCartanCoordinateHom' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.cartanCharacter' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.cartanCharacter_translated' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.cartanCharacter_reflected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.cartanCharacter_positive' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+translation_conj_extendedCartan
+  ℚ : ∀ (m : ℤ) (c a q : ℚˣ),
+  SemidirectProduct.inl (LoopSL2.translationLift ℚ m) * extendedCartanElement ℚ c a q *
+      (SemidirectProduct.inl (LoopSL2.translationLift ℚ m))⁻¹ =
+    extendedCartanElement ℚ (c * a ^ (-2 * m) * q ^ (-(m * m))) (a * q ^ m) q
+translation_conj_extendedCartan
+  ℝ : ∀ (m : ℤ) (c a q : ℝˣ),
+  SemidirectProduct.inl (LoopSL2.translationLift ℝ m) * extendedCartanElement ℝ c a q *
+      (SemidirectProduct.inl (LoopSL2.translationLift ℝ m))⁻¹ =
+    extendedCartanElement ℝ (c * a ^ (-2 * m) * q ^ (-(m * m))) (a * q ^ m) q
