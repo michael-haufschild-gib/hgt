@@ -40,12 +40,12 @@ theorem mertens_eq_mobiusMertensPartialSum (N : ℕ) :
   unfold mertens RHTower.mobiusMertensPartialSum RHTower.mobiusComplexCoefficient
   rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot (Nat.succ_pos N)]
   simp only [ArithmeticFunction.map_zero, Int.cast_zero, zero_add]
+  push_cast
   rfl
 
 theorem mertens_eq_mertensFunctionReal (x : ℝ) :
     mertens ⌊x⌋₊ = RHTower.mertensFunctionReal x := by
   unfold mertens RHTower.mertensFunctionReal
-  push_cast
   rfl
 
 /-- **Abel summation against `μ`.** -/

@@ -445,14 +445,20 @@ private theorem sum_inv_abs_sub_ge (M : ℕ) (b : ℕ → ℝ) :
     have hcontW : Continuous W := by
       unfold W
       exact continuous_const.add (continuous_finsetSum _ fun d _ => by fun_prop)
+    have hcont_term : ∀ n j : ℕ, Continuous (fun θ : ℝ => (b n * b j) *
+        (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ))) :=
+      fun _ _ => continuous_const.mul
+        (hcontW.mul (Real.continuous_cos.comp (continuous_const.mul continuous_id)))
     have hint_row : ∀ n ∈ Icc 1 M, ∀ j ∈ Icc 1 M, IntervalIntegrable
         (fun θ : ℝ => (b n * b j) *
           (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ)))
-        volume 0 (2 * Real.pi) := fun n _ j _ =>
-      (continuous_const.mul (hcontW.mul (by fun_prop))).intervalIntegrable _ _
-    rw [intervalIntegral.integral_finsetSum fun n _ =>
-      (continuous_finsetSum _ fun j _ =>
-        continuous_const.mul (hcontW.mul (by fun_prop))).intervalIntegrable _ _]
+        volume 0 (2 * Real.pi) := fun n _ j _ => (hcont_term n j).intervalIntegrable _ _
+    have hint_outer : ∀ n ∈ Icc 1 M, IntervalIntegrable
+        (fun θ : ℝ => ∑ j ∈ Icc 1 M, (b n * b j) *
+          (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ)))
+        volume 0 (2 * Real.pi) := fun n _ =>
+      (continuous_finsetSum _ fun j _ => hcont_term n j).intervalIntegrable _ _
+    rw [intervalIntegral.integral_finsetSum hint_outer]
     have hrow : ∀ n ∈ Icc 1 M,
         (∫ θ in (0 : ℝ)..(2 * Real.pi), ∑ j ∈ Icc 1 M, (b n * b j) *
           (W θ * Real.cos (((if j ≤ n then n - j else j - n : ℕ) : ℝ) * θ))) =
@@ -505,8 +511,10 @@ private theorem sum_inv_add_ge (M : ℕ) (b : ℕ → ℝ) :
     have hj1 := (mem_Icc.mp hj).1
     rw [intervalIntegral.integral_const_mul, integral_pow]
     have hexp_eq : (n - 1) + (j - 1) + 1 + 1 = n + j := by omega
-    rw [hexp_eq, one_pow, zero_pow (by omega : n + j ≠ 0), sub_zero]
-    push_cast
+    have hden_eq : (((n - 1) + (j - 1) + 1 : ℕ) : ℝ) + 1 = (n : ℝ) + j := by
+      rw [Nat.cast_add, Nat.cast_add, Nat.cast_sub hn1, Nat.cast_sub hj1, Nat.cast_one]
+      ring
+    rw [hexp_eq, hden_eq, one_pow, zero_pow (by omega : n + j ≠ 0), sub_zero]
     ring
   rw [hint_eval] at hint_nn
   have hsplit : (∑ n ∈ Icc 1 M, ∑ j ∈ Icc 1 M, b n * b j / ((n : ℝ) + j)) =
@@ -1097,7 +1105,7 @@ private theorem liouville_weilQuadTw_subhorizon_le {φ : ℝ → ℝ}
             (((∫ u, g u) ^ 2 / ∫ u, g u ^ 2) *
                 (∑ n ∈ Icc 1 M, ∑ j ∈ Icc 1 M, x n * x j * archimedeanCenterKernel n j) +
               ∑ n ∈ Icc 1 M, ∑ j ∈ Icc 1 M, x n * x j * atomCrossErrorKernel g n j) := by
-      rw [mul_add, mul_sum, ← mul_assoc, mul_sum, ← sum_add_distrib]
+      rw [mul_add, ← mul_assoc, mul_sum, mul_sum, ← sum_add_distrib]
       refine sum_congr rfl fun n _ => ?_
       rw [mul_sum, mul_sum, ← sum_add_distrib]
       refine sum_congr rfl fun j _ => ?_
@@ -1132,8 +1140,24 @@ private theorem liouville_weilQuadTw_subhorizon_le {φ : ℝ → ℝ}
       rw [one_div, Real.log_inv, Real.log_mul (by positivity) (by positivity),
         Real.log_mul hw0.ne' hM0.ne', one_div, Real.log_inv]
       ring
-    rw [hlog_eq]
-    linarith only [h1, h2, hfp]
+    calc 2 * gammaHardyPhaseRate 0 * ((∑ n ∈ Icc 1 M, x n ^ 2) * ∫ u, g u ^ 2) +
+            (∑ n ∈ Icc 1 M, x n ^ 2) * levyEnergy g -
+            (∫ u, g u ^ 2) * atomicWeilForm M (fun n => liouvilleSign n * x n)
+        ≤ 2 * gammaHardyPhaseRate 0 * ((∑ n ∈ Icc 1 M, x n ^ 2) * ∫ u, g u ^ 2) +
+            (∑ n ∈ Icc 1 M, x n ^ 2) *
+              ((Real.log (1 / w) + profileRobin φ + Real.exp (1 / 2) / 2 * w) * ∫ u, g u ^ 2) -
+            (∫ u, g u ^ 2) *
+              ((Real.log M - Real.eulerMascheroniConstant - ε) * ∑ n ∈ Icc 1 M, x n ^ 2) := by
+          linarith only [h1, h2]
+      _ = (∫ u, g u ^ 2) *
+            (((2 * gammaHardyPhaseRate 0 + profileRobin φ + Real.eulerMascheroniConstant) +
+                Real.log (1 / w) - Real.log M + ε + Real.exp (1 / 2) / 2 * w) *
+              ∑ n ∈ Icc 1 M, x n ^ 2) := by ring
+      _ = (∫ u, g u ^ 2) *
+            ((Real.log (1 / (2 * Real.pi * (w * M))) + bumpRobin φ 1 / (∫ u, φ u ^ 2) + ε +
+                Real.exp (1 / 2) / 2 * w) * ∑ n ∈ Icc 1 M, x n ^ 2) := by
+          rw [hfp, hlog_eq]
+          ring
   -- Center kernel bound
   have hcenter_ge := sum_archimedeanCenterKernel_ge M x
   have hsum_nx : ∑ n ∈ Icc 1 M, (n : ℝ) * x n ^ 2 ≤ 4 * M := by
@@ -1309,10 +1333,10 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
   have hlogM_atTop : Tendsto (fun N : ℕ => Real.log (M N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop.comp hM_tendsto)
   filter_upwards [hw_pos,
-    hw_zero.eventually (le_mem_nhds zero_lt_one),
+    hw_zero.eventually (gt_mem_nhds zero_lt_one),
     hM_tendsto.eventually_ge_atTop M₀,
     (tendsto_natCast_atTop_atTop.comp hM_tendsto).eventually_gt_atTop (c₀ / (1 - c₀)),
-    hwM_lim.eventually (le_mem_nhds hc₀_gt),
+    hwM_lim.eventually (gt_mem_nhds hc₀_gt),
     hcoef_lim.eventually (gt_mem_nhds (show -(3 * μ / 4) < -(μ / 2) by linarith only [hμ_pos])),
     hlogM_atTop.eventually_gt_atTop (2 + 2 * (C_err + 1) / μ)]
     with N hw0 hw1 hMM₀ hM_sp hwM_c₀ hcoef_neg hlogM_big
@@ -1324,7 +1348,7 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
       have hN0 : (0 : ℝ) ≤ N := Nat.cast_nonneg N
       nlinarith only [hθ_le1, hN0]
     exact Nat.floor_le_of_le hle
-  have hw_c0 : w N ≤ c₀ / (M N : ℝ) := (le_div_iff₀ hM0).mpr hwM_c₀
+  have hw_c0 : w N ≤ c₀ / (M N : ℝ) := (le_div_iff₀ hM0).mpr hwM_c₀.le
   have hw_sp : w N < atomSpacing (M N) := by
     have hsp := (atomSpacing_bounds hM1).1
     have hlt : c₀ / (M N : ℝ) < 1 / ((M N : ℝ) + 1) := by
@@ -1335,11 +1359,11 @@ theorem eventually_liouville_weilQuadTw_neg_of_gt_robinEuler {φ : ℝ → ℝ}
     exact (hw_c0.trans_lt hlt).trans_le hsp
   obtain ⟨x, hx_supp, horth, hnx, hx_log, hx_pos, hprime⟩ := hwit (M N) hMM₀
   refine ⟨x, ?_⟩
-  have hup := liouville_weilQuadTw_subhorizon_le hφ hφsupp hφ0 hLip hM1 hMN hw0 hw1 hc₀_nn hc₀_lt1
-    hw_c0 hw_sp hx_supp horth hnx hprime
+  have hup := liouville_weilQuadTw_subhorizon_le hφ hφsupp hφ0 hLip hM1 hMN hw0 hw1.le hc₀_nn
+    hc₀_lt1 hw_c0 hw_sp hx_supp horth hnx hprime
   have hG_pos : 0 < ∫ u, atomDilate φ (w N) u ^ 2 := by
     rw [integral_atomDilate_sq hw0]; exact mul_pos hw0 hφ0
-  have hwM_le1 : w N * (M N : ℝ) ≤ 1 := hwM_c₀.trans hc₀_lt1.le
+  have hwM_le1 : w N * (M N : ℝ) ≤ 1 := hwM_c₀.le.trans hc₀_lt1.le
   have hwM_nn : 0 ≤ w N * (M N : ℝ) := by positivity
   have hK0_nn : 0 ≤ K₀ := by dsimp only [K₀]; positivity
   have herr_le : 17 * ((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2) * (w N * (M N : ℝ)) +
@@ -1436,27 +1460,30 @@ theorem exists_plateau_liouville_weilQuadTw_neg_of_gt_exp_div_two_pi {c : ℝ}
     ∃ η : ℝ, 0 < η ∧ η < 1 / 2 ∧
       ∀ᶠ N : ℕ in atTop, ∃ x : ℕ → ℝ,
         weilQuadTw (fun n => liouvilleTwin n * ArithmeticFunction.vonMangoldt n)
-          (atomicTest N x (atomDilate (plateau η) (c / N))) < 0 := by
+          (atomicTest N x (atomDilate (SpacingScaleHarmonicAnalysis.plateau η) (c / N))) < 0 := by
   have he_lt_2pi : Real.exp 1 / (2 * Real.pi) < 1 := by
     rw [div_lt_one (by positivity)]
     have he1 := Real.exp_one_lt_d9
     have hpi := Real.pi_gt_three
     linarith only [he1, hpi]
-  have hlim : Tendsto (fun η : ℝ => robinEulerThreshold (plateau η))
+  have hlim : Tendsto (fun η : ℝ => robinEulerThreshold (SpacingScaleHarmonicAnalysis.plateau η))
       (𝓝[>] 0) (𝓝 (Real.exp 1 / (2 * Real.pi))) := by
     unfold robinEulerThreshold
     exact (Real.continuous_exp.continuousAt.tendsto.comp
       tendsto_normalized_bumpRobin_plateau).div_const (2 * Real.pi)
-  have hev1 : ∀ᶠ η : ℝ in 𝓝[>] 0, robinEulerThreshold (plateau η) < min c 1 :=
+  have hev1 : ∀ᶠ η : ℝ in 𝓝[>] 0,
+      robinEulerThreshold (SpacingScaleHarmonicAnalysis.plateau η) < min c 1 :=
     hlim.eventually (gt_mem_nhds (lt_min hc he_lt_2pi))
   have hev2 : ∀ᶠ η : ℝ in 𝓝[>] 0, η < 1 / 2 :=
     mem_nhdsWithin_of_mem_nhds (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))
   have hev3 : ∀ᶠ η : ℝ in 𝓝[>] 0, 0 < η := self_mem_nhdsWithin
   obtain ⟨η, hRE_min, hη2, hη0⟩ := (hev1.and (hev2.and hev3)).exists
-  have hRE_c : robinEulerThreshold (plateau η) < c := hRE_min.trans_le (min_le_left _ _)
-  have hRE_1 : robinEulerThreshold (plateau η) < 1 := hRE_min.trans_le (min_le_right _ _)
+  have hRE_c : robinEulerThreshold (SpacingScaleHarmonicAnalysis.plateau η) < c :=
+    hRE_min.trans_le (min_le_left _ _)
+  have hRE_1 : robinEulerThreshold (SpacingScaleHarmonicAnalysis.plateau η) < 1 :=
+    hRE_min.trans_le (min_le_right _ _)
   have hc_pos : 0 < c := (by positivity : 0 < Real.exp 1 / (2 * Real.pi)).trans hc
-  have hsq_pos : 0 < ∫ u, plateau η u ^ 2 :=
+  have hsq_pos : 0 < ∫ u, SpacingScaleHarmonicAnalysis.plateau η u ^ 2 :=
     lt_of_lt_of_le (by linarith only [hη2]) (integral_plateau_sq_ge hη0 hη2.le)
   refine ⟨η, hη0, hη2, eventually_liouville_weilQuadTw_neg_of_gt_robinEuler
     ((contDiff_plateau η).of_le (by norm_num)) (fun u hu => plateau_eq_zero hη0 hu)
