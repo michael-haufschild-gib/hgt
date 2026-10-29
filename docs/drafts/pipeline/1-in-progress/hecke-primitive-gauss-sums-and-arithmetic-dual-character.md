@@ -296,9 +296,12 @@ The next written consumers are:
   All three main transitive axiom audits are standard only; final source
   audit passes without warnings. Full proof:
   [ray-residue covariance](../3-formalized/hecke-fourier-coefficients-scale-by-ray-residues.md).
-- `/tmp/HeckeReferenceGaussConstantScratch.lean`: actual reference
-  frequency and ideal, corrected Gauss constant, exact norm, and unit
-  normalization; not yet checked.
+- Actual reference frequency and ideal, corrected Gauss constant, exact
+  norm, and unit normalization are finalized in
+  `HeckeLFunctions/HeckePrimitiveGaussConstantsHaveExactNorm.lean`.
+  All three main transitive axiom audits are standard only; final source
+  audit passes without warnings. Full proof:
+  [corrected primitive Gauss norm](../3-formalized/hecke-primitive-gauss-constants-have-exact-norm.md).
 - `/tmp/HeckeDualCoefficientCharacterScratch.lean`: principal-ideal
   transformation of associated ideals, prime-to-modulus multipliers,
   sign-corrected character invariance, and the actual inverse-Hecke-value
@@ -306,11 +309,14 @@ The next written consumers are:
   exact base-change ideal multiplication, an actual nonzero unit-residue
   element of each base ideal, and both supported and unsupported cases.
 
-The support module's consumer olean has been built, and the covariance
-module's consumer olean is being built. The Gauss-constant scratch
-imports the finalized support module; the coefficient scratch awaits
-the Gauss-constant module. Neither remaining scratch conclusion is yet
-counted as formalized.
+The support, covariance, and Gauss-constant consumer oleans have been
+built. The coefficient scratch's first check exposed principal-ideal
+namespace and frequency-projection errors; the exact root-level APIs
+`toPrincipalIdeal` and `coe_toPrincipalIdeal` are now checked in Mathlib
+`RingTheory/ClassGroup/Basic.lean`, and those errors are corrected for
+the next check. The scratch is not yet counted as formalized. The subsequent
+fractional-class unfolding is tracked on
+[its own active card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
 
 ## Remaining analytic recombination and normalization
 
@@ -335,9 +341,32 @@ existing Poisson scalar and class weight cancels `Norm(b)` exactly:
 ```
 
 Thus `Wψ=Cψ(-i)^parityDegree/sqrt(Norm(m))` has norm one, and with
-`Λψ(s)=(|disc K| Norm(m))^(s/2) Γψ(s)Lψ(s)` the reflection is
+`Λψ(s)=(|disc K| Norm(m))^(s/2) Γψ(s)Lψ(s)` initially on `Re(s)>1`,
+continued by the actual theta construction, the reflection is
 `Λψ(1-s)=Wψ Λ_(ψ⁻¹)(s)`. This calculation is a target, not a completed
 proof: it still needs actual fractional-ideal reindexing, exact Mellin
 normalization, inversion invariance of finite conductor and real parity,
 and treatment of the completed continuation's zero modes. The latter
 remains on the separate unramified residue-cancellation card.
+
+The completed function must use that theta continuation, rather than
+totalized pointwise multiplication of Gamma and L at Gamma poles.
+For the unramified nontrivial case, cancellation of polar coefficients
+also requires filling the resulting removable quotients: class weights
+depend on `s`, so setting each original division by zero to zero need not
+give the removable value. The existing entire divided-difference method
+is available for this correction. For the trivial character, statements
+at the actual poles must use meromorphic germs or explicitly exclude
+the poles.
+
+Exact norm sources are now checked: Mathlib
+`NumberTheory/NumberField/Discriminant/Different.lean` proves
+`NumberField.absNorm_differentIdeal K (𝓞 K)`, and
+`RingTheory/DedekindDomain/Different.lean` proves
+`coeIdeal_differentIdeal ℤ ℚ K (𝓞 K)` and `FractionalIdeal.dual_eq_mul_inv`.
+Together they give
+`Norm(dual I)=(|disc K| Norm(I))⁻¹` directly. The written verification
+file `/tmp/HeckeTraceDualNormScratch.lean` has not yet been checked.
+Mathlib `FractionalIdeal.absNorm_span_singleton (𝓞 K)` also gives
+`Norm((a))=|Norm_(K/ℚ)(a)|`; its source is checked for the coming orbit
+and Mellin normalization argument.

@@ -38,5 +38,15 @@ locality, and must not duplicate HKT modules.
 - Neumann's lemma: Mathlib `Subgroup.leftCoset_cover_filter_FiniteIndex`.
 - Real zeros: `RHTower.riemannZeta_ne_zero_of_ofReal_mem_Ioo`.
 
+## Proved (axiom audit clean, wired into the umbrella)
+- `CyclicSubgroupsDecideTheKreinLangerClass`, `TowerFaithfulSpectraAreDecidedByAlmostEveryTower`,
+  `LocalConstituentsMeetOnlyAtTheIdentity`, `TheTwistTowerCompletesTheUpperCount`,
+  `TheIndexIsContinuousOffTheDiscriminant`, `TheParityFormOfTheGlobalLaw`,
+  `TheIndexIsTheNumberOfExceptionalWaves`.
+
+## Open (RH/LH-deep, recorded in README §9)
+Producer over ℤ; Lindelöf bridge from the kernel; near-axis collision quantity; selective transfer
+past Robin–Euler; two-sided coalescent pair theory; cyclic locality for infinite spectra.
+
 ## Log
-- 2026-10-29 — created; README draft written.
+- 2026-10-29 — created; README draft written; seven modules proved.

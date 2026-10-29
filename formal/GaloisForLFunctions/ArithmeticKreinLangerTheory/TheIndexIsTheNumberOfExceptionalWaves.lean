@@ -116,7 +116,7 @@ theorem card_le_of_bounded_sub_waves {p : G → ℂ} (hp : IsPosDefKernel p) (χ
         · exact absurd (congrArg Sum.inl (hsep (mem_filter.mp hi1).2)) hne'
         · simp at hi2
       · intro h
-        exact absurd (mem_filter.mpr ⟨mem_filter.mpr ⟨mem_univ _, rfl⟩, rfl⟩) h
+        exact (h (mem_filter.mpr ⟨mem_filter.mpr ⟨mem_univ _, by simp [ν]⟩, by simp⟩)).elim
     rw [hleft, hright, add_zero] at h0
     have hc : nodeCoeff ω (outerNode χ u j) ≠ 0 := by
       unfold outerNode; split_ifs
@@ -130,7 +130,7 @@ theorem card_le_of_bounded_sub_waves {p : G → ℂ} (hp : IsPosDefKernel p) (χ
 
 /-- **Attainment.** Subtracting the outer nodes with their weights leaves a bounded count. -/
 theorem exists_waves_bounded {p : G → ℂ} (hp : IsPosDefKernel p) (χ : Fin κ → G →* ℂ)
-    (ω : Fin κ → ℂ) (u : G) (hne : ∀ j, ‖χ j u‖ ≠ 1) :
+    (ω : Fin κ → ℂ) (u : G) :
     ∃ v a : Fin κ → ℂ, ∃ M, ∀ n : ℕ, ‖p (u ^ n) + ∑ j, pairKernel (χ j) (ω j) (u ^ n) -
       ∑ i, a i * v i ^ n‖ ≤ M := by
   classical
@@ -148,8 +148,12 @@ theorem exists_waves_bounded {p : G → ℂ} (hp : IsPosDefKernel p) (χ : Fin �
         ∑ j, nodeCoeff ω (inner j) * nodes χ u (inner j) ^ n := by
     rw [← sum_add_distrib]
     refine sum_congr rfl fun j _ => ?_
-    simp only [pairKernel, map_pow, outerNode, inner]
-    split_ifs <;> simp only [nodeCoeff, nodes, Sum.elim_inl, Sum.elim_inr] <;> ring
+    by_cases h : 1 < ‖χ j u‖
+    · simp only [pairKernel, map_pow, outerNode, inner, h, if_true, nodeCoeff, nodes,
+        Sum.elim_inl, Sum.elim_inr]
+    · simp only [pairKernel, map_pow, outerNode, inner, h, if_false, nodeCoeff, nodes,
+        Sum.elim_inl, Sum.elim_inr]
+      ring
   rw [hsplit]
   beta_reduce
   rw [show ∀ x y z : ℂ, x + (y + z) - y = x + z from fun x y z => by ring]
@@ -171,6 +175,6 @@ theorem negIndex_eq_card_waves {p : G → ℂ} (hp : IsPosDefKernel p) (χ : Fin
         ∑ i, a i * v i ^ n‖ ≤ M :=
   ⟨negIndex_add_sum_pairKernel_eq hp χ ω hω u hne hsep,
     fun _ v a hb => card_le_of_bounded_sub_waves hp χ ω hω u hne hsep v a hb,
-    exists_waves_bounded hp χ ω u hne⟩
+    exists_waves_bounded hp χ ω u⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

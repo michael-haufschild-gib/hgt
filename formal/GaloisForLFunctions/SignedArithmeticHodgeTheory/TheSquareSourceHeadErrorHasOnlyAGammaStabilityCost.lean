@@ -99,8 +99,10 @@ theorem exists_actualGenerator_square_head_bound {ε : ℝ} (hε : 0 < ε) :
       _ ≤ |centeredSquarePrimeSource t| +
           |squarePrimeRegularSymbol 0| * ∫ x, t x ^ 2 := by
         rw [he]
-        simpa only [abs_mul, abs_of_nonneg hmass] using
-          abs_add_le (centeredSquarePrimeSource t) (squarePrimeRegularSymbol 0 * ∫ x, t x ^ 2)
+        calc
+          _ ≤ |centeredSquarePrimeSource t| +
+              |squarePrimeRegularSymbol 0 * ∫ x, t x ^ 2| := abs_add_le _ _
+          _ = _ := by rw [abs_mul, abs_of_nonneg hmass]
       _ ≤ (ε / 2) * levyEnergy t + (Cd + |squarePrimeRegularSymbol 0|) * ∫ x, t x ^ 2 := by
         linarith only [hdiag]
       _ ≤ _ := add_le_add le_rfl (mul_le_mul_of_nonneg_left

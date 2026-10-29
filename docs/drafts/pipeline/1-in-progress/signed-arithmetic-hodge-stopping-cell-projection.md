@@ -64,7 +64,8 @@ orthogonal projection of every original cell onto its normalized stopping cell.
 check and standard transitive-axiom audit: exact square-root
 block matrix, common stopping ancestor across each block, positive averaging
 weights summing to one, and support below twice the original label.
-`ActualGeneratorHeadsPreserveTheSourceMean.lean` is drafted: explicit finite real
+`ActualGeneratorHeadsPreserveTheSourceMean.lean` passes its individual Lean
+check and standard transitive-axiom audit: explicit finite real
 compact BV head, equality with the existing physical projection, original
 wholeCellProfile interface, mean preservation, head-tail orthogonality, exact
 centered-square correction cancellation, and original-Gamma tail-mass payment.
@@ -75,8 +76,8 @@ tail supplies a bound for the complete even-power source head error by
  epsilon*(Gamma(head)+Gamma(tail))
  + C_epsilon*32 Gamma(original)/(1+log A).
 
-One constant precedes every finite source family, horizon and cutoff. These
-two physical-source drafts are not accepted proofs until their individual Lean checks pass.
+One constant precedes every finite source family, horizon and cutoff. The full even-power error draft is not accepted as a proof until its individual
+Lean check passes. The mixed estimate and its physical identities are verified.
 
 Uniform all-level Gamma stability remains unproved. Research findings and
 continuation state are recorded in logs/signed-arithmetic-hodge-research.log.

@@ -1,8 +1,8 @@
 # Positive Iwahori and completed unipotent coordinates
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** Construct the positive Iwahori and its unipotent radical inside
   the actual central loop group, with unique Gauss coordinates.
 
@@ -55,20 +55,29 @@ central/finite/unipotent decomposition of the completed positive Borel.
 
 ## Status and limits
 
-Paper proof recorded. `PositiveIwahori.lean` contains the actual reduction
-subgroups, entrywise membership criteria, and the zero-coordinate unipotent
-splitting. `IwahoriGaussCoordinates.lean` contains the full Gauss equivalence
-and its principal-unit characterization. `IwahoriTorusFactorization.lean`
-contains the multiplicative finite coordinate, exact unipotent kernel, and
-unique torus/unipotent factorization. `PositiveBorelCoordinates.lean` contains
-the independent central/Iwahori embedding and unique central/finite/unipotent
-coordinates using the actual finite coroot. `PositiveIwahori` compiles without
-warnings, including the triviality of the actual tame cocycle on the full
-positive unipotent subgroup. `IwahoriGaussCoordinates` also compiles without
-warnings. The finite-torus and positive-Borel checks and all final audits are
-in progress. This does not yet prove a global Iwasawa
-decomposition, construct a compact subgroup or an arithmetic lattice, or
-supply the unipotent quotient measure.
+All four modules passed final direct `lake --old env lean` source checks at
+ordinary limits, without warnings. The transitive audit reports only
+`propext`, `Classical.choice`, and `Quot.sound`; the concrete rational and
+real positive-Borel factorizations also typecheck. Saved audit:
+[garland-positive-iwahori-axioms.txt](garland-positive-iwahori-axioms.txt).
+
+| Exact mathematical result | Lean declaration |
+| --- | --- |
+| Actual Iwahori and unipotent membership | `mem_iwahoriMatrices`, `mem_positiveUnipotentMatrices` |
+| Trivial tame cocycle on full positive unipotent group | `LoopSL2.positiveUnipotent_tameFactor` |
+| Unique full power-series Gauss coordinates | `iwahoriGaussEquiv` |
+| Unipotent condition is principal diagonal | `IwahoriCoordinates.unipotent_iff` |
+| Exact finite-coordinate kernel | `iwahoriFiniteCoordinate_eq_one_iff` |
+| Unique finite-torus/unipotent factors | `iwahoriTorusUnipotentEquiv` |
+| Finite factor agrees with actual root-word coroot | `LoopSL2.positiveEmbedding_iwahoriFiniteCoroot` |
+| Independent central and Iwahori factors | `LoopSL2.positiveBorelEmbedding_injective` |
+| Unique central/finite/unipotent coordinates | `LoopSL2.positiveBorel_unique_coordinates` |
+
+Sources: `PositiveIwahori`, `IwahoriGaussCoordinates`,
+`IwahoriTorusFactorization`, and `PositiveBorelCoordinates`, all under
+`GaloisForLFunctions.HTGeometry.LoopEisenstein` and wired into its umbrella.
+This does not prove global Iwasawa decomposition, construct a compact
+subgroup or arithmetic lattice, or supply the unipotent quotient measure.
 
 The natural topology of the central extension must be built from split
 positive-loop and Bruhat charts. No product topology on the set-theoretic

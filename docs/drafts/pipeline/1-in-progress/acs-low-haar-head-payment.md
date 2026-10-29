@@ -96,16 +96,15 @@ controls the full signed Gamma error in ordinary mass. The required
 all-head joint inequality remains open. An all-head conclusion
 must preserve cross terms, not combine separate diagonal inequalities.
 
-One candidate joint comparison uses the actual divisor-square generator.
-With `n_a=2a+1`, investigate the coordinates `u_a=sqrt(n_a)*d_a`
-and weight `pi_a=M_a/n_a`. The proposed edge expression is
-`Lambda(m)*pi_b*(u_a−u_b)^2` when `n_a*m=n_b`.
-The comparison model has geometric prime parameter `q=1/p`; the existing
-critical `primeBlaschkeParameter=1/sqrt(p)` is a different parameter.
-`HTGeometry.HardyNumberSpectrum` supplies a basis for general `q`.
-The exact mass change and any outgoing boundary completion must be proved
-before using that model to pay the original Gamma boundary cost. This is
-an investigation of the full signed head inequality, not a proved bridge.
+The [actual-source valuation transport](../3-formalized/acs-haar-subcritical-source-transport.md)
+now has a direct Lean check. Put `x_a=d_a/sqrt(n_a)` and `w_a=n_a*M_a>=1/2`.
+The actual edge is `Lambda(m)*w_b*(x_a/m−x_b)^2`; the root charge remains.
+At parameters `q_p=1/p`, the complete product basis gives exactly
+`D_X+T_Q=(1/2)*sum_e E_Q(e)*|xhat(e)|^2+R_X`, with T_Q,R_X nonnegative
+and the full series summable. Original-domain membership is proved for
+the actual finite source. T_Q is the explicit Euler-minus-outgoing
+diagonal completion cost. It still needs joint payment with the original
+Gamma remainder; positivity of the completed operator does not pay it.
 
 No all-head positivity claim is established. No numerical experiment,
 web search, novelty check, or axiom check is authorized. If this target

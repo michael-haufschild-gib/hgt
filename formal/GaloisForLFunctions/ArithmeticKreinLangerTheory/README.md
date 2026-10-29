@@ -5,30 +5,31 @@
 Namespace `GaloisForLFunctions.ArithmeticKreinLangerTheory`; umbrella `ArithmeticKreinLangerTheory.lean`.
 
 **One question.** The Weil kernel of `ζ` is a Hermitian kernel on the Hecke lattice
-`Γ = ℚ_{>0} ≅ ⊕_p ℤ` assembled from local constituents: one tower `⟨p⟩ ≅ ℤ` per prime, an
+`Γ = ℚ_{>0} ≅ ⊕_p ℤ`, assembled from local constituents: one per prime, on the tower `⟨p⟩ ≅ ℤ`, an
 archimedean factor on `ℝ_{>0}`, and the pole. RH says its negative index is zero. Over `𝔽_q` the
-corresponding index is computed in two steps, both global: Castelnuovo–Severi (or Riemann–Roch)
-bounds it, and Stepanov's auxiliary polynomial produces the count that brings it to zero. AKL asks
-for the map in between:
+corresponding index is computed in two steps: Riemann–Roch bounds it by the genus, and a count
+(Stepanov's auxiliary polynomial) brings it to zero. AKL asks for the map in between:
 
 > *Which local data, together with which single global law, determine the index of an arithmetic
 > kernel, and what produces that law?*
 
-AKL is the local-to-global part of Krein–Langer theory on `Γ`. Its foundation is
-[HeckeKreinToeplitz](../HeckeKreinToeplitz/README.md) (HKT): kernels on groups, hyperbolic pairs, the
-index formula, closedness, aliasing on one tower, the Weil kernel of `ζ` and its index laws. HKT
-treats the index as an invariant of one global kernel. AKL treats it as the output of a
-local-to-global map, and studies that map's four missing parts:
+AKL is the local-to-global part of Krein–Langer theory on groups with a family of towers. Its
+foundation is [HeckeKreinToeplitz](../HeckeKreinToeplitz/README.md) (HKT): kernels on groups,
+hyperbolic pairs, the index formula, closedness, the aliasing law on one cyclic subgroup, and the Weil
+kernel of `ζ` with its index laws. HKT treats the index as an invariant of one global kernel. AKL
+treats it as the output of a local-to-global map, and studies the parts of that map that HKT leaves
+open:
 
-1. **locality**: when the restrictions to towers determine the index (a Hasse principle for the index);
-2. **ceilings**: inequalities `κ ≤ F(local data, one law)`;
-3. **producers**: constructions that yield the law (a one-sided square-root count) without assuming it;
-4. **completion and parity**: the topology in which local-to-global limits carry the index, and the
-   exact place where the twins of `Λ` enter.
+1. **locality**: when restrictions to towers determine the index (Hasse principles for the index);
+2. **local constituents and ceilings**: what assemblies of tower-supported data can carry, and
+   inequalities `κ ≤ F(local data, one law)`;
+3. **producers and parity**: the form of the global law a construction would have to produce, and
+   where the parity twins enter;
+4. **completion**: the topology in which local-to-global limits carry the index.
 
-Nothing in HKT is restated here. Every AKL theorem either takes local data as input or proves that a
-class of local data cannot decide the index. Everything is unconditional; RH appears only inside
-equivalences.
+Nothing in HKT is restated here. Every AKL theorem takes local data (towers, constituents, counts) as
+input, or proves that a class of local data cannot decide the index. Everything is unconditional; RH
+appears only inside equivalences.
 
 ---
 
@@ -36,72 +37,69 @@ equivalences.
 
 The corpus pins down what the missing input must be ([obstacles summary](../../../docs/reports/review-2910/obstacles-summary.md)):
 **parity-sensitive** (it fails for the Liouville twin), **square-root precise** (it fails for
-`Λ + εn^{−η}`, `η < ½`), **global** (unbounded aperture, at least two prime towers). Both of the first
-two have been obtained together only over `𝔽_q`, from geometry or Frobenius. In index language the
-missing input is one statement: index zero of `K_ζ` is the one-sided count
-`ψ(x) − x ≤ C√x log²x` (`global_law_count`), just as over `𝔽_q` it is
-`N_k ≥ q^k + 1 − Cq^{k/2}`.
+`Λ + εn^{−η}`, `η < ½`), and **global** (unbounded aperture, at least two prime towers). Both of the
+first two have been obtained together only over `𝔽_q`, from geometry or Frobenius. In index language
+the missing input is one statement: index zero of `K_ζ` is the one-sided count
+`ψ(x) − x ≤ C√x log²x` (`global_law_count`), as over `𝔽_q` it is `N_k ≥ q^k + 1 − Cq^{k/2}`.
 
-AKL owns the obstacles of that summary that are statements about the passage from local to global:
+AKL owns the obstacles of that summary that concern the passage from local to global:
 
-| Obstacle | AKL form |
-|---|---|
-| I10 arithmetic Krein–Langer ceiling | a local-to-global index ceiling (§5 B) |
-| I9 Stepanov over `ℤ` | a producer of one-sided counts (§5 C) |
-| O3 positivity on one prime's towers | locality on one tower: what one tower can and cannot certify (§5 A) |
-| F1, F6 finite index; two-prime lattice | the ceiling at finite level; the Lindelöf diagnostic |
-| §2.8 items 4–5 (cross-level couplings, index at limits, locality on `ℤ²`) | completion and locality (§5 A, D) |
+| Obstacle | AKL form | Status |
+|---|---|---|
+| §2.8 *locality fails on `ℤ²`; why do two primes suffice* | Hasse principles for the index | answered (§5 A) |
+| I10 arithmetic Krein–Langer ceiling | ceilings from local data and one law | structure proved (§5 B); finite ceiling for `ζ` is LH-deep |
+| I9 Stepanov over `ℤ` | the law a producer must produce, and its parity form | target fixed (§5 C); producer open |
+| §2.8 *in which completion does the index pass to limits* | continuity off the discriminant | answered (§5 D) |
+| F1, F3, F6 finite stratum | the index as a number of exceptional waves | proved (§5 B) |
 
 **Interfaces.**
 
 | Programme | What AKL takes | What AKL adds |
 |---|---|---|
-| [HeckeKreinToeplitz](../HeckeKreinToeplitz/README.md) | the index `negIndex`, pair kernels `pairKernel`, the index formula (`negIndex_add_sum_pairKernel_eq`), aliasing on a cyclic subgroup (`negIndex_zpowers_eq_card_classes`), Stepanov compressions (`negIndex_compress_eq`), the global law (`global_law_count`), closedness (`negIndex_le_of_tendsto`), coalescence (`coalescence_law`) | the local-to-global map on top of these |
-| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | curve data `CurveDatum`, one-sided Lefschetz bounds and the real-node exception (`oneSided_forcing_tfae`, `zeta_riemannHypothesis_iff_oneSided_upper`), the golden datum | the one-sided law as a ceiling with local exceptions |
-| [ArithmeticLorentzianGeometry](../ArithmeticLorentzianGeometry/README.md) | trickle-down = square-root count; hyperelliptic data (`hyperelliptic_weightedTrickleDown`) | the producer's two steps (auxiliary count, twist) |
-| `RHTower.Stepanov` | the auxiliary-polynomial count (`stepanov_count`, `stepanov_bound`) | the identification of the step a producer over `ℤ` lacks |
-| [ArithmeticCorrespondencePositivity](../ArithmeticCorrespondencePositivity/README.md) | sparse annihilators kill only critical lattice symbols | producers vs receivers |
-| [SelectiveMultiscaleArithmeticPositivity](../SelectiveMultiscaleArithmeticPositivity/README.md), [ArithmeticCountingPositivity](../ArithmeticCountingPositivity/README.md) | selection, the margin `2 log 2`, precision rigidity, maximal-margin flips | the battery, sorted by which local datum excludes each member |
-| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | orbit correlations, Bézout-selective orientation (open) | additive structure as the level of the structure ladder at which a producer must act |
-| [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | Herglotz–Bochner on `ℚ_{>0}` and on lattices | positive-definite local factors |
+| [HeckeKreinToeplitz](../HeckeKreinToeplitz/README.md) | `negIndex`, `pairKernel`, the index formula `negIndex_add_sum_pairKernel_eq`, the aliasing law `negIndex_zpowers_eq_card_classes`, orthogonal translates `card_le_negIndex_of_orthogonal_translates`, closedness `negIndex_le_of_tendsto`, coalescence `coalescence_law`, the global law `global_law_count`, the arithmetic tower law `negIndex_eq_zero_of_posDef_on_infinitely_many_towers` | Hasse principles on every group, the zero-or-infinity law, the wave formula, continuity off the discriminant |
+| [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | `CurveDatum`, one-sided Lefschetz bounds and the real-node exception (`oneSided_forcing_tfae`, `zeta_riemannHypothesis_iff_oneSided_upper`), the golden datum | the Riemann–Roch ceiling, the twist tower |
+| `RHTower` | Stepanov's count (`stepanov_count`), the Liouville laws (`riemannHypothesis_iff_forall_liouvilleSummatory_le`, `riemannHypothesis_iff_forall_liouvilleExpSum_lower`), real zeros of `ζ` | the parity classes as the targets of a producer |
+| [ArithmeticLorentzianGeometry](../ArithmeticLorentzianGeometry/README.md) | trickle-down = square-root count, hyperelliptic data | the role of the quadratic twist |
+| [ArithmeticCorrespondencePositivity](../ArithmeticCorrespondencePositivity/README.md) | sparse annihilators kill only critical lattice symbols | producers versus receivers |
+| [SelectiveMultiscaleArithmeticPositivity](../SelectiveMultiscaleArithmeticPositivity/README.md), [ArithmeticCountingPositivity](../ArithmeticCountingPositivity/README.md) | selection, the margin `2 log 2`, precision rigidity, the flips | the battery, sorted by the level of arithmetic structure that excludes each member |
+| [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Bézout-selective orientation (open) | additive structure as the level at which a producer must act |
+| [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | Herglotz–Bochner on `ℚ_{>0}` | positive-definite local factors |
 
 ---
 
 ## 2. Why
 
-**Weil over `𝔽_q` is a local-to-global index theorem.** For a curve, every datum lives on one
-graded tower, the Frobenius powers `ℤ`. The trace kernel `n ↦ Σ_i β_i^n` is the pole pair minus
-the closed points: a closed point of degree `d` contributes `d·q^{−|n|/2}·1[d | n]`, which is a
-positive-definite kernel on `ℤ` (a character of `ℤ/d` times a Poisson kernel). So:
+**Weil over `𝔽_q` is a local-to-global index theorem.** All data of a curve live on one graded tower,
+the Frobenius powers `ℤ`. The global index is finite because the genus is (Riemann–Roch), with
+`κ ≤ g`, and the golden datum attains this ceiling with positive counts. It is zero because of a count.
+Stepanov's auxiliary polynomial produces **upper** counts: `#{x : f(x)^{(q−1)/2} = ε} ≤ q/2 + O(√q)`
+for `ε = ±1`, using the Frobenius identity `x^q = x` on the counted set and Euler's criterion (the
+parity character is the polynomial `a^{(q−1)/2}`). The two parity classes are a curve and its
+quadratic twist; the twist turns one class's upper count into the other's lower count, and the twists
+of the `2`-power base changes deliver the whole global law.
 
-- every local constituent is positive definite, and enters with a minus sign;
-- the global index is finite because the genus is finite (Riemann–Roch), with `κ ≤ g`;
-- the index is zero because of a count: Stepanov's auxiliary polynomial gives the upper count for the
-  curve and for its quadratic twist, and the twist turns the second upper count into the missing
-  lower count.
+**Over `ℤ` every ingredient changes.** There are infinitely many towers, one per prime, meeting only
+at the identity; an archimedean factor supported everywhere; infinite genus. HKT shows the index is a
+robust invariant (closed under limits, carried by two primes, counted by heat collisions, priced by
+energy) and that index zero is a one-sided square-root count. AKL establishes why the constituents
+alone cannot give it:
 
-The golden datum `1 − 5X + 5X²` has positive counts, positive closed-point counts and index one: local
-positivity and the genus ceiling cannot by themselves give index zero.
+1. *Locality is a property of the spectrum.* Cyclic subgroups decide every Krein–Langer kernel, but
+   coordinate towers decide only tower-faithful spectra; the Weil kernel's spectrum is logarithmic,
+   hence tower-faithful (§4.1–4.2).
+2. *Tower-supported assemblies have index `0` or `∞`* on two or more towers: no finite set of places
+   carries a finite nonzero index, so the finite stratum is a non-local phenomenon (§4.3).
+3. *Local positive definiteness is twin-invariant.* A unitary twin twists each tower constituent by a
+   unitary character and keeps it positive definite (§4.3).
+4. *Upper counts are blind to real nodes.* Over `𝔽_q` a single twist does not remove the blind spot;
+   over `ℤ` the blind spot is a real zero of `ζ` in `(½, 1)`, of which there is none, so one parity
+   class carries the law (§4.4–4.5).
+5. *Finite index is Lindelöf-deep* (HKT), and the index is exactly the number of exceptional waves of
+   a count (§4.6): every finite ceiling for `ζ` is a count with finitely many exceptions, hence LH.
 
-**Over `ℤ` every step changes.** There are infinitely many towers, one per prime, meeting only at the
-identity of `Γ`; an archimedean factor supported everywhere; infinite genus. HKT has shown that the
-index is a robust invariant (closed under pointwise limits, carried by two primes, counted by heat
-collisions, priced by energy) and that index zero is a one-sided square-root count. What it does not
-have is any inequality bounding the index from the constituents. Five facts explain why the
-constituents alone cannot give one:
-
-1. *A positive part never pays a pair* (HKT): no positive majorant is an index ceiling.
-2. *Locality is not automatic.* Positivity on coordinate circles is not positivity on the torus;
-   whether the prime towers decide depends on the spectrum (§4.1).
-3. *Local constituents have infinite index individually*, and finite sets of places have infinite
-   index jointly: positivity is a property of the assembly with the archimedean factor (§4.2).
-4. *Local indices are twin-invariant.* The Liouville twin acts on each tower by the unitary character
-   `(−1)^n`, which keeps every tower index; selectivity must enter through a non-local constituent
-   (§4.5).
-5. *Finite index is Lindelöf-deep* (HKT): every finite ceiling for `ζ` proves LH.
-
-So the local-to-global map needs one global input, and AKL's task is to say exactly which, to build
-the parts of the map that are theorems, and to prove that every weaker class of input fails.
+So the local-to-global map needs one global input, a count of one parity class at square-root
+precision. AKL proves the parts of the map that are theorems and that every weaker class of input
+fails.
 
 ---
 
@@ -109,133 +107,131 @@ the parts of the map that are theorems, and to prove that every weaker class of 
 
 | Weil over `𝔽_q` | AKL object | Over `ℤ` |
 |---|---|---|
-| Frobenius tower `ℤ` | a group `G` with a family of **towers** `⟨u_t⟩` | `Γ = ℚ_{>0}`, prime towers `⟨p⟩` |
-| closed point of degree `d` | **local constituent** on a tower | Euler-factor kernel `L_p(n) = log p · p^{−|n|/2}` |
+| Frobenius tower `ℤ` | a group `G` with **towers** `⟨u_t⟩` | `Γ = ℚ_{>0}`, prime towers `⟨p⟩` |
+| closed point of degree `d` | **local constituent** on a tower | `log p · δ₀ − L_p`, `L_p(n) = log p · p^{−|n|/2}` |
 | degree grading | **scale** `ℓ : G → ℝ` | `log : Γ → ℝ` |
-| `β_i`, `1/β̄_i` | **spectrum**: characters `χ`, reflections `χ^† = 1/χ̄` | `u ↦ u^{ρ−½}`, `u ↦ u^{½−ρ̄}` |
-| `|β| ≠ 1` | non-unitary character | right zero |
-| Riemann–Roch, `κ ≤ g` | **ceiling** | open |
-| `N_k ≥ q^k+1−Cq^{k/2}` | **global law** (a count) | `ψ(x)−x ≤ C√x log²x` |
-| Stepanov's auxiliary polynomial | **producer** | open (I9) |
-| quadratic twist | **twin** (a unitary character acting on constituents) | Liouville character `λ : Γ → {±1}` |
+| `β_i`, `1/β̄_i` | **spectrum**: characters and reflections | `u ↦ u^{ρ−½}`, `u ↦ u^{½−ρ̄}` |
+| Riemann–Roch `κ ≤ g` | **ceiling** | wave formula; finite ceiling open (LH-deep) |
+| `N_k ≥ q^k+1−Cq^{k/2}` | **global law** (a count) | `ψ(x)−x ≤ C√x log²x`; odd parity class |
+| Stepanov | **producer** | open |
+| quadratic twist `β ↦ −β` | **twin** | Liouville twist |
 
 **Words.**
 
-- *Tower restriction*: `k ∘ zpowersHom G u`, the kernel on the cyclic subgroup `⟨u⟩`.
-- *Cyclic locality*: positivity on every cyclic subgroup implies positivity.
-- *Tower locality*: positivity on infinitely many members of a fixed family of towers implies positivity.
-- *Torsion aliasing*: two characters whose quotient has finite order on a finite-index subgroup;
-  they agree on a whole finite-index subgroup of towers.
-- *Tower-faithful spectrum*: every non-unitary member is non-unitary on all but finitely many towers,
-  and two distinct members agree on only finitely many towers.
-- *Logarithmic spectrum*: characters `u ↦ e^{s ℓ(u)}` of one scale `ℓ`; tower scales pairwise
+- *Tower restriction*: `k ∘ zpowersHom G u`, the kernel on `⟨u⟩`.
+- *Cyclic locality*: positivity on every cyclic subgroup implies positivity. *Tower locality*:
+  positivity on infinitely many towers of a fixed family implies positivity.
+- *Torsion-aliased* (`IsTorsionAliased`): two characters agreeing on a finite-index subgroup.
+- *Tower-faithful* (`IsTowerFaithful`): every character non-unitary at all but finitely many towers,
+  two distinct nodes agreeing at finitely many towers.
+- *Logarithmic spectrum*: characters `u ↦ e^{sℓ(u)}` of one scale; tower scales pairwise
   incommensurable.
-- *Local constituent*: a kernel supported on one tower. *Meeting point*: the identity, the only element
-  shared by two distinct towers of `Γ`.
-- *Ceiling*: an inequality `κ(k) ≤ F` with `F` computed from local data and one global law.
-- *Count*: a one-sided bound at square-root precision. *Producer*: a construction yielding a count
-  without assuming it. *Receiver*: a statement that is equivalent to a count.
-- *Twin*: a kernel obtained by twisting the constituents by a unitary character of `Γ`; the
-  *Liouville twin* twists each tower by `(−1)^n`.
-- *Structure ladder*: the four levels of arithmetic input — **sign** (positive local coefficients),
-  **support** (an Euler product: prime data on the towers), **normalization** (pole and Gamma
-  factor matched to the prime mass), **ring** (additive structure: `gcd(n, n+1) = 1`, the curve's
-  equation).
-- *Index-carrying topology*: one in which the index is continuous, not only lower semicontinuous.
+- *Axis-supported* (`IsAxisSupported`): a kernel on `ℤ^S` vanishing off the coordinate axes.
+- *Count*: a bound on `k(u^n)` along a tower. *Wave*: a term `a v^n` subtracted from a count.
+- *Ceiling*: an inequality `κ ≤ F` with `F` from local data and one law.
+- *Producer*: a construction yielding a count without assuming it. *Receiver*: a statement equivalent
+  to a count.
+- *Parity classes*: `{n : λ(n) = ±1}` over `ℤ`; a curve and its quadratic twist over `𝔽_q`.
+- *Discriminant*: Krein–Langer data with a node on the unit circle, two colliding nodes, or a zero
+  weight.
+- *Structure ladder*: **sign** (positive local coefficients), **support** (an Euler product: prime
+  data on the towers), **normalization** (pole and Gamma factor matched to the prime mass), **ring**
+  (additive structure: `gcd(n, n+1) = 1`, the curve's equation).
 
 ---
 
 ## 4. Mechanisms
 
-1. **Cyclic subgroups decide the Krein–Langer class; coordinate towers do not.** For a
-   positive-definite kernel plus finitely many hyperbolic pairs on any group, the set of elements at
-   which some node lies on the unit circle or two nodes coincide is a finite union of subgroups. The
-   unitarity subgroups have infinite index. By Neumann's lemma (a group is not covered by finitely
-   many cosets of infinite-index subgroups), every coset of the finite-index aliasing subgroup
-   contains an element avoiding all infinite-index ones. At such an element the pairs regroup into
-   torsion classes, and if all class weights vanished at every coset, Dedekind's independence of the
-   torsion characters would force every weight to vanish. So some cyclic subgroup carries a negative
-   square. On `ℤ²` the coordinate axes can still hide everything: the kernel
-   `2i·sinh(v₁ log 2)·(1 − (−1)^{v₂})` is two separated hyperbolic pairs, has index `2`, and vanishes
-   on both axes and on every `⟨(m, 2n)⟩`. Outside the Krein–Langer class even cyclic locality fails:
-   `δ₀ − ½ Σ_{w∈{e₁,e₂,e₁+e₂}} (δ_w + δ_{−w})` is positive on every cyclic subgroup and not on `ℤ²`.
-2. **Logarithmic spectra are tower-faithful.** For `χ_s(u) = e^{sℓ(u)}`, non-unitarity at one tower is
-   non-unitarity at every tower with nonzero scale, and `χ_s = χ_{s'}` on two towers with
-   incommensurable scales forces `s = s'`. So every pair of distinct nodes is blind on at most one
-   tower, almost every tower carries the whole index, and positivity on infinitely many towers is
-   positivity. This is the arithmetic property behind the two-prime law: the spectrum of the Weil
-   kernel is rank one, read through a single real logarithm.
-3. **The Euler factor is a Poisson kernel.** `n ↦ r^{|n|}` (`0 ≤ r < 1`) is the autocorrelation of
-   `√(1−r²)·r^k 1[k ≥ 0]`, hence positive definite; the local kernel of `(1 − p^{−s})^{−1}` is
-   `L_p(n) = log p · p^{−|n|/2}`, and the prime constituent of the Weil kernel on `⟨p⟩` is
-   `log p·δ₀ − L_p`. Distinct towers meet only at the identity, so the constituents interact only
-   through the diagonal, where the divergent sum `Σ_p log p` is renormalized by the archimedean factor.
-   Without it, finitely many places give the symbol `Σ_p log p·(1 − P_{p^{−1/2}}(θ_p))`, negative near
-   `θ = 0`: infinite index.
-4. **One-sided laws and the real-node exception.** A one-sided bound along one tower forces the
-   deepest node to be real and positive with negative weight (ACS: `oneSided_forcing_tfae`). Over `𝔽_q`
-   the exception is removed by the quadratic twist, which negates every Frobenius eigenvalue; over `ℤ`
-   by a second prime and the absence of real zeros
-   (`zeta_riemannHypothesis_iff_oneSided_upper`). A one-sided law with finitely many subtracted
-   exponentials bounds the index by their number (the finite stratum, `re_le_half_add_of_lagPoleSeries_sub_extension`).
-5. **Twins act on constituents, not on the kernel.** A unitary character `ω` of `Γ` acts on the tower
-   `⟨p⟩` by `n ↦ ω(p)^n`, a unitary twist; tower indices are unchanged (`negIndex_twist`). At atomic
-   resolution, where the archimedean factor is a diagonal counterterm and `ω(1) = 1`, the twin of the
-   whole kernel is its unitary twist, so the index ladder is twin-blind (`hermNegIndex_gaugeAtom_eq`);
-   what is not twin-invariant is the pole direction and the archimedean factor off the diagonal. Over
-   `𝔽_q` the analogous twist `β ↦ −β` (quadratic twist) is a symmetry of the whole kernel, and Weil's
-   proof uses it.
-6. **Producers give upper bounds; the twist gives the other side.** Stepanov's auxiliary polynomial
-   bounds `#{x : f(x)^{(q−1)/2} = ε}` from above for each `ε = ±1`. Two facts make it work: the
-   Frobenius identity `x^q = x` on the counted set (vanishing conditions cost independently of the
-   set's size), and Euler's criterion (the parity character is the polynomial `a^{(q−1)/2}`). The two
-   parity classes are the curve and its twist, and their counts add to `2(q + 1)`. Over `ℤ` the parity
-   character `λ` has no algebraic description, and the complementary class of the primes is not a
-   set to which an upper-bound producer applies.
-7. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
-   support excludes `Λ + εn^{−η}` and Davenport–Heilbronn; normalization excludes `cΛ`, `c ≠ 1`;
-   only the ring level excludes over-regular Beurling systems and the golden datum, which have
-   positivity, an Euler product and the right normalization. A ceiling or producer must act at the
-   ring level.
-8. **Index limits.** Bounded index is closed under pointwise convergence (HKT); the index drops in the
-   limit only by coalescence onto the unitary dual, collision of nodes with cancelling weights, or
-   vanishing weights. A topology in which these are excluded carries the index.
+1. **Cyclic subgroups decide the Krein–Langer class.** The elements where a node is unitary or two
+   nodes coincide form finitely many subgroups `ker(ν/ν')`. Unitarity subgroups have infinite index.
+   Neumann's lemma: every coset of a finite-index subgroup contains an element outside any finitely
+   many infinite-index subgroups (`exists_mul_not_mem`). At such an element, pairs merge only within
+   torsion-aliasing classes; if every class weight vanished on every coset, Dedekind's independence
+   of the distinct torsion quotients would kill all weights. So some cyclic subgroup carries a square
+   (`exists_one_le_negIndex_zpowers`). Without torsion aliasing one element separates all nodes, and
+   its cyclic subgroup carries the whole index (`negIndex_zpowers_eq_of_not_aliased`).
+2. **Coordinate towers decide only faithful spectra.** On `ℤ²` the kernel `2i·sinh(a log 2)·(1−(−1)^b)`
+   is two separated pairs of index `2`, torsion-aliased with cancelling weights on the first axis and
+   unitary on the second: it vanishes on both axes (`coordinate_locality_fails`). For a tower-faithful
+   spectrum all but finitely many towers separate the pairs and carry the whole index
+   (`finite_towers_negIndex_ne`). Both clauses of faithfulness are sharp
+   (`unitary_tower_defeat`, `aliased_tower_defeat`). Logarithmic spectra with incommensurable tower
+   scales are faithful: unitarity is tower-independent and two exponents agree at most at one tower
+   (`isTowerFaithful_logChar`). Outside the Krein–Langer class even cyclic locality fails: the star
+   kernel `δ₀ − ½Σ_{e₁,e₂,e₁+e₂}(δ_w + δ_{−w})` is positive on every cyclic subgroup and not on `ℤ²`
+   (`cyclic_locality_fails_off_class`).
+3. **Local constituents meet only at the identity.** The Euler factor is a Poisson kernel:
+   `n ↦ r^{|n|}` has form `(1−r²)Σ_{k<N}|h(k)|² + |h(N)|²` (`isPosDefKernel_poissonKernel`), so the local
+   kernel `L_p` and all its unitary twins are positive definite (`isPosDefKernel_eulerKernel`,
+   `isPosDefKernel_twist`); the constituent `log p·δ₀ − L_p` vanishes at the identity. On `ℤ^S`,
+   `|S| ≥ 2`, translates along the diagonal by a large step have differences with every coordinate
+   nonzero, off all axes, hence orthogonal: an axis-supported kernel has index `0` or `∞`
+   (`negIndex_eq_zero_or_top_of_isAxisSupported`). The assembly `Σ_s a_s(δ₀ − L_s)` is negative on the
+   pair `0, e_p` and so has infinite index (`negIndex_localAssembly_eq_top`). With one tower the law
+   fails (`rankOne_axis_pair`), as over `𝔽_q`.
+4. **The twin over `𝔽_q` is index-preserving and the twist tower completes.** The quadratic twist
+   multiplies the trace kernel by `(−1)^n` (`negIndex_traceKernel_quadTwist`) and pairs the counts,
+   `N_k + N_k' = 2(q^k + 1)` in odd degree. Upper counts for a datum and its twist do not force RH:
+   eigenvalues `±2, ±½` (`one_twist_does_not_complete`). Upper counts for the twists of all `2`-power
+   base changes do: `k = 2^j m`, `m` odd, turns the twist count at `(2^j, m)` into the curve's lower
+   count at `k` (`unitary_iff_twistTower_upper`).
+5. **The parity form of the global law over `ℤ`.** The parity classes partition `{1, …, N}` and differ
+   by `L(N) = Σλ(n)`; upper counts for both are RH (`riemannHypothesis_iff_parityClasses_upper`). In
+   harmonic–exponential weight, `J = H − 2O` (`liouvilleExpSum_eq_harmonic_sub_oddClass`) and the
+   one-sided Liouville law makes the upper count of the odd class alone equivalent to RH, and to index
+   zero of `K_ζ` (`negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
+6. **The index is the number of exceptional waves.** Along a separating tower, a count bounded after
+   subtracting `m` waves forces each outer node to be a wave (merging frequencies, non-cancellation at
+   the top modulus), so `κ ≤ m`; the outer nodes attain it (`negIndex_eq_card_waves`).
+7. **Index limits.** Lower semicontinuity is attained on one finite family
+   (`eventually_le_negIndex_of_tendsto`); with the structural ceiling `κ`, the index is continuous along
+   pointwise convergence of data off the discriminant (`eventually_negIndex_eq_of_tendsto`). Each part
+   of the discriminant lowers it: vanishing weights (`vanishing_weight_drops_index`), colliding
+   exponents with opposite weights (`collision_drops_index`), coalescence onto the line (HKT
+   `coalescence_law`).
+8. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+   support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
+   `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
+   positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
+   sign: it is twin-invariant (§4.3). A producer must act at the ring level.
 
 ---
 
 ## 5. Pillar theorems
 
 **A. Locality.**
-- *Cyclic Hasse principle*: on every group, a Krein–Langer kernel positive definite on every cyclic
-  subgroup is positive definite; with a pair present, some cyclic subgroup carries a negative square.
-- *Separation*: without torsion aliasing some element separates all nodes, and its cyclic subgroup
-  carries the whole index.
-- *Coordinate failure*: an explicit Krein–Langer kernel on `ℤ²` of index `2` vanishing on both axes;
-  an explicit non-Krein–Langer kernel positive on every cyclic subgroup and not on `ℤ²`.
-- *Tower-faithful Hasse principle*: for a tower-faithful spectrum, all but finitely many towers carry
-  the whole index; logarithmic spectra with pairwise incommensurable tower scales are tower-faithful.
-  For `ζ` this is HKT's `negIndex_eq_zero_of_posDef_on_infinitely_many_towers`.
+1. *Cyclic Hasse principle* (`exists_one_le_negIndex_zpowers`, `negIndex_eq_zero_of_forall_zpowers`): on
+   every group, a positive-definite kernel plus hyperbolic pairs (non-unitary characters, distinct
+   nodes, nonzero weights) positive on every cyclic subgroup has no pair.
+2. *Separation* (`exists_separating_of_not_aliased`, `negIndex_zpowers_eq_of_not_aliased`): without
+   torsion aliasing one cyclic subgroup carries the whole index.
+3. *Failures* (`coordinate_locality_fails`, `cyclic_locality_fails_off_class`): coordinate towers
+   inside the class; cyclic subgroups outside it.
+4. *Tower Hasse principle* (`finite_towers_negIndex_ne`, `negIndex_eq_zero_of_posDef_on_infinitely_many`)
+   and its sharpness (`unitary_tower_defeat`, `aliased_tower_defeat`); logarithmic spectra are
+   tower-faithful (`isTowerFaithful_logChar`); on `ℚ_{>0}` any exponents with nonzero real parts are
+   decided by infinitely many primes (`negIndex_eq_zero_of_posDef_on_infinitely_many_primes`).
 
 **B. Local constituents and ceilings.**
-- *Poisson law*: the local Euler-factor kernel is positive definite; its twins are positive definite;
-  the prime constituent is `log p·δ₀ − L_p`.
-- *No finite set of places has finite index*: the kernel `(Σ_{p∈S} log p)δ₁ − Σ_{p∈S} L_p` on
-  `⊕_{p∈S} ℤ` has infinite index.
-- *Riemann–Roch ceiling over `𝔽_q`*: `κ(traceKernel D) ≤ g`; the count lowers it to `0`; the golden
-  datum attains `1` with positive local data.
-- *One-sided ceiling with exceptions*: a one-sided law with `m` subtracted exponentials bounds the
-  index by `m` plus the number of real positive deepest nodes of negative weight.
+1. *Poisson law* (`isPosDefKernel_poissonKernel`, `isPosDefKernel_eulerKernel`, `isPosDefKernel_twist`).
+2. *Zero-or-infinity law* (`negIndex_eq_zero_or_top_of_isAxisSupported`) and *no finite set of places
+   has finite index* (`negIndex_localAssembly_eq_top`); the law needs two towers (`rankOne_axis_pair`).
+3. *Riemann–Roch ceiling* (`two_mul_negIndex_traceKernel_le`), attained by the golden datum
+   (`golden_attains_ceiling`).
+4. *Wave formula* (`card_le_of_bounded_sub_waves`, `exists_waves_bounded`, `negIndex_eq_card_waves`):
+   the index is the least number of exceptional waves of a bounded count along a separating tower.
 
-**C. Producers.**
-- *Twist completion over `𝔽_q`*: upper counts for a curve datum and for its quadratic twist force
-  index zero; an upper count alone does not (the golden datum).
-- *The parity form of the global law*: index zero is an upper count for both parity classes.
+**C. Producers and parity.**
+1. *Twin invariance over `𝔽_q`* (`negIndex_traceKernel_quadTwist`, `pointCount_add_quadTwist_of_odd`).
+2. *One twist does not complete* (`one_twist_does_not_complete`); *the twist tower completes*
+   (`unitary_iff_twistTower_upper`).
+3. *Parity form over `ℤ`* (`riemannHypothesis_iff_parityClasses_upper`); *one class suffices*
+   (`riemannHypothesis_iff_oddClass_upper`, `negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
 
-**D. Completion and parity.**
-- *Index continuity*: along pointwise convergence of Krein–Langer kernels whose hyperbolic data
-  converge without coalescence, collision or vanishing weights, the index is continuous.
-- *Twin invariance of local indices*: every unitary twin keeps every tower index; at atomic resolution
-  it keeps the global index.
+**D. Completion.**
+1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
+2. *Continuity off the discriminant* (`eventually_negIndex_eq_of_tendsto`).
+3. *The degenerations* (`vanishing_weight_drops_index`, `collision_drops_index`, HKT `coalescence_law`).
 
 ---
 
@@ -243,74 +239,87 @@ the parts of the map that are theorems, and to prove that every weaker class of 
 
 | Trap | Truth |
 |---|---|
-| The prime towers always decide, because two primes do for `ζ` | Only for tower-faithful spectra; on `ℤ²` a Krein–Langer kernel of index `2` vanishes on both axes |
-| Cyclic locality is a general fact about kernels | It holds for the Krein–Langer class and fails for finite-support kernels with a signed spectrum |
-| Local constituents are positive | The local Euler-factor kernel is positive definite; the constituent `log p·δ₀ − L_p` is not, and finitely many places have infinite index |
-| Local positivity excludes the twins | Coefficient positivity excludes the Liouville twin; kernel positivity of each constituent is twin-invariant |
-| An upper count is half of the global law | It misses real positive deepest nodes (golden datum); the twist or a second prime is needed |
-| A producer over `ℤ` can be modelled on the counts | Stepanov uses the equation (`x^q = x`, Euler's criterion), not the counts; Beurling systems and the golden datum share every count-level property |
-| An index ceiling can be local | Every finite ceiling for `ζ` proves LH; a ceiling needs one global input |
-| Limits keep the index | Only lower semicontinuity holds; coalescence, collision and vanishing weights lower it |
+| The prime towers decide because two primes do for `ζ` | Only for tower-faithful spectra; on `ℤ²` a Krein–Langer kernel of index `2` vanishes on both axes |
+| Cyclic locality is a general fact | It holds for the Krein–Langer class and fails for finite-support kernels with a signed spectrum |
+| A cyclic subgroup always carries the whole index | Only without torsion aliasing; otherwise it carries at least one square |
+| Local constituents are positive | The local kernel `L_p` is; the constituent `log p·δ₀ − L_p` is not, and finitely many places have infinite index |
+| More places make the index smaller | Tower-supported assemblies on two or more towers have index `0` or `∞`; finite index needs an off-axis constituent |
+| Local positivity excludes the twins | Coefficient positivity excludes the Liouville twin; positive definiteness of each constituent is twin-invariant |
+| An upper count and its twin give the law | Not over `𝔽_q` (eigenvalues `±2, ±½`); the twist tower does |
+| Over `ℤ` both parity classes are needed | One class suffices: the real-node blind spot is a real zero of `ζ` in `(½,1)`, and there is none |
+| A finite ceiling can be local | Every finite ceiling for `ζ` is a count with finitely many exceptional waves, hence LH |
+| Limits keep the index | Only off the discriminant; vanishing weights, collisions and coalescence lower it |
 | A new equivalence is progress | AKL contributions take local data as input and bound, produce or exclude |
 
 ---
 
-## 7. Questions the programme answers
+## 7. Questions and their answers
 
-1. **What replaces `x^q = x` over `ℤ`?** In Stepanov's argument `x^q = x` makes the vanishing
-   conditions on the counted set independent of its size, and Euler's criterion makes the parity
-   character a polynomial; the count for the curve and its twist then gives the two sides.
-   A replacement over `ℤ` must supply both: an identity on the primes that makes vanishing conditions
-   cheap, and an algebraic description of a parity class.
+1. **What replaces `x^q = x` over `ℤ`?** A producer must supply an upper count for one parity class at
+   square-root precision (`negIndex_zetaKernel_eq_zero_iff_oddClass_upper`). Over `𝔽_q` it is supplied
+   by two identities: `x^q = x` makes the vanishing conditions on the counted set independent of its
+   size, and Euler's criterion makes the parity class the zero set of `f^{(q−1)/2} − ε`. A single class
+   count is not enough there (`one_twist_does_not_complete`); the twist tower is
+   (`unitary_iff_twistTower_upper`). Over `ℤ` one class is enough, and what is missing is an identity
+   describing a parity class algebraically. *Open:* such an identity.
 2. **What is the positive form of the parity barrier?** Twins act on constituents by unitary twists,
-   so every local index is twin-invariant and every law assembled from local indices is twin-blind;
-   selectivity lives in the pole direction and the archimedean factor. The margin `2 log 2` is the
-   width of the window where the pole carries the first square (HKT).
-3. **Why does finite index imply LH?** Finite index is finite off-line support, so the off-line zero
-   count in every unit height window is eventually zero, which is Backlund's form of LH. A direct
-   argument from the kernel would bound `ζ` on the line by the positive part of the kernel; open.
-4. **In which completion does the Weil kernel carry its index to the limit?** Pointwise kernel
-   convergence closes `{κ ≤ m}`; the index is continuous exactly along non-coalescent convergence of
-   the hyperbolic data.
+   so every local constituent stays positive definite (`isPosDefKernel_twist`) and over `𝔽_q` the
+   global index is twin-invariant (`negIndex_traceKernel_quadTwist`). Over `ℤ` the twin breaks the
+   global law only through a count, and exactly one parity class carries the law. The margin `2 log 2`
+   is the width of the window where the pole carries the first square (HKT). *Open:* a selective
+   count.
+3. **Why does finite index imply LH?** Finite index is a count with finitely many exceptional waves
+   (`negIndex_eq_card_waves`), so the off-line zeros in every unit height window are eventually absent:
+   Backlund's form of LH (HKT `lindelof_of_negIndex_zetaKernel_lt_top`). *Open:* a proof from the kernel
+   that bounds `ζ` on the line by the positive part.
+4. **In which completion does the Weil kernel carry its index to the limit?** Pointwise convergence of
+   Krein–Langer data off the discriminant (`eventually_negIndex_eq_of_tendsto`); the index drops exactly
+   by vanishing weights, collisions and coalescence.
 5. **Why do two primes suffice, and which arithmetic property makes locality hold?** The spectrum is
    logarithmic: one real logarithm reads every character, so unitarity is tower-independent and two
-   incommensurable scales separate any two characters. Without this, locality fails on `ℤ²` inside the
-   Krein–Langer class.
+   incommensurable scales separate any two characters (`isTowerFaithful_logChar`). Cyclic subgroups
+   decide every Krein–Langer kernel (`negIndex_eq_zero_of_forall_zpowers`); coordinate towers decide
+   only faithful spectra (`coordinate_locality_fails`, `aliased_tower_defeat`).
 6. **What arithmetic quantity governs the near-axis collisions of the heat flow?** Collision mass is
-   `2(κ + E)` on the finite stratum (HKT); the near-axis part is the multiplicity excess and the
-   coalescence of pairs onto the line, which is exactly the index drop of §4.8. Open: a prime-side
-   expression.
+   `2(κ + E)` on the finite stratum (HKT); near the axis the index drops by coalescence, the part of
+   the discriminant where a node reaches the unit circle (§4.7). *Open:* a prime-side expression.
 
 ---
 
 ## 8. Tools
 
+Built: Neumann avoidance and torsion aliasing (`exists_mul_not_mem`, `IsTorsionAliased`); outward
+orientation of pairs and the class-vanishing lemma (`outer`, `sum_mul_eq_zero_of_classWeight`);
+tower faithfulness (`IsTowerFaithful`); Poisson and Euler kernels (`poissonKernel`, `eulerKernel`);
+axis support and local assemblies (`IsAxisSupported`, `localAssembly`); the quadratic twist and twist
+counts (`quadTwist`, `twistCount`); parity classes (`parityCount`, `oddClassSum`); exceptional waves
+(`card_le_of_bounded_sub_waves`); limits of data (`tendsto_pairKernel`).
+
+To build:
+
 | Tool | Purpose | Test |
 |---|---|---|
-| Cyclic and tower Hasse principles | decide the index from restrictions | coordinate failure on `ℤ²`; recovers the two-prime law |
-| Local Euler-factor kernels | constituents as positive-definite kernels on towers | Poisson law; infinite index of finite place sets |
-| Local-to-global index ceiling | bound `κ` from constituents and one law | `κ ≤ g` and `0` over `𝔽_q`; fails for the golden datum without the count; implies LH whenever finite for `ζ` |
-| Arithmetic compressor (Stepanov over `ℤ`) | produce a one-sided count | reproduces hyperelliptic RH; fails for Liouville; first rung: beat the sieve constant `2` |
-| Twist completion | turn upper counts into the global law | over `𝔽_q`: quadratic twist; over `ℤ`: second prime |
-| Index-carrying completion | continuity of the index along limits | agrees with pointwise limits; detects coalescence |
-| Structure ladder | sort inputs by arithmetic level | every battery member excluded at a stated level |
+| Arithmetic compressor (Stepanov over `ℤ`) | an upper count for the odd parity class | reproduces hyperelliptic RH through the twist tower; fails for Liouville; first rung: beat the sieve constant `2` |
+| Ring-level inputs | Bézout relations as local data | fail on over-regular Beurling systems and the golden datum |
+| Selective transfer to overlap | the pole carrier of the index-one window at overlapping widths | Q1; fails for Liouville |
+| Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | Q2; fails for parity-twisted models |
+| Cyclic locality for infinite spectra | Hasse principles for kernels with infinitely many pairs | recovers the finite case |
 
 ---
 
 ## 9. Open research topics
 
-1. **Ceiling over `ℤ` at finite level**: a bound on the index of height or integer truncations from
-   prime-side data that is uniform in the truncation (equivalent to finite support; LH-deep).
-2. **Producer over `ℤ`**: an identity on primes playing `x^q = x`; an algebraic or analytic
-   description of a parity class; the first rung, beating the sieve's parity constant `2` on
-   intervals `x^ε`.
-3. **Ring-level inputs**: Bézout relations as local-to-global data that fail on Beurling systems.
-4. **Cyclic locality for infinite spectra**: positivity on every cyclic subgroup for kernels with
-   infinitely many pairs; for one test function on `Γ`.
-5. **Index continuity in the arithmetic topology**: which receivers converge non-coalescently.
-6. **A direct Lindelöf bridge** from finite index.
-7. **Hecke and Dedekind kernels**: tower faithfulness for spectra with finite-order twists, where
-   torsion aliasing is generic.
+1. **Producer over `ℤ`**: an identity on the primes playing `x^q = x`; an algebraic or analytic
+   description of a parity class; the first rung, beating the sieve's parity constant `2` on intervals
+   `x^ε`.
+2. **Ring-level inputs**: Bézout relations as local-to-global data.
+3. **Cyclic and tower locality for infinite spectra**: one test, all cyclic subgroups of `ℚ_{>0}`.
+4. **A direct Lindelöf bridge** from a count with finitely many waves.
+5. **The near-axis count** of the heat flow in prime-side terms.
+6. **Finite-level ceilings**: index bounds for height or integer truncations from prime-side data,
+   uniform in the truncation (equivalent to finite support; LH-deep).
+7. **The atomic index ladder over `𝔽_q`**: the function-field analogue of the index-one window and of
+   the margin `2 log 2`.
 
 ---
 
@@ -318,9 +327,10 @@ the parts of the map that are theorems, and to prove that every weaker class of 
 
 **Success.** AKL succeeds when the passage from local data to the index of `K_ζ` is a theorem with one
 named global input, and that input is produced: index theory first (locality, ceilings), then a count,
-then positivity as a consequence. Its first evidence is any of: a ceiling for the index of a
-truncated Weil kernel from prime-side data, failing for the golden datum; an auxiliary construction
-over `ℤ` beating the sieve constant `2`; a selective local-to-global law that fails visibly for the
+then positivity. The locality and completion parts are theorems; the global input is fixed as an upper
+count for one parity class; its production is open. First evidence of a producer is any of: an
+auxiliary construction over `ℤ` beating the sieve constant `2`; a ceiling for truncated Weil kernels
+from prime-side data, failing for the golden datum; a selective count that fails visibly for the
 Liouville twin.
 
 **Criteria** (from the field assessment).
@@ -339,7 +349,7 @@ towers. It names its local data and its global input, says what it gives over `�
 datum, names the level of the structure ladder at which it acts, and records the positive survivor of
 every no-go.
 
-**Principles.** Local data are twin-invariant at the index level. Locality is a property of the
-spectrum. A positive part never pays a pair, and no finite set of places pays the diagonal. Producers
-give upper bounds; the global law needs a twist. Finite index is Lindelöf-deep. Index, then count,
-then sign.
+**Principles.** Locality is a property of the spectrum. Local positive definiteness is twin-invariant.
+A positive part never pays a pair, and no finite set of towers carries a finite nonzero index.
+Upper counts are blind only to real nodes. The index is the number of exceptional waves. Finite index
+is Lindelöf-deep. Index, then count, then sign.

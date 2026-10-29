@@ -4,12 +4,22 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.LocalConstituentsMeetOnly
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheTwistTowerCompletesTheUpperCount
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsContinuousOffTheDiscriminant
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityFormOfTheGlobalLaw
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsTheNumberOfExceptionalWaves
 
 /-!
 # Arithmetic Krein–Langer theory
 
 Umbrella for the local-to-global theory of Krein–Langer kernels on groups with a family of towers:
-locality (the cyclic Hasse principle, separation, the failure of coordinate towers on `ℤ²`),
-local constituents and ceilings, producers of one-sided counts, completion and parity. The
-foundation is `HeckeKreinToeplitz`. See `ArithmeticKreinLangerTheory/README.md`.
+
+* **Locality.** The cyclic Hasse principle on every group, separation without torsion aliasing, the
+  failure of coordinate towers on `ℤ²` and of cyclic subgroups outside the class; tower-faithful
+  spectra, logarithmic spectra and the prime towers of `ℚ_{>0}`.
+* **Local constituents and ceilings.** The Poisson law of the Euler factor, the zero-or-infinity law
+  for axis-supported kernels, the Riemann–Roch ceiling, and the index as the number of exceptional
+  waves of a count.
+* **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
+  the global law over `ℤ`; compressions as receivers.
+* **Completion.** Continuity of the index off the discriminant and its three degenerations.
+
+The foundation is `HeckeKreinToeplitz`. See `ArithmeticKreinLangerTheory/README.md`.
 -/

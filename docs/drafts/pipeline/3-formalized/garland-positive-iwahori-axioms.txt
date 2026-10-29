@@ -1,0 +1,34 @@
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.mem_iwahoriMatrices' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.mem_positiveUnipotentMatrices' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveUnipotent_tameFactor' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.iwahoriGaussEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.IwahoriCoordinates.unipotent_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.iwahoriFiniteCoordinate_eq_one_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.iwahoriTorusUnipotentEquiv' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveEmbedding_iwahoriFiniteCoroot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveBorelEmbedding_injective' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveBorel_unique_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+LoopSL2.positiveBorel_unique_coordinates
+  ℚ : ∀ (g : ↥(LoopSL2.positiveBorel ℚ)), ∃! p, LoopSL2.borelCoordinateMap ℚ p = ↑g
+LoopSL2.positiveBorel_unique_coordinates
+  ℝ : ∀ (g : ↥(LoopSL2.positiveBorel ℝ)), ∃! p, LoopSL2.borelCoordinateMap ℝ p = ↑g

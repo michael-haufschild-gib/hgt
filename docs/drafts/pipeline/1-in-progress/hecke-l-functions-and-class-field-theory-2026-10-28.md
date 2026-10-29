@@ -622,3 +622,10 @@ exact transfer from a base ideal to the unit base. All three main
 transitive axiom audits are standard only; final source audit passes
 without warnings. The inverse ideal-character identity is drafted and
 awaits verification with the constructed Gauss constant.
+
+`HeckePrimitiveGaussConstantsHaveExactNorm.lean` constructs the reference
+frequency and corrected Gauss constant, proves squared norm `Norm(m)`,
+and proves unit normalization. All three main transitive axiom audits
+are standard only; final source audit passes without warnings. The
+inverse-Hecke coefficient draft and subsequent fractional-class Mellin
+unfolding remain active; the completed functional equation is still open.

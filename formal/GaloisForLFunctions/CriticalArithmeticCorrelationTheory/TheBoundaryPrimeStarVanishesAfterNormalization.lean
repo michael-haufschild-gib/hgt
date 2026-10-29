@@ -231,7 +231,7 @@ theorem abs_normalized_nonRatioForm_uniform_up_to_touching {φ : ℝ → ℝ} {B
       _ = A * (1 / c) := by
         rw [integral_atomDilate_sq hw]
         dsimp only [w, A]
-        field_simp [hN0.ne', hc0.ne', hM.ne'] <;> ring
+        field_simp [hN0.ne', hc0.ne', hM.ne']
       _ ≤ A * 2 := mul_le_mul_of_nonneg_left hcinv hA
       _ = _ := by dsimp only [A]; ring
 

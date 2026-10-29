@@ -166,6 +166,18 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     the original positive rectangle remainders, including touching cells
     and index one. The joint signed Gamma/central-mass comparison with
     the logarithmic/outgoing arithmetic diagonal remains open.
+    The actual signed divisor source also has complete valuation coordinates:
+    with $x_a=d_a/\sqrt{2a+1}$ and $w_a=(2a+1)M_a\ge1/2$,
+    $D_X+T_Q=\tfrac12\sum_e E_Q(e)|\widehat x(e)|^2+R_X$
+    (`TheHaarDivisorReserveControlsValuationOccupation`). Here Q consists
+    of the source's primes, the product basis has parameters $q_p=1/p$,
+    and $E_Q(e)=\sum_{p:e_p>0}\log p\,(e_p+1/(p^2-1))$.
+    The full series is summable; original-domain membership is proved.
+    The exact cell-weight remainder $R_X$ and boundary charge
+    $T_Q=\tfrac12\sum_a(C_Q-O_{0,X}(a))x_a^2$ are nonnegative,
+    where $C_Q=\sum_{p\in Q}\log p/(p^2-1)$ and $O_{0,X}$ is the
+    actual inverse-square outgoing row. Joint payment must retain T_Q;
+    this identity does not bound occupation by D_X alone.
     Pair averages: the average→detail prime block vanishes and
     $\Gamma(g)+\sum\log(a)M_ad_a^2\le\Gamma(f)+C\int g^2$ (coarse source inherits Gamma payment).
     Homogeneous recovery removes the additive mass error at a fixed multiplicative cost:

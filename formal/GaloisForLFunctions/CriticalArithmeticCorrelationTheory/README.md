@@ -323,6 +323,58 @@ atom Gram matrix. Furthermore, the charge reserve tends to zero when plateaus
 approach the unit indicator; uniformity in a fixed profile does not imply
 uniform spectral exhaustion in that profile limit.
 
+## The first arithmetic correction is a vanishing boundary star
+
+The endpoint ratio does admit non-ratio prime lags, even though its actual atom
+supports remain disjoint. Their geometry is rigid. For `N≥2`, if unequal
+positive integers have logarithmic distance at most `1/N` and one belongs to
+`1,…,N`, that pair must be `N,N+1`.
+
+Set `d_N=log(N+1)-log N`. For every profile `g` supported in `[0,1/N]`, the
+entire non-ratio prime source is therefore exactly
+
+\[
+\operatorname{NR}(g,N,x)=2G_g(d_N)x_N
+ \sum_{\substack{km=N+1\\ k\ge2,\ 1\le m\le N}}
+ \frac{\Lambda(k)}{\sqrt{k}}x_m.
+\]
+
+The sum includes all prime powers. This identity retains the boundary term
+that the strictly separated formula omits. The divisor identity pays its
+weights by `log(N+1)`, giving, for every signed coefficient vector,
+
+\[
+|\operatorname{NR}(g,N,x)|\le
+2|G_g(d_N)|\log(N+1)\sum_{m\le N}x_m^2.
+\]
+
+The remaining support overlap satisfies `1/N-d_N≤1/N²`. If `|φ|≤B` and
+`M=∫φ²>0`, the actual endpoint dilation obeys
+
+\[
+\frac{|\operatorname{NR}(\phi_{1/N},N,x)|}{\int\phi_{1/N}^2}
+\le\frac{2B^2}{M}\frac{\log(N+1)}N\sum_{m\le N}x_m^2.
+\]
+
+One bound also covers every `0<c≤1`, with `2B²/M` replaced by `4B²/M` and
+`φ_{1/N}` replaced by `φ_{c/N}`. At ratios at most one half the correction is
+zero; at the other ratios normalization costs at most a factor two. Every
+smooth nonzero compact profile supplies its own finite height bound, so this
+is an unconditional source estimate for the programme's actual profiles.
+
+Consequently, for every fixed such profile and every `ε>0`, one horizon makes
+the normalized correction at most `ε∑x_m²` simultaneously for all `0<c≤1` and
+all coefficient vectors. The exact classification and source identity are in
+[OnlyTheBoundaryStarEntersAtTouching](OnlyTheBoundaryStarEntersAtTouching.lean);
+the quantitative and uniform eventual bounds are in
+[TheBoundaryPrimeStarVanishesAfterNormalization](TheBoundaryPrimeStarVanishesAfterNormalization.lean).
+
+This supplies the missing arithmetic error estimate at the endpoint. A full
+endpoint positivity theorem still requires the complete source decomposition,
+its scalar error bounds, and the exhaustive spectral transfer. Beyond ratio
+one, additional integer interactions and the overlapping atom Gram must be
+handled together; the single-star classification no longer applies.
+
 ## Questions and tools to develop
 
 **Arithmetic overlap analysis.** What new low modes appear when atom supports touch? Derive and

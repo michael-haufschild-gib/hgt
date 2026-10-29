@@ -27,15 +27,17 @@ private theorem oddMultiplierFiber {a b X : ℕ} (hbX : b ≤ X) :
           (((2 * b + 1) / (2 * a + 1) : ℕ) : ℝ) else 0 := by
   have ha0 : 0 < 2 * a + 1 := by omega
   by_cases h : (2 * a + 1) ∣ (2 * b + 1) ∧ a ≠ b
-  · let t := (2 * b + 1) / (2 * a + 1)
+  · let t : ℕ := (2 * b + 1) / (2 * a + 1)
     have he : (2 * a + 1) * t = 2 * b + 1 := Nat.mul_div_cancel' h.1
     have ht0 : t ≠ 0 := by intro ht; rw [ht, mul_zero] at he; omega
     have ht1 : t ≠ 1 := by
       intro ht
       rw [ht, mul_one] at he
       exact h.2 (by omega)
-    have ht : t ∈ Icc 2 (2 * X + 1) := mem_Icc.mpr ⟨by omega,
-      (Nat.div_le_self _ _).trans (by omega)⟩
+    have htpos : 0 < t := Nat.pos_of_ne_zero ht0
+    have ht2 : 2 ≤ t := by omega
+    have ht : t ∈ Icc 2 (2 * X + 1) := mem_Icc.mpr ⟨ht2,
+      (Nat.div_le_self (2 * b + 1) (2 * a + 1)).trans (by omega)⟩
     rw [if_pos h, sum_eq_single t, if_pos he]
     · intro m _ hmt
       exact if_neg fun hm => hmt (Nat.eq_of_mul_eq_mul_left ha0 (hm.trans he.symm))
@@ -129,7 +131,8 @@ def haarBoundaryCoefficient (d : ℕ → ℝ) (X : ℕ)
 
 theorem haarBoundaryCoefficient_class (d : ℕ → ℝ) (X : ℕ) (a : ↥(Icc 1 X)) :
     haarBoundaryCoefficient d X (haarBoundaryClass X a) = haarArithmeticCoordinate d a.val := by
-  unfold haarBoundaryCoefficient haarBoundaryClass
+  change haarArithmeticCoordinate d ((2 * a.val + 1 - 1) / 2) =
+    haarArithmeticCoordinate d a.val
   congr 1
   omega
 
@@ -175,13 +178,19 @@ theorem haarBoundaryFiniteEnergy_eq (d : ℕ → ℝ) (X : ℕ) :
         haarArithmeticCoordinate d a.val * haarArithmeticCoordinate d b.val *
           inversePrimeKernel (2 * a.val + 1) (2 * b.val + 1)) = _
   congr 1
-  · exact sum_coe_sort (Icc 1 X) _
+  · exact sum_coe_sort (Icc 1 X) (fun a : ℕ =>
+      (Real.log ((2 * a + 1 : ℕ) : ℝ) + inversePrimeEuler (haarBoundarySieve X)) *
+        haarArithmeticCoordinate d a ^ 2)
   · calc
       _ = ∑ a : ↥(Icc 1 X), ∑ b ∈ Icc 1 X,
           haarArithmeticCoordinate d a.val * haarArithmeticCoordinate d b *
             inversePrimeKernel (2 * a.val + 1) (2 * b + 1) :=
-        sum_congr rfl fun a _ => sum_coe_sort (Icc 1 X) _
-      _ = _ := sum_coe_sort (Icc 1 X) _
+        sum_congr rfl fun a _ => sum_coe_sort (Icc 1 X) (fun b : ℕ =>
+          haarArithmeticCoordinate d a.val * haarArithmeticCoordinate d b *
+            inversePrimeKernel (2 * a.val + 1) (2 * b + 1))
+      _ = _ := sum_coe_sort (Icc 1 X) (fun a : ℕ => ∑ b ∈ Icc 1 X,
+        haarArithmeticCoordinate d a * haarArithmeticCoordinate d b *
+          inversePrimeKernel (2 * a + 1) (2 * b + 1))
 
 private theorem finite_vonMangoldt_inverse_square_le (Q : Finset Nat.Primes) (T : Finset ℕ)
     (hQ : ∀ m ∈ T, ∀ p : Nat.Primes, (p : ℕ) ∣ m → p ∈ Q) :
@@ -245,6 +254,7 @@ private theorem finite_vonMangoldt_inverse_square_le (Q : Finset Nat.Primes) (T 
 /-- A finite outgoing row is a subseries of the completed prime ladders. -/
 theorem oddDivisorOutgoing_le_inversePrimeEuler (X a : ℕ) :
     oddDivisorOutgoing X a ≤ inversePrimeEuler (haarBoundarySieve X) := by
+  classical
   let T := (Icc 2 (2 * X + 1)).filter
     (fun m => ∃ b ∈ Icc 1 X, (2 * a + 1) * m = 2 * b + 1)
   have hrow : oddDivisorOutgoing X a = ∑ m ∈ T, vonMangoldt m / (m : ℝ) ^ 2 := by
@@ -262,7 +272,10 @@ theorem oddDivisorOutgoing_le_inversePrimeEuler (X a : ℕ) :
   rw [hrow]
   apply finite_vonMangoldt_inverse_square_le
   intro m hm p hpm
-  obtain ⟨b, hb, he⟩ := (mem_filter.mp hm).2
+  have hm' : m ∈ Icc 2 (2 * X + 1) ∧
+      ∃ b ∈ Icc 1 X, (2 * a + 1) * m = 2 * b + 1 := by
+    simpa only [T, mem_filter] using hm
+  obtain ⟨b, hb, he⟩ := hm'.2
   apply (haarBoundaryClass X ⟨b, hb⟩).property.prime_dvd_mem
   change (p : ℕ) ∣ 2 * b + 1
   exact hpm.trans ⟨2 * a + 1, by simpa only [mul_comm] using he.symm⟩

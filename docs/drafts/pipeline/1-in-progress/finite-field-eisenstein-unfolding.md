@@ -71,7 +71,7 @@ The third is the selected exact target. Do not infer noncancellation from termwi
 
 - [x] Exact arithmetic source and intended group fixed.
 - [ ] Complete internal and external dependency audit.
-- [ ] Dependency-closed paper proof of analytic noncancellation.
+- [x] Dependency-closed paper proof of analytic noncancellation.
 - [ ] Lean proof of the exact full-sum pole theorem.
 - [ ] Actual finite-field arithmetic series and convergence.
 - [ ] Actual unipotent quotient measure and local/global intertwining integrals.
@@ -144,3 +144,29 @@ makes no claim that no exceptional smaller rotations or torus values can cancel 
 leading coefficient. All analytical inputs above are the already proved polynomial
 root circle, finite inversion sets, elementary compactness, holomorphic uniform-limit
 theory, and dominated convergence. No arithmetic unfolding theorem is used.
+
+## Working state
+
+- The existing `AffineA1FiniteFieldCoefficients` olean was missing and has now been
+  compiled for the new dependent modules. Compilation passed; do not rebuild it.
+- `/tmp/hgt_ff_zeta_bounds.lean` passed its foreground check, exit 0, no diagnostics.
+  It contains reduced numerator/denominator, compact-disk and right-half-plane bounds,
+  entire additive factors, and exact denominator order. The identical production source
+  is `ArithmeticEffectivityTheory/FiniteFieldEllipticZetaBounds.lean`; its olean is now
+  compiled for the dependent affine coefficient module, exit 0 with no diagnostics.
+  Never rebuild that olean.
+- `/tmp/hgt_ff_degree_gaussian.lean` contains uniform holomorphy and strong-rotation
+  extraction for the level-four integer series. Check after the active compiler exits.
+- `/tmp/hgt_ff_eisenstein_api.lean` is an owned API scratch file. Its check finished;
+  expected unknown-name errors identified unavailable aliases. Valid APIs include
+  `mul_div_mul_left`, `IsCompact.exists_bound_of_continuousOn`,
+  `tendsto_tsum_of_dominated_convergence`, and `DifferentiableOn.analyticOnNhd`.
+  Holomorphic sums use `Mathlib.Analysis.Complex.SummableUniformlyOn`, specifically
+  `SummableLocallyUniformlyOn.differentiableOn`.
+- Next analytic modules: a reusable Gaussian integer-series lemma with uniform
+  holomorphy and large-rotation limit, then actual cleared affine coefficients and
+  the full Weyl-sum pole theorem. Keep the arithmetic unfolding programme active.
+- Arithmetic dependency audit: no elliptic-coordinate Dedekind theorem surfaced yet.
+  Corpus has actual general normal-local-ring DVR and finite-extension valuation
+  machinery; inspect those and mathlib's adelic/function-field sources before building
+  curve-specific places. Do not substitute number-field adeles without a proved transport.
