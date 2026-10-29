@@ -366,7 +366,22 @@ Exact norm sources are now checked: Mathlib
 `coeIdeal_differentIdeal ℤ ℚ K (𝓞 K)` and `FractionalIdeal.dual_eq_mul_inv`.
 Together they give
 `Norm(dual I)=(|disc K| Norm(I))⁻¹` directly. The written verification
-file `/tmp/HeckeTraceDualNormScratch.lean` has not yet been checked.
+file `/tmp/HeckeTraceDualNormScratch.lean` now passes its transitive axiom
+audit with only the three standard axioms. Its permanent source is
+`HTGeometry/NumberFieldTraceDualsHaveDiscriminantNorms.lean`; the final
+direct source audit is pending the current coefficient check.
 Mathlib `FractionalIdeal.absNorm_span_singleton (𝓞 K)` also gives
 `Norm((a))=|Norm_(K/ℚ)(a)|`; its source is checked for the coming orbit
 and Mellin normalization argument.
+
+## Inversion of conductor and archimedean data
+
+The next verification file is `/tmp/HeckeInverseConductorParityScratch.lean`.
+For any finite commutative ring, a character descends through an ideal
+exactly when it is one on that ideal's unit congruence kernel. Inversion
+preserves this condition, hence the greatest descent ideal and the actual
+finite Hecke conductor. Finite residue restriction and its zero extension
+commute with inversion. Every real sign has order at most two, so the
+infinite sign character equals its inverse; all real, coordinate, and
+place parities, the Gamma product, and both Mellin normalizations agree.
+The scratch contains these proofs but has not yet been compiled.

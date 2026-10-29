@@ -1,8 +1,8 @@
 # The actual Haar divisor reserve controls complete valuation occupation
 
 - **ID:** acs-haar-subcritical-source-transport
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** THEOREM (paper), `[PROVED HERE]`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean), `[PROVED HERE]`
 - **Route:** ACS: full-source effectivity → Hodge index → RH.
 - **Parent:** [subcritical divisor operator](../1-in-progress/acs-haar-subcritical-divisor-operator.md)
 - **Scope:** Actual signed finite Haar source, every horizon and every low index.
@@ -70,20 +70,22 @@ diagonal compensation, not a free addition of outgoing reserve.
 
 ## Lean status
 
-`TheHaarDivisorFormHasSubcriticalPrimeWeights.lean` passed its direct
-Lean check. It proves the sharp mass comparison, exact source-coordinate
-identity, nonnegative remainder decomposition, and exact finite number
-potential. Its required olean was built for the importing source theorem;
-the finished module is wired into the umbrella.
+All five modules passed final direct `lake --old env lean <file>` checks,
+without writing oleans. This includes the complete actual-source theorem,
+nonnegative boundary cost, original-domain membership and full summability.
 
-`HTGeometry.FiniteBlaschkeEnergyForm` passed its required olean check;
-the scalar occupation series is summable on the original maximal domain.
-Its final direct check remains. The inverse-prime kernel also passed its
-required olean check; its final direct check remains. The operator
-specialization has three normalization errors fixed after its first
-check; the actual-source occupation theorem awaits checks. The nonnegative boundary-cost proof is next
-in the same formalization batch. No umbrella is built.
-No axiom checks, web search, novelty checks, or numerical experiments.
+| Module | Exact declarations |
+|---|---|
+| [TheHaarDivisorFormHasSubcriticalPrimeWeights](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarDivisorFormHasSubcriticalPrimeWeights.lean) | `haarMass_ge_midpoint`, `haarBoundaryWeight_ge_half`, `haarPrimeLogDefect_subcritical_decomposition`, `oddDivisorForm_one_add_prime` |
+| [FiniteBlaschkeEnergyForm](../../../../formal/GaloisForLFunctions/HTGeometry/FiniteBlaschkeEnergyForm.lean) | `finiteBlaschkeNumberOperator_hasSum_energy`, `finiteBlaschkeNumberOperator_energy_eq` |
+| [TheInversePrimeKernelHasSubcriticalValuationCoordinates](../../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheInversePrimeKernelHasSubcriticalValuationCoordinates.lean) | `inversePrimeKernel_ladder`, `inversePrimeKernel_sieve_sum`, `inversePrimeLadderKernel_tensor` |
+| [TheInversePrimeNumberOperatorHasOccupationEnergy](../../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheInversePrimeNumberOperatorHasOccupationEnergy.lean) | `hasSum_inversePrimeTower`, `inversePrimeCoordinateKernel_single`, `inversePrimeFiniteVector_mem_domain`, `inversePrimeFiniteEnergy_hasSum` |
+| [TheHaarDivisorReserveControlsValuationOccupation](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarDivisorReserveControlsValuationOccupation.lean) | `haarValuationVector_zeroRoot`, `oddDivisorOutgoing_le_inversePrimeEuler`, `haarValuationBoundaryCost_nonneg`, `haarValuationOccupation_hasSum`, `haarPrimeLogDefect_add_boundary_eq_occupation`, `haarPrimeLogDefect_add_boundary_ge_occupation` |
+
+The modules are wired into their umbrellas. Required dependency oleans
+were built only for importing modules; the final Haar theorem has no
+olean build. No umbrella build, axiom check, web search, novelty check,
+or numerical experiment was run.
 
 ## Remaining route gap
 

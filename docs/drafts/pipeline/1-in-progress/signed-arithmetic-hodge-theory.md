@@ -415,10 +415,54 @@ all printed capstones use only propext, Classical.choice and Quot.sound.
 The [formalized card](../3-formalized/signed-arithmetic-hodge-infinite-prime-power-payment.md)
 records the positive theorem and sharp coefficient boundary together.
 
-The remaining source-transfer question concerns the first-prime and square
-layers with signed compensation, Gamma and both poles. Existing one-level
-coarse/detail Gamma comparisons and the O(mass) signed Haar cross-error do
-not assert Gamma stability of the full all-level generator projection.
-A uniform upper Gamma estimate for that projection is a possible intermediate
-target. It is not used by the higher-power theorem and is not assumed in the
-programme. Retained-orbit signs and complete-form bounded index remain open.
+### Actual stopping-cell averages and even-power source transfer
+
+The whole-orbit coordinate cutoff is exactly logarithmic block averaging.
+EveryGeneratorCutoffStopsAtAnActualDyadicCell gives the stopping ancestor
+(j,a): a<2A and, for original labels n>=A, A<=a<2A. The projected original
+cell is its scalar projection onto W_2^j e_a. GeneratorCutoffsAreLogarithmicBlockAverages
+identifies the scalar and block weights: physical heights are averaged with
+weights ell_m/ell_a on m in[2^j a,2^j(a+1)). Those weights sum to one.
+Every produced label is below twice its original label.
+
+ActualGeneratorHeadsPreserveTheSourceMean constructs finite real compact BV
+head h=P_A f and tail t=f-h, and identifies their Hilbert representatives
+with the existing projection. The original wholeCellProfile and its exact
+cell coordinates are instances of this interface. The integral is preserved,
+the tail has zero mean, and integral(h*t)=0. Both centering corrections
+therefore cancel in the actual mixed square source. Tail square mass is
+at most32 Gamma(f)/(1+log A), uniformly in source horizon and cutoff.
+
+TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost proves the complete
+even-power source head bound, not only its mixed part:
+
+abs(S_even(f)-S_even(h))
+ <=epsilon*(Gamma(h)+Gamma(t))
+   +C_epsilon*32 Gamma(f)/(1+log A).
+
+One C_epsilon is chosen before every cutoff and finite source-index type.
+The centered diagonal estimate follows from exact quadratic homogeneity;
+the tail's zero mean leaves only a constant times its paid square mass.
+S_even includes all even prime powers. Its exponents>=4 overlap the paid
+higher-power sector. All four modules pass individual Lean checks and
+printed transitive-axiom audits using only propext, Classical.choice and
+Quot.sound. The [formalized card](../3-formalized/signed-arithmetic-hodge-stopping-cell-projection.md)
+states the exact physical identities and remaining boundary.
+
+### Uniform Gamma stability and full-form boundary
+
+The explicit cost Gamma(h)+Gamma(t) is not bounded by original Gamma in
+the present results. Seek one K, independent of A and the source horizon,
+with Gamma(h)+Gamma(t)<=K Gamma(f), or another direct payment for the
+even-power error. Iterating a one-level estimate can lose uniformity.
+Two concrete approaches are averaged Levy-kernel comparison on stopping
+intervals and a Gamma upper synthesis estimate for root-free Haar details.
+The first has an existing arbitrary-disjoint-interval mean-graph lower
+bound; adjacent rectangle kernels and integrated exterior rows still need
+a uniform upper comparison. The second must pay nested Haar cross terms.
+These are unresolved corpus targets, not claims of globally unsolved mathematics.
+
+Ordinary mean preservation does not preserve either exponential Weil moment.
+First-prime payment, continuous polar comparison, retained-orbit signs and
+complete-form bounded index remain distinct research endpoints. No such
+input is assumed by the higher-power or even-power error theorems.

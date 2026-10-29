@@ -80,7 +80,7 @@ theorem compress_traceKernel_charPoly :
     have hβ := β_ne_zero D i
     simp only [towerPositions, toAdd_mul, toAdd_inv, toAdd_ofAdd]
     rw [show -(a : ℤ) + Multiplicative.toAdd u + (b : ℤ) =
-      (Multiplicative.toAdd u - (a : ℤ)) + ((b : ℕ) : ℤ) by push_cast; ring,
+      (Multiplicative.toAdd u - (a : ℤ)) + ((b : ℕ) : ℤ) by ring,
       zpow_add₀ hβ, zpow_natCast]
     ring
   simp only [hterm]
@@ -116,8 +116,9 @@ character of `ρ` iff `(ρ − ½) log p ∈ log c⁻¹ + 2πiℤ`. -/
 theorem hat_euler_eq_zero_iff {p : ℕ} (hp : p.Prime) {c : ℂ} (hc : c ≠ 0) (ρ : ℂ) :
     hat (eulerNodes hp) (eulerCoeffs c) (zeroChar ρ) = 0 ↔
       ∃ k : ℤ, (ρ - 1 / 2) * Real.log p = Complex.log c⁻¹ + k * (2 * π * I) := by
-  rw [hat_euler_zeroChar, sub_eq_zero, eq_comm, ← eq_inv_mul_iff_mul_eq₀ hc, mul_one,
-    ← Complex.exp_log (inv_ne_zero hc), Complex.exp_eq_exp_iff_exists_int]
+  rw [hat_euler_zeroChar, sub_eq_zero, eq_comm, ← eq_inv_mul_iff_mul_eq₀ hc, mul_one]
+  conv_lhs => rw [← Complex.exp_log (inv_ne_zero hc)]
+  exact Complex.exp_eq_exp_iff_exists_int
 
 /-- **Euler compressors do not vanish on the strip.** For `|c| ≤ p^{−½}` the transform is nonzero
 at the character of every `ρ` with `0 < Re ρ < 1` and at its reflection. -/
@@ -131,7 +132,7 @@ theorem hat_euler_ne_zero {p : ℕ} (hp : p.Prime) {c : ℂ} (hc : ‖c‖ ≤ (
   -- `‖c e^{a log p}‖ = ‖c‖ p^{Re a}`, and `p^{−½} p^{Re a} < 1` for `Re a < ½`
   have key : ∀ a : ℂ, a.re < 1 / 2 → 1 - c * cexp (a * Real.log p) ≠ 0 := fun a ha h => by
     have hn : ‖c * cexp (a * Real.log p)‖ = 1 := by
-      rw [← sub_eq_zero.mp h |>.symm, norm_one]
+      rw [← sub_eq_zero.mp h, norm_one]
     rw [norm_mul, Complex.norm_exp, Complex.re_mul_ofReal] at hn
     have hexp : Real.exp (a.re * Real.log p) = (p : ℝ) ^ a.re := by
       rw [Real.rpow_def_of_pos hp0, mul_comm]
@@ -167,3 +168,10 @@ theorem negIndex_compress_euler {κ : ℕ} {p₀ : HeckeLattice → ℂ} (hp₀ 
   rw [hall, card_univ, Fintype.card_fin]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms compress_traceKernel_charPoly
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms negIndex_compress_euler
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms hat_euler_eq_zero_iff

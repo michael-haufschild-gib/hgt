@@ -51,8 +51,36 @@ the finite coordinate. Representatives need not multiply exactly:
 their central defects cancel in conjugation, and no representative
 homomorphism is asserted.
 
+## Character comparison
+
+The extended Cartan embedding `(c,a,q) ↦ z(c)H(a)mu(q)` is an injective
+homomorphism: rotation fixes the first two factors, and projection onto the
+degree group followed by the previously proved Cartan injection recovers all
+three coordinates. Thus its image has a genuine multiplicative coordinate
+map, without an assumed decomposition outside that subgroup.
+
+For real units define `ell(a)=log|a|`. This is additive on multiplication
+and satisfies `ell(a^n)=n ell(a)` for every integer `n`. For a complex
+weight `L=(kappa,b,d)`, the character is
+
+`chi_L(c,a,q)=exp(kappa*ell(c)+b*ell(a)+d*ell(q))`.
+
+Substitution into the proved conjugation formulas yields
+`chi_L(N_(-m) g N_(-m)^-1)=chi_(translateWeight m L)(g)` and
+`chi_L(W g W^-1)=chi_(reflectWeight L)(g)` for every element of the actual
+extended Cartan subgroup. In positive exponential coordinates
+`c=exp(z), a=exp(t), q=exp(-exp(r))`, the exponent equals the existing
+`rotatedEvaluation L t z r`. This identifies the Weyl-sum exponent with a
+character of the constructed group, while leaving the spherical extension
+and Eisenstein-series theorem open.
+
 ## Status
 
-Paper identities recorded. Lean implementation and dependency audit pending.
+Paper identities recorded. `LaurentMonomialTorus`, `SL2WeylConjugation`, and
+`ExtendedCartanConjugation` compile at ordinary limits. They prove the actual
+quadratic translation and finite-reflection formulas, with injective extended
+Cartan embedding. `RealCartanCharacters` is being implemented to connect these
+identities with the existing affine weight evaluation. Final direct source
+checks and transitive axiom audit remain pending.
 These identities do not supply global Iwasawa decomposition, an arithmetic
 lattice, or Eisenstein convergence and unfolding.

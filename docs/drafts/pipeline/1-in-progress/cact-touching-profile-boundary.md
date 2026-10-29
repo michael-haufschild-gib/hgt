@@ -1,147 +1,38 @@
-# Profile boundary vanishing at touching
+# Complete arithmetic source through touching
 
-## Mathematical question
+## Question
 
-Can the separated matrix estimates reach c=1 without losing the actual source?
-Two apparent degeneracies should be separated: the charge was bounded by c,
-and the cross-integral error used a worst-point distance (1-c)^-2.
+Can one horizon control the actual complete Weil matrix simultaneously for every width ratio `0<c<=1`, while retaining all prime lags, both poles, and Gamma completion?
 
-## Established inputs
+## Proved source inputs
 
-- CompleteWeilEnergyControlsThePrimeDefect retains a prime-defect coefficient
-  (1-c)/4 after replacing the actual pole charge alpha=c*(integral phi)^2/M by c.
-- TheAtomCrossReplacementHasUniformErrors bounds the normalized cross error by
-  38*(integral |phi|)^2/(M*(1-c)^2), before summing reciprocal integer distances.
-- TheRowsAtBoundedOverlap gives the exact non-ratio prime correction at every
-  width. No actual overlapping source sign estimate has been supplied.
+The following own modules have passed Lean; individual final-audit status is recorded in `logs/critical-arithmetic-correlation/final-audits.txt`.
 
-## Proposed mechanism; not a proof claim
+- `BoundaryVanishingControlsTheTouchingAutocorrelation`: quadratic endpoint decay of autocorrelation.
+- `EndpointDecayRemovesTheCrossKernelGapLoss`: actual cross-integral error with one reciprocal-square constant for all positive support gaps.
+- `TheTouchingCrossMatrixHasAUniformErrorBudget`: whole cross form and bounded pole-profile residual uniformly for `0<c<=1`.
+- `TheChargeDeficitKeepsAUniformPrimeReserve`: strict profile charge `q<1`; one prime-defect coefficient and mass floor for each fixed `c<1`. Its eventual horizon may depend on `c`.
+- `OverlapLengthControlsTheTouchingCrossError`: height-based estimate, with common scalar coefficient316 for all smooth plateaus `0<eta<=1/4`.
+- `OnlyTheBoundaryStarEntersAtTouching`: the exact non-ratio prime source is the star `km=N+1`, including all prime powers.
+- `TheBoundaryPrimeStarVanishesAfterNormalization`: its actual normalized form is bounded by `(4B^2/M)*log(N+1)/N*sum(x^2)` simultaneously for all `0<c<=1`. Every smooth compact profile produces its own height bound; one eventual horizon pays any prescribed positive error.
 
-Retain the actual charge alpha in the Young estimate. A coefficient
-(1-alpha)/4 survives, with Young parameter 2/(1-alpha); alpha can equal zero.
-For every fixed nonzero continuous compact profile on [0,1], strict
-Cauchy-Schwarz should give q=(integral phi)^2/M<1. This removes the charge
-coefficient's apparent degeneration at c=1, but not the cross-error issue.
+Distinct internal integer log gaps exceed `1/N`. Thus atom supports remain strictly disjoint at the endpoint ratio, but prime products just outside the horizon contribute the boundary star. The old separated source formula cannot be used without this term.
 
-For the cross error, a C1 profile vanishing at both endpoints satisfies
-|phi(u)|<=L*min(u,1-u) on [0,1]. In the potentially singular corner u near1,
-v near0, the product is at most L^2*(1-u)*v. The denominator has the form
-(d-w+w*(1-u+v))^2. When d>=w the endpoint product cancels this singularity.
-For d>=2w retain the usual w^2/d^2 estimate; for w<=d<=2w use boundary
-vanishing and then w^2/d^2>=1/4. This suggests one profile-dependent cross
-error constant uniform up to touching, including a reciprocal integer-square
-majorant. Actual cross-integral formula and admissible integrations must be
-checked before formalization.
+## Current formalization, not theorem claims
 
-At width1/N all distinct log nodes in [1,N] are still separated: their loggap
-exceeds1/N. The existing atomSpacing lower bound is conservative. Non-ratio
-prime lags can first enter through a product just outside N; these are a
-separate actual-source error and cannot be omitted. For c>1 genuine support
-overlap requires the renormalized Gram contribution too; the separated
-cross-integral formula cannot be continued through its singularity alone.
+A. `TheActualArchimedeanMatrixReachesTouching`: exact raw and normalized entries retaining the literal prime pairing.
+B. `TheNonRatioMatrixIsTheActualPrimeCorrection`: actual prime-pairing matrix minus ratio kernel; its quadratic form equals normalized non-ratio source.
+C. `TheCompleteWeilMatrixKeepsItsBoundaryCorrection`: complete matrix and energy decomposition through ratio1, with the negative non-ratio correction.
+D. `TheSelfAndPoleErrorsStayUniformAtTouching`: actual self and two-pole remainders through ratio1.
+E. `OnePrimeDefectReserveCoversEveryRatioThroughTouching`: one mass floor, one prime-defect fraction `(1-q)/4`, and one eventual horizon for all `0<c<=1`.
+F. `OneRamanujanFamilyDetectsAllBoundedEnergiesThroughTouching`: one finite arithmetic family detects all bounded-energy unit vectors throughout the same range.
 
-## Required success criteria
+These six files are drafts, uncompiled and unwired. Required dependent oleans are justified only by their explicit imports.
 
-Prove a uniform actual cross-error estimate, then discharge the boundary
-non-ratio source and full spectral transfer. A charge-only refinement or a
-padded narrow profile is not an endpoint/overlap positivity theorem.
+## Remaining spectral argument
 
-## Status
+Prove Ramanujan norm residuals uniformly in `c<=1`: prime residual independent of `c`, scalar self error `O(1/N)`, center linear in bounded charge, uniformly square-bounded cross/pole errors divided by logarithmic mass, and small actual non-ratio operator. Combine the finite coordinate certificate with the conductor-one energy lower bound at `c=1` to exclude all lower eigenvalues with one horizon. No endpoint positivity claim until these steps pass Lean.
 
-New analytic investigation. No theorem claimed and no new Lean file yet.
+## Boundary of the result
 
-## Refined cross-error estimate
-
-A Lipschitz bump g on [0,w], vanishing at its endpoints, has
- |G_g(z)| <= (L_g^2*w/4)*(w-|z|)^2   (|z|<=w).
-Pointwise this is the product of the two endpoint distances; its integral
-requires only the interval length w, so no plane change of variables is needed.
-For s>w, the density increment is at most 38w/(s-|z|)^2. Hence the weighted
-error integrand is at most (38/4)L_g^2*w^2 uniformly in s-w. Integration over
-[-w,w] gives cross error <=19 L_g^2*w^3.
-For g(u)=phi(u/w), L_g=L_phi/w, and normalization by w*M yields
-19 L_phi^2/M. If s<=2w this is at most 76 L_phi^2/M * w^2/s^2.
-If s>=2w the existing far estimate is at most
-152 (integral|phi|)^2/M * w^2/s^2.
-Thus C_phi=76*(L_phi^2+2*(integral|phi|)^2)/M is a candidate global
-reciprocal-square coefficient for every s>w, with no (1-c)^-2 divergence.
-This is a proof plan, not a verified theorem. Remaining formal work: endpoint
-values, autocorrelation bound, exact translated integral, then normalized rows.
-
-## Arithmetic boundary at c=1: proposed exact classification
-
-For N>=2, integers1<=m,n<=N and k>=2, a non-ratio lag inside width1/N can occur only
-when m=N and kn=N+1 (or the transposed term). Reason: among unequal positive
-integers a,b with min(a,b)<=N, a loggap below1/N forces the consecutive pair
-N,N+1. Any pair wholly inside1..N has loggap>1/N; a pair with gap>=2 or outside
-N+1 also exceeds1/N. This uses strict log(1+x)>x/(1+x), not a numerical check.
-
-If formalized, the non-ratio form is one boundary star:
- 2*G_g(log((N+1)/N))*x_N*sum_{k|N+1,k>=2} Lambda(k)/sqrt(k)*x_{(N+1)/k}.
-The divisor identity sum Lambda(k)=log(N+1) bounds its operator norm.
-The overlap length w-log(1+w) is <=w^2/2 forw=1/N; even a bounded profile gives
-normalized star error O(log(N+1)/N). Endpoint Lipschitz decay strengthens this
-to O(log(N+1)/N^2) with the coarser quadratic autocorrelation estimate.
-All terms must be included in the exact source; atom-atom separation alone did
-not justify dropping this star.
-
-A complete endpoint proof would then combine: uniform crosserror; strict
-profile charge q<1; self/pole endpoint bounds; boundary-star disappearance;
-and full bounded-spectrum exhaustion using the retained prime-defect fraction.
-The present c<1 proof cannot be extended merely by taking a pointwise limit
-in c after N. None of these new endpoint conclusions has yet been formalized.
-
-## Strict charge and uniform reserve: analytic plan
-
-For a nonzero continuous profile supported in[0,1], let I=integral(phi),
-M=integral(phi^2). The exact variance on[0,1] is M-I^2. If I=0 this is positive;
-if I!=0, phi(0)=0 makes (phi(0)-I)^2>0, and continuity gives a strictly positive
-variance integral. Hence q=I^2/M<1. Mathlib intervalIntegral.integral_pos
-accepts a positive value at either endpoint of a nondegenerate interval.
-This is a strict statement for each fixed profile, consistent with q_eta->1.
-
-Retaining alpha=c*q in the existing center Young estimate gives a positive
-prime-defect coefficient (1-alpha)/4. For allc<=1 one may instead choose the
-single reserve epsilon=(1-q)/4 and Young parameter2/(1-q), independent ofc.
-The new cross bound would be uniform in this range; the pole/self errors also
-need their endpoint versions. Together with the boundary-star estimate this
-suggests uniform coercivity through touching. A separate complete spectral
-argument is still required; these are proposed deductions, not completed results.
-
-## Stronger bounded-width variant to investigate
-
-Corpus search found AIP/CubicGaugeSurplusPotential.archLevyDensity_le_inv:
- omega(t)<=1/(2t)+1/4 for everyt>0. Together with the elementary overlap bound
-|G_g(z)|<=B^2*(w-|z|), this can remove derivative dependence at0<w<=1.
-Indeed |omega(s+z)-omega(s)|<=1/(2(s+z))+1/(2s)+1/2. Multiplication by
-B^2*(w-|z|) costs at most3B^2/2 since s>w andw<=1. Integration costs3B^2*w.
-After normalizing g=phi(u/w), the near-touching error is<=3B_phi^2/M, hence
-<=12B_phi^2/M*w^2/s^2 when s<=2w. Combine with the far bound152I_abs^2/M.
-This would be uniform for plateau transitions shrinking to0 (B_phi<=1,
-M boundedbelow), unlike the Lipschitz constant. Existing draft's all-width
-Lipschitz theorem remains useful and is being checked first; this bounded-width
-variant is not yetwritten or proved. Original source estimate, not numerical work.
-
-## Current formal status
-
-The all-width Lipschitz cross-integral estimate and the uniform whole-matrix /
-bounded-pole-profile transfers have passed their needed dependency builds with
-standard axioms. Their final individual audits remain pending. Strict charge
-and the common complete-energy defect reserve are under Lean checking.
-
-The derivative-free refinement has a sharper analytic constant than the first
-plan: positivity and monotonicity give
- |omega(s+z)-omega(s)| <= omega(s-|z|).
-Together with linear overlap this yields raw error B²*w*(1+w/2). For w<=1,
-the near normalized error is at most(3/2)B²/M. Combined with the far estimate,
-(152Iabs²+6B²)/M is a reciprocal-square coefficient. For plateaus0<eta<=1/4,
-one common coefficient316 follows. This is a drafted formal proof, unchecked.
-
-The arithmetic draft classifies the single boundary pair and gives the exact
-finite non-ratio star. A second draft pays its total weight bylog(N+1) using
-the divisor identity. The elementary bounds1/(N+1)<d_N<1/N leave overlap at
-most1/N², giving normalized source error at most
- (2B²/M)*log(N+1)/N*sum(x_m²).
-These drafts have not passed Lean. The eventual full complete-energy endpoint
-and bounded-spectrum transfer remain outstanding. Uniform cross control as
-eta->0 does not keep the strict-charge reserve uniform, since q_eta->1.
+For `c>1`, the atom Gram overlaps and additional non-ratio interactions enter. They must be compared jointly with the logarithmic self term. A separated cross formula alone cannot cover that regime. The strict charge reserve also vanishes as smooth plateaus approach the indicator; fixed-profile uniformity does not give uniform spectral exhaustion in that limit. RH, improved census, and finite exceptional zeros remain open.

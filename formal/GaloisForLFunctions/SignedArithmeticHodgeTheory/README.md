@@ -50,6 +50,7 @@ Every comparison specifies **source, form, domain, exhaustion, error currency**.
 | Radical | Vectors pairing to zero with all source vectors (may have nonzero graph norm); `arithmeticWeilRadical` = radical of the full form |
 | Mixed charge; reserve | Bilinear block interaction in a stated norm; a positive term spent once |
 | Dyadic clock | Weighted log-cell shift $W_2e_a=\alpha_ae_{2a}+\beta_ae_{2a+1}$, wandering details $d_a=\beta_ae_{2a}-\alpha_ae_{2a+1}$ |
+| Stopping-cell source | The same whole-orbit cutoff as logarithmic block averaging; literal finite real BV head and tail, with ordinary mean and square mass accounted for |
 | Modal source | Ramanujan profiles $v_m(n)=c_m(n)/\sqrt{\varphi(m)n}$, energies $E_m=\gamma+\log m+\text{tameDifferent}(m)$ |
 | Critical energy | $R^2(\mathcal W(2R)-\mathcal W(R))\to\mathcal E_{\rm crit}\in[0,\infty]$ |
 
@@ -74,7 +75,9 @@ coordinates unless stored separately.
    parent variances and logarithmic Haar tails across all levels. Whole generator cutoffs split every dyadic correlation exactly;
    the complete prime-two Euler contribution has one original-source Gamma budget. Orthogonal tail localization and Gamma
    translation invariance pay every real-lag correlation, each fixed finite Euler family, and jointly every cube and higher power
-   of every prime. Prime and square absolute coefficient masses diverge; full-Weil signed transfer remains separate.
+   of every prime. The cutoff is exactly logarithmic stopping-cell averaging: it preserves the ordinary mean and splits square
+   mass orthogonally. The full even-power source error costs arbitrarily little head-plus-tail Gamma plus the paid tail mass.
+   Uniform Gamma stability, first-prime transfer and full-Weil signed payment remain separate.
 6. **Renormalized adjunction**: growing Ramanujan families have one Gram budget $(1+2\sum_{m\in S}m^2)/\log N$; prime-row corrections cost
    $C_m=\sqrt{\varphi(m)}(1+4\log m)$; one Mertens-type remainder $B_N$, bounded uniformly in $N$, controls every Ramanujan residual.
 7. **Local capture and escape**: modal families lose normalized mass on every fixed integer window ($\le K_{S,L}/(\log N-D_S)$); every bounded
@@ -100,6 +103,9 @@ coordinates unless stored separately.
    `TheArithmeticResidualBudgetIsUniformInTheHorizon`).
 6. **Local capture cost and escape of bounded prime energy** (`RamanujanFamiliesHaveAnExplicitLocalCaptureCost`,
    `BoundedPrimeEnergyEscapesEveryFixedIntegerWindow`).
+7. **Actual stopping-cell averages and complete even-power head error** (`EveryGeneratorCutoffStopsAtAnActualDyadicCell`,
+   `GeneratorCutoffsAreLogarithmicBlockAverages`, `ActualGeneratorHeadsPreserveTheSourceMean`,
+   `TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost`).
 
 For the actual complete-cell clock $W_2$, the generator cutoff $P_A$ retains the root and every Haar label $a<A$ at every level.
 [GeneratorOrbitCutoffsReduceTheDyadicClock](GeneratorOrbitCutoffsReduceTheDyadicClock.lean) proves $P_AW_2^k=W_2^kP_A$ and
@@ -165,6 +171,46 @@ Both $\sum_p2\log p/\sqrt p$ and $\sum_p2\log p/p$ diverge. This classifies the 
 assert divergence of actual compact-source correlations or exclude signed prime–pole compensation. The higher-power theorem
 is its positive survivor, with the literal physical source and one original Gamma reserve.
 
+The whole-orbit cutoff also has an exact physical description. Write $\ell_n=\log((n+1)/n)$.
+Repeated integer halving stops at a pair $(j,a)$ with $n/2^j$ having integer part $a<2A$;
+if $n\ge A$, then $A\le a<2A$. Its block is
+$B_{j,a}=\{2^ja,\ldots,2^j(a+1)-1\}$, and its physical interval is
+$[j\log2+\log a,j\log2+\log(a+1))$.
+[EveryGeneratorCutoffStopsAtAnActualDyadicCell](EveryGeneratorCutoffStopsAtAnActualDyadicCell.lean) and
+[GeneratorCutoffsAreLogarithmicBlockAverages](GeneratorCutoffsAreLogarithmicBlockAverages.lean) prove
+that the projected physical height on this block is
+\[
+\frac{1}{\ell_a}\sum_{m\in B_{j,a}}\ell_m f_m,
+\qquad \sum_{m\in B_{j,a}}\frac{\ell_m}{\ell_a}=1.
+\]
+Cells $n<2A$ are fixed. Every cell in the projected image of cell $n$ has label below $2n$.
+Thus an original finite horizon $X$ produces a finite real head using labels below $2X$, with every retained generator orbit intact.
+
+[ActualGeneratorHeadsPreserveTheSourceMean](ActualGeneratorHeadsPreserveTheSourceMean.lean) constructs this head $h=P_Af$
+and tail $t=f-h$ as actual compact BV functions for every finite real cell source, including the original `wholeCellProfile`.
+It proves
+\[
+\int h=\int f,\quad \int t=0,\quad \int ht=0,\quad
+\int f^2=\int h^2+\int t^2,\qquad
+\int t^2\le\frac{32\Gamma(f)}{1+\log A}.
+\]
+Let $S_{\rm even}(f)=2\sum_n\Lambda(n)n^{-1}C_{2\log n}(f)$, the literal `squarePrimeSource`.
+This includes **all even prime powers**, with exponents at least four also belonging to the higher-power sector above.
+Its centered version subtracts $\tfrac12(\int f)^2+s_0\int f^2$, where $s_0$ is the square-source regular symbol at zero.
+Both centering corrections cancel exactly in the mixed difference for $f=h+t$.
+[TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost](TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost.lean) proves that,
+for every $\varepsilon>0$, one $C_\varepsilon\ge0$ works for every cutoff and every finite source family:
+\[
+|S_{\rm even}(f)-S_{\rm even}(h)|
+\le\varepsilon\bigl(\Gamma(h)+\Gamma(t)\bigr)
+ +C_\varepsilon\frac{32\Gamma(f)}{1+\log A}.
+\]
+The proof extracts the centered diagonal estimate by quadratic homogeneity, then pays the zero-mean tail's remaining correction
+with its square mass. The actual projected Gamma energies remain explicit. A bound
+$\Gamma(h)+\Gamma(t)\le K\Gamma(f)$ uniform in cutoff and horizon is an unresolved intermediate target; it is not assumed here.
+Ordinary mean preservation does not preserve the two exponential Weil moments. These four modules pass individual Lean checks
+and their printed capstones use only `propext`, `Classical.choice` and `Quot.sound`.
+
 ---
 
 ## 5. Traps
@@ -184,11 +230,11 @@ is its positive survivor, with the literal physical source and one original Gamm
 
 ## 6. Open problems
 
-1. **Joint full-Weil payment** using the all-level Gamma allocation: transfer the first-prime and square layers with their signed
-   compensation, continuous Gamma interactions and polar terms. Every fixed finite Euler family and the complete all-prime
-   higher-power sector have uniform all-level generator approximation. The existing one-level square-pole and coarse/detail
-   estimates do not supply this full projection transfer. Uniform upper Gamma control of the all-level cutoff is a possible
-   intermediate target, not an assumed input. A full-form bounded-index theorem remains open.
+1. **Joint full-Weil payment** using the all-level Gamma allocation. The complete even-power head error has an explicit
+   $\varepsilon(\Gamma(h)+\Gamma(t))$ cost and an original-Gamma tail-mass cost. Seek uniform Gamma stability of the actual
+   stopping-cell average, or a direct way to pay that remaining cost. Averaged Levy-kernel comparison and weighted Haar upper
+   synthesis are concrete analytic candidates, not proved inputs or established globally open problems. First-prime transfer,
+   both exponential polar moments, retained-orbit sign and a complete-form bounded-index theorem remain separate obligations.
 2. **Twin-selective control of generator orbits** with Gamma and both poles; transfer of the discrete prime gap beyond narrow spacing.
 3. **Arithmetic upper bound on $\mathcal E_{\rm crit}$** retaining exterior rows (finiteness ⇒ finite off-line support; $\mathcal E_{\rm crit}\le1294047/2000$ ⇔ RH).
 4. **Growing Ramanujan families** controlling a useful full-source domain, with a complement estimate surviving Gamma and the continuous

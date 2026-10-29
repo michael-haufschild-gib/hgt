@@ -160,8 +160,51 @@ theorem eventually_fullWeilNonRatioMatrix_small_uniformly {φ : ℝ → ℝ}
   have h := hsmall c hc0 hc1 (primeHorizonExtension x)
   rwa [sum_primeHorizonExtension_sq] at h
 
+private theorem hermitian_action_le_of_abs_form_le {I : Type*} [Fintype I] [DecidableEq I]
+    {A : Matrix I I ℝ} (hA : A.IsHermitian) {ε : ℝ} (hε : 0 ≤ ε)
+    (hform : ∀ x : EuclideanSpace ℝ I, |⟪Matrix.toEuclideanLin A x, x⟫| ≤ ε * ‖x‖ ^ 2)
+    (x : EuclideanSpace ℝ I) : ‖Matrix.toEuclideanLin A x‖ ≤ ε * ‖x‖ := by
+  have happ (i : I) : Matrix.toEuclideanLin A (hA.eigenvectorBasis i) =
+      hA.eigenvalues i • hA.eigenvectorBasis i := by
+    ext j
+    exact congrFun (hA.mulVec_eigenvectorBasis i) j
+  have heig (i : I) : |hA.eigenvalues i| ≤ ε := by
+    have hi : ⟪hA.eigenvectorBasis i, hA.eigenvectorBasis i⟫ = (1 : ℝ) := by
+      simpa only [ite_true] using (orthonormal_iff_ite.mp hA.eigenvectorBasis.orthonormal) i i
+    have hn : ‖hA.eigenvectorBasis i‖ ^ 2 = (1 : ℝ) := by
+      rwa [real_inner_self_eq_norm_sq] at hi
+    simpa only [happ, real_inner_smul_left, hi, hn, mul_one] using hform (hA.eigenvectorBasis i)
+  have hinner (i : I) : ⟪Matrix.toEuclideanLin A x, hA.eigenvectorBasis i⟫ =
+      hA.eigenvalues i * ⟪x, hA.eigenvectorBasis i⟫ := by
+    rw [(Matrix.isSymmetric_toEuclideanLin_iff.mpr hA) x (hA.eigenvectorBasis i),
+      happ, real_inner_smul_right]
+  have hs : ‖Matrix.toEuclideanLin A x‖ ^ 2 ≤ ε ^ 2 * ‖x‖ ^ 2 := by
+    rw [← hA.eigenvectorBasis.sum_sq_inner_left (Matrix.toEuclideanLin A x),
+      ← hA.eigenvectorBasis.sum_sq_inner_left x, mul_sum]
+    apply sum_le_sum
+    intro i hi
+    rw [hinner, mul_pow]
+    have hb := mul_self_le_mul_self (abs_nonneg (hA.eigenvalues i)) (heig i)
+    rw [← sq, sq_abs, ← sq] at hb
+    exact mul_le_mul_of_nonneg_right hb (sq_nonneg _)
+  have hprod : 0 ≤ ε * ‖x‖ := mul_nonneg hε (norm_nonneg x)
+  nlinarith only [hs, hprod, norm_nonneg (Matrix.toEuclideanLin A x)]
+
+/-- The actual boundary correction also vanishes in operator action, uniformly in ratio. -/
+theorem eventually_fullWeilNonRatioMatrix_action_small_uniformly {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 0 < c → c ≤ 1 →
+      ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
+        ‖Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N) x‖ ≤ ε * ‖x‖ := by
+  filter_upwards [eventually_fullWeilNonRatioMatrix_small_uniformly hφ hsupp hM hε] with N hN
+  intro c hc0 hc1 x
+  exact hermitian_action_le_of_abs_form_le (fullWeilNonRatioMatrix_isHermitian φ c N)
+    hε.le (hN c hc0 hc1) x
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.fullWeilNonRatioMatrix_inner_eq
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_fullWeilNonRatioMatrix_small_uniformly
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_fullWeilNonRatioMatrix_action_small_uniformly

@@ -122,8 +122,8 @@ theorem translation_conj_extendedCartan (m : ℤ) (c a q : Fˣ) :
   apply SemidirectProduct.ext
   · change (LoopSL2.translationLift F m *
         (LoopSL2.rotationAction (1 : Fˣ)) (LoopSL2.cartanEmbedding F (c, a))) *
-        (LoopSL2.rotationAction q) (LoopSL2.translationLift F m)⁻¹ = _
-    rw [map_one, MulAut.one_apply]
+        (LoopSL2.rotationAction (1 * q)) (LoopSL2.translationLift F m)⁻¹ = _
+    rw [one_mul, map_one, MulAut.one_apply]
     change (LoopSL2.translationLift F m * LoopSL2.cartanEmbedding F (c, a)) *
       LoopSL2.rotation q (LoopSL2.translationLift F m)⁻¹ = _
     calc
@@ -147,8 +147,8 @@ theorem finiteWeyl_conj_extendedCartan (c a q : Fˣ) :
   apply SemidirectProduct.ext
   · change (LoopSL2.finiteWeylLift F *
         (LoopSL2.rotationAction (1 : Fˣ)) (LoopSL2.cartanEmbedding F (c, a))) *
-        (LoopSL2.rotationAction q) (LoopSL2.finiteWeylLift F)⁻¹ = _
-    rw [map_one, MulAut.one_apply]
+        (LoopSL2.rotationAction (1 * q)) (LoopSL2.finiteWeylLift F)⁻¹ = _
+    rw [one_mul, map_one, MulAut.one_apply]
     change (LoopSL2.finiteWeylLift F * LoopSL2.cartanEmbedding F (c, a)) *
       LoopSL2.rotation q (LoopSL2.finiteWeylLift F)⁻¹ = _
     rw [map_inv, LoopSL2.rotation_finiteWeylLift]

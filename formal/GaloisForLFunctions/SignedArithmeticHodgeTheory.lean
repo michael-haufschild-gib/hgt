@@ -32,6 +32,10 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.EveryTranslationHasAnAllL
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.FiniteEulerFactorsHaveAllLevelGeneratorApproximation
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.CriticalEulerCoefficientMassStartsAtCubes
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.AllHigherPrimePowersHaveAllLevelGeneratorApproximation
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.EveryGeneratorCutoffStopsAtAnActualDyadicCell
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.GeneratorCutoffsAreLogarithmicBlockAverages
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.ActualGeneratorHeadsPreserveTheSourceMean
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost
 
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
@@ -47,5 +51,10 @@ Gamma energy pays the generator error at every real lag, in every fixed
 finite family of complete critical Euler correlations, and jointly over
 all primes and exponents at least three. Absolute coefficient summability
 holds exactly for tails beginning at cubes; prime and square layers require
-a different payment mechanism.
+a different payment mechanism. The actual cutoff is logarithmic stopping-cell
+averaging, with finite real BV realization, preserved ordinary mean and
+orthogonal head and tail. The complete even-power source error is bounded by
+arbitrarily small head-plus-tail Gamma energy and an original-Gamma tail-mass
+cost. Uniform Gamma stability and the two exponential Weil moments remain
+separate analytic questions.
 -/
