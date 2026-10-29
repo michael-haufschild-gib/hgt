@@ -61,7 +61,7 @@ theorem not_riemannHypothesis_of_aperturePositive_imp_count {A : ℝ}
     (hA : ∀ lam, AperturePositive A lam → Count lam) : ¬ RiemannHypothesis := by
   intro hRH
   have hW : WeilPositiveFull vonMangoldtWeight :=
-    weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt.mpr ⟨hRH, fun _ _ => rfl⟩
+    WeilSpectral.weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt.mpr ⟨hRH, fun _ _ => rfl⟩
   exact not_of_finite_window (AperturePositive A) hA ⌊Real.exp (A + A)⌋₊
     (aperturePositive_finite_window A) vonMangoldtWeight (aperturePositive_of_weilPositiveFull hW A)
 

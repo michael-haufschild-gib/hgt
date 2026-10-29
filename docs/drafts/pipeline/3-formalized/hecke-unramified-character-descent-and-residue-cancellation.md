@@ -44,4 +44,4 @@ the final direct source audit passes without warnings. See
 [the completed construction](../3-formalized/hecke-gamma-completed-functions-have-removable-values.md).
 
 Primitive scalar normalization, class recombination, and global
-reflection remain on the [dual analytic card](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
+reflection are formalized on the [dual analytic card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).

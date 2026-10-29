@@ -1,17 +1,17 @@
 # Two-sided annular frames for growing Ramanujan conductors
 
-Status: in progress. No new theorem claimed before Lean checks.
+Status: formalized, individually checked, and wired.
 
-## Actual object and proposed improvement
+## Actual object and improvement
 
 For the literal normalized Ramanujan pole profiles, put
 `F(n) = Σ_{m≤Q} a_m c_m(n)/sqrt(φ(m)n)` and `C = Σ_{m≤Q} a_m²`.
-Seek the simultaneous bound, for every `Q≥2`, shift `A`, length `N`, and real
+The simultaneous bound holds, for every `Q≥2`, shift `A`, length `N`, and real
 coefficient vector,
 
 `|Σ_{A<n≤A+N} F(n)² - (H_{A+N}-H_A) C| ≤ Q(Q-1) C/(A+1)`.
 
-On `(A,2A]`, `A≥4Q(Q-1)` should then give frame constants `1/4` and `5/4`.
+On `(A,2A]`, `A≥4Q(Q-1)` give frame constants `1/4` and `5/4`.
 This supplies both sides on a growing conductor family, unlike the existing
 whole-prefix lower frame bound. It does not estimate the completed source or
 interactions between distinct annuli.
@@ -31,6 +31,7 @@ been read. No statistical model or unproved analytic premise enters.
 
 ## Formalization
 
-Planned module: `CriticalArithmeticCorrelationTheory/AnnularRamanujanFamiliesHaveTwoSidedFrames.lean`.
-Depends on the existing packet theorem; its first olean is needed only when
-this importing module is checked. No full or umbrella build.
+Module: `CriticalArithmeticCorrelationTheory/AnnularRamanujanFamiliesHaveTwoSidedFrames.lean`.
+Final individual check61590 passed clean. All printed capstone dependencies are `propext`, `Classical.choice`, and `Quot.sound` only. The existing packet module's first needed olean39049 passed. The new module is imported by the programme umbrella; no full or umbrella build was run.
+
+The same module proves `weilPrimeKernel_eq_zero_on_dyadic_annulus` and `dyadic_annulus_prime_quadratic_eq_zero`: no two distinct integers in `(A,2A]` divide one another. Thus the literal prime compression to one such annulus is zero. This exact boundary explains why the frame theorem alone gives no localized prime quasimodes; prime transport must cross annular boundaries.

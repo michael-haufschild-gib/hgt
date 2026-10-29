@@ -3,7 +3,7 @@
 - **ID:** hecke-dual-theta-kernels-are-unit-covariant
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** For a finite-primitive Hecke character, simultaneous multiplication of an actual trace-dual frequency by a global unit and translation of the place profile by its logarithm leave the actual finite-Fourier-weighted parity kernel invariant. Negative log coordinates translate by `x+log(u)`.
 
 ## Proof

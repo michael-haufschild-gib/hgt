@@ -3,7 +3,7 @@
 - **ID:** hecke-dual-frequencies-have-class-generators
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual Hecke theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual Hecke theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** The actual trace dual `J_b=dual(mb)` has selected nonzero generators indexed by integral ideals of class `[J_b]⁻¹`; their associated frequency ideals are exactly those indices, their norms include the exact discriminant/conductor/base factor, and their Fourier coefficients are the inverse Hecke ideal values. The dual classes form an explicit permutation of ordinary classes.
 
 ## Proof

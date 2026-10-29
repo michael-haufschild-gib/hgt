@@ -4,6 +4,7 @@ import GaloisForLFunctions.HeckeKreinToeplitz.HeatCollisionsCountTheIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
 import GaloisForLFunctions.RHTower.XiZeroCountingFunction
 import GaloisForLFunctions.RHTower.CompletedPrimeFluxFittingAttachment
+import GaloisForLFunctions.RHTower.WeilPhiDoobPrimeAtoms
 
 /-!
 # The collision mass is the wave number
@@ -11,6 +12,10 @@ import GaloisForLFunctions.RHTower.CompletedPrimeFluxFittingAttachment
 Along the de Bruijn–Newman flow, nonreal zeros collide on the real axis; on the finite stratum the
 collision mass after small times is `2(κ(K_ζ) + E)`, `E` the multiplicity excess (HKT,
 `eventually_collisionMassAfter_eq_index`). This module reads `κ(K_ζ)` on the prime side.
+
+**The count is prime-side** (`zetaKernel_eq_weilFullFunctional`). Each value `K_ζ(u)` is the
+explicit-formula functional of the spline and its translate by `log u`: pole terms minus the von
+Mangoldt sum plus the Gamma term.
 
 **The Weil kernel on the finite stratum, presented** (`zetaKernel_eq_onLine_add_pairs_fin`). The
 kernel is the positive-definite orbit kernel of the on-line zeros plus one hyperbolic pair per right
@@ -40,15 +45,30 @@ towers are unbounded, and the heat counts are bounded exactly when those indices
 open Complex Finset Filter Topology Zeta23
 open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (rightZeros cx realTests)
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (rightZeros cx realTests cx_contDiff
+  cx_hasCompactSupport)
 open GaloisForLFunctions.ArithmeticOrientationGeometry (xiMult seenRightZeros seenRightZeros_cubicSpline)
 open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
-open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff_cubicSpline
+  hasCompactSupport_cubicSpline)
 open RHTower RHTower.DeBruijn
 
 noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+/-- **The count is prime-side.** Every value of the Weil kernel of `ζ` is the explicit-formula
+functional of the spline and its translate: the two pole terms, minus the von Mangoldt sum, plus the
+Gamma term. -/
+theorem zetaKernel_eq_weilFullFunctional (u : HeckeLattice) :
+    zetaKernel u = RHTower.weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+      (EF.weilTest (cx cubicSpline)
+        (ArithmeticCastelnuovoSeveri.translate (scale heckeLogScale u) (cx cubicSpline))) :=
+  RHTower.zeta_W_eq_weilFullFunctional_mixed (cx_contDiff contDiff_cubicSpline)
+    (cx_hasCompactSupport hasCompactSupport_cubicSpline)
+    (ArithmeticCastelnuovoSeveri.translate_contDiff (cx_contDiff contDiff_cubicSpline) _)
+    (ArithmeticCastelnuovoSeveri.translate_hasCompactSupport
+      (cx_hasCompactSupport hasCompactSupport_cubicSpline) _)
 
 /-- **The spline sees every right zero**: its weight in the Weil kernel is nonzero. -/
 theorem Wsummand_ne_zero_of_rightZero {ρ : ℂ} (hρ : ρ ∈ rightZeros zetaZeroConfig) :
@@ -215,3 +235,6 @@ theorem bounded_heat_iff_consecutive_bounded :
   exact ((zetaKernel_finiteIndex_tfae Nat.prime_two Nat.prime_three (by norm_num)).out 0 3).symm
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms zetaKernel_eq_weilFullFunctional

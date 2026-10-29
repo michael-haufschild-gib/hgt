@@ -3,7 +3,7 @@
 - **ID:** hecke-fourier-coefficients-are-inverse-hecke-values
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Gauss and dual-character arithmetic](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Gauss and dual-character arithmetic](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** At the actual finite conductor, every nonzero frequency `a∈J_b=dual(mb)` satisfies `F_b(a)sgnψ(a)=Cψ ψ(b)ψ⁻¹(I_a)`, where `I_a=(a)J_b⁻¹` is the constructed integral ideal and `Cψ` is the constructed arithmetic Gauss constant.
 
 ## Proof

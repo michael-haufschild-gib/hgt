@@ -3,7 +3,7 @@
 - **ID:** hecke-fourier-coefficients-scale-by-ray-residues
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** Primitive finite Hecke Fourier coefficients scale by the inverse actual finite character under field multipliers prime to the modulus. Multiplying a frequency by an element of its base ideal transfers it to the unit base with the exact inverse finite-character factor.
 
 ## Proof

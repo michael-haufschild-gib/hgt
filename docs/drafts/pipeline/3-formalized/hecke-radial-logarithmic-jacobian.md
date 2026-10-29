@@ -3,7 +3,7 @@
 - **ID:** hecke-radial-logarithmic-jacobian
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Hecke theta Mellin unfolding](../1-in-progress/hecke-theta-mellin-continuation-and-unit-unfolding.md)
+- **Source:** [Hecke theta Mellin unfolding](hecke-theta-mellin-continuation-and-unit-unfolding.md)
 - **Statement:** The actual map `(q,l) ↦ (q-P(l)_v)_v` pushes product Lebesgue measure forward to `2^r₂/[K:Q]` times place-coordinate Lebesgue measure, with exact nonnegative and complex integral formulas and equivalence of absolute integrability.
 
 ## Dependency-closed proof

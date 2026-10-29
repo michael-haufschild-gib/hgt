@@ -3,7 +3,7 @@
 - **ID:** primitive-gauss-sums-detect-primitive-additive-characters
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** For a primitive complex multiplicative character of a finite commutative ring, its Gauss sum against an additive character is nonzero exactly when that additive character is primitive. Its squared norm is then the ring cardinality, and otherwise zero.
 
 ## Proof

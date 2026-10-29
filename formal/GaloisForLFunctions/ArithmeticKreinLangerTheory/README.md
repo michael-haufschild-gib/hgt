@@ -212,12 +212,21 @@ fails.
    consecutive-integer towers are fine and do not. The two-prime lattice contains fine towers
    `⟨p^a q^b⟩` (`exists_fine_twoPrime`), and single such towers carry the index
    (`negIndex_orbitKernel_eq_iSup_twoPrime_towers`): the two-prime law is the fine-tower law.
-10. **Locality is twin-blind.** A unitary character `ω` translates Krein–Langer data:
+10. **Attained deep zeros are seen by almost every prime.** For one test and infinitely many zeros,
+    suppose the largest depth `D > 0` is attained by finitely many zeros, all others strictly
+    shallower (no gap needed). Along a tower, the orbit kernel divided by `e^{n·D·scale}` is the
+    unimodular top sum plus a remainder tending to `0` by dominated convergence (Tannery's theorem), so
+    non-cancellation at the top makes the kernel unbounded wherever the top nodes are distinct
+    (`not_bounded_orbitKernel_pow`). Two zeros alias at
+    most at one prime, so all but finitely many prime towers fail positivity
+    (`finite_primes_posDef_of_isolated_depth`); for `ζ` with the cubic spline
+    (`zeta_finite_primes_posDef_of_isolated_depth`).
+11. **Locality is twin-blind.** A unitary character `ω` translates Krein–Langer data:
     `ω·h_{χ,a} = h_{ωχ,a}` (`pairKernel_twist`), reflection commutes with the twist
     (`reflectChar_twistChar`), and tower faithfulness is invariant (`isTowerFaithful_twist`). So the tower
     Hasse principle holds verbatim for every twin (`twin_finite_towers_negIndex_ne`), including the
     Liouville character of `ℚ_{>0}`: no locality theorem is selective.
-11. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+12. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -247,6 +256,10 @@ fails.
    `negIndex_orbitKernel_eq_iSup_consecutive`, `negIndex_zetaKernel_eq_iSup_consecutive`,
    `riemannHypothesis_iff_zetaKernel_consecutive`): for orbit kernels, with any number of pairs, the
    consecutive-integer towers decide positivity and carry the whole index.
+6. *Coarse towers with attained depth* (`not_isPosDefKernel_orbitKernel_zpowers`,
+   `finite_primes_posDef_of_isolated_depth`, `zeta_finite_primes_posDef_of_isolated_depth`): with any
+   number of zeros, a largest depth attained by finitely many zeros is seen by all but finitely many
+   prime towers.
 
 **B. Local constituents and ceilings.**
 1. *Poisson law* (`isPosDefKernel_poissonKernel`, `isPosDefKernel_eulerKernel`, `isPosDefKernel_twist`).
@@ -263,7 +276,8 @@ fails.
 1. *Twin invariance over `𝔽_q`* (`negIndex_traceKernel_quadTwist`, `pointCount_add_quadTwist_of_odd`).
 2. *One twist does not complete* (`one_twist_does_not_complete`); *the twist tower completes*
    (`unitary_iff_twistTower_upper`), stated through the quadratic twists of the `2`-power base changes
-   (`baseChange`, `twistCount_eq_pointCount`, `unitary_iff_twistedBaseChanges_upper`).
+   (`baseChange`, `twistCount_eq_pointCount`, `unitary_iff_twistedBaseChanges_upper`); the golden
+   datum attains the genus ceiling, passes the upper count and fails the twist tower (`golden_battery`).
 3. *Parity form over `ℤ`* (`riemannHypothesis_iff_parityClasses_upper`); *one class suffices*
    (`riemannHypothesis_iff_oddClass_upper`, `negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
 4. *Compressions are receivers* (`compress_traceKernel_charPoly`, `hat_euler_eq_zero_iff`,
@@ -287,6 +301,7 @@ fails.
 | The prime towers decide because two primes do for `ζ` | Only for tower-faithful spectra; on `ℤ²` a Krein–Langer kernel of index `2` vanishes on both axes |
 | Cyclic locality is a general fact | It holds for the Krein–Langer class and fails for finite-support kernels with a signed spectrum |
 | A cyclic subgroup always carries the whole index | Only without torsion aliasing; otherwise it carries at least one square |
+| Prime towers cannot decide infinite spectra | They do when the largest depth is attained by finitely many zeros; what remains is an unattained or infinitely attained supremum |
 | Locality needs finitely many pairs | For orbit kernels the fine towers `⟨(n+2)/(n+1)⟩` decide with any number of pairs; the archimedean place supplies the continuity |
 | A Stepanov certificate is an annihilating compressor | Over `𝔽_q` the characteristic polynomial annihilates the trace kernel and certifies nothing; Euler-factor compressors are index-neutral over `ℤ` |
 | Local constituents are positive | The local kernel `L_p` is; the constituent `log p·δ₀ − L_p` is not, and finitely many places have infinite index |
@@ -388,8 +403,9 @@ To build:
    description of a parity class; the first rung, beating the sieve's parity constant `2` on intervals
    `x^ε`.
 2. **Ring-level inputs**: Bézout relations as local-to-global data.
-3. **Prime-tower locality for infinite spectra**: one test, infinitely many prime towers, infinitely
-   many pairs (the fine towers decide; the coarse prime towers alias).
+3. **Prime-tower locality when the depth supremum is not attained, or attained infinitely often**
+   (fine towers decide in general; prime towers decide when the largest depth is attained by finitely
+   many zeros).
 4. **A direct Lindelöf bridge** from a count with finitely many waves.
 5. **Collision rates off the finite stratum**: the growth rate of collision mass as `t ↓ 0` against
    the growth of the fine-tower indices.

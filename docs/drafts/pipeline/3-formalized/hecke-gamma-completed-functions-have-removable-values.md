@@ -58,5 +58,6 @@ without warnings:
 lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeGammaCompletedFunctionsHaveRemovableValues.lean
 ```
 
-Wired into the Hecke umbrella without compiling it. Arithmetic scalar
-normalization and primitive reflection are separate obligations.
+Wired into the Hecke umbrella without compiling it. [Arithmetic scalar normalization](hecke-completion-factors-have-exact-arithmetic-normalization.md)
+and [primitive reflection](primitive-hecke-l-functions-have-completed-functional-equation.md)
+are also finalized.

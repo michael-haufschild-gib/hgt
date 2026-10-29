@@ -3,7 +3,7 @@
 - **ID:** fractional-ideal-elements-are-class-unit-orbits
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual Hecke theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual Hecke theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** For any invertible fractional ideal `J`, its nonzero elements are in explicit bijection with nonzero integral ideals of class `[J]⁻¹` times global units. The chosen generators and all unit-orbit elements have absolute field norm `Norm(I)Norm(J)`.
 
 ## Proof

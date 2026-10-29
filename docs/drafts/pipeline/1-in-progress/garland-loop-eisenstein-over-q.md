@@ -2,6 +2,7 @@
 
 - **ID:** garland-loop-eisenstein-over-q
 - **Stage:** 1-in-progress
+- **Status:** Paused; finish only the already-started compact–Borel and spherical-function batch.
 - **Type:** FORMALIZATION PROGRAMME
 - **Target:** Construct an actual arithmetic loop-group Eisenstein series over ℚ, prove its
   absolute convergence, and identify its unipotent constant term with Garland's affine Weyl
@@ -143,10 +144,10 @@ For every inversion argument `s`, normalization and proved nonvanishing give
 Here `|s-1|≥Re s-1≥δ`, and the first estimate uses `s+1=(s-1)+2`.
 Multiplying over the exact inversion set proves
 `|c_w(λ)|≤exp(B #I(w))`. In particular the translation and reflection bounds are
-`exp(B|2m|)` and `exp(B|2m+1|)`. Every input is already proved; the next Lean
-module must formalize these exact bounds before they count as established.
+`exp(B|2m|)` and `exp(B|2m+1|)`. These exact bounds are formalized and audited
+in `AffineA1XiEstimates`.
 
-## Degree-rotation calculation for the next convergence theorem
+## Degree-rotation calculation for Weyl-sum convergence
 
 An affine weight has coordinates `(κ,b,d)=(λ(c),λ(h₁),λ(D))`. The Weyl action is
 
@@ -227,11 +228,12 @@ coefficient bounds, actual degree-rotation exponents, and Gaussian domination.
 | Bruhat unfolding identifying that integral with `weylSum` | Still open |
 
 **[OPEN CORE]** Construct the completed central loop group and its arithmetic series,
-then prove the convergence and unfolding statements. The full objective stays active.
+then prove the convergence and unfolding statements. The full objective is paused;
+only the already-started compact–Borel and spherical-function batch is being closed.
 A convergent Weyl expansion cannot be advertised as a constructed arithmetic
 loop-group Eisenstein series.
 
-## Next group-level dependency audit
+## Group-level dependency audit
 
 Corpus leads, with statements inspected:
 

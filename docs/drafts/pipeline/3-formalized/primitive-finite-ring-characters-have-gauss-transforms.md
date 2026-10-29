@@ -3,7 +3,7 @@
 - **ID:** primitive-finite-ring-characters-have-gauss-transforms
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** For a primitive multiplicative character of a finite commutative ring, every shifted Gauss sum equals the inverse-character value times the original Gauss sum. A primitive additive character gives squared Gauss norm equal to the ring cardinality.
 
 ## Definitions and proof

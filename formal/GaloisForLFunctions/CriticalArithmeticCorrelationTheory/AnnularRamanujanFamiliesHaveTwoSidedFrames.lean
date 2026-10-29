@@ -23,7 +23,7 @@ private theorem sum_window_eq_range (f : ℕ → ℝ) (A N : ℕ) :
   | zero => simp
   | succ N ih =>
     rw [show A + (N + 1) = (A + N) + 1 by omega,
-      sum_Icc_succ_top (by omega : A + 1 ≤ (A + N) + 1), ih, sum_range_succ]
+      sum_Icc_succ_top (by omega : A + 1 ≤ (A + N) + 1), ih, Finset.sum_range_succ]
 
 /-- Every real coefficient vector has the same harmonic annular discrepancy,
 with the exact cost `Q(Q-1)/(A+1)` from the first weight. -/
@@ -55,14 +55,14 @@ theorem abs_ramanujanPoleProfile_annular_gram_discrepancy_le {Q : ℕ} (hQ : 2 �
       (∑ n ∈ Icc (A + 1) (A + N),
         (∑ m ∈ Icc 1 Q, a m * ramanujanPoleProfile m n) ^ 2) -
       (∑ n ∈ Icc (A + 1) (A + N), 1 / (n : ℝ)) * C := by
-    rw [sum_window_eq_range, sum_window_eq_range, ← sum_mul, ← sum_sub_distrib]
+    rw [sum_window_eq_range, sum_window_eq_range, sum_mul, ← sum_sub_distrib]
     apply sum_congr rfl
     intro i hi
     simp only [ramanujanPoleProfile, ← mul_div_assoc, ← sum_div, div_pow,
       Real.sq_sqrt (Nat.cast_nonneg (A + i + 1)), w, f]
     ring
   rw [he] at hb
-  simpa only [w, Nat.add_zero, Nat.cast_add, Nat.cast_one, C, D, mul_one_div,
+  simpa only [w, Nat.add_zero, Nat.cast_add, Nat.cast_zero, Nat.cast_one, add_zero, C, D, mul_one_div,
     div_mul_eq_mul_div] using hb
 
 private theorem dyadic_harmonic_bounds {A : ℕ} (hA : 0 < A) :

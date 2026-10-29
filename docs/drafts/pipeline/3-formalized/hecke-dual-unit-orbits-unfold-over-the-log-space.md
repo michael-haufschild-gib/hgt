@@ -3,7 +3,7 @@
 - **ID:** hecke-dual-unit-orbits-unfold-over-the-log-space
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** The actual dual unit-averaged Hecke theta, minus its regulator-scaled zero mode, equals the torsion order times the sum of whole-log class-generator integrals. The class kernels are integrable and their absolute masses are summable at every positive theta parameter.
 
 ## Proof

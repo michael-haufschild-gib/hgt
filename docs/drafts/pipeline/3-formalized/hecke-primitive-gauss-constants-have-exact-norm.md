@@ -3,7 +3,7 @@
 - **ID:** hecke-primitive-gauss-constants-have-exact-norm
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Gauss and dual-character arithmetic](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Gauss and dual-character arithmetic](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** Construct an actual nonzero primitive trace frequency and its coprime integral ideal. The finite Gauss coefficient corrected by its real sign and ideal character has squared norm equal to the finite conductor norm; dividing by the positive square root gives norm one.
 
 ## Proof

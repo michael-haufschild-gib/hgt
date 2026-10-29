@@ -102,5 +102,5 @@ No umbrella was compiled. No Mertens olean is generated until a written
 consumer requires it.
 
 HL6 is complete. The primitive completed functional equation remains on
-[its arithmetic card](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md).
+[its arithmetic card](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md).
 Class field theory follows the completed Hecke programme.

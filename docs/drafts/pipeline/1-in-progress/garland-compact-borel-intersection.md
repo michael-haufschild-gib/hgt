@@ -129,6 +129,23 @@ g=b₁k₁=b₂k₂, then b₂⁻¹b₁=k₂k₁⁻¹ belongs to B∩K. Thus the
 values of b₁,b₂ coincide. This yields a well-defined spherical function,
 left B-equivariant and right K-invariant, on the actual central loop group.
 
+## Lean declaration map
+
+Modules are in `GaloisForLFunctions.HTGeometry.LoopEisenstein`; group-level
+declarations use its `LoopSL2` namespace.
+
+| Module | Main declarations |
+| --- | --- |
+| `RealRotationMatrices` | `rotation_upperTriangular_eq_sign`, `sl2Diagonal_neg_one_mem_rotation` |
+| `MatrixLaurentLeading` | `MatrixHasLeadAt.mul`, `affineConstantSL2Map_hasLeadAt`, `not_mem_laurentIwahori_of_negative_lead` |
+| `SubgroupAlternatingWords` | `subgroup_join_base_or_alternating` |
+| `SimpleCompactBorel` | `finiteSL2Embedding_mem_borel_iff`, `affineSimpleSL2Embedding_mem_borel_iff`, both simple sign classifications |
+| `RealCompactSigns` | `enlargedSimpleCompact_inf_borel`, `enlargedSimpleCompact_sup` |
+| `SimpleMatrixWords` | `affine_head_boundary`, `alternating_simpleMatrixWord_not_mem_iwahori` |
+| `CompactBorelIntersection` | `realCompact_inf_positiveBorel` |
+| `RealBorelCharacters` | `borelTorusHom`, `borelTorusHom_cartan`, `borelWeightCharacter_ne_zero` |
+| `RealSphericalFunction` | `borelWeightCharacter_iwasawa_unique`, `sphericalFunction_of_factors`, `sphericalFunction_borel_mul`, `sphericalFunction_mul_compact`, `sphericalFunction_ne_zero` |
+
 ## Status and remaining exact obligations
 
 The parent programme is paused. Closure scope is the nine already started
@@ -136,17 +153,21 @@ modules on this card: finish proofs, direct source checks, transitive
 audits, umbrella imports, and scratch cleanup. Do not begin arithmetic,
 degree-extension, determinant-comparison, or additional research work.
 
-Paper argument recorded. `SimpleCompactBorel`, `RealCompactSigns`,
-`SimpleMatrixWords`, `CompactBorelIntersection`, `RealBorelCharacters`, and
-`RealSphericalFunction` are written but unchecked. They include the exact
+Paper argument recorded. All nine modules are installed. They include the exact
 simple Borel intersections, sign-torus inclusions, generation by enlarged
 simple rotation groups, alternating-word boundary coefficients, intrinsic
 Borel weight characters, and the factorization-independent spherical
 function with left Borel and right compact transformation laws.
-`RealRotationMatrices`, `MatrixLaurentLeading`, and `SubgroupAlternatingWords`
-are installed and passed clean dependency builds. `SimpleCompactBorel` is
-undergoing its dependency check. Input axiom audits passed. Remaining work:
-check and fix the six written consumers, run final direct checks and
-transitive audits, wire all nine modules, and remove owned scratch files.
+`RealRotationMatrices`, `MatrixLaurentLeading`, `SubgroupAlternatingWords`,
+`SimpleCompactBorel`, `RealCompactSigns`, `SimpleMatrixWords`,
+`CompactBorelIntersection`, and `RealBorelCharacters` passed clean dependency
+builds. `RealSphericalFunction` passed its final direct source check. All
+nine modules are wired. The unchanged, previously audited
+`RealCartanCharacters` was emitted for its written consumer. Input axiom
+audits passed. Installed scratch copies were removed. Remaining work: the
+five final direct dependency checks, transitive audit, documentation
+promotion, and removal of the remaining owned audit scratch files.
+Final direct checks passed: `RealSphericalFunction`, `RealRotationMatrices`,
+`MatrixLaurentLeading`, `SubgroupAlternatingWords`.
 Only then can this card move to formalized. Arithmetic subgroup, series,
 measure, convergence, and ξ constant-term unfolding remain open.

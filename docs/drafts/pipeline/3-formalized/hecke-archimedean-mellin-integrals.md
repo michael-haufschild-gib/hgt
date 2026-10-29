@@ -3,7 +3,7 @@
 - **ID:** hecke-archimedean-mellin-integrals
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Hecke theta Mellin unfolding](../1-in-progress/hecke-theta-mellin-continuation-and-unit-unfolding.md)
+- **Source:** [Hecke theta Mellin unfolding](hecke-theta-mellin-continuation-and-unit-unfolding.md)
 - **Statement:** Actual nonzero-element Hecke kernels have absolutely convergent Mellin integrals for `Re s>0`, with their principal-ideal character coefficient, norm power, and standard Gamma product. The inverse-class sum may be exchanged with the Mellin integral on `Re s>1`.
 
 ## Proof
@@ -45,5 +45,6 @@ inverse-class L-series; unit torsion contributes its exact order.
 All modules pass final direct source audits with `lake --old env lean`.
 Audited principal declarations use only `propext`, `Classical.choice`, and
 `Quot.sound`. Required consumer oleans exist; finished modules are wired
-into their umbrellas. Global continuation and the primitive functional
-equation remain separate programme obligations.
+into their umbrellas. [Global continuation](hecke-global-continuation-from-ordinary-classes.md)
+and the [primitive functional equation](primitive-hecke-l-functions-have-completed-functional-equation.md)
+are also finalized.

@@ -3,7 +3,7 @@
 - **ID:** finite-ring-characters-have-primitive-conductors
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** Every multiplicative character of a finite commutative ring has a unique greatest quotient-descent ideal, and its unique inducing character on that quotient is primitive.
 
 ## Proof

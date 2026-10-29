@@ -3,7 +3,7 @@
 - **ID:** dedekind-ideal-quotients-detect-coprimality
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** For a nonzero ideal `m` in a Dedekind domain and any ideal `I`, `(m:I)=m` if and only if `m+I=(1)`.
 
 ## Proof

@@ -3,7 +3,7 @@
 - **ID:** number-field-trace-duals-have-discriminant-norms
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual Hecke unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual Hecke unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** For every fractional ideal `I` of a number field, `Norm(dual(I))=(|disc K| Norm(I))⁻¹`, including the zero ideal under the standard totalized inverse.
 
 ## Proof

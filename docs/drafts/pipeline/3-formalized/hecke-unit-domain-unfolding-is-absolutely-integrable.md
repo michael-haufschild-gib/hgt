@@ -3,7 +3,7 @@
 - **ID:** hecke-unit-domain-unfolding-is-absolutely-integrable
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** [Hecke theta Mellin unfolding](../1-in-progress/hecke-theta-mellin-continuation-and-unit-unfolding.md)
+- **Source:** [Hecke theta Mellin unfolding](hecke-theta-mellin-continuation-and-unit-unfolding.md)
 - **Statement:** For each actual nonzero ideal element and positive Gaussian parameter, its Hecke kernel is integrable on the whole logarithmic space, and its unit-orbit average equals the torsion order times that whole-space integral.
 
 ## Dependency-closed proof

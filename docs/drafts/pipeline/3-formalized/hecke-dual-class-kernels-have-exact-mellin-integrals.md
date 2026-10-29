@@ -3,7 +3,7 @@
 - **ID:** hecke-dual-class-kernels-have-exact-mellin-integrals
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** Each selected actual trace-dual class generator has joint Mellin density equal to its inverse Hecke ideal term times one common arithmetic factor and a translated archimedean kernel. Its exact Mellin integral and absolute mass are determined, and the absolute masses are summable on `Re(s)>1`.
 
 ## Proof

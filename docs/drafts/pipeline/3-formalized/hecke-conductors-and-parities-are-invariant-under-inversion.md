@@ -3,7 +3,7 @@
 - **ID:** hecke-conductors-and-parities-are-invariant-under-inversion
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke dual-character arithmetic](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke dual-character arithmetic](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** A finite-order Hecke character and its inverse have the same finite conductor, infinite sign character, real parities, Gamma factor, theta Mellin weight, and affine Mellin argument.
 
 ## Proof

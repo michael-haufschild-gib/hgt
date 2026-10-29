@@ -3,7 +3,7 @@
 - **ID:** hecke-dual-averaged-mellin-is-the-inverse-class-series
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** For a finite-primitive Hecke character, the actual dual unit average has an absolutely convergent Mellin transform throughout `Re(s)>1`. It equals the inverse-character ideal-class series with the exact Gauss, fractional-norm, torsion, and Gamma/Jacobian factors, and agrees with the symmetric actual theta continuation.
 
 ## Proof
@@ -62,4 +62,5 @@ lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeDualAveragedMellinI
 
 Wired into `HeckeLFunctions.lean`; the umbrella was not compiled.
 Finite dual class recombination, completed removable values, and the
-normalized global functional equation remain separate obligations.
+normalized global functional equation are finalized in
+[the completed equation](primitive-hecke-l-functions-have-completed-functional-equation.md).

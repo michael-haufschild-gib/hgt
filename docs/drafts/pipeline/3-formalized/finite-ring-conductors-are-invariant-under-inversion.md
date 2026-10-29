@@ -3,7 +3,7 @@
 - **ID:** finite-ring-conductors-are-invariant-under-inversion
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke dual-character arithmetic](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke dual-character arithmetic](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** A multiplicative character of a finite commutative ring, valued in a field, and its inverse have exactly the same descent ideals and conductor ideal.
 
 ## Proof

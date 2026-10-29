@@ -245,10 +245,37 @@ logarithmic version without an additional constant loss.
 contains the actual packet and family bounds;
 [HarmonicMassFollowsDelayedCounting](HarmonicMassFollowsDelayedCounting.lean)
 contains the general transfer. This improves lower frame control beyond the
-previous whole-family error proportional to `sum m²`. It does not give a
-matching upper frame estimate, a small prime residual at the same growing
-cutoff, or a sign estimate for the completed Weil form. Those require further
-arithmetic cancellation.
+previous whole-family error proportional to `sum m²`. This whole-prefix
+estimate alone does not give matching upper frame control or a small prime
+residual at the same growing cutoff. The following annular theorem supplies
+two frame bounds on a different family of windows.
+
+For every starting point `A≥0`, length `N≥0`, and the same actual packet,
+
+\[
+\left|\sum_{A<n\le A+N}F_a(n)^2
+ -(H_{A+N}-H_A)\sum_{m\le Q}a_m^2\right|
+\le\frac{Q(Q-1)}{A+1}\sum_{m\le Q}a_m^2.
+\]
+
+Shifted large-sieve discrepancy followed by summation against the decreasing
+harmonic weights costs exactly their first value `1/(A+1)`. On `(A,2A]`,
+the harmonic mass lies between `1/2` and `1`. Thus, when `A≥4Q(Q-1)`,
+
+\[
+\frac14\sum_{m\le Q}a_m^2
+\le\sum_{A<n\le2A}F_a(n)^2
+\le\frac54\sum_{m\le Q}a_m^2.
+\]
+
+[AnnularRamanujanFamiliesHaveTwoSidedFrames](AnnularRamanujanFamiliesHaveTwoSidedFrames.lean)
+proves both estimates for every real coefficient vector. It also proves an
+exact boundary: the literal prime kernel, and hence every prime quadratic
+form compressed to one such dyadic annulus, is zero. Distinct integers in
+that annulus cannot divide one another. These frames therefore do not give
+localized prime quasimodes; the missing prime transport crosses annular
+boundaries. No sign estimate for the completed Weil form follows from the
+frame bounds alone.
 
 ## A uniform cross budget and a strict charge reserve
 
@@ -439,6 +466,31 @@ The norm argument and conductor-uniform floor are in
 These are finite arithmetic theorems. Identifying an integral of this
 curvature with a complete overlapping spectral symbol, and realizing that
 symbol in the full operator with an exhaustive norm estimate, remain open.
+
+The finite arithmetic excitation also has an exact source description. Put
+
+\[
+J_m(n)=\sum_{\substack{d\mid m\\d\mid n}}\mu(m/d)d\log d.
+\]
+
+For every positive integer `n`, the literal downward convolution satisfies
+
+\[
+\sum_{a\mid n}\Lambda(a)c_m(n/a)=\log n\,c_m(n)-J_m(n).
+\]
+
+Thus the existing downward correction equals `-J_m(n)`. At `n=m>0`, every
+upward correction vanishes, and the completed prime-row identity gives
+
+\[
+\sum_{d\mid m}\mu(m/d)d\log d
+=\varphi(m)\bigl(\log m+\operatorname{tameDifferent}(m)\bigr).
+\]
+
+[TheDownwardPrimeRowIsAnExactLogarithmicDivisorJet](TheDownwardPrimeRowIsAnExactLogarithmicDivisorJet.lean)
+proves these identities directly from the original divisor source. They fix
+the logarithmic correction exactly; they do not estimate a growing family
+of overlapping norm residuals.
 
 ## Questions and tools to develop
 

@@ -3,7 +3,7 @@
 - **ID:** hecke-theta-unit-orbits-as-logarithmic-periodizations
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** [Hecke theta Mellin unfolding](../1-in-progress/hecke-theta-mellin-continuation-and-unit-unfolding.md)
+- **Source:** [Hecke theta Mellin unfolding](hecke-theta-mellin-continuation-and-unit-unfolding.md)
 - **Lean:** `HeckeLFunctions/HeckeThetaUnitOrbitsAreLogPeriodizations.lean`
 
 For every actual nonzero integral ideal `b` and positive Gaussian parameter,

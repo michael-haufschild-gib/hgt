@@ -3,7 +3,7 @@
 - **ID:** hecke-finite-fourier-coefficients-are-gauss-sums
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** Actual finite coefficients in Hecke ideal-theta inversion are Gauss sums of constructed residue trace characters. At the finite conductor, their inverse-character scaling, nonvanishing, and exact squared norms follow, with additive primitivity characterized by a concrete trace-dual annihilator condition.
 
 ## Proof

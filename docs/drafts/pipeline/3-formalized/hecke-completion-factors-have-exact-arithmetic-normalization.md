@@ -51,4 +51,5 @@ lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeCompletionFactorsHa
 ```
 
 Wired into the Hecke umbrella without compiling it. Finite class
-recombination and global reflection are the existing consumer's obligations.
+recombination and global reflection are finalized in
+[the completed functional equation](primitive-hecke-l-functions-have-completed-functional-equation.md).

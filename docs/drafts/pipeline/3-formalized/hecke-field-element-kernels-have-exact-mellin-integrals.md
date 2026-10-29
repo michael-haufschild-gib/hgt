@@ -3,7 +3,7 @@
 - **ID:** hecke-field-element-kernels-have-exact-mellin-integrals
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** For every nonzero number-field element, the actual Hecke parity kernel has an absolutely convergent whole-log Mellin integral on `Re(s)>0`, with coefficient `sgnψ(a)|Norm(a)|^(-s)` and the exact Gamma/Jacobian factor. The negative logarithmic profile has the same integral.
 
 ## Proof

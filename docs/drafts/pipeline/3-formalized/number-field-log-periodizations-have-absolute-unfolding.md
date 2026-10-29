@@ -3,7 +3,7 @@
 - **ID:** number-field-log-periodizations-have-absolute-unfolding
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Dual theta unfolding](../1-in-progress/hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
+- **Source:** [Dual theta unfolding](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md)
 - **Statement:** A continuous countable family on a number field's unit-log space, uniformly dominated on the unit fundamental domain by one summable family/lattice majorant, is integrable over the entire log space. Its absolute masses are summable, and integration of the paired periodization equals the sum of whole-space integrals.
 
 ## Proof

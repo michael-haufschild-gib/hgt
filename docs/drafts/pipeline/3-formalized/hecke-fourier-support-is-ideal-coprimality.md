@@ -3,7 +3,7 @@
 - **ID:** hecke-fourier-support-is-ideal-coprimality
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** A frequency in `dual(mb)` has primitive residue trace character exactly when its associated integral ideal is coprime to `m`. At the finite conductor, this is exactly the support of the actual Hecke Fourier coefficient, whose squared norm there is `Norm(m)`. Every nonzero base ideal admits a nonzero such frequency.
 
 ## Proof

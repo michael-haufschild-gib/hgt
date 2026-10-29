@@ -50,6 +50,6 @@ Its olean is built for the written archimedean-theta consumer.
 - [x] Exact target and corpus audit.
 - [x] Lean implementation, direct source audit, transitive axiom audit.
 
-Next is the [archimedean place-parameter family](../1-in-progress/ideal-theta-under-archimedean-place-scaling.md).
+Next is the [archimedean place-parameter family](ideal-theta-under-archimedean-place-scaling.md).
 This completed result is the unweighted ideal theta identity. Finite characters,
 real parity factors, unit integration, and the Hecke Mellin transform remain open.

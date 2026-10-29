@@ -46,5 +46,6 @@ lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeCompletedThetaResid
 ```
 
 The module is wired into the Hecke umbrella without compiling it. The
-divided-difference completion and normalized functional equation remain
-separate obligations.
+[divided-difference completion](hecke-gamma-completed-functions-have-removable-values.md)
+and [normalized functional equation](primitive-hecke-l-functions-have-completed-functional-equation.md)
+are also finalized.

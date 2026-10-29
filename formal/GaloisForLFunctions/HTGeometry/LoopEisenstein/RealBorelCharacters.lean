@@ -42,10 +42,11 @@ def positiveBorelFactorHom : positiveBorel F →* (Fˣ × iwahoriMatrices F) whe
 def borelTorusHom : positiveBorel F →* (Fˣ × Fˣ) where
   toFun g := ((positiveBorelFactorHom F g).1,
     iwahoriFiniteCoordinate F (positiveBorelFactorHom F g).2)
-  map_one' := by rw [map_one]; simp only [Prod.fst_one, Prod.snd_one, map_one]
+  map_one' := by rw [map_one]; simp only [Prod.fst_one, Prod.snd_one, map_one]; rfl
   map_mul' g h := by
     rw [map_mul]
     simp only [Prod.fst_mul, Prod.snd_mul, map_mul]
+    rfl
 
 /-- The intrinsic coordinates recover every actual central/finite Cartan element. -/
 theorem borelTorusHom_cartan (c a : Fˣ)

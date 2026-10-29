@@ -80,8 +80,8 @@ theorem sphericalFunction_borel (L : AffineA1.Weight) (b : positiveBorel ℝ) :
   sphericalFunction_of_factors L b b 1 (mul_one _)
 
 @[simp] theorem sphericalFunction_one (L : AffineA1.Weight) : sphericalFunction L 1 = 1 := by
-  have h := sphericalFunction_borel L (1 : positiveBorel ℝ)
-  simpa only [map_one] using h
+  change sphericalFunction L ((1 : positiveBorel ℝ) : LoopSL2 ℝ) = 1
+  rw [sphericalFunction_borel, map_one]
 
 /-- Left Borel equivariance with the intrinsic weight character. -/
 theorem sphericalFunction_borel_mul (L : AffineA1.Weight) (b : positiveBorel ℝ) (g : LoopSL2 ℝ) :

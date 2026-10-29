@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
 import GaloisForLFunctions.HeckeKreinToeplitz.AllButFinitelyManyPrimesSeeTheWholeIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.GrowthReadsTheDepthOfTheDeepestPair
+import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Isolated deep zeros are seen by almost every prime
@@ -9,24 +10,26 @@ The tower Hasse principle (`TowerFaithfulSpectraAreDecidedByAlmostEveryTower`) c
 pairs; fine towers (`FineTowersDecideEveryOrbitKernel`) cover every orbit kernel. For the coarse prime
 towers and a single test, with infinitely many zeros, positivity on a tower must defeat the growth of
 the deepest nodes against an infinite remainder. This module proves that it never can when the
-deepest zeros are **isolated in depth**.
+maximal depth is **attained by finitely many zeros**.
 
-**Isolated depth.** A finite nonempty set `T` of zeros at depth `½ − Re ρ = D > 0`, every other zero
-at depth `≤ D' < D`, and nonzero weights on `T`.
+**Attained depth.** A finite nonempty set `T` of zeros at depth `½ − Re ρ = D > 0`, every other zero
+strictly shallower (no uniform gap is needed), and nonzero weights on `T`.
 
 **Growth along one tower** (`not_bounded_orbitKernel_pow`, `not_isPosDefKernel_orbitKernel_zpowers`).
 Along `u^n`, `scale u > 0`, the orbit kernel is the finite top sum `Σ_{ρ∈T} W_ρ ν_ρ^n`, with
-`|ν_ρ| = e^{D·scale u}`, plus a remainder bounded by `e^{max(D',0)·n·scale u} Σ|W_ρ|`. If the top
-nodes are distinct, non-cancellation at the top modulus (`coeff_eq_zero_of_norm_le`) makes the kernel
-unbounded along the tower, so it is not positive definite there.
+`|ν_ρ| = R = e^{D·scale u}`, plus a remainder. Divided by `R^n`, every remainder term tends to `0` and
+is dominated by `|W_ρ|`, a summable bound, so the remainder tends to `0` (Tannery's theorem,
+`tendsto_tsum_of_dominated_convergence`). If the kernel were bounded along the tower, the normalized
+top sum would tend to `0`, and non-cancellation of distinct unimodular frequencies
+(`coeff_eq_zero_of_tendsto_zero'`) would kill the top weights.
 
 **Almost every prime** (`finite_primes_posDef_of_isolated_depth`). Two zeros alias at most at one
 prime (`eq_of_alias_of_alias`), so all but finitely many prime towers separate the top nodes and see
 a negative square, whatever the rest of the spectrum. For `ζ` with the cubic spline
-(`zeta_finite_primes_posDef_of_isolated_depth`): if the off-line zeros have finitely many deepest
-members isolated in depth, positivity of the Weil kernel fails on all but finitely many prime
-towers. What remains open is depth accumulation, where the deepest zeros are not attained or not
-isolated.
+(`zeta_finite_primes_posDef_of_isolated_depth`): if the largest depth of the off-line zeros is
+attained by finitely many of them, positivity of the Weil kernel fails on all but finitely many
+prime towers. What remains open is a supremum of depths that is not attained, or attained infinitely
+often.
 -/
 
 open Complex Finset Filter
@@ -51,11 +54,11 @@ theorem logChar_neg_apply {G : Type*} [Group G] (ℓ : G →* Multiplicative ℝ
 section IsolatedDepth
 
 variable {Z : ZeroConfig} (hZ : TemperedConfig Z) {f : ℝ → ℝ} (hf : f ∈ realTests)
-  {T : Finset ℂ} (hT : ∀ ρ ∈ T, ρ ∈ Z.carrier) (hTne : T.Nonempty) {D D' : ℝ}
-  (hDD : max D' 0 < D) (htop : ∀ ρ ∈ T, 1 / 2 - ρ.re = D)
-  (hgap : ∀ ρ ∈ Z.carrier, ρ ∉ T → 1 / 2 - ρ.re ≤ D')
+  {T : Finset ℂ} (hT : ∀ ρ ∈ T, ρ ∈ Z.carrier) (hTne : T.Nonempty) {D : ℝ}
+  (hD : 0 < D) (htop : ∀ ρ ∈ T, 1 / 2 - ρ.re = D)
+  (hshallow : ∀ ρ ∈ Z.carrier, ρ ∉ T → 1 / 2 - ρ.re < D)
   (hW : ∀ ρ ∈ T, Z.Wsummand (cx f) (cx f) ρ ≠ 0)
-include hZ hf hT hTne hDD htop hgap hW
+include hZ hf hT hTne hD htop hshallow hW
 
 /-- **Growth along one tower.** If the top nodes are distinct along `⟨u⟩`, `scale u > 0`, the
 orbit kernel is unbounded along `u^n`. -/
@@ -67,21 +70,22 @@ theorem not_bounded_orbitKernel_pow {u : HeckeLattice} (hu : 0 < scale heckeLogS
   set s := scale heckeLogScale u with hs
   set W : ℂ → ℂ := fun ρ => Z.Wsummand (cx f) (cx f) ρ with hWdef
   set ν : ℂ → ℂ := fun ρ => logChar heckeLogScale (1 / 2 - ρ) u with hνdef
-  set R := Real.exp (D * s)
-  set r := Real.exp (max D' 0 * s)
-  have hr1 : 1 ≤ r := Real.one_le_exp (mul_nonneg (le_max_right _ _) hu.le)
-  have hrR : r < R := Real.exp_lt_exp.mpr (mul_lt_mul_of_pos_right hDD hu)
+  set R := Real.exp (D * s) with hRdef
+  have hR1 : 1 < R := Real.one_lt_exp_iff.mpr (mul_pos hD hu)
+  have hR0 : (R : ℂ) ≠ 0 := by exact_mod_cast (zero_lt_one.trans hR1).ne'
+  set z : ℂ → ℂ := fun ρ => ν ρ / R with hzdef
   have hnorm : ∀ ρ, ‖ν ρ‖ = Real.exp ((1 / 2 - ρ.re) * s) := fun ρ => by
     simp only [hνdef, norm_logChar, sub_re, one_div, inv_re, normSq_ofNat]
     norm_num [hs]
-  have hνT : ∀ ρ ∈ T, ‖ν ρ‖ = R := fun ρ hρ => by rw [hnorm, htop ρ hρ]
-  have hνrest : ∀ ρ ∈ Z.carrier, ρ ∉ T → ‖ν ρ‖ ≤ r := fun ρ hρ hρT => by
-    rw [hnorm]
-    exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right
-      ((hgap ρ hρ hρT).trans (le_max_left _ _)) hu.le)
+  have hzn : ∀ ρ, ‖z ρ‖ = Real.exp ((1 / 2 - ρ.re) * s) / R := fun ρ => by
+    rw [hzdef, norm_div, hnorm, Complex.norm_real, Real.norm_of_nonneg (zero_lt_one.trans hR1).le]
+  have hzT : ∀ ρ ∈ T, ‖z ρ‖ = 1 := fun ρ hρ => by
+    rw [hzn, htop ρ hρ, div_self (zero_lt_one.trans hR1).ne']
+  have hzrest : ∀ ρ ∈ Z.carrier, ρ ∉ T → ‖z ρ‖ < 1 := fun ρ hρ hρT => by
+    rw [hzn, div_lt_one (zero_lt_one.trans hR1)]
+    exact Real.exp_lt_exp.mpr (mul_lt_mul_of_pos_right (hshallow ρ hρ hρT) hu)
   have hsumW := summable_norm_Wsummand Z hZ (cx_contDiff hf.1) (cx_hasCompactSupport hf.2)
     (cx_contDiff hf.1) (cx_hasCompactSupport hf.2)
-  set S := ∑' ρ : Z.carrier, ‖W ρ‖
   -- the kernel along the tower: top sum plus remainder
   have hterm : ∀ (n : ℕ) (ρ : ℂ), orbitTerm Z f (u ^ n) ρ = W ρ * ν ρ ^ n := fun n ρ => by
     simp only [orbitTerm, map_pow, hWdef, hνdef]; ring
@@ -102,40 +106,61 @@ theorem not_bounded_orbitKernel_pow {u : HeckeLattice} (hu : 0 < scale heckeLogS
       rw [hterm]; split_ifs <;> ring
     rw [orbitKernel_eq_tsum, ← htopsum, ← hsT.tsum_add hsE]
     exact tsum_congr fun ρ => by rw [hterm]; split_ifs <;> ring
-  -- the remainder grows at most like `r^n`
-  have hE : ∀ n : ℕ, ‖E n‖ ≤ S * r ^ n := fun n => by
-    have hb : ∀ ρ : Z.carrier, ‖(if (ρ : ℂ) ∈ T then 0 else W ρ * ν ρ ^ n)‖ ≤ ‖W ρ‖ * r ^ n :=
-      fun ρ => by
+  have hpowR : ∀ n : ℕ, ((R : ℂ) ^ n) ≠ 0 := fun n => pow_ne_zero n hR0
+  -- normalized by `R^n`, the kernel and the remainder tend to `0`
+  have hK : Tendsto (fun n : ℕ => orbitKernel Z f (u ^ n) / (R : ℂ) ^ n) atTop (nhds 0) := by
+    have hlim : Tendsto (fun n : ℕ => B * (R⁻¹) ^ n) atTop (nhds 0) := by
+      simpa using (tendsto_pow_atTop_nhds_zero_of_lt_one (inv_nonneg.mpr (zero_lt_one.trans hR1).le)
+        (inv_lt_one_of_one_lt₀ hR1)).const_mul B
+    refine squeeze_zero_norm (fun n => ?_) hlim
+    rw [norm_div, norm_pow, Complex.norm_real, Real.norm_of_nonneg (zero_lt_one.trans hR1).le,
+      div_eq_mul_inv, inv_pow]
+    exact mul_le_mul_of_nonneg_right (hB n) (by positivity)
+  have hEn : ∀ n : ℕ, E n / (R : ℂ) ^ n =
+      ∑' ρ : Z.carrier, if (ρ : ℂ) ∈ T then 0 else W ρ * z ρ ^ n := fun n => by
+    rw [← tsum_div_const]
+    refine tsum_congr fun ρ => ?_
+    split_ifs
+    · simp
+    · rw [hzdef, div_pow]; field_simp
+  have hE : Tendsto (fun n : ℕ => E n / (R : ℂ) ^ n) atTop (nhds 0) := by
+    simp only [hEn]
+    have := tendsto_tsum_of_dominated_convergence (𝓕 := atTop)
+      (f := fun (n : ℕ) (ρ : Z.carrier) => if (ρ : ℂ) ∈ T then 0 else W ρ * z ρ ^ n)
+      (g := fun _ => (0 : ℂ)) (bound := fun ρ => ‖W ρ‖) hsumW (fun ρ => by
+        by_cases hρT : (ρ : ℂ) ∈ T
+        · simp only [hρT, if_true]; exact tendsto_const_nhds
+        · simp only [hρT, if_false]
+          simpa using (tendsto_pow_atTop_nhds_zero_of_norm_lt_one
+            (hzrest ρ ρ.2 hρT)).const_mul (W ρ))
+      (Eventually.of_forall fun n ρ => by
         split_ifs with hρT
-        · simp only [norm_zero]; positivity
+        · simp
         · rw [norm_mul, norm_pow]
-          exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _)
-            (hνrest ρ ρ.2 hρT) n) (norm_nonneg _)
-    calc ‖E n‖ ≤ ∑' ρ : Z.carrier, ‖W ρ‖ * r ^ n :=
-          tsum_of_norm_bounded (hsumW.mul_right (r ^ n)).hasSum hb
-      _ = S * r ^ n := tsum_mul_right
-  -- non-cancellation at the top modulus
-  have hS0 : 0 ≤ S := tsum_nonneg fun _ => norm_nonneg _
-  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+          exact mul_le_of_le_one_right (norm_nonneg _)
+            (pow_le_one₀ (norm_nonneg _) (hzrest ρ ρ.2 hρT).le))
+    simpa using this
+  -- the normalized top sum tends to `0`: non-cancellation forces the weights to vanish
+  have htop0 : Tendsto (fun n : ℕ => ∑ ρ : T, W ρ * z ρ ^ n) atTop (nhds 0) := by
+    have := hK.sub hE
+    rw [sub_zero] at this
+    refine this.congr fun n => ?_
+    rw [Finset.sum_coe_sort T (fun ρ => W ρ * z ρ ^ n), ← sub_div, hsplit, add_sub_cancel_right,
+      sum_div]
+    exact sum_congr rfl fun ρ _ => by rw [hzdef, div_pow]; field_simp
+  have hz := coeff_eq_zero_of_tendsto_zero' (ι := T) (ζ := fun ρ => z ρ)
+    (fun ρ => hzT ρ ρ.2) (fun a b hab => Subtype.ext (hinj a.2 b.2 (by
+      have := congrArg (· * (R : ℂ)) hab
+      simpa [hzdef, div_mul_cancel₀ _ hR0] using this))) (fun ρ => W ρ) htop0
   obtain ⟨ρ₀, hρ₀⟩ := hTne
-  have hz := coeff_eq_zero_of_norm_le (ι := T) (ν := fun ρ => ν ρ)
-    (fun a b hab => Subtype.ext (hinj a.2 b.2 hab)) (fun ρ => W ρ) (zero_lt_one.trans_le hr1)
-    (M := B + S) (fun n => by
-      rw [Finset.sum_coe_sort T (fun ρ => W ρ * ν ρ ^ n)]
-      have h1 : ∑ ρ ∈ T, W ρ * ν ρ ^ n = orbitKernel Z f (u ^ n) - E n := by rw [hsplit]; ring
-      rw [h1]
-      calc ‖orbitKernel Z f (u ^ n) - E n‖ ≤ B + S * r ^ n :=
-            (norm_sub_le _ _).trans (add_le_add (hB n) (hE n))
-        _ ≤ (B + S) * r ^ n := by nlinarith [one_le_pow₀ hr1 (n := n)])
-    (i := ⟨ρ₀, hρ₀⟩) (by rw [hνT ρ₀ hρ₀]; exact hrR)
-  exact hW ρ₀ hρ₀ hz
+  exact hW ρ₀ hρ₀ (congrFun hz ⟨ρ₀, hρ₀⟩)
 
 /-- **A tower separating the top nodes sees a negative square.** -/
 theorem not_isPosDefKernel_orbitKernel_zpowers {u : HeckeLattice}
     (hu : 0 < scale heckeLogScale u)
     (hinj : Set.InjOn (fun ρ => logChar heckeLogScale (1 / 2 - ρ) u) T) :
     ¬ IsPosDefKernel (orbitKernel Z f ∘ zpowersHom _ u) := fun hpd =>
-  not_bounded_orbitKernel_pow hZ hf hT hTne hDD htop hgap hW hu hinj
+  not_bounded_orbitKernel_pow hZ hf hT hTne hD htop hshallow hW hu hinj
     ⟨((orbitKernel Z f ∘ zpowersHom _ u) 1).re, fun n => by
       have := hpd.norm_le (Multiplicative.ofAdd (n : ℤ))
       simpa [zpowersHom_apply] using this⟩
@@ -153,7 +178,7 @@ theorem finite_primes_posDef_of_isolated_depth :
   refine (Set.Finite.biUnion (s := ((T ×ˢ T).filter fun x => x.1 ≠ x.2 : Set (ℂ × ℂ))) (Finset.finite_toSet _)
     hS).subset fun p hp => ?_
   by_contra hnot
-  refine not_isPosDefKernel_orbitKernel_zpowers hZ hf hT hTne hDD htop hgap hW
+  refine not_isPosDefKernel_orbitKernel_zpowers hZ hf hT hTne hD htop hshallow hW
     (by rw [scale_primeElt]; exact Real.log_pos (by exact_mod_cast p.2.one_lt)) (fun ρ hρ ρ' hρ' h => ?_) hp
   by_contra hne
   apply hnot
@@ -188,15 +213,12 @@ theorem zeta_Wsummand_ne_zero_of_left {ρ : ℂ} (hρ : ρ ∈ zetaZeroConfig.ca
 finitely many zeros left of the line sit at the largest depth `D > 0`, and all other zeros have depth
 at most `D' < D`, then the Weil kernel is positive definite on only finitely many prime towers. -/
 theorem zeta_finite_primes_posDef_of_isolated_depth {T : Finset ℂ}
-    (hT : ∀ ρ ∈ T, ρ ∈ zetaZeroConfig.carrier) (hTne : T.Nonempty) {D D' : ℝ}
-    (hDD : max D' 0 < D) (htop : ∀ ρ ∈ T, 1 / 2 - ρ.re = D)
-    (hgap : ∀ ρ ∈ zetaZeroConfig.carrier, ρ ∉ T → 1 / 2 - ρ.re ≤ D') :
+    (hT : ∀ ρ ∈ T, ρ ∈ zetaZeroConfig.carrier) (hTne : T.Nonempty) {D : ℝ}
+    (hD : 0 < D) (htop : ∀ ρ ∈ T, 1 / 2 - ρ.re = D)
+    (hshallow : ∀ ρ ∈ zetaZeroConfig.carrier, ρ ∉ T → 1 / 2 - ρ.re < D) :
     {p : Nat.Primes | IsPosDefKernel (zetaKernel ∘ zpowersHom _ (primeElt p.2))}.Finite :=
   finite_primes_posDef_of_isolated_depth temperedConfig_zetaZeroConfig cubicSpline_mem_realTests hT
-    hTne hDD htop hgap fun ρ hρ => zeta_Wsummand_ne_zero_of_left (hT ρ hρ)
-      (by have := htop ρ hρ; have := le_max_right D' 0; linarith)
+    hTne hD htop hshallow fun ρ hρ => zeta_Wsummand_ne_zero_of_left (hT ρ hρ)
+      (by have := htop ρ hρ; linarith)
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms zeta_finite_primes_posDef_of_isolated_depth

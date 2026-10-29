@@ -3,7 +3,7 @@
 - **ID:** hecke-finite-characters-have-primitive-conductors
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive Hecke Gauss sums](../1-in-progress/hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
+- **Source:** [Primitive Hecke Gauss sums](hecke-primitive-gauss-sums-and-arithmetic-dual-character.md)
 - **Statement:** The actual finite residue character of every Hecke character has a canonical nonzero integral conductor dividing its modulus, and a unique primitive character on the conductor quotient inducing it.
 
 ## Proof

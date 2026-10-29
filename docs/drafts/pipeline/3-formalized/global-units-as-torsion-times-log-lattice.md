@@ -3,7 +3,7 @@
 - **ID:** global-units-as-torsion-times-log-lattice
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** [Hecke theta Mellin unfolding](../1-in-progress/hecke-theta-mellin-continuation-and-unit-unfolding.md)
+- **Source:** [Hecke theta Mellin unfolding](hecke-theta-mellin-continuation-and-unit-unfolding.md)
 - **Lean:** `HTGeometry/NumberFieldUnitsAreTorsionTimesLogLattice.lean`
 
 `numberFieldUnitsEquivTorsionLogLattice` identifies the actual global unit
