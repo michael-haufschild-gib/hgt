@@ -25,7 +25,7 @@ is the size of `N_k − q^k − 1`.
 * **The upper half is blind to real outer eigenvalues** (`unitary_of_upperCountAtPrecision_half`,
   `golden_upperCount_and_not_lowerCount`): without a real outer eigenvalue an upper square-root
   count forces unitarity, while the golden datum satisfies `N_k ≤ q^k + 1` and fails the lower half.
-  Over `ℤ` each half is RH, because `ζ` has no real zero in `(½, 1)`.
+  Over `ℤ` each half is RH: Landau's argument meets the real axis, where `ζ` has no zero in `(½, 1)`.
 -/
 
 noncomputable section

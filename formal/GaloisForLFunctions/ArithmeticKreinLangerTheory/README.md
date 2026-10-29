@@ -182,7 +182,9 @@ fails.
    zero of `K_ζ` (`negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
 6. **The index is the number of exceptional waves.** Along a separating tower, a count bounded after
    subtracting `m` waves forces each outer node to be a wave (merging frequencies, non-cancellation at
-   the top modulus), so `κ ≤ m`; the outer nodes attain it (`negIndex_eq_card_waves`).
+   the top modulus), so `κ ≤ m`; the outer nodes attain it (`negIndex_eq_card_waves`), and a count with
+   exactly `κ` waves uses the outer nodes with the pair weights (`minimal_waves_eq_outerNodes`): the
+   minimal count determines the hyperbolic spectrum.
 7. **Index limits and collisions.** Lower semicontinuity is attained on one finite family
    (`eventually_le_negIndex_of_tendsto`); with the structural ceiling `κ`, the index is continuous along
    pointwise convergence of data off the discriminant (`eventually_negIndex_eq_of_tendsto`). Each part
@@ -253,7 +255,9 @@ fails.
 3. *Riemann–Roch ceiling* (`two_mul_negIndex_traceKernel_le`), attained by the golden datum
    (`golden_attains_ceiling`).
 4. *Wave formula* (`card_le_of_bounded_sub_waves`, `exists_waves_bounded`, `negIndex_eq_card_waves`):
-   the index is the least number of exceptional waves of a bounded count along a separating tower.
+   the index is the least number of exceptional waves of a bounded count along a separating tower;
+   minimal counts are rigid: their waves are the outer nodes with the pair weights
+   (`nodeCoeff_outer_eq_sum_waves`, `minimal_waves_eq_outerNodes`).
 
 **C. Producers and parity.**
 1. *Twin invariance over `𝔽_q`* (`negIndex_traceKernel_quadTwist`, `pointCount_add_quadTwist_of_odd`).
@@ -341,7 +345,11 @@ fails.
    after at least `κ`, and the collision mass after small times is `2(κ + E)` with `E` the
    multiplicity excess (`waveNumber_collision_law`). Each exceptional wave of the count accounts for
    two collisions, and the index drops by coalescence, the part of the discriminant
-   where a node reaches the unit circle (§4.7). *Open:* a prime-side expression for `E`.
+   where a node reaches the unit circle (§4.7). The multiplicities are prime-side too: a count bounded
+   after exactly `κ` waves uses one wave per right zero, with amplitude `m_ρ |ĝ(γ_ρ)| |ĝ(γ̄_ρ)|`
+   (`minimal_count_reads_multiplicities`), so the zero multiplicities `m_ρ` are the minimal count's
+   amplitudes divided by the spline factors. *Open:* the identification of `m_ρ` with the `ξ`-orders
+   in `E`, within the corpus.
 
 ---
 
@@ -377,8 +385,8 @@ To build:
 3. **Prime-tower locality for infinite spectra**: one test, infinitely many prime towers, infinitely
    many pairs (the fine towers decide; the coarse prime towers alias).
 4. **A direct Lindelöf bridge** from a count with finitely many waves.
-5. **The multiplicity excess** `E` of the collision law in prime-side terms (the index part is the
-   wave number).
+5. **The multiplicity bridge**: identify the zero multiplicities read off minimal counts with the
+   `ξ`-orders of the collision law.
 6. **Finite-level ceilings**: index bounds for height or integer truncations from prime-side data,
    uniform in the truncation (equivalent to finite support; LH-deep).
 7. **The atomic index ladder over `𝔽_q`**: the function-field analogue of the index-one window and of

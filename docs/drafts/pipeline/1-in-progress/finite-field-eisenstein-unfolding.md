@@ -442,7 +442,10 @@ The valuation criterion for ideal-power membership gives
 are integral and `v(d)=1`, so the same inequality holds. Division by `d` proves
 `a-b/d` integral at every finite place. Hence every finite-adele coset modulo the
 actual diagonal field has an integral representative. This is the finite-place
-input to the global additive fundamental domain; its Lean proof is still open.
+input to the global additive fundamental domain. Lean formalization now passes in
+`FiniteFieldEllipticFiniteApproximation.lean`; the main theorem
+`finiteAdele_exists_integral_difference` has only the standard axioms
+`[propext, Classical.choice, Quot.sound]`.
 
 ## Genus-one additive fundamental domain `[PAPER PROOF; LEAN OPEN]`
 

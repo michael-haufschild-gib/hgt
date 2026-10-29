@@ -1,6 +1,8 @@
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheIndexIsTheNumberOfExceptionalWaves
 import GaloisForLFunctions.HeckeKreinToeplitz.HeatCollisionsCountTheIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
+import GaloisForLFunctions.RHTower.XiZeroCountingFunction
+import GaloisForLFunctions.RHTower.CompletedPrimeFluxFittingAttachment
 
 /-!
 # The collision mass is the wave number
@@ -23,6 +25,11 @@ count, the least number of exceptional exponentials it needs, plus the multiplic
 **A minimal count reads the multiplicities** (`minimal_count_reads_multiplicities`). A count bounded
 after exactly `κ` waves uses one wave per right zero, with amplitude `m_ρ |ĝ(γ_ρ)| |ĝ(γ̄_ρ)|`: the
 zero multiplicities, and with them the excess `E`, are read off the amplitudes of a minimal count.
+
+**The collision law read from one count** (`xiMult_eq_mult`, `collision_mass_from_minimal_count`).
+The order of `ξ` at a zero is its multiplicity as a zero of `ζ`, so the heat-collision mass after
+small times, `2(κ + Σ(m_ρ − 1))`, is determined by a minimal count: its number of waves and their
+amplitudes.
 -/
 
 open Complex Finset Filter Topology Zeta23
@@ -139,5 +146,42 @@ theorem minimal_count_reads_multiplicities (h : negIndex zetaKernel < ⊤) :
   rw [hnorm]
   simp only [ZeroConfig.Wsummand, norm_mul, Complex.norm_natCast, Complex.norm_conj]
   rfl
+
+/-! ### The multiplicity bridge and the collision law read from one count -/
+
+/-- **The order of `ξ` is the multiplicity of the zero of `ζ`** in the critical strip. -/
+theorem xiMult_eq_mult {ρ : ℂ} (hρ : ρ ∈ zetaZeroConfig.carrier) :
+    xiMult ρ = zetaZeroConfig.mult ρ := by
+  have hstrip : 0 < ρ.re ∧ ρ.re < 1 := by
+    simp only [zetaZeroConfig_carrier, Set.mem_setOf_eq] at hρ
+    exact hρ.2
+  rw [xiMult, RHTower.xi_divisor_apply_of_mem (Set.mem_univ ρ), Int.toNat_natCast,
+    RHTower.xi_analyticOrderAt_eq_riemannZeta_of_mem_strip hstrip, zetaZeroConfig_mult]
+  rfl
+
+/-- **The collision law read from one count.** On the finite stratum there is a tower `⟨u⟩` and a
+labelling `ρ_1, …, ρ_κ` of the right zeros such that every count along `⟨u⟩` bounded after exactly
+`κ` waves has amplitudes `m_j · |ĝ(γ_j)| · |ĝ(γ̄_j)|`, and the collision mass after small times is
+`2(κ + Σ_j (m_j − 1))`: index and multiplicity excess of the heat collisions are both read off the
+minimal count. -/
+theorem collision_mass_from_minimal_count (h : negIndex zetaKernel < ⊤) :
+    ∃ (κ : ℕ) (ρ : Fin κ → ℂ) (u : HeckeLattice),
+      negIndex zetaKernel = κ ∧
+      (∀ v a : Fin κ → ℂ, (∃ M, ∀ n : ℕ, ‖zetaKernel (u ^ n) - ∑ i, a i * v i ^ n‖ ≤ M) →
+        ∃ σ : Fin κ ≃ Fin κ, ∀ j, ‖a (σ j)‖ = (zetaZeroConfig.mult (ρ j) : ℝ) *
+          ‖paperFT (cx cubicSpline) (gammaOf (ρ j))‖ *
+          ‖paperFT (cx cubicSpline) (conj (gammaOf (ρ j)))‖) ∧
+      ∀ᶠ t in 𝓝[>] (0 : ℝ), collisionMassAfter t =
+        2 * (κ + ∑ j, (zetaZeroConfig.mult (ρ j) - 1)) := by
+  obtain ⟨hfin, hκ, hev⟩ := eventually_collisionMassAfter_eq_index h
+  obtain ⟨hfin', u, hmin⟩ := minimal_count_reads_multiplicities h
+  have hR : hfin'.toFinset = hfin.toFinset := rfl
+  refine ⟨hfin.toFinset.card, fun j => (hfin.toFinset.equivFin.symm j : ℂ), u, hκ, hmin, ?_⟩
+  filter_upwards [hev] with t ht
+  rw [ht]
+  congr 2
+  rw [← Finset.sum_coe_sort hfin.toFinset, ← hfin.toFinset.equivFin.symm.sum_comp]
+  refine sum_congr rfl fun j _ => ?_
+  rw [xiMult_eq_mult (hfin.mem_toFinset.mp (hfin.toFinset.equivFin.symm j).2).1]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

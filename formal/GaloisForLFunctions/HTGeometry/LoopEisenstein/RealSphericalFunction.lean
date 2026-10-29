@@ -91,9 +91,10 @@ theorem sphericalFunction_borel_mul (L : AffineA1.Weight) (b : positiveBorel ℝ
       (iwasawaFactors g).2 = (b : LoopSL2 ℝ) * g := by
     change ((b : LoopSL2 ℝ) * (iwasawaFactors g).1) * (iwasawaFactors g).2 = _
     rw [mul_assoc, iwasawaFactors_spec]
+  change sphericalFunction L ((b : LoopSL2 ℝ) * g) =
+    borelWeightCharacter L b * borelWeightCharacter L (iwasawaFactors g).1
   rw [sphericalFunction_of_factors L _ (b * (iwasawaFactors g).1) (iwasawaFactors g).2 he,
     map_mul]
-  rfl
 
 /-- Right invariance under the full generated rotation subgroup. -/
 theorem sphericalFunction_mul_compact (L : AffineA1.Weight) (g : LoopSL2 ℝ) (k : realCompact) :

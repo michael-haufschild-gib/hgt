@@ -95,6 +95,18 @@ This proves that every nonempty alternating word in K₀\M and K₁\M lies
 outside B. The argument requires no norm, positivity representation,
 assumed amalgam theorem, or assumed central-kernel statement.
 
+The coefficient argument in fact works over every coefficient field for
+alternating finite and oriented affine SL₂ matrices whose source lower-left
+entries are nonzero. Rotations are needed only to identify the excluded
+letters with the common sign torus. The same proof gives the generic
+`alternating_simpleMatrixWord_not_mem_iwahori` statement. For formal
+induction, an affine-headed word has boundary `[[u,v],[0,0]]` in degree
+`-m`, with `m>0` and `(u,v)≠(0,0)`. Prepending an affine–finite pair
+multiplies both entries by the nonzero product of their source lower-left
+entries and increases `m` by one. A finite prefix preserves nonvanishing
+by invertibility. This is the usual reduced-word obstruction, not a new
+mathematical claim.
+
 ## Reduction of arbitrary words
 
 Every element of K has a finite word in factors from K₀ or K₁; inverses

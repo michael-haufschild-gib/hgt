@@ -160,6 +160,8 @@ here.
     $\|\beta_i\|\le q^{\theta-1/2}$, already from its lower half; the precision exponent is
     $\tfrac12+\max_i\log\|\beta_i\|/\log q\ge\tfrac12$, with equality iff unitary. Odd hyperelliptic data
     have exponent $\tfrac12$ (Stepanov). The golden datum has $N_k/5^k\to1$ and exponent $\tfrac12+\log\varphi/\log5$.
+    The upper half over $\mathbb F_q$ is blind exactly to real outer eigenvalues: without one it forces
+    unitarity, and the golden datum satisfies $N_k\le q^k+1$. Over $\mathbb Z$ each half is RH.
 
 ---
 
@@ -189,7 +191,8 @@ here.
 11. **The Chebyshev ledger** (`psi_eq_sum_moebius_log_factorial`, `eq_of_chebyshevTransform_eq`,
     `log_factorial_sub_bounds`, `not_inversion_bounded`).
 12. **Curve precision exponents** (`countAtPrecision_iff`, `precisionExponent_eq`,
-    `precisionExponent_eq_half_iff`, `golden_countAtPrecision_iff`, `golden_tendsto_pointCount_div`).
+    `precisionExponent_eq_half_iff`, `golden_countAtPrecision_iff`, `golden_tendsto_pointCount_div`,
+    `golden_upperCount_and_not_lowerCount`).
 13. **Abscissa dictionary** (`abscissaOfAbsConv_le_of_partialSum_isBigO`,
     `partialSum_isBigO_of_abscissaOfAbsConv_lt`, `not_count_add_of_half_lt_abscissaOfAbsConv`).
 14. **Sup-norm vanishing law** (`aeval_eq_zero_of_sup_lt`, `eventually_vanish_of_supCeiling`).
@@ -204,7 +207,7 @@ here.
 |---|---|
 | A sharper constant in a relative-error theorem approaches RH | Its precision class contains every $\varepsilon n^{-\eta}$, $\eta>0$; constants do not measure distance to the count |
 | The count selects $\Lambda$ | Modulo $\mathcal Q$ only: finite flips, Euler-factor deletions and square-root sparse sign gauges pass |
-| One-sided counts are weaker | Each half alone is RH |
+| One-sided counts are weaker | Over $\mathbb Z$ each half alone is RH; over $\mathbb F_q$ the upper half is blind only to real outer eigenvalues (golden passes it) |
 | Integrality reaches only linear precision | The floor is exact and the Siegel half at precision $\theta$ is $\Theta\le\theta$; what is linear is the *ceiling* used to certify auxiliaries |
 | Nair's method loses at the integrality step | $\min^+\int_0^1P=1/d_{n+1}$ exactly |
 | Identities are soft | They have precision class $\{0\}$; they lose precision under inversion |
