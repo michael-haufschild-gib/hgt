@@ -1,6 +1,6 @@
 # Route-unification ledger
 
-Status: 29 October 2026, corpus checkpoint `7f191801a3` plus working tree. **The 31 live routes and 18 candidate branches are faces of three core problems: the selective critical sign (U1), source-complete positivity (U2) and an independent producer (U3).** Seven facts bind them:
+Status: 29 October 2026, corpus checkpoint `7f191801a3` plus working tree. **The 31 live routes and 19 candidate branches are faces of three core problems: the selective critical sign (U1), source-complete positivity (U2) and an independent producer (U3).** Seven facts bind them:
 
 1. **Selectivity is common to all three by theorem.** No twin-blind input reaches an RH-complete family. The margin \(2\log2\) separates \(\zeta\) from Liouville but is shared at its maximum by single flips \(p\ge11\).
 2. **Precision is common to all three, but U1 and U2 sit in different precision classes.** Any property implying the count rejects \(\Lambda+\varepsilon n^{-\eta}\) [S]. As properties of weights, counts see only the square-root class while tower positivity sees every coefficient [S/L].
@@ -28,7 +28,7 @@ All RH criteria are E-equivalent almost tautologically. Unification is meaningfu
 |---|---|---|---|
 | **U1 — Selective critical sign** | A bound on the actual signed prime/Möbius discrepancy at the critical scale, in some currency (one-sided count, one parity class, history floor, integrality half, inversion). | WL, FU, RP, MC, LI, PM, JAS, CTF, PBM, RB; prime-error faces of HF/SRT/AIP; via the Chebyshev identity, the off-diagonal of every U2 route. | 1 |
 | **U2 — Source-complete positivity** | Index zero of the complete Weil form, with Gamma and both poles, on a source-complete family; on atomic families, positivity under overlap growth. | RW, TT, HF, CHMD, SZ, EWU, OWU, SRT, ACT, AIP, ACS, HCF; via sign receivers PA, LA, TH, WD. | 1 and 3 |
-| **U3 — Independent producer** | A source-built structure whose proved property supplies the U1 count or U2 index zero: over \(\mathbb Z\), a point-side auxiliary or a structural constraint on a polar divisor. | TG, RN, XN, BAG, GTA, all 17 candidates and PW-B; geometric faces of HF/ACS; the Stepanov question; the infinite-symmetry test. | 14 |
+| **U3 — Independent producer** | A source-built structure whose proved property supplies the U1 count or U2 index zero: over \(\mathbb Z\), a point-side auxiliary or a structural constraint on a polar divisor. | TG, RN, XN, BAG, GTA, all 18 candidates and PW-B; geometric faces of HF/ACS; the Stepanov question; arithmetic confinement of affine polar divisors (ISC-polar). | 14 |
 
 **Cross-cutting requirements on every producer.**
 
@@ -219,7 +219,7 @@ Consequence (inference): every candidate whose established mechanism is a vanish
 
 ## Candidate crosswalk
 
-The 17 candidates and PW-B are U3 producers whose landing is unproved. Each landing must fail for the battery. "Side" records where the established mechanism acts (inference).
+The 18 candidates and PW-B are U3 producers whose landing is unproved. Each landing must fail for the battery. "Side" records where the established mechanism acts (inference).
 
 | Candidate | Intended landing | Side | What prevents merger into a live producer |
 |---|---|---|---|
@@ -240,6 +240,7 @@ The 17 candidates and PW-B are U3 producers whose landing is unproved. Each land
 | **SEC** | U3→U2; seam sign | Zero side (seam charge) | Asymptotic seam smallness is nonselective. |
 | **W1C** | U3→real-rooted Xi | Prime side (couplings) | No arithmetic ferromagnetic limit; Bohr-torus Lee–Yang lift is the natural landing. |
 | **WBF** | U3→U2; certificates | Unspecified | No arithmetic coupling. |
+| **ISC-polar** | U3→zero-free endpoint; polar-divisor confinement | Zero side (polar divisor of the continued constant term) | The continuation calculus is a receiver for every curve datum; confinement needs an arithmetic input absent for the golden datum. |
 | **PW-B** | U3→U1; PM complete energy | Zero-indexed | Zero-indexed action. |
 
 ## Unifications that are not valid
@@ -277,7 +278,7 @@ The 17 candidates and PW-B are U3 producers whose landing is unproved. Each land
 | One-sided sieve bounds control pair correlation beyond \(\alpha=1\) | The kernel is signed. |
 | Better density exponents yield a strip | Envelopes never drop below \(1\), at \(30/13\) as at \(8/3\). |
 | Tensor amplification of \(\zeta\) is independent of WL | Its tensor square is WL's mean square. |
-| Infinite symmetry is blind to zeros | Blind in genus zero; in genus one zeros enter the polar divisor. Neither yet constrains them. |
+| Infinite symmetry confines the zeros | Blind in genus zero; in positive genus it sees every zero exactly and places none: unitarity is equivalent to confinement, and the golden datum has the same calculus with an off-line pole. |
 | Regular integer counts force RH | Over-regular Beurling systems. |
 | \(A_Q\) is the Xi operator | Adjunction energies are prime-matrix eigenvalues. |
 | Curves over finite fields donate Weil positivity | The archimedean continuum cannot arise from finite places. |
@@ -286,7 +287,7 @@ The 17 candidates and PW-B are U3 producers whose landing is unproved. Each land
 
 1. **One large-overlap programme** (U2, D): the complete form at every fixed overlap, then uniformly up to \(\log\log N\); flips at fixed ratio as the selectivity test (Q1).
 2. **One producer programme** (B, O, P, U3): a point-side construction for one parity class, first at the parity rung or the integer-Chebyshev rung (Q2).
-3. **One polar-divisor test** (U3, 14.45): the positive-genus affine Eisenstein series over \(\mathbb F_3\), then Garland over \(\mathbb Q\) (Q3).
+3. **One arithmetic-confinement test** (U3, 14.45): an input absent for the golden datum, calibrated by re-proving RH for the genus-one curve over \(\mathbb F_3\) through its Eisenstein series; Garland over \(\mathbb Q\) only afterwards (Q3).
 4. **One census programme** (H, I, M): the coalescent pair energy and displacement-sensitive slack, guided by the dichotomy.
 5. **One Krein–Langer programme** at the Lindelöf level (F): every result checked against LH and against "RH above a height".
 6. **One vanishing-mechanism extraction** for fixed strips: the Chen–Gupta–Li threshold (W10).

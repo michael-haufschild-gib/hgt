@@ -44,7 +44,9 @@ locality, and must not duplicate HKT modules.
   `TheIndexIsContinuousOffTheDiscriminant`, `TheParityFormOfTheGlobalLaw`,
   `TheIndexIsTheNumberOfExceptionalWaves`, `CompressionsAreReceivers`,
   `FineTowersDecideEveryOrbitKernel`, `LocalityIsTwinBlind`, `TheCollisionMassIsTheWaveNumber`,
-  `IsolatedDeepZerosAreSeenByAlmostEveryPrime`.
+  `IsolatedDeepZerosAreSeenByAlmostEveryPrime`, `IntegralityProducesLinearCounts` (Bézout ledger,
+  binomial multiplicity cap, divisibility is parity-blind), `StepanovsOrderOverTheFiniteField`,
+  `TheParityTwinIsGeometricOnlyInTheBohrClosure`.
 
 ## Open (RH/LH-deep, recorded in README §9)
 Producer over ℤ; Lindelöf bridge from the kernel; near-axis collision quantity; selective transfer
@@ -53,4 +55,4 @@ is unattained or attained infinitely often (finite attainment and fine towers ar
 collision law is read from one minimal count).
 
 ## Log
-- 2026-10-29 — created; README draft written; twelve modules proved; README revised.
+- 2026-10-29 — created; README draft written; fifteen modules proved; README revised.

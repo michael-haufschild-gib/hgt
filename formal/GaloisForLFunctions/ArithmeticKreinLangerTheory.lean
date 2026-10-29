@@ -12,6 +12,8 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheCollisionMassIsTheWave
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FiniteSupportMakesAlmostEveryPrimeDecideZeta
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.IsolatedDeepZerosAreSeenByAlmostEveryPrime
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.IntegralityProducesLinearCounts
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.StepanovsOrderOverTheFiniteField
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheParityTwinIsGeometricOnlyInTheBohrClosure
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -27,7 +29,10 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   for axis-supported kernels, the Riemann–Roch ceiling, and the index as the number of exceptional
   waves of a count.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
-  the global law over `ℤ`; compressions as receivers; the two existing producers and their precision.
+  the global law over `ℤ`; compressions as receivers; the Bézout ledger of both producers and its
+  multiplicity caps; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index
+  zero; the parity twin over `ℤ` is a vertical shift on one prime tower, on no two primes, and in the
+  Bohr closure.
 * **Completion.** Continuity of the index off the discriminant and its three degenerations; the
   heat-collision mass as twice the wave number of the prime-side count.
 

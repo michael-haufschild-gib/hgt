@@ -1,6 +1,7 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ExplicitPlateauParameters
 import GaloisForLFunctions.TransMetzlerWeilPositivity.TransMetzlerDecomposition
 import GaloisForLFunctions.TransMetzlerWeilPositivity.TransMetzlerPositivity
+import GaloisForLFunctions.TransMetzlerWeilPositivity.OptimizedTransMetzlerFloor
 import GaloisForLFunctions.TransMetzlerWeilPositivity.LiouvilleTwinSelectivity
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ZeroSideStratum
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyCriticalGrowth
@@ -19,6 +20,9 @@ Umbrella for the theory of atomic Weil positivity across and beyond the Metzler 
 * unconditional complete Weil positive definiteness across `(0, cZero]` (`cZero = 1 + 10⁻¹⁸ > 1`)
   and simultaneous positive definiteness and unimodular Markov gauge frustration at
   `rhoZero * atomSpacing N` (`TransMetzlerPositivity`);
+* optimal interpolation of the certified reference, coercivity and perturbation bounds, giving
+  every strict floor below `1/25 - 2000 * 2150400040961 * δ` at overlap `1+δ`, positive for
+  `δ < 1/107520002048050000` (`OptimizedTransMetzlerFloor`);
 * Fejér–Abel center floor, bounded-pole hyperplane witnesses, and breakdown of the Liouville twin
   above the Robin–Euler ratio `exp(β(φ)/‖φ‖₂²) / (2π) < 1/2` (`LiouvilleTwinSelectivity`);
 * zero-side implications under `RiemannHypothesis` and finite off-line support, sharp linear-in-`c`

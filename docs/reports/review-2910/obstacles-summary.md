@@ -9,7 +9,7 @@ Status: 29 October 2026, corpus checkpoint `7f191801a3` plus working tree. **RH 
 
 One unconditional fact changes the map. The complete Weil form of \(\zeta\) is positive definite on atomic families at every fixed overlap ratio \(0<c\le1+10^{-18}\), past the Metzler threshold, where its Liouville twin is negative [L/S]. RH is the same positivity at overlap \(c_N=(\log\log N)(\log\log\log N)^{\beta}\), \(\beta>2\) [L]. In this language the distance to RH is **overlap growth**.
 
-Coverage: 31 live routes, 17 standalone candidates, PW-B. Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence: corpus searches and Lean statements; no builds. **[L]**/**[S]**/**[K]** as in the [frontier map](../rh-current-frontier-map.md); **[Lean]** = statement read, integration not assessed; **(inference)** = conclusion of this review. Record: [working log](../../../logs/review-2910b-research-2026-10-29.md).
+Coverage: 31 live routes, 18 standalone candidates, PW-B. Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md). Evidence: corpus searches and Lean statements; no builds. **[L]**/**[S]**/**[K]** as in the [frontier map](../rh-current-frontier-map.md); **[Lean]** = statement read, integration not assessed; **(inference)** = conclusion of this review. Record: [working log](../../../logs/review-2910b-research-2026-10-29.md).
 
 ## What the corpus establishes
 
@@ -23,7 +23,7 @@ Coverage: 31 live routes, 17 standalone candidates, PW-B. Companions: [route rep
 - **Finite support** \(\iff\) RH above a height \(\iff\) finite index \(\iff\) bounded heat counts [S]; \(\Rightarrow\) LH \(\wedge\) \(\Theta<1\) [L].
 - **Census**: \(\ge HD(1)+10^{-8}\) simple critical; \(\ge0.8876\) simple or critical; exact bandwidth, capacity and slack exchange rates [L]; 3/4-or-near-line-off-line dichotomy [Lean].
 - **Quasi-RH**: complete translation layer; Guth–Maynard Theorem 1.1, \(30/13\), DH on \(\sigma\ge5/6\), \(17/30\) short intervals, VK [L]; no producer.
-- **Over \(\mathbb F_q\)**: the count is produced (Stepanov) [L]; the twist tower completes the upper count [S]; zeros of a genus-one zeta function appear as poles of the affine \(A_1\) Weyl sum with full multiplicity [K/L].
+- **Over \(\mathbb F_q\)**: the count is produced (Stepanov) [L]; the twist tower completes the upper count [S]; zeros of a genus-one zeta function appear as poles of the affine \(A_1\) Weyl sum with full multiplicity [K/L]; the same exact pole calculus holds for every curve datum with zeros in the strip, unitary or not, and unitarity is equivalent to confinement of its poles [S].
 
 ## 2.1 Tasks that are just work
 
@@ -59,7 +59,7 @@ Coverage: 31 live routes, 17 standalone candidates, PW-B. Companions: [route rep
 | W26 | Certified finite-aperture ground energies, blind minima, finite-level feasibility, shell relaxations. | RW, EWU, OWU, ACT | Finite windows. |
 | W27 | Finite heat/Jensen/Hankel heads; both Gaussian grids; Laguerre data; the first-atom analytic tail. | LA, TH, WD, HCF, PA | No all-degree inference. |
 | W28 | Newton discs, Ward caps, renewal resolvents, transgression traces, Schur charges, compact recurrence; finite Robin, Cayley–Li and Suzuki ranges. | XN, WD, RN, TG, GTA, BAG, RB, LI, SZ | Local certificates. |
-| W29 | Constant term of the affine \(A_1\) Eisenstein series over the genus-one \(\mathbb F_3\) base: arithmetic quotient, measures, coset-sum convergence, imaginary-root correction factor; for Garland over \(\mathbb Q\): determinant metric, Bruhat refinement, arithmetic quotient. | Q3; 2.7 | Construction; the polar-divisor constraint is I14. |
+| W29 | Constant term of the affine \(A_1\) Eisenstein series over the genus-one \(\mathbb F_3\) base: arithmetic quotient, measures, coset-sum convergence, imaginary-root correction factor; for Garland over \(\mathbb Q\): determinant metric, Bruhat refinement, arithmetic quotient. | Q3; 2.7 | Construction; the confinement input is I14. |
 | W30 | Candidate calculations: cycle traces, curvatures, repair defects, jets, contours, contrasts, co-shift defects, photonic/Ising stacks, certificate streams, cusp actions. | Candidates, PW-B | Calibration is not forcing. |
 | W31 | Literature intake: Garland's Maass–Selberg relations for loop groups; the affine Gindikin–Karpelevich formula of Braverman–Kazhdan–Patnaik; Diaconu–Paşol–Popa; the integer Chebyshev problem; Stepanov–Bombieri over \(\mathbb F_q[t]\); Bui–Heath-Brown; Bourgain's DH on \(\sigma\ge25/32\). | Q2, Q3, 2.4, 2.5 | Acceptance of external proofs is not assumed. |
 
@@ -122,7 +122,7 @@ Each item is equivalent to finitely many off-line zeros, equivalently to RH abov
 | I11 | Independent faithful constructions for each candidate. | Calibrations, zero-indexed objects. | Candidate promotion. |
 | I12 | Whether \(\zeta\)-only inputs move the Chen–Gupta–Li threshold below \(7/8\). | Threshold not extracted (W10). | An improved quasi-RH, conditional on the external argument. |
 | I13 | Growing-conductor spectral control of the prime and complete-Weil matrices. | Only fixed packets and per-conductor eigenlines. | Profile-independent large-overlap spectra (I1). |
-| I14 | **Polar-divisor constraint for positive-genus affine Eisenstein series**: a spectral or holomorphy theorem restricting where Frobenius-pole hyperplanes may lie; then the same over \(\mathbb Q\) (Garland). | Zeros enter the polar divisor (genus one); no positivity on the hyperplanes that carry them. | A route outside the three walls (Q3, 2.7). |
+| I14 | **Arithmetic confinement of the polar divisor of positive-genus affine Eisenstein series**: an input absent for the golden datum that places the Frobenius-pole hyperplanes on the critical hyperplane; then the same over \(\mathbb Q\) (Garland). | Continuation, closed-chamber holomorphy (certifies only \(\operatorname{Re}\rho\ge1\)), normalized holomorphy and the entire positive cuspidal series do not confine [S]; over \(\mathbb F_q\) confinement is RH for the curve. | The only candidate whose remaining input is a confinement law (Q3, 2.7). |
 | I15 | A many-node Gram floor from pairwise two-prime phase separation. | Baker bounds degenerate as \(\Delta\to0\). | HCF/SRT detection without aliasing. |
 
 "No known solution" refers to the corpus and the literature consulted.
@@ -229,39 +229,45 @@ The strip \(1/8<\operatorname{Re}\rho<7/8\) is the external claim for Dirichlet 
 **Payoff.** A mechanism that produces counts rather than requiring them. Q2 is the only question aimed at the producer.
 
 <a id="q3"></a>
-### Q3. Is there a spectral constraint on the polar divisor of positive-genus affine Eisenstein series?
+### Q3. Which arithmetic input confines the polar divisor of positive-genus affine Eisenstein series and fails for the golden datum?
 
-**Exact object.** Over the genus-one curve \(y^2=x^3-x\) over \(\mathbb F_3\), the affine \(A_1\) Gindikin–Karpelevich coefficients have poles at the Frobenius zeros with full multiplicity, and they survive the complete Weyl sum [K/L]. Over \(\mathbb F_q(t)\) (genus zero) the affine series continues to the Tits cone without RH and its singularities are images of the pole of \(\zeta_K\).
+**Exact object.** For every curve datum with zeros in the open critical strip, unitary or not, the complete affine \(A_1\) Weyl sum continues from the Godement half-plane and has a pole of exact multiplicity at every shifted zero; unitarity is equivalent to eventual holomorphy off \(\operatorname{Re}s=-\tfrac12\) in \(-1<\operatorname{Re}s<0\) [S]. The golden datum (\(q=5\), \(\beta=\varphi,\varphi^{-1}\)) has the same calculus and a pole at \(\operatorname{Re}s=-\tfrac12+\log\varphi/\log5\) [S].
 
-**Question.** Does the full Eisenstein series (or its constant term) satisfy a constraint, from holomorphy on a region proved without RH or from a Maass–Selberg/residual-spectrum positivity, that restricts where Frobenius-pole hyperplanes may lie? Over \(\mathbb F_q\) a yes re-proves the Riemann hypothesis for the curve by a mechanism unrelated to Weil, Stepanov or Bombieri: that is the calibration. Only then is Garland's series over \(\mathbb Q\) worth the cost.
+**What is excluded [S].** Continuation and pole survival (golden datum); holomorphy on the closed positive chamber, which certifies exactly \(\operatorname{Re}\rho\ge1\); normalized (cleared) holomorphy, which holds for every datum; an entire positive cuspidal series with \(E=\Xi E^-\), where a pole of \(\Xi\) is exactly a zero of \(E^-\).
 
-**First useful answer.** The full constant term over the genus-one base (W29); the position of the Frobenius hyperplanes relative to the Tits cone and the dominant chamber; a literature check of Garland's Maass–Selberg relations (W31). A negative answer retires the route with a precise reason.
+**Question.** Which property of the actual automorphic object, absent for the golden datum, confines the poles to the critical hyperplane? Over \(\mathbb F_q\) any such input proves RH for the curve, so its calibration is a new proof of Weil's theorem through the Eisenstein series. The only known source of confinement over \(\mathbb F_q\) is geometric purity (inference).
 
-**Payoff.** The only candidate that bounds no signed sum, uses no exhaustion and builds no carrier.
+**First useful answer.** A confinement statement for the actual genus-one curve derived from the arithmetic Eisenstein series (W29) without invoking Weil's theorem; a property of the arithmetic coset sum (integrality, positivity of its terms) that fails for the golden datum; or a proof that the geometric realization over \(\mathbb F_q\) reduces confinement to purity of an associated variety, which would place the candidate in Wall 14.
 
-**Why these three.** Q1 pushes the one proved selective sign toward RH. Q2 asks for the missing producer in its cleanest form. Q3 tests the only structurally different candidate. They are independent. The census (2.5) is the best intermediate milestone but shares Q2's parity obstruction.
+**Payoff.** The only candidate whose remaining input is a confinement law rather than a signed estimate.
+
+**Why these three.** Q1 pushes the one proved selective sign toward RH. Q2 asks for the missing producer in its cleanest form. Q3 tests the only structurally different candidate, now reduced to its arithmetic confinement input. They are independent. The census (2.5) is the best intermediate milestone but shares Q2's parity obstruction.
 
 ## 2.7 Is there a wildly different route?
 
-**One candidate survives, now with a concrete test: analytic continuation by infinite symmetry, in positive genus, where zeros enter the polar divisor.** Every corpus route either bounds a signed quantity (Wall 1), builds an object whose structure forces reality (Wall 14), and must hold at every scale (Wall 3). A route outside all three would obtain zero-freeness from a structural identity: no estimate, no exhaustion, no carrier. I see no other mechanism of that kind.
+**One candidate remains, in narrowed form: arithmetic confinement of the polar divisor of positive-genus affine Eisenstein series (frontier candidate ISC-polar).** Every corpus route either bounds a signed quantity (Wall 1), builds an object whose structure forces reality (Wall 14), and must hold at every scale (Wall 3). A route outside all three would obtain zero-freeness from a structural identity: no estimate, no exhaustion, no carrier. Confinement by analytic continuation under infinite symmetry is retired [S]; what survives needs an arithmetic input that the formal calculus does not contain.
 
 ### Analytic continuation by infinite symmetry
 
-**Mechanism.** Multiple Dirichlet series and Eisenstein series whose functional equations generate an infinite Weyl group \(W\). By Bochner's tube theorem holomorphy extends to the convex hull of the \(W\)-images of the convergence region: all of \(\mathbb C^n\) for finite \(W\), the complexified Tits cone for affine and Kac–Moody \(W\), with a natural boundary. Constant terms carry products of zeta ratios \(\xi(\langle\lambda,\alpha^\vee\rangle)/\xi(\langle\lambda,\alpha^\vee\rangle+1)\) over infinitely many roots, so zeros of \(\xi\) become poles along hyperplanes. The force would be a constraint on the polar divisor, not a sign.
+**Mechanism.** Multiple Dirichlet series and Eisenstein series whose functional equations generate an infinite Weyl group \(W\). By Bochner's tube theorem holomorphy extends to the convex hull of the \(W\)-images of the convergence region: all of \(\mathbb C^n\) for finite \(W\), the complexified Tits cone for affine and Kac–Moody \(W\), with a natural boundary. Constant terms carry products of zeta ratios \(\xi(\langle\lambda,\alpha^\vee\rangle)/\xi(\langle\lambda,\alpha^\vee\rangle+1)\) over infinitely many roots, so zeros of \(\xi\) become poles along hyperplanes. The hoped-for force was a constraint on the polar divisor, not a sign.
 
 **What is established.**
 
-| Test | Genus zero (\(\mathbb F_q(t)\), Diaconu–Paşol–Popa) | Genus one (\(y^2=x^3-x\) over \(\mathbb F_3\), corpus) |
+| Test | Genus zero (\(\mathbb F_q(t)\), Diaconu–Paşol–Popa) | Genus one and every curve datum with zeros in the strip (corpus) |
 |---|---|---|
 | RH used? | No: absolute convergence, functional equations, one residue comparison. | No. |
-| Do zeros enter the polar divisor? | There are none; singularities are images of the pole of \(\zeta_K\). | Yes: Gindikin–Karpelevich coefficients have poles at Frobenius zeros with full multiplicity, surviving the complete Weyl sum [K/L]. |
-| Does the output constrain zeros? | Moments see zeros only through the Jensen depth product: Lindelöf-stratum ceiling [L]. | Not yet asked: needs the full constant term and a spectral constraint (Q3). |
+| Do zeros enter the polar divisor? | There are none; singularities are images of the pole of \(\zeta_K\). | Yes: every zero is a pole of exact multiplicity of the complete Weyl sum, for all strong rotations [K/L] (actual curve), [S] (every datum). |
+| Does the output constrain zeros? | Moments see zeros only through the Jensen depth product: Lindelöf-stratum ceiling [L]. | No: unitarity is equivalent to holomorphy off \(\operatorname{Re}s=-\tfrac12\); the impure golden datum has the same calculus and an off-line pole [S]. |
 
-**Why it does not face the same walls (inference).** It bounds no signed prime sum, so Wall 1 enters only if the constraint is proved by estimates. It has no exhaustion parameter: Bochner's theorem is global. It builds no carrier whose positivity must be shown faithful; the Eisenstein series is the arithmetic object itself. The Jensen moment ceiling bounds what moments of such series can say, not what their polar divisor can say.
+**What the calculus cannot supply [S].**
 
-**What would make it a route.** A theorem that the polar divisor of the full series in some region proved without RH contains only hyperplanes of on-line type. Langlands' theory gives such constraints in finite rank (in the positive chamber the poles lie on finitely many real hyperplanes) but in finite rank the \(\xi\)-zero hyperplanes lie where those constraints are silent (inference, as in the finite-rank case). The open point is whether the infinite root system, through its imaginary-root correction factor and natural boundary, pushes a zero hyperplane into a constrained region. Over \(\mathbb F_q\) this is decidable by computation and calibrates against Weil's theorem.
+- Holomorphy on the closed positive chamber certifies exactly \(\{\operatorname{Re}\rho\ge1\}\), the prime-number-theorem line; absolute convergence certifies \(\{\operatorname{Re}\rho>2\}\). In each chamber \(w\cdot C\) of the Tits cone a zero hyperplane appears only for the finitely many roots inverted by \(w^{-1}\): zeros enter only through the factors the functional equation transports.
+- Bochner-type holomorphy of the cleared (normalized) sum holds for every datum, because the normalizer carries the zeros.
+- For cuspidal series the positive series is entire (Garland–Miller–Patnaik; finite sums over function fields by Braverman–Kazhdan) and carries no nontrivial \(L\)-function in its constant term; with \(E=\Xi E^-\), a pole of \(\Xi\) is exactly a zero of \(E^-\), so zero-freeness is holomorphy and nonvanishing of the negative series, whose continuation is open.
 
-**Risks.** The constraint may be silent exactly on the zero hyperplanes, as in finite rank; Garland's Maass–Selberg relations may hold only in the dominant chamber; the full series over \(\mathbb Q\) needs arithmetic-quotient measure theory the corpus does not have.
+**What would make it a route.** An arithmetic confinement input that the golden datum lacks (Q3). Over \(\mathbb F_q\) it re-proves Weil's theorem through the Eisenstein series; only then is Garland's series over \(\mathbb Q\) worth its cost.
+
+**Assessment (inference).** The calculus is a receiver: it sees every zero and places none. The only known confinement source over \(\mathbb F_q\) is geometric purity, which is Wall 14. The candidate lies outside the three walls only if a confinement law of a new kind exists. Record: [failed-route card](../../drafts/pipeline/5-failed/infinite-symmetry-polar-divisor.md).
 
 ### Mechanisms examined and rejected
 
@@ -277,7 +283,8 @@ The strip \(1/8<\operatorname{Re}\rho<7/8\) is the external claim for Dirichlet 
 | Model-theoretic transfer (ultraproducts of function fields) | RH for \(\zeta\) is not first-order in the valued-field language; ultraproducts do not reach \(\mathbb Q\). |
 | o-minimal point counting | The primes are not definable in an o-minimal structure. |
 | Fourier quasicrystals | The archimedean continuum breaks the crystalline dual; the real-stable lift is W1C's Bohr-torus landing. |
-| Infinite symmetry in genus zero | Blind: no zeros to see; moments capped at the Lindelöf stratum. Superseded by the positive-genus test above. |
+| Infinite symmetry in genus zero | Blind: no zeros to see; moments capped at the Lindelöf stratum. |
+| Confinement by continuation under infinite symmetry (positive genus) | A receiver: exact pole calculus for every curve datum, golden datum with an off-line pole, closed chamber certifies only \(\operatorname{Re}\rho\ge1\), cuspidal pair zero-freeness = negative-series holomorphy [S]. Survives only as arithmetic confinement (Q3). |
 
 ## 2.8 Would the obstacles in 2.2 need a new field of mathematics?
 
@@ -339,7 +346,7 @@ Weil's proof transported to a setting with an archimedean place, in Stepanov's o
 | Large-overlap renormalization | Positivity of the complete form uniformly in overlap | Reproduce the fixed-ratio floor; fail for the Liouville twin above \(c_{\rm RE}\); decide \(\omega_p\) (Q1) |
 | Geometric parity twin | A family of "base changes" over \(\mathbb Z\) on which the Liouville twist acts as a symmetry | Reproduce the twist tower over \(\mathbb F_q\) |
 | Two-sided coalescent pair theory | Prime-pair asymptotics beyond bandwidth one at bounded constant | Hardy–Littlewood models; fail for parity-twisted models (2.5) |
-| Polar-divisor spectral theory | Constrain the poles of infinite-rank Eisenstein series | Re-prove RH for a genus-one curve (Q3) |
+| Arithmetic polar confinement | Confine the poles of infinite-rank Eisenstein series by an input beyond continuation | Fail for the golden datum; re-prove RH for a genus-one curve (Q3) |
 | Index-carrying completion | A completion on which the Weil kernel is continuous for index | Agree with pointwise limits; reproduce tower and Nyquist laws |
 
 ### Questions it must answer
@@ -362,4 +369,4 @@ Weil's proof transported to a setting with an archimedean place, in Stepanov's o
 7. **A new inequality.** A paid sign, index ceiling, count or energy bound, not another equivalence.
 8. **Formal closure.** Unconditional Lean statements.
 
-**First evidence of success:** fixed-ratio positivity at some \(c\ge2\), or a decision for \(\omega_{11}\); any auxiliary construction over \(\mathbb Z\) beating the sieve constant \(2\) or the integer Chebyshev constant; or a polar-divisor constraint that re-proves RH for one curve over a finite field.
+**First evidence of success:** fixed-ratio positivity at some \(c\ge2\), or a decision for \(\omega_{11}\); any auxiliary construction over \(\mathbb Z\) beating the sieve constant \(2\) or the integer Chebyshev constant; or an arithmetic confinement of the polar divisor that re-proves RH for one curve over a finite field.

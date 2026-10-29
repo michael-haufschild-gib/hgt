@@ -26,6 +26,7 @@ theorem exists_atomDilate_lipschitz_difference_budget {φ : ℝ → ℝ}
         C * (c - 1) * |u - v| := by
   have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc hsupp
   have hφd : ContDiff ℝ 1 (deriv φ) := hφ.iterate_deriv' 1 1
+  have hderφ : ∀ z, HasDerivAt φ (deriv φ z) z := (profile_derivs hφ).1
   obtain ⟨B, hB⟩ := hφd.continuous.bounded_above_of_compact_support hφc.deriv
   have hB0 : 0 ≤ B := (norm_nonneg (deriv φ 0)).trans (hB 0)
   have hBabs : ∀ u, |deriv φ u| ≤ B := by
@@ -50,14 +51,15 @@ theorem exists_atomDilate_lipschitz_difference_budget {φ : ℝ → ℝ}
     simpa only [one_div_one] using one_div_le_one_div_of_le zero_lt_one hc1
   have hratio : |1 / c - 1| ≤ c - 1 := by
     rw [abs_of_nonpos (sub_nonpos.mpr hinv), neg_sub,
-      show 1 - 1 / c = (c - 1) / c by field_simp [hc0.ne']; ring]
+      show 1 - 1 / c = (c - 1) / c by field_simp [hc0.ne']]
     exact div_le_self hδ hc1
   have hd (z : ℝ) : HasDerivAt (fun z => atomDilate φ c z - φ z)
       (deriv φ (z / c) / c - deriv φ z) z := by
-    simpa only [atomDilate, mul_one_div] using
-      (((hφ.differentiable (by norm_num) (z / c)).hasDerivAt.comp z
-        ((hasDerivAt_id z).div_const c)).sub
-        (hφ.differentiable (by norm_num) z).hasDerivAt)
+    have hscale : HasDerivAt (fun t : ℝ => t / c) (1 / c) z :=
+      (hasDerivAt_id z).div_const c
+    have hcompose : HasDerivAt (fun t : ℝ => φ (t / c)) (deriv φ (z / c) / c) z := by
+      simpa only [Function.comp_def, mul_one_div] using (hderφ (z / c)).comp z hscale
+    exact hcompose.sub (hderφ z)
   have hbound : ∀ z, |deriv φ (z / c) / c - deriv φ z| ≤ C * (c - 1) := by
     intro z
     by_cases hz : |z| ≤ 2
@@ -116,7 +118,7 @@ theorem exists_atomDilate_lipschitz_and_mass_budgets {φ : ℝ → ℝ}
     intro u hu
     have h := hb c hc1 hc2 u (-1)
     change |d u - d (-1)| ≤ C * (c - 1) * |u - (-1)| at h
-    rw [hm, sub_zero, sub_neg_eq_add, abs_of_nonneg (by linarith only [hu.1])] at h
+    rw [hm, sub_zero, sub_neg_eq_add, abs_of_nonneg (by linarith only [hu.1] : 0 ≤ u + 1)] at h
     have hmul := mul_le_mul_of_nonneg_left (show u + 1 ≤ 3 by linarith only [hu.2])
       (mul_nonneg hC.le hδ)
     exact h.trans (hmul.trans_eq (by ring))
@@ -191,7 +193,7 @@ theorem exists_normalized_atomDilate_mixedRobin_difference_budget {φ : ℝ → 
     simpa only [one_div_one] using one_div_le_one_div_of_le zero_lt_one hc1
   have hratio : |1 / c - 1| ≤ c - 1 := by
     rw [abs_of_nonpos (sub_nonpos.mpr hinv), neg_sub,
-      show 1 - 1 / c = (c - 1) / c by field_simp [hc0.ne']; ring]
+      show 1 - 1 / c = (c - 1) / c by field_simp [hc0.ne']]
     exact div_le_self hδ hc1
   have hbase : |mixedBumpRobin φ (fun u => φ (u - a)) W| ≤ 2 * W * L * A := by
     have h := abs_mixedBumpRobin_shift_sub_le hφ hφc

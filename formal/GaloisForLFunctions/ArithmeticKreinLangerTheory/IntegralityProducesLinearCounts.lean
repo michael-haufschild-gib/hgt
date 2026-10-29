@@ -17,10 +17,12 @@ compressor of the programme has to close.
 twist; the twist tower turns these upper counts into the Riemann hypothesis for the curve
 (`unitary_iff_twistTower_upper`).
 
-**Over `ℤ`: linear precision for the primes** (`sum_log_prime_le`, `sum_log_prime_Ioc_le`). The
-primorial is at most `4^n`, so `Σ_{p ≤ n} log p ≤ n log 4`: an integrality certificate gives an upper
-count for the primes, a subset of the odd parity class, at relative precision `log 4`. The global law
-needs the odd class at precision `x^{½+ε}` (`negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
+**Over `ℤ`: linear precision for the primes** (`sum_log_prime_Ioc_le`). The primes of `(n, 2n]` divide
+`C(2n, n) ≤ 4^n`, so `Σ_{n<p≤2n} log p ≤ n log 4`: an integrality certificate gives an upper count for
+the primes, a subset of the odd parity class, at relative precision `log 4` (summed dyadically this is
+`Chebyshev.theta_le_log4_mul_x`). Integer polynomials on `[0, 1]` give the matching lower count
+(`ArithmeticEffectivityTheory.log_inv_integral_le_psi`). The global law needs the odd class at
+precision `x^{½+ε}` (`negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
 
 **One ledger for both rings.** Both producers are the same inequality: an auxiliary that vanishes to
 order `m` on the counted set has size at least `m` times the counted mass.
@@ -62,19 +64,6 @@ theorem stepanov_parity_classes_upper {E : Type*} [Field E] [Fintype E] [Decidab
         s ^ 2 + 2 * (h.natDegree + 1) * s :=
   ⟨RHTower.Stepanov.stepanov_bound hcard hsq hdeg hQ hs hsD 1,
     RHTower.Stepanov.stepanov_bound hcard hsq hdeg hQ hs hsD (-1)⟩
-
-/-- **The integrality producer: the primes at linear precision.** `Σ_{p ≤ n} log p ≤ n log 4`, from
-the primorial bound `n# ≤ 4^n`. -/
-theorem sum_log_prime_le (n : ℕ) :
-    ∑ p ∈ (range (n + 1)).filter Nat.Prime, Real.log p ≤ n * Real.log 4 := by
-  have h := primorial_le_four_pow n
-  have hpos : (0 : ℝ) < primorial n := by exact_mod_cast primorial_pos n
-  have hlog : Real.log (primorial n) = ∑ p ∈ (range (n + 1)).filter Nat.Prime, Real.log p := by
-    rw [primorial, Nat.cast_prod, Real.log_prod]
-    intro p hp
-    exact_mod_cast (mem_filter.mp hp).2.ne_zero
-  rw [← hlog, ← Real.log_pow]
-  exact Real.log_le_log hpos (by exact_mod_cast h)
 
 /-! ### The Bézout ledger -/
 

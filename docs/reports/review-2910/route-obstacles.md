@@ -1,6 +1,6 @@
 # Research routes and their mathematical obstacles
 
-Status: 29 October 2026, corpus checkpoint `7f191801a3` plus working tree. **RH remains open.** The inventory is 31 live routes, 17 standalone candidates and the PW-B branch of PM. Every live route has an exact RH receiver; none has the arithmetic input that receiver needs. The atomic frontier has moved: the complete Weil form of \(\zeta\) is now unconditionally positive past the Metzler threshold at fixed overlap, where the Liouville twin is negative. What separates this from RH is overlap growth, from a bounded ratio to \(c_N\asymp\log\log N\).
+Status: 29 October 2026, corpus checkpoint `7f191801a3` plus working tree. **RH remains open.** The inventory is 31 live routes, 18 standalone candidates and the PW-B branch of PM. Every live route has an exact RH receiver; none has the arithmetic input that receiver needs. The atomic frontier has moved: the complete Weil form of \(\zeta\) is now unconditionally positive past the Metzler threshold at fixed overlap, where the Liouville twin is negative. What separates this from RH is overlap growth, from a bounded ratio to \(c_N\asymp\log\log N\).
 
 Companions: [summary, open problems and next questions](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md) · [frontier map](../rh-current-frontier-map.md) · [scoped obstructions](../rh-killed-routes.md).
 
@@ -139,7 +139,7 @@ Trickle-down on every Frobenius ladder iff the one-sided square-root count; hype
 - **Positive-genus calibration [K/L].** For the genus-one curve \(y^2=x^3-x\) over \(\mathbb F_3\) (zeta numerator roots of modulus \(1/\sqrt3\)): adeles, Haar, finite approximation, local shells; the affine \(A_1\) Gindikin–Karpelevich coefficients have genuine poles at the Frobenius zeros with full multiplicity, and these poles survive the complete regularized affine Weyl sum. [Coefficients](../../../formal/GaloisForLFunctions/HTGeometry/LoopEisenstein/AffineA1FiniteFieldCoefficients.lean), [Weyl poles](../../../formal/GaloisForLFunctions/HTGeometry/LoopEisenstein/AffineA1FiniteFieldWeylPoles.lean).
 - **Real loop group [K/S].** Bruhat, rank-one lifts, vertex generation, Iwasawa \(G=BK\) [K]; \(K\cap B=M\) and a Borel-equivariant spherical function [S]. Missing: arithmetic quotient and measures, coset-sum convergence, constant-term identification, Maass–Selberg relations.
 
-These are tools; they carry no selective sign. The calibration shows that zeros of a positive-genus zeta function enter the polar divisor of an affine Weyl sum (inference from the module statements).
+These are tools; they carry no selective sign. For every curve datum with zeros in the strip, unitary or not, the complete affine Weyl sum has a pole of exact multiplicity at every zero, and unitarity is equivalent to confinement of its poles; the golden datum has an off-line pole [S] ([receiver](../../../formal/GaloisForLFunctions/RHTower/InfiniteSymmetry/ThePolarDivisorIsTheZeroSet.lean), [chamber law](../../../formal/GaloisForLFunctions/RHTower/InfiniteSymmetry/TheChamberIsSilentOnTheStrip.lean)).
 
 ## Live routes
 
@@ -396,7 +396,7 @@ Each entry gives the current state, then **A** (just work) and **B** (open).
 
 **A:** Fixed source families in complete cells; the slack calculus at \(\lambda\in[3/4,1)\); the full constant-term computation of the affine \(A_1\) Eisenstein series over the genus-one base.
 
-**B:** Full-source quadratic RI with degree-zero subquadratic growth, a Rosati-height lower bound, or complete-cell index zero **[RH]**; uniform finite index **[FS]**; a census input beyond \(2/3\): prime surplus \(\le N/18\) at bandwidth \(4/3\), \(E(1/9)\le4\), or zero-side slack \(\ge N/30\) near bandwidth one **[open]**; a positivity or holomorphy constraint on the polar divisor of positive-genus affine Eisenstein series **[open]** (Q3). [Effectivity receiver](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ExactArithmeticSourceEffectivity.lean).
+**B:** Full-source quadratic RI with degree-zero subquadratic growth, a Rosati-height lower bound, or complete-cell index zero **[RH]**; uniform finite index **[FS]**; a census input beyond \(2/3\): prime surplus \(\le N/18\) at bandwidth \(4/3\), \(E(1/9)\le4\), or zero-side slack \(\ge N/30\) near bandwidth one **[open]**; an arithmetic confinement input for the polar divisor of positive-genus affine Eisenstein series **[open]** (Q3); continuation, closed-chamber holomorphy and the cuspidal pair do not supply it [S]. [Effectivity receiver](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/ExactArithmeticSourceEffectivity.lean).
 
 ## Route candidates and promotion obstacles
 
@@ -421,6 +421,7 @@ A candidate lacks an independent source construction or its landing. Every promo
 | **SEC** Adjacent prime seam | Seam-charge/essential-norm and Fock criteria. | Finite jets and seam charges. | All-order Fock boundedness or eventual compactness at actual zeros. [Source](../../../formal/GaloisForLFunctions/RHTower/TimeOneGammaJetFockRHCriterion.lean) |
 | **W1C** Clifford–Dirac / Lee–Yang | Ferromagnetic Ising limits to Riemann's law force RH. | Finite couplings. | Source-defined centred couplings; a Bohr-torus Lee–Yang lift is the natural landing. [Source](../../../formal/GaloisForLFunctions/RHTower/IsingLawConvergenceRH.lean) |
 | **WBF** Source certificates | Abstract genealogy Gram and Fredholm recovery. | Certificate streams. | Arithmetic stream with uniform-depth landing. [Source](../../../formal/GaloisForLFunctions/HTGeometry/PaperCriticalGenealogyCompletion.lean) |
+| **ISC-polar** Infinite-symmetry polar confinement | Every zero of a curve datum with zeros in the strip is a pole of exact multiplicity of the complete affine \(A_1\) Weyl sum; unitarity \(\iff\) holomorphy off \(\operatorname{Re}s=-\tfrac12\); closed chamber certifies only \(\operatorname{Re}\rho\ge1\); cuspidal pair is a receiver [S]. | Constant term of the arithmetic series over the genus-one \(\mathbb F_3\) base (W29). | An arithmetic confinement input absent for the golden datum, then a \(\zeta\)/Eisenstein realization. [Source](../../../formal/GaloisForLFunctions/RHTower/InfiniteSymmetry/ThePolarDivisorIsTheZeroSet.lean) |
 | **PW-B** PM cusp branch | Native two-response action with cutoff-independent limit. | Positive-damping actions. | Remove zero indexing; ceiling, optical magnitude, cap, extinction chain. [Source](../../../formal/GaloisForLFunctions/RHTower/ThetaCusp/ThetaCuspHawkingBMPWNativeTwoResponseAction.lean) |
 
 ## Supporting programmes

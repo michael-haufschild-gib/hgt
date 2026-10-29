@@ -31,6 +31,7 @@ private theorem integrableOn_robinDensity {f : ℝ → ℝ}
     ((hm.measurable.div (measurable_const.mul measurable_id)).aestronglyMeasurable)
   apply (ae_restrict_iff' measurableSet_Ioc).mpr
   refine Filter.Eventually.of_forall fun y hy => ?_
+  change ‖(∫ u, (f u - f (u + y)) ^ 2) / (2 * y)‖ ≤ L * ∫ u, |f u|
   rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg
     (integral_nonneg fun u => sq_nonneg _) (by linarith only [hy.1]))]
   have h := integral_sub_shift_sq_le_lipschitz hf.continuous hfc (fun u v => hLip v u) y
@@ -46,10 +47,12 @@ private theorem abs_square_increment_integral_sub_le {f g : ℝ → ℝ} {L y : 
       2 * L * y * ((∫ u, |f u|) + ∫ u, |g u|) := by
   have hfQ := _root_.RHTower.WeilMarkovPole.integrable_sub_shift_sq hf hfc y
   have hgQ := _root_.RHTower.WeilMarkovPole.integrable_sub_shift_sq hg hgc y
-  have hfA := (hf.integrable_of_hasCompactSupport hfc).abs
-  have hgA := (hg.integrable_of_hasCompactSupport hgc).abs
+  have hfA : Integrable (fun u => |f u|) := (hf.integrable_of_hasCompactSupport hfc).abs
+  have hgA : Integrable (fun u => |g u|) := (hg.integrable_of_hasCompactSupport hgc).abs
   have hfS := hfA.comp_add_right y
   have hgS := hgA.comp_add_right y
+  have hfAS : Integrable (fun u => |f u| + |f (u + y)|) := hfA.add hfS
+  have hfgAS : Integrable (fun u => |f u| + |f (u + y)| + |g u|) := hfAS.add hgA
   have hpoint : ∀ u,
       |(f u - f (u + y)) ^ 2 - (g u - g (u + y)) ^ 2| ≤
         (L * y) * (|f u| + |f (u + y)| + |g u| + |g (u + y)|) := by
@@ -77,8 +80,8 @@ private theorem abs_square_increment_integral_sub_le {f g : ℝ → ℝ} {L y : 
     _ ≤ ∫ u, (L * y) * (|f u| + |f (u + y)| + |g u| + |g (u + y)|) :=
       integral_mono (hfQ.sub hgQ).abs (((hfA.add hfS).add hgA).add hgS |>.const_mul _) hpoint
     _ = _ := by
-      rw [integral_const_mul, integral_add ((hfA.add hfS).add hgA) hgS,
-        integral_add (hfA.add hfS) hgA, integral_add hfA hfS,
+      rw [integral_const_mul, integral_add hfgAS hgS,
+        integral_add hfAS hgA, integral_add hfA hfS,
         integral_add_right_eq_self (fun u => |f u|) y,
         integral_add_right_eq_self (fun u => |g u|) y]
       ring
@@ -119,8 +122,8 @@ private theorem integral_abs_add_le {f g : ℝ → ℝ}
     (hf : Continuous f) (hfc : HasCompactSupport f)
     (hg : Continuous g) (hgc : HasCompactSupport g) :
     (∫ u, |f u + g u|) ≤ (∫ u, |f u|) + ∫ u, |g u| := by
-  have hfA := (hf.integrable_of_hasCompactSupport hfc).abs
-  have hgA := (hg.integrable_of_hasCompactSupport hgc).abs
+  have hfA : Integrable (fun u => |f u|) := (hf.integrable_of_hasCompactSupport hfc).abs
+  have hgA : Integrable (fun u => |g u|) := (hg.integrable_of_hasCompactSupport hgc).abs
   rw [← integral_add hfA hgA]
   exact integral_mono ((hf.add hg).integrable_of_hasCompactSupport (hfc.add hgc)).abs
     (hfA.add hgA) (fun u => abs_add_le _ _)
@@ -177,10 +180,12 @@ theorem abs_mixedBumpRobin_shift_sub_le {f g : ℝ → ℝ} {W L : ℝ}
     linarith only [h]
   have hmf : (∫ u, |-f u + f (u - a)|) ≤ 2 * ∫ u, |f u| := by
     have h := integral_abs_add_le hf.continuous.neg hfc.neg hfS.continuous hfcS
+    change (∫ u, |-f u + f (u - a)|) ≤ (∫ u, |-f u|) + ∫ u, |f (u - a)| at h
     simp only [abs_neg, integral_sub_right_eq_self (fun u => |f u|) a] at h
     linarith only [h]
   have hmg : (∫ u, |-g u + g (u - a)|) ≤ 2 * ∫ u, |g u| := by
     have h := integral_abs_add_le hg.continuous.neg hgc.neg hgS.continuous hgcS
+    change (∫ u, |-g u + g (u - a)|) ≤ (∫ u, |-g u|) + ∫ u, |g (u - a)| at h
     simp only [abs_neg, integral_sub_right_eq_self (fun u => |g u|) a] at h
     linarith only [h]
   have hp := abs_bumpRobin_sub_le_lipschitz_difference (hf.add hfS) (hfc.add hfcS)

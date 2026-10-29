@@ -2,14 +2,14 @@
 
 - **ID:** review-2910-w01-optimal-certified-perturbation-floor
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Type:** THEOREM (formalized certified-bound optimization; analytic-constant audit open)
 - **Source:** [W01](../../../reports/review-2910/obstacles-summary.md)
 - **Statement:** Optimize the exact existing reference/coercivity/perturbation inequalities and
   transfer their full open positive range to the actual complete Weil matrices.
 
 ## Paper argument
 
-[PROVED HERE, pending Lean audit] Let M=‖x‖² and D=poleDefect(x). The current source proves
+[FORMALIZED] Let M=‖x‖² and D=poleDefect(x). The current source proves
 `E≥M/25`, `E≥−2100000M+D/1024000`, and
 `F≥E−e(D+M)`, with `e=2000δ+o(1)` for overlap at most 1+δ.
 For `0≤e≤1/1024000`, combine the first inequalities with weights
@@ -34,6 +34,17 @@ Any further improvement must sharpen at least one estimate rather than change th
 ## Verification
 
 - [x] Read exact reference floor, coercivity, and perturbation statements and their domains.
-- [ ] Optimal algebraic floor and sharpness formalized.
-- [ ] Actual-matrix transfer over the full open certified range checked.
-- [ ] Transitive axioms and umbrella import audited.
+- [x] Optimal algebraic floor and sharpness formalized.
+- [x] Actual-matrix transfer over the full open certified range checked.
+- [x] Transitive axioms and umbrella import audited.
+
+Leaf `TransMetzlerWeilPositivity/OptimizedTransMetzlerFloor.lean` passed
+`lake --old env lean GaloisForLFunctions/TransMetzlerWeilPositivity/OptimizedTransMetzlerFloor.lean`.
+All three terminal declarations report only `propext`, `Classical.choice`, `Quot.sound`.
+
+## Remaining scope
+
+The spectral-floor argument uses adjunction energies strictly above 1/20 but states only 1/25.
+Consequently the optimum of these three displayed inequalities does not yet certify the largest
+reach of the underlying analytic proof. Generalize its reference floor before closing W01;
+also retain the c-dependence of the charge reserve when auditing the coercivity constants.

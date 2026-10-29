@@ -130,6 +130,7 @@ theorem eventually_completeWeilMatrix_certified_floor (δ : ℝ) (hδ0 : 0 ≤ �
   have herror : -e * (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2) ≤
       -((2000 * δ + C / Real.log ((N : ℝ) / 3)) *
         (poleDefect N (primeHorizonExtension x) + ‖x‖ ^ 2)) := by
+    rw [neg_mul]
     apply neg_le_neg
     exact mul_le_mul_of_nonneg_right (by dsimp [e]; linarith only [htailN])
       (add_nonneg (poleDefect_nonneg N _) (sq_nonneg _))

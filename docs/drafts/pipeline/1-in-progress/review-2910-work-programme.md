@@ -23,7 +23,7 @@ No row is complete merely because a related theorem already exists or a weaker c
 
 | ID | Required scope | Status / evidence |
 |---|---|---|
-| W01 | Maximal reach of the Trans-Metzler perturbation scheme; certified floor as a function of overlap. | Exact optimum of the current three certified bounds written; actual-matrix check pending. [Card](review-2910-w01-optimal-certified-perturbation-floor.md). |
+| W01 | Maximal reach of the Trans-Metzler perturbation scheme; certified floor as a function of overlap. | Exact optimum of the current three displayed bounds formalized and audited; reference-floor and analytic-constant improvements remain. [Card](review-2910-w01-optimal-certified-perturbation-floor.md). |
 | W02 | Single-prime flips p≥11 and cofinite flips: fixed-ratio positivity or negative atomic witnesses. | Open. |
 | W03 | Optimize Robin–Euler profile threshold and narrow twin survival; decide sharp transition. | Open. |
 | W04 | Steklov weights q!(log q)^((1+ε)q), receiver β>1, exact quasi-analytic edge. | Open. |
@@ -35,8 +35,8 @@ No row is complete merely because a related theorem already exists or a weaker c
 | W10 | Chen–Gupta–Li continuation/contour capstone; exponent/modulus threshold; q=1 specializations. | Open; external proof must be inspected. |
 | W11 | Optimal positive-definite-majorant narrow-strip pair-energy bound; comparison with E(1/9)≤4. | Open. |
 | W12 | Explicit shallow and deep energy constants; comparison with 3/20. | Open. |
-| W13 | 70% or simple near-line off-line dichotomy with explicit forced proportion. | Written; direct Lean check running. [Card](review-2910-w13-seventy-percent-near-line.md). |
-| W14 | Slack on [3/4,1), 70%/75% displacement thresholds, actual-Gram negative-part credit. | Open. |
+| W13 | 70% or simple near-line off-line dichotomy with explicit forced proportion. | Complete: [proof and audit](../3-formalized/review-2910-w13-seventy-percent-near-line.md). |
+| W14 | Slack on [3/4,1), 70%/75% displacement thresholds, actual-Gram negative-part credit. | Paper argument for generic thresholds and projected imaginary-component credit. [Card](review-2910-w14-displacement-credit.md). |
 | W15 | Gabor-pinching slack optimization. | Open. |
 | W16 | Compact-time heat counts, 2/3-horizon constants, near-axis count tables. | Open. |
 | W17 | Localized heat-energy evolution from pair/exterior forces and forward simplicity. | Open. |
@@ -68,3 +68,6 @@ new work of this programme and must not be reverted or silently credited as veri
 - 2026-10-29 — W07 leaf passed direct check and four transitive-axiom audits; umbrella wired.
   W01 optimal convex use of the existing bounds and W13 general census threshold are written,
   awaiting checks. Remaining rows retain their full original scope.
+- 2026-10-29 — W13 passed direct leaf check and three standard-only transitive-axiom audits;
+  root umbrella import wired. General threshold theorem specializes to 70% with coefficient
+  `HD(1)−2/5−1/A−ε`.

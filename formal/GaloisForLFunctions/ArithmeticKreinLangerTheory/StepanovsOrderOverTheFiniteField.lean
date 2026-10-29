@@ -123,6 +123,3 @@ theorem stepanov_order_hyperelliptic :
     hypTraceKernel_mul_sqrt_card hF hsq hsplit hodd E⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms stepanov_order_hyperelliptic

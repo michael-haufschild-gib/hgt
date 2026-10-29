@@ -63,10 +63,12 @@ AKL owns the obstacles of that summary that concern the passage from local to gl
 |---|---|---|
 | [HeckeKreinToeplitz](../HeckeKreinToeplitz/README.md) | `negIndex`, `pairKernel`, the index formula `negIndex_add_sum_pairKernel_eq`, the aliasing law `negIndex_zpowers_eq_card_classes`, orthogonal translates `card_le_negIndex_of_orthogonal_translates`, closedness `negIndex_le_of_tendsto`, coalescence `coalescence_law`, the global law `global_law_count`, the arithmetic tower law `negIndex_eq_zero_of_posDef_on_infinitely_many_towers` | Hasse principles on every group, the zero-or-infinity law, the wave formula, continuity off the discriminant |
 | [ArithmeticCastelnuovoSeveri](../ArithmeticCastelnuovoSeveri/README.md) | `CurveDatum`, one-sided Lefschetz bounds and the real-node exception (`oneSided_forcing_tfae`, `zeta_riemannHypothesis_iff_oneSided_upper`), the golden datum | the Riemann–Roch ceiling, the twist tower |
-| `RHTower` | Stepanov's count (`stepanov_count`), the Liouville laws (`riemannHypothesis_iff_forall_liouvilleSummatory_le`, `riemannHypothesis_iff_forall_liouvilleExpSum_lower`), real zeros of `ζ` | the parity classes as the targets of a producer |
+| `RHTower` | Stepanov's count (`stepanov_count`), hyperelliptic RH by counting (`riemannHypothesis_splitHyperelliptic`), the Liouville laws (`riemannHypothesis_iff_forall_liouvilleSummatory_le`, `riemannHypothesis_iff_forall_liouvilleExpSum_lower`), real zeros of `ζ` | the parity classes as the targets of a producer |
 | [ArithmeticLorentzianGeometry](../ArithmeticLorentzianGeometry/README.md) | trickle-down = square-root count, hyperelliptic data | the role of the quadratic twist |
 | [ArithmeticCorrespondencePositivity](../ArithmeticCorrespondencePositivity/README.md) | sparse annihilators kill only critical lattice symbols | producers versus receivers |
 | [SelectiveMultiscaleArithmeticPositivity](../SelectiveMultiscaleArithmeticPositivity/README.md), [ArithmeticCountingPositivity](../ArithmeticCountingPositivity/README.md) | selection, the margin `2 log 2`, precision rigidity, the flips | the battery, sorted by the level of arithmetic structure that excludes each member |
+| [ArithmeticEffectivityTheory](../ArithmeticEffectivityTheory/README.md) | the Stepanov method over `ℤ` by integrality of `lcm(1, …, n+1) ∫₀¹ P` (`log_inv_integral_le_psi`, `nair_psi_ge`): lower counts for the primes | the ledger for upper counts, its multiplicity caps, parity-blindness of divisibility |
+| `HTGeometry` | Kronecker density of the prime phases (`primeTorus_kronecker_dense`) | the parity twin in the Bohr closure of vertical shifts |
 | [ArithmeticOrientationGeometry](../ArithmeticOrientationGeometry/README.md) | Bézout-selective orientation (open) | additive structure as the level at which a producer must act |
 | [ArithmeticPositiveDuality](../ArithmeticPositiveDuality/README.md) | Herglotz–Bochner on `ℚ_{>0}` | positive-definite local factors |
 
@@ -241,7 +243,15 @@ fails.
     `ψ(x)`, and the odd class, containing every prime, is worth between `θ(x)` and `ψ(x)`, within
     `2√x log x` of the primes. At square-root precision, vanishing at the primes, at the prime powers and
     at one parity class are the same divisibility condition.
-13. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
+13. **The parity twin is geometric only in the Bohr closure.** Over `𝔽_q` the vertical shift
+    `u ↦ u^{iπ/log q}` is `(−1)^{deg}` at every place, because all norms are powers of `q`; this is the
+    quadratic twist that makes the twist tower work. Over `ℤ` the shift by `π/log p` is the Liouville
+    twin on the tower `⟨p⟩`, but a vertical shift is `−1` at two primes `p, q` only if
+    `p^{2b+1} = q^{2a+1}` (exponents up to sign), which unique factorization forbids: every vertical
+    shift over `ℤ` is `−1` at most at one prime. Two-prime lattices carry the whole index, so no shift
+    realizes the twin there. By Kronecker, since the `log p` are independent over `ℚ`, some shift is
+    within `ε` of `−1` at all primes `p ≤ N`: the twin is a limit of shifts, never one.
+14. **The structure ladder sorts the battery.** Sign excludes the Liouville twin and the sign flips;
    support excludes `Λ + εn^{−η}` and Davenport–Heilbronn functions; normalization excludes `cΛ`,
    `c ≠ 1`; only the ring level excludes over-regular Beurling systems and the golden datum, which have
    positivity, an Euler product and the right normalization. Kernel-level local positivity sits below
@@ -297,13 +307,19 @@ fails.
    (`riemannHypothesis_iff_oddClass_upper`, `negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
 4. *Compressions are receivers* (`compress_traceKernel_charPoly`, `hat_euler_eq_zero_iff`,
    `negIndex_compress_euler`).
-5. *The two producers and their precision* (`stepanov_parity_classes_upper`, `sum_log_prime_le`): over
-   `𝔽_q` Stepanov bounds both Legendre parity classes by `q/2 + (deg h + 1)√q`; over `ℤ` integrality
-   bounds the primes by `Σ_{p≤n} log p ≤ n log 4`, linear precision.
-6. *The Bézout ledger* (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`,
+5. *The two producers and their precision* (`stepanov_parity_classes_upper`, `sum_log_prime_Ioc_le`):
+   over `𝔽_q` Stepanov bounds both Legendre parity classes by `q/2 + (deg h + 1)√q`; over `ℤ`
+   integrality bounds the primes by `Σ_{n<p≤2n} log p ≤ n log 4`, linear precision.
+6. *Stepanov's order over `𝔽_q`* (`hypTraceKernel_mul_sqrt_card`, `negIndex_hypTraceKernel`,
+   `stepanov_order_hyperelliptic`): for `y² = f(x)`, `f` split, squarefree, of odd degree, the
+   normalized point-count errors over all extensions are the values of one kernel on `ℤ`, and the
+   producer (Stepanov on both parity classes, the curve and its twist) gives it index zero.
+7. *The Bézout ledger* (`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`,
    `sum_log_prime_Ioc_le`) and *the binomial multiplicity cap* (`pow_le_of_dvd_choose`,
    `le_one_of_dvd_choose`); *divisibility does not see parity* (`log_lcm_le_psi`,
    `theta_le_log_lcm_oddPoints`, `abs_log_lcm_oddPoints_sub_theta_le`).
+8. *The parity twin is geometric only in the Bohr closure* (`shift_pow_eq_neg_one_pow`,
+   `shiftChar_primeElt_zpow`, `shiftChar_eq_neg_one_subsingleton`, `exists_shiftChar_near_neg_one`).
 
 **D. Completion.**
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
@@ -360,7 +376,11 @@ fails.
    global law only through a count, and exactly one parity class carries the law. The margin `2 log 2`
    is the width of the window where the pole carries the first square (HKT). Locality is twin-blind
    (`twin_finite_towers_negIndex_ne`), so selectivity can only come from a count or a carrier.
-   *Open:* a selective count.
+   Over `𝔽_q` the twin that completes the count is geometric, a vertical shift; over `ℤ` the
+   Liouville twin is a vertical shift on each prime tower and on no two-prime lattice
+   (`shiftChar_eq_neg_one_subsingleton`), only a limit of shifts (`exists_shiftChar_near_neg_one`).
+   A producer that applies to a family closed under vertical shifts reaches the twin only through
+   that limit. *Open:* a selective count.
 3. **Why does finite index imply LH?** The passage has two steps of different kinds. The kernel step:
    finite index is a count with finitely many exceptional waves (`negIndex_eq_card_waves`), i.e.
    finitely many off-line zeros, so the zeros approach the line. The analytic step: zeros approaching
@@ -412,17 +432,20 @@ axis support and local assemblies (`IsAxisSupported`, `localAssembly`); the quad
 counts (`quadTwist`, `twistCount`); parity classes (`parityCount`, `oddClassSum`); exceptional waves
 (`card_le_of_bounded_sub_waves`); limits of data (`tendsto_pairKernel`); compressors
 (`frobCharPoly`, `eulerNodes`, `eulerCoeffs`); fine grids and consecutive ratios
-(`hermQuad_nonneg_of_fine_zpowers`, `consecutiveRatio`).
+(`hermQuad_nonneg_of_fine_zpowers`, `consecutiveRatio`); the Bézout ledger in both rings
+(`sum_le_natDegree_of_vanishing`, `sum_mul_log_le_log_of_dvd`); the hyperelliptic trace kernel
+(`hypTraceKernel`); vertical shifts (`shiftChar`).
 
 To build:
 
 | Tool | Purpose | Test |
 |---|---|---|
-| Arithmetic compressor (Stepanov over `ℤ`) | an upper count for the odd parity class at precision `x^{½+ε}`; first layer built (integrality at linear precision, Stepanov over `𝔽_q` at square-root precision) | reproduces hyperelliptic RH through the twist tower; fails for Liouville; first rung: beat the sieve constant `2` |
+| Arithmetic compressor (Stepanov over `ℤ`) | an upper count for the odd parity class at precision `x^{½+ε}`; first layer built (integrality at linear precision, Stepanov over `𝔽_q` at square-root precision); the hyperelliptic test passed in kernel form (`stepanov_order_hyperelliptic`) | reproduces hyperelliptic RH through the twist tower; fails for Liouville; first rung: beat the sieve constant `2` |
 | Ring-level inputs | Bézout relations as local data; the ledger built in both rings (multiplicity × mass ≤ size), binomial multiplicities capped at `p^m ≤ N` | fail on over-regular Beurling systems and the golden datum |
 | Selective transfer to overlap | the pole carrier of the index-one window at overlapping widths | Q1; fails for Liouville |
-| Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | Q2; fails for parity-twisted models |
-| Coarse-tower locality for infinite spectra | prime towers for kernels with infinitely many pairs | recovers the finite case and the fine-tower law |
+| Geometric parity twin | a family over `ℤ` on which the Liouville twist acts as a symmetry; settled for vertical shifts: one prime tower yes, two primes no, the Bohr closure yes | reproduces the twist tower over `𝔽_q` |
+| Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one (owned by `TransThresholdPairCorrelation`) | Q2; fails for parity-twisted models |
+| Coarse-tower locality for infinite spectra | prime towers for kernels with infinitely many pairs; built when the largest depth is attained by finitely many zeros (`finite_primes_posDef_of_isolated_depth`) | recovers the finite case and the fine-tower law |
 
 ---
 
