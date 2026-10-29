@@ -20,3 +20,7 @@ cd formal
 lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/SmallPrimeFlipsLieBelowTheMaximalGap.lean
 
 No olean was needed for this leaf. Umbrella and foundational README wired.
+
+First required olean for the exact-gap leaf (exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/SmallPrimeFlipsLieBelowTheMaximalGap.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/SmallPrimeFlipsLieBelowTheMaximalGap.ilean GaloisForLFunctions/ArithmeticCountingPositivity/SmallPrimeFlipsLieBelowTheMaximalGap.lean

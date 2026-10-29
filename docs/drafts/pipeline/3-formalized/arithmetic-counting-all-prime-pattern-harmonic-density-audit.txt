@@ -1,0 +1,30 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsEulerProductHarmonicMean.lean
+SHA256: c913d4d2f6de75d3bf69995206969b27f3673de6118f268fb180acec088da605
+
+Scratch audit (session 83412, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-all-prime-pattern-harmonic-mean-check.lean
+
+Canonical installed-source audit (session 76375, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsEulerProductHarmonicMean.lean
+
+Scratch declarations are identical to installed source; only the audit
+#print axioms commands were removed. Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_primeSetCutoff_density' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetHarmonicDensity_bounds' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetFlip_harmonicCorrelation_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetFlip_hasHyperplaneGap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean (session 4666, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsEulerProductHarmonicMean.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsEulerProductHarmonicMean.ilean GaloisForLFunctions/ArithmeticCountingPositivity/EveryPrimePatternHasItsEulerProductHarmonicMean.lean
+Required by the actual cutoff-boundary draft.

@@ -46,7 +46,7 @@ The principal-ideal identity, parity-product formula, and global-unit parity rel
 pass transitive axiom audits using only `propext`, `Classical.choice`, and `Quot.sound`.
 The final direct source audit with `lake --old env lean` passes without warnings.
 The module is imported by `HeckeLFunctions.lean`; no umbrella is compiled.
-No olean is built because no written leaf module yet imports it.
+Its olean is built for the written arithmetic Hecke-theta consumer.
 
 ## Remaining use
 

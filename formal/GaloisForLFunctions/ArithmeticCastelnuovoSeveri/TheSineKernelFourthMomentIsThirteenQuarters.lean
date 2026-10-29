@@ -2,6 +2,30 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheSineKernelMomentsMatch
 
 /-!
 # The sine-kernel fourth Gram moment is `13/4`
+
+Splitting `tr Ĝ⁴ = Σ G_ij G_jk G_kl G_li` by index coincidences gives the per-point moment
+`κ₄ = 1 + 6 ∫ S²ρ₂ + ∫ S⁴ρ₂ + 4·(triangles) + 2 ∬ S(x)²S(y)²ρ₃ + ∭ S(x)S(x−y)S(y−z)S(z)ρ₄`
+(`sineKappa₄`), with `ρ₃, ρ₄` the kernel determinants (`rho₃_eq`, `rho₄_eq`).
+
+* **`κ₄ = 13/4`** (`sineKappa₄_eq`): `∫ S⁴ρ₂ = 2/3 − 11/20 = 7/60` (`∫ S⁶ = ∫ (Δ ⋆ 1)² = 11/20`),
+  the square-pair term is `1/15`, the triangles vanish, and the fully distinct four-cycle
+  vanishes (`sineCycle₄_eq_zero`).
+* **The census** (`qStarValue_sineKappa_eq`, `sineMoments_eq_witness`,
+  `quartic_sineValue_le_sixteen_twentyFirsts`, `sixteen_twentyFirsts_le_card_of_sineMoments`):
+  `q⋆` certifies `16/21 > 3/4` at the sine-kernel moments, the block-model witness has exactly
+  these moments, so `16/21` is the best quartic value there; the sine kernel leaves the
+  coalescence blind spot only at fourth order (`sineKappa₄_lt_blindSpot`,
+  `neg_coeff_of_beats_two_thirds_sine`).
+
+The four-cycle. After the `z`-integration only the two-point profiles `S, A, B` and the
+three-point profiles `J₃, J₅, J₇` remain (`integral_cycle_z`). In `y`, two-point terms pair by
+Parseval, three terms contract a degree-two vertex by Fubini (`integral_contract`), and three
+complete-graph terms (`K₄` with a doubled perfect matching) remain. Two of them agree after the
+substitutions `z ↦ x − z`, `y ↦ x − y` (`K13_eq_K17`) and become the third after swapping the
+outer variables (`integral_sk_mul_K13`). The third is computed through `P_x = 1 ⋆ (1 e_x)`, with
+`|P_x(η)| = |L S(Lx)|`, `L = (1 − |η|)₊` (`norm_mcv_ind_ind`); scaled Parseval gives
+`∫ (Δ³ − Δ⁴/3) = 11/30` (`integral_sk_sq_mul_K15`). The outer integrand then integrates to
+`1/3 − 10/3 + 9/20 + 2 + 9/20 + 2 − 4/5 − 3 · 11/30 = 0`.
 -/
 
 open MeasureTheory Complex FourierTransform
@@ -692,7 +716,7 @@ theorem fourier_cind {a : ℝ} (ha : 0 ≤ a) (x : ℝ) :
           fun v => Complex.exp (↑(-2 * Real.pi * v * x) * Complex.I) := by
       funext v; rw [cind_apply, Set.indicator_apply, neg_zero]; split_ifs <;> simp
     rw [e, integral_indicator measurableSet_Icc,
-      setIntegral_measure_zero _ (by simp [Real.volume_Icc])]
+      setIntegral_measure_zero _ (by simp)]
     simp
   · by_cases hx : x = 0
     · subst hx
@@ -709,7 +733,7 @@ theorem fourier_cind {a : ℝ} (ha : 0 ≤ a) (x : ℝ) :
       field_simp
 
 /-- `1_{[−a,a]} ⋆ 1_{[−a,a]} = (2a − |u|)₊`. -/
-theorem cind_conv_apply {a : ℝ} (ha : 0 ≤ a) (u : ℝ) :
+theorem cind_conv_apply (a u : ℝ) :
     (cind a ⋆[ContinuousLinearMap.mul ℂ ℂ] cind a) u = ((max (2 * a - |u|) 0 : ℝ) : ℂ) := by
   set lo : ℝ := max (-a) (u - a)
   set hi : ℝ := min a (u + a)
@@ -739,15 +763,17 @@ theorem cind_conv_apply {a : ℝ} (ha : 0 ≤ a) (u : ℝ) :
     · have hl : lo = u - a := max_eq_right (by linarith)
       have hh : hi = a := min_eq_left (by linarith)
       rw [hl, hh]; ring_nf
-    · rw [max_eq_right (by linarith), max_eq_right]
-      linarith [min_le_left a (u + a), le_max_right (-a) (u - a)]
+    · have h3 : hi ≤ a := min_le_left _ _
+      have h4 : u - a ≤ lo := le_max_right _ _
+      rw [max_eq_right (by linarith), max_eq_right (by linarith)]
   · rw [abs_of_neg hu]
     rcases le_total (-(2 * a)) u with h2 | h2
     · have hl : lo = -a := max_eq_left (by linarith)
       have hh : hi = u + a := min_eq_right (by linarith)
       rw [hl, hh]; ring_nf
-    · rw [max_eq_right (by linarith), max_eq_right]
-      linarith [min_le_right a (u + a), le_max_left (-a) (u - a)]
+    · have h3 : hi ≤ u + a := min_le_right _ _
+      have h4 : -a ≤ lo := le_max_left _ _
+      rw [max_eq_right (by linarith), max_eq_right (by linarith)]
 
 /-- `∫ (1 − |u|)₊ (L − |u|)₊ du = L² − L³/3` for `0 ≤ L ≤ 1`. -/
 theorem integral_triR_mul_ramp {L : ℝ} (h0 : 0 ≤ L) (h1 : L ≤ 1) :
@@ -782,7 +808,7 @@ theorem integral_sk_sq_mul_scaled {L : ℝ} (h0 : 0 ≤ L) (h1 : L ≤ 1) :
     hc1.integrable_convolution _ hc1
   have hGv : ∀ u, (cind (L / 2) ⋆[ContinuousLinearMap.mul ℂ ℂ] cind (L / 2)) u =
       ((max (L - |u|) 0 : ℝ) : ℂ) := fun u => by
-    rw [cind_conv_apply (by linarith), show 2 * (L / 2) = L by ring]
+    rw [cind_conv_apply, show 2 * (L / 2) = L by ring]
   have hG2 : MemLp (cind (L / 2) ⋆[ContinuousLinearMap.mul ℂ ℂ] cind (L / 2)) 2 :=
     memLp_two_of_norm_le_one hG1 fun u => by
       rw [hGv, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (le_max_right _ _)]
@@ -833,7 +859,6 @@ theorem mcv_ind_ind_eq (x : ℝ) {η : ℝ} (hη : |η| ≤ 1) :
   rw [integral_const_mul, integral_sub_right_eq_self
     (fun s => Complex.exp (↑(-2 * Real.pi * s * x) * Complex.I) • cind (triR η / 2) s) (η / 2),
     Real.fourier_real_eq_integral_exp_smul]
-  congr 2; funext s; congr 3; ring
 
 /-- `|P_x(η)| = |L S(Lx)|` with `L = (1 − |η|)₊`. -/
 theorem norm_mcv_ind_ind (x η : ℝ) : ‖mcv ind ind x η‖ = |triR η * sk (triR η * x)| := by
@@ -844,7 +869,7 @@ theorem norm_mcv_ind_ind (x η : ℝ) : ‖mcv ind ind x η‖ = |triR η * sk (
     have h0 : mcv ind ind x η = 0 := by
       rw [mcv, convolution_def]
       refine (integral_congr_ae (g := fun _ => (0 : ℂ))
-        (Filter.Eventually.of_forall fun t => ?_)).trans integral_zero
+        (Filter.Eventually.of_forall fun t => ?_)).trans (integral_zero ℝ ℂ)
       show (ContinuousLinearMap.mul ℂ ℂ) (ind t) (ind (η - t) * ex x (η - t)) = 0
       rw [ContinuousLinearMap.mul_apply', ind_apply, ind_apply]
       split_ifs with h1 h2
@@ -860,7 +885,7 @@ theorem K15_eq (x : ℝ) : K15 x = ∫ η, triR η * (triR η * sk (triR η * x)
     funext η
     rw [show conj (mcv ind ind x η) * (tri η * mcv ind ind x η) =
       tri η * (conj (mcv ind ind x η) * mcv ind ind x η) by ring, Complex.conj_mul',
-      norm_mcv_ind_ind, sq_abs, tri_apply]
+      norm_mcv_ind_ind, ← Complex.ofReal_pow, sq_abs, tri_apply]
     push_cast; ring
   rw [e, integral_complex_ofReal] at h
   exact_mod_cast h
@@ -991,5 +1016,216 @@ theorem K13_eq_K17 (x : ℝ) : K13 x = K17 x := by
   simp_rw [J3_eq_J5]
   rw [← integral_sub_left_eq_self (fun y => sk y ^ 2 * sk (x - y) * J5 x (x - y)) volume x]
   congr 1; funext y; simp only [sub_sub_cancel]; ring
+
+/-! ### The fully distinct four-cycle -/
+
+/-- The fully distinct four-cycle term `∭ S(x) S(x − y) S(y − z) S(z) ρ₄(0, x, y, z)`. -/
+def sineCycle₄ : ℝ := ∫ x, ∫ y, ∫ z, sk x * sk (x - y) * sk (y - z) * sk z * rho₄ x y z
+
+/-- After the `z`-integration: coefficients in `x` and two-variable profiles in `y`. -/
+def cycE (x : ℝ) : Fin 14 → ℝ :=
+  ![sk x * (1 - sk x ^ 2), -sk x, -sk x, 2 * sk x ^ 2, sk x, sk x ^ 3 - 2 * sk x, sk x, -sk x,
+    2 * sk x ^ 2, -2 * sk x, 2 * sk x, -2 * sk x ^ 2, 2 * sk x, -2 * sk x ^ 2]
+
+/-- The `y`-profiles paired with `cycE`. -/
+def cycU (x : ℝ) : Fin 14 → ℝ → ℝ :=
+  ![fun y => sk (x - y) * sk y, fun y => sk (x - y) * sk y ^ 3, fun y => sk y * sk (x - y) ^ 3,
+    fun y => sk (x - y) ^ 2 * sk y ^ 2, fun y => sk (x - y) ^ 3 * sA y,
+    fun y => sk (x - y) * sA y, fun y => sk y ^ 2 * sk (x - y) * J3 x y,
+    fun y => sk (x - y) * J3 x y, fun y => sk (x - y) * J5 x y,
+    fun y => sk y * sk (x - y) ^ 2 * J5 x y, fun y => sk y * sk (x - y) * sB y,
+    fun y => sk (x - y) ^ 2 * sB y, fun y => sk (x - y) ^ 2 * J7 x y,
+    fun y => sk y * sk (x - y) * J7 x y]
+
+/-- **The `z`-integration.** Expanding `ρ₄` leaves seven `z`-profiles: three two-point
+(`S(y)`, `A(y)`, `B(y)`) and three three-point (`J₃, J₅, J₇`). -/
+theorem integral_cycle_z (x y : ℝ) :
+    ∫ z, sk x * sk (x - y) * sk (y - z) * sk z * rho₄ x y z = ∑ j, cycE x j * cycU x j y := by
+  obtain ⟨-, hsum⟩ := integral_sum_smul
+    ![sk x * sk (x - y) * (1 - sk x ^ 2 - sk y ^ 2 - sk (x - y) ^ 2 +
+        2 * sk x * sk y * sk (x - y)),
+      sk x * sk (x - y) * (sk (x - y) ^ 2 - 1), sk x * sk (x - y) * (sk y ^ 2 - 1),
+      sk x * sk (x - y) * (sk x ^ 2 - 1),
+      sk x * sk (x - y) * (2 * sk x - 2 * sk y * sk (x - y)),
+      sk x * sk (x - y) * (2 * sk y - 2 * sk x * sk (x - y)),
+      sk x * sk (x - y) * (2 * sk (x - y) - 2 * sk x * sk y)]
+    ![fun z => sk (y - z) * sk z, fun z => sk (y - z) * sk z ^ 3,
+      fun z => sk (y - z) * (sk z * sk (x - z) ^ 2), fun z => sk z * sk (y - z) ^ 3,
+      fun z => sk (y - z) * (sk z ^ 2 * sk (x - z)), fun z => sk (y - z) ^ 2 * sk z ^ 2,
+      fun z => sk (y - z) ^ 2 * (sk z * sk (x - z))]
+    (by
+      intro i; fin_cases i
+      exacts [(integral_sk_sub_mul_sk y).1, integrable_sA_integrand y, (J3_pair x y).1,
+        (integral_sk_mul_sk_sub_cube y).1, (J5_pair x y).1, integrable_sB_integrand y,
+        (J7_pair x y).1])
+  have e : (fun z => sk x * sk (x - y) * sk (y - z) * sk z * rho₄ x y z) = fun z =>
+      ∑ i, ![sk x * sk (x - y) * (1 - sk x ^ 2 - sk y ^ 2 - sk (x - y) ^ 2 +
+        2 * sk x * sk y * sk (x - y)),
+      sk x * sk (x - y) * (sk (x - y) ^ 2 - 1), sk x * sk (x - y) * (sk y ^ 2 - 1),
+      sk x * sk (x - y) * (sk x ^ 2 - 1),
+      sk x * sk (x - y) * (2 * sk x - 2 * sk y * sk (x - y)),
+      sk x * sk (x - y) * (2 * sk y - 2 * sk x * sk (x - y)),
+      sk x * sk (x - y) * (2 * sk (x - y) - 2 * sk x * sk y)] i *
+      ![fun z => sk (y - z) * sk z, fun z => sk (y - z) * sk z ^ 3,
+        fun z => sk (y - z) * (sk z * sk (x - z) ^ 2), fun z => sk z * sk (y - z) ^ 3,
+        fun z => sk (y - z) * (sk z ^ 2 * sk (x - z)), fun z => sk (y - z) ^ 2 * sk z ^ 2,
+        fun z => sk (y - z) ^ 2 * (sk z * sk (x - z))] i z := by
+    funext z
+    simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, Matrix.cons_val_zero, Matrix.cons_val_succ,
+      add_zero, rho₄_eq]
+    ring
+  rw [e, hsum]
+  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, Matrix.cons_val_zero, Matrix.cons_val_succ,
+    add_zero, cycE, cycU]
+  rw [(integral_sk_sub_mul_sk y).2, (integral_sk_mul_sk_sub_cube y).2,
+    show ∫ z, sk (y - z) * sk z ^ 3 = sA y from rfl,
+    show ∫ z, sk (y - z) * (sk z * sk (x - z) ^ 2) = J3 x y from rfl,
+    show ∫ z, sk (y - z) * (sk z ^ 2 * sk (x - z)) = J5 x y from rfl,
+    show ∫ z, sk (y - z) ^ 2 * sk z ^ 2 = sB y from rfl,
+    show ∫ z, sk (y - z) ^ 2 * (sk z * sk (x - z)) = J7 x y from rfl]
+  ring
+
+/-- The outer weights. -/
+def cycW : Fin 9 → ℝ := ![1, -5, 1, 4, 1, -1, 4, -2, -2]
+
+/-- The outer one-variable profiles. -/
+def cycV : Fin 9 → ℝ → ℝ :=
+  ![fun x => sk x ^ 2 * (1 - sk x ^ 2), fun x => sk x * sA x, fun x => sk x ^ 3 * sA x,
+    fun x => sk x ^ 2 * sB x, fun x => sk x * U1 x, fun x => sk x * K13 x, fun x => sk x * U2 x,
+    fun x => sk x ^ 2 * U3 x, fun x => sk x ^ 2 * K15 x]
+
+/-- **The `y`-integration.** Two-point pairings, three contractions, and the complete-graph
+profiles `K₁₃ = K₁₇`, `K₁₅`. -/
+theorem integral_cycle_y (x : ℝ) :
+    ∫ y, ∑ j, cycE x j * cycU x j y = ∑ k, cycW k * cycV k x := by
+  have hU : ∀ j, Integrable (cycU x j) := by
+    intro j; fin_cases j
+    exacts [(integral_sk_sub_mul_sk x).1, integrable_sA_integrand x,
+      (integral_sk_mul_sk_sub_cube x).1, integrable_sB_integrand x, (U1_pair x).1, (sA_pair x).1,
+      integrable_K13_integrand x, integrable_W6_integrand x, integrable_W9_integrand x,
+      integrable_K17_integrand x, integrable_U2_integrand x, (U3_pair x).1,
+      integrable_W11_integrand x, (K15_pair x).1]
+  rw [(integral_sum_smul (cycE x) (cycU x) hU).2]
+  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, Matrix.cons_val_zero, Matrix.cons_val_succ,
+    add_zero, cycE, cycU, cycW, cycV]
+  rw [(integral_sk_sub_mul_sk x).2, (integral_sk_mul_sk_sub_cube x).2, (sA_pair x).2,
+    integral_W6, integral_W9, integral_W11,
+    show ∫ y, sk (x - y) * sk y ^ 3 = sA x from rfl,
+    show ∫ y, sk (x - y) ^ 2 * sk y ^ 2 = sB x from rfl,
+    show ∫ y, sk (x - y) ^ 3 * sA y = U1 x from rfl,
+    show ∫ y, sk y ^ 2 * sk (x - y) * J3 x y = K13 x from rfl,
+    show ∫ y, sk y * sk (x - y) ^ 2 * J5 x y = K17 x from rfl,
+    show ∫ y, sk y * sk (x - y) * sB y = U2 x from rfl,
+    show ∫ y, sk (x - y) ^ 2 * sB y = U3 x from rfl,
+    show ∫ y, sk y * sk (x - y) * J7 x y = K15 x from rfl, ← K13_eq_K17]
+  ring
+
+/-- **The fully distinct four-cycle term vanishes.** -/
+theorem sineCycle₄_eq_zero : sineCycle₄ = 0 := by
+  have hV : ∀ k, Integrable (cycV k) := by
+    intro k; fin_cases k
+    exacts [integrable_sk_sq_mul_one_sub, integral_sk_mul_sA.1, integral_sk_cube_mul_sA.1,
+      integral_sk_sq_mul_sB.1, integral_sk_mul_U1.1, integral_sk_mul_K13.1, integral_sk_mul_U2.1,
+      integral_sk_sq_mul_U3.1, integral_sk_sq_mul_K15.1]
+  rw [sineCycle₄]
+  simp_rw [integral_cycle_z, integral_cycle_y]
+  rw [(integral_sum_smul cycW cycV hV).2]
+  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, Matrix.cons_val_zero, Matrix.cons_val_succ,
+    add_zero, cycW, cycV]
+  rw [← sinePair, sinePair_eq, integral_sk_mul_sA.2, integral_sk_cube_mul_sA.2,
+    integral_sk_sq_mul_sB.2, integral_sk_mul_U1.2, integral_sk_mul_K13.2, integral_sk_mul_U2.2,
+    integral_sk_sq_mul_U3.2, integral_sk_sq_mul_K15.2]
+  norm_num
+
+/-! ### The fourth moment -/
+
+/-- The fourth sine-kernel Gram moment per point. The cyclic words `(i, j, k, l)` of
+`tr Ĝ⁴ = Σ G_ij G_jk G_kl G_li` split by coincidences: all equal (`1`); two blocks
+(`4 + 2` pair terms with weight `S²`, one with weight `S⁴`); three blocks (`4` triangles,
+`2` non-adjacent squares); four distinct points (the four-cycle). -/
+def sineKappa₄ : ℝ :=
+  1 + 6 * sinePair + sineQuartPair + 4 * sineTriple + 2 * sineSquarePair + sineCycle₄
+
+/-- **`κ₄ = 13/4`.** -/
+theorem sineKappa₄_eq : sineKappa₄ = 13 / 4 := by
+  rw [sineKappa₄, sinePair_eq, sineQuartPair_eq, sineTriple_eq_zero, sineSquarePair_eq,
+    sineCycle₄_eq_zero]
+  norm_num
+
+/-! ### The census at the sine-kernel moments -/
+
+/-- **The quartic certificate certifies `16/21` at the sine-kernel moments.** -/
+theorem qStarValue_sineKappa_eq :
+    HigherInertia.qStarValue sineKappa₂ sineKappa₃ sineKappa₄ = 16 / 21 := by
+  rw [sineKappa₂_eq, sineKappa₃_eq, sineKappa₄_eq]
+  exact HigherInertia.qStar_value_sineMoments
+
+theorem three_quarters_lt_qStarValue_sine :
+    3 / 4 < HigherInertia.qStarValue sineKappa₂ sineKappa₃ sineKappa₄ := by
+  rw [qStarValue_sineKappa_eq]; norm_num
+
+open Matrix in
+/-- **The sine-kernel moments are the block-model moments.** The witness (`16` simple pairs of
+overlap `√2/4`, `5` coalesced pairs; `42` zeros) has `tr Ĥᵏ = 42 κₖ` for `k = 2, 3, 4`. -/
+theorem sineMoments_eq_witness :
+    (((diagonal fun i => (HigherInertia.witnessVal i : ℂ)) ^ 2).trace).re = 42 * sineKappa₂ ∧
+    (((diagonal fun i => (HigherInertia.witnessVal i : ℂ)) ^ 3).trace).re = 42 * sineKappa₃ ∧
+    (((diagonal fun i => (HigherInertia.witnessVal i : ℂ)) ^ 4).trace).re = 42 * sineKappa₄ := by
+  obtain ⟨-, h2, h3, h4⟩ := HigherInertia.witness_moments
+  rw [sineKappa₂_eq, sineKappa₃_eq, sineKappa₄_eq]
+  exact ⟨h2, h3, h4⟩
+
+/-- **`16/21` is optimal at the sine-kernel moments**: every quartic certificate valid on the
+block-model witness has value at most `16/21` there. -/
+theorem quartic_sineValue_le_sixteen_twentyFirsts (c₁ c₂ c₃ c₄ : ℝ)
+    (hvalid : ∑ i, (c₁ * HigherInertia.witness_isHermitian.eigenvalues₀ i +
+      c₂ * HigherInertia.witness_isHermitian.eigenvalues₀ i ^ 2 +
+      c₃ * HigherInertia.witness_isHermitian.eigenvalues₀ i ^ 3 +
+        c₄ * HigherInertia.witness_isHermitian.eigenvalues₀ i ^ 4) ≤
+          Fintype.card HigherInertia.WitnessS) :
+    c₁ + c₂ * sineKappa₂ + c₃ * sineKappa₃ + c₄ * sineKappa₄ ≤ 16 / 21 := by
+  rw [sineKappa₂_eq, sineKappa₃_eq, sineKappa₄_eq]
+  exact HigherInertia.le_sixteen_twentyFirsts_of_valid c₁ c₂ c₃ c₄ hvalid
+
+/-- The sine kernel separates from the coalescence blind spot only at fourth order:
+`κ₄ = 13/4 < 10/3`. -/
+theorem sineKappa₄_lt_blindSpot : sineKappa₄ < 10 / 3 := by
+  rw [sineKappa₄_eq]; norm_num
+
+/-- Beating `2/3` at the sine-kernel moments with a certificate valid on the blind spot forces a
+negative quartic coefficient. -/
+theorem neg_coeff_of_beats_two_thirds_sine {c₁ c₂ c₃ c₄ : ℝ}
+    (hvalid : ∑ i, (c₁ * HigherInertia.blindSpot_isHermitian.eigenvalues₀ i +
+      c₂ * HigherInertia.blindSpot_isHermitian.eigenvalues₀ i ^ 2 +
+      c₃ * HigherInertia.blindSpot_isHermitian.eigenvalues₀ i ^ 3 +
+        c₄ * HigherInertia.blindSpot_isHermitian.eigenvalues₀ i ^ 4) ≤ Fintype.card (Fin 4))
+    (hbeat : 2 / 3 < c₁ + c₂ * sineKappa₂ + c₃ * sineKappa₃ + c₄ * sineKappa₄) : c₄ < 0 := by
+  rw [sineKappa₂_eq, sineKappa₃_eq] at hbeat
+  exact HigherInertia.neg_coeff_of_beats_two_thirds sineKappa₄_lt_blindSpot hvalid hbeat
+
+open Matrix in
+open scoped ComplexOrder in
+/-- **The sine-kernel census.** On the zero-side model `Ĥ = Σ_S ww* + Σ_R aa* − B`, if the
+normalized power traces `tr Ĥᵏ / N` (`k ≤ 4`) are the sine-kernel moments, then at least
+`16/21` of the `N` zeros are simple critical zeros. -/
+theorem sixteen_twentyFirsts_le_card_of_sineMoments {n S R : Type*} [Fintype n] [DecidableEq n]
+    [Fintype S] [Fintype R] (w : S → n → ℂ) (a : R → n → ℂ) {B : Matrix n n ℂ}
+    (hB : B.PosSemidef)
+    (hnorm : (2 * Fintype.card R : ℝ) ≤ ∑ j, ∑ k, Complex.normSq (a j k) - (B.trace).re)
+    (hH : (∑ j, vecMulVec (w j) (star (w j)) + ∑ j, vecMulVec (a j) (star (a j)) - B).IsHermitian)
+    (N : ℝ)
+    (h1 : (((∑ j, vecMulVec (w j) (star (w j)) + ∑ j, vecMulVec (a j) (star (a j)) - B) ^ 1).trace).re
+      = N)
+    (h2 : (((∑ j, vecMulVec (w j) (star (w j)) + ∑ j, vecMulVec (a j) (star (a j)) - B) ^ 2).trace).re
+      = N * sineKappa₂)
+    (h3 : (((∑ j, vecMulVec (w j) (star (w j)) + ∑ j, vecMulVec (a j) (star (a j)) - B) ^ 3).trace).re
+      = N * sineKappa₃)
+    (h4 : (((∑ j, vecMulVec (w j) (star (w j)) + ∑ j, vecMulVec (a j) (star (a j)) - B) ^ 4).trace).re
+      = N * sineKappa₄) :
+    16 / 21 * N ≤ Fintype.card S := by
+  have h := HigherInertia.qStar_moments_le_card_of_columns w a hB hnorm hH
+  simp only at h
+  rw [h1, h2, h3, h4, sineKappa₂_eq, sineKappa₃_eq, sineKappa₄_eq] at h
+  linarith
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SineKernel

@@ -82,13 +82,30 @@ needs the beyond-threshold fourth moment `κ₄ = 13/4` at `λ → 1`, and `3/4`
   `tr E⁴/N` is `(4/15)λ` (patterns: `4(L − max)₊ + 8(L − y − y')₊` against `yy'`), exact for `λ < 1/2`.
   At `λ = 1` the sine kernel has `c₄ = 1/4 = 4/15 − 1/60`: the `−1/60` is the off-diagonal
   (products `n₁n₃ ≈ n₂n₄ > T`) — beyond threshold, as in the CUE high range `x + y > N`.
-- Sine-kernel moments (paper, cross-checked): `κ₃ = 2` (CUE: `E[p_a p_b p̄_{a+b}] = (a+b−N)_+ = 0`),
-  `κ₄ = 13/4` (`c₄ = 7/60 + 2/15`, fully distinct cycles vanish).
+- Sine-kernel moments (Lean): `κ₂ = 4/3`, `κ₃ = 2`, `κ₄ = 13/4`, defined as the coincidence
+  expansions of `tr Ĝᵏ` against the determinantal correlations `ρ_m = det[S(x_a − x_b)]`.
+  Fourier side: `S = 𝓕1`, `S² = 𝓕Δ`, `S³ = 𝓕(Δ⋆1)`; `∫S⁶ = 11/20`, `∫_{|η|≤1/2}(Δ⋆1)² = 9/20`;
+  fully distinct triangles and four-cycles vanish; the `K₄`-with-doubled-matching integral is
+  `∫(Δ³ − Δ⁴/3) = 11/30` via `|1⋆(1e_x)|(η) = |L S(Lx)|`, `L = (1−|η|)₊`.
+  `ArithmeticCastelnuovoSeveri/TheSineKernelMomentsMatchTheBlindSpot.lean` — `sineKappa₂_eq`,
+  `sineKappa₃_eq`, `sineTriple_eq_zero`, `sineMoments_eq_blindSpot`, `cubic_sineValue_le_two_thirds`,
+  `qStarValue_sineKappa`.
+  `ArithmeticCastelnuovoSeveri/TheSineKernelFourthMomentIsThirteenQuarters.lean` — `rho₃_eq`,
+  `rho₄_eq`, `sineQuartPair_eq`, `sineSquarePair_eq`, `sineCycle₄_eq_zero`, `sineKappa₄_eq`,
+  `integral_sk_sq_mul_K15`, `qStarValue_sineKappa_eq` (`16/21`), `sineMoments_eq_witness`,
+  `quartic_sineValue_le_sixteen_twentyFirsts`, `sineKappa₄_lt_blindSpot`,
+  `neg_coeff_of_beats_two_thirds_sine`, `sixteen_twentyFirsts_le_card_of_sineMoments`.
 - Lean: `ArithmeticCastelnuovoSeveri/TheBlindSpotIsExactThroughThirdOrder.lean` —
   `triangle_variation_le`, `square_variation_le`, `square_variation_attained`,
   `sum_le_card_of_isInertiaCertificate`, `blindSpot_moments`, `blindSpot_value`,
   `cubic_value_le_two_thirds`, `quartic_value_le`, `neg_coeff_of_beats_two_thirds`,
   `qStar_value_diagonal`.
+- ζ zeros, unconditionally (complex ordinates), Montgomery's mean-square method (card
+  `3-formalized/zeta-three-and-four-level-form-factors.md`): the 3-level form factor vanishes,
+  `∫_0^T S(T^α)S(T^β) conj S(T^{α+β}) = o(T log T)` for `α + β < 1` (`tendsto_tripleFormFactor`), and
+  the 4-level form factor is Gaussian, `∫_0^T |S(T^α)|²|S(T^β)|² ~ (αβ/16) T log²T` for `α < β`,
+  `α + β < 1` (`tendsto_fourLevelFormFactor`). In range, ζ's higher statistics are the sine
+  kernel's — no extra census information beyond the blind spot.
 - Zeta23's `Z.Gz P T = P.Gp T` makes every power trace prime-side; the cubic `ζ` moment is an
   in-range Zeta23-§5-scale computation, but it carries no census information (blind spot).
 
@@ -96,3 +113,5 @@ needs the beyond-threshold fourth moment `κ₄ = 13/4` at `λ → 1`, and `3/4`
 - 2026-10-28 — created; Q-I and Q-III paper answers drafted.
 - 2026-10-28 — Q-I, Q-II, Q-III certificate formalized and wired.
 - 2026-10-29 — Q-II two-sided depth law; Q-III range obstruction and third-order blind spot formalized.
+- 2026-10-29 — sine-kernel moments `κ₂, κ₃, κ₄` and the `16/21` census corollaries formalized.
+- 2026-10-29 — ζ 3- and 4-level form factors below threshold formalized.

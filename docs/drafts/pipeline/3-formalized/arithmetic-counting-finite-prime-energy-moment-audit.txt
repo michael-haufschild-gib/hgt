@@ -1,0 +1,27 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeConductorMomentsBoundTheGreatestGap.lean
+SHA256: def954aa781cfb241f339ef58ef5e48ac146d644eb70ee03afe9d8b3e1f6fef3
+
+Scratch audit (session 66682, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-energy-moment-check.lean
+
+Canonical installed-source audit (session 4681, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeConductorMomentsBoundTheGreatestGap.lean
+
+Scratch declarations are identical to installed source; only the audit
+#print axioms commands were removed. Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.hasSum_finiteFlipConductorEnergy' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipHarmonicDensity_lt_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipGreatestGap_le_energyMoment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean (session 46661, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeConductorMomentsBoundTheGreatestGap.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeConductorMomentsBoundTheGreatestGap.ilean GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeConductorMomentsBoundTheGreatestGap.lean
+Required by the actual prime-tail rate draft; existing oleans were preserved.

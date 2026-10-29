@@ -3,7 +3,7 @@
 - **ID:** ACP-PARITY-RESOLVENT-LIMIT
 - **Stage:** 3-formalized
 - **Type:** THEOREM (paper and Lean)
-- **Parent:** ../2-fully-proven/arithmetic-counting-small-prime-secular-gap.md
+- **Parent:** arithmetic-counting-small-prime-secular-gap.md
 - **Sources:** arithmetic-counting-parity-spectral-mass.md; arithmetic-counting-parity-secular-data.md; arithmetic-counting-finite-secular-criterion.md in stage three
 - **Statement:** For each prime p and each 0<s<2 log 2, the actual finite prime-matrix reciprocal reading of the unit parity constraint converges to its full arithmetic tower series.
 

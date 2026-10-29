@@ -133,6 +133,150 @@ precision — do not conflate the two.
    positive number. The selected tower mass exhausts one, controlling all remaining actual
    eigenlines, including those whose energies diverge. This transfers the whole scalar reading
    from counted arithmetic coordinates to the finite prime matrix.
+16. **Exact single-prime gaps.** The greatest hyperplane gap of $\omega_p$ is
+   $\delta_p=\min(2\log2,\alpha_p)$. Below the first global excitation, the finite constrained
+   form is nonnegative exactly when its full reciprocal reading is nonpositive. Resolvent
+   convergence and the sign on either side of the unique root prove both attainment and the
+   necessary bound. Thus every real gap is classified by $g\le\delta_p$; for $p=2,3,5,7$,
+   $\delta_p=\alpha_p$, characterized by
+   $\sum_{k\ge1}4/(\varphi(p^k)(k\log p+\log p/(p-1)-\alpha_p))=1/\alpha_p$.
+   Every prime-flip gap is strictly below $p\log p/(p+3)$.
+17. **Finite prime sets have unit conductor mass.** Put $b_F=\mu*\omega_F$ on positive integers.
+   Its local value at $p^k$, $k\ge1$, is $2(-1)^k$ for $p\in F$ and zero otherwise. Hence
+   $b_F(m)^2=4^{\omega(m)}$ when every prime factor of $m$ belongs to $F$, and zero elsewhere.
+   The normalized coefficients $a_F(m)=c_Fb_F(m)/\sqrt{\varphi(m)}$ satisfy
+   $\sum_{m\ge1}a_F(m)^2=1$: the finite Euler product has local factors
+   $1+4p/(p-1)^2=(p+1)^2/(p-1)^2$, exactly cancelled by $c_F^2$.
+   All prime-power tails are included. This gives the total mass needed for a joint resolvent
+   transfer; identifying the finite-set coordinates on actual eigenlines is a separate step.
+18. **Finite-set counts determine actual eigenline coordinates.** The mixed harmonic count is
+   $\sum_{d\mid m}\mu(m/d)\omega_F(d)S_F(\lfloor N/d\rfloor)$. Its normalized limit is
+   $c_Fb_F(m)$, so the inner product with the normalized Ramanujan mode tends to $a_F(m)$.
+   The common quasimode residual and isolated spectral window then give an actual eigenline
+   sequence with energy tending to the conductor energy and squared constraint coordinate
+   tending to $a_F(m)^2$. This includes every mixed conductor. Together with unit mass it
+   supplies the arithmetic inputs for controlling all omitted lines in the joint resolvent.
+
+19. **The joint resolvent retains every spectral direction.** For every finite prime set $F$ and
+   $0<s<2\log2$, the full actual reciprocal reading tends to
+   $c_F^2\Phi_F(s)$, where $\Phi_F(s)=-1/s+\sum_{m\ge2}w_F(m)/(D_m-s)$.
+   Distinct conductor energies separate each finite packet, without an ordering by conductor size.
+   The unique ground count bounds all omitted denominators below by a fixed positive number;
+   unit conductor mass then makes the omitted contribution vanish. The normalized function is
+   strictly increasing throughout the physical first gap, including for the empty prime set.
+
+20. **Exact finite-prime gap criterion and inclusion law.** Every real gap is classified by
+   $g\le2\log2$ and $\Phi_F(s)\le0$ for every $0<s<g$. Necessity passes the actual finite
+   reciprocal sign to its arithmetic limit. For sufficiency, a test value slightly above $s$
+   makes the limit strictly negative, giving an eventual finite inequality. The epsilon in
+   the gap definition includes the endpoint: the greatest gap $\delta_F$ is attained and
+   $(2\log2)c_F^2\le\delta_F\le2\log2$. Enlarging $F$ adds supported conductor weights,
+   increasing $\Phi_F$ and decreasing $\delta_F$. These assertions include the empty set.
+
+21. **Interior roots and the maximal plateau.** The same summable denominator bound makes
+   $\Phi_F$ continuous on $(0,2\log2)$. If the greatest gap is below the ceiling, then
+   $\Phi_F(\delta_F)=0$; every zero in this interval equals $\delta_F$. For proper inclusion
+   $F\subsetneq G$, a newly flipped prime contributes a strictly positive conductor term,
+   so $\Phi_F(s)<\Phi_G(s)$. Consequently
+   $\delta_G<\delta_F$ exactly when $\delta_G<2\log2$: equal gaps under proper inclusion
+   occur only at the maximum. This completes the finite-set classification without introducing
+   secular roots above the physically relevant ceiling.
+
+22. **Joint gaps vanish above every fixed prime cutoff.** Let $F_{B,Q}$ contain the primes
+   $B<p\le Q$. Then $\delta_{F_{B,Q}}\to0$, although each finite-stage greatest gap is
+   positive. The progression $B!(n+2)+1$ supplies conductors supported above $B$;
+   its reciprocal logarithmic mass diverges by condensation. Since
+   $w_F(m)/(D_m-s)\ge1/(2m\log m)$ for supported $m\ge2$ and $0<s<2\log2$,
+   a sufficiently large finite packet contradicts any fixed positive secular gap.
+   Inclusion makes the gaps decrease. In particular, arbitrarily large primes can each
+   have maximal singleton gap while their joint greatest gap is arbitrarily small.
+   This uses fixed finite packets, with no exchange of horizon and prime-cutoff limits.
+
+23. **One fixed dyadic probe selects finite prime signs.** Let $\delta_2$ be the greatest gap
+   of dyadic parity. Among finite prime flips, the two lower bounds
+   $\operatorname{Gap}(\omega_F)\ge2\log2$ and
+   $\operatorname{Gap}(\omega_2\omega_F)\ge\delta_2$ hold together exactly when $F$ is empty.
+   The first excludes $2\in F$, since inclusion would force a gap at most
+   $\delta_2<2\log2$. For every remaining nonempty $F$, the dyadic toggle inserts two,
+   and strict inclusion makes its gap smaller than $\delta_2$. Both readings are attained
+   for the untwisted sign. This selects within the finite-prime family using a fixed
+   additional arithmetic probe; it does not assert selection among arbitrary weights.
+
+24. **Conductor mass controls gap loss and probe precision.** For $F\subseteq G$, the added
+   normalized weight has total mass $\Delta=c_G^{-2}-c_F^{-2}\ge0$. Its full secular
+   increment is at most $\Delta/(g_0-s)$, where $g_0=2\log2$. The reciprocal ground term gives
+   $(\delta_F-\delta_G)(g_0-\delta_G)\le\delta_G\delta_F\Delta$, hence
+   $(\delta_F-\delta_G)^2\le g_0^2\Delta$. The proof includes the maximal plateau by taking
+   a reciprocal limit from below, with no continuity assertion at the excitation itself.
+   Inserting a prime gives squared loss at most $16g_0^2/(pc_F^2)$. At the interior dyadic
+   calibration the stronger product bound gives loss at most
+   $16g_0^2/(pc_2^2(g_0-\delta_2))$. Thus arbitrarily remote maximal-gap single-prime flips
+   have a strictly smaller dyadic response, yet approach the untwisted reading at order
+   $1/p$. Exact finite-prime selection has no fixed positive tolerance.
+
+25. **The counted first energy moment bounds the gap.** Dual numbers retain mass and
+   energy in a finite Euler product, giving
+   $M_F=\sum_m a_F(m)^2D_m=\sum_{p\in F}4p\log p/(p^2-1)$.
+   Weighted Cauchy-Schwarz in the full secular series gives
+   $\delta_F\le c_F^2M_F/(1-c_F^2)$ for nonempty $F$.
+   Combined with $g_0c_F^2\le\delta_F$, this relates both sides of the attained
+   gap to arithmetic counts without assuming full-vector energy convergence.
+
+26. **Quantitative collapse above every fixed prime cutoff.** For
+   $F_{B,Q}=\{p\text{ prime}:B<p\le Q\}$, elementary Mertens bounds give
+   $c_{F_{B,Q}}\le D_B/(\log Q)^2$ and
+   $M_{F_{B,Q}}\le(16/3)(\log Q+C_1)$, where
+   $D_B=\exp(2(C_2+1+\sum_{p\le B}1/p))$ is explicit.
+   Eventually $c_{F_{B,Q}}\le1/2$, so the moment inequality pays
+   $\delta_{F_{B,Q}}\le(64/3)D_B^2/(\log Q)^3$.
+   For $B\ge10$, every constituent single-prime flip is maximal while this
+   positive joint gap decays. The prime-cutoff limit is quantified directly
+   in the attained gaps, with no exchange of integer-horizon limits.
+
+27. **Divisibility counts control genuinely infinite prime patterns.** Let
+   $\omega_P$ flip any set $P$ of primes, and put
+   $\eta_P(N)=\sum_{p\le N,\,p\in P}1/p$. The actual gauge agrees with its
+   finite prime cutoff throughout $[1,N]$. Counting multiples gives
+   $S_P(N)/H_N\ge1-2\eta_P(N)$, and the normalized squared harmonic error
+   of cutting off at $Q$ is at most $4\eta_{P\cap(Q,\infty)}(N)$.
+   Both bounds are uniform in the integer horizon and assume no limiting
+   mean. An increasing prime sequence bounded below geometrically has
+   arbitrarily small reciprocal mass. Its infinite sign therefore retains
+   every prescribed gap below $2\log2$, with the gap paid directly by the
+   uniform count. Pointwise convergence alone is not used to transfer it.
+
+28. **Prime stripping has an additive cost independent of the residual sign.**
+   If a multiplicative sign $\omega$ is unflipped on the finite prime set $F$,
+   then $|S_{\omega_F\omega}(N)-c_FS_\omega(N)|\le K_F$, where
+   $K_F=\sum_{p\in F}2(1+\log p)/(p+1)$. The exact divisibility recurrence
+   expresses each one-prime error as two harmonic shells. Their costs add
+   because each local density factor lies in $(0,1]$. If $F\subseteq[1,Q]$,
+   elementary Mertens counting gives
+   $K_F\le2(1+1/\log2)(\log Q+C_1)$. Thus the error is explicit and uniform
+   in the integer horizon and every remaining, possibly infinite, prime pattern.
+
+29. **Every prime pattern has its Euler-product harmonic mean.** For any
+   prime set $P$, let $c_Q=\prod_{p\in P,\,p\le Q}(p-1)/(p+1)$ and
+   $c=\inf_Qc_Q$. Then $0\le c\le1$, $c_Q\to c$, and
+   $S_P(N)/H_N\to c$ without any summability or density hypothesis.
+   If $c=0$, finite prime stripping squeezes the full correlation between
+   $\pm c_Q$ with a vanishing fixed-cutoff error. If $c>0$, the finite
+   product inequality $c_F(1+\sum_{p\in F}1/p)\le1$ bounds residual
+   reciprocal mass by $c_Q/c-1$. Divisibility counting and stripping then
+   squeeze both correlation limits to $c$. The actual sign retains gap
+   $(2\log2)c^2$. This establishes a paid lower bound; zero density alone
+   does not determine the greatest gap.
+
+30. **Positive density is exactly harmonic cutoff completeness.** The residual
+   prime pattern beyond $Q$ has density $c/c_Q$. Its multiplicative partition
+   gives the exact squared harmonic cutoff distance
+   $D(P,Q,N)=2(1-C_{P\setminus[1,Q]}(N))$ for $N\ge1$, hence
+   $D(P,Q,N)\to2(1-c/c_Q)$ at fixed $Q$. Finite prime cutoffs approximate
+   the full sign in eventual harmonic mean square exactly when $c>0$.
+   If $c=0$, every fixed cutoff stays at limiting squared distance two.
+   In the reverse order, $Q\ge N$ makes the distance exactly zero.
+   Thus both orders of exhaustion are explicit; this does not transfer an
+   unbounded quadratic form solely from harmonic norm approximation.
 
 ---
 
@@ -173,7 +317,7 @@ precision — do not conflate the two.
 13. **Exact arithmetic secular data** (`primeParityTowerEnergy_eq`,
    `primeParityTowerCoefficient_sq_succ`, `hasSum_primeParityTowerCoefficient_sq`,
    `primeParitySecularRoot_spec`, `primeParitySecularRoot_unique`). The existing infinite secular
-   theory applies to the counted parity tower and gives a strictly improved candidate gap.
+   theory applies to the counted parity tower and gives the root used in the exact gap classification.
 14. **Finite constraint and exhaustion tools** (`diagonal_hyperplane_nonneg_iff`,
    `reciprocal_mass_le_packet_add_tail`, `exists_negative_diagonal_on_hyperplane`,
    `one_negative_diagonal_nonneg_iff`, `hermitian_hyperplane_bound_iff`,
@@ -183,6 +327,92 @@ precision — do not conflate the two.
    `exists_primeParity_tower_eigenline`, `eventually_fullPrime_ground_count_one`,
    `primeParityTowerEnergy_strictMono`, `primeParityTowerEnergy_ge_excitation`,
    `tendsto_primeParityFiniteResolvent`). Every unselected eigenline is included in the remainder bound.
+16. **Complete single-prime classification** (`primeFlip_hasHyperplaneGap_min_secularRoot`,
+   `primeFlip_hyperplaneGap_le_secularRoot`, `isGreatest_primeFlip_hyperplaneGap_min_secularRoot`,
+   `primeFlip_hasHyperplaneGap_iff_le_min_secularRoot`,
+   `primeParitySecularRoot_lt_two_mul_log_two_iff`,
+   `isGreatest_smallPrimeFlip_hyperplaneGap_secularRoot`,
+   `primeFlip_hyperplaneGap_lt_prime_log_div`, `hasSum_primeParitySecularRoot_reciprocals`).
+   The counted series determines the exact constrained gap of the actual prime matrices.
+17. **Exact mass for arbitrary finite prime sets** (`finiteFlipMobius_isMultiplicative`,
+   `finiteFlipMobius_eq_divisor_sum`, `finiteFlipMobius_prime_pow`,
+   `finiteFlipMobius_sq_eq_prod`, `finiteFlipSpectralWeight_eq`,
+   `hasSum_finiteFlipSpectralWeight_supported`, `finiteFlipConductorCoefficient_sq`,
+   `hasSum_finiteFlipConductorCoefficient_sq`). The supported conductor weights and their
+   summability are proved directly from local geometric counts and the finite Euler product.
+18. **Actual coordinates for every finite prime set** (`finiteFlipRamanujanSum_eq`,
+   `finiteFlipRamanujanSum_tendsto`, `finiteFlipHorizonVector_norm_sq`,
+   `finiteFlipHorizonVector_inner`, `tendsto_finiteFlipHorizonVector_inner`,
+   `tendsto_finiteFlipWindowCoordinateSq`, `exists_finiteFlip_eigenline_coordinates`,
+   `exists_finiteFlip_conductor_eigenline`). Every positive conductor has its counted
+   squared mass on an actual prime eigenline; the horizon limit is for fixed F and m.
+
+19. **Full joint-prime resolvent and strict increase** (`summable_finiteFlipSecularTail`,
+   `hasSum_finiteFlipSecularSeries`, `tendsto_finiteFlipFiniteResolvent`,
+   `finiteFlipSecular_strictMonoOn`). Summability and unit counted mass control the entire actual
+   reading below the first excitation; no unselected eigenline is discarded.
+
+20. **Attained finite-prime gaps and inclusion comparison** (`finiteFlip_hasHyperplaneGap_iff_secular`,
+   `isGreatest_finiteFlip_hyperplaneGap`, `finiteFlip_hasHyperplaneGap_iff_le_greatestGap`,
+   `finiteFlipGreatestGap_bounds`, `finiteFlipGreatestGap_pos`, `finiteFlipSpectralWeight_mono`,
+   `finiteFlipSecular_mono`, `finiteFlipGreatestGap_antitone`). The explicit counted series
+   classifies the exact uniform gap, including its endpoint and arbitrary joint flips.
+
+21. **Interior-root classification and strict inclusion law** (`finiteFlipSecular_continuousAt`,
+   `finiteFlipSecular_greatestGap_eq_zero`, `finiteFlipGreatestGap_eq_iff_secular_zero`,
+   `finiteFlipSecular_lt_of_ssubset`, `finiteFlipGreatestGap_lt_iff_of_ssubset`). Every submaximal
+   finite-set gap is the unique interior arithmetic root; equality under proper inclusion is
+   confined to the maximal plateau.
+
+22. **Prime-tail collapse despite individually maximal constituents**
+   (`not_summable_progressionReciprocalLog`, `tendsto_sum_progressionReciprocalLog_atTop`,
+   `exists_primeTailCutoff_gap_lt`, `tendsto_primeTailGreatestGap_zero`,
+   `exists_maximal_prime_flips_with_small_joint_gap`). An explicit rough progression
+   supplies enough positive conductor mass to force the joint greatest gaps to zero.
+
+23. **Exact selection by a fixed dyadic probe** (`finiteFlip_dyadicPrimeToggle`,
+   `dyadicFlipGreatestGap_lt_ceiling`, `finiteFlip_two_gap_selection`). The maximal original
+   gap and the untwisted dyadic-response gap are jointly rigid among finite prime flips.
+
+24. **Quantitative gap stability and exact probe precision** (`hasSum_finiteFlipSpectralWeight`,
+   `finiteFlipSecular_increment_le`, `finiteFlipGreatestGap_loss_mul_ceiling_le`,
+   `finiteFlipGreatestGap_loss_sq_le`, `finiteFlipGreatestGap_insert_loss_sq_le`,
+   `dyadicGreatestGap_prime_response_loss_le`,
+   `exists_maximal_flip_with_almost_unchanged_dyadic_gap`). Total counted conductor mass
+   pays a global perturbation bound and the sharp qualitative tolerance obstruction.
+
+25. **Exact conductor moment and greatest-gap upper bound**
+   (`hasSum_finiteFlipConductorEnergy`, `finiteFlipHarmonicDensity_lt_one`,
+   `finiteFlipGreatestGap_le_energyMoment`). A dual-number Euler product evaluates
+   the first moment; weighted Cauchy-Schwarz converts it to a gap bound.
+
+26. **Explicit inverse-log-cube prime-tail gap bound**
+   (`finiteFlipHarmonicDensity_primeTail_le`,
+   `finiteFlipConductorEnergyMoment_primeTail_le`,
+   `eventually_primeTailGreatestGap_le_inverse_log_cube`). Elementary prime
+   counts bound density and mean energy, and hence the actual greatest gap.
+
+27. **Uniform infinite-prime counting and sparse infinite gaps**
+   (`primeSetFlip_eq_finiteFlip_of_le`, `primeSetFlip_harmonicCorrelation_ge`,
+   `primeSetFlip_cutoff_distance_sq_le`,
+   `exists_infinite_primes_bounded_reciprocal_mass`,
+   `exists_infinite_prime_flips_with_near_maximal_gap`). Exact finite-horizon
+   counts provide an explicit truncation error and actual infinite-family gaps.
+
+28. **Additive uniform prime stripping** (`finiteFlip_harmonic_stripping_error`,
+   `finiteFlip_harmonic_stripping_error_le_log_cutoff`). Two harmonic shells
+   per prime pay an explicit error uniform in the horizon and residual sign.
+
+29. **All-pattern harmonic mean and paid gap** (`tendsto_primeSetCutoff_density`,
+   `primeSetHarmonicDensity_bounds`, `primeSetFlip_harmonicCorrelation_tendsto`,
+   `primeSetFlip_hasHyperplaneGap`). Every prime pattern has the exact
+   decreasing Euler-product mean, which pays its squared-density gap.
+
+30. **Exact harmonic cutoff boundary** (`primeSetCutoffDistanceSq_eq_zero_of_le`,
+   `primeSetHarmonicDensity_tail`, `primeSetFlip_cutoff_distance_sq_eq`,
+   `primeSetFlip_cutoff_distance_sq_tendsto`,
+   `primeSetFlip_harmonic_cutoffs_complete_iff`). Positive Euler density is
+   necessary and sufficient for harmonic approximation by prime cutoffs.
 
 **Pillar obligations** (targets, not theorems): count before sign (an integer-side construction with square-root error);
 arithmetic selection on overlapping complete sources; uniform mixed-term control through exhaustion; a displacement-sensitive
@@ -197,6 +427,7 @@ signature bound or uniform complete-source index ceiling; obstructions with posi
 | A Gram representation settles the sign | Prove equality with the literal complete form |
 | Multiplicativity breaks parity | Liouville is completely multiplicative |
 | A positive, even maximal, selective gap identifies the source | Single-prime flips at $p\ge11$ have the maximal gap $2\log2$ and keep polar matching |
+| Exact finite-prime selection survives a fixed measurement tolerance | Remote maximal-gap flips have dyadic-response loss of order $1/p$ |
 | Positive arithmetic weights select $\zeta$ | Test scalings, mixtures, golden data, Beurling systems |
 | Finite counts or ranks retain signs | Record exact correlations and what reweighting loses |
 | A fixed arithmetic mode controls a full spectrum | Bound its orthogonal complement uniformly |
@@ -212,9 +443,23 @@ Battery: Liouville twin, scaled $\Lambda$, quadratic mixtures, golden curve, ove
 
 ## 6. Open problems
 
-1. **Exact gap values** for the flips at $p\le7$, between the counted lower bound
-   $(2\log2)((p-1)/(p+1))^2$ and the upper bound $p\log p/(p+3)$; classification for multiple-prime flips;
-   the information beyond a maximal gap needed to select the source. The single-prime cutoff for maximal-gap attainment is settled.
+1. **Quantitative exhaustion and source selection.** Determine sharp joint-gap decay rates and
+   extend source selection beyond finite prime signs. An explicit upper bound
+   $O_B((\log Q)^{-3})$ is proved for primes $B<p\le Q$. The fixed dyadic probe selects this
+   family exactly, but no fixed positive tolerance survives remote prime flips. Prime cutoffs above
+   every fixed bound have greatest gaps tending to zero. Reciprocal-mass counts
+   now control truncation uniformly for arbitrary prime patterns and give sparse
+   infinite examples with near-maximal positive gaps. Prime stripping also has an
+   explicit additive error, at most O(log Q), uniform in every residual sign.
+   Every infinite pattern now has its exact Euler-product harmonic mean
+   and the corresponding squared-density gap. Harmonic approximation by finite
+   prime cutoffs holds exactly at positive Euler density, with an exact squared
+   distance formula. Optimal-gap transfer requires further work. Selection among arbitrary multiplicative weights
+   remains open.
+   Every finite prime set has an attained greatest gap characterized by its explicit secular
+   signs and unique interior root. Proper inclusion strictly decreases a submaximal larger-set
+   gap; equality can occur only at the maximum. Single-prime gaps are classified by the
+   arithmetic secular root and the dyadic ceiling, including the cutoff at eleven.
 2. **Selective overlap transfer**: carry the discrete hyperplane gap into continuous atomic families beyond the Robin–Euler threshold, paying the
    affine pole direction separately.
 3. **Arithmetic Herglotz theory**: Toeplitz positivity from prime-side data with Gamma and poles.

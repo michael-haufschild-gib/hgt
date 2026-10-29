@@ -148,14 +148,64 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     $\Gamma(g)+\Gamma(h)\le C\Gamma(f)$, uniformly in horizon. Moreover,
     $\Gamma(f)$ is equivalent to $\Gamma(g)+\sum_a\log(1/w_a)M_ad_a^2$
     (`ArithmeticIndexDescent.CompleteCellAveragesAreBoundedInGammaEnergy`).
+    The actual Gamma coupling $B=\Gamma(f)-\Gamma(g)-\Gamma(h)$ satisfies
+    $B^2\le128e^{1/2}\Gamma(g)\int h^2$. For every $\varepsilon>0$, one fixed
+    detail head approximates $B$ within $\varepsilon\Gamma(f)$ uniformly over
+    all signed coefficients and horizons
+    (`ArithmeticIndexDescent.GammaCouplingHasUniformFiniteHeads`).
+    With $Q=\Gamma(g+h)-\Gamma(h)+W(h)$ and $D=\sum_a\log(1/w_a)M_ad_a^2$,
+    one fixed detail head gives
+    $Q-B_2-B_{\rm odd}\ge(1-\varepsilon)\Gamma(g)+(1-1/\sqrt2)D/4+\int h^2$.
+    Here $B_2$ contains every even mixed exponent and $B_{\rm odd}$ every odd
+    mixed exponent at least three. The square tail is arbitrarily small in
+    the original complete-profile Gamma energy, using sublogarithmic
+    $\zeta'/\zeta$ on $\Re s=1$ and a centred boundary estimate. Moreover,
+    $W(h)$ includes every prime-power diagonal, archimedean mass and the actual
+    Haar pole product. This subform has uniformly bounded negative dimension
+    (`ArithmeticIndexDescent.EveryMixedExponentAboveOneLeavesACoarseReserve`).
+    Replacing the Haar pole by the full original pole $P(f)$ retains
+    $(1-\varepsilon)\Gamma(g)+(1-1/\sqrt2)D/8+\int h^2$ and the positive
+    cosh square, at the cost of the single actual sinh square. The detail
+    head and that moment give uniform negative dimension at most $A+1$
+    (`ArithmeticIndexDescent.TheFullPolarNonfirstSourceHasUniformFiniteIndex`).
+    The entire Haar prime diagonal, including first powers, admits one
+    finite coefficient head with error at most $\varepsilon\Gamma(f)$,
+    uniformly over all original profiles and horizons
+    (`ArithmeticIndexDescent.TheFullHaarPrimeSourceHasUniformFiniteHeads`).
+    The exact divisor sum makes large multipliers small; upward incidence
+    controls bounded multipliers after a coefficient cutoff. Consequently
+    the full-pole source $R$ above obeys
+    $|R-(\Gamma(f)+P(f))|\le\varepsilon\Gamma(f)$ after one fixed head,
+    retaining $(1-\varepsilon)\Gamma(f)$ and the positive cosh square
+    (`ArithmeticIndexDescent.TheFullNonfirstSourceRetainsAlmostAllGamma`).
+    This preserves the complete Gamma coupling; the first-prime mixed and
+    coarse signed sources still require payment.
+    Retained coarse Gamma also pays the missing coarse square source.
+    The resulting joint form includes the entire even-prime source exactly
+    once, retaining positive coarse Gamma, coarse mass, weighted detail mass,
+    detail mass and the cosh square. One fixed head and the original sinh
+    and ordinary-mean moments give uniform negative dimension at most $A+2$
+    (`ArithmeticIndexDescent.TheEntireSquareSourceSharesTheFullDetailReserve`).
     For odd powers of exponent at least three, the mixed and pure-detail blocks combine into
     $P_{\rm odd}(f)-P_{\rm odd}(g)=\sum_mw_m\operatorname{Re}\langle T_mh,f\rangle$.
     A fixed detail head makes this entire difference Gamma-small; jointly with the full even-power
     source it has uniform negative dimension at most $A+1$
     (`ArithmeticIndexDescent.OddHigherPrimePowersPayTheirWholeDetailBlock`). The paid form retains
     a positive multiple of coarse Gamma plus weighted detail mass after a fixed head
-    (`exists_squareOddHigherRefinement_coarse_detail_reserve`). The coarse odd source,
-    first-prime source and actual polar/archimedean terms remain unpaid.
+    (`exists_squareOddHigherRefinement_coarse_detail_reserve`). Beyond the
+    joint whole-square payment, coarse first-prime and odd higher-power
+    sources, coarse archimedean mass and first-prime mixing remain open.
+    Finite heads, the sinh coordinate and the ordinary mean still cost
+    negative directions. Standalone source estimates cannot be added when
+    their Gamma reserves overlap.
+    The entire prime–polar residual also satisfies
+    $|\operatorname{primeSum}(f)-P(f)|\le\varepsilon e^R(\Gamma(f)+\int f^2)$
+    for all sufficiently large $R$, uniformly over every real BV profile
+    supported in $[-R,R]$
+    (`ArithmeticIndexDescent.TheFullPrimePolarSourceCancelsInGammaNorm`).
+    This removes the derivative-norm restriction while retaining all prime
+    powers and both pole moments. The aperture factor remains, so the estimate
+    does not settle the unpaid signs or finite index costs above.
 17. **Finite readings cannot supply Bézout**: Weil Rayleigh quotients are unbounded in every
     finite-reading kernel; arithmetic majorants give Bézout + ampleness but break RR.
 18. **Hecke–Lefschetz rigidity.** Hecke correspondences are isometries; RH ⇔ $T_2$ maps the open positive

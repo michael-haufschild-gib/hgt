@@ -108,9 +108,68 @@ reserve. *Descent* transports the specified form, never a corrected one. *Exhaus
     $\eta(\Gamma(g)+D)+(\gamma_E/2)\|F\|^2$ for some fixed $\eta>0$ after one fixed detail head
     (`exists_squareOddHigherRefinement_coarse_detail_reserve`). This is a multiplicative energy
     comparison, not a coefficient-one splitting or full-Weil sign theorem.
-    **Outside these theorems**: the first-prime terms, archimedean mass term, pure coarse odd higher-power source, and the actual Weil poles.
+    The actual Gamma coupling $B=\Gamma(F)-\Gamma(g)-\Gamma(h)$ satisfies
+    $B^2\le128e^{1/2}\Gamma(g)\int h^2$; one fixed detail head approximates it
+    within $\varepsilon\Gamma(F)$ uniformly over all horizons and signed coefficients
+    (`exists_uniform_finite_head_for_gamma_mixed`).
+    The regular even-power multiplier is now lower order in absolute value:
+    for every $\varepsilon>0$, $|m_2(t)|\le\varepsilon\gamma(t)$ beyond one
+    fixed frequency threshold (`TheSquarePrimeBoundaryIsLowerOrder`). This follows
+    from the unconditional sublogarithmic bound for $\zeta'/\zeta$ on $\Re s=1$.
+    Centring at zero and retaining both corrections through BV smoothing give
+    $|B_2(q,d_{\rm tail},X)|\le\varepsilon\Gamma(F)$ after one fixed detail head,
+    with the original untruncated $F$ on the right
+    (`TheMixedSquareSourceHasUniformSmallTails`).
+    For $Q=\Gamma(g+h)-\Gamma(h)+W(h)$, the same full-detail reserve now yields
+    $Q-B_2-B_{\rm odd}\ge(1-\varepsilon)\Gamma(g)+(1-1/\sqrt2)D/4+\int h^2$,
+    with uniform negative dimension at most $A$
+    (`EveryMixedExponentAboveOneLeavesACoarseReserve`). This jointly pays the entire
+    Haar Weil diagonal, Gamma mixing, and every mixed prime exponent at least two.
+    Even powers and odd powers at least three occur once each.
+    The detail pole can also be replaced by the full original pole $P(F)$,
+    including its coarse self and mixed terms. For
+    $R=Q-B_2-B_{\rm odd}-P(h)+P(F)$, one fixed detail head gives
+    $R+2\operatorname{sinhHalfMoment}(F)^2\ge
+    (1-\varepsilon)\Gamma(g)+(1-1/\sqrt2)D/8+\int h^2+
+    2\operatorname{coshHalfMoment}(F)^2$.
+    The head and the single actual sinh moment bound negative dimension by
+    $A+1$ (`TheFullPolarNonfirstSourceHasUniformFiniteIndex`).
+    The entire Haar prime diagonal now has uniform finite coefficient heads:
+    $|P_{\rm Haar}(d)-P_{\rm Haar}(d_{<A})|\le\varepsilon\Gamma(F)$ for one A and all q,d,X,
+    including every first power (`TheFullHaarPrimeSourceHasUniformFiniteHeads`).
+    Large multipliers use the exact divisor identity; bounded multipliers
+    use upward incidence and reciprocal-width detail payment. Together with
+    the mixed higher powers and detail mass, this gives
+    $|R-(\Gamma(F)+P(F))|\le\varepsilon\Gamma(F)$ after one fixed detail head,
+    hence $R+2\operatorname{sinhHalfMoment}(F)^2\ge
+    (1-\varepsilon)\Gamma(F)+2\operatorname{coshHalfMoment}(F)^2$
+    (`TheFullNonfirstSourceRetainsAlmostAllGamma`). Almost all of the original
+    complete Gamma energy survives, including its coarse/detail coupling.
+    The retained coarse Gamma now pays the missing coarse square source:
+    with $U=R-S_2(g)$, one fixed head and one $c>0$ give
+    $U+2\operatorname{sinhHalfMoment}(F)^2+\frac12(\int F)^2\ge
+    c\Gamma(g)+(\gamma_E/2)\int g^2+(1-1/\sqrt2)D/8+\int h^2+
+    2\operatorname{coshHalfMoment}(F)^2$.
+    Its exact decomposition includes the entire $S_2(F)$ once. The two
+    actual moments and the head give uniform negative dimension at most
+    $A+2$ (`TheEntireSquareSourceSharesTheFullDetailReserve`).
+    **Outside this joint payment**: coarse first-prime and odd higher-power
+    sources, coarse archimedean mass, and first-prime mixing. Finite heads,
+    the sinh coordinate and the ordinary mean remain index costs.
 
 ### E. Source-defined carriers and centred identities
+
+The full prime–polar source now has a uniform Gamma-plus-mass estimate:
+for every $\varepsilon>0$, all sufficiently large $R$ satisfy
+$|\operatorname{primeSum}(f)-P(f)|\le\varepsilon e^R(\Gamma(f)+\int f^2)$
+for every real BV profile supported in $[-R,R]$
+(`exists_primePolar_gamma_bound_bv` in `TheFullPrimePolarSourceCancelsInGammaNorm`).
+The cutoff equals one on correlation support, retaining every actual prime
+power and both original pole moments. Bounded-frequency arithmetic cancellation,
+Gamma growth and pole-preserving smoothing remove the derivative-norm requirement.
+This applies to complete cells but retains an aperture factor; it gives neither
+full-source sign nor an aperture-independent index bound.
+
 14. **Cell payments**: separated and touching cells pay the full mixed source with adjustable old/new mass charges; a short new cell pays
     its own interaction; an additional cell preserves any fraction of the old floor; one fixed width sequence supports nested positive
     prefixes; the section floor controls the complete source-graph norm.
@@ -135,7 +194,15 @@ reserve. *Descent* transports the specified form, never a corrected one. *Exhaus
    `FiniteEulerMixedFormsHaveUniformFiniteIndex`). The joint mixed-plus-detail extension is
    `exists_uniform_squareOddHigherRefinement_negative_dimension` in `OddHigherPrimePowersPayTheirWholeDetailBlock`.
    Homogeneous coarse/detail recovery and the retained arithmetic reserve are in
-   `CompleteCellAveragesAreBoundedInGammaEnergy`.
+   `CompleteCellAveragesAreBoundedInGammaEnergy`. Uniform finite-head approximation of the actual
+   Gamma coupling is in `GammaCouplingHasUniformFiniteHeads`. Joint full-detail payment,
+   retained coarse energy and its uniform index bound are in `TheFullDetailSourceRetainsCoarseGamma`.
+   `EveryMixedExponentAboveOneLeavesACoarseReserve` includes every mixed exponent
+   at least two; `TheFullPolarNonfirstSourceHasUniformFiniteIndex` restores the
+   complete original pole with one extra scalar readout.
+   `TheEntireSquareSourceSharesTheFullDetailReserve` spends retained coarse
+   Gamma on the missing coarse square source, retaining positive reserves
+   with the actual sinh and ordinary-mean readouts.
 7. **Carrier constructions** (`FixedCellWidthsSupportNestedPositiveSections`, `TheClosedSectionHasABoundedWeilProjection`,
    `TheUnboundedCellCarrierHasAWeilProjection`).
 8. **Centred Chebyshev identity with Gamma reserve** (`TheOrderedWeilSourceIsACenteredChebyshevDefect`, `TheOrderedWeilSourceRetainsItsGammaSquareReserve`).

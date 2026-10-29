@@ -254,8 +254,58 @@ Homogeneous coarse recovery is now formalized:
 coarse-mass error. The paid even-power plus odd-detail form retains a positive
 multiple of `Γ(g)+Σ log(1/w_a)M_a d_a²` after a fixed detail head.
 See [paper proof and Lean validation](../3-formalized/acs-homogeneous-gamma-coarse-recovery.md).
-This supplies a multiplicative Gamma comparison; the full first-prime,
-coarse odd, finite-head, and actual polar/archimedean signed payment remains open.
+The actual Gamma coupling `B=Γ(g+h)-Γ(g)-Γ(h)` also satisfies
+`B²≤128 exp(1/2) Γ(g)∫h²`. For every `ε>0`, one fixed detail cutoff gives
+`|B(q,d,X)-B(q,d_head,X)|≤εΓ(g+h)` for every horizon and all signed coefficients.
+See [lower-order coupling and uniform finite heads](../3-formalized/acs-gamma-mixed-block-lower-order.md).
+The square mixed block now has a uniform physical tail bound:
+`|B₂(q,d_tail,X)|≤εΓ(completePairProfile q d X)` for one fixed detail cutoff
+and every q,d,X. The controlling source is the original untruncated profile.
+The proof combines the sublogarithmic ζ′/ζ bound on Re s=1 with a centred
+low-frequency Gamma floor, exact mean and mass corrections, and BV smoothing.
+See [the mixed-square card](../3-formalized/acs-square-mixed-source-lower-order.md).
+The full Haar Weil diagonal can consequently be paid together with Gamma
+coupling and every mixed prime exponent at least two. Writing
+`Q=Γ(g+h)-Γ(h)+W(h)` and `D=Σ log(1/w_a)M_a d_a²`, one fixed detail head gives
+`Q-B₂-Bodd≥(1-ε)Γ(g)+(1-1/sqrt(2))D/4+∫h²` for every ε>0.
+This literal subform has uniformly bounded negative dimension at every horizon.
+Its diagonal includes first primes, archimedean mass and the actual Haar pole
+product. Even powers and odd powers at least three occur once each.
+See [joint payment and Lean check](../3-formalized/acs-joint-nonfirst-mixed-payment.md).
+The [full-pole extension](../3-formalized/acs-full-polar-nonfirst-payment.md)
+replaces the Haar pole by the actual complete-profile pole P(F). For
+`R=Q−B₂−Bodd−P(h)+P(F)`, one fixed detail head gives
+`R+2 sinhHalfMoment(F)² ≥ (1−ε)Γ(g)+(κ/8)D+∫h²+2 coshHalfMoment(F)²`.
+The complete polar self and cross terms therefore cost only the single
+actual sinh moment beyond the detail head: negative dimension is at most A+1.
+The [full Haar prime finite-head theorem](../3-formalized/acs-full-haar-prime-source-finite-heads.md)
+now controls the entire prime diagonal, including first powers, within
+`εΓ(F)` after one coefficient head, uniformly over all original profiles
+and horizons. Exact divisor incidence makes the large-multiplier part
+small, and bounded multipliers cannot connect a low source to an arbitrarily
+high target. Together with the disjoint mixed higher powers and detail mass,
+this gives `|R−(Γ(F)+P(F))|≤εΓ(F)` after one fixed detail head. Thus R
+retains `(1−ε)Γ(F)` and the positive cosh square, including the original
+complete Gamma coupling. Three direct Lean source checks passed; no axiom
+checks were run. First-prime mixing and coarse signed payment remain open.
+The [joint whole-square payment](../3-formalized/acs-joint-whole-square-polar-payment.md)
+then spends only retained coarse Gamma on the missing coarse even-power
+source. For `U=R−S₂(g)`, one fixed head and c>0 give
+`U+2 sinhHalfMoment(F)²+(1/2)(∫F)² ≥
+ c Γ(g)+(γ_E/2)∫g²+(κ/8)D+∫h²+2 coshHalfMoment(F)²`.
+The complete square source occurs exactly once in U. Uniform negative
+dimension is at most A+2, read by the head and the two original moments.
+Coarse first-prime and odd higher-power sources, coarse archimedean mass,
+first-prime mixing, and the head/sinh/mean index costs remain unpaid.
+Full signed payment remains open; low-generator translation orbits remain
+noncompact.
+
+The [full prime–polar residual](../3-formalized/acs-prime-polar-cancellation-in-gamma-norm.md)
+now satisfies `|primeSum(f)−P(f)|≤ε exp(R)(Γ(f)+∫f²)` uniformly over
+every real BV profile supported in [−R,R], for all sufficiently large R.
+All actual prime powers and both pole moments remain. This closes the
+derivative-to-Gamma norm transfer for relative cancellation on complete
+cells. The exp(R) factor remains; full-source sign and uniform index are open.
 
 The complete-cell source has a further unconditional payment:
 `ArithmeticIndexDescent.OddHigherPrimePowersPayTheirWholeDetailBlock` proves

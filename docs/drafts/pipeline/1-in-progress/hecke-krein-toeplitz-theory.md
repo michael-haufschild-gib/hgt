@@ -22,9 +22,16 @@ namespace `GaloisForLFunctions.HeckeKreinToeplitz`. README there is the foundati
 3. Closedness of `{κ ≤ n}` under pointwise convergence (transfer) — DONE (`BoundedIndexIsClosedUnderPointwiseLimits`)
 4. Aliasing law on subgroups; two primes never alias arithmetic pairs; blind primes ≤ κ(κ−1)/2 — DONE (`OneGridHidesTwoGridsDecide`, `AllButFinitelyManyPrimesSeeTheWholeIndex`)
 5. `𝔽_q` calibration — DONE (`WeilsIndexIsCountedByTheOuterFrobeniusEigenvalues`)
-6. Arithmetic instance: orbit kernel index law, ζ TFAE, finite stratum, Lindelöf law — DONE (`TheHeckeOrbitKernelOfAZeroConfiguration`, `TheFiniteIndexStratumOfZetaIsLindelofDeep`); explicit KL decomposition on the finite stratum — IN PROGRESS
+6. Arithmetic instance: orbit kernel index law, ζ TFAE, finite stratum, Lindelöf law — DONE (`TheHeckeOrbitKernelOfAZeroConfiguration`, `TheFiniteIndexStratumOfZetaIsLindelofDeep`); explicit KL decomposition on the finite stratum — DONE (`TheWeilKernelIsKreinLangerOnTheFiniteStratum`); height truncations — DONE; archimedean completion — DONE; index priced by E_crit — DONE (`IndexIsEnergy`)
 7. Self-upgrade, growth = depth — DONE (`GrowthReadsTheDepthOfTheDeepestPair`)
-8. Selectivity battery, deformation, inertia, Stepanov no-go — TODO
+8. Selectivity battery on towers — DONE; pole principle / local constituents — DONE. Global law over ℤ — DONE; annihilation law (Stepanov) — DONE; locality failure/repair — DONE; higher inertia — DONE. Also DONE: heat collisions, selection by index zero, one-prime law for ζ, golden curve tower vs lattice.
+9. Pontryagin decomposition (finite index = positive minus finite rank, attainment, subadditivity) — DONE (`FiniteIndexIsPositiveMinusFiniteRank`)
+10. Margin `2 log 2` = width of the index-one window of the atomic kernel; adjunction-energy rungs; twin-blind index, selective pole carrier; infinite index at fixed counterterm — DONE (`TheMarginIsTheWidthOfTheIndexOneWindow`)
+11. Integer windows carry the index — DONE (`IntegerFamiliesCarryTheWholeIndex`); Nyquist law with heights — DONE (`TheNyquistLawOfAPrimeTower`); rotation/damping/coalescence — DONE (`TheIndexUnderRotationDampingAndCoalescence`)
+12. Exact index of finite exponential sums without separation (covariant KL, finite spectral support) — DONE (`TheIndexOfAFiniteExponentialSum`); uniform receiver bound at every width, κ = sup over receivers — DONE (`EveryReceiverAtEveryWidthIsBoundedByTheIndex`)
+Quasi-analytic boundary of the test class and receivers — DONE (`TheReceiversEndAtTheQuasiAnalyticBoundary`)
+Covariant classification of absolutely convergent Bohr series (index = #negative coefficients) — DONE (`TheIndexOfABohrSeries`)
+13. Open: covariant converse Krein–Langer on Γ for arbitrary kernels (beyond finite support and Bohr series) (common invariant negative subspace; needs an infinite-dimensional fixed-point theorem); lower half of the transfer at the explicit schedule (log log N)^α/N (along some shrinking schedule it is DONE: `ShrinkingAtomsCarryTheWholeIndex`); count over ℤ from local constituents; selective carrier at overlapping widths; direct Lindelöf bridge
 
 ## Log
 - 2026-10-28 — created; README first draft.

@@ -74,8 +74,8 @@ The Gaussian module is wired into `HTGeometry.lean`; no umbrella was compiled.
 
 ## Next targets
 
-- [Lattice shifts and additive phases](../1-in-progress/gaussian-theta-with-lattice-shifts-and-phases.md).
-- [Weighted number-field trace pairing](../1-in-progress/number-field-trace-pairing-in-weighted-real-coordinates.md).
+- [Lattice shifts and additive phases](gaussian-theta-with-lattice-shifts-and-phases.md).
+- [Weighted number-field trace pairing](number-field-trace-pairing-in-weighted-real-coordinates.md).
 
 The corpus also supplies scalar polynomial-Gaussian Fourier transforms in
 `RHTower/GaussianMomentFourier.lean` and scalar polynomial-Gaussian Schwartz functions in

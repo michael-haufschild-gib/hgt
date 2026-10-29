@@ -91,7 +91,7 @@ theorem exists_uniform_finite_head_for_gamma_mixed (ε : ℝ) (hε : 0 < ε) :
   have ht := completeGammaMixed_tail_sq_le q d hA1 X
   have hs : completeGammaMixed q (fun a => if A ≤ a then d a else 0) X ^ 2 ≤
       (ε * levyEnergy (completePairProfile q d X)) ^ 2 := by
-    apply (mul_le_mul_left (cellGammaWeight_pos hA1)).mp
+    refine le_of_mul_le_mul_left (a := cellGammaWeight A) ?_ (cellGammaWeight_pos hA1)
     refine ht.trans ((mul_le_mul_of_nonneg_right hcap (sq_nonneg _)).trans_eq ?_)
     ring
   have hb : |completeGammaMixed q (fun a => if A ≤ a then d a else 0) X| ≤

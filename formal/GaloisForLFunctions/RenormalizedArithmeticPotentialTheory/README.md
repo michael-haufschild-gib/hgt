@@ -73,7 +73,7 @@ kernel); positivity passes the limit exactly on the counterterm's null cone (RBG
 | covariant / torsion counterterms | least scalar with $P_N\le\kappa|x|^2$; least renormalizing torsion pairing | `covariantCounterterm_sandwich`, `torsionCounterterm_window` |
 | matched sieve operator | $A_Q$ on the maximal log domain of $\ell^2(S_Q)$ | `sieveAdjunctionOperator` |
 | Ramanujan profile, adjunction energy | $u_m(n)=c_m(n)/\sqrt{\varphi(m)n}$; $\gamma+\log m+\text{tameDifferent}(m)$ | `ramanujanHorizonVector`, `ramanujanAdjunctionEnergy` |
-| complete Weil horizon matrix | self-energy + prime kernel + archimedean cross integrals + two pole products | `fullWeilHorizonMatrix`, `normalizedFullWeilHorizonMatrix` |
+| complete Weil horizon matrix | normalized self-energy, prime kernel, archimedean cross integrals and both poles at $w=c/N$ | `completeWeilMatrix`, `normalizedFullWeilHorizonMatrix` |
 | archimedean center kernel | collar of the Lévy density in pole gauge | `archimedeanCenterKernel` |
 
 | Regulator | Counterterm | Rank | Survival | Anomaly of $[t]$ |
@@ -104,11 +104,9 @@ survival cone), anomaly, and paying place.
    energies $\gamma+\log m+d(m)$; simple eigenlines converge to Ramanujan profiles.
 7. **Atomic stability**: Lévy self-energy with constant one; Markov form nonnegative down to $\delta_N/(C\log N)$ with absolute
    interaction; at width $c/N$ the ground energy is $2\theta'(0)+\log(1/c)+\kappa_L(\varphi)+\gamma+O(c)$ (Robin constant + Euler constant).
-8. **Complete Weil matrix at the spacing**: exact separation into common self-energy, full prime kernel, literal archimedean
-   cross integrals and two pole products; the center-density kernel in pole gauge is inverse-difference + inverse-sum
-   (harmonic); restoring the pole rows cancels the harmonic bulk, leaving identity + boundary layer; the center collar is
-   paid by the top-atom potential $(n/N)\log n$; replacing literal cross integrals by the center kernel has uniform errors;
-   complete Weil trial energies are simple and proper (pole shift affects only conductor one, below the first arithmetic excitation).
+8. **Complete Weil spectrum at the spacing**: for a nonzero $C^2$ profile supported in $[0,1]$ and fixed $0<c<1$, widths $w=c/N$
+   give Ramanujan norm quasimodes, eventual exact counts with multiplicity at thresholds outside the limiting spectrum, and simple eigenline convergence.
+   Joint center-pole cancellation and prime-defect coercivity retain both pole terms; only conductor one receives the pole shift.
 
 ---
 
@@ -129,9 +127,8 @@ survival cone), anomaly, and paying place.
    pole hyperplane and finite part separate $\zeta$ from Liouville (`liouville_matching`, `exists_pole_hyperplane_separates_liouville`).
 10. **Characters and Chebotarev patterns matched by their mean** (`exists_norm_charMertensSum_le`, RP25/RP38/RP60 modules).
 11. **Atomic stability with constant one** (`markovEnergy_atomicTest_nonneg_sharp`, `markovEnergy_atomicTest_nonneg_logSpacing`).
-12. **Complete Weil matrix splits at the spacing; pole cancels the harmonic center row; trial energies simple and proper**
-    (`normalizedFullWeilHorizonMatrix_apply_of_separated`, `sum_pole_minus_center_div_sqrt`, `collar_quadratic_div_horizon_le`,
-    `completeWeilAdjunctionEnergy_injectiveOn`).
+12. **Complete Weil spectral law for $0<c<1$** (`tendsto_completeWeilMatrix_ramanujan_residual_norm`,
+    `eventually_completeWeil_spectral_count_eq`, `exists_simple_completeWeil_eigenline`).
 
 ---
 
@@ -153,8 +150,7 @@ survival cone), anomaly, and paying place.
 ## 7. Open problems
 
 1. **Overlap regime** $w\gg\delta_N$: which finite part (signed interaction + pole) keeps the matching through overlaps; SSHA ties
-   positivity at widths $N^{-\theta}$, $\theta<1$, to RH. Next step on the complete Weil matrix: pass from the center-kernel replacement
-   and trial energies to a lower bound of the full matrix at the spacing.
+   positivity at widths $N^{-\theta}$, $\theta<1$, to RH.
 2. **All primes at once in the class-profile finite part**, or growing normalized class families.
 3. **The $O(1)$ term of the torsion constant**; twisted torsion pairings.
 4. **Finite parts of Chebotarev patterns** (needs Artin $L$ Mertens constants); patterns not constant on divisions (Hecke $L$-functions).

@@ -208,15 +208,14 @@ representative is assumed.
 
 ### Gaussian theta with shifts and phases
 
-The ordinary Gaussian theta theorem is complete. The next exact target is
-[theta with characteristics](gaussian-theta-with-lattice-shifts-and-phases.md).
-`/tmp/HeckeGaussianCharacteristicsScratch.lean` contains normal convergence for affine
-lattices, modulation, exact Fourier covariance, absolute convergence of both sums, and
-the full shifted/phased Poisson identity. The scratch compiles cleanly and all three
-axiom audits pass. `HTGeometry/GaussianThetaCharacteristics.lean` is wired into the umbrella
-and undergoing its final direct source audit.
-The exported ordinary-theta axiom audits all pass. Arithmetic ideal duality and
-unit integration remain open.
+[Theta with characteristics](../3-formalized/gaussian-theta-with-lattice-shifts-and-phases.md)
+is formalized in `HTGeometry/GaussianThetaCharacteristics.lean`. It proves affine Gaussian
+normal convergence, Fourier modulation/covariance, absolute convergence on both lattices,
+and the exact shifted/phased theta identity. Three axiom audits and the final direct source
+audit pass without warnings. It is wired into the umbrella; no olean is needed yet.
+The completed characteristics scratch has been removed. Arithmetic ideal duality,
+real parity factors, finite multiplicative-character transforms, and unit integration
+remain open.
 
 ### Arithmetic trace-duality sources
 
@@ -237,8 +236,8 @@ Mathlib already proves `mixedEmbedding.covolume_idealLattice` for every nonzero 
 ideal: `absNorm(I) * 2^(−r₂) * sqrt(abs(discr K))`. Applying `√2` to both real coordinates
 at each complex place multiplies volume by `2^r₂`, giving the desired trace-normalized
 covolume. `FractionalIdeal.dual_eq_mul_inv`, `dual_mul_self`, and `dual_dual` identify the
-trace dual algebraically as `dual(1) * I⁻¹` and prove involution. The remaining bridge is
-its exact identification with the Euclidean dual of the weighted mixed ideal lattice.
+trace dual algebraically as `dual(1) * I⁻¹` and prove involution. Its exact identification
+with the Euclidean dual of the weighted mixed ideal lattice is now formalized below.
 
 `InfinitePlace.embedding_mk_eq` states that the chosen embedding of a place represented
 by `σ` is either `σ` or its complex conjugate. Hence real parts are constant on the
@@ -246,7 +245,232 @@ fibers used above. The completed search JSON scratch files have been removed aft
 preserving the useful declarations and source locations here and on the theta cards.
 
 The precise weighted trace-pairing target is recorded on
-[number-field trace pairing](number-field-trace-pairing-in-weighted-real-coordinates.md).
-`/tmp/HeckeWeightedTraceScratch.lean` contains drafted finite-fiber and field-trace
-summation lemmas; it is uncompiled. The theta-characteristics final source audit is the current
-Lean check. Completed search JSON scratch files have been removed.
+[number-field trace pairing](../3-formalized/number-field-trace-pairing-in-weighted-real-coordinates.md).
+The weighted trace-pairing theorem is formalized. `HTGeometry/NumberFieldTraceCoordinates.lean`
+passes its final direct source audit and four axiom audits without warnings. It is wired
+into the umbrella; its olean is built for the written ideal-duality consumer.
+[Ideal-lattice trace duality](../3-formalized/weighted-ideal-lattices-have-the-arithmetic-trace-dual.md)
+is formalized in `HTGeometry/NumberFieldIdealTraceDuality.lean`. The intrinsic integer
+dual is exactly the conjugated weighted embedding of `FractionalIdeal.dual ℤ ℚ I`.
+Its complete scratch, final direct source audit, and two transitive axiom audits pass
+without warnings; it is wired into the umbrella. The olean is built for the
+written covolume consumer. The [weighted covolume normalization](../3-formalized/weighted-ideal-lattice-covolume-is-norm-times-root-discriminant.md)
+is formalized in `HTGeometry/NumberFieldIdealCovolume.lean`: the actual weighted ideal
+lattice has covolume `absNorm(I) * sqrt(abs(discr K))`. Its complete scratch, final
+direct source audit, and three transitive axiom checks pass without warnings.
+It is wired into the umbrella; its olean is needed by the newly written arithmetic
+theta consumer and is built.
+[Intrinsic dual-lattice Gaussian summation](../3-formalized/gaussian-poisson-sums-over-intrinsic-dual-lattices.md)
+is formalized in `HTGeometry/IntrinsicLatticeTheta.lean`. It identifies the inverse-adjoint
+parametrization with the intrinsic integer dual, computes the actual covolume, and
+reindexes theta over actual lattice subtypes. Its complete scratch, final direct source
+audit, and three axiom checks pass without warnings; it is wired into the umbrella.
+Its olean is built for the written arithmetic consumer.
+The [actual fractional-ideal theta theorem](../3-formalized/fractional-ideal-theta-inversion-with-arithmetic-normalization.md)
+is formalized in `HTGeometry/NumberFieldIdealTheta.lean`. It proves summability and
+`θ_I(t) = (absNorm(I) sqrt(abs(discr K)))⁻¹ t^(-[K:ℚ]/2) θ_(dual I)(1/t)`
+over actual ideal elements. The complete scratch, final direct source audit, and two
+transitive axiom checks pass without warnings. It is wired into the umbrella; its
+olean is built for the written archimedean-theta consumer. The next exact target is
+[archimedean place scaling](../3-formalized/ideal-theta-under-archimedean-place-scaling.md), supported by
+[positive diagonal lattice duality](../3-formalized/positive-diagonal-images-of-dual-lattices.md),
+which now passes its complete scratch, final direct source audit, and both axiom checks.
+`HTGeometry/NumberFieldScaledIdealTheta.lean` now proves scaled actual lattices,
+determinant, duality, covolume, actual-ideal reindexing, summability, inversion, the
+weighted place-norm formula, and global-unit log periodicity. Its complete scratch
+and final direct source audit pass without warnings. The three main theta theorems
+and both updated diagonal-helper theorems audit to standard axioms only. It is wired
+into the umbrella; its olean is built for the written
+[uniform exponential-tail consumer](../3-formalized/ideal-theta-tails-decay-uniformly-on-bounded-place-profiles.md).
+`HTGeometry/NumberFieldIdealThetaDecay.lean` now proves a positive actual-ideal
+minimum, the profile-dependent norm comparison, zero-term removal, and uniform
+exponential decay for all upper-bounded place profiles. Its complete scratch and
+final direct source audit pass without warnings, and its transitive axiom audit
+is standard only. It is wired into the umbrella; no olean is needed yet.
+The [parity Gaussian theorem](../3-formalized/parity-weighted-gaussian-poisson-summation.md)
+is formalized. The supporting
+[Euclidean coordinate-product Fourier identity](../3-formalized/coordinate-products-factor-under-euclidean-fourier-transform.md)
+is formalized in `HTGeometry/CoordinateProductFourier.lean`, with clean complete
+scratch, final source, and both axiom audits. It is wired into the umbrella; its
+olean is built, as is the required `GaussianThetaCharacteristics` olean.
+`HTGeometry/ParityGaussianPoisson.lean` proves the scalar and finite-coordinate
+parity transforms, the half-rate Gaussian majorant, normal convergence, absolute
+affine and dual summability, and the normalized shifted/phased Poisson identity.
+Its complete scratch and final direct source audit pass without warnings; all five
+transitive axiom audits are standard only. It is wired into the umbrella; its olean is built for the written arithmetic
+Hecke-theta consumer. The completed scratch is removed.
+
+The next arithmetic step is to extend the actual finite residue character by zero
+on nonunits and combine it with the actual real parity profile. Mathlib
+`MulChar.ofUnitHom` and `ofUnitHom_coe` are source-inspected. The existing
+`finite_character_mul_parities_globalUnit` already proves the exact global-unit
+compatibility of the two characters. `signAtInf_apply` identifies each sign with
+the sign of the chosen real embedding.
+
+The completed primitive-Gauss corpus query returned `ZMod` and prime-power local
+formulas. Mathlib `gaussSum_mulShift_eq` is valid over every finite commutative ring,
+but `gaussSum_mul_gaussSum_eq_card` in `NumberTheory/GaussSum.lean` assumes the source
+ring is a field. The nonunit vanishing theorem found is for Dirichlet characters
+over `ZMod`. These do not yet prove the needed primitive transform over arbitrary
+number-ring residue rings. That arithmetic input, unit-domain integration, and
+the exact Hecke Mellin unfolding remain open. HL6, HL7 and CFT remain open.
+
+
+[Actual Hecke-weighted ideal theta](../3-formalized/finite-hecke-weights-give-unit-periodic-ideal-theta.md)
+is now formalized in `HeckeLFunctions/HeckeIdealThetaIsUnitPeriodic.lean`.
+It extends the actual finite residue character by zero on nonunits, identifies
+its actual real parity profile, proves the finite/infinite global-unit
+cancellation in the scaled kernel, proves absolute summability on every integral
+ideal, and proves unit-log periodicity of the actual theta sum. The complete
+scratch and four transitive axiom audits pass; the final direct source audit is
+clean. The module is wired into the Hecke umbrella, and its completed scratches
+are removed. Its olean is built for the written ideal-coset and affine-parity consumers. The character-splitting and parity-Poisson dependency oleans are built.
+
+The next exact target is the
+[finite residue-coset Poisson transform](../3-formalized/hecke-ideal-theta-as-finite-parity-poisson-sums.md).
+The existing `residueRep`, `residueRep_mem`, and `mk_residueRep` already give
+representatives in a coprime ideal for every residue. The intrinsic parity theorem and physical/dual absolute summability are now
+formalized in `HTGeometry/IntrinsicParityPoisson.lean`; its complete scratch,
+three transitive axiom audits, and final direct source check pass. It is wired
+into the umbrella and its completed scratch is removed. Two current scratches
+hold the actual affine ideal parity Poisson formula and the residue/ideal coset
+equivalence. Their required dependency oleans are being built. These
+inputs do not yet discharge primitive Gauss evaluation or Mellin unfolding.
+
+
+The finite residue-coset transform is now formalized in
+`HeckeLFunctions/HeckeThetaHasAFiniteFourierTransform.lean`. It proves the actual
+coset equivalence, integral/fractional reindexing, affine parity transform with
+arithmetic trace phases, the finite Fourier coefficient bound by `N(𝔪.fin)`,
+and the full weighted ideal theta transformation with an absolutely convergent
+dual series. The complete scratch and final direct source audit are clean;
+nine transitive axiom checks are standard only. The module is wired into the
+Hecke umbrella, no olean is needed yet, and its completed scratch is removed.
+The intrinsic-parity and unit-periodic-Hecke dependency oleans are built.
+
+Completed searches for unit-domain Mellin unfolding and Hecke conductors returned
+scalar Mellin identities, unit-log definitions, and Dirichlet-character conductor
+results, but no matching actual-number-field unfolding or ray-character conductor
+in those returned results. This is not a claim of absence. Exact finite primitive
+Gauss evaluation, unit-domain integration, completed continuation, and the primitive
+functional equation remain open, as do HL6's real characters and CFT.
+
+
+The next active analytic card is
+[zero modes and uniform exponential tails](../3-formalized/hecke-theta-zero-modes-and-uniform-exponential-tails.md).
+Its scratch already proves uniform exponential decay of the sum of nonzero
+parity-Gaussian norms for every actual nonzero fractional ideal and bounded
+place profiles. Physical/dual zero-mode classification and the actual weighted
+applications are in progress. The finite-Fourier and unweighted-tail oleans
+are now built for this written consumer. Unit-domain Mellin unfolding and
+primitive arithmetic Gauss evaluation remain open.
+
+
+Zero modes and actual physical/dual uniform exponential tails are now fully
+formalized in `HeckeLFunctions/HeckeThetaTailsDecayExponentially.lean`. The
+complete scratch, six transitive axiom audits, and final direct source check
+pass without warnings. The source is wired into the umbrella and its completed
+scratch is removed. Its olean is being built for the written measurability
+consumer. The active next card is
+[theta Mellin continuation and actual unit unfolding](hecke-theta-mellin-continuation-and-unit-unfolding.md),
+which records the exact unresolved analytic and arithmetic inputs and a
+normalization derivation explicitly marked unproved. The current scratch is
+`/tmp/HeckeThetaMeasurabilityScratch.lean`.
+
+
+[Actual theta Mellin continuation](../3-formalized/actual-hecke-theta-mellin-continuation.md)
+is now formalized in `HeckeThetaHasMellinContinuation.lean`: actual local
+integrability, fully discharged Mellin-pair construction, continuation,
+functional equation, both residues, and entire continuation for nonzero
+parity. Seven transitive axiom audits are standard only; the final direct
+source audit passes without warnings. It is wired into the Hecke umbrella.
+The tail dependency olean is built, and this module's olean is being built
+for `/tmp/HeckeThetaJointContinuityScratch.lean`.
+
+The active unfolding card now records Mathlib's actual unit-log quotient by
+torsion, full unit lattice, and fundamental-cone ideal-element equivalences.
+Its weighted logarithmic coordinates alter the proposed unfolding scalar;
+the exact Jacobian and Gamma normalization remain explicitly unproved.
+Next: joint theta continuity, actual unit-domain averaging and unfolding.
+This closes neither full Hecke continuation nor HL6, HL7, or CFT.
+
+
+[Joint continuity of actual Hecke theta](../3-formalized/hecke-theta-joint-continuity-on-positive-parameters.md)
+is now formalized and source/axiom audited. Both physical and finite-Fourier
+series have actual uniform summable Gaussian majorants on positive parameter
+strips and bounded profile regions. Its consumer olean is built and scratch
+removed. The next geometric unit-domain source is written and in final audit;
+the actual unit-averaging/Mellin consumer is written but not yet compiled.
+
+
+[The actual unit logarithm domain](../3-formalized/actual-unit-log-domain-and-regulator-volume.md)
+is now formalized in `HTGeometry/NumberFieldUnitLogFundamentalDomain.lean`.
+It identifies the weighted profile conversion, actual lattice tiling, exact
+regulator volume, compact closure, and uniform coordinate bound. Five main
+transitive axiom checks are standard only, and the final direct source audit
+is clean. Its required olean is building for the written unit-average consumer;
+the completed scratch is removed. The averaged Mellin construction itself
+has not yet been checked. Full Hecke continuation, HL6, primitive FE, and CFT
+remain open.
+
+
+[Actual unit-averaged theta Mellin continuation](../3-formalized/actual-unit-averaged-hecke-theta-mellin-continuation.md)
+is now formalized in `HeckeThetaAveragesOverTheUnitDomain.lean`. The actual
+unit integrals are continuous, have regulator-scaled zero modes and exponential
+tails, and satisfy a fully discharged Mellin functional-equation pair with
+explicit residues. Six transitive checks are standard only; the complete
+scratch and final direct source audit are clean. The umbrella is wired and
+the scratch removed. No new olean is needed yet.
+
+The next actual target is the unrestricted nonzero ideal-element/global-unit
+bijection, followed by absolute Tonelli/Fubini and exact Gamma/ideal-series
+unfolding. Full Hecke continuation, primitive FE, real-character HL6, and CFT
+remain open.
+
+
+### Exact ideal and unit indexing for HL7
+
+`HeckeLFunctions/NonzeroIdealElementsAreGlobalUnitOrbits.lean` now identifies
+nonzero elements of each actual nonzero integral ideal `b` with inverse-class
+integral ideals times global units. Its inverse sends `(I,u)` to `u*g_I`,
+with `(g_I)=I*b` and `|Norm(g_I)|=N(I)N(b)`. Four transitive axiom audits and
+the final source check passed.
+
+`HTGeometry/NumberFieldUnitsAreTorsionTimesLogLattice.lean` now identifies
+actual global units with their torsion subgroup times the actual unit
+logarithm lattice. It retains the exact fundamental-unit product and the
+exact logarithm of both directions. Three transitive axiom audits and the
+final source check passed. Both modules are wired into their umbrellas.
+
+The weighted theta reindexing and absolutely integrable unit-domain
+unfolding are written in separate scratch files, not yet claimed as proved.
+HL7 still requires the exact Gamma/Mellin identification with the actual
+Hecke ideal series, ordinary-class residue cancellation, and primitive
+finite-Fourier/Gauss normalization. HL6 real-character nonvanishing and CFT
+remain open; these algebraic indexing results do not close those gates.
+
+
+The exact series unfolding is now formalized in
+`HeckeThetaUnitOrbitsAreLogPeriodizations.lean`: the nonzero actual ideal
+theta is a torsion-weighted sum over inverse-class ideals and actual
+logarithmic-lattice translates. Unit-orbit, lattice, and full class/unit
+families have proved absolute convergence. Three transitive axiom audits and
+the final source check passed. Integral unfolding is the current scratch;
+radial Mellin/Gamma identification and primitive functional-equation
+normalization remain open.
+
+
+The fixed-parameter unit-domain unfolding is now fully formalized in
+`HeckeUnitOrbitsUnfoldOverTheLogSpace.lean`. The actual averaged theta minus
+its regulator-weighted zero mode equals the exact torsion order times the
+sum over inverse-class ideals of whole-log-space kernel integrals. Whole-space
+integrability and both infinite exchanges follow from the actual summable
+Gaussian majorant; no analytic premise is added. Three transitive axiom
+checks are standard-only, and the final direct source audit passed without
+warnings. The card is now
+`3-formalized/hecke-unit-domain-unfolding-is-absolutely-integrable.md`.
+Earlier scratch-status paragraphs are superseded. The next bridge is the
+exact radial/logarithmic Jacobian and Gamma evaluation, followed by the
+arithmetic coefficient identity and absolutely convergent ideal-series
+Mellin exchange. Full Hecke continuation/primitive functional equation and
+class field theory are still unfinished.

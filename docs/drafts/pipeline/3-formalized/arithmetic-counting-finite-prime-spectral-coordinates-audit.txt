@@ -1,0 +1,41 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeCountsDetermineTheConductorCoordinates.lean
+SHA256: 4447b5d4c764ad6150475cf1e71789b68a90fac005dadde4e4c7ae45ae633682
+
+First required olean (session 31732, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeCountsDetermineTheConductorCoordinates.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeCountsDetermineTheConductorCoordinates.ilean GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeCountsDetermineTheConductorCoordinates.lean
+Required by the actual import in the finite-prime full-resolvent formalization.
+
+Scratch audit (session 44835, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-finite-prime-coordinates-check.lean
+
+Canonical installed-source audit (session 96499, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/FinitePrimeCountsDetermineTheConductorCoordinates.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipRamanujanSum_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipRamanujanSum_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipHorizonVector_norm_sq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipHorizonVector_inner' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_finiteFlipHorizonVector_inner' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_finiteFlipWindowCoordinateSq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_finiteFlip_eigenline_coordinates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_finiteFlip_conductor_eigenline' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

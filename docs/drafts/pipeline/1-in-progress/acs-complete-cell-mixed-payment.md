@@ -53,6 +53,93 @@ The exterior sum is proved finite before conversion to real numbers. All three t
 
 for every signed `q,d` and every horizon, with the explicit nonnegative constant `C=2*(13*exp(1/2)+2*gammaTailMass(log(3/2)))`. The integral equals the actual coefficient mass `Σ logCellWidth(a)*q(a)²`. The original independent cell coefficients `u,v` are retained in a separate exact specialization. This closes coarse Gamma recovery without using the detail reserve twice. Full signed prime and pole coupling remains unpaid.
 
+## Joint non-first-prime payment
+
+The [mixed square tail](../3-formalized/acs-square-mixed-source-lower-order.md)
+is arbitrarily small in the original complete-profile Gamma energy, uniformly
+in horizon. Together with the odd higher powers and actual Gamma coupling,
+it gives the [joint source estimate](../3-formalized/acs-joint-nonfirst-mixed-payment.md)
+
+`Γ(g+h)−Γ(h)+W(h)−B₂−Bodd ≥ (1−ε)Γ(g)+(κ/4)D+∫h²`
+
+after one fixed detail head, where `κ=1−1/sqrt(2)` and
+`D=Σ log(1/w_a)M_a d_a²`. Every mixed exponent at least two occurs once.
+The entire Haar diagonal, including first primes and its pole, is retained.
+This closes those mixed payments, not the exponent-one mixed source or
+the coarse signed block.
+
+The [full-pole extension](../3-formalized/acs-full-polar-nonfirst-payment.md)
+replaces the detail pole with the actual complete-profile pole. It retains
+`(1−ε)Γ(g)+(κ/8)D+∫h²` and the positive cosh square after a fixed head,
+leaving one adverse sinh square. The original head coordinates and that
+moment bound negative dimension by A+1. First-prime mixing and the coarse
+signed prime/archimedean block still require joint arithmetic payment.
+
+The [joint whole-square extension](../3-formalized/acs-joint-whole-square-polar-payment.md)
+now pays the coarse even-power source from retained coarse Gamma. For
+`U=R−S₂(g)`, one fixed head and c>0 give
+
+`c Γ(g)+(γ_E/2)∫g²+(κ/8)D+∫h²+2 coshHalfMoment(F)²
+ ≤ U+2 sinhHalfMoment(F)²+(1/2)(∫F)²`.
+
+The exact source identity contains the complete `S₂(F)` once. The head and
+the two original moments give uniform negative dimension at most A+2.
+This jointly pays the previously missing coarse even powers without reusing
+the complete Gamma reserve. The remaining coarse source has first primes,
+odd higher powers and archimedean mass; first-prime mixing and the finite
+index costs remain open.
+
+## Full Haar prime source: uniform finite heads
+
+[Full Haar prime finite heads](../3-formalized/acs-full-haar-prime-source-finite-heads.md)
+now approximate the entire prime diagonal, including first powers, within
+`εΓ(F)` in the original complete profile, with one head for every horizon.
+The exact divisor identity makes large multipliers small; upward incidence
+and reciprocal-width detail payment handle the finite remainder.
+
+Combining this with the established mixed square and odd higher-power
+estimates gives `|R−(Γ(F)+P(F))|≤εΓ(F)` after one fixed detail head,
+where `R=fullPolarNonfirstSourceForm q d X`. In particular,
+`R+2 sinhHalfMoment(F)²≥(1−ε)Γ(F)+2 coshHalfMoment(F)²`.
+This retains the original complete Gamma coupling, strengthening the
+previous coarse-Gamma share plus fixed logarithmic-detail reserve.
+First-prime mixing, the coarse signed block and finite index costs remain.
+
+## Remaining first-prime investigation
+
+`TheOrderedWeilSourceIsACenteredChebyshevDefect` gives the exact ordered
+mixed form as a centred Chebyshev derivative pairing minus the localized
+Gamma tail. Prime and polar terms must remain together in this comparison;
+the identity supplies no sign for arbitrary signed complete coefficients.
+
+`BezoutValuationIncidence.CentredPrimeRowPassesTheCoherentBlockObstruction`
+proves short-window cancellation for the actual row Λ−1 and a cross-scale
+weighted bilinear bound using Huxley's theorem. Its stated window and row
+norms differ from the complete-cell mixed source. No transfer to the
+required shared Gamma/polar reserve has been proved here. This is a source
+input to investigate, not a discharged first-prime estimate.
+
+The stronger balanced-scale input is in
+`ArithmeticCompensationTheory.TheBalancedRegimeAndTheOmittedResidueClassLaw`:
+`exists_balanced_centredPrimeBlock_rowBilinear_le` and
+`exists_balanced_centredPrimeBlock_dualNorm_le` give qualitative savings
+when P≤Q≤BP, using the 17/30 window theorem. Its
+`tendsto_mul_kernelStatistic_centredPrimeBlock` also proves that centring
+Λ−1 retains the nonzero single-modulus limit
+`−π²(p²−1)²/(144p²(p−1))`. That contribution cannot be discarded in a
+source-preserving transfer. The finite-prime packet theorem
+`eventually_packetCorrectedPrimeBlock_seventeenThirtieths` in
+`MultiModulusKloostermanDispersionAndPrimeRowTransfer` adds explicit periodic
+correctors; it therefore does not directly estimate the original ACS source.
+Neither statement supplies the missing aperture-independent all-prime complete-cell norm bound.
+
+[Uniform prime–polar cancellation](../3-formalized/acs-prime-polar-cancellation-in-gamma-norm.md)
+now gives `|primeSum(f)−P(f)|≤ε exp(R)(Γ(f)+∫f²)` for all sufficiently
+large R, simultaneously over every BV profile supported in [−R,R]. This
+retains the original coefficients and both poles and removes the derivative
+norm from the cancellation estimate. The remaining aperture factor prevents
+its use as the missing uniform first-prime mixed payment.
+
 ## Log
 
 - 2026-10-28 — Opened after the full balanced-cell floor and smooth effectivity passed exact Lean audits.

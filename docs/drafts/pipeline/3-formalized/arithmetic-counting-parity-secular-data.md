@@ -3,7 +3,7 @@
 - **ID:** ACP-PARITY-SECULAR-DATA
 - **Stage:** 3-formalized
 - **Type:** THEOREM (paper and Lean)
-- **Parent:** ../2-fully-proven/arithmetic-counting-small-prime-secular-gap.md
+- **Parent:** arithmetic-counting-small-prime-secular-gap.md
 - **Source:** ../3-formalized/arithmetic-counting-parity-spectral-mass.md
 - **Statement:** The explicit parity coefficients have squared sum one; their arithmetic diagonal has a unique secular root strictly below the two-mode value `p log(p)/(p+3)`.
 

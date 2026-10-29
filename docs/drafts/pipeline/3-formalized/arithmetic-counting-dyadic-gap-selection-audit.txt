@@ -1,0 +1,27 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/OneDyadicProbeSelectsTheFinitePrimeSource.lean
+SHA256: 646e1f82c222321a8d72d6e2346e6583a8f15c61111bb88390bef373af765750
+
+Scratch audit (session 62873, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-dyadic-gap-selection-check.lean
+
+Canonical installed-source audit (session 1007, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/OneDyadicProbeSelectsTheFinitePrimeSource.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlip_dyadicPrimeToggle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.dyadicFlipGreatestGap_lt_ceiling' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlip_two_gap_selection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean (session 77319, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/OneDyadicProbeSelectsTheFinitePrimeSource.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/OneDyadicProbeSelectsTheFinitePrimeSource.ilean GaloisForLFunctions/ArithmeticCountingPositivity/OneDyadicProbeSelectsTheFinitePrimeSource.lean
+Required by the actual conductor-mass stability draft importing this module.
+

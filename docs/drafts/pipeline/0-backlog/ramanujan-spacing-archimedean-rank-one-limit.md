@@ -5,7 +5,7 @@
 - **Type:** CONJECTURE
 - **Source:** formalized full-prime Ramanujan quasimodes; SSHA separated-atom pairing and Robin constant
 - **Statement:** On every fixed finite Ramanujan packet, the spacing-scale archimedean cross correction has rank at most one, with opposite net pole corrections in the Markov and complete Weil forms.
-- **Count:** uncounted; no completed paper proof or Lean formalization
+- **Count:** uncounted; supporting packet formulation of the complete-Weil spectral package
 
 ## Goal
 
@@ -206,11 +206,11 @@ to `(integral g*exp(-u/2))*sum a(n)/n` and
 tend to integral phi. Ordinary and logarithmic periodic means then give the
 claimed product limit. Exact integration and finite-sum adapters remain.
 
-A stronger, separately audited conjecture is recorded in
-`complete-weil-spacing-ramanujan-spectral-law.md`. An exact harmonic-row
-calculation suggests that the two pole terms cancel the large archimedean row
-on the pole vector, while periodic zero-mean profiles have bounded row residual.
-If proved for the actual atom integrals, this would upgrade the present form
-limit to full-Weil quasimodes and, at a fixed small width ratio, spectral
-exhaustion. The weaker form limit would be supporting content of that single
-contribution, not an additional count. Both remain unproved and uncounted.
+The stronger [complete-Weil spectral law](../3-formalized/complete-weil-spacing-ramanujan-spectral-law.md)
+is formalized for every fixed `0<c<1`: actual Ramanujan norm quasimodes, exact
+bounded counts with multiplicity, and simple eigenline convergence, retaining
+the Gamma, prime and both pole terms.
+
+The displayed packet-form limits have not been added as separate Lean endpoints.
+This card remains a supporting formulation of that one package,
+with no separate completion or count. No further novelty audit was performed.

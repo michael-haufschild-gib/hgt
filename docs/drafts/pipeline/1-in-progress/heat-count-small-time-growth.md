@@ -2,7 +2,7 @@
 
 - **ID:** heat-count-small-time-growth
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE (the three rungs); paper-level REDUCTION (the dictionary below)
+- **Type:** CONJECTURE (the three upper-count rungs); Lean necessity and paper-level sufficiency
 - **Source:** `docs/reports/review-2810/obstacles-summary.md` Q-II; receivers in `index-exit-hodge-defect-collision-count`
 - **Statement:** As `t ↓ 0`, `N(t) := nonrealZeroCount t ≤ e^{o(1/t)}`, then `N(t) ≤ C t^{−A}`, then `N(t) ≤ C`.
 
@@ -26,14 +26,16 @@
 Coordinates: a zero `z` of `H_0 = Ξ` has `Im z = β − 1/2`, and the Gaussian average defining `H_t`
 at ordinate `x` has its saddle at abscissa `1/2 + w`, `w = t log(x/2π)`.
 
-**Mean-field rate.** A nonreal zero `x + iy` obeys
+**Mean-field heuristic.** A nonreal zero `x + iy` obeys
 `ẏ = −2 Σ_{j} (y − y_j)/|z − z_j|²`.
 - Its conjugate contributes `−1/y`. This term alone is the energy-transition rate: `y²` drops by
   `2t`.
 - The real zeros near `x`, of density `(1/2π) log(x/2π)`, contribute about `−log(x/2π)`.
 
-So depth `δ` at ordinate `x` survives until `t ≈ δ / log x`, and is absorbed once
-`t log x > δ`. With `δ < 1/2` this reproduces the sharp horizon `c = 1/2`.
+This suggests survival until `t ≈ δ / log x` and absorption once
+`t log x > δ`. With `δ < 1/2` it suggests horizon `c = 1/2`.
+Neither the linear depth dependence nor this absorption threshold is
+proved here; the quadratic-depth necessity theorem below is formalized.
 
 **Claims.** Let `E(σ) := limsup_T log N(σ, T)/log T` be the zero-density exponent.
 - **(S) Sufficiency [paper sketch].** `κ ≤ sup_{0<w<1/2} w·E(1/2 + w)`. Proof route:
@@ -41,13 +43,12 @@ So depth `δ` at ordinate `x` survives until `t ≈ δ / log x`, and is absorbed
   - the small values of `ζ` at the anchor occur near zeros with `β ≥ 1/2 + w − o(1)` (zero density) or on a Dirichlet-polynomial large-deviation set;
   - large values left of the saddle are controlled by mean values (moments) instead of `μ`;
   - sum over dyadic `x`, using `#zeros ≤ x^{E}` at depth `t log x`.
-- **(N) Necessity [paper sketch].** `N_off(δ, T) ≤ C log T · N(c δ²/log T)`. Proof route:
-  - window energy `Σ_window y²`;
-  - pair terms `(y_k − y_j)²/|z_k − z_j|² ≤ 1`, at most `C log x` partners per zero;
-  - nonreal zeros are not created forward in time (`nonrealZeroCount_antitoneOn`);
-  - so the energy of `k` zeros of depth `≥ δ` lasts until `t ≈ δ²/(C log x)`.
+- **(N) Necessity [Lean, dyadic form].** `N_off(δ, [X,2X]) ≤ C log X · N(c δ²/log X)`, with absolute constants and a height threshold independent of `0<δ≤1/2`.
+  - Centered finite zero factors give a quadratic error on a fixed real interval.
+  - A complex saddle and the complete reverse Gaussian force a nearby nonreal heat zero.
+  - The actual local Xi count bounds each fibre of the chosen zero map, retaining multiplicity.
 
-  Consequence: `E(1/2 + δ) ≤ κ/(c δ²)`.
+  Consequence: `E(1/2 + δ) ≤ κ/(c δ²)`. The sufficiency direction `(S)` remains a sketch.
 
 **Rungs translated (S + N).**
 
@@ -90,9 +91,17 @@ So depth `δ` at ordinate `x` survives until `t ≈ δ / log x`, and is absorbed
 - **Rung 2 ⇒ polylog density:** `N(t) ≤ A t^{−a}` ⇒ `N_off(δ, [X, 2X]) = O((log X)^{4a+1})`.
 - Rung 1 gives nothing at this rate: `e^{o(1/t)}` with `1/t ≍ log⁴ X` is superpolynomial.
 
-**(N₁) Mean-field rate, needed for rung 1 [OPEN].** Rung 1 ⇒ sub-power density needs
-survival `≥ c(δ)/log X`. Every energy or threshold functional tried fails at the same point,
-**threshold crowding**:
+**(N₁) Uniform mean-field rate [Lean].** There are absolute `c,C>0`
+and `X₀≥4096` such that, for every `X≥X₀`, `0<δ≤1/2`, and `0<t`
+with `t log X≤c δ²`, deep dyadic zero copies satisfy
+`#F≤C log X·N(t)`. Depth may shrink with height and heat.
+`HeatZeroDisplacement.lean` proves actual zero displacement and nonreal
+persistence; `HeatUniformDepthZeroDensity.lean` proves the multiplicity
+count. Both passed final plain Lean checks without warnings.
+The earlier fixed-depth version is in `HeatMeanFieldPersistence.lean`
+and `HeatMeanFieldZeroDensity.lean`. No upper bound on `N(t)` is supplied.
+
+The energy and threshold approaches encountered **threshold crowding**:
 - Pair drains are bounded per pair, so the drain is `≲ (log x/θ) · #{zeros above θ}`.
 - The budget is the excess above `2θ`.
 - Zeros just above `θ` count fully in the drain and carry no budget.
@@ -109,13 +118,34 @@ Physically the crowd is harmless: zeros at depth `≥ θ` survive `≍ θ²/log 
 
 **Inputs a dynamics proof of (N₁) would need:**
 - zero ODE for `H_s`, with collisions;
-- local zero counts for `H_s` uniform in `s`;
+- **[Lean]** local zero counts for `H_s`, with full multiplicity, uniform for
+  `0 ≤ s ≤ 1/8` and `s log X ≤ 1`: every finite zero set in
+  `|Re z-X| ≤ 1` has multiplicity sum `≤ C log X` for large `X`
+  (`exists_sum_zeroMult_riemannHeat_near_le_log`,
+  `RHTower/HeatLocalZeroDensity.lean`; [proof and exact range](../3-formalized/wd-heat-uniform-local-zero-count.md));
 - flux control (horizontal velocities, with symmetrised near-field terms).
 
 Zero dynamics give `dE/ds = −4 Σ_{pairs} φ̄ (y_k − y_j)²/|z_k − z_j|² + (φ′-flux)` for the window
 energy `E = Σ φ(x_k) y_k²`.  Each pair term is `≤ 1`, which is where the crowding loss enters.
 
 A static contour version (Hermite/Gram negative index from `∮ G H′/H`) fails: real zeros' Gram mass swamps the pair's negative eigenvalue.
+
+A [static reverse-Gaussian proof](../3-formalized/wd-mean-field-heat-persistence.md) closes
+the fixed-depth `(N₁)` scale. Actual-heat cofactor bounds and minimum
+modulus control a window containing only real heat zeros. A complex saddle
+removes the linear logarithmic slope, leaving a quadratic local error;
+the actual global envelope controls the full Gaussian tail. The reverse
+integral is nonzero, contradicting the unheated zero. Persistence,
+counting, and all four supporting modules passed final plain checks
+without warnings.
+
+The [uniform shrinking-window proof](../3-formalized/wd-shrinking-window-heat-persistence.md)
+retains the centered polynomial factors. Their quadratic error remains
+valid across polynomial zeros, so the local Gaussian interval can stay
+fixed while the target depth shrinks. This closes the universal
+`c δ²/log X` necessity scale. The next missing input is an arithmetic
+upper bound on `N(t)` strong enough to control or extinguish the residual
+nonreal zeros.
 
 ## Lowering the exponent: routes
 The pointwise threshold is `c > sup_w θ_w`, where `θ_w` solves `(c − w)² = 4c μ(1/2 + w)`. Its floor is
@@ -144,6 +174,26 @@ Lemma chain, none of it in the corpus:
 3. the `B`-process lemma (Titchmarsh 4.9), with explicit constants;
 4. the zeta block at `σ = 11/18`: Weyl differencing with `H ≍ N^{?}`, `B` on each differenced sum, and the fourth derivative test on the transformed sums. The result is `block ≪ t^{1/9} N^{11/18}` up to logs;
 5. the profile point `μ(11/18) ≤ 1/9` in `KiKimLeeInteriorLindelofHorizon`'s strip exponent, and re-run the threshold to get `2/3 + ε`.
+
+Status:
+- 1–3 formalized (file checks pass, oleans built):
+  - `RHTower/StationaryPhaseWithCubicError.lean` — `norm_integral_cexp_sub_stationary_le` (error `λ₃δ⁴/3 + 14/(λ₂δ) + 4/(λ₂(c−a)) + 4/(λ₂(b−c))`), crude companion `9/√λ₂`;
+  - `RHTower/TruncatedPoissonSummation.lean` — `norm_sum_sub_truncatedPoisson_le`: integer endpoints, `f″ ≥ 0`, `|f′| ≤ K′`, `K ≥ max(1, 2K′)`, error `≤ 5`;
+  - `RHTower/VanDerCorputBProcess.lean` — `norm_sum_sub_bDualSum_le`: error `5 + K + 19/√λ₂ + (β−α+1)(3λ₃δ⁴ + 3/(λ₂δ) + 2ρ)`. The `K` term (one unit per dual frequency) replaces Titchmarsh's `log`; it is absorbed on the whole `B` range `N ∈ [t^{5/13}, t^{1/2}]` (checked: `(N/H)·Σ_h Th/N² = t^{7/9}N^{−2/9} ≤ N^{11/9}t^{2/9}` iff `N ≥ t^{5/13}`).
+- 4–5 formalized (file checks pass, oleans built, wired into `RHTower.lean`; umbrella not compiled):
+  - `RHTower/ZetaDifferencedDualPhase.lean` — calculus of `F`, dual point `x(u)`, dual chain `G₀…G₄`, `q/u³ ≤ G₄ ≤ 3q/u³`;
+  - `RHTower/ZetaWeylCorrelationBound.lean` — `norm_dualSum_diffPhase_le` (Abel + fourth test on the dual sum), `norm_sum_diffLog_le_B`: for `5N⁷ ≤ X³`, `X = Th`, differenced sum `≤ 10¹⁰(X^{2/7} + X^{13/28}N^{−1/2} + X/N² + (N³/X)^{1/2} + X^{2/5}N^{−2/5})`;
+  - `RHTower/ZetaElevenEighteenthsWeylBlock.lean` — second-derivative regime, all shifts, Weyl assembly, `norm_prefix_le_BRange`: for `t ≥ 1024π`, `t⁵ ≤ N¹³`, `N² ≤ t`, `L ≤ N`, `‖Σ_{j<L}(N+j)^{−it}‖ ≤ 10⁶ N^{11/18} t^{1/9}`;
+  - `RHTower/ZetaElevenEighteenthsLineBound.lean` — `norm_riemannZeta_elevenEighteenths_le`: `‖ζ(11/18 + it)‖ ≤ 10⁷ t^{1/9} log t` for `t ≥ 1024π`;
+  - `RHTower/ZetaElevenEighteenthsProfiles.lean` — edge bound on `Re s = 11/18` and the profiles `1/6 + η − (σ−1/2)/2` on `[1/2, 11/18]`, `1/9 + η − (5/13)(σ − 11/18)` on `[11/18, 5/7]`;
+  - `RHTower/KiKimLeeTwoThirdsHorizon.lean` — three-piece strip exponent `eeStripExp`, threshold `exists_twoThirds_params` (`c > 2/3`), and the corollaries `riemannHeat_zeros_real_simple_twoThirds` and `exists_nonrealZeroCount_and_collisionMass_le_twoThirds`: for `0 < t ≤ 1/8`, `N(t) ≤ C₀ R log(2 + 3R)`, `R = max(X₀, 2π e^{(2/3+ε)/t}) + 1`.
+- `2/3 = 4μ(1/2)` is the floor of this method: at `w = 0` the constraint is `c² > 4c/6` whatever the interior profile. Going below needs a better `μ(1/2)` or a different comparison at the axis.
+- Plan (kept for reference), with `T = t/2π`, differenced phase `F(x) = T log(1 + h/x) + kx` (conjugate of the Weyl correlation):
+  - `F″ = T(x⁻² − (x+h)⁻²)`, `F‴ = −2T(x⁻³ − (x+h)⁻³)`;
+  - dual point `x(u) = √(Th/u + h²/4) − h/2`, `u = k − ν`; dual phase `Ψ(u) = T log(1 + h/x) + ux`, `Ψ′ = x`, `Ψ⁗ = x‴ = −(q/u³)(3r − 3r²/2 + 3r³/8)`, `q = √(Th/u + h²/4)`, `r = Th/(Th + h²u/4) ∈ [4/5, 1]`;
+  - per `h`: `B` + monotone Abel (`norm_sum_Ico_mul_le_of_bounded_partial_mono`) + `fourth_derivative_test_sharp` for `h ≥ h₀ ≍ N^{7/3}/t`, second-derivative test below;
+  - every per-`h` bound is monotone in `h`, so `Σ_h ≤ H · max`; `H = N^{7/9}t^{−2/9}`; all terms close at `N ∈ [t^{5/13}, t^{1/2}]`;
+  - assembly as in `ZetaFiveSeventhsLineBound`, regimes: trivial (`N ≤ t^{2/7}`), fourth test (`≤ t^{5/13}`), `A+B+4th` (`≤ t^{1/2}`), third test (`≤ t^{5/7}`), second test (`≥ t^{7/11}`).
 
 ## (N₂) static proof — the build plan (chosen 2026-10-28)
 Any polylog survival rate gives rung 2 ⇒ polylog density. A static Rouché argument at each deep zero
@@ -177,12 +227,13 @@ Status: **(N₂) formalized** (file checks pass; wired into `RHTower.lean`; umbr
   - `polylog_deep_density_of_polynomial_nonrealZeroCount`: `N(t) ≤ A t^{−a}` ⇒ that count is `O((log X)^{4a+1})`.
 
 ## Survivors to formalize (not dependency-closed)
-- (N₁), the mean-field necessity (rung 1 ⇒ sub-power density): open on paper (threshold crowding).
+- (N₁) is formalized, including uniform quadratic depth dependence; see the necessity section above. Threshold crowding concerns the earlier dynamics attempt, not an outstanding premise of that theorem.
 - (S), the sufficiency transfer. Needs:
   - interior anchors with small-value control;
   - mean values of `ζ` in the strip.
 
 ## Log
+- 2026-10-29 — Track B done: `μ(11/18) ≤ 1/9` and the `N(t)` exponent `2/3 + ε` formalized.
 - 2026-10-29 — (N₂) formalized: rung 2 ⇒ polylog deep density (static Rouché, no zero dynamics).
 - 2026-10-28 — necessity: polylog rate (N₂) on paper; mean-field rate (N₁) open (threshold crowding); exponent routes mapped (`2/3` needs `μ(11/18) ≤ 1/9`).
 - 2026-10-28 — created; dictionary `κ = sup_w w E(1/2+w)` found (paper sketch); rung 1 identified with sub-power density.

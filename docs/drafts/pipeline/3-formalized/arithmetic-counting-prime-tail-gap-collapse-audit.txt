@@ -1,0 +1,35 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeTailExhaustionHasVanishingGreatestGaps.lean
+SHA256: e95d0991dcdd0794d1c8f8a45082ac036a8108dd7bfeb03fb8b73dd1e72bb9dc
+
+Scratch axiom audit (session 14449; completed log, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-prime-tail-gap-collapse-check.lean
+The final process-status response was lost across compaction; the handle is
+closed. Verification relies on the subsequent installed-source exit status
+and the complete transitive axiom output below, not an inferred scratch exit.
+
+Canonical installed-source audit (session 77612, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/PrimeTailExhaustionHasVanishingGreatestGaps.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.not_summable_progressionReciprocalLog' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_sum_progressionReciprocalLog_atTop' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_primeTailCutoff_gap_lt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.tendsto_primeTailGreatestGap_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_maximal_prime_flips_with_small_joint_gap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+First required olean (session 3496, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeTailExhaustionHasVanishingGreatestGaps.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeTailExhaustionHasVanishingGreatestGaps.ilean GaloisForLFunctions/ArithmeticCountingPositivity/PrimeTailExhaustionHasVanishingGreatestGaps.lean
+Required by the actual prime-tail rate draft; existing oleans were preserved.

@@ -15,6 +15,9 @@ import GaloisForLFunctions.HeckeLFunctions.TheTrivialCharacterRemovesTheModulusE
 import GaloisForLFunctions.HeckeLFunctions.TheTrivialCharacterHasAPositiveResidue
 import GaloisForLFunctions.HeckeLFunctions.EveryRayResidueAndSignHasAnIntegralRepresentative
 import GaloisForLFunctions.HeckeLFunctions.HeckeCharactersSplitIntoFiniteCharactersAndRealParities
+import GaloisForLFunctions.HeckeLFunctions.HeckeIdealThetaIsUnitPeriodic
+import GaloisForLFunctions.HeckeLFunctions.HeckeThetaHasAFiniteFourierTransform
+import GaloisForLFunctions.HeckeLFunctions.HeckeThetaTailsDecayExponentially
 
 /-!
 # Hecke L-functions
@@ -33,4 +36,23 @@ Positive signed-cone volumes and lattice counts also show that arbitrary inverti
 and real sign patterns have nonzero integral representatives, making the ray reduction surjective.
 Every Hecke character therefore splits on principal ideals into a finite residue character
 and real-place parities; their product is trivial on global units.
+The resulting finite-weighted parity theta series converges absolutely on every integral ideal
+and is periodic under translation by global-unit place logarithms.
+Residue-coset parity Poisson transforms this theta into an absolutely convergent sum on the
+arithmetic trace-dual ideal, with explicit finite Fourier coefficients and exact normalization.
+The physical and dual zero terms are classified; both remaining theta tails decay exponentially,
+uniformly on bounded archimedean place profiles.
+The actual theta Mellin pair has an entire regular part and explicit zero-mode residues.
+Integration over the actual unit logarithm domain multiplies those zero modes by the regulator
+and preserves the Mellin reflection. Nonzero ideal elements are indexed by inverse-class ideals
+and global units; splitting units into torsion and logarithmic lattice coordinates expresses
+the nonzero theta as an absolutely convergent sum of lattice periodizations with exact torsion factor.
+Uniform summable Gaussian bounds justify unfolding its unit-domain average into whole-log-space
+kernel integrals indexed by the inverse ordinary ideal class.
 -/
+import GaloisForLFunctions.HeckeLFunctions.HeckeThetaHasMellinContinuation
+import GaloisForLFunctions.HeckeLFunctions.HeckeThetaIsJointlyContinuous
+import GaloisForLFunctions.HeckeLFunctions.HeckeThetaAveragesOverTheUnitDomain
+import GaloisForLFunctions.HeckeLFunctions.NonzeroIdealElementsAreGlobalUnitOrbits
+import GaloisForLFunctions.HeckeLFunctions.HeckeThetaUnitOrbitsAreLogPeriodizations
+import GaloisForLFunctions.HeckeLFunctions.HeckeUnitOrbitsUnfoldOverTheLogSpace

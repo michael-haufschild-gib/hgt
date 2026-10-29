@@ -13,13 +13,15 @@ its per-point moments are
 `κ₂ = 1 + ∫ S²ρ₂`, `κ₃ = 1 + 3∫ S²ρ₂ + ∬ S(x)S(y)S(x−y) ρ₃(0, x, y)`, with `ρ₂ = 1 − S²` and
 `ρ₃(0, x, y) = 1 − S(x)² − S(y)² − S(x−y)² + 2S(x)S(y)S(x−y)` (`sineKappa₂`, `sineKappa₃`).
 
-* **The values** (`sineKappa₂_eq`, `sineKappa₃_eq`): `κ₂ = 4/3` and `κ₃ = 2`, the moments
-  `(4/3, 2)` of the coalescence blind spot `diag(1,1,1,1,2)`
-  (`HigherInertia.blindSpot_moments`). The fully distinct triple term vanishes
-  (`sineTriple_eq_zero`).
+* **The values** (`sineKappa₂_eq`, `sineKappa₃_eq`): `κ₂ = 4/3` and `κ₃ = 2`. The fully
+  distinct triple term vanishes (`sineTriple_eq_zero`).
+* **The blind spot** (`sineMoments_eq_blindSpot`, `cubic_sineValue_le_two_thirds`): these are the
+  moments of the coalescence blind spot `diag(1,1,1,1,2)`, so every cubic inertia certificate
+  certifies at most `2/3` at sine-kernel statistics; `q⋆` reaches `3/4` iff `κ₄ ≤ 2503/768`
+  (`qStarValue_sineKappa`).
 
 All integrals are computed on the Fourier side. `S = 𝓕 1`, `S² = 𝓕 Δ` with the triangle
-`Δ = 1 ⋆ 1 = (1 − |η|)₊` (`sinc_sq_eq_fourier_tri`, `tri_apply`), and `S³ = 𝓕 (Δ ⋆ 1)` by the
+`Δ = 1 ⋆ 1 = (1 − |η|)₊` (`fourier_tri`, `tri_apply`), and `S³ = 𝓕 (Δ ⋆ 1)` by the
 convolution theorem. Parseval for integrable square-integrable functions
 (`integral_conj_fourier_mul_fourier`) and the modulation rule `𝓕(G e_x) = 𝓕G(· − x)` turn every
 inner integral over `y` into an integral of compactly supported polynomials: `∫ S² = 1`,

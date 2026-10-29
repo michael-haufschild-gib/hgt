@@ -3,7 +3,7 @@
 - **ID:** ACP-FINITE-SECULAR-CRITERION
 - **Stage:** 3-formalized
 - **Type:** THEOREM (paper and Lean)
-- **Parent:** ../2-fully-proven/arithmetic-counting-small-prime-secular-gap.md
+- **Parent:** arithmetic-counting-small-prime-secular-gap.md
 - **Statement:** An exact finite reciprocal criterion, its negative witness and tail estimate, and an eventual packet-limit principle reduce the actual parity gap to a scalar limit.
 
 ## Closed finite criterion

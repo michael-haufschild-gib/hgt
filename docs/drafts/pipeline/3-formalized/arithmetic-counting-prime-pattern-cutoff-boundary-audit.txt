@@ -1,0 +1,28 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/PositiveEulerDensityIsExactlyHarmonicCutoffCompleteness.lean
+SHA256: 19c95498d639a7adf69611144d21b9dc3dab58e1006ca5649cbed651b256b05d
+
+Scratch audit (session 62197, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-prime-pattern-cutoff-boundary-check.lean
+
+Canonical installed-source audit (session 96931, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/PositiveEulerDensityIsExactlyHarmonicCutoffCompleteness.lean
+
+Scratch declarations are identical to installed source; only the audit
+#print axioms commands were removed. Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetHarmonicDensity_tail' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetFlip_cutoff_distance_sq_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetFlip_cutoff_distance_sq_tendsto' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetFlip_harmonic_cutoffs_complete_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeSetCutoffDistanceSq_eq_zero_of_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

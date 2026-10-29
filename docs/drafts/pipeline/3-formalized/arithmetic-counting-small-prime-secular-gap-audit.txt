@@ -1,0 +1,36 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/TheParitySecularRootDeterminesTheGap.lean
+SHA256: 5e42aa6036efa6258e94cfac292dcd8ec18c9f903733cbd18063f693759ffedc
+
+Scratch audit (session 37481, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-exact-parity-gap-check.lean
+
+Canonical installed-source audit (session 14513, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/TheParitySecularRootDeterminesTheGap.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeFlip_hasHyperplaneGap_min_secularRoot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeFlip_hyperplaneGap_le_secularRoot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.isGreatest_primeFlip_hyperplaneGap_min_secularRoot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeFlip_hasHyperplaneGap_iff_le_min_secularRoot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeParitySecularRoot_lt_two_mul_log_two_iff' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.isGreatest_smallPrimeFlip_hyperplaneGap_secularRoot' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.primeFlip_hyperplaneGap_lt_prime_log_div' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.hasSum_primeParitySecularRoot_reciprocals' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

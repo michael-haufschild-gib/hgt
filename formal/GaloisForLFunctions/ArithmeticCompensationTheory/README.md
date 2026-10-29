@@ -94,6 +94,13 @@ source class, with which damping/aperture dependence.
    (budget $\ge-\frac{27}5\int F^2$); unconditional floor $-Ke^{r-c\sqrt r}(\frac14\int F^2+\int F'^2)$, pure $L^2$ on the
    sub-envelope Dirichlet cone; **width $\le\sigma_0$ ⇔ cost $\le Ce^{2\sigma r}(\frac14\int F^2+\int F'^2)$ for all $\sigma>\sigma_0$**;
    exponent $<\tfrac12$ ⇔ $\Theta<1$; every positive exponent ⇔ RH.
+   The literal all-parity cutoff has uniform bounded-frequency cancellation and a common
+   all-frequency bound (`ThePrimePolarCutoffHasUniformFrequencyBounds`). The actual Gamma
+   symbol then gives $|P_{\rm prime}(f)-P_{\rm pole}(f)|\le
+   \varepsilon e^R(\Gamma(f)+\int f^2)$ for all sufficiently large $R$, uniformly over
+   compact BV profiles supported in $[-R,R]$ (`ArithmeticIndexDescent.TheFullPrimePolarSourceCancelsInGammaNorm`).
+   Every prime power and both pole moments remain; no derivative norm is required.
+   The remaining $e^R$ factor prevents a uniform critical-norm or sign conclusion.
 8. **Depth law** $D_r(u)\to e^{-u/2}$ uniformly; depth statistics → horizon law uniformly over translates.
 9. **Comb resolvent law:** $E_r(F)\sim4J(F)e^{2r}$ for every continuous compact $F$, $S_r^{-1}C_r\approx\tau_{2r}\Psi$,
    $\Psi$ = resolvent of $1+2\partial$, $J(F)=\|\Psi F\|^2>0$ (pointwise positive, not uniformly coercive).

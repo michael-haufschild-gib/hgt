@@ -154,7 +154,8 @@ theorem hermQuad_gram_towerPole {ι : Type*} [Fintype ι] (x : ι → Multiplica
     rw [mul_sum, mul_sum, ← sum_add_distrib]
     refine sum_congr rfl fun b _ => ?_
     rw [towerPole_apply, toAdd_mul, toAdd_inv]
-    simp only [n, zpow_add₀ hw, zpow_add₀ (inv_ne_zero hw), zpow_neg, inv_zpow, inv_inv]
+    change conj (c a) * (A * w ^ (-n a + n b) + B * w⁻¹ ^ (-n a + n b)) * c b = _
+    simp only [zpow_add₀ hw, zpow_add₀ (inv_ne_zero hw), zpow_neg, inv_zpow, inv_inv]
     ring
   have hre : (A * (E * conj F) + B * (F * conj E)).re =
       (((2 : ℝ) : ℂ) * (poleWeight g * E * conj F)).re := by

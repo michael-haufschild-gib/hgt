@@ -904,3 +904,19 @@ and pure detail blocks, original archimedean mass term and original polar terms 
 the combined theorem. The encompassing programme remains in progress. The result and its
 mathematical interpretation are recorded in `docs/reports/review-2710/astra2.md`; exact check
 records are in `logs/arithmetic-index-descent-checks.json`.
+
+### Full Haar prime finite heads and complete Gamma reserve
+
+[Uniform finite heads for the entire Haar prime source](../3-formalized/acs-full-haar-prime-source-finite-heads.md)
+is formalized. One coefficient head approximates every actual prime power,
+including exponent one, within ε times the original untruncated complete
+profile's Gamma energy, uniformly in horizon. The exact divisor identity
+controls large multipliers; upward incidence and weighted detail mass pay
+the finite multiplier remainder.
+
+For the original full-pole nonfirst mixed source R, the shared estimate is
+`|R−(Γ(F)+P(F))|≤εΓ(F)` after one fixed detail head. It retains any complete
+Gamma share below one and the exact cosh square. All three new modules
+passed direct `lake --old env lean` source checks and are wired into the
+umbrella. No axiom checks were run. First-prime mixing, coarse signed terms,
+and finite head/moment index costs remain open.

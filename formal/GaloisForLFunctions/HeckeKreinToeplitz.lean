@@ -1,27 +1,69 @@
 import GaloisForLFunctions.HeckeKreinToeplitz.KernelsOnGroupsAndTheirNegativeIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.HyperbolicPairsAndTheIndexFormula
 import GaloisForLFunctions.HeckeKreinToeplitz.BoundedIndexIsClosedUnderPointwiseLimits
+import GaloisForLFunctions.HeckeKreinToeplitz.FiniteIndexIsPositiveMinusFiniteRank
+import GaloisForLFunctions.HeckeKreinToeplitz.TheIndexOfAFiniteExponentialSum
+import GaloisForLFunctions.HeckeKreinToeplitz.TheIndexOfABohrSeries
+import GaloisForLFunctions.HeckeKreinToeplitz.TheIndexUnderRotationDampingAndCoalescence
 import GaloisForLFunctions.HeckeKreinToeplitz.GrowthReadsTheDepthOfTheDeepestPair
+import GaloisForLFunctions.HeckeKreinToeplitz.HigherMomentsAreHigherInertia
 import GaloisForLFunctions.HeckeKreinToeplitz.LogarithmicCharactersAndTheArithmeticIndexFormula
+import GaloisForLFunctions.HeckeKreinToeplitz.StepanovCompressionsAndTheAnnihilationLaw
 import GaloisForLFunctions.HeckeKreinToeplitz.OneGridHidesTwoGridsDecide
 import GaloisForLFunctions.HeckeKreinToeplitz.AllButFinitelyManyPrimesSeeTheWholeIndex
+import GaloisForLFunctions.HeckeKreinToeplitz.LocalityFailsButAlmostEveryPrimeDecides
 import GaloisForLFunctions.HeckeKreinToeplitz.WeilsIndexIsCountedByTheOuterFrobeniusEigenvalues
 import GaloisForLFunctions.HeckeKreinToeplitz.TheHeckeOrbitKernelOfAZeroConfiguration
 import GaloisForLFunctions.HeckeKreinToeplitz.TheArchimedeanCompletionCarriesTheSameIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.TheFiniteIndexStratumOfZetaIsLindelofDeep
 import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
+import GaloisForLFunctions.HeckeKreinToeplitz.TheConverseKreinLangerTheoremForOrbitKernels
+import GaloisForLFunctions.HeckeKreinToeplitz.HeightTruncationsCarryTheIndexToTheLimit
+import GaloisForLFunctions.HeckeKreinToeplitz.IndexIsEnergy
+import GaloisForLFunctions.HeckeKreinToeplitz.IntegerFamiliesCarryTheWholeIndex
+import GaloisForLFunctions.HeckeKreinToeplitz.EveryReceiverAtEveryWidthIsBoundedByTheIndex
+import GaloisForLFunctions.HeckeKreinToeplitz.ShrinkingAtomsCarryTheWholeIndex
+import GaloisForLFunctions.HeckeKreinToeplitz.TheReceiversEndAtTheQuasiAnalyticBoundary
+import GaloisForLFunctions.HeckeKreinToeplitz.HeatCollisionsCountTheIndex
+import GaloisForLFunctions.HeckeKreinToeplitz.TheGlobalLawIsTheOneSidedSquareRootCount
 import GaloisForLFunctions.HeckeKreinToeplitz.TheSelectivityBatteryOnPrimeTowers
+import GaloisForLFunctions.HeckeKreinToeplitz.IndexZeroSelectsTheVonMangoldtWeight
+import GaloisForLFunctions.HeckeKreinToeplitz.OnePrimeTowerCountsTheDistinctFrobeniusValues
+import GaloisForLFunctions.HeckeKreinToeplitz.TheNyquistLawOfAPrimeTower
+import GaloisForLFunctions.HeckeKreinToeplitz.TheGoldenCurveIsDecidedOnItsTowerButNotOnTheLattice
+import GaloisForLFunctions.HeckeKreinToeplitz.ThePoleIsTheOnlyRemovableHyperbolicDirection
+import GaloisForLFunctions.HeckeKreinToeplitz.TheMarginIsTheWidthOfTheIndexOneWindow
 
 /-!
 # Hecke-covariant Krein–Toeplitz theory
 
-Umbrella for the indefinite harmonic analysis of Hermitian kernels on the Hecke lattice `ℚ_{>0}`:
-kernels on groups and their negative index; hyperbolic pairs and the Krein–Langer index formula;
-closedness of bounded index under pointwise limits; growth along a separating element and
-self-upgrade; logarithmic characters and the arithmetic index
-formula; the aliasing law on one prime, the two-prime law and the finiteness of blind primes; the `𝔽_q` calibration, where the
-index of the trace kernel counts the outer Frobenius eigenvalues; the Hecke orbit kernel of a
-zero configuration and its index law, on `ℚ_{>0}`, on two primes and on the archimedean completion; the Weil kernel of `ζ`, its finite-index stratum and the
-Lindelöf law; the Krein–Langer structure of the Weil kernel on the finite stratum; tower kernels
-and the selectivity battery. See `HeckeKreinToeplitz/README.md`.
+Hermitian kernels with finitely many negative squares on groups, and on the Hecke lattice
+`ℚ_{>0}` in particular, with the Weil kernel of `ζ` as the arithmetic instance.
+
+* **Structure.** The negative index of a kernel; hyperbolic pairs and the Krein–Langer index
+  formula; the exact index of a finite exponential sum without separation and of an absolutely
+  convergent Bohr series; finite index as
+  positive definite minus finite rank (Pontryagin decomposition),
+  attainment and subadditivity; closedness under pointwise limits; growth and self-upgrade; higher
+  moments as higher inertia; rotation, damping and coalescence.
+* **Arithmetic characters.** Logarithmic characters and the arithmetic index formula; Stepanov
+  compressions and the annihilation law.
+* **Local-to-global.** The aliasing law on one prime, the Nyquist law at bounded height, the
+  two-prime law, finitely many blind primes; the failure of locality on `ℤ²` and its arithmetic
+  repair.
+* **Calibration over `𝔽_q`.** The index of a curve trace kernel counts the outer Frobenius
+  eigenvalues; index zero is the square-root count; the golden curve on its tower and on the
+  lattice.
+* **The Weil kernel of `ζ`.** The Hecke orbit kernel of a zero configuration and its index law, on
+  `ℚ_{>0}`, on two primes and on `ℝ_{>0}`; the finite-index stratum, the Lindelöf law and the
+  Krein–Langer structure with its converse; height truncations and integer windows; every
+  receiver at every width bounded by the index; shrinking atoms reaching it; the quasi-analytic boundary of
+  the receivers; the energy
+  price of the index; heat collisions; the global law (the one-sided square-root count).
+* **Prime towers and selectivity.** Tower kernels and the selectivity battery; selection of `Λ` by
+  index zero; the one-prime law for `ζ`; local constituents and the pole principle; the margin
+  `2 log 2` as the width of the index-one window of the atomic kernel, with a twin-blind index and
+  a selective carrier.
+
+See `HeckeKreinToeplitz/README.md`.
 -/

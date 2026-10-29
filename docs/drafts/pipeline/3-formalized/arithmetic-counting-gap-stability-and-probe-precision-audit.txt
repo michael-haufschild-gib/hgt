@@ -1,0 +1,39 @@
+Source: formal/GaloisForLFunctions/ArithmeticCountingPositivity/ConductorMassBoundsGapLossAndProbePrecision.lean
+SHA256: 77d6b08a15de4bf68084a0df0a243cc3cff54697ddc43dca15afd7ebeb1451ea
+
+Scratch audit (session 84190, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean /tmp/acp-gap-stability-check.lean
+
+Canonical installed-source audit (session 36557, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean GaloisForLFunctions/ArithmeticCountingPositivity/ConductorMassBoundsGapLossAndProbePrecision.lean
+
+Actual transitive axiom output:
+'GaloisForLFunctions.ArithmeticCountingPositivity.hasSum_finiteFlipSpectralWeight' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipSecular_increment_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipGreatestGap_loss_mul_ceiling_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipGreatestGap_loss_sq_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.finiteFlipGreatestGap_insert_loss_sq_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.dyadicGreatestGap_prime_response_loss_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.ArithmeticCountingPositivity.exists_maximal_flip_with_almost_unchanged_dyadic_gap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+
+
+First required olean (session 36820, exit 0, no diagnostics):
+  cd formal
+  lake --old env lean -o .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/ConductorMassBoundsGapLossAndProbePrecision.olean -i .lake/build/lib/lean/GaloisForLFunctions/ArithmeticCountingPositivity/ConductorMassBoundsGapLossAndProbePrecision.ilean GaloisForLFunctions/ArithmeticCountingPositivity/ConductorMassBoundsGapLossAndProbePrecision.lean
+Required by the actual infinite conductor-mass draft.
