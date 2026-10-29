@@ -101,6 +101,18 @@ the high block at order `log N`; Hilbert's inequality pays the low/high Gamma cr
 and a Schur estimate pays the full prime shells and the pole cross terms. None of these
 operator bridges has yet been formalized here.
 
+A more direct coercivity candidate uses an exponentially tilted compact spline, whose
+Fourier transform has no real zeros. A triangular frequency window of width `B*N`,
+centered above `B*N`, has Fourier off-diagonal entries bounded by
+`4/(B*N*|log(m/n)|²)`. Integer log separation and the convergent inverse-square sum give
+a lower mean-square bound of order `N*sum|x_n|²` when `B` is a sufficiently large fixed
+constant. No sharp Hilbert inequality is needed. A positive Fourier minimum on this
+fixed rescaled band would then give Gamma coercivity of order `log N` on a top block.
+The lower prefix is separated; prime and pole mixed blocks can be paid by one Schur
+estimate, and the separated Gamma mixed block by the Hilbert matrix bound. This could
+produce the full prime-defect reserve needed for spectral exhaustion. The corpus already
+contains a boosted cubic spline (`splineProbe`), but this complete argument is unproved.
+
 ## Proof and Lean status
 
 `elevenTrialUpperMargin_neg` passed Lean with only `propext`, `Classical.choice`, and

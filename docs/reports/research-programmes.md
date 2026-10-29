@@ -50,3 +50,4 @@
 - formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/README.md
 - formal/GaloisForLFunctions/TransMetzlerWeilPositivity/README.md
 - formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/README.md
+- formal/GaloisForLFunctions/CompletedArithmeticForms/README.md

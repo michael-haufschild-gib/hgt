@@ -129,6 +129,18 @@ theorem divisorGramEnergy_eq_norms (Q : ℕ) (a : ℕ → ℝ) :
   simpa only [prefixPacket, Complex.real_smul] using
     primitivePrefixGram_quadratic_eq (Ico 1 Q) hm0 a id
 
+/-- The arithmetic energy is the full discrete bridge quadratic form. -/
+theorem divisorGramEnergy_eq_bridge {Q : ℕ} (hQ : 0 < Q) (a : ℕ → ℝ) :
+    divisorGramEnergy Q a = ∑ i ∈ Ico 1 Q, ∑ j ∈ Ico 1 Q,
+      a i * a j * ((Q : ℝ) * min (i : ℝ) j - (i : ℝ) * j) := by
+  unfold divisorGramEnergy
+  rw [sum_comm]
+  refine sum_congr rfl fun i hi => ?_
+  rw [sum_comm]
+  refine sum_congr rfl fun j hj => ?_
+  rw [← mul_sum, sum_nontrivial_divisors_primitivePrefixGram hQ
+    (mem_Ico.mp hi).2.le (mem_Ico.mp hj).2.le]
+
 private theorem unit_root_channel_identity (ζ z : ℂ) (hζ : ‖ζ‖ = 1) :
     ‖(1 - ζ) * z‖ ^ 2 + ‖(1 + ζ) * z‖ ^ 2 = 4 * ‖z‖ ^ 2 := by
   have hsq : Complex.normSq ζ = 1 := by
