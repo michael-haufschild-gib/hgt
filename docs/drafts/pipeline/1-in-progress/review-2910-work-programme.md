@@ -39,7 +39,7 @@ No row is complete merely because a related theorem already exists or a weaker c
 | W14 | Slack on [3/4,1), 70%/75% displacement thresholds, actual-Gram negative-part credit. | Complete: exact model thresholds and actual projected displacement credit, [proof and audit](../3-formalized/review-2910-w14-displacement-credit.md). |
 | W15 | Gabor-pinching slack optimization. | Open. |
 | W16 | Compact-time heat counts, 2/3-horizon constants, near-axis count tables. | Open. |
-| W17 | Localized heat-energy evolution from pair/exterior forces and forward simplicity. | Actual simple-time derivative, finite-packet flux, collision-continuous observables and global comparison proved; dissipation capstone and final audits remain. [Card](review-2910-w17-localized-heat-energy.md). |
+| W17 | Localized heat-energy evolution from pair/exterior forces and forward simplicity. | Complete: integrated full-count dissipation and upper right-slope bound through collisions and time zero; six leaf checks and fifteen standard-only axiom audits. [Proof and audit](../3-formalized/review-2910-w17-localized-heat-energy.md). |
 | W18 | Ordered Chebyshev block-pair integrals with certified ψ and VK bounds. | Open. |
 | W19 | Projections, Schur residuals, radicals, bounded-window transport constants. | Open. |
 | W20 | Fixed-conductor Ramanujan residual/Gram estimates; infinite-pattern greatest gaps. | Open. |
@@ -61,15 +61,3 @@ Initial worktree already contained CACT affine-unit-average changes, AKLT integr
 frontier/killed-route edits, and infinite-symmetry polar-divisor/chamber changes. These are not
 new work of this programme and must not be reverted or silently credited as verified.
 
-## Log
-
-- 2026-10-29 — Read attachment and source task table. Started current-source audit; no task
-  certified complete. Full scope remains W01–W31.
-- 2026-10-29 — W07 leaf passed direct check and four transitive-axiom audits; umbrella wired.
-  W01 optimal convex use of the existing bounds and W13 general census threshold are written,
-  awaiting checks. Remaining rows retain their full original scope.
-- 2026-10-29 — W13 passed direct leaf check and three standard-only transitive-axiom audits;
-  root umbrella import wired. General threshold theorem specializes to 70% with coefficient
-  `HD(1)−2/5−1/A−ε`.
-- 2026-10-29 — W14's two leaves passed direct checks and seven standard-only axiom audits;
-  both umbrella imports wired. Actual credit may vanish; no census gain is inferred.

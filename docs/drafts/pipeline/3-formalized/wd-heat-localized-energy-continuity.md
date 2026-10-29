@@ -2,7 +2,7 @@
 
 - **ID:** wd-heat-localized-energy-continuity
 - **Stage:** 3-formalized
-- **Source:** [Localized heat energy](../1-in-progress/wd-heat-localized-energy-flux.md)
+- **Source:** [Localized heat energy](wd-heat-localized-energy-flux.md)
 - **Lean:** `RHTower/Heat/HeatZeroSumContinuity.lean`
 - **Declaration:** `RHTower.DeBruijn.continuousOn_heatLocalizedVerticalEnergy`
 

@@ -52,6 +52,14 @@ Dirichlet variation of its coupling vector, including the two boundary differenc
 row size is absent from this exact cost. Identifying and estimating the actual complete-Weil
 coupling vector remains a separate arithmetic theorem.
 
+For cumulative covariance `C_T(c)=Σ_(1≤n≤T)(Σ_(j≤n)c_j)²/(n(n+1))`, the substitution
+`a_j=c_j/j`, `Q=T+1` gives the unconditional dual bound
+
+`2Σ_j c_j b_j-C_T(c) ≤ Σ_(0≤j≤T) (w_(j+1)-w_j)²`,
+
+where `w_j=j b_j` for `1≤j≤T` and `w_0=w_(T+1)=0`. The two conductor factors cancel
+exactly. The cost is the local variation of the weighted coupling, with no omitted endpoint.
+
 ## Dependencies
 
 - `sum_nontrivial_divisors_primitivePrefixGram`.

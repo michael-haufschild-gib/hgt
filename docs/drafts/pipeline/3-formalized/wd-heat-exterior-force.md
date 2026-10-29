@@ -2,7 +2,7 @@
 
 - **ID:** wd-heat-exterior-force
 - **Stage:** 3-formalized
-- **Source:** [Localized heat energy](../1-in-progress/wd-heat-localized-energy-flux.md)
+- **Source:** [Localized heat energy](wd-heat-localized-energy-flux.md)
 - **Lean:** `RHTower/Heat/HeatExteriorForce.lean`
 - **Declaration:** `RHTower.DeBruijn.exists_uniform_riemannHeat_exterior_force`
 

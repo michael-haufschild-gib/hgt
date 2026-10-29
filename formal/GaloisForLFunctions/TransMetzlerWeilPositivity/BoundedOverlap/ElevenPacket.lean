@@ -41,6 +41,10 @@ theorem elevenPacketProfile_eq {n : ℕ} (hn : 0 < n) :
   have hs10 : Real.sqrt (10 : ℝ) ≠ 0 := by positivity
   have hs110 : Real.sqrt (110 : ℝ) ≠ 0 := by positivity
   have hsn : Real.sqrt (n : ℝ) ≠ 0 := by positivity
+  have ht11 : Nat.totient 11 = 10 := by
+    simpa using Nat.totient_prime (by norm_num : Nat.Prime 11)
+  have ht121 : Nat.totient 121 = 110 := by
+    simpa using Nat.totient_prime_pow_succ (by norm_num : Nat.Prime 11) 1
   norm_num only [Nat.cast_ofNat] at hex
   simp only [ramanujanPacketProfile, elevenPacketConductors, sum_insert
     (by norm_num : (1 : ℕ) ∉ ({11, 121} : Finset ℕ)), sum_insert
@@ -49,7 +53,7 @@ theorem elevenPacketProfile_eq {n : ℕ} (hn : 0 < n) :
   rw [normalizedRamanujanMode_eq_coefficient (by norm_num : 0 < (1 : ℕ)),
     normalizedRamanujanMode_eq_coefficient (by norm_num : 0 < (11 : ℕ)),
     normalizedRamanujanMode_eq_coefficient (by norm_num : 0 < (121 : ℕ)), hex]
-  norm_num
+  norm_num [ht11, ht121]
   field_simp [hs10, hs110, hsn]
   ring
 

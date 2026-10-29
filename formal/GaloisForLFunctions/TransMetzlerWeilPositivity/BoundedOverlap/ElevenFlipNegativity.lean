@@ -35,11 +35,18 @@ theorem tendsto_elevenUpperEnergy :
   have h := tendsto_elevenTrial_weil.add
     ((tendsto_primeSquareFlipBound (by norm_num : Nat.Prime 11)).const_mul
       (∫ u, transMetzlerProfile u ^ 2))
-  convert h using 1
-  · rfl
-  · congr 1
+  have heq :
+      (∫ u, transMetzlerProfile u ^ 2) *
+        (completeWeilSelfFinitePart transMetzlerProfile (99 / 100) + 4 * Real.log 11 / 11 +
+          completeWeilPoleShift transMetzlerProfile (99 / 100) * (101 / 121 : ℝ) ^ 2) +
+        (∫ u, transMetzlerProfile u ^ 2) *
+          (-4 * Real.log (11 : ℕ) / (11 : ℕ) + 4 * Real.log (11 : ℕ) *
+            (2 / ((11 : ℕ) : ℝ) ^ 3 + 1 / (((11 : ℕ) : ℝ) ^ 2 * (((11 : ℕ) : ℝ) - 1)))) =
+      (∫ u, transMetzlerProfile u ^ 2) * elevenTrialUpperMargin := by
     norm_num only [Nat.cast_ofNat, elevenTrialUpperMargin, elevenPrimeTailCost]
     ring
+  rw [heq] at h
+  exact h
 
 theorem eventually_elevenTrial_le_upper :
     ∀ᶠ N : ℕ in atTop,

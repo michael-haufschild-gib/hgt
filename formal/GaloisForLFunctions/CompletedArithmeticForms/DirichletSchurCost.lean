@@ -139,7 +139,8 @@ theorem bridgePotential_inverse {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ)
   · rw [bridgePotential_endpoint, hbQ]
   · intro i hi
     rw [bridgePotential_dirichletDifference Q _ hi]
-    exact mul_div_cancel₀ _ (by exact_mod_cast hQ.ne')
+    have hQr : (Q : ℝ) ≠ 0 := by exact_mod_cast hQ.ne'
+    field_simp
 
 private theorem finite_green_identity (b : ℕ → ℝ) (N : ℕ) :
     dirichletEnergy (N + 1) b =
@@ -163,5 +164,132 @@ theorem sum_mul_dirichletDifference {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ)
   have hset : Ico 1 (N + 1) = Icc 1 N := by ext i; simp
   rw [hset, finite_green_identity]
   simp only [hb0, hbQ, zero_pow, zero_mul, mul_zero, add_zero, sub_zero]
+
+/-- The quadratic arithmetic form pairs coefficients with their exact potential. -/
+theorem divisorGramEnergy_eq_sum_potential {Q : ℕ} (hQ : 0 < Q) (a : ℕ → ℝ) :
+    divisorGramEnergy Q a = ∑ i ∈ Ico 1 Q, a i * bridgePotential Q a i := by
+  rw [divisorGramEnergy_eq_bridge hQ]
+  simp only [bridgePotential, bridgeKernel, Nat.cast_min, mul_sum]
+  refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+  ring
+
+theorem bridgePotential_sub (Q : ℕ) (a b : ℕ → ℝ) (i : ℕ) :
+    bridgePotential Q (fun j => a j - b j) i =
+      bridgePotential Q a i - bridgePotential Q b i := by
+  simp only [bridgePotential, mul_sub, sum_sub_distrib]
+
+theorem sum_mul_bridgePotential_comm (Q : ℕ) (a b : ℕ → ℝ) :
+    (∑ i ∈ Ico 1 Q, a i * bridgePotential Q b i) =
+      ∑ i ∈ Ico 1 Q, b i * bridgePotential Q a i := by
+  simp only [bridgePotential, mul_sum]
+  rw [sum_comm]
+  refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+  rw [bridgeKernel_symm Q j i]
+  ring
+
+theorem divisorGramEnergy_sub {Q : ℕ} (hQ : 0 < Q) (a b : ℕ → ℝ) :
+    divisorGramEnergy Q (fun i => a i - b i) =
+      divisorGramEnergy Q a - 2 * (∑ i ∈ Ico 1 Q, a i * bridgePotential Q b i) +
+        divisorGramEnergy Q b := by
+  simp only [divisorGramEnergy_eq_sum_potential hQ, bridgePotential_sub]
+  have hpoint (i : ℕ) : (a i - b i) * (bridgePotential Q a i - bridgePotential Q b i) =
+      a i * bridgePotential Q a i - a i * bridgePotential Q b i -
+        b i * bridgePotential Q a i + b i * bridgePotential Q b i := by ring
+  simp_rw [hpoint]
+  rw [sum_add_distrib, sum_sub_distrib, sum_sub_distrib,
+    sum_mul_bridgePotential_comm Q b a]
+  ring
+
+private theorem inverse_energy {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ)
+    (hb0 : b 0 = 0) (hbQ : b Q = 0) :
+    divisorGramEnergy Q (fun j => dirichletDifference b j / Q) = dirichletEnergy Q b / Q := by
+  rw [divisorGramEnergy_eq_sum_potential hQ]
+  calc
+    _ = ∑ i ∈ Ico 1 Q, (b i * dirichletDifference b i) / Q := by
+      refine sum_congr rfl fun i hi => ?_
+      rw [bridgePotential_inverse hQ b hb0 hbQ i (mem_Ico.mp hi).2.le]
+      ring
+    _ = (∑ i ∈ Ico 1 Q, b i * dirichletDifference b i) / Q := by rw [sum_div]
+    _ = _ := by rw [sum_mul_dirichletDifference hQ b hb0 hbQ]
+
+/-- Zero extension records the boundary cost of an arbitrary interior coupling. -/
+def interiorExtension (Q : ℕ) (b : ℕ → ℝ) (i : ℕ) : ℝ :=
+  if i ∈ Ico 1 Q then b i else 0
+
+/-- The exact coefficient vector absorbing a linear coupling to the arithmetic Gram. -/
+def bridgeInverse (Q : ℕ) (b : ℕ → ℝ) (i : ℕ) : ℝ :=
+  dirichletDifference (interiorExtension Q b) i / Q
+
+/-- Exact Schur cost, measured by local variation rather than absolute row size. -/
+def bridgeSchurCost (Q : ℕ) (b : ℕ → ℝ) : ℝ :=
+  dirichletEnergy Q (interiorExtension Q b) / Q
+
+theorem dirichletEnergy_mul (Q : ℕ) (r : ℝ) (b : ℕ → ℝ) :
+    dirichletEnergy Q (fun i => r * b i) = r ^ 2 * dirichletEnergy Q b := by
+  simp only [dirichletEnergy, ← mul_sub, mul_pow, mul_sum]
+
+theorem interiorExtension_mul (Q : ℕ) (r : ℝ) (b : ℕ → ℝ) :
+    interiorExtension Q (fun i => r * b i) = fun i => r * interiorExtension Q b i := by
+  funext i
+  simp only [interiorExtension, mul_ite, mul_zero]
+
+theorem bridgeSchurCost_mul (Q : ℕ) (r : ℝ) (b : ℕ → ℝ) :
+    bridgeSchurCost Q (fun i => r * b i) = r ^ 2 * bridgeSchurCost Q b := by
+  rw [bridgeSchurCost, interiorExtension_mul, dirichletEnergy_mul, bridgeSchurCost]
+  ring
+
+theorem bridgePotential_bridgeInverse {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ)
+    {i : ℕ} (hi : i ∈ Ico 1 Q) :
+    bridgePotential Q (bridgeInverse Q b) i = b i := by
+  have h := bridgePotential_inverse hQ (interiorExtension Q b)
+    (by simp [interiorExtension]) (by simp [interiorExtension]) i (mem_Ico.mp hi).2.le
+  simpa only [bridgeInverse, interiorExtension, if_pos hi] using h
+
+theorem divisorGramEnergy_bridgeInverse {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ) :
+    divisorGramEnergy Q (bridgeInverse Q b) = bridgeSchurCost Q b :=
+  inverse_energy hQ (interiorExtension Q b)
+    (by simp [interiorExtension]) (by simp [interiorExtension])
+
+/-- The exact complete-square identity pays the whole mixed coupling once. -/
+theorem bridgeSchur_completion {Q : ℕ} (hQ : 0 < Q) (a b : ℕ → ℝ) :
+    divisorGramEnergy Q a - 2 * (∑ i ∈ Ico 1 Q, a i * b i) + bridgeSchurCost Q b =
+      divisorGramEnergy Q (fun i => a i - bridgeInverse Q b i) := by
+  rw [divisorGramEnergy_sub hQ, divisorGramEnergy_bridgeInverse hQ]
+  have hp : (∑ i ∈ Ico 1 Q, a i * bridgePotential Q (bridgeInverse Q b) i) =
+      ∑ i ∈ Ico 1 Q, a i * b i :=
+    sum_congr rfl fun i hi => by rw [bridgePotential_bridgeInverse hQ b hi]
+  rw [hp]
+
+/-- The arithmetic Schur bound retains every off-diagonal and endpoint contribution. -/
+theorem bridgeSchur_bound {Q : ℕ} (hQ : 0 < Q) (a b : ℕ → ℝ) :
+    2 * (∑ i ∈ Ico 1 Q, a i * b i) - divisorGramEnergy Q a ≤ bridgeSchurCost Q b := by
+  have h := divisorGramEnergy_nonneg Q (fun i => a i - bridgeInverse Q b i)
+  rw [← bridgeSchur_completion hQ] at h
+  linarith only [h]
+
+/-- Equality forces the exact inverse coefficient on every interior coordinate. -/
+theorem bridgeSchur_equality_iff {Q : ℕ} (hQ : 0 < Q) (a b : ℕ → ℝ) :
+    2 * (∑ i ∈ Ico 1 Q, a i * b i) - divisorGramEnergy Q a = bridgeSchurCost Q b ↔
+      ∀ i ∈ Ico 1 Q, a i = bridgeInverse Q b i := by
+  have h := bridgeSchur_completion hQ a b
+  have he : (2 * (∑ i ∈ Ico 1 Q, a i * b i) - divisorGramEnergy Q a = bridgeSchurCost Q b) ↔
+      divisorGramEnergy Q (fun i => a i - bridgeInverse Q b i) = 0 := by
+    constructor <;> intro heq <;> linarith only [h, heq]
+  rw [he, divisorGramEnergy_eq_zero_iff hQ]
+  simp only [sub_eq_zero]
+
+/-- The cost is attained, so no smaller uniform payment for the same coupling is possible. -/
+theorem bridgeSchurCost_isGreatest {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ) :
+    IsGreatest {r : ℝ | ∃ a : ℕ → ℝ,
+      r = 2 * (∑ i ∈ Ico 1 Q, a i * b i) - divisorGramEnergy Q a} (bridgeSchurCost Q b) := by
+  constructor
+  · refine ⟨bridgeInverse Q b, ?_⟩
+    exact ((bridgeSchur_equality_iff hQ _ b).mpr fun _ _ => rfl).symm
+  · rintro r ⟨a, rfl⟩
+    exact bridgeSchur_bound hQ a b
+
+#print axioms bridgePotential_inverse
+#print axioms bridgeSchur_completion
+#print axioms bridgeSchurCost_isGreatest
 
 end GaloisForLFunctions.CompletedArithmeticForms

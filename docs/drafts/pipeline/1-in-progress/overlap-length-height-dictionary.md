@@ -47,6 +47,8 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Audit pending: `TheAtomicApertureRetainsTheProfileWidth` |
 | Paid coordinate prefix at overlap `cM/N≤1`; exact Schur reduction retaining every mixed entry | Audit pending: `APositivePrefixGivesTheExactSchurReduction` |
 | Gap `k` first becomes geometrically eligible at `N log(1+k/N)`, tending to `k` | Checked, axiom-audited, umbrella wired: `ExactHigherShellThresholds` |
+| Every finite plateau overlap Gram is strictly positive at every positive width | Audit pending: `ThePlateauOverlapGramIsNondegenerate` |
+| Growing overlap destroys every uniform lower comparison with coefficient mass | Audit pending: `GrowingOverlapHasNoUniformGramFloor` |
 
 Here `δ_*=1/107520002048050000`; the existing certified floor is
 `1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of the certified estimates,
@@ -57,6 +59,8 @@ The Steklov receiver is not yet dependency-closed: direct compilation of
 `SuperGevreyCriticalGrowth` fails in its moving-average construction and synthesis estimates.
 Its printed receiver audit therefore contains `sorryAx` from elaboration errors. The proposed
 length-height transport cannot be certified until this dependency is repaired and re-audited.
+The synthesis remainder also omitted the first derivative weight `dcLogWeight 1=(log 4)^2`;
+the corrected remainder retains that constant. Its limiting estimates require verification.
 
 Remaining mathematical obligations: complete divisor-shell row decomposition; the self-energy loss along
 growing overlap; whether the full matrix admits the proposed additive/shell Schur decomposition.

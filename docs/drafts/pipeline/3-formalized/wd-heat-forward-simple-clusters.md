@@ -2,7 +2,7 @@
 
 - **ID:** wd-heat-forward-simple-clusters
 - **Stage:** 3-formalized
-- **Source:** [Localized heat energy](../1-in-progress/wd-heat-localized-energy-flux.md)
+- **Source:** [Localized heat energy](wd-heat-localized-energy-flux.md)
 - **Lean:** `RHTower/Heat/HeatForwardSimpleZeros.lean`
 - **Declaration:** `RHTower.DeBruijn.exists_ball_simple_riemannHeat_zeros_forward`
 

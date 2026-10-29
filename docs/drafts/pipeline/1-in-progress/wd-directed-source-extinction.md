@@ -396,48 +396,27 @@ arithmetic upper-count approach.
   `riemannHeat`; it prevents using a universal depth-count law as its
   missing premise.
 
-A useful transport proof must therefore retain cluster interactions and
-derive a uniform arithmetic flux or absorption estimate for the actual
-heat function. No such estimate was proved in this investigation. No
-Lean source was changed, and existing modules were not recompiled.
+### Localized heat evolution and remaining absorption
 
-### Uniform exterior-force input
+The actual heat function has a collision-compatible local flux bound. For a
+nonnegative cutoff w supported on [−1,1], with w≤W, |w′|≤V and Lip(w′)≤M,
+write E_w for its multiplicity-weighted squared-height energy and N_w for its
+weighted nonreal count. For X≥X₀, 0≤a≤b≤1/8 and b log X≤1,
 
-The subsequent localized-energy investigation has one new unconditional
-analytic input: [the actual exterior-force theorem](../3-formalized/wd-heat-exterior-force.md).
-`RHTower.DeBruijn.exists_uniform_riemannHeat_exterior_force` extracts all
-actual heat zeros in `|Re z-X|<=2`, with full multiplicity and total
-degree `O(log X)`. On the inner rectangle its exterior field satisfies
-`|Q|, |Q'| <= C log X` and `|Im Q(z)| <= C log X |Im z|`, uniformly for
-`0<=t<=1/8`, `t log X<=1`, including time zero. No spacing or simplicity
-assumption is used. The final plain Lean check passed without warnings;
-the module is wired into the umbrella.
+`E_w(b)−E_w(a)+2∫_a^b N_w≤(2M+2V+4W) C log X ∫_a^b E_outer`.
 
-This pays external vertical drift by squared-height energy. It does not
-yet prove the full localized energy inequality or an upper zero count.
-[The active flux card](wd-heat-localized-energy-flux.md) records the
-pairwise cutoff calculation and the next collision-passage target.
-The arithmetic upper sign, near-axis extinction, and WD closure remain
-open.
+The outer cutoff equals one on the radius-two packet. The upper right slope
+retains the full initial N_w even at collisions and time zero. Both actual
+capstones, the dependency-closed proof, and six final leaf checks are recorded
+on the [completed flux card](../3-formalized/wd-heat-localized-energy-flux.md).
 
-The collision-passage investigation also proves
-`exists_ball_simple_riemannHeat_zeros_forward`: every sufficiently small
-isolating disk about an arbitrary complex center contains only simple
-zeros for all sufficiently close strictly later heat times. The proof
-uses the forward Hermite model and exact local multiplicity conservation,
-without assuming that the collision center is real. The
-[formalized cluster input](../3-formalized/wd-heat-forward-simple-clusters.md)
-passed its final plain Lean check without warnings. Weighted zero-sum
-continuity and the integrated local energy estimate remain to be proved.
+The actual exterior field has |Q|, |Q′|≤C log X and
+|Im Q(z)|≤C log X |Im z|. Pair symmetrization cancels inverse-gap singularities;
+conjugate pairs supply the negative count. Actual simple branches identify the
+derivative. Forward simplicity and continuous truncated counts integrate it
+through arbitrary collisions; dominated convergence recovers the full count.
+No uniform zero separation or finite collision count is assumed.
 
-The subsequent continuity theorem,
-`continuousOn_heatLocalizedVerticalEnergy`, now proves continuity of the
-actual multiplicity-weighted localized vertical energy on all nonnegative
-times, including zero. Disjoint isolating disks and preserved total
-multiplicity control collisions; the critical strip and compact cutoff
-prove the finite-support identities. The
-[formalized continuity input](../3-formalized/wd-heat-localized-energy-continuity.md)
-passed its final plain check without warnings. Pairwise cutoff dissipation
-is also formalized in `RHTower/Heat/LocalizedHeatPairForce.lean`. The full
-actual derivative/integrated inequality and arithmetic upper sign remain
-open.
+WD still requires arithmetic absorption of the outer-energy error and control
+of the sum over heights. The local estimate alone gives neither a uniform
+small-time nonreal count nor near-axis extinction or the Ward upper sign.

@@ -73,3 +73,9 @@ Next exact specialization: identify the unit mean of actual primitive-phase pref
 ## Moving windows and variation
 
 The finite-part Mertens limit should also provide one horizon controlling every pair of endpoints above it. The existing `RHTower.Sieve.abs_sum_mul_le_of_bounded_partial_bv` can then transport this bound to envelopes varying with prime height, with an explicit endpoint-plus-variation cost. This is a proposed next theorem, not a proved full-Weil comparison.
+
+## Closure scope
+
+User requested completion of existing Lean drafts and paper proofs, followed by stopping. No further research branches are being opened. The existing finite/arithmetic and synthesis drafts will receive direct Lean audits; conjectural moving-window, Fourier and real-radical extensions remain explicitly unproved.
+
+The source-sign check is decisive for interpreting this batch: `TransMetzlerDecomposition` subtracts the actual `nonRatioForm` from the complete form. A lower bound for an auxiliary positive prime Gram is therefore insufficient. The unresolved theorem must give an upper bound for the adverse actual prime contribution, or a joint lower bound after combining it with the retained Gamma and polar terms. No such theorem has been obtained in this batch.

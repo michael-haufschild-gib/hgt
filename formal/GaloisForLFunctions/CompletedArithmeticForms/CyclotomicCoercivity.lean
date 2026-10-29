@@ -126,7 +126,7 @@ theorem divisorGramEnergy_eq_norms (Q : ℕ) (a : ℕ → ℝ) :
   unfold divisorGramEnergy
   refine sum_congr rfl fun m hm => ?_
   have hm0 := Nat.pos_of_mem_divisors (mem_erase.mp hm).2
-  simpa only [prefixPacket, Complex.real_smul] using
+  simpa only [prefixPacket, Complex.real_smul, id_eq] using
     primitivePrefixGram_quadratic_eq (Ico 1 Q) hm0 a id
 
 /-- The arithmetic energy is the full discrete bridge quadratic form. -/
@@ -199,7 +199,9 @@ theorem divisorGramEnergy_eq_zero_iff {Q : ℕ} (hQ : 0 < Q) (a : ℕ → ℝ) :
     have h := divisorGramEnergy_coercive hQ a
     rw [hzero, mul_zero] at h
     have hQr : (0 : ℝ) < Q := by exact_mod_cast hQ
-    have hmass := (mul_nonpos_iff_of_pos_left hQr).mp h
+    have hmass : (∑ j ∈ Ico 1 Q, a j) ^ 2 + (∑ j ∈ Ico 1 Q, a j ^ 2) ≤ 0 := by
+      by_contra hn
+      exact (not_lt_of_ge h) (mul_pos hQr (lt_of_not_ge hn))
     have hsum : (∑ j ∈ Ico 1 Q, a j ^ 2) ≤ 0 := by
       linarith only [hmass, sq_nonneg (∑ j ∈ Ico 1 Q, a j)]
     have hiSq := (single_le_sum (fun j _ => sq_nonneg (a j)) hi).trans hsum

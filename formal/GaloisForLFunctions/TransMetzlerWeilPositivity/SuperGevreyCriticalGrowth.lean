@@ -157,7 +157,8 @@ theorem abs_steklovAvg_sub_self_le {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) {
     rw [intervalIntegral.integral_const, smul_eq_mul, show a - (-a) = 2 * a by ring]
     field_simp [ha.ne']
   have heq : steklovAvg a f x - f x = (2 * a)⁻¹ * ∫ t in (-a)..a, (f (x + t) - f x) := by
-    rw [intervalIntegral.integral_sub
+    rw [intervalIntegral.integral_sub (f := fun t : ℝ => f (x + t))
+      (g := fun _ : ℝ => f x) (μ := volume)
       ((hf.continuous.comp (continuous_const.add continuous_id)).intervalIntegrable (-a) a)
       intervalIntegrable_const, mul_sub, hconst]
     rfl
@@ -225,7 +226,8 @@ theorem integral_steklovAvg {f : ℝ → ℝ} {R a : ℝ} (hf : Continuous f) (h
     fun x => steklovAvg_eq_primitive_sub hf a x
   simp_rw [heq]
   rw [intervalIntegral.integral_const_mul,
-    intervalIntegral.integral_sub
+    intervalIntegral.integral_sub (f := fun x : ℝ => F (x + a))
+      (g := fun x : ℝ => F (x - a)) (μ := volume)
       ((hFc.comp (continuous_id.add continuous_const)).intervalIntegrable (-L) L)
       ((hFc.comp (continuous_id.sub continuous_const)).intervalIntegrable (-L) L),
     intervalIntegral.integral_comp_add_right F a,
@@ -297,7 +299,7 @@ private def steklovTel (m : ℕ) : ℝ :=
 
 theorem steklovRadius_pos (m : ℕ) : 0 < steklovRadius m := by
   unfold steklovRadius
-  have hm3 : (1 : ℝ) < (m : ℝ) + 3 := by linarith only [Nat.cast_nonneg (R := ℝ) m]
+  have hm3 : (1 : ℝ) < (m : ℝ) + 3 := by linarith only [Nat.cast_nonneg (α := ℝ) m]
   have hlog : 0 < Real.log ((m : ℝ) + 3) := Real.log_pos hm3
   positivity
 
@@ -341,19 +343,26 @@ theorem sum_Ico_steklovRadius_le {K M : ℕ} (hKM : K ≤ M) :
   calc ∑ m ∈ Finset.Ico K M, steklovRadius m
       ≤ ∑ m ∈ Finset.Ico K M, (steklovTel m - steklovTel (m + 1)) :=
         Finset.sum_le_sum fun m _ => steklovRadius_le_tel_sub m
-    _ = steklovTel K - steklovTel M := Finset.sum_Ico_sub_top hKM steklovTel
+    _ = steklovTel K - steklovTel M := by
+        calc ∑ m ∈ Finset.Ico K M, (steklovTel m - steklovTel (m + 1)) =
+            ∑ m ∈ Finset.Ico K M, ((-steklovTel (m + 1)) - (-steklovTel m)) := by
+              refine Finset.sum_congr rfl fun m _ => ?_
+              ring
+          _ = -steklovTel M - (-steklovTel K) :=
+            Finset.sum_Ico_sub (fun m => -steklovTel m) hKM
+          _ = steklovTel K - steklovTel M := by ring
     _ ≤ steklovTel K := by
         have hpos : 0 ≤ steklovTel M := by
           unfold steklovTel
           have : 0 < Real.log ((M : ℝ) + 2) :=
-            Real.log_pos (by linarith only [Nat.cast_nonneg (R := ℝ) M])
+            Real.log_pos (by linarith only [Nat.cast_nonneg (α := ℝ) M])
           positivity
         linarith
     _ = 1 / (4 * Real.log ((K : ℝ) + 2)) := rfl
 
 theorem sum_range_steklovRadius_le_half (M : ℕ) :
     ∑ m ∈ Finset.range M, steklovRadius m ≤ 1 / 2 := by
-  rw [← Finset.Ico_zero_eq_range]
+  rw [← Nat.Ico_zero_eq_range]
   refine (sum_Ico_steklovRadius_le (Nat.zero_le M)).trans ?_
   simp only [Nat.cast_zero, zero_add]
   have hl2 : (1 / 2 : ℝ) < Real.log 2 := by
@@ -373,7 +382,7 @@ theorem dcLogWeight_pos (q : ℕ) : 0 < dcLogWeight q := by
   unfold dcLogWeight
   have hfac : (0 : ℝ) < q.factorial := by exact_mod_cast Nat.factorial_pos q
   have hlog : 0 < Real.log ((q : ℝ) + 3) :=
-    Real.log_pos (by linarith only [Nat.cast_nonneg (R := ℝ) q])
+    Real.log_pos (by linarith only [Nat.cast_nonneg (α := ℝ) q])
   positivity
 
 private theorem one_le_log_add_three (q : ℕ) : 1 ≤ Real.log ((q : ℝ) + 3) := by
@@ -752,8 +761,9 @@ theorem integral_abs_iteratedDeriv_logTower_le_dcLogWeight {H : ℝ → ℝ} (hH
       _ ≤ C * dcLogWeight (j + (p + 1)) * X ^ (j + 1) * P +
             ((p : ℝ) + 1) * (C * dcLogWeight (j + (p + 1)) * X ^ j * P) := by
           refine add_le_add h1 (mul_le_mul_of_nonneg_left (h2.trans ?_) (by positivity))
-          exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmono hC)
-            (mul_nonneg (pow_nonneg hX j) hP)
+          exact mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmono hC)
+              (pow_nonneg hX j)) hP
       _ = C * dcLogWeight (j + (p + 1)) * X ^ j * (P * (X + ((p : ℝ) + 1))) := by ring
 
 theorem integral_abs_iteratedDeriv_mul_le_dcLogWeight {F G : ℝ → ℝ} (hF : ContDiff ℝ ∞ F)
@@ -866,13 +876,14 @@ theorem abs_dcLogSynth_sub_le {φ F : ℝ → ℝ} {R M b A B : ℝ}
         mul_le_mul hB1 (mul_le_mul_of_nonneg_left hT hnp) (mul_nonneg hnp hT0) zero_le_one
     _ = M * A * (((p : ℕ) : ℝ) * Real.log (((p : ℕ) : ℝ) + 3) ^ 2 *
           (X + (p : ℕ)) / n₀) ^ p := by
-        rw [div_pow, mul_pow, div_eq_mul_inv _ ((n₀ : ℝ) ^ p), ← inv_pow]
+        simp only [div_pow, mul_pow, div_eq_mul_inv, inv_pow]
         ring
 
 /-- Supremum error of the logarithmic Denjoy–Carleman synthesis of order `2m + 2`. -/
 def dcSynthErr (M b A B k A0 : ℝ) (m n₀ : ℕ) : ℝ :=
   M * A * (((2 * m + 2 : ℕ) : ℝ) * Real.log (((2 * m + 2 : ℕ) : ℝ) + 3) ^ 2 *
-    (b + B * k + (2 * m + 2 : ℕ)) / n₀) ^ (2 * m + 2) + M * b * (1 / k) * A0
+    (b + B * k + (2 * m + 2 : ℕ)) / n₀) ^ (2 * m + 2) +
+      M * b * dcLogWeight 1 * (1 / k) * A0
 
 /-- Quadrature ratio for the logarithmic Denjoy–Carleman synthesis at `m = gevOrder k`. -/
 def dcSynthRatio (b Bφ k : ℝ) (n₀ : ℕ) : ℝ :=
@@ -992,8 +1003,10 @@ private theorem dcSynthRatio_le {b Bφ : ℝ} (hb : 0 ≤ b) (hBφ : 0 ≤ Bφ) 
     rw [show (4 : ℝ) = 3 + 1 by norm_num, Real.rpow_add_one hL0.ne']
   set Kq := ((n * B : ℕ) : ℝ) / k / W
   have hB0 : (0 : ℝ) < B := by
-    rcases Nat.eq_zero_or_pos B with rfl | hBpos
-    · simp at hK1; linarith
+    rcases Nat.eq_zero_or_pos B with hBzero | hBpos
+    · have hknonpos : k ≤ 0 := by
+        simpa only [hBzero, Nat.mul_zero, Nat.cast_zero] using hkN
+      exact False.elim ((not_le_of_gt hk0) hknonpos)
     · exact_mod_cast hBpos
   have hkn : k / n = B * Kq⁻¹ * W⁻¹ := by
     dsimp only [Kq]; push_cast; field_simp [hk0.ne', hn0.ne', hW0.ne', hB0.ne']
@@ -1062,13 +1075,14 @@ private theorem tendsto_dcLogSynthesis {κ : ℕ → ℝ} (hκ : OverlapGrowthSu
     tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hup
       (hev.mono fun n h => dcSynthRatio_nonneg hb hBφ (by linarith [h.1]) n)
       (hev.mono fun n ⟨hk1, hn, hℓ9, hll1, hK1⟩ => dcSynthRatio_le hb hBφ hk1 hn hℓ9 hll1 hK1)
-  have hρ1 := hρ.eventually (Set.Iic_mem_nhds (Real.exp_pos (-1)))
+  have hρ1 := hρ.eventually (Iic_mem_nhds (Real.exp_pos (-1)))
   have he₁ : ∀ᶠ n : ℕ in atTop,
       0 ≤ M * A * dcSynthRatio b Bφ (κ (n * B)) n ^ (2 * gevOrder (κ (n * B)) + 2) ∧
       M * A * dcSynthRatio b Bφ (κ (n * B)) n ^ (2 * gevOrder (κ (n * B)) + 2) ≤
         M * A * (1 / Real.log (κ (n * B)) ^ 2) := by
     filter_upwards [hev, hρ1] with n ⟨hk1, _, hℓ9, _, _⟩ hρn
-    have hρ0 := dcSynthRatio_nonneg hb hBφ (by linarith) n
+    have hρ0 := dcSynthRatio_nonneg (k := κ (n * B)) hb hBφ
+      (by linarith only [hk1]) n
     refine ⟨mul_nonneg hMA (pow_nonneg hρ0 _), mul_le_mul_of_nonneg_left ?_ hMA⟩
     have hlogk : 1 < Real.log (κ (n * B)) := by
       by_contra h; push Not at h
@@ -1104,11 +1118,11 @@ private theorem tendsto_dcLogSynthesis {κ : ℕ → ℝ} (hκ : OverlapGrowthSu
       (he₁.mono fun n h => h.1) (he₁.mono fun n h => h.2)
   have herr_eq : ∀ n, dcSynthErr M b A Bφ (κ (n * B)) A0 (gevOrder (κ (n * B))) n =
       M * A * dcSynthRatio b Bφ (κ (n * B)) n ^ (2 * gevOrder (κ (n * B)) + 2) +
-        M * b * (1 / κ (n * B)) * A0 := fun _ => rfl
+        M * b * dcLogWeight 1 * (1 / κ (n * B)) * A0 := fun _ => rfl
   have he : Tendsto (fun n : ℕ => dcSynthErr M b A Bφ (κ (n * B)) A0 (gevOrder (κ (n * B))) n)
       atTop (𝓝 0) := by
     simp_rw [herr_eq]
-    simpa using he₁t.add ((hinv.const_mul (M * b)).mul_const A0)
+    simpa using he₁t.add ((hinv.const_mul (M * b * dcLogWeight 1)).mul_const A0)
   refine ⟨he, ?_⟩
   have hLE : Tendsto (fun n => Real.log (κ (n * B)) *
       dcSynthErr M b A Bφ (κ (n * B)) A0 (gevOrder (κ (n * B))) n ^ 2) atTop (𝓝 0) := by
@@ -1314,7 +1328,7 @@ theorem overlapGrowthSuperGevrey_of_two_lt {β : ℝ} (hβ : 2 < β) :
   dsimp only [Function.comp_def] at hκll2 hκlll1
   set cN := superGevreyRatio β N
   have hcN1 : 1 ≤ cN := by
-    unfold superGevreyRatio
+    dsimp only [cN, superGevreyRatio]
     have : 1 ≤ Real.log (Real.log (Real.log N)) ^ β :=
       Real.one_le_rpow (by linarith) hβ0.le
     nlinarith
@@ -1323,11 +1337,7 @@ theorem overlapGrowthSuperGevrey_of_two_lt {β : ℝ} (hβ : 2 < β) :
   have hl_le : Real.log ((N : ℝ) / cN) ≤ Real.log N :=
     Real.log_le_log (by linarith) hκ_le_N
   have hll_le : Real.log (Real.log ((N : ℝ) / cN)) ≤ Real.log (Real.log N) :=
-    Real.log_le_log (by
-      by_contra h; push Not at h
-      have : Real.log (Real.log ((N : ℝ) / cN)) ≤ 0 :=
-        Real.log_nonpos (Real.log_nonneg (by linarith)) h
-      linarith) hl_le
+    Real.log_le_log (Real.log_pos (by linarith only [hκ2])) hl_le
   have hlll_le : Real.log (Real.log (Real.log ((N : ℝ) / cN))) ≤
       Real.log (Real.log (Real.log N)) :=
     Real.log_le_log (by linarith) hll_le

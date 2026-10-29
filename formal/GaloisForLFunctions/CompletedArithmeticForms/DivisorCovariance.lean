@@ -1,4 +1,4 @@
-import GaloisForLFunctions.CompletedArithmeticForms.CyclotomicCoercivity
+import GaloisForLFunctions.CompletedArithmeticForms.DirichletSchurCost
 import GaloisForLFunctions.RHTower.EulerDeletionAveragedDivisorCovariance
 
 /-!
@@ -68,6 +68,30 @@ theorem cumulativeEnergy_coercive (c : ℕ → ℝ) (T : ℕ) :
   rw [cumulativeEnergy_completion]
   exact le_add_of_nonneg_right
     (div_nonneg (cyclotomicRemainder_nonneg _ _) (by positivity))
+
+/-- The dual cost of temporal covariance is local variation of the weighted coupling. -/
+theorem cumulativeEnergy_schur_bound (c b : ℕ → ℝ) (T : ℕ) :
+    2 * (∑ j ∈ Icc 1 T, c j * b j) - cumulativeEnergy c T ≤
+      dirichletEnergy (T + 1) (interiorExtension (T + 1) (fun j => (j : ℝ) * b j)) := by
+  have hQ : (0 : ℝ) < (T : ℝ) + 1 := by positivity
+  have h := bridgeSchur_bound (Nat.succ_pos T) (fun j => c j / j)
+    (fun j => ((T : ℝ) + 1) * ((j : ℝ) * b j))
+  rw [divisorGramEnergy_eq_cumulativeEnergy, Ico_one_succ, bridgeSchurCost_mul] at h
+  have hpair : (∑ j ∈ Icc 1 T, (c j / j) * (((T : ℝ) + 1) * ((j : ℝ) * b j))) =
+      ((T : ℝ) + 1) * ∑ j ∈ Icc 1 T, c j * b j := by
+    rw [mul_sum]
+    refine sum_congr rfl fun j hj => ?_
+    have hj0 : (j : ℝ) ≠ 0 := by
+      exact_mod_cast (show j ≠ 0 by have := (mem_Icc.mp hj).1; omega)
+    field_simp
+    ring
+  rw [hpair, bridgeSchurCost] at h
+  push_cast at h
+  have hcost (D : ℝ) : ((T : ℝ) + 1) ^ 2 * (D / ((T : ℝ) + 1)) =
+      ((T : ℝ) + 1) * D := by field_simp; ring
+  rw [hcost] at h
+  apply (mul_le_mul_left hQ).mp
+  convert h using 1 <;> ring
 
 /-- The full Euler-deletion energy retains the completed finite arithmetic Gram and its tail. -/
 theorem fullErrorEnergy_eq_cyclotomic_add_tail {X M : ℕ}

@@ -113,10 +113,19 @@ estimate, and the separated Gamma mixed block by the Hilbert matrix bound. This 
 produce the full prime-defect reserve needed for spectral exhaustion. The corpus already
 contains a boosted cubic spline (`splineProbe`), but this complete argument is unproved.
 
+A subsequent corpus search located the already verified
+`HTGeometry.interval_integral_normSq_expSum_ge`. Applied at frequencies
+`log(n)/(2*pi)`, separation is `1/(2*pi*N)` and its endpoint error is `52*N`.
+The actual interval `[N,101*N]` therefore retains at least
+`48*N*sum|x_n|²`. This replaces the redundant triangular-kernel draft.
+The profile multiplier and complete-form coercivity bridges remain unproved.
+
 ## Proof and Lean status
 
 `elevenTrialUpperMargin_neg` passed Lean with only `propext`, `Classical.choice`, and
 `Quot.sound`. `PrimeSquareTrial.lean` and `PrimeFlipTail.lean` also compiled, including the
 exact Ramanujan expansion, harmonic correlation, finite full-tail bound, and its limit.
-Draft variable packet and complete-form bridges remain under
-verification. All required mathematical conclusions remain open.
+`VariablePacketLimit.lean` also compiled with the three standard axioms: the actual
+complete finite-packet limit survives a varying ratio converging strictly below one
+and an arbitrary horizon tending to infinity. The remaining complete-form and
+negative-witness bridges are under verification. All required conclusions remain open.

@@ -26,6 +26,8 @@ private theorem continuous_fract_quadratic :
     (by norm_num) hpoly.continuousOn).comp (AddCircle.continuous_mk' (1 : ℝ))
   convert h using 1
   funext x
+  change Int.fract x * (1 - Int.fract x) =
+    AddCircle.liftIco 1 0 (fun y : ℝ => y * (1 - y)) (x : AddCircle (1 : ℝ))
   rw [← AddCircle.coe_fract x,
     AddCircle.liftIco_zero_coe_apply ⟨Int.fract_nonneg x, Int.fract_lt_one x⟩]
 
@@ -33,11 +35,11 @@ private theorem continuous_fract_quadratic :
 theorem continuous_arithmeticOverlapCurvature (m : ℕ) :
     Continuous (arithmeticOverlapCurvature m) := by
   unfold arithmeticOverlapCurvature
-  apply continuous_finset_sum
+  apply continuous_finsetSum
   intro d _
   have h := (continuous_fract_quadratic.comp (continuous_id.div_const (d : ℝ))).const_mul
     ((ArithmeticFunction.moebius (m / d) : ℝ) * (d : ℝ) ^ 2)
-  simpa only [mul_assoc] using h
+  simpa only [Function.comp_apply, id_eq, mul_assoc] using h
 
 /-- The centered arithmetic kernel is jointly continuous. -/
 theorem continuous_arithmeticOverlapGram (m : ℕ) :
@@ -88,8 +90,8 @@ theorem arithmeticOverlapCurvature_conditional_quadratic_eq {ι : Type*}
     intro i j
     unfold arithmeticOverlapGram
     ring
-  simp_rw [he, sum_sub_distrib, sum_add_distrib, ← mul_sum, ← sum_mul, ha,
-    mul_zero, zero_mul, sum_const_zero]
+  conv_lhs => simp only [he, sum_sub_distrib, sum_add_distrib,
+    ← mul_sum, ← sum_mul, ha, mul_zero, zero_mul, sum_const_zero]
   ring
 
 /-- The real arithmetic distance kernel is conditionally negative. -/
@@ -124,14 +126,14 @@ equal to the number of primitive roots. -/
 theorem arithmeticOverlapCurvature_unit_cell {m : ℕ} (hm : 1 < m)
     {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) 1) :
     arithmeticOverlapCurvature m t = (m.totient : ℝ) * t := by
-  have hcard : (Polynomial.primitiveRoots m ℂ).card = m.totient :=
+  have hcard : (primitiveRoots m ℂ).card = m.totient :=
     (Complex.isPrimitiveRoot_exp m (zero_lt_one.trans hm).ne').card_primitiveRoots
   have h0 : primitiveRootPrefixEnergy m 0 = 0 := by simp [primitiveRootPrefixEnergy]
   have h1 : primitiveRootPrefixEnergy m 1 = (m.totient : ℝ) := by
     simp [primitiveRootPrefixEnergy, hcard]
   rcases lt_or_eq_of_le ht.2 with hlt | rfl
   · have h := arithmeticOverlapCurvature_eq_interpolation hm 0 ht.1 hlt
-    simpa only [Nat.cast_zero, zero_add, Nat.zero_add, h0, h1, mul_zero,
+    simpa only [Nat.cast_zero, zero_add, Nat.zero_add, h0, h1, zero_mul,
       zero_add, mul_comm] using h
   · simpa only [Nat.cast_one, h1, mul_one] using arithmeticOverlapCurvature_natCast hm 1
 
