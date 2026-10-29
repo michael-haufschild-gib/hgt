@@ -36,7 +36,13 @@ Seek a uniform bound for Gamma(P_A f)+Gamma(f-P_A f) in terms of the
 original Gamma(f). Repeating the one-level bound is insufficient because
 its constant can grow with depth. The stopping partition suggests a direct
 comparison of averaged Levy kernels, or an all-level weighted Haar upper
-estimate. These are research targets, not proved inputs.
+estimate. These are research targets, not proved inputs. A more specific synthesis target
+is Gamma(h)<=C sum_(j,a)(1+log a)|d_(j,a)|^2 for finite root-free dyadic
+expansions. The existing original-source weighted estimate would then pay the
+tail; the quadratic triangle bound would pay the head. Root-free details have
+zero mean on each log2 shell. Disjoint-shell synthesis is available, while
+nested Haar cross terms still need a proof. These intermediate targets are not
+claimed to be globally unsolved mathematical problems.
 
 If uniform Gamma stability is proved, combine it with the existing
 centered-square epsilon-Gamma-plus-tail-mass estimate and the all-level
@@ -50,6 +56,26 @@ GeneratorOrbitCutoffsReduceTheDyadicClock, EveryFiniteCellSourceHasFiniteDyadicC
 CompleteCellAveragesAreBoundedInGammaEnergy, TheCenteredSquareSourceHasAGammaMassBound,
 TheMixedSquareSourceHasUniformSmallTails.
 
-Exact stopping-cell identification and mean preservation are not yet
-formalized. Uniform all-level Gamma stability remains unproved. Research
-findings and continuation state are recorded in logs/signed-arithmetic-hodge-research.log.
+`EveryGeneratorCutoffStopsAtAnActualDyadicCell.lean` passes its individual
+Lean check and dependency audit. It proves the terminal-label bounds and exact
+orthogonal projection of every original cell onto its normalized stopping cell.
+
+`GeneratorCutoffsAreLogarithmicBlockAverages.lean` is drafted: exact square-root
+block matrix, common stopping ancestor across each block, positive averaging
+weights summing to one, and support below twice the original label.
+`ActualGeneratorHeadsPreserveTheSourceMean.lean` is drafted: explicit finite real
+compact BV head, equality with the existing physical projection, original
+wholeCellProfile interface, mean preservation, head-tail orthogonality, exact
+centered-square correction cancellation, and original-Gamma tail-mass payment.
+`TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost.lean` is drafted: exact
+quadratic homogeneity supplies the centered diagonal estimate, and the zero-mean
+tail supplies a bound for the complete even-power source head error by
+
+ epsilon*(Gamma(head)+Gamma(tail))
+ + C_epsilon*32 Gamma(original)/(1+log A).
+
+One constant precedes every finite source family, horizon and cutoff. These
+three drafts are not accepted proofs until their individual Lean checks pass.
+
+Uniform all-level Gamma stability remains unproved. Research findings and
+continuation state are recorded in logs/signed-arithmetic-hodge-research.log.

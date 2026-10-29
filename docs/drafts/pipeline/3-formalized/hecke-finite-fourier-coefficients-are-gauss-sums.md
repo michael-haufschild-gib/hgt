@@ -76,7 +76,8 @@ lake --old env lean GaloisForLFunctions/HeckeLFunctions/HeckeFiniteFourierCoeffi
 ```
 
 Wired into `HeckeLFunctions.lean`; the umbrella was not compiled.
-Still required: identify the annihilator condition with ideal
-coprimality, identify the dual coefficients with the inverse Hecke
+The annihilator condition is now identified with ideal coprimality in
+[the arithmetic support theorem](hecke-fourier-support-is-ideal-coprimality.md).
+Still required: identify the dual coefficients with the inverse Hecke
 character including their class factors, and assemble the normalized
 completed functional equation.

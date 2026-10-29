@@ -70,3 +70,34 @@ This completion needs no contribution from primes outside Q, since
 every nonzero original prime edge already belongs to Q. The direct
 Lean source transport is in progress; the operator equality and joint
 Gamma payment are still unproved.
+
+## Verification checkpoint
+
+- The exact normalized Haar graph decomposition passed a clean direct
+  Lean check. Its required olean/ilean now exist and must not be rebuilt.
+- Complete paper proof and current formalization list:
+  [actual-source occupation transport](../2-fully-proven/acs-haar-subcritical-source-transport.md).
+- The scalar Parseval helper is being checked; its first two passes
+  exposed coercion normalization errors. No spectral transport is yet
+  marked formalized.
+- The original missing odd root is explicitly retained as the zero
+  valuation coordinate in the source vector.
+
+## Next joint comparison to investigate
+
+The corpus gives the exact positive exponential series
+`archLevyDensity(t)=sum_k exp(-(2k+1/2)*t)` for `t>0`
+(`RHTower.ArchimedeanAnomaly.archLevyDensity_eq_tsum`). Its four-point mixed difference
+on two ordered intervals is nonpositive term by term. Combined with the
+actual two-piece balanced Haar profiles, this suggests that their Gamma
+off-diagonal matrix entries are nonnegative. This sign is not yet proved
+here. A useful next target is a comparison of the resulting additive
+graph energy with the retained multiplicative divisor form, including
+the ground-state diagonal and the exact boundary charge. A sign theorem
+alone would not pay the signed source.
+
+The same module already proves `completelyMonotone_archLevyDensity`,
+including nonnegative second derivative. Either its four-point
+exponential identity or two integrations against nonnegative Haar
+primitives can supply the proposed cross-term sign. These are leads,
+not completed Gamma/arithmetic comparisons.

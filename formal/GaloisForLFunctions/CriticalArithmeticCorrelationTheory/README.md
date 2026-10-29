@@ -186,7 +186,7 @@ The statements are in
 [SmoothPlateausRecoverTheCompletedRobinMargin](SmoothPlateausRecoverTheCompletedRobinMargin.lean),
 [ThePlateauShapeAndChargeHaveTheirIndicatorLimits](ThePlateauShapeAndChargeHaveTheirIndicatorLimits.lean),
 and [SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive](SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean).
-They do not establish the endpoint `c=1`, uniformity as `c` approaches one,
+They do not establish the endpoint `c=1`, a uniform positivity horizon as `c` approaches one,
 or positivity on an exhausting overlapping family. No global optimality of the
 constant `2-log(2π)` over all profiles is asserted.
 
@@ -236,6 +236,92 @@ previous whole-family error proportional to `sum m²`. It does not give a
 matching upper frame estimate, a small prime residual at the same growing
 cutoff, or a sign estimate for the completed Weil form. Those require further
 arithmetic cancellation.
+
+## A uniform cross budget and a strict charge reserve
+
+For a compact profile `g` supported in `[0,w]`, write
+
+\[
+G_g(z)=\int g(u)g(u+z)\,du,\qquad
+X_g(s)=\int_0^\infty\omega(y)G_g(y-s)\,dy.
+\]
+
+The error in replacing the actual cross integral by its center value is
+`X_g(s)-ω(s)(∫g)²`. Bounding the density variation at the nearest support point
+before integration incurs a factor proportional to `(s-w)⁻²`. The support
+boundary supplies the missing payment: a globally `L`-Lipschitz profile satisfies
+
+\[
+|G_g(z)|\le\frac{L^2w}{4}(w-|z|)^2,
+\qquad
+|X_g(s)-\omega(s)(\textstyle\int g)^2|\le19L^2w^3
+\quad(0<w<s).
+\]
+
+Pairing the endpoint decay with the density increment before integrating
+removes dependence on the remaining gap. For each fixed smooth unit profile
+`φ` of mass `M>0`, its dilates therefore satisfy
+
+\[
+\frac{|X_{\phi_w}(s)-\omega(s)(\int\phi_w)^2|}
+ {\int\phi_w^2}\le C_\phi\frac{w^2}{s^2}
+\quad(0<w<s),
+\]
+
+with one constant for all widths and positive gaps.
+
+A second estimate needs only profile height. If `|g|≤B`, the actual overlap
+obeys `|G_g(z)|≤B²(w-|z|)` for `|z|≤w`, and
+
+\[
+|X_g(s)-\omega(s)(\textstyle\int g)^2|
+\le B^2w(1+w/2).
+\]
+
+For dilates of a fixed unit profile and `w≤1`, this yields the explicit
+reciprocal-square coefficient `(152(∫|φ|)²+6B²)/M`. For every smooth plateau
+with `0<η≤1/4`, one coefficient `316` works independently of `η`. Thus shrinking
+transition layers do not force the cross budget to diverge. This refinement is
+in [OverlapLengthControlsTheTouchingCrossError](OverlapLengthControlsTheTouchingCrossError.lean).
+
+Distinct integer logarithms
+among `1,…,N` have distance strictly greater than `1/N`. Consequently this
+estimate controls every entry of the actual cross-error matrix for all
+`0<c≤1`, including the endpoint ratio. Reciprocal integer-distance summation
+gives the whole quadratic-form budget `4 Cφ c² ‖x‖²` and the square-residual
+budget `(36 Cφ A c²)²` on every pole profile `a_n/√n` with `|a_n|≤A`.
+
+The charge has its own strict reserve. Continuity and interval support force
+`φ(0)=0`; a nonzero profile cannot agree almost everywhere with a nonzero
+constant on `[0,1]`. Its variance gives
+
+\[
+q_\phi=\frac{(\int\phi)^2}{M}<1.
+\]
+
+Keeping the actual charge `c qφ` in the center estimate, rather than replacing
+it by `c`, yields a single real floor `aφ` such that, for every fixed `0<c<1`,
+eventually in `N`,
+
+\[
+a_\phi\|x\|^2+\frac{1-q_\phi}{4}D_N(x)
+\le\mathcal W_{\phi,c,N}(x)
+\quad\text{for every }x.
+\]
+
+Both constants are independent of `c`; the eventual horizon may still depend
+on it. The floor need not be positive. These results are in
+[BoundaryVanishingControlsTheTouchingAutocorrelation](BoundaryVanishingControlsTheTouchingAutocorrelation.lean),
+[EndpointDecayRemovesTheCrossKernelGapLoss](EndpointDecayRemovesTheCrossKernelGapLoss.lean),
+[TheTouchingCrossMatrixHasAUniformErrorBudget](TheTouchingCrossMatrixHasAUniformErrorBudget.lean),
+and [TheChargeDeficitKeepsAUniformPrimeReserve](TheChargeDeficitKeepsAUniformPrimeReserve.lean).
+
+The endpoint cross estimate alone does not supply a full endpoint source
+decomposition. Non-ratio prime lags can enter through products outside the
+integer horizon and must be retained. Genuine support overlap also changes the
+atom Gram matrix. Furthermore, the charge reserve tends to zero when plateaus
+approach the unit indicator; uniformity in a fixed profile does not imply
+uniform spectral exhaustion in that profile limit.
 
 ## Questions and tools to develop
 

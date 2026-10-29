@@ -100,5 +100,5 @@ The saved [transitive axiom audit](garland-positive-loop-splitting-audit.txt)
 contains only `propext`, `Classical.choice`, and `Quot.sound` for all principal
 declarations. Every final source check used `lake --old env lean` on the
 individual module. All five modules are wired into the umbrella; no umbrella
-build was run. The leaf `PositiveLoopSplitting` has no emitted olean until a
-consumer requires it.
+build was run. The `PositiveLoopSplitting` olean is emitted only for the new
+`PositiveIwahori` consumer.

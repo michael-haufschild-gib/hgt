@@ -1,9 +1,9 @@
 # Finite-field zeta zeros in the shifted quotient
 
 - **ID:** `finite-field-zeta-pole-transfer`
-- **Stage:** 1-in-progress
-- **Type:** CLASSICAL BRIDGE
-- **Source:** [finite-field-positive-genus-base](../3-formalized/finite-field-positive-genus-base.md).
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean) / CLASSICAL BRIDGE
+- **Source:** [finite-field-positive-genus-base](finite-field-positive-genus-base.md).
 - **Target:** Prove actual meromorphic pole orders, including multiplicities, for the
   reciprocal and shifted quotient of the constructed elliptic curve's point-count zeta function.
 
@@ -75,8 +75,8 @@ Each root `ρ` gives the explicit pole representative
 `s_ρ=−log(3ρ)/log(3)`, because `3ρ≠0` and `exp(log(3ρ))=3ρ`.
 Moreover `|t(s_ρ)|²=3`, so injectivity of the real exponential gives
 `−2log(3) Re(s_ρ)=log(3)` and `Re(s_ρ)=−1/2`.
-The second coordinate repeats vertically; the finite count `2g` refers to the
-multiplicative coordinate and multiplicities, not all points of the `s`-plane.
+The finite count `2g` refers to the multiplicative coordinate and multiplicities,
+not all lifts in the `s`-plane.
 
 For the existing affine `A₁` inversion sets define the finite-field coefficient by
 the finite product of `c(λ(β∨))`. The genus-dependent prefactor in Lee–Lombardo is
@@ -84,7 +84,9 @@ the finite product of `c(λ(β∨))`. The genus-dependent prefactor in Lee–Lom
 the singleton inversion set `{α}`, and the affine simple reflection has `{δ−α}`.
 Their coefficients are exactly `c(λ₁)` and `c(λ₀)`. Hence the explicit pole parameters
 above give genuine coefficient poles in either simple-coroot coordinate, independently
-of the other coordinate. This uses the actual infinite affine root datum but supplies
+of the other coordinate. The proved cardinality two of the Frobenius index makes this
+an existence theorem for either coordinate, not only a conditional statement indexed
+by a potentially empty type. This uses the actual infinite affine root datum but supplies
 no unproved group-level unfolding.
 
 Attack: roots need not be distinct, and a denominator zero alone is not a pole.
@@ -96,48 +98,68 @@ claim about the full Eisenstein series follows at this stage.
 ## Gates
 
 - [x] Corpus and primary-literature audit; exact normalization fixed.
-- [x] Exact paper proof; all analytic inputs are polynomial factorization and local order laws.
-- [x] Lean formalization of reciprocal and shifted-quotient pole orders.
-- [x] Exact pole locus and nontrivial pole count.
-- [x] Explicit additive pole parameters and exact orders on the shifted Weil line.
-- [ ] Analytic continuation of the actual point-count quotient series.
-- [ ] Both simple affine Weyl coefficients and their poles.
-- [ ] Foreground source check and transitive axiom audit; umbrella import.
+- [x] Dependency-closed paper proof followed by Lean formalization.
+- [x] Reciprocal and shifted-quotient pole orders, complete finite pole locus, and multiplicities.
+- [x] Arithmetic pole multiset has cardinality `2 * geometricGenus = 2`.
+- [x] Explicit additive pole parameters and exact orders on `Re s = -1/2`.
+- [x] Taylor identities and `HasFPowerSeriesAt` for the actual point-count quotient series.
+- [x] Both simple affine coefficient formulas and unconditional pole existence.
+- [x] Transitive axiom audit and owning umbrella imports.
+- [x] Final non-output check of the installed coefficient source.
 
-## Continuation
+## Lean certificates and validation
 
-Next analytic target: identify the Taylor series of `Z(T)/Z(T/3)` with the
-actual point-count quotient series; apply its poles to both simple affine coefficients.
-Keep the finite-field series/unfolding gap explicit; do not replace an arithmetic coset
-sum by a definition equal to its proposed constant term.
+All curve-level declarations below are in namespace
+`GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase`.
 
-## Working state
+- `ArithmeticEffectivityTheory/FiniteFieldEllipticZetaPoles.lean`:
+  `shiftedZetaQuotientSeries_rational`, `reciprocalZeta_pole_iff`,
+  `shiftedZetaQuotient_order_at_root`, `shiftedZetaQuotient_pole_iff`,
+  `arithmeticPoleMultiset_card`, `arithmeticPoleMultiset_order`,
+  `arithmeticZetaRatio_order_at_zero`, `arithmeticZetaRatio_pole_iff`,
+  `arithmeticPoleParameter_spec`, and `finiteFieldZetaPoleTransfer_spec`.
+  The combined specification has no parameters or mathematical assumptions.
+- `ArithmeticEffectivityTheory/FiniteFieldEllipticZetaContinuation.lean`:
+  `zetaFunction_taylor`, `shiftedZetaQuotient_taylor`,
+  `zetaFunction_hasFPowerSeriesAt`, and `shiftedZetaQuotient_hasFPowerSeriesAt`.
+  These identify the actual arithmetic series and certify its local convergence.
+- `HTGeometry/LoopEisenstein/AffineA1FiniteFieldCoefficients.lean`, namespace
+  `GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1`:
+  `finiteFieldCoefficient_finiteReflection`, `finiteFieldCoefficient_affineReflection`,
+  `simpleCoefficient_orders`, `simpleCoefficient_poles`, and `simpleCoefficient_has_poles`.
+  The last theorem proves pole existence for every fixed other coordinate, with no
+  assumed zero, pole, or noncancellation input.
 
-- `/tmp/hgt_zeta_poles.lean`: quotient power-series identities, reciprocal pole locus,
-  shifted quotient exact multiplicities and complete pole locus, arithmetic pole multiset
-  with cardinality and exact order. Complete foreground check passed, exit 0, no diagnostics.
-- `/tmp/hgt_zeta_additive.lean`: standalone exponential/logarithmic coordinate lemmas;
-  complete foreground check passed, exit 0, no diagnostics.
-  `/tmp/hgt_zeta_additive_bridge.txt` contains the additive
-  zeta ratio, explicit Frobenius-indexed pole parameters, and combined specification.
-- `/tmp/hgt_zeta_coefficients.lean`: both simple affine coefficients and pole transfer;
-  depends on the final `ArithmeticEffectivityTheory/FiniteFieldEllipticZetaPoles.lean`.
-- `/tmp/hgt_zeta_continuation.lean`: Taylor identities and actual `HasFPowerSeriesAt`
-  certificates for both zeta and its shifted quotient; awaiting the pole module's olean.
-  It reuses `HardyTaylorCoefficient` and `AffineFluxTaylorCoeff`, whose oleans exist.
-- Reuse `HTGeometry.analyticOrderAt_eval_eq_rootMultiplicity` from
-  `HTGeometry/PolynomialHeatNonrealCount.lean` (existing olean). Do not rebuild it.
-- Mathlib API scratch files `/tmp/hgt_zeta_poles_names.lean`,
-  `/tmp/hgt_zeta_poles_api.lean`, `/tmp/hgt_zeta_order_api.lean` are owned and disposable.
-  `meromorphicOrderAt_div` has no generated function-form alias in the installed olean;
-  `convert!` resolves the pointwise-function and instance presentation mismatch. No limit
-  changes or trusted computations.
-- Production source `ArithmeticEffectivityTheory/FiniteFieldEllipticZetaPoles.lean`
-  combines the passed multiplicative and coordinate proofs with the additive pole bridge.
-  Its foreground source compilation passed with exit 0 and no diagnostics; its olean
-  is required by the continuation module. Never rebuild that olean.
-- `/tmp/hgt_zeta_continuation.lean` is being checked in foreground session `67055`.
-  Do not start another compiler until it exits.
-- Next: check `/tmp/hgt_zeta_continuation.lean`, preserve its final production source;
-  update the coefficient draft to import the continuation module, check it; audit all
-  transitive axioms, wire both owning umbrellas, preserve audit, clean only owned scratch.
+The two curve-level modules passed foreground source compilation with exit 0 and no
+diagnostics. Their oleans were created only for their dependent new modules. The coefficient
+source passed verbatim in the independent non-output audit harness, which checked 29
+selected declarations and their transitive dependencies with `#print axioms`. All report
+exactly `[propext, Classical.choice, Quot.sound]`; the audit exited 0. Its complete output
+is preserved in
+[finite-field-zeta-pole-transfer-audit.txt](finite-field-zeta-pole-transfer-audit.txt).
+
+The installed coefficient source passed its final foreground, non-output check with exit 0
+and no diagnostics:
+
+```sh
+lake --old env lean GaloisForLFunctions/HTGeometry/LoopEisenstein/AffineA1FiniteFieldCoefficients.lean
+```
+
+Both owning umbrellas import the new leaves. A transitive source-import audit found no
+dependency on either owning umbrella, so these imports introduce no cycle. No full or
+umbrella build, existing-olean rebuild, numerical experiment, finite point enumeration,
+proof placeholder, new mathematical axiom, kernel bypass, or raised Lean limit was used.
+
+## Remaining full-series frontier
+
+The actual quotient of point-count series and both simple affine zeta-product formulas
+now have certified arithmetic poles. This does not construct an arithmetic Eisenstein
+coset sum or identify its constant term with these formulas. Such an identification
+requires finite-field arithmetic-series definitions and an unfolding proof. A pole theorem
+for the full summed constant term or Eisenstein series additionally requires proof that
+summation does not cancel the coefficient poles. These inputs remain open, not hidden
+hypotheses of the completed theorems.
+
+Do not replace the missing arithmetic coset sum by a definition equal to its proposed
+constant term. The series in the user's earlier correction was not explicitly specified;
+no identification with an unspecified series is claimed.

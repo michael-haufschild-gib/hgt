@@ -21,7 +21,7 @@ logarithmic prime defect D_X already proved in the corpus,
 
 `D_X + T_Q = (1/2)*sum_e E_Q(e)*|xhat(e)|^2 + R_X`,
 
-where xhat is the complete product Blaschke transform at parameters
+Here T_Q is nonnegative. The transform xhat is the complete product Blaschke transform at parameters
 `q_p=1/p`,
 
 `E_Q(e)=sum_(p in Q, e_p>0) log(p)*(e_p+1/(p^2-1))`,
@@ -60,7 +60,11 @@ diagonal compensation, not a free addition of outgoing reserve.
    Adding C_Q leaves exactly E_Q above. The actual source has finite
    coordinate support, hence lies in the original operator domain.
    Inner-product Parseval gives the full summable occupation series.
-6. Changing the finite outgoing row O0_X to C_Q costs exactly T_Q.
+6. Each nonzero finite outgoing multiplier is a power of a unique prime
+   in Q. Inject those multipliers into `(p,k)` with multiplier `p^(k+1)`.
+   The full positive geometric ladder has sum `log(p)/(p^2-1)`.
+   Summing the finite subseries proves `O0_X(a)<=C_Q`, hence `T_Q>=0`.
+7. Changing the finite outgoing row O0_X to C_Q costs exactly T_Q.
    Substitute the previous identities to obtain the displayed equality
    and its lower bound by the complete occupation energy.
 
@@ -72,8 +76,13 @@ identity, nonnegative remainder decomposition, and exact finite number
 potential. Its required olean was built for the importing source theorem;
 the finished module is wired into the umbrella.
 
-The inverse-prime kernel, operator energy identity, and actual-source
-occupation theorem are written and awaiting checks. No umbrella is built.
+`HTGeometry.FiniteBlaschkeEnergyForm` passed its required olean check;
+the scalar occupation series is summable on the original maximal domain.
+Its final direct check remains. The inverse-prime kernel also passed its
+required olean check; its final direct check remains. The operator
+specialization has three normalization errors fixed after its first
+check; the actual-source occupation theorem awaits checks. The nonnegative boundary-cost proof is next
+in the same formalization batch. No umbrella is built.
 No axiom checks, web search, novelty checks, or numerical experiments.
 
 ## Remaining route gap

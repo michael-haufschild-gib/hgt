@@ -211,12 +211,13 @@ coefficient bounds, actual degree-rotation exponents, and Gaussian domination.
 | Absolute convergence of affine Weyl expansion | Formalized; `summable_norm_weylTerm`, `hasSum_weylTerm` |
 | Locally uniform convergence of this expansion | Still open |
 | Formal Laurent central extension | Formalized; exact kernel `Fˣ`, both root splittings, inverse tame-symbol torus defect |
-| Rational-to-real central loop embedding | Paper proof complete; two Lean modules written, awaiting compilation |
+| Rational-to-real central loop embedding | Formalized and audited; injective coefficient-field map, center/root compatibility |
 | Garland completion comparison and arithmetic subgroup | Still open |
 | Group-level degree rotation | Formalized; tame-cocycle-preserving action, semidirect product, every positive real contraction, affine-root scaling |
 | Affine simple coroots and Cartan coordinates | Formalized; actual root words, `h₀(a)=z(a)h₁(a⁻¹)`, injective central/finite torus |
 | Actual Weyl conjugation on Cartan and degree rotation | Still open; root/weight formulas and simple-coroot normalization are proved separately |
 | Positive power-series subgroup splitting | Formalized and audited; injective `LoopSL2.positiveEmbedding`, both root restrictions |
+| Positive Iwahori and unipotent coordinates | In progress; subgroup, Gauss, and finite-torus sources written |
 | Group-level Iwasawa coordinates | Still open |
 | Arithmetic coset Eisenstein series and its convergence | Still open |
 | Unipotent quotient measure and constant-term integral | Still open |
@@ -264,10 +265,12 @@ generation over the power-series ring. Its projection is faithful and it agrees
 with both canonical root embeddings. All five source checks and the transitive
 axiom audit passed.
 
-The [rational coefficient embedding](garland-rational-loop-embedding.md) and
-[positive Iwahori coordinates](garland-positive-iwahori.md) are the next concrete
-group inputs. Their paper proofs record the scope precisely; neither is being
-used as an assumed Iwasawa or arithmetic-series theorem.
+The [rational coefficient embedding](../3-formalized/garland-rational-loop-embedding.md)
+is formalized and audited: the coefficientwise field map preserves the actual
+tame symbol and lifts faithfully to the central extension. Its specialization
+gives `LoopSL2 ℚ →* LoopSL2 ℝ`, with exact center/root compatibility.
+[Positive Iwahori coordinates](garland-positive-iwahori.md) are in progress.
+Neither construction supplies an assumed Iwasawa or arithmetic-series theorem.
 
 Do not instantiate the stable Steinberg centrality theorem outside its hypotheses.
 
@@ -302,3 +305,6 @@ Do not instantiate the stable Steinberg centrality theorem outside its hypothese
   bottom-row correction satisfies both elementary multiplication laws, hence
   defines an injective homomorphism on the full power-series matrix group.
   Final individual source checks and the saved axiom audit passed.
+- 2026-10-29: Coefficient-field functoriality completed in two modules, including
+  the faithful rational-to-real central loop embedding. Both final direct
+  source checks and the saved transitive axiom audit passed.

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1Roots
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1XiCoefficients
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1FiniteFieldCoefficients
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1XiEstimates
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1Weights
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1WeylSum
@@ -18,3 +19,5 @@ import GaloisForLFunctions.HTGeometry.LoopEisenstein.PowerSeriesSL2
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.PowerSeriesRowCorrection
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.PowerSeriesKubota
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.PositiveLoopSplitting
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.LaurentFieldMap
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2FieldMap

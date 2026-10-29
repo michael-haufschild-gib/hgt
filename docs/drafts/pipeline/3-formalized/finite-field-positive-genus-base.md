@@ -135,3 +135,10 @@ The requested arithmetic base is available: the function field of
 zeta function. Its numerator has exactly `2g=2` zeros counted with multiplicity.
 This supplies the arithmetic zeros that a separate series may inherit as poles;
 inheritance by a particular series requires its own identity with this zeta function.
+
+[Finite-field zeta pole transfer](finite-field-zeta-pole-transfer.md) now proves exact
+pole inheritance, including multiplicities, for the reciprocal and `Z(T)/Z(T/3)`, and
+certifies that the latter continues the actual point-count quotient series. Both simple
+affine Weyl coefficient formulas have explicit arithmetic poles on `Re s = -1/2`.
+Identifying these formulas with an arithmetic Eisenstein constant term and proving
+noncancellation in the full sum remain open.

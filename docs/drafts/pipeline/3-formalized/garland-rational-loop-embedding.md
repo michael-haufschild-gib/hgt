@@ -1,8 +1,8 @@
 # Coefficient-field embeddings of the central loop group
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** Construct the faithful map `LoopSL2 ℚ → LoopSL2 ℝ` from the
   actual rational coefficient inclusion, compatible with center and root groups.
 
@@ -39,6 +39,16 @@ rational subgroup of the real central loop group.
 
 ## Status
 
-Paper proof recorded. Implementation follows the positive-loop splitting.
+Paper proof and Lean formalization complete. `LaurentFieldMap.lean` compiles: the actual coefficient
+map preserves Laurent valuation and commutes with the tame symbol.
+`LoopSL2FieldMap.lean` contains the faithful group map, its central/root
+restrictions, and the canonical rational-to-real specialization. Its final
+direct source check passed without warnings. The final direct source check of
+`LaurentFieldMap` also passed. The saved
+[transitive axiom audit](garland-rational-loop-embedding-audit.txt) contains
+only `propext`, `Classical.choice`, and `Quot.sound` for all principal
+declarations, including `LoopSL2.rationalEmbedding_injective`. The imported
+`hahnMapRingHom` was also audited. Both modules are wired into the umbrella;
+no umbrella build was run.
 This supplies coefficient-field functoriality, not an arithmetic lattice,
 Iwasawa decomposition, or Eisenstein convergence theorem.

@@ -137,7 +137,7 @@ def splitDatum : CurveDatum (Fin 4) where
   conjPerm := Equiv.refl _
   β_conjPerm := fun i => by fin_cases i <;> simp [Complex.conj_ofNat]
   fePerm := ⟨![2, 3, 0, 1], ![2, 3, 0, 1], by decide, by decide⟩
-  β_fePerm := fun i => by fin_cases i <;> simp <;> norm_num
+  β_fePerm := fun i => by fin_cases i <;> simp
 
 theorem splitDatum_trace (k : ℕ) :
     splitDatum.trace k = 2 ^ k * (1 + (-1) ^ k) + (1 / 2) ^ k * (1 + (-1) ^ k) := by

@@ -16,6 +16,7 @@ open Finset
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics ArithmeticEffectivityTheory
+open _root_.RHTower (vonMangoldtAtom)
 
 /-- An integer log window at touching contains exactly one possible unequal boundary pair. -/
 theorem small_integer_log_gap_forces_boundary {N a b : ℕ} (hN : 2 ≤ N)
@@ -48,7 +49,9 @@ theorem small_integer_log_gap_forces_boundary {N a b : ℕ} (hN : 2 ≤ N)
   have hlog := Real.log_lt_sub_one_of_pos (div_pos hN0 hN2) (ne_of_lt hratio)
   rw [Real.log_div hN0.ne' hN2.ne'] at hlog
   have hlower : 2 / ((N : ℝ) + 2) < Real.log ((N : ℝ) + 2) - Real.log N := by
-    have he : 2 / ((N : ℝ) + 2) = 1 - (N : ℝ) / (N + 2) := by field_simp; ring
+    have he : 2 / ((N : ℝ) + 2) = 1 - (N : ℝ) / (N + 2) := by
+      field_simp [hN2.ne']
+      ring
     rw [he]
     linarith only [hlog]
   have hfrac : 1 / (N : ℝ) ≤ 2 / ((N : ℝ) + 2) := by
@@ -103,9 +106,8 @@ theorem nonRatioLag_eq_boundary_star {g : ℝ → ℝ} {N k : ℕ} (hN : 2 ≤ N
       nonRatio_up_term_eq_boundary hN hsupp hk hm hn]
     dsimp only [d]
     by_cases hmN : m = N <;> by_cases hnN : n = N <;>
-      by_cases hkn : k * n = N + 1 <;> by_cases hkm : k * m = N + 1 <;>
-      simp only [hmN, hnN, hkn, hkm, and_self, and_true, and_false, false_and,
-        true_and, ite_true, ite_false] <;> ring
+      simp only [hmN, hnN, and_self, and_true, and_false, false_and,
+        true_and, ite_true, ite_false] <;> split_ifs <;> ring
   unfold nonRatioLag
   have he : (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n *
       ((if m = k * n then 0 else bumpCorr g (-Real.log k - (Real.log n - Real.log m))) +

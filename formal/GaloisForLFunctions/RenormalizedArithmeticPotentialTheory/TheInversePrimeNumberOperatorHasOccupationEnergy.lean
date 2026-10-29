@@ -32,6 +32,33 @@ def inversePrimeEuler (Q : Finset Nat.Primes) : ℝ :=
   ∑ p : Q, Real.log ((p : Nat.Primes) : ℕ) /
     ((((p : Nat.Primes) : ℕ) : ℝ) ^ 2 - 1)
 
+/-- Every completed prime ladder has its convergent inverse-square outgoing mass. -/
+theorem hasSum_inversePrimeTower (p : Nat.Primes) :
+    HasSum (fun k : ℕ => ArithmeticFunction.vonMangoldt ((p : ℕ) ^ (k + 1)) /
+      ((((p : ℕ) ^ (k + 1) : ℕ) : ℝ) ^ 2))
+      (Real.log (p : ℕ) / (((p : ℕ) : ℝ) ^ 2 - 1)) := by
+  have hp : (1 : ℝ) < ((p : ℕ) : ℝ) := by exact_mod_cast p.property.one_lt
+  have hp2 : 1 < ((p : ℕ) : ℝ) ^ 2 := by nlinarith only [hp]
+  let r : ℝ := 1 / (((p : ℕ) : ℝ) ^ 2)
+  have hr0 : 0 ≤ r := by positivity
+  have hr1 : r < 1 := (div_lt_one (by positivity)).mpr hp2
+  have hsum := (hasSum_geometric_of_lt_one hr0 hr1).mul_left (Real.log (p : ℕ) * r)
+  have hval : (Real.log (p : ℕ) * r) * (1 - r)⁻¹ =
+      Real.log (p : ℕ) / (((p : ℕ) : ℝ) ^ 2 - 1) := by
+    dsimp only [r]
+    field_simp [(zero_lt_one.trans hp).ne', (sub_pos.mpr hp2).ne',
+      (sub_pos.mpr hr1).ne']
+  rw [hval] at hsum
+  refine hsum.congr_fun fun k => ?_
+  rw [ArithmeticFunction.vonMangoldt_apply_pow (by omega),
+    ArithmeticFunction.vonMangoldt_apply_prime p.property, Nat.cast_pow]
+  have he : ((((p : ℕ) : ℝ) ^ (k + 1)) ^ 2) =
+      (((p : ℕ) : ℝ) ^ 2) ^ (k + 1) := by
+    rw [← pow_mul, ← pow_mul, Nat.mul_comm (k + 1) 2]
+  rw [he, div_eq_mul_inv, ← inv_pow, pow_succ]
+  simp only [r, one_div]
+  ring
+
 /-- The entire valuation excitation is retained, including its occupied-prime correction. -/
 def inversePrimeOccupationEnergy (Q : Finset Nat.Primes) (e : Q → ℕ) : ℝ :=
   ∑ p : Q, Real.log ((p : Nat.Primes) : ℕ) *
@@ -48,7 +75,7 @@ private theorem inversePrimeGroundCorrection (p : Nat.Primes) :
     rw [div_pow, one_pow]
     exact sub_pos.mpr ((div_lt_one (by positivity)).mpr hp2)
   unfold inversePrimeParameter
-  field_simp [hd, (sub_pos.mpr hp2).ne']
+  field_simp [hd, (sub_pos.mpr hp2).ne', (zero_lt_one.trans hp).ne']
 
 theorem inversePrime_energy_eq (Q : Finset Nat.Primes) (e : Q → ℕ) :
     finiteBlaschkeEnergy (fun p : Q => inversePrimeParameter p)
@@ -163,7 +190,10 @@ theorem inversePrimeNumberOperator_apply (Q : Finset Nat.Primes)
     apply sum_congr rfl
     intro p _
     module
-  rw [inversePrimeNumberOperator, finiteBlaschkeNumberOperator_apply, hc]
+  change finiteBlaschkeNumberOperator (fun p : Q => inversePrimeParameter p)
+    (fun p => inversePrimeParameter_norm_lt_one p)
+    (fun p => Real.log ((p : Nat.Primes) : ℕ)) (inversePrimeEuler Q) x e = _
+  rw [finiteBlaschkeNumberOperator_apply, hc]
   change (inversePrimeEuler Q : ℂ) * (x : FiniteNumberSpace Q) e -
       inversePrimeCoordinateKernel Q (x : FiniteNumberSpace Q) e +
       (finiteNumberDegree (fun p : Q => Real.log ((p : Nat.Primes) : ℕ)) e : ℂ) *
@@ -272,7 +302,8 @@ theorem inversePrimeNumberOperator_hasSum_energy (Q : Finset Nat.Primes)
       ‖(finiteBlaschkeBasis (fun p : Q => inversePrimeParameter p)
         (fun p => inversePrimeParameter_norm_lt_one p)).repr (x : FiniteNumberSpace Q) e‖ ^ 2)
       (inner ℂ (x : FiniteNumberSpace Q) (inversePrimeNumberOperator Q x)).re := by
-  simpa only [inversePrime_energy_eq] using finiteBlaschkeNumberOperator_hasSum_energy
+  simpa only [inversePrime_energy_eq, inversePrimeNumberOperator] using
+    finiteBlaschkeNumberOperator_hasSum_energy
     (fun p : Q => inversePrimeParameter p) (fun p => inversePrimeParameter_norm_lt_one p)
     (fun p => Real.log ((p : Nat.Primes) : ℕ)) (inversePrimeEuler Q) x
 

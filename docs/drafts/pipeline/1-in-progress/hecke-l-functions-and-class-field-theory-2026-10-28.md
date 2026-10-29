@@ -605,5 +605,13 @@ the concrete condition `ra∈dual(b) → r∈m` for algebraic integers `r`.
 All five main transitive audits have standard axioms only; final direct
 source audit passes without warnings. See
 [the proof](../3-formalized/hecke-finite-fourier-coefficients-are-gauss-sums.md).
-Arithmetic ideal support, dual Hecke-character identification, and the
-normalized completed reflection remain open.
+Arithmetic ideal support is now finalized in
+`HeckeFourierSupportIsIdealCoprimality.lean`. The actual coefficient is
+nonzero exactly when the constructed frequency ideal is coprime to the
+modulus, with squared norm `Norm(m)` there. Coprime ordinary-class
+representatives construct nonzero primitive trace frequencies, including
+unit modulus. All five main transitive axiom audits are standard only;
+final direct source audit passes without warnings. See
+[the arithmetic support proof](../3-formalized/hecke-fourier-support-is-ideal-coprimality.md).
+Dual Hecke-character identification and normalized completed reflection
+remain open; CFT still follows the Hecke programme.

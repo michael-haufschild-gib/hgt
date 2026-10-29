@@ -41,9 +41,10 @@ theorem finiteBlaschkeNumberOperator_hasSum_energy
         starRingEnd ℂ (B.repr (x : FiniteNumberSpace I) e) := by
       rw [B.repr_apply_apply, ← inner_conj_symm]
     rw [hc, mul_left_comm, RCLike.conj_mul]
-    simp only [← Complex.ofReal_pow, Complex.mul_re, Complex.ofReal_re,
-      Complex.ofReal_im, mul_zero, sub_zero]
-  simpa only [hterm] using hs
+    change ((finiteBlaschkeEnergy q c a e : ℂ) *
+      (‖B.repr (x : FiniteNumberSpace I) e‖ : ℂ) ^ 2).re = _
+    norm_cast
+  simpa only [hterm, Complex.reCLM_apply, B, A] using hs
 
 theorem finiteBlaschkeNumberOperator_energy_eq
     (q : I → ℝ) (hq : ∀ i, ‖(q i : ℂ)‖ < 1) (c : I → ℝ) (a : ℝ)

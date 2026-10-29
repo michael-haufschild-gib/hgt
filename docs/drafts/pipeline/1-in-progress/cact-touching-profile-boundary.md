@@ -121,3 +121,27 @@ This would be uniform for plateau transitions shrinking to0 (B_phi<=1,
 M boundedbelow), unlike the Lipschitz constant. Existing draft's all-width
 Lipschitz theorem remains useful and is being checked first; this bounded-width
 variant is not yetwritten or proved. Original source estimate, not numerical work.
+
+## Current formal status
+
+The all-width Lipschitz cross-integral estimate and the uniform whole-matrix /
+bounded-pole-profile transfers have passed their needed dependency builds with
+standard axioms. Their final individual audits remain pending. Strict charge
+and the common complete-energy defect reserve are under Lean checking.
+
+The derivative-free refinement has a sharper analytic constant than the first
+plan: positivity and monotonicity give
+ |omega(s+z)-omega(s)| <= omega(s-|z|).
+Together with linear overlap this yields raw error B²*w*(1+w/2). For w<=1,
+the near normalized error is at most(3/2)B²/M. Combined with the far estimate,
+(152Iabs²+6B²)/M is a reciprocal-square coefficient. For plateaus0<eta<=1/4,
+one common coefficient316 follows. This is a drafted formal proof, unchecked.
+
+The arithmetic draft classifies the single boundary pair and gives the exact
+finite non-ratio star. A second draft pays its total weight bylog(N+1) using
+the divisor identity. The elementary bounds1/(N+1)<d_N<1/N leave overlap at
+most1/N², giving normalized source error at most
+ (2B²/M)*log(N+1)/N*sum(x_m²).
+These drafts have not passed Lean. The eventual full complete-energy endpoint
+and bounded-spectrum transfer remain outstanding. Uniform cross control as
+eta->0 does not keep the strict-charge reserve uniform, since q_eta->1.

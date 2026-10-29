@@ -55,8 +55,17 @@ central/finite/unipotent decomposition of the completed positive Borel.
 
 ## Status and limits
 
-Paper proof recorded; implementation follows the positive-loop splitting and
-rational coefficient embedding. This does not yet prove a global Iwasawa
+Paper proof recorded. `PositiveIwahori.lean` contains the actual reduction
+subgroups, entrywise membership criteria, and the zero-coordinate unipotent
+splitting. `IwahoriGaussCoordinates.lean` contains the full Gauss equivalence
+and its principal-unit characterization. `IwahoriTorusFactorization.lean`
+contains the multiplicative finite coordinate, exact unipotent kernel, and
+unique torus/unipotent factorization. `PositiveBorelCoordinates.lean` contains
+the independent central/Iwahori embedding and unique central/finite/unipotent
+coordinates using the actual finite coroot. `PositiveIwahori` compiles without
+warnings, including the triviality of the actual tame cocycle on the full
+positive unipotent subgroup. The remaining three source checks and all final
+audits are in progress. This does not yet prove a global Iwasawa
 decomposition, construct a compact subgroup or an arithmetic lattice, or
 supply the unipotent quotient measure.
 

@@ -95,12 +95,12 @@ private theorem criticalKernel_ne_zero_of_inverse_ne_zero {m n : ℕ}
   · have hn : vonMangoldt (n / m) ≠ 0 := fun hz => h (by rw [hz, zero_div])
     have hd : n / m ≠ 0 := by
       intro hz
-      exact hn (by rw [hz, vonMangoldt_apply_zero])
+      exact hn (by simp [hz])
     exact div_ne_zero hn (Real.sqrt_pos.mpr (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hd))).ne'
   · have hn : vonMangoldt (m / n) ≠ 0 := fun hz => h (by rw [hz, zero_div])
     have hd : m / n ≠ 0 := by
       intro hz
-      exact hn (by rw [hz, vonMangoldt_apply_zero])
+      exact hn (by simp [hz])
     exact div_ne_zero hn (Real.sqrt_pos.mpr (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hd))).ne'
   · exact (h rfl).elim
 
@@ -151,7 +151,7 @@ theorem inversePrimeKernel_sieve_sum {Q : Finset Nat.Primes} {m n : ℕ}
     _ = _ := sum_image (fun a _ b _ h => Subtype.ext h)
 
 /-- The literal inverse-prime ladder is the `1/p` KMS fibre with its diagonal removed. -/
-theorem inversePrimeLadderKernel_tensor {p m n : ℕ} (hp : p.Prime) (hm : m ≠ 0) (hn : n ≠ 0) :
+theorem inversePrimeLadderKernel_tensor {p m n : ℕ} (_hp : p.Prime) (hm : m ≠ 0) (hn : n ≠ 0) :
     inversePrimeLadderKernel p m n =
       if ∀ l, l ≠ p → m.factorization l = n.factorization l then
         Real.log p * (kmsEntry (1 / (p : ℝ)) (m.factorization p) (n.factorization p) -

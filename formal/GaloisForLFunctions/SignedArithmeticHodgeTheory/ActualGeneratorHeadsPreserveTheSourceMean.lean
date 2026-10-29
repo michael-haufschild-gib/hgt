@@ -130,9 +130,7 @@ def wholeCellSourceLabel (X : ℕ) (i : ↥(Finset.Icc 1 X)) : ℕ+ :=
 theorem finiteLogCellProfile_wholeCell (c : ℕ → ℝ) (X : ℕ) :
     finiteLogCellProfile (wholeCellSourceLabel X) (fun i => c i.1) = wholeCellProfile c X := by
   funext x
-  change (∑ i ∈ (Finset.Icc 1 X).attach, c i.1 * rawCell i.1 x) =
-    ∑ i ∈ Finset.Icc 1 X, c i * rawCell i x
-  exact Finset.sum_attach _ _
+  exact Finset.sum_coe_sort (Finset.Icc 1 X) (fun i => c i * rawCell i x)
 
 /-- The finite interface has exactly the original physical logarithmic-cell coordinates. -/
 theorem finiteLogCellVector_wholeCell (c : ℕ → ℝ) (X : ℕ) :
@@ -322,7 +320,7 @@ theorem integral_actualGeneratorTail_sq_le (A : ℕ+) (n : ι → ℕ+) (c : ι 
 
 /-- Signed square compensation transfers to literal all-level profiles; the remaining Gamma costs stay explicit. -/
 theorem exists_actualGenerator_square_mixed_bound {ε : ℝ} (hε : 0 < ε) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (A : ℕ+) (n : ι → ℕ+) (c : ι → ℝ),
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (A : ℕ+) (κ : Type) [Fintype κ] (n : κ → ℕ+) (c : κ → ℝ),
       |squarePrimeSource (finiteLogCellProfile n c) - squarePrimeSource (actualGeneratorHeadProfile A n c) -
           squarePrimeSource (actualGeneratorTailProfile A n c)| ≤
         ε * (levyEnergy (actualGeneratorHeadProfile A n c) +
@@ -330,7 +328,7 @@ theorem exists_actualGenerator_square_mixed_bound {ε : ℝ} (hε : 0 < ε) :
             C * (32 * levyEnergy (finiteLogCellProfile n c) / (1 + Real.log (A : ℝ))) := by
   obtain ⟨C, hC, hb⟩ := exists_centeredSquareSource_gamma_mass_bv hε
   refine ⟨C, hC, ?_⟩
-  intro A n c
+  intro A κ _ n c
   rw [actualGenerator_square_mixed_eq_centered]
   have h := hb (actualGeneratorHeadProfile A n c) (actualGeneratorTailProfile A n c)
     (actualGeneratorHeadProfile_bv A n c) (actualGeneratorHeadProfile_compact A n c)

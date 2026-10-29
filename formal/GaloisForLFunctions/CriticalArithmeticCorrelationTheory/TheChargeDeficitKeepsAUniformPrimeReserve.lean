@@ -50,9 +50,15 @@ theorem profile_square_charge_lt_mass {φ : ℝ → ℝ} (hφ : Continuous φ)
     have heq : (fun u => (φ u - I) ^ 2) = (fun u => φ u ^ 2 - (2 * I) * φ u + I ^ 2) := by
       funext u
       ring
+    have hisub : Integrable (fun u => φ u ^ 2 - (2 * I) * φ u)
+        (volume.restrict (Set.Icc (0 : ℝ) 1)) := by
+      have hc : Continuous (fun u => φ u ^ 2 - (2 * I) * φ u) := by fun_prop
+      exact hc.integrableOn_Icc
     rw [heq, integral_add (f := fun u => φ u ^ 2 - (2 * I) * φ u)
-      (g := fun _ => I ^ 2) (hi2.sub (hi.const_mul (2 * I))) continuous_const.integrableOn_Icc,
+      (g := fun _ => I ^ 2) (μ := volume.restrict (Set.Icc (0 : ℝ) 1))
+        hisub continuous_const.integrableOn_Icc,
       integral_sub (f := fun u => φ u ^ 2) (g := fun u => (2 * I) * φ u)
+        (μ := volume.restrict (Set.Icc (0 : ℝ) 1))
         hi2 (hi.const_mul (2 * I)), integral_const_mul, hIres, hMres]
     simp only [integral_const]
     norm_num

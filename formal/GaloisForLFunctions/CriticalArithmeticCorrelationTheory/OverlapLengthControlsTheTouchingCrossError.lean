@@ -105,7 +105,8 @@ theorem abs_crossTerm_sub_le_height {g : ℝ → ℝ} {w s B : ℝ}
           mul_le_mul (hvar.trans (ArithmeticIncidencePositivity.archLevyDensity_le_inv hd))
             (abs_bumpAutocorr_le_overlap_length hg hsupp hB hheight habs)
             (abs_nonneg _) (by positivity)
-        _ = B ^ 2 * ((1 / 2) * ((w - |z|) / (s - |z|)) + (w - |z|) / 4) := by ring
+        _ = B ^ 2 * ((1 / 2) * ((w - |z|) / (s - |z|)) + (w - |z|) / 4) := by
+          field_simp [hd.ne']
         _ ≤ B ^ 2 * ((1 / 2) * 1 + w / 4) :=
           mul_le_mul_of_nonneg_left
             (add_le_add (mul_le_mul_of_nonneg_left hratio (by norm_num))

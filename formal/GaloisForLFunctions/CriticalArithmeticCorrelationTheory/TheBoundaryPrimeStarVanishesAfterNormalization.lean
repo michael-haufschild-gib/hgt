@@ -16,6 +16,8 @@ open MeasureTheory Finset
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics ArithmeticEffectivityTheory
+  RenormalizedArithmeticPotentialTheory
+open _root_.RHTower (vonMangoldtAtom vonMangoldtAtom_nonneg')
 
 private theorem boundary_weight_mass_le (N : ℕ) :
     (∑ k ∈ Icc 2 (N + 1), ∑ m ∈ Icc 1 N,
@@ -86,6 +88,157 @@ theorem abs_nonRatioForm_at_touching_le {g : ℝ → ℝ} {N : ℕ} (hN : 2 ≤ 
     abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
   exact (mul_le_mul_of_nonneg_left hsum (by positivity)).trans_eq (by dsimp only [S]; ring)
 
+private theorem touching_log_lag_bounds {N : ℕ} (hN : 1 ≤ N) :
+    0 < Real.log (N + 1 : ℕ) - Real.log N ∧
+    Real.log (N + 1 : ℕ) - Real.log N < 1 / (N : ℝ) ∧
+    1 / (N : ℝ) - (Real.log (N + 1 : ℕ) - Real.log N) ≤ (1 / (N : ℝ)) ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hN1 : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  have hpos : 0 < Real.log (N + 1 : ℕ) - Real.log N :=
+    sub_pos.mpr (Real.log_lt_log hN0 (by exact_mod_cast Nat.lt_succ_self N))
+  have hloRatio : (N : ℝ) / (N + 1) < 1 := (div_lt_one hN1).mpr (by linarith)
+  have hlo := Real.log_lt_sub_one_of_pos (div_pos hN0 hN1) (ne_of_lt hloRatio)
+  rw [Real.log_div hN0.ne' hN1.ne'] at hlo
+  have hhiRatio : 1 < ((N : ℝ) + 1) / N := (one_lt_div hN0).mpr (by linarith)
+  have hhi := Real.log_lt_sub_one_of_pos (div_pos hN1 hN0) (ne_of_gt hhiRatio)
+  rw [Real.log_div hN1.ne' hN0.ne'] at hhi
+  have e1 : 1 - (N : ℝ) / (N + 1) = 1 / ((N : ℝ) + 1) := by field_simp
+  have e2 : ((N : ℝ) + 1) / N - 1 = 1 / (N : ℝ) := by field_simp
+  have hlower : 1 / ((N : ℝ) + 1) < Real.log (N + 1 : ℕ) - Real.log N := by
+    push_cast
+    rw [← e1]
+    linarith only [hlo]
+  have hupper : Real.log (N + 1 : ℕ) - Real.log N < 1 / (N : ℝ) := by
+    push_cast
+    rwa [e2] at hhi
+  refine ⟨hpos, hupper, ?_⟩
+  calc
+    _ ≤ 1 / (N : ℝ) - 1 / ((N : ℝ) + 1) := sub_le_sub_left hlower.le _
+    _ = 1 / ((N : ℝ) * (N + 1)) := by field_simp
+    _ ≤ 1 / (N : ℝ) ^ 2 := one_div_le_one_div_of_le (sq_pos_of_pos hN0)
+      (by nlinarith only [hN0])
+    _ = _ := by ring
+
+/-- Every coefficient vector has a vanishing normalized prime correction at touching. -/
+theorem abs_normalized_nonRatioForm_at_touching_le {φ : ℝ → ℝ} {B : ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) (hB : 0 ≤ B) (hheight : ∀ u, |φ u| ≤ B)
+    {N : ℕ} (hN : 2 ≤ N) (x : ℕ → ℝ) :
+    |nonRatioForm (atomDilate φ (1 / (N : ℝ))) N x| /
+        (∫ u, atomDilate φ (1 / (N : ℝ)) u ^ 2) ≤
+      ((2 * B ^ 2 / (∫ u, φ u ^ 2)) * Real.log (N + 1 : ℕ) / N) *
+        ∑ m ∈ Icc 1 N, x m ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  let w : ℝ := 1 / N
+  let d : ℝ := Real.log (N + 1 : ℕ) - Real.log N
+  have hw : 0 < w := one_div_pos.mpr hN0
+  obtain ⟨hg, hgsupp, _hgc⟩ := atomDilate_facts hφ hsupp hw
+  obtain ⟨hd, hdw, hrem⟩ := touching_log_lag_bounds (show 1 ≤ N by omega)
+  have hheightg : ∀ u, |atomDilate φ w u| ≤ B := fun u => hheight (u / w)
+  have hG : 0 < ∫ u, atomDilate φ w u ^ 2 := by
+    rw [integral_atomDilate_sq hw]
+    exact mul_pos hw hM
+  have hcorr : |bumpCorr (atomDilate φ w) d| ≤ B ^ 2 * w ^ 2 := by
+    change |bumpAutocorr (atomDilate φ w) d| ≤ _
+    have h := abs_bumpAutocorr_le_overlap_length hg.continuous hgsupp hB hheightg
+      (show |d| ≤ w by rw [abs_of_pos hd]; exact hdw.le)
+    rw [abs_of_pos hd] at h
+    exact h.trans (mul_le_mul_of_nonneg_left hrem (sq_nonneg B))
+  have hraw := abs_nonRatioForm_at_touching_le hN hgsupp x
+  have hS : 0 ≤ ∑ m ∈ Icc 1 N, x m ^ 2 := sum_nonneg fun m _ => sq_nonneg _
+  have hl : 0 ≤ Real.log (N + 1 : ℕ) := Real.log_natCast_nonneg _
+  calc
+    _ ≤ (2 * |bumpCorr (atomDilate φ w) d| * Real.log (N + 1 : ℕ) *
+        ∑ m ∈ Icc 1 N, x m ^ 2) / (∫ u, atomDilate φ w u ^ 2) :=
+      div_le_div_of_nonneg_right hraw hG.le
+    _ ≤ (2 * (B ^ 2 * w ^ 2) * Real.log (N + 1 : ℕ) *
+        ∑ m ∈ Icc 1 N, x m ^ 2) / (∫ u, atomDilate φ w u ^ 2) :=
+      div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hcorr (by norm_num)) hl) hS) hG.le
+    _ = _ := by
+      rw [integral_atomDilate_sq hw]
+      dsimp only [w]
+      field_simp [hN0.ne', hM.ne'] <;> ring
+
+/-- The non-ratio prime correction has one vanishing budget for every ratio up to one. -/
+theorem abs_normalized_nonRatioForm_uniform_up_to_touching {φ : ℝ → ℝ} {B : ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) (hB : 0 ≤ B) (hheight : ∀ u, |φ u| ≤ B)
+    {c : ℝ} (hc0 : 0 < c) (hc1 : c ≤ 1) {N : ℕ} (hN : 2 ≤ N) (x : ℕ → ℝ) :
+    |nonRatioForm (atomDilate φ (c / N)) N x| / (∫ u, atomDilate φ (c / N) u ^ 2) ≤
+      ((4 * B ^ 2 / (∫ u, φ u ^ 2)) * Real.log (N + 1 : ℕ) / N) *
+        ∑ m ∈ Icc 1 N, x m ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hN1 : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  let w : ℝ := c / N
+  let d : ℝ := Real.log (N + 1 : ℕ) - Real.log N
+  have hw : 0 < w := div_pos hc0 hN0
+  have hwN : w ≤ 1 / (N : ℝ) := div_le_div_of_nonneg_right hc1 hN0.le
+  obtain ⟨hg, hgsupp, _hgc⟩ := atomDilate_facts hφ hsupp hw
+  have hbig : ∀ u, u ∉ Set.Icc 0 (1 / (N : ℝ)) → atomDilate φ w u = 0 := by
+    intro u hu
+    exact hgsupp u (fun h => hu ⟨h.1, h.2.trans hwN⟩)
+  obtain ⟨hd, _hdw, hrem⟩ := touching_log_lag_bounds (show 1 ≤ N by omega)
+  have hlower : 1 / ((N : ℝ) + 1) < d := by
+    have h := inv_horizon_lt_integer_log_gap
+      (N := N + 1) (n := N) (j := N + 1)
+      (mem_Icc.mpr ⟨by omega, by omega⟩) (mem_Icc.mpr ⟨by omega, le_rfl⟩) (by omega)
+    rw [abs_of_pos hd] at h
+    simpa only [Nat.cast_add, Nat.cast_one] using h
+  have hG : 0 < ∫ u, atomDilate φ w u ^ 2 := by
+    rw [integral_atomDilate_sq hw]
+    exact mul_pos hw hM
+  have hS : 0 ≤ ∑ m ∈ Icc 1 N, x m ^ 2 := sum_nonneg fun m _ => sq_nonneg _
+  have hl : 0 ≤ Real.log (N + 1 : ℕ) := Real.log_natCast_nonneg _
+  by_cases hcHalf : c ≤ 1 / 2
+  · have hwlow : w ≤ 1 / ((N : ℝ) + 1) := by
+      apply (div_le_div_iff₀ hN0 hN1).mpr
+      have hcmul := mul_le_mul_of_nonneg_right hcHalf hN1.le
+      have hNge : (1 : ℝ) ≤ N := by exact_mod_cast (show 1 ≤ N by omega)
+      nlinarith only [hcmul, hNge]
+    have hcorr : bumpCorr (atomDilate φ w) d = 0 :=
+      bumpCorr_eq_zero hgsupp (by rw [abs_of_pos hd]; exact hwlow.trans_lt hlower)
+    have hzero : nonRatioForm (atomDilate φ w) N x = 0 := by
+      rw [nonRatioForm_eq_boundary_star hN hbig x, hcorr, mul_zero, zero_mul]
+    change |nonRatioForm (atomDilate φ w) N x| / _ ≤ _
+    rw [hzero, abs_zero, zero_div]
+    positivity
+  · have hcorr : |bumpCorr (atomDilate φ w) d| ≤ B ^ 2 * (1 / (N : ℝ)) ^ 2 := by
+      by_cases hdw : d ≤ w
+      · change |bumpAutocorr (atomDilate φ w) d| ≤ _
+        have h := abs_bumpAutocorr_le_overlap_length hg.continuous hgsupp hB
+          (fun u => hheight (u / w)) (by rw [abs_of_pos hd]; exact hdw)
+        rw [abs_of_pos hd] at h
+        exact h.trans (mul_le_mul_of_nonneg_left
+          ((sub_le_sub_right hwN d).trans hrem) (sq_nonneg B))
+      · rw [bumpCorr_eq_zero hgsupp (by rw [abs_of_pos hd]; exact lt_of_not_ge hdw), abs_zero]
+        positivity
+    have hraw := abs_nonRatioForm_at_touching_le hN hbig x
+    have hcinv : 1 / c ≤ 2 := (div_le_iff₀ hc0).mpr (by linarith only [lt_of_not_ge hcHalf])
+    let A : ℝ := ((2 * B ^ 2 / (∫ u, φ u ^ 2)) * Real.log (N + 1 : ℕ) / N) *
+      ∑ m ∈ Icc 1 N, x m ^ 2
+    have hA : 0 ≤ A := by dsimp only [A]; positivity
+    calc
+      _ ≤ (2 * |bumpCorr (atomDilate φ w) d| * Real.log (N + 1 : ℕ) *
+          ∑ m ∈ Icc 1 N, x m ^ 2) / (∫ u, atomDilate φ w u ^ 2) :=
+        div_le_div_of_nonneg_right hraw hG.le
+      _ ≤ (2 * (B ^ 2 * (1 / (N : ℝ)) ^ 2) * Real.log (N + 1 : ℕ) *
+          ∑ m ∈ Icc 1 N, x m ^ 2) / (∫ u, atomDilate φ w u ^ 2) :=
+        div_le_div_of_nonneg_right
+          (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hcorr (by norm_num)) hl) hS) hG.le
+      _ = A * (1 / c) := by
+        rw [integral_atomDilate_sq hw]
+        dsimp only [w, A]
+        field_simp [hN0.ne', hc0.ne', hM.ne'] <;> ring
+      _ ≤ A * 2 := mul_le_mul_of_nonneg_left hcinv hA
+      _ = _ := by dsimp only [A]; ring
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_nonRatioForm_at_touching_le
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_normalized_nonRatioForm_at_touching_le
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_normalized_nonRatioForm_uniform_up_to_touching

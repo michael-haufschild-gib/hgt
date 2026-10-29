@@ -11,6 +11,7 @@ cell stays below twice its original label, independently of the cutoff.
 
 noncomputable section
 open RHTower
+open GaloisForLFunctions.HTGeometry.PNatBlock
 open scoped InnerProductSpace
 
 namespace GaloisForLFunctions.SignedArithmeticHodgeTheory
@@ -93,8 +94,10 @@ theorem logCellDyadic_pow_single_apply (j : ℕ) (a m : ℕ+) :
     · rw [if_neg hma, if_neg (fun h => hma (PNat.eq h))]
   | succ j =>
     rw [← logCellShift_two_pow_succ]
-    exact logCellShift_single_apply (by have := one_lt_pow₀ (by norm_num : (1 : ℕ) < 2)
-      (by omega : j + 1 ≠ 0); omega) a m
+    have hp : 2 ≤ 2 ^ (j + 1) := by
+      have h := one_lt_pow₀ (by norm_num : (1 : ℕ) < 2) (by omega : j + 1 ≠ 0)
+      omega
+    exact logCellShift_single_apply hp a m
 
 /-- The normalized stopping cell has the literal square-root length coordinates. -/
 theorem logCellStoppingVector_apply (A n m : ℕ+) :
@@ -135,11 +138,11 @@ theorem lt_twice_of_logCellStopping_block (A n m : ℕ+)
   have hn : (n : ℕ) / b = a := logCellStoppingAncestor_div A n
   have hnlo : a * b ≤ (n : ℕ) := (Nat.le_div_iff_mul_le hb).mp hn.ge
   have hmhi : (m : ℕ) < (a + 1) * b := (Nat.div_lt_iff_lt_mul hb).mp (by
-    change (m : ℕ) / b < a + 1
     change (m : ℕ) / b = a at hm
     omega)
   have ha : 1 ≤ a := (logCellStoppingAncestor A n).2.pos
-  have hbn : b ≤ (n : ℕ) := (by simpa only [one_mul] using Nat.mul_le_mul_right b ha).trans hnlo
+  have hba : b ≤ a * b := by simpa only [one_mul] using Nat.mul_le_mul_right b ha
+  have hbn : b ≤ (n : ℕ) := hba.trans hnlo
   rw [Nat.add_mul, one_mul] at hmhi
   omega
 
@@ -157,7 +160,7 @@ theorem logCellGeneratorHead_apply_eq_stopping_inner (A n : ℕ+) (x : CellH) :
         inner ℂ (logCellStoppingVector A n) x := by
   have hi := inner_logCellGeneratorHead A (e n) x
   rw [logCellGeneratorHead_single_eq_sqrt_stopping, inner_smul_left,
-    Complex.conj_ofReal, lp.inner_single_left, RCLike.inner_apply, star_one, mul_one] at hi
+    Complex.conj_ofReal, lp.inner_single_left, RCLike.inner_apply, map_one, mul_one] at hi
   exact hi.symm
 
 /-- An original cell inside a translated dyadic block. -/
@@ -167,7 +170,7 @@ def logCellDyadicBlockCell (j : ℕ) (a : ℕ+) (r : Fin (2 ^ j)) : ℕ+ :=
 theorem logCellDyadicBlockCell_div (j : ℕ) (a : ℕ+) (r : Fin (2 ^ j)) :
     (logCellDyadicBlockCell j a r : ℕ) / 2 ^ j = (a : ℕ) := by
   change ((a : ℕ) * 2 ^ j + r) / 2 ^ j = (a : ℕ)
-  exact div_block
+  exact div_block (a : ℕ) r
 
 /-- Every translated cell is an explicit finite sum of original cells. -/
 theorem logCellDyadic_pow_single_eq_sum (j : ℕ) (a : ℕ+) :
@@ -176,7 +179,10 @@ theorem logCellDyadic_pow_single_eq_sum (j : ℕ) (a : ℕ+) :
         e (logCellDyadicBlockCell j a r) := by
   cases j with
   | zero =>
-    simp only [pow_zero, one_apply_eq_self, Fin.sum_univ_one]
+    change e a = ∑ r : Fin 1,
+      (Real.sqrt (logCell (logCellDyadicBlockCell 0 a r) / logCell a) : ℂ) •
+        e (logCellDyadicBlockCell 0 a r)
+    rw [Fin.sum_univ_one]
     have hcell : logCellDyadicBlockCell 0 a 0 = a := by
       apply PNat.eq
       change (a : ℕ) * 2 ^ 0 + 0 = (a : ℕ)
@@ -190,7 +196,7 @@ theorem logCellDyadic_pow_single_eq_sum (j : ℕ) (a : ℕ+) :
     have h := divBlockOp_single_eq_sum (by positivity : 0 < 2 ^ (j + 1))
       (norm_logCellWeight_le_one hp) a
     simpa only [logCellShift, logCellWeight, div_block, logCellDyadicBlockCell,
-      Nat.toPNat] using h
+      Nat.toPNat, PNat.val] using h
 
 private theorem sqrt_weighted_column {u v w : ℝ} (hu : 0 < u) (hv : 0 < v) (hw : 0 < w) :
     Real.sqrt u * Real.sqrt (u / w) * Real.sqrt (v / w) = (u / w) * Real.sqrt v := by
@@ -241,7 +247,6 @@ private theorem sqrt_ratio_product {u v w : ℝ} (hu : 0 < u) (hv : 0 < v) (hw :
     Real.sq_sqrt (div_nonneg hv.le hw.le), div_pow, mul_pow,
     Real.sq_sqrt hu.le, Real.sq_sqrt hv.le]
   field_simp
-  <;> ring
 
 /-- The cutoff is literal logarithmic mass averaging on each stopping block. -/
 theorem logCellGeneratorHead_physicalHeight (A n : ℕ+) (x : CellH) :
@@ -262,7 +267,7 @@ theorem logCellGeneratorHead_physicalHeight (A n : ℕ+) (x : CellH) :
     apply Finset.sum_congr rfl
     intro r _
     rw [inner_smul_left, Complex.conj_ofReal, lp.inner_single_left,
-      RCLike.inner_apply, star_one, mul_one]
+      RCLike.inner_apply, map_one, mul_one]
     have he : (Real.sqrt (logCell n / logCell a) : ℂ) *
         (Real.sqrt (logCell (logCellDyadicBlockCell j a r) / logCell a) : ℂ) =
         (Real.sqrt (logCell n) : ℂ) *
@@ -277,6 +282,7 @@ theorem logCellGeneratorHead_physicalHeight (A n : ℕ+) (x : CellH) :
   have hn : (Real.sqrt (logCell n) : ℂ) ≠ 0 := by
     exact_mod_cast (Real.sqrt_pos.mpr (logCell_pos n.pos)).ne'
   field_simp
+  rfl
 
 /-- The projected physical height is constant on the entire stopping block. -/
 theorem logCellGeneratorHead_height_eq_of_same_block (A n m : ℕ+) (x : CellH)
