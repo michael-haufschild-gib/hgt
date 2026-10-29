@@ -35,7 +35,7 @@ theorem exists_actualGenerator_even_originalGamma_bound {ε : ℝ} (hε : 0 < ε
     _ ≤ (ε / generatorGammaStabilityConstant) *
         (generatorGammaStabilityConstant * levyEnergy (finiteLogCellProfile n c)) +
           C * (32 * levyEnergy (finiteLogCellProfile n c) / (1 + Real.log (A : ℝ))) :=
-      add_le_add_right hh _
+      add_le_add hh le_rfl
     _ = _ := by
       rw [← mul_assoc, div_mul_cancel₀ _ generatorGammaStabilityConstant_pos.ne']
       ring

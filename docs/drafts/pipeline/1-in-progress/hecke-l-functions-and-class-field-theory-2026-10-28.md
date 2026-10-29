@@ -41,8 +41,8 @@ Programme folders `formal/GaloisForLFunctions/HeckeLFunctions/` (first) and
       `exists_norm_heckePrimeMertensSum_one_sub_log_le`
 - [ ] HL7 Hecke's functional equation (theta series, Poisson summation, Mellin transform) —
       full-plane continuation, exact pole classification, primitive finite Gauss/conductor
-      arithmetic, and inverse-character Fourier coefficients are proved. Actual dual Mellin
-      unfolding, finite class recombination, and completed reflection remain under verification
+      arithmetic, inverse-character Fourier coefficients, and actual dual Mellin unfolding
+      are proved. Finite dual class recombination and completed reflection remain under verification
       ([dual analytic obligations](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md));
       raw completed removable values are tracked separately
       ([completed residue cancellation](hecke-unramified-character-descent-and-residue-cancellation.md))
@@ -699,3 +699,11 @@ factors. Final direct source and three main transitive axiom audits pass;
 see [dual unit unfolding](../3-formalized/hecke-dual-unit-orbits-unfold-over-the-log-space.md).
 The infinite dual Mellin exchange and completed reflection remain under
 verification.
+
+The actual dual averaged Mellin transform is now finalized on all
+`Re(s)>1`, including absolute infinite exchange and identification with
+the symmetric theta continuation. Both main transitive axiom audits and
+the final direct source audit pass; see
+[the inverse-class Mellin identity](../3-formalized/hecke-dual-averaged-mellin-is-the-inverse-class-series.md).
+Only completed removable values, scalar/class recombination, and global
+reflection remain for HL7.

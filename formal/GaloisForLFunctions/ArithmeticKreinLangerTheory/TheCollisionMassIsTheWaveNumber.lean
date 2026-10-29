@@ -19,6 +19,10 @@ count with the following property: it is bounded after subtracting `κ` waves, i
 subtracting `m` waves only if `m ≥ κ`, and the collision mass after small times is
 `2(κ + E)`. The near-axis collisions are therefore governed by the **wave number** of the prime-side
 count, the least number of exceptional exponentials it needs, plus the multiplicity excess.
+
+**A minimal count reads the multiplicities** (`minimal_count_reads_multiplicities`). A count bounded
+after exactly `κ` waves uses one wave per right zero, with amplitude `m_ρ |ĝ(γ_ρ)| |ĝ(γ̄_ρ)|`: the
+zero multiplicities, and with them the excess `E`, are read off the amplitudes of a minimal count.
 -/
 
 open Complex Finset Filter Topology Zeta23
@@ -92,5 +96,48 @@ theorem waveNumber_collision_law (h : negIndex zetaKernel < ⊤) :
     exact ⟨M, fun n => by rw [← zetaKernel_eq_onLine_add_pairs_fin hfin]; exact hM n⟩
   · obtain ⟨v, a, M, hM⟩ := hatt
     exact ⟨v, a, M, fun n => by rw [zetaKernel_eq_onLine_add_pairs_fin hfin]; exact hM n⟩
+
+/-- **A minimal count reads the multiplicities.** On the finite stratum there is a tower `⟨u⟩` such
+that every count along it bounded after exactly `κ` waves uses one wave per right zero, with
+amplitude `m_ρ · |ĝ(γ_ρ)| · |ĝ(γ̄_ρ)|`: the multiplicity times the spline factor. -/
+theorem minimal_count_reads_multiplicities (h : negIndex zetaKernel < ⊤) :
+    ∃ (hfin : (rightZeros zetaZeroConfig).Finite) (u : HeckeLattice),
+      ∀ v a : Fin hfin.toFinset.card → ℂ, (∃ M, ∀ n : ℕ,
+        ‖zetaKernel (u ^ n) - ∑ i, a i * v i ^ n‖ ≤ M) →
+      ∃ σ : Fin hfin.toFinset.card ≃ Fin hfin.toFinset.card, ∀ j,
+        ‖a (σ j)‖ = (zetaZeroConfig.mult (hfin.toFinset.equivFin.symm j : ℂ) : ℝ) *
+          ‖paperFT (cx cubicSpline) (gammaOf (hfin.toFinset.equivFin.symm j : ℂ))‖ *
+          ‖paperFT (cx cubicSpline) (conj (gammaOf (hfin.toFinset.equivFin.symm j : ℂ)))‖ := by
+  obtain ⟨hfin, -, -⟩ := eventually_collisionMassAfter_eq_index h
+  set R := hfin.toFinset with hR
+  set e := R.equivFin
+  have hρR : ∀ j, ((e.symm j : ℂ)) ∈ rightZeros zetaZeroConfig := fun j =>
+    hfin.mem_toFinset.mp (e.symm j).2
+  have hp := isPosDefKernel_orbitKernel_onLine temperedConfig_zetaZeroConfig cubicSpline_mem_realTests
+  have hω : ∀ j, conj (zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) (e.symm j : ℂ)) ≠ 0 :=
+    fun j => (_root_.map_ne_zero _).mpr (Wsummand_ne_zero_of_rightZero (hρR j))
+  obtain ⟨u, hne, hsep⟩ := exists_separating_of_small heckeLogScale heckeLogScale_small
+    (fun j => conj (e.symm j : ℂ) - 1 / 2)
+    (fun i j hij => e.symm.injective (Subtype.ext ((RingHom.injective _) (sub_left_injective hij))))
+    (fun j => by
+      have := (hρR j).2
+      simp only [sub_re, conj_re, one_div, inv_re, normSq_ofNat]
+      norm_num
+      linarith)
+  refine ⟨hfin, u, fun v a hb => ?_⟩
+  obtain ⟨σ, hσ⟩ := minimal_waves_eq_outerNodes hp _ _ hω u hne hsep v a (by
+    obtain ⟨M, hM⟩ := hb
+    exact ⟨M, fun n => by rw [← zetaKernel_eq_onLine_add_pairs_fin hfin]; exact hM n⟩)
+  refine ⟨σ, fun j => ?_⟩
+  rw [(hσ j).2]
+  have hnorm : ‖nodeCoeff (fun j => conj (zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline)
+      (e.symm j : ℂ))) (outerNode (fun j => zeroChar (conj (e.symm j : ℂ))) u j)‖ =
+      ‖zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) (e.symm j : ℂ)‖ := by
+    unfold outerNode; split_ifs
+    · simp [nodeCoeff]
+    · simp [nodeCoeff]
+  rw [hnorm]
+  simp only [ZeroConfig.Wsummand, norm_mul, Complex.norm_natCast, Complex.norm_conj]
+  rfl
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

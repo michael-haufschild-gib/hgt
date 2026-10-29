@@ -74,30 +74,16 @@ remaining constant correction by the original-Gamma square-mass bound.
 - [ActualGeneratorHeadsPreserveTheSourceMean](../../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/ActualGeneratorHeadsPreserveTheSourceMean.lean): `realSourceLp_actualGeneratorHead`, `integral_actualGeneratorHead`, `integral_actualGeneratorTail`, `integral_actualGeneratorHead_mul_tail`, `actualGenerator_square_mixed_eq_centered`, `integral_actualGeneratorTail_sq_le`, `exists_actualGenerator_square_mixed_bound`.
 - [TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost](../../../../formal/GaloisForLFunctions/SignedArithmeticHodgeTheory/TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost.lean): `exists_centeredSquare_diagonal_gamma_mass`, `exists_actualGenerator_square_head_bound`.
 
-## Exact boundary and next analytic target
+## Uniform Gamma payment and exact boundary
 
-The result retains $\Gamma(h)+\Gamma(t)$ explicitly. Uniform stability
-$\Gamma(h)+\Gamma(t)\le K\Gamma(f)$ is unproved here. It would convert the
-even-power estimate into an arbitrarily small original-Gamma error after
-choosing the cutoff; the finite-cutoff estimate itself assumes no stability.
-
-Two concrete approaches are available for research:
-
-- Compare averaged Levy kernels on stopping intervals with their far-end
-  mean-graph weights. The corpus supplies a lower bound for arbitrary
-  disjoint interval families. Adjacent interval kernels and integrated
-  exterior rows still need a uniform upper comparison.
-- Prove $\Gamma(t)\le K\sum_{j,a}(1+\log a)|d_{j,a}|^2$ for finite root-free
-  Haar expansions. The proved weighted original-source estimate would pay
-  the right side. Nested Haar cross terms remain unpaid.
-
-Neither approach is a proved input or a claim that a globally open problem
-requires a new field. Repeating a one-level constant does not establish
-uniformity in depth.
+The [uniform Gamma theorem](signed-arithmetic-hodge-uniform-gamma-stability.md)
+supplies \(\Gamma(h)+\Gamma(t)\le(2+96e^2)\Gamma(f)\) for these exact profiles,
+independently of cutoff, source cardinality, coefficients, horizon and levels.
+It uses graded stopping intervals, integrated kernel defects, simultaneous
+mean-graph payment and finite zero padding. The complete even-power source
+therefore has error≤δΓ(f) at one cutoff before all finite sources and horizons.
 
 Ordinary integral preservation does not preserve the two exponential Weil
-moments. First-prime transfer, full Gamma/polar comparison, retained-orbit
+moments. First-prime transfer, continuous polar comparison, retained-orbit
 sign and complete-form bounded index remain distinct obligations. The
 all-level retained space remains infinite-dimensional and noncompact.
-
-Working findings and verification records: `logs/signed-arithmetic-hodge-research.log`.

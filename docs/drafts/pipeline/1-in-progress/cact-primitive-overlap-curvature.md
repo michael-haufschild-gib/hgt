@@ -62,6 +62,6 @@ It explains primitive-frequency selection but is not needed if the finite proof 
 
 ## Status and obligations
 
-These are symbolic derivations under investigation, not formalized theorem claims. Corpus searches211–218 inspect existing primitive, covariance, and Ramanujan identities before any new implementation. No numerical experiments were used.
+`PrimitiveRootPrefixEnergyIsAMobiusQuadraticRemainder.lean` is an unchecked draft of the finite root-energy calculation, Möbius inversion, nonnegativity, and strict positivity off conductor multiples. The draft also cancels the constant mode for nontrivial conductors and states the resulting signed divisor-sum positivity. The draft now also includes exact real-cell interpolation and its positivity consequences. The fractional-part identification of these cells, the integral identity, and symbol matching remain open. Corpus searches211–224 inspected existing primitive, covariance, Fourier, and Ramanujan identities. No numerical experiments were used.
 
 Even a proof of all displayed symbol identities would leave separate obligations: realize the symbol in the actual overlapping complete Weil operator; control smooth approximation; prove an exhaustive low-energy description with the required conductor and overlap uniformity. Positivity of selected arithmetic modes is not positivity of the full operator and does not imply RH.

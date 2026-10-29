@@ -255,7 +255,10 @@ and final-audited in TheSiblingGammaChargePaysItsParentVariance.
 For any finite set S of dyadic level / positive parent labels and any common
 real translation t, the proved bound is
 
-sum_(j,a in S) Var_[t+j log2+log(2a), t+j log2+log(2a+2)](f) <=16 Gamma(f).
+\[
+\sum_{(j,a)\in S}\operatorname{Var}_{[t+j\log2+\log(2a),\,t+j\log2+\log(2a+2)]}(f)
+\le16\Gamma(f).
+\]
 
 Sibling rectangles are disjoint even though parent intervals are nested.
 The integer labels floor(exp(x-t)) and floor(exp(y-t)) determine their unique
@@ -449,20 +452,37 @@ printed transitive-axiom audits using only propext, Classical.choice and
 Quot.sound. The [formalized card](../3-formalized/signed-arithmetic-hodge-stopping-cell-projection.md)
 states the exact physical identities and remaining boundary.
 
-### Uniform Gamma stability and full-form boundary
+### Uniform Gamma stability and complete even-power approximation
 
-The explicit cost Gamma(h)+Gamma(t) is not bounded by original Gamma in
-the present results. Seek one K, independent of A and the source horizon,
-with Gamma(h)+Gamma(t)<=K Gamma(f), or another direct payment for the
-even-power error. Iterating a one-level estimate can lose uniformity.
-Two concrete approaches are averaged Levy-kernel comparison on stopping
-intervals and a Gamma upper synthesis estimate for root-free Haar details.
-The first has an existing arbitrary-disjoint-interval mean-graph lower
-bound; adjacent rectangle kernels and integrated exterior rows still need
-a uniform upper comparison. The second must pay nested Haar cross terms.
-These are unresolved corpus targets, not claims of globally unsolved mathematics.
+ActualGeneratorHeadsAreLocalIntervalMeans identifies each head value with the
+original source's interval mean. ComparableIntervalsHaveComparableGammaKernels
+and GradedIntervalAveragesHaveUniformGammaControl give C=32 exp(2) for graded
+short-interval averages. StoppingCellsFormAUniformlyGradedPartition supplies
+the exact endpoints and width ratios. PaddedGradedGridsHaveUniformGammaControl
+pays exterior rows once zero first/last means and exterior support are supplied.
 
-Ordinary mean preservation does not preserve either exponential Weil moment.
-First-prime payment, continuous polar comparison, retained-orbit signs and
-complete-form bounded index remain distinct research endpoints. No such
-input is assumed by the higher-power or even-power error theorems.
+ActualGeneratorHeadsAndTailsHaveUniformGammaBounds discharges every condition
+on the actual finite real cell source, with no added stability hypothesis:
+
+Gamma(h)<=32 exp(2) Gamma(f),
+Gamma(h)+Gamma(t)<=(2+96 exp(2)) Gamma(f).
+
+The constant is independent of cutoff, source cardinality, coefficients,
+horizon and every translation level. The quadratic triangle inequality pays
+the tail; no one-level constant is iterated.
+
+AllEvenPrimePowersHaveOriginalGammaApproximation proves
+
+abs(S_even(f)-S_even(h))
+ <=(epsilon+C_epsilon/(1+log A))*Gamma(f).
+
+For every delta>0, one A0 works before all finite source families and horizons;
+every A>=A0 gives error<=delta Gamma(f). This combines bounded Gamma stability
+with the vanishing L2 tail-mass bound. Entire retained orbits remain noncompact.
+All seven modules pass individual Lean checks and printed transitive-axiom
+audits with only propext, Classical.choice and Quot.sound. See the
+[formalized Gamma card](../3-formalized/signed-arithmetic-hodge-uniform-gamma-stability.md).
+
+Ordinary and local integral preservation do not preserve both exponential
+Weil moments. First-prime payment, continuous polar comparison, retained-orbit
+sign and complete-form bounded index remain distinct research endpoints.

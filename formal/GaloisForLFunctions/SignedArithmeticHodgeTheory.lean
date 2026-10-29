@@ -37,6 +37,14 @@ import GaloisForLFunctions.SignedArithmeticHodgeTheory.GeneratorCutoffsAreLogari
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.ActualGeneratorHeadsPreserveTheSourceMean
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost
 
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.ComparableIntervalsHaveComparableGammaKernels
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.GradedIntervalAveragesHaveUniformGammaControl
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.StoppingCellsFormAUniformlyGradedPartition
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.PaddedGradedGridsHaveUniformGammaControl
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.ActualGeneratorHeadsAreLocalIntervalMeans
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.ActualGeneratorHeadsAndTailsHaveUniformGammaBounds
+import GaloisForLFunctions.SignedArithmeticHodgeTheory.AllEvenPrimePowersHaveOriginalGammaApproximation
+
 /-!
 # Signed arithmetic Hodge theory with source-compatible renormalization
 
@@ -53,8 +61,9 @@ all primes and exponents at least three. Absolute coefficient summability
 holds exactly for tails beginning at cubes; prime and square layers require
 a different payment mechanism. The actual cutoff is logarithmic stopping-cell
 averaging, with finite real BV realization, preserved ordinary mean and
-orthogonal head and tail. The complete even-power source error is bounded by
-arbitrarily small head-plus-tail Gamma energy and an original-Gamma tail-mass
-cost. Uniform Gamma stability and the two exponential Weil moments remain
-separate analytic questions.
+orthogonal head and tail. Uniform graded-kernel comparison pays the actual head and tail by
+(2 + 96 exp(2)) times the original Gamma energy. Signed compensation then
+makes the complete even-power source error arbitrarily small relative to
+original Gamma, uniformly in the finite source and horizon. First-prime
+payment, both exponential Weil moments and retained-orbit sign remain separate.
 -/

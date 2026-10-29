@@ -9,8 +9,9 @@
 ## Dependency and novelty audit
 
 The actual rank-one embeddings are proved in five source modules; their
-final direct checks and transitive audit passed. Global Iwasawa
-existence is being formalized separately. No loop compact-intersection
+final direct checks and transitive audit passed.
+[Global Iwasawa existence](../3-formalized/garland-real-iwasawa-existence.md)
+is formalized and audited. No loop compact-intersection
 theorem was found in the earlier corpus search. Searches for lowest Laurent
 coefficients and alternating-word arguments found exact reusable leads:
 `HahnLeadingCoefficient.coeffAt_mul_of_vanishing_below` and its lower-bound
@@ -27,7 +28,10 @@ A further exact-name corpus search found
 `realSphericalKCircleEquiv`, and `realSphericalM_diagonal_square` (their Lean
 namespace is `GaloisForLFunctions.RHTower`). Their actual matrix proofs were
 inspected. They supply the finite rotation characterization and triangular
-square-one identity directly; transitive audit is pending.
+square-one identity directly. The finite matrix relations, actual circle
+rotation, Hahn boundary identities, and pushout letter decomposition all
+passed transitive audits with only the three standard Lean axioms. The
+input log is `/tmp/garland-compact-input-audit.txt`.
 
 This route uses the absence of a finite braid relation in affine A₁.
 The determinant-metric construction remains a possible general-rank route;
@@ -114,7 +118,10 @@ left B-equivariant and right K-invariant, on the actual central loop group.
 
 ## Status and remaining exact obligations
 
-Paper argument recorded. `SimpleCompactBorel` is written but unchecked.
+Paper argument recorded. `SimpleCompactBorel`, `RealCompactSigns`,
+`SimpleMatrixWords`, and `RealBorelCharacters` are written but unchecked. They include the exact
+simple Borel intersections, sign-torus inclusions, generation by enlarged
+simple rotation groups, alternating-word boundary coefficients, and intrinsic Borel weight characters.
 Scratch proofs for `RealRotationMatrices`, `MatrixLaurentLeading`, and
 `SubgroupAlternatingWords` are written in `/tmp/Garland*.lean`, pending
 checks before installation. The existing finite rotation characterization

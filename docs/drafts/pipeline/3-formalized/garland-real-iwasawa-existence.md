@@ -1,8 +1,8 @@
 # Existence of real loop Iwasawa factors
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** Prove every element of the actual real Laurent central
   extension is a product of its positive Borel and the subgroup generated
   by the two simple compact rank-one groups.
@@ -11,7 +11,7 @@
 
 Affine Bruhat and the exact Borel-preimage theorem are formalized and
 audited. The actual finite and affine SL₂ embeddings are formalized and audited in
-[the rank-one card](../3-formalized/garland-simple-rank-one-subgroups.md).
+[the rank-one card](garland-simple-rank-one-subgroups.md).
 Corpus search found `RHTower.realIwasawaB_mul_realIwasawaK`; its inspected
 proof factors a real SL₂ matrix using the upper-half-plane section and
 the stabilizer of i. Its transitive axiom audit passed.
@@ -67,12 +67,14 @@ each Pᵢ is a subgroup. The identity starts the induction. Thus G=BK.
 This proves existence only. It does not assert uniqueness of Borel torus
 coordinates, compactness of an infinite-dimensional group, a spherical
 character outside B, or any arithmetic convergence. Intersection control
-is separately open in [its own card](garland-compact-borel-intersection.md).
-The [determinant-norm route](garland-determinant-metric-iwasawa.md) remains
+is separately open in [its own card](../1-in-progress/garland-compact-borel-intersection.md).
+The [determinant-norm route](../1-in-progress/garland-determinant-metric-iwasawa.md) remains
 an alternative for more general root data.
 
-`VertexParabolics` and `VertexGeneration` passed clean dependency checks.
-`RealIwasawaExistence` is written and undergoing its first source check.
+All three modules passed clean dependency builds and final direct source
+checks. They are wired into the umbrella. The saved
+[transitive axiom audit](garland-real-iwasawa-existence-axioms.txt) passed
+with only `propext`, `Classical.choice`, and `Quot.sound`.
 They define both actual
 parabolics, prove the reduction-kernel shift criterion, factor each
 parabolic into Borel times its actual simple subgroup, and prove generation
@@ -80,5 +82,5 @@ using affine Bruhat. The last module defines the actual subgroup generated
 by simple rotations and central signs, proves parabolic factorizations,
 and applies induction over the two parabolics. The finite real input passed
 its transitive audit with only `propext`, `Classical.choice`, and `Quot.sound`;
-the scratch log is `/tmp/garland-iwasawa-input-audit.txt`.
+its audit and checked induction signatures are included in the saved log.
 The rank-one batch passed all final source and dependency audits.

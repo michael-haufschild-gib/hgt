@@ -76,8 +76,9 @@ coordinates unless stored separately.
    the complete prime-two Euler contribution has one original-source Gamma budget. Orthogonal tail localization and Gamma
    translation invariance pay every real-lag correlation, each fixed finite Euler family, and jointly every cube and higher power
    of every prime. The cutoff is exactly logarithmic stopping-cell averaging: it preserves the ordinary mean and splits square
-   mass orthogonally. The full even-power source error costs arbitrarily little head-plus-tail Gamma plus the paid tail mass.
-   Uniform Gamma stability, first-prime transfer and full-Weil signed payment remain separate.
+   mass orthogonally. Uniformly, Γ(head)+Γ(tail)≤(2+96e²)Γ(original). Signed compensation and the paid L² tail mass
+   give complete even-power approximation with arbitrarily small original-Gamma error. First-prime transfer, both
+   exponential poles and full-Weil signed payment remain separate.
 6. **Renormalized adjunction**: growing Ramanujan families have one Gram budget $(1+2\sum_{m\in S}m^2)/\log N$; prime-row corrections cost
    $C_m=\sqrt{\varphi(m)}(1+4\log m)$; one Mertens-type remainder $B_N$, bounded uniformly in $N$, controls every Ramanujan residual.
 7. **Local capture and escape**: modal families lose normalized mass on every fixed integer window ($\le K_{S,L}/(\log N-D_S)$); every bounded
@@ -103,9 +104,10 @@ coordinates unless stored separately.
    `TheArithmeticResidualBudgetIsUniformInTheHorizon`).
 6. **Local capture cost and escape of bounded prime energy** (`RamanujanFamiliesHaveAnExplicitLocalCaptureCost`,
    `BoundedPrimeEnergyEscapesEveryFixedIntegerWindow`).
-7. **Actual stopping-cell averages and complete even-power head error** (`EveryGeneratorCutoffStopsAtAnActualDyadicCell`,
+7. **Actual stopping averages, uniform Gamma stability and complete even-power approximation** (`EveryGeneratorCutoffStopsAtAnActualDyadicCell`,
    `GeneratorCutoffsAreLogarithmicBlockAverages`, `ActualGeneratorHeadsPreserveTheSourceMean`,
-   `TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost`).
+   `TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost`, `ActualGeneratorHeadsAreLocalIntervalMeans`,
+   `ActualGeneratorHeadsAndTailsHaveUniformGammaBounds`, `AllEvenPrimePowersHaveOriginalGammaApproximation`).
 
 For the actual complete-cell clock $W_2$, the generator cutoff $P_A$ retains the root and every Haar label $a<A$ at every level.
 [GeneratorOrbitCutoffsReduceTheDyadicClock](GeneratorOrbitCutoffsReduceTheDyadicClock.lean) proves $P_AW_2^k=W_2^kP_A$ and
@@ -205,11 +207,28 @@ for every $\varepsilon>0$, one $C_\varepsilon\ge0$ works for every cutoff and ev
 \le\varepsilon\bigl(\Gamma(h)+\Gamma(t)\bigr)
  +C_\varepsilon\frac{32\Gamma(f)}{1+\log A}.
 \]
-The proof extracts the centered diagonal estimate by quadratic homogeneity, then pays the zero-mean tail's remaining correction
-with its square mass. The actual projected Gamma energies remain explicit. A bound
-$\Gamma(h)+\Gamma(t)\le K\Gamma(f)$ uniform in cutoff and horizon is an unresolved intermediate target; it is not assumed here.
-Ordinary mean preservation does not preserve the two exponential Weil moments. These four modules pass individual Lean checks
-and their printed capstones use only `propext`, `Classical.choice` and `Quot.sound`.
+The centered diagonal estimate follows from quadratic homogeneity; the zero-mean tail's remaining correction costs its square mass.
+[ActualGeneratorHeadsAndTailsHaveUniformGammaBounds](ActualGeneratorHeadsAndTailsHaveUniformGammaBounds.lean) proves
+\[
+\Gamma(h)\le32e^2\Gamma(f),\qquad
+\Gamma(h)+\Gamma(t)\le(2+96e^2)\Gamma(f).
+\]
+This holds for every positive cutoff and every finite real cell source, uniformly in coefficients, cardinality, horizon and
+translation depth. The head equals the original mean on each stopping interval. The grid has widths at most one and adjacent
+width ratios at most three. Integrated touching-boundary defects and separated-kernel comparisons bound its complete energy
+by the original source's simultaneous mean-graph and exterior charges. Finite zero padding discharges the exposed boundary
+conditions. The quadratic triangle inequality pays the tail, without iterating a constant through the levels.
+
+[AllEvenPrimePowersHaveOriginalGammaApproximation](AllEvenPrimePowersHaveOriginalGammaApproximation.lean) consequently gives
+\[
+|S_{\rm even}(f)-S_{\rm even}(h)|
+\le\left(\varepsilon+\frac{C_\varepsilon}{1+\log A}\right)\Gamma(f).
+\]
+For every δ>0 there is one A₀, before all finite source families and horizons, such that every A≥A₀ gives error≤δΓ(f).
+The argument combines bounded Gamma stability with small L² tails; complete translation orbits remain infinite-dimensional
+and noncompact. First-prime transfer, both exponential Weil moments and retained-orbit sign remain separate obligations.
+All seven kernel, grid, physical-mean, Gamma-stability and even-power modules pass individual Lean checks. Their printed
+capstones use only `propext`, `Classical.choice` and `Quot.sound`.
 
 ---
 
@@ -230,11 +249,9 @@ and their printed capstones use only `propext`, `Classical.choice` and `Quot.sou
 
 ## 6. Open problems
 
-1. **Joint full-Weil payment** using the all-level Gamma allocation. The complete even-power head error has an explicit
-   $\varepsilon(\Gamma(h)+\Gamma(t))$ cost and an original-Gamma tail-mass cost. Seek uniform Gamma stability of the actual
-   stopping-cell average, or a direct way to pay that remaining cost. Averaged Levy-kernel comparison and weighted Haar upper
-   synthesis are concrete analytic candidates, not proved inputs or established globally open problems. First-prime transfer,
-   both exponential polar moments, retained-orbit sign and a complete-form bounded-index theorem remain separate obligations.
+1. **Joint full-Weil payment** using uniform actual-head Gamma stability and complete even-power approximation. First-prime
+   transfer, both exponential polar moments, retained-orbit sign and a complete-form bounded-index theorem remain distinct
+   obligations. The supplied averaging bound has one original-source reserve, independent of cutoff and translation depth.
 2. **Twin-selective control of generator orbits** with Gamma and both poles; transfer of the discrete prime gap beyond narrow spacing.
 3. **Arithmetic upper bound on $\mathcal E_{\rm crit}$** retaining exterior rows (finiteness ⇒ finite off-line support; $\mathcal E_{\rm crit}\le1294047/2000$ ⇔ RH).
 4. **Growing Ramanujan families** controlling a useful full-source domain, with a complement estimate surviving Gamma and the continuous

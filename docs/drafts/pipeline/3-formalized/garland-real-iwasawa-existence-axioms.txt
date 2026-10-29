@@ -1,0 +1,39 @@
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.laurentIwahori_le_affineVertex' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.affineShift_mem_laurentIwahori' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveVertex_borel_finite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.affineVertex_borel_affine' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.vertex_sup_eq_top' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.finiteSL2_iwasawa' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.affineSL2_iwasawa' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.exists_iwasawa' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.exists_iwasawa (g : LoopSL2 ℝ) :
+  ∃ b ∈ LoopSL2.positiveBorel ℝ, ∃ k ∈ LoopSL2.realCompact, b * k = g
+Subgroup.closure_induction_left.{u_2} {G : Type u_2} [Group G] {s : Set G} {p : (x : G) → x ∈ Subgroup.closure s → Prop}
+  (one : p 1 ⋯) (mul_left : ∀ (x : G) (hx : x ∈ s) (y : G) (hy : y ∈ Subgroup.closure s), p y hy → p (x * y) ⋯)
+  (inv_mul_cancel : ∀ (x : G) (hx : x ∈ s) (y : G) (hy : y ∈ Subgroup.closure s), p y hy → p (x⁻¹ * y) ⋯) {x : G}
+  (h : x ∈ Subgroup.closure s) : p x h
+Subgroup.closure_union.{u_1} {G : Type u_1} [Group G] (s t : Set G) :
+  Subgroup.closure (s ∪ t) = Subgroup.closure s ⊔ Subgroup.closure t
+Subgroup.mem_sup_left.{u_1} {G : Type u_1} [Group G] {S T : Subgroup G} {x : G} : x ∈ S → x ∈ S ⊔ T
+Subgroup.mem_sup_right.{u_1} {G : Type u_1} [Group G] {S T : Subgroup G} {x : G} : x ∈ T → x ∈ S ⊔ T
+Subgroup.zpow_mem.{u_1} {G : Type u_1} [Group G] (K : Subgroup G) {x : G} (hx : x ∈ K) (n : ℤ) : x ^ n ∈ K
+PowerSeries.constantCoeff_X.{u_1} {R : Type u_1} [Semiring R] : PowerSeries.constantCoeff PowerSeries.X = 0
+GaloisForLFunctions.RHTower.realUpperBorel_mem_iff (g : GaloisForLFunctions.RHTower.SL2R) :
+  g ∈ GaloisForLFunctions.RHTower.realUpperBorel ↔ ↑g 1 0 = 0
+'GaloisForLFunctions.RHTower.realIwasawaB_mul_realIwasawaK' depends on axioms: [propext, Classical.choice, Quot.sound]

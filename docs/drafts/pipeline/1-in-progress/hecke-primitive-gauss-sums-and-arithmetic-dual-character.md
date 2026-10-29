@@ -14,8 +14,8 @@ Gamma factors, primal class-series Mellin identities, primal finite class
 recombination, and global ordinary-L continuation are formalized. The
 actual primitive Fourier coefficients are now identified with inverse
 Hecke ideal values, and their Gauss norms and discriminant normalization
-are proved. Remaining obligations are actual dual Mellin unfolding,
-dual class recombination, completed removable values, and normalized
+are proved. Actual dual Mellin unfolding is also finalized. Remaining
+obligations are dual class recombination, completed removable values, and normalized
 reflection. Their complete drafts are under verification on the
 [dual unfolding card](hecke-dual-theta-unfolding-over-fractional-ideal-classes.md).
 
@@ -77,11 +77,11 @@ and audited. Neither is an assumed arithmetic interface.
    reference frequency without assuming principal conductor or different.
    The corrected Gauss constant and its exact norm are proved; no ideal
    coefficient is evaluated as a unit at a conductor prime.
-4. **Coefficient identification done; analytic reindexing open:** every
-   nonzero dual coefficient is the inverse actual Hecke ideal value with
-   exact Gauss, sign, and base-class factors. Fractional-ideal unit orbits
-   are finalized. Their actual dual Mellin sum is under verification on
-   the unfolding card.
+4. **Done:** every nonzero dual coefficient is the inverse actual Hecke
+   ideal value with exact Gauss, sign, and base-class factors. Fractional
+   class/unit orbits, actual dual unit unfolding, infinite Mellin exchange,
+   and identification with the symmetric continuation are finalized; see
+   [the dual Mellin proof](../3-formalized/hecke-dual-averaged-mellin-is-the-inverse-class-series.md).
 5. Assemble the completed reflection with the exact discriminant,
    conductor and parity factors, and audit the root number.
 

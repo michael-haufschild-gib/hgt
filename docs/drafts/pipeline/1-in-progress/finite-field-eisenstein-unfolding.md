@@ -473,3 +473,21 @@ The three displayed translates are disjoint, hence `F` is compact open and has
 volume one. This gives an actual measurable fundamental domain and probability
 measure on `Adeles/K`, with no assumed covolume. These statements still require
 Lean formalization; the ambient Haar measure alone does not establish them.
+
+## Conventions for the remaining Eisenstein identity
+
+Use the `KHU` Iwasawa convention and the right arithmetic cosets
+`Γ/(Γ∩B)`, with `χ=-λ-ρ`. The intended series is
+`Eχ(g η)=Σ_{γ∈Γ/(Γ∩B)} Φχ(g η γ)`. Its constant term integrates
+`Eχ(g η u)` over `U_A/(U_A∩Γ)`. The target torus factor is
+`(h η)^(w(χ+ρ)-ρ)=(h η)^(-wλ-ρ)`, exactly `weylExponent`.
+This matches Lee–Lombardo, §3.5 and Theorem 4.23.
+
+In rank one, for `u(x)=[[1,x],[0,1]]` and
+`w=[[0,-1],[1,0]]`, when `|x|>1` one has
+`u(x)w = lower(x⁻¹) diag(x,x⁻¹) upper(-x⁻¹)`.
+The first factor is integral, so `χ(h)=-s-1` gives `|x|^(-s-1)`;
+for integral `x`, `u(x)w` itself is integral. This is the precise matrix
+identity still to connect to `sphericalKernel`. The left-coset Bruhat
+coordinates above transport to right cosets by inversion; the corresponding
+Weyl labels must be inverted when making that comparison.

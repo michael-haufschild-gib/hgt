@@ -50,7 +50,7 @@ theorem separated_of_abs_sub_ge_two {N n j : ℕ} {w : ℝ}
     max_le (by exact_mod_cast (mem_Icc.mp hn).2) (by exact_mod_cast (mem_Icc.mp hj).2)
   have hmax0 : 0 < max (n : ℝ) j := hn0.trans_le (le_max_left _ _)
   have hgap := gap_div_le_abs_log_div hn1 hj1 hnj
-  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (j : ℝ) n, abs_sub_comm (Real.log n) (Real.log j)] at hgap
+  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (Real.log n) (Real.log j)] at hgap
   have h2N : 2 / (N : ℝ) ≤ |(n : ℝ) - j| / max (n : ℝ) j := by
     rw [div_le_div_iff₀ hN0 hmax0]
     nlinarith only [hd, hmaxN, hN0]
@@ -80,7 +80,7 @@ theorem separated_of_two_mul_max_le {N n j : ℕ} {w : ℝ}
     · have hR : (j : ℝ) + 1 ≤ n := by exact_mod_cast Nat.succ_le_of_lt h
       rw [abs_of_pos (by linarith only [hR])]; linarith only [hR]
   have hgap := gap_div_le_abs_log_div hn1 hj1 hnj
-  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (j : ℝ) n, abs_sub_comm (Real.log n) (Real.log j)] at hgap
+  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (Real.log n) (Real.log j)] at hgap
   have h2N : 2 / (N : ℝ) ≤ |(n : ℝ) - j| / max (n : ℝ) j := by
     rw [div_le_div_iff₀ hN0 hmax0]
     nlinarith only [hd1, hmax_half, hN0]
@@ -127,7 +127,7 @@ theorem top_adjacent_of_log_gap_le {N n j : ℕ} {w : ℝ}
     · push_cast; rw [show (n : ℝ) - (n + 1) = -1 by ring]; norm_num
     · push_cast; rw [show (j : ℝ) + 1 - j = 1 by ring]; norm_num
   have hgap := gap_div_le_abs_log_div hn1 hj1 hnj
-  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (j : ℝ) n, abs_sub_comm (Real.log n) (Real.log j)] at hgap
+  rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (Real.log n) (Real.log j)] at hgap
   have h1N : 1 / (N : ℝ) ≤ |(n : ℝ) - j| / max (n : ℝ) j := by
     rw [div_le_div_iff₀ hN0 hmax0]
     nlinarith only [hd1, hmaxN, hN0]
@@ -287,10 +287,16 @@ theorem abs_separatedCrossErrorKernel_transMetzler_le {w : ℝ} {N n j : ℕ}
           archLevyDensity |Real.log j - Real.log n| *
             (∫ u, atomDilate transMetzlerProfile w u) ^ 2| /
           (∫ u, atomDilate transMetzlerProfile w u ^ 2) := by
-      rw [← abs_of_pos hM, ← abs_div]
-      congr 1
-      field_simp [hM.ne']
-      ring
+      rw [show atomCrossTerm (atomDilate transMetzlerProfile w) |Real.log j - Real.log n| /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) -
+            ((∫ u, atomDilate transMetzlerProfile w u) ^ 2 /
+              (∫ u, atomDilate transMetzlerProfile w u ^ 2)) *
+              archLevyDensity |Real.log j - Real.log n| =
+          (atomCrossTerm (atomDilate transMetzlerProfile w) |Real.log j - Real.log n| -
+            archLevyDensity |Real.log j - Real.log n| *
+              (∫ u, atomDilate transMetzlerProfile w u) ^ 2) /
+            (∫ u, atomDilate transMetzlerProfile w u ^ 2) by ring,
+        abs_div, abs_of_pos hM]
     rw [heq]
     have hplat := plateau_crossError_le_uniform etaZero_pos (by norm_num [etaZero]) hw0 hw1 hws
     change |atomCrossTerm (atomDilate transMetzlerProfile w) |Real.log j - Real.log n| -
@@ -298,7 +304,7 @@ theorem abs_separatedCrossErrorKernel_transMetzler_le {w : ℝ} {N n j : ℕ}
           (∫ u, atomDilate transMetzlerProfile w u) ^ 2| /
         (∫ u, atomDilate transMetzlerProfile w u ^ 2) ≤ _ at hplat
     have hgap := gap_div_le_abs_log_div hn1 hj1 hnj
-    rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm] at hgap
+    rw [Real.log_div hn0.ne' hj0.ne', abs_sub_comm (Real.log n) (Real.log j)] at hgap
     have hmax0 : 0 < max (n : ℝ) j := hn0.trans_le (le_max_left _ _)
     have hd_pos : 0 < |(n : ℝ) - j| := abs_pos.mpr (sub_ne_zero.mpr (by exact_mod_cast hnj))
     have hsq_gap : (|(n : ℝ) - j| / max (n : ℝ) j) ^ 2 ≤ |Real.log j - Real.log n| ^ 2 :=
@@ -1149,7 +1155,7 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
   have hshort_pt : ∀ y ∈ Set.Ioc 0 (2 * w),
       |levyMixed (atomDilate transMetzlerProfile w)
           (fun u => atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|)) y| ≤
-        16000 * w := by
+        16000 := by
     intro y hy
     have hy0 : 0 < y := hy.1
     have hω0 : 0 ≤ archLevyDensity y := (archLevyDensity_pos hy0).le
@@ -1161,8 +1167,8 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
           atomDilate transMetzlerProfile w (u + y - |Real.log j - Real.log n|)) ^ 2 := by
       have h := hsq1.comp_sub_right |Real.log j - Real.log n|
       refine h.congr (Eventually.of_forall fun u => ?_)
-      simp only [Function.comp_apply, show u - |Real.log j - Real.log n| + y =
-        u + y - |Real.log j - Real.log n| by ring]
+      dsimp only [Function.comp_apply]
+      rw [show u - |Real.log j - Real.log n| + y = u + y - |Real.log j - Real.log n| by ring]
     have hcs_u : |∫ u, (atomDilate transMetzlerProfile w u -
           atomDilate transMetzlerProfile w (u + y)) *
         (atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|) -
@@ -1218,27 +1224,25 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
     calc archLevyDensity y * |∫ u, _|
         ≤ (Real.exp (1 / 2) / (2 * y)) * (2 * (8000 / w) * y * (w * ∫ u, |transMetzlerProfile u|)) :=
           mul_le_mul hd (hcs_u.trans hinc) (abs_nonneg _) (by positivity)
-      _ = Real.exp (1 / 2) * 8000 * w * ∫ u, |transMetzlerProfile u| := by
+      _ = Real.exp (1 / 2) * 8000 * ∫ u, |transMetzlerProfile u| := by
           field_simp [hy0.ne', hw0.ne']
-          ring
-      _ ≤ 2 * 8000 * w * 1 := by
-          have hw_pos := hw0.le
+      _ ≤ (2 * 8000) * 1 := by
           have hI0 : 0 ≤ ∫ u, |transMetzlerProfile u| := integral_nonneg fun _ => abs_nonneg _
-          exact mul_le_mul (by linarith only [he2, hw_pos]) hI1 hI0 (by positivity)
-      _ = 16000 * w := by ring
+          exact mul_le_mul (by linarith only [he2]) hI1 hI0 (by norm_num)
+      _ = 16000 := by norm_num
   have hshort_int : |∫ y in Set.Ioc 0 (2 * w),
       levyMixed (atomDilate transMetzlerProfile w)
         (fun u => atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|)) y| ≤
-      32000 * w ^ 2 := by
+      32000 * w := by
     calc |∫ y in Set.Ioc 0 (2 * w), _|
         ≤ ∫ y in Set.Ioc 0 (2 * w), |levyMixed (atomDilate transMetzlerProfile w)
             (fun u => atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|)) y| :=
           abs_integral_le_integral_abs
-      _ ≤ ∫ _ in Set.Ioc 0 (2 * w), 16000 * w :=
+      _ ≤ ∫ _ in Set.Ioc 0 (2 * w), (16000 : ℝ) :=
           setIntegral_mono_on hint_short.abs
-            (integrableOn_const (by simp [ENNReal.mul_eq_top]))
+            (integrableOn_const (by simp))
             measurableSet_Ioc hshort_pt
-      _ = 32000 * w ^ 2 := by
+      _ = 32000 * w := by
           rw [setIntegral_const, smul_eq_mul, Real.volume_real_Ioc_of_le (by positivity)]
           ring
   have hshort_div : |∫ y in Set.Ioc 0 (2 * w),
@@ -1246,8 +1250,7 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
         (fun u => atomDilate transMetzlerProfile w (u - |Real.log j - Real.log n|)) y| /
       (∫ u, atomDilate transMetzlerProfile w u ^ 2) ≤ 64000 := by
     rw [div_le_iff₀ hM_pos]
-    have hw1 : w ≤ 1 := by linarith only [h2w1, hw0]
-    nlinarith only [hshort_int, hM_half, hw0, hw1]
+    linarith only [hshort_int, hM_half]
   -- Long shifts `(2w, ∞)`: cross-shift products vanish, leaving `2 * archLevyDensity y * bumpCorr`
   have hlong_pt : ∀ y ∈ Set.Ioi (2 * w),
       levyMixed (atomDilate transMetzlerProfile w)
@@ -1437,12 +1440,13 @@ theorem abs_integral_levyMixed_adjacent_le {N n j : ℕ} {w δ₀ : ℝ}
     have hover : |(SpacingScaleHarmonicAnalysis.bumpCorr (atomDilate transMetzlerProfile w)
         |Real.log j - Real.log n|)| ≤ w - |Real.log j - Real.log n| := by
       change |(bumpAutocorr (atomDilate transMetzlerProfile w) |Real.log j - Real.log n|)| ≤ _
-      simpa only [one_pow, one_mul, abs_abs] using
-        abs_bumpAutocorr_le_overlap_length hg.continuous hgsupp zero_le_one
-          (fun u => by
-            rw [atomDilate, abs_of_nonneg (transMetzlerProfile_nonneg _)]
-            exact transMetzlerProfile_le_one _)
-          (by rwa [abs_abs])
+      have hb := abs_bumpAutocorr_le_overlap_length hg.continuous hgsupp zero_le_one
+        (fun u => by
+          rw [atomDilate, abs_of_nonneg (transMetzlerProfile_nonneg _)]
+          exact transMetzlerProfile_le_one _)
+        (by rwa [abs_of_nonneg (abs_nonneg _)])
+      rw [one_pow, one_mul, abs_of_nonneg (abs_nonneg _)] at hb
+      exact hb
     have hw_sub : w - |Real.log j - Real.log n| ≤ δ₀ / (N : ℝ) := by
       have hsub := sub_le_sub hw_hi hs_ge
       have hring : (1 + δ₀) / (N : ℝ) - 1 / (N : ℝ) = δ₀ / (N : ℝ) := by ring

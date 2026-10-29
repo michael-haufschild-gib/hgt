@@ -9,10 +9,10 @@
 ## Current status
 
 Arithmetic coefficients, fractional class/unit orbits, actual dual unit
-unfolding, and exact individual class Mellin integrals are finalized.
-Infinite averaged Mellin exchange, scalar recombination, completed
-removable values, and global reflection have complete drafts but remain
-under verification. **HL7 remains open. Class field theory has not begun.**
+unfolding, exact class Mellin integrals, infinite Mellin exchange, and
+symmetric theta-continuation identification are finalized. Scalar/class
+recombination, completed removable values, and global reflection have
+complete drafts but remain under verification. **HL7 remains open. Class field theory has not begun.**
 
 Every finalized module below passes its final direct source audit without
 warnings. Its recorded transitive axiom audits contain only `propext`,
@@ -117,7 +117,7 @@ explicit zero element, since its fractional-ideal subtype has no zero
 instance. Typed projection maps and typed continuous factors avoid
 unnecessary definitional unfolding; all checks use default limits.
 
-## Infinite Mellin exchange — draft
+## Infinite Mellin exchange — formalized
 
 The proved arithmetic coefficient and norm give
 
@@ -144,9 +144,10 @@ parity gives an actual strong pair and its symmetric strong pair.
 `IsStrongFEPair.symm` and `WeakFEPair.symm` are checked in Mathlib
 `NumberTheory/LSeries/AbstractFuncEq.lean`.
 
-The infinite exchange and symmetric continuation comparison pass their
-scratch check without warnings; both main transitive axiom audits are
-standard only. The promoted source is undergoing its final direct audit.
+The infinite exchange and symmetric continuation comparison are finalized
+in `HeckeDualAveragedMellinIsTheInverseClassSeries`. Both main transitive
+axiom audits and the final direct source audit pass without warnings.
+See [the exact averaged Mellin proof](../3-formalized/hecke-dual-averaged-mellin-is-the-inverse-class-series.md).
 
 ## Exact global scalar — draft
 
@@ -183,7 +184,8 @@ removal. The [completed residue card](hecke-unramified-character-descent-and-res
 tracks physical cancellation by ordinary-class orthogonality and dual
 cancellation by the proved ordinary L-pole coefficient plus nonvanishing
 of Gamma at one. Entire divided differences supply both removable values.
-The residue and corrected-completion drafts remain unchecked.
+The residue scratch check passes with standard-only transitive axioms;
+its final source audit is running. The corrected-completion draft remains unchecked.
 
 Finite class recombination uses the proved permutation and the exact
 scalar above. The final draft defines the pole-cleared entire function
@@ -204,15 +206,15 @@ Finalized with consumer oleans built:
 - `HeckeDualClassKernelsHaveExactMellinIntegrals`
 - `HeckeConductorsAndParitiesAreInvariantUnderInversion`
 
+Finalized, required consumer olean pending:
+- `HeckeDualAveragedMellinIsTheInverseClassSeries`.
+
 Current check:
-- `HeckeDualAveragedMellinIsTheInverseClassSeries.lean`: final direct
-  source audit running after a clean scratch check and both standard-only
-  main transitive axiom audits.
+- `HeckeCompletedThetaResiduesCancel`: final direct source audit running.
+  Its scratch check passes with standard-only transitive axioms; the sole
+  correction was using `Units.val_inv_eq_inv_val` for inverse coercion.
 
 Unchecked complete drafts and intended module names:
-- `/tmp/HeckeCompletedThetaResidueCancellationScratch.lean` →
-  `HeckeCompletedThetaResiduesCancel`; imports the already built global
-  ordinary L-continuation.
 - `/tmp/HeckeGammaCompletedContinuationScratch.lean` →
   `HeckeGammaCompletedFunctionsHaveRemovableValues`; imports residue
   cancellation.

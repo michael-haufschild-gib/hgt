@@ -69,3 +69,9 @@ and targets global meromorphy and nontrivial-character entireness. Its
 last theorem recovers the ordinary entire L-function by reciprocal Gamma
 using analytic uniqueness, including removable values. This is unchecked;
 it authorizes the residue module's consumer olean after finalization.
+
+The residue-cancellation scratch check passes. Both main transitive axiom
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+`HeckeCompletedThetaResiduesCancel.lean` now contains the verified proof;
+its final direct source audit is running. The sole correction was the
+inverse-unit coercion rewrite `Units.val_inv_eq_inv_val`.

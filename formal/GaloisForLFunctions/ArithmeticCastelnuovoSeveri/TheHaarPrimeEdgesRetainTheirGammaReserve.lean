@@ -96,7 +96,7 @@ theorem setIntegral_abs_haarProfile_pair {a : ℕ} (ha : 1 ≤ a) :
     intro hin
     exact hx ⟨lt_of_le_of_ne hin.1 hne.symm, hin.2⟩
 
-private theorem haar_prime_edge_order {a b m : ℕ} (ha : 1 ≤ a) (hm : 3 ≤ m)
+private theorem haar_prime_edge_order {a b m : ℕ} (_ha : 1 ≤ a) (hm : 3 ≤ m)
     (he : (2 * a + 1) * m = 2 * b + 1) : a < b := by
   have h := Nat.mul_le_mul_left (2 * a + 1) hm
   rw [he] at h
@@ -114,7 +114,7 @@ private theorem haar_prime_rectangle_density {a b m : ℕ} (ha : 1 ≤ a) (hm : 
   have hlow : (m : ℝ) * ((2 * a + 1 : ℕ) : ℝ) - 1 = ((2 * b : ℕ) : ℝ) := by
     have heR : (((2 * a + 1 : ℕ) : ℝ)) * (m : ℝ) = ((2 * b + 1 : ℕ) : ℝ) :=
       by exact_mod_cast he
-    simp only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat] at heR ⊢
+    simp only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one] at heR ⊢
     nlinarith only [heR]
   have hupp : ((2 * a + 1 : ℕ) : ℝ) + 1 = ((2 * a + 2 : ℕ) : ℝ) := by
     push_cast
@@ -122,7 +122,7 @@ private theorem haar_prime_rectangle_density {a b m : ℕ} (ha : 1 ≤ a) (hm : 
   have hs : 0 < Real.sqrt (m : ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast (by omega : 0 < m))
   refine ⟨hxy, (le_div_iff₀ hs).mpr ?_⟩
   rw [mul_comm]
-  apply sqrt_mul_archLevyDensity_le_two (by exact_mod_cast hm)
+  apply sqrt_mul_archLevyDensity_le_two (n := ((2 * a + 1 : ℕ) : ℝ)) (by exact_mod_cast hm)
     (by exact_mod_cast (show 3 ≤ 2 * a + 1 by omega))
   rw [hlow, hupp]
   linarith only [hx.2, hy.1]
@@ -144,7 +144,7 @@ theorem haarGammaCoupling_le_prime_scale {a b m : ℕ} (ha : 1 ≤ a) (hm : 3 �
   have hsep : U a ≤ L b := Real.log_le_log (by positivity)
     (by exact_mod_cast (show 2 * a + 2 ≤ 2 * b by omega))
   have hd : Disjoint (Ioo (L a) (U a)) (Ioo (L b) (U b)) := by
-    apply disjoint_left.mpr
+    apply Set.disjoint_left.mpr
     intro x hx hy
     linarith only [hx.2, hy.1, hsep]
   have hrect : ∀ᵐ p ∂μ, p.1 ∈ Ioo (L a) (U a) ∧ p.2 ∈ Ioo (L b) (U b) := by
@@ -224,7 +224,10 @@ theorem haarGammaCoupling_le_prime_scale {a b m : ℕ} (ha : 1 ≤ a) (hm : 3 �
       have hmul := mul_le_mul_of_nonneg_left hp.2 (neg_nonneg.mpr hPn)
       rw [abs_of_nonpos hPn]
       dsimp only [H]
-      nlinarith only [hmul]
+      calc
+        _ = -P p * archLevyDensity |p.2 - p.1| := by ring
+        _ ≤ -P p * (2 / Real.sqrt (m : ℝ)) := hmul
+        _ = _ := by ring
   calc
     haarGammaCoupling a b = ∫ p, -H p ∂μ := by rw [hR, integral_neg]
     _ ≤ ∫ p, (1 / Real.sqrt (m : ℝ)) * (|P p| - P p) ∂μ :=
@@ -289,6 +292,19 @@ private theorem haar_prime_gamma_coefficient_le {a b m : ℕ}
       mul_le_mul_of_nonneg_right hweight (haarMass_pos hb).le
     _ = _ := mul_assoc _ _ _
 
+/-- Every literal nonzero prime channel has strictly positive conductance
+after its own Gamma edge has been paid. -/
+theorem haarPrimeGammaConductance_pos {a b m : ℕ} (ha : 1 ≤ a) (hm : 2 ≤ m)
+    (he : (2 * a + 1) * m = 2 * b + 1) (hΛ : vonMangoldt m ≠ 0) :
+    0 < vonMangoldt m * haarMass b - Real.sqrt (m : ℝ) * haarGammaCoupling a b := by
+  have hab := haar_prime_edge_order ha (haar_prime_multiplier_ge_three hm he) he
+  have hb : 1 ≤ b := by omega
+  have hp : 0 < (1 - haarPrimeGammaShare) * (vonMangoldt m * haarMass b) :=
+    mul_pos (sub_pos.mpr haarPrimeGammaShare_lt_one)
+      (mul_pos (vonMangoldt_pos_iff.mpr (vonMangoldt_ne_zero_iff.mp hΛ)) (haarMass_pos hb))
+  have hc := haar_prime_gamma_coefficient_le ha hb hm he hΛ
+  nlinarith only [hp, hc]
+
 /-- The Gamma graph restricted to the literal nonzero prime channels. -/
 def haarPrimeGammaGraphEnergy (d : ℕ → ℝ) (X : ℕ) : ℝ := by
   classical
@@ -335,7 +351,7 @@ theorem haarPrimeGammaReserve_add_graph (d : ℕ → ℝ) (X : ℕ) :
   · by_cases hΛ : vonMangoldt m = 0
     · simp only [he, hΛ, ne_eq, not_true_eq_false, and_false, if_false, if_true,
         zero_mul, add_zero]
-    · rw [if_pos ⟨he, hΛ⟩, if_pos he]
+    · simp only [if_pos ⟨he, hΛ⟩, if_pos he]
       ring
   · simp only [he, false_and, if_false, add_zero]
 
@@ -394,7 +410,7 @@ theorem haar_prime_gamma_square_eq_graph (d : ℕ → ℝ) {a b m : ℕ} (hm : 2
   have hrel : ((2 * b + 1 : ℕ) : ℝ) = ((2 * a + 1 : ℕ) : ℝ) * (m : ℝ) :=
     by exact_mod_cast he.symm
   simp only [haarGammaGraphWeight, haarGroundCoordinate, hrel, Real.sqrt_mul hn.le]
-  field_simp [(Real.sqrt_pos.mpr hn).ne', (Real.sqrt_pos.mpr hm0).ne'] <;> ring
+  field_simp [(Real.sqrt_pos.mpr hn).ne', (Real.sqrt_pos.mpr hm0).ne']
 
 /-- The finite payment retains precisely the graph weights on the actual prime channels. -/
 theorem haarPrimeGammaGraphEnergy_eq_ground (d : ℕ → ℝ) (X : ℕ) :
@@ -414,5 +430,248 @@ theorem haarPrimeGammaGraphEnergy_eq_ground (d : ℕ → ℝ) (X : ℕ) :
   split_ifs with he
   · exact haar_prime_gamma_square_eq_graph d (mem_Icc.mp hm).1 he.1
   · rfl
+
+private theorem haar_prime_multiplier_fiber (X a b : ℕ) (C : ℝ) :
+    (∑ m ∈ Icc 2 (2 * X + 1),
+      if (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0 then C else 0) =
+      if ∃ m ∈ Icc 2 (2 * X + 1),
+        (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0 then C else 0 := by
+  classical
+  by_cases h : ∃ m ∈ Icc 2 (2 * X + 1),
+      (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0
+  · rw [if_pos h]
+    obtain ⟨m, hm, he⟩ := h
+    rw [sum_eq_single m, if_pos he]
+    · intro j _ hne
+      apply if_neg
+      intro hj
+      exact hne (Nat.eq_of_mul_eq_mul_left (by omega : 0 < 2 * a + 1)
+        (hj.1.trans he.1.symm))
+    · intro hn
+      exact (hn hm).elim
+  · rw [if_neg h]
+    apply sum_eq_zero
+    intro m hm
+    exact if_neg (fun he => h ⟨m, hm, he⟩)
+
+/-- The paid channels form a genuine subset of the full original Gamma graph;
+uniqueness of the multiplier prevents counting any undirected edge twice. -/
+theorem haarPrimeGammaGraphEnergy_le_graph (d : ℕ → ℝ) (X : ℕ) :
+    haarPrimeGammaGraphEnergy d X ≤ haarGammaGraphEnergy d X := by
+  classical
+  let T : ℕ → ℕ → ℝ := fun a b =>
+    haarGammaGraphWeight a b * (haarGroundCoordinate d a - haarGroundCoordinate d b) ^ 2
+  let F : ℕ → ℕ → ℝ := fun a b =>
+    if ∃ m ∈ Icc 2 (2 * X + 1),
+      (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0 then T a b else 0
+  have hform : haarPrimeGammaGraphEnergy d X = ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F a b := by
+    rw [haarPrimeGammaGraphEnergy_eq_ground, sum_comm]
+    apply sum_congr rfl
+    intro a _
+    rw [sum_comm]
+    apply sum_congr rfl
+    intro b _
+    exact haar_prime_multiplier_fiber X a b (T a b)
+  have hpair {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) : F a b + F b a ≤ T a b := by
+    have hT : 0 ≤ T a b :=
+      mul_nonneg (haarGammaGraphWeight_nonneg ha hb) (sq_nonneg _)
+    have hsym : T b a = T a b := by
+      dsimp only [T]
+      rw [haarGammaGraphWeight_symm hb ha]
+      ring
+    by_cases h : ∃ m ∈ Icc 2 (2 * X + 1),
+        (2 * a + 1) * m = 2 * b + 1 ∧ vonMangoldt m ≠ 0
+    · have hn : ¬∃ m ∈ Icc 2 (2 * X + 1),
+          (2 * b + 1) * m = 2 * a + 1 ∧ vonMangoldt m ≠ 0 := by
+        obtain ⟨m, hm, he⟩ := h
+        have hab := haar_prime_edge_order ha
+          (haar_prime_multiplier_ge_three (mem_Icc.mp hm).1 he.1) he.1
+        rintro ⟨j, hj, he'⟩
+        have hba := haar_prime_edge_order hb
+          (haar_prime_multiplier_ge_three (mem_Icc.mp hj).1 he'.1) he'.1
+        omega
+      simp only [F, if_pos h, if_neg hn, add_zero, le_refl]
+    · dsimp only [F]
+      rw [if_neg h, zero_add]
+      split_ifs
+      · exact hsym.le
+      · exact hT
+  have hrev : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F b a) =
+      ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F a b := sum_comm
+  have hs : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, F a b + F b a) ≤
+      ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, T a b :=
+    sum_le_sum fun a ha => sum_le_sum fun b hb =>
+      hpair (mem_Icc.mp ha).1 (mem_Icc.mp hb).1
+  simp only [sum_add_distrib, hrev] at hs
+  rw [hform]
+  change _ ≤ (1 / 2 : ℝ) * ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, T a b
+  linarith only [hs]
+
+theorem haarGammaGraphEnergy_sub_prime_nonneg (d : ℕ → ℝ) (X : ℕ) :
+    0 ≤ haarGammaGraphEnergy d X - haarPrimeGammaGraphEnergy d X :=
+  sub_nonneg.mpr (haarPrimeGammaGraphEnergy_le_graph d X)
+
+/-- After the shared edges are paid once, the complete Weil identity retains
+the positive prime reserve, every root charge, both poles, and the exact potential. -/
+theorem haarSectionProfile_roughWeil_add_remaining_graph_eq (d : ℕ → ℝ) (X : ℕ) :
+    roughWeil (haarSectionProfile d X) +
+      (haarGammaGraphEnergy d X - haarPrimeGammaGraphEnergy d X) =
+      haarPrimeGammaReserve d X +
+        (∑ a ∈ Icc 1 X, vonMangoldt (2 * a + 1) * haarMass a * d a ^ 2) +
+        (2 * coshHalfMoment (haarSectionProfile d X) ^ 2 -
+          2 * sinhHalfMoment (haarSectionProfile d X) ^ 2) +
+        ∑ a ∈ Icc 1 X, haarWeilGroundPotential X a * haarGroundCoordinate d a ^ 2 := by
+  have hfull := haarSectionProfile_roughWeil_add_graph_eq d X
+  have hpaid := haarPrimeLogDefect_sub_primeGamma_eq d X
+  linarith only [hfull, hpaid]
+
+/-- The two original pole moments contribute a nonpositive symmetric coupling. -/
+def haarPoleCoupling (a b : ℕ) : ℝ :=
+  haarLaplaceLeft a (1 / 2) * haarLaplaceRight b (1 / 2) +
+    haarLaplaceLeft b (1 / 2) * haarLaplaceRight a (1 / 2)
+
+theorem haarPoleCoupling_nonneg {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) :
+    0 ≤ haarPoleCoupling a b := by
+  exact add_nonneg
+    (mul_nonneg (haarLaplaceLeft_nonneg ha (by norm_num))
+      (haarLaplaceRight_nonneg hb (by norm_num)))
+    (mul_nonneg (haarLaplaceLeft_nonneg hb (by norm_num))
+      (haarLaplaceRight_nonneg ha (by norm_num)))
+
+private theorem integral_haarSectionProfile_mul_exp (d : ℕ → ℝ) (X : ℕ) (r : ℝ) :
+    (∫ x, haarSectionProfile d X x * Real.exp (r * x)) =
+      ∑ a ∈ Icc 1 X, d a * (∫ x, haarProfile a x * Real.exp (r * x)) := by
+  simp only [haarSectionProfile, sum_mul, mul_assoc]
+  rw [integral_finsetSum _
+    (fun a _ => (integrable_haarProfile_mul_exp a r).const_mul (d a))]
+  simp only [integral_const_mul]
+
+/-- The complete pole term is the negative of its actual Haar coupling matrix. -/
+theorem haarSectionProfile_poles_eq_matrix (d : ℕ → ℝ) (X : ℕ) :
+    2 * coshHalfMoment (haarSectionProfile d X) ^ 2 -
+        2 * sinhHalfMoment (haarSectionProfile d X) ^ 2 =
+      -(∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarPoleCoupling a b * d a * d b) := by
+  let A := ∑ a ∈ Icc 1 X, d a * haarLaplaceLeft a (1 / 2)
+  let B := ∑ a ∈ Icc 1 X, d a * haarLaplaceRight a (1 / 2)
+  have hp : Integrable (fun x => Real.exp (x / 2) * haarSectionProfile d X x) := by
+    simpa only [Function.comp_apply, id_eq, mul_comm] using
+      integrable_compact_bv_mul (haarSectionProfile_bv d X) (haarSectionProfile_compact d X)
+        (Real.continuous_exp.comp (continuous_id.div_const 2))
+  have hm : Integrable (fun x => Real.exp (-(x / 2)) * haarSectionProfile d X x) := by
+    simpa only [Function.comp_apply, id_eq, Pi.neg_apply, mul_comm] using
+      integrable_compact_bv_mul (haarSectionProfile_bv d X) (haarSectionProfile_compact d X)
+        (Real.continuous_exp.comp (continuous_id.div_const 2).neg)
+  have hA : (∫ x, Real.exp (x / 2) * haarSectionProfile d X x) = -A := by
+    calc
+      _ = ∫ x, haarSectionProfile d X x * Real.exp ((1 / 2) * x) := by
+        apply integral_congr_ae
+        filter_upwards [] with x
+        rw [show x / 2 = (1 / 2) * x by ring, mul_comm]
+      _ = _ := by
+        rw [integral_haarSectionProfile_mul_exp]
+        simp only [A, haarLaplaceLeft, mul_neg, sum_neg_distrib, neg_neg]
+  have hB : (∫ x, Real.exp (-(x / 2)) * haarSectionProfile d X x) = B := by
+    calc
+      _ = ∫ x, haarSectionProfile d X x * Real.exp ((-(1 / 2)) * x) := by
+        apply integral_congr_ae
+        filter_upwards [] with x
+        rw [show -(x / 2) = (-(1 / 2)) * x by ring, mul_comm]
+      _ = _ := integral_haarSectionProfile_mul_exp d X (-(1 / 2))
+  have he (a b : ℕ) : haarPoleCoupling a b * d a * d b =
+      (d a * haarLaplaceLeft a (1 / 2)) * (d b * haarLaplaceRight b (1 / 2)) +
+        (d a * haarLaplaceRight a (1 / 2)) * (d b * haarLaplaceLeft b (1 / 2)) := by
+    unfold haarPoleCoupling
+    ring
+  have hsum : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarPoleCoupling a b * d a * d b) =
+      2 * A * B := by
+    simp only [he, sum_add_distrib, ← mul_sum, ← sum_mul]
+    dsimp only [A, B]
+    ring
+  rw [(halfMoments_eq_exp hp hm).1, (halfMoments_eq_exp hp hm).2, hA, hB, hsum]
+  ring
+
+/-- The symmetric interaction matrix of the original full finite Haar Weil source. -/
+def haarWeilInteraction (X a b : ℕ) : ℝ :=
+  haarGammaCoupling a b - haarPrimeMatrix (2 * X + 1) a b -
+    haarPrimeMatrix (2 * X + 1) b a - haarPoleCoupling a b
+
+/-- Exact full-source matrix, retaining both poles and every finite-head entry. -/
+theorem haarSectionProfile_roughWeil_eq_interaction_matrix (d : ℕ → ℝ) (X : ℕ) :
+    roughWeil (haarSectionProfile d X) =
+      (∑ a ∈ Icc 1 X,
+        (2 * gammaHardyPhaseRate 0 * haarMass a + levyEnergy (haarProfile a)) * d a ^ 2) +
+      ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarWeilInteraction X a b * d a * d b := by
+  have hrev : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X,
+      haarPrimeMatrix (2 * X + 1) b a * d a * d b) =
+      ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarPrimeMatrix (2 * X + 1) a b * d a * d b := by
+    rw [sum_comm]
+    apply sum_congr rfl
+    intro a _
+    apply sum_congr rfl
+    intro b _
+    ring
+  have hprime : haarPrimeEnergy d X =
+      2 * ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X,
+        haarPrimeMatrix (2 * X + 1) a b * d a * d b := by
+    rw [haarPrimeEnergy_matrix]
+    simp only [mul_assoc, ← mul_sum]
+  have hi : (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarWeilInteraction X a b * d a * d b) =
+      (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarGammaCoupling a b * d a * d b) -
+      2 * (∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarPrimeMatrix (2 * X + 1) a b * d a * d b) -
+      ∑ a ∈ Icc 1 X, ∑ b ∈ Icc 1 X, haarPoleCoupling a b * d a * d b := by
+    simp only [haarWeilInteraction, sub_mul, sum_sub_distrib]
+    rw [hrev]
+    ring
+  have hd : (∑ a ∈ Icc 1 X,
+      (2 * gammaHardyPhaseRate 0 * haarMass a + levyEnergy (haarProfile a)) * d a ^ 2) =
+      2 * gammaHardyPhaseRate 0 * (∑ a ∈ Icc 1 X, haarMass a * d a ^ 2) +
+        ∑ a ∈ Icc 1 X, levyEnergy (haarProfile a) * d a ^ 2 := by
+    simp only [add_mul, sum_add_distrib, mul_assoc, ← mul_sum]
+  rw [roughWeil, integral_haarSectionProfile_sq, ← haarPrimeEnergy_eq_primeSum,
+    haarSectionProfile_gamma_eq_matrix, haarSectionProfile_poles_eq_matrix, hprime, hi, hd]
+  ring
+
+/-- Each actual prime-power entry of the full Weil matrix retains a strict negative reserve. -/
+theorem haarWeilInteraction_prime_edge_le {X a b m : ℕ} (ha : 1 ≤ a)
+    (hb : b ∈ Icc 1 X) (hm : 2 ≤ m) (he : (2 * a + 1) * m = 2 * b + 1)
+    (hΛ : vonMangoldt m ≠ 0) :
+    haarWeilInteraction X a b ≤ -(Real.log 3 - Real.log 2) * haarMass b / Real.sqrt (m : ℝ) := by
+  have hb1 := (mem_Icc.mp hb).1
+  have hmX : m ≤ 2 * X + 1 := by
+    have hmul : m ≤ (2 * a + 1) * m := by
+      simpa only [Nat.one_mul] using Nat.mul_le_mul_right m (show 1 ≤ 2 * a + 1 by omega)
+    rw [he] at hmul
+    have hbX := (mem_Icc.mp hb).2
+    omega
+  have hentry : vonMangoldt m / Real.sqrt (m : ℝ) * haarMass b ≤
+      haarPrimeMatrix (2 * X + 1) a b := by
+    have h := single_le_sum (fun j _ => haarPrimeEntry_nonneg a j hb1) (mem_Icc.mpr ⟨hm, hmX⟩)
+    simpa only [haarPrimeMatrix, haarPrimeEntry, if_pos he] using h
+  have hΓ := haarGammaCoupling_le_prime_scale ha (haar_prime_multiplier_ge_three hm he) he
+  have hΛ3 := log_three_le_haar_prime_weight hm he hΛ
+  have hs : 0 < Real.sqrt (m : ℝ) := Real.sqrt_pos.mpr (by exact_mod_cast (by omega : 0 < m))
+  have hweight : Real.log 3 * haarMass b / Real.sqrt (m : ℝ) ≤
+      vonMangoldt m / Real.sqrt (m : ℝ) * haarMass b := by
+    have h := div_le_div_of_nonneg_right
+      (mul_le_mul_of_nonneg_right hΛ3 (haarMass_pos hb1).le) hs.le
+    simpa only [div_mul_eq_mul_div] using h
+  have hr := haarPrimeMatrix_nonneg (2 * X + 1) b ha
+  have hp := haarPoleCoupling_nonneg ha hb1
+  unfold haarWeilInteraction
+  have hscale : -(Real.log 3 - Real.log 2) * haarMass b / Real.sqrt (m : ℝ) =
+      Real.log 2 * haarMass b / Real.sqrt (m : ℝ) -
+        Real.log 3 * haarMass b / Real.sqrt (m : ℝ) := by ring
+  rw [hscale]
+  linarith only [hΓ, hweight, hentry, hr, hp]
+
+theorem haarWeilInteraction_prime_edge_neg {X a b m : ℕ} (ha : 1 ≤ a)
+    (hb : b ∈ Icc 1 X) (hm : 2 ≤ m) (he : (2 * a + 1) * m = 2 * b + 1)
+    (hΛ : vonMangoldt m ≠ 0) : haarWeilInteraction X a b < 0 := by
+  apply lt_of_le_of_lt (haarWeilInteraction_prime_edge_le ha hb hm he hΛ)
+  have hlog : 0 < Real.log 3 - Real.log 2 :=
+    sub_pos.mpr (Real.log_lt_log (by norm_num) (by norm_num))
+  exact div_neg_of_neg_of_pos
+    (mul_neg_of_neg_of_pos (neg_neg_of_pos hlog) (haarMass_pos (mem_Icc.mp hb).1))
+    (Real.sqrt_pos.mpr (by exact_mod_cast (by omega : 0 < m)))
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells
