@@ -32,7 +32,7 @@ obstructions. Give every new inequality an explicit scope and positive survivor.
 
 ## Current evidence
 
-Twenty-nine own Lean leaves contain 178 audited public theorems. Signed harmonic
+Thirty own Lean leaves contain 184 audited public theorems. Signed harmonic
 counts pay uniform gaps; exact prime-parity and finite-prime counts identify
 their harmonic densities. The parity Ramanujan expansion exhausts unit mass,
 with error uniform in the integer horizon. Those counted coordinates determine
@@ -63,8 +63,8 @@ finite arithmetic construction or README is finished.
 
 All twenty-six own leaves are installed, individually checked and wired into
 `ArithmeticCountingPositivity.lean`. `MainTheorems.lean` imports that umbrella;
-no umbrella was compiled. All 178 transitive audits use only `propext`,
-`Classical.choice`, and `Quot.sound`. Twenty-six own stage-three proof cards have adjacent
+no umbrella was compiled. All 184 transitive audits use only `propext`,
+`Classical.choice`, and `Quot.sound`. Twenty-seven own stage-three proof cards have adjacent
 `-audit.txt` files with exact commands, source hashes and actual axiom output.
 
 | Own leaves | Public endpoints | Stage-three card stem |
@@ -95,12 +95,13 @@ no umbrella was compiled. All 178 transitive audits use only `propext`,
 | PrimeStrippingHasAnAdditiveHarmonicError | 2 | arithmetic-counting-uniform-prime-stripping |
 | EveryPrimePatternHasItsEulerProductHarmonicMean | 4 | arithmetic-counting-all-prime-pattern-harmonic-density |
 | PositiveEulerDensityIsExactlyHarmonicCutoffCompleteness | 5 | arithmetic-counting-prime-pattern-cutoff-boundary |
+| InfinitePrimeCountsHaveAZeroOrUnitConductorMass | 6 | arithmetic-counting-infinite-conductor-mass-boundary |
 
-Latest closure: the exact harmonic cutoff distance and positive-density
-completeness criterion, including both orders of exhaustion. All five
-endpoints have standard transitive axioms; scratch 62197 and canonical
-96931 exited zero without diagnostics. Twenty-six proof cards plus the
-finite-set synthesis give twenty-seven own stage-three cards.
+Latest closure: sharp conductor-weight summability, zero/unit normalized
+mass, and actual harmonic Ramanujan coefficients for every prime pattern.
+All six endpoints have standard transitive axioms; scratch 51739 and
+canonical 12533 exited zero without diagnostics. Twenty-seven proof cards
+plus the finite-set synthesis give twenty-eight own stage-three cards.
 
 Required oleans were built only when an actual new import needed them. Existing
 oleans must never be rebuilt. In particular the parity spectral, finite-density,
@@ -135,37 +136,38 @@ use hgtl7.
 
 ## Active formalization
 
-All 29 own installed leaves are checked, with 178 standard-axiom public
-endpoints. Uniform stripping, all-pattern means and the cutoff boundary
-have closed paper/source/axiom/canonical audits. Their transient drafts and
-logs are cleaned. The stripping, infinite-count and all-pattern-mean first
-oleans passed 82142, 36233 and 4666; audits are saved. Preserve them and all
-other existing oleans. The cutoff-boundary leaf has no required olean.
+All 30 own installed leaves are checked, with 184 standard-axiom public
+endpoints. Uniform stripping, all-pattern means, the cutoff boundary and
+conductor mass have closed paper/source/axiom/canonical audits. Their
+transient drafts, logs and closed searches are cleaned. The stripping,
+infinite-count, all-pattern-mean and gap-stability first oleans passed
+82142, 36233, 4666 and 36820; audits are saved. Preserve all existing oleans.
+The cutoff-boundary leaf has no required olean.
 
 The next exact proof is
-../2-fully-proven/arithmetic-counting-infinite-conductor-mass-boundary.md.
-Its immediate six-endpoint draft is /tmp/acp-infinite-conductor-mass-check.lean.
-It proves fixed-conductor compatibility, exact harmonic Ramanujan counts,
-summability iff positive density, and zero/unit normalized conductor mass.
-Its first scratch check 51739 passed without diagnostics, and all six
-transitive axiom audits contain only standard axioms. The installed source
-is written; its canonical check is next. The actual draft imports
-ConductorMassBoundsGapLossAndProbePrecision, whose first olean is required
-and passed 36820, with audit saved. No other missing dependency is known.
+../2-fully-proven/arithmetic-counting-all-pattern-actual-conductor-coordinates.md.
+Its immediate six-endpoint draft is
+/tmp/acp-all-pattern-actual-conductor-coordinates-check.lean.
+It reuses finite-vector identities pointwise on F_N, then the proved
+all-pattern mixed mean and sign-independent quasimode residuals. It claims
+actual unit vectors, exact/limiting inner products, projected squared
+coordinates, simple windows and actual index sequences for every P.
+The first scratch check 77312 passed without diagnostics, with all six
+transitive axiom audits containing only standard axioms. The installed
+source is written and its canonical check is next. Its actual import of the newly closed
+InfinitePrimeCountsHaveAZeroOrUnitConductorMass leaf requires that leaf's
+first olean passed 46359, with audit saved. No other missing dependency is known.
 
-Actual eigenline transfer remains separate, preserved in
-../2-fully-proven/arithmetic-counting-all-pattern-actual-conductor-coordinates.md. That card
-records the existing finite-vector/window mechanisms and the distinction
-between fixed conductor packets and all bounded energy windows. A full
-Lean draft is written at /tmp/acp-all-pattern-actual-conductor-coordinates-check.lean,
-with six endpoints. Its paper audit is complete; it depends on the mass leaf
-under formalization, whose first olean will be needed.
+The following bounded-window/full-resolvent research plan is preserved in
+arithmetic-counting-all-pattern-bounded-spectral-mass.md. The exact actual
+spectral sublevel count and finite-energy properness sources were fully
+read. Search evidence is /tmp/acp-all-pattern-bounded-energy-count-search.json.
+No all-pattern bounded-window or full-resolvent theorem is claimed yet.
+The zero-density relative ground/positive-tail balance remains open.
 
-Relevant mass API searches are /tmp/acp-infinite-mass-*.json, with the
-initial semantic search /tmp/acp-infinite-conductor-mass-search.json.
 The HKT source-selection module was fully read after its corpus search.
-It states that universal tower index zero is equivalent to RH and the
-exact von Mangoldt weight; it supplies no independent positivity producer
-closing the present goal. It is not imported into the new proofs.
-No numerical experiment was run. All broader counting producer obligations
-remain open; do not mark the programme complete for this batch.
+It states universal tower index zero iff RH and the exact von Mangoldt
+weight; it supplies no independent positivity producer closing this goal.
+It is not imported into the new proofs. No numerical experiment was run.
+All broader counting producer obligations remain open; do not mark the
+programme complete for this batch.

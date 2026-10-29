@@ -71,3 +71,65 @@ The principal-ideal coefficient bridge has also been source-checked:
 coprime branch. In the nonunit-residue branch, `integralHeckeWeight_eq_zero`
 and the equivalence between prime-to ideal membership and ideal coprimality
 must prove both sides zero. This bridge is not yet formalized.
+
+The radial Jacobian module now has its required olean for the written actual
+Gamma-factor consumer. The scalar logarithmic Gaussian scratch's integral
+value and finite-product value already passed their first axiom checks;
+only its convergence proof needed a rewrite-order correction. That proof
+is now factored through a reusable convergence equivalence for arbitrary
+complex Mellin transforms under `t=exp(2u)`; the corrected scratch is checking.
+
+For the later actual kernel identity, source checks found:
+
+- `norm_sq_numberFieldTraceCoordinates` and
+  `normAtPlace_numberFieldMixedPlaceScale`, both in
+  `NumberFieldScaledIdealTheta.lean`, express the Gaussian exponent as
+  `sum_v mult_v*(exp(-y_v)*v(a))^2`.
+- `mixedEmbedding.normAtPlace_apply` reduces the embedded place norm to `v(a)`.
+- `signAtInf_apply` is exactly the positive/negative real-embedding sign.
+  No general nonunit integer sign/magnitude decomposition was found in the
+  corpus search; it can be proved by the two signs of a nonzero real embedding.
+- No exact generic weighted-log norm identity was found by the semantic
+  search. The existing product formula and `Real.log_prod` should supply it;
+  verify exact Mathlib names before use.
+
+The scalar Gaussian scratch now also contains
+`mellinConvergent_iff_integrable_exp_two`; this is an unconditional change of
+variables, and its actual Gaussian application supplies the required positive
+rate and real exponent from existing proved Mellin convergence.
+
+A subsequent exact Mathlib search found the weighted-log norm formula in
+`CanonicalEmbedding/NormLeOne.lean`:
+`mixedEmbedding.fundamentalCone.sum_expMap_symm_apply`.
+Its statement sums the inverse exponential-map coordinates of the embedded
+place norms and equals the logarithm of the absolute field norm. Check the
+inverse-map definition to simplify this directly into `sum mult*log(v(a))`
+before writing a separate logarithm-of-product proof.
+
+The scalar and finite-product logarithmic Gamma integrals are now fully
+formalized in `HTGeometry/LogarithmicGaussianMellin.lean`, including the
+arbitrary-function Mellin convergence equivalence. Four main transitive
+axiom checks are standard-only; final direct source audit passed without
+warnings. Its stage-3 card is `logarithmic-gaussian-mellin-integrals.md`.
+The olean is being built for the already written actual-character consumer.
+
+The separate coefficient bridge now has an active card
+`hecke-theta-weights-as-principal-ideal-characters.md` and an uncompiled
+scratch `/tmp/HeckePrincipalThetaWeightScratch.lean`. It includes the
+noncoprime zero branch, actual parity signs, chosen inverse-class coefficient,
+and the real-monomial sign/magnitude decomposition. No proof of these new
+arithmetic bridge declarations is yet claimed.
+
+The actual-character Gamma scratch is now under its first compile; both
+required new oleans exist. It also includes two direct analytic consequences
+of the standard Gamma factors: nonvanishing on `Re s>0`, and entire reciprocal.
+The latter uses Mathlib `differentiable_Gammaℝ_inv` and the exact identity
+`GammaR(s)*GammaR(s+1)=GammaC(s)`, followed by finite products and affine
+composition. These remain proposed until this scratch and final audits pass.
+
+The weighted-log norm input is now fully source-inspected:
+`fundamentalCone.expMap_symm_apply` is exactly `mult_v*log(x_v)`, and
+`sum_expMap_symm_apply` gives its sum as the logarithm of the absolute field
+norm. The existing `norm_mixedEmbedding_eq_absNorm` converts that norm to the
+absolute norm of the principal ideal. No new generic logarithmic product
+formula is needed.

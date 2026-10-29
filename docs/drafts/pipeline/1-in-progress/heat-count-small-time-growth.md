@@ -122,7 +122,7 @@ Physically the crowd is harmless: zeros at depth `≥ θ` survive `≍ θ²/log 
   `0 ≤ s ≤ 1/8` and `s log X ≤ 1`: every finite zero set in
   `|Re z-X| ≤ 1` has multiplicity sum `≤ C log X` for large `X`
   (`exists_sum_zeroMult_riemannHeat_near_le_log`,
-  `RHTower/HeatLocalZeroDensity.lean`; [proof and exact range](../3-formalized/wd-heat-uniform-local-zero-count.md));
+  `RHTower/Heat/HeatLocalZeroDensity.lean`; [proof and exact range](../3-formalized/wd-heat-uniform-local-zero-count.md));
 - flux control (horizontal velocities, with symmetrised near-field terms).
 
 Zero dynamics give `dE/ds = −4 Σ_{pairs} φ̄ (y_k − y_j)²/|z_k − z_j|² + (φ′-flux)` for the window

@@ -1,8 +1,8 @@
 # Infinite prime counts have zero or unit conductor mass
 
 - **ID:** ACP-INFINITE-CONDUCTOR-MASS-BOUNDARY
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; immediate formalization)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** ../1-in-progress/arithmetic-counting-positivity.md
 - **Lean target:** InfinitePrimeCountsHaveAZeroOrUnitConductorMass.lean
 - **Input:** ../3-formalized/arithmetic-counting-all-prime-pattern-harmonic-density.md
@@ -118,11 +118,21 @@ bridge; no literature-wide priority claim is made.
 The immediate full six-endpoint draft is
 /tmp/acp-infinite-conductor-mass-check.lean. It imports the formalized
 all-pattern mean leaf and ConductorMassBoundsGapLossAndProbePrecision,
-whose existing finite-weight total is reused. The latter's first olean is
-required by this actual draft and has not yet been built. Existing oleans
+whose existing finite-weight total is reused. The latter's first olean passed 36820,
+required by this actual draft. Existing oleans
 are preserved; no numerical experiment or extra analytic premise is used.
 
 - [x] Complete paper proof, including zero-product divergence and normalization.
 - [x] Immediate full Lean draft with the same six endpoints.
-- [ ] Scratch and transitive axiom audit.
-- [ ] Canonical source check, umbrella and durable evidence.
+- [x] Scratch and transitive axiom audit.
+- [x] Canonical source check, umbrella and durable evidence.
+
+## Lean endpoints and audit
+
+InfinitePrimeCountsHaveAZeroOrUnitConductorMass.lean proves
+primeSetMobius_eq_finiteCutoff, primeSetConductorCoefficient_sq,
+summable_primeSetSpectralWeight_iff, hasSum_primeSetConductorCoefficient_sq,
+primeSetRamanujanSum_eq and primeSetRamanujanSum_tendsto. Scratch 51739 and
+canonical 12533 exited zero without diagnostics. All six transitive audits
+use only propext, Classical.choice and Quot.sound. The adjacent audit
+preserves exact commands, source SHA256 and actual output.

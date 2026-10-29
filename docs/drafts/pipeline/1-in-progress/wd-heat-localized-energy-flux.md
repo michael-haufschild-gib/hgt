@@ -146,7 +146,7 @@ yet a proof of a derivative bound for the actual heat-zero measure.
 At a multiple root, the horizontal Hermite splitting and cluster
 centroid expansion must supply the missing collision term.
 
-Formalization is complete in `HTGeometry/LocalizedHeatPairForce.lean`.
+Formalization is complete in `RHTower/Heat/LocalizedHeatPairForce.lean`.
 The trapezoid estimate follows from the mean value theorem applied to
 `w(r) - (w'(x_i)+w'(x_j))r/2`: between the endpoints its derivative
 has absolute value at most `M |x_i-x_j|/2`. This gives the stated
@@ -172,7 +172,7 @@ the initial collision. This could replace the explicit centroid and
 second-moment expansion. Neither this extension nor the integrated
 energy estimate is claimed proven yet.
 
-The source `RHTower/HeatForwardSimpleZeros.lean` now proves
+The source `RHTower/Heat/HeatForwardSimpleZeros.lean` now proves
 `exists_ball_simple_riemannHeat_zeros_forward`; the final plain Lean
 check passed without errors or warnings. Its argument is dependency-closed:
 the scaled
@@ -227,7 +227,7 @@ uniform interval of simplicity there. The source inputs are
 `PoissonJensenUpperBound.exists_radius_no_boundary_zero`,
 `LocallyUniformZeroCountTransfer`, and the actual heat-time Taylor bound.
 
-`RHTower/HeatZeroSumContinuity.lean` now proves
+`RHTower/Heat/HeatZeroSumContinuity.lean` now proves
 `continuousOn_heatLocalizedVerticalEnergy` for every continuous compactly
 supported horizontal weight. The final plain Lean check passed without
 errors or warnings. The zero sum is defined with actual analytic multiplicity;

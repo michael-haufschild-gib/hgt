@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HeatLocalCofactor
+import GaloisForLFunctions.RHTower.Heat.HeatLocalCofactor
 
 /-!+# Quantitative bounds in a heat window without nonreal zeros
 

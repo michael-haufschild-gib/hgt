@@ -424,3 +424,17 @@ exact radial/logarithmic Jacobian and Gamma evaluation, followed by the
 arithmetic coefficient identity and absolutely convergent ideal-series
 Mellin exchange. Full Hecke continuation/primitive functional equation and
 class field theory are still unfinished.
+
+The exact radial/logarithmic Jacobian is now fully formalized in
+`HTGeometry/NumberFieldRadialLogarithmicJacobian.lean`: `(q,l) ↦ q-P(l)`
+has measure pushforward density `2^r₂/[K:Q]`, with both integral formulas
+and an absolute-integrability equivalence. Seven axiom checks are
+standard-only and the final source audit passed without warnings. The card
+moved to `3-formalized/hecke-radial-logarithmic-jacobian.md`.
+
+`/tmp/HeckeLogGaussianMellinScratch.lean` is under its first check.
+`/tmp/HeckeArchimedeanGammaFactorsScratch.lean` is a written, uncompiled
+consumer of that planned module and the finished Jacobian. It defines the
+actual place parities, standard Gamma product, independent logarithmic
+kernel, and proposed normalization `1/(degree*2^unitRank)` using finite-product
+Fubini. These Gamma results are not yet certified; see their active card.

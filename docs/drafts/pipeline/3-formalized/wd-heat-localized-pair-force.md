@@ -3,7 +3,7 @@
 - **ID:** wd-heat-localized-pair-force
 - **Stage:** 3-formalized
 - **Source:** [Localized heat energy](../1-in-progress/wd-heat-localized-energy-flux.md)
-- **Lean:** `HTGeometry/LocalizedHeatPairForce.lean`
+- **Lean:** `RHTower/Heat/LocalizedHeatPairForce.lean`
 - **Declarations:** `localizedHeatPairForce_le`, `localizedHeatPairForce_conjugate`
 
 ## Statement
@@ -42,9 +42,9 @@ derivative has absolute value at most `M |x-x'|/2`.
 
 Final plain Lean check passed without errors or warnings:
 
-`lake --old env lean GaloisForLFunctions/HTGeometry/LocalizedHeatPairForce.lean`
+`lake --old env lean GaloisForLFunctions/RHTower/Heat/LocalizedHeatPairForce.lean`
 
-The module is wired into `HTGeometry.lean`; the umbrella was not compiled.
+The module is wired into `RHTower.lean`; the umbrella was not compiled.
 This is a proved calculus and pair-force estimate for the stated cutoff
 class. It does not assume or assert an evolution equation for the actual
 heat-zero measure. Applying it to that measure and passing through

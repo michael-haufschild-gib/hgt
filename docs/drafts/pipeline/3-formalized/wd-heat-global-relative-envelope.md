@@ -3,7 +3,7 @@
 - **ID:** wd-heat-global-relative-envelope
 - **Stage:** 3-formalized
 - **Source:** [mean-field persistence](wd-mean-field-heat-persistence.md)
-- **Lean:** `formal/GaloisForLFunctions/RHTower/HeatRelativeGlobalBounds.lean`
+- **Lean:** `formal/GaloisForLFunctions/RHTower/Heat/HeatRelativeGlobalBounds.lean`
 - **Main declaration:** `RHTower.DeBruijn.exists_riemannHeat_global_relative_bound`
 
 ## Statement
@@ -70,7 +70,7 @@ Passed without warnings:
 
 ```sh
 cd formal
-lake --old env lean GaloisForLFunctions/RHTower/HeatRelativeGlobalBounds.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatRelativeGlobalBounds.lean
 ```
 
 Wired into `RHTower.lean`; umbrella not compiled. No web, novelty, or

@@ -17,7 +17,7 @@ WD extinction remains open.
 
 ## Cofactor theorem
 
-Module: `RHTower/HeatLocalCofactor.lean`.
+Module: `RHTower/Heat/HeatLocalCofactor.lean`.
 
 - `exists_riemannHeat_local_cofactor` gives explicit bounds under
   `X≥4096`, `log X≥20`, `alpha≥8`, `0≤t≤1/8`, and `t log X≤1`.
@@ -85,7 +85,7 @@ anchor identity.
 
 ## Reverse Gaussian theorem
 
-Module: `RHTower/HeatReverseGaussian.lean`.
+Module: `RHTower/Heat/HeatReverseGaussian.lean`.
 
 - `riemannHeat_sub_eq_integral_gaussian`:
   `H_(t-tau)(z)=∫ g_tau(u) H_t(z+u) du`, for `t≥0`, `tau>0`.
@@ -137,8 +137,8 @@ nonzero; those are the next parts of the persistence proof.
 Both final plain-file checks passed without warnings, from `formal/`:
 
 ```text
-lake --old env lean GaloisForLFunctions/RHTower/HeatLocalCofactor.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatReverseGaussian.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatLocalCofactor.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatReverseGaussian.lean
 ```
 
 Both modules are wired into `GaloisForLFunctions/RHTower.lean`.

@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.HeatLocalGrowth
-import GaloisForLFunctions.RHTower.HeatReverseGaussian
+import GaloisForLFunctions.RHTower.Heat.HeatLocalGrowth
+import GaloisForLFunctions.RHTower.Heat.HeatReverseGaussian
 
 /-!+# Global relative bounds for the Riemann heat flow
 

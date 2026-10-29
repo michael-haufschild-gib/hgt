@@ -3,7 +3,7 @@
 - **ID:** wd-heat-exterior-force
 - **Stage:** 3-formalized
 - **Source:** [Localized heat energy](../1-in-progress/wd-heat-localized-energy-flux.md)
-- **Lean:** `RHTower/HeatExteriorForce.lean`
+- **Lean:** `RHTower/Heat/HeatExteriorForce.lean`
 - **Declaration:** `RHTower.DeBruijn.exists_uniform_riemannHeat_exterior_force`
 
 ## Statement
@@ -50,7 +50,7 @@ imaginary-part bound.
 
 Final plain check passed without errors or warnings:
 
-`lake --old env lean GaloisForLFunctions/RHTower/HeatExteriorForce.lean`
+`lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatExteriorForce.lean`
 
 The module is imported by `RHTower.lean`; the umbrella was not compiled.
 No olean was generated for this module because no new file imports it yet.

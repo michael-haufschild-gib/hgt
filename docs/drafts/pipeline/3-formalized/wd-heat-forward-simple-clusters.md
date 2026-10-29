@@ -3,7 +3,7 @@
 - **ID:** wd-heat-forward-simple-clusters
 - **Stage:** 3-formalized
 - **Source:** [Localized heat energy](../1-in-progress/wd-heat-localized-energy-flux.md)
-- **Lean:** `RHTower/HeatForwardSimpleZeros.lean`
+- **Lean:** `RHTower/Heat/HeatForwardSimpleZeros.lean`
 - **Declaration:** `RHTower.DeBruijn.exists_ball_simple_riemannHeat_zeros_forward`
 
 ## Statement
@@ -43,7 +43,7 @@ the disk has nonzero derivative and multiplicity one.
 
 Final plain check passed without errors or warnings:
 
-`lake --old env lean GaloisForLFunctions/RHTower/HeatForwardSimpleZeros.lean`
+`lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatForwardSimpleZeros.lean`
 
 The module is wired into `RHTower.lean`; no umbrella compilation or new
 olean generation was needed.

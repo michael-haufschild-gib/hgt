@@ -3,7 +3,7 @@
 - **ID:** wd-heat-localized-energy-continuity
 - **Stage:** 3-formalized
 - **Source:** [Localized heat energy](../1-in-progress/wd-heat-localized-energy-flux.md)
-- **Lean:** `RHTower/HeatZeroSumContinuity.lean`
+- **Lean:** `RHTower/Heat/HeatZeroSumContinuity.lean`
 - **Declaration:** `RHTower.DeBruijn.continuousOn_heatLocalizedVerticalEnergy`
 
 ## Statement
@@ -42,7 +42,7 @@ then gives continuity on the full nonnegative time interval.
 
 Final plain check passed without errors or warnings:
 
-`lake --old env lean GaloisForLFunctions/RHTower/HeatZeroSumContinuity.lean`
+`lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatZeroSumContinuity.lean`
 
 The module is wired into `RHTower.lean`; no umbrella compilation or new
 olean generation was needed.

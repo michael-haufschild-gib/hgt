@@ -10,8 +10,10 @@ its topic subfolder; RH relevance alone does not make `RHTower/` the owner.
 
 | Folder | Contents |
 |---|---|
-| `RHTower/` | RH/Xi/Weil/Li criteria, explicit formulas, CCM and CHMD infrastructure not owned by a programme below, use subfolders for specific routes or larger programmes/topics |
-| `HTGeometry/` | Reusable hypertranscendence, differential algebra, constraint/value-relation geometry and analytic infrastructure, use subfolders for larger programmes/topics  |
+| `RHTower/` | RH/Xi/Weil/Li criteria, explicit formulas, CCM and CHMD infrastructure not owned by a programme below; use topic subfolders |
+| `RHTower/Heat/` | New heat-flow, Gaussian transport, heat-zero persistence/counting, collision and energy modules |
+| `RHTower/WD/` | New route WD Ward caps, directed source-current estimates and arithmetic collision/extinction arguments |
+| `HTGeometry/` | Reusable hypertranscendence, differential algebra, constraint/value-relation geometry and analytic infrastructure; use topic subfolders |
 | `HilbertMetric/` | Source-independent Hilbert/finite-metric, Gaussian-kernel and feature-volume laws |
 | `SelbergClass/` | General Selberg-class L-functions, twists and continuation |
 | `Hurwitz/`, `U0/`, `Bottcher/` | Their respective theorem programmes |
@@ -48,6 +50,8 @@ its topic subfolder; RH relevance alone does not make `RHTower/` the owner.
   [frontier](../docs/reports/rh-current-frontier-map.md) and
   [killed mechanisms](../docs/reports/rh-killed-routes.md); research notes/gaps belong in
   [pipeline cards](../docs/drafts/pipeline/), not Lean comments.
+- Put new heat and WD modules in the subfolders above. Historical modules retain their
+  current paths until separately migrated; update imports and umbrella entries when moving a file.
 - `QuantumAlg/`, `PNTPlus/`, `QECLean/` are read-only vendors. Consult their `PROVENANCE.md`;
   keep project-owned extensions outside them, and use upstream resyncs for vendor changes.
 - Keep `formal/AGENTS.md` and `formal/CLAUDE.md` identical.

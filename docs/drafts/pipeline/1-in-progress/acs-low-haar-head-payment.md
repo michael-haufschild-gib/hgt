@@ -20,6 +20,27 @@ original complete-profile Gamma energy. The corresponding nonfirst mixed
 source retains any complete Gamma share below one after a head.
 Neither theorem pays the remaining head or its interaction with the tail.
 
+## Concrete diagonal payment
+
+First discharge the actual diagonal at every index, including index one.
+For adjacent widths u,v, put w=u+v, M=uv/w and let E(s) be Gamma energy
+per unit mass of an interval indicator of width s. Quadratic polarization
+gives the exact normalized balanced energy E(u)+E(v)−E(w).
+
+The corpus supplies the exact interval exterior kernel, elementary bounds
+on its antiderivative, and polynomial bounds on its first moment. These
+give
+
+`Gamma(h)/M + 2*gammaHardyPhaseRate(0)
+ ≥ 1−gamma_E−log(2*pi*M)−w^2/16−5*w^3/192`.
+
+For the actual pairs, w≤log(2) and M≤w/4. Mean zero and support width w
+also bound the adverse pole product by `−w^3*exp(w)*M/8`. These estimates
+are intended to establish a positive diagonal without excluding any
+coefficient index. The prime diagonal of one Haar atom is exactly zero.
+All statements in this paragraph remain under formalization; positivity
+of arbitrary signed sums still requires the cross-pair terms.
+
 ## Investigation
 
 Seek a direct shared Gamma–prime–pole payment on all actual Haar cells.

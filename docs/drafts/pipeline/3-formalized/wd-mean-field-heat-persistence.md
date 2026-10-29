@@ -275,12 +275,12 @@ proof; its plain check passed without warnings. No upper bound on `N(t)` is assu
 Each command passed without warnings, run individually from `formal/`:
 
 ```sh
-lake --old env lean GaloisForLFunctions/RHTower/HeatRelativeGlobalBounds.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatZeroFreeWindow.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatGaussianQuadraticError.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatRelativeGlobalBounds.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatZeroFreeWindow.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatGaussianQuadraticError.lean
 lake --old env lean GaloisForLFunctions/HTGeometry/LogDerivativeSaddle.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatMeanFieldPersistence.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatMeanFieldZeroDensity.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatMeanFieldPersistence.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatMeanFieldZeroDensity.lean
 ```
 
 Imports are wired; umbrellas were not compiled. Scratch files were

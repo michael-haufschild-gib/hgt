@@ -5,7 +5,7 @@
 - **Type:** THEOREM (paper; immediate formalization)
 - **Parent:** ../1-in-progress/arithmetic-counting-positivity.md
 - **Lean target:** EveryPrimePatternHasActualConductorCoordinates.lean
-- **Input under formalization:** arithmetic-counting-infinite-conductor-mass-boundary.md
+- **Input:** ../3-formalized/arithmetic-counting-infinite-conductor-mass-boundary.md
 
 ## Exact objects and endpoints
 
@@ -106,8 +106,8 @@ zero-gap converse is claimed.
 The immediate full six-endpoint draft is
 /tmp/acp-all-pattern-actual-conductor-coordinates-check.lean. It imports
 the new infinite conductor-mass leaf and the existing finite-coordinate
-leaf. The mass leaf is currently being checked; its first olean will be
-required by this actual draft after its canonical closure. No existing
+leaf. The mass leaf passed its canonical and standard-axiom audits. Its first
+olean is now required by this actual draft. No existing
 olean is rebuilt and no numerical experiment is used.
 
 - [x] Dependency-closed paper argument, including zero coefficients.

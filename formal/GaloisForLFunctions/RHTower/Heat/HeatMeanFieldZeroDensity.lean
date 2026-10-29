@@ -1,14 +1,13 @@
-import GaloisForLFunctions.RHTower.HeatZeroDisplacement
+import GaloisForLFunctions.RHTower.Heat.HeatMeanFieldPersistence
 import GaloisForLFunctions.RHTower.DeBruijnNonrealCountAntitone
 import GaloisForLFunctions.RHTower.XiLocalZeroDensity
 
 /-!
-# Heat counting uniformly over shrinking depths
+# Deep zero counts at inverse-logarithmic heat
 
-The depth, height, and heat time may vary together. Absolute constants
-count every dyadic family of Xi zero copies of depth at least `d` by
-`log X` times the nonreal heat count whenever `t log X ≤ c d²`.
-Multiplicity is retained through the local Xi count on each fibre.
+Assign a nonreal heat zero to each deep unheated zero copy. Persistence
+holds at inverse-logarithmic time, and the local multiplicity count
+bounds every fibre by a constant times `log X`.
 -/
 
 open Complex Metric Filter Set
@@ -18,26 +17,26 @@ namespace RHTower.DeBruijn
 
 noncomputable section
 
-/-- The inverse-logarithmic heat-count comparison has constants and a height
-threshold independent of the positive depth. -/
-theorem exists_card_deep_le_heat_count_at_uniform_depth_scale :
+/-- Deep zero copies in a dyadic height window are counted by the heat flow
+at every sufficiently small inverse-logarithmic time. -/
+theorem exists_card_deep_le_heat_count_at_inverse_log_scale {δ : ℝ}
+    (hδ : 0 < δ) (hδ2 : δ ≤ 1 / 2) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∃ X₀ : ℝ, 4096 ≤ X₀ ∧
-      ∀ X : ℝ, X₀ ≤ X → ∀ d : ℝ, 0 < d → d ≤ 1 / 2 →
-        ∀ t : ℝ, 0 < t → t * Real.log X ≤ c * d ^ 2 →
-          ∀ F : Finset XiZeroCopy,
-            (∀ q ∈ F, X ≤ (q.1 : ℂ).im ∧ (q.1 : ℂ).im ≤ 2 * X ∧
-              d ≤ |(q.1 : ℂ).re - 1 / 2|) →
-            (F.card : ℝ) ≤ C * Real.log X * nonrealZeroCount t := by
+      ∀ X : ℝ, X₀ ≤ X → ∀ t : ℝ, 0 < t → t * Real.log X ≤ c →
+        ∀ F : Finset XiZeroCopy,
+          (∀ q ∈ F, X ≤ (q.1 : ℂ).im ∧ (q.1 : ℂ).im ≤ 2 * X ∧
+            δ ≤ |(q.1 : ℂ).re - 1 / 2|) →
+          (F.card : ℝ) ≤ C * Real.log X * nonrealZeroCount t := by
   classical
   obtain ⟨c, hc, X₁, hX₁, hpersist⟩ :=
-    exists_nonreal_riemannHeat_zero_at_uniform_depth_scale
+    exists_nonreal_riemannHeat_zero_at_inverse_log_scale hδ hδ2
   obtain ⟨C, hC, hloc⟩ := exists_card_near_xi_zeros_le
   obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp hloc
   refine ⟨c / 2, 2 * C, by positivity, by positivity, ?_⟩
   refine ⟨max (max X₁ (T₀ + 1)) (4096 + Real.exp 20), ?_, ?_⟩
   · have h := le_max_right (max X₁ (T₀ + 1)) (4096 + Real.exp 20)
     linarith only [h, Real.exp_pos 20]
-  intro X hX₀ d hd hd2 t ht htX F hF
+  intro X hX₀ t ht htX F hF
   have hX1 : X₁ ≤ X := (le_max_left _ _).trans ((le_max_left _ _).trans hX₀)
   have hXT : T₀ + 1 ≤ X := (le_max_right _ _).trans ((le_max_left _ _).trans hX₀)
   have hXE : 4096 + Real.exp 20 ≤ X := (le_max_right _ _).trans hX₀
@@ -78,15 +77,11 @@ theorem exists_card_deep_le_heat_count_at_uniform_depth_scale :
     have hlog : Real.log (q.1 : ℂ).im ≤ 2 * Real.log X :=
       hlogHeight (by linarith only [hqX, hX])
         (by nlinarith only [hq2X, hX])
-    have htq : t * Real.log (q.1 : ℂ).im ≤ c * d ^ 2 := by
+    have htq : t * Real.log (q.1 : ℂ).im ≤ c := by
       have h := mul_le_mul_of_nonneg_left hlog ht.le
       nlinarith only [h, htX]
-    obtain ⟨w, hw, hwim, hdist⟩ := hpersist (q.1 : ℂ).im (hX1.trans hqX)
-      d hd hd2 t ht htq z hzre (by simpa only [hzim, abs_neg] using hqδ) hdepth hz0
-    refine ⟨w, hw, hwim, ?_⟩
-    have h := Complex.abs_re_le_norm (w - z)
-    rw [Complex.sub_re, hzre] at h
-    linarith only [h, hdist, hd2]
+    exact hpersist (q.1 : ℂ).im (hX1.trans hqX) t ht htq z hzre
+      (by simpa only [hzim, abs_neg] using hqδ) hdepth hz0
   choose! W hW using hnear
   let S : Finset ℂ := F.image W
   have hS : ∀ w ∈ S, riemannHeat t w = 0 ∧ w.im ≠ 0 := by

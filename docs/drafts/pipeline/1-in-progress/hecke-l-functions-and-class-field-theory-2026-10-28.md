@@ -474,3 +474,12 @@ exact radial/logarithmic Jacobian and Gamma evaluation, followed by the
 arithmetic coefficient identity and absolutely convergent ideal-series
 Mellin exchange. Full Hecke continuation/primitive functional equation and
 class field theory are still unfinished.
+
+The exact radial/logarithmic measure conversion is now audited in
+`HTGeometry/NumberFieldRadialLogarithmicJacobian.lean`. Its pushforward density
+is `2^r₂/[K:Q]`, and it preserves absolute integrability, with exact complex
+and nonnegative integral identities. Seven transitive axiom checks are
+standard-only; final direct source audit passed without warnings. Card:
+`3-formalized/hecke-radial-logarithmic-jacobian.md`.
+The Gamma-factor and actual kernel/ideal-series identification remain active
+on `hecke-archimedean-mellin-integrals.md`; full HL7 is not yet closed.

@@ -110,6 +110,12 @@ The count retains useful energy rather than merely detecting a failure:
     tends to 2(1-c/c_Q); at zero density every fixed cutoff has limit two,
     while cutoffs beyond any fixed integer horizon are exactly equal.
 
+17. Arbitrary prime patterns have exact harmonic Ramanujan coefficients
+    with a sharp mass boundary. Their unnormalized conductor weights are
+    summable exactly at positive Euler density; the normalized total is
+    one there and zero at zero density. Finite divisibility counts identify
+    the coefficients as actual mixed harmonic means.
+
 Paper proof: `../3-formalized/arithmetic-counting-pole-angle.md`. Lean survivors:
 `eventually_prime_gap_ge_squared_correlation`,
 `gaugeWitness_attains_variance_bound`, `prime_parity_pairing`,
@@ -187,6 +193,11 @@ Survivor 16 is formalized in
 `../3-formalized/arithmetic-counting-prime-pattern-cutoff-boundary.md`
 and `PositiveEulerDensityIsExactlyHarmonicCutoffCompleteness.lean`. All
 five endpoints passed standard-axiom and canonical source audits.
+
+Survivor 17 is formalized in
+`../3-formalized/arithmetic-counting-infinite-conductor-mass-boundary.md`
+and `InfinitePrimeCountsHaveAZeroOrUnitConductorMass.lean`. All six
+endpoints passed standard-axiom and canonical source audits.
 
 ## New insight and remaining boundary
 

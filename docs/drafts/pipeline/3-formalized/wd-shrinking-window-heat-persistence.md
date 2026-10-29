@@ -39,9 +39,9 @@ Paths are relative to `formal/GaloisForLFunctions/`.
 | Module | Main declarations |
 |---|---|
 | `HTGeometry/CenteredFactorProduct.lean` | `GaloisForLFunctions.HTGeometry.norm_centered_root_product_sub_one_le`; `GaloisForLFunctions.HTGeometry.norm_centered_factorization_sub_one_le` |
-| `RHTower/HeatShrinkingWindow.lean` | `RHTower.DeBruijn.exists_riemannHeat_shrinking_window_bounds` |
-| `RHTower/HeatZeroDisplacement.lean` | `RHTower.DeBruijn.exists_riemannHeat_zero_in_shrinking_ball`; `RHTower.DeBruijn.exists_nonreal_riemannHeat_zero_at_uniform_depth_scale` |
-| `RHTower/HeatUniformDepthZeroDensity.lean` | `RHTower.DeBruijn.exists_card_deep_le_heat_count_at_uniform_depth_scale` |
+| `RHTower/Heat/HeatShrinkingWindow.lean` | `RHTower.DeBruijn.exists_riemannHeat_shrinking_window_bounds` |
+| `RHTower/Heat/HeatZeroDisplacement.lean` | `RHTower.DeBruijn.exists_riemannHeat_zero_in_shrinking_ball`; `RHTower.DeBruijn.exists_nonreal_riemannHeat_zero_at_uniform_depth_scale` |
+| `RHTower/Heat/HeatUniformDepthZeroDensity.lean` | `RHTower.DeBruijn.exists_card_deep_le_heat_count_at_uniform_depth_scale` |
 
 All four modules passed final plain Lean checks without warnings.
 Every analytic input to the actual heat theorems is discharged; no
@@ -192,9 +192,9 @@ Each command passed without warnings, run individually from `formal/`:
 
 ```sh
 lake --old env lean GaloisForLFunctions/HTGeometry/CenteredFactorProduct.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatShrinkingWindow.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatZeroDisplacement.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatUniformDepthZeroDensity.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatShrinkingWindow.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatZeroDisplacement.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatUniformDepthZeroDensity.lean
 ```
 
 Imports are wired into `HTGeometry.lean` and `RHTower.lean`; umbrellas

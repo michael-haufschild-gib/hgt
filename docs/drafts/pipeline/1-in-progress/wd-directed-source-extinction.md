@@ -165,7 +165,7 @@ radii 18 and 36 about `X-16i`. The inner disk contains every zero with
 The source estimates and multiplicity transport have now compiled
 together. The exact theorem is
 `RHTower.DeBruijn.exists_sum_zeroMult_riemannHeat_near_le_log` in
-`RHTower/HeatLocalZeroDensity.lean`. The source lower and upper estimates
+`RHTower/Heat/HeatLocalZeroDensity.lean`. The source lower and upper estimates
 are in `HeatEulerAnchor.lean` and `HeatLocalGrowth.lean`. All three modules
 are wired into `RHTower.lean`; final plain-file checks passed without
 warnings. The [formalized card](../3-formalized/wd-heat-uniform-local-zero-count.md)
@@ -255,7 +255,7 @@ error at most `8tK`. `HeatGaussianQuadraticError.lean` combines it with
 the global envelope to bound the full integral error by
 `8tK+8 exp(E-r²/(8t))`; its integrability is proved as well.
 
-`RHTower/HeatLocalCofactor.lean` has passed its plain-file Lean check and
+`RHTower/Heat/HeatLocalCofactor.lean` has passed its plain-file Lean check and
 is wired into the umbrella. It contains the actual cofactor
 construction and its uniform version. Besides the
 degree and two logarithmic-derivative bounds, the uniform theorem retains
@@ -293,7 +293,7 @@ With `b=2tau a`, completing the square gives the exact identity
 
 The identity, arbitrary complex contour translation, and absolute
 integrability of the translated integrand are formalized in
-`RHTower/HeatReverseGaussian.lean`. Its plain-file Lean check passed
+`RHTower/Heat/HeatReverseGaussian.lean`. Its plain-file Lean check passed
 without warnings, and its import is wired.
 Taking `tau=t` supplies the reverse identity needed by `(N₁)`. It does
 not by itself prove that the integral is nonzero.
@@ -438,6 +438,6 @@ multiplicity control collisions; the critical strip and compact cutoff
 prove the finite-support identities. The
 [formalized continuity input](../3-formalized/wd-heat-localized-energy-continuity.md)
 passed its final plain check without warnings. Pairwise cutoff dissipation
-is also formalized in `HTGeometry/LocalizedHeatPairForce.lean`. The full
+is also formalized in `RHTower/Heat/LocalizedHeatPairForce.lean`. The full
 actual derivative/integrated inequality and arithmetic upper sign remain
 open.

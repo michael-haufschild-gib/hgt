@@ -278,6 +278,20 @@ precision — do not conflate the two.
    Thus both orders of exhaustion are explicit; this does not transfer an
    unbounded quadratic form solely from harmonic norm approximation.
 
+31. **Harmonic conductor mass has a sharp zero/unit boundary.** For an
+   arbitrary prime pattern, put $b_P=\mu*\omega_P$, $w_P=b_P^2/\varphi$,
+   and $a_P=cb_P/\sqrt{\varphi}$. Every fixed conductor transform agrees
+   exactly with a sufficiently large finite prime cutoff. Nonnegative
+   packet bounds give $\sum_mw_P(m)=c^{-2}$ when $c>0$; conversely,
+   summability would imply $1\le Wc_Q^2$, excluding $c=0$.
+   Thus $w_P$ is summable exactly when $c>0$, and
+   $\sum_ma_P(m)^2$ is one for $c>0$ and zero for $c=0$.
+   The exact mixed count is
+   $\sum_{d\mid m}\mu(m/d)\omega_P(d)S_P(\lfloor N/d\rfloor)$.
+   Its harmonic mean is $cb_P(m)$, identifying these as actual harmonic
+   Ramanujan coefficients. Unit conductor mass and vanishing fixed
+   coefficients are established before any all-pattern eigenline transfer.
+
 ---
 
 ## 4. Pillar theorems
@@ -414,6 +428,13 @@ precision — do not conflate the two.
    `primeSetFlip_harmonic_cutoffs_complete_iff`). Positive Euler density is
    necessary and sufficient for harmonic approximation by prime cutoffs.
 
+31. **All-pattern conductor mass and harmonic coordinates**
+   (`primeSetMobius_eq_finiteCutoff`, `primeSetConductorCoefficient_sq`,
+   `summable_primeSetSpectralWeight_iff`, `hasSum_primeSetConductorCoefficient_sq`,
+   `primeSetRamanujanSum_eq`, `primeSetRamanujanSum_tendsto`). Positive
+   density is the exact summability threshold, and the counted normalized
+   mass is either zero or one.
+
 **Pillar obligations** (targets, not theorems): count before sign (an integer-side construction with square-root error);
 arithmetic selection on overlapping complete sources; uniform mixed-term control through exhaustion; a displacement-sensitive
 signature bound or uniform complete-source index ceiling; obstructions with positive content.
@@ -454,7 +475,10 @@ Battery: Liouville twin, scaled $\Lambda$, quadratic mixtures, golden curve, ove
    Every infinite pattern now has its exact Euler-product harmonic mean
    and the corresponding squared-density gap. Harmonic approximation by finite
    prime cutoffs holds exactly at positive Euler density, with an exact squared
-   distance formula. Optimal-gap transfer requires further work. Selection among arbitrary multiplicative weights
+   distance formula. The harmonic conductor coefficients have total squared
+   mass one at positive density and zero at zero density, with a sharp
+   unnormalized summability criterion. All-pattern eigenline and optimal-gap
+   transfer require further work. Selection among arbitrary multiplicative weights
    remains open.
    Every finite prime set has an attained greatest gap characterized by its explicit secular
    signs and unique interior root. Proper inclusion strictly decreases a submaximal larger-set

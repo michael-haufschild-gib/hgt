@@ -171,9 +171,9 @@ the claimed unit-window count, including `t=0` and multiple zeros.
 All final plain-file checks passed without warnings, from `formal/`:
 
 ```text
-lake --old env lean GaloisForLFunctions/RHTower/HeatEulerAnchor.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatLocalGrowth.lean
-lake --old env lean GaloisForLFunctions/RHTower/HeatLocalZeroDensity.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatEulerAnchor.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatLocalGrowth.lean
+lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatLocalZeroDensity.lean
 ```
 
 All three modules are imported by `GaloisForLFunctions/RHTower.lean`.

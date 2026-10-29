@@ -1,5 +1,5 @@
-import GaloisForLFunctions.RHTower.HeatEulerAnchor
-import GaloisForLFunctions.RHTower.HeatLocalGrowth
+import GaloisForLFunctions.RHTower.Heat.HeatEulerAnchor
+import GaloisForLFunctions.RHTower.Heat.HeatLocalGrowth
 import GaloisForLFunctions.RHTower.KiKimLeeFiniteness
 import GaloisForLFunctions.RHTower.DeBruijnNonrealCountAntitone
 import GaloisForLFunctions.HTGeometry.UniformZeroCountBound

@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.HeatShrinkingWindow
-import GaloisForLFunctions.RHTower.HeatRelativeGlobalBounds
-import GaloisForLFunctions.RHTower.HeatGaussianQuadraticError
+import GaloisForLFunctions.RHTower.Heat.HeatShrinkingWindow
+import GaloisForLFunctions.RHTower.Heat.HeatRelativeGlobalBounds
+import GaloisForLFunctions.RHTower.Heat.HeatGaussianQuadraticError
 
 /-!
 # Uniform displacement of zeros under small positive heat

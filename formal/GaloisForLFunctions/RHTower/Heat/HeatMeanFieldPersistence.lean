@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.HeatRelativeGlobalBounds
-import GaloisForLFunctions.RHTower.HeatZeroFreeWindow
-import GaloisForLFunctions.RHTower.HeatGaussianQuadraticError
+import GaloisForLFunctions.RHTower.Heat.HeatRelativeGlobalBounds
+import GaloisForLFunctions.RHTower.Heat.HeatZeroFreeWindow
+import GaloisForLFunctions.RHTower.Heat.HeatGaussianQuadraticError
 import GaloisForLFunctions.HTGeometry.LogDerivativeSaddle
 
 /-!

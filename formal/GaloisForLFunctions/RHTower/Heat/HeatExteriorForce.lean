@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HeatLocalCofactor
+import GaloisForLFunctions.RHTower.Heat.HeatLocalCofactor
 import GaloisForLFunctions.RHTower.DeBruijnCollisionJumpLaw
 import GaloisForLFunctions.RHTower.DeBruijnStripThreshold
 import GaloisForLFunctions.RHTower.XiExceptionalPointDiscrete

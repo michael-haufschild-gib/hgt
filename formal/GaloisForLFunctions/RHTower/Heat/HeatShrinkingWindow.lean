@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.HeatLocalCofactor
+import GaloisForLFunctions.RHTower.Heat.HeatLocalCofactor
 import GaloisForLFunctions.HTGeometry.LogDerivativeFactor
 import GaloisForLFunctions.HTGeometry.CenteredFactorProduct
 
