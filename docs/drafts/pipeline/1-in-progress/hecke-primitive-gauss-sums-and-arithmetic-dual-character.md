@@ -367,9 +367,8 @@ Exact norm sources are now checked: Mathlib
 `RingTheory/DedekindDomain/Different.lean` proves
 `coeIdeal_differentIdeal ℤ ℚ K (𝓞 K)` and `FractionalIdeal.dual_eq_mul_inv`.
 Together they give
-`Norm(dual I)=(|disc K| Norm(I))⁻¹` directly. The written verification
-file `/tmp/HeckeTraceDualNormScratch.lean` now passes its transitive axiom
-audit with only the three standard axioms. Its permanent source is
+`Norm(dual I)=(|disc K| Norm(I))⁻¹` directly. The proof now passes its
+transitive axiom audit with only the three standard axioms. Its source is
 `HTGeometry/NumberFieldTraceDualsHaveDiscriminantNorms.lean`; the final
 direct source audit passes without warnings. See
 [the norm proof](../3-formalized/number-field-trace-duals-have-discriminant-norms.md).
@@ -379,7 +378,6 @@ and Mellin normalization argument.
 
 ## Inversion of conductor and archimedean data
 
-The next verification file is `/tmp/HeckeInverseConductorParityScratch.lean`.
 For any finite commutative ring, a character descends through an ideal
 exactly when it is one on that ideal's unit congruence kernel. Inversion
 preserves this condition, hence the greatest descent ideal and the actual
@@ -387,9 +385,7 @@ finite Hecke conductor. Finite residue restriction and its zero extension
 commute with inversion. Every real sign has order at most two, so the
 infinite sign character equals its inverse; all real, coordinate, and
 place parities, the Gamma product, and both Mellin normalizations agree.
-The corrected scratch passes all three main transitive axiom audits with
-standard axioms only. The reusable conductor result and Hecke-specific
-results are now separated into permanent modules
+The reusable conductor result and Hecke-specific results are finalized in
 `HTGeometry/FiniteRingConductorsAreInvariantUnderInversion.lean` and
 `HeckeLFunctions/HeckeConductorsAndParitiesAreInvariantUnderInversion.lean`.
 Both final direct source audits pass without warnings, and the generic

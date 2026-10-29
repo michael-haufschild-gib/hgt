@@ -41,6 +41,7 @@ theorem haarProfile_moment_nonpos_of_monotone {a : ℕ} (ha : 1 ≤ a)
     exact mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr (haarCoeff_nonneg ha).2)
       (sub_nonneg.mpr (hw hr.1))
   · simp only [mul_zero, sub_zero, zero_mul, Pi.zero_apply]
+    exact le_rfl
 
 /-- The nonnegative left factor of an ordered Gamma interaction. -/
 def haarLaplaceLeft (a : ℕ) (r : ℝ) : ℝ :=

@@ -72,7 +72,7 @@ The third is the selected exact target. Do not infer noncancellation from termwi
 - [x] Exact arithmetic source and intended group fixed.
 - [ ] Complete internal and external dependency audit.
 - [x] Dependency-closed paper proof of analytic noncancellation.
-- [ ] Lean proof of the exact full-sum pole theorem.
+- [x] Lean proof of the exact full-sum pole theorem.
 - [ ] Actual finite-field arithmetic series and convergence.
 - [ ] Actual unipotent quotient measure and local/global intertwining integrals.
 - [ ] Dependency-closed paper proof of arithmetic unfolding.
@@ -80,10 +80,10 @@ The third is the selected exact target. Do not infer noncancellation from termwi
 
 ## Open core
 
-Construct and discharge the arithmetic definitions and integration theorems. For analytic
-noncancellation, prove coefficient bounds uniform near `s₀`, locally uniform convergence
-after removal of the one singular factor, and a nonzero limiting Laurent coefficient.
-No completed sublemma closes this programme; both requested theorems remain required.
+Construct and discharge the arithmetic definitions and integration theorems. Analytic
+noncancellation of the complete infinite affine Weyl sum is now Lean-verified, including
+uniform coefficient bounds, holomorphic regularization, and exact eventual pole orders.
+The separate arithmetic unfolding theorem remains required.
 
 ## Dependency-closed analytic Weyl-sum proof `[PROVED HERE]`
 
@@ -163,26 +163,32 @@ theory, and dominated convergence. No arithmetic unfolding theorem is used.
   finite-field regularization, root-argument separation, uniform Weyl-length bounds,
   and exact clearing identity. Scratch check passed, exit 0 without diagnostics.
   Production olean compilation also passed, exit 0 without diagnostics. Never rebuild
-  that olean. The dependent full-sum scratch check is now running.
-- `/tmp/hgt_ff_weyl_noncancellation.lean` contains the complete Weyl-sum definitions,
-  normal convergence, original-series/continuation equality, punctured-germ equality,
-  and exact eventual pole orders, including integral rotations. It awaits the preceding
-  module; its proofs are not yet compiler-verified.
+  that olean. The dependent full-sum scratch check also passed.
+- `HTGeometry/LoopEisenstein/AffineA1FiniteFieldWeylPoles.lean` contains the complete
+  Weyl-sum definitions, normal convergence, original-series/continuation equality,
+  punctured-germ equality, and exact eventual pole orders, including integral rotations.
+  Its identical scratch source passed, exit 0 with no diagnostics. The final declaration
+  is `finiteFieldWeylSum_integral_rotation_poles`; final axiom audit remains pending.
 - `/tmp/hgt_ff_eisenstein_api.lean` is an owned API scratch file. Its check finished;
   expected unknown-name errors identified unavailable aliases. Valid APIs include
   `mul_div_mul_left`, `IsCompact.exists_bound_of_continuousOn`,
   `tendsto_tsum_of_dominated_convergence`, and `DifferentiableOn.analyticOnNhd`.
   Holomorphic sums use `Mathlib.Analysis.Complex.SummableUniformlyOn`, specifically
   `SummableLocallyUniformlyOn.differentiableOn`.
-- Next analytic modules: a reusable Gaussian integer-series lemma with uniform
-  holomorphy and large-rotation limit, then actual cleared affine coefficients and
-  the full Weyl-sum pole theorem. Keep the arithmetic unfolding programme active.
+- Analytic modules are complete. Continue the actual arithmetic construction and
+  unfolding; do not identify the independently defined Weyl sum with an Eisenstein
+  constant term until that integration theorem is proved.
 - Arithmetic dependency audit: no elliptic-coordinate Dedekind theorem surfaced yet.
   Corpus has actual general normal-local-ring DVR and finite-extension valuation
   machinery; inspect those and mathlib's adelic/function-field sources before building
   curve-specific places. Do not substitute number-field adeles without a proved transport.
 
 ## Arithmetic construction: rational subfield and finite adeles `[PAPER PROOF]`
+
+Lean status: `FiniteFieldEllipticGlobalField.lean` passed its identical scratch check,
+exit 0 without diagnostics. The actual extension degree, separability, finite residue
+fields, finite adeles, and injective diagonal map are proved. Olean and axiom audit
+remain pending; the integral closure has not yet been identified with the affine ring.
 
 The actual affine coordinate ring `A` has the already proved free `F₃[X]` basis
 `(1,y)`. Its polynomial algebra map is injective, and therefore extends uniquely

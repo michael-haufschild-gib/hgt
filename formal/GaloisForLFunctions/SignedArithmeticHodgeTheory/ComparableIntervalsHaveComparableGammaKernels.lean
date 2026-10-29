@@ -102,7 +102,7 @@ theorem gammaIntervalKernel_le_stopping_of_gap {a b c d : ℝ}
         ((b - a) * (d - c) * archLevyDensity (d - a))) := by
   have hg : 0 < c - b := sub_pos.mpr hbc
   have hf : 0 < d - a := by linarith only [hab, hbc, hcd]
-  have hk := archLevyDensity_le_seven_exp hg
+  have hk := archLevyDensity_le_seven_exp (t := d - a) hg
     (by linarith only [hab, hcd]) (by linarith only [hgu, hgv])
     (by linarith only [hu, hv])
   have hcost : archLevyDensity (c - b) ≤
@@ -129,7 +129,7 @@ theorem gammaIntervalKernel_le_stopping_of_touching {a b d : ℝ}
     exact (not_lt_of_ge hy.1.le) hy'.2
   have hbound := (gammaIntervalKernel_le_defect_add_width hab (Or.inl le_rfl)).trans
     (add_le_add (gamma_interval_exterior_subset_defect_le hab hu hsub) le_rfl)
-  have hdensity := archLevyDensity_le_seven_exp hu0
+  have hdensity := archLevyDensity_le_seven_exp (t := d - a) hu0
     (by linarith only [hbd]) (by linarith only [hvu, hu0])
     (by linarith only [hv])
   have hfloor := one_le_two_exp_mul_distance_density hf (by linarith only [hu, hv])
@@ -177,7 +177,7 @@ theorem gammaKernel_le_stopping_far_of_gap {a b x y : ℝ}
     rw [abs_of_pos hs, gammaFarCharge, if_neg hyn, max_eq_left (by linarith only [hab, hyb]),
       ← ENNReal.ofReal_mul stoppingGammaKernelConstant_pos.le]
     apply ENNReal.ofReal_le_ofReal
-    have h := archLevyDensity_le_seven_exp hs
+    have h := archLevyDensity_le_seven_exp (t := y - a) hs
       (by linarith only [hx.1]) (by linarith only [hr, hx.2, hab])
       (by linarith only [hx.1, hx.2, hw])
     exact h.trans (mul_le_mul_of_nonneg_right seven_exp_le_stopping (archLevyDensity_pos ht).le)
@@ -189,7 +189,7 @@ theorem gammaKernel_le_stopping_far_of_gap {a b x y : ℝ}
       gammaFarCharge, if_neg hyn, max_eq_right (by linarith only [hab, hya]),
       ← ENNReal.ofReal_mul stoppingGammaKernelConstant_pos.le]
     apply ENNReal.ofReal_le_ofReal
-    have h := archLevyDensity_le_seven_exp hs
+    have h := archLevyDensity_le_seven_exp (t := b - y) hs
       (by linarith only [hx.2]) (by linarith only [hl, hx.1, hab])
       (by linarith only [hx.1, hx.2, hw])
     exact h.trans (mul_le_mul_of_nonneg_right seven_exp_le_stopping (archLevyDensity_pos ht).le)

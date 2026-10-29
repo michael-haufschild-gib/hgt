@@ -72,7 +72,7 @@ theorem hermQuad_nonneg_of_fine_zpowers {k : Multiplicative ℝ → ℂ}
       congr 1
       apply Multiplicative.toAdd.injective
       simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd, toAdd_zpow]
-      push_cast; ring
+      ring
   -- the Gram entries converge
   have hentry : ∀ a b, Tendsto (fun n => k ((Multiplicative.ofAdd ((N n a : ℝ) * s n))⁻¹ *
       Multiplicative.ofAdd ((N n b : ℝ) * s n))) atTop (𝓝 (k ((x a)⁻¹ * x b))) := fun a b => by

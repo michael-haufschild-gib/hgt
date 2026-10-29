@@ -106,24 +106,23 @@ The fractional orbit equivalence is now formalized. Dual Mellin exchange
 and normalized reflection remain open. Raw completed zero-mode
 cancellation remains on its separate active card.
 
-The full fractional orbit construction is now written in
-`/tmp/HeckeFractionalUnitOrbitsScratch.lean`: principal generators,
-integral inverse-class quotient for every nonzero element, bijection
-with global units, and exact generator/orbit norms. After correcting an
-embedding-coercion rewrite and product extensionality, both main
-transitive axiom audits pass with standard axioms only. The permanent
-source is `HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`;
-its final direct source audit passes without warnings. See
+The full fractional orbit construction is finalized in
+`HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`: principal
+generators, integral inverse-class quotient for every nonzero element,
+bijection with global units, and exact generator/orbit norms. Both main
+transitive axiom audits pass with standard axioms only; the final direct
+source audit passes without warnings. See
 [the completed orbit proof](../3-formalized/fractional-ideal-elements-are-class-unit-orbits.md).
 This is a reusable construction
 for every invertible fractional ideal, independent of the Hecke Fourier
 coefficients. It also proves countability of the inverse-class ideal index.
 
-Its written consumer `/tmp/HeckeDualFractionalClassScratch.lean` imports
-the proposed permanent orbit module and the finalized coefficient and
-discriminant-norm modules. It identifies the selected orbit generator's
-frequency ideal with the orbit index and specializes both the exact norm
-and the inverse-character coefficient. This consumer is not yet compiled.
+Its consumer `HeckeLFunctions/HeckeDualFrequenciesHaveClassGenerators.lean`
+is finalized. It identifies the selected orbit generator's frequency
+ideal with the orbit index and specializes both the exact norm and
+inverse-character coefficient. All three main transitive axiom audits
+are standard only; final direct source audit passes without warnings.
+See [the exact dual-generator proof](../3-formalized/hecke-dual-frequencies-have-class-generators.md).
 It now also proves the exact ordinary-class law
 `[J_b]⁻¹=[J_1]⁻¹[b]` directly from `J_b*b=J_1`, and constructs the
 resulting class permutation `c↦[J_1]⁻¹c⁻¹`.
@@ -134,7 +133,7 @@ at any nonzero `a∈K`, with coefficient `sgnψ(a)|Norm(a)|⁻ˢ`, and proves
 the translated archimedean identity, joint integrability, exact absolute
 mass, and whole-log Mellin value. Mathlib's checked weighted-log formula
 already applies to arbitrary field elements. This scratch is not yet
-compiled and is not counted as a proved analytic dependency.
+fully verified and is not counted as a proved analytic dependency.
 
 `/tmp/HeckeDualUnitCovarianceScratch.lean` now contains the actual dual
 kernel, simultaneous unit/place-log covariance, and the negative-profile
@@ -173,18 +172,18 @@ translation tile formulas. It has not yet been compiled.
 - `HTGeometry/FractionalIdealElementsAreClassUnitOrbits.lean`: finalized;
   final source and both main transitive axiom audits pass. Required
   consumer olean is built.
-- `/tmp/HeckeDualFractionalClassScratch.lean`: written; needs the orbit,
-  inverse-coefficient, and trace-dual-norm consumer oleans before checking.
-- `/tmp/HeckeFieldElementMellinScratch.lean`: written, unchecked; imports
+- `HeckeLFunctions/HeckeDualFrequenciesHaveClassGenerators.lean`: finalized;
+  final source check and all three main transitive axiom audits pass.
+  No consumer olean built yet.
+- `/tmp/HeckeFieldElementMellinScratch.lean`: first check running; imports
   the already built integral-element Mellin module.
-- `/tmp/HeckeDualUnitCovarianceScratch.lean`: written, unchecked; needs
-  the inverse-coefficient olean.
+- `/tmp/HeckeDualUnitCovarianceScratch.lean`: written, unchecked; its
+  inverse-coefficient dependency is built.
 - `/tmp/HeckeUnitDomainFamilyUnfoldingScratch.lean`: written, unchecked;
   imports existing unit-domain and absolute-periodization infrastructure.
 
 The inverse-coefficient and trace-dual-norm sources have passed final
-audits. The inverse-coefficient consumer olean is built; the trace-dual
-norm consumer olean is building.
+audits, and both required consumer oleans are built.
 No dual class Mellin identity or completed functional equation is yet
 claimed from the unchecked files above.
 

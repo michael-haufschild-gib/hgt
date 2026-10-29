@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 open ArithmeticLorentzianGeometry ArithmeticElectrostatics ArithmeticEffectivityTheory
   SpacingScaleHarmonicAnalysis RenormalizedArithmeticPotentialTheory
-open _root_.RHTower (vonMangoldtAtom)
+open _root_.RHTower (vonMangoldtAtom primeSum)
 
 private theorem primePair_self (f : ℝ → ℝ) : primePair f f = primeSum f := rfl
 
@@ -142,6 +142,7 @@ theorem fullWeilNonRatioMatrix_inner_eq {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2
     primeSum_atomicTest_eq_ratio_add hg.continuous hgc hgsupp hw.le,
     atomicWeilForm_primeHorizonExtension]
   field_simp [hG.ne']
+  ring
 
 /-- One horizon makes the whole actual non-ratio matrix small for every ratio up to one. -/
 theorem eventually_fullWeilNonRatioMatrix_small_uniformly {φ : ℝ → ℝ}

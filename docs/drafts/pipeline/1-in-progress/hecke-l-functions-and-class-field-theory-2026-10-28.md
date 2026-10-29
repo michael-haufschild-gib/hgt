@@ -654,3 +654,10 @@ class index, and exact field-norm formula for every unit orbit. Both main
 transitive audits are standard only; final source audit passes without
 warnings. Its specialization to dual Hecke frequencies and the actual
 dual Mellin unfolding remain under verification.
+
+`HeckeDualFrequenciesHaveClassGenerators.lean` now specializes the orbit
+construction to actual trace-dual frequencies, identifies their integral
+ideal indices, proves their exact norm and inverse-character coefficient,
+and constructs the ordinary-class permutation. All three main transitive
+audits are standard only; final source audit passes without warnings.
+Actual dual Mellin unfolding and the completed reflection remain open.

@@ -41,8 +41,8 @@ theorem iwahoriEquivalent_trans {g h k : SL2 (LaurentSeries F)}
 
 /-- The two families of concrete representatives indexed by the infinite affine Weyl group. -/
 def affineWeylMatrix : AffineA1.Weyl → SL2 (LaurentSeries F)
-  | .r m => sl2Diagonal (laurentXUnit F ^ (-m))
-  | .sr m => sl2WeylLower (laurentXUnit F ^ (-m))
+  | .r m => sl2Diagonal (laurentXUnit F ^ (-(show ℤ from m)))
+  | .sr m => sl2WeylLower (laurentXUnit F ^ (-(show ℤ from m)))
 
 /-- One of the four pivots has exactly the valuation inequalities required by its shears. -/
 theorem iwahori_pivot_cases (g : SL2 (LaurentSeries F)) :
@@ -77,7 +77,7 @@ theorem iwahori_pivot_cases (g : SL2 (LaurentSeries F)) :
     refine ⟨?_, lt_of_le_of_lt (le_max_left _ _) hb, lt_of_le_of_lt (le_max_right _ _) hb⟩
     intro hzero
     rw [hzero, map_zero] at hb
-    exact (not_lt_of_ge (zero_le _)) hb
+    exact (not_lt_of_ge zero_le) hb
   have hble := le_of_not_gt hb
   by_cases had : laurentValuation F (g 0 0) ≤ laurentValuation F (g 1 1)
   · rw [max_eq_right had] at hclt hble
@@ -85,14 +85,14 @@ theorem iwahori_pivot_cases (g : SL2 (LaurentSeries F)) :
     refine ⟨?_, hble, hclt⟩
     intro hzero
     rw [hzero, map_zero] at hclt
-    exact (not_lt_of_ge (zero_le _)) hclt
+    exact (not_lt_of_ge zero_le) hclt
   · have hda := le_of_lt (lt_of_not_ge had)
     rw [max_eq_left hda] at hclt hble
     right; right; left
     refine ⟨?_, hble, hclt⟩
     intro hzero
     rw [hzero, map_zero] at hclt
-    exact (not_lt_of_ge (zero_le _)) hclt
+    exact (not_lt_of_ge zero_le) hclt
 
 theorem iwahoriEquivalent_diagonal_monomial (a : (LaurentSeries F)ˣ) :
     iwahoriEquivalent F (sl2Diagonal a)

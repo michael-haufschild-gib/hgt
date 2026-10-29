@@ -91,10 +91,12 @@ arithmetic lattice, measure, or Eisenstein convergence by itself.
 
 `LaurentIwahoriCriteria` compiles without warnings at ordinary limits,
 including exact Iwahori valuation membership and Laurent-unit factorization.
-`SL2PivotReduction` contains all four elimination identities; remaining
-checks concern the normalization of their elementary field equalities.
+`SL2PivotReduction` compiles cleanly with all four exact elimination
+identities.
 `IwahoriBruhatExistence` contains the complete existence proof, valuation
 pivot case split, and double-coset normalization, awaiting its dependencies
-and first check. `MatrixValuationContent` and `IwahoriLatticeChain` contain
-the entry-valuation bounds and adjacent-lattice preservation; neither has
-been checked yet. Uniqueness and the central lift remain to be implemented.
+and first check. `MatrixValuationContent` compiles cleanly and proves the integral-inverse
+content invariance. `IwahoriLatticeChain` now contains all three invariant
+proofs, awaiting its first check. `IwahoriBruhatUniqueness` has the exact
+integer profile definitions; profile evaluation, uniqueness, and the central
+lift remain to be completed.

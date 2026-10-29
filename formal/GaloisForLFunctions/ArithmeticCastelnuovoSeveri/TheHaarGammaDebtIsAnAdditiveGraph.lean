@@ -34,8 +34,9 @@ theorem haarSectionProfile_gamma_eq_matrix (d : ℕ → ℝ) (X : ℕ) :
     exact logCellWidth_pos (hpos i)
   have hw (i : S) : U i - L i ≤ 1 := by
     rw [hwidth]
+    have hi := hpos i
     exact (logCellWidth_le_inv (hpos i)).trans
-      ((div_le_one (by positivity : (0 : ℝ) < (i : ℕ))).mpr (by exact_mod_cast hpos i))
+      ((div_le_one (by positivity : (0 : ℝ) < (i : ℕ))).mpr (by exact_mod_cast hi))
   have hsep (i j : S) (hij : i ≠ j) : U i ≤ L j ∨ U j ≤ L i := by
     have hne : (i : ℕ) ≠ (j : ℕ) := fun h => hij (Subtype.ext h)
     rcases lt_or_gt_of_ne hne with hlt | hgt
@@ -139,7 +140,7 @@ private theorem haarGamma_diagonal_ground (d : ℕ → ℝ) (a : ℕ) :
       (levyEnergy (haarProfile a) / ((2 * a + 1 : ℕ) : ℝ)) * haarGroundCoordinate d a ^ 2 := by
   have hn : (0 : ℝ) < ((2 * a + 1 : ℕ) : ℝ) := by positivity
   rw [haarGroundCoordinate, mul_pow, Real.sq_sqrt hn.le]
-  field_simp [hn.ne']
+  field_simp [hn.ne'] <;> ring
 
 private theorem haarGamma_cross_ground (d : ℕ → ℝ) (a b : ℕ) :
     haarGammaCoupling a b * d a * d b =
@@ -149,7 +150,7 @@ private theorem haarGamma_cross_ground (d : ℕ → ℝ) (a b : ℕ) :
   have hb : Real.sqrt ((2 * b + 1 : ℕ) : ℝ) ≠ 0 :=
     (Real.sqrt_pos.mpr (by positivity : (0 : ℝ) < ((2 * b + 1 : ℕ) : ℝ))).ne'
   rw [haarGammaGraphWeight, haarGroundCoordinate, haarGroundCoordinate]
-  field_simp [ha, hb]
+  field_simp [ha, hb] <;> ring
 
 /-- Exact signed Gamma decomposition in the original divisor ground coordinates. -/
 theorem haarSectionProfile_gamma_eq_row_sub_graph (d : ℕ → ℝ) (X : ℕ) :
