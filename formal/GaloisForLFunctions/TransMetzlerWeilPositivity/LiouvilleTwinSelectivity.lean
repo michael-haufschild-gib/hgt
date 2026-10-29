@@ -1486,7 +1486,8 @@ theorem exists_plateau_liouville_weilQuadTw_neg_of_gt_exp_div_two_pi {c : ℝ}
   have hsq_pos : 0 < ∫ u, SpacingScaleHarmonicAnalysis.plateau η u ^ 2 :=
     lt_of_lt_of_le (by linarith only [hη2]) (integral_plateau_sq_ge hη0 hη2.le)
   refine ⟨η, hη0, hη2, eventually_liouville_weilQuadTw_neg_of_gt_robinEuler
-    ((contDiff_plateau η).of_le (by norm_num)) (fun u hu => plateau_eq_zero hη0 hu)
+    (SpacingScaleHarmonicAnalysis.contDiff_plateau η)
+    (fun _ hu => SpacingScaleHarmonicAnalysis.plateau_eq_zero hη0 hu)
     hsq_pos hRE_1 hRE_c ?_ ?_⟩
   · filter_upwards [eventually_ge_atTop 1] with N hN
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN

@@ -51,7 +51,7 @@ Quantitative bounds for `transMetzlerProfile = plateau (1 / 1000)` and explicit 
 
 ### `TransMetzlerDecomposition.lean`
 Exact perturbative decomposition `normalizedFullWeilHorizonMatrix = transMetzlerMainMatrix + perturbation` for widths $1/(2N) \le w \le (1 + \delta_0)/N$:
-* `top_adjacent_of_log_gap_le`, `sum_top_third_sq_le_poleDefect`: support overlaps occur only on adjacent pairs $|j - n| = 1$ in the top collar $2\min(n, j) + 2 \ge N$, where mass is paid by `poleDefect / log(N / 3)`.
+* `top_adjacent_of_log_gap_le`, `sum_sq_top_third_le`: support overlaps occur only on adjacent pairs $|j - n| = 1$ in the top collar $3n > N$, where mass is paid by `poleDefect / log(N / 3)`.
 * `tendsto_transMetzlerMainMatrix_ramanujan_residual_norm`: norm quasimode convergence $\|H_N^{\mathrm{main}} u_m^{(N)} - E_m u_m^{(N)}\| \to 0$ for every conductor $m \ge 1$.
 * `abs_nonRatioForm_transMetzler_le`: signed prime-defect + Chebyshev bound on the additive successor prime pairs $(kn, kn \pm 1)$ with factor $\delta_0 + 2/N$.
 * `exists_perturbation_bound_transMetzler`: total overlap-and-drift perturbation bounded by $(2000\delta_0 + C_{\mathrm{short}}/\log(N/3))(\texttt{poleDefect } N\ x + \|x\|^2)$.
