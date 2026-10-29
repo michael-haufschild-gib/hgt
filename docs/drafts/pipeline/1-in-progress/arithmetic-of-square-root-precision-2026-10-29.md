@@ -16,7 +16,7 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 
 ## Gates
 - [x] 0 → 1  scope fixed, README first draft
-- [x] modules 1–20 proved, checked, wired into `ArithmeticOfSquareRootPrecision.lean`; axioms audited
+- [x] modules 1–21 proved, checked, wired into `ArithmeticOfSquareRootPrecision.lean`; axioms audited
   (propext, Classical.choice, Quot.sound only)
 - [ ] open topics of the README §9 (ceiling, off-line vanishing, positivity precision, inversion with
   arithmetic input, successor, index/defect/regulator precision, vertical zero estimates, structure)
@@ -45,6 +45,7 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 18. `TheStirlingErrorSplits` — log⌊y⌋! = F + monotone + sawtooth; ψ − I(F) − I(h) = O(log n · max|M|).
 19. `TheSmoothTermInvertsToMobiusMoments` — I_x(F) = x((log x − 1)m − ℓ); |I_n(h)| < n; arithmetic ledger.
 20. `FiniteAperturePositivityCannotDecide` — window law; aperture positivity ⊆ count ⇒ ¬RH; 3/10 weight-blind.
+21. `TheSuccessorEntersOnlyModuloTheSquareRootClass` — Count a ↔ a − 1 ∈ 𝒬; successor models mod 𝒬.
 
 ## No-go closure
 - **Inversion no-go** (`not_inversion_bounded`): size bounds do not survive Möbius inversion.
@@ -68,4 +69,4 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 
 ## Log
 - 2026-10-29 — created; README first draft written.
-- 2026-10-29 — modules 1–20 formalized; README rewritten on the established results.
+- 2026-10-29 — modules 1–21 formalized; README rewritten on the established results.

@@ -53,8 +53,7 @@ theorem sum_log_prime_le (n : ℕ) :
   have hlog : Real.log (primorial n) = ∑ p ∈ (range (n + 1)).filter Nat.Prime, Real.log p := by
     rw [primorial, Nat.cast_prod, Real.log_prod]
     intro p hp
-    exact_mod_cast (Nat.prime_of_mem_primesBelow (by
-      simpa [Nat.primesBelow] using hp)).ne_zero
+    exact_mod_cast (mem_filter.mp hp).2.ne_zero
   rw [← hlog, ← Real.log_pow]
   exact Real.log_le_log hpos (by exact_mod_cast h)
 

@@ -22,7 +22,7 @@ private theorem lagCoefficient_eq_of_modEq {q a b : ℕ} (hab : Nat.ModEq q a b)
     ramanujanLagCoefficient q a = ramanujanLagCoefficient q b := by
   unfold ramanujanLagCoefficient
   refine sum_congr rfl fun d hd => ?_
-  rw [hab.dvd_iff (Nat.dvd_of_mem_divisors hd)]
+  simp only [hab.dvd_iff (Nat.dvd_of_mem_divisors hd)]
 
 /-- The affine Ramanujan pattern as a function of the multiplier residue. -/
 def affineRamanujanResidue (q n h : ℕ) (r : ZMod q) : ℝ :=

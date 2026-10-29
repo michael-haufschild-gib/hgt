@@ -492,6 +492,50 @@ proves these identities directly from the original divisor source. They fix
 the logarithmic correction exactly; they do not estimate a growing family
 of overlapping norm residuals.
 
+## Affine arithmetic averages from actual prime windows
+
+For every positive conductor `q` and natural numbers `n,h`, the finite
+reduced-residue identity is
+
+\[
+\sum_{\substack{0\le r<q\\(r,q)=1}}c_q(rn+h)=c_q(n)c_q(h).
+\]
+
+Primitive-root powers permute the primitive roots as `r` runs through the
+units. Interchanging these finite sums proves the identity. Consequently
+the normalized mode `c_q(n)/√φ(q)` is an eigenfunction of affine unit
+averaging, with exact eigenvalue `c_q(h)/φ(q)` in `[-1,1]`.
+[UnitAveragesDiagonalizeSuccessorCorrections](UnitAveragesDiagonalizeSuccessorCorrections.lean)
+contains this finite character calculation.
+
+The literal prime source realizes the same average. For any real residue
+pattern `F` on `ℤ/qℤ`, put `κ_F=φ(q)⁻¹∑_{r unit}F(r)`. The actual reading
+
+\[
+\sum_{1\le k\le Y}\frac{\Lambda(k)}kF(k\bmod q)-\kappa_F\log Y
+\]
+
+has a finite limit. Existing residue-class Mertens constants give the unit
+contributions; convergent non-unit prime-power classes supply the rest.
+There is no sign or multiplicativity condition on `F`. Subtracting the two
+readings at `AN` and `BN`, for fixed integers `0<A≤B`, cancels the finite
+part and leaves `κ_F(log B-log A)`. This is
+[PrimeResidueWindowsConvergeToTheirUnitMean](PrimeResidueWindowsConvergeToTheirUnitMean.lean).
+
+The affine pattern therefore gives the actual limit
+
+\[
+\lim_{N\to\infty}
+\sum_{AN<k\le BN}\frac{\Lambda(k)}k c_q(kn+h)
+=(\log B-\log A)\frac{c_q(n)c_q(h)}{\varphi(q)}.
+\]
+
+[ActualPrimeWindowsDiagonalizeAffineRamanujanModes](ActualPrimeWindowsDiagonalizeAffineRamanujanModes.lean)
+proves this statement and its normalized-mode version. All prime powers
+are retained. Conductor, affine parameters, and window endpoints are fixed;
+these scalar limits provide neither growing-conductor norm control nor
+spectral exhaustion for the overlapping complete form.
+
 ## Questions and tools to develop
 
 **Arithmetic overlap analysis.** What new low modes appear as overlap grows? The surrounding

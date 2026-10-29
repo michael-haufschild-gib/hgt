@@ -185,7 +185,12 @@ here.
     $\log2/2$ it is weight-blind: every weight, the Liouville twin included, is aperture-$3/10$ positive.
     Positivity spans the whole precision scale: blind at small aperture, window-determined at finite
     aperture, exact on a whole tower.
-21. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
+21. **The successor enters only modulo $\mathcal Q$.** The successor weight $1$ counts the integers
+    with error $<1$; the count for $a$ is $a-1\in\mathcal Q$, and for any model $u$ of the integer count
+    with $u-1\in\mathcal Q$ it is $a-u\in\mathcal Q$. Over-regular integer systems share the class of the
+    successor, so integer-count precision cannot decide the prime count; the deciding input must come
+    from the prime side.
+22. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
     $\|\beta_i\|\le q^{\theta-1/2}$, already from its lower half; the precision exponent is
     $\tfrac12+\max_i\log\|\beta_i\|/\log q\ge\tfrac12$, with equality iff unitary. Odd hyperelliptic data
     have exponent $\tfrac12$ (Stepanov). The golden datum has $N_k/5^k\to1$ and exponent $\tfrac12+\log\varphi/\log5$.
@@ -238,6 +243,8 @@ here.
     `abs_inversionOp_sawtooth_lt`, `abs_psi_sub_moments_sub_sawtooth_le`).
 20. **The window law of finite-aperture positivity** (`aperturePositive_finite_window`,
     `not_riemannHypothesis_of_aperturePositive_imp_count`, `aperturePositive_threeTenths_not_imp_count`).
+21. **The successor modulo $\mathcal Q$** (`count_iff_sub_one_mem_sqrtClass`,
+    `count_iff_sub_mem_sqrtClass_of_successor`, `riemannHypothesis_iff_vonMangoldt_sub_one_mem_sqrtClass`).
 
 ---
 
@@ -301,8 +308,8 @@ dictionary; the deciding-input theorem; precision-blindness of producers; the in
 exponent; the transcendence toolkit on integer Dirichlet polynomials; the sup-norm vanishing law; the
 separation of prime logarithms and the two-prime non-aliasing law; the twin's reciprocal torsion; the
 Chebyshev ledger, the monotone inversion law, the Stirling split and the arithmetic ledger; the precision-exactness of
-tower positivity and the window law of aperture positivity; curve precision exponents; the TFAE
-ledger.
+tower positivity and the window law of aperture positivity; the successor modulo $\mathcal Q$; curve
+precision exponents; the TFAE ledger.
 
 Open, with what the theory already proves about each:
 
@@ -312,7 +319,7 @@ Open, with what the theory already proves about each:
 | Inversion of the Stirling error | Built as an exact ledger: monotone part at Mertens precision, smooth term $=$ Möbius moments, sawtooth $<n$; open is the cancellation of $\mu$ against the sawtooth below linear size |
 | Precision of finite index on two towers (HKT) | Index zero is precision-exact; finite index is Lindelöf-deep, its stabilizer is open |
 | Precision of the Hecke defect (CDG) | The defect is a zero-side object; a weight-parametrized collided form is needed first |
-| Successor precision | Over-regular Beurling systems must fail; no formal Beurling model in the corpus yet |
+| Successor precision | Built at the level of weights: the successor enters only modulo $\mathcal Q$, so any integer model of square-root precision gives the same count; a Beurling model with its own Chebyshev identity is open |
 | Structure: converse Krein–Langer beyond orbit kernels | Owned by HKT/AKL; proved for orbit kernels |
 
 ---
@@ -335,9 +342,10 @@ Open, with what the theory already proves about each:
 4. **Inversion of the sawtooth.** The ledger reduces Chebyshev's method to the Möbius moments, the
    Mertens function and $\sum_k\mu(k)h(n/k)$ with the sawtooth $h(y)=F(\lfloor y\rfloor)-F(y)$; determine
    the precision at which $\mu$ cancels against $h(n/k)$.
-5. **The successor as a precision source.** Over-regular Beurling systems have integer counts at
-   square-root precision and prime counts without it; isolate the identity of $\mathbb Z$ (the exact
-   count $\lfloor x\rfloor$, precision $0$) that excludes them.
+5. **The successor as a precision source.** The count sees the successor only modulo $\mathcal Q$, so
+   integer-count precision cannot decide; isolate which identity of $\mathbb Z$ beyond the integer
+   count (unique factorization in the Chebyshev identity, used exactly) excludes over-regular Beurling
+   systems.
 6. **Gauge geometry of the stabilizer.** The stabilizer in the gauge torus is the square-root ball
    of the gauge distance (for real parts of rotated sources); relate it to Haar-generic square-root
    cancellation (ACG) and to the complex gauge-rotated source itself.

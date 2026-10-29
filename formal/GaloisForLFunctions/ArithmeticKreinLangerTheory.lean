@@ -10,6 +10,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersDecideEveryOrbi
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.LocalityIsTwinBlind
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheCollisionMassIsTheWaveNumber
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.IsolatedDeepZerosAreSeenByAlmostEveryPrime
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.IntegralityProducesLinearCounts
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -25,7 +26,7 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   for axis-supported kernels, the Riemann–Roch ceiling, and the index as the number of exceptional
   waves of a count.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
-  the global law over `ℤ`; compressions as receivers.
+  the global law over `ℤ`; compressions as receivers; the two existing producers and their precision.
 * **Completion.** Continuity of the index off the discriminant and its three degenerations; the
   heat-collision mass as twice the wave number of the prime-side count.
 

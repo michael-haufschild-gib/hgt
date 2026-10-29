@@ -2,7 +2,7 @@
 
 - **ID:** garland-loop-eisenstein-over-q
 - **Stage:** 1-in-progress
-- **Status:** Paused; finish only the already-started compact–Borel and spherical-function batch.
+- **Status:** Paused; the already-started compact–Borel and spherical-function batch is closed.
 - **Type:** FORMALIZATION PROGRAMME
 - **Target:** Construct an actual arithmetic loop-group Eisenstein series over ℚ, prove its
   absolute convergence, and identify its unipotent constant term with Garland's affine Weyl
@@ -222,14 +222,14 @@ coefficient bounds, actual degree-rotation exponents, and Gaussian domination.
 | Affine Bruhat decomposition of the actual central extension | Formalized and audited; `LoopSL2.exists_unique_bruhat`, unique infinite-dihedral double-coset label |
 | Two simple rank-one subgroups | Formalized and audited; both injective homomorphisms, exact root maps, and simple coroot restrictions |
 | Group-level Iwasawa existence | Formalized and audited; `LoopSL2.exists_iwasawa` for every actual real Laurent central-loop element |
-| Uniqueness of absolute Iwasawa torus coordinates | Compact–Borel intersection proof in progress |
+| Compact–Borel intersection and spherical-function descent | Formalized and audited; exact sign torus, intrinsic Borel characters, factorization independence, left Borel equivariance and right compact invariance |
 | Arithmetic coset Eisenstein series and its convergence | Still open |
 | Unipotent quotient measure and constant-term integral | Still open |
 | Bruhat unfolding identifying that integral with `weylSum` | Still open |
 
 **[OPEN CORE]** Construct the completed central loop group and its arithmetic series,
-then prove the convergence and unfolding statements. The full objective is paused;
-only the already-started compact–Borel and spherical-function batch is being closed.
+then prove the convergence and unfolding statements. The full objective remains paused
+after closure of the already-started compact–Borel and spherical-function batch.
 A convergent Weyl expansion cannot be advertised as a constructed arithmetic
 loop-group Eisenstein series.
 
@@ -294,9 +294,10 @@ are formalized and audited. The
 [Iwasawa existence proof](../3-formalized/garland-real-iwasawa-existence.md)
 is also formalized and audited: two vertex parabolics generate the entire
 central group, and ordinary real Iwasawa supplies their Borel–rotation factors. The separate
-[compact–Borel intersection proof](garland-compact-borel-intersection.md)
-uses alternating words and Laurent boundary coefficients to control central
-and finite torus coordinates. The
+[compact–Borel intersection proof](../3-formalized/garland-compact-borel-intersection.md)
+is formalized and audited. Alternating words and Laurent boundary coefficients
+give the exact sign intersection, and intrinsic Borel weight characters
+extend to well-defined spherical functions on the real central loop group. The
 [determinant-metric route](../0-backlog/garland-determinant-metric-iwasawa.md) remains an
 alternative for more general root data.
 
@@ -336,3 +337,8 @@ Do not instantiate the stable Steinberg centrality theorem outside its hypothese
 - 2026-10-29: Coefficient-field embeddings completed in two modules, including
   the faithful rational-to-real central loop embedding. Both final direct
   source checks and the saved transitive axiom audit passed.
+- 2026-10-29: Closed the nine already-started compact–Borel and spherical-function
+  modules after the pause request. All final direct source checks and the saved
+  transitive axiom audit passed; all modules are wired and owned scratch files
+  removed. The programme remains paused. The unstarted determinant-metric
+  proposal is recorded in backlog without a paper-proof claim.

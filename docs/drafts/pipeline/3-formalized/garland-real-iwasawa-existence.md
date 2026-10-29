@@ -67,7 +67,8 @@ each Pᵢ is a subgroup. The identity starts the induction. Thus G=BK.
 This proves existence only. It does not assert uniqueness of Borel torus
 coordinates, compactness of an infinite-dimensional group, a spherical
 character outside B, or any arithmetic convergence. Intersection control
-is separately open in [its own card](../1-in-progress/garland-compact-borel-intersection.md).
+and spherical-function descent are formalized separately in
+[their own card](garland-compact-borel-intersection.md).
 The [determinant-norm route](../0-backlog/garland-determinant-metric-iwasawa.md) remains
 an alternative for more general root data.
 

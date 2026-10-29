@@ -91,5 +91,6 @@ using Weyl conjugation followed by the sign rescaling. These rank-one
 subgroups will support the two simple compact rotation groups over the
 reals. They do not by themselves prove global Iwasawa decomposition,
 uniqueness of its positive central coordinate, or any arithmetic series.
-The next dependencies are [Iwasawa existence](garland-real-iwasawa-existence.md)
-and [the compact–Borel intersection](../1-in-progress/garland-compact-borel-intersection.md).
+The subsequent [Iwasawa existence](garland-real-iwasawa-existence.md)
+and [compact–Borel intersection](garland-compact-borel-intersection.md)
+are also formalized and audited.

@@ -282,6 +282,9 @@ fails.
    (`riemannHypothesis_iff_oddClass_upper`, `negIndex_zetaKernel_eq_zero_iff_oddClass_upper`).
 4. *Compressions are receivers* (`compress_traceKernel_charPoly`, `hat_euler_eq_zero_iff`,
    `negIndex_compress_euler`).
+5. *The two producers and their precision* (`stepanov_parity_classes_upper`, `sum_log_prime_le`): over
+   `𝔽_q` Stepanov bounds both Legendre parity classes by `q/2 + (deg h + 1)√q`; over `ℤ` integrality
+   bounds the primes by `Σ_{p≤n} log p ≤ n log 4`, linear precision.
 
 **D. Completion.**
 1. *Attained lower semicontinuity* (`eventually_le_negIndex_of_tendsto`).
@@ -390,7 +393,7 @@ To build:
 
 | Tool | Purpose | Test |
 |---|---|---|
-| Arithmetic compressor (Stepanov over `ℤ`) | an upper count for the odd parity class | reproduces hyperelliptic RH through the twist tower; fails for Liouville; first rung: beat the sieve constant `2` |
+| Arithmetic compressor (Stepanov over `ℤ`) | an upper count for the odd parity class at precision `x^{½+ε}`; first layer built (integrality at linear precision, Stepanov over `𝔽_q` at square-root precision) | reproduces hyperelliptic RH through the twist tower; fails for Liouville; first rung: beat the sieve constant `2` |
 | Ring-level inputs | Bézout relations as local data | fail on over-regular Beurling systems and the golden datum |
 | Selective transfer to overlap | the pole carrier of the index-one window at overlapping widths | Q1; fails for Liouville |
 | Two-sided coalescent pair theory | prime-pair asymptotics beyond bandwidth one | Q2; fails for parity-twisted models |
