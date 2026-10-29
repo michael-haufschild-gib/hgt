@@ -11,7 +11,7 @@
 
 Affine Bruhat and the exact Borel-preimage theorem are formalized and
 audited. The actual finite and affine SL₂ embeddings are in progress in
-[the rank-one card](garland-simple-rank-one-subgroups.md).
+[the rank-one card](../3-formalized/garland-simple-rank-one-subgroups.md).
 Corpus search found `RHTower.realIwasawaB_mul_realIwasawaK`; its inspected
 proof factors a real SL₂ matrix using the upper-half-plane section and
 the stabilizer of i. Its transitive axiom audit is pending.

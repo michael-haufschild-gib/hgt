@@ -51,9 +51,9 @@ widths<=1 and adjacent width ratios<=3 are verified.
 
 The finite padded-grid specialization is verified, including its exterior
 and zero-boundary-mean conditions. The actual local-mean identification and finite support facts are verified.
-The final head-plus-tail specialization and even-power consequence await Lean audits. The proposed
-universal constant is K=2+96 exp(2). No actual-head Gamma bound is certified
-until those source and boundary obligations pass.
+The actual head bound, head-plus-tail bound and direct wholeCellProfile
+corollary are verified with K=2+96 exp(2), with no added stability premise.
+The complete even-power consequence awaits its Lean audit.
 
 The drafted consequence substitutes this constant into the complete even-power
 head estimate. For every delta>0 it chooses one cutoff A0 before all finite

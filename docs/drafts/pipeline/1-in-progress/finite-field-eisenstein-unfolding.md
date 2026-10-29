@@ -326,9 +326,10 @@ dilates indexed by the countable affine ring. They are sigma-compact, as is the 
 adele ring after adjoining the infinity completion. Haar measure normalized to give
 the integral product mass one is therefore sigma-finite. This is ambient Haar measure;
 the rational quotient's covolume and the unipotent quotient measure still require proof.
-Lean draft: `/tmp/hgt_ff_adele_haar.lean`. Initial checks exposed missing countability
-instances and a completion-wrapper typeclass bridge. These are being repaired;
-ambient Haar measure is not yet reported as verified.
+`FiniteFieldEllipticAdeleHaar.lean` now passed its identical scratch check and
+transitive axiom audit, with only `[propext, Classical.choice, Quot.sound]`.
+It proves countability, denominator clearing, sigma-compactness, and normalized
+ambient Haar measure on the actual adeles. Quotient volume remains open.
 
 ## Local rank-one integral `[PAPER PROOF]`
 
@@ -418,3 +419,22 @@ Hence `B\G` is bijective with the disjoint union of the finite inversion-root
 coordinate spaces. This is the group-level parametrization needed for unfolding.
 Arithmetic restriction and the integration argument are separate. Lean status:
 the double-coset theorem is available; the truncation refinement remains to prove.
+
+## Additive strong approximation at finite places `[PAPER PROOF]`
+
+Given a finite adele `a`, choose a nonzero affine integer `d` such that every
+`d a_v` is integral. Only finitely many primes divide `(d)`. At such a prime `v`,
+density of the fraction field in its completion first approximates `d a_v` by an
+integral fraction `y`. The localization at `v` is dense in the completed integer
+ring: write `y=n/e` with `e` outside `v` and invert `e` modulo a sufficiently high
+power of `v`. Thus choose `b_v` in the affine ring with
+`v(d a_v-b_v) ≤ v(d)`.
+
+The prime powers `v^(ord_v d)` for distinct divisors of `(d)` are pairwise
+coprime. Chinese remainders supply `b` with `b-b_v` in each required prime power.
+The valuation criterion for ideal-power membership gives
+`v(d a_v-b) ≤ v(d)` at every divisor of `(d)`. At every other prime, both terms
+are integral and `v(d)=1`, so the same inequality holds. Division by `d` proves
+`a-b/d` integral at every finite place. Hence every finite-adele coset modulo the
+actual diagonal field has an integral representative. This is the finite-place
+input to the global additive fundamental domain; its Lean proof is still open.

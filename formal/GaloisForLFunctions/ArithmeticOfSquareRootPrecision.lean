@@ -11,6 +11,7 @@ import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.CurvesCalibrateThePre
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheGaugeStabilizerOfTheCount
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.ThePrecisionLedgerOfTheCount
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.SupNormCeilingsForceVanishingAtSmallRationals
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.OneSignedPerturbations
 
 /-!
 # Arithmetic of Square-Root Precision
@@ -21,5 +22,6 @@ deciding-input theorem and the precision-blindness of producers; the integrality
 horizon and the integrality exponent; integer Dirichlet polynomials at arithmetic points; the
 Liouville twin as a ratio of horizon torsions; the Chebyshev ledger of where precision is lost;
 calibration of precision exponents on curve data; the gauge stabilizer of the count; the precision
-ledger; the vanishing forced by sup-norm ceilings. See `ArithmeticOfSquareRootPrecision/README.md`.
+ledger; the vanishing forced by sup-norm ceilings; majorants, minorants and abscissas of one-signed
+perturbations. See `ArithmeticOfSquareRootPrecision/README.md`.
 -/

@@ -12,7 +12,7 @@ Apply this to `r ↦ c_q(rn+h)`. The finite affine unit law identifies its mean 
 
 ## Drafts and status
 
-`PrimeResidueWindowsConvergeToTheirUnitMean.lean` is an unchecked draft. The affine specialization and continuous compact-weight transfer remain to be written. No new theorem is claimed until the individual Lean checks pass.
+`PrimeResidueWindowsConvergeToTheirUnitMean.lean` and `ActualPrimeWindowsDiagonalizeAffineRamanujanModes.lean` are unchecked drafts. The latter includes the exact affine coefficient limit and its normalized-mode version. Their imports authorize needed oleans for the residue-window and finite-unit-average modules. Continuous compact-weight transfer remains to be written. No new theorem is claimed until the individual Lean checks pass.
 
 ## Scope
 

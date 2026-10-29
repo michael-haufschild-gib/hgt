@@ -200,12 +200,12 @@ Finalized with consumer oleans built:
 - `HeckeDualThetaKernelsAreUnitCovariant`
 - `HTGeometry/NumberFieldLogPeriodizationsHaveAbsoluteUnfolding`
 - `HeckeDualUnitOrbitsUnfoldOverTheLogSpace`
+- `HeckeDualClassKernelsHaveExactMellinIntegrals`
+- `HeckeConductorsAndParitiesAreInvariantUnderInversion`
 
-Finalized, required olean now building:
-- `HeckeDualClassKernelsHaveExactMellinIntegrals`.
-
-Finalized, required olean still pending:
-- `HeckeConductorsAndParitiesAreInvariantUnderInversion`.
+Current check:
+- `/tmp/HeckeDualAveragedMellinScratch.lean`: first check running with all
+  required consumer oleans built.
 
 Unchecked complete drafts and intended module names:
 - `/tmp/HeckeDualAveragedMellinScratch.lean` →

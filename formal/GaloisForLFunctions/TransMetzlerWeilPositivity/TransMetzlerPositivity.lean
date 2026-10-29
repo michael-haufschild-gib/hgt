@@ -20,7 +20,7 @@ unconditionally:
 
 noncomputable section
 
-open MeasureTheory Set Filter Topology Finset Matrix RHTower
+open MeasureTheory Filter Topology Finset Matrix RHTower
 open scoped Real RealInnerProductSpace ComplexOrder
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
@@ -245,7 +245,15 @@ theorem eventually_transMetzlerMainMatrix_eigenvalues_ge
       rw [div_le_iff₀ (sq_pos_of_pos (by linarith only [hgap]))]
       have hmul := mul_le_mul_of_nonneg_left hgap_sq
         (mul_nonneg (by norm_num : (0 : ℝ) ≤ 10000) (sq_nonneg _))
-      linarith only [hmul]
+      have hid : ‖Matrix.toEuclideanLin (transMetzlerMainMatrix (w N) cStar N)
+              (normalizedRamanujanHorizonVector m N) -
+            completeWeilAdjunctionEnergy transMetzlerProfile cStar m •
+              normalizedRamanujanHorizonVector m N‖ ^ 2 =
+          (10000 * ‖Matrix.toEuclideanLin (transMetzlerMainMatrix (w N) cStar N)
+              (normalizedRamanujanHorizonVector m N) -
+            completeWeilAdjunctionEnergy transMetzlerProfile cStar m •
+              normalizedRamanujanHorizonVector m N‖ ^ 2) * (1 / 10000) := by ring
+      linarith only [hid, hmul]
     exact hinner.trans hdiv
   linarith only [hmass, hmass_le, hsmallN]
 
@@ -297,7 +305,7 @@ private theorem posDef_of_quadratic_floor {I : Type*} [Fintype I] [DecidableEq I
   exact hμ.trans_le hf
 
 private theorem weilQuad_atomicTest_nonneg_of_posDef {g : ℝ → ℝ} {w : ℝ} {N : ℕ}
-    (hg : ContDiff ℝ 2 g) (hsupp : ∀ u, u ∉ Icc 0 w → g u = 0)
+    (hg : ContDiff ℝ 2 g) (hsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
     (hw : 0 ≤ w) (hM : 0 < ∫ u, g u ^ 2)
     (hpos : (normalizedFullWeilHorizonMatrix g N).PosDef) (y : ℕ → ℝ) :
     0 ≤ weilQuad (atomicTest N y g) := by
@@ -356,8 +364,8 @@ theorem eventually_normalizedFullWeilHorizonMatrix_posDef_of_width_near
     (by simpa only [cZero] using hw_hi) hdrift x)).1
   have hcoef_pert : 2000 * deltaZero + C_short / Real.log ((N : ℝ) / 3) ≤
       (4 : ℝ) * 10⁻¹ ^ 15 := by
-    unfold deltaZero
-    linarith only [hsmallN]
+    have h2000 : 2000 * deltaZero ≤ (2 : ℝ) * 10⁻¹ ^ 15 := by norm_num [deltaZero]
+    linarith only [h2000, hsmallN]
   have hpd0 := poleDefect_nonneg N (primeHorizonExtension x)
   have hnorm0 : 0 ≤ ‖x‖ ^ 2 := sq_nonneg _
   have hpert_le : (2000 * deltaZero + C_short / Real.log ((N : ℝ) / 3)) *
@@ -404,7 +412,7 @@ nonnegative Weil quadratic form. -/
 theorem exists_gt_one_eventually_completeWeilMatrix_posDef :
     ∃ c : ℝ, 1 < c ∧ ∃ φ : ℝ → ℝ,
       ContDiff ℝ (⊤ : ℕ∞) φ ∧ HasCompactSupport φ ∧
-      (∀ u, 0 ≤ φ u) ∧ (∀ u, u ∉ Icc 0 1 → φ u = 0) ∧ (∀ u ∈ Ioo 0 1, 0 < φ u) ∧
+      (∀ u, 0 ≤ φ u) ∧ (∀ u, u ∉ Set.Icc 0 1 → φ u = 0) ∧ (∀ u ∈ Set.Ioo 0 1, 0 < φ u) ∧
       (∀ᶠ N : ℕ in atTop, (completeWeilMatrix φ c N).PosDef) ∧
       (∀ᶠ N : ℕ in atTop, ∀ y : ℕ → ℝ, 0 ≤ weilQuad (atomicTest N y (atomDilate φ (c / N)))) :=
   ⟨cZero, one_lt_cZero, transMetzlerProfile, contDiff_top_transMetzlerProfile,
@@ -415,7 +423,7 @@ theorem exists_gt_one_eventually_completeWeilMatrix_posDef :
 /-- Eventual positive definiteness of `completeWeilMatrix transMetzlerProfile c N` at every fixed
 overlap ratio `c ∈ (0, cZero]` (including every `c ∈ (0, 1)`, the touching ratio `c = 1`, and the
 trans-Metzler regime `(1, cZero]`). -/
-theorem eventually_completeWeilMatrix_posDef_of_mem_Ioc {c : ℝ} (hc : c ∈ Ioc 0 cZero) :
+theorem eventually_completeWeilMatrix_posDef_of_mem_Ioc {c : ℝ} (hc : c ∈ Set.Ioc 0 cZero) :
     ∀ᶠ N : ℕ in atTop, (completeWeilMatrix transMetzlerProfile c N).PosDef := by
   rcases lt_or_ge c (1 / 2) with hlt | hge
   · have hc1 : c < 1 := hlt.trans (by norm_num)
@@ -493,7 +501,8 @@ theorem eventually_touching_atomSpacing_posDef :
           field_simp [(by positivity : (N : ℝ) + 1 ≠ 0)]; ring
         rw [hstep, div_le_div_iff₀ (by positivity) hN0]
         linarith only [hN0]
-      exact ⟨by linarith only [h1, hgap], by linarith only [h2, hN0]⟩
+      have h2N0 : 0 ≤ 2 / (N : ℝ) := by positivity
+      exact ⟨by linarith only [h1, hgap], by linarith only [h2, h2N0]⟩
   filter_upwards [hpos_ev, eventually_ge_atTop 1] with N hpos hN1
   have hw0 := atomSpacing_pos hN1
   obtain ⟨hg, hgsupp, -⟩ := atomDilate_facts contDiff_transMetzlerProfile
@@ -554,7 +563,8 @@ theorem eventually_transMetzler_atomSpacing_posDef_and_frustrated :
         rw [hstep, div_le_div_iff₀ (by positivity) hN0]
         nlinarith only [hρ_le_two, rhoZero_pos, hN0]
       rw [abs_le]
-      exact ⟨by linarith only [h1, hgap], by linarith only [h2, hN0]⟩
+      have h2N0 : 0 ≤ 2 / (N : ℝ) := by positivity
+      exact ⟨by linarith only [h1, hgap], by linarith only [h2, h2N0]⟩
   filter_upwards [hpos_ev, transMetzlerProfile_frustrated_of_one_lt one_lt_rhoZero,
     eventually_ge_atTop 1] with N hpos hfrust hN1
   have hw0 := mul_pos rhoZero_pos (atomSpacing_pos hN1)

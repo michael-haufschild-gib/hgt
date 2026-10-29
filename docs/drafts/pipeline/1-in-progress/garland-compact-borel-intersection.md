@@ -9,7 +9,7 @@
 ## Dependency and novelty audit
 
 The actual rank-one embeddings are proved in five source modules; their
-final direct checks and transitive audit are pending. Global Iwasawa
+final direct checks and transitive audit passed. Global Iwasawa
 existence is being formalized separately. No loop compact-intersection
 theorem was found in the earlier corpus search. Searches for lowest Laurent
 coefficients and alternating-word arguments found exact reusable leads:

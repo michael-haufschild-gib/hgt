@@ -1,8 +1,8 @@
 # The two actual simple rank-one subgroups
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** BRIDGE / known mathematics
-- **Parent:** [Garland loop Eisenstein series](garland-loop-eisenstein-over-q.md)
+- **Parent:** [Garland loop Eisenstein series](../1-in-progress/garland-loop-eisenstein-over-q.md)
 - **Target:** Construct injective homomorphisms from `SL₂(F)` for both
   affine simple roots, with exact root and coroot compatibility.
 
@@ -80,20 +80,16 @@ Paper proof recorded. `SL2DiagonalRescaling`, `ConstantSL2Embedding`,
 written, including both
 subgroup maps, the exact central correction, elementary multiplication,
 full homomorphism law, injectivity, and root/coroot restrictions.
-`SL2DiagonalRescaling` and `ConstantSL2Embedding` passed their dependency
-builds cleanly. `AffineSL2Kubota` also passed cleanly, including the exact
-correction on all lower-root cases. `AffineSL2Embedding` and
-`SimpleRankOneEmbeddings` also passed cleanly. All five modules are wired
-into the umbrella. Final direct source checks passed for
-`SL2DiagonalRescaling` and `ConstantSL2Embedding`; `AffineSL2Kubota` is
-being checked. `AffineSL2Embedding`, `SimpleRankOneEmbeddings`, and the
-transitive audit remain. The audit scratch is
-`/tmp/GarlandRankOneAudit.lean`. Scratch verification
+All five modules passed dependency builds and final direct source checks
+cleanly and are wired into the umbrella. The saved
+[transitive axiom audit](garland-simple-rank-one-subgroups-axioms.txt)
+contains only `propext`, `Classical.choice`, and `Quot.sound`.
+Both simple embeddings were checked over ℚ and ℝ. Scratch verification
 confirmed the field instance of finite maximal spectrum needed for
 four-factor generation. The oriented affine simple embedding is written
 using Weyl conjugation followed by the sign rescaling. These rank-one
 subgroups will support the two simple compact rotation groups over the
 reals. They do not by themselves prove global Iwasawa decomposition,
 uniqueness of its positive central coordinate, or any arithmetic series.
-The next open metric and Iwasawa route is recorded in
-[the determinant-metric card](garland-determinant-metric-iwasawa.md).
+The next dependencies are [Iwasawa existence](../1-in-progress/garland-real-iwasawa-existence.md)
+and [the compact–Borel intersection](../1-in-progress/garland-compact-borel-intersection.md).

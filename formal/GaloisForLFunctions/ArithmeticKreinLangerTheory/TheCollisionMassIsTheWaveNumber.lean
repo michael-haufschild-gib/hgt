@@ -94,3 +94,6 @@ theorem waveNumber_collision_law (h : negIndex zetaKernel < ⊤) :
     exact ⟨v, a, M, fun n => by rw [zetaKernel_eq_onLine_add_pairs_fin hfin]; exact hM n⟩
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms waveNumber_collision_law
