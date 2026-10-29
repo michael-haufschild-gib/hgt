@@ -183,11 +183,101 @@ theorem haarBoundaryFiniteEnergy_eq (d : ℕ → ℝ) (X : ℕ) :
         sum_congr rfl fun a _ => sum_coe_sort (Icc 1 X) _
       _ = _ := sum_coe_sort (Icc 1 X) _
 
+private theorem finite_vonMangoldt_inverse_square_le (Q : Finset Nat.Primes) (T : Finset ℕ)
+    (hQ : ∀ m ∈ T, ∀ p : Nat.Primes, (p : ℕ) ∣ m → p ∈ Q) :
+    (∑ m ∈ T, vonMangoldt m / (m : ℝ) ^ 2) ≤ inversePrimeEuler Q := by
+  let P := T.filter fun m => vonMangoldt m ≠ 0
+  let idx (n : ↥P) : Nat.Primes × ℕ := Nat.Primes.prodNatEquiv.symm
+    ⟨n.val, vonMangoldt_ne_zero_iff.mp (mem_filter.mp n.property).2⟩
+  have hid (n : ↥P) : ((idx n).1 : ℕ) ^ ((idx n).2 + 1) = n.val := by
+    exact congrArg Subtype.val (Nat.Primes.prodNatEquiv.apply_symm_apply
+      ⟨n.val, vonMangoldt_ne_zero_iff.mp (mem_filter.mp n.property).2⟩)
+  have hpQ (n : ↥P) : (idx n).1 ∈ Q := by
+    apply hQ n.val (mem_filter.mp n.property).1
+    rw [← hid n]
+    exact dvd_pow_self _ (by omega)
+  let j (n : ↥P) : Q × ℕ := (⟨(idx n).1, hpQ n⟩, (idx n).2)
+  have hj : Function.Injective j := by
+    intro m n he
+    have hp := congrArg (fun z : Q × ℕ => ((z.1 : Nat.Primes) : ℕ)) he
+    have hk := congrArg Prod.snd he
+    dsimp only [j] at hp hk
+    apply Subtype.ext
+    rw [← hid m, ← hid n, hp, hk]
+  let F (z : Q × ℕ) : ℝ :=
+    vonMangoldt (((z.1 : Nat.Primes) : ℕ) ^ (z.2 + 1)) /
+      (((((z.1 : Nat.Primes) : ℕ) ^ (z.2 + 1) : ℕ) : ℝ) ^ 2)
+  have hF (z : Q × ℕ) : 0 ≤ F z := div_nonneg vonMangoldt_nonneg (sq_nonneg _)
+  have hterm (n : ↥P) : F (j n) = vonMangoldt n.val / (n.val : ℝ) ^ 2 := by
+    change vonMangoldt (((idx n).1 : ℕ) ^ ((idx n).2 + 1)) /
+      (((((idx n).1 : ℕ) ^ ((idx n).2 + 1) : ℕ) : ℝ) ^ 2) = _
+    rw [hid]
+  let J : Finset (Q × ℕ) := univ.image j
+  let K : Finset ℕ := J.image Prod.snd
+  have hsub : J ⊆ univ ×ˢ K := by
+    intro z hz
+    exact mem_product.mpr ⟨mem_univ _, mem_image.mpr ⟨z, hz, rfl⟩⟩
+  have hfilter : (∑ m ∈ T, vonMangoldt m / (m : ℝ) ^ 2) =
+      ∑ m ∈ P, vonMangoldt m / (m : ℝ) ^ 2 := by
+    rw [sum_filter]
+    apply sum_congr rfl
+    intro m _
+    by_cases hm : vonMangoldt m = 0
+    · simp only [hm, ne_eq, not_true_eq_false, if_false, zero_div]
+    · rw [if_pos hm]
+  calc
+    _ = ∑ m ∈ P, vonMangoldt m / (m : ℝ) ^ 2 := hfilter
+    _ = ∑ n : ↥P, F (j n) := by
+      rw [← sum_coe_sort P]
+      exact sum_congr rfl fun n _ => (hterm n).symm
+    _ = ∑ z ∈ J, F z := (sum_image (fun m _ n _ he => hj he)).symm
+    _ ≤ ∑ z ∈ univ ×ˢ K, F z :=
+      sum_le_sum_of_subset_of_nonneg hsub (fun z _ _ => hF z)
+    _ = ∑ p : Q, ∑ k ∈ K, F (p, k) := sum_product _ _ _
+    _ ≤ inversePrimeEuler Q := by
+      apply sum_le_sum
+      intro p _
+      have hs := hasSum_inversePrimeTower (p : Nat.Primes)
+      have hl := hs.summable.sum_le_tsum K (fun k _ => hF (p, k))
+      rw [hs.tsum_eq] at hl
+      exact hl
+
+/-- A finite outgoing row is a subseries of the completed prime ladders. -/
+theorem oddDivisorOutgoing_le_inversePrimeEuler (X a : ℕ) :
+    oddDivisorOutgoing X a ≤ inversePrimeEuler (haarBoundarySieve X) := by
+  let T := (Icc 2 (2 * X + 1)).filter
+    (fun m => ∃ b ∈ Icc 1 X, (2 * a + 1) * m = 2 * b + 1)
+  have hrow : oddDivisorOutgoing X a = ∑ m ∈ T, vonMangoldt m / (m : ℝ) ^ 2 := by
+    rw [oddDivisorOutgoing, sum_filter]
+    apply sum_congr rfl
+    intro m _
+    by_cases hm : ∃ b ∈ Icc 1 X, (2 * a + 1) * m = 2 * b + 1
+    · obtain ⟨b, hb, he⟩ := hm
+      rw [if_pos ⟨b, hb, he⟩, sum_eq_single b, if_pos he]
+      · intro c _ hcb
+        exact if_neg fun hc => hcb (by omega)
+      · exact fun hn => (hn hb).elim
+    · rw [if_neg hm]
+      exact sum_eq_zero fun b hb => if_neg (fun he => hm ⟨b, hb, he⟩)
+  rw [hrow]
+  apply finite_vonMangoldt_inverse_square_le
+  intro m hm p hpm
+  obtain ⟨b, hb, he⟩ := (mem_filter.mp hm).2
+  apply (haarBoundaryClass X ⟨b, hb⟩).property.prime_dvd_mem
+  change (p : ℕ) ∣ 2 * b + 1
+  exact hpm.trans ⟨2 * a + 1, by simpa only [mul_comm] using he.symm⟩
+
 /-- Exact diagonal compensation for completing the selected prime ladders. -/
 def haarValuationBoundaryCost (d : ℕ → ℝ) (X : ℕ) : ℝ :=
   (1 / 2 : ℝ) * ∑ a ∈ Icc 1 X,
     (inversePrimeEuler (haarBoundarySieve X) - oddDivisorOutgoing X a) *
       haarArithmeticCoordinate d a ^ 2
+
+theorem haarValuationBoundaryCost_nonneg (d : ℕ → ℝ) (X : ℕ) :
+    0 ≤ haarValuationBoundaryCost d X := by
+  apply mul_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2)
+  exact sum_nonneg fun a _ => mul_nonneg
+    (sub_nonneg.mpr (oddDivisorOutgoing_le_inversePrimeEuler X a)) (sq_nonneg _)
 
 /-- The completed number form and its boundary charge are both attached to the original source. -/
 theorem haarPrimeLogDefect_add_boundary_eq_finiteEnergy (d : ℕ → ℝ) (X : ℕ) :

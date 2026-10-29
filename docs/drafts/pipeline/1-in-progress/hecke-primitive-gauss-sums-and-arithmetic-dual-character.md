@@ -307,3 +307,33 @@ The support module's consumer olean has been built. The first scratch
 imports the finalized actual Gauss module; the second imports the
 finalized support module; the third awaits both pending consumers.
 None of these scratch conclusions is yet counted as formalized.
+
+## Remaining analytic recombination and normalization
+
+Once the coefficient identity is audited, the nonzero dual frequencies
+must be reindexed over integral ideals in the inverse class of
+`J_b=dual(mb)` and global units. The existing orbit equivalence in
+`NonzeroIdealElementsAreGlobalUnitOrbits.lean` is for integral base
+ideals, so a fractional-ideal extension or a proved principal scaling to
+an integral representative is still required. The actual unit-domain
+Mellin and reflection identities are already available.
+
+The expected dual Mellin coefficient is
+`Cψ ψ(b) Norm(J_b)^(-s) Γψ(s)`, with the existing torsion/Jacobian
+factor. The ordinary classes of the ideals `J_b` permute all classes.
+Using `Norm(J_b)=1/(|disc K| Norm(m) Norm(b))`, multiplication by the
+existing Poisson scalar and class weight cancels `Norm(b)` exactly:
+
+```
+Γψ(1-s)Lψ(1-s)
+  = Cψ (-i)^parityDegree |disc K|^(s-1/2) Norm(m)^(s-1)
+      Γ_(ψ⁻¹)(s)L_(ψ⁻¹)(s).
+```
+
+Thus `Wψ=Cψ(-i)^parityDegree/sqrt(Norm(m))` has norm one, and with
+`Λψ(s)=(|disc K| Norm(m))^(s/2) Γψ(s)Lψ(s)` the reflection is
+`Λψ(1-s)=Wψ Λ_(ψ⁻¹)(s)`. This calculation is a target, not a completed
+proof: it still needs actual fractional-ideal reindexing, exact Mellin
+normalization, inversion invariance of finite conductor and real parity,
+and treatment of the completed continuation's zero modes. The latter
+remains on the separate unramified residue-cancellation card.

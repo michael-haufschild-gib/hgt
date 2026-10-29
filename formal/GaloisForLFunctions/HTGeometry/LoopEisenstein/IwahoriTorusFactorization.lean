@@ -82,6 +82,11 @@ def positiveUnipotentToIwahori : positiveUnipotentMatrices F →* iwahoriMatrice
   map_one' := by apply Subtype.ext; rfl
   map_mul' _ _ := by apply Subtype.ext; rfl
 
+theorem positiveUnipotentToIwahori_injective : Function.Injective (positiveUnipotentToIwahori F) := by
+  intro u v h
+  apply Subtype.ext
+  exact congrArg (fun b : iwahoriMatrices F => (b : PowerSeriesSL2 F)) h
+
 @[simp] theorem iwahoriFiniteCoordinate_unipotent (u : positiveUnipotentMatrices F) :
     iwahoriFiniteCoordinate F (positiveUnipotentToIwahori F u) = 1 :=
   (iwahoriFiniteCoordinate_eq_one_iff F _).2 u.property
@@ -106,20 +111,23 @@ theorem iwahori_torus_unipotent_injective :
     Function.Injective (fun p : Fˣ × positiveUnipotentMatrices F =>
       iwahoriFiniteCoroot F p.1 * positiveUnipotentToIwahori F p.2) := by
   intro p q h
+  change iwahoriFiniteCoroot F p.1 * positiveUnipotentToIwahori F p.2 =
+    iwahoriFiniteCoroot F q.1 * positiveUnipotentToIwahori F q.2 at h
   have ha := congrArg (iwahoriFiniteCoordinate F) h
   simp only [map_mul, iwahoriFiniteCoordinate_finiteCoroot,
     iwahoriFiniteCoordinate_unipotent, mul_one] at ha
   have hu : p.2 = q.2 := by
-    apply Subtype.ext
     rw [ha] at h
-    exact congrArg Subtype.val (mul_left_cancel h)
+    have hU : positiveUnipotentToIwahori F p.2 = positiveUnipotentToIwahori F q.2 :=
+      mul_left_cancel h
+    exact positiveUnipotentToIwahori_injective F hU
   exact Prod.ext ha hu
 
 /-- Unique finite-torus and completed-unipotent coordinates on the Iwahori. -/
 def iwahoriTorusUnipotentEquiv : Fˣ × positiveUnipotentMatrices F ≃ iwahoriMatrices F where
   toFun p := iwahoriFiniteCoroot F p.1 * positiveUnipotentToIwahori F p.2
   invFun g := (iwahoriFiniteCoordinate F g, iwahoriUnipotentPart F g)
-  left_inv p := iwahori_torus_unipotent_injective F (iwahori_torus_unipotent F _)
+  left_inv _ := iwahori_torus_unipotent_injective F (iwahori_torus_unipotent F _)
   right_inv := iwahori_torus_unipotent F
 
 end

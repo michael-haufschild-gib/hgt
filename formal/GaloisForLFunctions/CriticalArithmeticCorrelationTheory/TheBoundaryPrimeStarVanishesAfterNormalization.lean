@@ -11,7 +11,7 @@ leaves a prime-source error tending to zero.
 
 noncomputable section
 
-open MeasureTheory Finset
+open MeasureTheory Finset Filter Topology
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
@@ -263,6 +263,41 @@ theorem exists_uniform_nonRatio_budget {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 
   intro c hc0 hc1 N hN x
   exact abs_normalized_nonRatioForm_uniform_up_to_touching hφ hsupp hM hB.le hheight hc0 hc1 hN x
 
+private theorem tendsto_log_succ_div_horizon :
+    Tendsto (fun N : ℕ => Real.log (N + 1 : ℕ) / (N : ℝ)) atTop (𝓝 0) := by
+  have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ) / (N : ℝ)) atTop (𝓝 0) :=
+    Real.isLittleO_log_id_atTop.tendsto_div_nhds_zero.comp tendsto_natCast_atTop_atTop
+  have hc : Tendsto (fun N : ℕ => Real.log 2 / (N : ℝ)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+  have hlim : Tendsto (fun N : ℕ => Real.log 2 / (N : ℝ) + Real.log N / N) atTop (𝓝 0) := by
+    simpa only [zero_add] using hc.add hlog
+  have hbound : ∀ᶠ N : ℕ in atTop,
+      Real.log (N + 1 : ℕ) / (N : ℝ) ≤ Real.log 2 / N + Real.log N / N := by
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+    have h := Real.log_le_log (show 0 < ((N + 1 : ℕ) : ℝ) by positivity)
+      (show ((N + 1 : ℕ) : ℝ) ≤ 2 * N by push_cast; linarith only [hN1])
+    rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) hN0.ne'] at h
+    simpa only [add_div] using div_le_div_of_nonneg_right h hN0.le
+  exact squeeze_zero' (Eventually.of_forall fun N =>
+    div_nonneg (Real.log_natCast_nonneg _) (Nat.cast_nonneg N)) hbound hlim
+
+/-- The actual boundary prime operator tends to zero uniformly in the width ratio. -/
+theorem eventually_normalized_nonRatioForm_small_uniformly {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 0 < c → c ≤ 1 → ∀ x : ℕ → ℝ,
+      |nonRatioForm (atomDilate φ (c / N)) N x| / (∫ u, atomDilate φ (c / N) u ^ 2) ≤
+        ε * ∑ m ∈ Icc 1 N, x m ^ 2 := by
+  obtain ⟨D, _hD, hbound⟩ := exists_uniform_nonRatio_budget hφ hsupp hM
+  have hlim : Tendsto (fun N : ℕ => D * Real.log (N + 1 : ℕ) / N) atTop (𝓝 0) := by
+    simpa only [mul_zero, mul_div_assoc] using tendsto_log_succ_div_horizon.const_mul D
+  filter_upwards [hlim.eventually (gt_mem_nhds hε), eventually_ge_atTop 2] with N hsmall hN
+  intro c hc0 hc1 x
+  exact (hbound c hc0 hc1 N hN x).trans (mul_le_mul_of_nonneg_right hsmall.le
+    (sum_nonneg fun m _ => sq_nonneg _))
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_nonRatioForm_at_touching_le
@@ -272,3 +307,5 @@ end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.abs_normalized_nonRatioForm_uniform_up_to_touching
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_uniform_nonRatio_budget
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_normalized_nonRatioForm_small_uniformly

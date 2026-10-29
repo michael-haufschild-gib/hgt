@@ -162,8 +162,3 @@ theorem negIndex_zetaKernel_eq_zero_iff_oddClass_upper :
   rw [← riemannHypothesis_iff_negIndex_zetaKernel_eq_zero, riemannHypothesis_iff_oddClass_upper]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
-
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms negIndex_zetaKernel_eq_zero_iff_oddClass_upper
-open GaloisForLFunctions.ArithmeticKreinLangerTheory in
-#print axioms riemannHypothesis_iff_parityClasses_upper

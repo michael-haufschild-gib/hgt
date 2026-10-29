@@ -64,8 +64,9 @@ unique torus/unipotent factorization. `PositiveBorelCoordinates.lean` contains
 the independent central/Iwahori embedding and unique central/finite/unipotent
 coordinates using the actual finite coroot. `PositiveIwahori` compiles without
 warnings, including the triviality of the actual tame cocycle on the full
-positive unipotent subgroup. The remaining three source checks and all final
-audits are in progress. This does not yet prove a global Iwasawa
+positive unipotent subgroup. `IwahoriGaussCoordinates` also compiles without
+warnings. The finite-torus and positive-Borel checks and all final audits are
+in progress. This does not yet prove a global Iwasawa
 decomposition, construct a compact subgroup or an arithmetic lattice, or
 supply the unipotent quotient measure.
 
