@@ -16,7 +16,7 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 
 ## Gates
 - [x] 0 → 1  scope fixed, README first draft
-- [x] modules 1–15 proved, checked, wired into `ArithmeticOfSquareRootPrecision.lean`; axioms audited
+- [x] modules 1–18 proved, checked, wired into `ArithmeticOfSquareRootPrecision.lean`; axioms audited
   (propext, Classical.choice, Quot.sound only)
 - [ ] open topics of the README §9 (ceiling, off-line vanishing, positivity precision, inversion with
   arithmetic input, successor, index/defect/regulator precision, vertical zero estimates, structure)
@@ -40,6 +40,19 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 14. `OneSignedPerturbations` — majorant/minorant principle; precision exponent = abscissa.
 15. `TwoPrimeTowersSeeEveryOrdinateDifference` — Liouville/Baker/Dirichlet separation; two-prime
     non-aliasing at polynomial precision (uses `RHTower.Matveev.effectiveBakerBound_holds`).
+16. `MonotoneErrorsInvertAtMertensPrecision` — Abel bound; RH ⇔ √-precise monotone inversion.
+17. `TowerPositivityIsPrecisionExact` — tower index zero ⇒ count; stabilizer {0} vs 𝒬.
+18. `TheStirlingErrorSplits` — log⌊y⌋! = F + monotone + sawtooth; ψ − I(F) − I(h) = O(log n · max|M|).
+
+## No-go closure
+- **Inversion no-go** (`not_inversion_bounded`): size bounds do not survive Möbius inversion.
+  Survivor: monotone errors invert at exactly Mertens precision (`riemannHypothesis_iff_monotone_inversion`);
+  the Stirling error splits so that only the smooth term and the sawtooth remain (`abs_psi_sub_smooth_sub_sawtooth_le`). Lean: done.
+- **Integrality "linear floor"**: refuted as stated; the floor is exact and the integrality exponent is Θ
+  (`siegelExponent_eq_zeroReSup`). Survivor for ceilings: sup-norm certificates vanish at 0, ½, 1
+  (`eventually_vanish_of_supCeiling`). Lean: done.
+- **One-prime certification**: one tower aliases (`one_prime_aliases`). Survivor: two towers certify at
+  polynomial margin (`two_prime_alias_bound_in_Δ`). Lean: done.
 
 ## Leads checked (exist; do not redo)
 - Exponent law Θ: `RHTower.chebyshevPsi_sub_exponent_law`, one-sided lower power bound ⇒ zeros:
@@ -53,4 +66,4 @@ on integer Dirichlet polynomials, and states the precision class of the others' 
 
 ## Log
 - 2026-10-29 — created; README first draft written.
-- 2026-10-29 — modules 1–15 formalized; README rewritten on the established results.
+- 2026-10-29 — modules 1–18 formalized; README rewritten on the established results.

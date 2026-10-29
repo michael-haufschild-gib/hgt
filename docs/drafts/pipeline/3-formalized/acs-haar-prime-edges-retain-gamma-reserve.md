@@ -1,33 +1,33 @@
 # The original prime edges retain a reserve after Gamma coupling
 
 - **ID:** acs-haar-prime-edges-retain-gamma-reserve
-- **Stage:** 1-in-progress
-- **Type:** Proof written; Lean verification pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM — every claim below formalized and checked in Lean
 - **Route:** ACS: full-source effectivity → Hodge index → RH.
-- **Parent:** [joint signed graph payment](acs-haar-gamma-signed-graph-payment.md)
-- **Target:** Prove that every actual prime-power edge remains aligned
+- **Parent:** [joint signed graph payment](../1-in-progress/acs-haar-gamma-signed-graph-payment.md)
+- **Result:** Every actual prime-power edge remains aligned
   after its full Gamma coupling, with an explicit positive reserve, and
-  sum this payment over the original finite source.
+  the payment sums over the original finite source without double counting.
 
-## Exact source target
+## Exact source theorem
 
-Write n_a=2a+1 and n_b=m*n_a. For a>=1 and m>=3, seek
+Write n_a=2a+1 and n_b=m*n_a. For a>=1 and m>=3,
 
 `0 <= J_ab <= log(2)*M_b/sqrt(m)`.
 
 If Lambda(m)>0, oddness forces its underlying prime to be at least
 three. Thus the original arithmetic coupling exceeds J_ab by at least
 `(log(3)-log(2))*M_b/sqrt(m)`. In the already formalized ground coordinates,
-the Gamma graph on these arithmetic edges should consume at most
-`log(2)/log(3)` of their original divisor-square energy. Both original
-pole moments have nonpositive cross entries in the oriented Haar basis;
-the actual full-Weil prime-edge sign should therefore retain this reserve.
+the Gamma graph on these arithmetic edges consumes at most
+`log(2)/log(3)` of their original divisor-square energy. The combined
+contribution of both poles has nonpositive cross entries in the oriented Haar basis;
+the actual full-Weil prime-edge sign retains this reserve.
 
-This is a proposed actual-source payment, not an assumed path
-certificate. Non-arithmetic Gamma edges and the signed diagonal still
+This pays the literal arithmetic-edge subset of the original Gamma graph.
+Non-arithmetic Gamma edges and the signed diagonal still
 need their joint comparison; full Haar positivity is not claimed.
 
-## Exact argument being formalized
+## Formalized argument
 
 Put n=2a+1. On the original rectangle, exp(y-x) is at least
 (mn-1)/(n+1), hence at least 2 and at least m/2. Therefore
@@ -39,7 +39,7 @@ integral of P is zero and its absolute integral is 4*M_a*M_b.
 The pointwise inequality
 `-P*k <= (abs(P)-P)/sqrt(m)` gives
 `J_ab <= 4*M_a*M_b/sqrt(m)` after integration. The exact cell mass
-obeys `4*M_a<=log(1+1/a)<=log(2)`. All integrations use the original
+obeys `4*M_a<=log(a+1)-log(a)<=log(2)`. All integrations use the original
 Gamma rectangle measure through its actual density; no singular
 endpoint or interaction is discarded.
 
@@ -82,14 +82,15 @@ prime channel satisfies
 This is an entry sign and a paid edge subset. It does not imply
 positivity of the full signed Haar form.
 
-## Lean declarations under verification
+## Checked Lean declarations
 
-File: `TheHaarPrimeEdgesRetainTheirGammaReserve.lean`.
+File: [TheHaarPrimeEdgesRetainTheirGammaReserve.lean](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarPrimeEdgesRetainTheirGammaReserve.lean).
 
 - `haarGammaCoupling_le_prime_scale`
 - `haarPrimeGammaShare_nonneg`, `haarPrimeGammaShare_lt_one`
 - `haarPrimeGammaConductance_pos`
-- `haarPrimeGammaReserve_add_graph`, `haarPrimeGammaReserve_ge`
+- `haarPrimeGammaReserve_add_graph`, `haarPrimeGammaReserve_ge`,
+  `haarPrimeGammaReserve_nonneg`
 - `haarPrimeGammaGraphEnergy_nonneg`,
   `haarPrimeGammaGraphEnergy_le_divisorSquares`
 - `haar_prime_gamma_square_eq_graph`,
@@ -103,7 +104,18 @@ File: `TheHaarPrimeEdgesRetainTheirGammaReserve.lean`.
 
 ## Validation
 
-No paper proof counts until every stated result passes Lean.
-Use exact-file `lake --old env lean` checks, required missing dependency
-oleans only, and no umbrella build. No axiom check, web search,
-novelty check, or numerical experiment.
+The complete source passed this direct check from `formal/`, with exit 0,
+no errors, and no warnings:
+
+```sh
+lake --old env lean GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHaarPrimeEdgesRetainTheirGammaReserve.lean
+```
+
+The module is imported by the ACS umbrella. Its required graph dependency
+olean was built only because this source imports it. Existing oleans
+were preserved; no umbrella build, axiom check, web search, novelty check,
+or numerical experiment was run.
+
+The [positive Gamma graph](acs-haar-gamma-positive-laplace-graph.md)
+supplies the already checked moment signs and original full-source identity.
+The remaining signed graph payment and full ACS route remain open.

@@ -11,7 +11,7 @@ quadratic residue sum is exactly a sum of squared absolute values.
 noncomputable section
 
 open Polynomial Finset Complex
-open scoped ArithmeticFunction.Moebius
+open scoped ArithmeticFunction.Moebius ComplexConjugate
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
@@ -22,7 +22,7 @@ def primitiveRootPrefixEnergy (m k : ℕ) : ℝ :=
   ∑ ζ ∈ primitiveRoots m ℂ, Complex.normSq (∑ j ∈ range k, ζ ^ j)
 
 theorem primitiveRootPrefixEnergy_nonneg (m k : ℕ) : 0 ≤ primitiveRootPrefixEnergy m k :=
-  sum_nonneg fun ζ _ => Complex.normSq_nonneg _
+  sum_nonneg fun ζ _ => Complex.normSq_nonneg (∑ j ∈ range k, ζ ^ j)
 
 private theorem conj_pow_eq_complement {d : ℕ} (hd : 0 < d) {ζ : ℂ}
     (hζ : ζ ^ d = 1) {i : ℕ} (hi : i ≤ d) : conj (ζ ^ i) = ζ ^ (d - i) := by
@@ -44,7 +44,7 @@ private theorem sum_nthRoots_conj_pow_mul_pow {d i j : ℕ} (hd : 0 < d)
   have hterm : ∀ ζ ∈ nthRootsFinset d (1 : ℂ),
       conj (ζ ^ i) * ζ ^ j = ζ ^ (d - i + j) := by
     intro ζ hζ
-    rw [conj_pow_eq_complement hd ((mem_nthRootsFinset hd).mp hζ) hi.le, pow_add]
+    rw [conj_pow_eq_complement hd ((mem_nthRootsFinset hd (1 : ℂ)).mp hζ) hi.le, pow_add]
   rw [sum_congr rfl hterm, sum_nthRoots_pow hd]
   have he : d ∣ d - i + j ↔ i = j := by
     constructor
@@ -90,7 +90,7 @@ private theorem nthRoots_prefix_energy_of_le {d r : ℕ} (hd : 0 < d) (hr : r �
       rw [sum_const, card_range, nsmul_eq_mul]
       ring
 
-private theorem root_geometric_prefix_mod {d : ℕ} (hd : 0 < d) {ζ : ℂ}
+private theorem root_geometric_prefix_mod {d : ℕ} (_hd : 0 < d) {ζ : ℂ}
     (hζ : ζ ^ d = 1) (hζ1 : ζ ≠ 1) (k : ℕ) :
     (∑ j ∈ range k, ζ ^ j) = ∑ j ∈ range (k % d), ζ ^ j := by
   have hpow : ζ ^ k = ζ ^ (k % d) := by
@@ -104,7 +104,7 @@ remainder of the prefix length modulo its order. -/
 theorem nthRoots_prefix_energy {d : ℕ} (hd : 0 < d) (k : ℕ) :
     (∑ ζ ∈ nthRootsFinset d (1 : ℂ), Complex.normSq (∑ j ∈ range k, ζ ^ j)) =
       (k : ℝ) ^ 2 + (k % d : ℕ) * ((d : ℝ) - (k % d : ℕ)) := by
-  have h1 : (1 : ℂ) ∈ nthRootsFinset d 1 := (mem_nthRootsFinset hd).mpr (one_pow d)
+  have h1 : (1 : ℂ) ∈ nthRootsFinset d 1 := (mem_nthRootsFinset hd (1 : ℂ)).mpr (one_pow d)
   have he : ∀ ζ ∈ nthRootsFinset d (1 : ℂ),
       Complex.normSq (∑ j ∈ range k, ζ ^ j) =
         Complex.normSq (∑ j ∈ range (k % d), ζ ^ j) +
@@ -115,7 +115,7 @@ theorem nthRoots_prefix_energy {d : ℕ} (hd : 0 < d) (k : ℕ) :
       simp only [one_pow, sum_const, card_range, nsmul_eq_mul, mul_one, if_true,
         Complex.normSq_natCast]
       ring
-    · rw [root_geometric_prefix_mod hd ((mem_nthRootsFinset hd).mp hζ) hζ1,
+    · rw [root_geometric_prefix_mod hd ((mem_nthRootsFinset hd (1 : ℂ)).mp hζ) hζ1,
         if_neg hζ1, add_zero]
   rw [sum_congr rfl he, sum_add_distrib,
     nthRoots_prefix_energy_of_le hd (Nat.mod_lt k hd).le, sum_ite_eq', if_pos h1]
@@ -170,9 +170,9 @@ theorem primitiveRootPrefixEnergy_eq_moebius_remainder {m : ℕ} (hm : 1 < m) (k
     rw [sum_antidiagonal_moebius, if_neg (by omega)]
   calc
     _ = ∑ p ∈ m.divisorsAntidiagonal,
-        (ArithmeticFunction.moebius p.1 : ℝ) * (k : ℝ) ^ 2 +
+        ((ArithmeticFunction.moebius p.1 : ℝ) * (k : ℝ) ^ 2 +
           (ArithmeticFunction.moebius p.1 : ℝ) *
-            ((k % p.2 : ℕ) * ((p.2 : ℝ) - (k % p.2 : ℕ))) := by
+            ((k % p.2 : ℕ) * ((p.2 : ℝ) - (k % p.2 : ℕ)))) := by
       rw [primitiveRootPrefixEnergy_eq_moebius_antidiagonal (zero_lt_one.trans hm)]
       exact sum_congr rfl fun p _ => by ring
     _ = ∑ p ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius p.1 : ℝ) *
@@ -206,7 +206,7 @@ theorem primitiveRootPrefixEnergy_pos {m k : ℕ} (hm : 1 < m) (hkm : ¬ m ∣ k
     exact hkm (hζ.dvd_of_pow_eq_one k (sub_eq_zero.mp h.symm))
   have hpos : 0 < Complex.normSq (∑ j ∈ range k, ζ ^ j) :=
     (Complex.normSq_pos).mpr hprefix
-  exact hpos.trans_le (single_le_sum (fun ξ _ => Complex.normSq_nonneg _) hmem)
+  exact hpos.trans_le (single_le_sum (fun ξ _ => Complex.normSq_nonneg (∑ j ∈ range k, ξ ^ j)) hmem)
 
 /-- The nonzero energy has an arithmetic quantum: its exact Möbius formula
 is an integer, so positivity already gives a lower bound of one. -/
@@ -341,7 +341,7 @@ theorem arithmeticOverlapCurvature_eq_cell (m k : ℕ) {u : ℝ}
   rw [fract_div_on_nat_cell hd0 k hu0 hu1]
   have hdR : (d : ℝ) ≠ 0 := by exact_mod_cast hd0.ne'
   field_simp [hdR]
-  <;> ring
+  ring
 
 /-- The actual signed fractional-part curvature is a convex interpolation
 of primitive-root square energies at every nontrivial conductor. -/
@@ -368,7 +368,7 @@ theorem arithmeticOverlapCurvature_cell_lower {m : ℕ} (hm : 1 < m) (k : ℕ)
   by_cases hkm : m ∣ k
   · have hnext : ¬ m ∣ k + 1 := by
       intro h
-      have hm1 : m ∣ 1 := (Nat.dvd_add_iff_right hkm).mp h
+      have hm1 : m ∣ 1 := (Nat.dvd_add_iff_right hkm).mpr h
       exact (by omega : m ≠ 1) (Nat.dvd_one.mp hm1)
     have hE := one_le_primitiveRootPrefixEnergy hm hnext
     have hmul := mul_le_mul_of_nonneg_left hE hu0

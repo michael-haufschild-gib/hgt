@@ -107,6 +107,14 @@ theorem two_pi_mul_form_eq (Δ : ℝ) (k₁ k₂ : ℤ) :
       (Δ * Real.log q - 2 * π * k₂) * Real.log p - (Δ * Real.log p - 2 * π * k₁) * Real.log q := by
   ring
 
+/-- **One tower always aliases**: the ordinate difference `Δ = 2π/log p` has phase defect `0` at `p`,
+so no single prime certifies every configuration; two primes do (`two_prime_alias_bound_in_Δ`). -/
+theorem one_prime_aliases (hp : 1 < p) :
+    (2 * π / Real.log p) * Real.log p - 2 * π * ((1 : ℤ) : ℝ) = 0 := by
+  have : Real.log p ≠ 0 := (Real.log_pos (by exact_mod_cast hp)).ne'
+  field_simp
+  ring
+
 /-- **The two-prime non-aliasing law**, for given aliasing integers. -/
 theorem two_prime_alias_bound (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧ ∀ (Δ : ℝ) (k₁ k₂ : ℤ), (k₁ ≠ 0 ∨ k₂ ≠ 0) →

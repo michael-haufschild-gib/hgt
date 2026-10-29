@@ -48,3 +48,4 @@
 - formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/README.md
 - formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/README.md
 - formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/README.md
+- formal/GaloisForLFunctions/TransMetzlerWeilPositivity/README.md

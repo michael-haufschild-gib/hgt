@@ -178,6 +178,19 @@ convolution, centred scaling flow, Hasse jets at Xi zeros.
     $V_X(a)=[\Gamma(H_a)+(2\operatorname{gammaHardyPhaseRate}(0)-\log(2a+1))M_a-O_X(a)]/(2a+1)
       +\sum_bK_{ab}$ remains signed. Joint payment must control this
     potential and the graph energy together, retaining both original poles.
+    The literal prime edges now pay their own Gamma interactions:
+    $J_{ab}\le\log(2)M_b/\sqrt m$ when $2b+1=m(2a+1)$ and $m\ge3$.
+    Their graph contribution satisfies $0\le G_{\rm prime}\le G_X$,
+    with no duplicated edge, and the remaining divisor squares obey
+    $Q_{\rm res}+G_{\rm prime}=Q_X$ and
+    $Q_{\rm res}\ge(1-\log(2)/\log(3))Q_X\ge0$
+    (`TheHaarPrimeEdgesRetainTheirGammaReserve`). Each surviving original
+    prime conductance is strictly positive. The exact full source retains
+    $W(h)+(G_X-G_{\rm prime})=Q_{\rm res}+R_X+P(h)+\sum_aV_X(a)u_a^2$,
+    where $R_X$ is the entire absent-root charge. The complete interaction
+    matrix, including both poles jointly, has prime-edge entries at most
+    $-(\log(3)-\log(2))M_b/\sqrt m<0$. This shared-edge payment is checked;
+    the remaining graph, signed potential, and poles still need joint payment.
     The actual signed divisor source also has complete valuation coordinates:
     with $x_a=d_a/\sqrt{2a+1}$ and $w_a=(2a+1)M_a\ge1/2$,
     $D_X+T_Q=\tfrac12\sum_e E_Q(e)|\widehat x(e)|^2+R_X$

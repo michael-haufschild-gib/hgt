@@ -13,6 +13,9 @@ import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.ThePrecisionLedgerOfT
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.SupNormCeilingsForceVanishingAtSmallRationals
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.OneSignedPerturbations
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TwoPrimeTowersSeeEveryOrdinateDifference
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.MonotoneErrorsInvertAtMertensPrecision
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TowerPositivityIsPrecisionExact
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheStirlingErrorSplits
 
 /-!
 # Arithmetic of Square-Root Precision
@@ -24,5 +27,7 @@ horizon and the integrality exponent; integer Dirichlet polynomials at arithmeti
 Liouville twin as a ratio of horizon torsions; the Chebyshev ledger of where precision is lost;
 calibration of precision exponents on curve data; the gauge stabilizer of the count; the precision
 ledger; the vanishing forced by sup-norm ceilings; majorants, minorants and abscissas of one-signed
-perturbations; the separation of prime logarithms and the two-prime non-aliasing law. See `ArithmeticOfSquareRootPrecision/README.md`.
+perturbations; the separation of prime logarithms and the two-prime non-aliasing law; inversion of monotone errors
+at Mertens precision and the split of the Stirling error; the precision-exactness of tower
+positivity. See `ArithmeticOfSquareRootPrecision/README.md`.
 -/

@@ -38,8 +38,9 @@ This module establishes the zero-side relationships governing atomic families of
 
 noncomputable section
 
-open MeasureTheory Finset Filter Topology Complex Matrix
-open scoped Real ComplexConjugate ENNReal
+open MeasureTheory Finset Filter Topology Complex Matrix Zeta23
+open _root_.RHTower (verticalLatticePoint gammaOf_verticalLatticePoint)
+open scoped Real ComplexConjugate ENNReal RealInnerProductSpace
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
 
@@ -47,17 +48,47 @@ open ArithmeticElectrostatics
 open ArithmeticCastelnuovoSeveri (cx realTests weilGram rightZeros)
 open ArithmeticIndexDescent (complexWeilMixed complexWeilMixed_eq_weilGram
   hermQuad_complexWeilMixed_ofReal realWeilForm realTestSynthesis)
-open HTGeometry (hermNegIndex hermQuad negIndex)
-open HeckeKreinToeplitz (zetaKernel negIndex_zetaKernel hermNegIndex_weilGram_le_negIndex_zetaKernel)
-open RenormalizedArithmeticPotentialTheory (completeWeilMatrix finAtomicTest)
-open SpacingScaleHarmonicAnalysis (dirichletPoly paperFT_atomicTest Wsummand_atomicTest
-  norm_Wsummand_atomicTest_dilate_le gammaOf_im)
-open SquareRootThreshold (offLinePoint gammaOf_offLinePoint isolatedPairConfig
+open ArithmeticLorentzianGeometry (atom contDiff_atom hasCompactSupport_atom finAtomicTest)
+open HTGeometry (hermNegIndex hermQuad)
+open HeckeKreinToeplitz (negIndex zetaKernel negIndex_zetaKernel
+  hermNegIndex_weilGram_le_negIndex_zetaKernel)
+open RenormalizedArithmeticPotentialTheory (completeWeilMatrix atomDilate_facts PrimeHorizonIndex
+  normalizedFullWeilHorizonMatrix normalizedFullWeilHorizonMatrix_isHermitian
+  normalizedFullWeilHorizonMatrix_inner_eq_weilQuad horizonProfileVector
+  primeHorizonExtension primeHorizonExtension_coe)
+open SpacingScaleHarmonicAnalysis (atomDilate integral_atomDilate_sq weilQuad dirichletPoly
+  paperFT_atomicTest Wsummand_atomicTest norm_Wsummand_atomicTest_dilate_le gammaOf_im)
+open SquareRootThreshold (TemperedConfig offLinePoint gammaOf_offLinePoint isolatedPairConfig
   temperedConfig_isolatedPairConfig)
-open RHTower (verticalLatticePoint gammaOf_verticalLatticePoint TemperedConfig)
-open Zeta23
 
 /-! ### 1. Unconditional regime and zero-side upper implications for `ζ` -/
+
+private theorem weilQuad_atomicTest_nonneg_of_posDef' {g : ℝ → ℝ} {w : ℝ} {N : ℕ}
+    (hg : ContDiff ℝ 2 g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
+    (hw : 0 ≤ w) (hM : 0 < ∫ u, g u ^ 2)
+    (hpos : (normalizedFullWeilHorizonMatrix g N).PosDef) (y : ℕ → ℝ) :
+    0 ≤ weilQuad (atomicTest N y g) := by
+  have hA := normalizedFullWeilHorizonMatrix_isHermitian g N
+  have heig : ∀ i : PrimeHorizonIndex N, 0 < hA.eigenvalues i :=
+    hA.posDef_iff_eigenvalues_pos.mp hpos
+  have hquad : 0 ≤ ⟪Matrix.toEuclideanLin (normalizedFullWeilHorizonMatrix g N)
+      (horizonProfileVector y N), horizonProfileVector y N⟫ := by
+    rw [HTGeometry.hermitianEnergy_eq_sum hA]
+    exact sum_nonneg fun i _ => mul_nonneg (heig i).le (sq_nonneg _)
+  rw [normalizedFullWeilHorizonMatrix_inner_eq_weilQuad hg hgsupp hw N (horizonProfileVector y N)]
+    at hquad
+  have htest_eq : atomicTest N (primeHorizonExtension (horizonProfileVector y N)) g =
+      atomicTest N y g := by
+    funext u
+    unfold atomicTest
+    refine sum_congr rfl fun n hn => ?_
+    have hcoe : primeHorizonExtension (horizonProfileVector y N) n = y n :=
+      primeHorizonExtension_coe (horizonProfileVector y N) ⟨n, hn⟩
+    rw [hcoe]
+  rw [htest_eq, div_nonneg_iff] at hquad
+  rcases hquad with ⟨hq, -⟩ | ⟨-, hM_neg⟩
+  · exact hq
+  · linarith only [hM, hM_neg]
 
 /-- Eventual positive definiteness and atomic Weil nonnegativity hold unconditionally across the
 Metzler threshold on the entire interval `(0, cZero]` (`cZero = 1 + 10⁻¹⁸ > 1`). -/
@@ -76,7 +107,7 @@ theorem unconditional_transMetzler_positivity_interval :
   have hM : 0 < ∫ u, atomDilate transMetzlerProfile (c / N) u ^ 2 := by
     rw [integral_atomDilate_sq hw0]
     exact mul_pos hw0 integral_transMetzlerProfile_sq_pos
-  exact ⟨hpos, weilQuad_atomicTest_nonneg_of_posDef hg hgsupp hw0.le hM hpos⟩
+  exact ⟨hpos, weilQuad_atomicTest_nonneg_of_posDef' hg hgsupp hw0.le hM hpos⟩
 
 /-- Under `RiemannHypothesis`, the complete Weil quadratic form is nonnegative on every atomic test
 at every overlap ratio `c > 0` and every horizon `N ≥ 1`. -/
@@ -120,15 +151,17 @@ theorem hermQuad_atomicShiftWeilGram_eq_weilQuad {φ : ℝ → ℝ} (hφ : ContD
     unfold atomicShiftWeilGram
     congr 1
     funext i u
-    simp only [f, atom, cx, ArithmeticCastelnuovoSeveri.translate, Nat.cast_add, Nat.cast_one]
+    simp only [f, atom, cx, ArithmeticCastelnuovoSeveri.translate]
+    push_cast
+    rfl
   have hsynth : (realTestSynthesis f y).1 = finAtomicTest (atomDilate φ w) N y := by
+    have hcoe : (realTestSynthesis f y).1 = realTests.subtype (∑ i : Fin N, y i • f i) := rfl
+    rw [hcoe, map_sum]
     funext u
-    change (∑ i : Fin N, y i • atom (atomDilate φ w) (i.1 + 1)) u =
-      finAtomicTest (atomDilate φ w) N y u
-    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, finAtomicTest]
-  rw [← hgram, hermQuad_complexWeilMixed_ofReal]
-  change ArithmeticCastelnuovoSeveri.weilPair (realTestSynthesis f y).1 (realTestSynthesis f y).1 = _
-  rw [hsynth, ArithmeticCastelnuovoSeveri.weilPair_self]
+    simp only [map_smul, Submodule.coe_subtype, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+      f, finAtomicTest]
+  have hreal : ∀ q : realTests, realWeilForm q q = weilQuad q.1 := fun _ => rfl
+  rw [← hgram, hermQuad_complexWeilMixed_ofReal, hreal, hsynth]
 
 /-- Under finite off-line zero support `(rightZeros zetaZeroConfig).Finite`, the negative index of
 `atomicShiftWeilGram φ (c / N) N` is bounded by `(rightZeros zetaZeroConfig).ncard` uniformly across
@@ -186,7 +219,7 @@ private theorem paperFT_cx_neg_I_mul_real (g : ℝ → ℝ) (α : ℝ) :
       have hII : Complex.I * Complex.I = -1 := Complex.I_mul_I
       push_cast
       linear_combination -(α : ℂ) * (u : ℂ) * hII
-    rw [hI, cx, Complex.ofReal_exp, Complex.ofReal_mul]
+    rw [hI, cx, ← Complex.ofReal_exp, ← Complex.ofReal_mul]
   rw [heq, integral_complex_ofReal]
 
 /-- On the uniform coefficient vector `x ≡ 1`, any real zero `ρ` with `Re ρ ≥ 1/2` and `Im ρ = 0`
@@ -247,7 +280,7 @@ theorem re_Wsummand_atomicTest_const_one_ge (Z : ZeroConfig)
     have hI : Complex.I * (-Complex.I * ((-σ : ℝ) : ℂ)) * (Real.log n : ℂ) =
         ((Real.log n * (-σ) : ℝ) : ℂ) := by
       have hII : Complex.I * Complex.I = -1 := Complex.I_mul_I
-      push_cast
+      rw [Complex.ofReal_mul, Complex.ofReal_neg]
       linear_combination (σ : ℂ) * (Real.log n : ℂ) * hII
     rw [Complex.ofReal_one, one_mul, hI, ← Complex.ofReal_exp, ← Real.rpow_def_of_pos hn0]
   rw [Wsummand_atomicTest Z hg.continuous hgc, hD1, hD2, hγ, hFT1,
@@ -330,6 +363,7 @@ theorem dirichletPoly_twoAtomWitness {N : ℕ} (hN : 2 ≤ N) (z : ℂ) :
   rw [← sum_subset hsub]
   · rw [sum_pair (by decide)]
     simp [twoAtomWitness]
+    ring
   · intro n _ hn
     simp only [mem_insert, mem_singleton, not_or] at hn
     simp [twoAtomWitness, hn.1, hn.2]
@@ -345,6 +379,7 @@ theorem dirichletPoly_twoAtomWitness_verticalLatticePoint {N : ℕ} (hN : 2 ≤ 
       Complex.I * (0 : ℝ)) * (Real.log 2 : ℂ) = (k : ℂ) * (2 * Real.pi * Complex.I) := by
     push_cast
     field_simp [hlog2]
+    ring
   rw [hexp_arg, Complex.exp_int_mul_two_pi_mul_I, sub_self]
 
 /-- Right-half zero set of `isolatedPairConfig`: exactly the single off-line point
@@ -380,7 +415,9 @@ private theorem integral_mul_exp_pos_of_sq_pos {g : ℝ → ℝ} {w : ℝ}
   have hle : ∀ u, g u ^ 2 ≤ C * (g u * Real.exp (α * u)) := by
     intro u
     by_cases hu : u ∈ Set.Icc 0 w
-    · have hgu_le : g u ≤ B₁ := (hB u).trans (le_max_left B 1)
+    · have hgu_le : g u ≤ B₁ := by
+        have h1 : g u ≤ ‖g u‖ := by rw [Real.norm_eq_abs]; exact le_abs_self (g u)
+        exact h1.trans ((hB u).trans (le_max_left B 1))
       have hexp_ge : 1 ≤ Real.exp (|α| * w) * Real.exp (α * u) := by
         rw [← Real.exp_add]
         refine Real.one_le_exp ?_
@@ -511,7 +548,8 @@ theorem isolatedPairConfig_atomic_negative_every_ratio {δ : ℝ} (hδ : 0 < δ)
   have hall := HasSum.add_disjoint (f := Z.Wsummand f f) hd₂
     (HasSum.add_disjoint (f := Z.Wsummand f f) hd₁ h₁ hp) hq
   have hW : Z.W f f = ((2 * v : ℝ) : ℂ) := by
-    rw [ZeroConfig.W, hall.tsum_eq, zero_add, ← Complex.ofReal_add]
+    have htsum : Z.W f f = 0 + (v : ℂ) + (v : ℂ) := hall.tsum_eq
+    rw [htsum, zero_add, ← Complex.ofReal_add]
     congr 1; ring
   rw [hW, Complex.ofReal_re]
   -- 3. Strict negativity of `2 * v`

@@ -48,7 +48,6 @@ theorem one_le_prod_primitive_prefix_norm {m k : ℕ} (hm : 1 < m) (hkm : ¬ m �
   have hcoe : (β : K) = ∑ j ∈ range k, zetaN m ^ j := by
     change (algebraMap (𝓞 K) K) β = _
     simp only [β, map_sum, map_pow]
-    rfl
   have hβ : β ≠ 0 := by
     intro hz
     have hzero := congrArg (fun z : 𝓞 K => (z : K)) hz
@@ -104,7 +103,7 @@ theorem totient_mul_cell_quadratic_le_curvature {m : ℕ} (hm : 1 < m) (k : ℕ)
   by_cases hkm : m ∣ k
   · have hnext : ¬ m ∣ k + 1 := by
       intro h
-      have hm1 : m ∣ 1 := (Nat.dvd_add_iff_right hkm).mp h
+      have hm1 : m ∣ 1 := (Nat.dvd_add_iff_right hkm).mpr h
       exact (by omega : m ≠ 1) (Nat.dvd_one.mp hm1)
     have hE := totient_le_primitiveRootPrefixEnergy hm hnext
     have hmul := mul_le_mul_of_nonneg_left hE hu0

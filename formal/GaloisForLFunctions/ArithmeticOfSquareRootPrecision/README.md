@@ -29,14 +29,14 @@ integers.
 | Programme | Interface |
 |---|---|
 | ArithmeticEffectivityTheory | Log-torsion $\psi(N)=\log\lvert\mathbb Z/d_N\rvert$, Nair's floor (`log_inv_integral_le_psi`); ASRP proves the floor is attained and computes its exact precision |
-| HeckeKreinToeplitz, ArithmeticKreinLangerTheory | The global law is the one-sided count (`global_law_count`); precision and parity principles; Stepanov compressions. ASRP supplies the precision calculus those principles presuppose, and proves that *each* half of the count is RH |
+| HeckeKreinToeplitz, ArithmeticKreinLangerTheory | The global law is the one-sided count (`global_law_count`); index zero on a tower selects $\Lambda$ (`forall_negIndex_towerKernel_eq_zero_iff`); Stepanov compressions. ASRP supplies the precision calculus those principles presuppose, proves that *each* half of the count is RH, and that tower positivity is precision-exact |
 | SelectiveMultiscaleArithmeticPositivity | Precision rigidity of tower positivity (`not_towerPositive_and_perturbed`); ASRP proves the count-level analogue with the sharp threshold |
 | ArithmeticCorrelationGeometry, BiarithmeticGaugeGeometry | The gauge torus; ASRP computes the count's stabilizer in it (sign and torus gauges) |
 | ArithmeticCorrespondencePositivity | "On nonnegative tests $\zeta$ is the worst twin"; its count-level form is the monotonicity of the lower half |
 | SquareRootThreshold | The zero width $\Theta$; ASRP identifies it with the precision exponent and with the integrality exponent |
 | ArithmeticCastelnuovoSeveri, ArithmeticLorentzianGeometry | Curve data, golden datum, one-sided power-sum bounds (`norm_le_of_re_sum_pow_le`); ASRP's calibration of precision exponents |
 | ConjugateDiagonalGeometry, RenormalizedArithmeticPotentialTheory, ArithmeticIntersectionTheory | The Hecke defect, the covariant regulator, torsion orbits: targets whose precision class is open (§9) |
-| `RHTower` | Von Koch, the exponent law $\Theta=$ order of $\psi(x)-x$ (`chebyshevPsi_sub_exponent_law`), Littlewood, PNT, Guth–Maynard short intervals; the effective Baker bound for prime logarithms (`Matveev.effectiveBakerBound_holds`) and the Liouville separation at the Liouville point (`LiouvillePointReachability`) |
+| `RHTower` | Von Koch, the exponent law $\Theta=$ order of $\psi(x)-x$ (`chebyshevPsi_sub_exponent_law`), Littlewood, PNT, Guth–Maynard short intervals; Littlewood's Mertens criterion and $M(x)=\Omega_\pm(\sqrt x)$; the effective Baker bound for prime logarithms (`Matveev.effectiveBakerBound_holds`) and the Liouville separation at the Liouville point (`LiouvillePointReachability`) |
 | `HTGeometry` | Real zeros of exponential polynomials (`card_lt_of_expPoly_eq_zero`) |
 
 ---
@@ -162,7 +162,22 @@ here.
     every nonzero nonnegative perturbation moves $T$ linearly; $A(n)=\sum_{k\le n}\mu(k)T_a(\lfloor n/k\rfloor)$,
     so $\psi(n)=\sum_k\mu(k)\log\lfloor n/k\rfloor!$; the inversion operator sends some $E$ with
     $|E(y)|\le y^\theta$ to $\ge\pi(x)$, and no bound $Cx^{\theta'}$, $\theta'<1$, survives it.
-17. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
+17. **Monotone errors invert at Mertens precision.** By Abel summation against $\mu$, a monotone $E$
+    with $|E|\le B$ on $(0,x]$ has $|I_x(E)|\le3B\max_{k\le x}|M(k)|$; constant errors invert to
+    $M(x)=\Omega_\pm(\sqrt x)$, so no exponent below $\tfrac12$ is possible; and RH holds iff monotone
+    errors bounded by $1$ invert to $O(x^{1/2+\delta})$ for every $\delta>0$. Inversion has no precision on
+    oscillating errors and exactly the precision of $M$ on monotone ones.
+18. **The Stirling error splits.** With $F(t)=t\log t-t$: $\log\lfloor y\rfloor!=F(y)+G(y)+h(y)$, where
+    $G(y)=\log\lfloor y\rfloor!-F(\lfloor y\rfloor)$ is monotone with $0\le G\le1+\tfrac12\log y$ and
+    $h(y)=F(\lfloor y\rfloor)-F(y)\in[-\log y,0]$ is a sawtooth. Hence
+    $|\psi(n)-I_n(F)-I_n(h)|\le3(1+\tfrac12\log n)\max_{k\le n}|M(k)|$: all remaining precision of
+    Chebyshev's method lives in the inversion of the smooth term and of the sawtooth.
+19. **Tower positivity is precision-exact.** Index zero of every tower kernel along one prime implies
+    the count, passes the deciding-input tests, and has stabilizer $\{0\}$: $\Lambda+\delta$ is tower
+    positive iff RH and $\delta=0$ on $n\ge2$. $\Lambda+1/n$ satisfies the count iff RH and is never tower
+    positive. At $\Lambda$ both statements are RH; as properties of weights the count sees $\mathcal Q$,
+    positivity sees every coefficient.
+20. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
     $\|\beta_i\|\le q^{\theta-1/2}$, already from its lower half; the precision exponent is
     $\tfrac12+\max_i\log\|\beta_i\|/\log q\ge\tfrac12$, with equality iff unitary. Odd hyperelliptic data
     have exponent $\tfrac12$ (Stepanov). The golden datum has $N_k/5^k\to1$ and exponent $\tfrac12+\log\varphi/\log5$.
@@ -205,7 +220,13 @@ here.
 15. **The ledger** (`riemannHypothesis_precision_tfae`, `zero_width_three_readings`,
     `zeroReSup_lt_one_tfae`).
 16. **Separation and non-aliasing** (`liouville_separation`, `exists_baker_separation`,
-    `exists_small_two_prime_form`, `two_prime_alias_bound_in_Δ`).
+    `exists_small_two_prime_form`, `one_prime_aliases`, `two_prime_alias_bound_in_Δ`).
+17. **Monotone inversion law** (`abs_inversionOp_le_of_monotoneOn`, `not_monotone_inversion_lt_half`,
+    `riemannHypothesis_iff_monotone_inversion`).
+18. **Precision-exactness of tower positivity** (`count_of_towerIndexZero`, `towerIndexZero_add_iff`,
+    `count_and_not_towerIndexZero_add_inv`).
+19. **The Stirling split** (`psi_eq_inversionOp_log_factorial`, `monotoneOn_stirlingMonotone`,
+    `sawtooth_bounds`, `abs_psi_sub_smooth_sub_sawtooth_le`).
 
 ---
 
@@ -242,8 +263,9 @@ here.
 4. **How much precision does integrality over $\mathbb Z$ reach?** Exactly $\Theta$, in each half;
    square-root integrality is RH; a fixed strip is integrality at a fixed precision. *Answered.*
 5. **Where is precision lost in Chebyshev–Nair?** Not at the floor (exact) nor in the identity
-   (precision $\log n$), but in the inversion (unbounded at every precision) and in the ceiling.
-   *Answered for floor, identity and inversion; the ceiling is open problem 1.*
+   (precision $\log n$), but in the inversion (unbounded on size classes, exactly Mertens precision on
+   monotone errors) and in the ceiling (a ceiling at precision $\theta<1$ is a zero-free strip).
+   *Answered.*
 6. **How does integrality see parity?** Through reciprocal torsion. *Answered.*
 7. **What is precision over $\mathbb F_q$?** The exponent formula, one half suffices, unitarity is
    square-root precision, golden is the relative-error twin. *Answered.*
@@ -253,6 +275,9 @@ here.
 9. **At what precision do prime towers separate ordinates?** One tower aliases; two towers see every
    ordinate difference $\Delta$ with margin $c\min(|\Delta|,(2+|\Delta|)^{-C})$, by Baker; integrality
    alone gives $e^{-O(|\Delta|)}$; Dirichlet shows the decay is genuinely polynomial. *Answered.*
+10. **What is the precision of positivity?** Tower positivity is precision-exact (stabilizer $\{0\}$),
+    strictly finer than the count, and RH-equivalent at $\Lambda$; finite-window statements cannot
+    decide. *Answered for tower positivity; finite index is open problem 3.*
 
 ---
 
@@ -263,17 +288,19 @@ the battery classification, the majorant/minorant principle and the gauge stabil
 dictionary; the deciding-input theorem; precision-blindness of producers; the integrality lattice and
 exponent; the transcendence toolkit on integer Dirichlet polynomials; the sup-norm vanishing law; the
 separation of prime logarithms and the two-prime non-aliasing law; the twin's reciprocal torsion; the
-Chebyshev ledger; curve precision exponents; the TFAE ledger.
+Chebyshev ledger, the monotone inversion law and the Stirling split; the precision-exactness of
+tower positivity; curve precision exponents; the TFAE ledger.
 
-To build:
+Open, with what the theory already proves about each:
 
-| Tool | Purpose | Test |
-|---|---|---|
-| A precision-preserving ceiling | Certify Siegel auxiliaries using cancellation in $\int_0^1P$, not $\int\lvert P\rvert$ | Must fail for the golden datum and for $\lambda\Lambda$ |
-| Inversion with arithmetic input | Bound $\sum\mu(k)E(x/k)$ for the Stirling error at precision $\theta<1$ | Equivalent strength to a strip; must use $\mu$ |
-| Precision of the index | Precision class of finite index on two towers (HKT) | Lindelöf test |
-| Precision of the Hecke defect | Which perturbations move $E_f(c\log T)$ at order $N(T)$ (CDG) | Census |
-| Successor precision | Precision class of laws using the exact integer count $\lfloor x\rfloor$ | Over-regular Beurling systems must fail |
+| Tool | Status |
+|---|---|
+| A precision-preserving ceiling for Siegel auxiliaries | A ceiling at precision $\theta<1$ is a zero-free strip (`zeroReSup_lt_one_iff_siegelHalf`); sup-norm ceilings must vanish at $0,\tfrac12,1$; must keep sign cancellation |
+| Inversion of the Stirling error | Split proved: the monotone part inverts at Mertens precision; the smooth term $F$ and the sawtooth $h$ (amplitude $\log y$) are the remaining inversions |
+| Precision of finite index on two towers (HKT) | Index zero is precision-exact; finite index is Lindelöf-deep, its stabilizer is open |
+| Precision of the Hecke defect (CDG) | The defect is a zero-side object; a weight-parametrized collided form is needed first |
+| Successor precision | Over-regular Beurling systems must fail; no formal Beurling model in the corpus yet |
+| Structure: converse Krein–Langer beyond orbit kernels | Owned by HKT/AKL; proved for orbit kernels |
 
 ---
 
@@ -288,10 +315,12 @@ To build:
 2. **Off-line vanishing.** A source of integer Dirichlet polynomials vanishing at one character of
    every off-line pair (HKT's arithmetic Stepanov problem). Integrality speaks only at $s\in\mathbb Z$;
    which precision class must such a source have?
-3. **Precision of positivity.** Classify the precision classes of the corpus's positivity theorems
-   (apertures, atomic tests, the separated regime). Every twin-blind theorem has the twin in its class.
-4. **Inversion with arithmetic input.** How much cancellation of $\mu$ against the specific Stirling
-   error is needed at each precision $\theta$; the inversion is unbounded on size classes.
+3. **Precision of positivity beyond towers.** Tower positivity is precision-exact. Classify the
+   precision classes of the other positivity theorems (apertures, atomic tests, the separated regime)
+   and of finite index; every twin-blind theorem has the twin in its class.
+4. **Inversion of the sawtooth.** The Stirling error splits into a monotone part, inverted at Mertens
+   precision, and the sawtooth $h(y)=F(\lfloor y\rfloor)-F(y)$; determine the precision at which $\mu$
+   cancels against $h(x/k)$ and against the smooth term $F(x/k)$.
 5. **The successor as a precision source.** Over-regular Beurling systems have integer counts at
    square-root precision and prime counts without it; isolate the identity of $\mathbb Z$ (the exact
    count $\lfloor x\rfloor$, precision $0$) that excludes them.

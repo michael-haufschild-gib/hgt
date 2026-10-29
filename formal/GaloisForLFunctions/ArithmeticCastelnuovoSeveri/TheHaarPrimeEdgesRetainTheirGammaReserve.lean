@@ -12,7 +12,7 @@ a positive part of its original divisor-square conductance.
 
 noncomputable section
 open MeasureTheory Set Filter Finset
-open scoped ENNReal
+open scoped ENNReal Classical
 open _root_.RHTower
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells

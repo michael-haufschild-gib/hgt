@@ -185,3 +185,6 @@ theorem collision_mass_from_minimal_count (h : negIndex zetaKernel < ⊤) :
   rw [xiMult_eq_mult (hfin.mem_toFinset.mp (hfin.toFinset.equivFin.symm j).2).1]
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory
+
+open GaloisForLFunctions.ArithmeticKreinLangerTheory in
+#print axioms collision_mass_from_minimal_count

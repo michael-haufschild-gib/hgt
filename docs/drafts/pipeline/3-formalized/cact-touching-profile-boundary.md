@@ -18,7 +18,7 @@ The following own modules passed final individual Lean audits with standard axio
 
 Distinct internal integer log gaps exceed `1/N`. Thus atom supports remain strictly disjoint at the endpoint ratio, but prime products just outside the horizon contribute the boundary star. The old separated source formula cannot be used without this term.
 
-## Current formalization, not theorem claims
+## Formalized complete argument
 
 A. `TheActualArchimedeanMatrixReachesTouching`: exact raw and normalized entries retaining the literal prime pairing.
 B. `TheNonRatioMatrixIsTheActualPrimeCorrection`: actual prime-pairing matrix minus ratio kernel; its quadratic form equals normalized non-ratio source.
@@ -31,12 +31,12 @@ G. `TheReplacementErrorsVanishUniformlyThroughTouching`: one normalized residual
 H. `RamanujanQuasimodesAreUniformThroughTouching`: the complete six-term norm residual, including the boundary prime matrix, uniformly for all ratios through one.
 I. `OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching`: finite coordinate detection excludes every eigenvalue below the completed endpoint shape; a near-unit-mass plateau then gives one positivity horizon for all `0<c<=1`.
 
-These nine files are drafts, uncompiled and unwired. Required dependent oleans are justified only by their explicit imports. The prime-matrix draft also converts its actual quadratic-form budget into an operator-action budget by the Hermitian eigenbasis identity.
+All nine files passed individual final no-output Lean checks and are wired into the programme umbrella. Their capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`. Exact final commands are recorded in `logs/critical-arithmetic-correlation/final-audits.txt`. The prime-matrix theorem also converts its actual quadratic-form budget into an operator-action budget by the Hermitian eigenbasis identity.
 
-## Remaining spectral argument
+## Spectral mechanism
 
-The full argument is drafted: prime residual independent of `c`, scalar self error `O(1/N)`, center linear in bounded charge, uniformly square-bounded cross/pole errors divided by logarithmic mass, and small actual non-ratio operator. A fixed finite coordinate certificate then excludes all eigenvalues below the endpoint conductor-one energy. For a detecting set of size `k`, choose residual tolerance `delta/(6*(k+1))`; total coordinate cost is below `1/18`, contradicting detection. No endpoint positivity claim until the entire chain passes Lean.
+The formalized argument combines: prime residual independent of `c`, scalar self error `O(1/N)`, center linear in bounded charge, uniformly square-bounded cross/pole errors divided by logarithmic mass, and small actual non-ratio operator. A fixed finite coordinate certificate then excludes all eigenvalues below the endpoint conductor-one energy. For a detecting set of size `k`, choose residual tolerance `delta/(6*(k+1))`; total coordinate cost is below `1/18`, contradicting detection. The resulting theorem produces a single smooth plateau and a single eventual horizon for every ratio `0<c<=1`, with every complete eigenvalue at least any prescribed `b<2-log(2*pi)` and profile mass above `1-epsilon`. The horizon may depend on the profile and `b`, but not on `c`.
 
 ## Boundary of the result
 
-For `c>1`, the atom Gram overlaps and additional non-ratio interactions enter. They must be compared jointly with the logarithmic self term. A separated cross formula alone cannot cover that regime. The strict charge reserve also vanishes as smooth plateaus approach the indicator; fixed-profile uniformity does not give uniform spectral exhaustion in that limit. RH, improved census, and finite exceptional zeros remain open.
+The neighbouring TransMetzlerWeilPositivity programme already proves genuine first-overlap positivity for an explicit profile. For general `c>1`, the atom Gram overlaps and additional non-ratio interactions enter. They must be compared jointly with the logarithmic self term. A separated cross formula alone cannot cover that regime. The strict charge reserve also vanishes as smooth plateaus approach the indicator; fixed-profile uniformity does not give uniform spectral exhaustion in that limit. RH, improved census, and finite exceptional zeros remain open.
