@@ -69,3 +69,223 @@ Source: cat/03.txt (94642 lines, 241 files).
 - Pronic-weighted energies (weights 1/(n(n+1))): selected ≤ paired ≤ 4·selected; exact slack 4·sel − paired = Σ(3s(2m+1)²/pronic + s(2m+2)²/(pronic·(4m+5))). Constants sharp: inverse 4 forced already at horizon 2; forward 1 attained (odd indicator). Prime-square coefficient (c = 1 at 2, 4; N = 4) aliases: selected energy 0, paired 1/6.
 ## FermiSelectedCoefficientTransportAndRecovery (start)
 - Selected readings form a divisor sieve after dyadic coefficient transport b(d) = c(d) (odd d), (2 if 4|d else 1)c(d) − c(2d)·1_{2d≤N} (even d). Inverse energy: Σc² ≤ (3/2)Σb² with exact residual 3Σb² − 2Σc² = Σ alias residual²; transport injective.
+- Selected reading = literal sieve of transported coefficients: R_sel(n) = sieveSeq N b (n+1). First N selected readings vanish ⇔ all admitted coefficients vanish (no support premise); traces equal ⇔ coefficients equal.
+## FermiSelectedCoefficientSharpInverse
+- Dyadic packets (3 at 2, (2/3)^{j−2} at 2^j, j ≤ K+2): alias residual only at terminal 2^{K+2}, residual energy 4(2/3)^{2K} → 0 while coefficient energy ≥ 9 ⇒ best inverse constant exactly 3/2.
+## FermiValuationDepthAndFiniteWindowStability
+- d < 2^L ⇒ (d | 2^{L+1}n ⇔ d | 2^L n): every horizon saturates on dyadic chains after L = ⌊log₂N⌋+1 levels. Even sieve values recovered by finite dyadic telescope of selected boundary jumps (weights 2^{−(j+1)}, terminal doubled). Without support restriction: paired pronic energy on first M ≤ (L+4)(L+1)·selected energy on 2^L·M (quadratic valuation-depth factor).
+## FermiCompleteTraceValuationStability
+- Finite coefficient horizon ⇒ both complete pronic traces summable (|s| ≤ Σ|c|, weights 1/(n(n+1))). Complete-trace inverse: sieveTotal ≤ (L+4)(L+1)·selectedTotal, L = ⌊log₂N⌋+1.
+## FermiDyadicRampAndQuadraticTraceLoss
+- Dyadic ramp weight (coefficient columns on powers of 2, horizon 2^{L+1}): sieve value on 2-adic shell k equals 2^{k+1}(L−k); odd jumps 0; even jumps = 2^{k+2} on shells. sieveTotal ≥ L(L+1)(2L+1)/12 (cubic) while selectedTotal ≤ 2L (linear) ⇒ quadratic loss ((L+1)(2L+1)/24) forced; NO horizon-uniform inverse constant for complete selected trace.
+## FermiNonnegativeDyadicRampTraceObstruction (start)
+- Removing the negative endpoint gives an explicitly nonnegative ramp (2(K+1) at 2, 2^{k+1}(K−k−1) at 2^{k+2}); its sieve energy ≥ the signed ramp's (cubic (K+1)(K+2)(2K+3)/12); endpoint correction energy ≤ ½ (Σ1/t² ≤ 2).
+- Nonnegative ramp: selectedTotal ≤ 4K+5 (linear), sieveTotal cubic ⇒ quadratic loss persists in nonnegative cone; no uniform inverse even for c ≥ 0.
+## FermiMixedBoundaryRayStability
+- Normalized dyadic ray x_k = s(2^k b)/2^k; normalized jump J(2^{k+1}b)/2^{k+1} = x_k − x_{k+1} (exact forward difference). Mixed-boundary sine bound (reflect path, RHTower autocorrelation chain sine certificate): (2 − 2cos(π/(2n+1)))Σ_{k<n}(x_{a+k} − x_{a+n})² ≤ Σ jumps². Horizon saturation: x_{D+1} = x_D/2 (D = ⌊log₂N⌋+1); terminal jump = x_{D+1}.
+## FermiPronicRayDecomposition / FermiPronicRayWeightAndTailControl (start)
+- Index m+1 = 2^k(2j+1): complete sieve energy = odd readings + Σ_k Σ_j x²·w(k+1, 2j+1); selected energy = odd + Σ jump²·w(k+2, ·). Ray weight w(k,b) = 4^k/pronic(2^k b) = 1/(b(b + 2^{−k})) ∈ [2^k/((2^k+1)b²), 1/b²], increasing in k, ≥ (1 − 2^{−k})/b².
+- Terminal mass bound with Young; beyond depth, x decays by exact powers 2^{−j}: tail Σ x² = (4/3)x_{D+a}²; first unadmitted tail mass = (4/3)·(terminal jump)². Complete ray (with geometric tail) controlled by finitely many observed jumps.
+## FermiPhysicalTraceSineUpperBound
+- Per-ray energies: sieve E_ray(b) = Σ_k x_{k+1}²·w(k+1,b), selected Q_ray(b) = Σ jump²·w(k+2,b). Head cells bounded by (5/2)(D+1)Q_ray; tail via mixed-boundary sine. UNCONDITIONAL TRACE BOUND: for 1 ≤ K ≤ D = ⌊log₂N⌋+1, n = D+1−K, λ = 2 − 2cos(π/(2n+1)), M ≥ 0: Mλ·sieveTotal ≤ [(1 + 2^{−(K+1)})((M+1) + M(M+1)λn + (4/3)Mλ) + (5/2)(K−1)(D+1)Mλ]·selectedTotal. (λ ~ π²/(4n²): inverse loss quadratic in depth.)
+## FermiNonnegativeCosinePhysicalTraceLowerBound (start)
+- Cosine profile x_k = cos((k+½)π/(2r+1)): x_r = 0, nonneg on [0,r], recurrence x_k + x_{k+2} = 2cos(θ)x_{k+1}; Σ_{k<r}x² = (2r+1)/4 (odd Dirichlet kernel); Σ(Δx)² = (2 − 2cosθ)Σx² (eigenvector of mixed-boundary path). Synthesized by nonnegative dyadic coefficients (2x_0 at 2; 2^{k+1}(2x_{k+1} − x_k) ≥ 0 at 2^{k+2}); sieve on odd rays = profile then geometric tail; selected homogeneous energy = (2 − 2cosθ)(2(L+1)+1)/4 − (2/3)x_L².
+- Cosine packet per ray: sieve ≥ (S − 1)/b², selected ≤ λS/b² (S = (2r+1)/4) ⇒ (S − 1)·selected ≤ λS·sieve on the full trace; odd readings vanish (odd rays only).
+## FermiPhysicalSineAsymptotics / FermiPhysicalOptimalConstants
+- n²(2 − 2cos(π/(2n+1))) → π²/4. Uniform upper: for every ε, eventually (dyadic N = 2^r) sieveTotal ≤ (4/π² + ε)r²·selectedTotal for ALL coefficients. Nonnegative cosine family attains (4/π² − ε)(L+1)². SHARP: best asymptotic leading coefficient = 4/π² (signed and nonnegative).
+- Optimal physical inverse constant (sup of sieve/selected ratio) C(N) satisfies C(N)/(log₂N)² → 4/π² for ALL horizons N (nonneg version too); horizon zero-extension preserves both energies (Buchstab band), squeeze between dyadic horizons.
+## FermiOddTraceCenteringAndExtremalRestriction
+- Shift weight c + t(e₂ − e₁): fixes even sieve readings and selected even jumps; odd readings shift by −t. Both total energies change by the same quadratic −2t·A + t²·T (A = odd pronic mean Σ s(2m+1)/pronic, T = odd pronic mass > 0); energy difference invariant. Centering (A = 0) uniquely maximizes the ratio on the orbit when sieve > selected (exact gain formula). Nonneg-preserving shifts: t ∈ [−c(2), c(1)]; A ≥ T·c(1) for c ≥ 0, equality ⇔ odd coefficients > 1 vanish; removing c(1) doesn't lower ratio > 1. A signed-extremizer that is nonnegative with ratio > 1 has all admitted odd coefficients zero.
+## FermiDilatedPronicMassAndRationalBounds
+- E_d = Σ_n 1/pronic(dn) > 0; odd split Σ 1/pronic(d(2m+1)) = E_d − E_{2d}; (4 − 2/(d+1))E_{2d} ≤ E_d; E_4 ≤ 9/80; 4E_4 − E_2 ≥ 1/30; (10/3)E_4 ≤ E_2 ≤ (100/27)E_4; (26/7)E_12 ≤ E_6; 2E_6 ≤ E_3 (rational, no numerics).
+## FermiHorizonThreePhysicalGram (start)
+- N = 3, c(1) = 0, a = c(2), b = c(3): sieve energy = E₂a² + 2E₆ab + E₃b²; selected = E₄a² + 2E₁₂ab + (E₃ − E₆ + E₁₂)b²; odd mean = b(E₃ − E₆).
+## FermiFiniteHorizonPositiveConeGap
+- Two-variable Rayleigh: if (A/D)E < B (cross gain) and C/F ≤ A/D then ratio maximum on the nonneg quadrant is attained at an interior point. At horizon 3: (E₂/E₄)E₁₂ < E₆ (100/27 < 26/7) ⇒ nonnegative supremum attained at a, b > 0 with ratio > 1; odd mean > 0 there ⇒ centering gives a signed input with strictly larger ratio. STRICT CONE GAP: nonnegativeConstant(3) < signedConstant(3) (same 4/π² asymptotics, but finite horizons differ).
+## FermiHomogeneousEnergyAndPronicComparison
+- Reciprocal-square ("homogeneous") forms in odd-ray coordinates: pronic energies ∈ [½, 1]·homogeneous (both sieve and selected).
+## FermiPrimeExponentGramBounds / FermiPrimeBoxGramBounds (classical)
+- Kernel r^{|i−j|}: (1−r)/(1+r) ≤ Gram ≤ (1+r)/(1−r) uniformly in dimension (induction with explicit square defects). Tensorizes over finite prime boxes via PSD Kronecker products: constants Π(1−r_i)/(1+r_i), Π(1+r_i)/(1−r_i) (cf. Aistleitner–Berkes–Seip GCD matrices; r = 1/p).
+## FermiGcdGramPrimeProductBounds / FermiOddDivisorGramAndFrameBounds (classical support)
+- gcd(a,b)²/(ab) = Π_p (1/p)^{|v_p(a) − v_p(b)|}; on any finite support with prime factors in P: Π(p−1)/(p+1) ≤ GCD Gram ≤ Π(p+1)/(p−1).
+- Odd-divisor profile φ_d(m) = d/(2m+1)·1_{d|2m+1}: Σ_m φ_dφ_e = M_odd·gcd(d,e)²/(de), M_odd = Σ1/(2m+1)² = π²/8 (positive). Packet energy = M_odd·GCD Gram form ⇒ frame bounds M_odd·Π(p∓1)/(p±1).
+## FermiDyadicAntichainCoordinates
+- Dyadic antichain: odd indices d ∈ S with one depth j(d) each, coefficient 2^{j}d·a(d) at 2^{j(d)}d (indices distinct). Normalized sieve ray /(2m+1) = odd-divisor packet with coefficients impulse(j,k)·a(d), impulse(j,k) = 2^{j−k}·1_{j≤k}; selected jumps = consecutive differences. Each impulse: full homogeneous mass Σ_k impulse² = 4/3; selected mass ≥ 1/3 (any depth).
+## FermiBooleanParityGram (start)
+- Boolean cube product kernel Π(x_i = y_i ? 1 : r_i): row sum Π(1+r_i); parity vector eigenvalue Π(1−r_i); parity² = 1, parity sums to 0. Gram form of affine-parity functions = 2^{|I|}(ac·Π(1+r) + bd·Π(1−r)).
+- Parity indicators (0/1, disjoint classes) Gram = (2^{|I|}/4)(Π(1+r) ± Π(1−r)).
+## FermiBooleanPrimeCube / Packets
+- Boolean choice of primes in P ↦ squarefree index Π p^{x_p} (injective, odd for odd P); GCD kernel of cube indices = Boolean product kernel with r_p = 1/p; odd-divisor packet energy on the cube = M_odd·Boolean Gram form.
+## FermiPrimeCapacityBanks
+- Parity ratio Π(p−1)/(p+1) ≤ 1/(1 + 2Σ1/p) (via 1 + Σ ≤ Π(1+·)). Divergent reciprocal-prime capacity ⇒ arbitrarily many disjoint nonempty prime banks each with parity ratio < 1/(4L).
+## FermiBankParityTensorGram
+- Product parity packets over banks are 0/1, one-hot odd-bank choices have disjoint supports; Gram factorizes = Π_i (card/4)(Π(1+r) ± Π(1−r)).
+## FermiFinitePrimeAntichainBound / FermiBoundedPrimeCapacityObservability
+- Antichain with odd indices whose prime factors lie in finite P: selected homogeneous ≥ M_odd·Π(p−1)/(p+1)·(1/3)Σa², sieve homogeneous ≤ M_odd·Π(p+1)/(p−1)·(4/3)Σa² ⇒ physical bound sieveTotal ≤ 8(Π(p+1)/(p−1))²·selectedTotal (all horizons, signed amplitudes). With Σ_{p∈P}1/p ≤ M: constant 8e^{6M} (Euler correction bound from RHTower.Sieve). Bounded reciprocal capacity ⇒ uniform native observability.
+## FermiDyadicAntichainSupportRepresentation
+- Admissible packet (horizon N, allowed primes): distinct active indices in [1,N] have distinct odd parts, all prime factors of active odd parts allowed. Every admissible packet = parameterized antichain on [1,N] (odd part support, depth = 2-adic valuation, amplitude c(n)/n; nonneg preserved); both native energies read only [1,N]. ⇒ finite-prime constant 8B² and bounded-capacity constant 8e^{6M} for EVERY admissible signed packet.
+## FermiMultiBankPrimeCube / FermiBankPacketNormalizedGram
+- Independent Boolean choices in disjoint prime banks multiply to injective odd squarefree indices; GCD kernel = product of bank kernels. Bank masses A = Π(1+1/p), D = Π(1−1/p) = θA (θ = Π(p−1)/(p+1)); parity class mass E = 2^{|T|}(A+D)/4; parity correlation ρ = (1−θ)/(1+θ). One-hot parity packets (odd in bank j, even elsewhere): 0/1, disjoint, nonempty; normalized Gram = 1 on diagonal, ρ_jρ_k off; θ < 1/(4L) ⇒ entries ∈ [1 − 1/L, 1].
+## FermiDivergentCapacityAntichainPackets (start)
+- Divergent reciprocal capacity: L disjoint banks with θ < 1/(4L); one-hot packet of bank t at dyadic level t+1 (amplitude 1 then ½) gives a NONNEGATIVE dyadic antichain with homogeneous P_h ≥ L−1, 0 < Q_h ≤ (L−1)/(2L) + 1/3; native P ≥ (L−1)/2, 0 < Q < 5/6 ⇒ unbounded energy ratio.
+- Mechanism: bank t at dyadic level t+1, amplitude 1 (t=0) or ½; normalized ray state k ≤ L is a convex combination of normalized packets (Σ = 1), halves beyond L. Gram entries ∈ [1−1/L,1] ⇒ each of first L states has norm² ≥ 1−1/L (P_h ≥ L−1); each interior selected difference = half-state minus half-new-packet has norm² ≤ 1/(2L); geometric tail = ⅓ terminal norm². Nearly-parallel packets make the ray almost constant ⇒ selected jumps tiny while full energy grows linearly in L.
+## FermiDyadicAntichainPrimeCapacityClassification (Theorem A)
+- For a set Π of odd primes, TFAE: (1) ∃C, P ≤ C·Q for every admissible signed dyadic-antichain packet; (2) same for nonnegative packets; (3) Σ_{p∈Π}1/p < ∞; (4) finite reciprocal subsums bounded. (4→1) constant 8e^{6M}; (2→4) divergent banks. Arbitrary allowed set A: only its odd primes matter (odd parts never see 2).
+- Consequence: over all odd primes (Σ1/p = ∞) native Fermi observability fails even on nonnegative dyadic antichains.
+## FermiHomogeneousPlainSumsAndImpulseMasses
+- n = 2^k(2j+1) reindexing: P_h = Σ_{n≥1} s_N(n)²/n²; Q_h = Σ_{n odd} J(n)²/n² + Σ_{4|n} J(n)²/n². P_h/2 ≤ P ≤ P_h, Q_h/2 ≤ Q ≤ Q_h (P,Q reciprocal-pronic natives).
+- Scalar dyadic impulse at level j: selected mass 13/12 (j=0), 1/3 (j=1), 4/3 (j ≥ 2); full mass 4/3 always. Level 1 is the worst depth (ratio 4).
+## AllHorizonRadicalSawtoothAndDefectReduction
+- Squarefree support is preserved by harmonic division c(s)/s ⇒ both active sawtooth endpoints (k−1 and k) are invariant under k ↦ dk (d|k) and k ↦ k^m at EVERY horizon.
+- Defect dissipation: if s_N(l) = s_N(k), 2 ≤ k ≤ l, then 2(D(l−1) − D(k−1)) = −Σ_{j=k}^{l−1}(s(j+1)−s(j))² ≤ 0. Along powers k^a, D(k^b − 1) ≤ D(k^a − 1) for a ≤ b (any horizon).
+- Damped unit mass: ε ≥ 0, k ≥ 2: τ_ε(k) + |μ(k)k^{−ε}| ≤ 1 (a prime p|k gives τ_ε(k) ≤ 1 − p^{−ε} and |w| ≤ p^{−ε}). First-octave reciprocity ⇒ |s_N(c_ε,k)| ≤ 1 for all 2 ≤ k ≤ 2N ⇒ s_N(c_ε,k^m)² ≤ 1 ⇒ D(k^m − 1) ≤ 0 for every m ≥ 1 (Möbius = ε = 0). Arbitrarily large nonpositive checkpoints.
+## HorizonRadicalStateAndDefectNormalForm
+- Radical state R_N(k) = gcd(k, primorial N): positive, squarefree, divides k and N#; preserves every squarefree divisibility test d ≤ N; all squarefree-supported sieve responses factor through it; R_N(k) = R_N(l) ⇔ all squarefree observers agree; image = divisors of N#; idempotent; least positive representative of its class; R(kl) = lcm(R(k),R(l)); R(k^m) = R(k).
+- Defect normal form: 2(D(k−1) − D(R(k)−1)) = −Σ_{j=R(k)}^{k−1}(Δs)² ⇒ the canonical representative MAXIMIZES the defect in its class; equality ⇔ additive flatness on [R(k), k−1]. Global bound ∀M D(M) ≤ B ⇔ finitely many tests at r−1, r | N#.
+- R_N(k) ≤ 2N ⇒ damped (and Möbius) defect D(k−1) ≤ 0, no size bound on k.
+## RadicalCheckpointSignRigidityAndGaugeLaw
+- Unit shift c ↦ c + a·δ_1: active sawtooth (all horizons, all positions) blind; sieve responses shift by a (N ≥ 1); all differences invariant; D_M ↦ D_M + a(s(M+1) − s(1)) (affine). Defect is quadratic under scaling.
+- ∀a D_M(c + aδ_1) ≤ 0 ⇔ s(M+1) = s(1); else the unit-shift orbit realizes every real defect.
+- R_N(k) = 1 ⇔ k trans-horizon rough (k ≥ 1). Rough ⇔ D(k−1) ≤ 0 for every nonnegative squarefree weight; converse witnessed by weights supported on {1, p} (p ≤ N visible prime of k), nonneg, unbounded positive defect. Sawtooth data cannot determine defect at nonrough checkpoints (unit gauge).
+- Rough ⇔ D(k−1) ≤ 0 for ALL weights ⇔ for all squarefree ⇔ for nonneg squarefree ⇔ for normalized ones (c(1) = 1, 0 ≤ c ≤ 1; witness c = δ_1 + t·δ_p, t = 1/(|D|+1), defect t²D + t > 0). Universal bound B exists ⇔ rough ∧ B ≥ 0 (sharp 0). Möbius/damped families impose extra relations; no counterexample claimed for them.
+## ActiveSawtoothPowerSamplingAndCalibratedRecovery
+- 2·A_N(c;k,k) = Σ_{d|k} [c(d) − c(d)/d]·1_{d≤N} (divisor transform of nonunit part). Inverse: c(d) = (2d/(d−1))·Σ_{uv=d} μ(u)A(v,v) for 2 ≤ d ≤ N. Squarefree support: samples at j^m (any m ≥ 1, beyond any scale B) recover the same; only squarefree bases needed.
+- Kernel of the sample map = agreement on [2,N]; unit coefficient = harmonic scalar H_N(c) = Σ c(d)/d difference. Samples determine every additive jump and Dirichlet window; samples + H determine all of c on [1,N] and every prefix defect. Defect ambiguity = (ΔH)·(s_b(M+1) − s_b(1)).
+- Stability: |c(d) − b(d)| ≤ 4Σ_{uv=d}|ΔA(v^m)| (l¹, factor 2d/(d−1) ≤ 4).
+## ActiveSawtoothInterpolationAndSharpConditioning
+- Surjectivity: any squarefree sample vector a and any harmonic scalar H realized by an explicit squarefree-supported weight, simultaneously at every common power (beyond any scale). Each sample indispensable even at fixed H. Exact sup-norm amplification at squarefree d: (2d/(d−1))·(τ(d) − 1), attained by Möbius-sign sample vector; independent of the power m.
+- Sharp constant iff: (∀ squarefree c, H fixed, |samples| ≤ 1 ⇒ |c(d)| ≤ C) ⇔ C ≥ (2d/(d−1))(τ(d)−1); same for two-weight errors (calibration does not help).
+## FiniteMultiplicativeObservationState
+- L_N = lcm(1..N); state σ_N(k) = lcm{d ≤ N : d|k}: divides k and L_N; preserves all tests d ≤ N; complete invariant for ALL real weights (σ(k) = σ(l) ⇔ ∀c s_N(c,k) = s_N(c,l)); idempotent; σ(kl) = σ(σ(k)σ(l)); σ(k + tL_N) = σ(k) ⇒ every state recurs beyond every bound; multiplicative contexts add nothing; σ(k) divides every integer with the same observation.
+## SuccessorStateObstructionAndPhaseRefinement
+- Phase φ_N(k) = k mod L_N. φ(k) = φ(l) ⇔ k ≡ l mod d ∀ d ≤ N ⇔ all future observations agree ⇔ the first N future observations agree (t < N). Phase carries successor, addition, multiplication.
+- Successor descends to multiplicative states ⇔ N ≤ 2 (any nonlinear update F exists ⇔ N ≤ 2). Witness for N > 2: k = 1 + tL, l = L − 1 + tL have equal states (both rough-like = state of 1) but successors 2 + tL vs L + tL differ (N | L, N ∤ 2); occurs beyond every window.
+## ArithmeticUncertaintyAndSpikeCancellation
+- Spike cancellation: 2D(M) = −Σ_{k=1}^{M−1}(Δs)² + 2s(M)s(M+1) − s(M)² − s(1)². ⇒ s(M)s(M+1) ≤ 0 ⇒ 2D(M) ≤ −s(M)² − s(1)² ≤ 0; s(M) = 0 ⇒ D(M) ≤ −s(1)²/2 regardless of spike s(M+1).
+- Two-point average: D(M−1) + D(M) = −Σ_{k=1}^{M−1}(Δs)² + s(M)s(M+1) − s(1)² ⇒ ≤ 0 if s(M)s(M+1) ≤ s(1)².
+- Path Poincaré: (f(a+L) − f(a))² ≤ L·Σ_{j<L}(Δf)² (identity L((L+1)(S+Y²) − (X+Y)²) = (L+1)(LS − X²) + (X−LY)²). Uncertainty: spike at distance L from a zero anchor costs s(a+L)²/L Dirichlet energy; from a rough anchor (s(a) = s(1)) costs (s(a+L) − s(1))²/L.
+## MultiPointDefectAveragingAndPeriodConservation
+- s_N(c,·) is L_N-periodic. Period Dirichlet energy E_N(c) = Σ_{j<L_N}(Δs)² is phase-independent. 2(D(M + L_N) − D(M)) = −E_N (all M) ⇒ D(M + qL_N) = D(M) − qE_N/2: exact linear drift; phase subsequences antitone.
+- E_N = 0 ⇔ s constant ⇔ all defects 0. Dichotomy: flat response with D ≡ 0, or E_N > 0 and D → −∞ along every phase subsequence. Oscillation within one period: (s(a+t) − s(a))² ≤ t·E_N (t ≤ L_N).
+- Full-period moving window W(M) = Σ_{j<L_N} D(M+j): 2(W(M+1) − W(M)) = −E_N exactly; average slope −E_N/(2L_N): phase fluctuations cancel.
+## PrimeChainSieveBridgeAndSpectralCutoff
+- Renormalization: p prime, gcd(p,b) = 1: s_H(c, pb) − s_H(c, b) = s_{⌊H/p⌋}(c(p·), b) (every horizon, every scale).
+- Low-pass cutoff: p > H ⇒ s_H(c, p^r b) = s_H(c, b) ⇒ CHMD prime-chain bipartite energy and variance energy of s_H vanish for all p > H.
+- Excited-shell collapse (squarefree c, any p): p|m ⇒ s_H(m) = s_H(p·ordCompl_p m); excited-to-excited jumps vanish; ground-to-excited jump = s_{⌊H/p⌋}(c(p·), b). Right-chain scatter vanishes; bipartite/variance energy = [b ∈ chainLeft]·|chainRight|·s_{⌊H/p⌋}(c(p·),b)² (rank one, ground state only).
+- Multiplicative fixed point: c(pd) = c(p)c(d) on d|b ⇒ variance = [b ∈ L]|R|c(p)²s_{⌊H/p⌋}(c,b)². Terminal octave H/2 < p ≤ H (⌊H/p⌋ = 1): s_H(c,pb) − s_H(c,b) = c(p) for EVERY weight and every b coprime to p; variance quantized to [b ∈ L]|R|c(p)².
+## SlidingPeriodPoincareCoercivityAndHarmonicDecomposition
+- Spectral (Selberg) coordinates Y_{N,c}(e) (Y(1) = H_N(c) harmonic sum). Selberg diagonal form S = Σ_{e≤N} φ(e)Y(e)²; successor reserve R = Σ_{e=2}^N (φ(e) − μ(e))Y(e)². Excess 2R − (S − H²) = Σ_{e=2}^N (φ(e) − 2μ(e))Y(e)² ≥ 0 (2μ(e) ≤ φ(e), equality only e = 6) ⇒ S − H² ≤ 2R for EVERY weight (no harmonic-null hypothesis).
+- Any common return period L (all d ≤ N divide L): s_N is L-periodic; every sliding window [M+1, M+L]: Σs² = L·S, Σs(k)s(k+1) = L·(Bézout coprime form), Σ(Δs)² = 2L·R. Combined prefix defect is L-periodic; D(M + qL) = D(M) − qL·R; D(M) = D(M mod L) − ⌊M/L⌋L·R.
+- Unit-step torus Poincaré with constant 1 (independent of N, L ~ e^N): Σ_{window}s² − L·H² ≤ Σ_{window}(Δs)², excess L·(Poincaré excess). Mechanism: gcd(k,k+1) = 1 kills non-coprime correlations in one step (generic torus constant would be L²/4π²).
+## BuchstabFermiCovarianceAndQuotientChainBridge (start)
+- One horizon step: s_{N+1}(k) = s_N(k) + c(N+1)1_{N+1|k}; band self-energy = c(N+1)²⌊M/(N+1)⌋; E_{N+1}(M) − E_N(M) = c(N+1)²Q + 2c(N+1)Σ_{j≤Q} s_N((N+1)j), Q = ⌊M/(N+1)⌋. Non-squarefree N+1 & squarefree c ⇒ E invariant.
+- Prime horizon p = N+1 (rough): s_N(pj) = s_N(j) ⇒ ΔE = c(p)²Q + 2c(p)Σ_{j≤Q}s_N(j). Quadratic window p ≤ M < p² (Q ≤ N sub-horizon): Möbius Σ_{j≤Q}s_N(μ,j) = 1 ⇒ ΔE = Q − 2 (Q = 1: contraction by 1; Q = 2: conservation). Damped first band: ΔE = p^{−2ε} − 2p^{−ε} ≤ 0.
+## TotientObservabilityThresholdAndValuationFiberCollision
+- σ_N(k) = gcd(k, L_N); fiber of k mod L_N ↦ gcd over g | L_N has size φ(L_N/g).
+- Prime-power totient observability: W consecutive gcd(k+t, p^a) observations determine k mod p^a ⇔ W ≥ φ(p^a) = p^a − p^{a−1}. Collision: k = 1, l = 1 + p^{a−1} (shift by valuation clock p^{a−1}) agree for t+1 < φ(p^a) (gcd(x,p^a) = gcd(x,p^{a−1}) when p^a ∤ x). Sufficiency by induction: return times forced into the tail of length p^{a−1} where residues mod p^{a−1} are unique.
+- Horizon threshold Φ_max(N) = max_{p^a ≤ N} φ(p^a) < N; any W ≥ Φ_max(N) consecutive full observations determine the phase k mod L_N (improves W = N).
+- Squarefree observers: radical phase k mod N#; W ≥ max_{p≤N}(p−1) radical-state observations suffice; W = p − 2 fails on k = 1, l = 2.
+## ValuationTraceDistanceAndPrimePowerPeriod
+- Trace distance d_L(W;k,l) = Hamming distance of (gcd(k+t,L))_{t<W} and (gcd(l+t,L))_{t<W}; decomposes as ⌊W/L⌋·d(L) + d(W mod L). Distinct phases disagree at both divisibility return times ⇒ ≥ 2 per full period.
+- Prime power q = p^a: sharp floor F_q(W) = 2⌊W/q⌋ + [φ(q) ≤ W mod q]; attained for every W by the collision pair (1, 1 + p^{a−1}) (disagreements exactly at t = φ(q)−1 and q−1).
+## ValuationTraceCoprimeCompletionAndObservationState
+- Projection to a divisor never increases trace distance; CRT completion (k ≡ 0 mod coprime cofactor) lifts any local pair with exact distance. Exact separation for any modulus L > 0: (distance ≤ b ⇒ k ≡ l mod L) ⇔ b < F_{p^{v_p(L)}}(W) for every p | L.
+- p^a | L_N ⇔ p^a ≤ N; σ_N(k) = gcd(k, L_N) (literal lcm state = gcd model).
+## ValuationTraceErrorsErasuresAndRecoveryClock
+- Coding lemma: two words admit a common received word with ≤ e errors and ≤ s erasures ⇔ Hamming distance ≤ 2e + s.
+- Prime-power recovery clock C_q(e,s) = (e + ⌊s/2⌋)q + (s even ? φ(q) : q); 2e + s < F_q(W) ⇔ C_q(e,s) ≤ W (parity dependence).
+## SharpCorruptedValuationClockRecovery (start)
+- Horizon state observations with ≤ e corrupted and ≤ s erased symbols determine the phase k mod L_N ⇔ W ≥ max_{p^a ≤ N} C_{p^a}(e,s) (empty max 0 for N ≤ 1); ambiguity witness below threshold.
+- Recovery ⇔ trace separation at budget 2e+s; recovery clock monotone under divisibility of prime powers; collision witness below the clock.
+## ShortWindowCorrelationDefectAndIsoStateClassification
+- Short window [M₀+1, M₀+M]: D_win = D(M₀+M) − D(M₀) = C − V (shifted correlation minus second moment) = ΔLcmFractDefect + ΔBézoutSawtooth − M·R (classical Selberg/Coppola–Murty–Saha remainders; triangle bound O((Σ|c|)²) beats main term only if M ≫ N²).
+- Polarization: 2D_win = −E_win + s(M₀+M+1)² − s(M₀+1)². Boundary depends only on endpoint states, not on period return.
+- Iso-state classification: D_win ≤ 0 ∀ weights ⇔ σ_N(M₀+M+1) = σ_N(M₀+1); ∀ squarefree weights ⇔ equal radical states (unit-shift gauge).
+- Contraction regimes: windows [a, da−1] (d|a) and [a, a^m−1] have zero boundary ⇒ 2D = −E (squarefree c, any horizon). Right endpoint zero (Möbius zero cone q·r, 2 ≤ q ≤ N, r rough) ⇒ 2D = −E − s(M₀+1)² for any start. Damped: rough start, 2 ≤ end ≤ 3N ⇒ D ≤ −E/2 ≤ 0 (|s_N(c_ε)| ≤ 1 up to 3N).
+- Universal envelope D_win ≤ ½s(end)² ≤ ½(Σ|c|)².
+## NonnegativeWeightEndpointOrderAndCalibratedDefect (start)
+- σ(k) | σ(l) ⇔ visible divisor inclusion; radical analogue via primes. Nonnegative weights: s monotone in divisibility; σ(k) | σ(l) ⇔ s_N(c,k) ≤ s_N(c,l) ∀ nonneg c.
+- Nonneg c: s(end) ≤ s(start) ⇒ D_win ≤ −E_win/2. Reverse state order σ(end) | σ(start) (or radical order for squarefree) ⇒ D_win ≤ −E/2.
+- Classification (nonneg cone): D_win ≤ 0 ∀ nonneg c ⇔ σ_N(M₀+M+1) | σ_N(M₀+1); squarefree nonneg ⇔ radical-state divisibility. Necessity survives fixing harmonic scalar H > 0 and box 0 ≤ c ≤ H: two-atom witness on {1, q} (q newly visible divisor/prime), defect tH + t²Q > 0. H ≤ 0 on nonneg cone ⇒ all visible coefficients 0 ⇒ defect 0. Full harmonic-slice classification: H ≤ 0 ∨ state order. Signed Möbius/damped families are NOT in these cones.
+## DownwardBuchstabL2TelescopeAndSawtoothCoupling
+- Linear prefix: Σ_{j≤Q} s_N(c,j) = Q·H_N(c) + discrepancy = Q·H_N(c) − Σ_d c(d){Q/d} (Báez-Duarte sawtooth); (fract sum)² ≤ variance·dual energy.
+- Prime step p = N+1: ΔE = Q(c(p)² + 2c(p)H_N(c)) − 2c(p)·FractSum(N,c,Q), Q = ⌊M/p⌋.
+- Square completion: Q(ΔE + E_N(Q)) = (c(p)Q + Σ_{j≤Q}s_N(j))² + (Q·E_N(Q) − (Σs)²) ≥ 0 ⇒ downward subadditivity E_N(M) ≤ E_{N+1}(M) + E_N(⌊M/p⌋) (every prime p = N+1, every c). Upward: E_{N+1}(M) ≤ E_N(M) + 2c(p)²Q + E_N(Q).
+- Telescope over horizons; squarefree c: only squarefree steps n+1 contribute. Möbius top closure: 1 ≤ M ≤ N₂ ⇒ E_{N₂}(M; μ) = 1; hence E_N(M; μ) = 1 − Σ_{n∈[N,M−1], n+1 squarefree} ΔE_n.
+## OffLineHyperbolicPrimeChainExcessAndCardinalRecurrence
+- Polar edge factorization: (r_m cosθ_m − r_k cosθ_k)² + (r_m sinθ_m − r_k sinθ_k)² = (r_m − r_k)² + r_m r_k·[2(1 − cos(θ_m − θ_k))].
+- Off-line envelope r_β(m) = m^β (β = Re ρ − ½), r_β r_{−β} = 1. Symmetrized excess on any bipartite cut: ½(V(β) + V(−β)) − V(0) = ½(Var(r_β) + Var(r_{−β})) + A(β,θ), A = Σ ½(e^{βℓ/2} − e^{−βℓ/2})²·(critical phase jump), ℓ = log m + log k; all terms ≥ 0 (cosh − 1 = 2sinh²).
+- Strict: β ≠ 0 and nonempty prime-chain cut ⇒ critical variance < symmetrized off-line variance for every phase θ (radial part already positive since log m < u < log k).
+- Chain wave Φ = e^{βt}cos(θ₀ + αt): second-order recurrence Φ(t+τ) − 2e^{βτ}cos(ατ)Φ(t) + e^{2βτ}Φ(t−τ) = 0 (τ = log p); same for sine. Phase-free step Casimir: two-channel step² = e^{2βt}((e^{βτ} − 1)² + 2e^{βτ}(1 − cos ατ)).
+- Note: identity-level only; no link to actual zeros (an energy comparison of model profiles).
+## CompositeSquarefreeStepAndMultiOctaveL2Energy (start)
+- General step (any n+1): ΔE = c(n+1)²Q + 2c(n+1)Σ_{j≤Q}s_n(c,(n+1)j). M < n+1 ⇒ ΔE = 0. First band (Q = 1): ΔE = c(n+1)² + 2c(n+1)s_n(c,n+1); Möbius s_n(μ, n+1) = −μ(n+1) (any n ≥ 1) ⇒ ΔE = −μ(n+1)² ≤ 0, prime or composite. First-octave closed form: E_N(M; μ) = 1 + Σ_{n∈[N,M)} μ(n+1)² for 1 ≤ N ≤ M ≤ 2N+1.
+- Second band (Q = 2, n ≥ 2): even n+1 ⇒ ΔE = −2μ(n+1)²; odd n+1 ⇒ ΔE = 0 (s_n(μ, 2(n+1)) = 0 by 2-adic switching). Every step monotone E_{n+1} ≤ E_n for M < 3(n+1).
+- Dilated subadditivity (any n, c): E_n(M) ≤ E_{n+1}(M) + Σ_{j≤Q}s_n(c,(n+1)j)².
+- Two-band closed form (2 ≤ N ≤ M < 3(N+1)): E_N(M; μ) = 1 + Σ_{n∈[N,M)} [M < 2(n+1) ? μ(n+1)² : (2|n+1 ? 2μ(n+1)² : 0)].
+- Dilated energy Σ_{j≤Q}s_n(c,(n+1)j)² = sub-sum of E_n(M) on multiples of n+1, ≤ E_n(M); Cauchy–Schwarz on dilated sequence.
+## GlobalPrimeChainHyperbolicCoercivityAndClockStepBound
+- Lift to global CHMD chainVariance (Σ_p log p Σ_b over divisors of N): ½(G(β) + G(−β)) − G(0) = ½(chainVar(r_β) + chainVar(r_{−β})) + global amplification ≥ 0.
+- Valuation-clock step: r_β(pb) = r_β(b)p^β; (r_β(b) − r_β(pb))² = r_β(b)²(p^β − 1)². If b, pb | N, ordCompl_p b = b, log b < u < log pb: log p·r_β(b)²(p^β − 1)² ≤ chainVar(N,u,r_β), and the global off-line excess ≥ (log p/2)(r_β(b)²(p^β−1)² + r_{−β}(b)²(p^{−β}−1)²) > 0 for β ≠ 0.
+## ThirdBandCompositeStepAndLinearL2EnergyBounds (start)
+- Third band (Q = 3): prime step p ≥ 5 gives ΔE = +1 > 0 (Q − 2). s_n(μ, 3(n+1)) for n ≥ 3: 3|n+1 ⇒ −μ(n+1); gcd(n+1,6) = 1 ⇒ 0; 2|n+1, 3∤n+1, squarefree ⇒ −μ(n+1). Uniformly μ(n+1)s_n(μ,3(n+1)) = −μ(n+1)²·[2|n+1 ∨ 3|n+1].
+- Third-band step (n ≥ 3, Q = 3): ΔE = −3μ(n+1)² if 2|n+1; −μ(n+1)² if odd and 3|n+1; +μ(n+1)² if gcd(n+1,6) = 1 (first non-dissipative composite/prime steps). Three-band closed form for 3 ≤ N ≤ M < 4(N+1). Linear bounds: E_N(M; μ) ≤ 1 + k(M − N) on k bands (k = 1,2,3).
+## MultiShellPrimePowerHyperbolicSumAndGroundCutCoercivity
+- Shell p^r b: (r_β(b) − r_β(p^r b))² = r_β(b)²(p^{rβ} − 1)²; global chainVariance ≥ log p·(that) across any straddling cut.
+- Ground cut u ∈ (0, log 2), any N: Σ_{p|N} log p·(p^β − 1)² ≤ chainVar(N,u,r_β); off-line excess ≥ Σ_{p|N} (log p/2)((p^β−1)² + (p^{−β}−1)²).
+## AllCutPrimeChainCoercivityAndContinuousDensityBridge (start)
+- (e^x − 1)² + (e^{−x} − 1)² ≥ x² ⇒ quadratic floor ½β²Σ_{p|N}(log p)³ ≤ ½(chainVar(r_β) + chainVar(r_{−β})) at ground cut.
+- Simultaneous shells along one chain: Σ_{r∈S} r_β(b)²(p^{rβ} − 1)² ≤ chain variance; straddling bases B at any cut u: log p(p^{rβ}−1)²Σ_{b∈B}r_β(b)² ≤ chainVar(N,u,r_β).
+- Continuous pullback: v^cos_{β,γ}(x) = e^{−βx}cos γx, v^sin = −e^{−βx}sin γx; v(u − log m) = e^{−βu}·(polar channel with r_β, θ_m = γ log m − γu). CHMD chainDensity/density of the wave pair = e^{−2βu}·log p·fiber(N,u)·(discrete off-line variance). Cut-normalized symmetrized density − critical = fiber(N,u)·(½(chainVar(r_β) + chainVar(r_{−β})) + amplification); ground cut, N ≥ 2: ≥ ½fiber·β²Σ_{p|N}(log p)³.
+- Note: model-wave computation; the coercivity is for the explicit test wave, not a statement about ξ's zeros.
+## OddEigenvectorNodalModulusBalanceAndFourthBandStepLaw (start)
+- CHMD odd sector: odd graph vector p (reflect p = −p): positive/negative lobes carry equal vertex/edge norms; balancedNodalGraph p = (½‖p_fst‖²)·absGraph p; p ⟂ absGraph p in every inner product and sourcePair.
+- Eigenvector resolvent w = μw, q = rieszLift w: sourceEnergy(|q|) − 4·sourcePair(q⁺, q⁻) = ((1 − 2μ)/μ)‖q_fst‖². μ > ½ ⇒ sourceEnergy(|q|) < 4·sourcePair(q⁺,q⁻) ≤ 0. RH ⇔ ∀ odd eigenvector with μ > ½: 4·sourcePair(q⁺,q⁻) ≤ sourceEnergy(|q|).
+- Conditional RH criterion (premises, not proved): if every odd eigenvector with μ > ½ has primitive-modulus Rayleigh ≤ ½ and oneL-defect 2⟨|p|_fst, oneL⟩² ≤ −4·sourcePair(p⁺,p⁻), then RH. (Open inputs; trap: do not cite as progress.)
+- Centered step (n ≥ 1, M ≥ n+1, B = ⌊M/(n+1)⌋): ΔE = (B − 2)μ(n+1)² + 2μ(n+1)Σ_{q=2}^B s_n(μ, q(n+1)). With sharp 5n envelope |s_n(μ,k)| ≤ 1 (2 ≤ k ≤ 5n): B(n+1) ≤ 5n ⇒ E_n − E_{n+1} ≤ Bμ(n+1)². Four-band bound E_N(M; μ) ≤ 1 + 4(M − N) for 4 ≤ N ≤ M < 5(N+1).
+## CompactWindowedOfflineChainIntegralAndOriginCollarDuality (start)
+- Windowed waves w(x)e^{−βx}cos γx etc.: continuous, compact support ⇒ chainIntegral summable to Σ primeCrossing (CHMD complete chain HasSum).
+- Windowed two-channel jump = radial jump + radial product × phase jump; w ≥ 0 ⇒ two-channel varianceEnergy, chainDensity, density, chainIntegral ≥ pure radial ones.
+- Two-point plateau: only w(u) = 1 and w(u − log p) = 1 needed for ground step bound e^{−2βu}(p^β − 1)² ≤ windowed variance; multi-prime density bound e^{−2βu}fiber·Σ log p(p^β−1)²; symmetrized quadratic floor ½β²fiber·Σ(log p)³.
+## CenteredSquareCompletionAndMultiBandResidueCancellation
+- S₂ = Σ_{q=2}^B s_n(μ, q(n+1)). Square completion: (B−2)(E_n − E_{n+1}) = (μ(n+1)S₂)² − ((B−2)μ(n+1)² + μ(n+1)S₂)² ≤ S₂². B ≥ 3 ⇒ E_n − E_{n+1} ≤ S₂²/(B−2) (ground term fully absorbed).
+- Half-band cancellation: B ≥ 2 and |S₂| ≤ (B−2)/2 ⇒ E_n ≤ E_{n+1}. So controlling the higher-quotient sum S₂ (a Möbius sum over multiples) is the open input for large ratios.
+- Two-step parity pairs: second band E_n − E_{n+2} ≤ 2; third band ≤ 4, and = 3μ(n+1)² − 1 ≤ 2 when n+1 even, n+2 squarefree, 3 ∤ n+2 (e.g. n+2 prime ≥ 5).
+## OddPolarCollarParallelogramAndPrimeClockBridge (start)
+- evenFold v(x) = v(|x|). For odd v on a bipartite chain cut (left nodes u − log m > 0, right nodes u − log k ≤ 0): v(u−log m) − v(u−log k) = evenFold v(·m) + evenFold v(·k). Parallelogram: bip(v) + bip(evenFold v) = 2ΣΣ(v_m² + v_k²); difference = 4ΣΣ evenFold_m·evenFold_k. v ≥ 0 on [0,∞) ⇒ origin flip reinforces jumps: variance/chainDensity/density/chainIntegral of evenFold v ≤ those of v (compact support inherited).
+- Smooth even complex-hyperbolic pair: w₀(x)cosh(βx)cos(γx), w₀(x)sinh(βx)sin(γx) (both even, C^∞ when w₀ is). Pointwise γ-cancellation: (Re)² + (Im)² − (critical)² = (w₀ sinh βx)². ⇒ CHMD odd-profile collar mixed density and per-divisor crossing+collar excess over β = 0 = Λ(d)∫_0^{log d} collarMixed(a, w₀ sinh β·) ≥ 0 (a > 0).
+- Finite packet: stationary energy of a sum ≥ 0 ⇒ off-diagonal stationary sum ≥ −Σ diag ≥ −(1 + ‖groundPerturbation‖)Σ‖a_i‖²; off-diag sourcePair = stationary − arch − primeShift ⇒ lower bound.
+## OddEigenvectorHalfMassLobeAndStrictPrimeShiftClosure (start)
+- Primitive p (⟨p_fst, 1_L⟩ = 0): both lobes have equal ground projections; ⟨|p|,1⟩ = 2⟨p⁺,1⟩; nodal defect 2⟨|p|,1⟩² = 8⟨p⁺,1⟩⟨p⁻,1⟩ (cross-lobe rank one, same footing as prime-shift cross pairing).
+- Odd eigenvector: sourceEnergy(|q|) − 4·sourceEnergy(q^±) = ((2μ−1)/μ)‖q_fst‖² (cross term eliminated); sourceEnergy(|q|) = 4‖q⁺_snd‖² − ‖q_fst‖²/μ; three-term balance ‖q⁺_snd‖² − ⟨stationary cross⟩ + ⟨primeShift q⁺, q⁻⟩ = ((1−μ)/(2μ))‖q_fst‖²; μ > ½ ⇒ each lobe energy ≤ ((1−2μ)/(2μ))‖q_fst‖² < 0.
+- Conditional: Rayleigh ≤ ½ on primGraph(|q|) and 2⟨q⁺,1⟩⟨q⁻,1⟩ ≤ ⟨primeShift q⁺, q⁻⟩ ⇒ μ < ½ strictly. RH ⇔ ∀ odd eigenvectors sourceEnergy(|q|) ≤ 4 sourceEnergy(q⁺).
+- Conditional sufficiency for RH (premises open): Rayleigh ≤ ½ + 2⟨q⁺,1⟩⟨q⁻,1⟩ ≤ ⟨primeShift q⁺,q⁻⟩ for all odd eigenvectors with μ ∈ (½,1). Equivalence RH ⇔ sourceEnergy(|q|) ≤ 4·sourceEnergy(q⁺) for odd eigenvectors (μ < 1 automatically).
+## OddProfileCollarToContinuumArchimedeanBridge
+- Odd profile m_a(x) = (Θ(x−a) − Θ(x+a))/(2 sinh(a/2)) strictly increasing on [0,a] (Θ even, decreasing on [0,∞)). Low-prime window 3t/2 ≤ a, x ∈ (0,t/2): m_a(x) < m_a(t−x) < m_a(t) < m_a(t+x).
+- Obstructions: collar jump ~O(x) vs 2D arch integrand ~O(x²) near origin; 1D line vs 2D area. Resolution: Schur identity direct − collar + (m_a(x)/(m_a(t+x) − m_a(t−x)))·across = (m_a(x)/Δ)(m_a(t+x)(w(x)−w(x+t)) − m_a(t−x)(w(x)−w(t−x)))² ≥ 0; across jump between t−x and t+x (both ≥ t/2 from origin). Anchor bound collar ≤ 2 direct + 2 across.
+- Arch Lévy density ω(s) = e^{−s/2}/(1 − e^{−2s}): ω(2y+s) ≤ e^{−y}ω(s) ⇒ (1 − e^{−y})ω(s)·shiftJump ≤ absorbed arch integrand; strip lower bound with y ≥ y₀, s ≤ M.
+- Continuum bridge: z ∈ (3t/2+δ, 3t/2+δ+L) ⊂ (3t/2, a]: across ≤ 2(leg t−x→z) + 2(leg t+x→z), each leg ≤ absorbed integrand / ((1−e^{−t/2})ω(t+δ+L)). Integrate over z then x; reflection t−x and translation t+x fold onto y ∈ (t/2, 3t/2).
+- Integrated bridge (3t/2 + δ + L ≤ a, w continuous): L(1−e^{−t/2})ω(t+δ+L)·∫_0^t collar ≤ 4L(...)∫_0^{t/2} direct + 8∫_{t/2}^{3t/2} absorbedArchSlice(δ, t+δ+L). With Schur ratio hypothesis m_a(x) ≤ κ(m_a(t+x) − m_a(t−x)): collar − 2·direct ≤ 4κ·(2D slice); even compactly supported w ⇒ 2∫_{t/2}^∞ direct ≤ full-line jump + 4κ·slice. Summed over low primes Λ(d)-weighted.
+## UnconditionalSchurRatioAndGlobalLowPrimeBudget (start)
+- Θ log-derivative bounds: Θ'(u) ≤ −πe^{2u}Θ(u) (u ≥ ½log 2) ⇒ drop Θ(u₁) − Θ(u₂) ≥ πe^{2u₁}Θ(u₂)(u₂−u₁); Θ'(u) ≥ −2π(e^{2u}+2)Θ(u) (u ≥ 0) ⇒ drop ≤ 2π(e^{2v₂}+2)Θ(v₁)(v₂−v₁).
+- Drop comparison (t ≥ 0, a ≥ 3t/2 + ½log 2, x ∈ [0,t/2]): Θ(a−x) − Θ(a+x) ≤ 4e^{4t}exp(−πe^{2(a−t+x)}(t−2x))·(Θ(a−t−x) − Θ(a−t+x)) ≤ 4e^{4t}(...): a-dependence cancels (e^{2a+t}/e^{2a−3t} = e^{4t}).
+- 2 sinh(a/2)(m_a(t+x) − m_a(t−x)) = (Θ(a−t−x) − Θ(a−t+x)) + (Θ(a+t−x) − Θ(a+t+x)) (second ≥ 0) ⇒ unconditional horizon-uniform Schur ratio m_a(x) ≤ 4e^{4t}(m_a(t+x) − m_a(t−x)) (κ = 4e^{4t}, independent of a). Hence collar − direct ≤ 4e^{4t}·across pointwise; collar − 2·direct ≤ 16e^{4t}·slice (premise-free, needs ½log 2 ≤ δ + L).
+- Premise-free positivity: full-line prime shift jump·L(1−e^{−t/2})ω(t+δ+L) + 16e^{4t}·slice ≥ 2·tail ≥ 0. absorbedArchSlice monotone in upper cutoff; every per-prime slice ≤ global rectangle ∫_0^a slice(δ,a); slice ≤ half-line arch direct − collar difference. Summed low-prime budget with weights 16Λ(d)e^{4 log d} = 16Λ(d)d⁴ (polynomial growth in d; the constant is not uniform).
+- Unweighted ratio primeCollarArchRatio(δ,L,d) = 16d⁴/(L(1 − d^{−1/2})ω(log d + δ + L)); Obstacle-B finite sum: Σ Λ(d)∫collar ≤ 2ΣΛ(d)∫_0^∞ direct + (ΣΛ(d)·ratio)·global slice.
+## SupportRadiusCollarCutoffAndAllScaleObstacleBBridge
+- w even, supported in (−R,R). For 2R ≤ t ≤ a − R and x ∈ (0,t/2): collar ≤ direct pointwise (x ≥ R: collar = 0; x < R: w(t−x) = w(x+t) = 0, compare m_a(t−x) ≤ m_a(x+t)) ⇒ zero archimedean cost above twice the support radius; full-line jump ≥ 2·tail alone.
+- Two-regime gluing (a ≥ 3R + δ + L): low primes log d < 2R use the Schur bridge, higher ones cost nothing; truncated ratio vanishes for log d ≥ 2R ⇒ Σ_{d∈S}Λ(d)·ratio ≤ C_supp(R,δ,L) = Σ_{d ≤ e^{2R}}Λ(d)·ratio, independent of S and a.
+- Master all-scale Obstacle-B comparison (w even, supp ⊂ (−R,R), a ≥ 3R + δ + L, ½log 2 ≤ δ + L, log d + R ≤ a, plus integrability hypotheses on the 2D integrand): 2ΣΛ(d)·halfCollar(log d) ≤ 2ΣΛ(d)∫_0^∞ direct + C_supp·∬_{(0,∞)²}(ω(s) − ω(2y+s))·shiftJump; full-line version ≥ 2·tail. (Integrability of the 2D absorbed integrand is an assumed input in the master theorem.)
+## CollectiveLowPrimeChebyshevTransportAndSinhAbsorption (start)
+- Reflection x ↦ t − x leaves ∫_0^t invariant; collarMixed(a,w,t,x) = diag(x) + diag(t−x) with kernel Θ(t−x)(Ψ_a(x) + Ψ_a(t−x)) ⇒ ∫_0^t collarMixed = 2∫_0^t m_a(x)K(x)w(x)² (one-point diagonal potential).
+- Ground-state collar duality: Λ(d)∫direct_ℝ + Λ(d)∫collarMixed = 2Λ(d)∫_0^∞ direct + primeCrossing(oddPolarWeight a w, d) (≥ 0).
+- Two-regime collective identity: Σ(2·halfCollar) + Σ_{log d < 2R} crossing ≤ Σ_{high} 2Λ∫direct + Σ_{low} 2Λ∫ m_a K w²: zero 2D archimedean consumption.
+- Chebyshev step Ψ_½(s) = Σ_{log d < s} Λ(d)d^{−1/2}; discrepancy Δ(s) = Ψ_½(s) − 2e^{s/2}; Ψ_½(s) ≤ (2 log 4 + 16)e^{s/2} (s ≥ 0) ⇒ |Δ(s)| ≤ (2 log 4 + 16)e^{s/2}. Stieltjes by parts on [0,T]: Σ_{log d < T}Λ(d)d^{−1/2}G(log d) = Ψ_½(T)G(T) − ∫_0^T Ψ_½ G'; main term 2e^{T/2}G(T) − ∫2e^{s/2}G' = 2G(0) + ∫_0^T e^{s/2}G(s).
+- Discrepancy transport: Σ_{log d < T}Λ(d)d^{−1/2}G(log d) = 2G(0) + ∫_0^T e^{s/2}G + Δ(T)G(T) − ∫_0^T Δ·G' (PNT pole + discrepancy).
+- sinh dominance: s ≤ sinh s; |Θ'| ≤ M on [a−R,a+R] ⇒ m_a(x) ≤ (2M/sinh(a/2))sinh(x/2) on [0,R]; ratio κ = 2M cosh(R/2)/(Θ(R)sinh(a/2)) ⇒ Ψ_a(x)cosh(x/2) ≤ κ sinh(x/2) ⇒ Θ-Doob cosh mass of oddPolarWeight ≤ κ·2∫ m_a sinh(x/2) w².
+- Conditional (premise θ ≥ κ, θ ≤ 1 NOT proved; feasibility as R grows open): arch jump + 2·sameSide + Σ chainIntegral ≤ markovEnergy + θ·sourcePair(Ψ_a, p).
+## PolarRadicalInvarianceNodalDriftAndFermiGradientBridge
+- Ψ_a − Ψ_b ∈ signedRadical: sourcePair(Ψ_a, q) = ⟨q_fst, tanhL⟩ (shift-independent pole moment); oddPrimitivePart_b q is sourcePair-orthogonal to every Ψ_a; primitive/odd q: sourceEnergy(q) = weilForm(q) + 2⟨q_fst, tanhL⟩².
+- Primitive eigenvector ν: Rayleigh excess of primGraph(|q|) = 4(⟨R q⁺, q⁻⟩ − 2(1−ν)⟨q⁺,1⟩⟨q⁻,1⟩); odd, ν > 0: 0 < −ν²sourcePair(q⁺,q⁻) ≤ ⟨R q⁺, q⁻⟩. Stationary Cauchy–Schwarz ‖q‖⁴ ≤ ⟨S|q|,|q|⟩·(4‖q⁺_snd‖² − ((1−μ)/μ)‖q‖² + arch + primeShift).
+- Odd q, both lobes: ⟨P q^±, q^±⟩² + ¼⟨D_odd q, |q|⟩² ≤ ⟨P_diag q^±, q^±⟩² (chiral drift tightening).
+- Second octave Fermi reciprocity: m ∈ [N, 2N−1]: second difference of fermiCellResponse(N, μ) at 2m+1 + forward gradient Δs_N(μ, 2m+1) = −2μ(m+1) ⇒ 2μ(m+1)² ≤ (curv)² + (grad)² ⇒ second-octave Fermi+gradient energy ≥ 2Σ_{first octave} μ² ≥ 2#oddSquarefreeWindow(N).

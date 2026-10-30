@@ -53,7 +53,7 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
 **Theta and heat.**
 
 - **A7.** Theta Hankel ranks nine, ten, … by seam-split piece certificates, each stated as flux domination through the square-plus-flux identity. Rank-N PSD reduces to positivity of the native tail.
-- **A8. The graded heat ladder as theorems.** Each rung is a corollary of `exists_card_deep_le_mul_nonrealZeroCount`. Example: N(t) ≤ exp(Ct^{−α}) with α < 1/4 implies X^{o(1)} zeros of depth ≥ δ in [X, 2X].
+- **A8. The graded heat ladder — formalized.** `stretchedExponential_deep_density_of_nonrealZeroCount` gives `C log X exp(K(log X)^{4α})`; `subpower_deep_density_of_subcritical_nonrealZeroCount` gives `X^ε` eventually for every `ε>0` when `α<1/4`. The existing polynomial rung has exponent `4a+1`. Direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/heat-count-stretched-exponential-density-ladder.md).
 - **A9.** HCF/LA: further finite degrees on the log2/log3 grids and Jensen degrees.
 
 **Fixed-aperture positivity.**
@@ -181,7 +181,7 @@ Rungs, all exact consequences of `exists_card_deep_le_mul_nonrealZeroCount` and 
 |---|---|
 | bounded | finite off-line support, hence LH [FS] |
 | ≤ At^{−a} | O((log X)^{4a+1}) zeros of depth ≥ δ in [X, 2X] [sub] |
-| ≤ exp(Ct^{−α}), α < 1/4 | X^{o(1)} such zeros (inference) [sub] |
+| ≤ exp(Ct^{−α}), α < 1/4 | X^{o(1)} such zeros [L] [sub] |
 | ≤ C R log R, R = 2π exp((2/3+ε)/t) | known [L] |
 
 Why this question:

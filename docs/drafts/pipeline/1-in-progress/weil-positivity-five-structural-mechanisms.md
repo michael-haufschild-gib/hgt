@@ -16,7 +16,7 @@
 
 ## Verified starting points
 
-- O1: `completedConductorEnergy_nonneg`, `nonRatioForm_eq_sum_shellForm`, and the successor-disagreement identity cover the stated conductor and shell pieces, not general signed repayment.
+- O1: `completedConductorEnergy_nonneg`, `nonRatioForm_eq_sum_shellForm`, and the successor-disagreement identity cover the stated conductor and shell pieces. [Uniform top-band cancellation](../3-formalized/joint-top-band-payment-uniform-in-overlap.md) gives `|κ_N(c)| ≤ Kφ G(c + 1 + log N)` on `1 ≤ c ≤ N/4`; general signed repayment remains open.
 - O2: [Finite-sieve Hodge index](../3-formalized/matched-prime-form-hodge-index-uniform-in-the-sieve.md) is formalized. `eventually_sieveHodgeGram_one_positive_direction` proves that `P_N − (log N − γ − η)I`, for `0 < η < 2 log 2`, has exactly one positive direction on every full finite-sieve partition, with one horizon independent of the sieve. It follows from the existing all-vector prime gap and pole estimate. Arbitrary finite profile Grams inherit at most one positive direction; fixed depth truncations can omit the pole. The complete Weil form and infinite assembly remain open.
 - O3: `exists_uniform_heatLocalizedVerticalEnergy_evolution` has outer-energy flux. `ImaginaryEnergyLyapunov.lean` proves the two-point algebra and scalar implications; its prose about the global Ξ sum is not a theorem about that sum.
 - O4: `riemannHypothesis_of_eventually_horizontalCollisionCharge_lt_two` still requires the charge bound.

@@ -1,8 +1,8 @@
 # The stretched-exponential rung of the heat-count ladder
 
 - **ID:** heat-count-stretched-exponential-density-ladder
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** `review-3010/obstacles-summary.md`, A8
 - **Statement:** `N(t)≤exp(A t^(−α))` near zero implies
   `#F≤C log X exp(K(log X)^(4α))` for every finite multiplicity-exact Ξ-zero
@@ -39,4 +39,9 @@ stretched-exponential row without asserting any improvement of `N(t)` itself.
 
 ## Verification
 
-Pending exact Lean leaf check, transitive axiom audit and umbrella import.
+`RHTower/Heat/TheHeatCountGrowthLadder.lean` passes the direct Lean check.
+`exists_deep_window_bound_at_logarithmic_heat`,
+`stretchedExponential_deep_density_of_nonrealZeroCount`,
+`subpower_deep_density_of_subcritical_nonrealZeroCount`, and the existing polynomial
+rung depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+The new module is imported by `RHTower.lean`.

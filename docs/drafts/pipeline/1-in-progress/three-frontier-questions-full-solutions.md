@@ -33,8 +33,9 @@ Every claimed solution requires the exact theorem, dependency audit and successf
 
 - `riemannHypothesis_iff_xiResolvent_sourcePolarizations_eq`: exact orientation receiver.
 - `exists_card_deep_le_mul_nonrealZeroCount`: transfers a heat-count law to deep-zero counts.
-- `exists_abs_jointWitnessCoefficient_le`: the pole and shells cancel on the pole-vector
-  top-band witness; the constant depends on overlap, so this does not settle Q1.
+- `exists_abs_jointWitnessCoefficient_le_uniform_overlap`: the pole and shells cancel on the
+  top-band witness with bound `Kφ G(c + 1 + log N)`, uniformly for `1 ≤ c ≤ N/4`.
+  Arbitrary coefficient vectors remain outside this theorem.
 
 ## Candidate: transfer the reserve through a shifted operator
 
@@ -64,8 +65,11 @@ At `Re s>1`, positivity of `Re(s−ρ)⁻¹` gives absolute convergence of
 `(Re s−1/2)S(s)−Re ξ′/ξ(s)`. Reindexing by `ρ↦1−conj ρ` and using
 `pair_depth_resolvent` identifies it with
 `Σ 2(Re s−1/2)(Re ρ−1/2)²/(|s−ρ|²|s−ρ*|²)`.
-This proof is implemented in `HilbertianExplicitFormulas/TheXiResolventDepthIdentity.lean`;
-Lean check pending. Theta-source identification remains separate.
+Formalized in `HilbertianExplicitFormulas/TheXiResolventDepthIdentity.lean` as
+`sub_mul_xiSamePointResolvent_sub_logDeriv`. Its prime expansion is
+`xiResolventDepth_eq_samePoint_sub_arch_add_prime`. Direct Lean check passed;
+both transitive axiom sets are exactly `propext`, `Classical.choice`, `Quot.sound`.
+Theta-source identification remains separate.
 
 ## Gates
 

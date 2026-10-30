@@ -1,8 +1,8 @@
 # Joint top-band payment uniform in overlap
 
 - **ID:** SSH-UNIFORM-JOINT-TOP-BAND
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** [O1](../1-in-progress/weil-positivity-five-structural-mechanisms.md)
 - **Target:** For every supported `C²` profile `φ` of positive square mass, a constant `Kφ` independent of overlap satisfies `|κ_N(c)| ≤ Kφ G(c + 1 + log N)` whenever `c ≥ 1`, `N ≥ 8`, and `4c ≤ N`. Here `κ_N` is `jointWitnessCoefficient` and `G = (c/N)∫φ²`.
 
@@ -22,5 +22,6 @@ Thus `Kφ = 19 + 84(1/4 + A₁/M)` works, using `log N ≥ 0`. The derivative bo
 
 - This controls the full joint coefficient on the top-band witness, not arbitrary coefficient vectors.
 - O1 still requires the signed joint payment off this family and the complete sum-of-squares identity.
-- [ ] Export the finite-horizon row remainder without weakening `G/N` to `G`.
-- [ ] Formalize the uniform overlap bound and audit its axioms.
+- `abs_jointWitnessCoefficient_le_rowRemainder` retains the finite-horizon remainder.
+- `exists_abs_jointWitnessCoefficient_le_uniform_overlap` and `exists_abs_jointWitnessCoefficient_le_uniform_log_overlap` are in `SuccessorShellArithmetic/TopBand/UniformJointCancellation.lean`.
+- Exact Lean check passed. Both capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
