@@ -477,6 +477,175 @@ private theorem exists_logarithmic_confinement_cutoffs {C₀ η : ℝ}
   exact ⟨P, A, R, hP, hA, hR, hARsq, hEuler, hmean, htail, hmode, hRexp⟩
 
 
+private def extendSieveCoefficient (Q : Finset Nat.Primes)
+    (b : SieveClass Q → ℝ) (m : ℕ) : ℝ :=
+  if hm : SieveSupported Q m then b ⟨m, hm⟩ else 0
+
+private theorem extendSieveCoefficient_at (Q : Finset Nat.Primes)
+    (b : SieveClass Q → ℝ) (m : SieveClass Q) :
+    extendSieveCoefficient Q b (m : ℕ) = b m := by
+  rw [extendSieveCoefficient, dif_pos m.property]
+
+private theorem sum_extendSieveCoefficient_ramanujanPole (Q : Finset Nat.Primes)
+    (R : ℕ) (b : SieveClass Q → ℝ) (n : ℕ) :
+    (∑ m ∈ Icc 1 R, extendSieveCoefficient Q b m * ramanujanPoleProfile m n) =
+      ∑ m ∈ sieveClassPrefix Q R, b m * ramanujanPoleProfile m n := by
+  let S := (sieveClassPrefix Q R).image (fun m : SieveClass Q => (m : ℕ))
+  have hS : S ⊆ Icc 1 R := by
+    intro m hm
+    obtain ⟨a, ha, rfl⟩ := mem_image.mp hm
+    exact mem_Icc.mpr ⟨a.property.pos, (mem_sieveClassPrefix Q R a).mp ha⟩
+  have hzero (m : ℕ) (hm : m ∈ Icc 1 R) (hmS : m ∉ S) :
+      extendSieveCoefficient Q b m * ramanujanPoleProfile m n = 0 := by
+    have hnot : ¬SieveSupported Q m := by
+      intro hsup
+      exact hmS (mem_image.mpr ⟨⟨m, hsup⟩,
+        (mem_sieveClassPrefix Q R ⟨m, hsup⟩).mpr (mem_Icc.mp hm).2, rfl⟩)
+    rw [extendSieveCoefficient, dif_neg hnot, zero_mul]
+  calc
+    _ = ∑ m ∈ S, extendSieveCoefficient Q b m * ramanujanPoleProfile m n :=
+      (sum_subset hS hzero).symm
+    _ = ∑ m ∈ sieveClassPrefix Q R,
+        extendSieveCoefficient Q b (m : ℕ) * ramanujanPoleProfile m n := by
+      dsimp only [S]
+      exact sum_image (fun a _ b _ h => Subtype.ext h)
+    _ = _ := sum_congr rfl fun m _ => by rw [extendSieveCoefficient_at]
+
+private theorem sum_horizon_truncated_coefficients {N R : ℕ} (hNR : N ≤ R)
+    (b : ℕ → ℝ) (n : ℕ) :
+    (∑ m ∈ Icc 1 R, (if m ≤ N then b m else 0) * ramanujanPoleProfile m n) =
+      ∑ m ∈ Icc 1 N, b m * ramanujanPoleProfile m n := by
+  have hsub : Icc 1 N ⊆ Icc 1 R := fun m hm =>
+    mem_Icc.mpr ⟨(mem_Icc.mp hm).1, (mem_Icc.mp hm).2.trans hNR⟩
+  calc
+    _ = ∑ m ∈ Icc 1 N, (if m ≤ N then b m else 0) * ramanujanPoleProfile m n := by
+      symm
+      apply sum_subset hsub
+      intro m hm hmN
+      have hn : ¬m ≤ N := fun h => hmN (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
+      rw [if_neg hn, zero_mul]
+    _ = _ := sum_congr rfl fun m hm => by rw [if_pos (mem_Icc.mp hm).2]
+
+/-- Bounded prime defect admits an exponential conductor cutoff uniformly over every horizon. -/
+theorem exists_exponential_conductor_cutoff_of_poleDefect_le {η : ℝ} (hη : 0 < η) :
+    ∃ C : ℝ, 0 < C ∧ ∀ K : ℝ, 0 ≤ K →
+      ∃ R : ℕ, (R : ℝ) ≤ Real.exp (C * (K + 1)) ∧
+        ∀ N : ℕ, ∀ x : ℕ → ℝ,
+          (∑ n ∈ Icc 1 N, x n ^ 2) ≤ 1 → poleDefect N x ≤ K →
+          ∃ b : ℕ → ℝ,
+            (∑ n ∈ Icc 1 N,
+              (x n - ∑ m ∈ Icc 1 R, b m * ramanujanPoleProfile m n) ^ 2) ≤ η := by
+  obtain ⟨C₀, hC₀, hconditioning⟩ := exists_smoothRoughPoleProjection_error_le
+  let δ : ℝ := η / 8
+  have hδ : 0 < δ := div_pos hη (by norm_num)
+  obtain ⟨C, hC, hcutoffs⟩ := exists_logarithmic_confinement_cutoffs hC₀ hδ
+  refine ⟨C, hC, fun K hK => ?_⟩
+  obtain ⟨P, A, R, hP, hA, hR, hAR, hEuler, hmeanBound, htailBound, hmodeBound, hRexp⟩ :=
+    hcutoffs K hK
+  refine ⟨R, hRexp, fun N x hmass hdef => ?_⟩
+  by_cases hRN : R ≤ N
+  · have hPR : (1 : ℝ) < P := by exact_mod_cast hP
+    have hAR' : (1 : ℝ) < A := by exact_mod_cast hA
+    have hRR : (1 : ℝ) < R := by exact_mod_cast hR
+    have hlogP : 0 < Real.log P := Real.log_pos hPR
+    have hlogA : 0 < Real.log A := Real.log_pos hAR'
+    have hlogR : 0 < Real.log R := Real.log_pos hRR
+    have hL0 := ladderConstant_nonneg P
+    have hAN : A ≤ N := by
+      have hself : A ≤ A ^ 2 := by
+        calc
+          A = A * 1 := (Nat.mul_one A).symm
+          _ ≤ A * A := Nat.mul_le_mul_left A (show 1 ≤ A by omega)
+          _ = A ^ 2 := (pow_two A).symm
+      exact (hself.trans hAR).trans hRN
+    have hlogN : Real.log R ≤ Real.log (N + 1 : ℕ) :=
+      Real.log_le_log (zero_lt_one.trans hRR)
+        (by exact_mod_cast hRN.trans (Nat.le_succ N))
+    have hNsieve : 2 * (sieveEuler (primePrefixSieve P) - Real.eulerMascheroniConstant) + 4 ≤
+        Real.log (N + 1 : ℕ) := by
+      rw [sieveEuler_primePrefix_sub_euler]
+      exact hEuler.trans hlogN
+    let f : ℕ → ℝ := smoothRoughMean P N x
+    let g : ℕ → ℝ := fun n =>
+      (if RHTower.Sieve.smoothPart (P - 1) n ≤ A then
+        f (RHTower.Sieve.smoothPart (P - 1) n) else 0) / Real.sqrt n
+    obtain ⟨b, hb⟩ := exists_sieveProfile_ramanujan_approximation (primePrefixSieve P) hR
+      ((hAR.trans hRN).trans (Nat.le_succ N)) hNsieve (fun a => f a)
+    rw [sieveEuler_primePrefix_sub_euler] at hb
+    have hprofileMass :
+        (∑ a ∈ sieveClassPrefix (primePrefixSieve P) A,
+          sieveClassMass (primePrefixSieve P) a N * f a ^ 2) ≤ 1 :=
+      (sum_smoothRoughMean_prefix_classMass_le P N hAN x).trans hmass
+    have hcoef : 0 ≤ 16 * (Real.log A + ladderConstant P) / Real.log R := by positivity
+    have hpacketError : (∑ n ∈ Icc 1 N,
+        (g n - ∑ m ∈ sieveClassPrefix (primePrefixSieve P) R,
+          b m * ramanujanPoleProfile m n) ^ 2) ≤ δ := by
+      dsimp only [g]
+      rw [smoothProfile_ramanujan_error_eq_classMass P A R N f b]
+      calc
+        _ ≤ (16 * (Real.log A + ladderConstant P) / Real.log R) *
+            ∑ a ∈ sieveClassPrefix (primePrefixSieve P) A,
+              sieveClassMass (primePrefixSieve P) a N * f a ^ 2 := hb
+        _ ≤ (16 * (Real.log A + ladderConstant P) / Real.log R) * 1 :=
+          mul_le_mul_of_nonneg_left hprofileMass hcoef
+        _ = 16 * (Real.log A + ladderConstant P) / Real.log R := mul_one _
+        _ ≤ δ := hmodeBound
+    have hmeanError :
+        (∑ n ∈ Icc 1 N, (x n - smoothRoughPoleProjection P N x n) ^ 2) ≤ δ := by
+      exact (hconditioning P (by omega) N x).trans
+        ((mul_le_mul_of_nonneg_left hdef (div_nonneg hC₀.le hlogP.le)).trans hmeanBound)
+    have hsmoothTail :
+        (∑ n ∈ Icc 1 N, if A < RHTower.Sieve.smoothPart (P - 1) n then x n ^ 2 else 0) ≤ δ := by
+      have hpaid := mul_le_mul_of_nonneg_left hmass (mul_nonneg zero_le_two hL0)
+      have hnum : 2 * poleDefect N x + 2 * ladderConstant P * ∑ n ∈ Icc 1 N, x n ^ 2 ≤
+          2 * K + 2 * ladderConstant P := by nlinarith only [hdef, hpaid]
+      exact (sum_outside_smoothPart_le P N hA x).trans
+        ((div_le_div_of_nonneg_right hnum hlogA.le).trans htailBound)
+    have hpreError : (∑ n ∈ Icc 1 N, (x n - g n) ^ 2) ≤ 2 * δ := by
+      calc
+        _ ≤ ∑ n ∈ Icc 1 N, ((x n - smoothRoughPoleProjection P N x n) ^ 2 +
+            if A < RHTower.Sieve.smoothPart (P - 1) n then x n ^ 2 else 0) := by
+          refine sum_le_sum fun n _ => ?_
+          by_cases hn : RHTower.Sieve.smoothPart (P - 1) n ≤ A
+          · simp only [g, f, if_pos hn, if_neg (not_lt.mpr hn), add_zero,
+              smoothRoughPoleProjection]
+            exact le_rfl
+          · simp only [g, if_neg hn, if_pos (not_le.mp hn), zero_div, sub_zero]
+            exact le_add_of_nonneg_left (sq_nonneg _)
+        _ = (∑ n ∈ Icc 1 N, (x n - smoothRoughPoleProjection P N x n) ^ 2) +
+            (∑ n ∈ Icc 1 N, if A < RHTower.Sieve.smoothPart (P - 1) n then x n ^ 2 else 0) :=
+          sum_add_distrib
+        _ ≤ δ + δ := add_le_add hmeanError hsmoothTail
+        _ = 2 * δ := by ring
+    refine ⟨extendSieveCoefficient (primePrefixSieve P) b, ?_⟩
+    simp_rw [sum_extendSieveCoefficient_ramanujanPole (primePrefixSieve P) R b]
+    calc
+      _ ≤ ∑ n ∈ Icc 1 N,
+          (2 * (x n - g n) ^ 2 + 2 * (g n -
+            ∑ m ∈ sieveClassPrefix (primePrefixSieve P) R, b m * ramanujanPoleProfile m n) ^ 2) :=
+        sum_le_sum fun n _ => by
+          nlinarith only [sq_nonneg ((x n - g n) - (g n -
+            ∑ m ∈ sieveClassPrefix (primePrefixSieve P) R, b m * ramanujanPoleProfile m n))]
+      _ = 2 * (∑ n ∈ Icc 1 N, (x n - g n) ^ 2) +
+          2 * (∑ n ∈ Icc 1 N, (g n -
+            ∑ m ∈ sieveClassPrefix (primePrefixSieve P) R, b m * ramanujanPoleProfile m n) ^ 2) := by
+        simp only [sum_add_distrib, mul_sum]
+      _ ≤ 2 * (2 * δ) + 2 * δ := add_le_add
+        (mul_le_mul_of_nonneg_left hpreError zero_le_two)
+        (mul_le_mul_of_nonneg_left hpacketError zero_le_two)
+      _ ≤ η := by dsimp only [δ]; linarith only [hη]
+  · obtain ⟨b, hb⟩ := exists_horizon_ramanujanPole_expansion N x
+    refine ⟨fun m => if m ≤ N then b m else 0, ?_⟩
+    have hNR : N ≤ R := (lt_of_not_ge hRN).le
+    have hzero : (∑ n ∈ Icc 1 N,
+        (x n - ∑ m ∈ Icc 1 R, (if m ≤ N then b m else 0) * ramanujanPoleProfile m n) ^ 2) = 0 := by
+      apply sum_eq_zero
+      intro n hn
+      rw [sum_horizon_truncated_coefficients hNR, ← hb n hn, sub_self, zero_pow (by decide)]
+    rw [hzero]
+    exact hη.le
+
+
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 
 #print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.exists_horizon_ramanujanPole_expansion
@@ -484,3 +653,5 @@ end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 #print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.sum_log_smoothPart_mul_sq_le
 #print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.sum_smoothRoughMean_classMass_le
 #print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.smoothProfile_ramanujan_error_eq_classMass
+
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.exists_exponential_conductor_cutoff_of_poleDefect_le

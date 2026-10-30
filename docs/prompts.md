@@ -391,16 +391,16 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 previously we had created these documents:
-- docs/reports/review-2910/walls-ledger.md
-- docs/reports/review-2910/route-obstacles.md
-- docs/reports/review-2910/route-unification-ledger.md
-- docs/reports/review-2910/obstacles-summary.md
+- docs/reports/review-3010/walls-ledger.md
+- docs/reports/review-3010/route-obstacles.md
+- docs/reports/review-3010/route-unification-ledger.md
+- docs/reports/review-3010/obstacles-summary.md
   
-also we have:
+read:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-create new versions of the reviews to reflect the current status quo and frontier of our research:
+create new versions of the reviews from scratch to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -411,14 +411,14 @@ create new versions of the reviews to reflect the current status quo and frontie
    2.6 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
-5. correct any issue you have identified in docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md
+
 
 do not read other markdown files, only the ones i mentioned.
 do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. keep a working log in logs/ to write down research findings, so they do not get lost during context window compaction. the expectation is that you do real in-depth research and not just read the markdown files and do some spot checks on recently changed files.
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the  reports in folder docs/reports/review-2910/
+replace the  reports in folder docs/reports/review-3010/
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -444,9 +444,9 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-2910/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-2910/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-2910/walls-ledger.md
+3. Unification of the routes: docs/reports/review-3010/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-3010/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-3010/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
     
@@ -464,7 +464,7 @@ The questions for you to answer:
 5. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 6. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-2910/astra.md
+Write a report in docs docs/reports/review-3010/astra.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -472,9 +472,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read fully docs/reports/review-2910/obstacles-summary.md
+read fully docs/reports/review-3010/fable.md
 
-the document describes under "## 2.6 Would the obstacles in 2.2 need a new field of mathematics?" a new field/research programme "arithmetic gauge theory of the ring \(\mathbb Z\)".
+the document describes under "## 7. Question 6: the field that would supply the missing tools" a new field/research programme.
 
 Your task: develop this new field / programme.
 
@@ -592,16 +592,13 @@ Put all lean code for the answer into its own subfolder.
 
 do not use the hgtl7 skill
 
-read and understand docs/reports/review-2910/fable2.md
+read and understand docs/reports/review-3010/fable.md
 
-in "### 1.3 A dictionary the ledgers imply but do not state (inference)" it speask of a "dictionary the ledgers imply but do not state" 
+under "## 6. Question 5: the three questions to focus on" it asks 3 questions.
 
-formalize this dictionary and its implications for the rest of our lean corpus.
+your task: find and formalize a final full solution/answer to each question.
 
-supporting docs:
-- docs/reports/review-2910/walls-ledger.md
-- docs/reports/review-2910/route-obstacles.md
-- docs/reports/review-2910/route-unification-ledger.md
+We are not interested in estimates, criterias what the answer could be like, nogos - we accept only a full and final answer/solution to each question.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -626,3 +623,36 @@ Make good use of the search tool for our lean corpus to find existing work and g
 
 Do keep changes in the README.md informative and crips - it is a foundational document describing the programme as a whole, it is not a history log or theorem/module ledger or diary.
 
+## Deep understanding
+
+Mandatory:
+- The source of truth is our lean corpus. Do not read files outside of the formal/GaloisForLFunctions folder unless user specifies specific files to read.
+- Do not assume anything based on your training data. Our lean corpus is SOTA research ahead of anything you have seen during your training or could find via websearch.
+- Do not use websearch. Our lean corpus is the SOTA research.
+
+Context:
+- Current reports on where our research stands: docs/reports/review-3010
+- Our most recent research programmes from oldest to newest: docs/reports/research-programmes.md
+
+The problem: Our research corpus is so large that we have lost the way. Our consolidated reports may name many routes and candidates, but ultimately we are kind of dancing around the idea of making Weils proof for Q work for Z. 
+
+We have indications that our lean corpus is actually already providing a lot of signs and hints that the solution is something very different, that we even have many building blocks. We just do not see the "forest because of all the trees". 
+
+Your task: Do an honest, in-depth research into our lean corpus. What does it really say? What does it actually hint at? If we do not assume what the solution must be like and where it has to live and what our problems are, what does it tell us where to look? 
+
+Be open-minded, do not assume a solution or route, but let the lean corpus speak. 
+
+Method:
+- Interrogate the lean corpus and understand not only what it does but why it does it and what "what if...?" questions could be ask and where they lead? 
+- Take apart lean proofs and ask why they are this way, what they do, why certain bounds, objects, relations, exclusions exist and what would happen if they would be different?
+- Ask questions to the lean corpus. Ask "what if?" and "why?" and what is the big picture and birds view? Interprete the proofs, do not just explain it.
+
+Work in phases:
+1. Collect information.
+2. Collect more information.
+3. Collect even more information.
+4. Keep the actual full interpretation of all the information you have collected and writing the final report for the end.
+
+Keep a log for mathematical facts you discover. Not a working log. Facts and information you discovered.
+
+The final report goes into docs/reports/review-3010/

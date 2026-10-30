@@ -1,13 +1,13 @@
 # Logarithmic conductor moments sharpen defect confinement
 
 - **ID:** logarithmic-conductor-defect-confinement
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean assembly pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For each `η>0`, a constant `Cη>0` gives squared approximation error at most `η` by conductors `m≤exp(Cη(K+1))` for every vector of squared mass at most one and prime defect at most `K≥0`, uniformly in the integer horizon.
 
 ## Purpose
 
-An exponential cutoff would match the known defect-only obstruction. Combined with a logarithmic defect bound for actual negative complete-Weil eigenvectors, it would give a polynomial conductor range. That signed bound remains unproved.
+The exponential cutoff matches the known defect-only obstruction. Combined with a logarithmic defect bound for actual negative complete-Weil eigenvectors, it would give a polynomial conductor range. That signed bound remains unproved.
 
 ## Formalized inputs
 
@@ -45,4 +45,16 @@ The choices above have `log P`, `L`, `log A`, and `log R` bounded by constants d
 
 ## Remaining scope
 
-Lean assembly of the smooth-part moment, physical class identification, finite-horizon span, and parameter choices is pending. The logarithmic defect bound for actual negative complete-Weil vectors remains unproved and is not an input assumed by this theorem.
+The logarithmic defect bound for actual negative complete-Weil vectors remains unproved and is not an input assumed by this theorem.
+
+## Lean
+
+`GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/BoundedPrimeDefectHasAnExponentialConductorCutoff.lean`:
+
+- `exists_exponential_conductor_cutoff_of_poleDefect_le`: the stated horizon-uniform theorem.
+- `sum_log_smoothPart_mul_sq_le`: collective smooth-part moment.
+- `sum_smoothRoughMean_classMass_le`: contraction of the conditional mean.
+- `smoothProfile_ramanujan_error_eq_classMass`: exact transfer to physical horizon error.
+- `exists_horizon_ramanujanPole_expansion`: exact finite-horizon span.
+
+Direct Lean check passed. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.

@@ -57,7 +57,7 @@ of these already bounded contributions.
   mixed block; the estimate does not bound the complete Weil form.
 
 These facts are existing results, not a proof, refutation, or retirement of
-the target. No new arithmetic saving has been established.
+the target. No saving for the complete signed source has been established.
 
 ## Verification
 
@@ -176,6 +176,34 @@ prime-weighted block, retaining its quotient and terminal terms together.
 Polynomial signed moments alone do not bound the exponentially weighted
 finite-clock remainder. A uniform bound for that remainder is still missing.
 
+## Terminal structure and a recursive hypothesis
+
+Write `T(x)=criticalContinuousAbel x`, `P_M=criticalMovingSquareCore M`,
+`h_M=mobiusDivisorSelectionFibre M P_M ∅`, and
+`S(M)=Σ_{p∈selectionPrimes M\P_M} p·T(M/p)²`.
+The exact terminal identity is `T(M)=h_M−Σ√p·T(M/p)`.
+The quotient envelope gives `S(N²)≤(9/25)N⁵`; see
+[terminal leaves](../3-formalized/terminal-leaves-fit-the-fourth-power-mesh.md).
+The canonical head nevertheless satisfies
+`h_M∼−(divisorHarmonicBoundary/3)M^(3/2)/log²M`.
+Thus a target-scale bound on every intermediate retained energy fails along
+the natural increasing-prime order. The full signed head correction must
+be retained before estimating the endpoint.
+
+**Unproved recursive hypothesis:** for every `δ>0`, uniformly in integer `M≥2`,
+`T(M)² ≪_δ M^(1/4+δ) S(M)+M^(2+δ)`.
+If `T(x)²≪x^a`, `a>2`, the quotient range `M/p<√M` gives
+`S(M)≪M^(1+a/2)`. The proposed estimate would improve `a` to
+`5/4+δ+a/2`. Choosing `δ` small and iterating from `a=3` reaches any
+exponent above `5/2`. A subpower loss instead of `M^(1/4+δ)` would drive the
+same recursion to the stronger RH scale `a=2`. Neither estimate is proved.
+
+An existing source-specific cancellation illustrates the required distinction:
+`mobiusSquareShortBilinearKernel_terminal_moebius_row` collapses an entire row
+by divisor inversion, although that kernel has a negative principal minor.
+The proof uses complete divisor coverage; interior rows lose that coverage.
+It does not supply the proposed recursive estimate.
+
 ## Inputs of `ℤ` absent from the Beurling models, tested as producers
 
 | # | Input | Where it enters | Verdict for the `3/4` strip |
@@ -184,7 +212,7 @@ finite-clock remainder. A uniform bound for that remainder is still missing.
 | Z2 | Functional equation (Poisson summation) | Beurling zetas have none | with `Λ ≥ 0` it does not force the line (`LambdaPositiveFunctionalEquationOffLine`); alone it allows zeros right of `1` (`davenportHeilbronnFakeCoeff`) |
 | Z3 | Exponential sums `Σ n^{−it}` (van der Corput, Vinogradov) | growth of `ζ` left of `1` | enters zero-free regions only through the `3-4-1` positivity at `σ ≥ 1`; `ζ` is unbounded on every line `σ ≤ 1`, so the region is always `1 − c/(log t)^a`; Lindelöf itself gives no strip |
 | Z4 | Dirichlet characters, large sieve, level of distribution | `TheShellsHaveLevelOfDistributionOneHalf` | bounds the trivial point only by the total over conductors; Bombieri–Vinogradov adds Siegel–Walfisz, i.e. log savings |
-| Z5 | Ramanujan sums / successor shells in the complete Weil form | `TheShellsRepayEveryConductor`, review Question 1 | the synthesis receiver is depth-independent: positivity at `(log N)^{1/4}` for `C²` profiles and `(log log N)^{1+ε}` for Denjoy–Carleman profiles is RH-complete (`riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo`, `exists_dcProfile_loglog`); a resonant top-window test detects depth `δ` only once the `≍ log N/log c` on-line zeros within `1/log c` of its ordinate are paid, i.e. at `c ≫ (log N)^{1/δ}`, worse than synthesis. No strip-only level exists in this framework; the backlog dictionary `δ(θ)` has no mechanism |
+| Z5 | Ramanujan sums / successor shells in the complete Weil form | `TheShellsRepayEveryConductor`, review Question 1 | Growing-overlap synthesis is RH-complete at its proved rates. A bounded Denjoy–Carleman rate `K` also gives positivity on tests supported in `[-R,R]` when `24e Bφ ceil(1+exp(2(R+1))) < K` (`nonneg_of_atomicFamilies_nonneg_of_rate`). This is a bounded-window receiver; no inspected theorem converts it into an all-height `3/4` strip. |
 | Z6 | Finite-field cancellation (cubic and sextic Gauss sums over `ℤ[ω]`) through Eisenstein-series Gram matrices: the Chen–Gupta–Li / `tmp/hgt-openai-math/quasirh-source` detector | the only producer in the corpus's view: `OAI.riemannZeta_ne_zero_of_seven_eighths_lt_re` in `OAI/NumberTheory/DirichletL/Nonvanishing.lean`, a 2924-file Lean source with no `sorry`, `axiom`, or `native_decide`, no build files, frontier status `[E]` | its displayed exponent model has boundary `x/2 + gram/2 − (x/3 − 5/6 + L/6) + reflectedLoss/2`; with the unit Gram term alone the minimum is `29/36` at `x = 0`, `L = 1/6` (`unitGramBoundary_sharp_minimum`, `gramProfileBoundary_gt_three_quarters`). The `1/6` is the unit group of `ℤ[ω]` (sextic characters, slot lengths summing to `1/6`). Reaching `3/4` needs a new principal normalization, unit term, or reflected allowance, not sharper estimates of the displayed terms |
 
 Consequence for the statement on this card: by

@@ -24,9 +24,10 @@ Hence (`iSup_negIndex_weightKernel_finiteFlip_eq_top`)
 `sup_g κ(K_{ω_S, g}) = ∞`
 
 unconditionally, over real `C²` tests of compact support, for every nonempty finite set of primes
-`S`. For `ζ` the same supremum is the number of zeros right of the line. A ceiling on the Weil-kernel
-index that is uniform over test functions is therefore selective against every finite flip set:
-it fails for the twins and holds for `ζ` exactly on the finite stratum.
+`S`. For `ζ` the same supremum is `κ(K_ζ)`, the number of zeros right of the line
+(`iSup_negIndex_weightKernel_vonMangoldt`): no test sees more than the right zeros and the cubic
+spline sees all of them. A ceiling on the test-uniform Weil-kernel index therefore fails for every
+finite flip twin and holds for `ζ` exactly on the finite stratum.
 -/
 
 open Complex Finset Filter Topology MeasureTheory Matrix
@@ -43,6 +44,7 @@ open GaloisForLFunctions.SpacingScaleHarmonicAnalysis (weilQuadTw atomDilate
   integral_tiltedUnitSpline_sq_pos)
 open GaloisForLFunctions.ArithmeticElectrostatics (atomicTest)
 open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
 
 noncomputable section
 
@@ -336,5 +338,3 @@ theorem iSup_negIndex_weightKernel_primeFlip_eq_top {p : ℕ} (hp : p.Prime) :
     (singleton_nonempty p)
 
 end GaloisForLFunctions.HeckeKreinToeplitz
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.iSup_negIndex_weightKernel_vonMangoldt
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.iSup_negIndex_weightKernel_primeFlip_eq_top

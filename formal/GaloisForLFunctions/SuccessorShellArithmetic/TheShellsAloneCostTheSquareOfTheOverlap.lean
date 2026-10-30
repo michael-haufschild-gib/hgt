@@ -433,12 +433,15 @@ theorem poleDefect_topWitness_le (hw : 0 ≤ w) (N : ℕ) :
       simp
     · simp only [topWitness, hmT, if_false, zero_div, sub_zero]
       exact le_rfl
+  have hD : poleDefect N (topWitness N w) ≤ ∑ m ∈ Icc 1 N, ∑ t ∈ Icc 1 (N / m),
+      (ArithmeticFunction.vonMangoldt t : ℝ) * topWitness N w (m * t) ^ 2 := by
+    unfold poleDefect
+    exact sum_le_sum fun m hm => sum_le_sum fun t ht => hterm m hm t ht
   calc
     poleDefect N (topWitness N w) ≤ ∑ m ∈ Icc 1 N, ∑ t ∈ Icc 1 (N / m),
-        (ArithmeticFunction.vonMangoldt t : ℝ) * topWitness N w (m * t) ^ 2 :=
-      sum_le_sum fun m hm => sum_le_sum fun t ht => hterm m hm t ht
+        (ArithmeticFunction.vonMangoldt t : ℝ) * topWitness N w (m * t) ^ 2 := hD
     _ = ∑ n ∈ Icc 1 N, Real.log n * topWitness N w n ^ 2 := by
-      refine sum_edges_eq_sum_log _ fun n hn => ?_
+      refine sum_edges_eq_sum_log (fun n => topWitness N w n ^ 2) fun n hn => ?_
       have : n ∉ topBand N w := fun h => by
         have := (mem_Icc.mp (mem_topBand.mp h).1).2; omega
       simp [topWitness, this]
@@ -494,9 +497,10 @@ theorem sum_topBand_inv_le_two (hw : 0 ≤ w) (N : ℕ) :
     _ = (topBand N w).card * (2 / (N : ℝ)) := by rw [sum_const, nsmul_eq_mul]
     _ ≤ N * (2 / (N : ℝ)) := by
       refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-      have := card_le_card (filter_subset (fun n : ℕ => (N : ℝ) * Real.exp w < 2 * n) (Icc 1 N))
-      rw [Nat.card_Icc, Nat.add_sub_cancel] at this
-      exact_mod_cast this
+      have hc : (topBand N w).card ≤ N := by
+        have := card_le_card (filter_subset _ _ : topBand N w ⊆ Icc 1 N)
+        rwa [Nat.card_Icc, Nat.add_sub_cancel] at this
+      exact_mod_cast hc
     _ = 2 := by field_simp
 
 /-- The top band holds at least `N(1 − e^w/2)` atoms. -/
@@ -542,4 +546,258 @@ theorem card_topBand_le (hw : 0 ≤ w) (N : ℕ) :
   have hR : (2 : ℝ) * (topBand N w).card ≤ N + 2 := by exact_mod_cast (Nat.mul_le_mul_left 2 hcard).trans h
   linarith only [hR]
 
+/-! ### The floor -/
+
+/-- The coefficient `A = cq/(4 log 2) − 1/2`, `q = (∫φ)²/∫φ²`, of the top-band shell reading. -/
+def shellFloorCoefficient (φ : ℝ → ℝ) (c : ℝ) : ℝ :=
+  c * ((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2) / (4 * Real.log 2) - 1 / 2
+
+private theorem harmonic_sum_bounds (N : ℕ) :
+    Real.log N ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ∧ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ≤ 1 + Real.log N := by
+  have hlo : Real.log N ≤ (harmonic N : ℝ) := by
+    simpa only [Nat.floor_natCast] using log_le_harmonic_floor (N : ℝ) (Nat.cast_nonneg N)
+  have hup := harmonic_le_one_add_log N
+  simp only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast] at hlo hup
+  simp only [← one_div] at hlo hup
+  exact ⟨hlo, hup⟩
+
+/-- One horizon of the floor: the payment hypothesis at `x_η`, divided by `G log N`. -/
+private theorem floor_inequality_at {φ : ℝ → ℝ} (hφ : Continuous φ) (hφ0 : ∀ u, 0 ≤ φ u)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c ε C η : ℝ} (hc : 0 < c) (hε : 0 < ε) (hη : 0 ≤ η) {N : ℕ} (hN : 2 ≤ N)
+    (hpay : nonRatioForm (atomDilate φ (c / N)) N (topWitnessVector N (c / N) η) ≤
+      (∫ u, atomDilate φ (c / N) u ^ 2) * (ε * poleDefect N (topWitnessVector N (c / N) η) +
+        C * ∑ n ∈ Icc 1 N, topWitnessVector N (c / N) η n ^ 2)) :
+    2 * η * (Real.log (N / 2) / Real.log N) *
+        (((topBand N (c / N)).card / (N : ℝ)) ^ 2 *
+          (c * ((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2)) / Real.log 2 -
+          (topBand N (c / N)).card / (N : ℝ)) ≤
+      2 * ε * η ^ 2 + C * ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) / Real.log N) +
+        C * (2 * η + η ^ 2) * ((∑ n ∈ topBand N (c / N), 1 / (n : ℝ)) / Real.log N) := by
+  set w := c / (N : ℝ) with hwdef
+  set g := atomDilate φ w with hgdef
+  set T := topBand N w with hT
+  set M := ∫ u, φ u ^ 2 with hMdef
+  set I := ∫ u, φ u with hIdef
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hN1 : 1 ≤ N := by omega
+  have hw : 0 < w := div_pos hc hN0
+  have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast (by omega : 1 < N))
+  -- the atom
+  have hgc : Continuous g := hφ.comp (continuous_id.div_const w)
+  have hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0 := by
+    intro u hu
+    apply hsupp
+    intro h
+    apply hu
+    rw [Set.mem_Icc, le_div_iff₀ hw, div_le_iff₀ hw] at h
+    constructor <;> nlinarith only [h.1, h.2, hw]
+  have hgcs : HasCompactSupport g :=
+    HasCompactSupport.intro isCompact_Icc fun u hu => hgsupp u hu
+  have hg0 : ∀ u, 0 ≤ g u := fun u => hφ0 _
+  have hG : (∫ u, g u ^ 2) = w * M := integral_atomDilate_sq hw
+  have hI : (∫ u, g u) = w * I := by
+    rw [hgdef, hIdef]
+    simpa only [atomDilate, smul_eq_mul, abs_of_pos hw] using
+      MeasureTheory.Measure.integral_comp_div φ w
+  -- the shells on the witness
+  have hNR := nonRatioForm_topWitnessVector hgsupp hw.le hN1 η
+  have hNRb := nonRatioForm_poleVector_nonneg hgsupp hw.le hg0 hN1
+  have hrow := sum_topBand_shellPoleRow_ge (g := g) hw.le hg0 hN
+  have hgram := sum_topBand_bumpCorr_ge hgc hgcs hgsupp (w := w) N
+  have hoff : ∑ n ∈ T, ∑ ℓ ∈ T, (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) =
+      ∑ n ∈ T, ∑ ℓ ∈ T, bumpCorr g (Real.log ℓ - Real.log n) - T.card * (w * M) := by
+    have hd : ∀ n ∈ T, ∑ ℓ ∈ T, (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) =
+        ∑ ℓ ∈ T, bumpCorr g (Real.log ℓ - Real.log n) - w * M := by
+      intro n hn
+      rw [← hG, ← bumpCorr_zero g]
+      have := sum_erase_add T (fun ℓ => bumpCorr g (Real.log ℓ - Real.log n)) hn
+      rw [sub_self] at this
+      rw [← this, add_sub_cancel_right, ← sum_erase_add T _ hn, if_pos rfl, add_zero]
+      exact sum_congr rfl fun ℓ hℓ => by rw [if_neg (ne_of_mem_erase hℓ)]
+    rw [sum_congr rfl hd, sum_sub_distrib, sum_const, nsmul_eq_mul]
+  -- defect and mass
+  have hD := poleDefect_topWitness_le hw.le N
+  have hDη := poleDefect_topWitnessVector N w η
+  have hS := sum_topWitnessVector_sq N w η
+  have hST := sum_topBand_inv_le_two hw.le N
+  have hST0 : 0 ≤ ∑ n ∈ T, 1 / (n : ℝ) := sum_nonneg fun n _ => by positivity
+  -- assemble
+  set τ : ℝ := (T.card : ℝ)
+  set R := ∑ n ∈ T, poleVector n * shellPoleRow g N w n
+  set Gr := ∑ n ∈ T, ∑ ℓ ∈ T, bumpCorr g (Real.log ℓ - Real.log n)
+  have hlogN2 : 0 ≤ Real.log (N / 2) :=
+    Real.log_nonneg (by rw [le_div_iff₀ two_pos]; exact_mod_cast (by omega : 1 * 2 ≤ N))
+  have hgram' : (τ * (w * I)) ^ 2 ≤ Gr * Real.log 2 := by
+    rw [← hI]
+    exact (div_le_iff₀ (Real.log_pos one_lt_two)).mp hgram
+  -- lower bound on the shells
+  have hlow : 2 * η * (Real.log (N / 2) / N * ((τ * (w * I)) ^ 2 / Real.log 2 - τ * (w * M))) ≤
+      nonRatioForm g N (topWitnessVector N w η) := by
+    have h1 : (τ * (w * I)) ^ 2 / Real.log 2 - τ * (w * M) ≤ Gr - τ * (w * M) := by
+      have := (div_le_iff₀ (Real.log_pos one_lt_two)).mpr hgram'
+      linarith only [this]
+    have h2 : Real.log (N / 2) / N * (Gr - τ * (w * M)) ≤ R := by
+      rw [← hoff]; exact hrow
+    have h3 := mul_le_mul_of_nonneg_left h1 (div_nonneg hlogN2 hN0.le)
+    rw [hNR]
+    nlinarith only [h2, h3, hNRb, hη]
+  -- upper bound on the payment
+  have hup : (∫ u, g u ^ 2) * (ε * poleDefect N (topWitnessVector N w η) +
+        C * ∑ n ∈ Icc 1 N, topWitnessVector N w η n ^ 2) ≤
+      w * M * (ε * η ^ 2 * (Real.log N * 2) + C * ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) +
+        (2 * η + η ^ 2) * ∑ n ∈ T, 1 / (n : ℝ))) := by
+    rw [hG, hDη, hS]
+    have hwM : 0 ≤ w * M := (mul_pos hw hM).le
+    refine mul_le_mul_of_nonneg_left ?_ hwM
+    have hεη : 0 ≤ ε * η ^ 2 := mul_nonneg hε.le (sq_nonneg η)
+    have hD2 : poleDefect N (topWitness N w) ≤ Real.log N * 2 :=
+      hD.trans (mul_le_mul_of_nonneg_left hST hL.le)
+    nlinarith only [mul_le_mul_of_nonneg_left hD2 hεη]
+  have hchain := (hlow.trans hpay).trans hup
+  -- divide by `w M log N`
+  have hpos : 0 < w * M * Real.log N := mul_pos (mul_pos hw hM) hL
+  rw [← mul_le_mul_iff_of_pos_left hpos]
+  have hwN : w * N = c := by rw [hwdef]; field_simp
+  have heq : w * M * Real.log N * (2 * η * (Real.log (N / 2) / Real.log N) *
+      ((τ / N) ^ 2 * (c * (I ^ 2 / M)) / Real.log 2 - τ / N)) =
+      2 * η * (Real.log (N / 2) / N * ((τ * (w * I)) ^ 2 / Real.log 2 - τ * (w * M))) := by
+    rw [← hwN]
+    field_simp
+    ring
+  have heq2 : w * M * Real.log N * (2 * ε * η ^ 2 + C * ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) /
+      Real.log N) + C * (2 * η + η ^ 2) * ((∑ n ∈ T, 1 / (n : ℝ)) / Real.log N)) =
+      w * M * (ε * η ^ 2 * (Real.log N * 2) + C * ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) +
+        (2 * η + η ^ 2) * ∑ n ∈ T, 1 / (n : ℝ))) := by
+    field_simp
+    ring
+  rw [heq, heq2]
+  exact hchain
+
+/-- **The shells alone cost the square of the overlap.** For a nonnegative profile, if the
+non-ratio form is paid by itself at defect fraction `ε` and mass cost `C` at every large horizon,
+`NR(x) ≤ G(εD(x) + C S(x))`, then `C ≥ A⁺²/(2ε)`, `A = cq/(4 log 2) − 1/2`. -/
+theorem le_of_nonRatioForm_payment {φ : ℝ → ℝ} (hφ : Continuous φ) (hφ0 : ∀ u, 0 ≤ φ u)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c ε C : ℝ} (hc : 0 < c) (hε : 0 < ε)
+    (hpay : ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      nonRatioForm (atomDilate φ (c / N)) N x ≤
+        (∫ u, atomDilate φ (c / N) u ^ 2) *
+          (ε * poleDefect N x + C * ∑ n ∈ Icc 1 N, x n ^ 2)) :
+    max (shellFloorCoefficient φ c) 0 ^ 2 / (2 * ε) ≤ C := by
+  set q := (∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 with hq
+  set A := shellFloorCoefficient φ c with hA
+  set η := max A 0 / (2 * ε) with hηdef
+  have hη : 0 ≤ η := div_nonneg (le_max_right _ _) (by positivity)
+  -- the top band fills half the horizon
+  have hexp : Tendsto (fun N : ℕ => Real.exp (c / N)) atTop (𝓝 1) := by
+    have h := (Real.continuous_exp.tendsto 0).comp
+      ((tendsto_const_nhds : Tendsto (fun _ : ℕ => c) atTop (𝓝 c)).div_atTop
+        tendsto_natCast_atTop_atTop)
+    simpa only [Function.comp_def, Real.exp_zero] using h
+  have hinvN : Tendsto (fun N : ℕ => 1 / (N : ℝ)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+  have hτ : Tendsto (fun N : ℕ => ((topBand N (c / N)).card : ℝ) / N) atTop (𝓝 (1 / 2)) := by
+    have hlo : Tendsto (fun N : ℕ => 1 - Real.exp (c / N) / 2) atTop (𝓝 (1 / 2)) := by
+      have := (hexp.div_const 2).const_sub 1
+      convert this using 2; norm_num
+    have hhi : Tendsto (fun N : ℕ => 1 / 2 + 1 / (N : ℝ)) atTop (𝓝 (1 / 2)) := by
+      simpa only [add_zero] using hinvN.const_add (1 / 2)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hhi ?_ ?_
+    · filter_upwards [eventually_gt_atTop 0] with N hN
+      have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+      rw [le_div_iff₀ hN0]
+      have := card_topBand_ge N (c / N)
+      linarith only [this]
+    · filter_upwards [eventually_gt_atTop 0] with N hN
+      have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+      rw [div_le_iff₀ hN0]
+      have := card_topBand_le (div_nonneg hc.le hN0.le) N
+      have h1 : (1 / 2 + 1 / (N : ℝ)) * N = N / 2 + 1 := by field_simp
+      linarith only [this, h1]
+  have hlogN : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hratio : Tendsto (fun N : ℕ => Real.log ((N : ℝ) / 2) / Real.log N) atTop (𝓝 1) := by
+    have h := (tendsto_const_nhds (x := Real.log 2)).div_atTop hlogN
+    have h' := h.const_sub 1
+    rw [sub_zero] at h'
+    refine h'.congr' ?_
+    filter_upwards [eventually_gt_atTop 1] with N hN
+    have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
+    rw [Real.log_div (by positivity) two_ne_zero]
+    field_simp
+  have hH : Tendsto (fun N : ℕ => (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) / Real.log N) atTop (𝓝 1) := by
+    have hhi : Tendsto (fun N : ℕ => 1 + 1 / Real.log N) atTop (𝓝 1) := by
+      simpa only [add_zero] using (tendsto_const_nhds.div_atTop hlogN).const_add 1
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hhi ?_ ?_
+    · filter_upwards [eventually_gt_atTop 1] with N hN
+      have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
+      rw [le_div_iff₀ hL, one_mul]
+      exact (harmonic_sum_bounds N).1
+    · filter_upwards [eventually_gt_atTop 1] with N hN
+      have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
+      rw [div_le_iff₀ hL, add_mul, one_mul, div_mul_cancel₀ _ hL.ne']
+      linarith only [(harmonic_sum_bounds N).2]
+  have hS0 : Tendsto (fun N : ℕ => (∑ n ∈ topBand N (c / N), 1 / (n : ℝ)) / Real.log N)
+      atTop (𝓝 0) := by
+    have hhi : Tendsto (fun N : ℕ => 2 / Real.log N) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop hlogN
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hhi ?_ ?_
+    all_goals filter_upwards [eventually_gt_atTop 1] with N hN
+    all_goals have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN)
+    · exact div_nonneg (sum_nonneg fun n _ => by positivity) hL.le
+    · exact div_le_div_of_nonneg_right
+        (sum_topBand_inv_le_two (div_nonneg hc.le (by positivity)) N) hL.le
+  -- the two sides converge
+  have hleft : Tendsto (fun N : ℕ => 2 * η * (Real.log ((N : ℝ) / 2) / Real.log N) *
+      ((((topBand N (c / N)).card : ℝ) / N) ^ 2 * (c * q) / Real.log 2 -
+        ((topBand N (c / N)).card : ℝ) / N)) atTop
+      (𝓝 (2 * η * 1 * ((1 / 2) ^ 2 * (c * q) / Real.log 2 - 1 / 2))) :=
+    ((tendsto_const_nhds.mul hratio).mul
+      ((((hτ.pow 2).mul_const (c * q)).div_const (Real.log 2)).sub hτ))
+  have hright : Tendsto (fun N : ℕ => 2 * ε * η ^ 2 +
+      C * ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) / Real.log N) +
+      C * (2 * η + η ^ 2) * ((∑ n ∈ topBand N (c / N), 1 / (n : ℝ)) / Real.log N)) atTop
+      (𝓝 (2 * ε * η ^ 2 + C * 1 + C * (2 * η + η ^ 2) * 0)) :=
+    (tendsto_const_nhds.add (hH.const_mul C)).add (hS0.const_mul _)
+  have hlim := le_of_tendsto_of_tendsto hleft hright (by
+    filter_upwards [hpay, eventually_ge_atTop 2] with N hN hN2
+    exact floor_inequality_at hφ hφ0 hsupp hM hc hε hη hN2 (hN _))
+  -- optimize in `η`
+  have hAq : (1 / 2) ^ 2 * (c * q) / Real.log 2 - 1 / 2 = 2 * A := by
+    rw [hA, shellFloorCoefficient]
+    field_simp
+    ring
+  rw [hAq] at hlim
+  have hmax : max A 0 * A = max A 0 ^ 2 := by
+    rcases le_total A 0 with h | h
+    · rw [max_eq_right h]; ring
+    · rw [max_eq_left h]; ring
+  have hkey : 2 * η * 1 * (2 * A) - 2 * ε * η ^ 2 = max A 0 ^ 2 / (2 * ε) := by
+    rw [hηdef]
+    field_simp
+    rw [← hmax]
+    ring
+  linarith only [hlim, hkey]
+
+/-- **Against the reserve fraction.** A separate payment at the defect fraction `a c⁻⁷` of the
+complete reserve costs `C ≥ A⁺² c⁷/(2a)`: order `c⁹`. -/
+theorem le_of_nonRatioForm_payment_at_reserve {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hφ0 : ∀ u, 0 ≤ φ u) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c a C : ℝ} (hc : 0 < c) (ha : 0 < a)
+    (hpay : ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ,
+      nonRatioForm (atomDilate φ (c / N)) N x ≤
+        (∫ u, atomDilate φ (c / N) u ^ 2) *
+          (a / c ^ 7 * poleDefect N x + C * ∑ n ∈ Icc 1 N, x n ^ 2)) :
+    max (shellFloorCoefficient φ c) 0 ^ 2 * c ^ 7 / (2 * a) ≤ C := by
+  have h := le_of_nonRatioForm_payment hφ hφ0 hsupp hM hc (by positivity : 0 < a / c ^ 7) hpay
+  have hc7 : 0 < c ^ 7 := by positivity
+  calc
+    _ = max (shellFloorCoefficient φ c) 0 ^ 2 / (2 * (a / c ^ 7)) := by
+      field_simp
+    _ ≤ C := h
+
 end GaloisForLFunctions.SuccessorShellArithmetic
+
+#print axioms GaloisForLFunctions.SuccessorShellArithmetic.le_of_nonRatioForm_payment
+#print axioms GaloisForLFunctions.SuccessorShellArithmetic.le_of_nonRatioForm_payment_at_reserve
