@@ -460,6 +460,45 @@ The exact equality threshold requires the side of finite spectral convergence.
 An unbounded overlap schedule requires a joint estimate against the reciprocal
 vanishing ground reserve.
 
+Every fixed arithmetic mode passes through the actual complete inverse in norm:
+\[
+\|A_N(c)^{-1}r_{m,N}-E_m(c)^{-1}r_{m,N}\|\longrightarrow0.
+\]
+The full inverse floor pays this transfer through
+$\|A^{-1}v-\lambda^{-1}v\|\le(e\lambda)^{-1}\|Av-\lambda v\|$
+when $A\succeq eI$. Consequently every fixed finite conductor packet has the
+exact mixed Green limit
+\[
+\left\langle A_N(c)^{-1}\sum_{m\in S}b_mr_{m,N},
+\sum_{m\in S}d_mr_{m,N}\right\rangle
+\longrightarrow\sum_{m\in S}\frac{b_md_m}{E_m(c)}.
+\]
+All completed source terms enter these energies. See
+[WeilGreenModes](WeilGreenModes.lean),
+`tendsto_tiltedWeil_inverse_ramanujan_residual_norm` and
+`tendsto_tiltedWeil_inverse_packet_inner`. The overlap and conductor support
+are fixed; an operator-norm approximation of every horizon direction requires
+a finite-coordinate tail payment.
+
+## The exact conductor heat domain
+
+For every profile and fixed positive overlap, the complete conductor energies
+have the sharp heat threshold
+\[
+\sum_{m\ge1}e^{-\beta E_m(c)}<\infty\quad\Longleftrightarrow\quad\beta>1.
+\]
+A conductor-independent shell budget gives $E_m\ge\log m+A-K$.
+At primes, $E_p\le\log p+A+K+1$; the divergent prime reciprocal series
+therefore pays the critical boundary $\beta=1$. All pole and shell terms
+remain in the spectrum. The tilted-spline energies are positive, and
+$e^{-E}\le k!E^{-k}$ gives $\sum_m E_m(c)^{-k}=\infty$ for every integer
+$k\ge0$. See [ConductorHeatThreshold](ConductorHeatThreshold.lean),
+`summable_completedConductorHeatWeight_iff` and
+`not_summable_tiltedWeil_inverse_energy_pow`.
+
+This is the infinite conductor model. Finite complete-Weil heat traces also
+require control of the multiplicities of modes whose energies grow with the horizon.
+
 ## Exact native-tail reserves and their rank boundary
 
 Write $(r)_n=\prod_{j<n}(r+j)$. The scaled Gamma moments $m_k=gw^k(r)_k$, with

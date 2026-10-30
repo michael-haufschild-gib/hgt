@@ -61,8 +61,11 @@ Existing analytic interface: `HTGeometry/MultivariatePolynomialJetCoefficient.le
 identifies ordered coordinate derivatives with centered polynomial
 coefficients, including factorials. `HTGeometry/MultivariateHermiteCRT.lean`
 identifies point-ideal powers with centered coefficient constraints.
-The Euler-operator identity and its arithmetic polynomial interface remain
-to be formalized.
+The Euler-operator identity is proved in `TorsionEulerJetExtraction.lean`;
+ideal multiplicity loss is proved in `EulerOperatorsLowerMultiplicity.lean`.
+`MixedJetMultiplicity.lean` identifies ordinary analytic mixed derivatives
+with point-ideal powers. The arithmetic application and matching boundary
+are being formalized from [AHA-EULER](../2-fully-proven/aha-euler-newton-extraction.md).
 
 `HTGeometry.bgv_coordinateEuler_product` gives the coordinate Euler
 eigenvalue on multivariate monomials. `HTGeometry.SparsePolynomial.pow_dvd_euler`
@@ -76,7 +79,9 @@ degree threshold. It is formalized in
 [AHA-NEWTON](../3-formalized/aha-residue-newton-resolution.md):
 `arithmeticNewton_sample_recovery` and `arithmeticNewton_samples_eq_iff`,
 in namespace `GaloisForLFunctions.ArithmeticHarmonicAnalysis`, have only
-standard Lean axioms. Analytic mixed-jet identification remains open.
+standard Lean axioms. The Euler extraction and mixed-jet bridge now connect
+this survivor to ordinary multiplicity; their arithmetic application awaits
+its final audit.
 
 The classical multiplicity bound is not claimed as new number theory:
 [Dvir–Kopparty–Saraf–Sudan, Lemma 8](https://www.math.toronto.edu/swastik/multiplicities.pdf)

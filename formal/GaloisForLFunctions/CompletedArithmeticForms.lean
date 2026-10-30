@@ -58,6 +58,8 @@ import GaloisForLFunctions.CompletedArithmeticForms.BesselSpectralBand
 import GaloisForLFunctions.CompletedArithmeticForms.BesselBarrierPayment
 import GaloisForLFunctions.CompletedArithmeticForms.WignerSpectralBand
 import GaloisForLFunctions.CompletedArithmeticForms.WeilInverseCost
+import GaloisForLFunctions.CompletedArithmeticForms.WeilGreenModes
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorHeatThreshold
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -119,6 +121,9 @@ The complete plateau Weil prefix has a uniform inverse cost of twenty through
 touching, retaining the actual signed mixed block in its Schur lower bound.
 The literal Schläfli source has a strictly positive imaginary-order band up to
 its argument scale; every order zero lies strictly outside that band.
+The complete tilted-spline inverse has the sharp reciprocal pole-energy cost,
+uniformly on bounded overlap intervals, and exact reciprocal-energy limits on
+every fixed arithmetic packet, including all mixed Green entries.
 The decaying barrier pays its negative argument derivative and gives a strict
 reserve for the full signed radial Bessel combination at argument at least six.
 The literal physical Wigner transform has this positive radial band; each

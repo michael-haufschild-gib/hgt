@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CompletedArithmeticForms.WeilInverseCost
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCompleteWeilFormIsDiagonalOnFiniteRamanujanPackets
 import GaloisForLFunctions.HTGeometry.HilbertClosedRange
 
 /-!
@@ -120,10 +121,11 @@ theorem tendsto_tiltedWeil_inverse_packet_inner {c : ℝ} (hc : 0 < c)
   refine h.congr fun N => ?_
   simp only [normalizedRamanujanPacketVector, map_sum, map_smul, sum_inner, inner_sum,
     real_inner_smul_left, real_inner_smul_right]
-  apply sum_congr rfl
-  intro m _
+  rw [sum_comm]
   apply sum_congr rfl
   intro l _
+  apply sum_congr rfl
+  intro m _
   ring
 
 #print axioms norm_inverse_quasimode_residual_le

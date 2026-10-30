@@ -185,5 +185,14 @@ theorem comp_crude_bound {c E P U Pm : ℝ} (hc : 0 ≤ c) (hE0 : 0 ≤ E) (hE :
   exact mul_le_mul (mul_le_mul_of_nonneg_left hE hc) hPm (abs_nonneg _)
     (mul_nonneg hc (hE0.trans hE))
 
+
+/-- Reciprocal enclosure of `e^{-x}` from an enclosure of `e^x`. -/
+theorem exp_neg_bounds {x L U : ℝ} (hL0 : 0 < L) (hL : L ≤ Real.exp x) (hU : Real.exp x ≤ U) :
+    1/U ≤ Real.exp (-x) ∧ Real.exp (-x) ≤ 1/L := by
+  rw [Real.exp_neg]
+  constructor
+  · rw [one_div]; exact inv_anti₀ (Real.exp_pos x) hU
+  · rw [one_div]; exact inv_anti₀ hL0 hL
+
 end
 end RHTower.ThetaCuspOddFourCertificateTools

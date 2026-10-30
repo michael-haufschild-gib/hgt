@@ -45,6 +45,15 @@ the averaging mechanism and periodic-primitive construction. The exact
 Fourier input is `WeilDeletionTestKit.paperFT_unif` and `paperFT_upow`,
 combined with `paperFT_tiltedSource`.
 
+The candidate exact spectrum is
+`[(sinh²1+sin²(πt/4))⁴/64]/[1+(πt/4)²]⁴`.
+Its numerator `Q(t)` has period four and strictly positive mean `μ`.
+The bounded primitive of `Q−μ` would give
+`c⁷T(c)→μ(4/π)⁸/7`. The repayment series then gives
+`K=(2/M)·μ(4/π)⁸/7·Σ_(k≥1)k⁻⁸`.
+`HTGeometry.HyperbolicModulus.normSq_sinh_sub_mul_I` supplies the exact
+complex-modulus calculation needed to verify this formula.
+
 ## Gates
 
 - Novelty search found completed-energy positivity, conductor comparison,

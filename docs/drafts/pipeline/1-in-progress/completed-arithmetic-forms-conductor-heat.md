@@ -35,4 +35,17 @@ This concerns the infinite conductor model identified by fixed arithmetic
 packets. Convergence of finite complete-Weil heat traces additionally requires
 control of their growing high-energy multiplicities.
 
-Lean target: `CompletedArithmeticForms/ConductorHeatThreshold.lean`.
+Lean: `CompletedArithmeticForms/ConductorHeatThreshold.lean`,
+`summable_completedConductorHeatWeight_iff`,
+`not_summable_tiltedWeil_inverse_energy_pow`.
+
+The source estimate
+\[
+\operatorname{tameDifferent}(m)
+\le2\log K+2\log4+2\log m/K\qquad(K\ge1)
+\]
+gives $\operatorname{tameDifferent}(m)/\log m\to0$ by first fixing $K$
+and then letting $K\to\infty$. Together with the bounded shell correction,
+it identifies the logarithmic spectral-law target $E_m(c)/\log m\to1$.
+Source: `ArithmeticIntersectionTheory/ThePositiveSquaresOfTheTorsionFormLiveBelowFourFifths`,
+`tameDifferent_le_split`. This target requires its own Lean formalization.

@@ -12,7 +12,7 @@ $$\|A^{-1}v-\lambda^{-1}v\|
 Indeed $A(A^{-1}v-\lambda^{-1}v)=-\lambda^{-1}(Av-\lambda v)$;
 coercivity and Cauchy–Schwarz give $e\|w\|\le\|Aw\|$.
 
-The corresponding source target is
+The corresponding actual source limits are
 $$\|A_N^{-1}r_{m,N}-E_m(c)^{-1}r_{m,N}\|\longrightarrow0,$$
 $$\langle A_N^{-1}r_{m,N},r_{l,N}\rangle
 \longrightarrow\mathbf1_{m=l}E_m(c)^{-1}.$$
@@ -22,3 +22,8 @@ $$\left\langle A_N^{-1}\sum_m b_mr_{m,N},\sum_m d_mr_{m,N}\right\rangle
 The normalization includes the pole, prime, Gamma, successor-shell and mixed
 terms of the original matrix. Conductors, packet support and overlap are
 fixed in these limits; no uniform growing-conductor assertion follows.
+
+Lean: `CompletedArithmeticForms/WeilGreenModes.lean`,
+`tendsto_tiltedWeil_inverse_ramanujan_residual_norm`,
+`tendsto_tiltedWeil_inverse_ramanujan_inner`,
+`tendsto_tiltedWeil_inverse_packet_inner`.

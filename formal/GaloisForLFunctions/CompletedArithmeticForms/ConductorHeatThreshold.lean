@@ -84,7 +84,8 @@ theorem summable_completedConductorHeatWeight (φ : ℝ → ℝ) {c β : ℝ}
     Summable (completedConductorHeatWeight φ c β) := by
   let B := completeWeilSelfFinitePart φ c - completedShellCorrectionBudget φ c
   have hs : Summable (fun n : ℕ => ((n + 1 : ℕ) : ℝ) ^ (-β)) :=
-    (Real.summable_nat_rpow.mpr (by linarith only [hβ])).comp_injective Nat.add_right_cancel
+    (Real.summable_nat_rpow.mpr (by linarith only [hβ])).comp_injective
+      (fun _ _ h => Nat.add_right_cancel h)
   apply (hs.mul_left (Real.exp (-β * B))).of_nonneg_of_le
     (fun _ => (Real.exp_pos _).le)
   intro n
@@ -96,7 +97,6 @@ theorem summable_completedConductorHeatWeight (φ : ℝ → ℝ) {c β : ℝ}
     have h := mul_le_mul_of_nonneg_left hE hβ0.le
     dsimp only [B]
     nlinarith only [h]
-  unfold completedConductorHeatWeight
   rw [Real.rpow_def_of_pos hn, ← Real.exp_add]
   exact Real.exp_le_exp.mpr hb
 
@@ -123,12 +123,14 @@ theorem summable_completedConductorHeatWeight_iff (φ : ℝ → ℝ) {c β : ℝ
     apply Subtype.ext
     have hp := p.property.two_le
     have hq := q.property.two_le
+    change (p : ℕ) - 1 = (q : ℕ) - 1 at he
     omega
   have hs : Summable (fun p : Nat.Primes =>
       Real.exp (-β * completedConductorEnergy φ c (p : ℕ))) := by
     have h := hsum.comp_injective hinj
     refine h.congr fun p => ?_
-    simp only [completedConductorHeatWeight, Nat.sub_add_cancel p.property.one_le]
+    simp only [Function.comp_apply, completedConductorHeatWeight,
+      Nat.sub_add_cancel p.property.one_le]
   apply Nat.Primes.not_summable_one_div
   apply (hs.mul_left (Real.exp (β * U))).of_nonneg_of_le (fun _ => by positivity)
   intro p
@@ -166,8 +168,8 @@ theorem not_summable_tiltedWeil_inverse_energy_pow {c : ℝ} (hc : 0 < c) (k : �
           mul_le_mul_of_nonneg_left h (Real.exp_pos _).le
         _ = _ := by
           rw [← mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul]
-    change Real.exp (-(1 : ℝ) * E) ≤ _
-    rw [neg_one_mul, ← inv_pow, ← div_eq_mul_inv, le_div_iff₀ (pow_pos hE k)]
+    change Real.exp (-(1 : ℝ) * E) ≤ (k.factorial : ℝ) * E⁻¹ ^ k
+    rw [neg_one_mul, inv_pow, ← div_eq_mul_inv, le_div_iff₀ (pow_pos hE k)]
     exact hpay
   exact (lt_irrefl (1 : ℝ)) ((summable_tiltedWeil_conductor_heat_iff hc).mp hheat)
 

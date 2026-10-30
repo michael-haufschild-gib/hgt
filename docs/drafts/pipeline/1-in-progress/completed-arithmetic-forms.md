@@ -73,6 +73,14 @@ constant is eventually violated by a unit eigenvector. One finite cost and
 one horizon work uniformly for every bounded interval $0<c\le K$.
 Lean: `WeilInverseCost`.
 
+Every fixed normalized Ramanujan mode satisfies
+$\|A_N(c)^{-1}r_{m,N}-E_m(c)^{-1}r_{m,N}\|\to0$.
+Every fixed finite packet therefore has mixed inverse limit
+$\sum_m b_md_m/E_m(c)$. The estimate
+$\|A^{-1}v-\lambda^{-1}v\|\le(e\lambda)^{-1}\|Av-\lambda v\|$
+retains the complete floor $A\succeq eI$.
+Lean: `WeilGreenModes`.
+
 The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
 Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.
 The energy flux proves zero exclusion throughout this joint argument-order

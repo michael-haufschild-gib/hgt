@@ -108,10 +108,10 @@ theorem band_le_two_pi_mass {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : Has
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs] at hpl
   have hint := RHTower.integrable_normSq_paperFT_ofReal hf hfc
   have hsub : ∫ t in R..101 * R, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 ≤
-      ∫ t, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 := by
+      ∫ t : ℝ, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 := by
     rw [intervalIntegral.integral_of_le (by linarith)]
     exact setIntegral_le_integral hint (Eventually.of_forall fun t => sq_nonneg _)
-  have h2 : ∫ t, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 = 2 * π * ∫ u, f u ^ 2 := by
+  have h2 : ∫ t : ℝ, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 = 2 * π * ∫ u, f u ^ 2 := by
     rw [← hpl]; field_simp
   exact hsub.trans h2.le
 
@@ -124,14 +124,14 @@ theorem growingMass_coef_le {c N : ℝ} (hc : 1 ≤ c) (hN : 0 < N) :
   have hfloor := splineBandFloor_ge hc
   have hfl : Real.sinh 1 ^ 8 / (64 * 161 ^ 4) ≤ c ^ 8 * splineBandFloor c := by
     rw [div_le_iff₀ (pow_pos hc0 8)] at hfloor; linarith
-  set A := Real.sinh 1 ^ 8 / (64 * 161 ^ 4)
-  set M := ∫ u, tiltedUnitSpline u ^ 2
-  set F := splineBandFloor c
-  have hl : growingMassConstant / c ^ 7 * ((c / N) * M) = 24 * A / (π * c ^ 6 * N) := by
+  have hl : growingMassConstant / c ^ 7 * ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) =
+      24 * (Real.sinh 1 ^ 8 / (64 * 161 ^ 4)) / (π * c ^ 6 * N) := by
     unfold growingMassConstant
     field_simp
-  have hr : 1 / (2 * π) * (48 * c ^ 2 * F / N) = 24 * (c ^ 8 * F) / (π * c ^ 6 * N) := by
+  have hr : 1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) =
+      24 * (c ^ 8 * splineBandFloor c) / (π * c ^ 6 * N) := by
     field_simp
+    ring
   rw [hl, hr]
   exact div_le_div_of_nonneg_right (by linarith) (by positivity)
 

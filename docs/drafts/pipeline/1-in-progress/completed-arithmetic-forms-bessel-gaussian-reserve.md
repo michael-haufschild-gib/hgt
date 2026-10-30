@@ -39,3 +39,20 @@ required literal-source obligations.
 A linear rank horizon would additionally require a polynomial-weighted
 estimate for the signed transform outside this band. The positive-band
 lower bound alone does not establish that horizon.
+
+The exact complex-order recurrence can pay the required first moment without
+a fresh boundary integration: differentiate
+$K_{\nu+1}=K_{\nu-1}+2\nu K_\nu/x$ at $\nu=0$ and use
+$K_{-\nu}=K_\nu$. The result is
+$\partial_\nu K_\nu(x)|_{\nu=1}=K_0(x)/x$; its literal source derivative is
+$\int_0^\infty t\sinh t\,e^{-x\cosh t}\,dt$.
+
+For a polynomial of degree $N$, the Gaussian reserve is concentrated at
+frequencies of order $\sqrt{aN}$. The contour shift by $\pi/3$ supplies an
+outer-frequency envelope $e^{-a/2-\pi|\tau|/3}$, with the argument derivative
+paid by the corresponding order-one integral. At $|\tau|=a$, its exponent
+has a strict gap from the central mass $e^{-a}$. A linear rank bound needs
+that gap to pay the full degree-$N$ polynomial growth, and must also pay
+every non-leading native product fibre. The expected horizon $a\ge C(N+1)$
+would match the existing linear upper bound for the first failing moment
+order; it is not established by the positive-band theorem.

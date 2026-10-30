@@ -43,6 +43,15 @@ Theorem (Lean, `RenormalizedArithmeticPotentialTheory`):
    (`completedShellEnergy_le_distance_of_resolutionThreshold_lt`); tilted spline:
    `C₀ √p ≤ 8 log p · max(c,1)^7` above `c_0(ω_p)`.
 
+7. Sharp law for single flips (`TheFlipThresholdIsSetByTheConductorsOfThePrime`): splitting a
+   packet into conductors prime to `p` and divisible by `p`, the flip energy is at least
+   `−κ_p(√α√b + b)`, `κ_p = 4 log p·√p/(p−1)` (`twistLimitEnergy_primeFlip_ge`); every conductor
+   divisible by `p` costs at least `E(c/p)` (`completedShellEnergy_div_le_of_dvd`, via
+   `E_{pm}(c) ≥ E_m(c/p)`); hence `λ_p(c) ≥ E(c) − κ_p²/(4D)`, `D = E(c/p) − κ_p − E(c)`, and above
+   the threshold `4E(c)·D ≤ κ_p²` (`margin_mul_le_of_primeFlip_resolutionThreshold_lt`).
+   Paper consequence, not formalized: for the tilted spline this gives
+   `c_0(ω_p) ≳ (p/log p)^{1/7}`, matching the corpus upper bound `(Kp)^{1/7}` up to the log.
+
 Not covered: twists at infinite distance (twin tails, the Liouville point, vertical shifts); for
 them the twist is not a bounded perturbation of the packet operator.
 
@@ -59,5 +68,5 @@ them the twist is not a bounded perturbation of the packet operator.
 ### Q2 — open
 
 ## Log
-- 2026-10-30 — created; Q3 law derived on paper and formalized (five modules in
-  `RenormalizedArithmeticPotentialTheory`, see Q3).
+- 2026-10-30 — created; Q3 law derived on paper and formalized (six modules in
+  `RenormalizedArithmeticPotentialTheory`, see Q3); paused on request.

@@ -167,9 +167,38 @@ Their Fourier sampling formula is the same residue inversion with weights
 [ResidueNewtonDetection.lean](ResidueNewtonDetection.lean) contains the
 triangular detection theorem;
 [ArithmeticNewtonResolution.lean](ArithmeticNewtonResolution.lean) supplies
-the arithmetic length bound. These are algebraic sampling statements.
-Identifying them with all analytic torus jets at torsion points is a further
-theorem required for a full multiplicity bound.
+the arithmetic length bound.
+
+The differential bridge is explicit. Set `E_p=z_p ∂/∂z_p` and
+`L_(b,α)=∏_p ∏_{j<α_p}(E_p−b_p−dj)`. Then
+
+`Σ_t conj(χ_b(t)) L_(b,α)F(t)`
+`= d^|P| d^|α| (∏_p α_p!) J(b,α)`.
+
+Euler operators act diagonally on monomials. Fourier averaging selects the
+residue, and falling factorials give the normalization. A word of `k` Euler
+factors lowers any point-ideal multiplicity by at most `k`, by Leibniz.
+Centered Taylor coefficients identify these ideal powers with vanishing
+of ordinary analytic mixed derivatives.
+
+Consequently a nonzero arithmetic auxiliary with full multiplicity at least
+`r` on the entire `ψ^(d+1)` fixed locus must reach integer support `2^(dr)`.
+Here full multiplicity means all complex prime-coordinate mixed derivatives
+of total order below `r`; the polynomial evaluates to the original arithmetic
+twist sum. The integer polynomial `(z₂^d−1)^r` attains the threshold: its
+largest arithmetic frequency is exactly `2^(dr)`, its top coefficient is
+one, and every `d`th root has multiplicity exactly `r` in that coordinate.
+
+The mechanism is formalized in
+[EulerOperatorsLowerMultiplicity.lean](EulerOperatorsLowerMultiplicity.lean),
+[TorsionEulerJetExtraction.lean](TorsionEulerJetExtraction.lean), and
+[MixedJetMultiplicity.lean](MixedJetMultiplicity.lean). The arithmetic
+theorem and boundary are
+[AdamsMultiplicityResolution.lean](AdamsMultiplicityResolution.lean) and
+[TorsionMultiplicityBoundary.lean](TorsionMultiplicityBoundary.lean).
+This sharp support law gives no coefficient-height gain and does not produce
+an auxiliary beating the divisibility cost. Classification of all auxiliaries
+attaining the minimum support is a further rigidity question.
 
 Vertical derivatives alone have a different cost. The auxiliary
 `log(3)(z₂−1)−log(2)(z₃−1)` has zero value and first derivative on the

@@ -151,7 +151,7 @@ theorem weilQuad_windowedApertureMode_eq_tsum {g : ℝ → ℝ} (hg : ContDiff �
 
 /-- **The window charge.** With `a = 1/2 − κ` and `z = s − 1/2`, the pole parts of the two horizon
 differences multiply to the zero-side summand of the exponential box test on `[log M, log N]`. -/
-theorem windowPole_mul_eq {M N : ℕ} (hM : 1 ≤ M) (hMN : M ≤ N) (κ : ℝ) (s : ℂ) :
+theorem windowPole_mul_eq (M N : ℕ) (κ : ℝ) (s : ℂ) :
     (RHTower.emPole M (s + ((1 / 2 - κ : ℝ) : ℂ)) - RHTower.emPole N (s + ((1 / 2 - κ : ℝ) : ℂ))) *
         (RHTower.emPole M (1 - s + ((1 / 2 - κ : ℝ) : ℂ)) -
           RHTower.emPole N (1 - s + ((1 / 2 - κ : ℝ) : ℂ))) =
@@ -160,26 +160,43 @@ theorem windowPole_mul_eq {M N : ℕ} (hM : 1 ≤ M) (hMN : M ≤ N) (κ : ℝ) 
           (N : ℂ) ^ ((κ : ℂ) - (s - 1 / 2)) * (M : ℂ) ^ ((κ : ℂ) + (s - 1 / 2)) -
           (M : ℂ) ^ ((κ : ℂ) - (s - 1 / 2)) * (N : ℂ) ^ ((κ : ℂ) + (s - 1 / 2))) /
         (κ ^ 2 - (s - 1 / 2) ^ 2) := by
+  by_cases hdeg : (κ : ℂ) ^ 2 - (s - 1 / 2) ^ 2 = 0
+  · -- both sides vanish: one of the two pole denominators is zero
+    have hfac : ((s - 1 / 2) - κ) * (-(s - 1 / 2) - κ) = 0 := by linear_combination hdeg
+    rw [hdeg, div_zero]
+    rcases mul_eq_zero.mp hfac with h | h
+    · have h0 : s + ((1 / 2 - κ : ℝ) : ℂ) - 1 = 0 := by push_cast; linear_combination h
+      simp only [RHTower.emPole, h0, div_zero, sub_self, zero_mul]
+    · have h0 : 1 - s + ((1 / 2 - κ : ℝ) : ℂ) - 1 = 0 := by push_cast; linear_combination h
+      simp only [RHTower.emPole, h0, div_zero, sub_self, mul_zero]
   have e1 : ∀ K : ℕ, (K : ℂ) ^ (1 - (s + ((1 / 2 - κ : ℝ) : ℂ))) =
       (K : ℂ) ^ ((κ : ℂ) - (s - 1 / 2)) := fun K => by congr 1; push_cast; ring
   have e2 : ∀ K : ℕ, (K : ℂ) ^ (1 - (1 - s + ((1 / 2 - κ : ℝ) : ℂ))) =
       (K : ℂ) ^ ((κ : ℂ) + (s - 1 / 2)) := fun K => by congr 1; push_cast; ring
-  unfold RHTower.emPole
-  rw [e1, e1, e2, e2]
   have hd1 : s + ((1 / 2 - κ : ℝ) : ℂ) - 1 = (s - 1 / 2) - κ := by push_cast; ring
   have hd2 : 1 - s + ((1 / 2 - κ : ℝ) : ℂ) - 1 = -(s - 1 / 2) - κ := by push_cast; ring
-  rw [hd1, hd2]
-  by_cases h1 : (s - 1 / 2) - (κ : ℂ) = 0
-  · have h2 : (κ : ℂ) ^ 2 - (s - 1 / 2) ^ 2 = 0 := by
-      rw [show s - 1 / 2 = (κ : ℂ) by linear_combination h1]; ring
-    simp [h1, h2]
-  by_cases h2 : -(s - 1 / 2) - (κ : ℂ) = 0
-  · have h3 : (κ : ℂ) ^ 2 - (s - 1 / 2) ^ 2 = 0 := by
-      rw [show s - 1 / 2 = -(κ : ℂ) by linear_combination -h2]; ring
-    simp [h2, h3]
   have h3 : (κ : ℂ) ^ 2 - (s - 1 / 2) ^ 2 = ((s - 1 / 2) - κ) * (-(s - 1 / 2) - κ) := by ring
-  rw [h3]
+  have h1 : (s - 1 / 2) - (κ : ℂ) ≠ 0 := fun h => hdeg (by rw [h3, h, zero_mul])
+  have h2 : -(s - 1 / 2) - (κ : ℂ) ≠ 0 := fun h => hdeg (by rw [h3, h, mul_zero])
+  unfold RHTower.emPole
+  rw [e1, e1, e2, e2, hd1, hd2, h3]
   field_simp
+  ring
+
+/-- **Moduli of the window charge.** A cross term `N^{κ−z} M^{κ+z}` has modulus
+`N^{κ − Re z} M^{κ + Re z}`, while a diagonal term `N^{κ−z} N^{κ+z}` has modulus `N^{2κ}`: the
+real part of the zero enters only the cross terms, through the window ratio `N/M`. -/
+theorem norm_windowCross_eq {M N : ℕ} (hM : 1 ≤ M) (hN : 1 ≤ N) (κ : ℝ) (z : ℂ) :
+    ‖(N : ℂ) ^ ((κ : ℂ) - z) * (M : ℂ) ^ ((κ : ℂ) + z)‖ =
+      (N : ℝ) ^ (κ - z.re) * (M : ℝ) ^ (κ + z.re) := by
+  rw [norm_mul, Complex.norm_natCast_cpow_of_pos (by omega),
+    Complex.norm_natCast_cpow_of_pos (by omega)]
+  simp
+
+theorem norm_windowDiag_eq {N : ℕ} (hN : 1 ≤ N) (κ : ℝ) (z : ℂ) :
+    ‖(N : ℂ) ^ ((κ : ℂ) - z) * (N : ℂ) ^ ((κ : ℂ) + z)‖ = (N : ℝ) ^ (2 * κ) := by
+  rw [norm_windowCross_eq hN hN, ← Real.rpow_add (by exact_mod_cast hN)]
+  congr 1
   ring
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

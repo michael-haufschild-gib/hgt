@@ -2,7 +2,7 @@
 
 - **ID:** poisson-weil-critical-scale
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (Lean) for A1–A3, B1; CONJECTURE for A4
+- **Type:** THEOREM (Lean) for A1–A3, B1–B3; CONJECTURE for A4
 - **Source:** `docs/reports/review-3010/obstacles-summary.md` §2.5 (thesis, target theorem, theta bridge).
 - **Statement:** The bounded-overlap identity carries exactly to every overlap `c` and horizon `N`
   as the *horizon law*; its positive part is blind to the real parts of the zeros, and the theta
@@ -40,14 +40,27 @@ line: the pole charge is the Hadamard pair of Poisson kernels at abscissa 1.
 `Φ−Φ_N` has transform `f̂₁(γ_ρ)B_N(ρ)` at every nontrivial zero. The atomic pole mode carries
 `B_N(1−ρ)` at the same zero.
 
-## Answer to the thesis (working form)
+**B2. Aperture modes.** `y_n=n^{κ−1}` (`κ=½`: pole mode) has zero-side factors
+`X_N(1−ρ+a)X_N(ρ+a)`, `a=½−κ`; the pole parts of the shifted horizons multiply to the aperture charge
+`N^{2κ}/(κ²−(ρ−½)²)=N^{2κ}/(κ²+t_ρ²)`, whose zero sum is `Re(ξ'/ξ)(½+κ)/κ>0` (corpus:
+`xiRealLogDeriv_eq_mul_re_xiShiftedReciprocalMoment`) — the TH current at aperture `κ`, `b=0`.
+
+**B3. Windowed aperture modes are exponential box tests.** For `y_n=n^{κ−1}1_{M<n≤N}`, `ζ` cancels at
+every zero: the factors are `(B_M−B_N)(1−ρ+a)` and `(B_M−B_N)(ρ+a)`. Their pole parts multiply to
+`(N^{2κ}+M^{2κ}−N^{κ−z}M^{κ+z}−M^{κ−z}N^{κ+z})/(κ²−z²)`, the zero-side summand of Weil's exponential
+box test `e^{κu}1_{[log M,log N]}`. The diagonal terms have modulus `N^{2κ}`, `M^{2κ}`; the cross
+terms have modulus `N^{κ−Re z}M^{κ+Re z}`, so the real part of a zero enters only the cross terms,
+through the window ratio. (Inference: they outgrow the diagonal as `N/M→∞` exactly when
+`|β−½|>κ`; the Euler–Maclaurin tails are the aliasing of the atoms.)
+
+## Answer to the thesis (working form; inference beyond A1–A3, B1–B3)
 
 The identity carries to every resolution as the horizon law A1. Split vectors by depth:
 
 - **Deep horizons** (`⌊N/d⌋` above the zero height `/2π`, i.e. `d≲2πc` at the heights `≍N/c`
   resolved by atoms of width `c/N`: the conductors `m≲c`). Their zero-side products are the
-  horizon charge (A2–A3: blind, Poisson-kernel positive at abscissa 1) and the Euler–Maclaurin
-  tails, whose Fourier expansion is the successor-shell Poisson dual. No growth `N^{|β−1/2|}`.
+  horizon charge (A2–A3, proved: blind, Poisson-kernel positive at abscissa 1) and the
+  Euler–Maclaurin tails, whose Fourier expansion is the successor-shell Poisson dual (not proved).
 - **Shallow horizons** (`⌊N/d⌋` below the height, Möbius support near the top of the horizon).
   There `B_M(ρ)=−X_M(ρ)` is a short partial Euler sum: semilocal data reading `β`. The RH
   receivers synthesize their witnesses here.
@@ -57,12 +70,12 @@ the zeros at abscissa `½+a`; the pole charge of A3 is the same balayage at absc
 
 ## Open (next in the loop)
 
-- **A4 (dual decomposition).** Exact identity for the tail–tail part of the pole mode:
+- **A4 (dual decomposition), conjecture, no paper proof yet.** Exact identity for the tail–tail part of the pole mode:
   `Σ_ρ m_ρΦ ρ(1−ρ)T_N(ρ)T_N(1−ρ) = ∫K̂(t)Ω(t)|S_N(t)|²dt + pole − dual primes`, with
   `K=(¼−∂²)G`, `S_N(t)=∫_N^∞{x}x^{−3/2−it}dx`, `Ω` the archimedean density. The first term is
   the archimedean zero density against the squared sawtooth transform (the Poisson remainder).
-- Deep-sector positivity at every overlap (A2+A4 with the dual primes bounded relative to
-  `log N`).
+- Deep-sector positivity at every overlap (conjecture; needs A4 and bounds on the dual primes and
+  cross terms relative to `log N`).
 
 ## Lean
 
@@ -76,12 +89,19 @@ the zeros at abscissa `½+a`; the pole charge of A3 is the same balayage at absc
 - `TheThetaSourceSharesTheHorizonOfThePoleMode`: `paperFT_thetaHorizonSource_gammaOf`,
   `paperFT_thetaTail_gammaOf`.
 
-All four pass direct `lake --old env lean`; RAPT umbrella wired.
+- `TheApertureModesCarryTheThetaApertureCharge`: `weilQuad_apertureMode_eq_tsum`,
+  `emPole_mul_emPole_aperture`, `tsum_apertureCharge_re_eq`, `tsum_apertureCharge_re_pos`.
+- `AWindowedApertureModeIsAnExponentialBoxTest`: `windowSum_eq_horizonBoundary_sub`,
+  `weilQuad_windowedApertureMode_eq_tsum`, `windowPole_mul_eq`, `norm_windowCross_eq`,
+  `norm_windowDiag_eq`.
+
+All six pass direct `lake --old env lean`; axiom audits: `propext`, `Classical.choice`,
+`Quot.sound` only; RAPT umbrella wired.
 
 ## Gates
 - [x] 0 → 1
-- [ ] 1 → 2  A4 paper proof
+- [ ] 1 → 2  A4 paper proof (open); A1–A3, B1–B3 are proved and formalized
 - [ ] 2 → 3
 
 ## Log
-- 2026-10-30 — created; A1–A3, B1 formalized.
+- 2026-10-30 — created; A1–A3, B1–B3 formalized; paused before A4.

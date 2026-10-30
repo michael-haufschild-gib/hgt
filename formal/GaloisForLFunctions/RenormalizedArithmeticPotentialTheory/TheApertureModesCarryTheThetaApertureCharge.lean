@@ -22,8 +22,8 @@ For `0 ≤ a < 1/2` both arguments lie in `Re s > 0` and differ from `1`, so eac
 which at `κ = 1/2` is the pole charge `N/(ρ(1−ρ))`. With `ρ − 1/2 = i t_ρ` this is
 `N^{2κ}/(κ² + t_ρ²)`: summed over the zeros it is `N^{2κ} Re(ξ'/ξ)(1/2+κ)/κ`
 (`tsum_apertureCharge_re_eq`), the theta center-mixed current at aperture `κ` on the real axis.
-The aperture modes are the atomic realization of the theta apertures. The factors `ζ(ρ + a)` that
-remain at `κ < 1/2` are where the zeros to the right of `1/2 + κ` enter.
+The aperture modes are the atomic realization of the theta apertures. For `κ < 1/2` the shift
+`a > 0` moves `ρ + a` off the zero set, so the factors `ζ(ρ + a)` no longer cancel.
 -/
 
 noncomputable section
