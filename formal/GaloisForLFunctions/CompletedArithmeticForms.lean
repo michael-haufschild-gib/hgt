@@ -69,6 +69,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.BesselGaussianMoments
 import GaloisForLFunctions.CompletedArithmeticForms.BesselGaussianReserve
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorOverlapDecay
 import GaloisForLFunctions.CompletedArithmeticForms.WeilGrowingOverlap
+import GaloisForLFunctions.CompletedArithmeticForms.WeilGrowingPackets
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -137,6 +138,17 @@ The decaying barrier pays its negative argument derivative and gives a strict
 reserve for the full signed radial Bessel combination at argument at least six.
 The literal physical Wigner transform has this positive radial band; each
 complete product fibre has precisely the real divisor trace's sign inside it.
+The completed conductor energy has logarithmic growth and heat summability exactly
+above inverse temperature one. The tilted-spline Green completion is compact and injective.
+At fixed overlap, the actual inverse is arbitrarily small on the orthogonal complement
+of a finite arithmetic packet once the horizon is sufficiently large.
+At growing overlap, every fixed conductor energy has matching inverse seventh-power
+bounds. The complete residual vanishes relative to that energy on logarithmic
+overlap schedules with exponent strictly between zero and one fortieth.
+Every fixed finite family of distinct positive conductors is eventually a strictly
+positive packet on those schedules, uniformly over all nonzero real coefficients.
+The literal imaginary-order Bessel source retains a Gaussian reserve throughout
+its positive band, including an explicit reserve for the signed radial combination.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/

@@ -24,8 +24,10 @@ Write `W=W_(N,c)`, `v_m` for normalized Ramanujan vectors, `E_m(c)` for complete
 - Fixed finite conductor packets are positive for `c≤(log N)^α`, `α<1/48`.
 - Growing Gamma reserve: `κ c^-7 log N-bc`, with explicit constants, for `1≤c≤N`.
 - Conductor-sensitive floor: formalized in [conductor-scale-controls-completed-energy.md](../3-formalized/conductor-scale-controls-completed-energy.md), with standard-only axioms.
+- Complete reserve `W_(N,c)≥a c^-7 D_N-C c^9‖x‖²` for `N≥Hc^8`: formalized in [growing-overlap-has-an-effective-complete-defect-reserve.md](../3-formalized/growing-overlap-has-an-effective-complete-defect-reserve.md). Every negative unit vector has `D_N≤C'c^16`.
+- Whole-family harmonic Gram lower bound: `Σ_(n≤N)(Σ_(m≤Q)a_m r_m(n))²≥(log(N+1)-2 log Q)Σa_m²`, for `Q≥2`; `GrowingRamanujanFamiliesHaveASquareRootHorizon.ramanujanPoleProfile_family_squareRoot_lower`. The earlier pairwise `Q³/log N` budget is not a necessary horizon restriction.
 - **Open:** effective negative-eigenvector confinement, growing-conductor weighted source estimate, and physical loss with exponent below `1/2`.
 
 The current finite approximation selects a prime threshold exponential in its defect bound, then all divisors of a valuation-box modulus. Neither this qualitative construction nor fixed-modulus prime asymptotics supply the needed growing-conductor estimate.
 
-The exact ratio-prime identity permits a coarser horizon-uniform counterterm `P_N+D_N≤(log N+C)‖x‖²`: boundedness of `A(y)-log y` suffices. Using it avoids a conductor-dependent convergence horizon when the allowed defect loss shrinks with overlap. The next source estimate is a polynomial complete reserve `W_(N,c)≥a c^-7 D_N-C c^9‖x‖²` on `N≥C'c^8`; it would bound the defect of negative unit vectors by `O(c^16)`.
+The complete reserve uses the exact horizon-uniform counterterm `P_N+D_N≤(log N+log 4+4)‖x‖²`, avoiding a shrinking-error convergence horizon. The polynomial defect bound alone still gives an enormous conductor family under existing generic compactness. Useful confinement must exploit additional structure of the complete signed form.

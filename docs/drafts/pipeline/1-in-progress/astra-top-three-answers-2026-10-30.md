@@ -18,6 +18,22 @@
   (seam tail form `=∫_ℝ|Σ_j v_j(2i)^jΦ^(j)|²`, every order) and `_zero_nonneg`.
 - Axioms: `propext`, `Classical.choice`, `Quot.sound` only. Wired into `RHTower.lean`.
 
+**Rank eight — the first test, answered: `I_7(a) ≥ 0` for every `0<a<1/2`** (unconditional).
+`RHTower/ThetaCusp/ThetaCuspOddFourRankEight.lean`: `thetaCuspNativeSuccessorIntegral_seven_nonneg`,
+`thetaCuspCenterMixedSignedHankel_eight_posSemidef` (size-8 signed section PSD),
+`thetaCuspCenterMixedOddFour_posSemidef`; axioms `propext`, `Classical.choice`, `Quot.sound`.
+Proof: aperture-free seam split at `r_c=log(5/π)`. Fibre `≥ K(q)q⁻⁶[yᵀE(q)y − tail]` in the
+moving frame `c=B(1/q)y` (three exact atom pairs + Cauchy tail). 23 piece certificates
+(`ThetaCuspOddFourCertificatePieces1–6`): `W(q)+D(q)X ⪰ 0` on each `q`-interval via Taylor shifts
+at the center (all four atom-pair numerators, including `(1,3)`, `(2,3)`), linearized `e^{-3q}`,
+endpoint `LDLᵀ`. Seam `q∈[π,5]` (15 pieces, `X⪰0`) bounds `r²min(f,0) ≥ −Ω·q·yᵀXy`; bulk
+`q∈[5,8]` (8 pieces, `X⪯0`) gives `f≥0` with reserve; beyond `q=6` first-atom coercivity
+(`ThetaCuspOddFourNativeBulk`). `ThetaCuspOddFourPieceIntegral` + `CertificateIntegrals1–4`: the
+moving-frame form is polynomial in `q` and integrates exactly against `πe^r dr=dq`; rational
+weight bounds per piece. Final 4×4 comparison (bulk reserve − seam cost) PSD by exact `LDLᵀ`
+(slack ≈ 18×). Design note: crude absolute-coefficient bounds on the `(1,3)` pair cost ~10⁴ of
+its true size in the badly scaled `y₃` direction; center-shifted bounds remove it.
+
 Exact structure exposed: the fibre form is a perfect square plus a null Lagrangian,
 `J_v=|G_v|²+B_v'` with `G_v=Σ_j v_j(2i)^jΦ^(j)`; hence the tail form at center `x=r/2` equals
 `2∫_x^∞|G_v|²-2B_v(x)`, bulk `L²` mass beyond the center minus a local boundary flux. The
@@ -150,9 +166,7 @@ Moving-frame certificate design (rigorous dry run): seam pieces width 0.05 on `[
 `W(q) − D(q)Ĉ ⪰ 0` (bulk) / `W(q) + D(q)Q̂ ⪰ 0` (seam), `D = 8q⁷(2q−3)²`, via Taylor shifts at the
 center, linearized `e^{-3q}`, endpoint LDL checks; integral step `∫A(q)ᵀĈA(q)dq` exact.
 
-Remaining for rank eight: a provable structured lower bound for the mixed atom pair on
-`q∈[π,5]` capturing that direction, bulk coercivity on `q≥5` without compensation, and the
-certified 4×4 comparison of the two integrated forms.
+Rank eight: done (see top). Higher ranks `n ≥ 8` remain open (all orders is RH strength).
 
 ## Q2 — answered and formalized (unconditional)
 

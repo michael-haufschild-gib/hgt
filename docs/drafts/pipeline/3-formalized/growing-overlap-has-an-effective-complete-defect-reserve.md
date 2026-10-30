@@ -1,8 +1,8 @@
 # Growing overlap has an effective complete defect reserve
 
 - **ID:** growing-overlap-effective-complete-defect-reserve
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean verification pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** There are fixed positive constants `a,C,H` such that `W_(N,c)(x)≥a c^-7 D_N(x)-C c^9‖x‖²` for `c≥1` and `N≥H c^8`.
 
 ## Paper proof
@@ -26,7 +26,15 @@ Combine Gamma with the exact ratio-prime estimate. Assign defect allowance `δ/8
 
 In particular every negative unit vector has `D_N(x)≤(C/a)c^16`. This is a quantitative defect bound; passing from it to useful conductor confinement remains open.
 
-## Lean target
+## Lean proof
 
 `CriticalArithmeticCorrelationTheory/TheCompleteWeilReserveHasPolynomialOverlapCost.lean`.
-First establish the exact cutoff and cost functions, then their polynomial bounds and the negative-vector consequence.
+
+- `atomicWeilForm_add_full_poleDefect_le`: exact uniform prime counterterm.
+- `tiltedUnitSpline_complete_defect_reserve_explicit`: explicit cutoff and cost.
+- `exists_growingDefectCutoff_polynomial_bound`: cutoff `O(c^8)`.
+- `exists_growingCompleteReserveCost_polynomial_bound`: mass cost `O(c^9)`.
+- `exists_tiltedUnitSpline_complete_defect_reserve_polynomial`: complete reserve.
+- `exists_negative_completeWeil_poleDefect_polynomial_bound`: negative-vector defect `O(c^16)`.
+
+Focused Lean check passes; all six transitive audits use only `propext`, `Classical.choice`, and `Quot.sound`.

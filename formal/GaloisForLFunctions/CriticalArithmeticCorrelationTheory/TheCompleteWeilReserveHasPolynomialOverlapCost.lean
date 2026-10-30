@@ -378,7 +378,6 @@ theorem exists_growingDefectCutoff_polynomial_bound :
     unfold growingDefectFraction
     dsimp only [d]
     field_simp
-    <;> ring
   have hmax : max 3 (max (4 * c) (128 * Real.exp 2 * c / growingDefectFraction c)) ≤
       A * c ^ 8 := by
     refine max_le ?_ (max_le ?_ ?_)
@@ -518,11 +517,11 @@ theorem exists_growingCompleteReserveCost_polynomial_bound :
   have hnreq : 2 * nonRatioUpConstant * nonRatioDownConstant * c ^ 2 / ε = U * c ^ 9 := by
     dsimp only [ε, growingDefectFraction, U, d]
     field_simp
-    <;> ring
+    ring
   have hpeq : 2 * hardyConstant * Real.exp 1 * c ^ 2 / ε = V * c ^ 9 := by
     dsimp only [ε, growingDefectFraction, V, d]
     field_simp
-    <;> ring
+    ring
   have hnr : nonRatioRelativeCost c ε ≤ (U + J) * c ^ 9 := by
     unfold nonRatioRelativeCost
     rw [hnreq]
@@ -556,8 +555,9 @@ theorem exists_tiltedUnitSpline_complete_defect_reserve_polynomial :
   have hcutN : growingDefectCutoff c ≤ N := by
     exact_mod_cast (hcut c hc).trans hN
   have he := tiltedUnitSpline_complete_defect_reserve_explicit hc hcutN x
-  have hpay := mul_le_mul_of_nonneg_right (hcost c hc)
-    (sum_nonneg fun n _ => sq_nonneg (x n))
+  have hS : 0 ≤ ∑ n ∈ Icc 1 N, x n ^ 2 :=
+    sum_nonneg fun n _ => sq_nonneg (x n)
+  have hpay := mul_le_mul_of_nonneg_right (hcost c hc) hS
   have hid : growingDefectFraction c / 4 = (d / 4) / c ^ 7 := by
     dsimp only [growingDefectFraction, d]
     ring

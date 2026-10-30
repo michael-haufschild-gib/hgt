@@ -585,6 +585,27 @@ See [WeilGrowingOverlap](WeilGrowingOverlap.lean),
 `eventually_logarithmicPacketOverlap_source_domain` and
 `tendsto_tiltedWeil_relative_residual_norm`.
 
+For $N\ge2$, the literal normalized Ramanujan Gram satisfies
+\[
+|\langle r_{m,N},r_{\ell,N}\rangle-\delta_{m\ell}|
+\le\frac{2m\ell+1}{\log N}.
+\]
+The quadratic energy ceiling pays its scaled mixed-entry cost by
+$O_{m,\ell}(c^9/\log N)$. Thus, on the same overlap schedules,
+\[
+c_N^7\bigl(\langle A_N(c_N)r_{m,N},r_{\ell,N}\rangle
+-\delta_{m\ell}E_m(c_N)\bigr)\longrightarrow0.
+\]
+For every fixed injective family $m:\mathrm{Fin}(d)\to\mathbb N_{>0}$,
+one horizon makes the literal complete energy of
+$\sum_i b_i r_{m_i,N}$ strictly positive for every nonzero real coefficient
+vector $b$. The varying diagonal has common scaled floor $\kappa$;
+the finite entry error controls all mixed coefficients simultaneously.
+See [WeilGrowingPackets](WeilGrowingPackets.lean),
+`normalizedRamanujan_gram_error_le`,
+`tendsto_tiltedWeil_scaled_packet_entry_error`, and
+`eventually_tiltedWeil_growing_packet_pos`.
+
 ## Exact native-tail reserves and their rank boundary
 
 Write $(r)_n=\prod_{j<n}(r+j)$. The scaled Gamma moments $m_k=gw^k(r)_k$, with
@@ -1302,8 +1323,13 @@ a norm-preserving transfer between programmes.
    These statements include $c=3/2$ for this explicit profile.
    See [TheCompleteWeilGroundStateIsThePole](../CriticalArithmeticCorrelationTheory/TheCompleteWeilGroundStateIsThePole.lean)
    and [OneHorizonMakesEveryBoundedOverlapPositive](../CriticalArithmeticCorrelationTheory/OneHorizonMakesEveryBoundedOverlapPositive.lean).
-   Which source estimates pay completion relative to the diminishing ground reserve
-   on a prescribed unbounded overlap schedule sufficient for the arithmetic endpoint?
+   At $c_N=(\log N)^\alpha$, $0<\alpha<1/40$, every fixed conductor has
+   vanishing relative residual, and every fixed finite family of distinct
+   positive conductors is eventually a strictly positive packet for all nonzero
+   real coefficients. See [WeilGrowingPackets](WeilGrowingPackets.lean).
+   Which source estimates control all remaining horizon directions relative to
+   the diminishing ground reserve on an unbounded overlap schedule sufficient
+   for the arithmetic endpoint?
    For the same tilted spline, eventual nonnegativity on
    $c_N=2(\log N)^\alpha$, $\alpha>1/4$, is equivalent to RH.
    More generally the proved transfer uses $c_N=o(N)$ and

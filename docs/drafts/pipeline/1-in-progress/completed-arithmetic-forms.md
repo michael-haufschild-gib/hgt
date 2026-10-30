@@ -133,6 +133,15 @@ inequality holds eventually, $c_N^7$ times the residual norm tends to zero,
 and the residual divided by the actual energy tends to zero.
 Lean: `WeilGrowingOverlap`.
 
+For $N\ge2$, the normalized Ramanujan Gram error is at most
+$(2m\ell+1)/\log N$. At $c_N=(\log N)^\alpha$, $0<\alpha<1/40$,
+$c_N^7$ times every complete mixed-entry error tends to zero.
+Every fixed injective finite positive-conductor family is eventually
+strictly positive for all nonzero real coefficient vectors, with one
+horizon for the entire family. The scaled varying diagonal retains
+the common floor $\kappa$.
+Lean: `WeilGrowingPackets`.
+
 The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
 Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.
 The energy flux proves zero exclusion throughout this joint argument-order
@@ -274,8 +283,12 @@ Lean: `HyperbolicClock`, `GaussianClockCone`, `ScaleJetTransport`.
 2. Pay the complete Weil source on a prescribed unbounded overlap schedule.
    The tilted unit spline already has positivity and a common spectral floor
    on every bounded overlap interval, including $3/2$; its limiting ground
-   energy is the completed pole energy. A growing schedule requires estimates
-   relative to that vanishing reserve. Eventual complete nonnegativity for
+   energy is the completed pole energy. For $c_N=(\log N)^\alpha$,
+   $0<\alpha<1/40$, every fixed conductor has vanishing relative residual,
+   and every fixed finite family of distinct positive conductors is eventually
+   a strictly positive packet for all nonzero real coefficients.
+   The remaining source estimate must control all horizon directions relative
+   to the vanishing reserve. Eventual complete nonnegativity for
    $c_N=2(\log N)^\alpha$, $\alpha>1/4$, is equivalent to RH.
    The plateau prefix theorem concerns a
    different profile and does not decide its full macroscopic residual.

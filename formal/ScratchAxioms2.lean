@@ -1,0 +1,3 @@
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterTailSquareFlux
+#print axioms RHTower.thetaCuspNativeTailHankelForm_eq_square_sub_flux
+#print axioms RHTower.hasDerivAt_thetaCuspNativeFlux

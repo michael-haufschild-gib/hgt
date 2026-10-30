@@ -33,11 +33,12 @@ theorem normalizedRamanujan_gram_error_le (m l : ℕ+) {N : ℕ} (hN : 2 ≤ N) 
   let δ : ℝ := if m = l then 1 else 0
   have hδ : 0 ≤ δ ∧ δ ≤ 1 := by dsimp only [δ]; split_ifs <;> norm_num
   have hh : |H - Real.log N| ≤ 1 := by
+    change |(∑ n ∈ Icc 1 N, 1 / (n : ℝ)) - Real.log N| ≤ 1
     have hlo : Real.log N ≤ (harmonic N : ℝ) := by
       simpa only [Nat.floor_natCast] using log_le_harmonic_floor (N : ℝ) (Nat.cast_nonneg N)
     have hup := harmonic_le_one_add_log N
-    simp only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast,
-      ← one_div] at hlo hup
+    simp only [harmonic_eq_sum_Icc, Rat.cast_sum, Rat.cast_inv, Rat.cast_natCast] at hlo hup
+    simp only [← one_div] at hlo hup
     rw [abs_of_nonneg (sub_nonneg.mpr hlo)]
     linarith only [hup]
   have hg := ramanujanPoleProfile_gram_error_le m l N
@@ -77,12 +78,14 @@ theorem tendsto_tiltedWeil_scaled_packet_entry_error {α : ℝ}
     have hc : 0 ≤ logarithmicPacketOverlap α N :=
       Real.rpow_nonneg (Real.log_natCast_nonneg N) α
     rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (pow_nonneg hc 7)]
+    rfl
   have hi := tendsto_horizon_inner_zero_of_norm (fun N => c N ^ 7 • r N)
     (fun N => normalizedRamanujanHorizonVector l N) hres
     (tendsto_normalizedRamanujanHorizonVector_norm l.property)
   obtain ⟨C, hC, hE⟩ := exists_completedConductorEnergy_polynomial_bound
     contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos m.property
-  have hlim := (tendsto_packetOverlap_pow_div_log (α := α) 9 (by linarith only [hα])).const_mul
+  have hlim := (tendsto_packetOverlap_pow_div_log (α := α) 9
+    (by push_cast; linarith only [hα])).const_mul
     (C * (2 * (m : ℝ) * (l : ℝ) + 1))
   simp only [mul_zero] at hlim
   have hgram : Tendsto (fun N : ℕ => c N ^ 7 * E N *
@@ -97,7 +100,7 @@ theorem tendsto_tiltedWeil_scaled_packet_entry_error {α : ℝ}
       _ ≤ c N ^ 7 * (C * c N ^ 2) * ((2 * (m : ℝ) * (l : ℝ) + 1) / Real.log N) :=
         mul_le_mul (mul_le_mul_of_nonneg_left (hE _ hd.1) (pow_nonneg hc 7))
           (normalizedRamanujan_gram_error_le m l hN) (abs_nonneg _) (by positivity)
-      _ = _ := by ring
+      _ = _ := by dsimp only [c]; ring
   have h := hi.add hgram
   simp only [zero_add] at h
   apply h.congr
@@ -144,15 +147,17 @@ theorem eventually_tiltedWeil_growing_packet_pos {α : ℝ}
     have hnon : 0 ≤ b ⬝ᵥ b := Finset.sum_nonneg fun _ _ => mul_self_nonneg _
     exact lt_of_le_of_ne hnon (Ne.symm fun he => hb (dotProduct_self_eq_zero.mp he))
   have hfloor : κ * (b ⬝ᵥ b) ≤ b ⬝ᵥ D N *ᵥ b := by
-    rw [Matrix.diagonal_mulVec, dotProduct, mul_sum]
+    simp only [D, dotProduct, Matrix.mulVec_diagonal, mul_sum]
     apply sum_le_sum
     intro i _
     have hf := tiltedUnitSpline_completedConductorEnergy_ge_polynomial_floor hd.1 (m i).property
-    change κ / c N ^ 7 ≤ _ at hf
+    change κ / c N ^ 7 ≤ completedConductorEnergy tiltedUnitSpline (c N) (m i) at hf
     rw [div_le_iff₀ (pow_pos hc 7)] at hf
     have h := mul_le_mul_of_nonneg_right hf (sq_nonneg (b i))
-    dsimp only [D, Pi.mul_apply, Pi.smul_apply, smul_eq_mul]
-    nlinarith only [h]
+    calc
+      _ = κ * b i ^ 2 := by ring
+      _ ≤ completedConductorEnergy tiltedUnitSpline (c N) (m i) * c N ^ 7 * b i ^ 2 := h
+      _ = _ := by ring
   have herr := HTGeometry.abs_dotProduct_mulVec_le (H N - D N) hε.le (hN) b
   have heq : b ⬝ᵥ H N *ᵥ b = b ⬝ᵥ D N *ᵥ b + b ⬝ᵥ (H N - D N) *ᵥ b := by
     rw [Matrix.sub_mulVec, dotProduct_sub]
