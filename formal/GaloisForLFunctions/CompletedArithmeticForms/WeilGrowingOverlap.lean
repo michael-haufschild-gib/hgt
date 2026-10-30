@@ -1,6 +1,6 @@
 import GaloisForLFunctions.CompletedArithmeticForms.WeilPolynomialResidual
 import GaloisForLFunctions.CompletedArithmeticForms.WeilGreenModes
-import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheTiltedSplineHasAPolynomialConductorFloor
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorOverlapDecay
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyWindow
 
 /-!
@@ -24,13 +24,6 @@ open CriticalArithmeticCorrelationTheory RenormalizedArithmeticPotentialTheory
 
 /-- An explicit unbounded overlap schedule for complete conductor packets. -/
 def logarithmicPacketOverlap (α : ℝ) (N : ℕ) : ℝ := Real.log (N : ℝ) ^ α
-
-/-- The positive coefficient of the actual common conductor floor. -/
-def tiltedConductorFloorCoefficient : ℝ :=
-  2 * tiltedSplineTailConstant / (∫ u, tiltedUnitSpline u ^ 2)
-
-theorem tiltedConductorFloorCoefficient_pos : 0 < tiltedConductorFloorCoefficient :=
-  div_pos (mul_pos zero_lt_two tiltedSplineTailConstant_pos) integral_tiltedUnitSpline_sq_pos
 
 private theorem packetOverlap_pow (α : ℝ) (N k : ℕ) :
     logarithmicPacketOverlap α N ^ k = Real.log (N : ℝ) ^ (α * (k : ℝ)) := by
@@ -133,7 +126,7 @@ private theorem tendsto_log_power_zero {r : ℝ} (hr : r < 0) :
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop))
   simpa only [Real.rpow_neg (Real.log_natCast_nonneg _), inv_inv] using h
 
-/-- A fixed overlap power is paid by the logarithmic Gram denominator below its exact threshold. -/
+/-- A fixed overlap power is paid by the logarithmic Gram denominator when its exponent is below one. -/
 theorem tendsto_packetOverlap_pow_div_log {α : ℝ} (k : ℕ) (hk : α * (k : ℝ) < 1) :
     Tendsto (fun N : ℕ => logarithmicPacketOverlap α N ^ k / Real.log N)
       atTop (𝓝 0) := by

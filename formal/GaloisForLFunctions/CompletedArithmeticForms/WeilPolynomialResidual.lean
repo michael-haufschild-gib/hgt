@@ -163,7 +163,8 @@ theorem exists_completeWeil_polynomial_residual_bound {φ : ℝ → ℝ}
       shellCorrection φ c m • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤
         (a ^ 2 * Cu) * weilResidualScale c N := by
     rw [upwardPrimeVector_ramanujan_residual_eq φ c N hm, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs]
-    exact (mul_le_mul_of_nonneg_left (huN c hc hw1 hBN hlarge) (sq_nonneg a)).trans_eq (by ring)
+    exact (mul_le_mul_of_nonneg_left (huN c hc hw1 hBN hlarge) (sq_nonneg a)).trans_eq
+      (by unfold weilResidualScale; ring)
   rw [completeWeilMatrix_ramanujan_residual_eq_at_every_overlap hφ hsupp hM hc0 hN hm]
   have hsum := norm_eight_residuals_sq_le
     (Matrix.toEuclideanLin (fullPrimeMatrix N) (normalizedRamanujanHorizonVector m N) -
