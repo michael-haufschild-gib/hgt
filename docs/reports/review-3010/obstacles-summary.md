@@ -46,7 +46,7 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
   - the logarithmic sieve spectral tail, harmonic class weights and `exists_sieveProfile_ramanujan_approximation` [L];
   - finite-horizon conductor coordinates [L];
   - the conductor-uniform Dirichlet log-derivative and Perron contours [S].
-- **A4. Effective horizons** for fixed-c positivity and for the explicit full-index schedules; full-index exhaustion for the smaller Steklov schedule.
+- **A4. Effective horizons** for fixed-c positivity and the explicit full-index schedules remain. **Full-index Steklov exhaustion is formalized:** `steklovDCProfile_atomicGram_reaches_index` gives convergence to the entire Weil index at width `(log log N)(log log log N)^β/N` for every `β>2`, with direct Lean and axiom audits. [Proof](../../drafts/pipeline/3-formalized/the-steklov-schedule-reaches-the-whole-index.md).
 - **A5. Haar branch:** first-prime, coarse, polar and head payments on fixed finite cells and finite sources.
 - **A6. The matched class Hodge index on a finite sieve — formalized.** `eventually_sieveHodgeGram_one_positive_direction` proves exactly one positive direction for `P_N − (log N − γ − η)I`, for `0 < η < 2 log 2`, on every full finite-sieve partition. One horizon works for every sieve, including growing sieves. The existing all-vector prime gap supplies the shared polar hyperplane. [Proof and Lean audit](../../drafts/pipeline/3-formalized/matched-prime-form-hodge-index-uniform-in-the-sieve.md). Transfer to the complete Weil form remains open (§2.5 O2).
 
@@ -62,13 +62,13 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
 
 **Selection and index bookkeeping.**
 
-- **A11.** Exact flip thresholds c₀ for further finite flip families.
+- **A11. Finite flip thresholds — formalized.** `tiltedUnitSpline_finiteFlip_resolutionThreshold_spec` specializes the existing all-finite-set theorem to the explicit tilted spline, with no profile conditions left to prove. Every nonempty finite prime set has a positive finite threshold, eventual positivity below it and a unit negative packet above it. Direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/every-finite-prime-flip-has-a-tilted-spline-threshold.md).
 - **A12.** PW-B: restate the native two-response action on source data, removing `XiZeroCopy` indexing.
 
 **Foundations and programmes.**
 
 - **A13.** ACS 𝔽₃ elliptic base: product formula, quotient measures, Iwasawa characters, Eisenstein unfolding.
-- **A14.** HEF: transport the finite resolvent depth formula (σ − 1/2)S = E + D to the Ξ divisor. The Ξ line-reflection receiver exists; Σ_ρ \|s − ρ\|^{−2} converges absolutely, so this is an identity to transport, not an estimate.
+- **A14. Full Ξ-divisor depth identity — formalized for `σ>1`.** `sub_mul_xiSamePointResolvent_sub_logDeriv` proves `(σ−1/2)S−Re(ξ′/ξ)=D`, with absolute convergence of both series and `D≥0`. The Euler and archimedean terms are also opened exactly. [Proof and Lean audit](../../drafts/pipeline/3-formalized/the-full-xi-resolvent-depth-identity.md).
 - **A15.** MC: Siegel–Walfisz transfer for growing-modulus shells with the conductor-uniform contours. WL: higher-order scalar-jet transfer for general prime families. CTF: terminal and Euler-completion bookkeeping.
 
 ## 2.2 Open mathematical problems

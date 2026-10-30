@@ -289,3 +289,326 @@ Source: cat/03.txt (94642 lines, 241 files).
 - Primitive eigenvector ν: Rayleigh excess of primGraph(|q|) = 4(⟨R q⁺, q⁻⟩ − 2(1−ν)⟨q⁺,1⟩⟨q⁻,1⟩); odd, ν > 0: 0 < −ν²sourcePair(q⁺,q⁻) ≤ ⟨R q⁺, q⁻⟩. Stationary Cauchy–Schwarz ‖q‖⁴ ≤ ⟨S|q|,|q|⟩·(4‖q⁺_snd‖² − ((1−μ)/μ)‖q‖² + arch + primeShift).
 - Odd q, both lobes: ⟨P q^±, q^±⟩² + ¼⟨D_odd q, |q|⟩² ≤ ⟨P_diag q^±, q^±⟩² (chiral drift tightening).
 - Second octave Fermi reciprocity: m ∈ [N, 2N−1]: second difference of fermiCellResponse(N, μ) at 2m+1 + forward gradient Δs_N(μ, 2m+1) = −2μ(m+1) ⇒ 2μ(m+1)² ≤ (curv)² + (grad)² ⇒ second-octave Fermi+gradient energy ≥ 2Σ_{first octave} μ² ≥ 2#oddSquarefreeWindow(N).
+## PronicCausalQuadratureInteriorSawtoothAndFermiGramBridge
+- Nyquist cell primitive F_c(t) = −e^{−t}((c−t)² + 1) − 2(c+1)t + t² + e^t has derivative e^{−t}(c + 1 − t − e^t)²; cell integral over [log n, log(n+1)] = c²/(n(n+1)) − 2c((1−1/(n+1))log(n+1) − (1−1/n)log n) + baseline: exact pronic quadratic coefficient 1/pronic(n).
+- Pronic Abel: Σ_{n≤T} ψ(n)²/(n(n+1)) + ψ(T)²/(T+1) = Σ_{n<T}(ψ(n+1)² − ψ(n)²)/(n+1) (ψ(1) = 0).
+- Interior sawtooth step identity (all n, no sub-horizon restriction): Δ(W² − I²) = (s(n) − Y(1))(s(n+1) − Y(1)) − (ΔI)² + ...; ⇒ upper bound dropping −(ΔI)².
+- Damped interior: ∀ε > 0 ∃C: |interior gradient sum + 2·local impulse − 2·counterterm·H_T^comp| ≤ C (O(1) compensated remainder, uniform in T).
+- Conditional RH criterion (premise open): cofinal ε → 0 with strict contraction 2·martingale + 2·counterterm·H ≤ (1−δ)·damped energy + C.
+- Route PM cofactor weight: iso-state window ⇒ 2D = −E ≤ 0; energy-centered pronic Gram form = damped Ramanujan energy variance. Barban–Vehov divisorSource on [1,X]: unit L² energy, zero unit-shift correlation (all excess sits in (X, M]). Vasyunin–Fermi head/tail Gram = pronic sums; first tail cell energy μ(2M+1)²/pronic(2M+1).
+## NodalDefectMarkovSubinvarianceAndCenteringPronicGramBridge (start)
+- Disjoint lobe supports ⇒ |p| leaves all local diagonal forms (θ-volume norm, arch, prime diagonal, ground potential) invariant.
+- Eigenvector μ: five-term |q| jump sum (stationary + primeGenerator − 4·stationary cross + 4·primeShift cross + ((2μ−1)/μ)‖q‖²) = c_∞‖θq‖² + ⟨V_prime q,q⟩ = ‖q‖² − ⟨V_ground q,q⟩ ≤ (1 + B_ground)‖q‖².
+- 1/cosh(x/2) ≤ 1/cosh(R/2) + Θ(x)/(Θ(R)cosh(x/2)) (collar/far-field split; Θ even, decreasing).
+- Spectral-to-nodal-defect: (sourceEnergy(|q|) − ((1−2μ)/μ)‖q‖²)² = 16 sourcePair(q⁺,q⁻)² ≤ 4(‖D‖² + statEnergy(D))(‖q‖² + statEnergy(|q|)), D = nodalDefectGraph μ q (a.e. ≥ 0 for 0 < μ ≤ 1; lobes Markov sub-invariant).
+- Pronic Gram (BVI forms): meanCentered − discrepancy Gram = (Σ(φ(e)/2 − Λ(e))Y_e)² − (ΣΛ(e)Y_e)². Route PM Gram quadratic = (energy mean)² + energy variance (≥ mean²); variance splits at any H into head energy + (H+1)(head mean)² + tail variance. Second-order mean approximation: Σ_{M≤H} prefix/pronic − mean − (½Σφ(e)w_e)/(H+1) = O(1/((H+1)(H+2))).
+- Boost light cone: autocorr f(log(N+k)) = 0 for k < N ⇔ cosh- and sinh-boosted autocorrelations coincide at those nodes; then producer–consumer Lévy duality on [log N, log 2N].
+## CoshCollarNodalDefectBezoutShellAndMobiusWaveBridge (start)
+- |thetaGroundPotential(x)| ≤ B_ground/cosh(x/2) (retain cosh denominator); Θ(R) ≤ Θ(x) on |x| ≤ R; ⇒ |⟨V_ground u,u⟩| ≤ (B/cosh(R/2))‖u‖² + (B/Θ(R))‖θu‖²; ‖u‖² − ⟨V_ground u,u⟩ and ⟨V_prime u,u⟩ bounded by (1 + B/cosh(R/2))‖u‖² + (B/Θ(R))‖θu‖² (resp. − c_∞‖θu‖²). Lobe five-term jump sums bounded by these collar splits; odd sector: half-mass version with ‖q‖²/2.
+- Odd q, 0 < μ ≤ 1: nodalDefectGraph = stationaryGraphLift(collarPotential(q⁻)) − q⁻; ≥ 0 a.e.; ⟨D, q⟩_ground = 0; ⟨D, |q|⟩_ground = 2(−stat cross + primeShift cross); Cauchy–Schwarz. Odd p: balancedNodalGraph = ½‖p‖²·|p| (also after primGraph).
+- Conditional RH criteria (premise open): positive-lobe four-term jump ≥ ‖q⁺‖² − ⟨V_ground q⁺,q⁺⟩ (or ≥ the collar split bound at some R) for all odd eigenvectors with μ ∈ (½,1) ⇒ RH. Single eigenvector: that inequality ⇒ μ ≤ ½.
+- Bézout shells of depth r factor through σ_N; iso-state windows annihilate (2r−1)-step shell sums. Route PM: damped centered prefix = Δ(active) + (second layer(n−1) − second layer(n+2)) + four-step interior. Common-return window zero ⇔ vanishing on Icc 2 (min(max(b+1,a),N)) + harmonic & raw tail moments vanish; centered radius n+1 at level n+3 ⇔ sieveVariance = 0 (sharp 2N−3 detection).
+- Klein–Gordon Chebyshev transport = CHMD prime kernel − (Möbius wave + (γ+1)·tail pairing + remainder); |remainderFold| ≤ 7L e^{−v/2}; |lightConeBessel| ≤ 1; Möbius fold tail ≤ C·envelope(y)·N^{−(π−3/2)}; RH ⇔ the three Möbius pieces bounded above on y ≥ 0 ⇔ bounded below (RHTower equivalences, re-exported).
+## WindowedQuarterZeroDensityAndCHMDBoundStateCount
+- windowedQuarterZeros(σ,T) = quarter-strip zeros with Re ≥ σ, T ≤ Im ≤ 2T: injects into zeroHeightBox ⇒ unconditionally finite (no offLineZeros.Finite needed); Ingham–Huxley count D(1+log T)^B T^{(A(σ)+ε)(1−σ)}; empty for σ > 1 − routeT width (zero-free region) and T ≥ T₁. VK: |Σ_{N<d≤Q}Λ(d) − (Q−N)| ≤ B·Q e^{−κ·vkScale(Q)/24} + same at N, eventually.
+## OddPolarAbsorptionBoundaryAndCompensatedHorizon (start)
+- 2 sinh(a/2) ≤ a e^{a/2}. Tail growth: x − a ≥ ½log 2 ⇒ Ψ_a(x) ≥ π e^{2x − 5a/2} (odd polar function grows exponentially in the tail).
+- Cosh tail price: 0 < a ≤ ½log 2, x ≥ log 2: πe^{2x − (5/4)log 2}sinh(x/2) ≤ Ψ_a(x)cosh(x/2). Price P(L) = πe^{2L − (5/4)log 2} > 1 for L ≥ log 2 ⇒ cosh/sinh ratio κ ≥ P(R) > 1: unit absorption by a derivative majorant is INFEASIBLE at every radius ≥ log 2 (refutes the θ ≤ 1 premise route).
+- Counterexample: for every θ there is a smooth compact even w with θ·sinhPotential < cosh mass (localize near L where defect density > 0). So no fixed coefficient absorbs cosh mass.
+- Positive survivors: (i) confinement P(L)·sinhTail_L ≤ cosh mass (bounded cosh mass forces exponential confinement of sinh potential); (ii) exact compensated identity markovEnergy + θ·sinhPot + Defect = archJump + 2 sameSide + Σ chainIntegral + Reserve (Defect/Reserve = positive/negative parts of density ρ_θ(x) = ΘΨ_a²cosh(x/2) − θ m_a sinh(x/2)) ⇒ markovEnergy + θ sinhPot + Defect ≥ 0; (iii) a continuous even h corrects cosh mass on all even compact w ⇔ h ≥ ρ_θ pointwise; max(ρ_θ,0) is the minimal nonnegative correction (no integrated improvement).
+- Localization w ↦ χw (even smooth χ) keeps odd compact zero-mean source class.
+## CanonicalOddPrimitiveHorizonBounds (start)
+- |sourcePair(p,q)| ≤ ‖p‖‖q‖ (graph norm); |E(p) − E(q)| ≤ ‖p−q‖(2‖q‖ + ‖p−q‖). Cutoff edge budget ∝ (Lip·scale_n)²·∫e² → 0; translated cutoff mass error → 0. Canonical odd cutoff (translate cutoff by ±a, divide by 2 sinh(a/2)) converges to Ψ_a in graph norm with budget → 0; |sourceEnergy(cutoff) − ½| ≤ √budget(2‖Ψ_a‖ + √budget).
+- Canonical odd cutoff is C², compact, odd, mean zero; equals m_a on |x| + |a| ≤ n+1, zero beyond 2(n+1) + |a|; cosh-moment 0, sinh-moment = cosh-moment of cutSource n. markovEnergy(cutoff) → ½ (eventually > ¼).
+- Primitive cutoff Ψ_a^{(n)} − Ψ_b^{(n)}: both polar moments cancel exactly; limit oddCritical(a,b) ∈ signedRadical (sourceEnergy 0) ⇒ |markovEnergy(primitive cutoff)| ≤ 2(budget_a + budget_b) (radical subtraction removes square-root error); budget ≤ rate·scale_n² via translated source moment ∫((x−a)·ratio)² (finite: theta tail super-exponential) ⇒ |markovEnergy| ≤ 2(rate_a + rate_b)/(n+1)² (unconditional inverse-square horizon bound). Explicit shift sequence: tests eventually nonzero (oddCriticalSequence linearly independent). Full chain identity retained (arch jump + sameSide ± + Σ chainIntegral − cosh mass). No finite-horizon sign and no density in the primitive sector.
+## FourthRootPrimeWindowSieveAndGallagherLinearTransfer
+- Fourth-root Brun–Titchmarsh (z = q^{1/4}): near-diagonal weight (700q/log q + 1)|cΛ(q)|² = (700 q log q + (log q)²)|c|² (one log cancels); prime-supported mean value ∫_{−W}^{W}|Σ c_qΛ(q)q^{−iw}|² ≤ (5/4)Σ(700 q log q + log²q)|c_q|²; truncated Perron-line mean square of prime-supported Dirichlet series (Selberg fibre error).
+- Gallagher transfer for μ: |linear (x, x+L] sum|² ≤ 2|multiplicative window sum|² + 2(y − x − L + 1)²; multiplicative window mean square ≤ M₁δ + M₂·2/(π²W).
+- windowedQuarterZeros: uniform Huxley T^{(12/5+ε)(1−σ)} for σ ∈ [½,1]; uniform density hypothesis T^{(2+ε)(1−σ)} for σ ∈ [5/6,1] (polylog factors).
+## MatomakiTeravainenPaperScaleSieveAndRankinEulerTail (start)
+- Rankin–Euler: e | P(z): d(e)^K e^{1/log z} ≤ (2^K e)^{ω(e)}; Σ_{e|P(z), e > D} d(e)^K/e ≤ D^{−1/log z}exp(2^K e(log log z + C_Mertens)).
+- MT sieve coefficients (re-export): Σ_{n≤Y} d₃(n)|c_{1,n}| ≤ BY(1+log Y)^7 D^{−1/log z}exp(8e(log log z + C)); c_{2,n}, c_{3,n} d₃-weighted first moments ≤ BY(log X)^{−3A} at paper width (log X)^{−10A}.
+## ShiftedGroundStateCollarDualityAndLamzouriFourTrace (re-exports from ACT/HilbertMetric)
+- Odd positive ground state ω, even u: two-sided generator = folded generator + reflected collar 2Θ(x)Θ(t−x)max(ω(t−x),0); full-line Doob jump = 2·same-side + reflected (0,t) jump + 2∫u²ω·foldedGen.
+- Shifted ground state ω_a: collar duality R_a + D_a = 4∫_{x>0}u² m_a C_a; markovEnergy(Φ(ω_a u)) = 2S_a − D_a + 4 sinh(a/2)∫u² m_a sinh(x/2); nonneg ⇔ variation inequality D_a ≤ 2S_a + 4 sinh(a/2)∫...
+- Any nonneg nonzero combination c₁ω_a + c₂ω_b is a STRICT folded subsolution near the origin and near infinity (combination failure).
+- Horizontal Lamzouri four-trace: 4·mass − E − 2N + quadratic mixed gain (#M − S)²/#M ≤ #H; pair routing identity/inequality.
+## CofactorSquarefreeFermiSamplingAndPronicObservability
+- fermiSelectedCoefficient N c = c on [1,N] ⇔ c vanishes on multiples of 4 in [1,N] (fixed-point subspace); there the 3/2 transport constant is an exact L² isometry and selected reading = sieve value.
+- Route PM cofactor real weight Re(Σ_{m≤Q/d}μ(m)w_ε(dm)·...) is squarefree-supported ⇒ four-free ⇒ transport identity at every N, Q; exact pair recovery (odd and 4m+4 boundaries give s(2m+1), s(2m+2)); constant-4 pronic sandwich F ≤ P ≤ 4F with explicit positive slack Σ(3s(2m+1)²/pronic + s(2m+2)²/(pronic(4m+5))); factors through radical state.
+## DampedPrimeBoundaryDissipationAndCofinalDefectSign (start)
+- τ_ε(p) = 1 − p^{−ε}; 2|n ⇒ τ_ε(n) ≤ 1 − 2^{−ε}; |s_N(c_ε, n+1)| ≤ d(n+1). Odd prime p, p+1 ≤ N: jump (s(p+1) − s(p))² ≥ (2^{−ε} − p^{−ε})² (prime boundary dissipation; vanishes at ε = 0: Möbius path is constant below horizon).
+- Damped defect budget (1 ≤ N ≤ M+1): 2D(M) + Σ_{3≤p<N prime}(2^{−ε} − p^{−ε})² ≤ d(M+1)² − 1. Beyond 2^{1+1/ε} each prime pays ≥ (2^{−ε}/2)²; Chebyshev: #primes ≥ N/(4 log N) + K eventually ⇒ dissipation ≥ δN/(4 log N), δ = (2^{−ε}/2)².
+- Cofinal coercivity at fixed ε > 0 (no shrinking radius): eventually in N, D(M) ≤ −δN/(16 log N) for every N ≤ M+1 ≤ N^{r+2}+1 (divisor square ≤ D√N). Radical-state transport: eventually, D(M) ≤ 0 whenever R_N(M+1) ≤ N^{r+2} (any M); same for literal Möbius (using first-octave Möbius cofinal bound −N/(2π²)).
+## GlobalRenormalizedDefectSignAtLargeHorizons
+- Window observability constant S_N = Σ_{q≤N}σ(q)²/φ(q) ≤ N⁵; |H_N(c)| ≤ N for |c| ≤ 1; Bertrand prime p ∈ (N/2, N] has Selberg coordinate c(p)/p ⇒ variance ≥ φ(p)(c(p)/p)².
+- Long-window law (phase-uniform window Poincaré, BVI): 2D(M) ≤ 4H² − (M − 11S_N)V ⇒ for |c| ≤ 1, M ≥ 11N⁵: 2D(M) ≤ 4N² − (M − 11N⁵)φ(p)(c(p)/p)². Möbius: mode ≥ 1/(2N) ⇒ 2D ≤ 4N² − (M − 11N⁵)/(2N), D ≤ 0 for M ≥ 11N⁵ + 8N³ (explicit, every N ≥ 2). Damped ε ≤ k: mode ≥ 1/(2N^{2k+1}), D ≤ 0 for M ≥ 11N⁵ + 8N^{2k+3}.
+- GLOBAL SIGN: eventually in N, D_N(M; μ) ≤ 0 for EVERY prefix M (regimes: M+1 < 6(N+1) unit envelope; M ≤ N⁶ polynomial cofinal; beyond: long-window). Same for every fixed ε > 0 (threshold depends on ε).
+## RoughPrimeBoundaryUniformDampingDefectSign (start)
+- 4 | k, 1 ≤ k ≤ 2N ⇒ s_N(c_ε, k) ≤ 1 − 2^{−ε} (in first octave the omitted divisor k is non-squarefree). Prime p ∈ (N, 2N) is N-rough: s(p) = 1. Boundary p−1 or p (whichever neighbour pair crosses a 4-divisible point) carries jump ≥ 4^{−ε}, distinct primes distinct boundaries.
+- Rough-prime dissipation: N ≥ 2, M ≥ 2N−1: jump energy ≥ 4^{−ε}·#{primes in (N,2N]}; PNT ⇒ #primes in (N, 2N] ≥ N/(2 log N) eventually.
+- UNIFORM GLOBAL SIGN: eventually in N (threshold independent of ε), for every 0 ≤ ε ≤ 1 and every M, D_N(M; c_ε) ≤ 0. Regimes: sub-horizon; M+1 < 5(N+1) unit envelope; 2N−1 ≤ M ≤ N⁶ rough-prime dissipation ≥ N/(8 log N) beats divisor square D√N; M > N⁶ long-window law with k = 1.
+## FermiAllBoundaryTraceFourfoldConditioningGain
+- All-boundary trace (all cell boundaries observed): K^all_N/(log₂N)² → 1/π² (real and nonneg coefficients); selected trace K_N/(log₂N)² → 4/π² ⇒ K_N/K^all_N → 4.
+- Mechanism: selected schedule leaves the first doubling step on each dyadic ray unobserved (ray free at bottom, pinned at top: mixed boundary, ground mode cos((k+½)π/(2L+3)), constant (2L/π)²); n ≡ 2 mod 4 cells observe it ⇒ Dirichlet chain sin((k+1)π/(L+2)), constant (L/π)²: halving effective ray length divides conditioning by 4; loss still quadratic in log₂N.
+- Explicit: N ≥ 4, L = ⌊log₂N⌋: K^all ≥ (1 − 4/(L+2))(L+2)²/π²; for m ≤ L+1, r = L+m+6: K^all ≤ (r²/(π²(1 − 5π²/(48r²))) + 1)(1 + 2^{−(m+1)}).
+## FermiAllBoundaryTraceRisingSinePackets (start)
+- Rising sine profile y_k = sin((k+1)θ), θ = π/(L+2), on L+1 dyadic levels via c(1) = y₀, c(2^{k+1}) = 2^{k+1}y_{k+1} − 2^k y_k (nonnegative since 2 sin((k+1)θ) ≥ sin(kθ)); Dirichlet ground mode: jump energy = λS, λ = 2 − 2cos θ, S = (L+2)/2; saturation tail costs sin²θ/3; sieve energy ≥ (S−2)/b² per ray ⇒ K^all ≥ (1 − 4/(L+2))/λ.
+- Profile mass Σ sin²((k+1)θ) = (L+2)/2 (telescoping cosine sum); chain v_j = sin(jθ), v_0 = v_{L+2} = 0, v_{j+2} + v_j = 2cos θ v_{j+1} ⇒ Σ(Δv)² = (2 − 2cos θ)Σv². On ray 2^k b (b odd), N ≥ 2^L: response = 2^{min(k,L)}y_{min(k,L)} (telescoping prefix); normalized head = y_k, tail halves.
+## FermiAllBoundaryTraceConditioningBound
+- Physical sieve and all-boundary energies decompose over odd-base dyadic rays (twice-odd cells n = 4m+2 give each ray's bottom jump). Dirichlet ray inequality ⇒ P ≤ ((1/λ) + 1)/ρ_m·Q_all, λ = 2 − 2cos(π/(log₂N + m + 6)), ρ_m = 2^{m+1}/(2^{m+1}+1), every m ≤ log₂N + 1.
+## FermiAllBoundaryTraceDirichletRayBound
+- Ray weights w_k(b) = 4^k/((2^k b)(2^k b + 1)): b²w_k ∈ [2^k/(2^k+1), 1], ≥ ½, ≥ ρ_m beyond level m. Saturation tails: values and jumps beyond D = log₂N + 1 sum to y_D²/3. Ray inequality b²·sieveRay ≤ (1/λ + 1)·R, R = ½(y₀² + Σ_{k<m}(Δy)²) + Σ_{m≤k<D}(Δy)² + y_D²/3 ≤ b²·allBoundaryRay/ρ_m.
+## DirichletChainDoubledPrefixAndRobinRamp
+- Pinned chain: (2 − 2cos(π/(n+1)))Σz² ≤ Σ(Δz)² (via RHTower autocorrelation chain sine certificate). Soft prefix: p half-weighted steps split into half-steps lengthen the chain by p (constant 2 − 2cos(π/(n+p+1))). Robin ramp: halving continuation costs y²/3 = three-step linear ramp to zero. Ray bound: (2 − 2cos(π/(D+m+5)))Σ_{k≤D}y² ≤ ½(y₀² + Σ_{k<m}(Δy)²) + Σ_{m≤k<D}(Δy)² + y_D²/3.
+## BuchstabSlopeLawAndPrimeHorizonDissipation (start)
+- d | mj ⇔ d/gcd(d,m) | j ⇒ dilation Σ_{j≤B}s_N(c, mj) = Σ_{d≤N}c(d)⌊B gcd(d,m)/d⌋.
+- Exact horizon step (any m = n+1): ΔE = μ(m)²B + 2μ(m)Σ_{d<m}μ(d)⌊B gcd(d,m)/d⌋, B = ⌊M/m⌋. Buchstab slope λ(m) = 1 + 2μ(m)Σ_{d<m}μ(d)gcd(d,m)/d; squarefree m: |ΔE − Bλ(m)| ≤ 2(m−1) uniformly in M. Prime: λ(p) = 1 − 2m(p−1), m(x) = Σ_{d≤x}μ(d)/d. Composite can be negative: m = 6 gives ΔE = −B − 2⌊B/5⌋ exactly.
+- Prime horizon step = B − 2Σ_{d<p}μ(d)⌊B/d⌋; Σ_{d≤B}μ(d)⌊B/d⌋ = 1 (B ≥ 1). Half-band criterion at a prime = Möbius floor mean bound. Theorem: eventually in p (PNT: m(x) → 0, M(x) = o(x)), for every M with B = ⌊M/p⌋ ≥ 2, E_{p−1}(M) ≤ E_p(M) (prime horizon steps never lower prefix energy). Three ratio regimes: B < p (head = 1), 4p ≤ B (harmonic Möbius mean ≤ ¼), p ≤ B < 4p (⌊B/d⌋ ∈ {1,2,3} ⇒ three Mertens values, |M(x)| ≤ (x+1)/24).
+## BuchstabSlopeInheritanceAndSelbergDerivative (start)
+- Core A(m) = Σ_{d<m}μ(d)gcd(d,m)/d, λ(m) = 1 + 2μ(m)A(m). Horizon derivative of Selberg form: Q_Sel(m) − Q_Sel(m−1) = μ(m)²(1 + 2μ(m)A(m))/m (= λ(m)/m squarefree): slope = derivative of period mean square.
+- Coprime harmonic Möbius m_f(n) = Σ_{d≤n,(d,f)=1}μ(d)/d; prime removal m_f(n) = m_{fp}(n) − m_{fp}(n/p)/p; contracting recursion transmits → 0 ⇒ m_f → 0 for every squarefree f (finite prime set). G_a(n) = Σ μ(d)gcd(d,a)/d = Σ_{f|a}φ(f)μ(f)/f·m_f(⌊n/f⌋) → 0.
+- Slope inheritance: squarefree a, prime q > a: A(aq) = G_a(aq−1) + A(a)/q − A(a); λ(aq) = λ(a) − 2μ(a)(G_a(aq−1) + A(a)/q) → λ(a) as q → ∞ (large primes invisible to horizon steps; rough absorption for horizon steps). λ(2) = −1 ⇒ eventually in q, horizon 2q strictly LOWERS Möbius energy for M ≥ 2q(8q+1); λ(q) → 1 (primes inject), λ(3q) → 0.
+## DampedPrimeHorizonSlopeReversalAndCrossover
+- Damped prime step (floor form): ΔE = r²B − 2rΣ_{d<p}c_ε(d)⌊B/d⌋, r = p^{−ε}. Completing floor sum to horizon gives damped divisor sum Σ_{j≤B}τ_ε(j) ≥ κB (mean 1/ζ(1+ε) > 0); omitted divisors d ≥ p cost ≤ B(1+ε)/ε·p^{−ε}.
+- REVERSAL: for each fixed ε > 0, every large prime horizon strictly lowers damped energy at every M ≥ p.
+- Damped prime slope λ_ε(p) = p^{−ε} − 2H_ε(p−1), H_ε = Σμ(d)d^{−1−ε}; |ΔE − p^{−ε}Bλ_ε(p)| ≤ 2p^{−ε}(p−1); λ_ε(p) ≥ λ(p) − ε log p(2p−1). Small damping: λ(p) > 0 and ε log p(2p−1) ≤ λ(p)/2 ⇒ injection at large ratios.
+- No damping-uniform dissipation threshold: for each P there is ε₀ s.t. all ε ≤ ε₀ have an injecting prime p ≥ P. Crossover diverges as ε → 0.
+## DampedPrimeHorizonCrossoverScale (start)
+- Abel summation vs m(t): |ρ_ε − H_ε(n)| ≤ 2 sup_{t≥n}|m(t)|(n+1)^{−ε}, ρ_ε = 1/ζ(1+ε) ⇒ sign λ_ε(p) = sign(p^{−ε} − 2ρ_ε) up to o(p^{−ε}) uniformly. Crossover scale Λ(ε) = log(1/(2ρ_ε))/ε; one absolute P₀: log p ≤ (1−δ)Λ ⇒ inject; ≥ (1+δ)Λ ⇒ dissipate. ρ_ε/ε → 1 ⇒ εΛ(ε) = log(1/(2ε)) + o(1): damped observer mimics Möbius up to exp((1+o(1))log(1/(2ε))/ε).
+- Abel tail: |m(t)| ≤ η for t ≥ n ⇒ |H_ε(n+1+k) − H_ε(n)| ≤ 2η(n+1)^{−ε} ⇒ |ρ_ε − H_ε(n)| ≤ 2η(n+1)^{−ε}; with η = 1/8: p^{−ε}/2 − 2ρ_ε ≤ λ_ε(p) ≤ (3/2)p^{−ε} − 2ρ_ε. Energy steps follow slope sign at large M (step-crossover theorem).
+## MobiusEnvelopeLadderAndPrimeShellResponses
+- Truncated divisor form: squarefree r ≥ 2: s_N(μ, r) = −μ(r)Σ_{q|r, q(N+1)≤r}μ(q) (only divisors below the radical ratio r/(N+1)); |s_N(μ,r)| ≤ ⌊r/(N+1)⌋.
+- Envelope ladder: truncated Möbius divisor sums over q ≤ 10 have |·| ≤ 2 (positive channels 6, 10 need negatives 2,3,5; 7 opens after 6); over q ≤ 12 have |·| ≤ 3. ⇒ |s_N(μ,k)| ≤ 2 if R_N(k) < 11(N+1); ≤ 3 if R_N(k) < 13(N+1), every horizon. Exact: rung two family N = 105p−1, k = 1155p = 11(N+1): response −3; rung three N = 1155p−1, k = 15015p = 13(N+1): response 4.
+- Defect sign up to ratio 11: R_N(M+1) < 11(N+1) ⇒ D_N(M; μ) ≤ 0; positive Möbius defect needs radical ratio ≥ 11.
+- Prime shell: P primes, max Q, all pair products > Q, prime ℓ > Q: n = ℓΠP at horizon N = n/Q − 1 (ratio exactly Q) has response −(−1)^{|P|}(|P| − 1) (divisors below ratio: 1 and P). Shell of Q = primes p ≤ Q with p² > Q ⇒ |response| = |shell| − 1 ≈ π(Q) − π(√Q) − 1 ≳ Q/(4 log Q): envelope grows almost linearly in the ratio.
+## FermiDyadicScheduleInjectivityClassification
+- Dyadic schedule S reads Fermi jumps J(n) at v₂(n) ∈ S. Along ray n = 2^k b (b odd), z_k = s_N(c, 2^k b): level 0 reads −z_0, level k+1 reads 2z_k − z_{k+1}; saturation z_k = z_L for k ≥ L = ⌊log₂N⌋ (all levels > L read z_L ⇒ one "saturated slot" L+1). L+2 slots ⇒ relations z_0 = 0, z_k = 2z_{k−1}, z_L = 0: chain pinned at both ends.
+- Classification (N ≥ 1): S injective on horizon-N rows ⇔ S misses at most one slot. Two missing slots a < b: profile z_k = 2^k on [a,b) realized by a powers-of-two row c(2^j) = discrete difference — invisible. Consequences: full schedule and "odd + 4-divisible" (missing level 1) injective; odd boundaries alone injective iff N = 1; injective schedule needs ≥ ⌊log₂N⌋+1 slots (observation depth = dyadic depth of horizon).
+## SuccessorReserveHorizonLawAndPrimeDissipation (start)
+- Successor reserve R_N(c) = Q_Sel − Q_Bez = Σ_{d,e≤N, gcd>1} c(d)c(e)gcd(d,e)/(de) (since 1/lcm = gcd/(de), coprime pairs of Selberg kernel = Bézout kernel): dissipation rate = non-coprime part of lcm kernel.
+- Horizon law: R_m − R_{m−1} = (c(m)² + 2c(m)Σ_{d<m, gcd(d,m)>1}c(d)gcd(d,m)/d)/m. Prime p: R_p − R_{p−1} = c(p)²/p ≥ 0 for EVERY weight (Möbius cancellation drops out of the difference). Prime-supported c: R_N = Σ_{p≤N}c(p)²/p exactly.
+- Möbius: R_m − R_{m−1} = μ(m)²ϑ(m)/m, reserve slope ϑ(m) = 1 + 2μ(m)Σ_{d<m,(d,m)>1}μ(d)gcd(d,m)/d = λ(m) − 2μ(m)m_m(m−1); ϑ(p) = 1; m_{aq}(aq−1) = m_a(aq−1) + m_a(a−1)/q; ϑ(aq) → λ(a) as prime q → ∞.
+## FermiGapScheduleMixedChains
+- Mixed (Dirichlet–Neumann) chain: u₀ = 0, free top at M: (2 − 2cos(π/(2M+1)))Σ_{i≤M}u_i² ≤ Σ_{i<M}(Δu)² — proof: reflect across the free end ⇒ Dirichlet chain of length 2M (mass, energy doubled, no jump at fold). Soft prefix (first p ≤ n steps half-weighted) via half-step splitting: constant λ at length n+p.
+## FermiGapScheduleTwoChainRayBound
+- One-gap trace at level g ≥ 1: all boundaries except dyadic level g (2^g·odd); g = 1 = selected trace. Along a ray the gap removes one step ⇒ ray splits into bottom mixed chain (levels 0..g−1, pinned by base reading, free at gap) and top mixed chain (levels g..L+1, saturated tail = three-step ramp y_D/3, pinned above, free at gap).
+- Mixed constant λ_n = 2 − 2cos(π/(2n+1)) > 0; 1/λ_n ≤ ((2n+1)² + 2)/π² (n ≥ 2).
+- Two-chain ray inequality: ray sieve energy ≤ [ρ_m·min(λ_{h+m+2}, λ_{L−h+3})]^{−1} × one-gap ray energy (gap at level h+1, m ≤ h ≤ L; ρ_m = weight floor, first m steps half-weighted).
+## FermiGapScheduleMiddleGapLimit
+- Global one-gap bound: P_N(c) ≤ K_ray·Q_gap(c), K_ray = 1/(ρ_m min(λ_{h+m+2}, λ_{L−h+3})); explicit K_{h+1}(N) ≤ (1 + 2^{−(m+1)})(max(2h+2m+5, 2(L−h)+7)² + 2)/π².
+- Monotonicity: K^all_N ≤ K_{h+1}(N) (removing a level only worsens conditioning). Edge gap = selected trace: K_1(N) = K_N (sharp (4/π²)L²).
+- MIDDLE GAP FREE: K_{⌊L/2⌋+1}(N)/(log₂N)² → 1/π² (= full-trace value). Edge/middle ratio → 4. Up to lower order, gap at relative depth α costs ≤ 4max(α,1−α)²L²/π².
+## FermiGapScheduleQuarterWavePackets (start)
+- Profile packet: c(1) = y₀, c(2^{k+1}) = 2^{k+1}y_{k+1} − 2^k y_k synthesizes profile y₀..y_L on EVERY odd ray (response 2^{min(k,L)}y_{min(k,L)}; halves above L). |y_k| ≤ 1 ⇒ ray sieve energy ≥ (S−2)/b² (S = Σy_k²); one-gap ray energy ≤ E/b², E = y₀² + Σ_{k<L,k≠h}(Δy)² + y_L²/3 ⇒ K_{h+1}(N) ≥ (S−2)/E.
+- Quarter wave v_j = sin(jθ), θ = π/(2n+1): Σ_{j=1}^n sin²(jθ) = (2n+1)/4; free-end reflection v_{n+1} = v_n; recurrence v_{j+1}+v_{j−1} = 2cosθ v_j ⇒ jump energy = (2−2cosθ)·mass exactly (ground mode of mixed chain).
+- Lower bounds: K_{h+1}(N) ≥ ((2h+3)² − 8(2h+3))/π² (bottom wave) and ≥ ((2(L−h)+1)² − 8(2(L−h)+1))/π² (top wave): matches two-chain upper bound to lower order.
+## FermiGapSchedulePositionLaw / FermiGapSchedulePositionLimit
+- Bottom wave y_k = sin((k+1)θ), θ = π/(2h+3) on k ≤ h; top wave y_k = sin((L+1−k)θ'), θ' = π/(2(L−h)+1) on h < k ≤ L; both give positive gap trace and K_{h+1}(N) ≥ (x² − 8x)/π² with x = 2h+3, resp. 2(L−h)+1 (uses 2 − 2cosθ ≤ θ²).
+- POSITION LAW: gap level h(N)+1 with h → ∞, h/⌊log₂N⌋ → α ∈ [0,1] ⇒ K_{h+1}(N)/(log₂N)² → 4max(α,1−α)²/π². Price of one unobserved level = square of the longer half-observed chain: 1/π² at half depth (free) to 4/π² at either end (selected trace = edge). Quarter depth: 9/(4π²).
+## PMCofactorRowRamanujanTruncation (start)
+- Route PM cofactor row c_Q(d) = Re(dΣ_{m≤Q/d}μ(m)w(dm)) (w = Ramanujan weights of c_ε = μ d^{−ε}) is supported on [1,Q], |c_Q| ≤ 1; horizon-Q response = complete divisor sum at EVERY n: s_Q(n) = Re Σ_{q≤Q}w(q)c_q(n) (truncated Ramanujan expansion of τ_ε(n) = Σ_q w(q)c_q(n)).
+- |c_q(n)| ≤ Σ_{d|(n,q)} d; d·Σ_{q>Q, d|q}q^{−1−ε} ≤ (1+ε)/ε·Q^{−ε} ⇒ |s_Q(n) − τ_ε(n)| ≤ (1+ε)/ε·τ(n)·Q^{−ε}; τ(n) = n^{o(1)} ⇒ row response = τ_ε uniformly on n ≤ Q^r as Q → ∞ (far beyond horizon the receiver row observes the complete damped divisor function).
+- Uniform agreement: ∀r, η > 0, eventually in Q: |s_Q(n) − τ_ε(n)| ≤ η for 1 ≤ n ≤ Q^r + 1 (τ(n) ≤ C n^a, a = ε/(2(r+1))).
+## PMCofactorRowGlobalDefectSign
+- τ_ε(n) = Π_{p|n}(1 − p^{−ε}): global unit envelope 0 ≤ τ_ε ≤ 1 = τ_ε(1), first jump τ_ε(1) − τ_ε(2) = 2^{−ε}. On M ≤ Q^r, truncation error η = 4^{−ε}/64 ⇒ Dirichlet polarization 2D̃_Q(M) ≤ −(2^{−ε} − 2η)² + (1+η)² − (1−η)² < 0. No rough primes / envelope ladder / ratio-five boundary needed: the row sees the complete damped divisor function which never exceeds its initial value.
+- Beyond Q^{2k+6} (k = ⌈ε⌉): long-window terminal-mode law with prime p ∈ (Q/2, Q]: c_Q(p)/p = −ρ_ε/(p^{1+ε} − 1), mode φ(p)(c(p)/p)² ≥ ρ_ε²/(4Q^{2k+1}).
+- THEOREM: ∀ε > 0, eventually in cutoff Q, D_Q(M; c_Q) ≤ 0 for EVERY prefix M (actual PM receiver row has global nonpositive defect).
+## MoebiusBezoutDecorrelation
+- Unit-shift correlation over a full period = L·Q_Bez(N,c). Möbius Selberg coordinates Y_N(f) = μ(f)/f·m_f(N/f) ⇒ Q_Bez(N;μ) = Σ_{f≤N}μ(f)/f²·m_f(N/f)².
+- |m_{Πs}(n)| ≤ 2^{|s|} (each prime at most doubles, recursion m_{fp}(n) = m_f(n) + m_{fp}(n/p)/p) ⇒ |m_f| ≤ τ(f) ≪ f^{1/4} for squarefree f; dominated convergence (bound C²f^{−3/2}) + m_f → 0 (PNT) ⇒ Q_Bez(N;μ) → 0: successive Möbius observations decorrelate completely over a period; period unit-shift correlation ≤ ηL eventually.
+- R_N(μ) − Q_Sel(N;μ) → 0: dissipation rate ≈ period mean square. Q_Sel = Σφ(f)/f²·m_f(N/f)² has non-summable weights φ(f)/f² — outside this argument (open: asymptotics of Q_Sel(N;μ)).
+## MoebiusBuchstabStepSmoothCoreLaw
+- Möbius band step Δ(m,B) = μ(m)²B + 2μ(m)Σ_{j≤B}s_{m−1}(μ, mj) = E_m(M;μ) − E_{m−1}(M;μ), B = ⌊M/m⌋. Past horizon: s_{m−1}(mj) = −Σ_{q|mj, q≤j}μ(mj/q) (only complementary quotients q ≤ j ≤ B).
+- SMOOTH-CORE LAW: squarefree m ≥ 2, B ≥ 1: Δ(m,B) depends only on r = gcd(m, B#): = B − 2 if r = 1 (rough horizon), = Δ(r,B) otherwise (rough cofactor invariance Δ(rm',B) = Δ(r,B) when primes of m' > B). Non-squarefree: Δ = 0. ⇒ band step takes ≤ 2^{π(B)} + 1 values (finite class set {0, B−2, Δ(r,B): r | B#}).
+- Explicit: Δ(2,B) = −B; Δ(3,B) = 2⌊B/2⌋ − B; Δ(6,B) = −B − 2⌊B/5⌋. Even rough horizons n+1 = 2m' (m' odd squarefree, primes > B) lower energy by exactly B.
+## MoebiusResponseWhiteNoiseLaw
+- Lag-h period covariance diagonal in Selberg coordinates: Cov_N(h) = Σ_{2≤e≤N}c_e(h)Y_N(e)² (Ramanujan lag weights; |c_e(h)| ≤ σ(h)). Bounded multipliers × Möbius coordinates → 0 (dominated convergence) ⇒ Cov_N(h;μ) → 0 for every h ≥ 1.
+- Variance floor: top octave N/2 < e ≤ N has m_e(1) = 1 ⇒ Cov_N(0;μ) ≥ Σφ(e)/e² over odd squarefree e there; Σ_{e≤X}e/φ(e) ≤ 4X ⇒ window Σ1/φ ≤ 8; Cauchy–Schwarz + odd-squarefree density 4/π² ⇒ Cov_N(0;μ) ≥ 1/288 eventually.
+- WHITE NOISE LAW: Cov_N(h)/Cov_N(0) → 0 ∀h ≥ 1; period shift-difference energy /(2·variance) → 1; dissipation floor R_N(μ) ≥ 1/576 eventually (defect drops ≥ L/576 per complete period).
+## MoebiusBandAverageStepAndEnergyProfile (start)
+- Core class value v_B(1) = B − 2, v_B(r) = Δ(r,B). Horizons of core r: density δ_B/r, δ_B = (6/π²)Π_{p≤B}p/(p+1). Band mean step A(B) = δ_B Σ_{r|B#}v_B(r)/r.
+- Telescoping from E_M(M;μ) = 1: E_N((B+1)N;μ)/N → −(B+1)Σ_{b≤B}A(b)/(b(b+1)); energy profile P(B) = −(B+1)Σ_{b≤B}A(b)/(b(b+1)) ⇔ A(B) = (B+1)P(B−1) − BP(B) (mean horizon step = second difference of energy profile). A(1) = −6/π², A(2) = −4/π², P(2) = 11/π².
+- Proved: band-average law (1/X)Σ_{2≤m≤X}Δ(m,B) → A(B) (class counts via fixed-core squarefree densities); band representation E_N((B+1)N;μ) = 1 − Σ_{b≤B}(S_b(M/b) − S_b(M/(b+1))), horizons in (M/(b+1), M/b] lie in band b; A(1) = −6/π² (first band every squarefree horizon steps −1), A(2) = −(2/3)(6/π²) (odd squarefree 0, even −2), P(2) = (11/6)(6/π²).
+## DampedPeriodVarianceAndNonCommutingLimits (start)
+- τ_ε(n) − s_N(c_ε, n) = Σ_{d|n, d>N}μ(d)d^{−ε} (trans-horizon divisors). Gcd series G(d,e) = (de)^{−ε}/lcm(d,e) summable: boxes = Selberg forms of d^{−ε} ≤ ζ(1+ε)²ζ(1+2ε). Mean square of τ_ε − s_N over [1,X] ≤ X·(tail of G beyond N) → 0.
+- (a+b)² ≤ (1+η)a² + (1+1/η)b² comparison over complete periods (N! multiples) with Cesàro means of τ_ε².
+- Q_Sel(N; c_ε) → E[τ_ε²] (adaptive η_N = √T_N + 1/(N+1) squeeze); Cov_N(0; c_ε) → V(ε) = E[τ_ε²] − E[τ_ε]² (period variance → variance of complete damped divisor function); V(ε)/ε → 1/2 ⇒ V(ε) → 0.
+- NON-COMMUTING LIMITS: lim_{ε→0}lim_N Cov_N(0;c_ε) = 0 < 1/288 ≤ liminf_N Cov_N(0;μ). For all small fixed ε, eventually in N damped variance < Möbius variance. Möbius variance floor is a horizon phenomenon living in trans-horizon divisors that every fixed damping suppresses.
+## PrimePairingCollapseAndPrimeFactorStepLaw
+- Prime pairing collapse: p | k ⇒ s_X(μ, k) = Σ_{d|k, p∤d, X/p < d ≤ X}μ(d) (pairs d, pd inside horizon cancel; response lives on top p-adic window of p-free divisors). Even k: sum of μ over odd divisors in top octave (X/2, X].
+- Prime-factor step law: p ∤ a, pa squarefree: Δ(pa,B) = −B − 2μ(a)W_p(a,B), W_p(a,B) = Σ_{a<d<pa, p∤d}μ(d)⌊B·gcd(d,a)/d⌋ (a = 1 ⇒ prime step law). Odd prime q: horizon 2q steps exactly −B for all B ≤ q+1 (first odd window divisor q+2); energy: M < 2q(q+2) ⇒ E_{2q}(M) = E_{2q−1}(M) − ⌊M/2q⌋.
+## ReceiverRowParsevalSpectrumAndHorizonUniformVariance
+- Selberg coordinates Y_N(e; c_ε) = Σ_{e|d≤N}μ(d)d^{−1−ε} → w_ε(e) (real Ramanujan coefficient of τ_ε), dominated by e^{−1−ε}ζ(1+ε). PARSEVAL: E[τ_ε²] = Σ_e φ(e)w_ε(e)², V(ε) = Σ_{e≥2}φ(e)w_ε(e)², w_ε(1) = E[τ_ε].
+- PM receiver row c_Q at horizon Q+1 has Selberg coordinates EXACTLY w_ε(e) for e ≤ Q+1 ⇒ period variance = partial Parseval sum Σ_{2≤e≤Q+1}φ(e)w_ε(e)² ↑ V(ε), never exceeds V(ε) (horizon-uniform); dissipation R_{Q+1}(c_Q) = Σ_{2≤e≤Q+1}(φ(e) − μ(e))w_ε(e)² ≤ 2V(ε).
+- For small ε the receiver row stays below Möbius floors (variance < 1/288, dissipation < 1/576) at EVERY cutoff Q.
+## DampedAutocorrelationAndClockInvisibility (start)
+- Clock invisibility: squarefree-supported weight ⇒ Selberg coordinates vanish at non-squarefree modes; c_e(h) at squarefree e depends on h only via gcd(e,h) ⇒ period covariance at lag h depends only on rad(h): visibility clock h/rad(h) invisible.
+- w_ε(e) = E[τ_ε]μ(e)/D_ε(e), D_ε(e) = Π_{p|e}(p^{1+ε} − 1) ≥ φ(e).
+- w_ε(e)² ≤ E[τ_ε]²μ²(e)/φ(e)²; Σμ²(e)/φ(e)² ≤ 16. Damped autocorrelation A_ε(h) = Σ_{e≥2}c_e(h)w_ε(e)² = lim_N Cov_N(h;c_ε); |A_ε(h)| ≤ 16σ(h)E[τ_ε]²; receiver row Cov_{Q+1}(h;c_Q) = partial sum, same bound at every cutoff.
+- SMALL-DAMPING WHITENESS: E[τ_ε] ~ ε, V(ε) ~ ε/2 ⇒ A_ε(h)/V(ε) → 0 as ε → 0. Correlation structure commutes with damping limit; variance does not.
+## DampedPrefixEnergyLinearityAndBandNonCommutation
+- On k ≤ (B+1)N at most B divisors exceed N (cofactors ≤ B) ⇒ |τ_ε(k) − s_N(k;c_ε)| ≤ B(N+1)^{−ε}; with 0 ≤ τ_ε ≤ 1: E_N((B+1)N; c_ε)/N → (B+1)E[τ_ε²] — damped trans-horizon profile LINEAR in band index (slope E[τ_ε²] ~ ε/2): Möbius band structure invisible under damping.
+- Möbius profile P(B) ≥ 6/π² (B ≥ 1) ⇒ band non-commutation: ∀B ≥ 1, small ε, large N: damped prefix energy < Möbius prefix energy.
+## DampedLinearDissipationExactRate (start)
+- Q_Bez(N;c_ε) → Σ_e μ(e)w_ε(e)² (bounded multipliers); R_N(c_ε) → R(ε) = E[τ_ε²] − Σμ(e)w_ε(e)² = Σ_{e≥2}(φ(e) − μ(e))w_ε(e)² > 0 (mode e = 2 alone gives 2w_ε(2)²).
+- Periodic response: Cesàro mean of successor energy (1/X)Σ(s_N(k+1) − s_N(k))² → 2R_N (complete periods N!).
+- Cesàro law for τ_ε (non-periodic): (1/X)Σ(τ_ε(k+1) − τ_ε(k))² → 2R(ε) (transferred from periodic s_N via gcd-tail mean-square approximation + uniform-approximation principle).
+- EXACT LINEAR DISSIPATION: ∀ε > 0, B: D_N((B+1)N; c_ε)/N → −(B+1)R(ε) (Dirichlet polarization; boundary terms o(N)): damped defect dissipates linearly in window at the Haar dissipation rate of τ_ε.
+## DampedPrimitiveEnergyHalfThreshold
+- Zero-mean primitive (centered discrepancy Σ_{j≤n}s_N(j) − nH_N): 12E_prim(N;c) = Σ_{2≤q≤N}J₂(q)Y_N(q)², J₂(q) = q²Π(1 − p^{−2}) ≤ q². Damped mode masses ≲ ζ(1+ε)²q^{−2ε}.
+- SHARP THRESHOLD ε = 1/2: ε > 1/2 ⇒ E_prim uniformly bounded, → (1/12)Σ_{q≥2}J₂(q)w_ε(q)²; 0 < ε ≤ 1/2 ⇒ prime modes J₂(p)w_ε(p)² ≥ (3/4)E[τ_ε]²/p, Σ1/p = ∞ ⇒ E_prim → ∞; Möbius (ε = 0): ⌊N/2⌋ ≤ 3456·E_prim(N;μ) (linear growth, top octave).
+- Interpretation (docstring): the PM receiver barrier ε = 1/2 on the period torus — below 1/2 no horizon-uniform discrepancy bound from complete-period averages; receiver estimate must use pronic weighting of small arguments.
+## HalfDampingDissipationLaw (start)
+- R(ε) = Σ_{e≥2}(φ(e) − μ(e))w_ε(e)² = V(ε) − A_ε(1); |A_ε(1)| ≤ 16E[τ_ε]² = O(ε²); V(ε) ~ ε/2 ⇒ R(ε)/ε → 1/2, R(ε)/V(ε) → 1; lim_{ε→0}(1/ε)lim_N D_N((B+1)N;c_ε)/N = −(B+1)/2 (each unit of window dissipates half the damping parameter).
+## MoebiusEnergyProfileThroughFourthBand
+- Bands 3,4: primes ≤ B are {2,3}; four smooth-core classes 1,2,3,6, δ_B = (6/π²)(2/3)(3/4) = 3/π². A(3) = −4/π², A(4) = −2/π² ⇒ P(3) = 16/π² (E_N(4N;μ)/N), P(4) = 41/(2π²) (E_N(5N;μ)/N). Band means P(B) − P(B−1) = 6, 5, 5, 9/2 (units 1/π²); first four bands dissipate on average (A(B) < 0 for B ≤ 4).
+## ReceiverRowLinearDissipationRate
+- Receiver row c_Q at horizon Q: |s_Q(n) − τ_ε(n)| ≤ ((1+ε)/ε)τ(n)Q^{−ε}; divisor moments Στ ≤ X(1+log X), Στ² ≤ X(1+log X)³ make error o(Q) on window (B+1)Q; boundary bounded since τ(k) ≪ k^{ε/2}.
+- THEOREM: D_Q((B+1)Q; c_Q)/Q → −(B+1)R(ε) for the actual PM receiver row (inherits Haar dissipation of τ_ε; half the damping per unit window as ε → 0).
+## PronicEnergyCommutesWithDamping (start)
+- |c| ≤ 1 ⇒ |s_N(n)| ≤ τ(n); τ(n)²/(n(n+1)) summable ⇒ pronic energy P(N,c) = Σs_N(n)²/(n(n+1)) follows pointwise limit of responses (dominated convergence).
+- Möbius: P(N;μ) → 1/2 (only n = 1 survives); damped: P(N;c_ε) → Στ_ε(n)²/(n(n+1)); τ_ε(n) → [n=1] as ε → 0 ⇒ damped limit → 1/2.
+- PRONIC OBSERVABLE COMMUTES with damping limit (unlike period variance, dissipation, trans-horizon profile): horizon effect lives in trans-horizon bulk that the pronic weight suppresses.
+- lim_{ε→0}lim_N P(N;c_ε) = 1/2 = lim_N P(N;μ) (τ_ε(n) = Π_{p|n}(1 − p^{−ε}) → [n=1]; dominated by 1/pronic).
+## DampedDiscrepancyEnergyGrowthLaw
+- Top octave N < 2q ≤ 2N: Y_N(q) = c(q)/q (single term).
+- GROWTH LAW 0 < ε < 1/2: N^{1−2ε}/10368 ≤ E_prim(N;c_ε) ≤ ζ(1+ε)²N^{1−2ε}/(12(1−2ε)) (lower: odd squarefree top octave, mode J₂(q)q^{−2−2ε} ≥ (φ(q)/q)N^{−2ε}; upper: Σq^{−2ε} ≤ N^{1−2ε}/(1−2ε)). Discrepancy grows like a walk of N^{1−2ε} unit steps; interpolates Möbius linear growth ↔ bounded above 1/2. Lower bound ⌊N/2⌋N^{−2ε} ≤ 3456E_prim valid for all ε ≥ 0.
+- |m_{Πs}(n)| ≤ Π_{p∈s}p/(p−1) ⇒ |m_f| ≤ f/φ(f) (squarefree) ⇒ Möbius cap 12E_prim(N;μ) ≤ 64N(1 + log N) (Möbius discrepancy energy between N and N log N).
+## MoebiusSpectralEscapeAndDampedTightness
+- Möbius spectrum ESCAPES: every fixed modulus mass φ(e)Y_N(e)² → 0 while total ≥ 1/288 ⇒ ∀E eventually moduli > E carry ≥ 1/300 (variance floor carried by moduli comparable to horizon).
+- Damped spectrum TIGHT uniformly in N: moduli > E carry ≤ ζ(1+ε)²((1+2ε)/(2ε))E^{−2ε} (fixed limit spectrum = Parseval spectrum of τ_ε). Opposite spectral geometry.
+## DampedVarianceAndDissipationSecondOrderLaw (start)
+- ζ(1+cε) − 1/(cε) → γ. E[τ_ε²] = H(ε)ζ(1+2ε)/ζ(1+ε)², Euler correction 1 − H(ε) = O(ε²) (prime deficit ≤ 64ε²p^{−3/2}); Euler constant cancels: ρ_ε²/ρ_{2ε} = ε/2 + o(ε²) ⇒ E[τ_ε²] = ε/2 + o(ε²).
+- Parity kills lag-one Bézout mean: removing prime 2 factors out 1 − (2^{1+ε}−1)^{−2} = O(ε) ⇒ Σμ(e)w_ε(e)² = O(ε³).
+- SECOND ORDER: V(ε) = ε/2 − ε² + o(ε²), R(ε) = ε/2 + o(ε²), A_ε(1) = −ε² + o(ε²): dissipation = full second moment (not variance), exceeds variance by squared mean; consecutive τ_ε anti-correlated at scale of squared mean (one of two consecutive integers is even; factor 1 − 2^{−ε}).
+- Parity factorisation: Σ_eμ(e)w_ε(e)² = (1 − (2^{1+ε}−1)^{−2})Σ_{e odd}μ(e)w_ε(e)² (w_ε(2m) = −w_ε(m)/(2^{1+ε}−1) at odd m); parity factor ∈ [0, 8ε] ⇒ |Bézout limit| ≤ 128εE[τ_ε]² = O(ε³). R(ε) − V(ε) ~ ε² ((R−V)/ε² → 1).
+## DampedCrossoverEulerConstantAndAdditiveWindow
+- ρ_ε = ε − γε² + o(ε²); Λ(ε) = log(1/(2ε))/ε + γ + o(1); crossover prime e^{Λ(ε)}(2ε)^{1/ε} → e^γ.
+- |m(t)| ≤ C(log t)^{−3} (Deninger harmonic partial log rate) ⇒ at crossover Abel error O(ε³p^{−ε}) ≪ gap ⇒ ADDITIVE window: ∃ absolute P₀, all small ε, primes p ≥ P₀: slope > 0 for log p ≤ Λ(ε) − ε, < 0 for log p ≥ Λ(ε) + ε. Explicit: inject for p ≤ e^{γ−δ}(2ε)^{−1/ε}, dissipate for p ≥ e^{γ+δ}(2ε)^{−1/ε} (energy steps at all large prefixes).
+## QuadraticLongWindowThreshold (start)
+- Long-window law 2D_N(M) ≤ 4H² − (M − 10N²)V (window observability constant exact order N²). Möbius: |m(N)| ≤ 1 (floor identity), Bertrand terminal prime mode V ≥ 1/(2N) ⇒ every N ≥ 2: 2D_N(M;μ) ≤ 4 − (M − 10N²)/(2N); D_N(M;μ) ≤ 0 for M ≥ 10N² + 8N (QUADRATIC threshold, not quintic).
+- Large N: white-noise floor V ≥ 1/288 ⇒ horizon-uniform slope 2D_N(M;μ) ≤ 4 − (M − 10N²)/288; with polynomial window [2N, N³]: D_N(M;μ) < 0 STRICTLY at every M ≥ 2N. Damped: |H_ε(N)| ≤ 3, threshold 10N² + 72N^{1+2ε}.
+- Damped quadratic law: 2D_N(M;c_ε) ≤ 36 − (M − 10N²)N^{−2ε}/(2N) (|H_ε(N)| ≤ 3, ρ_ε ≤ 1).
+## SelbergRowPeriodCorrelationsSingularSeries
+- Selberg/Barban–Vehov row ℓ_N(d) = μ(d)log(N/d), d ≤ N: response = Selberg truncated von Mangoldt (ε-tangent of Möbius identity Σ_{d|k}μ(d)log(1/d) = Λ(k)). Coordinates Y_N(e) = μ(e)T_e(N/e)/e, |T_e| ≤ A e/φ(e), T_e(Y) → e/φ(e) ⇒ Y_N(e) → μ(e)/φ(e).
+- SINGULAR SERIES LAW: ∀h ≥ 1: Cov_N(h;ℓ_N) → 𝔖(h) − 1 (Hardy–Littlewood 𝔖(h) = Σμ(q)²c_q(h)/φ(q)²); H_N(ℓ_N) → 1; uncentred H² + Cov → 𝔖(h); odd h: Cov → −1; variance Cov_N(0;ℓ_N) → ∞ (modes → μ²(e)/φ(e), Σ diverges like log); normalised correlations → 0.
+- Selberg row sees prime-pair correlations on period torus (literal Möbius row: all lag covariances vanish). TWO TANGENTS AGREE: horizon limit of Selberg row = second-order Haar limit A_ε(h)/ε² → 𝔖(h) − 1 of damped row.
+## ParityTwinOfTheDampedMoebiusWeight (start)
+- w_ε(e) = ρ_ε μ(e)/D_ε(e); every translation statistic sees only w_ε(e)² — sign μ(e) = parity of ω(e) invisible.
+- Parity twin: weight with Ramanujan coefficients μ(e)w_ε(e) = |w_ε(e)|: c'_ε(d) = (ρ_ε/U_ε)·d·μ²(d)Π_{p|d}1/(p^{1+ε} − 2), U_ε = Σμ²(k)Πu_ε(p), u_ε(p) = 1/(p^{1+ε} − 2) > 0. Coprime mass recursion U_e = (1 + u_ε(p))U_{pe}; u/(1+u) = 1/(p^{1+ε} − 1); product formula U_1 = U_eΠ_{p|e}(1 + u_ε(p)); shape ≤ C d^{−1−ε/2} (summable). Twin dominates Liouville row: c'_ε(d) ≥ (ρ_ε/U_ε)μ²(d)d^{−ε}.
+- Proved: W_{c'_ε}(e) = Σ_k c'_ε(ek)/(ek) = μ(e)w_ε(e) (parity involution on moduli); |W_{c'}| = |W_c| all e; twin mean Σc'_ε(d)/d = ρ_ε.
+## ParityPairAtHalfDamping
+- Receiver energy E_T(c) = Σ_{n≤T}A_c(n)²/(n(n+1)), A_c(n) = Σ_{j≤n}Σ_{d|j}c(d) − mn = Σ_{d≤n}c(d)⌊n/d⌋ − mn. Nonnegative weight: drift A_c(n) ≤ −nΣ_{n<d≤2n}c(d)/d (moduli d > n not yet producing divisibility events leave uncancelled drift).
+- ≥ n/8 squarefree in (n, 2n] (n ≥ 100). Twin drift ≥ (K/16)n(2n)^{−ε}; cell bound K²/(4n) when ε ≤ 1/2 ⇒ Σ1/n diverges ⇒ E_T(c'_ε) → ∞ for 0 < ε ≤ 1/2.
+- PARITY PAIR at ε = 1/2: c_{1/2} and c'_{1/2} have coefficients w(e), μ(e)w(e): identical amplitudes ⇒ identical diagonal data (mean, variance, all lag covariances, successor/primitive energy, every pronic mode mass w(e)²𝒢(e,e)) but OPPOSITE receiver growth: c_{1/2} bounded (Mellin bound exists_pmPowerDampedDivisorDiscreteEnergy_budget_of_half_le, rests on ζ(1+it) ≠ 0), c'_{1/2} divergent. Separating observable: prime moduli W_{c'}(p) = −w(p) > 0 > w(p) (mean along dilation k ↦ pk).
+## CharacterFourParityPairAtEveryDamping (start)
+- Bounded sign pattern s (partial sums ≤ B), c = s d^{−ε}: hyperbola split at D: |A_c(n)| ≤ 2BD + 4Bn(D+1)^{−1−ε}; D = ⌊n^{1/(2+ε)}⌋ ⇒ |A_c(n)| ≤ 6Bn^{1/(2+ε)}; 1/(2+ε) < 1/2 ⇒ receiver energy bounded at every ε > 0 (Abel block bounds 2Bk^{−α}).
+- χ₄ pair: c_χ = χ₄(d)d^{−ε} (partial sums ∈ {0,1}) has coefficients χ₄(e)e^{−1−ε}L_ε; nonnegative c_+ = (L_ε/O_ε)1_odd(d)d^{−ε} has χ₄(e)²e^{−1−ε}L_ε = χ₄(e)W_χ(e). Twist χ₄(e) = (−1)^{Ω₃(e)} on odd moduli. Identical amplitudes/translation data, opposite receiver growth at EVERY 0 < ε ≤ 1/2 (bounded vs divergent by odd-moduli drift).
+- Proved: pronic receiver energy of bounded-sign weight ≤ 36B²Σn^{2θ−2}, θ = 1/(2+ε), independent of the pattern. χ₄ partial sums ∈ {0,1}; L_ε = Σχ₄(d)d^{−1−ε} > 0; W_χ(e) = (c_χ(e)/e)L_ε (multiplicative factorisation); W_{c_+}(e) = χ₄(e)W_χ(e); odd moduli in (n,2n] give c_+ drift ≥ κ/8·n(2n)^{−ε}. THEOREM chiFour_parityPair (all 0 < ε ≤ 1/2).
+## CharacterFourParityRowsAtEveryHorizon (start)
+- Horizon-N character row c_N = χ₄(d)d^{−ε}1_{d≤N}; parity twin c'_N = scaledSelbergRow with sign extension σ(q) = χ₄(q) (odd), 1 (even): Selberg coordinates χ₄(q)Y_N(q).
+- At every horizon: coordinates agree up to sign ⇒ every complete-period quadratic form agrees (variance, Bézout, reserve, primitive energy, all lag covariances); every two-point translated moment agrees (two-point blindness); CUBIC moment differs (zero-product triple ζ₃ζ₃ζ₃ = 1 at modulus 3, χ₄(3) = −1, Y(3)³(1 − χ₄(3)³) = 2Y(3)³ ≠ 0) for N ≥ 3.
+- Partial character masses L_X ∈ [1 − 2^{−ε}, 1 + 2^{−ε}] > 0. Character rows uniformly paid: horizon pronic energy ≤ 36Σn^{2θ−2} for all N (truncated character still has partial sums in {0,1}).
+- (Σμ(m)o(m))·O_ε = 1 (Möbius inversion of odd mass); twin row closed form c'_N(d) = dΣ_{m≤N/d}μ(m)o(dm)L_{N/(dm)} → c_+(d) divisor by divisor.
+- THEOREM chiFour_parityRows (0 < ε ≤ 1/2): at every horizon: coordinates equal up to sign, two-point moments equal, cubic moment separates (N ≥ 3), character rows uniformly bounded pronic discrepancy energy, twin rows' energy → ∞ with N (fixed-T receiver energy continuous in weight and mean; twin rows → c_+ pointwise). Trans-horizon receiver separates what all complete-period quadratic data cannot.
+## LocalEulerFactorsAndPronicDilationContraction
+- Pronic norm ‖f‖_T = (Σ_{n≤T}f(n)²/(n(n+1)))^{1/2} (Minkowski, ‖·‖ ≤ sup|f| since Σ1/(n(n+1)) = 1 − 1/(T+1)).
+- DILATION CONTRACTION at critical exponent: Σ_{r<p}1/((pk+r)(pk+r+1)) = 1/(pk(k+1)) ⇒ Σf(⌊n/p⌋)²/(n(n+1)) ≤ p^{−1}Σf(k)²/(k(k+1)), ‖f(⌊·/p⌋)‖ ≤ p^{−1/2}‖f‖.
+- Local Euler factor c' = c ⋆ (δ₁ − aδ_p): mean m' = m − am/p; A_{c'}(n) = A_c(n) − aA_c(⌊n/p⌋) + am{n/p}. Forward ‖A_{c'}‖ ≤ (1 + |a|p^{−1/2})‖A_c‖ + |am|; backward (1 − |a|p^{−1/2})‖A_c‖ ≤ ‖A_{c'}‖ + |am|.
+- RECEIVER GROWTH CLASS INVARIANT under every local factor with zero LEFT of the critical line (|a| < √p ⇔ Re zero = log_p|a| < 1/2). SHARP: geometric weight g(p^k) = p^{k/2} (mean 1/(1 − p^{−1/2})) has unbounded receiver energy, g ⋆ (δ₁ − √pδ_p) = δ₁ has zero energy.
+- Parity flip at one prime (multiplicative along p, |x| < √p) never changes growth class ⇒ a parity pair needs infinitely many flipped primes. Window drift: c ≥ 0, n ≤ X ⇒ A_c(n) ≤ −nΣ_{n<d≤X}c(d)/d.
+- Sharpness proof: window (n, pn] holds a power p^{K+1} ⇒ A_g(n) ≤ −n/√(pn) ⇒ cell ≥ 1/(2pn) ⇒ Σ diverges. Parity flip identity c^{(p)} ⋆ (δ₁ + xδ_p) = c ⋆ (δ₁ − xδ_p); χ₄ weight multiplicative along every prime with x = χ₄(p)p^{−ε}, |x| < √p ⇒ flipping χ₄ at any single prime preserves growth class.
+## CubicMomentsPinTheParityOfOddRows
+- Twisted row c^σ = scaledSelbergRow N c σ (σ² = 1): coordinates σ(q)Y_N(q). Cubic zero-product triple ζ_qζ_qζ_q^{q−2} = 1 (q odd, gcd(q−2,q) = 1) has coefficient Y(q)³(1 − σ(q)³) (BVI sign visibility law) ⇒ σ(q) = 1 if Y(q) ≠ 0.
+- Odd-supported row (Y = 0 at even, ≠ 0 at odd moduli) + equal cubic translated moments ⇒ c^σ = c on [1,N]: NO PARITY PAIR SURVIVES CUBIC MOMENTS; separating observable of parity rows = cubic moment at one modulus. χ₄ rows satisfy hypotheses (Y_N(q) ≠ 0 for odd q via L_X > 0).
+## EvenFlipIsTheFermiTransformOfTheEvenPart
+- Even flip c^♭: σ = −1 at even moduli. For squarefree-supported coordinates, every zero-product tuple has an even number of even-order frequencies (raise to odd M = Π oddpart(ord); squarefree even order ↦ −1) ⇒ c^♭ invisible to EVERY translated moment at every degree.
+- Four-free row supported on [1,N]: c^♭(d) = c(d) + c(2d) (d odd), −c(d) (d even) ⇒ c^♭ = c + c_e ⋆ (δ₁ − 2δ₂), even part c_e(d) = 1_odd(d)c(2d): local factor 1 − 2·2^{−s} of the Fermi cells 2⌊n/2d⌋ − ⌊n/d⌋ (zero RIGHT of critical line). Same mean. |‖A_{c^♭}‖ − ‖A_c‖| ≤ (1 + √2)‖A_{c_e}‖ + 2|m_e|.
+- The only sign twist of a squarefree row invisible to all additive observables costs at most the receiver of its even part read through the Fermi trace; uniformly paid even parts ⇒ growth class preserved.
+## CubicMomentsPinSquarefreeRowsUpToTheEvenFlip (start)
+- Coordinates nonzero exactly at squarefree moduli (e.g. every PM cofactor row Y_{Q+1}(e) = ρ_εμ(e)/D_ε(e)): odd q: σ(q) = 1; even 2q': triple orders (2, q', 2q') via η^{q'}η²η^{q'−2} = 1 forces σ(2)σ(q')σ(2q') = 1 ⇒ σ(2q') = σ(2) ⇒ c^σ ∈ {c, c^♭}. Cubic additive data determine receiver of squarefree row up to Fermi receiver of its even part; no parity pair of PM rows survives cubic moments except through prime 2.
+- THEOREM pmCofactor_twist_eq_or_evenFlip: at every Q, a sign twist of the PM cofactor row with the row's cubic translated moments equals the row or its even flip on [1, Q+1] (PM coordinates nonzero exactly at squarefree moduli).
+## RealCharacterParityPairsAndTheParityBarrier
+- Nontrivial real character χ mod q: Σ_{a mod q}χ(a) = 0 ⇒ |partial sums| ≤ q ⇒ c_χ = χ(d)d^{−ε} receiver bounded at every ε > 0. Positive twin c_+ = (|L_χ|/O_χ)1_{(d,q)=1}d^{−ε}; |W_{c_+}(e)| = |W_χ(e)|; L_χ = L(1+ε, χ) ≠ 0 (Dirichlet L nonvanishing Re s > 1, Mathlib); residues 1+qj ∈ (n,2n] carry drift ⇒ diverges for ε ≤ 1/2. EVERY real non-principal character gives a parity pair at every 0 < ε ≤ 1/2.
+- PARITY BARRIER: for 0 < ε ≤ 1/2 and every K > 0, receiver boundedness is NOT a function of Ramanujan amplitudes on class 𝒞(K,ε) = {|c(d)| ≤ Kd^{−ε}} (rescaled χ₄ pair). A receiver estimate below half damping must read the signs of the coefficients.
+## HalfDampingIsTheExactThresholdOfTheParityPair (start)
+- Exact split: A_c(n) = Σ_{d≤n}c(d)(⌊n/d⌋ − n/d) − nΣ_{d>n}c(d)/d. On 𝒞(K,ε): |A_c(n)| ≤ KC_εn^{1−ε}, C_ε = 1 + 1/(1−ε) + 1/ε; pronic cell ≤ (KC_ε)²n^{−2ε}.
+- ε > 1/2: receiver energy uniformly bounded on all of 𝒞(K,ε) (no parity pair). ε ≤ 1/2: growth ≤ Σ_{n≤T}n^{−2ε} (T^{1−2ε}, log T at 1/2), attained by positive twins of real characters (extremal). ⇒ receiver boundedness on 𝒞(K,ε) is a function of amplitudes IFF ε > 1/2.
+- Twin drift ⇒ cell ≥ (K²/4)n^{−2ε}. char_parityPair_extremal: χ bounded; positive twin pinched between aΣ_{8q≤n≤T}n^{−2ε} and bΣ_{n≤T}n^{−2ε}. THEOREM receiverBounded_amplitudeInvariant_iff: (∃Φ, receiver bounded ⇔ Φ(|W_c|) on 𝒞(K,ε)) ⇔ ε > 1/2.
+## UnsignedMajorantsAndSignBlindDataStopAtHalfDamping
+- Three thresholds coincide at ε = 1/2: (1) one constant bounds the receiver on all of 𝒞(K,ε) ⇔ ε > 1/2 (absolute majorant); (2) unsigned majorant exists ⇔ boundedness is function of amplitudes |W_c(e)|; (3) boundedness is function of coefficient MAGNITUDES |c(d)| ⇔ ε > 1/2 (|χ₄(d)| = 1_odd(d): Kχ₄(d)d^{−ε} vs K1_odd(d)d^{−ε} same magnitudes, opposite receivers).
+- Absolute-convergence boundary = parity barrier = blindness of magnitude-only (ℓ²) inputs, same line ε = 1/2 in the receiver's coordinates.
+## DyadicMassesGovernPositiveReceivers (start)
+- Nonnegative weight: both pieces of A_c(n) nonpositive (no cancellation); dyadic masses M_k = Σ_{2^k<d≤2^{k+1}}c(d).
+- Lower law: block (2^{k+1}, 2^{k+2}] drifts every n ≤ 2^{k+1}: M_{k+1}²/(32·2^k) ≤ receiver block; Σ_{k<K}M_{k+1}²/2^{k+1} ≤ 16E_{2^K}(c). Bounded receiver ⇒ ΣM_k²/2^k < ∞.
+- Hardy inequalities (geometric weights): forward Σ_{k<K}(Σ_{j≤k}M_j)²/2^k ≤ 12Σ_{j<K}M_j²/2^j; backward Σ_k 2^k(Σ_{k≤j<J}M_j2^{−j})² ≤ 12ΣM_j²/2^j. Finite support: −(C(n) + n·tail(n)) ≤ A_c(n) ≤ 0.
+- Upper law: E_T(c) ≤ 12c(1)² + 100Σ_kM_k²/2^k (finite support then truncation limit). THEOREM: nonnegative weight has bounded receiver ⇔ Σ_kM_k²/2^k < ∞. c(d) ≍ d^{−ε} on positive density ⇒ M_k ≍ 2^{k(1−ε)} recovers threshold 1/2. Nonnegative weights have nonnegative Ramanujan coefficients ⇒ a parity pair always has a sign-changing member.
+## CriticalWienerConvolutionsPreserveTheReceiver (start)
+- Convolution law: A_{g⋆c}(n) = Σ_{q≤n}g(q)A_c(⌊n/q⌋) + m_cA_g(n), mean m_{g⋆c} = m_gm_c (absolutely convergent means).
+- Sawtooth ψ_q(n) = ⌊n/q⌋ − n/q has pronic norm ≤ √(2/q). Critical Wiener algebra: G = Σ_q|g(q)|q^{−1/2} < ∞ (Dirichlet series absolutely convergent on Re s ≥ 1/2). ‖A_g‖ ≤ (√2+1)G; ‖A_{g⋆c}‖ ≤ G‖A_c‖ + (√2+1)G|m_c|.
+- THEOREM: receiver boundedness preserved by convolution with every critical Wiener kernel (local Euler factors are the finite kernels).
+- Liouville: λ d^{−ε} = 1_□d^{−ε} ⋆ μd^{−ε}; square kernel in critical Wiener algebra (G = ζ(1+2ε)) ⇒ λ receiver paid by μ receiver at every ε; receiver of μ(d)d^{−1/2} bounded (Mellin budget, uses ζ(1+it) ≠ 0); m_λ = ζ(2+2ε)ρ_ε > 0.
+- LIOUVILLE PARITY PAIR: liouvilleTwin = κd^{−ε} (smooth power, κ = m_λ/ζ(1+ε)); |W_twin(e)| = |W_λ(e)| (λ completely multiplicative, |λ| = 1). For 0 < ε ≤ 1/2: IF μd^{−ε} receiver bounded THEN λd^{−ε} bounded and κd^{−ε} diverges. UNCONDITIONAL at ε = 1/2 (liouville_parityPair_at_half_damping). Parity of Ω is the whole difference between Liouville and constant weight.
+- (Conditional form liouville_parityPair_of_moebius for ε < 1/2 needs boundedness of μd^{−ε} receiver — not proved below 1/2 here; that is RH-strength territory.)
+## FirstPronicMomentIsTheVonMangoldtPairing
+- Sawtooth superposition A_c(n) = Σ_dc(d)ψ_d(n), ψ_d(n) = ⌊n/d⌋ − n/d ≤ 0. Summation by parts: Σ_{n≤N}ψ_d(n)/(n(n+1)) = (H_{⌊N/d⌋} − H_N)/d − ψ_d(N)/(N+1); H_{⌊N/d⌋} − H_N → −log d ⇒ Σ_nψ_d(n)/(n(n+1)) = −log d/d.
+- FIRST PRONIC MOMENT: Σ_nA_c(n)/(n(n+1)) = −Σ_dc(d)log d/d = −Σ_eΛ(e)W_c(e) (von Mangoldt pairing of Ramanujan coefficients; first-order signed observable on prime powers). Valid on 𝒞(K,ε), ε > 0 (Σ|c|log d/d < ∞).
+- Separates every real-character parity pair: M(c_χ) − M(c_+) = Σ_eΛ(e)e^{−1−ε}(|L|χ(e)² − Lχ(e)) > 0 (L < 0: squares p² of primes coprime to q; L > 0: primes with χ(p) = −1, which exist for non-principal χ).
+## FirstPronicMomentOrdersPositivePairs
+- On 𝒞(K,ε): |W_c(e)| ≤ KZe^{−1−ε} (Z = ζ(1+ε)). Positive member c₊ with amplitudes of c has W_{c₊} = |W_c| ⇒ M(c) − M(c₊) = Σ_eΛ(e)(|W_c(e)| − W_c(e)) ≥ 0, strict ⇔ W_c(e) < 0 at some prime power. First pronic moment ORDERS every amplitude pair with a positive member; an unseparated pair has W_c ≥ 0 on all prime powers (parity lives on composite moduli). Liouville pair strictly ordered at every ε > 0 (W_λ(2) = −2^{−1−ε}m_λ < 0).
+## FirstMomentBlindParityPairOfTheNegatedMoebiusWeight
+- c_b = 2ρ_εδ₁ − μ(d)d^{−ε}: W(1) = ρ_ε, W(e) = −w_ε(e) (e ≥ 2); A_{c_b} = −A_{μd^{−ε}} ⇒ receiver = Möbius receiver. Agrees with parity twin c'_ε at every prime power (μ(p) = −1; w_ε = 0 on higher prime powers) and in all amplitudes ⇒ SAME first pronic moment. At e = pq: W_{c_b}(pq) < 0 < W_{c'}(pq). For 0 < ε ≤ 1/2: c_b has Möbius receiver, c' divergent; unconditional at ε = 1/2 (c_b bounded).
+- Equality case of first-moment ordering: first observable seeing the pair is supported on ω(e) ≥ 2 (weight Λ ⋆ Λ). Twin in 𝒞(K, ε/2).
+## SecondVonMangoldtMomentSeparatesTheBlindPair
+- Divisor pairing: a ≥ 0, Σ_{e|d}a(e) = g(d) ⇒ Σ_dc(d)g(d)/d = Σ_ea(e)W_c(e). Λ₂ = Λ·log + Λ⋆Λ, Σ_{e|d}Λ₂(e) = log²d, 0 ≤ Λ₂ ≤ log², Λ₂(6) > 0 (supported on ≤ 2 prime factors).
+- Logarithmic first moment M(c·log) = −Σ_dc(d)log²d/d = −Σ_eΛ₂(e)W_c(e) (c·log ∈ 𝒞(2K/ε, ε/2)).
+- M(c_b·log) − M(c'·log) = Σ_eΛ₂(e)ρ_ε(μ(e) + μ(e)²)/D_ε(e) > 0 (positive at e = 6): logarithmic first moment separates the blind pair through moduli pq alone.
+## MoebiusAndLiouvilleReceiversAreEquivalent
+- λ = 1_□ ⋆ μ; square-dilated Möbius inversion μ(√·)1_□ ⋆ 1_□ = δ₁ ⇒ μ = μ(√·)1_□ ⋆ λ. Both damped kernels critical Wiener ⇒ ∀ε > 0: receiver of μd^{−ε} bounded ⇔ receiver of λd^{−ε} bounded (Möbius and Liouville parity pairs exist at exactly the same dampings).
+- RH CRITERION (Liouville): bounded Liouville receivers at arbitrarily small damping ⇒ RH (via RHTower.riemannHypothesis_of_pmPowerDamped_cofinal_discrete_budget). Premise OPEN (conditional criterion).
+## ReceiverOfMultiplicativeWeightsIsDecidedAtThePrimes
+- f multiplicative, |f| ≤ 1, f(p) = −1 ∀p: f = g ⋆ μ, g = f ⋆ 1 with g(p) = 0, |g(p^k)| ≤ k−1; Euler factors of Σ|g(q)|q^{−1/2−ε} are 1 + O(p^{−1−2ε}) (local sum ≤ exp(32p^{−1−2ε})) ⇒ g d^{−ε} critical Wiener ⇒ f(d)d^{−ε} paid wherever μ(d)d^{−ε} is; UNCONDITIONAL at ε = 1/2. Higher prime-power values invisible.
+- f multiplicative, 0 ≤ f ≤ 1, f(p) = 1 ∀p ⇒ f ≥ μ² (f = 1 on squarefree) ⇒ squarefree drift ⇒ receiver diverges ∀ε ≤ 1/2.
+## PretentiousMultiplicativeWeightsAndTheReceiverTrichotomy (start)
+- Multiplicative g, g(p) = 0, |g(p^k)| ≤ Bk ⇒ critical Wiener (local sum ≤ exp(32Bp^{−1−2ε})).
+- Character model: f(p) = χ(p) (real non-principal χ): g = f ⋆ μχ, g(p) = 0, |g(p^k)| ≤ 2 ⇒ f(d)d^{−ε} bounded receiver at EVERY ε > 0.
+- RECEIVER TRICHOTOMY (|f| ≤ 1 multiplicative): pretends χ at primes ⇒ bounded ∀ε > 0; pretends μ ⇒ bounded at ε = 1/2 (paid wherever μ is); pretends 1 with f ≥ 0 ⇒ divergent ∀ε ≤ 1/2. Arithmetic enters only through prime dilations k ↦ pk.
+## HorizonLawOfPositiveRows
+- Dyadic row c_J = c·1_{d≤2^J} (c ≥ 0): (1/16)Σ_{k<J−1}M_{k+1}²/2^{k+1} ≤ E_{2^{J−1}}(c_J); E_T(c_J) ≤ 12c(1)² + 100Σ_{k<J}M_k²/2^k (uniform in cutoff). Each horizon step N ↦ 2N adds one dyadic block ≍ M_J²/2^J. Smooth power d^{−ε}: row energy ≍ N^{1−2ε} (ε < 1/2), log N (ε = 1/2); real-character rows bounded.
+- Horizon limit commutes with receiver for positive weights: rows uniformly bounded ⇔ weight bounded.
+## UnimodularCharacterCompletionsAreParityPartnersOfTheSmoothPower
+- Smooth twin κd^{−ε}, κ = |L_s|/ζ(1+ε) of a completely multiplicative unimodular sign s: equal amplitudes with s; diverges for ε ≤ 1/2 when L_s ≠ 0.
+- Unimodular completion χ̂ (χ̂(p) = χ(p) for p ∤ q, 1 for p | q; for χ₄: (−1)^{Ω₃(n)}): χ̂ = 1_{q-smooth} ⋆ χ; q-smooth kernel = finite Euler product Π_{p|q}(1 − p^{−s})^{−1}, critical Wiener ⇒ χ̂(d)d^{−ε} bounded receiver at every ε > 0. L(1+ε, χ̂) = L(1+ε,χ)Π(1 − p^{−1−ε})^{−1} ≠ 0.
+- UNCONDITIONAL parity pair at every 0 < ε ≤ 1/2 with bounded member taking only values ±d^{−ε} and positive member = full-density smooth power: parity of inert prime factors is the whole difference.
+## SparsePrimeFlipsPreserveTheReceiver (start)
+- UnimodularSign structure (completely multiplicative, |f| = 1). f' = g ⋆ f, g = f' ⋆ μf, g(p^{m+1}) = f'(p)^m(f'(p) − f(p)): vanishes over primes where f, f' agree, |g| ≤ 2 elsewhere; Euler factors 1 off flip set P, ≤ 1 + 8p^{−1/2−ε} on P.
+- Σ_{p∈P}p^{−1/2−ε} < ∞ ⇒ kernel critical Wiener ⇒ receivers bounded together (receiver blind to parity changes on prime sets of convergent p^{−1/2−ε} mass).
+- Consequence: completely multiplicative unimodular s with Σ_{s(p)=−1}p^{−1/2−ε} < ∞ (0 < ε ≤ 1/2) has DIVERGENT receiver (in class of smooth power). A bounded unimodular sign must flip a prime set of divergent p^{−1/2−ε}-mass (inert primes of real characters: positive density).
+## LogarithmicMomentHierarchySeparatesEveryPositivePair
+- Higher von Mangoldt Λ_{k+1} = Λ_k·log + Λ_k ⋆ Λ (Λ_1 = Λ): Σ_{e|d}Λ_k(e) = log^k d, 0 ≤ Λ_k ≤ log^k, Λ_{k+1}(e) > 0 iff e ≥ 2 has ≤ k+1 distinct prime factors.
+- Log-power weight c·log^k ∈ 𝒞(K(2(k+1)/ε)^k, ε/2); M(c·log^k) = −Σ_eΛ_{k+1}(e)W_c(e) (additive observables reading W_c on moduli with ≤ k+1 prime factors). Each orders a positive-member pair: M(c·log^k) − M(c₊·log^k) = Σ_eΛ_{k+1}(e)(|W_c| − W_c) ≥ 0.
+- Möbius inversion over multiples: c(d)/d = Σ_mμ(m)W_c(dm) on 𝒞(K,ε) ⇒ Ramanujan coefficients determine the damped weight. δ₁-shift c − 2m·δ₁ has same receiver.
+- THEOREM exists_logMoment_separating: no parity pair with a positive member is invisible to the log moment hierarchy (if all agree, W_c = W_{c₊} on e ≥ 2 ⇒ c ∈ {c₊, c₊ − 2m₊δ₁} ⇒ same receiver). Order of first separating moment = least ω(e) with W_c(e) < 0.
+## LogarithmicMomentsAreACompleteReceiverInvariant
+- M(c·log^k) = −Σ_dc(d)log^{k+1}d/d = ±(k+1)-st derivative at s = 1 of L_c(s) = Σc(d)d^{−s} (holomorphic Re s > 1−ε). Equal log moments of all orders ⇒ L_c − L_{c'} has vanishing positive-order derivatives at 1 ⇒ constant near 1 (Taylor) ⇒ constant on half-plane (identity theorem) ⇒ c − c' ∈ ℝδ₁ (uniqueness of Dirichlet coefficients, Mathlib LSeries.eq_of_LSeries_eventually_eq). Receiver blind to δ₁.
+- THEOREM exists_logMoment_ne: any two damped weights with different receiver behaviour are separated by some M(c·log^k). Log pronic moments are a COMPLETE receiver invariant (whatever the signs).
+## RealCharacterParityRowsAtEveryHorizon
+- Horizon-N row c_N = χ(d)d^{−ε}1_{d≤N}; twin c'_N = scaledSelbergRow with completed signs χ̂ (χ, or 1 where χ = 0): coordinates agree up to sign, two-point moments agree; cubic moment separates at all large N at an odd n₀ with χ(n₀) = −1 (exists for non-principal χ); character rows uniformly paid (partial sums ≤ q, energy ≤ 36q²Σn^{2θ−2}); twins → signed positive twin (L/O)1_{(d,q)=1}d^{−ε} divisor by divisor (Möbius inversion of unit mass) ⇒ energy → ∞ for ε ≤ 1/2. THEOREM char_parityRows (every real character carries parity rows at every horizon).
+## FiniteKernelsRepairAPositiveDriftOnlyAtItsPole (start)
+- Mellin cells Δ_n(σ) = n^{−σ} − (n+1)^{−σ} ∈ [σ(n+1)^{−σ−1}, σn^{−σ−1}]; Φ_c(σ) = Σ_nA_c(n)Δ_n(σ) (Mellin transform of step A_c(⌊x⌋)). Cells telescope over [M, M+j).
+- Dilation law of cells: Σ_r<jΔ_{tj+r}(σ) = j^{−σ}Δ_t(σ) ⇒ Σ_nf(⌊n/j⌋)Δ_n(σ) = j^{−σ}Σ_nf(n)Δ_n(σ); with convolution law Φ_{k⋆q}(σ) = K(σ)Φ_q(σ) + m_qΦ_k(σ), K(σ) = Σk(j)j^{−σ}.
+- Receiver bound (Cauchy–Schwarz vs pronic weights, Δ_n²n(n+1) ≤ 2σ²n^{−2σ}): energy ≤ E ⇒ |Φ(σ)| ≤ √E·√(2σ²(1 + 1/(2σ−1))) for σ > 1/2 (O(δ^{−1/2}) at σ = 1−ε+δ, ε ≤ 1/2).
+- Drift ⇒ pole: q ≥ 0 with drift nΣ_{(n,2n]}q(d)/d ≥ κn^{1−ε} ⇒ Φ_q(1−ε+δ) ≤ −(κσ/2)(N₀+1)^{−δ}/δ (order δ^{−1}). Finite kernel prefix |A_k(n)| ≤ Σ|k(j)|.
+- THEOREM not_receiverBounded_dirichletConv_of_drift: 0 < ε ≤ 1/2, q ≥ 0 in damped class with drift, k finite: K(1−ε) ≠ 0 ⇒ receiver of k ⋆ q UNBOUNDED. Finite kernels repair a positive drift only if their Dirichlet polynomial vanishes at the pole s = 1−ε (single separating number K(1−ε)).
+## EvenFlipOfTheFermiSquarefreeWeightBreaksTheReceiver (start)
+- o(d) = 1_{odd sqf}(d)d^{−ε} (pole at s = 1−ε). Fermi weight F = (δ₁ − 2^{1−ε}δ₂) ⋆ o: Fermi factor 1 − 2^{1−ε−s} vanishes exactly at pole. F(d)d^ε = (g ⋆ s₀)(d), g(j²) = μ(j)1_odd(j) (1_{odd sqf} = g ⋆ 1_odd, square-root Möbius normalization), s₀ = 1_odd ⋆ (δ₁ − 2δ₂) = period-4 pattern (0,1,−2,1) by n mod 4 (mean zero, partial sums ∈ {−1,0,1}).
+- F ∈ 𝒞(3,ε); F vanishes on multiples of 4 and non-squarefree d. Even flip F^♭ = ((1 − 2^{1−ε})δ₁ + 2^{1−ε}δ₂) ⋆ o = F + c_e ⋆ (δ₁ − 2δ₂): F^♭(d) = F(d) + F(2d) (d odd), −F(d) (d even).
+- Even flip twists Ramanujan coefficients by σ₂ (−1 on even e) for any four-free damped weight: W_{c^♭}(e) = σ₂(e)W_c(e) ⇒ equal amplitudes, same mean.
+- F = g ⋆ s₀d^{−ε} with g critical Wiener, s₀ partial sums bounded ⇒ F receiver bounded ∀ε > 0. Odd squarefree drift ≥ (D/3)2^{−1−ε}n^{1−ε} (D = 6/π²). F^♭ kernel at pole: 2 − 2^{1−ε} ≠ 0 ⇒ F^♭ unbounded ∀ε ≤ 1/2. THEOREM fermi_evenFlip_parityPair. Fermi factor at 2 is the only local factor whose zero sits on the pole.
+## FermiRowsAgreeInEveryTranslatedMomentAndSplitTheReceiver
+- Fermi row F_N = F·1_{≤N} squarefree ⇒ even flip invisible to EVERY translated moment of every degree at every horizon; F_N^♭(d) = F^♭(d) once N ≥ 2d. Fixed-cutoff receivers converge ⇒ Fermi rows bounded (eventually, each T), flipped rows exceed any C at large N. THEOREM fermi_parityRows: trans-horizon receiver separates a pair no additive observable of any degree can (strengthens χ₄ case where cubic moments separate).
+## FinitePerturbationsOfTheSmoothPowerAreDecidedAtThePole
+- k on [1,J], 0 < ε ≤ 1/2: receiver of k ⋆ d^{−ε} bounded ⇔ K(1−ε) = Σk(j)j^{−(1−ε)} = 0. (⇐: s = k̃ ⋆ 1 with k̃(j) = k(j)j^ε has partial sums Σk̃(j)(⌊n/j⌋ − n/j) bounded since mean = K(1−ε) = 0; ⇒: pole law + drift 2^{−1−ε}n^{1−ε}.) Paid finite perturbations of smooth power = hyperplane K(1−ε) = 0.
+## EvenFlipPairsOverTheOddSquarefreeWeightAreClassifiedAtThePole (start)
+- Commuting convolutions via toAF; o = g ⋆ (1_odd d^{−ε}).

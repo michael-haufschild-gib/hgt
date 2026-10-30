@@ -171,7 +171,7 @@ theorem abs_shellCorrection_le_polynomial_div_totient {φ : ℝ → ℝ}
   calc
     _ ≤ 2 / ((∫ u, φ u ^ 2) * m.totient) * ((∫ u, φ u ^ 2) * c ^ 4) :=
       mul_le_mul_of_nonneg_left hsum (by positivity)
-    _ = _ := by field_simp; ring
+    _ = _ := by field_simp
 
 
 /-- The conductor cutoff is polynomial in the overlap, uniformly in the profile. -/

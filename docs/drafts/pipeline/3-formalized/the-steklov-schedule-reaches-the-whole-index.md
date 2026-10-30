@@ -1,7 +1,7 @@
 # The Steklov schedule reaches the whole index
 
 - **ID:** the-steklov-schedule-reaches-the-whole-index
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Statement:** For every `β>2`, the negative indices of the complete atomic Weil
   Gram matrices with profile `steklovDCProfile` and width
   `(log log N)(log log log N)^β/N` converge in `ℕ∞` to the index of the ζ Weil kernel.
@@ -51,4 +51,8 @@ and `overlapGrowthSuperGevrey_of_two_lt`.
 
 ## Verification
 
-Lean formalization in progress.
+`EffectiveArithmeticHodgeTheory/TheSteklovScheduleReachesTheIndex.lean`
+passes the direct Lean check. The declarations `exists_dcLog_family`,
+`tendsto_hermNegIndex_atomicGram_dcLog`, and
+`steklovDCProfile_atomicGram_reaches_index` depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. The module is imported by its umbrella.

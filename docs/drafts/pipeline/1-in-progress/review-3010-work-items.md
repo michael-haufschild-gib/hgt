@@ -10,17 +10,17 @@
 | A1 | Pole-row estimate and joint top-band cancellation | Both named theorems proved in `SuccessorShellArithmetic/TheShellsAndThePoleCancelOnTheTopBand`; direct Lean check and capstone axiom audit passed; umbrella wired |
 | A2 | Growing Euler heads have arbitrarily large negative dimension | Named theorem exists in `ArithmeticIndexDescent/TheIndexOfAGrowingEulerHeadIsUnbounded`; audit pending |
 | A3 | Effective conductor confinement for finite sieve profiles at fixed overlap | `exists_sieveProfile_ramanujan_approximation` and exponential defect cutoff exist; scope audit pending |
-| A4 | Effective positivity/index horizons; full-index exhaustion for Steklov schedule | Unfinished |
+| A4 | Effective positivity/index horizons; full-index exhaustion for Steklov schedule | Full-index Steklov exhaustion formalized in `TheSteklovScheduleReachesTheIndex`, direct Lean and axiom audits passed; effective horizons remain unfinished |
 | A5 | First-prime, coarse, polar and head payments on finite Haar cells/sources | Several separate payments exist; joint scope audit pending |
 | A6 | Matched finite-sieve Hodge index | Existing formalized card and theorem; audit pending |
 | A7 | Further finite theta Hankel ranks as square-plus-flux domination | Unfinished |
 | A8 | Exact graded implications from heat-count growth to deep-zero density | Stretched-exponential and subpower rungs formalized in `RHTower/Heat/TheHeatCountGrowthLadder`; direct Lean and axiom audits passed, including existing polynomial rung |
 | A9 | Further finite log2/log3-grid and Jensen degrees | Unfinished |
 | A10 | Further fixed-radius floors, odd witnesses and effective collar shifts | Unfinished |
-| A11 | Exact overlap thresholds for further finite flip families | `finiteFlip_resolutionThreshold_spec` already covers every nonempty finite prime set; audit pending |
+| A11 | Exact overlap thresholds for further finite flip families | Every nonempty finite prime set covered; explicit tilted-spline specialization added; direct Lean and transitive axiom audits passed |
 | A12 | Native two-response action on source data without zero-copy indexing | Existing native action still uses `XiZeroCopy` |
 | A13 | Elliptic base over F₃: product formula, quotient measures, Iwasawa characters, unfolding | Principal ideal norms, local integrals and finite approximation proved; global product formula, quotient covolume and arithmetic unfolding remain open |
-| A14 | Actual Ξ-divisor identity `(σ−1/2)S=Re(ξ′/ξ)+D` | Finite identity and actual real reciprocal field available; infinite transport unfinished |
+| A14 | Actual Ξ-divisor identity `(σ−1/2)S=Re(ξ′/ξ)+D` | Shared-corpus `TheXiResolventDepthIdentity` now proves full-divisor identity for `σ>1`, absolute convergence and nonnegative depth; source reviewed, existing card records direct Lean and axiom audits |
 | A15 | Growing-modulus shell transfer; general scalar jets; terminal/Euler completion | Unfinished |
 
 ## Heat-count ladder
@@ -37,13 +37,14 @@ Input: `exists_card_deep_le_mul_nonrealZeroCount`. The bounded-count equivalence
 ## Steklov index target
 
 For every `β>2`, the atomic Gram matrices of `steklovDCProfile` at width
-`superGevreyRatio β N / N` should have negative indices converging in `ℕ∞`
+`superGevreyRatio β N / N` have negative indices converging in `ℕ∞`
 to `HeckeKreinToeplitz.negIndex zetaKernel`.
 `TheExplicitSchedulesReachTheIndex` supplies finite spline families, Gram convergence,
 the atomic index upper bound and residue-class assembly.
 `SuperGevreyCriticalGrowth` supplies `exists_dcLogSynthesis` and the explicit schedule's
 `OverlapGrowthSuperGevrey` law. Its mollification and synthesis-error proofs already
-give the required logarithmic derivative class; the full-index transport remains to formalize.
+give the required logarithmic derivative class. The full-index transport is now
+formalized in `TheSteklovScheduleReachesTheIndex`.
 
 ## Gates
 
