@@ -640,3 +640,723 @@ Source: cat/02.txt (152786 lines, 668 files).
 - Correlation form: ∫h·P + ∫(h(0) − h)W − (∫W)h(0) = ∫h(P − W); squared ≤ ∫h²·∫(P − W)². Dyadic window with zeros: discrepancy² ≤ 2h(0)·biScaleLevyEnergy·∫(cosh(x/2) − W)².
 ## AsymptoticTailCoercivityAndNyquistTrap5Closure (Pillar XIII)
 - Quadratic collar h(0) − h(y) ≤ Ky² on [0,1/N] + N dyadic zeros ⇒ ∫_{log N}^{log 2N} h² ≤ (2K/N²)h(0). ∫cosh²(x/2) over window ≤ 2N log 2. ⇒ (∫|h|cosh(x/2))² ≤ (4 log 2/N)K h(0); same for negative polar lobe. Kinetic coercivity: polar lobe mass μ in window ⇒ Nμ² ≤ 4 log 2·K·h(0) (distant-copy trap costs K ≳ N = e^T when the dyadic grid zeros are imposed).
+- Derivative-free: (∫_{window}|h|cosh)² ≤ 4N log 2·h(0)·∫_{(0, log(1+1/N)]}(h(0) − h)·w (no K).
+## SignedKreinCollarAndPrimeDeficitTransfer (Pillar XIV)
+- Drops grid-blindness. Signed collar identity (h(0) − h(t±y)) + h(t) = h(0) − (h(t±y) − h(t)); Krein increment |h(t+y) − h(t)| ≤ √(2h(0)(h(0) − h(y))) ⇒ h(0) − √(2h(0)D(y)) ≤ collar + h(t). Young: w√(2RD) ≤ W₀D + w²R/(2W₀) ⇒ single-node leverage (w − w²/(2W₀))h(0) ≤ W₀D(y) + w(h(0) − h(t±y)) + w h(t).
+- Abstract Hilbert identity (‖x‖² = ‖x_y‖² = R): W₀(R − ⟨x,x_y⟩) + Σw_i(R − ⟨e_i,x_y⟩) + Σw_i⟨e_i,x⟩ = (Σw_i)R − (1/2W₀)Σw_iw_j⟨e_i,e_j⟩ + (1/2W₀)‖Σw_ie_i − W₀(x_y − x)‖². Orthogonal clique: ≥ (Σw − Σw²/2W₀)R; almost-orthogonal: ≥ (Σw − (1+Δ)Σw²/2W₀)R.
+- Signed Nyquist sum over [log N, log 2N] without zeros: Σ∫((h(0) − h(x)) + h(log(N+k))) ≥ Σ∫((1 − 1/2W₀)h(0) − W₀D(y)).
+- archLevySinhWeight(log n) = 2n^{3/2}/(n² − 1) = 2/√n + 2/(√n(n² − 1)) ≥ 2/√n; remainder ≤ 8/(3√n n²): arch weight at log n matches Weil prime weight exponent n^{−1/2}.
+## KreinKantorovichMeasureTransportAndPrimePolarPairing (Pillar XV, start)
+- 1/archLevySinhWeight(y) = e^{−y/2}sinh y = ½e^{y/2}(1 − e^{−2y}) ≤ y e^{y/2} (vanishes linearly at 0); on (0, r₂]: archLevySinhWeight(y) ≥ e^{−r₂/2}/y.
+- Krein–Kantorovich pointwise: ρ|h(t) − h(t+y)| ≤ D(y)·w(y) + (h(0)/2)ρ²e^{−y/2}sinh y ≤ D·w + (h(0)/2)ρ²y e^{y/2}; integrated: |(∫ρ)h(t) − ∫h(t+y)ρ(y)| ≤ ∫D·w + (h(0)/2)∫ρ²e^{−y/2}sinh y (signed, no blindness).
+- Width rigidity: h ≤ 0 on [r₁, r₂] ⇒ e^{−r₂/2}log(r₂/r₁)h(0) ≤ ∫_{r₁}^{r₂} D·w; bounded energy ≤ K h(0) ⇒ log(r₂/r₁) ≤ e^{r₂/2}K (midpoint-compression trap requires log-divergent energy).
+## AnnularCorrelationTransport
+- Annular average A(t) = (1/d)∫_{t+a}^{t+a+d} h differentiable with continuous slope (h(t+a+d) − h(t+a))/d for any continuous h. correlationAverage with a = e^α, d = e^β; |A(t) − h(t)| ≤ (1/d)∫_a^{a+d}√(2h(0)D(y)) = transport cost (uniform in t, signed). Cost ≤ e^c∫D·w + h(0)/(2e^c d²)·∫e^{−y/2}sinh y (Young, adjustable budget).
+## SignedPrimePolarCoupling
+- Finite window cutoff log(N+2); step function = ψ(e^x) on window; logError = ψ(e^x) − e^x. Abel/Stieltjes: Σ g(log n)Λ(n) − ∫g e^x = g(0) + g(L)·logError(L) − ∫ g'·logError. Pairing = Σ_{n≤N+2} Λ(n)/√n·H(log n) − ∫_0^L 2cosh(x/2)H; for differentiable H: pairing = H(0) + e^{−L/2}H(L)logError(L) − ∫e^{−x/2}(H' − H/2)logError − ∫e^{−x/2}H (Chebyshev work, both endpoints, polar shadow).
+- |pairing H − pairing K| ≤ mass·sup|H − K| (mass = Σ Λ/√n + ∫2cosh). For every compact continuous f: |pairing(h_f) − chebyshevWork(annular average)| ≤ mass·transportCost ≤ mass·(e^c∫D·w + …). Pairing equals the literal truncated prime-minus-polar measure.
+## SignedPrimePolarPacket
+- Signed packet S_f = Σ Λ(n)/√n·f(·+log n) − ∫_0^L 2cosh(t/2)f(·+t)dt (compact continuous source); ∫ q·S_f = pairing of q⋆f correlation (Fubini justified by supports). ⟨f, S_f⟩ = pairing(h_f) ⇒ pairing(h_f)² ≤ h_f(0)·‖S_f‖² (packet energy). Increment control: pairing(h(·+y) − h)² ≤ 2‖S_f‖²(h(0) − h(y)). Packet energy = iterated pairing pairing_t pairing_s h(s − t) (full Gram incl. mixed terms); ‖S_f‖² ≤ mass²·h(0) (signed budget never exceeds unsigned).
+## SignedPrimePolarGramTransport
+- pairing commutes with annular averaging (Fubini on compact windows): pairing(A) − pairing(h) = (1/d)∫ pairing(h(·+y) − h) dy. Packet transport cost (1/d)∫√(2‖S_f‖²D(y)) ≤ mass·(unsigned cost). |pairing(h_f) − chebyshevWork| ≤ packet cost ≤ e^c∫D·w + ‖S_f‖²/(2e^c d²)∫e^{−y/2}sinh y (cancellation-sensitive).
+## SignedPrimePolarHalfLineDomain
+- Source cutoff N_f = ⌈e^{supp radius}⌉: h_f and every right-annular average/slope vanish beyond log(N_f + 2). Full pairing (infinite prime sum − half-line polar integral) admissible: finite atom support, absolutely summable, integrable polar term; stabilizes = finite-window pairing for every N ≥ N_f.
+## SignedPrimePolarHalfLineTransport (start)
+- Abel kernel e^{−x/2}(A' − A/2) and shadow kernel e^{−x/2}A vanish beyond source cutoff; Abel kernel × logError integrable on half-line (local boundedness of ψ-error suffices; no arithmetic asymptotic).
+- Full Chebyshev work = A(0) − ∫_{x≥0} abelKernel·logError − ∫ shadowKernel (upper boundary term vanishes beyond source cutoff); fullPairing(A) = fullChebyshevWork exactly; |fullPairing(h_f) − fullWork| ≤ packet cost at any cutoff ≥ N_f.
+## AnnularCorrelationSource
+- Collar source C = (1/d)∫_a^{a+d} f(· − y)dy (compact continuous); ⟨C, f(·+t)⟩ = annular correlation average A(t) (mixed pairing, not assumed autocorr); collar energy ‖C‖² = (1/d)∫A(−y) = (1/d²)∫∫h(z − y) (full double Gram); A ≤ h(0), ‖C‖² ≤ h(0); ⟨C, S_f⟩ = Chebyshev work exactly.
+## SignedPrimePolarCoherentSchur
+- Removing f-parallel parts: Schur: (work − A(0)·pairing/h(0))² ≤ (‖C‖² − A(0)²/h(0))·(‖S_f‖² − pairing²/h(0)); ⇒ packet energy ≥ pairing²/h(0) + (work − …)²/collarSchur. Coherent chord ‖f − C‖² = h(0) + ‖C‖² − 2A(0) ≤ 2(h(0) − A(0)); (pairing − work)² ≤ ‖S_f‖²·‖f − C‖². All transferred to literal half-line scalars.
+## AnnularSourceRegularity
+- Collar source is C¹ with derivative (f(u − e^a) − f(u − e^a − e^b))/e^b (no derivative of f used); compact support; gauge source C' − C/2 compact continuous with finite L¹ norm; remainder f − C has energy = coherent chord energy exactly.
+## SignedPrimePolarRoughGauge
+- S_{f−g} = S_f − S_g; weighted split ‖S_f‖² ≤ (1+e^c)‖S_g‖² + (1+e^{−c})‖S_{f−g}‖². With g = collar: ‖S_C‖² ≤ 3(10 + E(L)²)‖C‖² + 3‖gauge‖₁²∫E² (E = normalized ψ error; smooth-source Chebyshev mean-square from HyperbolicGaugeChebyshevEnergyRepresentation); remainder ≤ mass²·chord. ⇒ packet energy of every compact continuous source bounded by collar energy + gauge L¹·∫E² + mass²·chord.
+- roughGaugeBound = 6(10 + E(L)²)‖C‖² + 6‖gauge‖₁²∫E² + 2mass²·chord ≥ packet energy; smoothing collar and transport collar chosen independently.
+## AnnularGaugeEnergy
+- ∫(C')² = 2(h(0) − h(e^b))/e^{2b} (single-width chord); ⟨C', C⟩ = 0 (compact C¹); gauge energy ‖C' − C/2‖² = 2(h(0) − h(e^b))/e^{2b} + ‖C‖²/4 — position-invariant (depends only on width).
+## SignedPrimePolarCorrelationBudget
+- Gauge supported in interval of length 2R + e^b ⇒ ‖gauge‖₁² ≤ (2R + e^b)·gauge energy (Cauchy–Schwarz); packet energy ≤ correlationGaugeBound (only source correlations, source radius, Chebyshev error E).
+## SignedPrimePolarScaledCollar
+- S_{tf} = tS_f, ‖S_{tf}‖² = t²‖S_f‖²; ‖f − tC‖² = h(0) − 2tA(0) + t²‖C‖²; A(0)² ≤ ‖C‖²h(0); collar packet ≤ collarPacketBound ≥ 30‖C‖². Trial family: ‖S_f‖² ≤ (1+e^c)t²·collarPacketBound + (1+e^{−c})mass²·‖f − tC‖² for every real t.
+## SignedPrimePolarOptimalCollar
+- Optimal signed coefficient t* = covariance/quadMass (degenerate case handled via Gram inequality); trial − optimum = quadMass·(t − t*)² (exact); optimizedPacketBound = min(mass²h(0), optimum) ≤ correlationGaugeBound (t = 1, c = 0) with exact gain; strict improvement over mass bound ⇔ mass²h(0)/e^c < cov²/quadMass.
+## SignedPrimePolarHarmonicCorrection
+- harmonicCorrection(N) = 4N(H_{4N} − 2H_{2N} + H_N) = 4NΣ_{k<N}[1/(2(N+k)+1) − 1/(2(N+k)+2)] ∈ [0, 1] (bounded real-ratio polar correction of factorial bi-null stencil).
+## SignedPrimePolarFactorialLift
+- Polar rectangle 1_{[0,L]}e^{x/2}: 2cosh(x/2)·e^{x/2} = e^x + 1, polar integral = e^L − 1 + L. Factorial lift F_K(x) = Σ_{j≤K} rect_{log(K/j)} (REAL ratios, never floored); F_K(log n) = √n·⌊K/n⌋; prime side Σ Λ(n)/√n·F_K(log n) = Σ_{n≤K}Λ(n)⌊K/n⌋ = Σ_{j≤K}ψ(K/j) = log K! (floorSummatory ψ); polar side Σ_j (K/j − 1 + log(K/j)).
+## SignedPrimePolarFactorialProducer
+- fullPairing(F_K) = 2·floorSummatory ψ(K) − K log K − K·H_K + K. Bi-null combination B_N = (F_{4N} − 4F_{2N} + 4F_N)/√N: B_N(0) = 0, B_N(log 4N) = 2 (nontrivial, not an autocorrelation); admissible; fullPairing(B_N) = (2·chebyshevBiNullProducer(N) − harmonicCorrection(N))/√N; |fullPairing(B_N)| ≤ (10 log(4N+1) + 3)/√N — UNCONDITIONAL explicit producer driving the signed prime–polar functional to 0 at rate log N/√N (both factorial poles cancel).
+## AntitoneDyadicStencil
+- For antitone f with values in [0,1]: Σ_{j≤4N}f(j) − 4Σ_{j≤2N}f(2j) + 4Σ_{j≤N}f(4j) ∈ [−2, 1] uniformly in N (paired drops).
+## ClampedExponentialRamp
+- clampedRamp_ε(t) = min(1, max(0, (1+ε−t)/ε)), continuous antitone; ∫_{x≥0}(e^x + 1)ramp(e^x/a) = a − 1 + log a + εa/2 + ((1+ε)log(1+ε) − ε)/ε.
+## SignedPrimePolarContinuousFactorialLift (start)
+- Continuous lift e^{x/2}Σ_j ramp_ε(j e^x/K): equals e^{x/2}K for x ≤ 0, 0 for e^x ≥ K(1+ε), e^{x/2} on [K(1+ε)/2, K]; with εK ≤ 1 agrees with discrete factorial lift at every log n (collar crosses no extra integer product).
+- Smoothing adds polar εK·H_K/2 + K·rampLogCorrection(ε).
+## SignedPrimePolarContinuousFactorialProducer
+- Collar ε = 1/(4N); smooth bi-null stencil agrees with discrete at every log n, vanishes for x ≤ 0 and x ≥ log(4N+1): compact continuous test (C_c). fullPairing = (2·chebyshevBiNullProducer − (1 + 1/(8N))·harmonicCorrection)/√N; |·| ≤ (10 log(4N+1) + 3 + 1/(8N))/√N. Value 0 at origin, 2 at log 4N ⇒ not an autocorrelation.
+## SignedPrimePolarContinuousFactorialEnergy
+- Pointwise (B_N)² ≤ 4e^x/N via antitone dyadic stencil ∈ [−2,1]; ∫B_N² ≤ 16 uniformly; on top band [log(2N+1), log 4N] B_N = e^{x/2}/√N ⇒ ∫B_N² ≥ 1. CERTIFICATE: compact continuous producer with unit-order L² norm (∈ [1,16]) and signed prime–polar pairing O(log N/√N), unconditional — small pairing is NOT from vanishing norm.
+## ExponentialTentMoments
+- Causal tent on [0,2δ]; ∫_0^{2δ} e^{ax}tent = ((e^{aδ} − 1)/a)²; exponential tent density e^x·tent/(e^δ − 1)² is a probability density; ∫e^x·density = ((e^δ + 1)/2)²; source e^{x/2}·density compact continuous.
+## ExponentialTentSourceEnergy
+- 1/(2δ) ≤ ‖source‖² ≤ e^{4δ}/δ (reciprocal-width cost, matching up to constant).
+## SignedPrimePolarSourceParameters (start)
+- Width δ_N = log(1 + 1/(4N))/3 ∈ [1/(15N), 1/(12N)], e^{3δ_N} = 1 + 1/(4N), e^{4δ_N} ≤ 2; costs 6N ≤ 1/(2δ_N), 2/δ_N ≤ 30N.
+- Collar (1 + ε_N)e^t ≤ 1 + 1/(4N) for t ≤ 2δ_N; coefficient ((1 + e^{δ_N})/2)³ ∈ [1, 1 + 1/(4N)].
+## ClampedExponentialBranchMoments
+- ∫_{x≥0} e^x·ramp(e^x/a) = a − 1 + εa/2; ∫ ramp(e^x/a) = log a + rampLogCorrection(ε).
+## SignedPrimePolarRampCore
+- rampBiNull_ε(N) general collar: zero for x ≤ 0, zero beyond e^x ≥ 4N(1+ε); compact support under ε·4N ≤ 1; equals e^{x/2}/√N on top band [2N(1+ε), 4N]; |·| ≤ 2e^{x/2}/√N, ∫² ≤ 16. Integer separation: e^{t/2}·L_K(log n − t) = factorial lift at log n whenever K(1+ε)e^t ≤ K+1 (small dilation collar preserves all grid values).
+## SignedPrimePolarRampMoments
+- ∫e^{x/2}L_K = (1 + ε/2)K·H_K − K; ∫e^{−x/2}L_K = K log K − Σ_{d≤K}ψ(⌊K/d⌋) + K·rampLogCorr. Stencil: ∫e^{x/2}·rampBiNull = (1 + ε/2)·harmonicCorrection/√N; ∫e^{−x/2}·rampBiNull = −chebyshevBiNullProducer/√N (ramp correction cancels in (1,−4,4)); prime side Σ Λ(n)n^{−1/2}·B_N(log n) = chebyshevBiNullProducer/√N. (Polar two-branch split: growing branch ↔ harmonic correction, decaying branch ↔ Chebyshev producer.)
+## SignedPrimePolarCausalSource (start)
+- Causal source = average over shifts t ∈ [0, 2δ_N] of e^{t/2}·ramp(x − t) against exponential tent density; continuous, support [0, log(4N+1)], equals discrete bi-null at every log n (shift budget K(1+ε_N)e^t ≤ K+1), equals e^{x/2}/√N on top band.
+- Causal source agrees with B_N at every log n (tent density mass 1), equals e^{x/2}/√N on top band.
+## SignedPrimePolarCausalMoments
+- Moment factorization (Fubini + translation): ∫e^{sx}C_N = (∫tent·e^{(s+1/2)t})·∫e^{sx}R_N; s = 1/2: coefficient((1+e^δ)/2)³·harmonicCorrection/√N; s = −1/2: −chebyshevBiNullProducer/√N (tent mass 1).
+## SignedPrimePolarCausalEnergy
+- |C_N| ≤ 2e^{x/2}/√N; 1 ≤ ∫C_N² ≤ 16.
+## SignedPrimePolarSourceFactorization
+- C_N is a genuine mixed correlation: C_N(x) = ∫ L(u)·R(u+x) with L(u) = ramp(−u) (reflected), R = exponential tent source; L and R have disjoint supports (L·R ≡ 0). With scale s = N^{1/4}: P = sL + R/s, M = sL − R/s; contrast (h_P − h_M)/2 = C_N(x) + C_N(−x), = C_N for x ≥ 0. So the producer is a DIFFERENCE of two autocorrelations of compact continuous sources.
+## SignedPrimePolarSourceEnergy
+- ‖P‖² = ‖M‖² = √N·‖L‖² + ‖R‖²/√N (disjointness kills cross term); ‖L‖² ≤ 16, 6N ≤ ‖R‖² ≤ 30N ⇒ 6√N ≤ ‖P‖² ≤ 46√N (balanced at square-root growth).
+## SignedPrimePolarCausalPairing
+- fullPairing(C_N) = (2·chebyshevBiNullProducer − coefficient·harmonicCorrection)/√N; |·| ≤ (10 log(4N+1) + 3 + 1/(4N))/√N (unconditional, no PNT error assumed).
+## SignedPrimePolarSourceCertificate (start)
+- Contrast producer compact continuous, equals B_{n+1} at every log m, same full pairing as C_N; ∫contrast² = 2∫C_N².
+- factorialSourceProducer CERTIFICATE: (h_P − h_M)/2 with ‖P‖² = ‖M‖² ∈ [6√N, 46√N], equals B_N on the integer grid, fullPairing = (2·chebBiNull − coeff·harmCorr)/√N, |·| ≤ (10 log(4N+1) + 3 + 1/(4N))/√N, admissible, contrast L² norm² ∈ [2, 32].
+## CompactProfileLipschitz
+- Clamp-to-interval Lipschitz extension lemma; ramp_ε Lipschitz 1/ε; causal tent 1-Lipschitz; |e^x − e^y| ≤ e^L|x − y| below L.
+## CompactLipschitzLevyEnergy
+- K-Lipschitz compact source ⇒ h(0) − h(x) ≤ K‖f‖₁|x| ⇒ Lévy integrand integrable; energy ≤ 3Ma + K_tail(log(6/a) + π) (near/far split at a ≤ 1); parallelogram law for Lévy energy given four admissions.
+## SignedPrimePolarTentRegularity
+- Narrow tent source Lipschitz ≤ 2000N², L¹ ≤ 2; δ_N ≤ 1, 1/collar ≤ 15N.
+## SignedPrimePolarRampRegularity
+- Factorial ramp Lipschitz ≤ 10000N⁴, |ramp| ≤ 5, ‖ramp‖₁ ≤ 20N.
+## SignedPrimePolarSourceJumpDomain (start)
+- Left/right/plus/minus sources Lipschitz ⇒ all Lévy (jump) energies admitted; parallelogram: E(P) + E(M) = 2(√N·E(L) + E(R)/√N); E(P) − E(M) = −2∫_{x>0} C_N·archLevySinhWeight (signed jump integrand = −2C_N·w).
+## SignedPrimePolarSourceJumpUpper
+- Jump scale Q_N = 10⁶N⁵; left increment ≤ Q|x|, right increment ≤ 4000N²|x|; E(L) ≤ 3 + 32(log 6Q + π), E(R) ≤ N(3 + 60(log 24000N + π)); E(P), E(M) ≤ 2√N·(…log N…) = O(√N log N).
+## SignedPrimePolarTentJumpLower
+- Narrow tent autocorr vanishes beyond 2δ_N ≤ 1/N ⇒ E(R) ≥ 6e^{−1/2}·N·log N (narrow source forces logarithmic Lévy cost).
+## SignedPrimePolarCausalJumpBounds
+- |C_N(x)| ≤ 20000N⁴x near 0 (Lipschitz from zero at origin); |C_N·w| ≤ (4 + 2/x)/√N; ⇒ |∫_{x>0}C_N·w| ≤ (6 log(4N+1) + 7 + 2 log Q)/√N = O(log N/√N); |E(P) − E(M)| ≤ 2·that.
+## SignedPrimePolarSourceArchimedeanCertificate
+- E(P), E(M) ≥ 6e^{−1/2}√N log N − O(log N/√N); normalized E/‖·‖² ≥ (3/23)e^{−1/2}log N − const (normalized Lévy energy of both balanced sources grows like log N). Full certificate: admitted jump domains, two-sided bounds O(√N log N), signed difference = −2∫C_N w with O(log N/√N) bound.
+- READING: the factorial producer drives the signed prime–polar pairing to 0 at rate log N/√N, but its balanced source pair pays normalized archimedean energy ≳ log N → ∞ (energy blowup is the price of small pairing).
+## SignedPrimePolarRealFactorialStencil
+- log ⌊·⌋! monotone; short cutoff change ≤ length·log(X+1); integer dilation creates < a floor carries; real-scale stencil log⌊4v⌋! − 4log⌊2v⌋! + 4log⌊v⌋! has |·| ≤ 9 log(4v+1) + 1 for all real v ≥ 0 (equals chebyshevBiNullProducer at integers).
+## SignedPrimePolarClampedPrimeSum (start)
+- ⌊w⌋ ≤ Σ_{j≤K} ramp(j/w) ≤ ⌊(1+ε)w⌋ (cap K ≥ ⌊w⌋); log B! = Σ_{m≤M}Λ(m)⌊B/m⌋ for B ≤ M; clamped prime factorial sum sandwiched between log⌊v⌋! and log⌊(1+ε)v⌋!.
+- With εv ≤ 2: clamped sum − log⌊v⌋! ∈ [0, 2 log((1+ε)v + 1)] (at most two carries).
+## SignedPrimePolarFactorialAtomicPacket
+- Atomic packet of the factorial ramp at shift u = e^{u/2}/√N × (clamped stencil at scale N e^{−u}); collar bounds on u ≥ −3δ_N; |atomic packet(u)| ≤ 19e^{u/2}/√N·(1 + log 13N − u) on [−3δ_N, log(4N+1)] — explicit, no discrepancy assumption (arithmetic enters only through log v! identities).
+## SignedPrimePolarFactorialPacketEnvelope
+- Envelope e^{u/2}/√N·(1 + log 13N − u); ∫_{window}envelope² ≤ 130 (fixed budget though window grows logarithmically).
+## SignedPrimePolarFactorialPolarPacket
+- Ramp support [0, log(4N+1)]; full moments: |∫e^{x/2}ramp| ≤ 2/√N, |∫e^{−x/2}ramp| ≤ (5 log(4N+1) + 1)/√N; polar packet splits into two branches with partial moments; |polar packet(u)| ≤ 5e^{u/2}/√N·(1 + log 13N − u) (full harmonic cancellation used before head estimate).
+## SignedPrimePolarReflectedTentPacket (start)
+- Reflected narrow tent supported in [−2δ, 0]; no prime translates in local window (atomic packet = 0 for u ≥ −3δ, since log m ≥ log 2 > −u); |signed packet| ≤ 6 there.
+- Reflected tent signed packet: zero for u ≥ 0, |·| ≤ 6 on [−3δ, 0] ⇒ ∫_{window} packet² ≤ 9/N.
+## SignedPrimePolarLocalizedPacket
+- Right support bound L ⇒ packet vanishes beyond L and stabilizes in cutoff (A ≤ K, L ≤ u + cutoff A); local Cauchy: pairing(q⋆f)² ≤ ‖q‖²·∫_{[a,b]} packet² when q·packet vanishes off [a,b].
+## SignedPrimePolarFactorialLocalEnergy
+- Window [−3δ_N, log(4N+1)]; |ramp packet| ≤ 24·envelope ⇒ ∫ ramp packet² ≤ 10⁵. Reflected balanced sources (b = ±): s·ramp ∓ s^{−1}·reflected tent, autocorr same as P/M; local packet energy ≤ 2s²·10⁵ + 2s^{−2}·9/N ≤ 3·10⁵√N; ratio local packet energy/‖source‖² ≤ 50000 (UNIFORM in N).
+## SignedPrimePolarFactorialLocalCertificate
+- Sources supported in window ⇒ packet stable for all cutoffs ≥ 10(n+1); pairing² ≤ 50000·h(0)² (uniform normalized prime–polar pairing bound); increment pairing² ≤ 6·10⁵√N·(h(0) − h(y)) for |y| ≤ δ_N.
+## FactorialCompleteFormCoercivity
+- Complete real-space energy = γ(0)·h(0) + LévyEnergy − 2·fullPairing. Normalized: ≥ γ(0) + normalizedJumpLower(n) − 448 → +∞ (|fullPairing| ≤ 224·h(0), normalized Lévy energy ≳ (3/23)e^{−1/2}log N). Eventually strictly positive for both signs. (Statement about the literal real-space expression; spectral identification separate.)
+- READING: this factorial family is NOT a counterexample to Weil positivity — the archimedean log N growth dominates the bounded normalized prime–polar term; the arithmetic producer is defeated by its own archimedean cost.
+## CompactFiniteJumpWeilFormula (start)
+- Compact continuous source with finite physical jump energy ⇒ spectral archimedean symbol × |f̂|² integrable (no derivative needed): physical Lévy jump lintegral = spectral excess lintegral.
+- re(weilFullFunctional(Λ, weilTest(f,f))) = γ(0)·h(0) + LévyEnergy(f) − 2·fullPairing(h_f) for every compact continuous f with finite jump energy (exact spectral Weil identity, all prime atoms and both polar branches, no derivatives).
+## FactorialWeilCoercivity
+- Both reflected factorial source families: literal spectral Weil functional = complete real-space energy; normalized Weil value ≥ γ(0) + (3/23)e^{−1/2}log N − const → +∞; eventually strictly positive. UNCONDITIONAL.
+## FactorialWeilGram
+- Weil form on span{c·L + d·R} (ramp L, tent R): exact quadratic W(c,d) = c²W(1,0) + d²W(0,1) + cd·mixed, mixed = −∫C_N·w − 2·fullPairing(C_N) (contrast gives all cross terms; contrast(0) = 0).
+## FactorialWeilMixedDecay
+- |mixed| ≤ (36 log N + const)/√N → 0; Gram error mixed²/(2N) → 0.
+## FactorialTentWeilCoercivity
+- Pure narrow tent has NO prime atoms (support < log 2) and nonpositive full pairing (pure polar); W(0,1)/N ≥ 6e^{−1/2}log N − 30|γ(0)| → ∞; eventually W(0,1) ≥ N.
+## FactorialWeilGramDecoupling
+- Eventually: W(c,d) ≥ c²(W(1,0) − GramError) + (W(0,1)/2)d²; exact completion of square W(c,d) = W(0,1)(d + c·mixed/(2W(0,1)))² + c²·minRamp; minRamp ≤ W(1,d) ∀d; 0 ≤ W(1,0) − minRamp ≤ GramError → 0. Tent direction decouples; sign of pure ramp diagonal NOT asserted (open).
+## ClampedPrimeLogResummation (start)
+- Divisor resummation: Σ_k log k·w(k) = Σ_m Λ(m)Σ_{j≤K/m}w(jm); with collar cutoff, clamped prime factorial sum = Σ_{k≤K} log k·ramp(k/v) exactly; atomic packet of factorial ramp on u ≥ 0 = explicit log-weighted lift field (no arithmetic premise; collar kills products beyond cutoff).
+## CompactAutocorrelationPolarMoment
+- ∫_{x≥0} 2cosh(x/2)·h_f = (∫e^{u/2}f)(∫e^{−u/2}f) for every compact continuous f (polar term = product of the two exponential source moments; via paperFT at ±i/2).
+## FactorialBiNullPolarSign
+- chebyshevBiNullProducer(N) = log C(4N,2N) − 2 log C(2N,N) ≥ 0 (Vandermonde: C(2N,N)² ≤ Σ_j C(2N,j)² = C(4N,2N)). Ramp polar term = −(1 + ε/2)·harmonicCorrection·chebBiNull/N ≤ 0: the POLE LOWERS the ramp diagonal (not a positive bonus); |·| ≤ 2(5 log(4N+1) + 1)/N.
+## FactorialRampDiagonalIdentity
+- Literal prime sum of ramp autocorrelation = ∫ ramp·logField (all von Mangoldt atoms eliminated via divisor resummation); pure ramp Weil diagonal W(1,0) = γ(0)h(0) + Lévy − 2∫ramp·logField − 2(1+ε/2)H·(log C(4N,2N) − 2 log C(2N,N))/N — prime-free explicit archimedean/logarithmic expression; sign not asserted.
+## CentralBinomialRatioGrowth
+- Ratio C(4N,2N)/C(2N,N)² has exact recurrence; N + 1 ≤ ratio² and ratio²(N+1) ≤ (9/4)(N+1) ⇒ log(N+1)/2 ≤ log ratio ≤ log(N+1)/2 + log(9/4)/2.
+## FactorialPolarLossLowerBound
+- chebBiNull(N) ∈ [log(N+1)/2, log N/2 + log(9/4)/2]; harmonicCorrection ∈ [N/(2N+1), 1/2] (≥ 1/4); polar loss ≥ log(n+2)/(8(n+1)) > 0; N·loss ≥ log 2/8; ramp polar integral strictly negative.
+## FactorialPolarLossAsymptotic
+- harmonicCorrection → 1/2; chebBiNull/log N → 1/2; collar → 0 ⇒ N·polarLoss/log N → 1/4 (exact asymptotic coefficient of the literal pole of the compact ramp).
+- Signed pole term in ramp Weil diagonal: N·2∫polar·h/log N → −1/2.
+## FactorialPolarGramScaleSeparation
+- N·GramError → 0 while N·polarLoss ≥ log 2/8 ⇒ GramError/polarLoss → 0; eventually GramError < polarLoss; NOT eventually polarLoss ≤ GramError — closes "polar-absorption shortcut" (the pole cannot be absorbed into the mixed-Gram error budget).
+## FactorialMuntzSeed
+- Seed on t > 0: ramp(t/4N) − 4ramp(t/2N) + 4ramp(t/N) (as positiveRamp − left step representation); measurable, |·| ≤ 9, support (0, 4N(1+ε)], ∫ = 0 exactly (dilation scaling with coefficients 4 − 8 + 4 = 0), total variation ≤ 10.
+## FactorialMuntzCompletion
+- Arithmetic (Müntz) sum Σ_j seed(jt) bounded by 10; its Mellin transform VANISHES at every zeta zero with Re ρ > 0 (all premises of CCM BV–Müntz theorem discharged). Completion e^{x/2}·Σ(e^x)/√N agrees EXACTLY with the compact ramp for x ≥ 0; |completion| ≤ 10e^{x/2}/√N.
+## FactorialMuntzTail
+- Completion − ramp = tail on x ≤ 0; ∫tail² ≤ 100/N → 0 (ramp approximates a zeta-annihilated completion in L²).
+## FactorialMuntzReadout (start)
+- Readout ∫e^{(s−1/2)x}·completion = Mellin(Σ)(s)/√N (integrable for Re s > 0); at every zeta zero with Re ρ > 0: ramp readout = −tail readout, ‖·‖ ≤ 10/(√N·Re ρ); reflected left source same bound; fixed zero readouts → 0 as N → ∞ regardless of the zero's position relative to the critical line.
+## ClampedRampLatticeSum
+- Lattice remainder r(y) = {y}(1 − {y})/2 ∈ [0, 1/8]; Σ_{k≥1} max(y − k, 0) = (y² − y)/2 + r(y); clamp = difference of positive parts / ε; exact lattice sum Σ_k ramp((k+1)t/a) = a(1+ε/2)/t − 1/2 + (t/(aε))(r(a(1+ε)/t) − r(a/t)); error ≤ t/(8aε).
+## FactorialMuntzBoundaryPole
+- Müntz sum = stencil of clamped lattice sums; |Σ(t) + 1/2| ≤ 25t/(32Nε) (zero mean cancels reciprocal sampling scale, endpoint half survives); e^{−x/2}·completion → −1/(2√N) as x → −∞ (nonzero negative-end polar coefficient).
+## FactorialMuntzBoundaryRepair
+- Corrected completion + c·e^{x/2}1_{x≤0}: negative polar moment integrable ⇔ c = 1/(2√N) (unique); original completion NOT polar-admissible (despite small tail mass and zero readouts). Correction changes readout by exactly c/s for Re s > 0; at every zeta zero the canonical corrected readout = c/ρ ≠ 0 (not a null-source certificate); positive polar moment always integrable.
+## FactorialMuntzUniformTail
+- N·ε_N ≥ 1/15 ⇒ boundary error ≤ 12/√N uniformly; |Σ(t) + 1/2| ≤ 12t; corrected tail |·| ≤ 12e^{3x/2}/√N on x ≤ 0; readouts integrable on Re s > −1 with ‖·‖ ≤ 12/(√N(Re s + 1)); at zeta zeros |ramp readout| ≤ 1/(2√N|ρ|) + 12/(√N(Re ρ + 1)) (no singularity as Re ρ → 0).
+## FactorialMuntzAnalyticRepair (start)
+- Regularized sum Σ + (1/2)1_{(0,1]}.
+- Regularized sum bounded by 21/2, ≤ 12t near 0, compactly supported ⇒ Mellin holomorphic on Re s > −1; corrected readout = regularized Mellin/√N, analytic on Re s > −1 (proved for source integral itself); uncorrected readout + c/s → corrected value at 0; residue of uncorrected readout at s = 0 is −c_N = −1/(2√N). Tail readouts → 0 UNIFORMLY on closed half-planes Re s ≥ −1 + δ; |ramp zeta readout| ≤ 13/√N uniformly over ALL nontrivial zeros (|ρ| ≥ 4); uniform convergence to 0 on the zero set (does not by itself justify exchanging the infinite Weil zero sum).
+## ExponentialDecayCompactConvolution
+- Compact kernel convolution preserves e^{−|x|} envelope (weighted kernel mass ∫|κ|e^{|y|}), also for derivative (moved to kernel); C²; exponential tilt commutes with convolution: transform of κ⋆f = product of tilted transforms (Fubini).
+## FactorialMuntzWeilSmoothing
+- Corrected Müntz source integrable with global e^{−|x|} envelope; mollified versions are ExpDecayTests (C², decay incl. derivative); unit mass; → source a.e.; readout = kernel readout × source readout on Re s > −1; at zeta zeros smoothed readout = kernel·c/ρ, eventually ≠ 0. Decay-class Weil identity holds: archPoleEnergy = re W(zero side) + Abel prime pairing.
+## FactorialMuntzZeroReadout (start)
+- Kernel readout bounded by e on 0 ≤ Re s ≤ 1 uniformly; paperFT at γ(ρ) = c/ρ; zero-side summand W_ρ = mult·c²/(ρ(1 − ρ)) at EVERY nontrivial zero (incl. hypothetical off-line); smoothed summand = kernel factors × summand → summand; |W_ρ| ≤ 2c²·mult/(1 + |γ|²) (summable genus-one majorant via |Im ρ| ≥ 4).
+- re W_ρ = mult·c²·Re(1/(ρ(1−ρ))) > 0 for every nontrivial zero (Re(ρ(1−ρ)) = σ(1−σ) + t² > 0 in open strip).
+## FactorialMuntzZeroSideLimit
+- Majorant 2c²·mult/(1+|γ|²) summable (zero_sum_inv_sq); uniform for all smoothings (kernel ≤ e); dominated convergence: W(smoothed) → W(corrected); W(corrected) = c_N²·Σ_ρ mult/(ρ(1−ρ)) (universal reciprocal-zero mass × c_N²); Re W(corrected) > 0 WITHOUT RH (uses existence of a zero in strip); smoothed complete Weil difference archPoleEnergy − Abel prime pairing → Re W(corrected) > 0 ⇒ eventually positive; one smoothing threshold works for all n (exact c_N² scaling).
+- READING: an explicit arithmetic source family whose Weil zero-side is EXACTLY c²·Σ1/(ρ(1−ρ)) — positive unconditionally because each summand has positive real part regardless of zero location; positivity here is not evidence for RH (works off-line too).
+## FactorialMuntzTailSmoothing
+- Corrected tail has rate 3/2: |tail| ≤ 12e^{−3|x|/2}/√N; smoothed tail preserves it (×e^{3/2}); ExpDecayTest; paperFT at γ(s) bounded by e·12/(√N(Re s+1)) for 0 ≤ Re s ≤ 1; tail polar term |·| ≤ 144e²/N.
+## FactorialMuntzTailPrimePolarBudget
+- Tail cross-correlation |·| ≤ (C/N)e^{−5|y|/4}; prime atoms ≤ (2C/N)(1 + log j)j^{−5/4} ⇒ ordinary prime series absolutely convergent = Abel pairing; |prime pairing| ≤ budget/N; prime + polar costs ≤ ε log N/N eventually, uniformly in smoothing; |W(tail) − arch integral(tail)| ≤ (budget + 144e²)/N (tail's non-archimedean cost negligible).
+## FactorialMuntzTailPhaseCells (start)
+- N·ε_N ≤ 1/12 (cubic collar relation); clamped lattice sum = m exactly on cells avoiding new integers; Müntz sum = 0 exactly on phase intervals N/t ∈ [j, j + 1/16] (j < 2N); phase cells log(N/(j+1/16)) ≤ x ≤ log(N/j) lie in x ≤ 0 for j ≥ N.
+- On phase cells (j ∈ [N, 2N)): corrected tail = e^{x/2}/(2√N) exactly (Müntz sum vanishes, only correction left).
+## FactorialMuntzTailMass
+- N disjoint phase cells in [−log 2, 0], each with ∫tail² ≥ 1/(256N²) ⇒ ∫tail² ≥ 1/(256N) (tail mass NOT smaller than 1/N, cf. upper 100/N); smoothed tails → in L² mass; eventually ≥ 1/(512N); prime + polar error ≤ const × actual tail mass (relative budget independent of N).
+## ClampedLatticePrimitive
+- Lattice remainder = −periodic Bernoulli B̃₂; centered Bernoulli primitive differentiable through integer joins; collar difference r(a(1+ε)y) − r(ay) = derivative of bounded primitive (|·| ≤ 2/a; constant means cancel).
+## FactorialMuntzTailPrimitive
+- Müntz sum + 1/2 = t/(Nε)·R(N/t) (exact remainder stencil); remainder has bounded lattice primitive (|·| ≤ 12); corrected tail = −scale·e^{5x/2}·(primitive)' on x ≤ 0 with scale ≤ 15/(N√N).
+## FactorialMuntzTailReadoutDecay
+- Integration by parts (improper endpoints discharged): tail readout = scale·((s+2)∫e^{(s+2)x}P − P(0)); ‖·‖ ≤ 180/(N√N)·(1 + |s+2|/(Re s+2)); on Re s ≥ 0: ≤ 360(1 + |Im s|)/(N√N); paperFT of tail and smoothed tail ≤ 360e(1 + |τ|)/(N√N) (N^{−3/2} gain over trivial).
+## FactorialMuntzTailPrimitiveEnergy (start)
+- (1+|τ|)²/(τ² + 1/4)² ≤ 32/(1 + τ²); primitive energy budget 32(360e)²π.
+- ∫|paperFT(smoothed tail)|²/(τ² + 1/4)² ≤ budget/N³ uniformly in smoothing; relative to actual tail mass ≤ (512·budget/N²)·mass (primitive energy decays by two powers).
+## ExpDecayFourierMass
+- ExpDecayTest ⇒ integrable, |paperFT| ≤ M/(1+|r|) (incl. truncations), |paperFT|² integrable, Parseval ∫|paperFT|² = 2π∫F² (noncompact), |paperFT|²·γ(r) integrable (|γ(r)| ≤ K + 2√(1+|r|)).
+## FactorialMuntzTailArchimedeanGrowth
+- Scalar quarter estimate on actual noncompact source: (b − C + 1/4)·mass ≤ archEnergy + e^{4b}/(8π)·primitive energy; with b = log N/2 and primitive energy O(N^{−3}): archEnergy ≥ (log N/2 − archLoss)·mass eventually in smoothing.
+## FactorialMuntzTailWeilGrowth
+- Re W(smoothed tail) ≥ (log N/2 − WeilLoss)·mass; for every B, eventually (n, then k) Re W ≥ B·mass (normalized Weil energy of tails → ∞); Re W ≥ log N/(2048N) > 0 eventually.
+- READING: lattice cancellation (tail Fourier transform ≈ N^{−3/2}·(1+|τ|), primitive energy N^{−3}) forces the tail's spectral mass to high frequency, where the archimedean symbol log|τ| dominates — the Müntz/Nyman–Beurling-type correction tail is archimedean-coercive with log N growth.
+## ThetaInnerLargeActionCurrent (namespace RHTower.ThetaCuspDefect, filed under BSU)
+- Inner chamber 0 < t ≤ min(2,u): curvature e(u,s) ≤ c(u)e^{2s}; primitive E ≤ c(u)·t·e⁴; clock mass 30kE ≤ θZ when 4050e⁴ ≤ θ²Z; clock elasticity < θZ + 18; enriched clock current > 0 whenever clock elasticity < 1 + 12Z/5; unconditional positivity for action Z ≥ 710e⁴ (method reaches Z > (5625/8)e⁴); bounded-action remainder open.
+## SquarefreeCancellationTransfer (namespace RHTower.SquarefreeDiscrepancy, filed under BSU; start)
+- Möbius Abel summation with both boundary terms; weighted telescoping; |Σ_{D<n≤R} μ(n)w(n)| ≤ δ(2Dw(D) + Σw) given |M(n)| ≤ δn beyond D and w ≥ 0 decreasing.
+- |Σ_{n≤D}μ(n)/n² − 6/π²| ≤ 3δ/D; squarefree count: |Q(N) − (6/π²)N| ≤ D + 6δN/D for any cutoff D with Mertens bound δ beyond D (free truncation, not necessarily √N).
+## SquarefreeCriticalLogEnvelope (RHTower.SquarefreeDiscrepancy)
+- Using unconditional |M(n)| ≤ Bn/log²n and D ≈ e^{t/2}/t: |E(e^t)|·e^{−t/2} ≤ C/t eventually (squarefree discrepancy critical source has reciprocal-log envelope, unconditional).
+## SquarefreeUnweightedHilbertSource (RHTower.SquarefreeDiscrepancy)
+- Unweighted critical source 1_{t>0}E(e^t)e^{−t/2} ≤ C/(1+|t|) ⇒ in L² (no auxiliary (1+t)^{−1} weight); ∫_{x>1}E(x)²/x² finite = ∫|source|²; ⟨source, evaluation_s⟩ = Mellin moment(s) for Re s > 1/2. Removes source-admission obstacle; inverse-overlap Sonin comparison remains open.
+## MertensValuationBudget (namespace RHTower)
+- primeRecipSum = mertensS; two Meissel–Mertens constant definitions agree; higher-prime-power defect has favorable sign; log N·e^{−c√log N} → 0 ⇒ eventually (∏(1−1/p))^{−1} ≤ e^γ log N·e^{a/log N} for every a > 0 (unconditional).
+## RobinMovingValuationDefect (namespace RHTower; start)
+- Valuation defect Σ_{p≤N} p^{−(v_p(n)+1)} at cutoff N = ⌊log n⌋.
+- σ(n)/n ≤ e^γ log log n·exp((1+ε)/log log n − valuation defect at cutoff ⌊log n⌋) eventually (unconditional, defect retained); Robin counterexamples have defect ≤ (1+ε)/log log n; ⇒ every prime power (and every integer m) ≤ η log log n divides every sufficiently large Robin counterexample, for each η < 1 (growing lcm core).
+## HyperbolicMultiplierIncrementAndOddSignCoercivity (Pillar XVI)
+- Exact: (h_{C_αf}(0) − h_{C_αf}(x)) + 2sinh²(αx/2)h_f(0) = cosh(αx)(h_f(0) − h_f(x)) + (h_{S_αf}(0) − h_{S_αf}(x)) (both RHS terms ≥ 0) ⇒ sinh- and cosh-weighted source increments dominated by cosh-multiplier increment + 2sinh²h(0). Signed collar leverage applies to S_αf and C_αf with no multiplier blindness; at source zeros h_f(t) = 0, h_{C_αf}(t) = h_{S_αf}(t) ⇒ leaked multiplier value + C-collar defect ≥ (w − w²/2W₀)(h_f(0) + h_{S_αf}(0)) (+ hyperbolic shift bonus) — resolves odd multiplier leakage trap.
+## EulerMaclaurinLevyQuadratureAndSFreeCellBounds (Pillar XVII, start)
+- Exact cell quadrature identity (∫ρ)h(t) − ∫ρh = ∫_0^δ ρ(t+y)(h(t) − h(t+y)); pointwise ρ|h(t) − h(t+y)| ≤ W₀D(y) + ρ²h(0)/(2W₀) ⇒ S(f)-free (derivative-free) cell bound; Nyquist cell origin integral ≤ (1/n)∫D·w; W₀ = ηn ⇒ cell error ≤ η∫D·w + h(0)/(2ηn)∫ρ²; dyadic window: all N cells charge Lévy collar once.
+- Global dyadic quadrature: |Σ_k(∫ρ)h(log(N+k)) − ∫_{log N}^{log 2N}ρh| ≤ η·LévyEnergy + h(0)/(2η)∫ρ². Polar cell weight ∫e^{x/2} = 2(√(n+1) − √n), ∫e^x = 1; polar cell quadrature: |2(√(n+1) − √n)h(log n) − ∫e^{x/2}h| ≤ η∫D·w + h(0)/(2ηn). On RealEvenPolarTestFn (unconditional): polar cell discrepancy ≤ weilArchRe + (|Ω(0)| + 1/(2(n+1)))·h(0).
+## MultiShellOriginBudgetAndGlobalPrimeCollarSynthesis (Pillar XVIII)
+- archLevySinhWeight(x) = 2/(e^{x/2} − e^{−3x/2}), strictly antitone on (0,∞); ≥ 2/√(n+1) on (0, log(n+1)]; shifted collar ×2/√(n+1) ≤ Lévy integral over cell. Origin interval (0, log(1+1/N)] ⊂ (0, log N] disjoint from dyadic window (log N, log 2N] ⇒ origin + window Lévy ≤ one LévyEnergy. Adaptive cell coercivity with w = 2/√(n+1), W₀ = n/N (coefficient ≥ 2/√(n+1) − 2/(n+1) > 0). GLOBAL DYADIC NYQUIST SIGNED COERCIVITY (unconditional, no blindness): (Σ_k δ_k(2/√(N+k+1) − 2/(N+k+1)))·h(0) ≤ LévyEnergy + Σ_k δ_k·(2/√(N+k+1))·h(log(N+k)).
+## SignedWeilFunctionalCoercivityAndRHBridge (Pillar XIX, start)
+- C_Nyq(N) := Σ_k δ_k(2/√(N+k+1) − 2/(N+k+1)) > 0 for N ≥ 2.
+- weilArchRe(weilTest g g) = Ω(0)h(0) + LévyEnergy(source) on RealEvenPolarTestFn; unconditional dyadic signed Weil lower bound (Ω(0) + C_Nyq(N))h(0) ≤ weilArchRe + Σ_k δ_k(2/√(N+k+1))h(log(N+k)); single-node version; smooth specialization; cosh-multiplier version controls h_g(0) + h_{S_αg}(0); sinh-multiplier version.
+- NOTE: these lower bounds have the signed grid sum on the RIGHT with positive coefficients — they bound h(0) by arch energy PLUS a positively weighted grid sum; they do not by themselves give Weil positivity (the explicit-formula prime sum has the opposite sign/weights Λ(n)/√n).
+## AllScaleCriticalLineOriginConvergenceAndSynthesis (Pillar XX)
+- Canonical weight ϖ_n = √2·n(1/√n − 1/√(n+1)) ≤ 2/√(n+1) ≤ archLevySinhWeight on (0, log(n+1)]; self-matched w = W₀ = ϖ gives coefficient ϖ/2; origin shares ϖ_n/n = √2(1/√n − 1/√(n+1)) telescope: Σ_{n=2}^{N+1} = 1 − √2/√(N+2) ≤ 1; every Nyquist step ≤ log 2 ⇒ first-prime origin window (0, log 2] + tail [log 2, log(N+2)] ≤ one LévyEnergy. ALL-SCALE signed coercivity: C_all(N)h(0) ≤ LévyEnergy + Σ_{n=2}^{N+1}δ_nϖ_n h(log n), C_all(N) = Σδ_nϖ_n/2 > 0, monotone in N; Weil version (Ω(0) + C_all(N))h(0) ≤ weilArchRe + Σδ_nϖ_n h(log n); multiplier versions.
+## VonMangoldtWeilExplicitFormulaAndChebyshevBridge (Pillar XXI)
+- θ_Λ(n) = Λ(n)/log n ∈ [0,1] (=1 at primes, 0 off prime powers); w_Λ = θ_Λϖ_n; with W₀ = ϖ_n: w − w²/(2ϖ) ≥ w/2 (θ(1−θ)/2 ≥ 0). Von Mangoldt all-scale signed coercivity: C_{Λ,all}(N)h(0) ≤ LévyEnergy + Σ δ_n w_Λ(n) h(log n) (C_{Λ,all} > 0, monotone) and Weil version; cosh-multiplier version.
+- RealEvenPolarTestFn: polar integral ∫_{x>0}h(x)cosh(x/2) = 0 UNCONDITIONALLY (from exact Weil arch form identity) ⇒ positive and negative polar lobes have equal cosh-mass; weilArchRe ≥ 0 ⇔ |Ω(0)|h(0) ≤ LévyEnergy; truncated prime sum Σ_{n≤N+2}Λ(n)/√n·h(log n) = pairing_N(h) − polar tail beyond log(N+2).
+## ChebyshevWeilExplicitFormulaAndUnconditionalSynthesis (Pillar XXII, start)
+- RealEvenPolarTestFn embeds into C_c; annular Lévy integral ≤ LévyEnergy = weilArchRe + |Ω(0)|h(0); prime sum + polar tail = pairing_N; |prime sum + polar tail − chebyshevWork| ≤ e^c(weilArchRe + |Ω(0)|h(0)) + packetEnergy/(2e^c e^{2b})·∫e^{−y/2}sinh y.
+- Chebyshev–mass–Weil: |prime sum + polar tail − chebyshevWork| ≤ mass(N)(e^c(weilArchRe + |Ω(0)|h(0)) + h(0)/(2e^c e^{2b})∫e^{−y/2}sinh y). Joint synthesis = conjunction of all-scale Λ coercivity, lobe conservation, Chebyshev–packet bound.
+## WeilFullFunctionalAndPrimitiveHyperplaneBridge (Pillar XXIII)
+- On RealEvenPolarTestFn: logValue(g,n) = 2h(log n)/√n; poleWeightArchRe(β) = weilArchRe for every β (pole term re = 0 on even polar class); weilPoleWeightFunctional re = weilFullFunctional re.
+- supportScale(g) = ⌈e^{supportRadius}⌉: beyond it polar tail = 0 and prime sum = pairing_N exactly; Λ-linear combination of logVector = 2·pairing_N.
+- EXACT FULL WEIL IDENTITY (unconditional): Re W_Λ(g*g̃) = Ω(0)h(0) + LévyEnergy(g) − 2·pairing_{supportScale}(h). So Weil positivity on this class ⇔ 2·pairing ≤ Ω(0)h(0) + LévyEnergy (Ω(0) < 0).
+- |Re W_Λ − (weilArchRe − 2chebyshevWork)| ≤ 2e^c(weilArchRe + |Ω(0)|h(0)) + packetEnergy/(e^c e^{2b})∫e^{−y/2}sinh y; lower bound form; all-scale lower bound (Ω(0) + C_{Λ,all}(N))h(0) ≤ Re W_Λ + 2pairing + Σδ w_Λ h(log n) (tautological rearrangement — pairing appears on the right).
+## MultiNodeSignedCliqueWeilCoercivity (Pillar XXIV)
+- Gram identity: ∫(Σw_i f(u+t_i))² = ΣΣ w_iw_j h(t_i − t_j) ≥ 0 = (Σw_i²)h(0) + off-diagonal. Multi-node signed collar (no blindness): (Σw − Σw²/(2W₀))h(0) ≤ W₀(h(0) − h(y)) + Σw_i(h(0) − h(t_i+y)) + Σw_ih(t_i) + (1/2W₀)·offDiag (Cauchy–Schwarz of P = Σw f(·+t_i) against D = f(·−y) − f + Young).
+- Dyadic coset nodes log((m+1)2^{k+1}): differences (i−j)log 2 independent of m ⇒ off-diagonal Gram entries are prime-2-power correlations h(log 2^{|i−j|}).
+## HyperbolicGaugeChebyshevEnergyRepresentation (ChebyshevGauge namespace)
+- Ẽ(t) = e^{−t/2}(ψ(e^t) − e^t); gauge derivative f' − f/2 = e^{u/2}(e^{−u/2}f)'.
+- Stieltjes against ψ: ΣΛ(n)G(log n) − ∫_0^L G e^x = G(0) + G(L)(ψ(e^L) − e^L) − ∫_0^L G'(ψ(e^x) − e^x).
+- POINTWISE PACKET IDENTITY: signed packet P(u) = Σ_{n≤N+2}Λ(n)n^{−1/2}f(u+log n) − ∫_0^L 2cosh(t/2)f(u+t) = [f(u) − ∫_0^L e^{−t/2}f(u+t)] + Ẽ(L)f(u+L) − ∫_0^L Ẽ(t)(f' − f/2)(u+t)dt. Origin value f(u) comes from ψ(1) − 1 = −1 boundary; e^{−t/2} half of cosh gives forward residual.
+- packetEnergy = ∫(R + Ẽ(L)f(·+L) − Df)²; ∫(Df)² = ∫∫Ẽ(s)Ẽ(t)·autocorr(f' − f/2)(t − s) (positive-definite kernel); Young: ∫(Df)² ≤ ‖f' − f/2‖₁²∫_0^LẼ²; packetEnergy ≤ 3(10 + Ẽ(L)²)h(0) + 3‖f' − f/2‖₁²∫Ẽ²; converse ∫(Df)² ≤ 3packetEnergy + 3(10 + Ẽ(L)²)h(0). ∫_0^LẼ² = ∫_1^{e^L}(ψ(x) − x)²/x² dx.
+- ⇒ uniform packet-energy stabilization over all C¹ sources ⇔ (up to source constants) ∫_1^X(ψ − x)²/x² = O(log X) — an RH-equivalent mean-square Chebyshev statement (RH ⇒ this; this ⇒ RH via standard Landau-type arguments). So the packet-energy route is exactly the mean-square PNT error.
+- Proof details: D = line convolution of (f' − f/2) with reflected window Ẽ·1_{[0,L]}; forward residual energy ∫R² ≤ 10h(0) (window mass ∫_0^Le^{−t/2} ≤ 2, weighted Cauchy–Schwarz, ∫(windowed f²) = mass·h(0)); ∫B² = Ẽ(L)²h(0); (a+b−c)² ≤ 3(a²+b²+c²).
+## ChebyshevGaugeNyquistCellQuadrature
+- On cell [log n, log(n+1)) ψ(e^t) = ψ(n); ∫_cell e^{−t}(c − e^t)² = c²/(n(n+1)) − 2c·log((n+1)/n) + 1. Cell energy ∫_cell Ẽ² = (ψ(n) − m_n)²/(n(n+1)) + c_n, m_n = n(n+1)log(1+1/n) ∈ [n, n+1], c_n = 1 − n(n+1)log²(1+1/n) ∈ [0, 2/(n(n+1))].
+- Σ_{n<M}(ψ(n) − m_n)²/(n(n+1)) ≤ ∫_0^{log M}Ẽ² ≤ same + 2: mean-square Chebyshev error = discrete critical-line-weighted mean square of centred ψ(n) up to universal constant.
+- c_n = ∫_cell e^{−t}(m_n − e^t)² ≤ 2/(n(n+1)) (integrand ≤ 1/n, cell length ≤ 1/n), Σc_n ≤ 2 (telescoping). Dyadic window law: ∫_{log N}^{log 2N}Ẽ² = Σ_k[(ψ(N+k) − m_{N+k})²/((N+k)(N+k+1)) + c_{N+k}]. Comparison with classical E(n) = ψ(n) − n: ½ΣE²/(n(n+1)) − 1 ≤ ∫_0^{log M}Ẽ² ≤ 2ΣE²/(n(n+1)) + 4 (|m_n − n| ≤ 1).
+## CausalExponentialResponseAndLaplaceEnergy
+- Signed prime–polar measure ν_N = ΣΛ(n)n^{−1/2}δ_{log n} − 2cosh(t/2)1_{[0,L]}dt. Causal kernel K(x) = e^{−x/2}1_{x≥0}; autocorr K = Laplace kernel e^{−|x|/2}.
+- Response K⋆ν_N on [0,L] = Ẽ(t) + (1 − t)e^{−t/2} (universal transient from polar ∫_0^t(e^s + 1)); 0 for t < 0; beyond L decays e^{−(t−L)/2}·value(L); |K⋆ν_N| ≤ mass·e^{L/2}·K.
+- ∫(K⋆ν_N)² = laplaceEnergy N = ∬e^{−|s−t|/2}dν_N dν_N (Fubini exchange of pairing with dominated line integral).
+- laplaceEnergy ≥ 0; = ∫_0^L(Ẽ + (1−t)e^{−t/2})² + (Ẽ(L) + (1−L)e^{−L/2})² (tail ∫_{>L} = value(L)²); transient energy ∫_0^L(1−t)²e^{−t} = 1 − (L²+1)e^{−L} ≤ 1; ∫Ẽ² ≤ 2·laplaceEnergy + 2; laplaceEnergy ≤ 2∫Ẽ² + 2 + boundary². Mean-square PNT error = Laplace Gram energy of ν_N (positive-definite kernel).
+## CausalCorrelationPacketRepresentation
+- Causal reconstruction f(u) = −∫K(t)(f' − f/2)(u+t)dt (K inverts the gauge derivative). Packet P_f(u) = −∫R_N(t)g(u+t)dt, g = f' − f/2, R_N = K⋆ν_N.
+- packetEnergy = ∬R_N(t)R_N(s)autocorr_g(s − t) = ⟨autocorr g, autocorr R_N⟩_{L²}; Young: packetEnergy ≤ ‖g‖₁²·laplaceEnergy N. Green: autocorr f = autocorr g ⋆ e^{−|·|/2}. packetEnergy = ∬(autocorr g ⋆ Laplace)(s − t)dν_N dν_N.
+- ⇒ all arithmetic content of every compact packet is in the single response R_N; every compact Gram energy = Laplace Gram energy filtered by positive-definite kernel.
+## SpectralLaplaceEnergyCriticalLine (start)
+- 𝓕R_N(ξ) = ν̂_N(ξ)/s(ξ), s = ½ + 2πiξ; laplaceEnergy = ∫|ν̂_N|²/(¼ + 4π²ξ²)dξ; ν̂_N(ξ) = Σ_{n≤N+2}Λ(n)n^{−s} − (e^{(1−s)L} − 1)/(1 − s) − (1 − e^{−sL})/s (pole-subtracted truncated −ζ'/ζ on critical line). Complex pairing pairingC, ‖pairingC h‖ ≤ mass·sup|h|, Fubini exchange.
+- 𝓕K(ξ) = 1/s(ξ); |ν̂_N| ≤ mass N; ∫Ẽ² ≤ 2∫|ν̂_N|²/|s|² + 2. Atoms: Λ(n)n^{−1/2}e^{−2πiξ log n} = Λ(n)n^{−s(ξ)}; polar 2cosh(x/2)χ_ξ = e^{(1−s)x} + e^{−sx}.
+## PrimeShellMellinMassBudget
+- Square shell (m², 2m²]: half-mass Σp^{−1/2} ≤ m (≤ m² primes, each ≤ 1/m). Quadratically damped shell sum ‖Σ_{shell}p^{−s}/(s+1)²‖ ≤ halfMass·‖1/(s(1−s))‖ in strip (|s(1−s)| ≤ |s+1|²). Loud-mode count: #{i: |damped(s_i)| ≥ L}·L ≤ m·Σ‖1/(s_i(1−s_i))‖ (no separation). Above |Im s| ≥ 1: Re(1/(s(1−s))) ≥ ‖1/(s(1−s))‖/2 (uniform acute cone).
+## CompensatedHausdorffPhase
+- Budget B = |nτ − rσ| + (n|τ|³ + r|σ|³)/3 bounds |n arctan τ − r arctan σ|; Re((1+iτ)^n(1−iσ)^r) = |·|cos(phase) ≥ (1 − B²/2)|·|; B ≤ 1 ⇒ Re ≥ |·|/2. Opposite rotations cancel linearly; only cubic remainders paid absolutely.
+## HausdorffSaddleScale
+- For u ∈ [T, T+H], slope a ∈ [1/u², 1/(u²−1)], r = nT²: 0 ≤ a ≤ 1, ra ≤ 2n, |n − ra| ≤ 4nH/T; with |τ| ≤ 2/T and T² ≥ 32nH: B(n, r, τ, aτ) ≤ 5/16. Quadratic scale T² ≳ nH controls a whole band.
+## HighFrequencyLaplaceEnergyMeanValue
+- Spectral density S_N(ξ) = |ν̂_N|²/(¼ + 4π²ξ²) ≤ mass²/(2πξ)²; ν̂ = A_N − P_N; |P_N| ≤ (e^{L/2} + 3)/|s|; A_N = Dirichlet polynomial with coefficients Λ(n)/√n at t = −2πξ.
+- Montgomery–Vaughan (sharp, corpus): ∫_{−u}^u|A_N|² ≤ 2uD₁ + 208D₂, D₁ = ΣΛ²/n, D₂ = ΣΛ². IBP against 1/u²: ∫_{T₀}^{T₁}(|A(u)|² + |A(−u)|²)/u² ≤ 4D₁/T₀ + 208D₂/T₀².
+- Window law ∫_{ξ₀}^{ξ₁}(S(ξ) + S(−ξ)) ≤ 2D₁/(π²ξ₀) + 52D₂/(π³ξ₀²) + 4(e^{L/2}+3)²/(3(2π)⁴ξ₀³), tail same; laplaceEnergy = band(|ξ| ≤ ξ₀) + tail. D₂ ≤ Lψ(N+2), D₁ ≤ LΣΛ/n.
+## BandLimitedLaplaceEnergy (start)
+- Mertens ΣΛ(n)/n ≤ L + log 4 + 4; ψ(x) ≤ (log 4 + 4)x. Band frequency ξ₀ = √(N+2) = e^{L/2}; L ≤ 4√ξ₀.
+- BAND THEOREM (unconditional): laplaceEnergy ≤ ∫_{|ξ|≤√(N+2)}S_N + (52(log 4 + 4)/π³)L + O(1). ⇒ Σ(ψ(n) − n)²/(n(n+1)) = O(log x) ⇔ band energy ∫_{|ξ|≤√x}|ν̂_x|²/|s|² = O(log x). Square-root barrier = bounded average energy of pole-subtracted truncated −ζ'/ζ on critical-line band |t| ≤ 2π√x (bi-scale: position √x × frequency √x).
+- Remainder ≤ (52(log 4+4)/π³)L + (32 + 8(log 4+4))/π² + 4/(3π⁴) (b² = N+2 cancels exactly in D₂ term). band ≤ laplaceEnergy. Wall-1: ∫Ẽ² ≤ 2·band + O(L); band ≤ 2∫Ẽ² + 2 + boundary².
+## BandSpectrumZeroWidthLaw
+- Three rates (mean-square band ∫_0^LẼ² ≤ Ce^{2βL}, Laplace energy ≤ C(N+2)^{2β}, spectral band ≤ C(N+2)^{2β}); for 0 ≤ α < ½: XiZeroHalfPlaneBound α (all zeros Re ≤ ½+α) ⇔ every β > α rate holds, for each of the three.
+- Band ⇒ width: resolvent Q(t) = e^{−t}(∫_0^te^hẼ − 2/3) ≤ (C+1)e^{βt} via 2|ab| ≤ μa² + b²/μ at μ = e^{(β−1)t}; exponentially bounded resolvent continues critical-Mellin defect (corpus RHTower CCM). Width ⇒ band: generalized von Koch |Ẽ| ≤ Ce^{βt}.
+- Spectral band rate ⇔ Laplace rate for β > 0 (linear remainder absorbed).
+- ENDPOINT: RH ⇒ ∫_0^LẼ² ≤ C(1+L) (Cramér dyadic mean square, corpus); RH ⇔ linear band ⇔ every subexponential band (for all three). SELF-IMPROVEMENT: e^{o(L)} band ⇒ O(L) band; no growth strictly between linear and exponential.
+## BandSlopeZeroEnergyLaw (start)
+- Claim: linear band ∫Ẽ² ≤ C(1+L) + K ⇒ Σ_k n_k²/|ρ_k|² ≤ C over critical zeros (orders of (s−1)ζ); multiplicity ≤ √C|ρ|. Mechanism: Laplace transform L(z) = ∫e^{−zt}Ẽ holomorphic on Re z > β = −((ζ_u'/ζ_u)(z+½) + 1)/(z+½); Abel coefficient σL(β+σ+iγ) → −n/ρ; IBP converts band bound into Abel energy σ∫e^{−σt}Ẽ²; Abel-orthonormal characters ⇒ Bessel inequality.
+- Laplace transform = continuation on Re z > β (identity theorem); Abel coefficient σL(β+σ+iγ) → −n/ρ (log-derivative residue). IBP: ∫_0^TF² ≤ g(T) ⇒ ∫e^{−at}F² ≤ M. Linear band ⇒ Abel energy σ∫e^{−σt}F² ≤ C(1+σ) + Kσ. ∫_0^∞e^{−σt}e^{−iΔt} = 1/(σ+iΔ) ⇒ Abel-orthonormal characters. ABEL–BESSEL: Abel energy limit A, Abel coefficients c_k at distinct γ_k ⇒ Σ|c_k|² ≤ A (2|ab| ≤ a² + |b|² against φ = Σ conj(c_k)χ_k).
+- BAND SLOPE ⇒ ZERO ENERGY: ∫Ẽ² ≤ C(1+L) + K ⇒ Σ n_k²/(¼ + γ_k²) ≤ C; n² ≤ C(¼ + γ²). Linear band forces C ≥ 0.
+## BandExtremalLineLaw
+- Exponential band ∫Ẽ² ≤ Ce^{2βL} + K (0 < β < ½) ⇒ Σ_k n_k²/((½+β)² + γ_k²) ≤ 2βC over zeros on Re = ½ + β (tilted error e^{−βt}Ẽ, Abel energy ≤ C(2β+σ) + Kσ).
+- Zeros of (s−1)ζ have positive integer order; Hardy's theorem (corpus) gives a critical zero. UNCONDITIONAL: square-root barrier never sublinear — no ∫_0^LẼ² ≤ c(1+L) + K for all c > 0. Linear floor at each critical zero: slope ≥ n²/|ρ|². Off-line floor: zero at Re = ½+β with 2βC < n²/|ρ|² makes ∫Ẽ² − Ce^{2βL} unbounded.
+## ProbeResolutionLaw
+- Stationary gauge convolution Φ_f(τ) = ∫_0^∞Ẽ(t)g(t − τ)dt (g = f' − f/2). Gauge factor ĝ(iγ) = −ρf̂(γ), ρ = ½ + iγ (IBP): gauge derivative cancels the 1/|ρ| height damping exactly.
+- Laplace factorization ∫e^{−zτ}Φ_f = ĝ(z)L(z) (convolution of integrable F₁, G₁). Under RH: Abel coefficient σ∫e^{−σt}Φ_f e^{−iγt} → n f̂(γ).
+- PROBE RESOLUTION (conditional on RH as hypothesis): ∫_0^LΦ_f² ≤ C(1+L) + K ⇒ Σ n_k²|f̂(γ_k)|² ≤ C. Bare band weighs zero by n²/|ρ|²; a probe by n²|f̂(γ)|² — no height loss.
+## ProbeParsevalLaw (start)
+- characterMean (1/L)∫_0^Le^{iΔτ} → 0 for Δ ≠ 0 (≤ 2/(|Δ|L)); Parseval for absolutely convergent almost periodic series: (1/L)∫_0^L|Σa_ie^{iγ_iτ}|² → Σ|a_i|² (distinct real γ_i).
+- Packet explicit formula (unconditional, from Zeta23 EF_lit_zetaZeroConfig for translate f(· − τ)): for compact C² f supported in [−w,w] and τ > w, Σ_ρ m_ρe^{iγ_ρτ}f̂(γ_ρ) = A_f(τ) − P_f(τ), P_f(τ) = ΣΛ(n)n^{−1/2}f(log n − τ) − ∫_0^∞2cosh(x/2)f(x − τ), A_f = (1/2π)∫e^{irτ}f̂(r)Ω(r)dr. Negative logs drop out beyond support; two pole terms = polar density.
+- f̂Ω integrable (|f̂|(1+r²) ≤ M, |Ω(r)| ≲ √(1+|r|)); A_f → 0 (Riemann–Lebesgue), continuous. Cesàro means of functions → 0 vanish.
+- PROBE PARSEVAL (under RH hypothesis): (1/L)∫_w^LP_f² → Σ_ρ m_ρ²|f̂(γ_ρ)|² (packet = Bohr almost periodic with coefficients −m_ρf̂(γ_ρ) + vanishing tail). Probe band slope attained exactly.
+## PacketBoundednessCriterion (start)
+- Beyond support: P_f(τ) = A_f(τ) − Σ_ρc_ρe^{λ_ρτ}, λ_ρ = ρ − ½, c_ρ = m_ρf̂(γ_ρ). Zero resolvent R(z) = Σc_ρe^{(λ_ρ−z)b}/(z − λ_ρ) holomorphic off locally finite {λ_ρ} (countable carrier), residue c_ρ at λ_ρ; termwise Laplace ∫_b^∞e^{−zτ}G = R(z) for Re z > ½.
+- Half-plane minus countable set preconnected ⇒ if R agrees with holomorphic L on Re z > σ, then c_ρ = 0 for depth Re λ_ρ > σ. Growth |G| ≤ Ke^{στ} ⇒ Laplace of e^{−στ}G holomorphic on Re z > σ ⇒ c_ρ = 0 at depth > σ.
+- For any complex ξ a small normed bump has f̂(ξ) ≠ 0. PACKET GROWTH LAW (unconditional): P_f = O(e^{στ}) ⇔ f̂(γ_ρ) = 0 at every zero of depth Re ρ − ½ > σ. Packet bounded ⇔ f blind to all zeros right of line. RH ⇔ every compact C² packet eventually bounded. Zero width β ⇔ every packet O(e^{βτ}).
+## PacketOneSidedGrowthLaw
+- One-sided bound suffices: P_f ≤ Ke^{στ} eventually (or ≥ −Ke^{στ}) ⇔ blind to zeros deeper than σ. Mechanism: εe^{σu} − ηP_f1_{u>b} is a nonnegative measure density; Laplace = ε/(z−σ) − η(L_A − R); analytic at every real t > σ because ζ has no real zero in the critical strip (no shifted zero is positive real); Landau ⇒ abscissa σ ⇒ R continues to Re > σ ⇒ residues vanish.
+- RH ⇔ every compact packet eventually bounded above ⇔ every one bounded below. Zero width = universal one-sided packet exponent. Ω± oscillation: a source seeing a zero of depth > σ has packet > Ke^{στ} and < −Ke^{στ} at arbitrarily large τ.
+## PacketWeilEnergyLaw (start)
+- Packet energy weights critical zero by m²|f̂|², Weil functional by m|f̂|². If P_f bounded above (unconditional): (1/L)∫P_f² → E(f) = Σ_{critical}m²|f̂(γ)|²; W(f) = Σ_{critical}m|f̂(γ)|²; 0 ≤ W ≤ E; W = E ⇔ all seen critical zeros simple. Field form: 0 ≤ Ω(0)h(0) + LévyEnergy − 2⟨h,ν⟩ ≤ lim(1/L)∫P_f². Grid-blind polar source (pairing 0) ⇒ bi-scale uncertainty |Ω(0)|h(0) ≤ LévyEnergy from a one-sided bound on one linear packet. Under RH: all zeros simple ⇔ packet energy = Weil energy for every source.
+- Off-critical zero series → 0 when blind right of line (left terms decay).
+- Blind packet = B − criticalSeries, B → 0; unconditional packet Parseval for blind sources → E(f). conj γ_ρ = γ_{1−ρ̄}; ĥ_f(γ) = f̂(γ)·conj f̂(conj γ); Weil functional of blind source = critical Weil energy W(f). W ≤ E with equality iff seen critical zeros simple (m ≤ m²).
+- Field form: Ω(0)h(0) + LévyEnergy − 2pairing = W(f) ∈ [0, E(f)] when packet bounded above. pairing = 0 + packet bounded above ⇒ 0 ≤ Ω(0)h(0) + LévyEnergy ≤ E(f). Under RH: all zeros simple ⇔ packet energy = Weil energy for every source.
+## PacketPersistenceLaw
+- Every nonzero compact source sees a critical zero (corpus: transform entire of exponential type cannot vanish on superlinearly dense simple critical ordinates) ⇒ E(f) > 0, W(f) > 0. STRICT bi-scale uncertainty |Ω(0)|h(0) < LévyEnergy for nonzero real Weil test with pairing 0 and packet bounded above.
+- ζ(½) ≠ 0 ⇒ critical ordinates nonzero ⇒ Bohr mean 0. Sign from mean & energy: mean 0, mean square E > 0, |p| ≤ M ⇒ p > E/(2(M+1)) infinitely often ((p+M)(p−c) ≤ 0 averaging).
+- PACKET PERSISTENCE (unconditional): every nonzero compact C² source has c > 0 with P_f > c and P_f < −c at arbitrarily large τ; no nonzero packet converges.
+## ProbeAmplitudeLaw (start)
+- |P_f| ≤ A eventually ⇒ E(f) ≤ A². Dilate f_t(u) = f(u/t): if ∫f ≠ 0, E(f_t) ≥ c·t log(1/t) for small t (f̂_t(ξ) = tf̂(tξ), |f̂| ≥ |∫f|/2 near 0, ≥ (72π)^{−1}(ξ₀/t)log(ξ₀/t) simple critical zeros, corpus). Probe amplitude law: |P_{f_t}| > √(ct log(1/t)) infinitely often; energy per unit source energy ~ log(1/t) = zero density.
+- limsup|P_f| ≥ √E(f) unconditionally. Proof constants: |f̂| ≥ a/2 on |ξ| ≤ ξ₀, each simple critical zero of height ≤ ξ₀/t contributes t²a²/4; c = a²ξ₀/(576π). PROBE AMPLITUDE LAW (unconditional): ∫f ≠ 0 ⇒ |P_{f_t}| > √(c·t·log(1/t)) at arbitrarily large τ for small t.
+## MultiplicitySpectroscopyLaw
+- Tuned probe f_R(u) = φ(u/R)cos(γ₀u): f̂_R(ξ) = (R/2)(φ̂(R(ξ−γ₀)) + φ̂(R(ξ+γ₀))). Weighted scaled energy Σv_ρ|φ̂(R(γ−γ₀)) + φ̂(R(γ+γ₀))|² → 2v_{ρ₀}|φ̂(0)|² (dominated by m/(1+γ²), summable; 1+γ² ≤ 2(1+γ₀²)(1+(γ−γ₀)²)).
+- UNCONDITIONAL: E(f_R)/W(f_R) → m_{ρ₀}. Under RH: E = packet mean square, W = Weil functional ⇒ multiplicities are prime-side observables.
+## UniversalProbeLaw (start)
+- Boost e^{tu}φ(u): transform translates f̂(z − it). For each zero t ↦ φ̂(γ_ρ − it) is nonzero entire (φ̂ not identically 0 on ℝ) ⇒ countably many bad t; countably many zeros ⇒ all but countably many boosts of any nonzero φ ∈ C²_c are UNIVERSAL probes (see every zero).
+- For universal U: RH ⇔ single packet P_U bounded above; zero width β ⇔ P_U ≤ Ke^{βτ}; deeper zero ⇒ P_U oscillates beyond ±Ke^{στ}.
+- Universal U: RH ⇔ P_U bounded ⇔ bounded above. Every nonzero φ ∈ C²_c has a boost t whose single packet decides RH and has zero width as one-sided growth exponent.
+## SimpleZeroPacketCriterion
+- For universal U: W(U) = E(U) ⇔ all critical zeros simple. RH ∧ all zeros simple ⇔ P_U bounded above ∧ lim(1/L)∫P_U² = Weil functional of h_U = Ω(0)h(0) + LévyEnergy − 2⟨h,ν⟩. Both sides prime–polar data of ONE compact source (linear packet energy vs quadratic bi-scale energy).
+## PacketSignGapLaw
+- Window means of absolutely convergent a.p. series uniform in window position: |mean over [x,x+L]| ≤ Σ|a_i||χ_L(γ_i)| (→ 0, nonzero freqs), window mean square ≥ Σ|a_i|² − Σ_{i≠j}|a_i||a_j||χ_L(γ_i − γ_j)| (→ 0, distinct freqs). Window energy inequality from (q+M)(q−c) ≤ 0.
+- SIGN GAP LAW: nonzero source with packet bounded above ⇒ c, ℓ > 0 with P_f > c and P_f < −c in EVERY window [x, x+ℓ] (c = E/(4(M+1))). Under RH for every nonzero compact source: smoothed prime–polar discrepancy changes sign in every multiplicative interval [X, e^ℓX].
+## PacketBandLaw (start)
+- ∫_T^LP_f² = O((1+L)e^{2σL}) ⇔ f blind to zeros of depth > σ. Universal U: RH ⇔ ∫_T^LP_U² = O(1+L) (slope E(U)); zero width = half the exponential band rate of P_U. Mechanism: smoothing zero series by bump k gives coefficients c_ρk̂(γ_ρ); 2|k||G| ≤ e^{στ}k² + e^{−στ}|G|² turns window energy into pointwise O((1+τ)e^{στ}); residue law.
+- Stationary packet of compact continuous source is continuous (locally finite grid + bounded polar range). Smoothing zero series by bump k multiplies coefficients by k̂(γ_ρ). Band O((1+L)e^{2σL}) ⇒ smoothed zero series O(e^{σ'τ}) ⇒ coefficient kills. PACKET BAND LAW proved both directions. Universal U: RH ⇔ linear band of P_U; zero width = half band rate.
+## PairingRecurrenceLaw
+- Packet of H at shift τ = full prime–polar pairing of H(· − τ). Recurrence: absolutely convergent a.p. series returns within ε of value at 0 at arbitrarily large times (finite simultaneous Kronecker/Bohr recurrence on mass-carrying finite set). autocorr f = weilTest f f; ĥ_f(z) = f̂(z)·conj f̂(conj z).
+- PAIRING RECURRENCE LAW: packet of f bounded above ⇒ limsup_{τ→∞} −⟨h_f(· − τ), ν⟩ = W(f) = Ω(0)h(0) + LévyEnergy − 2⟨h_f,ν⟩ (critical series of h_f has nonnegative coefficients m|f̂|², |Γ(τ)| ≤ Γ(0) = W). Lévy energy fixed by prime–polar pairings alone (origin pairing + recurrent max of translated pairings). Under RH for every source.
+## CubicSplineUniversalProbe
+- Real-rooted boost law: if φ̂ vanishes only on ℝ, every boost |t| ≥ ½ is universal (zeros have |Im γ_ρ| < ½). Box smoothing gains one derivative ((U_w⋆g) = difference of primitives), U_w^{⋆(k+2)} ∈ C^k. Cubic spline B = U_1^{⋆4} ∈ C², supp [−4,4], B̂ = (sin z/z)⁴ real-rooted.
+- EXPLICIT universal probe U(u) = e^uB(u). RH ⇔ Σ_nΛ(n)√n·B(log n − τ) ≤ ∫_0^∞2cosh(x/2)e^xB(x − τ)dx + Ke^τ for large τ (one spline-weighted prime sum vs polar prediction); zero width β ⇔ same with Ke^{(1+β)τ}. Band and simple-zero criteria for P_U.
+## MultiplicityCeilingLaw
+- E(f) ≤ K·W(f) ∀ compact C² f ⇔ every critical multiplicity ≤ K (tuned cubic splines read each multiplicity). Bounded multiplicities ⇔ uniform E ≤ KW. Under RH: multiplicity ≤ K ⇔ lim(1/L)∫P_f² ≤ K·Weil(h_f) ∀f.
+## PacketZeroAmplitudeLaw
+- Bohr mean of a.p. series = sum of zero-frequency coefficients; character twist shifts frequencies; twisted packet mean of P_f e^{−iητ} = −coefficient at ordinate η.
+- PER-ZERO AMPLITUDE LAW (unconditional): limsup P_f ≥ m_ρ|f̂(γ_ρ)|, liminf P_f ≤ −m_ρ|f̂(γ_ρ)| for every critical ρ (weight 1 + cos(γ₀τ + θ) ≥ 0, mean 1; choose θ = arg(∓c₀)).
+- Tuned spline B(u/R)cos(γ_ρu): |f̂_R(γ_ρ)| ≥ 15R/32 once R|γ_ρ| ≥ 1 ⇒ packet oscillates beyond ±15m_ρR/32 — linear resonance in R vs √(t log(1/t)) for dilates. |B̂(x)| ≤ x^{−4}.
+## TranslatedPairingEnvelopeLaw
+- Blindness of ĥ_f right of line ⇒ blind left too (ĥ_f(γ_ρ) = f̂(γ_ρ)conj f̂(γ_{1−ρ̄})) ⇒ Weil functional of h_f = critical sum W(f).
+- WEIL BOUND BY ONE PACKET (unconditional): W(h_f) ≤ limsup_{τ→∞} −⟨h_f(· − τ), ν⟩ (if pairings unbounded below on −side, trivial; else envelope law).
+- ENVELOPE LAW: translated pairings of h_f bounded on one side ⇒ W(h_f) ≥ 0 (Weil positivity for f), |⟨h_f(· − τ),ν⟩| ≤ W + ε eventually, −⟨…⟩ ≥ W − ε infinitely often. One-sided bound on single packet of h_f gives Weil positivity for f.
+## CramerLiminfLaw (start)
+- Gauge bridge: beyond support, below cutoff, P_f(τ) = R_N(−τ) − D_N(−τ) (forward residual − Chebyshev gauge convolution). Windowed energy: ∫_w^LP_f² ≤ (1+η)‖f' − f/2‖₁²∫_0^{L+w+3}Ẽ² + (1+1/η)·10h(0). Under RH: (1/M)∫_0^MẼ² ≥ E(f)/‖g‖₁² − ε eventually for every probe.
+- Gauge-delta probe f(u) = e^{u/2}∫_u^{u+T}k_r: gauge derivative e^{u/2}(k(u+T) − k(u)); ‖g‖₁ ≤ e^{r/2} + e^{(r−T)/2}; |ĝ(γ)| ≥ 1 − 2|ρ|r − e^{(r−T)/2}. Ratio E/‖g‖₁² → zero energy of S. CRAMÉR LIMINF LAW (under RH): (1/M)∫_0^MẼ² ≥ Σ_{ρ∈S}m²/|ρ|² − ε for all large M; liminf ≥ full zero energy.
+- Under RH zero energy Σm²/|ρ|² converges (finite parts ≤ 2C + 1); liminf (1/M)∫_0^MẼ² ≥ full zero energy.
+## DiscrepancyTransformLaw
+- Stieltjes form of pairing for any C¹ f: pairing_N f = f(0) + Ẽ(L)f(L) − ∫_0^LẼ(f' − f/2) − ∫_0^Le^{−t/2}f. Gauge derivative of χ_ξ = −s(ξ)χ_ξ.
+- ν̂_N(ξ) = s(ξ)∫_0^LẼχ_ξ + Ẽ(L)χ_ξ(L) + 1 − (1 − e^{−sL})/s. 𝓕R_N = 𝓕(Ẽ·1_{[0,L]}) + B_N with |B_N| ≤ (|Ẽ(L)| + 5)/|s|. Boundary = Fourier shadow of endpoint jump Ẽ(L); high-frequency energy ≍ Ẽ(L)²/ξ₀ ⇒ Laplace energy (causal continuation) is the band-limited object, not the windowed Chebyshev energy. |s(ξ)| ≥ ½.
+## DyadicRenewalChain (start)
+- Renewal (Markov) law: R_N(t) = e^{−(t−a)/2}R_N(a) + e^{−t/2}[(ψ(e^t) − ψ(e^a)) − (e^t − e^a) − (t − a)]. R_N(0) = 0. Chain x_{k+1} = qx_k + r_k, q = e^{−h/2}, x_k = Σ_{j<k}q^{k−1−j}r_j. Dyadic h = log 2: r_k = 2^{−(k+1)/2}(ψ(2^{k+1}) − ψ(2^k) − 2^k − log 2).
+- (he^{−h}/2)Σx_k² − Σc_k ≤ ∫_0^{Kh}R_N² ≤ 2hΣx_k² + 2Σc_k; Σx_k² ≤ (1−q)^{−2}Σr_k² (Schur); Σr_k² ≤ 4Σx_k². Laplace energy ≍ squared block discrepancies + fine intra-block energies (coarse/fine separated).
+- Converse block bound (he^{−h}/8)Σr_k² ≤ ∫_0^{(K+1)h}R_N² + Σc_k. Dyadic coarse-fine law ∫_0^{K log 2}R_N² ≤ 2log2(1 − 1/√2)^{−2}Σr_k² + 2Σc_k.
+## PacketEnergyPlancherel
+- ν̂_N(−ξ) = conj ν̂_N(ξ) (real measure); S_N even. 𝓕(signedSource f N)(ξ) = 𝓕f(ξ)·ν̂_N(−ξ). packetEnergy = ∫|𝓕f|²|ν̂_N|² = ∫|𝓕f|²(¼ + 4π²ξ²)S_N. Every compact Gram energy = spectral energy of ν_N through window |𝓕f|²; probing band |ξ| ≤ √x needs sources of width ≲ 1/√x (bi-scale uncertainty of probes).
+## ExponentialRectangleAndDivisorAverageLaw
+- Pairing linear (finset sum, difference). RECTANGLE LAW: pairing_N(e^{t/2}1_{[0,a]}) = (ψ(e^a) − e^a) + 1 − a for 0 ≤ a ≤ L. Rectangle difference = e^{b/2}·blockResponse(a,b); chain input r_k = normalized rectangle-difference reading.
+- Factorial lift Σ_{j≤K}polarRectangle(log(K/j)) pairs to Σ_j(ψ(K/j) − K/j + 1 − log(K/j)). DIVISOR-AVERAGED CHEBYSHEV LAW: Σ_{j≤K}(ψ(K/j) − K/j) = log K! − K·H_K; ⇔ Σ√(K/j)Ẽ(log(K/j)) = log K! − KH_K. Closed form pairing = 2log K! − K log K − KH_K + K. Factorial producers = signed sums of rectangle readings; their O(log K/√K) cancellation = Λ∗1 = log.
+## GaugeDualNormAndDivisorSampledResponse (start)
+- pairing_N h = −∫R_N(h' − h/2) for compact C¹ h ⇒ (pairing h)² ≤ laplaceEnergy·‖h' − h/2‖₂² (Laplace energy dominates squared gauge-Sobolev dual norm of ν_N). Rectangle tests are point readings e^{a/2}R_N(a), NOT L²-controlled. Divisor-sampled: Σ_{j≤K}√(K/j)R_N(log(K/j)) = 2log K! − K log K − KH_K + K.
+- Every smooth producer: pairing²/‖h' − h/2‖₂² ≤ laplaceEnergy. Rectangle reading = e^{a/2}R_N(a); chain input r_k = R_N((k+1)h) − qR_N(kh).
+## DyadicBlockEnergyDiscreteDeviation
+- blockResponse(a,t) = e^{−t/2}(logError t − logError a − (t−a)). On cell of n ∈ [X,2X): explicit in integer errors E(n) = ψ(n) − n. Cell law: (E(n) − E(X))²/(16X²) − 3/(2X²) ≤ ∫_cell blockResponse² ≤ 4(E(n) − E(X))²/X² + 10/X².
+- Dyadic fine energy: D_X/(16X²) − 2 ≤ c_k ≤ 4D_X/X² + 10, D_X = Σ_{n∈[X,2X)}(E(n) − E(X))², X = 2^k. Chain input r_k = 2^{−(k+1)/2}(E(2^{k+1}) − E(2^k) − log 2). Window Laplace energy bounded by purely discrete dyadic statistics of E(n): coarse jumps + fine in-block deviations.
+## FermiNymanBrickDictionary
+- t = e^{−u}: L²((0,1],dt) = gauge space ∫‖e^{−u/2}F(e^{−u})‖²du. Fermi–Nyman generator φ_a(t) = {1/(at)} − 2{1/(2at)}: φ_a(e^{−u}) = −1_{[log a, log 2a)}(u) on bulk u < log 2a.
+- Gauge-lifted brick pairing: pairing_N(e^{t/2}1_{(a,b]}) = logError b − logError a − (b − a); dyadic brick reads ψ(2a) − ψ(a) − a − log 2 = √(2X)·r_k. Nyman–Beurling approximation = approximation of gauge brick by dyadic bricks + origin tails; generators pair to coarse dyadic block discrepancies.
+## IntegerBlockVarianceBridge
+- u_j = E(X+j): X·D_X = finiteBlockVariance X u + (Σu_j − Xu_0)² (Σ_{r<s}(u_r − u_s)² = XΣu² − (Σu)²). c_k ≍ Var_X(E)/X³ + (Ē_X − E(X))²/X. Var/(16X³) − 2 ≤ c_k.
+- c_k ≤ 4Var/X³ + 4(Σu_j − Xu_0)²/X³ + 10.
+## WindowEnergyArithmeticQuadrature
+- On cell: R_N(t) = e^{−t/2}(ψ(n) + 1 − t − e^t). Closed cell energy ∫_cell e^{−t}(c+1−t−e^t)² = F_c(log(n+1)) − F_c(log n), F_c(t) = −e^{−t}((c+1−t)² − 2(c+1−t) + 2) − 2(c+1)t + t² + e^t. Window Laplace energy = finite explicit quadratic form in ψ(n) (coefficient 1/(n(n+1)) on ψ(n)²); laplaceEnergy = sum + R_N(L)².
+## PoleRegionNetSignedMass
+- ν̂_N(0) = pairing_N 1 = ΣΛ(n)/√n − 4sinh(L/2) = ½∫_0^LẼ + Ẽ(L) − 1 + 2e^{−L/2} (classical Σ_{n≤x}Λ(n)/√n = √x + ψ(x)/√x − 1 + ½∫(ψ−u)u^{−3/2}). S_N(0) = 4(pairing 1)². ∫_0^L2cosh(t/2) = 4sinh(L/2).
+## OddSectorAndPrimitiveHyperplaneBiScaleSynthesis (Pillar XXV)
+- For EVERY real f ∈ C²_c: Re pole term = 2((∫f cosh(u/2))² − (∫f sinh(u/2))²); weilArchRe = pole + Ω(0)h(0) + LévyEnergy. poleWeightArchRe(β) = Ω(0)h(0) + LévyEnergy + 2β((∫f cosh)² − (∫f sinh)²); β = 0 ⇒ pole cancels on all real tests.
+- RealWeilTestFn (real, no parity), RealOddTestFn: odd ⇒ ∫f cosh(u/2) = 0 ⇒ pole re = −2(∫f sinh)² ≤ 0. SINH-CAPACITY WEIL IDENTITY (odd): weilArchRe + 2(∫f sinh(u/2))² = Ω(0)h(0) + LévyEnergy. All Layer-V coercivity bounds lift to odd and full real sectors at β = 0 (and β = 1 with sinh capacity).
+- RealHyperplaneGenerator = RealOddTestFn ⊕ RealEvenPolarTestFn ↔ EvenSector.hyperplaneTest; poleWeightArchRe(0) = Ω(0)h(0) + LévyEnergy on all generators; all-scale Λ lower bound there.
+## IntegratedMultiNodeDyadicCosetWeilCoercivity (Pillar XXVI)
+- Integrating the multi-node collar over y ∈ [0, δ]: all K nodes SHARE one origin collar W₀∫_0^δ(h(0) − h(y)) (no division by K); price = off-diagonal Gram δ/(2W₀)ΣΣw_iw_jh(t_i − t_j) (prime-2-power correlations for dyadic cosets). Origin collar ×archLevySinhWeight(e^d) ≤ LévyEnergy; shifted collar ×archLevySinhWeight(t + e^d) ≤ LévyEnergy. Lifted to all sectors.
+## AllParityWeilPoleWeightFunctionalAndChebyshevSynthesis (Pillar XXVII, start)
+- For every real C²_c f: 4∫_{x>0}h_f(x)cosh(x/2) = Re weilPoleTerm = 2∫_{x>0}polarDensity·h_f. Support scale on RealWeilTestFn; polar tail vanishes beyond.
+- UNIVERSAL POLE ABSORPTION (β = 1, any parity): 2(prime sum + polar tail) = 2pairing_N + Re pole; Λ-linear combination of logVector = 2pairing_N + Re pole. ⇒ Re W_Λ(f) = Ω(0)h(0) + LévyEnergy − 2pairing_{supportScale}(h_f) = poleWeightArchRe(0) − 2pairing for EVERY real test (pole term of ζ is exactly the continuum polar part of ν).
+- Full Weil identity on every RealWeilTestFn and RealOddTestFn; |Re W_Λ − (poleWeightArchRe(0) − 2chebyshevWork)| ≤ 2e^cLévyEnergy + packetEnergy/(e^ce^{2b})∫e^{−y/2}sinh y; lower bound (1 − 2e^c)LévyEnergy + Ω(0)h(0) − 2chebyshevWork − packet term ≤ Re W_Λ.
+## HyperbolicGaugeMeanSquareChebyshevWeilSynthesis (Pillar XXVIII)
+- Cutoff-level dictionary ∫_0^LẼ² = ∫_1^{N+2}(ψ − x)²/x²; = discreteChebyshevCellSum + Σc_n; two-sided cell bound. smoothGaugeBound = 3(10 + Ẽ(L)²)h(0) + 3‖g‖₁²∫Ẽ² ≤ discreteCellGaugeBound. packetEnergy ≤ each.
+- Chain of unconditional lower bounds for Re W_Λ(f) on all real sectors: (1 − 2e^c)LévyEnergy + Ω(0)h(0) − 2chebyshevWork − [packetEnergy | smoothGauge | discreteCell | roughGauge | correlationGauge]/(e^ce^{2b})·∫e^{−y/2}sinh y. All circular w.r.t. RH: the mean-square Chebyshev term is the RH-equivalent quantity.
+- ∫f'f = 0 for compact C¹ ⇒ ∫(f' − f/2)² = ∫f'² + h(0)/4 (gauge L² energy identity).
+## ExplicitNyquistPolarAndChebyshevFactorialProducer (Pillar XXIX)
+- nyquistPolarConstant(n) = cosh(log n/2) = (√n + 1/√n)/2; √(n+1) − √n ≤ 1/(2√n); on cell 0 ≤ cosh(x/2) − const ≤ 1/(4√n); cell L² error ≤ 1/(16n²); dyadic window total ≤ 1/(16N). Instantiates Pillar XII producer W explicitly.
+- Stirling residual T(k) − (k log k − k) ∈ [1, log(k+1) + 1], T(k) = Σ_{d≤k}ψ(⌊k/d⌋) = log k!.
+- Alternating producer T(2N) − 2T(N): |· − (2log 2)N| ≤ 2log(2N+1) + 1 (no O(√N) divisor noise — avoids subtracting j before floor-summing). T(K) = Σ_dΛ(d)⌊K/d⌋. 0 ≤ ⌊2N/d⌋ − 2⌊N/d⌋ ≤ 1 ⇒ ψ(2N) − ψ(N) ≤ T(2N) − 2T(N) ≤ ψ(2N) ⇒ Chebyshev bounds: ψ(2N) − ψ(N) ≤ (2log2)N + O(log N), ψ(2N) ≥ (2log2)N − O(log N).
+- Bi-null producer T(4N) − 4T(2N) + 4T(N) = alt(2N) − 2alt(N) ((1 − 2·2^{−s})² kills double and simple pole).
+- Bi-null = second dyadic difference of Stirling residual; |T(4N) − 4T(2N) + 4T(N)| ≤ 5log(4N+1) + 1 (vs 24√N for floorSummatory psiDefect with divisor contamination).
+## NyquistResidualMass / NyquistResidualPartition / NyquistResidualKernel / NyquistResidualOperator
+- Residual density cosh(x/2) − cosh(log(k+1)/2) on cell k ∈ [0, 1/(4√(k+1))]; cell mass ≤ 1/(4(k+1)√(k+1)) ≤ 1/√(k+1) − 1/√(k+2) (telescoping); tail mass from N ≤ 1/√(N+1) → 0.
+- Half-open cells partition (log(N+1), ∞); residual kernel K_N ≥ 0, integrable, ∫K_N = tail mass. Positive operator H ↦ ∫H·K_N on bounded continuous functions; EXACT operator norm = tail mass ≤ 1/√(N+1) (attained at H = 1); continuous under uniform convergence; = Σ cell residuals.
+## NyquistPolarDecomposition
+- ∫_cell H cosh(x/2) = cosh(log(k+1)/2)∫_cell H + cell residual. For compact H: polar tail ∫_{>log(N+1)}H cosh(x/2) = cell-average producer + residual operator; |tail − producer| ≤ ‖H‖/√(N+1). Under uniform convergence: tail convergence ⇔ producer convergence (residual always stable).
+## NyquistPolarSourceEscape (start)
+- LevyEnergySource correlation as bounded continuous ‖·‖ ≤ 1, compact support. Normalized polar moment = producer(0) + residual, |polar − producer| ≤ 1. Smooth diffuse train g_n → f (uniform correlation convergence, arch energy converges, compact closure, uniform signed grid tail) with producer(g_n) ≥ ((n+2)/4)·polar(f) − 1 → ∞ while residual converges: polar escape lives entirely in the cell-average producer.
+## NyquistWeightJets / NyquistWeightTaylorRemainder / NyquistWeightCells / NyquistWeightCellAsymptotic
+- Weight cosh(βx); j-th derivative (β^j/2)(e^{βx} + (−1)^je^{−βx}) ≥ 0 on x ≥ 0, ≤ β^je^{βx}, monotone. Taylor residual of order m at left endpoint a ≥ 0: jet_{m+1}(a)(x−a)^{m+1}/(m+1)! ≤ residual ≤ jet_{m+1}(b)(x−a)^{m+1}/(m+1)!; mass bounds with (b−a)^{m+2}/(m+2)!.
+- Log cell widths 1/(k+2) ≤ w_k ≤ 1/(k+1), (k+1)w_k → 1. Cell mass ≤ 2^ββ^{m+1}/(m+2)!·(k+1)^{β−m−2}. β = 0 ⇒ residual ≡ 0.
+- ASYMPTOTIC: cell mass ~ β^{m+1}/(2(m+2)!)·(k+1)^{β−m−2}. SHARP SUMMABILITY THRESHOLD: Σ_k cellMass(β, m, k) < ∞ ⇔ β < m + 1. (For polar β = ½, order-0 Taylor producer already summable; residual tail.)
+## NyquistPowerTails / NyquistPositiveTailComparison / NyquistPositivePrefixComparison
+- Σ_{k≥0}(N+k+1)^p for p < −1 between (N+1)^{p+1}/(−p−1) and (N+1)^p + (N+1)^{p+1}/(−p−1); normalized → 1/(−p−1). Pointwise ratio a_n/b_n → c (b > 0) transfers to tails (summable) and to divergent prefixes (Stolz–Cesàro type).
+## NyquistPrefixScales / NyquistWeightPrefixMass
+- Power increments (k+2)^r − (k+1)^r ~ r(k+1)^{r−1}; cell widths sum to log ratio, normalized → 1. CRITICAL β = m+1: prefix residual mass ~ C·log M (C = β^{m+1}/(2(m+2)!)); SUPERCRITICAL β > m+1: prefix mass ~ C/(β−m−1)·M^{β−m−1}.
+## NyquistWeightKernel / NyquistWeightTailMass / NyquistWeightOperator
+- Weight-β order-m Taylor residual kernel ≥ 0, ≤ cosh(βx), locally integrable; compact inputs always integrable against it. Kernel integrable ⇔ β < m+1 (sharp); at/above threshold lintegral = ∞.
+- Subcritical tail mass ≤ 2^ββ^{m+1}/(m+2)!·(1 + 1/(m+1−β))(N+1)^{β−m−1} → 0; normalized tail → C/(m+1−β). Bounded positive operator with exact norm = tail mass.
+## NyquistWeightProducer (start)
+- Cell moments ∫_cell H(x)(x − node)^j; produced cell = Σ_{j≤m}jet_j(node)/j!·moment_j; exact: ∫_cell H·Taylor = produced cell; polar tail = producer + residual operator.
+- Weighted polar tail = Taylor producer + residual (for compact H always, operator if β < m+1); |tail − producer| ≤ tailBound·‖H‖; convergence equivalence.
+## NyquistWeightCalibrations
+- Kernel integrable ⇔ ⌊β⌋ ≤ m: minimum producer order = ⌊β⌋. Polar β = ½, m = 0 recovers cell-average producer. SHARP: residual tail mass / (1/√(N+1)) → 1/4. Critical β = 1, m = 0: prefix mass/log M → ¼; β = 1, m = 1: tail·(N+1) → 1/12.
+## NyquistWideSourceEnergy / NyquistWideResidualLimit / NyquistWideResidualEscape
+- Stretched sources f(δx): normalized arch energy ≤ δK (linear). Fixed wide bump family f_j = bump rescaled by 1/(j+1): energy ≤ K/(j+1) → 0, correlation → 1 pointwise, plateau ≥ ½ on [0, r(j+1)].
+- Subcritical: wide residual → tail mass ⇒ best constant under ANY energy ceiling = tail mass (attained). Supercritical (β ≥ m+1): wide residual → ∞ under arbitrarily small energy ⇒ no bound under energy ceiling. Low archimedean energy cannot control the order-m residual at/above threshold.
+## ChebyshevCellAndArchimedeanWeilProducer (Pillar XXX, start)
+- General dilation stencil Σc_aT(aN) = (Σc_aa)(N log N − N) + (Σc_a a log a)N + Σc_a·Stirling(aN); bi-null stencils O(log N). Coprime (2,3) producer T(6N) − 2T(3N) − 3T(2N) + 6T(N) (= (1 − 2·2^{−s})(1 − 3·3^{−s})): |·| ≤ 12log(6N+1) + 2.
+- Slope ψ(x) ≤ (log 4 + 3)x ⇒ |Ẽ(t)| ≤ (log 4+3)e^{t/2}, Ẽ(L)² ≤ (log4+3)²(N+2); cell sum ≤ (log4+3)²(N+1); ∫_0^LẼ² ≤ (log4+3)²(N+1) + 2 (trivial exponential-size bound). Prime-free archimedean packet producer bound eliminates ψ via pairing² ≤ h(0)·packetEnergy.
+- archimedeanPacketProducerBound(f,N) = 3(10 + slope²(N+2))h(0) + 3‖g‖₁²(slope²(N+1) + 2) ≥ packetEnergy (prime-free but O(N) — trivial Chebyshev). Young: 2|pairing| ≤ e^ch(0) + e^{−c}packetEnergy. ⇒ |Re W_Λ − poleWeightArchRe(0)| ≤ e^ch(0) + e^{−c}·archProducerBound(f, supportScale) for all real sectors. NOTE: grows like N ~ e^{supportRadius}: not a positivity proof; it is the trivial bound.
+## LaplaceEnergyAndRoughCollarWeilProducer (Pillar XXXI, start)
+- Dyadic telescoping ψ(2^K) = Σ_k(ψ(2^{k+1}) − ψ(2^k)) ≤ Σ alternating producers ≤ (2log2)(2^K − 1) + K(2log(2^K+1) + 1) — elementary Chebyshev upper bound ψ(x) ≤ (2 log 2)x + O(log²x) at x = 2^K.
+- laplaceEnergy ≤ producer bound 2slope²(2N+3) + 6 + 2(transient)² (O(N), trivial). Ẽ(L)² ≤ 2laplaceEnergy + 2T²; packetEnergy ≤ 3(10 + 2laplaceEnergy + 2T²)h(0) + 3‖g‖₁²(2laplaceEnergy + 2) (all packets controlled by the single scalar laplaceEnergy).
+- mass(N) ≤ (log4+4)(N+2) + 4sinh(L/2); derivative-free correlation-only collar producers.
+- Atomic mass ≤ ψ(N+2) (Λ/√n ≤ Λ). Collar/correlation/trial producer bounds with slope and mass producer: all derivative-free, prime-free, but O(N) — trivial Chebyshev size.
+## CoprimeFactorialLiftAndSpectralLaplaceProducer (Pillar XXXII, start)
+- H_{2n} − H_n = Σ_{k<n}(1/(2k+1) − 1/(2k+2)); coprime harmonic correction 6N(H_{6N} − H_{3N} − H_{2N} + H_N) ∈ [0, 3].
+- Coprime factorial lift [FL(6N) − 2FL(3N) − 3FL(2N) + 6FL(N)]/√N: vanishes at 0, equals √6 at log(6N) (so NOT an autocorrelation: autocorr with h(0) = 0 vanishes identically), admissible; fullPairing = (2·coprimeProducer − harmonicCorrection)/√N; |·| ≤ (24log(6N+1) + 7)/√N.
+- Boundary-free: spectral critical-line mean square ≤ laplaceProducerBound; packetEnergy ≤ ‖g‖₁²·laplaceProducerBound; collar packet ≤ gaugeBudget·laplaceProducerBound.
+- |ν̂_N(ξ)| ≤ massProducer. Boundary-free full Weil bound: |Re W_Λ − poleWeightArchRe(0)| ≤ e^ch(0) + e^{−c}‖g‖₁²·laplaceProducerBound(supportScale).
+## ChebyshevHeadAndShearCellProducer (Pillar XXXIII, start)
+- Chebyshev.psi(m) = RHTower.chebyshevPsi(m) for m ∈ ℕ. dyadicDiff(2m) = 2ψ(m) − ψ(2m) ∈ [ψ(m) − (2log2)m − O(log m), 2ψ(m) − (2log2)m + O(log m)]; at 2·2^K bounded by pure Stirling producers.
+- Integer-centered cell sum Σ(ψ(n) − n)²/(n(n+1)) ≤ slope²(N+1) (trivial); harmonic bilinear von Mangoldt shear sum Σ(Λ(k+2)−1)(2E(k+1) + Λ(k+2) − 1)/(k+2) ≤ 2slope²(N+1) − 1 (Abel identity from companion module).
+- Wall-1 Chebyshev head ∫_{1/(N+1)}^1(2ψ(1/(2t)) − ψ(1/t))² ≤ (log4+4)²N (|2ψ(x/2) − ψ(x)| ≤ (log4+4)x; ∫(1/t)² = 1/a − 1); log-Möbius Fermi error energy ≤ tail + (log4+4)²N/(log N)² — trivial size, not Nyman–Beurling convergence.
+- Continuous coprime (2,3) factorial producer with collar 1/(6N): continuous, agrees with step producer at log n, vanishes for x ≤ 0 (stencil sum 6N − 6N − 6N + 6N = 0).
+- Continuous coprime producer supported in [0, log(6N+1)] (C_c); linear collar log correction cancels (stencil Σc_aa = 0); fullPairing = (2·coprimeProducer − (1 + 1/(12N))harmonicCorr)/√N, |·| ≤ (24log(6N+1) + 7 + 1/(4N))/√N; never an autocorrelation (0 at 0, √6 at log 6N).
+## FoldFreeKernelGramAndFranelGcdCancellation (second "Pillar XXIX")
+- Canonical self-similar profile s₀ = selfSimilarExtension(1/u): ‖s₀‖² = 2 on (0,1], dyadic fold Ps₀ = 2/u, log-mean 1; Haar target ⊥ s₀. ⟨φ_{a+1}, s₀⟩ = −1/(a+1). Fold-free generator φ̃_{a+1} = φ_{a+1} + s₀/(2(a+1)) ∈ ker P (top-octave dyadic fold vanishes a.e.), ⊥ s₀.
+- EXACT PYTHAGORAS on L²(0,1] = ker P ⊕ ℂs₀: ‖Haar − Σc_jφ_{a_j+1}‖² = ‖Haar − Σc_jφ̃_{a_j+1}‖² + |Σc_j/(a_j+1)|²/2; same for generator energy; ⟨φ̃_a, φ̃_b⟩ = ⟨φ_a, φ_b⟩ − 1/(2(a+1)(b+1)). Nyman–Beurling approximation splits into fold-free residual + harmonic shadow.
+- Franel: ∫_0^1ψ((a+1)x)ψ((b+1)x) = gcd(a+1,b+1)²/(12(a+1)(b+1)).
+- Franel diagonal 1/12; consecutive scales 1/(12(m+1)(m+2)); exact GCD quadratic form for sawtooth combinations. Alternating sawtooth ψ(mx) − 2ψ(2mx): Gram = (5gcd(m,m')² − gcd(m,2m')² − gcd(2m,m')²)/(12mm'), diagonal ¼, EXACT orthogonality to its dyadic double (scale 2m), odd–odd gcd²/(4(2k+1)(2l+1)).
+## CoprimeShearArithmeticWeightsAndChebyshevCellIncrement (second "Pillar XXX")
+- ⌊(n+1)/d⌋ − ⌊n/d⌋ = 1_{d|n+1} (idempotent); coprime neighbors ⇒ consecutive jumps of ⌊·/(d+2)⌋ have disjoint support. Weighted floor sum step = Σ_{d≤N, d|n+1}c(d); Möbius floor sum step = truncated Möbius divisor sum (vanishes below cutoff).
+- ψ step = Λ(n+1); E(n) = ψ(n) − n step = Λ(n+1) − 1; log-Möbius floor sum = ψ below cutoff. Dyadic difference D(n) = 2ψ(n/2) − ψ(n): odd step −Λ(2m+1), even step 2Λ(m+1) − Λ(2m+2), two-step 2Λ(m+1) − Λ(2m+1) − Λ(2m+2).
+- (E²) step = (Λ−1)(2E + Λ − 1). Abel on Nyquist weights 1/((k+1)(k+2)): Σ_{k≤N}A(k)/((k+1)(k+2)) = A(0) − A(N)/(N+2) + Σ_{k<N}ΔA(k)/(k+2). ⇒ Σ_{k≤N}E(k+1)²/((k+1)(k+2)) = 1 − E(N+1)²/(N+2) + Σ_{k<N}(Λ(k+2)−1)(2E(k+1) + Λ(k+2) − 1)/(k+2). discreteCellSum ≤ 2·integerCenteredSum + 2.
+- Full Weil lower bound with integer-centered gauge (cell sum expanded into von Mangoldt shear increments) — same rearrangement shape; remainder = Chebyshev mean square.
+## WitnessGermOriginMassAndJointTailHeadSynthesis (second "Pillar XXXI")
+- L2FermiWitness bundle (w ⊥ every φ_{a+1}; zero witness inhabits). ⟨φ̃_{a+1}, w⟩ = ⟨s₀, w⟩/(2(a+1)): witnesses see fold-free kernel only through s₀. Scale-balanced difference Δ_{a,b} = (a+1)φ_{a+1} − (b+1)φ_{b+1} ∈ ker P ∩ s₀^⊥ ∩ W^⊥ (fold shadow −1/u is scale-normalized away).
+- witnessMass(w,1) = witnessMass(w,2^{−K}) + Σ_{j<K} shell energies (rescaled top-octave form 2^{−j}∫_{1/2}^1|w(2^{−j}u)|²).
+- |⟨Haar, w⟩|² ≤ 2·witnessMass(w,1/(N+1))·tailEnergy + 2·headMass·headEnergy for any generator combination Φ (Haar pairing invariant under Φ-subtraction; Cauchy–Schwarz per piece).
+- logMobiusFermiErrorEnergy(N+2) = tail(0,1/(N+3)] + (log(N+2))^{−2}∫_{1/(N+3)}^1(2ψ(1/2t) − ψ(1/t))²; 2ψ(x/2) − ψ(x) = 2(ψ(x/2) − x/2) − (ψ(x) − x) (linear PNT drift cancels); head² ≤ 8E(x/2)² + 2E(x)². Wall 1 head = centered Chebyshev mean square (RH-equivalent size question).
+## SelbergSieveTailQuadraticFormAndTruncatedDivisorGram (second "Pillar XXXII")
+- General finite Nyman error 1_{(0,1]} + Σ_{d≤N}c_d{1/(dt)} = 1_{(0,1]} + H_c(N)/t − Φ_c(N,1/t), H_c = Σc_d/d, Φ_c(N,x) = Σc_d⌊x/d⌋.
+- Φ_c(N,m+1) − Φ_c(N,m) = sieved divisor sum s_{N,c}(m+1) = Σ_{d|m+1, d≤N}c_d; equals full divisor sum on head k ≤ N; Φ_c(N,N+K) = head (full divisor sums) + tail (sieved sums, k ∈ (N, N+K]). Origin tail t < 1/(N+1) ⇔ m = ⌊1/t⌋ > N ⇔ Selberg Λ²-sieve regime.
+- Σ_{k≤N+K}s_{N,c}(k)² = Σ_{d₁,d₂≤N}c_{d₁}c_{d₂}⌊(N+K)/lcm⌋. Smooth part: Σc_{d₁}c_{d₂}/lcm(d₁,d₂) = Σ_{e≤N}φ(e)(Σ_{d≤N, e|d}c_d/d)² ≥ 0 (Selberg totient diagonalization). Mean square ≤ (N+K)·diag + (Σ|c_d|)²; tail mean square ≤ that − head energy.
+## CoprimeResidueAntiCorrelationAndSawtoothPhase (second "Pillar XXXIII")
+- Δ{n/(d+1)} = 1/(d+1) − 1_{(d+1)|n+1}. At predecessor n = q(d+1)+d of a multiple: {n/(d+1)} = 1 − 1/(d+1), centered sawtooth ½ − 1/(d+1). Identity: 1_{d|n+1}·{n/d} = 1_{d|n+1}(1 − 1/d) ("coprime residue anti-correlation" — deterministic phase on jumps).
+- Weighted floor sum = n·Σw(d)/d − Σw(d){n/d}. With w_Λ = −μ log: Σ_{d≤n+1}w_Λ(d)Δfloor(n){n/d} = Λ(n+1) − Σ_{d|n+1}w_Λ(d)/d; ψ(n) − n = n(Σ_{d≤n}w_Λ(d)/d − 1) − Σ_{d≤n}w_Λ(d){n/d}. Cross-term (Λ(n+1)−1)(ψ(n)−n) = harmonic drift part − sawtooth phase correlation. (Σ_{d≤n}−μ(d)log d/d → 1 is PNT-equivalent; drift term is where all info sits.)
+## LocalToGlobalTailStabilityAndWitnessIndicatorPairing (second "Pillar XXXIV")
+- φ_{a+1} = 2⌊1/(2(a+1)t)⌋ − ⌊1/((a+1)t)⌋ is a pure step function; = 0 for t > 1/(a+1), = −1 on (1/(2(a+1)), 1/(a+1)]; on (1/(2(a+1)), ∞) equals −1 of that brick. |φ| ≤ 3 ⇒ |Φ_{c,a}| ≤ 3Σ|c_j|.
+- Tail energies: ∫_0^{1/(N+1)}|Φ|² ≤ 9(Σ|c|)²/(N+1); Haar tail ≤ 2(1 + 9(Σ|c|)²)/(N+1); |⟨Haar,w⟩|² ≤ 4·witnessMass(w,1/(N+1))(1 + 9(Σ|c|)²)/(N+1) + 2·headMass·headError. ℓ¹ coefficient growth vs origin mass is the trade-off.
+## SawtoothPhaseCancellationAndBandSpectralProducer (second "Pillar XXXIV")
+- H_{μlog}(N) = Σ_{d≤N}−μ(d)log d/d. Common cutoff N ≥ n: ψ(n) = n·H(N) − Φ_fract(N,n), Φ_fract(N,n) = Σ_{d≤N}(−μ log)(d){n/d}. Λ(n+1) = H(N) − ΔΦ_fract(N)(n). Dyadic: 2ψ(m) − ψ(2m) = Φ_fract(N,2m) − 2Φ_fract(N,m) for N ≥ 2m (drift cancels EXACTLY).
+- |Φ_fract(N,n)| ≤ log N! ≤ N log N − N + log(N+1) + 1; dyadic phase difference ≤ (log4+4)2m (log factor cancels) + Stirling sandwich; Σ_{n≤N}Φ_fract(N,n) = (Σn)H(N) − Σψ(n); Σ_nΦ_fract(N,⌊N/n⌋) = (Σ⌊N/n⌋)H(N) − log N!.
+- bandRemainderProducer(N) = 52(log4+4)cutoff(N)/π³ + (32 + 8(log4+4))/π² + 4/(3π⁴) = O(log N). Band integral ∫_{|ξ|≤ξ₀}S_N ≤ laplaceEnergyProducer. packetEnergy ≤ ‖g‖₁²(band integral at √(N+2) + bandRemainder); collar version derivative-free. Full Weil |Re W_Λ − poleWeightArchRe(0)| ≤ e^c h(0) + e^{−c}‖g‖₁²(band + remainder), across even-polar, odd, hyperplane-generator test spaces. Weil positivity reduces to critical-line band integral of S_N being small relative to arch energy.
+## DyadicRenewalStirlingAndLogMobiusTotalEnergyProducer (second "Pillar XXXV")
+- log-smoothed Möbius coefficients |μ(d)log(N/d)/log N| ≤ 1 ⇒ |logMobiusFermiApprox(N,t)| ≤ 3N; tail ∫_0^{1/(N+1)} ≤ (1+3N)²/(N+1); TOTAL logMobiusFermiErrorEnergy(N) ≤ (1+3N)²/(N+1) + (log4+4)²N/(log N)² — grows linearly in N (trivial; no Nyman–Beurling convergence). Witnesses ⊥ logMobiusFermiApprox.
+- |⟨Haar,w⟩|² ≤ witnessMass(w,1)·logMobiusFermiErrorEnergy(N) ≤ witnessMass·logMobiusTotalEnergyProducer(N+2) (linear growth — no witness exclusion).
+- Dyadic renewal at h = log 2: 0 ≤ ψ(2^{k+1}) − ψ(2^k) ≤ chebyshevAlternatingProducer(2^k) ≤ (2log2)2^k + 2log(2^{k+1}+1) + 1; chainInput sandwich (√2)^{−(k+1)}·[−(2^k + log2), altProducer − 2^k − log2]; prime-free envelope ~ (√2)^{k}(2log2 − 1) (grows!); Schur bounds Σ chainState² ≤ (1 − 1/√2)^{−2}Σ envelope²; causal response energy ≤ 2log2·that + 2Σ blockEnergy. boundaryTransform ≤ ((log4+3)e^{L/2} + 5)/|s(ξ)|.
+- Selberg sieve tail specializations: μ weights ℓ¹ ≤ N; −μlog weights ℓ¹ ≤ log N!; Σ_{d|k}(−μ log)(d) = Λ(k), so head energy = Σ_{k≤N}Λ(k)².
+## FoldFreeLogMobiusAndPlancherelCausalProducer (second "Pillar XXXVI")
+- logMobiusHarmonicShadow(N) = Σμ(d)log(N/d)/(d log N) = Σ_{d≤N}μ(d)/d + H_{μlog}(N)/log N = ⟨logMobiusApprox, s₀⟩. Fold-free approximant (subtract shadow/2·s₀) ⊥ s₀; logMobiusErrorEnergy = foldFreeError + shadow²/2; shadow² ≤ 2·totalProducer.
+- Tent-convolved causal factorial producer sourceFactorialCausal(N) (C_c, agrees with factorialBiNull at log n): polar integral = (coef·harmonicCorr − chebyshevBiNullProducer)/√N; fullPairing = (2·chebyshevBiNullProducer − coef·harmonicCorr)/√N, |·| ≤ (10log(4N+1) + 3 + 1/(4N))/√N.
+- Plancherel: packetEnergy = ∫|f̂(ξ)|²(¼ + 4π²ξ²)S_N(ξ)dξ ≤ prime-free Laplace producer combination. Franel entry = gcd/(12 lcm) ≥ 1/(12 lcm) (Selberg smooth kernel), equality iff coprime.
+## DivisorAverageChebyshevAndDyadicBlockVarianceProducer (second "Pillar XXXVII")
+- log(K+1) ≤ H_K ≤ 1 + log K. Σ_{j≤K}(ψ(K/j) − K/j) = log K! − KH_K ∈ [−2K, −K + log(K+1) + 1] (K log K cancels; divisor-averaged Chebyshev error is NEGATIVE linear, i.e. −(γ+…)K: Euler constant channel). pairing_N(factorialLift K) = 2log K! − K log K − KH_K + K ∈ [−2K, −K + 2log(K+1) + 2] (needs log K ≤ cutoff N).
+- Quantitative Gram coefficient on factorial source pair: allocation error ≤ 46√(m+1)(r₀+1)/(n+1); limiting error adds 92√(m+1)·collarTailMass(n). Package: mass ≤ massProducer, collar packet ≤ archimedean collar producer.
+- Haar block variance m=2: Σ(w(2j+1) − w(2j))² + ‖blockSum₂ w‖² = 2‖w‖²; equality iff pairwise constant.
+- Critical β=½ Nyquist cell masses: m=0 ≤ √2/4·(k+1)^{−3/2}; m=1 ≤ √2/24·(k+1)^{−5/2} ≤ √2/(24(k+1)²); cumulative ≤ √2/24·Σ1/(k+1)².
+## FactorialSourceWeilContrastAndDivisorResponseProducer (second "Pillar XXXVIII")
+- divisorSampledCausalResponse(N,K) = Σ_{j≤K}√(K/j)R_N(log(K/j)) = 2log K! − K log K − KH_K + K for 1 ≤ K ≤ N+2 — cutoff-independent, = pairing(factorialLift K) = fullPairing; in linear channel [−2K, −K + 2log(K+1) + 2]. Bi-null (1,−4,4) stencil over (K,2K,4K): = 2·chebyshevBiNullProducer(K) − harmonicCorr(K), |·| ≤ 10log(4K+1) + 3 (linear drift and γ cancel).
+- (1,−4,4)/√K stencil of divisor-sampled response = fullPairing(factorialBiNull K). pairing_N(f)² ≤ laplaceEnergyProducer(N)·∫(gauge f)² (prime-free Sobolev dual norm; producer O(N)-size).
+- Cutoff-free half-line Weil identity for every RealWeilTestFn: Re W_Λ(f*f̃) = Ω(0)h(0) + LévyEnergy − 2·fullPairing(autocorr f). Equal-origin contrast (same h(0)): Ω(0)h(0) cancels; W(f₊) − W(f₋) = ΔLévy − 2ΔfullPairing.
+- Factorial source pair: (fullPairing(autocorr f₊) − fullPairing(autocorr f₋))/2 = fullPairing(factorialSourceProducer n); normalized contrast |·|/h(0) ≤ (10log(4(n+1)+1) + 3 + ...)/(6(n+1)) — prime–polar contrast decays relative to origin mass (only contrast, not the absolute pairing).
+## OddProfileCollarDominanceAndUnimodalPrimeWindowProducer (second "Pillar XXXIX") — CHMD support
+- CHMD Chebyshev discrepancy Δ(s) = chebyshevStep(s) − 2e^{s/2} ∈ [−2e^{s/2}, (2log4+14)e^{s/2}] on s ≥ 0 (trivial Chebyshev size); kernelDeriv·Δ integrable on (0,∞); window+tail split.
+- Odd-profile test f = m_a w (w even): primeCrossing(oddPolarWeight a w, d) ≥ 0 and m_a-Doob collar difference ≥ 0, each ≤ the ground-state collar mixed integral (their sum equals it). Shift jump + collar mixed = 2·half-line shift jump + primeCrossing ≥ 0 (positive completion).
+- Unimodal one-signed odd v ∈ C²_c with Doob profile Θ|v| antitone on [c, L/2]: weilLevyForm + 4crossSignBonus − Σ_{n<N}sameSideCross ≤ sourceEnergy (drops opposite-side bonuses ≥ 0).
+## NodalLobeEnergyAndDyadicDilationDefectProducer (second "Pillar XL") — CHMD
+- For resolvent eigenvector resolvent w = μw (μ ≠ 0), q = rieszLift w, lobes u± = pos/neg graph parts: five-term lobe jump (stationaryEnergy(Θu₊) − ⟨E(q₊),E(q₋)⟩ + ⟨L_prime u₊,u₊⟩ + ⟨T_prime u₊,u₋⟩ + (2μ−1)/μ‖u₊‖²) ≤ (1 + thetaGroundPotentialBound)‖u₊‖²; sum over lobes ≤ (1+bound)‖q‖².
+- 2⟨T_prime u₊,u₋⟩ ∈ [0, ⟨L_prime u₊,u₊⟩ + ⟨L_prime u₋,u₋⟩]; for p ≠ 0, −2⟨E(p₊),E(p₋)⟩ < stationaryEnergy(Θu₊) + stationaryEnergy(Θu₋) (no zero mode); hence −2·sourcePair(pos,neg) < sum of lobe stationary + prime Dirichlet energies (strict nodal-lobe cross dominance).
+- Dyadic dilation trace defect on Velocity: 2‖q‖² − ‖cellAnalysis(dilation₂ q)‖² = 2‖q − cellProj q‖² + Σ blockVariance₂; equality iff cellular and pairwise constant. Right-node collar partition: coefficient = Lévy mass on (r₀, endpoint) − radial penalty; active fibres above log 4 are left-sided with (k+1)y ≤ 1.
+## CenteredRamanujanVarianceAndAbelCofactorCancellation (Route PM support)
+- Centered discrete Bernoulli sawtooth B̃₁(d,n) = {n/d} − (d−1)/(2d) = ((n mod d) − (d−1)/2)/d: zero at d=1, zero period sum, |·| ≤ (d−1)/(2d) < ½; at d|n: −(d−1)/(2d); at predecessor: +(d−1)/(2d); sign flip B̃(n) + B̃(n+1) = 0 across d|n+1, jump 1 − 1/d.
+- Power-damped Ramanujan cumulative prefix (cofactor weights W_{ε,Q+1}(d), |W| ≤ d^{−ε}) = periodMean + centered sawtooth prefix (d=1 mode vanishes; |·| ≤ ½Σ_{d=2}^{Q+1}d^{−ε}). Dyadic difference P(2N) − 2P(N) = Fermi prefix at t = 1/(2N) = transfer convolution of damped Möbius Fermi prefixes.
+- Cesàro-centered vs energy-centered Ramanujan primitive differ by Δ(q) = φ(q)/2 − Λ(q); Gram matrices differ by rank-one Δ(p)Δ(q); meanCenteredQuadratic = energyVariance + (Σ w_q Δ(q))².
+- Variational: Σ_N((P(N) − c)²/(N(N+1))) = energyVariance + (c − energyMean)² for every c; so energyVariance ≤ reciprocal-weighted energy of the centered sawtooth prefix (c = periodMean).
+## MultiOctaveStepBrickPartitionAndWitnessDyadicPositivity (Route PW-B)
+- φ_a = 0 on (1/2,1] for a ≥ 2. On reciprocal cell I_n = (1/(n+1), 1/n], ⌊1/t⌋ = n and φ_d(t) = fermiCellMatrix(d,n) = 2⌊n/(2d)⌋ − ⌊n/d⌋ ∈ {−1,0}: upper triangular (0 for n < d), diagonal −1, −1 on band d ≤ n < 2d.
+- Σ_{m≤N/k}μ(m)⌊n/(km)⌋ = 1_{k≤n} (n ≤ N). Dilated Möbius combinator B_{k,N} = −Σμ(m)φ_{km} equals 1_{k≤n} − 2·1_{2k≤n} on I_n; dyadic resolvent Σ_{j≤N}2^jB_{2^jk,N} = 1_{k≤n}; difference gives EXACT single-cell indicator δ_{n,k} on bulk cells 1 ≤ n ≤ N (in span{φ_a : a ≤ N}, coefficients grow like 2^N).
+- Re dyadicForm(v,v) = ½(∫_0^{1/2}|v|² − ∫_{1/2}^1|v|²). RH ⇔ every Fermi–Nyman witness has top-octave energy ≤ lower-half energy (under RH they are equal: half-mass law); domination ⇒ witnessNegIndex = 0 = rightStripMultiplicityCount ⇒ RH.
+## RoutePMVarianceToWitnessSynthesisAndCriticalStripBridge
+- Power-damped Fermi source ∈ L²(0,∞) with Mellin analytic on Re s > ½ unconditionally for ε ≥ ½; for 0 < ε < ½ conditional on uniform-in-Q bound of centered sawtooth variance / mean-centered quadratic / any shifted budget (criterion, open). All ε > 0: Σ‖w_ε(q)‖ = 1, log-square moment summable, energy mean uniformly bounded. Master packages ε=½ admission, variance ≤ sawtooth energy, Selberg diagonalization, witnessNegIndex = rightStripMultiplicityCount, RH ⇔ top-octave domination.
+## VasyuninReciprocityAndExactTailGramProducer
+- |I_n| = 1/(n(n+1)); bulk (1/(N+1),1] integral = Σ_{n≤N} cell integrals.
+- Fermi Gram: global = tail(0,1/(N+1)] + head; head = Σ_{n≤N}cellMatrix(d₁+1,n)cellMatrix(d₂+1,n)/(n(n+1)) EXACTLY (no ℓ¹ truncation artifact); tail = global − cellular head.
+- Single-cell combinator Δ_{k+1,N}: head energy = 1/((k+1)(k+2)) if k+1 ≤ N else 0; tail energy = global − cell (top octave: global − ½).
+- Báez–Duarte: bdDistDiscrete(N)² ≤ 1 + 2Σc_iθ_i log θ_i + Σc_ic_j bdGram(θ_i,θ_j), θ_i = 1/(i+1); reciprocal Gram certificates below (1/(k+1))² for all k ⇒ RH (criterion).
+## SawtoothCharacterExpansionAndCriticalStripPoleBridge
+- B̃₁(d, d−1−r) = −B̃₁(d,r); B̃₁(d,d−r) + B̃₁(d,r) = 1/d (1 ≤ r < d). Σ_{r<d}B̃₁(d,r)² = (d²−1)/(12d) < d/12 (per-residue mean square (d²−1)/(12d²) < 1/12).
+- Divisor-remainder hyperbola split: period bias + centered sawtooth head + large-divisor block + density tail. For 0 < ε < ½: unconditional (log N)^4 saving ‖R_ε(N)‖ ≤ 1 + CN^{1−ε}/(log N)^4; large-prime sector: head energy = o(sector energy), mixed energy ~ −sector, complement energy ~ +sector (complementary cancellation — signed mixed term cancels the diagonal asymptotically).
+- Admission ⇔ centered-source admission ⇔ ∫|R_ε(x)|²/x² < ∞. Given uniform sawtooth budget at ε ≤ ½: cleared Mellin s·ζResUnit(s+ε)·M[F_ε](s) = (s+ε−1)(1−2^{1−s})ζ(s) on ½ < Re s < 1, and zero translation ζ(ρ)=0, Re ρ > ½+ε ⇒ ζ(ρ−ε)=0 (iterating pushes off-line zeros left ⇒ contradiction). Cofinal (ε → 0) sawtooth or mean-centered budgets ⇒ RH (criteria; budgets for ε < ½ are open = RH-strength).
+## WitnessCellTransferAndTopOctaveTailInequality
+- Witnesses ⊥ dilated Möbius combinators, dyadic resolvents, single-cell combinators. Head pairing of Δ_{k,N} with w = ∫_{I_k}w̄ (k ≤ N).
+- Witness cell transfer: ∫_{I_k}w̄ = −∫_0^{1/(N+1)}Δ_{k,N}w̄ (k ≤ N) — bulk cell integrals transfer exactly into the origin tail; top octave ∫_{1/2}^1 w̄ = −∫_0^{1/(N+2)}Δ_{1,N+1}w̄ for every N.
+- |∫_{I_k}w̄|² ≤ witnessMass(w,1/(N+1))·(‖Δ_{k,N}‖² − 1/(k(k+1))); |∫_{1/2}^1 w̄|² ≤ (∫_0^{1/2}|w|²)(‖Δ_{1,N+1}‖² − ½). (Δ energy grows ~4^N; origin mass shrinks — product controls nothing without rates.)
+## SignedLcmFractionalDefectAndCompleteFibreCollapse
+- Selberg coordinate Y_{N,c}(e) = Σ_{d≤N,e|d}c_d/d; Q_Sel = Σφ(e)Y(e)² ≥ 0. Signed lcm defect R(N,M,c) = Σc_{d₁}c_{d₂}{M/lcm}. LOSSLESS: Σ_{k≤M}s_{N,c}(k)² = M·Q_Sel − R(N,M,c) for all N, M (no ℓ¹ loss). Successor reciprocity: R(M+1) − R(M) = Q_Sel − s_{N,c}(M+1)². R = 0 at common multiples of [1,N] ⇒ Σ_{k≤M}s² = M·Q_Sel exactly there (clock period). Interval and origin-tail versions exact.
+- LCM fibres F_{N,c}(L) = Σ_{lcm(d₁,d₂)=L}c c: R = ΣF(L){M/L}; Σ_{q|L}F(q) = s_{N,c}(L)²; F(L) = Σ_{d|L}μ(L/d)s(d)². Möbius weights: s_{N,μ}(k) = 1_{k=1} for k ≤ N; complete-fibre collapse F_{N,μ}(L) = μ(L) for 1 ≤ L ≤ N (3^{ω(L)} terms cancel); for L > N excess = Σ_{d|L,d>N}μ(L/d)s(d)².
+## BarbanVehovLogarithmicDiagonalAndKerPCauchyPinch
+- Y_{N,c}(1) = H_c(N) (harmonic shadow = ker P centering coordinate). Σ_{e≤N}μ(e)Y(e) = c(1). Q_Sel ≥ c(1)²/Σ_{e≤N}sqfreeTotientInv(e); on ker P (H_c = 0) sharpened to denominator Σ_{e=2}^N.
+- Jordan J₂ = μ*id², Σ_{e|n}J₂(e) = n². Franel gcd form Σc c gcd²/(d₁d₂) = Σ_e J₂(e)Y(e)² — SAME Selberg coordinates as Q_Sel = Σφ(e)Y(e)²; difference Σ_{e≥2}(J₂ − φ)Y² (e=1 harmonic shadow cancels for every c).
+- Barban–Vehov weight b_X (supported [1,X], X ≤ N): s_{N,b_X}(1) = log X, s(k) = Λ(k) for 2 ≤ k ≤ X, s = barbanVehovCoeff for all k (incl. tail). Pinch (log X)²/Σ_{e≤X}sqfreeTotientInv ≤ Q_Sel(b_X) ≤ 4A²(1 + log X); normalized w_X = b_X/log X: 1/Σ sqfreeTotientInv ≤ Q_Sel ≤ 4A²(1+log X)/(log X)² = O(1/log X). Mean square: (log X)² + Σ_{2≤k≤X}Λ² + Σ_{X<k≤M}b_X(k)² = M·Q_Sel − R(N,M,b_X).
+## KerPCenteredSieveAndFirstSecondMomentReciprocity
+- First moment: sievedFractSum F(m) = Σc_d{m/d}; F(m+1) − F(m) = Y(1) − s(m+1); Σ_{k≤m}s(k) = m·Y(1) − F(m). On ker P (H_c = Y(1) = 0): |Σ_{k≤m}s(k)| ≤ Σ|c_d| for all m (no drift).
+- kerPEndpointWeight: subtract N·H_c(N) at d = N ⇒ H = 0, preserves c(d) for d < N and s(k) for k < N (keeps Λ recovery for Barban–Vehov with X < N); ker-P Selberg lower bound c(1)²/Σ_{e=2}^N sqfreeTotientInv. (Endpoint coefficient N·H_c can be large — ℓ¹ cost moved to one coefficient.)
+## TwoLagArithmeticCone (namespace TwoLagSieve)
+- lag-2 eigenvalue λ₂(n) = μ(n) + 2·1_{2|n}μ(n/2); Σ_{e|n}λ₂(e) = n·1_{n|2} (inverts gcd kernel for lag 2). Odd n ≥ 2 with μ(n) = 1 ⇒ φ(n) ≥ 8. MomentCone(V,x,y): five facets 2V+3x+y, V+x+y, V−x+y, V−4x−2y, V−x−2y ≥ 0.
+- Every n ≥ 2 has (φ(n), μ(n), λ₂(n)) ∈ MomentCone (case split by 2-adic valuation: n odd/2r/4r/8r). MomentCone ⇔ nonnegative masses A..E on generating modes 2,3,4,6,12 (V = ΣA..E, x = −A − B/2 + D/2, y = A − B/2 − C − D/2 + E/2). Dual: a linear inequality αV + βx + γy ≥ 0 holds on the cone ⇔ α−β+γ, 2α−β−γ, α−γ, 2α+β−γ, 2α+γ ≥ 0 (five rays).
+## TwoLagSievePeriod
+- Joint count on complete period P (lcm(a,b) | P): #{k ≤ P : a|k, b|k+h} = P/lcm if gcd(a,b)|h else 0 (CRT, no coprimality); density gcd/(ab)·1_{gcd|h}.
+## TwoLagMomentCone
+- periodCovariance(N,c,h) = centered lag-h covariance of sieveSeq over 1..N!: = Σ_{e=2}^N w_h(e)Y(e)² with Σ_{e|g}w_h(e) = g·1_{g|h}: lag 0 → φ (Selberg variance), lag 1 → μ (Bézout covariance − H²), lag 2 → λ₂. Every finite sieve's (lag0, lag1, lag2) ∈ MomentCone; conversely, at N+12, every cone point with arbitrary mean H is attained by an explicit weight (Ramanujan-inverse of a profile on modes 1,2,3,4,6,12). Complete classification of universal linear inequalities in the three lag moments (= five facets). Lag 2 separates weights with equal mean, variance, lag-1 covariance.
+## AffineFourierCorrelation (namespace AffineSieve)
+- On ZMod P: correlation C_a(b) = P^{−1}Σ_kf(k)f(ak+b); DFT in b: Ĉ_a(r) = P^{−1}f̂(r)f̂(−ar) (holds for non-invertible a).
+- Divisor indicator on ZMod P (d|P): DFT = (P/d)·1_{addOrder(r)|d} (Fourier support = frequencies of order dividing d).
+## DivisorSieveAffineSpectrum
+- On ZMod N!: DFT of residue signal Σc_d1_{d|k} at r = N!·Y(addOrder r) — Fourier coefficients ARE Selberg coordinates. Affine correlation DFT = N!·Y(q)Y(q/gcd(q,a)), q = order(r).
+- Equality of ALL affine data (a,b) ⇔ equality on slopes 1..N and one period ⇔ equality of comparable products Y(q)Y(d) for d|q ≤ N ⇔ Y_e = ±Y_c with sign constant on components of the nonzero divisibility graph. Explicit weight with modes 3 and 5 only: flipping the 5-sign invisible to every affine quadratic observation.
+## AffineSievePhaseRecovery
+- Real version for actual sieveSeq: affineMoment(N,c,a,b) = complete-period correlation; DFT = N!Y(q)Y(q/gcd(q,a)); affine data ⇔ comparable products ⇔ componentwise signs. Same affine data, sieveSeq(0) = 6 vs |sieveSeq| ≤ 5 everywhere: NO functional of affine (quadratic) data recovers |origin response| (no absolute-origin decoder).
+## SieveTripleFourier (namespace SieveMoments)
+- Triple correlation T(h,k) = P^{−1}Σf(n)f(n+h)f(n+k); double DFT = P^{−1}f̂(r)f̂(s)f̂(−(r+s)) (closed triangle); for divisor sieve = (N!)²Y(ord r)Y(ord s)Y(ord(r+s)); triple data equal ⇔ triangle products equal.
+- Odd-order mode q: diagonal double DFT at (N!/q, N!/q) = (N!)²Y(q)³. Anti-periodic f (f(n+t) = −f(n)) ⇒ every odd-length translated moment vanishes.
+## ParityLiftedSieveMoments
+- Explicit weight with Selberg coordinates exactly at 6 (value 1) and 10 (value t); response = (−1)^{k odd}·(−(1+t) + 3·1_{3|k} + 5t·1_{5|k}); anti-period 15; flipping t sign preserves all affine data; all odd translated moments vanish for every t.
+## CubicSievePhaseRecovery
+- Real triple moments: double DFT = (N!)²Y(ord r)Y(ord s)Y(ord(r+s)); triple data ⇔ triangle products; triple data determine every signed ODD-order Selberg coordinate (cube readout, odd 3rd power injective). Parity obstruction: real parity weights have equal affine data and equal (zero) odd translated moments, but origin 6 vs |·| ≤ 5 ⇒ no decoder of |origin response| from affine + all odd moments.
+## EvenPrimePairMomentCalculus
+- Centered residue row r_p(x) = p−1 at 0 else −1: Σ r_p^j = (p−1)^j + (p−1)(−1)^j; shift-mean zero. CRT: factorial average of F(n mod 3, n mod 5) = (1/15)Σ_{x,y}F. Sixth moment of a·r₃ + b·r₅: 22a⁶ + 360a⁴b² + 480a³b³ + 1560a²b⁴ + 820b⁶ (contains odd cross a³b³). All 2-lag and 4-lag translated products invariant under b → −b (cross terms are products of zero-mean rows).
+## SixthSievePhaseRecovery
+- Two-parameter weights evenPairReal(a,b) with coordinates a at 6, b at 10.
+- evenPair response = (−1)^{k odd}(a·r₃(k) + b·r₅(k)); affine data ⇔ a² = c², b² = d²; odd moments 0; even moments = parity sign × CRT row averages; all moments of degree ≤ 5 invariant under b → −b; zero-lag sixth moment difference = 960a³b³. Affine + one sixth moment ⇔ (c,d) = ±(a,b). Degree six is SHARP for phase recovery in this sector.
+## SieveMomentFourier
+- Full m-lag DFT of translated product moment = 1_{Σr_i = 0}·Π f̂(r_i) (zero-sum resonances); for divisor sieve = (N!)^m Π Y(ord r_i) on resonances.
+## ValuationTripleResonance
+- Triple (r, r, (p−2)r) with r of order 2^k p (p odd; p=1: (r,r,−r)), all of exact order 2^k p, sums to N!/2^k (depends only on k). Pairing one triple with negative of another gives zero-sum six-resonance with product (v(2^kp)v(2^kq))³.
+## SixthValuationPhaseRecovery
+- sixthPairReadout = (N!)^6(Y(2^kp)Y(2^kq))³; equality ⇔ equal signed pair product. Rank-one rigidity: a_ia_j = b_ib_j on a set ⇔ a = b or a = −b there (incl. zeros). Sixth translated moments alone recover all relative signs within each 2-adic valuation block (one global sign per block).
+## MixedValuationQuintic (namespace SieveMoments.MixedValuation)
+- Lower order 2^k(2p+1), upper 2^{k+s+1}(2q+1); upper pair (r, (2^{s+1}(2q+1)−1)r) sums into the lower class center; 5-resonance (lower triple − upper pair); fifthReadout = (N!)^5Y(lower)³Y(upper)²; with upper magnitude known, orients lower coordinate unless Y(upper) = 0.
+## SieveHalfPeriodTranslation (namespace SieveMoments.HalfPeriod)
+- Reflection weights 2·gcdProjection(h) − c: coordinates kept where q|h, negated otherwise. A shifted divisor sieve k ↦ s(k+h) is again a divisor sieve ⇔ 2h is a period ⇔ every active raw divisor d|2h; then the translate equals the reflection (uses evenness of residue signal: DFT real/even). Reflection preserves ALL translated moments; preserves affine data ⇔ every comparable product crossing the resonant set (q∤h, d|h) vanishes.
+## SieveValuationPhaseRecovery (namespace SieveMoments.ValuationPhase)
+- activeDepth = max 2-adic valuation of active Selberg modes. Sixth moments ⇒ squares of all coordinates; fifth diagonal (r,r,−2r,r,−r) ⇒ odd coordinates exactly (fifth power injective); quintic receiver orients every lower valuation class against an active top mode. ⇒ fifth + sixth translated data determine all coordinates up to flipping the single highest active valuation class (if depth > 0).
+## SieveCanonicalTranslation
+- dyadicPeriod(N,k) = 2^k·(odd part of N!); q | it ⇔ v₂(q) ≤ k. canonicalShift = dyadicPeriod(depth − 1); 2·shift is a true period; companion = reflection by it: flips exactly the top active valuation class, is a literal translate of the response, involution, preserves active support/depth and EVERY translated moment; differs from c iff depth > 0. Fifth+sixth data ⇒ e = c or e = companion(c) on [1,N].
+## SieveAffineTranslationAnchoring
+- HasAnchor: active divisor edge q → d with v₂(q) = depth > v₂(d). Affine data distinguish companion ⇔ HasAnchor.
+- Fifth+sixth translated moments ⇔ e ∈ {c, companion(c)}; ALL translated moments are determined by orders 5 and 6. Full observation fibre (affine + all translated): {c} ∪ {companion(c) if no anchor}. Absolute recovery ⇔ activeDepth = 0 ∨ HasAnchor; a distinct indistinguishable real sieve exists ⇔ depth > 0 ∧ no anchor (witness = companion = literal half-period translate).
+## CoprimeOverlapQuarticReadout
+- p,q,r odd pairwise coprime: frequencies (d+a+b, d−a+c, d+b+c, d−2b−2c) (d order 2) sum to 0 with orders 2pq, 2pr, 2qr, 2qr; fourthReadout = (N!)⁴Y(2pq)Y(2pr)Y(2qr)² (relative sign of two modes via third).
+## IncomparableSieveQuartic
+- momentDFT injective (full lag arrays recovered from all zero-sum products). In zero-sum tuple, an order occurring once divides product/lcm of others. Two incomparable orders A ∤ B, B ∤ A with only these modes active: equal squares ⇒ identical quartic arrays (no odd multiplicity possible). Squares of all coordinates ⇔ all quadratic lag moments.
+## SieveMomentSpectralEquivalence
+- Translated m-arrays equal ⇔ products over every zero-sum m-tuple equal. Quadratic arrays ⇔ all Y(q)²; fourth arrays already give all Y(q)² via (r,−r,r,−r).
+## ArithmeticEdgeResonance
+- In a zero-sum tuple each order divides product of the others; a nontrivial block coprime to all other orders cannot occur in only one entry. Blocks (pairwise coprime odd values >1 per vertex): edge order 2·v(u)v(w); edge orders incomparable unless same edge; in any resonance every vertex repeats. Edge frequency d + N!/p − N!/q has order 2pq; 4-cycle frequencies sum to 0.
+- Fourth moments read 4-cycle products Y(2pq)Y(2qr)Y(2rs)Y(2sp) and triangle products Y(2pq)Y(2pr)Y(2qr)².
+## FourEdgeQuarticRelations
+- Combinatorics: a 4-edge multiset with no singleton vertex is (paired edges | triangle + doubled edge | 4-cycle); square + triangle + cycle equations (QuarticRelations) determine every such product (complete).
+## ArithmeticEdgeQuartic
+- For edge-supported sieves (coords only at 2·v(u)v(w)): full fourth lag array ⇔ competitor edge-supported ∧ QuarticRelations(squares, triangles, 4-cycles).
+## ArithmeticEdgeSieveFamily
+- Ramanujan inversion realizes any real profile on edge orders as actual weights (cutoff = 2 + Σ orders + n). Affine data ⇔ edge magnitudes (squares); affine data force any competitor into the realized edge family; fourth arrays between family members ⇔ QuarticRelations of edge amplitudes.
+## ArithmeticEdgeTranslation
+- Represented translate preserves all translated arrays. Edge-sieve negation: weights(−a) = −weights(a). halfPeriod = Π vertex blocks (odd); every edge order | 2·halfPeriod.
+- Edge sieves have explicit odd ANTIPERIOD halfPeriod: s(k + Πv) = −s(k) (reflection = negation); all odd translated moments vanish; moment(−a) = moment(a). Sixth moments ⇔ CommonSign (one global sign); translation equivalence ⇔ CommonSign (shift 0 or halfPeriod).
+## ArithmeticEdgePhaseCode (namespace ArithmeticEdges, BinaryPhase)
+- Binary sign code over ZMod 2: columns = active edge orders, rows = active-triangle comparisons x_uv + x_uw = 0 and active 4-cycle parities x_uv + x_vw + x_wz + x_zu = 0. Twist by x ∈ ker ⇔ equal fourth-lag arrays; constants in kernel; |ker| = 2^{#active − rank} (rank–nullity).
+## ArithmeticEdgePhaseFibre
+- Signal equality ⇒ coordinate equality (Fourier readout). Fourth-data fibre of distinct actual cutoff signals (arbitrary competitors) ≃ ker of phase code; card = 2^{#active − rank}.
+## ArithmeticEdgePhaseOrbits
+- All-ones code vector = literal halfPeriod translation; commonCode = span{1}.
+- Phase orbits (code mod constants) ⇔ literal translation classes; #orbits = 2^{#active − rank − 1}; every code vector constant ⇔ rank = #active − 1; rank deficiency ⇒ explicit fourth-data-indistinguishable non-translate.
+## ArithmeticEdgeObservationHierarchy
+- On edge support: affine data ⇔ quadratic translated arrays; squares ⇒ moments through degree 3 (odd vanish); fourth arrays ⇒ all moments through 5 and affine data. Order-two Ramanujan atom matches degree ≤ 1 data of any edge sieve but is never a translate (edge profiles vanish at orders 1, 2).
+## ArithmeticEdgeObservationOrder
+- SHARP recovery degree (up to translation, vs arbitrary real competitors, with affine data): ≤1 active order → 0 extra; else degree 4 suffices iff phase-code rank = #active − 1, otherwise degree 6 needed and suffices. Without affine data: need ≥ 2 plus same (degrees 2, 4, 6). Two active orders always admit a non-translate matching affine + degree ≤ 3.
+## SieveThresholdRounding (namespace Threshold)
+- Noise rounding: keep coords with |a| > δ, use competitor sign; for m ∈ {5,6}, magnitudes within δ and product error ≤ δ^6 (δ ≤ 1) ⇒ rounded products exactly equal (sign of product stable).
+## SieveRawMomentPerturbation
+- Raw lag error ε on m-arrays ⇒ resonant product error ≤ ε (factorial normalization exact, no loss). Sixth-array error ⇒ |Y^6 − Y'^6| ≤ ε; with ε = δ^6: ||Y| − |Y'|| ≤ δ (stability).
+## SieveResonantVisibility (namespace LinearVisibility)
+- Prime-factor count of order is subadditive under sums; pairwise coprime orders multiply. Visible(q): q appears linearly in a 5/6-resonance with other orders in admitted set S. Visibility with prime-power companions ⇒ ω(q) ≤ 5.
+- Prime-power orders (with 1) keep the full lcm of [1,N]; divisibility by all prime-power orders ⇒ by all orders. Short family (≤5) with prescribed sum order ⇒ sixth-moment visibility word.
+## SieveVisibilitySpikeEstimate
+- Spike perturbation ±t at one coordinate: if every changed nonzero product has spike multiplicity odd ≥ 3, product error ≤ 2M^6t³ (cubic).
+## SieveCoordinateSupNorm
+- Ramanujan expansion sieveSeq(n) = Σ_{q≤N}Y(q)·c_q(n) (lag coefficient, |c_q(n)| ≤ φ(q)); pointwise signal error ≤ Σφ(q)|ΔY(q)| ≤ (Σ_{q≤N}φ(q))·η.
+## SievePhysicalTranslationStability
+- Noisy recovery: if fifth and sixth arrays differ by ≤ δ^6 (δ ≤ 1), ∃ ONE shift t with |s_e(n) − s_c(n+t)| ≤ 3(Σφ(q))δ for all n; raw ε ⇒ 3(Σφ)ε^{1/6} (Hölder-1/6 stability; threshold rounding to exact case).
+## SievePhysicalTranslationSharpness
+- One-mode family evenPairReal(δ/2,0): signal ≤ δ, moment differences ≤ δ^6 vs zero, but distance from zero ≥ δ/2 after every shift ⇒ no uniform exponent α > 1/6 (even near zero). Exponent 1/6 sharp.
+## SieveHighestDyadicCoordinate (namespace TopAnchor)
+- topOrder = 2^{⌊log₂N⌋} is the unique admitted mode at max depth; nonzero top coordinate fixes activeDepth; companion then flips only Y(top). Raw fifth-array noise ε bounds |Y(d)³Y(u)² − Y'(d)³Y'(u)²| ≤ ε for v₂(d) < v₂(u).
+## SieveArithmeticSourceAnchors
+- Squarefree-supported weights have Y(q) = 0 at non-squarefree q; so for N ≥ 4 the top dyadic coordinate vanishes for Möbius rows and their tapers (top-anchor classification inapplicable to arithmetic sources).
+- Terminal-prime anchors: Möbius taper coordinate at a tail prime p = −w(p)/p (single multiple); Barban–Vehov anchor nonzero ⇔ p < X.
+## SieveCubicAnchorEstimate / SieveHighestModeStability (TopAnchor)
+- Scalar lemmas: large magnitudes (≥1) make sixth-power errors Lipschitz; |x−y|³ ≤ 4|x³−y³|; with |X|,|Y| ≥ 1 and errors δ³ on X⁶, x⁶, x³X²: |x−y| ≤ 2δ. Top-mode stratum (|Y(top)| ≥ 1 for both): fifth+sixth raw errors ≤ ε ⇒ one shift with signal error ≤ 2(Σφ)ε^{1/3} (cube-root stability, lower coords arbitrary).
+## SieveHighestModeSharpWitness / SieveHighestModeSharpness (TopAnchor.Sharp)
+- N=3 family weights(t): signal = parity(n) + t·r₃(n), Y(2) = 1; near parity (≤2|t|); every shift leaves discrepancy ≥ 2t between ±t; sixth arrays identical for ±t (moment(−t) = (−1)^m moment(t)); fifth arrays differ ≤ 224t³ (linear term averages out over ZMod 3). ⇒ no exponent > 1/3 on top-mode stratum, even near pure parity source. Cube-root sharp.
+## SieveParityAnchorEstimate (namespace ParityNeighborhood)
+- Positive anchors A,B ≥ 1: |A−B|, |A⁴−B⁴| ≤ |A⁶−B⁶|. Mixed sixth products a²A⁴ recover |a| within 4δ; mixed linear products aA⁴ recover a within 4ε (constant coordinate has linear readout near parity).
+- Noisy readouts: Y(q)²Y(u)⁴ via (r,−r,s,−s,s,−s); Y(1)Y(u)⁴ via (0,s,−s,s,−s); same-depth (Y(d)Y(u))³ via valuation six; Y(4)Y(8)²Y(2)² (fifth) and Y(12)³Y(4)Y(2)² (sixth) — the only higher-depth interactions below 12 / 20.
+- Rounding lemmas: retained products with relative error < 1 become exact after thresholding; anchored monomial with unit anchor converts noisy degree-d product into exact identity when perturbation degree ≤ d; retained square fixes sign of odd-power factor; cubic-linear readout fixes same-depth relative sign.
+## SieveParityCutoffRecovery (ParityNeighborhood)
+- Parity anchor Y(2) ≥ 1 (both): all magnitudes within 4δ when sixth error ≤ δ^d (d ≥ 2, competitor coords ≤ 3); odd and parity-depth modes oriented at degree 3; any retained higher mode orients lower modes at degree 5; below 12 only the 4–8 relation, below 20 only 4–12 pair repeat above parity depth. Phase relations ⇒ e = c or companion (coordinate recovery); coordinate rounding ⇒ one physical translation with error 3(Σφ)τ. Cutoffs N < 12: degree-3 rounded recovery; N < 20: degree 5.
+- Parity-neighbourhood physical stability: with Y(2) ≥ 1 for both and competitor coords ≤ 3: N < 12 with fifth/sixth errors δ³ ⇒ one translation, error 12(Σφ)δ; N < 20 with δ⁵ same.
+## SieveParityFourierBounds
+- Multivariate DFT sup bound: coefficient sup ≤ C ⇒ array sup ≤ C. Resonant product error η ⇒ raw moment error ≤ (N!)^m η (inverse direction has factorial loss). Translated signal sup-error D ⇒ |Y_e(q) − phase·Y_c(q)| ≤ D for every Fourier coordinate. Phase incompatibility: z^p = w^q, q odd, |z|,|w| ≤ 1 ⇒ p|1−z| + q|1+w| ≥ 2.
+## SieveParityResonanceCounts
+- In zero-sum tuples: a prime confined to one order forbids that order appearing exactly once; annihilator version; under a common half-period h (all orders | 2h), the number of modes with order ∤ h is even. Multiplicity lower bounds: orders {2,3}, odd count of 3 ⇒ ≥3 non-parity entries; {2,8,12} with odd #12 ⇒ ≥5; {2,12,20} with odd #20 ⇒ ≥6.
+## SieveParitySharpWitnesses
+- Families sharpProfile(A,B,t) (Y(2)=2, Y(A)=Y(B)=t) vs flipped at B: raw moment differences of all degrees ≤ 6 bounded by 128(N!)^6 t^d with d = 3 (A=B=3), 5 (8,12), 6 (12,20). translationPhase(N,q,h): unit modulus, q-th power 1, phase relations from frequency relations.
+- Separation: any translate of the flipped witness differs from the original by D with 2t ≤ kD (k = 3, 5, 8) via phase incompatibility (phase relations (8,12): z² = w³; (12,20): z³ = w⁵).
+## SieveParityNeighborhoodStability
+- parityWeights(N) has Y(2) = 2 only. Physical unit ball around it ⇒ Y(2) ≥ 1, |Y(q)| ≤ 3. LocalPairwiseHolder(N,b,α): local Hölder-α recovery modulo one translation from fifth+sixth raw arrays. Attained: α = 1 (N = 2, Lipschitz), 1/3 (N < 12), 1/5 (N < 20), 1/6 (all N).
+## SieveParityNeighborhoodSharpness
+- Generic obstruction: polynomial raw cancellation L·t^d + linear orbit separation ⇒ no α > 1/d. Hence α ≤ 1/3 (N ≥ 3), ≤ 1/5 (N ≥ 12), ≤ 1/6 (N ≥ 20), ≤ 1 (N = 2).
+## SieveParityAmplitudeScaling / SieveParityNeighborhoodClassification
+- Moments scale by scl^m; local exponent invariant under nonzero amplitude rescaling. SHARP CLASSIFICATION: optimal local exponent at any nonzero parity source = 1/d with d = 1 (N=2), 3 (N<12), 5 (12≤N<20), 6 (N≥20).
+## SieveLinearVisibility
+- Signed sixth root stable near |A| ≥ 2; bounded product perturbation ≤ 6M⁶ε; linear resonant factor stable when co-factors ≥ 1: |Δa| ≤ (1 + 6M⁷)ε. Visible coordinates (linear in a 5/6-resonance with anchored co-factors in S) are recovered Lipschitz.
+- Physical unit ball bounds every coordinate by 1 + Σ|Y_b|. Visibility of every missing mode (from active set) ⇒ local Lipschitz (α = 1) recovery (normalized and general, by rescaling).
+## SievePrimePowerVisibility
+- Visible(q) w.r.t. prime-power support ⇔ ω(q) ≤ 5 (primary frequencies sum to order q).
+## SieveVisibilityPerturbations / SieveVisibilityPhaseSeparation / SieveVisibilityRadialEstimates
+- Spike at a missing mode moves signal ≤ φ(q)|t|; invisible ⇒ fifth/sixth raw arrays change ≤ 2(N!)^6 M^6 t³ between ±t. Lower-depth mode has odd-power phase relation with top dyadic mode ⇒ any translate separates ±t spikes by 2t ≤ (p+u)D given retained top coordinate. Radial scaling (1+t)b: raw arrays change linearly, translation separation 2t ≤ D (|Y| ≥ 2).
+## SieveLocalVisibilityClassification
+- On the nonzero highest-dyadic stratum: local cube-root recovery always; never better than Lipschitz (radial obstruction); Lipschitz ⇔ every missing mode visible; else exactly 1/3 (invisible spike obstruction). Complete sharp classification α ∈ {1, 1/3}.
+## SievePrimePowerLocalRegularity
+- primePowerWeights (Y = 2 on prime powers & 1) vs fullWeights (Y = 2 everywhere); top order is a prime power; all missing modes visible ⇔ every q ≤ N has ω(q) ≤ 5.
+- Prime-power source local exponent: 1 if every q ≤ N has ω(q) ≤ 5, else 1/3 (sharp); full source always 1. Periodicity ⇔ every active order divides the period; sources containing all primary orders have least period = horizon modulus lcm(1..N). ∃ N (ω(N) = 6) where prime-power and full sources share least period AND dyadic depth but have different sharp exponents (1/3 vs 1) — period/depth do not determine local regularity.
+## CoprimeOverlapSieveFamily (CoprimeOverlap.Triangle)
+- Three overlapping orders 2pq, 2pr, 2qr (p,q,r odd pairwise coprime >1): antichain; Ramanujan-inverse weights realize any coordinates; halfPeriod = pqr is an exact antiperiod (negation = translation); odd moments vanish; affine data ⇔ squares; affine data force any partner into the family.
+## CoprimeOverlapObservationOrder
+- ≤1 active coordinate: squares suffice. Signs invisible through degree 3 always; with a missing coordinate invisible through degree 5 (two incomparable orders); all three active: affine + fourth moments ⇒ common sign (three readouts a₁a₂a₀² etc.); sixth ⇔ common sign.
+- Triangle recovery degree (vs arbitrary real competitors, affine data supplied, modulo translation): ≤1 active ⇒ 0; all three active ⇒ 4; some missing (≥2 active) ⇒ 6. Sharp. Translation equivalence ⇔ common sign (shift 0 or pqr).
+## OddPrimeSieveFamilies
+- Atom at odd prime p: weights 1@1, −2@2, −p@p, 2p@2p has single Selberg coordinate 1 at 2p; response = parity(n)·r_p(n) (centered residue row). Family Σa_p·atom_p: coordinates a_p at 2p; response = parity(n)·Σa_p r_p(n mod p).
+## FiniteCoprimeMomentCalculus
+- CRT averaging over any multiple of Πp_i (pairwise coprime): period average = product-residue average. A factor at a single independent coordinate has zero mean. Independent centered rows: quadratic and quartic translated observations depend only on coefficient squares.
+## PrimeFamilyTranslatedMoments
+- Prime-family period Πp (odd, divides N!) is an exact antiperiod ⇒ odd moments vanish; even moments = parity signs × CRT product averages; quadratic and quartic moments depend only on a_p² (independent signs invisible through degree 5).
+## PrimeFamilyPhaseRecovery
+- Sixth readout for prime family = (N!)^6(a_p a_q)³; full sixth data ⇔ coefficients up to one common sign (incl. zeros/empty); affine ⇔ squares; every independent sign flip preserves affine + all degree ≤ 5 data; affine adds nothing beyond sixth. Zero extension embeds any finite odd-prime support.
+## SixthReadoutStability (namespace CubedGram)
+- Cubed coefficients make the readout matrix a rank-one Gram matrix; for one global sign: error6² ≤ 512·readoutError, mass6·error6 ≤ 32·readoutError, mass6·weightedError ≤ 8·readoutError (no support assumptions). One-mode: error t^6 vs readout t^12 (⇒ sixth-root exponent); two-mode vanishing: error 64t^6 vs readout 8t^6 with mass ≥ 2.
+## PrimeReadoutSharpness (namespace PrimeSharpness)
+- Embedded in actual prime family at primes 3, 5: power barriers sharp — at zero, distance⁶ ≤ C·noise^α iff α ≤ ½ (norm exponent 1/6); nonzero-mass stratum iff α ≤ 1 (norm exponent 1/3).
+## PrimeRawMomentContrasts (namespace PrimeRaw)
+- Finite-difference cube in lags: Σ_b sign(b)·moment(cubeLag) = average of Π(s(n) − s(n+t_i)); 2^m observations; error amplification ≤ sum over cube.
+- CRT selective lag: even lag ≡ 1 mod p, 0 mod other family primes; s(n) − s(n + j·lag) = parity(n)·a_p·(r_p(n) − r_p(n+j)) isolates one prime coefficient (no support assumption).
+## PrimeRawMomentRecovery
+- (r_p(x) − r_p(x+1))²(r_p(x) − r_p(x+2)) = p³·1_{x=0}. Factorial averages factor into prime-coordinate means; joint zero-residue density Π1/p. Six lags (λ_p,λ_p,2λ_p,λ_q,λ_q,2λ_q) ⇒ 64-vertex contrast = pairScale·(a_pa_q)³ (pairScale = p²q² or p⁵, ≥ 81). Protocol with 64M² literal sixth moments recovers coefficients up to common sign; raw noise controls cubed-Gram stability (6561·noise ≤ 64·rawNoise).
+## PrimeMeasurementComplexity
+- Invariance of domain ⇒ any fixed protocol with fewer than M literal observations (any degree, affine included) has two distinct positive coefficient vectors with identical data (M = #modes). Explicit decoder: least prime with nonzero diagonal contrast as anchor, inverse cube, divide by √ — recovers up to common sign.
+## PrimeAdaptiveMomentRecovery
+- Adaptive: diagonals first, then anchor row: ≤ 128M − 64 raw observations; exact common-sign recovery including zero support.
+- Adaptive observation equality ⇔ common sign; zero-filled unobserved slots give same decoder output.
+## ClassicalFoundationBoundaries (namespace ClassicalBoundaries)
+- Hyperbolic boosted correlations: autocorr(cosh_α f) − autocorr(sinh_α f) = cosh(αx)·autocorr f (exact); squared version fails by cross term 2cosh(αx)·autocorr f·autocorr(sinh_α f); holds iff one correlation vanishes; strict violation on an actual smooth bump at lag 0. Finite bi-scale joint energy has the same zero set (finite-window constants) as the additive step energy alone — the multiplicative term adds no new zero states.
+## AllocationBoundaryClassification
+- Equality W·a + A·q = √(W²+A²)√(a²+q²) ⇔ A·a = W·q ∧ W·a + A·q ≥ 0. Finite allocation Σ√(a_i²+q_i²) = √((Σa)²+(Σq)²) ⇔ (if both totals 0: all zero; else all vectors positively parallel to total).
+## ThreePrimeMomentCollision / ThreePrimeScalarPhaseCollision
+- Rows at 3,5,7 with u³ = 5, v³ = 2: zero-lag sixth moment of r₃ + u r₅ − v r₇ equals that of r₃ − u r₅ + v r₇ (cubic contributions cancel). Actual weights (N ≥ 14) with equal affine data, equal all degree ≤ 5 moments AND equal zero-lag sixth moment, yet not common-sign related; a selected sixth Fourier readout differs by 10(N!)^6, so some literal sixth lag separates. (Scalar/zero-lag sixth moment insufficient; lagged sixth required.)
+## PrimeGraphClockOffDiagonalSynthesisAndStationaryEnergyProducer (CHMD SourceGraph)
+- ‖p‖² = ‖fst‖² + ‖snd‖²; sourcePair(p,q) = ⟨snd,snd⟩ − ⟨fst,fst⟩ symmetric, bilinear, |sourcePair| ≤ ‖p‖‖q‖ (Lagrange identity).
+- |sourceEnergy p| ≤ ‖p‖²; quadratic continuity |E(P) − E(q)| ≤ ‖P−q‖² + 2‖P−q‖‖q‖; same for bounded-operator forms (×‖T‖). 0 ≤ stationaryEnergy(Θp) ≤ (1 + ‖groundPerturbation‖)‖p‖².
+- Finite packets: sourceEnergy(Σa) = Σ diag + offDiag; offDiag = offDiagStationary − offDiag(arch) − offDiag(primeShift) = offDiagStationary + offDiag(primeGenerator) + offDiag(groundPotential − id); diagonal terms bounded by Σ‖a_i‖².
+- Terminal-prime clock realization: any q ∈ SourceGraph is approximated by Σ_{p∈S} prime clock atoms (primes p > √N, log(N/p) > T₀) with total diagonal cost < ε ⇒ sourceEnergy(q) and every bounded operator form concentrate in DISTINCT-PRIME off-diagonal sums up to O(ε(1+‖q‖)).
+- Prime-clock product = (N/(pp'))·cutoff²·profile(t + log(p'/p))·profile(t) (N cancels; scale-free prime-ratio lag). Resolvent eigenvector with μ > ½ ⇒ sourceEnergy(rieszLift w) = ((1−2μ)/μ)‖fst‖² < 0 ⇒ off-diagonal prime-clock pairing strictly negative eventually; conversely nonnegativity of off-diagonal prime-clock pairings along arbitrarily precise realizations ⇒ sourceEnergy ≥ 0 and μ ≤ ½ (criterion; the sign is the open RH-type input).
+## PrimeGraphClockCorrelationKernels
+- primeClockProfile(k,t,x) = cutoff_k(x)·criticalAbelLogProfile(t − x); mass/edge kernels at center t = log(N/q), lag log(q/p); mass and edge pairings of clock atoms = N/(pq)·kernels exactly; difference = signed source pairing. (No lag-only reduction, no closed form, no sign.)

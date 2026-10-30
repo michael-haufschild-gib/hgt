@@ -27,6 +27,7 @@ variable {ι : Type*} [Fintype ι]
 def matchedPrimeProfileGram (N : ℕ) (c : ℝ) (x : ι → ℕ → ℝ) : Matrix ι ι ℝ :=
   fun i j => primeBilinear N (x i) (x j) - c * ∑ n ∈ Icc 1 N, x i n * x j n
 
+omit [Fintype ι] in
 theorem matchedPrimeProfileGram_isSymm (N : ℕ) (c : ℝ) (x : ι → ℕ → ℝ) :
     (matchedPrimeProfileGram N c x).IsSymm := by
   ext i j
@@ -60,9 +61,15 @@ theorem qf_matchedPrimeProfileGram (N : ℕ) (c : ℝ) (x : ι → ℕ → ℝ) 
     rw [mul_sum]
     exact sum_congr rfl fun j _ => by ring
   rw [hP, ← hS]
-  simp only [qf, bil, dotProduct, mulVec, matchedPrimeProfileGram, mul_sub, sum_sub_distrib,
-    mul_sum]
-  congr 1 <;> exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
+  change (∑ i, a i * ∑ j, (primeBilinear N (x i) (x j) -
+    c * ∑ n ∈ Icc 1 N, x i n * x j n) * a j) = _
+  calc
+    _ = ∑ i, ∑ j, (a i * a j * primeBilinear N (x i) (x j) -
+        c * (a i * a j * ∑ n ∈ Icc 1 N, x i n * x j n)) := by
+      refine sum_congr rfl fun i _ => ?_
+      rw [mul_sum]
+      exact sum_congr rfl fun j _ => by ring
+    _ = _ := by simp only [sum_sub_distrib, mul_sum]
 
 theorem polarFunctional_profile (N : ℕ) (x : ι → ℕ → ℝ) (a : ι → ℝ) :
     polarFunctional N (fun n => ∑ i, a i * x i n) =
@@ -86,7 +93,8 @@ theorem eventually_isHyperbolic_matchedPrimeProfileGram {η : ℝ}
   intro a ha
   have hpolar : polarFunctional N (fun n => ∑ i, a i * x i n) = 0 := by
     rw [polarFunctional_profile]
-    simpa only [dotLeft, dotProduct, mul_comm] using ha
+    change (∑ i, polarFunctional N (x i) * a i) = 0 at ha
+    simpa only [mul_comm] using ha
   have hzero : ∑ n ∈ Icc 1 N, (∑ i, a i * x i n) / Real.sqrt n = 0 := by
     simpa only [polarFunctional, poleVector, mul_one_div] using hpolar
   have hbound := hN₀ N hN (fun n => ∑ i, a i * x i n) hzero
@@ -157,6 +165,7 @@ theorem qf_sieveHodgeGram_one (Q : Finset Nat.Primes) (N : ℕ) (η : ℝ) :
   · rw [atomicWeilForm_eq_primeBilinear, atomicWeilForm_eq_primeBilinear]
     unfold primeBilinear
     exact sum_congr rfl fun m hm => sum_congr rfl fun n hn => by
+      dsimp only
       rw [sum_sieveClassPrefix_pole Q hm, sum_sieveClassPrefix_pole Q hn]
   · congr 1
     exact sum_congr rfl fun n hn => by rw [sum_sieveClassPrefix_pole Q hn]
@@ -175,5 +184,8 @@ theorem eventually_sieveHodgeGram_one_positive_direction {η : ℝ} (hη : 0 < �
       (fun a => sieveClassPole Q (a.1 : ℕ))
   · rw [qf_sieveHodgeGram_one]
     exact hN₂ N ((le_max_right _ _).trans hN)
+
+#print axioms eventually_isHyperbolic_matchedPrimeProfileGram
+#print axioms eventually_sieveHodgeGram_one_positive_direction
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

@@ -6,7 +6,7 @@ Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md
 
 - Evidence labels [L]/[K]/[S]/[P] follow the frontier map. [S] on a recent module means statement and proof were read in source.
 - (inference) marks this review's interpretation; (external) marks literature outside the corpus.
-- No builds were run.
+- The original review ran no builds; A6's subsequent formalization passed its Lean and axiom audit.
 
 ## The corpus in one paragraph
 
@@ -48,7 +48,7 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
   - the conductor-uniform Dirichlet log-derivative and Perron contours [S].
 - **A4. Effective horizons** for fixed-c positivity and for the explicit full-index schedules; full-index exhaustion for the smaller Steklov schedule.
 - **A5. Haar branch:** first-prime, coarse, polar and head payments on fixed finite cells and finite sources.
-- **A6. The matched class Hodge index on a finite sieve.** Extend `eventually_isHyperbolic_classHodgeGram` from one prime to a finite set of primes, using the sieve-class coordinates and their exact prime Grams. This is the first test of local-to-global assembly (§2.5 O2), and failure is informative.
+- **A6. The matched class Hodge index on a finite sieve — formalized.** `eventually_sieveHodgeGram_one_positive_direction` proves exactly one positive direction for `P_N − (log N − γ − η)I`, for `0 < η < 2 log 2`, on every full finite-sieve partition. One horizon works for every sieve, including growing sieves. The existing all-vector prime gap supplies the shared polar hyperplane. [Proof and Lean audit](../../drafts/pipeline/3-formalized/matched-prime-form-hodge-index-uniform-in-the-sieve.md). Transfer to the complete Weil form remains open (§2.5 O2).
 
 **Theta and heat.**
 
@@ -283,7 +283,7 @@ Each item is a mechanism that would create positivity or precision from structur
 
   with every term an integer computed locally. All local Hodge indices share one positive direction, the pole, which is the archimedean matching. A finite index would follow from finiteness of the local defects, i.e. B8 ⇒ B9.
 - **Why it differs from the routes:** it converts the critical sign into a local–global integer computation, the form in which Hasse principles succeed. It also uses the structure (one positive direction shared through the archimedean place) that makes ℤ differ from 𝔽_q.
-- **First test:** A6 (finite sieve).
+- **First test:** A6 (finite sieve) is formalized, uniformly in the sieve. The complete Weil form and infinite assembly are not covered.
 
 **O3. A Lyapunov functional for the de Bruijn–Newman zero dynamics.**
 

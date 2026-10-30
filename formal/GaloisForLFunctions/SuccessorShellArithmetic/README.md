@@ -42,7 +42,9 @@ conductor families) become polynomial once the defect bound on negative vectors 
 **What SSh has settled about this loss.** The separate payment is sharp: no payment of the shells by
 themselves, even one-sided, costs less than `κ c²/ε` (§5, pillar 4). At the reserve fraction
 `ε ∝ c⁻⁷` that is `c⁹`. So the polynomial confinement exponent is intrinsic to paying the shells
-apart from the pole and the archimedean shells, and the only way below it is joint, signed payment.
+apart from the pole and the archimedean shells. On the witness that forces the floor, the shells and
+the pole cancel to `O(G(1 + log N))` (§5, pillar 6): the only way below the floor is joint, signed
+payment, and it removes the obstruction there.
 
 **Why the shells.** A shell pairs `m` with `km + h`: a multiplicative relation broken by a bounded
 additive shift. On the pole vector unique factorization collapses every prime power into `log ℓ`,
@@ -128,10 +130,15 @@ power of `c` in the defect bound for negative vectors (`16 = κ + θ` now, targe
 9. **Directed payment.** Up rows cost mass, down rows cost `(m/N) log m · x_m²`, which the defect pays;
    Young's inequality gives `|NR| ≤ εD + O(c²/ε)S` (`abs_nonRatioForm_le_relative_defect`). By
    mechanism 8 this is sharp in order.
-10. **Gauge defect.** For a completely multiplicative sign `ω`, the twin's prime form minus `ζ`'s
+10. **Pole rows are Laplace moments.** A first-order cell comparison and the substitution `t = n e^u`
+    give `b_n R(n) = a₋a₊ log n + ∫ u e^{u/2}β − G log n/n + O(...)`, because `∫ e^{u/2}β = a₋a₊`
+    is the factorization of the autocorrelation's Laplace transform at `½`
+    (`integral_exp_half_mul_bumpCorr`, `abs_poleRow_sub_le`). The pole moments of the witness carry the
+    same `a₋a₊`.
+11. **Gauge defect.** For a completely multiplicative sign `ω`, the twin's prime form minus `ζ`'s
     prime form of the gauged vector is weighted by `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`: zero on
     ratio pairs, twice the successor disagreement on shells.
-11. **Fourier reserve and horizon decay.** `E_m(c) ≥ κ(m/φ(m))min(1, (m/c)⁷)` for the tilted spline;
+12. **Fourier reserve and horizon decay.** `E_m(c) ≥ κ(m/φ(m))min(1, (m/c)⁷)` for the tilted spline;
     `‖(W − E_m)u_m‖² ≤ K_m(c⁵/log N + c¹⁰(log N/N)²)`; the Gram of conductor modes up to `√N` is
     conditioned (`ramanujanPoleProfile_family_squareRoot_lower`).
 
@@ -196,6 +203,11 @@ the top band, controlled by neither `D` nor `S`. Conductor modes are exactly the
    `ω(k)(1 − ω(km)ω(km + h))` (`twistedPrimeSum_sub_primeSum_eq_sum_twinShellForm`); shifts on which
    the gauge agrees with its successor are invisible (`twinShellForm_eq_zero_of_agree`); below the
    spacing the twins coincide (`twistedPrimeSum_eq_of_shellRange_eq_zero`).
+6. **The shells and the pole cancel on the top band** (`TheShellsAndThePoleCancelOnTheTopBand`).
+   Along the witness `b + ηb1_T` the joint block `2·Pole − NR` is a quadratic in `η`
+   (`jointBlock_topWitnessVector`) whose linear coefficient is `≤ K G (1 + log N)` for every `C²`
+   profile, `K` depending on `c` and the profile (`exists_abs_jointWitnessCoefficient_le`), while
+   the shell and pole parts separately are `≍ Gcq log N`. This is the positive survivor of pillar 4.
 
 ---
 
@@ -207,6 +219,7 @@ the top band, controlled by neither `D` nor `S`. Conductor modes are exactly the
 | A continuum of shifts repays as well | Continuum shells carry exactly the pole charge; the continuum energy is `log(1/(2πc)) + β/M → −∞` (pillar 2) |
 | The repayment is a property of the primes | On the pole vector the shells are prime-free; the repayment is the unit gap of the shift lattice (pillars 2, 4) |
 | Better Young constants remove `c¹⁶` | Every separate payment of the shells costs `≥ κc²/ε`, hence `c⁹` at the reserve fraction (pillar 4) |
+| The floor witness is a negative direction | Jointly with the pole the shells cancel on it to `O(G(1 + log N))` (pillar 6) |
 | One-sided bounds escape the floor | The floor holds for the one-sided bound `NR ≤ G(εD + CS)` |
 | Shells help on nonnegative data | Diamagnetism: they are maximal at the trivial point and enter Weil's form with a minus sign (AGT) |
 | Repayment on conductor modes is repayment | Off the conductor span the signed structure is the open core (Q1) |
@@ -225,7 +238,7 @@ the top band, controlled by neither `D` nor `S`. Conductor modes are exactly the
 | Q1 | **Signed repayment off the conductor span (central).** Is there a reserve `W ≥ a c⁻⁷(D − C log(2c)S)` with an effective horizon, i.e. `D = O(log c)` on negative vectors? Its selective form is persistence of the pole ground line along `c_N`. | Open. Pillar 4 proves it cannot come from separate payment; the heuristic anatomy (§4) names the three parts a joint payment must control |
 | Q2 | The exact shell decomposition of the literal non-ratio form, the number of shells, the band each shift lives on | Answered (pillar 1) |
 | Q3 | How much of the repayment is the integrality of the shift, for every conductor? | Answered: all of it; continuum shells are the pole charge, the gain is `log(2πc) − β/M + o(1)` (pillar 2) |
-| Q4 | Is `c²/ε` the floor of every separate payment of the shells? | Answered: yes, even one-sided, for every nonnegative profile (pillar 4) |
+| Q4 | Is `c²/ε` the floor of every separate payment of the shells? | Answered: yes, even one-sided, for every nonnegative profile (pillar 4); on the floor witness the joint shell–pole block costs only `O(G(1 + log N))` (pillar 6) |
 | Q5 | How far do conductor packets stay positive along `c = (log N)^α`? | Fixed packets: `α < 1/19` (pillar 3). Effective growing ranges need conductor-explicit residual constants; seven of the eight residual components are not explicit in `m` |
 | Q6 | Mean-square conductor costs: replace `√φ(m)` in the prime residual by the period mean square | Open. Blocks `⌊N/n⌋ = y` have length `≍ N/y²`; averaging works for `y ≤ √(N/m)`, and the short blocks need a quantitative Mertens remainder, which the uniform budget (`tendsto_primeMertensRemainderProfile`, rate `o(1)`) does not supply |
 | Q7 | Which models fail repayment? | Continuum: fails (pillar 2). Sign twins: differ exactly on disagreeing shells (pillar 5). Beurling generators: open |
@@ -241,6 +254,7 @@ the top band, controlled by neither `D` nor `S`. Conductor modes are exactly the
 | Lattice–continuum comparison for every conductor | Built (pillar 2) |
 | Base collapse and prime-free pole rows | Built (pillar 4) |
 | Witness method for payment floors (top-band perturbation of the pole, Cauchy–Schwarz on a `log 2` window) | Built (pillar 4); reusable for any separately paid source |
+| First-order cell comparison and Laplace-moment evaluation of pole rows | Built (pillar 6) |
 | Growing-packet machinery with explicit range | Built for fixed packets (pillar 3) |
 | Gauge-defect shells | Built (pillar 5) |
 | A joint payment ledger tracking reserve exponents `(θ, κ)` for shells + pole + archimedean shells | Open |
@@ -252,10 +266,9 @@ the top band, controlled by neither `D` nor `S`. Conductor modes are exactly the
 
 ## 9. Open research topics
 
-1. **Joint shell–pole payment.** On the top-band witness family the continuum parts of the shells
-   and of the pole cancel at order `c log N` (paper heuristic), leaving the lattice part. Formalize:
-   the `η`-coefficient of `2·Pole − NR` on `b + η b1_T` is `O(G(log N + c))`. This needs a first-order
-   Euler–Maclaurin bound for `ℓ ↦ (log ℓ/√ℓ)β(log ℓ − log n)` with a `C²` profile.
+1. **Joint shell–pole payment beyond the witness.** On the top-band witness the joint block is
+   paid (pillar 6). For general vectors the joint block still contains the PNT discrepancy and the
+   successor variation of topics 2 and 3.
 2. **The PNT discrepancy form.** `Δ(f) = Σ_m f(m)[(1/m)Σ_n f(n) − Σ_k Λ(k)f(km)]` on the top band:
    its size relative to `D` and `S` is where the prime number theorem (and RH) enters the joint block.
 3. **The successor-variation form.** `Σ_h Σ_ℓ y(ℓ)(x(ℓ + h) − x(ℓ))β`: an additive Dirichlet energy

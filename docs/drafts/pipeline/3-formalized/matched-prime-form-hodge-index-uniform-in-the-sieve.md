@@ -1,8 +1,8 @@
 # The matched prime form has one positive direction uniformly in the sieve
 
 - **ID:** MATCHED-PRIME-SIEVE-HODGE
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** [O2](../1-in-progress/weil-positivity-five-structural-mechanisms.md)
 - **Statement:** For `0 < η < 2 log 2`, eventually in `N`, the matched prime form `P_N − (log N − γ − η)I` is hyperbolic on every finite family of vectors. On the full class partition of any finite prime sieve it has exactly one positive direction. The horizon is independent of the sieve and its size.
 
@@ -25,4 +25,10 @@ This settles the finite-sieve first test A6 using a stronger existing all-vector
 ## Verification
 
 - [x] Dependency-closed paper proof.
-- [ ] Lean module and axiom audit.
+- [x] Lean module and axiom audit.
+
+Module: `RenormalizedArithmeticPotentialTheory/Signature/TheMatchedPrimeFormHasOnePositiveDirection.lean`.
+
+- `eventually_isHyperbolic_matchedPrimeProfileGram`: one horizon for every finite family.
+- `eventually_sieveHodgeGram_one_positive_direction`: at most one positive direction and a strictly positive pole on every full sieve partition.
+- Both declarations use only `propext`, `Classical.choice`, and `Quot.sound`. The module passed `lake --old env lean` and is imported by its programme umbrella.

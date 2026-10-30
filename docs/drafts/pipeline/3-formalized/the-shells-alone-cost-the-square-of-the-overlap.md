@@ -44,9 +44,9 @@ With `N(1 − e^w/2) ≤ |T| ≤ N/2 + 1`, `|T|/N → 1/2`; letting `N → ∞`,
   (`3-formalized/the-integrality-of-the-shift-repays-the-logarithm.md`).
 - **New insight:** the reserve cost is controlled by the joint block shells + pole + archimedean
   shells; Q1 of the programme is stated for that block.
-- **Status:** floor formalized. The witness-level joint statement (the `η`-coefficient of
-  `2·Pole − NR` is `O(G(log N + c))`) is a paper heuristic; it needs a first-order Euler–Maclaurin
-  bound for the `C²` profile and is open.
+- **Status:** floor formalized. The witness-level joint statement is formalized as well: along
+  `b + ηb1_T` the `η`-coefficient of `2·Pole − NR` is `≤ K G(1 + log N)`
+  (`3-formalized/the-shells-and-the-pole-cancel-on-the-top-band.md`).
 
 ## Lean proof
 
