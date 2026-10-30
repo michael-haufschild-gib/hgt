@@ -51,11 +51,17 @@ theorem tendsto_tameDifferent_div_log_zero :
       rw [div_le_iff₀ hb] at h
       linarith only [h]
     have ht := tameDifferent_le_split (Nat.succ_pos n) hK1
+    simp only [Nat.succ_eq_add_one] at ht
     have htail := mul_le_mul_of_nonneg_right hKb hL.le
+    have htail' : 2 * Real.log ((n + 1 : ℕ) : ℝ) / K ≤
+        b / 4 * Real.log ((n + 1 : ℕ) : ℝ) := by
+      calc
+        _ = (2 / (K : ℝ)) * Real.log ((n + 1 : ℕ) : ℝ) := by ring
+        _ ≤ _ := htail
     apply (div_lt_iff₀ hL).mpr
     dsimp only [B] at hB
     have hstrict := mul_pos hb hL
-    nlinarith only [ht, hB, htail, hstrict]
+    nlinarith only [ht, hB, htail', hstrict]
 
 /-- Every fixed shell correction is negligible on the logarithmic conductor scale. -/
 theorem tendsto_shellCorrection_div_log_zero (φ : ℝ → ℝ) (c : ℝ) :
@@ -69,7 +75,8 @@ theorem tendsto_shellCorrection_div_log_zero (φ : ℝ → ℝ) (c : ℝ) :
   simp only [mul_zero] at hlim
   apply squeeze_zero_norm (fun n => ?_) hlim
   rw [Real.norm_eq_abs, abs_div, abs_of_nonneg (Real.log_natCast_nonneg _)]
-  simpa only [div_eq_mul_inv] using div_le_div_of_nonneg_right
+  unfold completedShellCorrectionBudget
+  simpa only [div_eq_mul_inv, Nat.succ_eq_add_one, Function.comp_apply] using div_le_div_of_nonneg_right
     (abs_shellCorrection_le φ c (Nat.succ_pos n)) (Real.log_natCast_nonneg (n + 1))
 
 /-- The complete conductor spectrum has leading term `log m`, including every source correction. -/
@@ -81,7 +88,8 @@ theorem tendsto_completedConductorEnergy_div_log_one (φ : ℝ → ℝ) {c : ℝ
       (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1))
   have hconst := (tendsto_inv_atTop_zero.comp hlog).const_mul
     (completeWeilSelfFinitePart φ c)
-  have h := ((tendsto_const_nhds.add hconst).add
+  have hone : Tendsto (fun _ : ℕ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
+  have h := ((hone.add hconst).add
     tendsto_tameDifferent_div_log_zero).sub (tendsto_shellCorrection_div_log_zero φ c)
   simp only [mul_zero, add_zero, sub_zero] at h
   apply h.congr'
@@ -91,8 +99,9 @@ theorem tendsto_completedConductorEnergy_div_log_one (φ : ℝ → ℝ) {c : ℝ
     (Real.log_pos (by exact_mod_cast (show 1 < n + 1 by omega))).ne'
   rw [completedConductorEnergy_eq_sub_shellCorrection hc (Nat.succ_pos n),
     completeWeilAdjunctionEnergy, ramanujanAdjunctionEnergy, if_neg hm]
+  dsimp only [Function.comp_def]
   field_simp [hL]
-  <;> ring
+  ring
 
 #print axioms tendsto_tameDifferent_div_log_zero
 #print axioms tendsto_shellCorrection_div_log_zero

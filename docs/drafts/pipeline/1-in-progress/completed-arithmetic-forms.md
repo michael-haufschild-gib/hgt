@@ -95,6 +95,11 @@ For the actual positive tilted-spline energies,
 $\sum_m E_m(c)^{-k}=\infty$ for every integer $k\ge0$.
 Lean: `ConductorHeatThreshold`.
 
+For every profile and fixed positive overlap, $E_m(c)/\log m\to1$.
+The tame different is sublogarithmic, and the bounded shell correction
+has zero logarithmic ratio.
+Lean: `ConductorLogLaw`.
+
 The exact conductor Green operator on complex $\ell^2$ is
 $G_ce_m=E_m(c)^{-1}e_m$. It is compact and injective, with exact norm
 $E_1(c)^{-1}$ attained at the pole coordinate. None of its integer

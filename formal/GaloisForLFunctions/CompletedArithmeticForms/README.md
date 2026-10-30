@@ -509,6 +509,13 @@ $k\ge0$. See [ConductorHeatThreshold](ConductorHeatThreshold.lean),
 `summable_completedConductorHeatWeight_iff` and
 `not_summable_tiltedWeil_inverse_energy_pow`.
 
+The full conductor spectrum also has the exact logarithmic law
+$E_m(c)/\log m\to1$. Splitting the prime divisors at a fixed cutoff proves
+$\operatorname{tameDifferent}(m)=o(\log m)$; the bounded shell completion
+is negligible on the same scale. This holds for every profile and fixed
+positive overlap. See [ConductorLogLaw](ConductorLogLaw.lean),
+`tendsto_completedConductorEnergy_div_log_one`.
+
 This is the infinite conductor model. Finite complete-Weil heat traces also
 require control of the multiplicities of modes whose energies grow with the horizon.
 

@@ -1,13 +1,13 @@
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspOddFourPieceSetup
 
 /-!
-# Piece certificates 10–14 on `q ∈ [37/10, 21/5]`
+# Piece certificates 8–11 on `q ∈ [39/10, 22/5]`
 
 Each piece proves that the piece matrix `W(q)` of its compensation matrix is positive
 semidefinite on its interval: every entry is affine in `t = q − q_*` up to an explicit radius
-(Taylor shift of the polynomial numerators, linearized `e^{-3q}`, crude higher pairs and tail),
-and both endpoint matrices with the row radii removed have an exact `LDLᵀ` factorization with
-nonnegative pivots.
+(Taylor shifts of the polynomial numerators, linearized `e^{-3q}`, shifted bounds for the pairs
+`(1,3)`, `(2,3)` and the tail), and both endpoint matrices with the row radii removed have an exact
+`LDLᵀ` factorization with nonnegative pivots.
 -/
 
 namespace RHTower.ThetaCuspOddFourPieces
@@ -15,1494 +15,66 @@ noncomputable section
 open ThetaCuspOddCentralTail ThetaCuspOddFourCentralEntries ThetaCuspOddFourCentralBound
 open ThetaCuspOddFourCertificateTools
 
-/-! #### Piece 10 (seam), `q ∈ [37/10, 19/5]` -/
+/-! #### Piece 8 (seam), `q ∈ [39/10, 4]` -/
 
-/-- The compensation matrix of piece 10. -/
-def pieceX_10 : Fin 4 → Fin 4 → ℝ :=
-  sym4 ((111140091739:ℝ)/10000000000000) ((-922669525289:ℝ)/1000000000000000) ((-30995684307:ℝ)/5000000000000) ((-34583834689:ℝ)/250000000000) ((10245427511:ℝ)/500000000000) ((35830011351:ℝ)/250000000000) ((987248065489:ℝ)/1000000000000) ((286382726407:ℝ)/50000000000) ((-180308963201:ℝ)/50000000000) ((199890813323:ℝ)/1000000000)
+/-- The compensation matrix of piece 8. -/
+def pieceX_8 : Fin 4 → Fin 4 → ℝ :=
+  sym4 ((99012783759:ℝ)/50000000000000) ((-291667288841:ℝ)/50000000000000) ((93216802503:ℝ)/5000000000000) ((-310213515871:ℝ)/10000000000000) ((155055259757:ℝ)/5000000000000) ((-25990185501:ℝ)/250000000000) ((542971281:ℝ)/3125000000) ((180913424351:ℝ)/500000000000) ((-38046623839:ℝ)/62500000000) ((25809069057:ℝ)/25000000000)
 
-theorem piece10_L3 : ((768799196918931088273177269557:ℝ)/10000000000000000000000000) ≤ Real.exp ((3:ℝ)*((15:ℝ)/4)) := by
-  have h := le_exp_nat_add 11 (f := ((1:ℝ)/4)) (by norm_num)
-  rw [show ((3:ℝ):ℝ)*((15:ℝ)/4) = ((11:ℕ):ℝ) + ((1:ℝ)/4) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece10_U3 : Real.exp ((3:ℝ)*((15:ℝ)/4)) ≤ ((38439959905358380531517881901:ℝ)/500000000000000000000000) := by
-  have h := exp_nat_add_le 11 (f := ((1:ℝ)/4)) (by norm_num) (by norm_num)
-  rw [show ((3:ℝ):ℝ)*((15:ℝ)/4) = ((11:ℕ):ℝ) + ((1:ℝ)/4) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-
-theorem piece10_L8_at : ((358167818375224268825234717439:ℝ)/50000000000000000) ≤ Real.exp ((8:ℝ)*((37:ℝ)/10)) := by
-  have h := le_exp_nat_add 29 (f := ((3:ℝ)/5)) (by norm_num)
-  rw [show ((8:ℝ):ℝ)*((37:ℝ)/10) = ((29:ℕ):ℝ) + ((3:ℝ)/5) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece10_E8 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((358167818375224268825234717439:ℝ)/50000000000000000) := by
-  have hm : Real.exp (-((8:ℝ))*q) ≤ Real.exp (-((8:ℝ)*((37:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece10_L8_at (le_refl _)).2
-
-theorem piece10_L11_at : ((18960294104224021848093835969:ℝ)/40000000000) ≤ Real.exp ((11:ℝ)*((37:ℝ)/10)) := by
-  have h := le_exp_nat_add 40 (f := ((7:ℝ)/10)) (by norm_num)
-  rw [show ((11:ℝ):ℝ)*((37:ℝ)/10) = ((40:ℕ):ℝ) + ((7:ℝ)/10) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece10_E11 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((18960294104224021848093835969:ℝ)/40000000000) := by
-  have hm : Real.exp (-((11:ℝ))*q) ≤ Real.exp (-((11:ℝ)*((37:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece10_L11_at (le_refl _)).2
-
-theorem piece10_Lt_at : ((25051388162973771983886131:ℝ)/250000000) ≤ Real.exp (((529:ℝ)/50)*((37:ℝ)/10)) := by
-  have h := le_exp_nat_add 39 (f := ((73:ℝ)/500)) (by norm_num)
-  rw [show (((529:ℝ)/50):ℝ)*((37:ℝ)/10) = ((39:ℕ):ℝ) + ((73:ℝ)/500) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece10_Et {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((25051388162973771983886131:ℝ)/250000000) := by
-  have hm : Real.exp (-(((529:ℝ)/50))*q) ≤ Real.exp (-(((529:ℝ)/50)*((37:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece10_Lt_at (le_refl _)).2
-
-theorem piece10_e00 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 0 0 - (((54798896558359531:ℝ)/25000000000) + (q - ((15:ℝ)/4)) * ((70549480059238571:ℝ)/12500000000))| ≤ ((44273611092566819:ℝ)/2500000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_00 q = ∑ e ∈ Finset.range 10, ([((17940234375:ℝ)/8192), ((11447578125:ℝ)/2048), ((102515625:ℝ)/16), ((69103125:ℝ)/16), ((30121875:ℝ)/16), ((2197125:ℝ)/4), (107100:ℝ), (13440:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_00; ring
-  have h12 : centralNum12_00 q = ∑ e ∈ Finset.range 11, ([((-5287243359375:ℝ)/32768), ((-3762152578125:ℝ)/8192), ((-603099421875:ℝ)/1024), ((-57345721875:ℝ)/128), ((-14322065625:ℝ)/64), ((-1226775375:ℝ)/16), (-18244800:ℝ), (-2976630:ℝ), (-318606:ℝ), (-20200:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_00; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((17940234375:ℝ)/8192), ((11447578125:ℝ)/2048), ((102515625:ℝ)/16), ((69103125:ℝ)/16), ((30121875:ℝ)/16), ((2197125:ℝ)/4), (107100:ℝ), (13440:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-5287243359375:ℝ)/32768), ((-3762152578125:ℝ)/8192), ((-603099421875:ℝ)/1024), ((-57345721875:ℝ)/128), ((-14322065625:ℝ)/64), ((-1226775375:ℝ)/16), (-18244800:ℝ), (-2976630:ℝ), (-318606:ℝ), (-20200:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 9 ht
-  have m12 := abs_poly_le (fun e => ([((-5287243359375:ℝ)/32768), ((-3762152578125:ℝ)/8192), ((-603099421875:ℝ)/1024), ((-57345721875:ℝ)/128), ((-14322065625:ℝ)/64), ((-1226775375:ℝ)/16), (-18244800:ℝ), (-2976630:ℝ), (-318606:ℝ), (-20200:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 11 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((17940234375:ℝ)/8192), ((11447578125:ℝ)/2048), ((102515625:ℝ)/16), ((69103125:ℝ)/16), ((30121875:ℝ)/16), ((2197125:ℝ)/4), (107100:ℝ), (13440:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - (((17940234375:ℝ)/8192) + ((11447578125:ℝ)/2048)*t)| ≤ ((16569874262101:ℝ)/1000000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 11, ([((-5287243359375:ℝ)/32768), ((-3762152578125:ℝ)/8192), ((-603099421875:ℝ)/1024), ((-57345721875:ℝ)/128), ((-14322065625:ℝ)/64), ((-1226775375:ℝ)/16), (-18244800:ℝ), (-2976630:ℝ), (-318606:ℝ), (-20200:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e) - ((-5287243359375:ℝ)/32768) - ((-3762152578125:ℝ)/8192)*t| ≤ ((61193410661851121:ℝ)/40000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 11, ([((-5287243359375:ℝ)/32768), ((-3762152578125:ℝ)/8192), ((-603099421875:ℝ)/1024), ((-57345721875:ℝ)/128), ((-14322065625:ℝ)/64), ((-1226775375:ℝ)/16), (-18244800:ℝ), (-2976630:ℝ), (-318606:ℝ), (-20200:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((1814902876917776:ℝ)/9765625) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (600:ℝ), (-7776:ℝ), (16800:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m13' : |centralNum13_00 q| ≤ ((86978318280925416:ℝ)/9765625) := by
-    rw [centralNum13_00_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (780:ℝ), (-6156:ℝ), (15288:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m23' : |centralNum23_00 q| ≤ ((23130904915424712:ℝ)/1953125) := by
-    rw [centralNum23_00_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((111140091739:ℝ)/10000000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0))| ≤ ((1333543553067013531648000000:ℝ)/1479259419635438261876492149419) := by
-    rw [abs_neg, tailWeight_0, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((19:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((19:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece10_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((10465499600:ℝ)/59049)) ≤ ((19:ℝ)/5)^6*(8000*(2*((19:ℝ)/5)-3)^2*(1/((25051388162973771983886131:ℝ)/250000000))*((10465499600:ℝ)/59049)) := by
-          gcongr
-      _ ≤ ((1333543553067013531648000000:ℝ)/1479259419635438261876492149419) := by norm_num
-  have c7 := affine_round (α := ((17940234375:ℝ)/8192) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-5287243359375:ℝ)/32768) + ((13839609375:ℝ)/8192)*((111140091739:ℝ)/10000000000000) - ((54798896558359531:ℝ)/25000000000)) (β := ((11447578125:ℝ)/2048) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-3762152578125:ℝ)/8192) - 3*((-5287243359375:ℝ)/32768)) + ((9533953125:ℝ)/2048)*((111140091739:ℝ)/10000000000000) - ((70549480059238571:ℝ)/12500000000)) ht
-  have hW : pieceW q pieceX_10 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((111140091739:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
-    rw [pieceW_00, pieceX_10, sym4_00, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((6086344772085063572169239093110698078109533689301495601571727:ℝ)/1891367059509467726944081741163766760312888297371850789622848000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((17940234375:ℝ)/8192) + ((11447578125:ℝ)/2048)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-5287243359375:ℝ)/32768) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-3762152578125:ℝ)/8192) - 3*((-5287243359375:ℝ)/32768))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((111140091739:ℝ)/10000000000000) - (((54798896558359531:ℝ)/25000000000) + t * ((70549480059238571:ℝ)/12500000000)) = (((17940234375:ℝ)/8192) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-5287243359375:ℝ)/32768) + ((13839609375:ℝ)/8192)*((111140091739:ℝ)/10000000000000) - ((54798896558359531:ℝ)/25000000000)) + t*(((11447578125:ℝ)/2048) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-3762152578125:ℝ)/8192) - 3*((-5287243359375:ℝ)/32768)) + ((9533953125:ℝ)/2048)*((111140091739:ℝ)/10000000000000) - ((70549480059238571:ℝ)/12500000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e01 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 0 1 - (((-546481712166114717:ℝ)/1000000000000) + (q - ((15:ℝ)/4)) * ((-956435675908009427:ℝ)/1000000000000))| ≤ ((493633251905758273:ℝ)/100000000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_01 q = ∑ e ∈ Finset.range 8, ([((-512578125:ℝ)/1024), ((-239203125:ℝ)/256), ((-47840625:ℝ)/64), ((-5315625:ℝ)/16), ((-354375:ℝ)/4), (-14175:ℝ), (-1260:ℝ), (-48:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_01; ring
-  have h12 : centralNum12_01 q = ∑ e ∈ Finset.range 12, ([((-111747669609375:ℝ)/262144), ((-47495864953125:ℝ)/32768), ((-36509962528125:ℝ)/16384), ((-4192018059375:ℝ)/2048), ((-639503656875:ℝ)/512), ((-34040681325:ℝ)/64), ((-5162731245:ℝ)/32), ((-139459107:ℝ)/4), ((-21043899:ℝ)/4), (-527970:ℝ), (-31716:ℝ), (-864:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_01; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((-512578125:ℝ)/1024), ((-239203125:ℝ)/256), ((-47840625:ℝ)/64), ((-5315625:ℝ)/16), ((-354375:ℝ)/4), (-14175:ℝ), (-1260:ℝ), (-48:ℝ)] : List ℝ).getD e 0) 6 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-111747669609375:ℝ)/262144), ((-47495864953125:ℝ)/32768), ((-36509962528125:ℝ)/16384), ((-4192018059375:ℝ)/2048), ((-639503656875:ℝ)/512), ((-34040681325:ℝ)/64), ((-5162731245:ℝ)/32), ((-139459107:ℝ)/4), ((-21043899:ℝ)/4), (-527970:ℝ), (-31716:ℝ), (-864:ℝ)] : List ℝ).getD e 0) 10 ht
-  have m12 := abs_poly_le (fun e => ([((-111747669609375:ℝ)/262144), ((-47495864953125:ℝ)/32768), ((-36509962528125:ℝ)/16384), ((-4192018059375:ℝ)/2048), ((-639503656875:ℝ)/512), ((-34040681325:ℝ)/64), ((-5162731245:ℝ)/32), ((-139459107:ℝ)/4), ((-21043899:ℝ)/4), (-527970:ℝ), (-31716:ℝ), (-864:ℝ)] : List ℝ).getD e 0) 12 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 8, ([((-512578125:ℝ)/1024), ((-239203125:ℝ)/256), ((-47840625:ℝ)/64), ((-5315625:ℝ)/16), ((-354375:ℝ)/4), (-14175:ℝ), (-1260:ℝ), (-48:ℝ)] : List ℝ).getD e 0 * t^e) - (((-512578125:ℝ)/1024) + ((-239203125:ℝ)/256)*t)| ≤ ((76434435789:ℝ)/40000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 12, ([((-111747669609375:ℝ)/262144), ((-47495864953125:ℝ)/32768), ((-36509962528125:ℝ)/16384), ((-4192018059375:ℝ)/2048), ((-639503656875:ℝ)/512), ((-34040681325:ℝ)/64), ((-5162731245:ℝ)/32), ((-139459107:ℝ)/4), ((-21043899:ℝ)/4), (-527970:ℝ), (-31716:ℝ), (-864:ℝ)] : List ℝ).getD e 0 * t^e) - ((-111747669609375:ℝ)/262144) - ((-47495864953125:ℝ)/32768)*t| ≤ ((74685617278962165699:ℝ)/12800000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 12, ([((-111747669609375:ℝ)/262144), ((-47495864953125:ℝ)/32768), ((-36509962528125:ℝ)/16384), ((-4192018059375:ℝ)/2048), ((-639503656875:ℝ)/512), ((-34040681325:ℝ)/64), ((-5162731245:ℝ)/32), ((-139459107:ℝ)/4), ((-21043899:ℝ)/4), (-527970:ℝ), (-31716:ℝ), (-864:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((24638246192130846:ℝ)/48828125) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-6288:ℝ), (81024:ℝ), (-238720:ℝ), (246784:ℝ), (-98304:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m13' : |centralNum13_01 q| ≤ ((21118026310314920496:ℝ)/48828125) := by
-    rw [centralNum13_01_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-7368:ℝ), (59208:ℝ), (-155734:ℝ), (205300:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m23' : |centralNum23_01 q| ≤ ((586764113003930886:ℝ)/1953125) := by
-    rw [centralNum23_01_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-922669525289:ℝ)/1000000000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-512578125:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-111747669609375:ℝ)/262144) + ((13839609375:ℝ)/8192)*((-922669525289:ℝ)/1000000000000000) - ((-546481712166114717:ℝ)/1000000000000)) (β := ((-239203125:ℝ)/256) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-47495864953125:ℝ)/32768) - 3*((-111747669609375:ℝ)/262144)) + ((9533953125:ℝ)/2048)*((-922669525289:ℝ)/1000000000000000) - ((-956435675908009427:ℝ)/1000000000000)) ht
-  have hW : pieceW q pieceX_10 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-922669525289:ℝ)/1000000000000000) + (0:ℝ) := by
-    rw [pieceW_01, pieceX_10, sym4_01, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((4024315863147347292933401896018677595178311611384588410232667:ℝ)/44421097911415021843824305113571035838541229736439798361784320000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-512578125:ℝ)/1024) + ((-239203125:ℝ)/256)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-111747669609375:ℝ)/262144) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-47495864953125:ℝ)/32768) - 3*((-111747669609375:ℝ)/262144))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((-922669525289:ℝ)/1000000000000000) - (((-546481712166114717:ℝ)/1000000000000) + t * ((-956435675908009427:ℝ)/1000000000000)) = (((-512578125:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-111747669609375:ℝ)/262144) + ((13839609375:ℝ)/8192)*((-922669525289:ℝ)/1000000000000000) - ((-546481712166114717:ℝ)/1000000000000)) + t*(((-239203125:ℝ)/256) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-47495864953125:ℝ)/32768) - 3*((-111747669609375:ℝ)/262144)) + ((9533953125:ℝ)/2048)*((-922669525289:ℝ)/1000000000000000) - ((-956435675908009427:ℝ)/1000000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e02 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 0 2 - (((121534471818195159:ℝ)/10000000000000) + (q - ((15:ℝ)/4)) * ((-989819300633604313:ℝ)/10000000000000))| ≤ ((13622364173350551:ℝ)/12500000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_02 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_02; ring
-  have h12 : centralNum12_02 q = ∑ e ∈ Finset.range 13, ([((1824006694921875:ℝ)/8388608), ((-45234506953125:ℝ)/2097152), ((-666360686390625:ℝ)/524288), ((-318390920859375:ℝ)/131072), ((-4870303959375:ℝ)/2048), ((-6056806802625:ℝ)/4096), ((-645709716225:ℝ)/1024), ((-48671534295:ℝ)/256), ((-5211558765:ℝ)/128), ((-194646825:ℝ)/32), ((-4835565:ℝ)/8), ((-71955:ℝ)/2), (-972:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_02; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((1824006694921875:ℝ)/8388608), ((-45234506953125:ℝ)/2097152), ((-666360686390625:ℝ)/524288), ((-318390920859375:ℝ)/131072), ((-4870303959375:ℝ)/2048), ((-6056806802625:ℝ)/4096), ((-645709716225:ℝ)/1024), ((-48671534295:ℝ)/256), ((-5211558765:ℝ)/128), ((-194646825:ℝ)/32), ((-4835565:ℝ)/8), ((-71955:ℝ)/2), (-972:ℝ)] : List ℝ).getD e 0) 11 ht
-  have m12 := abs_poly_le (fun e => ([((1824006694921875:ℝ)/8388608), ((-45234506953125:ℝ)/2097152), ((-666360686390625:ℝ)/524288), ((-318390920859375:ℝ)/131072), ((-4870303959375:ℝ)/2048), ((-6056806802625:ℝ)/4096), ((-645709716225:ℝ)/1024), ((-48671534295:ℝ)/256), ((-5211558765:ℝ)/128), ((-194646825:ℝ)/32), ((-4835565:ℝ)/8), ((-71955:ℝ)/2), (-972:ℝ)] : List ℝ).getD e 0) 13 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 13, ([((1824006694921875:ℝ)/8388608), ((-45234506953125:ℝ)/2097152), ((-666360686390625:ℝ)/524288), ((-318390920859375:ℝ)/131072), ((-4870303959375:ℝ)/2048), ((-6056806802625:ℝ)/4096), ((-645709716225:ℝ)/1024), ((-48671534295:ℝ)/256), ((-5211558765:ℝ)/128), ((-194646825:ℝ)/32), ((-4835565:ℝ)/8), ((-71955:ℝ)/2), (-972:ℝ)] : List ℝ).getD e 0 * t^e) - ((1824006694921875:ℝ)/8388608) - ((-45234506953125:ℝ)/2097152)*t| ≤ ((3580346053526657837193:ℝ)/1024000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 13, ([((1824006694921875:ℝ)/8388608), ((-45234506953125:ℝ)/2097152), ((-666360686390625:ℝ)/524288), ((-318390920859375:ℝ)/131072), ((-4870303959375:ℝ)/2048), ((-6056806802625:ℝ)/4096), ((-645709716225:ℝ)/1024), ((-48671534295:ℝ)/256), ((-5211558765:ℝ)/128), ((-194646825:ℝ)/32), ((-4835565:ℝ)/8), ((-71955:ℝ)/2), (-972:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((227341771384642380493443:ℝ)/1024000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82080:ℝ), (-967680:ℝ), (3257600:ℝ), (-4474880:ℝ), (2908160:ℝ), (-786432:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_02 q| ≤ ((4262277246974834534752:ℝ)/244140625) := by
-    rw [centralNum13_02_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (87660:ℝ), (-702180:ℝ), ((7421435:ℝ)/4), ((-10854125:ℝ)/4), ((2828125:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_02 q| ≤ ((2779321715958151252:ℝ)/390625) := by
-    rw [centralNum23_02_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-30995684307:ℝ)/5000000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((1824006694921875:ℝ)/8388608) + ((13839609375:ℝ)/8192)*((-30995684307:ℝ)/5000000000000) - ((121534471818195159:ℝ)/10000000000000)) (β := (0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-45234506953125:ℝ)/2097152) - 3*((1824006694921875:ℝ)/8388608)) + ((9533953125:ℝ)/2048)*((-30995684307:ℝ)/5000000000000) - ((-989819300633604313:ℝ)/10000000000000)) ht
-  have hW : pieceW q pieceX_10 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((-30995684307:ℝ)/5000000000000) + (0:ℝ) := by
-    rw [pieceW_02, pieceX_10, sym4_02, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((463185650719492738203071731467365228111691268551810412127299:ℝ)/23642088243868346586801021764547084503911103717148134870285600000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((1824006694921875:ℝ)/8388608) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-45234506953125:ℝ)/2097152) - 3*((1824006694921875:ℝ)/8388608))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((-30995684307:ℝ)/5000000000000) - (((121534471818195159:ℝ)/10000000000000) + t * ((-989819300633604313:ℝ)/10000000000000)) = ((0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((1824006694921875:ℝ)/8388608) + ((13839609375:ℝ)/8192)*((-30995684307:ℝ)/5000000000000) - ((121534471818195159:ℝ)/10000000000000)) + t*((0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-45234506953125:ℝ)/2097152) - 3*((1824006694921875:ℝ)/8388608)) + ((9533953125:ℝ)/2048)*((-30995684307:ℝ)/5000000000000) - ((-989819300633604313:ℝ)/10000000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e03 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 0 3 - (((-123568888338666059:ℝ)/1000000000000) + (q - ((15:ℝ)/4)) * ((-28102228516557029:ℝ)/50000000000))| ≤ ((111715460936349221:ℝ)/10000000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_03 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_03; ring
-  have h12 : centralNum12_03 q = ∑ e ∈ Finset.range 14, ([((497197031741015625:ℝ)/469762048), ((116344166275546875:ℝ)/29360128), ((11514865929890625:ℝ)/1835008), ((19954028861578125:ℝ)/3670016), ((4841521325465625:ℝ)/1835008), ((110726107147125:ℝ)/229376), ((-3510192111075:ℝ)/14336), ((-1593947407455:ℝ)/7168), ((-626451887925:ℝ)/7168), ((-1200078855:ℝ)/56), ((-194397975:ℝ)/56), ((-20374335:ℝ)/56), ((-629613:ℝ)/28), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_03; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((497197031741015625:ℝ)/469762048), ((116344166275546875:ℝ)/29360128), ((11514865929890625:ℝ)/1835008), ((19954028861578125:ℝ)/3670016), ((4841521325465625:ℝ)/1835008), ((110726107147125:ℝ)/229376), ((-3510192111075:ℝ)/14336), ((-1593947407455:ℝ)/7168), ((-626451887925:ℝ)/7168), ((-1200078855:ℝ)/56), ((-194397975:ℝ)/56), ((-20374335:ℝ)/56), ((-629613:ℝ)/28), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 12 ht
-  have m12 := abs_poly_le (fun e => ([((497197031741015625:ℝ)/469762048), ((116344166275546875:ℝ)/29360128), ((11514865929890625:ℝ)/1835008), ((19954028861578125:ℝ)/3670016), ((4841521325465625:ℝ)/1835008), ((110726107147125:ℝ)/229376), ((-3510192111075:ℝ)/14336), ((-1593947407455:ℝ)/7168), ((-626451887925:ℝ)/7168), ((-1200078855:ℝ)/56), ((-194397975:ℝ)/56), ((-20374335:ℝ)/56), ((-629613:ℝ)/28), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 14 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 14, ([((497197031741015625:ℝ)/469762048), ((116344166275546875:ℝ)/29360128), ((11514865929890625:ℝ)/1835008), ((19954028861578125:ℝ)/3670016), ((4841521325465625:ℝ)/1835008), ((110726107147125:ℝ)/229376), ((-3510192111075:ℝ)/14336), ((-1593947407455:ℝ)/7168), ((-626451887925:ℝ)/7168), ((-1200078855:ℝ)/56), ((-194397975:ℝ)/56), ((-20374335:ℝ)/56), ((-629613:ℝ)/28), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((497197031741015625:ℝ)/469762048) - ((116344166275546875:ℝ)/29360128)*t| ≤ ((9395261030513398809912939:ℝ)/573440000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 14, ([((497197031741015625:ℝ)/469762048), ((116344166275546875:ℝ)/29360128), ((11514865929890625:ℝ)/1835008), ((19954028861578125:ℝ)/3670016), ((4841521325465625:ℝ)/1835008), ((110726107147125:ℝ)/229376), ((-3510192111075:ℝ)/14336), ((-1593947407455:ℝ)/7168), ((-626451887925:ℝ)/7168), ((-1200078855:ℝ)/56), ((-194397975:ℝ)/56), ((-20374335:ℝ)/56), ((-629613:ℝ)/28), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((182485645323989777009607141:ℝ)/143360000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-812160:ℝ), (8985600:ℝ), (-32225280:ℝ), (52019200:ℝ), ((-305233920:ℝ)/7), ((135528448:ℝ)/7), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_03 q| ≤ ((3775031646305422366704256:ℝ)/8544921875) := by
-    rw [centralNum13_03_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-833220:ℝ), (6469740:ℝ), ((-68603955:ℝ)/4), ((104396875:ℝ)/4), ((-1001334375:ℝ)/56), ((125828125:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_03 q| ≤ ((2503457891385345330811:ℝ)/21875000) := by
-    rw [centralNum23_03_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-34583834689:ℝ)/250000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((497197031741015625:ℝ)/469762048) + ((13839609375:ℝ)/8192)*((-34583834689:ℝ)/250000000000) - ((-123568888338666059:ℝ)/1000000000000)) (β := (0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((116344166275546875:ℝ)/29360128) - 3*((497197031741015625:ℝ)/469762048)) + ((9533953125:ℝ)/2048)*((-34583834689:ℝ)/250000000000) - ((-28102228516557029:ℝ)/50000000000)) ht
-  have hW : pieceW q pieceX_10 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-34583834689:ℝ)/250000000000) + (0:ℝ) := by
-    rw [pieceW_03, pieceX_10, sym4_03, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((1561991951283747254648380867237619063056174616198499215576067:ℝ)/6052374590430296726221061571724053633001242551589922526793113600000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((497197031741015625:ℝ)/469762048) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((116344166275546875:ℝ)/29360128) - 3*((497197031741015625:ℝ)/469762048))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((-34583834689:ℝ)/250000000000) - (((-123568888338666059:ℝ)/1000000000000) + t * ((-28102228516557029:ℝ)/50000000000)) = ((0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((497197031741015625:ℝ)/469762048) + ((13839609375:ℝ)/8192)*((-34583834689:ℝ)/250000000000) - ((-123568888338666059:ℝ)/1000000000000)) + t*((0:ℝ) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((116344166275546875:ℝ)/29360128) - 3*((497197031741015625:ℝ)/469762048)) + ((9533953125:ℝ)/2048)*((-34583834689:ℝ)/250000000000) - ((-28102228516557029:ℝ)/50000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e11 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 1 1 - (((93886126428934261:ℝ)/50000000000) + (q - ((15:ℝ)/4)) * ((422362164317891599:ℝ)/100000000000))| ≤ ((152605956596803991:ℝ)/10000000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_11 q = ∑ e ∈ Finset.range 10, ([((1811109375:ℝ)/1024), ((4298821875:ℝ)/1024), ((289321875:ℝ)/64), ((46423125:ℝ)/16), ((4890375:ℝ)/4), ((700245:ℝ)/2), (67956:ℝ), (8592:ℝ), (640:ℝ), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_11; ring
-  have h12 : centralNum12_11 q = ∑ e ∈ Finset.range 13, ([((1500308619890625:ℝ)/2097152), ((773366277065625:ℝ)/524288), ((91489301803125:ℝ)/131072), ((-31848790393125:ℝ)/32768), ((-894799416375:ℝ)/512), ((-1381814075835:ℝ)/1024), ((-165716224779:ℝ)/256), ((-13485498429:ℝ)/64), ((-1525965247:ℝ)/32), ((-178409785:ℝ)/24), ((-1528911:ℝ)/2), (-46818:ℝ), (-1296:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_11; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((1811109375:ℝ)/1024), ((4298821875:ℝ)/1024), ((289321875:ℝ)/64), ((46423125:ℝ)/16), ((4890375:ℝ)/4), ((700245:ℝ)/2), (67956:ℝ), (8592:ℝ), (640:ℝ), ((64:ℝ)/3)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((1500308619890625:ℝ)/2097152), ((773366277065625:ℝ)/524288), ((91489301803125:ℝ)/131072), ((-31848790393125:ℝ)/32768), ((-894799416375:ℝ)/512), ((-1381814075835:ℝ)/1024), ((-165716224779:ℝ)/256), ((-13485498429:ℝ)/64), ((-1525965247:ℝ)/32), ((-178409785:ℝ)/24), ((-1528911:ℝ)/2), (-46818:ℝ), (-1296:ℝ)] : List ℝ).getD e 0) 11 ht
-  have m12 := abs_poly_le (fun e => ([((1500308619890625:ℝ)/2097152), ((773366277065625:ℝ)/524288), ((91489301803125:ℝ)/131072), ((-31848790393125:ℝ)/32768), ((-894799416375:ℝ)/512), ((-1381814075835:ℝ)/1024), ((-165716224779:ℝ)/256), ((-13485498429:ℝ)/64), ((-1525965247:ℝ)/32), ((-178409785:ℝ)/24), ((-1528911:ℝ)/2), (-46818:ℝ), (-1296:ℝ)] : List ℝ).getD e 0) 13 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((1811109375:ℝ)/1024), ((4298821875:ℝ)/1024), ((289321875:ℝ)/64), ((46423125:ℝ)/16), ((4890375:ℝ)/4), ((700245:ℝ)/2), (67956:ℝ), (8592:ℝ), (640:ℝ), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((1811109375:ℝ)/1024) + ((4298821875:ℝ)/1024)*t)| ≤ ((280129634376451:ℝ)/24000000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 13, ([((1500308619890625:ℝ)/2097152), ((773366277065625:ℝ)/524288), ((91489301803125:ℝ)/131072), ((-31848790393125:ℝ)/32768), ((-894799416375:ℝ)/512), ((-1381814075835:ℝ)/1024), ((-165716224779:ℝ)/256), ((-13485498429:ℝ)/64), ((-1525965247:ℝ)/32), ((-178409785:ℝ)/24), ((-1528911:ℝ)/2), (-46818:ℝ), (-1296:ℝ)] : List ℝ).getD e 0 * t^e) - ((1500308619890625:ℝ)/2097152) - ((773366277065625:ℝ)/524288)*t| ≤ ((45068838297046767089:ℝ)/24000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 13, ([((1500308619890625:ℝ)/2097152), ((773366277065625:ℝ)/524288), ((91489301803125:ℝ)/131072), ((-31848790393125:ℝ)/32768), ((-894799416375:ℝ)/512), ((-1381814075835:ℝ)/1024), ((-165716224779:ℝ)/256), ((-13485498429:ℝ)/64), ((-1525965247:ℝ)/32), ((-178409785:ℝ)/24), ((-1528911:ℝ)/2), (-46818:ℝ), (-1296:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((607514666925999881312473:ℝ)/768000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-3444:ℝ), (162624:ℝ), (-1531216:ℝ), (4800960:ℝ), (-6350848:ℝ), ((12025856:ℝ)/3), (-1048576:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_11 q| ≤ ((17518357083773076663628:ℝ)/732421875) := by
-    rw [centralNum13_11_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-4074:ℝ), (159906:ℝ), (-1104799:ℝ), (2801499:ℝ), (-3931375:ℝ), ((5896250:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_11 q| ≤ ((58220500614398817323:ℝ)/5859375) := by
-    rw [centralNum23_11_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((10245427511:ℝ)/500000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1))| ≤ ((613508312853351562668032000000:ℝ)/13313334776718944356888429344771) := by
-    rw [abs_neg, tailWeight_1, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((19:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((19:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece10_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((4814744136400:ℝ)/531441)) ≤ ((19:ℝ)/5)^6*(8000*(2*((19:ℝ)/5)-3)^2*(1/((25051388162973771983886131:ℝ)/250000000))*((4814744136400:ℝ)/531441)) := by
-          gcongr
-      _ ≤ ((613508312853351562668032000000:ℝ)/13313334776718944356888429344771) := by norm_num
-  have c7 := affine_round (α := ((1811109375:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((1500308619890625:ℝ)/2097152) + ((13839609375:ℝ)/8192)*((10245427511:ℝ)/500000000000) - ((93886126428934261:ℝ)/50000000000)) (β := ((4298821875:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((773366277065625:ℝ)/524288) - 3*((1500308619890625:ℝ)/2097152)) + ((9533953125:ℝ)/2048)*((10245427511:ℝ)/500000000000) - ((422362164317891599:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_10 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((10245427511:ℝ)/500000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
-    rw [pieceW_11, pieceX_10, sym4_11, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((172813182612895727302818593681716143389380571947791591924818937:ℝ)/60523745904302967262210615717240536330012425515899225267931136000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((1811109375:ℝ)/1024) + ((4298821875:ℝ)/1024)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((1500308619890625:ℝ)/2097152) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((773366277065625:ℝ)/524288) - 3*((1500308619890625:ℝ)/2097152))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((10245427511:ℝ)/500000000000) - (((93886126428934261:ℝ)/50000000000) + t * ((422362164317891599:ℝ)/100000000000)) = (((1811109375:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((1500308619890625:ℝ)/2097152) + ((13839609375:ℝ)/8192)*((10245427511:ℝ)/500000000000) - ((93886126428934261:ℝ)/50000000000)) + t*(((4298821875:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((773366277065625:ℝ)/524288) - 3*((1500308619890625:ℝ)/2097152)) + ((9533953125:ℝ)/2048)*((10245427511:ℝ)/500000000000) - ((422362164317891599:ℝ)/100000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e12 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 1 2 - (((51757047620482177:ℝ)/625000000000) + (q - ((15:ℝ)/4)) * ((43660837952370271:ℝ)/100000000000))| ≤ ((208226583249375023:ℝ)/10000000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_12 q = ∑ e ∈ Finset.range 9, ([((-2562890625:ℝ)/8192), ((-284765625:ℝ)/512), ((-49359375:ℝ)/128), ((-3796875:ℝ)/32), ((-84375:ℝ)/16), ((14625:ℝ)/2), (2250:ℝ), (280:ℝ), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_12; ring
-  have h12 : centralNum12_12 q = ∑ e ∈ Finset.range 14, ([((99019341398671875:ℝ)/67108864), ((31690178128265625:ℝ)/4194304), ((3895418110359375:ℝ)/262144), ((8300329848759375:ℝ)/524288), ((2678738400061875:ℝ)/262144), ((130974116761575:ℝ)/32768), ((1544910768495:ℝ)/2048), ((-97632348245:ℝ)/1024), ((-334668685685:ℝ)/3072), ((-281982775:ℝ)/8), ((-52657845:ℝ)/8), ((-6045813:ℝ)/8), ((-199503:ℝ)/4), (-1458:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_12; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((-2562890625:ℝ)/8192), ((-284765625:ℝ)/512), ((-49359375:ℝ)/128), ((-3796875:ℝ)/32), ((-84375:ℝ)/16), ((14625:ℝ)/2), (2250:ℝ), (280:ℝ), ((40:ℝ)/3)] : List ℝ).getD e 0) 7 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((99019341398671875:ℝ)/67108864), ((31690178128265625:ℝ)/4194304), ((3895418110359375:ℝ)/262144), ((8300329848759375:ℝ)/524288), ((2678738400061875:ℝ)/262144), ((130974116761575:ℝ)/32768), ((1544910768495:ℝ)/2048), ((-97632348245:ℝ)/1024), ((-334668685685:ℝ)/3072), ((-281982775:ℝ)/8), ((-52657845:ℝ)/8), ((-6045813:ℝ)/8), ((-199503:ℝ)/4), (-1458:ℝ)] : List ℝ).getD e 0) 12 ht
-  have m12 := abs_poly_le (fun e => ([((99019341398671875:ℝ)/67108864), ((31690178128265625:ℝ)/4194304), ((3895418110359375:ℝ)/262144), ((8300329848759375:ℝ)/524288), ((2678738400061875:ℝ)/262144), ((130974116761575:ℝ)/32768), ((1544910768495:ℝ)/2048), ((-97632348245:ℝ)/1024), ((-334668685685:ℝ)/3072), ((-281982775:ℝ)/8), ((-52657845:ℝ)/8), ((-6045813:ℝ)/8), ((-199503:ℝ)/4), (-1458:ℝ)] : List ℝ).getD e 0) 14 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 9, ([((-2562890625:ℝ)/8192), ((-284765625:ℝ)/512), ((-49359375:ℝ)/128), ((-3796875:ℝ)/32), ((-84375:ℝ)/16), ((14625:ℝ)/2), (2250:ℝ), (280:ℝ), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((-2562890625:ℝ)/8192) + ((-284765625:ℝ)/512)*t)| ≤ ((1879520861671:ℝ)/1920000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 14, ([((99019341398671875:ℝ)/67108864), ((31690178128265625:ℝ)/4194304), ((3895418110359375:ℝ)/262144), ((8300329848759375:ℝ)/524288), ((2678738400061875:ℝ)/262144), ((130974116761575:ℝ)/32768), ((1544910768495:ℝ)/2048), ((-97632348245:ℝ)/1024), ((-334668685685:ℝ)/3072), ((-281982775:ℝ)/8), ((-52657845:ℝ)/8), ((-6045813:ℝ)/8), ((-199503:ℝ)/4), (-1458:ℝ)] : List ℝ).getD e 0 * t^e) - ((99019341398671875:ℝ)/67108864) - ((31690178128265625:ℝ)/4194304)*t| ≤ ((9632239267706225992122619:ℝ)/245760000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 14, ([((99019341398671875:ℝ)/67108864), ((31690178128265625:ℝ)/4194304), ((3895418110359375:ℝ)/262144), ((8300329848759375:ℝ)/524288), ((2678738400061875:ℝ)/262144), ((130974116761575:ℝ)/32768), ((1544910768495:ℝ)/2048), ((-97632348245:ℝ)/1024), ((-334668685685:ℝ)/3072), ((-281982775:ℝ)/8), ((-52657845:ℝ)/8), ((-6045813:ℝ)/8), ((-199503:ℝ)/4), (-1458:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((116273554111315327555159561:ℝ)/61440000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (122790:ℝ), (-3586680:ℝ), (28529720:ℝ), (-90761600:ℝ), (137804800:ℝ), ((-332136448:ℝ)/3), ((141819904:ℝ)/3), (-8388608:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_12 q| ≤ ((1323822481307973177334462:ℝ)/1220703125) := by
-    rw [centralNum13_12_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (132555:ℝ), (-3252375:ℝ), ((39743695:ℝ)/2), ((-197111615:ℝ)/4), ((281947375:ℝ)/4), ((-1100234375:ℝ)/24), ((131828125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_12 q| ≤ ((903663232936068871829:ℝ)/3125000) := by
-    rw [centralNum23_12_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((35830011351:ℝ)/250000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-2562890625:ℝ)/8192) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((99019341398671875:ℝ)/67108864) + ((13839609375:ℝ)/8192)*((35830011351:ℝ)/250000000000) - ((51757047620482177:ℝ)/625000000000)) (β := ((-284765625:ℝ)/512) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((31690178128265625:ℝ)/4194304) - 3*((99019341398671875:ℝ)/67108864)) + ((9533953125:ℝ)/2048)*((35830011351:ℝ)/250000000000) - ((43660837952370271:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_10 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((35830011351:ℝ)/250000000000) + (0:ℝ) := by
-    rw [pieceW_12, pieceX_10, sym4_12, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((6436355039108359857093242161578267686037890962015137820948157:ℝ)/151309364760757418155526539293101340825031063789748063169827840000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-2562890625:ℝ)/8192) + ((-284765625:ℝ)/512)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((99019341398671875:ℝ)/67108864) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((31690178128265625:ℝ)/4194304) - 3*((99019341398671875:ℝ)/67108864))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((35830011351:ℝ)/250000000000) - (((51757047620482177:ℝ)/625000000000) + t * ((43660837952370271:ℝ)/100000000000)) = (((-2562890625:ℝ)/8192) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((99019341398671875:ℝ)/67108864) + ((13839609375:ℝ)/8192)*((35830011351:ℝ)/250000000000) - ((51757047620482177:ℝ)/625000000000)) + t*(((-284765625:ℝ)/512) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((31690178128265625:ℝ)/4194304) - 3*((99019341398671875:ℝ)/67108864)) + ((9533953125:ℝ)/2048)*((35830011351:ℝ)/250000000000) - ((43660837952370271:ℝ)/100000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e13 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 1 3 - (((905627934309187969:ℝ)/1000000000000) + (q - ((15:ℝ)/4)) * ((422115795223010041:ℝ)/100000000000))| ≤ ((128330161197032867:ℝ)/1000000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_13 q = ∑ e ∈ Finset.range 7, ([((-170859375:ℝ)/1024), ((-34171875:ℝ)/128), ((-11390625:ℝ)/64), ((-253125:ℝ)/4), ((-50625:ℝ)/4), (-1350:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_13; ring
-  have h12 : centralNum12_13 q = ∑ e ∈ Finset.range 15, ([((-21502289125593984375:ℝ)/3758096384), ((-17099674580183765625:ℝ)/939524096), ((-1324645491451359375:ℝ)/58720256), ((-340600965881821875:ℝ)/29360128), ((28004264767344375:ℝ)/14680064), ((24416356106938725:ℝ)/3670016), ((2116434960571395:ℝ)/458752), ((14459705879985:ℝ)/8192), ((22547213294775:ℝ)/57344), ((524268861345:ℝ)/14336), ((-2572422165:ℝ)/448), ((-1107207819:ℝ)/448), ((-84434967:ℝ)/224), ((-1624941:ℝ)/56), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_13; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((-170859375:ℝ)/1024), ((-34171875:ℝ)/128), ((-11390625:ℝ)/64), ((-253125:ℝ)/4), ((-50625:ℝ)/4), (-1350:ℝ), (-60:ℝ)] : List ℝ).getD e 0) 5 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-21502289125593984375:ℝ)/3758096384), ((-17099674580183765625:ℝ)/939524096), ((-1324645491451359375:ℝ)/58720256), ((-340600965881821875:ℝ)/29360128), ((28004264767344375:ℝ)/14680064), ((24416356106938725:ℝ)/3670016), ((2116434960571395:ℝ)/458752), ((14459705879985:ℝ)/8192), ((22547213294775:ℝ)/57344), ((524268861345:ℝ)/14336), ((-2572422165:ℝ)/448), ((-1107207819:ℝ)/448), ((-84434967:ℝ)/224), ((-1624941:ℝ)/56), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 13 ht
-  have m12 := abs_poly_le (fun e => ([((-21502289125593984375:ℝ)/3758096384), ((-17099674580183765625:ℝ)/939524096), ((-1324645491451359375:ℝ)/58720256), ((-340600965881821875:ℝ)/29360128), ((28004264767344375:ℝ)/14680064), ((24416356106938725:ℝ)/3670016), ((2116434960571395:ℝ)/458752), ((14459705879985:ℝ)/8192), ((22547213294775:ℝ)/57344), ((524268861345:ℝ)/14336), ((-2572422165:ℝ)/448), ((-1107207819:ℝ)/448), ((-84434967:ℝ)/224), ((-1624941:ℝ)/56), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 15 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 7, ([((-170859375:ℝ)/1024), ((-34171875:ℝ)/128), ((-11390625:ℝ)/64), ((-253125:ℝ)/4), ((-50625:ℝ)/4), (-1350:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e) - (((-170859375:ℝ)/1024) + ((-34171875:ℝ)/128)*t)| ≤ ((1449395103:ℝ)/3200000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 15, ([((-21502289125593984375:ℝ)/3758096384), ((-17099674580183765625:ℝ)/939524096), ((-1324645491451359375:ℝ)/58720256), ((-340600965881821875:ℝ)/29360128), ((28004264767344375:ℝ)/14680064), ((24416356106938725:ℝ)/3670016), ((2116434960571395:ℝ)/458752), ((14459705879985:ℝ)/8192), ((22547213294775:ℝ)/57344), ((524268861345:ℝ)/14336), ((-2572422165:ℝ)/448), ((-1107207819:ℝ)/448), ((-84434967:ℝ)/224), ((-1624941:ℝ)/56), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((-21502289125593984375:ℝ)/3758096384) - ((-17099674580183765625:ℝ)/939524096)*t| ≤ ((41474493081652375533192711:ℝ)/716800000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 15, ([((-21502289125593984375:ℝ)/3758096384), ((-17099674580183765625:ℝ)/939524096), ((-1324645491451359375:ℝ)/58720256), ((-340600965881821875:ℝ)/29360128), ((28004264767344375:ℝ)/14680064), ((24416356106938725:ℝ)/3670016), ((2116434960571395:ℝ)/458752), ((14459705879985:ℝ)/8192), ((22547213294775:ℝ)/57344), ((524268861345:ℝ)/14336), ((-2572422165:ℝ)/448), ((-1107207819:ℝ)/448), ((-84434967:ℝ)/224), ((-1624941:ℝ)/56), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((38360091906614183207146401063:ℝ)/5734400000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2325540:ℝ), (52589280:ℝ), (-375655200:ℝ), (1192958720:ℝ), (-1965096960:ℝ), ((12857851904:ℝ)/7), ((-21171273728:ℝ)/21), ((914358272:ℝ)/3), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_13 q| ≤ ((1302653699964058140793612636:ℝ)/42724609375) := by
-    rw [centralNum13_13_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2399070:ℝ), (45666930:ℝ), (-251781675:ℝ), ((2452738385:ℝ)/4), ((-14104310625:ℝ)/16), ((74345740625:ℝ)/112), ((-74899765625:ℝ)/336), ((5161328125:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_13 q| ≤ ((34448542394958925045457:ℝ)/6250000) := by
-    rw [centralNum23_13_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((987248065489:ℝ)/1000000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-170859375:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-21502289125593984375:ℝ)/3758096384) + ((13839609375:ℝ)/8192)*((987248065489:ℝ)/1000000000000) - ((905627934309187969:ℝ)/1000000000000)) (β := ((-34171875:ℝ)/128) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-17099674580183765625:ℝ)/939524096) - 3*((-21502289125593984375:ℝ)/3758096384)) + ((9533953125:ℝ)/2048)*((987248065489:ℝ)/1000000000000) - ((422115795223010041:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_10 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((987248065489:ℝ)/1000000000000) + (0:ℝ) := by
-    rw [pieceW_13, pieceX_10, sym4_13, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((40113044539150837197205008701262679502001576663928507744640383:ℝ)/121047491808605934524421231434481072660024851031798450535862272000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-170859375:ℝ)/1024) + ((-34171875:ℝ)/128)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-21502289125593984375:ℝ)/3758096384) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-17099674580183765625:ℝ)/939524096) - 3*((-21502289125593984375:ℝ)/3758096384))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((987248065489:ℝ)/1000000000000) - (((905627934309187969:ℝ)/1000000000000) + t * ((422115795223010041:ℝ)/100000000000)) = (((-170859375:ℝ)/1024) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-21502289125593984375:ℝ)/3758096384) + ((13839609375:ℝ)/8192)*((987248065489:ℝ)/1000000000000) - ((905627934309187969:ℝ)/1000000000000)) + t*(((-34171875:ℝ)/128) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-17099674580183765625:ℝ)/939524096) - 3*((-21502289125593984375:ℝ)/3758096384)) + ((9533953125:ℝ)/2048)*((987248065489:ℝ)/1000000000000) - ((422115795223010041:ℝ)/100000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e22 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 2 2 - (((497832143112578739:ℝ)/50000000000) + (q - ((15:ℝ)/4)) * ((14906158135306309:ℝ)/500000000))| ≤ ((61320942659881339:ℝ)/200000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_22 q = ∑ e ∈ Finset.range 10, ([((22952109375:ℝ)/16384), ((14902734375:ℝ)/4096), ((1066921875:ℝ)/256), ((178790625:ℝ)/64), ((38975625:ℝ)/32), ((2882925:ℝ)/8), (72575:ℝ), ((28780:ℝ)/3), ((2260:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_22; ring
-  have h12 : centralNum12_22 q = ∑ e ∈ Finset.range 15, ([((-23125606235265234375:ℝ)/2147483648), ((-19870795340778515625:ℝ)/536870912), ((-1714636625343046875:ℝ)/33554432), ((-569828350356046875:ℝ)/16777216), ((-53391300598715625:ℝ)/8388608), ((15375242604637125:ℝ)/2097152), ((1828558501761875:ℝ)/262144), ((297459504406925:ℝ)/98304), ((73956173979125:ℝ)/98304), ((2236913417875:ℝ)/24576), ((-1135288995:ℝ)/256), ((-930798675:ℝ)/256), ((-78312663:ℝ)/128), ((-1578285:ℝ)/32), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_22; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((22952109375:ℝ)/16384), ((14902734375:ℝ)/4096), ((1066921875:ℝ)/256), ((178790625:ℝ)/64), ((38975625:ℝ)/32), ((2882925:ℝ)/8), (72575:ℝ), ((28780:ℝ)/3), ((2260:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-23125606235265234375:ℝ)/2147483648), ((-19870795340778515625:ℝ)/536870912), ((-1714636625343046875:ℝ)/33554432), ((-569828350356046875:ℝ)/16777216), ((-53391300598715625:ℝ)/8388608), ((15375242604637125:ℝ)/2097152), ((1828558501761875:ℝ)/262144), ((297459504406925:ℝ)/98304), ((73956173979125:ℝ)/98304), ((2236913417875:ℝ)/24576), ((-1135288995:ℝ)/256), ((-930798675:ℝ)/256), ((-78312663:ℝ)/128), ((-1578285:ℝ)/32), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 13 ht
-  have m12 := abs_poly_le (fun e => ([((-23125606235265234375:ℝ)/2147483648), ((-19870795340778515625:ℝ)/536870912), ((-1714636625343046875:ℝ)/33554432), ((-569828350356046875:ℝ)/16777216), ((-53391300598715625:ℝ)/8388608), ((15375242604637125:ℝ)/2097152), ((1828558501761875:ℝ)/262144), ((297459504406925:ℝ)/98304), ((73956173979125:ℝ)/98304), ((2236913417875:ℝ)/24576), ((-1135288995:ℝ)/256), ((-930798675:ℝ)/256), ((-78312663:ℝ)/128), ((-1578285:ℝ)/32), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 15 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((22952109375:ℝ)/16384), ((14902734375:ℝ)/4096), ((1066921875:ℝ)/256), ((178790625:ℝ)/64), ((38975625:ℝ)/32), ((2882925:ℝ)/8), (72575:ℝ), ((28780:ℝ)/3), ((2260:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((22952109375:ℝ)/16384) + ((14902734375:ℝ)/4096)*t)| ≤ ((103450421352233:ℝ)/9600000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 15, ([((-23125606235265234375:ℝ)/2147483648), ((-19870795340778515625:ℝ)/536870912), ((-1714636625343046875:ℝ)/33554432), ((-569828350356046875:ℝ)/16777216), ((-53391300598715625:ℝ)/8388608), ((15375242604637125:ℝ)/2097152), ((1828558501761875:ℝ)/262144), ((297459504406925:ℝ)/98304), ((73956173979125:ℝ)/98304), ((2236913417875:ℝ)/24576), ((-1135288995:ℝ)/256), ((-930798675:ℝ)/256), ((-78312663:ℝ)/128), ((-1578285:ℝ)/32), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e) - ((-23125606235265234375:ℝ)/2147483648) - ((-19870795340778515625:ℝ)/536870912)*t| ≤ ((2595975027601301114868281683:ℝ)/19660800000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 15, ([((-23125606235265234375:ℝ)/2147483648), ((-19870795340778515625:ℝ)/536870912), ((-1714636625343046875:ℝ)/33554432), ((-569828350356046875:ℝ)/16777216), ((-53391300598715625:ℝ)/8388608), ((15375242604637125:ℝ)/2097152), ((1828558501761875:ℝ)/262144), ((297459504406925:ℝ)/98304), ((73956173979125:ℝ)/98304), ((2236913417875:ℝ)/24576), ((-1135288995:ℝ)/256), ((-930798675:ℝ)/256), ((-78312663:ℝ)/128), ((-1578285:ℝ)/32), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e)| ≤ ((250701736472495138089965937933:ℝ)/19660800000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82125:ℝ), (-6663750:ℝ), (115666200:ℝ), (-750437000:ℝ), (2277262000:ℝ), (-3656824320:ℝ), (3359621120:ℝ), (-1817706496:ℝ), ((1625292800:ℝ)/3), (-67108864:ℝ)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_22 q| ≤ ((1000650421456607504856737707:ℝ)/18310546875) := by
-    rw [centralNum13_22_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((178425:ℝ)/2), ((-13176075:ℝ)/2), ((777815145:ℝ)/8), ((-3968389015:ℝ)/8), ((9393350195:ℝ)/8), ((-26366634375:ℝ)/16), ((77851609375:ℝ)/64), ((-25714921875:ℝ)/64), ((5236328125:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_22 q| ≤ ((374797364256447589994627:ℝ)/37500000) := by
-    rw [centralNum23_22_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((286382726407:ℝ)/50000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2))| ≤ ((327531579121864663910351360000000:ℝ)/119820012990470499211995864102939) := by
-    rw [abs_neg, tailWeight_2, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((19:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((19:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece10_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((2570430941234500:ℝ)/4782969)) ≤ ((19:ℝ)/5)^6*(8000*(2*((19:ℝ)/5)-3)^2*(1/((25051388162973771983886131:ℝ)/250000000))*((2570430941234500:ℝ)/4782969)) := by
-          gcongr
-      _ ≤ ((327531579121864663910351360000000:ℝ)/119820012990470499211995864102939) := by norm_num
-  have c7 := affine_round (α := ((22952109375:ℝ)/16384) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-23125606235265234375:ℝ)/2147483648) + ((13839609375:ℝ)/8192)*((286382726407:ℝ)/50000000000) - ((497832143112578739:ℝ)/50000000000)) (β := ((14902734375:ℝ)/4096) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-19870795340778515625:ℝ)/536870912) - 3*((-23125606235265234375:ℝ)/2147483648)) + ((9533953125:ℝ)/2048)*((286382726407:ℝ)/50000000000) - ((14906158135306309:ℝ)/500000000)) ht
-  have hW : pieceW q pieceX_10 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((286382726407:ℝ)/50000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
-    rw [pieceW_22, pieceX_10, sym4_22, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((34481202335779999649823890873936168690841613002715558675650857:ℝ)/6052374590430296726221061571724053633001242551589922526793113600000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((22952109375:ℝ)/16384) + ((14902734375:ℝ)/4096)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-23125606235265234375:ℝ)/2147483648) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-19870795340778515625:ℝ)/536870912) - 3*((-23125606235265234375:ℝ)/2147483648))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((286382726407:ℝ)/50000000000) - (((497832143112578739:ℝ)/50000000000) + t * ((14906158135306309:ℝ)/500000000)) = (((22952109375:ℝ)/16384) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-23125606235265234375:ℝ)/2147483648) + ((13839609375:ℝ)/8192)*((286382726407:ℝ)/50000000000) - ((497832143112578739:ℝ)/50000000000)) + t*(((14902734375:ℝ)/4096) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((-19870795340778515625:ℝ)/536870912) - 3*((-23125606235265234375:ℝ)/2147483648)) + ((9533953125:ℝ)/2048)*((286382726407:ℝ)/50000000000) - ((14906158135306309:ℝ)/500000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e23 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 2 3 - (((-67147227807925983:ℝ)/20000000000) + (q - ((15:ℝ)/4)) * ((-175804712376142503:ℝ)/10000000000))| ≤ ((441150507779066629:ℝ)/100000000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_23 q = ∑ e ∈ Finset.range 9, ([((1879453125:ℝ)/4096), ((1788328125:ℝ)/2048), ((406265625:ℝ)/512), ((58978125:ℝ)/128), ((5923125:ℝ)/32), ((406575:ℝ)/8), ((17955:ℝ)/2), (910:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_23; ring
-  have h12 : centralNum12_23 q = ∑ e ∈ Finset.range 16, ([((2630447344830295546875:ℝ)/120259084288), ((745744112375174296875:ℝ)/15032385536), ((157378077819969046875:ℝ)/7516192768), ((-45481787495773284375:ℝ)/939524096), ((-37855006460168360625:ℝ)/469762048), ((-3426367363938952425:ℝ)/58720256), ((-693183708535179825:ℝ)/29360128), ((-17116195401886075:ℝ)/3670016), ((528242101660225:ℝ)/1835008), ((101835610237425:ℝ)/229376), ((14004189878625:ℝ)/114688), ((215663127291:ℝ)/14336), ((913817781:ℝ)/7168), ((-189361395:ℝ)/896), ((-1659933:ℝ)/64), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_23; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((1879453125:ℝ)/4096), ((1788328125:ℝ)/2048), ((406265625:ℝ)/512), ((58978125:ℝ)/128), ((5923125:ℝ)/32), ((406575:ℝ)/8), ((17955:ℝ)/2), (910:ℝ), (40:ℝ)] : List ℝ).getD e 0) 7 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((2630447344830295546875:ℝ)/120259084288), ((745744112375174296875:ℝ)/15032385536), ((157378077819969046875:ℝ)/7516192768), ((-45481787495773284375:ℝ)/939524096), ((-37855006460168360625:ℝ)/469762048), ((-3426367363938952425:ℝ)/58720256), ((-693183708535179825:ℝ)/29360128), ((-17116195401886075:ℝ)/3670016), ((528242101660225:ℝ)/1835008), ((101835610237425:ℝ)/229376), ((14004189878625:ℝ)/114688), ((215663127291:ℝ)/14336), ((913817781:ℝ)/7168), ((-189361395:ℝ)/896), ((-1659933:ℝ)/64), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 14 ht
-  have m12 := abs_poly_le (fun e => ([((2630447344830295546875:ℝ)/120259084288), ((745744112375174296875:ℝ)/15032385536), ((157378077819969046875:ℝ)/7516192768), ((-45481787495773284375:ℝ)/939524096), ((-37855006460168360625:ℝ)/469762048), ((-3426367363938952425:ℝ)/58720256), ((-693183708535179825:ℝ)/29360128), ((-17116195401886075:ℝ)/3670016), ((528242101660225:ℝ)/1835008), ((101835610237425:ℝ)/229376), ((14004189878625:ℝ)/114688), ((215663127291:ℝ)/14336), ((913817781:ℝ)/7168), ((-189361395:ℝ)/896), ((-1659933:ℝ)/64), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 16 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 9, ([((1879453125:ℝ)/4096), ((1788328125:ℝ)/2048), ((406265625:ℝ)/512), ((58978125:ℝ)/128), ((5923125:ℝ)/32), ((406575:ℝ)/8), ((17955:ℝ)/2), (910:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e) - (((1879453125:ℝ)/4096) + ((1788328125:ℝ)/2048)*t)| ≤ ((1307192051481:ℝ)/640000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 16, ([((2630447344830295546875:ℝ)/120259084288), ((745744112375174296875:ℝ)/15032385536), ((157378077819969046875:ℝ)/7516192768), ((-45481787495773284375:ℝ)/939524096), ((-37855006460168360625:ℝ)/469762048), ((-3426367363938952425:ℝ)/58720256), ((-693183708535179825:ℝ)/29360128), ((-17116195401886075:ℝ)/3670016), ((528242101660225:ℝ)/1835008), ((101835610237425:ℝ)/229376), ((14004189878625:ℝ)/114688), ((215663127291:ℝ)/14336), ((913817781:ℝ)/7168), ((-189361395:ℝ)/896), ((-1659933:ℝ)/64), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e) - ((2630447344830295546875:ℝ)/120259084288) - ((745744112375174296875:ℝ)/15032385536)*t| ≤ ((216236492967843493137757543753:ℝ)/3670016000000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 16, ([((2630447344830295546875:ℝ)/120259084288), ((745744112375174296875:ℝ)/15032385536), ((157378077819969046875:ℝ)/7516192768), ((-45481787495773284375:ℝ)/939524096), ((-37855006460168360625:ℝ)/469762048), ((-3426367363938952425:ℝ)/58720256), ((-693183708535179825:ℝ)/29360128), ((-17116195401886075:ℝ)/3670016), ((528242101660225:ℝ)/1835008), ((101835610237425:ℝ)/229376), ((14004189878625:ℝ)/114688), ((215663127291:ℝ)/14336), ((913817781:ℝ)/7168), ((-189361395:ℝ)/896), ((-1659933:ℝ)/64), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e)| ≤ ((44797220263396233538942535998439:ℝ)/1835008000000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-7627725:ℝ)/2), (173988600:ℝ), (-2299614450:ℝ), (13088188200:ℝ), (-38221499200:ℝ), (63366115840:ℝ), ((-445610508288:ℝ)/7), ((841540698112:ℝ)/21), ((-326820167680:ℝ)/21), ((10133438464:ℝ)/3), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 hq1'
-  have m13' : |centralNum13_23 q| ≤ ((2169720469407101782204617066967:ℝ)/1281738281250) := by
-    rw [centralNum13_23_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-15801525:ℝ)/4), ((655493865:ℝ)/4), ((-7334421225:ℝ)/4), ((16442962485:ℝ)/2), ((-598626108395:ℝ)/32), ((414013307125:ℝ)/16), ((-4611984703125:ℝ)/224), ((399923828125:ℝ)/48), ((-4353201171875:ℝ)/2688), ((189736328125:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 hq1'
-  have m23' : |centralNum23_23 q| ≤ ((33121412177253401215664177:ℝ)/150000000) := by
-    rw [centralNum23_23_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-180308963201:ℝ)/50000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((1879453125:ℝ)/4096) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((2630447344830295546875:ℝ)/120259084288) + ((13839609375:ℝ)/8192)*((-180308963201:ℝ)/50000000000) - ((-67147227807925983:ℝ)/20000000000)) (β := ((1788328125:ℝ)/2048) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((745744112375174296875:ℝ)/15032385536) - 3*((2630447344830295546875:ℝ)/120259084288)) + ((9533953125:ℝ)/2048)*((-180308963201:ℝ)/50000000000) - ((-175804712376142503:ℝ)/10000000000)) ht
-  have hW : pieceW q pieceX_10 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-180308963201:ℝ)/50000000000) + (0:ℝ) := by
-    rw [pieceW_23, pieceX_10, sym4_23, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((250671402213048351698161367126587229207138945825739638308827:ℝ)/47284176487736693173602043529094169007822207434296269740571200000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((1879453125:ℝ)/4096) + ((1788328125:ℝ)/2048)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((2630447344830295546875:ℝ)/120259084288) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((745744112375174296875:ℝ)/15032385536) - 3*((2630447344830295546875:ℝ)/120259084288))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((-180308963201:ℝ)/50000000000) - (((-67147227807925983:ℝ)/20000000000) + t * ((-175804712376142503:ℝ)/10000000000)) = (((1879453125:ℝ)/4096) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((2630447344830295546875:ℝ)/120259084288) + ((13839609375:ℝ)/8192)*((-180308963201:ℝ)/50000000000) - ((-67147227807925983:ℝ)/20000000000)) + t*(((1788328125:ℝ)/2048) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((745744112375174296875:ℝ)/15032385536) - 3*((2630447344830295546875:ℝ)/120259084288)) + ((9533953125:ℝ)/2048)*((-180308963201:ℝ)/50000000000) - ((-175804712376142503:ℝ)/10000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_e33 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) :
-    |pieceW q pieceX_10 3 3 - (((167338186373161907:ℝ)/500000000) + (q - ((15:ℝ)/4)) * ((23540592448596987:ℝ)/25000000))| ≤ ((29445423716394271:ℝ)/200000000) := by
-  set t := q - ((15:ℝ)/4) with htd
-  have hq : q = ((15:ℝ)/4) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((15:ℝ)/4))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_33 q = ∑ e ∈ Finset.range 10, ([((8121515625:ℝ)/57344), ((6434184375:ℝ)/7168), ((5493774375:ℝ)/3584), ((166026375:ℝ)/128), ((21003075:ℝ)/32), ((1723455:ℝ)/8), ((94395:ℝ)/2), ((47430:ℝ)/7), ((4080:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_33; ring
-  have h12 : centralNum12_33 q = ∑ e ∈ Finset.range 17, ([((-204632514522209087859375:ℝ)/6734508720128), ((11303168539281959503125:ℝ)/1683627180032), ((87793120572282397614375:ℝ)/420906795008), ((5737188031795358913375:ℝ)/15032385536), ((1236202806302017724025:ℝ)/3758096384), ((140577691032050221575:ℝ)/939524096), ((5572897543142863725:ℝ)/234881024), ((-4883463807981532875:ℝ)/411041792), ((-865961496527023875:ℝ)/102760448), ((-58831140385831825:ℝ)/25690112), ((-219987683878509:ℝ)/917504), ((6926348547981:ℝ)/229376), ((722321745939:ℝ)/57344), ((19716012765:ℝ)/14336), ((-8444007:ℝ)/25088), ((-71862633:ℝ)/6272), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_33; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((8121515625:ℝ)/57344), ((6434184375:ℝ)/7168), ((5493774375:ℝ)/3584), ((166026375:ℝ)/128), ((21003075:ℝ)/32), ((1723455:ℝ)/8), ((94395:ℝ)/2), ((47430:ℝ)/7), ((4080:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-204632514522209087859375:ℝ)/6734508720128), ((11303168539281959503125:ℝ)/1683627180032), ((87793120572282397614375:ℝ)/420906795008), ((5737188031795358913375:ℝ)/15032385536), ((1236202806302017724025:ℝ)/3758096384), ((140577691032050221575:ℝ)/939524096), ((5572897543142863725:ℝ)/234881024), ((-4883463807981532875:ℝ)/411041792), ((-865961496527023875:ℝ)/102760448), ((-58831140385831825:ℝ)/25690112), ((-219987683878509:ℝ)/917504), ((6926348547981:ℝ)/229376), ((722321745939:ℝ)/57344), ((19716012765:ℝ)/14336), ((-8444007:ℝ)/25088), ((-71862633:ℝ)/6272), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 15 ht
-  have m12 := abs_poly_le (fun e => ([((-204632514522209087859375:ℝ)/6734508720128), ((11303168539281959503125:ℝ)/1683627180032), ((87793120572282397614375:ℝ)/420906795008), ((5737188031795358913375:ℝ)/15032385536), ((1236202806302017724025:ℝ)/3758096384), ((140577691032050221575:ℝ)/939524096), ((5572897543142863725:ℝ)/234881024), ((-4883463807981532875:ℝ)/411041792), ((-865961496527023875:ℝ)/102760448), ((-58831140385831825:ℝ)/25690112), ((-219987683878509:ℝ)/917504), ((6926348547981:ℝ)/229376), ((722321745939:ℝ)/57344), ((19716012765:ℝ)/14336), ((-8444007:ℝ)/25088), ((-71862633:ℝ)/6272), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 17 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((8121515625:ℝ)/57344), ((6434184375:ℝ)/7168), ((5493774375:ℝ)/3584), ((166026375:ℝ)/128), ((21003075:ℝ)/32), ((1723455:ℝ)/8), ((94395:ℝ)/2), ((47430:ℝ)/7), ((4080:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e) - (((8121515625:ℝ)/57344) + ((6434184375:ℝ)/7168)*t)| ≤ ((12795066382423:ℝ)/3200000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 17, ([((-204632514522209087859375:ℝ)/6734508720128), ((11303168539281959503125:ℝ)/1683627180032), ((87793120572282397614375:ℝ)/420906795008), ((5737188031795358913375:ℝ)/15032385536), ((1236202806302017724025:ℝ)/3758096384), ((140577691032050221575:ℝ)/939524096), ((5572897543142863725:ℝ)/234881024), ((-4883463807981532875:ℝ)/411041792), ((-865961496527023875:ℝ)/102760448), ((-58831140385831825:ℝ)/25690112), ((-219987683878509:ℝ)/917504), ((6926348547981:ℝ)/229376), ((722321745939:ℝ)/57344), ((19716012765:ℝ)/14336), ((-8444007:ℝ)/25088), ((-71862633:ℝ)/6272), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e) - ((-204632514522209087859375:ℝ)/6734508720128) - ((11303168539281959503125:ℝ)/1683627180032)*t| ≤ ((41930828416485466448531111761873:ℝ)/73400320000000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 17, ([((-204632514522209087859375:ℝ)/6734508720128), ((11303168539281959503125:ℝ)/1683627180032), ((87793120572282397614375:ℝ)/420906795008), ((5737188031795358913375:ℝ)/15032385536), ((1236202806302017724025:ℝ)/3758096384), ((140577691032050221575:ℝ)/939524096), ((5572897543142863725:ℝ)/234881024), ((-4883463807981532875:ℝ)/411041792), ((-865961496527023875:ℝ)/102760448), ((-58831140385831825:ℝ)/25690112), ((-219987683878509:ℝ)/917504), ((6926348547981:ℝ)/229376), ((722321745939:ℝ)/57344), ((19716012765:ℝ)/14336), ((-8444007:ℝ)/25088), ((-71862633:ℝ)/6272), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e)| ≤ ((16078210335510970146243233407333111:ℝ)/513802240000000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((13839609375:ℝ)/8192), ((9533953125:ℝ)/2048), ((362221875:ℝ)/64), ((15946875:ℝ)/4), ((28704375:ℝ)/16), ((2140425:ℝ)/4), (105840:ℝ), (13392:ℝ), (984:ℝ), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13839609375:ℝ)/8192) - ((9533953125:ℝ)/2048)*t| ≤ ((916188335461:ℝ)/62500000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-8120475:ℝ)/4), ((464861025:ℝ)/2), (-5906535975:ℝ), ((411904731750:ℝ)/7), ((-2024051769000:ℝ)/7), ((5554394637600:ℝ)/7), (-1314913862656:ℝ), ((9709155336192:ℝ)/7), ((-6724555112448:ℝ)/7), ((1313173667840:ℝ)/3), ((-6168244125696:ℝ)/49), ((3004329623552:ℝ)/147), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 hq1'
-  have m13' : |centralNum13_33 q| ≤ ((735263111809856534126735952832961:ℝ)/12817382812500) := by
-    rw [centralNum13_33_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((19:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-16872075:ℝ)/8), ((1833754545:ℝ)/8), ((-83998007145:ℝ)/16), ((4929124002765:ℝ)/112), ((-76723155584685:ℝ)/448), ((164888745653055:ℝ)/448), ((-63358359907625:ℝ)/128), ((364713160040625:ℝ)/896), ((-334937462578125:ℝ)/1792), ((245466998046875:ℝ)/5376), ((-72144521484375:ℝ)/12544), ((6518798828125:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 hq1'
-  have m23' : |centralNum23_33 q| ≤ ((11671835092137813231638235533:ℝ)/2100000000) := by
-    rw [centralNum23_33_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((38439959905358380531517881901:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
-  have c5 := scaled_affine (X := ((199890813323:ℝ)/1000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3))| ≤ ((421587576257926954397659358720000000:ℝ)/3235140350742703478723888330779353) := by
-    rw [abs_neg, tailWeight_3, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((19:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((19:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece10_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((3308571812705231500:ℝ)/129140163)) ≤ ((19:ℝ)/5)^6*(8000*(2*((19:ℝ)/5)-3)^2*(1/((25051388162973771983886131:ℝ)/250000000))*((3308571812705231500:ℝ)/129140163)) := by
-          gcongr
-      _ ≤ ((421587576257926954397659358720000000:ℝ)/3235140350742703478723888330779353) := by norm_num
-  have c7 := affine_round (α := ((8121515625:ℝ)/57344) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-204632514522209087859375:ℝ)/6734508720128) + ((13839609375:ℝ)/8192)*((199890813323:ℝ)/1000000000) - ((167338186373161907:ℝ)/500000000)) (β := ((6434184375:ℝ)/7168) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((11303168539281959503125:ℝ)/1683627180032) - 3*((-204632514522209087859375:ℝ)/6734508720128)) + ((9533953125:ℝ)/2048)*((199890813323:ℝ)/1000000000) - ((23540592448596987:ℝ)/25000000)) ht
-  have hW : pieceW q pieceX_10 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((15:ℝ)/4)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((199890813323:ℝ)/1000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
-    rw [pieceW_33, pieceX_10, sym4_33, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((18801942824371822232500674659928308133343745658447790722100697:ℝ)/169466488532048308334189724008273501724034791444517830750207180800000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((8121515625:ℝ)/57344) + ((6434184375:ℝ)/7168)*t) + (8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-204632514522209087859375:ℝ)/6734508720128) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((11303168539281959503125:ℝ)/1683627180032) - 3*((-204632514522209087859375:ℝ)/6734508720128))*t) + (((13839609375:ℝ)/8192) + ((9533953125:ℝ)/2048)*t)*((199890813323:ℝ)/1000000000) - (((167338186373161907:ℝ)/500000000) + t * ((23540592448596987:ℝ)/25000000)) = (((8121515625:ℝ)/57344) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*((-204632514522209087859375:ℝ)/6734508720128) + ((13839609375:ℝ)/8192)*((199890813323:ℝ)/1000000000) - ((167338186373161907:ℝ)/500000000)) + t*(((6434184375:ℝ)/7168) + 8*(((1/((38439959905358380531517881901:ℝ)/500000000000000000000000))+(1/((768799196918931088273177269557:ℝ)/10000000000000000000000000)))/2)*(((11303168539281959503125:ℝ)/1683627180032) - 3*((-204632514522209087859375:ℝ)/6734508720128)) + ((9533953125:ℝ)/2048)*((199890813323:ℝ)/1000000000) - ((23540592448596987:ℝ)/25000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece10_plus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((54798896558359531:ℝ)/25000000000) + ((1:ℝ)/20)*((70549480059238571:ℝ)/12500000000) - (((44273611092566819:ℝ)/2500000000000) + ((493633251905758273:ℝ)/100000000000000) + ((13622364173350551:ℝ)/12500000000000) + ((111715460936349221:ℝ)/10000000000000)))
-      (((-546481712166114717:ℝ)/1000000000000) + ((1:ℝ)/20)*((-956435675908009427:ℝ)/1000000000000))
-      (((121534471818195159:ℝ)/10000000000000) + ((1:ℝ)/20)*((-989819300633604313:ℝ)/10000000000000))
-      (((-123568888338666059:ℝ)/1000000000000) + ((1:ℝ)/20)*((-28102228516557029:ℝ)/50000000000))
-      (((93886126428934261:ℝ)/50000000000) + ((1:ℝ)/20)*((422362164317891599:ℝ)/100000000000) - (((493633251905758273:ℝ)/100000000000000) + ((152605956596803991:ℝ)/10000000000000) + ((208226583249375023:ℝ)/10000000000000) + ((128330161197032867:ℝ)/1000000000000)))
-      (((51757047620482177:ℝ)/625000000000) + ((1:ℝ)/20)*((43660837952370271:ℝ)/100000000000))
-      (((905627934309187969:ℝ)/1000000000000) + ((1:ℝ)/20)*((422115795223010041:ℝ)/100000000000))
-      (((497832143112578739:ℝ)/50000000000) + ((1:ℝ)/20)*((14906158135306309:ℝ)/500000000) - (((13622364173350551:ℝ)/12500000000000) + ((208226583249375023:ℝ)/10000000000000) + ((61320942659881339:ℝ)/200000000000) + ((441150507779066629:ℝ)/100000000000)))
-      (((-67147227807925983:ℝ)/20000000000) + ((1:ℝ)/20)*((-175804712376142503:ℝ)/10000000000))
-      (((167338186373161907:ℝ)/500000000) + ((1:ℝ)/20)*((23540592448596987:ℝ)/25000000) - (((111715460936349221:ℝ)/10000000000000) + ((128330161197032867:ℝ)/1000000000000) + ((441150507779066629:ℝ)/100000000000) + ((29445423716394271:ℝ)/200000000))) i j :=
-  quadForm_nonneg_of_ldl ((243924667038774824749:ℝ)/100000000000000) ((5411335904663343315544718822244232473961:ℝ)/3049058337984685309362500000000000) ((116033529289952589831345726159674971230992852831733937418845531:ℝ)/17316274894922698609743100231181543916675200000000000000) ((262877322091732484434310197755890632551773036393855868787802610831901089581505575229:ℝ)/1160335292899525898313457261596749712309928528317339374188455310000000000000) ((-59430349596151518835:ℝ)/243924667038774824749) ((1440870135730298867:ℝ)/487849334077549649498) ((-15167111685522308800:ℝ)/243924667038774824749) ((5190569546381249020491334001545752901205:ℝ)/86581374474613493048715501155907719583376) ((13168667611991382401804920626026826732775:ℝ)/21645343618653373262178875288976929895844) ((-74471534509813290630749270692688804588483122460173664581487100:ℝ)/116033529289952589831345726159674971230992852831733937418845531)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
-
-theorem piece10_minus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((54798896558359531:ℝ)/25000000000) - ((1:ℝ)/20)*((70549480059238571:ℝ)/12500000000) - (((44273611092566819:ℝ)/2500000000000) + ((493633251905758273:ℝ)/100000000000000) + ((13622364173350551:ℝ)/12500000000000) + ((111715460936349221:ℝ)/10000000000000)))
-      (((-546481712166114717:ℝ)/1000000000000) - ((1:ℝ)/20)*((-956435675908009427:ℝ)/1000000000000))
-      (((121534471818195159:ℝ)/10000000000000) - ((1:ℝ)/20)*((-989819300633604313:ℝ)/10000000000000))
-      (((-123568888338666059:ℝ)/1000000000000) - ((1:ℝ)/20)*((-28102228516557029:ℝ)/50000000000))
-      (((93886126428934261:ℝ)/50000000000) - ((1:ℝ)/20)*((422362164317891599:ℝ)/100000000000) - (((493633251905758273:ℝ)/100000000000000) + ((152605956596803991:ℝ)/10000000000000) + ((208226583249375023:ℝ)/10000000000000) + ((128330161197032867:ℝ)/1000000000000)))
-      (((51757047620482177:ℝ)/625000000000) - ((1:ℝ)/20)*((43660837952370271:ℝ)/100000000000))
-      (((905627934309187969:ℝ)/1000000000000) - ((1:ℝ)/20)*((422115795223010041:ℝ)/100000000000))
-      (((497832143112578739:ℝ)/50000000000) - ((1:ℝ)/20)*((14906158135306309:ℝ)/500000000) - (((13622364173350551:ℝ)/12500000000000) + ((208226583249375023:ℝ)/10000000000000) + ((61320942659881339:ℝ)/200000000000) + ((441150507779066629:ℝ)/100000000000)))
-      (((-67147227807925983:ℝ)/20000000000) - ((1:ℝ)/20)*((-175804712376142503:ℝ)/10000000000))
-      (((167338186373161907:ℝ)/500000000) - ((1:ℝ)/20)*((23540592448596987:ℝ)/25000000) - (((111715460936349221:ℝ)/10000000000000) + ((128330161197032867:ℝ)/1000000000000) + ((441150507779066629:ℝ)/100000000000) + ((29445423716394271:ℝ)/200000000))) i j :=
-  quadForm_nonneg_of_ldl ((187485082991383967949:ℝ)/100000000000000) ((6395873436802002395878383313496460530747:ℝ)/4687127074784599198725000000000000) ((38095888310355580229779440806434661023486938289725719202918711:ℝ)/10233397498883203833405413301594336849195200000000000000) ((50969337449447086166170398403606058055520072618341379280731126241766538584817027849:ℝ)/380958883103555802297794408064346610234869382897257192029187110000000000000) ((-49865992837071424565:ℝ)/187485082991383967949) ((3420508736997507493:ℝ)/374970165982767935898) ((-3182221994070301000:ℝ)/62495027663794655983) ((2457167279405743404866569869901325739005:ℝ)/51166987494416019167027066507971684245976) ((6273049059936263628024646389671874783825:ℝ)/12791746873604004791756766626992921061494) ((-25681761021742288275990146185156319202858864076696351929354500:ℝ)/38095888310355580229779440806434661023486938289725719202918711)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
-
-/-- **Piece 10.** The piece matrix is positive semidefinite on `q ∈ [37/10, 19/5]`. -/
-theorem piece_10 {q : ℝ} (h0 : ((37:ℝ)/10) ≤ q) (h1 : q ≤ ((19:ℝ)/5)) (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_10 i j :=
-  pieceForm_nonneg (pieceW_symm (sym4_symm _ _ _ _ _ _ _ _ _ _) q) (by norm_num : (0:ℝ) < ((1:ℝ)/20))
-    (abs_le.mpr ⟨by linarith, by linarith⟩)
-    (piece10_e00 h0 h1) (piece10_e01 h0 h1) (piece10_e02 h0 h1) (piece10_e03 h0 h1) (piece10_e11 h0 h1) (piece10_e12 h0 h1) (piece10_e13 h0 h1) (piece10_e22 h0 h1) (piece10_e23 h0 h1) (piece10_e33 h0 h1)
-    piece10_plus piece10_minus y
-
-/-! #### Piece 11 (seam), `q ∈ [19/5, 39/10]` -/
-
-/-- The compensation matrix of piece 11. -/
-def pieceX_11 : Fin 4 → Fin 4 → ℝ :=
-  sym4 ((27843177323:ℝ)/2500000000000) ((-19650599607:ℝ)/31250000000000) ((774437674717:ℝ)/100000000000000) ((-108489430133:ℝ)/1000000000000) ((221557230021:ℝ)/10000000000000) ((848698446263:ℝ)/10000000000000) ((96829622447:ℝ)/125000000000) ((117640627701:ℝ)/50000000000) ((-66231917669:ℝ)/25000000000) ((971775550441:ℝ)/10000000000)
-
-theorem piece11_L3 : ((103777023515170732568717557253:ℝ)/1000000000000000000000000) ≤ Real.exp ((3:ℝ)*((77:ℝ)/20)) := by
-  have h := le_exp_nat_add 11 (f := ((11:ℝ)/20)) (by norm_num)
-  rw [show ((3:ℝ):ℝ)*((77:ℝ)/20) = ((11:ℕ):ℝ) + ((11:ℝ)/20) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece11_U3 : Real.exp ((3:ℝ)*((77:ℝ)/20)) ≤ ((103777037629710019882577736861:ℝ)/1000000000000000000000000) := by
-  have h := exp_nat_add_le 11 (f := ((11:ℝ)/20)) (by norm_num) (by norm_num)
-  rw [show ((3:ℝ):ℝ)*((77:ℝ)/20) = ((11:ℕ):ℝ) + ((11:ℝ)/20) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-
-theorem piece11_L8_at : ((79711732508562897109392033677:ℝ)/5000000000000000) ≤ Real.exp ((8:ℝ)*((19:ℝ)/5)) := by
-  have h := le_exp_nat_add 30 (f := ((2:ℝ)/5)) (by norm_num)
-  rw [show ((8:ℝ):ℝ)*((19:ℝ)/5) = ((30:ℕ):ℝ) + ((2:ℝ)/5) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece11_E8 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((79711732508562897109392033677:ℝ)/5000000000000000) := by
-  have hm : Real.exp (-((8:ℝ))*q) ≤ Real.exp (-((8:ℝ)*((19:ℝ)/5))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece11_L8_at (le_refl _)).2
-
-theorem piece11_L11_at : ((142399495980080563235442634613:ℝ)/100000000000) ≤ Real.exp ((11:ℝ)*((19:ℝ)/5)) := by
-  have h := le_exp_nat_add 41 (f := ((4:ℝ)/5)) (by norm_num)
-  rw [show ((11:ℝ):ℝ)*((19:ℝ)/5) = ((41:ℕ):ℝ) + ((4:ℝ)/5) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece11_E11 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((142399495980080563235442634613:ℝ)/100000000000) := by
-  have hm : Real.exp (-((11:ℝ))*q) ≤ Real.exp (-((11:ℝ)*((19:ℝ)/5))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece11_L11_at (le_refl _)).2
-
-theorem piece11_Lt_at : ((288652517379563037996819230889:ℝ)/1000000000000) ≤ Real.exp (((529:ℝ)/50)*((19:ℝ)/5)) := by
-  have h := le_exp_nat_add 40 (f := ((51:ℝ)/250)) (by norm_num)
-  rw [show (((529:ℝ)/50):ℝ)*((19:ℝ)/5) = ((40:ℕ):ℝ) + ((51:ℝ)/250) by norm_num]
-  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
-  linarith
-theorem piece11_Et {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((288652517379563037996819230889:ℝ)/1000000000000) := by
-  have hm : Real.exp (-(((529:ℝ)/50))*q) ≤ Real.exp (-(((529:ℝ)/50)*((19:ℝ)/5))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece11_Lt_at (le_refl _)).2
-
-theorem piece11_e00 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 0 0 - (((282572660038003097:ℝ)/100000000000) + (q - ((77:ℝ)/20)) * ((353907386706293197:ℝ)/50000000000))| ≤ ((53365846744793379:ℝ)/2500000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_00 q = ∑ e ∈ Finset.range 10, ([((45080301856590077:ℝ)/16000000000), ((5606770446774189:ℝ)/800000000), ((2444226093771:ℝ)/312500), ((1282277476557:ℝ)/250000), ((108690007041:ℝ)/50000), ((1541047893:ℝ)/2500), ((14598276:ℝ)/125), ((355968:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_00; ring
-  have h12 : centralNum12_00 q = ∑ e ∈ Finset.range 11, ([((-68364606760245822257:ℝ)/320000000000), ((-1892527942070282517:ℝ)/3200000000), ((-59007198979071651:ℝ)/80000000), ((-1091138405453019:ℝ)/2000000), ((-52992432744867:ℝ)/200000), ((-4413176557251:ℝ)/50000), ((-2552419947:ℝ)/125), ((-80971398:ℝ)/25), ((-1685226:ℝ)/5), (-20776:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_00; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((45080301856590077:ℝ)/16000000000), ((5606770446774189:ℝ)/800000000), ((2444226093771:ℝ)/312500), ((1282277476557:ℝ)/250000), ((108690007041:ℝ)/50000), ((1541047893:ℝ)/2500), ((14598276:ℝ)/125), ((355968:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-68364606760245822257:ℝ)/320000000000), ((-1892527942070282517:ℝ)/3200000000), ((-59007198979071651:ℝ)/80000000), ((-1091138405453019:ℝ)/2000000), ((-52992432744867:ℝ)/200000), ((-4413176557251:ℝ)/50000), ((-2552419947:ℝ)/125), ((-80971398:ℝ)/25), ((-1685226:ℝ)/5), (-20776:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 9 ht
-  have m12 := abs_poly_le (fun e => ([((-68364606760245822257:ℝ)/320000000000), ((-1892527942070282517:ℝ)/3200000000), ((-59007198979071651:ℝ)/80000000), ((-1091138405453019:ℝ)/2000000), ((-52992432744867:ℝ)/200000), ((-4413176557251:ℝ)/50000), ((-2552419947:ℝ)/125), ((-80971398:ℝ)/25), ((-1685226:ℝ)/5), (-20776:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 11 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((45080301856590077:ℝ)/16000000000), ((5606770446774189:ℝ)/800000000), ((2444226093771:ℝ)/312500), ((1282277476557:ℝ)/250000), ((108690007041:ℝ)/50000), ((1541047893:ℝ)/2500), ((14598276:ℝ)/125), ((355968:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - (((45080301856590077:ℝ)/16000000000) + ((5606770446774189:ℝ)/800000000)*t)| ≤ ((161669825650091:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 11, ([((-68364606760245822257:ℝ)/320000000000), ((-1892527942070282517:ℝ)/3200000000), ((-59007198979071651:ℝ)/80000000), ((-1091138405453019:ℝ)/2000000), ((-52992432744867:ℝ)/200000), ((-4413176557251:ℝ)/50000), ((-2552419947:ℝ)/125), ((-80971398:ℝ)/25), ((-1685226:ℝ)/5), (-20776:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e) - ((-68364606760245822257:ℝ)/320000000000) - ((-1892527942070282517:ℝ)/3200000000)*t| ≤ ((61243361149107799:ℝ)/32000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 11, ([((-68364606760245822257:ℝ)/320000000000), ((-1892527942070282517:ℝ)/3200000000), ((-59007198979071651:ℝ)/80000000), ((-1091138405453019:ℝ)/2000000), ((-52992432744867:ℝ)/200000), ((-4413176557251:ℝ)/50000), ((-2552419947:ℝ)/125), ((-80971398:ℝ)/25), ((-1685226:ℝ)/5), (-20776:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((4787578130010273:ℝ)/19531250) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (600:ℝ), (-7776:ℝ), (16800:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m13' : |centralNum13_00 q| ≤ ((893221938755896347:ℝ)/78125000) := by
-    rw [centralNum13_00_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (780:ℝ), (-6156:ℝ), (15288:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m23' : |centralNum23_00 q| ≤ ((953337353541699087:ℝ)/62500000) := by
-    rw [centralNum23_00_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((27843177323:ℝ)/2500000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0))| ≤ ((79580502896287744000000000:ℝ)/199836358185851333997797929077) := by
-    rw [abs_neg, tailWeight_0, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((39:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((39:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece11_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((10465499600:ℝ)/59049)) ≤ ((39:ℝ)/10)^6*(8000*(2*((39:ℝ)/10)-3)^2*(1/((288652517379563037996819230889:ℝ)/1000000000000))*((10465499600:ℝ)/59049)) := by
-          gcongr
-      _ ≤ ((79580502896287744000000000:ℝ)/199836358185851333997797929077) := by norm_num
-  have c7 := affine_round (α := ((45080301856590077:ℝ)/16000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-68364606760245822257:ℝ)/320000000000) + ((35451187896478277:ℝ)/16000000000)*((27843177323:ℝ)/2500000000000) - ((282572660038003097:ℝ)/100000000000)) (β := ((5606770446774189:ℝ)/800000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-1892527942070282517:ℝ)/3200000000) - 3*((-68364606760245822257:ℝ)/320000000000)) + ((4731396450400389:ℝ)/800000000)*((27843177323:ℝ)/2500000000000) - ((353907386706293197:ℝ)/50000000000)) ht
-  have hW : pieceW q pieceX_11 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((27843177323:ℝ)/2500000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
-    rw [pieceW_00, pieceX_11, sym4_00, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((777944501695093599864564583676107078245678218477397489622073236823:ℝ)/611913186047339472511011723174739499712637764344825909251875000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((45080301856590077:ℝ)/16000000000) + ((5606770446774189:ℝ)/800000000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-68364606760245822257:ℝ)/320000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-1892527942070282517:ℝ)/3200000000) - 3*((-68364606760245822257:ℝ)/320000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((27843177323:ℝ)/2500000000000) - (((282572660038003097:ℝ)/100000000000) + t * ((353907386706293197:ℝ)/50000000000)) = (((45080301856590077:ℝ)/16000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-68364606760245822257:ℝ)/320000000000) + ((35451187896478277:ℝ)/16000000000)*((27843177323:ℝ)/2500000000000) - ((282572660038003097:ℝ)/100000000000)) + t*(((5606770446774189:ℝ)/800000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-1892527942070282517:ℝ)/3200000000) - 3*((-68364606760245822257:ℝ)/320000000000)) + ((4731396450400389:ℝ)/800000000)*((27843177323:ℝ)/2500000000000) - ((353907386706293197:ℝ)/50000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e01 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 0 1 - (((-649133701077751467:ℝ)/1000000000000) + (q - ((77:ℝ)/20)) * ((-111140719468876623:ℝ)/100000000000))| ≤ ((521871343467821597:ℝ)/100000000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_01 q = ∑ e ∈ Finset.range 8, ([((-48145569800559:ℝ)/80000000), ((-4376869981869:ℝ)/4000000), ((-170527401891:ℝ)/200000), ((-738213861:ℝ)/2000), ((-9587193:ℝ)/100), ((-373527:ℝ)/25), ((-6468:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_01; ring
-  have h12 : centralNum12_01 q = ∑ e ∈ Finset.range 12, ([((-7624839550903232527947:ℝ)/12800000000000), ((-627780969905133709203:ℝ)/320000000000), ((-18706986099850342833:ℝ)/6400000000), ((-416485814269154091:ℝ)/160000000), ((-12323451770696451:ℝ)/8000000), ((-636309806995863:ℝ)/1000000), ((-18725878756893:ℝ)/100000), ((-19633730091:ℝ)/500), ((-575056251:ℝ)/100), ((-2800806:ℝ)/5), ((-163332:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_01; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((-48145569800559:ℝ)/80000000), ((-4376869981869:ℝ)/4000000), ((-170527401891:ℝ)/200000), ((-738213861:ℝ)/2000), ((-9587193:ℝ)/100), ((-373527:ℝ)/25), ((-6468:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0) 6 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-7624839550903232527947:ℝ)/12800000000000), ((-627780969905133709203:ℝ)/320000000000), ((-18706986099850342833:ℝ)/6400000000), ((-416485814269154091:ℝ)/160000000), ((-12323451770696451:ℝ)/8000000), ((-636309806995863:ℝ)/1000000), ((-18725878756893:ℝ)/100000), ((-19633730091:ℝ)/500), ((-575056251:ℝ)/100), ((-2800806:ℝ)/5), ((-163332:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0) 10 ht
-  have m12 := abs_poly_le (fun e => ([((-7624839550903232527947:ℝ)/12800000000000), ((-627780969905133709203:ℝ)/320000000000), ((-18706986099850342833:ℝ)/6400000000), ((-416485814269154091:ℝ)/160000000), ((-12323451770696451:ℝ)/8000000), ((-636309806995863:ℝ)/1000000), ((-18725878756893:ℝ)/100000), ((-19633730091:ℝ)/500), ((-575056251:ℝ)/100), ((-2800806:ℝ)/5), ((-163332:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0) 12 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 8, ([((-48145569800559:ℝ)/80000000), ((-4376869981869:ℝ)/4000000), ((-170527401891:ℝ)/200000), ((-738213861:ℝ)/2000), ((-9587193:ℝ)/100), ((-373527:ℝ)/25), ((-6468:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e) - (((-48145569800559:ℝ)/80000000) + ((-4376869981869:ℝ)/4000000)*t)| ≤ ((43566695577:ℝ)/20000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 12, ([((-7624839550903232527947:ℝ)/12800000000000), ((-627780969905133709203:ℝ)/320000000000), ((-18706986099850342833:ℝ)/6400000000), ((-416485814269154091:ℝ)/160000000), ((-12323451770696451:ℝ)/8000000), ((-636309806995863:ℝ)/1000000), ((-18725878756893:ℝ)/100000), ((-19633730091:ℝ)/500), ((-575056251:ℝ)/100), ((-2800806:ℝ)/5), ((-163332:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e) - ((-7624839550903232527947:ℝ)/12800000000000) - ((-627780969905133709203:ℝ)/320000000000)*t| ≤ ((19565121249239928963:ℝ)/2560000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 12, ([((-7624839550903232527947:ℝ)/12800000000000), ((-627780969905133709203:ℝ)/320000000000), ((-18706986099850342833:ℝ)/6400000000), ((-416485814269154091:ℝ)/160000000), ((-12323451770696451:ℝ)/8000000), ((-636309806995863:ℝ)/1000000), ((-18725878756893:ℝ)/100000), ((-19633730091:ℝ)/500), ((-575056251:ℝ)/100), ((-2800806:ℝ)/5), ((-163332:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((1095974987421838329:ℝ)/1562500000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-6288:ℝ), (81024:ℝ), (-238720:ℝ), (246784:ℝ), (-98304:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m13' : |centralNum13_01 q| ≤ ((221575774168088492841:ℝ)/390625000) := by
-    rw [centralNum13_01_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-7368:ℝ), (59208:ℝ), (-155734:ℝ), (205300:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m23' : |centralNum23_01 q| ≤ ((98346017841957970929:ℝ)/250000000) := by
-    rw [centralNum23_01_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-19650599607:ℝ)/31250000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-48145569800559:ℝ)/80000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-7624839550903232527947:ℝ)/12800000000000) + ((35451187896478277:ℝ)/16000000000)*((-19650599607:ℝ)/31250000000000) - ((-649133701077751467:ℝ)/1000000000000)) (β := ((-4376869981869:ℝ)/4000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-627780969905133709203:ℝ)/320000000000) - 3*((-7624839550903232527947:ℝ)/12800000000000)) + ((4731396450400389:ℝ)/800000000)*((-19650599607:ℝ)/31250000000000) - ((-111140719468876623:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_11 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-19650599607:ℝ)/31250000000000) + (0:ℝ) := by
-    rw [pieceW_01, pieceX_11, sym4_01, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((38047015127100644784912954403939726172201631225999443560036052201731:ℝ)/81588424806311929668134896423298599961685035245976787900250000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-48145569800559:ℝ)/80000000) + ((-4376869981869:ℝ)/4000000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-7624839550903232527947:ℝ)/12800000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-627780969905133709203:ℝ)/320000000000) - 3*((-7624839550903232527947:ℝ)/12800000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((-19650599607:ℝ)/31250000000000) - (((-649133701077751467:ℝ)/1000000000000) + t * ((-111140719468876623:ℝ)/100000000000)) = (((-48145569800559:ℝ)/80000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-7624839550903232527947:ℝ)/12800000000000) + ((35451187896478277:ℝ)/16000000000)*((-19650599607:ℝ)/31250000000000) - ((-649133701077751467:ℝ)/1000000000000)) + t*(((-4376869981869:ℝ)/4000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-627780969905133709203:ℝ)/320000000000) - 3*((-7624839550903232527947:ℝ)/12800000000000)) + ((4731396450400389:ℝ)/800000000)*((-19650599607:ℝ)/31250000000000) - ((-111140719468876623:ℝ)/100000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e02 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 0 2 - (((162841766780541267:ℝ)/5000000000000) + (q - ((77:ℝ)/20)) * ((-280946594923039537:ℝ)/10000000000000))| ≤ ((128091007893879803:ℝ)/100000000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_02 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_02; ring
-  have h12 : centralNum12_02 q = ∑ e ∈ Finset.range 13, ([((409373484099166412479269:ℝ)/2048000000000000), ((-36754502487176047735161:ℝ)/102400000000000), ((-11049881054574231876699:ℝ)/5120000000000), ((-181326475272074469183:ℝ)/51200000000), ((-2060139455563852971:ℝ)/640000000), ((-607789517495253093:ℝ)/320000000), ((-12409379432403723:ℝ)/16000000), ((-179967142666467:ℝ)/800000), ((-743483675799:ℝ)/16000), ((-5365728297:ℝ)/800), ((-128932479:ℝ)/200), ((-371439:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_02; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((409373484099166412479269:ℝ)/2048000000000000), ((-36754502487176047735161:ℝ)/102400000000000), ((-11049881054574231876699:ℝ)/5120000000000), ((-181326475272074469183:ℝ)/51200000000), ((-2060139455563852971:ℝ)/640000000), ((-607789517495253093:ℝ)/320000000), ((-12409379432403723:ℝ)/16000000), ((-179967142666467:ℝ)/800000), ((-743483675799:ℝ)/16000), ((-5365728297:ℝ)/800), ((-128932479:ℝ)/200), ((-371439:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0) 11 ht
-  have m12 := abs_poly_le (fun e => ([((409373484099166412479269:ℝ)/2048000000000000), ((-36754502487176047735161:ℝ)/102400000000000), ((-11049881054574231876699:ℝ)/5120000000000), ((-181326475272074469183:ℝ)/51200000000), ((-2060139455563852971:ℝ)/640000000), ((-607789517495253093:ℝ)/320000000), ((-12409379432403723:ℝ)/16000000), ((-179967142666467:ℝ)/800000), ((-743483675799:ℝ)/16000), ((-5365728297:ℝ)/800), ((-128932479:ℝ)/200), ((-371439:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0) 13 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 13, ([((409373484099166412479269:ℝ)/2048000000000000), ((-36754502487176047735161:ℝ)/102400000000000), ((-11049881054574231876699:ℝ)/5120000000000), ((-181326475272074469183:ℝ)/51200000000), ((-2060139455563852971:ℝ)/640000000), ((-607789517495253093:ℝ)/320000000), ((-12409379432403723:ℝ)/16000000), ((-179967142666467:ℝ)/800000), ((-743483675799:ℝ)/16000), ((-5365728297:ℝ)/800), ((-128932479:ℝ)/200), ((-371439:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e) - ((409373484099166412479269:ℝ)/2048000000000000) - ((-36754502487176047735161:ℝ)/102400000000000)*t| ≤ ((2999739245379599563371:ℝ)/512000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 13, ([((409373484099166412479269:ℝ)/2048000000000000), ((-36754502487176047735161:ℝ)/102400000000000), ((-11049881054574231876699:ℝ)/5120000000000), ((-181326475272074469183:ℝ)/51200000000), ((-2060139455563852971:ℝ)/640000000), ((-607789517495253093:ℝ)/320000000), ((-12409379432403723:ℝ)/16000000), ((-179967142666467:ℝ)/800000), ((-743483675799:ℝ)/16000), ((-5365728297:ℝ)/800), ((-128932479:ℝ)/200), ((-371439:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((229063471783930429233957:ℝ)/1024000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82080:ℝ), (-967680:ℝ), (3257600:ℝ), (-4474880:ℝ), (2908160:ℝ), (-786432:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_02 q| ≤ ((22798401097405400275653:ℝ)/976562500) := by
-    rw [centralNum13_02_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (87660:ℝ), (-702180:ℝ), ((7421435:ℝ)/4), ((-10854125:ℝ)/4), ((2828125:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_02 q| ≤ ((7556658519538624758093:ℝ)/800000000) := by
-    rw [centralNum23_02_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((774437674717:ℝ)/100000000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((409373484099166412479269:ℝ)/2048000000000000) + ((35451187896478277:ℝ)/16000000000)*((774437674717:ℝ)/100000000000000) - ((162841766780541267:ℝ)/5000000000000)) (β := (0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-36754502487176047735161:ℝ)/102400000000000) - 3*((409373484099166412479269:ℝ)/2048000000000000)) + ((4731396450400389:ℝ)/800000000)*((774437674717:ℝ)/100000000000000) - ((-280946594923039537:ℝ)/10000000000000)) ht
-  have hW : pieceW q pieceX_11 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((774437674717:ℝ)/100000000000000) + (0:ℝ) := by
-    rw [pieceW_02, pieceX_11, sym4_02, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((350056257242911674194473215130861380539265318132135166076361108261:ℝ)/8158842480631192966813489642329859996168503524597678790025000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((409373484099166412479269:ℝ)/2048000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-36754502487176047735161:ℝ)/102400000000000) - 3*((409373484099166412479269:ℝ)/2048000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((774437674717:ℝ)/100000000000000) - (((162841766780541267:ℝ)/5000000000000) + t * ((-280946594923039537:ℝ)/10000000000000)) = ((0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((409373484099166412479269:ℝ)/2048000000000000) + ((35451187896478277:ℝ)/16000000000)*((774437674717:ℝ)/100000000000000) - ((162841766780541267:ℝ)/5000000000000)) + t*((0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-36754502487176047735161:ℝ)/102400000000000) - 3*((409373484099166412479269:ℝ)/2048000000000000)) + ((4731396450400389:ℝ)/800000000)*((774437674717:ℝ)/100000000000000) - ((-280946594923039537:ℝ)/10000000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e03 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 0 3 - (((-122964815780514959:ℝ)/1000000000000) + (q - ((77:ℝ)/20)) * ((-9035177173670353:ℝ)/15625000000))| ≤ ((1681318340316659:ℝ)/156250000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_03 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_03; ring
-  have h12 : centralNum12_03 q = ∑ e ∈ Finset.range 14, ([((124774336457946219309199011:ℝ)/81920000000000000), ((5520967106207476263158511:ℝ)/1024000000000000), ((413129334398755520679903:ℝ)/51200000000000), ((33458974299906223973751:ℝ)/5120000000000), ((290266450142419418283:ℝ)/102400000000), ((3634506328335353163:ℝ)/12800000000), ((-34148479433563341:ℝ)/80000000), ((-4806879128927037:ℝ)/16000000), ((-346578855998463:ℝ)/3200000), ((-100425874707:ℝ)/4000), ((-7773244299:ℝ)/2000), ((-547817499:ℝ)/1400), ((-3261789:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_03; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((124774336457946219309199011:ℝ)/81920000000000000), ((5520967106207476263158511:ℝ)/1024000000000000), ((413129334398755520679903:ℝ)/51200000000000), ((33458974299906223973751:ℝ)/5120000000000), ((290266450142419418283:ℝ)/102400000000), ((3634506328335353163:ℝ)/12800000000), ((-34148479433563341:ℝ)/80000000), ((-4806879128927037:ℝ)/16000000), ((-346578855998463:ℝ)/3200000), ((-100425874707:ℝ)/4000), ((-7773244299:ℝ)/2000), ((-547817499:ℝ)/1400), ((-3261789:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 12 ht
-  have m12 := abs_poly_le (fun e => ([((124774336457946219309199011:ℝ)/81920000000000000), ((5520967106207476263158511:ℝ)/1024000000000000), ((413129334398755520679903:ℝ)/51200000000000), ((33458974299906223973751:ℝ)/5120000000000), ((290266450142419418283:ℝ)/102400000000), ((3634506328335353163:ℝ)/12800000000), ((-34148479433563341:ℝ)/80000000), ((-4806879128927037:ℝ)/16000000), ((-346578855998463:ℝ)/3200000), ((-100425874707:ℝ)/4000), ((-7773244299:ℝ)/2000), ((-547817499:ℝ)/1400), ((-3261789:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 14 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 14, ([((124774336457946219309199011:ℝ)/81920000000000000), ((5520967106207476263158511:ℝ)/1024000000000000), ((413129334398755520679903:ℝ)/51200000000000), ((33458974299906223973751:ℝ)/5120000000000), ((290266450142419418283:ℝ)/102400000000), ((3634506328335353163:ℝ)/12800000000), ((-34148479433563341:ℝ)/80000000), ((-4806879128927037:ℝ)/16000000), ((-346578855998463:ℝ)/3200000), ((-100425874707:ℝ)/4000), ((-7773244299:ℝ)/2000), ((-547817499:ℝ)/1400), ((-3261789:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((124774336457946219309199011:ℝ)/81920000000000000) - ((5520967106207476263158511:ℝ)/1024000000000000)*t| ≤ ((12046261173884125244953947:ℝ)/573440000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 14, ([((124774336457946219309199011:ℝ)/81920000000000000), ((5520967106207476263158511:ℝ)/1024000000000000), ((413129334398755520679903:ℝ)/51200000000000), ((33458974299906223973751:ℝ)/5120000000000), ((290266450142419418283:ℝ)/102400000000), ((3634506328335353163:ℝ)/12800000000), ((-34148479433563341:ℝ)/80000000), ((-4806879128927037:ℝ)/16000000), ((-346578855998463:ℝ)/3200000), ((-100425874707:ℝ)/4000), ((-7773244299:ℝ)/2000), ((-547817499:ℝ)/1400), ((-3261789:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((260013423838329248944446333:ℝ)/143360000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-812160:ℝ), (8985600:ℝ), (-32225280:ℝ), (52019200:ℝ), ((-305233920:ℝ)/7), ((135528448:ℝ)/7), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_03 q| ≤ ((5138251117622455674669633:ℝ)/8544921875) := by
-    rw [centralNum13_03_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-833220:ℝ), (6469740:ℝ), ((-68603955:ℝ)/4), ((104396875:ℝ)/4), ((-1001334375:ℝ)/56), ((125828125:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_03 q| ≤ ((3444225529281588402729417:ℝ)/22400000000) := by
-    rw [centralNum23_03_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-108489430133:ℝ)/1000000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((124774336457946219309199011:ℝ)/81920000000000000) + ((35451187896478277:ℝ)/16000000000)*((-108489430133:ℝ)/1000000000000) - ((-122964815780514959:ℝ)/1000000000000)) (β := (0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((5520967106207476263158511:ℝ)/1024000000000000) - 3*((124774336457946219309199011:ℝ)/81920000000000000)) + ((4731396450400389:ℝ)/800000000)*((-108489430133:ℝ)/1000000000000) - ((-9035177173670353:ℝ)/15625000000)) ht
-  have hW : pieceW q pieceX_11 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-108489430133:ℝ)/1000000000000) + (0:ℝ) := by
-    rw [pieceW_03, pieceX_11, sym4_03, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((8654750444521774863551178857319233054133638275757373079521318211:ℝ)/81588424806311929668134896423298599961685035245976787900250000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((124774336457946219309199011:ℝ)/81920000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((5520967106207476263158511:ℝ)/1024000000000000) - 3*((124774336457946219309199011:ℝ)/81920000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((-108489430133:ℝ)/1000000000000) - (((-122964815780514959:ℝ)/1000000000000) + t * ((-9035177173670353:ℝ)/15625000000)) = ((0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((124774336457946219309199011:ℝ)/81920000000000000) + ((35451187896478277:ℝ)/16000000000)*((-108489430133:ℝ)/1000000000000) - ((-122964815780514959:ℝ)/1000000000000)) + t*((0:ℝ) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((5520967106207476263158511:ℝ)/1024000000000000) - 3*((124774336457946219309199011:ℝ)/81920000000000000)) + ((4731396450400389:ℝ)/800000000)*((-108489430133:ℝ)/1000000000000) - ((-9035177173670353:ℝ)/15625000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e11 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 1 1 - (((7352379756230599:ℝ)/3125000000) + (q - ((77:ℝ)/20)) * ((26230354021152059:ℝ)/5000000000))| ≤ ((10741120100109359:ℝ)/625000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_11 q = ∑ e ∈ Finset.range 10, ([((26840425685481331:ℝ)/12000000000), ((2077724812129043:ℝ)/400000000), ((27340242484709:ℝ)/5000000), ((856721153673:ℝ)/250000), ((4400480084:ℝ)/3125), ((490920661:ℝ)/1250), ((9268924:ℝ)/125), ((227792:ℝ)/25), ((3296:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_11; ring
-  have h12 : centralNum12_11 q = ∑ e ∈ Finset.range 13, ([((1334369300005805043323189:ℝ)/1536000000000000), ((40392104464281340703933:ℝ)/25600000000000), ((367428357538888520567:ℝ)/1280000000000), ((-23291701506924009621:ℝ)/12800000000), ((-404349852837134897:ℝ)/160000000), ((-142787244356667911:ℝ)/80000000), ((-3235278173324281:ℝ)/4000000), ((-50325896164289:ℝ)/200000), ((-218914300013:ℝ)/4000), ((-4934538937:ℝ)/600), ((-40840533:ℝ)/50), ((-241866:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_11; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((26840425685481331:ℝ)/12000000000), ((2077724812129043:ℝ)/400000000), ((27340242484709:ℝ)/5000000), ((856721153673:ℝ)/250000), ((4400480084:ℝ)/3125), ((490920661:ℝ)/1250), ((9268924:ℝ)/125), ((227792:ℝ)/25), ((3296:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((1334369300005805043323189:ℝ)/1536000000000000), ((40392104464281340703933:ℝ)/25600000000000), ((367428357538888520567:ℝ)/1280000000000), ((-23291701506924009621:ℝ)/12800000000), ((-404349852837134897:ℝ)/160000000), ((-142787244356667911:ℝ)/80000000), ((-3235278173324281:ℝ)/4000000), ((-50325896164289:ℝ)/200000), ((-218914300013:ℝ)/4000), ((-4934538937:ℝ)/600), ((-40840533:ℝ)/50), ((-241866:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0) 11 ht
-  have m12 := abs_poly_le (fun e => ([((1334369300005805043323189:ℝ)/1536000000000000), ((40392104464281340703933:ℝ)/25600000000000), ((367428357538888520567:ℝ)/1280000000000), ((-23291701506924009621:ℝ)/12800000000), ((-404349852837134897:ℝ)/160000000), ((-142787244356667911:ℝ)/80000000), ((-3235278173324281:ℝ)/4000000), ((-50325896164289:ℝ)/200000), ((-218914300013:ℝ)/4000), ((-4934538937:ℝ)/600), ((-40840533:ℝ)/50), ((-241866:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0) 13 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((26840425685481331:ℝ)/12000000000), ((2077724812129043:ℝ)/400000000), ((27340242484709:ℝ)/5000000), ((856721153673:ℝ)/250000), ((4400480084:ℝ)/3125), ((490920661:ℝ)/1250), ((9268924:ℝ)/125), ((227792:ℝ)/25), ((3296:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((26840425685481331:ℝ)/12000000000) + ((2077724812129043:ℝ)/400000000)*t)| ≤ ((338577760206817:ℝ)/24000000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 13, ([((1334369300005805043323189:ℝ)/1536000000000000), ((40392104464281340703933:ℝ)/25600000000000), ((367428357538888520567:ℝ)/1280000000000), ((-23291701506924009621:ℝ)/12800000000), ((-404349852837134897:ℝ)/160000000), ((-142787244356667911:ℝ)/80000000), ((-3235278173324281:ℝ)/4000000), ((-50325896164289:ℝ)/200000), ((-218914300013:ℝ)/4000), ((-4934538937:ℝ)/600), ((-40840533:ℝ)/50), ((-241866:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e) - ((1334369300005805043323189:ℝ)/1536000000000000) - ((40392104464281340703933:ℝ)/25600000000000)*t| ≤ ((738399013394910409243:ℝ)/768000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 13, ([((1334369300005805043323189:ℝ)/1536000000000000), ((40392104464281340703933:ℝ)/25600000000000), ((367428357538888520567:ℝ)/1280000000000), ((-23291701506924009621:ℝ)/12800000000), ((-404349852837134897:ℝ)/160000000), ((-142787244356667911:ℝ)/80000000), ((-3235278173324281:ℝ)/4000000), ((-50325896164289:ℝ)/200000), ((-218914300013:ℝ)/4000), ((-4934538937:ℝ)/600), ((-40840533:ℝ)/50), ((-241866:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((728511205712719443126737:ℝ)/768000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-3444:ℝ), (162624:ℝ), (-1531216:ℝ), (4800960:ℝ), (-6350848:ℝ), ((12025856:ℝ)/3), (-1048576:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_11 q| ≤ ((31216346881674393189699:ℝ)/976562500) := by
-    rw [centralNum13_11_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-4074:ℝ), (159906:ℝ), (-1104799:ℝ), (2801499:ℝ), (-3931375:ℝ), ((5896250:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_11 q| ≤ ((13181501311931633574231:ℝ)/1000000000) := by
-    rw [centralNum23_11_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((221557230021:ℝ)/10000000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1))| ≤ ((36611702674152759296000000000:ℝ)/1798527223672662005980181361693) := by
-    rw [abs_neg, tailWeight_1, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((39:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((39:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece11_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((4814744136400:ℝ)/531441)) ≤ ((39:ℝ)/10)^6*(8000*(2*((39:ℝ)/10)-3)^2*(1/((288652517379563037996819230889:ℝ)/1000000000000))*((4814744136400:ℝ)/531441)) := by
-          gcongr
-      _ ≤ ((36611702674152759296000000000:ℝ)/1798527223672662005980181361693) := by norm_num
-  have c7 := affine_round (α := ((26840425685481331:ℝ)/12000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((1334369300005805043323189:ℝ)/1536000000000000) + ((35451187896478277:ℝ)/16000000000)*((221557230021:ℝ)/10000000000000) - ((7352379756230599:ℝ)/3125000000)) (β := ((2077724812129043:ℝ)/400000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((40392104464281340703933:ℝ)/25600000000000) - 3*((1334369300005805043323189:ℝ)/1536000000000000)) + ((4731396450400389:ℝ)/800000000)*((221557230021:ℝ)/10000000000000) - ((26230354021152059:ℝ)/5000000000)) ht
-  have hW : pieceW q pieceX_11 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((221557230021:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
-    rw [pieceW_11, pieceX_11, sym4_11, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((1027688603644873851547825394811317299082295316206249627426472328193137:ℝ)/234974663442178357444228501699099967889652901508413149152720000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((26840425685481331:ℝ)/12000000000) + ((2077724812129043:ℝ)/400000000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((1334369300005805043323189:ℝ)/1536000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((40392104464281340703933:ℝ)/25600000000000) - 3*((1334369300005805043323189:ℝ)/1536000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((221557230021:ℝ)/10000000000000) - (((7352379756230599:ℝ)/3125000000) + t * ((26230354021152059:ℝ)/5000000000)) = (((26840425685481331:ℝ)/12000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((1334369300005805043323189:ℝ)/1536000000000000) + ((35451187896478277:ℝ)/16000000000)*((221557230021:ℝ)/10000000000000) - ((7352379756230599:ℝ)/3125000000)) + t*(((2077724812129043:ℝ)/400000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((40392104464281340703933:ℝ)/25600000000000) - 3*((1334369300005805043323189:ℝ)/1536000000000000)) + ((4731396450400389:ℝ)/800000000)*((221557230021:ℝ)/10000000000000) - ((26230354021152059:ℝ)/5000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e12 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 1 2 - (((86391819684601793:ℝ)/250000000000000) + (q - ((77:ℝ)/20)) * ((162288122667626089:ℝ)/1000000000000))| ≤ ((41160417993376833:ℝ)/2000000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_12 q = ∑ e ∈ Finset.range 9, ([((-715097186085359:ℝ)/1920000000), ((-15285210134579:ℝ)/24000000), ((-505746800867:ℝ)/1200000), ((-7199068877:ℝ)/60000), ((-1523753:ℝ)/1200), ((1308307:ℝ)/150), ((36746:ℝ)/15), ((872:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_12; ring
-  have h12 : centralNum12_12 q = ∑ e ∈ Finset.range 14, ([((588975757867251066690313397:ℝ)/245760000000000000), ((33931350224401217654631257:ℝ)/3072000000000000), ((3112476774306965060467241:ℝ)/153600000000000), ((312321696146451790378657:ℝ)/15360000000000), ((3786574743622112857261:ℝ)/307200000000), ((169844711576003873101:ℝ)/38400000000), ((156960925944178733:ℝ)/240000000), ((-9408087489278539:ℝ)/48000000), ((-1380037228134841:ℝ)/9600000), ((-169027216223:ℝ)/4000), ((-14893729791:ℝ)/2000), ((-163342953:ℝ)/200), ((-1035423:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_12; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((-715097186085359:ℝ)/1920000000), ((-15285210134579:ℝ)/24000000), ((-505746800867:ℝ)/1200000), ((-7199068877:ℝ)/60000), ((-1523753:ℝ)/1200), ((1308307:ℝ)/150), ((36746:ℝ)/15), ((872:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0) 7 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((588975757867251066690313397:ℝ)/245760000000000000), ((33931350224401217654631257:ℝ)/3072000000000000), ((3112476774306965060467241:ℝ)/153600000000000), ((312321696146451790378657:ℝ)/15360000000000), ((3786574743622112857261:ℝ)/307200000000), ((169844711576003873101:ℝ)/38400000000), ((156960925944178733:ℝ)/240000000), ((-9408087489278539:ℝ)/48000000), ((-1380037228134841:ℝ)/9600000), ((-169027216223:ℝ)/4000), ((-14893729791:ℝ)/2000), ((-163342953:ℝ)/200), ((-1035423:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0) 12 ht
-  have m12 := abs_poly_le (fun e => ([((588975757867251066690313397:ℝ)/245760000000000000), ((33931350224401217654631257:ℝ)/3072000000000000), ((3112476774306965060467241:ℝ)/153600000000000), ((312321696146451790378657:ℝ)/15360000000000), ((3786574743622112857261:ℝ)/307200000000), ((169844711576003873101:ℝ)/38400000000), ((156960925944178733:ℝ)/240000000), ((-9408087489278539:ℝ)/48000000), ((-1380037228134841:ℝ)/9600000), ((-169027216223:ℝ)/4000), ((-14893729791:ℝ)/2000), ((-163342953:ℝ)/200), ((-1035423:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0) 14 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 9, ([((-715097186085359:ℝ)/1920000000), ((-15285210134579:ℝ)/24000000), ((-505746800867:ℝ)/1200000), ((-7199068877:ℝ)/60000), ((-1523753:ℝ)/1200), ((1308307:ℝ)/150), ((36746:ℝ)/15), ((872:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((-715097186085359:ℝ)/1920000000) + ((-15285210134579:ℝ)/24000000)*t)| ≤ ((2051804023663:ℝ)/1920000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 14, ([((588975757867251066690313397:ℝ)/245760000000000000), ((33931350224401217654631257:ℝ)/3072000000000000), ((3112476774306965060467241:ℝ)/153600000000000), ((312321696146451790378657:ℝ)/15360000000000), ((3786574743622112857261:ℝ)/307200000000), ((169844711576003873101:ℝ)/38400000000), ((156960925944178733:ℝ)/240000000), ((-9408087489278539:ℝ)/48000000), ((-1380037228134841:ℝ)/9600000), ((-169027216223:ℝ)/4000), ((-14893729791:ℝ)/2000), ((-163342953:ℝ)/200), ((-1035423:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e) - ((588975757867251066690313397:ℝ)/245760000000000000) - ((33931350224401217654631257:ℝ)/3072000000000000)*t| ≤ ((4364608534356563886880041:ℝ)/81920000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 14, ([((588975757867251066690313397:ℝ)/245760000000000000), ((33931350224401217654631257:ℝ)/3072000000000000), ((3112476774306965060467241:ℝ)/153600000000000), ((312321696146451790378657:ℝ)/15360000000000), ((3786574743622112857261:ℝ)/307200000000), ((169844711576003873101:ℝ)/38400000000), ((156960925944178733:ℝ)/240000000), ((-9408087489278539:ℝ)/48000000), ((-1380037228134841:ℝ)/9600000), ((-169027216223:ℝ)/4000), ((-14893729791:ℝ)/2000), ((-163342953:ℝ)/200), ((-1035423:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((184448746091981407242369637:ℝ)/61440000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (122790:ℝ), (-3586680:ℝ), (28529720:ℝ), (-90761600:ℝ), (137804800:ℝ), ((-332136448:ℝ)/3), ((141819904:ℝ)/3), (-8388608:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_12 q| ≤ ((14400106925355209873742993:ℝ)/9765625000) := by
-    rw [centralNum13_12_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (132555:ℝ), (-3252375:ℝ), ((39743695:ℝ)/2), ((-197111615:ℝ)/4), ((281947375:ℝ)/4), ((-1100234375:ℝ)/24), ((131828125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_12 q| ≤ ((1241789140582954628422563:ℝ)/3200000000) := by
-    rw [centralNum23_12_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((848698446263:ℝ)/10000000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-715097186085359:ℝ)/1920000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((588975757867251066690313397:ℝ)/245760000000000000) + ((35451187896478277:ℝ)/16000000000)*((848698446263:ℝ)/10000000000000) - ((86391819684601793:ℝ)/250000000000000)) (β := ((-15285210134579:ℝ)/24000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((33931350224401217654631257:ℝ)/3072000000000000) - 3*((588975757867251066690313397:ℝ)/245760000000000000)) + ((4731396450400389:ℝ)/800000000)*((848698446263:ℝ)/10000000000000) - ((162288122667626089:ℝ)/1000000000000)) ht
-  have hW : pieceW q pieceX_11 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((848698446263:ℝ)/10000000000000) + (0:ℝ) := by
-    rw [pieceW_12, pieceX_11, sym4_12, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((4389937372776867819458738707055088309427628578731484676154760649189:ℝ)/234974663442178357444228501699099967889652901508413149152720000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-715097186085359:ℝ)/1920000000) + ((-15285210134579:ℝ)/24000000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((588975757867251066690313397:ℝ)/245760000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((33931350224401217654631257:ℝ)/3072000000000000) - 3*((588975757867251066690313397:ℝ)/245760000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((848698446263:ℝ)/10000000000000) - (((86391819684601793:ℝ)/250000000000000) + t * ((162288122667626089:ℝ)/1000000000000)) = (((-715097186085359:ℝ)/1920000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((588975757867251066690313397:ℝ)/245760000000000000) + ((35451187896478277:ℝ)/16000000000)*((848698446263:ℝ)/10000000000000) - ((86391819684601793:ℝ)/250000000000000)) + t*(((-15285210134579:ℝ)/24000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((33931350224401217654631257:ℝ)/3072000000000000) - 3*((588975757867251066690313397:ℝ)/245760000000000000)) + ((4731396450400389:ℝ)/800000000)*((848698446263:ℝ)/10000000000000) - ((162288122667626089:ℝ)/1000000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e13 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 1 3 - (((460665468697026169:ℝ)/500000000000) + (q - ((77:ℝ)/20)) * ((429898918841471289:ℝ)/100000000000))| ≤ ((968056574082606027:ℝ)/10000000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_13 q = ∑ e ∈ Finset.range 7, ([((-625267140267:ℝ)/3200000), ((-24361057413:ℝ)/80000), ((-316377369:ℝ)/1600), ((-1369599:ℝ)/20), ((-53361:ℝ)/4), (-1386:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_13; ring
-  have h12 : centralNum12_13 q = ∑ e ∈ Finset.range 15, ([((-25488755621404013619394155519:ℝ)/3276800000000000000), ((-3776323716541363093010994243:ℝ)/163840000000000000), ((-26470941249235862198442777:ℝ)/1024000000000000), ((-2063110331330290351454961:ℝ)/204800000000000), ((122689508450209867560471:ℝ)/20480000000000), ((10049680785404926179591:ℝ)/1024000000000), ((152628889845702464601:ℝ)/25600000000), ((1338909549535927581:ℝ)/640000000), ((54156102485640783:ℝ)/128000000), ((188056088476731:ℝ)/6400000), ((-697422289239:ℝ)/80000), ((-165018027087:ℝ)/56000), ((-2326892913:ℝ)/5600), ((-8492121:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_13; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((-625267140267:ℝ)/3200000), ((-24361057413:ℝ)/80000), ((-316377369:ℝ)/1600), ((-1369599:ℝ)/20), ((-53361:ℝ)/4), (-1386:ℝ), (-60:ℝ)] : List ℝ).getD e 0) 5 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-25488755621404013619394155519:ℝ)/3276800000000000000), ((-3776323716541363093010994243:ℝ)/163840000000000000), ((-26470941249235862198442777:ℝ)/1024000000000000), ((-2063110331330290351454961:ℝ)/204800000000000), ((122689508450209867560471:ℝ)/20480000000000), ((10049680785404926179591:ℝ)/1024000000000), ((152628889845702464601:ℝ)/25600000000), ((1338909549535927581:ℝ)/640000000), ((54156102485640783:ℝ)/128000000), ((188056088476731:ℝ)/6400000), ((-697422289239:ℝ)/80000), ((-165018027087:ℝ)/56000), ((-2326892913:ℝ)/5600), ((-8492121:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 13 ht
-  have m12 := abs_poly_le (fun e => ([((-25488755621404013619394155519:ℝ)/3276800000000000000), ((-3776323716541363093010994243:ℝ)/163840000000000000), ((-26470941249235862198442777:ℝ)/1024000000000000), ((-2063110331330290351454961:ℝ)/204800000000000), ((122689508450209867560471:ℝ)/20480000000000), ((10049680785404926179591:ℝ)/1024000000000), ((152628889845702464601:ℝ)/25600000000), ((1338909549535927581:ℝ)/640000000), ((54156102485640783:ℝ)/128000000), ((188056088476731:ℝ)/6400000), ((-697422289239:ℝ)/80000), ((-165018027087:ℝ)/56000), ((-2326892913:ℝ)/5600), ((-8492121:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 15 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 7, ([((-625267140267:ℝ)/3200000), ((-24361057413:ℝ)/80000), ((-316377369:ℝ)/1600), ((-1369599:ℝ)/20), ((-53361:ℝ)/4), (-1386:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e) - (((-625267140267:ℝ)/3200000) + ((-24361057413:ℝ)/80000)*t)| ≤ ((1609547019:ℝ)/3200000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 15, ([((-25488755621404013619394155519:ℝ)/3276800000000000000), ((-3776323716541363093010994243:ℝ)/163840000000000000), ((-26470941249235862198442777:ℝ)/1024000000000000), ((-2063110331330290351454961:ℝ)/204800000000000), ((122689508450209867560471:ℝ)/20480000000000), ((10049680785404926179591:ℝ)/1024000000000), ((152628889845702464601:ℝ)/25600000000), ((1338909549535927581:ℝ)/640000000), ((54156102485640783:ℝ)/128000000), ((188056088476731:ℝ)/6400000), ((-697422289239:ℝ)/80000), ((-165018027087:ℝ)/56000), ((-2326892913:ℝ)/5600), ((-8492121:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((-25488755621404013619394155519:ℝ)/3276800000000000000) - ((-3776323716541363093010994243:ℝ)/163840000000000000)*t| ≤ ((756093801797417924322097851:ℝ)/11468800000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 15, ([((-25488755621404013619394155519:ℝ)/3276800000000000000), ((-3776323716541363093010994243:ℝ)/163840000000000000), ((-26470941249235862198442777:ℝ)/1024000000000000), ((-2063110331330290351454961:ℝ)/204800000000000), ((122689508450209867560471:ℝ)/20480000000000), ((10049680785404926179591:ℝ)/1024000000000), ((152628889845702464601:ℝ)/25600000000), ((1338909549535927581:ℝ)/640000000), ((54156102485640783:ℝ)/128000000), ((188056088476731:ℝ)/6400000), ((-697422289239:ℝ)/80000), ((-165018027087:ℝ)/56000), ((-2326892913:ℝ)/5600), ((-8492121:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((51591935742303118208870061009:ℝ)/5734400000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2325540:ℝ), (52589280:ℝ), (-375655200:ℝ), (1192958720:ℝ), (-1965096960:ℝ), ((12857851904:ℝ)/7), ((-21171273728:ℝ)/21), ((914358272:ℝ)/3), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_13 q| ≤ ((28794955915075598283529971009:ℝ)/683593750000) := by
-    rw [centralNum13_13_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2399070:ℝ), (45666930:ℝ), (-251781675:ℝ), ((2452738385:ℝ)/4), ((-14104310625:ℝ)/16), ((74345740625:ℝ)/112), ((-74899765625:ℝ)/336), ((5161328125:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_13 q| ≤ ((669615851687193179737198191:ℝ)/89600000000) := by
-    rw [centralNum23_13_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((96829622447:ℝ)/125000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-625267140267:ℝ)/3200000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-25488755621404013619394155519:ℝ)/3276800000000000000) + ((35451187896478277:ℝ)/16000000000)*((96829622447:ℝ)/125000000000) - ((460665468697026169:ℝ)/500000000000)) (β := ((-24361057413:ℝ)/80000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-3776323716541363093010994243:ℝ)/163840000000000000) - 3*((-25488755621404013619394155519:ℝ)/3276800000000000000)) + ((4731396450400389:ℝ)/800000000)*((96829622447:ℝ)/125000000000) - ((429898918841471289:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_11 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((96829622447:ℝ)/125000000000) + (0:ℝ) := by
-    rw [pieceW_13, pieceX_11, sym4_13, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((5757690042573465191547861817479374388380448955352235062094052351:ℝ)/10198553100788991208516862052912324995210629405747098487531250000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-625267140267:ℝ)/3200000) + ((-24361057413:ℝ)/80000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-25488755621404013619394155519:ℝ)/3276800000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-3776323716541363093010994243:ℝ)/163840000000000000) - 3*((-25488755621404013619394155519:ℝ)/3276800000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((96829622447:ℝ)/125000000000) - (((460665468697026169:ℝ)/500000000000) + t * ((429898918841471289:ℝ)/100000000000)) = (((-625267140267:ℝ)/3200000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-25488755621404013619394155519:ℝ)/3276800000000000000) + ((35451187896478277:ℝ)/16000000000)*((96829622447:ℝ)/125000000000) - ((460665468697026169:ℝ)/500000000000)) + t*(((-24361057413:ℝ)/80000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-3776323716541363093010994243:ℝ)/163840000000000000) - 3*((-25488755621404013619394155519:ℝ)/3276800000000000000)) + ((4731396450400389:ℝ)/800000000)*((96829622447:ℝ)/125000000000) - ((429898918841471289:ℝ)/100000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e22 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 2 2 - (((586492667553574753:ℝ)/100000000000) + (q - ((77:ℝ)/20)) * ((45567918684710643:ℝ)/2500000000))| ≤ ((106609783898677289:ℝ)/500000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_22 q = ∑ e ∈ Finset.range 10, ([((34738897645563727:ℝ)/19200000000), ((1459443284169563:ℝ)/320000000), ((60990461763847:ℝ)/12000000), ((1990992534839:ℝ)/600000), ((28187968347:ℝ)/20000), ((1217903243:ℝ)/3000), ((5962763:ℝ)/75), ((51028:ℝ)/5), ((2332:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_22; ring
-  have h12 : centralNum12_22 q = ∑ e ∈ Finset.range 15, ([((-590431339777971783791673253819:ℝ)/39321600000000000000), ((-31635902719335077027137934661:ℝ)/655360000000000000), ((-756780170657642571598012547:ℝ)/12288000000000000), ((-87556020099006670042902301:ℝ)/2457600000000000), ((-126271411125974918722303:ℝ)/81920000000000), ((149857459192451204272691:ℝ)/12288000000000), ((2860561125551023921181:ℝ)/307200000000), ((9369297005141777347:ℝ)/2560000000), ((1277357326915553003:ℝ)/1536000000), ((6485575323818951:ℝ)/76800000), ((-2832741751413:ℝ)/320000), ((-141093801207:ℝ)/32000), ((-2167770033:ℝ)/3200), ((-8258841:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_22; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((34738897645563727:ℝ)/19200000000), ((1459443284169563:ℝ)/320000000), ((60990461763847:ℝ)/12000000), ((1990992534839:ℝ)/600000), ((28187968347:ℝ)/20000), ((1217903243:ℝ)/3000), ((5962763:ℝ)/75), ((51028:ℝ)/5), ((2332:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-590431339777971783791673253819:ℝ)/39321600000000000000), ((-31635902719335077027137934661:ℝ)/655360000000000000), ((-756780170657642571598012547:ℝ)/12288000000000000), ((-87556020099006670042902301:ℝ)/2457600000000000), ((-126271411125974918722303:ℝ)/81920000000000), ((149857459192451204272691:ℝ)/12288000000000), ((2860561125551023921181:ℝ)/307200000000), ((9369297005141777347:ℝ)/2560000000), ((1277357326915553003:ℝ)/1536000000), ((6485575323818951:ℝ)/76800000), ((-2832741751413:ℝ)/320000), ((-141093801207:ℝ)/32000), ((-2167770033:ℝ)/3200), ((-8258841:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 13 ht
-  have m12 := abs_poly_le (fun e => ([((-590431339777971783791673253819:ℝ)/39321600000000000000), ((-31635902719335077027137934661:ℝ)/655360000000000000), ((-756780170657642571598012547:ℝ)/12288000000000000), ((-87556020099006670042902301:ℝ)/2457600000000000), ((-126271411125974918722303:ℝ)/81920000000000), ((149857459192451204272691:ℝ)/12288000000000), ((2860561125551023921181:ℝ)/307200000000), ((9369297005141777347:ℝ)/2560000000), ((1277357326915553003:ℝ)/1536000000), ((6485575323818951:ℝ)/76800000), ((-2832741751413:ℝ)/320000), ((-141093801207:ℝ)/32000), ((-2167770033:ℝ)/3200), ((-8258841:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 15 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((34738897645563727:ℝ)/19200000000), ((1459443284169563:ℝ)/320000000), ((60990461763847:ℝ)/12000000), ((1990992534839:ℝ)/600000), ((28187968347:ℝ)/20000), ((1217903243:ℝ)/3000), ((5962763:ℝ)/75), ((51028:ℝ)/5), ((2332:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((34738897645563727:ℝ)/19200000000) + ((1459443284169563:ℝ)/320000000)*t)| ≤ ((7878043900501:ℝ)/600000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 15, ([((-590431339777971783791673253819:ℝ)/39321600000000000000), ((-31635902719335077027137934661:ℝ)/655360000000000000), ((-756780170657642571598012547:ℝ)/12288000000000000), ((-87556020099006670042902301:ℝ)/2457600000000000), ((-126271411125974918722303:ℝ)/81920000000000), ((149857459192451204272691:ℝ)/12288000000000), ((2860561125551023921181:ℝ)/307200000000), ((9369297005141777347:ℝ)/2560000000), ((1277357326915553003:ℝ)/1536000000), ((6485575323818951:ℝ)/76800000), ((-2832741751413:ℝ)/320000), ((-141093801207:ℝ)/32000), ((-2167770033:ℝ)/3200), ((-8258841:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e) - ((-590431339777971783791673253819:ℝ)/39321600000000000000) - ((-31635902719335077027137934661:ℝ)/655360000000000000)*t| ≤ ((1557471977997354300202709311:ℝ)/9830400000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 15, ([((-590431339777971783791673253819:ℝ)/39321600000000000000), ((-31635902719335077027137934661:ℝ)/655360000000000000), ((-756780170657642571598012547:ℝ)/12288000000000000), ((-87556020099006670042902301:ℝ)/2457600000000000), ((-126271411125974918722303:ℝ)/81920000000000), ((149857459192451204272691:ℝ)/12288000000000), ((2860561125551023921181:ℝ)/307200000000), ((9369297005141777347:ℝ)/2560000000), ((1277357326915553003:ℝ)/1536000000), ((6485575323818951:ℝ)/76800000), ((-2832741751413:ℝ)/320000), ((-141093801207:ℝ)/32000), ((-2167770033:ℝ)/3200), ((-8258841:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e)| ≤ ((345784467923983216036948947523:ℝ)/19660800000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82125:ℝ), (-6663750:ℝ), (115666200:ℝ), (-750437000:ℝ), (2277262000:ℝ), (-3656824320:ℝ), (3359621120:ℝ), (-1817706496:ℝ), ((1625292800:ℝ)/3), (-67108864:ℝ)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_22 q| ≤ ((7369615143904697330818942251:ℝ)/97656250000) := by
-    rw [centralNum13_22_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((178425:ℝ)/2), ((-13176075:ℝ)/2), ((777815145:ℝ)/8), ((-3968389015:ℝ)/8), ((9393350195:ℝ)/8), ((-26366634375:ℝ)/16), ((77851609375:ℝ)/64), ((-25714921875:ℝ)/64), ((5236328125:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_22 q| ≤ ((693495856807206800114120067:ℝ)/51200000000) := by
-    rw [centralNum23_22_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((117640627701:ℝ)/50000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2))| ≤ ((19545764156698239150080000000000:ℝ)/16186745013053958053821632255237) := by
-    rw [abs_neg, tailWeight_2, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((39:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((39:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece11_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((2570430941234500:ℝ)/4782969)) ≤ ((39:ℝ)/10)^6*(8000*(2*((39:ℝ)/10)-3)^2*(1/((288652517379563037996819230889:ℝ)/1000000000000))*((2570430941234500:ℝ)/4782969)) := by
-          gcongr
-      _ ≤ ((19545764156698239150080000000000:ℝ)/16186745013053958053821632255237) := by norm_num
-  have c7 := affine_round (α := ((34738897645563727:ℝ)/19200000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-590431339777971783791673253819:ℝ)/39321600000000000000) + ((35451187896478277:ℝ)/16000000000)*((117640627701:ℝ)/50000000000) - ((586492667553574753:ℝ)/100000000000)) (β := ((1459443284169563:ℝ)/320000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-31635902719335077027137934661:ℝ)/655360000000000000) - 3*((-590431339777971783791673253819:ℝ)/39321600000000000000)) + ((4731396450400389:ℝ)/800000000)*((117640627701:ℝ)/50000000000) - ((45567918684710643:ℝ)/2500000000)) ht
-  have hW : pieceW q pieceX_11 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((117640627701:ℝ)/50000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
-    rw [pieceW_22, pieceX_11, sym4_22, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((96758895614231857936896257248500051666289701112053029352203637397:ℝ)/36714791162840368350660703390484369982758265860689554555112500000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((34738897645563727:ℝ)/19200000000) + ((1459443284169563:ℝ)/320000000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-590431339777971783791673253819:ℝ)/39321600000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-31635902719335077027137934661:ℝ)/655360000000000000) - 3*((-590431339777971783791673253819:ℝ)/39321600000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((117640627701:ℝ)/50000000000) - (((586492667553574753:ℝ)/100000000000) + t * ((45567918684710643:ℝ)/2500000000)) = (((34738897645563727:ℝ)/19200000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-590431339777971783791673253819:ℝ)/39321600000000000000) + ((35451187896478277:ℝ)/16000000000)*((117640627701:ℝ)/50000000000) - ((586492667553574753:ℝ)/100000000000)) + t*(((1459443284169563:ℝ)/320000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((-31635902719335077027137934661:ℝ)/655360000000000000) - 3*((-590431339777971783791673253819:ℝ)/39321600000000000000)) + ((4731396450400389:ℝ)/800000000)*((117640627701:ℝ)/50000000000) - ((45567918684710643:ℝ)/2500000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e23 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 2 3 - (((-323507740970011761:ℝ)/100000000000) + (q - ((77:ℝ)/20)) * ((-168550400417640437:ℝ)/10000000000))| ≤ ((140522466535326013:ℝ)/50000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_23 q = ∑ e ∈ Finset.range 9, ([((44366899117387:ℝ)/80000000), ((33487806294789:ℝ)/32000000), ((1509352425427:ℝ)/1600000), ((43205648717:ℝ)/80000), ((169509879:ℝ)/800), ((11280343:ℝ)/200), ((96257:ℝ)/10), (942:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_23; ring
-  have h12 : centralNum12_23 q = ∑ e ∈ Finset.range 16, ([((14148643725792691914141353908513:ℝ)/524288000000000000000), ((136292949284627347167305678559:ℝ)/2621440000000000000), ((251875018847151782652150889:ℝ)/262144000000000000), ((-113988234145090744383877933:ℝ)/1310720000000000), ((-74357666989304048980160223:ℝ)/655360000000000), ((-6018979719076928807296109:ℝ)/81920000000000), ((-43833460504506829875187:ℝ)/1638400000000), ((-174428957269528373313:ℝ)/40960000000), ((610200853719728507:ℝ)/819200000), ((58814585896216821:ℝ)/102400000), ((7100197224800391:ℝ)/51200000), ((26919456506307:ℝ)/1792000), ((-30704002803:ℝ)/179200), ((-222888105:ℝ)/896), ((-12328119:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_23; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((44366899117387:ℝ)/80000000), ((33487806294789:ℝ)/32000000), ((1509352425427:ℝ)/1600000), ((43205648717:ℝ)/80000), ((169509879:ℝ)/800), ((11280343:ℝ)/200), ((96257:ℝ)/10), (942:ℝ), (40:ℝ)] : List ℝ).getD e 0) 7 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((14148643725792691914141353908513:ℝ)/524288000000000000000), ((136292949284627347167305678559:ℝ)/2621440000000000000), ((251875018847151782652150889:ℝ)/262144000000000000), ((-113988234145090744383877933:ℝ)/1310720000000000), ((-74357666989304048980160223:ℝ)/655360000000000), ((-6018979719076928807296109:ℝ)/81920000000000), ((-43833460504506829875187:ℝ)/1638400000000), ((-174428957269528373313:ℝ)/40960000000), ((610200853719728507:ℝ)/819200000), ((58814585896216821:ℝ)/102400000), ((7100197224800391:ℝ)/51200000), ((26919456506307:ℝ)/1792000), ((-30704002803:ℝ)/179200), ((-222888105:ℝ)/896), ((-12328119:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 14 ht
-  have m12 := abs_poly_le (fun e => ([((14148643725792691914141353908513:ℝ)/524288000000000000000), ((136292949284627347167305678559:ℝ)/2621440000000000000), ((251875018847151782652150889:ℝ)/262144000000000000), ((-113988234145090744383877933:ℝ)/1310720000000000), ((-74357666989304048980160223:ℝ)/655360000000000), ((-6018979719076928807296109:ℝ)/81920000000000), ((-43833460504506829875187:ℝ)/1638400000000), ((-174428957269528373313:ℝ)/40960000000), ((610200853719728507:ℝ)/819200000), ((58814585896216821:ℝ)/102400000), ((7100197224800391:ℝ)/51200000), ((26919456506307:ℝ)/1792000), ((-30704002803:ℝ)/179200), ((-222888105:ℝ)/896), ((-12328119:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 16 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 9, ([((44366899117387:ℝ)/80000000), ((33487806294789:ℝ)/32000000), ((1509352425427:ℝ)/1600000), ((43205648717:ℝ)/80000), ((169509879:ℝ)/800), ((11280343:ℝ)/200), ((96257:ℝ)/10), (942:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e) - (((44366899117387:ℝ)/80000000) + ((33487806294789:ℝ)/32000000)*t)| ≤ ((1553417000611:ℝ)/640000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 16, ([((14148643725792691914141353908513:ℝ)/524288000000000000000), ((136292949284627347167305678559:ℝ)/2621440000000000000), ((251875018847151782652150889:ℝ)/262144000000000000), ((-113988234145090744383877933:ℝ)/1310720000000000), ((-74357666989304048980160223:ℝ)/655360000000000), ((-6018979719076928807296109:ℝ)/81920000000000), ((-43833460504506829875187:ℝ)/1638400000000), ((-174428957269528373313:ℝ)/40960000000), ((610200853719728507:ℝ)/819200000), ((58814585896216821:ℝ)/102400000), ((7100197224800391:ℝ)/51200000), ((26919456506307:ℝ)/1792000), ((-30704002803:ℝ)/179200), ((-222888105:ℝ)/896), ((-12328119:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e) - ((14148643725792691914141353908513:ℝ)/524288000000000000000) - ((136292949284627347167305678559:ℝ)/2621440000000000000)*t| ≤ ((51399838163221599404374584411:ℝ)/3670016000000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 16, ([((14148643725792691914141353908513:ℝ)/524288000000000000000), ((136292949284627347167305678559:ℝ)/2621440000000000000), ((251875018847151782652150889:ℝ)/262144000000000000), ((-113988234145090744383877933:ℝ)/1310720000000000), ((-74357666989304048980160223:ℝ)/655360000000000), ((-6018979719076928807296109:ℝ)/81920000000000), ((-43833460504506829875187:ℝ)/1638400000000), ((-174428957269528373313:ℝ)/40960000000), ((610200853719728507:ℝ)/819200000), ((58814585896216821:ℝ)/102400000), ((7100197224800391:ℝ)/51200000), ((26919456506307:ℝ)/1792000), ((-30704002803:ℝ)/179200), ((-222888105:ℝ)/896), ((-12328119:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e)| ≤ ((27158103092158994825026312360783:ℝ)/917504000000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-7627725:ℝ)/2), (173988600:ℝ), (-2299614450:ℝ), (13088188200:ℝ), (-38221499200:ℝ), (63366115840:ℝ), ((-445610508288:ℝ)/7), ((841540698112:ℝ)/21), ((-326820167680:ℝ)/21), ((10133438464:ℝ)/3), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 hq1'
-  have m13' : |centralNum13_23 q| ≤ ((8105738823872830958897152289619:ℝ)/3417968750000) := by
-    rw [centralNum13_23_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-15801525:ℝ)/4), ((655493865:ℝ)/4), ((-7334421225:ℝ)/4), ((16442962485:ℝ)/2), ((-598626108395:ℝ)/32), ((414013307125:ℝ)/16), ((-4611984703125:ℝ)/224), ((399923828125:ℝ)/48), ((-4353201171875:ℝ)/2688), ((189736328125:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 hq1'
-  have m23' : |centralNum23_23 q| ≤ ((432876459590361411377515123959:ℝ)/1433600000000) := by
-    rw [centralNum23_23_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-66231917669:ℝ)/25000000000)) bD'
-  have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((44366899117387:ℝ)/80000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((14148643725792691914141353908513:ℝ)/524288000000000000000) + ((35451187896478277:ℝ)/16000000000)*((-66231917669:ℝ)/25000000000) - ((-323507740970011761:ℝ)/100000000000)) (β := ((33487806294789:ℝ)/32000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((136292949284627347167305678559:ℝ)/2621440000000000000) - 3*((14148643725792691914141353908513:ℝ)/524288000000000000000)) + ((4731396450400389:ℝ)/800000000)*((-66231917669:ℝ)/25000000000) - ((-168550400417640437:ℝ)/10000000000)) ht
-  have hW : pieceW q pieceX_11 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-66231917669:ℝ)/25000000000) + (0:ℝ) := by
-    rw [pieceW_23, pieceX_11, sym4_23, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((390656615099448179134691413001807829482840207222735895591632987:ℝ)/470702450805645748085393633211338076702029049496019930193750000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((44366899117387:ℝ)/80000000) + ((33487806294789:ℝ)/32000000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((14148643725792691914141353908513:ℝ)/524288000000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((136292949284627347167305678559:ℝ)/2621440000000000000) - 3*((14148643725792691914141353908513:ℝ)/524288000000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((-66231917669:ℝ)/25000000000) - (((-323507740970011761:ℝ)/100000000000) + t * ((-168550400417640437:ℝ)/10000000000)) = (((44366899117387:ℝ)/80000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((14148643725792691914141353908513:ℝ)/524288000000000000000) + ((35451187896478277:ℝ)/16000000000)*((-66231917669:ℝ)/25000000000) - ((-323507740970011761:ℝ)/100000000000)) + t*(((33487806294789:ℝ)/32000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((136292949284627347167305678559:ℝ)/2621440000000000000) - 3*((14148643725792691914141353908513:ℝ)/524288000000000000000)) + ((4731396450400389:ℝ)/800000000)*((-66231917669:ℝ)/25000000000) - ((-168550400417640437:ℝ)/10000000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_e33 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) :
-    |pieceW q pieceX_11 3 3 - (((213466558195247209:ℝ)/1000000000) + (q - ((77:ℝ)/20)) * ((293497180261575647:ℝ)/500000000))| ≤ ((469300638587169287:ℝ)/5000000000) := by
-  set t := q - ((77:ℝ)/20) with htd
-  have hq : q = ((77:ℝ)/20) + t := by rw [htd]; ring
-  have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
-  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((77:ℝ)/20))) * Real.exp (-3*t) := by
-    rw [← Real.exp_add, hq]; ring_nf
-  have h11 : centralNum11_33 q = ∑ e ∈ Finset.range 10, ([((793869245255471:ℝ)/3200000000), ((99667744866921:ℝ)/80000000), ((15708742320579:ℝ)/8000000), ((632852269203:ℝ)/400000), ((15427658301:ℝ)/20000), ((245206203:ℝ)/1000), ((2605281:ℝ)/50), ((253758:ℝ)/35), ((4224:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum11_33; ring
-  have h12 : centralNum12_33 q = ∑ e ∈ Finset.range 17, ([((-570685973569756818087279614309353:ℝ)/20971520000000000000000), ((64247657555274348647547483515241:ℝ)/1048576000000000000000), ((3610700283302820843682261491777:ℝ)/10485760000000000000), ((277150920037791147812124789513:ℝ)/524288000000000000), ((10665023150882358186334236633:ℝ)/26214400000000000), ((1054251863973499242452855253:ℝ)/6553600000000000), ((4211728863673847556807969:ℝ)/327680000000000), ((-446695476033546202847901:ℝ)/22937600000000), ((-12145793467593709854699:ℝ)/1146880000000), ((-143951821262405635639:ℝ)/57344000000), ((-405186389095083201:ℝ)/2048000000), ((33247359800985249:ℝ)/716800000), ((103065178210821:ℝ)/7168000), ((69754804587:ℝ)/51200), ((-2300135697:ℝ)/125440), ((-393325389:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    unfold centralNum12_33; ring
-  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    ring
-  have b11 := abs_poly_sub_affine_le (fun e => ([((793869245255471:ℝ)/3200000000), ((99667744866921:ℝ)/80000000), ((15708742320579:ℝ)/8000000), ((632852269203:ℝ)/400000), ((15427658301:ℝ)/20000), ((245206203:ℝ)/1000), ((2605281:ℝ)/50), ((253758:ℝ)/35), ((4224:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0) 8 ht
-  have b12 := abs_poly_sub_affine_le (fun e => ([((-570685973569756818087279614309353:ℝ)/20971520000000000000000), ((64247657555274348647547483515241:ℝ)/1048576000000000000000), ((3610700283302820843682261491777:ℝ)/10485760000000000000), ((277150920037791147812124789513:ℝ)/524288000000000000), ((10665023150882358186334236633:ℝ)/26214400000000000), ((1054251863973499242452855253:ℝ)/6553600000000000), ((4211728863673847556807969:ℝ)/327680000000000), ((-446695476033546202847901:ℝ)/22937600000000), ((-12145793467593709854699:ℝ)/1146880000000), ((-143951821262405635639:ℝ)/57344000000), ((-405186389095083201:ℝ)/2048000000), ((33247359800985249:ℝ)/716800000), ((103065178210821:ℝ)/7168000), ((69754804587:ℝ)/51200), ((-2300135697:ℝ)/125440), ((-393325389:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 15 ht
-  have m12 := abs_poly_le (fun e => ([((-570685973569756818087279614309353:ℝ)/20971520000000000000000), ((64247657555274348647547483515241:ℝ)/1048576000000000000000), ((3610700283302820843682261491777:ℝ)/10485760000000000000), ((277150920037791147812124789513:ℝ)/524288000000000000), ((10665023150882358186334236633:ℝ)/26214400000000000), ((1054251863973499242452855253:ℝ)/6553600000000000), ((4211728863673847556807969:ℝ)/327680000000000), ((-446695476033546202847901:ℝ)/22937600000000), ((-12145793467593709854699:ℝ)/1146880000000), ((-143951821262405635639:ℝ)/57344000000), ((-405186389095083201:ℝ)/2048000000), ((33247359800985249:ℝ)/716800000), ((103065178210821:ℝ)/7168000), ((69754804587:ℝ)/51200), ((-2300135697:ℝ)/125440), ((-393325389:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 17 ht
-  have bD := abs_poly_sub_affine_le (fun e => ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
-  have b11' : |(∑ e ∈ Finset.range 10, ([((793869245255471:ℝ)/3200000000), ((99667744866921:ℝ)/80000000), ((15708742320579:ℝ)/8000000), ((632852269203:ℝ)/400000), ((15427658301:ℝ)/20000), ((245206203:ℝ)/1000), ((2605281:ℝ)/50), ((253758:ℝ)/35), ((4224:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e) - (((793869245255471:ℝ)/3200000000) + ((99667744866921:ℝ)/80000000)*t)| ≤ ((114500890544377:ℝ)/22400000000) := by
-    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have b12' : |(∑ e ∈ Finset.range 17, ([((-570685973569756818087279614309353:ℝ)/20971520000000000000000), ((64247657555274348647547483515241:ℝ)/1048576000000000000000), ((3610700283302820843682261491777:ℝ)/10485760000000000000), ((277150920037791147812124789513:ℝ)/524288000000000000), ((10665023150882358186334236633:ℝ)/26214400000000000), ((1054251863973499242452855253:ℝ)/6553600000000000), ((4211728863673847556807969:ℝ)/327680000000000), ((-446695476033546202847901:ℝ)/22937600000000), ((-12145793467593709854699:ℝ)/1146880000000), ((-143951821262405635639:ℝ)/57344000000), ((-405186389095083201:ℝ)/2048000000), ((33247359800985249:ℝ)/716800000), ((103065178210821:ℝ)/7168000), ((69754804587:ℝ)/51200), ((-2300135697:ℝ)/125440), ((-393325389:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e) - ((-570685973569756818087279614309353:ℝ)/20971520000000000000000) - ((64247657555274348647547483515241:ℝ)/1048576000000000000000)*t| ≤ ((238797089067741993481558866942569:ℝ)/256901120000000000000000) := by
-    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have m12' : |(∑ e ∈ Finset.range 17, ([((-570685973569756818087279614309353:ℝ)/20971520000000000000000), ((64247657555274348647547483515241:ℝ)/1048576000000000000000), ((3610700283302820843682261491777:ℝ)/10485760000000000000), ((277150920037791147812124789513:ℝ)/524288000000000000), ((10665023150882358186334236633:ℝ)/26214400000000000), ((1054251863973499242452855253:ℝ)/6553600000000000), ((4211728863673847556807969:ℝ)/327680000000000), ((-446695476033546202847901:ℝ)/22937600000000), ((-12145793467593709854699:ℝ)/1146880000000), ((-143951821262405635639:ℝ)/57344000000), ((-405186389095083201:ℝ)/2048000000), ((33247359800985249:ℝ)/716800000), ((103065178210821:ℝ)/7168000), ((69754804587:ℝ)/51200), ((-2300135697:ℝ)/125440), ((-393325389:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e)| ≤ ((16033468140698747571966381630587691:ℝ)/513802240000000000000000) := by
-    refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have bD' : |(∑ e ∈ Finset.range 10, ([((35451187896478277:ℝ)/16000000000), ((4731396450400389:ℝ)/800000000), ((34844432453061:ℝ)/5000000), ((297500185983:ℝ)/62500), ((103896410541:ℝ)/50000), ((1503695193:ℝ)/2500), ((14436576:ℝ)/125), ((354768:ℝ)/25), ((5064:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((35451187896478277:ℝ)/16000000000) - ((4731396450400389:ℝ)/800000000)*t| ≤ ((144243147419291:ℝ)/8000000000) := by
-    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-8120475:ℝ)/4), ((464861025:ℝ)/2), (-5906535975:ℝ), ((411904731750:ℝ)/7), ((-2024051769000:ℝ)/7), ((5554394637600:ℝ)/7), (-1314913862656:ℝ), ((9709155336192:ℝ)/7), ((-6724555112448:ℝ)/7), ((1313173667840:ℝ)/3), ((-6168244125696:ℝ)/49), ((3004329623552:ℝ)/147), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 hq1'
-  have m13' : |centralNum13_33 q| ≤ ((19480714813574607646437720171906447:ℝ)/239257812500000) := by
-    rw [centralNum13_33_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((39:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-16872075:ℝ)/8), ((1833754545:ℝ)/8), ((-83998007145:ℝ)/16), ((4929124002765:ℝ)/112), ((-76723155584685:ℝ)/448), ((164888745653055:ℝ)/448), ((-63358359907625:ℝ)/128), ((364713160040625:ℝ)/896), ((-334937462578125:ℝ)/1792), ((245466998046875:ℝ)/5376), ((-72144521484375:ℝ)/12544), ((6518798828125:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 hq1'
-  have m23' : |centralNum23_33 q| ≤ ((307507009741254954032516730962307:ℝ)/40140800000000) := by
-    rw [centralNum23_33_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
-  have c5 := scaled_affine (X := ((971775550441:ℝ)/10000000000)) bD'
-  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3))| ≤ ((25158646867041556875868160000000000:ℝ)/437042115352456867453184070891399) := by
-    rw [abs_neg, tailWeight_3, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
-    have hq6 : q^6 ≤ ((39:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
-    have hB : (2*q-3)^2 ≤ (2*((39:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece11_Et h0
-    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
-    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((3308571812705231500:ℝ)/129140163)) ≤ ((39:ℝ)/10)^6*(8000*(2*((39:ℝ)/10)-3)^2*(1/((288652517379563037996819230889:ℝ)/1000000000000))*((3308571812705231500:ℝ)/129140163)) := by
-          gcongr
-      _ ≤ ((25158646867041556875868160000000000:ℝ)/437042115352456867453184070891399) := by norm_num
-  have c7 := affine_round (α := ((793869245255471:ℝ)/3200000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-570685973569756818087279614309353:ℝ)/20971520000000000000000) + ((35451187896478277:ℝ)/16000000000)*((971775550441:ℝ)/10000000000) - ((213466558195247209:ℝ)/1000000000)) (β := ((99667744866921:ℝ)/80000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((64247657555274348647547483515241:ℝ)/1048576000000000000000) - 3*((-570685973569756818087279614309353:ℝ)/20971520000000000000000)) + ((4731396450400389:ℝ)/800000000)*((971775550441:ℝ)/10000000000) - ((293497180261575647:ℝ)/500000000)) ht
-  have hW : pieceW q pieceX_11 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((77:ℝ)/20)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((971775550441:ℝ)/10000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
-    rw [pieceW_33, pieceX_11, sym4_33, hexp3]; ring
-  rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((33452140686637204472471899565794556718134273651633017695012768368041:ℝ)/78324887814059452481409500566366655963217633836137716384240000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((793869245255471:ℝ)/3200000000) + ((99667744866921:ℝ)/80000000)*t) + (8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-570685973569756818087279614309353:ℝ)/20971520000000000000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((64247657555274348647547483515241:ℝ)/1048576000000000000000) - 3*((-570685973569756818087279614309353:ℝ)/20971520000000000000000))*t) + (((35451187896478277:ℝ)/16000000000) + ((4731396450400389:ℝ)/800000000)*t)*((971775550441:ℝ)/10000000000) - (((213466558195247209:ℝ)/1000000000) + t * ((293497180261575647:ℝ)/500000000)) = (((793869245255471:ℝ)/3200000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*((-570685973569756818087279614309353:ℝ)/20971520000000000000000) + ((35451187896478277:ℝ)/16000000000)*((971775550441:ℝ)/10000000000) - ((213466558195247209:ℝ)/1000000000)) + t*(((99667744866921:ℝ)/80000000) + 8*(((1/((103777037629710019882577736861:ℝ)/1000000000000000000000000))+(1/((103777023515170732568717557253:ℝ)/1000000000000000000000000)))/2)*(((64247657555274348647547483515241:ℝ)/1048576000000000000000) - 3*((-570685973569756818087279614309353:ℝ)/20971520000000000000000)) + ((4731396450400389:ℝ)/800000000)*((971775550441:ℝ)/10000000000) - ((293497180261575647:ℝ)/500000000)) := by ring
-    rw [hab]; exact c7.trans (by norm_num)
-  · norm_num
-
-theorem piece11_plus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((282572660038003097:ℝ)/100000000000) + ((1:ℝ)/20)*((353907386706293197:ℝ)/50000000000) - (((53365846744793379:ℝ)/2500000000000) + ((521871343467821597:ℝ)/100000000000000) + ((128091007893879803:ℝ)/100000000000000) + ((1681318340316659:ℝ)/156250000000)))
-      (((-649133701077751467:ℝ)/1000000000000) + ((1:ℝ)/20)*((-111140719468876623:ℝ)/100000000000))
-      (((162841766780541267:ℝ)/5000000000000) + ((1:ℝ)/20)*((-280946594923039537:ℝ)/10000000000000))
-      (((-122964815780514959:ℝ)/1000000000000) + ((1:ℝ)/20)*((-9035177173670353:ℝ)/15625000000))
-      (((7352379756230599:ℝ)/3125000000) + ((1:ℝ)/20)*((26230354021152059:ℝ)/5000000000) - (((521871343467821597:ℝ)/100000000000000) + ((10741120100109359:ℝ)/625000000000) + ((41160417993376833:ℝ)/2000000000000) + ((968056574082606027:ℝ)/10000000000000)))
-      (((86391819684601793:ℝ)/250000000000000) + ((1:ℝ)/20)*((162288122667626089:ℝ)/1000000000000))
-      (((460665468697026169:ℝ)/500000000000) + ((1:ℝ)/20)*((429898918841471289:ℝ)/100000000000))
-      (((586492667553574753:ℝ)/100000000000) + ((1:ℝ)/20)*((45567918684710643:ℝ)/2500000000) - (((128091007893879803:ℝ)/100000000000000) + ((41160417993376833:ℝ)/2000000000000) + ((106609783898677289:ℝ)/500000000000) + ((140522466535326013:ℝ)/50000000000)))
-      (((-323507740970011761:ℝ)/100000000000) + ((1:ℝ)/20)*((-168550400417640437:ℝ)/10000000000))
-      (((213466558195247209:ℝ)/1000000000) + ((1:ℝ)/20)*((293497180261575647:ℝ)/500000000) - (((1681318340316659:ℝ)/156250000000) + ((968056574082606027:ℝ)/10000000000000) + ((140522466535326013:ℝ)/50000000000) + ((469300638587169287:ℝ)/5000000000))) i j :=
-  quadForm_nonneg_of_ldl ((15705137937483815919:ℝ)/5000000000000) ((9476950879222422741724168333375336113:ℝ)/4089879671219743728906250000000) ((60334550241178783939587084483456529279284037775356691692496809:ℝ)/16173996167206268145875913955627240299520000000000000000) ((17018691563759332091183138220478944018653214705477953370849542746002437901244900563:ℝ)/120669100482357567879174168966913058558568075550713383384993618000000000000) ((-2349013536040632595:ℝ)/10470091958322543946) ((890389153756944449:ℝ)/89743645357050376680) ((-108483844811614349:ℝ)/2243591133926259417) ((161780465698016056124413622955121970837:ℝ)/24260994250809402218813870933440860449280) ((72126238857651012472994003402713631425:ℝ)/151631214067558763867586693334005377808) ((-66049302467234078365572457309755376409438672432194917482674400:ℝ)/60334550241178783939587084483456529279284037775356691692496809)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
-
-theorem piece11_minus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((282572660038003097:ℝ)/100000000000) - ((1:ℝ)/20)*((353907386706293197:ℝ)/50000000000) - (((53365846744793379:ℝ)/2500000000000) + ((521871343467821597:ℝ)/100000000000000) + ((128091007893879803:ℝ)/100000000000000) + ((1681318340316659:ℝ)/156250000000)))
-      (((-649133701077751467:ℝ)/1000000000000) - ((1:ℝ)/20)*((-111140719468876623:ℝ)/100000000000))
-      (((162841766780541267:ℝ)/5000000000000) - ((1:ℝ)/20)*((-280946594923039537:ℝ)/10000000000000))
-      (((-122964815780514959:ℝ)/1000000000000) - ((1:ℝ)/20)*((-9035177173670353:ℝ)/15625000000))
-      (((7352379756230599:ℝ)/3125000000) - ((1:ℝ)/20)*((26230354021152059:ℝ)/5000000000) - (((521871343467821597:ℝ)/100000000000000) + ((10741120100109359:ℝ)/625000000000) + ((41160417993376833:ℝ)/2000000000000) + ((968056574082606027:ℝ)/10000000000000)))
-      (((86391819684601793:ℝ)/250000000000000) - ((1:ℝ)/20)*((162288122667626089:ℝ)/1000000000000))
-      (((460665468697026169:ℝ)/500000000000) - ((1:ℝ)/20)*((429898918841471289:ℝ)/100000000000))
-      (((586492667553574753:ℝ)/100000000000) - ((1:ℝ)/20)*((45567918684710643:ℝ)/2500000000) - (((128091007893879803:ℝ)/100000000000000) + ((41160417993376833:ℝ)/2000000000000) + ((106609783898677289:ℝ)/500000000000) + ((140522466535326013:ℝ)/50000000000)))
-      (((-323507740970011761:ℝ)/100000000000) - ((1:ℝ)/20)*((-168550400417640437:ℝ)/10000000000))
-      (((213466558195247209:ℝ)/1000000000) - ((1:ℝ)/20)*((293497180261575647:ℝ)/500000000) - (((1681318340316659:ℝ)/156250000000) + ((968056574082606027:ℝ)/10000000000000) + ((140522466535326013:ℝ)/50000000000) + ((469300638587169287:ℝ)/5000000000))) i j :=
-  quadForm_nonneg_of_ldl ((12166064070420883949:ℝ)/5000000000000) ((1098517995988754370370827040738407565841:ℝ)/608303203521044197450000000000000) ((167639452596574243778501110441370852565599518606655633390706001:ℝ)/87881439679100349629666163259072605267280000000000000000) ((28189893439421952895025126284296847559032051988500875328072640114346227998981137819:ℝ)/335278905193148487557002220882741705131199037213311266781412002000000000000) ((-5935633413433131555:ℝ)/24332128140841767898) ((6794617266144690217:ℝ)/486642562816835357960) ((-470261244123849147:ℝ)/12166064070420883949) ((12619403865369130771645913646080505531:ℝ)/43940719839550174814833081629536302633640) ((415737624190777694018429199056267463650:ℝ)/1098517995988754370370827040738407565841) ((-210142846061848139688237319899566828485257702432658944951617600:ℝ)/167639452596574243778501110441370852565599518606655633390706001)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
-
-/-- **Piece 11.** The piece matrix is positive semidefinite on `q ∈ [19/5, 39/10]`. -/
-theorem piece_11 {q : ℝ} (h0 : ((19:ℝ)/5) ≤ q) (h1 : q ≤ ((39:ℝ)/10)) (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_11 i j :=
-  pieceForm_nonneg (pieceW_symm (sym4_symm _ _ _ _ _ _ _ _ _ _) q) (by norm_num : (0:ℝ) < ((1:ℝ)/20))
-    (abs_le.mpr ⟨by linarith, by linarith⟩)
-    (piece11_e00 h0 h1) (piece11_e01 h0 h1) (piece11_e02 h0 h1) (piece11_e03 h0 h1) (piece11_e11 h0 h1) (piece11_e12 h0 h1) (piece11_e13 h0 h1) (piece11_e22 h0 h1) (piece11_e23 h0 h1) (piece11_e33 h0 h1)
-    piece11_plus piece11_minus y
-
-/-! #### Piece 12 (seam), `q ∈ [39/10, 4]` -/
-
-/-- The compensation matrix of piece 12. -/
-def pieceX_12 : Fin 4 → Fin 4 → ℝ :=
-  sym4 ((111973133929:ℝ)/10000000000000) ((-634629436629:ℝ)/1000000000000000) ((867738853991:ℝ)/100000000000000) ((-408111547811:ℝ)/5000000000000) ((107968838179:ℝ)/5000000000000) ((158770955539:ℝ)/10000000000000) ((297892288439:ℝ)/500000000000) ((126875021731:ℝ)/200000000000) ((-38654993997:ℝ)/20000000000) ((93812695481:ℝ)/2000000000)
-
-theorem piece12_L3 : ((140083900709778466732471974383:ℝ)/1000000000000000000000000) ≤ Real.exp ((3:ℝ)*((79:ℝ)/20)) := by
+theorem piece8_L3 : ((140083900709778466732471974383:ℝ)/1000000000000000000000000) ≤ Real.exp ((3:ℝ)*((79:ℝ)/20)) := by
   have h := le_exp_nat_add 11 (f := ((17:ℝ)/20)) (by norm_num)
   rw [show ((3:ℝ):ℝ)*((79:ℝ)/20) = ((11:ℕ):ℝ) + ((17:ℝ)/20) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece12_U3 : Real.exp ((3:ℝ)*((79:ℝ)/20)) ≤ ((70042178050639083684723132989:ℝ)/500000000000000000000000) := by
+theorem piece8_U3 : Real.exp ((3:ℝ)*((79:ℝ)/20)) ≤ ((70042178050639083684723132989:ℝ)/500000000000000000000000) := by
   have h := exp_nat_add_le 11 (f := ((17:ℝ)/20)) (by norm_num) (by norm_num)
   rw [show ((3:ℝ):ℝ)*((79:ℝ)/20) = ((11:ℕ):ℝ) + ((17:ℝ)/20) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
 
-theorem piece12_L8_at : ((22175215647670696722875420569:ℝ)/625000000000000) ≤ Real.exp ((8:ℝ)*((39:ℝ)/10)) := by
+theorem piece8_L8_at : ((22175215647670696722875420569:ℝ)/625000000000000) ≤ Real.exp ((8:ℝ)*((39:ℝ)/10)) := by
   have h := le_exp_nat_add 31 (f := ((1:ℝ)/5)) (by norm_num)
   rw [show ((8:ℝ):ℝ)*((39:ℝ)/10) = ((31:ℕ):ℝ) + ((1:ℝ)/5) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece12_E8 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((22175215647670696722875420569:ℝ)/625000000000000) := by
+theorem piece8_E8 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((22175215647670696722875420569:ℝ)/625000000000000) := by
   have hm : Real.exp (-((8:ℝ))*q) ≤ Real.exp (-((8:ℝ)*((39:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece12_L8_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece8_L8_at (le_refl _)).2
 
-theorem piece12_L11_at : ((427790543904709206650549836381:ℝ)/100000000000) ≤ Real.exp ((11:ℝ)*((39:ℝ)/10)) := by
+theorem piece8_L11_at : ((427790543904709206650549836381:ℝ)/100000000000) ≤ Real.exp ((11:ℝ)*((39:ℝ)/10)) := by
   have h := le_exp_nat_add 42 (f := ((9:ℝ)/10)) (by norm_num)
   rw [show ((11:ℝ):ℝ)*((39:ℝ)/10) = ((42:ℕ):ℝ) + ((9:ℝ)/10) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece12_E11 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((427790543904709206650549836381:ℝ)/100000000000) := by
+theorem piece8_E11 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((427790543904709206650549836381:ℝ)/100000000000) := by
   have hm : Real.exp (-((11:ℝ))*q) ≤ Real.exp (-((11:ℝ)*((39:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece12_L11_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece8_L11_at (le_refl _)).2
 
-theorem piece12_Lt_at : ((831493600485514841979407800409:ℝ)/1000000000000) ≤ Real.exp (((529:ℝ)/50)*((39:ℝ)/10)) := by
+theorem piece8_Lt_at : ((831493600485514841979407800409:ℝ)/1000000000000) ≤ Real.exp (((529:ℝ)/50)*((39:ℝ)/10)) := by
   have h := le_exp_nat_add 41 (f := ((131:ℝ)/500)) (by norm_num)
   rw [show (((529:ℝ)/50):ℝ)*((39:ℝ)/10) = ((41:ℕ):ℝ) + ((131:ℝ)/500) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece12_Et {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((831493600485514841979407800409:ℝ)/1000000000000) := by
+theorem piece8_Et {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((831493600485514841979407800409:ℝ)/1000000000000) := by
   have hm : Real.exp (-(((529:ℝ)/50))*q) ≤ Real.exp (-(((529:ℝ)/50)*((39:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece12_Lt_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece8_Lt_at (le_refl _)).2
 
-theorem piece12_e00 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 0 0 - (((72363387600466157:ℝ)/20000000000) + (q - ((79:ℝ)/20)) * ((882407628736461083:ℝ)/100000000000))| ≤ ((256557593094336537:ℝ)/10000000000000) := by
+theorem piece8_e00 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 0 0 - (((14366431146690087:ℝ)/4000000000) + (q - ((79:ℝ)/20)) * ((875532217592702967:ℝ)/100000000000))| ≤ ((254525988208733683:ℝ)/10000000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_00 q = ∑ e ∈ Finset.range 10, ([((57630930867463159:ℝ)/16000000000), ((6988521258773229:ℝ)/800000000), ((5935641793671:ℝ)/625000), ((1515664501953:ℝ)/250000), ((125001656787:ℝ)/50000), ((1723845333:ℝ)/2500), ((15879948:ℝ)/125), ((376512:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_00; ring
   have h12 : centralNum12_00 q = ∑ e ∈ Finset.range 11, ([((-89833524156446504443:ℝ)/320000000000), ((-2420496908646352989:ℝ)/3200000000), ((-73445794552214751:ℝ)/80000000), ((-1321600670030787:ℝ)/2000000), ((-62454515761113:ℝ)/200000), ((-5060722219707:ℝ)/50000), ((-2847836082:ℝ)/125), ((-87901014:ℝ)/25), ((-1780014:ℝ)/5), (-21352:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_00; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((57630930867463159:ℝ)/16000000000), ((6988521258773229:ℝ)/800000000), ((5935641793671:ℝ)/625000), ((1515664501953:ℝ)/250000), ((125001656787:ℝ)/50000), ((1723845333:ℝ)/2500), ((15879948:ℝ)/125), ((376512:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-89833524156446504443:ℝ)/320000000000), ((-2420496908646352989:ℝ)/3200000000), ((-73445794552214751:ℝ)/80000000), ((-1321600670030787:ℝ)/2000000), ((-62454515761113:ℝ)/200000), ((-5060722219707:ℝ)/50000), ((-2847836082:ℝ)/125), ((-87901014:ℝ)/25), ((-1780014:ℝ)/5), (-21352:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 9 ht
@@ -1510,67 +82,71 @@ theorem piece12_e00 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((57630930867463159:ℝ)/16000000000), ((6988521258773229:ℝ)/800000000), ((5935641793671:ℝ)/625000), ((1515664501953:ℝ)/250000), ((125001656787:ℝ)/50000), ((1723845333:ℝ)/2500), ((15879948:ℝ)/125), ((376512:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - (((57630930867463159:ℝ)/16000000000) + ((6988521258773229:ℝ)/800000000)*t)| ≤ ((98064968440903:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 11, ([((-89833524156446504443:ℝ)/320000000000), ((-2420496908646352989:ℝ)/3200000000), ((-73445794552214751:ℝ)/80000000), ((-1321600670030787:ℝ)/2000000), ((-62454515761113:ℝ)/200000), ((-5060722219707:ℝ)/50000), ((-2847836082:ℝ)/125), ((-87901014:ℝ)/25), ((-1780014:ℝ)/5), (-21352:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e) - ((-89833524156446504443:ℝ)/320000000000) - ((-2420496908646352989:ℝ)/3200000000)*t| ≤ ((190381185080432653:ℝ)/80000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 11, ([((-89833524156446504443:ℝ)/320000000000), ((-2420496908646352989:ℝ)/3200000000), ((-73445794552214751:ℝ)/80000000), ((-1321600670030787:ℝ)/2000000), ((-62454515761113:ℝ)/200000), ((-5060722219707:ℝ)/50000), ((-2847836082:ℝ)/125), ((-87901014:ℝ)/25), ((-1780014:ℝ)/5), (-21352:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ (320929792:ℝ) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (600:ℝ), (-7776:ℝ), (16800:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m13' : |centralNum13_00 q| ≤ (14587133952:ℝ) := by
-    rw [centralNum13_00_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (780:ℝ), (-6156:ℝ), (15288:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m23' : |centralNum23_00 q| ≤ (19523371008:ℝ) := by
-    rw [centralNum23_00_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_00 q = ∑ e ∈ Finset.range 11, ([((-403251035988508380897:ℝ)/80000000000), ((-10824176584655546631:ℝ)/800000000), ((-81590916693187701:ℝ)/5000000), ((-2911428151611999:ℝ)/250000), ((-272335289760177:ℝ)/50000), ((-21806692348203:ℝ)/12500), ((-48443576412:ℝ)/125), ((-1474161024:ℝ)/25), ((-29406024:ℝ)/5), (-347232:ℝ), (-9216:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_00; ring
+  have m13 := abs_poly_le (fun e => ([((-403251035988508380897:ℝ)/80000000000), ((-10824176584655546631:ℝ)/800000000), ((-81590916693187701:ℝ)/5000000), ((-2911428151611999:ℝ)/250000), ((-272335289760177:ℝ)/50000), ((-21806692348203:ℝ)/12500), ((-48443576412:ℝ)/125), ((-1474161024:ℝ)/25), ((-29406024:ℝ)/5), (-347232:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m13' : |centralNum13_00 q| ≤ (5759434752:ℝ) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_00 q = ∑ e ∈ Finset.range 11, ([((-645707799647634413271:ℝ)/64000000000), ((-84071704361792207541:ℝ)/3200000000), ((-2462684847326052903:ℝ)/80000000), ((-42744902441703339:ℝ)/2000000), ((-1947364365641793:ℝ)/200000), ((-30414407139207:ℝ)/10000), ((-82459967898:ℝ)/125), ((-2452576422:ℝ)/25), ((-47865438:ℝ)/5), (-553512:ℝ), (-14400:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_00; ring
+  have m23 := abs_poly_le (fun e => ([((-645707799647634413271:ℝ)/64000000000), ((-84071704361792207541:ℝ)/3200000000), ((-2462684847326052903:ℝ)/80000000), ((-42744902441703339:ℝ)/2000000), ((-1947364365641793:ℝ)/200000), ((-30414407139207:ℝ)/10000), ((-82459967898:ℝ)/125), ((-2452576422:ℝ)/25), ((-47865438:ℝ)/5), (-553512:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m23' : |centralNum23_00 q| ≤ (11482497024:ℝ) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((111973133929:ℝ)/10000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((99012783759:ℝ)/50000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0))| ≤ ((8573337272320000000000000000000:ℝ)/49098865615069165904042051206351041) := by
     rw [abs_neg, tailWeight_0, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ (4:ℝ)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*(4:ℝ)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece12_Et h0
+    have hx := piece8_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((10465499600:ℝ)/59049)) ≤ (4:ℝ)^6*(8000*(2*(4:ℝ)-3)^2*(1/((831493600485514841979407800409:ℝ)/1000000000000))*((10465499600:ℝ)/59049)) := by
           gcongr
       _ ≤ ((8573337272320000000000000000000:ℝ)/49098865615069165904042051206351041) := by norm_num
-  have c7 := affine_round (α := ((57630930867463159:ℝ)/16000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-89833524156446504443:ℝ)/320000000000) + ((46108585475767759:ℝ)/16000000000)*((111973133929:ℝ)/10000000000000) - ((72363387600466157:ℝ)/20000000000)) (β := ((6988521258773229:ℝ)/800000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-2420496908646352989:ℝ)/3200000000) - 3*((-89833524156446504443:ℝ)/320000000000)) + ((5967553945585029:ℝ)/800000000)*((111973133929:ℝ)/10000000000000) - ((882407628736461083:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_12 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((111973133929:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
-    rw [pieceW_00, pieceX_12, sym4_00, hexp3]; ring
+  have c7 := affine_round (α := ((57630930867463159:ℝ)/16000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-89833524156446504443:ℝ)/320000000000) + ((46108585475767759:ℝ)/16000000000)*((99012783759:ℝ)/50000000000000) - ((14366431146690087:ℝ)/4000000000)) (β := ((6988521258773229:ℝ)/800000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-2420496908646352989:ℝ)/3200000000) - 3*((-89833524156446504443:ℝ)/320000000000)) + ((5967553945585029:ℝ)/800000000)*((99012783759:ℝ)/50000000000000) - ((875532217592702967:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_8 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((99012783759:ℝ)/50000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
+    rw [pieceW_00, pieceX_8, sym4_00, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((130487806970672214761898605105912310287916081770804153954907259266421:ℝ)/156988504248677601253884775576694813586264492626660963532592000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((57630930867463159:ℝ)/16000000000) + ((6988521258773229:ℝ)/800000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-89833524156446504443:ℝ)/320000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-2420496908646352989:ℝ)/3200000000) - 3*((-89833524156446504443:ℝ)/320000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((111973133929:ℝ)/10000000000000) - (((72363387600466157:ℝ)/20000000000) + t * ((882407628736461083:ℝ)/100000000000)) = (((57630930867463159:ℝ)/16000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-89833524156446504443:ℝ)/320000000000) + ((46108585475767759:ℝ)/16000000000)*((111973133929:ℝ)/10000000000000) - ((72363387600466157:ℝ)/20000000000)) + t*(((6988521258773229:ℝ)/800000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-2420496908646352989:ℝ)/3200000000) - 3*((-89833524156446504443:ℝ)/320000000000)) + ((5967553945585029:ℝ)/800000000)*((111973133929:ℝ)/10000000000000) - ((882407628736461083:ℝ)/100000000000)) := by ring
+  refine entry_assemble (r7 := ((8730891084130717174579548979667795171594996878293982996722763777825601:ℝ)/1962356303108470015673559694708685169828306157833262044157400000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((57630930867463159:ℝ)/16000000000) + ((6988521258773229:ℝ)/800000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-89833524156446504443:ℝ)/320000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-2420496908646352989:ℝ)/3200000000) - 3*((-89833524156446504443:ℝ)/320000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((99012783759:ℝ)/50000000000000) - (((14366431146690087:ℝ)/4000000000) + t * ((875532217592702967:ℝ)/100000000000)) = (((57630930867463159:ℝ)/16000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-89833524156446504443:ℝ)/320000000000) + ((46108585475767759:ℝ)/16000000000)*((99012783759:ℝ)/50000000000000) - ((14366431146690087:ℝ)/4000000000)) + t*(((6988521258773229:ℝ)/800000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-2420496908646352989:ℝ)/3200000000) - 3*((-89833524156446504443:ℝ)/320000000000)) + ((5967553945585029:ℝ)/800000000)*((99012783759:ℝ)/50000000000000) - ((875532217592702967:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e01 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 0 1 - (((-769025205870522981:ℝ)/1000000000000) + (q - ((79:ℝ)/20)) * ((-129004593917967179:ℝ)/100000000000))| ≤ ((550890165796614907:ℝ)/100000000000000) := by
+theorem piece8_e01 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 0 1 - (((-156801359383304187:ℝ)/200000000000) + (q - ((79:ℝ)/20)) * ((-132882546443952699:ℝ)/100000000000))| ≤ ((281161010493729333:ℝ)/50000000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_01 q = ∑ e ∈ Finset.range 8, ([((-57611726958477:ℝ)/80000000), ((-5104836565941:ℝ)/4000000), ((-193854553137:ℝ)/200000), ((-817951701:ℝ)/2000), ((-10353819:ℝ)/100), ((-393183:ℝ)/25), ((-6636:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_01; ring
   have h12 : centralNum12_01 q = ∑ e ∈ Finset.range 12, ([((-10545477665519027354811:ℝ)/12800000000000), ((-841917226428430766097:ℝ)/320000000000), ((-24338916887049802341:ℝ)/6400000000), ((-525876126086497011:ℝ)/160000000), ((-15104724165646683:ℝ)/8000000), ((-757240418425617:ℝ)/1000000), ((-21640391072601:ℝ)/100000), ((-22036758351:ℝ)/500), ((-626955003:ℝ)/100), ((-2966514:ℝ)/5), ((-168084:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_01; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-57611726958477:ℝ)/80000000), ((-5104836565941:ℝ)/4000000), ((-193854553137:ℝ)/200000), ((-817951701:ℝ)/2000), ((-10353819:ℝ)/100), ((-393183:ℝ)/25), ((-6636:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0) 6 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-10545477665519027354811:ℝ)/12800000000000), ((-841917226428430766097:ℝ)/320000000000), ((-24338916887049802341:ℝ)/6400000000), ((-525876126086497011:ℝ)/160000000), ((-15104724165646683:ℝ)/8000000), ((-757240418425617:ℝ)/1000000), ((-21640391072601:ℝ)/100000), ((-22036758351:ℝ)/500), ((-626955003:ℝ)/100), ((-2966514:ℝ)/5), ((-168084:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0) 10 ht
@@ -1578,59 +154,63 @@ theorem piece12_e01 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 8, ([((-57611726958477:ℝ)/80000000), ((-5104836565941:ℝ)/4000000), ((-193854553137:ℝ)/200000), ((-817951701:ℝ)/2000), ((-10353819:ℝ)/100), ((-393183:ℝ)/25), ((-6636:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e) - (((-57611726958477:ℝ)/80000000) + ((-5104836565941:ℝ)/4000000)*t)| ≤ ((98998237791:ℝ)/40000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 12, ([((-10545477665519027354811:ℝ)/12800000000000), ((-841917226428430766097:ℝ)/320000000000), ((-24338916887049802341:ℝ)/6400000000), ((-525876126086497011:ℝ)/160000000), ((-15104724165646683:ℝ)/8000000), ((-757240418425617:ℝ)/1000000), ((-21640391072601:ℝ)/100000), ((-22036758351:ℝ)/500), ((-626955003:ℝ)/100), ((-2966514:ℝ)/5), ((-168084:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e) - ((-10545477665519027354811:ℝ)/12800000000000) - ((-841917226428430766097:ℝ)/320000000000)*t| ≤ ((25421493124822222599:ℝ)/2560000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 12, ([((-10545477665519027354811:ℝ)/12800000000000), ((-841917226428430766097:ℝ)/320000000000), ((-24338916887049802341:ℝ)/6400000000), ((-525876126086497011:ℝ)/160000000), ((-15104724165646683:ℝ)/8000000), ((-757240418425617:ℝ)/1000000), ((-21640391072601:ℝ)/100000), ((-22036758351:ℝ)/500), ((-626955003:ℝ)/100), ((-2966514:ℝ)/5), ((-168084:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ (965345280:ℝ) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-6288:ℝ), (81024:ℝ), (-238720:ℝ), (246784:ℝ), (-98304:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m13' : |centralNum13_01 q| ≤ (739080667136:ℝ) := by
-    rw [centralNum13_01_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-7368:ℝ), (59208:ℝ), (-155734:ℝ), (205300:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m23' : |centralNum23_01 q| ≤ (511756599296:ℝ) := by
-    rw [centralNum23_01_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_01 q = ∑ e ∈ Finset.range 12, ([((-18202507190833906007407:ℝ)/100000000000), ((-2699654712237632744603:ℝ)/5000000000), ((-568715708891446203:ℝ)/781250), ((-735991526555009457:ℝ)/1250000), ((-4959645808158924:ℝ)/15625), ((-1871048635114008:ℝ)/15625), ((-100800235745748:ℝ)/3125), ((-775453417584:ℝ)/125), ((-20869544352:ℝ)/25), ((-374245504:ℝ)/5), ((-20122624:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_01; ring
+  have m13 := abs_poly_le (fun e => ([((-18202507190833906007407:ℝ)/100000000000), ((-2699654712237632744603:ℝ)/5000000000), ((-568715708891446203:ℝ)/781250), ((-735991526555009457:ℝ)/1250000), ((-4959645808158924:ℝ)/15625), ((-1871048635114008:ℝ)/15625), ((-100800235745748:ℝ)/3125), ((-775453417584:ℝ)/125), ((-20869544352:ℝ)/25), ((-374245504:ℝ)/5), ((-20122624:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m13' : |centralNum13_01 q| ≤ (210917130240:ℝ) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_01 q = ∑ e ∈ Finset.range 12, ([((-31932284231945688635771:ℝ)/512000000000), ((-2634684501929201440073:ℝ)/12800000000), ((-387780954430099289961:ℝ)/1280000000), ((-8436511743964216143:ℝ)/32000000), ((-241891875141121383:ℝ)/1600000), ((-2404570361128761:ℝ)/40000), ((-67760866572777:ℝ)/4000), ((-338736954891:ℝ)/100), ((-9429384039:ℝ)/20), (-43534634:ℝ), (-2401700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_01; ring
+  have m23 := abs_poly_le (fun e => ([((-31932284231945688635771:ℝ)/512000000000), ((-2634684501929201440073:ℝ)/12800000000), ((-387780954430099289961:ℝ)/1280000000), ((-8436511743964216143:ℝ)/32000000), ((-241891875141121383:ℝ)/1600000), ((-2404570361128761:ℝ)/40000), ((-67760866572777:ℝ)/4000), ((-338736954891:ℝ)/100), ((-9429384039:ℝ)/20), (-43534634:ℝ), (-2401700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m23' : |centralNum23_01 q| ≤ (73450782720:ℝ) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-634629436629:ℝ)/1000000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-291667288841:ℝ)/50000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-57611726958477:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-10545477665519027354811:ℝ)/12800000000000) + ((46108585475767759:ℝ)/16000000000)*((-634629436629:ℝ)/1000000000000000) - ((-769025205870522981:ℝ)/1000000000000)) (β := ((-5104836565941:ℝ)/4000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-841917226428430766097:ℝ)/320000000000) - 3*((-10545477665519027354811:ℝ)/12800000000000)) + ((5967553945585029:ℝ)/800000000)*((-634629436629:ℝ)/1000000000000000) - ((-129004593917967179:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_12 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-634629436629:ℝ)/1000000000000000) + (0:ℝ) := by
-    rw [pieceW_01, pieceX_12, sym4_01, hexp3]; ring
+  have c7 := affine_round (α := ((-57611726958477:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-10545477665519027354811:ℝ)/12800000000000) + ((46108585475767759:ℝ)/16000000000)*((-291667288841:ℝ)/50000000000000) - ((-156801359383304187:ℝ)/200000000000)) (β := ((-5104836565941:ℝ)/4000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-841917226428430766097:ℝ)/320000000000) - 3*((-10545477665519027354811:ℝ)/12800000000000)) + ((5967553945585029:ℝ)/800000000)*((-291667288841:ℝ)/50000000000000) - ((-132882546443952699:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_8 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-291667288841:ℝ)/50000000000000) + (0:ℝ) := by
+    rw [pieceW_01, pieceX_8, sym4_01, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((7438363724622348679565462922174095367769812709359318645618780942331279:ℝ)/15698850424867760125388477557669481358626449262666096353259200000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-57611726958477:ℝ)/80000000) + ((-5104836565941:ℝ)/4000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-10545477665519027354811:ℝ)/12800000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-841917226428430766097:ℝ)/320000000000) - 3*((-10545477665519027354811:ℝ)/12800000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((-634629436629:ℝ)/1000000000000000) - (((-769025205870522981:ℝ)/1000000000000) + t * ((-129004593917967179:ℝ)/100000000000)) = (((-57611726958477:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-10545477665519027354811:ℝ)/12800000000000) + ((46108585475767759:ℝ)/16000000000)*((-634629436629:ℝ)/1000000000000000) - ((-769025205870522981:ℝ)/1000000000000)) + t*(((-5104836565941:ℝ)/4000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-841917226428430766097:ℝ)/320000000000) - 3*((-10545477665519027354811:ℝ)/12800000000000)) + ((5967553945585029:ℝ)/800000000)*((-634629436629:ℝ)/1000000000000000) - ((-129004593917967179:ℝ)/100000000000)) := by ring
+  refine entry_assemble (r7 := ((556841265297970067585500838132687113568893263458127174750091517605799:ℝ)/1962356303108470015673559694708685169828306157833262044157400000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-57611726958477:ℝ)/80000000) + ((-5104836565941:ℝ)/4000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-10545477665519027354811:ℝ)/12800000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-841917226428430766097:ℝ)/320000000000) - 3*((-10545477665519027354811:ℝ)/12800000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((-291667288841:ℝ)/50000000000000) - (((-156801359383304187:ℝ)/200000000000) + t * ((-132882546443952699:ℝ)/100000000000)) = (((-57611726958477:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-10545477665519027354811:ℝ)/12800000000000) + ((46108585475767759:ℝ)/16000000000)*((-291667288841:ℝ)/50000000000000) - ((-156801359383304187:ℝ)/200000000000)) + t*(((-5104836565941:ℝ)/4000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-841917226428430766097:ℝ)/320000000000) - 3*((-10545477665519027354811:ℝ)/12800000000000)) + ((5967553945585029:ℝ)/800000000)*((-291667288841:ℝ)/50000000000000) - ((-132882546443952699:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e02 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 0 2 - (((329177026029719493:ℝ)/10000000000000) + (q - ((79:ℝ)/20)) * ((-27533621446419653:ℝ)/2500000000000))| ≤ ((145242632663487421:ℝ)/100000000000000) := by
+theorem piece8_e02 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 0 2 - (((616375069778831787:ℝ)/10000000000000) + (q - ((79:ℝ)/20)) * ((633271455409388601:ℝ)/10000000000000))| ≤ ((33176899589866413:ℝ)/20000000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_02 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_02; ring
   have h12 : centralNum12_02 q = ∑ e ∈ Finset.range 13, ([((283712117303050252274799:ℝ)/2048000000000000), ((-93254281117533362170953:ℝ)/102400000000000), ((-17581993738909563239901:ℝ)/5120000000000), ((-257811444621804737871:ℝ)/51200000000), ((-1373819000580860463:ℝ)/320000000), ((-772679581027336629:ℝ)/320000000), ((-15146328649108797:ℝ)/16000000), ((-211701026232819:ℝ)/800000), ((-844807184109:ℝ)/16000), ((-5897972601:ℝ)/800), ((-137232441:ℝ)/200), ((-383103:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_02; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((283712117303050252274799:ℝ)/2048000000000000), ((-93254281117533362170953:ℝ)/102400000000000), ((-17581993738909563239901:ℝ)/5120000000000), ((-257811444621804737871:ℝ)/51200000000), ((-1373819000580860463:ℝ)/320000000), ((-772679581027336629:ℝ)/320000000), ((-15146328649108797:ℝ)/16000000), ((-211701026232819:ℝ)/800000), ((-844807184109:ℝ)/16000), ((-5897972601:ℝ)/800), ((-137232441:ℝ)/200), ((-383103:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0) 11 ht
@@ -1638,59 +218,63 @@ theorem piece12_e02 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 13, ([((283712117303050252274799:ℝ)/2048000000000000), ((-93254281117533362170953:ℝ)/102400000000000), ((-17581993738909563239901:ℝ)/5120000000000), ((-257811444621804737871:ℝ)/51200000000), ((-1373819000580860463:ℝ)/320000000), ((-772679581027336629:ℝ)/320000000), ((-15146328649108797:ℝ)/16000000), ((-211701026232819:ℝ)/800000), ((-844807184109:ℝ)/16000), ((-5897972601:ℝ)/800), ((-137232441:ℝ)/200), ((-383103:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e) - ((283712117303050252274799:ℝ)/2048000000000000) - ((-93254281117533362170953:ℝ)/102400000000000)*t| ≤ ((9463789900758445051923:ℝ)/1024000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 13, ([((283712117303050252274799:ℝ)/2048000000000000), ((-93254281117533362170953:ℝ)/102400000000000), ((-17581993738909563239901:ℝ)/5120000000000), ((-257811444621804737871:ℝ)/51200000000), ((-1373819000580860463:ℝ)/320000000), ((-772679581027336629:ℝ)/320000000), ((-15146328649108797:ℝ)/16000000), ((-211701026232819:ℝ)/800000), ((-844807184109:ℝ)/16000), ((-5897972601:ℝ)/800), ((-137232441:ℝ)/200), ((-383103:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((197946989111050252274799:ℝ)/1024000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82080:ℝ), (-967680:ℝ), (3257600:ℝ), (-4474880:ℝ), (2908160:ℝ), (-786432:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_02 q| ≤ (31002821394432:ℝ) := by
-    rw [centralNum13_02_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (87660:ℝ), (-702180:ℝ), ((7421435:ℝ)/4), ((-10854125:ℝ)/4), ((2828125:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_02 q| ≤ (12455905198080:ℝ) := by
-    rw [centralNum23_02_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_02 q = ∑ e ∈ Finset.range 13, ([((-1038813534902473497819843:ℝ)/250000000000), ((-171752298190419946208379:ℝ)/12500000000), ((-6508290946500678341509:ℝ)/312500000), ((-7473457699134574083:ℝ)/390625), ((-926747446734908793:ℝ)/78125), ((-408534996559422444:ℝ)/78125), ((-26256452762164968:ℝ)/15625), ((-1239354857106144:ℝ)/3125), ((-8527579675968:ℝ)/125), ((-208519857408:ℝ)/25), ((-17198886912:ℝ)/25), ((-171843584:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_02; ring
+  have m13 := abs_poly_le (fun e => ([((-1038813534902473497819843:ℝ)/250000000000), ((-171752298190419946208379:ℝ)/12500000000), ((-6508290946500678341509:ℝ)/312500000), ((-7473457699134574083:ℝ)/390625), ((-926747446734908793:ℝ)/78125), ((-408534996559422444:ℝ)/78125), ((-26256452762164968:ℝ)/15625), ((-1239354857106144:ℝ)/3125), ((-8527579675968:ℝ)/125), ((-208519857408:ℝ)/25), ((-17198886912:ℝ)/25), ((-171843584:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_02 q| ≤ (4896796966912:ℝ) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_02 q = ∑ e ∈ Finset.range 13, ([((1129151722500764707800279:ℝ)/3276800000000), ((118026006254916058850799:ℝ)/163840000000), ((3735525600838778214059:ℝ)/8192000000), ((-65301708561725013891:ℝ)/409600000), ((-1153547693637765687:ℝ)/2560000), ((-178993722588827037:ℝ)/512000), ((-4077272451842037:ℝ)/25600), ((-61753217167467:ℝ)/1280), ((-1286980690809:ℝ)/128), ((-45891245145:ℝ)/32), ((-1074827625:ℝ)/8), ((-14946875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_02; ring
+  have m23 := abs_poly_le (fun e => ([((1129151722500764707800279:ℝ)/3276800000000), ((118026006254916058850799:ℝ)/163840000000), ((3735525600838778214059:ℝ)/8192000000), ((-65301708561725013891:ℝ)/409600000), ((-1153547693637765687:ℝ)/2560000), ((-178993722588827037:ℝ)/512000), ((-4077272451842037:ℝ)/25600), ((-61753217167467:ℝ)/1280), ((-1286980690809:ℝ)/128), ((-45891245145:ℝ)/32), ((-1074827625:ℝ)/8), ((-14946875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_02 q| ≤ ((625494075356711544865137:ℝ)/1638400000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((867738853991:ℝ)/100000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((93216802503:ℝ)/5000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((283712117303050252274799:ℝ)/2048000000000000) + ((46108585475767759:ℝ)/16000000000)*((867738853991:ℝ)/100000000000000) - ((329177026029719493:ℝ)/10000000000000)) (β := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-93254281117533362170953:ℝ)/102400000000000) - 3*((283712117303050252274799:ℝ)/2048000000000000)) + ((5967553945585029:ℝ)/800000000)*((867738853991:ℝ)/100000000000000) - ((-27533621446419653:ℝ)/2500000000000)) ht
-  have hW : pieceW q pieceX_12 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((867738853991:ℝ)/100000000000000) + (0:ℝ) := by
-    rw [pieceW_02, pieceX_12, sym4_02, hexp3]; ring
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((283712117303050252274799:ℝ)/2048000000000000) + ((46108585475767759:ℝ)/16000000000)*((93216802503:ℝ)/5000000000000) - ((616375069778831787:ℝ)/10000000000000)) (β := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-93254281117533362170953:ℝ)/102400000000000) - 3*((283712117303050252274799:ℝ)/2048000000000000)) + ((5967553945585029:ℝ)/800000000)*((93216802503:ℝ)/5000000000000) - ((633271455409388601:ℝ)/10000000000000)) ht
+  have hW : pieceW q pieceX_8 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((93216802503:ℝ)/5000000000000) + (0:ℝ) := by
+    rw [pieceW_02, pieceX_8, sym4_02, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((21555953529135826982585401521445757684502032645668838958167645786341:ℝ)/1569885042486776012538847755766948135862644926266609635325920000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((283712117303050252274799:ℝ)/2048000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-93254281117533362170953:ℝ)/102400000000000) - 3*((283712117303050252274799:ℝ)/2048000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((867738853991:ℝ)/100000000000000) - (((329177026029719493:ℝ)/10000000000000) + t * ((-27533621446419653:ℝ)/2500000000000)) = ((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((283712117303050252274799:ℝ)/2048000000000000) + ((46108585475767759:ℝ)/16000000000)*((867738853991:ℝ)/100000000000000) - ((329177026029719493:ℝ)/10000000000000)) + t*((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-93254281117533362170953:ℝ)/102400000000000) - 3*((283712117303050252274799:ℝ)/2048000000000000)) + ((5967553945585029:ℝ)/800000000)*((867738853991:ℝ)/100000000000000) - ((-27533621446419653:ℝ)/2500000000000)) := by ring
+  refine entry_assemble (r7 := ((6762888739182354737526698732952067439202416921078046226177318699383:ℝ)/196235630310847001567355969470868516982830615783326204415740000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((283712117303050252274799:ℝ)/2048000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-93254281117533362170953:ℝ)/102400000000000) - 3*((283712117303050252274799:ℝ)/2048000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((93216802503:ℝ)/5000000000000) - (((616375069778831787:ℝ)/10000000000000) + t * ((633271455409388601:ℝ)/10000000000000)) = ((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((283712117303050252274799:ℝ)/2048000000000000) + ((46108585475767759:ℝ)/16000000000)*((93216802503:ℝ)/5000000000000) - ((616375069778831787:ℝ)/10000000000000)) + t*((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-93254281117533362170953:ℝ)/102400000000000) - 3*((283712117303050252274799:ℝ)/2048000000000000)) + ((5967553945585029:ℝ)/800000000)*((93216802503:ℝ)/5000000000000) - ((633271455409388601:ℝ)/10000000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e03 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 0 3 - (((-112446636098754597:ℝ)/1000000000000) + (q - ((79:ℝ)/20)) * ((-565255496982561493:ℝ)/1000000000000))| ≤ ((103000287559184559:ℝ)/10000000000000) := by
+theorem piece8_e03 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 0 3 - (((333745261481598167:ℝ)/10000000000000) + (q - ((79:ℝ)/20)) * ((-187800563964198687:ℝ)/1000000000000))| ≤ ((439959324127884169:ℝ)/50000000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_03 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_03; ring
   have h12 : centralNum12_03 q = ∑ e ∈ Finset.range 14, ([((1232776318558560297494027949:ℝ)/573440000000000000), ((51701761000879284507860547:ℝ)/7168000000000000), ((1828132104075339886652709:ℝ)/179200000000000), ((275521877561122898254893:ℝ)/35840000000000), ((2079631879967781249057:ℝ)/716800000000), ((-3731797513818488619:ℝ)/89600000000), ((-750035996165938977:ℝ)/1120000000), ((-44418357914167071:ℝ)/112000000), ((-2972847803484537:ℝ)/22400000), ((-102247163163:ℝ)/3500), ((-7582060323:ℝ)/1750), ((-587641311:ℝ)/1400), ((-3375513:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_03; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((1232776318558560297494027949:ℝ)/573440000000000000), ((51701761000879284507860547:ℝ)/7168000000000000), ((1828132104075339886652709:ℝ)/179200000000000), ((275521877561122898254893:ℝ)/35840000000000), ((2079631879967781249057:ℝ)/716800000000), ((-3731797513818488619:ℝ)/89600000000), ((-750035996165938977:ℝ)/1120000000), ((-44418357914167071:ℝ)/112000000), ((-2972847803484537:ℝ)/22400000), ((-102247163163:ℝ)/3500), ((-7582060323:ℝ)/1750), ((-587641311:ℝ)/1400), ((-3375513:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 12 ht
@@ -1698,59 +282,63 @@ theorem piece12_e03 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 14, ([((1232776318558560297494027949:ℝ)/573440000000000000), ((51701761000879284507860547:ℝ)/7168000000000000), ((1828132104075339886652709:ℝ)/179200000000000), ((275521877561122898254893:ℝ)/35840000000000), ((2079631879967781249057:ℝ)/716800000000), ((-3731797513818488619:ℝ)/89600000000), ((-750035996165938977:ℝ)/1120000000), ((-44418357914167071:ℝ)/112000000), ((-2972847803484537:ℝ)/22400000), ((-102247163163:ℝ)/3500), ((-7582060323:ℝ)/1750), ((-587641311:ℝ)/1400), ((-3375513:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((1232776318558560297494027949:ℝ)/573440000000000000) - ((51701761000879284507860547:ℝ)/7168000000000000)*t| ≤ ((15186512391687043117423623:ℝ)/573440000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 14, ([((1232776318558560297494027949:ℝ)/573440000000000000), ((51701761000879284507860547:ℝ)/7168000000000000), ((1828132104075339886652709:ℝ)/179200000000000), ((275521877561122898254893:ℝ)/35840000000000), ((2079631879967781249057:ℝ)/716800000000), ((-3731797513818488619:ℝ)/89600000000), ((-750035996165938977:ℝ)/1120000000), ((-44418357914167071:ℝ)/112000000), ((-2972847803484537:ℝ)/22400000), ((-102247163163:ℝ)/3500), ((-7582060323:ℝ)/1750), ((-587641311:ℝ)/1400), ((-3375513:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((4546155859230513995759043:ℝ)/1792000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-812160:ℝ), (8985600:ℝ), (-32225280:ℝ), (52019200:ℝ), ((-305233920:ℝ)/7), ((135528448:ℝ)/7), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_03 q| ≤ ((5688055304290304:ℝ)/7) := by
-    rw [centralNum13_03_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-833220:ℝ), (6469740:ℝ), ((-68603955:ℝ)/4), ((104396875:ℝ)/4), ((-1001334375:ℝ)/56), ((125828125:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_03 q| ≤ ((1436140273664000:ℝ)/7) := by
-    rw [centralNum23_03_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_03 q = ∑ e ∈ Finset.range 14, ([((-47834405874267093162283927:ℝ)/1093750000000), ((-8944634651812294793396399:ℝ)/54687500000), ((-385248702827974348624503:ℝ)/1367187500), ((-20245757035800387867364:ℝ)/68359375), ((-579444829012189681722:ℝ)/2734375), ((-298080780101390947608:ℝ)/2734375), ((-22685804015774622624:ℝ)/546875), ((-1293177025055743104:ℝ)/109375), ((-55215087864818688:ℝ)/21875), ((-348815004700672:ℝ)/875), ((-39614033895424:ℝ)/875), ((-612696686592:ℝ)/175), ((-5783683072:ℝ)/35), ((-25165824:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_03; ring
+  have m13 := abs_poly_le (fun e => ([((-47834405874267093162283927:ℝ)/1093750000000), ((-8944634651812294793396399:ℝ)/54687500000), ((-385248702827974348624503:ℝ)/1367187500), ((-20245757035800387867364:ℝ)/68359375), ((-579444829012189681722:ℝ)/2734375), ((-298080780101390947608:ℝ)/2734375), ((-22685804015774622624:ℝ)/546875), ((-1293177025055743104:ℝ)/109375), ((-55215087864818688:ℝ)/21875), ((-348815004700672:ℝ)/875), ((-39614033895424:ℝ)/875), ((-612696686592:ℝ)/175), ((-5783683072:ℝ)/35), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_03 q| ≤ ((368585702637568:ℝ)/7) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_03 q = ∑ e ∈ Finset.range 14, ([((171194235657793463691956753:ℝ)/183500800000000), ((11457720440636054643433027:ℝ)/2293760000000), ((79097852960032969433913:ℝ)/8192000000), ((113528993768688437676089:ℝ)/11468800000), ((7002831517331234459193:ℝ)/1146880000), ((9437236873796669823:ℝ)/4096000), ((163474539371439399:ℝ)/358400), ((-457570289987907:ℝ)/35840), ((-264857535105453:ℝ)/7168), ((-186857948945:ℝ)/16), ((-56694914375:ℝ)/28), ((-11891484375:ℝ)/56), ((-50796875:ℝ)/4), ((-2343750:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_03; ring
+  have m23 := abs_poly_le (fun e => ([((171194235657793463691956753:ℝ)/183500800000000), ((11457720440636054643433027:ℝ)/2293760000000), ((79097852960032969433913:ℝ)/8192000000), ((113528993768688437676089:ℝ)/11468800000), ((7002831517331234459193:ℝ)/1146880000), ((9437236873796669823:ℝ)/4096000), ((163474539371439399:ℝ)/358400), ((-457570289987907:ℝ)/35840), ((-264857535105453:ℝ)/7168), ((-186857948945:ℝ)/16), ((-56694914375:ℝ)/28), ((-11891484375:ℝ)/56), ((-50796875:ℝ)/4), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_03 q| ≤ ((55422197859091536394346037:ℝ)/45875200000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-408111547811:ℝ)/5000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-310213515871:ℝ)/10000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1232776318558560297494027949:ℝ)/573440000000000000) + ((46108585475767759:ℝ)/16000000000)*((-408111547811:ℝ)/5000000000000) - ((-112446636098754597:ℝ)/1000000000000)) (β := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((51701761000879284507860547:ℝ)/7168000000000000) - 3*((1232776318558560297494027949:ℝ)/573440000000000000)) + ((5967553945585029:ℝ)/800000000)*((-408111547811:ℝ)/5000000000000) - ((-565255496982561493:ℝ)/1000000000000)) ht
-  have hW : pieceW q pieceX_12 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-408111547811:ℝ)/5000000000000) + (0:ℝ) := by
-    rw [pieceW_03, pieceX_12, sym4_03, hexp3]; ring
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1232776318558560297494027949:ℝ)/573440000000000000) + ((46108585475767759:ℝ)/16000000000)*((-310213515871:ℝ)/10000000000000) - ((333745261481598167:ℝ)/10000000000000)) (β := (0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((51701761000879284507860547:ℝ)/7168000000000000) - 3*((1232776318558560297494027949:ℝ)/573440000000000000)) + ((5967553945585029:ℝ)/800000000)*((-310213515871:ℝ)/10000000000000) - ((-187800563964198687:ℝ)/1000000000000)) ht
+  have hW : pieceW q pieceX_8 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-310213515871:ℝ)/10000000000000) + (0:ℝ) := by
+    rw [pieceW_03, pieceX_8, sym4_03, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((633076156356472783232748043541667645330189635021101766221749926270597:ℝ)/1373649412175929010971491786296079618879814310483283430910180000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1232776318558560297494027949:ℝ)/573440000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((51701761000879284507860547:ℝ)/7168000000000000) - 3*((1232776318558560297494027949:ℝ)/573440000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((-408111547811:ℝ)/5000000000000) - (((-112446636098754597:ℝ)/1000000000000) + t * ((-565255496982561493:ℝ)/1000000000000)) = ((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1232776318558560297494027949:ℝ)/573440000000000000) + ((46108585475767759:ℝ)/16000000000)*((-408111547811:ℝ)/5000000000000) - ((-112446636098754597:ℝ)/1000000000000)) + t*((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((51701761000879284507860547:ℝ)/7168000000000000) - 3*((1232776318558560297494027949:ℝ)/573440000000000000)) + ((5967553945585029:ℝ)/800000000)*((-408111547811:ℝ)/5000000000000) - ((-565255496982561493:ℝ)/1000000000000)) := by ring
+  refine entry_assemble (r7 := ((94982185692637380471067191167720999313904854437708840513185022570217:ℝ)/2747298824351858021942983572592159237759628620966566861820360000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1232776318558560297494027949:ℝ)/573440000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((51701761000879284507860547:ℝ)/7168000000000000) - 3*((1232776318558560297494027949:ℝ)/573440000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((-310213515871:ℝ)/10000000000000) - (((333745261481598167:ℝ)/10000000000000) + t * ((-187800563964198687:ℝ)/1000000000000)) = ((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1232776318558560297494027949:ℝ)/573440000000000000) + ((46108585475767759:ℝ)/16000000000)*((-310213515871:ℝ)/10000000000000) - ((333745261481598167:ℝ)/10000000000000)) + t*((0:ℝ) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((51701761000879284507860547:ℝ)/7168000000000000) - 3*((1232776318558560297494027949:ℝ)/573440000000000000)) + ((5967553945585029:ℝ)/800000000)*((-310213515871:ℝ)/10000000000000) - ((-187800563964198687:ℝ)/1000000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e11 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 1 1 - (((73382031441816239:ℝ)/25000000000) + (q - ((79:ℝ)/20)) * ((323563734773396967:ℝ)/50000000000))| ≤ ((49163115552066389:ℝ)/2500000000000) := by
+theorem piece8_e11 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 1 1 - (((296241986134861517:ℝ)/100000000000) + (q - ((79:ℝ)/20)) * ((654152238568575783:ℝ)/100000000000))| ≤ ((198544758883560339:ℝ)/10000000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_11 q = ∑ e ∈ Finset.range 10, ([((8443156592610893:ℝ)/3000000000), ((2558624705727283:ℝ)/400000000), ((32923218116627:ℝ)/5000000), ((1007733751997:ℝ)/250000), ((20199601877:ℝ)/12500), ((548972501:ℝ)/1250), ((10089492:ℝ)/125), ((241168:ℝ)/25), ((3392:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_11; ring
   have h12 : centralNum12_11 q = ∑ e ∈ Finset.range 13, ([((1577919190040992389352159:ℝ)/1536000000000000), ((40181397360286785998029:ℝ)/25600000000000), ((-549879147498650358367:ℝ)/1280000000000), ((-38734224774859374917:ℝ)/12800000000), ((-284010436518355081:ℝ)/80000000), ((-186091598220902263:ℝ)/80000000), ((-4003969576254879:ℝ)/4000000), ((-59694537609073:ℝ)/200000), ((-250023975743:ℝ)/4000), ((-5440759561:ℝ)/600), ((-43543827:ℝ)/50), ((-249642:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_11; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((8443156592610893:ℝ)/3000000000), ((2558624705727283:ℝ)/400000000), ((32923218116627:ℝ)/5000000), ((1007733751997:ℝ)/250000), ((20199601877:ℝ)/12500), ((548972501:ℝ)/1250), ((10089492:ℝ)/125), ((241168:ℝ)/25), ((3392:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((1577919190040992389352159:ℝ)/1536000000000000), ((40181397360286785998029:ℝ)/25600000000000), ((-549879147498650358367:ℝ)/1280000000000), ((-38734224774859374917:ℝ)/12800000000), ((-284010436518355081:ℝ)/80000000), ((-186091598220902263:ℝ)/80000000), ((-4003969576254879:ℝ)/4000000), ((-59694537609073:ℝ)/200000), ((-250023975743:ℝ)/4000), ((-5440759561:ℝ)/600), ((-43543827:ℝ)/50), ((-249642:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0) 11 ht
@@ -1758,67 +346,71 @@ theorem piece12_e11 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((8443156592610893:ℝ)/3000000000), ((2558624705727283:ℝ)/400000000), ((32923218116627:ℝ)/5000000), ((1007733751997:ℝ)/250000), ((20199601877:ℝ)/12500), ((548972501:ℝ)/1250), ((10089492:ℝ)/125), ((241168:ℝ)/25), ((3392:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((8443156592610893:ℝ)/3000000000) + ((2558624705727283:ℝ)/400000000)*t)| ≤ ((407417141931007:ℝ)/24000000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 13, ([((1577919190040992389352159:ℝ)/1536000000000000), ((40181397360286785998029:ℝ)/25600000000000), ((-549879147498650358367:ℝ)/1280000000000), ((-38734224774859374917:ℝ)/12800000000), ((-284010436518355081:ℝ)/80000000), ((-186091598220902263:ℝ)/80000000), ((-4003969576254879:ℝ)/4000000), ((-59694537609073:ℝ)/200000), ((-250023975743:ℝ)/4000), ((-5440759561:ℝ)/600), ((-43543827:ℝ)/50), ((-249642:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e) - ((1577919190040992389352159:ℝ)/1536000000000000) - ((40181397360286785998029:ℝ)/25600000000000)*t| ≤ ((1132936500926373673123:ℝ)/768000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 13, ([((1577919190040992389352159:ℝ)/1536000000000000), ((40181397360286785998029:ℝ)/25600000000000), ((-549879147498650358367:ℝ)/1280000000000), ((-38734224774859374917:ℝ)/12800000000), ((-284010436518355081:ℝ)/80000000), ((-186091598220902263:ℝ)/80000000), ((-4003969576254879:ℝ)/4000000), ((-59694537609073:ℝ)/200000), ((-250023975743:ℝ)/4000), ((-5440759561:ℝ)/600), ((-43543827:ℝ)/50), ((-249642:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((141727437926975457891041:ℝ)/128000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-3444:ℝ), (162624:ℝ), (-1531216:ℝ), (4800960:ℝ), (-6350848:ℝ), ((12025856:ℝ)/3), (-1048576:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_11 q| ≤ ((127279407939584:ℝ)/3) := by
-    rw [centralNum13_11_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-4074:ℝ), (159906:ℝ), (-1104799:ℝ), (2801499:ℝ), (-3931375:ℝ), ((5896250:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_11 q| ≤ ((52108923920384:ℝ)/3) := by
-    rw [centralNum23_11_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_11 q = ∑ e ∈ Finset.range 13, ([((-3992551706356085897064977:ℝ)/750000000000), ((-2650547804679114121227319:ℝ)/150000000000), ((-50406799096822180211597:ℝ)/1875000000), ((-154914168781083057199:ℝ)/6250000), ((-4819586473248556081:ℝ)/312500), ((-1065975240429146219:ℝ)/156250), ((-34370399911959804:ℝ)/15625), ((-1627671305713392:ℝ)/3125), ((-11235226988544:ℝ)/125), ((-826747893952:ℝ)/75), ((-68397242368:ℝ)/75), ((-685408256:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_11; ring
+  have m13 := abs_poly_le (fun e => ([((-3992551706356085897064977:ℝ)/750000000000), ((-2650547804679114121227319:ℝ)/150000000000), ((-50406799096822180211597:ℝ)/1875000000), ((-154914168781083057199:ℝ)/6250000), ((-4819586473248556081:ℝ)/312500), ((-1065975240429146219:ℝ)/156250), ((-34370399911959804:ℝ)/15625), ((-1627671305713392:ℝ)/3125), ((-11235226988544:ℝ)/125), ((-826747893952:ℝ)/75), ((-68397242368:ℝ)/75), ((-685408256:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_11 q| ≤ ((18831972352000:ℝ)/3) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_11 q = ∑ e ∈ Finset.range 13, ([((6503624790073169291977699:ℝ)/12288000000000), ((735053033783368181647259:ℝ)/614400000000), ((29561549809938811663639:ℝ)/30720000000), ((51920925360303479803:ℝ)/512000000), ((-1336729465370369749:ℝ)/3200000), ((-251001199138999979:ℝ)/640000), ((-6118790550699939:ℝ)/32000), ((-96060820092669:ℝ)/1600), ((-2048167845903:ℝ)/160), ((-44532796649:ℝ)/24), ((-1055851625:ℝ)/6), ((-29653750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_11; ring
+  have m23 := abs_poly_le (fun e => ([((6503624790073169291977699:ℝ)/12288000000000), ((735053033783368181647259:ℝ)/614400000000), ((29561549809938811663639:ℝ)/30720000000), ((51920925360303479803:ℝ)/512000000), ((-1336729465370369749:ℝ)/3200000), ((-251001199138999979:ℝ)/640000), ((-6118790550699939:ℝ)/32000), ((-96060820092669:ℝ)/1600), ((-2048167845903:ℝ)/160), ((-44532796649:ℝ)/24), ((-1055851625:ℝ)/6), ((-29653750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_11 q| ≤ ((605702396771018199288001:ℝ)/1024000000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((107968838179:ℝ)/5000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((155055259757:ℝ)/5000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1))| ≤ ((358567126958080000000000000000000:ℝ)/40171799139602044830579860077923579) := by
     rw [abs_neg, tailWeight_1, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ (4:ℝ)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*(4:ℝ)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece12_Et h0
+    have hx := piece8_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((4814744136400:ℝ)/531441)) ≤ (4:ℝ)^6*(8000*(2*(4:ℝ)-3)^2*(1/((831493600485514841979407800409:ℝ)/1000000000000))*((4814744136400:ℝ)/531441)) := by
           gcongr
       _ ≤ ((358567126958080000000000000000000:ℝ)/40171799139602044830579860077923579) := by norm_num
-  have c7 := affine_round (α := ((8443156592610893:ℝ)/3000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1577919190040992389352159:ℝ)/1536000000000000) + ((46108585475767759:ℝ)/16000000000)*((107968838179:ℝ)/5000000000000) - ((73382031441816239:ℝ)/25000000000)) (β := ((2558624705727283:ℝ)/400000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((40181397360286785998029:ℝ)/25600000000000) - 3*((1577919190040992389352159:ℝ)/1536000000000000)) + ((5967553945585029:ℝ)/800000000)*((107968838179:ℝ)/5000000000000) - ((323563734773396967:ℝ)/50000000000)) ht
-  have hW : pieceW q pieceX_12 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((107968838179:ℝ)/5000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
-    rw [pieceW_11, pieceX_12, sym4_11, hexp3]; ring
+  have c7 := affine_round (α := ((8443156592610893:ℝ)/3000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1577919190040992389352159:ℝ)/1536000000000000) + ((46108585475767759:ℝ)/16000000000)*((155055259757:ℝ)/5000000000000) - ((296241986134861517:ℝ)/100000000000)) (β := ((2558624705727283:ℝ)/400000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((40181397360286785998029:ℝ)/25600000000000) - 3*((1577919190040992389352159:ℝ)/1536000000000000)) + ((5967553945585029:ℝ)/800000000)*((155055259757:ℝ)/5000000000000) - ((654152238568575783:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_8 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((155055259757:ℝ)/5000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
+    rw [pieceW_11, pieceX_8, sym4_11, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((1118627709816561379464016162458769019457723713584887007314153115150987:ℝ)/235482756373016401880827163365042220379396738939991445298888000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((8443156592610893:ℝ)/3000000000) + ((2558624705727283:ℝ)/400000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1577919190040992389352159:ℝ)/1536000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((40181397360286785998029:ℝ)/25600000000000) - 3*((1577919190040992389352159:ℝ)/1536000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((107968838179:ℝ)/5000000000000) - (((73382031441816239:ℝ)/25000000000) + t * ((323563734773396967:ℝ)/50000000000)) = (((8443156592610893:ℝ)/3000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1577919190040992389352159:ℝ)/1536000000000000) + ((46108585475767759:ℝ)/16000000000)*((107968838179:ℝ)/5000000000000) - ((73382031441816239:ℝ)/25000000000)) + t*(((2558624705727283:ℝ)/400000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((40181397360286785998029:ℝ)/25600000000000) - 3*((1577919190040992389352159:ℝ)/1536000000000000)) + ((5967553945585029:ℝ)/800000000)*((107968838179:ℝ)/5000000000000) - ((323563734773396967:ℝ)/50000000000)) := by ring
+  refine entry_assemble (r7 := ((293944931954234352026406469941159380133170127625744371624960015837431:ℝ)/588706890932541004702067908412605550948491847349978613247220000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((8443156592610893:ℝ)/3000000000) + ((2558624705727283:ℝ)/400000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1577919190040992389352159:ℝ)/1536000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((40181397360286785998029:ℝ)/25600000000000) - 3*((1577919190040992389352159:ℝ)/1536000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((155055259757:ℝ)/5000000000000) - (((296241986134861517:ℝ)/100000000000) + t * ((654152238568575783:ℝ)/100000000000)) = (((8443156592610893:ℝ)/3000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((1577919190040992389352159:ℝ)/1536000000000000) + ((46108585475767759:ℝ)/16000000000)*((155055259757:ℝ)/5000000000000) - ((296241986134861517:ℝ)/100000000000)) + t*(((2558624705727283:ℝ)/400000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((40181397360286785998029:ℝ)/25600000000000) - 3*((1577919190040992389352159:ℝ)/1536000000000000)) + ((5967553945585029:ℝ)/800000000)*((155055259757:ℝ)/5000000000000) - ((654152238568575783:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e12 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 1 2 - (((-90983402398200443:ℝ)/500000000000) + (q - ((79:ℝ)/20)) * ((-43072035642634809:ℝ)/125000000000))| ≤ ((19834445401425567:ℝ)/1000000000000) := by
+theorem piece8_e12 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 1 2 - (((-8239279348644549:ℝ)/15625000000) + (q - ((79:ℝ)/20)) * ((-123849973557735837:ℝ)/100000000000))| ≤ ((52056678047625991:ℝ)/2500000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_12 q = ∑ e ∈ Finset.range 9, ([((-845701257757559:ℝ)/1920000000), ((-17394599823547:ℝ)/24000000), ((-548923491533:ℝ)/1200000), ((-7174210489:ℝ)/60000), ((4162747:ℝ)/1200), ((1538051:ℝ)/150), ((39854:ℝ)/15), ((904:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_12; ring
   have h12 : centralNum12_12 q = ∑ e ∈ Finset.range 14, ([((915537286777933886509519469:ℝ)/245760000000000000), ((48413560242679404977347987:ℝ)/3072000000000000), ((2084988305813728723730749:ℝ)/76800000000000), ((395036059980898943447693:ℝ)/15360000000000), ((4493656702574329333537:ℝ)/307200000000), ((183002092631703069461:ℝ)/38400000000), ((226964025303549583:ℝ)/480000000), ((-15702641395300031:ℝ)/48000000), ((-1778624929502137:ℝ)/9600000), ((-12541088993:ℝ)/250), ((-2094959271:ℝ)/250), ((-175995477:ℝ)/200), ((-1073331:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_12; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-845701257757559:ℝ)/1920000000), ((-17394599823547:ℝ)/24000000), ((-548923491533:ℝ)/1200000), ((-7174210489:ℝ)/60000), ((4162747:ℝ)/1200), ((1538051:ℝ)/150), ((39854:ℝ)/15), ((904:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0) 7 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((915537286777933886509519469:ℝ)/245760000000000000), ((48413560242679404977347987:ℝ)/3072000000000000), ((2084988305813728723730749:ℝ)/76800000000000), ((395036059980898943447693:ℝ)/15360000000000), ((4493656702574329333537:ℝ)/307200000000), ((183002092631703069461:ℝ)/38400000000), ((226964025303549583:ℝ)/480000000), ((-15702641395300031:ℝ)/48000000), ((-1778624929502137:ℝ)/9600000), ((-12541088993:ℝ)/250), ((-2094959271:ℝ)/250), ((-175995477:ℝ)/200), ((-1073331:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0) 12 ht
@@ -1826,59 +418,63 @@ theorem piece12_e12 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 9, ([((-845701257757559:ℝ)/1920000000), ((-17394599823547:ℝ)/24000000), ((-548923491533:ℝ)/1200000), ((-7174210489:ℝ)/60000), ((4162747:ℝ)/1200), ((1538051:ℝ)/150), ((39854:ℝ)/15), ((904:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((-845701257757559:ℝ)/1920000000) + ((-17394599823547:ℝ)/24000000)*t)| ≤ ((2224438667923:ℝ)/1920000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 14, ([((915537286777933886509519469:ℝ)/245760000000000000), ((48413560242679404977347987:ℝ)/3072000000000000), ((2084988305813728723730749:ℝ)/76800000000000), ((395036059980898943447693:ℝ)/15360000000000), ((4493656702574329333537:ℝ)/307200000000), ((183002092631703069461:ℝ)/38400000000), ((226964025303549583:ℝ)/480000000), ((-15702641395300031:ℝ)/48000000), ((-1778624929502137:ℝ)/9600000), ((-12541088993:ℝ)/250), ((-2094959271:ℝ)/250), ((-175995477:ℝ)/200), ((-1073331:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e) - ((915537286777933886509519469:ℝ)/245760000000000000) - ((48413560242679404977347987:ℝ)/3072000000000000)*t| ≤ ((3498562946899087346960143:ℝ)/49152000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 14, ([((915537286777933886509519469:ℝ)/245760000000000000), ((48413560242679404977347987:ℝ)/3072000000000000), ((2084988305813728723730749:ℝ)/76800000000000), ((395036059980898943447693:ℝ)/15360000000000), ((4493656702574329333537:ℝ)/307200000000), ((183002092631703069461:ℝ)/38400000000), ((226964025303549583:ℝ)/480000000), ((-15702641395300031:ℝ)/48000000), ((-1778624929502137:ℝ)/9600000), ((-12541088993:ℝ)/250), ((-2094959271:ℝ)/250), ((-175995477:ℝ)/200), ((-1073331:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((281671085620786735788428033:ℝ)/61440000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (122790:ℝ), (-3586680:ℝ), (28529720:ℝ), (-90761600:ℝ), (137804800:ℝ), ((-332136448:ℝ)/3), ((141819904:ℝ)/3), (-8388608:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_12 q| ≤ ((5971935472197632:ℝ)/3) := by
-    rw [centralNum13_12_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (132555:ℝ), (-3252375:ℝ), ((39743695:ℝ)/2), ((-197111615:ℝ)/4), ((281947375:ℝ)/4), ((-1100234375:ℝ)/24), ((131828125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_12 q| ≤ ((1551607924183040:ℝ)/3) := by
-    rw [centralNum23_12_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_12 q = ∑ e ∈ Finset.range 14, ([((-2777297229155541617057413843:ℝ)/30000000000000), ((-16402542535495339861226933:ℝ)/46875000000), ((-11414927233872581728450031:ℝ)/18750000000), ((-605382514054125321113573:ℝ)/937500000), ((-2912481932104403717619:ℝ)/6250000), ((-188789553959966628457:ℝ)/781250), ((-7238597416281006518:ℝ)/78125), ((-415594830818789448:ℝ)/15625), ((-17865941498682696:ℝ)/3125), ((-340800386407552:ℝ)/375), ((-38944148102144:ℝ)/375), ((-605913874432:ℝ)/75), ((-5752225792:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_12; ring
+  have m13 := abs_poly_le (fun e => ([((-2777297229155541617057413843:ℝ)/30000000000000), ((-16402542535495339861226933:ℝ)/46875000000), ((-11414927233872581728450031:ℝ)/18750000000), ((-605382514054125321113573:ℝ)/937500000), ((-2912481932104403717619:ℝ)/6250000), ((-188789553959966628457:ℝ)/781250), ((-7238597416281006518:ℝ)/78125), ((-415594830818789448:ℝ)/15625), ((-17865941498682696:ℝ)/3125), ((-340800386407552:ℝ)/375), ((-38944148102144:ℝ)/375), ((-605913874432:ℝ)/75), ((-5752225792:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_12 q| ≤ (111678317109248:ℝ) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_12 q = ∑ e ∈ Finset.range 14, ([((102404641333056932986402001:ℝ)/78643200000000), ((9538232226514525730806739:ℝ)/983040000000), ((517083909388213004400647:ℝ)/24576000000), ((113578561901446652067353:ℝ)/4915200000), ((2476832039128340649747:ℝ)/163840000), ((25156062678466128019:ℝ)/4096000), ((73354445264649181:ℝ)/51200), ((439365098876127:ℝ)/5120), ((-62937352782927:ℝ)/1024), ((-1134603816755:ℝ)/48), ((-52549862875:ℝ)/12), ((-11421584375:ℝ)/24), ((-349578125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_12; ring
+  have m23 := abs_poly_le (fun e => ([((102404641333056932986402001:ℝ)/78643200000000), ((9538232226514525730806739:ℝ)/983040000000), ((517083909388213004400647:ℝ)/24576000000), ((113578561901446652067353:ℝ)/4915200000), ((2476832039128340649747:ℝ)/163840000), ((25156062678466128019:ℝ)/4096000), ((73354445264649181:ℝ)/51200), ((439365098876127:ℝ)/5120), ((-62937352782927:ℝ)/1024), ((-1134603816755:ℝ)/48), ((-52549862875:ℝ)/12), ((-11421584375:ℝ)/24), ((-349578125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_12 q| ≤ ((12077415153040719434296677:ℝ)/6553600000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((158770955539:ℝ)/10000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-25990185501:ℝ)/250000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-845701257757559:ℝ)/1920000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((915537286777933886509519469:ℝ)/245760000000000000) + ((46108585475767759:ℝ)/16000000000)*((158770955539:ℝ)/10000000000000) - ((-90983402398200443:ℝ)/500000000000)) (β := ((-17394599823547:ℝ)/24000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((48413560242679404977347987:ℝ)/3072000000000000) - 3*((915537286777933886509519469:ℝ)/245760000000000000)) + ((5967553945585029:ℝ)/800000000)*((158770955539:ℝ)/10000000000000) - ((-43072035642634809:ℝ)/125000000000)) ht
-  have hW : pieceW q pieceX_12 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((158770955539:ℝ)/10000000000000) + (0:ℝ) := by
-    rw [pieceW_12, pieceX_12, sym4_12, hexp3]; ring
+  have c7 := affine_round (α := ((-845701257757559:ℝ)/1920000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((915537286777933886509519469:ℝ)/245760000000000000) + ((46108585475767759:ℝ)/16000000000)*((-25990185501:ℝ)/250000000000) - ((-8239279348644549:ℝ)/15625000000)) (β := ((-17394599823547:ℝ)/24000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((48413560242679404977347987:ℝ)/3072000000000000) - 3*((915537286777933886509519469:ℝ)/245760000000000000)) + ((5967553945585029:ℝ)/800000000)*((-25990185501:ℝ)/250000000000) - ((-123849973557735837:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_8 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((-25990185501:ℝ)/250000000000) + (0:ℝ) := by
+    rw [pieceW_12, pieceX_8, sym4_12, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((170519408452168052575877372936636452555489263998353198636501764028933:ℝ)/470965512746032803761654326730084440758793477879982890597776000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-845701257757559:ℝ)/1920000000) + ((-17394599823547:ℝ)/24000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((915537286777933886509519469:ℝ)/245760000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((48413560242679404977347987:ℝ)/3072000000000000) - 3*((915537286777933886509519469:ℝ)/245760000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((158770955539:ℝ)/10000000000000) - (((-90983402398200443:ℝ)/500000000000) + t * ((-43072035642634809:ℝ)/125000000000)) = (((-845701257757559:ℝ)/1920000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((915537286777933886509519469:ℝ)/245760000000000000) + ((46108585475767759:ℝ)/16000000000)*((158770955539:ℝ)/10000000000000) - ((-90983402398200443:ℝ)/500000000000)) + t*(((-17394599823547:ℝ)/24000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((48413560242679404977347987:ℝ)/3072000000000000) - 3*((915537286777933886509519469:ℝ)/245760000000000000)) + ((5967553945585029:ℝ)/800000000)*((158770955539:ℝ)/10000000000000) - ((-43072035642634809:ℝ)/125000000000)) := by ring
+  refine entry_assemble (r7 := ((5271155952806713096584260800847896463230119828604294896362470095947:ℝ)/11774137818650820094041358168252111018969836946999572264944400000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-845701257757559:ℝ)/1920000000) + ((-17394599823547:ℝ)/24000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((915537286777933886509519469:ℝ)/245760000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((48413560242679404977347987:ℝ)/3072000000000000) - 3*((915537286777933886509519469:ℝ)/245760000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((-25990185501:ℝ)/250000000000) - (((-8239279348644549:ℝ)/15625000000) + t * ((-123849973557735837:ℝ)/100000000000)) = (((-845701257757559:ℝ)/1920000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((915537286777933886509519469:ℝ)/245760000000000000) + ((46108585475767759:ℝ)/16000000000)*((-25990185501:ℝ)/250000000000) - ((-8239279348644549:ℝ)/15625000000)) + t*(((-17394599823547:ℝ)/24000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((48413560242679404977347987:ℝ)/3072000000000000) - 3*((915537286777933886509519469:ℝ)/245760000000000000)) + ((5967553945585029:ℝ)/800000000)*((-25990185501:ℝ)/250000000000) - ((-123849973557735837:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e13 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 1 3 - (((897881223093624777:ℝ)/1000000000000) + (q - ((79:ℝ)/20)) * ((53054555286123291:ℝ)/12500000000))| ≤ ((37573053742016169:ℝ)/500000000000) := by
+theorem piece8_e13 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 1 3 - (((-159165013998287423:ℝ)/500000000000) + (q - ((79:ℝ)/20)) * ((27405695847861409:ℝ)/25000000000))| ≤ ((369550440891071341:ℝ)/10000000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_13 q = ∑ e ∈ Finset.range 7, ([((-729262366563:ℝ)/3200000), ((-27693507591:ℝ)/80000), ((-350550729:ℝ)/1600), ((-1479117:ℝ)/20), ((-56169:ℝ)/4), (-1422:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_13; ring
   have h12 : centralNum12_13 q = ∑ e ∈ Finset.range 15, ([((-237434246573064476126006351427:ℝ)/22937600000000000000), ((-32676821667291741579565328877:ℝ)/1146880000000000000), ((-407223901992962807308991073:ℝ)/14336000000000000), ((-9417726316792116913872831:ℝ)/1433600000000000), ((1701439147314429308302803:ℝ)/143360000000000), ((14187264881107786861647:ℝ)/1024000000000), ((1352464684613177024427:ℝ)/179200000000), ((10930990547476093971:ℝ)/4480000000), ((398818347364953699:ℝ)/896000000), ((849034883406069:ℝ)/44800000), ((-1713909822147:ℝ)/140000), ((-194284618551:ℝ)/56000), ((-364637781:ℝ)/800), ((-8859537:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_13; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-729262366563:ℝ)/3200000), ((-27693507591:ℝ)/80000), ((-350550729:ℝ)/1600), ((-1479117:ℝ)/20), ((-56169:ℝ)/4), (-1422:ℝ), (-60:ℝ)] : List ℝ).getD e 0) 5 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-237434246573064476126006351427:ℝ)/22937600000000000000), ((-32676821667291741579565328877:ℝ)/1146880000000000000), ((-407223901992962807308991073:ℝ)/14336000000000000), ((-9417726316792116913872831:ℝ)/1433600000000000), ((1701439147314429308302803:ℝ)/143360000000000), ((14187264881107786861647:ℝ)/1024000000000), ((1352464684613177024427:ℝ)/179200000000), ((10930990547476093971:ℝ)/4480000000), ((398818347364953699:ℝ)/896000000), ((849034883406069:ℝ)/44800000), ((-1713909822147:ℝ)/140000), ((-194284618551:ℝ)/56000), ((-364637781:ℝ)/800), ((-8859537:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 13 ht
@@ -1886,59 +482,63 @@ theorem piece12_e13 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 7, ([((-729262366563:ℝ)/3200000), ((-27693507591:ℝ)/80000), ((-350550729:ℝ)/1600), ((-1479117:ℝ)/20), ((-56169:ℝ)/4), (-1422:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e) - (((-729262366563:ℝ)/3200000) + ((-27693507591:ℝ)/80000)*t)| ≤ ((356523651:ℝ)/640000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 15, ([((-237434246573064476126006351427:ℝ)/22937600000000000000), ((-32676821667291741579565328877:ℝ)/1146880000000000000), ((-407223901992962807308991073:ℝ)/14336000000000000), ((-9417726316792116913872831:ℝ)/1433600000000000), ((1701439147314429308302803:ℝ)/143360000000000), ((14187264881107786861647:ℝ)/1024000000000), ((1352464684613177024427:ℝ)/179200000000), ((10930990547476093971:ℝ)/4480000000), ((398818347364953699:ℝ)/896000000), ((849034883406069:ℝ)/44800000), ((-1713909822147:ℝ)/140000), ((-194284618551:ℝ)/56000), ((-364637781:ℝ)/800), ((-8859537:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((-237434246573064476126006351427:ℝ)/22937600000000000000) - ((-32676821667291741579565328877:ℝ)/1146880000000000000)*t| ≤ ((58911948559283723538377049:ℝ)/819200000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 15, ([((-237434246573064476126006351427:ℝ)/22937600000000000000), ((-32676821667291741579565328877:ℝ)/1146880000000000000), ((-407223901992962807308991073:ℝ)/14336000000000000), ((-9417726316792116913872831:ℝ)/1433600000000000), ((1701439147314429308302803:ℝ)/143360000000000), ((14187264881107786861647:ℝ)/1024000000000), ((1352464684613177024427:ℝ)/179200000000), ((10930990547476093971:ℝ)/4480000000), ((398818347364953699:ℝ)/896000000), ((849034883406069:ℝ)/44800000), ((-1713909822147:ℝ)/140000), ((-194284618551:ℝ)/56000), ((-364637781:ℝ)/800), ((-8859537:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((67940150700004040491161559419:ℝ)/5734400000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2325540:ℝ), (52589280:ℝ), (-375655200:ℝ), (1192958720:ℝ), (-1965096960:ℝ), ((12857851904:ℝ)/7), ((-21171273728:ℝ)/21), ((914358272:ℝ)/3), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_13 q| ≤ ((1213062029848821760:ℝ)/21) := by
-    rw [centralNum13_13_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2399070:ℝ), (45666930:ℝ), (-251781675:ℝ), ((2452738385:ℝ)/4), ((-14104310625:ℝ)/16), ((74345740625:ℝ)/112), ((-74899765625:ℝ)/336), ((5161328125:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_13 q| ≤ ((211315817319424000:ℝ)/21) := by
-    rw [centralNum23_13_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_13 q = ∑ e ∈ Finset.range 15, ([((-172809233600652267029914094729:ℝ)/262500000000000), ((-19309443904225382727955683677:ℝ)/6562500000000), ((-659158269819604708115141589:ℝ)/109375000000), ((-8808599735761009683628433:ℝ)/1171875000), ((-2620889735115018517065511:ℝ)/410156250), ((-53622901737265067998282:ℝ)/13671875), ((-700932962128369219604:ℝ)/390625), ((-340221714710745667552:ℝ)/546875), ((-17976381205208774688:ℝ)/109375), ((-2161803244210759936:ℝ)/65625), ((-9248984461144064:ℝ)/1875), ((-468384063012864:ℝ)/875), ((-20897533001728:ℝ)/525), ((-27237810176:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_13; ring
+  have m13 := abs_poly_le (fun e => ([((-172809233600652267029914094729:ℝ)/262500000000000), ((-19309443904225382727955683677:ℝ)/6562500000000), ((-659158269819604708115141589:ℝ)/109375000000), ((-8808599735761009683628433:ℝ)/1171875000), ((-2620889735115018517065511:ℝ)/410156250), ((-53622901737265067998282:ℝ)/13671875), ((-700932962128369219604:ℝ)/390625), ((-340221714710745667552:ℝ)/546875), ((-17976381205208774688:ℝ)/109375), ((-2161803244210759936:ℝ)/65625), ((-9248984461144064:ℝ)/1875), ((-468384063012864:ℝ)/875), ((-20897533001728:ℝ)/525), ((-27237810176:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_13 q| ≤ ((5750413989494784:ℝ)/7) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_13 q = ∑ e ∈ Finset.range 15, ([((-178901659016213351679071707049:ℝ)/4404019200000000), ((-29732296699877095981143145879:ℝ)/220200960000000), ((-167261000433633725493523017:ℝ)/917504000000), ((-34132181432017836626611597:ℝ)/275251200000), ((-962257186568143030195879:ℝ)/27525120000), ((4492492903999176926233:ℝ)/458752000), ((151716045483053144059:ℝ)/11468800), ((1658281336753848067:ℝ)/286720), ((80212503607192323:ℝ)/57344), ((7517319701772395:ℝ)/43008), ((-22858541875:ℝ)/672), ((-1706917396875:ℝ)/448), ((-420751015625:ℝ)/672), ((-7799609375:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_13; ring
+  have m23 := abs_poly_le (fun e => ([((-178901659016213351679071707049:ℝ)/4404019200000000), ((-29732296699877095981143145879:ℝ)/220200960000000), ((-167261000433633725493523017:ℝ)/917504000000), ((-34132181432017836626611597:ℝ)/275251200000), ((-962257186568143030195879:ℝ)/27525120000), ((4492492903999176926233:ℝ)/458752000), ((151716045483053144059:ℝ)/11468800), ((1658281336753848067:ℝ)/286720), ((80212503607192323:ℝ)/57344), ((7517319701772395:ℝ)/43008), ((-22858541875:ℝ)/672), ((-1706917396875:ℝ)/448), ((-420751015625:ℝ)/672), ((-7799609375:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_13 q| ≤ ((3010147553560873688447364323:ℝ)/62914560000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((297892288439:ℝ)/500000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((542971281:ℝ)/3125000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-729262366563:ℝ)/3200000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-237434246573064476126006351427:ℝ)/22937600000000000000) + ((46108585475767759:ℝ)/16000000000)*((297892288439:ℝ)/500000000000) - ((897881223093624777:ℝ)/1000000000000)) (β := ((-27693507591:ℝ)/80000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-32676821667291741579565328877:ℝ)/1146880000000000000) - 3*((-237434246573064476126006351427:ℝ)/22937600000000000000)) + ((5967553945585029:ℝ)/800000000)*((297892288439:ℝ)/500000000000) - ((53054555286123291:ℝ)/12500000000)) ht
-  have hW : pieceW q pieceX_12 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((297892288439:ℝ)/500000000000) + (0:ℝ) := by
-    rw [pieceW_13, pieceX_12, sym4_13, hexp3]; ring
+  have c7 := affine_round (α := ((-729262366563:ℝ)/3200000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-237434246573064476126006351427:ℝ)/22937600000000000000) + ((46108585475767759:ℝ)/16000000000)*((542971281:ℝ)/3125000000) - ((-159165013998287423:ℝ)/500000000000)) (β := ((-27693507591:ℝ)/80000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-32676821667291741579565328877:ℝ)/1146880000000000000) - 3*((-237434246573064476126006351427:ℝ)/22937600000000000000)) + ((5967553945585029:ℝ)/800000000)*((542971281:ℝ)/3125000000) - ((27405695847861409:ℝ)/25000000000)) ht
+  have hW : pieceW q pieceX_8 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((542971281:ℝ)/3125000000) + (0:ℝ) := by
+    rw [pieceW_13, pieceX_8, sym4_13, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((30798624475549608625542109078216084631016987684043212750146370648877:ℝ)/54945976487037160438859671451843184755192572419331337236407200000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-729262366563:ℝ)/3200000) + ((-27693507591:ℝ)/80000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-237434246573064476126006351427:ℝ)/22937600000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-32676821667291741579565328877:ℝ)/1146880000000000000) - 3*((-237434246573064476126006351427:ℝ)/22937600000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((297892288439:ℝ)/500000000000) - (((897881223093624777:ℝ)/1000000000000) + t * ((53054555286123291:ℝ)/12500000000)) = (((-729262366563:ℝ)/3200000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-237434246573064476126006351427:ℝ)/22937600000000000000) + ((46108585475767759:ℝ)/16000000000)*((297892288439:ℝ)/500000000000) - ((897881223093624777:ℝ)/1000000000000)) + t*(((-27693507591:ℝ)/80000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-32676821667291741579565328877:ℝ)/1146880000000000000) - 3*((-237434246573064476126006351427:ℝ)/22937600000000000000)) + ((5967553945585029:ℝ)/800000000)*((297892288439:ℝ)/500000000000) - ((53054555286123291:ℝ)/12500000000)) := by ring
+  refine entry_assemble (r7 := ((151431017434915336538389042522577485017903785344797179076930400917:ℝ)/343412353043982252742872946574019904719953577620820857727545000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-729262366563:ℝ)/3200000) + ((-27693507591:ℝ)/80000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-237434246573064476126006351427:ℝ)/22937600000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-32676821667291741579565328877:ℝ)/1146880000000000000) - 3*((-237434246573064476126006351427:ℝ)/22937600000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((542971281:ℝ)/3125000000) - (((-159165013998287423:ℝ)/500000000000) + t * ((27405695847861409:ℝ)/25000000000)) = (((-729262366563:ℝ)/3200000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-237434246573064476126006351427:ℝ)/22937600000000000000) + ((46108585475767759:ℝ)/16000000000)*((542971281:ℝ)/3125000000) - ((-159165013998287423:ℝ)/500000000000)) + t*(((-27693507591:ℝ)/80000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-32676821667291741579565328877:ℝ)/1146880000000000000) - 3*((-237434246573064476126006351427:ℝ)/22937600000000000000)) + ((5967553945585029:ℝ)/800000000)*((542971281:ℝ)/3125000000) - ((27405695847861409:ℝ)/25000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e22 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 2 2 - (((148871056600675261:ℝ)/50000000000) + (q - ((79:ℝ)/20)) * ((104047213136618921:ℝ)/10000000000))| ≤ ((75736086379010643:ℝ)/500000000000) := by
+theorem piece8_e22 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 2 2 - (((109599760537191913:ℝ)/50000000000) + (q - ((79:ℝ)/20)) * ((837166325860581799:ℝ)/100000000000))| ≤ ((936695196391259697:ℝ)/10000000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_22 q = ∑ e ∈ Finset.range 10, ([((44537902036898209:ℝ)/19200000000), ((5455356485426929:ℝ)/960000000), ((74001357006661:ℝ)/12000000), ((784860652077:ℝ)/200000), ((97480229287:ℝ)/60000), ((1367570683:ℝ)/3000), ((2171683:ℝ)/25), ((162556:ℝ)/15), ((2404:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_22; ring
   have h12 : centralNum12_22 q = ∑ e ∈ Finset.range 15, ([((-805865502592299011971319865721:ℝ)/39321600000000000000), ((-121225001412572811892281183511:ℝ)/1966080000000000000), ((-1775141402367400188038182999:ℝ)/24576000000000000), ((-28527931854855771164966791:ℝ)/819200000000000), ((1495964828139224944190809:ℝ)/245760000000000), ((228540208771763705155867:ℝ)/12288000000000), ((1240409892235655401787:ℝ)/102400000000), ((33441483386035063073:ℝ)/7680000000), ((1386808963477545017:ℝ)/1536000000), ((5607741694745807:ℝ)/76800000), ((-566577873051:ℝ)/40000), ((-168414526431:ℝ)/32000), ((-2387276307:ℝ)/3200), ((-8626257:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_22; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((44537902036898209:ℝ)/19200000000), ((5455356485426929:ℝ)/960000000), ((74001357006661:ℝ)/12000000), ((784860652077:ℝ)/200000), ((97480229287:ℝ)/60000), ((1367570683:ℝ)/3000), ((2171683:ℝ)/25), ((162556:ℝ)/15), ((2404:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-805865502592299011971319865721:ℝ)/39321600000000000000), ((-121225001412572811892281183511:ℝ)/1966080000000000000), ((-1775141402367400188038182999:ℝ)/24576000000000000), ((-28527931854855771164966791:ℝ)/819200000000000), ((1495964828139224944190809:ℝ)/245760000000000), ((228540208771763705155867:ℝ)/12288000000000), ((1240409892235655401787:ℝ)/102400000000), ((33441483386035063073:ℝ)/7680000000), ((1386808963477545017:ℝ)/1536000000), ((5607741694745807:ℝ)/76800000), ((-566577873051:ℝ)/40000), ((-168414526431:ℝ)/32000), ((-2387276307:ℝ)/3200), ((-8626257:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 13 ht
@@ -1946,67 +546,71 @@ theorem piece12_e22 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((44537902036898209:ℝ)/19200000000), ((5455356485426929:ℝ)/960000000), ((74001357006661:ℝ)/12000000), ((784860652077:ℝ)/200000), ((97480229287:ℝ)/60000), ((1367570683:ℝ)/3000), ((2171683:ℝ)/25), ((162556:ℝ)/15), ((2404:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((44537902036898209:ℝ)/19200000000) + ((5455356485426929:ℝ)/960000000)*t)| ≤ ((152810738837431:ℝ)/9600000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 15, ([((-805865502592299011971319865721:ℝ)/39321600000000000000), ((-121225001412572811892281183511:ℝ)/1966080000000000000), ((-1775141402367400188038182999:ℝ)/24576000000000000), ((-28527931854855771164966791:ℝ)/819200000000000), ((1495964828139224944190809:ℝ)/245760000000000), ((228540208771763705155867:ℝ)/12288000000000), ((1240409892235655401787:ℝ)/102400000000), ((33441483386035063073:ℝ)/7680000000), ((1386808963477545017:ℝ)/1536000000), ((5607741694745807:ℝ)/76800000), ((-566577873051:ℝ)/40000), ((-168414526431:ℝ)/32000), ((-2387276307:ℝ)/3200), ((-8626257:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e) - ((-805865502592299011971319865721:ℝ)/39321600000000000000) - ((-121225001412572811892281183511:ℝ)/1966080000000000000)*t| ≤ ((606122106937783786682295983:ℝ)/3276800000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 15, ([((-805865502592299011971319865721:ℝ)/39321600000000000000), ((-121225001412572811892281183511:ℝ)/1966080000000000000), ((-1775141402367400188038182999:ℝ)/24576000000000000), ((-28527931854855771164966791:ℝ)/819200000000000), ((1495964828139224944190809:ℝ)/245760000000000), ((228540208771763705155867:ℝ)/12288000000000), ((1240409892235655401787:ℝ)/102400000000), ((33441483386035063073:ℝ)/7680000000), ((1386808963477545017:ℝ)/1536000000), ((5607741694745807:ℝ)/76800000), ((-566577873051:ℝ)/40000), ((-168414526431:ℝ)/32000), ((-2387276307:ℝ)/3200), ((-8626257:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e)| ≤ ((233590992322031307325947150257:ℝ)/9830400000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82125:ℝ), (-6663750:ℝ), (115666200:ℝ), (-750437000:ℝ), (2277262000:ℝ), (-3656824320:ℝ), (3359621120:ℝ), (-1817706496:ℝ), ((1625292800:ℝ)/3), (-67108864:ℝ)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_22 q| ≤ ((310324325077007360:ℝ)/3) := by
-    rw [centralNum13_22_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((178425:ℝ)/2), ((-13176075:ℝ)/2), ((777815145:ℝ)/8), ((-3968389015:ℝ)/8), ((9393350195:ℝ)/8), ((-26366634375:ℝ)/16), ((77851609375:ℝ)/64), ((-25714921875:ℝ)/64), ((5236328125:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_22 q| ≤ ((54686425057318400:ℝ)/3) := by
-    rw [centralNum23_22_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_22 q = ∑ e ∈ Finset.range 15, ([((-323103873479187474531966557603:ℝ)/300000000000000), ((-72913915262020312177114670123:ℝ)/15000000000000), ((-627306124801955525968696419:ℝ)/62500000000), ((-118170473479772332182851957:ℝ)/9375000000), ((-10105884362543038526278069:ℝ)/937500000), ((-103928597319433251848899:ℝ)/15625000), ((-1194318053820343200117:ℝ)/390625), ((-83169897132785780348:ℝ)/78125), ((-4411716359731854692:ℝ)/15625), ((-532465473902347184:ℝ)/9375), ((-16000240508744192:ℝ)/1875), ((-116118353821696:ℝ)/125), ((-5196084150272:ℝ)/75), ((-47540338688:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_22; ring
+  have m13 := abs_poly_le (fun e => ([((-323103873479187474531966557603:ℝ)/300000000000000), ((-72913915262020312177114670123:ℝ)/15000000000000), ((-627306124801955525968696419:ℝ)/62500000000), ((-118170473479772332182851957:ℝ)/9375000000), ((-10105884362543038526278069:ℝ)/937500000), ((-103928597319433251848899:ℝ)/15625000), ((-1194318053820343200117:ℝ)/390625), ((-83169897132785780348:ℝ)/78125), ((-4411716359731854692:ℝ)/15625), ((-532465473902347184:ℝ)/9375), ((-16000240508744192:ℝ)/1875), ((-116118353821696:ℝ)/125), ((-5196084150272:ℝ)/75), ((-47540338688:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_22 q| ≤ ((4040389940577280:ℝ)/3) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_22 q = ∑ e ∈ Finset.range 15, ([((-180885734461309020364091381593:ℝ)/2516582400000000), ((-30670930637995240588180168423:ℝ)/125829120000000), ((-176372079245414011059617989:ℝ)/524288000000), ((-37278116871697251247905509:ℝ)/157286400000), ((-1176888345812767386845383:ℝ)/15728640000), ((2967922820769611973881:ℝ)/262144000), ((142091664108393235083:ℝ)/6553600), ((1636075990285894139:ℝ)/163840), ((81671637028330931:ℝ)/32768), ((8018623329445915:ℝ)/24576), ((378725421875:ℝ)/96), ((-1591378921875:ℝ)/256), ((-409836015625:ℝ)/384), ((-7724609375:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_22; ring
+  have m23 := abs_poly_le (fun e => ([((-180885734461309020364091381593:ℝ)/2516582400000000), ((-30670930637995240588180168423:ℝ)/125829120000000), ((-176372079245414011059617989:ℝ)/524288000000), ((-37278116871697251247905509:ℝ)/157286400000), ((-1176888345812767386845383:ℝ)/15728640000), ((2967922820769611973881:ℝ)/262144000), ((142091664108393235083:ℝ)/6553600), ((1636075990285894139:ℝ)/163840), ((81671637028330931:ℝ)/32768), ((8018623329445915:ℝ)/24576), ((378725421875:ℝ)/96), ((-1591378921875:ℝ)/256), ((-409836015625:ℝ)/384), ((-7724609375:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_22 q| ≤ ((21374887294853641487982804757:ℝ)/251658240000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((126875021731:ℝ)/200000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((180913424351:ℝ)/500000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2))| ≤ ((2105697027059302400000000000000000000:ℝ)/3977008114820602438227406147714434321) := by
     rw [abs_neg, tailWeight_2, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ (4:ℝ)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*(4:ℝ)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece12_Et h0
+    have hx := piece8_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((2570430941234500:ℝ)/4782969)) ≤ (4:ℝ)^6*(8000*(2*(4:ℝ)-3)^2*(1/((831493600485514841979407800409:ℝ)/1000000000000))*((2570430941234500:ℝ)/4782969)) := by
           gcongr
       _ ≤ ((2105697027059302400000000000000000000:ℝ)/3977008114820602438227406147714434321) := by norm_num
-  have c7 := affine_round (α := ((44537902036898209:ℝ)/19200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-805865502592299011971319865721:ℝ)/39321600000000000000) + ((46108585475767759:ℝ)/16000000000)*((126875021731:ℝ)/200000000000) - ((148871056600675261:ℝ)/50000000000)) (β := ((5455356485426929:ℝ)/960000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-121225001412572811892281183511:ℝ)/1966080000000000000) - 3*((-805865502592299011971319865721:ℝ)/39321600000000000000)) + ((5967553945585029:ℝ)/800000000)*((126875021731:ℝ)/200000000000) - ((104047213136618921:ℝ)/10000000000)) ht
-  have hW : pieceW q pieceX_12 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((126875021731:ℝ)/200000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
-    rw [pieceW_22, pieceX_12, sym4_22, hexp3]; ring
+  have c7 := affine_round (α := ((44537902036898209:ℝ)/19200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-805865502592299011971319865721:ℝ)/39321600000000000000) + ((46108585475767759:ℝ)/16000000000)*((180913424351:ℝ)/500000000000) - ((109599760537191913:ℝ)/50000000000)) (β := ((5455356485426929:ℝ)/960000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-121225001412572811892281183511:ℝ)/1966080000000000000) - 3*((-805865502592299011971319865721:ℝ)/39321600000000000000)) + ((5967553945585029:ℝ)/800000000)*((180913424351:ℝ)/500000000000) - ((837166325860581799:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_8 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((180913424351:ℝ)/500000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
+    rw [pieceW_22, pieceX_8, sym4_22, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((48479230398138725704001889562779585919538725607038444259536471235527:ℝ)/23548275637301640188082716336504222037939673893999144529888800000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((44537902036898209:ℝ)/19200000000) + ((5455356485426929:ℝ)/960000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-805865502592299011971319865721:ℝ)/39321600000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-121225001412572811892281183511:ℝ)/1966080000000000000) - 3*((-805865502592299011971319865721:ℝ)/39321600000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((126875021731:ℝ)/200000000000) - (((148871056600675261:ℝ)/50000000000) + t * ((104047213136618921:ℝ)/10000000000)) = (((44537902036898209:ℝ)/19200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-805865502592299011971319865721:ℝ)/39321600000000000000) + ((46108585475767759:ℝ)/16000000000)*((126875021731:ℝ)/200000000000) - ((148871056600675261:ℝ)/50000000000)) + t*(((5455356485426929:ℝ)/960000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-121225001412572811892281183511:ℝ)/1966080000000000000) - 3*((-805865502592299011971319865721:ℝ)/39321600000000000000)) + ((5967553945585029:ℝ)/800000000)*((126875021731:ℝ)/200000000000) - ((104047213136618921:ℝ)/10000000000)) := by ring
+  refine entry_assemble (r7 := ((9240935251885269469595572126672833846706140734487272107147563562701:ℝ)/7849425212433880062694238778834740679313224631333048176629600000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((44537902036898209:ℝ)/19200000000) + ((5455356485426929:ℝ)/960000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-805865502592299011971319865721:ℝ)/39321600000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-121225001412572811892281183511:ℝ)/1966080000000000000) - 3*((-805865502592299011971319865721:ℝ)/39321600000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((180913424351:ℝ)/500000000000) - (((109599760537191913:ℝ)/50000000000) + t * ((837166325860581799:ℝ)/100000000000)) = (((44537902036898209:ℝ)/19200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-805865502592299011971319865721:ℝ)/39321600000000000000) + ((46108585475767759:ℝ)/16000000000)*((180913424351:ℝ)/500000000000) - ((109599760537191913:ℝ)/50000000000)) + t*(((5455356485426929:ℝ)/960000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((-121225001412572811892281183511:ℝ)/1966080000000000000) - 3*((-805865502592299011971319865721:ℝ)/39321600000000000000)) + ((5967553945585029:ℝ)/800000000)*((180913424351:ℝ)/500000000000) - ((837166325860581799:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e23 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 2 3 - (((-61351604094839123:ℝ)/20000000000) + (q - ((79:ℝ)/20)) * ((-158608411254540717:ℝ)/10000000000))| ≤ ((89519003511913993:ℝ)/50000000000) := by
+theorem piece8_e23 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 2 3 - (((373957979544008463:ℝ)/500000000000) + (q - ((79:ℝ)/20)) * ((-299225580406308207:ℝ)/50000000000))| ≤ ((226822459053232231:ℝ)/2500000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_23 q = ∑ e ∈ Finset.range 9, ([((214153894201203:ℝ)/320000000), ((40071726482557:ℝ)/32000000), ((1789853350633:ℝ)/1600000), ((50452924269:ℝ)/80000), ((193252249:ℝ)/800), ((12475439:ℝ)/200), ((102963:ℝ)/10), (974:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_23; ring
   have h12 : centralNum12_23 q = ∑ e ∈ Finset.range 16, ([((117793177910662233014115143375943:ℝ)/3670016000000000000000), ((180133932259683315481064202631:ℝ)/3670016000000000000), ((-60027511779492166136314220573:ℝ)/1835008000000000000), ((-6433874807756410559135918787:ℝ)/45875200000000000), ((-708101540277714081391713697:ℝ)/4587520000000000), ((-51822431677121056605583117:ℝ)/573440000000000), ((-67608558243653230365957:ℝ)/2293760000000), ((-985948406197110323407:ℝ)/286720000000), ((38038285233103283713:ℝ)/28672000000), ((516986975452815177:ℝ)/716800000), ((55556634737563389:ℝ)/358400000), ((1047403814463:ℝ)/71680), ((-93228320763:ℝ)/179200), ((-1291994307:ℝ)/4480), ((-13036707:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_23; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((214153894201203:ℝ)/320000000), ((40071726482557:ℝ)/32000000), ((1789853350633:ℝ)/1600000), ((50452924269:ℝ)/80000), ((193252249:ℝ)/800), ((12475439:ℝ)/200), ((102963:ℝ)/10), (974:ℝ), (40:ℝ)] : List ℝ).getD e 0) 7 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((117793177910662233014115143375943:ℝ)/3670016000000000000000), ((180133932259683315481064202631:ℝ)/3670016000000000000), ((-60027511779492166136314220573:ℝ)/1835008000000000000), ((-6433874807756410559135918787:ℝ)/45875200000000000), ((-708101540277714081391713697:ℝ)/4587520000000000), ((-51822431677121056605583117:ℝ)/573440000000000), ((-67608558243653230365957:ℝ)/2293760000000), ((-985948406197110323407:ℝ)/286720000000), ((38038285233103283713:ℝ)/28672000000), ((516986975452815177:ℝ)/716800000), ((55556634737563389:ℝ)/358400000), ((1047403814463:ℝ)/71680), ((-93228320763:ℝ)/179200), ((-1291994307:ℝ)/4480), ((-13036707:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 14 ht
@@ -2014,59 +618,63 @@ theorem piece12_e23 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 9, ([((214153894201203:ℝ)/320000000), ((40071726482557:ℝ)/32000000), ((1789853350633:ℝ)/1600000), ((50452924269:ℝ)/80000), ((193252249:ℝ)/800), ((12475439:ℝ)/200), ((102963:ℝ)/10), (974:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e) - (((214153894201203:ℝ)/320000000) + ((40071726482557:ℝ)/32000000)*t)| ≤ ((1841285115037:ℝ)/640000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 16, ([((117793177910662233014115143375943:ℝ)/3670016000000000000000), ((180133932259683315481064202631:ℝ)/3670016000000000000), ((-60027511779492166136314220573:ℝ)/1835008000000000000), ((-6433874807756410559135918787:ℝ)/45875200000000000), ((-708101540277714081391713697:ℝ)/4587520000000000), ((-51822431677121056605583117:ℝ)/573440000000000), ((-67608558243653230365957:ℝ)/2293760000000), ((-985948406197110323407:ℝ)/286720000000), ((38038285233103283713:ℝ)/28672000000), ((516986975452815177:ℝ)/716800000), ((55556634737563389:ℝ)/358400000), ((1047403814463:ℝ)/71680), ((-93228320763:ℝ)/179200), ((-1291994307:ℝ)/4480), ((-13036707:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e) - ((117793177910662233014115143375943:ℝ)/3670016000000000000000) - ((180133932259683315481064202631:ℝ)/3670016000000000000)*t| ≤ ((368122159808625016979825006441:ℝ)/3670016000000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 16, ([((117793177910662233014115143375943:ℝ)/3670016000000000000000), ((180133932259683315481064202631:ℝ)/3670016000000000000), ((-60027511779492166136314220573:ℝ)/1835008000000000000), ((-6433874807756410559135918787:ℝ)/45875200000000000), ((-708101540277714081391713697:ℝ)/4587520000000000), ((-51822431677121056605583117:ℝ)/573440000000000), ((-67608558243653230365957:ℝ)/2293760000000), ((-985948406197110323407:ℝ)/286720000000), ((38038285233103283713:ℝ)/28672000000), ((516986975452815177:ℝ)/716800000), ((55556634737563389:ℝ)/358400000), ((1047403814463:ℝ)/71680), ((-93228320763:ℝ)/179200), ((-1291994307:ℝ)/4480), ((-13036707:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e)| ≤ ((63583998341727511902574089256967:ℝ)/1835008000000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-7627725:ℝ)/2), (173988600:ℝ), (-2299614450:ℝ), (13088188200:ℝ), (-38221499200:ℝ), (63366115840:ℝ), ((-445610508288:ℝ)/7), ((841540698112:ℝ)/21), ((-326820167680:ℝ)/21), ((10133438464:ℝ)/3), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 hq1'
-  have m13' : |centralNum13_23 q| ≤ ((23080541166264989184:ℝ)/7) := by
-    rw [centralNum13_23_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-15801525:ℝ)/4), ((655493865:ℝ)/4), ((-7334421225:ℝ)/4), ((16442962485:ℝ)/2), ((-598626108395:ℝ)/32), ((414013307125:ℝ)/16), ((-4611984703125:ℝ)/224), ((399923828125:ℝ)/48), ((-4353201171875:ℝ)/2688), ((189736328125:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 hq1'
-  have m23' : |centralNum23_23 q| ≤ (410006567374670080:ℝ) := by
-    rw [centralNum23_23_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_23 q = ∑ e ∈ Finset.range 16, ([((-1440573549489201670572501986139:ℝ)/437500000000000), ((-75137753466595765574048144867:ℝ)/3500000000000), ((-155099601227458497882519515347:ℝ)/2625000000000), ((-592891717223064554342131351:ℝ)/6250000000), ((-221686601433882506269420141:ℝ)/2187500000), ((-126595897617173337771332441:ℝ)/1640625000), ((-9528665950542941053151:ℝ)/218750), ((-10199277982595452523814:ℝ)/546875), ((-670000768437918829528:ℝ)/109375), ((-33843051459292929216:ℝ)/21875), ((-932858870053975552:ℝ)/3125), ((-22717085863395328:ℝ)/525), ((-799026006720512:ℝ)/175), ((-11597653213184:ℝ)/35), ((-310781149184:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_23; ring
+  have m13 := abs_poly_le (fun e => ([((-1440573549489201670572501986139:ℝ)/437500000000000), ((-75137753466595765574048144867:ℝ)/3500000000000), ((-155099601227458497882519515347:ℝ)/2625000000000), ((-592891717223064554342131351:ℝ)/6250000000), ((-221686601433882506269420141:ℝ)/2187500000), ((-126595897617173337771332441:ℝ)/1640625000), ((-9528665950542941053151:ℝ)/218750), ((-10199277982595452523814:ℝ)/546875), ((-670000768437918829528:ℝ)/109375), ((-33843051459292929216:ℝ)/21875), ((-932858870053975552:ℝ)/3125), ((-22717085863395328:ℝ)/525), ((-799026006720512:ℝ)/175), ((-11597653213184:ℝ)/35), ((-310781149184:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 ht
+  have m13' : |centralNum13_23 q| ≤ ((95053685144986112:ℝ)/21) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_23 q = ∑ e ∈ Finset.range 16, ([((29181205234476360380757972059659:ℝ)/46976204800000000), ((1712829756072019776007965387787:ℝ)/1174405120000000), ((352349125660009848248049063817:ℝ)/352321536000000), ((-172874146257135588490925429:ℝ)/419430400000), ((-336375623144487884390478481:ℝ)/293601280000), ((-19154809887413062989855571:ℝ)/22020096000), ((-260347216742926233839449:ℝ)/734003200), ((-1407484973486986857807:ℝ)/18350080), ((-5040497275701260719:ℝ)/1835008), ((758544372536665765:ℝ)/229376), ((16019170354430375:ℝ)/16384), ((5234352406140625:ℝ)/43008), ((24085726953125:ℝ)/7168), ((-855583984375:ℝ)/896), ((-22490234375:ℝ)/192), ((-244140625:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_23; ring
+  have m23 := abs_poly_le (fun e => ([((29181205234476360380757972059659:ℝ)/46976204800000000), ((1712829756072019776007965387787:ℝ)/1174405120000000), ((352349125660009848248049063817:ℝ)/352321536000000), ((-172874146257135588490925429:ℝ)/419430400000), ((-336375623144487884390478481:ℝ)/293601280000), ((-19154809887413062989855571:ℝ)/22020096000), ((-260347216742926233839449:ℝ)/734003200), ((-1407484973486986857807:ℝ)/18350080), ((-5040497275701260719:ℝ)/1835008), ((758544372536665765:ℝ)/229376), ((16019170354430375:ℝ)/16384), ((5234352406140625:ℝ)/43008), ((24085726953125:ℝ)/7168), ((-855583984375:ℝ)/896), ((-22490234375:ℝ)/192), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 ht
+  have m23' : |centralNum23_23 q| ≤ ((8181771025471318582150858212929:ℝ)/11744051200000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-38654993997:ℝ)/20000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-38046623839:ℝ)/62500000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((214153894201203:ℝ)/320000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((117793177910662233014115143375943:ℝ)/3670016000000000000000) + ((46108585475767759:ℝ)/16000000000)*((-38654993997:ℝ)/20000000000) - ((-61351604094839123:ℝ)/20000000000)) (β := ((40071726482557:ℝ)/32000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((180133932259683315481064202631:ℝ)/3670016000000000000) - 3*((117793177910662233014115143375943:ℝ)/3670016000000000000000)) + ((5967553945585029:ℝ)/800000000)*((-38654993997:ℝ)/20000000000) - ((-158608411254540717:ℝ)/10000000000)) ht
-  have hW : pieceW q pieceX_12 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-38654993997:ℝ)/20000000000) + (0:ℝ) := by
-    rw [pieceW_23, pieceX_12, sym4_23, hexp3]; ring
+  have c7 := affine_round (α := ((214153894201203:ℝ)/320000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((117793177910662233014115143375943:ℝ)/3670016000000000000000) + ((46108585475767759:ℝ)/16000000000)*((-38046623839:ℝ)/62500000000) - ((373957979544008463:ℝ)/500000000000)) (β := ((40071726482557:ℝ)/32000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((180133932259683315481064202631:ℝ)/3670016000000000000) - 3*((117793177910662233014115143375943:ℝ)/3670016000000000000000)) + ((5967553945585029:ℝ)/800000000)*((-38046623839:ℝ)/62500000000) - ((-299225580406308207:ℝ)/50000000000)) ht
+  have hW : pieceW q pieceX_8 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-38046623839:ℝ)/62500000000) + (0:ℝ) := by
+    rw [pieceW_23, pieceX_8, sym4_23, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((10015622330801826073442489670801846930463458859561185677503456840181:ℝ)/5494597648703716043885967145184318475519257241933133723640720000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((214153894201203:ℝ)/320000000) + ((40071726482557:ℝ)/32000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((117793177910662233014115143375943:ℝ)/3670016000000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((180133932259683315481064202631:ℝ)/3670016000000000000) - 3*((117793177910662233014115143375943:ℝ)/3670016000000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((-38654993997:ℝ)/20000000000) - (((-61351604094839123:ℝ)/20000000000) + t * ((-158608411254540717:ℝ)/10000000000)) = (((214153894201203:ℝ)/320000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((117793177910662233014115143375943:ℝ)/3670016000000000000000) + ((46108585475767759:ℝ)/16000000000)*((-38654993997:ℝ)/20000000000) - ((-61351604094839123:ℝ)/20000000000)) + t*(((40071726482557:ℝ)/32000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((180133932259683315481064202631:ℝ)/3670016000000000000) - 3*((117793177910662233014115143375943:ℝ)/3670016000000000000000)) + ((5967553945585029:ℝ)/800000000)*((-38654993997:ℝ)/20000000000) - ((-158608411254540717:ℝ)/10000000000)) := by ring
+  refine entry_assemble (r7 := ((3533785821651258867641133592798299578803917608855440934781912671077:ℝ)/6868247060879645054857458931480398094399071552416417154550900000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((214153894201203:ℝ)/320000000) + ((40071726482557:ℝ)/32000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((117793177910662233014115143375943:ℝ)/3670016000000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((180133932259683315481064202631:ℝ)/3670016000000000000) - 3*((117793177910662233014115143375943:ℝ)/3670016000000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((-38046623839:ℝ)/62500000000) - (((373957979544008463:ℝ)/500000000000) + t * ((-299225580406308207:ℝ)/50000000000)) = (((214153894201203:ℝ)/320000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((117793177910662233014115143375943:ℝ)/3670016000000000000000) + ((46108585475767759:ℝ)/16000000000)*((-38046623839:ℝ)/62500000000) - ((373957979544008463:ℝ)/500000000000)) + t*(((40071726482557:ℝ)/32000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((180133932259683315481064202631:ℝ)/3670016000000000000) - 3*((117793177910662233014115143375943:ℝ)/3670016000000000000000)) + ((5967553945585029:ℝ)/800000000)*((-38046623839:ℝ)/62500000000) - ((-299225580406308207:ℝ)/50000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_e33 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
-    |pieceW q pieceX_12 3 3 - (((134593154371669777:ℝ)/1000000000) + (q - ((79:ℝ)/20)) * ((14517778658149711:ℝ)/40000000))| ≤ ((148519468068319549:ℝ)/2500000000) := by
+theorem piece8_e33 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
+    |pieceW q pieceX_8 3 3 - (((23941195290233363:ℝ)/10000000000) + (q - ((79:ℝ)/20)) * ((207501163831363853:ℝ)/10000000000))| ≤ ((113654799765686111:ℝ)/500000000000) := by
   set t := q - ((79:ℝ)/20) with htd
   have hq : q = ((79:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece12_L3 piece12_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece8_L3 piece8_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((79:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_33 q = ∑ e ∈ Finset.range 10, ([((1260692870367847:ℝ)/3200000000), ((135139248110121:ℝ)/80000000), ((139274616704379:ℝ)/56000000), ((766508914947:ℝ)/400000), ((18041197407:ℝ)/20000), ((278026203:ℝ)/1000), ((2867583:ℝ)/50), ((38706:ℝ)/5), (624:ℝ), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_33; ring
   have h12 : centralNum12_33 q = ∑ e ∈ Finset.range 17, ([((-2506024161507996412863278915493101:ℝ)/146800640000000000000000), ((7589223824313637670373099789266937:ℝ)/51380224000000000000000), ((271782932745982715688653166250047:ℝ)/513802240000000000000), ((2597006571327962752886323523007:ℝ)/3670016000000000000), ((89629207610763072167108284881:ℝ)/183500800000000000), ((7517256724844114727897134643:ℝ)/45875200000000000), ((-9080911183673455035938583:ℝ)/2293760000000000), ((-662264029525727054698077:ℝ)/22937600000000), ((-103805937229441754620923:ℝ)/8028160000000), ((-1075530402397126584289:ℝ)/401408000000), ((-1963262598997578633:ℝ)/14336000000), ((46370870971282593:ℝ)/716800000), ((115599155431131:ℝ)/7168000), ((474227135757:ℝ)/358400), ((-680303529:ℝ)/17920), ((-427337613:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_33; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((1260692870367847:ℝ)/3200000000), ((135139248110121:ℝ)/80000000), ((139274616704379:ℝ)/56000000), ((766508914947:ℝ)/400000), ((18041197407:ℝ)/20000), ((278026203:ℝ)/1000), ((2867583:ℝ)/50), ((38706:ℝ)/5), (624:ℝ), ((160:ℝ)/7)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-2506024161507996412863278915493101:ℝ)/146800640000000000000000), ((7589223824313637670373099789266937:ℝ)/51380224000000000000000), ((271782932745982715688653166250047:ℝ)/513802240000000000000), ((2597006571327962752886323523007:ℝ)/3670016000000000000), ((89629207610763072167108284881:ℝ)/183500800000000000), ((7517256724844114727897134643:ℝ)/45875200000000000), ((-9080911183673455035938583:ℝ)/2293760000000000), ((-662264029525727054698077:ℝ)/22937600000000), ((-103805937229441754620923:ℝ)/8028160000000), ((-1075530402397126584289:ℝ)/401408000000), ((-1963262598997578633:ℝ)/14336000000), ((46370870971282593:ℝ)/716800000), ((115599155431131:ℝ)/7168000), ((474227135757:ℝ)/358400), ((-680303529:ℝ)/17920), ((-427337613:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 15 ht
@@ -2074,149 +682,153 @@ theorem piece12_e33 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((1260692870367847:ℝ)/3200000000), ((135139248110121:ℝ)/80000000), ((139274616704379:ℝ)/56000000), ((766508914947:ℝ)/400000), ((18041197407:ℝ)/20000), ((278026203:ℝ)/1000), ((2867583:ℝ)/50), ((38706:ℝ)/5), (624:ℝ), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e) - (((1260692870367847:ℝ)/3200000000) + ((135139248110121:ℝ)/80000000)*t)| ≤ ((144768433883377:ℝ)/22400000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 17, ([((-2506024161507996412863278915493101:ℝ)/146800640000000000000000), ((7589223824313637670373099789266937:ℝ)/51380224000000000000000), ((271782932745982715688653166250047:ℝ)/513802240000000000000), ((2597006571327962752886323523007:ℝ)/3670016000000000000), ((89629207610763072167108284881:ℝ)/183500800000000000), ((7517256724844114727897134643:ℝ)/45875200000000000), ((-9080911183673455035938583:ℝ)/2293760000000000), ((-662264029525727054698077:ℝ)/22937600000000), ((-103805937229441754620923:ℝ)/8028160000000), ((-1075530402397126584289:ℝ)/401408000000), ((-1963262598997578633:ℝ)/14336000000), ((46370870971282593:ℝ)/716800000), ((115599155431131:ℝ)/7168000), ((474227135757:ℝ)/358400), ((-680303529:ℝ)/17920), ((-427337613:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e) - ((-2506024161507996412863278915493101:ℝ)/146800640000000000000000) - ((7589223824313637670373099789266937:ℝ)/51380224000000000000000)*t| ≤ ((363249906014970904973485051847831:ℝ)/256901120000000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 17, ([((-2506024161507996412863278915493101:ℝ)/146800640000000000000000), ((7589223824313637670373099789266937:ℝ)/51380224000000000000000), ((271782932745982715688653166250047:ℝ)/513802240000000000000), ((2597006571327962752886323523007:ℝ)/3670016000000000000), ((89629207610763072167108284881:ℝ)/183500800000000000), ((7517256724844114727897134643:ℝ)/45875200000000000), ((-9080911183673455035938583:ℝ)/2293760000000000), ((-662264029525727054698077:ℝ)/22937600000000), ((-103805937229441754620923:ℝ)/8028160000000), ((-1075530402397126584289:ℝ)/401408000000), ((-1963262598997578633:ℝ)/14336000000), ((46370870971282593:ℝ)/716800000), ((115599155431131:ℝ)/7168000), ((474227135757:ℝ)/358400), ((-680303529:ℝ)/17920), ((-427337613:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e)| ≤ ((1661524536183093511269374525319373:ℝ)/64225280000000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((46108585475767759:ℝ)/16000000000), ((5967553945585029:ℝ)/800000000), ((42638770520943:ℝ)/5000000), ((88338783708:ℝ)/15625), ((119824747287:ℝ)/50000), ((1684527033:ℝ)/2500), ((15714048:ℝ)/125), ((375312:ℝ)/25), ((5208:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((46108585475767759:ℝ)/16000000000) - ((5967553945585029:ℝ)/800000000)*t| ≤ ((88165144661803:ℝ)/4000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-8120475:ℝ)/4), ((464861025:ℝ)/2), (-5906535975:ℝ), ((411904731750:ℝ)/7), ((-2024051769000:ℝ)/7), ((5554394637600:ℝ)/7), (-1314913862656:ℝ), ((9709155336192:ℝ)/7), ((-6724555112448:ℝ)/7), ((1313173667840:ℝ)/3), ((-6168244125696:ℝ)/49), ((3004329623552:ℝ)/147), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 hq1'
-  have m13' : |centralNum13_33 q| ≤ ((16857379845418980177472:ℝ)/147) := by
-    rw [centralNum13_33_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ (4:ℝ) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-16872075:ℝ)/8), ((1833754545:ℝ)/8), ((-83998007145:ℝ)/16), ((4929124002765:ℝ)/112), ((-76723155584685:ℝ)/448), ((164888745653055:ℝ)/448), ((-63358359907625:ℝ)/128), ((364713160040625:ℝ)/896), ((-334937462578125:ℝ)/1792), ((245466998046875:ℝ)/5376), ((-72144521484375:ℝ)/12544), ((6518798828125:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 hq1'
-  have m23' : |centralNum23_33 q| ≤ ((220164085498056193120:ℝ)/21) := by
-    rw [centralNum23_33_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_33 q = ∑ e ∈ Finset.range 17, ([((57124270236617902611086056666141:ℝ)/3750000000000000), ((164937321036241989788632689886903:ℝ)/4593750000000000), ((-952490909986124156289067819763:ℝ)/30625000000000), ((-51883903518453558774297649403:ℝ)/218750000000), ((-2126241829603177065349412771:ℝ)/4687500000), ((-198813962301699429512812121:ℝ)/390625000), ((-160561941841892232237809329:ℝ)/410156250), ((-85917696594637860532462:ℝ)/390625), ((-356687354729129674036464:ℝ)/3828125), ((-69400171174137091843424:ℝ)/2296875), ((-2471099245844702938112:ℝ)/328125), ((-4483182251867389952:ℝ)/3125), ((-25683999717851136:ℝ)/125), ((-11257770963632128:ℝ)/525), ((-7703694934016:ℝ)/5), ((-50124415827968:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_33; ring
+  have m13 := abs_poly_le (fun e => ([((57124270236617902611086056666141:ℝ)/3750000000000000), ((164937321036241989788632689886903:ℝ)/4593750000000000), ((-952490909986124156289067819763:ℝ)/30625000000000), ((-51883903518453558774297649403:ℝ)/218750000000), ((-2126241829603177065349412771:ℝ)/4687500000), ((-198813962301699429512812121:ℝ)/390625000), ((-160561941841892232237809329:ℝ)/410156250), ((-85917696594637860532462:ℝ)/390625), ((-356687354729129674036464:ℝ)/3828125), ((-69400171174137091843424:ℝ)/2296875), ((-2471099245844702938112:ℝ)/328125), ((-4483182251867389952:ℝ)/3125), ((-25683999717851136:ℝ)/125), ((-11257770963632128:ℝ)/525), ((-7703694934016:ℝ)/5), ((-50124415827968:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 ht
+  have m13' : |centralNum13_33 q| ≤ ((314925036827481721504096431282943:ℝ)/18375000000000000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_33 q = ∑ e ∈ Finset.range 17, ([((-21826256839672862643685672914576857:ℝ)/7892002406400000000), ((198089927198098110369972924283763:ℝ)/394600120320000000), ((102655107458784783621064552953011:ℝ)/6576668672000000), ((1237303747377552623742363111523:ℝ)/46976204800000), ((148541467869259680297079614839:ℝ)/7046430720000), ((1070867410149924016467294907:ℝ)/117440512000), ((4132896549192022298933813:ℝ)/2516582400), ((-758412856202424596146111:ℝ)/2055208960), ((-30998944334982477663711:ℝ)/102760448), ((-6049841121899595792115:ℝ)/77070336), ((-22954384227576854875:ℝ)/2752512), ((118925370599603125:ℝ)/229376), ((14772117528359375:ℝ)/57344), ((162832462890625:ℝ)/6144), ((5012470703125:ℝ)/25088), ((-2739013671875:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_33; ring
+  have m23 := abs_poly_le (fun e => ([((-21826256839672862643685672914576857:ℝ)/7892002406400000000), ((198089927198098110369972924283763:ℝ)/394600120320000000), ((102655107458784783621064552953011:ℝ)/6576668672000000), ((1237303747377552623742363111523:ℝ)/46976204800000), ((148541467869259680297079614839:ℝ)/7046430720000), ((1070867410149924016467294907:ℝ)/117440512000), ((4132896549192022298933813:ℝ)/2516582400), ((-758412856202424596146111:ℝ)/2055208960), ((-30998944334982477663711:ℝ)/102760448), ((-6049841121899595792115:ℝ)/77070336), ((-22954384227576854875:ℝ)/2752512), ((118925370599603125:ℝ)/229376), ((14772117528359375:ℝ)/57344), ((162832462890625:ℝ)/6144), ((5012470703125:ℝ)/25088), ((-2739013671875:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 ht
+  have m23' : |centralNum23_33 q| ≤ ((399274249130612935788133778994187:ℝ)/140928614400000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((70042178050639083684723132989:ℝ)/500000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece12_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece12_E11 h0) m23'
-  have c5 := scaled_affine (X := ((93812695481:ℝ)/2000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece8_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece8_E11 h0) m23'
+  have c5 := scaled_affine (X := ((25809069057:ℝ)/25000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3))| ≤ ((2710382028968125644800000000000000000000:ℝ)/107379219100156265832139965988289726667) := by
     rw [abs_neg, tailWeight_3, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ (4:ℝ)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*(4:ℝ)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece12_Et h0
+    have hx := piece8_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((3308571812705231500:ℝ)/129140163)) ≤ (4:ℝ)^6*(8000*(2*(4:ℝ)-3)^2*(1/((831493600485514841979407800409:ℝ)/1000000000000))*((3308571812705231500:ℝ)/129140163)) := by
           gcongr
       _ ≤ ((2710382028968125644800000000000000000000:ℝ)/107379219100156265832139965988289726667) := by norm_num
-  have c7 := affine_round (α := ((1260692870367847:ℝ)/3200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000) + ((46108585475767759:ℝ)/16000000000)*((93812695481:ℝ)/2000000000) - ((134593154371669777:ℝ)/1000000000)) (β := ((135139248110121:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((7589223824313637670373099789266937:ℝ)/51380224000000000000000) - 3*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000)) + ((5967553945585029:ℝ)/800000000)*((93812695481:ℝ)/2000000000) - ((14517778658149711:ℝ)/40000000)) ht
-  have hW : pieceW q pieceX_12 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((93812695481:ℝ)/2000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
-    rw [pieceW_33, pieceX_12, sym4_33, hexp3]; ring
+  have c7 := affine_round (α := ((1260692870367847:ℝ)/3200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000) + ((46108585475767759:ℝ)/16000000000)*((25809069057:ℝ)/25000000000) - ((23941195290233363:ℝ)/10000000000)) (β := ((135139248110121:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((7589223824313637670373099789266937:ℝ)/51380224000000000000000) - 3*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000)) + ((5967553945585029:ℝ)/800000000)*((25809069057:ℝ)/25000000000) - ((207501163831363853:ℝ)/10000000000)) ht
+  have hW : pieceW q pieceX_8 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((79:ℝ)/20)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((25809069057:ℝ)/25000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
+    rw [pieceW_33, pieceX_8, sym4_33, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((762697130322121717589044405106003857757197933263290128760737769866809:ℝ)/3846218354092601230720177001629022932863480069353193606548504000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((1260692870367847:ℝ)/3200000000) + ((135139248110121:ℝ)/80000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((7589223824313637670373099789266937:ℝ)/51380224000000000000000) - 3*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((93812695481:ℝ)/2000000000) - (((134593154371669777:ℝ)/1000000000) + t * ((14517778658149711:ℝ)/40000000)) = (((1260692870367847:ℝ)/3200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000) + ((46108585475767759:ℝ)/16000000000)*((93812695481:ℝ)/2000000000) - ((134593154371669777:ℝ)/1000000000)) + t*(((135139248110121:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((7589223824313637670373099789266937:ℝ)/51380224000000000000000) - 3*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000)) + ((5967553945585029:ℝ)/800000000)*((93812695481:ℝ)/2000000000) - ((14517778658149711:ℝ)/40000000)) := by ring
+  refine entry_assemble (r7 := ((67623371124289581343589240415570649931024213132159797175042235472157:ℝ)/19231091770463006153600885008145114664317400346765968032742520000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((1260692870367847:ℝ)/3200000000) + ((135139248110121:ℝ)/80000000)*t) + (8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((7589223824313637670373099789266937:ℝ)/51380224000000000000000) - 3*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000))*t) + (((46108585475767759:ℝ)/16000000000) + ((5967553945585029:ℝ)/800000000)*t)*((25809069057:ℝ)/25000000000) - (((23941195290233363:ℝ)/10000000000) + t * ((207501163831363853:ℝ)/10000000000)) = (((1260692870367847:ℝ)/3200000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000) + ((46108585475767759:ℝ)/16000000000)*((25809069057:ℝ)/25000000000) - ((23941195290233363:ℝ)/10000000000)) + t*(((135139248110121:ℝ)/80000000) + 8*(((1/((70042178050639083684723132989:ℝ)/500000000000000000000000))+(1/((140083900709778466732471974383:ℝ)/1000000000000000000000000)))/2)*(((7589223824313637670373099789266937:ℝ)/51380224000000000000000) - 3*((-2506024161507996412863278915493101:ℝ)/146800640000000000000000)) + ((5967553945585029:ℝ)/800000000)*((25809069057:ℝ)/25000000000) - ((207501163831363853:ℝ)/10000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece12_plus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((72363387600466157:ℝ)/20000000000) + ((1:ℝ)/20)*((882407628736461083:ℝ)/100000000000) - (((256557593094336537:ℝ)/10000000000000) + ((550890165796614907:ℝ)/100000000000000) + ((145242632663487421:ℝ)/100000000000000) + ((103000287559184559:ℝ)/10000000000000)))
-      (((-769025205870522981:ℝ)/1000000000000) + ((1:ℝ)/20)*((-129004593917967179:ℝ)/100000000000))
-      (((329177026029719493:ℝ)/10000000000000) + ((1:ℝ)/20)*((-27533621446419653:ℝ)/2500000000000))
-      (((-112446636098754597:ℝ)/1000000000000) + ((1:ℝ)/20)*((-565255496982561493:ℝ)/1000000000000))
-      (((73382031441816239:ℝ)/25000000000) + ((1:ℝ)/20)*((323563734773396967:ℝ)/50000000000) - (((550890165796614907:ℝ)/100000000000000) + ((49163115552066389:ℝ)/2500000000000) + ((19834445401425567:ℝ)/1000000000000) + ((37573053742016169:ℝ)/500000000000)))
-      (((-90983402398200443:ℝ)/500000000000) + ((1:ℝ)/20)*((-43072035642634809:ℝ)/125000000000))
-      (((897881223093624777:ℝ)/1000000000000) + ((1:ℝ)/20)*((53054555286123291:ℝ)/12500000000))
-      (((148871056600675261:ℝ)/50000000000) + ((1:ℝ)/20)*((104047213136618921:ℝ)/10000000000) - (((145242632663487421:ℝ)/100000000000000) + ((19834445401425567:ℝ)/1000000000000) + ((75736086379010643:ℝ)/500000000000) + ((89519003511913993:ℝ)/50000000000)))
-      (((-61351604094839123:ℝ)/20000000000) + ((1:ℝ)/20)*((-158608411254540717:ℝ)/10000000000))
-      (((134593154371669777:ℝ)/1000000000) + ((1:ℝ)/20)*((14517778658149711:ℝ)/40000000) - (((103000287559184559:ℝ)/10000000000000) + ((37573053742016169:ℝ)/500000000000) + ((89519003511913993:ℝ)/50000000000) + ((148519468068319549:ℝ)/2500000000))) i j :=
-  quadForm_nonneg_of_ldl ((200822803917079262931:ℝ)/50000000000000) ((59558218010419396526184442962022783598173:ℝ)/20082280391707926293100000000000000) ((9063361959938894395320409653890055245162906182985579346803863:ℝ)/5955821801041939652618444296202278359817300000000000000) ((29590819877333987521620451989679272415842696737796111177542938074957887301582896257:ℝ)/362534478397555775812816386155602209806516247319423173872154520000000000000) ((-41676375141475328525:ℝ)/200822803917079262931) ((1618351508702177812:ℝ)/200822803917079262931) ((-14070941094788267165:ℝ)/401645607834158525862) ((-3865408225456428245488667543037162919160:ℝ)/59558218010419396526184442962022783598173) ((21706902482209025063811635781208889125475:ℝ)/59558218010419396526184442962022783598173) ((-22568613480478161965248850514822791303862770824963371743835160:ℝ)/9063361959938894395320409653890055245162906182985579346803863)
+theorem piece8_plus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((14366431146690087:ℝ)/4000000000) + ((1:ℝ)/20)*((875532217592702967:ℝ)/100000000000) - (((254525988208733683:ℝ)/10000000000000) + ((281161010493729333:ℝ)/50000000000000) + ((33176899589866413:ℝ)/20000000000000) + ((439959324127884169:ℝ)/50000000000000)))
+      (((-156801359383304187:ℝ)/200000000000) + ((1:ℝ)/20)*((-132882546443952699:ℝ)/100000000000))
+      (((616375069778831787:ℝ)/10000000000000) + ((1:ℝ)/20)*((633271455409388601:ℝ)/10000000000000))
+      (((333745261481598167:ℝ)/10000000000000) + ((1:ℝ)/20)*((-187800563964198687:ℝ)/1000000000000))
+      (((296241986134861517:ℝ)/100000000000) + ((1:ℝ)/20)*((654152238568575783:ℝ)/100000000000) - (((281161010493729333:ℝ)/50000000000000) + ((198544758883560339:ℝ)/10000000000000) + ((52056678047625991:ℝ)/2500000000000) + ((369550440891071341:ℝ)/10000000000000)))
+      (((-8239279348644549:ℝ)/15625000000) + ((1:ℝ)/20)*((-123849973557735837:ℝ)/100000000000))
+      (((-159165013998287423:ℝ)/500000000000) + ((1:ℝ)/20)*((27405695847861409:ℝ)/25000000000))
+      (((109599760537191913:ℝ)/50000000000) + ((1:ℝ)/20)*((837166325860581799:ℝ)/100000000000) - (((33176899589866413:ℝ)/20000000000000) + ((52056678047625991:ℝ)/2500000000000) + ((936695196391259697:ℝ)/10000000000000) + ((226822459053232231:ℝ)/2500000000000)))
+      (((373957979544008463:ℝ)/500000000000) + ((1:ℝ)/20)*((-299225580406308207:ℝ)/50000000000))
+      (((23941195290233363:ℝ)/10000000000) + ((1:ℝ)/20)*((207501163831363853:ℝ)/10000000000) - (((439959324127884169:ℝ)/50000000000000) + ((369550440891071341:ℝ)/10000000000000) + ((226822459053232231:ℝ)/2500000000000) + ((113654799765686111:ℝ)/500000000000))) i j :=
+  quadForm_nonneg_of_ldl ((398784004497607427451:ℝ)/100000000000000) ((1675376752192511778791985042306881483977:ℝ)/553866672913343649237500000000000) ((236427509167499811568098604710669646369176016283597374786147:ℝ)/103100107827231494079506771834269629783200000000000000) ((8795516723678254810316259366677777559060114580589313705620043167366007079434983:ℝ)/2955343864593747644601232558883370579614700203544967184826837500000000000) ((-28348269004616576150:ℝ)/132928001499202475817) ((4320257616995341447:ℝ)/265856002998404951634) ((2398449794994988235:ℝ)/398784004497607427451) ((-196126326579272183153427989016772447925:ℝ)/1031001078272314940795067718342696297832) ((-1717454334072079814077965808680654546175:ℝ)/20104521026310141345503820507682577807724) ((41151865708903722853305072056732876132369747963758849102390:ℝ)/236427509167499811568098604710669646369176016283597374786147)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
 
-theorem piece12_minus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((72363387600466157:ℝ)/20000000000) - ((1:ℝ)/20)*((882407628736461083:ℝ)/100000000000) - (((256557593094336537:ℝ)/10000000000000) + ((550890165796614907:ℝ)/100000000000000) + ((145242632663487421:ℝ)/100000000000000) + ((103000287559184559:ℝ)/10000000000000)))
-      (((-769025205870522981:ℝ)/1000000000000) - ((1:ℝ)/20)*((-129004593917967179:ℝ)/100000000000))
-      (((329177026029719493:ℝ)/10000000000000) - ((1:ℝ)/20)*((-27533621446419653:ℝ)/2500000000000))
-      (((-112446636098754597:ℝ)/1000000000000) - ((1:ℝ)/20)*((-565255496982561493:ℝ)/1000000000000))
-      (((73382031441816239:ℝ)/25000000000) - ((1:ℝ)/20)*((323563734773396967:ℝ)/50000000000) - (((550890165796614907:ℝ)/100000000000000) + ((49163115552066389:ℝ)/2500000000000) + ((19834445401425567:ℝ)/1000000000000) + ((37573053742016169:ℝ)/500000000000)))
-      (((-90983402398200443:ℝ)/500000000000) - ((1:ℝ)/20)*((-43072035642634809:ℝ)/125000000000))
-      (((897881223093624777:ℝ)/1000000000000) - ((1:ℝ)/20)*((53054555286123291:ℝ)/12500000000))
-      (((148871056600675261:ℝ)/50000000000) - ((1:ℝ)/20)*((104047213136618921:ℝ)/10000000000) - (((145242632663487421:ℝ)/100000000000000) + ((19834445401425567:ℝ)/1000000000000) + ((75736086379010643:ℝ)/500000000000) + ((89519003511913993:ℝ)/50000000000)))
-      (((-61351604094839123:ℝ)/20000000000) - ((1:ℝ)/20)*((-158608411254540717:ℝ)/10000000000))
-      (((134593154371669777:ℝ)/1000000000) - ((1:ℝ)/20)*((14517778658149711:ℝ)/40000000) - (((103000287559184559:ℝ)/10000000000000) + ((37573053742016169:ℝ)/500000000000) + ((89519003511913993:ℝ)/50000000000) + ((148519468068319549:ℝ)/2500000000))) i j :=
-  quadForm_nonneg_of_ldl ((156702422480256208781:ℝ)/50000000000000) ((36561630353123967513370145462117204800823:ℝ)/15670242248025620878100000000000000) ((1766274650048556145848085950043300442126784394273899634608133:ℝ)/3656163035312396751337014546211720480082300000000000000) ((3157221115038763352104665853784764519680775788238961714824261377458058656974710937:ℝ)/70650986001942245833923438001732017685071375770955985384325320000000000000) ((-35226145445576969575:ℝ)/156702422480256208781) ((1673418751595017118:ℝ)/156702422480256208781) ((-8418386124962652235:ℝ)/313404844960512417562) ((-2463588034534435987621319966759875313740:ℝ)/36561630353123967513370145462117204800823) ((10447958046996394351647834869531628625175:ℝ)/36561630353123967513370145462117204800823) ((-8148538459202856747837634874610290197404842266005559664070410:ℝ)/1766274650048556145848085950043300442126784394273899634608133)
+theorem piece8_minus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((14366431146690087:ℝ)/4000000000) - ((1:ℝ)/20)*((875532217592702967:ℝ)/100000000000) - (((254525988208733683:ℝ)/10000000000000) + ((281161010493729333:ℝ)/50000000000000) + ((33176899589866413:ℝ)/20000000000000) + ((439959324127884169:ℝ)/50000000000000)))
+      (((-156801359383304187:ℝ)/200000000000) - ((1:ℝ)/20)*((-132882546443952699:ℝ)/100000000000))
+      (((616375069778831787:ℝ)/10000000000000) - ((1:ℝ)/20)*((633271455409388601:ℝ)/10000000000000))
+      (((333745261481598167:ℝ)/10000000000000) - ((1:ℝ)/20)*((-187800563964198687:ℝ)/1000000000000))
+      (((296241986134861517:ℝ)/100000000000) - ((1:ℝ)/20)*((654152238568575783:ℝ)/100000000000) - (((281161010493729333:ℝ)/50000000000000) + ((198544758883560339:ℝ)/10000000000000) + ((52056678047625991:ℝ)/2500000000000) + ((369550440891071341:ℝ)/10000000000000)))
+      (((-8239279348644549:ℝ)/15625000000) - ((1:ℝ)/20)*((-123849973557735837:ℝ)/100000000000))
+      (((-159165013998287423:ℝ)/500000000000) - ((1:ℝ)/20)*((27405695847861409:ℝ)/25000000000))
+      (((109599760537191913:ℝ)/50000000000) - ((1:ℝ)/20)*((837166325860581799:ℝ)/100000000000) - (((33176899589866413:ℝ)/20000000000000) + ((52056678047625991:ℝ)/2500000000000) + ((936695196391259697:ℝ)/10000000000000) + ((226822459053232231:ℝ)/2500000000000)))
+      (((373957979544008463:ℝ)/500000000000) - ((1:ℝ)/20)*((-299225580406308207:ℝ)/50000000000))
+      (((23941195290233363:ℝ)/10000000000) - ((1:ℝ)/20)*((207501163831363853:ℝ)/10000000000) - (((439959324127884169:ℝ)/50000000000000) + ((369550440891071341:ℝ)/10000000000000) + ((226822459053232231:ℝ)/2500000000000) + ((113654799765686111:ℝ)/500000000000))) i j :=
+  quadForm_nonneg_of_ldl ((311230782738337130751:ℝ)/100000000000000) ((6189986839071199516051471833734412090687:ℝ)/2593589856152809422925000000000000) ((203563288348544394455961252258034321530818590481645799657171:ℝ)/137555263090471100356699374082986935348600000000000000) ((26674736467035740233504002668557818104079620486423468087175116107910014699357709:ℝ)/91603479756844977505182563516115444688868365716740609845726950000000000000) ((-23918850789818152850:ℝ)/103743594246112376917) ((3898076646722415713:ℝ)/207487188492224753834) ((4276455434636975105:ℝ)/311230782738337130751) ((-1562751787492921119838166378783568482225:ℝ)/8253315785428266021401962444979216120916) ((-1884407652323608403330708823335063694775:ℝ)/12379973678142399032102943667468824181374) ((403401986482977873659658825323285860844812990270257436121020:ℝ)/610689865045633183367883756774102964592455771444937398971513)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
 
-/-- **Piece 12.** The piece matrix is positive semidefinite on `q ∈ [39/10, 4]`. -/
-theorem piece_12 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_12 i j :=
+/-- **Piece 8.** The piece matrix is positive semidefinite on `q ∈ [39/10, 4]`. -/
+theorem piece_8 {q : ℝ} (h0 : ((39:ℝ)/10) ≤ q) (h1 : q ≤ (4:ℝ)) (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_8 i j :=
   pieceForm_nonneg (pieceW_symm (sym4_symm _ _ _ _ _ _ _ _ _ _) q) (by norm_num : (0:ℝ) < ((1:ℝ)/20))
     (abs_le.mpr ⟨by linarith, by linarith⟩)
-    (piece12_e00 h0 h1) (piece12_e01 h0 h1) (piece12_e02 h0 h1) (piece12_e03 h0 h1) (piece12_e11 h0 h1) (piece12_e12 h0 h1) (piece12_e13 h0 h1) (piece12_e22 h0 h1) (piece12_e23 h0 h1) (piece12_e33 h0 h1)
-    piece12_plus piece12_minus y
+    (piece8_e00 h0 h1) (piece8_e01 h0 h1) (piece8_e02 h0 h1) (piece8_e03 h0 h1) (piece8_e11 h0 h1) (piece8_e12 h0 h1) (piece8_e13 h0 h1) (piece8_e22 h0 h1) (piece8_e23 h0 h1) (piece8_e33 h0 h1)
+    piece8_plus piece8_minus y
 
-/-! #### Piece 13 (seam), `q ∈ [4, 41/10]` -/
+/-! #### Piece 9 (seam), `q ∈ [4, 41/10]` -/
 
-/-- The compensation matrix of piece 13. -/
-def pieceX_13 : Fin 4 → Fin 4 → ℝ :=
-  sym4 ((11148000359:ℝ)/1000000000000) ((-4578848991:ℝ)/4000000000000) ((71271091163:ℝ)/20000000000000) ((-573662206417:ℝ)/10000000000000) ((198552705423:ℝ)/10000000000000) ((-137767972523:ℝ)/5000000000000) ((110924610021:ℝ)/250000000000) ((968561291969:ℝ)/10000000000000) ((-138127623807:ℝ)/100000000000) ((27808308009:ℝ)/1250000000)
+/-- The compensation matrix of piece 9. -/
+def pieceX_9 : Fin 4 → Fin 4 → ℝ :=
+  sym4 ((147214026323:ℝ)/100000000000000) ((-353895088751:ℝ)/100000000000000) ((21100359437:ℝ)/2000000000000) ((-82903356679:ℝ)/5000000000000) ((180551666239:ℝ)/10000000000000) ((-8961320351:ℝ)/156250000000) ((906277712133:ℝ)/10000000000000) ((192456096647:ℝ)/1000000000000) ((-306899272691:ℝ)/1000000000000) ((495384428211:ℝ)/1000000000000)
 
-theorem piece13_L3 : ((9454704485244025628860692337:ℝ)/50000000000000000000000) ≤ Real.exp ((3:ℝ)*((81:ℝ)/20)) := by
+theorem piece9_L3 : ((9454704485244025628860692337:ℝ)/50000000000000000000000) ≤ Real.exp ((3:ℝ)*((81:ℝ)/20)) := by
   have h := le_exp_nat_add 12 (f := ((3:ℝ)/20)) (by norm_num)
   rw [show ((3:ℝ):ℝ)*((81:ℝ)/20) = ((12:ℕ):ℝ) + ((3:ℝ)/20) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece13_U3 : Real.exp ((3:ℝ)*((81:ℝ)/20)) ≤ ((189094089956474140623031291221:ℝ)/1000000000000000000000000) := by
+theorem piece9_U3 : Real.exp ((3:ℝ)*((81:ℝ)/20)) ≤ ((189094089956474140623031291221:ℝ)/1000000000000000000000000) := by
   have h := exp_nat_add_le 12 (f := ((3:ℝ)/20)) (by norm_num) (by norm_num)
   rw [show ((3:ℝ):ℝ)*((81:ℝ)/20) = ((12:ℕ):ℝ) + ((3:ℝ)/20) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
 
-theorem piece13_L8_at : ((789629600348380990724996935799:ℝ)/10000000000000000) ≤ Real.exp ((8:ℝ)*(4:ℝ)) := by
+theorem piece9_L8_at : ((789629600348380990724996935799:ℝ)/10000000000000000) ≤ Real.exp ((8:ℝ)*(4:ℝ)) := by
   have h := le_exp_nat_add 32 (f := (0:ℝ)) (by norm_num)
   rw [show ((8:ℝ):ℝ)*(4:ℝ) = ((32:ℕ):ℝ) + (0:ℝ) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece13_E8 {q : ℝ} (h0 : (4:ℝ) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((789629600348380990724996935799:ℝ)/10000000000000000) := by
+theorem piece9_E8 {q : ℝ} (h0 : (4:ℝ) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((789629600348380990724996935799:ℝ)/10000000000000000) := by
   have hm : Real.exp (-((8:ℝ))*q) ≤ Real.exp (-((8:ℝ)*(4:ℝ))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece13_L8_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece9_L8_at (le_refl _)).2
 
-theorem piece13_L11_at : ((128516000812739333147406854669:ℝ)/10000000000) ≤ Real.exp ((11:ℝ)*(4:ℝ)) := by
+theorem piece9_L11_at : ((128516000812739333147406854669:ℝ)/10000000000) ≤ Real.exp ((11:ℝ)*(4:ℝ)) := by
   have h := le_exp_nat_add 44 (f := (0:ℝ)) (by norm_num)
   rw [show ((11:ℝ):ℝ)*(4:ℝ) = ((44:ℕ):ℝ) + (0:ℝ) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece13_E11 {q : ℝ} (h0 : (4:ℝ) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((128516000812739333147406854669:ℝ)/10000000000) := by
+theorem piece9_E11 {q : ℝ} (h0 : (4:ℝ) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((128516000812739333147406854669:ℝ)/10000000000) := by
   have hm : Real.exp (-((11:ℝ))*q) ≤ Real.exp (-((11:ℝ)*(4:ℝ))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece13_L11_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece9_L11_at (le_refl _)).2
 
-theorem piece13_Lt_at : ((239520380097857689497853293383:ℝ)/100000000000) ≤ Real.exp (((529:ℝ)/50)*(4:ℝ)) := by
+theorem piece9_Lt_at : ((239520380097857689497853293383:ℝ)/100000000000) ≤ Real.exp (((529:ℝ)/50)*(4:ℝ)) := by
   have h := le_exp_nat_add 42 (f := ((8:ℝ)/25)) (by norm_num)
   rw [show (((529:ℝ)/50):ℝ)*(4:ℝ) = ((42:ℕ):ℝ) + ((8:ℝ)/25) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece13_Et {q : ℝ} (h0 : (4:ℝ) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((239520380097857689497853293383:ℝ)/100000000000) := by
+theorem piece9_Et {q : ℝ} (h0 : (4:ℝ) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((239520380097857689497853293383:ℝ)/100000000000) := by
   have hm : Real.exp (-(((529:ℝ)/50))*q) ≤ Real.exp (-(((529:ℝ)/50)*(4:ℝ))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece13_Lt_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece9_Lt_at (le_refl _)).2
 
-theorem piece13_e00 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 0 0 - (((92055040069721673:ℝ)/20000000000) + (q - ((81:ℝ)/20)) * ((109372830951384483:ℝ)/10000000000))| ≤ ((153680921241767561:ℝ)/5000000000000) := by
+theorem piece9_e00 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 0 0 - (((456676836442032899:ℝ)/100000000000) + (q - ((81:ℝ)/20)) * ((27117166722654561:ℝ)/2500000000))| ≤ ((60953946496885543:ℝ)/2000000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_00 q = ∑ e ∈ Finset.range 10, ([((73228612648330161:ℝ)/16000000000), ((8661831454335789:ℝ)/800000000), ((14341144241313:ℝ)/1250000), ((1783554791193:ℝ)/250000), ((143219629413:ℝ)/50000), ((1922458293:ℝ)/2500), ((17234532:ℝ)/125), ((397632:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_00; ring
   have h12 : centralNum12_00 q = ∑ e ∈ Finset.range 11, ([((-117198105145067117493:ℝ)/320000000000), ((-3075663583298356101:ℝ)/3200000000), ((-90887676322102731:ℝ)/80000000), ((-1592597944108323:ℝ)/2000000), ((-73284556952943:ℝ)/200000), ((-5782131637443:ℝ)/50000), ((-3168175437:ℝ)/125), ((-95214966:ℝ)/25), ((-1877394:ℝ)/5), (-21928:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_00; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((73228612648330161:ℝ)/16000000000), ((8661831454335789:ℝ)/800000000), ((14341144241313:ℝ)/1250000), ((1783554791193:ℝ)/250000), ((143219629413:ℝ)/50000), ((1922458293:ℝ)/2500), ((17234532:ℝ)/125), ((397632:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-117198105145067117493:ℝ)/320000000000), ((-3075663583298356101:ℝ)/3200000000), ((-90887676322102731:ℝ)/80000000), ((-1592597944108323:ℝ)/2000000), ((-73284556952943:ℝ)/200000), ((-5782131637443:ℝ)/50000), ((-3168175437:ℝ)/125), ((-95214966:ℝ)/25), ((-1877394:ℝ)/5), (-21928:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 9 ht
@@ -2224,67 +836,71 @@ theorem piece13_e00 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((73228612648330161:ℝ)/16000000000), ((8661831454335789:ℝ)/800000000), ((14341144241313:ℝ)/1250000), ((1783554791193:ℝ)/250000), ((143219629413:ℝ)/50000), ((1922458293:ℝ)/2500), ((17234532:ℝ)/125), ((397632:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - (((73228612648330161:ℝ)/16000000000) + ((8661831454335789:ℝ)/800000000)*t)| ≤ ((236737686447761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 11, ([((-117198105145067117493:ℝ)/320000000000), ((-3075663583298356101:ℝ)/3200000000), ((-90887676322102731:ℝ)/80000000), ((-1592597944108323:ℝ)/2000000), ((-73284556952943:ℝ)/200000), ((-5782131637443:ℝ)/50000), ((-3168175437:ℝ)/125), ((-95214966:ℝ)/25), ((-1877394:ℝ)/5), (-21928:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e) - ((-117198105145067117493:ℝ)/320000000000) - ((-3075663583298356101:ℝ)/3200000000)*t| ≤ ((470736629809936217:ℝ)/160000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 11, ([((-117198105145067117493:ℝ)/320000000000), ((-3075663583298356101:ℝ)/3200000000), ((-90887676322102731:ℝ)/80000000), ((-1592597944108323:ℝ)/2000000), ((-73284556952943:ℝ)/200000), ((-5782131637443:ℝ)/50000), ((-3168175437:ℝ)/125), ((-95214966:ℝ)/25), ((-1877394:ℝ)/5), (-21928:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((130388570626151143:ℝ)/312500000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (600:ℝ), (-7776:ℝ), (16800:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m13' : |centralNum13_00 q| ≤ ((1445541590648773947:ℝ)/78125000) := by
-    rw [centralNum13_00_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (780:ℝ), (-6156:ℝ), (15288:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m23' : |centralNum23_00 q| ≤ ((388131050782839687:ℝ)/15625000) := by
-    rw [centralNum23_00_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_00 q = ∑ e ∈ Finset.range 11, ([((-525524006269514879847:ℝ)/80000000000), ((-13732729230426555879:ℝ)/800000000), ((-100783693469800881:ℝ)/5000000), ((-3501702285209271:ℝ)/250000), ((-318960560707047:ℝ)/50000), ((-24872265663147:ℝ)/12500), ((-53812652292:ℝ)/125), ((-1594937856:ℝ)/25), ((-30989304:ℝ)/5), (-356448:ℝ), (-9216:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_00; ring
+  have m13 := abs_poly_le (fun e => ([((-525524006269514879847:ℝ)/80000000000), ((-13732729230426555879:ℝ)/800000000), ((-100783693469800881:ℝ)/5000000), ((-3501702285209271:ℝ)/250000), ((-318960560707047:ℝ)/50000), ((-24872265663147:ℝ)/12500), ((-53812652292:ℝ)/125), ((-1594937856:ℝ)/25), ((-30989304:ℝ)/5), (-356448:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m13' : |centralNum13_00 q| ≤ ((584338191546991947:ℝ)/78125000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_00 q = ∑ e ∈ Finset.range 11, ([((-834984829063244625849:ℝ)/64000000000), ((-105954564962831880861:ℝ)/3200000000), ((-3024874405277216307:ℝ)/80000000), ((-51169732773373899:ℝ)/2000000), ((-2271999093140007:ℝ)/200000), ((-34583933052207:ℝ)/10000), ((-91384893117:ℝ)/125), ((-2649062982:ℝ)/25), ((-50388642:ℝ)/5), (-567912:ℝ), (-14400:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_00; ring
+  have m23 := abs_poly_le (fun e => ([((-834984829063244625849:ℝ)/64000000000), ((-105954564962831880861:ℝ)/3200000000), ((-3024874405277216307:ℝ)/80000000), ((-51169732773373899:ℝ)/2000000), ((-2271999093140007:ℝ)/200000), ((-34583933052207:ℝ)/10000), ((-91384893117:ℝ)/125), ((-2649062982:ℝ)/25), ((-50388642:ℝ)/5), (-567912:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m23' : |centralNum23_00 q| ≤ ((924998472334159527:ℝ)/62500000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((11148000359:ℝ)/1000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((147214026323:ℝ)/100000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0))| ≤ ((1075374613986598759475200000000:ℝ)/14143438924398398707158739120972767) := by
     rw [abs_neg, tailWeight_0, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((41:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((41:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece13_Et h0
+    have hx := piece9_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((10465499600:ℝ)/59049)) ≤ ((41:ℝ)/10)^6*(8000*(2*((41:ℝ)/10)-3)^2*(1/((239520380097857689497853293383:ℝ)/100000000000))*((10465499600:ℝ)/59049)) := by
           gcongr
       _ ≤ ((1075374613986598759475200000000:ℝ)/14143438924398398707158739120972767) := by norm_num
-  have c7 := affine_round (α := ((73228612648330161:ℝ)/16000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-117198105145067117493:ℝ)/320000000000) + ((59502537175353561:ℝ)/16000000000)*((11148000359:ℝ)/1000000000000) - ((92055040069721673:ℝ)/20000000000)) (β := ((8661831454335789:ℝ)/800000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-3075663583298356101:ℝ)/3200000000) - 3*((-117198105145067117493:ℝ)/320000000000)) + ((7475627401115589:ℝ)/800000000)*((11148000359:ℝ)/1000000000000) - ((109372830951384483:ℝ)/10000000000)) ht
-  have hW : pieceW q pieceX_13 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((11148000359:ℝ)/1000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
-    rw [pieceW_00, pieceX_13, sym4_00, hexp3]; ring
+  have c7 := affine_round (α := ((73228612648330161:ℝ)/16000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-117198105145067117493:ℝ)/320000000000) + ((59502537175353561:ℝ)/16000000000)*((147214026323:ℝ)/100000000000000) - ((456676836442032899:ℝ)/100000000000)) (β := ((8661831454335789:ℝ)/800000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-3075663583298356101:ℝ)/3200000000) - 3*((-117198105145067117493:ℝ)/320000000000)) + ((7475627401115589:ℝ)/800000000)*((147214026323:ℝ)/100000000000000) - ((27117166722654561:ℝ)/2500000000)) ht
+  have hW : pieceW q pieceX_9 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((147214026323:ℝ)/100000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
+    rw [pieceW_00, pieceX_9, sym4_00, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((395079735381679781795089674874739736471764775394140105094877856651:ℝ)/140221861995655946380436358622066768993079125478676868508000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((73228612648330161:ℝ)/16000000000) + ((8661831454335789:ℝ)/800000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-117198105145067117493:ℝ)/320000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-3075663583298356101:ℝ)/3200000000) - 3*((-117198105145067117493:ℝ)/320000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((11148000359:ℝ)/1000000000000) - (((92055040069721673:ℝ)/20000000000) + t * ((109372830951384483:ℝ)/10000000000)) = (((73228612648330161:ℝ)/16000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-117198105145067117493:ℝ)/320000000000) + ((59502537175353561:ℝ)/16000000000)*((11148000359:ℝ)/1000000000000) - ((92055040069721673:ℝ)/20000000000)) + t*(((8661831454335789:ℝ)/800000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-3075663583298356101:ℝ)/3200000000) - 3*((-117198105145067117493:ℝ)/320000000000)) + ((7475627401115589:ℝ)/800000000)*((11148000359:ℝ)/1000000000000) - ((109372830951384483:ℝ)/10000000000)) := by ring
+  refine entry_assemble (r7 := ((36541226299098108662186366688128291859907622278089104015335643763731:ℝ)/19070173231409208707739344772601080583058761065100054117088000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((73228612648330161:ℝ)/16000000000) + ((8661831454335789:ℝ)/800000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-117198105145067117493:ℝ)/320000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-3075663583298356101:ℝ)/3200000000) - 3*((-117198105145067117493:ℝ)/320000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((147214026323:ℝ)/100000000000000) - (((456676836442032899:ℝ)/100000000000) + t * ((27117166722654561:ℝ)/2500000000)) = (((73228612648330161:ℝ)/16000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-117198105145067117493:ℝ)/320000000000) + ((59502537175353561:ℝ)/16000000000)*((147214026323:ℝ)/100000000000000) - ((456676836442032899:ℝ)/100000000000)) + t*(((8661831454335789:ℝ)/800000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-3075663583298356101:ℝ)/3200000000) - 3*((-117198105145067117493:ℝ)/320000000000)) + ((7475627401115589:ℝ)/800000000)*((147214026323:ℝ)/100000000000000) - ((27117166722654561:ℝ)/2500000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e01 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 0 1 - (((-181975854277918413:ℝ)/200000000000) + (q - ((81:ℝ)/20)) * ((-29964394066923543:ℝ)/20000000000))| ≤ ((581980739421157441:ℝ)/100000000000000) := by
+theorem piece9_e01 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 0 1 - (((-459391612996951887:ℝ)/500000000000) + (q - ((81:ℝ)/20)) * ((-152059274832142661:ℝ)/100000000000))| ≤ ((147094828577681483:ℝ)/25000000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_01 q = ∑ e ∈ Finset.range 8, ([((-68630377364883:ℝ)/80000000), ((-5931020266101:ℝ)/4000000), ((-219667417263:ℝ)/200000), ((-903981141:ℝ)/2000), ((-11160261:ℝ)/100), ((-413343:ℝ)/25), ((-6804:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_01; ring
   have h12 : centralNum12_01 q = ∑ e ∈ Finset.range 12, ([((-14444511508895026666419:ℝ)/12800000000000), ((-1119401132499533336247:ℝ)/320000000000), ((-31425058396437646329:ℝ)/6400000000), ((-659547509580601371:ℝ)/160000000), ((-18406068248895147:ℝ)/8000000), ((-896696858899107:ℝ)/1000000), ((-24906139380549:ℝ)/100000), ((-24653404131:ℝ)/500), ((-681879267:ℝ)/100), ((-3136974:ℝ)/5), ((-172836:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_01; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-68630377364883:ℝ)/80000000), ((-5931020266101:ℝ)/4000000), ((-219667417263:ℝ)/200000), ((-903981141:ℝ)/2000), ((-11160261:ℝ)/100), ((-413343:ℝ)/25), ((-6804:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0) 6 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-14444511508895026666419:ℝ)/12800000000000), ((-1119401132499533336247:ℝ)/320000000000), ((-31425058396437646329:ℝ)/6400000000), ((-659547509580601371:ℝ)/160000000), ((-18406068248895147:ℝ)/8000000), ((-896696858899107:ℝ)/1000000), ((-24906139380549:ℝ)/100000), ((-24653404131:ℝ)/500), ((-681879267:ℝ)/100), ((-3136974:ℝ)/5), ((-172836:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0) 10 ht
@@ -2292,59 +908,63 @@ theorem piece13_e01 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 8, ([((-68630377364883:ℝ)/80000000), ((-5931020266101:ℝ)/4000000), ((-219667417263:ℝ)/200000), ((-903981141:ℝ)/2000), ((-11160261:ℝ)/100), ((-413343:ℝ)/25), ((-6804:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e) - (((-68630377364883:ℝ)/80000000) + ((-5931020266101:ℝ)/4000000)*t)| ≤ ((5606088483:ℝ)/2000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 12, ([((-14444511508895026666419:ℝ)/12800000000000), ((-1119401132499533336247:ℝ)/320000000000), ((-31425058396437646329:ℝ)/6400000000), ((-659547509580601371:ℝ)/160000000), ((-18406068248895147:ℝ)/8000000), ((-896696858899107:ℝ)/1000000), ((-24906139380549:ℝ)/100000), ((-24653404131:ℝ)/500), ((-681879267:ℝ)/100), ((-3136974:ℝ)/5), ((-172836:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e) - ((-14444511508895026666419:ℝ)/12800000000000) - ((-1119401132499533336247:ℝ)/320000000000)*t| ≤ ((163908464856690761439:ℝ)/12800000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 12, ([((-14444511508895026666419:ℝ)/12800000000000), ((-1119401132499533336247:ℝ)/320000000000), ((-31425058396437646329:ℝ)/6400000000), ((-659547509580601371:ℝ)/160000000), ((-18406068248895147:ℝ)/8000000), ((-896696858899107:ℝ)/1000000), ((-24906139380549:ℝ)/100000), ((-24653404131:ℝ)/500), ((-681879267:ℝ)/100), ((-3136974:ℝ)/5), ((-172836:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((8226182733765031299:ℝ)/6250000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-6288:ℝ), (81024:ℝ), (-238720:ℝ), (246784:ℝ), (-98304:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m13' : |centralNum13_01 q| ≤ ((373824214664684227359:ℝ)/390625000) := by
-    rw [centralNum13_01_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-7368:ℝ), (59208:ℝ), (-155734:ℝ), (205300:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m23' : |centralNum23_01 q| ≤ ((20675635072398139437:ℝ)/31250000) := by
-    rw [centralNum23_01_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_01 q = ∑ e ∈ Finset.range 12, ([((-24391949253730616699253:ℝ)/100000000000), ((-3522587414543946157203:ℝ)/5000000000), ((-11561078691301487787:ℝ)/12500000), ((-910502716519556577:ℝ)/1250000), ((-5974255702331541:ℝ)/15625), ((-2194550323707168:ℝ)/15625), ((-115121018023452:ℝ)/3125), ((-862360577904:ℝ)/125), ((-22599330528:ℝ)/25), ((-394638464:ℝ)/5), ((-20663296:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_01; ring
+  have m13 := abs_poly_le (fun e => ([((-24391949253730616699253:ℝ)/100000000000), ((-3522587414543946157203:ℝ)/5000000000), ((-11561078691301487787:ℝ)/12500000), ((-910502716519556577:ℝ)/1250000), ((-5974255702331541:ℝ)/15625), ((-2194550323707168:ℝ)/15625), ((-115121018023452:ℝ)/3125), ((-862360577904:ℝ)/125), ((-22599330528:ℝ)/25), ((-394638464:ℝ)/5), ((-20663296:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m13' : |centralNum13_01 q| ≤ ((109980885494912343079:ℝ)/390625000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_01 q = ∑ e ∈ Finset.range 12, ([((-44165187419557636920339:ℝ)/512000000000), ((-3519623141452265443983:ℝ)/12800000000), ((-501432820720345988109:ℝ)/1280000000), ((-10575242064699226263:ℝ)/32000000), ((-294243996083825367:ℝ)/1600000), ((-2840667740444331:ℝ)/40000), ((-77788377304533:ℝ)/4000), ((-378050756271:ℝ)/100), ((-10234820751:ℝ)/20), (-45969334:ℝ), (-2467700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_01; ring
+  have m23 := abs_poly_le (fun e => ([((-44165187419557636920339:ℝ)/512000000000), ((-3519623141452265443983:ℝ)/12800000000), ((-501432820720345988109:ℝ)/1280000000), ((-10575242064699226263:ℝ)/32000000), ((-294243996083825367:ℝ)/1600000), ((-2840667740444331:ℝ)/40000), ((-77788377304533:ℝ)/4000), ((-378050756271:ℝ)/100), ((-10234820751:ℝ)/20), (-45969334:ℝ), (-2467700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m23' : |centralNum23_01 q| ≤ ((25257625495641738391:ℝ)/250000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-4578848991:ℝ)/4000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-353895088751:ℝ)/100000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-68630377364883:ℝ)/80000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-14444511508895026666419:ℝ)/12800000000000) + ((59502537175353561:ℝ)/16000000000)*((-4578848991:ℝ)/4000000000000) - ((-181975854277918413:ℝ)/200000000000)) (β := ((-5931020266101:ℝ)/4000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-1119401132499533336247:ℝ)/320000000000) - 3*((-14444511508895026666419:ℝ)/12800000000000)) + ((7475627401115589:ℝ)/800000000)*((-4578848991:ℝ)/4000000000000) - ((-29964394066923543:ℝ)/20000000000)) ht
-  have hW : pieceW q pieceX_13 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-4578848991:ℝ)/4000000000000) + (0:ℝ) := by
-    rw [pieceW_01, pieceX_13, sym4_01, hexp3]; ring
+  have c7 := affine_round (α := ((-68630377364883:ℝ)/80000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-14444511508895026666419:ℝ)/12800000000000) + ((59502537175353561:ℝ)/16000000000)*((-353895088751:ℝ)/100000000000000) - ((-459391612996951887:ℝ)/500000000000)) (β := ((-5931020266101:ℝ)/4000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-1119401132499533336247:ℝ)/320000000000) - 3*((-14444511508895026666419:ℝ)/12800000000000)) + ((7475627401115589:ℝ)/800000000)*((-353895088751:ℝ)/100000000000000) - ((-152059274832142661:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_9 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-353895088751:ℝ)/100000000000000) + (0:ℝ) := by
+    rw [pieceW_01, pieceX_9, sym4_01, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((5390731735318231278600684827673587721622893797841122528082559961517:ℝ)/9535086615704604353869672386300540291529380532550027058544000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-68630377364883:ℝ)/80000000) + ((-5931020266101:ℝ)/4000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-14444511508895026666419:ℝ)/12800000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-1119401132499533336247:ℝ)/320000000000) - 3*((-14444511508895026666419:ℝ)/12800000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-4578848991:ℝ)/4000000000000) - (((-181975854277918413:ℝ)/200000000000) + t * ((-29964394066923543:ℝ)/20000000000)) = (((-68630377364883:ℝ)/80000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-14444511508895026666419:ℝ)/12800000000000) + ((59502537175353561:ℝ)/16000000000)*((-4578848991:ℝ)/4000000000000) - ((-181975854277918413:ℝ)/200000000000)) + t*(((-5931020266101:ℝ)/4000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-1119401132499533336247:ℝ)/320000000000) - 3*((-14444511508895026666419:ℝ)/12800000000000)) + ((7475627401115589:ℝ)/800000000)*((-4578848991:ℝ)/4000000000000) - ((-29964394066923543:ℝ)/20000000000)) := by ring
+  refine entry_assemble (r7 := ((9996012012767745760282418208402810538353147282110179072186189433647:ℝ)/19070173231409208707739344772601080583058761065100054117088000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-68630377364883:ℝ)/80000000) + ((-5931020266101:ℝ)/4000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-14444511508895026666419:ℝ)/12800000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-1119401132499533336247:ℝ)/320000000000) - 3*((-14444511508895026666419:ℝ)/12800000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-353895088751:ℝ)/100000000000000) - (((-459391612996951887:ℝ)/500000000000) + t * ((-152059274832142661:ℝ)/100000000000)) = (((-68630377364883:ℝ)/80000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-14444511508895026666419:ℝ)/12800000000000) + ((59502537175353561:ℝ)/16000000000)*((-353895088751:ℝ)/100000000000000) - ((-459391612996951887:ℝ)/500000000000)) + t*(((-5931020266101:ℝ)/4000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-1119401132499533336247:ℝ)/320000000000) - 3*((-14444511508895026666419:ℝ)/12800000000000)) + ((7475627401115589:ℝ)/800000000)*((-353895088751:ℝ)/100000000000000) - ((-152059274832142661:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e02 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 0 2 - (((135754637866512603:ℝ)/10000000000000) + (q - ((81:ℝ)/20)) * ((-424247530263613113:ℝ)/10000000000000))| ≤ ((4532588873584341:ℝ)/3125000000000) := by
+theorem piece9_e02 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 0 2 - (((395580839950254109:ℝ)/10000000000000) + (q - ((81:ℝ)/20)) * ((14288753178864849:ℝ)/625000000000))| ≤ ((32596217205184609:ℝ)/20000000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_02 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_02; ring
   have h12 : centralNum12_02 q = ∑ e ∈ Finset.range 13, ([((15632432651792465566929:ℝ)/2048000000000000), ((-180939070072572921355617:ℝ)/102400000000000), ((-26766394521969931502751:ℝ)/5120000000000), ((-359117066045636395839:ℝ)/51200000000), ((-3617365767018554781:ℝ)/640000000), ((-973194879857941341:ℝ)/320000000), ((-18356831018656767:ℝ)/16000000), ((-247683472855731:ℝ)/800000), ((-956012967819:ℝ)/16000), ((-6463929969:ℝ)/800), ((-145789011:ℝ)/200), ((-394767:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_02; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((15632432651792465566929:ℝ)/2048000000000000), ((-180939070072572921355617:ℝ)/102400000000000), ((-26766394521969931502751:ℝ)/5120000000000), ((-359117066045636395839:ℝ)/51200000000), ((-3617365767018554781:ℝ)/640000000), ((-973194879857941341:ℝ)/320000000), ((-18356831018656767:ℝ)/16000000), ((-247683472855731:ℝ)/800000), ((-956012967819:ℝ)/16000), ((-6463929969:ℝ)/800), ((-145789011:ℝ)/200), ((-394767:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0) 11 ht
@@ -2352,59 +972,63 @@ theorem piece13_e02 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 13, ([((15632432651792465566929:ℝ)/2048000000000000), ((-180939070072572921355617:ℝ)/102400000000000), ((-26766394521969931502751:ℝ)/5120000000000), ((-359117066045636395839:ℝ)/51200000000), ((-3617365767018554781:ℝ)/640000000), ((-973194879857941341:ℝ)/320000000), ((-18356831018656767:ℝ)/16000000), ((-247683472855731:ℝ)/800000), ((-956012967819:ℝ)/16000), ((-6463929969:ℝ)/800), ((-145789011:ℝ)/200), ((-394767:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e) - ((15632432651792465566929:ℝ)/2048000000000000) - ((-180939070072572921355617:ℝ)/102400000000000)*t| ≤ ((1789769423196232134903:ℝ)/128000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 13, ([((15632432651792465566929:ℝ)/2048000000000000), ((-180939070072572921355617:ℝ)/102400000000000), ((-26766394521969931502751:ℝ)/5120000000000), ((-359117066045636395839:ℝ)/51200000000), ((-3617365767018554781:ℝ)/640000000), ((-973194879857941341:ℝ)/320000000), ((-18356831018656767:ℝ)/16000000), ((-247683472855731:ℝ)/800000), ((-956012967819:ℝ)/16000), ((-6463929969:ℝ)/800), ((-145789011:ℝ)/200), ((-394767:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((112603906747752550540497:ℝ)/1024000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82080:ℝ), (-967680:ℝ), (3257600:ℝ), (-4474880:ℝ), (2908160:ℝ), (-786432:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_02 q| ≤ ((39942309569391845143483:ℝ)/976562500) := by
-    rw [centralNum13_02_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (87660:ℝ), (-702180:ℝ), ((7421435:ℝ)/4), ((-10854125:ℝ)/4), ((2828125:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_02 q| ≤ ((3264023629111975582223:ℝ)/200000000) := by
-    rw [centralNum23_02_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_02 q = ∑ e ∈ Finset.range 13, ([((-1439477534276347145301153:ℝ)/250000000000), ((-231620242022574478218531:ℝ)/12500000000), ((-8541495907817902281909:ℝ)/312500000), ((-9544905735208925697:ℝ)/390625), ((-1151829860669913033:ℝ)/78125), ((-494117780290365276:ℝ)/78125), ((-30903835570945848:ℝ)/15625), ((-1419551391250656:ℝ)/3125), ((-9505330250688:ℝ)/125), ((-226195639552:ℝ)/25), ((-18157002752:ℝ)/25), ((-176562176:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_02; ring
+  have m13 := abs_poly_le (fun e => ([((-1439477534276347145301153:ℝ)/250000000000), ((-231620242022574478218531:ℝ)/12500000000), ((-8541495907817902281909:ℝ)/312500000), ((-9544905735208925697:ℝ)/390625), ((-1151829860669913033:ℝ)/78125), ((-494117780290365276:ℝ)/78125), ((-30903835570945848:ℝ)/15625), ((-1419551391250656:ℝ)/3125), ((-9505330250688:ℝ)/125), ((-226195639552:ℝ)/25), ((-18157002752:ℝ)/25), ((-176562176:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_02 q| ≤ ((6597530855874202050933:ℝ)/976562500) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_02 q = ∑ e ∈ Finset.range 13, ([((1379463776008518797862921:ℝ)/3276800000000), ((131858918607604513377879:ℝ)/163840000000), ((3091552760513580144921:ℝ)/8192000000), ((-154824505826571742131:ℝ)/409600000), ((-3333397376171117601:ℝ)/5120000), ((-233405972726360517:ℝ)/512000), ((-5017045419295623:ℝ)/25600), ((-72730850893227:ℝ)/1280), ((-1460086959231:ℝ)/128), ((-50323408145:ℝ)/32), ((-1141583875:ℝ)/8), ((-15396875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_02; ring
+  have m23 := abs_poly_le (fun e => ([((1379463776008518797862921:ℝ)/3276800000000), ((131858918607604513377879:ℝ)/163840000000), ((3091552760513580144921:ℝ)/8192000000), ((-154824505826571742131:ℝ)/409600000), ((-3333397376171117601:ℝ)/5120000), ((-233405972726360517:ℝ)/512000), ((-5017045419295623:ℝ)/25600), ((-72730850893227:ℝ)/1280), ((-1460086959231:ℝ)/128), ((-50323408145:ℝ)/32), ((-1141583875:ℝ)/8), ((-15396875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_02 q| ≤ ((151458288246493633812453:ℝ)/327680000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((71271091163:ℝ)/20000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((21100359437:ℝ)/2000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((15632432651792465566929:ℝ)/2048000000000000) + ((59502537175353561:ℝ)/16000000000)*((71271091163:ℝ)/20000000000000) - ((135754637866512603:ℝ)/10000000000000)) (β := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-180939070072572921355617:ℝ)/102400000000000) - 3*((15632432651792465566929:ℝ)/2048000000000000)) + ((7475627401115589:ℝ)/800000000)*((71271091163:ℝ)/20000000000000) - ((-424247530263613113:ℝ)/10000000000000)) ht
-  have hW : pieceW q pieceX_13 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((71271091163:ℝ)/20000000000000) + (0:ℝ) := by
-    rw [pieceW_02, pieceX_13, sym4_02, hexp3]; ring
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((15632432651792465566929:ℝ)/2048000000000000) + ((59502537175353561:ℝ)/16000000000)*((21100359437:ℝ)/2000000000000) - ((395580839950254109:ℝ)/10000000000000)) (β := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-180939070072572921355617:ℝ)/102400000000000) - 3*((15632432651792465566929:ℝ)/2048000000000000)) + ((7475627401115589:ℝ)/800000000)*((21100359437:ℝ)/2000000000000) - ((14288753178864849:ℝ)/625000000000)) ht
+  have hW : pieceW q pieceX_9 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((21100359437:ℝ)/2000000000000) + (0:ℝ) := by
+    rw [pieceW_02, pieceX_9, sym4_02, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((32079126123146742965189704495200215406525507252544444476316914789:ℝ)/3814034646281841741547868954520216116611752213020010823417600000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((15632432651792465566929:ℝ)/2048000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-180939070072572921355617:ℝ)/102400000000000) - 3*((15632432651792465566929:ℝ)/2048000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((71271091163:ℝ)/20000000000000) - (((135754637866512603:ℝ)/10000000000000) + t * ((-424247530263613113:ℝ)/10000000000000)) = ((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((15632432651792465566929:ℝ)/2048000000000000) + ((59502537175353561:ℝ)/16000000000)*((71271091163:ℝ)/20000000000000) - ((135754637866512603:ℝ)/10000000000000)) + t*((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-180939070072572921355617:ℝ)/102400000000000) - 3*((15632432651792465566929:ℝ)/2048000000000000)) + ((7475627401115589:ℝ)/800000000)*((71271091163:ℝ)/20000000000000) - ((-424247530263613113:ℝ)/10000000000000)) := by ring
+  refine entry_assemble (r7 := ((12848404783418293851064717917529468740456265972842917451856697011:ℝ)/381403464628184174154786895452021611661175221302001082341760000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((15632432651792465566929:ℝ)/2048000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-180939070072572921355617:ℝ)/102400000000000) - 3*((15632432651792465566929:ℝ)/2048000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((21100359437:ℝ)/2000000000000) - (((395580839950254109:ℝ)/10000000000000) + t * ((14288753178864849:ℝ)/625000000000)) = ((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((15632432651792465566929:ℝ)/2048000000000000) + ((59502537175353561:ℝ)/16000000000)*((21100359437:ℝ)/2000000000000) - ((395580839950254109:ℝ)/10000000000000)) + t*((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-180939070072572921355617:ℝ)/102400000000000) - 3*((15632432651792465566929:ℝ)/2048000000000000)) + ((7475627401115589:ℝ)/800000000)*((21100359437:ℝ)/2000000000000) - ((14288753178864849:ℝ)/625000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e03 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 0 3 - (((-872196643197672363:ℝ)/10000000000000) + (q - ((81:ℝ)/20)) * ((-32043823522873429:ℝ)/62500000000))| ≤ ((7590681969674379:ℝ)/781250000000) := by
+theorem piece9_e03 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 0 3 - (((322290323336017061:ℝ)/5000000000000) + (q - ((81:ℝ)/20)) * ((-131579213915053699:ℝ)/1000000000000))| ≤ ((419606581903162297:ℝ)/50000000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_03 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_03; ring
   have h12 : centralNum12_03 q = ∑ e ∈ Finset.range 14, ([((1709464708113658582706159301:ℝ)/573440000000000000), ((68062676408690899843296297:ℝ)/7168000000000000), ((4544678288682547129161207:ℝ)/358400000000000), ((316432718152584063852393:ℝ)/35840000000000), ((1982058557330705724693:ℝ)/716800000000), ((-47895704027241977619:ℝ)/89600000000), ((-138179609305578081:ℝ)/140000000), ((-57547439551427571:ℝ)/112000000), ((-3607042418026713:ℝ)/22400000), ((-945904098429:ℝ)/28000), ((-67345822791:ℝ)/14000), ((-628829811:ℝ)/1400), ((-3489237:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_03; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((1709464708113658582706159301:ℝ)/573440000000000000), ((68062676408690899843296297:ℝ)/7168000000000000), ((4544678288682547129161207:ℝ)/358400000000000), ((316432718152584063852393:ℝ)/35840000000000), ((1982058557330705724693:ℝ)/716800000000), ((-47895704027241977619:ℝ)/89600000000), ((-138179609305578081:ℝ)/140000000), ((-57547439551427571:ℝ)/112000000), ((-3607042418026713:ℝ)/22400000), ((-945904098429:ℝ)/28000), ((-67345822791:ℝ)/14000), ((-628829811:ℝ)/1400), ((-3489237:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 12 ht
@@ -2412,59 +1036,63 @@ theorem piece13_e03 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 14, ([((1709464708113658582706159301:ℝ)/573440000000000000), ((68062676408690899843296297:ℝ)/7168000000000000), ((4544678288682547129161207:ℝ)/358400000000000), ((316432718152584063852393:ℝ)/35840000000000), ((1982058557330705724693:ℝ)/716800000000), ((-47895704027241977619:ℝ)/89600000000), ((-138179609305578081:ℝ)/140000000), ((-57547439551427571:ℝ)/112000000), ((-3607042418026713:ℝ)/22400000), ((-945904098429:ℝ)/28000), ((-67345822791:ℝ)/14000), ((-628829811:ℝ)/1400), ((-3489237:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((1709464708113658582706159301:ℝ)/573440000000000000) - ((68062676408690899843296297:ℝ)/7168000000000000)*t| ≤ ((3764318750511993529208811:ℝ)/114688000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 14, ([((1709464708113658582706159301:ℝ)/573440000000000000), ((68062676408690899843296297:ℝ)/7168000000000000), ((4544678288682547129161207:ℝ)/358400000000000), ((316432718152584063852393:ℝ)/35840000000000), ((1982058557330705724693:ℝ)/716800000000), ((-47895704027241977619:ℝ)/89600000000), ((-138179609305578081:ℝ)/140000000), ((-57547439551427571:ℝ)/112000000), ((-3607042418026713:ℝ)/22400000), ((-945904098429:ℝ)/28000), ((-67345822791:ℝ)/14000), ((-628829811:ℝ)/1400), ((-3489237:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((7814597685550711522364799:ℝ)/2240000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-812160:ℝ), (8985600:ℝ), (-32225280:ℝ), (52019200:ℝ), ((-305233920:ℝ)/7), ((135528448:ℝ)/7), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_03 q| ≤ ((9318398533850399048415127:ℝ)/8544921875) := by
-    rw [centralNum13_03_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-833220:ℝ), (6469740:ℝ), ((-68603955:ℝ)/4), ((104396875:ℝ)/4), ((-1001334375:ℝ)/56), ((125828125:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_03 q| ≤ ((95184480554048691124117:ℝ)/350000000) := by
-    rw [centralNum23_03_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_03 q = ∑ e ∈ Finset.range 14, ([((-69154013722202786417196573:ℝ)/1093750000000), ((-12561999590778200921805399:ℝ)/54687500000), ((-75097936969286541811821:ℝ)/195312500), ((-26845049563995290972364:ℝ)/68359375), ((-746680814947477783278:ℝ)/2734375), ((-53332561165065067944:ℝ)/390625), ((-27617270870112833376:ℝ)/546875), ((-1530341042925055104:ℝ)/109375), ((-63521900165901312:ℝ)/21875), ((-55735141380096:ℝ)/125), ((-43080196120576:ℝ)/875), ((-647889518592:ℝ)/175), ((-849608704:ℝ)/5), ((-25165824:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_03; ring
+  have m13 := abs_poly_le (fun e => ([((-69154013722202786417196573:ℝ)/1093750000000), ((-12561999590778200921805399:ℝ)/54687500000), ((-75097936969286541811821:ℝ)/195312500), ((-26845049563995290972364:ℝ)/68359375), ((-746680814947477783278:ℝ)/2734375), ((-53332561165065067944:ℝ)/390625), ((-27617270870112833376:ℝ)/546875), ((-1530341042925055104:ℝ)/109375), ((-63521900165901312:ℝ)/21875), ((-55735141380096:ℝ)/125), ((-43080196120576:ℝ)/875), ((-647889518592:ℝ)/175), ((-849608704:ℝ)/5), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_03 q| ≤ ((647054599787718013408847:ℝ)/8544921875) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_03 q = ∑ e ∈ Finset.range 14, ([((282506738727329118350464617:ℝ)/183500800000000), ((16627101746443544469660417:ℝ)/2293760000000), ((1492694374882983884782983:ℝ)/114688000000), ((144286608543139222603749:ℝ)/11468800000), ((8401685967208866282957:ℝ)/1146880000), ((73766867864910222321:ℝ)/28672000), ((39049088626708299:ℝ)/89600), ((-1676645792737767:ℝ)/35840), ((-346985599180077:ℝ)/7168), ((-3096363045855:ℝ)/224), ((-253890374375:ℝ)/112), ((-12759496875:ℝ)/56), ((-367765625:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_03; ring
+  have m23 := abs_poly_le (fun e => ([((282506738727329118350464617:ℝ)/183500800000000), ((16627101746443544469660417:ℝ)/2293760000000), ((1492694374882983884782983:ℝ)/114688000000), ((144286608543139222603749:ℝ)/11468800000), ((8401685967208866282957:ℝ)/1146880000), ((73766867864910222321:ℝ)/28672000), ((39049088626708299:ℝ)/89600), ((-1676645792737767:ℝ)/35840), ((-346985599180077:ℝ)/7168), ((-3096363045855:ℝ)/224), ((-253890374375:ℝ)/112), ((-12759496875:ℝ)/56), ((-367765625:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_03 q| ≤ ((17764152345302692436652221:ℝ)/9175040000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-573662206417:ℝ)/10000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-82903356679:ℝ)/5000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((1709464708113658582706159301:ℝ)/573440000000000000) + ((59502537175353561:ℝ)/16000000000)*((-573662206417:ℝ)/10000000000000) - ((-872196643197672363:ℝ)/10000000000000)) (β := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((68062676408690899843296297:ℝ)/7168000000000000) - 3*((1709464708113658582706159301:ℝ)/573440000000000000)) + ((7475627401115589:ℝ)/800000000)*((-573662206417:ℝ)/10000000000000) - ((-32043823522873429:ℝ)/62500000000)) ht
-  have hW : pieceW q pieceX_13 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-573662206417:ℝ)/10000000000000) + (0:ℝ) := by
-    rw [pieceW_03, pieceX_13, sym4_03, hexp3]; ring
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((1709464708113658582706159301:ℝ)/573440000000000000) + ((59502537175353561:ℝ)/16000000000)*((-82903356679:ℝ)/5000000000000) - ((322290323336017061:ℝ)/5000000000000)) (β := (0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((68062676408690899843296297:ℝ)/7168000000000000) - 3*((1709464708113658582706159301:ℝ)/573440000000000000)) + ((7475627401115589:ℝ)/800000000)*((-82903356679:ℝ)/5000000000000) - ((-131579213915053699:ℝ)/1000000000000)) ht
+  have hW : pieceW q pieceX_9 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-82903356679:ℝ)/5000000000000) + (0:ℝ) := by
+    rw [pieceW_03, pieceX_9, sym4_03, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((7609489228654042997086484840188198437180026491896410637215913801653:ℝ)/166864015774830576192719266760259455101764159319625473524520000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((1709464708113658582706159301:ℝ)/573440000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((68062676408690899843296297:ℝ)/7168000000000000) - 3*((1709464708113658582706159301:ℝ)/573440000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-573662206417:ℝ)/10000000000000) - (((-872196643197672363:ℝ)/10000000000000) + t * ((-32043823522873429:ℝ)/62500000000)) = ((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((1709464708113658582706159301:ℝ)/573440000000000000) + ((59502537175353561:ℝ)/16000000000)*((-573662206417:ℝ)/10000000000000) - ((-872196643197672363:ℝ)/10000000000000)) + t*((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((68062676408690899843296297:ℝ)/7168000000000000) - 3*((1709464708113658582706159301:ℝ)/573440000000000000)) + ((7475627401115589:ℝ)/800000000)*((-573662206417:ℝ)/10000000000000) - ((-32043823522873429:ℝ)/62500000000)) := by ring
+  refine entry_assemble (r7 := ((69611403415947548486054802897601195512487544867895477144206940559:ℝ)/6674560630993223047708770670410378204070566372785018940980800000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((1709464708113658582706159301:ℝ)/573440000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((68062676408690899843296297:ℝ)/7168000000000000) - 3*((1709464708113658582706159301:ℝ)/573440000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-82903356679:ℝ)/5000000000000) - (((322290323336017061:ℝ)/5000000000000) + t * ((-131579213915053699:ℝ)/1000000000000)) = ((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((1709464708113658582706159301:ℝ)/573440000000000000) + ((59502537175353561:ℝ)/16000000000)*((-82903356679:ℝ)/5000000000000) - ((322290323336017061:ℝ)/5000000000000)) + t*((0:ℝ) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((68062676408690899843296297:ℝ)/7168000000000000) - 3*((1709464708113658582706159301:ℝ)/573440000000000000)) + ((7475627401115589:ℝ)/800000000)*((-82903356679:ℝ)/5000000000000) - ((-131579213915053699:ℝ)/1000000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e11 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 1 1 - (((72954025879958907:ℝ)/20000000000) + (q - ((81:ℝ)/20)) * ((793559263205429469:ℝ)/100000000000))| ≤ ((227338920235692897:ℝ)/10000000000000) := by
+theorem piece9_e11 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 1 1 - (((182050343605134469:ℝ)/50000000000) + (q - ((81:ℝ)/20)) * ((395938574966636823:ℝ)/50000000000))| ≤ ((56687232236175549:ℝ)/2500000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_11 q = ∑ e ∈ Finset.range 10, ([((14096340595303191:ℝ)/4000000000), ((3136442764740723:ℝ)/400000000), ((39476985567633:ℝ)/5000000), ((1180722133017:ℝ)/250000), ((11550043449:ℝ)/6250), ((612089541:ℝ)/1250), ((10957548:ℝ)/125), ((254928:ℝ)/25), ((3488:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_11; ring
   have h12 : centralNum12_11 q = ∑ e ∈ Finset.range 13, ([((602392767830298469520523:ℝ)/512000000000000), ((35262926957479176723141:ℝ)/25600000000000), ((-2016334982877552662517:ℝ)/1280000000000), ((-60158441840503719573:ℝ)/12800000000), ((-779879600102716407:ℝ)/160000000), ((-239442919046293167:ℝ)/80000000), ((-4912820722440309:ℝ)/4000000), ((-70369620403377:ℝ)/200000), ((-284269320233:ℝ)/4000), ((-5979932929:ℝ)/600), ((-46332657:ℝ)/50), ((-257418:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_11; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((14096340595303191:ℝ)/4000000000), ((3136442764740723:ℝ)/400000000), ((39476985567633:ℝ)/5000000), ((1180722133017:ℝ)/250000), ((11550043449:ℝ)/6250), ((612089541:ℝ)/1250), ((10957548:ℝ)/125), ((254928:ℝ)/25), ((3488:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((602392767830298469520523:ℝ)/512000000000000), ((35262926957479176723141:ℝ)/25600000000000), ((-2016334982877552662517:ℝ)/1280000000000), ((-60158441840503719573:ℝ)/12800000000), ((-779879600102716407:ℝ)/160000000), ((-239442919046293167:ℝ)/80000000), ((-4912820722440309:ℝ)/4000000), ((-70369620403377:ℝ)/200000), ((-284269320233:ℝ)/4000), ((-5979932929:ℝ)/600), ((-46332657:ℝ)/50), ((-257418:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0) 11 ht
@@ -2472,67 +1100,71 @@ theorem piece13_e11 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((14096340595303191:ℝ)/4000000000), ((3136442764740723:ℝ)/400000000), ((39476985567633:ℝ)/5000000), ((1180722133017:ℝ)/250000), ((11550043449:ℝ)/6250), ((612089541:ℝ)/1250), ((10957548:ℝ)/125), ((254928:ℝ)/25), ((3488:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((14096340595303191:ℝ)/4000000000) + ((3136442764740723:ℝ)/400000000)*t)| ≤ ((488173399052317:ℝ)/24000000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 13, ([((602392767830298469520523:ℝ)/512000000000000), ((35262926957479176723141:ℝ)/25600000000000), ((-2016334982877552662517:ℝ)/1280000000000), ((-60158441840503719573:ℝ)/12800000000), ((-779879600102716407:ℝ)/160000000), ((-239442919046293167:ℝ)/80000000), ((-4912820722440309:ℝ)/4000000), ((-70369620403377:ℝ)/200000), ((-284269320233:ℝ)/4000), ((-5979932929:ℝ)/600), ((-46332657:ℝ)/50), ((-257418:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e) - ((602392767830298469520523:ℝ)/512000000000000) - ((35262926957479176723141:ℝ)/25600000000000)*t| ≤ ((437477557074799402463:ℝ)/96000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 13, ([((602392767830298469520523:ℝ)/512000000000000), ((35262926957479176723141:ℝ)/25600000000000), ((-2016334982877552662517:ℝ)/1280000000000), ((-60158441840503719573:ℝ)/12800000000), ((-779879600102716407:ℝ)/160000000), ((-239442919046293167:ℝ)/80000000), ((-4912820722440309:ℝ)/4000000), ((-70369620403377:ℝ)/200000), ((-284269320233:ℝ)/4000), ((-5979932929:ℝ)/600), ((-46332657:ℝ)/50), ((-257418:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((2399958406595662161463:ℝ)/1920000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-3444:ℝ), (162624:ℝ), (-1531216:ℝ), (4800960:ℝ), (-6350848:ℝ), ((12025856:ℝ)/3), (-1048576:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_11 q| ≤ ((81946071031967932118111:ℝ)/1464843750) := by
-    rw [centralNum13_11_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-4074:ℝ), (159906:ℝ), (-1104799:ℝ), (2801499:ℝ), (-3931375:ℝ), ((5896250:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_11 q| ≤ ((17056944702010831639603:ℝ)/750000000) := by
-    rw [centralNum23_11_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_11 q = ∑ e ∈ Finset.range 13, ([((-3692834708285025898695963:ℝ)/500000000000), ((-1192793473692869355109917:ℝ)/50000000000), ((-22072812999628715175249:ℝ)/625000000), ((-198021438869684602131:ℝ)/6250000), ((-1498642695050687154:ℝ)/78125), ((-1290096719029335771:ℝ)/156250), ((-40475253066301284:ℝ)/15625), ((-1865123788239408:ℝ)/3125), ((-12527595685664:ℝ)/125), ((-299015770176:ℝ)/25), ((-24072964096:ℝ)/25), ((-704282624:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_11; ring
+  have m13 := abs_poly_le (fun e => ([((-3692834708285025898695963:ℝ)/500000000000), ((-1192793473692869355109917:ℝ)/50000000000), ((-22072812999628715175249:ℝ)/625000000), ((-198021438869684602131:ℝ)/6250000), ((-1498642695050687154:ℝ)/78125), ((-1290096719029335771:ℝ)/156250), ((-40475253066301284:ℝ)/15625), ((-1865123788239408:ℝ)/3125), ((-12527595685664:ℝ)/125), ((-299015770176:ℝ)/25), ((-24072964096:ℝ)/25), ((-704282624:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_11 q| ≤ ((25402843018339875471017:ℝ)/2929687500) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_11 q = ∑ e ∈ Finset.range 13, ([((2697553079252359607291967:ℝ)/4096000000000), ((284671328025747099069153:ℝ)/204800000000), ((9865493374852566474687:ℝ)/10240000000), ((-55779208658370125397:ℝ)/512000000), ((-4126065846392546127:ℝ)/6400000), ((-332969834000602179:ℝ)/640000), ((-7583446828703361:ℝ)/32000), ((-113549262305469:ℝ)/1600), ((-2328297778297:ℝ)/160), ((-16295999883:ℝ)/8), ((-374026625:ℝ)/2), ((-30553750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_11; ring
+  have m23 := abs_poly_le (fun e => ([((2697553079252359607291967:ℝ)/4096000000000), ((284671328025747099069153:ℝ)/204800000000), ((9865493374852566474687:ℝ)/10240000000), ((-55779208658370125397:ℝ)/512000000), ((-4126065846392546127:ℝ)/6400000), ((-332969834000602179:ℝ)/640000), ((-7583446828703361:ℝ)/32000), ((-113549262305469:ℝ)/1600), ((-2328297778297:ℝ)/160), ((-16295999883:ℝ)/8), ((-374026625:ℝ)/2), ((-30553750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_11 q| ≤ ((897648859638302419546553:ℝ)/1228800000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((198552705423:ℝ)/10000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((180551666239:ℝ)/10000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1))| ≤ ((494735446468832678122956800000000:ℝ)/127290950319585588364428652088754903) := by
     rw [abs_neg, tailWeight_1, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((41:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((41:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece13_Et h0
+    have hx := piece9_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((4814744136400:ℝ)/531441)) ≤ ((41:ℝ)/10)^6*(8000*(2*((41:ℝ)/10)-3)^2*(1/((239520380097857689497853293383:ℝ)/100000000000))*((4814744136400:ℝ)/531441)) := by
           gcongr
       _ ≤ ((494735446468832678122956800000000:ℝ)/127290950319585588364428652088754903) := by norm_num
-  have c7 := affine_round (α := ((14096340595303191:ℝ)/4000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((602392767830298469520523:ℝ)/512000000000000) + ((59502537175353561:ℝ)/16000000000)*((198552705423:ℝ)/10000000000000) - ((72954025879958907:ℝ)/20000000000)) (β := ((3136442764740723:ℝ)/400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((35262926957479176723141:ℝ)/25600000000000) - 3*((602392767830298469520523:ℝ)/512000000000000)) + ((7475627401115589:ℝ)/800000000)*((198552705423:ℝ)/10000000000000) - ((793559263205429469:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_13 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((198552705423:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
-    rw [pieceW_11, pieceX_13, sym4_11, hexp3]; ring
+  have c7 := affine_round (α := ((14096340595303191:ℝ)/4000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((602392767830298469520523:ℝ)/512000000000000) + ((59502537175353561:ℝ)/16000000000)*((180551666239:ℝ)/10000000000000) - ((182050343605134469:ℝ)/50000000000)) (β := ((3136442764740723:ℝ)/400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((35262926957479176723141:ℝ)/25600000000000) - 3*((602392767830298469520523:ℝ)/512000000000000)) + ((7475627401115589:ℝ)/800000000)*((180551666239:ℝ)/10000000000000) - ((395938574966636823:ℝ)/50000000000)) ht
+  have hW : pieceW q pieceX_9 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((180551666239:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
+    rw [pieceW_11, pieceX_9, sym4_11, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((116759285414770773214406480496532415668167003538443053805982439104701:ℝ)/23837716539261510884674180965751350728823451331375067646360000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((14096340595303191:ℝ)/4000000000) + ((3136442764740723:ℝ)/400000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((602392767830298469520523:ℝ)/512000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((35262926957479176723141:ℝ)/25600000000000) - 3*((602392767830298469520523:ℝ)/512000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((198552705423:ℝ)/10000000000000) - (((72954025879958907:ℝ)/20000000000) + t * ((793559263205429469:ℝ)/100000000000)) = (((14096340595303191:ℝ)/4000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((602392767830298469520523:ℝ)/512000000000000) + ((59502537175353561:ℝ)/16000000000)*((198552705423:ℝ)/10000000000000) - ((72954025879958907:ℝ)/20000000000)) + t*(((3136442764740723:ℝ)/400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((35262926957479176723141:ℝ)/25600000000000) - 3*((602392767830298469520523:ℝ)/512000000000000)) + ((7475627401115589:ℝ)/800000000)*((198552705423:ℝ)/10000000000000) - ((793559263205429469:ℝ)/100000000000)) := by ring
+  refine entry_assemble (r7 := ((27416095280426083623169370783558001874868939938464072228375887507507:ℝ)/23837716539261510884674180965751350728823451331375067646360000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((14096340595303191:ℝ)/4000000000) + ((3136442764740723:ℝ)/400000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((602392767830298469520523:ℝ)/512000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((35262926957479176723141:ℝ)/25600000000000) - 3*((602392767830298469520523:ℝ)/512000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((180551666239:ℝ)/10000000000000) - (((182050343605134469:ℝ)/50000000000) + t * ((395938574966636823:ℝ)/50000000000)) = (((14096340595303191:ℝ)/4000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((602392767830298469520523:ℝ)/512000000000000) + ((59502537175353561:ℝ)/16000000000)*((180551666239:ℝ)/10000000000000) - ((182050343605134469:ℝ)/50000000000)) + t*(((3136442764740723:ℝ)/400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((35262926957479176723141:ℝ)/25600000000000) - 3*((602392767830298469520523:ℝ)/512000000000000)) + ((7475627401115589:ℝ)/800000000)*((180551666239:ℝ)/10000000000000) - ((395938574966636823:ℝ)/50000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e12 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 1 2 - (((-191595185500352119:ℝ)/500000000000) + (q - ((81:ℝ)/20)) * ((-856389696952104163:ℝ)/1000000000000))| ≤ ((103013135444032431:ℝ)/5000000000000) := by
+theorem piece9_e12 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 1 2 - (((-494009591098170013:ℝ)/1000000000000) + (q - ((81:ℝ)/20)) * ((-113484612508371751:ℝ)/100000000000))| ≤ ((1627284726283099:ℝ)/78125000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_12 q = ∑ e ∈ Finset.range 9, ([((-331289846292213:ℝ)/640000000), ((-6558641458281:ℝ)/8000000), ((-197197028901:ℝ)/400000), ((-2342060487:ℝ)/20000), ((3601989:ℝ)/400), ((595593:ℝ)/50), ((14358:ℝ)/5), (312:ℝ), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_12; ring
   have h12 : centralNum12_12 q = ∑ e ∈ Finset.range 14, ([((458752427944400424046667607:ℝ)/81920000000000000), ((22550276350275798681425619:ℝ)/1024000000000000), ((1832437380586742226552429:ℝ)/51200000000000), ((164118429272144665566531:ℝ)/5120000000000), ((1747839283017698480391:ℝ)/102400000000), ((63611603970049258767:ℝ)/12800000000), ((3751488148862163:ℝ)/20000000), ((-7911221150751537:ℝ)/16000000), ((-2249665427964313:ℝ)/9600000), ((-236160366023:ℝ)/4000), ((-18767298237:ℝ)/2000), ((-189102897:ℝ)/200), ((-1111239:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_12; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-331289846292213:ℝ)/640000000), ((-6558641458281:ℝ)/8000000), ((-197197028901:ℝ)/400000), ((-2342060487:ℝ)/20000), ((3601989:ℝ)/400), ((595593:ℝ)/50), ((14358:ℝ)/5), (312:ℝ), ((40:ℝ)/3)] : List ℝ).getD e 0) 7 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((458752427944400424046667607:ℝ)/81920000000000000), ((22550276350275798681425619:ℝ)/1024000000000000), ((1832437380586742226552429:ℝ)/51200000000000), ((164118429272144665566531:ℝ)/5120000000000), ((1747839283017698480391:ℝ)/102400000000), ((63611603970049258767:ℝ)/12800000000), ((3751488148862163:ℝ)/20000000), ((-7911221150751537:ℝ)/16000000), ((-2249665427964313:ℝ)/9600000), ((-236160366023:ℝ)/4000), ((-18767298237:ℝ)/2000), ((-189102897:ℝ)/200), ((-1111239:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0) 12 ht
@@ -2540,59 +1172,63 @@ theorem piece13_e12 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 9, ([((-331289846292213:ℝ)/640000000), ((-6558641458281:ℝ)/8000000), ((-197197028901:ℝ)/400000), ((-2342060487:ℝ)/20000), ((3601989:ℝ)/400), ((595593:ℝ)/50), ((14358:ℝ)/5), (312:ℝ), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((-331289846292213:ℝ)/640000000) + ((-6558641458281:ℝ)/8000000)*t)| ≤ ((2394584366059:ℝ)/1920000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 14, ([((458752427944400424046667607:ℝ)/81920000000000000), ((22550276350275798681425619:ℝ)/1024000000000000), ((1832437380586742226552429:ℝ)/51200000000000), ((164118429272144665566531:ℝ)/5120000000000), ((1747839283017698480391:ℝ)/102400000000), ((63611603970049258767:ℝ)/12800000000), ((3751488148862163:ℝ)/20000000), ((-7911221150751537:ℝ)/16000000), ((-2249665427964313:ℝ)/9600000), ((-236160366023:ℝ)/4000), ((-18767298237:ℝ)/2000), ((-189102897:ℝ)/200), ((-1111239:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e) - ((458752427944400424046667607:ℝ)/81920000000000000) - ((22550276350275798681425619:ℝ)/1024000000000000)*t| ≤ ((23000559219041469892761931:ℝ)/245760000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 14, ([((458752427944400424046667607:ℝ)/81920000000000000), ((22550276350275798681425619:ℝ)/1024000000000000), ((1832437380586742226552429:ℝ)/51200000000000), ((164118429272144665566531:ℝ)/5120000000000), ((1747839283017698480391:ℝ)/102400000000), ((63611603970049258767:ℝ)/12800000000), ((3751488148862163:ℝ)/20000000), ((-7911221150751537:ℝ)/16000000), ((-2249665427964313:ℝ)/9600000), ((-236160366023:ℝ)/4000), ((-18767298237:ℝ)/2000), ((-189102897:ℝ)/200), ((-1111239:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((83493057962777616310493609:ℝ)/12288000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (122790:ℝ), (-3586680:ℝ), (28529720:ℝ), (-90761600:ℝ), (137804800:ℝ), ((-332136448:ℝ)/3), ((141819904:ℝ)/3), (-8388608:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_12 q| ≤ ((6516106964253248663593363:ℝ)/2441406250) := by
-    rw [centralNum13_12_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (132555:ℝ), (-3252375:ℝ), ((39743695:ℝ)/2), ((-197111615:ℝ)/4), ((281947375:ℝ)/4), ((-1100234375:ℝ)/24), ((131828125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_12 q| ≤ ((34241614419896876479023:ℝ)/50000000) := by
-    rw [centralNum23_12_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_12 q = ∑ e ∈ Finset.range 14, ([((-1343514791764463733115569729:ℝ)/10000000000000), ((-1925948966947298697725649:ℝ)/3906250000), ((-5206497415866869790363363:ℝ)/6250000000), ((-268204596325706195320491:ℝ)/312500000), ((-3760579062542884442751:ℝ)/6250000), ((-236844160768925045937:ℝ)/781250), ((-8824378245803194602:ℝ)/78125), ((-492369536688813288:ℝ)/15625), ((-20572210267216904:ℝ)/3125), ((-127147553275264:ℝ)/125), ((-14124161938432:ℝ)/125), ((-640917962752:ℝ)/75), ((-5915803648:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_12; ring
+  have m13 := abs_poly_le (fun e => ([((-1343514791764463733115569729:ℝ)/10000000000000), ((-1925948966947298697725649:ℝ)/3906250000), ((-5206497415866869790363363:ℝ)/6250000000), ((-268204596325706195320491:ℝ)/312500000), ((-3760579062542884442751:ℝ)/6250000), ((-236844160768925045937:ℝ)/781250), ((-8824378245803194602:ℝ)/78125), ((-492369536688813288:ℝ)/15625), ((-20572210267216904:ℝ)/3125), ((-127147553275264:ℝ)/125), ((-14124161938432:ℝ)/125), ((-640917962752:ℝ)/75), ((-5915803648:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_12 q| ≤ ((4722579019474481070452461:ℝ)/29296875000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_12 q = ∑ e ∈ Finset.range 14, ([((65732757478331536053661923:ℝ)/26214400000000), ((4806307537948762652454363:ℝ)/327680000000), ((474203878666383631997277:ℝ)/16384000000), ((48820470498948758643351:ℝ)/1638400000), ((3015579992528485329903:ℝ)/163840000), ((28735525383382652859:ℝ)/4096000), ((18860598772987461:ℝ)/12800), ((141274752089427:ℝ)/5120), ((-86821555667023:ℝ)/1024), ((-905118214045:ℝ)/32), ((-78753516125:ℝ)/16), ((-12275196875:ℝ)/24), ((-361765625:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_12; ring
+  have m23 := abs_poly_le (fun e => ([((65732757478331536053661923:ℝ)/26214400000000), ((4806307537948762652454363:ℝ)/327680000000), ((474203878666383631997277:ℝ)/16384000000), ((48820470498948758643351:ℝ)/1638400000), ((3015579992528485329903:ℝ)/163840000), ((28735525383382652859:ℝ)/4096000), ((18860598772987461:ℝ)/12800), ((141274752089427:ℝ)/5120), ((-86821555667023:ℝ)/1024), ((-905118214045:ℝ)/32), ((-78753516125:ℝ)/16), ((-12275196875:ℝ)/24), ((-361765625:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_12 q| ≤ ((65216638305769392085785187:ℝ)/19660800000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-137767972523:ℝ)/5000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-8961320351:ℝ)/156250000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-331289846292213:ℝ)/640000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((458752427944400424046667607:ℝ)/81920000000000000) + ((59502537175353561:ℝ)/16000000000)*((-137767972523:ℝ)/5000000000000) - ((-191595185500352119:ℝ)/500000000000)) (β := ((-6558641458281:ℝ)/8000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((22550276350275798681425619:ℝ)/1024000000000000) - 3*((458752427944400424046667607:ℝ)/81920000000000000)) + ((7475627401115589:ℝ)/800000000)*((-137767972523:ℝ)/5000000000000) - ((-856389696952104163:ℝ)/1000000000000)) ht
-  have hW : pieceW q pieceX_13 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((-137767972523:ℝ)/5000000000000) + (0:ℝ) := by
-    rw [pieceW_12, pieceX_13, sym4_12, hexp3]; ring
+  have c7 := affine_round (α := ((-331289846292213:ℝ)/640000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((458752427944400424046667607:ℝ)/81920000000000000) + ((59502537175353561:ℝ)/16000000000)*((-8961320351:ℝ)/156250000000) - ((-494009591098170013:ℝ)/1000000000000)) (β := ((-6558641458281:ℝ)/8000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((22550276350275798681425619:ℝ)/1024000000000000) - 3*((458752427944400424046667607:ℝ)/81920000000000000)) + ((7475627401115589:ℝ)/800000000)*((-8961320351:ℝ)/156250000000) - ((-113484612508371751:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_9 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((-8961320351:ℝ)/156250000000) + (0:ℝ) := by
+    rw [pieceW_12, pieceX_9, sym4_12, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((67624203289256575867124508240941432767758521858174286295651099267:ℝ)/136215523081494347912423891232864861307562579036428957979200000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-331289846292213:ℝ)/640000000) + ((-6558641458281:ℝ)/8000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((458752427944400424046667607:ℝ)/81920000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((22550276350275798681425619:ℝ)/1024000000000000) - 3*((458752427944400424046667607:ℝ)/81920000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-137767972523:ℝ)/5000000000000) - (((-191595185500352119:ℝ)/500000000000) + t * ((-856389696952104163:ℝ)/1000000000000)) = (((-331289846292213:ℝ)/640000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((458752427944400424046667607:ℝ)/81920000000000000) + ((59502537175353561:ℝ)/16000000000)*((-137767972523:ℝ)/5000000000000) - ((-191595185500352119:ℝ)/500000000000)) + t*(((-6558641458281:ℝ)/8000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((22550276350275798681425619:ℝ)/1024000000000000) - 3*((458752427944400424046667607:ℝ)/81920000000000000)) + ((7475627401115589:ℝ)/800000000)*((-137767972523:ℝ)/5000000000000) - ((-856389696952104163:ℝ)/1000000000000)) := by ring
+  refine entry_assemble (r7 := ((2688358253861329927117953288101252164564888443048302281019654121:ℝ)/4256735096296698372263246601027026915861330594888404936850000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-331289846292213:ℝ)/640000000) + ((-6558641458281:ℝ)/8000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((458752427944400424046667607:ℝ)/81920000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((22550276350275798681425619:ℝ)/1024000000000000) - 3*((458752427944400424046667607:ℝ)/81920000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-8961320351:ℝ)/156250000000) - (((-494009591098170013:ℝ)/1000000000000) + t * ((-113484612508371751:ℝ)/100000000000)) = (((-331289846292213:ℝ)/640000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((458752427944400424046667607:ℝ)/81920000000000000) + ((59502537175353561:ℝ)/16000000000)*((-8961320351:ℝ)/156250000000) - ((-494009591098170013:ℝ)/1000000000000)) + t*(((-6558641458281:ℝ)/8000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((22550276350275798681425619:ℝ)/1024000000000000) - 3*((458752427944400424046667607:ℝ)/81920000000000000)) + ((7475627401115589:ℝ)/800000000)*((-8961320351:ℝ)/156250000000) - ((-113484612508371751:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e13 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 1 3 - (((814583646033642191:ℝ)/1000000000000) + (q - ((81:ℝ)/20)) * ((20071271309439857:ℝ)/5000000000))| ≤ ((594628729131134503:ℝ)/10000000000000) := by
+theorem piece9_e13 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 1 3 - (((-498453891466718687:ℝ)/1000000000000) + (q - ((81:ℝ)/20)) * ((142994660692590847:ℝ)/200000000000))| ≤ ((40452969831929379:ℝ)/1250000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_13 q = ∑ e ∈ Finset.range 7, ([((-847288609443:ℝ)/3200000), ((-31381059609:ℝ)/80000), ((-387420489:ℝ)/1600), ((-1594323:ℝ)/20), ((-59049:ℝ)/4), (-1458:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_13; ring
   have h12 : centralNum12_13 q = ∑ e ∈ Finset.range 15, ([((-309423576172263532495372099917:ℝ)/22937600000000000000), ((-5622214180679914590408182499:ℝ)/163840000000000000), ((-26444525501334010949351883:ℝ)/896000000000000), ((-396756180739900619410239:ℝ)/1433600000000000), ((2869535875117389721602453:ℝ)/143360000000000), ((135622968809960017211841:ℝ)/7168000000000), ((1681102504466646494007:ℝ)/179200000000), ((12549718450525086819:ℝ)/4480000000), ((58375917239115867:ℝ)/128000000), ((210503976943581:ℝ)/44800000), ((-9166352943123:ℝ)/560000), ((-226315385559:ℝ)/56000), ((-2787588837:ℝ)/5600), ((-9226953:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_13; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-847288609443:ℝ)/3200000), ((-31381059609:ℝ)/80000), ((-387420489:ℝ)/1600), ((-1594323:ℝ)/20), ((-59049:ℝ)/4), (-1458:ℝ), (-60:ℝ)] : List ℝ).getD e 0) 5 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-309423576172263532495372099917:ℝ)/22937600000000000000), ((-5622214180679914590408182499:ℝ)/163840000000000000), ((-26444525501334010949351883:ℝ)/896000000000000), ((-396756180739900619410239:ℝ)/1433600000000000), ((2869535875117389721602453:ℝ)/143360000000000), ((135622968809960017211841:ℝ)/7168000000000), ((1681102504466646494007:ℝ)/179200000000), ((12549718450525086819:ℝ)/4480000000), ((58375917239115867:ℝ)/128000000), ((210503976943581:ℝ)/44800000), ((-9166352943123:ℝ)/560000), ((-226315385559:ℝ)/56000), ((-2787588837:ℝ)/5600), ((-9226953:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 13 ht
@@ -2600,59 +1236,63 @@ theorem piece13_e13 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 7, ([((-847288609443:ℝ)/3200000), ((-31381059609:ℝ)/80000), ((-387420489:ℝ)/1600), ((-1594323:ℝ)/20), ((-59049:ℝ)/4), (-1458:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e) - (((-847288609443:ℝ)/3200000) + ((-31381059609:ℝ)/80000)*t)| ≤ ((1969285611:ℝ)/3200000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 15, ([((-309423576172263532495372099917:ℝ)/22937600000000000000), ((-5622214180679914590408182499:ℝ)/163840000000000000), ((-26444525501334010949351883:ℝ)/896000000000000), ((-396756180739900619410239:ℝ)/1433600000000000), ((2869535875117389721602453:ℝ)/143360000000000), ((135622968809960017211841:ℝ)/7168000000000), ((1681102504466646494007:ℝ)/179200000000), ((12549718450525086819:ℝ)/4480000000), ((58375917239115867:ℝ)/128000000), ((210503976943581:ℝ)/44800000), ((-9166352943123:ℝ)/560000), ((-226315385559:ℝ)/56000), ((-2787588837:ℝ)/5600), ((-9226953:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((-309423576172263532495372099917:ℝ)/22937600000000000000) - ((-5622214180679914590408182499:ℝ)/163840000000000000)*t| ≤ ((848125858051772816309808873:ℝ)/11468800000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 15, ([((-309423576172263532495372099917:ℝ)/22937600000000000000), ((-5622214180679914590408182499:ℝ)/163840000000000000), ((-26444525501334010949351883:ℝ)/896000000000000), ((-396756180739900619410239:ℝ)/1433600000000000), ((2869535875117389721602453:ℝ)/143360000000000), ((135622968809960017211841:ℝ)/7168000000000), ((1681102504466646494007:ℝ)/179200000000), ((12549718450525086819:ℝ)/4480000000), ((58375917239115867:ℝ)/128000000), ((210503976943581:ℝ)/44800000), ((-9166352943123:ℝ)/560000), ((-226315385559:ℝ)/56000), ((-2787588837:ℝ)/5600), ((-9226953:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((87618831788281620065212248789:ℝ)/5734400000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2325540:ℝ), (52589280:ℝ), (-375655200:ℝ), (1192958720:ℝ), (-1965096960:ℝ), ((12857851904:ℝ)/7), ((-21171273728:ℝ)/21), ((914358272:ℝ)/3), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_13 q| ≤ ((53768989681501967693402899929:ℝ)/683593750000) := by
-    rw [centralNum13_13_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2399070:ℝ), (45666930:ℝ), (-251781675:ℝ), ((2452738385:ℝ)/4), ((-14104310625:ℝ)/16), ((74345740625:ℝ)/112), ((-74899765625:ℝ)/336), ((5161328125:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_13 q| ≤ ((301483923967523337369853991:ℝ)/22400000000) := by
-    rw [centralNum23_13_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_13 q = ∑ e ∈ Finset.range 15, ([((-89339484790673270965573498503:ℝ)/87500000000000), ((-1375263349468228186978712733:ℝ)/312500000000), ((-952332328033374330413019729:ℝ)/109375000000), ((-28719240606477764939674413:ℝ)/2734375000), ((-1181683453043147694938937:ℝ)/136718750), ((-70260340720803403150278:ℝ)/13671875), ((-890142547149426419364:ℝ)/390625), ((-418946198257562917728:ℝ)/546875), ((-3067392915633201504:ℝ)/15625), ((-835140598605701888:ℝ)/21875), ((-24274301402075136:ℝ)/4375), ((-511430663192576:ℝ)/875), ((-22155174084608:ℝ)/525), ((-28043116544:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_13; ring
+  have m13 := abs_poly_le (fun e => ([((-89339484790673270965573498503:ℝ)/87500000000000), ((-1375263349468228186978712733:ℝ)/312500000000), ((-952332328033374330413019729:ℝ)/109375000000), ((-28719240606477764939674413:ℝ)/2734375000), ((-1181683453043147694938937:ℝ)/136718750), ((-70260340720803403150278:ℝ)/13671875), ((-890142547149426419364:ℝ)/390625), ((-418946198257562917728:ℝ)/546875), ((-3067392915633201504:ℝ)/15625), ((-835140598605701888:ℝ)/21875), ((-24274301402075136:ℝ)/4375), ((-511430663192576:ℝ)/875), ((-22155174084608:ℝ)/525), ((-28043116544:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_13 q| ≤ ((2592599618549050633692794467:ℝ)/2050781250000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_13 q = ∑ e ∈ Finset.range 15, ([((-82318599768968721573263749197:ℝ)/1468006400000000), ((-12869842388350841085280196133:ℝ)/73400320000000), ((-25401061197233745854670621:ℝ)/114688000000), ((-12544348475429124120630639:ℝ)/91750400000), ((-255672408515900941187307:ℝ)/9175040000), ((8727805184255323925553:ℝ)/458752000), ((202807994275522902471:ℝ)/11468800), ((1997134253232745107:ℝ)/286720), ((89194547629987197:ℝ)/57344), ((2473221125662465:ℝ)/14336), ((-4167979351875:ℝ)/896), ((-2059968896875:ℝ)/448), ((-462162109375:ℝ)/672), ((-8127734375:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_13; ring
+  have m23 := abs_poly_le (fun e => ([((-82318599768968721573263749197:ℝ)/1468006400000000), ((-12869842388350841085280196133:ℝ)/73400320000000), ((-25401061197233745854670621:ℝ)/114688000000), ((-12544348475429124120630639:ℝ)/91750400000), ((-255672408515900941187307:ℝ)/9175040000), ((8727805184255323925553:ℝ)/458752000), ((202807994275522902471:ℝ)/11468800), ((1997134253232745107:ℝ)/286720), ((89194547629987197:ℝ)/57344), ((2473221125662465:ℝ)/14336), ((-4167979351875:ℝ)/896), ((-2059968896875:ℝ)/448), ((-462162109375:ℝ)/672), ((-8127734375:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_13 q| ≤ ((823085396798484140454130609:ℝ)/12582912000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((110924610021:ℝ)/250000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((906277712133:ℝ)/10000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-847288609443:ℝ)/3200000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-309423576172263532495372099917:ℝ)/22937600000000000000) + ((59502537175353561:ℝ)/16000000000)*((110924610021:ℝ)/250000000000) - ((814583646033642191:ℝ)/1000000000000)) (β := ((-31381059609:ℝ)/80000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-5622214180679914590408182499:ℝ)/163840000000000000) - 3*((-309423576172263532495372099917:ℝ)/22937600000000000000)) + ((7475627401115589:ℝ)/800000000)*((110924610021:ℝ)/250000000000) - ((20071271309439857:ℝ)/5000000000)) ht
-  have hW : pieceW q pieceX_13 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((110924610021:ℝ)/250000000000) + (0:ℝ) := by
-    rw [pieceW_13, pieceX_13, sym4_13, hexp3]; ring
+  have c7 := affine_round (α := ((-847288609443:ℝ)/3200000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-309423576172263532495372099917:ℝ)/22937600000000000000) + ((59502537175353561:ℝ)/16000000000)*((906277712133:ℝ)/10000000000000) - ((-498453891466718687:ℝ)/1000000000000)) (β := ((-31381059609:ℝ)/80000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-5622214180679914590408182499:ℝ)/163840000000000000) - 3*((-309423576172263532495372099917:ℝ)/22937600000000000000)) + ((7475627401115589:ℝ)/800000000)*((906277712133:ℝ)/10000000000000) - ((142994660692590847:ℝ)/200000000000)) ht
+  have hW : pieceW q pieceX_9 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((906277712133:ℝ)/10000000000000) + (0:ℝ) := by
+    rw [pieceW_13, pieceX_9, sym4_13, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((137577609740954162663970418334594715985534198641709695959104550141:ℝ)/333728031549661152385438533520518910203528318639250947049040000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-847288609443:ℝ)/3200000) + ((-31381059609:ℝ)/80000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-309423576172263532495372099917:ℝ)/22937600000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-5622214180679914590408182499:ℝ)/163840000000000000) - 3*((-309423576172263532495372099917:ℝ)/22937600000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((110924610021:ℝ)/250000000000) - (((814583646033642191:ℝ)/1000000000000) + t * ((20071271309439857:ℝ)/5000000000)) = (((-847288609443:ℝ)/3200000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-309423576172263532495372099917:ℝ)/22937600000000000000) + ((59502537175353561:ℝ)/16000000000)*((110924610021:ℝ)/250000000000) - ((814583646033642191:ℝ)/1000000000000)) + t*(((-31381059609:ℝ)/80000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-5622214180679914590408182499:ℝ)/163840000000000000) - 3*((-309423576172263532495372099917:ℝ)/22937600000000000000)) + ((7475627401115589:ℝ)/800000000)*((110924610021:ℝ)/250000000000) - ((20071271309439857:ℝ)/5000000000)) := by ring
+  refine entry_assemble (r7 := ((50327264641349806070327819036465002749653540987490935843499242250297:ℝ)/166864015774830576192719266760259455101764159319625473524520000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-847288609443:ℝ)/3200000) + ((-31381059609:ℝ)/80000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-309423576172263532495372099917:ℝ)/22937600000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-5622214180679914590408182499:ℝ)/163840000000000000) - 3*((-309423576172263532495372099917:ℝ)/22937600000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((906277712133:ℝ)/10000000000000) - (((-498453891466718687:ℝ)/1000000000000) + t * ((142994660692590847:ℝ)/200000000000)) = (((-847288609443:ℝ)/3200000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-309423576172263532495372099917:ℝ)/22937600000000000000) + ((59502537175353561:ℝ)/16000000000)*((906277712133:ℝ)/10000000000000) - ((-498453891466718687:ℝ)/1000000000000)) + t*(((-31381059609:ℝ)/80000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-5622214180679914590408182499:ℝ)/163840000000000000) - 3*((-309423576172263532495372099917:ℝ)/22937600000000000000)) + ((7475627401115589:ℝ)/800000000)*((906277712133:ℝ)/10000000000000) - ((142994660692590847:ℝ)/200000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e22 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 2 2 - (((3365630231395661:ℝ)/1562500000) + (q - ((81:ℝ)/20)) * ((204069426137267099:ℝ)/25000000000))| ≤ ((59253559510500257:ℝ)/500000000000) := by
+theorem piece9_e22 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 2 2 - (((250953088666585839:ℝ)/100000000000) + (q - ((81:ℝ)/20)) * ((905611421576034141:ℝ)/100000000000))| ≤ ((894481169643275163:ℝ)/10000000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_22 q = ∑ e ∈ Finset.range 10, ([((18903730641044337:ℝ)/6400000000), ((2252953584805563:ℝ)/320000000), ((29784968504793:ℝ)/4000000), ((924306574437:ℝ)/200000), ((37320279471:ℝ)/20000), ((510298281:ℝ)/1000), ((2366997:ℝ)/25), ((172316:ℝ)/15), ((2476:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_22; ring
   have h12 : centralNum12_22 q = ∑ e ∈ Finset.range 15, ([((-359351788687716872366526627837:ℝ)/13107200000000000000), ((-50537876846913993096572777253:ℝ)/655360000000000000), ((-168156379007678375526847617:ℝ)/2048000000000000), ((-24798341217314631928328199:ℝ)/819200000000000), ((1422314666762063920033653:ℝ)/81920000000000), ((109906061942594570832801:ℝ)/4096000000000), ((1579012550953827935847:ℝ)/102400000000), ((39176164051512752017:ℝ)/7680000000), ((1476566210245125287:ℝ)/1536000000), ((4284701609614343:ℝ)/76800000), ((-6547729770903:ℝ)/320000), ((-198426643839:ℝ)/32000), ((-2616335397:ℝ)/3200), ((-8993673:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_22; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((18903730641044337:ℝ)/6400000000), ((2252953584805563:ℝ)/320000000), ((29784968504793:ℝ)/4000000), ((924306574437:ℝ)/200000), ((37320279471:ℝ)/20000), ((510298281:ℝ)/1000), ((2366997:ℝ)/25), ((172316:ℝ)/15), ((2476:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-359351788687716872366526627837:ℝ)/13107200000000000000), ((-50537876846913993096572777253:ℝ)/655360000000000000), ((-168156379007678375526847617:ℝ)/2048000000000000), ((-24798341217314631928328199:ℝ)/819200000000000), ((1422314666762063920033653:ℝ)/81920000000000), ((109906061942594570832801:ℝ)/4096000000000), ((1579012550953827935847:ℝ)/102400000000), ((39176164051512752017:ℝ)/7680000000), ((1476566210245125287:ℝ)/1536000000), ((4284701609614343:ℝ)/76800000), ((-6547729770903:ℝ)/320000), ((-198426643839:ℝ)/32000), ((-2616335397:ℝ)/3200), ((-8993673:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 13 ht
@@ -2660,67 +1300,71 @@ theorem piece13_e22 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((18903730641044337:ℝ)/6400000000), ((2252953584805563:ℝ)/320000000), ((29784968504793:ℝ)/4000000), ((924306574437:ℝ)/200000), ((37320279471:ℝ)/20000), ((510298281:ℝ)/1000), ((2366997:ℝ)/25), ((172316:ℝ)/15), ((2476:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((18903730641044337:ℝ)/6400000000) + ((2252953584805563:ℝ)/320000000)*t)| ≤ ((92184578248543:ℝ)/4800000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 15, ([((-359351788687716872366526627837:ℝ)/13107200000000000000), ((-50537876846913993096572777253:ℝ)/655360000000000000), ((-168156379007678375526847617:ℝ)/2048000000000000), ((-24798341217314631928328199:ℝ)/819200000000000), ((1422314666762063920033653:ℝ)/81920000000000), ((109906061942594570832801:ℝ)/4096000000000), ((1579012550953827935847:ℝ)/102400000000), ((39176164051512752017:ℝ)/7680000000), ((1476566210245125287:ℝ)/1536000000), ((4284701609614343:ℝ)/76800000), ((-6547729770903:ℝ)/320000), ((-198426643839:ℝ)/32000), ((-2616335397:ℝ)/3200), ((-8993673:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e) - ((-359351788687716872366526627837:ℝ)/13107200000000000000) - ((-50537876846913993096572777253:ℝ)/655360000000000000)*t| ≤ ((4112451267059728202198878699:ℝ)/19660800000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 15, ([((-359351788687716872366526627837:ℝ)/13107200000000000000), ((-50537876846913993096572777253:ℝ)/655360000000000000), ((-168156379007678375526847617:ℝ)/2048000000000000), ((-24798341217314631928328199:ℝ)/819200000000000), ((1422314666762063920033653:ℝ)/81920000000000), ((109906061942594570832801:ℝ)/4096000000000), ((1579012550953827935847:ℝ)/102400000000), ((39176164051512752017:ℝ)/7680000000), ((1476566210245125287:ℝ)/1536000000), ((4284701609614343:ℝ)/76800000), ((-6547729770903:ℝ)/320000), ((-198426643839:ℝ)/32000), ((-2616335397:ℝ)/3200), ((-8993673:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e)| ≤ ((309473474784503013198423993167:ℝ)/9830400000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82125:ℝ), (-6663750:ℝ), (115666200:ℝ), (-750437000:ℝ), (2277262000:ℝ), (-3656824320:ℝ), (3359621120:ℝ), (-1817706496:ℝ), ((1625292800:ℝ)/3), (-67108864:ℝ)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_22 q| ≤ ((41247538627852190055293470963:ℝ)/292968750000) := by
-    rw [centralNum13_22_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((178425:ℝ)/2), ((-13176075:ℝ)/2), ((777815145:ℝ)/8), ((-3968389015:ℝ)/8), ((9393350195:ℝ)/8), ((-26366634375:ℝ)/16), ((77851609375:ℝ)/64), ((-25714921875:ℝ)/64), ((5236328125:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_22 q| ≤ ((935813839784287953371742341:ℝ)/38400000000) := by
-    rw [centralNum23_22_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_22 q = ∑ e ∈ Finset.range 15, ([((-167722715257738155998233087491:ℝ)/100000000000000), ((-36465440420255248344879936729:ℝ)/5000000000000), ((-908528869114714124228521449:ℝ)/62500000000), ((-55146486276688171686967791:ℝ)/3125000000), ((-4563516619635371062896573:ℝ)/312500000), ((-136343946979055866805091:ℝ)/15625000), ((-1518230040192221766027:ℝ)/390625), ((-102496598431396907292:ℝ)/78125), ((-5272864638645077612:ℝ)/15625), ((-205800529303241872:ℝ)/3125), ((-6001213632628224:ℝ)/625), ((-126822587777024:ℝ)/125), ((-1836558843904:ℝ)/25), ((-48949624832:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_22; ring
+  have m13 := abs_poly_le (fun e => ([((-167722715257738155998233087491:ℝ)/100000000000000), ((-36465440420255248344879936729:ℝ)/5000000000000), ((-908528869114714124228521449:ℝ)/62500000000), ((-55146486276688171686967791:ℝ)/3125000000), ((-4563516619635371062896573:ℝ)/312500000), ((-136343946979055866805091:ℝ)/15625000), ((-1518230040192221766027:ℝ)/390625), ((-102496598431396907292:ℝ)/78125), ((-5272864638645077612:ℝ)/15625), ((-205800529303241872:ℝ)/3125), ((-6001213632628224:ℝ)/625), ((-126822587777024:ℝ)/125), ((-1836558843904:ℝ)/25), ((-48949624832:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_22 q| ≤ ((609528114250313011347135713:ℝ)/292968750000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_22 q = ∑ e ∈ Finset.range 15, ([((-83769464521403747952348928509:ℝ)/838860800000000), ((-13356080210849652134305693461:ℝ)/41943040000000), ((-53981606676022872150076479:ℝ)/131072000000), ((-13911223273878348893293623:ℝ)/52428800000), ((-343639851381668952579339:ℝ)/5242880000), ((6965512719293241178641:ℝ)/262144000), ((192655368843840431607:ℝ)/6553600), ((1982049779755714059:ℝ)/163840), ((91316782004166029:ℝ)/32768), ((2675213048940305:ℝ)/8192), ((-1853728134375:ℝ)/512), ((-1935542421875:ℝ)/256), ((-150285703125:ℝ)/128), ((-8052734375:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_22; ring
+  have m23 := abs_poly_le (fun e => ([((-83769464521403747952348928509:ℝ)/838860800000000), ((-13356080210849652134305693461:ℝ)/41943040000000), ((-53981606676022872150076479:ℝ)/131072000000), ((-13911223273878348893293623:ℝ)/52428800000), ((-343639851381668952579339:ℝ)/5242880000), ((6965512719293241178641:ℝ)/262144000), ((192655368843840431607:ℝ)/6553600), ((1982049779755714059:ℝ)/163840), ((91316782004166029:ℝ)/32768), ((2675213048940305:ℝ)/8192), ((-1853728134375:ℝ)/512), ((-1935542421875:ℝ)/256), ((-150285703125:ℝ)/128), ((-8052734375:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_22 q| ≤ ((5881045433058744759609621719:ℝ)/50331648000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((968561291969:ℝ)/10000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((192456096647:ℝ)/1000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2))| ≤ ((264122716244646376718329664000000000:ℝ)/1145618552876270295279857868798794127) := by
     rw [abs_neg, tailWeight_2, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((41:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((41:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece13_Et h0
+    have hx := piece9_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((2570430941234500:ℝ)/4782969)) ≤ ((41:ℝ)/10)^6*(8000*(2*((41:ℝ)/10)-3)^2*(1/((239520380097857689497853293383:ℝ)/100000000000))*((2570430941234500:ℝ)/4782969)) := by
           gcongr
       _ ≤ ((264122716244646376718329664000000000:ℝ)/1145618552876270295279857868798794127) := by norm_num
-  have c7 := affine_round (α := ((18903730641044337:ℝ)/6400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-359351788687716872366526627837:ℝ)/13107200000000000000) + ((59502537175353561:ℝ)/16000000000)*((968561291969:ℝ)/10000000000000) - ((3365630231395661:ℝ)/1562500000)) (β := ((2252953584805563:ℝ)/320000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-50537876846913993096572777253:ℝ)/655360000000000000) - 3*((-359351788687716872366526627837:ℝ)/13107200000000000000)) + ((7475627401115589:ℝ)/800000000)*((968561291969:ℝ)/10000000000000) - ((204069426137267099:ℝ)/25000000000)) ht
-  have hW : pieceW q pieceX_13 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((968561291969:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
-    rw [pieceW_22, pieceX_13, sym4_22, hexp3]; ring
+  have c7 := affine_round (α := ((18903730641044337:ℝ)/6400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-359351788687716872366526627837:ℝ)/13107200000000000000) + ((59502537175353561:ℝ)/16000000000)*((192456096647:ℝ)/1000000000000) - ((250953088666585839:ℝ)/100000000000)) (β := ((2252953584805563:ℝ)/320000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-50537876846913993096572777253:ℝ)/655360000000000000) - 3*((-359351788687716872366526627837:ℝ)/13107200000000000000)) + ((7475627401115589:ℝ)/800000000)*((192456096647:ℝ)/1000000000000) - ((905611421576034141:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_9 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((192456096647:ℝ)/1000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
+    rw [pieceW_22, pieceX_9, sym4_22, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((1662201676999114349625349743155755262317473868262370074619033101429:ℝ)/3405388077037358697810597280821621532689064475910723949480000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((18903730641044337:ℝ)/6400000000) + ((2252953584805563:ℝ)/320000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-359351788687716872366526627837:ℝ)/13107200000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-50537876846913993096572777253:ℝ)/655360000000000000) - 3*((-359351788687716872366526627837:ℝ)/13107200000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((968561291969:ℝ)/10000000000000) - (((3365630231395661:ℝ)/1562500000) + t * ((204069426137267099:ℝ)/25000000000)) = (((18903730641044337:ℝ)/6400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-359351788687716872366526627837:ℝ)/13107200000000000000) + ((59502537175353561:ℝ)/16000000000)*((968561291969:ℝ)/10000000000000) - ((3365630231395661:ℝ)/1562500000)) + t*(((2252953584805563:ℝ)/320000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-50537876846913993096572777253:ℝ)/655360000000000000) - 3*((-359351788687716872366526627837:ℝ)/13107200000000000000)) + ((7475627401115589:ℝ)/800000000)*((968561291969:ℝ)/10000000000000) - ((204069426137267099:ℝ)/25000000000)) := by ring
+  refine entry_assemble (r7 := ((390585024880549563415529708006957381216139719311606840126623820359:ℝ)/190701732314092087077393447726010805830587610651000541170880000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((18903730641044337:ℝ)/6400000000) + ((2252953584805563:ℝ)/320000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-359351788687716872366526627837:ℝ)/13107200000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-50537876846913993096572777253:ℝ)/655360000000000000) - 3*((-359351788687716872366526627837:ℝ)/13107200000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((192456096647:ℝ)/1000000000000) - (((250953088666585839:ℝ)/100000000000) + t * ((905611421576034141:ℝ)/100000000000)) = (((18903730641044337:ℝ)/6400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((-359351788687716872366526627837:ℝ)/13107200000000000000) + ((59502537175353561:ℝ)/16000000000)*((192456096647:ℝ)/1000000000000) - ((250953088666585839:ℝ)/100000000000)) + t*(((2252953584805563:ℝ)/320000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((-50537876846913993096572777253:ℝ)/655360000000000000) - 3*((-359351788687716872366526627837:ℝ)/13107200000000000000)) + ((7475627401115589:ℝ)/800000000)*((192456096647:ℝ)/1000000000000) - ((905611421576034141:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e23 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 2 3 - (((-139273302231040331:ℝ)/50000000000) + (q - ((81:ℝ)/20)) * ((-36132725881604467:ℝ)/2500000000))| ≤ ((113829670428556599:ℝ)/100000000000) := by
+theorem piece9_e23 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 2 3 - (((121004366305466171:ℝ)/100000000000) + (q - ((81:ℝ)/20)) * ((-441353800074845313:ℝ)/100000000000))| ≤ ((739235328513589279:ℝ)/10000000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_23 q = ∑ e ∈ Finset.range 9, ([((129007536052599:ℝ)/160000000), ((47868513359373:ℝ)/32000000), ((2116784241423:ℝ)/1600000), ((58698780381:ℝ)/80000), ((219466179:ℝ)/800), ((13752351:ℝ)/200), ((109893:ℝ)/10), (1006:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_23; ring
   have h12 : centralNum12_23 q = ∑ e ∈ Finset.range 16, ([((134031236773256908404347378914047:ℝ)/3670016000000000000000), ((691216483377713787914859219141:ℝ)/18350080000000000000), ((-22281306654117543043167723087:ℝ)/262144000000000000), ((-9708419028628202610533843151:ℝ)/45875200000000000), ((-187235808433751153826974061:ℝ)/917504000000000), ((-62329771786332181610303127:ℝ)/573440000000000), ((-360656125942026433402221:ℝ)/11468800000000), ((-601725631792968558839:ℝ)/286720000000), ((58718136539418164281:ℝ)/28672000000), ((3621506989689321:ℝ)/4096000), ((61163678175716601:ℝ)/358400000), ((24644013917211:ℝ)/1792000), ((-165243361419:ℝ)/179200), ((-1479468321:ℝ)/4480), ((-13745295:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_23; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((129007536052599:ℝ)/160000000), ((47868513359373:ℝ)/32000000), ((2116784241423:ℝ)/1600000), ((58698780381:ℝ)/80000), ((219466179:ℝ)/800), ((13752351:ℝ)/200), ((109893:ℝ)/10), (1006:ℝ), (40:ℝ)] : List ℝ).getD e 0) 7 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((134031236773256908404347378914047:ℝ)/3670016000000000000000), ((691216483377713787914859219141:ℝ)/18350080000000000000), ((-22281306654117543043167723087:ℝ)/262144000000000000), ((-9708419028628202610533843151:ℝ)/45875200000000000), ((-187235808433751153826974061:ℝ)/917504000000000), ((-62329771786332181610303127:ℝ)/573440000000000), ((-360656125942026433402221:ℝ)/11468800000000), ((-601725631792968558839:ℝ)/286720000000), ((58718136539418164281:ℝ)/28672000000), ((3621506989689321:ℝ)/4096000), ((61163678175716601:ℝ)/358400000), ((24644013917211:ℝ)/1792000), ((-165243361419:ℝ)/179200), ((-1479468321:ℝ)/4480), ((-13745295:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 14 ht
@@ -2728,59 +1372,63 @@ theorem piece13_e23 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 9, ([((129007536052599:ℝ)/160000000), ((47868513359373:ℝ)/32000000), ((2116784241423:ℝ)/1600000), ((58698780381:ℝ)/80000), ((219466179:ℝ)/800), ((13752351:ℝ)/200), ((109893:ℝ)/10), (1006:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e) - (((129007536052599:ℝ)/160000000) + ((47868513359373:ℝ)/32000000)*t)| ≤ ((2176594215447:ℝ)/640000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 16, ([((134031236773256908404347378914047:ℝ)/3670016000000000000000), ((691216483377713787914859219141:ℝ)/18350080000000000000), ((-22281306654117543043167723087:ℝ)/262144000000000000), ((-9708419028628202610533843151:ℝ)/45875200000000000), ((-187235808433751153826974061:ℝ)/917504000000000), ((-62329771786332181610303127:ℝ)/573440000000000), ((-360656125942026433402221:ℝ)/11468800000000), ((-601725631792968558839:ℝ)/286720000000), ((58718136539418164281:ℝ)/28672000000), ((3621506989689321:ℝ)/4096000), ((61163678175716601:ℝ)/358400000), ((24644013917211:ℝ)/1792000), ((-165243361419:ℝ)/179200), ((-1479468321:ℝ)/4480), ((-13745295:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e) - ((134031236773256908404347378914047:ℝ)/3670016000000000000000) - ((691216483377713787914859219141:ℝ)/18350080000000000000)*t| ≤ ((881737287532688234775398653573:ℝ)/3670016000000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 16, ([((134031236773256908404347378914047:ℝ)/3670016000000000000000), ((691216483377713787914859219141:ℝ)/18350080000000000000), ((-22281306654117543043167723087:ℝ)/262144000000000000), ((-9708419028628202610533843151:ℝ)/45875200000000000), ((-187235808433751153826974061:ℝ)/917504000000000), ((-62329771786332181610303127:ℝ)/573440000000000), ((-360656125942026433402221:ℝ)/11468800000000), ((-601725631792968558839:ℝ)/286720000000), ((58718136539418164281:ℝ)/28672000000), ((3621506989689321:ℝ)/4096000), ((61163678175716601:ℝ)/358400000), ((24644013917211:ℝ)/1792000), ((-165243361419:ℝ)/179200), ((-1479468321:ℝ)/4480), ((-13745295:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e)| ≤ ((14182513889456673451827136975903:ℝ)/367001600000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-7627725:ℝ)/2), (173988600:ℝ), (-2299614450:ℝ), (13088188200:ℝ), (-38221499200:ℝ), (63366115840:ℝ), ((-445610508288:ℝ)/7), ((841540698112:ℝ)/21), ((-326820167680:ℝ)/21), ((10133438464:ℝ)/3), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 hq1'
-  have m13' : |centralNum13_23 q| ≤ ((5833404991380377337971080671361:ℝ)/1281738281250) := by
-    rw [centralNum13_23_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-15801525:ℝ)/4), ((655493865:ℝ)/4), ((-7334421225:ℝ)/4), ((16442962485:ℝ)/2), ((-598626108395:ℝ)/32), ((414013307125:ℝ)/16), ((-4611984703125:ℝ)/224), ((399923828125:ℝ)/48), ((-4353201171875:ℝ)/2688), ((189736328125:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 hq1'
-  have m23' : |centralNum23_23 q| ≤ ((297291025513295244300661043191:ℝ)/537600000000) := by
-    rw [centralNum23_23_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_23 q = ∑ e ∈ Finset.range 16, ([((-5369176890519267346919730012087:ℝ)/875000000000000), ((-640108399734214905499752843279:ℝ)/17500000000000), ((-82657729780552477503424428687:ℝ)/875000000000), ((-6302450279675300795177066001:ℝ)/43750000000), ((-64380593798251095481655571:ℝ)/437500000), ((-58832163141056201299879107:ℝ)/546875000), ((-319737708689026192159713:ℝ)/5468750), ((-13204259545222597676358:ℝ)/546875), ((-837793118227243112376:ℝ)/109375), ((-8183232286804576192:ℝ)/4375), ((-7639237192120408576:ℝ)/21875), ((-42886870205841408:ℝ)/875), ((-2630375811842048:ℝ)/525), ((-37002250551296:ℝ)/105), ((-320444825600:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_23; ring
+  have m13 := abs_poly_le (fun e => ([((-5369176890519267346919730012087:ℝ)/875000000000000), ((-640108399734214905499752843279:ℝ)/17500000000000), ((-82657729780552477503424428687:ℝ)/875000000000), ((-6302450279675300795177066001:ℝ)/43750000000), ((-64380593798251095481655571:ℝ)/437500000), ((-58832163141056201299879107:ℝ)/546875000), ((-319737708689026192159713:ℝ)/5468750), ((-13204259545222597676358:ℝ)/546875), ((-837793118227243112376:ℝ)/109375), ((-8183232286804576192:ℝ)/4375), ((-7639237192120408576:ℝ)/21875), ((-42886870205841408:ℝ)/875), ((-2630375811842048:ℝ)/525), ((-37002250551296:ℝ)/105), ((-320444825600:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 ht
+  have m13' : |centralNum13_23 q| ≤ ((4013774179477709739461195883:ℝ)/488281250000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_23 q = ∑ e ∈ Finset.range 16, ([((5211021931287716901847872070053:ℝ)/6710886400000000), ((1927289313886818222264832255917:ℝ)/1174405120000000), ((93769292877822769596486598071:ℝ)/117440512000000), ((-2832638616127334293554689343:ℝ)/2936012800000), ((-480487740826338381301646769:ℝ)/293601280000), ((-8066053394084684691356787:ℝ)/7340032000), ((-300101949258352339668141:ℝ)/734003200), ((-1423735740054310667127:ℝ)/18350080), ((1265520245787043689:ℝ)/1835008), ((998320217889503515:ℝ)/229376), ((127709957155400125:ℝ)/114688), ((1791292406109375:ℝ)/14336), ((43228099609375:ℝ)/21504), ((-3019865234375:ℝ)/2688), ((-166220703125:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_23; ring
+  have m23 := abs_poly_le (fun e => ([((5211021931287716901847872070053:ℝ)/6710886400000000), ((1927289313886818222264832255917:ℝ)/1174405120000000), ((93769292877822769596486598071:ℝ)/117440512000000), ((-2832638616127334293554689343:ℝ)/2936012800000), ((-480487740826338381301646769:ℝ)/293601280000), ((-8066053394084684691356787:ℝ)/7340032000), ((-300101949258352339668141:ℝ)/734003200), ((-1423735740054310667127:ℝ)/18350080), ((1265520245787043689:ℝ)/1835008), ((998320217889503515:ℝ)/229376), ((127709957155400125:ℝ)/114688), ((1791292406109375:ℝ)/14336), ((43228099609375:ℝ)/21504), ((-3019865234375:ℝ)/2688), ((-166220703125:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 ht
+  have m23' : |centralNum23_23 q| ≤ ((2425899818381786245636537240633:ℝ)/2818572288000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-138127623807:ℝ)/100000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-306899272691:ℝ)/1000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((129007536052599:ℝ)/160000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((134031236773256908404347378914047:ℝ)/3670016000000000000000) + ((59502537175353561:ℝ)/16000000000)*((-138127623807:ℝ)/100000000000) - ((-139273302231040331:ℝ)/50000000000)) (β := ((47868513359373:ℝ)/32000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((691216483377713787914859219141:ℝ)/18350080000000000000) - 3*((134031236773256908404347378914047:ℝ)/3670016000000000000000)) + ((7475627401115589:ℝ)/800000000)*((-138127623807:ℝ)/100000000000) - ((-36132725881604467:ℝ)/2500000000)) ht
-  have hW : pieceW q pieceX_13 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-138127623807:ℝ)/100000000000) + (0:ℝ) := by
-    rw [pieceW_23, pieceX_13, sym4_23, hexp3]; ring
+  have c7 := affine_round (α := ((129007536052599:ℝ)/160000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((134031236773256908404347378914047:ℝ)/3670016000000000000000) + ((59502537175353561:ℝ)/16000000000)*((-306899272691:ℝ)/1000000000000) - ((121004366305466171:ℝ)/100000000000)) (β := ((47868513359373:ℝ)/32000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((691216483377713787914859219141:ℝ)/18350080000000000000) - 3*((134031236773256908404347378914047:ℝ)/3670016000000000000000)) + ((7475627401115589:ℝ)/800000000)*((-306899272691:ℝ)/1000000000000) - ((-441353800074845313:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_9 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-306899272691:ℝ)/1000000000000) + (0:ℝ) := by
+    rw [pieceW_23, pieceX_9, sym4_23, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((426081496362855374066946829401093809658672051383284267263455339847:ℝ)/133491212619864460954175413408207564081411327455700378819616000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((129007536052599:ℝ)/160000000) + ((47868513359373:ℝ)/32000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((134031236773256908404347378914047:ℝ)/3670016000000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((691216483377713787914859219141:ℝ)/18350080000000000000) - 3*((134031236773256908404347378914047:ℝ)/3670016000000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-138127623807:ℝ)/100000000000) - (((-139273302231040331:ℝ)/50000000000) + t * ((-36132725881604467:ℝ)/2500000000)) = (((129007536052599:ℝ)/160000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((134031236773256908404347378914047:ℝ)/3670016000000000000000) + ((59502537175353561:ℝ)/16000000000)*((-138127623807:ℝ)/100000000000) - ((-139273302231040331:ℝ)/50000000000)) + t*(((47868513359373:ℝ)/32000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((691216483377713787914859219141:ℝ)/18350080000000000000) - 3*((134031236773256908404347378914047:ℝ)/3670016000000000000000)) + ((7475627401115589:ℝ)/800000000)*((-138127623807:ℝ)/100000000000) - ((-36132725881604467:ℝ)/2500000000)) := by ring
+  refine entry_assemble (r7 := ((710507787095434997503822383304390988373219409590723701470794666583:ℝ)/2383771653926151088467418096575135072882345133137506764636000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((129007536052599:ℝ)/160000000) + ((47868513359373:ℝ)/32000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((134031236773256908404347378914047:ℝ)/3670016000000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((691216483377713787914859219141:ℝ)/18350080000000000000) - 3*((134031236773256908404347378914047:ℝ)/3670016000000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((-306899272691:ℝ)/1000000000000) - (((121004366305466171:ℝ)/100000000000) + t * ((-441353800074845313:ℝ)/100000000000)) = (((129007536052599:ℝ)/160000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((134031236773256908404347378914047:ℝ)/3670016000000000000000) + ((59502537175353561:ℝ)/16000000000)*((-306899272691:ℝ)/1000000000000) - ((121004366305466171:ℝ)/100000000000)) + t*(((47868513359373:ℝ)/32000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((691216483377713787914859219141:ℝ)/18350080000000000000) - 3*((134031236773256908404347378914047:ℝ)/3670016000000000000000)) + ((7475627401115589:ℝ)/800000000)*((-306899272691:ℝ)/1000000000000) - ((-441353800074845313:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_e33 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
-    |pieceW q pieceX_13 3 3 - (((834815606652567061:ℝ)/10000000000) + (q - ((81:ℝ)/20)) * ((110682924395723923:ℝ)/500000000))| ≤ ((93391711494618103:ℝ)/2500000000) := by
+theorem piece9_e33 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
+    |pieceW q pieceX_9 3 3 - (((259060600802874111:ℝ)/100000000000) + (q - ((81:ℝ)/20)) * ((45276090544326299:ℝ)/2500000000))| ≤ ((232050661807429757:ℝ)/1000000000000) := by
   set t := q - ((81:ℝ)/20) with htd
   have hq : q = ((81:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece13_L3 piece13_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece9_L3 piece9_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((81:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_33 q = ∑ e ∈ Finset.range 10, ([((13210856199849681:ℝ)/22400000000), ((1258817763695787:ℝ)/560000000), ((174659516529201:ℝ)/56000000), ((922429333827:ℝ)/400000), ((20999021193:ℝ)/20000), ((314098083:ℝ)/1000), ((3147357:ℝ)/50), ((288702:ℝ)/35), ((4512:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_33; ring
   have h12 : centralNum12_33 q = ∑ e ∈ Finset.range 17, ([((550138294843109358138247183425549:ℝ)/146800640000000000000000), ((14220196482493274248179796734155313:ℝ)/51380224000000000000000), ((396750490891331518606347989414397:ℝ)/513802240000000000000), ((3373489423044886368979249292943:ℝ)/3670016000000000000), ((104352082871824375381359056331:ℝ)/183500800000000000), ((7095353833263116239195787307:ℝ)/45875200000000000), ((-64265999138955677756481333:ℝ)/2293760000000000), ((-921984937314226644720573:ℝ)/22937600000000), ((-123567988733153417355873:ℝ)/8028160000000), ((-1114757701974954479161:ℝ)/401408000000), ((-785147817044530683:ℝ)/14336000000), ((60971304218436657:ℝ)/716800000), ((127636103046681:ℝ)/7168000), ((449914536693:ℝ)/358400), ((-1061169579:ℝ)/17920), ((-461349837:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_33; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((13210856199849681:ℝ)/22400000000), ((1258817763695787:ℝ)/560000000), ((174659516529201:ℝ)/56000000), ((922429333827:ℝ)/400000), ((20999021193:ℝ)/20000), ((314098083:ℝ)/1000), ((3147357:ℝ)/50), ((288702:ℝ)/35), ((4512:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((550138294843109358138247183425549:ℝ)/146800640000000000000000), ((14220196482493274248179796734155313:ℝ)/51380224000000000000000), ((396750490891331518606347989414397:ℝ)/513802240000000000000), ((3373489423044886368979249292943:ℝ)/3670016000000000000), ((104352082871824375381359056331:ℝ)/183500800000000000), ((7095353833263116239195787307:ℝ)/45875200000000000), ((-64265999138955677756481333:ℝ)/2293760000000000), ((-921984937314226644720573:ℝ)/22937600000000), ((-123567988733153417355873:ℝ)/8028160000000), ((-1114757701974954479161:ℝ)/401408000000), ((-785147817044530683:ℝ)/14336000000), ((60971304218436657:ℝ)/716800000), ((127636103046681:ℝ)/7168000), ((449914536693:ℝ)/358400), ((-1061169579:ℝ)/17920), ((-461349837:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 15 ht
@@ -2788,149 +1436,153 @@ theorem piece13_e33 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) :
   have bD := abs_poly_sub_affine_le (fun e => ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((13210856199849681:ℝ)/22400000000), ((1258817763695787:ℝ)/560000000), ((174659516529201:ℝ)/56000000), ((922429333827:ℝ)/400000), ((20999021193:ℝ)/20000), ((314098083:ℝ)/1000), ((3147357:ℝ)/50), ((288702:ℝ)/35), ((4512:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e) - (((13210856199849681:ℝ)/22400000000) + ((1258817763695787:ℝ)/560000000)*t)| ≤ ((181265735877337:ℝ)/22400000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 17, ([((550138294843109358138247183425549:ℝ)/146800640000000000000000), ((14220196482493274248179796734155313:ℝ)/51380224000000000000000), ((396750490891331518606347989414397:ℝ)/513802240000000000000), ((3373489423044886368979249292943:ℝ)/3670016000000000000), ((104352082871824375381359056331:ℝ)/183500800000000000), ((7095353833263116239195787307:ℝ)/45875200000000000), ((-64265999138955677756481333:ℝ)/2293760000000000), ((-921984937314226644720573:ℝ)/22937600000000), ((-123567988733153417355873:ℝ)/8028160000000), ((-1114757701974954479161:ℝ)/401408000000), ((-785147817044530683:ℝ)/14336000000), ((60971304218436657:ℝ)/716800000), ((127636103046681:ℝ)/7168000), ((449914536693:ℝ)/358400), ((-1061169579:ℝ)/17920), ((-461349837:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e) - ((550138294843109358138247183425549:ℝ)/146800640000000000000000) - ((14220196482493274248179796734155313:ℝ)/51380224000000000000000)*t| ≤ ((1052763528697730874539125694554867:ℝ)/513802240000000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 17, ([((550138294843109358138247183425549:ℝ)/146800640000000000000000), ((14220196482493274248179796734155313:ℝ)/51380224000000000000000), ((396750490891331518606347989414397:ℝ)/513802240000000000000), ((3373489423044886368979249292943:ℝ)/3670016000000000000), ((104352082871824375381359056331:ℝ)/183500800000000000), ((7095353833263116239195787307:ℝ)/45875200000000000), ((-64265999138955677756481333:ℝ)/2293760000000000), ((-921984937314226644720573:ℝ)/22937600000000), ((-123567988733153417355873:ℝ)/8028160000000), ((-1114757701974954479161:ℝ)/401408000000), ((-785147817044530683:ℝ)/14336000000), ((60971304218436657:ℝ)/716800000), ((127636103046681:ℝ)/7168000), ((449914536693:ℝ)/358400), ((-1061169579:ℝ)/17920), ((-461349837:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e)| ≤ ((288238451482721450060368262960627:ℝ)/14680064000000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((59502537175353561:ℝ)/16000000000), ((7475627401115589:ℝ)/800000000), ((51872891533677:ℝ)/5000000), ((208819643571:ℝ)/31250), ((137639498913:ℝ)/50000), ((1881123993:ℝ)/2500), ((17064432:ℝ)/125), ((396432:ℝ)/25), ((5352:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((59502537175353561:ℝ)/16000000000) - ((7475627401115589:ℝ)/800000000)*t| ≤ ((214313332515761:ℝ)/8000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-8120475:ℝ)/4), ((464861025:ℝ)/2), (-5906535975:ℝ), ((411904731750:ℝ)/7), ((-2024051769000:ℝ)/7), ((5554394637600:ℝ)/7), (-1314913862656:ℝ), ((9709155336192:ℝ)/7), ((-6724555112448:ℝ)/7), ((1313173667840:ℝ)/3), ((-6168244125696:ℝ)/49), ((3004329623552:ℝ)/147), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 hq1'
-  have m13' : |centralNum13_33 q| ≤ ((16439312576341655828796607788981493:ℝ)/102539062500000) := by
-    rw [centralNum13_33_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((41:ℝ)/10) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-16872075:ℝ)/8), ((1833754545:ℝ)/8), ((-83998007145:ℝ)/16), ((4929124002765:ℝ)/112), ((-76723155584685:ℝ)/448), ((164888745653055:ℝ)/448), ((-63358359907625:ℝ)/128), ((364713160040625:ℝ)/896), ((-334937462578125:ℝ)/1792), ((245466998046875:ℝ)/5376), ((-72144521484375:ℝ)/12544), ((6518798828125:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 hq1'
-  have m23' : |centralNum23_33 q| ≤ ((429024526453618482418043101187491:ℝ)/30105600000000) := by
-    rw [centralNum23_33_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_33 q = ∑ e ∈ Finset.range 17, ([((1116253451037490778487515828174703:ℝ)/61250000000000000), ((31352171604914515255612836796449:ℝ)/1531250000000000), ((-4140452623273504249723009868313:ℝ)/30625000000000), ((-104600381784926343438964108347:ℝ)/218750000000), ((-8478641492912524286566324449:ℝ)/10937500000), ((-2175606764901590369224845303:ℝ)/2734375000), ((-78506912097439232288720193:ℝ)/136718750), ((-5863152786300225837598062:ℝ)/19140625), ((-474707055434249637886464:ℝ)/3828125), ((-29539204365614518639392:ℝ)/765625), ((-1011822644575115643904:ℝ)/109375), ((-37154266364790030336:ℝ)/21875), ((-205434022594609152:ℝ)/875), ((-12428219747663872:ℝ)/525), ((-402955576541184:ℝ)/245), ((-51773683269632:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_33; ring
+  have m13 := abs_poly_le (fun e => ([((1116253451037490778487515828174703:ℝ)/61250000000000000), ((31352171604914515255612836796449:ℝ)/1531250000000000), ((-4140452623273504249723009868313:ℝ)/30625000000000), ((-104600381784926343438964108347:ℝ)/218750000000), ((-8478641492912524286566324449:ℝ)/10937500000), ((-2175606764901590369224845303:ℝ)/2734375000), ((-78506912097439232288720193:ℝ)/136718750), ((-5863152786300225837598062:ℝ)/19140625), ((-474707055434249637886464:ℝ)/3828125), ((-29539204365614518639392:ℝ)/765625), ((-1011822644575115643904:ℝ)/109375), ((-37154266364790030336:ℝ)/21875), ((-205434022594609152:ℝ)/875), ((-12428219747663872:ℝ)/525), ((-402955576541184:ℝ)/245), ((-51773683269632:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 ht
+  have m13' : |centralNum13_33 q| ≤ ((1805450425400093858178023871987091:ℝ)/91875000000000000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_33 q = ∑ e ∈ Finset.range 17, ([((-951094273991001540496429628856843:ℝ)/375809638400000000), ((592287290676362356602778632028041:ℝ)/131533373440000000), ((163555506666936821438365218058809:ℝ)/6576668672000000), ((1677723049644989662209055478643:ℝ)/46976204800000), ((60765569512033143141866753487:ℝ)/2348810240000), ((1175385032377743532557743667:ℝ)/117440512000), ((7590884610069735084656163:ℝ)/5872025600), ((-187784528944165334769513:ℝ)/293601280), ((-38634250924543041463149:ℝ)/102760448), ((-2222024118950949273705:ℝ)/25690112), ((-6965227469859222875:ℝ)/917504), ((194585261838853125:ℝ)/229376), ((16754364668203125:ℝ)/57344), ((1145096037109375:ℝ)/43008), ((-99990234375:ℝ)/3584), ((-2973388671875:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_33; ring
+  have m23 := abs_poly_le (fun e => ([((-951094273991001540496429628856843:ℝ)/375809638400000000), ((592287290676362356602778632028041:ℝ)/131533373440000000), ((163555506666936821438365218058809:ℝ)/6576668672000000), ((1677723049644989662209055478643:ℝ)/46976204800000), ((60765569512033143141866753487:ℝ)/2348810240000), ((1175385032377743532557743667:ℝ)/117440512000), ((7590884610069735084656163:ℝ)/5872025600), ((-187784528944165334769513:ℝ)/293601280), ((-38634250924543041463149:ℝ)/102760448), ((-2222024118950949273705:ℝ)/25690112), ((-6965227469859222875:ℝ)/917504), ((194585261838853125:ℝ)/229376), ((16754364668203125:ℝ)/57344), ((1145096037109375:ℝ)/43008), ((-99990234375:ℝ)/3584), ((-2973388671875:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 ht
+  have m23' : |centralNum23_33 q| ≤ ((530405744128528596825210139257813:ℝ)/187904819200000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece13_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece13_E11 h0) m23'
-  have c5 := scaled_affine (X := ((27808308009:ℝ)/1250000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece9_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece9_E11 h0) m23'
+  have c5 := scaled_affine (X := ((495384428211:ℝ)/1000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3))| ≤ ((339969831534352134840987873728000000000:ℝ)/30931700927659297972556162457567441429) := by
     rw [abs_neg, tailWeight_3, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((41:ℝ)/10)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((41:ℝ)/10)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece13_Et h0
+    have hx := piece9_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((3308571812705231500:ℝ)/129140163)) ≤ ((41:ℝ)/10)^6*(8000*(2*((41:ℝ)/10)-3)^2*(1/((239520380097857689497853293383:ℝ)/100000000000))*((3308571812705231500:ℝ)/129140163)) := by
           gcongr
       _ ≤ ((339969831534352134840987873728000000000:ℝ)/30931700927659297972556162457567441429) := by norm_num
-  have c7 := affine_round (α := ((13210856199849681:ℝ)/22400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((550138294843109358138247183425549:ℝ)/146800640000000000000000) + ((59502537175353561:ℝ)/16000000000)*((27808308009:ℝ)/1250000000) - ((834815606652567061:ℝ)/10000000000)) (β := ((1258817763695787:ℝ)/560000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((14220196482493274248179796734155313:ℝ)/51380224000000000000000) - 3*((550138294843109358138247183425549:ℝ)/146800640000000000000000)) + ((7475627401115589:ℝ)/800000000)*((27808308009:ℝ)/1250000000) - ((110682924395723923:ℝ)/500000000)) ht
-  have hW : pieceW q pieceX_13 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((27808308009:ℝ)/1250000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
-    rw [pieceW_33, pieceX_13, sym4_33, hexp3]; ring
+  have c7 := affine_round (α := ((13210856199849681:ℝ)/22400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((550138294843109358138247183425549:ℝ)/146800640000000000000000) + ((59502537175353561:ℝ)/16000000000)*((495384428211:ℝ)/1000000000000) - ((259060600802874111:ℝ)/100000000000)) (β := ((1258817763695787:ℝ)/560000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((14220196482493274248179796734155313:ℝ)/51380224000000000000000) - 3*((550138294843109358138247183425549:ℝ)/146800640000000000000000)) + ((7475627401115589:ℝ)/800000000)*((495384428211:ℝ)/1000000000000) - ((45276090544326299:ℝ)/2500000000)) ht
+  have hW : pieceW q pieceX_9 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((81:ℝ)/20)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((495384428211:ℝ)/1000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
+    rw [pieceW_33, pieceX_9, sym4_33, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((5911198527643400469798149988590669990774083705647012194955874548333:ℝ)/146006013802976754168629358415227023214043639404672289333955000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((13210856199849681:ℝ)/22400000000) + ((1258817763695787:ℝ)/560000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((550138294843109358138247183425549:ℝ)/146800640000000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((14220196482493274248179796734155313:ℝ)/51380224000000000000000) - 3*((550138294843109358138247183425549:ℝ)/146800640000000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((27808308009:ℝ)/1250000000) - (((834815606652567061:ℝ)/10000000000) + t * ((110682924395723923:ℝ)/500000000)) = (((13210856199849681:ℝ)/22400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((550138294843109358138247183425549:ℝ)/146800640000000000000000) + ((59502537175353561:ℝ)/16000000000)*((27808308009:ℝ)/1250000000) - ((834815606652567061:ℝ)/10000000000)) + t*(((1258817763695787:ℝ)/560000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((14220196482493274248179796734155313:ℝ)/51380224000000000000000) - 3*((550138294843109358138247183425549:ℝ)/146800640000000000000000)) + ((7475627401115589:ℝ)/800000000)*((27808308009:ℝ)/1250000000) - ((110682924395723923:ℝ)/500000000)) := by ring
+  refine entry_assemble (r7 := ((13102424295656733440348175596168554016634770616097781208216983505917:ℝ)/9344384883390512266792278938574529485698792921899026517373120000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((13210856199849681:ℝ)/22400000000) + ((1258817763695787:ℝ)/560000000)*t) + (8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((550138294843109358138247183425549:ℝ)/146800640000000000000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((14220196482493274248179796734155313:ℝ)/51380224000000000000000) - 3*((550138294843109358138247183425549:ℝ)/146800640000000000000000))*t) + (((59502537175353561:ℝ)/16000000000) + ((7475627401115589:ℝ)/800000000)*t)*((495384428211:ℝ)/1000000000000) - (((259060600802874111:ℝ)/100000000000) + t * ((45276090544326299:ℝ)/2500000000)) = (((13210856199849681:ℝ)/22400000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*((550138294843109358138247183425549:ℝ)/146800640000000000000000) + ((59502537175353561:ℝ)/16000000000)*((495384428211:ℝ)/1000000000000) - ((259060600802874111:ℝ)/100000000000)) + t*(((1258817763695787:ℝ)/560000000) + 8*(((1/((189094089956474140623031291221:ℝ)/1000000000000000000000000))+(1/((9454704485244025628860692337:ℝ)/50000000000000000000000)))/2)*(((14220196482493274248179796734155313:ℝ)/51380224000000000000000) - 3*((550138294843109358138247183425549:ℝ)/146800640000000000000000)) + ((7475627401115589:ℝ)/800000000)*((495384428211:ℝ)/1000000000000) - ((45276090544326299:ℝ)/2500000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece13_plus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((92055040069721673:ℝ)/20000000000) + ((1:ℝ)/20)*((109372830951384483:ℝ)/10000000000) - (((153680921241767561:ℝ)/5000000000000) + ((581980739421157441:ℝ)/100000000000000) + ((4532588873584341:ℝ)/3125000000000) + ((7590681969674379:ℝ)/781250000000)))
-      (((-181975854277918413:ℝ)/200000000000) + ((1:ℝ)/20)*((-29964394066923543:ℝ)/20000000000))
-      (((135754637866512603:ℝ)/10000000000000) + ((1:ℝ)/20)*((-424247530263613113:ℝ)/10000000000000))
-      (((-872196643197672363:ℝ)/10000000000000) + ((1:ℝ)/20)*((-32043823522873429:ℝ)/62500000000))
-      (((72954025879958907:ℝ)/20000000000) + ((1:ℝ)/20)*((793559263205429469:ℝ)/100000000000) - (((581980739421157441:ℝ)/100000000000000) + ((227338920235692897:ℝ)/10000000000000) + ((103013135444032431:ℝ)/5000000000000) + ((594628729131134503:ℝ)/10000000000000)))
-      (((-191595185500352119:ℝ)/500000000000) + ((1:ℝ)/20)*((-856389696952104163:ℝ)/1000000000000))
-      (((814583646033642191:ℝ)/1000000000000) + ((1:ℝ)/20)*((20071271309439857:ℝ)/5000000000))
-      (((3365630231395661:ℝ)/1562500000) + ((1:ℝ)/20)*((204069426137267099:ℝ)/25000000000) - (((4532588873584341:ℝ)/3125000000000) + ((103013135444032431:ℝ)/5000000000000) + ((59253559510500257:ℝ)/500000000000) + ((113829670428556599:ℝ)/100000000000)))
-      (((-139273302231040331:ℝ)/50000000000) + ((1:ℝ)/20)*((-36132725881604467:ℝ)/2500000000))
-      (((834815606652567061:ℝ)/10000000000) + ((1:ℝ)/20)*((110682924395723923:ℝ)/500000000) - (((7590681969674379:ℝ)/781250000000) + ((594628729131134503:ℝ)/10000000000000) + ((113829670428556599:ℝ)/100000000000) + ((93391711494618103:ℝ)/2500000000))) i j :=
-  quadForm_nonneg_of_ldl ((102037873304794215683:ℝ)/20000000000000) ((38221072317305325148818353868218286712187:ℝ)/10203787330479421568300000000000000) ((13489971914873903146100469026399418522177987327601360186277017:ℝ)/10920306376372950042519529676633796203482000000000000000) ((219014270499606315314269979124251846215196716383487929973628242341377938962100490751:ℝ)/4721490170205866101135164159239796482762295564660476065196955950000000000000) ((-19695805131138018450:ℝ)/102037873304794215683) ((2290845227066638947:ℝ)/1020378733047942156830) ((-2257094462761319590:ℝ)/102037873304794215683) ((-617764849882199081223914626395907158710:ℝ)/5460153188186475021259764838316898101741) ((10137591662446999100156269870446113298800:ℝ)/38221072317305325148818353868218286712187) ((-37079470103414542418223143962289566703562667920328175437502900:ℝ)/13489971914873903146100469026399418522177987327601360186277017)
+theorem piece9_plus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((456676836442032899:ℝ)/100000000000) + ((1:ℝ)/20)*((27117166722654561:ℝ)/2500000000) - (((60953946496885543:ℝ)/2000000000000) + ((147094828577681483:ℝ)/25000000000000) + ((32596217205184609:ℝ)/20000000000000) + ((419606581903162297:ℝ)/50000000000000)))
+      (((-459391612996951887:ℝ)/500000000000) + ((1:ℝ)/20)*((-152059274832142661:ℝ)/100000000000))
+      (((395580839950254109:ℝ)/10000000000000) + ((1:ℝ)/20)*((14288753178864849:ℝ)/625000000000))
+      (((322290323336017061:ℝ)/5000000000000) + ((1:ℝ)/20)*((-131579213915053699:ℝ)/1000000000000))
+      (((182050343605134469:ℝ)/50000000000) + ((1:ℝ)/20)*((395938574966636823:ℝ)/50000000000) - (((147094828577681483:ℝ)/25000000000000) + ((56687232236175549:ℝ)/2500000000000) + ((1627284726283099:ℝ)/78125000000) + ((40452969831929379:ℝ)/1250000000000)))
+      (((-494009591098170013:ℝ)/1000000000000) + ((1:ℝ)/20)*((-113484612508371751:ℝ)/100000000000))
+      (((-498453891466718687:ℝ)/1000000000000) + ((1:ℝ)/20)*((142994660692590847:ℝ)/200000000000))
+      (((250953088666585839:ℝ)/100000000000) + ((1:ℝ)/20)*((905611421576034141:ℝ)/100000000000) - (((32596217205184609:ℝ)/20000000000000) + ((1627284726283099:ℝ)/78125000000) + ((894481169643275163:ℝ)/10000000000000) + ((739235328513589279:ℝ)/10000000000000)))
+      (((121004366305466171:ℝ)/100000000000) + ((1:ℝ)/20)*((-441353800074845313:ℝ)/100000000000))
+      (((259060600802874111:ℝ)/100000000000) + ((1:ℝ)/20)*((45276090544326299:ℝ)/2500000000) - (((419606581903162297:ℝ)/50000000000000) + ((40452969831929379:ℝ)/1250000000000) + ((739235328513589279:ℝ)/10000000000000) + ((232050661807429757:ℝ)/1000000000000))) i j :=
+  quadForm_nonneg_of_ldl ((506272898998354770279:ℝ)/100000000000000) ((47586071166262513146760780563258237876293:ℝ)/12656822474958869256975000000000000) ((6418948116010011286908192410507244547066713500264638187244281:ℝ)/2379303558313125657338039028162911893814650000000000000) ((14266819988773799257087164865597893482248316209663731927330140602044902550122219933:ℝ)/5135158492808009029526553928405795637653370800211710549795424800000000000000) ((-99481286340997510450:ℝ)/506272898998354770279) ((4070118424933459882:ℝ)/506272898998354770279) ((5787910397145072725:ℝ)/506272898998354770279) ((-13739087676834788686194849579810046511125:ℝ)/95172142332525026293521561126516475752586) ((-22849722858199169031790788674320376983225:ℝ)/190344284665050052587043122253032951505172) ((8791497787887456763602669273753759005069098383726293424305925:ℝ)/25675792464040045147632769642028978188266854001058552748977124)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
 
-theorem piece13_minus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((92055040069721673:ℝ)/20000000000) - ((1:ℝ)/20)*((109372830951384483:ℝ)/10000000000) - (((153680921241767561:ℝ)/5000000000000) + ((581980739421157441:ℝ)/100000000000000) + ((4532588873584341:ℝ)/3125000000000) + ((7590681969674379:ℝ)/781250000000)))
-      (((-181975854277918413:ℝ)/200000000000) - ((1:ℝ)/20)*((-29964394066923543:ℝ)/20000000000))
-      (((135754637866512603:ℝ)/10000000000000) - ((1:ℝ)/20)*((-424247530263613113:ℝ)/10000000000000))
-      (((-872196643197672363:ℝ)/10000000000000) - ((1:ℝ)/20)*((-32043823522873429:ℝ)/62500000000))
-      (((72954025879958907:ℝ)/20000000000) - ((1:ℝ)/20)*((793559263205429469:ℝ)/100000000000) - (((581980739421157441:ℝ)/100000000000000) + ((227338920235692897:ℝ)/10000000000000) + ((103013135444032431:ℝ)/5000000000000) + ((594628729131134503:ℝ)/10000000000000)))
-      (((-191595185500352119:ℝ)/500000000000) - ((1:ℝ)/20)*((-856389696952104163:ℝ)/1000000000000))
-      (((814583646033642191:ℝ)/1000000000000) - ((1:ℝ)/20)*((20071271309439857:ℝ)/5000000000))
-      (((3365630231395661:ℝ)/1562500000) - ((1:ℝ)/20)*((204069426137267099:ℝ)/25000000000) - (((4532588873584341:ℝ)/3125000000000) + ((103013135444032431:ℝ)/5000000000000) + ((59253559510500257:ℝ)/500000000000) + ((113829670428556599:ℝ)/100000000000)))
-      (((-139273302231040331:ℝ)/50000000000) - ((1:ℝ)/20)*((-36132725881604467:ℝ)/2500000000))
-      (((834815606652567061:ℝ)/10000000000) - ((1:ℝ)/20)*((110682924395723923:ℝ)/500000000) - (((7590681969674379:ℝ)/781250000000) + ((594628729131134503:ℝ)/10000000000000) + ((113829670428556599:ℝ)/100000000000) + ((93391711494618103:ℝ)/2500000000))) i j :=
-  quadForm_nonneg_of_ldl ((80163307114517319083:ℝ)/20000000000000) ((23795391660627205077464329237600829342087:ℝ)/8016330711451731908300000000000000) ((20400427963596942873243977757890339235445292309959674778573539:ℝ)/47590783321254410154928658475201658684174000000000000000) ((24937605473973638179080842898238839508453468337697812713576702045608059512509778531:ℝ)/1020021398179847143662198887894516961772264615497983738928676950000000000000) ((-16699365724445664150:ℝ)/80163307114517319083) ((3139340287593865173:ℝ)/801633071145173190830) ((-1231692110029369862:ℝ)/80163307114517319083) ((-2702313092155120597780809791203249338780:ℝ)/23795391660627205077464329237600829342087) ((4818150027561912140499293601460012717800:ℝ)/23795391660627205077464329237600829342087) ((-94910932259990009696953273337712744153750582665314137642093860:ℝ)/20400427963596942873243977757890339235445292309959674778573539)
+theorem piece9_minus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((456676836442032899:ℝ)/100000000000) - ((1:ℝ)/20)*((27117166722654561:ℝ)/2500000000) - (((60953946496885543:ℝ)/2000000000000) + ((147094828577681483:ℝ)/25000000000000) + ((32596217205184609:ℝ)/20000000000000) + ((419606581903162297:ℝ)/50000000000000)))
+      (((-459391612996951887:ℝ)/500000000000) - ((1:ℝ)/20)*((-152059274832142661:ℝ)/100000000000))
+      (((395580839950254109:ℝ)/10000000000000) - ((1:ℝ)/20)*((14288753178864849:ℝ)/625000000000))
+      (((322290323336017061:ℝ)/5000000000000) - ((1:ℝ)/20)*((-131579213915053699:ℝ)/1000000000000))
+      (((182050343605134469:ℝ)/50000000000) - ((1:ℝ)/20)*((395938574966636823:ℝ)/50000000000) - (((147094828577681483:ℝ)/25000000000000) + ((56687232236175549:ℝ)/2500000000000) + ((1627284726283099:ℝ)/78125000000) + ((40452969831929379:ℝ)/1250000000000)))
+      (((-494009591098170013:ℝ)/1000000000000) - ((1:ℝ)/20)*((-113484612508371751:ℝ)/100000000000))
+      (((-498453891466718687:ℝ)/1000000000000) - ((1:ℝ)/20)*((142994660692590847:ℝ)/200000000000))
+      (((250953088666585839:ℝ)/100000000000) - ((1:ℝ)/20)*((905611421576034141:ℝ)/100000000000) - (((32596217205184609:ℝ)/20000000000000) + ((1627284726283099:ℝ)/78125000000) + ((894481169643275163:ℝ)/10000000000000) + ((739235328513589279:ℝ)/10000000000000)))
+      (((121004366305466171:ℝ)/100000000000) - ((1:ℝ)/20)*((-441353800074845313:ℝ)/100000000000))
+      (((259060600802874111:ℝ)/100000000000) - ((1:ℝ)/20)*((45276090544326299:ℝ)/2500000000) - (((419606581903162297:ℝ)/50000000000000) + ((40452969831929379:ℝ)/1250000000000) + ((739235328513589279:ℝ)/10000000000000) + ((232050661807429757:ℝ)/1000000000000))) i j :=
+  quadForm_nonneg_of_ldl ((397804232107736526279:ℝ)/100000000000000) ((29683948077786077174412776891108488917443:ℝ)/9945105802693413156975000000000000) ((1342327858940924461206573948114141400562322748702786257568413:ℝ)/742098701944651929360319422277712222936075000000000000) ((38190004747158503123899531962338471897680768080762465226996050486310026891998461:ℝ)/165209582638883010610039870537125095453824338301881385546881600000000000000) ((-84275358857783244350:ℝ)/397804232107736526279) ((3841498374071622298:ℝ)/397804232107736526279) ((2367900845431869905:ℝ)/132601410702578842093) ((-8535466996646561985504969383218273709975:ℝ)/59367896155572154348825553782216977834886) ((-20652136702945910600868071518803767914875:ℝ)/118735792311144308697651107564433955669772) ((618976373971690483665968957683835914330057557540834731004665:ℝ)/826047913194415053050199352685625477269121691509406927734408)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
 
-/-- **Piece 13.** The piece matrix is positive semidefinite on `q ∈ [4, 41/10]`. -/
-theorem piece_13 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_13 i j :=
+/-- **Piece 9.** The piece matrix is positive semidefinite on `q ∈ [4, 41/10]`. -/
+theorem piece_9 {q : ℝ} (h0 : (4:ℝ) ≤ q) (h1 : q ≤ ((41:ℝ)/10)) (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_9 i j :=
   pieceForm_nonneg (pieceW_symm (sym4_symm _ _ _ _ _ _ _ _ _ _) q) (by norm_num : (0:ℝ) < ((1:ℝ)/20))
     (abs_le.mpr ⟨by linarith, by linarith⟩)
-    (piece13_e00 h0 h1) (piece13_e01 h0 h1) (piece13_e02 h0 h1) (piece13_e03 h0 h1) (piece13_e11 h0 h1) (piece13_e12 h0 h1) (piece13_e13 h0 h1) (piece13_e22 h0 h1) (piece13_e23 h0 h1) (piece13_e33 h0 h1)
-    piece13_plus piece13_minus y
+    (piece9_e00 h0 h1) (piece9_e01 h0 h1) (piece9_e02 h0 h1) (piece9_e03 h0 h1) (piece9_e11 h0 h1) (piece9_e12 h0 h1) (piece9_e13 h0 h1) (piece9_e22 h0 h1) (piece9_e23 h0 h1) (piece9_e33 h0 h1)
+    piece9_plus piece9_minus y
 
-/-! #### Piece 14 (seam), `q ∈ [41/10, 21/5]` -/
+/-! #### Piece 10 (seam), `q ∈ [41/10, 21/5]` -/
 
-/-- The compensation matrix of piece 14. -/
-def pieceX_14 : Fin 4 → Fin 4 → ℝ :=
-  sym4 ((111214274551:ℝ)/10000000000000) ((-108101808163:ℝ)/100000000000000) ((162533601993:ℝ)/50000000000000) ((-175486873537:ℝ)/5000000000000) ((103176780923:ℝ)/5000000000000) ((-14470057141:ℝ)/500000000000) ((39090608763:ℝ)/125000000000) ((98022118669:ℝ)/1000000000000) ((-939590876347:ℝ)/1000000000000) ((25404409743:ℝ)/2500000000)
+/-- The compensation matrix of piece 10. -/
+def pieceX_10 : Fin 4 → Fin 4 → ℝ :=
+  sym4 ((6424991643:ℝ)/6250000000000) ((-152627338127:ℝ)/100000000000000) ((48216431323:ℝ)/12500000000000) ((-563676216197:ℝ)/100000000000000) ((71642007061:ℝ)/10000000000000) ((-51239494857:ℝ)/2500000000000) ((151354041537:ℝ)/5000000000000) ((332027383171:ℝ)/5000000000000) ((-25011628649:ℝ)/250000000000) ((19407221119:ℝ)/125000000000)
 
-theorem piece14_L3 : ((127625157653632984343797997311:ℝ)/500000000000000000000000) ≤ Real.exp ((3:ℝ)*((83:ℝ)/20)) := by
+theorem piece10_L3 : ((127625157653632984343797997311:ℝ)/500000000000000000000000) ≤ Real.exp ((3:ℝ)*((83:ℝ)/20)) := by
   have h := le_exp_nat_add 12 (f := ((9:ℝ)/20)) (by norm_num)
   rw [show ((3:ℝ):ℝ)*((83:ℝ)/20) = ((12:ℕ):ℝ) + ((9:ℝ)/20) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece14_U3 : Real.exp ((3:ℝ)*((83:ℝ)/20)) ≤ ((255250323281310323230844226733:ℝ)/1000000000000000000000000) := by
+theorem piece10_U3 : Real.exp ((3:ℝ)*((83:ℝ)/20)) ≤ ((255250323281310323230844226733:ℝ)/1000000000000000000000000) := by
   have h := exp_nat_add_le 12 (f := ((9:ℝ)/20)) (by norm_num) (by norm_num)
   rw [show ((3:ℝ):ℝ)*((83:ℝ)/20) = ((12:ℕ):ℝ) + ((9:ℝ)/20) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
 
-theorem piece14_L8_at : ((43933734775493992670979870427:ℝ)/250000000000000) ≤ Real.exp ((8:ℝ)*((41:ℝ)/10)) := by
+theorem piece10_L8_at : ((43933734775493992670979870427:ℝ)/250000000000000) ≤ Real.exp ((8:ℝ)*((41:ℝ)/10)) := by
   have h := le_exp_nat_add 32 (f := ((4:ℝ)/5)) (by norm_num)
   rw [show ((8:ℝ):ℝ)*((41:ℝ)/10) = ((32:ℕ):ℝ) + ((4:ℝ)/5) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece14_E8 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((43933734775493992670979870427:ℝ)/250000000000000) := by
+theorem piece10_E8 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((43933734775493992670979870427:ℝ)/250000000000000) := by
   have hm : Real.exp (-((8:ℝ))*q) ≤ Real.exp (-((8:ℝ)*((41:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece14_L8_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece10_L8_at (le_refl _)).2
 
-theorem piece14_L11_at : ((193041701576213268831412776967:ℝ)/5000000000) ≤ Real.exp ((11:ℝ)*((41:ℝ)/10)) := by
+theorem piece10_L11_at : ((193041701576213268831412776967:ℝ)/5000000000) ≤ Real.exp ((11:ℝ)*((41:ℝ)/10)) := by
   have h := le_exp_nat_add 45 (f := ((1:ℝ)/10)) (by norm_num)
   rw [show ((11:ℝ):ℝ)*((41:ℝ)/10) = ((45:ℕ):ℝ) + ((1:ℝ)/10) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece14_E11 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((193041701576213268831412776967:ℝ)/5000000000) := by
+theorem piece10_E11 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((193041701576213268831412776967:ℝ)/5000000000) := by
   have hm : Real.exp (-((11:ℝ))*q) ≤ Real.exp (-((11:ℝ)*((41:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece14_L11_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece10_L11_at (le_refl _)).2
 
-theorem piece14_Lt_at : ((172490841285844495920402488413:ℝ)/25000000000) ≤ Real.exp (((529:ℝ)/50)*((41:ℝ)/10)) := by
+theorem piece10_Lt_at : ((172490841285844495920402488413:ℝ)/25000000000) ≤ Real.exp (((529:ℝ)/50)*((41:ℝ)/10)) := by
   have h := le_exp_nat_add 43 (f := ((189:ℝ)/500)) (by norm_num)
   rw [show (((529:ℝ)/50):ℝ)*((41:ℝ)/10) = ((43:ℕ):ℝ) + ((189:ℝ)/500) by norm_num]
   norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
   linarith
-theorem piece14_Et {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((172490841285844495920402488413:ℝ)/25000000000) := by
+theorem piece10_Et {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((172490841285844495920402488413:ℝ)/25000000000) := by
   have hm : Real.exp (-(((529:ℝ)/50))*q) ≤ Real.exp (-(((529:ℝ)/50)*((41:ℝ)/10))) := Real.exp_le_exp.mpr (by nlinarith)
-  exact hm.trans (exp_neg_bounds (by norm_num) piece14_Lt_at (le_refl _)).2
+  exact hm.trans (exp_neg_bounds (by norm_num) piece10_Lt_at (le_refl _)).2
 
-theorem piece14_e00 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 0 0 - (((581978479844851799:ℝ)/100000000000) + (q - ((83:ℝ)/20)) * ((134836843187854117:ℝ)/10000000000))| ≤ ((183519573022389503:ℝ)/5000000000000) := by
+theorem piece10_e00 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 0 0 - (((144292474183697831:ℝ)/25000000000) + (q - ((83:ℝ)/20)) * ((133662844947298321:ℝ)/10000000000))| ≤ ((18188528729510541:ℝ)/500000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_00 q = ∑ e ∈ Finset.range 10, ([((92506797823638443:ℝ)/16000000000), ((10678199534604909:ℝ)/800000000), ((17241180894411:ℝ)/1250000), ((2089922081877:ℝ)/250000), ((163506495159:ℝ)/50000), ((2137773813:ℝ)/2500), ((18664044:ℝ)/125), ((419328:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_00; ring
   have h12 : centralNum12_00 q = ∑ e ∈ Finset.range 11, ([((-151857167521142229407:ℝ)/320000000000), ((-3884089887647404173:ℝ)/3200000000), ((-111853301404757511:ℝ)/80000000), ((-1909905599034171:ℝ)/2000000), ((-85636373743557:ℝ)/200000), ((-6583549255899:ℝ)/50000), ((-3514801332:ℝ)/125), ((-102923622:ℝ)/25), ((-1977366:ℝ)/5), (-22504:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_00; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((92506797823638443:ℝ)/16000000000), ((10678199534604909:ℝ)/800000000), ((17241180894411:ℝ)/1250000), ((2089922081877:ℝ)/250000), ((163506495159:ℝ)/50000), ((2137773813:ℝ)/2500), ((18664044:ℝ)/125), ((419328:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-151857167521142229407:ℝ)/320000000000), ((-3884089887647404173:ℝ)/3200000000), ((-111853301404757511:ℝ)/80000000), ((-1909905599034171:ℝ)/2000000), ((-85636373743557:ℝ)/200000), ((-6583549255899:ℝ)/50000), ((-3514801332:ℝ)/125), ((-102923622:ℝ)/25), ((-1977366:ℝ)/5), (-22504:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 9 ht
@@ -2938,67 +1590,71 @@ theorem piece14_e00 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((92506797823638443:ℝ)/16000000000), ((10678199534604909:ℝ)/800000000), ((17241180894411:ℝ)/1250000), ((2089922081877:ℝ)/250000), ((163506495159:ℝ)/50000), ((2137773813:ℝ)/2500), ((18664044:ℝ)/125), ((419328:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - (((92506797823638443:ℝ)/16000000000) + ((10678199534604909:ℝ)/800000000)*t)| ≤ ((71096061419069:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 11, ([((-151857167521142229407:ℝ)/320000000000), ((-3884089887647404173:ℝ)/3200000000), ((-111853301404757511:ℝ)/80000000), ((-1909905599034171:ℝ)/2000000), ((-85636373743557:ℝ)/200000), ((-6583549255899:ℝ)/50000), ((-3514801332:ℝ)/125), ((-102923622:ℝ)/25), ((-1977366:ℝ)/5), (-22504:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e) - ((-151857167521142229407:ℝ)/320000000000) - ((-3884089887647404173:ℝ)/3200000000)*t| ≤ ((36175024952826653:ℝ)/10000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 11, ([((-151857167521142229407:ℝ)/320000000000), ((-3884089887647404173:ℝ)/3200000000), ((-111853301404757511:ℝ)/80000000), ((-1909905599034171:ℝ)/2000000), ((-85636373743557:ℝ)/200000), ((-6583549255899:ℝ)/50000), ((-3514801332:ℝ)/125), ((-102923622:ℝ)/25), ((-1977366:ℝ)/5), (-22504:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((5262305229427176:ℝ)/9765625) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (600:ℝ), (-7776:ℝ), (16800:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m13' : |centralNum13_00 q| ≤ ((227929152508257816:ℝ)/9765625) := by
-    rw [centralNum13_00_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (780:ℝ), (-6156:ℝ), (15288:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 hq1'
-  have m23' : |centralNum23_00 q| ≤ ((61380319407030288:ℝ)/1953125) := by
-    rw [centralNum23_00_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_00 q = ∑ e ∈ Finset.range 11, ([((-680149894730395574253:ℝ)/80000000000), ((-17315201254543674567:ℝ)/800000000), ((-123810456228616161:ℝ)/5000000), ((-4191577142079867:ℝ)/250000), ((-372047688625053:ℝ)/50000), ((-28272888208971:ℝ)/12500), ((-59615626812:ℝ)/125), ((-1722130752:ℝ)/25), ((-32614056:ℝ)/5), (-365664:ℝ), (-9216:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_00; ring
+  have m13 := abs_poly_le (fun e => ([((-680149894730395574253:ℝ)/80000000000), ((-17315201254543674567:ℝ)/800000000), ((-123810456228616161:ℝ)/5000000), ((-4191577142079867:ℝ)/250000), ((-372047688625053:ℝ)/50000), ((-28272888208971:ℝ)/12500), ((-59615626812:ℝ)/125), ((-1722130752:ℝ)/25), ((-32614056:ℝ)/5), (-365664:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m13' : |centralNum13_00 q| ≤ ((94219941401499816:ℝ)/9765625) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_00 q = ∑ e ∈ Finset.range 11, ([((-1072805350496281488267:ℝ)/64000000000), ((-132760791516140135781:ℝ)/3200000000), ((-3696295423843144719:ℝ)/80000000), ((-60979404093221091:ℝ)/2000000), ((-2640526788183501:ℝ)/200000), ((-39198644660007:ℝ)/10000), ((-101015334924:ℝ)/125), ((-2855771958:ℝ)/25), ((-52976646:ℝ)/5), (-582312:ℝ), (-14400:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_00; ring
+  have m23 := abs_poly_le (fun e => ([((-1072805350496281488267:ℝ)/64000000000), ((-132760791516140135781:ℝ)/3200000000), ((-3696295423843144719:ℝ)/80000000), ((-60979404093221091:ℝ)/2000000), ((-2640526788183501:ℝ)/200000), ((-39198644660007:ℝ)/10000), ((-101015334924:ℝ)/125), ((-2855771958:ℝ)/25), ((-52976646:ℝ)/5), (-582312:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m23' : |centralNum23_00 q| ≤ ((37024170249670632:ℝ)/1953125) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((111214274551:ℝ)/10000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((6424991643:ℝ)/6250000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0))| ≤ ((5673625631725363200000000:ℝ)/172490841285844495920402488413) := by
     rw [abs_neg, tailWeight_0, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((21:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((21:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece14_Et h0
+    have hx := piece10_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((10465499600:ℝ)/59049)) ≤ ((21:ℝ)/5)^6*(8000*(2*((21:ℝ)/5)-3)^2*(1/((172490841285844495920402488413:ℝ)/25000000000))*((10465499600:ℝ)/59049)) := by
           gcongr
       _ ≤ ((5673625631725363200000000:ℝ)/172490841285844495920402488413) := by norm_num
-  have c7 := affine_round (α := ((92506797823638443:ℝ)/16000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-151857167521142229407:ℝ)/320000000000) + ((76225167229862243:ℝ)/16000000000)*((111214274551:ℝ)/10000000000000) - ((581978479844851799:ℝ)/100000000000)) (β := ((10678199534604909:ℝ)/800000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-3884089887647404173:ℝ)/3200000000) - 3*((-151857167521142229407:ℝ)/320000000000)) + ((9305049966455109:ℝ)/800000000)*((111214274551:ℝ)/10000000000000) - ((134836843187854117:ℝ)/10000000000)) ht
-  have hW : pieceW q pieceX_14 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((111214274551:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
-    rw [pieceW_00, pieceX_14, sym4_00, hexp3]; ring
+  have c7 := affine_round (α := ((92506797823638443:ℝ)/16000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-151857167521142229407:ℝ)/320000000000) + ((76225167229862243:ℝ)/16000000000)*((6424991643:ℝ)/6250000000000) - ((144292474183697831:ℝ)/25000000000)) (β := ((10678199534604909:ℝ)/800000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-3884089887647404173:ℝ)/3200000000) - 3*((-151857167521142229407:ℝ)/320000000000)) + ((9305049966455109:ℝ)/800000000)*((6424991643:ℝ)/6250000000000) - ((133662844947298321:ℝ)/10000000000)) ht
+  have hW : pieceW q pieceX_10 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((6424991643:ℝ)/6250000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
+    rw [pieceW_00, pieceX_10, sym4_00, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((8510609599141173660526945596407948439422686747510692498099572496511429:ℝ)/2606109019993441258331146371185900963387014845328944665197040000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((92506797823638443:ℝ)/16000000000) + ((10678199534604909:ℝ)/800000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-151857167521142229407:ℝ)/320000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-3884089887647404173:ℝ)/3200000000) - 3*((-151857167521142229407:ℝ)/320000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((111214274551:ℝ)/10000000000000) - (((581978479844851799:ℝ)/100000000000) + t * ((134836843187854117:ℝ)/10000000000)) = (((92506797823638443:ℝ)/16000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-151857167521142229407:ℝ)/320000000000) + ((76225167229862243:ℝ)/16000000000)*((111214274551:ℝ)/10000000000000) - ((581978479844851799:ℝ)/100000000000)) + t*(((10678199534604909:ℝ)/800000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-3884089887647404173:ℝ)/3200000000) - 3*((-151857167521142229407:ℝ)/320000000000)) + ((9305049966455109:ℝ)/800000000)*((111214274551:ℝ)/10000000000000) - ((134836843187854117:ℝ)/10000000000)) := by ring
+  refine entry_assemble (r7 := ((923205408514414599331712560978481062132923696137046608251332934883179:ℝ)/407204534373975196614241620497797025529221069582647603937037500000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((92506797823638443:ℝ)/16000000000) + ((10678199534604909:ℝ)/800000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-151857167521142229407:ℝ)/320000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-3884089887647404173:ℝ)/3200000000) - 3*((-151857167521142229407:ℝ)/320000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((6424991643:ℝ)/6250000000000) - (((144292474183697831:ℝ)/25000000000) + t * ((133662844947298321:ℝ)/10000000000)) = (((92506797823638443:ℝ)/16000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-151857167521142229407:ℝ)/320000000000) + ((76225167229862243:ℝ)/16000000000)*((6424991643:ℝ)/6250000000000) - ((144292474183697831:ℝ)/25000000000)) + t*(((10678199534604909:ℝ)/800000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-3884089887647404173:ℝ)/3200000000) - 3*((-151857167521142229407:ℝ)/320000000000)) + ((9305049966455109:ℝ)/800000000)*((6424991643:ℝ)/6250000000000) - ((133662844947298321:ℝ)/10000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e01 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 0 1 - (((-5353799221362511:ℝ)/5000000000) + (q - ((83:ℝ)/20)) * ((-172958207820686779:ℝ)/100000000000))| ≤ ((612999379887766889:ℝ)/100000000000000) := by
+theorem piece10_e01 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 0 1 - (((-107288107300219229:ℝ)/100000000000) + (q - ((83:ℝ)/20)) * ((-43369024543014793:ℝ)/25000000000))| ≤ ((12288649109636821:ℝ)/2000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_01 q = ∑ e ∈ Finset.range 8, ([((-81408152968881:ℝ)/80000000), ((-6865747840749:ℝ)/4000000), ((-248159560509:ℝ)/200000), ((-996624741:ℝ)/2000), ((-12007527:ℝ)/100), ((-434007:ℝ)/25), ((-6972:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_01; ring
   have h12 : centralNum12_01 q = ∑ e ∈ Finset.range 12, ([((-19606444007685559114323:ℝ)/12800000000000), ((-1476317903645795347653:ℝ)/320000000000), ((-40282966880534889837:ℝ)/6400000000), ((-821968433049559011:ℝ)/160000000), ((-22305923498201619:ℝ)/8000000), ((-1056877969989933:ℝ)/1000000), ((-28553885260257:ℝ)/100000), ((-27495940551:ℝ)/500), ((-739914579:ℝ)/100), ((-3312186:ℝ)/5), ((-177588:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_01; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-81408152968881:ℝ)/80000000), ((-6865747840749:ℝ)/4000000), ((-248159560509:ℝ)/200000), ((-996624741:ℝ)/2000), ((-12007527:ℝ)/100), ((-434007:ℝ)/25), ((-6972:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0) 6 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-19606444007685559114323:ℝ)/12800000000000), ((-1476317903645795347653:ℝ)/320000000000), ((-40282966880534889837:ℝ)/6400000000), ((-821968433049559011:ℝ)/160000000), ((-22305923498201619:ℝ)/8000000), ((-1056877969989933:ℝ)/1000000), ((-28553885260257:ℝ)/100000), ((-27495940551:ℝ)/500), ((-739914579:ℝ)/100), ((-3312186:ℝ)/5), ((-177588:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0) 10 ht
@@ -3006,59 +1662,63 @@ theorem piece14_e01 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 8, ([((-81408152968881:ℝ)/80000000), ((-6865747840749:ℝ)/4000000), ((-248159560509:ℝ)/200000), ((-996624741:ℝ)/2000), ((-12007527:ℝ)/100), ((-434007:ℝ)/25), ((-6972:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e) - (((-81408152968881:ℝ)/80000000) + ((-6865747840749:ℝ)/4000000)*t)| ≤ ((126601578801:ℝ)/40000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 12, ([((-19606444007685559114323:ℝ)/12800000000000), ((-1476317903645795347653:ℝ)/320000000000), ((-40282966880534889837:ℝ)/6400000000), ((-821968433049559011:ℝ)/160000000), ((-22305923498201619:ℝ)/8000000), ((-1056877969989933:ℝ)/1000000), ((-28553885260257:ℝ)/100000), ((-27495940551:ℝ)/500), ((-739914579:ℝ)/100), ((-3312186:ℝ)/5), ((-177588:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e) - ((-19606444007685559114323:ℝ)/12800000000000) - ((-1476317903645795347653:ℝ)/320000000000)*t| ≤ ((209861863141437525027:ℝ)/12800000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 12, ([((-19606444007685559114323:ℝ)/12800000000000), ((-1476317903645795347653:ℝ)/320000000000), ((-40282966880534889837:ℝ)/6400000000), ((-821968433049559011:ℝ)/160000000), ((-22305923498201619:ℝ)/8000000), ((-1056877969989933:ℝ)/1000000), ((-28553885260257:ℝ)/100000), ((-27495940551:ℝ)/500), ((-739914579:ℝ)/100), ((-3312186:ℝ)/5), ((-177588:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((86856619560694074:ℝ)/48828125) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-6288:ℝ), (81024:ℝ), (-238720:ℝ), (246784:ℝ), (-98304:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m13' : |centralNum13_01 q| ≤ ((60145729665494017104:ℝ)/48828125) := by
-    rw [centralNum13_01_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-7368:ℝ), (59208:ℝ), (-155734:ℝ), (205300:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 hq1'
-  have m23' : |centralNum23_01 q| ≤ ((1660767162834991554:ℝ)/1953125) := by
-    rw [centralNum23_01_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_01 q = ∑ e ∈ Finset.range 12, ([((-32438818324087732405851:ℝ)/100000000000), ((-4564743507911499073147:ℝ)/5000000000), ((-7298808336403846443:ℝ)/6250000), ((-1120187093479092657:ℝ)/1250000), ((-7161744894802032:ℝ)/15625), ((-2563357021838592:ℝ)/15625), ((-131024295849636:ℝ)/3125), ((-956372041584:ℝ)/125), ((-24422101536:ℝ)/25), ((-415572096:ℝ)/5), ((-21203968:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_01; ring
+  have m13 := abs_poly_le (fun e => ([((-32438818324087732405851:ℝ)/100000000000), ((-4564743507911499073147:ℝ)/5000000000), ((-7298808336403846443:ℝ)/6250000), ((-1120187093479092657:ℝ)/1250000), ((-7161744894802032:ℝ)/15625), ((-2563357021838592:ℝ)/15625), ((-131024295849636:ℝ)/3125), ((-956372041584:ℝ)/125), ((-24422101536:ℝ)/25), ((-415572096:ℝ)/5), ((-21203968:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m13' : |centralNum13_01 q| ≤ ((18216312353034045264:ℝ)/48828125) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_01 q = ∑ e ∈ Finset.range 12, ([((-60428404707746788810707:ℝ)/512000000000), ((-4659277281777923336893:ℝ)/12800000000), ((-643406824161292635153:ℝ)/1280000000), ((-13169326304736851967:ℝ)/32000000), ((-355942186960608831:ℝ)/1600000), ((-3340323986119701:ℝ)/40000), ((-88962602534001:ℝ)/4000), ((-420674745699:ℝ)/100), ((-11084676063:ℝ)/20), (-48470034:ℝ), (-2533700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_01; ring
+  have m23 := abs_poly_le (fun e => ([((-60428404707746788810707:ℝ)/512000000000), ((-4659277281777923336893:ℝ)/12800000000), ((-643406824161292635153:ℝ)/1280000000), ((-13169326304736851967:ℝ)/32000000), ((-355942186960608831:ℝ)/1600000), ((-3340323986119701:ℝ)/40000), ((-88962602534001:ℝ)/4000), ((-420674745699:ℝ)/100), ((-11084676063:ℝ)/20), (-48470034:ℝ), (-2533700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m23' : |centralNum23_01 q| ≤ ((268621178334664554:ℝ)/1953125) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-108101808163:ℝ)/100000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-152627338127:ℝ)/100000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-81408152968881:ℝ)/80000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-19606444007685559114323:ℝ)/12800000000000) + ((76225167229862243:ℝ)/16000000000)*((-108101808163:ℝ)/100000000000000) - ((-5353799221362511:ℝ)/5000000000)) (β := ((-6865747840749:ℝ)/4000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-1476317903645795347653:ℝ)/320000000000) - 3*((-19606444007685559114323:ℝ)/12800000000000)) + ((9305049966455109:ℝ)/800000000)*((-108101808163:ℝ)/100000000000000) - ((-172958207820686779:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_14 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-108101808163:ℝ)/100000000000000) + (0:ℝ) := by
-    rw [pieceW_01, pieceX_14, sym4_01, hexp3]; ring
+  have c7 := affine_round (α := ((-81408152968881:ℝ)/80000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-19606444007685559114323:ℝ)/12800000000000) + ((76225167229862243:ℝ)/16000000000)*((-152627338127:ℝ)/100000000000000) - ((-107288107300219229:ℝ)/100000000000)) (β := ((-6865747840749:ℝ)/4000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-1476317903645795347653:ℝ)/320000000000) - 3*((-19606444007685559114323:ℝ)/12800000000000)) + ((9305049966455109:ℝ)/800000000)*((-152627338127:ℝ)/100000000000000) - ((-43369024543014793:ℝ)/25000000000)) ht
+  have hW : pieceW q pieceX_10 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-152627338127:ℝ)/100000000000000) + (0:ℝ) := by
+    rw [pieceW_01, pieceX_10, sym4_01, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((7314799889329492593492776513366962198741008262051133112073325133370423:ℝ)/26061090199934412583311463711859009633870148453289446651970400000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-81408152968881:ℝ)/80000000) + ((-6865747840749:ℝ)/4000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-19606444007685559114323:ℝ)/12800000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-1476317903645795347653:ℝ)/320000000000) - 3*((-19606444007685559114323:ℝ)/12800000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-108101808163:ℝ)/100000000000000) - (((-5353799221362511:ℝ)/5000000000) + t * ((-172958207820686779:ℝ)/100000000000)) = (((-81408152968881:ℝ)/80000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-19606444007685559114323:ℝ)/12800000000000) + ((76225167229862243:ℝ)/16000000000)*((-108101808163:ℝ)/100000000000000) - ((-5353799221362511:ℝ)/5000000000)) + t*(((-6865747840749:ℝ)/4000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-1476317903645795347653:ℝ)/320000000000) - 3*((-19606444007685559114323:ℝ)/12800000000000)) + ((9305049966455109:ℝ)/800000000)*((-108101808163:ℝ)/100000000000000) - ((-172958207820686779:ℝ)/100000000000)) := by ring
+  refine entry_assemble (r7 := ((6680715497232583662897775924620846237548350889518832844503924926073631:ℝ)/6515272549983603145827865927964752408467537113322361662992600000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-81408152968881:ℝ)/80000000) + ((-6865747840749:ℝ)/4000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-19606444007685559114323:ℝ)/12800000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-1476317903645795347653:ℝ)/320000000000) - 3*((-19606444007685559114323:ℝ)/12800000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-152627338127:ℝ)/100000000000000) - (((-107288107300219229:ℝ)/100000000000) + t * ((-43369024543014793:ℝ)/25000000000)) = (((-81408152968881:ℝ)/80000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-19606444007685559114323:ℝ)/12800000000000) + ((76225167229862243:ℝ)/16000000000)*((-152627338127:ℝ)/100000000000000) - ((-107288107300219229:ℝ)/100000000000)) + t*(((-6865747840749:ℝ)/4000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-1476317903645795347653:ℝ)/320000000000) - 3*((-19606444007685559114323:ℝ)/12800000000000)) + ((9305049966455109:ℝ)/800000000)*((-152627338127:ℝ)/100000000000000) - ((-43369024543014793:ℝ)/25000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e02 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 0 2 - (((207765141230859569:ℝ)/25000000000000) + (q - ((83:ℝ)/20)) * ((-45208156226968049:ℝ)/1250000000000))| ≤ ((184949203468018519:ℝ)/100000000000000) := by
+theorem piece10_e02 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 0 2 - (((4480277845145291:ℝ)/400000000000) + (q - ((83:ℝ)/20)) * ((-291104769094276347:ℝ)/10000000000000))| ≤ ((37291828558791267:ℝ)/20000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_02 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_02; ring
   have h12 : centralNum12_02 q = ∑ e ∈ Finset.range 13, ([((-468898224062549201847621:ℝ)/2048000000000000), ((-312029773312364586536769:ℝ)/102400000000000), ((-39441106134257450673249:ℝ)/5120000000000), ((-491675955327606554127:ℝ)/51200000000), ((-147122220884619933:ℝ)/20000000), ((-1215386170214867037:ℝ)/320000000), ((-22103190530000433:ℝ)/16000000), ((-288322033426083:ℝ)/800000), ((-1077717099969:ℝ)/16000), ((-7064626833:ℝ)/800), ((-154602189:ℝ)/200), ((-406431:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_02; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-468898224062549201847621:ℝ)/2048000000000000), ((-312029773312364586536769:ℝ)/102400000000000), ((-39441106134257450673249:ℝ)/5120000000000), ((-491675955327606554127:ℝ)/51200000000), ((-147122220884619933:ℝ)/20000000), ((-1215386170214867037:ℝ)/320000000), ((-22103190530000433:ℝ)/16000000), ((-288322033426083:ℝ)/800000), ((-1077717099969:ℝ)/16000), ((-7064626833:ℝ)/800), ((-154602189:ℝ)/200), ((-406431:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0) 11 ht
@@ -3066,59 +1726,63 @@ theorem piece14_e02 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 13, ([((-468898224062549201847621:ℝ)/2048000000000000), ((-312029773312364586536769:ℝ)/102400000000000), ((-39441106134257450673249:ℝ)/5120000000000), ((-491675955327606554127:ℝ)/51200000000), ((-147122220884619933:ℝ)/20000000), ((-1215386170214867037:ℝ)/320000000), ((-22103190530000433:ℝ)/16000000), ((-288322033426083:ℝ)/800000), ((-1077717099969:ℝ)/16000), ((-7064626833:ℝ)/800), ((-154602189:ℝ)/200), ((-406431:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e) - ((-468898224062549201847621:ℝ)/2048000000000000) - ((-312029773312364586536769:ℝ)/102400000000000)*t| ≤ ((20998059846525630215613:ℝ)/1024000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 13, ([((-468898224062549201847621:ℝ)/2048000000000000), ((-312029773312364586536769:ℝ)/102400000000000), ((-39441106134257450673249:ℝ)/5120000000000), ((-491675955327606554127:ℝ)/51200000000), ((-147122220884619933:ℝ)/20000000), ((-1215386170214867037:ℝ)/320000000), ((-22103190530000433:ℝ)/16000000), ((-288322033426083:ℝ)/800000), ((-1077717099969:ℝ)/16000), ((-7064626833:ℝ)/800), ((-154602189:ℝ)/200), ((-406431:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((98100199349876052:ℝ)/244140625) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82080:ℝ), (-967680:ℝ), (3257600:ℝ), (-4474880:ℝ), (2908160:ℝ), (-786432:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_02 q| ≤ ((13090952945632530743712:ℝ)/244140625) := by
-    rw [centralNum13_02_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (87660:ℝ), (-702180:ℝ), ((7421435:ℝ)/4), ((-10854125:ℝ)/4), ((2828125:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_02 q| ≤ ((16603600737787094241:ℝ)/781250) := by
-    rw [centralNum23_02_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_02 q = ∑ e ∈ Finset.range 13, ([((-1977543628589123768327503:ℝ)/250000000000), ((-309893543226413094699467:ℝ)/12500000000), ((-11129434763341445850341:ℝ)/312500000), ((-12111714252850060671:ℝ)/390625), ((-1423351223432703933:ℝ)/78125), ((-594623669085171132:ℝ)/78125), ((-36217068141305352:ℝ)/15625), ((-1620112816144608:ℝ)/3125), ((-10564797069888:ℝ)/125), ((-244842513664:ℝ)/25), ((-19141070848:ℝ)/25), ((-181280768:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_02; ring
+  have m13 := abs_poly_le (fun e => ([((-1977543628589123768327503:ℝ)/250000000000), ((-309893543226413094699467:ℝ)/12500000000), ((-11129434763341445850341:ℝ)/312500000), ((-12111714252850060671:ℝ)/390625), ((-1423351223432703933:ℝ)/78125), ((-594623669085171132:ℝ)/78125), ((-36217068141305352:ℝ)/15625), ((-1620112816144608:ℝ)/3125), ((-10564797069888:ℝ)/125), ((-244842513664:ℝ)/25), ((-19141070848:ℝ)/25), ((-181280768:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_02 q| ≤ ((2256537157506777110112:ℝ)/244140625) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_02 q = ∑ e ∈ Finset.range 13, ([((1654080291624946243446403:ℝ)/3276800000000), ((141901222529117182232759:ℝ)/163840000000), ((1802746026357237840007:ℝ)/8192000000), ((-281855284059499680579:ℝ)/409600000), ((-582692505723607521:ℝ)/640000), ((-300057299854158597:ℝ)/512000), ((-6120501563926281:ℝ)/25600), ((-85158449137563:ℝ)/1280), ((-1649634411453:ℝ)/128), ((-55026556145:ℝ)/32), ((-1210320125:ℝ)/8), ((-15846875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_02; ring
+  have m23 := abs_poly_le (fun e => ([((1654080291624946243446403:ℝ)/3276800000000), ((141901222529117182232759:ℝ)/163840000000), ((1802746026357237840007:ℝ)/8192000000), ((-281855284059499680579:ℝ)/409600000), ((-582692505723607521:ℝ)/640000), ((-300057299854158597:ℝ)/512000), ((-6120501563926281:ℝ)/25600), ((-85158449137563:ℝ)/1280), ((-1649634411453:ℝ)/128), ((-55026556145:ℝ)/32), ((-1210320125:ℝ)/8), ((-15846875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_02 q| ≤ ((899042687076121870673857:ℝ)/1638400000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((162533601993:ℝ)/50000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((48216431323:ℝ)/12500000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-468898224062549201847621:ℝ)/2048000000000000) + ((76225167229862243:ℝ)/16000000000)*((162533601993:ℝ)/50000000000000) - ((207765141230859569:ℝ)/25000000000000)) (β := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-312029773312364586536769:ℝ)/102400000000000) - 3*((-468898224062549201847621:ℝ)/2048000000000000)) + ((9305049966455109:ℝ)/800000000)*((162533601993:ℝ)/50000000000000) - ((-45208156226968049:ℝ)/1250000000000)) ht
-  have hW : pieceW q pieceX_14 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((162533601993:ℝ)/50000000000000) + (0:ℝ) := by
-    rw [pieceW_02, pieceX_14, sym4_02, hexp3]; ring
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-468898224062549201847621:ℝ)/2048000000000000) + ((76225167229862243:ℝ)/16000000000)*((48216431323:ℝ)/12500000000000) - ((4480277845145291:ℝ)/400000000000)) (β := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-312029773312364586536769:ℝ)/102400000000000) - 3*((-468898224062549201847621:ℝ)/2048000000000000)) + ((9305049966455109:ℝ)/800000000)*((48216431323:ℝ)/12500000000000) - ((-291104769094276347:ℝ)/10000000000000)) ht
+  have hW : pieceW q pieceX_10 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((48216431323:ℝ)/12500000000000) + (0:ℝ) := by
+    rw [pieceW_02, pieceX_10, sym4_02, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((78119436817818679129423375958329078116393029991288852245759554369147:ℝ)/13030545099967206291655731855929504816935074226644723325985200000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-468898224062549201847621:ℝ)/2048000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-312029773312364586536769:ℝ)/102400000000000) - 3*((-468898224062549201847621:ℝ)/2048000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((162533601993:ℝ)/50000000000000) - (((207765141230859569:ℝ)/25000000000000) + t * ((-45208156226968049:ℝ)/1250000000000)) = ((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-468898224062549201847621:ℝ)/2048000000000000) + ((76225167229862243:ℝ)/16000000000)*((162533601993:ℝ)/50000000000000) - ((207765141230859569:ℝ)/25000000000000)) + t*((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-312029773312364586536769:ℝ)/102400000000000) - 3*((-468898224062549201847621:ℝ)/2048000000000000)) + ((9305049966455109:ℝ)/800000000)*((162533601993:ℝ)/50000000000000) - ((-45208156226968049:ℝ)/1250000000000)) := by ring
+  refine entry_assemble (r7 := ((35607546888299184180958071939137223341418643091785799529734430277781:ℝ)/814409068747950393228483240995594051058442139165295207874075000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-468898224062549201847621:ℝ)/2048000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-312029773312364586536769:ℝ)/102400000000000) - 3*((-468898224062549201847621:ℝ)/2048000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((48216431323:ℝ)/12500000000000) - (((4480277845145291:ℝ)/400000000000) + t * ((-291104769094276347:ℝ)/10000000000000)) = ((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-468898224062549201847621:ℝ)/2048000000000000) + ((76225167229862243:ℝ)/16000000000)*((48216431323:ℝ)/12500000000000) - ((4480277845145291:ℝ)/400000000000)) + t*((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-312029773312364586536769:ℝ)/102400000000000) - 3*((-468898224062549201847621:ℝ)/2048000000000000)) + ((9305049966455109:ℝ)/800000000)*((48216431323:ℝ)/12500000000000) - ((-291104769094276347:ℝ)/10000000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e03 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 0 3 - (((-79509638909429079:ℝ)/2000000000000) + (q - ((83:ℝ)/20)) * ((-404858694398523533:ℝ)/1000000000000))| ≤ ((223719447480223761:ℝ)/25000000000000) := by
+theorem piece10_e03 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 0 3 - (((12574710989798021:ℝ)/125000000000) + (q - ((83:ℝ)/20)) * ((-621931046765230521:ℝ)/10000000000000))| ≤ ((785687380817595131:ℝ)/100000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_03 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_03; ring
   have h12 : centralNum12_03 q = ∑ e ∈ Finset.range 14, ([((2331898798461054414077950173:ℝ)/573440000000000000), ((88216901171911162396594827:ℝ)/7168000000000000), ((346934464362063610718769:ℝ)/22400000000000), ((353382792696928523888757:ℝ)/35840000000000), ((238660564487935793967:ℝ)/102400000000), ((-111471865124363258859:ℝ)/89600000000), ((-1562061273977515851:ℝ)/1120000000), ((-73404045453750759:ℝ)/112000000), ((-4338270286902009:ℝ)/22400000), ((-271916912331:ℝ)/7000), ((-37247871141:ℝ)/7000), ((-95911857:ℝ)/200), ((-3602961:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_03; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((2331898798461054414077950173:ℝ)/573440000000000000), ((88216901171911162396594827:ℝ)/7168000000000000), ((346934464362063610718769:ℝ)/22400000000000), ((353382792696928523888757:ℝ)/35840000000000), ((238660564487935793967:ℝ)/102400000000), ((-111471865124363258859:ℝ)/89600000000), ((-1562061273977515851:ℝ)/1120000000), ((-73404045453750759:ℝ)/112000000), ((-4338270286902009:ℝ)/22400000), ((-271916912331:ℝ)/7000), ((-37247871141:ℝ)/7000), ((-95911857:ℝ)/200), ((-3602961:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 12 ht
@@ -3126,59 +1790,63 @@ theorem piece14_e03 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 14, ([((2331898798461054414077950173:ℝ)/573440000000000000), ((88216901171911162396594827:ℝ)/7168000000000000), ((346934464362063610718769:ℝ)/22400000000000), ((353382792696928523888757:ℝ)/35840000000000), ((238660564487935793967:ℝ)/102400000000), ((-111471865124363258859:ℝ)/89600000000), ((-1562061273977515851:ℝ)/1120000000), ((-73404045453750759:ℝ)/112000000), ((-4338270286902009:ℝ)/22400000), ((-271916912331:ℝ)/7000), ((-37247871141:ℝ)/7000), ((-95911857:ℝ)/200), ((-3602961:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((2331898798461054414077950173:ℝ)/573440000000000000) - ((88216901171911162396594827:ℝ)/7168000000000000)*t| ≤ ((3274165737505957795776081:ℝ)/81920000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 14, ([((2331898798461054414077950173:ℝ)/573440000000000000), ((88216901171911162396594827:ℝ)/7168000000000000), ((346934464362063610718769:ℝ)/22400000000000), ((353382792696928523888757:ℝ)/35840000000000), ((238660564487935793967:ℝ)/102400000000), ((-111471865124363258859:ℝ)/89600000000), ((-1562061273977515851:ℝ)/1120000000), ((-73404045453750759:ℝ)/112000000), ((-4338270286902009:ℝ)/22400000), ((-271916912331:ℝ)/7000), ((-37247871141:ℝ)/7000), ((-95911857:ℝ)/200), ((-3602961:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((42307586926738137003668157:ℝ)/8960000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-812160:ℝ), (8985600:ℝ), (-32225280:ℝ), (52019200:ℝ), ((-305233920:ℝ)/7), ((135528448:ℝ)/7), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_03 q| ≤ ((1774821396392342559660672:ℝ)/1220703125) := by
-    rw [centralNum13_03_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-833220:ℝ), (6469740:ℝ), ((-68603955:ℝ)/4), ((104396875:ℝ)/4), ((-1001334375:ℝ)/56), ((125828125:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_03 q| ≤ ((1119494076287735984787:ℝ)/3125000) := by
-    rw [centralNum23_03_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_03 q = ∑ e ∈ Finset.range 14, ([((-98944435508510521615664179:ℝ)/1093750000000), ((-17475404184155878414624159:ℝ)/54687500000), ((-711130615557646922993559:ℝ)/1367187500), ((-35317682096531567007836:ℝ)/68359375), ((-955453927060582705074:ℝ)/2734375), ((-464674390511076819288:ℝ)/2734375), ((-33439175353648986912:ℝ)/546875), ((-1802644926655986816:ℝ)/109375), ((-72798384866466816:ℝ)/21875), ((-435040816812032:ℝ)/875), ((-46742617956352:ℝ)/875), ((-684063817728:ℝ)/175), ((-6110838784:ℝ)/35), ((-25165824:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_03; ring
+  have m13 := abs_poly_le (fun e => ([((-98944435508510521615664179:ℝ)/1093750000000), ((-17475404184155878414624159:ℝ)/54687500000), ((-711130615557646922993559:ℝ)/1367187500), ((-35317682096531567007836:ℝ)/68359375), ((-955453927060582705074:ℝ)/2734375), ((-464674390511076819288:ℝ)/2734375), ((-33439175353648986912:ℝ)/546875), ((-1802644926655986816:ℝ)/109375), ((-72798384866466816:ℝ)/21875), ((-435040816812032:ℝ)/875), ((-46742617956352:ℝ)/875), ((-684063817728:ℝ)/175), ((-6110838784:ℝ)/35), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_03 q| ≤ ((131601767931129316770432:ℝ)/1220703125) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_03 q = ∑ e ∈ Finset.range 14, ([((441854475511398129641823041:ℝ)/183500800000000), ((23533822196214901322008907:ℝ)/2293760000000), ((70678167046401322654437:ℝ)/4096000000), ((180941790417907119476641:ℝ)/11468800000), ((1421387225370006008343:ℝ)/163840000), ((80899730961631194681:ℝ)/28672000), ((139168441299593637:ℝ)/358400), ((-3252961320702123:ℝ)/35840), ((-443747069470701:ℝ)/7168), ((-259490522695:ℝ)/16), ((-141471446875:ℝ)/56), ((-1950965625:ℝ)/8), ((-379953125:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_03; ring
+  have m23 := abs_poly_le (fun e => ([((441854475511398129641823041:ℝ)/183500800000000), ((23533822196214901322008907:ℝ)/2293760000000), ((70678167046401322654437:ℝ)/4096000000), ((180941790417907119476641:ℝ)/11468800000), ((1421387225370006008343:ℝ)/163840000), ((80899730961631194681:ℝ)/28672000), ((139168441299593637:ℝ)/358400), ((-3252961320702123:ℝ)/35840), ((-443747069470701:ℝ)/7168), ((-259490522695:ℝ)/16), ((-141471446875:ℝ)/56), ((-1950965625:ℝ)/8), ((-379953125:ℝ)/28), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_03 q| ≤ ((3887697965879564224551951:ℝ)/1310720000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-175486873537:ℝ)/5000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-563676216197:ℝ)/100000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2331898798461054414077950173:ℝ)/573440000000000000) + ((76225167229862243:ℝ)/16000000000)*((-175486873537:ℝ)/5000000000000) - ((-79509638909429079:ℝ)/2000000000000)) (β := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((88216901171911162396594827:ℝ)/7168000000000000) - 3*((2331898798461054414077950173:ℝ)/573440000000000000)) + ((9305049966455109:ℝ)/800000000)*((-175486873537:ℝ)/5000000000000) - ((-404858694398523533:ℝ)/1000000000000)) ht
-  have hW : pieceW q pieceX_14 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-175486873537:ℝ)/5000000000000) + (0:ℝ) := by
-    rw [pieceW_03, pieceX_14, sym4_03, hexp3]; ring
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2331898798461054414077950173:ℝ)/573440000000000000) + ((76225167229862243:ℝ)/16000000000)*((-563676216197:ℝ)/100000000000000) - ((12574710989798021:ℝ)/125000000000)) (β := (0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((88216901171911162396594827:ℝ)/7168000000000000) - 3*((2331898798461054414077950173:ℝ)/573440000000000000)) + ((9305049966455109:ℝ)/800000000)*((-563676216197:ℝ)/100000000000000) - ((-621931046765230521:ℝ)/10000000000000)) ht
+  have hW : pieceW q pieceX_10 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-563676216197:ℝ)/100000000000000) + (0:ℝ) := by
+    rw [pieceW_03, pieceX_10, sym4_03, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((479466409025119290457534367451167256244434872436263937056306698683061:ℝ)/9121381569977044404159012299150653371854551958651306328189640000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2331898798461054414077950173:ℝ)/573440000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((88216901171911162396594827:ℝ)/7168000000000000) - 3*((2331898798461054414077950173:ℝ)/573440000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-175486873537:ℝ)/5000000000000) - (((-79509638909429079:ℝ)/2000000000000) + t * ((-404858694398523533:ℝ)/1000000000000)) = ((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2331898798461054414077950173:ℝ)/573440000000000000) + ((76225167229862243:ℝ)/16000000000)*((-175486873537:ℝ)/5000000000000) - ((-79509638909429079:ℝ)/2000000000000)) + t*((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((88216901171911162396594827:ℝ)/7168000000000000) - 3*((2331898798461054414077950173:ℝ)/573440000000000000)) + ((9305049966455109:ℝ)/800000000)*((-175486873537:ℝ)/5000000000000) - ((-404858694398523533:ℝ)/1000000000000)) := by ring
+  refine entry_assemble (r7 := ((30246469035294811669378618448788453603836494801550920317417915863947959:ℝ)/182427631399540888083180245983013067437091039173026126563792800000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2331898798461054414077950173:ℝ)/573440000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((88216901171911162396594827:ℝ)/7168000000000000) - 3*((2331898798461054414077950173:ℝ)/573440000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-563676216197:ℝ)/100000000000000) - (((12574710989798021:ℝ)/125000000000) + t * ((-621931046765230521:ℝ)/10000000000000)) = ((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2331898798461054414077950173:ℝ)/573440000000000000) + ((76225167229862243:ℝ)/16000000000)*((-563676216197:ℝ)/100000000000000) - ((12574710989798021:ℝ)/125000000000)) + t*((0:ℝ) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((88216901171911162396594827:ℝ)/7168000000000000) - 3*((2331898798461054414077950173:ℝ)/573440000000000000)) + ((9305049966455109:ℝ)/800000000)*((-563676216197:ℝ)/100000000000000) - ((-621931046765230521:ℝ)/10000000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e11 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 1 1 - (((113272646959838049:ℝ)/25000000000) + (q - ((83:ℝ)/20)) * ((971614456034509961:ℝ)/100000000000))| ≤ ((66104277705211601:ℝ)/2500000000000) := by
+theorem piece10_e11 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 1 1 - (((446672831094801337:ℝ)/100000000000) + (q - ((83:ℝ)/20)) * ((955945734180343963:ℝ)/100000000000))| ≤ ((259991826530566539:ℝ)/10000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_11 q = ∑ e ∈ Finset.range 10, ([((26352374914661507:ℝ)/6000000000), ((3827806074282323:ℝ)/400000000), ((47140872290831:ℝ)/5000000), ((1378211941533:ℝ)/250000), ((26329420439:ℝ)/12500), ((680560741:ℝ)/1250), ((11874436:ℝ)/125), ((269072:ℝ)/25), ((3584:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_11; ring
   have h12 : centralNum12_11 q = ∑ e ∈ Finset.range 13, ([((1986544233289752062996459:ℝ)/1536000000000000), ((23048695651427759983397:ℝ)/25600000000000), ((-4236196637422350303883:ℝ)/1280000000000), ((-89276379339824443269:ℝ)/12800000000), ((-131356428616310089:ℝ)/20000000), ((-304636432479760559:ℝ)/80000000), ((-5981018375263771:ℝ)/4000000), ((-82480566684161:ℝ)/200000), ((-321851129243:ℝ)/4000), ((-6553085473:ℝ)/600), ((-49207023:ℝ)/50), ((-265194:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_11; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((26352374914661507:ℝ)/6000000000), ((3827806074282323:ℝ)/400000000), ((47140872290831:ℝ)/5000000), ((1378211941533:ℝ)/250000), ((26329420439:ℝ)/12500), ((680560741:ℝ)/1250), ((11874436:ℝ)/125), ((269072:ℝ)/25), ((3584:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((1986544233289752062996459:ℝ)/1536000000000000), ((23048695651427759983397:ℝ)/25600000000000), ((-4236196637422350303883:ℝ)/1280000000000), ((-89276379339824443269:ℝ)/12800000000), ((-131356428616310089:ℝ)/20000000), ((-304636432479760559:ℝ)/80000000), ((-5981018375263771:ℝ)/4000000), ((-82480566684161:ℝ)/200000), ((-321851129243:ℝ)/4000), ((-6553085473:ℝ)/600), ((-49207023:ℝ)/50), ((-265194:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0) 11 ht
@@ -3186,67 +1854,71 @@ theorem piece14_e11 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((26352374914661507:ℝ)/6000000000), ((3827806074282323:ℝ)/400000000), ((47140872290831:ℝ)/5000000), ((1378211941533:ℝ)/250000), ((26329420439:ℝ)/12500), ((680560741:ℝ)/1250), ((11874436:ℝ)/125), ((269072:ℝ)/25), ((3584:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((26352374914661507:ℝ)/6000000000) + ((3827806074282323:ℝ)/400000000)*t)| ≤ ((582549083023867:ℝ)/24000000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 13, ([((1986544233289752062996459:ℝ)/1536000000000000), ((23048695651427759983397:ℝ)/25600000000000), ((-4236196637422350303883:ℝ)/1280000000000), ((-89276379339824443269:ℝ)/12800000000), ((-131356428616310089:ℝ)/20000000), ((-304636432479760559:ℝ)/80000000), ((-5981018375263771:ℝ)/4000000), ((-82480566684161:ℝ)/200000), ((-321851129243:ℝ)/4000), ((-6553085473:ℝ)/600), ((-49207023:ℝ)/50), ((-265194:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e) - ((1986544233289752062996459:ℝ)/1536000000000000) - ((23048695651427759983397:ℝ)/25600000000000)*t| ≤ ((7056325446274728519853:ℝ)/768000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 13, ([((1986544233289752062996459:ℝ)/1536000000000000), ((23048695651427759983397:ℝ)/25600000000000), ((-4236196637422350303883:ℝ)/1280000000000), ((-89276379339824443269:ℝ)/12800000000), ((-131356428616310089:ℝ)/20000000), ((-304636432479760559:ℝ)/80000000), ((-5981018375263771:ℝ)/4000000), ((-82480566684161:ℝ)/200000), ((-321851129243:ℝ)/4000), ((-6553085473:ℝ)/600), ((-49207023:ℝ)/50), ((-265194:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((517450742784146199996589:ℝ)/384000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-3444:ℝ), (162624:ℝ), (-1531216:ℝ), (4800960:ℝ), (-6350848:ℝ), ((12025856:ℝ)/3), (-1048576:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m13' : |centralNum13_11 q| ≤ ((17895853667957540703876:ℝ)/244140625) := by
-    rw [centralNum13_11_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-4074:ℝ), (159906:ℝ), (-1104799:ℝ), (2801499:ℝ), (-3931375:ℝ), ((5896250:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 hq1'
-  have m23' : |centralNum23_11 q| ≤ ((57805629780084754239:ℝ)/1953125) := by
-    rw [centralNum23_11_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_11 q = ∑ e ∈ Finset.range 13, ([((-952322651449041071140619:ℝ)/93750000000), ((-4792603655986854221730967:ℝ)/150000000000), ((-86360751478605285292153:ℝ)/1875000000), ((-251475607003186920943:ℝ)/6250000), ((-7412845197790052631:ℝ)/312500), ((-1553432898945075867:ℝ)/156250), ((-47457669864224396:ℝ)/15625), ((-2129497373967344:ℝ)/3125), ((-13928305697344:ℝ)/125), ((-971220281536:ℝ)/75), ((-76144351232:ℝ)/75), ((-723156992:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_11; ring
+  have m13 := abs_poly_le (fun e => ([((-952322651449041071140619:ℝ)/93750000000), ((-4792603655986854221730967:ℝ)/150000000000), ((-86360751478605285292153:ℝ)/1875000000), ((-251475607003186920943:ℝ)/6250000), ((-7412845197790052631:ℝ)/312500), ((-1553432898945075867:ℝ)/156250), ((-47457669864224396:ℝ)/15625), ((-2129497373967344:ℝ)/3125), ((-13928305697344:ℝ)/125), ((-971220281536:ℝ)/75), ((-76144351232:ℝ)/75), ((-723156992:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_11 q| ≤ ((2899407086587183309956:ℝ)/244140625) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_11 q = ∑ e ∈ Finset.range 13, ([((9916875289488545767747583:ℝ)/12288000000000), ((968638569640947362765699:ℝ)/614400000000), ((27232931145759457246307:ℝ)/30720000000), ((-217009041696502943813:ℝ)/512000000), ((-188593247538438273:ℝ)/200000), ((-434047603688042499:ℝ)/640000), ((-9309123818552047:ℝ)/32000), ((-133385403993421:ℝ)/1600), ((-2635361587691:ℝ)/160), ((-53512075649:ℝ)/24), ((-1190288125:ℝ)/6), ((-31453750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_11; ring
+  have m23 := abs_poly_le (fun e => ([((9916875289488545767747583:ℝ)/12288000000000), ((968638569640947362765699:ℝ)/614400000000), ((27232931145759457246307:ℝ)/30720000000), ((-217009041696502943813:ℝ)/512000000), ((-188593247538438273:ℝ)/200000), ((-434047603688042499:ℝ)/640000), ((-9309123818552047:ℝ)/32000), ((-133385403993421:ℝ)/1600), ((-2635361587691:ℝ)/160), ((-53512075649:ℝ)/24), ((-1190288125:ℝ)/6), ((-31453750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_11 q| ≤ ((1818912149692672359323639:ℝ)/2048000000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((103176780923:ℝ)/5000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((71642007061:ℝ)/10000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1))| ≤ ((290022314446501683200000000:ℝ)/172490841285844495920402488413) := by
     rw [abs_neg, tailWeight_1, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((21:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((21:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece14_Et h0
+    have hx := piece10_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((4814744136400:ℝ)/531441)) ≤ ((21:ℝ)/5)^6*(8000*(2*((21:ℝ)/5)-3)^2*(1/((172490841285844495920402488413:ℝ)/25000000000))*((4814744136400:ℝ)/531441)) := by
           gcongr
       _ ≤ ((290022314446501683200000000:ℝ)/172490841285844495920402488413) := by norm_num
-  have c7 := affine_round (α := ((26352374914661507:ℝ)/6000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((1986544233289752062996459:ℝ)/1536000000000000) + ((76225167229862243:ℝ)/16000000000)*((103176780923:ℝ)/5000000000000) - ((113272646959838049:ℝ)/25000000000)) (β := ((3827806074282323:ℝ)/400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23048695651427759983397:ℝ)/25600000000000) - 3*((1986544233289752062996459:ℝ)/1536000000000000)) + ((9305049966455109:ℝ)/800000000)*((103176780923:ℝ)/5000000000000) - ((971614456034509961:ℝ)/100000000000)) ht
-  have hW : pieceW q pieceX_14 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((103176780923:ℝ)/5000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
-    rw [pieceW_11, pieceX_14, sym4_11, hexp3]; ring
+  have c7 := affine_round (α := ((26352374914661507:ℝ)/6000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((1986544233289752062996459:ℝ)/1536000000000000) + ((76225167229862243:ℝ)/16000000000)*((71642007061:ℝ)/10000000000000) - ((446672831094801337:ℝ)/100000000000)) (β := ((3827806074282323:ℝ)/400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23048695651427759983397:ℝ)/25600000000000) - 3*((1986544233289752062996459:ℝ)/1536000000000000)) + ((9305049966455109:ℝ)/800000000)*((71642007061:ℝ)/10000000000000) - ((955945734180343963:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_10 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((71642007061:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
+    rw [pieceW_11, pieceX_10, sym4_11, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((3822087298047328422692576032957838931296047112864336557347659377835149:ℝ)/3909163529990161887496719556778851445080522267993416997795560000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((26352374914661507:ℝ)/6000000000) + ((3827806074282323:ℝ)/400000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((1986544233289752062996459:ℝ)/1536000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23048695651427759983397:ℝ)/25600000000000) - 3*((1986544233289752062996459:ℝ)/1536000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((103176780923:ℝ)/5000000000000) - (((113272646959838049:ℝ)/25000000000) + t * ((971614456034509961:ℝ)/100000000000)) = (((26352374914661507:ℝ)/6000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((1986544233289752062996459:ℝ)/1536000000000000) + ((76225167229862243:ℝ)/16000000000)*((103176780923:ℝ)/5000000000000) - ((113272646959838049:ℝ)/25000000000)) + t*(((3827806074282323:ℝ)/400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23048695651427759983397:ℝ)/25600000000000) - 3*((1986544233289752062996459:ℝ)/1536000000000000)) + ((9305049966455109:ℝ)/800000000)*((103176780923:ℝ)/5000000000000) - ((971614456034509961:ℝ)/100000000000)) := by ring
+  refine entry_assemble (r7 := ((3872199947168988211247088289637222327702560088806533497048617536593201:ℝ)/1954581764995080943748359778389425722540261133996708498897780000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((26352374914661507:ℝ)/6000000000) + ((3827806074282323:ℝ)/400000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((1986544233289752062996459:ℝ)/1536000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23048695651427759983397:ℝ)/25600000000000) - 3*((1986544233289752062996459:ℝ)/1536000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((71642007061:ℝ)/10000000000000) - (((446672831094801337:ℝ)/100000000000) + t * ((955945734180343963:ℝ)/100000000000)) = (((26352374914661507:ℝ)/6000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((1986544233289752062996459:ℝ)/1536000000000000) + ((76225167229862243:ℝ)/16000000000)*((71642007061:ℝ)/10000000000000) - ((446672831094801337:ℝ)/100000000000)) + t*(((3827806074282323:ℝ)/400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23048695651427759983397:ℝ)/25600000000000) - 3*((1986544233289752062996459:ℝ)/1536000000000000)) + ((9305049966455109:ℝ)/800000000)*((71642007061:ℝ)/10000000000000) - ((955945734180343963:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e12 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 1 2 - (((-485731117039720241:ℝ)/1000000000000) + (q - ((83:ℝ)/20)) * ((-10820430413015879:ℝ)/10000000000))| ≤ ((13146875289862143:ℝ)/625000000000) := by
+theorem piece10_e12 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 1 2 - (((-445501777971134107:ℝ)/1000000000000) + (q - ((83:ℝ)/20)) * ((-196764911893115257:ℝ)/200000000000))| ≤ ((40841970520929679:ℝ)/2000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_12 q = ∑ e ∈ Finset.range 9, ([((-1160965265833319:ℝ)/1920000000), ((-22125591291731:ℝ)/24000000), ((-632951627177:ℝ)/1200000), ((-6735079073:ℝ)/60000), ((18483187:ℝ)/1200), ((2055163:ℝ)/150), ((46406:ℝ)/15), ((968:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_12; ring
   have h12 : centralNum12_12 q = ∑ e ∈ Finset.range 14, ([((2013730323324927201677614493:ℝ)/245760000000000000), ((92811606799709754393005147:ℝ)/3072000000000000), ((55776118438481247339283:ℝ)/1200000000000), ((604887984798944973766357:ℝ)/15360000000000), ((6009656791925167071049:ℝ)/307200000000), ((190635854803078788181:ℝ)/38400000000), ((-110072449793067611:ℝ)/480000000), ((-33808106701721479:ℝ)/48000000), ((-2801833460887609:ℝ)/9600000), ((-68956101467:ℝ)/1000), ((-10460802927:ℝ)/1000), ((-202665213:ℝ)/200), ((-1149147:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_12; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-1160965265833319:ℝ)/1920000000), ((-22125591291731:ℝ)/24000000), ((-632951627177:ℝ)/1200000), ((-6735079073:ℝ)/60000), ((18483187:ℝ)/1200), ((2055163:ℝ)/150), ((46406:ℝ)/15), ((968:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0) 7 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((2013730323324927201677614493:ℝ)/245760000000000000), ((92811606799709754393005147:ℝ)/3072000000000000), ((55776118438481247339283:ℝ)/1200000000000), ((604887984798944973766357:ℝ)/15360000000000), ((6009656791925167071049:ℝ)/307200000000), ((190635854803078788181:ℝ)/38400000000), ((-110072449793067611:ℝ)/480000000), ((-33808106701721479:ℝ)/48000000), ((-2801833460887609:ℝ)/9600000), ((-68956101467:ℝ)/1000), ((-10460802927:ℝ)/1000), ((-202665213:ℝ)/200), ((-1149147:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0) 12 ht
@@ -3254,59 +1926,63 @@ theorem piece14_e12 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 9, ([((-1160965265833319:ℝ)/1920000000), ((-22125591291731:ℝ)/24000000), ((-632951627177:ℝ)/1200000), ((-6735079073:ℝ)/60000), ((18483187:ℝ)/1200), ((2055163:ℝ)/150), ((46406:ℝ)/15), ((968:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((-1160965265833319:ℝ)/1920000000) + ((-22125591291731:ℝ)/24000000)*t)| ≤ ((852979990273:ℝ)/640000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 14, ([((2013730323324927201677614493:ℝ)/245760000000000000), ((92811606799709754393005147:ℝ)/3072000000000000), ((55776118438481247339283:ℝ)/1200000000000), ((604887984798944973766357:ℝ)/15360000000000), ((6009656791925167071049:ℝ)/307200000000), ((190635854803078788181:ℝ)/38400000000), ((-110072449793067611:ℝ)/480000000), ((-33808106701721479:ℝ)/48000000), ((-2801833460887609:ℝ)/9600000), ((-68956101467:ℝ)/1000), ((-10460802927:ℝ)/1000), ((-202665213:ℝ)/200), ((-1149147:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e) - ((2013730323324927201677614493:ℝ)/245760000000000000) - ((92811606799709754393005147:ℝ)/3072000000000000)*t| ≤ ((29797579184416730397909131:ℝ)/245760000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 14, ([((2013730323324927201677614493:ℝ)/245760000000000000), ((92811606799709754393005147:ℝ)/3072000000000000), ((55776118438481247339283:ℝ)/1200000000000), ((604887984798944973766357:ℝ)/15360000000000), ((6009656791925167071049:ℝ)/307200000000), ((190635854803078788181:ℝ)/38400000000), ((-110072449793067611:ℝ)/480000000), ((-33808106701721479:ℝ)/48000000), ((-2801833460887609:ℝ)/9600000), ((-68956101467:ℝ)/1000), ((-10460802927:ℝ)/1000), ((-202665213:ℝ)/200), ((-1149147:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((201231194142348579137295351:ℝ)/20480000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (122790:ℝ), (-3586680:ℝ), (28529720:ℝ), (-90761600:ℝ), (137804800:ℝ), ((-332136448:ℝ)/3), ((141819904:ℝ)/3), (-8388608:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m13' : |centralNum13_12 q| ≤ ((4339830007934800337164878:ℝ)/1220703125) := by
-    rw [centralNum13_12_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (132555:ℝ), (-3252375:ℝ), ((39743695:ℝ)/2), ((-197111615:ℝ)/4), ((281947375:ℝ)/4), ((-1100234375:ℝ)/24), ((131828125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 hq1'
-  have m23' : |centralNum23_12 q| ≤ ((2816098381171510842771:ℝ)/3125000) := by
-    rw [centralNum23_12_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_12 q = ∑ e ∈ Finset.range 14, ([((-1929077403442512194057095857:ℝ)/10000000000000), ((-16124152687960601096745049:ℝ)/23437500000), ((-21184226190350562970562203:ℝ)/18750000000), ((-1060894617922418606050477:ℝ)/937500000), ((-4821037589399927308763:ℝ)/6250000), ((-295258559756993477697:ℝ)/781250), ((-10698540835256913294:ℝ)/78125), ((-580596335425437832:ℝ)/15625), ((-23596394692816072:ℝ)/3125), ((-141870143959424:ℝ)/125), ((-45996045048832:ℝ)/375), ((-676903518208:ℝ)/75), ((-6079381504:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_12; ring
+  have m13 := abs_poly_le (fun e => ([((-1929077403442512194057095857:ℝ)/10000000000000), ((-16124152687960601096745049:ℝ)/23437500000), ((-21184226190350562970562203:ℝ)/18750000000), ((-1060894617922418606050477:ℝ)/937500000), ((-4821037589399927308763:ℝ)/6250000), ((-295258559756993477697:ℝ)/781250), ((-10698540835256913294:ℝ)/78125), ((-580596335425437832:ℝ)/15625), ((-23596394692816072:ℝ)/3125), ((-141870143959424:ℝ)/125), ((-45996045048832:ℝ)/375), ((-676903518208:ℝ)/75), ((-6079381504:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_12 q| ≤ ((281099719437319380102498:ℝ)/1220703125) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_12 q = ∑ e ∈ Finset.range 14, ([((112601734397930078988708779:ℝ)/26214400000000), ((21064046839972703109253979:ℝ)/983040000000), ((479958343364166789153743:ℝ)/12288000000), ((186241713185900998935937:ℝ)/4915200000), ((3626557826180186442379:ℝ)/163840000), ((32359534919858187219:ℝ)/4096000), ((75088754035557063:ℝ)/51200), ((-261258061455257:ℝ)/5120), ((-115245017275919:ℝ)/1024), ((-535920540335:ℝ)/16), ((-132115883875:ℝ)/24), ((-13158059375:ℝ)/24), ((-373953125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_12; ring
+  have m23 := abs_poly_le (fun e => ([((112601734397930078988708779:ℝ)/26214400000000), ((21064046839972703109253979:ℝ)/983040000000), ((479958343364166789153743:ℝ)/12288000000), ((186241713185900998935937:ℝ)/4915200000), ((3626557826180186442379:ℝ)/163840000), ((32359534919858187219:ℝ)/4096000), ((75088754035557063:ℝ)/51200), ((-261258061455257:ℝ)/5120), ((-115245017275919:ℝ)/1024), ((-535920540335:ℝ)/16), ((-132115883875:ℝ)/24), ((-13158059375:ℝ)/24), ((-373953125:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_12 q| ≤ ((1433747610367278985679943:ℝ)/262144000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-14470057141:ℝ)/500000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-51239494857:ℝ)/2500000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-1160965265833319:ℝ)/1920000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2013730323324927201677614493:ℝ)/245760000000000000) + ((76225167229862243:ℝ)/16000000000)*((-14470057141:ℝ)/500000000000) - ((-485731117039720241:ℝ)/1000000000000)) (β := ((-22125591291731:ℝ)/24000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((92811606799709754393005147:ℝ)/3072000000000000) - 3*((2013730323324927201677614493:ℝ)/245760000000000000)) + ((9305049966455109:ℝ)/800000000)*((-14470057141:ℝ)/500000000000) - ((-10820430413015879:ℝ)/10000000000)) ht
-  have hW : pieceW q pieceX_14 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((-14470057141:ℝ)/500000000000) + (0:ℝ) := by
-    rw [pieceW_12, pieceX_14, sym4_12, hexp3]; ring
+  have c7 := affine_round (α := ((-1160965265833319:ℝ)/1920000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2013730323324927201677614493:ℝ)/245760000000000000) + ((76225167229862243:ℝ)/16000000000)*((-51239494857:ℝ)/2500000000000) - ((-445501777971134107:ℝ)/1000000000000)) (β := ((-22125591291731:ℝ)/24000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((92811606799709754393005147:ℝ)/3072000000000000) - 3*((2013730323324927201677614493:ℝ)/245760000000000000)) + ((9305049966455109:ℝ)/800000000)*((-51239494857:ℝ)/2500000000000) - ((-196764911893115257:ℝ)/200000000000)) ht
+  have hW : pieceW q pieceX_10 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((-51239494857:ℝ)/2500000000000) + (0:ℝ) := by
+    rw [pieceW_12, pieceX_10, sym4_12, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((56596938500500573504519283582425124778163445751142472403591784217519:ℝ)/97729088249754047187417988919471286127013056699835424944889000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-1160965265833319:ℝ)/1920000000) + ((-22125591291731:ℝ)/24000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2013730323324927201677614493:ℝ)/245760000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((92811606799709754393005147:ℝ)/3072000000000000) - 3*((2013730323324927201677614493:ℝ)/245760000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-14470057141:ℝ)/500000000000) - (((-485731117039720241:ℝ)/1000000000000) + t * ((-10820430413015879:ℝ)/10000000000)) = (((-1160965265833319:ℝ)/1920000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2013730323324927201677614493:ℝ)/245760000000000000) + ((76225167229862243:ℝ)/16000000000)*((-14470057141:ℝ)/500000000000) - ((-485731117039720241:ℝ)/1000000000000)) + t*(((-22125591291731:ℝ)/24000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((92811606799709754393005147:ℝ)/3072000000000000) - 3*((2013730323324927201677614493:ℝ)/245760000000000000)) + ((9305049966455109:ℝ)/800000000)*((-14470057141:ℝ)/500000000000) - ((-10820430413015879:ℝ)/10000000000)) := by ring
+  refine entry_assemble (r7 := ((86368359069622471857805071960910940299941155249165452855811624353963:ℝ)/488645441248770235937089944597356430635065283499177124724445000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-1160965265833319:ℝ)/1920000000) + ((-22125591291731:ℝ)/24000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2013730323324927201677614493:ℝ)/245760000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((92811606799709754393005147:ℝ)/3072000000000000) - 3*((2013730323324927201677614493:ℝ)/245760000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-51239494857:ℝ)/2500000000000) - (((-445501777971134107:ℝ)/1000000000000) + t * ((-196764911893115257:ℝ)/200000000000)) = (((-1160965265833319:ℝ)/1920000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((2013730323324927201677614493:ℝ)/245760000000000000) + ((76225167229862243:ℝ)/16000000000)*((-51239494857:ℝ)/2500000000000) - ((-445501777971134107:ℝ)/1000000000000)) + t*(((-22125591291731:ℝ)/24000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((92811606799709754393005147:ℝ)/3072000000000000) - 3*((2013730323324927201677614493:ℝ)/245760000000000000)) + ((9305049966455109:ℝ)/800000000)*((-51239494857:ℝ)/2500000000000) - ((-196764911893115257:ℝ)/200000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e13 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 1 3 - (((25752124246234523:ℝ)/40000000000) + (q - ((83:ℝ)/20)) * ((177745988348358287:ℝ)/50000000000))| ≤ ((473333999364526031:ℝ)/10000000000000) := by
+theorem piece10_e13 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 1 3 - (((-175457162448529219:ℝ)/250000000000) + (q - ((83:ℝ)/20)) * ((134804159580106551:ℝ)/500000000000))| ≤ ((137433518604381171:ℝ)/5000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_13 q = ∑ e ∈ Finset.range 7, ([((-980821120107:ℝ)/3200000), ((-35451365787:ℝ)/80000), ((-427124889:ℝ)/1600), ((-1715361:ℝ)/20), ((-62001:ℝ)/4), (-1494:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_13; ring
   have h12 : centralNum12_13 q = ∑ e ∈ Finset.range 15, ([((-394860247108756528752888798903:ℝ)/22937600000000000000), ((-6575925214963179022015025067:ℝ)/163840000000000000), ((-404162653024778919974814963:ℝ)/14336000000000000), ((14077245189587446592304297:ℝ)/1433600000000000), ((4442011552101872770094247:ℝ)/143360000000000), ((180369316230100095101433:ℝ)/7168000000000), ((2055383682795085991667:ℝ)/179200000000), ((14182407188007822843:ℝ)/4480000000), ((57885826470500913:ℝ)/128000000), ((-627395581495467:ℝ)/44800000), ((-5922566702559:ℝ)/280000), ((-261224961903:ℝ)/56000), ((-3032266023:ℝ)/5600), ((-9594369:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_13; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((-980821120107:ℝ)/3200000), ((-35451365787:ℝ)/80000), ((-427124889:ℝ)/1600), ((-1715361:ℝ)/20), ((-62001:ℝ)/4), (-1494:ℝ), (-60:ℝ)] : List ℝ).getD e 0) 5 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-394860247108756528752888798903:ℝ)/22937600000000000000), ((-6575925214963179022015025067:ℝ)/163840000000000000), ((-404162653024778919974814963:ℝ)/14336000000000000), ((14077245189587446592304297:ℝ)/1433600000000000), ((4442011552101872770094247:ℝ)/143360000000000), ((180369316230100095101433:ℝ)/7168000000000), ((2055383682795085991667:ℝ)/179200000000), ((14182407188007822843:ℝ)/4480000000), ((57885826470500913:ℝ)/128000000), ((-627395581495467:ℝ)/44800000), ((-5922566702559:ℝ)/280000), ((-261224961903:ℝ)/56000), ((-3032266023:ℝ)/5600), ((-9594369:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 13 ht
@@ -3314,59 +1990,63 @@ theorem piece14_e13 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 7, ([((-980821120107:ℝ)/3200000), ((-35451365787:ℝ)/80000), ((-427124889:ℝ)/1600), ((-1715361:ℝ)/20), ((-62001:ℝ)/4), (-1494:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e) - (((-980821120107:ℝ)/3200000) + ((-35451365787:ℝ)/80000)*t)| ≤ ((2170243167:ℝ)/3200000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 15, ([((-394860247108756528752888798903:ℝ)/22937600000000000000), ((-6575925214963179022015025067:ℝ)/163840000000000000), ((-404162653024778919974814963:ℝ)/14336000000000000), ((14077245189587446592304297:ℝ)/1433600000000000), ((4442011552101872770094247:ℝ)/143360000000000), ((180369316230100095101433:ℝ)/7168000000000), ((2055383682795085991667:ℝ)/179200000000), ((14182407188007822843:ℝ)/4480000000), ((57885826470500913:ℝ)/128000000), ((-627395581495467:ℝ)/44800000), ((-5922566702559:ℝ)/280000), ((-261224961903:ℝ)/56000), ((-3032266023:ℝ)/5600), ((-9594369:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((-394860247108756528752888798903:ℝ)/22937600000000000000) - ((-6575925214963179022015025067:ℝ)/163840000000000000)*t| ≤ ((824715825624746487526379241:ℝ)/11468800000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 15, ([((-394860247108756528752888798903:ℝ)/22937600000000000000), ((-6575925214963179022015025067:ℝ)/163840000000000000), ((-404162653024778919974814963:ℝ)/14336000000000000), ((14077245189587446592304297:ℝ)/1433600000000000), ((4442011552101872770094247:ℝ)/143360000000000), ((180369316230100095101433:ℝ)/7168000000000), ((2055383682795085991667:ℝ)/179200000000), ((14182407188007822843:ℝ)/4480000000), ((57885826470500913:ℝ)/128000000), ((-627395581495467:ℝ)/44800000), ((-5922566702559:ℝ)/280000), ((-261224961903:ℝ)/56000), ((-3032266023:ℝ)/5600), ((-9594369:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((31610082518910591063003338061:ℝ)/1638400000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2325540:ℝ), (52589280:ℝ), (-375655200:ℝ), (1192958720:ℝ), (-1965096960:ℝ), ((12857851904:ℝ)/7), ((-21171273728:ℝ)/21), ((914358272:ℝ)/3), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_13 q| ≤ ((649300106742842122597753668:ℝ)/6103515625) := by
-    rw [centralNum13_13_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (-2399070:ℝ), (45666930:ℝ), (-251781675:ℝ), ((2452738385:ℝ)/4), ((-14104310625:ℝ)/16), ((74345740625:ℝ)/112), ((-74899765625:ℝ)/336), ((5161328125:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_13 q| ≤ ((111799197178329957573123:ℝ)/6250000) := by
-    rw [centralNum23_13_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_13 q = ∑ e ∈ Finset.range 15, ([((-136464863572492199197424012827:ℝ)/87500000000000), ((-42620982812386323430186708469:ℝ)/6562500000000), ((-1359696920443147286871077709:ℝ)/109375000000), ((-39710176118511316620840301:ℝ)/2734375000), ((-4750734108364409456363339:ℝ)/410156250), ((-91309875634912306390514:ℝ)/13671875), ((-1122386692083870266484:ℝ)/390625), ((-512724312603034453216:ℝ)/546875), ((-25513748370859221792:ℝ)/109375), ((-963750307203875584:ℝ)/21875), ((-81634138693193728:ℝ)/13125), ((-557029186977792:ℝ)/875), ((-7816485535744:ℝ)/175), ((-28848422912:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_13; ring
+  have m13 := abs_poly_le (fun e => ([((-136464863572492199197424012827:ℝ)/87500000000000), ((-42620982812386323430186708469:ℝ)/6562500000000), ((-1359696920443147286871077709:ℝ)/109375000000), ((-39710176118511316620840301:ℝ)/2734375000), ((-4750734108364409456363339:ℝ)/410156250), ((-91309875634912306390514:ℝ)/13671875), ((-1122386692083870266484:ℝ)/390625), ((-512724312603034453216:ℝ)/546875), ((-25513748370859221792:ℝ)/109375), ((-963750307203875584:ℝ)/21875), ((-81634138693193728:ℝ)/13125), ((-557029186977792:ℝ)/875), ((-7816485535744:ℝ)/175), ((-28848422912:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_13 q| ≤ ((11702260573701731707121028:ℝ)/6103515625) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_13 q = ∑ e ∈ Finset.range 15, ([((-111514114418251231884732840471:ℝ)/1468006400000000), ((-49288932984178077133707210199:ℝ)/220200960000000), ((-242175293791205756784381051:ℝ)/917504000000), ((-13357714694273290694195911:ℝ)/91750400000), ((-425156175253165674497003:ℝ)/27525120000), ((14307184138535201886953:ℝ)/458752000), ((263887477119667498947:ℝ)/11468800), ((2371514493228561643:ℝ)/286720), ((97932611216134071:ℝ)/57344), ((2368058932197465:ℝ)/14336), ((-13678704315625:ℝ)/1344), ((-2446831771875:ℝ)/448), ((-168426484375:ℝ)/224), ((-8455859375:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_13; ring
+  have m23 := abs_poly_le (fun e => ([((-111514114418251231884732840471:ℝ)/1468006400000000), ((-49288932984178077133707210199:ℝ)/220200960000000), ((-242175293791205756784381051:ℝ)/917504000000), ((-13357714694273290694195911:ℝ)/91750400000), ((-425156175253165674497003:ℝ)/27525120000), ((14307184138535201886953:ℝ)/458752000), ((263887477119667498947:ℝ)/11468800), ((2371514493228561643:ℝ)/286720), ((97932611216134071:ℝ)/57344), ((2368058932197465:ℝ)/14336), ((-13678704315625:ℝ)/1344), ((-2446831771875:ℝ)/448), ((-168426484375:ℝ)/224), ((-8455859375:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_13 q| ≤ ((64469665957066301697660592407:ℝ)/734003200000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((39090608763:ℝ)/125000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((151354041537:ℝ)/5000000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((-980821120107:ℝ)/3200000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-394860247108756528752888798903:ℝ)/22937600000000000000) + ((76225167229862243:ℝ)/16000000000)*((39090608763:ℝ)/125000000000) - ((25752124246234523:ℝ)/40000000000)) (β := ((-35451365787:ℝ)/80000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-6575925214963179022015025067:ℝ)/163840000000000000) - 3*((-394860247108756528752888798903:ℝ)/22937600000000000000)) + ((9305049966455109:ℝ)/800000000)*((39090608763:ℝ)/125000000000) - ((177745988348358287:ℝ)/50000000000)) ht
-  have hW : pieceW q pieceX_14 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((39090608763:ℝ)/125000000000) + (0:ℝ) := by
-    rw [pieceW_13, pieceX_14, sym4_13, hexp3]; ring
+  have c7 := affine_round (α := ((-980821120107:ℝ)/3200000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-394860247108756528752888798903:ℝ)/22937600000000000000) + ((76225167229862243:ℝ)/16000000000)*((151354041537:ℝ)/5000000000000) - ((-175457162448529219:ℝ)/250000000000)) (β := ((-35451365787:ℝ)/80000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-6575925214963179022015025067:ℝ)/163840000000000000) - 3*((-394860247108756528752888798903:ℝ)/22937600000000000000)) + ((9305049966455109:ℝ)/800000000)*((151354041537:ℝ)/5000000000000) - ((134804159580106551:ℝ)/500000000000)) ht
+  have hW : pieceW q pieceX_10 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((151354041537:ℝ)/5000000000000) + (0:ℝ) := by
+    rw [pieceW_13, pieceX_10, sym4_13, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((17184325069339987827359744235609081635023289009464932126531385098227:ℝ)/57008634812356527525993826869691583574090949741570664551185250000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((-980821120107:ℝ)/3200000) + ((-35451365787:ℝ)/80000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-394860247108756528752888798903:ℝ)/22937600000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-6575925214963179022015025067:ℝ)/163840000000000000) - 3*((-394860247108756528752888798903:ℝ)/22937600000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((39090608763:ℝ)/125000000000) - (((25752124246234523:ℝ)/40000000000) + t * ((177745988348358287:ℝ)/50000000000)) = (((-980821120107:ℝ)/3200000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-394860247108756528752888798903:ℝ)/22937600000000000000) + ((76225167229862243:ℝ)/16000000000)*((39090608763:ℝ)/125000000000) - ((25752124246234523:ℝ)/40000000000)) + t*(((-35451365787:ℝ)/80000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-6575925214963179022015025067:ℝ)/163840000000000000) - 3*((-394860247108756528752888798903:ℝ)/22937600000000000000)) + ((9305049966455109:ℝ)/800000000)*((39090608763:ℝ)/125000000000) - ((177745988348358287:ℝ)/50000000000)) := by ring
+  refine entry_assemble (r7 := ((645613528975382396509633708499427154166332263033662394336062224029527:ℝ)/2280345392494261101039753074787663342963637989662826582047410000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-980821120107:ℝ)/3200000) + ((-35451365787:ℝ)/80000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-394860247108756528752888798903:ℝ)/22937600000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-6575925214963179022015025067:ℝ)/163840000000000000) - 3*((-394860247108756528752888798903:ℝ)/22937600000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((151354041537:ℝ)/5000000000000) - (((-175457162448529219:ℝ)/250000000000) + t * ((134804159580106551:ℝ)/500000000000)) = (((-980821120107:ℝ)/3200000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-394860247108756528752888798903:ℝ)/22937600000000000000) + ((76225167229862243:ℝ)/16000000000)*((151354041537:ℝ)/5000000000000) - ((-175457162448529219:ℝ)/250000000000)) + t*(((-35451365787:ℝ)/80000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-6575925214963179022015025067:ℝ)/163840000000000000) - 3*((-394860247108756528752888798903:ℝ)/22937600000000000000)) + ((9305049966455109:ℝ)/800000000)*((151354041537:ℝ)/5000000000000) - ((134804159580106551:ℝ)/500000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e22 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 2 2 - (((307642783852511279:ℝ)/100000000000) + (q - ((83:ℝ)/20)) * ((12801954321983373:ℝ)/1250000000))| ≤ ((52485629278576793:ℝ)/500000000000) := by
+theorem piece10_e22 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 2 2 - (((18286274058614251:ℝ)/6250000000) + (q - ((83:ℝ)/20)) * ((39495281660820099:ℝ)/4000000000))| ≤ ((847757676039828283:ℝ)/10000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_22 q = ∑ e ∈ Finset.range 10, ([((71751007915510693:ℝ)/19200000000), ((2776351785864603:ℝ)/320000000), ((107398923174313:ℝ)/12000000), ((3252541535279:ℝ)/600000), ((42715459553:ℝ)/20000), ((1708695563:ℝ)/3000), ((7721597:ℝ)/75), ((60788:ℝ)/5), ((2548:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_22; ring
   have h12 : centralNum12_22 q = ∑ e ∈ Finset.range 15, ([((-1414679523427461509415665651989:ℝ)/39321600000000000000), ((-61840108489127655485997968029:ℝ)/655360000000000000), ((-2208270154226279710457465629:ℝ)/24576000000000000), ((-49929746714475038107611229:ℝ)/2457600000000000), ((2726039201135272012251847:ℝ)/81920000000000), ((457239750620583213264779:ℝ)/12288000000000), ((5917956575909999200841:ℝ)/307200000000), ((15072066224420849523:ℝ)/2560000000), ((1537912921012678613:ℝ)/1536000000), ((2437197859033199:ℝ)/76800000), ((-4454148955389:ℝ)/160000), ((-231244787223:ℝ)/32000), ((-2854947303:ℝ)/3200), ((-9361089:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_22; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((71751007915510693:ℝ)/19200000000), ((2776351785864603:ℝ)/320000000), ((107398923174313:ℝ)/12000000), ((3252541535279:ℝ)/600000), ((42715459553:ℝ)/20000), ((1708695563:ℝ)/3000), ((7721597:ℝ)/75), ((60788:ℝ)/5), ((2548:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((-1414679523427461509415665651989:ℝ)/39321600000000000000), ((-61840108489127655485997968029:ℝ)/655360000000000000), ((-2208270154226279710457465629:ℝ)/24576000000000000), ((-49929746714475038107611229:ℝ)/2457600000000000), ((2726039201135272012251847:ℝ)/81920000000000), ((457239750620583213264779:ℝ)/12288000000000), ((5917956575909999200841:ℝ)/307200000000), ((15072066224420849523:ℝ)/2560000000), ((1537912921012678613:ℝ)/1536000000), ((2437197859033199:ℝ)/76800000), ((-4454148955389:ℝ)/160000), ((-231244787223:ℝ)/32000), ((-2854947303:ℝ)/3200), ((-9361089:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 13 ht
@@ -3374,67 +2054,71 @@ theorem piece14_e22 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((71751007915510693:ℝ)/19200000000), ((2776351785864603:ℝ)/320000000), ((107398923174313:ℝ)/12000000), ((3252541535279:ℝ)/600000), ((42715459553:ℝ)/20000), ((1708695563:ℝ)/3000), ((7721597:ℝ)/75), ((60788:ℝ)/5), ((2548:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((71751007915510693:ℝ)/19200000000) + ((2776351785864603:ℝ)/320000000)*t)| ≤ ((221432800028101:ℝ)/9600000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 15, ([((-1414679523427461509415665651989:ℝ)/39321600000000000000), ((-61840108489127655485997968029:ℝ)/655360000000000000), ((-2208270154226279710457465629:ℝ)/24576000000000000), ((-49929746714475038107611229:ℝ)/2457600000000000), ((2726039201135272012251847:ℝ)/81920000000000), ((457239750620583213264779:ℝ)/12288000000000), ((5917956575909999200841:ℝ)/307200000000), ((15072066224420849523:ℝ)/2560000000), ((1537912921012678613:ℝ)/1536000000), ((2437197859033199:ℝ)/76800000), ((-4454148955389:ℝ)/160000), ((-231244787223:ℝ)/32000), ((-2854947303:ℝ)/3200), ((-9361089:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e) - ((-1414679523427461509415665651989:ℝ)/39321600000000000000) - ((-61840108489127655485997968029:ℝ)/655360000000000000)*t| ≤ ((223539687150162506121300757:ℝ)/983040000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 15, ([((-1414679523427461509415665651989:ℝ)/39321600000000000000), ((-61840108489127655485997968029:ℝ)/655360000000000000), ((-2208270154226279710457465629:ℝ)/24576000000000000), ((-49929746714475038107611229:ℝ)/2457600000000000), ((2726039201135272012251847:ℝ)/81920000000000), ((457239750620583213264779:ℝ)/12288000000000), ((5917956575909999200841:ℝ)/307200000000), ((15072066224420849523:ℝ)/2560000000), ((1537912921012678613:ℝ)/1536000000), ((2437197859033199:ℝ)/76800000), ((-4454148955389:ℝ)/160000), ((-231244787223:ℝ)/32000), ((-2854947303:ℝ)/3200), ((-9361089:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e)| ≤ ((402285359095212744029627896589:ℝ)/9830400000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (82125:ℝ), (-6663750:ℝ), (115666200:ℝ), (-750437000:ℝ), (2277262000:ℝ), (-3656824320:ℝ), (3359621120:ℝ), (-1817706496:ℝ), ((1625292800:ℝ)/3), (-67108864:ℝ)] : List ℝ).getD e 0) 15 hq1'
-  have m13' : |centralNum13_22 q| ≤ ((1161736766144808267475951659:ℝ)/6103515625) := by
-    rw [centralNum13_22_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((178425:ℝ)/2), ((-13176075:ℝ)/2), ((777815145:ℝ)/8), ((-3968389015:ℝ)/8), ((9393350195:ℝ)/8), ((-26366634375:ℝ)/16), ((77851609375:ℝ)/64), ((-25714921875:ℝ)/64), ((5236328125:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 hq1'
-  have m23' : |centralNum23_22 q| ≤ ((202341076390664468086473:ℝ)/6250000) := by
-    rw [centralNum23_22_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_22 q = ∑ e ∈ Finset.range 15, ([((-771329718719921925706335805327:ℝ)/300000000000000), ((-161892081184998988318895719691:ℝ)/15000000000000), ((-1300005944379862785084694599:ℝ)/62500000000), ((-229155918715382884615495661:ℝ)/9375000000), ((-18372773971950473009910281:ℝ)/937500000), ((-177394956422929380511763:ℝ)/15625000), ((-1916119716395198963977:ℝ)/390625), ((-125532941564186734044:ℝ)/78125), ((-6269153867668649588:ℝ)/15625), ((-712804940281427888:ℝ)/9375), ((-20188885803561472:ℝ)/1875), ((-138163166855168:ℝ)/125), ((-5832429273088:ℝ)/75), ((-50358910976:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_22; ring
+  have m13 := abs_poly_le (fun e => ([((-771329718719921925706335805327:ℝ)/300000000000000), ((-161892081184998988318895719691:ℝ)/15000000000000), ((-1300005944379862785084694599:ℝ)/62500000000), ((-229155918715382884615495661:ℝ)/9375000000), ((-18372773971950473009910281:ℝ)/937500000), ((-177394956422929380511763:ℝ)/15625000), ((-1916119716395198963977:ℝ)/390625), ((-125532941564186734044:ℝ)/78125), ((-6269153867668649588:ℝ)/15625), ((-712804940281427888:ℝ)/9375), ((-20188885803561472:ℝ)/1875), ((-138163166855168:ℝ)/125), ((-5832429273088:ℝ)/75), ((-50358910976:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_22 q| ≤ ((19323248864843859694979409:ℝ)/6103515625) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_22 q = ∑ e ∈ Finset.range 15, ([((-342492830956854869445731079221:ℝ)/2516582400000000), ((-51465402014042325992986328743:ℝ)/125829120000000), ((-259558133272706317744366247:ℝ)/524288000000), ((-45340033245495589755215021:ℝ)/157286400000), ((-745625272234987152078731:ℝ)/15728640000), ((12297195529685583693001:ℝ)/262144000), ((253445542378875679379:ℝ)/6553600), ((2366464832651254371:ℝ)/163840), ((100851342918121127:ℝ)/32768), ((7827966889945915:ℝ)/24576), ((-9781625921875:ℝ)/768), ((-2313205296875:ℝ)/256), ((-493584453125:ℝ)/384), ((-8380859375:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_22; ring
+  have m23 := abs_poly_le (fun e => ([((-342492830956854869445731079221:ℝ)/2516582400000000), ((-51465402014042325992986328743:ℝ)/125829120000000), ((-259558133272706317744366247:ℝ)/524288000000), ((-45340033245495589755215021:ℝ)/157286400000), ((-745625272234987152078731:ℝ)/15728640000), ((12297195529685583693001:ℝ)/262144000), ((253445542378875679379:ℝ)/6553600), ((2366464832651254371:ℝ)/163840), ((100851342918121127:ℝ)/32768), ((7827966889945915:ℝ)/24576), ((-9781625921875:ℝ)/768), ((-2313205296875:ℝ)/256), ((-493584453125:ℝ)/384), ((-8380859375:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_22 q| ≤ ((198582197351447220802105720997:ℝ)/1258291200000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((98022118669:ℝ)/1000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((332027383171:ℝ)/5000000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2))| ≤ ((154833218460312417536000000000:ℝ)/1552417571572600463283622395717) := by
     rw [abs_neg, tailWeight_2, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((21:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((21:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece14_Et h0
+    have hx := piece10_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((2570430941234500:ℝ)/4782969)) ≤ ((21:ℝ)/5)^6*(8000*(2*((21:ℝ)/5)-3)^2*(1/((172490841285844495920402488413:ℝ)/25000000000))*((2570430941234500:ℝ)/4782969)) := by
           gcongr
       _ ≤ ((154833218460312417536000000000:ℝ)/1552417571572600463283622395717) := by norm_num
-  have c7 := affine_round (α := ((71751007915510693:ℝ)/19200000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-1414679523427461509415665651989:ℝ)/39321600000000000000) + ((76225167229862243:ℝ)/16000000000)*((98022118669:ℝ)/1000000000000) - ((307642783852511279:ℝ)/100000000000)) (β := ((2776351785864603:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-61840108489127655485997968029:ℝ)/655360000000000000) - 3*((-1414679523427461509415665651989:ℝ)/39321600000000000000)) + ((9305049966455109:ℝ)/800000000)*((98022118669:ℝ)/1000000000000) - ((12801954321983373:ℝ)/1250000000)) ht
-  have hW : pieceW q pieceX_14 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((98022118669:ℝ)/1000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
-    rw [pieceW_22, pieceX_14, sym4_22, hexp3]; ring
+  have c7 := affine_round (α := ((71751007915510693:ℝ)/19200000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-1414679523427461509415665651989:ℝ)/39321600000000000000) + ((76225167229862243:ℝ)/16000000000)*((332027383171:ℝ)/5000000000000) - ((18286274058614251:ℝ)/6250000000)) (β := ((2776351785864603:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-61840108489127655485997968029:ℝ)/655360000000000000) - 3*((-1414679523427461509415665651989:ℝ)/39321600000000000000)) + ((9305049966455109:ℝ)/800000000)*((332027383171:ℝ)/5000000000000) - ((39495281660820099:ℝ)/4000000000)) ht
+  have hW : pieceW q pieceX_10 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((332027383171:ℝ)/5000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
+    rw [pieceW_22, pieceX_10, sym4_22, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((535281793546268448983544510673662828489243408018156739547671912512853:ℝ)/781832705998032377499343911355770289016104453598683399559112000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((71751007915510693:ℝ)/19200000000) + ((2776351785864603:ℝ)/320000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-1414679523427461509415665651989:ℝ)/39321600000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-61840108489127655485997968029:ℝ)/655360000000000000) - 3*((-1414679523427461509415665651989:ℝ)/39321600000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((98022118669:ℝ)/1000000000000) - (((307642783852511279:ℝ)/100000000000) + t * ((12801954321983373:ℝ)/1250000000)) = (((71751007915510693:ℝ)/19200000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-1414679523427461509415665651989:ℝ)/39321600000000000000) + ((76225167229862243:ℝ)/16000000000)*((98022118669:ℝ)/1000000000000) - ((307642783852511279:ℝ)/100000000000)) + t*(((2776351785864603:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-61840108489127655485997968029:ℝ)/655360000000000000) - 3*((-1414679523427461509415665651989:ℝ)/39321600000000000000)) + ((9305049966455109:ℝ)/800000000)*((98022118669:ℝ)/1000000000000) - ((12801954321983373:ℝ)/1250000000)) := by ring
+  refine entry_assemble (r7 := ((3018607969375842653060588448789348335377033318063051627650169414088773:ℝ)/3909163529990161887496719556778851445080522267993416997795560000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((71751007915510693:ℝ)/19200000000) + ((2776351785864603:ℝ)/320000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-1414679523427461509415665651989:ℝ)/39321600000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-61840108489127655485997968029:ℝ)/655360000000000000) - 3*((-1414679523427461509415665651989:ℝ)/39321600000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((332027383171:ℝ)/5000000000000) - (((18286274058614251:ℝ)/6250000000) + t * ((39495281660820099:ℝ)/4000000000)) = (((71751007915510693:ℝ)/19200000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((-1414679523427461509415665651989:ℝ)/39321600000000000000) + ((76225167229862243:ℝ)/16000000000)*((332027383171:ℝ)/5000000000000) - ((18286274058614251:ℝ)/6250000000)) + t*(((2776351785864603:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((-61840108489127655485997968029:ℝ)/655360000000000000) - 3*((-1414679523427461509415665651989:ℝ)/39321600000000000000)) + ((9305049966455109:ℝ)/800000000)*((332027383171:ℝ)/5000000000000) - ((39495281660820099:ℝ)/4000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e23 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 2 3 - (((-113883399459166089:ℝ)/50000000000) + (q - ((83:ℝ)/20)) * ((-62048837984003871:ℝ)/5000000000))| ≤ ((360526448407087881:ℝ)/500000000000) := by
+theorem piece10_e23 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 2 3 - (((43049564913163733:ℝ)/25000000000) + (q - ((83:ℝ)/20)) * ((-264476480286487611:ℝ)/100000000000))| ≤ ((281647239925958279:ℝ)/5000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_23 q = ∑ e ∈ Finset.range 9, ([((310360951302613:ℝ)/320000000), ((57076271792181:ℝ)/32000000), ((2496439767397:ℝ)/1600000), ((68045387933:ℝ)/80000), ((248317989:ℝ)/800), ((15113767:ℝ)/200), ((117047:ℝ)/10), (1038:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_23; ring
   have h12 : centralNum12_23 q = ∑ e ∈ Finset.range 16, ([((143880510456474753905707950620719:ℝ)/3670016000000000000000), ((246766159847543678727959087391:ℝ)/18350080000000000000), ((-59404055923016929125509340097:ℝ)/367001600000000000), ((-13980906714480306207370237163:ℝ)/45875200000000000), ((-1207403421772965915578412537:ℝ)/4587520000000000), ((-73329777467722538265429593:ℝ)/573440000000000), ((-370034413662285610705057:ℝ)/11468800000000), ((-1388759572907480919:ℝ)/11468800000), ((83799149936068289881:ℝ)/28672000000), ((761349979261005261:ℝ)/716800000), ((66332277693276453:ℝ)/358400000), ((22179228388479:ℝ)/1792000), ((-49452995367:ℝ)/35840), ((-1676862567:ℝ)/4480), ((-14453883:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_23; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((310360951302613:ℝ)/320000000), ((57076271792181:ℝ)/32000000), ((2496439767397:ℝ)/1600000), ((68045387933:ℝ)/80000), ((248317989:ℝ)/800), ((15113767:ℝ)/200), ((117047:ℝ)/10), (1038:ℝ), (40:ℝ)] : List ℝ).getD e 0) 7 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((143880510456474753905707950620719:ℝ)/3670016000000000000000), ((246766159847543678727959087391:ℝ)/18350080000000000000), ((-59404055923016929125509340097:ℝ)/367001600000000000), ((-13980906714480306207370237163:ℝ)/45875200000000000), ((-1207403421772965915578412537:ℝ)/4587520000000000), ((-73329777467722538265429593:ℝ)/573440000000000), ((-370034413662285610705057:ℝ)/11468800000000), ((-1388759572907480919:ℝ)/11468800000), ((83799149936068289881:ℝ)/28672000000), ((761349979261005261:ℝ)/716800000), ((66332277693276453:ℝ)/358400000), ((22179228388479:ℝ)/1792000), ((-49452995367:ℝ)/35840), ((-1676862567:ℝ)/4480), ((-14453883:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 14 ht
@@ -3442,59 +2126,63 @@ theorem piece14_e23 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 9, ([((310360951302613:ℝ)/320000000), ((57076271792181:ℝ)/32000000), ((2496439767397:ℝ)/1600000), ((68045387933:ℝ)/80000), ((248317989:ℝ)/800), ((15113767:ℝ)/200), ((117047:ℝ)/10), (1038:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e) - (((310360951302613:ℝ)/320000000) + ((57076271792181:ℝ)/32000000)*t)| ≤ ((2565741976609:ℝ)/640000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 16, ([((143880510456474753905707950620719:ℝ)/3670016000000000000000), ((246766159847543678727959087391:ℝ)/18350080000000000000), ((-59404055923016929125509340097:ℝ)/367001600000000000), ((-13980906714480306207370237163:ℝ)/45875200000000000), ((-1207403421772965915578412537:ℝ)/4587520000000000), ((-73329777467722538265429593:ℝ)/573440000000000), ((-370034413662285610705057:ℝ)/11468800000000), ((-1388759572907480919:ℝ)/11468800000), ((83799149936068289881:ℝ)/28672000000), ((761349979261005261:ℝ)/716800000), ((66332277693276453:ℝ)/358400000), ((22179228388479:ℝ)/1792000), ((-49452995367:ℝ)/35840), ((-1676862567:ℝ)/4480), ((-14453883:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e) - ((143880510456474753905707950620719:ℝ)/3670016000000000000000) - ((246766159847543678727959087391:ℝ)/18350080000000000000)*t| ≤ ((1631095992829960574316877111577:ℝ)/3670016000000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 16, ([((143880510456474753905707950620719:ℝ)/3670016000000000000000), ((246766159847543678727959087391:ℝ)/18350080000000000000), ((-59404055923016929125509340097:ℝ)/367001600000000000), ((-13980906714480306207370237163:ℝ)/45875200000000000), ((-1207403421772965915578412537:ℝ)/4587520000000000), ((-73329777467722538265429593:ℝ)/573440000000000), ((-370034413662285610705057:ℝ)/11468800000000), ((-1388759572907480919:ℝ)/11468800000), ((83799149936068289881:ℝ)/28672000000), ((761349979261005261:ℝ)/716800000), ((66332277693276453:ℝ)/358400000), ((22179228388479:ℝ)/1792000), ((-49452995367:ℝ)/35840), ((-1676862567:ℝ)/4480), ((-14453883:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e)| ≤ ((73989634023890075633652209303103:ℝ)/1835008000000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-7627725:ℝ)/2), (173988600:ℝ), (-2299614450:ℝ), (13088188200:ℝ), (-38221499200:ℝ), (63366115840:ℝ), ((-445610508288:ℝ)/7), ((841540698112:ℝ)/21), ((-326820167680:ℝ)/21), ((10133438464:ℝ)/3), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 hq1'
-  have m13' : |centralNum13_23 q| ≤ ((380773923104941638768958133133:ℝ)/61035156250) := by
-    rw [centralNum13_23_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-15801525:ℝ)/4), ((655493865:ℝ)/4), ((-7334421225:ℝ)/4), ((16442962485:ℝ)/2), ((-598626108395:ℝ)/32), ((414013307125:ℝ)/16), ((-4611984703125:ℝ)/224), ((399923828125:ℝ)/48), ((-4353201171875:ℝ)/2688), ((189736328125:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 hq1'
-  have m23' : |centralNum23_23 q| ≤ ((37053735712633254441695841:ℝ)/50000000) := by
-    rw [centralNum23_23_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_23 q = ∑ e ∈ Finset.range 16, ([((-7152161974023962558564527029343:ℝ)/656250000000000), ((-3173026168410788068535753703797:ℝ)/52500000000000), ((-77532470822054295971795514347:ℝ)/525000000000), ((-4030020552556641814411354037:ℝ)/18750000000), ((-1382168293862660920749634843:ℝ)/6562500000), ((-243111854117639422900884289:ℝ)/1640625000), ((-424797238555105264737051:ℝ)/5468750), ((-3389500351698993305134:ℝ)/109375), ((-1040016296906143176856:ℝ)/109375), ((-147509288295911354944:ℝ)/65625), ((-3811371338405274112:ℝ)/9375), ((-145179099538210816:ℝ)/2625), ((-575650768617472:ℝ)/105), ((-39279187197952:ℝ)/105), ((-330108502016:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_23; ring
+  have m13 := abs_poly_le (fun e => ([((-7152161974023962558564527029343:ℝ)/656250000000000), ((-3173026168410788068535753703797:ℝ)/52500000000000), ((-77532470822054295971795514347:ℝ)/525000000000), ((-4030020552556641814411354037:ℝ)/18750000000), ((-1382168293862660920749634843:ℝ)/6562500000), ((-243111854117639422900884289:ℝ)/1640625000), ((-424797238555105264737051:ℝ)/5468750), ((-3389500351698993305134:ℝ)/109375), ((-1040016296906143176856:ℝ)/109375), ((-147509288295911354944:ℝ)/65625), ((-3811371338405274112:ℝ)/9375), ((-145179099538210816:ℝ)/2625), ((-575650768617472:ℝ)/105), ((-39279187197952:ℝ)/105), ((-330108502016:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 ht
+  have m13' : |centralNum13_23 q| ≤ ((873894968127999928798050573:ℝ)/61035156250) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_23 q = ∑ e ∈ Finset.range 16, ([((133523526379430157176599165822009:ℝ)/140928614400000000), ((6217421104873976158941180770581:ℝ)/3523215360000000), ((20092037725853932608379965223:ℝ)/50331648000000), ((-15306104748036360442009601681:ℝ)/8808038400000), ((-1981827361002776628889622651:ℝ)/880803840000), ((-29956655612131306705437671:ℝ)/22020096000), ((-339538874080931584476897:ℝ)/734003200), ((-197476000635973130569:ℝ)/2621440), ((1344417854036704271:ℝ)/262144), ((544108263930442685:ℝ)/98304), ((430761623942612875:ℝ)/344064), ((5437975006765625:ℝ)/43008), ((9358671484375:ℝ)/21504), ((-3497587890625:ℝ)/2688), ((-175009765625:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_23; ring
+  have m23 := abs_poly_le (fun e => ([((133523526379430157176599165822009:ℝ)/140928614400000000), ((6217421104873976158941180770581:ℝ)/3523215360000000), ((20092037725853932608379965223:ℝ)/50331648000000), ((-15306104748036360442009601681:ℝ)/8808038400000), ((-1981827361002776628889622651:ℝ)/880803840000), ((-29956655612131306705437671:ℝ)/22020096000), ((-339538874080931584476897:ℝ)/734003200), ((-197476000635973130569:ℝ)/2621440), ((1344417854036704271:ℝ)/262144), ((544108263930442685:ℝ)/98304), ((430761623942612875:ℝ)/344064), ((5437975006765625:ℝ)/43008), ((9358671484375:ℝ)/21504), ((-3497587890625:ℝ)/2688), ((-175009765625:ℝ)/1344), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 ht
+  have m23' : |centralNum23_23 q| ≤ ((2922633356607355492958713782553:ℝ)/2818572288000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((-939590876347:ℝ)/1000000000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-25011628649:ℝ)/250000000000)) bD'
   have c6 : |(0:ℝ)| ≤ 0 := by simp
-  have c7 := affine_round (α := ((310360951302613:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((143880510456474753905707950620719:ℝ)/3670016000000000000000) + ((76225167229862243:ℝ)/16000000000)*((-939590876347:ℝ)/1000000000000) - ((-113883399459166089:ℝ)/50000000000)) (β := ((57076271792181:ℝ)/32000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((246766159847543678727959087391:ℝ)/18350080000000000000) - 3*((143880510456474753905707950620719:ℝ)/3670016000000000000000)) + ((9305049966455109:ℝ)/800000000)*((-939590876347:ℝ)/1000000000000) - ((-62048837984003871:ℝ)/5000000000)) ht
-  have hW : pieceW q pieceX_14 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-939590876347:ℝ)/1000000000000) + (0:ℝ) := by
-    rw [pieceW_23, pieceX_14, sym4_23, hexp3]; ring
+  have c7 := affine_round (α := ((310360951302613:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((143880510456474753905707950620719:ℝ)/3670016000000000000000) + ((76225167229862243:ℝ)/16000000000)*((-25011628649:ℝ)/250000000000) - ((43049564913163733:ℝ)/25000000000)) (β := ((57076271792181:ℝ)/32000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((246766159847543678727959087391:ℝ)/18350080000000000000) - 3*((143880510456474753905707950620719:ℝ)/3670016000000000000000)) + ((9305049966455109:ℝ)/800000000)*((-25011628649:ℝ)/250000000000) - ((-264476480286487611:ℝ)/100000000000)) ht
+  have hW : pieceW q pieceX_10 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-25011628649:ℝ)/250000000000) + (0:ℝ) := by
+    rw [pieceW_23, pieceX_10, sym4_23, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((2530435657793126630018389587309734459136802676193402579401207261753037:ℝ)/456069078498852220207950614957532668592727597932565316409482000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((310360951302613:ℝ)/320000000) + ((57076271792181:ℝ)/32000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((143880510456474753905707950620719:ℝ)/3670016000000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((246766159847543678727959087391:ℝ)/18350080000000000000) - 3*((143880510456474753905707950620719:ℝ)/3670016000000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-939590876347:ℝ)/1000000000000) - (((-113883399459166089:ℝ)/50000000000) + t * ((-62048837984003871:ℝ)/5000000000)) = (((310360951302613:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((143880510456474753905707950620719:ℝ)/3670016000000000000000) + ((76225167229862243:ℝ)/16000000000)*((-939590876347:ℝ)/1000000000000) - ((-113883399459166089:ℝ)/50000000000)) + t*(((57076271792181:ℝ)/32000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((246766159847543678727959087391:ℝ)/18350080000000000000) - 3*((143880510456474753905707950620719:ℝ)/3670016000000000000000)) + ((9305049966455109:ℝ)/800000000)*((-939590876347:ℝ)/1000000000000) - ((-62048837984003871:ℝ)/5000000000)) := by ring
+  refine entry_assemble (r7 := ((1074805495049873243270758305866192584084189065105865779697942818550403:ℝ)/456069078498852220207950614957532668592727597932565316409482000000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((310360951302613:ℝ)/320000000) + ((57076271792181:ℝ)/32000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((143880510456474753905707950620719:ℝ)/3670016000000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((246766159847543678727959087391:ℝ)/18350080000000000000) - 3*((143880510456474753905707950620719:ℝ)/3670016000000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((-25011628649:ℝ)/250000000000) - (((43049564913163733:ℝ)/25000000000) + t * ((-264476480286487611:ℝ)/100000000000)) = (((310360951302613:ℝ)/320000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((143880510456474753905707950620719:ℝ)/3670016000000000000000) + ((76225167229862243:ℝ)/16000000000)*((-25011628649:ℝ)/250000000000) - ((43049564913163733:ℝ)/25000000000)) + t*(((57076271792181:ℝ)/32000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((246766159847543678727959087391:ℝ)/18350080000000000000) - 3*((143880510456474753905707950620719:ℝ)/3670016000000000000000)) + ((9305049966455109:ℝ)/800000000)*((-25011628649:ℝ)/250000000000) - ((-264476480286487611:ℝ)/100000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_e33 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
-    |pieceW q pieceX_14 3 3 - (((3946647248306943:ℝ)/78125000) + (q - ((83:ℝ)/20)) * ((26363960431855923:ℝ)/200000000))| ≤ ((23393067092043699:ℝ)/1000000000) := by
+theorem piece10_e33 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) :
+    |pieceW q pieceX_10 3 3 - (((71133989751432447:ℝ)/25000000000) + (q - ((83:ℝ)/20)) * ((77155013840229979:ℝ)/5000000000))| ≤ ((275159737500462341:ℝ)/1000000000000) := by
   set t := q - ((83:ℝ)/20) with htd
   have hq : q = ((83:ℝ)/20) + t := by rw [htd]; ring
   have ht : |t| ≤ ((1:ℝ)/20) := abs_le.mpr ⟨by linarith, by linarith⟩
-  have hE3 := exp_neg_bounds (by norm_num) piece14_L3 piece14_U3
+  have hE3 := exp_neg_bounds (by norm_num) piece10_L3 piece10_U3
   have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((83:ℝ)/20))) * Real.exp (-3*t) := by
     rw [← Real.exp_add, hq]; ring_nf
   have h11 : centralNum11_33 q = ∑ e ∈ Finset.range 10, ([((18998845040425913:ℝ)/22400000000), ((1649320814260227:ℝ)/560000000), ((217110664615767:ℝ)/56000000), ((1103500697043:ℝ)/400000), ((24334708299:ℝ)/20000), ((353634963:ℝ)/1000), ((3445179:ℝ)/50), ((307038:ℝ)/35), ((4656:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum11_33; ring
   have h12 : centralNum12_33 q = ∑ e ∈ Finset.range 17, ([((41230941328148711003000578129438553:ℝ)/1027604480000000000000000), ((23692818113201835046023148133061441:ℝ)/51380224000000000000000), ((556736719237315346507385868141323:ℝ)/513802240000000000000), ((4262463601726832312011682259759:ℝ)/3670016000000000000), ((117493028208547386859310461581:ℝ)/183500800000000000), ((5895776699237462845556494779:ℝ)/45875200000000000), ((-139227166014147511202956467:ℝ)/2293760000000000), ((-8592089042670511783846443:ℝ)/160563200000000), ((-143711605302226719179343:ℝ)/8028160000000), ((-1116354678953860557577:ℝ)/401408000000), ((729756164392045443:ℝ)/14336000000), ((76972591997090001:ℝ)/716800000), ((138898750573071:ℝ)/7168000), ((414529541541:ℝ)/358400), ((-10298322747:ℝ)/125440), ((-495362061:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     unfold centralNum12_33; ring
   have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
-    rw [hq]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
+    rw [hq]; poly_expand
     ring
   have b11 := abs_poly_sub_affine_le (fun e => ([((18998845040425913:ℝ)/22400000000), ((1649320814260227:ℝ)/560000000), ((217110664615767:ℝ)/56000000), ((1103500697043:ℝ)/400000), ((24334708299:ℝ)/20000), ((353634963:ℝ)/1000), ((3445179:ℝ)/50), ((307038:ℝ)/35), ((4656:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0) 8 ht
   have b12 := abs_poly_sub_affine_le (fun e => ([((41230941328148711003000578129438553:ℝ)/1027604480000000000000000), ((23692818113201835046023148133061441:ℝ)/51380224000000000000000), ((556736719237315346507385868141323:ℝ)/513802240000000000000), ((4262463601726832312011682259759:ℝ)/3670016000000000000), ((117493028208547386859310461581:ℝ)/183500800000000000), ((5895776699237462845556494779:ℝ)/45875200000000000), ((-139227166014147511202956467:ℝ)/2293760000000000), ((-8592089042670511783846443:ℝ)/160563200000000), ((-143711605302226719179343:ℝ)/8028160000000), ((-1116354678953860557577:ℝ)/401408000000), ((729756164392045443:ℝ)/14336000000), ((76972591997090001:ℝ)/716800000), ((138898750573071:ℝ)/7168000), ((414529541541:ℝ)/358400), ((-10298322747:ℝ)/125440), ((-495362061:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 15 ht
@@ -3502,88 +2190,846 @@ theorem piece14_e33 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5
   have bD := abs_poly_sub_affine_le (fun e => ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
   have b11' : |(∑ e ∈ Finset.range 10, ([((18998845040425913:ℝ)/22400000000), ((1649320814260227:ℝ)/560000000), ((217110664615767:ℝ)/56000000), ((1103500697043:ℝ)/400000), ((24334708299:ℝ)/20000), ((353634963:ℝ)/1000), ((3445179:ℝ)/50), ((307038:ℝ)/35), ((4656:ℝ)/7), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e) - (((18998845040425913:ℝ)/22400000000) + ((1649320814260227:ℝ)/560000000)*t)| ≤ ((225008012168257:ℝ)/22400000000) := by
     refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
-    · rw [sub_add_eq_sub_sub]; simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero]
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
   have b12' : |(∑ e ∈ Finset.range 17, ([((41230941328148711003000578129438553:ℝ)/1027604480000000000000000), ((23692818113201835046023148133061441:ℝ)/51380224000000000000000), ((556736719237315346507385868141323:ℝ)/513802240000000000000), ((4262463601726832312011682259759:ℝ)/3670016000000000000), ((117493028208547386859310461581:ℝ)/183500800000000000), ((5895776699237462845556494779:ℝ)/45875200000000000), ((-139227166014147511202956467:ℝ)/2293760000000000), ((-8592089042670511783846443:ℝ)/160563200000000), ((-143711605302226719179343:ℝ)/8028160000000), ((-1116354678953860557577:ℝ)/401408000000), ((729756164392045443:ℝ)/14336000000), ((76972591997090001:ℝ)/716800000), ((138898750573071:ℝ)/7168000), ((414529541541:ℝ)/358400), ((-10298322747:ℝ)/125440), ((-495362061:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e) - ((41230941328148711003000578129438553:ℝ)/1027604480000000000000000) - ((23692818113201835046023148133061441:ℝ)/51380224000000000000000)*t| ≤ ((1468512183472981224252842368013629:ℝ)/513802240000000000000000) := by
     refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
   have m12' : |(∑ e ∈ Finset.range 17, ([((41230941328148711003000578129438553:ℝ)/1027604480000000000000000), ((23692818113201835046023148133061441:ℝ)/51380224000000000000000), ((556736719237315346507385868141323:ℝ)/513802240000000000000), ((4262463601726832312011682259759:ℝ)/3670016000000000000), ((117493028208547386859310461581:ℝ)/183500800000000000), ((5895776699237462845556494779:ℝ)/45875200000000000), ((-139227166014147511202956467:ℝ)/2293760000000000), ((-8592089042670511783846443:ℝ)/160563200000000), ((-143711605302226719179343:ℝ)/8028160000000), ((-1116354678953860557577:ℝ)/401408000000), ((729756164392045443:ℝ)/14336000000), ((76972591997090001:ℝ)/716800000), ((138898750573071:ℝ)/7168000), ((414529541541:ℝ)/358400), ((-10298322747:ℝ)/125440), ((-495362061:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e)| ≤ ((16965195952074127124382352749631813:ℝ)/256901120000000000000000) := by
     refine m12.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    poly_norm
   have bD' : |(∑ e ∈ Finset.range 10, ([((76225167229862243:ℝ)/16000000000), ((9305049966455109:ℝ)/800000000), ((62760734564919:ℝ)/5000000), ((491335997313:ℝ)/62500), ((157502731659:ℝ)/50000), ((2094373113:ℝ)/2500), ((18489744:ℝ)/125), ((418128:ℝ)/25), ((5496:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((76225167229862243:ℝ)/16000000000) - ((9305049966455109:ℝ)/800000000)*t| ≤ ((64765982479019:ℝ)/2000000000) := by
     refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-    · simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m13 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-8120475:ℝ)/4), ((464861025:ℝ)/2), (-5906535975:ℝ), ((411904731750:ℝ)/7), ((-2024051769000:ℝ)/7), ((5554394637600:ℝ)/7), (-1314913862656:ℝ), ((9709155336192:ℝ)/7), ((-6724555112448:ℝ)/7), ((1313173667840:ℝ)/3), ((-6168244125696:ℝ)/49), ((3004329623552:ℝ)/147), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 hq1'
-  have m13' : |centralNum13_33 q| ≤ ((135838419095360575735657118969121:ℝ)/610351562500) := by
-    rw [centralNum13_33_list]; refine m13.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
-  have hq1' : |q| ≤ ((21:ℝ)/5) := abs_le.mpr ⟨by linarith, h1⟩
-  have m23 := abs_poly_le (fun e => ([(0:ℝ), (0:ℝ), (0:ℝ), (0:ℝ), ((-16872075:ℝ)/8), ((1833754545:ℝ)/8), ((-83998007145:ℝ)/16), ((4929124002765:ℝ)/112), ((-76723155584685:ℝ)/448), ((164888745653055:ℝ)/448), ((-63358359907625:ℝ)/128), ((364713160040625:ℝ)/896), ((-334937462578125:ℝ)/1792), ((245466998046875:ℝ)/5376), ((-72144521484375:ℝ)/12544), ((6518798828125:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 hq1'
-  have m23' : |centralNum23_33 q| ≤ ((1924521862703053679812195407:ℝ)/100000000) := by
-    rw [centralNum23_33_list]; refine m23.trans (le_of_eq ?_)
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero, List.getD_cons_succ, List.getD_cons_zero] <;> norm_num
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_33 q = ∑ e ∈ Finset.range 17, ([((3372877431783111020965095927255989:ℝ)/183750000000000000), ((-112295523933667545008443889442821:ℝ)/4593750000000000), ((-10230207446944032330089327256367:ℝ)/30625000000000), ((-27513862802989307362746690973:ℝ)/31250000000), ((-41697746233852042710005801497:ℝ)/32812500000), ((-3313967782246242613786681991:ℝ)/2734375000), ((-339121494133057638317316821:ℝ)/410156250), ((-8050191332181343130641806:ℝ)/19140625), ((-624688185870766326372624:ℝ)/3828125), ((-112134149809208430484832:ℝ)/2296875), ((-528804930374920920064:ℝ)/46875), ((-43734511911283048448:ℝ)/21875), ((-233699705088376832:ℝ)/875), ((-13676329056600064:ℝ)/525), ((-429254735036416:ℝ)/245), ((-53422950711296:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_33; ring
+  have m13 := abs_poly_le (fun e => ([((3372877431783111020965095927255989:ℝ)/183750000000000000), ((-112295523933667545008443889442821:ℝ)/4593750000000000), ((-10230207446944032330089327256367:ℝ)/30625000000000), ((-27513862802989307362746690973:ℝ)/31250000000), ((-41697746233852042710005801497:ℝ)/32812500000), ((-3313967782246242613786681991:ℝ)/2734375000), ((-339121494133057638317316821:ℝ)/410156250), ((-8050191332181343130641806:ℝ)/19140625), ((-624688185870766326372624:ℝ)/3828125), ((-112134149809208430484832:ℝ)/2296875), ((-528804930374920920064:ℝ)/46875), ((-43734511911283048448:ℝ)/21875), ((-233699705088376832:ℝ)/875), ((-13676329056600064:ℝ)/525), ((-429254735036416:ℝ)/245), ((-53422950711296:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 ht
+  have m13' : |centralNum13_33 q| ≤ ((1886337865186162600294825808555957:ℝ)/91875000000000000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_33 q = ∑ e ∈ Finset.range 17, ([((-14153515700286987431568859872190909:ℝ)/7892002406400000000), ((600735998299075408648985633691869:ℝ)/56371445760000000), ((244898504093357804736275253162703:ℝ)/6576668672000000), ((2211962153355999415892933658387:ℝ)/46976204800000), ((218747556335020841201370556123:ℝ)/7046430720000), ((1248098968700867107044010627:ℝ)/117440512000), ((12900536479403337082347583:ℝ)/17616076800), ((-1998443880568674817888479:ℝ)/2055208960), ((-6709811443166142838341:ℝ)/14680064), ((-7210091563212164235115:ℝ)/77070336), ((-17775439763259632375:ℝ)/2752512), ((279762456669353125:ℝ)/229376), ((18733537592421875:ℝ)/57344), ((1136092568359375:ℝ)/43008), ((-6881083984375:ℝ)/25088), ((-458251953125:ℝ)/2688), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_33; ring
+  have m23 := abs_poly_le (fun e => ([((-14153515700286987431568859872190909:ℝ)/7892002406400000000), ((600735998299075408648985633691869:ℝ)/56371445760000000), ((244898504093357804736275253162703:ℝ)/6576668672000000), ((2211962153355999415892933658387:ℝ)/46976204800000), ((218747556335020841201370556123:ℝ)/7046430720000), ((1248098968700867107044010627:ℝ)/117440512000), ((12900536479403337082347583:ℝ)/17616076800), ((-1998443880568674817888479:ℝ)/2055208960), ((-6709811443166142838341:ℝ)/14680064), ((-7210091563212164235115:ℝ)/77070336), ((-17775439763259632375:ℝ)/2752512), ((279762456669353125:ℝ)/229376), ((18733537592421875:ℝ)/57344), ((1136092568359375:ℝ)/43008), ((-6881083984375:ℝ)/25088), ((-458251953125:ℝ)/2688), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 ht
+  have m23' : |centralNum23_33 q| ≤ ((3190228657549198773175954860157183:ℝ)/1315333734400000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
   have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))) hE3 ht (by norm_num) b12' m12'
-  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece14_E8 h0) m13'
-  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece14_E11 h0) m23'
-  have c5 := scaled_affine (X := ((25404409743:ℝ)/2500000000)) bD'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece10_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece10_E11 h0) m23'
+  have c5 := scaled_affine (X := ((19407221119:ℝ)/125000000000)) bD'
   have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3))| ≤ ((199296084578794383740672000000000:ℝ)/41915274432460212508657804684359) := by
     rw [abs_neg, tailWeight_3, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
     have hq6 : q^6 ≤ ((21:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
     have hB : (2*q-3)^2 ≤ (2*((21:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
-    have hx := piece14_Et h0
+    have hx := piece10_Et h0
     have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
     calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((3308571812705231500:ℝ)/129140163)) ≤ ((21:ℝ)/5)^6*(8000*(2*((21:ℝ)/5)-3)^2*(1/((172490841285844495920402488413:ℝ)/25000000000))*((3308571812705231500:ℝ)/129140163)) := by
           gcongr
       _ ≤ ((199296084578794383740672000000000:ℝ)/41915274432460212508657804684359) := by norm_num
-  have c7 := affine_round (α := ((18998845040425913:ℝ)/22400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000) + ((76225167229862243:ℝ)/16000000000)*((25404409743:ℝ)/2500000000) - ((3946647248306943:ℝ)/78125000)) (β := ((1649320814260227:ℝ)/560000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23692818113201835046023148133061441:ℝ)/51380224000000000000000) - 3*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000)) + ((9305049966455109:ℝ)/800000000)*((25404409743:ℝ)/2500000000) - ((26363960431855923:ℝ)/200000000)) ht
-  have hW : pieceW q pieceX_14 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((25404409743:ℝ)/2500000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
-    rw [pieceW_33, pieceX_14, sym4_33, hexp3]; ring
+  have c7 := affine_round (α := ((18998845040425913:ℝ)/22400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000) + ((76225167229862243:ℝ)/16000000000)*((19407221119:ℝ)/125000000000) - ((71133989751432447:ℝ)/25000000000)) (β := ((1649320814260227:ℝ)/560000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23692818113201835046023148133061441:ℝ)/51380224000000000000000) - 3*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000)) + ((9305049966455109:ℝ)/800000000)*((19407221119:ℝ)/125000000000) - ((77155013840229979:ℝ)/5000000000)) ht
+  have hW : pieceW q pieceX_10 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((83:ℝ)/20)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((19407221119:ℝ)/125000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
+    rw [pieceW_33, pieceX_10, sym4_33, hexp3]; ring
   rw [h11, h12, hD] at hW
-  refine entry_assemble (r7 := ((1302923988278535853652392406726125946077299201556193269335402968836547:ℝ)/31924835494919655414556543047027286801490931855279572148663740000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
-  · have hab : (((18998845040425913:ℝ)/22400000000) + ((1649320814260227:ℝ)/560000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23692818113201835046023148133061441:ℝ)/51380224000000000000000) - 3*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((25404409743:ℝ)/2500000000) - (((3946647248306943:ℝ)/78125000) + t * ((26363960431855923:ℝ)/200000000)) = (((18998845040425913:ℝ)/22400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000) + ((76225167229862243:ℝ)/16000000000)*((25404409743:ℝ)/2500000000) - ((3946647248306943:ℝ)/78125000)) + t*(((1649320814260227:ℝ)/560000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23692818113201835046023148133061441:ℝ)/51380224000000000000000) - 3*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000)) + ((9305049966455109:ℝ)/800000000)*((25404409743:ℝ)/2500000000) - ((26363960431855923:ℝ)/200000000)) := by ring
+  refine entry_assemble (r7 := ((448432502641858406923714854244520659935152517727723584682184390919743:ℝ)/399060443686495692681956788087841085018636648190994651858296750000000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((18998845040425913:ℝ)/22400000000) + ((1649320814260227:ℝ)/560000000)*t) + (8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23692818113201835046023148133061441:ℝ)/51380224000000000000000) - 3*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000))*t) + (((76225167229862243:ℝ)/16000000000) + ((9305049966455109:ℝ)/800000000)*t)*((19407221119:ℝ)/125000000000) - (((71133989751432447:ℝ)/25000000000) + t * ((77155013840229979:ℝ)/5000000000)) = (((18998845040425913:ℝ)/22400000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000) + ((76225167229862243:ℝ)/16000000000)*((19407221119:ℝ)/125000000000) - ((71133989751432447:ℝ)/25000000000)) + t*(((1649320814260227:ℝ)/560000000) + 8*(((1/((255250323281310323230844226733:ℝ)/1000000000000000000000000))+(1/((127625157653632984343797997311:ℝ)/500000000000000000000000)))/2)*(((23692818113201835046023148133061441:ℝ)/51380224000000000000000) - 3*((41230941328148711003000578129438553:ℝ)/1027604480000000000000000)) + ((9305049966455109:ℝ)/800000000)*((19407221119:ℝ)/125000000000) - ((77155013840229979:ℝ)/5000000000)) := by ring
     rw [hab]; exact c7.trans (by norm_num)
   · norm_num
 
-theorem piece14_plus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((581978479844851799:ℝ)/100000000000) + ((1:ℝ)/20)*((134836843187854117:ℝ)/10000000000) - (((183519573022389503:ℝ)/5000000000000) + ((612999379887766889:ℝ)/100000000000000) + ((184949203468018519:ℝ)/100000000000000) + ((223719447480223761:ℝ)/25000000000000)))
-      (((-5353799221362511:ℝ)/5000000000) + ((1:ℝ)/20)*((-172958207820686779:ℝ)/100000000000))
-      (((207765141230859569:ℝ)/25000000000000) + ((1:ℝ)/20)*((-45208156226968049:ℝ)/1250000000000))
-      (((-79509638909429079:ℝ)/2000000000000) + ((1:ℝ)/20)*((-404858694398523533:ℝ)/1000000000000))
-      (((113272646959838049:ℝ)/25000000000) + ((1:ℝ)/20)*((971614456034509961:ℝ)/100000000000) - (((612999379887766889:ℝ)/100000000000000) + ((66104277705211601:ℝ)/2500000000000) + ((13146875289862143:ℝ)/625000000000) + ((473333999364526031:ℝ)/10000000000000)))
-      (((-485731117039720241:ℝ)/1000000000000) + ((1:ℝ)/20)*((-10820430413015879:ℝ)/10000000000))
-      (((25752124246234523:ℝ)/40000000000) + ((1:ℝ)/20)*((177745988348358287:ℝ)/50000000000))
-      (((307642783852511279:ℝ)/100000000000) + ((1:ℝ)/20)*((12801954321983373:ℝ)/1250000000) - (((184949203468018519:ℝ)/100000000000000) + ((13146875289862143:ℝ)/625000000000) + ((52485629278576793:ℝ)/500000000000) + ((360526448407087881:ℝ)/500000000000)))
-      (((-113883399459166089:ℝ)/50000000000) + ((1:ℝ)/20)*((-62048837984003871:ℝ)/5000000000))
-      (((3946647248306943:ℝ)/78125000) + ((1:ℝ)/20)*((26363960431855923:ℝ)/200000000) - (((223719447480223761:ℝ)/25000000000000) + ((473333999364526031:ℝ)/10000000000000) + ((360526448407087881:ℝ)/500000000000) + ((23393067092043699:ℝ)/1000000000))) i j :=
-  quadForm_nonneg_of_ldl ((161008420901263596747:ℝ)/25000000000000) ((592188124094653199907368353466379576319:ℝ)/125787828829112184958593750000000) ((158585455526168568072430174108087880290970626110624320710569:ℝ)/59218812409465319990736835346637957631900000000000000) ((80813396525383884791973959308362405616678793017956146734028265882480805957120031271:ℝ)/2706525107646610228436141638111366490299232018954655073460377600000000000000) ((-57861947409142279475:ℝ)/322016841802527193494) ((54185661667963840:ℝ)/53669473633754532249) ((-5999775417464071615:ℝ)/644033683605054386988) ((-542059905838656247123479329108549581575:ℝ)/4737504992757225599258946827731036610552) ((26108105790125560551766064708682477280675:ℝ)/151600159768231219176286298487393171537664) ((-886017219237060835577241978477624341653559657342314260957675:ℝ)/845789096139565696386294261909802028218510005923329710456368)
+theorem piece10_plus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((144292474183697831:ℝ)/25000000000) + ((1:ℝ)/20)*((133662844947298321:ℝ)/10000000000) - (((18188528729510541:ℝ)/500000000000) + ((12288649109636821:ℝ)/2000000000000) + ((37291828558791267:ℝ)/20000000000000) + ((785687380817595131:ℝ)/100000000000000)))
+      (((-107288107300219229:ℝ)/100000000000) + ((1:ℝ)/20)*((-43369024543014793:ℝ)/25000000000))
+      (((4480277845145291:ℝ)/400000000000) + ((1:ℝ)/20)*((-291104769094276347:ℝ)/10000000000000))
+      (((12574710989798021:ℝ)/125000000000) + ((1:ℝ)/20)*((-621931046765230521:ℝ)/10000000000000))
+      (((446672831094801337:ℝ)/100000000000) + ((1:ℝ)/20)*((955945734180343963:ℝ)/100000000000) - (((12288649109636821:ℝ)/2000000000000) + ((259991826530566539:ℝ)/10000000000000) + ((40841970520929679:ℝ)/2000000000000) + ((137433518604381171:ℝ)/5000000000000)))
+      (((-445501777971134107:ℝ)/1000000000000) + ((1:ℝ)/20)*((-196764911893115257:ℝ)/200000000000))
+      (((-175457162448529219:ℝ)/250000000000) + ((1:ℝ)/20)*((134804159580106551:ℝ)/500000000000))
+      (((18286274058614251:ℝ)/6250000000) + ((1:ℝ)/20)*((39495281660820099:ℝ)/4000000000) - (((37291828558791267:ℝ)/20000000000000) + ((40841970520929679:ℝ)/2000000000000) + ((847757676039828283:ℝ)/10000000000000) + ((281647239925958279:ℝ)/5000000000000)))
+      (((43049564913163733:ℝ)/25000000000) + ((1:ℝ)/20)*((-264476480286487611:ℝ)/100000000000))
+      (((71133989751432447:ℝ)/25000000000) + ((1:ℝ)/20)*((77155013840229979:ℝ)/5000000000) - (((785687380817595131:ℝ)/100000000000000) + ((137433518604381171:ℝ)/5000000000000) + ((281647239925958279:ℝ)/5000000000000) + ((275159737500462341:ℝ)/1000000000000))) i j :=
+  quadForm_nonneg_of_ldl ((79847129310430622973:ℝ)/12500000000000) ((1858096898983851986502709366855488936191:ℝ)/399235646552153114865000000000000) ((19050001271476630549018004061264797950853668197117987525152757:ℝ)/5945910076748326356808669973937564595811200000000000000) ((18533247950716001223970765771897406686363491534335708045143142504577215376946275197:ℝ)/7620000508590652219607201624505919180341467278847195010061102800000000000000) ((-14495239026102773450:ℝ)/79847129310430622973) ((278433450496909879:ℝ)/182507724138127138224) ((2785372362415943297:ℝ)/182507724138127138224) ((-196792789174928145861190408850035764685:ℝ)/1858096898983851986502709366855488936191) ((-1070990362035418425124882204807009109459:ℝ)/7432387595935407946010837467421955744764) ((9029259276340808087628304801399905299587401000281647636382771:ℝ)/19050001271476630549018004061264797950853668197117987525152757)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
 
-theorem piece14_minus (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((581978479844851799:ℝ)/100000000000) - ((1:ℝ)/20)*((134836843187854117:ℝ)/10000000000) - (((183519573022389503:ℝ)/5000000000000) + ((612999379887766889:ℝ)/100000000000000) + ((184949203468018519:ℝ)/100000000000000) + ((223719447480223761:ℝ)/25000000000000)))
-      (((-5353799221362511:ℝ)/5000000000) - ((1:ℝ)/20)*((-172958207820686779:ℝ)/100000000000))
-      (((207765141230859569:ℝ)/25000000000000) - ((1:ℝ)/20)*((-45208156226968049:ℝ)/1250000000000))
-      (((-79509638909429079:ℝ)/2000000000000) - ((1:ℝ)/20)*((-404858694398523533:ℝ)/1000000000000))
-      (((113272646959838049:ℝ)/25000000000) - ((1:ℝ)/20)*((971614456034509961:ℝ)/100000000000) - (((612999379887766889:ℝ)/100000000000000) + ((66104277705211601:ℝ)/2500000000000) + ((13146875289862143:ℝ)/625000000000) + ((473333999364526031:ℝ)/10000000000000)))
-      (((-485731117039720241:ℝ)/1000000000000) - ((1:ℝ)/20)*((-10820430413015879:ℝ)/10000000000))
-      (((25752124246234523:ℝ)/40000000000) - ((1:ℝ)/20)*((177745988348358287:ℝ)/50000000000))
-      (((307642783852511279:ℝ)/100000000000) - ((1:ℝ)/20)*((12801954321983373:ℝ)/1250000000) - (((184949203468018519:ℝ)/100000000000000) + ((13146875289862143:ℝ)/625000000000) + ((52485629278576793:ℝ)/500000000000) + ((360526448407087881:ℝ)/500000000000)))
-      (((-113883399459166089:ℝ)/50000000000) - ((1:ℝ)/20)*((-62048837984003871:ℝ)/5000000000))
-      (((3946647248306943:ℝ)/78125000) - ((1:ℝ)/20)*((26363960431855923:ℝ)/200000000) - (((223719447480223761:ℝ)/25000000000000) + ((473333999364526031:ℝ)/10000000000000) + ((360526448407087881:ℝ)/500000000000) + ((23393067092043699:ℝ)/1000000000))) i j :=
-  quadForm_nonneg_of_ldl ((127299210104300067497:ℝ)/25000000000000) ((23893402646026556855933108297864074762691:ℝ)/6364960505215003374850000000000000) ((568745010488249107452966889357341291854349337627524092562829:ℝ)/341334323514665097941901547112343925181300000000000000) ((8260072928686248379643559961653377121252588331737536752115925870012746209368429447:ℝ)/454996008390599285962373511485873033483479470102019274050263200000000000000) ((-49214037018107940525:ℝ)/254598420208600134994) ((252973297457827618:ℝ)/127299210104300067497) ((-1951188473478836285:ℝ)/509196840417200269988) ((-390693068249248090820813444907744671950:ℝ)/3413343235146650979419015471123439251813) ((1681387818616189016171678450859306168225:ℝ)/13653372940586603917676061884493757007252) ((-547577873368184786350843184646788539771467353598617236184605:ℝ)/568745010488249107452966889357341291854349337627524092562829)
+theorem piece10_minus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((144292474183697831:ℝ)/25000000000) - ((1:ℝ)/20)*((133662844947298321:ℝ)/10000000000) - (((18188528729510541:ℝ)/500000000000) + ((12288649109636821:ℝ)/2000000000000) + ((37291828558791267:ℝ)/20000000000000) + ((785687380817595131:ℝ)/100000000000000)))
+      (((-107288107300219229:ℝ)/100000000000) - ((1:ℝ)/20)*((-43369024543014793:ℝ)/25000000000))
+      (((4480277845145291:ℝ)/400000000000) - ((1:ℝ)/20)*((-291104769094276347:ℝ)/10000000000000))
+      (((12574710989798021:ℝ)/125000000000) - ((1:ℝ)/20)*((-621931046765230521:ℝ)/10000000000000))
+      (((446672831094801337:ℝ)/100000000000) - ((1:ℝ)/20)*((955945734180343963:ℝ)/100000000000) - (((12288649109636821:ℝ)/2000000000000) + ((259991826530566539:ℝ)/10000000000000) + ((40841970520929679:ℝ)/2000000000000) + ((137433518604381171:ℝ)/5000000000000)))
+      (((-445501777971134107:ℝ)/1000000000000) - ((1:ℝ)/20)*((-196764911893115257:ℝ)/200000000000))
+      (((-175457162448529219:ℝ)/250000000000) - ((1:ℝ)/20)*((134804159580106551:ℝ)/500000000000))
+      (((18286274058614251:ℝ)/6250000000) - ((1:ℝ)/20)*((39495281660820099:ℝ)/4000000000) - (((37291828558791267:ℝ)/20000000000000) + ((40841970520929679:ℝ)/2000000000000) + ((847757676039828283:ℝ)/10000000000000) + ((281647239925958279:ℝ)/5000000000000)))
+      (((43049564913163733:ℝ)/25000000000) - ((1:ℝ)/20)*((-264476480286487611:ℝ)/100000000000))
+      (((71133989751432447:ℝ)/25000000000) - ((1:ℝ)/20)*((77155013840229979:ℝ)/5000000000) - (((785687380817595131:ℝ)/100000000000000) + ((137433518604381171:ℝ)/5000000000000) + ((281647239925958279:ℝ)/5000000000000) + ((275159737500462341:ℝ)/1000000000000))) i j :=
+  quadForm_nonneg_of_ldl ((3946204605751145803:ℝ)/781250000000) ((18330997771833790797045688647295089839:ℝ)/4932755757188932253750000000000) ((2090098644535119637464443594851333998603497067853245181875973:ℝ)/938547085917890088808739258741508599756800000000000000) ((507027092640582475854052569682622438185825765644657795054094742558588285611628957:ℝ)/3344157831256191419943109751762134397765595308565192291001556800000000000000) ((-1540848474869004225:ℝ)/7892409211502291606) ((2531243691666921847:ℝ)/1010228379072293325568) ((20741468630442064121:ℝ)/1010228379072293325568) ((-124333748820379151313776629300882345545:ℝ)/1173183857397362611010924073426885749696) ((-219428582323375598685170564165947375619:ℝ)/1173183857397362611010924073426885749696) ((1670893939064103438540022063665862281614249506402558410063619:ℝ)/2090098644535119637464443594851333998603497067853245181875973)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
 
-/-- **Piece 14.** The piece matrix is positive semidefinite on `q ∈ [41/10, 21/5]`. -/
-theorem piece_14 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) (y : Fin 4 → ℝ) :
-    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_14 i j :=
+/-- **Piece 10.** The piece matrix is positive semidefinite on `q ∈ [41/10, 21/5]`. -/
+theorem piece_10 {q : ℝ} (h0 : ((41:ℝ)/10) ≤ q) (h1 : q ≤ ((21:ℝ)/5)) (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_10 i j :=
   pieceForm_nonneg (pieceW_symm (sym4_symm _ _ _ _ _ _ _ _ _ _) q) (by norm_num : (0:ℝ) < ((1:ℝ)/20))
     (abs_le.mpr ⟨by linarith, by linarith⟩)
-    (piece14_e00 h0 h1) (piece14_e01 h0 h1) (piece14_e02 h0 h1) (piece14_e03 h0 h1) (piece14_e11 h0 h1) (piece14_e12 h0 h1) (piece14_e13 h0 h1) (piece14_e22 h0 h1) (piece14_e23 h0 h1) (piece14_e33 h0 h1)
-    piece14_plus piece14_minus y
+    (piece10_e00 h0 h1) (piece10_e01 h0 h1) (piece10_e02 h0 h1) (piece10_e03 h0 h1) (piece10_e11 h0 h1) (piece10_e12 h0 h1) (piece10_e13 h0 h1) (piece10_e22 h0 h1) (piece10_e23 h0 h1) (piece10_e33 h0 h1)
+    piece10_plus piece10_minus y
+
+/-! #### Piece 11 (seam), `q ∈ [21/5, 22/5]` -/
+
+/-- The compensation matrix of piece 11. -/
+def pieceX_11 : Fin 4 → Fin 4 → ℝ :=
+  sym4 ((211294010849:ℝ)/500000000000000) ((-852605032457:ℝ)/1000000000000000) ((239508751557:ℝ)/100000000000000) ((-13794930831:ℝ)/4000000000000) ((16965620617:ℝ)/4000000000000) ((-31862564051:ℝ)/2500000000000) ((46076295519:ℝ)/2500000000000) ((410321751783:ℝ)/10000000000000) ((-59865389667:ℝ)/1000000000000) ((177297498017:ℝ)/2000000000000)
+
+theorem piece11_L3 : ((400310262652192068862035883567:ℝ)/1000000000000000000000000) ≤ Real.exp ((3:ℝ)*((43:ℝ)/10)) := by
+  have h := le_exp_nat_add 12 (f := ((9:ℝ)/10)) (by norm_num)
+  rw [show ((3:ℝ):ℝ)*((43:ℝ)/10) = ((12:ℕ):ℝ) + ((9:ℝ)/10) by norm_num]
+  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
+  linarith
+theorem piece11_U3 : Real.exp ((3:ℝ)*((43:ℝ)/10)) ≤ ((100078054499556509043018668037:ℝ)/250000000000000000000000) := by
+  have h := exp_nat_add_le 12 (f := ((9:ℝ)/10)) (by norm_num) (by norm_num)
+  rw [show ((3:ℝ):ℝ)*((43:ℝ)/10) = ((12:ℕ):ℝ) + ((9:ℝ)/10) by norm_num]
+  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
+  linarith
+
+theorem piece11_L8_at : ((391106005602355390279146778221:ℝ)/1000000000000000) ≤ Real.exp ((8:ℝ)*((21:ℝ)/5)) := by
+  have h := le_exp_nat_add 33 (f := ((3:ℝ)/5)) (by norm_num)
+  rw [show ((8:ℝ):ℝ)*((21:ℝ)/5) = ((33:ℕ):ℝ) + ((3:ℝ)/5) by norm_num]
+  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
+  linarith
+theorem piece11_E8 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) : Real.exp (-((8:ℝ))*q) ≤ 1/((391106005602355390279146778221:ℝ)/1000000000000000) := by
+  have hm : Real.exp (-((8:ℝ))*q) ≤ Real.exp (-((8:ℝ)*((21:ℝ)/5))) := Real.exp_le_exp.mpr (by nlinarith)
+  exact hm.trans (exp_neg_bounds (by norm_num) piece11_L8_at (le_refl _)).2
+
+theorem piece11_L11_at : ((5799293210154367748248128699:ℝ)/50000000) ≤ Real.exp ((11:ℝ)*((21:ℝ)/5)) := by
+  have h := le_exp_nat_add 46 (f := ((1:ℝ)/5)) (by norm_num)
+  rw [show ((11:ℝ):ℝ)*((21:ℝ)/5) = ((46:ℕ):ℝ) + ((1:ℝ)/5) by norm_num]
+  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
+  linarith
+theorem piece11_E11 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) : Real.exp (-((11:ℝ))*q) ≤ 1/((5799293210154367748248128699:ℝ)/50000000) := by
+  have hm : Real.exp (-((11:ℝ))*q) ≤ Real.exp (-((11:ℝ)*((21:ℝ)/5))) := Real.exp_le_exp.mpr (by nlinarith)
+  exact hm.trans (exp_neg_bounds (by norm_num) piece11_L11_at (le_refl _)).2
+
+theorem piece11_Lt_at : ((99375560574937156562341070943:ℝ)/5000000000) ≤ Real.exp (((529:ℝ)/50)*((21:ℝ)/5)) := by
+  have h := le_exp_nat_add 44 (f := ((109:ℝ)/250)) (by norm_num)
+  rw [show (((529:ℝ)/50):ℝ)*((21:ℝ)/5) = ((44:ℕ):ℝ) + ((109:ℝ)/250) by norm_num]
+  norm_num [Finset.sum_range_succ, Nat.factorial] at h ⊢
+  linarith
+theorem piece11_Et {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) : Real.exp (-(((529:ℝ)/50))*q) ≤ 1/((99375560574937156562341070943:ℝ)/5000000000) := by
+  have hm : Real.exp (-(((529:ℝ)/50))*q) ≤ Real.exp (-(((529:ℝ)/50)*((21:ℝ)/5))) := Real.exp_le_exp.mpr (by nlinarith)
+  exact hm.trans (exp_neg_bounds (by norm_num) piece11_Lt_at (le_refl _)).2
+
+theorem piece11_e00 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 0 0 - (((50707353808107919:ℝ)/6250000000) + (q - ((43:ℝ)/10)) * ((36220903674170921:ℝ)/2000000000))| ≤ ((19440146619127179:ℝ)/100000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_00 q = ∑ e ∈ Finset.range 10, ([((126939291386969:ℝ)/15625000), ((28275456918177:ℝ)/1562500), ((5633216527317:ℝ)/312500), ((328892075001:ℝ)/31250), ((12387111093:ℝ)/3125), ((623516082:ℝ)/625), ((20953212:ℝ)/125), ((452952:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_00; ring
+  have h12 : centralNum12_00 q = ∑ e ∈ Finset.range 11, ([((-108051431556976891:ℝ)/156250000), ((-21297677208805791:ℝ)/12500000), ((-1181477307693957:ℝ)/625000), ((-77716283477229:ℝ)/62500), ((-3355785103419:ℝ)/6250), ((-496871881548:ℝ)/3125), ((-4087099002:ℝ)/125), ((-115249356:ℝ)/25), ((-2132184:ℝ)/5), (-23368:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_00; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((126939291386969:ℝ)/15625000), ((28275456918177:ℝ)/1562500), ((5633216527317:ℝ)/312500), ((328892075001:ℝ)/31250), ((12387111093:ℝ)/3125), ((623516082:ℝ)/625), ((20953212:ℝ)/125), ((452952:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((-108051431556976891:ℝ)/156250000), ((-21297677208805791:ℝ)/12500000), ((-1181477307693957:ℝ)/625000), ((-77716283477229:ℝ)/62500), ((-3355785103419:ℝ)/6250), ((-496871881548:ℝ)/3125), ((-4087099002:ℝ)/125), ((-115249356:ℝ)/25), ((-2132184:ℝ)/5), (-23368:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 9 ht
+  have m12 := abs_poly_le (fun e => ([((-108051431556976891:ℝ)/156250000), ((-21297677208805791:ℝ)/12500000), ((-1181477307693957:ℝ)/625000), ((-77716283477229:ℝ)/62500), ((-3355785103419:ℝ)/6250), ((-496871881548:ℝ)/3125), ((-4087099002:ℝ)/125), ((-115249356:ℝ)/25), ((-2132184:ℝ)/5), (-23368:ℝ), (-576:ℝ)] : List ℝ).getD e 0) 11 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 10, ([((126939291386969:ℝ)/15625000), ((28275456918177:ℝ)/1562500), ((5633216527317:ℝ)/312500), ((328892075001:ℝ)/31250), ((12387111093:ℝ)/3125), ((623516082:ℝ)/625), ((20953212:ℝ)/125), ((452952:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - (((126939291386969:ℝ)/15625000) + ((28275456918177:ℝ)/1562500)*t)| ≤ ((1493703191683:ℝ)/7812500) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 11, ([((-108051431556976891:ℝ)/156250000), ((-21297677208805791:ℝ)/12500000), ((-1181477307693957:ℝ)/625000), ((-77716283477229:ℝ)/62500), ((-3355785103419:ℝ)/6250), ((-496871881548:ℝ)/3125), ((-4087099002:ℝ)/125), ((-115249356:ℝ)/25), ((-2132184:ℝ)/5), (-23368:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e) - ((-108051431556976891:ℝ)/156250000) - ((-21297677208805791:ℝ)/12500000)*t| ≤ ((12626508232807417:ℝ)/625000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 11, ([((-108051431556976891:ℝ)/156250000), ((-21297677208805791:ℝ)/12500000), ((-1181477307693957:ℝ)/625000), ((-77716283477229:ℝ)/62500), ((-3355785103419:ℝ)/6250), ((-496871881548:ℝ)/3125), ((-4087099002:ℝ)/125), ((-115249356:ℝ)/25), ((-2132184:ℝ)/5), (-23368:ℝ), (-576:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((8614384695386624:ℝ)/9765625) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_00 q = ∑ e ∈ Finset.range 11, ([((-966105590336221503:ℝ)/78125000), ((-47360555918024007:ℝ)/1562500), ((-10434852894259431:ℝ)/312500), ((-680413559632707:ℝ)/31250), ((-29083315619127:ℝ)/3125), ((-8515212979518:ℝ)/3125), ((-69183565332:ℝ)/125), ((-1925313096:ℝ)/25), ((-35128944:ℝ)/5), (-379488:ℝ), (-9216:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_00; ring
+  have m13 := abs_poly_le (fun e => ([((-966105590336221503:ℝ)/78125000), ((-47360555918024007:ℝ)/1562500), ((-10434852894259431:ℝ)/312500), ((-680413559632707:ℝ)/31250), ((-29083315619127:ℝ)/3125), ((-8515212979518:ℝ)/3125), ((-69183565332:ℝ)/125), ((-1925313096:ℝ)/25), ((-35128944:ℝ)/5), (-379488:ℝ), (-9216:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m13' : |centralNum13_00 q| ≤ ((153846427125033984:ℝ)/9765625) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_00 q = ∑ e ∈ Finset.range 11, ([((-754225701164426073:ℝ)/31250000), ((-719943065583510471:ℝ)/12500000), ((-38653144991342109:ℝ)/625000), ((-2459366865124917:ℝ)/62500), ((-102682176845451:ℝ)/6250), ((-2939493065292:ℝ)/625), ((-116863346922:ℝ)/125), ((-3185569452:ℝ)/25), ((-56980152:ℝ)/5), (-603912:ℝ), (-14400:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_00; ring
+  have m23 := abs_poly_le (fun e => ([((-754225701164426073:ℝ)/31250000), ((-719943065583510471:ℝ)/12500000), ((-38653144991342109:ℝ)/625000), ((-2459366865124917:ℝ)/62500), ((-102682176845451:ℝ)/6250), ((-2939493065292:ℝ)/625), ((-116863346922:ℝ)/125), ((-3185569452:ℝ)/25), ((-56980152:ℝ)/5), (-603912:ℝ), (-14400:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m23' : |centralNum23_00 q| ≤ ((59676285246319104:ℝ)/1953125) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((211294010849:ℝ)/500000000000000)) bD'
+  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0))| ≤ ((102186141993614570946560000000:ℝ)/5868027476389464157849677898113207) := by
+    rw [abs_neg, tailWeight_0, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
+    have hq6 : q^6 ≤ ((22:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
+    have hB : (2*q-3)^2 ≤ (2*((22:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
+    have hx := piece11_Et h0
+    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
+    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((10465499600:ℝ)/59049)) ≤ ((22:ℝ)/5)^6*(8000*(2*((22:ℝ)/5)-3)^2*(1/((99375560574937156562341070943:ℝ)/5000000000))*((10465499600:ℝ)/59049)) := by
+          gcongr
+      _ ≤ ((102186141993614570946560000000:ℝ)/5868027476389464157849677898113207) := by norm_num
+  have c7 := affine_round (α := ((126939291386969:ℝ)/15625000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-108051431556976891:ℝ)/156250000) + ((13319111944243:ℝ)/1953125)*((211294010849:ℝ)/500000000000000) - ((50707353808107919:ℝ)/6250000000)) (β := ((28275456918177:ℝ)/1562500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-21297677208805791:ℝ)/12500000) - 3*((-108051431556976891:ℝ)/156250000)) + ((6239185329363:ℝ)/390625)*((211294010849:ℝ)/500000000000000) - ((36220903674170921:ℝ)/2000000000)) ht
+  have hW : pieceW q pieceX_11 0 0 = centralNum11_00 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_00 q + 18*Real.exp (-8*q)*centralNum13_00 q + 72*Real.exp (-11*q)*centralNum23_00 q + 8*q^7*(2*q-3)^2*((211294010849:ℝ)/500000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 0)) := by
+    rw [pieceW_00, pieceX_11, sym4_00, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((461411123234400141737497843492560649071380223522791909947920583612033:ℝ)/78246625551636442247206076415236556730861628183888196187458984375000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((126939291386969:ℝ)/15625000) + ((28275456918177:ℝ)/1562500)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-108051431556976891:ℝ)/156250000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-21297677208805791:ℝ)/12500000) - 3*((-108051431556976891:ℝ)/156250000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((211294010849:ℝ)/500000000000000) - (((50707353808107919:ℝ)/6250000000) + t * ((36220903674170921:ℝ)/2000000000)) = (((126939291386969:ℝ)/15625000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-108051431556976891:ℝ)/156250000) + ((13319111944243:ℝ)/1953125)*((211294010849:ℝ)/500000000000000) - ((50707353808107919:ℝ)/6250000000)) + t*(((28275456918177:ℝ)/1562500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-21297677208805791:ℝ)/12500000) - 3*((-108051431556976891:ℝ)/156250000)) + ((6239185329363:ℝ)/390625)*((211294010849:ℝ)/500000000000000) - ((36220903674170921:ℝ)/2000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e01 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 0 1 - (((-67909555857309877:ℝ)/50000000000) + (q - ((43:ℝ)/10)) * ((-106616292125636223:ℝ)/50000000000))| ≤ ((4363542954538591:ℝ)/156250000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_01 q = ∑ e ∈ Finset.range 8, ([((-815455833321:ℝ)/625000), ((-132748624029:ℝ)/62500), ((-9261531909:ℝ)/6250), ((-71794821:ℝ)/125), ((-3339294:ℝ)/25), ((-465948:ℝ)/25), ((-7224:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_01; ring
+  have h12 : centralNum12_01 q = ∑ e ∈ Finset.range 12, ([((-7450721278898145159:ℝ)/3125000000), ((-8611220635546833537:ℝ)/1250000000), ((-225508507252618239:ℝ)/25000000), ((-552212881103982:ℝ)/78125), ((-230252051527089:ℝ)/62500), ((-83830498696287:ℝ)/62500), ((-2175833730189:ℝ)/6250), ((-8052744894:ℝ)/125), ((-208246968:ℝ)/25), ((-3583914:ℝ)/5), ((-184716:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_01; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((-815455833321:ℝ)/625000), ((-132748624029:ℝ)/62500), ((-9261531909:ℝ)/6250), ((-71794821:ℝ)/125), ((-3339294:ℝ)/25), ((-465948:ℝ)/25), ((-7224:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0) 6 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((-7450721278898145159:ℝ)/3125000000), ((-8611220635546833537:ℝ)/1250000000), ((-225508507252618239:ℝ)/25000000), ((-552212881103982:ℝ)/78125), ((-230252051527089:ℝ)/62500), ((-83830498696287:ℝ)/62500), ((-2175833730189:ℝ)/6250), ((-8052744894:ℝ)/125), ((-208246968:ℝ)/25), ((-3583914:ℝ)/5), ((-184716:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0) 10 ht
+  have m12 := abs_poly_le (fun e => ([((-7450721278898145159:ℝ)/3125000000), ((-8611220635546833537:ℝ)/1250000000), ((-225508507252618239:ℝ)/25000000), ((-552212881103982:ℝ)/78125), ((-230252051527089:ℝ)/62500), ((-83830498696287:ℝ)/62500), ((-2175833730189:ℝ)/6250), ((-8052744894:ℝ)/125), ((-208246968:ℝ)/25), ((-3583914:ℝ)/5), ((-184716:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0) 12 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 8, ([((-815455833321:ℝ)/625000), ((-132748624029:ℝ)/62500), ((-9261531909:ℝ)/6250), ((-71794821:ℝ)/125), ((-3339294:ℝ)/25), ((-465948:ℝ)/25), ((-7224:ℝ)/5), (-48:ℝ)] : List ℝ).getD e 0 * t^e) - (((-815455833321:ℝ)/625000) + ((-132748624029:ℝ)/62500)*t)| ≤ ((4814485821:ℝ)/312500) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 12, ([((-7450721278898145159:ℝ)/3125000000), ((-8611220635546833537:ℝ)/1250000000), ((-225508507252618239:ℝ)/25000000), ((-552212881103982:ℝ)/78125), ((-230252051527089:ℝ)/62500), ((-83830498696287:ℝ)/62500), ((-2175833730189:ℝ)/6250), ((-8052744894:ℝ)/125), ((-208246968:ℝ)/25), ((-3583914:ℝ)/5), ((-184716:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e) - ((-7450721278898145159:ℝ)/3125000000) - ((-8611220635546833537:ℝ)/1250000000)*t| ≤ ((1220673732512812899:ℝ)/12500000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 12, ([((-7450721278898145159:ℝ)/3125000000), ((-8611220635546833537:ℝ)/1250000000), ((-225508507252618239:ℝ)/25000000), ((-552212881103982:ℝ)/78125), ((-230252051527089:ℝ)/62500), ((-83830498696287:ℝ)/62500), ((-2175833730189:ℝ)/6250), ((-8052744894:ℝ)/125), ((-208246968:ℝ)/25), ((-3583914:ℝ)/5), ((-184716:ℝ)/5), (-864:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((154823357358016512:ℝ)/48828125) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_01 q = ∑ e ∈ Finset.range 12, ([((-191748317578492409253:ℝ)/390625000), ((-51968919653847092201:ℝ)/39062500), ((-1280329625950764147:ℝ)/781250), ((-94612730076830727:ℝ)/78125), ((-9320041087879026:ℝ)/15625), ((-3212421052162308:ℝ)/15625), ((-158127356299752:ℝ)/3125), ((-1111536728784:ℝ)/125), ((-27335926848:ℝ)/25), ((-447986304:ℝ)/5), ((-22014976:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_01; ring
+  have m13 := abs_poly_le (fun e => ([((-191748317578492409253:ℝ)/390625000), ((-51968919653847092201:ℝ)/39062500), ((-1280329625950764147:ℝ)/781250), ((-94612730076830727:ℝ)/78125), ((-9320041087879026:ℝ)/15625), ((-3212421052162308:ℝ)/15625), ((-158127356299752:ℝ)/3125), ((-1111536728784:ℝ)/125), ((-27335926848:ℝ)/25), ((-447986304:ℝ)/5), ((-22014976:ℝ)/5), (-98304:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m13' : |centralNum13_01 q| ≤ ((31327009042255173632:ℝ)/48828125) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_01 q = ∑ e ∈ Finset.range 12, ([((-23180399493835242189:ℝ)/125000000), ((-27290433915638532313:ℝ)/50000000), ((-3604410155447241579:ℝ)/5000000), ((-8834176180585161:ℝ)/15625), ((-3663977421806889:ℝ)/12500), ((-264050660422311:ℝ)/2500), ((-6755228870733:ℝ)/250), ((-122803123014:ℝ)/25), ((-3111335664:ℝ)/5), (-52344834:ℝ), (-2632700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_01; ring
+  have m23 := abs_poly_le (fun e => ([((-23180399493835242189:ℝ)/125000000), ((-27290433915638532313:ℝ)/50000000), ((-3604410155447241579:ℝ)/5000000), ((-8834176180585161:ℝ)/15625), ((-3663977421806889:ℝ)/12500), ((-264050660422311:ℝ)/2500), ((-6755228870733:ℝ)/250), ((-122803123014:ℝ)/25), ((-3111335664:ℝ)/5), (-52344834:ℝ), (-2632700:ℝ), (-60000:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m23' : |centralNum23_01 q| ≤ ((484040365056309248:ℝ)/1953125) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-852605032457:ℝ)/1000000000000000)) bD'
+  have c6 : |(0:ℝ)| ≤ 0 := by simp
+  have c7 := affine_round (α := ((-815455833321:ℝ)/625000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-7450721278898145159:ℝ)/3125000000) + ((13319111944243:ℝ)/1953125)*((-852605032457:ℝ)/1000000000000000) - ((-67909555857309877:ℝ)/50000000000)) (β := ((-132748624029:ℝ)/62500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-8611220635546833537:ℝ)/1250000000) - 3*((-7450721278898145159:ℝ)/3125000000)) + ((6239185329363:ℝ)/390625)*((-852605032457:ℝ)/1000000000000000) - ((-106616292125636223:ℝ)/50000000000)) ht
+  have hW : pieceW q pieceX_11 0 1 = centralNum11_01 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_01 q + 18*Real.exp (-8*q)*centralNum13_01 q + 72*Real.exp (-11*q)*centralNum23_01 q + 8*q^7*(2*q-3)^2*((-852605032457:ℝ)/1000000000000000) + (0:ℝ) := by
+    rw [pieceW_01, pieceX_11, sym4_01, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((250464897718741848115851312945249801980380180879589521966022545286951:ℝ)/52164417034424294831470717610157704487241085455925464124972656250000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-815455833321:ℝ)/625000) + ((-132748624029:ℝ)/62500)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-7450721278898145159:ℝ)/3125000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-8611220635546833537:ℝ)/1250000000) - 3*((-7450721278898145159:ℝ)/3125000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((-852605032457:ℝ)/1000000000000000) - (((-67909555857309877:ℝ)/50000000000) + t * ((-106616292125636223:ℝ)/50000000000)) = (((-815455833321:ℝ)/625000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-7450721278898145159:ℝ)/3125000000) + ((13319111944243:ℝ)/1953125)*((-852605032457:ℝ)/1000000000000000) - ((-67909555857309877:ℝ)/50000000000)) + t*(((-132748624029:ℝ)/62500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-8611220635546833537:ℝ)/1250000000) - 3*((-7450721278898145159:ℝ)/3125000000)) + ((6239185329363:ℝ)/390625)*((-852605032457:ℝ)/1000000000000000) - ((-106616292125636223:ℝ)/50000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e02 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 0 2 - (((-156891275378256877:ℝ)/100000000000000) + (q - ((43:ℝ)/10)) * ((-151315388426484233:ℝ)/5000000000000))| ≤ ((54509009919955411:ℝ)/5000000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_02 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_02; ring
+  have h12 : centralNum12_02 q = ∑ e ∈ Finset.range 13, ([((-223948336232655401193:ℝ)/250000000000), ((-611595416705075004573:ℝ)/100000000000), ((-32892647849758258587:ℝ)/2500000000), ((-2994241958833853799:ℝ)/200000000), ((-53579787236459757:ℝ)/5000000), ((-26124926424019209:ℝ)/5000000), ((-225611791473159:ℝ)/125000), ((-22435208838891:ℝ)/50000), ((-40042213407:ℝ)/500), ((-2008263501:ℝ)/200), ((-21037887:ℝ)/25), ((-423927:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_02; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((-223948336232655401193:ℝ)/250000000000), ((-611595416705075004573:ℝ)/100000000000), ((-32892647849758258587:ℝ)/2500000000), ((-2994241958833853799:ℝ)/200000000), ((-53579787236459757:ℝ)/5000000), ((-26124926424019209:ℝ)/5000000), ((-225611791473159:ℝ)/125000), ((-22435208838891:ℝ)/50000), ((-40042213407:ℝ)/500), ((-2008263501:ℝ)/200), ((-21037887:ℝ)/25), ((-423927:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m12 := abs_poly_le (fun e => ([((-223948336232655401193:ℝ)/250000000000), ((-611595416705075004573:ℝ)/100000000000), ((-32892647849758258587:ℝ)/2500000000), ((-2994241958833853799:ℝ)/200000000), ((-53579787236459757:ℝ)/5000000), ((-26124926424019209:ℝ)/5000000), ((-225611791473159:ℝ)/125000), ((-22435208838891:ℝ)/50000), ((-40042213407:ℝ)/500), ((-2008263501:ℝ)/200), ((-21037887:ℝ)/25), ((-423927:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0) 13 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 13, ([((-223948336232655401193:ℝ)/250000000000), ((-611595416705075004573:ℝ)/100000000000), ((-32892647849758258587:ℝ)/2500000000), ((-2994241958833853799:ℝ)/200000000), ((-53579787236459757:ℝ)/5000000), ((-26124926424019209:ℝ)/5000000), ((-225611791473159:ℝ)/125000), ((-22435208838891:ℝ)/50000), ((-40042213407:ℝ)/500), ((-2008263501:ℝ)/200), ((-21037887:ℝ)/25), ((-423927:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e) - ((-223948336232655401193:ℝ)/250000000000) - ((-611595416705075004573:ℝ)/100000000000)*t| ≤ ((147667497366499162047:ℝ)/1000000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 13, ([((-223948336232655401193:ℝ)/250000000000), ((-611595416705075004573:ℝ)/100000000000), ((-32892647849758258587:ℝ)/2500000000), ((-2994241958833853799:ℝ)/200000000), ((-53579787236459757:ℝ)/5000000), ((-26124926424019209:ℝ)/5000000), ((-225611791473159:ℝ)/125000), ((-22435208838891:ℝ)/50000), ((-40042213407:ℝ)/500), ((-2008263501:ℝ)/200), ((-21037887:ℝ)/25), ((-423927:ℝ)/10), (-972:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((404066469482957952:ℝ)/244140625) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_02 q = ∑ e ∈ Finset.range 13, ([((-12250673972064743719543:ℝ)/976562500), ((-3694820757532591074487:ℝ)/97656250), ((-510759474679593777937:ℝ)/9765625), ((-17115568268716626162:ℝ)/390625), ((-1935461132715855228:ℝ)/78125), ((-778035990567772536:ℝ)/78125), ((-45599313066647088:ℝ)/15625), ((-1962835125529056:ℝ)/3125), ((-12316934110848:ℝ)/125), ((-274690392832:ℝ)/25), ((-20665833472:ℝ)/25), ((-188358656:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_02; ring
+  have m13 := abs_poly_le (fun e => ([((-12250673972064743719543:ℝ)/976562500), ((-3694820757532591074487:ℝ)/97656250), ((-510759474679593777937:ℝ)/9765625), ((-17115568268716626162:ℝ)/390625), ((-1935461132715855228:ℝ)/78125), ((-778035990567772536:ℝ)/78125), ((-45599313066647088:ℝ)/15625), ((-1962835125529056:ℝ)/3125), ((-12316934110848:ℝ)/125), ((-274690392832:ℝ)/25), ((-20665833472:ℝ)/25), ((-188358656:ℝ)/5), (-786432:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_02 q| ≤ ((4125390654533042982912:ℝ)/244140625) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_02 q = ∑ e ∈ Finset.range 13, ([((254728162443878761673:ℝ)/400000000), ((139484402611163196011:ℝ)/160000000), ((-936841611895201753:ℝ)/4000000), ((-2213811114517271931:ℝ)/1600000), ((-57560667892852917:ℝ)/40000), ((-6681657224875713:ℝ)/8000), ((-63512358377181:ℝ)/200), ((-6676066251267:ℝ)/80), ((-61467368673:ℝ)/4), ((-15651675005:ℝ)/8), (-164642125:ℝ), ((-16521875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_02; ring
+  have m23 := abs_poly_le (fun e => ([((254728162443878761673:ℝ)/400000000), ((139484402611163196011:ℝ)/160000000), ((-936841611895201753:ℝ)/4000000), ((-2213811114517271931:ℝ)/1600000), ((-57560667892852917:ℝ)/40000), ((-6681657224875713:ℝ)/8000), ((-63512358377181:ℝ)/200), ((-6676066251267:ℝ)/80), ((-61467368673:ℝ)/4), ((-15651675005:ℝ)/8), (-164642125:ℝ), ((-16521875:ℝ)/2), (-187500:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_02 q| ≤ ((116460235763482328963:ℝ)/160000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((239508751557:ℝ)/100000000000000)) bD'
+  have c6 : |(0:ℝ)| ≤ 0 := by simp
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-223948336232655401193:ℝ)/250000000000) + ((13319111944243:ℝ)/1953125)*((239508751557:ℝ)/100000000000000) - ((-156891275378256877:ℝ)/100000000000000)) (β := (0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-611595416705075004573:ℝ)/100000000000) - 3*((-223948336232655401193:ℝ)/250000000000)) + ((6239185329363:ℝ)/390625)*((239508751557:ℝ)/100000000000000) - ((-151315388426484233:ℝ)/5000000000000)) ht
+  have hW : pieceW q pieceX_11 0 2 = centralNum11_02 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_02 q + 18*Real.exp (-8*q)*centralNum13_02 q + 72*Real.exp (-11*q)*centralNum23_02 q + 8*q^7*(2*q-3)^2*((239508751557:ℝ)/100000000000000) + (0:ℝ) := by
+    rw [pieceW_02, pieceX_11, sym4_02, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((22700212925329204015622882510456587898814522224558666408551063173:ℝ)/5216441703442429483147071761015770448724108545592546412497265625000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-223948336232655401193:ℝ)/250000000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-611595416705075004573:ℝ)/100000000000) - 3*((-223948336232655401193:ℝ)/250000000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((239508751557:ℝ)/100000000000000) - (((-156891275378256877:ℝ)/100000000000000) + t * ((-151315388426484233:ℝ)/5000000000000)) = ((0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-223948336232655401193:ℝ)/250000000000) + ((13319111944243:ℝ)/1953125)*((239508751557:ℝ)/100000000000000) - ((-156891275378256877:ℝ)/100000000000000)) + t*((0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-611595416705075004573:ℝ)/100000000000) - 3*((-223948336232655401193:ℝ)/250000000000)) + ((6239185329363:ℝ)/390625)*((239508751557:ℝ)/100000000000000) - ((-151315388426484233:ℝ)/5000000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e03 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 0 3 - (((102291765485504683:ℝ)/1000000000000) + (q - ((43:ℝ)/10)) * ((-399276850579115567:ℝ)/5000000000000))| ≤ ((316057843768527711:ℝ)/10000000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_03 q = ∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_03; ring
+  have h12 : centralNum12_03 q = ∑ e ∈ Finset.range 14, ([((220338817184969195738049:ℝ)/35000000000000), ((247053299704254456617691:ℝ)/14000000000000), ((28260542989144704563307:ℝ)/1400000000000), ((1522062111614663385153:ℝ)/140000000000), ((2358198168533186013:ℝ)/2800000000), ((-1993735203059053143:ℝ)/700000000), ((-155152884468819033:ℝ)/70000000), ((-6450514019908911:ℝ)/7000000), ((-176242571932509:ℝ)/700000), ((-1328312978109:ℝ)/28000), ((-86117045481:ℝ)/14000), ((-737771571:ℝ)/1400), ((-3773547:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_03; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0) 0 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((220338817184969195738049:ℝ)/35000000000000), ((247053299704254456617691:ℝ)/14000000000000), ((28260542989144704563307:ℝ)/1400000000000), ((1522062111614663385153:ℝ)/140000000000), ((2358198168533186013:ℝ)/2800000000), ((-1993735203059053143:ℝ)/700000000), ((-155152884468819033:ℝ)/70000000), ((-6450514019908911:ℝ)/7000000), ((-176242571932509:ℝ)/700000), ((-1328312978109:ℝ)/28000), ((-86117045481:ℝ)/14000), ((-737771571:ℝ)/1400), ((-3773547:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 12 ht
+  have m12 := abs_poly_le (fun e => ([((220338817184969195738049:ℝ)/35000000000000), ((247053299704254456617691:ℝ)/14000000000000), ((28260542989144704563307:ℝ)/1400000000000), ((1522062111614663385153:ℝ)/140000000000), ((2358198168533186013:ℝ)/2800000000), ((-1993735203059053143:ℝ)/700000000), ((-155152884468819033:ℝ)/70000000), ((-6450514019908911:ℝ)/7000000), ((-176242571932509:ℝ)/700000), ((-1328312978109:ℝ)/28000), ((-86117045481:ℝ)/14000), ((-737771571:ℝ)/1400), ((-3773547:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 2, ([(0:ℝ), (0:ℝ)] : List ℝ).getD e 0 * t^e) - ((0:ℝ) + (0:ℝ)*t)| ≤ (0:ℝ) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 14, ([((220338817184969195738049:ℝ)/35000000000000), ((247053299704254456617691:ℝ)/14000000000000), ((28260542989144704563307:ℝ)/1400000000000), ((1522062111614663385153:ℝ)/140000000000), ((2358198168533186013:ℝ)/2800000000), ((-1993735203059053143:ℝ)/700000000), ((-155152884468819033:ℝ)/70000000), ((-6450514019908911:ℝ)/7000000), ((-176242571932509:ℝ)/700000), ((-1328312978109:ℝ)/28000), ((-86117045481:ℝ)/14000), ((-737771571:ℝ)/1400), ((-3773547:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((220338817184969195738049:ℝ)/35000000000000) - ((247053299704254456617691:ℝ)/14000000000000)*t| ≤ ((29798707128018696795609:ℝ)/140000000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 14, ([((220338817184969195738049:ℝ)/35000000000000), ((247053299704254456617691:ℝ)/14000000000000), ((28260542989144704563307:ℝ)/1400000000000), ((1522062111614663385153:ℝ)/140000000000), ((2358198168533186013:ℝ)/2800000000), ((-1993735203059053143:ℝ)/700000000), ((-155152884468819033:ℝ)/70000000), ((-6450514019908911:ℝ)/7000000), ((-176242571932509:ℝ)/700000), ((-1328312978109:ℝ)/28000), ((-86117045481:ℝ)/14000), ((-737771571:ℝ)/1400), ((-3773547:ℝ)/140), ((-4374:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((144775909446518742045687:ℝ)/17500000000000) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_03 q = ∑ e ∈ Finset.range 14, ([((-1299113604838123462945181:ℝ)/8544921875), ((-881225659240854221379002:ℝ)/1708984375), ((-275499130919339135760708:ℝ)/341796875), ((-52566391077497689105064:ℝ)/68359375), ((-1366047601631056189488:ℝ)/2734375), ((-638253856052390802528:ℝ)/2734375), ((-44129901410707167936:ℝ)/546875), ((-2285922045662692224:ℝ)/109375), ((-88712766977882112:ℝ)/21875), ((-509501959718912:ℝ)/875), ((-52616045756416:ℝ)/875), ((-740165517312:ℝ)/175), ((-6356205568:ℝ)/35), ((-25165824:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_03; ring
+  have m13 := abs_poly_le (fun e => ([((-1299113604838123462945181:ℝ)/8544921875), ((-881225659240854221379002:ℝ)/1708984375), ((-275499130919339135760708:ℝ)/341796875), ((-52566391077497689105064:ℝ)/68359375), ((-1366047601631056189488:ℝ)/2734375), ((-638253856052390802528:ℝ)/2734375), ((-44129901410707167936:ℝ)/546875), ((-2285922045662692224:ℝ)/109375), ((-88712766977882112:ℝ)/21875), ((-509501959718912:ℝ)/875), ((-52616045756416:ℝ)/875), ((-740165517312:ℝ)/175), ((-6356205568:ℝ)/35), ((-25165824:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_03 q| ≤ ((1815619559121621031927808:ℝ)/8544921875) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_03 q = ∑ e ∈ Finset.range 14, ([((49201709893935956842223:ℝ)/11200000000), ((74484140621210768845231:ℝ)/4480000000), ((1639948932955442380089:ℝ)/64000000), ((969531195029695065949:ℝ)/44800000), ((48875027825605811397:ℝ)/4480000), ((99691608824645571:ℝ)/32000), ((5580441939862971:ℝ)/22400), ((-401526400369107:ℝ)/2240), ((-19375615632141:ℝ)/224), ((-650225861015:ℝ)/32), ((-330303318125:ℝ)/112), ((-15057496875:ℝ)/56), ((-56890625:ℝ)/4), ((-2343750:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_03; ring
+  have m23 := abs_poly_le (fun e => ([((49201709893935956842223:ℝ)/11200000000), ((74484140621210768845231:ℝ)/4480000000), ((1639948932955442380089:ℝ)/64000000), ((969531195029695065949:ℝ)/44800000), ((48875027825605811397:ℝ)/4480000), ((99691608824645571:ℝ)/32000), ((5580441939862971:ℝ)/22400), ((-401526400369107:ℝ)/2240), ((-19375615632141:ℝ)/224), ((-650225861015:ℝ)/32), ((-330303318125:ℝ)/112), ((-15057496875:ℝ)/56), ((-56890625:ℝ)/4), ((-2343750:ℝ)/7)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_03 q| ≤ ((1013537273702261071269:ℝ)/160000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-13794930831:ℝ)/4000000000000)) bD'
+  have c6 : |(0:ℝ)| ≤ 0 := by simp
+  have c7 := affine_round (α := (0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((220338817184969195738049:ℝ)/35000000000000) + ((13319111944243:ℝ)/1953125)*((-13794930831:ℝ)/4000000000000) - ((102291765485504683:ℝ)/1000000000000)) (β := (0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((247053299704254456617691:ℝ)/14000000000000) - 3*((220338817184969195738049:ℝ)/35000000000000)) + ((6239185329363:ℝ)/390625)*((-13794930831:ℝ)/4000000000000) - ((-399276850579115567:ℝ)/5000000000000)) ht
+  have hW : pieceW q pieceX_11 0 3 = centralNum11_03 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_03 q + 18*Real.exp (-8*q)*centralNum13_03 q + 72*Real.exp (-11*q)*centralNum23_03 q + 8*q^7*(2*q-3)^2*((-13794930831:ℝ)/4000000000000) + (0:ℝ) := by
+    rw [pieceW_03, pieceX_11, sym4_03, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((169714038779653967985641204715655037117161754648724387380896945937:ℝ)/1460603676963880255281180093084415725642750392765912995499234375000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : ((0:ℝ) + (0:ℝ)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((220338817184969195738049:ℝ)/35000000000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((247053299704254456617691:ℝ)/14000000000000) - 3*((220338817184969195738049:ℝ)/35000000000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((-13794930831:ℝ)/4000000000000) - (((102291765485504683:ℝ)/1000000000000) + t * ((-399276850579115567:ℝ)/5000000000000)) = ((0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((220338817184969195738049:ℝ)/35000000000000) + ((13319111944243:ℝ)/1953125)*((-13794930831:ℝ)/4000000000000) - ((102291765485504683:ℝ)/1000000000000)) + t*((0:ℝ) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((247053299704254456617691:ℝ)/14000000000000) - 3*((220338817184969195738049:ℝ)/35000000000000)) + ((6239185329363:ℝ)/390625)*((-13794930831:ℝ)/4000000000000) - ((-399276850579115567:ℝ)/5000000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e11 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 1 1 - (((76434703039578379:ℝ)/12500000000) + (q - ((43:ℝ)/10)) * ((6387454564706417:ℝ)/500000000))| ≤ ((16922056943040021:ℝ)/125000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_11 q = ∑ e ∈ Finset.range 10, ([((71007871129417:ℝ)/11718750), ((9999955318189:ℝ)/781250), ((3816383624693:ℝ)/312500), ((107902607022:ℝ)/15625), ((7962650087:ℝ)/3125), ((396979268:ℝ)/625), ((13344268:ℝ)/125), ((291008:ℝ)/25), ((3728:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_11; ring
+  have h12 : centralNum12_11 q = ∑ e ∈ Finset.range 13, ([((248763388407391856827:ℝ)/187500000000), ((-16558301989509293371:ℝ)/25000000000), ((-4672102694584150229:ℝ)/625000000), ((-594039486534416493:ℝ)/50000000), ((-12475137225839179:ℝ)/1250000), ((-6705585167006783:ℝ)/1250000), ((-61942873609043:ℝ)/31250), ((-6477654415097:ℝ)/12500), ((-12029190949:ℝ)/125), ((-1869692641:ℝ)/150), ((-26839476:ℝ)/25), ((-276858:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_11; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((71007871129417:ℝ)/11718750), ((9999955318189:ℝ)/781250), ((3816383624693:ℝ)/312500), ((107902607022:ℝ)/15625), ((7962650087:ℝ)/3125), ((396979268:ℝ)/625), ((13344268:ℝ)/125), ((291008:ℝ)/25), ((3728:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0) 8 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((248763388407391856827:ℝ)/187500000000), ((-16558301989509293371:ℝ)/25000000000), ((-4672102694584150229:ℝ)/625000000), ((-594039486534416493:ℝ)/50000000), ((-12475137225839179:ℝ)/1250000), ((-6705585167006783:ℝ)/1250000), ((-61942873609043:ℝ)/31250), ((-6477654415097:ℝ)/12500), ((-12029190949:ℝ)/125), ((-1869692641:ℝ)/150), ((-26839476:ℝ)/25), ((-276858:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0) 11 ht
+  have m12 := abs_poly_le (fun e => ([((248763388407391856827:ℝ)/187500000000), ((-16558301989509293371:ℝ)/25000000000), ((-4672102694584150229:ℝ)/625000000), ((-594039486534416493:ℝ)/50000000), ((-12475137225839179:ℝ)/1250000), ((-6705585167006783:ℝ)/1250000), ((-61942873609043:ℝ)/31250), ((-6477654415097:ℝ)/12500), ((-12029190949:ℝ)/125), ((-1869692641:ℝ)/150), ((-26839476:ℝ)/25), ((-276858:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0) 13 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 10, ([((71007871129417:ℝ)/11718750), ((9999955318189:ℝ)/781250), ((3816383624693:ℝ)/312500), ((107902607022:ℝ)/15625), ((7962650087:ℝ)/3125), ((396979268:ℝ)/625), ((13344268:ℝ)/125), ((291008:ℝ)/25), ((3728:ℝ)/5), ((64:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((71007871129417:ℝ)/11718750) + ((9999955318189:ℝ)/781250)*t)| ≤ ((3030265013351:ℝ)/23437500) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 13, ([((248763388407391856827:ℝ)/187500000000), ((-16558301989509293371:ℝ)/25000000000), ((-4672102694584150229:ℝ)/625000000), ((-594039486534416493:ℝ)/50000000), ((-12475137225839179:ℝ)/1250000), ((-6705585167006783:ℝ)/1250000), ((-61942873609043:ℝ)/31250), ((-6477654415097:ℝ)/12500), ((-12029190949:ℝ)/125), ((-1869692641:ℝ)/150), ((-26839476:ℝ)/25), ((-276858:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e) - ((248763388407391856827:ℝ)/187500000000) - ((-16558301989509293371:ℝ)/25000000000)*t| ≤ ((65766092603652404027:ℝ)/750000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 13, ([((248763388407391856827:ℝ)/187500000000), ((-16558301989509293371:ℝ)/25000000000), ((-4672102694584150229:ℝ)/625000000), ((-594039486534416493:ℝ)/50000000), ((-12475137225839179:ℝ)/1250000), ((-6705585167006783:ℝ)/1250000), ((-61942873609043:ℝ)/31250), ((-6477654415097:ℝ)/12500), ((-12029190949:ℝ)/125), ((-1869692641:ℝ)/150), ((-26839476:ℝ)/25), ((-276858:ℝ)/5), (-1296:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((46270606341739487977:ℝ)/31250000000) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_11 q = ∑ e ∈ Finset.range 13, ([((-23636187526244198205971:ℝ)/1464843750), ((-14306012141816301687563:ℝ)/292968750), ((-7936803427449882601717:ℝ)/117187500), ((-22235656679758330186:ℝ)/390625), ((-2522440488406646889:ℝ)/78125), ((-1017142003499354028:ℝ)/78125), ((-59793460927657604:ℝ)/15625), ((-2581435531644608:ℝ)/3125), ((-16245433669744:ℝ)/125), ((-1089969734848:ℝ)/75), ((-82227181568:ℝ)/75), ((-751468544:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_11; ring
+  have m13 := abs_poly_le (fun e => ([((-23636187526244198205971:ℝ)/1464843750), ((-14306012141816301687563:ℝ)/292968750), ((-7936803427449882601717:ℝ)/117187500), ((-22235656679758330186:ℝ)/390625), ((-2522440488406646889:ℝ)/78125), ((-1017142003499354028:ℝ)/78125), ((-59793460927657604:ℝ)/15625), ((-2581435531644608:ℝ)/3125), ((-16245433669744:ℝ)/125), ((-1089969734848:ℝ)/75), ((-82227181568:ℝ)/75), ((-751468544:ℝ)/15), (-1048576:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m13' : |centralNum13_11 q| ≤ ((15934801878370530391808:ℝ)/732421875) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_11 q = ∑ e ∈ Finset.range 13, ([((1592256870024178554313:ℝ)/1500000000), ((1079586608943150872531:ℝ)/600000000), ((8148314038574850127:ℝ)/15000000), ((-2326812355025049197:ℝ)/2000000), ((-78012551923424559:ℝ)/50000), ((-9826679630034531:ℝ)/10000), ((-97368649806617:ℝ)/250), ((-10501923302149:ℝ)/100), ((-98439132751:ℝ)/5), ((-15242412881:ℝ)/6), ((-648156500:ℝ)/3), ((-32803750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_11; ring
+  have m23 := abs_poly_le (fun e => ([((1592256870024178554313:ℝ)/1500000000), ((1079586608943150872531:ℝ)/600000000), ((8148314038574850127:ℝ)/15000000), ((-2326812355025049197:ℝ)/2000000), ((-78012551923424559:ℝ)/50000), ((-9826679630034531:ℝ)/10000), ((-97368649806617:ℝ)/250), ((-10501923302149:ℝ)/100), ((-98439132751:ℝ)/5), ((-15242412881:ℝ)/6), ((-648156500:ℝ)/3), ((-32803750:ℝ)/3), (-250000:ℝ)] : List ℝ).getD e 0) 13 ht
+  have m23' : |centralNum23_11 q| ≤ ((1248197549002646401041:ℝ)/1000000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((16965620617:ℝ)/4000000000000)) bD'
+  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1))| ≤ ((47011623600376761918423040000000:ℝ)/52812247287505177420647101083018863) := by
+    rw [abs_neg, tailWeight_1, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
+    have hq6 : q^6 ≤ ((22:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
+    have hB : (2*q-3)^2 ≤ (2*((22:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
+    have hx := piece11_Et h0
+    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
+    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((4814744136400:ℝ)/531441)) ≤ ((22:ℝ)/5)^6*(8000*(2*((22:ℝ)/5)-3)^2*(1/((99375560574937156562341070943:ℝ)/5000000000))*((4814744136400:ℝ)/531441)) := by
+          gcongr
+      _ ≤ ((47011623600376761918423040000000:ℝ)/52812247287505177420647101083018863) := by norm_num
+  have c7 := affine_round (α := ((71007871129417:ℝ)/11718750) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((248763388407391856827:ℝ)/187500000000) + ((13319111944243:ℝ)/1953125)*((16965620617:ℝ)/4000000000000) - ((76434703039578379:ℝ)/12500000000)) (β := ((9999955318189:ℝ)/781250) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-16558301989509293371:ℝ)/25000000000) - 3*((248763388407391856827:ℝ)/187500000000)) + ((6239185329363:ℝ)/390625)*((16965620617:ℝ)/4000000000000) - ((6387454564706417:ℝ)/500000000)) ht
+  have hW : pieceW q pieceX_11 1 1 = centralNum11_11 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_11 q + 18*Real.exp (-8*q)*centralNum13_11 q + 72*Real.exp (-11*q)*centralNum23_11 q + 8*q^7*(2*q-3)^2*((16965620617:ℝ)/4000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 1)) := by
+    rw [pieceW_11, pieceX_11, sym4_11, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((9412552062277082721970013227300661657828403734026839267590728546133:ℝ)/1877919013239274613932945833965677361540679076413316708499015625000000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((71007871129417:ℝ)/11718750) + ((9999955318189:ℝ)/781250)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((248763388407391856827:ℝ)/187500000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-16558301989509293371:ℝ)/25000000000) - 3*((248763388407391856827:ℝ)/187500000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((16965620617:ℝ)/4000000000000) - (((76434703039578379:ℝ)/12500000000) + t * ((6387454564706417:ℝ)/500000000)) = (((71007871129417:ℝ)/11718750) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((248763388407391856827:ℝ)/187500000000) + ((13319111944243:ℝ)/1953125)*((16965620617:ℝ)/4000000000000) - ((76434703039578379:ℝ)/12500000000)) + t*(((9999955318189:ℝ)/781250) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-16558301989509293371:ℝ)/25000000000) - 3*((248763388407391856827:ℝ)/187500000000)) + ((6239185329363:ℝ)/390625)*((16965620617:ℝ)/4000000000000) - ((6387454564706417:ℝ)/500000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e12 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 1 2 - (((-564027879475575983:ℝ)/1000000000000) + (q - ((43:ℝ)/10)) * ((-29604652713241711:ℝ)/25000000000))| ≤ ((449889257541807653:ℝ)/5000000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_12 q = ∑ e ∈ Finset.range 9, ([((-176998165372:ℝ)/234375), ((-203900710441:ℝ)/187500), ((-43155525023:ℝ)/75000), ((-373921421:ℝ)/3750), ((4014179:ℝ)/150), ((1248032:ℝ)/75), ((51614:ℝ)/15), ((1016:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_12; ring
+  have h12 : centralNum12_12 q = ∑ e ∈ Finset.range 14, ([((208720429269169350716129:ℝ)/15000000000000), ((282545028774095741606971:ℝ)/6000000000000), ((40204186713464397974987:ℝ)/600000000000), ((3132364673144003960353:ℝ)/60000000000), ((27737302790915891293:ℝ)/1200000000), ((1309657730051069897:ℝ)/300000000), ((-35203127617150073:ℝ)/30000000), ((-3344485737550351:ℝ)/3000000), ((-118835636705309:ℝ)/300000), ((-343777946783:ℝ)/4000), ((-24439044867:ℝ)/2000), ((-223861617:ℝ)/200), ((-1206009:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_12; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((-176998165372:ℝ)/234375), ((-203900710441:ℝ)/187500), ((-43155525023:ℝ)/75000), ((-373921421:ℝ)/3750), ((4014179:ℝ)/150), ((1248032:ℝ)/75), ((51614:ℝ)/15), ((1016:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0) 7 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((208720429269169350716129:ℝ)/15000000000000), ((282545028774095741606971:ℝ)/6000000000000), ((40204186713464397974987:ℝ)/600000000000), ((3132364673144003960353:ℝ)/60000000000), ((27737302790915891293:ℝ)/1200000000), ((1309657730051069897:ℝ)/300000000), ((-35203127617150073:ℝ)/30000000), ((-3344485737550351:ℝ)/3000000), ((-118835636705309:ℝ)/300000), ((-343777946783:ℝ)/4000), ((-24439044867:ℝ)/2000), ((-223861617:ℝ)/200), ((-1206009:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0) 12 ht
+  have m12 := abs_poly_le (fun e => ([((208720429269169350716129:ℝ)/15000000000000), ((282545028774095741606971:ℝ)/6000000000000), ((40204186713464397974987:ℝ)/600000000000), ((3132364673144003960353:ℝ)/60000000000), ((27737302790915891293:ℝ)/1200000000), ((1309657730051069897:ℝ)/300000000), ((-35203127617150073:ℝ)/30000000), ((-3344485737550351:ℝ)/3000000), ((-118835636705309:ℝ)/300000), ((-343777946783:ℝ)/4000), ((-24439044867:ℝ)/2000), ((-223861617:ℝ)/200), ((-1206009:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0) 14 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 9, ([((-176998165372:ℝ)/234375), ((-203900710441:ℝ)/187500), ((-43155525023:ℝ)/75000), ((-373921421:ℝ)/3750), ((4014179:ℝ)/150), ((1248032:ℝ)/75), ((51614:ℝ)/15), ((1016:ℝ)/3), ((40:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((-176998165372:ℝ)/234375) + ((-203900710441:ℝ)/187500)*t)| ≤ ((21962356427:ℝ)/3750000) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 14, ([((208720429269169350716129:ℝ)/15000000000000), ((282545028774095741606971:ℝ)/6000000000000), ((40204186713464397974987:ℝ)/600000000000), ((3132364673144003960353:ℝ)/60000000000), ((27737302790915891293:ℝ)/1200000000), ((1309657730051069897:ℝ)/300000000), ((-35203127617150073:ℝ)/30000000), ((-3344485737550351:ℝ)/3000000), ((-118835636705309:ℝ)/300000), ((-343777946783:ℝ)/4000), ((-24439044867:ℝ)/2000), ((-223861617:ℝ)/200), ((-1206009:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e) - ((208720429269169350716129:ℝ)/15000000000000) - ((282545028774095741606971:ℝ)/6000000000000)*t| ≤ ((43477934554151727891037:ℝ)/60000000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 14, ([((208720429269169350716129:ℝ)/15000000000000), ((282545028774095741606971:ℝ)/6000000000000), ((40204186713464397974987:ℝ)/600000000000), ((3132364673144003960353:ℝ)/60000000000), ((27737302790915891293:ℝ)/1200000000), ((1309657730051069897:ℝ)/300000000), ((-35203127617150073:ℝ)/30000000), ((-3344485737550351:ℝ)/3000000), ((-118835636705309:ℝ)/300000), ((-343777946783:ℝ)/4000), ((-24439044867:ℝ)/2000), ((-223861617:ℝ)/200), ((-1206009:ℝ)/20), (-1458:ℝ)] : List ℝ).getD e 0 * t^e)| ≤ ((290226170101231218090631:ℝ)/15000000000000) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_12 q = ∑ e ∈ Finset.range 14, ([((-795320893779051459306409:ℝ)/2441406250), ((-3265814710054412861809223:ℝ)/2929687500), ((-2059038314598989102997199:ℝ)/1171875000), ((-98988876360627623014453:ℝ)/58593750), ((-863828107405130829487:ℝ)/781250), ((-203217688126965470496:ℝ)/390625), ((-14144496241877590422:ℝ)/78125), ((-737339181759570328:ℝ)/15625), ((-28788629906926504:ℝ)/3125), ((-166302275714944:ℝ)/125), ((-51809232526336:ℝ)/375), ((-732722102272:ℝ)/75), ((-6324748288:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_12; ring
+  have m13 := abs_poly_le (fun e => ([((-795320893779051459306409:ℝ)/2441406250), ((-3265814710054412861809223:ℝ)/2929687500), ((-2059038314598989102997199:ℝ)/1171875000), ((-98988876360627623014453:ℝ)/58593750), ((-863828107405130829487:ℝ)/781250), ((-203217688126965470496:ℝ)/390625), ((-14144496241877590422:ℝ)/78125), ((-737339181759570328:ℝ)/15625), ((-28788629906926504:ℝ)/3125), ((-166302275714944:ℝ)/125), ((-51809232526336:ℝ)/375), ((-732722102272:ℝ)/75), ((-6324748288:ℝ)/15), (-8388608:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m13' : |centralNum13_12 q| ≤ ((1672164583259682749164928:ℝ)/3662109375) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_12 q = ∑ e ∈ Finset.range 14, ([((13644908803463394919237:ℝ)/1600000000), ((69162834173082175280527:ℝ)/1920000000), ((11400171152669650918511:ℝ)/192000000), ((1018501734543973656253:ℝ)/19200000), ((18268531314484432663:ℝ)/640000), ((293522262427818663:ℝ)/32000), ((4262385852341769:ℝ)/3200), ((-68970763055633:ℝ)/320), ((-5236770888559:ℝ)/32), ((-1358533122795:ℝ)/32), ((-309910842125:ℝ)/48), ((-14537196875:ℝ)/24), ((-392234375:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_12; ring
+  have m23 := abs_poly_le (fun e => ([((13644908803463394919237:ℝ)/1600000000), ((69162834173082175280527:ℝ)/1920000000), ((11400171152669650918511:ℝ)/192000000), ((1018501734543973656253:ℝ)/19200000), ((18268531314484432663:ℝ)/640000), ((293522262427818663:ℝ)/32000), ((4262385852341769:ℝ)/3200), ((-68970763055633:ℝ)/320), ((-5236770888559:ℝ)/32), ((-1358533122795:ℝ)/32), ((-309910842125:ℝ)/48), ((-14537196875:ℝ)/24), ((-392234375:ℝ)/12), (-781250:ℝ)] : List ℝ).getD e 0) 14 ht
+  have m23' : |centralNum23_12 q| ≤ ((2044808378748020917049:ℝ)/160000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-31862564051:ℝ)/2500000000000)) bD'
+  have c6 : |(0:ℝ)| ≤ 0 := by simp
+  have c7 := affine_round (α := ((-176998165372:ℝ)/234375) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((208720429269169350716129:ℝ)/15000000000000) + ((13319111944243:ℝ)/1953125)*((-31862564051:ℝ)/2500000000000) - ((-564027879475575983:ℝ)/1000000000000)) (β := ((-203900710441:ℝ)/187500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((282545028774095741606971:ℝ)/6000000000000) - 3*((208720429269169350716129:ℝ)/15000000000000)) + ((6239185329363:ℝ)/390625)*((-31862564051:ℝ)/2500000000000) - ((-29604652713241711:ℝ)/25000000000)) ht
+  have hW : pieceW q pieceX_11 1 2 = centralNum11_12 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_12 q + 18*Real.exp (-8*q)*centralNum13_12 q + 72*Real.exp (-11*q)*centralNum23_12 q + 8*q^7*(2*q-3)^2*((-31862564051:ℝ)/2500000000000) + (0:ℝ) := by
+    rw [pieceW_12, pieceX_11, sym4_12, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((54737043874035345737487781044113335346885978773192744403335993:ℝ)/58149989262512219268137690558291139068714051860796816429443359375000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-176998165372:ℝ)/234375) + ((-203900710441:ℝ)/187500)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((208720429269169350716129:ℝ)/15000000000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((282545028774095741606971:ℝ)/6000000000000) - 3*((208720429269169350716129:ℝ)/15000000000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((-31862564051:ℝ)/2500000000000) - (((-564027879475575983:ℝ)/1000000000000) + t * ((-29604652713241711:ℝ)/25000000000)) = (((-176998165372:ℝ)/234375) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((208720429269169350716129:ℝ)/15000000000000) + ((13319111944243:ℝ)/1953125)*((-31862564051:ℝ)/2500000000000) - ((-564027879475575983:ℝ)/1000000000000)) + t*(((-203900710441:ℝ)/187500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((282545028774095741606971:ℝ)/6000000000000) - 3*((208720429269169350716129:ℝ)/15000000000000)) + ((6239185329363:ℝ)/390625)*((-31862564051:ℝ)/2500000000000) - ((-29604652713241711:ℝ)/25000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e13 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 1 3 - (((-729595189858318377:ℝ)/1000000000000) + (q - ((43:ℝ)/10)) * ((245007736994881991:ℝ)/1000000000000))| ≤ ((18547823388804841:ℝ)/200000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_13 q = ∑ e ∈ Finset.range 7, ([((-18964089147:ℝ)/50000), ((-1323075987:ℝ)/2500), ((-30769209:ℝ)/100), ((-477042:ℝ)/5), (-16641:ℝ), (-1548:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_13; ring
+  have h12 : centralNum12_13 q = ∑ e ∈ Finset.range 15, ([((-16672900535634902056551399:ℝ)/700000000000000), ((-13284211934475194561349303:ℝ)/280000000000000), ((-261083881555244538044367:ℝ)/14000000000000), ((6108274711895806933023:ℝ)/175000000000), ((7576547878326674596947:ℝ)/140000000000), ((148263508004876014983:ℝ)/4000000000), ((1318825820085570669:ℝ)/87500000), ((129068550267160953:ℝ)/35000000), ((716054425939497:ℝ)/1750000), ((-145374875257509:ℝ)/2800000), ((-4156106174127:ℝ)/140000), ((-19952365959:ℝ)/3500), ((-122042619:ℝ)/200), ((-10145493:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_13; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((-18964089147:ℝ)/50000), ((-1323075987:ℝ)/2500), ((-30769209:ℝ)/100), ((-477042:ℝ)/5), (-16641:ℝ), (-1548:ℝ), (-60:ℝ)] : List ℝ).getD e 0) 5 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((-16672900535634902056551399:ℝ)/700000000000000), ((-13284211934475194561349303:ℝ)/280000000000000), ((-261083881555244538044367:ℝ)/14000000000000), ((6108274711895806933023:ℝ)/175000000000), ((7576547878326674596947:ℝ)/140000000000), ((148263508004876014983:ℝ)/4000000000), ((1318825820085570669:ℝ)/87500000), ((129068550267160953:ℝ)/35000000), ((716054425939497:ℝ)/1750000), ((-145374875257509:ℝ)/2800000), ((-4156106174127:ℝ)/140000), ((-19952365959:ℝ)/3500), ((-122042619:ℝ)/200), ((-10145493:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 13 ht
+  have m12 := abs_poly_le (fun e => ([((-16672900535634902056551399:ℝ)/700000000000000), ((-13284211934475194561349303:ℝ)/280000000000000), ((-261083881555244538044367:ℝ)/14000000000000), ((6108274711895806933023:ℝ)/175000000000), ((7576547878326674596947:ℝ)/140000000000), ((148263508004876014983:ℝ)/4000000000), ((1318825820085570669:ℝ)/87500000), ((129068550267160953:ℝ)/35000000), ((716054425939497:ℝ)/1750000), ((-145374875257509:ℝ)/2800000), ((-4156106174127:ℝ)/140000), ((-19952365959:ℝ)/3500), ((-122042619:ℝ)/200), ((-10145493:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 7, ([((-18964089147:ℝ)/50000), ((-1323075987:ℝ)/2500), ((-30769209:ℝ)/100), ((-477042:ℝ)/5), (-16641:ℝ), (-1548:ℝ), (-60:ℝ)] : List ℝ).getD e 0 * t^e) - (((-18964089147:ℝ)/50000) + ((-1323075987:ℝ)/2500)*t)| ≤ ((158700447:ℝ)/50000) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 15, ([((-16672900535634902056551399:ℝ)/700000000000000), ((-13284211934475194561349303:ℝ)/280000000000000), ((-261083881555244538044367:ℝ)/14000000000000), ((6108274711895806933023:ℝ)/175000000000), ((7576547878326674596947:ℝ)/140000000000), ((148263508004876014983:ℝ)/4000000000), ((1318825820085570669:ℝ)/87500000), ((129068550267160953:ℝ)/35000000), ((716054425939497:ℝ)/1750000), ((-145374875257509:ℝ)/2800000), ((-4156106174127:ℝ)/140000), ((-19952365959:ℝ)/3500), ((-122042619:ℝ)/200), ((-10145493:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e) - ((-16672900535634902056551399:ℝ)/700000000000000) - ((-13284211934475194561349303:ℝ)/280000000000000)*t| ≤ ((636134345398873584198699:ℝ)/2800000000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 15, ([((-16672900535634902056551399:ℝ)/700000000000000), ((-13284211934475194561349303:ℝ)/280000000000000), ((-261083881555244538044367:ℝ)/14000000000000), ((6108274711895806933023:ℝ)/175000000000), ((7576547878326674596947:ℝ)/140000000000), ((148263508004876014983:ℝ)/4000000000), ((1318825820085570669:ℝ)/87500000), ((129068550267160953:ℝ)/35000000), ((716054425939497:ℝ)/1750000), ((-145374875257509:ℝ)/2800000), ((-4156106174127:ℝ)/140000), ((-19952365959:ℝ)/3500), ((-122042619:ℝ)/200), ((-10145493:ℝ)/280), ((-6561:ℝ)/7)] : List ℝ).getD e 0 * t^e)| ≤ ((40305974211206838185876799:ℝ)/1400000000000000) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_13 q = ∑ e ∈ Finset.range 15, ([((-1961176078027018388455291921:ℝ)/683593750000), ((-1166793429299213045221003367:ℝ)/102539062500), ((-142044914268608007316835709:ℝ)/6835937500), ((-1132154287413885592093188:ℝ)/48828125), ((-3625972976278531788043243:ℝ)/205078125), ((-133364470596785916017588:ℝ)/13671875), ((-1569482051917972770324:ℝ)/390625), ((-686759974072786314208:ℝ)/546875), ((-32747870371391484768:ℝ)/109375), ((-1185809567750713088:ℝ)/21875), ((-13759398914842624:ℝ)/1875), ((-630372135714816:ℝ)/875), ((-8486527696896:ℝ)/175), ((-30056382464:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_13; ring
+  have m13 := abs_poly_le (fun e => ([((-1961176078027018388455291921:ℝ)/683593750000), ((-1166793429299213045221003367:ℝ)/102539062500), ((-142044914268608007316835709:ℝ)/6835937500), ((-1132154287413885592093188:ℝ)/48828125), ((-3625972976278531788043243:ℝ)/205078125), ((-133364470596785916017588:ℝ)/13671875), ((-1569482051917972770324:ℝ)/390625), ((-686759974072786314208:ℝ)/546875), ((-32747870371391484768:ℝ)/109375), ((-1185809567750713088:ℝ)/21875), ((-13759398914842624:ℝ)/1875), ((-630372135714816:ℝ)/875), ((-8486527696896:ℝ)/175), ((-30056382464:ℝ)/15), ((-268435456:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_13 q| ≤ ((543414677425471261251204352:ℝ)/128173828125) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_13 q = ∑ e ∈ Finset.range 15, ([((-5195625945973952976668009:ℝ)/44800000000), ((-16825092437221342101774229:ℝ)/53760000000), ((-295956597011967768439527:ℝ)/896000000), ((-1636667164603511311477:ℝ)/11200000), ((450212422972983407221:ℝ)/26880000), ((100596886932896762273:ℝ)/1792000), ((91883049623956641:ℝ)/2800), ((23406375075165209:ℝ)/2240), ((429467615403147:ℝ)/224), ((127752329582615:ℝ)/896), ((-13678723938125:ℝ)/672), ((-193344271875:ℝ)/28), ((-47762890625:ℝ)/56), ((-8948046875:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_13; ring
+  have m23 := abs_poly_le (fun e => ([((-5195625945973952976668009:ℝ)/44800000000), ((-16825092437221342101774229:ℝ)/53760000000), ((-295956597011967768439527:ℝ)/896000000), ((-1636667164603511311477:ℝ)/11200000), ((450212422972983407221:ℝ)/26880000), ((100596886932896762273:ℝ)/1792000), ((91883049623956641:ℝ)/2800), ((23406375075165209:ℝ)/2240), ((429467615403147:ℝ)/224), ((127752329582615:ℝ)/896), ((-13678723938125:ℝ)/672), ((-193344271875:ℝ)/28), ((-47762890625:ℝ)/56), ((-8948046875:ℝ)/168), ((-9765625:ℝ)/7)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_13 q| ≤ ((20257030956017958321238679:ℝ)/134400000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((46076295519:ℝ)/2500000000000)) bD'
+  have c6 : |(0:ℝ)| ≤ 0 := by simp
+  have c7 := affine_round (α := ((-18964089147:ℝ)/50000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-16672900535634902056551399:ℝ)/700000000000000) + ((13319111944243:ℝ)/1953125)*((46076295519:ℝ)/2500000000000) - ((-729595189858318377:ℝ)/1000000000000)) (β := ((-1323075987:ℝ)/2500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-13284211934475194561349303:ℝ)/280000000000000) - 3*((-16672900535634902056551399:ℝ)/700000000000000)) + ((6239185329363:ℝ)/390625)*((46076295519:ℝ)/2500000000000) - ((245007736994881991:ℝ)/1000000000000)) ht
+  have hW : pieceW q pieceX_11 1 3 = centralNum11_13 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_13 q + 18*Real.exp (-8*q)*centralNum13_13 q + 72*Real.exp (-11*q)*centralNum23_13 q + 8*q^7*(2*q-3)^2*((46076295519:ℝ)/2500000000000) + (0:ℝ) := by
+    rw [pieceW_13, pieceX_11, sym4_13, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((255925908916355730316299302147611941956743773646865035253254358787:ℝ)/1825754596204850319101475116355519657053437990957391244374042968750000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((-18964089147:ℝ)/50000) + ((-1323075987:ℝ)/2500)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-16672900535634902056551399:ℝ)/700000000000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-13284211934475194561349303:ℝ)/280000000000000) - 3*((-16672900535634902056551399:ℝ)/700000000000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((46076295519:ℝ)/2500000000000) - (((-729595189858318377:ℝ)/1000000000000) + t * ((245007736994881991:ℝ)/1000000000000)) = (((-18964089147:ℝ)/50000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-16672900535634902056551399:ℝ)/700000000000000) + ((13319111944243:ℝ)/1953125)*((46076295519:ℝ)/2500000000000) - ((-729595189858318377:ℝ)/1000000000000)) + t*(((-1323075987:ℝ)/2500) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-13284211934475194561349303:ℝ)/280000000000000) - 3*((-16672900535634902056551399:ℝ)/700000000000000)) + ((6239185329363:ℝ)/390625)*((46076295519:ℝ)/2500000000000) - ((245007736994881991:ℝ)/1000000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e22 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 2 2 - (((14049481211347699:ℝ)/3125000000) + (q - ((43:ℝ)/10)) * ((32753836388974943:ℝ)/2500000000))| ≤ ((173516481979308463:ℝ)/500000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_22 q = ∑ e ∈ Finset.range 10, ([((98610764420869:ℝ)/18750000), ((918539521073:ℝ)/78125), ((4386626274317:ℝ)/375000), ((64103315669:ℝ)/9375), ((1624475328:ℝ)/625), ((250549141:ℝ)/375), ((8719706:ℝ)/75), ((65992:ℝ)/5), ((2656:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_22; ring
+  have h12 : centralNum12_22 q = ∑ e ∈ Finset.range 15, ([((-62641963527081678542881817:ℝ)/1200000000000000), ((-19541698400677538471373963:ℝ)/160000000000000), ((-2234230428789250910097481:ℝ)/24000000000000), ((11317062434490408666841:ℝ)/1200000000000), ((5473390808190710081747:ℝ)/80000000000), ((2760987513497285991323:ℝ)/48000000000), ((7824792704330057669:ℝ)/300000000), ((35510942620457717:ℝ)/5000000), ((379367550266807:ℝ)/375000), ((-94319197578427:ℝ)/4800000), ((-3291533535747:ℝ)/80000), ((-35748007803:ℝ)/4000), ((-807694173:ℝ)/800), ((-9912213:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_22; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((98610764420869:ℝ)/18750000), ((918539521073:ℝ)/78125), ((4386626274317:ℝ)/375000), ((64103315669:ℝ)/9375), ((1624475328:ℝ)/625), ((250549141:ℝ)/375), ((8719706:ℝ)/75), ((65992:ℝ)/5), ((2656:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0) 8 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((-62641963527081678542881817:ℝ)/1200000000000000), ((-19541698400677538471373963:ℝ)/160000000000000), ((-2234230428789250910097481:ℝ)/24000000000000), ((11317062434490408666841:ℝ)/1200000000000), ((5473390808190710081747:ℝ)/80000000000), ((2760987513497285991323:ℝ)/48000000000), ((7824792704330057669:ℝ)/300000000), ((35510942620457717:ℝ)/5000000), ((379367550266807:ℝ)/375000), ((-94319197578427:ℝ)/4800000), ((-3291533535747:ℝ)/80000), ((-35748007803:ℝ)/4000), ((-807694173:ℝ)/800), ((-9912213:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 13 ht
+  have m12 := abs_poly_le (fun e => ([((-62641963527081678542881817:ℝ)/1200000000000000), ((-19541698400677538471373963:ℝ)/160000000000000), ((-2234230428789250910097481:ℝ)/24000000000000), ((11317062434490408666841:ℝ)/1200000000000), ((5473390808190710081747:ℝ)/80000000000), ((2760987513497285991323:ℝ)/48000000000), ((7824792704330057669:ℝ)/300000000), ((35510942620457717:ℝ)/5000000), ((379367550266807:ℝ)/375000), ((-94319197578427:ℝ)/4800000), ((-3291533535747:ℝ)/80000), ((-35748007803:ℝ)/4000), ((-807694173:ℝ)/800), ((-9912213:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0) 15 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 10, ([((98610764420869:ℝ)/18750000), ((918539521073:ℝ)/78125), ((4386626274317:ℝ)/375000), ((64103315669:ℝ)/9375), ((1624475328:ℝ)/625), ((250549141:ℝ)/375), ((8719706:ℝ)/75), ((65992:ℝ)/5), ((2656:ℝ)/3), ((80:ℝ)/3)] : List ℝ).getD e 0 * t^e) - (((98610764420869:ℝ)/18750000) + ((918539521073:ℝ)/78125)*t)| ≤ ((775506891297:ℝ)/6250000) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 15, ([((-62641963527081678542881817:ℝ)/1200000000000000), ((-19541698400677538471373963:ℝ)/160000000000000), ((-2234230428789250910097481:ℝ)/24000000000000), ((11317062434490408666841:ℝ)/1200000000000), ((5473390808190710081747:ℝ)/80000000000), ((2760987513497285991323:ℝ)/48000000000), ((7824792704330057669:ℝ)/300000000), ((35510942620457717:ℝ)/5000000), ((379367550266807:ℝ)/375000), ((-94319197578427:ℝ)/4800000), ((-3291533535747:ℝ)/80000), ((-35748007803:ℝ)/4000), ((-807694173:ℝ)/800), ((-9912213:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e) - ((-62641963527081678542881817:ℝ)/1200000000000000) - ((-19541698400677538471373963:ℝ)/160000000000000)*t| ≤ ((1516486364695471510408639:ℝ)/1600000000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 15, ([((-62641963527081678542881817:ℝ)/1200000000000000), ((-19541698400677538471373963:ℝ)/160000000000000), ((-2234230428789250910097481:ℝ)/24000000000000), ((11317062434490408666841:ℝ)/1200000000000), ((5473390808190710081747:ℝ)/80000000000), ((2760987513497285991323:ℝ)/48000000000), ((7824792704330057669:ℝ)/300000000), ((35510942620457717:ℝ)/5000000), ((379367550266807:ℝ)/375000), ((-94319197578427:ℝ)/4800000), ((-3291533535747:ℝ)/80000), ((-35748007803:ℝ)/4000), ((-807694173:ℝ)/800), ((-9912213:ℝ)/160), ((-6561:ℝ)/4)] : List ℝ).getD e 0 * t^e)| ≤ ((156871204202222872058437537:ℝ)/2400000000000000) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_22 q = ∑ e ∈ Finset.range 15, ([((-1392000090137474835691629067:ℝ)/292968750000), ((-139002181882647617272661929:ℝ)/7324218750), ((-68102297424159978745522677:ℝ)/1953125000), ((-5730134514526378965182417:ℝ)/146484375), ((-878111983588644798323392:ℝ)/29296875), ((-32437761423765840835717:ℝ)/1953125), ((-2682789464725592657482:ℝ)/390625), ((-168314782292621078712:ℝ)/78125), ((-8053235815371200672:ℝ)/15625), ((-877597663440868016:ℝ)/9375), ((-23831093002035712:ℝ)/1875), ((-156407259152384:ℝ)/125), ((-6333734060032:ℝ)/75), ((-52472840192:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_22; ring
+  have m13 := abs_poly_le (fun e => ([((-1392000090137474835691629067:ℝ)/292968750000), ((-139002181882647617272661929:ℝ)/7324218750), ((-68102297424159978745522677:ℝ)/1953125000), ((-5730134514526378965182417:ℝ)/146484375), ((-878111983588644798323392:ℝ)/29296875), ((-32437761423765840835717:ℝ)/1953125), ((-2682789464725592657482:ℝ)/390625), ((-168314782292621078712:ℝ)/78125), ((-8053235815371200672:ℝ)/15625), ((-877597663440868016:ℝ)/9375), ((-23831093002035712:ℝ)/1875), ((-156407259152384:ℝ)/125), ((-6333734060032:ℝ)/75), ((-52472840192:ℝ)/15), (-67108864:ℝ)] : List ℝ).getD e 0) 15 ht
+  have m13' : |centralNum13_22 q| ≤ ((128909461137937932634353248:ℝ)/18310546875) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_22 q = ∑ e ∈ Finset.range 15, ([((-16095579085913931827313319:ℝ)/76800000000), ((-17740519629413925792138193:ℝ)/30720000000), ((-322194206154048027156299:ℝ)/512000000), ((-23291368211210353358743:ℝ)/76800000), ((40662091683555484117:ℝ)/15360000), ((91281324324475762681:ℝ)/1024000), ((357544030331177813:ℝ)/6400), ((5884254889220277:ℝ)/320), ((446653885479629:ℝ)/128), ((441212449853065:ℝ)/1536), ((-11381802565625:ℝ)/384), ((-368187109375:ℝ)/32), ((-140218671875:ℝ)/96), ((-8873046875:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_22; ring
+  have m23 := abs_poly_le (fun e => ([((-16095579085913931827313319:ℝ)/76800000000), ((-17740519629413925792138193:ℝ)/30720000000), ((-322194206154048027156299:ℝ)/512000000), ((-23291368211210353358743:ℝ)/76800000), ((40662091683555484117:ℝ)/15360000), ((91281324324475762681:ℝ)/1024000), ((357544030331177813:ℝ)/6400), ((5884254889220277:ℝ)/320), ((446653885479629:ℝ)/128), ((441212449853065:ℝ)/1536), ((-11381802565625:ℝ)/384), ((-368187109375:ℝ)/32), ((-140218671875:ℝ)/96), ((-8873046875:ℝ)/96), ((-9765625:ℝ)/4)] : List ℝ).getD e 0) 15 ht
+  have m23' : |centralNum23_22 q| ≤ ((21037384897201482640224553:ℝ)/76800000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((410321751783:ℝ)/10000000000000)) bD'
+  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2))| ≤ ((25097934277859890022544179200000000:ℝ)/475310225587546596785823909747169767) := by
+    rw [abs_neg, tailWeight_2, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
+    have hq6 : q^6 ≤ ((22:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
+    have hB : (2*q-3)^2 ≤ (2*((22:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
+    have hx := piece11_Et h0
+    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
+    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((2570430941234500:ℝ)/4782969)) ≤ ((22:ℝ)/5)^6*(8000*(2*((22:ℝ)/5)-3)^2*(1/((99375560574937156562341070943:ℝ)/5000000000))*((2570430941234500:ℝ)/4782969)) := by
+          gcongr
+      _ ≤ ((25097934277859890022544179200000000:ℝ)/475310225587546596785823909747169767) := by norm_num
+  have c7 := affine_round (α := ((98610764420869:ℝ)/18750000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-62641963527081678542881817:ℝ)/1200000000000000) + ((13319111944243:ℝ)/1953125)*((410321751783:ℝ)/10000000000000) - ((14049481211347699:ℝ)/3125000000)) (β := ((918539521073:ℝ)/78125) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-19541698400677538471373963:ℝ)/160000000000000) - 3*((-62641963527081678542881817:ℝ)/1200000000000000)) + ((6239185329363:ℝ)/390625)*((410321751783:ℝ)/10000000000000) - ((32753836388974943:ℝ)/2500000000)) ht
+  have hW : pieceW q pieceX_11 2 2 = centralNum11_22 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_22 q + 18*Real.exp (-8*q)*centralNum13_22 q + 72*Real.exp (-11*q)*centralNum23_22 q + 8*q^7*(2*q-3)^2*((410321751783:ℝ)/10000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 2)) := by
+    rw [pieceW_22, pieceX_11, sym4_22, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((39954353054676309811971262127236775814494047305215554465690781337679:ℝ)/4694797533098186534832364584914193403851697691033291771247539062500000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((98610764420869:ℝ)/18750000) + ((918539521073:ℝ)/78125)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-62641963527081678542881817:ℝ)/1200000000000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-19541698400677538471373963:ℝ)/160000000000000) - 3*((-62641963527081678542881817:ℝ)/1200000000000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((410321751783:ℝ)/10000000000000) - (((14049481211347699:ℝ)/3125000000) + t * ((32753836388974943:ℝ)/2500000000)) = (((98610764420869:ℝ)/18750000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((-62641963527081678542881817:ℝ)/1200000000000000) + ((13319111944243:ℝ)/1953125)*((410321751783:ℝ)/10000000000000) - ((14049481211347699:ℝ)/3125000000)) + t*(((918539521073:ℝ)/78125) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-19541698400677538471373963:ℝ)/160000000000000) - 3*((-62641963527081678542881817:ℝ)/1200000000000000)) + ((6239185329363:ℝ)/390625)*((410321751783:ℝ)/10000000000000) - ((32753836388974943:ℝ)/2500000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e23 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 2 3 - (((159490508881315977:ℝ)/100000000000) + (q - ((43:ℝ)/10)) * ((-10079942358018363:ℝ)/5000000000))| ≤ ((254210665701411491:ℝ)/1000000000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_23 q = ∑ e ∈ Finset.range 9, ([((797226786389:ℝ)/625000), ((72297384747:ℝ)/31250), ((99378741059:ℝ)/50000), ((5273087291:ℝ)/5000), ((9278712:ℝ)/25), ((2165027:ℝ)/25), ((64099:ℝ)/5), (1086:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_23; ring
+  have h12 : centralNum12_23 q = ∑ e ∈ Finset.range 16, ([((2038829873149813890516463027:ℝ)/56000000000000000), ((-266891555162646003307682199:ℝ)/4480000000000000), ((-151915066654116831069547409:ℝ)/448000000000000), ((-11056959181565701016357587:ℝ)/22400000000000), ((-33142158710576976673761:ℝ)/89600000000), ((-350220530792622199776617:ℝ)/2240000000000), ((-1354262808588964735771:ℝ)/44800000000), ((2421106964231985513:ℝ)/560000000), ((63706828770996797:ℝ)/14000000), ((12131130987759171:ℝ)/8960000), ((4548850806054861:ℝ)/22400000), ((2059871143977:ℝ)/224000), ((-48773519253:ℝ)/22400), ((-1991554371:ℝ)/4480), ((-15516765:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_23; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((797226786389:ℝ)/625000), ((72297384747:ℝ)/31250), ((99378741059:ℝ)/50000), ((5273087291:ℝ)/5000), ((9278712:ℝ)/25), ((2165027:ℝ)/25), ((64099:ℝ)/5), (1086:ℝ), (40:ℝ)] : List ℝ).getD e 0) 7 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((2038829873149813890516463027:ℝ)/56000000000000000), ((-266891555162646003307682199:ℝ)/4480000000000000), ((-151915066654116831069547409:ℝ)/448000000000000), ((-11056959181565701016357587:ℝ)/22400000000000), ((-33142158710576976673761:ℝ)/89600000000), ((-350220530792622199776617:ℝ)/2240000000000), ((-1354262808588964735771:ℝ)/44800000000), ((2421106964231985513:ℝ)/560000000), ((63706828770996797:ℝ)/14000000), ((12131130987759171:ℝ)/8960000), ((4548850806054861:ℝ)/22400000), ((2059871143977:ℝ)/224000), ((-48773519253:ℝ)/22400), ((-1991554371:ℝ)/4480), ((-15516765:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 14 ht
+  have m12 := abs_poly_le (fun e => ([((2038829873149813890516463027:ℝ)/56000000000000000), ((-266891555162646003307682199:ℝ)/4480000000000000), ((-151915066654116831069547409:ℝ)/448000000000000), ((-11056959181565701016357587:ℝ)/22400000000000), ((-33142158710576976673761:ℝ)/89600000000), ((-350220530792622199776617:ℝ)/2240000000000), ((-1354262808588964735771:ℝ)/44800000000), ((2421106964231985513:ℝ)/560000000), ((63706828770996797:ℝ)/14000000), ((12131130987759171:ℝ)/8960000), ((4548850806054861:ℝ)/22400000), ((2059871143977:ℝ)/224000), ((-48773519253:ℝ)/22400), ((-1991554371:ℝ)/4480), ((-15516765:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0) 16 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 9, ([((797226786389:ℝ)/625000), ((72297384747:ℝ)/31250), ((99378741059:ℝ)/50000), ((5273087291:ℝ)/5000), ((9278712:ℝ)/25), ((2165027:ℝ)/25), ((64099:ℝ)/5), (1086:ℝ), (40:ℝ)] : List ℝ).getD e 0 * t^e) - (((797226786389:ℝ)/625000) + ((72297384747:ℝ)/31250)*t)| ≤ ((13105224661:ℝ)/625000) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 16, ([((2038829873149813890516463027:ℝ)/56000000000000000), ((-266891555162646003307682199:ℝ)/4480000000000000), ((-151915066654116831069547409:ℝ)/448000000000000), ((-11056959181565701016357587:ℝ)/22400000000000), ((-33142158710576976673761:ℝ)/89600000000), ((-350220530792622199776617:ℝ)/2240000000000), ((-1354262808588964735771:ℝ)/44800000000), ((2421106964231985513:ℝ)/560000000), ((63706828770996797:ℝ)/14000000), ((12131130987759171:ℝ)/8960000), ((4548850806054861:ℝ)/22400000), ((2059871143977:ℝ)/224000), ((-48773519253:ℝ)/22400), ((-1991554371:ℝ)/4480), ((-15516765:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e) - ((2038829873149813890516463027:ℝ)/56000000000000000) - ((-266891555162646003307682199:ℝ)/4480000000000000)*t| ≤ ((878787563953940371324374989:ℝ)/224000000000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 16, ([((2038829873149813890516463027:ℝ)/56000000000000000), ((-266891555162646003307682199:ℝ)/4480000000000000), ((-151915066654116831069547409:ℝ)/448000000000000), ((-11056959181565701016357587:ℝ)/22400000000000), ((-33142158710576976673761:ℝ)/89600000000), ((-350220530792622199776617:ℝ)/2240000000000), ((-1354262808588964735771:ℝ)/44800000000), ((2421106964231985513:ℝ)/560000000), ((63706828770996797:ℝ)/14000000), ((12131130987759171:ℝ)/8960000), ((4548850806054861:ℝ)/22400000), ((2059871143977:ℝ)/224000), ((-48773519253:ℝ)/22400), ((-1991554371:ℝ)/4480), ((-15516765:ℝ)/448), ((-59049:ℝ)/56)] : List ℝ).getD e 0 * t^e)| ≤ ((2592141208091606487482159523:ℝ)/56000000000000000) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_23 q = ∑ e ∈ Finset.range 16, ([((-61860182819639344825671759439:ℝ)/2563476562500), ((-12561787705733288556213500431:ℝ)/102539062500), ((-22843913245383726513384680933:ℝ)/82031250000), ((-445875163215296309491949819:ℝ)/1171875000), ((-14437055537963586579111112:ℝ)/41015625), ((-48128390406672272014517537:ℝ)/205078125), ((-319619362311258655604439:ℝ)/2734375), ((-24278568164549126806118:ℝ)/546875), ((-1420456951336077128776:ℝ)/109375), ((-7691853912076019008:ℝ)/2625), ((-4746676692404130304:ℝ)/9375), ((-172858007243014144:ℝ)/2625), ((-3278370676932608:ℝ)/525), ((-42821427920896:ℝ)/105), ((-344604016640:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_23; ring
+  have m13 := abs_poly_le (fun e => ([((-61860182819639344825671759439:ℝ)/2563476562500), ((-12561787705733288556213500431:ℝ)/102539062500), ((-22843913245383726513384680933:ℝ)/82031250000), ((-445875163215296309491949819:ℝ)/1171875000), ((-14437055537963586579111112:ℝ)/41015625), ((-48128390406672272014517537:ℝ)/205078125), ((-319619362311258655604439:ℝ)/2734375), ((-24278568164549126806118:ℝ)/546875), ((-1420456951336077128776:ℝ)/109375), ((-7691853912076019008:ℝ)/2625), ((-4746676692404130304:ℝ)/9375), ((-172858007243014144:ℝ)/2625), ((-3278370676932608:ℝ)/525), ((-42821427920896:ℝ)/105), ((-344604016640:ℝ)/21), ((-2147483648:ℝ)/7)] : List ℝ).getD e 0) 16 ht
+  have m13' : |centralNum13_23 q| ≤ ((8456273825241267665957577744:ℝ)/213623046875) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_23 q = ∑ e ∈ Finset.range 16, ([((2610648716490435151861845943:ℝ)/2150400000000), ((1490765260241596187088130771:ℝ)/860160000000), ((-63315462629012965001238467:ℝ)/86016000000), ((-2105169509649695194145959:ℝ)/614400000), ((-1477377279667552638911359:ℝ)/430080000), ((-155774714167217350823351:ℝ)/86016000), ((-1538955248351047897851:ℝ)/2867200), ((-2299686847298871731:ℝ)/35840), ((49956505462613257:ℝ)/3584), ((325537443289168745:ℝ)/43008), ((4484911393571125:ℝ)/3072), ((670805550484375:ℝ)/5376), ((-6385123046875:ℝ)/2688), ((-4260314453125:ℝ)/2688), ((-26884765625:ℝ)/192), ((-244140625:ℝ)/56)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_23; ring
+  have m23 := abs_poly_le (fun e => ([((2610648716490435151861845943:ℝ)/2150400000000), ((1490765260241596187088130771:ℝ)/860160000000), ((-63315462629012965001238467:ℝ)/86016000000), ((-2105169509649695194145959:ℝ)/614400000), ((-1477377279667552638911359:ℝ)/430080000), ((-155774714167217350823351:ℝ)/86016000), ((-1538955248351047897851:ℝ)/2867200), ((-2299686847298871731:ℝ)/35840), ((49956505462613257:ℝ)/3584), ((325537443289168745:ℝ)/43008), ((4484911393571125:ℝ)/3072), ((670805550484375:ℝ)/5376), ((-6385123046875:ℝ)/2688), ((-4260314453125:ℝ)/2688), ((-26884765625:ℝ)/192), ((-244140625:ℝ)/56)] : List ℝ).getD e 0) 16 ht
+  have m23' : |centralNum23_23 q| ≤ ((6014631582282253676423696717:ℝ)/4300800000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((-59865389667:ℝ)/1000000000000)) bD'
+  have c6 : |(0:ℝ)| ≤ 0 := by simp
+  have c7 := affine_round (α := ((797226786389:ℝ)/625000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((2038829873149813890516463027:ℝ)/56000000000000000) + ((13319111944243:ℝ)/1953125)*((-59865389667:ℝ)/1000000000000) - ((159490508881315977:ℝ)/100000000000)) (β := ((72297384747:ℝ)/31250) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-266891555162646003307682199:ℝ)/4480000000000000) - 3*((2038829873149813890516463027:ℝ)/56000000000000000)) + ((6239185329363:ℝ)/390625)*((-59865389667:ℝ)/1000000000000) - ((-10079942358018363:ℝ)/5000000000)) ht
+  have hW : pieceW q pieceX_11 2 3 = centralNum11_23 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_23 q + 18*Real.exp (-8*q)*centralNum13_23 q + 72*Real.exp (-11*q)*centralNum23_23 q + 8*q^7*(2*q-3)^2*((-59865389667:ℝ)/1000000000000) + (0:ℝ) := by
+    rw [pieceW_23, pieceX_11, sym4_23, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((2762559188613376463227946197333756952114085428676999783784857318101:ℝ)/1095452757722910191460885069813311794232062794574434746624425781250000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((797226786389:ℝ)/625000) + ((72297384747:ℝ)/31250)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((2038829873149813890516463027:ℝ)/56000000000000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-266891555162646003307682199:ℝ)/4480000000000000) - 3*((2038829873149813890516463027:ℝ)/56000000000000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((-59865389667:ℝ)/1000000000000) - (((159490508881315977:ℝ)/100000000000) + t * ((-10079942358018363:ℝ)/5000000000)) = (((797226786389:ℝ)/625000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((2038829873149813890516463027:ℝ)/56000000000000000) + ((13319111944243:ℝ)/1953125)*((-59865389667:ℝ)/1000000000000) - ((159490508881315977:ℝ)/100000000000)) + t*(((72297384747:ℝ)/31250) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((-266891555162646003307682199:ℝ)/4480000000000000) - 3*((2038829873149813890516463027:ℝ)/56000000000000000)) + ((6239185329363:ℝ)/390625)*((-59865389667:ℝ)/1000000000000) - ((-10079942358018363:ℝ)/5000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_e33 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) :
+    |pieceW q pieceX_11 3 3 - (((474802722806654273:ℝ)/100000000000) + (q - ((43:ℝ)/10)) * ((149157092144182973:ℝ)/10000000000))| ≤ ((1215715138713923:ℝ)/800000000) := by
+  set t := q - ((43:ℝ)/10) with htd
+  have hq : q = ((43:ℝ)/10) + t := by rw [htd]; ring
+  have ht : |t| ≤ ((1:ℝ)/10) := abs_le.mpr ⟨by linarith, by linarith⟩
+  have hE3 := exp_neg_bounds (by norm_num) piece11_L3 piece11_U3
+  have hexp3 : Real.exp (-3*q) = Real.exp (-(3*((43:ℝ)/10))) * Real.exp (-3*t) := by
+    rw [← Real.exp_add, hq]; ring_nf
+  have h11 : centralNum11_33 q = ∑ e ∈ Finset.range 10, ([((17339143288103:ℝ)/12500000), ((5389846872429:ℝ)/1250000), ((4633253046249:ℝ)/875000), ((89329253457:ℝ)/25000), ((941422899:ℝ)/625), ((52490046:ℝ)/125), ((1963506:ℝ)/25), ((47946:ℝ)/5), (696:ℝ), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum11_33; ring
+  have h12 : centralNum12_33 q = ∑ e ∈ Finset.range 17, ([((154476589021469642500508481727:ℝ)/1120000000000000000), ((2739387993639650985996190028157:ℝ)/3136000000000000000), ((13300006143943436070637499367:ℝ)/7840000000000000), ((1406176392863721952651255503:ℝ)/896000000000000), ((3971558757884308632221487:ℝ)/5600000000000), ((2018047619711095268464383:ℝ)/44800000000000), ((-1128248425279540601157:ℝ)/8750000000), ((-6917681457542959802493:ℝ)/89600000000), ((-84433332172439574291:ℝ)/3920000000), ((-16037887940409442789:ℝ)/6272000000), ((14444285239485117:ℝ)/56000000), ((6459317884668177:ℝ)/44800000), ((150080224599:ℝ)/7000), ((84726416097:ℝ)/89600), ((-66902517:ℝ)/560), ((-546380397:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum12_33; ring
+  have hD : 8*q^7*(2*q-3)^2 = ∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    ring
+  have b11 := abs_poly_sub_affine_le (fun e => ([((17339143288103:ℝ)/12500000), ((5389846872429:ℝ)/1250000), ((4633253046249:ℝ)/875000), ((89329253457:ℝ)/25000), ((941422899:ℝ)/625), ((52490046:ℝ)/125), ((1963506:ℝ)/25), ((47946:ℝ)/5), (696:ℝ), ((160:ℝ)/7)] : List ℝ).getD e 0) 8 ht
+  have b12 := abs_poly_sub_affine_le (fun e => ([((154476589021469642500508481727:ℝ)/1120000000000000000), ((2739387993639650985996190028157:ℝ)/3136000000000000000), ((13300006143943436070637499367:ℝ)/7840000000000000), ((1406176392863721952651255503:ℝ)/896000000000000), ((3971558757884308632221487:ℝ)/5600000000000), ((2018047619711095268464383:ℝ)/44800000000000), ((-1128248425279540601157:ℝ)/8750000000), ((-6917681457542959802493:ℝ)/89600000000), ((-84433332172439574291:ℝ)/3920000000), ((-16037887940409442789:ℝ)/6272000000), ((14444285239485117:ℝ)/56000000), ((6459317884668177:ℝ)/44800000), ((150080224599:ℝ)/7000), ((84726416097:ℝ)/89600), ((-66902517:ℝ)/560), ((-546380397:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 15 ht
+  have m12 := abs_poly_le (fun e => ([((154476589021469642500508481727:ℝ)/1120000000000000000), ((2739387993639650985996190028157:ℝ)/3136000000000000000), ((13300006143943436070637499367:ℝ)/7840000000000000), ((1406176392863721952651255503:ℝ)/896000000000000), ((3971558757884308632221487:ℝ)/5600000000000), ((2018047619711095268464383:ℝ)/44800000000000), ((-1128248425279540601157:ℝ)/8750000000), ((-6917681457542959802493:ℝ)/89600000000), ((-84433332172439574291:ℝ)/3920000000), ((-16037887940409442789:ℝ)/6272000000), ((14444285239485117:ℝ)/56000000), ((6459317884668177:ℝ)/44800000), ((150080224599:ℝ)/7000), ((84726416097:ℝ)/89600), ((-66902517:ℝ)/560), ((-546380397:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0) 17 ht
+  have bD := abs_poly_sub_affine_le (fun e => ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0) 8 ht
+  have b11' : |(∑ e ∈ Finset.range 10, ([((17339143288103:ℝ)/12500000), ((5389846872429:ℝ)/1250000), ((4633253046249:ℝ)/875000), ((89329253457:ℝ)/25000), ((941422899:ℝ)/625), ((52490046:ℝ)/125), ((1963506:ℝ)/25), ((47946:ℝ)/5), (696:ℝ), ((160:ℝ)/7)] : List ℝ).getD e 0 * t^e) - (((17339143288103:ℝ)/12500000) + ((5389846872429:ℝ)/1250000)*t)| ≤ ((1239864935261:ℝ)/21875000) := by
+    refine (le_of_eq_of_le ?_ b11).trans (le_of_eq ?_)
+    · rw [sub_add_eq_sub_sub]; poly_expand
+    · poly_norm
+  have b12' : |(∑ e ∈ Finset.range 17, ([((154476589021469642500508481727:ℝ)/1120000000000000000), ((2739387993639650985996190028157:ℝ)/3136000000000000000), ((13300006143943436070637499367:ℝ)/7840000000000000), ((1406176392863721952651255503:ℝ)/896000000000000), ((3971558757884308632221487:ℝ)/5600000000000), ((2018047619711095268464383:ℝ)/44800000000000), ((-1128248425279540601157:ℝ)/8750000000), ((-6917681457542959802493:ℝ)/89600000000), ((-84433332172439574291:ℝ)/3920000000), ((-16037887940409442789:ℝ)/6272000000), ((14444285239485117:ℝ)/56000000), ((6459317884668177:ℝ)/44800000), ((150080224599:ℝ)/7000), ((84726416097:ℝ)/89600), ((-66902517:ℝ)/560), ((-546380397:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e) - ((154476589021469642500508481727:ℝ)/1120000000000000000) - ((2739387993639650985996190028157:ℝ)/3136000000000000000)*t| ≤ ((583458911342638901604986518241:ℝ)/31360000000000000000) := by
+    refine (le_of_eq_of_le ?_ b12).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have m12' : |(∑ e ∈ Finset.range 17, ([((154476589021469642500508481727:ℝ)/1120000000000000000), ((2739387993639650985996190028157:ℝ)/3136000000000000000), ((13300006143943436070637499367:ℝ)/7840000000000000), ((1406176392863721952651255503:ℝ)/896000000000000), ((3971558757884308632221487:ℝ)/5600000000000), ((2018047619711095268464383:ℝ)/44800000000000), ((-1128248425279540601157:ℝ)/8750000000), ((-6917681457542959802493:ℝ)/89600000000), ((-84433332172439574291:ℝ)/3920000000), ((-16037887940409442789:ℝ)/6272000000), ((14444285239485117:ℝ)/56000000), ((6459317884668177:ℝ)/44800000), ((150080224599:ℝ)/7000), ((84726416097:ℝ)/89600), ((-66902517:ℝ)/560), ((-546380397:ℝ)/31360), ((-531441:ℝ)/784)] : List ℝ).getD e 0 * t^e)| ≤ ((546299385541674276972529573911:ℝ)/2240000000000000000) := by
+    refine m12.trans (le_of_eq ?_)
+    poly_norm
+  have bD' : |(∑ e ∈ Finset.range 10, ([((13319111944243:ℝ)/1953125), ((6239185329363:ℝ)/390625), ((5170139931867:ℝ)/312500), ((310943369751:ℝ)/31250), ((11969699343:ℝ)/3125), ((611867382:ℝ)/625), ((20772612:ℝ)/125), ((451752:ℝ)/25), ((5712:ℝ)/5), (32:ℝ)] : List ℝ).getD e 0 * t^e) - ((13319111944243:ℝ)/1953125) - ((6239185329363:ℝ)/390625)*t| ≤ ((686670523079:ℝ)/3906250) := by
+    refine (le_of_eq_of_le ?_ bD).trans (le_of_eq ?_)
+    · poly_norm
+    · poly_norm
+  have h13 : centralNum13_33 q = ∑ e ∈ Finset.range 17, ([((354363150181878503949927835487:ℝ)/102539062500000), ((-14694655043855949814199151211877:ℝ)/71777343750000), ((-454452011150301134291471634007:ℝ)/478515625000), ((-27065032786814110974771269897:ℝ)/13671875000), ((-368374554912008163275285483:ℝ)/146484375), ((-106884871967079075577629178:ℝ)/48828125), ((-284307954653678670538086202:ℝ)/205078125), ((-1807055367953440709157786:ℝ)/2734375), ((-925243840209763190744424:ℝ)/3828125), ((-157161840057777234717536:ℝ)/2296875), ((-4922752690718248195072:ℝ)/328125), ((-7899896139318837248:ℝ)/3125), ((-40197927750598656:ℝ)/125), ((-15699518162993152:ℝ)/525), ((-67178523000832:ℝ)/35), ((-55896851873792:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum13_33; ring
+  have m13 := abs_poly_le (fun e => ([((354363150181878503949927835487:ℝ)/102539062500000), ((-14694655043855949814199151211877:ℝ)/71777343750000), ((-454452011150301134291471634007:ℝ)/478515625000), ((-27065032786814110974771269897:ℝ)/13671875000), ((-368374554912008163275285483:ℝ)/146484375), ((-106884871967079075577629178:ℝ)/48828125), ((-284307954653678670538086202:ℝ)/205078125), ((-1807055367953440709157786:ℝ)/2734375), ((-925243840209763190744424:ℝ)/3828125), ((-157161840057777234717536:ℝ)/2296875), ((-4922752690718248195072:ℝ)/328125), ((-7899896139318837248:ℝ)/3125), ((-40197927750598656:ℝ)/125), ((-15699518162993152:ℝ)/525), ((-67178523000832:ℝ)/35), ((-55896851873792:ℝ)/735), ((-68719476736:ℝ)/49)] : List ℝ).getD e 0) 17 ht
+  have m13' : |centralNum13_33 q| ≤ ((4268358564977100680060963793139:ℝ)/119628906250000) := by
+    rw [h13]; refine m13.trans (le_of_eq ?_)
+    poly_norm
+  have h23 : centralNum23_33 q = ∑ e ∈ Finset.range 17, ([((49276985896611734923298623621:ℝ)/60211200000000), ((613012350729568732658356476527:ℝ)/24084480000000), ((1580042254732432557176646871:ℝ)/25088000000), ((781420517819631377185754323:ℝ)/11468800000), ((16828837133309002861985929:ℝ)/430080000), ((1231137148861611181896343:ℝ)/114688000), ((-370974069520785994733:ℝ)/614400), ((-12837286192924285077471:ℝ)/8028160), ((-59121371787721202781:ℝ)/100352), ((-122201676284556675535:ℝ)/1204224), ((-21154540716647125:ℝ)/5376), ((26573303182853125:ℝ)/14336), ((338121111484375:ℝ)/896), ((39048783203125:ℝ)/1536), ((-1064482421875:ℝ)/1568), ((-3559326171875:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0 * t^e := by
+    rw [hq]; poly_expand
+    unfold centralNum23_33; ring
+  have m23 := abs_poly_le (fun e => ([((49276985896611734923298623621:ℝ)/60211200000000), ((613012350729568732658356476527:ℝ)/24084480000000), ((1580042254732432557176646871:ℝ)/25088000000), ((781420517819631377185754323:ℝ)/11468800000), ((16828837133309002861985929:ℝ)/430080000), ((1231137148861611181896343:ℝ)/114688000), ((-370974069520785994733:ℝ)/614400), ((-12837286192924285077471:ℝ)/8028160), ((-59121371787721202781:ℝ)/100352), ((-122201676284556675535:ℝ)/1204224), ((-21154540716647125:ℝ)/5376), ((26573303182853125:ℝ)/14336), ((338121111484375:ℝ)/896), ((39048783203125:ℝ)/1536), ((-1064482421875:ℝ)/1568), ((-3559326171875:ℝ)/18816), ((-6103515625:ℝ)/784)] : List ℝ).getD e 0) 17 ht
+  have m23' : |centralNum23_33 q| ≤ ((23313872280506649333284573671:ℝ)/5734400000000) := by
+    rw [h23]; refine m23.trans (le_of_eq ?_)
+    poly_norm
+  have c2 := comp_exp_bound (c := 8) (by norm_num) (by norm_num : (0:ℝ) ≤ (1/((100078054499556509043018668037:ℝ)/250000000000000000000000))) hE3 ht (by norm_num) b12' m12'
+  have c3 := comp_crude_bound (c := 18) (by norm_num) (Real.exp_pos (-8*q)).le (piece11_E8 h0) m13'
+  have c4 := comp_crude_bound (c := 72) (by norm_num) (Real.exp_pos (-11*q)).le (piece11_E11 h0) m23'
+  have c5 := scaled_affine (X := ((177297498017:ℝ)/2000000000000)) bD'
+  have c6 : |-(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3))| ≤ ((32305212552792753403156440678400000000:ℝ)/12833376090863758113217245563173583709) := by
+    rw [abs_neg, tailWeight_3, abs_of_nonneg (by have := Real.exp_pos (-(529/50)*q); positivity)]
+    have hq6 : q^6 ≤ ((22:ℝ)/5)^6 := pow_le_pow_left₀ (by linarith) h1 6
+    have hB : (2*q-3)^2 ≤ (2*((22:ℝ)/5)-3)^2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
+    have hx := piece11_Et h0
+    have hx0 : 0 ≤ Real.exp (-(529/50)*q) := (Real.exp_pos _).le
+    calc q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*((3308571812705231500:ℝ)/129140163)) ≤ ((22:ℝ)/5)^6*(8000*(2*((22:ℝ)/5)-3)^2*(1/((99375560574937156562341070943:ℝ)/5000000000))*((3308571812705231500:ℝ)/129140163)) := by
+          gcongr
+      _ ≤ ((32305212552792753403156440678400000000:ℝ)/12833376090863758113217245563173583709) := by norm_num
+  have c7 := affine_round (α := ((17339143288103:ℝ)/12500000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((154476589021469642500508481727:ℝ)/1120000000000000000) + ((13319111944243:ℝ)/1953125)*((177297498017:ℝ)/2000000000000) - ((474802722806654273:ℝ)/100000000000)) (β := ((5389846872429:ℝ)/1250000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((2739387993639650985996190028157:ℝ)/3136000000000000000) - 3*((154476589021469642500508481727:ℝ)/1120000000000000000)) + ((6239185329363:ℝ)/390625)*((177297498017:ℝ)/2000000000000) - ((149157092144182973:ℝ)/10000000000)) ht
+  have hW : pieceW q pieceX_11 3 3 = centralNum11_33 q + 8*(Real.exp (-(3*((43:ℝ)/10)))*Real.exp (-3*t))*centralNum12_33 q + 18*Real.exp (-8*q)*centralNum13_33 q + 72*Real.exp (-11*q)*centralNum23_33 q + 8*q^7*(2*q-3)^2*((177297498017:ℝ)/2000000000000) + -(q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight 3)) := by
+    rw [pieceW_33, pieceX_11, sym4_33, hexp3]; ring
+  rw [h11, h12, hD] at hW
+  refine entry_assemble (r7 := ((85246686054394949914248835056857514316469370577248553794621889972639:ℝ)/15336338608120742680452390977386365119248879124042086452741960937500000000000000)) hW b11' c2 (by simpa using c3) (by simpa using c4) c5 c6 ?_ ?_
+  · have hab : (((17339143288103:ℝ)/12500000) + ((5389846872429:ℝ)/1250000)*t) + (8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((154476589021469642500508481727:ℝ)/1120000000000000000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((2739387993639650985996190028157:ℝ)/3136000000000000000) - 3*((154476589021469642500508481727:ℝ)/1120000000000000000))*t) + (((13319111944243:ℝ)/1953125) + ((6239185329363:ℝ)/390625)*t)*((177297498017:ℝ)/2000000000000) - (((474802722806654273:ℝ)/100000000000) + t * ((149157092144182973:ℝ)/10000000000)) = (((17339143288103:ℝ)/12500000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*((154476589021469642500508481727:ℝ)/1120000000000000000) + ((13319111944243:ℝ)/1953125)*((177297498017:ℝ)/2000000000000) - ((474802722806654273:ℝ)/100000000000)) + t*(((5389846872429:ℝ)/1250000) + 8*(((1/((100078054499556509043018668037:ℝ)/250000000000000000000000))+(1/((400310262652192068862035883567:ℝ)/1000000000000000000000000)))/2)*(((2739387993639650985996190028157:ℝ)/3136000000000000000) - 3*((154476589021469642500508481727:ℝ)/1120000000000000000)) + ((6239185329363:ℝ)/390625)*((177297498017:ℝ)/2000000000000) - ((149157092144182973:ℝ)/10000000000)) := by ring
+    rw [hab]; exact c7.trans (by norm_num)
+  · norm_num
+
+theorem piece11_plus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((50707353808107919:ℝ)/6250000000) + ((1:ℝ)/10)*((36220903674170921:ℝ)/2000000000) - (((19440146619127179:ℝ)/100000000000) + ((4363542954538591:ℝ)/156250000000) + ((54509009919955411:ℝ)/5000000000000) + ((316057843768527711:ℝ)/10000000000000)))
+      (((-67909555857309877:ℝ)/50000000000) + ((1:ℝ)/10)*((-106616292125636223:ℝ)/50000000000))
+      (((-156891275378256877:ℝ)/100000000000000) + ((1:ℝ)/10)*((-151315388426484233:ℝ)/5000000000000))
+      (((102291765485504683:ℝ)/1000000000000) + ((1:ℝ)/10)*((-399276850579115567:ℝ)/5000000000000))
+      (((76434703039578379:ℝ)/12500000000) + ((1:ℝ)/10)*((6387454564706417:ℝ)/500000000) - (((4363542954538591:ℝ)/156250000000) + ((16922056943040021:ℝ)/125000000000) + ((449889257541807653:ℝ)/5000000000000) + ((18547823388804841:ℝ)/200000000000)))
+      (((-564027879475575983:ℝ)/1000000000000) + ((1:ℝ)/10)*((-29604652713241711:ℝ)/25000000000))
+      (((-729595189858318377:ℝ)/1000000000000) + ((1:ℝ)/10)*((245007736994881991:ℝ)/1000000000000))
+      (((14049481211347699:ℝ)/3125000000) + ((1:ℝ)/10)*((32753836388974943:ℝ)/2500000000) - (((54509009919955411:ℝ)/5000000000000) + ((449889257541807653:ℝ)/5000000000000) + ((173516481979308463:ℝ)/500000000000) + ((254210665701411491:ℝ)/1000000000000)))
+      (((159490508881315977:ℝ)/100000000000) + ((1:ℝ)/10)*((-10079942358018363:ℝ)/5000000000))
+      (((474802722806654273:ℝ)/100000000000) + ((1:ℝ)/10)*((149157092144182973:ℝ)/10000000000) - (((316057843768527711:ℝ)/10000000000000) + ((18547823388804841:ℝ)/200000000000) + ((254210665701411491:ℝ)/1000000000000) + ((1215715138713923:ℝ)/800000000))) i j :=
+  quadForm_nonneg_of_ldl ((96593860655446504643:ℝ)/10000000000000) ((327965240947031748430456944656316935151:ℝ)/48296930327723252321500000000000) ((1651346530840664617925759010159435495010841628089143979142467:ℝ)/327965240947031748430456944656316935151000000000000000) ((1295412150766813540283036000495315680906830084454402060953609293316934279951152069:ℝ)/330269306168132923585151802031887099002168325617828795828493400000000000000) ((-15714237013974699860:ℝ)/96593860655446504643) ((-459522052231225343:ℝ)/965938606554465046430) ((4715311423696118583:ℝ)/482969303277232523215) ((-164980878940032204732403574343910878202:ℝ)/1639826204735158742152284723281584675755) ((-666258413572461847767307780234929960221:ℝ)/6559304818940634968609138893126338703020) ((434211541622238617782234327605786889809953323248795992025586:ℝ)/1651346530840664617925759010159435495010841628089143979142467)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
+
+theorem piece11_minus (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i, ∑ j, y i * y j * sym4 (((50707353808107919:ℝ)/6250000000) - ((1:ℝ)/10)*((36220903674170921:ℝ)/2000000000) - (((19440146619127179:ℝ)/100000000000) + ((4363542954538591:ℝ)/156250000000) + ((54509009919955411:ℝ)/5000000000000) + ((316057843768527711:ℝ)/10000000000000)))
+      (((-67909555857309877:ℝ)/50000000000) - ((1:ℝ)/10)*((-106616292125636223:ℝ)/50000000000))
+      (((-156891275378256877:ℝ)/100000000000000) - ((1:ℝ)/10)*((-151315388426484233:ℝ)/5000000000000))
+      (((102291765485504683:ℝ)/1000000000000) - ((1:ℝ)/10)*((-399276850579115567:ℝ)/5000000000000))
+      (((76434703039578379:ℝ)/12500000000) - ((1:ℝ)/10)*((6387454564706417:ℝ)/500000000) - (((4363542954538591:ℝ)/156250000000) + ((16922056943040021:ℝ)/125000000000) + ((449889257541807653:ℝ)/5000000000000) + ((18547823388804841:ℝ)/200000000000)))
+      (((-564027879475575983:ℝ)/1000000000000) - ((1:ℝ)/10)*((-29604652713241711:ℝ)/25000000000))
+      (((-729595189858318377:ℝ)/1000000000000) - ((1:ℝ)/10)*((245007736994881991:ℝ)/1000000000000))
+      (((14049481211347699:ℝ)/3125000000) - ((1:ℝ)/10)*((32753836388974943:ℝ)/2500000000) - (((54509009919955411:ℝ)/5000000000000) + ((449889257541807653:ℝ)/5000000000000) + ((173516481979308463:ℝ)/500000000000) + ((254210665701411491:ℝ)/1000000000000)))
+      (((159490508881315977:ℝ)/100000000000) - ((1:ℝ)/10)*((-10079942358018363:ℝ)/5000000000))
+      (((474802722806654273:ℝ)/100000000000) - ((1:ℝ)/10)*((149157092144182973:ℝ)/10000000000) - (((316057843768527711:ℝ)/10000000000000) + ((18547823388804841:ℝ)/200000000000) + ((254210665701411491:ℝ)/1000000000000) + ((1215715138713923:ℝ)/800000000))) i j :=
+  quadForm_nonneg_of_ldl ((60372956981275583643:ℝ)/10000000000000) ((129020831090722928380573167083175108751:ℝ)/30186478490637791821500000000000) ((314443951110820455850469907321551215603578015443738686425443:ℝ)/129020831090722928380573167083175108751000000000000000) ((1036341641217726257070199441874171087157131001749971367482938436014729108805621:ℝ)/62888790222164091170093981464310243120715603088747737285088600000000000000) ((-11449585328949250940:ℝ)/60372956981275583643) ((16193277941634621:ℝ)/67081063312528426270) ((5513865124854349717:ℝ)/301864784906377918215) ((-67215156591077812357784684755374604851:ℝ)/645104155453614641902865835415875543755) ((-442643737828422707922221511112719750527:ℝ)/2580416621814458567611463341663502175020) ((221926805773719601751575738939508239093637576942997054897338:ℝ)/314443951110820455850469907321551215603578015443738686425443)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) y
+
+/-- **Piece 11.** The piece matrix is positive semidefinite on `q ∈ [21/5, 22/5]`. -/
+theorem piece_11 {q : ℝ} (h0 : ((21:ℝ)/5) ≤ q) (h1 : q ≤ ((22:ℝ)/5)) (y : Fin 4 → ℝ) :
+    0 ≤ ∑ i : Fin 4, ∑ j : Fin 4, y i * y j * pieceW q pieceX_11 i j :=
+  pieceForm_nonneg (pieceW_symm (sym4_symm _ _ _ _ _ _ _ _ _ _) q) (by norm_num : (0:ℝ) < ((1:ℝ)/10))
+    (abs_le.mpr ⟨by linarith, by linarith⟩)
+    (piece11_e00 h0 h1) (piece11_e01 h0 h1) (piece11_e02 h0 h1) (piece11_e03 h0 h1) (piece11_e11 h0 h1) (piece11_e12 h0 h1) (piece11_e13 h0 h1) (piece11_e22 h0 h1) (piece11_e23 h0 h1) (piece11_e33 h0 h1)
+    piece11_plus piece11_minus y
 
 end
 end RHTower.ThetaCuspOddFourPieces

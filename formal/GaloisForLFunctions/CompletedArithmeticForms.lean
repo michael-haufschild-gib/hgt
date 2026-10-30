@@ -64,6 +64,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.ConductorGreenCompletion
 import GaloisForLFunctions.CompletedArithmeticForms.UpwardSourcePayment
 import GaloisForLFunctions.CompletedArithmeticForms.WeilPolynomialResidual
 import GaloisForLFunctions.CompletedArithmeticForms.WeilGreenTail
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorLogLaw
 
 /-!
 # Quantitative theory of completed arithmetic forms

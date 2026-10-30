@@ -176,7 +176,8 @@ theorem tendsto_tiltedWeil_scaled_residual_norm {α : ℝ} (hα0 : 0 < α) (hα 
     have h := mul_le_mul_of_nonneg_left (hN _ hd.1 hd.2.1 hd.2.2.1 hd.2.2.2)
       (pow_nonneg (Real.rpow_nonneg (Real.log_natCast_nonneg N) α) 14)
     rw [relativeWeilResidualScale_eq]
-    convert h using 1 <;> ring
+    rw [mul_pow, ← pow_mul]
+    exact h.trans_eq (by ring)
   have h := hsq.sqrt
   rw [Real.sqrt_zero] at h
   apply h.congr

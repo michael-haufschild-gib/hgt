@@ -46,6 +46,8 @@ The source estimate
 \]
 gives $\operatorname{tameDifferent}(m)/\log m\to0$ by first fixing $K$
 and then letting $K\to\infty$. Together with the bounded shell correction,
-it identifies the logarithmic spectral-law target $E_m(c)/\log m\to1$.
-Source: `ArithmeticIntersectionTheory/ThePositiveSquaresOfTheTorsionFormLiveBelowFourFifths`,
-`tameDifferent_le_split`. This target requires its own Lean formalization.
+it proves the exact logarithmic spectral law $E_m(c)/\log m\to1$.
+Lean: `CompletedArithmeticForms/ConductorLogLaw.lean`,
+`tendsto_tameDifferent_div_log_zero`,
+`tendsto_shellCorrection_div_log_zero`,
+`tendsto_completedConductorEnergy_div_log_one`.
