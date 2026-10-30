@@ -44,7 +44,9 @@ near `θ = π` give twin index growing linearly in the tower length. Target form
 
 | Target | Result | Lean |
 |---|---|---|
-| T1 trial-span growth | false: one square (pole carrier) | `poleNegIndex_gauge_le_add_one`, `abs_poleNegIndex_gauge_sub_zeta_le_one`, `eventually_poleNegIndex_window` (HKT `TheSelectiveIndexOfTheAtomicKernelIsOneSquare`) |
+| T1 index growth | the `S`-flipped complete Weil matrix has `≥ n` negative eigenvalues at every overlap `c ≥ c₀(S, n)` (conductor blocks `m·d`, `(m, Q) = 1`, carry the flip packet with diagonal limit form) | `eventually_flip_negative_eigenvalues`, `exists_overlap_flip_negIndex_ge` (RAPT `EveryLowConductorSeesTheFlipSet`) |
+| T1 `κ(K_{ω_p}) = ∞` | unconditional over tests: `sup_g κ(K_{ω_S,g}) = ∞` for every nonempty finite flip set; for `ζ` the same supremum is `κ(K_ζ)` | `iSup_negIndex_weightKernel_finiteFlip_eq_top`, `iSup_negIndex_weightKernel_primeFlip_eq_top`, `iSup_negIndex_weightKernel_vonMangoldt` (HKT `EveryFlipSetHasInfiniteIndexOnTheHeckeLattice`) |
+| T1 trial-span growth | one square (pole carrier) in the trial span; growth lives in the conductor blocks | `poleNegIndex_gauge_le_add_one`, `abs_poleNegIndex_gauge_sub_zeta_le_one`, `eventually_poleNegIndex_window` (HKT `TheSelectiveIndexOfTheAtomicKernelIsOneSquare`) |
 | T1 flip index on its tower | `κ(K_ζ) = ∞ ∨ κ(K_{ω_p}) = ∞`; on the finite stratum the twin has `≥ n − #R` squares for every `n` | `weightKernel_flip_tower`, `negIndex_flip_eq_top_of_finite`, `negIndex_zetaKernel_eq_top_or_flip` (HKT `OnTheFiniteStratumEveryFlipHasInfiniteIndex`); `exists_frequency_thin` (HKT `APurePointSpectrumIsThinAtMostFrequencies`) |
 | T2 fixed overlap | low spectral subspace ε-close to the Ramanujan span of conductors with `E_m(c) < T`, both directions | `eventually_completeWeil_lowSpace_near_ramanujan`, `tiltedUnitSpline_lowSpace_near_ramanujan` |
 | T2 growing overlap | along a diagonal schedule `c_N → ∞` | `exists_overlap_schedule_lowSpace_near_ramanujan` (RAPT `TheLowCompleteWeilSpectrumLivesOnTheLowConductors`) |
@@ -52,6 +54,17 @@ near `θ = π` give twin index growing linearly in the tower length. Target form
 | T4 tail | no-go for coefficient-wise Gamma payment at any depth; survivor: depth `A` reaches `Y` with `32√Y log Y ≤ log A` | `not_summable_primeEulerMixedWeightTotal`, `exists_eulerHead_cost_gt` |
 
 Formalized summary: ../3-formalized/krein-index-selection-localization-and-gamma-reach.md
+
+## T3 plan: the head index grows (uniform extension is false)
+Form `Q_Y = Γ − source(eulerHead Y)` at horizon `X ≥ (K+1)Y`. Details `e_a` (`haarAtom a`, `a ≤ K`),
+coarse windows `C_b = Σ_{Yb ≤ n < Y(b+1)} coarseAtom n` = indicator of `log Y + [log 2b, log 2(b+1))`.
+Orientation 2 vanishes (`inner_shift_coarseSection_haarSection`). Source matrix
+`B_Y[a,b] = ∫ h_a(u) S_Y(u) du`, `S_Y(u) = Σ_{m ∈ head, m ∈ [2bY e^{-u}, (2b+2)Y e^{-u})} 2Λ(m)/√m`.
+PNT: `S_Y/√Y → 4(√min((2b+2)e^{-u},1) − √min(2b e^{-u},1))₊` (sharp head edge at `m = Y`; proper prime
+powers above `Y` are `o(√Y)`). Limit `L[a,b] = 0 (a<b)`, `−4√(2a) J_a (a=b)`, `4(√(2b+2)−√(2b)) J_a (a>b)`,
+`J_a = ∫ h_a e^{-u/2} > 0`: invertible. Test `v(x) = (x, (s/√Y) Lᵀx)`, `Γ(f+g) ≤ 2Γ(f)+2Γ(g)`, Lévy
+translation invariance: `Q_Y(v(x)) ≤ 2g_H|x|² + 2s²g_C‖L‖²|x|²/Y − s xᵀ(B_Y/√Y)Lᵀx < 0` for large `Y`.
+Hence index `≥ K` once `Y ≥ Y₀(K)`; for heads `p ≤ (log N)^A` at horizon `N` the index → ∞.
 
 ## Approach
 - T1a: one-square rigidity of the pole-hyperplane index under every sign gauge (atomic model).

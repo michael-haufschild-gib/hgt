@@ -97,7 +97,8 @@ theorem norm_le_of_eventually_norm_le (s : Finset ι) (c α : ι → ℂ) (hinj 
     intro n
     have h1 : ∑ i ∈ s, c i * α i ^ n = ∑ i ∈ t, c i * α i ^ n := by
       rw [ht]
-      exact (Finset.sum_filter_of_ne fun i _ hne hc => hne (by rw [hc, zero_mul])).symm
+      exact (Finset.sum_filter_of_ne (p := fun i => c i ≠ 0)
+        fun i _ hne hc => hne (by rw [hc, zero_mul])).symm
     rw [h1, Finset.sum_div, ← Finset.sum_filter_add_sum_filter_not t (fun i => ‖α i‖ = M)]
     simp only [hu, div_pow, mul_div_assoc]
     ring
@@ -199,7 +200,7 @@ theorem norm_le_of_fixed_loss (s : Finset ι) (c α : ι → ℂ) (hinj : Set.In
     rw [Real.rpow_zero] at hc
     exact hc.comp h0
   rw [mul_one] at hlim
-  exact le_of_tendsto hlim ((eventually_ge_atTop 1).mono fun k hk => hle k (by omega))
+  exact ge_of_tendsto hlim ((eventually_ge_atTop 1).mono fun k hk => hle k (by omega))
 
 /-- **The pole must be killed.** Under fixed-loss moment bounds, a frequency above `B` carries
 coefficient `0`. -/
@@ -214,11 +215,12 @@ theorem pole_coefficient_eq_zero (s : Finset ι) (c α : ι → ℂ) (hinj : Set
 /-- **Envelope losses are attained.** The single frequency `α = B e^{λ}` satisfies the moment bound
 with loss `D_k = e^{2kλ}` at every tensor power, so the bound `B e^{λ}` given by an envelope loss
 cannot be improved by taking `k` larger. -/
-theorem envelope_moment_bound_attained {B : ℝ} (hB : 0 ≤ B) (λ' : ℝ) (k n : ℕ) :
-    ‖((B * Real.exp λ' : ℝ) : ℂ) ^ n‖ ^ (2 * k) =
-      1 * (B ^ (2 * k) * Real.exp (2 * k * λ')) ^ n := by
+theorem envelope_moment_bound_attained {B : ℝ} (hB : 0 ≤ B) (lam : ℝ) (k n : ℕ) :
+    ‖((B * Real.exp lam : ℝ) : ℂ) ^ n‖ ^ (2 * k) =
+      1 * (B ^ (2 * k) * Real.exp (2 * k * lam)) ^ n := by
   rw [norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity), one_mul,
     ← pow_mul, mul_comm n, pow_mul, mul_pow, ← Real.exp_nat_mul]
+  push_cast
   ring_nf
 
 end GaloisForLFunctions.ArithmeticResonanceTheory

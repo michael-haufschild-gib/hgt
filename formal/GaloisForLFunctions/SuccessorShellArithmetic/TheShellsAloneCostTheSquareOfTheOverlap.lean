@@ -664,7 +664,6 @@ private theorem floor_inequality_at {φ : ℝ → ℝ} (hφ : Continuous φ) (h�
       2 * η * (Real.log (N / 2) / N * ((τ * (w * I)) ^ 2 / Real.log 2 - τ * (w * M))) := by
     rw [← hwN]
     field_simp
-    ring
   have heq2 : w * M * Real.log N * (2 * ε * η ^ 2 + C * ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) /
       Real.log N) + C * (2 * η + η ^ 2) * ((∑ n ∈ T, 1 / (n : ℝ)) / Real.log N)) =
       w * M * (ε * η ^ 2 * (Real.log N * 2) + C * ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) +
@@ -764,8 +763,8 @@ theorem le_of_nonRatioForm_payment {φ : ℝ → ℝ} (hφ : Continuous φ) (hφ
     filter_upwards [hpay, eventually_ge_atTop 2] with N hN hN2
     exact floor_inequality_at hφ hφ0 hsupp hM hc hε hη hN2 (hN _))
   -- optimize in `η`
-  have hAq : (1 / 2) ^ 2 * (c * q) / Real.log 2 - 1 / 2 = 2 * A := by
-    rw [hA, shellFloorCoefficient]
+  have hAq : (1 / 2) ^ 2 * (c * q) / Real.log 2 - 1 / 2 = A := by
+    rw [hA, shellFloorCoefficient, hq]
     field_simp
     ring
   rw [hAq] at hlim
@@ -773,7 +772,7 @@ theorem le_of_nonRatioForm_payment {φ : ℝ → ℝ} (hφ : Continuous φ) (hφ
     rcases le_total A 0 with h | h
     · rw [max_eq_right h]; ring
     · rw [max_eq_left h]; ring
-  have hkey : 2 * η * 1 * (2 * A) - 2 * ε * η ^ 2 = max A 0 ^ 2 / (2 * ε) := by
+  have hkey : 2 * η * 1 * A - 2 * ε * η ^ 2 = max A 0 ^ 2 / (2 * ε) := by
     rw [hηdef]
     field_simp
     rw [← hmax]

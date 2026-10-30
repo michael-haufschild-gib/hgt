@@ -56,7 +56,7 @@ theorem eventually_weightedResiduePrimeReading_variation_log_bound {q : ℕ} [Ne
       exact mul_le_mul_of_nonneg_left (hY.2 (X * u) hXu F) (abs_nonneg _)
   have hcont : Continuous (fun u => |deriv W u| * E) :=
     (hW.continuous_deriv (by norm_num)).abs.mul continuous_const
-  have hI := intervalIntegral.norm_integral_le_of_norm_le zero_le_one
+  have hI := intervalIntegral.norm_integral_le_of_norm_le (μ := volume) zero_le_one
     (Eventually.of_forall hpoint) (hcont.intervalIntegrable 0 1)
   rw [Real.norm_eq_abs, intervalIntegral.integral_mul_const] at hI
   have hID := hI.trans (mul_le_mul_of_nonneg_right hWD hE)
@@ -92,7 +92,9 @@ theorem exists_reciprocalShellWeight_variation_bounds {φ : ℝ → ℝ}
           apply intervalIntegral.integral_congr
           intro u hu
           rw [Set.uIcc_of_le hδ.le] at hu
-          rw [deriv_zero_of_flat (fun v hv => reciprocalShellWeight_zero_near hφ hsupp ha hv)
+          change |deriv (reciprocalShellWeight φ a) u| = 0
+          rw [deriv_zero_of_flat (W := reciprocalShellWeight φ a)
+            (fun v hv => reciprocalShellWeight_zero_near hφ hsupp ha hv)
             (by rw [abs_of_nonneg hu.1]; exact hu.2.trans_lt hδa), abs_zero]
         _ = 0 := intervalIntegral.integral_zero
     have hmajor : ContinuousOn (fun u : ℝ => (L : ℝ) * a / u ^ 2) (Set.Icc δ 1) :=
@@ -116,7 +118,7 @@ theorem exists_reciprocalShellWeight_variation_bounds {φ : ℝ → ℝ}
       rw [Set.uIcc_of_le hδ1] at hu
       have hd := (hasDerivAt_const u (-((L : ℝ) * a))).div (hasDerivAt_id u)
         (hδ.trans_le hu.1).ne'
-      convert hd using 1 <;> ring
+      simpa only [zero_mul, mul_one, zero_sub, neg_neg] using hd
     have hcalc := intervalIntegral.integral_eq_sub_of_hasDerivAt hanti hint
     have hend : -((L : ℝ) * a) / 1 - -((L : ℝ) * a) / δ = (L : ℝ) * (2 - a) := by
       dsimp only [δ]
@@ -125,7 +127,7 @@ theorem exists_reciprocalShellWeight_variation_bounds {φ : ℝ → ℝ}
     have hbound := intervalIntegral.integral_mono_on hδ1
       (hcont.intervalIntegrable δ 1) hint hpoint
     rw [hcalc] at hbound
-    have hsplit := intervalIntegral.integral_add_adjacent_intervals
+    have hsplit := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (hcont.intervalIntegrable 0 δ) (hcont.intervalIntegrable δ 1)
     rw [hzero, zero_add] at hsplit
     rw [← hsplit]

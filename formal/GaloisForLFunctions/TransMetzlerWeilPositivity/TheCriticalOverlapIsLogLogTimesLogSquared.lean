@@ -432,7 +432,7 @@ theorem nonneg_of_critical_multiple {φ : ℝ → ℝ}
         dcScale_atTop.eventually_ge_atTop (32 * Real.exp 1)] with N h hS
       have h1 : 1 ≤ dcScale N / (32 * Real.exp 1) := by
         rw [le_div_iff₀ (by positivity)]; linarith
-      have h2 : 1 ≤ K := by linarith
+      have h2 : 1 ≤ K := by have := Real.add_one_le_exp 1; linarith
       nlinarith
     filter_upwards [eventually_div_dcScale_le_dcRate hcN hc1, eventually_le_dcCriticalOverlap hB,
       dcScale_atTop.eventually_gt_atTop 0] with N h hlow hS
@@ -471,8 +471,9 @@ theorem riemannHypothesis_iff_forall_critical_multiple {φ : ℝ → ℝ}
       have : (1 : ℝ) ≤ 32 * Real.exp 1 := by have := Real.add_one_le_exp 1; linarith
       linarith
     refine nonneg_of_critical_multiple hφ hφ1 hφint hB hA hK32 (H K hK1) hg hR hgR ?_
-    rw [show K / (32 * Real.exp 1) = 24 * B * blockSize (R + 1) * Real.exp 1 + 1 by
-      field_simp]
+    have hKdiv : K / (32 * Real.exp 1) = 24 * B * blockSize (R + 1) * Real.exp 1 + 1 :=
+      mul_div_cancel_left₀ _ (by positivity)
+    rw [hKdiv]
     linarith
 
 /-- **The Steklov profile.** RH holds iff every bounded multiple of its critical overlap
@@ -494,3 +495,12 @@ theorem riemannHypothesis_iff_steklovDCProfile_critical_multiples :
       integral_abs_iteratedDeriv_steklovDCProfile_le hr hrN⟩
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity
+
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.riemannHypothesis_iff_forall_critical_multiple
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.riemannHypothesis_iff_nonneg_of_critical_rate
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.nonneg_of_critical_multiple
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_le_dcCriticalOverlap
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_dcCriticalOverlap_le
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.riemannHypothesis_iff_steklovDCProfile_critical_multiples
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.riemannHypothesis_iff_forall_bounded_rate
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.steklovDCProfile_window
