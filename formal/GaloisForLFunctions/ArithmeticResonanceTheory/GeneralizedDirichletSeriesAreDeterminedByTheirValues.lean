@@ -14,7 +14,9 @@ finite head `Σ_{λ_i ≤ t₀}` equals `e^{−σ t₀}` times the mass at `t₀
 `σ → ∞` kills the mass at `t₀`.
 
 This is the uniqueness used to read the length spectrum of a dynamical system off its zeta
-function: two zeta functions that agree have the same periodic-orbit masses at every length.
+function: two zeta functions that agree have the same periodic-orbit masses at every length. The
+index is arbitrary and frequencies may repeat; the strictly increasing case is
+`RHTower.generalizedDirichletSeries_coeff_eq_zero_of_eventuallyEq_zero`.
 -/
 
 open Filter Topology

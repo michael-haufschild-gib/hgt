@@ -10,7 +10,8 @@ contains it. Three facts make it work and fix what it can give.
 1. **Rate = depth** (`norm_le_of_eventually_norm_le`). If `|a(n)| ≤ K Rⁿ` eventually, every
    frequency with nonzero coefficient has `|α_i| ≤ R`. The top frequencies, normalized, form an
    almost periodic sum tending to `0`; the difference operator `b(n + 1) − u_j b(n)` peels off one
-   frequency at a time (`coeff_eq_zero_of_tendsto`), so all their coefficients vanish.
+   frequency at a time (`coeff_eq_zero_of_tendsto`), so all their coefficients vanish. (The
+   continuous-time analogue is `HTGeometry.eq_zero_of_expSum_tendsto_zero`.)
 2. **Moments lose a root** (`norm_le_of_moment_bound`). A bound `|a(n)|^{2k} ≤ C (B^{2k} D)ⁿ` gives
    `|α_i| ≤ B D^{1/2k}`. Positivity transfers a family moment to each member
    (`norm_le_of_family_moment_bound`).

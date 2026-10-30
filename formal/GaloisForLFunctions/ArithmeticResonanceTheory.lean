@@ -9,6 +9,9 @@ import GaloisForLFunctions.ArithmeticResonanceTheory.EvenRealizationsHaveNoZeros
 import GaloisForLFunctions.ArithmeticResonanceTheory.AHolderRealizationIsAZeroFreeStrip
 import GaloisForLFunctions.ArithmeticResonanceTheory.AdditiveRealizationsAreCommutative
 import GaloisForLFunctions.ArithmeticResonanceTheory.TheArchimedeanPlaceForbidsFiniteVirtualRealizations
+import GaloisForLFunctions.ArithmeticResonanceTheory.OverFiniteFieldsTheOddPartIsSpectral
+import GaloisForLFunctions.ArithmeticResonanceTheory.GeneralizedDirichletSeriesAreDeterminedByTheirValues
+import GaloisForLFunctions.ArithmeticResonanceTheory.ARealizationOfZetaIsPrimeLength
 
 /-!
 # Arithmetic Resonance Theory
@@ -16,7 +19,9 @@ import GaloisForLFunctions.ArithmeticResonanceTheory.TheArchimedeanPlaceForbidsF
 Umbrella for the theory of realizations, resonances and amplifiers for Euler products: the
 commutative and free realizations of the primes and the nature of their poles; additive
 realizations are commutative; finite even and virtual realizations are excluded (parity, the
-archimedean place); a Hölder realization is a zero-free strip; the arithmetic
+archimedean place), while over finite fields the odd part is spectral; uniqueness of generalized
+Dirichlet series makes every realization of `ζ` prime-length; a Hölder realization is a zero-free
+strip whose price is a lower bound on its Hölder modulus; the arithmetic
 obstructions to realizations (no affine recurrence among primes, integrality against
 super-conformal distortion, the Hölder modulus law of prime-length systems); the failure of
 oscillation on additive and free realizations; the amplifier law (rate = depth, fixed versus

@@ -1,8 +1,8 @@
 # Overlap Gram smoothing needs a prime-defect corrector
 
 - **ID:** overlap-gram-defect-corrector
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM — Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For every fixed `c>1`, eventually in `N`, `D_N(x,Gx)+τ D_N(x-Gx)` is nonnegative for every vector exactly when `τ≥1/4`. At equality its kernel is the one-dimensional inverse image of the arithmetic pole line under `I+G`.
 
 `G` is the normalized physical mass Gram of the actual tilted unit spline at width `w=c/N`. `D_N(x,y)` is the bilinear prime-power edge energy; `D_N(x)=D_N(x,x)` and `b_n=1/sqrt(n)` on `1≤n≤N`.
@@ -32,3 +32,15 @@ proves nonnegativity for `τ≥1/4`. At equality, zero energy means `(I+G)x∈sp
 This rules out positivity of a proposed Gram-smoothed arithmetic reserve, not positivity of the complete Weil form. The correction coefficient is sharp; no uniform lower bound on the negative eigenvalue is asserted. A useful signed Weil reserve must account for the correction and its changed ground vector.
 
 The negative-eigenvector conductor bound, growing-family signed residual estimate, and physical synthesis estimate remain open.
+
+## Lean proof
+
+[OverlapGramSmoothingNeedsAQuarterDefectCorrection.lean](../../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/OverlapGramSmoothingNeedsAQuarterDefectCorrection.lean):
+
+- `poleDefect_eq_zero_iff_horizonPoleVector`: exact arithmetic kernel.
+- `correctedOverlapDefect_eq`: the signed square completion.
+- `eventually_normalizedTiltedGram_does_not_preserve_pole`: literal Gram ground-line failure.
+- `eventually_correctedTiltedOverlapDefect_nonneg_iff`: sharp `1/4` threshold.
+- `eventually_correctedTiltedOverlapDefect_ground_line`: exact corrected kernel and its strictly positive unsmoothed defect.
+
+Direct Lean check passes. All audited declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.

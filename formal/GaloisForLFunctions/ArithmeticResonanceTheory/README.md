@@ -104,6 +104,7 @@ identity.
 | Amplifier moment | $\lvert a(n)\rvert^{2k}\le C(B^{2k}D)^n$, $a(n)=\sum c_i\alpha_i^n$ | `norm_le_of_moment_bound` |
 | Brauer family | degree-$k$ monomials of unimodular phases orthogonal over the family | `IsBrauer`, `monomial` |
 | Mass at a length | $\sum_{\lambda_i=t}w_i$ of a generalized Dirichlet series | `massAt` |
+| Signed length series | periodic points $(+1/n)$ against prime powers $(-1/(k+1))$ | `signedWeight`, `signedLength`, `OrbitIndex` |
 
 **Words.** *Spectral pole*: a pole where an eigenvalue of $\mathcal L_s$ crosses $1$. *Nuclearity pole*: a
 pole created by divergence of the trace norm while the spectral radius stays below $1$. *Even / odd
@@ -175,6 +176,9 @@ phases a family must separate — $2g$ over $\mathbb F_q$, $\pi(x)$ over $\mathb
    realizations are zero-free, and $\zeta$ is none (`riemannZeta_ne_graphZeta`).
 4. **The archimedean place forbids finite odd parts.** $\zeta$ is no finite virtual realization
    (`riemannZeta_ne_virtualRealization`): the trivial zeros would make the odd determinant vanish.
+   Calibration: over $\mathbb F_q$ the zeros of the odd determinant are exactly the spectrum of the
+   finite odd operator (`det_one_sub_cpow_smul_eq_zero_iff`), they repeat along vertical progressions
+   (`cpow_add_period`), and RH is unitarity (`re_eq_half_of_norm_eigenvalue`).
 5. **A realization of $\zeta$ is prime-length** (`isPrimeLength_of_realization`), by uniqueness of
    generalized Dirichlet series (`massAt_eq_zero_of_tsum_eq_zero`).
 6. **The conformal threshold.** Prime cycle families are never super-conformal and never obey a
