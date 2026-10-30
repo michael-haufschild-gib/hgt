@@ -1,7 +1,7 @@
 # Growing-conductor reciprocal-shell transfer
 
 - **ID:** growing-conductor-reciprocal-shell-transfer
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Statement:** For each `A≥0` and each natural `k`, one base horizon gives
   `|actual affine shell correction − signed mean|≤Cφ c/(log Y)^k`
   simultaneously for `1≤q≤(log Y)^A`, `c≥1`, `X≥2cY`, and all shifts and
@@ -39,4 +39,8 @@ The tilted spline discharges every profile condition.
 
 ## Verification
 
-Lean formalization in progress.
+`CriticalArithmeticCorrelationTheory/GrowingConductorsHaveUniformReciprocalShellRates.lean`:
+`exists_conductor_uniform_affineShellCorrection_linear_log_rate` and
+`exists_tiltedUnitSpline_conductor_uniform_affineShellCorrection_linear_log_rate`.
+Direct Lean check passed. All four public bounds depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. Umbrella wired.

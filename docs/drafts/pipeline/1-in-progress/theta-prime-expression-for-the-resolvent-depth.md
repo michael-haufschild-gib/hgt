@@ -27,7 +27,9 @@ in `TheXiResolventDepthIdentity`.
 
 ## Lean obligations
 
-- General compact-test convergence for the prescribed finite theta reading.
+- General compact-test convergence is formalized in
+  `FiniteThetaReadingsRecoverCompactCurrents`, with error
+  `Bφ exp(−n⁴+56n²+62)` and a standard-axiom audit.
 - Xi-copy/carrier trace transport with summability.
 - Two exact limits and the final theta–prime identity.
 

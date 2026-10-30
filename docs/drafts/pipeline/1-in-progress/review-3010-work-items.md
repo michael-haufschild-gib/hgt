@@ -9,7 +9,7 @@
 |---|---|---|
 | A1 | Pole-row estimate and joint top-band cancellation | Both named theorems proved in `SuccessorShellArithmetic/TheShellsAndThePoleCancelOnTheTopBand`; direct Lean check and capstone axiom audit passed; umbrella wired |
 | A2 | Growing Euler heads have arbitrarily large negative dimension | `eventually_eulerHead_negative_family` and its log-power corollary passed direct Lean and transitive axiom audits; umbrella wired |
-| A3 | Effective conductor confinement for finite sieve profiles at fixed overlap | `exists_sieveProfile_ramanujan_approximation` and exponential defect cutoff exist; scope audit pending |
+| A3 | Effective conductor confinement for finite sieve profiles at fixed overlap | Explicit sieve horizon/conductor cutoffs and complete negative-packet cutoff `exp(D(Cc^16+1))` have paper proofs and Lean drafts; checks pending |
 | A4 | Effective positivity/index horizons; full-index exhaustion for Steklov schedule | Full-index Steklov exhaustion formalized in `TheSteklovScheduleReachesTheIndex`, direct Lean and axiom audits passed; effective horizons remain unfinished |
 | A5 | First-prime, coarse, polar and head payments on finite Haar cells/sources | Several separate payments exist; joint scope audit pending |
 | A6 | Matched finite-sieve Hodge index | Existing formalized card and theorem; audit pending |
@@ -21,7 +21,7 @@
 | A12 | Native two-response action on source data without zero-copy indexing | Existing native action still uses `XiZeroCopy` |
 | A13 | Elliptic base over F₃: product formula, quotient measures, Iwasawa characters, unfolding | Principal ideal norms, local integrals and finite approximation proved; global product formula, quotient covolume and arithmetic unfolding remain open |
 | A14 | Actual Ξ-divisor identity `(σ−1/2)S=Re(ξ′/ξ)+D` | Shared-corpus `TheXiResolventDepthIdentity` now proves full-divisor identity for `σ>1`, absolute convergence and nonnegative depth; source reviewed, existing card records direct Lean and axiom audits |
-| A15 | Growing-modulus shell transfer; general scalar jets; terminal/Euler completion | Unfinished |
+| A15 | Growing-modulus shell transfer; general scalar jets; terminal/Euler completion | Logarithmic-conductor shell transfer formalized, direct Lean and transitive axiom audits passed. Explicit joint Euler-completion schedules drafted. Higher scalar-jet recovery needs a separate homogeneous-logarithm argument |
 
 ## Heat-count ladder
 

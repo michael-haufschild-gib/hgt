@@ -20,7 +20,7 @@ Together with the existing upper bound `E_m(c) ≤ (m/φ(m))E_1(c/m)`, this iden
 
 ## Audit
 
-- Existing pole-minimality compares `E_m(c)` with `E_1(c)`, at the same overlap. This target compares with the larger energy at `c/m`.
+- `completedConductorEnergy_prime_mul_ge` already gives `E_{pm}(c) ≥ E_m(c/p)`; iterating that prime step implies this order. The harmonic-prefix proof additionally compares every nonnegative decreasing weight and gives the [exact positive surplus series](positive-abel-decomposition-of-the-conductor-surplus.md).
 - Arithmetic bridge: Euler's totient product and prime-divisor coprimality identify the sieve density as `φ(m)/m`.
 - Analytic transfer: `HTGeometry.sum_mul_weight_eq` and the two convergent Fourier series.
 - `density_mul_weighted_harmonic_le_coprime` proves weighted sieve domination. `completedShellEnergy_div_conductor_le` proves the rescaled pole order; `log_conductor_sub_log_overlap_le_completedEnergy` gives the full-coefficient logarithmic floor.

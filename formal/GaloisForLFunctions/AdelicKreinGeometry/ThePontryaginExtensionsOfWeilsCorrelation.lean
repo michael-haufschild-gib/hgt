@@ -36,6 +36,7 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticPositiveDuality
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff_cubicSpline
   hasCompactSupport_cubicSpline)
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx cx_contDiff cx_hasCompactSupport)
 
 noncomputable section
 
@@ -124,8 +125,8 @@ theorem negIndex_le_of_weil_extension {φ : AffineGroupQ → ℂ}
 
 /-- **The blind extension is index-minimal**: its index is exactly `κ(K_ζ)`. -/
 theorem negIndex_blindWeilState : negIndex blindWeilState = negIndex zetaKernel := by
-  rw [blindWeilState, negIndex_comp_of_surjective _ _ fun u => ⟨dilation u, slopeAbs_dilation u⟩,
-    negIndex_ratCorr]
+  rw [blindWeilState, negIndex_comp_of_surjective ratCorr slopeAbs
+    fun u : posUnits => ⟨dilation (u : ℚˣ), slopeAbs_dilation u⟩, negIndex_ratCorr]
 
 /-! ### The regular extension -/
 
@@ -167,9 +168,10 @@ theorem isHermKernel_dilationCorr : IsHermKernel dilationCorr := fun h => by
 /-- The **regular extension** of Weil's correlation: zero off the dilations. -/
 def regularWeilState : AffineGroupQ → ℂ := extendFromSubgroup dilationSubgroup dilationCorr
 
+open scoped Classical in
 /-- **The regular extension has index `0` or `∞`**: `0` under RH, `∞` otherwise. -/
 theorem negIndex_regularWeilState :
-    negIndex regularWeilState = if RiemannHypothesis then 0 else ⊤ := by
+    negIndex regularWeilState = if RiemannHypothesis then (0 : ℕ∞) else ⊤ := by
   haveI := infinite_quotient_dilationSubgroup
   rw [regularWeilState, negIndex_extendFromSubgroup isHermKernel_dilationCorr,
     ENat.card_eq_top_of_infinite, negIndex_dilationCorr]

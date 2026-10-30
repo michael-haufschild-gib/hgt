@@ -193,7 +193,7 @@ theorem exists_conductor_uniform_affineShellCorrection_linear_log_rate
         (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmass hC.le)
           (zero_le_one.trans hc)) (pow_nonneg hlog.le _)
     _ = C * c / Real.log Y ^ k := by
-      rw [pow_add]
+      simp only [pow_add]
       field_simp
 
 /-- The explicit tilted spline has a uniform logarithmic-conductor shell-transfer rate. -/

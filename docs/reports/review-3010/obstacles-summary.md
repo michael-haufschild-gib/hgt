@@ -69,7 +69,7 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
 
 - **A13.** ACS 𝔽₃ elliptic base: product formula, quotient measures, Iwasawa characters, Eisenstein unfolding.
 - **A14. Full Ξ-divisor depth identity — formalized for `σ>1`.** `sub_mul_xiSamePointResolvent_sub_logDeriv` proves `(σ−1/2)S−Re(ξ′/ξ)=D`, with absolute convergence of both series and `D≥0`. The Euler and archimedean terms are also opened exactly. [Proof and Lean audit](../../drafts/pipeline/3-formalized/the-full-xi-resolvent-depth-identity.md).
-- **A15.** MC: Siegel–Walfisz transfer for growing-modulus shells with the conductor-uniform contours. WL: higher-order scalar-jet transfer for general prime families. CTF: terminal and Euler-completion bookkeeping.
+- **A15.** MC growing-modulus shell transfer is formalized: uniformly for `q≤(log Y)^A`, every logarithmic error rate `Cφ c/(log Y)^k` holds once `X≥2cY`; direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/growing-conductor-reciprocal-shell-transfer.md). WL: higher-order scalar-jet transfer for general prime families. CTF: terminal and Euler-completion bookkeeping.
 
 ## 2.2 Open mathematical problems
 
@@ -132,6 +132,10 @@ Nobody knows how to produce these. Strength tags:
 Concretely:
 
 - Is there, eventually in N and for every coefficient vector, a reserve W ≥ ac⁻⁷(D − C log(2c)‖x‖²)?
+- **Fixed-overlap answer: yes, formalized.** `exists_completeWeil_logarithmic_defect_reserve`
+  gives absolute `a,C>0` and `∀c≥1, eventually N, ∀x`. The horizon depends on `c`
+  and is ineffective; a prescribed growing-overlap schedule remains separate.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/logarithmic-reserve-by-shifting-the-prime-energy.md).
 - Equivalently: is the complete matrix at overlap c a defect-relative perturbation of its conductor Hamiltonian Σ_m E_m(c)\|⟨x, u_m⟩\|², with O(log c) loss, once shells, Euler heads and pole are paid together?
 
 Why this question:

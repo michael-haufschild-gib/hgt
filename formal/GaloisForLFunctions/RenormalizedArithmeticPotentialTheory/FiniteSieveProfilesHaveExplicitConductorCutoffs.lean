@@ -57,7 +57,9 @@ theorem exists_sieveProfile_ramanujan_approximation_explicit
     simpa only [mul_comm] using (div_le_iff₀ hη).mp hRlog
   obtain ⟨b, hb⟩ := exists_sieveProfile_ramanujan_approximation Q hR hA hNlog f
   exact ⟨b, hb.trans (mul_le_mul_of_nonneg_right hcoef
-    (sum_nonneg fun a _ => mul_nonneg (sieveClassMass_nonneg Q a N) (sq_nonneg _)))⟩
+    (sum_nonneg fun a _ => mul_nonneg
+      (div_nonneg (sievedHarmonic_nonneg Q _) (Nat.cast_nonneg (a : ℕ)))
+      (sq_nonneg _)))⟩
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 

@@ -10,14 +10,14 @@
 
 | Question | Required mathematical conclusion | Status |
 |---|---|---|
-| Q1 | All-vector logarithmic defect reserve for the complete Weil form; defect-relative conductor decomposition | Open |
+| Q1 | All-vector logarithmic defect reserve for the complete Weil form; defect-relative conductor decomposition | Reserve formalized for each fixed overlap; prescribed growing-overlap horizon and conductor/shell decomposition open |
 | Q1/A1 | Top-band joint cancellation, then top-band perturbations of Ramanujan modes | Pole-vector case formalized in `TheShellsAndThePoleCancelOnTheTopBand`; conductor perturbations open |
 | Q1/A2 | Growing Euler heads and joint head–pole–tail cancellation | Growing-head theorem exists in `TheIndexOfAGrowingEulerHeadIsUnbounded`; joint cancellation open |
 | Q1/O1 | Ramanujan–Plancherel decomposition of the shell block | Open |
 | Q2 | Equality of the two actual Ξ source polarizations | Open; corpus theorem identifies this with RH |
-| Q2/defect | Theta–prime expression for `(σ − 1/2)S(s) − Re(ξ′/ξ)(s)`, at some `σ > 1` | Exact available identities under inspection |
+| Q2/defect | Theta–prime expression for `(σ − 1/2)S(s) − Re(ξ′/ξ)(s)`, at some `σ > 1` | Full-divisor and prime identities formalized; two-limit theta reading at `s=4` in progress |
 | Q2/charge | Theta-prefix reading of window collision charge with explicit error | Open |
-| Q2/calibration | Integer analogue of the calibrated explicit-formula Rosati pairing | Existing `tsum_explicit_eq_xiWeilPolarization` and `norm_sq_sub_explicit_eq_half_reflectionDefect`; source audited, axiom check pending |
+| Q2/calibration | Integer analogue of the calibrated explicit-formula Rosati pairing | Formalized: `tsum_explicit_eq_xiWeilPolarization` and `norm_sq_sub_explicit_eq_half_reflectionDefect`; source and transitive standard-axiom audits passed |
 | Q3 | Actual growth law for the de Bruijn–Newman nonreal count at zero | Open |
 | Q3/flux | Consequence of summing the actual localized outer flux over heights | Open |
 | Q3/tower | Arithmetic ceiling for a nonblind prime tower | Open |
@@ -41,7 +41,7 @@ Every claimed solution requires the exact theorem, dependency audit and successf
   Both are uniform scalar laws with direct Lean and standard-axiom audits; finite-horizon
   operator transfer remains separate.
 
-## Candidate: transfer the reserve through a shifted operator
+## Formalized fixed-overlap reserve
 
 Let `R_N = (log N)I − P_N`, with conductor eigenvalues
 `λ_m = γ + log m + tameDifferent(m)`. The row bounds compare `R_N` with `D_N`
@@ -50,17 +50,17 @@ up to an absolute multiple of the mass. Starting from the proved reserve
 Then `W_N − δ(c)R_N` still has a positive defect reserve. Its conductor
 quasimode energies are `E_m(c) − δ(c)λ_m`.
 
-Candidate scalar input: `E_m(c) ≥ δ(c)(λ_m − C log(2c))`, uniformly in `m,c≥1`.
+Proved scalar input: `E_m(c) ≥ δ(c)(λ_m − C log(2c))`, uniformly in `m,c≥1`.
 For polynomially bounded `m`, use `E_m(c)≥0` and `tameDifferent(m)≤log m`.
 For larger `m`, bound the finite shell correction using the divisor formula
 for Ramanujan sums and a polynomial lower bound for the totient.
-Uniform finite Ramanujan approximation plus quasimodes should transfer this
-floor to the shifted matrices, giving Q1 with a possibly ineffective horizon.
+Finite Ramanujan approximation plus norm quasimodes transfers this floor to
+the shifted matrices. `exists_completeWeil_logarithmic_defect_reserve` proves
+`∃a,C>0, ∀c≥1, eventually N, ∀x`; direct Lean check and standard-axiom audit
+passed. Proof: `../3-formalized/logarithmic-reserve-by-shifting-the-prime-energy.md`.
 
-**Audit obligations:** prove the scalar bound with constants independent of `c`;
-extend the compactness/spectral argument to the shifted matrix; keep the
-order of quantifiers `∀ c, eventually N, ∀ x`. No growing-overlap horizon
-claim follows without a separate rate.
+The constants are independent of `c`. The horizon is ineffective and depends
+on `c`; no prescribed growing-overlap claim follows without a separate rate.
 
 ## Full-divisor resolvent identity
 

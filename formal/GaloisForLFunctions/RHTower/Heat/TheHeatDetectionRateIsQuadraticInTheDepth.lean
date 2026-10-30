@@ -35,6 +35,7 @@ loss itself is the cluster loss: a cluster of `≍ log t` zeros within `δ` of `
 -/
 
 open MeasureTheory Filter Topology
+open scoped ComplexOrder
 
 namespace RHTower
 
@@ -304,6 +305,75 @@ theorem heatedSliceReal_le_relative_growth {t lam δ R : ℝ} (ht : 16 ≤ t) (h
 
 /-! ## Detection at the quadratic rate -/
 
+/-- **The numerical inequality behind the quadratic rate.**  With `L ≥ 1600`, `L ≤ A ≤ 1.01L`,
+`200κ ≤ δ² ≤ 1/4`, `λL = κ`, `A²λ ≤ L/700`, `M ≤ 4.43L`, `log(6D) ≤ 4 + 3A/2 + 9/2 + 2A²λ` and
+`α = A + 2M/(eδ)`: `log(6D) + 2αδ + 16δ² + 32α²λ < (δ²/(4λ)) log(3/2)`.  The left side is
+`≤ 12.5 + 12.7L` and the right side `≥ 50L/3`. -/
+theorem quadraticRate_numerics {L A M δ κ lam D α : ℝ} (hL : 1600 ≤ L) (hAL : L ≤ A)
+    (hA1 : A ≤ 101 / 100 * L) (hδ : 0 < δ) (hδ2 : δ ≤ 1 / 2) (hκ : 0 < κ) (hκδ : 200 * κ ≤ δ ^ 2)
+    (hlam : 0 < lam) (hlamL : lam * L = κ) (hA2lam : A ^ 2 * lam ≤ L / 700) (hM0 : 0 ≤ M)
+    (hMle : M ≤ 443 / 100 * L)
+    (hlogD : Real.log (6 * D) ≤ 4 + (3 / 2 * A + 9 / 2 + 2 * A ^ 2 * lam))
+    (hα : α = A + 2 * M / (Real.exp 1 * δ)) :
+    Real.log (6 * D) + 2 * α * δ + 8 * 2 * δ ^ 2 + 32 * α ^ 2 * lam
+      < δ ^ 2 / (4 * lam) * Real.log (3 / 2) := by
+  obtain ⟨q, hq⟩ : ∃ q, q = 2 * M / (Real.exp 1 * δ) := ⟨_, rfl⟩
+  rw [← hq] at hα
+  subst hα
+  have he1 := Real.exp_one_gt_d9
+  have he0 : 0 < Real.exp 1 := Real.exp_pos 1
+  have hL0 : 0 < L := by linarith
+  have hqe : q * (Real.exp 1 * δ) = 2 * M := by rw [hq]; field_simp
+  -- `2αδ ≤ A + 4M/2.7`
+  have hαδ : 2 * (A + q) * δ ≤ A + 4 * M / (27 / 10) := by
+    have hqδ : q * δ = 2 * M / Real.exp 1 := by
+      rw [eq_div_iff he0.ne']; linarith [hqe]
+    have h1 : 4 * M / Real.exp 1 ≤ 4 * M / (27 / 10) :=
+      div_le_div_of_nonneg_left (by linarith) (by norm_num) (by linarith)
+    have h2 : 2 * A * δ ≤ A := by nlinarith
+    have e : 2 * (A + q) * δ = 2 * A * δ + 2 * (q * δ) := by ring
+    rw [e, hqδ]
+    have e2 : 2 * (2 * M / Real.exp 1) = 4 * M / Real.exp 1 := by ring
+    linarith
+  -- `32α²λ ≤ 64A²λ + 64q²λ`
+  have hα2 : 32 * (A + q) ^ 2 * lam ≤ 64 * (A ^ 2 * lam) + 64 * (q ^ 2 * lam) := by
+    have h : (A + q) ^ 2 ≤ 2 * A ^ 2 + 2 * q ^ 2 := by nlinarith [sq_nonneg (A - q)]
+    nlinarith
+  -- `q²λ ≤ 0.054 L`
+  have hqlam : q ^ 2 * lam ≤ 54 / 1000 * L := by
+    have hid : q ^ 2 * lam * ((Real.exp 1 * δ) ^ 2 * L) = (2 * M) ^ 2 * κ := by
+      rw [← hqe, ← hlamL]; ring
+    have he2 : 729 / 100 ≤ Real.exp 1 ^ 2 := by nlinarith
+    have h1 : 1458 * κ ≤ (Real.exp 1 * δ) ^ 2 := by rw [mul_pow]; nlinarith
+    have hql : 0 ≤ q ^ 2 * lam * L := by positivity
+    have h2 : q ^ 2 * lam * L * (1458 * κ) ≤ (2 * M) ^ 2 * κ := by
+      calc q ^ 2 * lam * L * (1458 * κ) ≤ q ^ 2 * lam * L * (Real.exp 1 * δ) ^ 2 :=
+            mul_le_mul_of_nonneg_left h1 hql
+        _ = (2 * M) ^ 2 * κ := by rw [← hid]; ring
+    have h3 : q ^ 2 * lam * L * 1458 ≤ (2 * M) ^ 2 := by
+      have := h2; rw [← mul_assoc] at this
+      exact le_of_mul_le_mul_right (by linarith) hκ
+    have hM2 : (2 * M) ^ 2 ≤ (2 * (443 / 100 * L)) ^ 2 := pow_le_pow_left₀ (by linarith) (by linarith) 2
+    have h4 : q ^ 2 * lam * L * 1458 ≤ 54 / 1000 * L * L * 1458 := by nlinarith
+    have h5 : q ^ 2 * lam * (L * 1458) ≤ 54 / 1000 * L * (L * 1458) := by nlinarith
+    exact le_of_mul_le_mul_right h5 (by positivity)
+  -- the right side is at least `50L/3`
+  have hl32 : (1 : ℝ) / 3 ≤ Real.log (3 / 2) := by
+    have := Real.one_sub_inv_le_log_of_pos (show (0 : ℝ) < 3 / 2 by norm_num)
+    norm_num at this ⊢; linarith
+  have hrhs : 50 * L / 3 ≤ δ ^ 2 / (4 * lam) * Real.log (3 / 2) := by
+    have h1 : 50 * L ≤ δ ^ 2 / (4 * lam) := by
+      rw [le_div_iff₀ (by positivity)]
+      have : 50 * L * (4 * lam) = 200 * κ := by rw [← hlamL]; ring
+      linarith
+    have h2 := mul_le_mul h1 hl32 (by norm_num) (by positivity)
+    linarith
+  have h16 : 8 * 2 * δ ^ 2 ≤ 4 := by nlinarith
+  have h4M : 4 * M / (27 / 10) ≤ 4 * (443 / 100 * L) / (27 / 10) :=
+    div_le_div_of_nonneg_right (by linarith) (by norm_num)
+  have e4 : 4 * (443 / 100 * L) / (27 / 10) = 1772 / 270 * L := by ring
+  linarith
+
 /-- **Detection of an off-line zero at heat `δ²/(200 log t)`.**  For `t ≥ e^{1600}`, `δ > 0` with
 `f_t(δ) = 0` (an off-line zero `½ + δ + it`) and `κ ∈ (0, δ²/200]`, some heated slice coefficient
 `T_n(κ/log t, 0, t)` has negative real part. -/
@@ -384,50 +454,77 @@ theorem re_xiSliceHeatTransfer_neg_of_slice_zero_quadratic {t : ℝ} (ht : Real.
       nlinarith
     have hE := Real.exp_pos (3 / 2 * A + 9 / 2 + 2 * A ^ 2 * lam)
     nlinarith
-  -- `2αδ = 2Aδ + 4M/e`
-  have hαδ : 2 * α * δ ≤ A + 4 * M / (27 / 10) := by
-    have e : 2 * α * δ = 2 * A * δ + 4 * M / Real.exp 1 := by rw [hα]; field_simp
-    have h1 : 4 * M / Real.exp 1 ≤ 4 * M / (27 / 10) :=
-      div_le_div_of_nonneg_left (by positivity) (by norm_num) (by linarith)
-    have h2 : 2 * A * δ ≤ A := by nlinarith
-    linarith
-  -- `32α²λ ≤ 64A²λ + 64q²λ` with `q = 2M/(eδ)` and `q²λ ≤ 4M²/(1458 L)`
-  set q := 2 * M / (Real.exp 1 * δ) with hq
-  have hα2 : 32 * α ^ 2 * lam ≤ 64 * (A ^ 2 * lam) + 64 * (q ^ 2 * lam) := by
-    have : α ^ 2 ≤ 2 * A ^ 2 + 2 * q ^ 2 := by rw [hα]; nlinarith [sq_nonneg (A - q)]
-    nlinarith
-  have hqlam : q ^ 2 * lam ≤ 4 * M ^ 2 / (1458 * L) := by
-    have e : q ^ 2 * lam = (2 * M) ^ 2 * κ / ((Real.exp 1 * δ) ^ 2 * L) := by
-      rw [hq, hlamdef]; field_simp
-    rw [e, div_le_div_iff₀ (by positivity) (by positivity)]
-    have he2 : 729 / 100 ≤ Real.exp 1 ^ 2 := by nlinarith
-    have h1 : 1458 * κ ≤ Real.exp 1 ^ 2 * δ ^ 2 := by nlinarith
-    have h2 : 0 ≤ 4 * M ^ 2 * L := by positivity
-    nlinarith
-  have hM2 : 4 * M ^ 2 / (1458 * L) ≤ 54 / 1000 * L := by
-    rw [div_le_iff₀ (by positivity)]
-    have : (M : ℝ) ^ 2 ≤ (443 / 100 * L) ^ 2 := pow_le_pow_left₀ hM0 hMle 2
-    nlinarith
-  -- the right side is at least `50L/3`
-  have hl32 : (1 : ℝ) / 3 ≤ Real.log (3 / 2) := by
-    have := Real.one_sub_inv_le_log_of_pos (show (0 : ℝ) < 3 / 2 by norm_num)
-    norm_num at this ⊢; linarith
-  have hrhs : 50 * L / 3 ≤ δ ^ 2 / (4 * lam) * Real.log (3 / 2) := by
-    have h1 : 50 * L ≤ δ ^ 2 / (4 * lam) := by
-      rw [le_div_iff₀ (by positivity)]
-      have : 50 * L * (4 * lam) = 200 * κ := by rw [← hlamL]; ring
-      linarith
-    have h2 := mul_le_mul h1 hl32 (by norm_num) (by positivity)
-    linarith
-  have h16 : 8 * 2 * δ ^ 2 ≤ 4 := by linarith
-  have h4M : 4 * M / (27 / 10) ≤ 4 * (443 / 100 * L) / (27 / 10) :=
-    div_le_div_of_nonneg_right (by linarith) (by norm_num)
-  have hbig : Real.log (6 * D) + 2 * α * δ + 8 * 2 * δ ^ 2 + 32 * α ^ 2 * lam
-      < δ ^ 2 / (4 * lam) * Real.log (3 / 2) := by linarith
+  clear_value α D M lam A L
+  have hbig := quadraticRate_numerics hL hAL hA1 hδ hδ2 hκ hκδ' hlam hlamL hA2lam hM0 hMle hlogD hα
   obtain ⟨n, hn⟩ := re_xiSliceHeatTransfer_neg_of_relative_growth ht16 hlam (by linarith) hδ hzero
     hD0 (by norm_num : (0 : ℝ) ≤ 2) (by linarith) hgr hbig
   exact absurd (hcon n) (not_le.mpr hn)
 
+
+namespace DeBruijn
+
+/-- **Heat rate excludes zeros quadratically.**  If `T_{2m}(κ/log t, 0, t) > 0` for all `t ≥ t₀` and all
+`m`, then every zero `ρ` of `ξ` with `Re ρ > ½` and `Im ρ ≥ max(t₀, e^{1600})` has
+`(Re ρ − ½)² < 200κ`. -/
+theorem sq_re_sub_half_lt_of_heat_rate_pos {κ t₀ : ℝ} (hκ : 0 < κ)
+    (hpos : ∀ t : ℝ, t₀ ≤ t → ∀ m : ℕ, 0 < xiSliceHeatTransfer (κ / Real.log t) 0 t (2 * m))
+    {ρ : ℂ} (hρ : xi ρ = 0) (hre : 1 / 2 < ρ.re) (hγ : max t₀ (Real.exp 1600) ≤ ρ.im) :
+    (ρ.re - 1 / 2) ^ 2 < 200 * κ := by
+  by_contra hle
+  push Not at hle
+  have hγ₁ : Real.exp 1600 ≤ ρ.im := le_trans (le_max_right _ _) hγ
+  obtain ⟨n, hn⟩ := re_xiSliceHeatTransfer_neg_of_slice_zero_quadratic hγ₁ (by linarith)
+    (xiSliceReal_offset_eq_zero hρ) hκ (by linarith)
+  have hL : 0 < Real.log ρ.im :=
+    Real.log_pos (lt_of_lt_of_le (by have := Real.add_one_le_exp (1600 : ℝ); linarith) hγ₁)
+  have hlam : 0 ≤ κ / Real.log ρ.im := div_nonneg hκ.le hL.le
+  obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
+  · have h := hpos ρ.im (le_trans (le_max_left _ _) hγ) m
+    have := (Complex.lt_def.mp h).1
+    simp only [Complex.zero_re] at this
+    linarith
+  · rw [xiSliceHeatTransfer_odd_eq_zero hlam] at hn
+    simp at hn
+
+/-- **An off-line zero bounds the WD heat threshold from below quadratically.**  Every zero `ρ` of `ξ`
+with `Re ρ > ½` and `Im ρ ≥ e^{1600}` gives `λ_WD ≥ (Re ρ − ½)²/(200 log Im ρ)`. -/
+theorem le_wdHeatThreshold_of_offLine_zero_quadratic {ρ : ℂ} (hρ : xi ρ = 0) (hre : 1 / 2 < ρ.re)
+    (hγ : Real.exp 1600 ≤ ρ.im) :
+    (ρ.re - 1 / 2) ^ 2 / 200 / Real.log ρ.im ≤ wdHeatThreshold := by
+  set r := (ρ.re - 1 / 2) ^ 2 / 200 with hr
+  have hδ0 : 0 < ρ.re - 1 / 2 := by linarith
+  have hr0 : 0 < r := by rw [hr]; positivity
+  have hL : 0 < Real.log ρ.im :=
+    Real.log_pos (lt_of_lt_of_le (by have := Real.add_one_le_exp (1600 : ℝ); linarith) hγ)
+  refine le_csInf ⟨1 / 8, eighth_mem_wdHeatAdmissible⟩ fun lam hlam => ?_
+  by_contra hlt
+  push Not at hlt
+  set lam' := max lam (r / (2 * Real.log ρ.im)) with hlam'
+  have hlam'0 : 0 < lam' := lt_of_lt_of_le (by positivity) (le_max_right _ _)
+  have hlam'lt : lam' < r / Real.log ρ.im := by
+    refine max_lt hlt ?_
+    rw [div_lt_div_iff₀ (by positivity) hL]; nlinarith
+  have hadm : ∀ t : ℝ, ∀ n : ℕ, 0 ≤ xiSliceHeatTransfer lam' 0 t n :=
+    xiSliceHeatTransfer_nonneg_of_le (le_max_left _ _) hlam
+  set κ := lam' * Real.log ρ.im with hκ
+  have hκ0 : 0 < κ := by positivity
+  have hκle : κ ≤ (ρ.re - 1 / 2) ^ 2 / 200 := by
+    rw [hκ]; rw [lt_div_iff₀ hL] at hlam'lt; linarith
+  obtain ⟨n, hn⟩ := re_xiSliceHeatTransfer_neg_of_slice_zero_quadratic hγ (by linarith)
+    (xiSliceReal_offset_eq_zero hρ) hκ0 hκle
+  rw [show κ / Real.log ρ.im = lam' by rw [hκ]; field_simp] at hn
+  exact absurd (Complex.nonneg_iff.mp (hadm ρ.im n)).1 (not_le.mpr hn)
+
+/-- **An off-line zero bounds the de Bruijn–Newman constant from below quadratically.**  Every zero
+`ρ` of `ξ` with `Re ρ > ½` and `Im ρ ≥ e^{1600}` gives `Λ ≥ (Re ρ − ½)²/(200 log Im ρ)`. -/
+theorem le_newmanConstant_of_offLine_zero_quadratic {ρ : ℂ} (hρ : xi ρ = 0) (hre : 1 / 2 < ρ.re)
+    (hγ : Real.exp 1600 ≤ ρ.im) :
+    (ρ.re - 1 / 2) ^ 2 / 200 / Real.log ρ.im ≤ newmanConstant :=
+  (le_wdHeatThreshold_of_offLine_zero_quadratic hρ hre hγ).trans wdHeatThreshold_le_newmanConstant
+
+end DeBruijn
+
 end
 
 end RHTower
+

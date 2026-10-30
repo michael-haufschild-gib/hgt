@@ -1,14 +1,14 @@
 # Logarithmic reserve by shifting the prime energy
 
 - **ID:** ssh-shifted-reserve
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** `docs/reports/review-3010/obstacles-summary.md` §2.3 Q1
 - **Statement:** For the tilted unit spline there are absolute `a,C>0` such that, for
   every `c≥1`, eventually in `N`, every vector satisfies
   `W_{N,c}(x) ≥ a c⁻⁷(D_N(x) − C log(2c)‖x‖²)`.
 
-## Paper argument awaiting Lean audit
+## Proof
 
 Write `R_N=(log N)I−P_N`, `λ_m=γ+log m+tameDifferent(m)`, and
 `M=∫φ²`. The two proved row bounds give
@@ -56,20 +56,22 @@ The horizon depends on `c` and is not effective. No interchange of
 `∀c, eventually N` with a prescribed growing-overlap schedule is used.
 The proof keeps the complete matrix, including both poles, Gamma and all prime shells.
 
-## Lean obligations
+## Lean verification
 
-- [ ] Totient and conductor-uniform shell bounds.
+- [x] Totient and conductor-uniform shell bounds; Lean check and standard-axiom audit passed.
 - [x] General finite-coordinate spectral transfer; Lean check and standard-axiom audit passed.
-- [ ] Application to `W_N−δR_N`.
-- [ ] Exact all-vector reserve, umbrella import, standard-axiom closure.
+- [x] Application to `W_N−δR_N`.
+- [x] Exact all-vector reserve, umbrella imports, standard-axiom closure.
 
 Declarations:
 
 - `RenormalizedArithmeticPotentialTheory.completedConductorEnergy_ge_logarithmic_reserve`
-  in `TheConductorEnergyKeepsALogarithmicReserve` — check pending.
+  in `TheConductorEnergyKeepsALogarithmicReserve` — checked.
 - `CriticalArithmeticCorrelationTheory.eventually_matrix_energy_ge_of_ramanujan_certificates`
   in `FiniteRamanujanCoordinatesTransferSpectralFloors` — checked.
 - `CriticalArithmeticCorrelationTheory.exists_completeWeil_logarithmic_defect_reserve`
-  in `ShiftingThePrimeEnergyGivesALogarithmicDefectReserve` — check pending.
+  in `ShiftingThePrimeEnergyGivesALogarithmicDefectReserve` — checked directly with
+  `lake --old env lean`. Both capstone transitive axiom sets are exactly
+  `propext`, `Classical.choice`, `Quot.sound`.
 
 The last declaration has exactly `∃a,C>0, ∀c≥1, eventually N, ∀x`.
