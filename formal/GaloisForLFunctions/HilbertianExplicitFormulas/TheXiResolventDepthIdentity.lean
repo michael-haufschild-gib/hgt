@@ -34,13 +34,13 @@ def xiResolventDepth (s : ℂ) : ℝ := ∑' q : XiZeroCopy, xiResolventDepthTer
 
 private theorem summable_real_reciprocal (s : ℂ) :
     Summable (fun q : XiZeroCopy => ((s - (q.1 : ℂ))⁻¹).re) := by
-  simpa only [xiRealReciprocal, Complex.ofReal_zero, add_zero] using
-    xiRealReciprocal_summable s (h := 0) (by norm_num)
+  have h := xiRealReciprocal_summable s (h := 0) (by norm_num)
+  exact h.congr fun q => by simp [xiRealReciprocal]
 
 /-- The positive real reciprocal field dominates the squared Cauchy kernel. -/
 theorem summable_xiSamePointResolvent {s : ℂ} (hs : 1 < s.re) :
     Summable (fun q : XiZeroCopy => 1 / normSq (s - (q.1 : ℂ))) := by
-  refine Summable.of_nonneg_of_le (fun q => by positivity) ?_
+  refine Summable.of_nonneg_of_le (fun q => div_nonneg zero_le_one (normSq_nonneg _)) ?_
     ((summable_real_reciprocal s).mul_left (s.re - 1)⁻¹)
   intro q
   have hβ := (xiDivisorSupport_re_mem q.1).2
@@ -60,7 +60,7 @@ private theorem summable_signed_depth {s : ℂ} (hs : 1 < s.re) :
       normSq (s - (q.1 : ℂ))) := by
   refine (((summable_xiSamePointResolvent hs).mul_left (s.re - 1 / 2)).sub
     (summable_real_reciprocal s)).congr fun q => ?_
-  simpa only [div_eq_mul_inv, mul_one] using sub_inv_re_eq s (q.1 : ℂ)
+  simpa only [div_eq_mul_inv, mul_one, one_mul] using sub_inv_re_eq s (q.1 : ℂ)
 
 private theorem normSq_sub_zero_pos {s : ℂ} (hs : 1 < s.re) (q : XiZeroCopy) :
     0 < normSq (s - (q.1 : ℂ)) := by
@@ -87,7 +87,10 @@ private theorem pair_xi_signed_depth {s : ℂ} (hs : 1 < s.re) (q : XiZeroCopy) 
 theorem summable_xiResolventDepthTerm {s : ℂ} (hs : 1 < s.re) :
     Summable (xiResolventDepthTerm s) := by
   have h := summable_signed_depth hs
-  have hr := xiZeroCopyLineConjEquiv.summable_iff.mpr h
+  have hr : Summable (fun q : XiZeroCopy =>
+      (((xiZeroCopyLineConjEquiv q).1 : ℂ).re - 1 / 2) /
+        normSq (s - ((xiZeroCopyLineConjEquiv q).1 : ℂ))) :=
+    xiZeroCopyLineConjEquiv.summable_iff.mpr h
   refine ((h.add hr).mul_left (1 / 2 : ℝ)).congr fun q => ?_
   rw [pair_xi_signed_depth hs q]
   ring
@@ -97,7 +100,10 @@ theorem sub_mul_xiSamePointResolvent_sub_logDeriv {s : ℂ} (hs : 1 < s.re) :
     (s.re - 1 / 2) * xiSamePointResolvent s - (logDeriv xi s).re =
       xiResolventDepth s := by
   have h := summable_signed_depth hs
-  have hr := xiZeroCopyLineConjEquiv.summable_iff.mpr h
+  have hr : Summable (fun q : XiZeroCopy =>
+      (((xiZeroCopyLineConjEquiv q).1 : ℂ).re - 1 / 2) /
+        normSq (s - ((xiZeroCopyLineConjEquiv q).1 : ℂ))) :=
+    xiZeroCopyLineConjEquiv.summable_iff.mpr h
   have hpair : 2 * (∑' q : XiZeroCopy,
       ((q.1 : ℂ).re - 1 / 2) / normSq (s - (q.1 : ℂ))) =
       2 * xiResolventDepth s := by
@@ -118,7 +124,7 @@ theorem sub_mul_xiSamePointResolvent_sub_logDeriv {s : ℂ} (hs : 1 < s.re) :
         (summable_real_reciprocal s)]
     apply tsum_congr
     intro q
-    simpa only [div_eq_mul_inv, mul_one] using sub_inv_re_eq s (q.1 : ℂ)
+    simpa only [div_eq_mul_inv, mul_one, one_mul] using sub_inv_re_eq s (q.1 : ℂ)
   linarith only [hpair, hpoint]
 
 /-- Every term of the full depth series is nonnegative to the right of the critical line. -/
@@ -139,6 +145,9 @@ theorem xiResolventDepth_eq_samePoint_sub_arch_add_prime {s : ℂ} (hs : 1 < s.r
     (xi_ne_zero_and_logDeriv_split hs).2, Complex.add_re,
     ← re_LSeries_vonMangoldt_eq hs, re_LSeries_vonMangoldt_eq_neg hs]
   ring
+
+#print axioms sub_mul_xiSamePointResolvent_sub_logDeriv
+#print axioms xiResolventDepth_eq_samePoint_sub_arch_add_prime
 
 end
 

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HeckeKreinToeplitz.FiniteIndexIsPositiveMinusFiniteRank
 import GaloisForLFunctions.HeckeKreinToeplitz.HyperbolicPairsAndTheIndexFormula
-import GaloisForLFunctions.ArithmeticPositiveDuality.AffinePositivityIsInducedFromTheDilations
+import GaloisForLFunctions.ArithmeticPositiveDuality.TheIntegerSuccessorForcesTheHeckeWeight
 
 /-!
 # The index of an induced state
@@ -29,7 +29,7 @@ extension of a state with one negative square has infinitely many
 The two languages of positivity agree (`isPosDefKernel_iff_isPosDefOnGroup`).
 -/
 
-open Complex Finset Matrix
+open Complex Finset
 open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticPositiveDuality (IsPosDefOnGroup extendFromSubgroup
@@ -65,7 +65,7 @@ theorem isPosDefKernel_iff_isPosDefOnGroup {k : G → ℂ} :
     simp only [Complex.star_def]
     exact (Complex.conj_eq_iff_re.mp (conj_gramForm hk x c)).symm
   · intro h
-    refine ⟨fun u => h.map_inv u, fun N x c => ?_⟩
+    refine ⟨fun u => ArithmeticPositiveDuality.IsPosDefOnGroup.map_inv h u, fun N x c => ?_⟩
     obtain ⟨r, hr, hf⟩ := h N x c
     rw [hermQuad_gram]
     simp only [Complex.star_def] at hf
@@ -131,7 +131,7 @@ theorem card_mul_le_negIndex_of_orthogonal_translates {k : G → ℂ} {ι J : Ty
   -- the block vectors of a coefficient array
   set blk : (J × Fin r → ℂ) → J → W := fun β j => ∑ i, β (j, i) • bW i
   have hblk : ∀ β j a, ((blk β j : W) : ι → ℂ) a = ∑ i, β (j, i) * ((bW i : W) : ι → ℂ) a :=
-    fun β j a => by simp [blk, Submodule.coe_sum, Finset.sum_apply]
+    fun β j a => by simp [blk, Finset.sum_apply]
   let L : (J × Fin r → ℂ) →ₗ[ℂ] (J × ι → ℂ) :=
     { toFun := fun β p => ∑ i, β (p.1, i) * ((bW i : W) : ι → ℂ) p.2
       map_add' := fun β β' => funext fun p => by simp [add_mul, sum_add_distrib]
@@ -148,7 +148,7 @@ theorem card_mul_le_negIndex_of_orthogonal_translates {k : G → ℂ} {ι J : Ty
     intro β hβ
     obtain ⟨⟨j, i⟩, hji⟩ : ∃ p, β p ≠ 0 := by
       by_contra h
-      push_neg at h
+      push Not at h
       exact hβ (funext h)
     have hj : ((blk β j : W) : ι → ℂ) ≠ 0 := by
       intro h0
@@ -158,7 +158,7 @@ theorem card_mul_le_negIndex_of_orthogonal_translates {k : G → ℂ} {ι J : Ty
       have := hW _ (blk β j).2 hj
       rw [hermQuad_neg] at this
       linarith
-    rw [hL, key]
+    rw [hL, key fun j => (blk β j : ι → ℂ)]
     calc ∑ j', hermQuad (gram k x) (blk β j')
         < ∑ _j' : J, (0 : ℝ) :=
           Finset.sum_lt_sum (fun j' _ => hnonpos _) ⟨j, mem_univ _, hjneg⟩
@@ -215,7 +215,8 @@ theorem card_mul_le_negIndex_extendFromSubgroup {H : Subgroup G} (ψ : H → ℂ
   rwa [hgram, Fintype.card_coe] at h
 
 /-- The Gram form of the regular extension splits into one Gram form of `ψ` per coset. -/
-theorem hermQuad_gram_extendFromSubgroup {H : Subgroup G} [Fintype (G ⧸ H)] (ψ : H → ℂ)
+theorem hermQuad_gram_extendFromSubgroup {H : Subgroup G} [Fintype (G ⧸ H)]
+    [DecidableEq (G ⧸ H)] (ψ : H → ℂ)
     {n : ℕ} (x : Fin n → G) (c : Fin n → ℂ) :
     hermQuad (gram (extendFromSubgroup H ψ) x) c =
       ∑ ρ : G ⧸ H, hermQuad (gram ψ fun a => cosetPart H (x a))
@@ -298,7 +299,8 @@ theorem negIndex_extendFromSubgroup {H : Subgroup G} {ψ : H → ℂ} (hψ : IsH
       (s.card : ℕ∞) * negIndex ψ ≤ negIndex (extendFromSubgroup H ψ) := by
     intro s
     rcases eq_or_ne (negIndex ψ) ⊤ with htop | htop
-    · rw [htop, top_le_iff.mp (htop ▸ hres)]
+    · have htop' : negIndex (extendFromSubgroup H ψ) = ⊤ := top_le_iff.mp (htop ▸ hres)
+      rw [htop']
       exact le_top
     · obtain ⟨n, x, hx⟩ := exists_hermNegIndex_gram_eq_negIndex (lt_top_iff_ne_top.mpr htop)
       rw [← hx]
@@ -319,8 +321,8 @@ theorem negIndex_extendFromSubgroup {H : Subgroup G} {ψ : H → ℂ} (hψ : IsH
     · have := hlow Finset.univ
       rwa [Finset.card_univ, Fintype.card_eq_nat_card, ← Subgroup.index] at this
   · haveI : Infinite (G ⧸ H) := not_finite_iff_infinite.mp hfin
-    rw [ENat.card_eq_top_of_infinite, ENat.top_mul h0, eq_comm, ENat.eq_top_iff_forall_ge]
-    intro n
+    rw [ENat.card_eq_top_of_infinite, ENat.top_mul h0]
+    refine ENat.eq_top_iff_forall_ge.mpr fun n => ?_
     obtain ⟨s, hs⟩ := Infinite.exists_subset_card_eq (G ⧸ H) n
     have h1 : (1 : ℕ∞) ≤ negIndex ψ := ENat.one_le_iff_ne_zero.mpr h0
     calc (n : ℕ∞) = (s.card : ℕ∞) * 1 := by rw [hs, mul_one]

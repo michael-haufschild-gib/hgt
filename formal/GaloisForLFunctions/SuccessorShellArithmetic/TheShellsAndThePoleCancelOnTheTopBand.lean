@@ -656,26 +656,25 @@ theorem abs_integral_le_of_vanish {f : ℝ → ℝ} {w C : ℝ} (hw : 0 ≤ w)
   rw [Real.norm_eq_abs, show |w - -w| = 2 * w by rw [abs_of_nonneg (by linarith)]; ring] at h
   linarith only [h]
 
-/-- **The shells and the pole cancel on the top band.** For a `C²` profile at overlap `c`, the
-`η`-coefficient of the joint block along the witness is `O(G(1 + log N))`, uniformly in `N`; each
-of its two terms is `≍ Gcq log N` (`sum_topBand_shellPoleRow_ge`). -/
-theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+/-- The finite-horizon joint bound retains the factor `1/N` in the row remainder.
+Here `A₁` bounds the derivative of the fixed profile autocorrelation. -/
+theorem abs_jointWitnessCoefficient_le_rowRemainder {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
     (hsupp : ∀ u : ℝ, u ∉ Set.Icc (0 : ℝ) 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
-    {c : ℝ} (hc : 0 < c) :
-    ∃ K : ℝ, ∀ᶠ N : ℕ in atTop,
-      |jointWitnessCoefficient (atomDilate φ (c / N)) N (c / N)| ≤
-        K * (∫ u, atomDilate φ (c / N) u ^ 2) * (1 + Real.log N) := by
-  obtain ⟨A₁, hA₁0, hA₁⟩ := exists_abs_deriv_shellAutocorr_le hφ hsupp
+    {c A₁ : ℝ} (hc : 0 < c) (hA₁0 : 0 ≤ A₁)
+    (hA₁ : ∀ x, |deriv (shellAutocorr φ) x| ≤ A₁)
+    {N : ℕ} (hN8 : 8 ≤ N) (hNc : 4 * c ≤ N) :
+    |jointWitnessCoefficient (atomDilate φ (c / N)) N (c / N)| ≤
+      17 * c * (∫ u, atomDilate φ (c / N) u ^ 2) +
+        2 * Real.log N * (∫ u, atomDilate φ (c / N) u ^ 2) +
+          (18 * c + 24) * (2 + Real.log N) *
+            (((∫ u, atomDilate φ (c / N) u ^ 2) + A₁) / N) := by
   set M := ∫ u, φ u ^ 2 with hMdef
-  refine ⟨20 * c + 2 + 2 * (18 * c + 24) * (1 + A₁ / (c * M)), ?_⟩
-  filter_upwards [eventually_ge_atTop 8, eventually_ge_atTop ⌈4 * c⌉₊] with N hN8 hNc
   have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
   have hNR : (8 : ℝ) ≤ N := by exact_mod_cast hN8
   set w := c / (N : ℝ) with hwdef
   have hw : 0 < w := div_pos hc hN0
   have hw4 : w ≤ 1 / 4 := by
-    have : 4 * c ≤ N := (Nat.le_ceil _).trans (by exact_mod_cast hNc)
-    rw [hwdef, div_le_iff₀ hN0]; linarith only [this]
+    rw [hwdef, div_le_iff₀ hN0]; linarith only [hNc]
   have hwN : w * N = c := by rw [hwdef]; field_simp
   set g := atomDilate φ w with hgdef
   set T := topBand N w with hT
@@ -812,7 +811,6 @@ theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff
     ring
   -- the five terms
   have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
-  have hGN : G * N = c * M := by rw [hG, ← hwN]; ring
   have hS1 : |∑ n ∈ T, (H - Real.log n)| ≤ 2 * N := by
     have hpt : ∀ n ∈ T, 0 ≤ H - Real.log n ∧ H - Real.log n ≤ 2 := by
       intro n hn
@@ -845,19 +843,13 @@ theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff
       _ = Real.log N * ∑ n ∈ T, 1 / (n : ℝ) := by rw [mul_sum]
       _ ≤ Real.log N * 2 := mul_le_mul_of_nonneg_left hST hlogN
       _ = 2 * Real.log N := by ring
-  have hS5 : |∑ n ∈ T, e n| ≤ (18 * c + 24) * (1 + A₁ / (c * M)) * (2 + Real.log N) * G := by
+  have hS5 : |∑ n ∈ T, e n| ≤
+      (18 * c + 24) * (2 + Real.log N) * ((G + A₁) / N) := by
     have hL2 : 0 ≤ 2 + Real.log N := by linarith only [hlogN]
     have hGA : 0 ≤ G + A₁ := by linarith only [hGpos, hA₁0]
     have hbound : (18 * w / N + 24 / (N : ℝ) ^ 2) * (2 + Real.log N) * (G + A₁) * N =
         (18 * c + 24) * (2 + Real.log N) * ((G + A₁) / N) := by
       rw [← hwN]; field_simp
-    have hGA' : (G + A₁) / N ≤ G * (1 + A₁ / (c * M)) := by
-      have hc0 : 0 < c * M := mul_pos hc hM
-      have hGle : G / N ≤ G := div_le_self hGpos.le (by linarith only [hNR])
-      have hA : A₁ / N = G * (A₁ / (c * M)) := by
-        rw [← hGN]; field_simp
-      rw [add_div, hA]
-      nlinarith only [hGle]
     calc
       _ ≤ ∑ n ∈ T, |e n| := abs_sum_le_sum_abs _ _
       _ ≤ ∑ n ∈ T, E n := sum_le_sum fun n hn => hrow n hn
@@ -868,9 +860,6 @@ theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff
       _ ≤ N * ((18 * w / N + 24 / (N : ℝ) ^ 2) * (2 + Real.log N) * (G + A₁)) :=
         mul_le_mul_of_nonneg_right hτN (by positivity)
       _ = (18 * c + 24) * (2 + Real.log N) * ((G + A₁) / N) := by rw [mul_comm, hbound]
-      _ ≤ (18 * c + 24) * (2 + Real.log N) * (G * (1 + A₁ / (c * M))) :=
-        mul_le_mul_of_nonneg_left hGA' (by positivity)
-      _ = _ := by ring
   have ht1 : |P * ∑ n ∈ T, (H - Real.log n)| ≤ 8 * c * G := by
     rw [abs_mul]
     calc
@@ -893,28 +882,50 @@ theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff
     ⟨mul_nonneg hGpos.le hS2.1, by nlinarith only [hS2.2, hGpos]⟩
   -- assemble
   rw [hdecomp]
+  obtain ⟨h1l, h1u⟩ := abs_le.mp ht1
+  obtain ⟨h2l, h2u⟩ := abs_le.mp ht2
+  obtain ⟨h3l, h3u⟩ := abs_le.mp ht3
+  obtain ⟨h5l, h5u⟩ := abs_le.mp hS5
+  have hLG : 0 ≤ 2 * Real.log N * G := mul_nonneg (by linarith only [hlogN]) hGpos.le
+  exact abs_le.mpr ⟨by linarith only [h1l, h2l, h3u, ht4.1, h5u, hLG],
+    by linarith only [h1u, h2u, h3l, ht4.2, h5l]⟩
+
+/-- For a fixed overlap, the joint witness coefficient is `O(G(1 + log N))`. -/
+theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hsupp : ∀ u : ℝ, u ∉ Set.Icc (0 : ℝ) 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c : ℝ} (hc : 0 < c) :
+    ∃ K : ℝ, ∀ᶠ N : ℕ in atTop,
+      |jointWitnessCoefficient (atomDilate φ (c / N)) N (c / N)| ≤
+        K * (∫ u, atomDilate φ (c / N) u ^ 2) * (1 + Real.log N) := by
+  obtain ⟨A₁, hA₁0, hA₁⟩ := exists_abs_deriv_shellAutocorr_le hφ hsupp
+  set M := ∫ u, φ u ^ 2
+  refine ⟨20 * c + 2 + 2 * (18 * c + 24) * (1 + A₁ / (c * M)), ?_⟩
+  filter_upwards [eventually_ge_atTop 8, eventually_ge_atTop ⌈4 * c⌉₊] with N hN8 hNc
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast (by omega : 1 ≤ N)
+  have hlogN := Real.log_natCast_nonneg N
+  set G := ∫ u, atomDilate φ (c / N) u ^ 2
+  have hG : G = (c / N) * M := integral_atomDilate_sq (div_pos hc hN0)
+  have hGpos : 0 < G := by rw [hG]; exact mul_pos (div_pos hc hN0) hM
+  have hGN : G * N = c * M := by rw [hG]; field_simp
+  have hGA : (G + A₁) / N ≤ G * (1 + A₁ / (c * M)) := by
+    have hGle : G / N ≤ G := div_le_self hGpos.le hN1
+    have hA : A₁ / N = G * (A₁ / (c * M)) := by rw [← hGN]; field_simp
+    rw [add_div, hA]
+    nlinarith only [hGle]
+  have hfin := abs_jointWitnessCoefficient_le_rowRemainder hφ hsupp hM hc hA₁0 hA₁ hN8
+    ((Nat.le_ceil _).trans (by exact_mod_cast hNc))
+  have herror := mul_le_mul_of_nonneg_left hGA
+    (show 0 ≤ (18 * c + 24) * (2 + Real.log N) by positivity)
   have hK1 : 17 * c * G ≤ 20 * c * G * (1 + Real.log N) := by
     nlinarith only [mul_pos hc hGpos, hlogN]
-  have hK2 : (18 * c + 24) * (1 + A₁ / (c * M)) * (2 + Real.log N) * G ≤
+  have hK2 : (18 * c + 24) * (2 + Real.log N) * (G * (1 + A₁ / (c * M))) ≤
       2 * (18 * c + 24) * (1 + A₁ / (c * M)) * G * (1 + Real.log N) := by
-    have h0 : 0 ≤ (18 * c + 24) * (1 + A₁ / (c * M)) * G := by
-      have : 0 ≤ A₁ / (c * M) := div_nonneg hA₁0 (mul_pos hc hM).le
-      positivity
+    have h0 : 0 ≤ (18 * c + 24) * (1 + A₁ / (c * M)) * G := by positivity
     nlinarith only [h0, hlogN]
-  have hfin : |P * ∑ n ∈ T, (H - Real.log n) + P * (N * ∑ n ∈ T, 1 / (n : ℝ)) -
-      T.card * I₁ + G * ∑ n ∈ T, Real.log n / n - ∑ n ∈ T, e n| ≤
-      17 * c * G + 2 * Real.log N * G +
-        (18 * c + 24) * (1 + A₁ / (c * M)) * (2 + Real.log N) * G := by
-    obtain ⟨h1l, h1u⟩ := abs_le.mp ht1
-    obtain ⟨h2l, h2u⟩ := abs_le.mp ht2
-    obtain ⟨h3l, h3u⟩ := abs_le.mp ht3
-    obtain ⟨h5l, h5u⟩ := abs_le.mp hS5
-    have hLG : 0 ≤ 2 * Real.log N * G := mul_nonneg (by linarith only [hlogN]) hGpos.le
-    exact abs_le.mpr ⟨by linarith only [h1l, h2l, h3u, ht4.1, h5u, hLG],
-      by linarith only [h1u, h2u, h3l, ht4.2, h5l]⟩
   refine hfin.trans ?_
   have hlog2 : 2 * Real.log N * G ≤ 2 * G * (1 + Real.log N) := by nlinarith only [hGpos]
-  nlinarith only [hK1, hK2, hlog2]
+  nlinarith only [hK1, hK2, hlog2, herror]
 
 end GaloisForLFunctions.SuccessorShellArithmetic
 

@@ -1,12 +1,12 @@
 # Joint top-band payment uniform in overlap
 
 - **ID:** SSH-UNIFORM-JOINT-TOP-BAND
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Parent:** [O1](weil-positivity-five-structural-mechanisms.md)
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Parent:** [O1](../1-in-progress/weil-positivity-five-structural-mechanisms.md)
 - **Target:** For every supported `C²` profile `φ` of positive square mass, a constant `Kφ` independent of overlap satisfies `|κ_N(c)| ≤ Kφ G(c + 1 + log N)` whenever `c ≥ 1`, `N ≥ 8`, and `4c ≤ N`. Here `κ_N` is `jointWitnessCoefficient` and `G = (c/N)∫φ²`.
 
-## Proof mechanism
+## Proof
 
 The existing row comparison and exact pole cancellation give
 
@@ -16,7 +16,7 @@ where `A₁` bounds the derivative of the fixed profile autocorrelation. Retain 
 
 `(18c + 24)(G + A₁)/N = (18 + 24/c)(c/N + A₁/M)G ≤ 42(1/4 + A₁/M)G`.
 
-This removes the growing overlap constant in the existing final estimate. On `c ≤ log N`, the joint coefficient is `Oφ(G log N)`, uniformly in `c`.
+Thus `Kφ = 19 + 84(1/4 + A₁/M)` works, using `log N ≥ 0`. The derivative bound exists because the fixed profile autocorrelation has a continuous compactly supported derivative. No new analytic premise is needed. On `c ≤ log N`, replace `Kφ` by `2Kφ` to obtain the uniform bound `Oφ(G(1 + log N))`.
 
 ## Scope and status
 

@@ -434,6 +434,25 @@ theorem finiteFlip_resolutionThreshold_spec (hφ : ContDiff ℝ 2 φ)
     (summable_abs_twistDefect_finiteFlip hS) hc₁ hseen
   exact ⟨h1, h3, h4⟩
 
+/-- Every nonempty finite prime flip has an exact threshold for the explicit tilted spline.
+The profile's regularity, support and Fourier nonvanishing are all discharged. -/
+theorem tiltedUnitSpline_finiteFlip_resolutionThreshold_spec
+    {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (hne : S.Nonempty) :
+    0 < resolutionThreshold (finiteFlipWeight S) tiltedUnitSpline ∧
+      (∀ c, 0 < c → c < resolutionThreshold (finiteFlipWeight S) tiltedUnitSpline →
+        ∀ᶠ N : ℕ in atTop,
+          (twistedCompleteWeilMatrix (finiteFlipWeight S) tiltedUnitSpline c N).PosDef) ∧
+      (∀ c, resolutionThreshold (finiteFlipWeight S) tiltedUnitSpline < c →
+        ∃ T : Finset ℕ, (∀ m ∈ T, 0 < m) ∧ ∃ β : ℕ → ℝ, ∑ m ∈ T, β m ^ 2 = 1 ∧
+          ∀ᶠ N : ℕ in atTop, weilQuadTw (finiteFlipWeight S)
+            (atomicTest N (packetCoeff (packetProfile T β) N)
+              (atomDilate tiltedUnitSpline (c / N))) < 0) :=
+  finiteFlip_resolutionThreshold_spec contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
+    paperFT_tiltedUnitSpline_real_ne_zero hS hne
+
 end Threshold
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.finiteFlip_resolutionThreshold_spec
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.tiltedUnitSpline_finiteFlip_resolutionThreshold_spec
