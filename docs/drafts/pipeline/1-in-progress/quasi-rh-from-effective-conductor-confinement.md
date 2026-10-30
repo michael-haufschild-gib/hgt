@@ -32,3 +32,9 @@ Write `W=W_(N,c)`, `v_m` for normalized Ramanujan vectors, `E_m(c)` for complete
 The current finite approximation selects a prime threshold exponential in its defect bound, then all divisors of a valuation-box modulus. Neither this qualitative construction nor fixed-modulus prime asymptotics supply the needed growing-conductor estimate.
 
 The complete reserve uses the exact horizon-uniform counterterm `P_N+D_N≤(log N+log 4+4)‖x‖²`, avoiding a shrinking-error convergence horizon. The polynomial defect bound alone still gives an enormous conductor family under existing generic compactness. Useful confinement must exploit additional structure of the complete signed form.
+
+This limitation is intrinsic to defect-only capture: actual unit conductor-`2^k` vectors have defect at most `γ+(k+1)log 2+log 4+5` eventually, while their total coordinate mass below every fixed cutoff `Q<2^k` tends to zero. [Lean proof](../3-formalized/prime-defect-confinement-must-retain-low-energy-conductors.md). Thus a polynomial cutoff in the defect budget cannot work. These witnesses are not negative complete-Weil eigenvectors; the signed eigenvalue equation remains the unresolved additional input.
+
+## Candidate signed reserve — unproved
+
+An estimate `W_(N,c)(x)≥a c^-7(D_N(x)-C log(2c)‖x‖²)` would give logarithmic defect on negative vectors. Its starting horizon must also be controlled; a fixed-`c` eventual statement would leave the synthesis obstruction intact. The current proof does not establish this cancellation between prime, Gamma and pole terms. Even this reserve would still require a conductor truncation sharper than the existing valuation-box construction. Direct confinement of negative eigenvectors remains an alternative.
