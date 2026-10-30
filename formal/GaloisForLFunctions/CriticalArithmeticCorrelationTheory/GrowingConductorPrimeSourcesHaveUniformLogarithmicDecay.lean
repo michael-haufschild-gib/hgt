@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DirichletCharacterUniformSums
+import GaloisForLFunctions.RHTower.ConductorUniform.DirichletCharacterUniformSums
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.PrimeResidueSourcesHaveQuantitativeLogDecay
 
 /-!

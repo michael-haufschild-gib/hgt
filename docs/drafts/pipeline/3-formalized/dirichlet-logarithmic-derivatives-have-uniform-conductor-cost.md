@@ -19,7 +19,7 @@ For a rectangle point `s`, use the local partial fraction centered at `2+i Im s`
 - `RHTower.L_logDeriv_partial_fraction_all`
 - `RHTower.norm_character_logDeriv_le_line`
 
-Lean source: `GaloisForLFunctions/RHTower/DirichletLConductorUniformLogDerivative.lean`.
+Lean source: `GaloisForLFunctions/RHTower/ConductorUniform/DirichletLConductorUniformLogDerivative.lean`.
 
 - `exists_conductor_uniform_character_zero_gap`
 - `L_partial_fraction_with_multiplicity_bound`

@@ -458,6 +458,154 @@ theorem integral_rowIntegrand {w : ℝ} (hw : 0 < w) {n : ℕ} (hn : 1 ≤ n) {a
   rw [hβ0 u hu']
   ring
 
+/-- **The pole row is a lattice sum of the pole moments.** For `n` in the top band,
+`b_n R(n) = log n · ∫e^{u/2}β + ∫ u e^{u/2}β − G log n/n + O(b_n (n(e^w − e^{−w}) + 2) K_n)`,
+`K_n = ((n/2)√(n/2))⁻¹(1 + log 2n)(G + A₁)`. -/
+theorem abs_poleRow_sub_le {w A₁ : ℝ} (hw : 0 < w) (hw4 : w ≤ 1 / 4)
+    (hA₁ : ∀ x, |deriv (shellAutocorr φ) x| ≤ A₁) {N n : ℕ} (hN : 8 ≤ N)
+    (hnT : n ∈ topBand N w) :
+    |poleVector n * shellPoleRow (atomDilate φ w) N w n -
+        (Real.log n * (∫ u, Real.exp (u / 2) * bumpCorr (atomDilate φ w) u) +
+          ∫ u, u * Real.exp (u / 2) * bumpCorr (atomDilate φ w) u) +
+        (∫ u, atomDilate φ w u ^ 2) * Real.log n / n| ≤
+      poleVector n * ((n * (Real.exp w - Real.exp (-w)) + 2) *
+        (((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹ * ((1 + Real.log (2 * n)) *
+          ((∫ u, atomDilate φ w u ^ 2) + A₁)))) := by
+  set g := atomDilate φ w with hgdef
+  set β := bumpCorr g with hβdef
+  set G := ∫ u, g u ^ 2 with hGdef
+  set P := ∫ u, Real.exp (u / 2) * β u
+  set I₁ := ∫ u, u * Real.exp (u / 2) * β u
+  set K := ((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹ * ((1 + Real.log (2 * n)) * (G + A₁))
+  set L := ⌈(N : ℝ) * Real.exp w⌉₊
+  obtain ⟨hnI, hn2⟩ := mem_topBand.mp hnT
+  obtain ⟨hn1, hnN⟩ := mem_Icc.mp hnI
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+  have hNR : (8 : ℝ) ≤ N := by exact_mod_cast hN
+  have hNn : (N : ℝ) < 2 * n := by
+    have := Real.add_one_le_exp w
+    nlinarith only [hn2, this, hw, hNR]
+  have hn4 : (4 : ℝ) ≤ n := by linarith only [hNn, hNR]
+  -- the exponentials are close to one
+  have hem : 3 / 4 ≤ Real.exp (-w) := by
+    have := Real.add_one_le_exp (-w); linarith only [this, hw4]
+  have hep : Real.exp w ≤ 4 / 3 := by
+    have h1 : Real.exp w * Real.exp (-w) = 1 := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+    nlinarith only [h1, hem, Real.exp_pos w]
+  have hew2 : Real.exp w < 2 := by linarith only [hep]
+  -- the cells
+  set A := ⌊(n : ℝ) * Real.exp (-w)⌋₊ with hAdef
+  set B := ⌊(n : ℝ) * Real.exp w⌋₊ with hBdef
+  have hAle : (A : ℝ) ≤ n * Real.exp (-w) := Nat.floor_le (by positivity)
+  have hAgt : (n : ℝ) * Real.exp (-w) < A + 1 := Nat.lt_floor_add_one _
+  have hBle : (B : ℝ) ≤ n * Real.exp w := Nat.floor_le (by positivity)
+  have hBgt : (n : ℝ) * Real.exp w < B + 1 := Nat.lt_floor_add_one _
+  have hAn : (n : ℝ) / 2 ≤ A := by nlinarith only [hAgt, hem, hn4]
+  have hA1 : 1 ≤ A := by
+    have : (1 : ℝ) ≤ A := by linarith only [hAn, hn4]
+    exact_mod_cast this
+  have hAB : A ≤ B + 1 := by
+    have e1 : (n : ℝ) * Real.exp (-w) ≤ n :=
+      mul_le_of_le_one_right hn0.le (Real.exp_le_one_iff.mpr (by linarith only [hw]))
+    have e2 : (n : ℝ) ≤ n * Real.exp w :=
+      le_mul_of_one_le_right hn0.le (Real.one_le_exp_iff.mpr hw.le)
+    have : (A : ℝ) ≤ B + 1 := by linarith only [hAle, e1, e2, hBgt]
+    exact_mod_cast this
+  have hB2n : (B : ℝ) + 1 ≤ 2 * n := by nlinarith only [hBle, hep, hn4]
+  have hBL : B ≤ L := by
+    have h1 : (B : ℝ) ≤ N * Real.exp w :=
+      hBle.trans (mul_le_mul_of_nonneg_right (by exact_mod_cast hnN) (Real.exp_pos w).le)
+    exact_mod_cast h1.trans (Nat.le_ceil _)
+  set m := B + 1 - A with hmdef
+  have hmR : (m : ℝ) = B + 1 - A := by rw [hmdef, Nat.cast_sub hAB]; push_cast; ring
+  -- the prime-free row as a lattice sum
+  have hrow : shellPoleRow g N w n =
+      ∑ k ∈ range m, rowIntegrand g n ((A : ℝ) + k) - poleVector n * Real.log n * G := by
+    rw [shellPoleRow_eq_log hew2]
+    have hsplit : ∀ ℓ ∈ Icc 1 L, poleVector ℓ * Real.log ℓ *
+        (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) =
+        rowIntegrand g n ℓ - if ℓ = n then poleVector n * Real.log n * G else 0 := by
+      intro ℓ _
+      rw [rowIntegrand_natCast]
+      split_ifs with h
+      · subst h; rw [sub_self, bumpCorr_zero]; ring
+      · ring
+    have hnL : n ∈ Icc 1 L := mem_Icc.mpr ⟨hn1, (by
+      have : (n : ℝ) ≤ N * Real.exp w := (by exact_mod_cast hnN : (n : ℝ) ≤ N).trans
+        (le_mul_of_one_le_right (Nat.cast_nonneg N) (Real.one_le_exp_iff.mpr hw.le))
+      exact_mod_cast this.trans (Nat.le_ceil _))⟩
+    rw [sum_congr rfl hsplit, sum_sub_distrib, sum_ite_eq' (Icc 1 L) n, if_pos hnL]
+    congr 1
+    -- only the cells `A ≤ ℓ ≤ B` carry the row
+    have hsub : Icc A B ⊆ Icc 1 L := fun ℓ hℓ =>
+      mem_Icc.mpr ⟨hA1.trans (mem_Icc.mp hℓ).1, (mem_Icc.mp hℓ).2.trans hBL⟩
+    rw [← sum_subset hsub fun ℓ hℓL hℓ => ?_]
+    · rw [← Finset.Ico_add_one_right_eq_Icc, sum_Ico_eq_sum_range]
+      refine sum_congr rfl fun k _ => ?_
+      push_cast
+      rfl
+    · have hℓ1 := (mem_Icc.mp hℓL).1
+      have hℓ0 : (0 : ℝ) < ℓ := by exact_mod_cast hℓ1
+      rw [rowIntegrand_natCast, bumpCorr_atomDilate_eq_zero_of_le hφ hsupp hw, mul_zero]
+      simp only [mem_Icc, not_and_or, not_le] at hℓ
+      rcases hℓ with hℓ | hℓ
+      · have hlt : (ℓ : ℝ) < n * Real.exp (-w) := by
+          have : ℓ + 1 ≤ A := hℓ
+          have : (ℓ : ℝ) + 1 ≤ A := by exact_mod_cast this
+          linarith only [this, hAle]
+        have := Real.log_lt_log hℓ0 hlt
+        rw [Real.log_mul hn0.ne' (Real.exp_pos _).ne', Real.log_exp] at this
+        rw [abs_of_neg (by linarith only [this, hw])]
+        linarith only [this]
+      · have hlt : (n : ℝ) * Real.exp w < ℓ := by
+          have : B + 1 ≤ ℓ := hℓ
+          have : (B : ℝ) + 1 ≤ ℓ := by exact_mod_cast this
+          linarith only [this, hBgt]
+        have := Real.log_lt_log (by positivity) hlt
+        rw [Real.log_mul hn0.ne' (Real.exp_pos _).ne', Real.log_exp] at this
+        rw [abs_of_pos (by linarith only [this, hw])]
+        linarith only [this]
+  -- the cell comparison
+  have hcells : (A : ℝ) + m = B + 1 := by rw [hmR]; ring
+  have hderiv : ∀ t ∈ Set.Icc (A : ℝ) (A + m), HasDerivAt (rowIntegrand g n)
+      ((t * Real.sqrt t)⁻¹ * ((1 - Real.log t / 2) * bumpCorr g (Real.log t - Real.log n) +
+        Real.log t * deriv (shellAutocorr φ) ((Real.log t - Real.log n) / w))) t := by
+    intro t ht
+    exact hasDerivAt_rowIntegrand hφ hsupp hw n (by linarith only [ht.1, hAn, hn4])
+  have hbound : ∀ t ∈ Set.Icc (A : ℝ) (A + m),
+      |(t * Real.sqrt t)⁻¹ * ((1 - Real.log t / 2) * bumpCorr g (Real.log t - Real.log n) +
+        Real.log t * deriv (shellAutocorr φ) ((Real.log t - Real.log n) / w))| ≤ K := by
+    intro t ht
+    refine abs_deriv_rowIntegrand_le hφ hsupp hw hA₁ (by exact_mod_cast (by
+      have : (2 : ℝ) ≤ n := by linarith only [hn4]
+      exact_mod_cast this : 2 ≤ n)) ⟨hAn.trans ht.1, ?_⟩
+    rw [hcells] at ht; linarith only [ht.2, hB2n]
+  have hcmp := abs_sum_sub_integral_le_of_deriv hderiv hbound
+  have hint := integral_rowIntegrand hφ hsupp hw hn1 (a := A) (b := A + m)
+    (by linarith only [hAn, hn4]) hAle (by rw [hcells]; exact hBgt.le)
+  rw [hint] at hcmp
+  -- assemble with the weight `b_n = 1/√n`
+  have hbn : poleVector n * Real.sqrt n = 1 := by
+    rw [poleVector]; field_simp
+  have hbn2 : poleVector n * (poleVector n * Real.log n * G) = G * Real.log n / n := by
+    rw [← mul_assoc, ← mul_assoc, ← sq, poleVector_sq]; ring
+  have hb0 : 0 ≤ poleVector n := by unfold poleVector; positivity
+  have hm : (m : ℝ) ≤ n * (Real.exp w - Real.exp (-w)) + 2 := by
+    rw [hmR]; nlinarith only [hBle, hAgt]
+  have hK0 : 0 ≤ K := (abs_nonneg _).trans (hbound A ⟨le_rfl, by
+    have := Nat.cast_nonneg (α := ℝ) m; linarith only [this]⟩)
+  rw [hrow, mul_sub, hbn2]
+  calc
+    _ = |poleVector n * (∑ k ∈ range m, rowIntegrand g n ((A : ℝ) + k) -
+          Real.sqrt n * (Real.log n * P + I₁))| := by
+      congr 1
+      rw [mul_sub, ← mul_assoc (poleVector n) (Real.sqrt n), hbn, one_mul]
+      ring
+    _ ≤ poleVector n * (m * K) := by
+      rw [abs_mul, abs_of_nonneg hb0]
+      exact mul_le_mul_of_nonneg_left hcmp hb0
+    _ ≤ _ := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hm hK0) hb0
+
 end Row
 
 end GaloisForLFunctions.SuccessorShellArithmetic

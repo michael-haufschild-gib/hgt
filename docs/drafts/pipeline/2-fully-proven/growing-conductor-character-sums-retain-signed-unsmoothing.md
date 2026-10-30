@@ -22,4 +22,4 @@ For a reduced residue class, exact finite-character orthogonality gives `θ(X;q,
 
 ## Formalization and scope
 
-Lean: `GaloisForLFunctions/RHTower/DirichletCharacterUniformSums.lean`; audit pending. Neither complex signed sum is treated as monotone. Only the ordinary positive mass pays the unsmoothing defect. Nonunit residue indicators and finite signed-pattern expansion remain to complete the actual residue-source theorem.
+Lean: `GaloisForLFunctions/RHTower/ConductorUniform/DirichletCharacterUniformSums.lean`; audit pending. Neither complex signed sum is treated as monotone. Only the ordinary positive mass pays the unsmoothing defect. Nonunit residue indicators and finite signed-pattern expansion remain to complete the actual residue-source theorem.

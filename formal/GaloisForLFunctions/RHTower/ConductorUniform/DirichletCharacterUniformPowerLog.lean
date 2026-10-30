@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DirichletCharacterUniformPerron
+import GaloisForLFunctions.RHTower.ConductorUniform.DirichletCharacterUniformPerron
 import GaloisForLFunctions.RHTower.PerronPolyExpAbsorb
 
 /-!

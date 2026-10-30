@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DirichletLConductorUniformLogDerivative
+import GaloisForLFunctions.RHTower.ConductorUniform.DirichletLConductorUniformLogDerivative
 
 /-!
 # Conductor-uniform actual Perron contours

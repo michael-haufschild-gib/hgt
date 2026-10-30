@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.DirichletCharacterUniformPowerLog
+import GaloisForLFunctions.RHTower.ConductorUniform.DirichletCharacterUniformPowerLog
 import GaloisForLFunctions.RHTower.PrimeProgressionPowerLog
 import GaloisForLFunctions.RHTower.PrimePowerSumBound
 import GaloisForLFunctions.RHTower.ZetaZeroDensityExponentLemmas

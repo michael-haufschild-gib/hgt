@@ -1,7 +1,7 @@
 # Actual character contours have uniform conductor cost
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For each `ε>0`, one pair `c,B>0` works for all nonprincipal characters modulo every `q≥1`. Set `L=log(q(T+5))`, `M=Bq^εL³`. For `x≥1`, `T>0` and `0<δ≤cq^(-ε)/L²`, the actual signed tent sum is bounded by
 
 `(2π)^(-1)[16x^(1+δ)/(δ²T) + Mx^(1−δ)π/(1−δ) + 4Mδx^(1+δ)/T²]`.
@@ -14,4 +14,9 @@ The existing exact signed Perron identity is absolutely integrable on the right 
 
 ## Formalization and scope
 
-Lean: `GaloisForLFunctions/RHTower/DirichletCharacterUniformPerron.lean`; audit pending. The only width restriction is numerical; every analytic input is supplied by the actual character. Selecting a common contour scale, signed unsmoothing, and residue recovery remain necessary for the growing-conductor source theorem.
+Lean: `GaloisForLFunctions/RHTower/ConductorUniform/DirichletCharacterUniformPerron.lean`.
+
+- `RHTower.exists_conductor_uniform_character_perron_bound`.
+- Direct Lean check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
+The width restriction is numerical; nonvanishing, the logarithmic-derivative bound, and every contour edge estimate come from the actual character.
