@@ -281,6 +281,7 @@ theorem sum_topBand_shellPoleRow_ge (hw : 0 ≤ w) (hg0 : ∀ u, 0 ≤ g u) {N :
         (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n))) := by
       field_simp
       rw [Real.sq_sqrt hN0.le]
+      ring
     _ ≤ poleVector n * shellPoleRow g N w n := mul_le_mul (hb n hn) hR hRn
       (by unfold poleVector; positivity)
 
