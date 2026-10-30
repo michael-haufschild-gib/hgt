@@ -762,8 +762,9 @@ theorem cellExpMass_eq {k : ℕ} (hk : 1 ≤ k) :
     exact (((hasDerivAt_neg x).div_const 2).exp.const_mul (-2)).congr_deriv (by ring)
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
     ((Real.continuous_exp.comp (continuous_neg.div_const 2)).intervalIntegrable _ _)]
-  trace_state
-  ring
+  set A := Real.exp (-Real.log ((k + 1 : ℕ) : ℝ) / 2)
+  set B := Real.exp (-Real.log (k : ℝ) / 2)
+  linear_combination
 
 /-- The first exponential moment `J_a = ∫ h_a e^{−u/2}` of the balanced detail. -/
 def haarExpMoment (a : ℕ) : ℝ :=

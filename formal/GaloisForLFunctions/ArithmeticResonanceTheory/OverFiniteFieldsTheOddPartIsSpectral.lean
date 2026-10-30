@@ -33,7 +33,7 @@ theorem det_one_sub_cpow_smul_eq_zero_iff (F : Matrix n n ℂ) {q : ℝ} (hq : 0
     rw [← cpow_add _ _ hq0, add_neg_cancel, cpow_zero]
   rw [← Matrix.exists_mulVec_eq_zero_iff]
   refine exists_congr fun v => and_congr_right fun _ => ?_
-  rw [Matrix.sub_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec_assoc, sub_eq_zero]
+  rw [Matrix.sub_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec, sub_eq_zero]
   constructor
   · intro h
     calc F *ᵥ v = ((q : ℂ) ^ s * (q : ℂ) ^ (-s)) • (F *ᵥ v) := by rw [hTinv, one_smul]
