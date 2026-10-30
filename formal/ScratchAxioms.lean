@@ -1,4 +1,0 @@
-import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspOddFourRankEight
-#print axioms RHTower.thetaCuspNativeSuccessorIntegral_seven_nonneg
-#print axioms RHTower.thetaCuspCenterMixedSignedHankel_eight_posSemidef
-#print axioms RHTower.thetaCuspCenterMixedOddFour_posSemidef
