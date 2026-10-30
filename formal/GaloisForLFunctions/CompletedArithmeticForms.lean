@@ -49,6 +49,9 @@ import GaloisForLFunctions.CompletedArithmeticForms.SuccessorMixture
 import GaloisForLFunctions.CompletedArithmeticForms.WeightedCenterTail
 import GaloisForLFunctions.CompletedArithmeticForms.ChebyshevCyclotomicCompletion
 import GaloisForLFunctions.CompletedArithmeticForms.PhysicalSuccessorMass
+import GaloisForLFunctions.CompletedArithmeticForms.WeightedSuccessorReserve
+import GaloisForLFunctions.CompletedArithmeticForms.TerminalCompletion
+import GaloisForLFunctions.CompletedArithmeticForms.EulerTerminalCost
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -98,6 +101,12 @@ The literal normalized Chebyshev energy has two coefficient channels with a line
 its five-sixths and three-quarters exponent bounds are exactly those of the remaining cyclic form.
 The exact full signed physical successor retains the first-atom mass, terminal source-scale
 power, and monic Hermite norm, with strict one-half and three-halves comparison constants.
+Integrating its explicit half-Hermite mass gives a positive lower bound for every exact weighted
+tail successor, and a literal source integral as the order-seven compact-center allowance.
+Finite source completion has the full maximum-index covariance, a free-terminal exact dual
+norm, a unique local second-difference optimizer, and an exact residual-square identity.
+The complete Euler-deletion energy pays this free-terminal variation with a joint cutoff
+allowance and retains the exact gain from its terminal mass discrepancy.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/

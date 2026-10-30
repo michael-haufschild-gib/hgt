@@ -36,6 +36,28 @@ $$0\le E_{\mathrm{full}}(X,M)-C_T(c^{X,M})\le\frac{(M+1)^2}{T+1}.$$
 The upper estimate at the inner cutoff is separate.
 Lean: `DivisorCovariance`.
 
+Finite-source terminal completion gives
+$$\mathcal C_T(c)=C_T(c)+\frac{(\sum c_j)^2}{T+1}
+=\sum_{j,k\le T}\frac{c_jc_k}{\max(j,k)}.$$
+With $F_j=jb_j$, $F_0=0$, $F_{T+1}=F_T$, its exact attained dual cost is
+$D_T(F)$, and its unique optimizer is $c_{*,j}=j(2F_j-F_{j-1}-F_{j+1})$.
+The full identity is
+$$\mathcal C_T(c)-2\langle c,b\rangle+D_T(F)=\mathcal C_T(c-c_*).$$
+The optimizer mass is $F_T$. Source extension changes energy by
+$c_{T+1}(2M_T+c_{T+1})/(T+1)$, so its monotonicity has an exact sign boundary.
+Lean: `TerminalCompletion`.
+
+For the literal Chebyshev prefix $F(N)=\sum_{2\le d<N}(\psi(d)-d)/\sqrt d$,
+let $E(N)=\sum_{2\le n\le N}F(n)^2/n^2$, $c_j=F(j)-F(j-1)$,
+and $\mathcal R_N=R_{N+1}(c_j/j)/(N+1)$. Then
+$$C_N(c)\le E(N)\le\tfrac43C_N(c),\qquad
+0\le\mathcal R_N\le4E(N),\qquad E(N)\le60N+\tfrac13\mathcal R_N.$$
+The two explicit coefficient channels cost at most $180N$ in total.
+Every uniform power bound with exponent $r\ge1$ is equivalent for $E$ and
+$\mathcal R$. The actual remainder therefore carries precisely the
+$5/3+\varepsilon$ and $3/2+\varepsilon$ strip questions.
+Lean: `ChebyshevCyclotomicCompletion`.
+
 ## Complete native rank and successor payment
 
 Put $q=\pi e^{2x}$, $D=50e\exp(2e)$, $A=27e^{3\pi}/399$,
@@ -60,6 +82,10 @@ $$C_{N,s}=16^{s+2N}(1/2)_sN!(s+1/2)_N.$$
 For $q\ge Q_M$, its bounds are strict: $C_{N,s}/2<S_N<3C_{N,s}/2$.
 Every literal physical native and first-atom signed rank-$N$ head is strict
 for $x\ge X_{N+1}$.
+The exact full signed physical native successor retains its mass and degree:
+$$\tfrac12 f(x)^2q(x)^N8^NN!<S_N(m(x))<\tfrac32 f(x)^2q(x)^N8^NN!,
+\qquad x\ge X_{N+1}.$$
+Exact moment rescaling $m'_k=ct^km_k$ multiplies $S_N$ by $ct^{2N}$.
 
 The first-atom failure dimension obeys
 $$\sqrt{q/C_2}<\kappa(x)+3.$$
@@ -71,7 +97,8 @@ The Gamma successor fraction of the new diagonal is at most $(2/3)^N$.
 
 Lean: `GaussianJetConvolution`, `GeometricContraction`,
 `HermiteContractionPayment`, `GaussianContractionBound`, `NativeQuadraticRank`,
-`QuadraticRankHorizon`, `PhysicalQuadraticHorizon`, `FirstAtomEffectiveRankBoundary`.
+`QuadraticRankHorizon`, `PhysicalQuadraticHorizon`, `PhysicalSuccessorMass`,
+`FirstAtomEffectiveRankBoundary`.
 
 ## Integration, mixtures, and the compact center boundary
 
@@ -96,11 +123,15 @@ $H_N(T_{a,R})\succ0$ for $R\ge2X_{N+1}$, uniformly in aperture.
 The actual rank-seven center head is strict. With its global minimizer
 $v=(-u_M,1)$ and $R\ge2X_9$,
 $$S_7(M)\ge v^{\mathsf T}H_8(B_{a,R})v+S_7(T_{a,R}),\qquad S_7(T_{a,R})>0.$$
+More generally, $R\ge2X_{N+2}$ gives the explicit payment
+$$0<\mathcal B_N(a,R)=\frac{8^NN!}{2}\int_R^\infty
+r\sinh(ar)f(r/2)^2q(r/2)^N\,dr\le S_N(T_{a,R}).$$
 The compact contribution remains unpaid. The full quadratic integrand is
 required; the linear source expression involving the integrated inverse
 need not inherit pointwise positivity from a native head.
 
-Lean: `SeamCoercivity`, `TailRankHorizon`, `SuccessorMixture`, `WeightedCenterTail`.
+Lean: `SeamCoercivity`, `TailRankHorizon`, `SuccessorMixture`, `WeightedCenterTail`,
+`WeightedSuccessorReserve`.
 
 ## Source-clock boundary
 
@@ -131,7 +162,9 @@ Lean: `HyperbolicClock`, `GaussianClockCone`, `ScaleJetTransport`.
    an eventual condition insufficient.
 7. Bound the complete arithmetic Hecke defect or index from above.
 8. Prove the actual Chebyshev mean-square exponents $5/3+\varepsilon$ or
-   $3/2+\varepsilon$, or the corresponding complete detector Gram bounds.
+   $3/2+\varepsilon$. Equivalently, prove those bounds for the normalized
+   cyclotomic remainder; the two explicit coefficient channels are paid.
+   The corresponding complete detector Gram bounds remain another source route.
 9. Preserve source reserves, radicals, domains, and endpoint tolerances through
    the simultaneous limits required by these questions.
 

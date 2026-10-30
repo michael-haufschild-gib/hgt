@@ -44,9 +44,14 @@ remain separate questions.
 The polynomial conductor floor and cumulative residue-source rates passed
 Lean audits. Quantitative Mertens transfer, the logarithmic harmonic
 cutoff bound and the global polynomial shell bound are also formalized.
-Weighted shell rates are formalized. Polynomial geometry is under formalization;
+Weighted shell rates, polynomial geometry, full downward cancellation
+and near-center bounds are formalized;
 `SignedArithmeticHodgeTheory.exists_uniform_primeMertensSquareBudget` supplies
-the stronger horizon-independent prime-ratio residual bound. Complete
+the stronger horizon-independent prime-ratio residual bound.
+`GrowingRamanujanFamiliesHaveAUniformGramBudget` supplies quantitative
+Gram control, and the existing center residual has bounded raw squared norm.
+Polynomial upward, replacement and energy estimates have paper proofs
+and Lean formalizations under check. Complete
 quasimodes and final packet positivity remain open. Supporting lemmas
 receive no separate contribution count. Corpus search found fixed-overlap
 quasimodes and actual quantitative progression prime sums; it did not find

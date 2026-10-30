@@ -1,7 +1,7 @@
 # Near Gamma and downward cancellation have polynomial growth
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -23,5 +23,7 @@ Near-center entries have size `O(c)`, giving the same fifth-power bound.
 
 ## Lean status
 
-Formalization follows directly. Supporting actual signed-source bound;
-no separate contribution count.
+`NearGammaDownwardCancellationHasPolynomialGrowth.lean` proves the
+coefficient, interior, exterior, full-cancellation and near-center bounds.
+Final direct Lean audit passed without warnings; all five axiom audits
+contain only `propext`, `Classical.choice`, `Quot.sound`. No separate count.

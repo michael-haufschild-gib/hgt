@@ -24,6 +24,11 @@ derives its degree sums from unique factorization, where the corpus calibration
   sums of `F[T]` up to degree `N ≥ 1` equal `1 − q`: bounded, gauge exponent `0` against the size
   `q^N`. Over `ℤ` the trivial point is never better than typical (`Θ ≥ 1/2`), because `ζ` has zeros;
   the zeta function of `F[T]` has none, and its trivial point lies below the half-power floor.
+* **The Liouville twin carries the pole** (`sum_monicDivisors_sq_dvd_polyMoebius`,
+  `sum_monicOfDeg_polyMoebius_sq`). `Σ_{d² ∣ f} μ(d) = μ(f)²`, and the same double counting gives
+  `q^n − q^{n−1}` squarefree monic polynomials of degree `n ≥ 2`: at the twin `μλ = μ²` the sums grow
+  like the size. Over `F[T]` the twin duality of the special locus is exact at the trivial point:
+  exponent `0` at `0`, exponent `1` at its Liouville twin.
 -/
 
 open Polynomial Finset UniqueFactorizationMonoid
@@ -242,7 +247,7 @@ theorem sum_monicOfDeg_polyMoebius (n : ℕ) :
     simpa using h
   · have h := sum_moebiusDegreeSum_mul_pow (F := F) (m + 1)
     have hprev := sum_moebiusDegreeSum_mul_pow (F := F) m
-    rw [sum_range_succ, Nat.sub_self, pow_zero, mul_one] at h
+    rw [Finset.sum_range_succ, Nat.sub_self, pow_zero, mul_one] at h
     have hshift : ∑ k ∈ range (m + 1), moebiusDegreeSum F k * (Fintype.card F : ℤ) ^ (m + 1 - k) =
         (Fintype.card F : ℤ) *
           ∑ k ∈ range (m + 1), moebiusDegreeSum F k * (Fintype.card F : ℤ) ^ (m - k) := by
@@ -266,11 +271,136 @@ equal `1 − q`. -/
 theorem sum_range_sum_monicOfDeg_polyMoebius {N : ℕ} (hN : 1 ≤ N) :
     ∑ k ∈ range (N + 1), moebiusDegreeSum F k = 1 - Fintype.card F := by
   obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by omega⟩
-  rw [sum_range_succ', sum_range_succ']
+  rw [Finset.sum_range_succ', Finset.sum_range_succ']
   rw [sum_eq_zero fun k _ => by
     rw [sum_monicOfDeg_polyMoebius]
     simp only [Nat.add_one_ne_zero, if_false, show k + 1 + 1 ≠ 1 by omega]]
   simp only [sum_monicOfDeg_polyMoebius]
-  simp
+  simp only [zero_add, Nat.add_one_ne_zero, if_false, if_true]
+  ring
+
+/-! ### The Liouville twin of `F[T]` -/
+
+open Classical in
+/-- **The squarefree indicator.** `Σ_{d monic, d² ∣ f} μ(d) = μ(f)²` for monic `f`. -/
+theorem sum_monicDivisors_sq_dvd_polyMoebius {f : F[X]} (hf : f.Monic) :
+    ∑ d ∈ (monicDivisors f).filter (fun d => d * d ∣ f), polyMoebius d = polyMoebius f ^ 2 := by
+  have hf0 := hf.ne_zero
+  have hmem := fun d => mem_monicDivisors (d := d) hf0
+  by_cases hsq : Squarefree f
+  · have hset : (monicDivisors f).filter (fun d => d * d ∣ f) = {1} := by
+      ext d
+      rw [mem_filter, hmem, mem_singleton]
+      constructor
+      · rintro ⟨⟨hdm, -⟩, hdd⟩
+        exact hdm.eq_one_of_isUnit (hsq d hdd)
+      · rintro rfl
+        exact ⟨⟨monic_one, one_dvd f⟩, by rw [one_mul]; exact one_dvd f⟩
+    rw [hset, sum_singleton, polyMoebius_one, polyMoebius, if_pos hsq, ← pow_mul, mul_comm,
+      pow_mul, neg_one_sq, one_pow]
+  · rw [show polyMoebius f = 0 by rw [polyMoebius, if_neg hsq], zero_pow two_ne_zero]
+    -- A monic irreducible `P` with `P² ∣ f`.
+    obtain ⟨x, hxx, hxu⟩ : ∃ x, x * x ∣ f ∧ ¬ IsUnit x := by
+      by_contra h
+      push Not at h
+      exact hsq h
+    obtain ⟨p, hp, hpx⟩ := WfDvdMonoid.exists_irreducible_factor hxu
+      (fun hx0 => hf0 (by rw [hx0, zero_mul] at hxx; exact zero_dvd_iff.mp hxx))
+    set P := normalize p
+    have hPirr : Irreducible P := (normalize_associated p).symm.irreducible hp
+    have hPm : P.Monic := monic_normalize hp.ne_zero
+    have hPP : P * P ∣ f := (mul_dvd_mul (normalize_dvd_iff.mpr hpx) (normalize_dvd_iff.mpr hpx)).trans hxx
+    set D := (monicDivisors f).filter (fun d => d * d ∣ f)
+    have himage : ∑ d ∈ D.filter (P ∣ ·), polyMoebius d =
+        ∑ d ∈ D.filter (¬ P ∣ ·), polyMoebius (d * P) := by
+      rw [← sum_image (s := D.filter (¬ P ∣ ·)) (g := (· * P)) fun a _ b _ h =>
+        mul_right_cancel₀ hPirr.ne_zero h]
+      refine (sum_subset (fun e he => ?_) fun e he hne => ?_).symm
+      · obtain ⟨d, hd, rfl⟩ := mem_image.mp he
+        obtain ⟨hdD, hPd⟩ := mem_filter.mp hd
+        obtain ⟨hdD', hdd⟩ := mem_filter.mp hdD
+        obtain ⟨hdm, hdf⟩ := (hmem d).mp hdD'
+        have hcop : IsCoprime d P := ((Irreducible.coprime_iff_not_dvd hPirr).mpr hPd).symm
+        have hsqdvd : d * P * (d * P) ∣ f := by
+          rw [show d * P * (d * P) = d * d * (P * P) by ring]
+          exact (hcop.mul_left hcop).mul_right (hcop.mul_left hcop) |>.mul_dvd hdd hPP
+        exact mem_filter.mpr ⟨mem_filter.mpr ⟨(hmem _).mpr ⟨hdm.mul hPm,
+          (dvd_mul_right (d * P) (d * P)).trans hsqdvd⟩, hsqdvd⟩, dvd_mul_left P d⟩
+      · obtain ⟨heD, hPe⟩ := mem_filter.mp he
+        obtain ⟨heD', hee⟩ := mem_filter.mp heD
+        obtain ⟨hem, hef⟩ := (hmem e).mp heD'
+        obtain ⟨e', rfl⟩ := hPe
+        have he'm : e'.Monic := hPm.of_mul_monic_left hem
+        by_cases hPe' : P ∣ e'
+        · exact polyMoebius_eq_zero_of_sq_dvd hPirr.not_isUnit (mul_dvd_mul_left P hPe')
+        · exfalso
+          have he'e' : e' * e' ∣ f :=
+            (mul_dvd_mul (dvd_mul_left e' P) (dvd_mul_left e' P)).trans hee
+          refine hne (mem_image.mpr ⟨e', mem_filter.mpr ⟨mem_filter.mpr ⟨(hmem e').mpr ⟨he'm,
+            (dvd_mul_left e' P).trans hef⟩, he'e'⟩, hPe'⟩, mul_comm e' P⟩)
+    rw [← sum_filter_add_sum_filter_not D (P ∣ ·), himage, ← sum_add_distrib]
+    refine sum_eq_zero fun d hd => ?_
+    obtain ⟨hdD, hPd⟩ := mem_filter.mp hd
+    rw [polyMoebius_mul_irreducible
+      ((hmem d).mp (mem_filter.mp hdD).1).1.ne_zero hPirr hPd, neg_add_cancel]
+
+/-- **The Liouville twin of `F[T]` carries the pole.** There are `q^n − q^{n−1}` squarefree monic
+polynomials of degree `n ≥ 2`: `Σ_{deg f = n} μ(f)² = q^n − q^{n−1}`. Over `F[T]` the Möbius sums of the
+trivial point are bounded while those of its Liouville twin `μ λ = μ²` grow like the size. -/
+theorem sum_monicOfDeg_polyMoebius_sq {n : ℕ} (hn : 2 ≤ n) :
+    ∑ f ∈ monicOfDeg F n, polyMoebius f ^ 2 =
+      (Fintype.card F : ℤ) ^ n - (Fintype.card F : ℤ) ^ (n - 1) := by
+  classical
+  set q : ℤ := (Fintype.card F : ℤ) with hq
+  have hdisj : (↑(range (n + 1)) : Set ℕ).PairwiseDisjoint (monicOfDeg F) := by
+    intro k _ k' _ hkk
+    refine disjoint_left.mpr fun f hf hf' => hkk ?_
+    rw [← (mem_monicOfDeg.mp hf).2, (mem_monicOfDeg.mp hf').2]
+  -- The number of `f` of degree `n` divisible by `d²`, for `d` of degree `k`.
+  have hcount : ∀ k ≤ n, ∀ d ∈ monicOfDeg F k,
+      (#((monicOfDeg F n).filter (fun f => d * d ∣ f)) : ℤ) =
+        if 2 * k ≤ n then q ^ (n - 2 * k) else 0 := by
+    intro k _ d hd
+    obtain ⟨hdm, hdk⟩ := mem_monicOfDeg.mp hd
+    have hdd : d * d ∈ monicOfDeg F (2 * k) :=
+      mem_monicOfDeg.mpr ⟨hdm.mul hdm, by rw [hdm.natDegree_mul hdm, hdk]; ring⟩
+    split_ifs with h2k
+    · rw [card_filter_dvd_monicOfDeg hdd h2k]
+      push_cast
+      rfl
+    · rw [Nat.cast_eq_zero, card_eq_zero, filter_eq_empty_iff]
+      intro f hf hdf
+      obtain ⟨hfm, hfn⟩ := mem_monicOfDeg.mp hf
+      have := natDegree_le_of_dvd hdf hfm.ne_zero
+      rw [hdm.natDegree_mul hdm, hdk, hfn] at this
+      omega
+  calc ∑ f ∈ monicOfDeg F n, polyMoebius f ^ 2
+      = ∑ f ∈ monicOfDeg F n, ∑ d ∈ monicUpTo F n, if d * d ∣ f then polyMoebius d else 0 := by
+        refine sum_congr rfl fun f hf => ?_
+        obtain ⟨hfm, hfn⟩ := mem_monicOfDeg.mp hf
+        rw [← sum_monicDivisors_sq_dvd_polyMoebius hfm, monicDivisors, hfn, filter_filter,
+          sum_filter]
+        refine sum_congr rfl fun d _ => ?_
+        by_cases hdd : d * d ∣ f
+        · rw [if_pos hdd, if_pos ⟨(dvd_mul_right d d).trans hdd, hdd⟩]
+        · rw [if_neg hdd, if_neg fun h => hdd h.2]
+    _ = ∑ k ∈ range (n + 1), moebiusDegreeSum F k * (if 2 * k ≤ n then q ^ (n - 2 * k) else 0) := by
+        rw [sum_comm, monicUpTo, sum_biUnion hdisj]
+        refine sum_congr rfl fun k hk => ?_
+        rw [moebiusDegreeSum, sum_mul]
+        refine sum_congr rfl fun d hd => ?_
+        rw [← sum_filter, sum_const, nsmul_eq_mul, mul_comm,
+          hcount k (by have := mem_range.mp hk; omega) d hd]
+    _ = q ^ n - q ^ (n - 1) := by
+        obtain ⟨m, rfl⟩ : ∃ m, n = m + 2 := ⟨n - 2, by omega⟩
+        rw [Finset.sum_range_succ', Finset.sum_range_succ']
+        rw [sum_eq_zero fun k _ => by
+          rw [sum_monicOfDeg_polyMoebius]
+          simp only [Nat.add_one_ne_zero, if_false, show k + 1 + 1 ≠ 1 by omega, zero_mul]]
+        simp only [sum_monicOfDeg_polyMoebius, Nat.add_one_ne_zero, if_false, if_true, zero_add,
+          show 2 * (0 + 1) ≤ m + 2 by omega, show 2 * 0 ≤ m + 2 by omega]
+        rw [show m + 2 - 2 * (0 + 1) = m by omega, show m + 2 - 2 * 0 = m + 2 by omega,
+          show m + 2 - 1 = m + 1 by omega]
+        ring
 
 end GaloisForLFunctions.ArithmeticGaugeTheory

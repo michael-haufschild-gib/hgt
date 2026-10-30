@@ -27,6 +27,7 @@ theorem finiteSourceEnergy_eq_covariance (c : ℕ → ℝ) (T : ℕ) :
   have hm : (∑ j ∈ Icc 1 T, c j) ^ 2 / ((T : ℝ) + 1) =
       ∑ j ∈ Icc 1 T, ∑ k ∈ Icc 1 T, c j * c k / ((T : ℝ) + 1) := by
     simp only [pow_two, sum_mul, mul_sum, sum_div]
+    rw [sum_comm]
   rw [finiteSourceEnergy, cumulativeEnergy_eq_covariance, hm, ← sum_add_distrib]
   apply sum_congr rfl
   intro j hj
@@ -122,7 +123,7 @@ private theorem dirichletEnergy_remove_endpoint {Q : ℕ} (hQ : 0 < Q)
     push_cast
     ring
   simp only [dirichletEnergy, he, sum_add_distrib, sum_sub_distrib]
-  rw [← mul_sum, Finset.sum_range_sub']
+  rw [← mul_sum, Finset.sum_range_sub]
   simp only [hf0, sub_zero, sum_const, card_range, nsmul_eq_mul]
   field_simp [hQr]
   ring
@@ -145,7 +146,8 @@ theorem centeredBoundaryCoupling_energy (T : ℕ) (b : ℕ → ℝ) :
   have h := dirichletEnergy_remove_endpoint (Nat.succ_pos T) (freeBoundaryCoupling T b)
     (freeBoundaryCoupling_zero T b)
   rw [freeBoundaryCoupling_endpoint, freeBoundaryCoupling_energy] at h
-  simpa only [Nat.cast_add, Nat.cast_one, centeredBoundaryCoupling] using h
+  unfold centeredBoundaryCoupling
+  simpa only [Nat.cast_succ, Nat.cast_add, Nat.cast_one] using h
 
 private theorem centeredBoundaryCoupling_eq_extension {T i : ℕ} (b : ℕ → ℝ) (hi : i ≤ T + 1) :
     centeredBoundaryCoupling T b i =
@@ -275,7 +277,8 @@ theorem finiteSourceMaximizer_eq_localDifference (b : ℕ → ℝ) (T : ℕ)
     he (j + 1) (by have := (mem_Icc.mp hj).2; omega)]
   simp only [centeredBoundaryCoupling, Nat.cast_sub (mem_Icc.mp hj).1,
     Nat.cast_add, Nat.cast_one]
-  field_simp [show (T : ℝ) + 1 ≠ 0 by positivity] <;> ring
+  field_simp [show (T : ℝ) + 1 ≠ 0 by positivity]
+  ring
 
 private theorem centeredBoundaryCoupling_bridgeCost (T : ℕ) (b : ℕ → ℝ) :
     bridgeSchurCost (T + 1) (fun i => ((T : ℝ) + 1) * centeredBoundaryCoupling T b i) =
@@ -329,44 +332,6 @@ theorem finiteSourceMaximizer_energy (b : ℕ → ℝ) (T : ℕ) :
     centeredBoundaryCoupling_energy]
   ring
 
-private theorem finiteSourceMaximizer_pairing (b : ℕ → ℝ) (T : ℕ) :
-    (∑ j ∈ Icc 1 T, finiteSourceMaximizer b T j * b j) = finiteSourceDualCost b T := by
-  let B := fun i => ((T : ℝ) + 1) * centeredBoundaryCoupling T b i
-  let a := bridgeInverse (T + 1) B
-  have he := (bridgeSchur_equality_iff (Nat.succ_pos T) a B).mpr (fun _ _ => rfl)
-  simp only [a, B, divisorGramEnergy_bridgeInverse (Nat.succ_pos T),
-    centeredBoundaryCoupling_bridgeCost] at he
-  have hs : (∑ j ∈ Ico 1 (T + 1), a j * B j) =
-      ((T : ℝ) + 1) * ∑ j ∈ Icc 1 T, finiteSourceMaximizer b T j * b j -
-        ((T : ℝ) * b T) * ∑ j ∈ Icc 1 T, finiteSourceMaximizer b T j := by
-    rw [Ico_one_succ, mul_sum, mul_sum, ← sum_sub_distrib]
-    apply sum_congr rfl
-    intro j hj
-    dsimp only [B]
-    rw [centeredBoundaryCoupling, freeBoundaryCoupling_of_le T b (mem_Icc.mp hj).2]
-    change a j * (((T : ℝ) + 1) * ((j : ℝ) * b j -
-      (j : ℝ) / ((T : ℝ) + 1) * ((T : ℝ) * b T))) =
-        ((T : ℝ) + 1) * ((j : ℝ) * a j * b j) - ((T : ℝ) * b T) * ((j : ℝ) * a j)
-    field_simp [show (T : ℝ) + 1 ≠ 0 by positivity]
-    ring
-  rw [hs, finiteSourceMaximizer_mass, centeredBoundaryCoupling_energy] at he
-  apply mul_left_cancel₀ (show (T : ℝ) + 1 ≠ 0 by positivity)
-  have hq : ((T : ℝ) + 1) * (((T : ℝ) * b T) ^ 2 / ((T : ℝ) + 1)) =
-      ((T : ℝ) * b T) ^ 2 := by field_simp
-  rw [mul_sub, hq] at he
-  nlinarith only [he]
-
-/-- The free-terminal variation is the sharp attained dual norm of the completed source packet. -/
-theorem finiteSourceDualCost_isGreatest (b : ℕ → ℝ) (T : ℕ) :
-    IsGreatest {r : ℝ | ∃ c : ℕ → ℝ,
-      r = 2 * (∑ j ∈ Icc 1 T, c j * b j) - finiteSourceEnergy c T} (finiteSourceDualCost b T) := by
-  constructor
-  · refine ⟨finiteSourceMaximizer b T, ?_⟩
-    rw [finiteSourceMaximizer_pairing, finiteSourceMaximizer_energy]
-    ring
-  · rintro r ⟨c, rfl⟩
-    exact finiteSourceEnergy_schur_bound c b T
-
 /-- Terminal completion retains the exact full covariance norm of the optimizer residual. -/
 theorem finiteSourceEnergy_completion (c b : ℕ → ℝ) (T : ℕ) :
     finiteSourceEnergy c T - 2 * (∑ j ∈ Icc 1 T, c j * b j) + finiteSourceDualCost b T =
@@ -397,7 +362,7 @@ theorem finiteSourceEnergy_completion (c b : ℕ → ℝ) (T : ℕ) :
       exact_mod_cast (show j ≠ 0 by have := (mem_Icc.mp hj).1; omega)
     dsimp only [a, B]
     rw [centeredBoundaryCoupling, freeBoundaryCoupling_of_le T b (mem_Icc.mp hj).2]
-    field_simp [hj0, hQ] <;> ring
+    field_simp [hj0, hQ]
   have hcost : bridgeSchurCost (T + 1) B =
       ((T : ℝ) + 1) * (finiteSourceDualCost b T - ((T : ℝ) * b T) ^ 2 / ((T : ℝ) + 1)) := by
     rw [show B = (fun i => ((T : ℝ) + 1) * centeredBoundaryCoupling T b i) from rfl,
@@ -408,10 +373,11 @@ theorem finiteSourceEnergy_completion (c b : ℕ → ℝ) (T : ℕ) :
         bridgeSchurCost (T + 1) B) +
           ((∑ j ∈ Icc 1 T, c j) - (T : ℝ) * b T) ^ 2 := by
       rw [hleft, hpair, hcost, finiteSourceEnergy]
-      field_simp [hQ] <;> ring
+      field_simp [hQ]
+      ring
     _ = _ := by
       rw [hb, hright, finiteSourceEnergy, sum_sub_distrib, finiteSourceMaximizer_mass]
-      field_simp [hQ] <;> ring
+      field_simp [hQ]
 
 /-- Full maximum-index covariance has no nonzero radical on its finite source coordinates. -/
 theorem finiteSourceEnergy_eq_zero_iff (c : ℕ → ℝ) (T : ℕ) :
@@ -454,6 +420,16 @@ theorem finiteSourceEnergy_schur_equality_iff (c b : ℕ → ℝ) (T : ℕ) :
     constructor <;> intro h <;> linarith only [he, h]
   rw [hz, finiteSourceEnergy_eq_zero_iff]
   simp only [sub_eq_zero]
+
+/-- The free-terminal variation is the sharp attained dual norm of the completed source packet. -/
+theorem finiteSourceDualCost_isGreatest (b : ℕ → ℝ) (T : ℕ) :
+    IsGreatest {r : ℝ | ∃ c : ℕ → ℝ,
+      r = 2 * (∑ j ∈ Icc 1 T, c j * b j) - finiteSourceEnergy c T} (finiteSourceDualCost b T) := by
+  constructor
+  · refine ⟨finiteSourceMaximizer b T, ?_⟩
+    exact ((finiteSourceEnergy_schur_equality_iff _ b T).mpr (fun _ _ => rfl)).symm
+  · rintro r ⟨c, rfl⟩
+    exact finiteSourceEnergy_schur_bound c b T
 
 #print axioms finiteSourceEnergy_eq_covariance
 #print axioms centeredBoundaryCoupling_energy

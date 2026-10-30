@@ -23,7 +23,8 @@ theorem errorIncrement_prefix_abs_le {X M : ℕ}
     |∑ j ∈ Icc 1 T, errorIncrement X M j| ≤ (M : ℝ) + 1 := by
   by_cases hT : T = 0
   · subst T
-    simp
+    simp only [Icc_eq_empty_of_lt (by omega : 0 < 1), sum_empty, abs_zero]
+    positivity
   rw [← error_eq_cumulative hXM.le (Nat.pos_of_ne_zero hT)]
   have h := (abs_sub (1 : ℝ) (modular X M T)).trans
     (add_le_add le_rfl (abs_modular_le hX hXM T))

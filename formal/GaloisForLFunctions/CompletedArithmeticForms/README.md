@@ -198,6 +198,37 @@ source energy at the inner-cutoff strength required by the Euler-deletion criter
 See [DivisorCovariance](DivisorCovariance.lean), particularly `cumulativeEnergy_completion`,
 `cumulativeEnergy_schur_bound`, and `fullErrorEnergy_truncation_bounds`.
 
+Completing a finite source packet gives a different boundary metric. Put
+$$\mathcal C_T(c)=C_T(c)+\frac{M_T^2}{T+1},\qquad M_T=\sum_{j\le T}c_j.$$
+Its full covariance is
+$$\mathcal C_T(c)=\sum_{j,k\le T}\frac{c_jc_k}{\max(j,k)}.$$
+For a coupling $b$, let $F_0=0$, $F_j=jb_j$ for $1\le j\le T$, and
+$F_{T+1}=F_T$. The exact dual cost is
+$$\max_c\bigl(2\langle c,b\rangle-\mathcal C_T(c)\bigr)
+=D_T(F)=\sum_{j=1}^T(F_j-F_{j-1})^2.$$
+The unique optimizing interior packet is $c_{*,j}=j(2F_j-F_{j-1}-F_{j+1})$,
+with total mass $F_T$, and
+$$\mathcal C_T(c)-2\langle c,b\rangle+D_T(F)
+=\mathcal C_T(c-c_*)=C_T(c-c_*)+\frac{(M_T-F_T)^2}{T+1}.$$
+Thus the terminal source mass pays the last Dirichlet edge. Source extension
+itself has the exact signed law
+$$\mathcal C_{T+1}(c)-\mathcal C_T(c)
+=\frac{c_{T+1}(2M_T+c_{T+1})}{T+1};$$
+it increases energy exactly when the numerator is nonnegative.
+See [TerminalCompletion](TerminalCompletion.lean), `finiteSourceEnergy_completion`,
+`finiteSourceEnergy_schur_equality_iff`, and `finiteSourceEnergy_le_succ_iff`.
+
+For the actual Euler-deletion source, finite completion approximates the full
+infinite energy on a simultaneous cutoff domain:
+$$\left|F_{X,M}-\mathcal C_T(c)\right|\le\frac{(M+1)^2}{T+1},$$
+$$2\sum_{j\le T}c_jb_j-F_{X,M}
+\le D_T(F)-\frac{(M_T-Tb_T)^2}{T+1}+\frac{(M+1)^2}{T+1}.$$
+Both the omitted source tail and inserted terminal mass lie in the same
+explicit interval; their difference gives the two-sided allowance. A cutoff
+$(M+1)^2\le\delta(T+1)$ therefore pays the transfer within $\delta$, with
+the mass-discrepancy gain retained. See [EulerTerminalCost](EulerTerminalCost.lean),
+`fullErrorEnergy_freeTerminal_schur_bound_with_mass`.
+
 ## The actual Chebyshev source and its unpaid cyclic form
 
 Let
@@ -905,6 +936,17 @@ exact growth exponent. See [PhysicalQuadraticHorizon](PhysicalQuadraticHorizon.l
 `nativeSignedHead_posDef_of_quadratic_rank_horizon` and
 `firstAtomFailureRank_sqrt_scale_lower`.
 
+Exact mass and monomial rescaling also identifies the physical successor size.
+For $m'_k=c t^k m_k$ with $c>0$, $t\ne0$, and a strict rank-$N$ head,
+$$S_N(m')=ct^{2N}S_N(m).$$
+The full signed Gaussian successor is its monic Hermite norm $8^N N!$.
+Consequently the actual full signed native successor satisfies
+$$\frac12 f(x)^2q(x)^N8^NN!<S_N(m(x))<
+\frac32 f(x)^2q(x)^N8^NN!,\qquad x\ge X_{N+1}.$$
+Here $f(x)$ is the literal first-atom source. The infinite native remainder
+is included in both inequalities. See [PhysicalSuccessorMass](PhysicalSuccessorMass.lean),
+`rescaledMoment_successorSchur` and `nativePhysicalSuccessor_half_bounds_of_horizon`.
+
 The literal complete tail $T_N(r)=H_N(k\mapsto\int_r^\infty m_k(s/2)\,ds)$
 retains this rank dependence:
 $$r\ge2X_{N+1}\Longrightarrow T_N(r)\succ0,$$
@@ -950,6 +992,20 @@ the integrated inverse does not acquire a pointwise sign from local head
 positivity. See [WeightedCenterTail](WeightedCenterTail.lean),
 `nativeWeightedCenterTail_posDef` and `centerSeventhSuccessor_compact_allowance`.
 
+The allowance has an explicit physical lower bound. For $R\ge2X_{N+2}$, set
+$$\mathcal B_N(a,R)=\frac{8^NN!}{2}\int_R^\infty
+r\sinh(ar)f(r/2)^2q(r/2)^N\,dr.$$
+The literal weighted native diagonal dominates this integrable density, and
+$$0<\mathcal B_N(a,R)\le S_N(T_{a,R}).$$
+The proof tests each complete native form at the integrated tail's own global
+minimizer. At order seven it yields the unconditional inequality
+$$v^{\mathsf T}H_8(B_{a,R})v+\mathcal B_7(a,R)\le S_7(M).$$
+No inverse matrix occurs in the displayed allowance. Its positivity is uniform
+in the admissible aperture and rank domain, while its magnitude retains their
+actual dependence. See [WeightedSuccessorReserve](WeightedSuccessorReserve.lean),
+`nativeWeightedSuccessorReserve_le_schur` and
+`centerSeventhSuccessor_explicit_compact_allowance`.
+
 ## Place in the research
 
 | Programme | Connection |
@@ -982,7 +1038,8 @@ a norm-preserving transfer between programmes.
    Its strict half-Gaussian reserve has a center horizon of $\log(N+2)+O(1)$.
    Every critical aperture shares that weighted-tail horizon. At order seven,
    the exact global minimizer gives a compact contribution plus a strict
-   positive integrated tail allowance.
+   positive integrated tail allowance, bounded below by the explicit
+   first-atom Hermite-mass integral $\mathcal B_7(a,R)$.
    Every seam tail head is strict,
    with an explicit half-seam neighborhood and a separate strict distant ray.
    What are the sharp growth laws, and which native compensation pays the intervening

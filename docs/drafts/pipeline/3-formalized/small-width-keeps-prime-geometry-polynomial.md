@@ -1,7 +1,7 @@
 # Small width keeps prime geometry polynomial
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -24,5 +24,7 @@ in overlap once physical width is bounded.
 
 ## Lean status
 
-Formalization follows directly. Supporting source geometry; no separate
-contribution count.
+`SmallWidthKeepsPrimeGeometryPolynomial.lean` proves the near-pair,
+near-row squared-mass, exterior-cutoff and integer-separation bounds.
+Final direct Lean audit passed without warnings; all four axiom audits
+contain only `propext`, `Classical.choice`, `Quot.sound`. No separate count.
