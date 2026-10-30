@@ -8,7 +8,10 @@ Scope:
   statements, docstrings and proofs quoted below, and one live pipeline card
   (`1-in-progress/quasi-rh-from-effective-conductor-confinement.md`).
 - Corpus size: RHTower 29,309 Lean files, HTGeometry 18,918, plus the arithmetic programmes.
-- Not done: no builds, compilation checks, axiom audits, web searches or external literature.
+- New Lean: one module, `RHTower/HolomorphicCarriersCannotBeQuantized.lean`, checked with `lake --old env lean`
+  (standard axioms only). Its cards are `3-formalized/holomorphic-carriers-cannot-be-quantized.md` and
+  `5-failed/hc-quantization-as-producer.md`.
+- Not done: no builds or axiom audits of other modules, no web searches, no external literature.
 
 Research log: [`logs/opus-review-3010-research-2026-10-30.md`](../../../logs/opus-review-3010-research-2026-10-30.md).
 
@@ -40,40 +43,47 @@ Companions: [walls](walls-ledger.md) · [route obstacles](route-obstacles.md) ·
 
      M1 pays those two sources by signed shell repayment instead of Young's inequality. M1b removes the √φ(m) sup loss
      from the prime-residual conductor cost.
-   - **Coalescence.** The horizontal-collision (HC) programme reduces RH to an absolute bound below the indivisible
-     quantum 2 on explicit reflection-faithful carriers. It also proves that the explicit-formula clock of the
-     two-prime pencil has no finite quantum. M3 states the producer this leaves.
-2. **Wildly different.** The corpus's genuinely different form of RH is quantization: the collision charge lies in
-   2ℕ, so any eventual bound below 2 is RH [Lean]. Its limit is also proved: for the two-prime pencil the quantum
-   margin exists only on the zero-indexed side, and the source-realizable holomorphic excess reads ∞·K(T) [Lean]. The
-   other frameworks in the corpus (theta-Hawking, Hankel, JAS, Herglotz, theta completeness, Deninger) are endpoints
-   or identities without a producer (§3).
+   - **Ruled out: quantized collision carriers.** The horizontal-collision (HC) endpoint RH ⇔ (collision charge < 2)
+     is not a producer route [Lean, this review]. Every carrier computable from explicit formulas is a holomorphic
+     linear or sesquilinear sum over the zeros. Any such sum that vanishes on critical configurations vanishes on all
+     configurations, and its off-line signal at depth δ is at most 2ε^{1−δ/Δ}M^{δ/Δ}. The carriers that keep the
+     quantum are non-holomorphic in the zero and have no source formula (§2).
+2. **Wildly different.** No framework in the corpus is a producer (§3).
+   - The carrier test shows why the observable-level shortcut fails: arithmetic single observables are holomorphic
+     and blind off the line.
+   - The Λ-positive models with the exact Riemann functional equation and off-line zeros show that selection must use
+     discreteness of the prime measure [Lean].
+   - A genuinely different approach would need a positivity family or a spectral realization, built from the discrete
+     prime measure. This review proposes none that meets those requirements.
 3. **Quasi-RH beyond 7/8.**
    - Exact targets: 5/6 ⇔ power-mesh covariance (m = 6) ≤ C J^{5+ε}, and 3/4 ⇔ the same at m = 4 with exponent
      3 + ε.
    - The absolute envelope is ≍ J^{m+1} on both sides and never ≤ C J^m [Lean].
    - (inference) The strip 1 − 1/m is a signed saving of exactly J² on the m-th mesh.
    - Inside the CGL detector, 5/6 needs ν ≤ 1/15 and κ + 4ν ≤ 4/3, and the method floor is 29/36. CGL packets
-     cannot carry horizontal reflection charge, whose quantum is the HC quantum 2. No gauge-invariant certificate
-     beats 3/4 [Lean].
+     cannot carry horizontal reflection charge. No gauge-invariant certificate beats 3/4 [Lean].
 4. **75 % on the line.**
    - The census stands at 0.67250071 [Lean].
    - At κ = 4/3, the joint (c = 2, c = 3) rank–trace functional equals (3/4)N. On extremal frames it certifies 3/4
      distinct critical zeros whenever off-line pairs do not outnumber double critical zeros [Lean].
-   - The corpus also proves N₀(T) ≥ N(T) − O(T), where O(T) is the collision charge [Lean]. (inference) An eventual
-     bound O(T) ≤ N(T)/4 gives 75 % with multiplicity, and O(T) ≤ 3N(T)/10 gives 70 %.
+   - Two exact routes remain: zero-side slack ≥ N/12 (Route I) and prime surplus ≤ 1/18 at λ = 4/3 (Route II).
+   - The collision inequality N₀ ≥ N − O(T) [Lean] gives no third route. The computable finite-height carriers are
+     Montgomery's pair form, so they lead to pair correlation, i.e. Route II. They also weight a near-line zero by
+     4 sinh²(δ log X), which is blind at depth ≪ 1/log X.
 5. **Three questions.**
    - (Σ) A signed payment of the non-ratio and pole sources that brings the negative-vector defect bound from C c¹⁶
-     to O(log c).
-   - (Γ) Persistence of the pole ground line of the complete matrix along growing overlap.
-   - (HC) A prime-side bound on one reflection-faithful carrier: O(N) with constant < 1/4 for the census, absolute
-     < 2 for RH.
-6. **New field.** *Hilbertian explicit formulas*.
-   - Weil's explicit formula computes reflection-paired zero sums: the Weil form.
-   - RH is the equality of that form with the same-point Hilbert norm, and their gap is an exact line-reflection
-     defect [Lean].
-   - The corpus shows that same-point clocks are not produced by explicit formulas [Lean].
-   - The field asks for arithmetic identities and bounds for same-point zero sums (§7).
+     to O(log c); its selective form is persistence of the pole ground line.
+   - (Π, quasi-RH) The J² signed saving for the m = 4 power-mesh covariance, i.e. the 3/4 strip.
+   - (census) Route I slack or Route II surplus.
+6. **New field.** *Successor-shell arithmetic*.
+   - Four corpus results fix what a missing tool must be:
+     - holomorphic rigidity forces a positivity family, not a carrier;
+     - the off-line Λ-positive models force use of discreteness;
+     - the RH-receiver equivalence forces square-root precision;
+     - the coalescence law forces visibility at depth o(1/log T).
+   - The complete Weil form at growing overlap meets all four by construction. Its unpaid part is the successor-shell
+     block.
+   - The field is the signed additive–multiplicative arithmetic of that block beyond conductor modes (§7).
 
 ---
 
@@ -175,12 +185,18 @@ Elliptic localization [Lean: `elliptic_sector_nonneg_below_conductor_horizon`, `
 | Shrinking atomic schedules reach the whole index; whether the explicit schedule (log log N)^α/N does is left open | [Lean] `exists_shrinking_schedule` |
 | Coalescence law: an off-line pair has one negative square for t ≠ 0 and none in the on-line limit | [Lean] `coalescence_law` |
 | No gauge-invariant bound on the Möbius exponent is below 3/4 | [Lean] `threeQuarters_le_of_gaugeInvariant_bound` |
+| An entire completed function with the exact Riemann functional equation, a nonnegative generalized von Mangoldt measure, and zeros off the line; Beurling systems with off-line zeros | [Lean docstrings] `EntireFunctionalEquationOffLine`, `LambdaPositiveFunctionalEquationOffLine`, `BeurlingRegularIntegersOffLineZeros` |
+| Discrete Beurling systems with the Riemann functional equation are rigid | [Lean docstring] `BeurlingRiemannFunctionalEquationRigidity` |
 | Deninger: canonical big-Witt Frobenius exists; conformal Hodge positivity does not constrain the spectrum; five further no-gos | [Lean docstrings] `DeningerResolventCoreIsRiemannHypothesis` and the big-Witt no-go modules |
 
-**Reading (inference).** At fixed overlap, selection at complete resolution is already settled: W is positive
-definite and its ground line is the pole (§1.2). The atomic ladder shows what the pole selects against: the next rung
-is conductor 2. A selective question survives only along growing overlap, as persistence of the pole ground line with
-its energy E_1(1 + o(1)). That statement is positivity, so it is Σ1 in selective form.
+**Reading (inference).**
+
+- At fixed overlap, selection at complete resolution is already settled: W is positive definite and its ground line
+  is the pole (§1.2). The atomic ladder shows what the pole selects against: the next rung is conductor 2.
+- A selective question survives only along growing overlap, as persistence of the pole ground line with energy
+  E_1(1 + o(1)). That statement is positivity, so it is Σ1 in selective form.
+- The off-line Λ-positive models show what selection must use. Positivity of Λ plus the functional equation does not
+  force the line. Discreteness of the prime measure does single out ζ.
 
 ### 1.4 Π: what precision costs
 
@@ -197,28 +213,26 @@ its energy E_1(1 + o(1)). That statement is positivity, so it is Σ1 in selectiv
 |---|---|
 | Collision charge O(T) = Σ_ρ m_ρ(H_ρ − m_ρ) ∈ 2ℕ dominates the off-line mass. RH ⇔ O(T) < 2 on every window ⇔ O(T) = 0 | [Lean] `riemannHypothesis_iff_forall_horizontalCollisionCharge_lt_two`, `…_eq_zero` |
 | N₀(T) ≥ N(T) − O(T) | [Lean] `xiStripWindowTotalOrder_sub_collisionCharge_le_lineOrder` |
-| Two-prime Cesàro carrier (labels 2, 3, both reflection orientations, multiplicities kept): its source excess converges to O(T). An absolute bound below 2 proves RH; a normalized o(N(T)) bound does not | [Lean] `XiHorizontalCollisionTwoPrimeCesaroCarrier` |
-| The excess is exactly the mean-square cost of quotienting the coefficient-faithful carrier by line reflection | [Lean] `XiHorizontalCollisionPrimeCayleyInformationLoss` |
-| The Ward–Green normalized source energy dominates 16 times the canonical reflection charge; an absolute bound below 32 proves RH | [Lean] `XiHorizontalCollisionWardGreenCayleyQuantum` |
-| Exterior source carrier with off-line quantum 4(96/145)², coefficients from an explicit prime–Gamma source formula | [Lean] `XiHorizontalCollisionWardGreenExteriorSourceCarrier` |
-| Summability of the multiplicity-faithful Gauss–Hodge prime current ⇔ RH | [Lean] `riemannHypothesis_iff_forall_summable_horizontalCollisionGaussHodgePrimeCurrent` |
-| **Growth dichotomy**: the explicit-formula clock χ_p(ρ)² is holomorphic. Its excess vanishes on all-critical windows and is unbounded on any window with an off-line zero. "The quantum margin of two exists only on the zero-indexed side" | [Lean] `XiHolomorphicTwoPrimePencilGrowthDichotomy` |
-| Constraints on any collision observable: (1) orientation is preserved or lost by transport, never created; (2) oriented displacement cancels under exchange, and only the squared displacement survives; (3) no scalar reporter exact on collisions is sequentially lower semicontinuous, so collision-stable additive weights are linear in multiplicity; (4) even readers lose the first jet at anti-phase collision | [Lean] (1) `PairwiseFirstCoalescenceLaw`, (2) `XiHorizontalCollisionExchangeOrientationNoGo`, (3) `XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo`, (4) `evenReader_firstJet_zero` |
-| Resolvent mass is one quarter of the squared Hilbert distance between a resolvent evaluation and its line reflection, i.e. the gap between the Hilbert norm and the Weil form. Source closure contains the defect, but "an additional source law must force the two reconstructed orientations to agree" | [Lean] `XiResolventLineReflectionDefect` |
+| Carriers that keep the quantum (two-prime Cesàro, Prime–Cayley, Ward–Green, exterior, Gauss–Hodge) have zero-side summands non-holomorphic in ρ: functions of Im ρ (p^{ρ−ρ̄}), of Re ρ (`realCayley(2 Re ρ − 1)`, (½ − Re ρ) log 2), or (Re ρ − ½)⁻² (`thetaXiWardTransverseGreenWeight_eq`). None has a source formula | [Lean] `XiHorizontalCollision*` |
+| **Growth dichotomy**: the explicit-formula clock is holomorphic; its excess vanishes on all-critical windows and is unbounded on any window with an off-line zero | [Lean] `XiHolomorphicTwoPrimePencilGrowthDichotomy` |
+| An entire weight vanishing on the critical line is zero: "beta-sensitivity and arithmetic evaluability are mutually exclusive" | [Lean] `entire_vanishing_on_criticalLine_eq_zero` (`AnalyticityExcludesBetaSensitivity`) |
+| **Holomorphic carrier rigidity**: a holomorphic linear or sesquilinear carrier that vanishes on critical configurations vanishes on every reflection-symmetric configuration in the strip | [Lean, this review] `linearCarrier_eq_zero`, `sesquilinearCarrier_eq_zero` |
+| **Three-lines tradeoff**: with on-line bound ε and bound M on Re s = ½ + Δ for h(s) + h(1−s), an off-line quartet at depth δ ≤ Δ carries ≤ 2ε^{1−δ/Δ}M^{δ/Δ}; if 2ε < q, no quartet near the line carries q | [Lean, this review] `norm_quartet_le_interp`, `exists_depth_without_quantum` |
+| Montgomery's unconditional pair form is the log-scale mean square of the holomorphic zero power sum Σ y^{ρ−½}; its leading order is proved for 0 < α < 1 | [Lean] `MontgomeryFormLogScaleMeanSquare`, `MontgomeryPairCorrelationLeadingOrder` |
+| Constraints on any collision observable: orientation is never created by transport; oriented displacement cancels under exchange; no scalar reporter exact on collisions is lower semicontinuous; even readers lose the first jet | [Lean] `PairwiseFirstCoalescenceLaw`, `XiHorizontalCollisionExchangeOrientationNoGo`, `XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo`, `evenReader_firstJet_zero` |
 | CGL packets cannot carry two reflected points; the Prop 4.6 envelope is ≥ 288 against the quantum 2 | [Lean] `ChenGuptaLiHorizontalCollisionNoGo` |
 | Census frames: double critical zeros and coalesced pairs share `extremalDiag` | [Lean] `BreakingTheCoalescenceBlindSpotAndThreeQuarters` |
-| ShallowCauchy: (α/log T)E_{α/log T} + R_deep = O_α(N(T,2T)); Σ m_j² ≤ C T log T for shallow off-line zeros | [Lean docstrings] `ShallowCauchyImplications` |
+| ShallowCauchy: (α/log T)E_{α/log T} + R_deep = O_α(N(T,2T)) | [Lean docstrings] `ShallowCauchyImplications` |
 
-**Reading (inference).** Census, the CGL merger and RH all ask for the same kind of input: an arithmetic bound on a
-reflection-faithful source carrier.
+**Reading (inference).** Quantization is an RH-equivalent reformulation, not a producer route.
 
-- RH needs an absolute bound below a quantum.
-- The census needs an N-normalized one, because N₀ ≥ N − O(T).
-- The CGL merger needs reflection charge below the same quantum 2.
-
-The corpus has built the carriers and proved the constraints any carrier must meet. For the two-prime pencil it has
-proved that the clock the explicit formula produces has no finite quantum. The open item is a source law that bounds
-a carrier with a quantum.
+- The carriers that see the quantum depend non-holomorphically on the zeros and have no arithmetic evaluation.
+- The carriers the explicit formula computes are holomorphic sums, which are rigid on critical configurations and
+  bounded off the line by three lines.
+- The computable side, at absolute precision, is square-root precision for prime counts in windows of relative width
+  1/T: the Π class.
+- At finite height and N-normalized, the computable mean square is Montgomery's pair form: pair correlation.
+- The coalescence blind spot reappears as the weight 4 sinh²(δ log X).
 
 ---
 
@@ -256,23 +270,7 @@ At fixed c the ground line is the pole [Lean]. The statement to carry along c_N:
 positivity, so M2 is Σ1 in selective form, not an independent mechanism. The atomic ladder shows the competing rung
 is conductor 2 [Lean].
 
-### M3. A source law for a quantized carrier (coalescence, census, RH)
-
-- **Target.** An arithmetic bound on one of the HC carriers:
-  - the two-prime Cesàro carrier, below 2;
-  - the Ward–Green normalization, below 32;
-  - the exterior carrier, below its quantum.
-
-  For the census: an N-normalized bound with constant < 1/4.
-- **Constraints the corpus imposes [Lean].** Orientation must be kept upstream of every transport step. Exchange
-  symmetry must be broken by a source label or an ordered structure; the ordered-prime cross curvature
-  `XiHorizontalCollisionOrderedPrimeCrossCurvature` is a corpus instance. Collision-stable scalar weights are linear
-  in multiplicity.
-- **Obstruction [Lean].** For the two-prime pencil, explicit formulas produce the holomorphic clock, whose excess has
-  no finite quantum. A producer must evaluate the same-point (holomorphic × antiholomorphic) carrier, or a carrier
-  whose quantum survives source realization (§7).
-
-### M4. A J² signed saving on integer-power meshes (Π, quasi-RH)
+### M3. A J² signed saving on integer-power meshes (Π, quasi-RH)
 
 - **Facts [Lean].**
   - On the m-th mesh the cumulative square exponent is 1 + 2m(Θ − 1/2).
@@ -285,13 +283,30 @@ is conductor 2 [Lean].
 - **Related corpus work.** The damped-divisor covariance balance (`PMPowerDampedMobiusLogConvolution`, with no sign
   assumed). Sextic shift and character correlations (`QuasiRHShiftCorrelation`, `QuasiRHCharacterCorrelation`).
 
+### Ruled out: quantized collision carriers
+
+The full record is the card `5-failed/hc-quantization-as-producer.md`. The six tests:
+
+1. **Classification.** No carrier is both computable from arithmetic and quantized.
+   - The carriers that keep the quantum depend on the zero through Im ρ, Re ρ or (Re ρ − ½)⁻² alone.
+   - The exterior carrier's prime–Gamma formula covers only its Weil-matrix entries; the quantum appears after
+     per-zero normalization.
+   - The holomorphic pencil is computable but unquantized.
+2. **Rigidity.** Holomorphic carrier rigidity and the three-lines tradeoff are proved in Lean (§1.5).
+3. **Finite height.** By the explicit formula, the computable carrier is square-root-precision prime counting in
+   windows of relative width 1/T: Π. Its normalized mean square is Montgomery's form: pair correlation.
+4. **Selection.** The carriers exist for every zero set with the reflection symmetry. A source law using only the
+   functional equation and Λ ≥ 0 holds for the off-line models of §1.3, so it cannot prove RH.
+5. **𝔽_q.** The holomorphic clock is −(N_n − qⁿ − 1)/q^{n/2}. Its bound is exactly the point-count bound: Π.
+6. **Census.** Near-line zeros enter with weight 4 sinh²(δ log X), invisible at depth ≪ 1/log X.
+
 ---
 
 ## 3. Q2: wildly different approaches
 
 | Framework | What the corpus proves | Producer status |
 |---|---|---|
-| Quantization (HC) | RH ⇔ O(T) < 2; carriers with prime labels, Cayley phases, Ward–Green weights | Quantum exists only zero-side for the two-prime pencil [Lean] |
+| Quantization (HC) | RH ⇔ O(T) < 2; reflection-faithful carriers | Reformulation: the computable side is Π, the zero side has no source formula [Lean] |
 | Theta-Hawking scattering | RH ⇔ real backreaction resonances, ⇔ all-pass winding rigidity, and further endpoints | Endpoints |
 | Heat / resolvent Hankel | RH ⇔ heatHankel a P P ≥ 0; RH ⇔ resolvent Hankel forms nonnegative; Λ is the extinction time of the Weil index | Endpoints |
 | JAS | Positive at dressing 2; RH ⇔ JasDressedPSD 1 ∧ quasi-RH | Gap from dressing 2 to 1 |
@@ -302,7 +317,8 @@ is conductor 2 [Lean].
 
 Sources [Lean]:
 
-- `riemannHypothesis_iff_forall_horizontalCollisionCharge_lt_two`, `XiHolomorphicTwoPrimePencilGrowthDichotomy`
+- `riemannHypothesis_iff_forall_horizontalCollisionCharge_lt_two`, `XiHolomorphicTwoPrimePencilGrowthDichotomy`,
+  `linearCarrier_eq_zero`, `sesquilinearCarrier_eq_zero`
 - `riemannHypothesis_iff_thetaCuspHawkingBackreactionResonances_real`, `riemannHypothesis_iff_heatHankel_nonneg`,
   `riemannHypothesis_iff_forall_xiResolventHankelForm_re_nonneg`, `WeilIndexExtinctionTime`
 - `jasDressedPSD_two`, `riemannHypothesis_iff_jasDressedPSD_one_and_quasi`
@@ -312,13 +328,28 @@ Sources [Lean]:
 - `ThetaCuspCenterTailSquareFlux`, `ThetaCuspOddFourRankEight`, `ThetaCuspDegreeTwelveFluxBoundary`
 - `DeningerResolventCoreIsRiemannHypothesis`
 
-**Reading (inference).** The one form in the table that differs in kind from positivity is quantization. RH becomes
-an O(1) statement with margin 2 instead of a sign at zero margin. The corpus has located its obstruction precisely:
-explicit formulas produce reflection-paired or holomorphic clocks, and the quantum lives on the same-point clock. An
-approach that does not touch the walls would have to compute same-point zero sums arithmetically. That is the content
-of §7.
+**Reading (inference).** No row is a producer, and the corpus results say why the shortcuts fail.
 
-**Not recommended.** More endpoints of the theta-Hawking type: they add reformulations without a producer.
+- **Observables.** An arithmetic single observable of the zeros is a holomorphic linear or sesquilinear sum. It sees
+  only data fixed on the critical line, and its off-line signal is bounded by three lines (`AnalyticityExcludesBetaSensitivity`,
+  `HolomorphicCarriersCannotBeQuantized`).
+- **Positivity plus the functional equation.** These do not select ζ: Λ-positive models with the exact functional
+  equation have off-line zeros (`EntireFunctionalEquationOffLine`).
+- **Conformal Hodge positivity.** It is spectrum-blind (`DeningerResolventCoreIsRiemannHypothesis`).
+
+What remains for a genuinely different approach:
+
+- a positivity family over tests, or a spectral realization whose traces give same-point zero sums;
+- built from the discrete prime measure.
+
+The positivity-family option leads back to the Weil form, i.e. Σ1. The spectral-realization option is the CCM line
+of the corpus (1,272 modules), not audited in this review. This review proposes no framework that is genuinely
+different and meets these requirements.
+
+**Not recommended.**
+
+- More endpoints of the theta-Hawking type.
+- Any carrier-level observable, by the rigidity theorem.
 
 ---
 
@@ -356,12 +387,12 @@ The boundary is 5/6 + (x − slots)/6 + max(0, ν(1 − slots − 2x), (κ − 1
 
 ### 4.4 Recommendation (inference)
 
-1. Treat the J² saving (M4) as the detector-independent target. The meshes m = 5 (4/5) and m = 4 (3/4) lie below the
+1. Treat the J² saving (M3) as the detector-independent target. The meshes m = 5 (4/5) and m = 4 (3/4) lie below the
    detector floor 29/36.
 2. Inside the detector, find which CGL lemma fixes κ = 2 before choosing a lever. The 5/6 condition
    κ + 4ν ≤ 4/3 concerns the large-values term of the packet Gram.
-3. A CGL merger with reflection structure must meet the HC constraints of §1.5 first. The no-go rules out finishing
-   S₂/S₃ as a route.
+3. Do not pursue a CGL merger with reflection charge. The horizontal-collision no-go rules out finishing S₂/S₃, and
+   the carrier rigidity theorem rules out a computable carrier for that charge.
 4. Audit the CGL dependency chain, which is [E].
 
 ---
@@ -391,16 +422,19 @@ The boundary is 5/6 + (x − slots)/6 + max(0, ν(1 − slots − 2x), (κ − 1
 ### 5.3 Reading (inference)
 
 The census gap is a coalescence gap. At the kernel level an off-line pair coalescing onto the line equals a double
-critical zero (`coalescence_law`). The corpus gives three exact routes:
+critical zero (`coalescence_law`). Two exact routes remain:
 
-- Route I needs zero-side slack ≥ N/12.
-- Route II needs a pair-correlation surplus ≤ 1/18 at λ = 4/3.
-- Through the HC inequality N₀ ≥ N − O(T), an eventual bound O(T) ≤ N/4 gives 75 % with multiplicity, and
-  O(T) ≤ 3N/10 gives 70 %.
+- Route I: zero-side slack ≥ N/12.
+- Route II: pair-correlation surplus ≤ 1/18 at λ = 4/3.
 
-The third route turns the census into an N-normalized estimate on the same carriers that RH needs at absolute
-precision. That makes the census the natural first test of any HC source law (M3). The 70 % shallow-Cauchy step is
-proved O_α(N); it needs ≤ 3N/20.
+The collision inequality N₀ ≥ N − O(T) turns 75 % into O(T) ≤ N/4, but no computable carrier delivers it.
+
+- At finite height the computable mean square is Montgomery's pair form, so a bound there is a pair-correlation
+  statement. That is Route II again.
+- Such a carrier weights an off-line pair at depth δ by 4 sinh²(δ log X), so the near-line core of the 70 %
+  dichotomy can sit below its resolution.
+
+The 70 % shallow-Cauchy step is proved O_α(N); it needs ≤ 3N/20.
 
 ---
 
@@ -414,85 +448,89 @@ bound drop from C c¹⁶ to O(log c)?
 
 - **Why.** The c¹⁶ is the ratio c²/δ² produced by two absolute-value payments (§1.2). The card's open items
   (confinement, weighted residual) become polynomial once the defect is logarithmic.
+- **Selective form.** Persistence of the pole ground line along c_N (M2). At fixed c it is a theorem.
 - **First step.** The bound on the span of conductors m ≤ Q (M1), with M1b for the residual weights.
 
-### Question 2 (Γ): the pole ground line along growing overlap
+### Question 2 (Π, quasi-RH): the J² saving on the fourth-power mesh
 
-Does the complete matrix keep exactly one eigenvalue below (E_1 + E_2)/2, equal to E_1(1 + o(1)) and with eigenline
-converging to the pole vector, along c_N = (log N)^α for some α > 0?
+Is `mobiusDivisorDilationPowerMeshCovariance 4 J ≤ C J^{3+ε}`, i.e. a J² signed saving over the absolute envelope?
 
-- **Why.** This is the selective form of Σ1. At fixed c it is a theorem.
+- **Why.** This is the 3/4 strip exactly [Lean]. Absolute values cannot give it, and the CGL detector cannot reach it.
 
-### Question 3 (HC): a source law for a quantized carrier
+### Question 3 (census): Route I or Route II
 
-Is there an arithmetic bound on one reflection-faithful carrier that is
-- N-normalized with constant < 1/4 (census 75 %), or
-- absolute and below its quantum (RH)?
+Is there a zero-side spectral slack ≥ (3/4 − H(λ))N → N/12, or a prime surplus ≤ 1/18 at λ = 4/3?
 
-- **Why.** Census, the CGL merger and RH reduce to this. The carriers and the constraints are built.
-- **Known obstruction.** For the two-prime pencil the explicit-formula clock has no finite quantum.
+- **Why.** These are the two exact routes to 75 % [Lean]. The collision route reduces to Route II (§5.3).
 
-**Runner-up.** The J² signed saving for the m = 4 power-mesh covariance (M4), i.e. the 3/4 strip.
+**Runner-up (Γ).** A functional that is nonnegative for the discrete prime measure of ζ and fails for the continuous
+Λ-positive models with the Riemann functional equation and off-line zeros. Any proof of RH must use a property that
+fails for those models.
 
 ---
 
-## 7. Q6: the new field. Hilbertian explicit formulas
+## 7. Q6: the new field. Successor-shell arithmetic
 
-### 7.1 The gap the field addresses [Lean]
+### 7.1 What the missing tools must be [Lean]
 
-- (inference) The Weil quadratic form is a reflection-paired zero sum: it pairs ĝ at a zero with ĝ at its line
-  reflection.
-- The resolvent mass is exactly the gap between that form and the same-point Hilbert norm. RH ⇔ the two agree on every
-  nonnegative resolvent carrier (`XiResolventLineReflectionDefect`).
-- The HC quantum lives on a same-point clock, holomorphic × antiholomorphic at ρ. The explicit formula produces only
-  the holomorphic clock, whose excess has no finite quantum (`XiHolomorphicTwoPrimePencilGrowthDichotomy`).
-- (inference) A route that ends at a quantized endpoint therefore needs an arithmetic evaluation of same-point zero
-  sums, while the explicit formula supplies reflection-paired ones.
+| Requirement | Forced by |
+|---|---|
+| R1. A positivity family over tests, not a single carrier | `linearCarrier_eq_zero`, `sesquilinearCarrier_eq_zero`, `norm_quartet_le_interp`, `entire_vanishing_on_criticalLine_eq_zero` |
+| R2. Use of discreteness of the prime measure, not only Λ ≥ 0 and the functional equation | `EntireFunctionalEquationOffLine`, `LambdaPositiveFunctionalEquationOffLine`, `BeurlingRiemannFunctionalEquationRigidity` |
+| R3. Square-root precision | `negIndex_zetaKernel_eq_zero_iff_count`, `riemannHypothesis_iff_completeWeilEnergy_nonneg_of_growthTwo` |
+| R4. Visibility at depth o(1/log T) | `coalescence_law`, `exists_depth_without_quantum` |
+| R5. No conformal positivity alone | `DeningerResolventCoreIsRiemannHypothesis` |
 
-### 7.2 Objects
+### 7.2 The object that meets them (inference)
 
-1. Same-point zero sums Σ_ρ m_ρ F(ρ)\overline{F(ρ)} for source-built F, against their reflection-paired companions
-   Σ_ρ m_ρ F(ρ)\overline{F(1 − ρ̄)}.
-2. Reflection-faithful carriers: the two-prime Cesàro carrier, Cayley-phase carriers, Ward–Green and exterior carriers.
-3. The line-reflection defect as a quadratic form on sources.
-4. Source labels and ordered structures that break exchange symmetry, such as ordered prime clocks.
+The complete atomic Weil form at growing overlap meets R1 to R4 by construction:
 
-### 7.3 Principles (from corpus no-gos)
+- **R1.** It is a quadratic form over all coefficient vectors.
+- **R2.** It is built on the integers, with atoms at log n and the prime kernel Λ(k)/√k.
+- **R3.** Its positivity at c⁴/log N → ∞ is RH.
+- **R4.** Weil positivity detects off-line zeros at every depth.
 
-1. Orientation is carried from the source and never reconstructed downstream (`PairwiseFirstCoalescenceLaw`).
-2. Exchange symmetry is broken by data beyond an unlabelled pair (`XiHorizontalCollisionExchangeOrientationNoGo`).
-3. Collision weights are linear in multiplicity (`XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo`).
-4. No even reader is used at an anti-phase collision (`evenReader_firstJet_zero`).
-5. Bounds are stated at the quantum: absolute for RH, N-normalized for the census.
+Its unpaid part is the successor-shell block: pairs n = km + h with |h| < c and weight Λ(k)/√k, the non-ratio form of
+§1.2. On conductor modes the shells repay exactly. Off them, the corpus pays the block in absolute value, and that
+payment is the whole c¹⁶.
 
-### 7.4 Acceptance criteria
+### 7.3 The field
 
-1. Produces a same-point zero sum from arithmetic data for at least one nontrivial carrier.
-2. Over 𝔽_q, reproduces the agreement of the same-point and reflection-paired forms from Frobenius eigenvalues of
-   modulus √q.
-3. Fails for Beurling systems with an off-line zero and for the Liouville twin.
-4. Recovers N₀ ≥ N − O(T) and gives a census constant.
-5. Unconditional Lean statements with every input discharged.
+*Successor-shell arithmetic*: signed cancellation in the shell block of the complete Weil form, for general
+coefficient vectors, at growing overlap. Additive structure (h) and multiplicative structure (k, m) meet at the atomic
+scale.
 
-### 7.5 First theorems
+**Objects.**
 
-1. For one carrier, an identity expressing the same-point sum as the reflection-paired sum plus an explicit source
-   term. The defect is then a source quantity.
-2. An N-normalized bound on that source term with constant < 1/4.
-3. The 𝔽_q calibration.
+1. Shell forms, schematically Σ_k Λ(k) k^{−1/2} Σ_{|h|<c} x_{km+h} x_m weighted by the atom overlap.
+2. Ramanujan expansions of shell coefficients, c_m(h).
+3. Residue and growing shell sources.
+4. The prime defect as the multiplicative Dirichlet energy.
 
-### 7.6 Relation to the corpus
+**Known theorems [Lean or map].**
 
-The Σ1 tools (conductor floors, residuals, reserves) are being built in CACT, CAF and RAPT, and the field does not
-replace them. Its chapters exist:
+- Exact repayment on conductor modes (`TheShellsRepayEveryConductor`).
+- Fixed-modulus shell sources with inverse-log rates (`PrimeResidueSourcesHaveQuantitativeLogDecay`,
+  `GrowingShellSourcesHaveLogarithmicRates`).
+- A uniform harmonic budget for affine shell errors (`AffineShellErrorsHaveAUniformHarmonicBudget`).
+- The large-sieve half of level 1/2 for shells (AGT).
+- Short shells c ≤ 2 have no conductor [map].
+- The uniform Dirichlet zero-free region needed for Siegel–Walfisz on shells
+  (`DirichletLUniformZeroFreeRegion`; the remaining steps are an in-progress card).
 
-- HC carriers and endpoints (RHTower `XiHorizontalCollision*`);
-- reflected-channel geometry and collision no-gos (HTGeometry, RHTower);
-- the resolvent line-reflection defect;
-- the census frames (ACS).
+**Central open theorem.** Signed repayment off the conductor span: the non-ratio form plus the archimedean shell
+deficit is ≥ −a c⁻⁷ O(log c)·mass − (small)·defect. This is Question 1.
 
-What the field adds is the target these chapters share: arithmetic access to same-point zero sums. The searches run
-for this review surfaced no module that supplies it.
+**Acceptance criteria.**
+
+1. Recovers the conductor-mode repayment and the fixed-c spectral count.
+2. Fails for the continuous Λ-positive models with off-line zeros (R2).
+3. Gives a growing-c reserve with cost below c⁹.
+4. Unconditional Lean statements.
+
+**Relation to the corpus.** The field is the common core of CACT, CAF, RAPT, AGT's shell work and the SW/BV card. What
+it adds is the target: signed shell payment beyond conductor modes as the single estimate that controls the reserve
+cost.
 
 ---
 
@@ -527,15 +565,24 @@ for this review surfaced no module that supplies it.
     `ShrinkingAtomsCarryTheWholeIndex`, `TheIndexUnderRotationDampingAndCoalescence`,
     `APurePointSpectrumIsThinAtMostFrequencies`
   - `ArithmeticGaugeTheory/TheExponentIsNotGaugeInvariant`
+  - Off-line models: `EntireFunctionalEquationOffLine`, `LambdaPositiveFunctionalEquationOffLine`,
+    `BeurlingRegularIntegersOffLineZeros`, `ArithmeticPositiveDuality/BeurlingRiemannFunctionalEquationRigidity`
   - Deninger modules
 - **Π:** `ArithmeticHarmonicAnalysis/`, `RHTower/ThetaEndpointHarmonicCompleteness`.
 - **Coalescence:**
-  - RHTower: `XiHorizontalCollisionChargeEndpoint`, `…TwoPrimeCesaroCarrier`, `…PrimeCayleyInformationLoss`,
-    `…WardGreenCayleyQuantum`, `…WardGreenExteriorSourceCarrier`, `…GaussHodgePrimeCurrent`,
-    `…OrderedPrimeCrossCurvature`, `…ExchangeOrientationNoGo`, `XiHolomorphicTwoPrimePencilGrowthDichotomy`,
-    `XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo`, `XiResolventLineReflectionDefect`,
-    `PrimeBurnolMixedReflectedCollision`, `SourceHorizontalGammaSixTameReaderTransgression`
-  - HTGeometry: `PairwiseFirstCoalescenceLaw`, `ReflectedChannelProjectiveFlow`
+  - RHTower collision carriers: `XiHorizontalCollisionChargeEndpoint`, `…TwoPrimeCesaroCarrier`,
+    `…PrimeCayleyInformationLoss`, `…WardGreenCayleyQuantum`, `…WardGreenExteriorSourceCarrier`,
+    `…GaussHodgePrimeCurrent`, `…OrderedPrimeCrossCurvature`, `…ExchangeOrientationNoGo`,
+    `XiHolomorphicTwoPrimePencilGrowthDichotomy`
+  - RHTower collision no-gos and supporting modules: `XiHeatCassiniWoldOrbitChargeLowerSemicontinuousCollisionNoGo`,
+    `XiResolventLineReflectionDefect`, `PrimeBurnolMixedReflectedCollision`,
+    `SourceHorizontalGammaSixTameReaderTransgression`, `AnalyticityExcludesBetaSensitivity`
+  - Carrier definitions: `thetaXiWardTransverseGreenWeight` (Hedenmalm Ward modules),
+    `sourceZeroHorizontalPrimeCarrier`, `gaussHodgeMassCurrent`, `primeDepthBVWoldXiCenteredRate`,
+    `burnolPrimeCharacter`, `HedenmalmCriticalFeatureExteriorPrimeGammaSource`
+  - Montgomery: `MontgomeryFormLogScaleMeanSquare`, `MontgomeryPairCorrelationLeadingOrder`
+  - HTGeometry: `PairwiseFirstCoalescenceLaw`, `ReflectedChannelProjectiveFlow`, `AutonomousStripSeparant`,
+    `StripThreeLinesTransfer`
   - `HilbertMetric/CoherentCollisionJet`
 - **Quasi-RH:**
   - QuasiRH: `QuasiRHDetectorScaleBudget`, `QuasiRHDetectorGramTradeoff`, `QuasiRHPowerMeshMeanSquareAbscissa`,
@@ -555,12 +602,26 @@ for this review surfaced no module that supplies it.
   - Herglotz and Putnam: `StableDirichletPolynomialPutnam`, `WeilFullConeHerglotzCriticalHalfPlane`,
     `CriticalCenteredPrimeTailEntireCarrier`, `EulerLogPrimePowerHerglotzMass`
 
+**Lean written and checked:** `RHTower/HolomorphicCarriersCannotBeQuantized.lean`.
+
+- `linearCarrier_eq_zero`
+- `sesquilinearCarrier_eq_zero`
+- `norm_quartet_le_interp`
+- `exists_depth_without_quantum`
+
+`lake --old env lean` passes; the axioms are `propext`, `Classical.choice`, `Quot.sound`.
+
 **Corpus searches** (`scripts/formal_tools.py research`), one per claim checked:
 
 - Σ1 and Γ: complement coercivity; graded reserves; successor shell norms; uniform quasimodes; negative eigenvector
   pole coordinate; pole index of the complete matrix; ground eigenline at growing overlap; weighted conductor
   residuals; effective confinement; packets with the horizon-decay residual; shrinking atomic schedules.
-- Coalescence and §7: confluent channels; coalescence-stable indices; terminal recovery after coalescence;
-  even-reader first jets; HC source carriers; pre-divisor source laws; normalized collision census; prime-side
-  bounds for oriented collision observables.
+- Coalescence and carriers:
+  - collision observables: confluent channels; coalescence-stable indices; terminal recovery after coalescence;
+    even-reader first jets; HC source carriers; pre-divisor source laws; normalized collision census; prime-side
+    bounds for oriented collision observables;
+  - analytic tools: symmetrized holomorphic weights on the critical strip; reflection-invariant zero sums; three
+    lines on vertical strips; identity theorem on the critical strip.
+- Selection and pair correlation: Davenport–Heilbronn-type models; Beurling systems with off-line zeros; Montgomery
+  pair correlation.
 - Other frameworks: ThetaCusp flux at every size; Herglotz carriers from Euler data; power-mesh covariance tools.

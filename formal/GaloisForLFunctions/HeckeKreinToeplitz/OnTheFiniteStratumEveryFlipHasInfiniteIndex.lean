@@ -541,7 +541,6 @@ theorem le_natAbs_blockExp_sub {G n L : ℕ} (hG : L ≤ G) {b b' : Fin n × Fin
     · have h1 : (1 : ℤ) ≤ (b'.1 : ℤ) - b.1 := by omega
       have h2 : (G : ℤ) ≤ ((b'.1 : ℤ) - b.1) * G := le_mul_of_one_le_left (by positivity) h1
       rw [abs_of_nonneg (by nlinarith)]
-      push_cast [Nat.sub_le_iff_le_add.mpr (by omega : G + 1 ≤ L + (G + 1 - L))]
       have : ((G + 1 - L : ℕ) : ℤ) = G + 1 - L := by omega
       rw [this]; nlinarith
     · have h1 : (1 : ℤ) ≤ (b.1 : ℤ) - b'.1 := by omega
@@ -672,5 +671,210 @@ theorem re_blockSum_flip_le {p : ℕ} (hp : p.Prime) {f : ℝ → ℝ}
           simpa using this
         have : 0 ≤ (L : ℝ) ^ 2 * (C * r ^ (G + 1 - L)) := by positivity
         nlinarith
+
+
+/-! ### The on-line part on the tower -/
+
+/-- On the tower of `p` the on-line orbit kernel is the Bohr series of the on-line zeros, with
+frequencies `γ log p`. -/
+theorem orbitKernel_onLine_towerPt {p : ℕ} (hp : p.Prime) (Z : ZeroConfig) (f : ℝ → ℝ) (d : ℤ) :
+    orbitKernel (onLineConfig Z) f (towerPt hp d) =
+      ∑' ρ : (onLineConfig Z).carrier, (onLineConfig Z).Wsummand (cx f) (cx f) ρ *
+        cexp (-(I * (((ρ : ℂ).im * Real.log p : ℝ) : ℂ)) * ((d : ℝ) : ℂ)) := by
+  rw [orbitKernel_eq_tsum]
+  refine tsum_congr fun ρ => ?_
+  rw [orbitTerm, logChar_apply, scale_towerPt, mul_comm]
+  congr 2
+  have hre : (ρ : ℂ).re = 1 / 2 := ρ.2.2
+  apply Complex.ext <;> simp [hre] <;> ring
+
+/-! ### The main theorem -/
+
+/-- **On the finite stratum every flip has infinite index.** Let `f` be a nonzero real test supported
+in `[−a, a]` with `2a ≤ log p`. If `ζ` has finitely many zeros right of the line, the Weil kernel of
+the `p`-flipped twin has infinitely many negative squares, already on the tower of `p`. -/
+theorem negIndex_flip_eq_top_of_finite {p : ℕ} (hp : p.Prime) {f : ℝ → ℝ} (hf : f ∈ realTests)
+    (hM : 0 < ∫ u, f u ^ 2) {a : ℝ} (ha : ∀ u, a ≤ |u| → f u = 0) (hap : 2 * a ≤ Real.log p)
+    (hR : (rightZeros zetaZeroConfig).Finite) :
+    negIndex (weightKernel (primeFlipWeight p) f) = ⊤ := by
+  classical
+  set R := hR.toFinset
+  refine ENat.eq_top_iff_forall_ge.mpr fun N => ?_
+  set n := N + R.card
+  -- the constants
+  have hR0eq : RHTower.crossCorr f f 0 = ∫ u, f u ^ 2 := by
+    unfold RHTower.crossCorr
+    congr 1; funext u; rw [sub_zero, sq]
+  set R0 := RHTower.crossCorr f f 0
+  have hR0 : 0 < R0 := by rw [hR0eq]; exact hM
+  set C := 2 * Real.log p * R0
+  have hlogp : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+  have hC : 0 < C := by positivity
+  set r := (Real.sqrt p)⁻¹
+  have hp1 : (1 : ℝ) < Real.sqrt p := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]
+    exact Real.sqrt_lt_sqrt zero_le_one (by exact_mod_cast hp.one_lt)
+  have hr0 : 0 < r := inv_pos.mpr (by linarith)
+  have hr1 : r < 1 := inv_lt_one_of_one_lt₀ hp1
+  have hn : (0 : ℝ) < n ∨ n = 0 := by
+    rcases Nat.eq_zero_or_pos n with h | h
+    · exact Or.inr h
+    · exact Or.inl (by exact_mod_cast h)
+  rcases hn with hn | hn0
+  swap
+  · have : N = 0 := by omega
+    simp [this]
+  -- the on-line weights
+  set Z := onLineConfig zetaZeroConfig
+  have hZ : TemperedConfig Z := temperedConfig_onLineConfig temperedConfig_zetaZeroConfig
+  set W : Z.carrier → ℂ := fun ρ => Z.Wsummand (cx f) (cx f) ρ
+  have hWn : Summable fun ρ => ‖W ρ‖ :=
+    ArithmeticCastelnuovoSeveri.summable_norm_Wsummand Z hZ (cx_contDiff hf.1)
+      (cx_hasCompactSupport hf.2) (cx_contDiff hf.1) (cx_hasCompactSupport hf.2)
+  have hWre : ∀ ρ, 0 ≤ (W ρ).re := fun ρ =>
+    ArithmeticCastelnuovoSeveri.re_Wsummand_nonneg Z (fun σ hσ hre => absurd hσ.2 (by linarith)) ρ
+  have hWres : Summable fun ρ => (W ρ).re :=
+    ArithmeticCastelnuovoSeveri.summable_re_Wsummand Z hZ (cx_contDiff hf.1)
+      (cx_hasCompactSupport hf.2) (cx_contDiff hf.1) (cx_hasCompactSupport hf.2)
+  set θ : Z.carrier → ℝ := fun ρ => (ρ : ℂ).im * Real.log p
+  -- a thin frequency near `π`
+  set ε := C * r / (8 * n)
+  have hε : 0 < ε := by positivity
+  have hδ : 0 < (1 - r) ^ 2 / 8 := by have : 0 < 1 - r := by linarith
+                                      positivity
+  have hδπ : (1 - r) ^ 2 / 8 ≤ π := by
+    have : (1 - r) ^ 2 ≤ 1 := by nlinarith
+    linarith [Real.pi_gt_three]
+  obtain ⟨L₀, hL₀⟩ := exists_frequency_thin hWre hWres θ hε hδ hδπ
+  set L := max L₀ 4
+  have hL4 : 4 ≤ L := le_max_right _ _
+  obtain ⟨θ₀, hθ₀, -, hS⟩ := hL₀ L (le_max_left _ _)
+  have hLpos : (0 : ℝ) < L := by exact_mod_cast (show 0 < L by omega)
+  -- the block spacing
+  obtain ⟨J, hJ⟩ := exists_pow_lt_of_lt_one (show (0 : ℝ) < 1 / (8 * n * L) by positivity) hr1
+  set G := L + J
+  have hGL : G + 1 - L = J + 1 := by omega
+  -- the family and the pair conditions
+  set x := blockPt hp G (n := n) (L := L)
+  set Φ : (Fin n → ℂ) →ₗ[ℂ] (R → ℂ) :=
+    LinearMap.pi fun ρ => (charEval (zeroChar (conj (ρ : ℂ))) x).comp (blockVec n L θ₀)
+  set V := LinearMap.ker Φ
+  have hV : N ≤ Module.finrank ℂ V := by
+    change N ≤ Module.finrank ℂ (LinearMap.ker Φ)
+    have h1 := LinearMap.finrank_range_add_finrank_ker Φ
+    have h2 : Module.finrank ℂ (LinearMap.range Φ) ≤ R.card := by
+      have := Submodule.finrank_le (LinearMap.range Φ)
+      rwa [Module.finrank_fintype_fun_eq_card, Fintype.card_coe] at this
+    rw [Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at h1
+    have hn' : n = N + R.card := rfl
+    omega
+  -- the twin kernel on the family
+  have hK : ∀ b b' : Fin n × Fin L, weightKernel (primeFlipWeight p) f ((x b)⁻¹ * x b') =
+      orbitKernel Z f (towerPt hp (blockExp G b' - blockExp G b)) +
+        ∑ ρ ∈ R, pairKernel (zeroChar (conj ρ))
+          (conj (zetaZeroConfig.Wsummand (cx f) (cx f) ρ)) ((x b)⁻¹ * x b') +
+        (flipJump p f (blockExp G b' - blockExp G b) : ℂ) := by
+    intro b b'
+    have hu : (x b)⁻¹ * x b' = towerPt hp (blockExp G b' - blockExp G b) := towerPt_inv_mul hp _ _
+    rw [hu, weightKernel_flip_tower hp ha hap, weightKernel_vonMangoldt hf,
+      orbitKernel_eq_onLine_add_pairs temperedConfig_zetaZeroConfig hf hR]
+  -- negativity on the pair-free subspace
+  have key : ∀ c ∈ V, c ≠ 0 → hermQuad (gram (weightKernel (primeFlipWeight p) f) x)
+      (blockVec n L θ₀ c) < 0 := by
+    intro c hcV hc0
+    set v := blockVec n L θ₀ c
+    have hpair : ∀ ρ ∈ R, ∑ b, ∑ b', conj (v b) * pairKernel (zeroChar (conj ρ))
+        (conj (zetaZeroConfig.Wsummand (cx f) (cx f) ρ)) ((x b)⁻¹ * x b') * v b' = 0 := by
+      intro ρ hρ
+      have h0 : charEval (zeroChar (conj ρ)) x v = 0 := by
+        have := congrFun (LinearMap.mem_ker.mp hcV) ⟨ρ, hρ⟩
+        simpa [Φ, v] using this
+      rw [toeplitzSum_pairKernel, h0]
+      simp
+    have hsplit : ∑ b, ∑ b', conj (v b) * weightKernel (primeFlipWeight p) f ((x b)⁻¹ * x b') * v b' =
+        (∑ b, ∑ b', conj (v b) * orbitKernel Z f (towerPt hp (blockExp G b' - blockExp G b)) * v b') +
+        (∑ b, ∑ b', ∑ ρ ∈ R, conj (v b) * pairKernel (zeroChar (conj ρ))
+          (conj (zetaZeroConfig.Wsummand (cx f) (cx f) ρ)) ((x b)⁻¹ * x b') * v b') +
+        ∑ b, ∑ b', conj (v b) * (flipJump p f (blockExp G b' - blockExp G b) : ℂ) * v b' := by
+      have hterm : ∀ b b' : Fin n × Fin L,
+          conj (v b) * weightKernel (primeFlipWeight p) f ((x b)⁻¹ * x b') * v b' =
+          conj (v b) * orbitKernel Z f (towerPt hp (blockExp G b' - blockExp G b)) * v b' +
+          ∑ ρ ∈ R, conj (v b) * pairKernel (zeroChar (conj ρ))
+            (conj (zetaZeroConfig.Wsummand (cx f) (cx f) ρ)) ((x b)⁻¹ * x b') * v b' +
+          conj (v b) * (flipJump p f (blockExp G b' - blockExp G b) : ℂ) * v b' := fun b b' => by
+        rw [hK, mul_add, mul_add, add_mul, add_mul, Finset.mul_sum, Finset.sum_mul]
+      rw [Finset.sum_congr rfl fun b _ => Finset.sum_congr rfl fun b' _ => hterm b b']
+      simp only [Finset.sum_add_distrib]
+    have hpairs : (∑ b, ∑ b', ∑ ρ ∈ R, conj (v b) * pairKernel (zeroChar (conj ρ))
+        (conj (zetaZeroConfig.Wsummand (cx f) (cx f) ρ)) ((x b)⁻¹ * x b') * v b') = 0 := by
+      rw [(Finset.sum_congr rfl fun b _ => Finset.sum_comm).trans Finset.sum_comm]
+      exact sum_eq_zero hpair
+    -- the pure-point part
+    have hon := re_blockSum_pp_le hWn hWre θ G (L := L) θ₀ c
+    have hon' : (∑ b, ∑ b', conj (v b) * orbitKernel Z f (towerPt hp (blockExp G b' - blockExp G b)) *
+        v b').re ≤ n * (∑ k, ‖c k‖ ^ 2) * (ε * L) := by
+      have heq : ∀ b b' : Fin n × Fin L, orbitKernel Z f (towerPt hp (blockExp G b' - blockExp G b)) =
+          ∑' i, W i * cexp (-(I * θ i) * ((blockExp G b' - blockExp G b : ℤ) : ℝ)) := fun b b' => by
+        rw [orbitKernel_onLine_towerPt]
+      simp_rw [heq]
+      refine hon.trans (mul_le_mul_of_nonneg_left hS (by positivity))
+    -- the flip part
+    have hfl := re_blockSum_flip_le hp hR0.le hL4 (show L ≤ G by omega) hθ₀ c
+    rw [hGL] at hfl
+    -- assemble
+    have hA2 : 0 < ∑ k, ‖c k‖ ^ 2 := by
+      obtain ⟨k, hk⟩ : ∃ k, c k ≠ 0 := by
+        by_contra h; push Not at h; exact hc0 (funext h)
+      exact lt_of_lt_of_le (by positivity) (single_le_sum (fun k _ => sq_nonneg ‖c k‖) (mem_univ k))
+    have hJ' : (n : ℝ) * L ^ 2 * r ^ J < L / 8 := by
+      have := mul_lt_mul_of_pos_left hJ (show (0 : ℝ) < n * L ^ 2 by positivity)
+      calc (n : ℝ) * L ^ 2 * r ^ J < n * L ^ 2 * (1 / (8 * n * L)) := this
+        _ = L / 8 := by field_simp
+    rw [hermQuad_gram, hsplit, hpairs, add_zero, Complex.add_re]
+    have hεL : (n : ℝ) * (∑ k, ‖c k‖ ^ 2) * (ε * L) = (∑ k, ‖c k‖ ^ 2) * (C * r * L / 8) := by
+      simp only [ε]; field_simp
+    have hfl2 : (n : ℝ) * (∑ k, ‖c k‖ ^ 2) * (L ^ 2 * (C * r ^ (J + 1))) ≤
+        (∑ k, ‖c k‖ ^ 2) * (C * r * L / 8) := by
+      have : (n : ℝ) * L ^ 2 * r ^ J * (C * r) ≤ L / 8 * (C * r) :=
+        mul_le_mul_of_nonneg_right hJ'.le (by positivity)
+      have e : (n : ℝ) * (∑ k, ‖c k‖ ^ 2) * (L ^ 2 * (C * r ^ (J + 1))) =
+          (∑ k, ‖c k‖ ^ 2) * ((n : ℝ) * L ^ 2 * r ^ J * (C * r)) := by ring
+      rw [e]
+      have e2 : L / 8 * (C * r) = C * r * L / 8 := by ring
+      rw [← e2]
+      exact mul_le_mul_of_nonneg_left this hA2.le
+    have : (∑ k, ‖c k‖ ^ 2) * (C * (-(L * r / 2))) + (∑ k, ‖c k‖ ^ 2) * (C * r * L / 8) +
+        (∑ k, ‖c k‖ ^ 2) * (C * r * L / 8) < 0 := by
+      have : 0 < (∑ k, ‖c k‖ ^ 2) * (C * r * L) := by positivity
+      nlinarith
+    linarith
+  -- count the negative squares
+  set W' := V.map (blockVec n L θ₀)
+  have hneg : IsPosDefOn (-(gram (weightKernel (primeFlipWeight p) f) x)) W' := by
+    rintro y ⟨c, hcV, rfl⟩ hy
+    have hc0 : c ≠ 0 := by rintro rfl; exact hy (map_zero _)
+    rw [hermQuad_neg]
+    linarith [key c hcV hc0]
+  have hW' : Module.finrank ℂ W' = Module.finrank ℂ V :=
+    LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ (blockVec_injective (by omega) θ₀) V).symm
+  have h1 := finrank_le_posIndex hneg
+  have h2 := hermNegIndex_gram_le_negIndex (weightKernel (primeFlipWeight p) f) x
+  calc (N : ℕ∞) ≤ (Module.finrank ℂ V : ℕ∞) := by exact_mod_cast hV
+    _ = (Module.finrank ℂ W' : ℕ∞) := by rw [hW']
+    _ ≤ (hermNegIndex (gram (weightKernel (primeFlipWeight p) f) x) : ℕ∞) := by
+        exact_mod_cast h1
+    _ ≤ _ := h2
+
+/-- **`ζ` and a single-prime flip never both have finite index.** For every prime `p` and every
+nonzero real test supported in `[−a, a]` with `2a ≤ log p`, either the Weil kernel of `ζ` has
+infinite index or the `p`-flipped twin's kernel does. -/
+theorem negIndex_zetaKernel_eq_top_or_flip {p : ℕ} (hp : p.Prime) {f : ℝ → ℝ} (hf : f ∈ realTests)
+    (hM : 0 < ∫ u, f u ^ 2) {a : ℝ} (ha : ∀ u, a ≤ |u| → f u = 0) (hap : 2 * a ≤ Real.log p) :
+    negIndex zetaKernel = ⊤ ∨ negIndex (weightKernel (primeFlipWeight p) f) = ⊤ := by
+  by_cases hR : (rightZeros zetaZeroConfig).Finite
+  · exact Or.inr (negIndex_flip_eq_top_of_finite hp hf hM ha hap hR)
+  · left
+    rw [negIndex_zetaKernel]
+    exact Set.encard_eq_top_iff.mpr hR
 
 end GaloisForLFunctions.HeckeKreinToeplitz
