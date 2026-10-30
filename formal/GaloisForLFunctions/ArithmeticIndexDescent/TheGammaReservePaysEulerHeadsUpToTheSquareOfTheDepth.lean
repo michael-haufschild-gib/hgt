@@ -113,6 +113,7 @@ def eulerHead (Y : ℕ) : Finset Nat.Primes :=
 theorem mem_eulerHead {Y : ℕ} {p : Nat.Primes} : p ∈ eulerHead Y ↔ (p : ℕ) ≤ Y := by
   change (⟨(p : ℕ), p.property⟩ : Subtype Nat.Prime) ∈ (Finset.range (Y + 1)).subtype Nat.Prime ↔ _
   rw [Finset.mem_subtype, Finset.mem_range]
+  change (p : ℕ) < Y + 1 ↔ (p : ℕ) ≤ Y
   omega
 
 /-- Each prime's Euler cost is at most `16 log p/√p`. -/
