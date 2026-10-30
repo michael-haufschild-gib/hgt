@@ -22,7 +22,9 @@ ACCE distinguishes the finite-horizon zero-damping limit from uniform admission:
 
 ## F04. A large positive norm can coexist with a small adverse pairing
 
-**Programme; direct proofs pending.** The raw prime-comb energy is asymptotic to `4 exp(2r)` on normalized slow profiles; its first-power adverse charge is `o(exp r)` on the same family. The surviving operator is a translation on slow profiles and a resolvent on fixed profiles. The norm majorant discards the geometry of the particular pairing ([ArithmeticCompensationTheory](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/README.md), mechanisms 1–12).
+**Source.** The raw prime-comb energy and cross-prime aggregate are both asymptotic to `4 exp(2r)` on a normalized smooth odd slow family. Its first-power charge divided by comb mass tends to zero. More generally this normalized charge tends to the original profile's autocorrelation at displacement 2, which is zero for support in `[-1,1]`. The normalized comb itself converges in square norm to translation by 2. Thus a sharp large norm does not imply a large adverse pairing with the original source.
+
+Declarations: `tendsto_combCharge_rescaledTest_div_combMass_zero`, `exists_odd_smooth_family_sharp_comb_rate` in [ThePrimeCombIsATranslation.lean](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/ThePrimeCombIsATranslation.lean). The fixed-profile resolvent description remains README-level evidence here.
 
 ## F05. The scaling surface is a paired vector space
 
@@ -81,3 +83,83 @@ Declarations: `relativeFormError_of_hermiteCongruence`, `nativeHermiteTail_relat
 **Source.** When both preceding Hankel heads are positive definite, the successor Schur complement of their sum equals the sum of their successor complements **plus** a nonnegative variance. This variance measures disagreement of their minimizing coefficient vectors in their respective head norms. It vanishes exactly when the minimizers coincide. Positivity of the preceding heads is essential to the stated theorem; it is not an all-rank theta positivity proof.
 
 Declarations: `successorSchur_add_eq`, `successorMixtureVariance_nonneg`, `successorMixtureVariance_eq_zero_iff` in [SuccessorMixture.lean](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/SuccessorMixture.lean).
+
+## F14. Every fixed overlap is already positive on the full actual matrix
+
+**Source.** For the tilted unit spline and every fixed `c > 0`, all eigenvalues of the complete Weil matrix eventually exceed a positive floor. The floor and starting horizon may depend on `c`. This covers every coefficient vector, not merely a selected packet. The proof combines actual conductor quasimodes, a complete defect reserve and a common positive conductor floor. It does not supply a horizon uniform in growing `c`.
+
+Declarations: `tendsto_completeWeilMatrix_completedConductor_residual_norm`, `exists_tiltedUnitSpline_completeWeil_eigenvalue_floor`, `eventually_tiltedUnitSpline_weilQuad_atomicTest_nonneg` in [TheCompleteWeilFormIsPositiveAtEveryFixedOverlap.lean](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilFormIsPositiveAtEveryFixedOverlap.lean).
+
+## F15. Two gap readings select where one maximal gap does not
+
+**Source.** Within the family of finite prime flips, the original gap at least `2 log 2` together with the dyadically toggled gap at least the untwisted dyadic-response gap holds exactly for the empty flip set. Proof: the first inequality excludes flipping 2; any remaining flip strictly decreases the second gap, whose secular root lies below the maximal plateau. The theorem concerns this specified family and two exact lower bounds.
+
+Declarations: `finiteFlip_two_gap_selection` in [OneDyadicProbeSelectsTheFinitePrimeSource.lean](../../../formal/GaloisForLFunctions/ArithmeticCountingPositivity/OneDyadicProbeSelectsTheFinitePrimeSource.lean); `exists_maximal_flip_with_almost_unchanged_dyadic_gap` in [ConductorMassBoundsGapLossAndProbePrecision.lean](../../../formal/GaloisForLFunctions/ArithmeticCountingPositivity/ConductorMassBoundsGapLossAndProbePrecision.lean). The latter proof uses the conductor-mass perturbation bound and arbitrarily large primes: every fixed positive response tolerance admits a nontrivial maximal-gap flip.
+
+## F16. Missing mass is classified on actual spectral sublevels
+
+**Source.** For every prime pattern and every regular energy threshold, the entire actual bounded prime spectral sublevel has limiting squared constraint mass equal to the finite sum of its counted conductor masses. Distinct limiting energies give injectivity; exact eigenvalue counts show that the selected lines exhaust the sublevel. Euler density zero is equivalent to mass vanishing on **every** bounded energy window. This is stronger than vanishing on each selected line separately.
+
+Declarations: `tendsto_primeSetBoundedSpectralMass`, `primeSet_bounded_spectral_mass_vanishes_iff` in [PrimeCountsDetermineEveryBoundedSpectralMass.lean](../../../formal/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeCountsDetermineEveryBoundedSpectralMass.lean).
+
+## F17. Nonlinear arithmetic readings recover depth-sensitive traces
+
+**Source.** Prescribed finite theta prefixes recover the actual multiplicity-weighted collided metric and all normalized depth moments uniformly over tests with `sourceTestSize ≤ 1`, motion `|τ| ≤ n/2` and combined aperture `a+j|L| ≤ 2 log(n+1)`. After division by `4^j`, the error is bounded by `sourceTestSize² · [B/(n+1)² + O(log(n+4)/n)]`. The reading is positive. Its construction passes through regularized source curvature, Green testing and a summable divisor tail; no RH or zero-separation premise occurs in the capstone. This is approximation of a trace, not an upper bound for its depth defect.
+
+Declarations: `exists_polynomialThetaSource_aperture_logarithmic_bound`, `polynomialThetaSource_uniform_test_aperture_moments` in [PolynomialThetaMetric.lean](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/PolynomialThetaMetric.lean).
+
+## F18. Actual heat dynamics retain nonreal-count dissipation through collisions
+
+**Source.** For admissible nonnegative unit-window cutoffs at large height `X`, and `0 ≤ a ≤ b ≤ 1/8` with `b log X ≤ 1`, actual localized vertical energy satisfies
+
+`E_w(b) − E_w(a) + 2∫ₐᵇ N_w ≤ (2M+2V+4W) C log X · ∫ₐᵇ E_outer`.
+
+Here `N_w` is the full multiplicity-weighted nonreal count. Continuous truncated counts and bounded convergence carry the estimate through collisions. A corresponding upper-right-slope bound holds at time zero as well. The right side is still a nearby energy flux, not a proved extinction estimate.
+
+Declarations: `exists_uniform_heatLocalizedVerticalEnergy_evolution`, `exists_uniform_heatLocalizedVerticalEnergy_right_slope` in [HeatLocalizedEnergyDissipation.lean](../../../formal/GaloisForLFunctions/RHTower/Heat/HeatLocalizedEnergyDissipation.lean). Capstone proofs and the initial zero-velocity reduction were inspected; intermediate local drift estimates were not all reread.
+
+## F19. A payment domain and its closure have different information
+
+**Source.** At the critical single-prime coefficient model, payment is square summability of inclusive partial sums in `ℓ¹`. Its closure is only the zero-total-evaluation hyperplane. Every continuous functional annihilating the payment domain is a scalar multiple of total evaluation. Separately, for an actual source, its paid ideal is exactly the input image of its complete cofactor graph, with a unique square-summable output for each paid input. Thus the graph records output energy absent from the input's closure description.
+
+Declarations: `criticalCoefficientDomain_topologicalClosure`, `criticalCoefficientDomain_continuous_annihilator` in [CriticalCoefficientDomain.lean](../../../formal/GaloisForLFunctions/BiarithmeticGeometry/CriticalCoefficientDomain.lean); `paidIdeal_iff_existsUnique_cofactorGraph` in [PaidGraphIdentification.lean](../../../formal/GaloisForLFunctions/BiarithmeticGeometry/PaidGraphIdentification.lean).
+
+The graph input image is closed **iff** its output norm is uniformly bounded by its input norm: `isClosed_range_cofactorGraphInput_iff` in [CofactorGraphClosedness.lean](../../../formal/GaloisForLFunctions/BiarithmeticGeometry/CofactorGraphClosedness.lean). Choosing a closure cannot supply that bound.
+
+## F20. Positive self-duality forces lattice support by saturation
+
+**Source.** A locally finite positive measure with no mass in `(-1,1) \ {0}` is self-dual against integer translates of the tent exactly when it is a constant multiple of the integer Dirac comb. At the unshifted tent, the gap uses the entire available integral at the origin; the remaining nonnegative sinc-square integral is zero. Its zero set forces integer support. Translated identities then force equal atom masses. Both positivity and the exact identity concern the **same measure**.
+
+Declaration: `tentSelfDual_iff_eq_smul_diracComb` in [PositiveSelfDualMeasuresWithAGapAreDiracCombs.lean](../../../formal/GaloisForLFunctions/ArithmeticPositiveDuality/PositiveSelfDualMeasuresWithAGapAreDiracCombs.lean).
+
+## F21. Growing-overlap positivity has two separate restrictions
+
+**Source.** Along `c_N = (log N)^α`, `0 < α < 1/40`, every **fixed finite** distinct conductor family is eventually positive for all its coefficients. Both residual and Gram discrepancy are paid relative to a vanishing conductor floor. The RH-equivalent full-space theorem instead permits `c_N = 2(log N)^α` with `α > 1/4`. Removing fixed-family dependence and improving the admissible growth range are separate missing steps in this comparison.
+
+Declarations: `eventually_tiltedWeil_growing_packet_pos` in [WeilGrowingPackets.lean](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/WeilGrowingPackets.lean); `riemannHypothesis_iff_tiltedUnitSpline_completeWeil_nonneg_log` in [LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis.lean](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis.lean).
+
+## F22. The exponent sixteen belongs to a particular signed-form estimate
+
+**Source.** The actual complete form satisfies `W ≥ a c^(−7) D − C c^9 ‖x‖²` once `N ≥ H c^8`. Hence a unit vector with `W ≤ 0` has `D ≤ C' c^16`. The proof pays the non-ratio form and the pole moments separately in absolute value, each with a defect fraction proportional to `c^(−7)` and mass cost proportional to `c²` divided by that fraction. These are upper estimates, not a lower obstruction at exponent sixteen. F10 is the separate genuine obstruction to compressing **all** bounded-defect vectors.
+
+Declarations: `tiltedUnitSpline_complete_defect_reserve_explicit`, `exists_negative_completeWeil_poleDefect_polynomial_bound` in [TheCompleteWeilReserveHasPolynomialOverlapCost.lean](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilReserveHasPolynomialOverlapCost.lean).
+
+## F23. Complete prefix inversion already has a uniform mixed cost
+
+**Source.** For the plateau profile, beyond one prefix horizon, simultaneously for all ambient horizons and overlaps satisfying `c M ≤ N`, the actual prefix inverse obeys `0 ≤ bᵀA⁻¹b ≤ 20‖b‖²`. The complete Schur form is exactly `yᵀCy − (By)ᵀA⁻¹(By)` and lies between `yᵀCy − 20‖By‖²` and `yᵀCy`. Here `B` retains the complete prime, Gamma and polar mixed block. A separate tilted-spline theorem controls every inverse direction by finitely many conductor readings at fixed overlap; its finite family and horizon depend on overlap and tolerance.
+
+Declarations: `eventually_plateauPrefix_inverse_quadratic_le`, `eventually_plateauPrefixSchur_quadratic_payment` in [WeilPrefixPayment.lean](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/WeilPrefixPayment.lean); `exists_tiltedWeil_inverse_finite_reading_tail` in [WeilGreenTail.lean](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/WeilGreenTail.lean).
+
+## F24. A nonzero compatible carrier can annihilate its actual source
+
+**Source.** Every finite simultaneous Sonin/Euler carrier is nonzero, but the complete cleared Euler source current vanishes on it. On the original Sonin carrier, the current's kernel is exactly an enlarged Fourier gap. The corresponding boundary quotient has a bounded spectral chart recovering the actual source's Fourier band; prime-insertion transitions become Fourier restrictions in these charts. Thus the compatible carrier alone omits source boundary data that the quotient chart retains.
+
+Declarations: `ccmFiniteEulerSourceCurrent_sonin_kernel_iff`, `ccmEulerSimultaneousProjection_ne_zero`, `ccmFiniteEulerSourceCurrent_mul_simultaneousProjection` in [CCMEulerMovingCarrierRadical.lean](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMEulerMovingCarrierRadical.lean); `ccmEulerBoundarySpectralEquiv_source`, `ccmEulerBoundaryTransition_spectral` in [CCMEulerBoundarySpectralChart.lean](../../../formal/GaloisForLFunctions/RHTower/CCM/CCMEulerBoundarySpectralChart.lean).
+
+## F25. The receiver survives as a difference below the forcing scale
+
+**Source.** For the actual Möbius source at fixed subcritical damping, receiver energy divided by inversion-forcing energy tends to zero. No common scalar normalization keeps forcing bounded and receiver uniformly nonzero. Nevertheless, the exact squared Gram distance between forcing and cofactor equals receiver energy; divided by receiver energy it is identically one at every positive horizon. The forcing-normalized Gram determinant tends to zero. The first ratio uses the actual source's zero-free-region estimate; the exact distance identity by itself gives no upper bound on receiver energy.
+
+Declarations: `tendsto_receiver_div_forcingEnergy_zero`, `no_common_scalar_normalization` in [ForcingScaleSeparation.lean](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/ForcingScaleSeparation.lean); `tendsto_forcingGramDefect_div_forcingEnergy_sq_zero`, `gram_distance_div_receiverEnergy_eq_one` in [TheReceiverIsTheGramTangent.lean](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheReceiverIsTheGramTangent.lean).
+
+Adding fixed covariance coordinates does not repair this automatically. After subtracting the forcing power, every escaping fixed signed Gram table is `sign(b) sign(c) K(j,k)`, with signs `(1,−1,0)` for receiver, residual and paid forcing. Its vectors already belong to the original cofactor Hilbert module: `ActualCofactorLimit.admits_or_signedCofactorGram_tendsto` in [TheSignedCofactorGramHasNoExtraCoordinates.lean](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheSignedCofactorGramHasNoExtraCoordinates.lean).

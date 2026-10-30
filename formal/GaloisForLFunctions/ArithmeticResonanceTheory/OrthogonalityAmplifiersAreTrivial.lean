@@ -68,7 +68,7 @@ theorem card_sym_le_card_of_isBrauer [Nonempty X] {w : X → Fin r → ℂ} (hw 
       exact zero_ne_one h1
     · show inner ℂ (v m) (v m') = 0
       rw [PiLp.inner_apply]
-      simp only [v, PiLp.toLp_apply, RCLike.inner_apply]
+      simp only [v, RCLike.inner_apply]
       exact hB m m' hmm'
   have := hli.fintype_card_le_finrank
   rwa [finrank_euclideanSpace] at this
@@ -93,11 +93,14 @@ theorem pow_sum_le_moment_of_isBrauer [Nonempty X] {w : X → Fin r → ℂ}
     rw [Finset.sum_pow]
     refine sum_congr rfl fun m _ => ?_
     simp only [hb, monomial, Multiset.prod_map_mul, Complex.ofReal_mul, Complex.ofReal_natCast]
-    have hcast : ((m : Multiset (Fin r)).map fun i => ((a i : ℝ) : ℂ)).prod =
-        ((((m : Multiset (Fin r)).map a).prod : ℝ) : ℂ) := by
-      rw [Complex.ofReal_multiset_prod, Multiset.map_map]; rfl
-    rw [hcast]
-    ring
+    have hcast : ∀ s : Multiset (Fin r), (s.map fun i => ((a i : ℝ) : ℂ)).prod =
+        (((s.map a).prod : ℝ) : ℂ) := by
+      intro s
+      induction s using Multiset.induction_on with
+      | empty => simp
+      | cons i s ih => simp [ih]
+    simp only [hcast]
+    exact (mul_assoc _ _ _).symm
   -- the Gram matrix of the monomials is `|X|` times the identity
   have hG : ∀ m m' : Sym (Fin r) k,
       ∑ x, monomial w x m * starRingEnd ℂ (monomial w x m') =

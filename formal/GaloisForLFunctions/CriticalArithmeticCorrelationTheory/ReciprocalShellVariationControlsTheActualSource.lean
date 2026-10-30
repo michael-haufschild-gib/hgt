@@ -116,13 +116,18 @@ theorem exists_reciprocalShellWeight_variation_bounds {φ : ℝ → ℝ}
         HasDerivAt (fun t : ℝ => -((L : ℝ) * a) / t) ((L : ℝ) * a / u ^ 2) u := by
       intro u hu
       rw [Set.uIcc_of_le hδ1] at hu
-      have hd := (hasDerivAt_const u (-((L : ℝ) * a))).div (hasDerivAt_id u)
-        (hδ.trans_le hu.1).ne'
-      simpa only [zero_mul, mul_one, zero_sub, neg_neg] using hd
+      have hd := (hasDerivAt_inv (hδ.trans_le hu.1).ne').const_smul (-((L : ℝ) * a))
+      have hf : (-((L : ℝ) * a)) • (fun t : ℝ => t⁻¹) =
+          (fun t : ℝ => -((L : ℝ) * a) / t) := by
+        funext t
+        simp only [Pi.smul_apply, smul_eq_mul, div_eq_mul_inv]
+      rw [hf] at hd
+      simpa only [smul_eq_mul, mul_neg, neg_mul, neg_neg, div_eq_mul_inv] using hd
     have hcalc := intervalIntegral.integral_eq_sub_of_hasDerivAt hanti hint
     have hend : -((L : ℝ) * a) / 1 - -((L : ℝ) * a) / δ = (L : ℝ) * (2 - a) := by
       dsimp only [δ]
-      field_simp [ha.ne'] <;> ring
+      field_simp [ha.ne']
+      ring
     rw [hend] at hcalc
     have hbound := intervalIntegral.integral_mono_on hδ1
       (hcont.intervalIntegrable δ 1) hint hpoint

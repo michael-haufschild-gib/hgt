@@ -762,3 +762,96 @@ observation about the shape of a proof or statement, read off the source.
 - EAHT: atomic family at unit-mass width 1/T has transform window × Dirichlet polynomial of length N; overlap
   c = N/T, bandwidth log N/log T = 1 + log c/log T (`bandwidth_eq_one_add_log_overlap`) [L].
 - EAHT: a twin failing Weil positivity is seen by every large Gevrey section (`eventually_negative_iff_of_gevrey`) [L].
+
+## F28. RH without primes: prime-blind positivity (RHTower)
+
+- `RHTower.WeilSpectral.eq_vonMangoldt_of_weilPositiveFull`: every real weight lam : ℕ → ℝ whose full Weil
+  functional A(k_f) − Σ_{n≥2} lam(n)ℓ_n(f) is ≥ 0 on all autocorrelations of C² compactly supported tests equals Λ
+  on n ≥ 2. No hypothesis on lam (sign, growth, multiplicativity) or on ζ (`WeilConeUniquenessUnconditional`) [L].
+- Proof shape (module docstring): the twisted arc minimum principle gives a probability measure on the modular
+  bottom arc annihilating every twisted integer moment; its arc Gamma weights produce a jointly prime-blind,
+  Ξ-divisible shifted-Gamma family Ξ·Q_j (j = 0 is Ξ); family rigidity `eq_vonMangoldt_of_xiDivisibleBlindFamily`
+  forces lam = Λ [L].
+- `weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt`: the Weil cone is {Λ} under RH and empty otherwise [L].
+- `twistedArcMinimumPrinciple_holds` (`TwistedArcMinimumPrincipleProof`): no finite combination of twisted arc moments
+  M_i(u) = ∫ g_u(x)cos(2π(i+2)x)dx is strictly positive on the closed bottom arc u ∈ [−½,½]. Proof via a stream
+  function ψ = Σ a_i yK₁(k_i y)sin(k_i x) on the half fundamental domain of SL₂(Z), vanishing on both walls,
+  decaying at the cusp, and a minimum principle with a corner argument at ρ = e^{iπ/3} [L].
+- `exists_weilPositiveFull_iff_primeBlindPositive` (`WeilFullConeOneSidedCriterion`): some real lam is full-cone
+  Weil-positive ⇔ PrimeBlindPositive, by the M. Riesz extension / finite feasibility theorem [L].
+- `PrimeBlindPositive`: for every nonnegative finite combination of autocorrelations whose symmetric values vanish at
+  every ±log n, n ≥ 2, the pole + archimedean part of the Weil functional is ≥ 0. "No prime enters" [L].
+- `riemannHypothesis_iff_primeBlindPositive_unconditional`: RH ⇔ PrimeBlindPositive [L].
+- `riemannHypothesis_iff_positiveOnNonnegCone` / `…NonposCone`: RH ⇔ W_Λ ≥ 0 on the cone of combinations whose
+  values at ±log n are all ≥ 0 (resp. ≤ 0); robust forms for weights with summable excess/deficit over Λ [L].
+- (obs) In this formulation the arithmetic input is only the node set {log n : n ≥ 2} (by BSU node criticality,
+  equivalently the prime powers); Λ, the Euler product and the primes as weights are gone. None of the review-3010
+  reports cites PrimeBlindPositive or the twisted arc minimum principle.
+- `riemannHypothesis_iff_zeroPoleBlindPositive` (`ArchimedeanPoleValueFunction`): RH ⇔ the archimedean symbol
+  Re ψ(¼ + ir/2) − log π, integrated against the spectral measure, is ≥ 0 on every nonnegative blind combination of
+  total pole mass zero. "The pole enters only as a constraint; the functional is the archimedean symbol alone."
+  Blind tests of both pole signs exist by support (two bumps at ±1/5) [L].
+- `poleValue_eq` (under RH): the value function in (node vector v, pole mass p) is linear with gradient (Λ, −1);
+  `riemannHypothesis_iff_bddBelow_poleFibre`: RH ⇔ one fibre is bounded below [L].
+- `WeilPoleWeightWindow`: for pole weight β, Farkas holds at every β (`exists_weilPositiveAt_iff`); the admissible set
+  of β is an interval; RH ⇔ β = 1 lies in it (`riemannHypothesis_iff_primeBlindPositiveAt_one`); pole-weight rigidity
+  `eq_one_of_weilPositiveAt` [L].
+- `TwistedArcN1Reduction`: the twisted arc vectors g_u (u on the bottom arc of the modular domain) are even, satisfy
+  g_u(1/x) = |x|g_u(x), have zero mean and strictly positive cosine transform of the log profile; the minimum principle
+  plus Prokhorov gives h = ∫g_u dμ(u) with h(1/x) = |x|h(x), ∫h = 0, PD log profile, and ∫h'(x)sin(2πmx)dx = 0 for every
+  integer m ≥ 2 (additive integer blindness) (`exists_decayClass_fullLineWitness`) [L].
+- `HTGeometry.le_of_halfDomainStreamMinimum`: minimum principle for y(Z_xx + Z_yy) − Z_y = 0 on the half fundamental
+  domain {0 ≤ x ≤ ½, x² + y² ≥ 1} with wall, cusp and arc (ray-derivative) conditions [L].
+- `WeilConeXiDivisibleBlindTest`: an (N1) object F (exp-decay C², prime-blind autocorrelation, F̂ vanishing at every
+  zero of ζ, nonzero elsewhere on R) forces every Weil-positive system to be Λ; F̂ = Ξ·g, |F̂|² = Ξ²R with R a prime-blind
+  radical multiplier (`eq_vonMangoldt_of_xiDivisibleBlindTest`, `archPoleEnergy_eq_zero_of_xiDivisibleBlindTest`) [L].
+
+## F29. Hecke normalization, affine induction, off-line Λ-positive models, infinite symmetry
+
+- APD `isPosDefOnGroup_heckeState_iff`: Hecke states φ_s(x ↦ ax+b) = (nd)^{−s}·1[db ∈ Z] on Aff(Q) are PD iff s ≥ ½;
+  below ½ the Hecke–Bessel law nd·|φ(ux)|² ≤ 1 fails at u = 2; φ_s = Haar state × slope weight (nd)^{−(s−½)}; slope
+  weights are PD multipliers via gcd^{2t} = Σ J_{2t}(d)1[d|A_i]1[d|A_j], J_α = μ⋆n^α ≥ 0. "The integer successor costs
+  exactly half a unit of exponent" (module docstring) [L].
+- APD `integer_successor_hecke_weight`: every PD φ on Aff(Q) with integer successor satisfies nd·|φ(dilation u)|² ≤ 1,
+  attained [L]. (obs) ½ here is the square root of the commensurability index [Z : Z ∩ uZ][uZ : Z ∩ uZ] = nd.
+- APD `heckeState_kakutani_wall`: φ_s PD ⇔ s ≥ ½; its torus measure is the prime Poisson measure; that measure ≪ Haar ⇔
+  s > ½, mutually singular for s ≤ ½ [L].
+- APD `riemannHypothesis_iff_exists_affine_posDef`: RH ⇔ some PD function on Aff(Q) restricts on dilations to the
+  spline correlation; restriction–induction: affine positivity adds nothing beyond the dilation Gram; the successor
+  coordinates are free unless prescribed by arithmetic [L].
+- RHTower `PoleOrderTwoRealStray`: F(s) = ζ(s)((s−½)² − w²)/(s(s−1)) is Λ-positive (correction density
+  (e^{u/2} − e^{wu})(e^{u/2} − e^{−wu}) ≥ 0), satisfies the exact FE, has entire order-one completion, real zeros ½ ± w,
+  pole of order 2; a complex off-line quartet costs pole order 3 (`EntireFunctionalEquationOffLine`); "two is optimal" [L].
+- (obs) all Λ-positive off-line models add a continuous density to the prime measure, so they leave the discrete node
+  set log N; PBAP is vacuous for continuous support.
+- RHTower `InfiniteSymmetry`: the affine A₁ Weyl sum of every curve datum (unitary or golden) has its poles exactly at
+  the shifted zeros; polar confinement ⇔ the lower square-root count (`polarConfinement_iff_lowerCount`); the golden
+  datum passes every test but the lower count; a priori Eisenstein information (Godement chamber, Maass–Selberg,
+  closed positive chamber) certifies exactly {Re ρ ≥ 1} (`certified_closedChamber`); entirety of cuspidal loop
+  Eisenstein series certifies nothing about zeros of Ξ (`pole_iff_zero_of_mul`) [L].
+- `PrimeBlindFiniteLevelFarkas`: at level L (tests in [−L,L]) only nodes log n < 2L carry values; Φ ≥ 0 on blind
+  nonnegative level-L combinations ⇔ ∃ node weights lam (supported on log n < 2L) with Σ lam(n)ℓ_n(f) ≤ Φ(f)
+  (`levelBlindNonneg_iff_exists_weights`); strong duality as equality of sets of floors and margins
+  (`levelFloors_eq_levelMargins`); RH ⇔ at every level some node weights give a Weil-positive level-L form
+  (`riemannHypothesis_iff_forall_level_exists_weights`) [L].
+- `PrimeBlindPoleWeightLevelWindow`: level windows of admissible pole weights β are closed intervals, decreasing in L,
+  compact from L ≥ 3/10; they squeeze to {1} unconditionally (`exists_level_forall_abs_sub_one_lt`); RH ⇔ every level
+  window is nonempty (`riemannHypothesis_iff_forall_level_exists_mem_levelWindow`) — "the pole weight is free at each
+  level and determined only in the limit" [L].
+- `PrimeBlindNonnegativeConeReduction`: nonnegative prime-blind g has positivity set of measure ≤ log 2 (dilation-free
+  support); quantile transport reduces the nonnegative blind cone to one window (0, log 2) [L].
+- `PrimeBlindPoleCriticalZetaDefect`: for f supported in [α,β] ⊂ (0,∞), Σ_{m≥1} A_f(m) = (∫f)(∫f/y) +
+  (1/2π)∫|Mf(½+it)|² Re ζ(½+it)dt (`tsum_dilationAutocorr_eq_pole_add_integral_zeta`); for blind f the prime-blind energy
+  is (1/π)∫|Mf(½+it)|²(θ'(t) + 1 − Re ζ(½+it))dt; a violator has S = ∫|M|²|ζ|² ≥ (m + πP)²/m: violators live on large
+  values of |ζ| on the line (`pole_ge_of_blind_secondMoment`) [L].
+- `BlindArchimedeanNodeTwoCertificate`: 2(1 − cos(r log 2)) ≤ γ(r) − γ(0) for γ(r) = Re ψ(¼ + ir/2) − log π
+  (`two_mul_one_sub_cos_le_gammaBracket_sub`); BlindSymbolSlack(−γ(0) − 2) holds unconditionally, fails for every
+  M ≤ 0; RH ⇔ ZeroPoleBlindSymbolSlack M for every M > 0: "the pole constraint must remove the whole negative part that
+  the symbol alone retains" [L].
+- AOT `TheLatticeOddLedgerIsBalanced`: on log-integer positions a prime-sum pair (log p^i, log p^j) is also a
+  prime-difference pair with larger weight Λ(p^{i+j})/√p^{i+j} ≤ Λ(p^{|i−j|})/√p^{|i−j|} (`primeKernel_log_add_le`), so
+  the odd Weil ledger is balanced; frustration exists only between lattice points [L].
+- APD `measure_eq_of_measureTheta_relation`: a positive Borel measure ν on [1,∞) with ∫u^{−2}dν < ∞ whose
+  θ_ν(x) = ∫e^{−πu²x}dν obeys Riemann's theta law is c·Σ_k δ_{k+1}; mechanism: a collar-blind Fejér pairing leaves
+  ∫(sin πu/πu)²dν = 0; Beurling prime measures with the theta law are Riemann's Σ Λ(n)/log n·δ_n
+  (`eq_riemannPrimeMeasure_of_beurling_theta_relation`) [L].

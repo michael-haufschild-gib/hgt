@@ -54,7 +54,7 @@ def headWindowMass (Y : ℕ) (γ : ℝ) : ℝ :=
 theorem headWindowMass_nonneg (Y : ℕ) (γ : ℝ) : 0 ≤ headWindowMass Y γ :=
   sum_nonneg fun _ _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
 
-theorem headWindowMass_le (Y : ℕ) {γ : ℝ} (hγ : 0 < γ) :
+theorem headWindowMass_le (Y : ℕ) (γ : ℝ) :
     headWindowMass Y γ ≤ sqrtChebyshev (min γ 1 * Y) := by
   refine sum_le_sum_of_subset_of_nonneg (fun m hm => ?_) fun _ _ _ =>
     div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
@@ -65,7 +65,7 @@ theorem headWindowMass_le (Y : ℕ) {γ : ℝ} (hγ : 0 < γ) :
   · rw [min_eq_left h]; exact hmγ.le
   · rw [min_eq_right h, one_mul]; exact hmY'
 
-theorem sqrtChebyshev_sub_one_le_headWindowMass (Y : ℕ) {γ : ℝ} (hγ : 0 < γ) :
+theorem sqrtChebyshev_sub_one_le_headWindowMass (Y : ℕ) (γ : ℝ) :
     sqrtChebyshev (min γ 1 * Y - 1) ≤ headWindowMass Y γ := by
   have h0 : ∑ n ∈ Icc 0 ⌊min γ 1 * Y - 1⌋₊, Λ n / Real.sqrt n =
       ∑ n ∈ Icc 1 ⌊min γ 1 * Y - 1⌋₊, Λ n / Real.sqrt n := by
@@ -135,9 +135,9 @@ theorem tendsto_headWindowMass {γ : ℝ} (hγ : 0 < γ) :
     rw [Real.sqrt_div hpos.le]
     field_simp
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlo hup (fun Y => ?_) fun Y => ?_
-  · exact div_le_div_of_nonneg_right (sqrtChebyshev_sub_one_le_headWindowMass Y hγ)
+  · exact div_le_div_of_nonneg_right (sqrtChebyshev_sub_one_le_headWindowMass Y γ)
       (Real.sqrt_nonneg _)
-  · exact div_le_div_of_nonneg_right (headWindowMass_le Y hγ) (Real.sqrt_nonneg _)
+  · exact div_le_div_of_nonneg_right (headWindowMass_le Y γ) (Real.sqrt_nonneg _)
 
 /-- **Chebyshev on windows.** `Σ_{1 ≤ m ≤ Y, m < γY} Λ(m)/√m ≤ 2C √Y`. -/
 theorem headWindowMass_le_sqrt (Y : ℕ) (hY : 1 ≤ Y) (γ : ℝ) :
@@ -191,7 +191,9 @@ theorem tsum_primePow_eq_sum {F : ℕ → ℝ} {M : ℕ} (hF0 : ∀ m, M < m →
     (hp : p.Prime) :
     ∑' k : ℕ, F (p ^ (k + 1)) = ∑ e ∈ Icc 1 (p.log M), F (p ^ e) := by
   rw [tsum_eq_sum (s := range (p.log M)) fun k hk => hF0 _ ?_]
-  · rw [range_eq_Ico, ← Nat.Ico_succ_right, sum_Ico_add' (fun e => F (p ^ e)) 0 (p.log M) 1]
+  · rw [range_eq_Ico, sum_Ico_add' (fun e => F (p ^ e)) 0 (p.log M) 1]
+    refine sum_congr ?_ fun _ _ => rfl
+    ext e; simp only [mem_Ico, mem_Icc]; omega
   · have hk' : p.log M + 1 ≤ k + 1 := by simpa using hk
     exact (Nat.lt_pow_succ_log_self hp.one_lt M).trans_le
       (Nat.pow_le_pow_right hp.pos hk')
@@ -212,15 +214,22 @@ theorem abs_eulerHead_tsum_sub_le {Y M : ℕ} (hYM : Y ≤ M) (hMY : M < (Y + 1)
   set G : ℕ → ℝ := fun p => ∑ e ∈ Icc 1 (p.log M), F (p ^ e)
   -- the head as a sum over `primesLE Y`
   have hhead : ∑ p ∈ eulerHead Y, ∑' k : ℕ, F ((p : ℕ) ^ (k + 1)) = ∑ p ∈ Nat.primesLE Y, G p := by
-    rw [eulerHead, sum_subtype_eq_sum_filter (f := fun p : ℕ => ∑' k : ℕ, F (p ^ (k + 1)))]
-    refine sum_congr rfl fun p hp => tsum_primePow_eq_sum hF0 p (mem_filter.mp hp).2
+    have hbij : ∑ p ∈ eulerHead Y, ∑' k : ℕ, F ((p : ℕ) ^ (k + 1)) =
+        ∑ n ∈ Nat.primesLE Y, ∑' k : ℕ, F (n ^ (k + 1)) :=
+      Finset.sum_bij (fun (p : Nat.Primes) _ => (p : ℕ))
+        (fun p hp => Nat.mem_primesLE.mpr ⟨mem_eulerHead.mp hp, p.property⟩)
+        (fun p _ q _ h => Subtype.ext h)
+        (fun n hn => ⟨⟨n, (Nat.mem_primesLE.mp hn).2⟩,
+          mem_eulerHead.mpr (Nat.mem_primesLE.mp hn).1, rfl⟩) (fun _ _ => rfl)
+    rw [hbij]
+    exact sum_congr rfl fun p hp => tsum_primePow_eq_sum hF0 p (Nat.mem_primesLE.mp hp).2
   -- all prime powers up to `M`
   have hall : ∑ m ∈ Icc 1 M, F m = ∑ p ∈ Nat.primesLE M, G p := by
     rw [← RHTower.sum_primePow_Icc_eq_sum_primesLE, sum_filter]
     refine sum_congr rfl fun m _ => ?_
     split_ifs with h
     · rfl
-    · exact (hΛ m (ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr h)).symm
+    · exact hΛ m (ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr h)
   -- primes beyond `Y` carry only their first power
   have hbig : ∀ p ∈ (Nat.primesLE M).filter (fun p => Y < p), G p = F p := by
     intro p hp
