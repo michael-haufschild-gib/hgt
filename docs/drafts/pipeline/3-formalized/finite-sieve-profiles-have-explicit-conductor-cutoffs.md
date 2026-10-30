@@ -1,7 +1,7 @@
 # Explicit conductor cutoffs for finite sieve profiles
 
 - **ID:** finite-sieve-profiles-have-explicit-conductor-cutoffs
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Statement:** For a finite prime sieve `Q`, prefix `A` and error `η>0`, put
   `E_Q=sieveEuler(Q)−γ`,
   `N₀=max(A²,ceil(exp(2E_Q+4)))`, and
@@ -22,4 +22,6 @@ and of the profile coefficients.
 
 ## Verification
 
-Lean formalization in progress.
+`RenormalizedArithmeticPotentialTheory/FiniteSieveProfilesHaveExplicitConductorCutoffs.lean`:
+`exists_sieveProfile_ramanujan_approximation_explicit` passed its direct Lean check.
+Transitive axioms: `propext`, `Classical.choice`, `Quot.sound`. Umbrella wired.

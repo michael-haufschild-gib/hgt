@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.XiSliceMehlerAndRVMCountingCumulants
+import GaloisForLFunctions.RHTower.XiSliceHeatCoshCountermodel
 import GaloisForLFunctions.ArithmeticLocalDivisorGeometry.RootRadiusHeatCone
 
 /-!
@@ -56,6 +56,60 @@ theorem eval_expand_clusterHead (m : ℕ) (δ y : ℝ) :
   simp only [clusterHead, eval_mul, eval_pow, eval_X, eval_sub, eval_C]
   rw [pow_mul]
   ring
+
+/-! ## Gaussian averages of polynomials -/
+
+/-- Taylor expansion of a real polynomial around `c`. -/
+theorem eval_add_eq_sum_hasseDeriv (P : ℝ[X]) (c v : ℝ) :
+    P.eval (c + v) = ∑ j ∈ Finset.range (P.natDegree + 1), (hasseDeriv j P).eval c * v ^ j := by
+  rw [show c + v = v + c by ring, ← taylor_eval, eval_eq_sum_range' (n := P.natDegree + 1)
+    (by rw [natDegree_taylor]; omega)]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [taylor_coeff]
+
+/-- `E[P(c + U)] = (e^{s∂²}P)(c)` for `U` with density `gaussDensity s`, `s > 0`. -/
+theorem integrable_and_integral_gaussDensity_mul_eval_add {s : ℝ} (hs : 0 < s) (P : ℝ[X]) (c : ℝ) :
+    Integrable (fun v : ℝ => gaussDensity s v * P.eval (c + v)) ∧
+      ∫ v : ℝ, gaussDensity s v * P.eval (c + v) = (forwardPolyHeat s P).eval c := by
+  set N := P.natDegree + 1
+  have hexp : (fun v : ℝ => gaussDensity s v * P.eval (c + v)) =
+      fun v => ∑ j ∈ Finset.range N, (hasseDeriv j P).eval c * (gaussDensity s v * v ^ j) := by
+    funext v
+    rw [eval_add_eq_sum_hasseDeriv, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    ring
+  have hint : Integrable (fun v : ℝ => gaussDensity s v * P.eval (c + v)) := by
+    rw [hexp]
+    exact integrable_finsetSum _ fun j _ => (integrable_gaussDensity_mul_pow hs j).const_mul _
+  refine ⟨hint, ?_⟩
+  rw [hexp, integral_finsetSum _ (fun j _ => (integrable_gaussDensity_mul_pow hs j).const_mul _)]
+  simp_rw [integral_const_mul]
+  let f : ℕ → ℝ := fun j => (hasseDeriv j P).eval c * ∫ v : ℝ, gaussDensity s v * v ^ j
+  have hc0 : ∀ j, N ≤ j → f j = 0 := by
+    intro j hj
+    dsimp only [f]
+    rw [hasseDeriv_eq_zero_of_lt_natDegree _ _ (by omega), eval_zero, zero_mul]
+  have hext : ∑ j ∈ Finset.range N, f j = ∑ j ∈ Finset.range (2 * N), f j := by
+    refine Finset.sum_subset (Finset.range_subset_range.mpr (by omega)) fun j _ hj => ?_
+    simp only [Finset.mem_range, not_lt] at hj
+    exact hc0 j hj
+  change ∑ j ∈ Finset.range N, f j = (forwardPolyHeat s P).eval c
+  rw [hext, sum_range_two_mul]
+  unfold forwardPolyHeat
+  rw [eval_finsetSum]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  have hodd : f (2 * m + 1) = 0 := by
+    dsimp only [f]
+    rw [integral_gaussDensity_mul_pow_odd s m, mul_zero]
+  rw [hodd, add_zero]
+  dsimp only [f]
+  rw [integral_gaussDensity_mul_pow_even hs m, eval_mul, eval_C]
+  have hfac := congrFun (factorial_smul_hasseDeriv (R := ℝ) (k := 2 * m)) P
+  rw [LinearMap.smul_apply] at hfac
+  rw [← hfac, eval_smul, nsmul_eq_mul]
+  have hf2 : ((2 * m).factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+  have hfm : (m.factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero _
+  field_simp
 
 /-! ## Head repair -/
 
@@ -159,7 +213,7 @@ theorem integrable_and_integral_gaussDensity_tilt_poly {lam : ℝ} (hlam : 0 < l
       ∧ ∫ u : ℝ, gaussDensity (lam / 2) u * (Real.exp (L * u) * P.eval (x + u))
         = Real.exp (lam * L ^ 2 / 2) * (forwardPolyHeat (lam / 2) P).eval (x + lam * L) := by
   have ht : 0 < lam / 2 := by positivity
-  obtain ⟨hint, hval⟩ := integrable_and_integral_gaussDensity_poly ht P (x + lam * L)
+  obtain ⟨hint, hval⟩ := integrable_and_integral_gaussDensity_mul_eval_add ht P (x + lam * L)
   have hpt : ∀ u : ℝ, gaussDensity (lam / 2) u * (Real.exp (L * u) * P.eval (x + u))
       = Real.exp (lam * L ^ 2 / 2) * (gaussDensity (lam / 2) (u - lam * L)
         * P.eval (x + lam * L + (u - lam * L))) := by
@@ -190,8 +244,8 @@ theorem integrable_and_integral_gaussDensity_tilt_poly {lam : ℝ} (hlam : 0 < l
 /-- The heat of an even polynomial `P(x²)` is even. -/
 theorem eval_neg_forwardPolyHeat_expand {s : ℝ} (hs : 0 < s) (q : ℝ[X]) (c : ℝ) :
     (forwardPolyHeat s (expand ℝ 2 q)).eval (-c) = (forwardPolyHeat s (expand ℝ 2 q)).eval c := by
-  rw [← (integrable_and_integral_gaussDensity_poly hs _ (-c)).2,
-    ← (integrable_and_integral_gaussDensity_poly hs _ c).2,
+  rw [← (integrable_and_integral_gaussDensity_mul_eval_add hs _ (-c)).2,
+    ← (integrable_and_integral_gaussDensity_mul_eval_add hs _ c).2,
     ← integral_neg_eq_self (fun v => gaussDensity s v * (expand ℝ 2 q).eval (-c + v))]
   refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
   simp only [gaussDensity_neg, expand_eval]
@@ -242,7 +296,7 @@ theorem hasSum_clusterModelHeat {m : ℕ} {δ L lam : ℝ} (hlam : 0 < lam) (hL 
   set κ := lam * L with hκdef
   have hκ : 0 ≤ κ := mul_nonneg hlam.le hL
   set R := taylor κ Q with hR
-  have hR0 : CoeffNonneg R := hQ0.taylor hκ
+  have hR0 : CoeffNonneg R := CoeffNonneg.taylor hQ0 hκ
   set c := expMulCoeff L R with hc
   have hc0 : ∀ n, 0 ≤ c n := expMulCoeff_nonneg hL hR0
   refine ⟨fun n => Real.exp (lam * L ^ 2 / 2) / 2 * (c n + (-1) ^ n * c n), fun n => ?_,
@@ -266,3 +320,5 @@ theorem hasSum_clusterModelHeat {m : ℕ} {δ L lam : ℝ} (hlam : 0 < lam) (hL 
 end
 
 end RHTower.DeBruijn
+
+#print axioms RHTower.DeBruijn.hasSum_clusterModelHeat

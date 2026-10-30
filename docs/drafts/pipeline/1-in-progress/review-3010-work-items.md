@@ -9,7 +9,7 @@
 |---|---|---|
 | A1 | Pole-row estimate and joint top-band cancellation | Both named theorems proved in `SuccessorShellArithmetic/TheShellsAndThePoleCancelOnTheTopBand`; direct Lean check and capstone axiom audit passed; umbrella wired |
 | A2 | Growing Euler heads have arbitrarily large negative dimension | `eventually_eulerHead_negative_family` and its log-power corollary passed direct Lean and transitive axiom audits; umbrella wired |
-| A3 | Effective conductor confinement for finite sieve profiles at fixed overlap | Explicit sieve horizon/conductor cutoffs and complete negative-packet cutoff `exp(D(Cc^16+1))` have paper proofs and Lean drafts; checks pending |
+| A3 | Effective conductor confinement for finite sieve profiles at fixed overlap | Explicit sieve horizon/conductor cutoffs passed direct Lean and axiom audits; umbrella wired. Complete negative-packet cutoff `exp(D(Cc^16+1))` has a paper proof and Lean draft; check pending |
 | A4 | Effective positivity/index horizons; full-index exhaustion for Steklov schedule | Full-index Steklov exhaustion formalized in `TheSteklovScheduleReachesTheIndex`, direct Lean and axiom audits passed; effective horizons remain unfinished |
 | A5 | First-prime, coarse, polar and head payments on finite Haar cells/sources | Several separate payments exist; joint scope audit pending |
 | A6 | Matched finite-sieve Hodge index | Existing formalized card and theorem; audit pending |
