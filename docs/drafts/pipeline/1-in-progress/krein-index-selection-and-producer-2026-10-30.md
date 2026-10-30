@@ -48,8 +48,10 @@ near `θ = π` give twin index growing linearly in the tower length. Target form
 | T1 flip index on its tower | `κ(K_ζ) = ∞ ∨ κ(K_{ω_p}) = ∞`; on the finite stratum the twin has `≥ n − #R` squares for every `n` | `weightKernel_flip_tower`, `negIndex_flip_eq_top_of_finite`, `negIndex_zetaKernel_eq_top_or_flip` (HKT `OnTheFiniteStratumEveryFlipHasInfiniteIndex`); `exists_frequency_thin` (HKT `APurePointSpectrumIsThinAtMostFrequencies`) |
 | T2 fixed overlap | low spectral subspace ε-close to the Ramanujan span of conductors with `E_m(c) < T`, both directions | `eventually_completeWeil_lowSpace_near_ramanujan`, `tiltedUnitSpline_lowSpace_near_ramanujan` |
 | T2 growing overlap | along a diagonal schedule `c_N → ∞` | `exists_overlap_schedule_lowSpace_near_ramanujan` (RAPT `TheLowCompleteWeilSpectrumLivesOnTheLowConductors`) |
-| T3 | open | — |
-| T4 | open | — |
+| T3 growing head | index `≤ ⌈exp cost(P)⌉`, `cost(p ≤ Y) ≤ 32√Y log Y`; head `p ≤ (log N)^a` has index `≤ exp(C(log N)^{a/2} log log N)` — not uniform | `finiteEulerGamma_negative_dimension_le_exp`, `finiteEulerMixedGammaCost_eulerHead_le`, `eulerHead_negative_dimension_le` (AID `TheGammaReservePaysEulerHeadsUpToTheSquareOfTheDepth`) |
+| T4 tail | no-go for coefficient-wise Gamma payment at any depth; survivor: depth `A` reaches `Y` with `32√Y log Y ≤ log A` | `not_summable_primeEulerMixedWeightTotal`, `exists_eulerHead_cost_gt` |
+
+Formalized summary: ../3-formalized/krein-index-selection-localization-and-gamma-reach.md
 
 ## Approach
 - T1a: one-square rigidity of the pole-hyperplane index under every sign gauge (atomic model).
@@ -57,6 +59,19 @@ near `θ = π` give twin index growing linearly in the tower length. Target form
   heavy/light split); assemble `n − κ` negative squares.
 - T2: fixed overlap — Davis–Kahan from exact spectral counts and Ramanujan quasimodes.
 - T3, T4: read AID's finite-Euler and first-prime modules; test growth of constants.
+
+## No-go closure
+- **T1 (trial-span growth).** Killing mechanism: the per-prime trials share the pole direction;
+  the flip gain is the pole–p-adic cross term; on `{pole, p-adic parts}` the twin form is an
+  arrowhead with nonnegative diagonal block, index `≤ 1`. Exact separated form: pole indices of any
+  two sign gauges differ by `≤ 1`. Survivor: twin index grows linearly in the aperture of the
+  flipped prime's tower (archimedean-rate odd kernel), and finite index for `ζ` forces infinite index
+  for every flip. Status: Lean, see the formalized card.
+- **T4 (tail).** Killing mechanism: the Gamma capacity at depth `A` is `log A + O(1)` while the
+  Euler costs of the primes diverge (`Σ 4 log p/(√p − 1) ≥ Σ 1/p`). Survivor: the reach law
+  `32√Y log Y ≤ log A`; at horizon depth `A ≍ N` Gamma pays the head `p ≲ (log N)²/C`, which contains
+  the flip selection front `p ≲ log N log log N`. New insight: selection is payable by Gamma; the
+  tail beyond `(log N)²` needs cancellation among the primes, i.e. the square-root count. Status: Lean.
 
 ## Log
 - 2026-10-30 — created in 1-in-progress

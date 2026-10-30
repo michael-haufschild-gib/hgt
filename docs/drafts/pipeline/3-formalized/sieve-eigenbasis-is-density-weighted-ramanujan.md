@@ -1,8 +1,8 @@
 # The sieve eigenbasis is density-weighted Ramanujan
 
 - **ID:** sieve-eigenbasis-density-weighted-ramanujan
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For supported positive integers `m,n` and a finite prime sieve `Q`, the existing complete eigenbasis satisfies `e_m(n)=sqrt(sieveDensity(Q)/n)·normalizedRamanujanMode(m,n)`.
 
 ## Proof
@@ -15,4 +15,6 @@ For `m=1`, the normalized mode is identically one. The ground vector has unit no
 
 ## Scope
 
-Lean formalization in progress. This identifies the spectral coefficients used in the proved logarithmic conductor-tail estimate. Quantitative comparison with finite-horizon harmonic weights remains separate and unproved.
+`TheSieveEigenbasisIsTheRamanujanBasis.lean` proves `sieveAdjunctionBasis_eq_normalizedRamanujan` and the probability identity `hasSum_sieveClassDensity`. Direct Lean check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`. Imported by the theory umbrella.
+
+This identifies the spectral coefficients used in the proved logarithmic conductor-tail estimate. Quantitative comparison with finite-horizon harmonic weights remains unproved.
