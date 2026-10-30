@@ -5,6 +5,9 @@
 - **Statement:** For the fixed explicit plateau and every `c>1`, the actual normalized
   non-ratio prime matrices have no horizon-uniform Euclidean operator-norm bound.
 - **Scope:** The prime correction alone; no claim about the sign of the complete Weil form.
+- **Lean draft:** `TransMetzlerWeilPositivity/FactorialSuccessorsForceUnboundedPrimeCorrections.lean`;
+  finite-row lower bound, cofinal action divergence, and exact eventual-boundedness boundary.
+  Supporting API and arithmetic scratch proofs passed; full module audit is pending.
 
 ## Candidate mechanism
 

@@ -42,7 +42,7 @@ theorem atomicTest_adjacentDipole {N : ℕ} (hN : 1 ≤ N) (g : ℝ → ℝ) (u 
       (∑ n ∈ Icc 1 (N + 1), (if n = a then (1 : ℝ) else 0) * g (u - Real.log n)) =
         g (u - Real.log a) := by
     rw [sum_eq_single_of_mem a ha]
-    · simp only [if_pos rfl, one_mul]
+    · simp only [ite_true, one_mul]
     · intro b _ hba
       rw [if_neg hba, zero_mul]
   rw [hunit N hn, hunit (N + 1) hsucc]
@@ -58,7 +58,7 @@ theorem adjacentDipole_coefficient_mass {N : ℕ} (hN : 1 ≤ N) :
     split_ifs with h₁ h₂ <;> norm_num <;> omega
   simp_rw [heq]
   rw [sum_add_distrib]
-  simp [hn, hsucc]
+  norm_num [hn, hsucc]
 
 /-- Logarithmic separation of the adjacent centers in profile coordinates. -/
 def adjacentProfileLag (c : ℝ) (N : ℕ) : ℝ :=
@@ -86,6 +86,7 @@ theorem plateauAdjacentMassRatio_eq {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤
     rw [← htranslate]
     apply integral_congr_ae
     exact Eventually.of_forall fun u => by
+      dsimp only
       rw [show u - Real.log (N + 1 : ℕ) + t = u - Real.log N by dsimp only [t]; ring]
       ring
   unfold plateauAdjacentMassRatio
@@ -97,7 +98,6 @@ theorem plateauAdjacentMassRatio_eq {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤
       2 * bumpCorr transMetzlerProfile (adjacentProfileLag c N))) /
     (2 * (c / (N + 1 : ℕ) * (∫ u, transMetzlerProfile u ^ 2))) = _
   field_simp [integral_transMetzlerProfile_sq_pos.ne', hw.ne']
-  ring
 
 /-- The last two centers are at most `2/c` apart in profile coordinates. -/
 theorem adjacentProfileLag_le_two_div {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) :
@@ -111,7 +111,7 @@ theorem adjacentProfileLag_le_two_div {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 �
   have heq : adjacentProfileLag c N =
       firstExteriorOverlap N * (((N + 1 : ℕ) : ℝ) / N) / c := by
     dsimp only [adjacentProfileLag, firstExteriorOverlap]
-    field_simp [hN0.ne', hc.ne'] <;> ring
+    field_simp [hN0.ne', hc.ne']
   rw [heq]
   apply div_le_div_of_nonneg_right _ hc.le
   have h := mul_le_mul (firstExteriorOverlap_lt_one hN).le hratio
@@ -148,7 +148,7 @@ theorem plateauAdjacentMassRatio_le_inv_sq {c : ℝ} (hc : 2 ≤ c) {N : ℕ} (h
       (2 * (∫ u, transMetzlerProfile u ^ 2) -
         2 * bumpCorr transMetzlerProfile (adjacentProfileLag c N)) /
           (2 * ∫ u, transMetzlerProfile u ^ 2)
-    field_simp [hM.ne'] <;> ring
+    field_simp [hM.ne']
   rw [heq]
   have hsq : adjacentProfileLag c N ^ 2 ≤ (2 / c) ^ 2 :=
     pow_le_pow_left₀ ht0 ht 2
@@ -162,10 +162,12 @@ theorem plateauAdjacentMassRatio_le_inv_sq {c : ℝ} (hc : 2 ≤ c) {N : ℕ} (h
         (mul_le_mul_of_nonneg_left (by linarith only [ht1])
           (mul_nonneg (sq_nonneg _) (sq_nonneg _))) (by positivity)
     _ = (8000 : ℝ) ^ 2 * adjacentProfileLag c N ^ 2 /
-        (∫ u, transMetzlerProfile u ^ 2) := by field_simp [hM.ne'] <;> ring
+        (∫ u, transMetzlerProfile u ^ 2) := by field_simp [hM.ne']
     _ ≤ (8000 : ℝ) ^ 2 * (2 / c) ^ 2 / (∫ u, transMetzlerProfile u ^ 2) :=
       div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hsq (sq_nonneg _)) hM.le
-    _ = _ := by field_simp <;> ring
+    _ = _ := by
+      field_simp
+      ring
 
 private theorem tendsto_succ_div_nat :
     Tendsto (fun N : ℕ => ((N + 1 : ℕ) : ℝ) / N) atTop (𝓝 1) := by
@@ -178,7 +180,7 @@ private theorem tendsto_succ_div_nat :
   filter_upwards [eventually_ge_atTop (1 : ℕ)] with N hN
   have hN0 : (N : ℝ) ≠ 0 := (show (0 : ℝ) < N by exact_mod_cast hN).ne'
   push_cast
-  field_simp [hN0] <;> ring
+  field_simp [hN0]
 
 /-- Growing overlap makes adjacent logarithmic centers indistinguishable at profile scale. -/
 theorem tendsto_adjacentProfileLag {c : ℕ → ℝ} (hc : Tendsto c atTop atTop) :
@@ -188,7 +190,7 @@ theorem tendsto_adjacentProfileLag {c : ℕ → ℝ} (hc : Tendsto c atTop atTop
   filter_upwards [eventually_ge_atTop (1 : ℕ), hc.eventually_gt_atTop 0] with N hN hcN
   have hN0 : (N : ℝ) ≠ 0 := (show (0 : ℝ) < N by exact_mod_cast hN).ne'
   dsimp only [adjacentProfileLag, firstExteriorOverlap]
-  field_simp [hN0, hcN.ne'] <;> ring
+  field_simp [hN0, hcN.ne']
 
 /-- At every overlap schedule tending to infinity, a coefficient vector of squared mass two
 has vanishing atom-normalized synthesized mass. -/

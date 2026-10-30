@@ -18,9 +18,13 @@ the box-class size. A section count, defined without any sign, obeys the exact l
 `h⁰ = ⌊e^{deg}⌋` with `deg = log N − Σ m_p log p`; it is positive iff the degree is nonnegative
 (`sections_ne_bot_iff`), which is Bézout with its converse.
 
-This is the Riemann–Roch of the base: one dimension, exact, and linear in `e^{deg}`. The Hodge index
-needs a surface with a quadratic Euler characteristic; the theorem fixes what the fibres of such a
-surface over the base must count.
+This is the Riemann–Roch of the base: one dimension, exact, and linear in `e^{deg}`. Over `𝔽_q[T]`
+the same count is additive (`finrank_divisibleLT_eulerFactor`): a Dirichlet polynomial of length
+`q^d` is a polynomial of degree `≤ d` in `u = q^{−s}`, and vanishing to order `m` along the
+progression of a place of degree `e` costs `em` conditions, shared by all places of that degree.
+Over `ℤ` every prime has its own progression and vanishing along it costs `N − ⌊N/p⌋` conditions.
+The Hodge index needs a surface with a quadratic Euler characteristic; the theorem fixes what the
+fibres of such a surface over the base must count.
 -/
 
 open Complex Finset Filter
@@ -292,5 +296,61 @@ theorem sections_ne_bot_iff {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (m : �
   have hpos : 0 < ∏ p ∈ S, p ^ m p := Finset.prod_pos fun p hp => pow_pos (hS p hp).pos _
   rw [Ne, ← Submodule.finrank_eq_zero, finrank_sections_eq hS, Nat.div_eq_zero_iff_lt hpos,
     not_lt]
+
+/-! ### Calibration over `𝔽_q[T]` -/
+
+section Calibration
+
+open Polynomial
+
+/-- The polynomials of degree `< n` divisible by `Q`. -/
+def divisibleLT (Q : ℂ[X]) (n : ℕ) : Submodule ℂ ℂ[X] :=
+  degreeLT ℂ n ⊓ (Ideal.span {Q}).restrictScalars ℂ
+
+/-- **Divisibility costs the degree of the divisor**: for monic `Q` of degree `k ≤ n`, the
+polynomials of degree `< n` divisible by `Q` form a space of dimension `n − k`. -/
+theorem finrank_divisibleLT {Q : ℂ[X]} (hQ : Q.Monic) {n : ℕ} (hk : Q.natDegree ≤ n) :
+    Module.finrank ℂ (divisibleLT Q n) = n - Q.natDegree := by
+  set k := Q.natDegree
+  have hQ0 : Q ≠ 0 := hQ.ne_zero
+  have hdeg : ∀ R : ℂ[X], R ∈ degreeLT ℂ (n - k) ↔ Q * R ∈ degreeLT ℂ n := fun R => by
+    rw [mem_degreeLT, mem_degreeLT]
+    by_cases hR0 : R = 0
+    · simp only [hR0, mul_zero, degree_zero]
+      exact ⟨fun _ => WithBot.bot_lt_coe n, fun _ => WithBot.bot_lt_coe _⟩
+    have hQR : Q * R ≠ 0 := mul_ne_zero hQ0 hR0
+    rw [← natDegree_lt_iff_degree_lt hR0, ← natDegree_lt_iff_degree_lt hQR,
+      natDegree_mul hQ0 hR0]
+    omega
+  let f : degreeLT ℂ (n - k) →ₗ[ℂ] divisibleLT Q n :=
+    { toFun := fun R => ⟨Q * R, Submodule.mem_inf.mpr ⟨(hdeg R).mp R.2,
+        (Submodule.restrictScalars_mem ℂ _ _).mpr
+          (Ideal.mem_span_singleton.mpr (dvd_mul_right Q R))⟩⟩
+      map_add' := fun R R' => Subtype.ext (mul_add Q R R')
+      map_smul' := fun c R => Subtype.ext (mul_smul_comm c Q R) }
+  have hbij : Function.Bijective f := by
+    refine ⟨fun R R' h => Subtype.ext (mul_left_cancel₀ hQ0 (congrArg Subtype.val h)),
+      fun P => ?_⟩
+    obtain ⟨hPn, hPQ⟩ := Submodule.mem_inf.mp P.2
+    obtain ⟨R, hR⟩ := Ideal.mem_span_singleton.mp ((Submodule.restrictScalars_mem ℂ _ _).mp hPQ)
+    refine ⟨⟨R, (hdeg R).mpr (by rw [← hR]; exact hPn)⟩, Subtype.ext ?_⟩
+    exact hR.symm
+  rw [← (LinearEquiv.ofBijective f hbij).finrank_eq, (degreeLTEquiv ℂ (n - k)).finrank_eq,
+    Module.finrank_fin_fun]
+
+/-- **The additive Riemann–Roch over `𝔽_q[T]`.** With `u = q^{−s}`, a Dirichlet polynomial over
+`𝔽_q[T]` of length `q^d` is a polynomial of degree `≤ d` in `u`, and the Euler factor of a place
+of degree `e` is `1 − u^e`. The polynomials divisible by `(u^e − 1)^m` form a space of dimension
+`d + 1 − em`: vanishing to order `m` along the progression of a place of degree `e` costs `em`
+conditions, the same for every place of that degree, because they share the progression. Over `ℤ`
+the cost is multiplicative: `h⁰ = ⌊N/p^m⌋` (`finrank_sections_eq`). -/
+theorem finrank_divisibleLT_eulerFactor {e m d : ℕ} (he : 0 < e) (hd : e * m ≤ d + 1) :
+    Module.finrank ℂ (divisibleLT ((X ^ e - C 1) ^ m) (d + 1)) = d + 1 - e * m := by
+  have hmon : ((X ^ e - C 1 : ℂ[X]) ^ m).Monic := (monic_X_pow_sub_C 1 he.ne').pow m
+  have hdeg : ((X ^ e - C 1 : ℂ[X]) ^ m).natDegree = e * m := by
+    rw [natDegree_pow, natDegree_X_pow_sub_C, mul_comm]
+  rw [finrank_divisibleLT hmon (by rw [hdeg]; exact hd), hdeg]
+
+end Calibration
 
 end GaloisForLFunctions.EffectiveArithmeticHodgeTheory

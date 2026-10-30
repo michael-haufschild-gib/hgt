@@ -47,10 +47,11 @@ proof. Equal scale coordinates do not identify distinct quadratic forms or their
 | Actual support aperture includes profile width: cutoff `N exp((b-a)w)` | Checked, axiom-audited, umbrella wired: `TheAtomicApertureRetainsTheProfileWidth` |
 | Paid coordinate prefix at overlap `cM/N≤1`; exact Schur reduction retaining every mixed entry | Audit pending: `APositivePrefixGivesTheExactSchurReduction` |
 | Gap `k` first becomes geometrically eligible at `N log(1+k/N)`, tending to `k` | Checked, axiom-audited, umbrella wired: `ExactHigherShellThresholds` |
-| Every finite plateau overlap Gram is strictly positive at every positive width | Audit pending: `ThePlateauOverlapGramIsNondegenerate` |
-| Growing overlap destroys every uniform lower comparison with coefficient mass | Audit pending: `GrowingOverlapHasNoUniformGramFloor` |
-| The actual plateau successor fiber is positive exactly when `N log(1+1/N)<c` | Audit pending: `TheSuccessorFiberHasAnExactOpenThreshold` |
+| Every finite plateau overlap Gram is strictly positive at every positive width | Checked, axiom-audited, umbrella wired: `ThePlateauOverlapGramIsNondegenerate` |
+| Growing overlap destroys every uniform lower comparison with coefficient mass, with an explicit `O(c⁻²)` adjacent-vector bound | Checked, axiom-audited, umbrella wired: `GrowingOverlapHasNoUniformGramFloor` |
+| Actual plateau successor fiber is positive exactly when `N log(1+1/N)<c`; its positive touching value is `O(log N/N²)` and tends to zero | Checked, axiom-audited, umbrella wired: `TheSuccessorFiberHasAnExactOpenThreshold` |
 | Normalizing profile support from `[a,b]` to `[0,1]` multiplies overlap by `b-a` and preserves the complete form | Checked, axiom-audited, umbrella wired: `ProfileNormalizationPreservesTheCompleteForm` |
+| Factorial successors force unbounded actual prime-correction action for every fixed `c>1`; eventual boundedness iff `c≤1` | Audit pending: `FactorialSuccessorsForceUnboundedPrimeCorrections` |
 
 Here `δ_*=1/107520002048050000`; the existing certified floor is
 `1/25-2000δ(1+1024000(2100000+1/25))`. This is the range of that fixed-reserve estimate,
@@ -157,7 +158,7 @@ The unchanged separated reference is also unsuitable as an all-overlap positive 
 its positive survivor is the exact per-conductor crossing law and finite negative-family theorem.
 
 
-**Overlap-Gram conjectures.** For the explicit plateau, synthesis is injective at every
+**Overlap-Gram laws.** For the explicit plateau, synthesis is injective at every
 positive width: isolate the least nonzero coefficient immediately to the right of its
 logarithmic center, before the next center. Hence every finite overlap Gram is positive
 definite. Nevertheless a growing overlap cannot have a uniform coefficient-mass lower bound:
@@ -173,7 +174,15 @@ at both endpoints. Consequently the normalized successor fiber is positive exact
 at each fixed `c<1` it is eventually zero. The closed geometric eligibility criterion and
 the open positivity criterion differ at their endpoint.
 
+The endpoint autocorrelation bound is
+`Cφ(t_N)≤(8000²/4)(1-t_N)²≤8000²/(4N²)`.
+Since `√(N/(N+1))≤1`, the touching fiber is at most
+`8000² log(N+1)/(4N²∫φ²)`. The elementary bound `log(N+1)≤N` then gives a constant
+times `1/N` and proves convergence to zero, despite positivity at every finite horizon.
+
 The corpus's compact-support Lipschitz bound gives a quantitative refinement:
 `∫(φ(u)-φ(u+t))² ≤ 8000² t²(1+t)` for `t≥0`. For `N≥1,c≥2`, the adjacent
 profile lag is at most `2/c≤1`, giving normalized adjacent mass at most
-`4·8000²/(c²∫φ²)`. This rate is a further Lean obligation.
+`4·8000²/(c²∫φ²)`. The exact ratio, this rate, and the failure of a uniform floor are
+formalized in `GrowingOverlapHasNoUniformGramFloor`; finite Gram positivity is independently
+formalized in `ThePlateauOverlapGramIsNondegenerate`.

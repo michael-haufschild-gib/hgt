@@ -338,8 +338,9 @@ private theorem mesh_edge_square_mass {N : ℕ} (hN : 0 < N) (b : ℕ → ℝ)
     (∑ i ∈ range N, (b (i + 1) ^ 2 + b i ^ 2)) = 2 * ∑ i ∈ Ico 1 N, b i ^ 2 := by
   have hs : (∑ i ∈ range N, b (i + 1) ^ 2) = ∑ i ∈ range N, b i ^ 2 := by
     have he : (∑ i ∈ range N, b i ^ 2) - (∑ i ∈ range N, b (i + 1) ^ 2) = 0 := by
-      simpa only [sum_sub_distrib, hb0, hbN, sub_self] using
-        Finset.sum_range_sub' (fun i => b i ^ 2) N
+      have ht := Finset.sum_range_sub' (fun i => b i ^ 2) N
+      rw [sum_sub_distrib, hb0, hbN] at ht
+      exact ht.trans (by ring)
     exact (sub_eq_zero.mp he).symm
   have hi : (∑ i ∈ Ico 1 N, b i ^ 2) = ∑ i ∈ range N, b i ^ 2 := by
     rw [sum_Ico_eq_sub (fun i => b i ^ 2) hN]

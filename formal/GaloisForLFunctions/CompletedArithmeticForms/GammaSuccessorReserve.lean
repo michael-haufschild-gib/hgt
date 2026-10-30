@@ -40,7 +40,6 @@ theorem gammaShapeMoment_eq_pochhammer (r : ℝ) (n : ℕ) :
   | zero => simp
   | succ n ih =>
     rw [gammaShapeMoment_succ, ascPochhammer_succ_eval, ih]
-    ring
 
 /-- Consecutive integer nodes have the factorial Vandermonde determinant. -/
 theorem det_vandermonde_natCast (N : ℕ) :
@@ -56,8 +55,9 @@ theorem det_vandermonde_natCast (N : ℕ) :
       (fun j => fallingFactorialPoly_monic j.val)).symm
   have htri : E.BlockTriangular id := by
     intro i j hji
+    have hji' : j.val < i.val := hji
     dsimp [E]
-    rw [eval_fallingFactorialPoly, Nat.choose_eq_zero_of_lt hji, Nat.cast_zero, zero_mul]
+    rw [eval_fallingFactorialPoly, Nat.choose_eq_zero_of_lt hji', Nat.cast_zero, zero_mul]
   rw [← hE, Matrix.det_of_upperTriangular htri]
   exact prod_congr rfl fun i _ => by simp [E, eval_fallingFactorialPoly]
 
@@ -94,7 +94,7 @@ theorem det_scaledGammaHankel (g w r : ℝ) (N : ℕ) :
     (finiteHankelMatrix (scaledGammaMoment g w r) N).det =
       ∏ i : Fin N, (g * w ^ (2 * i.val) * (i.val.factorial : ℝ) * gammaShapeMoment r i.val) := by
   rw [scaledGammaHankel_eq, Matrix.det_smul, Matrix.det_mul, Matrix.det_mul,
-    Matrix.det_diagonal, Matrix.det_diagonal, det_gammaShapeHankel]
+    Matrix.det_diagonal, det_gammaShapeHankel]
   have hgprod : g ^ N = ∏ _i : Fin N, g := by simp
   simp only [Fintype.card_fin]
   rw [hgprod]
@@ -129,7 +129,58 @@ theorem scaledGamma_successorSchur {g w r : ℝ} (hg : 0 < g) (hw : 0 < w) (hr :
     exact hhead.det_pos.ne'
   exact (mul_left_cancel₀ hdet h).symm
 
+/-- Relative to the new diagonal, source mass and scale cancel from the exact reserve. -/
+theorem scaledGamma_successorSchur_div_diagonal {g w r : ℝ}
+    (hg : 0 < g) (hw : 0 < w) (hr : 0 < r) (N : ℕ) :
+    finiteHankelSuccessorSchur (scaledGammaMoment g w r) N /
+        scaledGammaMoment g w r (2 * N) =
+      (N.factorial : ℝ) / gammaShapeMoment (r + N) N := by
+  have hmoment := gammaShapeMoment_add r N N
+  rw [show N + N = 2 * N by omega] at hmoment
+  rw [scaledGamma_successorSchur hg hw hr, scaledGammaMoment, hmoment]
+  field_simp [hg.ne', pow_ne_zero _ hw.ne', (gammaShapeMoment_pos hr N).ne',
+    (gammaShapeMoment_pos (add_pos_of_pos_of_nonneg hr (Nat.cast_nonneg N)) N).ne']
+
+private theorem factorial_reserve_le_shifted_moment {r : ℝ} (hr : 1 / 2 ≤ r) (N : ℕ) :
+    (3 / 2 : ℝ) ^ N * (N.factorial : ℝ) ≤ gammaShapeMoment (r + N) N := by
+  have hr0 : 0 < r := lt_of_lt_of_le (by norm_num) hr
+  have hprod : ∀ j, j ≤ N →
+      (3 / 2 : ℝ) ^ j * (j.factorial : ℝ) ≤ gammaShapeMoment (r + N) j := by
+    intro j
+    induction j with
+    | zero => intro _; simp
+    | succ j ih =>
+      intro hj
+      have hjr : (j : ℝ) + 1 ≤ N := by exact_mod_cast hj
+      have hstep : (3 / 2 : ℝ) * ((j : ℝ) + 1) ≤ r + N + j := by
+        linarith only [hr, hjr, (Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
+      rw [pow_succ, Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one,
+        gammaShapeMoment_succ]
+      calc
+        _ = ((3 / 2 : ℝ) ^ j * (j.factorial : ℝ)) *
+            ((3 / 2 : ℝ) * ((j : ℝ) + 1)) := by ring
+        _ ≤ gammaShapeMoment (r + N) j * (r + N + j) :=
+          mul_le_mul (ih (by omega)) hstep (by positivity)
+            (gammaShapeMoment_pos (add_pos_of_pos_of_nonneg hr0 (Nat.cast_nonneg N)) j).le
+  exact hprod N le_rfl
+
+/-- Even the positive Gamma model loses an exponential fraction of each new diagonal. -/
+theorem gamma_successor_relative_reserve_le {r : ℝ} (hr : 1 / 2 ≤ r) (N : ℕ) :
+    (N.factorial : ℝ) / gammaShapeMoment (r + N) N ≤ (2 / 3 : ℝ) ^ N := by
+  have hr0 : 0 < r := lt_of_lt_of_le (by norm_num) hr
+  have hpos := gammaShapeMoment_pos (add_pos_of_pos_of_nonneg hr0 (Nat.cast_nonneg N)) N
+  apply (div_le_iff₀ hpos).mpr
+  have hcancel : (2 / 3 : ℝ) ^ N * (3 / 2 : ℝ) ^ N = 1 := by
+    rw [← mul_pow]
+    norm_num
+  calc
+    (N.factorial : ℝ) = (2 / 3 : ℝ) ^ N * ((3 / 2 : ℝ) ^ N * (N.factorial : ℝ)) := by
+      rw [← mul_assoc, hcancel, one_mul]
+    _ ≤ (2 / 3 : ℝ) ^ N * gammaShapeMoment (r + N) N :=
+      mul_le_mul_of_nonneg_left (factorial_reserve_le_shifted_moment hr N) (by positivity)
+
 #print axioms det_gammaShapeHankel
 #print axioms scaledGamma_successorSchur
+#print axioms gamma_successor_relative_reserve_le
 
 end GaloisForLFunctions.CompletedArithmeticForms

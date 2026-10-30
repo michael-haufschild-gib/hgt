@@ -303,7 +303,50 @@ the regulator anomaly (AIT).
   `N`, divisor `m` (`sectionsEquivQuot`), and with no conditions `h⁰(N, 0) = N`, the box-class size
   (`finrank_dirPolys`). A nonzero section exists iff `∏ p^{m_p} ≤ N` (`sections_ne_bot_iff`). The
   section count is defined without any sign and obeys `h⁰ = ⌊e^{deg}⌋`, `deg = log N − Σ m_p log p`:
-  the exact Riemann–Roch of the base, linear in `e^{deg}`.
+  the exact Riemann–Roch of the base, linear in `e^{deg}`. Calibration: over `𝔽_q[T]`, with
+  `u = q^{−s}`, a Dirichlet polynomial of length `q^d` is a polynomial of degree `≤ d` in `u`, and
+  divisibility by `(u^e − 1)^m` cuts out a space of dimension `d + 1 − em`
+  (`finrank_divisibleLT_eulerFactor`): there vanishing along a place of degree `e` costs `em`
+  conditions, shared by all places of that degree; over `ℤ` it costs `N − ⌊N/p^m⌋`.
+
+- **D‴. Approximate vanishing is almost divisibility** (`ApproximateVanishingIsAlmostDivisibility`).
+  On the progression of `p` a Dirichlet polynomial of length `N` is the exponential sum
+  `Σ_w C_w w^j` over the roots `w = e^{−2πi log n/log p}`, with `C_w` the `p`-tower sums
+  (`dirDeriv_zero_frobPoint_eq`). Distinct roots are `4/(Np log p)` apart, by integrality alone
+  (`norm_frobRoot_sub_ge`); on any stretch of `J` points the mean square is at least
+  `(J − 2|T|/δ) Σ|C_w|²` (`sum_normSq_expSum_ge`). Hence values at most `ε` on `J ≥ N²p log p`
+  consecutive points force `Σ_w |C_w|² ≤ 2ε²` (`sum_normSq_towerSums_le`): small values along a
+  progression are no cheaper than zeros, up to an `ε`-ball in coefficient space.
+
+- **D⁗. Small integer auxiliaries are divisible** (`SmallIntegerAuxiliariesAreDivisible`). The
+  `p`-tower sums of an integer auxiliary are integers, so D‴ with `ε < 1/√2` makes them vanish:
+  approximate vanishing on `N²p log p` consecutive points is vanishing on the whole progression
+  (`dirDeriv_frobPoint_eq_zero_of_small`). If `a = (1 − p^{−s})^k F`, the first `k` derivatives
+  vanish on the progression and the `k`-th is `k!(log p)^k F` (`dirDeriv_frobPoint_chain`); peeling
+  one Euler factor at a time, `|D^{(i)}| ≤ i!(log p)^i ε` for `i < m` forces vanishing to order `m`
+  (`vanishesAlong_of_small`), and a nonzero integer auxiliary small to orders `m_p` along `p ∈ S` has
+  `∏ p^{m_p} ≤ N` (`prod_pow_le_of_small`). The auxiliary `1` has `|D| = 1` everywhere
+  (`dirDeriv_single_one`), so `ε < 1` is necessary. This is the zero estimate for integer Dirichlet
+  polynomials, with no transcendence input.
+
+- **G. The twist tower collapses over `ℤ`** (`TheTwistTowerCollapsesOverTheIntegers`). Over `𝔽_q`
+  the quadratic twists of the `2^j`-power base changes complete the one-sided count (AKL). Over `ℤ`
+  the twist is `(−1)^Ω` and its base-change levels are `w_j(n) = (−1)^{Ω(n)/2^j} Λ(n)` on
+  `2^j ∣ Ω(n)` (`twistLevel`); level `0` is the Liouville twin (`twistLevel_zero`). For `j ≥ 1`
+  the level lives on prime powers `p^k`, `2^j ∣ k`, never on a prime, so its partial sums are at
+  most `ψ(x) − θ(x) ≤ 2√x log x` (`abs_partialSum_twistLevel_le`) and it lies in the square-root
+  class `𝒬` (`twistLevel_mem_sqrtClass`): invisible to the count. Every prime has degree one, so
+  the tower is its first level, the parity form of the global law, where one class suffices (AKL).
+
+- **H. Twins are seen by every large section** (`TwinsAreSeenByEveryLargeSection`). SSHA's gauge law
+  of the Gevrey window is intermittent (negative atomic tests for infinitely many `N`), because the
+  synthesis lives on the horizons `nB`. Along each residue class the shifted schedule keeps Gevrey
+  growth and finitely many classes cover all `N`, so a stable form negative on one test is negative
+  on some atomic test of **every** large horizon (`eventually_atomicTest_neg_of_stable_gevrey`); a
+  bounded twin is seen by every large section iff it is not Weil positive
+  (`eventually_negative_iff_of_gevrey`); the Liouville twin is, unconditionally
+  (`liouville_eventually_negative_of_gevrey`); under RH every large section separates `ζ`
+  (nonnegative) from its twin (negative) (`riemannHypothesis_imp_liouville_separation_of_gevrey`).
 
 Targets:
 
@@ -344,6 +387,7 @@ Targets:
 | A count route must reject finite flips | Every finite flip set lies in the count's stabilizer `𝒬`; only a full-positivity claim must see a flip |
 | Positivity at every fixed `c` gives positivity along `c_N → ∞` | The horizon `N₀(c)` may grow faster than any schedule; bounded-overlap completeness is not established |
 | The proven positivity and the sharp receiver share a profile | Positivity is proved for the plateau, the sharp receiver for the Steklov profile; a signed transfer is needed |
+| Vanishing at a point costs a bounded number of conditions | Over `𝔽_q[T]` the places of one degree share one progression; over `ℤ` each prime has its own, and vanishing along it at length `N` costs `N − ⌊N/p⌋` conditions (§7.2 D″); small values cost the same up to an `ε`-ball (D‴) |
 | A scalar positive symbol pays the shells | After the paid block the form is a Schur complement; cross-mode and cross-annulus terms are part of one operator |
 
 ---
@@ -363,10 +407,15 @@ Targets:
 4. **W14: what can an auxiliary over `ℤ` certify, and where is precision lost?** The zero estimate
    is exact in both rings that carry the primes: in `ℤ` the Bézout ledger `Σ m_p log p ≤ log A`
    (AKL), in the group ring the Bézout theorem `Σ m_p log p ≤ log N` for vanishing on Frobenius
-   progressions (D), sharp at the Euler factors. Neither loses precision; the count they produce is
+   progressions (D), sharp at the Euler factors; for integer auxiliaries smallness below `1/√2` on a
+   long stretch already is vanishing (D⁗). Neither loses precision; the count they produce is
    Chebyshev's because nothing makes the vanishing conditions cheap. Open: the flatness identity.
 5. **W1: which statements of the theory are selective, and at which scale does selectivity first
-   appear?** In the finite sections: the flip threshold `c*(p)`.
+   appear?** Along a Gevrey schedule selectivity is eventual, not intermittent: a twin failing
+   Weil positivity is seen by every large section (§7.2 H). At fixed overlap the Liouville twin is
+   seen at every large horizon once `c` exceeds the Robin–Euler threshold of the profile (TM,
+   `eventually_liouville_weilQuadTw_neg_of_gt_robinEuler`); for the remote flips the threshold
+   `c*(p)` is open.
 6. **Converse Krein–Langer on `Γ`: is finite index a Krein–Langer decomposition for every kernel?**
    Yes for orbit kernels of tempered configurations, with infinite on-line spectral support, for
    absolutely convergent Bohr series and for finite exponential sums (HKT); every kernel of index `κ`
@@ -386,7 +435,12 @@ inversion of the factorial identity; ceilings for integer auxiliaries.
 Built: index carriers of finite spectra, tower windows and two-element boxes
 (`IndexCarriersOfFiniteSpectra`); the Bézout theorem for Dirichlet polynomials along Frobenius
 progressions, the tower quotient by an Euler factor, exponential sums on `ℤ` with distinct
-frequencies (`TheBezoutTheoremOfTheMultiplicativeGroup`); certifying towers of given height in
+frequencies (`TheBezoutTheoremOfTheMultiplicativeGroup`); the section spaces with their exact
+dimension and the `𝔽_q[T]` calibration (`TheRiemannRochTheoremOfTheMultiplicativeGroup`);
+separation of Frobenius roots and mean values on a stretch of a progression
+(`ApproximateVanishingIsAlmostDivisibility`); the Taylor coefficients of powers of the Euler
+factor and the integrality step (`SmallIntegerAuxiliariesAreDivisible`); the residue-class upgrade
+from frequent to eventual negativity (`TwinsAreSeenByEveryLargeSection`); certifying towers of given height in
 `⟨2, 3⟩` (`TheHassePrincipleWithHeights`); the
 polarization of Weil's form on real tests, its two-sided continuity in the synthesis norms,
 Gram-matrix convergence of synthesized families, the compression of real atomic families into the
@@ -398,7 +452,8 @@ atomic Gram matrix, and the transfer from synthesis to index (`TheExplicitSchedu
 
 1. **Converse Krein–Langer on `Γ`.** A common invariant negative subspace for all prime translations of
    the Pontryagin space of a finite-index kernel.
-2. **Arithmetic Stepanov.** The zero estimate is proved and exact (§7.2 D, D″); open are the
+2. **Arithmetic Stepanov.** The zero estimate is proved and exact (§7.2 D, D″), also for integer
+   auxiliaries that are only small (D⁗); open are the
    existence half, an identity on the primes playing `x^q = x` that makes vanishing along Frobenius
    progressions cheap, and the odd-class upper count at a power precision.
 3. **Quadratic Riemann–Roch on the scaling surface.** A section count of box-class size `N` defined
@@ -412,6 +467,9 @@ atomic Gram matrix, and the transfer from synthesis to index (`TheExplicitSchedu
 6. **Local-to-global with heights.** Explicit certifying primes; locality when the depth supremum is
    not attained.
 7. **Geometry of the parity twin over `ℤ`.** The object whose base changes produce the Liouville twist.
+   The `Ω`-degree gives every prime degree one, and its base-change tower is invisible above the
+   first level (§7.2 G): a visible tower needs points of every degree, which `ℚ_{>0}` lacks; vertical
+   shifts realize the twin only in the Bohr closure (AKL).
 8. **Arithmetic Herglotz theory.** Positive measures from primes and the successor whose moments are
    explicit-formula values.
 9. **Infinite symmetry.** Polar divisors of positive-genus affine Eisenstein series.

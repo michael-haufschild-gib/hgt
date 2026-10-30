@@ -52,7 +52,10 @@ theorem sum_abs_mul_directed_schur (N : ℕ) (x : ℕ → ℝ) (V : ℕ → ℕ 
       rw [← Real.sqrt_inv, inv_div]
     have h := mul_le_mul_of_nonneg_right (directed_young (x m) (x n) ha ht) (hV m n)
     rw [hinv]
-    convert h using 1 <;> ring
+    calc
+      _ ≤ (x m ^ 2 * (Real.sqrt ((m : ℝ) / n) / t) +
+          x n ^ 2 * (t / Real.sqrt ((m : ℝ) / n))) * V m n := h
+      _ = _ := by ring
   have hswap : (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, |x m| * |x n| * V n m) =
       ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, |x m| * |x n| * V m n := by
     rw [sum_comm]
@@ -107,7 +110,8 @@ theorem abs_nonRatioForm_le_directed_rows {g : ℝ → ℝ} {w t : ℝ}
   let V : ℕ → ℕ → ℝ := fun m n =>
     ∑ k ∈ range L, vonMangoldtAtom k * upInd w k m n
   have hV : ∀ m n, 0 ≤ V m n := fun m n =>
-    sum_nonneg fun k _ => mul_nonneg (vonMangoldtAtom_nonneg' k) (upInd_nonneg _ _ _ _)
+    sum_nonneg fun k _ => mul_nonneg (SpacingScaleHarmonicAnalysis.vonMangoldtAtom_nonneg' k)
+      (upInd_nonneg _ _ _ _)
   have hsource : |nonRatioForm g N x| ≤
       G * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, |x m| * |x n| * (V m n + V n m) := by
     rw [hfin]
@@ -116,9 +120,9 @@ theorem abs_nonRatioForm_le_directed_rows {g : ℝ → ℝ} {w t : ℝ}
           (G * ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
             |x m| * |x n| * (upInd w k m n + upInd w k n m)) := by
         refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun k _ => ?_)
-        rw [abs_mul, abs_of_nonneg (vonMangoldtAtom_nonneg' k)]
+        rw [abs_mul, abs_of_nonneg (SpacingScaleHarmonicAnalysis.vonMangoldtAtom_nonneg' k)]
         exact mul_le_mul_of_nonneg_left (abs_nonRatioLag_le hg hgc hsupp N k x)
-          (vonMangoldtAtom_nonneg' k)
+          (SpacingScaleHarmonicAnalysis.vonMangoldtAtom_nonneg' k)
       _ = _ := by
         simp only [V, ← sum_add_distrib, mul_sum, ← mul_add]
         rw [sum_comm]
@@ -298,7 +302,6 @@ theorem abs_nonRatioForm_le_relative_defect {g : ℝ → ℝ} {w K ε : ℝ}
       t * nonRatioDownConstant * K * (2 * psiConstant + 1) = nonRatioRelativeCost K ε := by
     dsimp only [t, nonRatioRelativeCost]
     field_simp [nonRatioDownConstant_pos.ne', hK.ne', hε.ne']
-    ring
   rwa [heq, hcost] at h
 
 /-- The actual overlapping prime form, normalized by atom mass and with its logarithmic

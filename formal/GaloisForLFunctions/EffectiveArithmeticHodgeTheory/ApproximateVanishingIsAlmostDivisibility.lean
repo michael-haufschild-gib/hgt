@@ -253,7 +253,7 @@ theorem sum_normSq_expSum_ge {T : Finset ℂ} (hT1 : ∀ t ∈ T, ‖t‖ = 1) {
         (∑ t ∈ T, ∑ t' ∈ T, C t * conj (C t') * (t * conj t') ^ (J₀ + (j : ℤ))).re := fun j => by
       have h1 : (((‖∑ t ∈ T, C t * t ^ (J₀ + j)‖ ^ 2 : ℝ)) : ℂ) =
           (∑ t ∈ T, C t * t ^ (J₀ + j)) * conj (∑ t ∈ T, C t * t ^ (J₀ + j)) := by
-        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]; push_cast
+        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
       rw [← Complex.ofReal_re (‖_‖ ^ 2), h1, map_sum, Finset.sum_mul_sum]
       congr 1
       refine Finset.sum_congr rfl fun t _ => Finset.sum_congr rfl fun t' _ => ?_

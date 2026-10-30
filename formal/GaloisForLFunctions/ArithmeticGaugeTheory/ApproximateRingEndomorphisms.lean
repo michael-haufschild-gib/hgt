@@ -96,8 +96,7 @@ theorem norm_le_one_of_bounded {φ : ℕ → ℂ} (hφ : IsCompletelyMultiplicat
     {C : ℝ} (hC : ∀ n, n ≠ 0 → ‖φ n‖ ≤ C) : ∀ n, n ≠ 0 → ‖φ n‖ ≤ 1 := by
   intro n hn
   by_contra hgt
-  push_neg at hgt
-  obtain ⟨k, hk⟩ := pow_unbounded_of_one_lt C hgt
+  obtain ⟨k, hk⟩ := pow_unbounded_of_one_lt C (not_le.mp hgt)
   have := hC (n ^ k) (pow_ne_zero k hn)
   rw [map_pow_of_isCompletelyMultiplicative hφ hn k h1, norm_pow] at this
   linarith
@@ -139,9 +138,10 @@ theorem approxRingEndomorphism_classification {φ : ℕ → ℂ} (hφ : IsComple
     by_cases h1 : φ 1 = 1
     · exact norm_le_one_of_bounded hφ h1 hbdd
     · have h0 : φ 1 = 0 := by
-        rcases mul_self_eq_self.mp h11 with h | h
+        have hfac : φ 1 * (φ 1 - 1) = 0 := by rw [mul_sub, h11, mul_one, sub_self]
+        rcases mul_eq_zero.mp hfac with h | h
         · exact h
-        · exact absurd h h1
+        · exact absurd (sub_eq_zero.mp h) h1
       intro n hn
       have := hφ n 1 hn one_ne_zero
       rw [mul_one, h0, mul_zero] at this
@@ -152,11 +152,12 @@ theorem approxRingEndomorphism_classification {φ : ℕ → ℂ} (hφ : IsComple
 theorem additiveDefectBounded_of_norm_le_one {φ : ℕ → ℂ} (h : ∀ n, n ≠ 0 → ‖φ n‖ ≤ 1) :
     AdditiveDefectBounded φ 3 := by
   intro a b ha hb
-  calc ‖φ (a + b) - φ a - φ b‖ ≤ ‖φ (a + b)‖ + ‖φ a‖ + ‖φ b‖ := by
-        refine (norm_sub_le _ _).trans ?_
-        exact add_le_add_right (norm_sub_le _ _) _
-    _ ≤ 1 + 1 + 1 := add_le_add (add_le_add (h _ (by omega)) (h a ha)) (h b hb)
-    _ = 3 := by norm_num
+  have hab := h (a + b) (by omega)
+  have ha1 := h a ha
+  have hb1 := h b hb
+  calc ‖φ (a + b) - φ a - φ b‖ ≤ ‖φ (a + b) - φ a‖ + ‖φ b‖ := norm_sub_le _ _
+    _ ≤ ‖φ (a + b)‖ + ‖φ a‖ + ‖φ b‖ := by linarith [norm_sub_le (φ (a + b)) (φ a)]
+    _ ≤ 3 := by linarith
 
 /-- The identity is an exact ring endomorphism. -/
 theorem additiveDefectBounded_id : AdditiveDefectBounded (fun n => (n : ℂ)) 0 := by
@@ -199,7 +200,8 @@ theorem ringEndomorphism_classification {φ : ℕ → ℂ} (hφ : IsCompletelyMu
       exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
     have h10 : φ 1 = 0 := by
       have h2 := hball 2 two_ne_zero
-      rw [hlin 2 two_ne_zero, norm_mul, Complex.norm_ofNat] at h2
+      rw [hlin 2 two_ne_zero, norm_mul, Complex.norm_natCast] at h2
+      norm_num at h2
       have h1 := hball 1 one_ne_zero
       by_contra hne
       have hpos : 0 < ‖φ 1‖ := norm_pos_iff.mpr hne

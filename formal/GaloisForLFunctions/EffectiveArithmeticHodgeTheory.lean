@@ -3,6 +3,10 @@ import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheExplicitSchedulesRe
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.IndexCarriersOfFiniteSpectra
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheBezoutTheoremOfTheMultiplicativeGroup
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheRiemannRochTheoremOfTheMultiplicativeGroup
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.ApproximateVanishingIsAlmostDivisibility
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.SmallIntegerAuxiliariesAreDivisible
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheTwistTowerCollapsesOverTheIntegers
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TwinsAreSeenByEveryLargeSection
 
 /-!
 # Effective Arithmetic Hodge Theory of the multiplicative group of `ℚ`
@@ -25,6 +29,15 @@ the Weil kernel and what they carry.
 * **Riemann–Roch.** The sections of length `N` vanishing to orders `m_p` along the progressions form
   a space of dimension `⌊N/∏p^{m_p}⌋`; multiplication by the Euler factor and the tower quotient
   are inverse isomorphisms between consecutive divisors.
+* **Approximate Bézout.** Values at most `ε` on `N²p log p` consecutive points of the progression of
+  `p` force every `p`-tower sum to be `√2 ε`-small in `ℓ²`: the roots `e^{−2πi log n/log p}` are
+  `4/(Np log p)`-separated by integrality, and the mean square on a stretch sees the diagonal.
+* **Integer auxiliaries.** For integer coefficients, smallness below `1/√2` on a long stretch of a
+  progression is vanishing on all of it, order by order: the zero estimate for `ℤ[Γ]`.
+* **Selectivity in sections.** A bounded twin that fails Weil positivity is seen by every large
+  section of a Gevrey schedule; under RH every large section separates `ζ` from its Liouville twin.
+* **Parity.** The twist tower of the Liouville character collapses over `ℤ`: its base-change levels
+  above the first live on proper prime powers and lie in the square-root class.
 
 See `EffectiveArithmeticHodgeTheory/README.md`.
 -/

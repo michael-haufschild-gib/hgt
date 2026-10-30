@@ -44,6 +44,7 @@ import GaloisForLFunctions.ArithmeticLorentzianGeometry.PolarGluingAndDispersion
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheTiltedMarginPaysThePolarDispersion
 
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.TheHalfDefectIsTheOptimalHodgeRepair
+import GaloisForLFunctions.ArithmeticLorentzianGeometry.ThePoleIsInfinitesimalRelativeToThePrimeDefect
 
 /-!
 # Arithmetic Lorentzian Geometry

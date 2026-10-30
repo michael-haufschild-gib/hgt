@@ -34,6 +34,13 @@ positive survivors. Do not duplicate HKT/AKL/ASRP modules.
   `eventually_le_hermNegIndex_of_synthesis`).
 - `IndexCarriersOfFiniteSpectra` (tower windows, two-element boxes, two-prime boxes).
 - `TheBezoutTheoremOfTheMultiplicativeGroup` (zero estimate along Frobenius progressions, sharp).
+- `TheRiemannRochTheoremOfTheMultiplicativeGroup` (`h⁰(N, m) = ⌊N/∏p^{m_p}⌋`).
+- `ApproximateVanishingIsAlmostDivisibility` (ε-small values on `N²p log p` points ⇒ tower sums
+  `√2 ε`-small).
+- `SmallIntegerAuxiliariesAreDivisible` (integer auxiliaries: small on a stretch ⇒ divisible; zero estimate).
+- `TheTwistTowerCollapsesOverTheIntegers` (levels `j ≥ 1` of the Liouville twist tower lie in `𝒬`).
+- `TwinsAreSeenByEveryLargeSection` (SSHA gauge law upgraded from frequently to eventually).
+- 𝔽_q calibration `finrank_divisibleLT_eulerFactor` (in the Riemann–Roch module).
 
 ## Open / blocked
 - A′ Steklov schedules: `tendsto_dcLogSynthesis` and `abs_iteratedDeriv_mollify_le_dcLogWeight` are
@@ -42,8 +49,10 @@ positive survivors. Do not duplicate HKT/AKL/ASRP modules.
 - Bandwidth dictionary (C): built in SSHA (`OverlapCoordinates`, `TheNormalizedAtomicTransform`).
 - Shell symbol (E), flip threshold (F): being developed in CACT and TM/BoundedOverlap by other
   agents; do not duplicate.
-- Next: Riemann–Roch of the base (dimension of Dirichlet polynomials of length `N` vanishing to
-  orders `m_p` along Frobenius progressions is `⌊N/∏p^{m_p}⌋`).
+- A′ export of the two TM lemmas requested from peer sessions (hgt-b7, hgt-3b), no reply yet.
+- Open research cores (README §11): converse Krein–Langer on Γ, flatness identity / producer,
+  quadratic Riemann–Roch on a surface, covariant regulators, Herglotz, infinite symmetry,
+  depth-sensitive census, constrained inversion.
 
 ## Leads checked (exist; do not redo)
 - `ArithmeticCastelnuovoSeveri.deepSparse_tower_law` holds for every `ℓ > 0`.
@@ -54,3 +63,4 @@ positive survivors. Do not duplicate HKT/AKL/ASRP modules.
 
 ## Log
 - 2026-10-29 — created; README first draft written; pillars A and B proved.
+- 2026-10-30 — carriers, Bézout, Riemann–Roch, approximate Bézout, integer rigidity, twist tower, eventual gauge law.

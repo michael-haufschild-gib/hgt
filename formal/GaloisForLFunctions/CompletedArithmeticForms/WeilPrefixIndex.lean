@@ -1,4 +1,5 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.APositivePrefixGivesTheExactSchurReduction
+import GaloisForLFunctions.TransMetzlerWeilPositivity.TransMetzlerYoungOptimization
 
 /-!
 # A macroscopic upper index bound for the complete Weil source
@@ -24,7 +25,7 @@ private def horizonTailEquivFin (M N : ℕ) : HorizonTail M N ≃ Fin (N - M) wh
     have ht := n.property
     omega⟩
   invFun i := ⟨⟨M + i.val + 1, mem_Icc.mpr ⟨by omega, by have := i.isLt; omega⟩⟩,
-    by omega⟩
+    by change M < M + i.val + 1; omega⟩
   left_inv n := by
     apply Subtype.ext
     apply Subtype.ext
@@ -60,20 +61,16 @@ private theorem completeWeil_quad_eq_prefix {M N : ℕ} (hMN : M ≤ N)
   rw [htail, add_zero]
   refine sum_congr rfl fun n _ => ?_
   rw [sum_horizon_split hMN]
-  simp only [hx, mul_zero, zero_mul, sum_const_zero, add_zero,
+  simp only [hx, mul_zero, sum_const_zero, add_zero,
     plateauPrefixBlock, Matrix.submatrix_apply]
 
-/-- Tail coordinates distinguish every vector in a negative subspace of the actual source. -/
-theorem eventually_completeWeil_negative_subspace_dim_le_tail :
-    ∀ᶠ M : ℕ in atTop, ∀ N : ℕ, ∀ hMN : M ≤ N, ∀ c : ℝ,
-      0 < c → c * M ≤ N →
-      ∀ W : Submodule ℝ (PrimeHorizonIndex N → ℝ),
-        (∀ x ∈ W, x ≠ 0 → x ⬝ᵥ (completeWeilMatrix transMetzlerProfile c N).mulVec x < 0) →
-          Module.finrank ℝ W ≤ N - M := by
+private theorem negative_subspace_dim_le_tail_of_posDef_prefix {M N : ℕ}
+    (hMN : M ≤ N) (c : ℝ) (hprefix : (plateauPrefixBlock hMN c).PosDef)
+    (W : Submodule ℝ (PrimeHorizonIndex N → ℝ))
+    (hW : ∀ x ∈ W, x ≠ 0 →
+      x ⬝ᵥ (completeWeilMatrix transMetzlerProfile c N).mulVec x < 0) :
+    Module.finrank ℝ W ≤ N - M := by
   classical
-  filter_upwards [eventually_plateauPrefixBlock_posDef] with M hM
-  intro N hMN c hc hcM W hW
-  have hprefix := hM N hMN c hc hcM
   let F : W →ₗ[ℝ] (HorizonTail M N → ℝ) :=
     { toFun := fun x n => x.val n.val
       map_add' := fun _ _ => rfl
@@ -93,6 +90,38 @@ theorem eventually_completeWeil_negative_subspace_dim_le_tail :
   have hdim := LinearMap.finrank_le_finrank_of_injective hinj
   simpa only [Module.finrank_fintype_fun_eq_card, card_horizonTail] using hdim
 
+/-- Tail coordinates distinguish every vector in a negative subspace of the actual source. -/
+theorem eventually_completeWeil_negative_subspace_dim_le_tail :
+    ∀ᶠ M : ℕ in atTop, ∀ N : ℕ, ∀ _hMN : M ≤ N, ∀ c : ℝ,
+      0 < c → c * M ≤ N →
+      ∀ W : Submodule ℝ (PrimeHorizonIndex N → ℝ),
+        (∀ x ∈ W, x ≠ 0 → x ⬝ᵥ (completeWeilMatrix transMetzlerProfile c N).mulVec x < 0) →
+          Module.finrank ℝ W ≤ N - M := by
+  filter_upwards [eventually_plateauPrefixBlock_posDef] with M hM
+  intro N hMN c hc hcM W hW
+  exact negative_subspace_dim_le_tail_of_posDef_prefix hMN c (hM N hMN c hc hcM) W hW
+
+/-- Every fixed prefix ratio in the full certified Young range yields an actual upper index bound. -/
+theorem eventually_completeWeil_negative_subspace_dim_le_young_tail
+    {d : ℝ} (hd : 1 ≤ d) (hdb : d < transMetzlerCertifiedBoundary) :
+    ∀ᶠ M : ℕ in atTop, ∀ N : ℕ, ∀ _hMN : M ≤ N, ∀ c : ℝ,
+      0 < c → c * M = d * N →
+      ∀ W : Submodule ℝ (PrimeHorizonIndex N → ℝ),
+        (∀ x ∈ W, x ≠ 0 → x ⬝ᵥ (completeWeilMatrix transMetzlerProfile c N).mulVec x < 0) →
+          Module.finrank ℝ W ≤ N - M := by
+  filter_upwards [eventually_completeWeilMatrix_posDef_before_young_boundary hd hdb,
+    eventually_ge_atTop (1 : ℕ)] with M hpos hM
+  intro N hMN c hc hscale W hW
+  have hNr : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have he : c * M / N = d := by
+    apply mul_right_cancel₀ hNr.ne'
+    rw [div_mul_cancel₀ _ hNr.ne']
+    exact hscale
+  have hprefix : (plateauPrefixBlock hMN c).PosDef := by
+    rw [plateauPrefixBlock_eq hM hMN hc, he]
+    exact hpos
+  exact negative_subspace_dim_le_tail_of_posDef_prefix hMN c hprefix W hW
+
 /-- At fixed overlap three halves, negative directions occupy at most one third of the horizon. -/
 theorem eventually_three_halves_negative_subspace_dim_le :
     ∀ᶠ K : ℕ in atTop,
@@ -109,5 +138,6 @@ theorem eventually_three_halves_negative_subspace_dim_le :
 
 #print axioms eventually_completeWeil_negative_subspace_dim_le_tail
 #print axioms eventually_three_halves_negative_subspace_dim_le
+#print axioms eventually_completeWeil_negative_subspace_dim_le_young_tail
 
 end GaloisForLFunctions.CompletedArithmeticForms

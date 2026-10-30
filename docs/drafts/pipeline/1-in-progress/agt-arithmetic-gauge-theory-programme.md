@@ -37,3 +37,22 @@ Pillar modules (planned order):
 
 ## Log
 - 2026-10-29 — created; README draft written.
+- 2026-10-30 — formalized and checked: TheAdditivelyInvariantPoint, ApproximateRingEndomorphisms,
+  TheDivisorCollapse, TheShellDecomposition, TheGaugeExponent (exponent at 0 = Θ). Next: factorial-ratio
+  multiplicity, coherence principle, exponent along the archimedean line.
+- 2026-10-30 — also checked: FactorialRatiosHaveBoundedMultiplicity, TheCoherencePrinciple,
+  TheArchimedeanLineCarriesTheExponent, TheGaugeExponentIsATailInvariant, TheAdamsOperations,
+  TheMajorArcsOfTheShells, AffineInvariantKernelsAreTrivial, TheExponentIsNotGaugeInvariant.
+  README v2 written. Open: growing-multiplicity producer, 0-1 law, a.e. exponent = 1/2,
+  shell repayment, affine KL with boundary, index ceiling.
+- 2026-10-30 — checked: TheLiouvillePointsHaveExponentOne (+ cylinder no-go), TheGaugeExponentZeroOneLaw
+  (general tail-invariant sources), TheFiniteGaugePointsSampleHaar (large sieve on G),
+  TheDirichletPointsCancelThroughPeriodicity, TheTypicalExponentIsOneHalf (a.e. exponent exactly 1/2 via
+  top-prime block + Paley–Zygmund + PNT), TheSpecialPointsOfTheConstantSourceAreAtypical (special locus
+  0 or 1; typical modulo the pole). Open: exponent floor (is 1/2 the minimum over G?), producer,
+  BV for shells, shell repayment, affine KL with boundary, positive index ceiling.
+- 2026-10-30 — checked: TheTrivialPointIsNeverBetterThanTypical (RH ⟺ exp(0) = θ_typ), TheSpecialLocusReadsGRH
+  (Möbius exponent at primitive Dirichlet points = Θ_χ ≥ 1/2; GRH(χ) ⟺ typical), TheSpecialLocusIsTypicalOnAverage
+  (large sieve: ≤ 2N^{1−2ε} atypical points up to conductor √N), TheLiouvillePointIsTheAntipode
+  (S_N(ℓ) + S_N(0) = 2ψ(√N); pole ±1 separates the twins). Producer target as phrased in the review is
+  excluded by the Bézout ledger for a single integer; the open form is AKLT's precision = size/multiplicity.

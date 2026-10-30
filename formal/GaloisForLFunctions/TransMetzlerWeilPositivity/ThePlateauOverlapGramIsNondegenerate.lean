@@ -89,17 +89,9 @@ theorem plateau_overlap_gram_strictly_positive {N : ℕ} {x : ℕ → ℝ}
     (hx : ∃ n ∈ Icc 1 N, x n ≠ 0) {w : ℝ} (hw : 0 < w) :
     0 < ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n *
       bumpCorr (atomDilate transMetzlerProfile w) (-(Real.log n - Real.log m)) := by
-  have hg : Continuous (atomDilate transMetzlerProfile w) :=
-    contDiff_transMetzlerProfile.continuous.comp (continuous_id.div_const w)
-  have hgc : HasCompactSupport (atomDilate transMetzlerProfile w) := by
-    have heq : atomDilate transMetzlerProfile w = fun u => transMetzlerProfile (w⁻¹ * u) := by
-      funext u
-      dsimp only [atomDilate]
-      congr 1
-      ring
-    rw [heq]
-    exact hasCompactSupport_transMetzlerProfile.comp_smul (inv_ne_zero hw.ne')
-  rw [← integral_atomicTest_sq_eq_gram hg hgc]
+  obtain ⟨hg, _, hgc⟩ := RenormalizedArithmeticPotentialTheory.atomDilate_facts
+    contDiff_transMetzlerProfile (fun u hu => transMetzlerProfile_eq_zero hu) hw
+  rw [← integral_atomicTest_sq_eq_gram hg.continuous hgc N x]
   exact integral_plateau_atomicTest_sq_pos hx hw
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity

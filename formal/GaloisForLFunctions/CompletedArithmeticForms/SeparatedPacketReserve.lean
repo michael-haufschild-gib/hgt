@@ -28,9 +28,11 @@ theorem packetCoefficient_adjacent_mul_eq_zero {ι : Type*} (s : Finset ι)
     (hsep : ∀ i ∈ s, ∀ j ∈ s, k i + 1 ≠ k j) (r : ℕ) :
     packetCoefficient s k a r * packetCoefficient s k a (r + 1) = 0 := by
   classical
-  simp only [packetCoefficient, sum_mul, mul_sum]
+  unfold packetCoefficient
+  rw [sum_mul]
   apply sum_eq_zero
   intro i hi
+  rw [mul_sum]
   apply sum_eq_zero
   intro j hj
   by_cases hri : r = k i
@@ -45,8 +47,10 @@ theorem dirichletEnergy_separated {Q : ℕ} (hQ : 0 < Q) (b : ℕ → ℝ)
     dirichletEnergy Q b = 2 * ∑ r ∈ Ico 1 Q, b r ^ 2 := by
   have hshift : (∑ r ∈ range Q, b (r + 1) ^ 2) = ∑ r ∈ range Q, b r ^ 2 := by
     have h := Finset.sum_range_sub' (fun r => b r ^ 2) Q
-    simp only [sum_sub_distrib, hb0, hbQ, zero_pow (by omega), sub_self] at h
-    exact (sub_eq_zero.mp h).symm
+    rw [sum_sub_distrib, hb0, hbQ] at h
+    have hz : (∑ r ∈ range Q, b r ^ 2) - (∑ r ∈ range Q, b (r + 1) ^ 2) = 0 :=
+      h.trans (by ring)
+    exact (sub_eq_zero.mp hz).symm
   have hinterior : (∑ r ∈ Ico 1 Q, b r ^ 2) = ∑ r ∈ range Q, b r ^ 2 := by
     rw [sum_Ico_eq_sub (fun r => b r ^ 2) hQ]
     simp [hb0]
@@ -68,7 +72,8 @@ theorem packetBridge_separated_reserve {ι : Type*} (s : Finset ι) (k : ι → 
     funext r
     by_cases hr : r ∈ Ico 1 Q
     · simp only [interiorExtension, if_pos hr]
-    · rw [interiorExtension, if_neg hr, packetCoefficient_zero_outside s k a hk hr]
+    · rw [interiorExtension, if_neg hr]
+      exact (packetCoefficient_zero_outside s k a hk hr).symm
   have hC0 : C 0 = 0 := packetCoefficient_zero_outside s k a hk (by simp)
   have hCQ : C Q = 0 := packetCoefficient_zero_outside s k a hk (by simp)
   have hD : dirichletEnergy Q C = 2 * ∑ i ∈ s, a i ^ 2 := by
@@ -79,6 +84,7 @@ theorem packetBridge_separated_reserve {ι : Type*} (s : Finset ι) (k : ι → 
       (1 / 2 : ℝ) * ∑ i ∈ s, a i ^ 2 := by
     rw [mul_sum]
     refine sum_congr rfl fun i hi => ?_
+    dsimp only [C]
     rw [packetCoefficient_at s k a hinj hi]
     ring
   have h := packetBridge_schur_bound s k a hQ hk (fun r => (1 / 2 : ℝ) * C r)
