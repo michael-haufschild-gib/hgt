@@ -114,7 +114,7 @@ theorem one_le_mul_pow_of_cycleFamily (hθ0 : 0 ≤ θ) (hθ1 : θ < 1)
     {p : ℕ → ℕ} (hp : ∀ n, Real.exp (birkhoff φ (P n) (x n)) = p n)
     (hprime : ∀ᶠ n in atTop, (p n).Prime) : 1 ≤ a * θ ^ L := by
   by_contra hlt
-  push_neg at hlt
+  rw [not_le] at hlt
   set δ : ℕ → ℝ := fun n =>
     birkhoff φ (P (n + 1)) (x (n + 1)) - birkhoff φ L y - birkhoff φ (P n) (x n) with hδ
   refine not_eventually_prime_of_ratio ha (pow_nonneg hθ0 L) hlt
@@ -192,8 +192,8 @@ theorem minimalPeriod_fixedPointFamily {a b : Fin k} (hab : a ≠ b) (n : ℕ) :
       rw [Nat.ModEq, h, Nat.add_zero, Nat.mod_eq_of_lt (by omega)]
     exact Nat.modEq_zero_iff_dvd.mp (Nat.ModEq.add_left_cancel' n hmod)
 
-theorem isAdmissible_fixedPointFamily {A : Fin k → Fin k → Prop} {a b : Fin k} (hab : a ≠ b)
-    (haa : A a a) (hab' : A a b) (hba : A b a) (n : ℕ) :
+theorem isAdmissible_fixedPointFamily {A : Fin k → Fin k → Prop} {a b : Fin k} (haa : A a a)
+    (hab' : A a b) (hba : A b a) (n : ℕ) :
     IsAdmissible A (fixedPointFamily a b n) := by
   intro i
   -- after a `b` comes an `a`
@@ -225,7 +225,7 @@ theorem one_le_exp_mul_of_isPrimeLength (hθ0 : 0 ≤ θ) (hθ1 : θ < 1)
   have hb1 : birkhoff φ 1 (fun _ : ℕ => a) = φ (fun _ => a) := by simp [birkhoff]
   rw [hb1] at hqa
   -- the family members have prime lengths over their least periods `n + 2`
-  have hfam := fun n => isAdmissible_fixedPointFamily hab haa hab' hba n
+  have hfam := fun n => isAdmissible_fixedPointFamily haa hab' hba n
   choose p hp using fun n => hPL _ (hfam n) (n + 2) (by omega)
     (minimalPeriod_fixedPointFamily hab n)
   have h := one_le_mul_pow_of_cycleFamily hθ0 hθ1 hh (isCycleFamily_fixedPointFamily a b) hya

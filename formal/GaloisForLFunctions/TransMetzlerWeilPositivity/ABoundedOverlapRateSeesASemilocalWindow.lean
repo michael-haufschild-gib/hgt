@@ -173,7 +173,9 @@ private theorem tendsto_dcLogSynthesis_of_rate {κ : ℕ → ℝ} (hk : Tendsto 
   have hδ : 0 < Real.exp (-1) - 24 * Bφ * B / K := by
     rw [sub_pos, div_lt_iff₀ hK0]
     have he : Real.exp 1 * Real.exp (-1) = 1 := by rw [← Real.exp_add]; norm_num
-    nlinarith [Real.exp_pos (-1)]
+    have h1 := mul_lt_mul_of_pos_right hKB (Real.exp_pos (-1))
+    rw [mul_assoc (24 * Bφ * B), he, mul_one] at h1
+    linarith
   have hsmall : Tendsto (fun n : ℕ => 24 * b * (Real.log ((n * B : ℕ) : ℝ) ^ (3 : ℝ) / n) +
       144 * (Real.log ((n * B : ℕ) : ℝ) ^ (4 : ℝ) / n)) atTop (𝓝 0) := by
     have := ((tendsto_log_rpow_div (r := 3) hB).const_mul (24 * b)).add
@@ -391,8 +393,10 @@ theorem tendsto_div_const_mul_dcScale {K : ℝ} (hK : 0 < K) :
     have : Real.log (Real.log (Real.log N)) ^ 2 ≤ Real.log (Real.log (Real.log N)) ^ 3 :=
       pow_le_pow_right₀ hu (by norm_num)
     exact mul_le_mul_of_nonneg_left this (by linarith)
-  rw [div_eq_mul_inv, div_eq_mul_inv, mul_inv, ← mul_assoc, mul_comm K⁻¹ (N : ℝ)]
-  exact mul_le_mul_of_nonneg_left (inv_anti₀ hS hle) (by positivity)
+  have e : (N : ℝ) / (K * dcScale N) = K⁻¹ * ((N : ℝ) / dcScale N) := by
+    field_simp [hK.ne', hS.ne']
+  rw [e]
+  exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_left hN0.le hS hle) (inv_nonneg.mpr hK.le)
 
 /-- At overlap `c_N ≥ 1` with dilation `κ_N = N/c_N → ∞`, the rate is at least `c_N/(L (log L)²)`,
 since `log log κ_N ≤ log log N`. -/
@@ -402,21 +406,14 @@ theorem eventually_div_dcScale_le_dcRate {c : ℕ → ℝ}
   have hl := Real.tendsto_log_atTop.comp hcN
   have hll := Real.tendsto_log_atTop.comp hl
   have hlll := Real.tendsto_log_atTop.comp hll
-  filter_upwards [hc1, hlll.eventually_gt_atTop 0, hl.eventually_gt_atTop 0,
-    eventually_ge_atTop (1 : ℕ)] with N hc hu hl0 hN
-  simp only [Function.comp] at hu hl0
+  filter_upwards [hc1, hlll.eventually_gt_atTop 0, hll.eventually_gt_atTop 1,
+    hl.eventually_gt_atTop 0, eventually_ge_atTop (1 : ℕ)] with N hc hu hℓ1 hl0 hN
+  simp only [Function.comp] at hu hℓ1 hl0
   set κ := (N : ℝ) / c N with hκ
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hc0 : 0 < c N := by linarith
   have hκ0 : 0 < κ := div_pos hN0 hc0
   have hκN : κ ≤ N := div_le_self hN0.le hc
-  have hℓ1 : 1 < Real.log (Real.log κ) := by
-    by_contra h; push Not at h
-    have : Real.log (Real.log (Real.log κ)) ≤ 0 := by
-      rcases le_or_gt (Real.log (Real.log κ)) 0 with h0 | h0
-      · exact Real.log_nonpos_of_nonpos h0
-      · exact Real.log_nonpos h0.le h
-    linarith
   have hlogκ : Real.log κ ≤ Real.log N := Real.log_le_log hκ0 hκN
   have hll : Real.log (Real.log κ) ≤ Real.log (Real.log N) := Real.log_le_log hl0 hlogκ
   have hlll : Real.log (Real.log (Real.log κ)) ≤ Real.log (Real.log (Real.log N)) :=

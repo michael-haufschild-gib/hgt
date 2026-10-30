@@ -42,6 +42,7 @@ open GaloisForLFunctions.SpacingScaleHarmonicAnalysis (weilQuadTw atomDilate
   integral_atomDilate_sq tiltedUnitSpline contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
   integral_tiltedUnitSpline_sq_pos)
 open GaloisForLFunctions.ArithmeticElectrostatics (atomicTest)
+open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
 
 noncomputable section
 
@@ -284,7 +285,9 @@ theorem exists_test_le_negIndex_weightKernel_finiteFlip {S : Finset ℕ} (hS : �
     congr 2
     funext k
     unfold primeHorizonExtension
-    split_ifs <;> simp [WithLp.ofLp_sum, Finset.univ_eq_attach]
+    split_ifs
+    · simp [WithLp.ofLp_sum]; rfl
+    · simp
   let L : (J → ℂ) →ₗ[ℂ] (PrimeHorizonIndex N → ℂ) :=
     { toFun := fun a m => ∑ j : J, a j * ((hA.eigenvectorBasis (j : PrimeHorizonIndex N) m : ℝ) : ℂ)
       map_add' := by intro a b; funext m; simp only [Pi.add_apply, add_mul, sum_add_distrib]
@@ -310,4 +313,28 @@ theorem iSup_negIndex_weightKernel_finiteFlip_eq_top {S : Finset ℕ} (hS : ∀ 
   exact h.trans (le_iSup₂ (f := fun (g : ℝ → ℝ) (_ : ContDiff ℝ 2 g ∧ HasCompactSupport g) =>
     negIndex (weightKernel (finiteFlipWeight S) g)) g ⟨hg, hgc⟩)
 
+/-- **For `ζ` the supremum over tests is the index of the Weil kernel**: every test sees at most the
+right zeros, and the cubic spline sees all of them. -/
+theorem iSup_negIndex_weightKernel_vonMangoldt :
+    (⨆ (g : ℝ → ℝ) (_ : ContDiff ℝ 2 g ∧ HasCompactSupport g),
+      negIndex (weightKernel (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) g)) =
+      negIndex zetaKernel := by
+  refine le_antisymm (iSup₂_le fun g hg => ?_) ?_
+  · rw [weightKernel_vonMangoldt (show g ∈ ArithmeticCastelnuovoSeveri.realTests from hg),
+      negIndex_orbitKernel _ temperedConfig_zetaZeroConfig hg, negIndex_zetaKernel]
+    exact Set.encard_le_encard fun ρ hρ => ⟨hρ.1, hρ.2.1⟩
+  · rw [zetaKernel, ← weightKernel_vonMangoldt cubicSpline_mem_realTests]
+    exact le_iSup₂ (f := fun (g : ℝ → ℝ) (_ : ContDiff ℝ 2 g ∧ HasCompactSupport g) =>
+      negIndex (weightKernel (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) g)) cubicSpline
+      cubicSpline_mem_realTests
+
+/-- **Every single-prime flip has infinite index on the Hecke lattice.** -/
+theorem iSup_negIndex_weightKernel_primeFlip_eq_top {p : ℕ} (hp : p.Prime) :
+    (⨆ (g : ℝ → ℝ) (_ : ContDiff ℝ 2 g ∧ HasCompactSupport g),
+      negIndex (weightKernel (ArithmeticCountingPositivity.primeFlipWeight p) g)) = ⊤ :=
+  iSup_negIndex_weightKernel_finiteFlip_eq_top (S := {p}) (by simpa using hp)
+    (singleton_nonempty p)
+
 end GaloisForLFunctions.HeckeKreinToeplitz
+#print axioms GaloisForLFunctions.HeckeKreinToeplitz.iSup_negIndex_weightKernel_vonMangoldt
+#print axioms GaloisForLFunctions.HeckeKreinToeplitz.iSup_negIndex_weightKernel_primeFlip_eq_top

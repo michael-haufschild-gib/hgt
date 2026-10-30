@@ -1,180 +1,146 @@
 # Walls ledger
 
-Status: 30 October 2026, corpus `00540e1855` plus working tree. **No core wall is crossed.**
+Status: 30 October 2026, corpus `4089dad808` plus working tree. **No core wall is crossed.**
 
-**Three core families of walls**, one for each property a crossing must supply:
+**Three families of walls**, one for each property a crossing input must supply:
 
 - **Σ — the critical sign.** A positivity statement that must hold with zero margin.
-- **Π — square-root precision.** A count or cancellation that must be exact at \(x^{1/2}\).
-- **Γ — selection.** The statement must hold for \(\zeta\) and fail for its gauge twins, at the trivial gauge point.
+- **Π — square-root precision.** A count or cancellation that must be exact at x^{1/2}.
+- **Γ — selection.** The statement must hold for ζ and fail for its gauge twins, at the trivial gauge point.
 
-Each family is forced by theorems (§1).
+Each family is forced by theorems (§1). The three are read off one object in §5.
 
-**Solved faces** (§3): the rank-eight theta Hankel section; twin resolution at bounded overlap; complete Weil positivity at every fixed overlap and on fixed conductor packets up to \((\log N)^{1/40}\).
+**Solved faces:** sub-spacing Hodge index; complete Weil positivity at every fixed overlap with its full conductor spectrum; twin resolution at bounded overlap; the rank-eight theta Hankel section; fixed conductor packets to (log N)^{1/40} ([S] to (log N)^{1/19}).
 
-**Sharpest open face:** the critical curve of the complete Weil matrix. The degeneracy sits in the \(\approx c\) conductors \(m\le c\). The complete defect reserve has explicit polynomial overlap cost and survives while \(c^8=o(\log N)\); RH needs \((\log N)^{1/4+}\).
+**Sharpest open faces:**
 
-Links: [route report](route-obstacles.md) · [summary and next questions](obstacles-summary.md) · [route unification](route-unification-ledger.md) · [scoped no-go catalogue](../rh-killed-routes.md). [Working log](../../../logs/review-3010-rev3-deep-research-2026-10-30.md). No builds were run.
+- **Σ1b** — signed payment of the successor shells jointly with the pole.
+- **Σ7** — a same-point identity.
+- **Σ5** — finite Krein index.
 
-| Label | Meaning |
+Links: [route report](route-obstacles.md) · [summary and next questions](obstacles-summary.md) · [route unification](route-unification-ledger.md) · [scoped no-gos](../rh-killed-routes.md) · [working log](../../../logs/review-3010-rev4-research-2026-10-30.md). No builds were run. Evidence labels [L]/[K]/[S]/[P] as in the frontier map; (inference) marks this review's interpretation.
+
+| Strength tag | Meaning |
 |---|---|
-| **[Lean]** | Declaration read via the corpus search. |
-| **[map]** | From the frontier map. |
-| **(inference)** | This review's interpretation. |
-| **[QRH] [LH] [FS] [RH]** | Strength of the open statement: zero-free strip; Lindelöf; finitely many off-line zeros; RH. |
+| [RH] | Equivalent to RH |
+| [FS] | Finitely many off-line zeros; implies LH |
+| [LH] / [QRH] | Lindelöf; zero-free strip |
+| [C%] | Critical-line proportion |
+| [sub] | Open, implies no classical conjecture by itself |
 
 ## 1. Why there are exactly three families
 
-Each family is the content of a theorem that any RH-strength input must satisfy.
-
-| Family | Forcing theorem [Lean] | What it says about any crossing input |
+| Family | Forcing theorems | What any crossing input must do |
 |---|---|---|
-| **Σ** | `extension_forces_positivity`; ACT: odd form never subcritical; `isPosDefOnGroup_heckeState_iff` (\(s\ge1/2\)); `tendsto_tiltedUnitSpline_completedShellEnergy_atTop` (\(E(c)\to0\)) | RH sits at the boundary of a positivity cone. There is no spectral gap to spend, and monotone continuation from a positive range is impossible. |
-| **Π** | `deciding_input_necessary_properties`; `producers_are_precision_blind`; `negIndex_zetaKernel_eq_zero_iff_count` | The input must distinguish perturbations of size \(n^{-\eta}\), \(\eta<1/2\), which every known producer law ignores. |
-| **Γ** | `threeQuarters_le_of_gaugeInvariant_bound`; `SMAP.not_forall_atomicPositiveAt`; AKLT: locality and pointwise-closed statements are twin-blind | The input must break the gauge symmetry at the trivial point. Uniform positivity over all weights \(|\lambda|\le\Lambda\) is false. |
+| **Σ** | Extension no-go (`extension_forces_positivity`); odd Markov form never subcritical; E₁(c) → 0; Hecke state PD exactly from s = 1/2 | Hold at the boundary of a positivity cone, with no gap to spend and no monotone continuation from a positive range. |
+| **Π** | `deciding_input_necessary_properties`; producers precision-blind; κ = 0 ⟺ one-sided √x log²x count | Separate a from a + εn^{−η} for every η < 1/2; no known producer law does. |
+| **Γ** | `threeQuarters_le_of_gaugeInvariant_bound`; locality and pointwise-closed statements twin-blind; sub-spacing positivity holds for every sign twin; Λ ≥ 0 + FE + entire completion allows off-line zeros | Break the gauge symmetry at the trivial point using discreteness of the prime support and the simple pole. |
 
-(inference) The three are independent. Bounded-overlap complete positivity is selective and fixed-resolution, but not critical. The Krein index is critical and precise by construction, but has no producer. Integrality producers (Bézout, Adams, factorial ratios) are selective through \(\Lambda*1=\log\), but give only Chebyshev precision.
+(inference) The three are independent away from the endpoint:
 
-## 2. The walls
+- Bounded-overlap complete positivity is selective and fixed-resolution, but not critical.
+- The Krein index is critical and precise by construction, but has no producer.
+- Integrality producers are selective through Λ∗1 = log, but reach only Chebyshev precision.
 
-### Family Σ — the critical sign
+## 2. Family Σ — the critical sign
 
-| Wall | Current content | Strength of open part |
+| Wall | Content | Status |
 |---|---|---|
-| **Σ1 Critical curve of the complete Weil matrix** | See below. | [RH] on or past the curve |
-| **Σ2 Extension** | A nondecreasing minorant of \(\lambda(L)\) nonnegative once forces \(\lambda\ge0\) everywhere (`extension_forces_positivity`). Soft tools move positivity only downward in \(L\). Linear \(\Lambda\)-positivity caps at PNT strength; the quadratic Weil index gives lower bounds on \(\operatorname{ind}_-\) only (`ExtensionProgrammeNoGo`). | Exact no-go |
-| **Σ3 Criticality of the arithmetic Markov form** | See below. | [RH] |
-| **Σ4 Rank and order uniformity** | Rank-seven strict and rank-eight PSD theta Hankel sections for \(0<a<1/2\) (`thetaCuspCenterMixedSignedHankel_eight_posSemidef`). Heated orthant signs at all ranks. Square-plus-null-Lagrangian identity for the native fibre form (`thetaCuspNativeTailHankelForm_eq_square_sub_flux`). All-rank sign iff RH. | Each finite rank: A. All ranks: [RH] |
-| **Σ5 Infinite genus** | See below. | [FS] for finite index; [RH] for zero |
-| **Σ6 Realization** | See below. | [RH] |
+| **Σ1 Growing-overlap complete positivity** | Positive at every fixed c, low spectrum = conductor modes with energies E_m(c) ≥ 0 [K/L]. Fixed packets positive to (log N)^{1/48} uniformly, 1/40 along schedules [L], 1/19 [S]. RH ⟺ positivity whenever c⁴/log N → ∞, any C² profile with ∫φ ≠ 0 [L]. Floor E_m(c) ≍ c⁻⁷ for m ≤ c, constant above the overlap scale [L]. | Fixed c: **solved**. c ≫ (log N)^{1/4}: **open [RH]**. In between: open, strength unknown (inference). |
+| **Σ1a Defect-only confinement** | Unit vectors with defect ≤ γ + (k+1)log2 + log4 + 5 escape every conductor set below 2^k (`eventually_exists_unit_vector_escaping_conductors`) [L]. | **Exact boundary:** capture from the defect alone needs exponential conductor cutoffs. |
+| **Σ1b Shell payment** | Reserve W ≥ ac⁻⁷D − Cc⁹‖x‖², negative vectors D ≤ C′c¹⁶ [L]. Any separate one-sided payment of the shells costs ≥ κc²/ε, hence c⁹ at the reserve fraction [S, in progress]. On conductor modes the shells repay log(2πc) exactly; continuum shells are only the pole charge [S]. | Separate payment: **exact boundary**. Joint signed payment off the conductor span with log c loss: **open [sub]**. |
+| **Σ2 Extension** | A nondecreasing minorant of λ(L) nonnegative once forces λ ≥ 0 everywhere; soft tools move positivity only downward in L. | **Exact no-go.** |
+| **Σ3 Criticality of the arithmetic Markov form** | Odd form never subcritical; folded supersolutions excluded; archimedean place is Z-type, every obstruction is prime. μ(A) ≤ K exp((11/2)A − πe^{2(A−2)}) [L]. | **Open [RH]:** a positive supersolution of the full nonlocal generator. |
+| **Σ4 Rank and order uniformity** | Rank-eight theta Hankel PSD for 0 < a < 1/2 [L]. Finite native tail = 2·(Gram-square mass) − 2·(local flux) [L]. No rank-uniform fraction of the new diagonal [K]. Heated orthant signs at all ranks; all-rank sign ⟺ RH. | Each finite rank: **A**. All ranks: **open [RH]**. |
+| **Σ5 Infinite genus / finite index** | κ = 2·#sector zeros; κ < ∞ ⟺ finite off-line support ⟺ bounded heat counts ⟺ eventual criticality [L]; κ < ∞ ⇒ LH. Finite ζ index forces infinite index for every single-prime flip [L]. Weil's form has finitely many negative directions at each aperture. | **Open [FS].** |
+| **Σ6 Realization** | Weil distribution = CCM operator trace; archimedean part = Sonin + square − anticommutator. Complete Deninger carriers have bounded generators. Lossless and Ising realizations need zero indexing or have a unit gap. Commutative realization of ζ has no dynamics; the free one has the wrong entropy; integrality forbids super-conformal roofs [P]. | **Open [RH]**; a Hölder mixing realization would give [QRH] [P]. |
+| **Σ7 Explicit image** | Every line-calibrated explicit statistic is the Weil form W; S = W + Δ, Δ = ½Σm abs(F(z) − F(z̄))² ≥ 0. Holomorphic clocks have Cesàro excess 0 or ∞. Strip-holomorphic carriers vanishing on critical configurations vanish on all reflection-invariant ones; three-lines law: no depth-uniform quantum near the line [L]. | **Exact boundary:** same-point information needs a non-holomorphic operation. **Open [RH]:** an arithmetic same-point identity. |
+| **Σ8 Quantum** | Collision charge O ∈ 2ℕ; O = 0 ⟺ critical; N ≤ N₀ + O. Over 𝔽_q unitary ⟺ O < 2; the golden datum has O = 2 [L]. | RH has integer margin 2 here. **Open [RH]:** source bound O < 2. **Open [C%]:** O ≤ cN, c < 1/4. |
 
-**Σ1 Critical curve of the complete Weil matrix.**
+**Σ1 phase diagram (overlap axis).**
 
-- Fixed \(c\): positive definite, bottom \(E(c)\).
-- \(c^{-7}\lesssim E_m(c)\) for \(m\le c\), constant floor above (`ConductorScaleControlsTheCompletedEnergy`).
-- Fixed packets: positive for \(c\le(\log N)^{1/48}\) and along \((\log N)^{\alpha}\), \(\alpha<1/40\).
-- Gamma reserve: survives while \(c^8=o(\log N)\); explicit complete defect reserve with polynomial cost.
-- Receiver: RH iff positivity at \(2(\log N)^\alpha\), \(\alpha>1/4\).
-- (inference) Margin, reserve and synthesis error are one Fourier tail separated by the weight \(\log N\), so the transition is the curve \(E(c_N)\log N\asymp1\); for the tilted spline, exponent \(1/7\).
-
-**Σ3 Criticality of the arithmetic Markov form.**
-
-- Odd form never subcritical.
-- Restricted Weil ground energy \(\to0\); \(\mu(A)\le K\exp((11/2)A-\pi e^{2(A-2)})\).
-- No positive profile is a folded supersolution.
-- Hecke state threshold \(s=1/2\) equals the Bost–Connes temperature \(\beta=1\).
-- RAPT: the pole is the ground state; the multiplicative random-walk Dirichlet form has gap \(2\log2\) below it.
-
-**Σ5 Infinite genus.**
-
-- \(\kappa(K_\zeta)=\) Hodge defect \(=\#\)right zeros; finite at each degree.
-- No compact test vanishes at every zero: no radical, hence infinite genus.
-- Finite index iff finitely many off-line zeros, which implies Lindelöf (`lindelof_of_negIndex_zetaKernel_lt_top`).
-- Weil's form has finitely many negative directions at each aperture (APol).
-- Over \(\mathbb F_q\): index \(\le\) genus (AKLT).
-
-**Σ6 Realization.**
-
-- The Weil distribution is a CCM operator trace.
-- The archimedean part equals Sonin \(+\) square \(-\) anticommutator.
-- Deninger: a complete carrier gives a bounded generator, which cannot have the zeros as spectrum.
-- Lossless media, Ising limits and theta-cusp black-hole quasinormal modes realize \(\Xi\) only when indexed by its zeros (`XiZeroCopy`) or with a unit gap [map].
-
-### Family Π — square-root precision
-
-| Wall | Current content | Strength of open part |
+| Overlap c | State | Selective? |
 |---|---|---|
-| **Π1 Global law** | Index zero iff \(\psi(x)-x\le C\sqrt x\log^2x\), which is also the odd Liouville upper count [Lean, HKT/AKLT]. The trickle-down inequality of the Lorentzian route is the same count (ALG). | [RH] |
-| **Π2 Deciding input and precision blindness** | A criterion implying the count must reject Liouville, separate \(a\) from \(a+\varepsilon n^{-\eta}\) for all \(\eta<1/2\), and not be finite-window. \(\Lambda+\varepsilon n^{-\eta}\) satisfies PNT and every short-interval law past \(17/30\). Count holds iff \(a-1\in\mathcal Q\) [map]. | Exact boundary |
-| **Π3 Producer cost** | See below. | [RH] for a square-root producer |
-| **Π4 Dispersion horizon** | Coherent prime blocks admit no Type-II dispersion below the quadratic horizon (`exists_primeBlock_typeII_window_loss`). Sharp cutoffs stop Type-I at \(\theta=4/3\). Every short-window, balanced or uniform-Vaughan saving is equivalent to a zero-free strip (BVI). Degree-\(m\) transfer horizon \(N^m\). | [QRH] and up |
-| **Π5 Depth visibility** | See below. | [FS] and up |
-| **Π6 Classical density layer** | Formalized past the literature: Guth–Maynard large values; Vinogradov–Korobov; \(\ge0.6725\) simple critical; \(\ge4/5\) critical ordinates; \(\Lambda<1/8\). Lindelöf follows only from finite index. | [LH], [QRH] |
+| ≤ c★ (fraction of spacing) | Hodge index proved, every N [L] | No: holds for every sign twin |
+| Fixed | Positive definite, attained bottom E₁(c) [K/L] | Yes for Liouville and cofinite flips; single flips need c₀(p) ≍ p^{1/7} |
+| (log N)^α, packets | α < 1/48, 1/40 [L]; 1/19 [S] | Packets only, not all vectors |
+| Reserve | Gamma survives while c⁸ = o(log N) [L] | — |
+| ≫ (log N)^{1/4} | RH-equivalent [L] | — |
 
-**Π3 Producer cost.**
+## 3. Family Π — square-root precision
 
-- Order-\(r\) jet vanishing on the Adams fixed locus costs support \(2^{qr}\), sharp.
-- Balanced factorial ratios cost \((2\log2-\varepsilon)mn\).
-- Bézout and Riemann–Roch on \(\mathbb G_m(\mathbb Q)\) are linear.
-- Integer approximate vanishing is divisibility.
-- Bounded-defect ring endomorphisms of \(\mathbb N\) are trivial [map].
-- Over \(\mathbb F_q\) Stepanov reaches \(\sqrt q\) (`stepanov_bound`).
-
-**Π5 Depth visibility.**
-
-- Single-horizon charges are depth-blind; depth enters only as \((N/M)^{|\operatorname{Re}z|}\).
-- Hiding needs a crystal.
-- A bounded aperture range certifies no rate; refutation is finite, confirmation is not.
-- Orientation rate = depth of the deepest seen zero.
-- Growth exponent of a compact packet = depth of the zeros it sees (BSU).
-
-### Family Γ — selection
-
-| Wall | Current content | Strength of open part |
+| Wall | Content | Status |
 |---|---|---|
-| **Γ1 The trivial gauge point** | The typical gauge exponent is exactly \(1/2\); \(\theta_\mu(0)=\Theta\); RH iff \(0\) is typical. Gauge-invariant majorants are \(\ge3/4\) at \(0\). The trivial point is the additively invariant point, and divisor collapse \(\Lambda*1=\log\) happens only there (AGT). | [RH] |
-| **Γ2 Twin resolution** | See below. | Bounded: solved. Uniform: [RH] |
-| **Γ3 Twin-blindness of soft structure** | See below. | Exact boundary |
-| **Γ4 Hecke invariance** | RH iff the collided polarization is Hecke invariant, iff it is a Hecke similitude, iff Weil form = collided form. The scaling defect is a Hecke similitude (`defect_heckeCorrespondence`). \(\zeta\)-specific deformations of \(\zeta^2\zeta(s\pm i\gamma)\) are rigid off the line (BGG). | [RH] |
+| **Π1 Global law** | κ = 0 ⟺ ψ(x) − x ≤ C√x log²x ⟺ odd Liouville upper count [L/S]. | **Open [RH].** |
+| **Π2 Deciding input** | A Count-sufficient criterion rejects Liouville, separates a from a + εn^{−η} (η < 1/2), uses unbounded aperture; Λ + εn^{−η} satisfies PNT and every short-interval law past 17/30 [S]. Count(a) ⟺ a − 1 ∈ 𝒬 [K]. | **Exact boundary.** |
+| **Π3 Producer cost** | Adams mixed-jet multiplicity r on the q-torsion locus costs support 2^{qr}, sharp [L]. Balanced factorial ratios cost (2log2 − ε)mn [L]. Bézout/Riemann–Roch on 𝔾_m are linear; approximate integer vanishing is divisibility; twist towers collapse to proper prime powers [L]. Over 𝔽_q Stepanov reaches √q. | Boundaries **exact**; a square-root producer over ℤ: **open [RH]**. |
+| **Π4 Gamma reach** | Gamma reserve pays Euler heads p ≤ Y while 32√Y log Y ≤ log A, so up to Y ≈ (log A)²; Euler costs are not summable, so no depth pays the first prime layer; the remainder needs prime cancellation [L]. Prime and square coefficient masses diverge; cubes and higher powers have one Gamma budget [K]. | **Exact boundary** (Σ → Π bridge). |
+| **Π5 Dispersion / parity** | No Type-II dispersion below the quadratic horizon for coherent prime blocks; every short-window or balanced saving is a zero-free strip; 5/6 strip ⟺ R = O(N^{5/3+ε}) [K]. | **Open [QRH]** and up. |
+| **Π6 Depth visibility** | Single-horizon pole charge is depth-blind; window modes see depth through N^{κ−Re z}M^{κ+Re z} [L]; orbit correlation ≤ Ke^{σt} ⟺ zero width ≤ σ [L]; refutation finite, confirmation not. | **Exact boundary**; the amplifier exists, a subexponential bound does not. |
+| **Π7 Amplifier rank** | Orthogonal families on π(x) phases have ≥ binom(π(x)+k−1, k) members, cancelling the moment gain; fixed-loss amplification needs an identity, not counting [P]. | **Boundary [P]**; a non-envelope amplifier over ℤ: **open [RH]**. |
+| **Π8 Classical density layer** | Guth–Maynard; density hypothesis on σ ≥ 5/6; VK; 0.6725; 3/4-or-near-line dichotomy; Λ_dBN < 1/8 [L]. | **Formalized.** LH, DH: open; LH follows from Σ5. |
+| **Π9 Exceptional zeros** | Uniform Dirichlet zero-free region except real zeros of real characters [L]. | **Open [Siegel].** |
 
-**Γ2 Twin resolution.**
+## 4. Family Γ — selection
 
-- At fixed overlap a twisted form is decided by a finite Ramanujan packet.
-- Pole-free \(\pm1\) gauges with bounded harmonic sums and all cofinite flips are rejected at one bounded overlap (`liouvilleSelector_selective_of_signGauge`).
-- Pole-keeping flips need \(c_0\asymp p^{1/7}\) [map].
-- The simple-pole class is \(\zeta\) (`completedPositiveSystem_one_one_eq_zeta`).
-- A positive measure satisfying the functional equation is Riemann's prime measure.
+| Wall | Content | Status |
+|---|---|---|
+| **Γ1 Trivial gauge point** | θ_μ(0) = Θ; typical exponent 1/2; RH ⟺ the trivial point is typical; gauge-invariant majorants ≥ 3/4; quadratic Dirichlet twins ≤ (2 + Θ)/6; a universal gauge floor 1/2 would force Θ = 1 [L]. | **Open [RH].** |
+| **Γ2 Twin resolution** | Bounded overlap rejects Liouville and every cofinite flip [L]; single flips need c₀(p) ≍ p^{1/7} [L]; every nonempty finite flip set has ≥ r negative eigenvalues for c ≥ c₀(r) [S]; finite ζ index ⇒ every p-flip has infinite index; unconditionally ζ or the p-flip has infinite index [L]; ζ and Liouville atomic pole indices differ by one square in an explicit window [L]. | Bounded overlap: **solved**. Uniform in p at growing overlap: **open [RH]**. |
+| **Γ3 Twin-blindness of soft structure** | Locality and pointwise-closed statements are twin-blind (twins are Bohr limits of vertical shifts); sub-spacing Hodge index holds for every sign twin; multiplicativity + polar matching + maximal gap 2log2 does not select ζ [L]. | **Exact boundary.** |
+| **Γ4 Hecke invariance** | RH ⟺ collided form Hecke invariant ⟺ Hecke similitude ⟺ W = collided [L]. | **Open [RH].** |
+| **Γ5 Source identification** | Λ ≥ 0, Euler product, exact FE and entire order-one completion admit off-line zeros, with a continuous Λ-measure and a triple pole at s = 1 [L]. Simple-pole class = ζ; a positive measure with the FE is Riemann's prime measure [L]. | **Exact boundary:** selection must use discreteness of the prime support and the simple pole. |
 
-**Γ3 Twin-blindness of soft structure.**
+## 5. How the walls interlock
 
-- Locality and pointwise-closed statements are twin-blind: a twin is a limit of vertical shifts (AKLT).
-- The gauge is invisible at atomic resolution (AES).
-- \(\zeta\) is the worst twin on nonnegative tests (`weilPositive_nonneg_transfers`).
-- Uniform atomic positivity over \(|\lambda|\le\Lambda\) is impossible (`not_forall_atomicPositiveAt`).
+| Bridge | Joins | Consequence (inference) |
+|---|---|---|
+| κ = #right zeros = Hodge defect; κ = 0 ⟺ one-sided count | Σ5 = Π1 | At the endpoint a critical sign and a precise count are one statement. |
+| κ < ∞ ⟺ bounded heat counts ⟺ eventual criticality ⇒ LH | Σ5 → Π8 | The weakest structural target that implies a first-rank conjecture. |
+| Finite ζ index ⇒ every p-flip infinite index | Σ5 = Γ2 | Finite index is selective by itself. |
+| Gamma reach (log A)² for Euler heads | Σ3 → Π4 | The archimedean reserve pays primes absolutely only to a square-logarithmic depth; beyond it, positivity needs square-root cancellation. |
+| Hecke state PD ⟺ s ≥ 1/2; prime Poisson measure ≪ Haar ⟺ s > 1/2 | Σ = Γ = Π | The critical line is the Kakutani threshold of a product measure on the gauge torus. |
+| RH ⟺ W = collided; collided read from theta prefixes | Σ7 = Γ4 | The multiplicative reading (primes) and the additive reading (theta) of one divisor must agree. |
+| Separate shell payment costs c²/ε | Σ1b | Shells, where successor and dilation meet, must be paid with their sign. |
+| Gauge-invariant data ≥ 3/4; typical 1/2 | Γ1 → Π | Precision must be spent at one point of the gauge torus, not on average. |
 
-## 3. Status by face
+**The common object** (inference, from the bridges above). Weil's correlation lives on the dilation group ℚ^×_{>0}, whose dual is the prime (gauge) torus.
+
+- **Σ** is its Bochner positivity.
+- **Γ** is the location of the trivial character on that torus.
+- **Π** is the Kakutani threshold s = 1/2 of the prime Poisson measure, where square-root precision sits.
+
+The same divisor has an additive reading (theta, successor) and a multiplicative reading (primes, dilation), and every wall is a form of their comparison. Shells are the comparison inside the complete matrix. The collided form is the comparison in the polarization.
+
+## 6. Status by face
 
 "Solved" means the stated face is answered; it never means a route is closed.
 
-| Face | Wall | Status | Content |
-|---|---|---|---|
-| Rank-eight theta Hankel section | Σ4 | **Solved [Lean]** | PSD for every \(0<a<1/2\); seam at \(\log(5/\pi)\), 15 seam and 8 bulk piece certificates, exact \(LDL^\top\). Rank nine is the next finite certificate. |
-| Theta tail form | Σ4 | **Identity [Lean]** | Square plus null Lagrangian; tail form = bulk \(L^2\) mass \(-\) center flux; flux \(0\) at the seam. All-rank positivity is flux domination. |
-| Complete positivity at fixed overlap | Σ1 | **Solved [Lean]** | Every fixed \(c\), uniformly on \(0<c\le K\); bottom \(E(c)\), attained at the pole conductor. |
-| Fixed conductor packets at growing overlap | Σ1 | **Solved to \((\log N)^{1/40}\) [Lean]** | Along \((\log N)^\alpha\), \(\alpha<1/40\); uniformly on \(1\le c\le(\log N)^A\), \(A<1/48\). |
-| Conductor floor | Σ1 | **Exact [Lean]** | \(c^{-7}\) floor only for \(m\le c\); constant floor above the overlap scale. |
-| Complete defect reserve | Σ1 | **Explicit [Lean]** | Cutoff \(\sim c^8\), polynomial cost; Gamma reserve survives while \(c^8=o(\log N)\). |
-| Growing conductors and full complement below the curve | Σ1 | **Open; A** | Loss-free control of the \(\approx c\) conductors \(m\le c\) up to \((\log N)^{1/8-\varepsilon}\). |
-| Positivity on the critical curve | Σ1 | **Open [RH]** | \(E(c_N)\log N\asymp1\). |
-| Extension of positivity ranges | Σ2 | **Exact no-go [Lean]** | Every positivity-range argument must prove RH outright. |
-| Ground state of the full nonlocal generator | Σ3 | **Open [RH]** | Folded supersolutions are excluded. |
-| Finite Krein index | Σ5 | **Open [FS]** | Implies Lindelöf. |
-| Realization without zero indexing | Σ6 | **Open [RH]** | The CCM anticommutator term and the Deninger bounded-generator law locate the missing sign. |
-| Producer precision | Π2, Π3 | **Exact boundary [Lean]** | Producers are precision-blind; integrality gives Chebyshev precision; Adams jets cost \(2^{qr}\). |
-| Type-II horizon | Π4 | **Exact boundary [Lean]** | No dispersion below the quadratic horizon for coherent prime blocks. |
-| Classical density layer | Π6 | **Formalized [Lean]** | Guth–Maynard, \(0.6725\), \(4/5\) ordinates, \(\Lambda<1/8\). Lindelöf and density hypothesis open. |
-| Bounded-overlap twin resolution | Γ2 | **Solved [Lean]** | Pole-free gauges and cofinite flips rejected at one bounded overlap; the simple-pole class is \(\zeta\). |
-| Uniform selection at growing resolution | Γ2 | **Open [RH]** | Pole-keeping flips need \(c_0\asymp p^{1/7}\). |
-| Exponent at the trivial gauge point | Γ1 | **Open [RH]** | Gauge-invariant data stop at \(3/4\). |
-| Hecke invariance of the collided polarization | Γ4 | **Open [RH]** | The scaling defect is a Hecke similitude. |
-
-## 4. How the walls interlock
-
-The corpus proves bridges between the families. A crossing of one family therefore transfers to the others only along these bridges.
-
-| Bridge [Lean] | Connects | Consequence (inference) |
+| Face | Wall | Status |
 |---|---|---|
-| \(\kappa(K_\zeta)=\#\)right zeros; \(\kappa=0\iff\) one-sided count | Σ5 = Π1 | Index zero is the count: a critical sign and a precise count are one statement at the endpoint. |
-| Finite \(\kappa\) ⇒ Lindelöf; finite \(\kappa\iff\) finitely many off-line zeros | Σ5 → Π6 | A weaker-than-RH target with a structural (dimension) form. |
-| RH iff collided polarization is Hecke invariant | Γ4 = Σ | Selection by Hecke symmetry is the sign. |
-| Gauge-invariant data \(\ge3/4\); typical \(1/2\) | Γ1 → Π | Precision must be spent at one point of the gauge torus, not on average. |
-| Hecke state PD iff \(s\ge1/2\) | Σ3 = Γ | The critical line is the positivity threshold of the integer successor. |
-| Adams cost \(2^{qr}\); \(\mathbb F_q\) Stepanov | Π3 ↔ \(\mathbb F_q\) | The char-\(p\) mechanism (a Frobenius with vanishing derivative) has no char-\(0\) analogue at polynomial cost. |
-| Margin = reserve = synthesis error (one tail) | Σ1 internal | No fixed-relative-loss estimate crosses the critical curve. |
-
-**Organizing identities.**
-
-- The complete form and the pole defect: \(\operatorname{Re}W(f,f)=D(f,f)-\mathfrak d(f)\); \(P_N+D_N=\sum(A(\lfloor N/n\rfloor)+\log n)x_n^2\) (RAPT ground-state identity).
-- The collided form under translation: \(\mathrm{collided}(T_Lf)=\sum_\rho m_\rho e^{2(\operatorname{Re}\rho-1/2)L}|\hat f(\rho)|^2\) (`collidedForm_translate`).
-- Shell repayment: \(E_m(c)=\frac2{M\varphi(m)}\sum_{(a,m)=1}\frac ma\int_{ac/m}^\infty|\hat\varphi(2\pi t)|^2dt\).
-- Theta tail: \(\sum v_iv_jU_{i+j}(r)=2\int_{y>r/2}|G_v|^2-2B_v(r/2)\).
+| Sub-spacing Hodge index, ζ and twins | Σ1, Γ3 | **Solved [L]**, not selective |
+| Complete positivity at fixed overlap, conductor spectrum | Σ1 | **Solved [K/L]** |
+| Fixed packets at growing overlap | Σ1 | **Solved to (log N)^{1/40} [L]**, 1/19 [S] |
+| Defect-only capture | Σ1a | **Exact boundary [L]** |
+| Separate shell payment | Σ1b | **Exact boundary [S]** |
+| Signed joint shell–pole payment | Σ1b | **Open [sub]** |
+| Positivity at c ≫ (log N)^{1/4} | Σ1 | **Open [RH]** |
+| Extension of positivity ranges | Σ2 | **Exact no-go** |
+| Ground state of the full nonlocal generator | Σ3 | **Open [RH]** |
+| Rank-eight theta section | Σ4 | **Solved [L]**; rank nine: A |
+| All-rank flux domination | Σ4 | **Open [RH]** |
+| Finite Krein index | Σ5 | **Open [FS]** |
+| Realization without zero indexing | Σ6 | **Open [RH]** |
+| Explicit image of same-point sums | Σ7 | **Exact boundary [L]** |
+| Arithmetic same-point identity | Σ7 | **Open [RH]** |
+| Collision quantum O < 2 | Σ8 | **Open [RH]**; O ≤ N/4 **open [C%]** |
+| Producer cost (Adams, factorial, Bézout) | Π3 | **Exact boundary [L]** |
+| Gamma reach for Euler heads | Π4 | **Exact boundary [L]** |
+| Type-II horizon | Π5 | **Exact boundary**; strips open [QRH] |
+| Amplifier rank | Π7 | **Boundary [P]** |
+| Classical density layer | Π8 | **Formalized [L]** |
+| Bounded-overlap twin resolution | Γ2 | **Solved [L]** |
+| Uniform selection at growing resolution | Γ2 | **Open [RH]** |
+| Exponent at the trivial gauge point | Γ1 | **Open [RH]** |
+| Hecke invariance | Γ4 | **Open [RH]** |
+| Source identification by Λ ≥ 0 + FE | Γ5 | **Exact boundary [L]** |

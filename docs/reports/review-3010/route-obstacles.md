@@ -1,286 +1,308 @@
 # Research routes and their mathematical obstacles
 
-Status: 30 October 2026, corpus `00540e1855` plus working tree. **RH remains open.** The inventory is the 32 live routes and 17 candidates of the frontier map, the PW-B branch of PM, and eleven theory programmes that act as routes without a map entry (§4.6).
+Status: 30 October 2026, corpus `4089dad808` plus working tree. **RH is open.**
 
-**The frontier in seven sentences.**
+Scope: the 32 live routes and 17 candidates of the [frontier map](../rh-current-frontier-map.md), the PW-B branch of PM, and the theory programmes that carry their own RH receivers without a map entry (§6).
 
-- **The corpus already proves, unconditionally and in Lean, results past the published literature:** the Guth–Maynard large-values theorem, at least \(0.6725\) of zeros simple and critical, at least \(4/5\) of zero ordinates carrying a critical zero, \(0\le\Lambda_{\rm dBN}<1/8\), and complete Weil positivity on atomic families at every fixed overlap.
-- **Every route ends at an exact RH receiver, and the receiver space is saturated.** About 2,400 declarations are named as RH equivalences, about 860 modules are named no-gos, and whole-corpus universality laws show that broad classes of certificates collapse onto the same few targets.
-- **The decisive quantities are known exactly.** The Weil-kernel index equals the number of zeros right of the line; the Hodge defect of the scaling surface equals the same number; the Hecke state \((nd)^{-s}\) on \(\mathrm{Aff}(\mathbb Q)\) is positive definite iff \(s\ge 1/2\).
-- **RH is a critical statement.** The margin of the complete Weil matrix is a positive Fourier tail \(E(c)\asymp c^{-7}\to0\), the restricted ground energy tends to \(0\), the odd form is never subcritical, and no monotone minorant of the truncated Weil spectrum can be nonnegative anywhere without being RH.
-- **RH is a square-root statement.** Every criterion implying the count must separate \(a\) from \(a+\varepsilon n^{-\eta}\) for every \(\eta<1/2\), while every producer law the corpus has (PNT, short intervals past \(17/30\)) holds for both.
-- **RH is a gauge-specific statement.** Gauge-invariant data certify nothing below \(3/4\) at the trivial point, locality is twin-blind, and uniform positivity over all weights \(|\lambda|\le\Lambda\) is impossible.
-- **No route has an input that is critical, square-root precise and gauge-selective at once.** Over \(\mathbb F_q\) one object supplies all three (Frobenius on \(C\times C\)). Over \(\mathbb Z\) the corpus proves why the obvious substitutes fail: infinite genus, Adams jets costing \(2^{qr}\), and a trivial gauge point never better than typical.
+Companions: [summary and next questions](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md) · [scoped no-gos](../rh-killed-routes.md). Research record: [working log](../../../logs/review-3010-rev4-research-2026-10-30.md). No builds or axiom audits were run.
 
-Companions: [summary and next questions](obstacles-summary.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md) · [frontier map](../rh-current-frontier-map.md) · [scoped obstructions](../rh-killed-routes.md). Research record: [working log](../../../logs/review-3010-rev3-deep-research-2026-10-30.md).
+## The frontier in eight sentences
+
+- **The classical layer is formalized unconditionally:** Guth–Maynard large values, Vinogradov–Korobov, ≥0.6725 of zeros simple and critical, 0 ≤ Λ_dBN < 1/8, and dichotomies "≥3/4 of zeros critical, or a positive proportion of simple off-line zeros within A/log T of the line".
+- **Weil positivity is proved in two regimes beyond the literature:** at every fixed fraction of the atom spacing (for ζ and every sign twin), and for the complete prime/Gamma/polar atomic matrix at every fixed overlap c (selectively: the Liouville twin and every cofinite flip fail).
+- **At fixed overlap the complete Weil matrix is a solved operator:** its low spectrum lives on Ramanujan conductor modes, with eigenvalues the completed conductor energies E_m(c), each an explicit nonnegative Fourier tail.
+- **RH is that same positivity along c_N ≫ (log N)^{1/4}.** Proved positivity reaches fixed conductor packets up to (log N)^{1/48} uniformly, (log N)^{1/40} along schedules, (log N)^{1/19} unintegrated.
+- **The receiver dictionary is saturated.** Every route ends at an exact RH equivalence; whole classes of certificates are proved to collapse onto the same targets.
+- **Three properties are forced on any crossing input** (walls ledger): critical (valid at zero margin), square-root precise, and selective at the trivial gauge point.
+- **The explicit formula computes one side only.** Every line-calibrated explicit statistic is Weil's reflection-paired form W; the same-point form S is read from additive (theta) data; RH is S = W.
+- **No route has an input with all three properties.** About two thirds lack criticality, a quarter lack precision, the rest lack selection.
 
 ## How to read this report
 
-Evidence: module docstrings of all theory programmes and RHTower subfolders, `formal_tools.py research` queries, and Lean statements. No builds, axiom audits or compilation checks were run.
-
-| Label | Meaning |
-|---|---|
-| **[Lean]** | Lean declaration read in this review via the corpus search; integration not assessed. |
-| **[map]** | Taken from the frontier map; not re-derived here. |
-| **(inference)** | A conclusion of this review, not a Lean theorem. |
+Evidence labels follow the frontier map: **[L]** integrated, **[K]** individual Lean with standard axioms, **[S]** unintegrated Lean, **[P]** paper only. **(inference)** marks a conclusion of this review. Lean statements cited by name were read through the corpus search.
 
 **Obstacle classes.**
 
-- **A, just work.** The mechanism exists in the corpus and has already succeeded on a smaller instance: a further certificate, an extension of a proved range below a proved barrier, a composition of proved theorems, or a quantification of a qualitative proof. An A item never promises that a desired sign holds.
-- **B, open mathematics.** No mechanism in the corpus or the literature is known to produce the statement. Each B item carries its strength:
+- **A — just work.** The mechanism exists in the corpus and has succeeded on a smaller instance: a finite certificate, a formalization of a paper proof, the integration of [S] work, an assembly of proved theorems, or the quantification of a qualitative proof. An A item never promises a sign beyond its stated range.
+- **B — open mathematics.** No known mechanism, in the corpus or the literature, produces the statement. Each B item carries its strength:
 
-| Tag | Meaning |
+| Tag | Strength of the open statement |
 |---|---|
-| **[QRH]** | Implies a zero-free strip \(\operatorname{Re}s>\Theta\), \(\Theta<1\). |
-| **[LH]** | Implies the Lindelöf hypothesis. |
-| **[FS]** | Implies finitely many off-line zeros, hence LH. |
 | **[RH]** | Equivalent to RH. |
+| **[FS]** | Finitely many off-line zeros; implies Lindelöf. |
+| **[LH] / [QRH]** | Lindelöf; a zero-free strip Re s > Θ, Θ < 1. |
+| **[C%]** | A critical-line proportion (70%, 75%), not RH. |
+| **[Siegel]** | Exclusion of real exceptional Dirichlet zeros. |
+| **[sub]** | Open estimate that implies no classical conjecture by itself. |
 
-**The three properties.** A crossing input must be **C** (critical: valid at zero margin), **P** (precise: square-root precision), and **S** (selective: specific to \(\zeta\) at the trivial gauge point). Each route below names the property it lacks. The unification ledger proves why these three are forced.
+**The three properties** (walls ledger): **C** critical, **P** square-root precise, **S** selective. Each route lists the one it lacks.
 
-## 1. What the corpus proves unconditionally
+## 1. Shared unconditional base
 
-These are the results every route stands on. All are [Lean].
-
-| Area | Theorem | Content |
+| Area | Result | Evidence |
 |---|---|---|
-| Zero density | `Sieve.guthMaynardLargeValuesBound_holds` | The Guth–Maynard large-values theorem; consequences on \(7/10\le\sigma\le8/10\) (`exists_zeroHeightBox_ncard_le_gm_unconditional`). |
-| Zero-free region | `Sieve.riemannZeta_ne_zero_vinogradovKorobov` | Vinogradov–Korobov with explicit constant \(10^{-8}\). |
-| Critical line | `IncommensurableGaborPinching.simple_critical_proportion_ge_67250071` | At least \(0.67250071-\varepsilon\) of zeros are simple and critical. |
-| Ordinates | `Zeta23CriticalOrdinateCensus.four_fifths_critical_ordinates` | At least \(4/5-\varepsilon\) of zero ordinates in \((T,2T]\) carry a critical zero. |
-| Heat flow | `DeBruijn.newmanConstant_nonneg`, `newmanConstant_lt_eighth` | \(0\le\Lambda<1/8\). An off-line zero at height \(\gamma\) forces \(\Lambda\gtrsim1/\log\gamma\) (`le_newmanConstant_of_offLine_zero`). |
-| Small support | `ArithmeticLorentzianGeometry.eventually_weilQuad_nonneg_of_support` | The Weil form is nonnegative on tests supported within a fixed fraction of the atom spacing. The full Weil floor holds through radius \(181/500\) [map]. |
-| Complete matrix | `eventually_tiltedUnitSpline_completeWeilMatrix_posDef`, `..._uniform_boundedOverlap` | The complete atomic Weil matrix is positive definite at every fixed overlap \(c\), uniformly on \(0<c\le K\). |
-| Spectrum bottom | `RAPT.tiltedUnitSpline_spectrum_bottom`, `tendsto_tiltedUnitSpline_completedShellEnergy_atTop` | The bottom is the completed shell energy \(E(c)\), attained, and \(E(c)\to0\). |
-| Conductor floor | `tiltedConductorEnergy_two_sided`, `ConductorScaleControlsTheCompletedEnergy` | \(c^{-7}\lesssim E_m(c)\lesssim1\) for \(m\le c\); a constant floor for every conductor above the overlap scale. |
-| Growing overlap | `eventually_tiltedWeil_growing_packet_pos`; `..._finite_packet_energy_pos_growing_overlap` | Every fixed finite conductor family is positive along \(c_N=(\log N)^\alpha\), \(\alpha<1/40\), and uniformly on \(1\le c\le(\log N)^A\), \(A<1/48\). |
-| Reserve | `tendsto_gammaReserve_growing`, `tiltedUnitSpline_complete_defect_reserve_explicit` | The Gamma reserve survives while \(c^8=o(\log N)\); the complete defect reserve has explicit polynomial overlap cost. |
-| Selection | `liouvilleSelector_selective_of_signGauge`, `..._of_cofiniteFlip` | At one bounded overlap the selector is strictly positive for \(\zeta\) and rejects every pole-free \(\pm1\) gauge with bounded harmonic sums. |
-| Selection | `StripBochnerWeilForcing.completedPositiveSystem_one_one_eq_zeta` | Every completed positive system of pole budget \(1\) and degree \(1\) is a multiple of \(\zeta\). |
-| Index | `HeckeKreinToeplitz.negIndex_zetaKernel` | \(\kappa(K_\zeta)=\#\{\rho:\operatorname{Re}\rho>1/2\}\), on any two-prime lattice. |
-| Hodge defect | `ArithmeticCastelnuovoSeveri.zeta_hodgeDefect_iff` | The Hodge defect of the scaling surface counts the right zeros. |
-| Thresholds | `ArithmeticPositiveDuality.isPosDefOnGroup_heckeState_iff` | The Hecke state is positive definite on \(\mathrm{Aff}(\mathbb Q)\) iff \(s\ge1/2\). |
-| Moments | `ThetaCuspOddFourRankEight.thetaCuspCenterMixedSignedHankel_eight_posSemidef` | The size-eight signed theta Hankel section is PSD for every \(0<a<1/2\). |
-| \(\mathbb F_q\) calibration | `Stepanov.stepanov_bound`, `EventualHasseWeilIsHasseWeil` | Stepanov's method; a Hasse–Weil bound with any constant is RH for curves. |
+| Zero density | Guth–Maynard large values; N(σ,T) ≪ T^{(30/13)(1−σ)+ε} on [1/2, 5/6]; density hypothesis on σ ≥ 5/6 | [L] |
+| Zero-free region | Vinogradov–Korobov; uniform Dirichlet region except real exceptional zeros | [L] |
+| Critical line | `simple_critical_proportion_ge_67250071`; `three_quarters_or_simple_offLine_near_line` | [L] |
+| Heat flow | `newmanConstant_lt_eighth`; heated zeros real and simple beyond 2π exp((2/3+ε)/t) | [L] |
+| Sub-spacing Hodge index | `weilQuad_atomicTest_nonneg` at width ≤ c★/N, every N; same for every completely multiplicative sign twin | [L] |
+| Small support | Full Weil floor ≥ mass/5000 through radius 181/500, where prime 2 is visible | [L] |
+| Complete matrix, fixed c | Positive definite, one horizon for all 0 < c ≤ K, bottom E₁(c), attained at the pole conductor | [K]/[L] |
+| Conductor spectrum | E_m(c) = 2/(Mφ(m)) Σ_{(k,m)=1}(m/k)∫_{kc/m}^∞ abs(φ̂(2πt))² dt ≥ 0; low spectrum spanned by Ramanujan modes (`tiltedUnitSpline_lowSpace_near_ramanujan`) | [K]/[L] |
+| Index | κ(K_ζ) = 2·#(sector zeros); finite κ ⟺ finite off-line support ⟺ bounded heat counts ⟺ all zeros above some height critical (`zetaKernel_finiteIndex_tfae`) | [L] |
+| Selection | Simple-pole completed positive class is ζ; Hecke state on Aff(ℚ) is PD ⟺ s ≥ 1/2, absolutely continuous over torus Haar ⟺ s > 1/2 (`heckeState_kakutani_wall`) | [L] |
+| Two readings | Collided (same-point) form is the limit of integer theta-prefix readings, uniformly in twists (`finiteThetaSource_uniform_moving_collided`); RH ⟺ Weil form = collided form (`riemannHypothesis_iff_W_eq_collided`) | [L] |
+| 𝔽_q calibration | Stepanov; eventual Hasse–Weil is Hasse–Weil; unitary ⟺ collision charge < 2; golden impure datum has charge exactly 2 | [L] |
 
-## 2. The receiver dictionary is saturated
+## 2. The shared object: the complete Weil matrix along the overlap axis
 
-The corpus proves RH equivalent to positivity, index, count, approximation, convergence and recurrence statements in every studied coordinate system. Examples [Lean]:
+HF, SRT, AIP, ACS (atomic branch), SC and the AID/CACT/CAF/RAPT/SSH/TM programmes share one object: the complete atomic Weil matrix W(φ, c, N), atoms φ((u − log n)/w), w = c/N, with all prime powers, Gamma and both poles. Its state along the overlap c:
 
-- **Index:** `riemannHypothesis_tfae_zetaKernel`; `negIndex_zetaKernel_eq_zero_iff_count` (index zero iff \(\psi(x)-x\le C\sqrt x\log^2x\)).
-- **Overlap:** `riemannHypothesis_iff_atomicFamilies_nonneg_of_growth/Two/Pow/Gevrey`; `tiltedUnitSpline_overlap_window` (RH iff positivity at \(c_N=2(\log N)^\alpha\), any \(\alpha>1/4\)).
-- **Polarization:** `riemannHypothesis_iff_collided_hecke_invariant`; `hecke_similitude_iff`; `riemannHypothesis_iff_W_eq_collided`.
-- **Approximation:** `riemannHypothesis_iff_tendsto_bdDistDiscrete` (Báez-Duarte); one off-line zero \(\rho\) forces distance \(\ge\sqrt{2\operatorname{Re}\rho-1}/|\rho|\) (`bdTarget_dist_floor`).
-- **Moments:** `xiCentralMomentHankelDeterminantsPositive_iff_riemannHypothesis`; `riemannHypothesis_iff_heatHankel_nonneg`; `thetaCuspIntegratedNativeSignedCone_iff_riemannHypothesis`.
-- **Sieve:** BVI proves every short-window Möbius or prime saving, balanced statistic and uniform Vaughan bound equivalent to a zero-free strip.
+| Regime | Status | Evidence |
+|---|---|---|
+| c ≤ c★ (fixed fraction of spacing) | Positive; also for every sign twin, so **not selective** | [L] |
+| Fixed c | Positive definite, selective against Liouville and cofinite flips; single prime flips need c₀(p) with (p/log p)^{1/7} ≲ c₀(p) ≲ p^{1/7} | [K]/[L] |
+| c = (log N)^α, fixed conductor packets | Positive for α < 1/48 uniformly, α < 1/40 along schedules, α < 1/19 | [L], [L], [S] |
+| Mass reserve | Gamma ≥ κc⁻⁷ log N − bc; W ≥ ac⁻⁷D − Cc⁹‖x‖²; negative vectors have D ≤ C′c¹⁶ | [L] |
+| RH receiver | Positivity eventually in N ⟺ RH whenever c⁴/log N → ∞, for every C² profile on [0,1] with ∫φ ≠ 0 (`riemannHypothesis_iff_completeWeilEnergy_nonneg_of_growthTwo`) | [L] |
 
-Three laws show that adding receivers does not move the frontier:
+(inference) The 1/4 threshold is a synthesis threshold: the atomic family must approximate fixed tests with error log N/c⁴ → 0. Whether an off-line zero forces negativity at slower growth is unknown, so positivity on (log N)^{1/8} ≲ c ≲ (log N)^{1/4} has no known strength.
 
-- **Extension no-go** (`RHTower.extension_forces_positivity`; `ExtensionProgrammeNoGo`). A nondecreasing minorant of \(\lambda(L)=\inf\operatorname{spec}Q_L\) that is nonnegative at one length forces \(\lambda\ge0\) everywhere. Soft tools transport positivity only downward in \(L\).
-- **Whole-corpus collapse** (`XiWholeCorpusPositiveSoninApertureCollapseUniversalityLaw`; `GammaDigammaZetaXiSynchronizedReporterBlindnessUniversalityLaw`). The positive and failure phases of whole classes of certificates descend to one intrinsic aperture domain. A single coefficient packet is invisible to every finite-dimensional reporter for \(\Gamma\), digamma, \(\zeta\) and \(\Xi\) simultaneously.
-- **Cross-route bridges** (`CrossRouteReceiverBridges`). Lag, spline, bound-state and factorial-grid receivers are identified with one another. The module states that these identifications supply none of the required bounds.
+**Where the loss sits.** The reserve exponent 16 = 2 + 2·7: the archimedean part keeps a defect fraction δ ∝ c⁻⁷, and the non-ratio (shell) form and the pole moments are each paid by Young's inequality at cost ∝ c²/δ. A top-band witness shows that any separate one-sided payment of the shells costs ≥ κc²/ε, so c¹⁶ is intrinsic to paying the shells apart from the pole ([S], in progress: `TheShellsAloneCostTheSquareOfTheOverlap`). Defect-only conductor capture needs exponential cutoffs ([L]). On conductor modes the same shells cancel exactly with sign: the integrality of the shift h repays log(2πc) (lattice gain, [S]).
 
-(inference) A receiver is progress only if it changes which of C, P, S the input must carry. No receiver in the corpus does.
+## 3. Complete-matrix, Hodge and index routes
 
-## 3. Routes by family
-
-Format: **Mechanism**, **Proved**, **A** (just work), **B** (open mathematics), **Lacks** (which of C, P, S).
-
-### 3.1 The complete Weil matrix and arithmetic Hodge theory
-
-These routes share one object: the complete atomic Weil matrix \(W(\varphi,c,N)\) on \(x\in\mathbb R^N\), atoms \(\varphi((u-\log n)/w)\), \(w=c/N\). Its shared state:
-
-| Regime | Status [Lean] |
-|---|---|
-| Fixed \(c\) | Positive definite; spectrum bottom \(E(c)\), attained at the pole conductor. |
-| Fixed finite conductor packets | Positive for \(c\le(\log N)^{1/48}\) uniformly, along \((\log N)^\alpha\), \(\alpha<1/40\). |
-| Mass reserve | Survives while \(c^8=o(\log N)\). |
-| RH receiver | \(c_N=2(\log N)^\alpha\), \(\alpha>1/4\). |
-| Critical curve | \(E(c_N)\log N\asymp1\); for the tilted spline \(c_N\asymp(\log N)^{1/7}\) (inference). |
-
-The degeneracy sits in the \(\approx c\) conductors \(m\le c\), where \(E_m(c)\) falls to \(c^{-7}\). Above the overlap scale the floor is constant (`ConductorScaleControlsTheCompletedEnergy`).
+Format: **Path** · **Proved** · **A** (just work) · **B** (open mathematics) · **Lacks**.
 
 #### HF — Positive Hodge form on arithmetic cohomology
-- **Mechanism:** Full-source sign, zero Hecke defect or subquantum arithmetic work → Hodge index → RH.
-- **Proved:** The complete-matrix state above. Hecke invariance of the collided polarization is RH (`riemannHypothesis_iff_collided_hecke_invariant`). The scaling-surface defect is a Hecke similitude, \(\mathrm{defect}(H_ax,H_ay)=a\,\mathrm{defect}(x,y)\) (`defect_heckeCorrespondence`). Tilted single-prime threshold \(\gtrsim(p/\log p)^{1/7}\) [map].
-- **A:** Extend complete positivity, including the growing conductors \(m\le c\) and the full complement, from fixed \(c\) to the reserve range \(c\le(\log N)^{1/8-\varepsilon}\). Below the critical curve this needs loss-free bookkeeping of the ratio-prime identity, not a new sign.
-- **B [RH]:** Positivity on or past the critical curve. The margin is \(E(c_N)\to0\), and every fixed-relative-loss estimate fails exactly there.
+- **Path:** full-source sign, zero Hecke defect or subquantum arithmetic work → Hodge index → RH.
+- **Proved:** §2 in full. RH ⟺ collided polarization Hecke invariant ⟺ Hecke similitude. Haar branch: W + G = D_X + P + ΣV_X(a)u_a², prime edges retain fraction 1 − log2/log3 of divisor energy, full-Weil prime-edge entries ≤ −(log3 − log2)M_b/√m [K]. Euler heads: cost(P) ≤ log A gives index(Γ − Euler_P) ≤ A [L].
+- **A:**
+  - Formalize the reciprocal-shell square budget c²(1 + log c) [P].
+  - Integrate fixed packets below (log N)^{1/19} [S → L].
+  - Assemble sieve spectral truncation, harmonic class weights and the effective Ramanujan approximation (`exists_sieveProfile_ramanujan_approximation`) into an effective conductor-confinement theorem for finite sieve profiles at fixed c.
+  - Finish the separate-shell-payment floor [S].
+  - Haar branch: first-prime, coarse and polar costs on finite cells.
+- **B:**
+  - [RH] positivity at c ≫ (log N)^{1/4}.
+  - [sub] confinement of nonpositive vectors with defect O(log c) instead of c¹⁶. Separate payment is excluded, so this needs a signed joint payment of shells and pole off the conductor span.
+  - [RH] Haar branch: joint payment of the non-arithmetic Gamma graph and the signed diagonal V_X together with roots and poles.
 - **Lacks:** C.
 
 #### SRT — Prime-side one-parameter lag localization
-- **Mechanism:** Late-lag bound, atomic-family sign, all-generator one-prime sign, or consecutive-ratio tower sign → RH.
-- **Proved:** The complete-matrix state; full-index exhaustion by towers; exact flip thresholds [map]. Visibility theory [Lean]: aperture-gain certificates certify width exactly down to \(\beta=1/2\) (`certifies_width_apertureGain_iff`). Fixed-aperture positivity cannot force width zero for abstract configurations (`not_forall_configWidth_eq_zero_of_weil_nonneg_on_aperture`).
-- **A:** Push packet positivity from \(A<1/48\) to the reserve exponent. Formalize the Steklov full-index exhaustion [map].
-- **B [RH]:** Sign on an RH-complete family. Tower branch [FS]: an arithmetic index ceiling.
-- **Lacks:** C, and P for the tower branch.
+- **Path:** late-lag bound, complete atomic sign, all-generator one-prime sign or consecutive-ratio tower sign → RH.
+- **Proved:** §2. Full-index exhaustion by explicit (loglog N)^α/N schedules, α > 1 [L]. A single Steklov profile is RH-complete at L(log L)² loglog L, L = loglog N [K]. No compact Gevrey profile of order ≤ 1 exists, and the receivers end at the quasi-analytic boundary [S].
+- **A:** full-index exhaustion for the smaller Steklov schedule; effective detection horizons for the explicit schedules.
+- **B:**
+  - [RH] sign on an RH-complete family.
+  - [FS] arithmetic index ceiling on prime towers.
+  - Detection of unattained maximal depth.
+- **Lacks:** C; P for the tower branch.
 
 #### AIP — Arithmetic incidence positivity
-- **Mechanism:** Prime incidence plus plateau gauge → all-aperture global incidence allocation → odd positivity ⇔ RH.
-- **Proved:** As SRT. Signed-incidence theory (SAEI): frustration is the local–global gap; Kron reduction never creates frustration; the odd Weil ledger is frustrated only by primes; on-line companions pay off-line depth; Paley–Wiener sources pay at Nyquist density [Lean docstrings].
-- **A:** Mixed Schur payment from tail energy on fixed blocks; Haar-branch bookkeeping of first-prime, coarse and polar costs.
-- **B [RH]:** All-aperture allocation. The frustration of the odd ledger is exactly the prime part, so paying it globally is the signed prime problem.
+- **Path:** prime incidence and plateau gauge → all-aperture GlobalIncidenceAllocation → odd positivity ⟺ RH.
+- **Proved:** §2 and the Haar branch shared with HF. Signed incidence theory: frustration is the local–global gap, and the odd Weil ledger is frustrated only by primes.
+- **A:** mixed Schur debit on fixed blocks from tail energy (positive-prefix Schur reduction, A ≥ I/20 [L]); Haar-branch first-prime and coarse costs.
+- **B:** [RH] all-aperture allocation. Paying the prime frustration globally is the signed prime problem.
 - **Lacks:** C.
 
 #### ACS — Arithmetic Castelnuovo–Severi effectivity
-- **Mechanism:** Full-source effectivity, bounded-error Rosati heights or chirality → Hodge → RH.
-- **Proved:** The scaling surface of \(\mathbb Z\) is a polar surface whose defect is the Weil form; Hodge defect \(=\#\)right zeros (`zeta_hodgeDefect_iff`). One generic test with dense shifts sees every right zero (`zeta_cyclic_hodgeDefect_iff`). The defect is finite at every degree. **Infinite-genus law:** no compact test vanishes at every zero, so Weil's form has no radical over \(\mathbb Q\), whereas over \(\mathbb F_q\) the genus is the aperture of the radical. Theta Riemann–Roch \(h^0(d)-h^0(-d)=d\) (`arithH0_riemannRoch`). Adams support threshold \(2^{qr}\), sharp.
-- **A:** Census and displacement Gram estimates at fixed degree. The automorphic branch's unfolding and quotient-measure formalization [map].
-- **B [RH]:** Quadratic effectivity, i.e. subquadratic \(h^0\) growth on degree-zero classes, or Rosati heights. Over \(\mathbb F_q\) the Castelnuovo constant is \(2g\); over \(\mathbb Z\) there is no finite genus to supply it.
-- **Lacks:** P, from infinite genus.
+- **Path:** full-source effectivity, bounded-error Rosati heights or all-ordinate chirality → Hodge index → RH.
+- **Proved:** scaling-surface Hodge defect = #right zeros. Arithmetic sections of width ≤ c★/N have Markov energy ≥ square mass; the sinh-pole kernel is a source-defined subspace with Riemann–Roch and ampleness on the scaling subsurface [L]. Sharp Adams support 2^{qr}. Moment bounds certify zero location only through the depth product (`MomentBoundsCapTheOffLineDepth`). Elliptic base over 𝔽₃: adeles, Haar, local integrals [K].
+- **A:**
+  - Automorphic branch foundations: product formula, quotient measures, Iwasawa characters, Eisenstein unfolding for the 𝔽₃ elliptic base.
+  - Atomic branch: as HF.
+- **B:**
+  - [RH] quadratic effectivity: subquadratic h⁰ growth on degree-zero classes, or Rosati heights. Over 𝔽_q the Castelnuovo constant is 2g; over ℤ there is no finite genus.
+  - [C%] census: signed Gram moments near bandwidth 1, a prime surplus ≤ N/18 or E(1/9) ≤ 4 (70%), or a displacement-sensitive slack bound near λ = 1 (75%).
+- **Lacks:** P.
+
+#### SC (candidate) — Stokes/Witt–Krein cross-fibre index
+- **Proved:** fine-tower and shrinking-family full-index exhaustion [L/S]; finite reflection-closed spectra carry full index on distinct-prime boxes [K]; under attained maximal depth, infinitely many positive prime towers ⟺ RH [L].
+- **A:** height-filtered certificate costs; effective horizons.
+- **B:** [FS] source-fixed cross-fibre index ceiling; detection at unattained depth.
+- **Lacks:** P.
+
+## 4. Ground-state, Markov and operator routes
 
 #### RW — Restricted Weil ground energy
-- **Mechanism:** Ground minimum \(\mu(A)\ge0\) at every aperture → RH.
-- **Proved:** \(\mu\) strictly decreasing; RH iff \(\mu(A)>0\) for all \(A\). Restricted ground energy \(\to0\) at infinite aperture, i.e. Gaussian criticality (ACT). \(\mu(A)\le K\exp((11/2)A-\pi e^{2(A-2)})\), so any aperture floor must decay doubly exponentially (ArithmeticCompensationTheory). \(\neg\)RH forces the restricted floor envelope below the transverse supremum (`restrictedWeilFloor_not_eventually_zero_of_not_rh`).
-- **A:** Small-aperture floors at further apertures.
-- **B [RH]:** Every aperture. The extension no-go forbids reaching it by monotone continuation.
+- **Proved:** μ strictly decreasing; RH ⟺ μ(A) > 0 at every aperture. μ(A) ≤ K exp((11/2)A − πe^{2(A−2)}), so any floor decays doubly exponentially. An off-line zero forces a zero crossing at an aperture bounded by its visibility lag (`groundEnergyCrossing_le_visibility`).
+- **A:** further fixed-aperture floors (finite certificates).
+- **B:** [RH] every aperture. Monotone continuation of positivity is excluded (extension no-go).
 - **Lacks:** C.
 
-#### EWU and OWU — Even and odd weight uniqueness
-- **Mechanism:** Even (odd) blind minimum \(\ge0\) at every aperture → \(\lambda=\Lambda\) → RH.
-- **Proved:** Weight rigidity; attained blind minima; odd witnesses separating \(\Lambda\) from Liouville and prime flips at radii \(181/500\) and \(23/40\) (`exists_odd_smooth_threeHundredSixtyTwoThousandths_zeta_pos_liouville_neg`). The conductor–forcing gap (`TheConductorForcingGap`): companion forcing and the conductor horizon are incompatible.
-- **A:** Further fixed-radius witnesses.
-- **B [RH]:** All-aperture sign with reflected-prime and polar payment.
+#### EWU, OWU — Even and odd weight uniqueness
+- **Proved:** even rigidity; attained blind minima; RH ⟺ at every aperture some real weights make the full Weil functional nonnegative. Odd witnesses separate Λ from Liouville and prime flips at radii 181/500 and 23/40. The companion-forcing certificate and the conductor horizon have no common aperture (`TheConductorForcingGap`).
+- **A:** further fixed-radius witnesses.
+- **B:** [RH] all-aperture sign with reflected-prime and polar payment; OWU needs a detector other than companion forcing.
 - **Lacks:** C.
 
 #### ACT — Arithmetic criticality / single-shift variation
-- **Mechanism:** One fixed theta shift with \(D_a\le2S_a+V_a\) for every even compact profile → odd positivity → RH.
-- **Proved:** The Markov form of Riemann's kernel in Doob coordinates (Allegretto–Piepenbrink, Pinchover). The odd form is **never subcritical**. An odd nonnegative supersolution of the folded generator would give RH (`riemannHypothesis_of_foldedSupersolution`). No positive profile is a folded supersolution: it fails at the origin through prime \(2\) and at infinity through the theta harmonic identity.
-- **A:** Larger-shift absorption of fixed-support collars.
-- **B [RH]:** A positive (super)solution of the full nonlocal generator, not of the folded one.
-- **Lacks:** C. The route is the clearest statement of the criticality face.
+- **Proved:** the Markov form of Riemann's kernel in Doob coordinates; the odd form is never subcritical; folded supersolutions would give RH, and no positive profile is one. The archimedean place is Z-type: every obstruction to the variation inequality is prime.
+- **A:** effective shift thresholds for fixed-support reflected-prime collars.
+- **B:** [RH] a positive supersolution of the full nonlocal prime-jump generator.
+- **Lacks:** C. This route is the cleanest statement of criticality.
 
-### 3.2 Prime error, cancellation and counts
+#### CHMD — Causal hyperbolic–modular duality
+- **Proved:** wave, Doob and nodal receivers. Stopping heads obey Γ(head) + Γ(tail) ≤ (2 + 96e²)Γ(f); one cutoff makes complete even-power error ≤ δΓ(f) [K]. Literal prime-edge Gamma payment leaves fraction 1 − log2/log3 of divisor energy [K].
+- **A:** first-prime, coarse and head payments on finite sources.
+- **B:** [RH] full wave or odd/nodal sign; sign of the infinite retained orbits.
+- **Lacks:** C.
 
-These routes read the signed prime or Möbius source. Their shared state:
+#### SZ — Suzuki screw and shifted kernels
+- **Proved:** Ward-defect receiver; ¬RH forces cofinal unboundedness below. Each finite prime-power packet satisfies reflected current + negative-light Gram = positive-light Gram, both PSD. Bare-source ℓ², uniform causal recovery and positive unital finite parts are excluded.
+- **A:** none that approaches the receiver.
+- **B:** [RH] a uniform lower bound after complete source assembly.
+- **Lacks:** C.
 
-- **Global law [Lean]:** Index zero iff the one-sided count \(\psi(x)-x\le C\sqrt x\log^2x\) (`negIndex_zetaKernel_eq_zero_iff_count`).
-- **Deciding input [Lean]:** Any criterion implying the count must reject Liouville, must separate \(a\) from \(a+\varepsilon n^{-\eta}\) for every \(\eta<1/2\), and cannot be decided on a finite window (`deciding_input_necessary_properties`, `not_of_finite_window`).
-- **Producer blindness [Lean]:** \(\Lambda+\varepsilon n^{-\eta}\) satisfies PNT and every short-interval law with \(\alpha>17/30\) (`producers_are_precision_blind`).
+#### FU, CFC, RP — CCM prime histories
+- **Proved:**
+  - CFC: RH ⟺ the published first-clock sine coefficient is bounded below on a tail.
+  - RP: no sublinear history floor exists; RH ⟺ an eventual linear floor.
+  - FU: narrow-window prime channel negative [L]; wide windows can be positive [S].
+  - CCM: the archimedean distribution = Sonin part + square − anticommutator, as operator traces.
+- **A:** low-LCM payments; narrow-window channel estimates.
+- **B:** [RH] one complete-history linear floor, paying high-LCM pairs and the anticommutator term.
+- **Lacks:** C.
+
+#### PA — Prime–archimedean passivity
+- **Proved:** exact trace receivers; each fixed Hausdorff order positive at large shift.
+- **A:** further fixed orders.
+- **B:** [RH] all orders and shifts at once.
+- **Lacks:** C.
+
+#### TG — Topological sub-unit gate
+- **Proved:** winding, cubic transgression and central-gap receivers.
+- **B:** [RH] matrix-complete decomposition with nonnegative residual and integer trace < 1 on every disc.
+- **Lacks:** C. Integrality enters only after the sign.
+
+#### RN — Theta renewal
+- **Proved:** compact cone-positive renewal operator with exact regularized determinant; native unregularized synthesis has a topology obstruction.
+- **B:** [RH] directed mixed prime + Gamma ≥ pole. Cone positivity does not give real spectrum.
+- **Lacks:** C.
+
+#### LI — Paired Li and prime–Gamma balances
+- **Proved:** the guarded history-zero set is finite; RH ⟺ it is empty; under ¬RH the last guarded zero has odd order. Cayley–Li ladder primitive sign ⟺ RH [S].
+- **B:** [RH] the outside budget at every possible guarded zero, or the ladder sign.
+- **Lacks:** C.
+
+## 5. Prime-error, cancellation and theta routes
+
+These share the global law κ = 0 ⟺ ψ(x) − x ≤ C√x log²x [L], the deciding-input theorem (a Count-sufficient input must separate a from a + εn^{−η} for all η < 1/2) and producer blindness.
 
 #### WL — Weil lag function
-- **Mechanism:** Prime lag or deficit → one-sided bound or subexponential critical energy → RH.
-- **Proved:** Critical-energy, linear-error and count criteria. Balanced factorial ratios cost \(\log A_n\ge(2\log2-\varepsilon)mn\). Order-\(r\) jet vanishing on the Adams fixed locus forces support \(\ge2^{qr}\), sharply attained. Integer approximate vanishing is exact divisibility [map].
-- **A:** Further parity-selective auxiliaries inside the factorial-ratio class.
-- **B [RH]:** A signed prime-error bound at square-root precision. The Adams and factorial costs show integrality alone gives Chebyshev precision.
+- **Proved:** critical-energy, linear prime-error and one-sided count criteria. Chebyshev inversion isolates two Möbius moments, a Mertens remainder and an O(n) sawtooth. Balanced factorial ratios cost (2log2 − ε)mn; full Adams multiplicity costs support 2^{qr}, sharply. Algebraic first vertical jets detect every partial.
+- **A (tractable):** higher-order scalar-jet transfer for general prime families.
+- **B:**
+  - [RH] signed prime error at √x precision.
+  - [RH] parity-selective integer auxiliaries of controlled height beyond the Landau-window class.
 - **Lacks:** P.
 
 #### MC — Möbius cancellation at half power
-- **Mechanism:** \(\mu\) or Liouville cancellation at half power, or an odd-parity upper count → RH.
-- **Proved [Lean, AGT]:** The Möbius gauge exponent satisfies \(\Theta=\theta_\mu(0)\ge1/2\). The typical exponent is exactly \(1/2\), and RH iff the trivial point is typical. Gauge-invariant majorants are \(\ge3/4\) at \(0\) (`threeQuarters_le_of_gaugeInvariant_bound`). The exponent is not constant on the gauge torus. Uniform Dirichlet zero-free region [map].
-- **A:** Level-averaged and conductor-averaged savings (large sieve over the special locus).
-- **B [RH]:** The exponent at the one specified point \(0\). Almost-sure and averaged typicality do not control a specified point.
+- **Proved:** gauge exponent θ_μ(0) = Θ = sup Re ρ; typical exponent 1/2; RH ⟺ the trivial point is typical; gauge-invariant majorants are ≥ 3/4 at 0. Quadratic Dirichlet-point twins have exponent ≤ (2 + Θ)/6. Normalized Chebyshev energy reduces to a nonnegative cyclotomic remainder [K].
+- **A:** Siegel–Walfisz transfer for growing-modulus shells.
+- **B:**
+  - [RH] half-power cancellation at the trivial point.
+  - [QRH] a fixed strip: the 5/6 strip is equivalent to the cyclotomic-remainder bound R = O(N^{5/3+ε}), the 3/4 strip to R = O(N^{3/2+ε}) [K].
+  - [Siegel] real exceptional zeros.
 - **Lacks:** S at the trivial point, and P.
 
 #### PBM, RB — Regularized abscissa; Robin/Nicolas
-- **Proved:** Convergence of the pole-regularized prime or log-\(\zeta\) series at every \(\sigma>1/2\) is RH. Robin at \(\mathrm{lcm}(1,\dots,n)\) is RH (`RobinLcmRiemannCriterion`). Counterexamples need growing prime cores (`RobinMovingValuationDefect`).
-- **A:** Necessary-condition refinements on colossally abundant extremizers.
-- **B [RH]:** Square-root-scale remainders on growing extremizers.
+- **Proved:** convergence of the pole-regularized prime or log-ζ series at every σ > 1/2 ⟺ RH; colossally abundant reduction; counterexamples need growing prime cores.
+- **B:** [RH] coefficient cancellation to the critical abscissa; square-root remainders on growing extremizers.
 - **Lacks:** P.
 
-#### LI — Paired Li and prime–Gamma balances
-- **Proved:** RH implies paired Li positivity. Unconditionally the paired Li coefficients are not eventually negative (`not_eventually_re_xiLiPaired_neg`). Guarded zero set finite; RH iff empty [map]. RH is reflection positivity of the Cayley ladder (ArithmeticLorentzianGeometry).
-- **A:** Budget computations at finitely many guarded zeros.
-- **B [RH]:** The primitive ladder sign.
-- **Lacks:** C.
+#### JAS, CTF — Joint ancestry; Báez-Duarte approximation
+- **Proved:**
+  - JAS: positivity at growing logarithmic prime budget.
+  - CTF: exact dual completion (kernel 1/max(j,k)); Euler completion error ≤ (M + 1)²/(T + 1); fixed-probe terminal edge sharp.
+- **A:** CTF terminal and Euler-completion bookkeeping.
+- **B:** [RH] JAS square-root budget; CTF covariance upper cancellation along compatible cutoffs. Dual completion yields lower bounds only.
+- **Lacks:** P.
 
-#### JAS, CTF, PM (with PW-B), FU, CFC, RP, PA
-- **JAS** (joint ancestry). Proved: positivity at growing logarithmic prime budget [map]. B [RH]: reach the square-root power budget. Lacks P.
-- **CTF** (chronological tail, Báez-Duarte). Proved [Lean]: RH iff the discrete Báez-Duarte distance tends to \(0\), plus the Burnol lower bound. Vasyunin reciprocity is a residue-difference energy (BVI). B [RH]: covariance cancellation along compatible cutoffs. Exact dual completion gives only lower bounds. Lacks P.
-- **PM / PW-B** (physical model, cusp forcing). Proved: complete-energy and gauge-mass receivers; the escape alternative; compact effective pole orders. Escape completeness: RH iff every escape state is visible. A: remove `XiZeroCopy` indexing from the native two-response action. B [RH]: positive gauge mass for every subcritical limit. Lacks S.
-- **FU, CFC, RP** (CCM-indexed prime histories). Proved: exact receivers. CFC: RH iff the published first-clock sine coefficient is bounded below on a tail, and under \(\neg\)RH it is unbounded below. RP: no sublinear history floor exists. The CCM subfolder has 48 no-go modules (gauges, Fock positivity, metric transport, parity selection under an off-line quartet). B [RH]: one complete-history linear floor. Lacks C.
-- **PA** (prime–archimedean passivity). Proved: each fixed Hausdorff order is positive at large shift [map]. Several "cofinal Hausdorff diagonal/quadrant forces RH" receivers [Lean]. B [RH]: all orders and all shifts. Lacks C.
-
-#### BAG — Deterministic zeta self-return
-- **Proved:** Strong and local recurrence receivers; weak ladders collapse to RH; Voronin universality on small discs (`ZetaVoroninUniversalityOnSmallDiscs`).
-- **B [RH]:** Returns near possible zeros. Zero-free-target universality is insufficient.
+#### PM with PW-B — Physical-model Haar approximation
+- **Proved:** RH ⟺ every escape state is visible; compact effective-pole-order laws. PW-B: native two-response action and principal small-damping limits.
+- **A:** PW-B: restate the native action on source data, removing `XiZeroCopy` indexing.
+- **B:** [RH] positive gauge mass for every subcritical limit; exterior tightness against infinite-height escape.
 - **Lacks:** S.
 
-### 3.3 Theta, heat and moments
+#### BAG — Deterministic self-return
+- **Proved:** strong and local recurrence receivers; finite Euler returns retain zero exceptions.
+- **B:** [RH] returns near every right-strip point, including possible zeros.
+- **Lacks:** S.
 
 #### TH — Theta moment positivity
-- **Mechanism:** Signed center-mixed theta jets → complete Hankel cone → RH.
-- **Proved [Lean]:**
-  - Rank seven strict for \(0<a<1/2\) [map]. **Rank eight is PSD for every \(0<a<1/2\)** (`thetaCuspCenterMixedSignedHankel_eight_posSemidef`). The seam is split at \(r_c=\log(5/\pi)\), paid by 15 seam and 8 bulk piece certificates and an exact \(LDL^\top\).
-  - The native fibre form is a square plus a null Lagrangian, \(\sum v_iv_jh_{i+j}=|G_v|^2+B_v'\), so the tail form is \(2\int_{y>x}|G_v|^2-2B_v(x)\) (`thetaCuspNativeTailHankelForm_eq_square_sub_flux`).
-  - The relaxed fourth-moment concentration holds (`thetaCuspRelaxedFourthMomentConcentration_holds`). The strict low block discharges Hankel sizes \(0,1,2\) (`PrimeArchThetaHankelDegreeTail`).
-- **A:** Rank nine, ten, … by the same seam-split piece certificates; each finite rank is a finite certificate.
-- **B [RH]:** All ranks at once. The square-plus-flux identity converts this into domination of the center flux \(B_v(x)\) by the bulk \(L^2\) mass of \(G_v\), uniformly in rank.
-- **Lacks:** C (rank uniformity).
+- **Proved:** rank seven strict; rank eight PSD for every 0 < a < 1/2 [L]. Each finite native tail = twice its Gram-square mass minus twice its local flux [L]. Heated orthant signs at all ranks; all-rank signed-center positivity ⟺ RH.
+- **A:** rank nine, ten, … by seam-split piece certificates.
+- **B:** [RH] flux domination uniformly in rank. No rank-uniform fraction of the new diagonal survives [K].
+- **Lacks:** C.
 
-#### TT, LA, WD — Theta tails, line anchor, Ward collisions
+#### TT, LA, WD, HCF, GTA — Theta tails, line anchor, Ward collisions, heat trace, transverse charge
 - **Proved:**
-  - TT: theta tail and Wold receivers; the windowed aperture modes are Weil box tests. Mixed-horizon modulus \(N^{\kappa-\operatorname{Re}z}M^{\kappa+\operatorname{Re}z}\) [map].
-  - LA: \(\xi\) coefficients are Turán [map]. The heat zeros are real and simple beyond \(2\pi\exp((2/3+\varepsilon)/t)\) [map]. Every local heat-zero cluster becomes simple immediately forward in time (`HeatForwardSimpleZeros`).
-  - WD: \(\Lambda\le t\) iff no collision mass after \(t\) (`newmanConstant_le_iff_forall_collisionMass_eq_zero`); collisions count the index (HKT).
-- **A:** LA/WD: absorb the \(C\log X\) outer vertical energy in localized dissipation, and sum the local estimates for fixed \(t>0\).
-- **B [RH]:** Uniform control of \(N(t)\) as \(t\downarrow0\), i.e. \(\Lambda=0\); all-height finite-head signs.
-- **Lacks:** C (the heat route is critical at \(t=0\)).
-
-#### HCF, GTA, RN, XN, CHMD
-- **HCF** (Gaussian heat trace). Proved: one vertical line of the complex-time heat trace decides RH (`XiGaussianHeatVerticalLineReceiver`); positivity on both \(\log2\) and \(\log3\) grids iff RH; uniform-grid alias no-go. A: finite-degree grid signs. B [RH]: all degrees and heights. Lacks C.
-- **GTA** (transverse Schur charge). Proved: exact transverse-charge decay criterion. B [RH]: rank-uniform arithmetic decay. Lacks C.
-- **RN** (theta renewal). Proved: compact cone-positive renewal operator with exact regularized determinant. Cone positivity does not imply real spectrum. B [RH]: a directed boundary-work sign. Lacks C.
-- **XN** (Newton discs). Proved: coverage criterion, nonnegative Laplacian of the margin. B [RH]: cover every zero. Lacks S.
-- **CHMD** (causal hyperbolic–modular duality). Proved: the Weil form on Doob tests is edge energy minus polar energy (`CHMDPolar.W_re_eq_edge_sub_polar`). Finite odd bound-state space iff finitely many off-line zeros (`CrossRouteReceiverBridges`). One cutoff controls complete even-power error for finite cell sources [map]. A: further Gamma graph payments. B [RH]: full wave or odd sign. Lacks C.
-
-### 3.4 Operator and boundary routes
-
-#### SZ — Suzuki screw and shifted kernels
-- **Proved:** Ward-defect lower-bound receiver; \(\neg\)RH forces cofinal unboundedness below. Every finite prime-power packet satisfies reflected current \(+\) negative-light Gram \(=\) positive-light Gram, with both Grams PSD [map]. The Suzuki subfolder has 44 no-go modules, e.g. Robin observers cannot extract the CCM-FU correction, and the ordinary entire characteristic limit is impossible.
-- **A:** Uniform-in-packet assembly of the two-Gram identity.
-- **B [RH]:** Uniform lower bound after complete assembly.
+  - TT: theta tail and Wold receivers.
+  - LA: ξ coefficients Turán; heated zeros real beyond 2π exp((2/3+ε)/t).
+  - WD: localized dissipation through collisions and t = 0, with C log X times outer vertical energy [K]; collision mass → ∞ as t ↓ 0 ⟺ unbounded tower indices.
+  - HCF: positivity on both log2 and log3 grids ⟺ RH.
+  - GTA: exact transverse-charge decay criterion.
+- **A:**
+  - WD: absorb the outer vertical energy and sum the localized estimates at each fixed t > 0.
+  - LA, HCF: further fixed degrees.
+- **B:**
+  - [FS] uniform N(t) as t ↓ 0. By `zetaKernel_finiteIndex_tfae` this is finite off-line support, hence LH.
+  - [RH] Λ_dBN = 0; all-height low-degree signs; both grid signs at all degrees; rank-uniform transverse decay.
 - **Lacks:** C.
 
-#### CCM, Hedenmalm, Deninger (operator programmes)
-- **CCM.** The Weil distribution is an actual operator trace (`opTrace_ccmIntegratedScaling_mul_geometricScatteringLogDifferential_eq_weilDistribution`). The archimedean Weil distribution equals Sonin part \(+\) square \(-\) anticommutator (`neg_ccmArchimedeanWeilDistribution_eq_sonin_add_square_sub_anticommutator`). Real-rooted nonnegative ground states force RH (`CCMNonnegativeGroundStateRH`). Parity selection of the restricted ground state fails under an isolated off-line quartet (`CCMParitySelectionNoGo`). **B [RH]:** a sign for the anticommutator term. Lacks C.
-- **Hedenmalm.** One-aperture singularity ceilings and a one-temperature Hankel criterion force RH. Covariant aggregation cannot select the critical line (`HedenmalmThetaAnomalyBurnolCovariantAggregationNoGo`). **B [RH]**. Lacks S.
-- **Deninger.** The Hodge–Schwartz resolvent core is RH (`DeningerResolventCoreIsRiemannHypothesis`). On a complete carrier the polarized generator is bounded, so its spectrum cannot be the zeros (`DeningerCompleteCarrierSpectrumBounded`). A single root adjunction destroys unique roots. **B:** a foliated space whose flow has the right unbounded generator. Lacks a realization (C).
+#### XN — Newton discs
+- **Proved:** coverage criterion; nonnegative Laplacian of the interior margin.
+- **B:** [RH] cover every zero by line-centered discs with nonnegative margin.
+- **Lacks:** S.
 
-#### TG — Topological sub-unit gate
-- **Proved:** Winding and transgression identities; central-gap receivers [map].
-- **B [RH]:** Nonnegative residual plus integer trace \(<1\) on every disc. Integrality is present here, but only after the sign.
-- **Lacks:** C.
+## 6. Candidates
 
-### 3.5 Candidates
+All candidates have proved receivers and lack an independent source mechanism [map].
 
-All seventeen candidates have proved receivers and lack a zero-independent source mechanism [map]. The table records the property each lacks.
-
-| Candidate | Missing mechanism | Lacks |
-|---|---|---|
-| APF, EWJ, FEL, WBF | Zero-independent exhaustion, admission or predeclared balance | P |
-| BSH, CDC, HJ, IRK, SEC | Pre-divisor forcing at actual zeros | S |
-| DR | Global monodromy of strict-right roots | C |
-| EGC | Outer contour sign beating the Gamma floor | C |
-| MSC | Source-faithful bridge from squarefree Hilbert data to the Sonin sign | C |
-| PCS, RFHM | Source-natural symmetry-breaking wall law | S |
-| PTR, W1C | Prime-faithful lossless port or ferromagnetic couplings landing on \(\Xi\) | Realization (C) |
-| SC | Arithmetic cross-fibre index ceiling | P |
-| PW-B | Removing `XiZeroCopy` indexing | S |
-
-### 3.6 Theory programmes that act as routes
-
-These programmes carry their own receivers and boundaries and are not separate map entries.
-
-| Programme | Decisive theorems [Lean] | Status | Lacks |
+| Candidate | A | B | Lacks |
 |---|---|---|---|
-| **HKT/AKLT** Krein index | \(\kappa(K_\zeta)=\#\)right zeros; Krein–Langer iff \(\kappa<\infty\); finite index ⇒ Lindelöf (`lindelof_of_negIndex_zetaKernel_lt_top`). All but finitely many primes see the whole index; locality and pointwise-closed statements are twin-blind. | **B [FS]:** \(\kappa<\infty\), a weaker-than-RH target that implies LH. | P (index ceiling) |
-| **APD** \(\mathrm{Aff}(\mathbb Q)\) positivity | Hecke state PD iff \(s\ge1/2\); Bost–Connes temperature is the Hecke exponent; Weil's correlation carries no successor. A positive measure satisfying the bare functional equation is Riemann's prime measure (`eq_riemannPrimeMeasure_of_beurling_functional_equation`). | **B [RH]:** a PD function on \(\mathrm{Aff}(\mathbb Q)\) restricting to Weil's correlation. | C (it sits at the threshold) |
-| **APol** polarization | The collided form is a coercive polarization at every aperture; RH iff Hecke invariant iff Weil form = collided form. Weil's form has finitely many negative directions at each aperture. | **B [RH]**. | C |
-| **ALG** Lorentzian | Euler products of Lorentzian local factors are Lorentzian; the prime ladder is not; Ramanujan and Lorentzian meet only at the Weil bound; trickle-down inequality = square-root count. | **B [RH]**. | P |
-| **MPG/SB** multiplicative positivity | Exact Fejér barrier \(a_1\le2\cos(\pi/(K+2))a_0\); multi-frequency certificates buy at most two; Siegel's exception is two-torsion; the simple-pole class is \(\zeta\). | Boundary; selection survivor. | C |
-| **AES/RBG** electrostatics, renormalized geometry | Transverse equilibrium is the critical line; an off-line zero carries a full energy quantum; the Hecke defect is the moment of inertia. Prime-place counterterm survives nothing; the archimedean germ survives on the polar hyperplane. | **B [RH]:** the stability (sign) of the equilibrium. | C |
-| **BGG** gauge geometry | Positive prime-mass deformations of \(\zeta(s)^2\zeta(s+i\gamma)\zeta(s-i\gamma)\) are rigid off the line; central excess forces a square-root prime deficit. | Rigidity for deformations, not for \(\zeta\) itself. | S |
-| **AOG/SSIC** orientation, visibility | Orientation rate = depth of deepest seen zero; eventual Hasse–Weil is Hasse–Weil over \(\mathbb F_q\); hiding needs a crystal; refutation is finite, confirmation is not; the depth is the complete dilation invariant. | Visibility boundary. | P |
-| **BSU** blind cones | Packet persistence; growth exponent of a compact packet = depth of seen zeros; prime-power node deletion price \(=\Lambda(m)/\sqrt m\) exactly, additive over primes (the blind cone reads the Euler product); a sharp window ceiling forces RH. | **B [RH]**. | C |
-| **THIM/BVI** receiver calculus | The oscillating smooth power is paid exactly at the zeros of \(\zeta\); sign-blind dampings stop at \(1/2\). Coherent prime blocks admit no Type-II dispersion below the quadratic horizon; sharp cutoffs stop Type-I at \(\theta=4/3\). | Exact Type-II/parity boundary. | P |
-| **ALDG/CDG** local divisors, collided metric | Heat repairs roots in a disc after time \(32r/\deg\); every finite head of \(\xi\) is heat-repaired at large height. Finite integer theta prefixes recover the full collided metric. | Local tools; no global sign. | C |
+| **APF** paired Fredholm | — | Zero-independent divisor exhaustion [RH] | P |
+| **BSH** mate curvature | — | Pre-divisor section and mate identity on actual Ξ zeros [RH] | S |
+| **CDC** constitutive dagger | — | Source potential forcing confluence at actual zeros [RH] | S |
+| **DR** dyadic roots | Capped-atlas extensions | Global strict-right roots and monodromy [RH] | C |
+| **EGC** pole-safe contour | — | Outer contour sign beating the Gamma floor [RH] | C |
+| **EWJ** Euler/Wold jets | — | Zero-independent norm exhaustion [RH] | P |
+| **FEL** theta likelihood | — | Cofinal balance from a predeclared source [RH] | P |
+| **HJ** Hurwitz reflection | — | Residual vanishing forced at actual zeros [RH] | S |
+| **IRK** rotation trace | — | Arithmetic projective lift with integral count [RH] | S |
+| **MSC** Möbius–Sonin | — | Source-faithful bridge to a nonnegative Sonin energy [RH] | C |
+| **PCS** singular co-shift | — | Source-natural wall annihilation [RH] | S |
+| **PTR** photonic source | — | Prime-faithful zero-loss nonlocal port [RH] | C |
+| **RFHM** support grade | — | Symmetry-breaking wall law [RH] | S |
+| **SC** Witt–Krein | Effective horizons | Cross-fibre index ceiling [FS] | P |
+| **SEC** prime seam | — | Exact eventual compactness at actual zeros [RH] | S |
+| **W1C** Lee–Yang | — | Source couplings converging to Riemann's measure [RH] | C |
+| **WBF** source certificates | — | Arithmetic certificate stream with uniform completion [RH] | P |
+| **PW-B** cusp forcing | Remove `XiZeroCopy` indexing | Complete-energy ceiling and all-divisor extinction [RH] | S |
 
-## 4. Cross-route verdict
+## 7. Theory programmes that act as routes
+
+| Programme | Decisive results | A | B | Lacks |
+|---|---|---|---|---|
+| **HKT/AKLT** Krein index | κ = 2·#sector zeros; finite-index TFAE (bounded heat counts, eventual criticality); finite ζ index forces every single-prime flip to infinite index; atomic pole indices of ζ and Liouville differ by exactly one square in an explicit window [L] | Effective horizons for full-index schedules | [FS] κ < ∞ | P |
+| **HEF** same-point sums | Calibration rigidity: every line-calibrated explicit statistic is W; holomorphic clocks have excess 0 or ∞; collision charge O ∈ 2ℕ, RH ⟺ O < 2, N ≤ N₀ + O; resolvent formula (σ − 1/2)S = E + D, D ≥ 0, on finite configurations [L] | Resolvent formula on the full Ξ divisor (absolute convergence) | [RH] D(s) or O(T) from arithmetic; [C%] O ≤ cN, c < 1/4 | C (no source for S) |
+| **SSH** successor shells | Non-ratio form = finite sum of shells on the top band; continuum shells = pole charge; lattice gain = log(2πc) − β/M + o(1) [S] | Finish the separate-payment floor; the reciprocal-shell budget | [sub] signed shell payment off the conductor span with log c loss | C |
+| **APD** Aff(ℚ) positivity | Hecke state PD ⟺ s ≥ 1/2 (Kakutani wall); RH ⟺ a PD function on Aff(ℚ) restricts to Weil's correlation; extensions classified [L] | — | [RH] the extension | C |
+| **APol/CDG** polarization | RH ⟺ W = collided ⟺ Hecke invariance; collided form and Hecke defect read from theta prefixes; Def_L ≥ 4L²·(depth second moment) [L] | Rates for the theta-prefix readings | [RH] Hecke-defect upper bound | C |
+| **ALG** Lorentzian | Sub-spacing Hodge index for ζ and twins; Ramanujan and Lorentzian meet only at the Weil bound [S]; trickle-down = count | — | [RH] | P |
+| **AOG/SSIC** visibility | Orbit correlation ≤ Ke^{σt} ⟺ zero width ≤ σ; refutation finite, confirmation not; depth is the complete dilation invariant [L] | — | [RH] any subexponential orbit bound | P |
+| **AES/RBG** electrostatics | RH ⟺ ℰ < 1; W(R) ≤ 64R L_R(L_R + 1) [L]; annular increment ≤ 39/50 at every R ≥ 4 ⟺ RH [S] | — | [FS] finite ℰ; [RH] subquantum increment | C |
+| **ART** resonances | Paper only: commutative vs free realization, unique factorization forbids additive concatenation, Pisot and Cunningham obstructions, Pollicott strip bridge, orthogonal families cancel their gain [P] | Formalize the realization obstructions and the rank law | [QRH] a Hölder mixing realization; [RH] a non-envelope amplifier | P |
+| **CCM / Deninger / Hedenmalm** | Weil distribution is an operator trace; complete carriers have bounded generators; covariant aggregation cannot select the line [L] | — | [RH] anticommutator sign; a carrier with unbounded generator | C / S |
+
+## 8. Cross-route verdict
 
 | Missing property | Routes |
 |---|---|
-| **C** — critical sign at zero margin | HF, SRT, AIP, RW, EWU, OWU, ACT, LI, FU, CFC, RP, PA, TH, TT, LA, WD, HCF, GTA, RN, CHMD, SZ, TG, CCM, APD, APol, AES/RBG, BSU, ALDG/CDG, DR, EGC, MSC, PTR, W1C |
-| **P** — square-root precision | ACS, WL, MC, PBM, RB, JAS, CTF, HKT/AKLT, ALG, AOG/SSIC, THIM/BVI, SRT (towers), APF, EWJ, FEL, WBF, SC |
-| **S** — selection at the trivial point | MC, PM/PW-B, BAG, XN, Hedenmalm, BGG, BSH, CDC, HJ, IRK, SEC, PCS, RFHM |
+| **C** critical sign | HF, SRT, AIP, RW, EWU, OWU, ACT, CHMD, SZ, FU, CFC, RP, PA, TG, RN, LI, TH, TT, LA, WD, HCF, GTA, DR, EGC, MSC, PTR, W1C, HEF, SSH, APD, APol/CDG, AES/RBG, CCM, Deninger |
+| **P** square-root precision | ACS, WL, MC, PBM, RB, JAS, CTF, SRT (towers), SC, APF, EWJ, FEL, WBF, HKT/AKLT, ALG, AOG/SSIC, ART |
+| **S** selection | MC, PM/PW-B, BAG, XN, BSH, CDC, HJ, IRK, PCS, RFHM, SEC, Hedenmalm |
 
-(inference) The list is lopsided: about two thirds of the routes lack C. These routes already have selection, from the pole, Gamma and Ramanujan packets, and work at a fixed resolution; they fail because their margin vanishes. The P-routes have the right counting form but no producer stronger than Chebyshev precision. The S-routes carry an analytic object that cannot tell \(\zeta\) from a twin. No route lacks nothing.
+(inference) The C-routes already have selection, from the pole, the Gamma factor and the conductor spectrum, and they work at fixed resolution; their margin vanishes along the axis that makes them complete. The P-routes have the right counting form but no producer stronger than Chebyshev precision. The S-routes carry analytic objects that cannot tell ζ from a twin. HEF explains the shared root of the C-routes: every positive object they build reads the reflection-paired side, and the same-point side has no prime-side source.

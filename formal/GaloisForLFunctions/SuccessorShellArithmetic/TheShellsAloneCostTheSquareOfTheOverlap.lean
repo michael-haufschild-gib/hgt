@@ -325,7 +325,7 @@ theorem sum_topBand_bumpCorr_ge (hg : Continuous g) (hgc : HasCompactSupport g)
       ((continuous_const.mul (hg.comp (continuous_sub_right _))).integrable_of_hasCompactSupport
         ((hgc.comp_homeomorph (Homeomorph.subRight (Real.log n))).mul_left))
     simp only [F, atomicTest]
-    rw [integral_finset_sum _ hi]
+    rw [integral_finsetSum _ hi]
     simp_rw [integral_const_mul, integral_sub_right_eq_self]
     rw [← sum_mul]
     congr 1
@@ -341,7 +341,8 @@ theorem sum_topBand_bumpCorr_ge (hg : Continuous g) (hgc : HasCompactSupport g)
       have hn1 := mem_Icc.mp hn'.1
       have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1.1
       have hlo : a < Real.log n := by
-        have h := Real.log_lt_log (by positivity) hn'.2
+        have h := Real.log_lt_log
+          (mul_pos (by exact_mod_cast (by omega : 0 < N)) (Real.exp_pos w)) hn'.2
         rw [Real.log_mul (by exact_mod_cast (by omega : N ≠ 0)) (Real.exp_pos w).ne',
           Real.log_exp, Real.log_mul two_ne_zero hn0.ne'] at h
         rw [ha]; linarith only [h]
@@ -357,11 +358,11 @@ theorem sum_topBand_bumpCorr_ge (hg : Continuous g) (hgc : HasCompactSupport g)
   -- Cauchy–Schwarz on the window
   let F' : ℝ → ℝ := fun u => F (u + a)
   have hcs := ArithmeticLorentzianGeometry.sq_integral_abs_le (g := F')
-    (hFc.comp (continuous_add_right a)) hwin (Real.log_pos one_lt_two)
+    (hFc.comp (continuous_add_const a)) hwin (Real.log_pos one_lt_two)
   have h1 : ∫ u, |F' u| = ∫ u, |F u| := integral_add_right_eq_self (fun u => |F u|) a
   have h2 : ∫ u, F' u ^ 2 = ∫ u, F u ^ 2 := integral_add_right_eq_self (fun u => F u ^ 2) a
   have h3 : (∫ u, F u) ^ 2 ≤ (∫ u, |F u|) ^ 2 := by
-    have h := abs_integral_le_integral_abs (f := F)
+    have h : |∫ u, F u| ≤ ∫ u, |F u| := abs_integral_le_integral_abs
     rw [← sq_abs (∫ u, F u)]
     exact pow_le_pow_left₀ (abs_nonneg _) h 2
   rw [hint] at h3
@@ -369,5 +370,176 @@ theorem sum_topBand_bumpCorr_ge (hg : Continuous g) (hgc : HasCompactSupport g)
   rw [div_le_iff₀ (Real.log_pos one_lt_two)]
   linarith only [h3, hcs, mul_comm (Real.log 2)
     (∑ n ∈ T, ∑ ℓ ∈ T, bumpCorr g (Real.log ℓ - Real.log n))]
+
+/-! ### Defect and mass of the witness -/
+
+theorem poleVector_mul_eq (m t : ℕ) : poleVector (m * t) = poleVector m / Real.sqrt t := by
+  unfold poleVector
+  rw [Nat.cast_mul, Real.sqrt_mul (Nat.cast_nonneg m), one_div, one_div, mul_inv, div_eq_mul_inv]
+
+/-- The pole vector satisfies every pole relation, so the witness only pays for its direction. -/
+theorem poleDefect_topWitnessVector (N : ℕ) (w η : ℝ) :
+    poleDefect N (topWitnessVector N w η) = η ^ 2 * poleDefect N (topWitness N w) := by
+  unfold poleDefect
+  rw [mul_sum]
+  refine sum_congr rfl fun m _ => ?_
+  rw [mul_sum]
+  refine sum_congr rfl fun t _ => ?_
+  simp only [topWitnessVector, poleVector_mul_eq m t]
+  ring
+
+/-- The divisors of `n ≤ N` regroup the prime edges: `Σ_m Σ_{t ≤ N/m} Λ(t) F(mt) = Σ_n F(n) log n`. -/
+theorem sum_edges_eq_sum_log {N : ℕ} (F : ℕ → ℝ) (hF : ∀ n, N < n → F n = 0) :
+    ∑ m ∈ Icc 1 N, ∑ t ∈ Icc 1 (N / m), (ArithmeticFunction.vonMangoldt t : ℝ) * F (m * t) =
+      ∑ n ∈ Icc 1 N, Real.log n * F n := by
+  have hext : ∀ m ∈ Icc 1 N, ∑ t ∈ Icc 1 (N / m), (ArithmeticFunction.vonMangoldt t : ℝ) * F (m * t) =
+      ∑ k ∈ range (N + 1), (ArithmeticFunction.vonMangoldt k : ℝ) * F (k * m) := by
+    intro m hm
+    have hm1 := (mem_Icc.mp hm).1
+    refine sum_subset (fun t ht => mem_range.mpr (Nat.lt_succ_of_le
+      ((mem_Icc.mp ht).2.trans (Nat.div_le_self N m)))) (fun k _ hk => ?_) |>.trans
+      (sum_congr rfl fun k _ => by rw [mul_comm m k])
+    rcases Nat.eq_zero_or_pos k with rfl | hk0
+    · simp
+    · have hlt : N / m < k := by
+        by_contra h
+        exact hk (mem_Icc.mpr ⟨hk0, not_lt.mp h⟩)
+      rw [hF _ ((Nat.div_lt_iff_lt_mul (by omega)).mp hlt |>.trans_eq (mul_comm k m)), mul_zero]
+  rw [sum_congr rfl hext, sum_comm, sum_range_sum_vonMangoldt_mul_eq (L := N) F hF]
+  exact sum_congr rfl fun n hn => by rw [horizonDivisorMangoldt_of_le (mem_Icc.mp hn).2]
+
+/-- **The witness is cheap**: its defect is at most `log N Σ_T 1/n`. -/
+theorem poleDefect_topWitness_le (hw : 0 ≤ w) (N : ℕ) :
+    poleDefect N (topWitness N w) ≤ Real.log N * ∑ n ∈ topBand N w, 1 / (n : ℝ) := by
+  have hterm : ∀ m ∈ Icc 1 N, ∀ t ∈ Icc 1 (N / m),
+      (ArithmeticFunction.vonMangoldt t : ℝ) * (topWitness N w (m * t) -
+        topWitness N w m / Real.sqrt t) ^ 2 ≤
+      (ArithmeticFunction.vonMangoldt t : ℝ) * topWitness N w (m * t) ^ 2 := by
+    intro m hm t ht
+    by_cases hmT : m ∈ topBand N w
+    · -- a top-band base has only the trivial edge `t = 1`
+      have h2 := half_lt_of_mem_topBand hw hmT
+      have hm1 := (mem_Icc.mp hm).1
+      have htle : t * m ≤ N := by
+        have := Nat.div_mul_le_self N m
+        exact (Nat.mul_le_mul_right m (mem_Icc.mp ht).2).trans this
+      have ht1 : t = 1 := by
+        have ht1' := (mem_Icc.mp ht).1
+        by_contra hne
+        have : 2 * m ≤ t * m := Nat.mul_le_mul_right m (by omega)
+        have hR : (2 * m : ℝ) ≤ N := by exact_mod_cast this.trans htle
+        linarith only [hR, h2]
+      subst ht1
+      simp
+    · simp only [topWitness, hmT, if_false, zero_div, sub_zero]
+      exact le_rfl
+  calc
+    poleDefect N (topWitness N w) ≤ ∑ m ∈ Icc 1 N, ∑ t ∈ Icc 1 (N / m),
+        (ArithmeticFunction.vonMangoldt t : ℝ) * topWitness N w (m * t) ^ 2 :=
+      sum_le_sum fun m hm => sum_le_sum fun t ht => hterm m hm t ht
+    _ = ∑ n ∈ Icc 1 N, Real.log n * topWitness N w n ^ 2 := by
+      refine sum_edges_eq_sum_log _ fun n hn => ?_
+      have : n ∉ topBand N w := fun h => by
+        have := (mem_Icc.mp (mem_topBand.mp h).1).2; omega
+      simp [topWitness, this]
+    _ ≤ ∑ n ∈ Icc 1 N, Real.log N * topWitness N w n ^ 2 := by
+      refine sum_le_sum fun n hn => mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
+      have hn1 := mem_Icc.mp hn
+      exact Real.log_le_log (by exact_mod_cast hn1.1) (by exact_mod_cast hn1.2)
+    _ = Real.log N * ∑ n ∈ topBand N w, 1 / (n : ℝ) := by
+      rw [← mul_sum, topBand, sum_filter]
+      congr 1
+      refine sum_congr rfl fun n _ => ?_
+      simp only [topWitness, topBand, mem_filter]
+      split_ifs with h1 h2 h2
+      · rw [poleVector_sq]
+      · exact absurd h1.2 h2
+      · exact absurd ⟨by assumption, h2⟩ h1
+      · simp
+
+/-- The mass of the witness. -/
+theorem sum_topWitnessVector_sq (N : ℕ) (w η : ℝ) :
+    ∑ n ∈ Icc 1 N, topWitnessVector N w η n ^ 2 =
+      ∑ n ∈ Icc 1 N, 1 / (n : ℝ) + (2 * η + η ^ 2) * ∑ n ∈ topBand N w, 1 / (n : ℝ) := by
+  have hT : ∑ n ∈ topBand N w, 1 / (n : ℝ) =
+      ∑ n ∈ Icc 1 N, (if n ∈ topBand N w then 1 / (n : ℝ) else 0) := by
+    rw [← sum_filter]
+    congr 1
+    ext n
+    simp only [mem_filter]
+    exact ⟨fun h => ⟨(mem_topBand.mp h).1, h⟩, fun h => h.2⟩
+  rw [hT, mul_sum, ← sum_add_distrib]
+  refine sum_congr rfl fun n _ => ?_
+  simp only [topWitnessVector, topWitness]
+  split_ifs
+  · rw [show (poleVector n + η * poleVector n) ^ 2 = (1 + η) ^ 2 * poleVector n ^ 2 by ring,
+      poleVector_sq]
+    ring
+  · rw [mul_zero, add_zero, poleVector_sq, mul_zero, add_zero]
+
+/-- `Σ_{n∈T} 1/n ≤ 2`: every top-band atom exceeds `N/2`. -/
+theorem sum_topBand_inv_le_two (hw : 0 ≤ w) (N : ℕ) :
+    ∑ n ∈ topBand N w, 1 / (n : ℝ) ≤ 2 := by
+  rcases Nat.eq_zero_or_pos N with rfl | hN
+  · simp [topBand]
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  calc
+    _ ≤ ∑ _n ∈ topBand N w, 2 / (N : ℝ) := by
+      refine sum_le_sum fun n hn => ?_
+      have h2 := half_lt_of_mem_topBand hw hn
+      have hn0 : (0 : ℝ) < n := by
+        exact_mod_cast (mem_Icc.mp (mem_topBand.mp hn).1).1
+      rw [div_le_div_iff₀ hn0 hN0]
+      linarith only [h2]
+    _ = (topBand N w).card * (2 / (N : ℝ)) := by rw [sum_const, nsmul_eq_mul]
+    _ ≤ N * (2 / (N : ℝ)) := by
+      refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+      have := card_le_card (filter_subset (fun n : ℕ => (N : ℝ) * Real.exp w < 2 * n) (Icc 1 N))
+      rw [Nat.card_Icc, Nat.add_sub_cancel] at this
+      exact_mod_cast this
+    _ = 2 := by field_simp
+
+/-- The top band holds at least `N(1 − e^w/2)` atoms. -/
+theorem card_topBand_ge (N : ℕ) (w : ℝ) :
+    (N : ℝ) * (1 - Real.exp w / 2) ≤ (topBand N w).card := by
+  set y := (N : ℝ) * Real.exp w / 2
+  have hy : 0 ≤ y := by positivity
+  have hsub : Icc (⌊y⌋₊ + 1) N ⊆ topBand N w := by
+    intro n hn
+    obtain ⟨h1, h2⟩ := mem_Icc.mp hn
+    refine mem_topBand.mpr ⟨mem_Icc.mpr ⟨by omega, h2⟩, ?_⟩
+    have := Nat.lt_floor_add_one y
+    have hn' : ((⌊y⌋₊ + 1 : ℕ) : ℝ) ≤ n := by exact_mod_cast h1
+    push_cast at hn'
+    dsimp only [y] at this
+    linarith only [this, hn']
+  have hcard := card_le_card hsub
+  rw [Nat.card_Icc] at hcard
+  have hfl := Nat.floor_le hy
+  rcases le_or_gt ⌊y⌋₊ N with hle | hlt
+  · have : ((N + 1 - (⌊y⌋₊ + 1) : ℕ) : ℝ) = N - ⌊y⌋₊ := by
+      rw [show N + 1 - (⌊y⌋₊ + 1) = N - ⌊y⌋₊ by omega, Nat.cast_sub hle]
+    have hc : (N : ℝ) - ⌊y⌋₊ ≤ (topBand N w).card := by
+      rw [← this]; exact_mod_cast hcard
+    dsimp only [y] at hfl
+    linarith only [hc, hfl]
+  · have : (N : ℝ) < ⌊y⌋₊ := by exact_mod_cast hlt
+    dsimp only [y] at hfl
+    linarith only [this, hfl, (Nat.cast_nonneg _ : (0 : ℝ) ≤ (topBand N w).card)]
+
+/-- The top band holds at most `N/2 + 1` atoms. -/
+theorem card_topBand_le (hw : 0 ≤ w) (N : ℕ) :
+    ((topBand N w).card : ℝ) ≤ N / 2 + 1 := by
+  have hsub : topBand N w ⊆ Icc (N / 2 + 1) N := by
+    intro n hn
+    have h2 := half_lt_of_mem_topBand hw hn
+    have hn1 := mem_Icc.mp (mem_topBand.mp hn).1
+    have h2' : N < 2 * n := by exact_mod_cast h2
+    exact mem_Icc.mpr ⟨by omega, hn1.2⟩
+  have hcard := card_le_card hsub
+  rw [Nat.card_Icc] at hcard
+  have h : 2 * (N + 1 - (N / 2 + 1)) ≤ N + 2 := by omega
+  have hR : (2 : ℝ) * (topBand N w).card ≤ N + 2 := by exact_mod_cast (Nat.mul_le_mul_left 2 hcard).trans h
+  linarith only [hR]
 
 end GaloisForLFunctions.SuccessorShellArithmetic
