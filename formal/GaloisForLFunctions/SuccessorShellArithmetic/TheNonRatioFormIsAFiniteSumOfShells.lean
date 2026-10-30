@@ -280,19 +280,19 @@ theorem eventually_shellRange_eq_floor {c : ℝ} (hc : 0 < c) :
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   apply le_antisymm
   · apply Nat.le_of_lt_succ
-    rw [shellRange, Nat.floor_lt (mul_nonneg hN0.le (by
-      linarith only [Real.add_one_le_exp (c / N), div_nonneg hc.le hN0.le]))]
+    have hkey : Real.exp (c / N) - 1 ≤ c / N * Real.exp (c / N) := by
+      have h1 := Real.add_one_le_exp (-(c / N))
+      have hmul : Real.exp (-(c / N)) * Real.exp (c / N) = 1 := by
+        rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+      nlinarith only [h1, hmul, Real.exp_pos (c / N)]
+    have hup : (N : ℝ) * (Real.exp (c / N) - 1) ≤ c * Real.exp (c / N) :=
+      (mul_le_mul_of_nonneg_left hkey hN0.le).trans_eq (by field_simp)
+    have hnn : 0 ≤ (N : ℝ) * (Real.exp (c / N) - 1) :=
+      mul_nonneg hN0.le (by linarith only [Real.add_one_le_exp (c / N), div_nonneg hc.le hN0.le])
+    unfold shellRange
+    rw [Nat.floor_lt hnn]
     push_cast
-    exact lt_of_le_of_lt (by exact_mod_cast shellRange_le hN1 hc.le |>.trans_eq' (by
-      unfold shellRange; rfl) |> fun _ => (by
-        have hkey : Real.exp (c / N) - 1 ≤ c / N * Real.exp (c / N) := by
-          have h1 := Real.add_one_le_exp (-(c / N))
-          have hmul : Real.exp (-(c / N)) * Real.exp (c / N) = 1 := by
-            rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
-          nlinarith only [h1, hmul, Real.exp_pos (c / N)]
-        calc (N : ℝ) * (Real.exp (c / N) - 1) ≤ N * (c / N * Real.exp (c / N)) :=
-              mul_le_mul_of_nonneg_left hkey hN0.le
-          _ = c * Real.exp (c / N) := by field_simp)) hN
+    exact lt_of_le_of_lt hup hN
   · unfold shellRange
     apply Nat.floor_le_floor
     have h := Real.add_one_le_exp (c / N)

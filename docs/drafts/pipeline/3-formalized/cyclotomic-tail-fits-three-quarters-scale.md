@@ -50,6 +50,6 @@ conductor; fixed-conductor limits do not control it.
 - `orderOf_cyclotomicMode`, `le_orderOf_cyclotomicMode_mul_min`,
   `cyclotomicMode_far_of_orderOf_le`: exact conductor and angular-frequency separation.
 
-Foreground `lake --old env lean` check and standard-axiom audit passed for the
-seven energy declarations, including `norm_cyclotomicMode`. The three conductor
-declarations await the same check. Imported by `CompletedArithmeticForms.lean`.
+Foreground `lake --old env lean` check and standard-axiom audits passed for all
+ten declarations, including `norm_cyclotomicMode`. Only `propext`,
+`Classical.choice`, and `Quot.sound` occur. Imported by `CompletedArithmeticForms.lean`.
