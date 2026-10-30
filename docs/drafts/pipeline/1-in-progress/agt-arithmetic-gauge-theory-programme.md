@@ -56,3 +56,13 @@ Pillar modules (planned order):
   (large sieve: ≤ 2N^{1−2ε} atypical points up to conductor √N), TheLiouvillePointIsTheAntipode
   (S_N(ℓ) + S_N(0) = 2ψ(√N); pole ±1 separates the twins). Producer target as phrased in the review is
   excluded by the Bézout ledger for a single integer; the open form is AKLT's precision = size/multiplicity.
+
+## Open-items goal (2026-10-30)
+Targets: (1) typicality at an individual special point; (2) exponent floor on G; (3) growing-multiplicity
+producer / precision = size/multiplicity; (4) BV for shells, shell repayment, positive affine KL, positive
+index ceiling; (5) calibrations: sign at c = 2, derived 𝔽_q[T].
+- (2) Paper proof (Liouville twin inequality): `μ(n)χ_{x+ℓ}(n) = μ(n)²χ_x(n)`, `μ² = Σ_{d²|n} μ(d)`, hyperbola
+  at `D = (N+1)^κ` gives `exp_μ(x+ℓ) ≤ (1 + 2·exp_1(x) + exp_μ(2x)/2)/3`. At a real nonprincipal Dirichlet
+  point `exp_1 = 0`, `2x` is a finite flip of `0`, so `exp_μ(x_χ+ℓ) ≤ (2+Θ)/6`. Hence floor on G ⟹ Θ = 1;
+  RH ⟹ a point with exponent ≤ 5/12. Lean: `TheLiouvilleTwinInequality` (in progress).
+- (1) GRH(χ) itself is out of reach; survivors: twin duality (x_χ ≥ 1/2 ≥ x_χ+ℓ).

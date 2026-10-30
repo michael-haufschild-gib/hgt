@@ -50,7 +50,7 @@ theorem chebyshevCesaroIncrement_eq {j : ℕ} (hj : 3 ≤ j) :
       (Chebyshev.psi ((j - 1 : ℕ) : ℝ) - ((j - 1 : ℕ) : ℝ)) /
         Real.sqrt ((j - 1 : ℕ) : ℝ) := by
   unfold chebyshevCesaroIncrement chebyshevNormalizedCesaroSum
-  rw [show j - 2 = (j - 3) + 1 by omega, sum_range_succ,
+  rw [show j - 2 = (j - 3) + 1 by omega, Finset.sum_range_succ,
     show j - 1 - 2 = j - 3 by omega,
     show j - 3 + 2 = j - 1 by omega]
   ring
@@ -119,7 +119,6 @@ private theorem chebyshevEnergy_term_bounds {n : ℕ} (hn : 1 ≤ n) :
       (1 + 1 / (n : ℝ)) *
         (chebyshevNormalizedCesaroSum n ^ 2 / ((n : ℝ) * ((n : ℝ) + 1))) := by
     field_simp [hnp.ne', show (n : ℝ) + 1 ≠ 0 by positivity]
-    ring
   have hl : (1 : ℝ) ≤ 1 + 1 / (n : ℝ) := by
     linarith only [div_nonneg (by norm_num : (0 : ℝ) ≤ 1) hnp.le]
   have hu : 1 + 1 / (n : ℝ) ≤ (4 / 3 : ℝ) := by
@@ -128,6 +127,18 @@ private theorem chebyshevEnergy_term_bounds {n : ℕ} (hn : 1 ≤ n) :
   rw [he]
   exact ⟨by simpa only [one_mul] using mul_le_mul_of_nonneg_right hl hq,
     mul_le_mul_of_nonneg_right hu hq⟩
+
+/-- Accumulation retains an explicit nonnegative one-order-smaller denominator defect. -/
+theorem chebyshevEnergy_covariance_defect (N : ℕ) :
+    chebyshevNormalizedCesaroMeanSquareEnergy N - chebyshevCompletedEnergy N =
+      ∑ n ∈ Icc 1 N,
+        chebyshevNormalizedCesaroSum n ^ 2 / ((n : ℝ) ^ 2 * ((n : ℝ) + 1)) := by
+  rw [chebyshevMeanSquare_eq_sum_one, chebyshevCompletedEnergy_eq_sum, ← sum_sub_distrib]
+  apply sum_congr rfl
+  intro n hn
+  have hnp : (0 : ℝ) < n := by exact_mod_cast (show 0 < n from (mem_Icc.mp hn).1)
+  field_simp [hnp.ne', show (n : ℝ) + 1 ≠ 0 by positivity]
+  ring
 
 /-- Actual Chebyshev mean-square energy and its arithmetic completion differ by at most four thirds. -/
 theorem chebyshevCompletedEnergy_comparison (N : ℕ) :

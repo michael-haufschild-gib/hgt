@@ -21,5 +21,6 @@ These are coordinate identities, without a positivity or common-threshold claim.
 Lean: `GaloisForLFunctions/SpacingScaleHarmonicAnalysis/OverlapCoordinates.lean`.
 Main declarations: `LengthHeight.bandwidth_eq_one_add_log_overlap`, `overlap_rpow`,
 `log_height_sub_log_length`, and `tendsto_bandwidth_fixed_overlap`.
-Kernel checked; final direct audit including the three transitive axiom prints is pending.
+Direct `lake --old env lean` check passed with default limits and no warnings.
+All three transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
 Imported by the SpacingScaleHarmonicAnalysis umbrella.

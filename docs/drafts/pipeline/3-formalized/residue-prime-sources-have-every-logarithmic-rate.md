@@ -1,8 +1,8 @@
 # Residue-prime sources have every logarithmic rate
 
 - **ID:** residue-prime-sources-have-every-logarithmic-rate
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement
@@ -35,5 +35,9 @@ finite residue-indicator basis and apply the triangle inequality.
 
 ## Lean status
 
-Formalization follows directly. This is supporting quantitative source
-transfer, not a separately counted contribution.
+`PrimeResidueSourcesHaveQuantitativeLogDecay` proves
+`exists_residueMangoldtReading_indicator_power_log` and
+`eventually_residueMangoldtReading_log_error`. Final direct Lean check
+passed without warnings; both dependency audits contain only standard
+logical axioms. CACT umbrella wired. Supporting source transfer; no
+separate contribution count.

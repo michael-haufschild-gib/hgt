@@ -28,5 +28,5 @@ The dependency-closed paper arguments are formalized in
 `completeWeilAdjunctionEnergy_neg_iff`,
 `exists_overlap_all_nonpolar_reference_energies_negative`, and
 `abs_completeWeilSelfError_le_of_width_le_one`.
-Kernel check and transitive axiom audits passed; final direct audit is pending.
+Final direct check and all three transitive axiom audits passed with default limits.
 The only axioms are `propext`, `Classical.choice`, `Quot.sound`.

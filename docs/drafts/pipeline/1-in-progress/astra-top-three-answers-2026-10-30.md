@@ -87,6 +87,47 @@ Atom sizes in the order-14 jet relative to the first atom: pair (1,2) ≈ 30 at 
 ≈ 5 at `q=3.72`, ≈ 0.1 at `q=5`; pair (2,2) ≈ 1.8 at `q=π`; pair (1,3) ≈ 0.07 at `q=π`.
 So the seam needs the exact two-atom formula plus a tail bound valid down to `q=π`.
 
+Certificate design (numerics, guidance): seam fibre `≥ K·cᵀTA(q,e^{-3q})c + (2,2)-pair (PSD for
+4q≥5) − tail`, with `TA_m = R1_m(q) + 8e^{-3q}R12_m(q)` (radial polynomials, order 7 generated;
+order 6 matches `HTGeometry.twoAtomAffineEvenMoment6`). Tail beyond two atoms ≥ −0.02 (central
+metric) at `q=π`. Rank-one compensation `λ(q)·wwᵀ + τI` in central coordinates,
+`w=(0,.06,−.37,.93)`, `λ ≤ 27.4`, `τ=.05`: seam/bulk ratio 0.032 (`q_c=4.6`), 0.061 (`q_c=5`).
+Lean plan: piecewise-constant certificates in piece-fixed central coordinates `A(q*)`, scalar
+bounds for `∫_J r²K dr`, one final rational 4×4 comparison.
+
+Implementation plan (rank eight), regions in `q = πe^{2x}`:
+1. `[π, 3.72]` (`x ≤ 8/95`): modular-ODE exact jets `M²·P(u,a,w)` (needs reflected scalar 14);
+   seam bound `Q ⪰ −P` over the corpus tube, weight `∫x²M²`.
+2. `[3.72, q_c]`: two-atom `K·TA` + (2,2) PSD + factored error (corpus has order ≤ 12; extend
+   to 14); piecewise rank-one compensation in piece-fixed central coordinates.
+3. `[q_c, ∞)`: pure-native coercivity (first-atom Gershgorin reserve > mixed 1/40 + tail 1/10
+   needs `q ≥ 6`); pieces `[q_c, 6]` by certificates.
+4. Scalar bounds of `∫_J r² K`, final rational 4×4 comparison, assemble with
+   `thetaCuspNativeSuccessorIntegral_seven_nonneg_of_seamSplit`.
+Done: `ThetaCuspRadialCoefficients.lean` (coefficient recursion + explicit tables k ≤ 7).
+
+Formalized (all axiom-clean):
+- `ThetaCuspOddFourSeamSplit.lean`: aperture-free seam split for the odd block and at every rank
+  (`thetaCuspCenterMixedSignedHankel_posSemidef_of_seamSplit`).
+- `ThetaCuspOddFourNativeBulk.lean`: first-atom Gershgorin reserve ≥ 1/6 for `v ≤ 1/12`
+  (row polynomials in `r=1−12v` with positive coefficients); native odd-four coercive
+  (`≥ S/24 |y|²`) for `q ≥ 6`; hence `thetaCuspNativeSuccessorIntegral_seven_nonneg_of_logSixSplit`:
+  `I_7(a) ≥ 0` for all `0<a<1/2` given the one inequality `hsplit` at `r_c = log(6/π)`.
+- `ThetaCuspRadialCoefficients.lean`: radial coefficient tables through order 7.
+
+Numerics for `hsplit` with isotropic bulk `κ S AᵀA`: `q_c=6, κ=1/24` → ratio 3.96 (fails);
+`q_c=5, κ=0.08` → 0.53 (works). So: lower the bulk to `q ≥ 5` with a sharper tail bound
+(corpus tail payment 1/10 vs actual ≤ 7e-6 at q=5; first-atom Gershgorin reserve at v=1/10 is
+0.111, mixed ≥ −1/40), or certify the bulk non-isotropically.
+
+Tail constants (Cauchy majorant + absolute envelope, S-units, guidance): beyond two atoms
+`q=π`: ≥ 2.8 for every radius ≤ 0.35 (useless; actual 0.02); `q=3.72`: 0.07 (ρ=.35);
+`q=5`: 3e-5 (ρ=.3). Hence on `q ∈ [π, ~3.7]` keep atom pairs with `n,m ≤ 3` exact
+(radial polynomials at `a = n²m²q²`, `X = (n²+m²)q`; pairs (n,n) are rescaled first atoms,
+PSD) and bound only beyond three atoms.
+Certificate format: piece-fixed central coordinates `y* = A(q*)c`; per piece a constant
+matrix bound via entry intervals in `t = q − q₀` plus a rational LDLᵀ check.
+
 Remaining for rank eight: a provable structured lower bound for the mixed atom pair on
 `q∈[π,5]` capturing that direction, bulk coercivity on `q≥5` without compensation, and the
 certified 4×4 comparison of the two integrated forms.

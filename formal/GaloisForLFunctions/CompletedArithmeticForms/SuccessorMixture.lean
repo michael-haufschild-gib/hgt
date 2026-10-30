@@ -44,6 +44,74 @@ theorem successorSchur_eq_minimizer (m : ℕ → ℝ) (N : ℕ) :
   intro j hj
   ring
 
+/-- The inverse-head debit is nonnegative at every strict head. -/
+theorem successorSchur_le_terminalMoment {m : ℕ → ℝ} {N : ℕ}
+    (hm : (finiteHankelMatrix m N).PosDef) : finiteHankelSuccessorSchur m N ≤ m (2 * N) := by
+  have hn := hm.inv.posSemidef.dotProduct_mulVec_nonneg (successorCoupling m N)
+  simp only [star_trivial] at hn
+  rw [successorSchur_eq_minimizer, successorMinimizer, dotProduct_comm]
+  linarith only [hn]
+
+private theorem monic_quadratic_expansion (m : ℕ → ℝ) (N : ℕ) (w : Fin N → ℝ) :
+    Fin.snoc w 1 ⬝ᵥ finiteHankelMatrix m (N + 1) *ᵥ Fin.snoc w 1 =
+      w ⬝ᵥ finiteHankelMatrix m N *ᵥ w +
+        2 * (w ⬝ᵥ successorCoupling m N) + m (2 * N) := by
+  simp only [dotProduct, Matrix.mulVec, finiteHankelMatrix, successorCoupling,
+    Fin.sum_univ_castSucc, Fin.snoc_castSucc, Fin.snoc_last,
+    Fin.val_castSucc, Fin.val_last, mul_one, one_mul,
+    mul_add, Finset.sum_add_distrib, Nat.add_comm N, two_mul]
+  have hc : (∑ i : Fin N, m (i.val + N) * w i) =
+      ∑ i : Fin N, w i * m (i.val + N) := by
+    apply Finset.sum_congr rfl
+    intro i hi
+    ring
+  rw [hc]
+  ring
+
+/-- The exact complete square for every monic successor direction. -/
+theorem successor_monic_energy_eq {m : ℕ → ℝ} {N : ℕ}
+    (hm : (finiteHankelMatrix m N).PosDef) (w : Fin N → ℝ) :
+    Fin.snoc (-w) 1 ⬝ᵥ finiteHankelMatrix m (N + 1) *ᵥ Fin.snoc (-w) 1 =
+      finiteHankelSuccessorSchur m N +
+        (w - successorMinimizer m N) ⬝ᵥ
+          finiteHankelMatrix m N *ᵥ (w - successorMinimizer m N) := by
+  rw [monic_quadratic_expansion, Matrix.mulVec_neg, neg_dotProduct,
+    dotProduct_neg, neg_neg, neg_dotProduct, successorSchur_eq_minimizer]
+  have he := schurMovingMinimizer_inverse (finiteHankelMatrix m N)
+    (successorCoupling m N) w hm
+  change w ⬝ᵥ finiteHankelMatrix m N *ᵥ w - 2 * (w ⬝ᵥ successorCoupling m N) +
+    successorMinimizer m N ⬝ᵥ successorCoupling m N =
+      (w - successorMinimizer m N) ⬝ᵥ
+        finiteHankelMatrix m N *ᵥ (w - successorMinimizer m N) at he
+  linarith only [he]
+
+/-- The exact monic minimizing coefficient vector, retaining its terminal coefficient. -/
+def successorTestVector (m : ℕ → ℝ) (N : ℕ) : Fin (N + 1) → ℝ :=
+  Fin.snoc (-successorMinimizer m N) 1
+
+theorem successorTestVector_ne_zero (m : ℕ → ℝ) (N : ℕ) : successorTestVector m N ≠ 0 := by
+  intro h
+  have he := congrFun h (Fin.last N)
+  exact one_ne_zero (by simpa only [successorTestVector, Fin.snoc_last, Pi.zero_apply] using he)
+
+/-- The global inverse-head test attains the exact successor reserve. -/
+theorem successorTestVector_energy_eq {m : ℕ → ℝ} {N : ℕ}
+    (hm : (finiteHankelMatrix m N).PosDef) :
+    successorTestVector m N ⬝ᵥ finiteHankelMatrix m (N + 1) *ᵥ successorTestVector m N =
+      finiteHankelSuccessorSchur m N := by
+  rw [successorTestVector, successor_monic_energy_eq hm]
+  simp only [sub_self, Matrix.mulVec_zero, dotProduct_zero, add_zero]
+
+/-- Every monic direction pays at least the exact successor of its own complete source. -/
+theorem successorSchur_le_monic_energy {m : ℕ → ℝ} {N : ℕ}
+    (hm : (finiteHankelMatrix m N).PosDef) (w : Fin N → ℝ) :
+    finiteHankelSuccessorSchur m N ≤
+      Fin.snoc (-w) 1 ⬝ᵥ finiteHankelMatrix m (N + 1) *ᵥ Fin.snoc (-w) 1 := by
+  rw [successor_monic_energy_eq hm]
+  apply le_add_of_nonneg_right
+  simpa only [star_trivial] using
+    hm.posSemidef.dotProduct_mulVec_nonneg (w - successorMinimizer m N)
+
 /-- The exact reserve gained by using a common minimizer for two complete sources. -/
 def successorMixtureVariance (m n : ℕ → ℝ) (N : ℕ) : ℝ :=
   let w := successorMinimizer (fun k => m k + n k) N
@@ -62,9 +130,13 @@ theorem successorSchur_add_eq {m n : ℕ → ℝ} {N : ℕ}
   have h1 := schurMovingMinimizer_inverse (finiteHankelMatrix m N) (successorCoupling m N) w hm
   have h2 := schurMovingMinimizer_inverse (finiteHankelMatrix n N) (successorCoupling n N) w hn
   change w ⬝ᵥ (finiteHankelMatrix m N *ᵥ w) - 2 * (w ⬝ᵥ successorCoupling m N) +
-    successorMinimizer m N ⬝ᵥ successorCoupling m N = _ at h1
+    successorMinimizer m N ⬝ᵥ successorCoupling m N =
+      (w - successorMinimizer m N) ⬝ᵥ
+        finiteHankelMatrix m N *ᵥ (w - successorMinimizer m N) at h1
   change w ⬝ᵥ (finiteHankelMatrix n N *ᵥ w) - 2 * (w ⬝ᵥ successorCoupling n N) +
-    successorMinimizer n N ⬝ᵥ successorCoupling n N = _ at h2
+    successorMinimizer n N ⬝ᵥ successorCoupling n N =
+      (w - successorMinimizer n N) ⬝ᵥ
+        finiteHankelMatrix n N *ᵥ (w - successorMinimizer n N) at h2
   have hsum : (finiteHankelMatrix (fun k => m k + n k) N).PosDef := hm.add hn
   have hw := successorMinimizer_normal hsum
   change (finiteHankelMatrix m N + finiteHankelMatrix n N) *ᵥ w =
@@ -77,6 +149,14 @@ theorem successorSchur_add_eq {m n : ℕ → ℝ} {N : ℕ}
       (n (2 * N) - successorMinimizer n N ⬝ᵥ successorCoupling n N) + _
   rw [dotProduct_add]
   unfold successorMixtureVariance
+  change m (2 * N) + n (2 * N) -
+    (w ⬝ᵥ successorCoupling m N + w ⬝ᵥ successorCoupling n N) =
+      (m (2 * N) - successorMinimizer m N ⬝ᵥ successorCoupling m N) +
+      (n (2 * N) - successorMinimizer n N ⬝ᵥ successorCoupling n N) +
+      ((w - successorMinimizer m N) ⬝ᵥ
+        finiteHankelMatrix m N *ᵥ (w - successorMinimizer m N) +
+      (w - successorMinimizer n N) ⬝ᵥ
+        finiteHankelMatrix n N *ᵥ (w - successorMinimizer n N))
   linarith only [h1, h2, he]
 
 theorem successorMixtureVariance_nonneg {m n : ℕ → ℝ} {N : ℕ}
@@ -177,6 +257,8 @@ theorem nativeTailSuccessor_strictAnti_of_quadratic_rank_horizon (N : ℕ) {r t 
   linarith only [hp, hv]
 
 #print axioms successorSchur_add_eq
+#print axioms successor_monic_energy_eq
+#print axioms successorTestVector_energy_eq
 #print axioms successorMixtureVariance_eq_zero_iff
 #print axioms nativeTailSuccessor_band_decomposition
 #print axioms nativeTailSuccessor_strictAnti_of_quadratic_rank_horizon

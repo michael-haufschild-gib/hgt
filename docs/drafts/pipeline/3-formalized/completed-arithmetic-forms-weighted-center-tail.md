@@ -1,7 +1,7 @@
 # Complete weighted center-tail reserve
 
 **ID:** completed-arithmetic-forms-weighted-center-tail  
-**Stage:** In progress  
+**Stage:** Formalized in Lean 4  
 **Type:** Actual center mixture and compact compensation boundary
 
 For $0<a<1/2$, the actual signed center moments satisfy
@@ -14,26 +14,30 @@ The complete rank-seven center head is strict by
 `RHTower/ThetaCusp/ThetaCuspCenterMixedSeventhRankStrict.lean`.
 
 Let $B_{a,R}$ contain the moment integral on $(0,R]$ and $T_{a,R}$ the integral
-on $(R,\infty)$. The quadratic source horizon has the proposed consequence
+on $(R,\infty)$. The quadratic source horizon gives
 $$R\ge2X_{N+1}\Longrightarrow H_N(T_{a,R})\succ0,$$
 with the same $X_M=\max(0,\tfrac12\log(C_2/\pi)+\log(M+2))$ for every aperture.
 The exact source decomposition is $H_N(M(a))=H_N(B_{a,R})+H_N(T_{a,R})$.
 
 For a strict rank-$N$ center head, put
 $u=H_N(M(a))^{-1}(M_{i+N}(a))_{i<N}$ and $v=(-u,1)$.
-The complete successor has the target decomposition
+The complete successor has the exact decomposition
 $$S_N(M(a))=v^{\mathsf T}H_{N+1}(B_{a,R})v+
 v^{\mathsf T}H_{N+1}(T_{a,R})v,$$
 and the tail term is at least $S_N(T_{a,R})>0$ when $R\ge2X_{N+2}$.
 At $N=7$ the required center-head strictness is an established actual-source
-theorem. This would localize the first unpaid successor to one compact integral
+theorem. This localizes the first unpaid successor to one compact integral
 against its exact global minimizer, with a strictly positive tail allowance.
 
 The full quadratic integrand is essential. The corpus's linear
 `thetaCuspNativeSuccessorSource` uses the integrated inverse head and is not
 the pointwise Schur complement. Positivity of a local complete head does not
 by itself give the sign of that linear integrand.
-The weighted tail and fixed-minimizer identities require formalization.
+Lean: `CompletedArithmeticForms/WeightedCenterTail.lean`, particularly
+`nativeWeightedCenterTail_posDef`, `nativeWeightedCenterTail_successor_pos`,
+`centerSuccessor_eq_globalMinimizer_band_add_tail`, and
+`centerSeventhSuccessor_compact_allowance`. All five audited capstones have
+only `propext`, `Classical.choice`, and `Quot.sound`.
 
 The inherited odd rank-three compensation cannot be extended by a nonnegative
 load on the new diagonal: `ThetaCuspInheritedOddCompensation.not_exists_global_inherited_posSemidef`

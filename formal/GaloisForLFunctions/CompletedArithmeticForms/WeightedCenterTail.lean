@@ -129,7 +129,9 @@ theorem nativeWeightedCenterTail_successor_pos (N : ℕ) {a R : ℝ}
   have he : Function.Injective (Fin.castSucc : Fin N → Fin (N + 1)) := by
     intro i j hij
     exact Fin.ext (congrArg (fun z : Fin (N + 1) => z.val) hij)
-  exact (finiteHankelMatrix_succ_posDef_iff_schur_pos (hfull.submatrix he)).mp hfull
+  have hhead : (finiteHankelMatrix (nativeWeightedCenterTailMoment a R) N).PosDef :=
+    hfull.submatrix he
+  exact (finiteHankelMatrix_succ_posDef_iff_schur_pos hhead).mp hfull
 
 /-- The complete center successor is the sum of two energies at its exact global minimizer. -/
 theorem centerSuccessor_eq_globalMinimizer_band_add_tail {N : ℕ} {a R : ℝ}
@@ -168,11 +170,13 @@ theorem centerSeventhSuccessor_compact_allowance {a R : ℝ}
   have he : Function.Injective (Fin.castSucc : Fin 7 → Fin 8) := by
     intro i j hij
     exact Fin.ext (congrArg (fun z : Fin 8 => z.val) hij)
-  have hb := successorSchur_le_monic_energy (ht.submatrix he)
+  have hhead : (finiteHankelMatrix (nativeWeightedCenterTailMoment a R) 7).PosDef :=
+    ht.submatrix he
+  have hb := successorSchur_le_monic_energy hhead
     (successorMinimizer (thetaCuspCenterMixedSignedJet a) 7)
   refine ⟨nativeWeightedCenterTail_successor_pos 7 ha0 ha hR, ?_⟩
   rw [centerSuccessor_eq_globalMinimizer_band_add_tail ha0.le ha hR0 hm]
-  exact add_le_add_left hb _
+  exact add_le_add le_rfl hb
 
 #print axioms nativeWeightedMoment_quadratic_eq_integral
 #print axioms nativeWeightedCenterTail_posDef

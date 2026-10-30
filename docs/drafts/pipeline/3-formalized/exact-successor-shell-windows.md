@@ -24,6 +24,6 @@ touching decay are formalized separately in `TheSuccessorFiberHasAnExactOpenThre
 Lean: `GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ExactSuccessorShellWindows.lean`.
 Main declarations: `upper_successor_window_iff`, `lower_successor_window_iff`,
 `tendsto_firstExteriorOverlap`, `exists_integer_shell_iff`, and `eventually_no_integer_shell`.
-Kernel check and four transitive axiom audits passed with only
-`propext`, `Classical.choice`, `Quot.sound`; final direct audit is pending.
+Final direct `lake --old env lean` check passed with default limits and no warnings.
+All four transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
 Imported by the CriticalArithmeticCorrelationTheory umbrella.

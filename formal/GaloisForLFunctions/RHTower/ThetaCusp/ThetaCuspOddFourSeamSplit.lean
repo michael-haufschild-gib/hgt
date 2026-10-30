@@ -184,5 +184,135 @@ theorem thetaCuspNativeSuccessorIntegral_seven_nonneg_of_seamSplit {rc : ℝ} (h
     (thetaCuspCenterMixedSignedHankel_eight_posSemidef_of_oddFour ha0 ha
       (thetaCuspCenterMixedOddFour_posSemidef_of_seamSplit hrc hbulk hsplit ha0 ha))
 
+
+/-! ### The same split at every rank -/
+
+/-- The native signed fibre form of rank `N` at center `r/2`. -/
+def thetaCuspNativeFibreForm {N : ℕ} (r : ℝ) (v : Fin N → ℝ) : ℝ :=
+  ∑ i : Fin N, ∑ j : Fin N, v i * v j * thetaCuspNativeSignedJet (r/2) (i.val + j.val)
+
+/-- The rank-`N` seam-split integrand. -/
+def thetaCuspNativeSeamSplitIntegrand {N : ℕ} (rc r : ℝ) (v : Fin N → ℝ) : ℝ :=
+  r ^ 2 * (if r ≤ rc then min (thetaCuspNativeFibreForm r v) 0 else thetaCuspNativeFibreForm r v)
+
+theorem integrableOn_thetaCuspNativeSeamSplitIntegrand {N : ℕ} (rc : ℝ) (v : Fin N → ℝ) :
+    IntegrableOn (fun r => thetaCuspNativeSeamSplitIntegrand rc r v) (Ioi 0) := by
+  set D : ℝ := ∑ i : Fin N, ∑ j : Fin N, |v i * v j| *
+    thetaCuspNativeJetDecayConstant (i.val + j.val)
+  have hexp : IntegrableOn (fun r : ℝ => r ^ 2 * Real.exp (-r)) (Ioi 0) := by
+    have hb := integrableOn_rpow_mul_exp_neg_mul_rpow (p := 1) (s := 2) (b := 1)
+      (by norm_num) le_rfl one_pos
+    refine hb.congr_fun (fun r _ => ?_) measurableSet_Ioi
+    simp only [Real.rpow_one, neg_mul, one_mul]
+    norm_cast
+  have hf : Continuous fun r => thetaCuspNativeFibreForm r v := by
+    unfold thetaCuspNativeFibreForm
+    exact continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ =>
+      continuous_const.mul (continuous_thetaCuspNativeSignedJet_half _)
+  have hmeas : AEStronglyMeasurable (fun r => thetaCuspNativeSeamSplitIntegrand rc r v)
+      (volume.restrict (Ioi 0)) := by
+    unfold thetaCuspNativeSeamSplitIntegrand
+    exact ((continuous_pow 2).measurable.mul (Measurable.ite measurableSet_Iic
+      (hf.measurable.min measurable_const) hf.measurable)).aestronglyMeasurable
+  refine (hexp.const_mul D).mono' hmeas ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with r hr
+  have hr0 : 0 ≤ r := le_of_lt hr
+  have hform : |thetaCuspNativeFibreForm r v| ≤ D * Real.exp (-r) := by
+    unfold thetaCuspNativeFibreForm
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    simp only [D, Finset.sum_mul]
+    refine Finset.sum_le_sum fun i _ => (Finset.abs_sum_le_sum_abs _ _).trans
+      (Finset.sum_le_sum fun j _ => ?_)
+    rw [abs_mul, mul_assoc]
+    exact mul_le_mul_of_nonneg_left (abs_thetaCuspNativeSignedJet_half_le _ hr0) (abs_nonneg _)
+  have hpiece : |if r ≤ rc then min (thetaCuspNativeFibreForm r v) 0
+      else thetaCuspNativeFibreForm r v| ≤ |thetaCuspNativeFibreForm r v| := by
+    split_ifs
+    · rw [abs_le]
+      exact ⟨le_min (neg_abs_le _) (neg_nonpos.mpr (abs_nonneg _)),
+        (min_le_right _ _).trans (abs_nonneg _)⟩
+    · exact le_rfl
+  rw [Real.norm_eq_abs, thetaCuspNativeSeamSplitIntegrand, abs_mul, abs_of_nonneg (by positivity)]
+  calc r ^ 2 * |_| ≤ r ^ 2 * (D * Real.exp (-r)) :=
+        mul_le_mul_of_nonneg_left (hpiece.trans hform) (by positivity)
+    _ = D * (r ^ 2 * Real.exp (-r)) := by ring
+
+/-- **Aperture-free seam split at every rank.** If the rank-`N` native fibre form is
+nonnegative beyond `r_c` and its `r²`-weighted bulk beyond `r_c` pays for its `r²`-weighted
+negative part below `r_c`, then the rank-`N` signed section is nonnegative at every critical
+aperture. -/
+theorem thetaCuspCenterMixedSignedHankel_posSemidef_of_seamSplit {N : ℕ} {rc : ℝ} (hrc : 0 < rc)
+    (hbulk : ∀ r : ℝ, rc < r → ∀ v : Fin N → ℝ, 0 ≤ thetaCuspNativeFibreForm r v)
+    (hsplit : ∀ v : Fin N → ℝ,
+      0 ≤ ∫ r in Ioi 0, thetaCuspNativeSeamSplitIntegrand rc r v)
+    {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
+    (thetaCuspCenterMixedSignedHankel a N).PosSemidef := by
+  have hHerm : (thetaCuspCenterMixedSignedHankel a N).IsHermitian := by
+    rw [Matrix.IsHermitian]
+    ext i j
+    simp [thetaCuspCenterMixedSignedHankel, add_comm]
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg hHerm fun v => ?_
+  have hint (i j : Fin N) := (integrableOn_thetaCuspWeightedNativeSignedJet ha0.le ha
+    (i.val + j.val)).const_mul (v i * v j)
+  have hform : star v ⬝ᵥ (thetaCuspCenterMixedSignedHankel a N *ᵥ v) =
+      ∫ r in Ioi 0, r * Real.sinh (a * r) * thetaCuspNativeFibreForm r v := by
+    have hpoint (r : ℝ) : r * Real.sinh (a * r) * thetaCuspNativeFibreForm r v =
+        ∑ i : Fin N, ∑ j : Fin N, (v i * v j) *
+          (r * Real.sinh (a * r) * thetaCuspNativeSignedJet (r/2) (i.val + j.val)) := by
+      simp only [thetaCuspNativeFibreForm, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+      ring
+    simp_rw [hpoint]
+    rw [integral_finsetSum Finset.univ (fun i _ =>
+      integrable_finsetSum Finset.univ (fun j _ => hint i j))]
+    simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, thetaCuspCenterMixedSignedHankel,
+      star_trivial]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [integral_finsetSum Finset.univ (fun j _ => hint i j)]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [integral_const_mul, thetaCuspCenterMixedSignedJet_eq_integral_nativeSignedJet ha0.le ha]
+    ring
+  rw [hform]
+  set c := Real.sinh (a * rc) / rc with hc
+  have hc0 : 0 < c := div_pos (Real.sinh_pos_iff.mpr (mul_pos ha0 hrc)) hrc
+  have hlhs : IntegrableOn (fun r => r * Real.sinh (a * r) * thetaCuspNativeFibreForm r v)
+      (Ioi 0) := by
+    refine (integrable_finsetSum Finset.univ (fun i _ =>
+      integrable_finsetSum Finset.univ (fun j _ => hint i j))).congr ?_
+    filter_upwards with r
+    simp only [thetaCuspNativeFibreForm, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+    ring
+  have hrhs := (integrableOn_thetaCuspNativeSeamSplitIntegrand rc v).const_mul c
+  have hmono : ∫ r in Ioi 0, c * thetaCuspNativeSeamSplitIntegrand rc r v ≤
+      ∫ r in Ioi 0, r * Real.sinh (a * r) * thetaCuspNativeFibreForm r v := by
+    refine setIntegral_mono_on hrhs hlhs measurableSet_Ioi fun r hr => ?_
+    have hr0 : 0 < r := hr
+    have hw0 : 0 ≤ r * Real.sinh (a * r) :=
+      mul_nonneg hr0.le (Real.sinh_nonneg_iff.mpr (mul_nonneg ha0.le hr0.le))
+    unfold thetaCuspNativeSeamSplitIntegrand
+    split_ifs with hle
+    · have hw : r * Real.sinh (a * r) ≤ c * r ^ 2 := by
+        have h := aperture_weight_le ha0.le hr0.le hle
+        rw [hc, div_mul_eq_mul_div, le_div_iff₀ hrc]
+        nlinarith
+      calc c * (r ^ 2 * min (thetaCuspNativeFibreForm r v) 0)
+          = (c * r ^ 2) * min (thetaCuspNativeFibreForm r v) 0 := by ring
+        _ ≤ (r * Real.sinh (a * r)) * min (thetaCuspNativeFibreForm r v) 0 :=
+            mul_le_mul_of_nonpos_right hw (min_le_right _ _)
+        _ ≤ r * Real.sinh (a * r) * thetaCuspNativeFibreForm r v :=
+            mul_le_mul_of_nonneg_left (min_le_left _ _) hw0
+    · push Not at hle
+      have hw : c * r ^ 2 ≤ r * Real.sinh (a * r) := by
+        have h := aperture_weight_le ha0.le hrc.le hle.le
+        rw [hc, div_mul_eq_mul_div, div_le_iff₀ hrc]
+        nlinarith
+      calc c * (r ^ 2 * thetaCuspNativeFibreForm r v)
+          = (c * r ^ 2) * thetaCuspNativeFibreForm r v := by ring
+        _ ≤ r * Real.sinh (a * r) * thetaCuspNativeFibreForm r v :=
+            mul_le_mul_of_nonneg_right hw (hbulk r hle v)
+  rw [integral_const_mul] at hmono
+  exact (mul_nonneg hc0.le (hsplit v)).trans hmono
+
 end
 end RHTower

@@ -198,6 +198,29 @@ source energy at the inner-cutoff strength required by the Euler-deletion criter
 See [DivisorCovariance](DivisorCovariance.lean), particularly `cumulativeEnergy_completion`,
 `cumulativeEnergy_schur_bound`, and `fullErrorEnergy_truncation_bounds`.
 
+## The actual Chebyshev source and its unpaid cyclic form
+
+Let
+$$F(N)=\sum_{2\le d<N}\frac{\psi(d)-d}{\sqrt d},\qquad
+E(N)=\sum_{2\le n\le N}\frac{F(n)^2}{n^2},\qquad c_j=F(j)-F(j-1).$$
+Its literal increment packet $a_j=c_j/j$ satisfies
+$$C_N(c)=\frac{E_{N+1}(a)}{N+1},\qquad
+C_N(c)\le E(N)\le\frac43 C_N(c).$$
+The denominator defect is exactly
+$$E(N)-C_N(c)=\sum_{1\le n\le N}\frac{F(n)^2}{n^2(n+1)}.$$
+The actual source bound $|\psi(d)-d|\le6d$ pays the two explicit channels:
+$$\left|\sum_{j\le N}a_j\right|\le12\sqrt N,\qquad
+\sum_{j\le N}a_j^2\le36N.$$
+Writing $\mathcal R_N=R_{N+1}(a)/(N+1)$ for the normalized cyclotomic remainder,
+$$0\le\mathcal R_N\le4E(N),\qquad E(N)\le60N+\frac13\mathcal R_N.$$
+For every fixed exponent $r\ge1$, a uniform $N^r$ bound for $E$ is therefore
+equivalent to one for $\mathcal R$. The exponent families $5/3+\varepsilon$
+and $3/2+\varepsilon$ for this literal remainder are exactly equivalent to
+the five-sixths and three-quarters zero strips. Its upper bound is the remaining
+arithmetic problem; the explicit coefficient channels already have a linear payment.
+See [ChebyshevCyclotomicCompletion](ChebyshevCyclotomicCompletion.lean),
+`chebyshevEnergy_cyclotomic_bounds` and `chebyshevEnergy_power_bound_iff_cyclotomic`.
+
 ## Arithmetic packets and an actual prime-source estimate
 
 For arbitrary interior arithmetic nodes $k_i$, aggregate colliding coefficients as
@@ -882,6 +905,51 @@ exact growth exponent. See [PhysicalQuadraticHorizon](PhysicalQuadraticHorizon.l
 `nativeSignedHead_posDef_of_quadratic_rank_horizon` and
 `firstAtomFailureRank_sqrt_scale_lower`.
 
+The literal complete tail $T_N(r)=H_N(k\mapsto\int_r^\infty m_k(s/2)\,ds)$
+retains this rank dependence:
+$$r\ge2X_{N+1}\Longrightarrow T_N(r)\succ0,$$
+$$2X_{N+1}\le r<t\Longrightarrow T_N(r)-T_N(t)\succ0.$$
+Its difference is exactly the integral of the full native form on $(r,t]$.
+Every nonzero direction is positive on that interval. At dimension $N+1$,
+this complete Loewner order makes the exact rank-$N$ integrated successor
+nonincreasing for $r\ge2X_{N+2}$. The inverse belongs to the integrated
+head throughout this comparison. See [TailRankHorizon](TailRankHorizon.lean),
+`nativeTailHead_sub_posDef_of_quadratic_rank_horizon` and
+`nativeTailSuccessor_antitone_of_quadratic_rank_horizon`.
+
+Complete source addition has an exact successor law. Write
+$A_m=H_N(m)$, $b_m=(m_{i+N})_{i<N}$, $u_m=A_m^{-1}b_m$.
+For strict heads $A_m,A_n$ and $w=u_{m+n}$,
+$$S_{m+n}=S_m+S_n+
+ (w-u_m)^{\mathsf T}A_m(w-u_m)+
+ (w-u_n)^{\mathsf T}A_n(w-u_n).$$
+The extra reserve vanishes exactly when $u_m=u_n$; neither individual successor
+needs to be nonnegative. More generally every monic test $v=(-z,1)$ has
+$$v^{\mathsf T}H_{N+1}(m)v=S_m+(z-u_m)^{\mathsf T}A_m(z-u_m).$$
+For native band and later-tail sources on the stated ray, both full heads
+are strict. Their exact decomposition makes the integrated successor strictly
+decreasing with the endpoint. See [SuccessorMixture](SuccessorMixture.lean),
+`successorSchur_add_eq`, `successorMixtureVariance_eq_zero_iff`, and
+`nativeTailSuccessor_strictAnti_of_quadratic_rank_horizon`.
+
+At each critical aperture $0<a<1/2$, the literal center source is
+$$M_k(a)=\int_0^\infty r\sinh(ar)m_k(r/2)\,dr.$$
+Let $B_{a,R}$ and $T_{a,R}$ be its moment integrals on $(0,R]$ and $(R,\infty)$.
+Every finite weighted form is integrable, the source splits exactly as
+$M=B+T$, and
+$$R\ge2X_{N+1}\Longrightarrow H_N(T_{a,R})\succ0.$$
+The same horizon works for every aperture. For a strict rank-$N$ center
+head and its actual global minimizing vector $v=(-u_M,1)$,
+$$S_N(M)=v^{\mathsf T}H_{N+1}(B)v+v^{\mathsf T}H_{N+1}(T)v.$$
+At the established rank-seven center head, $R\ge2X_9$ gives
+$$S_7(M)\ge v^{\mathsf T}H_8(B)v+S_7(T),\qquad S_7(T)>0.$$
+This is an unconditional compact-center lower bound with a strict tail
+allowance. The sign of the compact term is unresolved. The full quadratic
+integrand at $v$ is essential: the linear native successor source involving
+the integrated inverse does not acquire a pointwise sign from local head
+positivity. See [WeightedCenterTail](WeightedCenterTail.lean),
+`nativeWeightedCenterTail_posDef` and `centerSeventhSuccessor_compact_allowance`.
+
 ## Place in the research
 
 | Programme | Connection |
@@ -912,10 +980,15 @@ a norm-preserving transfer between programmes.
    $\kappa(x)\le\nu(x)+1$. The complete native rank-$N$ form has relative error
    $J_N/q$, where $J_N=16D(N+1)^2+NAe^8$, on $q\ge16(N+2)^2$.
    Its strict half-Gaussian reserve has a center horizon of $\log(N+2)+O(1)$.
+   Every critical aperture shares that weighted-tail horizon. At order seven,
+   the exact global minimizer gives a compact contribution plus a strict
+   positive integrated tail allowance.
    Every seam tail head is strict,
    with an explicit half-seam neighborhood and a separate strict distant ray.
    What are the sharp growth laws, and which native compensation pays the intervening
-   compact-center integral as rank grows?
+   compact-center integral as rank grows? The inherited scalar odd compensation
+   has a literal obstruction. A source-derived moving direction cancels its
+   coupled Schur defect, but the scalar gap and admissible tail join remain open.
 
 2. **Macroscopic overlap.** Can the actual completed Weil operator at a fixed nondegenerate ratio
    such as $3/2$ be compared to the cyclotomic Gram with cross-annulus and Schur costs paid?
@@ -938,7 +1011,10 @@ a norm-preserving transfer between programmes.
    or an upper bound for the complete index? Height certificates detect index without bounding it.
 
 8. **Strip precision.** Can actual normalized Chebyshev energy satisfy the $5/3+\varepsilon$ or
-   $3/2+\varepsilon$ exponent bound? Can both detector Gram contributions enter the exact
+   $3/2+\varepsilon$ exponent bound? Both questions are exactly equivalent to those
+   exponent bounds for its normalized cyclotomic remainder; the two explicit
+   coefficient channels cost only $O(N)$. Which arithmetic relation bounds this remainder?
+   Can both detector Gram contributions enter the exact
    five-sixths feasible region?
 
 9. **Transfer calculus.** Which concrete source maps preserve reserves, radicals, domains, and

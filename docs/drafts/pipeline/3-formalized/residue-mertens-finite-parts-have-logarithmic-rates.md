@@ -1,7 +1,7 @@
 # Residue Mertens finite parts have logarithmic rates
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement
@@ -33,5 +33,9 @@ Every source coefficient and prime power remains in the identity.
 
 ## Lean status
 
-Formalization follows directly. Supporting source transfer; no separate
-contribution count.
+`ResidueMertensFinitePartsHaveLogarithmicRates` proves the exact
+`residuePrimeRealError_sub_eq` identity and
+`eventually_residuePrimeRealError_log_bound`. Final direct Lean check
+passed without warnings; both dependency audits contain only standard
+logical axioms. CACT umbrella wired. Supporting source transfer; no
+separate contribution count.

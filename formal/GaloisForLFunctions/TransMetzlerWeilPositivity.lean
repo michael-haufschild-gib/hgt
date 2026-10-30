@@ -15,6 +15,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.CompleteWeilLengthHeight
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyLengthHeight
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ThePlateauOverlapGramIsNondegenerate
 import GaloisForLFunctions.TransMetzlerWeilPositivity.GrowingOverlapHasNoUniformGramFloor
+import GaloisForLFunctions.TransMetzlerWeilPositivity.APositivePrefixGivesTheExactSchurReduction
 import GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap.ElevenFlipAtEveryHorizon
 import GaloisForLFunctions.TransMetzlerWeilPositivity.BoundedOverlap.LogarithmicBandMass
 
@@ -45,6 +46,8 @@ Umbrella for the theory of atomic Weil positivity across and beyond the Metzler 
 * strict positivity of every finite plateau overlap Gram, together with failure of any uniform
   coefficient-mass floor along growing overlap and an explicit adjacent-vector bound of order
   `c⁻²` (`ThePlateauOverlapGramIsNondegenerate`, `GrowingOverlapHasNoUniformGramFloor`);
+* positivity of the actual coordinate prefix at overlap `cM/N ≤ 1`, and an exact Schur reduction
+  retaining every mixed entry (`APositivePrefixGivesTheExactSchurReduction`);
 * exact length-height transport of the complete matrix, and asymptotic height substitution in
   the super-Gevrey receiver (`CompleteWeilLengthHeight`, `SuperGevreyLengthHeight`);
 * Fejér–Abel center floor, bounded-pole hyperplane witnesses, and breakdown of the Liouville twin

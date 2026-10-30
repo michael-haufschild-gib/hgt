@@ -44,6 +44,11 @@ import GaloisForLFunctions.CompletedArithmeticForms.GaussianContractionBound
 import GaloisForLFunctions.CompletedArithmeticForms.NativeQuadraticRank
 import GaloisForLFunctions.CompletedArithmeticForms.QuadraticRankHorizon
 import GaloisForLFunctions.CompletedArithmeticForms.PhysicalQuadraticHorizon
+import GaloisForLFunctions.CompletedArithmeticForms.TailRankHorizon
+import GaloisForLFunctions.CompletedArithmeticForms.SuccessorMixture
+import GaloisForLFunctions.CompletedArithmeticForms.WeightedCenterTail
+import GaloisForLFunctions.CompletedArithmeticForms.ChebyshevCyclotomicCompletion
+import GaloisForLFunctions.CompletedArithmeticForms.PhysicalSuccessorMass
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -83,6 +88,16 @@ The infinite native remainder adds only a linear rank payment to this full-form 
 Every shifted head and exact native Schur successor retains the quadratic joint degree payment.
 The physical complete-form center horizon has unit logarithmic rank growth, and the
 first failing first-atom mixed dimension exceeds the square root of source scale up to constants.
+Complete native tails are strict beyond this logarithmic boundary and decrease strictly
+in Loewner order; their exact integrated successors are nonincreasing there.
+Successor addition retains the exact positive discrepancy between the two source minimizers,
+with equality precisely when they agree; native tail successors decrease strictly on the paid ray.
+Every critical aperture shares the logarithmic weighted-tail rank boundary. The literal
+order-seven center successor retains a strictly positive exact tail allowance at its global minimizer.
+The literal normalized Chebyshev energy has two coefficient channels with a linear payment;
+its five-sixths and three-quarters exponent bounds are exactly those of the remaining cyclic form.
+The exact full signed physical successor retains the first-atom mass, terminal source-scale
+power, and monic Hermite norm, with strict one-half and three-halves comparison constants.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/

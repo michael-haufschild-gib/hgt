@@ -26,6 +26,6 @@ Main declarations: `completeWeilAdjunctionEnergy_eq_at_one_sub_log`,
 `completeWeilAdjunctionEnergy_neg_iff`,
 `exists_overlap_all_nonpolar_reference_energies_negative`, and
 `abs_completeWeilSelfError_le_of_width_le_one`.
-Kernel check and three transitive axiom audits passed with only
-`propext`, `Classical.choice`, `Quot.sound`; final direct audit is pending.
+Final direct `lake --old env lean` check passed with default limits and no warnings.
+All three transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
 Imported by the RenormalizedArithmeticPotentialTheory umbrella.
