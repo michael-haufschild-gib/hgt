@@ -104,8 +104,9 @@ theorem L_partial_fraction_with_multiplicity_bound {q : ℕ} [NeZero q]
   have hr : ‖logDeriv χ.LFunction z‖ ≤ 8 := by
     rw [logDeriv_apply]
     have h := norm_character_logDeriv_le_line χ (s := z) (by simp [z]) (by simp [z])
-    simpa [z] using h
-  have he := hpf z (by simp [z]) hne
+    norm_num only [show z.re = 2 by simp [z]] at h
+    exact h
+  have he := hpf z (by change dist z z ≤ (3 / 2 : ℝ); norm_num) hne
   have hinv : ∀ ρ ∈ Z, (1 / 4 : ℝ) ≤ ((z - ρ)⁻¹).re := by
     intro ρ hρ
     have hβ := re_lt_one_of_LFunction_eq_zero hχ (hzeros ρ hρ).1
@@ -254,12 +255,18 @@ theorem exists_conductor_uniform_character_logDeriv {ε : ℝ} (hε : 0 < ε) :
   have htriangle := norm_sub_norm_le (logDeriv χ.LFunction s)
     (∑ ρ ∈ Z, (analyticOrderNatAt χ.LFunction ρ : ℂ) / (s - ρ))
   have hbound : ‖logDeriv χ.LFunction s‖ ≤ ((32 + 5 * pfConst) * L) / δ := by
-    nlinarith only [htriangle, he, hsum, herr]
+    calc
+      _ ≤ ‖∑ ρ ∈ Z, (analyticOrderNatAt χ.LFunction ρ : ℂ) / (s - ρ)‖ +
+          ‖logDeriv χ.LFunction s -
+            ∑ ρ ∈ Z, (analyticOrderNatAt χ.LFunction ρ : ℂ) / (s - ρ)‖ := by
+        linarith only [htriangle]
+      _ ≤ ((32 + 4 * pfConst) * L) / δ + (pfConst * L) / δ :=
+        add_le_add hsum (he.trans herr)
+      _ = ((32 + 5 * pfConst) * L) / δ := by ring
   have heq : ((32 + 5 * pfConst) * L) / δ = B * (q : ℝ) ^ ε * L ^ 3 := by
     dsimp only [δ, B]
     rw [Real.rpow_neg hq0.le]
     field_simp [ha.ne', hL0.ne', (Real.rpow_pos_of_pos hq0 ε).ne']
-    <;> ring
   exact hbound.trans_eq heq
 
 #print axioms exists_conductor_uniform_character_zero_gap

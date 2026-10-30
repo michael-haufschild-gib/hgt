@@ -1,7 +1,7 @@
 # Dirichlet logarithmic derivatives have uniform conductor cost
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For each `ε>0`, there are `a,B>0`, independent of modulus and character, such that every nonprincipal `χ mod q` is nonzero and satisfies `|L'/L(s,χ)|≤B q^ε L³` on `|Re s-1|≤δ`, `|Im s|≤T`, where `L=log(q(T+5))` and `δ=a q^(-ε)/L²`.
 
 ## Proof
@@ -19,4 +19,10 @@ For a rectangle point `s`, use the local partial fraction centered at `2+i Im s`
 - `RHTower.L_logDeriv_partial_fraction_all`
 - `RHTower.norm_character_logDeriv_le_line`
 
-Lean source: `GaloisForLFunctions/RHTower/DirichletLConductorUniformLogDerivative.lean`; audit pending. No zero-free, reciprocal, or prime-distribution estimate remains an assumed input. The growing-modulus prime-source theorem still requires the actual Perron contour estimate and signed unsmoothing.
+Lean source: `GaloisForLFunctions/RHTower/DirichletLConductorUniformLogDerivative.lean`.
+
+- `exists_conductor_uniform_character_zero_gap`
+- `L_partial_fraction_with_multiplicity_bound`
+- `exists_conductor_uniform_character_logDeriv`
+
+Direct `lake --old env lean` audit passed without warnings. All three declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. No zero-free, reciprocal, or prime-distribution estimate remains an assumed input. The growing-modulus prime-source theorem still requires the actual Perron contour estimate and signed unsmoothing.

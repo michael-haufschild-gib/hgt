@@ -1,4 +1,4 @@
-import GaloisForLFunctions.TransMetzlerWeilPositivity.TheSincProductProfile
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProductProfile
 import GaloisForLFunctions.HTGeometry.NyquistLatticeSum
 import GaloisForLFunctions.HTGeometry.FourierDecayFromDerivative
 import GaloisForLFunctions.HTGeometry.FourierFirstOrderWeight

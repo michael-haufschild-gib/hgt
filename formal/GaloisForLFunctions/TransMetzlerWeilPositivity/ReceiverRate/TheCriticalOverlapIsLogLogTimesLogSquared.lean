@@ -1,4 +1,4 @@
-import GaloisForLFunctions.TransMetzlerWeilPositivity.ABoundedOverlapRateSeesASemilocalWindow
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.ABoundedOverlapRateSeesASemilocalWindow
 import Mathlib.Analysis.Fourier.FourierTransformDeriv
 
 /-!

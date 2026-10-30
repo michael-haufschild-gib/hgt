@@ -1,431 +1,291 @@
 # Reboot-final: the Lean corpus condensed, and where it points
 
-Status: 30 October 2026. **RH is open.** Sources: `formal/GaloisForLFunctions` only, read through the corpus research
-tool, module docstrings and proofs, plus the four review-3010 files named in the task. No web search, no builds, no axiom
-audits. Every claim below points to the companion log [`reboot-final-facts.md`](reboot-final-facts.md): sections G1–G19
-hold the facts checked in source, section K holds the corpus condensed by object. Two small numerical checks are archived
-in [`computations/2026-10-30-reboot-final-checks`](../../../computations/2026-10-30-reboot-final-checks/README.md).
+Status: 30 October 2026. **RH is open.**
+
+- **Sources.** `formal/GaloisForLFunctions`, read through the corpus research tool and in source, plus the four
+  review-3010 files named in the task. No web search, builds or axiom audits.
+- **Fact log.** Every claim points to [`reboot-final-facts.md`](reboot-final-facts.md):
+  - sections G1–G19 hold the facts behind the audit of the two reports;
+  - section K holds the corpus condensed by object, with K0 listing the mechanisms.
+- **Reading standard.** Every cited item was read in source, statement and proof. For long assemblies that means the
+  top-level proof and the named lemmas it combines.
+- **Computations.** Two small checks are archived in
+  [`computations/2026-10-30-reboot-final-checks`](../../../computations/2026-10-30-reboot-final-checks/README.md).
 
 | Label | Meaning |
 |---|---|
-| **K*n*** / **G*n*** | Fact-log section; each item there carries its Lean anchor and a [T]/[D]/[S] tag (title / docstring / proof read) |
+| **K*n*, M*n*, G*n*** | Fact-log section or mechanism, with Lean anchors |
+| **[P]** | A module whose prose claims more than its Lean proves |
 | **(inference)** | This report's reading of several facts together; the facts are named and the step is stated |
 
 ---
 
 ## 0. Summary
 
-1. **Method: condense first, interpret afterwards.** The corpus has 53,234 files and about 498,000 declarations. I
-   collected the one-line statements (module docstring titles) of all 3,934 programme modules and filtered the 23,457
-   `RHTower` titles. Through the research tool I queried the relations between them and read the decisive modules in
-   source. The result is about 200 short facts grouped by mathematical object, not by programme (K1–K15). The picture
-   below comes from those facts, not from an assumed shape of the solution.
+1. **What the laws are made of (K0).** The structural theorems that recur across programmes reduce to eight
+   mechanisms applied to the explicit formula:
+   - M1 the explicit formula;
+   - M2 extraction of exponents from exponential sums;
+   - M3 Landau's one-sided argument;
+   - M4 archimedean domination at bounded scale;
+   - M5 Toeplitz minors and Fejér elimination;
+   - M6 the local zero count;
+   - M7 the linear algebra of renormalization;
+   - M8 symmetry bookkeeping and integer orders.
 
-2. **Three kinds of theorem.**
-   - Reformulations: 1,718 `riemannHypothesis_iff` and 1,150 `riemannHypothesis_of` declarations.
-   - Unconditional theorems that hold whatever the zeros do: positivity at bounded scale, uniqueness, no-gos.
-   - A small classical core that actually constrains the zeros (G2, G12): the Vinogradov–Korobov region, Guth–Maynard
-     density `30/13`, `≥ 67.25%` simple critical zeros, `4/5` of ordinates critical, `Σ(β−½) ≤ 0.066V`, anti-clustering
-     of near-line zeros.
+   "Growth equals depth", "one side suffices", "bounded scale is blind" and "quantization" are these mechanisms, not
+   separate phenomena. Three headline obstruction modules prove only interval or norm arithmetic [P]:
+   `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`.
 
-   No theorem of the second kind says anything about where zeros are. The corpus proves why (law L2).
+2. **Where ζ itself enters (§2).** The proofs use ζ-specific content in a short list of places:
+   - no real zero in `(0, 1)`, which drives every one-sided criterion;
+   - the simple pole at `s = 1`, which defines the positive class and separates the fakes;
+   - the archimedean place: domination at bounded scale, and the successor edges, which are the only place a sign
+     twin differs from ζ;
+   - the discreteness `|h| ≥ 1` of integer shifts, which repays the logarithm in fixed-overlap positivity;
+   - cyclotomic integrality: Λ is a log-resultant, and nonvanishing prefixes have norm `≥ 1`;
+   - ℚ-independence of `log p`, through two-prime rotation and Kronecker density;
+   - the theta radical;
+   - the census and density engine.
 
-3. **Twelve laws** recur across unrelated programmes (§2).
-   - **L1** One invariant: every rate reads `Θ`, and one-sided bounds suffice.
-   - **L2** Bounded scale is blind.
-   - **L3** Detection is finite; exclusion must be uniform.
-   - **L4** A counterexample must be crystalline near the top depth.
-   - **L5** The primes are anti-crystalline.
-   - **L6** Torsion of the circle carries both sides of the explicit formula.
-   - **L7** Finite levels are positive; the limit loses the sign through a full-rank counterterm.
-   - **L8** Zeros meet arithmetic modes only at boundaries.
-   - **L9** The successor enters only through the archimedean place.
-   - **L10** Quantization is everywhere.
-   - **L11** Inside the strip there are only statistics.
-   - **L12** Heat heals at rate `1/log T`.
+3. **The compiled picture (§3).**
+   - **Clusters.** Three independent instruments have the same worst case, a cluster of `≍ log t` zeros near one
+     point, i.e. an approximate multiple zero:
+     - the Weil lag family: hiding beyond `V ≍ log T` forces collapse;
+     - the heat slice: the detection rate loses `δ → δ²` exactly on clustered zeros;
+     - the explicit-formula census: blind exactly at coalescence.
+   - **One threshold.** Three programmes meet the same threshold: bandwidth of order one, where the prime length is a
+     power of the height (`bandwidth = log X/log T`, `OverlapCoordinates.lean`).
+     - TTPC's census is diagonal through bandwidth `1` and stops there.
+     - Every fixed overlap of the complete Weil matrix has limiting bandwidth exactly `1`.
+     - The cluster collapse of SquareRootThreshold sets in at lag `≍ log T`.
 
-4. **The picture (inference, §3).**
-   - All finite arithmetic in the corpus is either positive and blind, or exactly rigid. Zeros enter only through limits
-     (renormalization, horizon `N → ∞`, aperture `→ ∞`) and boundaries.
-   - Positivity dies in the limit through a counterterm of full rank on the torsion orbits.
-   - The undecided regime sits at one scale, doubly logarithmic in the height. At height `T` it is decided by primes up to
-     a fixed power of `log T`.
-   - A counterexample must be a crystalline or collapsed cluster of near-top zeros with tight twins. The primes that
-     decide it have ℚ-independent logarithms, and the height `T` lies far below the Dirichlet bound `(Q+1)^d` (corpus) at
-     which all `d` of their phases are guaranteed to align.
+     Past bandwidth one the only new input is the signed correlation of close prime pairs, the Fourier-dual face of
+     zero coalescence.
 
-5. **Four solution shapes follow from the laws (§4).** None is a Weil-positivity statement.
-   - **A. Pre-ergodic prime phases.** Exclude the crystals a counterexample needs by the Diophantine geometry of
-     `(p^{iT})_{p ≤ (log T)^C}`.
-   - **B. Depth at the horizon.** The zeros' real parts can reach a finite arithmetic box only through its boundary
-     tail, which is Poisson-dual to the successor shells.
-   - **C. A natural regularization.** Find a family of positive torsion energies whose counterterm is Hecke-covariant
-     and of low rank.
-   - **D. Reality invariants.** Jensen discriminants: reality-sensitive, and as yet undecidable.
+4. **Two solution shapes survive the proof reading (§4).**
+   - **A. The coalescent band:** non-coalescence of zeros off the line, together with signed close-prime-pair
+     correlations past bandwidth one.
+   - **B. The heat pincer:** on one `1/log t` scale, repair is proved from `κ = 17/25` and detection works below
+     `κ₀(δ) = δ²/(200(log(3/δ)+1))`. A zero-free strip follows if the two meet.
 
-   §6 lists the first theorems and the falsifiers.
+   Two other shapes fall:
+   - prime-phase transcendence: the formalized Baker exponent is exponential in the number of primes;
+   - depth at the horizon: the horizon pairing `B_N(ρ)B_N(1−ρ)` has no depth-dependent growth at any order.
 
-6. **The two reports (§5)** read programme READMEs and stayed inside the positivity frame. They missed:
-   - the classical core;
-   - the hiding laws (what a counterexample must look like);
-   - the horizon law (where zeros meet the arithmetic);
-   - the survival law (exactly where positivity is lost);
-   - the successor collar (how additive structure enters).
+   A third, natural regularization (C), stays as a precisely scoped question.
+
+5. **Audit (§5).** The two reports read programme READMEs and stayed inside the positivity frame. They miss the
+   mechanisms, the cluster anatomy, the bandwidth-one coincidence, the heat pincer and the selectivity inputs.
 
 ---
 
 ## 1. Method
 
-- **Harvest.** For each of the 3,934 programme modules (outside `RHTower`, `HTGeometry` and the vendored folders) the
-  docstring title was extracted. In this corpus the title is usually the theorem stated in one sentence ("The zeros meet
-  the pole mode only at the horizon"). The 23,457 `RHTower` titles were filtered for unconditional and structural
-  statements.
-- **Relations.** Recurring objects (torsion, horizon, counterterm, crystal, successor, quantum, `Θ`) were queried with
-  `scripts/formal_tools.py research`, and the returned statements were read.
-- **Proofs read** where a law rests on them:
-  - Weil cone uniqueness;
-  - the fixed-overlap positivity assembly, including its capture lemma and residual budget;
-  - the Hecke orbit kernel and pair-growth argument; fine towers;
-  - the hiding laws and the counterexample specification;
-  - archimedean domination;
-  - the realization no-gos and the Hölder strip;
-  - the survival law;
-  - the de Bruijn–Newman strict bound.
-- **Tags.** [T] means the fact is the module's own one-line statement and its proof was not read. Laws in §2 rest on at
-  least two programmes and on at least one [D] or [S] item.
+- **Harvest.** Module docstring titles of all 3,934 programme modules outside `RHTower`, `HTGeometry` and the
+  vendors, plus the 23,457 `RHTower` titles, filtered by content.
+- **Relations.** Recurring objects were queried with `scripts/formal_tools.py research`: torsion, horizon, counterterm,
+  crystal, cluster, successor, quantum, heat, `Θ`.
+- **Proof reading.** Every fact that enters this report was then read in source, statement and proof. This removed
+  several title-level readings and corrected others:
+  - "positivity through aperture `3/10`" holds because `e^{0.6} < 2`: no prime is read at all;
+  - "inside the strip only counts" is prose over the lemma `1 ≤ N → N ≤ S → 1 ≤ S`;
+  - "finite off-line sets are visible at a logarithmic aperture" uses a compactness constant that is not effective in
+    the configuration;
+  - the shallow anti-clustering bound has the order of all zeros and excludes no individual cluster.
 
 ---
 
-## 2. The laws
+## 2. What the proofs use
 
-### L1. One invariant; growth equals depth; one side suffices (K1)
+### 2.1 Mechanisms (K0)
 
-- **One number.** `TheWallsMeasureOneZeroWidth` proves that the deficit primitive, mean-square bands, formation energy,
-  Abel exponents, lag family, CCM ground energy, heat time, window ceiling and node criticality all read
-  `Θ = sup|Re ρ − ½|`.
-- **Growth equals depth.** Independently, five programmes state that a growth rate equals the depth of the zeros seen:
-  - packets (BSU);
-  - cycles (AOG);
-  - Krein–Langer pairs (HKT);
-  - amplifiers (ART);
-  - Lefschetz sequences (ACS).
-- **One side suffices.** One-sided bounds are enough everywhere:
-  - a packet bounded on one side sees no deeper zero;
-  - one-sided Lefschetz bounds at one prime give the zero-free strip;
-  - each half of the count is RH;
-  - RH has a criterion on the nonnegative cone in which every term is a nonnegative functional, sharp at the constant
-    profile (`riemannHypothesis_iff_forall_nonneg_cone`).
-- **What the problem asks.** In this corpus RH is never a two-sided precision problem. It is a one-sided growth bound
-  for one signed quantity, at exponent `½`.
-
-### L2. Bounded scale is blind (K2)
-
-- **Domination.** For every test of aperture `a`, ζ's Weil form is positive at heights where
-  `log(1 + π|ξ|/4) > 10 + 68e^a + 2(sinh a − a) + O_f(1/|ξ|)`, and `L²`-coercive beyond an explicit height
-  (`zetaZeroConfig_re_W_heightShift_pos_of_dominance`, `exists_height_horizon_zetaZeroConfig_re_W_ge_norm_sq`).
-- **Unconditional positivity:**
-  - through aperture `3/10` for every prime weight;
-  - on windows up to `12/25`;
-  - at most `|lowGrid(a)| + 1` negative directions at each aperture;
-  - at every fixed overlap of the complete Weil matrix.
-- **Blind by mechanism.**
-  - The fixed-overlap margin is the synthesis tail, which equals the Weil weight `1/log N` at the critical overlap
-    (G4, G9).
-  - The Weil margin is `≤ Ce^{12L − πe^{2L−1/2}}` with or without RH (truncated Riemann kernel).
-  - Window-averaged positivity holds for configurations with off-line zeros.
-  - "A bounded aperture range certifies no rate at all."
-
-### L3. Detection is finite; exclusion is uniform (K3)
-
-- Every off-line zero is visible at some finite aperture:
-  - finite off-line sets at a logarithmic aperture;
-  - an attained top at a lag logarithmic in the separation;
-  - near-top zeros at a polylogarithmic lag.
-- Sparse explicit families decide RH: two-bump tests, single dyadic prime windows, one parameter.
-- The corpus states the asymmetry itself: "any search for a counterexample is effective; any proof of criticality must
-  be uniform" (`RefutationIsFiniteConfirmationIsNot`).
-
-### L4. What a counterexample must look like (K4)
-
-- **Hiding needs a crystal** (`TheHidingLaws`, `theFloorsRequireACrystal`).
-  - An isolated off-line pair of depth `δ` in on-line mass `M` hides only up to lag `arsinh(M/|Q| + 1)/δ`.
-  - Only infinite off-line lattices sustain hiding.
-  - Mass buys aperture only logarithmically: reach `a ≤ log((3L+ℓ)/ℓ)/(2δ) + ℓ/2`.
-  - Aliasing is free below Nyquist `ℓ/2` and ends exactly there.
-- **Hiding is not monotone.** Adding off-line zeros can restore positivity: `exists_offLine_superset_hiding` gives
-  `Z ⊆ Z'`, with `Z'` entirely off-line, `Z` negative and `Z'` positive at the same aperture.
-- **For ζ specifically** (SRT, SSIC):
-  - hiding up to the threshold forces uniform depth and crystalline spacing;
-  - near-top zeros hide only in collapsed clusters;
-  - isolated twins cannot hide;
-  - twins are exponentially tight unless tripled;
-  - lag positivity forces close companions.
-- **Statistical limits on such clusters:**
-  - near-line off-line copies obey anti-clustering, `Σ m_j² ≤ CT log T` (ShallowCauchyPrimeEnergy);
-  - in every dyadic window, either `≥ 3/4` of zeros are critical or `≥ 17%` are simple off-line zeros within `A/log T`
-    (G2).
-
-### L5. The primes are anti-crystalline (K5)
-
-- At a lag inside a crystal gap the crystal's response is a positive constant. ζ's prime phases are linearly independent
-  over ℚ (`loggedPrimes_linearIndependent`) and align at some height, forcing negativity or exponential height escape
-  (`crystal_gap_prime_torus_incompatibility`; "Kronecker–Bohr prime-phase realization and exponential height escape").
-- `S(T)` is unbounded from prime-torus oscillation.
-- Two prime towers see every ordinate difference at polynomial precision (Baker). The corpus formalizes Baker
-  independence over `ℚ̄` and linear forms in prime logarithms (`RHTower/Matveev`, `BakerHomogeneousIndependence`).
-- Dirichlet recurrence (pigeonhole): `d` prime phases can be brought within `2π/(Q+1)` of zero at some height
-  `≤ (Q+1)^d` (`exists_fin_primeLog_phase_recurrence_quantitative`).
-
-### L6. Torsion of the circle carries both sides of the explicit formula (K6)
-
-- **Prime side.**
-  - `I(m, mt) = φ(m)Λ(t)`: Λ is the intersection number of torsion orbits (a log-resultant of cyclotomic polynomials).
-  - Weil's prime kernel is the renormalized limit of a positive torsion energy.
-- **Archimedean side.**
-  - Gauss's digamma theorem is the Fourier transform of the torsion energy on `μ_N`.
-  - The `log N` in it is the anomaly of the multiplication map `[N]`.
-- **Integrality and spectrum.**
-  - The cyclotomic norm `≥ 1` gives a conductor-uniform floor.
-  - Ramanujan sums diagonalize the prime matrix.
-  - The prime-defect Dirichlet form has "the spectrum of the integers", `log m + Σ_{p|m} log p/(p−1)`.
-- **Two energy problems.** Torsion is the stable equilibrium of the circle (Fekete). The corpus contrasts this
-  directly: "on the zero divisor equilibrium is computed and stability is the open sign; on the circle both are
-  theorems".
-
-### L7. Finite levels are positive; the limit loses the sign through a full-rank counterterm (K7)
-
-- **Survival law** (`TheRenormalizationSurvivalLaw`): positivity passes a scale limit exactly on the null cone of the
-  counterterm, and that cone does not depend on the renormalization scheme.
-- **The two places.**
-  - The torsion (prime) germ has counterterm the identity, so nothing survives under any renormalization.
-  - The archimedean germ has a rank-one counterterm and survives on the polar hyperplane (`counterterm_rank_dichotomy`).
-- **Coupling does not help.** Coupling never lowers the torsion rank; a partner pays at most as many directions as the
-  rank of its own counterterm, and the archimedean place pays one (`TheCoupledSurvivalLaw`). "Characters are invisible
-  to polar matching."
-- **Regulators tried:**
-  - Abel (not Hecke-covariant, Hecke cocycle not a coboundary);
-  - spacing (covariant, scalar counterterm, indefinite limit);
-  - horizon (covariant; tensor counterterm equal to the identity on torsion orbits).
-- **The corpus's own statement of what is missing:** "a covariant regulator whose counterterm has a nontrivial null
-  cone".
-
-### L8. The zeros meet arithmetic modes only at boundaries (K8)
-
-- **The horizon law.** For the pole mode on `[1, N]`, the zero side is exactly the Euler–Maclaurin boundary:
-  `Q(f_pole) = Re Σ_ρ m_ρ ĝ(γ_ρ)conj ĝ(conj γ_ρ)·B_N(1−ρ)B_N(ρ)`. "The zeros see the pole mode through the boundary of
-  its horizon and through nothing else" (`ThePoleModeMeetsTheZerosOnlyAtTheHorizon`).
-- **The boundary product splits in two:**
-  - the pole parts give the Li charge `N/(ρ(1−ρ))`;
-  - the remainder carries the Euler–Maclaurin tail, "whose Fourier expansion is the Poisson dual of the successor
-    shells".
-- **The charge is blind to depth.** "The horizon charge is blind to the real parts of the zeros":
-  `|P_a(s)P_a(1−s)| ≤ N(Σ|a_d|/d)²/|s(1−s)|`. The zeros see every atomic vector only through its Möbius horizons.
-- **Corollaries elsewhere.**
-  - The quasimode residual of the complete Weil matrix is an `N`-independent boundary layer at `n ≈ N` (G9, G13).
-  - "The shells and the pole cancel on the top band."
-  - "Every unconditional input is separated from the error by the strip": inputs live at `Re s > 1` or on `Re s = ½`.
-
-### L9. The successor enters only through the archimedean place (K9)
-
-- **Mechanism.** Consecutive integers share no prime relation (`heckeIncidence k (k+1) = 0`). They interact only through
-  the archimedean kernel, whose values there are algebraic:
-  `archLevyDensity(log((k+1)/k)) = (k+1)√(k(k+1))/(2k+1)` (`TheSuccessorCollar`). Hence "the successor connection is the
-  archimedean gauge field".
-- **Blindness:**
-  - an atomic archimedean spectrum blinds the successor (`successor_blind_of_atomic`);
-  - the successor is invisible at zeros;
-  - it enters the count only modulo the square-root class.
-- **Yet it is necessary.** Ring structure (`gcd(n, n+1) = 1`) is what excludes Beurling systems and the golden datum
-  (K13).
-
-### L10. Quantization (K10)
-
-- Index is even, and RH ⇔ index `≤ 1`.
-- Transverse energy is `≥ 1` per off-line zero; RH ⇔ window energy `< 2`.
-- Collision charge is even.
-- Prime mass at the `√x` scale comes in even integer units.
-- The prime mean is quantized height by height; local exponents are integers below half damping.
-- Integer-valued positive-definite functions are characters.
-- Integrality forbids super-conformal distortion.
-- Integer quanta appear on both sides: arithmetic counts and zero multiplicities.
-
-### L11. Inside the strip: statistics only (K11)
-
-- The census (67.25%, 4/5, 88.76%) uses the second-moment Gram of the explicit formula.
-- It is blind exactly at the coalescence of a pair with a double zero (G14).
-- Its ceiling under full pair-correlation knowledge is `1 − 1/(3λ²) < 1` (G13).
-- Density bounds count zeros and never locate them ("inside the strip only counts").
-
-### L12. Heat heals at rate `1/log T` (K12)
-
-- `0 ≤ Λ < 1/8`.
-- For every `t > 0` only finitely many zeros of `H_t` are nonreal; all are real and simple beyond
-  `2πe^{(1+√3/2+ε)/t}`.
-- At height `t` the heat transfer is positive from time `100/log t`.
-- An off-line zero of depth `δ₀` at height `γ` forces `Λ ≥ kkl(δ₀)/log γ`.
-- At negative time, zeros are produced by an almost periodic Dirichlet-series model.
-
-### Calibration facts used below (K13–K15)
-
-- **Fakes.**
-  - Λ-positive functions with the exact functional equation (even entire, at pole order 2) have off-line zeros.
-  - The golden datum passes integrality, the functional equation, the λ-ring and the upper count. It fails unitarity,
-    Bézout on its window surface, Riemann–Roch on its Rosati cone, positive-definiteness of its trace sequence, and the
-    lower count.
-- **Realizations.** Finite odd parts are impossible over ℤ; carriers indexed by zeros carry nothing beyond RH.
-- **Over `𝔽_q`:**
-  - square-root cancellation is a count;
-  - the odd part is finite and spectral;
-  - Frobenius is conformal, while the Hecke dilations of ℤ are isometric boosts.
-
----
-
-## 3. What the laws say together (inference)
-
-### 3.1 The finite level is positive; the information is in the passage to the limit
-
-L2, L6, L7 and L8 describe one situation from four sides:
-- every finite arithmetic object the corpus built is positive or rigid;
-- the positive ones cannot see off-line zeros;
-- the zeros appear when a finite level is taken to its limit, through the divergence of torsion self-energies (L7) and
-  through horizon boundaries (L8).
-
-A proof must therefore say something about how a finite positive structure passes through its limit. A better finite
-form does not suffice. The corpus has three precise descriptions of that passage:
-- the counterterm rank (L7);
-- the horizon boundary (L8);
-- the critical overlap where margin = synthesis error = `1/log N` (L2).
-
-### 3.2 The problem lives at one scale, doubly logarithmic in the height
-
-| Quantity at height `T` | Scale | Fact |
+| Mechanism | What it does | Where it appears (examples) |
 |---|---|---|
-| Aperture where archimedean domination holds | `69e^a − 2a + 12 < log(1 + πT/4)`, i.e. `a ≲ log log T − 4.2` | K2: `horizonExponent(e^{2a}) = 10 + 68e^a`, `pairEnergy(½, a) = sinh a − a` |
-| Aperture an isolated pair of depth `δ` can hide to | lag `v ≤ arsinh(M/\|Q\| + 1)/δ` at aperture `v/2`, with on-line mass `M ≍ log T`: `a ≲ log log T/(2δ)` | K2, K4: `theFloorsRequireACrystal`, `onLineMass` |
-| Single-zero detector threshold | `e^{2δa}` beats `log T·poly(a)` | G10 |
-| Critical overlap of the complete Weil matrix | `≍ log log N·(log log log N)²` | G9 |
-| Heat time that makes height-`T` zeros real | `≈ (1+√3/2)/log T`; transfer positive from `100/log T` | K12 |
-| Prime powers read by a test of aperture `a` | `n ≤ e^{2a}` | the Weil test `f * f̃` has support `[−2a, 2a]` (`prime_visible`, `RHTower/CCM/CCMRestrictedWeilPrimePoleMatrix.lean`) |
-| Height escape in the crystal-gap obstruction | `log(1 + 2π\|ξ\|) > (B − 2e^a‖g‖₁² − O_g(1))/‖g‖₂²`, with `B` below the prime envelope over `p ≤ e^{2a}`; both are of order `e^a`, so again `a ≍ log log ξ` (inference from the statement) | `crystal_gap_prime_torus_incompatibility` |
+| M1 explicit formula | functional = zero sum + archimedean tail + pole | packets, lag structures, orbit correlations, Lefschetz sequences |
+| M2 exponent extraction | a sum `Σ c ν^n` that is `O(r^n)` has no seen node above `r` (Vandermonde, residues, discrete Cauchy transforms, Cesàro) | growth = depth in BSU, AOG, HKT, ACS, ART; determination of the configuration |
+| M3 Landau | a one-sided bound gives a nonnegative measure; the abscissa sits at the bound because ζ has no real zero in `(0, 1)` | packet sign law, one-sided von Koch, one-sign difference families, one- and two-prime Lefschetz bounds |
+| M4 domination | `log(1 + π\|ξ\|/4) > 10 + 68e^a + 2(sinh a − a)` | positivity at bounded aperture, the low-frequency divisor, the `12/25` window |
+| M5 Toeplitz/Fejér | `2×2` minors; companion elimination via `(x² + β²)K_{k+1} = cK_k` | sparse deciding families; twin and cluster laws |
+| M6 local count | at most `40 log(180\|t\|)` zeros per unit window | the only ζ-input of the hiding laws and of large-height heat repair |
+| M7 survival algebra | null cones of counterterms; coupled ranks | the renormalization programmes |
+| M8 bookkeeping | conjugate pairs, horizontal segments, integer orders, character sums | even index, transverse quantum, even Abel residues, `−1/p` successor bias |
 
-**Inference.**
-- Domination decides apertures up to about `log log T`. A pair of depth `δ < ½` hides up to about `log log T/(2δ)`.
-  For `δ` near `½` the window closes; for shallow pairs it is wide.
-- In between, neither mechanism decides anything. Tests in that window read primes from about `(log T)²` to
-  `(log T)^{1/δ}`.
-- So, at height `T`, the corpus has localized the undecided question to the joint behaviour of the phases `p^{iT}` for
-  primes up to a fixed power of `log T`.
-- The heat and critical-overlap scales are the same scale in other coordinates.
+### 2.2 The ζ-specific inputs
 
-### 3.3 The shape of a counterexample is known, and it is the opposite of what the primes allow
-
-L4 and L5 together give a specification:
-- A counterexample must be crystalline near the top depth: uniform depth, periodic spacing, collapsed clusters,
-  exponentially tight twins.
-- The prime phases that would have to support such coherence are linearly independent over ℚ (and over `ℚ̄`, by Baker).
-- Their coherence is guaranteed only at heights `≤ (Q+1)^d` for `d` phases.
-
-At height `T`, the window primes number `d ≈ δ(log T)^{1/δ}/log log T`, far more than `log T`. Those heights are far
-beyond `T`. The flow `t ↦ (t log p mod 2π)_{p ≤ (log T)^C}` is observed at height `T` long before it has explored its
-torus. Call this the pre-ergodic regime. The corpus's Kronecker obstruction leaves exactly one escape, "exponential
-height escape", and the question is whether that escape is compatible with the hiding laws at heights `≤ T`.
-
-### 3.4 Additive structure: blind in the bulk, present at the boundary
-
-- **The puzzle.** L9 says the successor is invisible to atomic (zero) spectra and enters the Weil form only through the
-  archimedean kernel. K13 says ring structure is nevertheless indispensable, since multiplicative data alone cannot
-  exclude Beurling systems.
-- **The resolution in the corpus's own statements is L8.** The depth-blind part of the horizon is the charge
-  `N/(ρ(1−ρ))`. The only other part is the Euler–Maclaurin tail, Poisson-dual to the successor shells. Whatever a finite
-  box `[1, N]` can know about the real parts of the zeros through its pole mode therefore passes through the successor
-  structure of the integers at its upper edge (inference by elimination from the two docstrings).
-- **On the top band** "the shells and the pole cancel". Along the top-band witness `b + η·1_T` of the complete Weil
-  matrix, the `c`-linear parts of the shell and pole moments are the same lattice-free quantity, and the joint
-  coefficient is `O(G(log N + c + 1))` uniformly in `N` while each term is `≍ Gcq log N`
-  (`exists_abs_jointWitnessCoefficient_le`). This is a prime-side statement on the same band `n ≈ N` whose zero side the
-  horizon law identifies with `B_N` (inference: same band, two sides).
-
-### 3.5 What is missing, in the corpus's own words
-
-| Missing input | Where the corpus states it |
-|---|---|
-| A covariant regulator whose counterterm has a nontrivial null cone | `TheSpacingRegulatorRemovesTheAnomaly` |
-| A carrier built independently of the zeros, such as "a category with ζ as one member among many" | `DeningerResolventCoreIsRiemannHypothesis` |
-| Reality-sensitive invariants that are decidable (Jensen discriminants) | `DiscriminantIsRealitySensitive` |
-| An input inside the strip that is not a count | `ContourCrossingObstruction` |
-| Uniformity in the unbounded parameter (aperture, overlap, horizon, rank) | L2, L3, G4, G9 |
-| Signed close prime pairs past bandwidth one | G3 (TTPC) |
+1. **No real zero in `(0, 1)`** (`riemannZeta_real_strip_ne_zero`, via `zeroShift_ne_ofReal`). It is what makes every
+   one-sided criterion work (M3).
+   - The single exception to one-sidedness anywhere in the corpus is a real positive eigenvalue or real zero.
+   - The golden fake curve is exactly that: its outer eigenvalue `φ` is real (K10).
+   - The Λ-positive FE fakes are forced to put a pole on the real axis (K10).
+2. **The simple pole.** A completed positive system with pole budget one is `Kζ` (Bernstein–Widder plus FE rigidity).
+   The entire Λ-positive fake with the exact FE differs from ζ only by a pole of order `3` at `s = 1` (K10).
+3. **The archimedean place.**
+   - Bounded scale is archimedean (M4).
+   - The prime form is gauge-blind: every completely multiplicative `±1` twin, Liouville included, has a prime form
+     unitarily equivalent to ζ's. Selectivity can only come from the pole term and the archimedean place
+     (`TheFiniteIntersectionIsGaugeBlind`).
+   - The archimedean kernel sees a twist exactly on the successor edges `(n, n+1)`, through the connection
+     `conj χ(n)χ(n+1)` (`TheSuccessorConnectionIsTheArchimedeanGaugeField`, K8).
+4. **Integer discreteness.**
+   - In fixed-overlap positivity the gap `|h| ≥ 1` of the successor shells repays `M log c`. The continuum model
+     without integer successors has energy `log(1/(2πc)) + β/M → −∞` (`TheIntegralityOfTheShiftRepaysTheLogarithm`).
+   - At zeros the successor is unipotent: its defect is holomorphic on `Re s > 0`.
+5. **Cyclotomic integrality.**
+   - Λ is the intersection number of torsion orbits (Apostol's resultants).
+   - Weil's kernel is the renormalized limit of positive torsion energies.
+   - Gauss's digamma theorem is the Fourier transform of the torsion energy.
+   - A nonvanishing primitive prefix has energy `≥ φ(m)` by norm `≥ 1` (K6).
+6. **Independence of `log p`.**
+   - Two primes rotate every non-real Frobenius phase (`irrational_log_ratio`).
+   - Kronecker density aligns prime phases at some height.
+   - Fel'dman's effective Baker bound is formalized. Its exponent is at least `(1000·Σlog p·R)^d`, exponential in the
+     number `d` of primes (K5).
+7. **The theta radical.** One modular object pins the null directions of the Weil form in three places:
+   - the blind Ξ-divisible family of cone uniqueness (G1);
+   - the truncated Riemann kernel, which makes the margin `≤ Ce^{12L − πe^{2L−1/2}}`;
+   - the theta plateaus that lift any test into the nonnegative cone (K1, K2).
+8. **Counting and density** (K11, G2, G12):
+   - the local count;
+   - the census: `≥ 67.250071%` simple critical, `4/5` of ordinates, `0.8876` simple-or-critical, off-line moment
+     `≤ 0.066V`;
+   - Selberg's near-line density `e^{−α/28}/α` at depth `α/log T`;
+   - fixed-σ density `o(T)`; Guth–Maynard `30/13`; Vinogradov–Korobov.
 
 ---
 
-## 4. Solution shapes the facts suggest
+## 3. The compiled picture (inference)
 
-Each shape combines corpus facts that no programme has combined. For each, the needed statement is new information
-about ζ, not a relabeling of `Θ = 0`.
+### 3.1 Three scales in the lag (aperture) of a Weil test at height `T`
 
-### A. Pre-ergodic prime phases: exclude the crystal
+| Lag `V` | What holds | Fact |
+|---|---|---|
+| `≲ log log T` | Positivity, by archimedean domination | M4 |
+| `≍ log log γ/Θ` | Below it, the trichotomy says a hidden near-top zero needs a twin within `(log log γ)/V` or height `≥ exp exp(cΘV)` | K4 |
+| `≍ log T` (the corpus's "square-root threshold") | Beyond it, hiding forces cluster collapse: `p ≤ log γ` companions at geometric radius `e^{−cVδ/p}` | K4 |
+| `≍ (log γ)² log log γ/δ` | Every near-top off-line zero is detected | K3 |
 
-- **Facts used.**
-  - L4: the hiding laws, the counterexample specification, collapsed near-top clusters, tight twins.
-  - L5: Kronecker obstruction with height escape, Baker independence, Dirichlet recurrence `(Q+1)^d`.
-  - §3.2: the undecided window, primes up to `(log T)^{O(1)}`.
-  - K4: near-line anti-clustering.
-- **Needed statement.** At heights `≤ T`, the phase vector `(p^{it})_{p ≤ (log T)^C}` cannot realize the coherent pattern
-  that a hiding crystal of depth `δ` requires in the window `[log log T, log log T/(2δ)]`, except on a set of heights too
-  sparse to carry the infinite lattice that hiding needs.
-- **Why it is new.**
-  - It is a statement about the Diophantine geometry of a linear flow on a torus whose dimension grows like a power of
-    `log T`, observed well before its recurrence time.
-  - It is neither positivity nor an average. Random models (equidistributed phases) and `𝔽_q` (one Frobenius, rank-one
-    phases) both lack this regime.
-- **Known bottleneck (corpus, inference).**
-  - Pigeonhole gives alignment only at heights exponential in the number of phases.
-  - Baker gives qualitative independence.
-  - The quantitative form needed is a lower bound for linear forms in `d ≍ (log T)^C` prime logarithms. The corpus's
-    `RHTower/Matveev` layer is where its dependence on `d` would be decided.
+- A test of lag `V` reads prime powers up to `e^{V+O(1)}`. The lag `log T` therefore reads primes up to a power of
+  `T`, the length at which a Dirichlet polynomial's length matches the height.
+- **The same threshold elsewhere.** `SpacingScaleHarmonicAnalysis/OverlapCoordinates.lean` fixes the coordinates:
+  overlap `X/T`, bandwidth `log X/log T = 1 + log(overlap)/log T`, and "a fixed overlap greater than one still has
+  limiting bandwidth one" [S].
+  - TTPC: the census's prime side is valid through `λ = 1` (`X = e^L ≤ T`, `Zeta23FamilyBandwidth`), where the
+    certificate is `2/3` (`subthreshold_cert_le_two_thirds`).
+  - Complete Weil matrix: horizon `N`, width `c/N`, hence length `N` and height `N/c`. Every fixed `c`, and every RH
+    schedule `c_N ≍ L(log L)²`, has bandwidth `1 + o(1)` (inference from the coordinate identities).
+  - SquareRootThreshold: collapse sets in once `Vδ/8 ≫ log γ`, i.e. at bandwidth `≍ 1/δ`, which is of order one for
+    fixed depth.
 
-### B. Depth at the horizon: the boundary tail and the successor shells
+### 3.2 One worst case for three instruments
 
-- **Facts used.**
-  - L8: the horizon law; the charge is blind to depth; the tail is Poisson-dual to the successor shells; shells and pole
-    cancel on the top band; the universal boundary layer.
-  - L9: successor pairs couple only through the explicit algebraic archimedean kernel.
-  - K1: the Li charge and the first sixty-eight Li coefficients.
-- **Needed statement.** An exact description, as `N → ∞`, of the top-band residual after the shell–pole cancellation, as
-  a functional of the zeros. Then a sign, or a rate, for its dependence on `Re ρ`.
-- **Why it is new.**
-  - It places RH in the additive structure of integers near a cutoff: consecutive integers near `N`, their factorizations
-    against the archimedean kernel.
-  - That is the one place where the corpus proves the successor is not blind.
-  - It is not a positivity statement on a test space.
-- **Falsifier.** If the tail is also blind to `Re ρ` at leading order, then no finite box sees depth through its pole
-  mode. That would be a sharp new no-go, to be recorded with its exact order.
+| Instrument | Its worst case, as proved | Fact |
+|---|---|---|
+| Weil lag family | Beyond `V ≍ log T` a hidden near-top record needs `≥ 3` zeros within `2r`, collapsing to an approximate multiple zero; isolated twins cannot hide | K4 |
+| Heat slice | Detection is linear in `δ` under regular local growth; the unconditional rate `δ²/log(3/δ)` loses exactly on "`≍ log t` zeros clustered near `½ + it`" | K9 |
+| Explicit-formula census | A double critical zero and a coalesced off-line pair have identical Gram data; every Gram functional is capped at `(2 − κ)N` there | G14 |
 
-### C. A natural regularization with a low-rank counterterm
+**Reading (inference from the three rows).** Each instrument fails on the same configuration, many zeros within a
+tiny disc. None of the corpus's local constraints rules it out:
+- the local count allows `40 log t` zeros per unit window;
+- the shallow anti-clustering and Selberg density bounds have the order of all zeros;
+- the census gives proportions.
 
-- **Facts used.**
-  - L6: both sides are torsion energies; the torsion equilibrium is stable.
-  - L7: the survival law; the counterterm dichotomy; the coupled law; the regulators tried.
-- **Needed statement.** A family of positive energies of an arithmetic origin with three properties: it converges after
-  renormalization to the Weil form; its counterterm is Hecke-covariant; it has a nontrivial null cone containing the
-  polar-neutral tests.
-- **Caution (from the survival law, inference).** For an arbitrary family this is tautological: by Finsler–Debreu such a
-  family exists exactly when positivity holds on the null cone. The content is the naturalness requirement. The corpus
-  shows that the circle's torsion germ, its character twists and its coupling to the archimedean germ all fail it.
-- **Where to look, by the corpus's own exclusions:**
-  - families not built from the circle alone (K14: "a category with ζ as one member");
-  - regulators that couple different torsion orbits, so that the divergence is not diagonal.
+### 3.3 The duality that ties the threshold to the clusters
 
-### D. Reality invariants
+TTPC proves that past bandwidth one the only new term in the census is the signed correlation of close prime pairs
+`|log(n/m)| ≲ 1/T` (the coalescent band). It reduces that term to a parity-locked Ramanujan stabilizer model plus a
+centred stabilizer discrepancy. The model gives negative Ward–Mertens repulsion (G3).
 
-- **Facts.**
-  - `DiscriminantIsRealitySensitive`: discriminants of Jensen polynomials refute real-rootedness by a polynomial in the
-    coefficients, with no contour and no spectrum.
-  - The Jensen polynomials of `ξ` satisfy Laguerre's inequality on the half-line (ALG).
-  - Heat repairs finite heads of `ξ` at every large height (ALDG).
-- **Needed statement.** Decidable nonnegativity of these discriminants for all indices. The corpus records that this
-  category is "not empty but hard".
-- **Ranking.** Listed for completeness; the corpus contains no new mechanism here.
+The census's blind spot is zero coalescence (G14). Close prime pairs past bandwidth one and zeros closer than the mean
+spacing are the two sides of one form factor, `F(α)` for `α > 1` (inference from the `κ(λ)` formula, G3 and G13).
+
+So the corpus has met one object from three directions:
+- the prime side: signed close pairs (TTPC);
+- the zero side: coalescence (census, hiding laws, heat);
+- the operator side: growing overlap at limiting bandwidth one (complete Weil matrix).
+
+### 3.4 What does not carry the problem
+
+- **Bounded scale** (M4, K2). Aperture `3/10` reads no prime; `12/25` reads only `2`; domination holds to
+  `log log T`.
+- **Averages** (K2). Height-windowed forms pass model off-line lattices and clusters.
+- **Horizons.** `B_N(ρ)B_N(1−ρ) = N^{−1}[N/(ρ−1) − ρJ_N(ρ)][−N/ρ − (1−ρ)J_N(1−ρ)]` with `|J_N| ≤ 1/Re s`. Depth enters
+  only through bounded factors (K8, computed from the definitions in `RHTower/EMCarrier.lean`).
+- **Transcendence at growing dimension** (K5). The effective Baker exponent grows at least exponentially in the number
+  of primes.
+- **Renormalization of the torsion germ** (K7):
+  - Abel's counterterm is the identity, and coupling does not lower its rank;
+  - the spacing regulator has a scalar counterterm;
+  - the horizon counterterm has unbounded rank, though its survival cone on class profiles is the class-wise polar
+    hyperplane.
+- **Prose obstructions** [P]: "every input is separated by the strip", "inside the strip only counts", "reality
+  tools lack decidability". These are not theorems of the corpus.
+
+---
+
+## 4. Solution shapes
+
+### A. The coalescent band
+
+**Facts used.**
+- K4: the trichotomy, loud twins, tight twins, collapse, the threshold `V ≍ log T`.
+- K9: detection is linear in `δ` under regular local growth; the three-radii loss comes from clustering.
+- G14: the coalescence blind spot.
+- G3: the reduction to the centred stabilizer discrepancy.
+- G2: Gabor pinching. The `10^{−8}` beyond `HD(1)` comes from non-orthogonality of three nearby simple ordinates.
+- G15: aligned ordinates of short prime polynomials are sparse, `T^{1−1/C+o(1)}` for `X = (log T)^C`.
+
+**Needed statements**, in the corpus's own terms:
+1. **Local count at scale `δ`.** Near every point `½ + δ + it`, the number of zeros within distance `δ` is
+   `≤ C(δ log t + 1)`, against the corpus's unit-window count `40 log(180|t|)`.
+   - In K9 this is the regular-growth hypothesis that gives detection at the linear rate `δ/(96(c+1))`.
+   - In K4 it excludes collapse at geometric radius `e^{−cVδ/p}` once `V ≫ log γ`, which lowers the detection lag from
+     `(log γ)² log log γ/δ` to `≍ log γ/δ`.
+2. **The coalescent band.** A bound for the centred stabilizer discrepancy of signed close prime pairs at
+   bandwidth `4/3`, enough for TTPC's `1/18` budget (G3). It is the prime-side form of item 1, on average.
+
+**What A gives, and what it does not.**
+- Item 1 makes off-line zeros of depth `δ` detectable at lag `≍ log γ/δ`. That is a refutation statement.
+- An RH-type conclusion needs positivity of the lag family up to that lag. That is a pointwise statement about prime
+  windows of length up to `T^{O(1/δ)}` at height `T`.
+- The corpus proves such positivity only to `log log T` (domination). A therefore localizes the remaining problem: the
+  bandwidth window `[log log T, log T/δ]`, with no clusters to hide in.
+
+### B. The heat pincer
+
+**Facts used (K9).**
+- Repair: every heated slice coefficient is positive at heat `κ/log t` for `κ ≥ 17/25`. The size-only floor of this
+  method is the parabola envelope of the Lindelöf profile, `27/40` with the formalized exponents.
+- Detection: an off-line zero of depth `δ` at height `t` is detected at every `κ ≤ κ₀(δ) = δ²/(200(log(3/δ)+1))`.
+- Every-height positivity at rate `κ₀(δ₀)` excludes `Re ρ ≥ ½ + δ₀` above `e^{16}` (`re_lt_of_heat_rate_pos`).
+
+**Needed statement.** Slice positivity at heat `κ₀(δ₀)/log t` at every large height `t`, for one `δ₀ < ½`. That
+gives a zero-free strip.
+
+**The gap is quantitative and two-sided.**
+- The repair argument uses only size bounds for `ξ` and floors near `2/3`.
+- The detection argument loses `δ → δ²` to clusters. Even linear detection, `≤ 1/192`, is far below `17/25`.
+- Closing the gap needs a non-size input on the repair side. The candidates are positivity structure of the slice
+  (Turán layer, K10) and non-coalescence (A1) on the detection side.
+
+### C. A natural regularization (scoped)
+
+**Facts used (K6, K7).**
+- The prime side is a renormalized positive torsion energy.
+- The survival law and the coupled-rank law hold.
+- Abel's identity counterterm survives nothing.
+- The horizon counterterm on `p`-adic class profiles is `Σ_j δ_j^{−1}ℓ_j(x)²`, rank `J + 1`, with survival cone
+  `ℓ_j = 0`. It is `[p]`-covariant, but its rank is unbounded over all classes.
+
+**Question.** Is there a positive family of arithmetic origin whose renormalized limit is Weil's prime kernel and whose
+counterterm has a null cone containing the polar-neutral tests?
+
+**Scope.**
+- Under the Abel regulator the answer is no, for every coupling.
+- The horizon gives a nontrivial survival cone on each finite set of classes. The corpus does not prove positivity of
+  a family renormalized by it.
+- By Finsler–Debreu the question is empty without the arithmetic-origin requirement.
 
 ---
 
@@ -433,89 +293,72 @@ about ζ, not a relabeling of `Θ = 0`.
 
 | Report claim | Compiled picture | Fact |
 |---|---|---|
-| Opus: "positivity proofs with margin cannot exist; estimates are the wrong instrument" | Margins exist at every bounded scale (L2), and the only zero-constraining theorems are estimates (K11, G12). The cone theorem fixes the weights and leaves the form's sign open. | G1, G9 |
-| Opus: cone uniqueness is "the only global theorem" and points to modular potential theory | Its family vanishes at every zero wherever it lies, so it is a uniqueness theorem. Automorphic a priori information certifies only `Re ρ ≥ 1`. | G1, G6 |
-| Opus: "prime-free" RH | The node set must contain every prime power: the weights disappear, the primes do not. | G1 |
-| Opus: `WindowPositive` on `(0, log 2)` as a first target | A short-window inequality for nonnegative tests. The RH criterion on a nonnegative cone (Doob coordinates) is a different object. | G5, K1 |
-| Opus: `𝔽_q` "has room" | The actual curve sits on the boundary of the cone (finite rank). What differs is the finite odd part and conformal Frobenius. | G11, K15 |
-| Astra: fixed-overlap positivity is "real progress" | True positivity that is blind by mechanism; its margin is the synthesis tail. | G4, G9, L2 |
-| Astra: nonlinear theta readings and heat as the main alternatives | CDG computes the divisor wherever it is. Heat heals at `1/log T`, and this is the same scale as §3.2. | K12 |
-| Both: the walls as obstacles to cross | The corpus proves what a counterexample must be (L4) and what the primes forbid (L5). Neither report uses this. | K4, K5 |
-| Both: no use of the horizon law, the survival law, the successor collar or the doubly-logarithmic scale | These carry the picture of §3. | K7–K9 |
+| Opus: "positivity proofs with margin cannot exist; estimates are the wrong instrument" | Margins exist at bounded scale, for archimedean reasons (M4). The zero-constraining theorems are estimates (census, density, VK, Guth–Maynard). | K2, G2, G12 |
+| Opus: cone uniqueness is "the only global theorem" | Cone uniqueness is one of three uses of the theta radical. It fixes the weights, not the sign. | §2.2(7), G1 |
+| Opus: "prime-free" RH | The node set must contain every prime power. | G1 |
+| Opus: `WindowPositive` on `(0, log 2)` as a first target | Below `log 2` no prime is read; positivity there is pole plus archimedean for every weight. | K2, G5 |
+| Opus: `𝔽_q` "has room" | Over `𝔽_q` the only one-sided exception is a real eigenvalue, and ζ has none in `(0, 1)`. | M3, K12 |
+| Astra: fixed-overlap positivity is "real progress" | It is positive because integer shifts are discrete (`\|h\| ≥ 1` repays `log c`), and its margin vanishes at the critical overlap. It says nothing about zeros. | K8, G9 |
+| Astra: nonlinear theta readings and heat as alternatives | Heat is a quantitative pincer (B) with an explicit two-sided gap; theta is the radical (§2.2). | K9 |
+| Both: the walls as obstacles | The walls are the mechanisms M1–M8, and some are prose [P]. The decisive scale is bandwidth one; the decisive configuration is a cluster. | K0, §3 |
 
-**What both got right and the picture keeps:**
-- Astra: the order of quantifiers decides; enlarging fixed coordinates adds nothing.
-- Opus: cone uniqueness means any positive weight already forces RH; the selective structures are the pole, the Gamma
-  factor and the successor.
+**What both got right:**
+- Astra: the order of quantifiers decides.
+- Opus: the selective structures are the pole, the Gamma factor and the successor. The proofs confirm this and sharpen
+  it to the successor edges of the archimedean kernel and the discreteness of the integer shift (§2.2).
 
 ---
 
 ## 6. Research programme
 
-The corpus's rule for a no-go applies throughout: if a package fails, extract and record its strongest positive
-statement.
+The corpus's no-go rule applies throughout: if a package fails, record its strongest positive statement.
 
-### WP-A. Pre-ergodic prime phases (shape A)
+### WP-A. The coalescent band
 
-- **A1. Fix the window.** From `theFloorsRequireACrystal`, `TheHidingLaws`, `exists_height_horizon_…` and
-  `horizonExponent`, prove with explicit constants the aperture interval in which an isolated pair of depth `δ` at
-  height `T` is neither excluded by domination nor detected. Also prove which primes the tests in that interval read.
-- **A2. Crystal versus anti-clustering.** Combine `uniform_crystal_of_hiding` with the shallow-zero anti-clustering
-  (`Σ m_j² ≤ CT log T`) and fixed-σ density `o(T)`. Prove which crystal parameters (depth, spacing, background mass)
-  are excluded unconditionally at height `T`. This needs no new input and gives the first unconditional theorem about
-  the shape of off-line configurations of ζ.
-- **A3. Coherence of short prime phases.** Prove an upper bound for the measure of heights `t ≤ T` at which
-  `(t log p mod 2π)_{p ≤ X}` lies within `η` of a crystalline pattern, for `X = (log T)^C`. Start with what pigeonhole
-  and Baker give in `RHTower/Matveev`. Record exactly where the dependence on the number of logarithms stops the
-  argument.
-- **A4. Close the loop.** Show that the coherence a hiding crystal needs in the window (A1) exceeds what A3 allows below
-  height `T`, for some range of depths.
-  - Success, even for `δ` in a restricted range, is a new zero-free statement.
-  - Failure, recorded with its exact exponent, says how much quantitative transcendence RH needs in this regime.
+- **A1. Local count at scale `δ`.** Prove or refute `#{zeros within δ of ½ + δ + it} ≤ C(δ log t + 1)` from the corpus
+  inputs: Riemann–von Mangoldt with its remainder, `rvmRemainder_unbounded`, Selberg near-line density, shallow energy.
+  If unconditional, record the best exponent of `δ` and `log t`. If not, record exactly which remainder bound it
+  needs.
+- **A2. Collapse without clusters.** Re-run `zeta_near_top_cluster_collapse` with A1's count in place of the unit
+  count, and state the resulting detection lag explicitly.
+- **A3. Heat detection under A1.** Turn `re_xiSliceHeatTransfer_neg_of_regular_growth` into an unconditional theorem
+  under A1. Its hypothesis is a growth majorant, which A1 supplies through Jensen.
+- **A4. The discrepancy.** Bound the centred stabilizer discrepancy at bandwidth `4/3`
+  (`oddEvenShiftPrimeCoalSum_eq_stabilizerModel_add_discrepancy`) within TTPC's `1/18`, or record the best fraction.
+- **Falsifier.** A model zero configuration that satisfies the local count, the census proportions and Selberg density
+  but carries collapsed clusters at every height. That would show A1 is not a consequence of the corpus inputs.
 
-### WP-B. Depth at the horizon (shape B)
+### WP-B. The heat pincer
 
-- **B1.** Split `weilQuad_poleMode_eq_tsum` into the charge part (blind to depth, `TheHorizonChargeIsBlind…`) and the
-  tail part. Prove the tail's exact expansion as successor shells (Poisson duality).
-- **B2.** Compute the `N → ∞` asymptotics of the tail contribution of a single off-line pair `{ρ, 1−ρ̄}` of depth `δ` at
-  height `γ`. Does it grow like `N^{δ}`, oscillate, or vanish?
-- **B3.** Write the `O(G(log N + c + 1))` residual left by the top-band cancellation
-  (`exists_abs_jointWitnessCoefficient_le`) and the Mertens boundary profile `R(e^u)` (G13) as one operator in
-  `u = log(N/n)`. Through the horizon law, express that operator's zero side via `B_N(ρ)B_N(1−ρ)`.
-- **Falsifier.** B2 returns no depth dependence at leading order. Record it as the no-go "finite boxes see depth only
-  beyond the pole mode", together with the next mode that does.
+- **B1.** Prove that `27/40` is a genuine floor of size-only repair. Show `T_{2m}` can fail for slices obeying the same
+  size bounds below that rate; `XiSliceHeatCoshCountermodel` and `XiSliceHeatGaussianSharpThreshold` are the
+  starting points.
+- **B2.** Find the first non-size input that lowers the repair rate. Candidates: the Turán layer of ξ's Taylor
+  coefficients (Lorentzian homogenizations, K10), and slice positivity transported from the Euler region
+  (`exists_iteratedDeriv_xiSliceProduct_ge_euler_from`).
+- **B3.** Record the pair `(κ_repair, κ_detect(δ))` as a frontier number in each module that moves it.
 
-### WP-C. Natural regularizations (shape C)
+### WP-C. Regularization
 
-- **C1.** On finitely many torsion orbits, classify the Hecke-covariant positive families of arithmetic origin. Use the
-  orbit energies, their gcd twists and their couplings across orbits; record the counterterm rank of each. This is a
-  finite-dimensional problem, and `survivalCone_eq_of_regularized` makes the answer scheme-independent.
-- **C2.** Test whether a family that couples distinct orbits (off-diagonal divergence) can have a counterterm of rank
-  below the number of orbits while its limit is still the Weil prime kernel.
-- **Retire when:** every natural family has full rank. The positive survivor is then the classification itself.
+- **C1.** On a finite set of `p`-adic classes, decide whether a positive family of arithmetic origin renormalizes to
+  `P_N` with the horizon counterterm `Σ_j δ_j^{−1}ℓ_j²`. The survival law then gives positivity of the limit on the
+  class-wise polar hyperplane.
+- **C2.** If C1 succeeds for one prime, test two primes. The class structures of `p` and `q` are transverse, and the
+  joint survival cone is the intersection.
 
-### WP-D. The statistical support (L11)
+### WP-D. Corpus hygiene
 
-- Keep the zero census as the instrument that produces zero-constraining theorems.
-- Its open input past bandwidth one is the centred stabilizer discrepancy of TTPC (G3).
-- WP-A2 depends on these statistics (anti-clustering, density).
-
-### WP-E. Corpus hygiene
-
-- Every new module that states an RH equivalence or a positivity theorem also states:
-  - its `Θ`-reading (L1);
-  - the scale at which it sees a pair at depth `δ` and height `T` (§3.2);
-  - whether its statement constrains zeros unconditionally.
-- Equivalences whose right-hand side quantifies over the zero set are labelled as relabelings (186 found, G19).
+- Mark modules whose docstrings claim more than their Lean as such, starting with the three [P] modules of K0.
+- Every new criterion states its mechanism (M1–M8), its lag or bandwidth scale, and whether its statement constrains
+  zeros unconditionally.
 
 ---
 
 ## 7. What would change this picture
 
-- A theorem from a positivity, rigidity, gauge, Hodge or realization programme that constrains zero locations
-  unconditionally. That would refute L2's reading.
-- A configuration that hides from all tests of aperture up to `C·log log T` at height `T` without crystalline structure.
-  That would refute L4.
-- A finite-level object, not a limit, whose sign is RH-sensitive. That would refute §3.1.
-- An expansion of the horizon tail that is blind to `Re ρ`. That would close shape B and move the boundary question to
-  the next mode.
+- A theorem excluding collapsed clusters off the line at every height (A1). It would remove the common worst case of
+  three instruments.
+- A configuration that hides from the lag family beyond `V ≍ log T` without clusters. It would contradict the reading
+  of K4.
+- A repair rate below `κ₀(δ)` for some `δ < ½`, or a proof that size-only methods cannot go below `27/40`.
+- A positive arithmetic family renormalized by the horizon counterterm (C1).

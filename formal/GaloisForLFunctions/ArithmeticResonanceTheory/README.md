@@ -99,7 +99,7 @@ identity.
 | Exponential polynomial | $\sum_jc_je^{-\lambda_js}$, $\lambda_j\in\mathbb R$ | `IsExpPoly` |
 | Cycle family | periodic points $(u^nv)^\infty$ shadowing $u^\infty$ | `IsCycleFamily`, `familyPoint`, `fixedPointFamily` |
 | Return word | starts at a symbol, avoids it, returns to it | `IsReturnWord` (subshifts), `IsFirstReturn` (any alphabet) |
-| Conformal defect | $m_n=p_{n+1}-a\,p_n$, $p_n=e^{\varphi(u^nv)}$, $a=e^{\varphi(u)}$; an integer | — |
+| Conformal defect | $m_n=p_{n+1}-a\,p_n$, $p_n=e^{\varphi(u^nv)}$, $a=e^{\varphi(u)}$; an integer | `IsDefectChain` |
 | Relative Dolgopyat bound | $\lvert Z_n(\sigma+it)\rvert\le C\rho^nZ_n(\sigma)$ for $t\ge T$, $\rho<1$ | `RelativeDolgopyat` |
 | Phase | $e^{-it\ell}$ of an orbit of length $\ell$ | `phase` |
 | Amplifier moment | $\lvert a(n)\rvert^{2k}\le C(B^{2k}D)^n$, $a(n)=\sum c_i\alpha_i^n$ | `norm_le_of_moment_bound` |
@@ -159,7 +159,13 @@ phases a family must separate — $2g$ over $\mathbb F_q$, $\pi(x)$ over $\mathb
     by $R$ (`norm_le_of_eventually_norm_le`).
 13. **Moments lose a root; positivity transfers family moments** (`norm_le_of_moment_bound`,
     `norm_le_of_family_moment_bound`).
-14. **Orthogonality pays for itself.** Orthogonal nonzero monomial vectors in $\mathbb C^X$
+14. **Congruence forcing of bounded defects.** Bounded conformal defects are nonzero, prime to $a$,
+    and of fixed parity (`IsDefectChain.defect_ne_zero`, `not_dvd_defect`, `two_dvd_defect`). If a fixed
+    modulus determines the defect, the residues follow a self-map of $\mathbb Z/L$ and the defects become
+    periodic (`IsDefectChain.false_of_determined`): two values in different nonzero classes mod $3$
+    (`false_of_two_classes_mod_three`), or a unipotent walk $x\mapsto x+r$ mod $\ell$ that can take only
+    finitely many $r$-steps (`false_of_unipotent`).
+15. **Orthogonality pays for itself.** Orthogonal nonzero monomial vectors in $\mathbb C^X$
     (`card_sym_le_card_of_isBrauer`); multinomial expansion, diagonal moment, Cauchy–Schwarz
     (`pow_sum_le_moment_of_isBrauer`).
 
@@ -199,7 +205,14 @@ phases a family must separate — $2g$ over $\mathbb F_q$, $\pi(x)$ over $\mathb
 9. **The amplifier law.** Fixed loss gives the sharp bound (`norm_le_of_fixed_loss`) and forces
    pole-killing (`pole_coefficient_eq_zero`); an envelope loss $e^{2k\lambda}$ gives $Be^\lambda$, attained
    (`envelope_moment_bound_attained`).
-10. **The rank law.** Brauer families have $\ge\binom{r+k-1}{k}$ members and their $2k$-th moment is at
+10. **The Mills boundary, decided cases.** $p_n=Ca^n+O(1)$ iff the defects are bounded
+    (`abs_defect_le`). No prime chain has defects $|m|\le2$ for even $a$ with $3\nmid a$
+    (`not_isDefectChain_of_even`), $|m|\le3$ for odd $a$ with $3\nmid a$ (`not_isDefectChain_of_odd`),
+    or $|m|\le1$ for odd $a$; for every real $C$, $\lfloor Ca^n\rfloor$ is not eventually prime for
+    $a=2,\dots,6$ (`not_eventually_prime_floor`), and no primes stay within $\tfrac12$ of $Ca^n$ for
+    $a\in\{2,4,5\}$ (`not_eventually_prime_near`). For a realization this means: along a cycle of prime
+    $2$ the junction defect exceeds $2$, along a cycle of prime $\ge5$ it exceeds $3$, infinitely often.
+11. **The rank law.** Brauer families have $\ge\binom{r+k-1}{k}$ members and their $2k$-th moment is at
     least the $2k$-th power of the trivial bound (`pow_sum_le_moment_of_isBrauer`); the per-power cost
     tends to $1$ at fixed rank (`tendsto_choose_rpow_inv_of_fixed_rank`) and is $\ge r/k$ at rank $r$
     (`rank_div_le_choose_rpow_inv`).
@@ -232,8 +245,9 @@ phases a family must separate — $2g$ over $\mathbb F_q$, $\pi(x)$ over $\mathb
    commutative (pillar 2). Every realization by a positive roof on a subshift of finite type is
    prime-length (pillar 5), so its cycle families are never super-conformal and its Hölder modulus is
    bounded below at every re-enterable cycle (pillar 6). Such a realization would yield a zero-free
-   strip (pillar 7). What survives: Hölder roofs at or below the conformal threshold whose conformal
-   defects are neither convergent nor eventually periodic, and non-additive roofs on countable alphabets.
+   strip (pillar 7). At the conformal threshold its junction defects are unbounded or bounded but
+   unforced by congruences (pillar 10). What survives: Hölder roofs at or below the conformal threshold
+   with such defects, and non-additive roofs on countable alphabets.
 2. **Oscillation.** *Where does a twisted transfer operator contract, and is oscillation needed?*
    Never on additive or free realizations, and the commutative one has nothing to contract (pillar 8).
    In a finite-type Hölder realization the strip needs no oscillation at all (pillar 7). Oscillation
@@ -242,14 +256,14 @@ phases a family must separate — $2g$ over $\mathbb F_q$, $\pi(x)$ over $\mathb
    big monodromy?* Positivity, a loss fixed in the tensor power, and rate = depth (pillar 9); an envelope
    loss yields exactly its strip. At the level of counting the role of big monodromy is played by
    finite rank: orthogonality costs $\binom{r+k-1}{k}$, subexponential in $k$ only at fixed rank, and never
-   beats the trivial bound (pillar 10). Over $\mathbb Z$ every orthogonality amplifier is an envelope.
+   beats the trivial bound (pillar 11). Over $\mathbb Z$ every orthogonality amplifier is an envelope.
 4. **Resonance–spectrum dictionary.** Spectral poles (free) versus nuclearity poles (commutative)
    (pillar 1); even parts give poles only (pillar 3); zeros need an odd part; over $\mathbb F_q$ the odd
    part is finite ($H^1$) and the zeros are its spectrum; over $\mathbb Z$ the archimedean place forbids a
    finite odd part (pillar 4).
 5. **Graded versus critical.** Strips: a Hölder realization (pillar 7), an envelope loss (pillar 9).
-   The line: a fixed loss (pillar 9). Sharp boundaries: the conformal threshold (pillar 6), the rank law
-   (pillar 10).
+   The line: a fixed loss (pillar 9). Sharp boundaries: the conformal threshold (pillar 6), the Mills
+   boundary (pillar 10), the rank law (pillar 11).
 
 ## 8. Tools
 
@@ -261,9 +275,14 @@ depth, moment roots, fixed and envelope losses, pole-killing); the rank law for 
 
 ## 9. Open research topics
 
-1. **The Mills boundary.** At the conformal rate with bounded, non-periodic conformal defect the
-   arithmetic obstructions stop: is there a prime sequence $p_n=Ca^n+O(1)$? A Hölder realization of
-   $\zeta$ needs such sequences, or growing defects, along every re-enterable cycle family.
+1. **The Mills boundary.** Is there a prime sequence $p_n=Ca^n+O(1)$? Decided impossible where a
+   fixed modulus forces the bounded defect (pillar 10). Open where congruences only confine the
+   residue walk without forcing periodicity: defects $\pm1$ with $6\mid a$, $\pm2$ with $a=3$,
+   integer parts for $a\ge7$, nearest integers for $a=3$ and $a\ge6$. For $a=6$ and defects $\pm1$,
+   moduli $5$ and $7$ bound the partial sums of the defects over even and over odd indices, which
+   aperiodic sequences satisfy. A branching count — at most $2M+1$ continuations per step, each prime
+   with probability $\asymp1/(n\log a)$ — predicts that no chain exists; a proof must use moduli that
+   grow along the chain, as the Cunningham argument does with $\ell=p_N$.
 2. **Sub-conformal realizations.** Construct or exclude Hölder realizations with
    $\theta e^{\varphi(a^\infty)}\ge1$ everywhere; relate the admissible $\theta$ to the strip width.
 3. **Countable alphabets.** Non-additive realizations over the infinite prime alphabet (the

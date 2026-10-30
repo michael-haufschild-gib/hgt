@@ -41,6 +41,11 @@ required three-quarters strip. This is a proposed producer, not a proved bound.
   combination. Its proof uses the sign change of the lowest surviving sine
   mode and a corner derivative contradiction. It constructs a null witness;
   it does not estimate the cost of repairing an arbitrary test.
+- `twistedArcMomentSum_eq_zero_of_nonneg` strengthens the sign conclusion:
+  a finite twisted sum nonnegative on `[0,1/2]` vanishes there. A fixed
+  clamped-kernel comparison makes any positive weighted mass force the
+  corner contradiction. See [the formalized rigidity theorem](../3-formalized/twisted-arc-nonnegative-rigidity.md).
+  This supplies no quantitative node, pole, or mass estimate.
 - `abs_coeff_le_of_ge_on_arc` gives quantitative rigidity for ordinary
   Whittaker sums: a lower bound `−η` on the arc gives
   `|a_m|,|b_m|≤4η/K₀(2π(m+1))`. This exponentially growing inverse cost

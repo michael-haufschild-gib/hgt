@@ -35,9 +35,10 @@ OscillationFailsOnAdditiveRealizations, TheAmplifierLaw, OrthogonalityAmplifiers
 EvenRealizationsHaveNoZeros, AHolderRealizationIsAZeroFreeStrip, AdditiveRealizationsAreCommutative,
 TheArchimedeanPlaceForbidsFiniteVirtualRealizations, OverFiniteFieldsTheOddPartIsSpectral,
 GeneralizedDirichletSeriesAreDeterminedByTheirValues, ARealizationOfZetaIsPrimeLength,
-TheHolderModulusAlongEveryCycle (all in umbrella).
+TheHolderModulusAlongEveryCycle, TheMillsBoundary (all in umbrella).
 README rewritten with Lean names and the answers to the five questions.
-Open topics (README §9): Mills boundary, sub-conformal realizations, countable alphabets,
+Open topics (README §9): Mills boundary (decided where congruences force the defect; open for
+defects ±1 with 6 | a, ±2 with a = 3, floor a ≥ 7, nearest-integer a = 3 and a ≥ 6), sub-conformal realizations, countable alphabets,
 infinite-rank odd parts, identity amplifiers, CGL loss audit.
 
 ## Log

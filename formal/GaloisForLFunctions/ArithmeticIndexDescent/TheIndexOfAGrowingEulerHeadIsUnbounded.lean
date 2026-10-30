@@ -33,6 +33,8 @@ namespace GaloisForLFunctions.ArithmeticIndexDescent
 
 open ArithmeticCastelnuovoSeveri.LogCells BiarithmeticGaugeGeometry HTGeometry
 
+local notation "L²₊" => Lp ℂ 2 halfLineMeasure
+
 /-! ### Bilinearity of the mixed source -/
 
 theorem haarSection_sum {ι : Type*} (s : Finset ι) (x : ι → ℝ) (d : ι → ℕ → ℝ) (Y : ℕ) :
@@ -51,19 +53,22 @@ private theorem re_inner_sum_sum {ι κ : Type*} (s : Finset ι) (t : Finset κ)
     (z : κ → ℝ) (u : ι → L²₊) (v : κ → L²₊) :
     (inner ℂ (∑ i ∈ s, (x i : ℂ) • u i) (∑ j ∈ t, (z j : ℂ) • v j)).re =
       ∑ i ∈ s, ∑ j ∈ t, x i * z j * (inner ℂ (u i) (v j)).re := by
-  simp only [sum_inner, inner_sum, inner_smul_left, inner_smul_right, Complex.conj_ofReal,
-    Complex.re_sum]
-  refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
-  rw [← mul_assoc, mul_comm (z j : ℂ), ← Complex.ofReal_mul, Complex.re_ofReal_mul]
+  rw [sum_inner, Complex.re_sum]
+  refine sum_congr rfl fun i _ => ?_
+  rw [inner_sum, Complex.re_sum]
+  refine sum_congr rfl fun j _ => ?_
+  rw [inner_smul_left, inner_smul_right, Complex.conj_ofReal, ← mul_assoc, ← Complex.ofReal_mul,
+    Complex.re_ofReal_mul]
 
 theorem integerMixedSource_sum {ι κ : Type*} (s : Finset ι) (t : Finset κ) (x : ι → ℝ)
     (d : ι → ℕ → ℝ) (z : κ → ℝ) (q : κ → ℕ → ℝ) (m Y X : ℕ) :
     integerMixedSource m (fun n => ∑ i ∈ s, x i * d i n) (fun n => ∑ j ∈ t, z j * q j n) Y X =
       ∑ i ∈ s, ∑ j ∈ t, x i * z j * integerMixedSource m (d i) (q j) Y X := by
   unfold integerMixedSource
-  rw [haarSection_sum, coarseSection_sum, map_sum, map_sum, re_inner_sum_sum]
+  rw [haarSection_sum, coarseSection_sum, map_sum, map_sum]
   simp only [map_smul]
-  rw [re_inner_sum_sum, sum_comm (s := t), mul_add, ← sum_add_distrib]
+  rw [re_inner_sum_sum, re_inner_sum_sum, sum_comm (s := t), mul_add, mul_sum, mul_sum,
+    ← sum_add_distrib]
   refine sum_congr rfl fun i _ => ?_
   rw [mul_sum, mul_sum, ← sum_add_distrib]
   refine sum_congr rfl fun j _ => ?_
@@ -78,7 +83,7 @@ theorem finiteEulerMixedSource_sum {ι κ : Type*} (s : Finset ι) (t : Finset �
   have hs : ∀ p : Nat.Primes, ∀ i ∈ s, Summable fun k : ℕ =>
       ∑ j ∈ t, x i * z j * integerMixedSource ((p : ℕ) ^ (k + 1)) (d i) (q j) X X := fun p i _ =>
     summable_sum fun j _ => (summable_primeEulerMixed p (d i) (q j) X).mul_left _
-  simp_rw [tsum_finsetSum (hs _), tsum_finsetSum fun j _ =>
+  simp_rw [Summable.tsum_finsetSum (hs _), Summable.tsum_finsetSum fun j _ =>
     (summable_primeEulerMixed _ _ _ X).mul_left _, tsum_mul_left, mul_sum]
   rw [sum_comm]
   refine sum_congr rfl fun i _ => ?_
@@ -89,23 +94,23 @@ theorem finiteEulerMixedSource_sum {ι κ : Type*} (s : Finset ι) (t : Finset �
 theorem levyEnergy_const_mul (c : ℝ) (f : ℝ → ℝ) :
     levyEnergy (fun u => c * f u) = c ^ 2 * levyEnergy f := by
   unfold levyEnergy
-  rw [← integral_const_mul]
-  refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-  simp only
-  rw [← integral_const_mul, mul_left_comm]
-  congr 1
+  have h : ∀ x : ℝ, ∫ u, (c * f u - c * f (u + x)) ^ 2 = c ^ 2 * ∫ u, (f u - f (u + x)) ^ 2 :=
+    fun x => by rw [← integral_const_mul]; congr 1; funext u; ring
+  simp_rw [h]
   rw [← integral_const_mul]
   congr 1
-  funext u
+  funext x
   ring
 
 theorem levyEnergy_add_le_two_bv {f g : ℝ → ℝ} (hf : BoundedVariationOn f Set.univ)
     (hg : BoundedVariationOn g Set.univ) (hfc : HasCompactSupport f) (hgc : HasCompactSupport g) :
     levyEnergy (fun u => f u + g u) ≤ 2 * levyEnergy f + 2 * levyEnergy g := by
-  have h := levyEnergy_sub_le_two_bv hf (bv_const_mul (-1) hg) hfc (hgc.mul_left (f' := fun _ => -1))
-  simp only [neg_one_mul, sub_neg_eq_add] at h
-  rwa [show (fun u => -g u) = fun u => (-1) * g u by funext u; ring, levyEnergy_const_mul,
-    neg_one_sq, one_mul] at h
+  have hg' : BoundedVariationOn (fun u => (-1) * g u) Set.univ := bv_const_mul (-1) hg
+  have hgc' : HasCompactSupport (fun u => (-1) * g u) := hgc.mul_left
+  have h := levyEnergy_sub_le_two_bv hf hg' hfc hgc'
+  have he : (fun x => f x - (-1) * g x) = fun u => f u + g u := funext fun u => by ring
+  rw [he, levyEnergy_const_mul, neg_one_sq, one_mul] at h
+  exact h
 
 theorem averageSectionProfile_bv (q : ℕ → ℝ) (X : ℕ) :
     BoundedVariationOn (averageSectionProfile q X) Set.univ := by
@@ -181,10 +186,11 @@ theorem abs_detailComb_le {K : ℕ} (x : Fin K → ℝ) (n : ℕ) : |detailComb 
   by_cases h : ∃ i : Fin K, n = i + 1
   · obtain ⟨i, rfl⟩ := h
     rw [detailComb, sum_eq_single i (fun j _ hj => by
-      simp only [detailUnit, if_neg (fun h => hj (Fin.ext (by omega))), mul_zero])
+      simp only [detailUnit]; rw [if_neg (fun h => hj (Fin.ext (by omega))), mul_zero])
       (fun h => absurd (mem_univ _) h)]
-    simp only [detailUnit, if_pos rfl, mul_one]
-    exact (Real.norm_eq_abs _).symm.trans_le (norm_le_pi_norm x i)
+    simp only [detailUnit, ↓reduceIte, mul_one]
+    rw [← Real.norm_eq_abs]
+    exact norm_le_pi_norm x i
   · push Not at h
     rw [detailComb, sum_eq_zero fun i _ => by simp [detailUnit, h i], abs_zero]
     exact norm_nonneg _
@@ -261,7 +267,8 @@ theorem levyEnergy_averageSectionProfile_windowComb_le {K Y X : ℕ} (hY : 1 ≤
           u - Real.log Y < Real.log ((2 * ((b : ℕ) + 1) + 2 : ℕ) : ℝ) := fun b hb => by
       rw [hwin, coarseProfile_eq_indicator (by omega)] at hb
       by_contra h
-      exact hb (Set.indicator_of_notMem (fun hm => h hm) _)
+      rw [Set.indicator_of_notMem (fun hm => h ⟨hm.1, hm.2⟩)] at hb
+      exact hb rfl
     have h1 := hsupp j (right_ne_zero_of_mul hcon.1)
     have h2 := hsupp j' (right_ne_zero_of_mul hcon.2)
     have hne' : (j : ℕ) ≠ j' := fun h => hne (Fin.ext h)
@@ -290,5 +297,213 @@ theorem levyEnergy_averageSectionProfile_windowComb_le {K Y X : ℕ} (hY : 1 ≤
   rw [show averageSectionProfile (coarseWindow Y (j + 1)) X =
     fun u => coarseProfile (j + 1) (u - Real.log Y) from funext (hwin j)]
   exact SpacingScaleHarmonicAnalysis.levyEnergy_translate (g := coarseProfile (j + 1)) _
+
+/-! ### Assembly -/
+
+theorem abs_sum_mul_le_norm {K : ℕ} (x c : Fin K → ℝ) : |∑ i, x i * c i| ≤ ‖x‖ * ∑ i, |c i| := by
+  refine (abs_sum_le_sum_abs _ _).trans ?_
+  rw [mul_sum]
+  refine sum_le_sum fun i _ => ?_
+  rw [abs_mul]
+  exact mul_le_mul_of_nonneg_right ((Real.norm_eq_abs _).symm.trans_le (norm_le_pi_norm x i))
+    (abs_nonneg _)
+
+/-- `|Σ_j (Σ_k x_k L_kj)(Σ_i x_i e_ij)| ≤ ‖x‖² (Σ|L|)(Σ|e|)`. -/
+theorem abs_sum_bilinear_le {K : ℕ} (x : Fin K → ℝ) (L e : Fin K → Fin K → ℝ) :
+    |∑ j, (∑ k, x k * L k j) * ∑ i, x i * e i j| ≤
+      ‖x‖ ^ 2 * (∑ i, ∑ j, |L i j|) * ∑ i, ∑ j, |e i j| := by
+  have hL : ∀ j, |∑ k, x k * L k j| ≤ ‖x‖ * ∑ i, ∑ j, |L i j| := fun j =>
+    (abs_sum_mul_le_norm x _).trans (mul_le_mul_of_nonneg_left
+      (sum_le_sum fun k _ => single_le_sum (f := fun j => |L k j|) (fun _ _ => abs_nonneg _)
+        (mem_univ j)) (norm_nonneg _))
+  refine (abs_sum_le_sum_abs _ _).trans ?_
+  calc ∑ j, |(∑ k, x k * L k j) * ∑ i, x i * e i j|
+      ≤ ∑ j, (‖x‖ * ∑ i, ∑ j, |L i j|) * (‖x‖ * ∑ i, |e i j|) := by
+        refine sum_le_sum fun j _ => ?_
+        rw [abs_mul]
+        exact mul_le_mul (hL j) (abs_sum_mul_le_norm x _) (abs_nonneg _)
+          (mul_nonneg (norm_nonneg _) (sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _))
+    _ = ∑ j, ‖x‖ ^ 2 * (∑ i, ∑ j, |L i j|) * ∑ i, |e i j| := sum_congr rfl fun j _ => by ring
+    _ = ‖x‖ ^ 2 * (∑ i, ∑ j, |L i j|) * ∑ j, ∑ i, |e i j| := by rw [← mul_sum]
+    _ = _ := by congr 1; exact sum_comm
+
+/-- The limit coupling matrix of the details and windows `1, …, K`. -/
+def headLimitMatrix (K : ℕ) (i j : Fin K) : ℝ := headCouplingLimit ((i : ℕ) + 1) ((j : ℕ) + 1)
+
+/-- **Gamma minus a large Euler head is negative definite on `K` dimensions.** For every `K`, once
+`Y` is large, at every horizon `X ≥ max(K, (K + 1)Y − 1)` the family of the details `1, …, K` with
+the coarse windows weighted by `(s/√Y) Lᵀ` makes Gamma minus the head `p ≤ Y` negative definite. -/
+theorem eventually_eulerHead_negative_family (K : ℕ) :
+    ∀ᶠ Y : ℕ in atTop, ∀ X : ℕ, K ≤ X → Y * (K + 1) ≤ X + 1 →
+      ∃ q d : Fin K → ℕ → ℝ, ∀ x : Fin K → ℝ, x ≠ 0 →
+        finiteEulerGammaProfileForm (eulerHead Y) q d X x < 0 := by
+  set L := headLimitMatrix K
+  obtain ⟨σ, hσ, hσx⟩ := exists_sq_vecMul_ge L
+    (fun i j h => headCouplingLimit_eq_zero_of_lt (by have : (i : ℕ) < j := h; omega))
+    (fun i => (headCouplingLimit_self_neg (by omega)).ne)
+  set GH := ∑ a ∈ Icc 1 K, levyEnergy (haarProfile a)
+  set GC := ∑ j : Fin K, levyEnergy (coarseProfile (j + 1))
+  set AL := ∑ i, ∑ j, |L i j|
+  have hGH : 0 ≤ GH := sum_nonneg fun _ _ => levyEnergy_nonneg _
+  have hGC : 0 ≤ GC := sum_nonneg fun _ _ => levyEnergy_nonneg _
+  have hAL : 0 ≤ AL := sum_nonneg fun _ _ => sum_nonneg fun _ _ => abs_nonneg _
+  set s := (4 * GH + 1) / σ
+  have hs : 0 < s := by positivity
+  have hsσ : s * σ = 4 * GH + 1 := by rw [div_mul_cancel₀ _ hσ.ne']
+  -- the normalized couplings converge to `L`
+  set E : ℕ → ℝ := fun Y => ∑ i : Fin K, ∑ j : Fin K,
+    |headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) / Real.sqrt Y - L i j|
+  have hE : Tendsto E atTop (𝓝 0) := by
+    have h : Tendsto E atTop (𝓝 (∑ i : Fin K, ∑ j : Fin K, |L i j - L i j|)) :=
+      tendsto_finsetSum _ fun i _ => tendsto_finsetSum _ fun j _ =>
+        ((tendsto_headCoupling (by omega) (by omega)).sub_const _).abs
+    simpa using h
+  have hsmall : Tendsto (fun Y : ℕ => 4 * (s ^ 2 / (Y : ℝ)) * (AL ^ 2 * GC) + s * AL * E Y) atTop
+      (𝓝 0) := by
+    have h1 : Tendsto (fun Y : ℕ => s ^ 2 / (Y : ℝ)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+    simpa using ((h1.const_mul 4).mul_const (AL ^ 2 * GC)).add (hE.const_mul (s * AL))
+  filter_upwards [hsmall.eventually (gt_mem_nhds (show (0 : ℝ) < 1 by norm_num)),
+    eventually_ge_atTop 1] with Y hY hY1 X hKX hX
+  have hY0 : (0 : ℝ) < Y := by exact_mod_cast hY1
+  have hsY := Real.sqrt_pos.mpr hY0
+  set t := s / Real.sqrt Y
+  have ht : 0 ≤ t := by positivity
+  have ht2 : t ^ 2 = s ^ 2 / Y := by rw [div_pow, Real.sq_sqrt hY0.le]
+  refine ⟨fun i n => ∑ j, t * L i j * coarseWindow Y (j + 1) n, fun i => detailUnit (i + 1),
+    fun x hx => ?_⟩
+  set ℓ : Fin K → ℝ := fun j => ∑ i, x i * L i j
+  set z : Fin K → ℝ := fun j => t * ℓ j
+  have hq : (fun n => ∑ i, x i * ∑ j, t * L i j * coarseWindow Y (j + 1) n) = windowComb Y z := by
+    funext n
+    simp only [windowComb, z, ℓ, mul_sum, sum_mul]
+    rw [sum_comm]
+    exact sum_congr rfl fun j _ => sum_congr rfl fun i _ => by ring
+  have hd : (fun n => ∑ i, x i * detailUnit (i + 1) n) = detailComb x := rfl
+  have hxpos : 0 < ‖x‖ := norm_pos_iff.mpr hx
+  -- the Gamma energy
+  have hz : ∀ j, z j ^ 2 ≤ (t * AL * ‖x‖) ^ 2 := fun j => by
+    rw [← sq_abs]
+    refine pow_le_pow_left₀ (abs_nonneg _) ?_ 2
+    rw [abs_mul, abs_of_nonneg ht, mul_assoc]
+    refine mul_le_mul_of_nonneg_left ((abs_sum_mul_le_norm x _).trans ?_) ht
+    rw [mul_comm]
+    exact mul_le_mul_of_nonneg_right (sum_le_sum fun k _ => single_le_sum
+      (f := fun j => |L k j|) (fun _ _ => abs_nonneg _) (mem_univ j)) (norm_nonneg _)
+  have hcoarse : levyEnergy (averageSectionProfile (windowComb Y z) X) ≤
+      2 * (t * AL * ‖x‖) ^ 2 * GC := by
+    have hsum : ∑ j : Fin K, z j ^ 2 * levyEnergy (coarseProfile ((j : ℕ) + 1)) ≤
+        (t * AL * ‖x‖) ^ 2 * GC := by
+      simp only [GC]
+      rw [mul_sum]
+      exact sum_le_sum fun j _ => mul_le_mul_of_nonneg_right (hz j) (levyEnergy_nonneg _)
+    have h := levyEnergy_averageSectionProfile_windowComb_le hY1 hX z
+    linarith
+  have hdetail := levyEnergy_haarSectionProfile_detailComb_le hKX x
+  have henergy : levyEnergy (completePairProfile (windowComb Y z) (detailComb x) X) ≤
+      4 * (t * AL * ‖x‖) ^ 2 * GC + 4 * ‖x‖ ^ 2 * GH := by
+    have h := levyEnergy_add_le_two_bv (averageSectionProfile_bv (windowComb Y z) X)
+      (haarSectionProfile_bv (detailComb x) X) (averageSectionProfile_hasCompactSupport _ X)
+      (haarSectionProfile_compact _ X)
+    have he : completePairProfile (windowComb Y z) (detailComb x) X =
+        fun u => averageSectionProfile (windowComb Y z) X u + haarSectionProfile (detailComb x) X u :=
+      rfl
+    rw [he]
+    linarith
+  -- the source
+  have hsource : finiteEulerMixedSource (eulerHead Y) (detailComb x) (windowComb Y z) X =
+      s * ∑ j, ℓ j * ∑ i, x i * (headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) / Real.sqrt Y) := by
+    have h := finiteEulerMixedSource_sum univ univ x (fun i => detailUnit (i + 1)) z
+      (fun j => coarseWindow Y (j + 1)) (eulerHead Y) X
+    have hdc : detailComb x = fun n => ∑ i, x i * detailUnit (i + 1) n := rfl
+    have hwc : windowComb Y z = fun n => ∑ j, z j * coarseWindow Y (j + 1) n := rfl
+    rw [hdc, hwc, h]
+    have hB : ∀ i j : Fin K, finiteEulerMixedSource (eulerHead Y) (detailUnit ((i : ℕ) + 1))
+        (coarseWindow Y ((j : ℕ) + 1)) X = headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) := fun i j =>
+      finiteEulerMixedSource_detailUnit_coarseWindow (by omega) (by have := i.2; omega) hY1
+        (by omega) (le_trans (Nat.mul_le_mul_left Y (by have := j.2; omega)) hX)
+    simp_rw [hB]
+    rw [sum_comm, mul_sum]
+    refine sum_congr rfl fun j _ => ?_
+    rw [mul_sum, mul_sum]
+    refine sum_congr rfl fun i _ => ?_
+    simp only [z, t]
+    field_simp
+  have hsplit : ∑ j, ℓ j * ∑ i, x i * (headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) / Real.sqrt Y) =
+      ∑ j, ℓ j ^ 2 + ∑ j, ℓ j * ∑ i, x i *
+        (headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) / Real.sqrt Y - L i j) := by
+    rw [← sum_add_distrib]
+    refine sum_congr rfl fun j _ => ?_
+    simp only [ℓ, mul_sub, sum_sub_distrib]
+    ring
+  have hcross := abs_sum_bilinear_le x L
+    (fun i j => headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) / Real.sqrt Y - L i j)
+  have hlow : σ * ‖x‖ ^ 2 - ‖x‖ ^ 2 * AL * E Y ≤
+      ∑ j, ℓ j * ∑ i, x i * (headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) / Real.sqrt Y) := by
+    rw [hsplit]
+    have h1 := hσx x
+    have h2 := neg_abs_le (∑ j, ℓ j * ∑ i, x i *
+      (headCoupling Y ((i : ℕ) + 1) ((j : ℕ) + 1) / Real.sqrt Y - L i j))
+    linarith
+  -- the form
+  have hform : finiteEulerGammaProfileForm (eulerHead Y)
+      (fun i n => ∑ j, t * L i j * coarseWindow Y (j + 1) n) (fun i => detailUnit (i + 1)) X x =
+      levyEnergy (completePairProfile (windowComb Y z) (detailComb x) X) -
+        finiteEulerMixedSource (eulerHead Y) (detailComb x) (windowComb Y z) X := by
+    rw [finiteEulerGammaProfileForm, hq, hd]
+  rw [hform, hsource]
+  have hxx : 0 < ‖x‖ ^ 2 := by positivity
+  have hkey : 4 * (s ^ 2 / (Y : ℝ)) * (AL ^ 2 * GC) + s * AL * E Y < 1 := hY
+  have hexp : 4 * (t * AL * ‖x‖) ^ 2 * GC = ‖x‖ ^ 2 * (4 * (s ^ 2 / (Y : ℝ)) * (AL ^ 2 * GC)) := by
+    rw [← ht2]; ring
+  nlinarith [mul_le_mul_of_nonneg_left hlow hs.le, mul_lt_mul_of_pos_left hkey hxx]
+
+/-- **No uniform index for the Euler heads.** No bound on the negative index of Gamma minus the
+complete mixed Euler source holds for all heads `p ≤ Y` and all horizons. -/
+theorem not_exists_uniform_eulerHead_index :
+    ¬ ∃ C : ℕ, ∀ (Y X n : ℕ) (q d : Fin n → ℕ → ℝ) (W : Submodule ℝ (Fin n → ℝ)),
+      (∀ x ∈ W, x ≠ 0 → finiteEulerGammaProfileForm (eulerHead Y) q d X x < 0) →
+        Module.finrank ℝ W ≤ C := by
+  rintro ⟨C, hC⟩
+  obtain ⟨Y, hY, hY1⟩ := ((eventually_eulerHead_negative_family (C + 1)).and
+    (eventually_ge_atTop 1)).exists
+  obtain ⟨q, d, hneg⟩ := hY (Y * (C + 1 + 1)) (le_trans (Nat.le_succ _)
+    (Nat.le_mul_of_pos_left _ hY1)) (Nat.le_succ _)
+  have h := hC Y _ (C + 1) q d ⊤ fun x _ hx => hneg x hx
+  rw [finrank_top, Module.finrank_fin_fun] at h
+  omega
+
+/-- **The heads `p ≤ (log N)^A` have unbounded index.** For every `A > 0` and every `K`, eventually
+in `N` Gamma minus the head `p ≤ ⌊(log N)^A⌋` at horizon `N` is negative definite on `K`
+dimensions. -/
+theorem eventually_logPowerHead_negative_family {A : ℝ} (hA : 0 < A) (K : ℕ) :
+    ∀ᶠ N : ℕ in atTop, ∃ q d : Fin K → ℕ → ℝ, ∀ x : Fin K → ℝ, x ≠ 0 →
+      finiteEulerGammaProfileForm (eulerHead ⌊Real.log N ^ A⌋₊) q d N x < 0 := by
+  have hlog : Tendsto (fun N : ℕ => Real.log N ^ A) atTop atTop :=
+    (tendsto_rpow_atTop hA).comp (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
+  have hYN : Tendsto (fun N : ℕ => ⌊Real.log N ^ A⌋₊) atTop atTop :=
+    tendsto_nat_floor_atTop.comp hlog
+  have hsmall : ∀ᶠ N : ℕ in atTop, Real.log N ^ A ≤ (N : ℝ) / (K + 1) := by
+    have h := (isLittleO_log_rpow_rpow_atTop A (show (0 : ℝ) < 1 by norm_num)).bound
+      (show (0 : ℝ) < 1 / (K + 1) by positivity)
+    filter_upwards [tendsto_natCast_atTop_atTop.eventually h,
+      tendsto_natCast_atTop_atTop.eventually (eventually_ge_atTop (1 : ℝ))] with N hN hN1
+    have hl : 0 ≤ Real.log N := Real.log_nonneg hN1
+    rw [Real.norm_of_nonneg (Real.rpow_nonneg hl _), Real.rpow_one,
+      Real.norm_of_nonneg (by linarith)] at hN
+    calc Real.log N ^ A ≤ 1 / (K + 1) * N := hN
+      _ = (N : ℝ) / (K + 1) := by ring
+  filter_upwards [hYN.eventually (eventually_eulerHead_negative_family K), hsmall,
+    eventually_ge_atTop K] with N hN hsm hKN
+  refine hN N hKN ?_
+  have hfl : (⌊Real.log N ^ A⌋₊ : ℝ) ≤ Real.log N ^ A :=
+    Nat.floor_le (Real.rpow_nonneg (Real.log_natCast_nonneg N) _)
+  have : ((⌊Real.log N ^ A⌋₊ * (K + 1) : ℕ) : ℝ) ≤ N := by
+    push_cast
+    calc (⌊Real.log N ^ A⌋₊ : ℝ) * (K + 1) ≤ (N : ℝ) / (K + 1) * (K + 1) :=
+          mul_le_mul_of_nonneg_right (hfl.trans hsm) (by positivity)
+      _ = N := by field_simp
+  have : ⌊Real.log N ^ A⌋₊ * (K + 1) ≤ N := by exact_mod_cast this
+  omega
 
 end GaloisForLFunctions.ArithmeticIndexDescent

@@ -8,7 +8,7 @@
 
 ## Proof
 
-[PROVED HERE] The [uniform logarithmic-derivative theorem](dirichlet-logarithmic-derivatives-have-uniform-conductor-cost.md) supplies nonvanishing and bound `M` throughout the closed rectangle with real endpoints `1±δ` and imaginary endpoints `±T`; choose its constant `c≤1/8`. The actual integrand `−(L'/L)(s,χ)x^s/s²` is analytic in a neighborhood of that rectangle, so its contour integral vanishes.
+[PROVED HERE] The [uniform logarithmic-derivative theorem](../3-formalized/dirichlet-logarithmic-derivatives-have-uniform-conductor-cost.md) supplies nonvanishing and bound `M` throughout the closed rectangle with real endpoints `1±δ` and imaginary endpoints `±T`; choose its constant `c≤1/8`. The actual integrand `−(L'/L)(s,χ)x^s/s²` is analytic in a neighborhood of that rectangle, so its contour integral vanishes.
 
 The existing exact signed Perron identity is absolutely integrable on the right line. Its two infinite tails total at most `16x^(1+δ)/(δ²T)`, using the actual absolute-convergence bound `|L'/L|≤8/δ²`. The left edge costs at most `Mx^(1−δ)π/(1−δ)`, since the full integral of `((1−δ)²+t²)^(-1)` is `π/(1−δ)`. Each horizontal edge costs at most `2Mδx^(1+δ)/T²`. The rectangle identity and triangle inequality give the displayed bound, including both tails and both horizontal edges. The constants precede the quantifiers over modulus and character.
 

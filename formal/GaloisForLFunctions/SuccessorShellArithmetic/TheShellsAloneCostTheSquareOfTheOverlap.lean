@@ -588,7 +588,8 @@ theorem card_topBand_le (hw : 0 ≤ w) (N : ℕ) :
 def shellFloorCoefficient (φ : ℝ → ℝ) (c : ℝ) : ℝ :=
   c * ((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2) / (4 * Real.log 2) - 1 / 2
 
-private theorem harmonic_sum_bounds (N : ℕ) :
+/-- `log N ≤ H_N ≤ 1 + log N`. -/
+theorem harmonic_sum_bounds (N : ℕ) :
     Real.log N ≤ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ∧ ∑ n ∈ Icc 1 N, 1 / (n : ℝ) ≤ 1 + Real.log N := by
   have hlo : Real.log N ≤ (harmonic N : ℝ) := by
     simpa only [Nat.floor_natCast] using log_le_harmonic_floor (N : ℝ) (Nat.cast_nonneg N)

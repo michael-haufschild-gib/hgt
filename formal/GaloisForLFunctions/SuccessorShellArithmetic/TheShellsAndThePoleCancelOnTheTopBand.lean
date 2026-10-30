@@ -253,4 +253,211 @@ theorem poleMoments_topWitnessVector {g : ℝ → ℝ} {w : ℝ} (hg : Continuou
   rw [h1, h2]
   ring
 
+/-! ### The row integrand -/
+
+/-- The pole row as a function of a continuous partner `t`: `(log t/√t) β(log t − log n)`. -/
+def rowIntegrand (g : ℝ → ℝ) (n : ℕ) (t : ℝ) : ℝ :=
+  Real.log t * (Real.sqrt t)⁻¹ * bumpCorr g (Real.log t - Real.log n)
+
+theorem rowIntegrand_natCast (g : ℝ → ℝ) (n ℓ : ℕ) :
+    rowIntegrand g n ℓ = poleVector ℓ * Real.log ℓ * bumpCorr g (Real.log ℓ - Real.log n) := by
+  rw [rowIntegrand, poleVector, one_div]; ring
+
+section Row
+
+variable {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u : ℝ, u ∉ Set.Icc (0 : ℝ) 1 → φ u = 0)
+include hφ hsupp
+
+/-- The derivative of the row integrand:
+`(t√t)⁻¹((1 − log t/2) β(u) + log t · A'(u/w))`, `u = log t − log n`. -/
+theorem hasDerivAt_rowIntegrand {w : ℝ} (hw : 0 < w) (n : ℕ) {t : ℝ} (ht : 0 < t) :
+    HasDerivAt (rowIntegrand (atomDilate φ w) n)
+      ((t * Real.sqrt t)⁻¹ * ((1 - Real.log t / 2) *
+          bumpCorr (atomDilate φ w) (Real.log t - Real.log n) +
+        Real.log t * deriv (shellAutocorr φ) ((Real.log t - Real.log n) / w))) t := by
+  have hs : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht
+  have hlog := Real.hasDerivAt_log ht.ne'
+  have hinv := (Real.hasDerivAt_sqrt ht.ne').inv hs.ne'
+  have hβ := (hasDerivAt_bumpCorr_atomDilate hφ hsupp hw (Real.log t - Real.log n)).comp t
+    (hlog.sub_const (Real.log n))
+  have h := (hlog.mul hinv).mul hβ
+  have hf : rowIntegrand (atomDilate φ w) n = Real.log * (fun x => Real.sqrt x)⁻¹ *
+      (bumpCorr (atomDilate φ w) ∘ fun x => Real.log x - Real.log n) := by
+    funext x; simp only [rowIntegrand, Pi.mul_apply, Pi.inv_apply, Function.comp]
+  rw [hf]
+  refine h.congr_deriv ?_
+  have hsq : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht.le
+  simp only [Pi.mul_apply, Pi.inv_apply, Function.comp]
+  field_simp
+  rw [hsq]
+  ring
+
+/-- **The row integrand has derivative `O((1 + log 2n)(G + A₁)/n^{3/2})` on `[n/2, 2n]`.** -/
+theorem abs_deriv_rowIntegrand_le {w A₁ : ℝ} (hw : 0 < w)
+    (hA₁ : ∀ x, |deriv (shellAutocorr φ) x| ≤ A₁) {n : ℕ} (hn : 2 ≤ n) {t : ℝ}
+    (ht : t ∈ Set.Icc ((n : ℝ) / 2) (2 * n)) :
+    |(t * Real.sqrt t)⁻¹ * ((1 - Real.log t / 2) *
+          bumpCorr (atomDilate φ w) (Real.log t - Real.log n) +
+        Real.log t * deriv (shellAutocorr φ) ((Real.log t - Real.log n) / w))| ≤
+      ((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹ * ((1 + Real.log (2 * n)) *
+        ((∫ u, atomDilate φ w u ^ 2) + A₁)) := by
+  have hn2 : (1 : ℝ) ≤ n / 2 := by
+    rw [le_div_iff₀ two_pos]; exact_mod_cast (by omega : 1 * 2 ≤ n)
+  have ht1 : 1 ≤ t := hn2.trans ht.1
+  have ht0 : 0 < t := zero_lt_one.trans_le ht1
+  have hlog0 : 0 ≤ Real.log t := Real.log_nonneg ht1
+  have hlogle : Real.log t ≤ Real.log (2 * n) := Real.log_le_log ht0 ht.2
+  have hgc : Continuous (atomDilate φ w) := hφ.continuous.comp (continuous_id.div_const w)
+  have hgcs : HasCompactSupport (atomDilate φ w) := by
+    refine HasCompactSupport.intro (isCompact_Icc : IsCompact (Set.Icc 0 w)) fun u hu => ?_
+    apply hsupp
+    intro h
+    apply hu
+    rw [Set.mem_Icc, le_div_iff₀ hw, div_le_iff₀ hw] at h
+    constructor <;> nlinarith only [h.1, h.2, hw]
+  have hβ := abs_bumpCorr_le hgc hgcs (Real.log t - Real.log n)
+  have hA := hA₁ ((Real.log t - Real.log n) / w)
+  have hA₀ : 0 ≤ A₁ := (abs_nonneg _).trans hA
+  have hG : 0 ≤ ∫ u, atomDilate φ w u ^ 2 := integral_nonneg fun u => sq_nonneg _
+  have hpos : 0 < t * Real.sqrt t := mul_pos ht0 (Real.sqrt_pos.mpr ht0)
+  have hden : ((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2)) ≤ t * Real.sqrt t :=
+    mul_le_mul ht.1 (Real.sqrt_le_sqrt ht.1) (Real.sqrt_nonneg _) ht0.le
+  have hinv : (t * Real.sqrt t)⁻¹ ≤ ((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹ :=
+    inv_anti₀ (mul_pos (by positivity) (Real.sqrt_pos.mpr (by positivity))) hden
+  have hbracket : |(1 - Real.log t / 2) * bumpCorr (atomDilate φ w) (Real.log t - Real.log n) +
+      Real.log t * deriv (shellAutocorr φ) ((Real.log t - Real.log n) / w)| ≤
+      (1 + Real.log (2 * n)) * ((∫ u, atomDilate φ w u ^ 2) + A₁) := by
+    have h1 : |1 - Real.log t / 2| ≤ 1 + Real.log (2 * n) := by
+      rw [abs_le]; constructor <;> linarith only [hlog0, hlogle]
+    have h2 : |Real.log t| ≤ 1 + Real.log (2 * n) := by
+      rw [abs_of_nonneg hlog0]; linarith only [hlogle]
+    calc
+      _ ≤ |1 - Real.log t / 2| * |bumpCorr (atomDilate φ w) (Real.log t - Real.log n)| +
+          |Real.log t| * |deriv (shellAutocorr φ) ((Real.log t - Real.log n) / w)| := by
+        rw [← abs_mul, ← abs_mul]; exact abs_add_le _ _
+      _ ≤ (1 + Real.log (2 * n)) * (∫ u, atomDilate φ w u ^ 2) +
+          (1 + Real.log (2 * n)) * A₁ :=
+        add_le_add (mul_le_mul h1 hβ (abs_nonneg _) (by linarith only [h2, abs_nonneg (Real.log t)]))
+          (mul_le_mul h2 hA (abs_nonneg _) (by linarith only [h2, abs_nonneg (Real.log t)]))
+      _ = _ := by ring
+  rw [abs_mul, abs_of_pos (inv_pos.mpr hpos)]
+  exact mul_le_mul hinv hbracket (abs_nonneg _) (inv_nonneg.mpr (by positivity))
+
+/-- The atom vanishes at both ends of its support, so its autocorrelation vanishes for `|t| ≥ w`. -/
+theorem bumpCorr_atomDilate_eq_zero_of_le {w t : ℝ} (hw : 0 < w) (ht : w ≤ |t|) :
+    bumpCorr (atomDilate φ w) t = 0 := by
+  have hopen : ∀ v, atomDilate φ w v ≠ 0 → 0 < v ∧ v < w := by
+    intro v hv
+    have hmem : v / w ∈ Set.Icc (0 : ℝ) 1 := by
+      by_contra h; exact hv (hsupp _ h)
+    have h0 : v / w ≠ 0 := fun h => hv (by simp only [atomDilate, h, profile_zero hφ hsupp])
+    have h1 : v / w ≠ 1 := fun h => hv (by simp only [atomDilate, h, profile_one hφ hsupp])
+    have hlo : 0 < v / w := lt_of_le_of_ne hmem.1 (Ne.symm h0)
+    have hhi : v / w < 1 := lt_of_le_of_ne hmem.2 h1
+    exact ⟨(div_pos_iff_of_pos_right hw).mp hlo, (div_lt_one hw).mp hhi⟩
+  unfold bumpCorr
+  refine integral_eq_zero_of_ae (Filter.Eventually.of_forall fun v => ?_)
+  change atomDilate φ w v * atomDilate φ w (v + t) = 0
+  by_contra hne
+  obtain ⟨h1, h2⟩ := hopen v (left_ne_zero_of_mul hne)
+  obtain ⟨h3, h4⟩ := hopen (v + t) (right_ne_zero_of_mul hne)
+  have : |t| < w := abs_lt.mpr ⟨by linarith only [h2, h3], by linarith only [h1, h4]⟩
+  linarith only [this, ht]
+
+/-- The atom autocorrelation is continuous. -/
+theorem continuous_bumpCorr_atomDilate {w : ℝ} (hw : 0 < w) :
+    Continuous (bumpCorr (atomDilate φ w)) :=
+  continuous_iff_continuousAt.mpr fun s =>
+    (hasDerivAt_bumpCorr_atomDilate hφ hsupp hw s).continuousAt
+
+/-- **The substitution `t = n e^u`.** Over any interval containing the support of the row,
+`∫ (log t/√t) β(log t − log n) dt = √n(log n ∫ e^{u/2}β + ∫ u e^{u/2}β)`. -/
+theorem integral_rowIntegrand {w : ℝ} (hw : 0 < w) {n : ℕ} (hn : 1 ≤ n) {a b : ℝ}
+    (ha : 0 < a) (hab : a ≤ n * Real.exp (-w)) (hb : n * Real.exp w ≤ b) :
+    ∫ t in a..b, rowIntegrand (atomDilate φ w) n t =
+      Real.sqrt n * (Real.log n * (∫ u, Real.exp (u / 2) * bumpCorr (atomDilate φ w) u) +
+        ∫ u, u * Real.exp (u / 2) * bumpCorr (atomDilate φ w) u) := by
+  set β := bumpCorr (atomDilate φ w) with hβdef
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hβc : Continuous β := continuous_bumpCorr_atomDilate hφ hsupp hw
+  have hβ0 : ∀ u, w ≤ |u| → β u = 0 := fun u hu => bumpCorr_atomDilate_eq_zero_of_le hφ hsupp hw hu
+  set a' := Real.log (a / n)
+  set b' := Real.log (b / n)
+  have hb0 : 0 < b := lt_of_lt_of_le (by positivity) hb
+  have ha' : a' ≤ -w := by
+    rw [← Real.log_exp (-w)]
+    exact Real.log_le_log (div_pos ha hn0) (by rw [div_le_iff₀ hn0]; linarith only [hab])
+  have hb' : w ≤ b' := by
+    rw [← Real.log_exp w]
+    exact Real.log_le_log (Real.exp_pos w) (by rw [le_div_iff₀ hn0]; linarith only [hb])
+  have hab' : a' ≤ b' := by linarith only [ha', hb', hw]
+  -- the substitution
+  have hsub := integral_comp_mul_deriv' (a := a') (b := b') (f := fun u => n * Real.exp u)
+    (f' := fun u => n * Real.exp u) (g := rowIntegrand (atomDilate φ w) n)
+    (fun u _ => (Real.hasDerivAt_exp u).const_mul _) (by fun_prop) (by
+      rintro t ⟨u, -, rfl⟩
+      have ht : (0 : ℝ) < n * Real.exp u := by positivity
+      refine ContinuousAt.continuousWithinAt ?_
+      unfold rowIntegrand
+      exact ((Real.continuousAt_log ht.ne').mul (Real.continuous_sqrt.continuousAt.inv₀
+        (Real.sqrt_pos.mpr ht).ne')).mul
+        (hβc.continuousAt.comp ((Real.continuousAt_log ht.ne').sub continuousAt_const)))
+  have hfa : (n : ℝ) * Real.exp a' = a := by
+    simp only [a']; rw [Real.exp_log (div_pos ha hn0)]; field_simp
+  have hfb : (n : ℝ) * Real.exp b' = b := by
+    simp only [b']; rw [Real.exp_log (div_pos hb0 hn0)]; field_simp
+  rw [hfa, hfb] at hsub
+  rw [← hsub]
+  -- the transformed integrand
+  have hpt : ∀ u, (rowIntegrand (atomDilate φ w) n ∘ fun u => (n : ℝ) * Real.exp u) u *
+      ((n : ℝ) * Real.exp u) =
+      Real.sqrt n * ((Real.log n * (Real.exp (u / 2) * β u)) + u * Real.exp (u / 2) * β u) := by
+    intro u
+    have he : Real.sqrt (Real.exp u) = Real.exp (u / 2) := by
+      rw [← Real.sqrt_sq (Real.exp_pos (u / 2)).le, sq, ← Real.exp_add, add_halves]
+    have hlog : Real.log ((n : ℝ) * Real.exp u) = Real.log n + u := by
+      rw [Real.log_mul hn0.ne' (Real.exp_pos u).ne', Real.log_exp]
+    have hsq : Real.sqrt ((n : ℝ) * Real.exp u) = Real.sqrt n * Real.exp (u / 2) := by
+      rw [Real.sqrt_mul hn0.le, he]
+    have hsn : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
+    have hex : Real.exp u = Real.exp (u / 2) * Real.exp (u / 2) := by
+      rw [← Real.exp_add, add_halves]
+    simp only [Function.comp, rowIntegrand, hlog, hsq, add_sub_cancel_left]
+    rw [← hβdef, hex]
+    field_simp
+    rw [Real.sq_sqrt hn0.le]
+    ring
+  simp_rw [hpt]
+  rw [intervalIntegral.integral_const_mul]
+  congr 1
+  -- the support of `β` lies inside `[a', b']`
+  have hint1 : Integrable (fun u => Real.exp (u / 2) * β u) := by
+    refine (Continuous.integrable_of_hasCompactSupport (by fun_prop) ?_)
+    exact HasCompactSupport.intro (isCompact_Icc : IsCompact (Set.Icc (-w) w)) fun u hu =>
+      by rw [hβ0 u (by
+        simp only [Set.mem_Icc, not_and_or, not_le] at hu
+        rcases hu with hu | hu
+        · rw [abs_of_neg (by linarith)]; linarith
+        · rw [abs_of_pos (by linarith)]; linarith), mul_zero]
+  have hint2 : Integrable (fun u => u * Real.exp (u / 2) * β u) := by
+    refine (Continuous.integrable_of_hasCompactSupport (by fun_prop) ?_)
+    exact HasCompactSupport.intro (isCompact_Icc : IsCompact (Set.Icc (-w) w)) fun u hu =>
+      by rw [hβ0 u (by
+        simp only [Set.mem_Icc, not_and_or, not_le] at hu
+        rcases hu with hu | hu
+        · rw [abs_of_neg (by linarith)]; linarith
+        · rw [abs_of_pos (by linarith)]; linarith), mul_zero]
+  rw [intervalIntegral.integral_of_le hab', ← MeasureTheory.integral_const_mul,
+    ← MeasureTheory.integral_add (hint1.const_mul _) hint2]
+  refine setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => ?_
+  have hu' : w ≤ |u| := by
+    simp only [Set.mem_Ioc, not_and_or, not_lt, not_le] at hu
+    rcases hu with hu | hu
+    · rw [abs_of_neg (by linarith)]; linarith
+    · rw [abs_of_pos (by linarith)]; linarith
+  rw [hβ0 u hu']
+  ring
+
+end Row
+
 end GaloisForLFunctions.SuccessorShellArithmetic

@@ -14,7 +14,8 @@ set_option autoImplicit false
 
 namespace RHTower
 
-open MeasureTheory Set Filter ArithmeticFunction Complex
+open MeasureTheory Set Filter ArithmeticFunction
+open _root_.Complex
 
 variable {Q : ℕ} [NeZero Q]
 
@@ -85,6 +86,7 @@ theorem exists_conductor_uniform_character_perron_bound {ε : ℝ} (hε : 0 < ε
     have h := one_le_log_conductor (q := q) (T + 2)
     simpa only [abs_of_pos (show 0 < T + 2 by linarith only [hT]),
       show T + 2 + 3 = T + 5 by ring] using h
+  have hL0 : 0 < Real.log ((q : ℝ) * (T + 5)) := zero_lt_one.trans_le hL1
   have hp : (q : ℝ) ^ (-ε) ≤ 1 :=
     Real.rpow_le_one_of_one_le_of_nonpos hq1 (by linarith only [hε])
   have hδc : δ ≤ c := hwidth.trans
@@ -95,10 +97,12 @@ theorem exists_conductor_uniform_character_perron_bound {ε : ℝ} (hε : 0 < ε
   have ha2 : a ≤ 2 := by dsimp only [a]; linarith only [hδhalf]
   have hb : 0 < b := by dsimp only [b]; linarith only [hδhalf]
   have hba : b ≤ a := by dsimp only [a, b]; linarith only [hδ]
-  have hM : 0 ≤ M := by dsimp only [M]; positivity
+  have hM : 0 ≤ M := mul_nonneg
+    (mul_nonneg hB.le (Real.rpow_nonneg hq0.le _)) (pow_nonneg hL0.le _)
   have hbox : ∀ s : ℂ, b ≤ s.re → s.re ≤ a → |s.im| ≤ T →
       χ.LFunction s ≠ 0 ∧ ‖deriv χ.LFunction s / χ.LFunction s‖ ≤ M := by
     intro s hlo hhi ht
+    dsimp only [a, b] at hlo hhi
     have hs : |s.re - 1| ≤ δ := abs_le.mpr ⟨by linarith only [hlo], by linarith only [hhi]⟩
     simpa only [logDeriv_apply] using hrect q χ hχ T hT.le s (hs.trans hwidth) ht
   have hsup : ∀ σ y : ℝ, b ≤ σ → σ ≤ a → |y| ≤ T →

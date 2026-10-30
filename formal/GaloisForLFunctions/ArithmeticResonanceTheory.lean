@@ -13,6 +13,7 @@ import GaloisForLFunctions.ArithmeticResonanceTheory.OverFiniteFieldsTheOddPartI
 import GaloisForLFunctions.ArithmeticResonanceTheory.GeneralizedDirichletSeriesAreDeterminedByTheirValues
 import GaloisForLFunctions.ArithmeticResonanceTheory.ARealizationOfZetaIsPrimeLength
 import GaloisForLFunctions.ArithmeticResonanceTheory.TheHolderModulusAlongEveryCycle
+import GaloisForLFunctions.ArithmeticResonanceTheory.TheMillsBoundary
 
 /-!
 # Arithmetic Resonance Theory
@@ -25,7 +26,8 @@ Dirichlet series makes every realization of `ζ` prime-length; a Hölder realiza
 strip whose price is a lower bound on its Hölder modulus along every re-enterable cycle; the
 arithmetic
 obstructions to realizations (no affine recurrence among primes, integrality against
-super-conformal distortion, the Hölder modulus law of prime-length systems); the failure of
+super-conformal distortion, the Hölder modulus law of prime-length systems, congruence forcing of
+bounded conformal defects at the Mills boundary); the failure of
 oscillation on additive and free realizations; the amplifier law (rate = depth, fixed versus
 envelope losses, pole-killing); and the rank law for orthogonality amplifiers.
 See `ArithmeticResonanceTheory/README.md`.
