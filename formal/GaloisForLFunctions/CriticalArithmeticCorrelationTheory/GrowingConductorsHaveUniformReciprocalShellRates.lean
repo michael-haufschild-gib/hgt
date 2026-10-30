@@ -26,7 +26,8 @@ private theorem deriv_zero_of_flat {W : ℝ → ℝ} {a : ℝ}
 theorem eventually_conductor_uniform_weightedResiduePrimeReading_variation_log_bound
     {A : ℝ} (hA : 0 ≤ A) (k : ℕ) :
     ∀ᶠ Y : ℝ in atTop, 1 < Real.log Y ∧
-      ∀ (q : ℕ) [NeZero q], (q : ℝ) ≤ Real.log Y ^ A → ∀ a B D : ℝ, 0 < a → 0 ≤ B → 0 ≤ D → ∀ W : ℝ → ℝ, ContDiff ℝ 1 W →
+      ∀ (q : ℕ) [NeZero q], (q : ℝ) ≤ Real.log Y ^ A →
+      ∀ a B D : ℝ, 0 < a → 0 ≤ B → 0 ≤ D → ∀ W : ℝ → ℝ, ContDiff ℝ 1 W →
       (∀ u, |u| < a → W u = 0) → |W 1| ≤ B →
       (∫ u in (0 : ℝ)..1, |deriv W u|) ≤ D →
       ∀ X : ℝ, Y ≤ X → Y ≤ X * a → ∀ F : ZMod q → ℝ,
@@ -74,7 +75,8 @@ theorem exists_conductor_uniform_affineShellCorrection_linear_log_rate_raw
     {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) :
     ∃ C : ℝ, 0 < C ∧ ∀ A : ℝ, 0 ≤ A → ∀ k : ℕ, ∀ᶠ Y : ℝ in atTop,
-      1 < Real.log Y ∧ ∀ q : ℕ, 0 < q → (q : ℝ) ≤ Real.log Y ^ A → ∀ c X : ℝ, 1 ≤ c → 2 * c * Y ≤ X →
+      1 < Real.log Y ∧ ∀ q : ℕ, 0 < q → (q : ℝ) ≤ Real.log Y ^ A →
+      ∀ c X : ℝ, 1 ≤ c → 2 * c * Y ≤ X →
       ∀ shift : ℕ → ℕ, ∀ n : ℕ,
       |affinePrimeShellCorrectionOfShift q n shift φ c X -
         ramanujanLagCoefficient q n * shellCorrectionOfShift φ c q shift| ≤
@@ -158,7 +160,56 @@ theorem exists_conductor_uniform_affineShellCorrection_linear_log_rate_raw
       exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hcard hB) (by positivity)
     _ = C * ((q : ℝ) * q.totient) * c / Real.log Y ^ k := by dsimp only [C, B]; ring
 
+/-- Extra logarithmic decay absorbs the entire conductor mass uniformly. -/
+theorem exists_conductor_uniform_affineShellCorrection_linear_log_rate
+    {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) :
+    ∃ C : ℝ, 0 < C ∧ ∀ A : ℝ, 0 ≤ A → ∀ k : ℕ, ∀ᶠ Y : ℝ in atTop,
+      1 < Real.log Y ∧ ∀ q : ℕ, 0 < q → (q : ℝ) ≤ Real.log Y ^ A →
+      ∀ c X : ℝ, 1 ≤ c → 2 * c * Y ≤ X → ∀ shift : ℕ → ℕ, ∀ n : ℕ,
+      |affinePrimeShellCorrectionOfShift q n shift φ c X -
+        ramanujanLagCoefficient q n * shellCorrectionOfShift φ c q shift| ≤
+        C * c / Real.log Y ^ k := by
+  obtain ⟨C, hC, hraw⟩ :=
+    exists_conductor_uniform_affineShellCorrection_linear_log_rate_raw hφ hsupp hM
+  refine ⟨C, hC, fun A hA k => ?_⟩
+  let b : ℕ := ⌈A⌉₊
+  filter_upwards [hraw A hA (k + (b + b))] with Y hY
+  refine ⟨hY.1, fun q hq hqY c X hc hX shift n => ?_⟩
+  have hlog : 0 < Real.log Y := zero_lt_one.trans hY.1
+  have hqpow : (q : ℝ) ≤ Real.log Y ^ b := by
+    apply hqY.trans
+    rw [← Real.rpow_natCast]
+    exact Real.rpow_le_rpow_of_exponent_le hY.1.le (Nat.le_ceil A)
+  have htot : (q.totient : ℝ) ≤ q := by exact_mod_cast Nat.totient_le q
+  have hmass : (q : ℝ) * q.totient ≤ Real.log Y ^ (b + b) := by
+    rw [pow_add]
+    exact mul_le_mul hqpow (htot.trans hqpow) (Nat.cast_nonneg _) (pow_nonneg hlog.le _)
+  calc
+    _ ≤ C * ((q : ℝ) * q.totient) * c / Real.log Y ^ (k + (b + b)) :=
+      hY.2 q hq hqY c X hc hX shift n
+    _ ≤ C * Real.log Y ^ (b + b) * c / Real.log Y ^ (k + (b + b)) :=
+      div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmass hC.le)
+          (zero_le_one.trans hc)) (pow_nonneg hlog.le _)
+    _ = C * c / Real.log Y ^ k := by
+      rw [pow_add]
+      field_simp
+
+/-- The explicit tilted spline has a uniform logarithmic-conductor shell-transfer rate. -/
+theorem exists_tiltedUnitSpline_conductor_uniform_affineShellCorrection_linear_log_rate :
+    ∃ C : ℝ, 0 < C ∧ ∀ A : ℝ, 0 ≤ A → ∀ k : ℕ, ∀ᶠ Y : ℝ in atTop,
+      1 < Real.log Y ∧ ∀ q : ℕ, 0 < q → (q : ℝ) ≤ Real.log Y ^ A →
+      ∀ c X : ℝ, 1 ≤ c → 2 * c * Y ≤ X → ∀ shift : ℕ → ℕ, ∀ n : ℕ,
+      |affinePrimeShellCorrectionOfShift q n shift tiltedUnitSpline c X -
+        ramanujanLagCoefficient q n * shellCorrectionOfShift tiltedUnitSpline c q shift| ≤
+        C * c / Real.log Y ^ k :=
+  exists_conductor_uniform_affineShellCorrection_linear_log_rate contDiff_tiltedUnitSpline
+    tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_conductor_uniform_weightedResiduePrimeReading_variation_log_bound
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_conductor_uniform_affineShellCorrection_linear_log_rate_raw
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_conductor_uniform_affineShellCorrection_linear_log_rate
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_tiltedUnitSpline_conductor_uniform_affineShellCorrection_linear_log_rate

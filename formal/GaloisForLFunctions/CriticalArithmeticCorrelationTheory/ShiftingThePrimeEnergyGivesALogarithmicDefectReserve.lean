@@ -15,7 +15,7 @@ coefficient vector. The horizon is allowed to depend on the fixed overlap.
 
 noncomputable section
 open MeasureTheory Filter Topology Finset
-open scoped RealInnerProductSpace
+open scoped RealInnerProductSpace Matrix
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 open RenormalizedArithmeticPotentialTheory RenormalizedArithmeticPotentialTheory.CompletedShell

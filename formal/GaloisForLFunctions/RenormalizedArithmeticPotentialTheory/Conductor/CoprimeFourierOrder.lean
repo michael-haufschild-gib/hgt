@@ -19,10 +19,11 @@ open scoped Classical
 namespace GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 open HTGeometry CompletedShell SpacingScaleHarmonicAnalysis CriticalArithmeticCorrelationTheory
 
-private def conductorPrimeSieve (m : ℕ) : Finset Nat.Primes :=
+/-- The distinct prime divisors of a conductor, viewed as a finite prime sieve. -/
+def conductorPrimeSieve (m : ℕ) : Finset Nat.Primes :=
   Finset.subtype Nat.Prime m.primeFactors
 
-private theorem coprime_conductorPrimeSieve {m : ℕ} (hm : 0 < m) (a : ℕ) :
+theorem coprime_conductorPrimeSieve {m : ℕ} (hm : 0 < m) (a : ℕ) :
     a.Coprime (sievePrimorial (conductorPrimeSieve m)) ↔ a.Coprime m := by
   rw [sievePrimorial, Nat.coprime_prod_right_iff]
   constructor
@@ -35,7 +36,7 @@ private theorem coprime_conductorPrimeSieve {m : ℕ} (hm : 0 < m) (a : ℕ) :
   · intro h p hp
     exact h.of_dvd_right (Nat.mem_primeFactors.mp (Finset.mem_subtype.mp hp)).2.1
 
-private theorem density_conductorPrimeSieve {m : ℕ} (hm : 0 < m) :
+theorem density_conductorPrimeSieve {m : ℕ} (hm : 0 < m) :
     sieveDensity (conductorPrimeSieve m) = (m.totient : ℝ) / m := by
   have hm0 : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
   have h := congrArg (fun x : ℚ => (x : ℝ)) (Nat.totient_eq_mul_prod_factors m)
@@ -56,7 +57,7 @@ theorem totient_div_mul_harmonicSum_le_coprimeSum {m : ℕ} (hm : 0 < m) (N : �
     coprime_conductorPrimeSieve hm] using h
 
 
-private theorem coprimeHarmonic_eq_range (m N : ℕ) :
+theorem coprimeHarmonic_eq_range (m N : ℕ) :
     (∑ a ∈ (Finset.Icc 1 N).filter (fun a => a.Coprime m), (1 : ℝ) / a) =
       ∑ n ∈ range N, if m.Coprime (n + 1) then 1 / ((n : ℝ) + 1) else 0 := by
   rw [Finset.sum_filter]
@@ -170,7 +171,7 @@ theorem exists_tiltedUnitSpline_uniform_logarithmic_conductor_coercivity :
       tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc hm
 
 
-private theorem harmonicSum_eq_range (N : ℕ) :
+theorem harmonicSum_eq_range (N : ℕ) :
     harmonicSum N = ∑ n ∈ range N, 1 / ((n : ℝ) + 1) := by
   simpa [harmonicSum] using coprimeHarmonic_eq_range 1 N
 
