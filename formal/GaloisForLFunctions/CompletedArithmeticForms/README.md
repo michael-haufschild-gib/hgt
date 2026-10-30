@@ -807,16 +807,21 @@ The coefficient envelope $|T_{nk}|\le n!e^4$ controls the cost of transporting
 an exponentially small source remainder. See [HermiteJetCongruence](HermiteJetCongruence.lean),
 `realWickJetMatrix_eq_congruence` and `hermiteJetCoefficient_abs_le`.
 
-Put $C_N=De^2(N+1)(N+2)^2$ and $\mathcal D_N=\operatorname{diag}(8^ii!)$.
-On $q\ge4(N+2)^2$, every mixed source entry through degrees $i,j\le N$ satisfies
-$$|\partial_z^i\partial_w^j(K_q-e^{8zw})(0,0)|
-\le\frac{C_N}{q}\sqrt{8^ii!}\sqrt{8^jj!}.$$
-Consequently the complete rank-$N$ first-atom Hermite head obeys
+For $d_i=8^ii!$, $t=\sqrt{(N+1)/8}$, and $R=4t$, the contraction coefficients satisfy
+$$\frac{\binom ir\binom jr d_r(i+j-2r)!}{R^{i+j-2r}}
+\le2^{-(i+j-2r)}\sqrt{d_i d_j},\qquad r\le\min(i,j),\quad i,j\le N.$$
+The complete majorant is the nonnegative kernel $C=LL^{\mathsf T}$ with
+$L_{ij}=\mathbf1_{j\le i}2^{-(i-j)}$. Every row of $C$ has mass at most four,
+independently of dimension. Applying the single-contour bound to the exact
+contraction formula therefore pays the complete rank-$N$ first-atom form:
 $$|v^{\mathsf T}(H^{(1)}_{\rm Hermite}-\mathcal D_N)v|
-\le\frac{NC_N}{q}v^{\mathsf T}\mathcal D_Nv.$$
-This quartic rank payment follows from the actual source and retains every mixed
-coefficient. See [HermiteSourceBound](HermiteSourceBound.lean),
-`firstAtomWickError_normalized_jet_le` and `firstAtomHermiteHead_relative_error_le`.
+\le\frac{16D(N+1)^2}{q}v^{\mathsf T}\mathcal D_Nv,
+\qquad \mathcal D_N=\operatorname{diag}(d_i),\quad q\ge16(N+2)^2.$$
+The quadratic degree cost includes every mixed coefficient. It has no further
+dimension or inverse-matrix factor. See [HermiteContractionPayment](HermiteContractionPayment.lean),
+`hermiteContractionCoefficient_le`, [GeometricContraction](GeometricContraction.lean),
+and [GaussianContractionBound](GaussianContractionBound.lean),
+`firstAtomHermiteHead_quadratic_error_le`.
 
 The complete native moment remainder obeys
 $|\sigma_k^{\rm native}-\sigma_k^{(1)}|\le A24^{2k}q^ke^{-3q}$,
@@ -832,50 +837,50 @@ and `nativeHermiteHead_firstAtom_error_le`.
 
 Let $\mathcal G_N$ be the full signed Gaussian moment head and $H_N^{\rm native}$
 the complete native head in the same mass and length coordinates. Define
-$$P_N=N\bigl(De^2(N+1)(N+2)^2+Ae^8\bigr).$$
+$$J_N=16D(N+1)^2+NAe^8.$$
 For $q\ge16(N+2)^2$,
 $$|v^{\mathsf T}(H_N^{\rm native}-\mathcal G_N)v|
-\le\frac{P_N}{q}v^{\mathsf T}\mathcal G_Nv.$$
-The Hermite diagonal norms are at least one, so the native remainder fits the
-same weighted entry bound as the first atom. Bijectivity of $T_N^{\mathsf T}$
-returns the resulting estimate to every original source direction with no inverse
-cost. If also $q>2P_N$, then $H_N^{\rm native}-\mathcal G_N/2$ is positive definite.
-Thus the complete source has a polynomial mixed-rank scale. See
-[NativeHermiteHorizon](NativeHermiteHorizon.lean),
-`nativeBalancedFullHead_polynomial_rank_error_le` and
-`nativeBalancedFullHead_half_posDef_of_polynomial_rank_scale`.
+\le\frac{J_N}{q}v^{\mathsf T}\mathcal G_Nv.$$
+Since $d_i\ge1$, the infinite remainder contributes at most $NAe^8/q$ in this
+same complete norm. Bijectivity of $T_N^{\mathsf T}$ returns the estimate to
+every original source direction. The physical first atom alone has cost
+$16D(N+1)^2/q$. See [NativeQuadraticRank](NativeQuadraticRank.lean),
+`nativeBalancedFullHead_quadratic_rank_error_le` and
+`firstAtomBalancedFullHead_quadratic_rank_error_le`.
 
 The monomial embedding $i\mapsto2i+s$ identifies the shifted rank-$n$ even-moment
 head with a principal restriction of full signed dimension $M=2n+s$.
-Its complete relative error is therefore $P_M/q$, on $q\ge16(M+2)^2$.
+Its complete relative error is therefore $J_M/q$, on $q\ge16(M+2)^2$.
 For the exact rank-$n$ successor, use $M=2(n+1)+s$:
 $$|S_n(\sigma_s^{\rm native}(x))-C_{n,s}|
-\le\frac{P_M}{q}C_{n,s},\qquad q\ge16(M+2)^2,\quad q>P_M.$$
-Define
-$$S_M=16(M+2)^2+2P_M,\qquad X_M=\max(0,\tfrac12\log(S_M/\pi)).$$
-Then $x\ge X_{2(n+1)+s}$ gives
-$C_{n,s}/2<S_n(\sigma_s^{\rm native}(x))<3C_{n,s}/2$.
-The exact Schur comparison preserves the relative error without another
-conditioning factor. See [PolynomialRankHorizon](PolynomialRankHorizon.lean),
-`nativeBalancedHead_polynomial_rank_error_le`,
-`nativeBalancedSuccessor_polynomial_rank_error_le`, and
-`nativeBalancedSuccessor_half_bounds_of_polynomial_rank_horizon`.
+\le\frac{J_M}{q}C_{n,s},\qquad q\ge16(M+2)^2,\quad q>J_M.$$
+The scale $Q_M=16(M+2)^2+2J_M$ leaves a strict half-Gaussian reserve in every
+contained shifted head. Its exact successor satisfies
+$C_{n,s}/2<S_n(\sigma_s^{\rm native}(x))<3C_{n,s}/2$ whenever $q\ge Q_M$.
+The Schur comparison retains the same relative error without another
+conditioning factor. See [QuadraticRankHorizon](QuadraticRankHorizon.lean),
+`nativeBalancedSuccessor_quadratic_rank_error_le` and
+`nativeBalancedSuccessor_half_bounds_of_quadratic_rank_scale`.
 
 The physical shifted head is exactly
 $$H^{\rm physical}_{n,s}(x)=q^sD\,H_n(\sigma_s^{\rm native}(x))D,
 \qquad D_{ii}=\theta_1(x)q^i.$$
 On the stated scale, $q>0$ and $\theta_1(x)\ne0$, so this congruence preserves
 strictness. Both parity blocks of the literal full signed rank-$N$ source fit in
-dimension $M=N+1$; $q\ge S_{N+1}$ therefore makes that full physical head positive definite.
-With the universal constant
-$$C=16+2De^2+2Ae^8,$$
-the explicit scale satisfies $S_M\le C(M+2)^4$.
-Thus the complete physical signed rank-$N$ head is strict whenever
-$$x\ge\max\left(0,\tfrac12\log(C/\pi)+2\log(N+3)\right).$$
-The identical logarithmic envelope at $M=2(n+1)+s$ pays the exact native successor.
-See [NativePhysicalRankHorizon](NativePhysicalRankHorizon.lean),
-`nativeSignedHead_posDef_of_logarithmic_rank_horizon` and
-`nativeBalancedSuccessor_half_bounds_of_logarithmic_rank_horizon`.
+dimension $M=N+1$; $q\ge Q_{N+1}$ therefore makes that full physical head positive definite.
+Put
+$$C_2=16+32D+2Ae^8,\qquad
+X_M=\max\left(0,\tfrac12\log(C_2/\pi)+\log(M+2)\right).$$
+Then $Q_M\le C_2(M+2)^2$. Both literal native and first-atom signed rank-$N$
+heads are strict at $x\ge X_{N+1}$. The same envelope at $M=2(n+1)+s$ pays
+the exact native successor. In particular the first failing physical first-atom
+dimension obeys the unconditional lower boundary
+$$\sqrt{q(x)/C_2}<\kappa(x)+3.$$
+Together with $\kappa(x)\le1+C_*q(x)$ for $x\ge0$, this bounds its growth
+between square-root and linear source scales. Neither bound identifies the
+exact growth exponent. See [PhysicalQuadraticHorizon](PhysicalQuadraticHorizon.lean),
+`nativeSignedHead_posDef_of_quadratic_rank_horizon` and
+`firstAtomFailureRank_sqrt_scale_lower`.
 
 ## Place in the research
 
@@ -903,9 +908,10 @@ a norm-preserving transfer between programmes.
    require quantitative bounds or controlled radicals. The complete native tail has an exact
    Gamma reserve, but its fraction of the next diagonal decreases exponentially with rank.
    At $x\ge0$, the negative order satisfies $\sqrt{q(x)}<\nu(x)\le C_*q(x)$.
-   The first failing dimension $\kappa(x)\le\nu(x)+1$ has an explicit mixed-form lower horizon.
-   The complete native rank-$N$ form has relative error $P_N/q$ with explicit quartic
-   $P_N$, on $q\ge16(N+2)^2$; $q>2P_N$ leaves a strict half-Gaussian reserve.
+   The first failing dimension satisfies $\sqrt{q(x)/C_2}<\kappa(x)+3$ and
+   $\kappa(x)\le\nu(x)+1$. The complete native rank-$N$ form has relative error
+   $J_N/q$, where $J_N=16D(N+1)^2+NAe^8$, on $q\ge16(N+2)^2$.
+   Its strict half-Gaussian reserve has a center horizon of $\log(N+2)+O(1)$.
    Every seam tail head is strict,
    with an explicit half-seam neighborhood and a separate strict distant ray.
    What are the sharp growth laws, and which native compensation pays the intervening
@@ -941,8 +947,10 @@ a norm-preserving transfer between programmes.
    Its complete clocked cone has the exact boundary $(2q-3)^2\ge3$; all individual
    signed moments are nonnegative even outside that cone.
    The exact monic Hermite transform preserves relative complete-form bounds and pays
-   the physical first-atom and infinite native errors by an explicit polynomial rank cost.
-   Can Gaussian contraction estimates sharpen that cost to the quadratic degree scale?
+   the physical first-atom and infinite native errors by an explicit quadratic rank cost.
+   Gaussian contractions supply a dimension-independent complete-form bound.
+   Which source maps retain this degree payment through actual center integration,
+   and which compact compensation mechanisms supply the remaining rank reserves?
 
 These include RH-equivalent targets. Fixed-rank or fixed-parameter theorems contribute without
 settling the full questions.

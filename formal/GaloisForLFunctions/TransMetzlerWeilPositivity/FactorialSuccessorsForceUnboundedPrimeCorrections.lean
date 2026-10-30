@@ -206,7 +206,6 @@ theorem fullWeilNonRatioMatrix_successor_entry_ge {c : ℝ} (hc : 0 < c)
         vonMangoldtAtom_eq hp.two_le, ArithmeticFunction.vonMangoldt_apply_prime hp]
       unfold plateauSuccessorCorrelation
       field_simp [hc.ne', hN0.ne', hM.ne', (Real.sqrt_pos.mpr hp0).ne']
-      ring
     _ ≤ _ := div_le_div_of_nonneg_right hterm hmass.le
 
 private theorem sum_sq_le_of_injective {P I : Type*} [Fintype P] [Fintype I] [DecidableEq I]
@@ -247,7 +246,9 @@ theorem factorialSuccessor_action_sq_ge {c : ℝ} (hc : 0 < c) (Y : ℕ) :
         A i (factorialSuccessorLast Y) := by
     simp [Matrix.toLpLin_apply]
   rw [EuclideanSpace.real_norm_sq_eq]
-  change q ^ 2 * (∑ p ∈ Nat.primesLE Y, Real.log (p : ℝ) ^ 2 / (p : ℝ)) ≤ _
+  change q ^ 2 * (∑ p ∈ Nat.primesLE Y, Real.log (p : ℝ) ^ 2 / (p : ℝ)) ≤
+    ∑ i : PrimeHorizonIndex N,
+      (Matrix.toEuclideanLin A (EuclideanSpace.single (factorialSuccessorLast Y) 1) i) ^ 2
   simp_rw [hcol]
   calc
     _ = ∑ p : ↥(Nat.primesLE Y), (q * (Real.log (p.val : ℝ) / Real.sqrt p.val)) ^ 2 := by
@@ -284,8 +285,8 @@ private theorem prime_log_sq_sum_atTop :
 private theorem tendsto_plateauSuccessorCorrelation (c : ℝ) :
     Tendsto (plateauSuccessorCorrelation c) atTop
       (𝓝 (bumpCorr transMetzlerProfile (1 / c) / (∫ u, transMetzlerProfile u ^ 2))) := by
-  exact (((continuous_bumpCorr contDiff_transMetzlerProfile hasCompactSupport_transMetzlerProfile)
-    .tendsto (1 / c)).comp (tendsto_firstExteriorOverlap.div_const c)).div_const _
+  exact (((continuous_bumpCorr contDiff_transMetzlerProfile hasCompactSupport_transMetzlerProfile).tendsto
+    (1 / c)).comp (tendsto_firstExteriorOverlap.div_const c)).div_const _
 
 /-- At every fixed overlap above one, the actual prime correction sends a unit coordinate
 to vectors of unbounded norm along the factorial successor horizons. -/

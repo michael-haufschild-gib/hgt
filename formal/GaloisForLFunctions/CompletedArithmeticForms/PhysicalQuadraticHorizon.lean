@@ -35,7 +35,6 @@ private theorem physicalShiftedHead_posDef_of_normalized (m : ℕ → ℝ) (N s 
       Matrix.smul_apply, smul_eq_mul, finiteHankelMatrix]
     rw [pow_add, pow_add]
     field_simp [hf, hq.ne']
-    ring
   rw [he]
   exact (hA.conjTranspose_mul_mul_same hD).smul (pow_pos hq s)
 
@@ -161,8 +160,10 @@ theorem nativeQuadraticRankScale_le_of_horizon (M : ℕ) {x : ℝ}
   have he := Real.exp_le_exp.mpr hxlog
   rw [Real.exp_add, Real.exp_log hc,
     show Real.exp (2 * Real.log ((M : ℝ) + 2)) = ((M : ℝ) + 2) ^ 2 by
-      rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num,
-        Real.exp_nat_mul, Real.exp_log hp]] at he
+      rw [show 2 * Real.log ((M : ℝ) + 2) =
+        Real.log ((M : ℝ) + 2) + Real.log ((M : ℝ) + 2) by ring,
+        Real.exp_add, Real.exp_log hp]
+      ring] at he
   have hm := mul_le_mul_of_nonneg_left he Real.pi_pos.le
   apply (nativeQuadraticRankScale_le_quadratic M).trans
   convert hm using 1

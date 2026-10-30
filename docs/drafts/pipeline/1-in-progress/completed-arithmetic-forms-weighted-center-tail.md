@@ -34,3 +34,17 @@ The full quadratic integrand is essential. The corpus's linear
 the pointwise Schur complement. Positivity of a local complete head does not
 by itself give the sign of that linear integrand.
 The weighted tail and fixed-minimizer identities require formalization.
+
+The inherited odd rank-three compensation cannot be extended by a nonnegative
+load on the new diagonal: `ThetaCuspInheritedOddCompensation.not_exists_global_inherited_posSemidef`
+gives a literal source witness at $q=7$. Its uncorrected source energy is
+positive, and the sharp admissible correction interval is
+$0<C<\mathrm{correctionBudget}<C_3$.
+The coupled correction has an exact determinant identity
+$$H\det K=D_{3,\mathrm{corr}}\,\mathrm{gap}-\mathrm{residual}^2.$$
+The actual regular direction solves
+$x t'+P(x)t=F(x)$ and makes the residual identically zero. Its seam value is
+optimal and its seam gap is strictly positive; global gap positivity and a
+controlled tail join are separate inputs. These are the exact statements of
+`ThetaCuspCoupledOddDirectionTransport.lean` and
+`ThetaCuspCoupledOddTransportSchur.lean`.

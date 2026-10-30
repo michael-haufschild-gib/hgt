@@ -43,6 +43,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.HermiteContractionPayment
 import GaloisForLFunctions.CompletedArithmeticForms.GaussianContractionBound
 import GaloisForLFunctions.CompletedArithmeticForms.NativeQuadraticRank
 import GaloisForLFunctions.CompletedArithmeticForms.QuadraticRankHorizon
+import GaloisForLFunctions.CompletedArithmeticForms.PhysicalQuadraticHorizon
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -80,6 +81,8 @@ Falling factorials pay each common-contraction coefficient by geometric degree-g
 The complete physical first-atom Hermite form has a quadratic relative Gaussian rank cost.
 The infinite native remainder adds only a linear rank payment to this full-form estimate.
 Every shifted head and exact native Schur successor retains the quadratic joint degree payment.
+The physical complete-form center horizon has unit logarithmic rank growth, and the
+first failing first-atom mixed dimension exceeds the square root of source scale up to constants.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/

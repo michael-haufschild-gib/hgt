@@ -42,13 +42,13 @@ theorem bumpRobin_le_of_nearPlateau {g : ℝ → ℝ} (hg : Continuous g)
     (setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => by rw [hsupp u hu, hF]).symm
   have hL1 : ∫ u, |g u| ≤ B := by
     rw [hrest (fun z => |z|) (by norm_num)]
-    have := setIntegral_mono_on (hg.abs.integrableOn_Icc) (continuous_const.integrableOn_Icc)
+    have := setIntegral_mono_on (μ := volume) (hg.abs.integrableOn_Icc) (continuous_const.integrableOn_Icc)
       measurableSet_Icc fun u (_ : u ∈ Set.Icc (0 : ℝ) 1) => by
         rw [abs_of_nonneg (hg0 u)]; exact hgB u
     simpa using this
   have hL2 : ∫ u, g u ^ 2 ≤ B ^ 2 := by
     rw [hrest (fun z => z ^ 2) (by norm_num)]
-    have := setIntegral_mono_on ((hg.pow 2).integrableOn_Icc) (continuous_const.integrableOn_Icc)
+    have := setIntegral_mono_on (μ := volume) ((hg.pow 2).integrableOn_Icc) (continuous_const.integrableOn_Icc)
       measurableSet_Icc fun u (_ : u ∈ Set.Icc (0 : ℝ) 1) =>
         pow_le_pow_left₀ (hg0 u) (hgB u) 2
     simpa using this
@@ -70,8 +70,9 @@ theorem bumpRobin_le_of_nearPlateau {g : ℝ → ℝ} (hg : Continuous g)
           have h1 := hm u ⟨hu.1, by linarith [hu.2]⟩
           have h2 := hm (u + y) ⟨by linarith [hu.1], by linarith [hu.2]⟩
           rw [sq]; exact mul_le_mul h1 h2 hm₀ (hg0 u)
-    have hsub := setIntegral_le_integral hint (Filter.Eventually.of_forall fun u =>
-      mul_nonneg (hg0 u) (hg0 (u + y)))
+    have hsub : ∫ u in Set.Icc η (1 - η - y), g u * g (u + y) ≤ ∫ u, g u * g (u + y) :=
+      setIntegral_le_integral hint (Filter.Eventually.of_forall fun u =>
+        mul_nonneg (hg0 u) (hg0 (u + y)))
     linarith
   set Q : ℝ → ℝ := fun y => ∫ u, (g u - g (u + y)) ^ 2 with hQdef
   have hQm : StronglyMeasurable Q := by

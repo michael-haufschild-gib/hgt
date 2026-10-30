@@ -1,7 +1,7 @@
 # Quadratic complete-form rank payment
 
 **ID:** completed-arithmetic-forms-gaussian-derivative-payment  
-**Stage:** In progress  
+**Stage:** Formalized in Lean 4  
 **Type:** Complete native source estimate and physical rank consequences
 
 Put $q=\pi e^{2x}$, $D=50e\exp(2e)$, $A=27e^{3\pi}/399$, and
@@ -45,6 +45,11 @@ $$|S_N-C_{N,s}|\le(J_M/q)C_{N,s},\qquad q\ge16(M+2)^2,\quad q>J_M.$$
 On $q\ge Q_M$ its bounds are strict: $C_{N,s}/2<S_N<3C_{N,s}/2$.
 These statements and the half-Gaussian reserve of both native and first-atom
 shifted heads are formalized in `QuadraticRankHorizon.lean`; all five capstones
-have only the standard axioms. The proposed physical center bound is
+have only the standard axioms. The physical center bound is
 $$X_M=\max\bigl(0,\tfrac12\log(C_2/\pi)+\log(M+2)\bigr).$$
-The quadratic universal scale envelope and physical-rank consequences require their Lean audit.
+Every literal native and first-atom rank-$N$ signed head is strict at
+$x\ge X_{N+1}$. The first failing physical first-atom dimension satisfies
+$$\sqrt{q/C_2}<\kappa(x)+3.$$
+These consequences and the quadratic universal envelope are formalized in
+`PhysicalQuadraticHorizon.lean`; all five capstones have only `propext`,
+`Classical.choice`, and `Quot.sound`.

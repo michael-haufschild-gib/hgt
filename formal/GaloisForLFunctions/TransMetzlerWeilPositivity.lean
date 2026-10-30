@@ -10,6 +10,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyCriticalGrowth
 import GaloisForLFunctions.TransMetzlerWeilPositivity.TheFixedProfileReachesAnIteratedLogEndpoint
 import GaloisForLFunctions.TransMetzlerWeilPositivity.FixedOverlapHasLogarithmicDivisorRows
 import GaloisForLFunctions.TransMetzlerWeilPositivity.TheSuccessorFiberHasAnExactOpenThreshold
+import GaloisForLFunctions.TransMetzlerWeilPositivity.FactorialSuccessorsForceUnboundedPrimeCorrections
 import GaloisForLFunctions.TransMetzlerWeilPositivity.CompleteWeilLengthHeight
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyLengthHeight
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ThePlateauOverlapGramIsNondegenerate
@@ -37,6 +38,15 @@ Umbrella for the theory of atomic Weil positivity across and beyond the Metzler 
 * exact conductor-one reference floor and full Young-parameter optimization: a unique zero of the
   certified floor characterizes this bound family's positive range; at `c = 1 + 10⁻¹⁶` the actual
   complete matrices eventually have floor `1/400` (`TransMetzlerYoungOptimization`);
+* exact successor-fiber onset, positive touching values tending to zero, and logarithmic weighted
+  divisor-fiber growth at every fixed overlap above one; factorial successor horizons classify
+  eventual Euclidean boundedness of the actual non-ratio prime correction exactly by `c ≤ 1`
+  (`TheSuccessorFiberHasAnExactOpenThreshold`, `FactorialSuccessorsForceUnboundedPrimeCorrections`);
+* strict positivity of every finite plateau overlap Gram, together with failure of any uniform
+  coefficient-mass floor along growing overlap and an explicit adjacent-vector bound of order
+  `c⁻²` (`ThePlateauOverlapGramIsNondegenerate`, `GrowingOverlapHasNoUniformGramFloor`);
+* exact length-height transport of the complete matrix, and asymptotic height substitution in
+  the super-Gevrey receiver (`CompleteWeilLengthHeight`, `SuperGevreyLengthHeight`);
 * Fejér–Abel center floor, bounded-pole hyperplane witnesses, and breakdown of the Liouville twin
   above the Robin–Euler ratio `exp(β(φ)/‖φ‖₂²) / (2π) < 1/2` (`LiouvilleTwinSelectivity`);
 * zero-side implications under `RiemannHypothesis` and finite off-line support, sharp linear-in-`c`
