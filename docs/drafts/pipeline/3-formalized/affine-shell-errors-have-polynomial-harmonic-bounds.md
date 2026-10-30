@@ -1,7 +1,7 @@
 # Affine shell errors have polynomial harmonic bounds
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement
@@ -30,5 +30,8 @@ all overlap and shift choices remain simultaneous.
 
 ## Lean status
 
-Formalization follows directly. Supporting actual norm estimate; no
-separate contribution count.
+`AffineShellErrorsHavePolynomialHarmonicBounds` proves the generic
+shifted source estimate and its explicit tilted-spline specialization.
+Final direct Lean check passed without warnings; both transitive axiom
+audits contain only standard logical axioms. CACT umbrella wired.
+Supporting actual norm estimate; no separate contribution count.

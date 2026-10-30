@@ -1,8 +1,8 @@
 # The flip threshold grows like a power of the prime
 
 - **ID:** the-flip-threshold-grows-like-a-power-of-the-prime
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** review-2910 breakthrough-question-2 (Q2: "the growth of `c*(p)` is the selectivity
   spectrum of the overlap ratio"); EAHT Q5; C5/C6 (`EveryFlippedPrimeIsSeenAtLargeOverlap`,
   `NoFixedOverlapSeesEveryFlip`).
@@ -32,5 +32,15 @@ Write `M = ‖φ‖²`, `T(y) = ∫_y^∞ |φ̂(2πt)|² dt`, `E_m(c)` the compl
    `≥ (E_1(c)/2)` per unit mass eventually, and `E_1(c) ≥ C/max(c,1)⁷` (polynomial floor,
    monotonicity). Positivity when `16(1 + 2e) max(c,1)⁸ log p < C√p`.
 
+## Lean
+
+`RenormalizedArithmeticPotentialTheory/TheFlipThresholdGrowsLikeAPowerOfThePrime.lean`:
+`integral_shellSpectrum_eq`, `setIntegral_Ioi_shellSpectrum_le`, `completedConductorEnergy_le_one`,
+`completedShellEnergy_le_log`, `completedShellEnergy_le_pow`, `shellSpectrum_tiltedUnitSpline_le`,
+`flipTrialEnergy_eq`, `tiltedUnitSpline_flip_negative_of_large_overlap`,
+`integral_atomicTest_sq_le_of_le_horizon`, `eventually_flip_posDef_of_margin`,
+`tiltedUnitSpline_flip_posDef_of_small_overlap`, `tiltedUnitSpline_flip_threshold_polynomial`.
+Wired into `RenormalizedArithmeticPotentialTheory.lean`.
+
 ## Log
-- 2026-10-30 — paper proof; Lean in progress (`RAPT/TheFlipThresholdGrowsLikeAPowerOfThePrime.lean`).
+- 2026-10-30 — paper proof and Lean formalization.

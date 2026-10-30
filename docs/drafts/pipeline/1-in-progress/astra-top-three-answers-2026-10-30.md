@@ -128,6 +128,19 @@ PSD) and bound only beyond three atoms.
 Certificate format: piece-fixed central coordinates `y* = A(q*)c`; per piece a constant
 matrix bound via entry intervals in `t = q − q₀` plus a rational LDLᵀ check.
 
+Formalized: `ThetaCuspThreeAtomCauchyTail.lean` (`native_threeAtom_cauchy_error`: beyond three
+atoms `|Δ_n| ≤ n!·8000 f₁² e^{-(529/50)q}/(3/20)^n` on `q ≥ 3`); `ThetaCuspPairRadialValues.lean`
+(pairs (1,1),(1,2),(1,3),(2,3), orders 1–7); `ThetaCuspOddFourThreeAtomModel.lean`
+(`nativeOddForm_ge_threeAtom`: fibre ≥ `K(q)·vᵀT(q)v − Σ|v_i||v_j|·tail`, diagonal pairs dropped as
+PSD).
+
+Exact-rational certificate dry run (Python, rigorous t-expansions, outward-rounded exp bounds,
+Gershgorin radii, tail radii, LDL checks): seam pieces of width 0.1 on `[3,5]` (20) and bulk pieces
+of width 0.25 on `[5,8]` (12), center expansions in piece-fixed frames `A(q*)`: final 4×4
+comparison PSD, ratio 0.064. Coarser grids fail at the bulk piece at 5 (crude `e^{-3q}` interval).
+Lean obstacle: direct identities with exact `A(q*)⁻¹` literals time out at elaboration; must
+split into small lemmas or use frames with short rational entries (no budget raises).
+
 Remaining for rank eight: a provable structured lower bound for the mixed atom pair on
 `q∈[π,5]` capturing that direction, bulk coercivity on `q≥5` without compensation, and the
 certified 4×4 comparison of the two integrated forms.

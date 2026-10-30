@@ -18,7 +18,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticHarmonicAnalysis
 
-open HTGeometry ArithmeticCorrelationGeometry ArithmeticGaugeTheory
+open ArithmeticCorrelationGeometry ArithmeticGaugeTheory
+open HTGeometry (torusCharacter_apply_of_subset)
 
 variable (q : ℕ) [NeZero q]
 
@@ -43,9 +44,9 @@ theorem isAdamsFixed_torsionGauge (P : Finset ℕ) (t : P → ZMod q) :
   rw [adams, add_nsmul, one_nsmul, torsionGauge_nsmul, zero_add]
 
 private theorem fourier_toAddCircle (k : ℕ) (z : ZMod q) :
-    fourier (k : ℤ) (ZMod.toAddCircle z) = ZMod.stdAddChar (z * k) := by
+    fourier (k : ℤ) (ZMod.toAddCircle z) = ZMod.stdAddChar (z * (k : ZMod q)) := by
   rw [fourier_apply, ← map_zsmul]
-  change (ZMod.toCircle ((k : ℤ) • z) : ℂ) = (ZMod.toCircle (z * k) : ℂ)
+  change (ZMod.toCircle ((k : ℤ) • z) : ℂ) = (ZMod.toCircle (z * (k : ZMod q)) : ℂ)
   congr 2
   simp only [natCast_zsmul, nsmul_eq_mul, mul_comm]
 
@@ -62,6 +63,7 @@ theorem twist_torsionGauge (P : Finset ℕ) (t : P → ZMod q) (n : ℕ)
     rw [torsionGauge, dif_pos p.property, expVec_apply, fourier_toAddCircle]
   exact hprod
 
+omit [NeZero q] in
 private theorem short_factorization_support (n : ℕ) (hn : n ∈ Ioo 0 (2 ^ q)) :
     n.factorization.support ⊆ shortPrimes q := by
   intro p hp

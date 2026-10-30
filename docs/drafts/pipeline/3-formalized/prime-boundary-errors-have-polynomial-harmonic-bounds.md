@@ -1,7 +1,7 @@
 # Prime boundary errors have polynomial harmonic bounds
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -25,5 +25,8 @@ Use `log L≤2√L`, `1+log(8b)≤8b`, `b≥1`, `L≥1` to bound this by
 
 ## Lean status
 
-Formalization follows directly. Supporting literal cutoff estimate;
-no separate contribution count.
+`PrimeBoundaryErrorsHavePolynomialHarmonicBounds.lean` proves
+`primeIndexBoundaryMass_le_sqrt` and
+`exists_linearizedUpwardCoefficient_boundary_polynomial_harmonic_bound`.
+Final direct Lean audit passed without warnings; both axiom audits contain
+only `propext`, `Classical.choice`, `Quot.sound`. No separate count.

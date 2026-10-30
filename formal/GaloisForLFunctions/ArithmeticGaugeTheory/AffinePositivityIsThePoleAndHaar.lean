@@ -120,7 +120,7 @@ theorem affine_nonneg_iff (hdil : ∀ a m n, 1 ≤ a → 1 ≤ m → 1 ≤ n →
     (hsucc : ∀ m n, 1 ≤ m → 1 ≤ n → K (m + 1) (n + 1) = K m n) :
     (∀ s : Finset ℕ, (∀ n ∈ s, 1 ≤ n) → ∀ v, 0 ≤ kernelForm K s v) ↔
       0 ≤ (K 1 2 + K 2 1) / 2 ∧ (K 1 2 + K 2 1) / 2 ≤ K 1 1 := by
-  set c := (K 1 2 + K 2 1) / 2
+  set c := (K 1 2 + K 2 1) / 2 with hcdef
   constructor
   · intro h
     -- The pole-free test vector `e₁ − e₂`.
@@ -134,12 +134,15 @@ theorem affine_nonneg_iff (hdil : ∀ a m n, 1 ≤ a → 1 ≤ m → 1 ≤ n →
       have hM := h (Icc 1 M) (fun n hn => (mem_Icc.mp hn).1) fun _ => 1
       rw [kernelForm_affine hdil hsucc (fun n hn => (mem_Icc.mp hn).1)] at hM
       simpa using hM
-    refine ⟨?_, by linarith⟩
+    refine ⟨?_, by linarith [hcdef]⟩
     by_contra hc
     push Not at hc
     obtain ⟨M, hM⟩ := exists_nat_gt ((K 1 1 - c) / (-c))
-    have hMpos : (0 : ℝ) < M := lt_of_le_of_lt (div_nonneg (by linarith) (by linarith)) hM
-    have hlt : K 1 1 - c < -c * M := by rwa [div_lt_iff₀ (by linarith)] at hM
+    have hMpos : (0 : ℝ) < M :=
+      lt_of_le_of_lt (div_nonneg (by linarith [hcdef]) (by linarith)) hM
+    have hlt : K 1 1 - c < -c * M := by
+      rw [div_lt_iff₀ (by linarith)] at hM
+      linarith
     have := hpole M
     nlinarith
   · rintro ⟨hc0, hcD⟩ s hs v
@@ -182,9 +185,6 @@ theorem kernelForm_affine_eq_gauge
   rw [integral_twistSum_mul_conj (fun n hn => by have := hs n hn; omega), twistSum_trivial,
     kernelForm_affine hdil hsucc hs]
   push_cast
-  simp only [Complex.conj_ofReal, ← map_sum]
-  rw [Complex.conj_ofReal]
-  push_cast
-  ring
+  simp only [map_sum, Complex.conj_ofReal, sq]
 
 end GaloisForLFunctions.ArithmeticGaugeTheory

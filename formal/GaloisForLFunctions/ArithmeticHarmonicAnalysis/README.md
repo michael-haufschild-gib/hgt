@@ -112,6 +112,35 @@ index.
 
 ## Foundations and intended pillars
 
+The first exact resolution law concerns the full order-`d` prime torsion
+grid. For a finite prime set `P`, write
+
+`F(t)=Σ_n a_n exp(2πi Σ_{p∈P} t_p v_p(n)/d)` and
+`A(r)=Σ_{v_P(n)≡r (mod d)} a_n`.
+
+Then
+
+`Σ_t F(t) conj(exp(2πi⟨t,r⟩/d)) = d^|P| A(r)`,
+
+`Σ_t |F(t)|² = d^|P| Σ_r |A(r)|²`.
+
+Thus every collision is explicit: vanishing means cancellation within each
+valuation-residue fibre. Below integer support `2^d`, there are no collisions
+among positive integers when all their prime factors are sampled. The
+resulting arithmetic auxiliary vanishes on the entire `ψ^(d+1)` fixed locus
+exactly when all its coefficients vanish. At the boundary, `χ(2^d)−1`
+vanishes there. Fourier inversion also recovers every individual coefficient
+below that boundary.
+
+The statements are in
+[TorsionFourierResolution.lean](TorsionFourierResolution.lean),
+[TorsionArithmeticResolution.lean](TorsionArithmeticResolution.lean), and
+[AdamsFixedLocusResolution.lean](AdamsFixedLocusResolution.lean).
+This imports classical finite Fourier inversion into the arithmetic support
+filtration and identifies its exact first obstruction. It bounds support
+length; coefficient height, evaluation size and prime counting require
+different inputs.
+
 The existing foundations belong to their original programmes: the gauge
 torus, its Haar laws, exponent dictionary and Adams operations; complete
 bounded-overlap positivity and its Fourier margin; arithmetic Bézout and

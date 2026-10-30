@@ -12,7 +12,15 @@ Write `M = ‖φ‖²`, `T(y) = ∫_y^∞ |φ̂(2πt)|² dt` and `E_m(c)` for th
 * **Plancherel** (`setIntegral_Ioi_shellSpectrum_le`): `T(0) ≤ M/2`.
 * **Conductor bounds** (`completedConductorEnergy_le_one`, `completedShellEnergy_le_log`,
   `completedShellEnergy_le_pow`): `E_m(c) ≤ (m/φ(m)) E_1(c/m)`, and if `T(y) ≤ B y⁻⁷` then
-  `E_1(y) ≤ 1 + log⁺(1/y) + 4B/M` and, for `y ≥ 1`, `E_1(y) ≤ (4B/M) y⁻⁷`.
+  `E_1(y) ≤ 1 + log⁺(1/y) + 4B/M` and, for `y ≥ 1`, `E_1(y) ≤ (4B/M) y⁻⁷`.* **Upper threshold** (`tiltedUnitSpline_flip_negative_of_large_overlap`): for the tilted unit
+  spline (`|φ̂(2πt)|² ≤ A t⁻⁸`) the prime-square trial of the `p`-flip has energy
+  `E_1(c) − (1/p)(log c − O(1))`: its `log p/p` excitation cancels exactly against the flip gain
+  because `T(0) = M/2`. Every prime is seen at overlap `O(p^{1/7})`.
+* **Lower threshold** (`tiltedUnitSpline_flip_posDef_of_small_overlap`): the flip moves the form
+  by `≤ (8 log p/√p)∫f²`, the atomic Gram is `≤ 1 + 2ec`, the margin is `E_1(c) ≥ C c⁻⁷`; no
+  overlap `c ≤ (κ√p/log p)^{1/8}` sees the `p`-flip.
+* **The selectivity spectrum** (`tiltedUnitSpline_flip_threshold_polynomial`):
+  `(κ√p/log p)^{1/8} ≤ c*(p) ≤ (Kp)^{1/7}`.
 -/
 
 noncomputable section
@@ -485,7 +493,7 @@ theorem tiltedUnitSpline_flip_negative_of_large_overlap :
     rw [completedConductorEnergy_one]
     refine (tiltedUnitSpline_completedShellEnergy_le_pow hc1).trans ?_
     rw [Real.rpow_neg hc0.le, show (c ^ (7 : ℝ)) = c ^ 7 by norm_cast, ← div_eq_mul_inv,
-      div_le_div_iff₀ (by positivity) hq0]
+      div_le_div_iff₀ (pow_pos hc0 7) hq0]
     nlinarith [mul_le_mul_of_nonneg_right hKK₀ hq0.le]
   have hE1nn : 0 ≤ completedConductorEnergy tiltedUnitSpline c 1 :=
     completedConductorEnergy_nonneg hφ hsupp hM hc0 one_pos
@@ -501,16 +509,17 @@ theorem tiltedUnitSpline_flip_negative_of_large_overlap :
     refine (completedConductorEnergy_le_one hφ hsupp hM hc0 hp.pos).trans ?_
     rw [htp]
     refine mul_le_mul_of_nonneg_left ((tiltedUnitSpline_completedShellEnergy_le_log
-      (div_pos hc0 hq0)).trans (le_of_eq ?_)) (by positivity)
+      (div_pos hc0 hq0)).trans (le_of_eq ?_)) (div_nonneg hq0.le hq1.le)
     rw [one_div_div, Real.log_div hq0.ne' hc0.ne', max_zero_log_sub_eq]
     ring
   have hEp2 : completedConductorEnergy tiltedUnitSpline c (p ^ 2) ≤
       q / (q - 1) * (1 + K₀ + 2 * Real.log q - min (Real.log c) (Real.log q)) := by
     refine (completedConductorEnergy_le_one hφ hsupp hM hc0 (pow_pos hp.pos 2)).trans ?_
     rw [htp2]
-    have hcq : 0 < c / ((p ^ 2 : ℕ) : ℝ) := div_pos hc0 (by positivity)
+    have hp2pos : (0 : ℝ) < ((p ^ 2 : ℕ) : ℝ) := by exact_mod_cast pow_pos hp.pos 2
+    have hcq : 0 < c / ((p ^ 2 : ℕ) : ℝ) := div_pos hc0 hp2pos
     have hlog := tiltedUnitSpline_completedShellEnergy_le_log hcq
-    rw [one_div_div, Real.log_div (by positivity) hc0.ne'] at hlog
+    rw [one_div_div, Real.log_div hp2pos.ne' hc0.ne'] at hlog
     push_cast at hlog
     rw [Real.log_pow, Nat.cast_ofNat] at hlog
     have hmax := max_zero_two_log_sub_le (Real.log q) (Real.log c) hL0
@@ -519,8 +528,8 @@ theorem tiltedUnitSpline_flip_negative_of_large_overlap :
         = q / (q - 1) * completedShellEnergy tiltedUnitSpline (c / q ^ 2) := by
           congr 1; field_simp
       _ ≤ q / (q - 1) * (1 + max 0 (2 * Real.log q - Real.log c) + K₀) :=
-          mul_le_mul_of_nonneg_left hlog (by positivity)
-      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+          mul_le_mul_of_nonneg_left hlog (div_nonneg hq0.le hq1.le)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (div_nonneg hq0.le hq1.le)
   -- the trial energy plus the flip gain is negative
   have ha1 : 0 ≤ 1 - 2 / q + 2 / q ^ 2 := by
     have : 2 / q ≤ 1 := by rw [div_le_one hq0]; linarith
@@ -543,13 +552,13 @@ theorem tiltedUnitSpline_flip_negative_of_large_overlap :
         4 * (q - 1) ^ 2 / q ^ 3 * (X + Real.log q) := by
       calc _ ≤ (-2 / q + 2 / q ^ 2) ^ 2 * (q - 1) *
             (q / (q - 1) * (1 + K₀ + Real.log q - min (Real.log c) (Real.log q))) :=
-            mul_le_mul_of_nonneg_left hEp (by positivity)
+            mul_le_mul_of_nonneg_left hEp (mul_nonneg (sq_nonneg _) hq1.le)
         _ = _ := by field_simp; ring
     have hT3 : (2 / q ^ 2) ^ 2 * (q * (q - 1)) *
         completedConductorEnergy tiltedUnitSpline c (p ^ 2) ≤ 4 / q ^ 2 * (X + 2 * Real.log q) := by
       calc _ ≤ (2 / q ^ 2) ^ 2 * (q * (q - 1)) *
             (q / (q - 1) * (1 + K₀ + 2 * Real.log q - min (Real.log c) (Real.log q))) :=
-            mul_le_mul_of_nonneg_left hEp2 (by positivity)
+            mul_le_mul_of_nonneg_left hEp2 (mul_nonneg (sq_nonneg _) (mul_nonneg hq0.le hq1.le))
         _ = _ := by field_simp; ring
     have hgain : flipGain p = 4 * Real.log q / q * (-1 + 2 / q ^ 2) +
         2 * (2 * Real.log q / (q * (q ^ 2 - 1))) * (1 - 1 / q + 1 / q ^ 2) := rfl
@@ -558,5 +567,199 @@ theorem tiltedUnitSpline_flip_negative_of_large_overlap :
   exact eventually_flip_negative_of_energy hφ hsupp hM hp hc0 hneg
 
 end Upper
+
+/-! ### The lower threshold: `c*(p) ≥ p^{1/16 − o(1)}` -/
+
+section Lower
+
+open ArithmeticElectrostatics
+
+/-- At overlap `c ≤ N` each atom meets at most `1 + 2ec` atoms: the atomic Gram operator is
+bounded by `(1 + 2ec) ‖g‖²`. -/
+theorem integral_atomicTest_sq_le_of_le_horizon {g : ℝ → ℝ} {c : ℝ} {N : ℕ}
+    (hg : Continuous g) (hgc : HasCompactSupport g) (hc : 0 < c) (hcN : c ≤ N)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 (c / N) → g u = 0) (x : ℕ → ℝ) :
+    (∫ u, atomicTest N x g u ^ 2) ≤
+      (∫ u, g u ^ 2) * (1 + 2 * Real.exp 1 * c) * ∑ n ∈ Finset.Icc 1 N, x n ^ 2 := by
+  have hNR : (0 : ℝ) < N := hc.trans_le hcN
+  have hw1 : c / N ≤ 1 := (div_le_one hNR).mpr hcN
+  have he : (N : ℝ) * (Real.exp (c / N) - 1) ≤ Real.exp 1 * c := by
+    calc _ ≤ N * (c / N * Real.exp (c / N)) :=
+          mul_le_mul_of_nonneg_left exp_sub_one_le_mul_exp hNR.le
+      _ = c * Real.exp (c / N) := by field_simp
+      _ ≤ c * Real.exp 1 := mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hw1) hc.le
+      _ = _ := by ring
+  have h := integral_atomicTest_sq_le_overlap_rows hg hgc hsupp (div_pos hc hNR).le N x
+  have hG : 0 ≤ ∫ u, g u ^ 2 := integral_nonneg fun u => sq_nonneg _
+  have hS : 0 ≤ ∑ n ∈ Finset.Icc 1 N, x n ^ 2 := Finset.sum_nonneg fun n _ => sq_nonneg _
+  exact h.trans (mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_left (by linarith only [he]) hG) hS)
+
+/-- **Positivity of the flip from the margin.** If `16(1 + 2ec) log p/√p < E(c)` the `p`-flipped
+form is eventually positive on every nonzero atomic family at overlap `c`: the flip moves the form
+by at most `(8 log p/√p) ∫ f²`, the atomic mass is at most `(1 + 2ec)‖g‖² Σ x_n²`, and `ζ`'s form is
+eventually at least `(E(c)/2)‖g‖² Σ x_n²`. -/
+theorem eventually_flip_posDef_of_margin {c : ℝ} (hc : 0 < c) {p : ℕ} (hp : p.Prime)
+    (hp4 : 4 ≤ p)
+    (hmargin : 16 * (1 + 2 * Real.exp 1 * c) * (Real.log p / Real.sqrt p) <
+      completedShellEnergy tiltedUnitSpline c) :
+    ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ, (∃ n ∈ Finset.Icc 1 N, x n ≠ 0) →
+      0 < weilQuadTw (ArithmeticCountingPositivity.primeFlipWeight p)
+        (atomicTest N x (atomDilate tiltedUnitSpline (c / N))) := by
+  set E := completedShellEnergy tiltedUnitSpline c with hEdef
+  set B := 1 + 2 * Real.exp 1 * c with hB
+  have hB0 : 0 < B := by positivity
+  have hlp : 0 ≤ Real.log p / Real.sqrt p :=
+    div_nonneg (Real.log_natCast_nonneg p) (Real.sqrt_nonneg _)
+  have hE0 : 0 < E := lt_of_le_of_lt (by positivity) hmargin
+  filter_upwards [tiltedUnitSpline_spectrum_bottom hc (half_pos hE0), eventually_ge_atTop 1,
+    eventually_ge_atTop ⌈c⌉₊] with N hN hN1 hNc x hx
+  obtain ⟨hbot, -⟩ := hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hcN : c ≤ N := (Nat.le_ceil c).trans (by exact_mod_cast hNc)
+  have hw0 : 0 < c / N := div_pos hc hN0
+  obtain ⟨hg, hgsupp, hgc⟩ := atomDilate_facts contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero hw0
+  set g := atomDilate tiltedUnitSpline (c / N) with hgdef
+  set G0 := ∫ u, g u ^ 2 with hG0def
+  have hG0 : 0 < G0 := by
+    rw [hG0def, hgdef, integral_atomDilate_sq hw0]
+    exact mul_pos hw0 integral_tiltedUnitSpline_sq_pos
+  set S := ∑ n ∈ Finset.Icc 1 N, x n ^ 2 with hSdef
+  have hS : 0 < S := by
+    obtain ⟨n, hn, hxn⟩ := hx
+    exact lt_of_lt_of_le (pow_pos (abs_pos.mpr hxn) 2 |>.trans_eq (sq_abs _))
+      (Finset.single_le_sum (fun m _ => sq_nonneg (x m)) hn)
+  set xv : EuclideanSpace ℝ (PrimeHorizonIndex N) := WithLp.toLp 2 (fun n => x n) with hxv
+  have hnorm : ‖xv‖ ^ 2 = S := by
+    rw [EuclideanSpace.real_norm_sq_eq, hSdef, ← Finset.sum_coe_sort (Finset.Icc 1 N)]
+  have hzeta : G0 * (E / 2 * S) ≤ weilQuad (atomicTest N x g) := by
+    have h := completeWeilMatrix_inner_eq_weilQuad contDiff_tiltedUnitSpline
+      tiltedUnitSpline_eq_zero hc hN1 xv
+    rw [← atomicTest_restrict] at h
+    have hlow : E / 2 * ‖xv‖ ^ 2 ≤
+        inner ℝ (Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) xv) xv := by
+      rw [HTGeometry.hermitianEnergy_eq_sum (completeWeilMatrix_isHermitian tiltedUnitSpline c N),
+        ← (completeWeilMatrix_isHermitian tiltedUnitSpline c N).eigenvectorBasis.sum_sq_inner_left xv,
+        Finset.mul_sum]
+      refine Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
+      have := hbot i
+      rw [completeWeilEigenvalue] at this
+      linarith
+    rw [h, hnorm] at hlow
+    rw [← hgdef, ← hG0def] at hlow
+    rw [le_div_iff₀ hG0] at hlow
+    linarith
+  have hmass := integral_atomicTest_sq_le_of_le_horizon hg.continuous hgc hc hcN hgsupp x
+  have hdiff := abs_weilQuadTw_flip_sub_le hg hgsupp hw0.le hp hp4 N x
+  have hlp8 : 0 ≤ 8 * Real.log p / Real.sqrt p :=
+    div_nonneg (mul_nonneg (by norm_num) (Real.log_natCast_nonneg p)) (Real.sqrt_nonneg _)
+  have hpertG : 8 * Real.log p / Real.sqrt p * ∫ t, atomicTest N x g t ^ 2 ≤
+      8 * Real.log p / Real.sqrt p * (G0 * B * S) :=
+    mul_le_mul_of_nonneg_left hmass hlp8
+  have hsmallG : 8 * Real.log p / Real.sqrt p * (G0 * B * S) < G0 * (E / 2 * S) := by
+    have h1 : 8 * B * (Real.log p / Real.sqrt p) < E / 2 := by linarith
+    have : 8 * Real.log p / Real.sqrt p * (G0 * B * S) =
+        G0 * S * (8 * B * (Real.log p / Real.sqrt p)) := by ring
+    rw [this, show G0 * (E / 2 * S) = G0 * S * (E / 2) by ring]
+    exact mul_lt_mul_of_pos_left h1 (mul_pos hG0 hS)
+  linarith [(abs_le.mp hdiff).1]
+
+/-- The pole energy decreases with the overlap. -/
+theorem completedShellEnergy_antitone {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2) {c c' : ℝ} (hc : 0 < c)
+    (hcc : c ≤ c') : completedShellEnergy φ c' ≤ completedShellEnergy φ c := by
+  have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hsupp u hu
+  refine hasSum_le (fun n => ?_) (hasSum_completedShellEnergy hφ hsupp hM (hc.trans_le hcc))
+    (hasSum_completedShellEnergy hφ hsupp hM hc)
+  have hn : (0 : ℝ) ≤ (n : ℝ) + 1 := by positivity
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  exact setIntegral_mono_set
+    (CriticalArithmeticCorrelationTheory.integrableOn_shellSpectrum_Ioi hφ hφc _)
+    (ae_of_all _ fun t => shellSpectrum_nonneg t)
+    (Eventually.of_forall (Ioi_subset_Ioi (mul_le_mul_of_nonneg_left hcc hn)))
+
+/-- The polynomial floor of the pole energy at every overlap. -/
+theorem tiltedUnitSpline_completedShellEnergy_ge {c : ℝ} (hc : 0 < c) :
+    (2 * CriticalArithmeticCorrelationTheory.tiltedSplineTailConstant /
+        (∫ u, tiltedUnitSpline u ^ 2)) / max c 1 ^ 7 ≤
+      completedShellEnergy tiltedUnitSpline c := by
+  have h := CriticalArithmeticCorrelationTheory.tiltedUnitSpline_completedConductorEnergy_ge_polynomial_floor
+    (le_max_right c 1) one_pos
+  rw [completedConductorEnergy_one] at h
+  exact h.trans (completedShellEnergy_antitone contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
+    integral_tiltedUnitSpline_sq_pos hc (le_max_left c 1))
+
+/-- **Small overlaps do not see large primes.** There is `κ > 0` such that for every prime
+`p ≥ 4` and every overlap `c > 0` with `max(c, 1)⁸ log p ≤ κ √p`, the `p`-flipped complete form
+is eventually positive on every nonzero atomic family. -/
+theorem tiltedUnitSpline_flip_posDef_of_small_overlap :
+    ∃ κ : ℝ, 0 < κ ∧ ∀ p : ℕ, p.Prime → 4 ≤ p → ∀ c : ℝ, 0 < c →
+      max c 1 ^ 8 * Real.log p ≤ κ * Real.sqrt p →
+        ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ, (∃ n ∈ Finset.Icc 1 N, x n ≠ 0) →
+          0 < weilQuadTw (ArithmeticCountingPositivity.primeFlipWeight p)
+            (atomicTest N x (atomDilate tiltedUnitSpline (c / N))) := by
+  set C₀ := 2 * CriticalArithmeticCorrelationTheory.tiltedSplineTailConstant /
+    (∫ u, tiltedUnitSpline u ^ 2) with hC₀
+  have hC₀0 : 0 < C₀ := by
+    have := CriticalArithmeticCorrelationTheory.tiltedSplineTailConstant_pos
+    have := integral_tiltedUnitSpline_sq_pos
+    positivity
+  set e := Real.exp 1
+  have he : 0 < e := Real.exp_pos 1
+  refine ⟨C₀ / (32 * (1 + 2 * e)), by positivity, fun p hp hp4 c hc hsmall => ?_⟩
+  refine eventually_flip_posDef_of_margin hc hp hp4 ?_
+  set m := max c 1 with hm
+  have hm1 : 1 ≤ m := le_max_right c 1
+  have hm0 : 0 < m := by linarith
+  have hcm : c ≤ m := le_max_left c 1
+  have hsp : 0 < Real.sqrt p := Real.sqrt_pos.mpr (by exact_mod_cast hp.pos)
+  set L := Real.log p
+  have hL0 : 0 ≤ L := Real.log_natCast_nonneg p
+  have hfloor := tiltedUnitSpline_completedShellEnergy_ge hc
+  rw [← hC₀, ← hm] at hfloor
+  have hB : 1 + 2 * e * c ≤ (1 + 2 * e) * m := by nlinarith
+  have hm7 : 0 < m ^ 7 := pow_pos hm0 7
+  have key : 16 * ((1 + 2 * e) * m) * (L / Real.sqrt p) < C₀ / m ^ 7 := by
+    rw [lt_div_iff₀ hm7]
+    have h8 : m ^ 8 * L ≤ C₀ / (32 * (1 + 2 * e)) * Real.sqrt p := hsmall
+    rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)] at h8
+    have : 16 * ((1 + 2 * e) * m) * (L / Real.sqrt p) * m ^ 7 =
+        16 * (1 + 2 * e) * (m ^ 8 * L) / Real.sqrt p := by
+      field_simp
+    rw [this, div_lt_iff₀ hsp]
+    nlinarith [mul_pos hC₀0 hsp]
+  calc 16 * (1 + 2 * e * c) * (L / Real.sqrt p)
+      ≤ 16 * ((1 + 2 * e) * m) * (L / Real.sqrt p) :=
+        mul_le_mul_of_nonneg_right (by linarith) (div_nonneg hL0 hsp.le)
+    _ < C₀ / m ^ 7 := key
+    _ ≤ _ := hfloor
+
+end Lower
+
+/-- **The flip threshold grows like a power of the prime.** For the tilted unit spline there are
+`κ, K > 0` such that for every prime `p ≥ K`: at every overlap `c > 0` with
+`max(c, 1)⁸ log p ≤ κ√p` the `p`-flipped complete form is eventually positive on every nonzero
+atomic family, and at every overlap `c ≥ K` with `c⁷ ≥ Kp` it is eventually negative on the
+prime-square trial. Hence the selectivity threshold satisfies
+`(κ√p/log p)^{1/8} ≤ c*(p) ≤ (Kp)^{1/7}`. -/
+theorem tiltedUnitSpline_flip_threshold_polynomial :
+    ∃ κ K : ℝ, 0 < κ ∧ 1 ≤ K ∧ ∀ p : ℕ, p.Prime → K ≤ p →
+      (∀ c : ℝ, 0 < c → max c 1 ^ 8 * Real.log p ≤ κ * Real.sqrt p →
+        ∀ᶠ N : ℕ in atTop, ∀ x : ℕ → ℝ, (∃ n ∈ Finset.Icc 1 N, x n ≠ 0) →
+          0 < weilQuadTw (ArithmeticCountingPositivity.primeFlipWeight p)
+            (ArithmeticElectrostatics.atomicTest N x (atomDilate tiltedUnitSpline (c / N)))) ∧
+      (∀ c : ℝ, K ≤ c → K * p ≤ c ^ 7 →
+        ∀ᶠ N : ℕ in atTop, weilQuadTw (ArithmeticCountingPositivity.primeFlipWeight p)
+          (ArithmeticElectrostatics.atomicTest N
+            (fun n => TransMetzlerWeilPositivity.BoundedOverlap.primeSquareTrial p n / Real.sqrt n)
+            (atomDilate tiltedUnitSpline (c / N))) < 0) := by
+  obtain ⟨κ, hκ, hpos⟩ := tiltedUnitSpline_flip_posDef_of_small_overlap
+  obtain ⟨K₁, hK₁, hneg⟩ := tiltedUnitSpline_flip_negative_of_large_overlap
+  set K := max K₁ 4
+  refine ⟨κ, K, hκ, (le_max_left _ _).trans' hK₁, fun p hp hpK => ⟨fun c hc h => ?_, fun c hc h7 => ?_⟩⟩
+  · exact hpos p hp (by exact_mod_cast (le_max_right K₁ 4).trans hpK) c hc h
+  · have hK₁p : K₁ * p ≤ c ^ 7 :=
+      (mul_le_mul_of_nonneg_right (le_max_left K₁ 4) (Nat.cast_nonneg p)).trans h7
+    exact hneg p hp ((le_max_left _ _).trans hpK) c ((le_max_left _ _).trans hc) hK₁p
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory

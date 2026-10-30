@@ -47,6 +47,31 @@ The optimizer mass is $F_T$. Source extension changes energy by
 $c_{T+1}(2M_T+c_{T+1})/(T+1)$, so its monotonicity has an exact sign boundary.
 Lean: `TerminalCompletion`.
 
+The actual Euler source satisfies
+$$|E_{\mathrm{full}}(X,M)-\mathcal C_T(c^{X,M})|\le\frac{(M+1)^2}{T+1}.$$
+Its complete mixed pairing is bounded by $D_T(F)+(M+1)^2/(T+1)$,
+with the additional gain $-(M_T-Tb_T)^2/(T+1)$.
+Lean: `EulerTerminalCost`.
+
+For a fixed probe supported through $T$, the exact dual cost over all finite
+source supports is $D_T(F)+F_T^2$. A neutral source supported through $T+1$
+attains it. Finite-source completion itself equals the literal infinite
+accumulation series. The two truncation costs agree exactly at $F_T=0$.
+Lean: `SourceProbeBoundary`.
+
+The literal plateau Weil prefix satisfies $A\succeq I/20$ and
+$0\le b^{\mathsf T}A^{-1}b\le20\|b\|^2$ beyond one joint horizon,
+for $N\ge M$, $c>0$, $cM\le N$. Its complete mixed block gives
+$$D-20B^{\mathsf T}B\preceq D-B^{\mathsf T}A^{-1}B\preceq D.$$
+The constant remains fixed at $(c,M,N)=(3/2,2K,3K)$.
+Lean: `WeilPrefixPayment`.
+
+The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
+Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.
+The energy flux proves zero exclusion throughout this joint argument-order
+domain; source reflection and conjugation fix the positive real sign.
+Lean: `BesselSpectralBand`.
+
 For the literal Chebyshev prefix $F(N)=\sum_{2\le d<N}(\psi(d)-d)/\sqrt d$,
 let $E(N)=\sum_{2\le n\le N}F(n)^2/n^2$, $c_j=F(j)-F(j-1)$,
 and $\mathcal R_N=R_{N+1}(c_j/j)/(N+1)$. Then

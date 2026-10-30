@@ -145,7 +145,7 @@ theorem modifiedBesselKOrder_ne_zero_on_band {a τ : ℝ} (ha : 0 < a) (hτ : |�
   have hI : 0 < ∫ x in a..R₁, besselBandEnergyDensity τ x := by
     refine intervalIntegral.integral_pos hR₁
       (fun x hx => (continuousAt_besselBandEnergyDensity (ha.trans_le hx.1) τ).continuousWithinAt)
-      (fun x hx => besselBandEnergyDensity_nonneg (ha.trans_le hx.1) (hτ.trans hx.1))
+      (fun x hx => besselBandEnergyDensity_nonneg (ha.trans hx.1) (hτ.trans hx.1.le))
       ⟨x₀, ⟨hx₀a.le, by dsimp only [R₁]; linarith⟩, ?_⟩
     exact besselBandEnergyDensity_pos hx₀ (hτ.trans_lt hx₀a) hf
   have hmono (R : ℝ) (hR : R₁ ≤ R) :
@@ -181,7 +181,7 @@ theorem modifiedBesselKOrder_zero_outside_band {a : ℝ} (ha : 0 < a) {ν : ℂ}
 theorem modifiedBesselKOrder_imaginaryOrder_im (a τ : ℝ) :
     (modifiedBesselKOrder a ((τ : ℂ) * I)).im = 0 := by
   have hc := modifiedBesselKOrder_conj a ((τ : ℂ) * I)
-  have he : conj ((τ : ℂ) * I) = -((τ : ℂ) * I) := by simp
+  have he : (starRingEnd ℂ) ((τ : ℂ) * I) = -((τ : ℂ) * I) := by simp
   rw [he, modifiedBesselKOrder_neg] at hc
   have hi := congrArg Complex.im hc
   simp only [Complex.conj_im] at hi
@@ -199,7 +199,8 @@ theorem modifiedBesselKOrder_re_pos_on_band {a τ : ℝ} (ha : 0 < a) (hτ : |τ
     hXpos R (le_max_right _ _)
   have hc : ContinuousOn (fun x : ℝ => (modifiedBesselKOrder x ((τ : ℂ) * I)).re)
       (Icc a R) := fun x hx =>
-    ((hasDerivAt_modifiedBesselKOrder_arg (ha.trans_le hx.1) ((τ : ℂ) * I)).continuousAt.re).continuousWithinAt
+    (Complex.continuous_re.continuousAt.comp
+      (hasDerivAt_modifiedBesselKOrder_arg (ha.trans_le hx.1) ((τ : ℂ) * I)).continuousAt).continuousWithinAt
   obtain ⟨y, hy, he⟩ := intermediate_value_Icc haR hc ⟨ha0, hR.le⟩
   have hz : modifiedBesselKOrder y ((τ : ℂ) * I) = 0 := by
     apply Complex.ext

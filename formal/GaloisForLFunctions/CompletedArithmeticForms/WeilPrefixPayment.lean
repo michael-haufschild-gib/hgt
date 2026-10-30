@@ -35,8 +35,8 @@ theorem inverseQuadratic_le_of_squareMass_bound {I : Type*} [Fintype I] [Decidab
   simp only [sub_dotProduct, dotProduct_sub, smul_dotProduct, dotProduct_smul,
     smul_eq_mul, dotProduct_comm u b] at hs
   change b ⬝ᵥ u ≤ C * (b ⬝ᵥ b)
-  apply (mul_le_mul_left hC).mp
-  nlinarith only [hl, hs]
+  have hp : 0 ≤ C * (C * (b ⬝ᵥ b) - b ⬝ᵥ u) := by nlinarith only [hl, hs]
+  exact sub_nonneg.mp ((mul_nonneg_iff_of_pos_left hC).mp hp)
 
 /-- One actual horizon pays the prefix square mass with constant twenty across all admissible overlaps. -/
 theorem eventually_plateauPrefix_squareMass_le_twenty_energy :
@@ -49,7 +49,8 @@ theorem eventually_plateauPrefix_squareMass_le_twenty_energy :
       bumpRobin transMetzlerProfile 1 / (∫ u, transMetzlerProfile u ^ 2) +
         completeWeilPoleShift transMetzlerProfile 1 - Real.log (2 * Real.pi) := by
     rw [completeWeilAdjunctionEnergy, completeWeilSelfFinitePart,
-      ramanujanAdjunctionEnergy_one, if_pos rfl, mul_one, one_div, Real.log_inv]
+      SelectiveMultiscaleArithmeticPositivity.ramanujanAdjunctionEnergy_one,
+      if_pos rfl, mul_one, one_div, Real.log_inv]
     ring
   rw [heq] at henergy
   have hspec := eventually_completeWeil_eigenvalues_ge_uniformly_at_touching

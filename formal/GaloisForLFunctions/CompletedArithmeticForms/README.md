@@ -229,6 +229,20 @@ $(M+1)^2\le\delta(T+1)$ therefore pays the transfer within $\delta$, with
 the mass-discrepancy gain retained. See [EulerTerminalCost](EulerTerminalCost.lean),
 `fullErrorEnergy_freeTerminal_schur_bound_with_mass`.
 
+Source support and probe support define different completion domains.
+The finite-source energy is literally
+$$\mathcal C_T(c)=\sum_{n\ge1}
+\frac{(\sum_{j\le\min(n,T)}c_j)^2}{n(n+1)}.$$
+For a fixed probe $b^T_j=b_j\mathbf1_{j\le T}$, allowing arbitrary finite
+source support gives the exact attained cost
+$$\max_{K,c}\{2\langle c,b^T\rangle-\mathcal C_K(c)\}
+=D_T(F)+F_T^2.$$
+An optimizing source is supported through $T+1$ and has total mass zero.
+The additional coordinate restores the terminal Dirichlet edge. The two
+domain costs agree exactly when $F_T=0$.
+See [SourceProbeBoundary](SourceProbeBoundary.lean),
+`hasSum_finiteSourceEnergy` and `finiteProbeDualCost_isGreatest`.
+
 ## The actual Chebyshev source and its unpaid cyclic form
 
 Let
@@ -410,6 +424,19 @@ See `eventually_completeWeil_negative_subspace_dim_le_young_tail` and
 [TransMetzlerYoungOptimization](../TransMetzlerWeilPositivity/TransMetzlerYoungOptimization.lean).
 The certificate boundary describes this proved positive range; it does not assert
 that the actual matrix is indefinite beyond that range.
+
+The exact complete prefix also pays its inverse uniformly through touching.
+For one eventual horizon, simultaneously for $N\ge M$, $c>0$, and $cM\le N$,
+its prefix, mixed, and tail blocks satisfy
+$$A\succeq\frac1{20}I,\qquad
+0\le b^{\mathsf T}A^{-1}b\le20\|b\|^2,$$
+$$D-20B^{\mathsf T}B\preceq D-B^{\mathsf T}A^{-1}B\preceq D.$$
+The constant comes from the literal plateau endpoint energy exceeding $1/20$
+and uniform spectral control in the effective prefix overlap $cM/N$.
+At $(c,M,N)=(3/2,2K,3K)$ it pays every complete mixed entry with a
+dimension-independent constant. The remaining tail comparison is unpaid.
+See [WeilPrefixPayment](WeilPrefixPayment.lean),
+`eventually_plateauPrefixSchur_quadratic_payment`.
 
 ## Exact native-tail reserves and their rank boundary
 
@@ -1006,6 +1033,20 @@ actual dependence. See [WeightedSuccessorReserve](WeightedSuccessorReserve.lean)
 `nativeWeightedSuccessorReserve_le_schur` and
 `centerSeventhSuccessor_explicit_compact_allowance`.
 
+## The source spectral band
+
+The literal Schläfli source satisfies
+$$K_\nu(a)=\int_0^\infty e^{-a\cosh t}\cosh(\nu t)\,dt,\qquad
+a>0,\ |\tau|\le a\Longrightarrow K_{i\tau}(a)>0.$$
+Every complex-order zero is purely imaginary and obeys $a<|\Im\nu|$.
+The argument energy flux has density
+$(x-\tau^2/x)|K|^2+x|K'|^2$. A zero inside the band would give a strictly
+positive flux on a later ray, contradicting its literal exponential decay.
+Reflection and conjugation determine the real sign. The argument scale is
+retained exactly; no fixed-order limit is used as a joint bound.
+See [BesselSpectralBand](BesselSpectralBand.lean),
+`modifiedBesselKOrder_zero_outside_band` and `modifiedBesselKOrder_re_pos_on_band`.
+
 ## Place in the research
 
 | Programme | Connection |
@@ -1049,6 +1090,8 @@ a norm-preserving transfer between programmes.
 
 2. **Macroscopic overlap.** Can the actual completed Weil operator at a fixed nondegenerate ratio
    such as $3/2$ be compared to the cyclotomic Gram with cross-annulus and Schur costs paid?
+   Its actual touching prefix has inverse cost at most twenty, so its complete
+   residual satisfies $D-20B^{\mathsf T}B\preceq S\preceq D$ uniformly in both sizes.
    Can its certified prefix index ceiling be improved to positivity or an endpoint-sufficient
    upper index bound, along a profile-compatible exhaustive schedule?
 

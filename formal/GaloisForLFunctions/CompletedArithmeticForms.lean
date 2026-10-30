@@ -52,6 +52,9 @@ import GaloisForLFunctions.CompletedArithmeticForms.PhysicalSuccessorMass
 import GaloisForLFunctions.CompletedArithmeticForms.WeightedSuccessorReserve
 import GaloisForLFunctions.CompletedArithmeticForms.TerminalCompletion
 import GaloisForLFunctions.CompletedArithmeticForms.EulerTerminalCost
+import GaloisForLFunctions.CompletedArithmeticForms.SourceProbeBoundary
+import GaloisForLFunctions.CompletedArithmeticForms.WeilPrefixPayment
+import GaloisForLFunctions.CompletedArithmeticForms.BesselSpectralBand
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -107,6 +110,12 @@ Finite source completion has the full maximum-index covariance, a free-terminal 
 norm, a unique local second-difference optimizer, and an exact residual-square identity.
 The complete Euler-deletion energy pays this free-terminal variation with a joint cutoff
 allowance and retains the exact gain from its terminal mass discrepancy.
+Finite probe support has a distinct sharp dual cost: the terminal edge returns,
+and a neutral source with one extra coordinate attains the full cost.
+The complete plateau Weil prefix has a uniform inverse cost of twenty through
+touching, retaining the actual signed mixed block in its Schur lower bound.
+The literal Schläfli source has a strictly positive imaginary-order band up to
+its argument scale; every order zero lies strictly outside that band.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/
