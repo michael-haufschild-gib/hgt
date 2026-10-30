@@ -9,25 +9,26 @@
 
 ## Construction
 
-Let `w_k(z)=1/(|4−z|²+1/(k+1))` and let `χ_R` be the existing smooth compact
-source cutoff. Each test `χ_R w_k` is globally C² and compactly supported.
-Use the existing prescribed finite theta reading `Q_n(χ_R w_k)`.
+Let `χ_R` be the existing smooth compact source cutoff, with inner radius
+`R+1` and outer radius `R+2`. Set
+`w(z)=1/(|4−z|²+χ_0(z−4))`. Its denominator is positive everywhere and
+`w(ρ)=|4−ρ|⁻²` throughout the zero strip. Each `χ_R w` is globally smooth
+and compactly supported. Use the prescribed finite theta reading `Q_n(χ_R w)`.
 
 The proposed identity is
 
-`D(4) = (7/2) lim_k lim_R lim_n Q_n(χ_R w_k)
+`D(4) = (7/2) lim_R lim_n Q_n(χ_R w)
         − Re(logDeriv archFactor 4) + Σn Λ(n)n⁻⁴`.
 
-For fixed `R,k`, compact-current convergence identifies the inner limit with
-the multiplicity-exact divisor trace. Absolute summability gives the cutoff limit.
-Finally `0≤w_k(ρ)≤|4−ρ|⁻²` and pointwise convergence identify the outer limit
-with `S(4)`. The full-divisor depth and prime identities are already formalized
+For fixed `R`, compact-current convergence identifies the inner limit with
+the multiplicity-exact divisor trace. Absolute summability gives the cutoff
+limit `S(4)`. The full-divisor depth and prime identities are already formalized
 in `TheXiResolventDepthIdentity`.
 
 ## Lean obligations
 
 - General compact-test convergence for the prescribed finite theta reading.
 - Xi-copy/carrier trace transport with summability.
-- Three exact limits and the final theta–prime identity.
+- Two exact limits and the final theta–prime identity.
 
 The expression does not assert that `D(4)=0`.

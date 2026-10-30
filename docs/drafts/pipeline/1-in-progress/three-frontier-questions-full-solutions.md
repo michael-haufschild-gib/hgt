@@ -36,6 +36,10 @@ Every claimed solution requires the exact theorem, dependency audit and successf
 - `exists_abs_jointWitnessCoefficient_le_uniform_overlap`: the pole and shells cancel on the
   top-band witness with bound `Kφ G(c + 1 + log N)`, uniformly for `1 ≤ c ≤ N/4`.
   Arbitrary coefficient vectors remain outside this theorem.
+- `completedShellEnergy_div_conductor_le` and `log_conductor_sub_log_overlap_le_completedEnergy`
+  prove `E_m(c) ≥ E_1(c/m) ≥ log(m/c) + min(0, completeWeilSelfFinitePart φ 1)`.
+  Both are uniform scalar laws with direct Lean and standard-axiom audits; finite-horizon
+  operator transfer remains separate.
 
 ## Candidate: transfer the reserve through a shifted operator
 

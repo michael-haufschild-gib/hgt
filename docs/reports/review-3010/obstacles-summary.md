@@ -40,8 +40,8 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
 
 **Complete Weil matrix (HF, SRT, AIP, ACS, SC, CHMD).**
 
-- **A1. Top-band joint cancellation (SSH) — formalized.** `abs_poleRow_sub_le` and `exists_abs_jointWitnessCoefficient_le` bound the joint witness coefficient by `K G(1 + log N)` at fixed overlap. The pole-row lattice estimate and Laplace factorization discharge the cancellation. Direct Lean check and transitive capstone axiom audit passed. [Proof](../../drafts/pipeline/3-formalized/the-shells-and-the-pole-cancel-on-the-top-band.md).
-- **A2. Growing Euler heads (AID).** Prove `eventually_eulerHead_negative_family`. The coupling limit B_Y/√Y → L, its negative diagonal and the lower-triangular bound σ‖x‖² ≤ Σ(Lᵀx)² are proved.
+- **A1. Top-band joint cancellation (SSH) — formalized.** `exists_abs_jointWitnessCoefficient_le_uniform_overlap` gives `Kφ G(c + 1 + log N)` uniformly for `1 ≤ c ≤ N/4`, hence `Oφ(G(1 + log N))` for `c ≤ log N`. The pole-row lattice estimate and Laplace factorization discharge the cancellation. Direct Lean and axiom audits passed. [Uniform bound](../../drafts/pipeline/3-formalized/joint-top-band-payment-uniform-in-overlap.md).
+- **A2. Growing Euler heads (AID) — formalized.** `eventually_eulerHead_negative_family` gives every prescribed negative dimension once the head and horizon are large enough. The log-power-head corollary gives unbounded index along every positive log-power schedule. Direct Lean and transitive axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/growing-euler-heads-have-unbounded-negative-index.md).
 - **A3. Effective conductor confinement for finite sieve profiles at fixed c.** Ingredients:
   - the logarithmic sieve spectral tail, harmonic class weights and `exists_sieveProfile_ramanujan_approximation` [L];
   - finite-horizon conductor coordinates [L];
@@ -257,7 +257,7 @@ Each item is a mechanism that would create positivity or precision from structur
 **O1. A sum-of-squares identity on the successor shells.**
 
 - **The pieces exist in the corpus:**
-  - The completed conductor energies E_m(c) are nonnegative Fourier tails produced by Möbius collapse and Poisson summation [K].
+  - The completed conductor energies E_m(c) are nonnegative Fourier tails produced by Möbius collapse and Poisson summation [K]. Harmonic sieve order further gives `E_m(c) ≥ E_1(c/m)` and a uniform lower bound `log(m/c)` plus a fixed profile constant. [Lean proof and audit](../../drafts/pipeline/3-formalized/the-completed-conductor-energy-dominates-its-rescaled-pole.md).
   - The divisor collapse Λ∗1 = log is maximal exactly at the trivial gauge point [S].
   - A twin's prime-form defect is exactly the sum of its successor-disagreement shells, weighted by 1 − σ_h(km) ∈ {0, 2} [S].
   - On the top band the shells and the pole move by the same lattice-free quantity [S].

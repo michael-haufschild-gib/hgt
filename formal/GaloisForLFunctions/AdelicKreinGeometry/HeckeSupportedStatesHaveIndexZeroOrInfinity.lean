@@ -75,7 +75,6 @@ theorem den_ne_one_of_prime {P : ℕ} (hP : P.Prime) {d : ℕ} {α β : ℚ} (h�
     push_cast
     rw [hN]
     field_simp
-    ring
   have e' : ((d : ℤ) * F * (B * P + E) : ℤ) = N * A * E * P := by exact_mod_cast e
   have hdiv : (P : ℤ) ∣ (d : ℤ) * F * E := ⟨N * A * E - d * F * B, by linear_combination e'⟩
   have hPz : Prime (P : ℤ) := Nat.prime_iff_prime_int.mp hP
