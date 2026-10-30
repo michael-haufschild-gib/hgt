@@ -1,9 +1,9 @@
 # Euler operators extract the residue Newton coordinates
 
 - **ID:** AHA-EULER
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** ../1-in-progress/aha-adams-multiplicity-cost.md
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Source:** aha-adams-multiplicity-cost.md
 - **Statement:** Fourier averaging of explicit shifted Euler derivatives extracts each residue Newton coefficient with normalization `d^(|P|+|α|) ∏_p α_p!`.
 
 ## Exact statement
@@ -79,4 +79,19 @@ The ingredients are classical finite Fourier inversion, falling factorials,
 and Leibniz. The contribution is the exact arithmetic normalization and its
 connection to the already formalized Newton sampling interface. No gain in
 integer auxiliary height or in the classical multiplicity bound is asserted.
-Lean formalization follows in `ArithmeticHarmonicAnalysis/`.
+## Lean closure
+
+Namespace `GaloisForLFunctions.ArithmeticHarmonicAnalysis`:
+
+- `newtonEuler_fourier_extraction` in `TorsionEulerJetExtraction.lean`
+  gives the exact formula.
+- `derivation_mem_ideal_pow` and `shiftedEulerWord_mem_ideal_pow` in
+  `EulerOperatorsLowerMultiplicity.lean` give the multiplicity loss.
+- `mem_pointIdeal_pow_iff_mixedJets` and
+  `renameEquiv_mem_pointIdeal_pow_iff` in `MixedJetMultiplicity.lean`
+  give the analytic and coordinate interfaces.
+
+The arithmetic and boundary conclusions are certified in
+[AHA-JETS](aha-adams-multiplicity-cost.md). All five leaf modules passed
+`lake --old env lean`; transitive axiom checks contain only
+`propext`, `Classical.choice`, `Quot.sound`.

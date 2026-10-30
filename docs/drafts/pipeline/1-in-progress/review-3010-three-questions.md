@@ -49,8 +49,9 @@ Theorem (Lean, `RenormalizedArithmeticPotentialTheory`):
    divisible by `p` costs at least `E(c/p)` (`completedShellEnergy_div_le_of_dvd`, via
    `E_{pm}(c) ≥ E_m(c/p)`); hence `λ_p(c) ≥ E(c) − κ_p²/(4D)`, `D = E(c/p) − κ_p − E(c)`, and above
    the threshold `4E(c)·D ≤ κ_p²` (`margin_mul_le_of_primeFlip_resolutionThreshold_lt`).
-   Paper consequence, not formalized: for the tilted spline this gives
-   `c_0(ω_p) ≳ (p/log p)^{1/7}`, matching the corpus upper bound `(Kp)^{1/7}` up to the log.
+   Tilted spline: `κ p ≤ log p · max(c,1)^7` above `c_0(ω_p)`, i.e. `c_0(ω_p) ≳ (p/log p)^{1/7}`
+   (`tiltedUnitSpline_primeFlip_resolutionThreshold_sharp_lower`), matching the corpus upper bound
+   `(Kp)^{1/7}` up to the log.
 
 Not covered: twists at infinite distance (twin tails, the Liouville point, vertical shifts); for
 them the twist is not a bounded perturbation of the packet operator.

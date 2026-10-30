@@ -60,6 +60,8 @@ import GaloisForLFunctions.CompletedArithmeticForms.WignerSpectralBand
 import GaloisForLFunctions.CompletedArithmeticForms.WeilInverseCost
 import GaloisForLFunctions.CompletedArithmeticForms.WeilGreenModes
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorHeatThreshold
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorGreenCompletion
+import GaloisForLFunctions.CompletedArithmeticForms.UpwardSourcePayment
 
 /-!
 # Quantitative theory of completed arithmetic forms

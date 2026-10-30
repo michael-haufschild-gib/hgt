@@ -21,4 +21,7 @@ The actual complete-Weil inverse converges to this diagonal form on each fixed
 finite Ramanujan packet. This finite-packet identification does not assert
 operator-norm convergence between the changing horizon spaces.
 
-Lean target: `CompletedArithmeticForms/ConductorGreenCompletion.lean`.
+Lean: `CompletedArithmeticForms/ConductorGreenCompletion.lean`,
+`norm_tiltedConductorGreen`, `isCompactOperator_tiltedConductorGreen`,
+`tiltedConductorGreen_injective`,
+`not_summable_tiltedConductorGreen_coordinate_power`.

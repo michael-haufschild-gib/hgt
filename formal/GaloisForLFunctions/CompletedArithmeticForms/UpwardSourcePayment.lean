@@ -22,6 +22,27 @@ namespace GaloisForLFunctions.CompletedArithmeticForms
 open CriticalArithmeticCorrelationTheory RenormalizedArithmeticPotentialTheory
   SpacingScaleHarmonicAnalysis ArithmeticElectrostatics BezoutValuationIncidence
 
+private theorem exists_mertensSum_add_le_log_multiple :
+    ∃ J : ℝ, 0 ≤ J ∧ ∀ N B : ℕ, 1 ≤ N → 1 ≤ Real.log (N : ℝ) → B ≤ N →
+      mertensSum (N + B) ≤ (J + 2) * Real.log N := by
+  obtain ⟨J, hJ⟩ := tendsto_mertensSum_sub_log.abs.bddAbove_range
+  have hJ0 : 0 ≤ J := (abs_nonneg _).trans (hJ ⟨0, rfl⟩)
+  refine ⟨J, hJ0, ?_⟩
+  intro N B hN hL hBN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hNB0 : (0 : ℝ) < (N + B : ℕ) := by exact_mod_cast (show 0 < N + B by omega)
+  have hlog : Real.log ((N + B : ℕ) : ℝ) ≤ 2 * Real.log N := by
+    have hsum : ((N + B : ℕ) : ℝ) ≤ 2 * N := by exact_mod_cast (show N + B ≤ 2 * N by omega)
+    have h := Real.log_le_log hNB0 hsum
+    rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) hN0.ne'] at h
+    have htwo : Real.log 2 ≤ 1 := by
+      have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+      linarith only [h]
+    linarith only [h, htwo, hL]
+  have herr := (abs_le.mp (hJ ⟨N + B, rfl⟩)).2
+  have hmul := mul_le_mul_of_nonneg_left hL hJ0
+  linarith only [herr, hlog, hmul]
+
 /-- The logarithmic kernel retains its actual squared horizon decay. -/
 theorem exists_logarithmicUpward_error_sharp_horizon_bound {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
@@ -80,7 +101,7 @@ theorem exists_reciprocalUpward_shell_polynomial_bound {φ : ℝ → ℝ}
     ∃ K : ℝ, 0 < K ∧ ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → ∀ B : ℕ, ⌈c⌉₊ ≤ B →
       (∑ n ∈ Icc 1 N,
         ((reciprocalUpwardCoefficient φ c B N m n -
-          ramanujanLagCoefficient m n * CompletedShell.shellCorrection φ c m) /
+          ramanujanLagCoefficient m n * shellCorrection φ c m) /
             Real.sqrt n) ^ 2) / Real.log N ≤ K * c ^ 6 / Real.sqrt (Real.log N) := by
   obtain ⟨K, hK, hbound⟩ :=
     exists_shiftedReciprocalUpwardRowError_polynomial_harmonic_bound hm hφ hsupp hM
@@ -88,10 +109,10 @@ theorem exists_reciprocalUpward_shell_polynomial_bound {φ : ℝ → ℝ}
   filter_upwards [hbound] with N hN
   intro c hc1 B hB
   have hc : 0 < c := zero_lt_one.trans_le hc1
-  have hid : shellCorrectionOfShift φ c m id = CompletedShell.shellCorrection φ c m := rfl
+  have hid : shellCorrectionOfShift φ c m id = shellCorrection φ c m := rfl
   have hrow (n : ℕ) (hn : 1 ≤ n) :
       (reciprocalUpwardCoefficient φ c B N m n -
-        ramanujanLagCoefficient m n * CompletedShell.shellCorrection φ c m) / Real.sqrt n =
+        ramanujanLagCoefficient m n * shellCorrection φ c m) / Real.sqrt n =
       (shiftedReciprocalUpwardRowError φ c id N m n +
         shiftedReciprocalUpwardRowError φ c (reflectedAffineShift m) N m n) / 2 := by
     rw [reciprocalUpwardCoefficient_eq_shifted_corrections hφ hsupp hc hB N m n hn]
@@ -100,7 +121,7 @@ theorem exists_reciprocalUpward_shell_polynomial_bound {φ : ℝ → ℝ}
     ring
   have hsum : (∑ n ∈ Icc 1 N,
       ((reciprocalUpwardCoefficient φ c B N m n -
-        ramanujanLagCoefficient m n * CompletedShell.shellCorrection φ c m) / Real.sqrt n) ^ 2) ≤
+        ramanujanLagCoefficient m n * shellCorrection φ c m) / Real.sqrt n) ^ 2) ≤
       ∑ n ∈ Icc 1 N, (shiftedReciprocalUpwardRowError φ c id N m n ^ 2 +
         shiftedReciprocalUpwardRowError φ c (reflectedAffineShift m) N m n ^ 2) / 2 := by
     apply sum_le_sum
@@ -162,7 +183,7 @@ theorem exists_actualUpward_polynomial_payment {φ : ℝ → ℝ}
       reciprocalUpwardCoefficient φ c strip N m n) / Real.sqrt n
   let d : ℕ → ℝ := fun n =>
     (reciprocalUpwardCoefficient φ c strip N m n -
-      ramanujanLagCoefficient m n * CompletedShell.shellCorrection φ c m) / Real.sqrt n
+      ramanujanLagCoefficient m n * shellCorrection φ c m) / Real.sqrt n
   have hrow (n : ℕ) (hn : n ∈ Icc 1 N) : actualUpwardRowError φ c N m n = a n + b n + d n := by
     have hs : Real.sqrt n ≠ 0 := (Real.sqrt_pos.mpr
       (by exact_mod_cast (mem_Icc.mp hn).1 : (0 : ℝ) < n)).ne'

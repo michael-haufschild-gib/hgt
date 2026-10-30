@@ -55,11 +55,15 @@ theorem tiltedConductorGreen_single (c : ℝ) (hc : 0 < c) (n : ℕ) :
 /-- The exact infinite inverse norm equals the sharp finite-horizon limiting cost. -/
 theorem norm_tiltedConductorGreen (c : ℝ) (hc : 0 < c) :
     ‖tiltedConductorGreen c hc‖ = tiltedWeilInverseCost c := by
-  apply le_antisymm (norm_lpDiag_le _ _ _ _)
+  have hu : ‖tiltedConductorGreen c hc‖ ≤ tiltedWeilInverseCost c :=
+    norm_lpDiag_le (tiltedConductorGreenWeight c) (tiltedWeilInverseCost c)
+      (tiltedWeilInverseCost_pos hc).le (norm_tiltedConductorGreenWeight_le hc)
+  refine le_antisymm hu ?_
   have h := (tiltedConductorGreen c hc).le_opNorm (lp.single 2 0 (1 : ℂ))
   rw [tiltedConductorGreen_single, norm_smul, lp.norm_single (by norm_num), norm_one,
     mul_one, mul_one, norm_tiltedConductorGreenWeight hc] at h
-  simpa only [Nat.zero_add, tiltedWeilInverseCost] using h
+  unfold tiltedWeilInverseCost
+  simpa only [Nat.zero_add] using h
 
 /-- Properness of the actual conductor energies gives a compact arithmetic Green operator. -/
 theorem isCompactOperator_tiltedConductorGreen (c : ℝ) (hc : 0 < c) :
@@ -85,8 +89,10 @@ theorem tiltedConductorGreen_injective (c : ℝ) (hc : 0 < c) :
 /-- Compactness does not pay even one integer power sum of the actual Green coordinate spectrum. -/
 theorem not_summable_tiltedConductorGreen_coordinate_power (c : ℝ) (hc : 0 < c) (k : ℕ) :
     ¬ Summable (fun n : ℕ => ‖tiltedConductorGreen c hc (lp.single 2 n (1 : ℂ))‖ ^ k) := by
-  simpa only [tiltedConductorGreen_single, norm_smul, lp.norm_single (by norm_num),
-    norm_one, mul_one, norm_tiltedConductorGreenWeight hc] using
+  have hs (n : ℕ) : ‖lp.single (E := fun _ : ℕ => ℂ) 2 n (1 : ℂ)‖ = 1 := by
+    rw [lp.norm_single (by norm_num), norm_one]
+  simpa only [tiltedConductorGreen_single, norm_smul, hs,
+    mul_one, norm_tiltedConductorGreenWeight hc] using
       not_summable_tiltedWeil_inverse_energy_pow hc k
 
 #print axioms norm_tiltedConductorGreen

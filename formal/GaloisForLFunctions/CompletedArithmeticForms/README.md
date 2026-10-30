@@ -499,6 +499,33 @@ $k\ge0$. See [ConductorHeatThreshold](ConductorHeatThreshold.lean),
 This is the infinite conductor model. Finite complete-Weil heat traces also
 require control of the multiplicities of modes whose energies grow with the horizon.
 
+Its exact Green completion on complex $\ell^2(\mathbb N_{\ge1})$ is
+$G_ce_m=E_m(c)^{-1}e_m$. The positive pole energy gives
+$\|G_c\|=E_1(c)^{-1}$, attained at $e_1$. Properness of the conductor
+energies makes these multipliers tend to zero, so $G_c$ is compact; their
+strict positivity makes it injective. Compactness coexists with divergence
+of every integer coordinate-eigenvalue power sum. See
+[ConductorGreenCompletion](ConductorGreenCompletion.lean),
+`norm_tiltedConductorGreen`, `isCompactOperator_tiltedConductorGreen`, and
+`not_summable_tiltedConductorGreen_coordinate_power`.
+
+## Growing overlap and complete source payment
+
+For each fixed positive conductor, the literal normalized upward residual
+retains the sharper joint bound
+\[
+\|U_{m,c,N}\|^2\le C_m\left[
+c^{10}(\log N/N)^2+c^6/\sqrt{\log N}\right].
+\]
+The domain is $c\ge1$, $c/N\le1$, $B=\lceil ec\rceil\le N$, and
+$2(e+3)cB\le N$, above one conductor-dependent horizon. The exact source
+decomposition retains both offset signs and both horizon cutoffs.
+Kernel replacement costs $c^4(B+1)^6(\log N/N)^2$; the two boundary
+and shell costs have inverse-square-root logarithmic decay. Keeping these
+payments separate preserves the stronger horizon decay of the kernel term.
+See [UpwardSourcePayment](UpwardSourcePayment.lean),
+`exists_tiltedWeil_upward_polynomial_payment`.
+
 ## Exact native-tail reserves and their rank boundary
 
 Write $(r)_n=\prod_{j<n}(r+j)$. The scaled Gamma moments $m_k=gw^k(r)_k$, with

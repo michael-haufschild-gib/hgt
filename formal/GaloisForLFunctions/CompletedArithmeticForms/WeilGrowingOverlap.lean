@@ -97,6 +97,36 @@ theorem relativeWeilResidualScale_eq (c : ℝ) (N : ℕ) :
   unfold relativeWeilResidualScale weilResidualScale
   ring
 
+/-- Every source term is paid relative to the actual completed conductor energy. -/
+theorem exists_tiltedWeil_relative_polynomial_residual_bound {m : ℕ} (hm : 0 < m) :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c / N ≤ 1 / 3 →
+      linearPrimeStrip c ≤ N → 2 * ((Real.exp 1 + 3) * c) * linearPrimeStrip c ≤ (N : ℝ) →
+      ‖Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N)
+          (normalizedRamanujanHorizonVector m N) -
+        completedConductorEnergy tiltedUnitSpline c m • normalizedRamanujanHorizonVector m N‖ ^ 2 /
+        completedConductorEnergy tiltedUnitSpline c m ^ 2 ≤ C * relativeWeilResidualScale c N := by
+  obtain ⟨C, hC, hbound⟩ := exists_tiltedWeil_polynomial_residual_bound hm
+  let κ := tiltedConductorFloorCoefficient
+  have hκ : 0 < κ := tiltedConductorFloorCoefficient_pos
+  refine ⟨C / κ ^ 2, by positivity, ?_⟩
+  filter_upwards [hbound] with N hN
+  intro c hc hw hB hg
+  have hc0 : 0 < c := zero_lt_one.trans_le hc
+  have hf := tiltedUnitSpline_completedConductorEnergy_ge_polynomial_floor hc hm
+  change κ / c ^ 7 ≤ _ at hf
+  have hf0 : 0 < κ / c ^ 7 := div_pos hκ (pow_pos hc0 7)
+  have hfsq := pow_le_pow_left₀ hf0.le hf 2
+  calc
+    _ ≤ (C * weilResidualScale c N) / completedConductorEnergy tiltedUnitSpline c m ^ 2 :=
+      div_le_div_of_nonneg_right (hN c hc hw hB hg) (sq_nonneg _)
+    _ ≤ (C * weilResidualScale c N) / (κ / c ^ 7) ^ 2 :=
+      div_le_div_of_nonneg_left (mul_nonneg hC.le (weilResidualScale_nonneg c N))
+        (sq_pos_of_pos hf0) hfsq
+    _ = _ := by
+      rw [relativeWeilResidualScale_eq]
+      field_simp
+      <;> ring
+
 private theorem tendsto_log_power_zero {r : ℝ} (hr : r < 0) :
     Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ r) atTop (𝓝 0) := by
   have h := tendsto_inv_atTop_zero.comp ((tendsto_rpow_atTop (neg_pos.mpr hr)).comp
@@ -109,7 +139,8 @@ theorem tendsto_packetOverlap_pow_div_log {α : ℝ} (k : ℕ) (hk : α * (k : �
       atTop (𝓝 0) := by
   apply (tendsto_log_power_zero (sub_neg.mpr hk)).congr'
   filter_upwards [eventually_ge_atTop 2] with N hN
-  have hL : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast hN)
+  have hL : 0 < Real.log (N : ℝ) :=
+    Real.log_pos (by exact_mod_cast (show 1 < N by omega))
   rw [packetOverlap_pow, Real.rpow_sub hL, Real.rpow_one]
 
 /-- Both complete-source costs vanish on the same explicit overlap schedule. -/
@@ -123,7 +154,8 @@ theorem tendsto_relativeWeilResidualScale_zero {α : ℝ} (hα : α < 1 / 40) :
   simp only [zero_mul, zero_add, Nat.mul_one] at h
   apply h.congr'
   filter_upwards [eventually_ge_atTop 2] with N hN
-  have hL : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast hN)
+  have hL : 0 < Real.log (N : ℝ) :=
+    Real.log_pos (by exact_mod_cast (show 1 < N by omega))
   rw [relativeWeilResidualScale, packetOverlap_pow, packetOverlap_pow,
     Real.sqrt_eq_rpow, Real.rpow_sub hL, Real.rpow_add hL]
   rw [show α * (24 : ℝ) = 24 * α by ring, show α * (20 : ℝ) = 20 * α by ring,
@@ -152,13 +184,11 @@ theorem tendsto_tiltedWeil_scaled_residual_norm {α : ℝ} (hα0 : 0 < α) (hα 
       (pow_nonneg (Real.rpow_nonneg (Real.log_natCast_nonneg N) α) 14)
     rw [relativeWeilResidualScale_eq]
     convert h using 1 <;> ring
-  simpa only [Real.sqrt_sq_eq_abs, abs_of_nonneg (show ∀ N : ℕ,
-    0 ≤ logarithmicPacketOverlap α N ^ 7 *
-      ‖Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (logarithmicPacketOverlap α N) N)
-          (normalizedRamanujanHorizonVector m N) -
-        completedConductorEnergy tiltedUnitSpline (logarithmicPacketOverlap α N) m •
-          normalizedRamanujanHorizonVector m N‖ from fun N => by
-            dsimp only [logarithmicPacketOverlap]; positivity) _, Real.sqrt_zero] using hsq.sqrt
+  have h := hsq.sqrt
+  rw [Real.sqrt_zero] at h
+  apply h.congr
+  intro N
+  exact Real.sqrt_sq (by dsimp only [logarithmicPacketOverlap]; positivity)
 
 /-- The actual residual is small relative to the actual completed conductor energy. -/
 theorem tendsto_tiltedWeil_relative_residual_norm {α : ℝ} (hα0 : 0 < α) (hα : α < 1 / 40)
@@ -191,6 +221,7 @@ theorem tendsto_tiltedWeil_relative_residual_norm {α : ℝ} (hα0 : 0 < α) (h�
     nlinarith only [h]
 
 #print axioms eventually_logarithmicPacketOverlap_source_domain
+#print axioms exists_tiltedWeil_relative_polynomial_residual_bound
 #print axioms tendsto_relativeWeilResidualScale_zero
 #print axioms tendsto_tiltedWeil_scaled_residual_norm
 #print axioms tendsto_tiltedWeil_relative_residual_norm

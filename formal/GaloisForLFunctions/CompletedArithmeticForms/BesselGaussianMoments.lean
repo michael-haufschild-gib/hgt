@@ -143,7 +143,7 @@ theorem bessel_imaginary_ratio_bounds {a : ℝ} (ha : 0 < a) (τ : ℝ) :
     rw [he, Complex.cosh_mul_I]
     simp only [Complex.cos_ofReal_re]
   have hg : (∫ t in Ioi (0 : ℝ), w t) = (modifiedBesselKOrder a 0).re := by
-    simpa only [Complex.ofReal_zero, zero_mul, Complex.zero_mul, Real.cos_zero, mul_one]
+    simpa only [Complex.ofReal_zero, zero_mul, Real.cos_zero, mul_one]
       using (modifiedBesselKOrder_imaginary_re_integral ha 0).symm
   have hgp : 0 < (modifiedBesselKOrder a 0).re := by
     simpa only [Complex.ofReal_zero, zero_mul] using

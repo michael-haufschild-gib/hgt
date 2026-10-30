@@ -3,7 +3,7 @@
 - **ID:** AHA-NEWTON
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** ../1-in-progress/aha-adams-multiplicity-cost.md
+- **Source:** aha-adams-multiplicity-cost.md
 - **Statement:** Weighted order-`d` torsion samples of Newton orders below `r` determine every coefficient supported on `1≤n<2^(dr)`.
 
 ## Exact statement

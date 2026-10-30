@@ -70,8 +70,7 @@ by `d` times this quantity times `Σa_m²`, hence by
 
 ## Lean status
 
-Supporting source, geometry, kernel and cutoff lemmas have direct audits.
-Remaining support modules and the complete packet formalization are
-written and under check. No accepted contribution until the capstone and
-its transitive axiom audit pass. All supporting lemmas belong to this
-single contribution.
+All source, geometry, replacement and complete-residual estimates are
+formalized with direct audits. Packet positivity is written; its final
+audit remains pending. All supporting lemmas belong to this single
+contribution, which is not accepted until the capstone audit passes.

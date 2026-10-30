@@ -20,6 +20,9 @@ of `v` are expensive: by Möbius inversion `E_{pm}(c) ≥ E_m(c/p) ≥ E(c/p)`
 and above the threshold `4 E(c) (E(c/p) − κ_p − E(c)) ≤ κ_p²`
 (`margin_mul_le_of_primeFlip_resolutionThreshold_lt`): the margin at resolution is of order
 `log² p/(p log(p/c))`, the squared coupling of the pole to the `p`-conductors over their energy.
+For the tilted spline, `E(c) ≥ C₀ c⁻⁷` turns this into `c_0(ω_p)⁷ ≳ p/log p`
+(`tiltedUnitSpline_primeFlip_resolutionThreshold_sharp_lower`), the order of the corpus upper
+bound `(Kp)^{1/7}` up to the logarithm.
 -/
 
 noncomputable section
@@ -622,10 +625,17 @@ theorem tiltedUnitSpline_primeFlip_resolutionThreshold_sharp_lower :
   obtain ⟨p₁, hp₁⟩ := eventually_atTop.mp (hsmall.and hlarge)
   refine ⟨min (C₀ / 64) 1, lt_min (by positivity) one_pos, max p₁ 4, fun p hp hpp c hlt => ?_⟩
   obtain ⟨h16, hlogp⟩ := hp₁ p ((le_max_left _ _).trans hpp)
+  have hlogA : 4 * A + 4 ≤ Real.log p := hlogp
   have hp4 : 4 ≤ p := (le_max_right _ _).trans hpp
   have hpR : (4 : ℝ) ≤ p := by exact_mod_cast hp4
   have hpR0 : (0 : ℝ) < p := by linarith
-  have hlogp0 : 0 < Real.log p := Real.log_pos (by linarith)
+  have hlog1 : 1 ≤ Real.log p := by
+    have h4 : 1 < Real.log 4 := by
+      rw [Real.lt_log_iff_exp_lt (by norm_num)]
+      have := Real.exp_one_lt_d9
+      linarith
+    exact h4.le.trans (Real.log_le_log (by norm_num) hpR)
+  have hlogp0 : 0 < Real.log p := by linarith
   have hsp : 0 < Real.sqrt p := Real.sqrt_pos.mpr hpR0
   have hss : Real.sqrt p * Real.sqrt p = p := Real.mul_self_sqrt hpR0.le
   have hth := (primeFlip_resolutionThreshold_spec contDiff_tiltedUnitSpline
@@ -646,7 +656,6 @@ theorem tiltedUnitSpline_primeFlip_resolutionThreshold_sharp_lower :
       calc (p : ℝ) ≤ m ^ 2 := hm2
         _ ≤ m ^ 2 * m ^ 5 := le_mul_of_one_le_right (by positivity) (one_le_pow₀ hm1)
         _ = m ^ 7 := by ring
-    have hlog1 : 1 ≤ Real.log p := by linarith
     calc min (C₀ / 64) 1 * p ≤ 1 * p := mul_le_mul_of_nonneg_right hκ1 hpR0.le
       _ ≤ Real.log p * m ^ 7 := by nlinarith
   push_neg at hcbig
@@ -685,7 +694,7 @@ theorem tiltedUnitSpline_primeFlip_resolutionThreshold_sharp_lower :
       exact div_nonneg (by positivity) (by linarith)
     calc flipCoupling p ^ 2 ≤ (8 * Real.log p / Real.sqrt p) ^ 2 := pow_le_pow_left₀ hκ0 hκ 2
       _ = 64 * Real.log p ^ 2 / p := by
-          rw [div_pow, ← hss, ← sq]
+          rw [div_pow, Real.sq_sqrt hpR0.le]
           ring
   -- the spline floor of the margin
   have hfloor : C₀ / m ^ 7 ≤ completedShellEnergy tiltedUnitSpline c := by
@@ -706,9 +715,13 @@ theorem tiltedUnitSpline_primeFlip_resolutionThreshold_sharp_lower :
       _ ≤ flipCoupling p ^ 2 := hlaw
       _ ≤ 64 * Real.log p ^ 2 / p := hκ2
   have hm70 : 0 < m ^ 7 := by positivity
+  have h1' : C₀ * Real.log p / m ^ 7 ≤ 64 * Real.log p ^ 2 / p := by
+    have : 4 * (C₀ / m ^ 7) * (Real.log p / 4) = C₀ * Real.log p / m ^ 7 := by ring
+    linarith
+  rw [div_le_div_iff₀ hm70 hpR0] at h1'
   have h2 : C₀ * p ≤ 64 * Real.log p * m ^ 7 := by
-    rw [div_mul_eq_mul_div, mul_div_assoc', div_le_div_iff₀ hm70 hpR0] at h1
-    nlinarith
+    have h3 : Real.log p * (C₀ * p) ≤ Real.log p * (64 * Real.log p * m ^ 7) := by nlinarith
+    exact le_of_mul_le_mul_left h3 hlogp0
   calc min (C₀ / 64) 1 * p ≤ C₀ / 64 * p := mul_le_mul_of_nonneg_right hκC hpR0.le
     _ ≤ Real.log p * m ^ 7 := by linarith
 

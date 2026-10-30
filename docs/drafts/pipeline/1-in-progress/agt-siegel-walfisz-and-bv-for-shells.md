@@ -30,3 +30,8 @@ prime sums `A_j(χ) = Σ_{k ≤ K} Λ(k) χ(k) k^{-it_j}` at conductors `≤ (lo
 ## Log
 - 2026-10-30 — created; prerequisites surveyed (Siegel, Landau lemma, uniform growth/partial fraction,
   uniform local zero count, character Perron all present). Starting step 1.
+- 2026-10-30 — step 1 formalized and checked (axioms: propext, Classical.choice, Quot.sound):
+  `RHTower.uniform_zero_free_region` (`β ≤ 1 − c/log²(q(|γ|+3))` except real zeros of real χ), with
+  `DirichletLUniformPartialFraction` (all-height partial fraction, constant `pfConst`),
+  `DirichletLThreeFourOne` (log-derivative 3-4-1, principal-character bounds),
+  `DirichletLUniformZeroFreeRegion`; wired into `RHTower.lean`. Steps 3–5 not started; paused on request.

@@ -91,7 +91,7 @@ theorem tendsto_completedConductorEnergy_div_log_one (φ : ℝ → ℝ) {c : ℝ
     (Real.log_pos (by exact_mod_cast (show 1 < n + 1 by omega))).ne'
   rw [completedConductorEnergy_eq_sub_shellCorrection hc (Nat.succ_pos n),
     completeWeilAdjunctionEnergy, ramanujanAdjunctionEnergy, if_neg hm]
-  field_simp
+  field_simp [hL]
   <;> ring
 
 #print axioms tendsto_tameDifferent_div_log_zero

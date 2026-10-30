@@ -206,7 +206,25 @@ logarithmic line at the identity, but nonzero derivative in the `z₂`
 coordinate. Its support ends at `3`, below `2²`.
 [VerticalJetsMissTransverseDirections.lean](VerticalJetsMissTransverseDirections.lean)
 checks the distinction. Its real logarithmic coefficients do not settle
-the integer-coefficient auxiliary problem.
+the integer-coefficient auxiliary problem. In fact, at an algebraic torus
+point an algebraic-coefficient polynomial satisfies
+
+`d/ds F(x_p exp(s log p))|_(s=0)=0 ⇔ ∂_p F(x)=0 for every p`.
+
+The chain rule gives `Σ_p x_p ∂_p F(x) log p`; Baker's independence over
+the algebraic numbers forces each coefficient to vanish. This exact
+first-order distinction is proved in
+[AlgebraicVerticalFirstJets.lean](AlgebraicVerticalFirstJets.lean).
+
+For two distinct primes, every fixed-degree homogeneous family
+`(log p)^j(log q)^(T−j)`, `0≤j≤T`, is independent over the algebraic
+numbers. Dividing by `(log q)^T` reduces this to Gelfond–Schneider
+transcendence of `log p/log q`.
+[TwoPrimeHomogeneousLogRigidity.lean](TwoPrimeHomogeneousLogRigidity.lean)
+proves this classical consequence. It excludes homogeneous relations of
+each degree separately; it does not establish algebraic independence of
+the two logarithms or a uniform height bound. The higher-order analytic
+jet application remains separate.
 
 These finite laws use the same prime-exponent lattice in two ways. Torsion
 reduces valuations modulo its order; successor ratios read differences of

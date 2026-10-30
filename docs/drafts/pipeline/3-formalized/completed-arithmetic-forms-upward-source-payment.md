@@ -1,7 +1,7 @@
 # Polynomial payment of the complete upward source
 
 For a fixed positive conductor and the actual tilted spline, put
-$B=\lceil ec\rceil$. The target squared-norm estimate is
+$B=\lceil ec\rceil$. The squared-norm estimate is
 \[
 \|U_{m,c,N}\|^2\le C_m\left[
 c^{10}\left(\frac{\log N}{N}\right)^2+
@@ -24,4 +24,7 @@ The strip inequality $B+1\le(e+2)c$ and the three-term square inequality
 give the stated payment. Retaining the kernel's $N^{-2}$ factor prevents
 its fourth overlap power from degrading the logarithmic shell rate.
 
-Lean target: `CompletedArithmeticForms/UpwardSourcePayment.lean`.
+Lean: `CompletedArithmeticForms/UpwardSourcePayment.lean`,
+`exists_logarithmicUpward_error_sharp_horizon_bound`,
+`exists_reciprocalUpward_shell_polynomial_bound`,
+`exists_tiltedWeil_upward_polynomial_payment`.

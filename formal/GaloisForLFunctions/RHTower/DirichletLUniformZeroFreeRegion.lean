@@ -435,12 +435,12 @@ theorem uniform_zero_free_region : ∃ c : ℝ, 0 < c ∧ ∀ (q : ℕ) [NeZero 
     by_cases hfar : 1 / (4 * M * L ^ 2) ≤ |γ|
     · have h := zero_free_of_sq_eq_one_far hD hζ hχ1 hχ2 hβ hzero hfar
       have := hc (28 * M) (by positivity) h28
-      rw [mul_assoc] at h
+      rw [← hMdef, ← hLdef] at h
       linarith
     · push Not at hfar
       have h := zero_free_of_sq_eq_one_near hD hχ1 hχ2 hβ hγ0 hzero hfar hM5
       have := hc (5 * M) (by positivity) h5
-      rw [mul_assoc] at h
+      rw [← hMdef, ← hLdef] at h
       linarith
   · right
     have h := zero_free_of_sq_ne_one hχ1 hχ2 hβ hzero

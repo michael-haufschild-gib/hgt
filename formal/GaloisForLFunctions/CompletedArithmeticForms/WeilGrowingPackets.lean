@@ -27,7 +27,8 @@ open CriticalArithmeticCorrelationTheory RenormalizedArithmeticPotentialTheory
 theorem normalizedRamanujan_gram_error_le (m l : ℕ+) {N : ℕ} (hN : 2 ≤ N) :
     |⟪normalizedRamanujanHorizonVector m N, normalizedRamanujanHorizonVector l N⟫ -
       (if m = l then 1 else 0)| ≤ (2 * (m : ℝ) * (l : ℝ) + 1) / Real.log N := by
-  have hL : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast hN)
+  have hL : 0 < Real.log (N : ℝ) :=
+    Real.log_pos (by exact_mod_cast (show 1 < N by omega))
   let H : ℝ := ∑ n ∈ Icc 1 N, 1 / (n : ℝ)
   let δ : ℝ := if m = l then 1 else 0
   have hδ : 0 ≤ δ ∧ δ ≤ 1 := by dsimp only [δ]; split_ifs <;> norm_num
@@ -121,7 +122,7 @@ theorem eventually_tiltedWeil_growing_packet_pos {α : ℝ}
   have hgap : (d : ℝ) * ε < κ := by
     dsimp only [ε]
     rw [← mul_div_assoc, div_lt_iff₀ (by positivity)]
-    nlinarith only [hκ, Nat.cast_nonneg d]
+    nlinarith only [hκ, mul_nonneg (Nat.cast_nonneg d) hκ.le]
   have hclose : ∀ᶠ N : ℕ in atTop, ∀ i j, |(H N - D N) i j| ≤ ε := by
     rw [Filter.eventually_all]
     intro i

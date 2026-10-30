@@ -1,7 +1,7 @@
 # The actual upward source has polynomial harmonic bounds
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -24,5 +24,8 @@ and Taylor conditions without removing any prime powers or source terms.
 
 ## Lean status
 
-Formalization follows directly. Supporting literal source estimate;
-no separate contribution count.
+`TheActualUpwardSourceHasPolynomialHarmonicBounds.lean` proves the
+literal row estimate and its normalized Euclidean-vector form. Final direct
+Lean check passed; both transitive axiom audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`. Umbrella wired. Supporting source
+estimate; no separate contribution count.

@@ -81,6 +81,26 @@ $\|A^{-1}v-\lambda^{-1}v\|\le(e\lambda)^{-1}\|Av-\lambda v\|$
 retains the complete floor $A\succeq eI$.
 Lean: `WeilGreenModes`.
 
+For every profile and fixed positive overlap, the completed conductor heat
+series converges exactly for $\beta>1$. The logarithmic lower envelope and
+the prime-conductor upper envelope retain the full shell and pole completion.
+For the actual positive tilted-spline energies,
+$\sum_m E_m(c)^{-k}=\infty$ for every integer $k\ge0$.
+Lean: `ConductorHeatThreshold`.
+
+The exact conductor Green operator on complex $\ell^2$ is
+$G_ce_m=E_m(c)^{-1}e_m$. It is compact and injective, with exact norm
+$E_1(c)^{-1}$ attained at the pole coordinate. None of its integer
+coordinate-eigenvalue power sums is finite.
+Lean: `ConductorGreenCompletion`.
+
+The literal upward residual satisfies
+$\|U_{m,c,N}\|^2\le C_m[c^{10}(\log N/N)^2+c^6/\sqrt{\log N}]$,
+with both offset signs and horizon cutoffs retained. Its joint domain is
+$c\ge1$, $c/N\le1$, $B=\lceil ec\rceil\le N$, and $2(e+3)cB\le N$,
+beyond one conductor-dependent horizon.
+Lean: `UpwardSourcePayment`.
+
 The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
 Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.
 The energy flux proves zero exclusion throughout this joint argument-order

@@ -1,7 +1,7 @@
 # Completed conductor quasimodes have polynomial error
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -25,5 +25,8 @@ regularity, support and positive-mass premise.
 
 ## Lean status
 
-Formalization follows directly. Supporting full actual quasimode bound;
-no separate contribution count.
+`CompletedConductorQuasimodesHavePolynomialError.lean` proves the
+full actual residual estimate and its explicit tilted-spline specialization.
+Final direct Lean check passed; both transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`. Umbrella wired.
+Supporting estimate; no separate contribution count.
