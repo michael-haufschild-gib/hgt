@@ -1,7 +1,7 @@
 # Growing-conductor character sums retain signed unsmoothing
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For each `A≥0`, one rate `ρ>0`, constant `C≥0` and horizon control both actual nonprincipal character sums `Σ_(n≤X)χ(n)Λ(n)` and `Σ_(p≤X)χ(p)log p` by `CX exp(−ρ(log X)^(1/10))`, uniformly over `q≤(log X)^A`.
 
 ## Proof
@@ -22,4 +22,14 @@ For a reduced residue class, exact finite-character orthogonality gives `θ(X;q,
 
 ## Formalization and scope
 
-Lean: `GaloisForLFunctions/RHTower/ConductorUniform/DirichletCharacterUniformSums.lean`; audit pending. Neither complex signed sum is treated as monotone. Only the ordinary positive mass pays the unsmoothing defect. Nonunit residue indicators and finite signed-pattern expansion remain to complete the actual residue-source theorem.
+Lean: `GaloisForLFunctions/RHTower/ConductorUniform/DirichletCharacterUniformSums.lean`.
+
+- `RHTower.exists_conductor_uniform_characterPsi_power_log`.
+- `RHTower.exists_conductor_uniform_characterTheta_power_log`.
+- `RHTower.exists_log_rpow_le_power_log_decay`.
+- `RHTower.exists_conductor_theta_power_log`.
+- `RHTower.exists_conductor_uniform_characterTheta_main_power_log`.
+- `RHTower.exists_conductor_uniform_primeProgressionTheta_power_log`.
+- Direct Lean check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
+Neither complex signed sum is treated as monotone. Ordinary positive mass pays the unsmoothing defect. Principal-character corrections and exact finite-character recovery retain one common horizon.

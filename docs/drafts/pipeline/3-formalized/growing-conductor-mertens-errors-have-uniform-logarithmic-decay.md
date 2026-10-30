@@ -1,7 +1,7 @@
 # Growing-conductor Mertens errors have uniform logarithmic decay
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For every `A≥0` and integer `k≥0`, one starting horizon gives
 
 `|Σ_(n≤X) F(n mod q)Λ(n)/n − κ_q(F)log X − FP_q(F)| ≤ [2/(log Y)^k]Σ_r|F(r)|`
@@ -10,7 +10,7 @@ simultaneously for all sufficiently large `Y`, every `X≥Y`, every `q≤(log Y)
 
 ## Proof
 
-[PROVED HERE] Let `L=Σ_r|F(r)|` and `R(t)=Σ_(n≤t)F(n mod q)Λ(n)−κ_q(F)t`. The [uniform cumulative source theorem](growing-conductor-prime-sources-have-uniform-logarithmic-decay.md), at exponent `k+2`, gives `|R(t)|≤Lt/(log t)^(k+2)` for every `t≥X`, because the allowed modulus range increases with `t`.
+[PROVED HERE] Let `L=Σ_r|F(r)|` and `R(t)=Σ_(n≤t)F(n mod q)Λ(n)−κ_q(F)t`. The [uniform cumulative source theorem](../3-formalized/growing-conductor-prime-sources-have-uniform-logarithmic-decay.md), at exponent `k+2`, gives `|R(t)|≤Lt/(log t)^(k+2)` for every `t≥X`, because the allowed modulus range increases with `t`.
 
 Exact Abel transport gives, for `Z≥X`,
 
@@ -28,4 +28,9 @@ The finite part cancels in the exact difference identity before estimation. Poin
 
 ## Formalization and scope
 
-Lean: `GaloisForLFunctions/CriticalArithmeticCorrelationTheory/GrowingConductorMertensErrorsHaveUniformLogarithmicDecay.lean`; audit pending. This supplies a common actual arithmetic source on polynomial logarithmic conductor families. It does not yet bound the weighted sum of all eight complete-Weil residuals, capture actual negative eigenvectors, or control physical separated-bump loss.
+Lean: `GaloisForLFunctions/CriticalArithmeticCorrelationTheory/GrowingConductorMertensErrorsHaveUniformLogarithmicDecay.lean`.
+
+- `GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_conductor_uniform_residuePrimeRealError_log_bound`.
+- Direct Lean check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
+The starting horizon is independent of the allowed modulus, signed pattern, and larger endpoint. The weighted complete-Weil residual estimate, negative-eigenvector confinement and physical separated-bump loss remain open.

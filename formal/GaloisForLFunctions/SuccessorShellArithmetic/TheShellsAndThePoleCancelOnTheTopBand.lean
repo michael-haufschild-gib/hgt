@@ -16,9 +16,11 @@ amount, so the joint block `2·Pole − NR` has an `η`-coefficient of order `G(
   cell comparison and the substitution `t = n e^u`,
   `∫ (log t/√t) β(log t − log n) dt = √n(a₋a₊ log n + ∫ u e^{u/2}β)`, because
   `∫ e^{u/2} β = a₋a₊` is the factorization of the autocorrelation's Laplace transform at `½`.
-* **Cancellation** (`exists_abs_jointWitnessCoefficient_le`): the `η`-coefficient
-  `a₋a₊(H_N|T| + N S_T) − Σ_T b_n R(n)` is `O(G(log N + c + 1))`, uniformly in `N`, while each of
-  its two terms is `≍ Gcq log N`.
+* **The joint block on the witness** (`jointBlock_topWitnessVector`): `2·Pole − NR` along `x_η` is
+  a quadratic in `η` whose linear coefficient is twice `a₋a₊(H_N|T| + N S_T) − Σ_T b_n R(n)`.
+* **Cancellation** (`exists_abs_jointWitnessCoefficient_le`): that coefficient is
+  `≤ K G (1 + log N)` for all large `N`, with `K` depending only on `c` and the profile, while each
+  of its two terms is `≍ Gcq log N` (`sum_topBand_shellPoleRow_ge`).
 
 So the obstruction of the separate payment is removed by paying the shells together with the pole:
 the `c`-linear parts are the same lattice-free quantity on both sides.
@@ -793,19 +795,128 @@ theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff
         linarith only [h1, h2']
       _ = _ := by ring
   -- the decomposition of the coefficient
+  have hA : ∑ n ∈ T, (H - Real.log n) = T.card * H - ∑ n ∈ T, Real.log n := by
+    rw [sum_sub_distrib, sum_const, nsmul_eq_mul]
+  have hB : ∑ n ∈ T, poleVector n * shellPoleRow g N w n =
+      P * ∑ n ∈ T, Real.log n + T.card * I₁ - G * ∑ n ∈ T, Real.log n / n +
+        ∑ n ∈ T, e n := by
+    have hpt : ∀ n ∈ T, poleVector n * shellPoleRow g N w n =
+        P * Real.log n + I₁ - G * (Real.log n / n) + e n :=
+      fun n _ => by simp only [e]; ring
+    rw [sum_congr rfl hpt, sum_add_distrib, sum_sub_distrib, sum_add_distrib, ← mul_sum,
+      sum_const, nsmul_eq_mul, ← mul_sum]
   have hdecomp : jointWitnessCoefficient g N w =
       P * ∑ n ∈ T, (H - Real.log n) + P * (N * ∑ n ∈ T, 1 / (n : ℝ)) - T.card * I₁ +
         G * ∑ n ∈ T, Real.log n / n - ∑ n ∈ T, e n := by
-    have hsumR : ∑ n ∈ T, poleVector n * shellPoleRow g N w n =
-        ∑ n ∈ T, ((Real.log n * P + I₁) - G * Real.log n / n + e n) :=
-      sum_congr rfl fun n _ => by simp only [e]; ring
-    rw [jointWitnessCoefficient, hPpole, hsumR, sum_add_distrib, sum_sub_distrib,
-      sum_add_distrib, sum_sub_distrib, sum_const, nsmul_eq_mul, ← sum_mul, mul_sum, mul_sum]
-    simp only [mul_sub, sum_sub_distrib, sum_const, nsmul_eq_mul]
-    rw [← hT]
-    ring_nf
-    simp only [mul_comm, mul_left_comm, mul_assoc, sum_div, ← sum_mul, mul_sum]
+    rw [jointWitnessCoefficient, hPpole, ← hT, hB, hA]
     ring
-  sorry
+  -- the five terms
+  have hlogN : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+  have hGN : G * N = c * M := by rw [hG, ← hwN]; ring
+  have hS1 : |∑ n ∈ T, (H - Real.log n)| ≤ 2 * N := by
+    have hpt : ∀ n ∈ T, 0 ≤ H - Real.log n ∧ H - Real.log n ≤ 2 := by
+      intro n hn
+      have h2 := half_lt_of_mem_topBand hw.le hn
+      have hn1 := mem_Icc.mp (mem_topBand.mp hn).1
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1.1
+      have hle : Real.log n ≤ Real.log N := Real.log_le_log hn0 (by exact_mod_cast hn1.2)
+      have hge : Real.log N - Real.log 2 ≤ Real.log n := by
+        rw [← Real.log_div hN0.ne' two_ne_zero]
+        exact Real.log_le_log (by positivity) (by linarith only [h2])
+      have := Real.log_two_lt_d9
+      constructor <;> linarith
+    rw [abs_of_nonneg (sum_nonneg fun n hn => (hpt n hn).1)]
+    calc
+      _ ≤ ∑ _n ∈ T, (2 : ℝ) := sum_le_sum fun n hn => (hpt n hn).2
+      _ = 2 * T.card := by rw [sum_const, nsmul_eq_mul]; ring
+      _ ≤ 2 * N := by linarith only [hτN]
+  have hS2 : 0 ≤ ∑ n ∈ T, Real.log n / n ∧ ∑ n ∈ T, Real.log n / n ≤ 2 * Real.log N := by
+    have hpt : ∀ n ∈ T, 0 ≤ Real.log n / n ∧ Real.log n / n ≤ Real.log N * (1 / n) := by
+      intro n hn
+      have hn1 := mem_Icc.mp (mem_topBand.mp hn).1
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1.1
+      have hle : Real.log n ≤ Real.log N := Real.log_le_log hn0 (by exact_mod_cast hn1.2)
+      refine ⟨div_nonneg (Real.log_natCast_nonneg n) hn0.le, ?_⟩
+      rw [mul_one_div]
+      exact div_le_div_of_nonneg_right hle hn0.le
+    refine ⟨sum_nonneg fun n hn => (hpt n hn).1, ?_⟩
+    calc
+      _ ≤ ∑ n ∈ T, Real.log N * (1 / (n : ℝ)) := sum_le_sum fun n hn => (hpt n hn).2
+      _ = Real.log N * ∑ n ∈ T, 1 / (n : ℝ) := by rw [mul_sum]
+      _ ≤ Real.log N * 2 := mul_le_mul_of_nonneg_left hST hlogN
+      _ = 2 * Real.log N := by ring
+  have hS5 : |∑ n ∈ T, e n| ≤ (18 * c + 24) * (1 + A₁ / (c * M)) * (2 + Real.log N) * G := by
+    have hL2 : 0 ≤ 2 + Real.log N := by linarith only [hlogN]
+    have hGA : 0 ≤ G + A₁ := by linarith only [hGpos, hA₁0]
+    have hbound : (18 * w / N + 24 / (N : ℝ) ^ 2) * (2 + Real.log N) * (G + A₁) * N =
+        (18 * c + 24) * (2 + Real.log N) * ((G + A₁) / N) := by
+      rw [← hwN]; field_simp
+    have hGA' : (G + A₁) / N ≤ G * (1 + A₁ / (c * M)) := by
+      have hc0 : 0 < c * M := mul_pos hc hM
+      have hGle : G / N ≤ G := div_le_self hGpos.le (by linarith only [hNR])
+      have hA : A₁ / N = G * (A₁ / (c * M)) := by
+        rw [← hGN]; field_simp
+      rw [add_div, hA]
+      nlinarith only [hGle]
+    calc
+      _ ≤ ∑ n ∈ T, |e n| := abs_sum_le_sum_abs _ _
+      _ ≤ ∑ n ∈ T, E n := sum_le_sum fun n hn => hrow n hn
+      _ ≤ ∑ _n ∈ T, (18 * w / N + 24 / (N : ℝ) ^ 2) * (2 + Real.log N) * (G + A₁) :=
+        sum_le_sum fun n hn => hEn n hn
+      _ = T.card * ((18 * w / N + 24 / (N : ℝ) ^ 2) * (2 + Real.log N) * (G + A₁)) := by
+        rw [sum_const, nsmul_eq_mul]
+      _ ≤ N * ((18 * w / N + 24 / (N : ℝ) ^ 2) * (2 + Real.log N) * (G + A₁)) :=
+        mul_le_mul_of_nonneg_right hτN (by positivity)
+      _ = (18 * c + 24) * (2 + Real.log N) * ((G + A₁) / N) := by rw [mul_comm, hbound]
+      _ ≤ (18 * c + 24) * (2 + Real.log N) * (G * (1 + A₁ / (c * M))) :=
+        mul_le_mul_of_nonneg_left hGA' (by positivity)
+      _ = _ := by ring
+  have ht1 : |P * ∑ n ∈ T, (H - Real.log n)| ≤ 8 * c * G := by
+    rw [abs_mul]
+    calc
+      _ ≤ (4 * w * G) * (2 * N) := mul_le_mul hP hS1 (abs_nonneg _) (by positivity)
+      _ = 8 * c * G := by rw [← hwN]; ring
+  have ht2 : |P * (N * ∑ n ∈ T, 1 / (n : ℝ))| ≤ 8 * c * G := by
+    rw [abs_mul, abs_of_nonneg (mul_nonneg hN0.le hST0)]
+    calc
+      _ ≤ (4 * w * G) * (N * 2) :=
+        mul_le_mul hP (mul_le_mul_of_nonneg_left hST hN0.le) (by positivity) (by positivity)
+      _ = 8 * c * G := by rw [← hwN]; ring
+  have ht3 : |(T.card : ℝ) * I₁| ≤ c * G := by
+    rw [abs_mul, abs_of_nonneg (Nat.cast_nonneg _)]
+    calc
+      _ ≤ (N : ℝ) * (4 * w ^ 2 * G) := mul_le_mul hτN hI (abs_nonneg _) hN0.le
+      _ = 4 * c * w * G := by rw [← hwN]; ring
+      _ ≤ c * G := by nlinarith only [hw4, hc, hGpos, mul_pos hc hGpos]
+  have ht4 : 0 ≤ G * ∑ n ∈ T, Real.log n / n ∧
+      G * ∑ n ∈ T, Real.log n / n ≤ 2 * Real.log N * G :=
+    ⟨mul_nonneg hGpos.le hS2.1, by nlinarith only [hS2.2, hGpos]⟩
+  -- assemble
+  rw [hdecomp]
+  have hK1 : 17 * c * G ≤ 20 * c * G * (1 + Real.log N) := by
+    nlinarith only [mul_pos hc hGpos, hlogN]
+  have hK2 : (18 * c + 24) * (1 + A₁ / (c * M)) * (2 + Real.log N) * G ≤
+      2 * (18 * c + 24) * (1 + A₁ / (c * M)) * G * (1 + Real.log N) := by
+    have h0 : 0 ≤ (18 * c + 24) * (1 + A₁ / (c * M)) * G := by
+      have : 0 ≤ A₁ / (c * M) := div_nonneg hA₁0 (mul_pos hc hM).le
+      positivity
+    nlinarith only [h0, hlogN]
+  have hfin : |P * ∑ n ∈ T, (H - Real.log n) + P * (N * ∑ n ∈ T, 1 / (n : ℝ)) -
+      T.card * I₁ + G * ∑ n ∈ T, Real.log n / n - ∑ n ∈ T, e n| ≤
+      17 * c * G + 2 * Real.log N * G +
+        (18 * c + 24) * (1 + A₁ / (c * M)) * (2 + Real.log N) * G := by
+    obtain ⟨h1l, h1u⟩ := abs_le.mp ht1
+    obtain ⟨h2l, h2u⟩ := abs_le.mp ht2
+    obtain ⟨h3l, h3u⟩ := abs_le.mp ht3
+    obtain ⟨h5l, h5u⟩ := abs_le.mp hS5
+    have hLG : 0 ≤ 2 * Real.log N * G := mul_nonneg (by linarith only [hlogN]) hGpos.le
+    exact abs_le.mpr ⟨by linarith only [h1l, h2l, h3u, ht4.1, h5u, hLG],
+      by linarith only [h1u, h2u, h3l, ht4.2, h5l]⟩
+  refine hfin.trans ?_
+  have hlog2 : 2 * Real.log N * G ≤ 2 * G * (1 + Real.log N) := by nlinarith only [hGpos]
+  nlinarith only [hK1, hK2, hlog2]
 
 end GaloisForLFunctions.SuccessorShellArithmetic
+
+#print axioms GaloisForLFunctions.SuccessorShellArithmetic.jointBlock_topWitnessVector
+#print axioms GaloisForLFunctions.SuccessorShellArithmetic.exists_abs_jointWitnessCoefficient_le
