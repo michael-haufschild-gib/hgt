@@ -126,6 +126,13 @@ with common $\kappa>0$. The positive coprime-tail series pays the upper bound.
 Every fixed finite conductor family has uniformly bounded energy ratios.
 Lean: `ConductorOverlapDecay`.
 
+The actual squared relative residual is at most
+$C_m[c^{24}(\log N/N)^2+c^{20}/\sqrt{\log N}]$.
+At $c_N=(\log N)^\alpha$, $0<\alpha<1/40$, every source-domain
+inequality holds eventually, $c_N^7$ times the residual norm tends to zero,
+and the residual divided by the actual energy tends to zero.
+Lean: `WeilGrowingOverlap`.
+
 The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
 Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.
 The energy flux proves zero exclusion throughout this joint argument-order

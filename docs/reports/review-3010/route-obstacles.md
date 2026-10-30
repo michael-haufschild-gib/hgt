@@ -50,7 +50,7 @@ Atomic families are \(f_x=\sum_{n\le N}x_n\,\varphi((u-\log n)/w)\), width \(w=c
 | Bounded ranges [K] | Tilted spline: one horizon for all \(0<c\le K\). |
 | Fixed packets, growing \(c\) [L] | Tilted spline, every fixed finite conductor set \(S\): one horizon gives energy \(\ge (C/M)\,c^{-7}\sum a_m^2\) for all \(1\le c\le(\log N)^A\), \(0\le A<1/48\). Every fixed power of \(\log\log N\) is inside. The CAF variant reaches \(\alpha<1/40\) [S]. |
 | Residual [L] | \(\|(W-E_m)v_m\|^2\le C_m[c^{10}(\log N/N)^2+c^6/\sqrt{\log N}]\), with all eight residual terms retained. |
-| Gamma reserve [L] | \(\mathrm{arch}(f_x)\ge(\kappa c^{-7}\log N-bc)\cdot\)atom mass; it diverges iff \(c_N^8=o(\log N)\). |
+| Gamma reserve [L] | \(\mathrm{arch}(f_x)\ge(\kappa c^{-7}\log N-bc)\cdot\)atom mass; it diverges along every schedule with \(c_N^8=o(\log N)\). |
 | Existential growth [L] | Some unbounded schedule is positive, with no rate. |
 | RH receivers [L/K] | \(C^2\): \(c_N^4\gg\log N\) (tilted spline \(c_N=2(\log N)^\alpha\), \(\alpha>1/4\)). Gevrey \(s\): \((\log\log N)^{s+}\). Steklov: \(L(\log L)^2\log\log L\), \(L=\log\log N\). |
 

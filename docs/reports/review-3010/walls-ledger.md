@@ -1,56 +1,51 @@
 # Walls ledger
 
-Status: 30 October 2026, corpus `a0e8154924` plus working tree.
+Status: 30 October 2026, corpus `66f67bc27f`.
 
 **Three core problem families remain:**
 
 - the selective critical sign (Wall 1);
-- transfer and exhaustion (Wall 3), now located inside one explicit overlap window;
+- transfer and exhaustion (Wall 3), now located at one critical curve inside the overlap window;
 - independent realization or forcing (Wall 14).
 
-No core wall was crossed. One major face was solved, and the remaining content of each wall is sharper:
+No core wall was crossed. Each wall moved:
 
-- **Wall 3 lost its bounded-overlap part.** The complete Weil matrix is positive at every fixed overlap, for every profile without real Fourier zeros [L].
-  - The successor shells repay the nonpolar \(-\log c\) loss exactly, by Poisson summation on the successor lattice.
-  - The margin is a positive Fourier tail \(E(c)\) that tends to \(0\) by Stirling's formula.
-  - The open part is the rate at which \(c_N\) may grow: RH is the same positivity at \(c_N^4\gg\log N\).
-- **Wall 1's gauge-charge source is now in use, at its major arcs only.** Bounded-overlap positivity reads the shells through Ramanujan sums, i.e. through finite gauge subgroups, controlled by fixed-modulus PNT in progressions. The point \(0\) is still uncertified beyond them.
-  - RH is an exponent statement at \(0\): the typical Möbius exponent is exactly \(1/2\), and \(0\) is never better than typical.
-  - No gauge-invariant certificate gets below \(3/4\) [L].
-- **Wall 14 is sharper.**
-  - \(\mathbb Z\) has no Frobenius substitute among its self-maps [L].
-  - Bézout and Riemann–Roch for \(\mathbb G_m(\mathbb Q)\) are exact but linear.
-  - Approximate vanishing of integer auxiliaries is exact divisibility.
-  - The Frobenius equation \(x^q=x\) lives on the gauge torus, as the fixed points of the Adams operations.
+- **Wall 3 gained its first growing-resolution rung.** Every fixed conductor packet is positive for \(1\le c\le(\log N)^{1/48}\) [L], and the Gamma reserve survives while \(c^8=o(\log N)\) [L]. The open part is now sharply located:
+  - loss-free control of the \(\approx c\) near-degenerate conductors \(m\lesssim c\);
+  - the critical curve \(E(c_N)\log N\asymp1\), where margin, Gamma reserve and synthesis error coincide (inference).
+- **Wall 1 became a resolution theory at bounded overlap.**
+  - Twisted forms are decided by finite Ramanujan packets and have exact thresholds [L].
+  - Pole-free twins fall at one bounded overlap [L/Lean]; pole-keeping twins need \(c_0\asymp p^{1/7}\) [L].
+  - The zeros read atomic vectors only through Möbius horizons, and single-horizon charges are depth-blind [L]. The \(0\)-specific input RH needs is depth information carried by long windows.
+- **Wall 14 lost its Adams hope at the level posed.** Full multiplicity on the Adams fixed locus costs support exactly \(2^{qr}\) [L]: Bézout-sharp, and on characters. Factorial-ratio producers stop at Chebyshev precision \(2\log2\) [L]. The producer problem has moved to a duality step from characters to primes.
 
-Links: [route report](route-obstacles.md) · [summary and next questions](obstacles-summary.md) · [route unification](route-unification-ledger.md) · [scoped no-go catalogue](../rh-killed-routes.md). Evidence comes from corpus searches and Lean statements; no builds were run.
+Links: [route report](route-obstacles.md) · [summary and next questions](obstacles-summary.md) · [route unification](route-unification-ledger.md) · [scoped no-go catalogue](../rh-killed-routes.md). Evidence comes from corpus searches and Lean statements; no builds were run. [Working log](../../../logs/review-3010-rev2-research-2026-10-30.md).
 
 | Label | Meaning |
 |---|---|
 | **[L]**, **[S]**, **[K]** | As in the frontier map. |
 | **[Lean]** | Statement read; integration not assessed. |
-| **[P]** | Paper proof only; not audited here. |
+| **[P]** | Paper proof only. |
 | **(inference)** | A conclusion of this review. |
-
-[Working log](../../../logs/review-3010-research-2026-10-30.md).
 
 ## The three families
 
 | Family | Question | Where the input can come from | What would cross it |
 |---|---|---|---|
-| **Wall 1 — Selective critical sign** | What bounds the actual signed prime/Möbius source, the complete Weil form or a defect at the critical scale, using a property \(\Lambda\) has and its twins lack? | The pole and Gamma; gauge charge through non-ratio lags. Major arcs suffice at bounded overlap. RH needs information that is not gauge-invariant and not finitely determined at the point \(0\) [L]. | A square-root-precise, \(0\)-specific statement: an exponent bound at \(0\), a parity-class count, or positivity on an RH-complete schedule. |
-| **Wall 3 — Transfer and exhaustion** | Does an estimate survive the needed overlap growth, aperture, rank, conductor and simultaneous limit? | For atomic families, the window between fixed \(c\) (theorem) and \(c_N^4\gg\log N\) (RH). The margin \(E(c_N)\) decays; errors must be controlled uniformly in \(c\) and in conductors \(m\lesssim c\). | Positivity with an error rate below \(E(c_N)\) along a schedule past the synthesis threshold, or an exact identity at zero margin. |
-| **Wall 14 — Realization and forcing** | Which independently built structure produces the inequality? | Over \(\mathbb F_q\), Frobenius couples addition and multiplication. Over \(\mathbb Z\), self-maps cannot; the Adams operations of the gauge torus satisfy \(x^q=x\) on characters. | A producer that vanishes finer than divisibility, a geometric parity twin, or an index ceiling from ring structure. |
+| **Wall 1 — Selective critical sign** | What bounds the actual signed prime/Möbius source, the complete Weil form or a defect at the critical scale, using a property \(\Lambda\) has and its twins lack? | The pole and Gamma (they decide every pole-free twin at bounded overlap); gauge charge through non-ratio lags, read by linear prime sums to fixed moduli; the functional equation and \(\Lambda*1=\log\). RH needs depth information at \(0\), carried only by two-horizon (long-window) directions, at square-root precision. | A \(0\)-specific, depth-sensitive statement: an exponent bound at \(0\), a parity-class count, or positivity past the critical curve. |
+| **Wall 3 — Transfer and exhaustion** | Does an estimate survive the needed overlap growth, aperture, rank, conductor and simultaneous limit? | The atomic window: theorem at every fixed \(c\), on fixed packets to \((\log N)^{1/48}\); RH past \(E(c_N)\log N\asymp1\). The near-degenerate conductors \(m\lesssim c\) and the harmonic boundary layer carry the losses. | Loss-free positivity up to the critical curve, and an exact identity at it. |
+| **Wall 14 — Realization and forcing** | Which independently built structure produces the inequality? | Over \(\mathbb F_q\), Frobenius couples addition and multiplication. Over \(\mathbb Z\), self-maps cannot; Adams operations vanish Bézout-sharply on characters; Riemann–Roch for \(\mathbb G_m(\mathbb Q)\) is linear. | A character-to-point duality producing counts, a producer with non-periodic valuations, or an index ceiling from ring structure. |
 
 **How the walls interlock.**
 
 - **Global law (Wall 1 = Wall 14 at the endpoint) [S].** Index zero of the Weil kernel is the one-sided count, already the upper count of the odd Liouville class.
 - **Window (Wall 3 meets Wall 1).**
-  - Fixed overlap uses the pole, Gamma and the shells' major arcs. Selectivity there is per twin: each flip at its own \(c_0(p)\), and no fixed \(c\) rejects every flip [L].
-  - RH requires \(c_N\to\infty\), the same growth that uniform selectivity requires.
-- **Marginality is an identity (Wall 3).** \(E(c)=\frac2M\sum_k\frac1k\int_{kc}^\infty|\hat\varphi(2\pi t)|^2dt\to0\) [L]. No estimate with a fixed loss survives the limit. The obstruction is now quantitative: the margin against the error rate.
-- **Producer (Wall 14) [L].** One ledger, \(\sum m_p\log p\le\log A\). Divisibility is parity-blind. Riemann–Roch for \(\mathbb G_m(\mathbb Q)\) is linear, while a Hodge index needs a quadratic Euler characteristic.
-- **Point \(0\) (Walls 1 and 14) [L].** Multiplicative, gauge-invariant data prove almost-sure laws and certify nothing below \(3/4\) at \(0\). The Adams operations fix \(0\), so a producer built from them must also use additive structure.
+  - Fixed overlap uses the pole, Gamma and fixed-modulus linear prime sums; it resolves exactly the summable-defect twists [L].
+  - An off-line zero is a pole-keeping, non-summable perturbation. It is invisible at fixed \(c\) and visible only through growing conductors.
+- **Criticality (Wall 3).** The margin \(E(c)\) is the aliasing tail; the Gamma reserve and the receiver's synthesis error are the same tail times the archimedean weight \(\log N\) (inference). No estimate with a fixed relative loss crosses the curve where they are equal.
+- **Depth (Walls 1 and 3).** Single-horizon charges satisfy \(\|P_a(s)P_a(1-s)\|\le N(\sum|a_d|/d)^2/|s(1-s)|\) throughout the strip [L]. Depth enters only as \((N/M)^{|\operatorname{Re}z|}\) through windows [L].
+- **Producer (Wall 14) [L].** One ledger, \(\sum m_p\log p\le\log A\). Divisibility is parity-blind. Adams vanishing costs \(2^{qr}\). Riemann–Roch for \(\mathbb G_m(\mathbb Q)\) is linear, while a Hodge index needs a quadratic Euler characteristic.
+- **Point \(0\) (Walls 1 and 14) [L].** Multiplicative, gauge-invariant data prove almost-sure laws and certify nothing below \(3/4\) at \(0\). The Adams operations fix \(0\). Over \(\mathbb F_q[T]\) the trivial point is better than typical; over \(\mathbb Z\) it is never better than typical.
 
 **Organizing identities.**
 
@@ -60,21 +55,26 @@ The complete form and an ordered entry:
 W(f,g)=-\int_0^\infty\big(e^h-\psi(e^h)-c\big)\,q'_{f,g}(h)\,dh-\Gamma_{\rm tail}(f,g).
 \]
 
-Shell repayment at overlap \(c\) (Ramanujan weights, Möbius inversion, Poisson):
+Shell repayment at overlap \(c\):
 \[
-E_m(c)=E^{\rm ref}_m(c)-\frac{2}{M\varphi(m)}\sum_{1\le h<c}c_m(h)\int_{h/c}^1\frac{G(u)}u\,du
-=\frac{2}{M\varphi(m)}\sum_{(a,m)=1}\frac ma\int_{ac/m}^\infty|\hat\varphi(2\pi t)|^2dt .
+E_m(c)=\frac{2}{M\varphi(m)}\sum_{(a,m)=1}\frac ma\int_{ac/m}^\infty|\hat\varphi(2\pi t)|^2dt ,\qquad \log m+F(c)-B(c)\le E_m(c).
 \]
 
-The index and the parity form of the global law:
+The horizon law, for every atomic vector \(y\), \(a=(\sqrt n\,y_n)*\mu\):
+\[
+Q(f_y)=\operatorname{Re}\sum_\rho m_\rho\,\hat g(\gamma_\rho)\overline{\hat g(\bar\gamma_\rho)}\,H_a(1-\rho)H_a(\rho),\qquad H_a(s)=\sum_{d\le N}a_dd^{-s}B_{\lfloor N/d\rfloor}(s).
+\]
+
+The resolution bottom of a twist \(\lambda\) with summable defect:
+\[
+\lambda_\lambda(c)=\inf_{\sum\beta_m^2=1}\Big[\sum_m\beta_m^2E_m(c)+2\sum_kd_\lambda(k)k^{-1/2}M(y\cdot y(k\cdot))\Big],\qquad y=\sum\beta_me_m .
+\]
+
+The index, the parity law and the exponent:
 \[
 \kappa(K_\zeta)=\#\{\rho:\operatorname{Re}\rho>\tfrac12\},\qquad
-\kappa=0\iff\sum_{\lambda(n)=-1}\frac{e^{-nt}}n\le\tfrac12\Big(\sum_n\frac{e^{-nt}}n+Ct^{1/2-\varepsilon}\Big).
-\]
-
-The exponent at the trivial point, and Riemann–Roch for \(\mathbb G_m(\mathbb Q)\):
-\[
-\theta_\mu(0)=\Theta,\qquad \theta_\mu(x)=\tfrac12\ \text{Haar-a.e.},\qquad h^0(N,m)=\Big\lfloor N\Big/\prod p^{m_p}\Big\rfloor .
+\kappa=0\iff\sum_{\lambda(n)=-1}\frac{e^{-nt}}n\le\tfrac12\Big(\sum_n\frac{e^{-nt}}n+Ct^{1/2-\varepsilon}\Big),\qquad
+\theta_\mu(0)=\Theta .
 \]
 
 **Strata**, weakest first:
@@ -94,41 +94,29 @@ The exponent at the trivial point, and Riemann–Roch for \(\mathbb G_m(\mathbb 
 
 | Face | Change | Current content |
 |---|---|---|
-| **3.46 Successor shells and nonpolar loss** | **Solved [L]** | Shells \(n=km+h\) enter with weights \(c_m(h)\). Möbius inversion and Poisson summation repay \(-\log c\) exactly. Every completed conductor energy is a positive Fourier integral. |
-| **3.26 Complete overlap transfer** | **Bounded part solved [L/K]** | Positive at every fixed \(c\) for profiles without real Fourier zeros [L]; uniform on \(0<c\le K\) for the tilted spline [K]. |
-| **3.38 Separated-regime spectrum** | **Extended to every overlap [L]** | Low spectrum = completed conductor spectrum; pole ground state; bottom \(\to E(c)\). |
-| **3.44 Certified-method boundary** | **Superseded** | \(c_*\) bounds only the plateau's Young family. Tilted profiles are positive at every \(c\). |
-| **3.45 Charge barrier** | **Superseded** | The pole-charge restriction belongs to the plateau reference method, not to complete positivity. |
-| **3.50 Marginality** | **Proved as an identity [L]** | \(E(c)\to0\) is Stirling; the margin is exact and decays (\(\ge C/c^7\) for the tilted spline [K]). |
-| **3.42 Overlap growth** | **Restated as 3.51–3.56** | The window, its rate problem and its thresholds. |
-| **3.47 Atom-norm degeneration** | **Boundary kept; survivor extended** | Still no uniform coefficient floor as \(c\to\infty\) [K]. At fixed \(c\) the Montgomery–Vaughan band mass becomes a Gamma reserve for every profile without real Fourier zeros [L]. |
-| **3.37 Quasi-analytic boundary** | **Upgraded to [K]** | Steklov profile: RH at \(L(\log L)^2\log\log L\). |
-| **1.3 Complete Weil positivity** | **Bounded overlap proved [L]** | RH-complete schedules remain [RH]. |
-| **1.38 Flip selectivity** | **Solved per prime [L]; uniform version impossible at fixed \(c\) [L]** | \(c_0(p)<\infty\) for every \(p\); thresholds \(\to\infty\) with \(p\). |
-| **1.40 Point-\(0\) typicality** | **Exact [L]** | Typical exponent exactly \(1/2\); \(0\) never better than typical; RH \(\iff\) equality. |
-| **1.41 Major arcs of gauge charge** | **Theorem [L]; used [L]** | Level-\(q\) averaging keeps the shells with \(q\mid j\). Bounded-overlap positivity needs only these major arcs. |
-| **14.50 Frobenius gap** | **Theorem [L]** | Bounded-defect ring endomorphisms of \(\mathbb N\) are the identity or unit-ball gauge points. |
-| **14.37 Local-to-global by counting** | **Extended [K/L]** | Bézout and Riemann–Roch for \(\mathbb G_m(\mathbb Q)\), exact and linear. |
-| **14.49 Producer ledger** | **Extended [L]** | Factorial ratios have bounded multiplicity above \(\sqrt{\text{length}}\). Approximate vanishing is divisibility for integer auxiliaries. |
-| **14.47 Geometry of the parity twin** | **Extended [L]** | The Adams operations give \(x^q=x\) a home on characters; \(\psi^2\) fixes only \(0\). |
-| **1.42 Gauge non-invariance of the exponent** | **New [L]** | No gauge-invariant certificate below \(3/4\); finitely determined certificates \(\ge1\). |
-| **1.43 Coherence principle** | **New [L]** | Nonnegative statistics are maximal at \(0\); the pole is coherence. |
-| **1.44 Antipode** | **New [L]** | The pole separates \(0\) from the Liouville point by sign only. |
-| **1.45 Special locus** | **New [L]** | Dirichlet points read GRH, typical on average; the constant source is atypical on the special locus. |
-| **1.46 Twin inequality** | **New [S]** | Exponents propagate between \(x\), \(2x\) and \(x+\ell\); \(1/2\) is not a floor on \(G\). |
-| **1.47 Fixed-modulus sufficiency** | **New (inference from [L])** | Positivity at every fixed overlap needs only linear prime sums to a fixed modulus. |
-| **3.51 The overlap window** | **New [L/K]** | Fixed \(c\): theorem. \(c_N^4\gg\log N\): RH. An existential unbounded positive schedule exists. |
-| **3.52 The rate problem** | **New [open]** | Errors uniform in \(c\) and in conductors \(m\lesssim c\). Paper cards on polynomial and logarithmic rates exist [P]. |
-| **3.53 Profile thresholds** | **New [L/K]** | \(C^2\): \(c^4\gg\log N\). Smooth: \((\log N)^\varepsilon\). Gevrey \(s\): \((\log\log N)^s\). Steklov: iterated log. |
-| **3.54 Flip thresholds** | **New [L]** | \(c_0(p)<\infty\); \(c^*(p)\to\infty\). |
-| **3.55 Single-profile window** | **New (inference)** | A generically tilted Steklov profile should carry both fixed-\(c\) positivity and the iterated-log receiver. |
-| **3.56 Critical scaling** | **New (inference)** | The margin \(E(c_N)\) and the off-line damage are both of relative order \(1/\log N\) at the transition; conjecturally RH lives on \(E(c_N)\log N\asymp1\). |
-| **14.51 Bézout and Riemann–Roch for \(\mathbb G_m(\mathbb Q)\)** | **New [K/L]** | \(h^0=\lfloor e^{\deg}\rfloor\); a Hodge index needs a quadratic Euler characteristic. |
-| **14.52 Approximate vanishing** | **New [L]** | For integer auxiliaries, smallness below \(1/\sqrt2\) on long progression stretches is divisibility. |
-| **14.53 Twist tower over \(\mathbb Z\)** | **New [L]** | Collapses to its first level. |
-| **14.54 Adams operations** | **New [L]** | \(\psi^q\)-fixed points are the \((q-1)\)-torsion twists. |
-| **14.55 Polar index** | **New [L]** | For curve data, index = number of right pole classes; confinement = index zero. |
-| **14.56 Affine-invariant kernels** | **New [L]** | Kernels invariant under dilation and successor carry three constants. A ring positivity principle must carry broken successor invariance as a boundary term. |
+| **3.52 The rate problem** | **Partly solved [L]** | Fixed conductor packets positive for \(1\le c\le(\log N)^A\), \(A<1/48\); residual \(c^{10}(\log N/N)^2+c^6/\sqrt{\log N}\). Growing conductors and the complement remain. |
+| **3.51 The overlap window** | **Lower endpoint moved [L]** | Theorem at fixed \(c\) and on fixed packets to \((\log N)^{1/48}\); RH past the critical curve. |
+| **3.47 Atom-norm degeneration** | **Survivor extended [L]** | The Gamma reserve \((\kappa c^{-7}\log N-bc)\cdot\)mass survives growing overlap while \(c^8=o(\log N)\). |
+| **3.53 Profile thresholds** | **Aligned with the critical curve (inference)** | Gevrey and Steklov receivers lie on \(E(c_N)\log N\asymp1\); \(C^2\) lies above it because of trapezoid synthesis. |
+| **3.56 Critical scaling** | **Superseded by 3.66** | The conjectured transition now has evidence from three profile classes and an explanation (one Fourier tail). |
+| **3.54 Flip thresholds** | **Sharp exponent [L]** | \((p/\log p)^{1/7}\lesssim c_0(\omega_p)\lesssim p^{1/7}\); margin at resolution \(\asymp\log^2p/(p\log(p/c))\). |
+| **1.38 Flip selectivity** | **Solved for every finite flip set [L]** | Exact thresholds for every finite set; each twist's sign at fixed \(c\) is a finite packet form. |
+| **1.18 Arithmetic gauge selection** | **Extended [L]** | Exact resolution thresholds for every summable twist. |
+| **1.41 Major arcs of gauge charge** | **Refined [L]** | Bounded overlap reads shells by linear prime sums in fixed residue classes (additive major arcs). For \(c\le2\) every multiplicative level-\(q\ge3\) average of the shells is zero. |
+| **1.46 Twin inequality** | **Upgraded to [L]** | Quadratic Dirichlet twins \(\le(2+\Theta)/6\); a universal floor \(1/2\) forces \(\Theta=1\). |
+| **1.47 Fixed-modulus sufficiency** | **Kept; scope sharpened** | Fixed overlap needs only fixed-modulus linear prime sums. Depth needs growing conductors. |
+| **14.54 Adams operations** | **Extended to a sharp cost [L]** | Full multiplicity \(r\) on the \(\psi^{q+1}\)-fixed locus forces support \(\ge2^{qr}\); \((\chi(2)^q-1)^r\) is sharp. |
+| **14.49 Producer ledger** | **Extended [L]** | Balanced factorial ratios cost \((2\log2-\varepsilon)mn\); the central binomial is optimal. |
+| **14.37 Local-to-global by counting** | **Calibration derived [L]** | Möbius degree sums of \(\mathbb F_q[T]\) derived from unique factorization; trivial point better than typical there. |
+| **1.48 Pole-free twin selectivity** | **New [L/Lean]** | One profile at one bounded overlap rejects every completely multiplicative \(\pm1\) gauge with bounded harmonic sums. |
+| **1.49 Packet decision** | **New [L]** | Twisted forms at fixed \(c\) are decided by finite Ramanujan packets; exact monotone thresholds. |
+| **1.50 Short shells** | **New [L]** | For \(c\le2\) no finite gauge subgroup sees the shells. |
+| **1.51 Level of distribution of the shells** | **New [L]** | Large sieve over conductors \(\le Q\); the trivial point is one term. |
+| **1.52 Charge blindness** | **New [L]** | Single-horizon charges cannot see real parts of zeros. |
+| **1.53 Function-field calibration** | **New [L]** | Trivial point better than typical over \(\mathbb F_q[T]\); twin at exponent \(1\). |
+| **1.54 The pole decides bounded selectivity** | **New (inference)** | Pole-free twins at bounded \(c\); pole-keeping ones at growing \(c\). |
+| **3.57–3.66** | **New [L]/(inference)** | Growing packets; residual; conductor Weyl law; Green coordinates; horizon law; windows; depth-blind packets; frames; the critical curve. |
+| **14.57–14.63** | **New [L]/(inference)** | Adams–Bézout cost; jets; factorial precision; affine positivity; successor rigidity; the duality step; Bost–Connes temperature. |
 
 ## Wall 1 — Selective critical sign
 
@@ -137,7 +125,7 @@ The exponent at the trivial point, and Riemann–Roch for \(\mathbb G_m(\mathbb 
 | **1.0 Fixed-strip first rung** | Open [≥QRH]; external claim | Every strip dictionary reads \(\Theta\). Density envelopes never force vanishing. Guth–Maynard and DH \(\sigma\ge5/6\) [L]. External \(7/8\) [E]. |
 | **1.1 Critical signed cancellation** | Open [RH] | Lag, Abel, history, series, one-sided \(\psi\), odd-class and first-clock receivers need the signed bound. |
 | **1.2 Axis orientation** | Open [RH] | Ward caps, winding and Newton margins detect; extinction missing. |
-| **1.3 Complete Weil positivity** | Bounded overlap proved [L]; RH-complete open [RH] | Every fixed \(c\) for profiles without real Fourier zeros. Index zero on an RH-complete schedule open. |
+| **1.3 Complete Weil positivity** | Bounded overlap and fixed packets proved [L]; past the critical curve open [RH] | Every fixed \(c\); every fixed packet to \((\log N)^{1/48}\). |
 | **1.4 Arithmetic cone membership** | Open [RH] | Identification is not positivity. |
 | **1.5 Contrast equality** | Open [RH] | BSY, Jensen and Li identities keep a defect. |
 | **1.6 Required uniformity** | Open | Fixed rank, order, height and orthant positivity leave the simultaneous receiver open. |
@@ -152,7 +140,7 @@ The exponent at the trivial point, and Riemann–Roch for \(\mathbb G_m(\mathbb 
 | **1.15 Depth homogeneity** | Boundary | Amplification pays at the scale it gains. |
 | **1.16 Payment for actual zeros** | Open | Defect, field, inertia and index payments are lower laws. |
 | **1.17 Loss-rate improvement** | Open | A sublinear loss law needs gauge charge or a fixed-budget correspondence. |
-| **1.18 Arithmetic gauge selection** | Classified for flips [L] | Gap \(2\log2\) shared by \(\omega_p\), \(p\ge11\); one probe selects within finite flips. Complete form: each flip at its own \(c_0(p)\). |
+| **1.18 Arithmetic gauge selection** | Classified for summable twists [L] | Gap \(2\log2\) shared by \(\omega_p\), \(p\ge11\). Every summable twist has an exact resolution threshold. |
 | **1.19 Budget strength** | Boundary | Abel/Mertens saturation is [RH+]. |
 | **1.20 Arithmetic-point completion** | Open | Integrality speaks only at integer arguments. |
 | **1.21 Source reserve / work ceiling** | Open [RH] | Cofinal work \(\le2\). |
@@ -172,18 +160,25 @@ The exponent at the trivial point, and Riemann–Roch for \(\mathbb G_m(\mathbb 
 | **1.35 Integrality** | Exact; certificate open | Integrality exponent \(\Theta\); divisibility cannot select parity [L]. |
 | **1.36 Precision classes** | Theorem | Count stabilizer \(\mathcal Q\); tower stabilizer trivial; finite aperture cannot decide; random signs satisfy the count. |
 | **1.37 Inversion precision** | Boundary [L] | Chebyshev ledger; monotone inversion at Mertens precision. |
-| **1.38 Flip selectivity** | Per prime [L]; uniform impossible at fixed \(c\) [L] | Prime-square trial at \(c\ge c_0(p)\); flips with \(8\log p/\sqrt p<E(c)/2\) survive at \(c\). |
+| **1.38 Flip selectivity** | Exact for finite flip sets [L] | \(c_0(\omega_p)\asymp p^{1/7}\) up to \(\log p\); no fixed \(c\) sees all flips. |
 | **1.39 Two-source law** | Theorem [L] | Twin-blind closure; diamagnetism; non-ratio lags. |
 | **1.40 Point-\(0\) typicality** | Exact [L] | Typical exponent \(1/2\); \(\theta_\mu(0)=\Theta\ge1/2\); RH \(\iff\) equality. |
-| **1.41 Major arcs of gauge charge** | Theorem [L]; used | Level-\(q\) averages keep shells with \(q\mid j\). |
+| **1.41 Major arcs of gauge charge** | Theorem [L]; refined | Level-\(q\) Dirichlet averages keep shells with \(q\mid j\). Bounded overlap reads shells through Ramanujan weights in fixed residue classes. |
 | **1.42 Gauge non-invariance** | Theorem [L] | Gauge-invariant certificates \(\ge3/4\) at \(0\); finitely determined \(\ge1\). |
-| **1.43 Coherence principle** | Theorem [L] | Nonnegative statistics are maximal at \(0\); excess = pole; diamagnetic prime pair form. |
-| **1.44 Antipode** | Theorem [L] | \(S_N(\ell)+S_N(0)=2\psi(\sqrt N)\); the twins are separated only by the sign of the pole. |
-| **1.45 Special locus** | Theorem [L] | Dirichlet points: exponent \(\Theta_\chi\), GRH = typical, typical on average. Constant source: exponent \(0\) or \(1\). |
-| **1.46 Twin inequality** | Theorem [S] | \(\exp_\mu(x+\ell)\le(1+2\exp_1(x)+\exp_\mu(2x)/2)/3\). Any strip produces points better than typical. |
-| **1.47 Fixed-modulus sufficiency** | Inference from [L] | Fixed overlap needs only linear fixed-modulus prime sums; minor arcs at \(0\) are not needed there. |
+| **1.43 Coherence principle** | Theorem [L] | Nonnegative statistics are maximal at \(0\); excess = pole. |
+| **1.44 Antipode** | Theorem [L] | \(S_N(\ell)+S_N(0)=2\psi(\sqrt N)\). |
+| **1.45 Special locus** | Theorem [L] | Dirichlet points read GRH, typical on average; constant source exponent \(0\) or \(1\). |
+| **1.46 Twin inequality** | Theorem [L] | \(\exp_\mu(x+\ell)\le(1+2\exp_1(x)+\exp_\mu(2x)/2)/3\); quadratic twins \(\le(2+\Theta)/6\). |
+| **1.47 Fixed-modulus sufficiency** | Inference from [L] | Fixed overlap needs only linear prime sums to fixed moduli; depth needs growing conductors. |
+| **1.48 Pole-free twin selectivity** | Theorem [L/Lean] | One profile at one bounded overlap above its Robin–Euler ratio rejects the Liouville twin and every cofinite flip. |
+| **1.49 Packet decision** | Theorem [L] | \(W_\lambda\) at fixed \(c\) has the sign of a finite Ramanujan-packet form; complement costs \(\ge T\). |
+| **1.50 Short shells** | Theorem [L] | \(c\le2\): shells \(|n-km|\le2\), every level-\(q\ge3\) average zero; sign is a property of \(0\) alone. |
+| **1.51 Level of distribution** | Theorem [L] | \(\sum_{q\le Q}|P|\le\|g\|_1\|a\|_1(N+Q^2)\|x\|^2\); says nothing about one point. |
+| **1.52 Charge blindness** | Theorem [L] | Single-horizon charge \(\le N(\sum|a_d|/d)^2/|s(1-s)|\); \(\operatorname{Re}1/(\rho(1-\rho))>0\) on or off the line. |
+| **1.53 Function-field calibration** | Theorem [L] | \(\mathbb F_q[T]\): Möbius sums \(1-q\), exponent \(0\) at the trivial point. |
+| **1.54 The pole decides bounded selectivity** | Inference from [L] | Pole-free twins: bounded \(c\). Pole-keeping twins: \(c\) growing with distance from \(0\). An off-line zero is pole-keeping and non-summable. |
 
-Evidence: [coherence](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheCoherencePrinciple.lean), [antipode](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheLiouvillePointIsTheAntipode.lean), [not gauge invariant](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheExponentIsNotGaugeInvariant.lean), [typical exponent](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheTypicalExponentIsOneHalf.lean), [trivial point](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheTrivialPointIsNeverBetterThanTypical.lean), [special locus](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheSpecialLocusReadsGRH.lean), [twin inequality](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheLiouvilleTwinInequality.lean), [major arcs](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheMajorArcsOfTheShells.lean), [flips seen](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/EveryFlippedPrimeIsSeenAtLargeOverlap.lean), [no fixed overlap](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/NoFixedOverlapSeesEveryFlip.lean), [affine windows](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/WeightedAffinePrimeWindowsAreUniform.lean), [parity form](../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/TheParityFormOfTheGlobalLaw.lean).
+Evidence: [packets decide](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ATwistedCompleteWeilMatrixIsDecidedByItsRamanujanPackets.lean), [exact threshold](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheOverlapThatResolvesATwistIsAnExactThreshold.lean), [flip conductors](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheFlipThresholdIsSetByTheConductorsOfThePrime.lean), [finite flip sets](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/EveryFiniteFlipSetHasAnExactResolutionThreshold.lean), [cofinite flips](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/FixedOverlapPositivityIsSelectiveAgainstEveryCofiniteFlip.lean), [pole-free twins](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/EveryPoleFreeSignTwinBreaksAboveTheRobinEulerRatio.lean), [short shells](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheShortShellsHaveNoConductor.lean), [level 1/2](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheShellsHaveLevelOfDistributionOneHalf.lean), [charge blindness](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheHorizonChargeIsBlindToTheRealPartsOfTheZeros.lean), [function field](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheFunctionFieldCalibrationIsDerived.lean), [twin inequality](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheLiouvilleTwinInequality.lean), [coherence](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheCoherencePrinciple.lean), [not gauge invariant](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheExponentIsNotGaugeInvariant.lean), [parity form](../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/TheParityFormOfTheGlobalLaw.lean).
 
 ## Wall 3 — Transfer, norms and exhaustion
 
@@ -203,8 +198,8 @@ Evidence: [coherence](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/
 | **3.12 Residual reconstruction** | Open | Coordinate maps need not have bounded inverses. |
 | **3.13 Joint orientation** | Open | One-channel signs do not orient the joint form. |
 | **3.14 Averages to selected zeros** | Open | Proportions, slack and large-value counts allow exceptions. |
-| **3.15 Escape states** | Open [RH] | Positive gauge mass of every escape state; the Möbius escape state is an Euler product blind to zeros [L]. |
-| **3.16 Prime to spectral sign** | Partly closed | At fixed overlap the prime-side margins reach the full form with poles intact [L]. Growing overlap open. |
+| **3.15 Escape states** | Open [RH] | Positive gauge mass of every escape state; the Möbius escape state is blind to zeros [L]. |
+| **3.16 Prime to spectral sign** | Partly closed | At fixed overlap and on fixed packets the prime-side margins reach the full form with poles intact [L]. Growing conductors open. |
 | **3.17 Archimedean-line horizon** | Boundary [L] | Below the threshold the line sees the whole torus; beyond it, near-incidence is gauge charge. |
 | **3.18 Localization** | Boundary | Positivity constrains a fibre only where the carrier localizes. |
 | **3.19 Conductor versus forcing** | Open | No common aperture range. |
@@ -214,7 +209,7 @@ Evidence: [coherence](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/
 | **3.23 Local to global Hodge** | Open | Hyperbolicity is not additive. |
 | **3.24 Horizon regulator** | Closed construction | Counterterms explicit. |
 | **3.25 Narrow spacing payment** | Closed | Self-energy and prime defect pay at fixed fractions. |
-| **3.26 Complete overlap transfer** | Every fixed \(c\) closed [L]; growth open | Uniform on bounded ranges [K]; RH beyond \(c_N^4\gg\log N\). |
+| **3.26 Complete overlap transfer** | Every fixed \(c\) closed [L]; fixed packets at growing \(c\) closed [L] | Full matrix at growing \(c\) open. |
 | **3.27 Complete residual** | Exact boundary | Residual radical = Weil radical; complete cells capture every finite index. |
 | **3.28 All-prime/class exhaustion** | Bulk open | Fixed packets realized; growing conductors open. |
 | **3.29 Valuation versus residue classes** | Exact boundary | Residue counterterm rank one. |
@@ -230,22 +225,32 @@ Evidence: [coherence](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/
 | **3.39 Index topology** | Boundary [S] | Continuous off the discriminant. |
 | **3.40 Aliasing and Nyquist** | Exact and effective [L/S] | Heights, certifying towers, carriers. |
 | **3.41 Locality** | Boundary [L] | Attained depth seen by almost every prime; unattained depth open. |
-| **3.43 Zero-side fixed-ratio stratum** | Boundary [S] | A tempered single-pair model is negative at every \(c\). Fixed-\(c\) positivity of \(\zeta\) uses its zero density, through Gamma. |
+| **3.43 Zero-side fixed-ratio stratum** | Boundary [K] | A tempered single-pair model is negative at every \(c\); \(\zeta\)'s fixed-\(c\) positivity uses its zero density through Gamma. |
 | **3.44 Certified-method boundary** | Superseded | Pertains to the plateau's Young family only. |
 | **3.45 Charge barrier** | Superseded | Pertains to the plateau reference method only. |
 | **3.46 Successor shells** | Solved [L] | Exact repayment by Poisson summation. |
-| **3.47 Atom-norm degeneration** | Boundary [K] | No uniform floor as \(c\to\infty\). Fixed-\(c\) Gamma reserve for profiles without real Fourier zeros [L]. |
+| **3.47 Atom-norm degeneration** | Boundary [K]; survivor extended [L] | No uniform coefficient floor; the Gamma reserve survives while \(c^8=o(\log N)\). |
 | **3.48 Length–height coordinate** | Exact [K] | Overlap \(X/T\), bandwidth \(\log X/\log T\). |
-| **3.49 Prefix Schur reduction** | Exact [K] | Full \(W\ge0\iff D-B^*A^{-1}B\ge0\); negative dimension \(\le N-M\). |
-| **3.50 Marginality** | Identity [L] | \(E(c)\to0\) by Stirling; tilted spline \(E\ge C/c^7\). |
-| **3.51 The overlap window** | Exact endpoints [L/K] | Fixed \(c\): theorem. \(c_N^4\gg\log N\): RH. Existential unbounded positive schedule [L]. |
-| **3.52 The rate problem** | Open [open] | Control replacement, shell and quasimode errors uniformly in \(c\) and in conductors \(m\lesssim c\), below \(E(c_N)\). Paper cards report polynomial-in-\(c\) harmonic bounds and logarithmic rates [P]. Siegel–Walfisz is not in the corpus. |
-| **3.53 Profile thresholds** | Exact receivers [L/K] | Thresholds by profile class; sharpness per profile open. |
-| **3.54 Flip thresholds** | Theorem [L] | \(c_0(p)<\infty\) for every \(p\); no fixed \(c\) sees all flips. |
-| **3.55 Single-profile window** | Inference | A tilted Steklov profile, with \(\tau\) avoiding countably many values, keeps the Denjoy–Carleman derivative class and has no real Fourier zeros. |
-| **3.56 Critical scaling** | Inference | One off-line zero's weight is \(O(c)\cdot\)mass [L]. Harmonic averaging of its row errors heuristically gives relative order \(1/\log N\), the same order as the top-row boundary layer. Conjecture: the RH transition is \(E(c_N)\log N\asymp1\). |
+| **3.49 Prefix Schur reduction** | Exact [K]; payment [L] | \(W\ge0\iff D-B^*A^{-1}B\ge0\); \(D-20B^*B\le S\le D\). |
+| **3.50 Marginality** | Identity [L] | \(E(c)\to0\) by Stirling; tilted spline \(E\asymp c^{-7}\). |
+| **3.51 The overlap window** | Lower endpoint moved [L] | Fixed \(c\); fixed packets to \((\log N)^{1/48}\); RH past the critical curve. |
+| **3.52 The rate problem** | Partly solved [L]; open for the full matrix | Residual polynomial in \(c\); arithmetic at every inverse-log rate; harmonic boundary rows give \(1/\sqrt{\log N}\). Siegel–Walfisz absent. |
+| **3.53 Profile thresholds** | Exact receivers [L/K]; aligned (inference) | Gevrey and Steklov on the critical curve; \(C^2\) above it. |
+| **3.54 Flip thresholds** | Theorem [L] | \((p/\log p)^{1/7}\lesssim c_0(\omega_p)\lesssim p^{1/7}\). |
+| **3.55 Single-profile window** | Inference | A tilted Steklov profile should carry fixed-\(c\) positivity and the iterated-log receiver. |
+| **3.56 Critical scaling** | Superseded by 3.66 | — |
+| **3.57 Growing-overlap packets** | Theorem [L]; variant [S] | Every fixed conductor set positive for \(1\le c\le(\log N)^{A}\), \(A<1/48\); CAF \(\alpha<1/40\) [S]. |
+| **3.58 Polynomial residual** | Theorem [L] | Eight-term residual \(C_m[c^{10}(\log N/N)^2+c^6/\sqrt{\log N}]\); \(C_m\) not explicit in \(m\). |
+| **3.59 Growing Gamma reserve** | Theorem [L] | \((\kappa c^{-7}\log N-bc)\cdot\)mass. |
+| **3.60 Arithmetic Weyl law** | Theorem [L]; ratio limit [S] | \(E_m(c)=\log m+O_c(1)\); heat threshold \(\beta=1\); Fermi level at \(m\approx c\) (inference). |
+| **3.61 Green coordinates** | Theorem [L] | Inverse cost \(1/E_1\); finite readings control \(W^{-1}\) at fixed \(c\); \(\sum E_m^{-k}=\infty\). |
+| **3.62 Horizon law** | Theorem [L] | Zeros see every atomic vector through Möbius horizon boundaries. |
+| **3.63 Windows are box tests** | Theorem [L] | Windowed aperture modes: cross modulus \(N^\kappa M^\kappa(N/M)^{\pm\operatorname{Re}z}\). |
+| **3.64 Depth-blind packets** | Inference from [L] | Fixed conductors have window ratio \(\le m\); depth requires \(m\to\infty\). |
+| **3.65 Ramanujan frames** | Theorem [L/K] | Harmonic Gram \(\ge(\log(N+1)-2\log Q)\sum d_m^2\); annular frames \(1/4,5/4\) [K]. |
+| **3.66 The critical curve** | Conjecture (inference from [L/K]) | Margin = aliasing tail; synthesis error energy = tail \(\times\log N\); Gamma reserve \(\approx\) tail \(\times\log N\). RH receiver on \(E(c_N)\log N\to0\) for every profile; unconditional range \(E(c_N)\log N\to\infty\). |
 
-Evidence: [every fixed overlap](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/EveryProfileWithoutRealFourierZerosIsPositiveAtEveryOverlap.lean), [one horizon](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/OneHorizonMakesEveryBoundedOverlapPositive.lean), [shells repay](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheShellsRepayEveryConductor.lean), [Fourier integral](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheCompletedShellEnergyIsAPositiveFourierIntegral.lean), [spectrum](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheBottomOfTheCompleteWeilSpectrumIsTheCompletedShellEnergy.lean), [log overlap](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis.lean), [second-order synthesis](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean), [polynomial floor](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheTiltedSplineHasAPolynomialConductorFloor.lean), [upward rows](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheUpwardPrimeWindowsCarryTheShellCorrection.lean), [one zero](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheWeightOfOneZero.lean), [zero side](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/ZeroSideStratum.lean), [Steklov](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/TheFixedProfileReachesAnIteratedLogEndpoint.lean), [prefix index](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/WeilPrefixIndex.lean).
+Evidence: [fixed packets](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/FixedConductorPacketsStayPositiveAtGrowingOverlap.lean), [quasimodes](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/CompletedConductorQuasimodesHavePolynomialError.lean), [polynomial residual](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/WeilPolynomialResidual.lean), [prime boundary](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/PrimeBoundaryErrorsHavePolynomialHarmonicBounds.lean), [Gamma reserve](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheGammaReserveSurvivesGrowingOverlap.lean), [heat threshold](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/ConductorHeatThreshold.lean), [Green tail](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/WeilGreenTail.lean), [Möbius horizons](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheZerosSeeEveryAtomicVectorThroughItsMobiusHorizons.lean), [windows](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/AWindowedApertureModeIsAnExponentialBoxTest.lean), [frames](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/GrowingRamanujanFamiliesHaveASquareRootHorizon.lean), [second-order synthesis](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheSecondOrderSynthesis.lean), [Gevrey](../../../formal/GaloisForLFunctions/SpacingScaleHarmonicAnalysis/TheDenjoyCarlemanProfiles.lean), [Steklov](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/TheFixedProfileReachesAnIteratedLogEndpoint.lean), [log overlap](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis.lean), [zero side](../../../formal/GaloisForLFunctions/TransMetzlerWeilPositivity/ZeroSideStratum.lean).
 
 ## Wall 14 — Realization and forcing
 
@@ -286,7 +291,7 @@ Evidence: [every fixed overlap](../../../formal/GaloisForLFunctions/CriticalArit
 | **14.34 Overlap frustration** | Solved (boundary) | Complete positivity where no Metzler gauge exists. |
 | **14.35 Adjunction versus Xi** | Fidelity boundary | Adjunction energies are prime-matrix eigenvalues; at fixed overlap they are the completed conductor energies [L]. |
 | **14.36 Function-field approximation** | Boundary (inference) | Curves reproduce prime support, not the archimedean continuum. |
-| **14.37 Local-to-global by counting** | Closed over \(\mathbb F_q\); open over \(\mathbb Z\) | Stepanov on both parity classes gives index zero over \(\mathbb F_q\). Over \(\mathbb Z\), Bézout and Riemann–Roch are exact and linear [K/L], with no ceiling and no producer. |
+| **14.37 Local-to-global by counting** | Closed over \(\mathbb F_q\); open over \(\mathbb Z\) | Stepanov on both parity classes gives index zero over \(\mathbb F_q\); calibration derived from unique factorization [L]. Over \(\mathbb Z\), Bézout and Riemann–Roch are exact and linear [K/L]. |
 | **14.38 Blind hyperbolicity, selective sign** | Exact boundary | Hodge index at proved scales carries no arithmetic. |
 | **14.39 Heat-flow horizon** | Near-axis open | \(2/3\) horizon [L]; wave number [L/S]; localized dissipation [K]. |
 | **14.40 Over-regular Beurling systems** | Boundary | They share the successor's square-root class [K]. |
@@ -294,54 +299,67 @@ Evidence: [every fixed overlap](../../../formal/GaloisForLFunctions/CriticalArit
 | **14.42 Tensor amplification** | Boundary | The tensor square of the prime error is WL's mean square. |
 | **14.43 Compression** | Boundary [S] | Characteristic-polynomial annihilation; Euler compressors are index-neutral. |
 | **14.44 Golden calibration** | Boundary [S] | Tower data do not decide; the lattice does. |
-| **14.45 Infinite-symmetry continuation** | Closed; retired | Confinement \(\iff\) lower count [L]; polar index = number of right pole classes [L]. |
+| **14.45 Infinite-symmetry continuation** | Closed; retired | Confinement \(\iff\) lower count [L]. |
 | **14.46 Locality is twin-blind** | Theorem [L] | Every pointwise-closed shift-invariant statement is twin-blind. |
-| **14.47 Geometry of the parity twin** | Settled; extended [L] | The twin is geometric only in the Bohr closure. The Adams operations host \(x^q=x\) on characters. |
+| **14.47 Geometry of the parity twin** | Settled [L] | Geometric only in the Bohr closure. |
 | **14.48 Point side versus zero side** | Boundary [S] | Integer auxiliaries see integrality only at \(s\in\mathbb Z\). |
-| **14.49 Producer ledger** | Theorem [L] | \(\sum m_p\log p\le\log A\). Binomials \(\le1\) and factorial ratios \(\le\#T-1\) above the square root. Divisibility on the odd class is within \(2\sqrt x\log x\) of \(\theta\). |
-| **14.50 Frobenius gap** | Theorem [L] | No bounded-defect ring endomorphism of \(\mathbb N\) besides the identity and unit-ball gauge points; integer-valued ones in \(\{-1,0,1\}\). |
+| **14.49 Producer ledger** | Theorem [L] | \(\sum m_p\log p\le\log A\); binomials \(\le1\) above \(\sqrt N\); factorial ratios Chebyshev-precise at \(2\log2\). |
+| **14.50 Frobenius gap** | Theorem [L] | Bounded-defect ring endomorphisms of \(\mathbb N\) are trivial. |
 | **14.51 Bézout and Riemann–Roch** | Theorem [K/L] | Exact and linear in \(e^{\deg}\). Over \(\mathbb F_q[T]\) places of one degree share a progression; over \(\mathbb Z\) each prime costs its own. |
 | **14.52 Approximate vanishing** | Theorem [L] | Integer auxiliaries: small = divisible. |
 | **14.53 Twist tower over \(\mathbb Z\)** | Theorem [L] | Collapses to level \(0\). |
-| **14.54 Adams operations** | Theorem [L] | \(\psi^q\)-fixed = \((q-1)\)-torsion twists; \(\psi^2\) fixes only \(0\); Dirichlet points of order \(d\) are \(\psi^{d+1}\)-fixed. |
+| **14.54 Adams operations** | Theorem [L] | \(\psi^q\)-fixed = \((q-1)\)-torsion twists; \(\psi^2\) fixes only \(0\). |
 | **14.55 Polar index** | Theorem [L] | Index of curve data = number of right pole classes. |
-| **14.56 Affine-invariant kernels** | Theorem [L] | Three constants. The successor must enter as a boundary, not as an invariance. |
+| **14.56 Affine-invariant kernels** | Theorem [L] | Three constants; the successor must enter as a boundary. |
+| **14.57 Adams–Bézout cost** | Theorem [L] | Full multiplicity \(r\) on the \(\psi^{q+1}\)-fixed locus forces support \(\ge2^{qr}\); \((\chi(2)^q-1)^r\) sharp. Torsion grids read valuations mod \(q\); first collision at \(2^q\). |
+| **14.58 Jets** | Theorem [L] | Vertical jets miss transverse directions (transcendental coefficients); algebraic first jets are faithful; two-prime log monomials independent of fixed degree. |
+| **14.59 Factorial-ratio precision** | Theorem [L] | Valuations periodic in \(n\bmod p\); precision \(\ge2\log2\); square-root precision needs non-periodic valuations. |
+| **14.60 Affine positivity** | Theorem [L] | Positive affine-invariant forms are \(c\,\delta_0+d\,\)Haar; index \(\le1\) via the pole. |
+| **14.61 Successor rigidity** | Theorem [L] | Successor defect \(\delta_N\) controls \(|\chi(n)-1|\le2k\delta_N\) for \(n\le\min(N,2^k)\); zero defect fixes exactly the primes \(\le N\). |
+| **14.62 The duality step** | Open (inference) | Adams vanishing acts on characters, Stepanov counts points. A producer must convert character vanishing into a prime count; the available converter is the explicit formula itself. |
+| **14.63 Bost–Connes temperature** | Theorem [L] | Temperature \(\beta\) forces Hecke exponent \(\beta/2\); \(\beta=1\) is the critical line. The conductor heat threshold is \(\beta=1\) (inference link). |
 
-Evidence: [ring endomorphisms](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/ApproximateRingEndomorphisms.lean), [Adams](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheAdamsOperations.lean), [factorial ratios](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/FactorialRatiosHaveBoundedMultiplicity.lean), [affine-invariant kernels](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/AffineInvariantKernelsAreTrivial.lean), [Bézout](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/TheBezoutTheoremOfTheMultiplicativeGroup.lean), [Riemann–Roch](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/TheRiemannRochTheoremOfTheMultiplicativeGroup.lean), [approximate vanishing](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/ApproximateVanishingIsAlmostDivisibility.lean), [small auxiliaries](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/SmallIntegerAuxiliariesAreDivisible.lean), [twist tower](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/TheTwistTowerCollapsesOverTheIntegers.lean), [polar index](../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/ThePolarDivisorCountsTheIndex.lean), [Stepanov](../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/StepanovsOrderOverTheFiniteField.lean), [linear counts](../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/IntegralityProducesLinearCounts.lean).
+Evidence: [Adams multiplicity](../../../formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/AdamsMultiplicityResolution.lean), [torsion boundary](../../../formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/TorsionMultiplicityBoundary.lean), [vertical jets](../../../formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/VerticalJetsMissTransverseDirections.lean), [first jets](../../../formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/AlgebraicVerticalFirstJets.lean), [successor rigidity](../../../formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/DyadicSuccessorRigidity.lean), [Chebyshev precision](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/FactorialRatiosHaveChebyshevPrecision.lean), [affine positivity](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/AffinePositivityIsThePoleAndHaar.lean), [Adams](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheAdamsOperations.lean), [ring endomorphisms](../../../formal/GaloisForLFunctions/ArithmeticGaugeTheory/ApproximateRingEndomorphisms.lean), [Bézout](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/TheBezoutTheoremOfTheMultiplicativeGroup.lean), [Riemann–Roch](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/TheRiemannRochTheoremOfTheMultiplicativeGroup.lean), [small auxiliaries](../../../formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/SmallIntegerAuxiliariesAreDivisible.lean), [Bost–Connes](../../../formal/GaloisForLFunctions/ArithmeticPositiveDuality/TheBostConnesTemperatureIsTheHeckeExponent.lean), [polar index](../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/ThePolarDivisorCountsTheIndex.lean), [Stepanov](../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/StepanovsOrderOverTheFiniteField.lean).
 
 ## Sharp obstructions and their positive survivors
 
 | Excluded shortcut | Strongest survivor | Replacement question |
 |---|---|---|
-| Multiplicative or gauge-invariant data as a selector | No certificate below \(3/4\); coherence; antipode | A \(0\)-specific input (Q3) |
-| Fixed-overlap positivity as RH | Theorem at every fixed \(c\), margin \(E(c)\) | Rates in the window (Q1) |
-| One fixed overlap against every flip | Per-prime thresholds \(c_0(p)\) | A resolution–distance law (Q3) |
+| Multiplicative or gauge-invariant data as a selector | No certificate below \(3/4\); coherence; antipode | A \(0\)-specific, depth-sensitive input |
+| Single-horizon charges as depth detectors | Exact horizon law; pole charge positive for every zero | Two-horizon (window) identities (Q2) |
+| Fixed-overlap positivity as RH | Theorem at every fixed \(c\); margin \(E(c)\) | The critical curve (Q1) |
+| Fixed packets at growing overlap as RH | Positive to \((\log N)^{1/48}\); depth-blind | Growing conductors \(m\lesssim c\) |
+| Estimates with fixed relative loss across the window | Margin, reserve, aliasing are one tail | An identity at \(E\log N\asymp1\) (Q2) |
+| One fixed overlap against every flip | Exact thresholds \(c_0\asymp p^{1/7}\) | Uniform selectivity along a schedule |
+| Fixed overlap against off-line zeros | Exact resolution of summable twists | Resolution of non-summable, pole-keeping perturbations (Q3) |
 | Separated reference continued past touching | Shells repay exactly by Poisson | Uniformity in \(c\) and conductor |
-| Atom-normalized floors at growing overlap | Fixed-\(c\) Gamma reserve; exact margin | Floors relative to \(E(c_N)\) |
+| Trapezoid synthesis for \(C^2\) profiles | Receiver at \((\log N)^{1/4}\) | Profile-adapted synthesis at \((\log N)^{1/7}\) |
 | Gevrey profiles at \(\log\log N\) | Steklov at \(L(\log L)^2\log\log L\) | The exact quasi-analytic edge; tilted Steklov |
 | Interval-stable or finite-aperture information | Precision rigidity; window law | Infinitely determined input |
 | The count as a selector of \(\Lambda\) | Tower positivity selects exactly | Positivity statements for selection |
 | One prime tower | Nyquist; height certificates | Two primes or fine towers; unattained depth |
 | Absolute payment of all prime layers | Finite index except \(k=1\) | The last layer is [FS] |
-| Positive-part repair of finite index | Krein–Langer: separated pairs keep index | A structural index ceiling |
-| Compression as a producer | Annihilation law | A point-side producer (Q2) |
-| Divisibility, binomials, factorial ratios as parity producers | Ledger; bounded multiplicity | Multiplicity beyond divisibility (Q2) |
-| Self-maps of \(\mathbb Z\) as Frobenius | Classification; Adams operations on \(G\) | A producer acting on characters and coupled to addition (Q2) |
-| "Small" auxiliaries instead of vanishing ones | Small = divisible for integers | Non-integral or archimedean auxiliaries |
+| Positive-part repair of finite index | Separated pairs keep index | A structural index ceiling |
+| Compression as a producer | Annihilation law | A point-side producer |
+| Divisibility, binomials, factorial ratios as parity producers | Ledger; precision \(2\log2\) | Non-periodic valuations (I8) |
+| Adams operations as cheap Frobenius vanishing | Exact cost \(2^{qr}\), sharp | The character-to-point duality step (14.62) |
+| Self-maps of \(\mathbb Z\) as Frobenius | Classification; Adams operations on \(G\) | A producer acting on characters and coupled to addition |
+| "Small" auxiliaries instead of vanishing ones | Small = divisible | Non-integral or archimedean auxiliaries |
 | A vertical shift as the parity twin | The twin lies in the Bohr closure | A geometric twin there |
 | Zero-side slack below bandwidth \(3/4\) | Slack conservation; projected credit | A positive \(E_{\rm proj}\) bound |
 | Value moments as certificates | Mimicry | A displacement-sensitive count |
 | One-sided sieve bounds beyond bandwidth one | Exact exchange rate | A two-sided coalescent estimate |
 | Density estimates as exclusion | \(30/13\); DH \(\sigma\ge5/6\) | A vanishing mechanism |
+| Level of distribution at one point | Large sieve on average | Individual-point (Siegel–Walfisz-type) input |
 | Finite support as a sub-Lindelöf target | Finite support \(\Rightarrow\) LH \(\wedge\) QRH | Treat as LH-level |
 | Index-continuity deformation of \(\zeta\) | Continuity off the discriminant | None: \(\Lambda_{\rm dBN}\ge0\) blocks openness |
-| Kernels invariant under the whole affine semigroup | Three constants | Successor as a boundary term |
+| Kernels invariant under the whole affine semigroup | Pole \(+\) Haar | Successor as a boundary term |
 
 ## Consequences for priorities
 
-- [Q1](obstacles-summary.md#q1) targets 3.51–3.56 and 1.47: the rate and location of the RH transition inside the overlap window.
-- [Q2](obstacles-summary.md#q2) targets 14.37, 14.47, 14.49–14.54: a producer acting on characters through the Adams operations and coupled to additive structure.
-- [Q3](obstacles-summary.md#q3) targets 1.18, 1.38, 1.42–1.46 and 3.54: how overlap resolves gauge points near \(0\).
-- 1.26, 3.35, 14.39 and 14.41 (finite support) are LH-level and not near-term priorities.
+- [Q1](obstacles-summary.md#q1) targets 3.51–3.53, 3.57–3.60 and 3.66: place every receiver on the critical curve and push unconditional positivity toward it.
+- [Q2](obstacles-summary.md#q2) targets 3.62–3.66 and 1.52: the identity at the critical curve on depth-sensitive directions.
+- [Q3](obstacles-summary.md#q3) targets 1.49, 1.54, 3.43 and 3.64: the resolution of an off-line zero and zero-free regions from positivity.
+- 14.62 (the duality step) is the next producer question; 1.26, 3.35, 14.39 and 14.41 (finite support) are LH-level and not near-term.
 
 No route is declared dead by these priorities. Finite calculations, compositions, quantifications, formalizations and integration are [just work](obstacles-summary.md#21-tasks-that-are-just-work).

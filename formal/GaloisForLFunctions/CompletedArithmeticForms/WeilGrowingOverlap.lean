@@ -118,7 +118,6 @@ theorem exists_tiltedWeil_relative_polynomial_residual_bound {m : ℕ} (hm : 0 <
     _ = _ := by
       rw [relativeWeilResidualScale_eq]
       field_simp
-      <;> ring
 
 private theorem tendsto_log_power_zero {r : ℝ} (hr : r < 0) :
     Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ r) atTop (𝓝 0) := by
@@ -151,6 +150,7 @@ theorem tendsto_relativeWeilResidualScale_zero {α : ℝ} (hα : α < 1 / 40) :
     Real.log_pos (by exact_mod_cast (show 1 < N by omega))
   rw [relativeWeilResidualScale, packetOverlap_pow, packetOverlap_pow,
     Real.sqrt_eq_rpow, Real.rpow_sub hL, Real.rpow_add hL]
+  push_cast
   rw [show α * (24 : ℝ) = 24 * α by ring, show α * (20 : ℝ) = 20 * α by ring,
     Real.rpow_two]
   ring
@@ -177,7 +177,7 @@ theorem tendsto_tiltedWeil_scaled_residual_norm {α : ℝ} (hα0 : 0 < α) (hα 
       (pow_nonneg (Real.rpow_nonneg (Real.log_natCast_nonneg N) α) 14)
     rw [relativeWeilResidualScale_eq]
     rw [mul_pow, ← pow_mul]
-    exact h.trans_eq (by ring)
+    exact h.trans_eq (by unfold logarithmicPacketOverlap; ring)
   have h := hsq.sqrt
   rw [Real.sqrt_zero] at h
   apply h.congr

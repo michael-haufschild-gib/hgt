@@ -53,7 +53,7 @@ theorem normalizedRamanujan_gram_error_le (m l : ℕ+) {N : ℕ} (hN : 2 ≤ N) 
   have he : (∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) /
       Real.log N - δ =
       ((∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) -
-        δ * Real.log N) / Real.log N := by field_simp
+        δ * Real.log N) / Real.log N := by field_simp [hL.ne']
   rw [he, abs_div, abs_of_pos hL]
   exact div_le_div_of_nonneg_right hs hL.le
 
@@ -72,9 +72,11 @@ theorem tendsto_tiltedWeil_scaled_packet_entry_error {α : ℝ}
       (normalizedRamanujanHorizonVector m N) - E N • normalizedRamanujanHorizonVector m N
   have hres : Tendsto (fun N : ℕ => ‖c N ^ 7 • r N‖) atTop (𝓝 0) := by
     dsimp only [c, r, E]
-    simpa only [norm_smul, Real.norm_eq_abs,
-      abs_of_nonneg (pow_nonneg (Real.rpow_nonneg (Real.log_natCast_nonneg _) α) 7)] using
-      tendsto_tiltedWeil_scaled_residual_norm hα0 hα m.property
+    apply (tendsto_tiltedWeil_scaled_residual_norm hα0 hα m.property).congr
+    intro N
+    have hc : 0 ≤ logarithmicPacketOverlap α N :=
+      Real.rpow_nonneg (Real.log_natCast_nonneg N) α
+    rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (pow_nonneg hc 7)]
   have hi := tendsto_horizon_inner_zero_of_norm (fun N => c N ^ 7 • r N)
     (fun N => normalizedRamanujanHorizonVector l N) hres
     (tendsto_normalizedRamanujanHorizonVector_norm l.property)

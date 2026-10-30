@@ -68,6 +68,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.ConductorLogLaw
 import GaloisForLFunctions.CompletedArithmeticForms.BesselGaussianMoments
 import GaloisForLFunctions.CompletedArithmeticForms.BesselGaussianReserve
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorOverlapDecay
+import GaloisForLFunctions.CompletedArithmeticForms.WeilGrowingOverlap
 
 /-!
 # Quantitative theory of completed arithmetic forms

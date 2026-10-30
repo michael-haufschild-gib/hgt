@@ -570,6 +570,21 @@ See [ConductorOverlapDecay](ConductorOverlapDecay.lean),
 `tiltedConductorEnergy_two_sided` and
 `exists_finite_conductor_energy_ratio_bound`.
 
+The actual squared residual divided by $E_m(c)^2$ is bounded by
+\[
+C_m\left[c^{24}(\log N/N)^2+c^{20}/\sqrt{\log N}\right].
+\]
+For $c_N=(\log N)^\alpha$, $0<\alpha<1/40$, all source-domain
+inequalities hold eventually and both costs vanish. Consequently
+\[
+c_N^7\|A_N(c_N)r_{m,N}-E_m(c_N)r_{m,N}\|\to0,\qquad
+\frac{\|A_N(c_N)r_{m,N}-E_m(c_N)r_{m,N}\|}{E_m(c_N)}\to0.
+\]
+These are joint overlap-horizon estimates for the literal complete source.
+See [WeilGrowingOverlap](WeilGrowingOverlap.lean),
+`eventually_logarithmicPacketOverlap_source_domain` and
+`tendsto_tiltedWeil_relative_residual_norm`.
+
 ## Exact native-tail reserves and their rank boundary
 
 Write $(r)_n=\prod_{j<n}(r+j)$. The scaled Gamma moments $m_k=gw^k(r)_k$, with

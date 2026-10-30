@@ -118,7 +118,7 @@ Finite support implies LH and a fixed strip. **Verdict: not a near-term target.*
 | L1 | LH | Open; \(\mu(1/2)\le13/84\). |
 | Q0 | A fixed zero-free strip \(\Theta<1\) in any dictionary | External claim at \(7/8\) for Dirichlet \(L\) [E]. Density envelopes never reach it. |
 | Q0′ | A \(0\)-specific, non-gauge-invariant inequality improving \(\theta_\mu(0)\) below \(1\) | Equivalent to Q0. |
-| Q0″ | Box-test positivity at a fixed sub-pole aperture \(\kappa<1/2\) for all windows | A fixed strip (inference from the window law). |
+| Q0″ | Box-test positivity at a fixed sub-pole aperture \(\kappa<1/2\) for all windows | Implies a fixed strip (inference from the window law). |
 
 ### (e) Census
 
