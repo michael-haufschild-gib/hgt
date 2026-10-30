@@ -46,6 +46,13 @@ required three-quarters strip. This is a proposed producer, not a proved bound.
   `|a_m|,|b_m|≤4η/K₀(2π(m+1))`. This exponentially growing inverse cost
   concerns Whittaker coefficients, not a repair of the twisted integer
   moments. No uniform source-weighted inverse estimate follows from it.
+- `exists_arcCosMoment_atoms_of_density` retains the whole cosine polynomial
+  `Q_v(t)=2Σ_n v_n cos(2π(n+1)t)/K₀(2π(n+1))`: if `M>0` and
+  `M+Q_v≥0`, at most `N+1` positive arc atoms realize `v` with mass exactly
+  `M`. Hence `exists_arcCosMoment_atoms` realizes every finite `v` with mass
+  `2Σ_n |v_n|/K₀(2π(n+1))`. These are formalized ordinary Whittaker repairs;
+  their arithmetic node and pole transport and source growth bound remain
+  unproved.
 - `logNode_blind_iff_certKernelPow_vanishes` already reverses divisor transfer
   for spectral densities `Ξ^k R`, with `R` holomorphic and the stated decay.
   General blind densities need not belong to that class. Dividing by `Ξ^k`

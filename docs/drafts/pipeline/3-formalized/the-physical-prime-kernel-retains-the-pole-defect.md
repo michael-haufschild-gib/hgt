@@ -1,7 +1,7 @@
 # The physical prime kernel retains the pole defect
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** The ground-state transform of the literal prime-pairing kernel equals the original prime defect plus a nonnegative non-ratio energy, with the original arithmetic pole as its exact nullspace.
 
 For `b_n=1/√n`, `M=∫g²` and `K_g(n,j)=primePair(atom g n,atom g j)`, set
@@ -29,3 +29,15 @@ For the literal physical prime kernel, the exact lag decomposition gives `K_g=M 
 Finite prime-pairing linearity identifies `Σ K_g(n,j)x_nx_j` with the literal synthesized prime sum. Substitution into the complete Weil identity gives the stated signed decomposition, retaining Gamma and both pole moments. The tilted unit spline is nonnegative because it is a positive exponential times a convolution of nonnegative interval indicators; its proved positive square mass supplies `M>0` at every positive width.
 
 **Scope:** exact physical kernel and every overlap; no prime-distribution approximation or missing analytic premise. The signed remainder estimate remains open.
+
+## Lean
+
+`GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/ThePhysicalPrimeKernelRetainsThePoleDefect.lean`:
+
+- `physicalPrimeKernel_defect_eq`: exact ratio and non-ratio energy decomposition.
+- `physicalPrimeKernel_defect_eq_zero_iff`: unchanged arithmetic ground line.
+- `weilQuad_eq_physicalPrimeDefect_add_remainder`: actual signed Weil decomposition.
+- `tiltedSpline_physicalPrimeDefect`: unconditional fixed-profile specialization.
+- `exists_tiltedSpline_physicalPrimeDefect_gap`: one positive gap for every horizon and overlap.
+
+Direct `lake --old env lean` audit passed without warnings. All five axiom reports contain only `propext`, `Classical.choice` and `Quot.sound`.

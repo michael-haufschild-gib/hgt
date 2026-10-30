@@ -157,18 +157,12 @@ def poleWeightMinus (g : ℝ → ℝ) : ℝ := ∫ u, g u * Real.exp (-u / 2)
 /-- The pole weight `a₊ = ∫ g e^{u/2}`. -/
 def poleWeightPlus (g : ℝ → ℝ) : ℝ := ∫ u, g u * Real.exp (u / 2)
 
-theorem exp_neg_half_log {n : ℕ} (hn : 1 ≤ n) : Real.exp (-(Real.log n / 2)) = poleVector n := by
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
-  rw [poleVector, Real.sqrt_eq_rpow, Real.exp_neg, ← Real.rpow_natCast, one_div,
-    ← Real.exp_log (Real.rpow_pos_of_pos hn0 _), Real.log_rpow hn0]
-  congr 2
-  ring
-
 theorem exp_half_log {n : ℕ} (hn : 1 ≤ n) : Real.exp (Real.log n / 2) = Real.sqrt n := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
-  rw [Real.sqrt_eq_rpow, ← Real.exp_log (Real.rpow_pos_of_pos hn0 _), Real.log_rpow hn0]
-  congr 1
-  ring
+  rw [← Real.sqrt_sq (Real.exp_pos _).le, sq, ← Real.exp_add, add_halves, Real.exp_log hn0]
+
+theorem exp_neg_half_log {n : ℕ} (hn : 1 ≤ n) : Real.exp (-(Real.log n / 2)) = poleVector n := by
+  rw [Real.exp_neg, exp_half_log hn, poleVector, one_div]
 
 /-- The moments of an atomic test against `e^{∓u/2}` are its pole sums times the atom's weights. -/
 theorem poleMoments_atomicTest {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g)
@@ -178,8 +172,10 @@ theorem poleMoments_atomicTest {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g)
       poleWeightMinus g * poleWeightPlus g *
         ((∑ n ∈ Icc 1 N, x n * poleVector n) * ∑ n ∈ Icc 1 N, x n * Real.sqrt n) := by
   have hm := ArithmeticLorentzianGeometry.integral_atomicTest_mul (g := g)
+    (φ := fun u => Real.exp (-(u / 2)))
     (Real.continuous_exp.comp (continuous_id.div_const 2).neg) hg hgsupp N x
   have hp := ArithmeticLorentzianGeometry.integral_atomicTest_mul (g := g)
+    (φ := fun u => Real.exp (u / 2))
     (Real.continuous_exp.comp (continuous_id.div_const 2)) hg hgsupp N x
   have hshift : ∀ (n : ℕ) (s : ℝ), ∫ u, g (u - Real.log n) * Real.exp (s * (u / 2)) =
       Real.exp (s * (Real.log n / 2)) * ∫ u, g u * Real.exp (s * (u / 2)) := by
@@ -187,7 +183,7 @@ theorem poleMoments_atomicTest {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g)
     have h := integral_sub_right_eq_self (μ := volume)
       (fun u => g u * Real.exp (s * ((u + Real.log n) / 2))) (Real.log n)
     simp only [sub_add_cancel] at h
-    rw [h, ← integral_const_mul]
+    rw [h, ← MeasureTheory.integral_const_mul]
     refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
     simp only
     rw [show s * ((u + Real.log n) / 2) = s * (u / 2) + s * (Real.log n / 2) by ring,
@@ -195,24 +191,20 @@ theorem poleMoments_atomicTest {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g)
     ring
   have hm' : ∫ u, atomicTest N x g u * Real.exp (-(u / 2)) =
       (∑ n ∈ Icc 1 N, x n * poleVector n) * poleWeightMinus g := by
-    rw [show (fun u => atomicTest N x g u * Real.exp (-(u / 2))) =
-      fun u => atomicTest N x g u * (Real.exp ∘ fun u => -(u / 2)) u from rfl, hm, sum_mul]
+    rw [hm, sum_mul]
     refine sum_congr rfl fun n hn => ?_
     have h := hshift n (-1)
     simp only [neg_one_mul] at h
-    simp only [Function.comp]
     rw [h, exp_neg_half_log (mem_Icc.mp hn).1, poleWeightMinus]
     rw [show (fun u => g u * Real.exp (-(u / 2))) = fun u => g u * Real.exp (-u / 2) from
       funext fun u => by rw [neg_div]]
     ring
   have hp' : ∫ u, atomicTest N x g u * Real.exp (u / 2) =
       (∑ n ∈ Icc 1 N, x n * Real.sqrt n) * poleWeightPlus g := by
-    rw [show (fun u => atomicTest N x g u * Real.exp (u / 2)) =
-      fun u => atomicTest N x g u * (Real.exp ∘ fun u => u / 2) u from rfl, hp, sum_mul]
+    rw [hp, sum_mul]
     refine sum_congr rfl fun n hn => ?_
     have h := hshift n 1
     simp only [one_mul] at h
-    simp only [Function.comp]
     rw [h, exp_half_log (mem_Icc.mp hn).1, poleWeightPlus]
     ring
   rw [hm', hp']
@@ -240,7 +232,10 @@ theorem poleMoments_topWitnessVector {g : ℝ → ℝ} {w : ℝ} (hg : Continuou
     rw [← hT, mul_sum, ← sum_add_distrib]
     refine sum_congr rfl fun n _ => ?_
     simp only [topWitnessVector, topWitness]
-    split_ifs <;> simp [add_mul, ← sq, poleVector_sq]
+    have hb2 := poleVector_sq n
+    split_ifs
+    · rw [add_mul, mul_assoc, ← sq, hb2]
+    · rw [mul_zero, add_zero, add_zero, ← sq, hb2]
   have h2 : ∑ n ∈ Icc 1 N, topWitnessVector N w η n * Real.sqrt n =
       (N : ℝ) + η * (topBand N w).card := by
     have hone : ∀ n ∈ Icc 1 N, poleVector n * Real.sqrt n = 1 := by
@@ -253,7 +248,7 @@ theorem poleMoments_topWitnessVector {g : ℝ → ℝ} {w : ℝ} (hg : Continuou
     refine sum_congr rfl fun n hn => ?_
     simp only [topWitnessVector, topWitness]
     split_ifs
-    · rw [add_mul, mul_assoc, hone n hn]; ring
+    · rw [add_mul, mul_assoc, hone n hn]
     · rw [add_mul, hone n hn]; ring
   rw [h1, h2]
   ring

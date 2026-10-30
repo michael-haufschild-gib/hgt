@@ -54,7 +54,7 @@ theorem poleKernelDefect_add_form {K : ℕ → ℕ → ℝ}
     rw [hK j n]
     field_simp [(poleVector_pos' (mem_Icc.mp hn).1).ne',
       (poleVector_pos' (mem_Icc.mp hj).1).ne']
-    <;> ring
+    ring
   have hswap :
       (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
         x j ^ 2 / poleVector j * (K j n * poleVector n)) =
@@ -89,7 +89,6 @@ theorem poleKernelDefect_weilPrimeKernel (N : ℕ) (x : ℕ → ℝ) :
     refine sum_congr rfl fun n hn => ?_
     rw [sum_weilPrimeKernel_poleVector (mem_Icc.mp hn).1 (mem_Icc.mp hn).2]
     field_simp [(poleVector_pos' (mem_Icc.mp hn).1).ne']
-    <;> ring
   rw [hp] at h
   have hp' := atomicWeilForm_add_poleDefect N x
   change atomicWeilForm N x + poleDefect N x = _ at hp'
@@ -121,7 +120,7 @@ theorem nonRatioPrimeKernel_nonneg {g : ℝ → ℝ} {w : ℝ}
   unfold nonRatioPrimeKernel physicalPrimeKernel
   rw [primePair_atom_sub_ratio_eq_tsum hsupp hw hn hj]
   refine tsum_nonneg fun k => mul_nonneg ?_ (add_nonneg ?_ ?_)
-  · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+  · exact SpacingScaleHarmonicAnalysis.vonMangoldtAtom_nonneg' k
   · split_ifs
     · exact le_rfl
     · exact integral_nonneg fun u => mul_nonneg (hg0 u) (hg0 _)
