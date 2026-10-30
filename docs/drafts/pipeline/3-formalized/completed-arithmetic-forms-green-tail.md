@@ -1,7 +1,7 @@
 # Finite arithmetic readings of the complete Green operator
 
 For fixed overlap $c>0$, let $A_N$ be the literal complete tilted-spline Weil
-matrix and $r_{m,N}$ the normalized Ramanujan vectors. The inverse-tail target is
+matrix and $r_{m,N}$ the normalized Ramanujan vectors. The inverse-tail theorem is
 \[
 \forall\varepsilon>0\ \exists S\subset\mathbb N_{>0}\text{ finite}\quad
 \|A_N^{-1}v\|\le\varepsilon\|v\|
@@ -34,5 +34,6 @@ $\sum_{m\in S}E_m(c)^{-1}r_{m,N}\otimes r_{m,N}$ additionally requires
 the finite Gram payment. That approximation must retain the actual inverse
 on every horizon direction.
 
-Source statements: `MacroscopicOverlapSpectralAssembly`,
-`TheCompleteWeilFormIsPositiveAtEveryFixedOverlap`, `WeilGreenModes`.
+Lean: `CompletedArithmeticForms/WeilGreenTail.lean`,
+`exists_tiltedWeil_inverse_finite_reading_tail`.
+Its transitive axioms are `propext`, `Classical.choice`, and `Quot.sound`.

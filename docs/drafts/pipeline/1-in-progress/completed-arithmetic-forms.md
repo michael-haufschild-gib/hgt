@@ -81,6 +81,13 @@ $\|A^{-1}v-\lambda^{-1}v\|\le(e\lambda)^{-1}\|Av-\lambda v\|$
 retains the complete floor $A\succeq eI$.
 Lean: `WeilGreenModes`.
 
+For every fixed $c,\varepsilon>0$, a finite positive-conductor set $S$
+controls every unread inverse direction eventually:
+$v\perp r_{m,N}$ for all $m\in S$ implies
+$\|A_N(c)^{-1}v\|\le\varepsilon\|v\|$.
+The complete defect reserve supplies the finite certificate.
+Lean: `WeilGreenTail`.
+
 For every profile and fixed positive overlap, the completed conductor heat
 series converges exactly for $\beta>1$. The logarithmic lower envelope and
 the prime-conductor upper envelope retain the full shell and pole completion.
@@ -100,6 +107,13 @@ with both offset signs and horizon cutoffs retained. Its joint domain is
 $c\ge1$, $c/N\le1$, $B=\lceil ec\rceil\le N$, and $2(e+3)cB\le N$,
 beyond one conductor-dependent horizon.
 Lean: `UpwardSourcePayment`.
+
+The complete eight-term normalized residual has the same bound,
+$\|A_N(c)r_{m,N}-E_m(c)r_{m,N}\|^2\le
+C_m[c^{10}(\log N/N)^2+c^6/\sqrt{\log N}]$,
+on the joint domain with $c/N\le1/3$. Every prime, polar, Gamma,
+cross, and upward-shell term is retained.
+Lean: `WeilPolynomialResidual`.
 
 The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
 Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.

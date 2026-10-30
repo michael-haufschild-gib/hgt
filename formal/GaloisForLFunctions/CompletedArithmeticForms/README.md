@@ -477,8 +477,21 @@ All completed source terms enter these energies. See
 [WeilGreenModes](WeilGreenModes.lean),
 `tendsto_tiltedWeil_inverse_ramanujan_residual_norm` and
 `tendsto_tiltedWeil_inverse_packet_inner`. The overlap and conductor support
-are fixed; an operator-norm approximation of every horizon direction requires
-a finite-coordinate tail payment.
+are fixed.
+
+Finitely many arithmetic readings also control every remaining inverse
+direction: for every $\varepsilon>0$, some finite positive-conductor set $S$
+has, eventually in $N$,
+\[
+v\perp r_{m,N}\ (m\in S)\quad\Longrightarrow\quad
+\|A_N(c)^{-1}v\|\le\varepsilon\|v\|.
+\]
+The complete defect reserve gives a finite coordinate certificate on each
+unit energy sublevel. Symmetry of the actual inverse and its norm quasimodes
+pay every reading of an unread vector. See [WeilGreenTail](WeilGreenTail.lean),
+`exists_tiltedWeil_inverse_finite_reading_tail`.
+An explicit operator-norm approximation by the arithmetic Green sum also
+requires the finite Gram projection estimate.
 
 ## The exact conductor heat domain
 
@@ -525,6 +538,17 @@ and shell costs have inverse-square-root logarithmic decay. Keeping these
 payments separate preserves the stronger horizon decay of the kernel term.
 See [UpwardSourcePayment](UpwardSourcePayment.lean),
 `exists_tiltedWeil_upward_polynomial_payment`.
+
+The same two costs pay the entire eight-term residual:
+\[
+\|A_N(c)r_{m,N}-E_m(c)r_{m,N}\|^2
+\le C_m\left[c^{10}(\log N/N)^2+c^6/\sqrt{\log N}\right].
+\]
+The simultaneous domain strengthens the width bound to $c/N\le1/3$.
+Prime adjunction, self, both polar terms, separated cross terms, near
+Gamma/downward cancellation, and the upward shell all enter this estimate.
+See [WeilPolynomialResidual](WeilPolynomialResidual.lean),
+`exists_tiltedWeil_polynomial_residual_bound`.
 
 ## Exact native-tail reserves and their rank boundary
 

@@ -1,8 +1,8 @@
 # Fixed conductor packets at growing overlap
 
 - **ID:** fixed-conductor-packets-remain-positive-at-growing-overlap
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean audit pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** quantitative residue primes; actual source decomposition;
   completed-shell Fourier positivity; arithmetic Hodge Gram bounds.
 
@@ -70,7 +70,19 @@ by `d` times this quantity times `Σa_m²`, hence by
 
 ## Lean status
 
-All source, geometry, replacement and complete-residual estimates are
-formalized with direct audits. Packet positivity is written; its final
-audit remains pending. All supporting lemmas belong to this single
-contribution, which is not accepted until the capstone audit passes.
+[FixedConductorPacketsStayPositiveAtGrowingOverlap.lean](../../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/FixedConductorPacketsStayPositiveAtGrowingOverlap.lean)
+proves:
+
+- `eventually_tiltedUnitSpline_finite_packet_energy_ge_growing_overlap`:
+  the common positive floor on the entire finite conductor span.
+- `eventually_tiltedUnitSpline_finite_packet_energy_pos_growing_overlap`:
+  strict positivity for every nonzero coefficient family.
+- `eventually_tiltedUnitSpline_finite_packet_energy_ge_iterated_log_overlap`
+  and `eventually_tiltedUnitSpline_finite_packet_energy_pos_iterated_log_overlap`:
+  the corresponding statements for every fixed iterated-logarithmic power.
+
+Weighted residual and mixed-entry estimates are also formalized. All six
+transitive axiom audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. Final direct Lean check passed without warnings; umbrella wired.
+The source, replacement and complete-residual estimates are formalized
+separately and belong to this single contribution.
