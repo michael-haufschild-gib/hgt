@@ -61,3 +61,11 @@ The proof keeps the complete matrix, including both poles, Gamma and all prime s
 - [ ] Totient and conductor-uniform shell bounds.
 - [ ] Transfer of the finite-coordinate spectral argument to `W_N−δR_N`.
 - [ ] Exact all-vector reserve, umbrella import, standard-axiom closure.
+
+Prepared declarations, awaiting integrated checks:
+
+- `TheConductorEnergyKeepsALogarithmicReserve.completedConductorEnergy_ge_logarithmic_reserve`.
+- `FiniteRamanujanCoordinatesTransferSpectralFloors.eventually_matrix_energy_ge_of_ramanujan_certificates`.
+- `ShiftingThePrimeEnergyGivesALogarithmicDefectReserve.exists_completeWeil_logarithmic_defect_reserve`.
+
+The last declaration has exactly `∃a,C>0, ∀c≥1, eventually N, ∀x`.

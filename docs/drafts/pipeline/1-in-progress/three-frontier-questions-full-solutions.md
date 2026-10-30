@@ -17,7 +17,7 @@
 | Q2 | Equality of the two actual Ξ source polarizations | Open; corpus theorem identifies this with RH |
 | Q2/defect | Theta–prime expression for `(σ − 1/2)S(s) − Re(ξ′/ξ)(s)`, at some `σ > 1` | Exact available identities under inspection |
 | Q2/charge | Theta-prefix reading of window collision charge with explicit error | Open |
-| Q2/calibration | Integer analogue of the calibrated explicit-formula Rosati pairing | Exact available identities under inspection |
+| Q2/calibration | Integer analogue of the calibrated explicit-formula Rosati pairing | Existing `tsum_explicit_eq_xiWeilPolarization` and `norm_sq_sub_explicit_eq_half_reflectionDefect`; source audited, axiom check pending |
 | Q3 | Actual growth law for the de Bruijn–Newman nonreal count at zero | Open |
 | Q3/flux | Consequence of summing the actual localized outer flux over heights | Open |
 | Q3/tower | Arithmetic ceiling for a nonblind prime tower | Open |

@@ -1,12 +1,12 @@
 # Completed conductor energy dominates its rescaled pole
 
 - **ID:** COMPLETED-CONDUCTOR-RESCALING-ORDER
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Parent:** [O1](weil-positivity-five-structural-mechanisms.md)
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Parent:** [O1](../1-in-progress/weil-positivity-five-structural-mechanisms.md)
 - **Target:** `E_m(c) ≥ E_1(c/m)` for every supported `C²` profile of positive square mass, `c > 0`, and `m ≥ 1`.
 
-## Mechanism
+## Proof
 
 For `T(x)=∫ₓ^∞|φ̂(2πt)|²dt`, the two energies are
 
@@ -14,19 +14,20 @@ For `T(x)=∫ₓ^∞|φ̂(2πt)|²dt`, the two energies are
 
 `E_1(c/m) = (2/M) Σ_{a≥1} T(ac/m)/a`.
 
-Every prefix of the difference of their harmonic weights is nonnegative by `sieveDensity_mul_harmonicSum_le`, applied to the prime divisors of `m`. Abel summation preserves this order against the nonnegative decreasing weights `T(ac/m)`. Both series converge by the existing Fourier formulas.
+Every prefix of the difference of their harmonic weights is nonnegative by `sieveDensity_mul_harmonicSum_le`, applied to the prime divisors of `m`. Write these differences as `d_n`, their prefixes as `S_n`, and `w_n=T((n+1)c/m)`. Abel summation gives `Σ_{n<N} d_n w_n = S_N w_N + Σ_{n<N} S_{n+1}(w_n−w_{n+1}) ≥ 0`. Thus each pole prefix is bounded by the corresponding conductor prefix and hence by the complete conductor energy. Passing to the pole-series limit proves the target.
 
 Together with the existing upper bound `E_m(c) ≤ (m/φ(m))E_1(c/m)`, this identifies the conductor scale directly. Below touching, the lower bound gives `E_m(c) ≥ log(m/c) + completeWeilSelfFinitePart φ 1`. Nonnegativity extends this to all overlaps with the constant replaced by its minimum with zero.
 
 ## Audit
 
 - Existing pole-minimality compares `E_m(c)` with `E_1(c)`, at the same overlap. This target compares with the larger energy at `c/m`.
-- Needed arithmetic bridge: density and coprimality of the prime-divisor sieve.
-- Needed analytic transfer: `HTGeometry.sum_mul_weight_eq` and the two convergent Fourier series.
+- Arithmetic bridge: Euler's totient product and prime-divisor coprimality identify the sieve density as `φ(m)/m`.
+- Analytic transfer: `HTGeometry.sum_mul_weight_eq` and the two convergent Fourier series.
+- Formalization is in progress under `RenormalizedArithmeticPotentialTheory/Conductor/`.
 - This order law does not identify the complete finite-horizon matrix with its conductor limit.
 
 ## Gates
 
 - [x] Exact target and corpus distinction identified.
-- [ ] Dependency-closed paper proof audited.
+- [x] Dependency-closed paper proof audited.
 - [ ] Exact Lean theorem, umbrella import and axiom audit.
