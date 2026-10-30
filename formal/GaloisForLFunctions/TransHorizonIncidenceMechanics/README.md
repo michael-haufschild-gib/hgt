@@ -1,224 +1,372 @@
 # Trans-Horizon Incidence Mechanics (THIM)
 
-Namespace `GaloisForLFunctions.TransHorizonIncidenceMechanics`; umbrella
-`TransHorizonIncidenceMechanics.lean`. Sieve objects come from BVI and BSU; Markov/chain/theta/Haar
-objects from `RHTower`.
+Umbrella `TransHorizonIncidenceMechanics.lean` (~240 modules, flat folder). Namespace
+`GaloisForLFunctions.TransHorizonIncidenceMechanics`. Inputs: `RHTower` (ζ/L bounds, zero-free
+regions, VK, CHMD odd sector, `receiverDampings`), `BezoutValuationIncidence` (sieve rows, Selberg
+coordinates, complete-period forms), `BiScaleUncertainty`, `HTGeometry`,
+`ArithmeticCriticalityTheory`, `ArithmeticIncidencePositivity`, `HilbertMetric`.
 
-**Question.** A divisor sieve of horizon $N$ reads $k$ through divisors $d\le N$. What can this
-finite observer recover and bound far beyond its horizon ($k\gg N$), and how do its observations
-transfer to RH-equivalent energies (signed sieve energies, Fermi–Nyman traces, odd-sector Markov
-chains)? *Incidence* is $d\mid k$; *mechanics* is conservation/dissipation under $k\mapsto k+1$,
-$N\mapsto N+1$, $k\mapsto pk$; *trans-horizon* concerns omitted divisors.
+## 1. Motivation
 
----
+Every truncated-Möbius route to RH (Nyman–Beurling/Báez-Duarte, Selberg mollifiers, Route PM
+cofactor rows) runs through a finite divisor observer of horizon `N`:
 
-## 1. Place in the research
+`s_{N,c}(k) = Σ_{d|k, d≤N} c(d)`.
 
-THIM is the **finite-observer theory of signed arithmetic receivers**. Central lesson: exact
-recovery, good conditioning and period-variance bounds do **not** pay the centred-prefix pronic
-energy $\sum_{n\le T}A_c(n)^2/(n(n+1))$. Two thresholds organise everything: sign-blind payment needs
-damping $>\tfrac12$; signed horizon-limit commutation holds exactly from $\tfrac12$. Below $\tfrac12$
-an infinite source can be paid while its truncated rows are not.
+For `k ≤ N` it is the full divisor sum; for `k ≫ N` it omits divisors. The RH-relevant quantity is a
+horizon-uniform statement about the omitted part, the receiver energy
 
-| Neighbour | Interface |
+`E_T(c) = Σ_{n≤T} A_c(n)²/(n(n+1))`, `A_c(n) = Σ_{d≤n} c(d)⌊n/d⌋ − n·Σ_d c(d)/d`.
+
+RH ⇔ `E_T(μ(d)d^{−ε})` is bounded in `T` for every `ε > 0`
+(`riemannHypothesis_iff_forall_pos_receiverBounded_moebius`). THIM asks:
+1. What does the finite observer conserve, dissipate and recover beyond its horizon under
+   `k ↦ k+1`, `N ↦ N+1`, `k ↦ pk`?
+2. Which sign statements (renormalized defect `≤ 0`) and energy statements survive `N → ∞`?
+3. Which data decide whether a weight is *paid* (`sup_T E_T < ∞`), and which data are provably blind?
+
+## 2. Objects
+
+Observer.
+- `sieveSeq N c k = s_{N,c}(k)`; horizon row `horizonRow c N = c·1_{d≤N}`; dyadic rows `c·1_{d≤2^J}`.
+- `L_N = lcm(1..N)`; observation state `σ_N(k) = gcd(k, L_N)`; radical state `R_N(k) = gcd(k, N#)`;
+  phase `k mod L_N`. Trans-horizon rough `r`: all prime factors `> N` (⇔ `R_N(r) = 1`).
+- Valuation clock `d/rad d` (`lagVisibilityClock`): Ramanujan mode `q` visible at lag `h` iff
+  clock`(q) | h`.
+- Band normal form, `BN < k ≤ (B+1)N`: `s_N(k) = Σ_{d|k}c(d) − Σ_{q≤B, q|k} c(k/q)`.
+
+Weights.
+- `μ`; damped Möbius `c_ε = μ(d)d^{−ε}`, `τ_ε(k) = Σ_{d|k}c_ε(d) = Π_{p|k}(1 − p^{−ε}) ∈ [0,1]`;
+  Liouville `λ`; real characters `χ`, `χ₄`; smooth power `d^{−ε}`; Selberg row `μ(d)log(N/d)`;
+  Route PM cofactor row `c_Q` (its horizon-`Q` response is the truncated Ramanujan expansion of `τ_ε`).
+- Completely multiplicative patterns `f(d)d^{−ε}`: `z^{Ω(d)}`; residue flips `f_{q,S}`
+  (`f(p) = −1 ⇔ p mod q ∈ S`); subgroup flips; oscillating `a cos(t₀ log p + φ)`; finite spectra
+  `c₀ + Σ_k Re(B_k p^{it_k})`; amplitude defects `(1 − d(p))cos(t₀ log p)`.
+- Parity twins: same Ramanujan amplitudes, flipped signs (`c'_ε`; `χ₄`-twin `∝ 1_odd d^{−ε}`;
+  Liouville twin `κd^{−ε}`; even flip `c^♭`).
+
+Spectral coordinates and period forms.
+- Selberg coordinates `Y_{N,c}(e) = Σ_{e|d≤N} c(d)/d`, `Y(1) = H_N(c)`. For `c_ε`, `Y → w_ε(e) =
+  ρ_ε μ(e)/D_ε(e)`, `ρ_ε = 1/ζ(1+ε)`, `D_ε(e) = Π_{p|e}(p^{1+ε} − 1)`.
+- `Q_Sel = Σφ(e)Y²`; `Q_Bez` (coprime part); successor reserve `R_N = Q_Sel − Q_Bez =
+  Σ_{e≥2}(φ−μ)(e)Y²`; covariance `Cov_N(h) = Σ_{e≥2} c_e(h)Y(e)²`; primitive energy
+  `12E_prim = Σ J₂(q)Y(q)²`.
+- Ramanujan coefficients of a weight `W_c(e) = Σ_k c(ek)/(ek)`.
+
+Defects and horizon steps.
+- Prefix energy `E_N(M) = Σ_{k≤M} s_N(k)²`; renormalized defect `D_N(M)` with Dirichlet polarization
+  `2D_N(M) = −Σ_{k≤M}(s(k+1) − s(k))² + s(M+1)² − s(1)²`.
+- Step `Δ(m,B) = E_m(M) − E_{m−1}(M)`, `B = ⌊M/m⌋`; Buchstab slope
+  `λ(m) = 1 + 2μ(m)Σ_{d<m}μ(d)gcd(d,m)/d`; band mean `A(B)`; profile `P(B) = lim E_N((B+1)N)/N`.
+
+Fermi observer.
+- Cell response `F(n) = Σ c(d)(2⌊n/2d⌋ − ⌊n/d⌋)`, boundary jumps `J(n)`, dyadic rays `n = 2^k b`
+  (`b` odd). Schedules = observed 2-adic levels: selected (odd + `4|n`), all-boundary, one-gap at level
+  `g`; p-adic cells `p⌊n/pd⌋ − ⌊n/d⌋`. Inverse constant `K_N = sup(sieve energy / trace energy)`
+  in pronic weights `1/(n(n+1))`.
+
+Receiver.
+- `ReceiverBounded c` (paid). Damped class `𝒞(K,ε) = {|c(d)| ≤ Kd^{−ε}}` (`DampedClass`).
+- Critical Wiener algebra `Σ_j |k(j)| j^{−1/2} < ∞` (`CriticalWiener`); pole value
+  `K(1−ε) = Σ k(j)j^{−(1−ε)}`; partial pole sums `S_k(n) = Σ_{j≤n} k(j)j^{−(1−ε)}`.
+- Mellin pairing `Φ(s) = Σ_n A(n)(n^{−s} − (n+1)^{−s}) = ζ(s)(C(s) − m)`, `C(s) = Σ c(d)d^{−s}`,
+  `m = C(1)`; line energy `∫|Φ(σ+it)/(σ+it)|² dt`.
+- Probes `d^{−ε}cos(t log d)(log d)^k`; `receiverDampings`, `signBlindDampings`;
+  `Θ = zetaZeroAbscissa = sup Re ρ`.
+- First pronic moment `M(c) = Σ_n A_c(n)/(n(n+1))`; log moments `M(c·log^k)`; higher von Mangoldt
+  `Λ_{k+1} = Λ_k·log + Λ_k ⋆ Λ`.
+
+Odd sector (CHMD).
+- Theta kernel `Θ`; odd profile `m_a(x) = (Θ(x−a) − Θ(x+a))/(2sinh(a/2))`; polar function `Ψ_a`;
+  `sourceEnergy`, `sourcePair`, `weilForm`; odd resolvent eigenvectors (eigenvalue `μ`), lobes `q^±`,
+  nodal defect; pole moment `⟨q, tanhL⟩`; collar/direct/across jumps; Lévy density
+  `ω(s) = e^{−s/2}/(1 − e^{−2s})`.
+
+## 3. Language
+
+| Term | Meaning |
 |---|---|
-| BezoutValuationIncidence | Selberg coordinates, successor polarization, window Poincaré, Vaughan pronic calibration, cofinal Möbius slope |
-| BiScaleUncertainty | Full-period observation theory, packets, Chebyshev gauge |
-| ArithmeticContinuationAndCriticalEnergy | Transports the receiver in damping/cutoff; THIM locates the boundary |
-| ArithmeticCompensationTheory | Whether signed derivative work is paid without restating admission |
-| ScaleSignedIncidenceCriticality | Abstracts parity pairs into limits on what a reading can prove |
-| SignedArithmeticEnergyIncidence | Keeps source and cross terms from receiver data to energy |
-| ArithmeticCriticalityTheory, ArithmeticIncidencePositivity | Odd-sector and crossing-pair forms of the nine-moduli obstruction |
-| ArithmeticOrientationTheory | Even flip as orientation at the prime 2; parity barrier |
-| SignedSuccessorArithmetic | Möbius orientation in successor/coprime-factor observations |
-| ArithmeticDefectRigidity | Same pronic receiver via cofactor energy $E=F+G-2Q$ |
-| TransThresholdPairCorrelation | Parity barrier at close prime pairs |
-
----
-
-## 2. Why: the horizon barrier and the receivers
-
-Below the horizon ($M+1\le N$) the renormalized defect is nonpositive because the truncated
-divisor sum is complete. Above it, omitted divisors at a highly composite endpoint can make
-$|s_{N,c}(M+1)|>|s_{N,c}(1)|$, reversing the boundary sign in Dirichlet polarization. THIM locates
-every such failure and extracts what survives.
-
-**Three RH receivers**, each needing a horizon-uniform estimate on a literal source:
-
-1. *Interior pronic energy.* $c_\varepsilon(d)=\mu(d)d^{-\varepsilon}$, Bézout interior prefix
-   $I_\varepsilon$: if $\forall\delta\,\exists\varepsilon<\delta\,\sup_T\sum_{n\le T}I_\varepsilon(n)^2/(n(n+1))<\infty$ then RH.
-   Known for $\varepsilon\ge\tfrac12$.
-2. *Odd-sector positivity.* RH ⇔ the arithmetic Markov resolvent has no odd eigenvalue in
-   $(\tfrac12,1)$ ⇔ cosh mass $\le$ archimedean Doob jump + same-side prime jumps + bipartite chain
-   variances, for odd $v\in C^2_c$.
-3. *Nyman–Beurling.* RH ⇔ $\mathbf1_{(0,1]}\in\overline{\operatorname{span}}\{\{1/(kx)\}\}$; origin tail
-   $\int_N^\infty|\sum a_k\{u/k\}|^2du/u^2$ (a tail bound alone identifies neither weak limit nor bulk).
-
----
-
-## 3. Objects and language
-
-**Sieve.** $s_{N,c}(k)=\sum_{d\mid k,d\le N}c(d)$ (`sieveSeq`); Selberg coordinates
-$Y_{N,c}(e)=\sum_{e\mid d\le N}c(d)/d$ (`selbergMultiplesCoord`). Complete invariant: $\gcd(k,L_N)$,
-$L_N=\operatorname{lcm}(1..N)$; radical state $\gcd(k,N\#)$. $N$-rough integers form a monoid;
-rough-prime boundary = prime $p\in(N,2N)$ with its 4-divisible neighbour.
-
-**Weights.** $\mu$; $c_\varepsilon$ with $\tau_\varepsilon(n)=\prod_{p\mid n}(1-p^{-\varepsilon})$; Ramanujan
-coefficients $w_\varepsilon(e)=\rho_\varepsilon\mu(e)/D_\varepsilon(e)$, $\rho_\varepsilon=1/\zeta(1+\varepsilon)$; PM cofactor
-row $c_Q$.
-
-**Energies.** $Q_{\rm Sel}=\sum\varphi(e)Y^2$; $Q_{\rm Bez}$ (coprime pairs); successor reserve
-$\mathcal R_N=\sum_{e\ge2}(\varphi-\mu)(e)Y(e)^2$; renormalized defect $\widetilde{\mathcal D}_N(M)=\mathcal D_N(M)-M\mathcal R_N$;
-primitive energy $12\mathcal E_{\rm prim}=\sum J_2(q)Y(q)^2$; period covariance $\sum c_e(h)Y(e)^2$.
-**Dirichlet polarization** (every sign statement passes through it):
-$2\widetilde{\mathcal D}_N(M)=-\sum_{k\le M}(s(k+1)-s(k))^2+s(M+1)^2-s(1)^2$.
-
-**Horizon steps.** Band index $B=\lfloor M/m\rfloor$; Buchstab slope $\lambda(p)=1-2\mathfrak m(p-1)$,
-$\mathfrak m(x)=\sum_{d\le x}\mu(d)/d$; smooth core $\gcd(m,B\#)$; band average $A(B)$; damped crossover
-$\Lambda(\varepsilon)=\log(1/2\rho_\varepsilon)/\varepsilon$.
-
-**Scale regimes.** $k\le N$ complete; $(N,2N]$ one omitted divisor; $(B+1)N$ at most $B$ omitted
-quotients; unit envelope for $k<5(N+1)$; radical ratio $<11$: Möbius responses $\le2$;
-$M\ge2N^2+2N-2$: long-window dissipation.
-
-**Fermi.** Cell response $F_{N,c}(n)=\sum c(d)(2\lfloor n/2d\rfloor-\lfloor n/d\rfloor)$; pronic weight
-$1/(n(n+1))$; dyadic rays; schedules and slots; inverse constants $K_N$, $K^{\rm all}_N$.
-
-**Clocks.** $\tau(q)=q/\operatorname{rad}q$ (`lagVisibilityClock`): $c_q(h)/\varphi(q)$ sees $q$ iff
-$\tau(q)\mid h$.
-
-**Odd sector.** Riemann kernel $\Theta$; odd profile $m_a=(\Theta(\cdot-a)-\Theta(\cdot+a))/(2\sinh\frac a2)$;
-source graph energy, ground vector, resolvent; pole moment $\langle q,\tanh_L\rangle$.
-
-**Receiver classes.** $E_T(c)=\sum_{n\le T}A_c(n)^2/(n(n+1))$, $A_c(n)=\sum_{j\le n}((c*1)(j)-W_c(1))$;
-*paid* = `ReceiverBounded`. Damped class $|c(d)|\le Kd^{-\varepsilon}$. Sign-blind data: $|W_c|$, period
-statistics, pronic mode masses. Parity pair: same sign-blind data, one paid, one not. Critical
-Wiener algebra $\sum|g(q)|q^{-1/2}<\infty$; first pronic moment $M(c)=-\sum\Lambda(e)W_c(e)$; even flip $c^\flat$.
-
-**Selectivity classes.** I Beurling-universal; II sign-blind ($(\mathbb Z/2)^N$-invariant); III
-Bézout-selective ($\gcd(n,n+1)=1$, $pa-qb=1$). Only III can carry new information.
-
----
+| sub-/trans-horizon | `k ≤ N` (complete divisor sum) / `k > N` (divisors `d > N` omitted) |
+| radical ratio | `R_N(k)/(N+1)`; controls the Möbius envelope |
+| iso-state window | endpoint states agree; polarization boundary term vanishes |
+| paid / unpaid | receiver energy bounded / unbounded in `T` |
+| sign-blind | depends only on `|W_c|`, `|c|`, `Y²` or other `(ℤ/2)^N`-invariant data |
+| complete-period | quadratic statistic over a full period `L_N` (diagonal in Selberg coordinates) |
+| parity pair | identical sign-blind data, one paid, one unpaid |
+| even flip `c^♭` | negate coordinates at even moduli = Fermi transform of the even part |
+| pole law | payment of `k ⋆ q` decided by `K` at the abscissa `1−ε` |
+| quarter law | half-damped pattern paid ⇔ local Euler exponent `< 1/2` at each height |
+| Dini law | at divergent defect mass: paid ⇔ `∫₀¹ e^{−cΛ(ρ)}dρ/ρ < ∞` or a critical zero |
+| selectivity I/II/III | Beurling-universal / sign-blind / Bézout-selective (`gcd(n,n+1) = 1`) |
+| Route PM / Route MC | cofactor-row receiver / long-sawtooth–tail anti-alignment receiver |
+| tangent | `ε`-derivative of a damped identity (Selberg row = tangent of Möbius) |
+| Θ-parametrized | statement for `ε > Θ − 1/2` or `ε > Θ/2`; unconditional content only for `ε > 1/2` |
 
 ## 4. Mechanisms
 
-1. **Rough absorption.** $s_N(qr)=s_N(q)$ for rough $r$; at rough checkpoints boundary squares cancel
-   ⇒ defect $\le0$ for every weight, sharp.
-2. **Horizon filtration.** $s_N(k)=\sum_{d\mid k}c(d)-\sum_{q\mid k,k/q>N}c(k/q)$; radical envelope
-   $|s_{N,\mu}(r)|\le2^{\omega(r)-2}$.
-3. **Envelope ladder.** Unit envelope exact below ratio 5; rungs 2 below 11, 3 below 13. Ratio 11 is
-   the Möbius sign boundary. Endpoint-square methods die at ratios $(\log N)^{O(1)}$.
-4. **Global defect sign.** Polynomial windows: rough-prime boundaries dissipate $\ge4^{-\varepsilon}$
-   each; long windows: MV on step differences gives Poincaré constant $2N(N-1)$. Together: all
-   prefixes nonpositive at large horizons, uniformly in $\varepsilon\in[0,1]$.
-5. **Period laws.** Variance/correlation/Dirichlet are linear in $(Q_{\rm Sel},Q_{\rm Bez},\mathcal R)$;
-   torus Poincaré constant $\le1$. Möbius observer is **white**: lag covariances → 0, variance →
-   cofinal slope $\ge1/288$.
-6. **Buchstab calculus.** Horizon step formula; large prime horizons **inject** energy for Möbius;
-   step depends only on the smooth core; $A(B)<0$ for $B\le9$, $A(10)>0$.
-7. **Damped observer.** Freezes into $\tau_\varepsilon$; exact linear dissipation $\to-(B+1)R(\varepsilon)$;
-   damped prime horizons dissipate beyond $\Lambda(\varepsilon)$. Variance and damping limits **do not
-   commute**. Primitive energy $\asymp N^{1-2\varepsilon}$ below ½: only pronic weights work there.
-8. **Observation and recovery.** State is not dynamics beyond $N=2$; Möbius-inversion recovery with
-   exact amplification; short windows classified by endpoint states.
-9. **Fermi observability.** Schedule injective iff at most one of $L+2$ slots missing;
-   $K_N\sim\frac4{\pi^2}(\log_2N)^2$. Wavelet identity reduces bulk and origin-tail tightness to a
-   subpower prefix bound.
-10. **Odd quotient.** sourceEnergy $=$ weilForm $+2\langle q,\tanh_L\rangle^2$ on odd vectors (polar shift
-    is a gauge); RH ⇔ cross-lobe bound $\mathrm{weilBilin}(q^+,q^-)\le\tfrac12\langle q_1,\tanh_L\rangle^2$.
-11. **Collar transport and nine moduli.** Midpoint reflection to one-point diagonal potentials:
-    atom-minus-pole total excess positive iff $d\in\{2,3,4,5,7,8,9,11,13\}$. **Light-cone variation:**
-    profile variance replaces the Lévy drop by the Weil jump difference
-    $\kappa(s)-\kappa(s+2y)\ge4\sinh\frac y2\sinh\frac{y+s}2$, so large aperture pays all $\log d\le a-R$
-    with an $\varepsilon$-fraction of continuum energy.
-12. **Absorption boundary.** cosh/sinh ratio $\ge\pi e^{2x-5\log2/4}$: no fixed absorption coefficient.
-13. **Parity calculus.** Hyperbola split of $A_c$; positive weights paid iff $\sum M_k^2/2^k<\infty$;
-    character/Liouville/Fermi parity pairs; even flip invisible to translated moments of every degree;
-    log-moment hierarchy $M(c\log^k)=-\sum\Lambda_{k+1}W_c$ separates every pair (qualitatively).
-14. **Pole law and Wiener closure.** Critical Wiener convolution preserves payment; drift forces pole
-    cancellation $K(1-\varepsilon)=0$.
-15. **Mellin boundary energy.** Paid ⇒ $\zeta(s)(C(s)-m)$ holomorphic on $\Re s>\tfrac12$; at ½: payment
-    ⇔ bounded line energy of $\zeta(s)(C(s)-m)/s$.
-16. **Horizon-limit commutation.** Uniformly paid rows ⇔ paid limit exactly for $\varepsilon\ge\tfrac12$;
-    below, lacunary dipoles break it.
-17. **Multiplicative phase diagrams.** Euler-log pinching; quarter law for flips; integer local
-    exponents below ½; phase law reads only $\Re(ae^{i\varphi})$; Dini law for divergent-mass defects.
-18. **Probe spectroscopy.** $d^{-\varepsilon}\cos(t\log d)$ paid iff $\zeta(1-\varepsilon+it)=0$; half-damped
-    probe energy $/\log T\to|\zeta(\frac12+it)|^2/(2|\frac12+it|^2)$.
-19. **Actual source.** Power saving for $\sum(\mu\star\Lambda)$ at $\beta$ pays Möbius for $\varepsilon>\beta/2$;
-    admission infimum $=\Theta-\tfrac12$; anti-alignment gap ⇔ non-admission of probes.
-20. **Signed interior energy.** Interior energy = diagonal of a 25-entry signed Vaughan Gram + mixed
-    remainder; diagonal sign-blind; leading matrix rank one; bounded ⇔ $|1+R^{\rm mix}/D|=O(1/T)$.
+Finite-observer algebra.
+1. Rough absorption: `s_N(qr) = s_N(q)` for rough `r`; primes `> N` reset the row to `s(1)`. At rough
+   checkpoints the boundary squares cancel ⇒ `D_N(r−1) ≤ 0` for every weight. Roughness is also
+   necessary (two-atom witness `δ₁ + tδ_p`).
+2. Horizon filtration: omitted divisors are complementary quotients `k/q`, `q ≤ B`, on band `B`.
+3. State compression: `σ_N` is a complete invariant for all weights, `R_N` for squarefree weights;
+   squarefree rows are constant on `k ↦ dk` (`d|k`) and `k ↦ k^m`. The canonical representative
+   maximizes the defect in its class, so all-`M` sign questions reduce to tests at `r | N#`.
+4. Successor non-descent: `+1` descends to states iff `N ≤ 2`; the phase `k mod L_N` carries it.
+   `W ≥ φ(p^a)` consecutive `gcd` observations recover `k mod p^a`; with `e` errors and `s` erasures
+   the sharp clock is `C_q(e,s) = (e + ⌊s/2⌋)q + (s even ? φ(q) : q)`.
+5. Exact recovery: active-sawtooth samples at powers recover `c` by Möbius inversion, amplification
+   `(2d/(d−1))(τ(d) − 1)` (sharp).
 
----
+Polarization and envelopes.
+6. Every sign statement is polarization: dissipation `−Σ(Δs)²` vs endpoint squares. Integer Möbius
+   paths give margins via `|z| ≤ z²`. Spike cancellation: `s(M)s(M+1) ≤ 0 ⇒ D(M) ≤ 0`.
+7. Envelope ladder (Möbius, radical ratio `r/(N+1)`): `|s| ≤ 1` below 5 (first failure `k = 30p`,
+   `N = 6p−1`, response 2), `≤ 2` below 11, `≤ 3` below 13; prime shells give `|s| ≈ π(Q) − π(√Q)`,
+   so envelopes grow almost linearly in the ratio. Endpoint-square arguments die at polylog ratios.
+8. Rough-prime dissipation: each prime `p ∈ (N,2N)` gives a jump `≥ 4^{−ε}` beside a 4-divisible
+   point; the PNT count beats the divisor-square boundary up to `M ≤ N⁶`.
+9. Long-window law: Montgomery–Vaughan on step differences over response roots ⇒
+   `2D_N(M) ≤ 4H² − (M − 10N²)V` (window constant exact order `N²`); Bertrand terminal prime ⇒
+   `V ≥ 1/(2N)`.
+
+Period (Haar) dynamics.
+10. `L_N`-periodicity: `D(M + qL) = D(M) − qL·R_N`; on a return period `Σs² = L·Q_Sel`,
+    `Σs(k)s(k+1) = L·Q_Bez`, `Σ(Δs)² = 2L·R_N`. Torus Poincaré constant 1 (not `L²/4π²`) because
+    `gcd(k,k+1) = 1` kills non-coprime correlations in one step.
+11. Möbius is white: `Q_Bez(N;μ) → 0`, `Cov_N(h;μ) → 0` (`h ≥ 1`), variance `→ κ ≥ 1/288`, carried
+    by moduli comparable to `N` (spectral escape). Damped is tight: `V(ε) = Σ_{e≥2}φ(e)w_ε(e)²
+    = ε/2 − ε² + o(ε²)`, `R(ε) = ε/2 + o(ε²)`; damped defect dissipates linearly at rate `R(ε)`.
+12. Non-commuting limits: variance, dissipation and band profiles of `c_ε` do not converge to
+    Möbius values as `ε → 0` (the horizon effect lives in trans-horizon divisors). Pronic energy
+    `Σ s_N(n)²/(n(n+1))` does commute.
+13. Primitive energy: bounded iff `ε > 1/2`, `≍ N^{1−2ε}` below, linear for Möbius.
+14. Selberg row: `Cov_N(h) → 𝔖(h) − 1` (Hardy–Littlewood); equals the second-order `ε`-tangent
+    `A_ε(h)/ε²` of the damped row.
+
+Buchstab horizon calculus.
+15. `Δ(m,B) = μ(m)²B + 2μ(m)Σ_{d<m}μ(d)⌊B·gcd(d,m)/d⌋`, `|Δ − Bλ(m)| ≤ 2(m−1)`; `λ(m)/m` is the
+    horizon derivative of `Q_Sel`.
+16. Smooth-core law: `Δ(m,B)` depends only on `gcd(m, B#)`; large primes invisible
+    (`λ(aq) → λ(a)`). Möbius prime horizons inject (`λ(p) → 1`); `λ(2q) → −1`.
+17. `A(B) < 0` for `B ≤ 9`, `A(10) = (1/9)(6/π²) > 0`; profile non-concave infinitely often.
+18. Damped crossover: slope sign = sign of `p^{−ε} − 2ρ_ε`; `Λ(ε) = log(1/(2ε))/ε + γ + o(1)`,
+    additive window `±ε`; no damping-uniform dissipation threshold.
+
+Fermi observability.
+19. Normalized ray responses form a chain pinned by saturation above level `⌊log₂N⌋`; a schedule is a
+    boundary condition. Injective ⇔ at most one of `⌊log_p N⌋ + 2` slots missed.
+20. Conditioning = inverse lowest chain eigenvalue: selected `K_N ~ (4/π²)(log₂N)²`, all-boundary
+    `~ (1/π²)(log₂N)²`, one gap at relative depth `α`: `4max(α,1−α)²/π²`. Sharpness by quarter-wave
+    and cosine packets.
+21. Prime capacity: uniform observability on dyadic antichains ⇔ `Σ_{p∈Π}1/p < ∞`; over all primes it
+    fails even for nonnegative packets (nearly parallel parity packets of prime banks).
+22. Tightness: subpower `|A_row(n)| ≤ Bn^γ`, `γ < 1/2` ⇒ uniform bulk and origin-tail tightness.
+
+Receiver calculus.
+23. Split `A_c(n) = Σ_{d≤n}c(d)(⌊n/d⌋ − n/d) − nΣ_{d>n}c(d)/d` (sawtooth + tail drift). On `𝒞(K,ε)`:
+    `|A_c(n)| ≤ KC_ε n^{1−ε}` ⇒ all paid for `ε > 1/2`. Nonnegative weights: paid ⇔
+    `Σ_k M_k²/2^k < ∞` (dyadic masses; Hardy inequalities). Bounded-sign patterns pay at every `ε > 0`.
+24. Convolution `A_{g⋆c}(n) = Σ_q g(q)A_c(⌊n/q⌋) + m_c A_g(n)`; dilation contracts the pronic norm by
+    `q^{−1/2}`; critical Wiener kernels preserve payment. Local factors `δ₁ − aδ_p` preserve the growth
+    class iff `|a| < √p`.
+25. Pole law: drift `nΣ_{(n,2n]}q(d)/d ≥ κn^{1−ε}` gives `Φ_q(1−ε+δ) ≲ −1/δ`, so paid `k ⋆ q` forces
+    `K(1−ε) = 0`; log drift forces `K = K' = 0`. Sufficiency: pole-free dilations
+    `δ_j − j^{−(1−ε)}δ₁` have energy `O(1/j)`.
+26. Moments: `M(c·log^k) = −Σ_e Λ_{k+1}(e)W_c(e)` = derivatives of `C(s)` at `s = 1`; `Λ_{k+1}` reads
+    moduli with `≤ k+1` prime factors; all log moments form a complete receiver invariant.
+
+Mellin reading.
+27. Paid ⇒ `ζ(C − m)` continues to `Re s > 1/2` and `|C(σ) − m| ≲ √E(2σ−1)^{−1/2}`.
+28. Boundary energy (Mellin–Plancherel of the step source):
+    `Σ A(n)²(n^{−2σ} − (n+1)^{−2σ}) = (σ/π)∫|ζ(C − m)/s|²`; on `𝒞(K,1/2)` paid ⇔ line energies
+    bounded as `σ ↓ 1/2`.
+29. Euler-log pinching: `|log|F(w)| − Re Σ_p f(p)p^{−w}| ≤ Σp^{−2}` for completely multiplicative
+    `|f| ≤ 1`; prime sums become `log|ζ|`, `log|L(·,χ)|`, `arg ζ` at shifted heights. A singularity
+    `|C(s)|² ≍ |s − s₀|^{−e}` is line-integrable iff `e < 1`; a zero of `ζ` at `s₀` cancels it.
+30. Below half damping, analyticity of `C·ζ` at `1−ε+it₀` makes local Euler exponents integers;
+    `|cos x| ≤ 3/4 + (1/4)cos 2x` makes them 0 off the real axis.
+31. Probe asymptotic `Σ_{d≤n}d^{ρ−1}⌊n/d⌋ = ζ(2−ρ)n + ζ(ρ)n^ρ/ρ + O(n^{Re ρ/2})`: the prefix main
+    term is `Re(ζ(ρ)n^ρ/ρ)`, so receiver energy calibrates `|ζ|²`.
+
+Odd sector.
+32. Odd eigenvector identities: `sourceEnergy(|q|) − 4·sourcePair(q⁺,q⁻) = ((1−2μ)/μ)‖q‖²`; RH ⇔ a
+    cross-lobe inequality for odd eigenvectors with `μ > 1/2`.
+33. Collar transport: unconditional Schur ratio `m_a(x) ≤ 4e^{4t}(m_a(t+x) − m_a(t−x))`
+    (`a`-independent); support radius `R` ⇒ primes with `log d ≥ 2R` cost nothing. Light-cone
+    variation (`κ(s) − κ(s+2y) ≥ 4sinh(y/2)sinh((y+s)/2)`) pays all `log d ≤ a − R` with an
+    `ε`-fraction of light-cone energy for large shift `a`.
+34. Absorption boundary: cosh tail price `P(L) = πe^{2L − (5/4)log 2} > 1` for `L ≥ log 2`; no fixed
+    coefficient absorbs cosh mass; the minimal pointwise correction is `max(ρ_θ, 0)`.
 
 ## 5. Pillar theorems
 
-1. **All-prefix defect sign at large horizons**, uniform in $\varepsilon\in[0,1]$
-   (`eventually_pmPowerDamped_renormalizedDefect_nonpos_uniform`).
-2. **White Möbius observer** (`tendsto_periodCorrelation_moebius`, `one_div_288_le_cofinalMobiusSlope`).
-3. **Parity barrier**: sign-blind data decide payment iff $\varepsilon>\tfrac12$
-   (`receiverBounded_amplitudeInvariant_iff`, `parity_barrier`).
-4. **Damping = zero width** (`receiverDampingRate_eq_zetaZeroAbscissa_sub_half`,
-   `riemannHypothesis_iff_forall_pos_receiverBounded_moebius`).
-5. **Horizon-limit commutation exactly from ½** (`horizonLimit_commutes_with_receiver_iff`).
-6. **Half-damped boundary energy** (`receiverBounded_iff_exists_lineEnergy_le`).
-7. **Zero-divisor spectroscopy** (`receiverBounded_oscillatingSmoothPower_iff`).
-8. **Odd quotient cross-lobe reduction** (`riemannHypothesis_of_odd_eigenvector_cross_lobe_weilBilin_le_tanhL_sq`).
-9. **Selectivity classes** (`selectivity_class_III_bezout_successor_selective_laws`).
+Finite observer.
+- Uniform global defect sign: eventually in `N`, `D_N(M; c_ε) ≤ 0` for every `M` and every
+  `ε ∈ [0,1]` (`eventually_pmPowerDamped_renormalizedDefect_nonpos_uniform`).
+- Sharp unit envelope through `5(N+1)`; Möbius defect `≤ 0` below radical ratio 11.
+- PM cofactor row: global nonpositive defect at large cutoff (it sees the complete `τ_ε ≤ τ_ε(1)`);
+  linear dissipation at the Haar rate `R(ε)`.
+- White Möbius observer (`tendsto_periodCorrelation_moebius`, `one_div_288_le_cofinalMobiusSlope`).
+- Fermi position law `4max(α,1−α)²/π²`; schedule injectivity (`pAdicFermiScheduleInjective_iff`);
+  prime-capacity classification.
 
----
+Receiver thresholds.
+- Parity barrier: on `𝒞(K,ε)`, payment is a function of Ramanujan amplitudes ⇔ `ε > 1/2`
+  (`receiverBounded_amplitudeInvariant_iff`, `parity_barrier`); same line for magnitudes and
+  unsigned majorants; `signBlindDampings = (1/2, ∞)`.
+- Parity pairs at every `0 < ε ≤ 1/2`: `χ₄` and all real characters (`chiFour_parityPair`,
+  `char_parityRows`); Fermi even flip, invisible to all additive moments (`fermi_evenFlip_parityPair`,
+  `fermi_parityRows`); Liouville vs `κd^{−1/2}` (`liouville_parityPair_at_half_damping`).
+- Cubic moments pin squarefree rows up to the even flip (`pmCofactor_twist_eq_or_evenFlip`); log
+  moments are a complete receiver invariant (`exists_logMoment_ne`).
+- Horizon-limit commutation on `𝒞(1,ε)` ⇔ `ε ≥ 1/2` (`horizonLimit_commutes_with_receiver_iff`).
+- Hyperplane law: `CriticalWiener k`, `0 < ε < 1/2`: `k ⋆ d^{−ε}` paid ⇔ `K(1−ε) = 0`
+  (`receiverBounded_dirichletConv_unit_iff_critical`), rows included
+  (`rows_bounded_iff_dirichletConv_unit_poleValue_eq_zero`); fails exactly at `1/2`
+  (`criticalWiener_hyperplaneLaw_iff_lt_half`), where the threshold weight is `√log`
+  (`halfDamped_hyperplaneLaw_logarithmic_threshold`) and payment ⇔ `Σ S_k(n)²/(n+1) < ∞`
+  (`receiverBounded_dirichletConv_unit_half_iff_summable_partialPoleSum`). Double pole needs double
+  zero (`receiverBounded_dirichletConv_logWeight_unit_iff`). Weights pretending to 1 are paid ⇔ some
+  local factor vanishes at the pole (`receiverBounded_iff_exists_poleLocalFactor_eq_zero`).
 
-## 6. Traps
+Analytic reading.
+- Boundary energy (`receiverBounded_iff_exists_lineEnergy_le`).
+- Zero spectroscopy: `d^{−ε}cos(t log d)(log d)^k` paid ⇔ `ζ` vanishes to order `> k` at `1−ε+it`
+  (`receiverBounded_oscillatingSmoothPower_iff`, `receiverBounded_logPowerCosine_iff_all`);
+  `2|1/2+it|²E_T/log T → |ζ(1/2+it)|²` (`norm_sq_riemannZeta_half_eq_limit`).
+- Damping = zero width (`sInf_derivedSet_liouville_dampings_eq_zetaZeroAbscissa_sub_half`).
+- Half-damped phase diagrams, unconditional: `z^{Ω}` paid ⇔ `z < 1/2` on `[−1,1]`, Liouville paid
+  (`receiverBounded_constantSign_iff_full`); residue flips ⇔ `φ(q) < 4#(S∩units)`
+  (`receiverBounded_residueFlip_half_iff_general`); subgroup flips ⇔ `ε ≥ 1/2`
+  (`receiverBounded_subgroupFlip_iff`); phase law `a cos φ < 1 ∨ ζ(1/2+it₀) = 0`
+  (`receiverBounded_phaseWeight_iff`); finite spectra (`receiverBounded_spectralWeight_iff`); Dini law
+  for monotone defects (`receiverBounded_monotoneDefectPattern_iff`; harmonic threshold `c = 1`).
+- Below half damping: integer local exponents (`exists_int_localExponent_of_receiverBounded_damped`),
+  quantized prime means (`not_receiverBounded_of_primeMean`), full `z^{Ω}` diagram
+  (`receiverBounded_constantSign_damped_iff`).
+- Real-axis prime data do not decide payment (`exists_paid_unpaid_with_same_prime_signs_and_mean`).
 
-| Trap | Why it fails |
+Odd sector.
+- Sub-unit collar domination at large shift (`exists_shift_subunit_collar_domination`).
+- Nine-moduli law: atom − polar + arch excess positive on `(0, log d)` ⇔
+  `d ∈ {2,3,4,5,7,8,9,11,13}`.
+
+## 6. Tools
+
+Developed.
+- Dirichlet polarization, defect normal form, state compression (`σ_N`, `R_N`).
+- Selberg/Ramanujan diagonalization of period statistics; Parseval for `τ_ε`; Cesàro transfer from
+  periodic rows to `τ_ε`.
+- Buchstab step formula; dilation identity `Σ_{j≤B}s_N(c,mj) = Σ_d c(d)⌊B·gcd(d,m)/d⌋`; smooth-core
+  reduction.
+- MV window inequality on response roots (constant `N(N−1)`).
+- Chain spectral certificates (Dirichlet, mixed, soft prefix, Robin ramp); quarter-wave, cosine and
+  rising-sine packets; GCD/Boolean Gram bounds `Π(p∓1)/(p±1)`.
+- Pronic toolkit: Minkowski, dilation contraction `q^{−1/2}`, sawtooth norm `√(2/q)`, pronic Abel
+  identity, readout–variance decomposition `E_∞ = M² + Var`.
+- Hyperbola transfers: bounded partial sums; `|S(x)| ≤ Lx`; subpower `O(x^β)` ⇒ paid for `ε > β/2`;
+  log-weighted version for `μ ⋆ Λ`; VK band `ε ≥ 1/2 − 1/(80√log T)`.
+- Pole-free dilation decomposition with assembly lemma; drift ⇒ pole lower bounds (simple, double).
+- Complex Mellin pairing, step-source Plancherel, line-energy payment criteria (majorants off countable
+  sets, multi-singularity collapse, Dini majorants), local obstruction `|C|² ≥ κ/|s − s₀|`.
+- Euler-log pinching; character expansion of residue flips; `1/|ζ| ≪ |t|^{1/4}` and polylog bounds on
+  `1 < Re w ≤ 2`.
+- Floor-sum asymptotics with Cauchy control of derivatives in `ρ`; multi-frequency window energy.
+- Schur ratio and collar bridges for the odd sector.
+
+To build.
+- A signed bound for `Σ_{e≤N}(μ ⋆ Λ)(e) = O(N^β)`, `β < 1`, or for the long-sawtooth–tail
+  anti-alignment, at one `ε < 1/2`.
+- A quantitative Class III (successor-selective) law controlling off-diagonal Vaughan Gram entries.
+- Dini law for non-monotone defects; multi-frequency patterns without amplitude budget.
+- Uniform horizon-row payment on `Θ − 1/2 < ε ≤ Θ/2`.
+- Asymptotics of `Q_Sel(N;μ)` (weights `φ(f)/f²` not summable).
+- Integrability of the 2D absorbed integrand in the all-scale Obstacle-B comparison; odd cross-lobe
+  bound.
+
+## 7. Open questions
+
+1. Möbius receiver at one fixed `ε < 1/2` with an unconditional input. Sign-blind inputs are excluded by
+   the parity barrier; the input must read signs of `μ` on composite moduli.
+2. A separating Class III statistic with an exponent: cubic, first and log moments separate parity pairs
+   only qualitatively.
+3. Sign pattern of `A(B)` for `B > 10`; a damped deformation commuting with the cofinal limit.
+4. Möbius all-prefix sign is proved for `N ≤ 12` (`moebius_defect_nonpos_of_le_twelve`) and
+   eventually; the intermediate horizons are uncovered.
+5. Horizon-row gap `Θ − 1/2 < ε ≤ Θ/2`; weak limits of bounded Nyman rows; origin-tail tightness below
+   `Θ/2` without zero-free input.
+6. Odd sector: the cross-lobe bound, or the low-prime/inner-end residual after light-cone transport;
+   the growth of the budget in `R`.
+7. Möbius discrepancy energy: it lies between `N` and `N log N`; exact order.
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| Full period is $N!$ | Least period divides $\operatorname{lcm}(1..N)$ |
-| Period diagonalization controls moving windows | Short windows are classified by endpoint states |
-| Ratio 5 is a sign boundary | Unit envelope fails at $5N+5$; sign boundary is 11 |
-| Endpoint-square methods reach every scale | Die at ratios $(\log N)^{O(1)}$ |
-| Möbius = $\varepsilon\to0$ limit of damped | Variance, dissipation, profile limits do not commute |
-| Prime horizons dissipate | Möbius large primes inject |
-| Complete-period averages bound the discrepancy below ½ | Primitive energy diverges; pronic weighting essential |
-| Nyman tail with $dx/x^2$ | Correct transform $\int_N^\infty|\cdot|^2du/u^2$ |
-| $\Lambda(d)=\log(d/\tau(d))$ always | $\Lambda(6)=0$ |
-| Finite observability ⇒ source estimate | Recovery says nothing about cancellation |
-| Injective selected trace ⇒ uniform coercivity | Constant grows like $(\log_2N)^2$ |
-| Polar shift is a parameter | It is a gauge |
-| Lobe-local inequality settles the odd sector | RH is a cross-lobe statement |
-| More sign-blind observables narrow the gap | Blindness closed under post-processing; floor stays ½ |
-| One admissible damping bounds the width | Width = infimum of the derived set |
-| Higher-degree moments see squarefree parity | Even flip invisible at every degree |
-| Separating observables bound the receiver | Separation is qualitative |
-| Probe payment is a Möbius estimate | Möbius series $1/\zeta(s+\varepsilon)$ is the unknown |
-| Absolute bounds on Vaughan pieces | Squared majorant nonsummable; content is off-diagonal signs |
+| Sign-blind data can see RH | Amplitudes, magnitudes, `Y²`, complete-period forms, diagonal Vaughan entries, two-point moments are all decided at `ε = 1/2`; parity pairs exist for every `ε ≤ 1/2` |
+| More sign-blind observables narrow the gap | Blindness is closed under post-processing; the floor stays `1/2` |
+| Higher additive moments see parity | The even flip is invisible to every translated moment of every degree |
+| A separating observable is an estimate | Separation is qualitative |
+| First-octave defect `ab − a² ≤ 0` is Möbius-specific | It holds for every `f` with `f² = |f|` (`μ²`, `1`) |
+| Eventual defect `≤ 0` encodes cancellation | It coexists with reserve `≥ 1/576` and an unbounded linear budget |
+| Small-horizon sign extends | `N ≤ 12` is a finite check; envelopes `2^{ω−2}` and prime shells grow |
+| Ratio 5 is a sign boundary | Unit envelope fails at `30p`; the Möbius sign holds to ratio 11 |
+| Möbius = `ε → 0` limit of damped | Variance, dissipation and band profiles do not commute with the limit |
+| Prime horizons dissipate | Möbius large prime horizons inject; damped ones dissipate only beyond `Λ(ε)` |
+| Complete-period averages bound discrepancy below `1/2` | Primitive energy `≍ N^{1−2ε}`; pronic weights are essential |
+| Full period is `N!` | Least period is `lcm(1..N)` |
+| Observability ⇒ source estimate | Recovery is linear algebra with `(log N)²` conditioning |
+| Probe/pattern payment is progress | `d^{−ε}cos(t log d)` paid ⇔ `ζ(1−ε+it) = 0`; anti-alignment gap, `θ_long < 1`, oscillating patterns are exact RH reformulations |
+| Real-axis tests detect oscillating probes | The pole sits at `1−ε ± it`; real-axis series stay Lipschitz; prime signs + prime mean do not decide |
+| Collars and finiteness of admitted sets exclude zeros | A planted Euler kernel keeps both and is paid at a planted point |
+| Local Euler factors are harmless | `(1 − 2^{1−w})` cancels the boundary singularity and erases zero detection |
+| Defect mass decides payment | At divergent mass the Dini integral decides |
+| Θ-parametrized results are unconditional | Only for `ε > 1/2` (`Θ ≤ 1`) |
+| Odd-sector criteria are results | Rayleigh `≤ 1/2` and cross-lobe premises are unproved; `θ ≤ 1` absorption is infeasible |
+| Model-wave coercivity concerns zeros | Off-line hyperbolic excess is a statement about explicit test waves |
+| `CriticalWiener` is necessary | `μ(j)j^{−ε}` is not in it, yet `μd^{−ε} ⋆ d^{−ε} = δ₁` is paid |
+| Budgeted multi-frequency patterns test zeros | Two active frequencies under `Σ|a_k| ≤ 1` are always paid |
+| `Λ(d) = log(d/clock(d))` always | Only for prime powers; `Λ(6) = 0` |
 
----
+## 9. Place in the research
 
-## 7. Open problems
+THIM is the receiver theory of the finite divisor observer.
 
-1. **Möbius receiver at one fixed $\varepsilon<\tfrac12$.** Bound $\sup_T(\sum_iG_{ii}+R^{\rm mix}_T)$
-   unconditionally, then cofinally as $\varepsilon\downarrow0$. Arithmetic form:
-   $|\sum_{e\le N}(\mu\star\Lambda)(e)|\le CN^\beta$, $\beta<1$. Must use Class III information.
-   Complementary coordinate: the signed forcing–cofactor pairing $Q$ of ArithmeticDefectRigidity.
-2. **Small horizons.** Close the gap between $N\le12$ and the eventual regime.
-3. **Buchstab.** Sign pattern of $A(B)$ beyond 10; a damped deformation commuting with the cofinal limit.
-4. **Odd sector.** The cross-lobe bound, or pay the low-prime/inner-end region left after the
-   light-cone budget.
-5. **Fermi–Nyman.** Möbius origin-tail tightness below $\Theta/2$ without zero-free input; identify
-   weak limits of bounded Nyman rows.
-6. **Horizon-row gap** for $\Theta-\tfrac12<\varepsilon\le\Theta/2$.
-7. **From separation to bound.** An exponent for a separating observable; quantitative Class III laws
-   controlling off-diagonal Vaughan entries.
+- Imports: `RHTower` (98 import lines), `BezoutValuationIncidence` (73), `BiScaleUncertainty` (9),
+  `HTGeometry` (7), `ArithmeticCriticalityTheory` (4, light-cone variation), `ArithmeticIncidencePositivity`
+  (2), `HilbertMetric` (2).
+- Imported by: `BezoutValuationIncidence` (29 modules; the two programmes depend on each other at
+  module level), `ArithmeticOrientationTheory` (15; even flip as orientation at 2),
+  `ArithmeticDefectRigidity` (5; same receiver via cofactor energy), `ArithmeticContinuationAndCriticalEnergy`
+  (5; transports the receiver in damping/cutoff), `BiScaleUncertainty` (4), `BiarithmeticGeometry`,
+  `ArithmeticCountingPositivity` (2 each), and single imports from `ScaleSignedIncidenceCriticality`,
+  `ArithmeticCompensationTheory`, `CriticalArithmeticCorrelationTheory`, `ArithmeticCorrelationGeometry`,
+  `RenormalizedArithmeticPotentialTheory`, `SmoothBernoulliPoleCalibration`, `twin-prime`, `RHTower`,
+  `MainTheorems`.
+- Roles: locates the sign-blind boundary used downstream as a resolution limit
+  (`ScaleSignedIncidenceCriticality`, `ArithmeticOrientationTheory`); calibrates Route PM rows and
+  receiver equivalences; supplies the unconditional `|ζ|` spectroscope for multiplicative patterns.
 
-## 8. Tools to build
+## 10. Big picture
 
-A signed Möbius bound below ½; a Class III estimate for off-diagonal Vaughan entries; the odd
-cross-lobe bound.
+The finite divisor observer is rich. It has complete invariants, exact recovery, white-noise
+statistics, and sharp sign theorems far beyond its horizon. None of this pays the RH receiver. That
+information is either sign-blind or linear-algebraic, and both kinds stop at damping `1/2`.
 
-## 9. Conventions
+`ε = 1/2` is one line seen from many sides: absolute convergence of the class, sign-blindness,
+horizon-limit commutation, the critical Wiener hyperplane law, primitive-energy boundedness, and the
+unconditional Möbius receiver. The quarter law locates the same line inside one Euler factor: a local
+exponent of `1/2` at each height. This is the square-root barrier, stated as an observation theorem.
 
-- Fix weight class, ranges of $k,M,N$, band/ratio, polynomial or long-window regime.
-- Keep horizon and damping limits ordered; state nested eventual quantifiers.
-- Audit signs through polarization with boundary squares; period laws through Selberg/Ramanujan.
-- Capstones take data (`c`, `N`, `M`, `ε`, `S`); no assumed positivity, cancellation or zero location.
+Above the line the receiver is ζ itself. Its energy is the boundary energy of `ζ(s)(C(s) − m)/s`.
+Every paid/unpaid dichotomy for structured weights reads the zero divisor of ζ, a local Euler exponent,
+or a singularity's integrability. Payment can therefore only be proved from an input as strong as zero
+location. The available unconditional inputs (`ζ ≠ 0` on `Re s = 1`, zero-free regions, VK) settle
+half damping and nothing below it.
+
+For the RH programme: truncated-Möbius, Nyman and mollifier energies are exact instruments, not
+estimation devices. Finite-horizon combinatorics supplies conservation laws and calibrations, but no
+cancellation. Progress needs a new signed input that reads `μ` on composite moduli through successor
+or Bézout structure (Class III) and carries an exponent. The odd sector gives the same picture: every
+unconditional estimate pays local, low-prime pieces, and what remains is a global cross-lobe statement.

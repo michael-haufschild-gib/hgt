@@ -17,11 +17,19 @@ nonpositive imaginary work. For the actual heat function, prove this sign from
 the full canonical product after placing every nonreal zero inside the packet.
 The existing collision continuation then supplies the integrated inequality.
 
+## Canonical-product input
+
+`RHTower.logDeriv_eq_tsum_of_even` supplies the absolutely convergent
+renormalized field `Σ(1/(z−a)+1/a)` for every even entire function with the
+proved order-one envelope. Apply it to `riemannHeat t`. The finite nonreal
+copy set is closed under `a↦−a`, so its counterterms sum to zero. Each real
+exterior copy contributes imaginary part `−Im z/|z−a|²`. Thus the exterior
+work has the required sign before taking the regular part at a simple zero.
+
 ## Exact unresolved inputs
 
-- Full canonical-product velocity with real exterior field of nonpositive
-  imaginary work; no omitted entire term.
-- Uniform confinement of all nonreal zeros on compact positive-time intervals.
+- Specialize the full field and pass its sign to the regular part at each zero.
+- Use the uniform Ki–Kim–Lee confinement on positive-time intervals.
 - Collision continuation for the global finite sum.
 
 Finiteness of `E(0)` is separate and presently unproved. Positive-time

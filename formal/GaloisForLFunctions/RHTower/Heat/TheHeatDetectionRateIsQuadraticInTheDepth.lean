@@ -348,9 +348,6 @@ theorem re_xiSliceHeatTransfer_neg_of_slice_zero_quadratic {t : ℝ} (ht : Real.
           / Real.sqrt (2 * Real.pi)) * Real.exp (α * R + 2 * R ^ 2) := fun R hR =>
     heatedSliceReal_le_relative_growth ht16 hlam (by linarith) hδ (by linarith) hR hcon
   have hD0 : 0 < D := lt_of_lt_of_le one_pos (one_le_heatLocalDegreeConstant ht16 hlam.le)
-  obtain ⟨n, hn⟩ := re_xiSliceHeatTransfer_neg_of_relative_growth ht16 hlam (by linarith) hδ hzero
-    hD0 (by norm_num : (0 : ℝ) ≤ 2) (by linarith) hgr ?_
-  · exact absurd (hcon n) (not_le.mpr hn)
   -- the numerical condition `log(6D) + 2αδ + 16δ² + 32α²λ < (δ²/(4λ)) log(3/2)`
   have hA1 : A ≤ 101 / 100 * L := by rw [hA]; linarith
   have hAL : L ≤ A := by rw [hA]; linarith
@@ -425,7 +422,11 @@ theorem re_xiSliceHeatTransfer_neg_of_slice_zero_quadratic {t : ℝ} (ht : Real.
   have h16 : 8 * 2 * δ ^ 2 ≤ 4 := by linarith
   have h4M : 4 * M / (27 / 10) ≤ 4 * (443 / 100 * L) / (27 / 10) :=
     div_le_div_of_nonneg_right (by linarith) (by norm_num)
-  linarith
+  have hbig : Real.log (6 * D) + 2 * α * δ + 8 * 2 * δ ^ 2 + 32 * α ^ 2 * lam
+      < δ ^ 2 / (4 * lam) * Real.log (3 / 2) := by linarith
+  obtain ⟨n, hn⟩ := re_xiSliceHeatTransfer_neg_of_relative_growth ht16 hlam (by linarith) hδ hzero
+    hD0 (by norm_num : (0 : ℝ) ≤ 2) (by linarith) hgr hbig
+  exact absurd (hcon n) (not_le.mpr hn)
 
 end
 
