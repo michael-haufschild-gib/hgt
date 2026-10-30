@@ -89,6 +89,12 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
 | Constant source | `a ≡ 1`; its exponent separates the special points | `oneSource` |
 | Rough source | Coefficients on integers whose prime factors exceed `R` | `RoughSource` |
 | Escape state | Limit of `|S_N|² dHaar / N`: where the energy of the sums sits on `G` | `tendsto_escapeCoefficient` |
+| Liouville twin `x + ℓ`, double `2x` | `χ_{x+ℓ}(p) = −χ_x(p)`; `χ_{2x} = χ_x²` | `twist_liouvilleTwin`, `twist_double` |
+| Landau count, ghost windows | `L(n, p) = Σ⌊a_i n/p⌋ − Σ⌊b_j n/p⌋`; primes with `n/p ∈ [k + 1/2, k + 1)` | `landauCount`, `ghostWindow` |
+| Precision of a producer | Size divided by multiplicity | `factorialRatio_precision` |
+| Möbius function of `𝔽_q[T]` | `(−1)^{#factors}` on squarefree polynomials; degree sums `M(k)` | `polyMoebius`, `monicOfDeg`, `moebiusDegreeSum` |
+| Fourier kernel | `G(u) = Σ_j g_j e^{i t_j u}` | `fourierKernel`, `archPhase` |
+| Affine form | Kernel invariant under dilations and successor | `kernelForm`, `kernelForm_affine` |
 
 **Words.**
 
@@ -101,6 +107,9 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
   `χ^q = χ`.
 - *Shell*, *repayment*, *marginal positivity*, *multiplicity beyond divisibility*, *Frobenius
   substitute*, *class of the trivial point* (finite modifications and vertical shifts of `0`).
+- *Twin duality*: a Dirichlet point is at least typical, its Liouville twin at most typical. *Ghost
+  window*: a window of primes that a periodic producer is forced to cover. *Short shell*: `|n − km| ≤ 2`,
+  the shells present up to overlap two.
 
 ---
 
@@ -146,6 +155,24 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
     Möbius source (`hasBound_iff_of_subset`); on the integers prime to `q` a Dirichlet gauge point is its
     character. So the gauge sums at a Dirichlet point are character sums, bounded by periodicity, and
     twisted Mertens sums, governed by the zeros of `L(s, χ)`.
+12. **The twin expansion.** At `x + ℓ` the Möbius source becomes `μ²χ_x`, and `μ² = Σ_{d² ∣ n} μ(d)`
+    writes its sums as `Σ_d μ(d) χ_{2x}(d) A_x(N/d²)` (`sum_moebius_sq_mul_twist`). A hyperbola split at
+    `d ≈ N^κ` bounds the exponent by the constant-source exponent at `x` and the Möbius exponent at `2x`
+    (`norm_sum_mul_partialSum_div_sq_le`).
+13. **Ghost periodicity.** For a balanced factorial ratio the valuation above `√n` is the Landau count,
+    which depends on `n` modulo `p` (`landauCount_add_mul`). Multiplicity on `(n, 2n]` is therefore
+    multiplicity on every ghost window `n/p ∈ [k + 1/2, k + 1)`, and the ledger pays for all of them.
+14. **Double counting over `𝔽_q[T]`.** Pairing divisors with their multiples by an irreducible factor kills
+    divisor sums of `μ`; counting the multiples of a monic `d` of degree `k` among monic polynomials of
+    degree `n` gives `q^{n−k}`; together `Σ_k M(k) q^{n−k} = [n = 0]` (`sum_moebiusDegreeSum_mul_pow`).
+15. **Frequency factorization.** For a kernel with finite Fourier expansion the prime pair form is
+    `Σ_j g_j A_j |X_j|²` (`primePairForm_fourierKernel`), so the multiplicative large sieve applies one
+    frequency at a time.
+16. **Affine forms split into pole and diagonal.** A dilation- and successor-invariant form is
+    `c ℓ(v)² + (D − c) ‖v‖²` (`kernelForm_affine`): the square of the sum at the trivial point plus the
+    Haar mean square.
+17. **Short kernels, short shells.** A kernel vanishing at lags `≥ 2/N` meets only shells with
+    `|n − km| ≤ 2` (`shell_short_of_kernel_short`), and level `q` keeps only shells with `q ∣ j`.
 
 ---
 
@@ -205,6 +232,27 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
 19. **The escape state leans to the Liouville point** — `integral_normSq_moebiusGaugeSum_mul_twist_eq`,
     `tendsto_escapeCoefficient` (Fourier coefficients `μ(a) d(a)/a`), `tendsto_escapeMass` (`6/π²`),
     `tendsto_escapeCoefficient_prime` (`−(6/π²)/(p + 1)`), `eventually_re_escapeCoefficient_prime_neg`.
+20. **The Liouville twin inequality** — `gaugeExponent_moebius_liouvilleTwin_le`
+    (`exp_μ(x + ℓ) ≤ (1 + 2 exp_1(x) + exp_μ(2x)/2)/3`),
+    `gaugeExponent_moebius_liouvilleTwin_dirichletGauge_le_half`, `twin_duality`,
+    `gaugeExponent_moebius_liouvilleTwin_quadratic_le` (`≤ (2 + Θ)/6` for real characters),
+    `exists_gaugeExponent_moebius_le`, `zetaZeroAbscissa_eq_one_of_floor` (a floor `1/2` on `G` forces
+    `Θ = 1`).
+21. **Factorial ratios have Chebyshev precision** — `landauCount_add_mul`, `padicValNat_eq_landauCount`,
+    `le_landauCount_of_mem_ghostWindow`, `ghost_ledger`, `tendsto_ghostConstant` (`2 log 2`),
+    `factorialRatio_precision`, `centralBinom_producer` (the binomial attains `2 log 2`).
+22. **The function-field calibration is derived** — `sum_monicDivisors_polyMoebius`,
+    `card_filter_dvd_monicOfDeg`, `sum_monicOfDeg_polyMoebius` (`1, −q, 0, …`), `fqMobiusDegreeSum_eq`,
+    `sum_range_sum_monicOfDeg_polyMoebius` (the trivial point of `𝔽_q[T]` has bounded sums),
+    `sum_monicOfDeg_polyMoebius_sq` (its Liouville twin: `q^n − q^{n−1}`).
+23. **The shells have level of distribution `1/2`** — `primePairForm_fourierKernel`,
+    `largeSieve_primePairForm`, `largeSieve_shellPart`.
+24. **Affine positivity is the pole and Haar** — `kernelForm_affine`, `affine_nonneg_iff`,
+    `kernelForm_affine_eq_gauge`, `affine_nonneg_on_poleHyperplane_iff` (index at most one, carried by
+    the pole).
+25. **The short shells have no conductor** — `shell_short_of_kernel_short`,
+    `sum_shellPart_dirichletGauge_eq_zero_of_short`,
+    `sum_shellPart_dirichletGauge_eq_zero_of_kernel_short`.
 
 ---
 
@@ -213,13 +261,15 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
 | Question | Status | Answer |
 |---|---|---|
 | What replaces `x^q = x` over `ℤ`? | **Answered** | Not a self-map of `ℤ`: the only bounded-defect endomorphisms are the identity and gauge points (Frobenius gap). The equation lives on the gauge torus as the fixed-point equation of `ψ^q`; its solutions are the finite-order twists, with the trivial point the unique fixed twist of `ψ²`. A producer built from Adams operations acts on characters, not on integers. |
-| At which points should an auxiliary vanish, and finer than divisibility in what sense? | **Partly answered** | Divisibility cannot select a parity class (AKLT); factorial ratios have bounded multiplicity above the square root. Open: a vanishing notion whose multiplicity grows. |
-| Is there a structure on which the Liouville twist acts geometrically? | **Answered** | Yes: `G`, where the twist is translation by a point; that point is a pointwise limit of vertical shifts but not one of them (AKLT). The exponent is constant along the archimedean line and under finite modifications, so typicality is not visible to the archimedean place or to finitely many primes. |
-| What is the positive form of the affine Weil kernel, and is its boundary the pole? | **Partly answered** | A kernel invariant under all dilations and the successor is three constants (`affineInvariant_kernel_lt`): affine positivity without a boundary term carries no arithmetic. The dilation face (ratio part) is the gauge average; the successor face (shells) is gauge charge, projected by finite gauge subgroups onto `q ∣ j`. The pole is the boundary that separates the twins: for the prime source the Liouville point is the antipode of the trivial point, `S_N(ℓ) + S_N(0) = 2ψ(√N)`, so the pole is `+1` at `0` and `−1` at `ℓ`, while every size statement sees both as coherent. Open: the positive form itself, a unitary affine action whose matrix coefficients carry this boundary. |
+| At which points should an auxiliary vanish, and finer than divisibility in what sense? | **Answered for factorial ratios** | Divisibility cannot select a parity class (AKLT). Multiplicity alone is free (take powers); the invariant is precision, size over multiplicity. A balanced factorial ratio with multiplicity `m` on `(n, 2n]` has the same multiplicity on every ghost window, because its valuations are periodic in `n` modulo `p`, so its size is at least `(2 log 2 − ε) m n` against a mass `≈ n` (`factorialRatio_precision`); `C(2n, n)` attains `2 log 2` (`centralBinom_producer`). Open: a producer whose valuations are not periodic in `n` modulo `p`. |
+| Is there a structure on which the Liouville twist acts geometrically? | **Answered** | Yes: `G`, where the twist is translation by a point; that point is a pointwise limit of vertical shifts but not one of them (AKLT). The exponent is constant along the archimedean line and under finite modifications, so typicality is not visible to the archimedean place or to finitely many primes. On the special locus the translation exchanges the two sides of `1/2`: a primitive Dirichlet point is at least typical, its Liouville twin at most typical (`twin_duality`). |
+| What is the positive form of the affine Weil kernel, and is its boundary the pole? | **Answered for invariant forms** | A kernel invariant under all dilations and the successor is three constants (`affineInvariant_kernel_lt`), and its form is `c ℓ(v)² + d ‖v‖²` (`kernelForm_affine`): the square of the sum at the trivial point plus the Haar mean square. It is positive iff `c, d ≥ 0` (`affine_nonneg_iff`), and off the pole hyperplane only `d ≥ 0` is needed (`affine_nonneg_on_poleHyperplane_iff`): the positive affine forms are the mixtures of the pole and Haar, and their Krein–Langer index is at most one, carried by the pole. The dilation face (ratio part) is the gauge average; the successor face (shells) is gauge charge, projected by finite gauge subgroups onto `q ∣ j`. The pole is the boundary that separates the twins: for the prime source the Liouville point is the antipode of the trivial point, `S_N(ℓ) + S_N(0) = 2ψ(√N)`, so the pole is `+1` at `0` and `−1` at `ℓ`, while every size statement sees both as coherent. Open: positivity of the non-invariant part, which is Weil's form. |
 | Which gauge-charged statistics have values at `0` determined by structure? | **Answered for the coherent class and the special locus** | Nonnegative statistics are coherent at `0` and determined by their coefficients: divisor fibres (`log ℓ`), the prime source (`ψ(N)`, the pole), the shells on the pole vector (`log ℓ`). For the constant source the whole special locus is decided by structure: exponent `0` along nonprincipal Dirichlet lines (periodicity), `1` along principal ones (the pole), against `1/2` almost surely. Signed statistics such as Möbius sums are not determined by structure; their size at `0` is `Θ`. Their Haar escape state is pure structure (an Euler product, `tendsto_escapeCoefficient`) and leans to the Liouville point, so the discrepancy at `0` is invisible to it. |
-| What is the gauge exponent of a point, and is it `Θ` at `0`? | **Answered** | The exponent is almost surely exactly `1/2` (zero–one law plus the independent top block); it equals `Θ` at `0`, at every vertical shift and at every finite modification of `0`; it equals `1` at every twin tail and at the Liouville point; it exceeds `1/2` on a residual null set and is at least `3/4` on a residual set. Unconditionally `Θ ≥ 1/2`: the class of the trivial point is never better than typical, and RH is the equality `exp(0) = θ_typ`. At a primitive Dirichlet point the exponent is `Θ_χ ≥ 1/2`, and GRH for `χ` is the typicality of that point. |
-| What replaces Riemann–Roch as an index ceiling? | **Negative part answered; positive part open** | No gauge-invariant bound can go below `3/4` (`threeQuarters_le_of_gaugeInvariant_bound`), and no bound that reads finitely many coordinates can go below `1` (`one_le_of_cylinder_bound`). An index ceiling must use gauge-charged information about the specific point. |
-| Why is positivity marginal at the limit? | **Partly answered** | In exponent form RH is extremal: the trivial point can only err upward from the floor `1/2` that Haar-almost every point attains, so RH asks for equality at a boundary, with zero room (`riemannHypothesis_iff_trivialPoint_eq_typical`). Open: the exact identity that carries the zero margin of Weil's form, and whether `1/2` is the floor on all of `G`. |
+| What is the gauge exponent of a point, and is it `Θ` at `0`? | **Answered** | The exponent is almost surely exactly `1/2` (zero–one law plus the independent top block); it equals `Θ` at `0`, at every vertical shift and at every finite modification of `0`; it equals `1` at every twin tail and at the Liouville point; it exceeds `1/2` on a residual null set and is at least `3/4` on a residual set. Unconditionally `Θ ≥ 1/2`: the class of the trivial point is never better than typical, and RH is the equality `exp(0) = θ_typ`. At a primitive Dirichlet point the exponent is `Θ_χ ≥ 1/2`, and GRH for `χ` is the typicality of that point. At the Liouville twin of a nonprincipal Dirichlet point it is at most `1/2`, and at most `(2 + Θ)/6` for a real character (`gaugeExponent_moebius_liouvilleTwin_quadratic_le`). |
+| What replaces Riemann–Roch as an index ceiling? | **Negative part answered; positive ceilings at the twins and for affine forms** | No gauge-invariant bound can go below `3/4` (`threeQuarters_le_of_gaugeInvariant_bound`), and no bound that reads finitely many coordinates can go below `1` (`one_le_of_cylinder_bound`). Positive ceilings exist where ring data are gauge charged: the twin inequality bounds `exp(x + ℓ)` by the additive cancellation at `x` and the exponent at `2x` (`gaugeExponent_moebius_liouvilleTwin_le`), and affine forms have index at most one. At `0` itself the inequality is circular: its input at `ℓ` is the Liouville sum, which carries the same zeros. Open: a ceiling at `0`. |
+| Why is positivity marginal at the limit? | **Partly answered** | In exponent form RH is extremal: the trivial point can only err upward from the value `1/2` that Haar-almost every point attains, so RH asks for equality at a boundary, with zero room (`riemannHypothesis_iff_trivialPoint_eq_typical`). `1/2` is not the floor of `G`: a floor would force `Θ = 1` (`zetaZeroAbscissa_eq_one_of_floor`), and under RH the twin of the quadratic character mod `4` has exponent at most `5/12`. Open: the exact identity that carries the zero margin of Weil's form. |
+| Can the special locus repay the shells? | **Answered: on average yes, at `0` no** | For kernels with finite Fourier expansion the shells cancel the ratio part to within the Haar scale on average over primitive Dirichlet points of conductor up to `√N` (`largeSieve_shellPart`): level of distribution `1/2`. The single point `0` gets only the trivial bound. Up to overlap two the shells are short (`|n − km| ≤ 2`) and every level `q ≥ 3` averages them to zero (`sum_shellPart_dirichletGauge_eq_zero_of_kernel_short`): the sign of the complete form at `c ≤ 2` depends on the trivial point alone. |
+| Does a finite field calibrate the theory? | **Answered** | Over `𝔽_q[T]` the degree sums of `μ` are `1, −q, 0, …` by unique factorization (`sum_monicOfDeg_polyMoebius`), which derives the corpus model (`fqMobiusDegreeSum_eq`). The trivial point has bounded sums, below the half-power floor, because the zeta function of `𝔽_q[T]` has no zeros; its Liouville twin counts squarefree polynomials, `q^n − q^{n−1}`, and carries the pole. |
 
 ---
 
@@ -240,6 +290,11 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
 | The exceptional set is small | It is null but residual: topologically it is everything. |
 | Typical in measure is typical in category | The two notions disagree on `G`. |
 | Factorial ratios can grow multiplicity | Above the square root their multiplicity is bounded by the number of factorials. |
+| Higher multiplicity buys precision | Powers raise multiplicity at the same precision; a periodic producer pays `2 log 2` times the mass of its window at every multiplicity. |
+| `1/2` is a floor on `G` | It is the floor of the special locus and the almost-sure value. The Liouville twins of Dirichlet points lie at or below it, those of real characters strictly below under any zero-free strip. |
+| Conductors repay the first shells | Up to overlap two every shell has `|n − km| ≤ 2`, and no level `q ≥ 3` sees it. |
+| Level of distribution decides `0` | The large sieve bounds the trivial point only by the total; it is one term of the sum. |
+| The finite field shows what `ℤ` must do at `0` | Over `𝔽_q[T]` the trivial point is better than typical; over `ℤ` it is never better. The calibration tests mechanisms, not the value at `0`. |
 
 ---
 
@@ -250,35 +305,44 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
 | Gauge calculus | Invariant/charged split; gauge averages | Built (with ACG): `integral_twistSum`, `integral_primePairForm_gaugeTransform`. |
 | Special-point theory | Gauge points with additive structure | Built: periodic and convergent points; Dirichlet gauge points as rational points of Adams operations; the constant source has exponent `0` at Dirichlet points and `1` at the trivial point. |
 | Endomorphism theory | Multiplicative maps compatible with addition | Built: classification and Frobenius gap; Adams operations on `G`. |
-| Shell calculus | Exact shells of the prime pair form | Built: convolved form, ratio/shell split, gauge charge, pole-vector collapse. Not built: sign of the complete form at `c = 2`. |
-| Gauge exponents | Typicality of points | Built: Haar-a.e. exponent exactly `1/2` (the calibration test), zero–one law, trivial point `= Θ`, primitive Dirichlet points `= Θ_χ`, both never below typical; Liouville points `= 1`; invariance along the archimedean line and under finite modifications. Not built: Siegel and Deuring–Heilbronn as calibration. |
-| Producer theory | Multiplicity of integer auxiliaries | Built: factorial-ratio no-go; the `ℤ`/`𝔽_q` contrast. Not built: a growing-multiplicity producer. |
-| Affine Krein–Langer theory | Positivity on the affine semigroup with boundary | Built: the no-go (affine-invariant kernels are trivial: one source, no arithmetic) and the boundary test (the pole separates the twins by sign). Not built: the positive form. |
-| Index ceiling | Bound `κ` from ring data | No-go built: gauge-invariant and finitely determined certificates fail. The positive ceiling is open. |
-| Dispersion inside Weil's form | Gauge charge averaged over moduli | Built: congruence projection of the shells at every level; the large sieve as Haar sampling by finite gauge points; the special locus is square-root typical on average at every scale, with at most `2N^{1−2ε}` exceptions up to conductor `√N`. Not built: Bombieri–Vinogradov for the shells. |
+| Shell calculus | Exact shells of the prime pair form | Built: convolved form, ratio/shell split, gauge charge, pole-vector collapse, frequency factorization; up to overlap two the shells are short and have no conductor. Not built: the sign of the complete form at `c = 2`, which by the last result is a property of the trivial point alone. |
+| Gauge exponents | Typicality of points | Built: Haar-a.e. exponent exactly `1/2` (the calibration test), zero–one law, trivial point `= Θ`, primitive Dirichlet points `= Θ_χ`, both never below typical; Liouville points `= 1`; invariance along the archimedean line and under finite modifications; the Liouville twin inequality and twin duality. Not built: Siegel and Deuring–Heilbronn as calibration. |
+| Producer theory | Multiplicity and precision of integer auxiliaries | Built: factorial-ratio multiplicity cap; the precision law (ghost windows, `2 log 2`, the binomial optimal); the `ℤ`/`𝔽_q` contrast. Not built: a producer with valuations not periodic in `n` modulo `p`. |
+| Affine Krein–Langer theory | Positivity on the affine semigroup with boundary | Built: the no-go (affine-invariant kernels are trivial), the boundary test (the pole separates the twins by sign), and the positive cone of invariant forms: mixtures of the pole and Haar, index at most one carried by the pole. Not built: positivity of a non-invariant form. |
+| Index ceiling | Bound `κ` from ring data | No-go built: gauge-invariant and finitely determined certificates fail. Positive ceilings built at the Liouville twins (twin inequality) and for affine forms (index `≤ 1`). Open: a ceiling at `0`. |
+| Dispersion inside Weil's form | Gauge charge averaged over moduli | Built: congruence projection of the shells at every level; the large sieve as Haar sampling by finite gauge points; the special locus is square-root typical on average at every scale, with at most `2N^{1−2ε}` exceptions up to conductor `√N`; the shells have level of distribution `1/2` in large-sieve form. Not built: the Siegel–Walfisz input of Bombieri–Vinogradov, a zero-free region for each `L(s, χ)` of small conductor. |
+| Function-field calibration | The same objects over `𝔽_q[T]` | Built: the Möbius degree sums from unique factorization, the bounded sums at the trivial point, the squarefree count at its twin. |
 
 ---
 
 ## 9. Open research topics
 
-1. **A growing-multiplicity producer.** An auxiliary over `ℤ` with `v_p ≥ 2` on a positive proportion of
-   the primes of `(x, 2x]` at size below twice their mass, or a no-go for a class beyond factorial
-   ratios. Adams operations suggest building it on characters.
-2. **Bombieri–Vinogradov for the shells.** Turn the large-sieve sampling into a level-of-distribution
-   bound for the shell part, and measure what it leaves at the single point `0`.
-3. **Typicality of special points.** Every point of the special locus has Möbius exponent `Θ_χ ≥ 1/2`,
-   and its typicality is GRH for `χ`; on average over the locus typicality holds at every scale.
-   The gap is from "most points at each scale" to "each point at all scales". A Roth- or Siegel-type theorem would bound `Θ_χ` from the
-   arithmetic of the locus; a Thue-type first rung, a uniform bound `Θ_χ ≤ 1 − c`, would already be a
-   zero-free strip.
-4. **The exponent floor.** Is the Möbius exponent at least `1/2` at every gauge point? It holds almost
-   surely and on the class of the trivial point; a general proof would need a Carlson-type mean value
-   for `1/L_x`.
-5. **Shell repayment.** The repayment of the nonpolar `−log c` loss on signed directions, organized by
-   conductors `q ∣ j`.
-6. **Affine Krein–Langer theory.** A positivity principle for the affine semigroup whose boundary is the
-   pole.
-7. **An index ceiling from ring data.**
+1. **A non-periodic producer.** Every balanced factorial ratio, and every product of them at
+   commensurable scales, has valuations periodic in `n` modulo `p` and pays `2 log 2` times the mass of
+   its window (`factorialRatio_precision`). Square-root precision needs an integer auxiliary whose
+   valuations on the counted primes are not a function of `n` modulo `p`, at size computable without
+   the primes. Adams operations suggest building it on characters.
+2. **Siegel–Walfisz for the special locus.** The shells have level of distribution `1/2` in large-sieve
+   form (`largeSieve_shellPart`). The remaining input of Bombieri–Vinogradov is an individual statement
+   for each small conductor, a zero-free region for `L(s, χ)`; in gauge terms, a quantitative typicality
+   of each special point of small conductor.
+3. **Typicality of special points.** A primitive Dirichlet point has exponent `Θ_χ ≥ 1/2`, typical iff
+   GRH for `χ`; its Liouville twin has exponent at most `1/2` (`twin_duality`). The gap is from "most
+   points at each scale" to "each point at all scales". A Thue-type first rung, `Θ_χ ≤ 1 − c`, would be a
+   zero-free strip, and by the twin inequality would already push the twins strictly below `1/2`.
+4. **The true floor of `G`.** `1/2` is not a floor unless `Θ = 1` (`zetaZeroAbscissa_eq_one_of_floor`).
+   The twins `x_χ + ℓ` have Dirichlet series `L(s, χ)/L(2s, χ²)`, which suggests `1/4`. Is the infimum of
+   the exponent over `G` equal to `0`, `1/4`, or something else, and is it attained on the twins of the
+   special locus?
+5. **Shell repayment at the trivial point.** Up to overlap two the shells are short and no conductor
+   sees them (`sum_shellPart_dirichletGauge_eq_zero_of_kernel_short`); on nonnegative data they are
+   maximal at `0` (diamagnetism). Their repayment is a statement about `0` on signed directions: the sign
+   of the complete form at `c = 2`.
+6. **Non-invariant affine positivity.** The invariant positive forms are the pole and Haar
+   (`affine_nonneg_iff`). The open principle concerns forms that break the successor invariance by the
+   shells, with the pole as the only negative square.
+7. **An index ceiling at `0`.** Ceilings exist at the twins and for affine forms; at `0` the twin
+   inequality is circular.
 
 ---
 
@@ -287,7 +351,7 @@ geometric. AGT locates what replaces Frobenius, and proves what cannot.
 **Success.** One of the following:
 
 - a statement about gauge charge at `0` that is false for Haar-random points;
-- a producer with growing multiplicity;
+- a producer with sublinear precision loss;
 - a positivity theorem in which additive structure pays on signed directions;
 - a typicality theorem for the class of the trivial point;
 - a proof that no input of a stated class can do any of these, with its positive survivor.

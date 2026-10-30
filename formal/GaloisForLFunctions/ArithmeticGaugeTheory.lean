@@ -22,6 +22,12 @@ import GaloisForLFunctions.ArithmeticGaugeTheory.TheSpecialLocusReadsGRH
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheSpecialLocusIsTypicalOnAverage
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheLiouvillePointIsTheAntipode
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheEscapeStateLeansToTheLiouvillePoint
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheLiouvilleTwinInequality
+import GaloisForLFunctions.ArithmeticGaugeTheory.FactorialRatiosHaveChebyshevPrecision
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheFunctionFieldCalibrationIsDerived
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheShellsHaveLevelOfDistributionOneHalf
+import GaloisForLFunctions.ArithmeticGaugeTheory.AffinePositivityIsThePoleAndHaar
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheShortShellsHaveNoConductor
 
 /-!
 # Arithmetic Gauge Theory of the ring ℤ
@@ -45,6 +51,13 @@ is never better than typical, so RH is the equality of its exponent with the typ
 at every primitive Dirichlet point, whose Möbius exponent is the zero abscissa of `L(s, χ)`, and on
 average over the special locus typicality holds unconditionally at every scale; for the prime source
 the Liouville point is the antipode of the trivial point, so the pole separates the twins by sign; the
-escape state of the Möbius sums is an Euler product leaning to the Liouville point, blind to zeros. See
+escape state of the Möbius sums is an Euler product leaning to the Liouville point, blind to zeros; the
+Liouville twin inequality bounds the exponent of `x + ℓ` by additive data at `x` and the Möbius exponent
+at `2x`, so twins of Dirichlet points are at most typical and a floor `1/2` on `G` would force `Θ = 1`;
+factorial-ratio producers have precision at least `2 log 2` times the mass, attained by `C(2n, n)`; the
+degree sums of `μ` over `𝔽_q[T]` are derived from unique factorization, its trivial point lying below the
+floor and its Liouville twin carrying the pole; the shells have level of distribution `1/2` in
+large-sieve form; positive affine-invariant forms are the mixtures of the pole and Haar, with
+Krein–Langer index at most one; and below overlap two the shells have no conductor. See
 `ArithmeticGaugeTheory/README.md`.
 -/

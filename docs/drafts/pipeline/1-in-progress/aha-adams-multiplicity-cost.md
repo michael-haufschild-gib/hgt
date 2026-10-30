@@ -3,7 +3,7 @@
 - **ID:** AHA-JETS
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
-- **Source:** aha-adams-torsion-resolution.md
+- **Source:** ../3-formalized/aha-adams-torsion-resolution.md
 - **Statement:** An auxiliary vanishing to full torus order `r` on the order-`d` fixed locus needs integer support reaching `2^(dr)`, with equality attained by `(χ(2)^d−1)^r`.
 
 ## Exact coordinates
@@ -18,20 +18,20 @@ The coefficient at residue `r` and multiindex `α` is therefore
 `J(r,α)=Σ_(v(n)≡r) a_n ∏_p binom(k_p(n),α_p)`.
 
 These are Newton coordinates of the auxiliary. Fourier inversion separates
-the residues. The finite binomial transform should recover every coefficient
-from these coordinates; the local maps `z_p↦z_p^d−1` have nonzero derivative
-at every torsion point over characteristic zero.
+the residues, and the finite binomial transform detects every nonzero array.
+The local maps `z_p↦z_p^d−1` have nonzero derivative at every torsion point
+over characteristic zero; their effect on full jets requires a formal bridge.
 
-## Proof mechanism to formalize
+## Algebraic detection mechanism
 
 Among nonzero coefficients in one residue fibre choose `n` maximizing
 `Σ_p k_p(n)`. For `α=k(n)`, a nonzero binomial product from another term
 requires `k(m)≥k(n)` coordinatewise. Maximality and equality of sums force
-equality of quotient vectors; the residue then forces `m=n`. Thus this jet
+equality of quotient vectors; the residue then forces `m=n`. Thus this coefficient
 equals `a_n` and cannot vanish.
 
-If `n<2^(dr)`, unique factorization gives `Σ_p k_p(n)<r`. Hence some jet of
-order below `r` detects every nonzero auxiliary of that length. The boundary
+If `n<2^(dr)`, unique factorization gives `Σ_p k_p(n)<r`. Hence some Newton
+coefficient of order below `r` detects every nonzero auxiliary of that length. The boundary
 binomial has order exactly `r` in the coordinate `Y_2`.
 
 ## Boundaries
@@ -42,8 +42,44 @@ derivative direction permits cancellations between different prime
 coordinates. The analytic mixed-jet identification must be proved, not
 folded into the definition of multiplicity.
 
+## Exact differential bridge
+
+For a residue vector `b` represented in `{0,…,d−1}`, let `E_p=z_p ∂/∂z_p`.
+The required identity is
+
+`d^|P| d^|α| (∏_p α_p!) J(b,α)`
+`= Σ_t conj(χ_b(t)) [∏_p ∏_{0≤j<α_p}(E_p−b_p−dj)] F(t)`.
+
+Fourier averaging kills all residue classes except `b`. In that class,
+`v_p=b_p+d k_p`, so the Euler-operator eigenvalue is exactly
+`d^α_p α_p! binom(k_p,α_p)`. The differential operator has total order
+`|α|`; full torus jets below `r` therefore force every `J(b,α)` below `r`
+to vanish. This route proves the needed implication without treating a
+Newton coordinate as an analytic derivative by definition.
+
+Existing analytic interface: `HTGeometry/MultivariatePolynomialJetCoefficient.lean`
+identifies ordered coordinate derivatives with centered polynomial
+coefficients, including factorials. `HTGeometry/MultivariateHermiteCRT.lean`
+identifies point-ideal powers with centered coefficient constraints.
+The Euler-operator identity and its arithmetic polynomial interface remain
+to be formalized.
+
+`HTGeometry.bgv_coordinateEuler_product` gives the coordinate Euler
+eigenvalue on multivariate monomials. `HTGeometry.SparsePolynomial.pow_dvd_euler`
+proves the one-variable multiplicity drop; the required extension is to
+powers of multivariate point ideals.
+
 ## Positive survivor
 
-Exact residue–jet reconstruction, including a nonzero detecting jet below
-the arithmetic degree threshold. The classical grid-vanishing mechanism
-alone is not claimed as a new theorem of number theory. Lean proof pending.
+The algebraic survivor is exact weighted torsion sampling below the arithmetic
+degree threshold. It is formalized in
+[AHA-NEWTON](../3-formalized/aha-residue-newton-resolution.md):
+`arithmeticNewton_sample_recovery` and `arithmeticNewton_samples_eq_iff`,
+in namespace `GaloisForLFunctions.ArithmeticHarmonicAnalysis`, have only
+standard Lean axioms. Analytic mixed-jet identification remains open.
+
+The classical multiplicity bound is not claimed as new number theory:
+[Dvir–Kopparty–Saraf–Sudan, Lemma 8](https://www.math.toronto.edu/swastik/multiplicities.pdf)
+bounds the sum of grid multiplicities by total degree times the appropriate
+grid cardinality. The arithmetic contribution sought here is its exact
+support filtration and constructive residue interface.

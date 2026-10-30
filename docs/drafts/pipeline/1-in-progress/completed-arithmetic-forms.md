@@ -72,6 +72,22 @@ The energy flux proves zero exclusion throughout this joint argument-order
 domain; source reflection and conjugation fix the positive real sign.
 Lean: `BesselSpectralBand`.
 
+The same literal source satisfies
+$$K'_{i\tau}(a)\ge-(1+1/a)K_{i\tau}(a),\qquad |\tau|\le a,$$
+and its full signed radial combination has reserve
+$$ (a^2+9)K_{i\tau}(a)+6aK'_{i\tau}(a)
+\ge(a^2-6a+3)K_{i\tau}(a)>0\qquad(a\ge6).$$
+The decaying barrier flux has negative derivative throughout the band.
+Lean: `BesselBarrierPayment`.
+
+The actual radial Wigner transform is exactly
+$$\int_{\mathbb R}a^2(a^2+9-6a\cosh(2v))e^{-a\cosh(2v)}e^{2ibv}\,dv
+=a^2[(a^2+9)K_{ib}(a)+6aK'_{ib}(a)].$$
+At physical center $u\ge0$, each product fibre $k\ge1$ has scale
+$a=2\pi k e^{2u}\ge6$. On $|b|\le a$ its sign equals the sign of
+$\sum_{nm=k}e^{-ib(\log n-\log m)}$; individual diagonal pairs are positive.
+Lean: `WignerSpectralBand`.
+
 For the literal Chebyshev prefix $F(N)=\sum_{2\le d<N}(\psi(d)-d)/\sqrt d$,
 let $E(N)=\sum_{2\le n\le N}F(n)^2/n^2$, $c_j=F(j)-F(j-1)$,
 and $\mathcal R_N=R_{N+1}(c_j/j)/(N+1)$. Then
@@ -176,8 +192,14 @@ Lean: `HyperbolicClock`, `GaussianClockCone`, `ScaleJetTransport`.
    propagate the complete signed hierarchy. Inherited scalar odd compensation
    has a literal obstruction; residual-free moving transport has a strict seam
    gap but requires global gap positivity and an admissible tail join.
-2. Compare the complete macroscopic Weil operator at overlap $3/2$ with the
-   arithmetic Green metric. The proved prefix index ceiling is not positivity.
+2. Pay the complete Weil source on a prescribed unbounded overlap schedule.
+   The tilted unit spline already has positivity and a common spectral floor
+   on every bounded overlap interval, including $3/2$; its limiting ground
+   energy is the completed pole energy. A growing schedule requires estimates
+   relative to that vanishing reserve. Eventual complete nonnegativity for
+   $c_N=2(\log N)^\alpha$, $\alpha>1/4$, is equivalent to RH.
+   The plateau prefix theorem concerns a
+   different profile and does not decide its full macroscopic residual.
 3. Bound the actual bandwidth-$4/3$ coalescent surplus by $N/18+o(N)$ in its
    receiver windows. Gauge mean-square bounds do not evaluate the prime source
    at the distinguished gauge point zero.

@@ -61,11 +61,11 @@ def centralNum11_01 (q : ℝ) : ℝ :=
   (-48:ℝ)*q^7
 
 /-- Moving-frame numerator, pair `(11)`, entry `(0,2)`. -/
-def centralNum11_02 (q : ℝ) : ℝ :=
+def centralNum11_02 (_q : ℝ) : ℝ :=
   0
 
 /-- Moving-frame numerator, pair `(11)`, entry `(0,3)`. -/
-def centralNum11_03 (q : ℝ) : ℝ :=
+def centralNum11_03 (_q : ℝ) : ℝ :=
   0
 
 /-- Moving-frame numerator, pair `(11)`, entry `(1,1)`. -/
@@ -923,28 +923,28 @@ def centralNumMat11 (q : ℝ) (i j : Fin 4) : ℝ :=
   (![![centralNum11_00 q, centralNum11_01 q, centralNum11_02 q, centralNum11_03 q],
     ![centralNum11_01 q, centralNum11_11 q, centralNum11_12 q, centralNum11_13 q],
     ![centralNum11_02 q, centralNum11_12 q, centralNum11_22 q, centralNum11_23 q],
-    ![centralNum11_03 q, centralNum11_13 q, centralNum11_23 q, centralNum11_33 q]]
+    ![centralNum11_03 q, centralNum11_13 q, centralNum11_23 q, centralNum11_33 q]] : Fin 4 → Fin 4 → ℝ) i j
 
 /-- Moving-frame numerator matrix of the pair `(12)`. -/
 def centralNumMat12 (q : ℝ) (i j : Fin 4) : ℝ :=
   (![![centralNum12_00 q, centralNum12_01 q, centralNum12_02 q, centralNum12_03 q],
     ![centralNum12_01 q, centralNum12_11 q, centralNum12_12 q, centralNum12_13 q],
     ![centralNum12_02 q, centralNum12_12 q, centralNum12_22 q, centralNum12_23 q],
-    ![centralNum12_03 q, centralNum12_13 q, centralNum12_23 q, centralNum12_33 q]]
+    ![centralNum12_03 q, centralNum12_13 q, centralNum12_23 q, centralNum12_33 q]] : Fin 4 → Fin 4 → ℝ) i j
 
 /-- Moving-frame numerator matrix of the pair `(13)`. -/
 def centralNumMat13 (q : ℝ) (i j : Fin 4) : ℝ :=
   (![![centralNum13_00 q, centralNum13_01 q, centralNum13_02 q, centralNum13_03 q],
     ![centralNum13_01 q, centralNum13_11 q, centralNum13_12 q, centralNum13_13 q],
     ![centralNum13_02 q, centralNum13_12 q, centralNum13_22 q, centralNum13_23 q],
-    ![centralNum13_03 q, centralNum13_13 q, centralNum13_23 q, centralNum13_33 q]]
+    ![centralNum13_03 q, centralNum13_13 q, centralNum13_23 q, centralNum13_33 q]] : Fin 4 → Fin 4 → ℝ) i j
 
 /-- Moving-frame numerator matrix of the pair `(23)`. -/
 def centralNumMat23 (q : ℝ) (i j : Fin 4) : ℝ :=
   (![![centralNum23_00 q, centralNum23_01 q, centralNum23_02 q, centralNum23_03 q],
     ![centralNum23_01 q, centralNum23_11 q, centralNum23_12 q, centralNum23_13 q],
     ![centralNum23_02 q, centralNum23_12 q, centralNum23_22 q, centralNum23_23 q],
-    ![centralNum23_03 q, centralNum23_13 q, centralNum23_23 q, centralNum23_33 q]]
+    ![centralNum23_03 q, centralNum23_13 q, centralNum23_23 q, centralNum23_33 q]] : Fin 4 → Fin 4 → ℝ) i j
 
 theorem basisQuadratic (B M : Matrix (Fin 4) (Fin 4) ℝ) (y : Fin 4 → ℝ) :
     (∑ r : Fin 4, ∑ s : Fin 4, (B.mulVec y r)*(B.mulVec y s)*M r s) =
@@ -990,17 +990,23 @@ theorem centralEnergy11 {q : ℝ} (hq : q ≠ 0) (y : Fin 4 → ℝ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [mul_div_assoc]
   congr 1
-  fin_cases i <;> fin_cases j <;> simp only [centralNumMat11, Matrix.of_apply, Matrix.cons_val',
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
-    Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.head_cons, Fin.zero_eta, Fin.mk_one,
-    Fin.reduceFinMk, Fin.isValue] <;>
-    first
-    | exact centralEntry11_00 hq | exact centralEntry11_01 hq | exact centralEntry11_02 hq
-    | exact centralEntry11_03 hq | exact centralEntry11_10 hq | exact centralEntry11_11 hq
-    | exact centralEntry11_12 hq | exact centralEntry11_13 hq | exact centralEntry11_20 hq
-    | exact centralEntry11_21 hq | exact centralEntry11_22 hq | exact centralEntry11_23 hq
-    | exact centralEntry11_30 hq | exact centralEntry11_31 hq | exact centralEntry11_32 hq
-    | exact centralEntry11_33 hq
+  fin_cases i <;> fin_cases j
+  · exact centralEntry11_00 hq
+  · exact centralEntry11_01 hq
+  · exact centralEntry11_02 hq
+  · exact centralEntry11_03 hq
+  · exact centralEntry11_10 hq
+  · exact centralEntry11_11 hq
+  · exact centralEntry11_12 hq
+  · exact centralEntry11_13 hq
+  · exact centralEntry11_20 hq
+  · exact centralEntry11_21 hq
+  · exact centralEntry11_22 hq
+  · exact centralEntry11_23 hq
+  · exact centralEntry11_30 hq
+  · exact centralEntry11_31 hq
+  · exact centralEntry11_32 hq
+  · exact centralEntry11_33 hq
 
 /-- The radial energy of the pair `(12)` in moving central coordinates. -/
 theorem centralEnergy12 {q : ℝ} (hq : q ≠ 0) (y : Fin 4 → ℝ) :
@@ -1016,17 +1022,23 @@ theorem centralEnergy12 {q : ℝ} (hq : q ≠ 0) (y : Fin 4 → ℝ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [mul_div_assoc]
   congr 1
-  fin_cases i <;> fin_cases j <;> simp only [centralNumMat12, Matrix.of_apply, Matrix.cons_val',
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
-    Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.head_cons, Fin.zero_eta, Fin.mk_one,
-    Fin.reduceFinMk, Fin.isValue] <;>
-    first
-    | exact centralEntry12_00 hq | exact centralEntry12_01 hq | exact centralEntry12_02 hq
-    | exact centralEntry12_03 hq | exact centralEntry12_10 hq | exact centralEntry12_11 hq
-    | exact centralEntry12_12 hq | exact centralEntry12_13 hq | exact centralEntry12_20 hq
-    | exact centralEntry12_21 hq | exact centralEntry12_22 hq | exact centralEntry12_23 hq
-    | exact centralEntry12_30 hq | exact centralEntry12_31 hq | exact centralEntry12_32 hq
-    | exact centralEntry12_33 hq
+  fin_cases i <;> fin_cases j
+  · exact centralEntry12_00 hq
+  · exact centralEntry12_01 hq
+  · exact centralEntry12_02 hq
+  · exact centralEntry12_03 hq
+  · exact centralEntry12_10 hq
+  · exact centralEntry12_11 hq
+  · exact centralEntry12_12 hq
+  · exact centralEntry12_13 hq
+  · exact centralEntry12_20 hq
+  · exact centralEntry12_21 hq
+  · exact centralEntry12_22 hq
+  · exact centralEntry12_23 hq
+  · exact centralEntry12_30 hq
+  · exact centralEntry12_31 hq
+  · exact centralEntry12_32 hq
+  · exact centralEntry12_33 hq
 
 /-- The radial energy of the pair `(13)` in moving central coordinates. -/
 theorem centralEnergy13 {q : ℝ} (hq : q ≠ 0) (y : Fin 4 → ℝ) :
@@ -1042,17 +1054,23 @@ theorem centralEnergy13 {q : ℝ} (hq : q ≠ 0) (y : Fin 4 → ℝ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [mul_div_assoc]
   congr 1
-  fin_cases i <;> fin_cases j <;> simp only [centralNumMat13, Matrix.of_apply, Matrix.cons_val',
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
-    Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.head_cons, Fin.zero_eta, Fin.mk_one,
-    Fin.reduceFinMk, Fin.isValue] <;>
-    first
-    | exact centralEntry13_00 hq | exact centralEntry13_01 hq | exact centralEntry13_02 hq
-    | exact centralEntry13_03 hq | exact centralEntry13_10 hq | exact centralEntry13_11 hq
-    | exact centralEntry13_12 hq | exact centralEntry13_13 hq | exact centralEntry13_20 hq
-    | exact centralEntry13_21 hq | exact centralEntry13_22 hq | exact centralEntry13_23 hq
-    | exact centralEntry13_30 hq | exact centralEntry13_31 hq | exact centralEntry13_32 hq
-    | exact centralEntry13_33 hq
+  fin_cases i <;> fin_cases j
+  · exact centralEntry13_00 hq
+  · exact centralEntry13_01 hq
+  · exact centralEntry13_02 hq
+  · exact centralEntry13_03 hq
+  · exact centralEntry13_10 hq
+  · exact centralEntry13_11 hq
+  · exact centralEntry13_12 hq
+  · exact centralEntry13_13 hq
+  · exact centralEntry13_20 hq
+  · exact centralEntry13_21 hq
+  · exact centralEntry13_22 hq
+  · exact centralEntry13_23 hq
+  · exact centralEntry13_30 hq
+  · exact centralEntry13_31 hq
+  · exact centralEntry13_32 hq
+  · exact centralEntry13_33 hq
 
 /-- The radial energy of the pair `(23)` in moving central coordinates. -/
 theorem centralEnergy23 {q : ℝ} (hq : q ≠ 0) (y : Fin 4 → ℝ) :
@@ -1068,17 +1086,23 @@ theorem centralEnergy23 {q : ℝ} (hq : q ≠ 0) (y : Fin 4 → ℝ) :
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [mul_div_assoc]
   congr 1
-  fin_cases i <;> fin_cases j <;> simp only [centralNumMat23, Matrix.of_apply, Matrix.cons_val',
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three,
-    Matrix.empty_val', Matrix.cons_val_fin_one, Matrix.head_cons, Fin.zero_eta, Fin.mk_one,
-    Fin.reduceFinMk, Fin.isValue] <;>
-    first
-    | exact centralEntry23_00 hq | exact centralEntry23_01 hq | exact centralEntry23_02 hq
-    | exact centralEntry23_03 hq | exact centralEntry23_10 hq | exact centralEntry23_11 hq
-    | exact centralEntry23_12 hq | exact centralEntry23_13 hq | exact centralEntry23_20 hq
-    | exact centralEntry23_21 hq | exact centralEntry23_22 hq | exact centralEntry23_23 hq
-    | exact centralEntry23_30 hq | exact centralEntry23_31 hq | exact centralEntry23_32 hq
-    | exact centralEntry23_33 hq
+  fin_cases i <;> fin_cases j
+  · exact centralEntry23_00 hq
+  · exact centralEntry23_01 hq
+  · exact centralEntry23_02 hq
+  · exact centralEntry23_03 hq
+  · exact centralEntry23_10 hq
+  · exact centralEntry23_11 hq
+  · exact centralEntry23_12 hq
+  · exact centralEntry23_13 hq
+  · exact centralEntry23_20 hq
+  · exact centralEntry23_21 hq
+  · exact centralEntry23_22 hq
+  · exact centralEntry23_23 hq
+  · exact centralEntry23_30 hq
+  · exact centralEntry23_31 hq
+  · exact centralEntry23_32 hq
+  · exact centralEntry23_33 hq
 
 end
 end RHTower.ThetaCuspOddFourCentralEntries

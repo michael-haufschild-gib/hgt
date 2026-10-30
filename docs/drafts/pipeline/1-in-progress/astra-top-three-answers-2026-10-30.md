@@ -141,6 +141,15 @@ comparison PSD, ratio 0.064. Coarser grids fail at the bulk piece at 5 (crude `e
 Lean obstacle: direct identities with exact `A(q*)⁻¹` literals time out at elaboration; must
 split into small lemmas or use frames with short rational entries (no budget raises).
 
+Formalized: `ThetaCuspOddFourCentralEntries.lean` (moving-frame numerators `N^{ab}_{ij}`,
+64 entry identities, pair energies), `ThetaCuspOddFourCentralBound.lean`
+(`nativeOddForm_ge_central`: native odd form ≥ `K(q)q⁻⁶[yᵀE(q)y − 8000(2q−3)²e^{-529q/50}Σρ̃_k y_k²]`
+on `q ≥ 3`, `c = B(1/q)y`).
+Moving-frame certificate design (rigorous dry run): seam pieces width 0.05 on `[3,3.5]`, 0.1 on
+`[3.5,5]` (25), bulk width 0.25 on `[5,8]` (12): final comparison PSD, ratio 0.175. Per piece:
+`W(q) − D(q)Ĉ ⪰ 0` (bulk) / `W(q) + D(q)Q̂ ⪰ 0` (seam), `D = 8q⁷(2q−3)²`, via Taylor shifts at the
+center, linearized `e^{-3q}`, endpoint LDL checks; integral step `∫A(q)ᵀĈA(q)dq` exact.
+
 Remaining for rank eight: a provable structured lower bound for the mixed atom pair on
 `q∈[π,5]` capturing that direction, bulk coercivity on `q≥5` without compensation, and the
 certified 4×4 comparison of the two integrated forms.

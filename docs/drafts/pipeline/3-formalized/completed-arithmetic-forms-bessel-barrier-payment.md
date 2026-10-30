@@ -12,11 +12,10 @@ $$f'(x)\ge-(1+x^{-1})f(x).$$
 For $q\ge3$ and $|\tau|\le2q$, this pays the signed source combination
 $$ (4q^2+9)K_{i\tau}(2q)+12q K'_{i\tau}(2q)
 \ge(4q^2-12q+3)K_{i\tau}(2q)>0.$$
-The combination is the proposed Fourier representation of the literal
-first-atom reflected theta pair, after its positive amplitude and the
-frequency scaling $\tau=\omega/2$ are accounted for.
+Positivity of a finite frequency band alone does not bound the signed
+polynomial-weighted Fourier tail or prove an all-rank Hankel cone.
 
-Lean targets: exact barrier derivative, source-derived limit, derivative
-inequality, positive signed Bessel combination, and exact physical Fourier
-identification. Positivity of a finite frequency band alone does not bound
-the signed polynomial-weighted Fourier tail or prove an all-rank Hankel cone.
+Lean: `CompletedArithmeticForms/BesselBarrierPayment.lean`:
+`hasDerivAt_besselBarrierFlux`, `tendsto_besselBarrierFlux_zero`,
+`besselArgDeriv_re_lower_on_band`, and `besselSignedRadialCombination_pos`.
+The capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.

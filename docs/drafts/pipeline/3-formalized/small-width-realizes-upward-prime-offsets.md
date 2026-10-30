@@ -1,7 +1,7 @@
 # Small width realizes the upward prime offsets
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -17,5 +17,8 @@ identity identifies its normalization with
 
 ## Lean status
 
-Formalization follows directly. Supporting exact source identity;
-no separate contribution count.
+`SmallWidthRealizesTheUpwardPrimeOffsets` proves the exact two-direction
+reindexing and logarithmic-source normalization. Final direct Lean check
+passed without warnings; all three transitive axiom audits contain only
+standard logical axioms. CACT umbrella wired. Supporting exact source
+identity; no separate contribution count.

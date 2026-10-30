@@ -1,7 +1,7 @@
 # Weil replacement errors have polynomial cost
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -19,5 +19,8 @@ Every source is the actual complete Weil replacement term.
 
 ## Lean status
 
-Formalization follows directly. Supporting explicit source estimates;
-no separate contribution count.
+`WeilReplacementErrorsHavePolynomialCost` proves all four literal
+normalized bounds. Final direct Lean check passed without warnings;
+all four transitive axiom audits contain only standard logical axioms.
+CACT umbrella wired. Supporting explicit source estimates; no separate
+contribution count.

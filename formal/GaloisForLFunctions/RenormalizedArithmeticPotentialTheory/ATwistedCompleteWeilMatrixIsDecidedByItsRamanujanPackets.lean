@@ -128,6 +128,107 @@ theorem abs_inner_le_of_abs_quadratic_le {A : Matrix I I ℝ} (hA : A.IsHermitia
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
+/-- A positive two-by-two quadratic form: `μ s² − 2Csξ + Dξ² > 0` unless `s = ξ = 0`, when
+`C² + μ ≤ μ D`. -/
+theorem two_by_two_pos {μ C D s ξ : ℝ} (hμ : 0 < μ) (hξ0 : 0 ≤ ξ) (hne : 0 < s ∨ 0 < ξ)
+    (hD : C ^ 2 + μ ≤ μ * D) : 0 < μ * s ^ 2 - 2 * C * s * ξ + D * ξ ^ 2 := by
+  have hkey : μ * (μ * s ^ 2 - 2 * C * s * ξ + D * ξ ^ 2) =
+      (μ * s - C * ξ) ^ 2 + (μ * D - C ^ 2) * ξ ^ 2 := by ring
+  have hpos : 0 < (μ * s - C * ξ) ^ 2 + (μ * D - C ^ 2) * ξ ^ 2 := by
+    rcases eq_or_lt_of_le hξ0 with hξz | hξp
+    · subst hξz
+      have hs1 : 0 < s := hne.resolve_right (lt_irrefl 0)
+      have : (μ * s - C * 0) ^ 2 + (μ * D - C ^ 2) * 0 ^ 2 = (μ * s) ^ 2 := by ring
+      rw [this]
+      exact pow_pos (mul_pos hμ hs1) 2
+    · have h1 : 0 < (μ * D - C ^ 2) * ξ ^ 2 := mul_pos (by linarith) (pow_pos hξp 2)
+      have h2 := sq_nonneg (μ * s - C * ξ)
+      linarith
+  rw [← hkey] at hpos
+  exact pos_of_mul_pos_right hpos hμ.le
+
+/-- Almost orthonormal vectors: `‖Σ a_i v_i‖² ≤ 2 Σ a_i²` when `#ι · ε ≤ 1`. -/
+theorem norm_sq_sum_smul_le (v : ι → EuclideanSpace ℝ I) {ε : ℝ} (hε0 : 0 ≤ ε)
+    (hεs : (Fintype.card ι : ℝ) * ε ≤ 1)
+    (hgram : ∀ i j, |⟪v i, v j⟫ - if i = j then 1 else 0| ≤ ε) (a : ι → ℝ) :
+    ‖∑ i, a i • v i‖ ^ 2 ≤ 2 * ∑ i, a i ^ 2 := by
+  have hα0 : 0 ≤ ∑ i, a i ^ 2 := sum_nonneg fun i _ => sq_nonneg _
+  have hcard : (∑ i, |a i|) ^ 2 ≤ (Fintype.card ι : ℝ) * ∑ i, a i ^ 2 := by
+    have h := sq_sum_le_card_mul_sum_sq (s := (univ : Finset ι)) (f := fun i => |a i|)
+    simpa only [sq_abs, card_univ] using h
+  have hexp : ‖∑ i, a i • v i‖ ^ 2 = ∑ i, ∑ j, a i * a j * ⟪v i, v j⟫ := by
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right]
+    rw [Finset.sum_comm]
+    exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
+  have hdiag : ∑ i, ∑ j, a i * a j * (if i = j then (1 : ℝ) else 0) = ∑ i, a i ^ 2 := by
+    refine sum_congr rfl fun i _ => ?_
+    rw [Finset.sum_eq_single i (fun j _ hji => by rw [if_neg (Ne.symm hji), mul_zero])
+      (fun h => absurd (mem_univ i) h), if_pos rfl]
+    ring
+  have herr : |∑ i, ∑ j, a i * a j * (⟪v i, v j⟫ - if i = j then 1 else 0)| ≤
+      ε * (∑ i, |a i|) ^ 2 := by
+    calc |∑ i, ∑ j, a i * a j * (⟪v i, v j⟫ - if i = j then 1 else 0)|
+        ≤ ∑ i, ∑ j, |a i| * |a j| * ε := by
+          refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
+          refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun j _ => ?_)
+          rw [abs_mul, abs_mul]
+          exact mul_le_mul_of_nonneg_left (hgram i j) (by positivity)
+      _ = ε * (∑ i, |a i|) ^ 2 := by
+          rw [sq, sum_mul_sum, mul_sum]
+          exact sum_congr rfl fun i _ => by rw [mul_sum]; exact sum_congr rfl fun j _ => by ring
+  have hsplit : ∑ i, ∑ j, a i * a j * ⟪v i, v j⟫ =
+      ∑ i, a i ^ 2 + ∑ i, ∑ j, a i * a j * (⟪v i, v j⟫ - if i = j then 1 else 0) := by
+    rw [← hdiag, ← sum_add_distrib]
+    exact sum_congr rfl fun i _ => by rw [← sum_add_distrib]; exact sum_congr rfl fun j _ => by ring
+  have hεα : ε * (∑ i, |a i|) ^ 2 ≤ ∑ i, a i ^ 2 := by
+    calc ε * (∑ i, |a i|) ^ 2 ≤ ε * ((Fintype.card ι : ℝ) * ∑ i, a i ^ 2) :=
+          mul_le_mul_of_nonneg_left hcard hε0
+      _ = ((Fintype.card ι : ℝ) * ε) * ∑ i, a i ^ 2 := by ring
+      _ ≤ 1 * ∑ i, a i ^ 2 := mul_le_mul_of_nonneg_right hεs hα0
+      _ = ∑ i, a i ^ 2 := one_mul _
+  rw [hexp, hsplit]
+  linarith [(abs_le.mp herr).2]
+
+/-- The quasimode cross term: against a vector orthogonal to the `v_i`, the form of `W` on
+`Σ a_i v_i` is at most the residual mass, `√(Σ a_i²) ‖z‖`, when `ε ≤ 1` and `#ι · ε ≤ 1`. -/
+theorem abs_inner_sum_quasimode_le {W : Matrix I I ℝ} (v : ι → EuclideanSpace ℝ I) (E : ι → ℝ)
+    {ε : ℝ} (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1) (hεs : (Fintype.card ι : ℝ) * ε ≤ 1)
+    (hres : ∀ i, ‖toEuclideanLin W (v i) - E i • v i‖ ≤ ε) (a : ι → ℝ)
+    {z : EuclideanSpace ℝ I} (hzv : ∀ i, ⟪z, v i⟫ = 0) :
+    |⟪toEuclideanLin W (∑ i, a i • v i), z⟫| ≤ Real.sqrt (∑ i, a i ^ 2) * ‖z‖ := by
+  have hα0 : 0 ≤ ∑ i, a i ^ 2 := sum_nonneg fun i _ => sq_nonneg _
+  have hcard : (∑ i, |a i|) ^ 2 ≤ (Fintype.card ι : ℝ) * ∑ i, a i ^ 2 := by
+    have h := sq_sum_le_card_mul_sum_sq (s := (univ : Finset ι)) (f := fun i => |a i|)
+    simpa only [sq_abs, card_univ] using h
+  have hsumabs0 : 0 ≤ ∑ i, |a i| := sum_nonneg fun i _ => abs_nonneg _
+  have hexp : ⟪toEuclideanLin W (∑ i, a i • v i), z⟫ =
+      ∑ i, a i * ⟪toEuclideanLin W (v i) - E i • v i, z⟫ := by
+    rw [map_sum, sum_inner]
+    refine sum_congr rfl fun i _ => ?_
+    rw [map_smul, real_inner_smul_left, inner_sub_left, real_inner_smul_left,
+      real_inner_comm z (v i), hzv i, mul_zero, sub_zero]
+  have hεsum : ε * ∑ i, |a i| ≤ Real.sqrt (∑ i, a i ^ 2) := by
+    rw [← Real.sqrt_sq (mul_nonneg hε0 hsumabs0)]
+    refine Real.sqrt_le_sqrt ?_
+    rw [mul_pow]
+    calc ε ^ 2 * (∑ i, |a i|) ^ 2 ≤ ε ^ 2 * ((Fintype.card ι : ℝ) * ∑ i, a i ^ 2) :=
+          mul_le_mul_of_nonneg_left hcard (sq_nonneg _)
+      _ = ε * ((Fintype.card ι : ℝ) * ε) * ∑ i, a i ^ 2 := by ring
+      _ ≤ 1 * 1 * ∑ i, a i ^ 2 := by
+          refine mul_le_mul_of_nonneg_right ?_ hα0
+          exact mul_le_mul hε1 hεs (by positivity) zero_le_one
+      _ = ∑ i, a i ^ 2 := by ring
+  rw [hexp]
+  calc |∑ i, a i * ⟪toEuclideanLin W (v i) - E i • v i, z⟫| ≤ ∑ i, |a i| * (ε * ‖z‖) := by
+        refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
+        rw [abs_mul]
+        refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+        exact (abs_real_inner_le_norm _ _).trans (mul_le_mul_of_nonneg_right (hres i)
+          (norm_nonneg _))
+    _ = ε * (∑ i, |a i|) * ‖z‖ := by rw [← sum_mul]; ring
+    _ ≤ Real.sqrt (∑ i, a i ^ 2) * ‖z‖ := mul_le_mul_of_nonneg_right hεsum (norm_nonneg _)
+
 /-- **The two-by-two Schur estimate.** Let `v_i` be almost orthonormal quasimodes of `W` with
 residual `≤ ε`, let `W ≥ T` on their orthogonal complement, and let `G` be bounded by `b`. If the
 form of `W + G` is at least `μ Σ a_i²` on every combination `Σ a_i v_i` and `T` exceeds
@@ -155,122 +256,48 @@ theorem posDef_add_of_packets {W G : Matrix I I ℝ} (hW : W.IsHermitian) (hG : 
       (K.starProjection_apply_mem x)
     refine ⟨a, x - K.starProjection x, by rw [ha]; abel, fun i => ?_⟩
     exact K.starProjection_inner_eq_zero x (v i) (Submodule.subset_span ⟨i, rfl⟩)
+  have hunorm := norm_sq_sum_smul_le v hε0 hεs hgram a
+  have hcrossW := abs_inner_sum_quasimode_le v E hε0 hε1 hεs hres a hzv
   obtain ⟨u, hu⟩ : ∃ u, u = ∑ i, a i • v i := ⟨_, rfl⟩
-  rw [← hu] at hxuz
-  obtain ⟨α, hα⟩ : ∃ α, α = ∑ i, a i ^ 2 := ⟨_, rfl⟩
-  have hα0 : 0 ≤ α := by rw [hα]; exact sum_nonneg fun i _ => sq_nonneg _
-  obtain ⟨s, hs⟩ : ∃ s, s = Real.sqrt α := ⟨_, rfl⟩
+  rw [← hu] at hxuz hunorm hcrossW
+  obtain ⟨s, hs⟩ : ∃ s, s = Real.sqrt (∑ i, a i ^ 2) := ⟨_, rfl⟩
+  rw [← hs] at hcrossW
+  have hα0 : 0 ≤ ∑ i, a i ^ 2 := sum_nonneg fun i _ => sq_nonneg _
   have hs0 : 0 ≤ s := by rw [hs]; exact Real.sqrt_nonneg _
-  have hss : s ^ 2 = α := by rw [hs]; exact Real.sq_sqrt hα0
+  have hss : s ^ 2 = ∑ i, a i ^ 2 := by rw [hs]; exact Real.sq_sqrt hα0
   obtain ⟨ξ, hξ⟩ : ∃ ξ, ξ = ‖z‖ := ⟨_, rfl⟩
+  rw [← hξ] at hcrossW
   have hξ0 : 0 ≤ ξ := by rw [hξ]; exact norm_nonneg _
-  have hcard : (∑ i, |a i|) ^ 2 ≤ (Fintype.card ι : ℝ) * α := by
-    have h := sq_sum_le_card_mul_sum_sq (s := (univ : Finset ι)) (f := fun i => |a i|)
-    simpa only [sq_abs, card_univ, hα] using h
-  have hsumabs0 : 0 ≤ ∑ i, |a i| := sum_nonneg fun i _ => abs_nonneg _
-  -- the coefficient mass controls the packet norm
-  have hunorm : ‖u‖ ^ 2 ≤ 2 * α := by
-    have hexp : ‖u‖ ^ 2 = ∑ i, ∑ j, a i * a j * ⟪v i, v j⟫ := by
-      rw [← real_inner_self_eq_norm_sq, hu]
-      simp only [sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right]
-      rw [Finset.sum_comm]
-      exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
-    have hdiag : ∑ i, ∑ j, a i * a j * (if i = j then (1 : ℝ) else 0) = α := by
-      rw [hα]
-      refine sum_congr rfl fun i _ => ?_
-      rw [Finset.sum_eq_single i (fun j _ hji => by rw [if_neg (Ne.symm hji), mul_zero])
-        (fun h => absurd (mem_univ i) h), if_pos rfl]
-      ring
-    have herr : |∑ i, ∑ j, a i * a j * (⟪v i, v j⟫ - if i = j then 1 else 0)| ≤
-        ε * (∑ i, |a i|) ^ 2 := by
-      calc |∑ i, ∑ j, a i * a j * (⟪v i, v j⟫ - if i = j then 1 else 0)|
-          ≤ ∑ i, ∑ j, |a i| * |a j| * ε := by
-            refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
-            refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun j _ => ?_)
-            rw [abs_mul, abs_mul]
-            exact mul_le_mul_of_nonneg_left (hgram i j) (by positivity)
-        _ = ε * (∑ i, |a i|) ^ 2 := by
-            rw [sq, sum_mul_sum, mul_sum]
-            exact sum_congr rfl fun i _ => by rw [mul_sum]; exact sum_congr rfl fun j _ => by ring
-    have hsplit : ∑ i, ∑ j, a i * a j * ⟪v i, v j⟫ =
-        α + ∑ i, ∑ j, a i * a j * (⟪v i, v j⟫ - if i = j then 1 else 0) := by
-      rw [← hdiag, ← sum_add_distrib]
-      exact sum_congr rfl fun i _ => by rw [← sum_add_distrib]; exact sum_congr rfl fun j _ => by ring
-    have hεα : ε * (∑ i, |a i|) ^ 2 ≤ α := by
-      calc ε * (∑ i, |a i|) ^ 2 ≤ ε * ((Fintype.card ι : ℝ) * α) :=
-            mul_le_mul_of_nonneg_left hcard hε0
-        _ = ((Fintype.card ι : ℝ) * ε) * α := by ring
-        _ ≤ 1 * α := mul_le_mul_of_nonneg_right hεs hα0
-        _ = α := one_mul α
-    rw [hexp, hsplit]
-    linarith [(abs_le.mp herr).2]
   have hu_le : ‖u‖ ≤ 2 * s := by
     have h2 : ‖u‖ ^ 2 ≤ (2 * s) ^ 2 := by rw [mul_pow, hss]; linarith
     nlinarith [norm_nonneg u]
-  -- the quasimode cross term
-  have hcrossW : |⟪toEuclideanLin W u, z⟫| ≤ s * ξ := by
-    have hexp : ⟪toEuclideanLin W u, z⟫ =
-        ∑ i, a i * ⟪toEuclideanLin W (v i) - E i • v i, z⟫ := by
-      rw [hu]
-      simp only [map_sum, map_smul, sum_inner, real_inner_smul_left, inner_sub_left,
-        real_inner_comm z, hzv, mul_zero, sub_zero]
-    rw [hexp]
-    have hεsum : ε * ∑ i, |a i| ≤ s := by
-      have hsq : (ε * ∑ i, |a i|) ^ 2 ≤ s ^ 2 := by
-        rw [mul_pow, hss]
-        calc ε ^ 2 * (∑ i, |a i|) ^ 2 ≤ ε ^ 2 * ((Fintype.card ι : ℝ) * α) :=
-              mul_le_mul_of_nonneg_left hcard (sq_nonneg _)
-          _ = ε * ((Fintype.card ι : ℝ) * ε) * α := by ring
-          _ ≤ 1 * 1 * α := by
-              refine mul_le_mul_of_nonneg_right ?_ hα0
-              exact mul_le_mul hε1 hεs (by positivity) zero_le_one
-          _ = α := by ring
-      nlinarith [mul_nonneg hε0 hsumabs0]
-    calc |∑ i, a i * ⟪toEuclideanLin W (v i) - E i • v i, z⟫| ≤ ∑ i, |a i| * (ε * ξ) := by
-          refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
-          rw [abs_mul]
-          refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
-          rw [hξ]
-          exact (abs_real_inner_le_norm _ _).trans (mul_le_mul_of_nonneg_right (hres i)
-            (norm_nonneg _))
-      _ = ε * (∑ i, |a i|) * ξ := by rw [← sum_mul]; ring
-      _ ≤ s * ξ := mul_le_mul_of_nonneg_right hεsum hξ0
   have hcrossG : |⟪toEuclideanLin G u, z⟫| ≤ 2 * b * s * ξ := by
     have h := abs_inner_le_of_abs_quadratic_le hG hb u z
     rw [← hξ] at h
     calc |⟪toEuclideanLin G u, z⟫| ≤ b * ‖u‖ * ξ := h
       _ ≤ b * (2 * s) * ξ := by gcongr
       _ = 2 * b * s * ξ := by ring
-  -- the three pieces of the form
   have hform : ⟪toEuclideanLin (W + G) x, x⟫ = ⟪toEuclideanLin (W + G) u, u⟫ +
       2 * ⟪toEuclideanLin (W + G) u, z⟫ + ⟪toEuclideanLin (W + G) z, z⟫ := by
     rw [hxuz, inner_add_self_eq hWG]
-  have hpk : μ * α ≤ ⟪toEuclideanLin (W + G) u, u⟫ := by
+  have hpk : μ * s ^ 2 ≤ ⟪toEuclideanLin (W + G) u, u⟫ := by
     have := hpacket a
-    rwa [← hα, ← hu] at this
+    rwa [← hss, ← hu] at this
   have hzz : (T - b) * ξ ^ 2 ≤ ⟪toEuclideanLin (W + G) z, z⟫ := by
     have h1 := hgap z hzv
     have h2 := (abs_le.mp (hb z)).1
     rw [map_add, LinearMap.add_apply, inner_add_left]
     rw [← hξ] at h1 h2
     linarith
-  have huz : |⟪toEuclideanLin (W + G) u, z⟫| ≤ (1 + 2 * b) * s * ξ := by
+  have huz : -((1 + 2 * b) * s * ξ) ≤ ⟪toEuclideanLin (W + G) u, z⟫ := by
     rw [map_add, LinearMap.add_apply, inner_add_left]
-    calc |⟪toEuclideanLin W u, z⟫ + ⟪toEuclideanLin G u, z⟫|
-        ≤ |⟪toEuclideanLin W u, z⟫| + |⟪toEuclideanLin G u, z⟫| := abs_add_le _ _
-      _ ≤ s * ξ + 2 * b * s * ξ := add_le_add hcrossW hcrossG
-      _ = (1 + 2 * b) * s * ξ := by ring
-  obtain ⟨C, hC⟩ : ∃ C, C = 1 + 2 * b := ⟨_, rfl⟩
-  rw [← hC] at huz hT
-  have hDμ : C ^ 2 + μ ≤ μ * (T - b) := by
-    have hD : C ^ 2 / μ + 1 ≤ T - b := by linarith
+    have h1 := (abs_le.mp hcrossW).1
+    have h2 := (abs_le.mp hcrossG).1
+    linarith
+  have hDμ : (1 + 2 * b) ^ 2 + μ ≤ μ * (T - b) := by
+    have hD : (1 + 2 * b) ^ 2 / μ + 1 ≤ T - b := by linarith
     have := mul_le_mul_of_nonneg_left hD hμ.le
     rwa [mul_add, mul_one, mul_div_cancel₀ _ hμ.ne'] at this
-  -- positivity of the two-by-two form
-  have hlow : μ * s ^ 2 - 2 * C * s * ξ + (T - b) * ξ ^ 2 ≤ ⟪toEuclideanLin (W + G) x, x⟫ := by
-    rw [hform, hss]
-    have := (abs_le.mp huz).1
-    linarith
   have hne : 0 < s ∨ 0 < ξ := by
     by_contra hcon
     push_neg at hcon
@@ -281,23 +308,8 @@ theorem posDef_add_of_packets {W G : Matrix I I ℝ} (hW : W.IsHermitian) (hG : 
       exact norm_le_zero_iff.mp this
     have hz0 : z = 0 := norm_eq_zero.mp (by rw [← hξ, hξ'])
     exact hx (by rw [hxuz, hu0, hz0, add_zero])
-  have hkey : μ * (μ * s ^ 2 - 2 * C * s * ξ + (T - b) * ξ ^ 2) =
-      (μ * s - C * ξ) ^ 2 + (μ * (T - b) - C ^ 2) * ξ ^ 2 := by ring
-  have hsq : 0 < (μ * s - C * ξ) ^ 2 + (μ * (T - b) - C ^ 2) * ξ ^ 2 := by
-    have hc2 : μ ≤ μ * (T - b) - C ^ 2 := by linarith
-    rcases hne with hs1 | hξ1
-    · rcases eq_or_lt_of_le hξ0 with hξz | hξp
-      · rw [← hξz]
-        have : 0 < (μ * s) ^ 2 := by positivity
-        simpa using this
-      · have : 0 < (μ * (T - b) - C ^ 2) * ξ ^ 2 :=
-          mul_pos (hμ.trans_le hc2) (pow_pos hξp 2)
-        nlinarith [sq_nonneg (μ * s - C * ξ)]
-    · have : 0 < (μ * (T - b) - C ^ 2) * ξ ^ 2 := mul_pos (hμ.trans_le hc2) (pow_pos hξ1 2)
-      nlinarith [sq_nonneg (μ * s - C * ξ)]
-  have hquad : 0 < μ * s ^ 2 - 2 * C * s * ξ + (T - b) * ξ ^ 2 := by
-    rw [← hkey] at hsq
-    exact pos_of_mul_pos_right hsq hμ.le
+  have hquad := two_by_two_pos (C := 1 + 2 * b) (D := T - b) hμ hξ0 hne hDμ
+  rw [hform]
   linarith
 
 end LinearAlgebra
@@ -625,6 +637,50 @@ theorem sum_single_smul {ι E : Type*} [Fintype ι] [DecidableEq ι] [AddCommMon
   rw [Finset.sum_eq_single i (fun k _ hk => by rw [Pi.single_eq_of_ne hk, zero_smul])
     (fun h => absurd (mem_univ i) h), Pi.single_eq_same, one_smul]
 
+/-- The normalized Ramanujan vectors of a finite conductor set. -/
+def packetVec (S : Finset ℕ) (N : ℕ) (i : S) : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  normalizedRamanujanHorizonVector i N
+
+/-- The twisted form of the packet `Σ_i a_i r_i`. -/
+def packetForm (lam : ℕ → ℝ) (φ : ℝ → ℝ) (c : ℝ) (S : Finset ℕ) (N : ℕ) (a : S → ℝ) : ℝ :=
+  ⟪toEuclideanLin (twistedCompleteWeilMatrix lam φ c N) (∑ i, a i • packetVec S N i),
+    ∑ i, a i • packetVec S N i⟫
+
+/-- The coefficient matrix of the packet form. -/
+def packetCoef (lam : ℕ → ℝ) (φ : ℝ → ℝ) (c : ℝ) (S : Finset ℕ) (N : ℕ) (i j : S) : ℝ :=
+  ⟪toEuclideanLin (twistedCompleteWeilMatrix lam φ c N) (packetVec S N i), packetVec S N j⟫
+
+theorem packetForm_eq_sum (S : Finset ℕ) (N : ℕ) (a : S → ℝ) :
+    packetForm lam φ c S N a = ∑ i, ∑ j, a i * a j * packetCoef lam φ c S N i j := by
+  unfold packetForm packetCoef
+  simp only [map_sum, map_smul, sum_inner, inner_sum, real_inner_smul_left,
+    real_inner_smul_right]
+  rw [Finset.sum_comm]
+  exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
+
+/-- Polarization of the packet form. -/
+theorem packetCoef_eq_polar (S : Finset ℕ) (N : ℕ) (i j : S) :
+    packetCoef lam φ c S N i j = (packetForm lam φ c S N (Pi.single i 1 + Pi.single j 1) -
+      packetForm lam φ c S N (Pi.single i 1) - packetForm lam φ c S N (Pi.single j 1)) / 2 := by
+  have hsi := sum_single_smul (packetVec S N) i
+  have hsj := sum_single_smul (packetVec S N) j
+  have hsij : ∑ k, (Pi.single i (1 : ℝ) + Pi.single j 1 : S → ℝ) k • packetVec S N k =
+      packetVec S N i + packetVec S N j := by
+    simp only [Pi.add_apply, add_smul, sum_add_distrib, hsi, hsj]
+  unfold packetForm
+  rw [hsij, hsi, hsj, inner_add_self_eq (twistedCompleteWeilMatrix_isHermitian lam φ c N)]
+  unfold packetCoef
+  ring
+
+theorem tendsto_packetForm (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) (hc : 0 < c) (hlam : Summable fun k => |twistDefect lam k|)
+    {S : Finset ℕ} (hS : ∀ m ∈ S, 0 < m) (a : S → ℝ) :
+    Tendsto (fun N => packetForm lam φ c S N a) atTop
+      (𝓝 (packetEnergy lam φ c S (subtypeCoeff S a))) := by
+  refine (tendsto_twisted_packet hφ hsupp hM hc hlam hS (subtypeCoeff S a)).congr fun N => ?_
+  unfold packetForm packetVec
+  rw [sum_subtype_smul_eq S a (fun m => normalizedRamanujanHorizonVector m N)]
+
 /-- **Positivity.** If every Ramanujan packet has limiting twisted energy at least `μ Σβ²`, `μ > 0`,
 the twisted complete Weil matrix is eventually positive definite. -/
 theorem eventually_twistedCompleteWeilMatrix_posDef (hφ : ContDiff ℝ 2 φ)
@@ -636,95 +692,65 @@ theorem eventually_twistedCompleteWeilMatrix_posDef (hφ : ContDiff ℝ 2 φ)
     (hbot : ∀ T : Finset ℕ, (∀ m ∈ T, 0 < m) → ∀ β : ℕ → ℝ,
       μ * ∑ m ∈ T, β m ^ 2 ≤ packetEnergy lam φ c T β) :
     ∀ᶠ N : ℕ in atTop, (twistedCompleteWeilMatrix lam φ c N).PosDef := by
-  set b := 2 * (∑' k, |twistDefect lam k|) * (1 + 2 * c * Real.exp c) with hb
-  have hb0 : 0 ≤ b := by
-    have := tsum_nonneg fun k => abs_nonneg (twistDefect lam k)
-    positivity
-  set Tg := b + (1 + 2 * b) ^ 2 / (μ / 2) + 1 with hTg
-  obtain ⟨S, hS, hgapS⟩ := exists_finite_orthogonal_gap hβ₀ hres Tg
-  set s := (Fintype.card S : ℝ) with hs
-  have hs0 : 0 ≤ s := Nat.cast_nonneg _
-  set ε := 1 / (s + 1) with hε
-  have hε0 : 0 < ε := by positivity
+  have hD0 : 0 ≤ ∑' k, |twistDefect lam k| := tsum_nonneg fun k => abs_nonneg _
+  obtain ⟨b, hb⟩ : ∃ b, b = 2 * (∑' k, |twistDefect lam k|) * (1 + 2 * c * Real.exp c) :=
+    ⟨_, rfl⟩
+  have hb0 : 0 ≤ b := by rw [hb]; positivity
+  obtain ⟨S, hS, hgapS⟩ := exists_finite_orthogonal_gap hβ₀ hres
+    (b + (1 + 2 * b) ^ 2 / (μ / 2) + 1)
+  obtain ⟨s, hs⟩ : ∃ s, s = (Fintype.card S : ℝ) := ⟨_, rfl⟩
+  have hs0 : 0 ≤ s := by rw [hs]; exact Nat.cast_nonneg _
+  obtain ⟨ε, hε⟩ : ∃ ε, ε = 1 / (s + 1) := ⟨_, rfl⟩
+  have hε0 : 0 < ε := by rw [hε]; positivity
   have hε1 : ε ≤ 1 := by rw [hε, div_le_one (by linarith)]; linarith
   have hεs : s * ε ≤ 1 := by
     rw [hε, mul_one_div, div_le_one (by linarith)]; linarith
-  set δ := μ / (2 * (s + 1)) with hδ
-  have hδ0 : 0 < δ := by positivity
+  obtain ⟨δ, hδ⟩ : ∃ δ, δ = μ / (2 * (s + 1)) := ⟨_, rfl⟩
+  have hδ0 : 0 < δ := by rw [hδ]; positivity
   have hδs : s * δ ≤ μ / 2 := by
     rw [hδ, mul_div_assoc', div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith
-  -- the packet form at horizon `N` and its coefficient matrix
-  set v : ℕ → S → EuclideanSpace ℝ (PrimeHorizonIndex N) := fun N i =>
-    normalizedRamanujanHorizonVector i N with hv
-  set q : ℕ → (S → ℝ) → ℝ := fun N a =>
-    ⟪toEuclideanLin (twistedCompleteWeilMatrix lam φ c N) (∑ i, a i • v N i),
-      ∑ i, a i • v N i⟫ with hq
-  set A : ℕ → S → S → ℝ := fun N i j =>
-    ⟪toEuclideanLin (twistedCompleteWeilMatrix lam φ c N) (v N i), v N j⟫ with hA
-  have hpk : ∀ a : S → ℝ, Tendsto (fun N => q N a) atTop
-      (𝓝 (packetEnergy lam φ c S (subtypeCoeff S a))) := by
-    intro a
-    have h := tendsto_twisted_packet hφ hsupp hM hc hlam hS (subtypeCoeff S a)
-    refine h.congr fun N => ?_
-    simp only [hq, hv]
-    rw [sum_subtype_smul_eq S a (fun m => normalizedRamanujanHorizonVector m N)]
-  have hqexp : ∀ N a, q N a = ∑ i, ∑ j, a i * a j * A N i j := by
-    intro N a
-    simp only [hq, hA, map_sum, map_smul, sum_inner, inner_sum, real_inner_smul_left,
-      real_inner_smul_right]
-    rw [Finset.sum_comm]
-    refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
-    ring
-  have hsymm : ∀ N i j, A N j i = A N i j := by
-    intro N i j
-    simp only [hA]
-    rw [(Matrix.isSymmetric_toEuclideanLin_iff.mpr
-      (twistedCompleteWeilMatrix_isHermitian lam φ c N)) (v N j) (v N i), real_inner_comm]
   -- polarization: each coefficient converges
-  set L : S → S → ℝ := fun i j =>
-    (packetEnergy lam φ c S (subtypeCoeff S (Pi.single i 1 + Pi.single j 1)) -
-      packetEnergy lam φ c S (subtypeCoeff S (Pi.single i 1)) -
-      packetEnergy lam φ c S (subtypeCoeff S (Pi.single j 1))) / 2 with hL
-  have hAlim : ∀ i j, Tendsto (fun N => A N i j) atTop (𝓝 (L i j)) := by
+  obtain ⟨L, hL⟩ : ∃ L : S → S → ℝ, L = fun i j =>
+      (packetEnergy lam φ c S (subtypeCoeff S (Pi.single i 1 + Pi.single j 1)) -
+        packetEnergy lam φ c S (subtypeCoeff S (Pi.single i 1)) -
+        packetEnergy lam φ c S (subtypeCoeff S (Pi.single j 1))) / 2 := ⟨_, rfl⟩
+  have hAlim : ∀ i j, Tendsto (fun N => packetCoef lam φ c S N i j) atTop (𝓝 (L i j)) := by
     intro i j
-    have h1 := hpk (Pi.single i 1 + Pi.single j 1)
-    have h2 := hpk (Pi.single i 1)
-    have h3 := hpk (Pi.single j 1)
-    refine (((h1.sub h2).sub h3).div_const 2).congr fun N => ?_
-    have hsi := sum_single_smul (v N) i
-    have hsj := sum_single_smul (v N) j
-    have hsij : ∑ k, (Pi.single i (1 : ℝ) + Pi.single j 1) k • v N k = v N i + v N j := by
-      simp only [Pi.add_apply, add_smul, sum_add_distrib, hsi, hsj]
-    simp only [hq]
-    rw [hsij, hsi, hsj, inner_add_self_eq (twistedCompleteWeilMatrix_isHermitian lam φ c N)]
-    simp only [hA]
-    ring
+    have h1 := tendsto_packetForm hφ hsupp hM hc hlam hS (Pi.single i 1 + Pi.single j 1)
+    have h2 := tendsto_packetForm hφ hsupp hM hc hlam hS (Pi.single i 1)
+    have h3 := tendsto_packetForm hφ hsupp hM hc hlam hS (Pi.single j 1)
+    rw [hL]
+    exact (((h1.sub h2).sub h3).div_const 2).congr fun N => (packetCoef_eq_polar S N i j).symm
   have hLform : ∀ a : S → ℝ, ∑ i, ∑ j, a i * a j * L i j =
       packetEnergy lam φ c S (subtypeCoeff S a) := by
     intro a
-    have hlim : Tendsto (fun N => q N a) atTop (𝓝 (∑ i, ∑ j, a i * a j * L i j)) := by
+    have hlim : Tendsto (fun N => packetForm lam φ c S N a) atTop
+        (𝓝 (∑ i, ∑ j, a i * a j * L i j)) := by
       have := tendsto_finsetSum (univ : Finset S) fun i _ =>
         tendsto_finsetSum (univ : Finset S) fun j _ => (hAlim i j).const_mul (a i * a j)
-      exact this.congr fun N => (hqexp N a).symm
-    exact tendsto_nhds_unique hlim (hpk a)
+      exact this.congr fun N => (packetForm_eq_sum S N a).symm
+    exact tendsto_nhds_unique hlim (tendsto_packetForm hφ hsupp hM hc hlam hS a)
   -- all finitely many approximations hold eventually
   have hev_res : ∀ᶠ N : ℕ in atTop, ∀ i : S,
-      ‖toEuclideanLin (completeWeilMatrix φ c N) (v N i) -
-        completedConductorEnergy φ c i • v N i‖ ≤ ε := by
+      ‖toEuclideanLin (completeWeilMatrix φ c N) (packetVec S N i) -
+        completedConductorEnergy φ c i • packetVec S N i‖ ≤ ε := by
     refine Filter.eventually_all.mpr fun i => ?_
     have h := CriticalArithmeticCorrelationTheory.tendsto_completeWeilMatrix_ramanujan_quasimode_norm
       hφ hsupp hM hc (hS i i.property)
     exact (h.eventually (ge_mem_nhds hε0)).mono fun N hN => hN
   have hev_gram : ∀ᶠ N : ℕ in atTop, ∀ i j : S,
-      |⟪v N i, v N j⟫ - if i = j then 1 else 0| ≤ ε := by
+      |⟪packetVec S N i, packetVec S N j⟫ - if i = j then 1 else 0| ≤ ε := by
     refine Filter.eventually_all.mpr fun i => Filter.eventually_all.mpr fun j => ?_
     have h := ((tendsto_normalizedRamanujanHorizonVector_gram (hS i i.property)
       (hS j j.property)).sub_const (if (i : ℕ) = j then 1 else 0)).abs
-    have hz : Tendsto (fun N : ℕ => |⟪v N i, v N j⟫ - if i = j then 1 else 0|) atTop (𝓝 0) := by
-      simpa only [sub_self, abs_zero, Subtype.ext_iff] using h
-    exact (hz.eventually (ge_mem_nhds hε0)).mono fun N hN => hN
-  have hev_coef : ∀ᶠ N : ℕ in atTop, ∀ i j : S, |A N i j - L i j| ≤ δ := by
+    rw [sub_self, abs_zero] at h
+    refine (h.eventually (ge_mem_nhds hε0)).mono fun N hN => ?_
+    have hij : (if (i : ℕ) = j then (1 : ℝ) else 0) = if i = j then 1 else 0 := by
+      simp only [Subtype.ext_iff]
+    rw [← hij]
+    exact hN
+  have hev_coef : ∀ᶠ N : ℕ in atTop, ∀ i j : S, |packetCoef lam φ c S N i j - L i j| ≤ δ := by
     refine Filter.eventually_all.mpr fun i => Filter.eventually_all.mpr fun j => ?_
     have h := ((hAlim i j).sub_const (L i j)).abs
     rw [sub_self, abs_zero] at h
@@ -732,19 +758,21 @@ theorem eventually_twistedCompleteWeilMatrix_posDef (hφ : ContDiff ℝ 2 φ)
   filter_upwards [hev_res, hev_gram, hev_coef, hgapS, eventually_ge_atTop 1]
     with N hNres hNgram hNcoef hNgap hN1
   refine posDef_add_of_packets (completeWeilMatrix_isHermitian φ c N)
-    (twistGapMatrix_isHermitian lam φ c N) (v N) (fun i => completedConductorEnergy φ c i)
-    hε0.le hε1 (by rw [← hs]; exact hεs) hNres hNgram ?_ hb0
-    (fun x => abs_inner_twistGapMatrix_le hφ hsupp hM hc hlam hN1 x) (half_pos hμ) ?_ le_rfl
+    (twistGapMatrix_isHermitian lam φ c N) (packetVec S N) (fun i => completedConductorEnergy φ c i)
+    hε0.le hε1 (by rw [← hs]; exact hεs) hNres hNgram ?_ hb0 ?_ (half_pos hμ) ?_ le_rfl
   · intro x hx
     exact hNgap x fun m hm => hx ⟨m, hm⟩
+  · intro x
+    rw [hb]
+    exact abs_inner_twistGapMatrix_le hφ hsupp hM hc hlam hN1 x
   · intro a
-    have hval := hqexp N a
+    have hval := packetForm_eq_sum (lam := lam) (φ := φ) (c := c) S N a
     have hlow := hbot S hS (subtypeCoeff S a)
     rw [← sum_subtype_sq_eq, ← hLform a] at hlow
-    have herr : |∑ i, ∑ j, a i * a j * A N i j - ∑ i, ∑ j, a i * a j * L i j| ≤
-        δ * (∑ i, |a i|) ^ 2 := by
+    have herr : |∑ i, ∑ j, a i * a j * packetCoef lam φ c S N i j -
+        ∑ i, ∑ j, a i * a j * L i j| ≤ δ * (∑ i, |a i|) ^ 2 := by
       rw [← sum_sub_distrib]
-      calc |∑ i, (∑ j, a i * a j * A N i j - ∑ j, a i * a j * L i j)|
+      calc |∑ i, (∑ j, a i * a j * packetCoef lam φ c S N i j - ∑ j, a i * a j * L i j)|
           ≤ ∑ i, ∑ j, |a i| * |a j| * δ := by
             refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
             rw [← sum_sub_distrib]
@@ -758,9 +786,8 @@ theorem eventually_twistedCompleteWeilMatrix_posDef (hφ : ContDiff ℝ 2 φ)
       have h := sq_sum_le_card_mul_sum_sq (s := (univ : Finset S)) (f := fun i => |a i|)
       simpa only [sq_abs, card_univ, hs] using h
     have hα0 : 0 ≤ ∑ i, a i ^ 2 := sum_nonneg fun i _ => sq_nonneg _
-    have hq' : q N a = ⟪toEuclideanLin (completeWeilMatrix φ c N + twistGapMatrix lam φ c N)
-        (∑ i, a i • v N i), ∑ i, a i • v N i⟫ := rfl
-    rw [← hq', hval]
+    change μ / 2 * ∑ i, a i ^ 2 ≤ packetForm lam φ c S N a
+    rw [hval]
     have h1 := (abs_le.mp herr).1
     have h2 : δ * (∑ i, |a i|) ^ 2 ≤ δ * (s * ∑ i, a i ^ 2) :=
       mul_le_mul_of_nonneg_left hcard hδ0.le

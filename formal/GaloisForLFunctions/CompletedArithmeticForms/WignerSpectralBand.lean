@@ -24,7 +24,7 @@ theorem cosTransform_polyaKernel_cosh {a : ℝ} (ha : 0 < a) (w : ℂ) :
     cosTransform (fun t => polyaKernel a t * Real.cosh t) w =
       -2 * besselArgDeriv (I * w) a := by
   have hs := (superExpKernel_polyaKernel ha).cosTransform_add_shift 1 w
-  simp only [one_mul] at hs
+  simp only [Complex.ofReal_one, one_mul] at hs
   rw [cosTransform_polyaKernel ha, cosTransform_polyaKernel ha] at hs
   have hp : I * (w + I) = I * w - 1 := by
     rw [mul_add, Complex.I_mul_I]
@@ -97,7 +97,7 @@ theorem thetaCuspWignerRadialTransform_band_lower {a b : ℝ}
         6 * a * besselArgDeriv ((b : ℂ) * I) a)).re =
       a ^ 2 * ((a ^ 2 + 9) * (modifiedBesselKOrder a ((b : ℂ) * I)).re +
         6 * a * (besselArgDeriv ((b : ℂ) * I) a).re) := by
-    simp only [Complex.mul_re, Complex.add_re, ← Complex.ofReal_pow,
+    simp only [Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im, ← Complex.ofReal_pow,
       Complex.ofReal_re, Complex.ofReal_im, Complex.re_ofNat, Complex.im_ofNat,
       zero_mul, mul_zero, sub_zero, add_zero]
   rw [he, mul_assoc]

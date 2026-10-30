@@ -1,15 +1,15 @@
 # Adams torsion resolution and auxiliary cost
 
 - **ID:** AHA-ADAMS
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Source:** arithmetic-harmonic-analysis-programme.md; obstacles summary Q2
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Source:** ../1-in-progress/arithmetic-harmonic-analysis-programme.md; obstacles summary Q2
 - **Statement:** Restricting a finite Dirichlet polynomial to the order-`d` prime torsion grid groups its coefficients by prime valuations modulo `d`.
 
-## Exact targets
+## Exact statements
 
 For a finite set of primes `P`, sample all `d`-torsion phases independently.
-Fourier inversion should recover, for each residue vector `r`, precisely
+Fourier inversion recovers, for each residue vector `r`, precisely
 `Σ_{v_P(n) ≡ r mod d} a_n`. Plancherel is the sum of squared absolute values
 of these fibre sums. Thus vanishing is equivalent to cancellation separately
 inside every residue fibre.
@@ -41,4 +41,31 @@ a lower bound on coefficient height or on an evaluated integer's size.
 
 Complete coefficient reconstruction below the first collision, and exact
 residue-fibre reconstruction at every length. These are the constructive
-content of the vanishing obstruction. Formalization is in progress.
+content of the vanishing obstruction.
+
+## Proof
+
+Summing a nontrivial character over one cyclic coordinate gives zero;
+summing the trivial character gives `d`. Taking products over `P` gives
+orthogonality with normalization `d^|P|`. Interchanging the finite sums
+then proves recovery and Parseval, including every collision.
+
+If `n<2^d`, then `2^v_p(n)≤p^v_p(n)≤n` forces `v_p(n)<d`. Equality of
+valuation residues is therefore equality of all prime valuations, hence
+equality of the positive integers. Embedded torsion samples are actual
+`ψ^(d+1)` fixed points. Conversely, at any such fixed point `χ(2)^d=1`,
+so the nonzero binomial `χ(2^d)−1` vanishes.
+
+## Lean
+
+Namespace `GaloisForLFunctions.ArithmeticHarmonicAnalysis`.
+
+- `TorsionFourierResolution.lean`: `torsion_coefficient_recovery`,
+  `torsionPolynomial_vanishes_iff`, `torsion_parseval`.
+- `TorsionArithmeticResolution.lean`: `valuationResidue_injOn_short`,
+  `short_torsion_coefficient_recovery`, `short_torsion_vanishing_iff`.
+- `AdamsFixedLocusResolution.lean`: `twist_torsionGauge`,
+  `short_adams_auxiliary_vanishes_iff`, `adams_boundary_binomial`.
+
+Each source passed `lake --old env lean`; transitive axiom checks contain
+only `propext`, `Classical.choice`, `Quot.sound`.

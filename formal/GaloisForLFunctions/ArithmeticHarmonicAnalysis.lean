@@ -1,9 +1,14 @@
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.TorsionFourierResolution
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.TorsionArithmeticResolution
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.AdamsFixedLocusResolution
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.ResidueNewtonDetection
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.ArithmeticNewtonResolution
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.VerticalJetsMissTransverseDirections
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicSuccessorRigidity
 
 /-!
 # Arithmetic harmonic analysis at critical resolution
 
-Arithmetic support, prime-phase resolution, and Adams fixed-locus constraints.
+Arithmetic support, successor reconstruction, prime-phase resolution, and
+Adams fixed-locus constraints.
 -/

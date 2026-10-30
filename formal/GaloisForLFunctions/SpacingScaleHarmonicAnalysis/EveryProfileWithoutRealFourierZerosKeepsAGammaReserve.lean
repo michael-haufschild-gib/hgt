@@ -80,7 +80,9 @@ theorem exists_noRealZero_fourier_floor {c : ℝ} (hc : 0 < c) :
   exact sq_pos_of_pos (norm_pos_iff.mpr (hFT t))
 
 omit hFT in
-private theorem noRealZero_highBand_mass {c m : ℝ} (hc : 0 < c) (hm : 0 < m)
+/-- **The band bound through the profile.** A floor `m ≤ |φ̂|²` on `[c, 101c]` transfers the
+Montgomery–Vaughan band bound `∫_N^{101N} |D_x|² ≥ 48N Σ x_n²` to the atomic test of width `c/N`. -/
+theorem noRealZero_highBand_mass {c m : ℝ} (hc : 0 < c) (hm : 0 < m)
     (hfloor : ∀ t ∈ Set.Icc c (101 * c), m ≤ ‖paperFT (cx φ) (t : ℂ)‖ ^ 2)
     {N : ℕ} (hN : 1 ≤ N) (x : ℕ → ℝ) :
     (48 * (c / N) ^ 2 * m * N) * (∑ n ∈ Icc 1 N, x n ^ 2) ≤

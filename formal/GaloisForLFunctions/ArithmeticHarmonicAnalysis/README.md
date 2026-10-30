@@ -79,8 +79,18 @@ contain far more points than a Dirichlet character family.
 
 **Additive rigidity.** Multiplicativity determines phases from primes;
 successor compatibility propagates the value at `1` through all integers.
-The useful refinement is a quantitative, finite-resolution law with exact
-defects, including a description of its unresolved tail.
+For `D_N(x)=max_{1≤m<N}|χₓ(m+1)−χₓ(m)|`, multiplicative halving gives
+
+`|χₓ(n)−1|≤2k D_N(x)` whenever `1≤n≤N` and `n≤2^k`.
+
+The reconstruction loss is logarithmic in the observed integer. Moreover,
+`D_N(x)=0` exactly when `χₓ(p)=1` for every prime `p≤N`.
+[DyadicSuccessorRigidity.lean](DyadicSuccessorRigidity.lean) proves both
+statements. Prime phases above `N` remain free; finite rigidity supplies
+no asymptotic cancellation estimate.
+For two gauges the same estimate is
+`|χₓ(n)−χᵧ(n)|≤2k D_N(x−y)`, with zero relative defect exactly when their
+prime values through `N` agree.
 
 **Adams vanishing.** A fixed-point condition gives root-of-unity identities on
 each prime coordinate. Auxiliaries must distinguish vanishing of values from
@@ -141,11 +151,56 @@ filtration and identifies its exact first obstruction. It bounds support
 length; coefficient height, evaluation size and prime counting require
 different inputs.
 
+Higher resolution separates each valuation as `v_p(n)=b_p+d k_p(n)`,
+`0≤b_p<d`. Define the explicit Newton coordinates
+
+`J(b,α)=Σ_{v(n)≡b (mod d)} a_n ∏_p binom(k_p(n),α_p)`.
+
+At integer support `n<2^(dr)`, all quotient multiindices have total order
+below `r`: unique factorization gives `2^(d Σ_p k_p(n))≤n`. A maximal
+quotient monomial is detected by its own Newton coefficient, because a
+nonzero binomial product requires componentwise domination. Consequently
+the coordinates `J(b,α)`, `|α|<r`, determine the entire coefficient array.
+Their Fourier sampling formula is the same residue inversion with weights
+`∏_p binom(k_p(n),α_p)`.
+
+[ResidueNewtonDetection.lean](ResidueNewtonDetection.lean) contains the
+triangular detection theorem;
+[ArithmeticNewtonResolution.lean](ArithmeticNewtonResolution.lean) supplies
+the arithmetic length bound. These are algebraic sampling statements.
+Identifying them with all analytic torus jets at torsion points is a further
+theorem required for a full multiplicity bound.
+
+Vertical derivatives alone have a different cost. The auxiliary
+`log(3)(z₂−1)−log(2)(z₃−1)` has zero value and first derivative on the
+logarithmic line at the identity, but nonzero derivative in the `z₂`
+coordinate. Its support ends at `3`, below `2²`.
+[VerticalJetsMissTransverseDirections.lean](VerticalJetsMissTransverseDirections.lean)
+checks the distinction. Its real logarithmic coefficients do not settle
+the integer-coefficient auxiliary problem.
+
+These finite laws use the same prime-exponent lattice in two ways. Torsion
+reduces valuations modulo its order; successor ratios read differences of
+valuation vectors. Unique factorization supplies the arithmetic support
+bound, while multiplicative halving makes successor reconstruction
+logarithmic. This is an exact coupling of additive and multiplicative
+observations. Its finite scope explains both its force and its unresolved
+prime tail.
+
 The existing foundations belong to their original programmes: the gauge
 torus, its Haar laws, exponent dictionary and Adams operations; complete
 bounded-overlap positivity and its Fourier margin; arithmetic Bézout and
 linear Riemann–Roch; scaling-surface signature and tower laws. Their exact
 Lean statements, rather than report summaries, govern every use here.
+
+Single-prime overlap resolution already has quantitative bounds in
+[TheFlipThresholdGrowsLikeAPowerOfThePrime.lean](../RenormalizedArithmeticPotentialTheory/TheFlipThresholdGrowsLikeAPowerOfThePrime.lean).
+For universal positive constants `κ,K` and sufficiently large primes `p`,
+the complete flipped form is eventually positive on every nonzero atomic
+family when `max(c,1)^8 log p≤κ√p`. It is eventually negative on the
+prime-square trial when `c≥K` and `c^7≥Kp`. These are two sufficient
+regions, with fixed `p,c` before the horizon tends to infinity. They do not
+give a uniform growing-horizon law or a sharp transition exponent.
 
 New pillars sought here are quantitative additive rigidity, exact Adams
 auxiliary costs, a resolution–distance law, an explicit growing positive

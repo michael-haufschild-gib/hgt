@@ -117,7 +117,7 @@ theorem sum_shellPart_dirichletGauge_eq_zero_of_kernel_short (hq : 3 ≤ q) (hN 
     ∑ χ : DirichletCharacter ℂ q,
         shellPart K N (gaugeTransform (dirichletGauge χ) a) (gaugeTransform (dirichletGauge χ) x) G =
       0 :=
-  sum_shellPart_dirichletGauge_eq_zero_of_short K N a x G hq ha hx fun k m n hk hm hn h =>
+  sum_shellPart_dirichletGauge_eq_zero_of_short K N a x G hq ha hx fun _ _ _ hk hm hn h =>
     shell_short_of_kernel_short N a x G hN hG (mem_Icc.mp hk).1 (mem_Icc.mp hm).1
       (mem_Icc.mp hn).1 (mem_Icc.mp hn).2 h
 

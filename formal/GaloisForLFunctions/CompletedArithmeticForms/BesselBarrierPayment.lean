@@ -22,7 +22,7 @@ theorem tendsto_modifiedBesselKOrder_arg_zero (ν : ℂ) :
   have hlim : Tendsto (fun x : ℝ => Real.exp (1 - x) * besselOrderUnitMass ν)
       atTop (𝓝 0) := by
     simp_rw [Real.exp_sub]
-    simpa only [div_eq_mul_inv, ← Real.exp_neg, zero_mul] using
+    simpa only [div_eq_mul_inv, ← Real.exp_neg, zero_mul, mul_zero] using
       (Real.tendsto_exp_neg_atTop_nhds_zero.const_mul (Real.exp 1)).mul_const
         (besselOrderUnitMass ν)
   refine squeeze_zero_norm' ?_ hlim
@@ -56,6 +56,7 @@ theorem hasDerivAt_besselBarrierFlux {x : ℝ} (hx : 0 < x) (ν : ℂ) :
   have hexp := ((hasDerivAt_id x).neg.exp).ofReal_comp
   have h : HasDerivAt (besselBarrierFlux ν) _ x := hexp.mul ((hcoef.mul hf).sub hg)
   refine h.congr_deriv ?_
+  dsimp only [Pi.neg_apply, id_eq, Pi.div_apply]
   push_cast
   field_simp [hxC]
   ring
@@ -66,9 +67,9 @@ theorem tendsto_besselBarrierFlux_zero (ν : ℂ) :
   have hinv : Tendsto (fun x : ℝ => ((x : ℂ))⁻¹) atTop (𝓝 0) := by
     have h := Complex.continuous_ofReal.continuousAt.tendsto.comp
       (tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (𝓝 0))
-    simpa only [Complex.ofReal_inv, Complex.ofReal_zero] using h
+    simpa only [Function.comp_def, Complex.ofReal_inv, Complex.ofReal_zero] using h
   have he : Tendsto (fun x : ℝ => (Real.exp (-x) : ℂ)) atTop (𝓝 0) := by
-    simpa only [Complex.ofReal_zero] using
+    simpa only [Function.comp_def, Complex.ofReal_zero] using
       Complex.continuous_ofReal.continuousAt.tendsto.comp
         Real.tendsto_exp_neg_atTop_nhds_zero
   have hc : Tendsto (fun x : ℝ => 1 + (ν + 1) / (x : ℂ)) atTop (𝓝 1) := by
@@ -76,6 +77,9 @@ theorem tendsto_besselBarrierFlux_zero (ν : ℂ) :
       tendsto_const_nhds.add (hinv.const_mul (ν + 1))
   have h := he.mul ((hc.mul (tendsto_modifiedBesselKOrder_arg_zero ν)).sub
     (tendsto_modifiedBesselKOrder_arg_zero (ν + 1)))
+  change Tendsto (fun x : ℝ => (Real.exp (-x) : ℂ) *
+    ((1 + (ν + 1) / (x : ℂ)) * modifiedBesselKOrder x ν -
+      modifiedBesselKOrder x (ν + 1))) atTop (𝓝 0)
   simpa only [besselBarrierFlux, mul_zero, sub_zero] using h
 
 /-- The imaginary-order barrier derivative is a negative real multiple of the source itself. -/
@@ -114,18 +118,23 @@ theorem besselBarrierFlux_re_nonneg_on_band {a τ : ℝ} (ha : 0 < a) (hτ : |τ
       exact (hasDerivAt_besselBarrierFlux_real (ha.trans_le hx) τ).neg.continuousAt.continuousWithinAt
     · intro x hx
       have hx0 : 0 < x := ha.trans_le (interior_subset hx)
-      convert (hasDerivAt_besselBarrierFlux_real hx0 τ).neg.hasDerivWithinAt using 1 <;> ring
+      have hd := (hasDerivAt_besselBarrierFlux_real hx0 τ).neg.hasDerivWithinAt
+        (s := interior (Ici a))
+      change HasDerivWithinAt (fun y : ℝ => -(besselBarrierFlux ((τ : ℂ) * I) y).re)
+        (-(-Real.exp (-x) * (1 / x + (1 + τ ^ 2) / x ^ 2) *
+          (modifiedBesselKOrder x ((τ : ℂ) * I)).re)) _ _ at hd
+      simpa only [neg_mul, neg_neg] using hd
     · intro x hx
       have hx0 : 0 < x := ha.trans_le (interior_subset hx)
       have hf := modifiedBesselKOrder_re_pos_on_band hx0 (hτ.trans (interior_subset hx))
       have hc : 0 ≤ 1 / x + (1 + τ ^ 2) / x ^ 2 := by positivity
       exact mul_nonneg (mul_nonneg (Real.exp_pos _).le hc) hf.le
   have hlim : Tendsto (fun x : ℝ => (besselBarrierFlux ν x).re) atTop (𝓝 0) := by
-    simpa only [Complex.zero_re] using Complex.continuous_re.continuousAt.tendsto.comp
+    simpa only [Function.comp_def, Complex.zero_re] using Complex.continuous_re.continuousAt.tendsto.comp
       (tendsto_besselBarrierFlux_zero ν)
   apply le_of_tendsto hlim
   filter_upwards [eventually_ge_atTop a] with x hx
-  have h := hm (show a ∈ Ici a from le_rfl) hx hx
+  have h := hm (Set.mem_Ici.mpr le_rfl) (Set.mem_Ici.mpr hx) hx
   linarith only [h]
 
 /-- The negative argument derivative costs at most `1 + 1/a` times the positive band density. -/

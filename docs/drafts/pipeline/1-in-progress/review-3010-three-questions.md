@@ -16,25 +16,35 @@ Full answers with unconditional Lean theorems. Estimates, criteria and no-gos ar
 
 ## Approach
 
-### Q3 — exact resolution law for flips (first target)
-Objects: `W(c,N)` = complete Weil matrix of profile `φ` at width `c/N`; `W_S` = the same with the
-odd powers of the primes in a finite set `S` flipped; normalized Ramanujan modes `e_m = c_m/√φ(m)`.
+### Q3 — exact resolution law (answered for every twist at finite square-root distance)
+Objects: `W(c,N)` complete Weil matrix of a profile `φ` without real Fourier zeros at width
+`c/N`; a real twist `λ` of `Λ` with defect `d_λ(k) = (Λ(k) − λ(k))/√k`, `D(λ) = Σ_k |d_λ(k)| < ∞`;
+normalized Ramanujan modes `e_m`; packets `y = Σ_{m∈T} β_m e_m`.
 
-Conjecture C3.1 (limit flip operator). On normalized Ramanujan horizon vectors `r_m`,
-`⟪(W_S − W) r_m, r_l⟫ → Q_S(m,l)`, where
-`Q_S(m,l) = Σ_{p∈S} Σ_{k odd} 2 log p · p^{-k} (ρ(m,l,p^k) + ρ(l,m,p^k))`,
-`ρ(m,l,q) = mean_n e_m(n) e_l(qn)`. Closed form: `e_l(qn) = √(φ(l)/φ(l')) e_{l'}(n)`,
-`l' = l/(l,q)`, so `ρ(m,l,q) = √(φ(l)/φ(l')) [m = l']`.
-Check: on the prime-square trial `F_p` the `k = 1` term is `(4 log p/p)(−1 + 2/p²)`, the corpus value.
+Theorem (Lean, `RenormalizedArithmeticPotentialTheory`):
+1. Packet limit: the twisted complete form of the packet tends to
+   `E_λ(c;T,β) = Σ_m β_m² E_m(c) + 2 Σ_k d_λ(k) k^{-1/2} M(y·y(k·))`
+   (`tendsto_twisted_packet`; twist part `tendsto_twistedGap_packet`, independent of `c`).
+2. Dichotomy at fixed `c`: `λ_λ(c) = inf_{Σβ²=1} E_λ(c;T,β)`; `λ_λ(c) > 0` ⇒ the twisted complete
+   matrix is eventually positive definite; `λ_λ(c) < 0` ⇒ eventually negative on an atomic test
+   (`eventually_posDef_of_resolutionBottom_pos`, `exists_eventually_neg_of_resolutionBottom_neg`).
+   Mechanism: reserve + finite Ramanujan approximation give `W ≥ T` off a finite packet span
+   (`exists_finite_orthogonal_gap`), then a 2×2 Schur estimate (`posDef_add_of_packets`).
+3. `λ_λ` is antitone in `c`, and strictly negative past its first nonpositive value
+   (`resolutionBottom_neg_of_lt`; uses strict decrease of each `E_m` and finiteness of conductor
+   sublevels).
+4. Exact threshold `c_0(λ) = sup{c : λ_λ(c) > 0}`: if `λ` is seen at some overlap, then
+   `0 < c_0(λ) < ∞`, positive definite below, negative above (`resolutionThreshold_spec`).
+5. Flips: `D(ω_p) ≤ 4 log p/√p`, flip energy `4 log p Σ_j p^{-(2j+1)} M(y·y(p^{2j+1}·))`, every
+   flip seen, `c_0(ω_p)` exact and `→ ∞` (`primeFlip_resolutionThreshold_spec`,
+   `le_primeFlip_resolutionThreshold`); finite flip sets via the product trial `Π_{p∈S} F_p`
+   (`finiteFlip_resolutionThreshold_spec`).
+6. Resolution–distance law: `E(c) ≤ 2D(λ)` for every `c > c_0(λ)`
+   (`completedShellEnergy_le_distance_of_resolutionThreshold_lt`); tilted spline:
+   `C₀ √p ≤ 8 log p · max(c,1)^7` above `c_0(ω_p)`.
 
-Conjecture C3.2 (exact threshold). With
-`λ_S(c) = inf_β (Σ_m E_m(c) β_m² + Σ_{m,l} Q_S(m,l) β_m β_l)/|β|²` over finitely supported `β`:
-`λ_S(c) > 0` ⇒ the flipped form is eventually positive definite; `λ_S(c) < 0` ⇒ eventually
-negative on an atomic test. `λ_S` is nonincreasing, `→ +∞` as `c → 0`, negative for large `c`;
-`c_0(ω_S) = sup{c : λ_S(c) > 0} ∈ (0,∞)`; single flips: `c_0(ω_p) → ∞`.
-
-Mechanism: complement gap (reserve `W ≥ a + β·poleDefect`, finite Ramanujan approximation of
-bounded defect) + quasimodes + bounded flip perturbation; 2×2 Schur estimate.
+Not covered: twists at infinite distance (twin tails, the Liouville point, vertical shifts); for
+them the twist is not a bounded perturbation of the packet operator.
 
 ### Q1 — structural notes
 - Low zeros (`|γ| ≲ N/c`) enter Ramanujan modes only through the boundary term `N^ρ/ρ` of the
@@ -49,5 +59,5 @@ bounded defect) + quasimodes + bounded flip perturbation; 2×2 Schur estimate.
 ### Q2 — open
 
 ## Log
-- 2026-10-30 — created; Q3 law C3.1–C3.2 derived on paper, Lean development started in
-  `RenormalizedArithmeticPotentialTheory`.
+- 2026-10-30 — created; Q3 law derived on paper and formalized (five modules in
+  `RenormalizedArithmeticPotentialTheory`, see Q3).

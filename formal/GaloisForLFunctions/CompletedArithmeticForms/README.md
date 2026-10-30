@@ -1047,6 +1047,38 @@ retained exactly; no fixed-order limit is used as a joint bound.
 See [BesselSpectralBand](BesselSpectralBand.lean),
 `modifiedBesselKOrder_zero_outside_band` and `modifiedBesselKOrder_re_pos_on_band`.
 
+The signed argument derivative has its own source payment. For
+$f(x)=K_{i\tau}(x)$, the decaying barrier gives
+$$W(x)=e^{-x}\{f'(x)+(1+x^{-1})f(x)\},\qquad
+W'(x)=-e^{-x}\{x^{-1}+(1+\tau^2)x^{-2}\}f(x),\qquad W(\infty)=0.$$
+Thus $W(a)\ge0$ on $|\tau|\le a$, and
+$$K'_{i\tau}(a)\ge-(1+1/a)K_{i\tau}(a),$$
+$$ (a^2+9)K_{i\tau}(a)+6aK'_{i\tau}(a)
+\ge(a^2-6a+3)K_{i\tau}(a)>0\qquad(a\ge6).$$
+This retains the negative argument-derivative term. A finite positive
+frequency band alone does not pay the polynomial-weighted signed tail.
+See [BesselBarrierPayment](BesselBarrierPayment.lean),
+`besselArgDeriv_re_lower_on_band` and `besselSignedRadialCombination_pos`.
+
+For the literal reflected theta-atom radial profile,
+$$P_a(v)=a^2(a^2+9-6a\cosh(2v))e^{-a\cosh(2v)},$$
+the exact physical transform is
+$$\int_{\mathbb R}P_a(v)e^{2ibv}\,dv
+=a^2\big[(a^2+9)K_{ib}(a)+6aK'_{ib}(a)\big].$$
+Its positive reserve is $a^2(a^2-6a+3)K_{ib}(a)$ on $|b|\le a$, $a\ge6$.
+A complete fixed-product fibre $k$ at center $u$ has scale
+$a=2\pi k e^{2u}$ and factors as
+$$e^u\left(\sum_{nm=k}e^{-ib(\log n-\log m)}\right)
+\int_{\mathbb R}P_a(v)e^{2ibv}\,dv.$$
+For $k\ge1$, $u\ge0$, its sign throughout $|b|\le a$ is exactly the sign
+of the real divisor-character sum. Each individual diagonal pair has a
+strictly positive band. Arithmetic ratio phases therefore remain a distinct
+sign obligation even where the full radial derivative cost is paid.
+See [WignerSpectralBand](WignerSpectralBand.lean),
+`thetaCuspWignerRadialTransform_eq_bessel`,
+`thetaCuspWignerProductFiber_physical_band_sign`, and
+`thetaCuspSourcePairWigner_diagonal_re_pos`.
+
 ## Place in the research
 
 | Programme | Connection |
@@ -1088,12 +1120,24 @@ a norm-preserving transfer between programmes.
    has a literal obstruction. A source-derived moving direction cancels its
    coupled Schur defect, but the scalar gap and admissible tail join remain open.
 
-2. **Macroscopic overlap.** Can the actual completed Weil operator at a fixed nondegenerate ratio
-   such as $3/2$ be compared to the cyclotomic Gram with cross-annulus and Schur costs paid?
-   Its actual touching prefix has inverse cost at most twenty, so its complete
-   residual satisfies $D-20B^{\mathsf T}B\preceq S\preceq D$ uniformly in both sizes.
-   Can its certified prefix index ceiling be improved to positivity or an endpoint-sufficient
-   upper index bound, along a profile-compatible exhaustive schedule?
+2. **Growing overlap and vanishing reserve.** The actual tilted-spline complete Weil matrix
+   is positive definite at every fixed $c>0$. For every finite $K$, one horizon and
+   one positive spectral floor work simultaneously for all $0<c\le K$.
+   Its limiting ground energy is the completed conductor-one energy, attained by
+   the pole mode and separated from all other conductors by a positive Fourier-tail gap.
+   These statements include $c=3/2$ for this explicit profile.
+   See [TheCompleteWeilGroundStateIsThePole](../CriticalArithmeticCorrelationTheory/TheCompleteWeilGroundStateIsThePole.lean)
+   and [OneHorizonMakesEveryBoundedOverlapPositive](../CriticalArithmeticCorrelationTheory/OneHorizonMakesEveryBoundedOverlapPositive.lean).
+   Which source estimates pay completion relative to the diminishing ground reserve
+   on a prescribed unbounded overlap schedule sufficient for the arithmetic endpoint?
+   For the same tilted spline, eventual nonnegativity on
+   $c_N=2(\log N)^\alpha$, $\alpha>1/4$, is equivalent to RH.
+   More generally the proved transfer uses $c_N=o(N)$ and
+   $c_N^4/\log N\to\infty$.
+   See [LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis](../RenormalizedArithmeticPotentialTheory/LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis.lean).
+   Profile transport must retain its cost. The separate plateau profile has the
+   uniform touching-prefix bound $D-20B^{\mathsf T}B\preceq S\preceq D$;
+   its macroscopic residual is not decided by changing the profile.
 
 3. **Census dispersion.** Can the actual bandwidth-$4/3$ coalescent surplus satisfy
    $(1/18+o(1))N$ in the receiver's windows, including model, cutoff, and collar errors?
