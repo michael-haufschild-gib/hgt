@@ -71,17 +71,19 @@ attack both. HEF builds the theory such an identity must live in.
 
 | Object | Meaning | Lean |
 |---|---|---|
-| Reflection configuration | finite multiset $Z\subset\mathbb C$ with positive multiplicities, closed under $s\mapsto 1-\bar s$ (and $s\mapsto\bar s$) | — |
+| Reflection configuration | finite multiset $Z\subset\mathbb C$ with positive multiplicities, closed under $s\mapsto 1-\bar s$ and $s\mapsto\bar s$ | `ReflectionConfiguration`, `IsCritical`, `total`, `lineMass` |
 | Spectral point | $z_\rho=-i(\rho-\tfrac12)$; critical ⇔ $z_\rho\in\mathbb R$; depth $\delta_\rho=\Re\rho-\tfrac12=-\Im z_\rho$ | `RHTower.xiSpectralPoint` |
 | Same-point form $S$ | $\sum m_\rho\lvert F(z_\rho)\rvert^2$; Hilbert norm of the evaluation vector | `RHTower.xiWeilEvaluationLp` |
 | Weil form $W$ | $\sum m_\rho F(z_\rho)\overline{F(\bar z_\rho)}$; Krein form $\Re\langle Jv,v\rangle$ | `RHTower.xiWeilPolarization`, `xiWeilHilbertQuadratic` |
 | Line-reflection defect $\Delta$ | $\tfrac12\sum m_\rho\lvert F(z_\rho)-F(\bar z_\rho)\rvert^2=S-W$ | `RHTower.norm_sq_xiResolvent_reflectionDefect` |
-| Explicit statistic | $\sum m_\rho h(z_\rho)$ with $h$ entire | — |
-| Clock | function $c$ of the zero; *holomorphic* $c_\lambda(s)=e^{\lambda(s-1/2)}$; *ordinate* (same-point) $c_\lambda(s)c_\lambda(1-\bar s)=e^{2i\lambda\Im s}$; *modulus* $\lvert c_\lambda(s)\rvert^2=e^{2\lambda(\Re s-1/2)}$ | `RHTower.burnolPrimeCharacter` |
-| Pencil, Cesàro excess | $P(n)=\sum m_\rho c(\rho)^n$; $\frac1N\sum_{n<N}\lvert P(n)\rvert^2-\sum m_\rho^2$ | `RHTower.finiteExponentialPencil` |
-| Collision charge | $O=\sum_\rho m_\rho(H_\rho-m_\rho)$, $H_\rho$ = multiplicity at the ordinate of $\rho$ | `RHTower.xiHorizontalCollisionCharge` |
+| Explicit statistic | $\sum m_\rho h(z_\rho)$ with $h$ entire; Weil weight $F\cdot F^\#$ | `explicitStatistic`, `weilWeight`, `samePointForm`, `lineReflectionDefect` |
+| Clock | function $c$ of the zero; *holomorphic* $c_\lambda(s)=e^{\lambda(s-1/2)}$; *ordinate* (same-point) $c_\lambda(s)c_\lambda(1-\bar s)=e^{2i\lambda\Im s}$; *modulus* $\lvert c_\lambda(s)\rvert^2=e^{2\lambda(\Re s-1/2)}$ | `holomorphicClock`, `ordinateClock` |
+| Pencil, Cesàro excess | $P(n)=\sum m_\rho c(\rho)^n$; $\frac1N\sum_{n<N}\lvert P(n)\rvert^2-\sum m_\rho^2$ | `cesaroMeanSquare`, `CesaroBounded`, `aliasCharge`, `NonResonant` |
+| Collision charge | $O=\sum_\rho m_\rho(H_\rho-m_\rho)$, $H_\rho$ = multiplicity at the ordinate of $\rho$ | `ReflectionConfiguration.collisionCharge`; for $\xi$: `RHTower.xiHorizontalCollisionCharge` |
 | Quantum | least positive value of a carrier's excess on configurations with an off-line zero | — |
-| Curve datum | normalized Frobenius eigenvalues $\beta_i$ with conjugation and functional-equation symmetry | `ArithmeticCastelnuovoSeveri.CurveDatum` |
+| Curve datum | normalized Frobenius eigenvalues $\beta_i$ with conjugation and functional-equation symmetry; ordinate $\beta/\lvert\beta\rvert$ | `ArithmeticCastelnuovoSeveri.CurveDatum`, `curveOrdinate`, `curveCollisionCharge` |
+| Resolvent norms | $S(s)=\sum m_\rho\lvert s-\rho\rvert^{-2}$, $E(s)=\sum m_\rho\Re\frac1{s-\rho}$, defect $D(s)$, depth moments $M_{2k}$ | `samePointResolvent`, `explicitResolvent`, `resolventDefect`, `depthMoment` |
+| Signed divisor | multiplicities in $\mathbb R$ | `signedSamePointForm`, `isolatingPolynomial` |
 
 **Words.** *Same-point*: a weight evaluated at one zero through both $z$ and $\bar z$ (holomorphic ×
 antiholomorphic). *Reflection-paired*: a holomorphic weight, pairing $z$ with its line reflection.
@@ -95,42 +97,74 @@ positive.
 ## 4. Mechanisms
 
 1. **Calibration rigidity.** An entire weight $h$ with $h=|F|^2$ on $\mathbb R$ equals $F\cdot F^\#$ (identity
-   theorem). So every line-calibrated explicit statistic is the Weil form, and at a pair $\{z,\bar z\}$ it
-   misses the same-point value by $|F(z)-F(\bar z)|^2$. An explicit statistic correct at one off-line pair
-   forces $F$ to be blind there; one correct on every configuration forces $F$ constant.
-2. **Polarization identity.** $S=W+\Delta$, $\Delta\ge0$, pairwise and summed; RH ⇔ $\Delta\equiv0$.
-3. **Parseval.** The Cesàro mean square of a pencil with unimodular clocks tends to the sum over clock
-   classes of the squared class multiplicity.
-4. **Dominant modes.** With positive multiplicities, the top-modulus modes of a pencil cannot cancel in
-   mean square; a pencil whose maximal clock modulus exceeds $1$ has unbounded Cesàro mean square.
+   theorem; `eq_weilWeight_of_calibrated`). So every line-calibrated explicit statistic is the Weil form,
+   and at a pair $\{z,\bar z\}$ it misses the same-point value by exactly $|F(z)-F(\bar z)|^2$
+   (`samePoint_sub_explicit_pair`). An explicit statistic correct at one off-line pair forces $F$ to be
+   blind there (`blind_of_explicit_eq_samePoint`); one correct on every pair forces $F$ constant
+   (`const_of_explicit_eq_samePoint_everywhere`).
+2. **Polarization identity.** $S=W+\Delta$, $\Delta\ge0$, on finite configurations
+   (`samePointForm_sub_explicitStatistic`, `explicitStatistic_eq_samePointForm_iff`) and on the Xi divisor
+   (`norm_sq_sub_explicit_eq_half_reflectionDefect`, `explicit_eq_norm_sq_iff_lineConj_fixed`).
+3. **Parseval with classes.** The Cesàro mean square of a pencil with unimodular clocks tends to the sum
+   over clock classes of $m_\rho m_{\rho'}$ (`RHTower.tendsto_tsum_pencil_cesaro_norm_sq`).
+4. **Dominant modes.** With positive multiplicities a clock of modulus $>1$ makes the Cesàro mean square
+   unbounded; clocks of modulus $\le1$ keep it bounded (`not_cesaroBounded_of_one_lt_norm`,
+   `cesaroBounded_of_norm_le_one`).
 5. **Clock classification.** A holomorphic clock $e^{\lambda(s-1/2)}$ has modulus
-   $e^{(\Re\lambda)\delta-(\Im\lambda)\gamma}$; on a reflection-and-conjugation-closed configuration the four points of a
-   quartet realize all four signs, so the pencil is bounded only if $\Re\lambda\cdot\delta_\rho=\Im\lambda\cdot\gamma_\rho=0$ for every
-   zero. The ordinate clock is unimodular; its excess is the collision charge plus aliasing.
-6. **Resolvent formula.** For $\Re s>\tfrac12$:
-   $(\sigma-\tfrac12)\sum m_\rho|s-\rho|^{-2}=\sum m_\rho\Re\frac1{s-\rho}+\sum m_\rho(\beta_\rho-\tfrac12)|s-\rho|^{-2}$, and the last term is a
-   nonnegative pair sum vanishing exactly on critical configurations. Its vertical integral is a
-   generating function of the even depth moments.
-7. **$\mathbb F_q$ calibration.** On a curve datum the Frobenius line reflection is $\beta\mapsto1/\bar\beta$, which keeps
-   the argument; off-unitary eigenvalues collide with their reflections, so the charge is $0$ or $\ge2$,
-   and the golden datum realizes $2$. The Lefschetz pencil is the holomorphic clock; it is bounded
-   exactly on unitary data.
-8. **Effectivity.** The same-point form of a signed divisor is indefinite as soon as one multiplicity is
-   negative. Hilbertian identities need effective divisors; twins with poles fail them.
+   $e^{(\Re\lambda)\delta-(\Im\lambda)\gamma}$; the four points of a quartet realize all four sign patterns, so the
+   pencil is bounded exactly when $\Re\lambda\cdot\delta_\rho=\Im\lambda\cdot\gamma_\rho=0$ at every point
+   (`cesaroBounded_holomorphicClock_iff`). The ordinate clock is the holomorphic clock at $s$ times the one
+   at $1-\bar s$ (`holomorphicClock_mul_lineReflect`); it is unimodular, and its mean square tends to
+   $\sum m^2+O+A_t$ (`tendsto_cesaro_ordinateClock`, `classPairSum_eq`).
+6. **Resolvent formula.** For $\Re s>\tfrac12$ and $s\notin Z$: $(\sigma-\tfrac12)S(s)=E(s)+D(s)$ with
+   $D(s)=\sum m_\rho\,2(\sigma-\tfrac12)(\beta_\rho-\tfrac12)^2/(|s-\rho|^2|s-\rho^*|^2)$, from the pair identity
+   $|s-\rho^*|^2-|s-\rho|^2=(2\sigma-1)(2\beta-1)$ (`pair_depth_resolvent`, `sub_mul_samePointResolvent_eq`). If
+   every $\Re\rho\le\tfrac12+w$ then $(\sigma-\tfrac12-w)S\le E\le(\sigma-\tfrac12)S$
+   (`sub_width_mul_samePointResolvent_le`, `explicitResolvent_le`). Along a vertical line
+   $\int D\,dt=\pi\sum m_\rho d_\rho^2/(u^2-d_\rho^2)=\pi\sum_{k\ge1}M_{2k}u^{-2k}$
+   (`integral_resolventDefect_vertical`).
+7. **$\mathbb F_q$ calibration.** On a curve datum line reflection is $\beta\mapsto1/\bar\beta$, which keeps the argument
+   (`curveOrdinate_reflPerm`); off-unitary eigenvalues collide with their reflections
+   (`two_le_curveCollisionCharge`). The Lefschetz pencil $\sum\beta_i^n$ is the holomorphic clock
+   (`lefschetzPencil_eq_powerSum`). Calibration rigidity transports to the circle through $w=e^{iz}$
+   (`eq_rosatiWeight_of_circleCalibrated`).
+8. **Effectivity.** The Lagrange polynomial vanishing at all other points isolates one multiplicity
+   (`signedSamePointForm_isolating`).
 
 ---
 
 ## 5. Pillar theorems
 
-1. **Calibration rigidity**: the explicit image of the same-point problem is the Weil form.
-2. **Clock classification**: no holomorphic exponential clock carries a finite quantum on reflection
-   configurations; the ordinate clock carries the collision charge.
-3. **Quantum law**: on effective reflection configurations the collision charge is even, vanishes
-   exactly on critical configurations, and is $\ge2$ otherwise; $N-N_0\le O$.
-4. **Resolvent Hilbertian formula** with a nonnegative, exactly critical-vanishing defect.
-5. **$\mathbb F_q$ calibration**: unitary ⇔ charge $<2$ ⇔ bounded Lefschetz pencil; golden datum has charge $2$;
-   the unique line-calibrated explicit formula is Weil's.
-6. **Effectivity**: same-point positivity ⇔ effectivity of the divisor.
+1. **Calibration rigidity**: the explicit image of the same-point problem is the Weil form
+   (`eq_weilWeight_of_calibrated`, `samePointForm_sub_explicitStatistic`,
+   `tsum_explicit_eq_xiWeilPolarization`, `const_of_explicit_eq_samePoint_everywhere`).
+2. **Clock classification**: holomorphic clocks are bounded exactly where they read nothing; for a real
+   frequency, exactly below the quantum, so their excess is $0$ or $\infty$
+   (`cesaroBounded_holomorphicClock_iff`, `cesaroBounded_holomorphicClock_real_iff`,
+   `not_cesaroBounded_holomorphicClock_of_im_ne_zero`). The ordinate clock reads the collision charge at
+   every non-resonant frequency (`tendsto_cesaro_ordinateClock_sub_diag_of_nonResonant`).
+3. **Quantum law**: the collision charge is even, vanishes exactly on critical configurations and is
+   $\ge2$ otherwise; $N\le N_0+O$, so $O\le cN$ gives the proportion $1-c$ (`even_collisionCharge`,
+   `isCritical_tfae`, `total_le_lineMass_add_collisionCharge`, `one_sub_mul_total_le_lineMass`).
+4. **Resolvent Hilbertian formula**: $(\sigma-\tfrac12)S=E+D$, $D\ge0$, $D=0$ ⇔ critical; width sandwich;
+   depth-moment series (`sub_mul_samePointResolvent_eq`, `resolventDefect_eq_zero_iff`,
+   `explicitResolvent_eq_iff`, `integral_resolventDefect_vertical`).
+5. **$\mathbb F_q$ calibration**: unitary ⇔ charge $=0$ ⇔ charge $<2$ ⇔ bounded Lefschetz pencil; the charge is
+   even; the golden datum has charge exactly $2$; every circle-calibrated explicit formula is the Rosati
+   pairing (`unitary_tfae`, `even_curveCollisionCharge`,
+   `cesaroBounded_lefschetz_iff_curveCollisionCharge_lt_two`, `goldenDatum_curveCollisionCharge`,
+   `explicit_eq_rosatiPairing`).
+6. **Effectivity**: same-point positivity ⇔ effectivity; a pole makes the form indefinite
+   (`signedSamePointForm_nonneg_iff`, `exists_signedSamePointForm_neg`).
+
+| Module | Content |
+|---|---|
+| `TheExplicitImageIsTheWeilForm` | calibration rigidity; finite and Xi polarization identities |
+| `TheSamePointQuantumOfAReflectionConfiguration` | reflection configurations, collision charge, quantum law, census |
+| `HolomorphicClocksCarryNoQuantum` | dominant modes, clock classification, ordinate Parseval |
+| `TheResolventHilbertianExplicitFormula` | resolvent formula, sandwich, vertical integral, depth moments |
+| `TheFiniteFieldCalibration` | circle rigidity, curve collision charge, Lefschetz pencil, golden datum |
+| `SamePointPositivityIsEffectivity` | signed divisors |
 
 ---
 
@@ -170,16 +204,23 @@ From HEF itself:
 ## 8. Questions
 
 1. **Explicit image.** Which zero sums does an explicit formula evaluate, and what is the exact error of
-   the best explicit approximation to a same-point sum? (Answered by calibration rigidity.)
-2. **Quantized carriers.** Which clocks give integer-valued excesses on all configurations, and which of
-   them are source-realizable? (Holomorphic exponential clocks: none.)
-3. **First same-point identity.** For one nontrivial carrier, an identity expressing the same-point sum as
-   the reflection-paired sum plus a source term.
-4. **Census constant.** An $N$-normalized bound on that source term with constant $<1/4$.
-5. **$\mathbb F_q$.** Does every HEF statement reduce to Weil's theorem over $\mathbb F_q$, with the golden datum as
-   the extremal fake?
-6. **Selectivity.** Which statements fail on Beurling systems with off-line zeros, on signed twins and on
-   the golden datum, and for which stated reason?
+   the best explicit approximation to a same-point sum? *Answer:* a line-calibrated explicit formula is
+   the Weil form, and its error is the line-reflection defect, pair by pair (pillar 1).
+2. **Quantized carriers.** Which clocks give integer-valued excesses, and which are source-realizable?
+   *Answer for exponential clocks:* holomorphic clocks have excess $0$ or $\infty$; the ordinate clock has
+   excess $O+A_t$, integer-valued, equal to $O$ at non-resonant frequencies, and it is antiholomorphic in
+   one factor (pillar 2).
+3. **First same-point identity.** For one nontrivial carrier, the same-point sum as the reflection-paired
+   sum plus a source term. *Answer for the resolvent carrier on finite configurations:*
+   $(\sigma-\tfrac12)S=E+D$ with $D$ a weighted second depth moment (pillar 4). For the zeta divisor
+   $E=\Re\,\xi'/\xi$ (`RHTower.re_logDeriv_xi_eq_tsum`), a prime sum for $\sigma>1$. Open: the identity on the full
+   divisor, and $D$ as a prime-side quantity.
+4. **Census constant.** An $N$-normalized bound $O\le cN$ with $c<1/4$. Open; pillar 3 is the reduction.
+5. **$\mathbb F_q$.** Every pillar has its curve form; there Weil's theorem makes the charge $0$, the golden
+   datum is the extremal fake at charge $2$ (pillar 5).
+6. **Selectivity.** Critical configurations pass every pillar; configurations with an off-line point fail
+   with charge $\ge2$ and positive defect; signed divisors fail effectivity; the golden datum fails at
+   exactly the quantum.
 
 ---
 
@@ -203,7 +244,8 @@ From HEF itself:
 3. **Census through same-point carriers**: $O(T)\le cN(T)$ with $c<1/4$.
 4. **Source-realizable unimodular clocks.** Products $c(\rho)c(\rho^*)$ are unimodular but antiholomorphic;
    is there any source-realizable family whose mean square reads the collision charge with finite loss?
-5. **Depth moments from resolvent data**: which part of the vertical resolvent defect is arithmetic.
+5. **Depth moments from resolvent data**: the resolvent formula on the full Xi divisor (summability of
+   $S$, symmetrization of the tsum), and which part of the vertical resolvent defect is arithmetic.
 
 ---
 

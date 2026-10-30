@@ -1,8 +1,8 @@
 # Finite sieve profiles have logarithmic conductor tails
 
 - **ID:** finite-sieve-logarithmic-conductor-tails
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** A finite sieve-class vector supported on integers at most `A` has squared spectral mass above conductor `R>1` at most `2(log A+L_Q)/log R` times its squared norm, where `L_Q=Σ_(p∈Q) log p/(p-1)`.
 
 ## Proof
@@ -23,4 +23,6 @@ Each conductor `m>R` contributes at least `log R` times its coefficient square. 
 
 ## Scope and formalization
 
-Lean formalization is in progress. Transfer from these sieve spectral coefficients to finite-horizon Ramanujan approximation requires the coefficient identification and harmonic-measure comparison described on the parent confinement card; neither transfer is asserted here.
+`FiniteSieveProfilesHaveLogarithmicConductorTails.lean` proves the exact spectral identity in `hasSum_sieveConductorEnergy`, the logarithmic moment in `tsum_log_mul_sieveClassVector_repr_sq_le`, and the displayed tail bound in `tsum_sieveClassVector_conductorTail_le_of_support`. Direct Lean check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`. Imported by the theory umbrella.
+
+Transfer to finite-horizon Ramanujan approximation still requires coefficient identification and harmonic-measure comparison. Neither transfer is asserted here.

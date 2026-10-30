@@ -53,3 +53,4 @@
 - formal/GaloisForLFunctions/CompletedArithmeticForms/README.md
 - formal/GaloisForLFunctions/ArithmeticGaugeTheory/README.md
 - formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/README.md
+- formal/GaloisForLFunctions/HilbertianExplicitFormulas/README.md

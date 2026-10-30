@@ -43,6 +43,8 @@ theorem hasSum_sieveConductorEnergy (Q : Finset Nat.Primes)
       (((Real.log (m : ℕ) + tameDifferent (m : ℕ) : ℝ) : ℂ) •
         R (x : SieveClassL2 Q) m)).re = _
     rw [inner_smul_right, inner_self_eq_norm_sq_to_K]
+    change (((Real.log (m : ℕ) + tameDifferent (m : ℕ) : ℝ) : ℂ) *
+      (‖R (x : SieveClassL2 Q) m‖ : ℂ) ^ 2).re = _
     rw [← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_re]
   have hs := (lp.hasSum_inner (R (x : SieveClassL2 Q)) (R y)).mapL Complex.reCLM
   change HasSum (fun m => (inner ℂ (R (x : SieveClassL2 Q) m) (R y m)).re)
@@ -51,7 +53,8 @@ theorem hasSum_sieveConductorEnergy (Q : Finset Nat.Primes)
   rw [R.inner_map_map] at hs
   dsimp only [y] at hs
   rw [inner_sub_right, inner_smul_right, inner_self_eq_norm_sq_to_K] at hs
-  rw [← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.sub_re, Complex.ofReal_re] at hs
+  simp only [RCLike.ofReal_eq_complex_ofReal, ← Complex.ofReal_pow,
+    ← Complex.ofReal_mul, Complex.sub_re, Complex.ofReal_re] at hs
   exact hs
 
 private theorem sieveExcitation_nonneg (m : SieveClass Q) :
@@ -83,9 +86,11 @@ private theorem norm_sieveClassVector_sq {ι : Type*} [Fintype ι]
     push_cast
     exact sum_congr rfl fun _ _ => by ring
   have h := congrArg Complex.re hinner
-  rw [inner_self_eq_norm_sq_to_K, ← Complex.ofReal_pow, Complex.ofReal_re,
-    Complex.ofReal_re] at h
-  exact h
+  change (inner ℂ (sieveClassVector d b) (sieveClassVector d b)).re =
+    (∑ i, b i ^ 2) at h
+  rw [inner_self_eq_norm_sq_to_K] at h
+  change ((‖sieveClassVector d b‖ : ℂ) ^ 2).re = (∑ i, b i ^ 2) at h
+  rwa [← Complex.ofReal_pow, Complex.ofReal_re] at h
 
 /-- The arithmetic eigenbasis resolves the exact finite class form above its Euler ground. -/
 theorem hasSum_sieveClassVector_conductorEnergy {ι : Type*} [Fintype ι]
@@ -146,7 +151,7 @@ theorem tsum_log_mul_sieveClassVector_repr_sq_le {ι : Type*} [Fintype ι]
   have hs := hasSum_sieveClassVector_conductorEnergy hd b
   have hlog := summable_sieveConductor_logMoment Q
     ⟨sieveClassVector d b, sieveClassVector_mem_domain d b⟩
-  have hle := tsum_le_tsum
+  have hle := Summable.tsum_le_tsum
     (fun m : SieveClass Q => mul_le_mul_of_nonneg_right
       (le_add_of_nonneg_right (tameDifferent_nonneg _))
       (sq_nonneg ‖(sieveAdjunctionBasis Q).repr (sieveClassVector d b) m‖))
@@ -172,15 +177,18 @@ theorem tsum_sieveClassVector_conductorTail_le {ι : Type*} [Fintype ι]
     by_cases hm : R < (m : ℕ)
     · rw [if_pos hm]
       apply (le_div_iff₀ hlogR).mpr
-      simpa only [mul_comm] using mul_le_mul_of_nonneg_right
-        (Real.log_le_log (zero_lt_one.trans hR) hm.le) (sq_nonneg _)
+      calc
+        a m * Real.log R = Real.log R * a m := mul_comm _ _
+        _ ≤ Real.log (m : ℕ) * a m := mul_le_mul_of_nonneg_right
+          (Real.log_le_log (zero_lt_one.trans hR) hm.le)
+          (sq_nonneg ‖(sieveAdjunctionBasis Q).repr (sieveClassVector d b) m‖)
     · rw [if_neg hm]
       exact div_nonneg (mul_nonneg (Real.log_natCast_nonneg _) (sq_nonneg _)) hlogR.le
   have htail := Summable.of_nonneg_of_le
     (fun m => by split_ifs <;> first | exact sq_nonneg _ | exact le_rfl) hdom hsum
   calc
     _ ≤ ∑' m : SieveClass Q, Real.log (m : ℕ) * a m / Real.log R :=
-      tsum_le_tsum hdom htail hsum
+      Summable.tsum_le_tsum hdom htail hsum
     _ = (∑' m : SieveClass Q, Real.log (m : ℕ) * a m) / Real.log R := tsum_div_const
     _ ≤ _ := div_le_div_of_nonneg_right (tsum_log_mul_sieveClassVector_repr_sq_le hd b) hlogR.le
 
@@ -197,12 +205,15 @@ theorem tsum_sieveClassVector_conductorTail_le_of_support {ι : Type*} [Fintype 
       (Real.log A + (sieveEuler Q - Real.eulerMascheroniConstant)) * ∑ i, b i ^ 2 := by
     rw [mul_sum]
     exact sum_le_sum fun i _ => mul_le_mul_of_nonneg_right
-      (add_le_add_right (Real.log_le_log (by exact_mod_cast (d i).property.pos) (hdA i)) _)
+      (add_le_add (Real.log_le_log (by exact_mod_cast (d i).property.pos) (hdA i)) le_rfl)
       (sq_nonneg _)
   have h := (tsum_sieveClassVector_conductorTail_le hd b hR).trans
     (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hdiag (by norm_num))
       (Real.log_pos hR).le)
-  convert h using 1 <;> ring
+  calc
+    _ ≤ (2 * ((Real.log A + (sieveEuler Q - Real.eulerMascheroniConstant)) *
+        ∑ i, b i ^ 2)) / Real.log R := h
+    _ = _ := by ring
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 

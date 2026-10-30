@@ -14,7 +14,7 @@ behind the horizontal-collision endpoint of `RHTower`, here in the generality of
 
 * `O` is even;
 * `O = 0` exactly on critical configurations, and `O ≥ 2` otherwise, so criticality is `O < 2`;
-* the off-line mass is at most `O`: `N - N₀ ≤ O` (census inequality), and the inequality is sharp.
+* the off-line mass is at most `O`: `N - N₀ ≤ O` (census inequality).
 
 The quantum `2` comes from line reflection: an off-line point and its reflection share an ordinate.
 -/

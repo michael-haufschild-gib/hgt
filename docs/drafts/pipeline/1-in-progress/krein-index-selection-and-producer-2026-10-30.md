@@ -40,6 +40,17 @@ the tower is a Bohr series with nonnegative weights plus finitely many pairs, so
 near `θ = π` give twin index growing linearly in the tower length. Target form:
 `negIndex zetaKernel = ⊤ ∨ negIndex (twin tower kernel) = ⊤`.
 
+## Status
+
+| Target | Result | Lean |
+|---|---|---|
+| T1 trial-span growth | false: one square (pole carrier) | `poleNegIndex_gauge_le_add_one`, `abs_poleNegIndex_gauge_sub_zeta_le_one`, `eventually_poleNegIndex_window` (HKT `TheSelectiveIndexOfTheAtomicKernelIsOneSquare`) |
+| T1 flip index on its tower | `κ(K_ζ) = ∞ ∨ κ(K_{ω_p}) = ∞`; on the finite stratum the twin has `≥ n − #R` squares for every `n` | `weightKernel_flip_tower`, `negIndex_flip_eq_top_of_finite`, `negIndex_zetaKernel_eq_top_or_flip` (HKT `OnTheFiniteStratumEveryFlipHasInfiniteIndex`); `exists_frequency_thin` (HKT `APurePointSpectrumIsThinAtMostFrequencies`) |
+| T2 fixed overlap | low spectral subspace ε-close to the Ramanujan span of conductors with `E_m(c) < T`, both directions | `eventually_completeWeil_lowSpace_near_ramanujan`, `tiltedUnitSpline_lowSpace_near_ramanujan` |
+| T2 growing overlap | along a diagonal schedule `c_N → ∞` | `exists_overlap_schedule_lowSpace_near_ramanujan` (RAPT `TheLowCompleteWeilSpectrumLivesOnTheLowConductors`) |
+| T3 | open | — |
+| T4 | open | — |
+
 ## Approach
 - T1a: one-square rigidity of the pole-hyperplane index under every sign gauge (atomic model).
 - T1b: odd-Poisson flip difference; Bohr-part frequency selection on a grid (exact average identity,

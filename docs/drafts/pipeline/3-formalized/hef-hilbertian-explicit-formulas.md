@@ -1,8 +1,8 @@
 # Hilbertian explicit formulas: foundations
 
 - **ID:** hef-foundations
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper) → THEOREM (Lean)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-3010/opus.md §7
 - **Statement:** The explicit image of the same-point problem is the Weil form; holomorphic clocks carry
   no quantum; same-point carriers are quantized; resolvent Hilbertian formula; 𝔽_q calibration; effectivity.
@@ -12,8 +12,28 @@ Programme `formal/GaloisForLFunctions/HilbertianExplicitFormulas/`. Pillars list
 
 ## Gates
 - [x] 0 → 1  well-posed; statements below
-- [ ] 1 → 2  paper proofs complete (below)
-- [ ] 2 → 3  Lean modules audited with `lake --old env lean`
+- [x] 1 → 2  paper proofs complete (below)
+- [x] 2 → 3  Lean modules audited with `lake --old env lean`; `#print axioms`: propext, Classical.choice, Quot.sound
+
+## Lean
+- P1 `TheExplicitImageIsTheWeilForm`: `eq_weilWeight_of_calibrated`, `samePoint_sub_explicit_pair`,
+  `blind_of_explicit_eq_samePoint`, `const_of_explicit_eq_samePoint_everywhere`,
+  `samePointForm_sub_explicitStatistic`, `norm_sq_sub_explicit_eq_half_reflectionDefect`.
+- P2 `HolomorphicClocksCarryNoQuantum`: `not_cesaroBounded_of_one_lt_norm`,
+  `cesaroBounded_holomorphicClock_iff`, `cesaroBounded_holomorphicClock_real_iff`,
+  `tendsto_cesaro_ordinateClock`, `tendsto_cesaro_ordinateClock_sub_diag_of_nonResonant`.
+- P3 `TheSamePointQuantumOfAReflectionConfiguration`: `isCritical_tfae`, `even_collisionCharge`,
+  `offLineMass_le_collisionCharge`, `one_sub_mul_total_le_lineMass`.
+- P4 `TheResolventHilbertianExplicitFormula`: `pair_depth_resolvent`, `sub_mul_samePointResolvent_eq`,
+  `resolventDefect_eq_zero_iff`, `sub_width_mul_samePointResolvent_le`, `integral_resolventDefect_vertical`.
+- P5 `TheFiniteFieldCalibration`: `unitary_tfae`, `even_curveCollisionCharge`,
+  `cesaroBounded_lefschetz_iff_curveCollisionCharge_lt_two`, `goldenDatum_curveCollisionCharge`,
+  `eq_rosatiWeight_of_circleCalibrated`, `explicit_eq_rosatiPairing`.
+- P6 `SamePointPositivityIsEffectivity`: `signedSamePointForm_nonneg_iff`, `exists_signedSamePointForm_neg`.
+
+## Open
+- Resolvent formula on the full Xi divisor; `D(s)` as a prime-side quantity.
+- Census: `O(T) ≤ c N(T)` with `c < 1/4`.
 
 ## Paper proofs
 
@@ -44,3 +64,4 @@ pencil = holomorphic clock with `c = 1 > 0` on every fibre.
 
 ## Log
 - 2026-10-30 — created; README first draft written.
+- 2026-10-30 — P1–P6 formalized; moved to 3-formalized.
