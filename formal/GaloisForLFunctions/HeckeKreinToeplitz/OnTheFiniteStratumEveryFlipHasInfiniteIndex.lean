@@ -427,7 +427,6 @@ theorem blockAmp_eq (G : ℕ) {n L : ℕ} (θ₀ θ : ℝ) (a : Fin n → ℂ) :
     push_cast
     ring
   rw [mul_assoc, this]
-  push_cast
 
 /-- **Pure-point part on a block family.** If `K(p^e) = Σ_i W_i e^{−i θ_i e}` with absolutely
 summable `W` of nonnegative real part, the form of `K` on a block vector is at most
@@ -519,5 +518,159 @@ theorem re_blockSum_pp_le {ι' : Type*} {W : ι' → ℂ} (hW : Summable fun i =
   · exact Summable.of_norm_bounded (hW.mul_right (n * (∑ k, ‖a k‖ ^ 2) * (L : ℝ) ^ 2)) fun i => by
       rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (Complex.normSq_nonneg _)]
       exact mul_le_mul (hre_le i) (hAbd i) (Complex.normSq_nonneg _) (norm_nonneg _)
+
+
+/-! ### The flip part on a block family -/
+
+theorem flipJump_eq (p : ℕ) (f : ℝ → ℝ) (d : ℤ) :
+    flipJump p f d = if Odd d then
+      (2 * Real.log p * RHTower.crossCorr f f 0) * (Real.sqrt p)⁻¹ ^ d.natAbs else 0 := by
+  unfold flipJump
+  split_ifs <;> simp [div_eq_mul_inv, inv_pow]
+
+/-- Exponents in different blocks are at least `G + 1 − L` apart. -/
+theorem le_natAbs_blockExp_sub {G n L : ℕ} (hG : L ≤ G) {b b' : Fin n × Fin L} (h : b.1 ≠ b'.1) :
+    G + 1 - L ≤ (blockExp G b' - blockExp G b).natAbs := by
+  have hl := b.2.isLt
+  have hl' := b'.2.isLt
+  have hk : (b.1 : ℤ) ≠ b'.1 := by
+    intro e; exact h (Fin.ext (by exact_mod_cast e))
+  have hd : ((G + 1 - L : ℕ) : ℤ) ≤ |blockExp G b' - blockExp G b| := by
+    simp only [blockExp]
+    rcases lt_or_gt_of_ne hk with hlt | hgt
+    · have h1 : (1 : ℤ) ≤ (b'.1 : ℤ) - b.1 := by omega
+      have h2 : (G : ℤ) ≤ ((b'.1 : ℤ) - b.1) * G := le_mul_of_one_le_left (by positivity) h1
+      rw [abs_of_nonneg (by nlinarith)]
+      push_cast [Nat.sub_le_iff_le_add.mpr (by omega : G + 1 ≤ L + (G + 1 - L))]
+      have : ((G + 1 - L : ℕ) : ℤ) = G + 1 - L := by omega
+      rw [this]; nlinarith
+    · have h1 : (1 : ℤ) ≤ (b.1 : ℤ) - b'.1 := by omega
+      have h2 : (G : ℤ) ≤ ((b.1 : ℤ) - b'.1) * G := le_mul_of_one_le_left (by positivity) h1
+      rw [abs_of_nonpos (by nlinarith)]
+      have : ((G + 1 - L : ℕ) : ℤ) = G + 1 - L := by omega
+      rw [this]; nlinarith
+  rw [← Int.natCast_natAbs] at hd
+  exact_mod_cast hd
+
+/-- **Flip part on a block family.** With `C = 2 log p ‖f‖²` and `r = p^{−1/2}`, the flip jump has
+form at most `−(C L r/2) Σ|a_k|²` on the diagonal blocks, up to `n L² C r^{G+1−L} Σ|a_k|²` from
+the cross terms. -/
+theorem re_blockSum_flip_le {p : ℕ} (hp : p.Prime) {f : ℝ → ℝ}
+    (hR0 : 0 ≤ RHTower.crossCorr f f 0) {n L G : ℕ} (hL : 4 ≤ L) (hG : L ≤ G) {θ₀ : ℝ}
+    (hθ : |θ₀ - π| ≤ (1 - (Real.sqrt p)⁻¹) ^ 2 / 8) (a : Fin n → ℂ) :
+    (∑ b : Fin n × Fin L, ∑ b' : Fin n × Fin L, conj (blockVec n L θ₀ a b) *
+        (flipJump p f (blockExp G b' - blockExp G b) : ℂ) * blockVec n L θ₀ a b').re ≤
+      (∑ k, ‖a k‖ ^ 2) * ((2 * Real.log p * RHTower.crossCorr f f 0) *
+        (-(L * (Real.sqrt p)⁻¹ / 2))) +
+      n * (∑ k, ‖a k‖ ^ 2) * (L ^ 2 * ((2 * Real.log p * RHTower.crossCorr f f 0) *
+        (Real.sqrt p)⁻¹ ^ (G + 1 - L))) := by
+  set C := 2 * Real.log p * RHTower.crossCorr f f 0
+  set r := (Real.sqrt p)⁻¹
+  set z := cexp (I * θ₀)
+  have hp1 : (1 : ℝ) < Real.sqrt p := by
+    rw [show (1 : ℝ) = Real.sqrt 1 by simp]
+    exact Real.sqrt_lt_sqrt zero_le_one (by exact_mod_cast hp.one_lt)
+  have hr0 : 0 < r := inv_pos.mpr (by linarith)
+  have hr1 : r < 1 := inv_lt_one_of_one_lt₀ hp1
+  have hC : 0 ≤ C := mul_nonneg (mul_nonneg (by norm_num) (Real.log_natCast_nonneg p)) hR0
+  have hz : ∀ l : ℕ, ‖z ^ l‖ = 1 := fun l => by
+    rw [norm_pow, show z = cexp ((θ₀ : ℂ) * I) by rw [mul_comm], Complex.norm_exp_ofReal_mul_I,
+      one_pow]
+  -- the block coefficients
+  set B : Fin n → Fin n → ℂ := fun k k' => ∑ l : Fin L, ∑ l' : Fin L,
+    conj (z ^ (l : ℕ)) * z ^ (l' : ℕ) * (flipJump p f (blockExp G (k', l') - blockExp G (k, l)) : ℂ)
+  have hexpand : ∑ b : Fin n × Fin L, ∑ b' : Fin n × Fin L, conj (blockVec n L θ₀ a b) *
+      (flipJump p f (blockExp G b' - blockExp G b) : ℂ) * blockVec n L θ₀ a b' =
+      ∑ k, ∑ k', conj (a k) * a k' * B k k' := by
+    simp only [Fintype.sum_prod_type, blockVec_apply, B, mul_sum]
+    refine sum_congr rfl fun k _ => ?_
+    rw [Finset.sum_comm]
+    refine sum_congr rfl fun k' _ => sum_congr rfl fun l _ => sum_congr rfl fun l' _ => ?_
+    rw [map_mul]
+    ring
+  -- diagonal blocks: the odd Poisson energy
+  have hdiag : ∀ k, (B k k).re ≤ C * (-(L * r / 2)) := by
+    intro k
+    have hterm : ∀ l l' : Fin L, (conj (z ^ (l : ℕ)) * z ^ (l' : ℕ) *
+        (flipJump p f (blockExp G (k, l') - blockExp G (k, l)) : ℂ)).re =
+        C * (if Odd (((l' : ℕ) : ℤ) - (l : ℕ)) then Real.cos (((((l' : ℕ) : ℤ) - (l : ℕ) : ℤ) : ℝ) * θ₀) *
+          r ^ (((l' : ℕ) : ℤ) - (l : ℕ)).natAbs else 0) := by
+      intro l l'
+      have he : blockExp G (k, l') - blockExp G (k, l) = ((l' : ℕ) : ℤ) - (l : ℕ) := by
+        simp only [blockExp]; ring
+      have hzz : conj (z ^ (l : ℕ)) * z ^ (l' : ℕ) =
+          cexp ((((((l' : ℕ) : ℤ) - (l : ℕ) : ℤ) : ℝ) * θ₀ : ℝ) * I) := by
+        have hzc : conj z = cexp (-(I * θ₀)) := by
+          simp only [z, ← Complex.exp_conj, map_mul, Complex.conj_I, Complex.conj_ofReal, neg_mul]
+        rw [map_pow, hzc]
+        simp only [z]
+        rw [← Complex.exp_nat_mul, ← Complex.exp_nat_mul, ← Complex.exp_add]
+        congr 1
+        push_cast
+        ring
+      rw [he, hzz, Complex.re_mul_ofReal, Complex.exp_ofReal_mul_I_re, flipJump_eq]
+      split_ifs
+      · simp only [C, r]; ring
+      · simp
+    have hsum : (B k k).re = C * ∑ l ∈ range L, ∑ l' ∈ range L,
+        (if Odd ((l' : ℤ) - l) then Real.cos ((((l' : ℤ) - l : ℤ) : ℝ) * θ₀) *
+          r ^ ((l' : ℤ) - l).natAbs else 0) := by
+      simp only [B, Complex.re_sum, hterm, ← mul_sum]
+      congr 1
+      rw [Fin.sum_univ_eq_sum_range (fun l => ∑ l' : Fin L, (if Odd (((l' : ℕ) : ℤ) - l) then
+        Real.cos (((((l' : ℕ) : ℤ) - l : ℤ) : ℝ) * θ₀) * r ^ (((l' : ℕ) : ℤ) - l).natAbs else 0)) L]
+      refine sum_congr rfl fun l _ => ?_
+      exact Fin.sum_univ_eq_sum_range (fun l' => (if Odd ((l' : ℤ) - l) then
+        Real.cos ((((l' : ℤ) - l : ℤ) : ℝ) * θ₀) * r ^ ((l' : ℤ) - l).natAbs else 0)) L
+    rw [hsum]
+    exact mul_le_mul_of_nonneg_left (oddPoisson_block_le hr0 hr1 hL hθ) hC
+  -- cross blocks: exponentially small
+  have hoff : ∀ k k', k ≠ k' → ‖B k k'‖ ≤ L ^ 2 * (C * r ^ (G + 1 - L)) := by
+    intro k k' hkk
+    have hJ : ∀ l l' : Fin L, ‖conj (z ^ (l : ℕ)) * z ^ (l' : ℕ) *
+        (flipJump p f (blockExp G (k', l') - blockExp G (k, l)) : ℂ)‖ ≤ C * r ^ (G + 1 - L) := by
+      intro l l'
+      rw [norm_mul, norm_mul, Complex.norm_conj, hz, hz, one_mul, one_mul, Complex.norm_real,
+        Real.norm_eq_abs, flipJump_eq]
+      split_ifs
+      · rw [abs_of_nonneg (by positivity)]
+        exact mul_le_mul_of_nonneg_left (pow_le_pow_of_le_one hr0.le hr1.le
+          (le_natAbs_blockExp_sub hG (b := (k, l)) (b' := (k', l')) hkk)) hC
+      · simp only [abs_zero]; positivity
+    calc ‖B k k'‖ ≤ ∑ l : Fin L, ∑ l' : Fin L, C * r ^ (G + 1 - L) :=
+          (norm_sum_le _ _).trans (sum_le_sum fun l _ => (norm_sum_le _ _).trans
+            (sum_le_sum fun l' _ => hJ l l'))
+      _ = _ := by simp [sum_const, card_univ, Fintype.card_fin]; ring
+  -- assemble
+  rw [hexpand, Complex.re_sum]
+  simp only [Complex.re_sum]
+  have hkk : ∀ k k', (conj (a k) * a k' * B k k').re ≤
+      (if k = k' then ‖a k‖ ^ 2 * (C * (-(L * r / 2))) else 0) +
+        ‖a k‖ * ‖a k'‖ * (L ^ 2 * (C * r ^ (G + 1 - L))) := by
+    intro k k'
+    by_cases h : k = k'
+    · subst h
+      rw [if_pos rfl, ← Complex.normSq_eq_conj_mul_self, Complex.re_ofReal_mul,
+        Complex.normSq_eq_norm_sq]
+      have := mul_le_mul_of_nonneg_left (hdiag k) (sq_nonneg ‖a k‖)
+      have : 0 ≤ ‖a k‖ * ‖a k‖ * (L ^ 2 * (C * r ^ (G + 1 - L))) := by positivity
+      linarith
+    · rw [if_neg h, zero_add]
+      refine (Complex.re_le_norm _).trans ?_
+      rw [norm_mul, norm_mul, Complex.norm_conj]
+      exact mul_le_mul_of_nonneg_left (hoff k k' h) (by positivity)
+  calc ∑ k, ∑ k', (conj (a k) * a k' * B k k').re
+      ≤ ∑ k, ∑ k', ((if k = k' then ‖a k‖ ^ 2 * (C * (-(L * r / 2))) else 0) +
+          ‖a k‖ * ‖a k'‖ * (L ^ 2 * (C * r ^ (G + 1 - L)))) :=
+        sum_le_sum fun k _ => sum_le_sum fun k' _ => hkk k k'
+    _ = (∑ k, ‖a k‖ ^ 2) * (C * (-(L * r / 2))) +
+          (∑ k, ‖a k‖) ^ 2 * (L ^ 2 * (C * r ^ (G + 1 - L))) := by
+        simp only [sum_add_distrib, sum_ite_eq, mem_univ, if_true, ← sum_mul, sq, sum_mul_sum]
+    _ ≤ _ := by
+        have hcs : (∑ k, ‖a k‖) ^ 2 ≤ n * ∑ k, ‖a k‖ ^ 2 := by
+          have := sq_sum_le_card_mul_sum_sq (s := (univ : Finset (Fin n))) (f := fun k => ‖a k‖)
+          simpa using this
+        have : 0 ≤ (L : ℝ) ^ 2 * (C * r ^ (G + 1 - L)) := by positivity
+        nlinarith
 
 end GaloisForLFunctions.HeckeKreinToeplitz
