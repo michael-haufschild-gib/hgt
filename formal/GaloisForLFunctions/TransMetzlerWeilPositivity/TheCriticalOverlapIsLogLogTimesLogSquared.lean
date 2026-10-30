@@ -1,11 +1,12 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ABoundedOverlapRateSeesASemilocalWindow
+import Mathlib.Analysis.Fourier.FourierTransformDeriv
 
 /-!
 # The critical overlap of a logarithmic Denjoy–Carleman profile
 
-A profile with `∫ |φ^{(q)}| ≤ A B^q q! (log(q + 3))^{2q}` has Fourier transform at frequency `c`
-bounded by `A μ_B(c)`, where `μ_B(c) = inf_q B^q q! (log(q + 3))^{2q} / c^q` is the derivative
-majorant of its Fourier tail (`dcMajorant`). The **critical overlap** `c*_N` is the least `c ≥ 1`
+A profile with `∫ |φ^{(q)}| ≤ A B^q q! (log(q + 3))^{2q}` has `|φ̂(ξ)| ≤ A μ_B(2π|ξ|)`, where
+`μ_B(c) = inf_q B^q q! (log(q + 3))^{2q} / c^q` is the derivative majorant of its Fourier tail
+(`dcMajorant`, `norm_fourier_le_dcMajorant`). The **critical overlap** `c*_N` is the least `c ≥ 1`
 with `μ_B(c)² log N ≤ 1` (`dcCriticalOverlap`): the tail energy, which is both the margin of the
 complete Weil form and its synthesis error, equals the Weil weight `1/log N` there.
 
@@ -23,7 +24,7 @@ complete Weil form and its synthesis error, equals the Weil weight `1/log N` the
 noncomputable section
 
 open Filter Topology RHTower
-open scoped ContDiff
+open scoped ContDiff FourierTransform
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
 
@@ -233,6 +234,61 @@ theorem dcMajorant_antitone {B c c' : ℝ} (hB : 0 ≤ B) (hc : 0 < c) (hcc : c 
   le_ciInf fun q => (dcMajorant_le_term hB (hc.trans_le hcc) q).trans
     (div_le_div_of_nonneg_left (by have := dcLogWeight_pos q; positivity) (pow_pos hc q)
       (pow_le_pow_left₀ hc.le hcc q))
+
+/-! ### The majorant bounds the Fourier transform -/
+
+/-- Iterated derivatives commute with `ℝ → ℂ`. -/
+private theorem iteratedDeriv_ofReal_comp' {g : ℝ → ℝ} (hg : ContDiff ℝ ∞ g) (n : ℕ) :
+    iteratedDeriv n (fun u : ℝ => ((g u : ℝ) : ℂ)) = fun u : ℝ => ((iteratedDeriv n g u : ℝ) : ℂ) := by
+  induction n with
+  | zero => funext u; simp [iteratedDeriv_zero]
+  | succ n ih =>
+      rw [iteratedDeriv_succ, ih]
+      funext u
+      rw [iteratedDeriv_succ]
+      have hd : HasDerivAt (iteratedDeriv n g) (deriv (iteratedDeriv n g) u) u :=
+        ((hg.differentiable_iteratedDeriv n (by exact_mod_cast WithTop.coe_lt_top _)) u).hasDerivAt
+      exact hd.ofReal_comp.deriv
+
+/-- **The majorant bounds the Fourier transform**: `|φ̂(ξ)| ≤ A μ_B(2π|ξ|)` for `ξ ≠ 0`, since
+`(2π|ξ|)^q |φ̂(ξ)| = |(φ^{(q)})^(ξ)| ≤ ∫ |φ^{(q)}|`. -/
+theorem norm_fourier_le_dcMajorant {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    {A B : ℝ} (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * B ^ q * dcLogWeight q)
+    {ξ : ℝ} (hξ : ξ ≠ 0) :
+    ‖𝓕 (fun x : ℝ => (φ x : ℂ)) ξ‖ ≤ A * dcMajorant B (2 * Real.pi * |ξ|) := by
+  set ψ : ℝ → ℂ := fun x => (φ x : ℂ)
+  have hψ : ContDiff ℝ ∞ ψ := Complex.ofRealCLM.contDiff.comp hφ
+  have hcs : ∀ n : ℕ, HasCompactSupport (iteratedDeriv n φ) := fun n => by
+    induction n with
+    | zero => simpa only [iteratedDeriv_zero] using hφc
+    | succ n ih => rw [iteratedDeriv_succ]; exact ih.deriv
+  have hint : ∀ n : ℕ, MeasureTheory.Integrable (iteratedDeriv n ψ) := fun n => by
+    rw [iteratedDeriv_ofReal_comp' hφ n]
+    exact (Complex.continuous_ofReal.comp (hφ.continuous_iteratedDeriv n
+      (by exact_mod_cast le_top))).integrable_of_hasCompactSupport
+      ((hcs n).comp_left Complex.ofReal_zero)
+  have hc0 : 0 < 2 * Real.pi * |ξ| := by positivity
+  have hbound : ∀ q : ℕ, ‖𝓕 ψ ξ‖ * (2 * Real.pi * |ξ|) ^ q ≤ A * B ^ q * dcLogWeight q := by
+    intro q
+    have hF := congrFun (Real.fourier_iteratedDeriv (N := ⊤) (n := q) hψ (fun n _ => hint n)
+      (by exact_mod_cast le_top)) ξ
+    have h1 : ‖𝓕 (iteratedDeriv q ψ) ξ‖ ≤ ∫ t, |iteratedDeriv q φ t| := by
+      refine (VectorFourier.norm_fourierIntegral_le_integral_norm _ _ _ _ _).trans (le_of_eq ?_)
+      rw [iteratedDeriv_ofReal_comp' hφ q]
+      simp only [Complex.norm_real, Real.norm_eq_abs]
+    rw [hF, norm_smul, norm_pow] at h1
+    have hn : ‖2 * (Real.pi : ℂ) * Complex.I * (ξ : ℂ)‖ = 2 * Real.pi * |ξ| := by
+      simp [Complex.norm_I, abs_of_pos Real.pi_pos]
+    rw [hn] at h1
+    linarith [hA q, mul_comm (‖𝓕 ψ ξ‖) ((2 * Real.pi * |ξ|) ^ q)]
+  have hA0 : 0 ≤ A := by
+    have h0 := (MeasureTheory.integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
+    simp only [pow_zero, mul_one] at h0
+    rw [dcLogWeight_zero, mul_one] at h0; exact h0
+  rw [dcMajorant, Real.mul_iInf_of_nonneg hA0]
+  refine le_ciInf fun q => ?_
+  rw [← mul_div_assoc, le_div_iff₀ (pow_pos hc0 q)]
+  exact (hbound q).trans_eq (by ring)
 
 /-! ### The critical overlap -/
 
@@ -499,6 +555,7 @@ end GaloisForLFunctions.TransMetzlerWeilPositivity
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.riemannHypothesis_iff_forall_critical_multiple
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.riemannHypothesis_iff_nonneg_of_critical_rate
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.nonneg_of_critical_multiple
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.norm_fourier_le_dcMajorant
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_le_dcCriticalOverlap
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_dcCriticalOverlap_le
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.riemannHypothesis_iff_steklovDCProfile_critical_multiples

@@ -775,8 +775,7 @@ theorem le_of_nonRatioForm_payment {φ : ℝ → ℝ} (hφ : Continuous φ) (hφ
   have hkey : 2 * η * 1 * A - 2 * ε * η ^ 2 = max A 0 ^ 2 / (2 * ε) := by
     rw [hηdef]
     field_simp
-    rw [← hmax]
-    ring
+    linear_combination hmax
   linarith only [hlim, hkey]
 
 /-- **Against the reserve fraction.** A separate payment at the defect fraction `a c⁻⁷` of the

@@ -39,8 +39,8 @@ local notation "Λ" => ArithmeticFunction.vonMangoldt
 /-- `A(x) = Σ_{n ≤ x} Λ(n)/√n`. -/
 def sqrtChebyshev (x : ℝ) : ℝ := ∑ n ∈ Icc 0 ⌊x⌋₊, Λ n / Real.sqrt n
 
-theorem sqrtChebyshev_mono : Monotone sqrtChebyshev := fun x y hxy =>
-  sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc_right (Nat.floor_mono hxy)) fun n _ _ =>
+theorem sqrtChebyshev_mono : Monotone sqrtChebyshev := fun _ _ hxy =>
+  sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc_right (Nat.floor_mono hxy)) fun _ _ _ =>
     div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
 
 theorem tendsto_sqrtChebyshev :
@@ -49,14 +49,14 @@ theorem tendsto_sqrtChebyshev :
 
 /-- `Σ_{1 ≤ m ≤ Y, m < γY} Λ(m)/√m`: the part of a window seen by the head `m ≤ Y`. -/
 def headWindowMass (Y : ℕ) (γ : ℝ) : ℝ :=
-  ∑ m ∈ (Icc 1 Y).filter (fun m => (m : ℝ) < γ * Y), Λ m / Real.sqrt m
+  ∑ m ∈ (Icc 1 Y).filter (fun m : ℕ => (m : ℝ) < γ * (Y : ℝ)), Λ m / Real.sqrt (m : ℝ)
 
 theorem headWindowMass_nonneg (Y : ℕ) (γ : ℝ) : 0 ≤ headWindowMass Y γ :=
   sum_nonneg fun _ _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
 
 theorem headWindowMass_le (Y : ℕ) {γ : ℝ} (hγ : 0 < γ) :
     headWindowMass Y γ ≤ sqrtChebyshev (min γ 1 * Y) := by
-  refine sum_le_sum_of_subset_of_nonneg (fun m hm => ?_) fun n _ _ =>
+  refine sum_le_sum_of_subset_of_nonneg (fun m hm => ?_) fun _ _ _ =>
     div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
   obtain ⟨hmY, hmγ⟩ := mem_filter.mp hm
   have hmY' : (m : ℝ) ≤ Y := by exact_mod_cast (mem_Icc.mp hmY).2
@@ -76,7 +76,7 @@ theorem sqrtChebyshev_sub_one_le_headWindowMass (Y : ℕ) {γ : ℝ} (hγ : 0 < 
     subst this
     simp
   rw [sqrtChebyshev, h0]
-  refine sum_le_sum_of_subset_of_nonneg (fun n hn => ?_) fun n _ _ =>
+  refine sum_le_sum_of_subset_of_nonneg (fun n hn => ?_) fun _ _ _ =>
     div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
   obtain ⟨hn1, hn2⟩ := mem_Icc.mp hn
   have hpos : 0 < min γ 1 * Y - 1 := by
@@ -107,9 +107,11 @@ theorem tendsto_headWindowMass {γ : ℝ} (hγ : 0 < γ) :
     refine (h1.mul_const (Real.sqrt c)).congr' ?_
     filter_upwards [eventually_gt_atTop 0] with Y hY0
     have hY0' : (0 : ℝ) < Y := by exact_mod_cast hY0
+    have hsc := Real.sqrt_pos.mpr hc0
+    have hsY := Real.sqrt_pos.mpr hY0'
     simp only [Function.comp_apply]
-    rw [Real.sqrt_mul hc0.le, div_mul_eq_mul_div, mul_div_mul_comm, div_self
-      (Real.sqrt_pos.mpr hc0).ne', one_mul]
+    rw [Real.sqrt_mul hc0.le]
+    field_simp
   -- lower bound
   have hlo : Tendsto (fun Y : ℕ => sqrtChebyshev (c * Y - 1) / Real.sqrt Y) atTop
       (𝓝 (2 * Real.sqrt c)) := by
@@ -127,9 +129,11 @@ theorem tendsto_headWindowMass {γ : ℝ} (hγ : 0 < γ) :
     refine (h1.mul h2).congr' ?_
     filter_upwards [hlin.eventually_gt_atTop 0, eventually_gt_atTop 0] with Y hpos hY0
     have hY0' : (0 : ℝ) < Y := by exact_mod_cast hY0
+    have hsp := Real.sqrt_pos.mpr hpos
+    have hsY := Real.sqrt_pos.mpr hY0'
     simp only [Function.comp_apply]
-    rw [Real.sqrt_div hpos.le, div_mul_div_comm, mul_comm (Real.sqrt (c * Y - 1)),
-      mul_div_mul_right _ _ (Real.sqrt_pos.mpr hpos).ne']
+    rw [Real.sqrt_div hpos.le]
+    field_simp
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlo hup (fun Y => ?_) fun Y => ?_
   · exact div_le_div_of_nonneg_right (sqrtChebyshev_sub_one_le_headWindowMass Y hγ)
       (Real.sqrt_nonneg _)
@@ -140,7 +144,7 @@ theorem headWindowMass_le_sqrt (Y : ℕ) (hY : 1 ≤ Y) (γ : ℝ) :
     headWindowMass Y γ ≤ 2 * RHTower.FreeLagTrace.chebyshevConst * Real.sqrt Y := by
   have hY' : (1 : ℝ) ≤ Y := by exact_mod_cast hY
   refine le_trans ?_ (RHTower.FreeLagTrace.sum_vonMangoldt_div_sqrt_le hY')
-  refine le_trans (sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun n _ _ =>
+  refine le_trans (sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun _ _ _ =>
     div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)) ?_
   rw [Nat.floor_natCast]
   have hsplit : Icc 1 Y = insert 1 (Icc 2 Y) := by

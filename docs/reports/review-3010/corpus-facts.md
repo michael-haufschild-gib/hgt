@@ -37,3 +37,47 @@ Proof mechanism: existence of this extension implies RH; the resulting dilation 
 Stronger spectral statement: a positive affine state with integer successor has zero spectral mass on the entire archimedean Kronecker line. The proof uses rational ratios `(N+1+b)/(N+1+a)` tending to 1 in the real topology but with reduced numerator–denominator product growing quadratically. The Hecke bound forces their coefficients to zero; normalized finite Gram averages bound Kronecker-line mass by `φ(1)/M` for every `M`.
 
 Declarations: `weil_successor_blind` ([source](../../../formal/GaloisForLFunctions/ArithmeticPositiveDuality/WeilsCorrelationCarriesNoSuccessor.lean)); `weil_extension_classification` ([source](../../../formal/GaloisForLFunctions/ArithmeticPositiveDuality/TheExtensionsOfWeilsCorrelationAreIndexedByTheZeros.lean)); `integer_successor_kronecker_null` ([source](../../../formal/GaloisForLFunctions/ArithmeticPositiveDuality/TheIntegerSuccessorForcesAKroneckerNullDilationSpectrum.lean)).
+
+## F07. Counting precision and complete tower positivity impose different requirements
+
+**Source.** At any prime tower, index zero for every compact smooth test is equivalent to RH **and exact equality of every coefficient** `λ(n) = Λ(n)` for `n ≥ 2`. In contrast, `Count(Λ + 1/n)` is equivalent to RH, although that perturbed source never has tower index zero. The counting endpoint tolerates the square-root class; complete tower positivity does not.
+
+`deciding_input_necessary_properties` assumes a predicate implies `Count` for every source. Its conclusions exclude specified twins and perturbation stability. They do not classify every possible proof method. `errorLaw_cannot_decide` concerns arbitrary weights sharing an error law; exact arithmetic restrictions are additional information.
+
+Sources: [TowerPositivityIsPrecisionExact.lean](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TowerPositivityIsPrecisionExact.lean), [TheDecidingInputTheorem.lean](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TheDecidingInputTheorem.lean).
+
+## F08. Holomorphic rigidity has explicit quantifiers
+
+**Source.** An entire weight calibrated to `|F(x)|²` at every real point is uniquely `F·F#`. A holomorphic linear carrier vanishing on every critical-line configuration also vanishes on the stipulated reflected configurations; the sesquilinear version requires separate holomorphy and universal critical-configuration vanishing. The approximate statement fixes positive boundary bounds and obtains a depth at which quartet response falls below a prescribed quantum. These statements do not quantify over arbitrary nonlinear source constructions or singular currents.
+
+Sources: `eq_weilWeight_of_calibrated` in [TheExplicitImageIsTheWeilForm.lean](../../../formal/GaloisForLFunctions/HilbertianExplicitFormulas/TheExplicitImageIsTheWeilForm.lean); `linearCarrier_eq_zero`, `sesquilinearCarrier_eq_zero`, `exists_depth_without_quantum` in [HolomorphicCarriersCannotBeQuantized.lean](../../../formal/GaloisForLFunctions/RHTower/HolomorphicCarriersCannotBeQuantized.lean).
+
+## F09. Shell cancellation gives a positive coprimality formula
+
+**Source.** For a nonzero real `C²` profile supported in `[0,1]`, positive overlap `c` and conductor `m`, the shell-completed energy is a sum of nonnegative Fourier tails over positive integers coprime to `m`. The proof interchanges a finite divisor sum with convergent one-conductor tails; Möbius cancellation becomes the coprimality indicator. This proves nonnegativity for every conductor and overlap. For each fixed conductor, the energy tends to zero as overlap tends to infinity. Realization on actual finite Weil matrices is a separate assertion.
+
+Declarations: `hasSum_completedConductorEnergy`, `completedConductorEnergy_nonneg`, `tendsto_completedConductorEnergy_atTop` in [TheShellsRepayEveryConductor.lean](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/TheShellsRepayEveryConductor.lean).
+
+## F10. Defect-only confinement really requires exponentially large conductors
+
+**Source.** Unit-normalized actual Ramanujan horizon vectors converge to orthogonal conductor coordinates and have limiting prime energy `γ + log m + tameDifferent(m)`. At `m = 2^k` this is exactly `γ + (k+1) log 2`. A row estimate bounds their pole defect by this energy plus `log 4 + 4 + ε`. Consequently any fixed conductor cutoff below `2^k` misses unit vectors of defect only linear in `k`. The obstruction concerns **all bounded-defect vectors**, not just negative directions of the complete signed form.
+
+Declarations: `eventually_exists_unit_vector_escaping_conductors`, `ramanujanAdjunctionEnergy_two_pow`, `not_eventually_defect_coordinate_capture_below_binary_cutoff` in [PrimeDefectConfinementMustRetainLowEnergyConductors.lean](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/PrimeDefectConfinementMustRetainLowEnergyConductors.lean).
+
+## F11. Exact nonlinear coordinates need not preserve the required positive cone
+
+**Source.** For the first theta atom, the invertible clock `u = arsinh(t/√q)` changes the reflected pair exactly into `C exp(−4t²)(B−24t²)`. Its signed moments are an adjacent-Gamma mixture. At every nonnegative source center, all clocked signed Hankel heads are positive definite, while some physical signed head fails positive semidefiniteness at that same center. Exact recovery of the source by inverse substitution therefore supplies no positivity transport by itself.
+
+Declarations: `firstAtomGaussianClockProfile_eq`, `firstAtomGaussianClockProfile_pullback`, `firstAtomGaussianClock_positive_pullback_fails` in [HyperbolicClock.lean](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/HyperbolicClock.lean).
+
+## F12. A congruence preserves complete mixed-rank error
+
+**Source.** The monic Hermite change of coordinates is surjective and transports the entire quadratic comparison with the Gaussian head. Gaussian contraction pays the first atom; a weighted entry estimate pays the infinite theta remainder with a linear dimension cost. The resulting bound for the **literal complete native** moment matrix is `|vᵀ(H−G)v| ≤ C(N)/q · vᵀGv`, with quadratic rank numerator, provided `q ≥ 16(N+2)²`. This includes every signed coefficient direction. Its scale condition grows with rank.
+
+Declarations: `relativeFormError_of_hermiteCongruence`, `nativeHermiteTail_relative_error_le`, `nativeBalancedFullHead_quadratic_rank_error_le` in [NativeQuadraticRank.lean](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/NativeQuadraticRank.lean).
+
+## F13. Combining sources can create an exact positive reserve
+
+**Source.** When both preceding Hankel heads are positive definite, the successor Schur complement of their sum equals the sum of their successor complements **plus** a nonnegative variance. This variance measures disagreement of their minimizing coefficient vectors in their respective head norms. It vanishes exactly when the minimizers coincide. Positivity of the preceding heads is essential to the stated theorem; it is not an all-rank theta positivity proof.
+
+Declarations: `successorSchur_add_eq`, `successorMixtureVariance_nonneg`, `successorMixtureVariance_eq_zero_iff` in [SuccessorMixture.lean](../../../formal/GaloisForLFunctions/CompletedArithmeticForms/SuccessorMixture.lean).

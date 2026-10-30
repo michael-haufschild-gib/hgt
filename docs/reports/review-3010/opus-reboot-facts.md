@@ -640,3 +640,125 @@ observation about the shape of a proof or statement, read off the source.
   `riemannHypothesis_iff_vonMangoldt_sub_one_mem_sqrtClass`); integer-count precision cannot decide [L].
 - ASRP calibration: over F_q precision exponent ½ + max log|β|/log q; the golden datum has exponent
   ½ + log φ/log 5 and satisfies the upper half N_k ≤ q^k + 1 (`golden_upperCount_and_not_lowerCount`) [L].
+
+## F23. Cyclotomic integrality inside the complete Weil matrix (CACT)
+
+- CACT: primitive-root prefix energy P_m(k) = Σ_{ζ prim. order m}|Σ_{j<k}ζ^j|² = Σ_{d|m} μ(m/d)(k mod d)(d − k mod d);
+  vanishes iff m | k; otherwise the prefix is a nonzero cyclotomic integer, its norm has |·| ≥ 1, and AM–GM over
+  the embeddings gives P_m(k) ≥ φ(m); interpolation: A_m(t)/φ(m) ≥ {t}(1−{t}) for m > 1
+  (`PrimitiveRootPrefixEnergyIsAMobiusQuadraticRemainder`, `CyclotomicNormGivesAConductorUniformCurvatureFloor`) [L].
+- CACT: Σ_{a|n} Λ(a)c_m(n/a) = log n·c_m(n) − J_m(n), J_m(n) = Σ_{d|m, d|n} μ(m/d)d log d; at n = m:
+  Σ_{d|m} μ(m/d)d log d = φ(m)(log m + tameDifferent(m)) — the source of the conductor energies
+  (`TheDownwardPrimeRowIsAnExactLogarithmicDivisorJet`) [L].
+- CACT: Σ_{(r,q)=1} c_q(rn+h) = c_q(n)c_q(h): Ramanujan modes are eigenfunctions of affine unit averaging with
+  eigenvalue c_q(h)/φ(q) (`UnitAveragesDiagonalizeSuccessorCorrections`); actual prime windows realize the average:
+  lim Σ_{AN<k≤BN} Λ(k)/k·c_q(kn+h) = (log B − log A)c_q(n)c_q(h)/φ(q)
+  (`ActualPrimeWindowsDiagonalizeAffineRamanujanModes`) [L].
+- CACT: every eigenvalue of the normalized complete Weil matrix ≥ b for all 0 < c ≤ 1 with one smooth plateau
+  and one horizon, any b < 2 − log(2π) (`OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching`) [L].
+- CACT: at touching only the boundary star N, N+1 carries non-ratio prime lags
+  (`OnlyTheBoundaryStarEntersAtTouching`) [L].
+- CACT: growing Ramanujan families: (log(N+1) − log(K+1))·Σa_m² ≤ Σ_{n≤N}F_a(n)², K = Q(Q−1), via resolution into
+  primitive roots and the large sieve (`GrowingRamanujanFamiliesHaveASquareRootHorizon`); on annuli (A,2A] with
+  A ≥ 4Q(Q−1) two-sided frames ¼ ≤ · ≤ 5/4; the prime kernel compressed to a dyadic annulus is zero (no divisibility
+  inside (A,2A]) (`AnnularRamanujanFamiliesHaveTwoSidedFrames`) [L].
+- CACT: completed source work 0 ≤ W(R) ≤ 64R L_R(L_R+1) (`xiDampedSourceWork_le_logarithmic_ceiling`); every
+  off-line quartet forces W(2|γ|) − W(|γ|) > 39/50 (AID) [L].
+
+## F24. Crossing the Metzler wall; zero density is indispensable
+
+- TMWP: complete Weil positivity crosses the Metzler wall c = 1: completeWeilMatrix φ₀ c N eventually PD on
+  (0, c₀], c₀ = 1 + 10^{−18}, φ₀ = plateau(1/1000), while no unimodular gauge makes the atomic Markov form Metzler
+  (`exists_gt_one_eventually_completeWeilMatrix_posDef`, `eventually_transMetzler_atomSpacing_posDef_and_frustrated`);
+  mechanism: convex combination of Ramanujan norm-quasimode spectral exclusion and strict-variance prime-defect
+  coercivity paying successor pairs (kn, kn ± 1) in the top third [L].
+- TMWP: the Liouville twin fails inside the separated regime above the Robin–Euler ratio
+  c_RE(φ) = e^{β(φ)/‖φ‖²}/(2π) < ½ (→ e/(2π) on thin plateaus) (`eventually_liouville_weilQuadTw_neg_of_gt_robinEuler`) [L].
+- TMWP: the tempered configuration `isolatedPairConfig` (one off-line pair, vertical period 2π/log 2) fails at every
+  c > 0 with x₁ = 1, x₂ = −1: fixed-c positivity is not a zero-side deduction; ζ's growing (log T)/2π density is
+  indispensable (`isolatedPairConfig_atomic_negative_every_ratio`) [L].
+- TMWP: under finite off-line support the atomic negative index is ≤ #right zeros uniformly in c > 0, N
+  (`hermNegIndex_atomicShiftWeilGram_le_of_finiteOffLine`) [L].
+- TMWP: one fixed Steklov Denjoy–Carleman profile makes RH equivalent to eventual atomic positivity at
+  c_N = (log log N)(log log log N)^β, β > 2 (`riemannHypothesis_iff_steklovDCProfile_nonneg_superGevrey`) [L].
+- RAPT (via AHA): single-prime flip thresholds: flipped form eventually positive when max(c,1)^8 log p ≤ κ√p, negative
+  on the prime-square trial when c ≥ K and c^7 ≥ Kp (`TheFlipThresholdGrowsLikeAPowerOfThePrime`) [L].
+- AHA: |χ_x(n) − 1| ≤ 2k·D_N(x) for n ≤ min(N, 2^k), D_N the max successor defect; D_N(x) = 0 ⇔ χ_x(p) = 1 for all
+  p ≤ N (`DyadicSuccessorRigidity`) [L].
+- AHA: an auxiliary with full multiplicity r on the order-(d+1) Adams fixed locus needs integer support 2^{dr},
+  attained by (z₂^d − 1)^r (`AdamsMultiplicityResolution`, `TorsionMultiplicityBoundary`) [L].
+- AHA: at an algebraic torus point, vanishing of the first vertical jet ⇔ all prime partials vanish (Baker)
+  (`AlgebraicVerticalFirstJets`); fixed-degree homogeneous families in log p, log q are independent over Q̄
+  (Gelfond–Schneider) (`TwoPrimeHomogeneousLogRigidity`) [L].
+
+## F25. Same-point vs reflection-paired; shells
+
+- HEF calibration rigidity: an entire weight h with h = |F|² on R equals F·F^# (`eq_weilWeight_of_calibrated`);
+  every line-calibrated explicit statistic is the Weil form; at a pair {z, z̄} it misses the same-point value by
+  |F(z) − F(z̄)|² (`samePoint_sub_explicit_pair`); correct on every pair forces F constant
+  (`const_of_explicit_eq_samePoint_everywhere`) [L].
+- HEF: holomorphic clocks e^{λ(s−½)} have Cesàro excess 0 or ∞ (`cesaroBounded_holomorphicClock_iff`); the
+  ordinate clock c(s)c(1−s̄) = e^{2iλ Im s} is unimodular (antiholomorphic in one factor) and reads the collision
+  charge O at non-resonant frequencies (`tendsto_cesaro_ordinateClock_sub_diag_of_nonResonant`) [L].
+- HEF: O ∈ 2N, O = 0 ⇔ critical, N ≤ N₀ + O (`even_collisionCharge`, `total_le_lineMass_add_collisionCharge`);
+  over F_q unitary ⇔ charge 0 ⇔ charge < 2; golden datum has charge exactly 2; every circle-calibrated
+  explicit formula is the Rosati pairing (`unitary_tfae`, `goldenDatum_curveCollisionCharge`,
+  `explicit_eq_rosatiPairing`) [L].
+- HEF resolvent: (σ−½)S(s) = E(s) + D(s), D ≥ 0, D = 0 ⇔ critical; ∫D dt = πΣ m d²/(u² − d²) = πΣ M_{2k}u^{−2k}
+  (`sub_mul_samePointResolvent_eq`, `integral_resolventDefect_vertical`); same-point positivity ⇔ effectivity, a pole
+  makes the form indefinite (`signedSamePointForm_nonneg_iff`, `exists_signedSamePointForm_neg`) [L].
+- SSh: on a conductor-m mode a shell of shift h acts by c_m(h) (average of c_m(ℓ)c_m(ℓ+h)); Möbius collapse
+  c_m(h) = Σ_{d|(m,h)} μ(m/d)d + Poisson on each dZ turn the shell symbol into the coprimality indicator:
+  E_m(c) = (2/(Mφ(m)))Σ_{(a,m)=1}(m/a)∫_{ac/m}^∞ |φ̂(2πt)|² ≥ 0 (`hasSum_completedConductorEnergy`) [L].
+- SSh: the continuum average of the shells is exactly the pole charge cq; only the lattice part repays log c;
+  without the shells every nonpolar reference energy is negative past touching
+  (`exists_overlap_all_nonpolar_reference_energies_negative`) [L].
+- SSh: ground-state transform P_N + D = Σ(A(⌊N/n⌋) + log n)x_n², D = Σ_{mt≤N} Λ(t)(x_{mt} − x_m/√t)², the
+  Dirichlet energy of the pole relation (`atomicWeilForm_add_poleDefect`) [L].
+- SSh: the reserve W ≥ (δ/4)D − C(c)‖x‖² with δ ∝ c^{−7}, C ∝ c^9; negative vectors have D ≤ C'c^{16}
+  (`tiltedUnitSpline_complete_defect_reserve_explicit`, `exists_negative_completeWeil_poleDefect_polynomial_bound`);
+  defect-only capture is exponential (`not_eventually_defect_coordinate_capture_below_binary_cutoff`) [L].
+
+## F26. Realizations and amplifiers (ART)
+
+- ART: commutative realization (one loop of length log p per prime) has zeta ζ; its transfer operator is diagonal
+  with eigenvalues p^{−s}, spectral radius 2^{−σ} < 1, trace norm P(σ) finite exactly for σ > 1: the pole of ζ is a
+  nuclearity pole, not a Perron–Frobenius crossing [L].
+- ART: free realization (one vertex, a loop per prime) is mixing with zeta 1/(1 − P(s)), spectral pole at a unique
+  σ* ∈ (1,2): wrong entropy [L].
+- ART: unique factorization forbids additive concatenation: every additive realization of the primes is
+  commutative (two first-return loops would concatenate to log(pq)) [L].
+- ART: finite even realizations Z = 1/det(I − M(s)) have no zeros; zeros need an odd part; over F_q the odd part is
+  H¹ [L].
+- ART: integrality forbids super-conformal roofs (Pisot: integers p_{n+1} − p·p_n → 0 force composites); primes obey
+  no eventual affine recurrence (Cunningham) [L].
+- ART: a realization by a Hölder suspension of a mixing finite-type subshift gives a zero-free strip (Pollicott);
+  oscillation fails on additive and free realizations (Dolgopyat modulus 1 at the abscissa, Kronecker density) [L].
+- ART rank law: a Brauer family at level k on r phases has ≥ C(r+k−1,k) members and never beats the trivial bound;
+  loss → 1 exactly at finite rank; over Z the rank at scale x is π(x) [L].
+- ART: open "Mills boundary": does a prime sequence p_n = Cp^n + O(1) exist (needed along every cycle family of a
+  Hölder finite-type realization) [L].
+
+## F27. Bézout and Riemann–Roch of G_m(Q); the twist tower collapses (EAHT)
+
+- EAHT Bézout of G_m(Q): points are the Frobenius progressions s_j = 2πij/log p (zeros of 1 − p^{−s}); a nonzero
+  Dirichlet polynomial of length N vanishing to order m_p along the progression of p (p ∈ S) has Π p^{m_p} ≤ N;
+  1 − p^{−s} attains it; distinct progressions meet only at s = 0 (log q/log p irrational)
+  (`prod_pow_le_of_vanishesAlong`, `sum_mul_log_le_of_vanishesAlong`, `cpow_neg_frobPoint_ne_one`) [L].
+- EAHT Riemann–Roch of G_m(Q): sections of length N with divisor m have dimension h⁰(N,m) = ⌊N/Π p^{m_p}⌋
+  (`finrank_sections_eq`), h⁰(N,0) = N; nonzero section ⇔ Π p^{m_p} ≤ N. Over F_q[T] with u = q^{−s}: divisibility by
+  (u^e − 1)^m cuts dimension d + 1 − em (`finrank_divisibleLT_eulerFactor`): places of one degree share one
+  progression; over Z each prime has its own and costs N − ⌊N/p⌋ conditions [L].
+- EAHT: approximate vanishing is almost divisibility: Frobenius roots are 4/(Np log p) apart by integrality; values
+  ≤ ε on J ≥ N²p log p consecutive points force Σ|C_w|² ≤ 2ε² (`sum_normSq_towerSums_le`); integer auxiliaries
+  small to order m_p along p ∈ S satisfy Π p^{m_p} ≤ N (`prod_pow_le_of_small`) [L].
+- EAHT twist tower: over Z the base-change levels w_j(n) = (−1)^{Ω(n)/2^j}Λ(n) on 2^j | Ω(n) live on prime powers
+  p^k, 2^j | k, for j ≥ 1, so lie in Q (`twistLevel_mem_sqrtClass`): every prime has degree one; the tower is its
+  first level [L].
+- EAHT: the explicit Gevrey/Denjoy–Carleman schedules reach the index: hermNegIndex G_N → κ(K_ζ)
+  (`tendsto_hermNegIndex_atomicGram`, `dcProfile_atomicGram_reaches_index`) [L].
+- EAHT Hasse with heights: a tower of scale ℓ with ℓT < π separates all right zeros of ordinate ≤ T (π sharp);
+  the tower of 3^k/2^j with k = O(T) certifies height T (`twoPrime_tower_certifies_height`) [L].
+- EAHT: atomic family at unit-mass width 1/T has transform window × Dirichlet polynomial of length N; overlap
+  c = N/T, bandwidth log N/log T = 1 + log c/log T (`bandwidth_eq_one_add_log_overlap`) [L].
+- EAHT: a twin failing Weil positivity is seen by every large Gevrey section (`eventually_negative_iff_of_gevrey`) [L].
