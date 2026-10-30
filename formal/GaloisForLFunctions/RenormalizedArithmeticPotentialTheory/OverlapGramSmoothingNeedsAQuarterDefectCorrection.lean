@@ -223,10 +223,10 @@ theorem exists_correctedOverlapDefect_ground_line {N : ℕ} (hN : 1 ≤ N)
 
 private theorem horizonPoleVector_ne_zero {N : ℕ} (hN : 1 ≤ N) : horizonPoleVector N ≠ 0 := by
   intro h
-  have he := congrArg (fun x : EuclideanSpace ℝ (PrimeHorizonIndex N) =>
-    x ⟨1, mem_Icc.mpr ⟨le_rfl, hN⟩⟩) h
-  change 1 / Real.sqrt (1 : ℝ) = 0 at he
-  norm_num at he
+  have hs := horizonPoleVector_norm_sq N
+  rw [h, norm_zero, zero_pow two_ne_zero] at hs
+  have hmass := one_le_harmonicMass hN
+  linarith only [hs, hmass]
 
 private theorem preimage_not_pole {N : ℕ} (hN : 1 ≤ N)
     (G : EuclideanSpace ℝ (PrimeHorizonIndex N) →ₗ[ℝ]
@@ -237,7 +237,7 @@ private theorem preimage_not_pole {N : ℕ} (hN : 1 ≤ N)
   rintro ⟨a, ha⟩
   have ha0 : a ≠ 0 := by
     intro hz
-    rw [ha, hz, zero_smul, map_zero, add_zero] at hu
+    rw [ha, hz, zero_smul, _root_.map_zero, add_zero] at hu
     exact horizonPoleVector_ne_zero hN hu.symm
   have hGu : G (a • horizonPoleVector N) = horizonPoleVector N - a • horizonPoleVector N := by
     apply eq_sub_iff_add_eq.mpr
@@ -355,9 +355,10 @@ private theorem positive_bumpCorr {g : ℝ → ℝ} {w s : ℝ}
   have hp : 0 < g ((w - s) / 2) * g ((w - s) / 2 + s) :=
     mul_pos (hgp _ ⟨by linarith only [hs'.2], by linarith only [hs'.1]⟩)
       (hgp _ ⟨by linarith only [hs'.1], by linarith only [hs'.2]⟩)
-  exact (hg.mul (hg.comp (continuous_id.add continuous_const)))
-    .integral_pos_of_hasCompactSupport_nonneg_nonzero hgc.mul_right
-      (fun u => mul_nonneg (hg0 u) (hg0 (u + s))) hp.ne'
+  have hcont : Continuous (fun u => g u * g (u + s)) :=
+    hg.mul (hg.comp (continuous_id.add continuous_const))
+  exact hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hgc.mul_right
+    (fun u => mul_nonneg (hg0 u) (hg0 (u + s))) hp.ne'
 
 private theorem overlapGram_does_not_preserve_pole {N : ℕ} (hN : 3 ≤ N)
     {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g) (hgc : HasCompactSupport g)
@@ -421,11 +422,15 @@ private theorem overlapGram_does_not_preserve_pole {N : ℕ} (hN : 3 ≤ N)
     linarith only [hsum, hp]
   rintro ⟨a, ha⟩
   have h₁ := congrArg (fun x : EuclideanSpace ℝ (PrimeHorizonIndex N) => x i₁) ha
-  change normalizedOverlapGram g N (horizonPoleVector N) i₁ = a * (1 / Real.sqrt (1 : ℝ)) at h₁
-  rw [hfirst, Real.sqrt_one, div_one, mul_one] at h₁
+  simp only [PiLp.smul_apply, smul_eq_mul] at h₁
+  have hb₁ : horizonPoleVector N i₁ = 1 := by
+    change 1 / Real.sqrt ((1 : ℕ) : ℝ) = 1
+    norm_num
+  rw [hfirst, hb₁, mul_one] at h₁
   have hN' := congrArg (fun x : EuclideanSpace ℝ (PrimeHorizonIndex N) => x iN) ha
-  change normalizedOverlapGram g N (horizonPoleVector N) iN = a * (1 / Real.sqrt (N : ℝ)) at hN'
-  rw [← h₁, one_mul] at hN'
+  simp only [PiLp.smul_apply, smul_eq_mul] at hN'
+  have hbN : horizonPoleVector N iN = 1 / Real.sqrt (N : ℝ) := rfl
+  rw [hbN, ← h₁, one_mul] at hN'
   exact hlast.ne hN'.symm
 
 private theorem eventually_overlap_endpoints {c : ℝ} (hc : 1 < c) :
@@ -471,7 +476,8 @@ theorem eventually_normalizedTiltedGram_does_not_preserve_pole {c : ℝ} (hc : 1
   filter_upwards [eventually_overlap_endpoints hc] with N hN
   have hw : 0 < c / (N : ℝ) := div_pos (lt_trans zero_lt_one hc)
     (by exact_mod_cast (show 0 < N by omega))
-  apply overlapGram_does_not_preserve_pole hN.1
+  apply overlapGram_does_not_preserve_pole
+    (g := atomDilate tiltedUnitSpline (c / N)) (w := c / N) hN.1
     (contDiff_tiltedUnitSpline.continuous.comp (continuous_id.div_const _))
     (hasCompactSupport_atomDilate hw.ne' hasCompactSupport_tiltedUnitSpline)
     (fun u => tiltedUnitSpline_nonneg _)

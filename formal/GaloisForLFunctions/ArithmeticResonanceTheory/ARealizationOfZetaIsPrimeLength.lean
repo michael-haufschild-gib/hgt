@@ -57,6 +57,15 @@ theorem orbitWeight_pos (i : OrbitIndex A) : 0 < orbitWeight i := by
 theorem primeWeight_pos (q : Nat.Primes × ℕ) : 0 < primeWeight q := by
   unfold primeWeight; positivity
 
+theorem abs_orbitWeight (i : OrbitIndex A) : |orbitWeight i| = orbitWeight i :=
+  abs_of_pos (orbitWeight_pos i)
+
+theorem abs_primeWeight (q : Nat.Primes × ℕ) : |primeWeight q| = primeWeight q :=
+  abs_of_pos (primeWeight_pos q)
+
+theorem abs_neg_primeWeight (q : Nat.Primes × ℕ) : |-primeWeight q| = primeWeight q := by
+  rw [abs_neg, abs_primeWeight]
+
 theorem log_prime_pos (p : Nat.Primes) : 0 < Real.log (p : ℕ) :=
   Real.log_pos (by exact_mod_cast p.prop.one_lt)
 
@@ -77,9 +86,9 @@ theorem hasSum_orbitSide {σ : ℝ}
     simp only [orbitWeight, orbitLength]
     ring
   have hs : Summable fun i : OrbitIndex A => orbitWeight i * Real.exp (-(σ * orbitLength φ i)) :=
-    (summable_sigma_of_nonneg hnn).mpr ⟨fun n => (Set.toFinite _).summable,
+    (summable_sigma_of_nonneg hnn).mpr ⟨fun n => (hasSum_fintype _).summable,
       by simpa only [hfiber] using hsum⟩
-  rw [← (hs.tsum_sigma' fun n => (Set.toFinite _).summable).trans (tsum_congr hfiber)]
+  rw [← (hs.tsum_sigma' fun n => (hasSum_fintype _).summable).trans (tsum_congr hfiber)]
   exact hs.hasSum
 
 /-- `e^{−σ(k+1) log p} = (p^{−σ})^{k+1}`. -/
@@ -163,13 +172,14 @@ theorem signedLength_finite {rmin : ℝ} (hrmin : 0 < rmin)
     have hx := (mem_periodicPoints.mp x.2).1
     have h1 := birkhoff_ge_of_admissible hmin hx (n + 1)
     have hn : (n : ℝ) < N := by
-      have : ((n + 1 : ℕ) : ℝ) * rmin ≤ T := h1.trans hi
-      rw [div_lt_iff₀ hrmin] at hN ⊢
-      push_cast at this
-      nlinarith
-    simp only [Finset.coe_disjSum, Set.mem_union, Set.mem_image, Finset.mem_coe, hS₁,
-      Finset.mem_sigma, Finset.mem_range, Finset.mem_univ, and_true]
-    left; exact ⟨⟨n, x⟩, by exact_mod_cast hn, rfl⟩
+      by_contra hcon
+      push Not at hcon
+      have h2 : (N : ℝ) * rmin ≤ ((n + 1 : ℕ) : ℝ) * rmin :=
+        mul_le_mul_of_nonneg_right (by push_cast; linarith) hrmin.le
+      rw [div_lt_iff₀ hrmin] at hN
+      linarith
+    rw [Finset.mem_coe, Finset.inl_mem_disjSum, hS₁, Finset.mem_sigma, Finset.mem_range]
+    exact ⟨by exact_mod_cast hn, Finset.mem_univ _⟩
   · simp only [signedLength, Sum.elim_inr, primeLength] at hi
     have hlog := log_prime_pos p
     have hlog2 : Real.log 2 ≤ Real.log (p : ℕ) :=
@@ -185,9 +195,9 @@ theorem signedLength_finite {rmin : ℝ} (hrmin : 0 < rmin)
       have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
       rw [div_lt_iff₀ hl2] at hK
       nlinarith
-    simp only [Finset.coe_disjSum, Set.mem_union, Set.mem_image, Finset.mem_coe, hS₂,
-      Finset.mem_product, Finset.mem_subtype, Finset.mem_range]
-    right; exact ⟨⟨p, j⟩, ⟨by exact_mod_cast hp, by exact_mod_cast hj⟩, rfl⟩
+    rw [Finset.mem_coe, Finset.inr_mem_disjSum]
+    exact Finset.mem_product.mpr ⟨Finset.mem_subtype.mpr (Finset.mem_range.mpr
+      (by exact_mod_cast hp)), Finset.mem_range.mpr (by exact_mod_cast hj)⟩
 
 /-! ## Realizations are prime-length -/
 
@@ -201,9 +211,8 @@ theorem birkhoff_shiftBy_of_period {L : ℕ} {y : ℕ → Fin k} (hy : shiftBy L
       rw [shiftBy_shiftBy, Nat.add_comm, ← shiftBy_shiftBy, hy]
     have h1 := birkhoff_add φ 1 L (shiftBy j y)
     have h2 := birkhoff_add φ L 1 (shiftBy j y)
-    rw [Nat.add_comm 1 L, hyj] at h1
-    rw [shiftBy_shiftBy, Nat.add_comm] at h1
-    rw [← ih]
+    rw [Nat.add_comm 1 L, shiftBy_shiftBy, Nat.add_comm 1 j] at h1
+    rw [hyj] at h2
     linarith
 
 /-- **A realization of `ζ` is prime-length.** -/
@@ -236,21 +245,22 @@ theorem isPrimeLength_of_realization {rmin : ℝ} (hrmin : 0 < rmin)
         Complex.ofReal_one, Complex.ofReal_cpow (by positivity), Complex.ofReal_neg,
         Complex.ofReal_natCast]
     rw [hL, hR, ← Complex.ofReal_exp, ← Complex.ofReal_exp] at h2
-    exact Real.exp_injective (Complex.ofReal_injective h2)
+    exact (Real.exp_injective (Complex.ofReal_injective h2)).symm
   -- the signed series vanishes, so its masses vanish
   have hfin := signedLength_finite (A := A) hrmin hmin
   have hzero : ∀ t, massAt (signedWeight A) (signedLength φ) hfin t = 0 := by
     refine massAt_eq_zero_of_tsum_eq_zero _ _ hfin (σ₀ := 1) (fun σ hσ => ?_) (fun σ hσ => ?_)
     · refine Summable.sum _ ?_ ?_
-      · simpa [signedWeight, signedLength, Function.comp_def,
-          abs_of_pos (orbitWeight_pos _)] using (hasSum_orbitSide (hsum σ hσ)).summable
-      · simpa [signedWeight, signedLength, Function.comp_def,
-          abs_of_pos (primeWeight_pos _)] using (hasSum_primeSide (A := A) hσ).summable
+      · simpa [signedWeight, signedLength, Function.comp_def, abs_orbitWeight] using
+          (hasSum_orbitSide (hsum σ hσ)).summable
+      · simpa [signedWeight, signedLength, Function.comp_def, abs_neg_primeWeight,
+          abs_primeWeight] using
+          (hasSum_primeSide hσ).summable
     · have h := HasSum.sum (f := fun i => signedWeight A i * Real.exp (-(σ * signedLength φ i)))
         (by simpa [signedWeight, signedLength, Function.comp_def] using
           hasSum_orbitSide (hsum σ hσ))
         (by simpa [signedWeight, signedLength, Function.comp_def, neg_mul] using
-          (hasSum_primeSide (A := A) hσ).neg)
+          (hasSum_primeSide hσ).neg)
       rw [h.tsum_eq, hlog σ hσ, add_neg_cancel]
   -- the atom of a periodic point
   intro x hx L hL hmin'
@@ -265,31 +275,35 @@ theorem isPrimeLength_of_realization {rmin : ℝ} (hrmin : 0 < rmin)
       ← shiftBy_shiftBy, hper]⟩
   set fib := (hfin t).toFinset.filter fun i => signedLength φ i = t with hfib
   have hsplit := hzero t
-  rw [massAt, Finset.sum_sum_eq_sum_toLeft_add_sum_toRight] at hsplit
+  rw [massAt, ← hfib, Finset.sum_sum_eq_sum_toLeft_add_sum_toRight] at hsplit
   simp only [signedWeight, Sum.elim_inl, Sum.elim_inr, Finset.sum_neg_distrib] at hsplit
   -- the orbit of `x` gives mass at least `1`
   set orb : ℕ → OrbitIndex A := fun j => ⟨m, ⟨shiftBy j x, hmemj j⟩⟩ with horb
+  -- distinct shifts below the least period are distinct points
+  have key : ∀ i j, i < j → j < m + 1 → shiftBy i x = shiftBy j x → False := by
+    intro i j hij hj heq
+    have h1 : shiftBy (m + 1 - i) (shiftBy i x) = shiftBy (m + 1 - i) (shiftBy j x) :=
+      congrArg _ heq
+    have hl : shiftBy (m + 1 - i) (shiftBy i x) = x := by
+      rw [shiftBy_shiftBy, show m + 1 - i + i = m + 1 by omega, hper]
+    have hr : shiftBy (m + 1 - i) (shiftBy j x) = shiftBy (j - i) x := by
+      rw [shiftBy_shiftBy, show m + 1 - i + j = (j - i) + (m + 1) by omega,
+        ← shiftBy_shiftBy (j - i) (m + 1) x, hper]
+    have hperiod : shiftBy (j - i) x = x := by rw [← hr, ← h1, hl]
+    have hpt : Function.IsPeriodicPt (shiftBy 1) (j - i) x := by
+      rw [Function.IsPeriodicPt, Function.IsFixedPt, shiftBy_one_iterate, hperiod]
+    have := Nat.le_of_dvd (by omega) hpt.minimalPeriod_dvd
+    rw [hmin'] at this
+    omega
   have horb_inj : Set.InjOn orb (Finset.range (m + 1)) := by
     intro i hi j hj hij
     have hij' : shiftBy i x = shiftBy j x := by
-      have := congrArg (fun o : OrbitIndex A => (o.2 : ℕ → Fin k)) hij
-      simpa [horb] using this
-    by_contra hne
-    wlog hlt : i < j generalizing i j
-    · exact this hj hi hij'.symm (Ne.symm hne) (lt_of_le_of_ne (not_lt.mp hlt) (Ne.symm hne))
-    have hi' := Finset.mem_range.mp hi
-    have hj' := Finset.mem_range.mp hj
-    -- `j − i` would be a period below the least period
-    have hperiod : shiftBy (j - i) x = x := by
-      have h1 := congrArg (shiftBy (m + 1 - i)) hij'
-      rw [shiftBy_shiftBy, shiftBy_shiftBy, show m + 1 - i + i = m + 1 by omega,
-        show m + 1 - i + j = (j - i) + (m + 1) by omega, ← shiftBy_shiftBy, hper] at h1
-      exact h1.symm
-    have hpt : Function.IsPeriodicPt (shiftBy 1) (j - i) x := by
-      rw [Function.IsPeriodicPt, Function.IsFixedPt, shiftBy_one_iterate, hperiod]
-    have := Nat.le_of_dvd (by omega) (hpt.minimalPeriod_dvd)
-    rw [hmin'] at this
-    omega
+      change (⟨m, ⟨shiftBy i x, hmemj i⟩⟩ : OrbitIndex A) = ⟨m, ⟨shiftBy j x, hmemj j⟩⟩ at hij
+      exact congrArg Subtype.val (eq_of_heq (Sigma.mk.inj_iff.mp hij).2)
+    rcases lt_trichotomy i j with h | h | h
+    · exact (key i j h (Finset.mem_range.mp hj) hij').elim
+    · exact h
+    · exact (key j i h (Finset.mem_range.mp hi) hij'.symm).elim
   have horb_mem : ∀ j ∈ Finset.range (m + 1), orb j ∈ fib.toLeft := by
     intro j _
     rw [Finset.mem_toLeft, hfib, mem_massAt_finset]
@@ -316,8 +330,9 @@ theorem isPrimeLength_of_realization {rmin : ℝ} (hrmin : 0 < rmin)
       have h1 : Real.log (((q.1 : ℕ) ^ (q.2 + 1) : ℕ) : ℝ) =
           Real.log (((q'.1 : ℕ) ^ (q'.2 + 1) : ℕ) : ℝ) := by
         push_cast; rw [Real.log_pow, Real.log_pow]; push_cast; linarith
-      have h2 := Real.log_injOn_pos (Set.mem_Ioi.mpr (by positivity))
-        (Set.mem_Ioi.mpr (by positivity)) h1
+      have h2 := Real.log_injOn_pos
+        (Set.mem_Ioi.mpr (by exact_mod_cast pow_pos q.1.prop.pos (q.2 + 1)))
+        (Set.mem_Ioi.mpr (by exact_mod_cast pow_pos q'.1.prop.pos (q'.2 + 1))) h1
       exact_mod_cast h2
     obtain ⟨hp, hk⟩ := Nat.Prime.pow_inj q.1.prop q'.1.prop hpow
     exact Prod.ext (Subtype.ext hp) hk
@@ -346,7 +361,7 @@ theorem isPrimeLength_of_realization {rmin : ℝ} (hrmin : 0 < rmin)
       one_mul] at h
     exact h.symm
   refine ⟨q.1, q.1.prop, ?_⟩
-  rw [← ht, hlen, Real.exp_log (by exact_mod_cast q.1.prop.pos)]
+  rw [hlen, Real.exp_log (by exact_mod_cast q.1.prop.pos)]
 
 /-! ## The price of the strip -/
 

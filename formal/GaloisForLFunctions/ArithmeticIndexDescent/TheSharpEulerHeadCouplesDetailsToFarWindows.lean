@@ -759,12 +759,10 @@ theorem cellExpMass_eq {k : ℕ} (hk : 1 ≤ k) :
   have hderiv : ∀ x ∈ Set.uIcc (Real.log (k : ℝ)) (Real.log ((k + 1 : ℕ) : ℝ)),
       HasDerivAt (fun u => -2 * Real.exp (-u / 2)) (Real.exp (-x / 2)) x := by
     intro x _
-    have h := ((hasDerivAt_neg x).div_const 2).exp.const_mul (-2)
-    convert h using 1
-    trace_state
-    sorry
+    exact (((hasDerivAt_neg x).div_const 2).exp.const_mul (-2)).congr_deriv (by ring)
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
     ((Real.continuous_exp.comp (continuous_neg.div_const 2)).intervalIntegrable _ _)]
+  trace_state
   ring
 
 /-- The first exponential moment `J_a = ∫ h_a e^{−u/2}` of the balanced detail. -/
