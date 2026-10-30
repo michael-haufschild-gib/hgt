@@ -57,6 +57,37 @@ private theorem cyclotomicMode_eq_pow (Q k : ℕ) :
   push_cast
   ring
 
+/-- The primitive conductor of a mode is its period divided by the numerator gcd. -/
+theorem orderOf_cyclotomicMode {Q k : ℕ} (hQ : 0 < Q) (hk : 0 < k) :
+    orderOf (cyclotomicMode Q k) = Q / Q.gcd k := by
+  rw [cyclotomicMode_eq_pow, orderOf_pow' _ hk.ne',
+    ← (Complex.isPrimitiveRoot_exp Q hQ.ne').eq_orderOf]
+
+/-- A mode close to the constant root must have large primitive conductor. -/
+theorem le_orderOf_cyclotomicMode_mul_min {Q k : ℕ} (hk0 : 0 < k) (hkQ : k < Q) :
+    Q ≤ orderOf (cyclotomicMode Q k) * min k (Q - k) := by
+  rw [orderOf_cyclotomicMode (hk0.trans hkQ) hk0]
+  have hg : Q.gcd k ≤ min k (Q - k) := le_min
+    (Nat.le_of_dvd hk0 (Nat.gcd_dvd_right Q k))
+    (Nat.le_of_dvd (Nat.sub_pos_of_lt hkQ)
+      (Nat.dvd_sub (Nat.gcd_dvd_left Q k) (Nat.gcd_dvd_right Q k)))
+  calc
+    Q = Q / Q.gcd k * Q.gcd k := (Nat.div_mul_cancel (Nat.gcd_dvd_left Q k)).symm
+    _ ≤ _ := Nat.mul_le_mul_left _ hg
+
+/-- Every conductor at most `L` lies outside the `K`-mode band when `K L < Q`. -/
+theorem cyclotomicMode_far_of_orderOf_le {Q k K L : ℕ} (hk0 : 0 < k) (hkQ : k < Q)
+    (horder : orderOf (cyclotomicMode Q k) ≤ L) (hKL : K * L < Q) :
+    K < k ∧ K < Q - k := by
+  have hr : K < min k (Q - k) := by
+    by_contra h
+    have hrK : min k (Q - k) ≤ K := by omega
+    have hbound := (le_orderOf_cyclotomicMode_mul_min hk0 hkQ).trans
+      (Nat.mul_le_mul horder hrK)
+    rw [Nat.mul_comm L K] at hbound
+    omega
+  exact ⟨hr.trans_le (min_le_left _ _), hr.trans_le (min_le_right _ _)⟩
+
 private theorem nontrivial_roots_sum_modes {Q : ℕ} (hQ : 0 < Q) (f : ℂ → ℝ) :
     (∑ m ∈ Q.divisors.erase 1, ∑ ζ ∈ primitiveRoots m ℂ, f ζ) =
       ∑ k ∈ Ico 1 Q, f (cyclotomicMode Q k) := by

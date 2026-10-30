@@ -212,6 +212,9 @@ The exact cyclic difference gives `(1−ζ_k)P(ζ_k)=B_Q(k)`.
 The new [cyclotomic tail theorem](../3-formalized/cyclotomic-tail-fits-three-quarters-scale.md)
 proves that modes with `min(k,Q−k)>⌈√Q⌉` already cost at most `288 N√Q`.
 This uses only `|a_j|≤6/√j`; no signed prime estimate enters.
+Moreover `Q≤orderOf(ζ_k)·min(k,Q−k)`: fixed primitive conductors eventually
+lie in the paid far part. The remaining low angular frequencies have growing
+primitive conductors.
 
 **Unproved low-mode hypothesis:** uniformly for `1≤k≤⌈√Q⌉`,
 `|B_Q(k)| ≪_ε Q^(1/4+ε)√k`. Conjugate symmetry and the root-gap bound
@@ -224,6 +227,12 @@ The existing one-sided strip law also permits a lower bound
 `T(M)≥−C_ε M^(5/4+ε)` in place of a square bound. Its observer-history
 two-zone estimate still requires a bound for the actual Chebyshev error
 throughout the remaining interval; that hypothesis is not discharged.
+
+A separate [quantitative blind-repair hypothesis](quantitative-blind-repair-for-the-quarter-strip.md)
+asks whether modular null witnesses can remove node and pole readings while
+preserving negative energy with mass cost `exp((1/2+ε)A)`. The existing
+minimum principle proves uniqueness; neither it nor qualitative divisor
+inversion proves this cost bound.
 
 ## Inputs of `ℤ` absent from the Beurling models, tested as producers
 

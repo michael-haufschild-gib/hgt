@@ -15,6 +15,8 @@ shells but never bases (a base `m ∈ T` would need `km > N e^w`). Perturb the p
 
 * **Base collapse** (`nonRatioForm_eq_of_pole_on_bases`): if `x = b` on all bases, then
   `NR(x) = 2 Σ_n x_n R(n)` with the pole row `R(n) = Σ_{ℓ ≠ n} b_ℓ Λ_N(ℓ) β(log ℓ − log n)`.
+  Below overlap `N log 2` the rows are prime-free, `Λ_N(ℓ) = log ℓ` (`shellPoleRow_eq_log`): the
+  whole witness computation is a statement about the integers.
 * **The witness is cheap**: `D(x_η) = η² D(b1_T) ≤ η² log N Σ_T 1/n` (`poleDefect_witness_le`), the
   defect of a vector living on atoms with no proper multiples below `N`.
 * **The witness is expensive for the shells**: by Cauchy–Schwarz on the window `[log N + w − log 2,
@@ -81,6 +83,40 @@ private theorem bumpCorr_eq_zero_of_far (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g
   rw [Real.log_mul hn0.ne' (Real.exp_pos w).ne', Real.log_exp,
     Real.log_mul hk0.ne' hm0.ne'] at hlog
   exact lt_of_lt_of_le (by linarith only [hlog]) (le_abs_self _)
+
+/-- Below twice the horizon every divisor weight is the full logarithm: `Λ_N(ℓ) = log ℓ` for
+`ℓ ≤ 2N + 1`, because only `d = 1` can have `ℓ/d > N` and `Λ(1) = 0`. -/
+theorem horizonDivisorMangoldt_eq_log_of_le {N ℓ : ℕ} (hℓ : ℓ ≤ 2 * N + 1) :
+    horizonDivisorMangoldt N ℓ = Real.log ℓ := by
+  rw [← ArithmeticFunction.vonMangoldt_sum, horizonDivisorMangoldt]
+  refine sum_subset (filter_subset _ _) fun d hd hnot => ?_
+  have hd' : ¬ ℓ / d ≤ N := fun h => hnot (mem_filter.mpr ⟨hd, h⟩)
+  have hd1 : d = 1 := by
+    by_contra hne
+    have hd0 := Nat.pos_of_mem_divisors hd
+    have : ℓ / d ≤ ℓ / 2 := Nat.div_le_div_left (by omega) (by omega)
+    omega
+  rw [hd1, ArithmeticFunction.vonMangoldt_apply_one]
+
+/-- **The pole rows are prime-free** below overlap `N log 2`: unique factorization collapses every
+prime power into `log ℓ`, so `R(n) = Σ_{ℓ ≠ n} b_ℓ log ℓ β(log ℓ − log n)` is an integer-lattice sum. -/
+theorem shellPoleRow_eq_log {N : ℕ} (hw : Real.exp w < 2) (n : ℕ) :
+    shellPoleRow g N w n = ∑ ℓ ∈ Icc 1 ⌈(N : ℝ) * Real.exp w⌉₊, poleVector ℓ * Real.log ℓ *
+      (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) := by
+  unfold shellPoleRow
+  refine sum_congr rfl fun ℓ hℓ => ?_
+  have hL : ℓ ≤ 2 * N + 1 := by
+    have h1 := (mem_Icc.mp hℓ).2
+    have h2 : (⌈(N : ℝ) * Real.exp w⌉₊ : ℝ) < N * Real.exp w + 1 :=
+      Nat.ceil_lt_add_one (by positivity)
+    have h3 : (N : ℝ) * Real.exp w ≤ 2 * N :=
+      mul_le_mul_of_nonneg_left hw.le (Nat.cast_nonneg N) |>.trans_eq (by ring)
+    have h4 : (ℓ : ℝ) < 2 * N + 1 := by
+      have : (ℓ : ℝ) ≤ ⌈(N : ℝ) * Real.exp w⌉₊ := by exact_mod_cast h1
+      linarith only [this, h2, h3]
+    have : ℓ < 2 * N + 1 := by exact_mod_cast h4
+    omega
+  rw [horizonDivisorMangoldt_eq_log_of_le hL]
 
 /-- **Base collapse.** If `x` is the pole vector on every possible base `2m ≤ N e^w`, the non-ratio
 form is `2 Σ_n x_n R(n)`. -/

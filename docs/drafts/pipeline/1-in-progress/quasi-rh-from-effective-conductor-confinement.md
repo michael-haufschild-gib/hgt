@@ -40,3 +40,5 @@ This limitation is intrinsic to defect-only capture: actual unit conductor-`2^k`
 ## Candidate signed reserve — unproved
 
 An estimate `W_(N,c)(x)≥a c^-7(D_N(x)-C log(2c)‖x‖²)` would give logarithmic defect on negative vectors. Its starting horizon must also be controlled; a fixed-`c` eventual statement would leave the synthesis obstruction intact. The current proof does not establish this cancellation between prime, Gamma and pole terms. Together with the formalized exponential cutoff, this reserve would give a polynomial conductor range. The weighted residual and physical synthesis estimates would remain to prove. Direct confinement of negative eigenvectors remains an alternative.
+
+Separate payment of the actual non-ratio shell cannot produce this reserve. For `q=(∫φ)²/∫φ²`, any eventual bound `NR≤(∫g²)(εD+C‖x‖²)` forces `C≥max(cq/(4 log 2)-1/2,0)²/(2ε)`; `TheShellsAloneCostTheSquareOfTheOverlap.le_of_nonRatioForm_payment`. Direct Lean audit uses only standard axioms. This forces the existing order `c^9` mass cost when `ε` is a fixed fraction of `c^-7`; it does not obstruct an estimate retaining the complete signed form.

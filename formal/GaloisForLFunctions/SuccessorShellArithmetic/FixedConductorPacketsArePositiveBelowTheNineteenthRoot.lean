@@ -14,8 +14,9 @@ modes is `O(ml/log N)` with `E_m ≤ C_m c²`. After scaling by `c⁷`:
 Both vanish exactly when `19α < 1`. So every fixed finite family of distinct conductors is positive
 simultaneously for all coefficients along `c_N = (log N)^α`, `0 < α < 1/19`
 (`eventually_tiltedWeil_packet_pos_of_lt_one_nineteenth`). The exponent `19 = 2·7 + 5` is the
-floor exponent twice plus the residual exponent: with the floor `(m/c)⁷` sharp at fixed `m`, the
-residual rate `c⁵/log N` is the only input that can move it.
+floor exponent twice plus the residual exponent; only a better floor or a better residual rate moves
+it. A diagonal choice gives an unbounded, non-effective conductor range `Q(N) → ∞` whose whole
+span stays positive (`exists_growing_packet_pos_of_lt_one_nineteenth`).
 -/
 
 noncomputable section
@@ -261,7 +262,7 @@ theorem exists_growing_packet_pos_of_lt_one_nineteenth {α : ℝ} (hα0 : 0 < α
     · exact absurd (funext fun i => absurd i.isLt (by omega)) hb
     · have hex : ∃ k, 0 < k ∧ k ≤ N ∧ P N k := by
         by_contra hne
-        push_neg at hne
+        push Not at hne
         exact hpos.ne' (Nat.findGreatest_eq_zero_iff.mpr fun k hk1 hk2 => hne k hk1 hk2)
       obtain ⟨k, -, hkN, hk⟩ := hex
       have hspec : P N (Q N) := Nat.findGreatest_spec hkN hk

@@ -28,5 +28,14 @@ questions by theorems (classifications, sharp boundaries, no-gos with positive s
 10. OrthogonalityAmplifiersAreTrivial — Brauer at level k on r primes ⇒ |X| ≥ C(r+k−1,k) ⇒ amplified bound ≥ trivial;
     finite rank (F_q) ⇒ loss → 0.
 
+## Status (modules compiled with `lake --old env lean`)
+Done: PrimesObeyNoAffineRecurrence, IntegralityForbidsSuperConformalDistortion,
+TheHolderModulusOfAPrimeLengthSystem, TheTwoRealizationsOfThePrimes,
+OscillationFailsOnAdditiveRealizations, TheAmplifierLaw, OrthogonalityAmplifiersAreTrivial,
+EvenRealizationsHaveNoZeros, AHolderRealizationIsAZeroFreeStrip, AdditiveRealizationsAreCommutative,
+TheArchimedeanPlaceForbidsFiniteVirtualRealizations (all in umbrella).
+Next: ARealizationOfZetaIsPrimeLength (generalized Dirichlet uniqueness ⇒ prime-length), then
+README update with Lean names, import narrowing, final audit.
+
 ## Log
 - 2026-10-30 — created; README first draft.

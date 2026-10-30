@@ -519,4 +519,321 @@ theorem abs_headCoupling_sub_le {Y a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hbY
     rw [abs_of_nonneg hw, mul_comm 2 (2 * Λ m / Real.sqrt m)]
     exact mul_le_mul_of_nonneg_left (abs_headCouplingKernel_le ha hb _) hw
 
+/-! ### The edge of the head at scale `√Y` -/
+
+/-- The head trace `T_Y(u) = Σ_{m ≤ Y} (2Λ(m)/√m) 1_b(u + log(m/Y))`. -/
+def headTrace (Y b : ℕ) (u : ℝ) : ℝ :=
+  ∑ m ∈ Icc 1 Y, 2 * Λ m / Real.sqrt m * coarseProfile b (u + (Real.log m - Real.log Y))
+
+theorem measurable_headTrace (Y b : ℕ) : Measurable (headTrace Y b) :=
+  Finset.measurable_sum _ fun _ _ =>
+    measurable_const.mul ((measurable_coarseProfile b).comp (measurable_add_const _))
+
+theorem sum_headTerm_eq_integral {a b : ℕ} (hb : 1 ≤ b) (Y : ℕ) :
+    ∑ m ∈ Icc 1 Y, headTerm Y a b m = ∫ u, haarProfile a u * headTrace Y b u := by
+  have h : (fun u => haarProfile a u * headTrace Y b u) = fun u => ∑ m ∈ Icc 1 Y,
+      2 * Λ m / Real.sqrt m *
+        (haarProfile a u * coarseProfile b (u + (Real.log m - Real.log Y))) := by
+    funext u
+    rw [headTrace, mul_sum]
+    refine sum_congr rfl fun m _ => ?_
+    ring
+  rw [h, integral_finsetSum _ fun m _ =>
+    (integrable_haarProfile_mul_coarseProfile a hb _).const_mul _]
+  refine sum_congr rfl fun m _ => ?_
+  rw [integral_const_mul]
+  rfl
+
+/-- The window of the head trace: `T_Y(u) = 2(H_Y(β) − H_Y(α))`, `α = 2b e^{−u}`, `β = (2b+2)e^{−u}`. -/
+theorem headTrace_eq {Y b : ℕ} (hY : 1 ≤ Y) (hb : 1 ≤ b) (u : ℝ) :
+    headTrace Y b u = 2 * (headWindowMass Y ((2 * b + 2) * Real.exp (-u)) -
+      headWindowMass Y (2 * b * Real.exp (-u))) := by
+  have hY0 : (0 : ℝ) < Y := by exact_mod_cast hY
+  have hb0 : (0 : ℝ) < b := by exact_mod_cast hb
+  set α := 2 * (b : ℝ) * Real.exp (-u)
+  set β := (2 * (b : ℝ) + 2) * Real.exp (-u)
+  have hαβ : α ≤ β := mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+  -- the indicator of the window in terms of `m`
+  have hind : ∀ m ∈ Icc 1 Y, coarseProfile b (u + (Real.log m - Real.log Y)) =
+      if α * Y ≤ (m : ℝ) ∧ (m : ℝ) < β * Y then 1 else 0 := by
+    intro m hm
+    have hm0 : (0 : ℝ) < m := by exact_mod_cast (mem_Icc.mp hm).1
+    rw [coarseProfile_eq_indicator hb, Set.indicator_apply]
+    have hexp : Real.exp (u + (Real.log m - Real.log Y)) = Real.exp u * m / Y := by
+      rw [Real.exp_add, Real.exp_sub, Real.exp_log hm0, Real.exp_log hY0]; ring
+    have e1 : Real.log ((2 * b : ℕ) : ℝ) ≤ u + (Real.log m - Real.log Y) ↔ α * Y ≤ m := by
+      rw [Real.log_le_iff_le_exp (by positivity), hexp, le_div_iff₀ hY0]
+      simp only [α, Real.exp_neg]
+      push_cast
+      rw [show 2 * (b : ℝ) * (Real.exp u)⁻¹ * Y = 2 * b * Y / Real.exp u by ring,
+        div_le_iff₀ (Real.exp_pos u)]
+      constructor <;> intro h <;> linarith
+    have e2 : u + (Real.log m - Real.log Y) < Real.log ((2 * b + 2 : ℕ) : ℝ) ↔ (m : ℝ) < β * Y := by
+      rw [Real.lt_log_iff_exp_lt (by positivity), hexp, div_lt_iff₀ hY0]
+      simp only [β, Real.exp_neg]
+      push_cast
+      rw [show (2 * (b : ℝ) + 2) * (Real.exp u)⁻¹ * Y = (2 * b + 2) * Y / Real.exp u by ring,
+        lt_div_iff₀ (Real.exp_pos u)]
+      constructor <;> intro h <;> linarith
+    simp only [Set.mem_Ico, e1, e2]
+  rw [headTrace, sum_congr rfl fun m hm => by rw [hind m hm], headWindowMass, headWindowMass]
+  simp only [mul_ite, mul_one, mul_zero]
+  rw [← sum_filter, ← sum_filter_add_sum_filter_not ((Icc 1 Y).filter
+    (fun m : ℕ => (m : ℝ) < β * Y)) (fun m : ℕ => (m : ℝ) < α * Y), filter_filter, filter_filter]
+  have e3 : (Icc 1 Y).filter (fun m : ℕ => (m : ℝ) < β * Y ∧ (m : ℝ) < α * Y) =
+      (Icc 1 Y).filter (fun m : ℕ => (m : ℝ) < α * Y) := by
+    refine filter_congr fun m _ => ⟨fun h => h.2, fun h => ⟨h.trans_le ?_, h⟩⟩
+    exact mul_le_mul_of_nonneg_right hαβ hY0.le
+  have e4 : (Icc 1 Y).filter (fun m : ℕ => (m : ℝ) < β * Y ∧ ¬ (m : ℝ) < α * Y) =
+      (Icc 1 Y).filter (fun m : ℕ => α * Y ≤ (m : ℝ) ∧ (m : ℝ) < β * Y) :=
+    filter_congr fun m _ => ⟨fun h => ⟨not_lt.mp h.2, h.1⟩, fun h => ⟨h.2, not_lt.mpr h.1⟩⟩
+  rw [e3, e4]
+  have e5 : ∑ m ∈ (Icc 1 Y).filter (fun m : ℕ => α * Y ≤ (m : ℝ) ∧ (m : ℝ) < β * Y),
+      2 * Λ m / Real.sqrt m = 2 * ∑ m ∈ (Icc 1 Y).filter
+        (fun m : ℕ => α * Y ≤ (m : ℝ) ∧ (m : ℝ) < β * Y), Λ m / Real.sqrt m := by
+    rw [mul_sum]; exact sum_congr rfl fun m _ => by ring
+  rw [e5]
+  ring
+
+theorem headTrace_nonneg_le {Y b : ℕ} (hY : 1 ≤ Y) (hb : 1 ≤ b) (u : ℝ) :
+    0 ≤ headTrace Y b u ∧
+      headTrace Y b u ≤ 4 * RHTower.FreeLagTrace.chebyshevConst * Real.sqrt Y := by
+  rw [headTrace_eq hY hb]
+  have hmono : headWindowMass Y (2 * b * Real.exp (-u)) ≤
+      headWindowMass Y ((2 * b + 2) * Real.exp (-u)) := by
+    refine sum_le_sum_of_subset_of_nonneg (fun m hm => ?_) fun _ _ _ =>
+      div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+    obtain ⟨h1, h2⟩ := mem_filter.mp hm
+    refine mem_filter.mpr ⟨h1, h2.trans_le (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le) (Nat.cast_nonneg _))⟩
+  have h0 := headWindowMass_nonneg Y (2 * b * Real.exp (-u))
+  have h1 := headWindowMass_le_sqrt Y hY ((2 * b + 2) * Real.exp (-u))
+  constructor <;> linarith
+
+/-- The pointwise limit `s_b(u) = 4(√min(β, 1) − √min(α, 1))` of `T_Y(u)/√Y`. -/
+def windowLimit (b : ℕ) (u : ℝ) : ℝ :=
+  4 * (Real.sqrt (min ((2 * b + 2) * Real.exp (-u)) 1) - Real.sqrt (min (2 * b * Real.exp (-u)) 1))
+
+theorem tendsto_headTrace {b : ℕ} (hb : 1 ≤ b) (u : ℝ) :
+    Tendsto (fun Y : ℕ => headTrace Y b u / Real.sqrt Y) atTop (𝓝 (windowLimit b u)) := by
+  have hb0 : (0 : ℝ) < b := by exact_mod_cast hb
+  have hα := tendsto_headWindowMass (γ := 2 * b * Real.exp (-u)) (by positivity)
+  have hβ := tendsto_headWindowMass (γ := (2 * b + 2) * Real.exp (-u)) (by positivity)
+  refine ((hβ.sub hα).const_mul 2).congr' ?_ |>.trans (le_of_eq ?_)
+  · filter_upwards [eventually_ge_atTop 1] with Y hY
+    rw [headTrace_eq hY hb]; ring
+  · rw [windowLimit]; ring_nf
+
+/-- The limit coupling `L[a, b] = ∫ h_a s_b`. -/
+def headCouplingLimit (a b : ℕ) : ℝ := ∫ u, haarProfile a u * windowLimit b u
+
+theorem tendsto_integral_headTrace (a : ℕ) {b : ℕ} (hb : 1 ≤ b) :
+    Tendsto (fun Y : ℕ => ∫ u, haarProfile a u * (headTrace Y b u / Real.sqrt Y)) atTop
+      (𝓝 (headCouplingLimit a b)) := by
+  set C := 4 * RHTower.FreeLagTrace.chebyshevConst
+  refine tendsto_integral_of_dominated_convergence (fun u => |haarProfile a u| * |C|)
+    (fun Y => ((measurable_haarProfile a).mul
+      ((measurable_headTrace Y b).div_const _)).aestronglyMeasurable)
+    ((integrable_haarProfile a).abs.mul_const _) (fun Y => Eventually.of_forall fun u => ?_)
+    (Eventually.of_forall fun u => (tendsto_headTrace hb u).const_mul _)
+  rw [Real.norm_eq_abs, abs_mul]
+  refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+  rcases Nat.eq_zero_or_pos Y with rfl | hY
+  · simp [headTrace]
+  · obtain ⟨h0, h1⟩ := headTrace_nonneg_le hY hb u
+    have hs := Real.sqrt_pos.mpr (show (0 : ℝ) < Y by exact_mod_cast hY)
+    rw [abs_of_nonneg (div_nonneg h0 hs.le), div_le_iff₀ hs]
+    exact h1.trans (mul_le_mul_of_nonneg_right (le_abs_self C) hs.le)
+
+/-- **The edge coupling law.** `B_Y[a, b]/√Y → L[a, b]`. -/
+theorem tendsto_headCoupling {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) :
+    Tendsto (fun Y : ℕ => headCoupling Y a b / Real.sqrt Y) atTop (𝓝 (headCouplingLimit a b)) := by
+  have hmain : Tendsto (fun Y : ℕ => (∑ m ∈ Icc 1 Y, headTerm Y a b m) / Real.sqrt Y) atTop
+      (𝓝 (headCouplingLimit a b)) := by
+    refine (tendsto_integral_headTrace a hb).congr fun Y => ?_
+    rw [sum_headTerm_eq_integral hb, ← integral_div]
+    congr 1; funext u; ring
+  -- the proper prime powers are `O(Y^{1/4})`
+  have herr : Tendsto (fun Y : ℕ => 576 * ((Y * (b + 1) : ℕ) : ℝ) ^ (1 / 4 : ℝ) / Real.sqrt Y)
+      atTop (𝓝 0) := by
+    have hlim : Tendsto (fun Y : ℕ => 576 * ((b : ℝ) + 1) ^ (1 / 4 : ℝ) *
+        (Y : ℝ) ^ (-(1 / 4 : ℝ))) atTop (𝓝 (576 * ((b : ℝ) + 1) ^ (1 / 4 : ℝ) * 0)) :=
+      ((tendsto_rpow_neg_atTop (by norm_num)).comp tendsto_natCast_atTop_atTop).const_mul _
+    rw [mul_zero] at hlim
+    refine hlim.congr' ?_
+    filter_upwards [eventually_gt_atTop 0] with Y hY
+    have hY0 : (0 : ℝ) < Y := by exact_mod_cast hY
+    push_cast
+    rw [Real.mul_rpow hY0.le (by positivity), Real.sqrt_eq_rpow, mul_div_assoc]
+    have : (Y : ℝ) ^ (-(1 / 4 : ℝ)) = (Y : ℝ) ^ (1 / 4 : ℝ) / (Y : ℝ) ^ (1 / 2 : ℝ) := by
+      rw [← Real.rpow_sub hY0]; norm_num
+    rw [this]; ring
+  have hdiff : Tendsto (fun Y : ℕ => (headCoupling Y a b - ∑ m ∈ Icc 1 Y, headTerm Y a b m) /
+      Real.sqrt Y) atTop (𝓝 0) := by
+    refine squeeze_zero_norm' ?_ herr
+    filter_upwards [eventually_ge_atTop b] with Y hbY
+    rw [Real.norm_eq_abs, abs_div, abs_of_nonneg (Real.sqrt_nonneg _)]
+    exact div_le_div_of_nonneg_right (abs_headCoupling_sub_le ha hb hbY) (Real.sqrt_nonneg _)
+  have h := hmain.add hdiff
+  rw [add_zero] at h
+  refine h.congr fun Y => ?_
+  rw [← add_div]; ring_nf
+
+/-! ### The limit coupling is triangular with a negative diagonal -/
+
+theorem haarProfile_eq_zero_of_ge {a : ℕ} {u : ℝ} (hu : Real.log ((2 * a + 2 : ℕ) : ℝ) ≤ u) :
+    haarProfile a u = 0 := by
+  have hle : Real.log ((2 * a + 1 : ℕ) : ℝ) ≤ Real.log ((2 * a + 2 : ℕ) : ℝ) :=
+    Real.log_le_log (by positivity) (by push_cast; linarith)
+  have h0 : rawCell (2 * a) u = 0 := by
+    rw [rawCell, Set.indicator_of_notMem]; exact fun h => absurd h.2 (not_lt.mpr (hle.trans hu))
+  have h1 : rawCell (2 * a + 1) u = 0 := by
+    rw [rawCell, Set.indicator_of_notMem]
+    exact fun h => absurd h.2 (not_lt.mpr (by simpa [show 2 * a + 1 + 1 = 2 * a + 2 by ring] using hu))
+  rw [haarProfile, h0, h1]; ring
+
+theorem haarProfile_mul_windowLimit_eq_zero {a b : ℕ} (hab : a < b) (u : ℝ) :
+    haarProfile a u * windowLimit b u = 0 := by
+  by_cases hu1 : u < Real.log ((2 * a : ℕ) : ℝ)
+  · rw [haarProfile_eq_zero_of_lt hu1, zero_mul]
+  by_cases hu2 : Real.log ((2 * a + 2 : ℕ) : ℝ) ≤ u
+  · rw [haarProfile_eq_zero_of_ge hu2, zero_mul]
+  push Not at hu2
+  have hexp : Real.exp u < 2 * a + 2 := by
+    have := (Real.lt_log_iff_exp_lt (by positivity)).mp hu2
+    exact_mod_cast this
+  have hb : (2 * a + 2 : ℝ) ≤ 2 * b := by
+    have : (a : ℝ) + 1 ≤ b := by exact_mod_cast hab
+    linarith
+  have hα : 1 ≤ 2 * (b : ℝ) * Real.exp (-u) := by
+    rw [Real.exp_neg, ← div_eq_mul_inv, le_div_iff₀ (Real.exp_pos u), one_mul]; linarith
+  have hβ : 1 ≤ (2 * (b : ℝ) + 2) * Real.exp (-u) :=
+    hα.trans (mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le)
+  rw [windowLimit, min_eq_right hα, min_eq_right hβ]
+  ring
+
+/-- **Above the diagonal the limit coupling vanishes**: a window beyond the detail is not reached. -/
+theorem headCouplingLimit_eq_zero_of_lt {a b : ℕ} (hab : a < b) : headCouplingLimit a b = 0 := by
+  rw [headCouplingLimit]
+  simp [haarProfile_mul_windowLimit_eq_zero hab]
+
+theorem windowLimit_self {a : ℕ} {u : ℝ} (h1 : Real.log ((2 * a : ℕ) : ℝ) ≤ u)
+    (h2 : u < Real.log ((2 * a + 2 : ℕ) : ℝ)) :
+    windowLimit a u = 4 - 4 * Real.sqrt (2 * a) * Real.exp (-u / 2) := by
+  have hexp1 : 2 * (a : ℝ) ≤ Real.exp u := by
+    rcases Nat.eq_zero_or_pos a with rfl | ha
+    · simp [(Real.exp_pos u).le]
+    · have := (Real.log_le_iff_le_exp (by positivity)).mp h1; exact_mod_cast this
+  have hexp2 : Real.exp u < 2 * a + 2 := by
+    have := (Real.lt_log_iff_exp_lt (by positivity)).mp h2; exact_mod_cast this
+  have hα : 2 * (a : ℝ) * Real.exp (-u) ≤ 1 := by
+    rw [Real.exp_neg, ← div_eq_mul_inv, div_le_iff₀ (Real.exp_pos u), one_mul]; exact hexp1
+  have hβ : 1 ≤ (2 * (a : ℝ) + 2) * Real.exp (-u) := by
+    rw [Real.exp_neg, ← div_eq_mul_inv, le_div_iff₀ (Real.exp_pos u), one_mul]; exact hexp2.le
+  rw [windowLimit, min_eq_right hβ, min_eq_left hα, Real.sqrt_one,
+    Real.sqrt_mul (by positivity), ← Real.exp_half, neg_div]
+  ring
+
+/-- `∫ 1_{[log k, log(k+1))} e^{−u/2} du`. -/
+def cellExpMass (k : ℕ) : ℝ := ∫ u, rawCell k u * Real.exp (-u / 2)
+
+theorem rawCell_mul_exp (k : ℕ) (u : ℝ) : rawCell k u * Real.exp (-u / 2) =
+    (Set.Ico (Real.log k) (Real.log ((k + 1 : ℕ) : ℝ))).indicator (fun u => Real.exp (-u / 2)) u := by
+  rw [rawCell, Set.indicator_apply, Set.indicator_apply]
+  split_ifs <;> simp
+
+theorem integrable_rawCell_mul_exp (k : ℕ) : Integrable (fun u => rawCell k u * Real.exp (-u / 2)) := by
+  simp_rw [rawCell_mul_exp]
+  refine (integrable_indicator_iff measurableSet_Ico).mpr ?_
+  exact ((Real.continuous_exp.comp (continuous_neg.div_const 2)).integrableOn_Icc).mono_set
+    Set.Ico_subset_Icc_self
+
+theorem cellExpMass_eq {k : ℕ} (hk : 1 ≤ k) :
+    cellExpMass k = 2 * (Real.exp (-Real.log k / 2) - Real.exp (-Real.log ((k + 1 : ℕ) : ℝ) / 2)) := by
+  have hle : Real.log (k : ℝ) ≤ Real.log ((k + 1 : ℕ) : ℝ) :=
+    Real.log_le_log (by exact_mod_cast hk) (by push_cast; linarith)
+  rw [cellExpMass]
+  simp_rw [rawCell_mul_exp]
+  rw [integral_indicator measurableSet_Ico, integral_Ico_eq_integral_Ioc,
+    ← intervalIntegral.integral_of_le hle]
+  have hderiv : ∀ x ∈ Set.uIcc (Real.log (k : ℝ)) (Real.log ((k + 1 : ℕ) : ℝ)),
+      HasDerivAt (fun u => -2 * Real.exp (-u / 2)) (Real.exp (-x / 2)) x := by
+    intro x _
+    have h := ((hasDerivAt_neg x).div_const 2).exp.const_mul (-2)
+    convert h using 1
+    trace_state
+    sorry
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
+    ((Real.continuous_exp.comp (continuous_neg.div_const 2)).intervalIntegrable _ _)]
+  ring
+
+/-- The first exponential moment `J_a = ∫ h_a e^{−u/2}` of the balanced detail. -/
+def haarExpMoment (a : ℕ) : ℝ :=
+  haarLeftCoeff a * cellExpMass (2 * a) - haarRightCoeff a * cellExpMass (2 * a + 1)
+
+/-- **`J_a > 0`**: `e^{−s/2}` is strictly convex in `s = log t`, so its mean slope over the left
+cell of the pair is steeper than over the right cell. -/
+theorem haarExpMoment_pos {a : ℕ} (ha : 1 ≤ a) : 0 < haarExpMoment a := by
+  set s₀ := Real.log ((2 * a : ℕ) : ℝ)
+  set s₁ := Real.log ((2 * a + 1 : ℕ) : ℝ)
+  set s₂ := Real.log ((2 * a + 2 : ℕ) : ℝ)
+  have hw0 : logCellWidth (2 * a) = s₁ - s₀ := by
+    simp only [logCellWidth, s₀, s₁]; push_cast; ring
+  have hw1 : logCellWidth (2 * a + 1) = s₂ - s₁ := by
+    simp only [logCellWidth, s₁, s₂]; push_cast; ring
+  have h01 : s₀ < s₁ := Real.log_lt_log (by positivity) (by push_cast; linarith)
+  have h12 : s₁ < s₂ := Real.log_lt_log (by positivity) (by push_cast; linarith)
+  have hslope := strictConvexOn_exp.slope_strict_mono_adjacent (Set.mem_univ (-s₂ / 2))
+    (Set.mem_univ (-s₀ / 2)) (show -s₂ / 2 < -s₁ / 2 by linarith)
+    (show -s₁ / 2 < -s₀ / 2 by linarith)
+  have hE0 : cellExpMass (2 * a) = 2 * (Real.exp (-s₀ / 2) - Real.exp (-s₁ / 2)) := by
+    rw [cellExpMass_eq (by omega)]
+  have hE1 : cellExpMass (2 * a + 1) = 2 * (Real.exp (-s₁ / 2) - Real.exp (-s₂ / 2)) := by
+    rw [cellExpMass_eq (by omega), show 2 * a + 1 + 1 = 2 * a + 2 by ring]
+  have hd : 0 < (s₁ - s₀) + (s₂ - s₁) := by linarith
+  rw [haarExpMoment, haarLeftCoeff, haarRightCoeff, hw0, hw1, hE0, hE1]
+  rw [div_lt_div_iff₀ (by linarith) (by linarith)] at hslope
+  rw [div_mul_eq_mul_div, div_mul_eq_mul_div, ← sub_div]
+  apply div_pos _ hd
+  nlinarith
+
+theorem integrable_haarProfile_mul_exp (a : ℕ) :
+    Integrable (fun u => haarProfile a u * Real.exp (-u / 2)) := by
+  have h : (fun u => haarProfile a u * Real.exp (-u / 2)) = fun u =>
+      haarLeftCoeff a * (rawCell (2 * a) u * Real.exp (-u / 2)) -
+        haarRightCoeff a * (rawCell (2 * a + 1) u * Real.exp (-u / 2)) := by
+    funext u; rw [haarProfile]; ring
+  rw [h]
+  exact ((integrable_rawCell_mul_exp _).const_mul _).sub ((integrable_rawCell_mul_exp _).const_mul _)
+
+/-- **The diagonal**: `L[a, a] = −4√(2a) J_a`. -/
+theorem headCouplingLimit_self {a : ℕ} (ha : 1 ≤ a) :
+    headCouplingLimit a a = -(4 * Real.sqrt (2 * a)) * haarExpMoment a := by
+  have hpt : ∀ u, haarProfile a u * windowLimit a u =
+      4 * haarProfile a u - 4 * Real.sqrt (2 * a) * (haarProfile a u * Real.exp (-u / 2)) := by
+    intro u
+    by_cases hu1 : u < Real.log ((2 * a : ℕ) : ℝ)
+    · rw [haarProfile_eq_zero_of_lt hu1]; ring
+    by_cases hu2 : Real.log ((2 * a + 2 : ℕ) : ℝ) ≤ u
+    · rw [haarProfile_eq_zero_of_ge hu2]; ring
+    rw [windowLimit_self (not_lt.mp hu1) (not_le.mp hu2)]
+    ring
+  have hJ : ∫ u, haarProfile a u * Real.exp (-u / 2) = haarExpMoment a := by
+    have h : (fun u => haarProfile a u * Real.exp (-u / 2)) = fun u =>
+        haarLeftCoeff a * (rawCell (2 * a) u * Real.exp (-u / 2)) -
+          haarRightCoeff a * (rawCell (2 * a + 1) u * Real.exp (-u / 2)) := by
+      funext u; rw [haarProfile]; ring
+    rw [h, integral_sub ((integrable_rawCell_mul_exp _).const_mul _)
+      ((integrable_rawCell_mul_exp _).const_mul _), integral_const_mul, integral_const_mul]
+    rfl
+  rw [headCouplingLimit, funext hpt, integral_sub ((integrable_haarProfile a).const_mul _)
+    ((integrable_haarProfile_mul_exp a).const_mul _), integral_const_mul, integral_const_mul,
+    integral_haarProfile ha, hJ]
+  ring
+
+theorem headCouplingLimit_self_neg {a : ℕ} (ha : 1 ≤ a) : headCouplingLimit a a < 0 := by
+  rw [headCouplingLimit_self ha]
+  have h2a : 0 < Real.sqrt (2 * a) := Real.sqrt_pos.mpr (by positivity)
+  nlinarith [haarExpMoment_pos ha]
+
 end GaloisForLFunctions.ArithmeticIndexDescent

@@ -57,7 +57,7 @@ theorem IsExpPoly.mul {f g : ℂ → ℂ} (hf : IsExpPoly f) (hg : IsExpPoly g) 
     fun j => l (finProdFinEquiv.symm j).1 + m (finProdFinEquiv.symm j).2, fun s => ?_⟩
   show f s * g s = _
   dsimp only
-  rw [hf, hg, Finset.sum_mul_sum, ← Finset.sum_product',
+  rw [hf, hg, Finset.sum_mul_sum, ← Finset.sum_product', Finset.univ_product_univ,
     ← (finProdFinEquiv.symm.sum_comp (fun q : Fin N × Fin M =>
       c q.1 * Complex.exp (-((l q.1 : ℂ) * s)) * (d q.2 * Complex.exp (-((m q.2 : ℂ) * s)))))]
   · refine Finset.sum_congr rfl fun j _ => ?_

@@ -29,6 +29,12 @@ is at most `Σ_{n>K}n⁻²≤1/K`; the second uses the injective change
 `k↦Q−k`. Dividing by `Q` proves the stated bound. Root enumeration
 and partitioning the finite sum give the exact near-plus-far decomposition.
 
+The primitive order of `ζ_k` is `Q/gcd(Q,k)`. Since `gcd(Q,k)` divides both
+`k` and `Q−k`, this gives `Q≤orderOf(ζ_k)·min(k,Q−k)`.
+Consequently every primitive conductor at most `L` is in the far packet when
+`KL<Q`. The remaining band has small angular frequency and large primitive
+conductor; fixed-conductor limits do not control it.
+
 ## Verification
 
 - [x] Dependency-closed paper proof.
@@ -41,7 +47,9 @@ and partitioning the finite sum give the exact near-plus-far decomposition.
 - `chebyshevCyclotomicFar_le`: `288 N(N+1)/K` for every `K≥1`.
 - `chebyshevCyclotomicFar_sqrt_le`: `288 N√(N+1)` outside the square-root band.
 - `chebyshevCyclotomicNear_card_le`: at most `2K` remaining modes.
+- `orderOf_cyclotomicMode`, `le_orderOf_cyclotomicMode_mul_min`,
+  `cyclotomicMode_far_of_orderOf_le`: exact conductor and angular-frequency separation.
 
-Foreground `lake --old env lean` check passed. All seven public declarations,
-including `norm_cyclotomicMode`, depend only on `propext`, `Classical.choice`,
-and `Quot.sound`. Imported by `CompletedArithmeticForms.lean`.
+Foreground `lake --old env lean` check and standard-axiom audit passed for the
+seven energy declarations, including `norm_cyclotomicMode`. The three conductor
+declarations await the same check. Imported by `CompletedArithmeticForms.lean`.

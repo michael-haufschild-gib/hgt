@@ -12,7 +12,8 @@ pairs of one shift form the **successor shell** `Sh_h`.
 * **Shift bound** (`abs_shift_le_of_bumpCorr_ne_zero`): a pair of nonzero weight has
   `|n − km| ≤ min(n, km)(e^w − 1)`.
 * **Shell decomposition** (`nonRatioForm_eq_sum_shellForm`): `NR = Σ_{0 < |h| ≤ H} Sh_h` with
-  `H = ⌊N(e^w − 1)⌋`. At `w = c/N` there are at most `2c e^{c/N}` shells (`card_shellShifts_le`).
+  `H = ⌊N(e^w − 1)⌋`. At `w = c/N` there are at most `2c e^{c/N}` shells (`card_shellShifts_le`),
+  and exactly `2⌊c⌋` at every large horizon (`eventually_shellRange_eq_floor`).
 * **Top band** (`shellLag_eq_zero_of_vanish_on_band`): the shell of shift `h` reads only partners
   `n ≥ |h|/(e^w − 1)`; at `w = c/N` this is `n ≥ |h|N/(c e^{c/N})`.
 * **Below the spacing** (`nonRatioForm_eq_zero_of_shellRange_eq_zero`): when `N(e^w − 1) < 1` there
@@ -264,6 +265,39 @@ theorem card_shellShifts_le {N : ℕ} (hN : 1 ≤ N) {c : ℝ} (hc : 0 ≤ c) :
   rw [card_shellShifts]
   push_cast
   linarith only [shellRange_le hN hc]
+
+/-- **Exact shell count.** At overlap `c > 0` and every large horizon the shifts are exactly
+`0 < |h| ≤ ⌊c⌋`: `c ≤ N(e^{c/N} − 1) ≤ c e^{c/N} < ⌊c⌋ + 1`. -/
+theorem eventually_shellRange_eq_floor {c : ℝ} (hc : 0 < c) :
+    ∀ᶠ N : ℕ in Filter.atTop, shellRange N (c / N) = ⌊c⌋₊ := by
+  have hlim : Filter.Tendsto (fun N : ℕ => c * Real.exp (c / N)) Filter.atTop (nhds c) := by
+    have h := ((Real.continuous_exp.tendsto 0).comp
+      ((tendsto_const_nhds : Filter.Tendsto (fun _ : ℕ => c) Filter.atTop (nhds c)).div_atTop
+        tendsto_natCast_atTop_atTop)).const_mul c
+    simpa only [Function.comp_def, Real.exp_zero, mul_one] using h
+  filter_upwards [hlim.eventually (gt_mem_nhds (Nat.lt_floor_add_one c)),
+    Filter.eventually_ge_atTop 1] with N hN hN1
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  apply le_antisymm
+  · apply Nat.le_of_lt_succ
+    rw [shellRange, Nat.floor_lt (mul_nonneg hN0.le (by
+      linarith only [Real.add_one_le_exp (c / N), div_nonneg hc.le hN0.le]))]
+    push_cast
+    exact lt_of_le_of_lt (by exact_mod_cast shellRange_le hN1 hc.le |>.trans_eq' (by
+      unfold shellRange; rfl) |> fun _ => (by
+        have hkey : Real.exp (c / N) - 1 ≤ c / N * Real.exp (c / N) := by
+          have h1 := Real.add_one_le_exp (-(c / N))
+          have hmul : Real.exp (-(c / N)) * Real.exp (c / N) = 1 := by
+            rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+          nlinarith only [h1, hmul, Real.exp_pos (c / N)]
+        calc (N : ℝ) * (Real.exp (c / N) - 1) ≤ N * (c / N * Real.exp (c / N)) :=
+              mul_le_mul_of_nonneg_left hkey hN0.le
+          _ = c * Real.exp (c / N) := by field_simp)) hN
+  · unfold shellRange
+    apply Nat.floor_le_floor
+    have h := Real.add_one_le_exp (c / N)
+    calc c = N * (c / N) := by field_simp
+      _ ≤ N * (Real.exp (c / N) - 1) := mul_le_mul_of_nonneg_left (by linarith only [h]) hN0.le
 
 /-! ### The top band -/
 

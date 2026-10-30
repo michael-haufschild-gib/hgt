@@ -79,7 +79,7 @@ theorem contDiff_boxStek {β : ℝ → ℝ} (hβ : ContDiff ℝ ∞ β) (m : ℕ
   | succ m ih => exact contDiff_steklovAvg ih (sincRadius_pos m)
 
 /-- The supremum of a Steklov average is at most the `L¹` norm divided by `2a`. -/
-theorem abs_steklovAvg_le_integral {f : ℝ → ℝ} (hf : Continuous f) (hfi : Integrable f)
+theorem abs_steklovAvg_le_integral {f : ℝ → ℝ} (hfi : Integrable f)
     {a : ℝ} (ha : 0 < a) (x : ℝ) :
     |steklovAvg a f x| ≤ (2 * a)⁻¹ * ∫ y, |f y| := by
   unfold steklovAvg
@@ -164,7 +164,7 @@ theorem prod_Ico_one_sincRadius (q : ℕ) :
 /-- The first average of a base of `L¹` norm at most one is bounded by `2`. -/
 theorem abs_boxStek_one_le {β : ℝ → ℝ} (hβ : Continuous β) (hβi : Integrable β)
     (hβ1 : ∫ y, |β y| ≤ 1) (x : ℝ) : |boxStek β 1 x| ≤ 2 := by
-  have h := abs_steklovAvg_le_integral hβ hβi (sincRadius_pos 0) x
+  have h := abs_steklovAvg_le_integral hβi (sincRadius_pos 0) x
   have hr : (2 * sincRadius 0)⁻¹ = 2 := by norm_num [sincRadius]
   rw [hr] at h
   show |steklovAvg (sincRadius 0) β x| ≤ 2
@@ -253,7 +253,7 @@ theorem abs_boxStek_two_le_of_meanZero {h : ℝ → ℝ} (hh : Continuous h) {e 
       ← intervalIntegral.integral_interval_sub_left (hh.intervalIntegrable (-e) (y + 1 / 4))
         (hh.intervalIntegrable (-e) (y + -(1 / 4)))]
     norm_num [hHdef]
-    ring
+    ring_nf
   set g : ℝ → ℝ := fun y => 2 * (H (y + 1 / 4) - H (y - 1 / 4)) with hgdef
   have hgc : Continuous g := by
     simp only [hgdef]
@@ -282,7 +282,7 @@ theorem abs_boxStek_two_le_of_meanZero {h : ℝ → ℝ} (hh : Continuous h) {e 
     show steklovAvg (sincRadius 1) (boxStek h 1) x = _
     rw [hS1]
   rw [hS2]
-  have hb := abs_steklovAvg_le_integral hgc hgi (sincRadius_pos 1) x
+  have hb := abs_steklovAvg_le_integral hgi (sincRadius_pos 1) x
   have hr1 : sincRadius 1 = steklovRadius 0 := rfl
   rw [hr1] at hb
   have ha0 := steklovRadius_pos 0

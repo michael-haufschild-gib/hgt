@@ -7,12 +7,16 @@ import GaloisForLFunctions.ArithmeticResonanceTheory.TheAmplifierLaw
 import GaloisForLFunctions.ArithmeticResonanceTheory.OrthogonalityAmplifiersAreTrivial
 import GaloisForLFunctions.ArithmeticResonanceTheory.EvenRealizationsHaveNoZeros
 import GaloisForLFunctions.ArithmeticResonanceTheory.AHolderRealizationIsAZeroFreeStrip
+import GaloisForLFunctions.ArithmeticResonanceTheory.AdditiveRealizationsAreCommutative
+import GaloisForLFunctions.ArithmeticResonanceTheory.TheArchimedeanPlaceForbidsFiniteVirtualRealizations
 
 /-!
 # Arithmetic Resonance Theory
 
 Umbrella for the theory of realizations, resonances and amplifiers for Euler products: the
-commutative and free realizations of the primes and the nature of their poles; the arithmetic
+commutative and free realizations of the primes and the nature of their poles; additive
+realizations are commutative; finite even and virtual realizations are excluded (parity, the
+archimedean place); a Hölder realization is a zero-free strip; the arithmetic
 obstructions to realizations (no affine recurrence among primes, integrality against
 super-conformal distortion, the Hölder modulus law of prime-length systems); the failure of
 oscillation on additive and free realizations; the amplifier law (rate = depth, fixed versus

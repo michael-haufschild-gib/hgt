@@ -94,7 +94,7 @@ theorem succ_mod_eq {P : ℕ} (hP : 0 < P) (i : ℕ) :
     · exact Nat.mod_eq_of_lt h
     · rw [show i % P + 1 = P by omega, Nat.mod_self]
   · have : P = 1 := by omega
-    subst this; simp
+    subst this; simp [Nat.mod_one]
 
 theorem IsFirstReturn.isAdm (hu : IsFirstReturn adm a u L) : IsAdm adm (perSeq u L) := by
   intro i
@@ -131,7 +131,7 @@ theorem catWord_eq_iff (hu : IsFirstReturn adm a u L) (hv : IsFirstReturn adm a 
     · intro hja; right; by_contra hL
       exact hv.avoid (j - L) (by omega) (by omega) hja
     · rintro (rfl | rfl)
-      · omega
+      · have := hu.pos; omega
       · rw [Nat.sub_self]; exact hv.start
 
 theorem isAdm_concat (hu : IsFirstReturn adm a u L) (hv : IsFirstReturn adm a v L') :
@@ -172,7 +172,7 @@ theorem minimalPeriod_concat (hu : IsFirstReturn adm a u L) (hv : IsFirstReturn 
   have hP : 0 < P := by omega
   refine minimalPeriod_perSeq hP fun m _ hm => ?_
   have hmod : ∀ i, (i + m) % P = (i + m % P) % P := fun i => by
-    rw [Nat.add_mod, Nat.mod_mod, ← Nat.add_mod]
+    rw [Nat.add_mod i m P, Nat.add_mod i (m % P) P, Nat.mod_mod]
   -- the shift by `m` moves the `a` at residue `0` to an `a`
   have h0 := hm 0
   simp only [perSeq, zero_add, Nat.zero_mod] at h0
