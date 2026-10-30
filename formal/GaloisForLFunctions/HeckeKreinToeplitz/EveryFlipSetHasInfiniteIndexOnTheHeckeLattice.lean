@@ -105,8 +105,8 @@ theorem im_weilFullFunctional_ofReal (lam : ℕ → ℝ) (r : ℝ → ℝ) :
         rw [map_mul, Complex.conj_ofReal, paperFT_ofReal_neg,
           RHTower.BlindPrimePowerSlack.gammaBracket_neg]
       rw [h1]
-      exact integral_comp_neg (fun t : ℝ => paperFT (fun u => (r u : ℂ)) (t : ℂ) *
-        (EF.gammaBracket t : ℂ))
+      exact integral_neg_eq_self (fun t : ℝ => paperFT (fun u => (r u : ℂ)) (t : ℂ) *
+        (EF.gammaBracket t : ℂ)) volume
     have hJim := congrArg Complex.im hJ
     rw [Complex.conj_im] at hJim
     rw [RHTower.WeilSpectral.archPart, Complex.mul_im,
@@ -200,32 +200,30 @@ theorem inner_sum_negEigenvectors_neg {I : Type*} [Fintype I] [DecidableEq I] {A
     (hA : A.IsHermitian) (γ : (univ.filter fun i => hA.eigenvalues i < 0) → ℝ) (hγ : γ ≠ 0) :
     ⟪Matrix.toEuclideanLin A (∑ j, γ j • hA.eigenvectorBasis (j : I)),
       ∑ j, γ j • hA.eigenvectorBasis (j : I)⟫ < 0 := by
-  set J := univ.filter fun i => hA.eigenvalues i < 0
-  set x := ∑ j : J, γ j • hA.eigenvectorBasis (j : I)
-  have hcoord : ∀ i, ⟪x, hA.eigenvectorBasis i⟫ = if h : i ∈ J then γ ⟨i, h⟩ else 0 := by
+  have hcoord : ∀ i, ⟪∑ j, γ j • hA.eigenvectorBasis (j : I), hA.eigenvectorBasis i⟫ =
+      if h : i ∈ univ.filter (fun i => hA.eigenvalues i < 0) then γ ⟨i, h⟩ else 0 := by
     intro i
-    simp only [x, sum_inner, real_inner_smul_left]
-    have hb : ∀ j : J, ⟪hA.eigenvectorBasis (j : I), hA.eigenvectorBasis i⟫ =
-        if (j : I) = i then 1 else 0 := fun j =>
-      orthonormal_iff_ite.mp hA.eigenvectorBasis.orthonormal _ _
+    simp only [sum_inner, real_inner_smul_left]
+    have hb : ∀ j : (univ.filter fun i => hA.eigenvalues i < 0),
+        ⟪hA.eigenvectorBasis (j : I), hA.eigenvectorBasis i⟫ = if (j : I) = i then 1 else 0 :=
+      fun j => orthonormal_iff_ite.mp hA.eigenvectorBasis.orthonormal _ _
     simp only [hb, mul_ite, mul_one, mul_zero]
     split_ifs with hi
     · rw [Finset.sum_eq_single ⟨i, hi⟩ (fun j _ hj => if_neg fun h => hj (Subtype.ext h))
         (fun h => absurd (mem_univ _) h), if_pos rfl]
-    · exact Finset.sum_eq_zero fun j _ => if_neg fun h => hi (h ▸ j.2)
+    · exact Finset.sum_eq_zero fun j _ => if_neg fun (h : (j : I) = i) => hi (h ▸ j.2)
   obtain ⟨j₀, hj₀⟩ := Function.ne_iff.mp hγ
   have hj : γ j₀ ≠ 0 := hj₀
   rw [hermitianEnergy_eq_sum hA]
-  calc ∑ i, hA.eigenvalues i * ⟪x, hA.eigenvectorBasis i⟫ ^ 2 < ∑ _i : I, (0 : ℝ) := by
-        refine Finset.sum_lt_sum (fun i _ => ?_) ⟨j₀, mem_univ _, ?_⟩
-        · rw [hcoord]
-          split_ifs with hi
-          · exact mul_nonpos_of_nonpos_of_nonneg (mem_filter.mp hi).2.le (sq_nonneg _)
-          · simp
-        · rw [hcoord, dif_pos j₀.2]
-          exact mul_neg_of_neg_of_pos (mem_filter.mp j₀.2).2
-            (lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hj)))
-    _ = 0 := sum_const_zero
+  refine (Finset.sum_lt_sum (s := (univ : Finset I)) (g := fun _ => (0 : ℝ)) (fun i _ => ?_)
+    ⟨j₀, mem_univ _, ?_⟩).trans_eq sum_const_zero
+  · rw [hcoord]
+    split_ifs with hi
+    · exact mul_nonpos_of_nonpos_of_nonneg (mem_filter.mp hi).2.le (sq_nonneg _)
+    · simp
+  · rw [hcoord, dif_pos j₀.2]
+    exact mul_neg_of_neg_of_pos (mem_filter.mp j₀.2).2
+      (lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hj)))
 
 /-- A complex vector `α + iβ` with real `α, β` in a negative real subspace of a real Hermitian form
 is negative unless it vanishes. -/
@@ -242,21 +240,16 @@ theorem hermQuad_complexify_neg {ι κ : Type*} [Fintype ι] [Fintype κ] {H : M
     refine sum_congr rfl fun j _ => ?_
     conv_lhs => rw [← Complex.re_add_im (a j)]
     ring
-  have hzero : hermQuad H (fun m => ((∑ j, (0 : κ → ℝ) j * v j m : ℝ) : ℂ)) = 0 := by
-    simp [hermQuad]
+  have hzero : ∀ γ : κ → ℝ, γ = 0 → hermQuad H (fun m => ((∑ j, γ j * v j m : ℝ) : ℂ)) = 0 := by
+    rintro γ rfl
+    simp [hermQuad, dotProduct]
   rw [hsplit, hermQuad_real_add_imag hH]
   by_cases hre : (fun j => (a j).re) = 0
   · have him : (fun j => (a j).im) ≠ 0 := fun him =>
       ha (funext fun j => Complex.ext (congrFun hre j) (congrFun him j))
-    have h0 : hermQuad H (fun m => ((∑ j, (a j).re * v j m : ℝ) : ℂ)) = 0 := by
-      rw [← hzero]; congr 3; funext m; congr 1; exact congrArg _ (funext fun j => by
-        rw [show (a j).re = 0 from congrFun hre j]; rfl)
-    linarith [hv _ him]
+    linarith [hv _ him, hzero _ hre]
   · by_cases him : (fun j => (a j).im) = 0
-    · have h0 : hermQuad H (fun m => ((∑ j, (a j).im * v j m : ℝ) : ℂ)) = 0 := by
-        rw [← hzero]; congr 3; funext m; congr 1; exact congrArg _ (funext fun j => by
-          rw [show (a j).im = 0 from congrFun him j]; rfl)
-      linarith [hv _ hre]
+    · linarith [hv _ hre, hzero _ him]
     · linarith [hv _ hre, hv _ him]
 
 /-- **Every nonempty finite flip set has infinite index over tests.** For every `n` there is a real
@@ -287,10 +280,11 @@ theorem exists_test_le_negIndex_weightKernel_finiteFlip {S : Finset ℕ} (hS : �
       at hx
     have hq := (div_neg_iff.mp hx).resolve_left fun h => absurd h.2 (not_lt.mpr hG0.le)
     rw [hermQuad_gram_weightKernel_horizon _ hgd hgc N]
-    convert hq.1 using 3
+    refine lt_of_eq_of_lt ?_ hq.1
+    congr 2
     funext k
     unfold primeHorizonExtension
-    split_ifs <;> simp
+    split_ifs <;> simp [WithLp.ofLp_sum, Finset.univ_eq_attach]
   let L : (J → ℂ) →ₗ[ℂ] (PrimeHorizonIndex N → ℂ) :=
     { toFun := fun a m => ∑ j : J, a j * ((hA.eigenvectorBasis (j : PrimeHorizonIndex N) m : ℝ) : ℂ)
       map_add' := by intro a b; funext m; simp only [Pi.add_apply, add_mul, sum_add_distrib]
@@ -298,8 +292,8 @@ theorem exists_test_le_negIndex_weightKernel_finiteFlip {S : Finset ℕ} (hS : �
         intro t a; funext m
         simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, mul_sum, mul_assoc] }
   have hcard := card_le_hermNegIndex_of_forall_neg H L
-    (hermQuad_complexify_neg (fun i j => im_weightKernel _ _ _)
-      (fun j m => hA.eigenvectorBasis (j : PrimeHorizonIndex N) m) hv)
+    (hermQuad_complexify_neg (H := H) (κ := J) (fun i j => im_weightKernel _ _ _)
+      (fun (j : J) m => hA.eigenvectorBasis (j : PrimeHorizonIndex N) m) hv)
   refine ⟨_, hgd, hgc, ?_⟩
   calc (n : ℕ∞) ≤ (Fintype.card J : ℕ∞) := by rw [Fintype.card_coe]; exact_mod_cast hN
     _ ≤ (hermNegIndex H : ℕ∞) := by exact_mod_cast hcard

@@ -143,6 +143,39 @@ For the full-ray correlation `C_P(Y)`, `mobiusDivisorDilationMean_insert` gives
 Thus a closed block comparison must retain correlations at both multiplied
 and divided ratios, together with their finite-cutoff boundary terms.
 
+The finite law already exists in `MobiusDivisorCriticalClockProductTransport`.
+Write `h_P(t)=H_P(exp t)/exp t`,
+`A_P(T)=∫_{t≤T}(T-t)h_P(t)² dt`,
+`B_P(a,T)=∫_{t≤T}(T-t)h_P(t+a)h_P(t) dt`, and
+`ρ_P=squarefreeDensity·∏_{p∈P}p/(p+1)`. For a fresh prime `p`, `a=log p`,
+`mobiusDivisorCriticalClockTriangularPairing_density_cancellation` proves
+
+`ρ_(P+p) A_(P+p)(T) - ρ_P A_P(T) + 2ρ_P√p/(p+1) B_P(a,T-a)
+ = -ρ_P/(p+1)·(A_P(T)-A_P(T-a)) ≤ 0`.
+
+Thus the copied diagonal and clock-boundary surplus are already paid; the
+arithmetic estimate must control the cumulative signed `B_P` terms with the
+changing core and complete endpoint retained.
+
+Two exact facts constrain that estimate:
+
+- `MobiusDivisorPrimeBlockEnergyEscape` proves superpolynomial full-ray energy
+  beyond every cutoff `y^A`, even for the natural core of all primes at most
+  `y`. A bound on those full-ray energies cannot supply the finite estimate.
+- For `g(t)=exp(-3t/2)·criticalContinuousAbel(exp t)` and
+  `R(u)=∫g(t+u)g(t)dt`, the proved source moments are
+  `∫g=0`, `∫tg=-divisorHarmonicBoundary/3`, and
+  `∫u²R(u)du=-2(divisorHarmonicBoundary/3)²<0`.
+  `MobiusDivisorCriticalFiniteCorrelationSign` also gives a negative original
+  finite-cutoff pairing; `MobiusDivisorCriticalCorrelationTailSign` gives
+  negative boundary correlations beyond every lag. These statements do not
+  assert negativity at prime lags, but rule out universal correlation positivity.
+
+**Refined hypothesis:** use the zero-mass cancellation in the actual finite
+prime-weighted block, retaining its quotient and terminal terms together.
+Polynomial signed moments alone do not bound the exponentially weighted
+finite-clock remainder. A uniform bound for that remainder is still missing.
+
 ## Inputs of `ℤ` absent from the Beurling models, tested as producers
 
 | # | Input | Where it enters | Verdict for the `3/4` strip |

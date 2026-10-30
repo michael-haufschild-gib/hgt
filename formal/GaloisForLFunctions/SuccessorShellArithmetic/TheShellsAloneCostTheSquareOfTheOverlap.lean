@@ -285,4 +285,89 @@ theorem sum_topBand_shellPoleRow_ge (hw : 0 ≤ w) (hg0 : ∀ u, 0 ≤ g u) {N :
     _ ≤ poleVector n * shellPoleRow g N w n := mul_le_mul (hb n hn) hR hRn
       (by unfold poleVector; positivity)
 
+/-! ### The top-band Gram -/
+
+/-- **Top-band Gram.** The atoms of the top band sit in a window of length `log 2`, so by
+Cauchy–Schwarz their Gram sum is at least `(|T|∫g)²/log 2`. -/
+theorem sum_topBand_bumpCorr_ge (hg : Continuous g) (hgc : HasCompactSupport g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (N : ℕ) :
+    ((topBand N w).card * ∫ u, g u) ^ 2 / Real.log 2 ≤
+      ∑ n ∈ topBand N w, ∑ ℓ ∈ topBand N w, bumpCorr g (Real.log ℓ - Real.log n) := by
+  set T := topBand N w with hT
+  let χ : ℕ → ℝ := fun n => if n ∈ T then 1 else 0
+  let F : ℝ → ℝ := atomicTest N χ g
+  have hFc : Continuous F := continuous_finsetSum _ fun n _ =>
+    continuous_const.mul (hg.comp (continuous_sub_right _))
+  have hTsub : T ⊆ Icc 1 N := filter_subset _ _
+  have hfT : (Icc 1 N).filter (· ∈ T) = T := by
+    ext n; simp only [mem_filter]; exact ⟨fun h => h.2, fun h => ⟨hTsub h, h⟩⟩
+  -- the Gram identity on the top band
+  have hgram : ∫ u, F u ^ 2 = ∑ n ∈ T, ∑ ℓ ∈ T, bumpCorr g (Real.log ℓ - Real.log n) := by
+    rw [integral_atomicTest_sq_eq_gram hg hgc N χ]
+    have h1 : ∀ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N,
+        χ m * χ n * bumpCorr g (-(Real.log n - Real.log m)) =
+        if m ∈ T then ∑ n ∈ T, bumpCorr g (Real.log m - Real.log n) else 0 := by
+      intro m _
+      by_cases hm : m ∈ T
+      · rw [if_pos hm]
+        have hrow : ∀ n ∈ Icc 1 N, χ m * χ n * bumpCorr g (-(Real.log n - Real.log m)) =
+            if n ∈ T then bumpCorr g (Real.log m - Real.log n) else 0 := by
+          intro n _
+          simp only [χ, if_pos hm, one_mul, neg_sub]
+          split_ifs <;> simp
+        rw [sum_congr rfl hrow, ← sum_filter, hfT]
+      · rw [if_neg hm]
+        exact sum_eq_zero fun n _ => by simp [χ, hm]
+    rw [sum_congr rfl h1, ← sum_filter, hfT, sum_comm]
+  -- the total mass
+  have hint : ∫ u, F u = T.card * ∫ u, g u := by
+    have hi : ∀ n ∈ Icc 1 N, Integrable fun u => χ n * g (u - Real.log n) := fun n _ =>
+      ((continuous_const.mul (hg.comp (continuous_sub_right _))).integrable_of_hasCompactSupport
+        ((hgc.comp_homeomorph (Homeomorph.subRight (Real.log n))).mul_left))
+    simp only [F, atomicTest]
+    rw [integral_finset_sum _ hi]
+    simp_rw [integral_const_mul, integral_sub_right_eq_self]
+    rw [← sum_mul]
+    congr 1
+    rw [← sum_filter, hfT, Finset.sum_const, nsmul_eq_mul, mul_one]
+  -- the window of length `log 2`
+  set a := Real.log N + w - Real.log 2 with ha
+  have hwin : ∀ u, u ∉ Set.Icc 0 (Real.log 2) → F (u + a) = 0 := by
+    intro u hu
+    simp only [F, atomicTest]
+    refine sum_eq_zero fun n _ => ?_
+    by_cases hn : n ∈ T
+    · have hn' := mem_topBand.mp hn
+      have hn1 := mem_Icc.mp hn'.1
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1.1
+      have hlo : a < Real.log n := by
+        have h := Real.log_lt_log (by positivity) hn'.2
+        rw [Real.log_mul (by exact_mod_cast (by omega : N ≠ 0)) (Real.exp_pos w).ne',
+          Real.log_exp, Real.log_mul two_ne_zero hn0.ne'] at h
+        rw [ha]; linarith only [h]
+      have hhi : Real.log n ≤ Real.log N := Real.log_le_log hn0 (by exact_mod_cast hn1.2)
+      have hg0 : g (u + a - Real.log n) = 0 := by
+        apply hgsupp
+        intro hmem
+        apply hu
+        rw [ha] at hmem hlo
+        exact ⟨by linarith only [hmem.1, hlo], by linarith only [hmem.2, hhi]⟩
+      rw [hg0, mul_zero]
+    · simp [χ, hn]
+  -- Cauchy–Schwarz on the window
+  let F' : ℝ → ℝ := fun u => F (u + a)
+  have hcs := ArithmeticLorentzianGeometry.sq_integral_abs_le (g := F')
+    (hFc.comp (continuous_add_right a)) hwin (Real.log_pos one_lt_two)
+  have h1 : ∫ u, |F' u| = ∫ u, |F u| := integral_add_right_eq_self (fun u => |F u|) a
+  have h2 : ∫ u, F' u ^ 2 = ∫ u, F u ^ 2 := integral_add_right_eq_self (fun u => F u ^ 2) a
+  have h3 : (∫ u, F u) ^ 2 ≤ (∫ u, |F u|) ^ 2 := by
+    have h := abs_integral_le_integral_abs (f := F)
+    rw [← sq_abs (∫ u, F u)]
+    exact pow_le_pow_left₀ (abs_nonneg _) h 2
+  rw [hint] at h3
+  rw [h1, h2, hgram] at hcs
+  rw [div_le_iff₀ (Real.log_pos one_lt_two)]
+  linarith only [h3, hcs, mul_comm (Real.log 2)
+    (∑ n ∈ T, ∑ ℓ ∈ T, bumpCorr g (Real.log ℓ - Real.log n))]
+
 end GaloisForLFunctions.SuccessorShellArithmetic

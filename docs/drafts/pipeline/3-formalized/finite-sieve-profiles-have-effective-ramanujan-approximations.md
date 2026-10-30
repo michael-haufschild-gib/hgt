@@ -1,8 +1,8 @@
 # Finite sieve profiles have effective Ramanujan approximations
 
 - **ID:** finite-sieve-effective-ramanujan
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** Let `Q` be a finite prime sieve, `L=sieveEuler(Q)-γ`, `1≤A`, `1<R`, `A²≤N+1`, and `log(N+1)≥2L+4`. Every real class profile supported on `a≤A` admits approximation by normalized Ramanujan modes with supported conductors `m≤R`. Its squared error in the actual harmonic class weights is at most `16(log A+L)/log R` times its squared norm in those weights.
 
 ## Proof
@@ -17,4 +17,6 @@ The harmonic comparison gives `w_N(a)≤4 log(N+1)μ(a)` for every class, and `w
 
 ## Scope
 
-This transfers the spectral cutoff to actual harmonic class weights. Conditioning arbitrary bounded-defect vectors on their smooth parts, controlling the discarded smooth-part mass, and obtaining a logarithmic defect bound for actual negative complete-Weil vectors remain separate obligations.
+`FiniteSieveProfilesHaveEffectiveRamanujanApproximations.exists_sieveProfile_ramanujan_approximation` transfers the spectral cutoff to actual harmonic class weights. Direct file check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
+Conditioning arbitrary bounded-defect vectors on their smooth parts, controlling the discarded smooth-part mass, and obtaining a logarithmic defect bound for actual negative complete-Weil vectors remain separate obligations.
