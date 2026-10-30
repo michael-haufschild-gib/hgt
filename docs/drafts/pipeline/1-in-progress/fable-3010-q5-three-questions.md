@@ -48,8 +48,16 @@ Answer.
 So `r` can be bounded only jointly (all `K`); a single bounded `r` reads Weil positivity on a
 window of radius `½ log r + O(1)`, and RH-completeness requires every window.
 
-Lean (`TransMetzlerWeilPositivity/`, umbrella wired; `lake --old env lean` clean; axioms
-`propext`, `Classical.choice`, `Quot.sound`):
+Exact Fourier-tail units (`sincProfile`, the infinite convolution of boxes of radii `1/4`,
+`a_j = 1/(4(j+3) log²(j+3))`, transform `Π_j sinc(2π r_j ξ)`): the tail energy
+`τ(c) = ∫_{ξ>c} |𝓕 sincProfile|²` satisfies `c e^{−K c/log² c} ≤ τ(c) ≤ 4W μ_{12}(c)`,
+`K = 8π/3 + 3000`; hence `L(log L)²/(4K) ≤ c*_N ≤ 96e L(log L)²` for the exact critical overlap,
+and items 2–4 hold with this `c*_N`. Tail mechanism: cut the product at `J ≍ c/log² c`; Jensen
+for `exp` on `[c, 2c]`; `−log|sin|` costs `π log 2` per period; Stirling gives
+`Σ_{j<J} log(r_j/r_J) = O(J)`.
+
+Lean (`TransMetzlerWeilPositivity/ReceiverRate/`, umbrella wired; `lake --old env lean` clean;
+axioms `propext`, `Classical.choice`, `Quot.sound`):
 - `ABoundedOverlapRateSeesASemilocalWindow`: `dcRate`, `dcScale`,
   `nonneg_of_atomicFamilies_nonneg_of_rate`, `riemannHypothesis_iff_forall_bounded_rate`,
   `riemannHypothesis_iff_nonneg_of_divergent_rate`, `steklovDCProfile_window`.
@@ -59,6 +67,16 @@ Lean (`TransMetzlerWeilPositivity/`, umbrella wired; `lake --old env lean` clean
   `riemannHypothesis_iff_nonneg_of_critical_rate`, `nonneg_of_critical_multiple`,
   `riemannHypothesis_iff_forall_critical_multiple`,
   `riemannHypothesis_iff_steklovDCProfile_critical_multiples`.
+- `TheSincProductProfile`: `sincProfile`, `contDiff_sincProfile`, `sincProfile_vanishesOff`,
+  `integral_sincProfile`, `integral_abs_iteratedDeriv_sincProfile_le`.
+- `TheSincProfileIsAProductOfSincs`: `fourier_steklovAvg`, `fourier_boxSeq`,
+  `tendsto_sincPartial`, `abs_sincPartial_mul_exp_le_norm_fourier`.
+- `TheSincProfileHasALogLogTail`: `integral_prod_sinc_sq_ge`, `integral_neg_log_sinc_le`,
+  `sum_log_radius_ratio_le`, `eventually_cut`, `exp_mul_le_integral_norm_fourier_sincProfile_sq`.
+- `TheSincProfileHasAnExactCriticalOverlap`: `sincTail`, `sincCriticalOverlap`,
+  `eventually_le_sincCriticalOverlap`, `eventually_sincCriticalOverlap_le`,
+  `riemannHypothesis_iff_nonneg_of_sincCritical_rate`, `nonneg_of_sincCritical_multiple`,
+  `riemannHypothesis_iff_forall_sincCritical_multiple`.
 
 ## Q-B, Q-C — what the statements contain
 
@@ -93,4 +111,5 @@ Lean (`TransMetzlerWeilPositivity/`, umbrella wired; `lake --old env lean` clean
 
 ## Log
 - 2026-10-30 — card created; corpus read for all three questions.
-- 2026-10-30 — Q-A formalized (two modules). Q-B/Q-C content analysed; loop continues on Q-B/Q-C.
+- 2026-10-30 — Q-A formalized (six modules, `ReceiverRate/`), including exact Fourier-tail units.
+  Q-B/Q-C: content analysed, no full answer; work stopped on request after finishing the Lean thread.

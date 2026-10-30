@@ -1,7 +1,7 @@
 # Growing-conductor character tents share one decay rate
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For every `A≥0`, there exist `κ>0`, `C≥0`, `X₀≥3` such that, simultaneously for all `X≥X₀`, `q≤(log X)^A` and nonprincipal characters `χ mod q`,
 
 `|Σ_n χ(n)Λ(n) max(log(X/n),0)| ≤ CX exp(−κ(log X)^(1/10))`.
@@ -20,4 +20,9 @@ The displacement is `δ log X=ku`; `T≥exp(Du)/2`. Consequently the two tails c
 
 ## Formalization and scope
 
-Lean: `GaloisForLFunctions/RHTower/ConductorUniform/DirichletCharacterUniformPowerLog.lean`; audit pending. The common horizon precedes the quantifiers over modulus and character. This is the actual signed tent sum, including prime powers; signed unsmoothing and residue recovery remain necessary for the actual residue-source estimate.
+Lean: `GaloisForLFunctions/RHTower/ConductorUniform/DirichletCharacterUniformPowerLog.lean`.
+
+- `RHTower.exists_conductor_uniform_character_tent_power_log`.
+- Direct Lean check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
+The common horizon precedes the quantifiers over modulus and character. The estimate concerns the actual signed tent sum, including prime powers.

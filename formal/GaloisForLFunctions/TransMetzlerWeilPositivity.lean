@@ -24,6 +24,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheCriticalOv
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProductProfile
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProfileIsAProductOfSincs
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProfileHasALogLogTail
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProfileHasAnExactCriticalOverlap
 
 /-!
 # Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram

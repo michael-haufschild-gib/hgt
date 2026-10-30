@@ -21,7 +21,7 @@ resolution. Targets:
 
 ## Findings
 
-**T1 as stated (index ≥ #{p ∈ S : Kp ≤ c⁷} via per-prime trials) is false in the trial span.**
+**In the per-prime trial span the twin has one negative square.**
 Every prime-square trial is `β₁·(pole vector) + (p-adic part)`, `β₁ = 1 − 2/p + 2/p²`. At leading order in
 `1/p` the flip gain sits entirely in the pole–p-adic cross term; the pure p-adic part has no gain, and a flip at
 `q` penalizes the pole by `+4 log q/q`. On the span `{pole, p-adic parts}` the twin form is an arrowhead
@@ -50,21 +50,11 @@ near `θ = π` give twin index growing linearly in the tower length. Target form
 | T1 flip index on its tower | `κ(K_ζ) = ∞ ∨ κ(K_{ω_p}) = ∞`; on the finite stratum the twin has `≥ n − #R` squares for every `n` | `weightKernel_flip_tower`, `negIndex_flip_eq_top_of_finite`, `negIndex_zetaKernel_eq_top_or_flip` (HKT `OnTheFiniteStratumEveryFlipHasInfiniteIndex`); `exists_frequency_thin` (HKT `APurePointSpectrumIsThinAtMostFrequencies`) |
 | T2 fixed overlap | low spectral subspace ε-close to the Ramanujan span of conductors with `E_m(c) < T`, both directions | `eventually_completeWeil_lowSpace_near_ramanujan`, `tiltedUnitSpline_lowSpace_near_ramanujan` |
 | T2 growing overlap | along a diagonal schedule `c_N → ∞` | `exists_overlap_schedule_lowSpace_near_ramanujan` (RAPT `TheLowCompleteWeilSpectrumLivesOnTheLowConductors`) |
-| T3 growing head | index `≤ ⌈exp cost(P)⌉`, `cost(p ≤ Y) ≤ 32√Y log Y`; head `p ≤ (log N)^a` has index `≤ exp(C(log N)^{a/2} log log N)` — not uniform | `finiteEulerGamma_negative_dimension_le_exp`, `finiteEulerMixedGammaCost_eulerHead_le`, `eulerHead_negative_dimension_le` (AID `TheGammaReservePaysEulerHeadsUpToTheSquareOfTheDepth`) |
+| T3 growing head, upper | index `≤ ⌈exp cost(P)⌉`, `cost(p ≤ Y) ≤ 32√Y log Y` | `finiteEulerGamma_negative_dimension_le_exp`, `finiteEulerMixedGammaCost_eulerHead_le`, `eulerHead_negative_dimension_le` (AID `TheGammaReservePaysEulerHeadsUpToTheSquareOfTheDepth`) |
+| T3 growing head, uniform | false: the sharp head edge at `m = Y` couples details to far windows at scale `√Y` with a triangular limit; index `≥ K` for `Y ≥ Y₀(K)`; heads `p ≤ (log N)^A` have index → ∞ | `eventually_eulerHead_negative_family`, `not_exists_uniform_eulerHead_index`, `eventually_logPowerHead_negative_family` (AID `TheIndexOfAGrowingEulerHeadIsUnbounded`, `TheSharpEulerHeadCouplesDetailsToFarWindows`) |
 | T4 tail | no-go for coefficient-wise Gamma payment at any depth; survivor: depth `A` reaches `Y` with `32√Y log Y ≤ log A` | `not_summable_primeEulerMixedWeightTotal`, `exists_eulerHead_cost_gt` |
 
 Formalized summary: ../3-formalized/krein-index-selection-localization-and-gamma-reach.md
-
-## T3 plan: the head index grows (uniform extension is false)
-Form `Q_Y = Γ − source(eulerHead Y)` at horizon `X ≥ (K+1)Y`. Details `e_a` (`haarAtom a`, `a ≤ K`),
-coarse windows `C_b = Σ_{Yb ≤ n < Y(b+1)} coarseAtom n` = indicator of `log Y + [log 2b, log 2(b+1))`.
-Orientation 2 vanishes (`inner_shift_coarseSection_haarSection`). Source matrix
-`B_Y[a,b] = ∫ h_a(u) S_Y(u) du`, `S_Y(u) = Σ_{m ∈ head, m ∈ [2bY e^{-u}, (2b+2)Y e^{-u})} 2Λ(m)/√m`.
-PNT: `S_Y/√Y → 4(√min((2b+2)e^{-u},1) − √min(2b e^{-u},1))₊` (sharp head edge at `m = Y`; proper prime
-powers above `Y` are `o(√Y)`). Limit `L[a,b] = 0 (a<b)`, `−4√(2a) J_a (a=b)`, `4(√(2b+2)−√(2b)) J_a (a>b)`,
-`J_a = ∫ h_a e^{-u/2} > 0`: invertible. Test `v(x) = (x, (s/√Y) Lᵀx)`, `Γ(f+g) ≤ 2Γ(f)+2Γ(g)`, Lévy
-translation invariance: `Q_Y(v(x)) ≤ 2g_H|x|² + 2s²g_C‖L‖²|x|²/Y − s xᵀ(B_Y/√Y)Lᵀx < 0` for large `Y`.
-Hence index `≥ K` once `Y ≥ Y₀(K)`; for heads `p ≤ (log N)^A` at horizon `N` the index → ∞.
 
 ## Approach
 - T1a: one-square rigidity of the pole-hyperplane index under every sign gauge (atomic model).

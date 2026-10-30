@@ -608,4 +608,204 @@ theorem abs_poleRow_sub_le {w A₁ : ℝ} (hw : 0 < w) (hw4 : w ≤ 1 / 4)
 
 end Row
 
+/-! ### The joint block on the witness -/
+
+/-- The `η`-coefficient of the joint block `2·Pole − NR` along the witness, divided by `2`:
+`a₋a₊(H_N|T| + N S_T) − Σ_{n∈T} b_n R(n)`. -/
+def jointWitnessCoefficient (g : ℝ → ℝ) (N : ℕ) (w : ℝ) : ℝ :=
+  poleWeightMinus g * poleWeightPlus g *
+      ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) * (topBand N w).card + N * ∑ n ∈ topBand N w, 1 / (n : ℝ)) -
+    ∑ n ∈ topBand N w, poleVector n * shellPoleRow g N w n
+
+/-- **The joint block on the witness** is a quadratic polynomial in `η` whose linear coefficient is
+`2·jointWitnessCoefficient`. -/
+theorem jointBlock_topWitnessVector {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw : 0 ≤ w) {N : ℕ} (hN : 1 ≤ N) (η : ℝ) :
+    2 * ((∫ u, atomicTest N (topWitnessVector N w η) g u * Real.exp (-(u / 2))) *
+        (∫ u, atomicTest N (topWitnessVector N w η) g u * Real.exp (u / 2))) -
+      nonRatioForm g N (topWitnessVector N w η) =
+    (2 * ((∫ u, atomicTest N poleVector g u * Real.exp (-(u / 2))) *
+        (∫ u, atomicTest N poleVector g u * Real.exp (u / 2))) - nonRatioForm g N poleVector) +
+      2 * η * jointWitnessCoefficient g N w +
+      2 * η ^ 2 * (poleWeightMinus g * poleWeightPlus g *
+        (∑ n ∈ topBand N w, 1 / (n : ℝ)) * (topBand N w).card) := by
+  have h0 : topWitnessVector N w 0 = poleVector := funext fun n => by simp [topWitnessVector]
+  have hb := poleMoments_topWitnessVector hg hgsupp N 0
+  rw [h0] at hb
+  rw [poleMoments_topWitnessVector hg hgsupp N η, hb,
+    nonRatioForm_topWitnessVector hgsupp hw hN η, jointWitnessCoefficient]
+  ring
+
+/-- A continuous function vanishing for `|u| ≥ w` and bounded by `C` has `|∫ f| ≤ 2wC`. -/
+theorem abs_integral_le_of_vanish {f : ℝ → ℝ} {w C : ℝ} (hw : 0 ≤ w)
+    (hf0 : ∀ u, w ≤ |u| → f u = 0) (hfC : ∀ u, |u| ≤ w → |f u| ≤ C) :
+    |∫ u, f u| ≤ 2 * w * C := by
+  have hset : ∫ u in Set.Ioc (-w) w, f u = ∫ u, f u :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => hf0 u (by
+      simp only [Set.mem_Ioc, not_and_or, not_lt, not_le] at hu
+      rcases hu with hu | hu
+      · rw [abs_of_nonpos (by linarith)]; linarith
+      · rw [abs_of_pos (by linarith)]; linarith)
+  rw [← hset, ← intervalIntegral.integral_of_le (by linarith)]
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := -w) (b := w) (C := C)
+    (f := f) fun u hu => by
+      rw [Set.uIoc_of_le (by linarith)] at hu
+      exact hfC u (abs_le.mpr ⟨hu.1.le, hu.2⟩)
+  rw [Real.norm_eq_abs, show |w - -w| = 2 * w by rw [abs_of_nonneg (by linarith)]; ring] at h
+  linarith only [h]
+
+/-- **The shells and the pole cancel on the top band.** For a `C²` profile at overlap `c`, the
+`η`-coefficient of the joint block along the witness is `O(G(1 + log N))`, uniformly in `N`; each
+of its two terms is `≍ Gcq log N` (`sum_topBand_shellPoleRow_ge`). -/
+theorem exists_abs_jointWitnessCoefficient_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hsupp : ∀ u : ℝ, u ∉ Set.Icc (0 : ℝ) 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c : ℝ} (hc : 0 < c) :
+    ∃ K : ℝ, ∀ᶠ N : ℕ in atTop,
+      |jointWitnessCoefficient (atomDilate φ (c / N)) N (c / N)| ≤
+        K * (∫ u, atomDilate φ (c / N) u ^ 2) * (1 + Real.log N) := by
+  obtain ⟨A₁, hA₁0, hA₁⟩ := exists_abs_deriv_shellAutocorr_le hφ hsupp
+  set M := ∫ u, φ u ^ 2 with hMdef
+  refine ⟨20 * c + 2 + 2 * (18 * c + 24) * (1 + A₁ / (c * M)), ?_⟩
+  filter_upwards [eventually_ge_atTop 8, eventually_ge_atTop ⌈4 * c⌉₊] with N hN8 hNc
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hNR : (8 : ℝ) ≤ N := by exact_mod_cast hN8
+  set w := c / (N : ℝ) with hwdef
+  have hw : 0 < w := div_pos hc hN0
+  have hw4 : w ≤ 1 / 4 := by
+    have : 4 * c ≤ N := (Nat.le_ceil _).trans (by exact_mod_cast hNc)
+    rw [hwdef, div_le_iff₀ hN0]; linarith only [this]
+  have hwN : w * N = c := by rw [hwdef]; field_simp
+  set g := atomDilate φ w with hgdef
+  set T := topBand N w with hT
+  set G := ∫ u, g u ^ 2 with hGdef
+  have hG : G = w * M := integral_atomDilate_sq hw
+  have hGpos : 0 < G := by rw [hG]; exact mul_pos hw hM
+  have hgc : Continuous g := hφ.continuous.comp (continuous_id.div_const w)
+  have hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0 := by
+    intro u hu
+    apply hsupp
+    intro h
+    apply hu
+    rw [Set.mem_Icc, le_div_iff₀ hw, div_le_iff₀ hw] at h
+    constructor <;> nlinarith only [h.1, h.2, hw]
+  have hgcs : HasCompactSupport g :=
+    HasCompactSupport.intro (isCompact_Icc : IsCompact (Set.Icc 0 w)) fun u hu => hgsupp u hu
+  set β := bumpCorr g with hβdef
+  set P := ∫ u, Real.exp (u / 2) * β u with hPdef
+  set I₁ := ∫ u, u * Real.exp (u / 2) * β u with hIdef
+  have hPpole : poleWeightMinus g * poleWeightPlus g = P :=
+    (integral_exp_half_mul_bumpCorr hgc hgcs).symm
+  have hβ0 : ∀ u, w ≤ |u| → β u = 0 := fun u hu =>
+    bumpCorr_atomDilate_eq_zero_of_le hφ hsupp hw hu
+  have hβG : ∀ u, |β u| ≤ G := fun u => abs_bumpCorr_le hgc hgcs u
+  have hexpw : Real.exp (w / 2) ≤ 2 := by
+    have := Real.exp_le_exp.mpr (show w / 2 ≤ Real.log 2 by
+      have := Real.log_two_gt_d9; linarith only [this, hw4])
+    rwa [Real.exp_log two_pos] at this
+  -- the two Laplace moments are small
+  have hP : |P| ≤ 4 * w * G := by
+    have h := abs_integral_le_of_vanish (f := fun u => Real.exp (u / 2) * β u) (C := 2 * G)
+      hw.le (fun u hu => by simp only [hβ0 u hu, mul_zero]) fun u hu => by
+        rw [abs_mul, abs_of_pos (Real.exp_pos _)]
+        have he : Real.exp (u / 2) ≤ 2 :=
+          (Real.exp_le_exp.mpr (by linarith only [(abs_le.mp hu).2])).trans hexpw
+        exact mul_le_mul he (hβG u) (abs_nonneg _) zero_le_two
+    linarith only [h]
+  have hI : |I₁| ≤ 4 * w ^ 2 * G := by
+    have h := abs_integral_le_of_vanish (f := fun u => u * Real.exp (u / 2) * β u)
+      (C := w * 2 * G) hw.le (fun u hu => by simp only [hβ0 u hu, mul_zero]) fun u hu => by
+        rw [abs_mul, abs_mul, abs_of_pos (Real.exp_pos _)]
+        have he : Real.exp (u / 2) ≤ 2 :=
+          (Real.exp_le_exp.mpr (by linarith only [(abs_le.mp hu).2])).trans hexpw
+        exact mul_le_mul (mul_le_mul hu he (Real.exp_pos _).le hw.le) (hβG u) (abs_nonneg _)
+          (by positivity)
+    nlinarith only [h]
+  -- the rows
+  set H := ∑ n ∈ Icc 1 N, 1 / (n : ℝ) with hHdef
+  obtain ⟨hHlo, hHhi⟩ := harmonic_sum_bounds N
+  have hST := sum_topBand_inv_le_two hw.le N
+  have hST0 : 0 ≤ ∑ n ∈ T, 1 / (n : ℝ) := sum_nonneg fun n _ => by positivity
+  have hτN : ((T.card : ℕ) : ℝ) ≤ N := by
+    have hc : T.card ≤ N := by
+      have := card_le_card (filter_subset _ _ : T ⊆ Icc 1 N)
+      rwa [Nat.card_Icc, Nat.add_sub_cancel] at this
+    exact_mod_cast hc
+  set E : ℕ → ℝ := fun n => poleVector n * ((n * (Real.exp w - Real.exp (-w)) + 2) *
+    (((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹ * ((1 + Real.log (2 * n)) * (G + A₁))))
+  set e : ℕ → ℝ := fun n => poleVector n * shellPoleRow g N w n -
+    (Real.log n * P + I₁) + G * Real.log n / n
+  have hrow : ∀ n ∈ T, |e n| ≤ E n := fun n hn => abs_poleRow_sub_le hφ hsupp hw hw4 hA₁ hN8 hn
+  -- each error is `O((w/N + 1/N²)(2 + log N)(G + A₁))`
+  have hEn : ∀ n ∈ T, E n ≤ (18 * w / N + 24 / (N : ℝ) ^ 2) * (2 + Real.log N) * (G + A₁) := by
+    intro n hn
+    have h2 := half_lt_of_mem_topBand hw.le hn
+    have hn1 := mem_Icc.mp (mem_topBand.mp hn).1
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1.1
+    have hnN : (n : ℝ) ≤ N := by exact_mod_cast hn1.2
+    have hsn : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
+    have hsn2 : 0 < Real.sqrt ((n : ℝ) / 2) := Real.sqrt_pos.mpr (by positivity)
+    have hprod : Real.sqrt n * Real.sqrt ((n : ℝ) / 2) * Real.sqrt 2 = n := by
+      rw [← Real.sqrt_mul hn0.le, ← Real.sqrt_mul (by positivity),
+        show (n : ℝ) * (n / 2) * 2 = n ^ 2 by ring, Real.sqrt_sq hn0.le]
+    have hs2 : Real.sqrt 2 ≤ 3 / 2 := by
+      rw [Real.sqrt_le_left (by norm_num)]; norm_num
+    have hweight : poleVector n * ((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹ ≤ 3 / (n : ℝ) ^ 2 := by
+      have heq : poleVector n * ((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹ =
+          2 * Real.sqrt 2 / (n : ℝ) ^ 2 := by
+        rw [poleVector]
+        field_simp
+        nlinarith only [hprod, hsn, hsn2]
+      rw [heq, div_le_div_iff_of_pos_right (by positivity)]
+      linarith only [hs2]
+    have hexp : Real.exp w - Real.exp (-w) ≤ 3 * w := by
+      have h1 := Real.add_one_le_exp (-w)
+      have h2 : Real.exp w * Real.exp (-w) = 1 := by
+        rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+      nlinarith only [h1, h2, hw, hw4, Real.exp_pos w, Real.exp_pos (-w)]
+    have hlog : 1 + Real.log (2 * n) ≤ 2 + Real.log N := by
+      have := Real.log_le_log (by positivity) (mul_le_mul_of_nonneg_left hnN zero_le_two)
+      rw [Real.log_mul two_ne_zero hN0.ne'] at this
+      have := Real.log_two_lt_d9
+      linarith
+    have hlog0 : 0 ≤ 1 + Real.log (2 * n) := by
+      have := Real.log_nonneg (show (1 : ℝ) ≤ 2 * n by linarith only [hn0, hNR, h2]); linarith
+    have hGA : 0 ≤ G + A₁ := by linarith only [hGpos, hA₁0]
+    have hm0 : 0 ≤ (n : ℝ) * (Real.exp w - Real.exp (-w)) + 2 := by
+      have : Real.exp (-w) ≤ Real.exp w := Real.exp_le_exp.mpr (by linarith only [hw])
+      nlinarith only [this, hn0]
+    have hinvn : 1 / (n : ℝ) ≤ 2 / N := by
+      rw [div_le_div_iff₀ hn0 hN0]; linarith only [h2]
+    calc
+      E n = (poleVector n * ((n : ℝ) / 2 * Real.sqrt ((n : ℝ) / 2))⁻¹) *
+          ((n * (Real.exp w - Real.exp (-w)) + 2) * ((1 + Real.log (2 * n)) * (G + A₁))) := by
+        simp only [E]; ring
+      _ ≤ (3 / (n : ℝ) ^ 2) * ((n * (3 * w) + 2) * ((2 + Real.log N) * (G + A₁))) := by
+        refine mul_le_mul hweight (mul_le_mul (by nlinarith only [hexp, hn0])
+          (mul_le_mul_of_nonneg_right hlog hGA) (mul_nonneg hlog0 hGA) (by positivity))
+          (mul_nonneg hm0 (mul_nonneg hlog0 hGA)) (by positivity)
+      _ = (9 * w * (1 / (n : ℝ)) + 6 * (1 / (n : ℝ)) ^ 2) * (2 + Real.log N) * (G + A₁) := by
+        field_simp; ring
+      _ ≤ (9 * w * (2 / N) + 6 * (2 / (N : ℝ)) ^ 2) * (2 + Real.log N) * (G + A₁) := by
+        have hL2 : 0 ≤ 2 + Real.log N := by linarith only [Real.log_natCast_nonneg N]
+        refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right ?_ hL2) hGA
+        have h1 := mul_le_mul_of_nonneg_left hinvn (show 0 ≤ 9 * w by positivity)
+        have h2' := pow_le_pow_left₀ (by positivity) hinvn 2
+        linarith only [h1, h2']
+      _ = _ := by ring
+  -- the decomposition of the coefficient
+  have hdecomp : jointWitnessCoefficient g N w =
+      P * ∑ n ∈ T, (H - Real.log n) + P * (N * ∑ n ∈ T, 1 / (n : ℝ)) - T.card * I₁ +
+        G * ∑ n ∈ T, Real.log n / n - ∑ n ∈ T, e n := by
+    have hsumR : ∑ n ∈ T, poleVector n * shellPoleRow g N w n =
+        ∑ n ∈ T, ((Real.log n * P + I₁) - G * Real.log n / n + e n) :=
+      sum_congr rfl fun n _ => by simp only [e]; ring
+    rw [jointWitnessCoefficient, hPpole, hsumR, sum_add_distrib, sum_sub_distrib,
+      sum_add_distrib, sum_sub_distrib, sum_const, nsmul_eq_mul, ← sum_mul, mul_sum, mul_sum]
+    simp only [mul_sub, sum_sub_distrib, sum_const, nsmul_eq_mul]
+    rw [← hT]
+    ring_nf
+    simp only [mul_comm, mul_left_comm, mul_assoc, sum_div, ← sum_mul, mul_sum]
+    ring
+  sorry
+
 end GaloisForLFunctions.SuccessorShellArithmetic

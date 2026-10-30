@@ -6,7 +6,7 @@
 
 ## Proof
 
-[PROVED HERE] Take the [common signed tent rate](growing-conductor-character-tents-share-one-decay-rate.md), with constants `κ,C₀`, and the ordinary proved von Mangoldt rate `κψ,Cψ`. Set `ρ=min(κ/2,κψ)`, `u=(log X)^(1/10)`, `η=exp(−ρu)`, `Y=(1+η)X` and `h=log(1+η)≥η/2`. Since `Y≥X`, every modulus allowed at `X` is also allowed at `Y`.
+[PROVED HERE] Take the [common signed tent rate](../3-formalized/growing-conductor-character-tents-share-one-decay-rate.md), with constants `κ,C₀`, and the ordinary proved von Mangoldt rate `κψ,Cψ`. Set `ρ=min(κ/2,κψ)`, `u=(log X)^(1/10)`, `η=exp(−ρu)`, `Y=(1+η)X` and `h=log(1+η)≥η/2`. Since `Y≥X`, every modulus allowed at `X` is also allowed at `Y`.
 
 The exact signed unsmoothing defect satisfies
 

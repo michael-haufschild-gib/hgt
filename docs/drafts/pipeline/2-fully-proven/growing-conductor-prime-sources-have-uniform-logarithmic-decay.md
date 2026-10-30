@@ -10,7 +10,7 @@ where `κ_q(F)=φ(q)^(-1)Σ_(r unit)F(r)`. One starting horizon precedes all qua
 
 ## Proof
 
-[PROVED HERE] The [uniform logarithmic-derivative bound](../3-formalized/dirichlet-logarithmic-derivatives-have-uniform-conductor-cost.md), [complete actual Perron contour estimate](../3-formalized/actual-character-contours-have-uniform-conductor-cost.md), [common tent decay](growing-conductor-character-tents-share-one-decay-rate.md), and [signed unsmoothing and finite-character recovery](growing-conductor-character-sums-retain-signed-unsmoothing.md) give constants `a>0,C≥0,Z≥3` such that every reduced residue class of every `q≤(log X)^A` has prime error at most `CX exp(−a(log X)^(1/10))` for `X≥Z`.
+[PROVED HERE] The [uniform logarithmic-derivative bound](../3-formalized/dirichlet-logarithmic-derivatives-have-uniform-conductor-cost.md), [complete actual Perron contour estimate](../3-formalized/actual-character-contours-have-uniform-conductor-cost.md), [common tent decay](../3-formalized/growing-conductor-character-tents-share-one-decay-rate.md), and [signed unsmoothing and finite-character recovery](growing-conductor-character-sums-retain-signed-unsmoothing.md) give constants `a>0,C≥0,Z≥3` such that every reduced residue class of every `q≤(log X)^A` has prime error at most `CX exp(−a(log X)^(1/10))` for `X≥Z`.
 
 A prime in a nonunit residue class divides `q`. The whole contribution is therefore at most `θ(q)`, which has a common bound `DX exp(−a(log X)^(1/10))` on the same growing family beyond one further horizon. Every residue's proper prime powers are bounded by the scalar mass `ψ(X)−θ(X)≤2√X log X`, absorbed by the same physical error. Thus all residue indicators, including nonunits, share one actual Mangoldt rate.
 

@@ -1,17 +1,22 @@
 # Research frontier: work, open problems and next questions
 
-Status: 30 October 2026, corpus `4089dad808` plus working tree. **RH is open.**
+Status: 30 October 2026, corpus `12ba3d87c6` plus working tree. **RH is open.**
 
-Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md) · [frontier map](../rh-current-frontier-map.md) · [working log](../../../logs/review-3010-rev4-research-2026-10-30.md). Evidence labels [L]/[K]/[S]/[P] as in the frontier map; (inference) marks this review's interpretation; (external) marks literature outside the corpus. No builds were run.
+Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md) · [route unification](route-unification-ledger.md) · [frontier map](../rh-current-frontier-map.md) · [working log](../../../logs/review-3010-rev5-facts-2026-10-30.md).
+
+- Evidence labels [L]/[K]/[S]/[P] follow the frontier map. [S] on a recent module means statement and proof were read in source.
+- (inference) marks this review's interpretation; (external) marks literature outside the corpus.
+- No builds were run.
 
 ## The corpus in one paragraph
 
-**Classical layer, formalized unconditionally.** Guth–Maynard large values, Vinogradov–Korobov, ≥0.6725 of zeros simple and critical, 0 ≤ Λ_dBN < 1/8, and "≥3/4 critical or a positive proportion of simple off-line zeros near the line".
+**Classical layer, formalized unconditionally.** Guth–Maynard large values, Vinogradov–Korobov, ≥ 0.6725 of zeros simple and critical, 0 ≤ Λ_dBN < 1/8, and "≥ 3/4 critical or a positive proportion of simple off-line zeros near the line".
 
 **Weil positivity beyond the literature.**
 
-- At every fixed fraction of the atom spacing, for ζ and for every sign twin.
+- Below a fixed fraction of the atom spacing, for ζ and every sign twin, on every C² test supported near the logarithms.
 - On the complete prime/Gamma/polar atomic matrix at every fixed overlap c, where it rejects the Liouville twin and every cofinite flip.
+- On fixed conductor packets up to overlap (log N)^{1/19}.
 
 At fixed c the complete matrix is a solved operator: its low spectrum is spanned by Ramanujan conductor modes with energies E_m(c), explicit nonnegative Fourier tails.
 
@@ -19,32 +24,36 @@ At fixed c the complete matrix is a solved operator: its low spectrum is spanned
 
 - Index of the Weil kernel = 2·#sector zeros.
 - Finite index ⟺ bounded heat counts ⟺ all zeros above some height critical.
+- The de Bruijn–Newman flow counts depth: its t-uniform high counts are the depth-counting function of Ξ, and deep zeros are bounded by C log X·N(t).
 - The Hecke state on Aff(ℚ) is PD exactly from s = 1/2, the Kakutani threshold of the prime Poisson measure.
 - Every line-calibrated explicit formula computes Weil's reflection-paired form W and never the same-point form S. S is read from integer theta prefixes, and RH is S = W.
 
-**The diagnosis.** A crossing input must be critical, square-root precise and selective at once, and no input in the corpus is all three.
+**The diagnosis.**
+
+- A crossing input must be critical, square-root precise and selective at once, and no input in the corpus is all three.
+- Every quantitative obstruction inside the complete matrix sits at a cutoff edge (horizon, top band, Euler head).
+- All coupling between primes, and between addition and multiplication, passes through the archimedean place.
 
 ## 2.1 Work that is "just work"
 
 Each item has a working mechanism in the corpus and a proved smaller instance. None promises a sign beyond its stated range.
 
-**Complete Weil matrix (HF, SRT, AIP, ACS, SC).**
+**Complete Weil matrix (HF, SRT, AIP, ACS, SC, CHMD).**
 
-- **A1.** Integrate fixed conductor packets below (log N)^{1/19} [S]; formalize the reciprocal-shell square budget c²(1 + log c) [P].
-- **A2.** Finish the separate shell-payment floor: the top-band witness forcing C ≥ κc²/ε in any one-sided payment NR ≤ G(εD + CS) [S, in progress].
-- **A3.** Effective conductor confinement for finite sieve profiles at fixed c. Ingredients, all [L]:
-  - the logarithmic sieve spectral tail;
-  - harmonic class weights ≍ density × log;
-  - the effective Ramanujan approximation `exists_sieveProfile_ramanujan_approximation`, relative error 16(log A + L_Q)/log R;
-  - finite-horizon conductor coordinates.
-- **A4.** Effective horizons for fixed-c positivity and for the explicit full-index schedules; full-index exhaustion for the smaller Steklov schedule.
-- **A5.** Haar branch: first-prime, coarse, polar and head payments on finite cells and finite sources (HF, AIP, ACS, CHMD).
-- **A6.** Mean-square conductor costs: replace the sup bound √φ(m) in the prime residual by the period mean square, turning Σφ(m)log²m into Σlog²m (SSH Q6).
+- **A1. Top-band joint cancellation (SSH).** Prove `abs_poleRow_sub_le` and `exists_abs_jointWitnessCoefficient_le`. The pole moments on the witness (`poleMoments_topWitnessVector`), the Laplace factorization ∫e^{u/2}β = a₋a₊ and the cell-derivative bounds are proved.
+- **A2. Growing Euler heads (AID).** Prove `eventually_eulerHead_negative_family`. The coupling limit B_Y/√Y → L, its negative diagonal and the lower-triangular bound σ‖x‖² ≤ Σ(Lᵀx)² are proved.
+- **A3. Effective conductor confinement for finite sieve profiles at fixed c.** Ingredients:
+  - the logarithmic sieve spectral tail, harmonic class weights and `exists_sieveProfile_ramanujan_approximation` [L];
+  - finite-horizon conductor coordinates [L];
+  - the conductor-uniform Dirichlet log-derivative and Perron contours [S].
+- **A4. Effective horizons** for fixed-c positivity and for the explicit full-index schedules; full-index exhaustion for the smaller Steklov schedule.
+- **A5. Haar branch:** first-prime, coarse, polar and head payments on fixed finite cells and finite sources.
+- **A6. The matched class Hodge index on a finite sieve.** Extend `eventually_isHyperbolic_classHodgeGram` from one prime to a finite set of primes, using the sieve-class coordinates and their exact prime Grams. This is the first test of local-to-global assembly (§2.5 O2), and failure is informative.
 
 **Theta and heat.**
 
-- **A7.** Theta Hankel ranks nine, ten, … by seam-split piece certificates, each stated as flux domination through the square-plus-flux identity.
-- **A8.** WD/LA: absorb the C log X outer vertical energy in localized dissipation and sum the local estimates at each fixed t > 0.
+- **A7.** Theta Hankel ranks nine, ten, … by seam-split piece certificates, each stated as flux domination through the square-plus-flux identity. Rank-N PSD reduces to positivity of the native tail.
+- **A8. The graded heat ladder as theorems.** Each rung is a corollary of `exists_card_deep_le_mul_nonrealZeroCount`. Example: N(t) ≤ exp(Ct^{−α}) with α < 1/4 implies X^{o(1)} zeros of depth ≥ δ in [X, 2X].
 - **A9.** HCF/LA: further finite degrees on the log2/log3 grids and Jensen degrees.
 
 **Fixed-aperture positivity.**
@@ -53,15 +62,14 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
 
 **Selection and index bookkeeping.**
 
-- **A11.** Integrate "every low conductor sees the flip set" [S]; exact flip thresholds c₀ for further finite flip families.
+- **A11.** Exact flip thresholds c₀ for further finite flip families.
 - **A12.** PW-B: restate the native two-response action on source data, removing `XiZeroCopy` indexing.
 
 **Foundations and programmes.**
 
 - **A13.** ACS 𝔽₃ elliptic base: product formula, quotient measures, Iwasawa characters, Eisenstein unfolding.
-- **A14.** HEF: the resolvent Hilbertian formula (σ − 1/2)S = E + D on the full Ξ divisor. Σ_ρ abs(s − ρ)^{−2} converges absolutely, so this is an identity to transport, not an estimate.
-- **A15.** ART: formalize the realization obstructions (commutative vs free realization, unique factorization against additive concatenation, Pisot, Cunningham, the Pollicott strip bridge) and the rank law for orthogonal families.
-- **A16.** MC: Siegel–Walfisz transfer for growing-modulus shells. WL: higher-order scalar-jet transfer for general prime families.
+- **A14.** HEF: transport the finite resolvent depth formula (σ − 1/2)S = E + D to the Ξ divisor. The Ξ line-reflection receiver exists; Σ_ρ \|s − ρ\|^{−2} converges absolutely, so this is an identity to transport, not an estimate.
+- **A15.** MC: Siegel–Walfisz transfer for growing-modulus shells with the conductor-uniform contours. WL: higher-order scalar-jet transfer for general prime families. CTF: terminal and Euler-completion bookkeeping.
 
 ## 2.2 Open mathematical problems
 
@@ -80,239 +88,320 @@ Nobody knows how to produce these. Strength tags:
 
 | # | Problem | Strength | Corpus form |
 |---|---|---|---|
-| **B1** | Complete Weil positivity at RH-complete overlap | [RH] | Positivity eventually in N for c⁴/log N → ∞. Margin E(c) ≍ c⁻⁷ → 0. |
-| **B2** | Signed joint shell–pole payment | [sub] | W ≥ ac⁻⁷(D − C log(2c)S) for all vectors. Separate payment is capped at c²/ε, defect-only capture is exponential. |
+| **B1** | Complete Weil positivity at RH-complete overlap | [RH] | Positivity eventually in N for c⁴/log N → ∞, or at every Kc*_N, c*_N ≍ L(log L)². Margin = synthesis error there. |
+| **B2** | Signed joint edge payment | [sub] | W ≥ ac⁻⁷(D − C log(2c)‖x‖²) for all vectors: shells, Euler heads and pole paid together at the cutoff edges. Separate shell payment is capped at A²/(2ε), absolute head payment ends at (log A)², defect-only capture is exponential. |
 | **B3** | Positive supersolution of the full arithmetic generator | [RH] | The odd Markov form is never subcritical; every obstruction is prime. |
 | **B4** | Rank-uniform theta / heat positivity | [RH] | Flux domination uniformly in rank; Λ_dBN = 0; all-degree Jensen. |
-| **B5** | An arithmetic same-point identity | [RH] | Express D(s), the Hecke defect or S − W through arithmetic data. Explicit formulas compute only W. |
-| **B6** | A source bound on the collision quantum | [RH], [C%] | O ∈ 2ℕ; RH ⟺ O < 2; O ≤ cN with c < 1/4 gives 75%. |
-| **B7** | A realization without zero indexing | [RH], [QRH] | CCM anticommutator sign; an unbounded Deninger generator; a Hölder mixing realization of ζ (strip). |
+| **B5** | A source law for the same-point side | [RH] | Force the two reconstructed orientations of the Ξ resolvent to agree, equivalently S = W, the Hecke defect = 0 or D(s) = 0. Explicit formulas compute only W. |
+| **B6** | A source bound on the collision quantum | [RH], [C%] | O ∈ 2ℕ; RH ⟺ O < 2 on every window; O ≤ cN with c < 1/4 gives 75%. |
+| **B7** | A realization without zero indexing | [RH], [QRH] | CCM anticommutator sign; an unbounded Deninger generator; a Hölder mixing realization (strip). |
+| **B8** | Local-to-global signature | [sub] → [RH] | Assemble the matched local Hodge indices over all primes through the archimedean glue. Local towers alone give index 0 or ∞. |
 
 **Family Π — square-root precision.**
 
 | # | Problem | Strength | Corpus form |
 |---|---|---|---|
-| **B8** | Finite Krein index | [FS] | κ < ∞ ⟺ bounded heat counts ⟺ eventual criticality. |
-| **B9** | A square-root producer over ℤ | [RH] | Parity-selective integer auxiliaries of controlled height. Adams costs 2^{qr}; factorial ratios cost 2log2. |
-| **B10** | Quadratic effectivity / Rosati heights | [RH] | Subquadratic h⁰ on degree-zero classes of the scaling surface; infinite genus blocks a constant. |
-| **B11** | A non-envelope amplifier seed | [RH] | Any subexponential bound on the scaling orbit correlation of one generic cycle. Orthogonal families cancel their gain. |
-| **B12** | Dispersion / parity | [QRH]+ | Any fixed zero-free strip; the 5/6 strip ⟺ R = O(N^{5/3+ε}). |
-| **B13** | Classical conjectures and census | [LH], [Siegel], [C%] | Lindelöf; density hypothesis below 5/6; exceptional zeros; signed Gram moments near bandwidth 1 for 70%/75%. |
+| **B9** | Finite Krein index | [FS] | κ < ∞ ⟺ t-uniform heat count ⟺ eventual criticality. |
+| **B10** | Growth of the heat count N(t) as t ↓ 0 | [sub] | Known exp((2/3+ε)/t). Polynomial growth gives polylog deep density; exp(Ct^{−α}), α < 1/4, gives X^{o(1)}. Depth counting alone cannot bound it (polynomial no-go). |
+| **B11** | A square-root producer over ℤ | [RH] | Parity-selective integer auxiliaries of controlled height. Adams costs 2^{qr}; factorial ratios cost 2 log 2. |
+| **B12** | Quadratic effectivity / Rosati heights | [RH] | Subquadratic h⁰ on degree-zero classes of the scaling surface; infinite genus blocks a constant. |
+| **B13** | A non-envelope amplifier seed | [RH] | Any subexponential bound on the scaling orbit correlation of one generic cycle. Orthogonal families cancel their gain. |
+| **B14** | Dispersion / parity | [QRH]+ | Any fixed zero-free strip; the 3/4 strip ⟺ near-band cyclotomic energy O(N^{3/2+ε}). No eventual single-height power saving exists. |
+| **B15** | Classical conjectures and census | [LH], [Siegel], [C%] | Lindelöf; density hypothesis below 5/6; exceptional zeros; signed coalescent prime pairs past bandwidth 1 for 70%/75%. |
 
 **Family Γ — selection.**
 
 | # | Problem | Strength | Corpus form |
 |---|---|---|---|
-| **B14** | The exponent at the trivial gauge point | [RH] | θ_μ(0) = 1/2; 0 is never better than typical; gauge-invariant data stop at 3/4. |
-| **B15** | Uniform selection at growing resolution | [RH] | Single prime flips need c₀(p) ≍ p^{1/7}; selection and criticality on one schedule. |
-| **B16** | Hecke invariance of the collided polarization | [RH] | W = collided; the scaling defect is already a Hecke similitude. |
+| **B16** | The exponent at the trivial gauge point | [RH] | θ_μ(0) = 1/2; 0 is never better than typical; gauge-invariant data stop at 3/4. |
+| **B17** | Uniform selection at growing resolution | [RH] | Single prime flips need c₀(p) ≍ p^{1/7}; selection and criticality must hold on one schedule. |
+| **B18** | Hecke invariance of the collided polarization | [RH] | W = collided; the scaling defect is a Hecke similitude. |
+| **B19** | A successor-carrying positive carrier | strength unknown | On Aff(ℚ) none exists with Weil's dilation part; an adelic or indefinite one is not excluded. |
 
-(inference) At the endpoint the three families are one statement (route-unification ledger §2). B2 is the only open item of unknown strength that controls an entire route family. B6 is the only formulation in which RH has an integer margin.
+(inference)
+
+- At the endpoint the three families are one statement (route-unification ledger §2).
+- B2 is the only open item of unknown strength that controls an entire route family.
+- B6 is the only formulation in which RH has an integer margin.
+- B10 is the only formulation with a known quantitative rung, exp(C/t), to improve.
 
 ## 2.3 The three questions to answer next
 
-**Q1. Can the successor shells be paid with their sign?**
+**Q1. Can the complete Weil form be paid jointly at its cutoff edges?**
 
-Is there, eventually in N and for every coefficient vector, a reserve W ≥ a c⁻⁷(D − C log(2c)S)? Equivalently: is the complete Weil matrix at overlap c a defect-relative perturbation of its conductor Hamiltonian Σ_m E_m(c) abs(⟨x, u_m⟩)², with only O(log c) loss?
+Concretely:
 
-- **It is the bottleneck of the most developed route family.** The confinement exponent 16 = 2 + 2·7 is the cost of paying the shells and the pole separately. Every open estimate of HF/SRT/AIP/ACS becomes polynomial bookkeeping once the defect bound is logarithmic.
-- **A "yes" must use new structure.** Separate payment is capped at c²/ε [S] and defect-only capture is exponential [L], so only the sign of the shells can work. On conductor modes the sign is known: the Möbius collapse c_m(h) = Σ_{d∣(m,h)} μ(m/d)d and the integrality of h turn the shell symbol into a nonnegative Fourier tail.
-- **It is selective by construction.** Continuum shells give only the pole charge, and twisted sources fail repayment.
-- **A "no" is just as informative.** A family off the conductor span on which the shells beat the pole at every log-power loss would be a structural obstruction to the whole complete-matrix route.
-- **Subquestions:**
-  - The lattice gain for vectors that are not conductor modes.
-  - A Ramanujan–Plancherel decomposition of the shell block (§2.5 O1).
-  - The joint signed bound on span{u_m : m ≤ Q} at growing c.
+- Is there, eventually in N and for every coefficient vector, a reserve W ≥ ac⁻⁷(D − C log(2c)‖x‖²)?
+- Equivalently: is the complete matrix at overlap c a defect-relative perturbation of its conductor Hamiltonian Σ_m E_m(c)\|⟨x, u_m⟩\|², with O(log c) loss, once shells, Euler heads and pole are paid together?
 
-**Q2. Is there an arithmetic formula for a same-point zero sum?**
+Why this question:
 
-Express the resolvent defect
+- **It is the bottleneck of the most developed route family.** The confinement exponent 16 = 2 + 2·7 is the cost of paying shells and pole separately. Every open estimate of HF/SRT/AIP/ACS/CHMD becomes polynomial bookkeeping once the defect bound is logarithmic.
+- **The corpus has located the obstruction at the edges.**
+  - The zeros meet the pole mode only through the horizon boundary B_N(ρ)B_N(1 − ρ) [S].
+  - The quasimode residual on each conductor mode is the upward prime defect [S].
+  - The separate-payment witness lives on the top band [L].
+  - The Euler-head obstruction lives at the head edge m = Y [S].
+- **A "yes" must use the sign.**
+  - Separate payment is capped [L].
+  - Coherence: on nonnegative data the trivial point is extremal, so repayment can only happen on signed nonpolar directions [S].
+  - On conductor modes the sign is known: Möbius collapse and the integrality of h turn the shell symbol into a nonnegative Fourier tail.
+- **It carries the selection.** A twin's defect is exactly its successor-disagreement shells [S]. A joint payment that works on agreement shells is selective by construction.
+- **A "no" is just as informative.** A family of signed nonpolar vectors on which shells and heads beat the pole at every log-power loss would be a structural obstruction to the whole complete-matrix family.
 
-D(s) = Σ_ρ m_ρ · 2(σ − 1/2)(β − 1/2)² / (abs(s − ρ)² · abs(s − ρ*)²) ≥ 0, which vanishes exactly on critical configurations [L, finite configurations; A14 transports it to Ξ],
+Subquestions:
 
-or the collision charge O(T), or the Hecke defect, through prime data and theta data together.
+- A1 (top-band cancellation). Then the same joint coefficient on the next witness family: Ramanujan modes perturbed on the top band.
+- A2 (growing heads), followed by the joint head–pole–tail version: does PNT on windows cancel the √Y coupling?
+- A Ramanujan–Plancherel decomposition of the shell block (§2.5 O1).
+
+**Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**
+
+- **The receiver.** On the Ξ divisor, RH ⟺ the resolvent vector equals its line reflection ⟺ the two source polarizations agree (`riemannHypothesis_iff_xiResolvent_sourcePolarizations_eq`) [S].
+- **The setting.** Both orientations lie in one closed continued-Cauchy source carrier and admit separated finite-source reconstruction. The question asks for the law that identifies them.
+
+Why this question:
 
 - **Explicit formulas read one side only.** HEF proves that they compute only the reflection-paired W. Every route that builds positivity from the explicit formula reads one side of the identity whose two sides RH equates.
-- **Both readings already exist.** The same-point side is the limit of integer theta-prefix readings (CDG), and W is the prime explicit formula. Q2 asks for a comparison theorem between two existing readings, not for an estimate.
-- **Quantization supplies a margin.** O is an even integer, so an identity with error < 2 decides RH, and O ≤ N/4 gives 75%. This is the one place where the zero margin of Σ becomes an integer gap.
-- **Subquestions:**
-  - (σ − 1/2)S(s) − Re ξ′/ξ(s) at one σ > 1 as a theta–prime expression.
-  - A source-realizable non-holomorphic carrier (the ordinate clock is antiholomorphic in one factor).
-  - The ℤ-analogue of "every circle-calibrated explicit formula is the Rosati pairing" over 𝔽_q.
+- **Both readings exist.** The same-point side is the limit of integer theta-prefix readings (CDG); W is the prime explicit formula. Q2 asks for a comparison theorem between two existing readings, not for an estimate.
+- **Quantization supplies a margin.** The collision charge is an even integer, RH ⟺ charge < 2 on every window [S], and O ≤ N/4 gives 75%. This is the one place where the zero margin of Σ becomes an integer gap.
+- **Its source must be additive.** Strip-holomorphic carriers vanishing on critical configurations vanish on all reflection-invariant ones [L], and the de la Vallée Poussin scalar coupling has no budget below the first quantum at distance 1/2 [S].
 
-**Q3. Is the Weil-kernel index finite?**
+Subquestions:
 
-Equivalently [L]: are the nonreal heat-zero counts N(t) bounded as t ↓ 0? Are all zeros above some height critical?
+- (σ − 1/2)S(s) − Re ξ′/ξ(s) at one σ > 1 as a theta–prime expression.
+- A theta-prefix reading of the collision charge on a window, with an explicit error.
+- The ℤ-analogue of "every circle-calibrated explicit formula is the Rosati pairing" over 𝔽_q.
 
-- **It is the weakest structural target that implies a first-rank conjecture:** finite index implies Lindelöf.
+**Q3. How fast can the de Bruijn–Newman nonreal count N(t) grow as t ↓ 0?**
+
+Rungs, all exact consequences of `exists_card_deep_le_mul_nonrealZeroCount` and the depth law (A8):
+
+| Growth of N(t) | Consequence |
+|---|---|
+| bounded | finite off-line support, hence LH [FS] |
+| ≤ At^{−a} | O((log X)^{4a+1}) zeros of depth ≥ δ in [X, 2X] [sub] |
+| ≤ exp(Ct^{−α}), α < 1/4 | X^{o(1)} such zeros (inference) [sub] |
+| ≤ C R log R, R = 2π exp((2/3+ε)/t) | known [L] |
+
+Why this question:
+
+- **It is the graded form of finite index**, the weakest structural target that implies a first-rank conjecture.
+- **It asks about an integer-valued, antitone quantity**, not a margin.
 - **It is selective by itself.** Finite ζ index forces infinite index for every single-prime flip [L].
-- **It asks for an integer, not a margin.** The index is lower semicontinuous, and integrality and compactness act on it.
-- **The corpus has two independent attack surfaces:**
-  - Localized heat dissipation through collisions and t = 0 [K], which needs the C log X outer energy absorbed uniformly as t ↓ 0.
-  - Consecutive-ratio tower indices, whose supremum is finite exactly when heat counts are bounded [L].
-- **Subquestions:**
-  - A uniform N(t) bound from localized dissipation.
-  - An arithmetic ceiling for one nonblind prime tower.
-  - A Persson-type principle locating the index at infinite height.
+- **The corpus has three attack surfaces:**
+  - localized dissipation through collisions and t = 0 [K];
+  - persistence of deep zeros for t ≲ δ²/log⁴X [S];
+  - the two-sided high-count law [S].
+- **It has a sharp warning.** On real polynomials the heat flow has no depth budget: a deep pair holds a shallow pair off the axis [S]. A bound on N(t) must therefore use Ξ-specific input, such as the zero density (log T)/2π or prime structure, not depth alone.
+
+Subquestions:
+
+- Which rung does the localized dissipation inequality give once its outer flux C log X·∫E_outer is summed over heights?
+- An arithmetic ceiling for one nonblind prime tower.
+- A global monotone functional for the zero dynamics (§2.5 O3).
 
 ## 2.4 A wildly different route
 
-The corpus proves that analytic, spectral, moment, sieve, heat, operator and physical-model certificates collapse onto the same receivers. A route with different walls must therefore rest on a mechanism the corpus does not contain. Corpus searches find no work on crystalline measures, Fourier quasicrystals, Fourier interpolation or Fourier uniqueness pairs.
+**Assessment: no route is visible that avoids all three walls.** The corpus proves closure theorems for every mechanism class that a new route would most naturally use:
 
-**Proposal: Poisson rigidity — the zeros as the crystalline partner of the log-integers.**
+| Mechanism class | Closure theorem | Wall it lands on |
+|---|---|---|
+| Linear/holomorphic identities on the explicit formula | Every line-calibrated statistic is W; holomorphic carriers cannot be quantized [L] | Σ7 |
+| Positivity at bounded scale | Archimedean domination makes every bounded-aperture test positive at large height, off-line zeros or not [S] | Σ |
+| Multiplicative (gauge-invariant) information | Bounds ≥ 3/4 at the trivial point; pointwise-closed statements are twin-blind [L/S] | Γ |
+| Size statements | Coherent at both the trivial point and the Liouville antipode [S] | Γ6 |
+| Poisson / crystalline rigidity of the zero divisor | Comb rigidity needs zero-side positivity, which is RH; one-sided gaps give only local mass bounds [S] | Σ (via Γ8) |
+| Positive states on Aff(ℚ) | Weil's correlation carries no successor; integer successor ⟂ archimedean; Mautner rigidity [S] | Γ7 |
+| Dynamical realizations | Finite even/virtual realizations impossible; additive ⇒ commutative; Hölder ⇒ strip only [L] | Σ6 |
+| Heat flow by depth | No depth budget on polynomials [S] | Σ5 |
+| Integer producers | Chebyshev precision; twist towers collapse [L] | Π3 |
 
-**The observation.** The explicit formula is a Poisson-type summation formula. On one side stands the zero divisor, with positive integer masses m_ρ. On the other stands the discrete set log ℕ with one-signed masses Λ(n)/√n, plus an explicit smooth Gamma density and a simple pole. Both sides are discrete, with integer or one-signed masses, at logarithmically growing density.
+In particular, the route "the zeros as the crystalline partner of log ℕ" lands on Σ. Its rigidity step needs positivity of the zero-side measure, and by `positive_duality_of_the_explicit_formula` that positivity is RH [S]. Positivity and the prime-free gap sit together on the prime side of the Weil pair.
 
-**The external theory** (external, not in the corpus). In this setting, discreteness and positivity on both sides force rigid algebraic structure, and reality of the support comes out of stability rather than out of an inequality:
+**One region lies outside the closure theorems** (inference). It is a region, not a route.
 
-- Lev–Olevskii: a positive measure with uniformly discrete support and spectrum is a combination of lattice combs.
-- Kurasov–Sarnak: stable (Lee–Yang) polynomials produce crystalline measures whose support is real.
-- Olevskii–Ulanovskii: Fourier quasicrystals with unit masses are zero sets of real-rooted exponential polynomials.
-- Fourier interpolation shows that zero ordinates and log n form a critical-density Fourier pair: Radchenko–Viazovska (nodes √n), Bondarenko–Radchenko–Seip (zeta zeros and log n), Kulikov–Nazarov–Sodin (uniqueness pairs).
+**The finite-height arithmetic of the prime phases.** It rests on two facts:
 
-**The route.** Classify the crystalline partners of log ℕ. These are integer-mass divisors in the strip whose explicit-formula transform is a one-signed measure on log ℕ, with ζ's Gamma factor and a simple pole. Then prove that every such partner, and every limit of them, is supported on the line. The mechanism would be a rigidity theorem at growing density, or a Lee–Yang principle in infinitely many variables on the prime torus.
+- **Twin-blindness has a scope.** It is proved for pointwise-closed classes that contain all vertical shifts (`PointwiseClosedStatementsAreTwinBlind`) [L]. A statement anchored at height 0, whose prime range grows with the height T, is not shift-invariant, and that theorem does not reach it.
+- **The phases have not equidistributed.** Prime phases align syndetically at every fixed number of primes [S]. But at height T the flow t ↦ (t log p mod 2π)_{p ≤ (log T)^C} runs on a torus of dimension far above log T, well before its Dirichlet recurrence time. This is the pre-ergodic regime.
 
-**Why it faces different walls.**
+The shape of a counterexample is constrained:
 
-- **Σ.** The central statement is a classification, not a positivity estimate. In Lee–Yang theory, reality holds at criticality with no margin because it comes from stability.
-- **Π.** Nothing is counted at √x. Growth enters only through the zero density (log T)/2π, which is known.
-- **Γ.** The hypothesis class consists exactly of the selection data the corpus proves necessary:
-  - discreteness of the dual support (the countermodel with an entire completion and off-line zeros has a continuous Λ-measure);
-  - one sign of the dual masses (the Liouville twin is signed);
-  - integrality of e^{node} (Beurling systems are not integral);
-  - a simple pole (the countermodel has a triple pole).
+- An abstract periodic off-line pattern that hides above (P − 1)ℓ/2 at unboundedly many scales is a uniform crystal (`uniform_crystal_of_hiding`) [S].
+- Bounded-aperture positivity at height T reads only primes up to about (log T)^{O(1)}.
 
-**What it must supply.**
+**What a route here needs:**
 
-1. Crystalline rigidity at logarithmically growing density, with an absolutely continuous archimedean part.
-2. A complex-support version: off-line zeros are points off ℝ.
-3. The mechanism that forces reality, whether stability in infinitely many variables or a structure theorem.
+1. **A forced-shape theorem for actual ζ.** An off-line pair of depth δ at height T that hides from every test of aperture ≤ log log T/(2δ) forces a specific coherence of (p^{iT})_{p ≤ (log T)^{1/δ}} on a set of heights in [T, 2T].
+2. **A pointwise non-coherence theorem for growing prime ranges below recurrence time.** This is quantitative linear independence of the logarithms of d ≍ (log T)^C primes. The corpus has the friable Vandermonde bound with forms ≥ P_S^{−D} and no Baker input [S].
+3. **The link between 1 and 2,** at least for a range of δ. Success in any range is a zero-free statement. Failure, recorded with its exponent, says how much quantitative transcendence RH needs.
 
-**Risks (inference).**
+**Why its walls differ** (inference):
 
-- **The interpolation identity is linear.** HEF shows that linear identities with holomorphic weights cannot see same-point information. The rigidity must therefore come from the nonlinear constraints (integer masses, one sign, integral nodes), not from the identity itself.
-- **The closest corpus candidate is W1C (centred Lee–Yang limits).** W1C builds couplings that converge to Riemann's measure. This route instead classifies the partner directly, which avoids the convergence problem but must handle infinitely many variables.
+- **Σ.** The positivity it uses is archimedean domination, with margin ≍ log T at bounded aperture.
+- **Π.** Nothing is counted at √x.
+- **Γ.** Its anchoring at height 0 escapes the closure theorem behind twin-blindness.
 
-**First question.** Within the convex set of one-signed discrete measures on log ℕ that carry ζ's Gamma factor, a simple pole and the functional equation, is every partner divisor real? Is ζ's divisor an extreme point of that set?
+**Risks.**
 
-**Two other directions** stay close to the existing walls:
+- Averaging over heights turns step 2 into mean-value and large-value statements for short Dirichlet polynomials. Those bound counts, not locations: the census and Guth–Maynard layer.
+- The forced-shape theorem is proved only for abstract periodic patterns, not for ζ's configuration.
 
-- **ART's realization/oscillation programme** (paper only) faces Σ6 (realization) and the amplifier rank law.
-- **Measure rigidity for ×p actions on the adelic solenoid** has no corpus programme. Its step "a positive measure attached to an off-line zero" reintroduces Σ unless that measure comes from the additive reading.
-
-No further route outside the three walls is visible.
+**First question.** At height T, for which depths δ does every off-line configuration that hides up to aperture log log T/(2δ) force (p^{it})_{p ≤ (log T)^{1/δ}} into a fixed neighbourhood of a rank-one (crystalline) subtorus on a positive proportion of t ∈ [T, 2T]?
 
 ## 2.5 Breakthrough opportunities on Weil positivity
 
 Each item is a mechanism that would create positivity or precision from structure. None is a receiver, a constant or a lower bound.
 
-**O1. Plancherel positivity on the arithmetic ax+b group.**
+**O1. A sum-of-squares identity on the successor shells.**
 
-- **The corpus already contains the pieces of one harmonic-analytic object.**
-  - Successor shells pair m with km + h: a dilation k and a shift h, i.e. Aff(ℚ) acting.
-  - Ramanujan conductor modes are joint eigenvectors of dilation and successor averaging, and the sieve eigenbasis is the Ramanujan basis.
-  - The completed conductor energies E_m(c) are nonnegative Fourier tails produced by Möbius collapse and Poisson summation.
-  - Positive-definite functions on Aff(ℚ) have the Kakutani threshold s = 1/2 [L].
-- **The opportunity:** a Plancherel theorem for the complete Weil form, W = ∫ (density ≥ 0) dπ over the unitary dual of the adelic ax+b group. The conductor m would be the non-archimedean level and c the archimedean resolution, at every overlap.
-- **What is known and what it would give.** At fixed c this holds asymptotically, since the low spectrum is the conductor spectrum. An exact Plancherel identity off the conductor span answers Q1 by identity and makes positivity a density statement.
-- **Why it is selective.** Twisted sources change the density; flip blocks have negative energies.
-- **The new mathematics.** Aff(ℚ) is not type I, so its Plancherel measure is not canonical. The KMS state at the critical temperature β = 1, where the Hecke exponent equals the Bost–Connes temperature, is the natural candidate to fix it.
+- **The pieces exist in the corpus:**
+  - The completed conductor energies E_m(c) are nonnegative Fourier tails produced by Möbius collapse and Poisson summation [K].
+  - The divisor collapse Λ∗1 = log is maximal exactly at the trivial gauge point [S].
+  - A twin's prime-form defect is exactly the sum of its successor-disagreement shells, weighted by 1 − σ_h(km) ∈ {0, 2} [S].
+  - On the top band the shells and the pole move by the same lattice-free quantity [S].
+- **The opportunity:** an exact identity
 
-**O2. A Rosati involution for ℤ.**
+  W(x) = Σ_m E_m(c)\|⟨x, u_m⟩\|² + (sum of squares carried by agreement shells) − (edge remainder),
 
-- **The model over 𝔽_q:** every circle-calibrated explicit formula is the Rosati pairing [L], and Rosati positivity gives purity.
-- **The situation over ℤ:** W is the Krein form ⟨Jv, v⟩, with J the line reflection on spectral points, and S is the Hilbert norm.
-- **The opportunity:** an arithmetic identity S = W + (an arithmetic expression vanishing identically), proved as an identity between the theta reading and the prime reading.
-- **Where it would come from:** a "second functional equation" that compares the theta function and the Euler product in a non-holomorphic quantity (abs(ξ)², log abs(ξ), its Laplacian). The functional equation compares them only holomorphically.
-- **Why an approximate version suffices:** the collision charge is quantized, so an identity with error below 2 already decides.
+  with the edge remainder paid by the pole through PNT.
+- **What it would give:**
+  - B2 by identity, hence polynomial confinement and a direct attack on B1.
+  - Selectivity built in: for a twin the disagreement shells enter with the opposite sign.
+- **First test:** the joint witness coefficient (A1), then the same identity on two-conductor packets at growing c.
 
-**O3. Integrality as margin.**
+**O2. A Hasse principle for the Krein index.**
 
-- **The corpus has three places where integrality creates a margin at criticality:**
-  - The shell shift h ≥ 1 repays log(2πc) exactly, while continuum shells give only the pole charge [S].
-  - The collision charge O is an even integer [L].
-  - The Krein index κ is an integer [L].
-- **The opportunity:** arguments whose only analytic input is an approximate statement with error below the integer gap, and whose exact conclusion comes from integrality. This is the characteristic-zero analogue of "eventual Hasse–Weil is Hasse–Weil", where any constant suffices.
-- **Concrete targets:** O(T) < 2 from O(T) ≤ 2 − η; a ceiling on κ from an approximate count; repayment of log c for non-conductor vectors from the unit gap of the shift lattice.
+- **The corpus has the local and the obstruction pieces:**
+  - At each prime, matched against log M − γ, the prime form on the p-adic class pole vectors has a Hodge index with gap → p log p/(p − 1) [S].
+  - Positive local assemblies on ℤ^S have index 0 or ∞ [S]: the towers alone cannot produce a finite index.
+  - The only off-tower constituent is archimedean, and a rank-one partner pays exactly one direction [S].
+- **The opportunity:** a signature formula of Atiyah–Bott or Hirzebruch type:
 
-**O4. An amplifier along the Hecke flow.**
+  κ(global) = Σ_p (local defect at p) − (archimedean gluing),
 
-- **Rate = depth:** a subexponential growth bound on the scaling orbit correlation of one generic cycle is RH [L].
-- **The collided form under Hecke translation T_L** grows as e^{2δL} on off-line zeros. Theta prefixes of length n read the Hecke defect for abs(L) ≤ 2 log(n + 1) [L].
-- **Why a single orbit can amplify.** ART shows that orthogonal families cancel their own gain. A single Hecke orbit is not such a family.
-- **The opportunity:** a unitary realization of the scaling flow on an arithmetic Hilbert space built from the additive (theta) side, with loss independent of L. Hecke translation would play the role of the tensor power in Deligne's argument.
+  with every term an integer computed locally. All local Hodge indices share one positive direction, the pole, which is the archimedean matching. A finite index would follow from finiteness of the local defects, i.e. B8 ⇒ B9.
+- **Why it differs from the routes:** it converts the critical sign into a local–global integer computation, the form in which Hasse principles succeed. It also uses the structure (one positive direction shared through the archimedean place) that makes ℤ differ from 𝔽_q.
+- **First test:** A6 (finite sieve).
 
-**O5. Disconjugacy for the arithmetic Markov form.**
+**O3. A Lyapunov functional for the de Bruijn–Newman zero dynamics.**
 
-- **The setting:** the odd Markov form (ACT) is critical, and every obstruction to its variation inequality is prime.
-- **The opportunity:** a positive solution of the full nonlocal generator via a Riccati/Sturm comparison. Absence of conjugate points decides positivity at zero margin.
-- **Status:** the corpus has a Riccati comparison lemma (`riccati_le_of_le_of_subsolution`) and no application of it to the Markov form. Reflection positivity from locality likewise has no corpus programme.
+- **The setting:**
+  - The zeros of H_t move by the reciprocal field of the other zeros.
+  - The corpus has localized energies with a dissipation inequality through collisions [K], and a lower bound for N(t) by deep zeros [S].
+  - It has no global functional, and the polynomial no-go shows that depth alone is not monotone [S].
+- **The opportunity:** a global functional F(t) of the zero configuration with dF/dt ≤ −c·N(t) + (controlled flux), for example a renormalized transverse energy 𝓔 (AES, where RH ⟺ 𝓔 < 1).
+- **What it would give:** an integral bound ∫N(t)dt, hence a rung of the heat ladder (Q3), hence a density statement beyond the density hypothesis. A strict quantum in 𝓔 per off-line zero would turn it into finite support.
+
+**O4. Integrality as margin through the additive reading.**
+
+- **Three places where integrality creates a margin at criticality:**
+  - the shell shift h ≥ 1 repays log(2πc) exactly, while continuum shells give only the pole charge [L];
+  - the collision charge is an even integer, with endpoint 2 on Ξ [S];
+  - the Krein index is an integer [L].
+- **The opportunity:** arguments whose only analytic input is an approximate statement with error below the integer gap, and whose exact conclusion comes from integrality. This is the characteristic-zero analogue of "eventual Hasse–Weil is Hasse–Weil".
+- **The source** must be the additive (theta-prefix) reading. The multiplicative scalar coupling has no budget below the first quantum at distance 1/2 [S].
+- **Concrete targets:**
+  - O(T) < 2 from O(T) ≤ 2 − η on windows;
+  - a ceiling on κ from an approximate count;
+  - repayment of log c on non-conductor vectors from the unit gap of the shift lattice.
+
+**O5. A second bridge between the primes.**
+
+- **The situation:** all inter-prime coupling passes through the archimedean place (route-unification ledger §3, Reading 3).
+- **What the corpus rules out:**
+  - On Aff(ℚ) the integer successor cannot carry Weil's correlation positively: they are spectrally singular, and a ℤ-periodic successor with continuous dilation part is constant [S].
+  - The Bost–Connes states are PD for β > 1 with Hecke exponent β/2 [S], and at s = 1/2 the Hecke state is the Haar state [L].
+- **The opportunity:** an indefinite (Pontryagin) or adelic state whose archimedean dilation part is Weil's correlation and whose finite-adelic part is the Haar state at the critical temperature. A finite negative index would replace positivity. Such an object would be the "second bridge" between the towers, and it is not excluded by any corpus theorem.
 
 ## 2.6 Does crossing the walls need a new field?
 
 (inference, ideation constrained by the corpus)
 
-**Yes.** Every problem in 2.2 compares the additive and multiplicative structures of ℤ at the exponent 1/2, on an object of infinite rank, at zero margin. Existing fields each supply two of these three features:
+**Yes.** Every problem in 2.2 asks to pay an infinite-rank arithmetic debt through a single rank-one channel, the archimedean place, at zero margin, at the exponent 1/2. Existing fields each supply two of the needed features:
 
 | Field | Supplies | Lacks |
 |---|---|---|
-| Hodge theory | Positivity at zero margin | Works on finite rank |
-| Harmonic analysis on groups | Plancherel positivity | Treats + (Fourier on ℝ, ℤ̂) and × (Mellin on ℚ^×) separately |
-| Probability | Kakutani dichotomies, typicality, multiplicative chaos | Speaks about almost every gauge, not the trivial point |
+| Hodge theory | An index theorem at zero margin | Finite rank; a conformal Frobenius |
+| Harmonic analysis on groups | Plancherel positivity | Treats + (Fourier on ℝ, ℤ̂) and × (Mellin on ℚ^×) separately; on Aff(ℚ) the two are spectrally singular |
+| Krein / Pontryagin space theory | Exact negative indices, finite-rank perturbations | Arithmetic producers of the index |
+| Probability on the gauge torus | Kakutani dichotomies, typicality, zero–one laws | Speaks about almost every gauge, not the trivial point |
 | Analytic number theory | Precision | Through estimates that spend a margin |
 
-No field treats the ax+b structure of ℚ — successor ⋊ dilation — as one harmonic-analytic object with positivity theorems at its critical temperature.
+The corpus pins down what the missing field must contain:
 
-**What the field would be about.** Positive-definite functions, states and quadratic forms on Aff(ℚ) ⊂ Aff(𝔸_ℚ), and the comparison of their additive (theta, Poisson, successor) and multiplicative (Euler, Mellin, dilation) spectral decompositions. A working name: **arithmetic Plancherel–Hodge theory**.
+- **Indefinite structures**, because positive states on Aff(ℚ) are excluded (Γ7).
+- **A local-to-global signature theory** with the archimedean place as the unique glue (Σ9).
+- **A conformal symmetry.** Hecke dilations are isometric boosts; power maps and the successor are not conformal (ALG).
+- **Same-point access**, because holomorphic carriers fail (Σ7).
+- **Renormalization at edges** with a counterterm of nontrivial null cone (survival law).
+
+A working name: **arithmetic signature theory** (adelic Krein geometry).
+
+**What the field would be about.** Hermitian forms and states of finite negative index on the adelic dilation–translation system ℚ^×_{>0} ⋉ 𝔸 ⊃ Aff(ℚ). It would study their local decomposition into prime towers glued by the archimedean place, and the comparison of their additive (theta, Poisson, successor) and multiplicative (Euler, Mellin, dilation) spectral readings.
 
 **What it would be like.**
 
-- **Like L²-invariants and von Neumann dimension:** infinite-dimensional spaces with a group action carry finite dimensions per unit volume.
-  - In the corpus, the zero density (log T)/2π plays the role of such a dimension.
-  - The Krein index is the integer that should vanish.
-  - The Kakutani threshold s = 1/2 is a change of type of a measure on the gauge torus.
-- **Like Hodge theory:** its central theorem is an index theorem holding at the boundary.
-- **Like crystalline-measure theory:** discreteness on both sides forces structure.
+- **Like Hodge theory:** its central theorem is an index theorem that holds at the boundary of the positive cone.
+- **Like the Atiyah–Bott and Hirzebruch signature formulas:** global index = sum of local contributions, here one per prime plus an archimedean term.
+- **Like Arakelov theory:** the archimedean place is a full participant with its own Green function, here the Gamma/Lévy kernel.
+- **Like L²-invariants:**
+  - infinite-dimensional spaces with a group action carry finite dimensions per unit volume;
+  - the zero density (log T)/2π plays that role;
+  - the Krein index is the integer that should vanish;
+  - the Kakutani threshold s = 1/2 is a change of type of a measure on the gauge torus.
 
 **Criteria for the field to be real rather than a reformulation.**
 
-1. **Intrinsic objects** defined from ℤ without reference to zeros: Aff(ℚ), its Hecke algebra, the gauge torus, theta prefixes, conductor modes.
-2. **A Plancherel theorem** with nonnegative density for Weil's form at every resolution, recovering E_m(c) at fixed overlap.
-3. **An additive–multiplicative comparison theorem** (S = W, Hecke invariance) proved as an identity.
-4. **Calibration:** over 𝔽_q[T] it reduces to Rosati positivity and Weil's theorem.
-5. **Selectivity:** it fails for twins, Beurling systems, continuous Λ-measures and higher-order poles.
-6. **A built-in amplifier:** the Hecke flow acts unitarily, and any subexponential bound becomes exact through rate = depth.
+1. **Intrinsic objects** defined from ℤ without reference to zeros: the dilation lattice, the gauge torus, prime towers, the archimedean Lévy kernel, theta prefixes, conductor modes, successor shells.
+2. **A local signature theorem** at each prime (matched Hodge index) and a **global gluing theorem** that computes the global index from local data.
+3. **An additive–multiplicative comparison theorem** (S = W, Hecke invariance, agreement of the two resolvent orientations) proved as an identity.
+4. **A conformal symmetry** with factor ≠ 1, or a proof that none exists together with a substitute that plays Frobenius's role.
+5. **Calibration:** over 𝔽_q[T] it reduces to Rosati positivity and Weil's theorem, with one tower and conformal Frobenius.
+6. **Selectivity:** it fails for twins (disagreement shells), Beurling systems, continuous Λ-measures and higher-order poles.
+7. **Edge control:** its renormalized limits keep a nontrivial null cone, so positivity survives the passage N → ∞.
 
 **Questions it would answer.**
 
-- Is there a Plancherel decomposition of Weil's correlation over the unitary dual of Aff(𝔸_ℚ) whose density is nonnegative by construction?
-- Do the non-archimedean level m and the archimedean resolution c decouple at growing overlap, i.e. is the shell block diagonal in that decomposition?
-- Is s = 1/2 a phase transition of a von Neumann algebra attached to Aff(ℚ)? Is Weil's state the unique KMS state there with the prescribed restriction to dilations?
-- What replaces the Frobenius graph? A correspondence on the scaling surface whose self-intersection is bounded by an invariant of Aff(ℚ)?
-- Is there an integer invariant computable on the additive side that equals the number of off-line zeros? Candidates: a Fredholm index of a Toeplitz operator on H²(𝕋^∞), or the collision charge.
-- Which discrete pairs (divisor, log ℕ) are crystalline partners, and are they all real (§2.4)?
+- Is there a signature formula expressing κ(K_ζ) as a sum of local prime defects minus an archimedean gluing term?
+- Do the matched local Hodge indices share one positive direction for every finite sieve, and what obstructs the infinite assembly?
+- Is there a Pontryagin (finite negative index) state on the adelic system whose dilation part is Weil's correlation and whose successor is the Haar state at the critical temperature? Is its index κ(K_ζ)?
+- What replaces conformal Frobenius over ℤ? A correspondence on an adelic carrier, not on the atoms?
+- Is there an integer invariant computable on the additive side that equals the number of off-line zeros? Candidates: the collision charge read from theta prefixes, or a Fredholm index of a Toeplitz operator on H²(𝕋^∞).
+- Is there an exact sum-of-squares decomposition of the complete Weil form whose squares are indexed by successor-agreement shells?
 
 **Tools to develop.**
 
-- Mackey theory and Plancherel measures for non-type-I solvable groups; Bost–Connes systems and KMS states.
-- Helson–Bohr analysis on 𝕋^∞ and Hardy spaces of Dirichlet series.
-- Krein and Pontryagin spaces (the index is exact: HKT/AKLT).
-- Kakutani–Hellinger dichotomies.
-- Crystalline measures and Fourier interpolation; Lee–Yang stability in infinitely many variables.
-- Ramanujan sums as a Plancherel basis on ℤ̂; the scaling surface and its theta Riemann–Roch.
+- Pontryagin-space index theory on groups (Krein–Langer on ⊕_p ℤ with continuous logarithmic structure).
+- Local–global signature calculus: matched counterterms, survival cones, coupled survival.
+- Kakutani–Hellinger dichotomies and zero–one laws on the gauge torus.
+- Mautner/Howe–Moore phenomena for adelic ax+b systems.
+- Bost–Connes / KMS states at the critical temperature.
+- Ramanujan sums as a Plancherel basis on ℤ̂; the conductor Hamiltonian.
+- Successor-shell calculus with the divisor collapse.
+- Lyapunov methods for the de Bruijn–Newman zero flow.
+- Quantitative linear independence of many logarithms (for §2.4).
 
-**Objects.** Aff(ℚ) and Aff(𝔸_ℚ); the gauge torus and its trivial point; prime Poisson measures; conductor modes and shells; theta prefixes; the collided form; the collision charge; the Krein index; the scaling surface.
+**Objects.**
+
+- The dilation lattice ⊕_p ℤ and its prime towers; the gauge torus, its trivial point and Liouville antipode.
+- The archimedean Lévy kernel and its successor collar.
+- Conductor modes, successor shells, Euler heads and their edges.
+- Theta prefixes, the collided form, the Ξ resolvent and its two orientations.
+- The collision charge, the Krein index, the matched local Hodge indices.
 
 **Language.**
 
-- Plancherel density; additive and multiplicative readings; line-reflection defect; quantum (least excess on off-line configurations).
-- Lattice gain; conductor Hamiltonian; selection class (the gauges an invariant separates); precision class (the perturbations n^{−η} it detects).
-- Rate = depth; Kakutani threshold.
+- Local defect; archimedean gluing; matched counterterm; survival cone.
+- Edge payment; agreement and disagreement shells; coherent excess (the pole).
+- Orientation (of the resolvent); quantum (least excess on off-line configurations).
+- Rate = depth; Kakutani threshold; pre-ergodic regime.
 
 **Mechanisms it would provide.**
 
-- **Positivity by identity:** Plancherel densities and Fourier tails instead of coercivity.
-- **Same-point access:** a Rosati-type involution comparing the two readings, instead of explicit formulas.
+- **Positivity by identity:** Fourier tails and sums of squares on agreement shells, instead of coercivity.
+- **Index by localization:** local signatures glued at the archimedean place, instead of global estimates.
+- **Same-point access:** an orientation law comparing the additive and multiplicative readings, instead of explicit formulas.
 - **Margin from integrality:** quantized invariants, instead of margins.
-- **Amplification along the Hecke flow:** instead of tensor powers.
-- **Selection by structure:** discreteness of log ℕ and the simple pole in the definitions, instead of in the test data.
+- **Selection by structure:** the divisor collapse and the boundary sign of the pole in the definitions, instead of in the test data.

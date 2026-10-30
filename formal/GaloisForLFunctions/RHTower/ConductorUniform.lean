@@ -1,2 +1,3 @@
 import GaloisForLFunctions.RHTower.ConductorUniform.DirichletLConductorUniformLogDerivative
 import GaloisForLFunctions.RHTower.ConductorUniform.DirichletCharacterUniformPerron
+import GaloisForLFunctions.RHTower.ConductorUniform.DirichletCharacterUniformPowerLog

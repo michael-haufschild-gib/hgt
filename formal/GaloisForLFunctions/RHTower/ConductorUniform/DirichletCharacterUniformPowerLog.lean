@@ -216,8 +216,8 @@ private theorem exists_uniform_character_tent_exp_pow_bound {A : ℝ} (hA : 0 �
     have hT5 : T + 5 ≤ 3 * Real.exp (D * u) := by
       dsimp only [T]
       linarith only [hexp6]
-    have hlog3 : Real.log (3 : ℝ) ≤ 2 := by
-      simpa using Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 3)
+    have hlog3 : Real.log (3 : ℝ) ≤ 2 :=
+      (Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 3)).trans (by norm_num)
     calc
       _ ≤ Real.log (3 * Real.exp (D * u)) :=
         Real.log_le_log (by linarith only [hT]) hT5

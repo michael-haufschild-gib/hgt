@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** ../1-in-progress/krein-index-selection-and-producer-2026-10-30.md
-- **Statement:** Four unconditional theorems on where the Weil-kernel index can select `ζ` and what a producer must pay.
+- **Statement:** Unconditional theorems on where the Weil-kernel index can select `ζ` and what a producer must pay.
 
 ## 1. The selective content of the atomic index is one square
 
@@ -85,6 +85,60 @@ bound the head. Each prime cost is `≥ 1/p` and `Σ 1/p` diverges.
 `finiteEulerGamma_negative_dimension_le_exp`, `eulerHead`, `finiteEulerMixedGammaCost_eulerHead_le`,
 `eulerHead_negative_dimension_le`, `not_summable_primeEulerMixedWeightTotal`,
 `exists_eulerHead_cost_gt`.
+
+## 5. Every finite flip set has infinite index
+
+**Theorem.** For every nonempty finite set of primes `S` and every `n` there is `c₀` such that at
+every overlap `c ≥ c₀` the `S`-flipped twisted complete Weil matrix eventually (in `N`) has at least
+`n` negative eigenvalues. Hence, over real `C²` tests `g` of compact support,
+`sup_g κ(K_{ω_S, g}) = ∞` on `ℚ_{>0}`, while for `Λ` the same supremum is `κ(K_ζ)`.
+
+**Proof.** Let `Q = Π_{p∈S} p²` and `Y_S` the flip packet on the divisors of `Q`. For conductors `m`
+prime to `Q` the vectors `e_m Y_S` have limit form `Σ_{d|Q} β_d² E_{md}(c) + τ_S`: Ramanujan modes are
+multiplicative (`e_{md} = e_m e_d`), dilation invariant for `(k, m) = 1`, and the period mean
+factors over coprime moduli, so cross terms between distinct `m` vanish. `τ_S < 0` and
+`E_{md}(c) → 0` for fixed `m`, so `n` primes `m > Q` give `n` negative blocks at large `c`. On the
+horizon the Gram matrix of the weight kernel is `Re W_λ` of the atomic test, i.e. the twisted
+complete Weil matrix; the explicit-formula functional is real on real tests (the Fourier transform
+of a real function is conjugate-symmetric and the Gamma bracket is even), so the real negative
+eigenvectors span a complex negative subspace. For `Λ` every test sees at most the right zeros and
+the cubic spline sees all of them.
+
+**Lean** (`RenormalizedArithmeticPotentialTheory/EveryLowConductorSeesTheFlipSet`,
+`HeckeKreinToeplitz/EveryFlipSetHasInfiniteIndexOnTheHeckeLattice`):
+`eventually_flip_negative_eigenvalues`, `exists_overlap_flip_negIndex_ge`;
+`im_weilFullFunctional_ofReal`, `im_weightKernel`, `hermQuad_gram_weightKernel_horizon`,
+`exists_test_le_negIndex_weightKernel_finiteFlip`, `iSup_negIndex_weightKernel_finiteFlip_eq_top`,
+`iSup_negIndex_weightKernel_primeFlip_eq_top`, `iSup_negIndex_weightKernel_vonMangoldt`.
+
+## 6. The index of a growing Euler head is unbounded
+
+**Theorem.** For every `K`, once `Y` is large, at every horizon `X ≥ max(K, (K + 1)Y − 1)` Gamma
+minus the complete mixed Euler source of the head `p ≤ Y` is negative definite on a `K`-dimensional
+space. No bound on the negative index holds for all heads, and for every `A > 0` the heads
+`p ≤ (log N)^A` at horizon `N` have negative index tending to infinity.
+
+**Proof.** Pair the details `a ≤ K` with the coarse windows `C_b = 1_{log Y + [log 2b, log(2b+2))}`,
+`b ≤ K`. The reverse orientation of the source vanishes, and the source of `(e_a, C_b)` is
+`B_Y[a,b] = ∫ h_a T_Y`, `T_Y(u) = Σ_{m ≤ Y} (2Λ(m)/√m) 1[2bYe^{−u} ≤ m < (2b+2)Ye^{−u}]` up to the
+proper prime powers above `Y`, which cost `≤ 288·2·(Y(b+1))^{1/4}` (`Σ_{n≤M, n not prime} Λ(n)/√n ≤
+144 M^{1/4}`). By `Σ_{n≤x} Λ(n)/√n ~ 2√x`, `T_Y/√Y → s_b = 4(√min(β,1) − √min(α,1))` pointwise with
+a Chebyshev bound, so `B_Y/√Y → L[a,b] = ∫ h_a s_b` (dominated convergence). On the pair `a`,
+`s_b = 0` for `b > a` and `s_a = 4 − 4√(2a)e^{−u/2}`, so `L` is lower triangular with diagonal
+`−4√(2a) J_a`, `J_a = ∫ h_a e^{−u/2} > 0` by strict convexity of `e^{−s/2}`. Hence
+`Σ_b (Lᵀx)_b² ≥ σ‖x‖²`. With coarse coefficients `(s/√Y)Lᵀx`: Gamma `≤ 4‖x‖² Γ_H + 4(s²/Y)‖L‖²‖x‖² Γ_C`
+(disjoint supports, translation invariance of the windows' Lévy energy), the source
+`≥ s(σ − ‖L‖ E_Y)‖x‖²` with `E_Y → 0`. With `sσ = 4Γ_H + 1` the form is `< 0` for large `Y`. For
+`Y = ⌊(log N)^A⌋` the window condition `(K + 1)Y ≤ N` holds eventually since `(log N)^A = o(N)`.
+
+**Lean** (`ArithmeticIndexDescent/TheSharpEulerHeadCouplesDetailsToFarWindows`,
+`ArithmeticIndexDescent/TheIndexOfAGrowingEulerHeadIsUnbounded`): `tendsto_headWindowMass`,
+`sum_nonprime_vonMangoldt_div_sqrt_le`, `abs_eulerHead_tsum_sub_le`,
+`averageSectionProfile_coarseWindow`, `integerMixedSource_detailUnit_coarseWindow`,
+`tendsto_headCoupling`, `headCouplingLimit_eq_zero_of_lt`, `headCouplingLimit_self_neg`,
+`haarExpMoment_pos`; `finiteEulerMixedSource_sum`, `exists_sq_vecMul_ge`,
+`eventually_eulerHead_negative_family`, `not_exists_uniform_eulerHead_index`,
+`eventually_logPowerHead_negative_family`.
 
 ## Gates
 - [x] 0 → 1

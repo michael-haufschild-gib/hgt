@@ -217,10 +217,12 @@ theorem eventually_sincCriticalOverlap_le :
           exact mul_le_mul_of_nonneg_right (htail.trans
             (mul_le_mul_of_nonneg_left hμ (by positivity))) hlogN.le
       _ ≤ Real.exp (Real.log (4 * sincDecayConst)) * Real.exp (1 - 2 * L) * Real.exp L := by
-          rw [Real.exp_log (by positivity)]
+          have e4 : Real.exp (Real.log (4 * sincDecayConst)) = 4 * sincDecayConst :=
+            Real.exp_log (by linarith)
+          rw [e4]
           have h1 : Real.exp (1 - c₁ / (Real.exp 1 * 12 * Real.log (c₁ + 3) ^ 2)) ≤
               Real.exp (1 - 2 * L) := Real.exp_le_exp.mpr (by linarith)
-          exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1 (by positivity))
+          exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1 (by linarith))
             (Real.exp_pos L).le
       _ = Real.exp (Real.log (4 * sincDecayConst) + 1 - L) := by
           rw [← Real.exp_add, ← Real.exp_add]; ring_nf
