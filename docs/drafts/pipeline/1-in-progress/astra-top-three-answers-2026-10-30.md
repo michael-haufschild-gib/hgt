@@ -34,11 +34,15 @@ weight bounds per piece. Final 4×4 comparison (bulk reserve − seam cost) PSD 
 (slack ≈ 18×). Design note: crude absolute-coefficient bounds on the `(1,3)` pair cost ~10⁴ of
 its true size in the badly scaled `y₃` direction; center-shifted bounds remove it.
 
-Exact structure exposed: the fibre form is a perfect square plus a null Lagrangian,
-`J_v=|G_v|²+B_v'` with `G_v=Σ_j v_j(2i)^jΦ^(j)`; hence the tail form at center `x=r/2` equals
-`2∫_x^∞|G_v|²-2B_v(x)`, bulk `L²` mass beyond the center minus a local boundary flux. The
-rank-`n` successor sign is exactly the statement that this mass dominates that flux at every
-center.
+Exact structure (formalized, `ThetaCuspCenterTailSquareFlux.lean`): the fibre form is a perfect
+square plus a null Lagrangian, `J_v=|G_v|²+B_v'` with `G_v=Σ_j v_j(2i)^jΦ^(j)` and explicit flux
+`B_v=Σ v_iv_jB_{ij}` (`hasDerivAt_thetaCuspNativeFlux`); hence the tail form at center `x=r/2`
+equals `2∫_x^∞|G_v|²-2B_v(x)` (`thetaCuspNativeTailHankelForm_eq_square_sub_flux`), bulk `L²`
+mass beyond the center minus a local boundary flux. Mechanism: Leibniz gives
+`h_{2n}=(−1)^nΣ_m C(2n,m)(−1)^mφ_mφ_{2n−m}`, and `φ_aφ_{2n−a}≡(−1)^{n−a}φ_n²` modulo the derivative
+of the alternating telescoping sum `Σ_l(−1)^lφ_{a+l}φ_{2n−1−a−l}`; Hankel and Gram entries both
+reduce to `4^nφ_n²`. The rank-`n` successor sign is exactly the statement that this mass
+dominates that flux at every center.
 
 ## Q1 — mechanism under test
 
@@ -54,7 +58,7 @@ Guidance numerics (not a proof input): at rank eight the odd fibre block is nega
 `x≲0.13`, positive beyond; `U_8`, the `s`- and `s²`-weighted tails are positive at every sampled
 `r` with margin.
 
-Big-picture constraint: the `a`-free tail conditions at every order are at least RH strength
+Big-picture remark (not proved): the `a`-free tail conditions at every order are at least RH strength
 (`U_n(0)` all orders is Plancherel; `r²`-tail at `r=0` all orders is the first Laguerre
 inequality for Ξ; large-center tails inherit the Wigner negativity of the fibre). Fixed order
 `n` sees zeros up to height about `n`.
@@ -72,101 +76,24 @@ survive this test: at `r=0` the `s`-tail is the weighted Turán integral
 `τ≤60`, `y₀≤1.2` no negative `s`- or `s²`-tail was found, while the weight-one tail is negative
 near `τ≈44`. Formalized certificates should therefore use weights vanishing at the seam.
 
-## Q1 — rank eight (`I_7`) via the odd moment tail
+## Q1 — rank eight (`I_7`): reduction chain (all formalized, axiom-clean)
 
-Formalized reduction (`RHTower/ThetaCusp/ThetaCuspOddFourMomentTail.lean`,
-`thetaCuspNativeSuccessorIntegral_seven_nonneg_of_oddTail`): if the `a`-free odd tail form
-`Σ v_i v_j V_{2(i+j)+2}(r) ≥ 0` for all `r>0`, then `I_7(a) ≥ 0` for every `0<a<1/2`
-(parity split: even block from rank seven, odd block = `a∫cosh(ar)·tail`).
+- `ThetaCuspOddFourMomentTail.lean`: parity split; the even block comes from rank seven, so
+  `I_7(a) ≥ 0` reduces to the odd 4×4 block.
+- `ThetaCuspOddFourSeamSplit.lean`: aperture-free seam split (`sinh(ay)/y` increasing): fibre
+  `≥ 0` beyond `r_c` plus `∫_0^{r_c} r² min(f_v,0) + ∫_{r_c}^∞ r² f_v ≥ 0` give the odd block at
+  every `0<a<1/2`; same split at every rank.
+- `ThetaCuspOddFourNativeBulk.lean`: first-atom coercivity, fibre `≥ 0` for `q ≥ 6`.
+- `ThetaCuspRadialCoefficients`, `ThetaCuspPairRadialValues`, `ThetaCuspThreeAtomCauchyTail`,
+  `ThetaCuspOddFourThreeAtomModel`, `ThetaCuspOddFourCentralEntries`,
+  `ThetaCuspOddFourCentralBound`: three exact atom pairs + Cauchy tail in the moving frame.
+- `ThetaCuspOddFourCertificateTools`, `ThetaCuspOddFourPieceSetup`,
+  `ThetaCuspOddFourCertificatePieces1–6`, `ThetaCuspOddFourPieceIntegral`,
+  `ThetaCuspOddFourCertificateIntegrals1–4`, `ThetaCuspOddFourRankEight`: the piecewise
+  certificate and final comparison (see top).
 
-Guidance numerics for `T(y)=∫_y^∞ x N(x)dx` (`N` = native odd-four fibre):
-- `N(x) ≻ 0` for `q=πe^{2x} ≳ 4.3`; seam negativity only below.
-- `T(y)` positive definite at every `y` (normalized min eig ≥ 5.4e-3); first atom alone gives
-  the same margin.
-- In `T(y₁)`'s geometry the seam piece `∫_y^{y₁} xN` is ≥ −2.5% (`y₁=.15`), and PSD for
-  `y₁ = log(5/π)/2`.
-- Bulk coercivity in first-atom central coordinates `y=A(q)c`, `S=8qf₁²`:
-  `N ⪰ κ S AᵀA`, `κ ≥ 0.32` on `q ≥ 4.3`. Seam: first atom alone `≥ −0.43 S AᵀA`; the other
-  atoms give `−25 S AᵀA` at `q=π` in one fixed polynomial direction
-  `c ≈ (1, −0.044, 4.2e-4, −1e-6)` (not the corner).
-- Directional negative part of `N` on `q∈[π,5]` integrated against `x` is ≤ 11% of the bulk
-  `∫_{q≥5} x·0.2·S AᵀA`; isotropic or absolute-value bounds fail (×6 to ×10¹³).
-
-Aperture-free seam split (`ThetaCuspOddFourSeamSplit.lean`,
-`thetaCuspNativeSuccessorIntegral_seven_nonneg_of_seamSplit`): since `sinh(ay)/y` increases,
-`I_7(a) ≥ 0` for all `0<a<1/2` follows from (i) fibre form `≥ 0` for `r > r_c` and
-(ii) `∫_0^{r_c} r² min(f_v,0) + ∫_{r_c}^∞ r² f_v ≥ 0` for every `v`. Numerically (ii) holds with
-`λ_max(A^{-1/2} B A^{-1/2}) ≈ 0.015–0.02` (≈50× slack) for split `q_c ∈ [4.3, 5]`, where
-`A = ∫_{x_c} x²N`, `B = ∫_0^{x_c} x² N⁻`.
-
-Atom sizes in the order-14 jet relative to the first atom: pair (1,2) ≈ 30 at `q=π`,
-≈ 5 at `q=3.72`, ≈ 0.1 at `q=5`; pair (2,2) ≈ 1.8 at `q=π`; pair (1,3) ≈ 0.07 at `q=π`.
-So the seam needs the exact two-atom formula plus a tail bound valid down to `q=π`.
-
-Certificate design (numerics, guidance): seam fibre `≥ K·cᵀTA(q,e^{-3q})c + (2,2)-pair (PSD for
-4q≥5) − tail`, with `TA_m = R1_m(q) + 8e^{-3q}R12_m(q)` (radial polynomials, order 7 generated;
-order 6 matches `HTGeometry.twoAtomAffineEvenMoment6`). Tail beyond two atoms ≥ −0.02 (central
-metric) at `q=π`. Rank-one compensation `λ(q)·wwᵀ + τI` in central coordinates,
-`w=(0,.06,−.37,.93)`, `λ ≤ 27.4`, `τ=.05`: seam/bulk ratio 0.032 (`q_c=4.6`), 0.061 (`q_c=5`).
-Lean plan: piecewise-constant certificates in piece-fixed central coordinates `A(q*)`, scalar
-bounds for `∫_J r²K dr`, one final rational 4×4 comparison.
-
-Implementation plan (rank eight), regions in `q = πe^{2x}`:
-1. `[π, 3.72]` (`x ≤ 8/95`): modular-ODE exact jets `M²·P(u,a,w)` (needs reflected scalar 14);
-   seam bound `Q ⪰ −P` over the corpus tube, weight `∫x²M²`.
-2. `[3.72, q_c]`: two-atom `K·TA` + (2,2) PSD + factored error (corpus has order ≤ 12; extend
-   to 14); piecewise rank-one compensation in piece-fixed central coordinates.
-3. `[q_c, ∞)`: pure-native coercivity (first-atom Gershgorin reserve > mixed 1/40 + tail 1/10
-   needs `q ≥ 6`); pieces `[q_c, 6]` by certificates.
-4. Scalar bounds of `∫_J r² K`, final rational 4×4 comparison, assemble with
-   `thetaCuspNativeSuccessorIntegral_seven_nonneg_of_seamSplit`.
-Done: `ThetaCuspRadialCoefficients.lean` (coefficient recursion + explicit tables k ≤ 7).
-
-Formalized (all axiom-clean):
-- `ThetaCuspOddFourSeamSplit.lean`: aperture-free seam split for the odd block and at every rank
-  (`thetaCuspCenterMixedSignedHankel_posSemidef_of_seamSplit`).
-- `ThetaCuspOddFourNativeBulk.lean`: first-atom Gershgorin reserve ≥ 1/6 for `v ≤ 1/12`
-  (row polynomials in `r=1−12v` with positive coefficients); native odd-four coercive
-  (`≥ S/24 |y|²`) for `q ≥ 6`; hence `thetaCuspNativeSuccessorIntegral_seven_nonneg_of_logSixSplit`:
-  `I_7(a) ≥ 0` for all `0<a<1/2` given the one inequality `hsplit` at `r_c = log(6/π)`.
-- `ThetaCuspRadialCoefficients.lean`: radial coefficient tables through order 7.
-
-Numerics for `hsplit` with isotropic bulk `κ S AᵀA`: `q_c=6, κ=1/24` → ratio 3.96 (fails);
-`q_c=5, κ=0.08` → 0.53 (works). So: lower the bulk to `q ≥ 5` with a sharper tail bound
-(corpus tail payment 1/10 vs actual ≤ 7e-6 at q=5; first-atom Gershgorin reserve at v=1/10 is
-0.111, mixed ≥ −1/40), or certify the bulk non-isotropically.
-
-Tail constants (Cauchy majorant + absolute envelope, S-units, guidance): beyond two atoms
-`q=π`: ≥ 2.8 for every radius ≤ 0.35 (useless; actual 0.02); `q=3.72`: 0.07 (ρ=.35);
-`q=5`: 3e-5 (ρ=.3). Hence on `q ∈ [π, ~3.7]` keep atom pairs with `n,m ≤ 3` exact
-(radial polynomials at `a = n²m²q²`, `X = (n²+m²)q`; pairs (n,n) are rescaled first atoms,
-PSD) and bound only beyond three atoms.
-Certificate format: piece-fixed central coordinates `y* = A(q*)c`; per piece a constant
-matrix bound via entry intervals in `t = q − q₀` plus a rational LDLᵀ check.
-
-Formalized: `ThetaCuspThreeAtomCauchyTail.lean` (`native_threeAtom_cauchy_error`: beyond three
-atoms `|Δ_n| ≤ n!·8000 f₁² e^{-(529/50)q}/(3/20)^n` on `q ≥ 3`); `ThetaCuspPairRadialValues.lean`
-(pairs (1,1),(1,2),(1,3),(2,3), orders 1–7); `ThetaCuspOddFourThreeAtomModel.lean`
-(`nativeOddForm_ge_threeAtom`: fibre ≥ `K(q)·vᵀT(q)v − Σ|v_i||v_j|·tail`, diagonal pairs dropped as
-PSD).
-
-Exact-rational certificate dry run (Python, rigorous t-expansions, outward-rounded exp bounds,
-Gershgorin radii, tail radii, LDL checks): seam pieces of width 0.1 on `[3,5]` (20) and bulk pieces
-of width 0.25 on `[5,8]` (12), center expansions in piece-fixed frames `A(q*)`: final 4×4
-comparison PSD, ratio 0.064. Coarser grids fail at the bulk piece at 5 (crude `e^{-3q}` interval).
-Lean obstacle: direct identities with exact `A(q*)⁻¹` literals time out at elaboration; must
-split into small lemmas or use frames with short rational entries (no budget raises).
-
-Formalized: `ThetaCuspOddFourCentralEntries.lean` (moving-frame numerators `N^{ab}_{ij}`,
-64 entry identities, pair energies), `ThetaCuspOddFourCentralBound.lean`
-(`nativeOddForm_ge_central`: native odd form ≥ `K(q)q⁻⁶[yᵀE(q)y − 8000(2q−3)²e^{-529q/50}Σρ̃_k y_k²]`
-on `q ≥ 3`, `c = B(1/q)y`).
-Moving-frame certificate design (rigorous dry run): seam pieces width 0.05 on `[3,3.5]`, 0.1 on
-`[3.5,5]` (25), bulk width 0.25 on `[5,8]` (12): final comparison PSD, ratio 0.175. Per piece:
-`W(q) − D(q)Ĉ ⪰ 0` (bulk) / `W(q) + D(q)Q̂ ⪰ 0` (seam), `D = 8q⁷(2q−3)²`, via Taylor shifts at the
-center, linearized `e^{-3q}`, endpoint LDL checks; integral step `∫A(q)ᵀĈA(q)dq` exact.
-
-Rank eight: done (see top). Higher ranks `n ≥ 8` remain open (all orders is RH strength).
+Guidance numerics (not proof inputs): odd fibre block negative only for `q ≲ 4.3`; true
+seam/bulk ratio of the model ≈ 0.006 at `q_c ∈ [4.3,5]`; the certificate reaches 0.054.
 
 ## Q2 — answered and formalized (unconditional)
 

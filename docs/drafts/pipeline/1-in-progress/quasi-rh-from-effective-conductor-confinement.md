@@ -21,6 +21,7 @@ Write `W=W_(N,c)`, `v_m` for normalized Ramanujan vectors, `E_m(c)` for complete
 ## Established inputs and open estimates
 
 - Fixed-conductor actual squared residual: `||R_m||²≤K_m c^10/sqrt(log N)`, beyond a conductor-dependent horizon.
+- Actual reciprocal affine-shell source: uniform unnormalized square budget `K_m c^5`, hence normalized error `K_m c^5/log N`; [Lean proof](../3-formalized/affine-shell-errors-have-a-uniform-harmonic-budget.md). Its conductor constant includes a residue-Mertens threshold.
 - Fixed finite conductor packets are positive for `c≤(log N)^α`, `α<1/48`.
 - Growing Gamma reserve: `κ c^-7 log N-bc`, with explicit constants, for `1≤c≤N`.
 - Conductor-sensitive floor: formalized in [conductor-scale-controls-completed-energy.md](../3-formalized/conductor-scale-controls-completed-energy.md), with standard-only axioms.

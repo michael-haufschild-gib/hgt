@@ -1,8 +1,8 @@
 # Affine shell errors have a uniform harmonic budget
 
 - **ID:** affine-shell-uniform-harmonic-budget
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** For each positive conductor `m`, the actual shifted reciprocal affine-shell residual satisfies `Σ_(n≤N) R_(m,N,c,shift)(n)^2≤K_m c^5` for every `N≥1`, `c≥1`, and every shift family.
 
 ## Paper proof
@@ -25,3 +25,10 @@ Thus normalized squared error is `O_m(c^5/log N)`, improving the prior `O_m(c^6/
 ## Scope
 
 The conductor constant includes the proved residue-Mertens starting threshold `Y_m`. Uniform growth of this constant with `m`, complete signed residual cancellation, and useful negative-eigenvector confinement remain open. This theorem alone does not establish quasi-RH.
+
+## Lean proof
+
+- `HTGeometry/HarmonicQuotientSquareBudget.lean`: `harmonic_log_kernel_sum_le` and `sum_sq_le_harmonic_log_envelope`.
+- `CriticalArithmeticCorrelationTheory/AffineShellErrorsHaveAUniformHarmonicBudget.lean`: `exists_shiftedReciprocalUpwardRowError_uniform_harmonic_budget` and its explicit tilted-spline instance.
+
+Both focused checks pass without warnings. All four transitive audits use only `propext`, `Classical.choice`, and `Quot.sound`.
