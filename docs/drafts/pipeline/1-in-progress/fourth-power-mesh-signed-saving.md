@@ -90,16 +90,16 @@ identify the covariance exponent below `3`.
 
 | # | Mechanism | Verdict | Lesson |
 |---|---|---|---|
-| L1 | Bound the `q = 1` cell by a Mertens estimate | circular | needs `M(x) ≪ x^{3/4+ε}`; by `zetaZeroAbscissa_le_of_moebius_power_bound` that is the conclusion |
+| L1 | Bound the `q = 1` cell by a Mertens estimate | equivalent estimate unproved | needs `M(x) ≪ x^{3/4+ε}`; `zetaZeroAbscissa_le_of_moebius_power_bound` transfers this to the required strip |
 | L2 | Mesh averaging: treat `M(j⁴)`, `j ≤ J`, as decorrelated samples | unproved cancellation | `exists_powerGap_pow_samples` transfers sampling gaps; it is not a Mertens mean-square estimate. The proved Abel-energy exponent is `8Θ − 3` in the mesh index. |
-| L3 | Plancherel: mean square of the tail via `∫|1/ζ(σ+it)|²/|s|²` | circular | needs `1/ζ` square-integrable on `Re s = 3/4 + ε`, which is the strip |
-| L4 | Pair the divisor fluctuation `ΔF(q) = log q + 2γ − τ(q)` with `M(M/q)` and exploit independence | circular | the full hyperbola sum is `ψ(M) − M` (`psiDefect_eq_mobius_primeFreeDivisorDefect`), exponent exactly `Θ`; the corner cannot be smaller in general |
-| L5 | Voronoi expansion of `Δ(q)` and stationary phase in `q` | circular | reorganises to `Σ_d μ(d) d^{1/4}·(phase)`, again a Möbius sum at scale `M` |
-| L6 | Refute: show the covariance exceeds `J^{3+ε}` | not available | would exhibit a zero with `Re ρ > 3/4`; no such input exists in the corpus |
+| L3 | Plancherel: mean square of the tail via `∫|1/ζ(σ+it)|²/|s|²` | analytic bound unproved | the required reciprocal-zeta integrability must be established independently |
+| L4 | Pair the divisor fluctuation `ΔF(q) = log q + 2γ − τ(q)` with `M(M/q)` | signed correlation unproved | the full hyperbola sum is `ψ(M) − M` (`psiDefect_eq_mobius_primeFreeDivisorDefect`); independence is not supplied by the identity |
+| L5 | Voronoi expansion of `Δ(q)` and stationary phase in `q` | oscillatory estimate unproved | the remaining `Σ_d μ(d) d^{1/4}·(phase)` still needs a signed estimate at scale `M` |
+| L6 | Refute: show the covariance exceeds `J^{3+ε}` | unproved | would exhibit a zero with `Re ρ > 3/4`; the inspected inputs establish no such zero |
 | L7 | Zero density (`exists_zeroHeightBox_ncard_le_gm_unconditional`, 30/13) with VK region | no strip | density counts zeros; one zero at `σ > 3/4` is not excluded (`DensityEnvelopeNoGo`) |
 | L8 | Dirichlet-polynomial mean values and large values (`dirichlet_meanValue_theorem`, `largeValues_dirPoly`) | no strip | they produce density estimates, which is L7 |
-| L9 | Vaughan Type I/II decomposition of `μ` on `(j³, j⁴)` | circular | `zetaZeroAbscissa_lt_one_iff_uniform_pmUndampedVaughan_power`: a Vaughan power saving is exactly a fixed strip |
-| L10 | Short-window Möbius saving as input | circular | `zetaZeroAbscissa_lt_one_of_moebiusPowerWindowSaving` |
+| L9 | Vaughan Type I/II decomposition of `μ` on `(j³, j⁴)` | signed block bound unproved | `zetaZeroAbscissa_lt_one_iff_uniform_pmUndampedVaughan_power`: the saving would produce a fixed strip; the exponent still matters |
+| L10 | Short-window Möbius saving | window estimate unproved | `zetaZeroAbscissa_lt_one_of_moebiusPowerWindowSaving` supplies the transfer, not the saving |
 | L11 | Positive normalisation or Cauchy–Schwarz on the channels | sign-blind | `not_mobiusDivisorDilationPositiveMeshEnergy_le_pow`: envelope `≍ J^5`, never `≤ CJ^4` |
 | L12 | Complete Weil positivity at a growing overlap `c_N → ∞` as a strip producer | open elsewhere | a slowly growing schedule is compatible with every zero (visibility needs `log N ≲ c^{1+2δ}/A(c)`); an explicit rate is review Question 1 |
 | L13 | Prime grouping / successor pairing of channels | insufficient | first pairing contracts the diagonal only (`MobiusDivisorPrimePairEnergy.sum_mobiusDivisorPrimePair`); the ordered covariance is untouched |
@@ -109,6 +109,39 @@ The equivalent Möbius and `ψ` estimates remain valid research targets; assumin
 them would leave the required arithmetic input unproved. The inspected absolute
 bounds and identities do not establish `Θ ≤ 3/4`. No proof or refutation of the
 requested covariance bound has been obtained.
+
+## Proof mechanisms and candidate replacement
+
+- **Exponential cost is an estimate, not a lower bound.** In
+  `MobiusDivisorLocalizedInteractions`, repeated `|a-b| ≤ |a|+|b|`
+  produces `4^(P.card-1)`. `mobiusDivisorSelectionEnergy_mixed_eq_filter_cutoff`
+  removes all processed primes outside the child quotient cutoffs when `pq ≥ M`.
+  Whole-block cancellation can therefore exploit information discarded by
+  summing individual insertion bounds.
+- **Fixed-core cancellation does not control simultaneous growth.**
+  `tendsto_mobiusDivisorSelectionHead_div_sqrt_zero` cancels the common unsigned
+  leading term using `Σ_{d|prod(P)} μ(d)=0`. Its threshold depends on `P`.
+  `exists_mobiusDivisorPaidPrimeExhaustion` does give exhaustive paid insertions,
+  each at its own cutoff; it does not bound cutoff transport or the complete
+  endpoint. `mobiusDivisorSelectionHead_add_terminal_leaves` retains the latter
+  as the head plus the entire signed singleton sum.
+- **One uniform positive input is already available.**
+  `mobiusDivisor_physicalCutoff_synchronized_energy_lower` has a common physical
+  cutoff for every prime core. The exact insertion comparison still contains
+  `mobiusDivisorPhysicalCorrelation_annulus_eq`, a signed annulus depending on
+  that core. Its sign is not a consequence of the positive moment.
+
+**Research hypothesis:** a complete-block estimate can couple these annular
+terms to the quotient fields before taking absolute values, retaining both
+cutoff transport and terminal completion. A sufficient pointwise output is
+`|mobiusDivisorSquareRootAbelMoment M|² ≪_δ M^(5/2+δ)` for every `δ>0`;
+this would give the requested mesh bound. No such block estimate is proved.
+The concrete test is whether the annular differences cancel when the core
+changes: fixed-core telescoping alone does not justify that cancellation.
+For the full-ray correlation `C_P(Y)`, `mobiusDivisorDilationMean_insert` gives
+`C_(P+p)(Y) = (1+1/p) C_P(Y) - p^(-3/2) C_P(pY) - sqrt(p) C_P(Y/p)`.
+Thus a closed block comparison must retain correlations at both multiplied
+and divided ratios, together with their finite-cutoff boundary terms.
 
 ## Inputs of `ℤ` absent from the Beurling models, tested as producers
 

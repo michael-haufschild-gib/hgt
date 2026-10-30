@@ -1,8 +1,8 @@
 # Harmonic sieve mass is controlled by its Euler correction
 
 - **ID:** harmonic-sieve-euler-comparison
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** For every finite prime sieve `Q`, write `δ=sieveDensity(Q)`, `L=sieveEuler(Q)-γ`, and `H_Q(N)=Σ_(n≤N,(n,primorial(Q))=1) 1/n`. Then `δ H_N≤H_Q(N)≤2δ(log(N+1)+2L+4)`. Consequently the harmonic class mass at a supported integer `a` satisfies
   `μ_Q(a)(log(N+1)-log a) ≤ H_Q(⌊N/a⌋)/a ≤ 2μ_Q(a)(log(N+1)+2L+4)`.
 
@@ -20,6 +20,8 @@ For the class bounds, divide by `a`. The upper estimate uses `⌊N/a⌋≤N`. Fo
 
 Thus, when `a²≤N+1` and `log(N+1)≥2L+4`, the class weight lies between `½ log(N+1) μ_Q(a)` and `4 log(N+1) μ_Q(a)`. Both sides retain the same sieve-density factor.
 
-## Scope
+## Lean
 
-Lean formalization in progress. This compares the actual finite-horizon harmonic weights with the geometric norm used by the spectral-tail theorem. The final exponential Ramanujan approximation and the signed complete-Weil reserve remain separate obligations.
+`TheHarmonicSieveMassIsControlledByItsEulerCorrection.lean` proves `harmonicSum_eq_sum_sieveClassMass`, `sieveDensity_mul_harmonicSum_le`, `sievedHarmonic_le_density_log_euler`, `sieveClassDensity_mul_log_sub_le_mass`, `sieveClassMass_le_density_log_euler`, and `sieveClassMass_comparable_to_density_log`. Direct file check passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
+This compares the actual finite-horizon harmonic weights with the geometric norm used by the spectral-tail theorem. Exponential Ramanujan approximation and the signed complete-Weil reserve remain separate obligations.

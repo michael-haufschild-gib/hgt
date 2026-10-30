@@ -80,8 +80,7 @@ private theorem bumpCorr_eq_zero_of_far (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g
   have hlog := Real.log_lt_log (by positivity) hlt
   rw [Real.log_mul hn0.ne' (Real.exp_pos w).ne', Real.log_exp,
     Real.log_mul hk0.ne' hm0.ne'] at hlog
-  rw [abs_of_pos (by linarith only [hlog])]
-  linarith only [hlog]
+  exact lt_of_lt_of_le (by linarith only [hlog]) (le_abs_self _)
 
 /-- **Base collapse.** If `x` is the pole vector on every possible base `2m ≤ N e^w`, the non-ratio
 form is `2 Σ_n x_n R(n)`. -/
@@ -130,7 +129,9 @@ theorem nonRatioForm_eq_of_pole_on_bases (hgsupp : ∀ u, u ∉ Set.Icc 0 w → 
     rcases lt_or_ge k 2 with hk | hk
     · have hΛ : (ArithmeticFunction.vonMangoldt k : ℝ) = 0 := by
         interval_cases k <;> simp
-      rw [RHTower.vonMangoldtAtom_eq_zero_of_lt_two hk, hΛ]
+      have hA : vonMangoldtAtom k = 0 := by
+        simp [vonMangoldtAtom, show ¬ 2 ≤ k by omega]
+      rw [hA, hΛ]
       ring
     have hHk : (if n = k * m then 0 else bumpCorr g (Real.log k - (Real.log n - Real.log m))) =
         H n (k * m) := by
@@ -171,9 +172,116 @@ theorem nonRatioForm_eq_of_pole_on_bases (hgsupp : ∀ u, u ∉ Set.Icc 0 w → 
   refine sum_congr rfl fun n hn => ?_
   have hfib := sum_range_sum_vonMangoldt_mul_eq (N := N) (L := L)
     (fun ℓ => poleVector ℓ * H n ℓ) (fun ℓ hℓ => by simp only [hHvan n hn ℓ hℓ, mul_zero])
-  rw [← Finset.mul_sum, hfib, shellPoleRow, Finset.mul_sum]
-  refine congrArg _ (sum_congr rfl fun ℓ _ => ?_)
+  rw [← Finset.mul_sum, hfib, shellPoleRow]
+  congr 1
+  refine sum_congr rfl fun ℓ _ => ?_
   simp only [hH]
   ring
+
+/-! ### The witness -/
+
+/-- The witness `x_η = b + η b 1_T`. -/
+def topWitnessVector (N : ℕ) (w η : ℝ) (n : ℕ) : ℝ :=
+  poleVector n + η * topWitness N w n
+
+theorem half_lt_of_mem_topBand (hw : 0 ≤ w) {N n : ℕ} (hn : n ∈ topBand N w) :
+    (N : ℝ) < 2 * n := by
+  have h := (mem_topBand.mp hn).2
+  have he : (N : ℝ) ≤ N * Real.exp w := le_mul_of_one_le_right (Nat.cast_nonneg N)
+    (Real.one_le_exp_iff.mpr hw)
+  linarith only [h, he]
+
+/-- The witness agrees with the pole vector on every base. -/
+theorem topWitnessVector_eq_on_bases {N : ℕ} {w η : ℝ} {m : ℕ}
+    (hm : 2 * (m : ℝ) ≤ N * Real.exp w) : topWitnessVector N w η m = poleVector m := by
+  have hT : m ∉ topBand N w := fun h => by
+    have := (mem_topBand.mp h).2
+    linarith only [this, hm]
+  simp [topWitnessVector, topWitness, hT]
+
+theorem shellPoleRow_nonneg (hg0 : ∀ u, 0 ≤ g u) (N : ℕ) (w : ℝ) (n : ℕ) :
+    0 ≤ shellPoleRow g N w n := by
+  unfold shellPoleRow
+  refine sum_nonneg fun ℓ _ => mul_nonneg (mul_nonneg ?_ (horizonDivisorMangoldt_nonneg N ℓ)) ?_
+  · unfold poleVector; positivity
+  · split_ifs
+    · exact le_rfl
+    · exact bumpCorr_nonneg hg0 _
+
+/-- **The shells on the witness**: `NR(x_η) = NR(b) + 2η Σ_{n∈T} b_n R(n)`. -/
+theorem nonRatioForm_topWitnessVector (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw : 0 ≤ w)
+    {N : ℕ} (hN : 1 ≤ N) (η : ℝ) :
+    nonRatioForm g N (topWitnessVector N w η) = nonRatioForm g N poleVector +
+      2 * η * ∑ n ∈ topBand N w, poleVector n * shellPoleRow g N w n := by
+  rw [nonRatioForm_eq_of_pole_on_bases hgsupp hw hN _ fun m _ hm => topWitnessVector_eq_on_bases hm,
+    nonRatioForm_eq_of_pole_on_bases hgsupp hw hN _ fun m _ _ => rfl]
+  have hsplit : ∑ n ∈ Icc 1 N, topWitness N w n * shellPoleRow g N w n =
+      ∑ n ∈ topBand N w, poleVector n * shellPoleRow g N w n := by
+    rw [topBand, sum_filter]
+    refine sum_congr rfl fun n hn => ?_
+    simp only [topWitness, mem_topBand, hn, true_and]
+    split_ifs <;> simp
+  simp only [topWitnessVector, add_mul, sum_add_distrib, mul_assoc, ← mul_sum, hsplit]
+  ring
+
+/-- The pole vector has nonnegative shells for a nonnegative bump. -/
+theorem nonRatioForm_poleVector_nonneg (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (hw : 0 ≤ w)
+    (hg0 : ∀ u, 0 ≤ g u) {N : ℕ} (hN : 1 ≤ N) : 0 ≤ nonRatioForm g N poleVector := by
+  rw [nonRatioForm_eq_of_pole_on_bases hgsupp hw hN _ fun m _ _ => rfl]
+  refine mul_nonneg zero_le_two (sum_nonneg fun n _ => mul_nonneg ?_ (shellPoleRow_nonneg hg0 N w n))
+  unfold poleVector; positivity
+
+/-- **Row bound.** On the top band each row reads at least `log(N/2)/√N` per unit of top-band
+autocorrelation. -/
+theorem sum_topBand_shellPoleRow_ge (hw : 0 ≤ w) (hg0 : ∀ u, 0 ≤ g u) {N : ℕ} (hN : 2 ≤ N) :
+    Real.log (N / 2) / N * ∑ n ∈ topBand N w, ∑ ℓ ∈ topBand N w,
+        (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) ≤
+      ∑ n ∈ topBand N w, poleVector n * shellPoleRow g N w n := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hlogN : 0 ≤ Real.log (N / 2) :=
+    Real.log_nonneg (by rw [le_div_iff₀ two_pos]; exact_mod_cast (by omega : 1 * 2 ≤ N))
+  have hsq : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  have hb : ∀ n ∈ topBand N w, 1 / Real.sqrt N ≤ poleVector n := by
+    intro n hn
+    have hn1 := (mem_Icc.mp (mem_topBand.mp hn).1)
+    unfold poleVector
+    exact one_div_le_one_div_of_le (Real.sqrt_pos.mpr (by exact_mod_cast hn1.1))
+      (Real.sqrt_le_sqrt (by exact_mod_cast hn1.2))
+  have hlog : ∀ ℓ ∈ topBand N w, Real.log (N / 2) ≤ horizonDivisorMangoldt N ℓ := by
+    intro ℓ hℓ
+    have hℓ1 := (mem_Icc.mp (mem_topBand.mp hℓ).1)
+    rw [horizonDivisorMangoldt_of_le hℓ1.2]
+    have h2 := half_lt_of_mem_topBand hw hℓ
+    exact Real.log_le_log (by positivity) (by linarith only [h2])
+  have hsub : topBand N w ⊆ Icc 1 ⌈(N : ℝ) * Real.exp w⌉₊ := by
+    intro ℓ hℓ
+    have hℓ1 := mem_Icc.mp (mem_topBand.mp hℓ).1
+    refine mem_Icc.mpr ⟨hℓ1.1, ?_⟩
+    have h1 : (ℓ : ℝ) ≤ N * Real.exp w :=
+      (by exact_mod_cast hℓ1.2 : (ℓ : ℝ) ≤ N).trans
+        (le_mul_of_one_le_right (Nat.cast_nonneg N) (Real.one_le_exp_iff.mpr hw))
+    exact_mod_cast h1.trans (Nat.le_ceil _)
+  have hH : ∀ n ℓ : ℕ, 0 ≤ (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) :=
+    fun n ℓ => by split_ifs; exacts [le_rfl, bumpCorr_nonneg hg0 _]
+  rw [mul_sum]
+  refine sum_le_sum fun n hn => ?_
+  have hR : 1 / Real.sqrt N * Real.log (N / 2) * ∑ ℓ ∈ topBand N w,
+      (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) ≤ shellPoleRow g N w n := by
+    rw [mul_sum]
+    refine (sum_le_sum fun ℓ hℓ => ?_).trans (sum_le_sum_of_subset_of_nonneg hsub fun ℓ _ _ =>
+      mul_nonneg (mul_nonneg (by unfold poleVector; positivity)
+        (horizonDivisorMangoldt_nonneg N ℓ)) (hH n ℓ))
+    exact mul_le_mul_of_nonneg_right (mul_le_mul (hb ℓ hℓ) (hlog ℓ hℓ) hlogN
+      (by unfold poleVector; positivity)) (hH n ℓ)
+  have hRn : 0 ≤ 1 / Real.sqrt N * Real.log (N / 2) * ∑ ℓ ∈ topBand N w,
+      (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n)) :=
+    mul_nonneg (mul_nonneg (by positivity) hlogN) (sum_nonneg fun ℓ _ => hH n ℓ)
+  calc
+    _ = 1 / Real.sqrt N * (1 / Real.sqrt N * Real.log (N / 2) * ∑ ℓ ∈ topBand N w,
+        (if ℓ = n then 0 else bumpCorr g (Real.log ℓ - Real.log n))) := by
+      field_simp
+      rw [Real.sq_sqrt hN0.le]
+    _ ≤ poleVector n * shellPoleRow g N w n := mul_le_mul (hb n hn) hR hRn
+      (by unfold poleVector; positivity)
 
 end GaloisForLFunctions.SuccessorShellArithmetic
