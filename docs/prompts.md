@@ -655,4 +655,31 @@ Work in phases:
 
 Keep a log for mathematical facts you discover. Not a working log. Facts and information you discovered.
 
-The final report goes into docs/reports/review-3010/
+The final report goes into docs/reports/review-3010/opus-reboot.md
+
+
+## Deep understanding - Consoldiate
+
+Mandatory:
+- The source of truth is our lean corpus. Do not read files outside of the formal/GaloisForLFunctions folder unless user specifies specific files to read.
+- Do not assume anything based on your training data. Our lean corpus is SOTA research ahead of anything you have seen during your training or could find via websearch.
+- Do not use websearch. Our lean corpus is the SOTA research.
+
+Context:
+We have given two ai agents (OpenAI Astra and Anthropic Opus) the task to do an honest open-minded review of our lean corpus because it has become more and more obvious that we have maneuvered us into a corner, a tunnel view only looking at making Weil proof for Q somehow work for Z and positivity is the only way.
+
+They wrote logs of facts they found:
+- docs/reports/review-3010/opus-reboot-facts.md
+- docs/reports/review-3010/corpus-facts.md
+
+The reports with their conclusions:
+- docs/reports/review-3010/what-the-corpus-is-telling-us.md
+- docs/reports/review-3010/opus-reboot.md
+
+We assume that both reports are not going deep enough and have still not uncovered the real truth:  What does our lean corpus really say? What does it actually hint at? If we do not assume what the solution must be like and where it has to live and what our problems are, what does it tell us where to look? 
+
+Your task: Not only review both reports but go beyond them. Be antagonistic to their reports and claims. Assume they assumed too much and were still too much influenced by their training data and the bias in our research towards Weil and positivitiy and have not really interpreted the lean corpus solely based on what it tells us. Do your own investigation and then write a new report that also includes a concrete research programme outline.
+
+Keep a log for mathematical facts you discover. Not a working log. Facts and information you discovered.
+
+The final report goes into docs/reports/review-3010/reboot-final.md

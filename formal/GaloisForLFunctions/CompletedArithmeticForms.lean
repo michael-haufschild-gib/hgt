@@ -48,6 +48,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.TailRankHorizon
 import GaloisForLFunctions.CompletedArithmeticForms.SuccessorMixture
 import GaloisForLFunctions.CompletedArithmeticForms.WeightedCenterTail
 import GaloisForLFunctions.CompletedArithmeticForms.ChebyshevCyclotomicCompletion
+import GaloisForLFunctions.CompletedArithmeticForms.ChebyshevCyclotomicTail
 import GaloisForLFunctions.CompletedArithmeticForms.PhysicalSuccessorMass
 import GaloisForLFunctions.CompletedArithmeticForms.WeightedSuccessorReserve
 import GaloisForLFunctions.CompletedArithmeticForms.TerminalCompletion
@@ -117,6 +118,8 @@ Every critical aperture shares the logarithmic weighted-tail rank boundary. The 
 order-seven center successor retains a strictly positive exact tail allowance at its global minimizer.
 The literal normalized Chebyshev energy has two coefficient channels with a linear payment;
 its five-sixths and three-quarters exponent bounds are exactly those of the remaining cyclic form.
+Outside the first and last square-root number of modes, the actual cyclic remainder
+already has three-halves energy growth by the coefficient envelope and root spacing.
 The exact full signed physical successor retains the first-atom mass, terminal source-scale
 power, and monic Hermite norm, with strict one-half and three-halves comparison constants.
 Integrating its explicit half-Hermite mass gives a positive lower bound for every exact weighted

@@ -291,4 +291,232 @@ theorem abs_eulerHead_tsum_sub_le {Y M : ℕ} (hYM : Y ≤ M) (hMY : M < (Y + 1)
         mul_le_mul_of_nonneg_left (sum_nonprime_vonMangoldt_div_sqrt_le M) (by positivity)
     _ = _ := by ring
 
+/-! ### A single detail and a far window -/
+
+/-- The unit detail on the pair `a`. -/
+def detailUnit (a : ℕ) : ℕ → ℝ := fun n => if n = a then 1 else 0
+
+/-- The coarse window of the pairs `Yb ≤ n < Y(b + 1)`, i.e. of `[log 2Yb, log 2Y(b + 1))`. -/
+def coarseWindow (Y b : ℕ) : ℕ → ℝ := fun n => if Y * b ≤ n ∧ n < Y * (b + 1) then 1 else 0
+
+theorem haarSectionProfile_detailUnit {a X : ℕ} (ha : 1 ≤ a) (haX : a ≤ X) (x : ℝ) :
+    haarSectionProfile (detailUnit a) X x = haarProfile a x := by
+  rw [haarSectionProfile, sum_eq_single a (fun n _ hn => by simp [detailUnit, hn])
+    (fun h => absurd (mem_Icc.mpr ⟨ha, haX⟩) h)]
+  simp [detailUnit]
+
+/-- Consecutive cells tile an interval: `Σ_{A ≤ k < B} 1_{[log k, log(k+1))} = 1_{[log A, log B)}`. -/
+theorem sum_Ico_rawCell {A B : ℕ} (hA : 1 ≤ A) (hAB : A ≤ B) (x : ℝ) :
+    ∑ k ∈ Ico A B, rawCell k x =
+      (Set.Ico (Real.log A) (Real.log B)).indicator (fun _ => (1 : ℝ)) x := by
+  induction B, hAB using Nat.le_induction with
+  | base => simp
+  | succ B hAB ih =>
+    have hA0 : (0 : ℝ) < A := by exact_mod_cast hA
+    have hB0 : (0 : ℝ) < B := by exact_mod_cast hA.trans hAB
+    have h1 : Real.log A ≤ Real.log B := Real.log_le_log hA0 (by exact_mod_cast hAB)
+    have h2 : Real.log (B : ℝ) ≤ Real.log ((B + 1 : ℕ) : ℝ) :=
+      Real.log_le_log hB0 (by push_cast; linarith)
+    have hu := congrFun (Set.indicator_union_of_disjoint (Set.Ico_disjoint_Ico_same
+      (a := Real.log A) (b := Real.log B) (c := Real.log ((B + 1 : ℕ) : ℝ))) (fun _ => (1 : ℝ))) x
+    rw [Set.Ico_union_Ico_eq_Ico h1 h2] at hu
+    rw [sum_Ico_succ_top hAB, ih, rawCell, hu]
+
+theorem coarseProfile_eq_indicator {b : ℕ} (hb : 1 ≤ b) (x : ℝ) :
+    coarseProfile b x =
+      (Set.Ico (Real.log ((2 * b : ℕ) : ℝ)) (Real.log ((2 * b + 2 : ℕ) : ℝ))).indicator
+        (fun _ => (1 : ℝ)) x := by
+  rw [← sum_Ico_rawCell (by omega) (by omega), coarseProfile,
+    show Ico (2 * b) (2 * b + 2) = {2 * b, 2 * b + 1} by ext n; simp; omega,
+    sum_pair (by omega)]
+
+private theorem sum_Ico_pairs (f : ℕ → ℝ) {A B : ℕ} (hAB : A ≤ B) :
+    ∑ n ∈ Ico A B, (f (2 * n) + f (2 * n + 1)) = ∑ k ∈ Ico (2 * A) (2 * B), f k := by
+  induction B, hAB using Nat.le_induction with
+  | base => simp
+  | succ B hAB ih =>
+    rw [sum_Ico_succ_top hAB, ih, show 2 * (B + 1) = 2 * B + 1 + 1 by ring,
+      sum_Ico_succ_top (by omega), sum_Ico_succ_top (by omega), add_assoc]
+
+/-- **The window is a translated coarse pair.** -/
+theorem averageSectionProfile_coarseWindow {Y b X : ℕ} (hY : 1 ≤ Y) (hb : 1 ≤ b)
+    (hX : Y * (b + 1) ≤ X + 1) (x : ℝ) :
+    averageSectionProfile (coarseWindow Y b) X x = coarseProfile b (x - Real.log Y) := by
+  have hYb : 1 ≤ Y * b := Nat.one_le_iff_ne_zero.mpr (by positivity)
+  have hsum : averageSectionProfile (coarseWindow Y b) X x =
+      ∑ n ∈ Ico (Y * b) (Y * (b + 1)), coarseProfile n x := by
+    rw [averageSectionProfile]
+    simp only [coarseWindow, ite_mul, one_mul, zero_mul]
+    rw [← sum_filter]
+    refine sum_congr ?_ fun _ _ => rfl
+    ext n
+    simp only [mem_filter, mem_Icc, mem_Ico]
+    constructor
+    · rintro ⟨_, h⟩; exact h
+    · rintro ⟨h1, h2⟩; exact ⟨⟨hYb.trans h1, by omega⟩, h1, h2⟩
+  rw [hsum, sum_congr rfl fun n _ =>
+    (show coarseProfile n x = rawCell (2 * n) x + rawCell (2 * n + 1) x from rfl), sum_Ico_pairs (fun k => rawCell k x) (Nat.mul_le_mul_left Y (Nat.le_succ b)),
+    sum_Ico_rawCell (by omega) (by nlinarith), coarseProfile_eq_indicator hb]
+  have hY0 : (0 : ℝ) < Y := by exact_mod_cast hY
+  have hb0 : (0 : ℝ) < b := by exact_mod_cast hb
+  simp only [Set.indicator_apply, Set.mem_Ico]
+  push_cast
+  rw [show (2 : ℝ) * (Y * b) = Y * (2 * b) by ring, show (2 : ℝ) * (Y * (b + 1)) = Y * (2 * b + 2) by
+    ring, Real.log_mul hY0.ne' (by positivity), Real.log_mul hY0.ne' (by positivity)]
+  congr 1
+  apply propext
+  constructor <;> rintro ⟨h1, h2⟩ <;> constructor <;> linarith
+
+/-- The coupling kernel of the detail `a` and the window `b` at relative lag `t`. -/
+def headCouplingKernel (a b : ℕ) (t : ℝ) : ℝ := ∫ u, haarProfile a u * coarseProfile b (u + t)
+
+theorem measurable_coarseProfile (b : ℕ) : Measurable (coarseProfile b) :=
+  (measurable_rawCell _).add (measurable_rawCell _)
+
+theorem abs_coarseProfile_le {b : ℕ} (hb : 1 ≤ b) (x : ℝ) : |coarseProfile b x| ≤ 1 := by
+  rw [coarseProfile_eq_indicator hb]
+  simp only [Set.indicator_apply]
+  split_ifs <;> norm_num
+
+theorem integrable_haarProfile_mul_coarseProfile (a : ℕ) {b : ℕ} (hb : 1 ≤ b) (t : ℝ) :
+    Integrable (fun u => haarProfile a u * coarseProfile b (u + t)) :=
+  (integrable_haarProfile a).mul_bdd ((measurable_coarseProfile b).comp
+    (measurable_add_const t)).aestronglyMeasurable
+    (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact abs_coarseProfile_le hb _)
+
+theorem rawCell_nonneg (k : ℕ) (x : ℝ) : 0 ≤ rawCell k x :=
+  Set.indicator_nonneg (fun _ _ => zero_le_one) x
+
+theorem abs_haarProfile_le {a : ℕ} (ha : 1 ≤ a) (x : ℝ) :
+    |haarProfile a x| ≤ rawCell (2 * a) x + rawCell (2 * a + 1) x := by
+  have hl := logCellWidth_pos (show 1 ≤ 2 * a by omega)
+  have hr := logCellWidth_pos (show 1 ≤ 2 * a + 1 by omega)
+  have hL0 : 0 ≤ haarLeftCoeff a := div_nonneg hr.le (add_pos hl hr).le
+  have hR0 : 0 ≤ haarRightCoeff a := div_nonneg hl.le (add_pos hl hr).le
+  have hs := haarCoeff_sum ha
+  have r0 := rawCell_nonneg (2 * a) x
+  have r1 := rawCell_nonneg (2 * a + 1) x
+  rw [haarProfile]
+  exact abs_le.mpr ⟨by nlinarith, by nlinarith⟩
+
+/-- `|k_{ab}(t)| ≤ 2`. -/
+theorem abs_headCouplingKernel_le {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) (t : ℝ) :
+    |headCouplingKernel a b t| ≤ 2 := by
+  have hint : Integrable (fun u => rawCell (2 * a) u + rawCell (2 * a + 1) u) :=
+    (integrable_rawCell _).add (integrable_rawCell _)
+  calc |headCouplingKernel a b t| ≤ ∫ u, |haarProfile a u * coarseProfile b (u + t)| :=
+        abs_integral_le_integral_abs
+    _ ≤ ∫ u, (rawCell (2 * a) u + rawCell (2 * a + 1) u) := by
+        refine integral_mono (integrable_haarProfile_mul_coarseProfile a hb t).abs hint fun u => ?_
+        rw [abs_mul]
+        exact (mul_le_of_le_one_right (abs_nonneg _) (abs_coarseProfile_le hb _)).trans
+          (abs_haarProfile_le ha u)
+    _ = logCellWidth (2 * a) + logCellWidth (2 * a + 1) := by
+        rw [integral_add (integrable_rawCell _) (integrable_rawCell _),
+          integral_rawCell (by omega), integral_rawCell (by omega)]
+    _ ≤ 1 + 1 := by
+        have h1 := logCellWidth_le_inv (show 1 ≤ 2 * a by omega)
+        have h2 := logCellWidth_le_inv (show 1 ≤ 2 * a + 1 by omega)
+        have h3 : 1 / ((2 * a : ℕ) : ℝ) ≤ 1 := by
+          rw [div_le_one (by positivity)]; exact_mod_cast (show 1 ≤ 2 * a by omega)
+        have h4 : 1 / ((2 * a + 1 : ℕ) : ℝ) ≤ 1 := by
+          rw [div_le_one (by positivity)]; exact_mod_cast (show 1 ≤ 2 * a + 1 by omega)
+        linarith
+    _ = 2 := by norm_num
+
+theorem haarProfile_eq_zero_of_lt {a : ℕ} {u : ℝ} (hu : u < Real.log ((2 * a : ℕ) : ℝ)) :
+    haarProfile a u = 0 := by
+  have h0 : rawCell (2 * a) u = 0 := by
+    rw [rawCell, Set.indicator_of_notMem]; exact fun h => absurd h.1 (not_le.mpr hu)
+  have h1 : rawCell (2 * a + 1) u = 0 := by
+    rcases Nat.eq_zero_or_pos a with rfl | ha
+    · rw [rawCell, Set.indicator_of_notMem]
+      intro h
+      have := h.1
+      simp only [mul_zero, Nat.cast_zero, Real.log_zero] at hu
+      simp at this
+      linarith
+    · rw [rawCell, Set.indicator_of_notMem]
+      intro h
+      have hle : Real.log ((2 * a : ℕ) : ℝ) ≤ Real.log ((2 * a + 1 : ℕ) : ℝ) :=
+        Real.log_le_log (by positivity) (by push_cast; linarith)
+      exact absurd (hle.trans h.1) (not_le.mpr hu)
+  rw [haarProfile, h0, h1]; ring
+
+/-- The kernel vanishes once the window lies beyond the translated pair. -/
+theorem headCouplingKernel_eq_zero {a b : ℕ} (hb : 1 ≤ b) {t : ℝ}
+    (ht : Real.log ((2 * b + 2 : ℕ) : ℝ) - Real.log ((2 * a : ℕ) : ℝ) ≤ t) :
+    headCouplingKernel a b t = 0 := by
+  unfold headCouplingKernel
+  refine integral_eq_zero_of_ae (Eventually.of_forall fun u => ?_)
+  by_cases hu : u < Real.log ((2 * a : ℕ) : ℝ)
+  · simp [haarProfile_eq_zero_of_lt hu]
+  · show haarProfile a u * coarseProfile b (u + t) = 0
+    rw [coarseProfile_eq_indicator hb, Set.indicator_of_notMem, mul_zero]
+    intro h; linarith [h.2]
+
+/-- **The source of a single detail against a far window.** -/
+theorem integerMixedSource_detailUnit_coarseWindow {a b Y X : ℕ} (ha : 1 ≤ a) (haX : a ≤ X)
+    (hY : 1 ≤ Y) (hb : 1 ≤ b) (hX : Y * (b + 1) ≤ X + 1) (m : ℕ) :
+    integerMixedSource m (detailUnit a) (coarseWindow Y b) X X =
+      2 * Λ m / Real.sqrt m * headCouplingKernel a b (Real.log m - Real.log Y) := by
+  by_cases hm : 2 ≤ m
+  · rw [integerMixedSource, inner_shift_coarseSection_haarSection _ _ _ _ hm, add_zero,
+      inner_shift_haar_coarse_profiles]
+    congr 1
+    unfold headCouplingKernel
+    congr 1
+    funext u
+    rw [haarSectionProfile_detailUnit ha haX, averageSectionProfile_coarseWindow hY hb hX]
+    congr 2
+    ring
+  · have hΛ : Λ m = 0 := by interval_cases m <;> simp
+    simp [integerMixedSource, hΛ]
+
+/-- The weighted term of the head at `m`. -/
+def headTerm (Y a b m : ℕ) : ℝ :=
+  2 * Λ m / Real.sqrt m * headCouplingKernel a b (Real.log m - Real.log Y)
+
+/-- **The head coupling** `B_Y[a, b]`: the complete mixed Euler source of the head `p ≤ Y` on the
+detail `a` and the window `b`. -/
+def headCoupling (Y a b : ℕ) : ℝ :=
+  ∑ p ∈ eulerHead Y, ∑' k : ℕ, headTerm Y a b ((p : ℕ) ^ (k + 1))
+
+theorem finiteEulerMixedSource_detailUnit_coarseWindow {a b Y X : ℕ} (ha : 1 ≤ a) (haX : a ≤ X)
+    (hY : 1 ≤ Y) (hb : 1 ≤ b) (hX : Y * (b + 1) ≤ X + 1) :
+    finiteEulerMixedSource (eulerHead Y) (detailUnit a) (coarseWindow Y b) X = headCoupling Y a b := by
+  unfold finiteEulerMixedSource primeEulerMixedSource headCoupling
+  refine sum_congr rfl fun p _ => tsum_congr fun k => ?_
+  rw [integerMixedSource_detailUnit_coarseWindow ha haX hY hb hX]
+  rfl
+
+/-- **The head is the integers up to `Y`**, up to `O(Y^{1/4})`. -/
+theorem abs_headCoupling_sub_le {Y a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) (hbY : b ≤ Y) :
+    |headCoupling Y a b - ∑ m ∈ Icc 1 Y, headTerm Y a b m| ≤
+      576 * ((Y * (b + 1) : ℕ) : ℝ) ^ (1 / 4 : ℝ) := by
+  have h := abs_eulerHead_tsum_sub_le (Y := Y) (M := Y * (b + 1)) (F := headTerm Y a b) (B := 2)
+    (Nat.le_mul_of_pos_right Y (by omega)) (by nlinarith) (by norm_num) (fun m hm => ?_)
+    (fun m => ?_)
+  · rw [headCoupling]; linarith
+  · have hY1 : 1 ≤ Y := hb.trans hbY
+    have hY0 : (0 : ℝ) < Y := by exact_mod_cast hY1
+    have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
+    rw [headTerm, headCouplingKernel_eq_zero hb, mul_zero]
+    have hmY : ((Y * (b + 1) : ℕ) : ℝ) ≤ m := by exact_mod_cast hm.le
+    have hlog : Real.log Y + Real.log ((b : ℝ) + 1) ≤ Real.log m := by
+      rw [← Real.log_mul hY0.ne' (by positivity)]
+      exact Real.log_le_log (by positivity) (by push_cast at hmY; linarith)
+    have ha0 : 0 ≤ Real.log (a : ℝ) := Real.log_nonneg (by exact_mod_cast ha)
+    have h2b : Real.log ((2 * b + 2 : ℕ) : ℝ) = Real.log 2 + Real.log ((b : ℝ) + 1) := by
+      rw [← Real.log_mul (by norm_num) (by positivity)]; push_cast; ring_nf
+    have h2a : Real.log ((2 * a : ℕ) : ℝ) = Real.log 2 + Real.log (a : ℝ) := by
+      rw [← Real.log_mul (by norm_num) (by positivity)]; push_cast; ring_nf
+    rw [h2b, h2a]
+    linarith
+  · rw [headTerm, abs_mul]
+    have hw : 0 ≤ 2 * Λ m / Real.sqrt m :=
+      div_nonneg (mul_nonneg (by norm_num) ArithmeticFunction.vonMangoldt_nonneg) (Real.sqrt_nonneg _)
+    rw [abs_of_nonneg hw, mul_comm 2 (2 * Λ m / Real.sqrt m)]
+    exact mul_le_mul_of_nonneg_left (abs_headCouplingKernel_le ha hb _) hw
+
 end GaloisForLFunctions.ArithmeticIndexDescent

@@ -1,8 +1,8 @@
 # Reciprocal-shell variation controls the actual source
 
 - **ID:** reciprocal-shell-variation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** The affine shell error has a bound `C_q c/(log Y)^k` whenever `X≥2cY`, with the existing fixed-conductor source threshold. Consequently its unnormalized harmonic square budget is `O_q(c²(1+log c))`.
 
 ## Paper proof
@@ -16,3 +16,14 @@ Combine this rate at `k=2` with the linear global source bound from active-shell
 ## Remaining scope
 
 The conductor-dependent residue-Mertens threshold remains. This improvement concerns the actual source, including all shifts and prime powers; it supplies no negative-eigenvector confinement by itself.
+
+## Lean
+
+`GaloisForLFunctions/CriticalArithmeticCorrelationTheory/ReciprocalShellVariationControlsTheActualSource.lean`:
+
+- `exists_reciprocalShellWeight_variation_bounds`: uniform total variation.
+- `exists_affineShellCorrection_linear_log_rate`: the actual affine source rate, uniform over shifts and affine multipliers.
+- `exists_shiftedReciprocalUpwardRowError_quadratic_log_harmonic_budget`: the horizon-uniform square budget.
+- `exists_tiltedUnitSpline_shiftedReciprocalUpwardRowError_quadratic_log_harmonic_budget`: the explicit tilted spline.
+
+Direct Lean check passed without warnings. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.

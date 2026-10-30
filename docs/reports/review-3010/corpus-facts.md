@@ -12,13 +12,13 @@ Declarations: `mem_paidIdeal_oscillating_iff`, `mem_obstructionHull_oscillating_
 
 ## F02. Several different boundaries share the number one half
 
-**Programme; direct proofs pending.** THIM distinguishes sign-blind payment, which requires damping **strictly greater** than `1/2`, from horizon-limit commutation, which holds **at and above** `1/2`. Below `1/2`, a paid infinite source need not have uniformly paid truncated rows. Relevant statements: `receiverBounded_amplitudeInvariant_iff`, `horizonLimit_commutes_with_receiver_iff` ([THIM](../../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md)).
+**Programme evidence only.** THIM distinguishes sign-blind payment, which requires damping **strictly greater** than `1/2`, from horizon-limit commutation, which holds **at and above** `1/2`. Below `1/2`, a paid infinite source need not have uniformly paid truncated rows. Relevant statements: `receiverBounded_amplitudeInvariant_iff`, `horizonLimit_commutes_with_receiver_iff` ([THIM](../../../formal/GaloisForLFunctions/TransHorizonIncidenceMechanics/README.md)).
 
 ACCE distinguishes the finite-horizon zero-damping limit from uniform admission: every fixed horizon has a bounded limit at damping zero; the obstruction can lie in a moving interior bump. `tendsto_dampedMobiusEnergy_nhdsGT_zero`, `riemannHypothesis_of_no_interior_bump` ([ACCE](../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/README.md)).
 
 ## F03. The stated criticality obstruction permits losses
 
-**Programme; direct proofs pending.** ACT's null sequences exclude subtracting a Hardy weight, reducing a prime rate or removing a fraction of the variance. Its README explicitly distinguishes these from negative floors: an aperture-uniform loss suffices for RH, while an exponential loss measures a strip. It also restricts the positive folded-supersolution obstruction to a specified decaying profile class ([ACT](../../../formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md), mechanisms 4 and 9, traps).
+**Programme evidence only.** ACT's null sequences exclude subtracting a Hardy weight, reducing a prime rate or removing a fraction of the variance. Its README explicitly distinguishes these from negative floors: an aperture-uniform loss suffices for RH, while an exponential loss measures a strip. It also restricts the positive folded-supersolution obstruction to a specified decaying profile class ([ACT](../../../formal/GaloisForLFunctions/ArithmeticCriticalityTheory/README.md), mechanisms 4 and 9, traps).
 
 ## F04. A large positive norm can coexist with a small adverse pairing
 
@@ -28,7 +28,7 @@ Declarations: `tendsto_combCharge_rescaledTest_div_combMass_zero`, `exists_odd_s
 
 ## F05. The scaling surface is a paired vector space
 
-**Programme; direct definitions pending.** ACS explicitly defines its scaling surface as a vector space with a pairing, not a scheme. Its finite-field golden datum satisfies integral counts, functional equation, Witt integrality and Adams structure while having one negative square. Consequently those named structures, in the stated model class, do not supply effectivity ([ACS](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md), introduction and mechanisms 1–3).
+**Programme evidence only.** ACS explicitly defines its scaling surface as a vector space with a pairing, not a scheme. Its finite-field golden datum satisfies integral counts, functional equation, Witt integrality and Adams structure while having one negative square. Consequently those named structures, in the stated model class, do not supply effectivity ([ACS](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md), introduction and mechanisms 1–3).
 
 ## F06. Weil and integer-successor affine states are incompatible
 
@@ -62,7 +62,7 @@ Declarations: `hasSum_completedConductorEnergy`, `completedConductorEnergy_nonne
 
 ## F10. Defect-only confinement really requires exponentially large conductors
 
-**Source.** Unit-normalized actual Ramanujan horizon vectors converge to orthogonal conductor coordinates and have limiting prime energy `γ + log m + tameDifferent(m)`. At `m = 2^k` this is exactly `γ + (k+1) log 2`. A row estimate bounds their pole defect by this energy plus `log 4 + 4 + ε`. Consequently any fixed conductor cutoff below `2^k` misses unit vectors of defect only linear in `k`. The obstruction concerns **all bounded-defect vectors**, not just negative directions of the complete signed form.
+**Source.** Unit-normalized actual Ramanujan horizon vectors converge to orthogonal conductor coordinates and have limiting prime energy `γ + log m + tameDifferent(m)`. At `m = 2^k`, `k ≥ 1`, this is exactly `γ + (k+1) log 2`. A row estimate bounds their pole defect by this energy plus `log 4 + 4 + ε`. Consequently any fixed conductor cutoff below `2^k` misses unit vectors of defect only linear in `k`. The obstruction concerns **all bounded-defect vectors**, not just negative directions of the complete signed form.
 
 Declarations: `eventually_exists_unit_vector_escaping_conductors`, `ramanujanAdjunctionEnergy_two_pow`, `not_eventually_defect_coordinate_capture_below_binary_cutoff` in [PrimeDefectConfinementMustRetainLowEnergyConductors.lean](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/PrimeDefectConfinementMustRetainLowEnergyConductors.lean).
 
@@ -126,6 +126,8 @@ Declarations: `criticalCoefficientDomain_topologicalClosure`, `criticalCoefficie
 
 The graph input image is closed **iff** its output norm is uniformly bounded by its input norm: `isClosed_range_cofactorGraphInput_iff` in [CofactorGraphClosedness.lean](../../../formal/GaloisForLFunctions/BiarithmeticGeometry/CofactorGraphClosedness.lean). Choosing a closure cannot supply that bound.
 
+The inclusion is genuinely strict: the explicit inverse-square-root-tail difference sequence has coefficient norm two and total evaluation zero, but divergent partial-sum square energy. Corrected finite paid sequences converge to it: `not_isClosed_criticalCoefficientDomain` in [CriticalCoefficientNonclosed.lean](../../../formal/GaloisForLFunctions/BiarithmeticGeometry/CriticalCoefficientNonclosed.lean).
+
 ## F20. Positive self-duality forces lattice support by saturation
 
 **Source.** A locally finite positive measure with no mass in `(-1,1) \ {0}` is self-dual against integer translates of the tent exactly when it is a constant multiple of the integer Dirac comb. At the unshifted tent, the gap uses the entire available integral at the origin; the remaining nonnegative sinc-square integral is zero. Its zero set forces integer support. Translated identities then force equal atom masses. Both positivity and the exact identity concern the **same measure**.
@@ -140,7 +142,7 @@ Declarations: `eventually_tiltedWeil_growing_packet_pos` in [WeilGrowingPackets.
 
 ## F22. The exponent sixteen belongs to a particular signed-form estimate
 
-**Source.** The actual complete form satisfies `W ≥ a c^(−7) D − C c^9 ‖x‖²` once `N ≥ H c^8`. Hence a unit vector with `W ≤ 0` has `D ≤ C' c^16`. The proof pays the non-ratio form and the pole moments separately in absolute value, each with a defect fraction proportional to `c^(−7)` and mass cost proportional to `c²` divided by that fraction. These are upper estimates, not a lower obstruction at exponent sixteen. F10 is the separate genuine obstruction to compressing **all** bounded-defect vectors.
+**Source.** For `c ≥ 1`, the actual complete form satisfies `W ≥ a c^(−7) D − C c^9 ‖x‖²` once `N ≥ H c^8`. Hence a unit vector with `W ≤ 0` has `D ≤ C' c^16`. The proof pays the non-ratio form and the pole moments separately in absolute value, each with a defect fraction proportional to `c^(−7)` and mass cost proportional to `c²` divided by that fraction. These are upper estimates, not a lower obstruction at exponent sixteen. F10 is the separate genuine obstruction to compressing **all** bounded-defect vectors.
 
 Declarations: `tiltedUnitSpline_complete_defect_reserve_explicit`, `exists_negative_completeWeil_poleDefect_polynomial_bound` in [TheCompleteWeilReserveHasPolynomialOverlapCost.lean](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilReserveHasPolynomialOverlapCost.lean).
 
@@ -163,3 +165,13 @@ Declarations: `ccmFiniteEulerSourceCurrent_sonin_kernel_iff`, `ccmEulerSimultane
 Declarations: `tendsto_receiver_div_forcingEnergy_zero`, `no_common_scalar_normalization` in [ForcingScaleSeparation.lean](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/ForcingScaleSeparation.lean); `tendsto_forcingGramDefect_div_forcingEnergy_sq_zero`, `gram_distance_div_receiverEnergy_eq_one` in [TheReceiverIsTheGramTangent.lean](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheReceiverIsTheGramTangent.lean).
 
 Adding fixed covariance coordinates does not repair this automatically. After subtracting the forcing power, every escaping fixed signed Gram table is `sign(b) sign(c) K(j,k)`, with signs `(1,−1,0)` for receiver, residual and paid forcing. Its vectors already belong to the original cofactor Hilbert module: `ActualCofactorLimit.admits_or_signedCofactorGram_tendsto` in [TheSignedCofactorGramHasNoExtraCoordinates.lean](../../../formal/GaloisForLFunctions/ArithmeticDefectRigidity/TheSignedCofactorGramHasNoExtraCoordinates.lean).
+
+The estimates `forcingReceiverCovariance_sq_le` and `abs_forcingRemainderGram_le` in the same module are uniform in both cofactor indices, with right side `forcingRemainderBudget² / receiverEnergy`. Moving individual indices does not avoid these bounds.
+
+## F26. The count has an exact prime-gauge stabilizer
+
+**Source.** Let `signGauge F` multiply `Λ(p^k)` by `(-1)^k` for primes `p ∈ F`, leaving other coefficients unchanged. It satisfies `Count` iff RH holds and the flipped-prime mass `θ_F(x) = Σ_{p≤x, p∈F} log p` is `O(√x log²x)`. Every finite flip set satisfies `Count` iff RH. For the real part of a torus gauge, the exact condition replaces `θ_F` by `Σ_{p≤x}(1−cos(2πt_p))log p`.
+
+Proof mechanism: the sign-gauge defect lies between `2θ_F` and `2θ_F+2(ψ−θ)`; the torus defect lies between its prime gauge distance and that distance plus `2(ψ−θ)`. The higher-prime-power term is already `O(√x)`. The converse implication uses monotonicity of the lower count for weights below `Λ`, not an assumed count for `Λ`.
+
+Declarations: `count_iff_of_le_vonMangoldt`, `count_signGauge_iff`, `count_signGauge_of_finite`, `count_torusGauge_iff` in [TheGaugeStabilizerOfTheCount.lean](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TheGaugeStabilizerOfTheCount.lean).

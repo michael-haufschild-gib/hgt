@@ -1,8 +1,8 @@
 # The cyclotomic tail fits the three-quarters scale
 
 - **ID:** cyclotomic-tail-fits-three-quarters-scale
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** fourth-power-mesh-signed-saving; `CompletedArithmeticForms.ChebyshevCyclotomicCompletion`
 - **Statement:** At conductor `Q=N+1`, the actual cyclotomic remainder outside its first and last `K` modes is at most `288 NQ/K`, for integers `K≥1`.
 
@@ -32,4 +32,16 @@ and partitioning the finite sum give the exact near-plus-far decomposition.
 ## Verification
 
 - [x] Dependency-closed paper proof.
-- [ ] Lean formalization and standard-axiom audit.
+- [x] Lean formalization and standard-axiom audit.
+
+`CompletedArithmeticForms/ChebyshevCyclotomicTail.lean` proves:
+
+- `chebyshevCyclotomicRemainder_eq_far_add_near`: exact partition.
+- `cyclotomicMode_gap`, `chebyshevCyclotomic_mode_le`: root spacing and individual mode bound.
+- `chebyshevCyclotomicFar_le`: `288 N(N+1)/K` for every `K≥1`.
+- `chebyshevCyclotomicFar_sqrt_le`: `288 N√(N+1)` outside the square-root band.
+- `chebyshevCyclotomicNear_card_le`: at most `2K` remaining modes.
+
+Foreground `lake --old env lean` check passed. All seven public declarations,
+including `norm_cyclotomicMode`, depend only on `propext`, `Classical.choice`,
+and `Quot.sound`. Imported by `CompletedArithmeticForms.lean`.

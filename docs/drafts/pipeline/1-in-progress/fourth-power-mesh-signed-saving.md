@@ -204,6 +204,27 @@ by divisor inversion, although that kernel has a negative principal minor.
 The proof uses complete divisor coverage; interior rows lose that coverage.
 It does not supply the proposed recursive estimate.
 
+## Where the cyclic energy still needs arithmetic cancellation
+
+At conductor `Q=N+1`, write `a_j=chebyshevConductorCoeff j`,
+`ζ_k=exp(2πik/Q)`, and `B_Q(k)=Σ_{1≤j<Q} a_j(1−ζ_k^j)`.
+The exact cyclic difference gives `(1−ζ_k)P(ζ_k)=B_Q(k)`.
+The new [cyclotomic tail theorem](../3-formalized/cyclotomic-tail-fits-three-quarters-scale.md)
+proves that modes with `min(k,Q−k)>⌈√Q⌉` already cost at most `288 N√Q`.
+This uses only `|a_j|≤6/√j`; no signed prime estimate enters.
+
+**Unproved low-mode hypothesis:** uniformly for `1≤k≤⌈√Q⌉`,
+`|B_Q(k)| ≪_ε Q^(1/4+ε)√k`. Conjugate symmetry and the root-gap bound
+would then give near energy `≪_ε Q^(3/2+2ε)log Q`, hence the target.
+This is a candidate arithmetic estimate, not a producer of that estimate.
+Its proof must retain cancellation in the whole coefficient prefix before
+taking absolute values; better estimates of the far modes cannot supply it.
+
+The existing one-sided strip law also permits a lower bound
+`T(M)≥−C_ε M^(5/4+ε)` in place of a square bound. Its observer-history
+two-zone estimate still requires a bound for the actual Chebyshev error
+throughout the remaining interval; that hypothesis is not discharged.
+
 ## Inputs of `ℤ` absent from the Beurling models, tested as producers
 
 | # | Input | Where it enters | Verdict for the `3/4` strip |

@@ -855,3 +855,28 @@ observation about the shape of a proof or statement, read off the source.
   θ_ν(x) = ∫e^{−πu²x}dν obeys Riemann's theta law is c·Σ_k δ_{k+1}; mechanism: a collar-blind Fejér pairing leaves
   ∫(sin πu/πu)²dν = 0; Beurling prime measures with the theta law are Riemann's Σ Λ(n)/log n·δ_n
   (`eq_riemannPrimeMeasure_of_beurling_theta_relation`) [L].
+- `ArchimedeanNodeValueFunction`: for a node vector v, nodeValue v = inf{A(c) : c ≥ 0, node vector of c = v} (A = pole +
+  archimedean energy). Under RH nodeValue v = Σ_n Λ(n)v_n: the value function is linear with gradient Λ
+  (`nodeValue_eq_vonMangoldtPairing`); if RH fails every fibre is unbounded below (`not_bddBelow_nodeFibre`); RH ⇔ for one
+  node m the least energy carrying mass +1 at log m plus the least carrying −1 at log m is ≥ 0
+  (`riemannHypothesis_iff_nodeFibre_add_neg_nonneg`) [L]. (obs) Λ(m) is the shadow price of node log m in the
+  archimedean energy problem.
+- `TwistedArcMomentPositiveRH`: for any finite measure ν on the bottom arc and density g with gν annihilating every twisted
+  integer moment and nonnegative weighted even moments, RH ⇔ prime-blind positivity; the witness h = ∫g g_u dν has
+  Mellin transform matched to ξ(s)²R(s) on the line; 𝓕h(N) = 0 for every integer N ≥ 2 becomes blindness at every
+  log n through "divisor transfer at abscissa 5/4" (`logNode_blind_of_fourier_vanishes`) [L].
+  (obs) Additive integer Fourier vanishing (T-periodicity) is converted into multiplicative log-node blindness.
+- `WindowPositive` (archimedean + pole inequality for nonnegative h supported in a window) is proved unconditionally on
+  (0, a) for a = 3/10, 1/3, 7/20, 3/8, 2/5, 13/32, 3/7, 7/16, 5/11, 7/15 and others ≤ 12/25 (`windowPositive_*`);
+  WindowPositive on (0, log 2) would give PBAP on the nonnegative single-test cone (`weilArchRe_nonneg_of_primeBlind`) [L].
+- ACT `poleFreeWeilOperator_riemannKernelReal`: the pole-free Weil operator maps Riemann's kernel Θ (Θ̂ = Ξ) to cosh(x/2)
+  exactly: Θ is a Green function of the Weil operator for the pole; the harmonic theta span is the radical of the zero
+  form [L].
+- CAF `ConductorHeatThreshold`: Σ_m e^{−βE_m(c)} < ∞ ⇔ β > 1 for every profile and fixed overlap
+  (`summable_completedConductorHeatWeight_iff`); E_m(c)/log m → 1 (`tendsto_completedConductorEnergy_div_log_one`);
+  the Green operator G_c e_m = E_m(c)^{−1}e_m is compact with ‖G_c‖ = E_1(c)^{−1} [L].
+- CAF: Σ_{m|Q, m≠1} G_m(i,j) = Q·min(i,j) − ij: the primitive-root prefix Grams over all divisor conductors sum to the
+  discrete bridge (Dirichlet Green) kernel (`AllDivisorConductorsRecoverTheDiscreteBridge`); exact Schur cost = Dirichlet
+  energy of the coupling (`bridgeSchurCost_isGreatest`) [L].
+- CAF: 5/6 strip ⇔ the literal cyclotomic remainder R_N of the Chebyshev source is O(N^{5/3+ε}); 3/4 strip ⇔
+  O(N^{3/2+ε}) (`chebyshevEnergy_power_bound_iff_cyclotomic`) [L].

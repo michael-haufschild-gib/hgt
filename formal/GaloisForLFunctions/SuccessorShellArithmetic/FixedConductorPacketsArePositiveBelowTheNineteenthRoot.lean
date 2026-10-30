@@ -227,7 +227,48 @@ theorem eventually_tiltedWeil_packet_pos_of_lt_one_nineteenth {α : ℝ}
   rw [hform] at hpos
   exact (mul_pos_iff_of_pos_left (pow_pos hc 7)).mp hpos
 
+/-- The first `Q` conductors `1, …, Q` as a packet. -/
+def firstConductors (Q : ℕ) : Fin Q → ℕ+ := fun i => ⟨i.val + 1, Nat.succ_pos _⟩
+
+theorem firstConductors_injective (Q : ℕ) : Function.Injective (firstConductors Q) := by
+  intro i j h
+  have := congrArg PNat.val h
+  simp only [firstConductors, PNat.mk_coe, Nat.add_right_cancel_iff] at this
+  exact Fin.ext this
+
+/-- **Slowly growing packets.** Some unbounded conductor range `Q(N) → ∞` keeps the whole span
+`span{u_1, …, u_{Q(N)}}` positive along `c_N = (log N)^α`, `0 < α < 1/19`. The range is not
+effective: it is the diagonal of the fixed-packet horizons. -/
+theorem exists_growing_packet_pos_of_lt_one_nineteenth {α : ℝ} (hα0 : 0 < α)
+    (hα : α < 1 / 19) :
+    ∃ Q : ℕ → ℕ, Tendsto Q atTop atTop ∧ ∀ N : ℕ, ∀ b : Fin (Q N) → ℝ, b ≠ 0 →
+      0 < completeWeilEnergy tiltedUnitSpline (logarithmicPacketOverlap α N) N
+        (∑ i, b i • normalizedRamanujanHorizonVector (firstConductors (Q N) i) N) := by
+  classical
+  have hfix := fun Q : ℕ => Filter.eventually_atTop.mp
+    (eventually_tiltedWeil_packet_pos_of_lt_one_nineteenth hα0 hα (firstConductors Q)
+      (firstConductors_injective Q))
+  choose N₀ hN₀ using hfix
+  let P : ℕ → ℕ → Prop := fun N Q => ∀ q ≤ Q, N₀ q ≤ N
+  let Q : ℕ → ℕ := fun N => Nat.findGreatest (P N) N
+  refine ⟨Q, ?_, fun N b hb => ?_⟩
+  · refine tendsto_atTop_atTop.mpr fun K => ⟨max K (∑ q ∈ range (K + 1), N₀ q), fun N hN => ?_⟩
+    apply Nat.le_findGreatest (le_of_max_le_left hN)
+    intro q hq
+    have hq' : q ∈ range (K + 1) := mem_range.mpr (Nat.lt_succ_of_le hq)
+    exact (single_le_sum (fun i _ => Nat.zero_le (N₀ i)) hq').trans (le_of_max_le_right hN)
+  · rcases Nat.eq_zero_or_pos (Q N) with h0 | hpos
+    · exact absurd (funext fun i => absurd i.isLt (by omega)) hb
+    · have hex : ∃ k, 0 < k ∧ k ≤ N ∧ P N k := by
+        by_contra hne
+        push_neg at hne
+        exact hpos.ne' (Nat.findGreatest_eq_zero_iff.mpr fun k hk1 hk2 => hne k hk1 hk2)
+      obtain ⟨k, -, hkN, hk⟩ := hex
+      have hspec : P N (Q N) := Nat.findGreatest_spec hkN hk
+      exact hN₀ (Q N) N (hspec (Q N) le_rfl) b hb
+
 end GaloisForLFunctions.SuccessorShellArithmetic
 
+#print axioms GaloisForLFunctions.SuccessorShellArithmetic.exists_growing_packet_pos_of_lt_one_nineteenth
 #print axioms GaloisForLFunctions.SuccessorShellArithmetic.tendsto_scaled_residual_norm_of_lt_one_nineteenth
 #print axioms GaloisForLFunctions.SuccessorShellArithmetic.eventually_tiltedWeil_packet_pos_of_lt_one_nineteenth

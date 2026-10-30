@@ -71,6 +71,26 @@ Lean (`TransMetzlerWeilPositivity/`, umbrella wired; `lake --old env lean` clean
 - Q-B: `N − N₀ ≤ O`; `O(T) ≤ cN(T)`, `c < 1/4`, is the `75 %` theorem. A depth-weighted Hecke
   defect at `L = κ log T` does not see zeros with `δ ≪ 1/log T`, so it cannot by itself bound `O`.
 
+
+## Loop record (Q-B, Q-C)
+
+- C1 (paper, open caveat). At `λ = 4/3` the zero-side Gram matrix is `Σ_ρ m_ρ a_ρ a_ρᵀ` with
+  `a_ρ = φ̂(γ_ρ − τ_k)` (bilinear). For an off-line pair the cross term `(a_ρ·ā_ρ)² = ‖a_ρ‖⁴`
+  enters `‖G‖_F²`, and `‖a_ρ‖² ≍ L·X^{δ}` (sesquilinear norm sees depth; bilinear trace is blind).
+  Hence a Frobenius budget `O(L²N)` forces `X^{δ} ≲ √N` for an isolated off-line pair:
+  `Re ρ ≤ 7/8 + o(1)`. Not closed: cross terms `(a_ρ·a_ρ′)²` between distinct off-line zeros are
+  complex squares and may cancel; no rigorous non-cancellation argument yet.
+- B1 (corpus fact). `RHTower.exists_eventually_offLineBlock_le`:
+  `Σ_{β>1/2, S≤γ≤2S} (2S)^{β−1/2} ≤ C S (log 2S)^{19/10}`, and `depthKernel(½ log 2S, δ) ≤ (2S)^δ`:
+  the Hecke-defect depth trace at `L = ½ log T` over a height block is `O(N (log N)^{9/10})`.
+  Layer rates (`22/25` near the line, `6/5` Ingham–Gabriel) give `O(N)` for `L = κ log T`,
+  `2κ < 0.84`. This answers the literal first form of Q-B; it cannot reach the `c < 1/4` form,
+  since the kernel vanishes to second order at depth `0`.
+- Barrier map. Simple-critical proportion in the rank–trace method is `2 − κ(λ)`,
+  `κ(λ) = 1/λ + λ/3 ≥ 4/3` for `λ ≤ 1`; `75 %` needs `κ ≤ 5/4`, hence `λ > 1`, hence
+  trans-threshold prime pairs; at `λ > 1` the off-line zeros enter with weight `X^{2δ}`.
+  `O/N` is the `α → ∞` limit of the multiplicity-weighted pair correlation minus one.
+
 ## Log
 - 2026-10-30 — card created; corpus read for all three questions.
 - 2026-10-30 — Q-A formalized (two modules). Q-B/Q-C content analysed; loop continues on Q-B/Q-C.

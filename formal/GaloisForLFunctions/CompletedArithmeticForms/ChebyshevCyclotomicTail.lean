@@ -76,9 +76,9 @@ private theorem nontrivial_roots_sum_modes {Q : ℕ} (hQ : 0 < Q) (f : ℂ → �
   have hperiod : (∑ ζ ∈ nthRootsFinset Q (1 : ℂ), f ζ) =
       ∑ k ∈ range Q, f (cyclotomicMode Q k) := by
     rw [hroots, sum_image (fun k hk l hl heq => hp.pow_inj (mem_range.mp hk) (mem_range.mp hl) heq)]
-    exact sum_congr rfl fun k _ => by rw [cyclotomicMode_eq_pow]; rfl
+    exact sum_congr rfl fun k _ => by rw [cyclotomicMode_eq_pow]
   have hall := congrArg Complex.re
-    (sum_nthRoots_eq_sum_divisors Q (fun ζ => (f ζ : ℂ)))
+    (ArithmeticEffectivityTheory.sum_nthRoots_eq_sum_divisors Q (fun ζ => (f ζ : ℂ)))
   simp only [Complex.re_sum, Complex.ofReal_re] at hall
   have herase := sum_erase_add Q.divisors (fun m => ∑ ζ ∈ primitiveRoots m ℂ, f ζ)
     (Nat.one_mem_divisors.mpr hQ.ne')
@@ -148,7 +148,9 @@ theorem cyclotomicMode_gap {Q k : ℕ} (hk0 : 0 < k) (hkQ : k < Q) :
     rw [show (2 * Real.pi * (k : ℝ) / Q) / 2 = Real.pi * ((k : ℝ) / Q) by ring]
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (by norm_num) hs0)]
   rw [hnorm]
-  linarith only [hs]
+  calc
+    _ = 2 * (2 * (((min k (Q - k) : ℕ) : ℝ) / Q)) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hs (by norm_num)
 
 /-- Each nonconstant mode has an inverse-square bound in its distance from the ends. -/
 theorem chebyshevCyclotomic_mode_le {N k : ℕ} (hk0 : 0 < k) (hkN : k < N + 1) :
@@ -160,9 +162,10 @@ theorem chebyshevCyclotomic_mode_le {N k : ℕ} (hk0 : 0 < k) (hkN : k < N + 1) 
   let P := prefixPacket (N + 1) chebyshevConductorCoeff ζ
   let r : ℝ := (min k (N + 1 - k) : ℕ)
   have hr : 0 < r := by
+    dsimp [r]
     exact_mod_cast lt_min hk0 (Nat.sub_pos_of_lt hkN)
   have hQ : 0 < (N : ℝ) + 1 := by positivity
-  have hζ := norm_cyclotomicMode (N + 1) k
+  have hζ : ‖ζ‖ = 1 := norm_cyclotomicMode (N + 1) k
   have hd := norm_difference_packet_le N ζ hζ
   change ‖(1 - ζ) * P‖ ≤ 24 * Real.sqrt (N : ℝ) at hd
   rw [norm_mul] at hd
@@ -182,7 +185,7 @@ theorem chebyshevCyclotomic_mode_le {N k : ℕ} (hk0 : 0 < k) (hkN : k < N + 1) 
     rw [norm_mul]
     apply mul_le_mul_of_nonneg_right _ (norm_nonneg P)
     have h := norm_add_le (1 : ℂ) ζ
-    simpa only [norm_one, hζ] using h
+    simpa only [norm_one, hζ, one_add_one_eq_two] using h
   have hplusSq := pow_le_pow_left₀ (norm_nonneg ((1 + ζ) * P)) hplus 2
   rw [mul_pow] at hplusSq
   have hscaled := mul_le_mul_of_nonneg_left hplusSq (sq_nonneg r)
@@ -238,11 +241,14 @@ theorem chebyshevCyclotomicFar_le (N : ℕ) {K : ℕ} (hK : 1 ≤ K) :
     change N + 1 - k = N + 1 - l at heq
     omega
   have hright : ∑ k ∈ S, (1 : ℝ) / ((N + 1 - k : ℕ) : ℝ) ^ 2 ≤ 1 / (K : ℝ) := by
-    rw [← sum_image hinj]
-    apply finite_inv_sq_tail hK
-    intro l hl
-    obtain ⟨k, hk, rfl⟩ := mem_image.mp hl
-    exact (mem_filter.mp hk).2.2
+    calc
+      _ = ∑ k ∈ S.image (fun k => N + 1 - k), (1 : ℝ) / (k : ℝ) ^ 2 :=
+        (sum_image (f := fun k : ℕ => (1 : ℝ) / (k : ℝ) ^ 2) hinj).symm
+      _ ≤ _ := by
+        apply finite_inv_sq_tail hK
+        intro l hl
+        obtain ⟨k, hk, rfl⟩ := mem_image.mp hl
+        exact (mem_filter.mp hk).2.2
   have hsum :
       (∑ k ∈ S, ‖(1 + cyclotomicMode (N + 1) k) *
         prefixPacket (N + 1) chebyshevConductorCoeff (cyclotomicMode (N + 1) k)‖ ^ 2) ≤
@@ -257,11 +263,12 @@ theorem chebyshevCyclotomicFar_le (N : ℕ) {K : ℕ} (hK : 1 ≤ K) :
       _ = 144 * ((N : ℝ) + 1) ^ 2 * N *
           ((∑ k ∈ S, 1 / (k : ℝ) ^ 2) + ∑ k ∈ S, 1 / ((N + 1 - k : ℕ) : ℝ) ^ 2) := by
         rw [← mul_sum, sum_add_distrib]
-      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith only [hleft, hright]) (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left
+        ((add_le_add hleft hright).trans_eq (by ring)) (by positivity)
   unfold chebyshevCyclotomicFar
   change _ / ((N : ℝ) + 1) ≤ _
   apply (div_le_iff₀ (by positivity : 0 < (N : ℝ) + 1)).mpr
-  convert hsum using 1 <;> ring
+  exact hsum.trans_eq (by ring)
 
 /-- Removing a square-root number of modes leaves energy of order `N^(3/2)`. -/
 theorem chebyshevCyclotomicFar_sqrt_le (N : ℕ) :

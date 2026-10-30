@@ -54,6 +54,15 @@ At `a = Λ`, this is equivalent to RH. At the same source, positivity of every c
 
 These are exact theorems, including the last counterexample. [F07; `TowerPositivityIsPrecisionExact`](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TowerPositivityIsPrecisionExact.lean).
 
+There is a sharper arithmetic classification. Flip the sign at odd powers of primes in a set `F`, leaving the other von Mangoldt coefficients unchanged. This sign gauge satisfies `Count` exactly when RH holds and
+
+\[
+\theta_F(x)=\sum_{\substack{p\le x\\p\in F}}\log p
+=O(\sqrt{x}\log^2x).
+\]
+
+Every finite `F` passes. For torus rotations, the corresponding quantity is `Σ_{p≤x}(1−cos(2πt_p))log p`. The proof sandwiches the counting defect between the prime-level gauge distance and that distance plus twice the higher-prime-power mass; the latter is already below counting precision. Thus exact recovery of every prime-power sign is unnecessary for this endpoint. [F26; `TheGaugeStabilizerOfTheCount`](../../../formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/TheGaugeStabilizerOfTheCount.lean).
+
 **Why it matters.** A requirement necessary for a universal positivity theorem is not automatically necessary for an argument proving the weaker counting endpoint. The project can accidentally demand recovery of every coefficient when its intended conclusion only needs a precision class. Equivalence at the actual source does not transport every robustness or selection requirement across a family of sources.
 
 Likewise, `TheDecidingInputTheorem` rules out specified perturbation-stable predicates as sufficient for counting over all sources. Its error-law counterexamples show that those estimates alone are insufficient. They do not show that analytic estimates combined with exact source identities can never decide the question, or that every proof must be phrased as a ring-level counting geometry.
@@ -64,7 +73,7 @@ Likewise, `TheDecidingInputTheorem` rules out specified perturbation-stable pred
 
 The prime-comb example shows why a sharp estimate can still estimate the wrong quantity. On an explicit smooth odd normalized family, both comb energy and the cross-prime aggregate are asymptotic to `4 exp(2r)`. Yet the first-power charge divided by comb mass tends to zero. The normalized comb converges to translation by 2; its pairing with the original profile tends to that profile's autocorrelation at 2, which vanishes by support. The large norm is real. The adverse pairing is small for a geometric reason the norm majorant cannot express. [F04; `ThePrimeCombIsATranslation`](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/ThePrimeCombIsATranslation.lean).
 
-The shell-completed conductor energy provides a second, arithmetic example. Its divisor sum has Möbius signs. Interchanging that finite sum with convergent Fourier tails turns the Möbius cancellation into an exact coprimality indicator:
+The shell-completed conductor energy provides a second, arithmetic example. For a real `C²` profile supported in `[0,1]`, with positive square mass, `c>0` and `m≥1`, its divisor sum has Möbius signs. Interchanging that finite sum with convergent Fourier tails turns the Möbius cancellation into an exact coprimality indicator:
 
 \[
 E_m(c)=\frac{2}{M\varphi(m)}
@@ -116,7 +125,7 @@ This is genuine finite-family selection, but it is not robust at fixed absolute 
 
 The infinite-prime classification goes further than a generic warning about limits. At every regular energy threshold, exact eigenvalue counts prove that the counted conductor lines exhaust the **whole actual spectral sublevel**. Euler density zero is equivalent to the constraint mass escaping every bounded energy window. The missing mass has been located, not merely suspected. [F16; `PrimeCountsDetermineEveryBoundedSpectralMass`](../../../formal/GaloisForLFunctions/ArithmeticCountingPositivity/PrimeCountsDetermineEveryBoundedSpectralMass.lean).
 
-**Interpretation.** Source selection may require a response to a controlled change, or a scale-dependent family of readings, rather than a better single invariant. But the finite two-probe theorem does not establish selection for arbitrary sources, and pointwise convergence cannot replace control of escaping mass. These are precise limits on what this successful mechanism currently buys.
+**Interpretation.** Exact source selection may require a response to a controlled change, or a scale-dependent family of readings, rather than a better single invariant. But the finite two-probe theorem does not establish selection for arbitrary sources, and pointwise convergence cannot replace control of escaping mass. For counting, even exact finite-flip selection is stronger than necessary: the gauge stabilizer in Section 2 specifies which distinctions that endpoint tolerates. These are precise limits on what this successful mechanism currently buys.
 
 **6. Several purported universal obstructions are narrower than the reports say.**
 
@@ -158,12 +167,12 @@ The existing polynomial estimate reads schematically
 
 \[
 W_{c,N}(x)\ge a c^{-7}D_N(x)-C c^9\|x\|^2,
-\qquad N\ge Hc^8.
+\qquad c\ge1,\quad N\ge Hc^8.
 \]
 
 Hence a nonpositive unit direction has defect at most `C'c^16`. Inspection of the proof shows exactly where this power comes from: separate absolute payments for the non-ratio form and pole moments, each using a defect fraction proportional to `c⁻⁷` and a cost proportional to `c²` divided by that fraction. Sixteen is the exponent of this estimate, not a proved optimum for actual negative directions. [F22; polynomial reserve proof](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilReserveHasPolynomialOverlapCost.lean).
 
-There is a genuine neighboring obstruction: binary conductor `2^k` has adjunction energy only `γ+(k+1)log2`, so arbitrary bounded-defect unit vectors cannot be captured below an exponential conductor scale. Those are actual vectors, not formal models. The hypothesis that they are nonpositive for the complete signed form is absent. This leaves room for stronger confinement using that sign, but does not prove such confinement. [F10; binary cutoff obstruction](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/PrimeDefectConfinementMustRetainLowEnergyConductors.lean).
+There is a genuine neighboring obstruction: binary conductor `2^k`, `k≥1`, has adjunction energy only `γ+(k+1)log2`, so arbitrary bounded-defect unit vectors cannot be captured below an exponential conductor scale. Those are actual vectors, not formal models. The hypothesis that they are nonpositive for the complete signed form is absent. This leaves room for stronger confinement using that sign, but does not prove such confinement. [F10; binary cutoff obstruction](../../../formal/GaloisForLFunctions/RenormalizedArithmeticPotentialTheory/PrimeDefectConfinementMustRetainLowEnergyConductors.lean).
 
 The specific research question is therefore about the joint complete source on its potentially adverse directions. Another scalar defect estimate on arbitrary vectors may repeat a known obstruction. Another positive fixed packet may repeat a known theorem. Neither is a substitute for the missing joint comparison.
 
@@ -171,12 +180,12 @@ The specific research question is therefore about the joint complete source on i
 
 The following are research questions supported by inspected mechanisms. They are not claims of a new proof route, nor claims that no related module exists elsewhere in the corpus.
 
-**A. Nonlinear source readings and actual local dynamics.** This is the most substantial alternative to the reports' forced return to a holomorphic carrier or a Weil positivity family. CDG already computes depth-sensitive traces from arithmetic prefixes. Independently, actual heat-zero dynamics prove
+**A. Nonlinear source readings and actual local dynamics.** This is the most substantial alternative to the reports' forced return to a holomorphic carrier or a Weil positivity family. CDG already computes depth-sensitive traces from arithmetic prefixes. Independently, for large `X` and admissible nonnegative unit-window cutoffs, actual heat-zero dynamics prove
 
 \[
 E_w(b)-E_w(a)+2\int_a^b N_w(t)\,dt
 \le C_w\log X\int_a^b E_{\rm outer}(t)\,dt,
-\quad b\log X\le1.
+\quad 0\le a\le b\le1/8,\quad b\log X\le1.
 \]
 
 Here `N_w` is the full multiplicity-weighted nonreal count. The estimate passes through collisions and includes time zero. Continuous truncated counts, bounded convergence and actual exterior-force estimates remove the need to assume a simple separated zero configuration. [F18; `HeatLocalizedEnergyDissipation`](../../../formal/GaloisForLFunctions/RHTower/Heat/HeatLocalizedEnergyDissipation.lean).
@@ -187,11 +196,11 @@ The first question is whether a common finite arithmetic source can represent th
 
 For theta, the first question is quantitative control of the complete source's successor test near the rank–center transition, including the contribution of the remaining atoms. For the atomic Weil form, it is control of the actual coupled expression `C−B* A⁻¹B` beyond the known prefix regime. The two problems have different sources and profiles; theorems cannot be transferred between them without an exact comparison. A useful result must improve a range or a bound for the literal source. A new coordinate model or the formal Schur identity alone is already insufficient.
 
-**C. Source selection at the precision the endpoint actually needs.** The finite two-probe law proves that a plateau in one invariant can be resolved by a controlled perturbation. The infinite-pattern theorem proves that bounded spectral windows may nevertheless miss all mass. Investigate which joint responses are stable in the counting precision class, and what arithmetic identities control their resolution as conductors grow.
+**C. Source selection at the precision the endpoint actually needs.** The finite two-probe law proves that a plateau in one invariant can be resolved by a controlled perturbation. The infinite-pattern theorem proves that bounded spectral windows may nevertheless miss all mass. The gauge-stabilizer theorem supplies an exact counting boundary: prime-level gauge distance of order `√x log²x`. Investigate which arithmetic readings control this distance, rather than demanding detection of every finite flip.
 
-This question deliberately separates exact source reconstruction from the counting endpoint. A first useful result would be a quantitative selection or approximation statement for a strictly larger source family in its declared norm, with the escaped mass accounted for. Exact classification of a finite family is not a uniform arithmetic estimate; fixed tolerance cannot exclude remote flips. The existing theorems specify these failure modes rather than foreclosing the question.
+This question deliberately separates exact source reconstruction from the counting endpoint. A first useful result would be a quantitative estimate for an infinite source family, with the escaped mass accounted for and errors measured in the stated counting class. Such an estimate must be derived from independently proved source identities; the stabilizer classification does not itself prove RH. Fixed tolerance cannot exclude remote flips, but exclusion is unnecessary when their aggregate defect stays inside that class.
 
-**D. Preserve source boundary data before completing a representation.** The cofactor graph and Euler boundary quotient provide actual mathematical objects retaining data lost by simpler closures and compatible carriers. Their use should begin with a source-specific estimate on that retained data. The closed-range equivalence shows where an estimate is still owed; the signed Gram classification shows that merely adding fixed coordinates will not pay it. A useful first result would control a growing family or a prelimit remainder not determined by the already classified fixed limit.
+**D. Preserve source boundary data before completing a representation.** The cofactor graph and Euler boundary quotient provide actual mathematical objects retaining data lost by simpler closures and compatible carriers. Their use should begin with a source-specific estimate on that retained data. The closed-range equivalence shows where an estimate is still owed; the signed Gram classification shows that merely adding fixed coordinates will not pay it. Its forcing-covariance error bounds are uniform in the individual cofactor indices, so moving one index alone does not evade them. A useful first result would control an aggregate quadratic form or a prelimit remainder beyond these bounds, with the norm and number of directions explicit.
 
 These directions can be pursued alongside the mature shell comparison. They should not be collapsed into a single conjectural geometric object. Their common lesson is methodological and mathematical: preserve the relevant interaction, prove the transport law, then obtain an estimate with the quantifiers the endpoint uses.
 
