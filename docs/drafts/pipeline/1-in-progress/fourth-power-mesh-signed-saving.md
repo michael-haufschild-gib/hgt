@@ -109,3 +109,21 @@ The equivalent Möbius and `ψ` estimates remain valid research targets; assumin
 them would leave the required arithmetic input unproved. The inspected absolute
 bounds and identities do not establish `Θ ≤ 3/4`. No proof or refutation of the
 requested covariance bound has been obtained.
+
+## Inputs of `ℤ` absent from the Beurling models, tested as producers
+
+| # | Input | Where it enters | Verdict for the `3/4` strip |
+|---|---|---|---|
+| Z1 | Integer count `N(x) = x + O(1)` | distinguishes `ℤ` from the continuous models, which reach only `N − ρx → const` with zeros in `(1/2, 2/3)` (`overRegular_integers_do_not_constrain_zeros`) | positive integer residues force real zeros (Herglotz), so complex zeros need negative residues; a rational model with many poles near `0` and zeros interlaced cannot keep the prime density nonnegative for `β` near `1`, but non-interlaced designs are not excluded. Whether `O(1)` regularity constrains zeros is open; nothing in the corpus uses it |
+| Z2 | Functional equation (Poisson summation) | Beurling zetas have none | with `Λ ≥ 0` it does not force the line (`LambdaPositiveFunctionalEquationOffLine`); alone it allows zeros right of `1` (`davenportHeilbronnFakeCoeff`) |
+| Z3 | Exponential sums `Σ n^{−it}` (van der Corput, Vinogradov) | growth of `ζ` left of `1` | enters zero-free regions only through the `3-4-1` positivity at `σ ≥ 1`; `ζ` is unbounded on every line `σ ≤ 1`, so the region is always `1 − c/(log t)^a`; Lindelöf itself gives no strip |
+| Z4 | Dirichlet characters, large sieve, level of distribution | `TheShellsHaveLevelOfDistributionOneHalf` | bounds the trivial point only by the total over conductors; Bombieri–Vinogradov adds Siegel–Walfisz, i.e. log savings |
+| Z5 | Ramanujan sums / successor shells in the complete Weil form | `TheShellsRepayEveryConductor`, review Question 1 | the synthesis receiver is depth-independent: positivity at `(log N)^{1/4}` for `C²` profiles and `(log log N)^{1+ε}` for Denjoy–Carleman profiles is RH-complete (`riemannHypothesis_iff_atomicFamilies_nonneg_of_growthTwo`, `exists_dcProfile_loglog`); a resonant top-window test detects depth `δ` only once the `≍ log N/log c` on-line zeros within `1/log c` of its ordinate are paid, i.e. at `c ≫ (log N)^{1/δ}`, worse than synthesis. No strip-only level exists in this framework; the backlog dictionary `δ(θ)` has no mechanism |
+| Z6 | Finite-field cancellation (cubic and sextic Gauss sums over `ℤ[ω]`) through Eisenstein-series Gram matrices: the Chen–Gupta–Li / `tmp/hgt-openai-math/quasirh-source` detector | the only producer in the corpus's view: `OAI.riemannZeta_ne_zero_of_seven_eighths_lt_re` in `OAI/NumberTheory/DirichletL/Nonvanishing.lean`, a 2924-file Lean source with no `sorry`, `axiom`, or `native_decide`, no build files, frontier status `[E]` | its displayed exponent model has boundary `x/2 + gram/2 − (x/3 − 5/6 + L/6) + reflectedLoss/2`; with the unit Gram term alone the minimum is `29/36` at `x = 0`, `L = 1/6` (`unitGramBoundary_sharp_minimum`, `gramProfileBoundary_gt_three_quarters`). The `1/6` is the unit group of `ℤ[ω]` (sextic characters, slot lengths summing to `1/6`). Reaching `3/4` needs a new principal normalization, unit term, or reflected allowance, not sharper estimates of the displayed terms |
+
+Consequence for the statement on this card: by
+`zetaZeroAbscissa_le_iff_mobiusDivisorDilationPowerMeshCovariance_subpower` at `s = 2`, `b = 7/8`,
+the external theorem is equivalent to `mobiusDivisorDilationPowerMeshCovariance 4 J ≤ C J^{4+ε}`.
+The `J²` saving over the envelope `J⁵` splits as one power delivered by the detector, pending its
+audit, and one power that is exactly the gap `7/8 → 3/4`, below the detector's model floor `29/36`
+(mesh exponent `31/9`).

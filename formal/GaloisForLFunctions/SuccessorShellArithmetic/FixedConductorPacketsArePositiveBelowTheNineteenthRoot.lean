@@ -57,7 +57,7 @@ private theorem tendsto_horizon_tail (α : ℝ) :
     rw [← Real.rpow_natCast, ← Real.rpow_mul hL.le]
     push_cast
     ring_nf
-  rw [hpow, Real.rpow_add hL, Real.rpow_one, Real.rpow_one]
+  rw [hpow, Real.rpow_add hL, Real.rpow_one]
   ring
 
 /-- **The scaled residual vanishes below the nineteenth root**: `c⁷‖(W − E_m)u_m‖ → 0` along
@@ -124,6 +124,7 @@ theorem tendsto_scaled_packet_entry_error_of_lt_one_nineteenth {α : ℝ}
     apply (tendsto_scaled_residual_norm_of_lt_one_nineteenth hα0 hα m.property).congr
     intro N
     rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (pow_nonneg (packetOverlap_nonneg α N) 7)]
+    rfl
   have hi := tendsto_horizon_inner_zero_of_norm (fun N => c N ^ 7 • r N)
     (fun N => normalizedRamanujanHorizonVector l N) hres
     (tendsto_normalizedRamanujanHorizonVector_norm l.property)

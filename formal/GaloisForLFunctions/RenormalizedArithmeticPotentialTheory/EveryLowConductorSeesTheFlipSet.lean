@@ -119,7 +119,7 @@ theorem sum_blockConductors {Q : ℕ} {M : Finset ℕ} (hM : ∀ m ∈ M, 0 < m 
   rw [blockConductors, Finset.sum_image (mul_injOn_coprime_divisors hM)]
   exact sum_congr rfl fun x hx => by rw [blockCoeff_mul hM a β hx]
 
-theorem blockConductors_pos {Q : ℕ} (hQ : 0 < Q) {M : Finset ℕ}
+theorem blockConductors_pos {Q : ℕ} {M : Finset ℕ}
     (hM : ∀ m ∈ M, 0 < m ∧ m.Coprime Q) : ∀ t ∈ blockConductors Q M, 0 < t := by
   intro t ht
   obtain ⟨x, hx, rfl⟩ := mem_image.mp ht
@@ -150,7 +150,7 @@ section FlipEnergy
 variable {S : Finset ℕ}
 
 /-- Every flipped lag is prime to every conductor prime to `Q`. -/
-theorem coprime_of_twistDefect_finiteFlip_ne_zero (hS : ∀ p ∈ S, p.Prime) {k : ℕ}
+theorem coprime_of_twistDefect_finiteFlip_ne_zero {k : ℕ}
     (hk : twistDefect (finiteFlipWeight S) k ≠ 0) {m : ℕ} (hm : m.Coprime (flipSetModulus S)) :
     k.Coprime m := by
   rw [twistDefect_finiteFlip] at hk
@@ -182,7 +182,7 @@ theorem twistLimitEnergy_block_combination (hS : ∀ p ∈ S, p.Prime) {M : Fins
   set Q := flipSetModulus S
   have hQ : 0 < Q := flipSetModulus_pos hS
   set T := blockConductors Q M
-  have hT := blockConductors_pos hQ hM
+  have hT := blockConductors_pos hM
   set U := packetProfile M a
   have hMpos : ∀ m ∈ M, 0 < m := fun m hm => (hM m hm).1
   have hPU : 0 < packetPeriod M := packetPeriod_pos hMpos
@@ -219,7 +219,7 @@ theorem twistLimitEnergy_block_combination (hS : ∀ p ∈ S, p.Prime) {M : Fins
     unfold U packetProfile
     exact sum_congr rfl fun m hm => by
       rw [normalizedRamanujanMode_coprime_mul (hM m hm).1
-        (coprime_of_twistDefect_finiteFlip_ne_zero hS hk (hM m hm).2)]
+        (coprime_of_twistDefect_finiteFlip_ne_zero hk (hM m hm).2)]
   have hprof : ∀ n, packetProfile T (blockCoeff Q M a β) n = U n * flipSetTrial S n := fun n => by
     rw [packetProfile_blockCoeff hM a β n, hβ]
   have hG : Function.Periodic (fun n => flipSetTrial S n * flipSetTrial S (k * n)) Q := by
@@ -311,7 +311,8 @@ theorem eventually_quadratic_neg (C : ℕ → K → K → ℝ) (e : K → ℝ) (
   filter_upwards [hev] with N hN a ha
   have hS : 0 < ∑ k, a k ^ 2 := by
     obtain ⟨k, hk⟩ := Function.ne_iff.mp ha
-    exact lt_of_lt_of_le (by positivity) (single_le_sum (fun l _ => sq_nonneg (a l)) (mem_univ k))
+    exact lt_of_lt_of_le ((pow_pos (abs_pos.mpr hk) 2).trans_eq (sq_abs _))
+      (single_le_sum (fun l _ => sq_nonneg (a l)) (mem_univ k))
   have hdiag : ∑ k, ∑ l, a k * a l * (if k = l then e k else 0) ≤ -μ * ∑ k, a k ^ 2 := by
     simp only [mul_ite, mul_zero, sum_ite_eq, mem_univ, if_true, mul_sum]
     refine sum_le_sum fun k _ => ?_
@@ -349,6 +350,7 @@ theorem eventually_quadratic_neg (C : ℕ → K → K → ℝ) (e : K → ℝ) (
   rw [hsplit]
   nlinarith
 
+omit [DecidableEq K] in
 /-- **Min–max.** A linear image of `ℝ^K` on which a symmetric matrix is negative definite forces at
 least `#K` negative eigenvalues. -/
 theorem card_le_negEigenvalues {I : Type*} [Fintype I] [DecidableEq I] {A : Matrix I I ℝ}
@@ -370,7 +372,7 @@ theorem card_le_negEigenvalues {I : Type*} [Fintype I] [DecidableEq I] {A : Matr
     have hlow : ∀ i, hA.eigenvalues i < 0 → ⟪syn a, b i⟫ = 0 := fun i hi =>
       congrFun (LinearMap.mem_ker.mp ha) ⟨i, mem_filter.mpr ⟨mem_univ _, hi⟩⟩
     have hge : 0 ≤ ⟪Matrix.toEuclideanLin A (syn a), syn a⟫ := by
-      rw [HTGeometry.hermitianEnergy_eq_sum]
+      rw [HTGeometry.hermitianEnergy_eq_sum hA]
       refine sum_nonneg fun i _ => ?_
       by_cases hi : hA.eigenvalues i < 0
       · rw [hlow i hi]; simp
@@ -417,12 +419,14 @@ theorem eventually_flip_negative_eigenvalues (hφ : ContDiff ℝ 2 φ)
   · exact Eventually.of_forall fun N => by simp [hMe]
   set Q := flipSetModulus S
   have hQ : 0 < Q := flipSetModulus_pos hS
-  have hT := blockConductors_pos hQ hMc
+  have hT := blockConductors_pos hMc
   have hlam := summable_abs_twistDefect_finiteFlip hS
-  set W : ℕ → _ := fun N => Matrix.toEuclideanLin (twistedCompleteWeilMatrix (finiteFlipWeight S) φ c N)
   set F : ℕ → (M → ℝ) → ℝ := fun N a =>
-    ⟪W N (∑ i : M, a i • blockVector S β N i), ∑ i : M, a i • blockVector S β N i⟫
-  set C : ℕ → M → M → ℝ := fun N i j => ⟪W N (blockVector S β N i), blockVector S β N j⟫
+    ⟪Matrix.toEuclideanLin (twistedCompleteWeilMatrix (finiteFlipWeight S) φ c N)
+      (∑ i : M, a i • blockVector S β N i), ∑ i : M, a i • blockVector S β N i⟫
+  set C : ℕ → M → M → ℝ := fun N i j =>
+    ⟪Matrix.toEuclideanLin (twistedCompleteWeilMatrix (finiteFlipWeight S) φ c N)
+      (blockVector S β N i), blockVector S β N j⟫
   -- every coefficient vector has the diagonal limit
   have hF : ∀ a : M → ℝ, Tendsto (fun N => F N a) atTop
       (𝓝 (∑ i : M, a i ^ 2 * blockEnergy φ c S β i)) := by
@@ -435,7 +439,7 @@ theorem eventually_flip_negative_eigenvalues (hφ : ContDiff ℝ 2 φ)
       exact sum_congr rfl fun i _ => by simp only [subtypeCoeff, dif_pos i.property]
     rw [hval] at h
     refine h.congr fun N => ?_
-    simp only [F, W]
+    simp only [F]
     rw [sum_blockVector_eq hMc β N a]
   -- the form in coordinates
   have hFC : ∀ N a, F N a = ∑ i, ∑ j, a i * a j * C N i j := by
@@ -456,28 +460,31 @@ theorem eventually_flip_negative_eigenvalues (hφ : ContDiff ℝ 2 φ)
   have hC : ∀ i j : M, Tendsto (fun N => C N i j) atTop
       (𝓝 (if i = j then blockEnergy φ c S β i else 0)) := by
     intro i j
+    have hone : ∀ l : M, ∑ k : M, (Pi.single l (1 : ℝ) : M → ℝ) k ^ 2 * blockEnergy φ c S β k =
+        blockEnergy φ c S β l := fun l => by
+      rw [Finset.sum_eq_single l (fun k _ hk => by rw [Pi.single_eq_of_ne hk]; ring)
+        (fun h => absurd (mem_univ l) h), Pi.single_eq_same]
+      ring
     by_cases hij : i = j
     · subst hij
       rw [if_pos rfl]
       have h := hF (Pi.single i 1)
-      simp only [Pi.single_apply, ite_pow, one_pow, zero_pow two_ne_zero, ite_mul, one_mul, zero_mul,
-        sum_ite_eq', mem_univ, if_true] at h
+      rw [hone] at h
       exact h.congr fun N => hsingle N i
     · rw [if_neg hij]
       have h2 := hF (Pi.single i 1 + Pi.single j 1)
       have hi := hF (Pi.single i 1)
       have hj := hF (Pi.single j 1)
-      have hval : ∀ k : M, (Pi.single i (1 : ℝ) + Pi.single j 1 : M → ℝ) k ^ 2 =
-          Pi.single i (1 : ℝ) k + Pi.single j 1 k := fun k => by
-        by_cases hki : k = i
-        · subst hki; simp [Pi.single_apply, hij]
-        · by_cases hkj : k = j
-          · subst hkj; simp [Pi.single_apply, hki]
-          · simp [Pi.single_apply, hki, hkj]
-      have hsq : ∀ (l : M), ∀ k : M, (Pi.single l (1 : ℝ) : M → ℝ) k ^ 2 = Pi.single l 1 k :=
-        fun l k => by by_cases h : k = l <;> simp [Pi.single_apply, h]
-      simp only [hval, hsq, add_mul, sum_add_distrib, Pi.single_apply, ite_mul, one_mul, zero_mul,
-        sum_ite_eq', mem_univ, if_true] at h2 hi hj
+      rw [hone] at hi hj
+      have htwo : ∑ k : M, (Pi.single i (1 : ℝ) + Pi.single j (1 : ℝ) : M → ℝ) k ^ 2 *
+          blockEnergy φ c S β k = blockEnergy φ c S β i + blockEnergy φ c S β j := by
+        rw [Finset.sum_eq_add i j hij (fun k _ hk => by
+            rw [Pi.add_apply, Pi.single_eq_of_ne hk.1, Pi.single_eq_of_ne hk.2]; ring)
+          (fun h => absurd (mem_univ i) h) (fun h => absurd (mem_univ j) h)]
+        rw [Pi.add_apply, Pi.add_apply, Pi.single_eq_same, Pi.single_eq_of_ne hij,
+          Pi.single_eq_same, Pi.single_eq_of_ne (Ne.symm hij)]
+        ring
+      rw [htwo] at h2
       have hlim := ((h2.sub hi).sub hj).div_const 2
       rw [show (blockEnergy φ c S β i + blockEnergy φ c S β j - blockEnergy φ c S β i -
         blockEnergy φ c S β j) / 2 = 0 by ring] at hlim
