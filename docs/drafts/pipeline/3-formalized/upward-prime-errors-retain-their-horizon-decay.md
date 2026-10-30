@@ -1,8 +1,8 @@
 # Upward prime errors retain their horizon decay
 
 - **ID:** upward-prime-horizon-decay
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** For each positive conductor, the actual upward source has normalized squared residual `≤C_m(c^5/log N+c^10(log N/N)^2)` when `c≥1`, `log N≥1`, and `N≥4(exp(1)+3)^2 c²`.
 
 ## Paper proof
@@ -18,3 +18,14 @@ The actual strip has `B+1≤(exp(1)+2)c`. Apply `(a+b+d)²≤3(a²+b²+d²)` and
 ## Remaining route gap
 
 This strengthens the actual source estimate. Its conductor constants still need uniform control on a family that captures negative eigenvectors; the complete signed residual and physical separated-bump synthesis remain necessary.
+
+## Lean proof
+
+`CriticalArithmeticCorrelationTheory/UpwardPrimeErrorsRetainTheirHorizonDecay.lean`:
+
+- `exists_linearizedUpwardCoefficient_boundary_uniform_harmonic_budget`.
+- `exists_logarithmicUpwardCoefficient_horizon_harmonic_bound`.
+- `exists_actualUpwardRowError_horizon_harmonic_bound`.
+- `exists_normalizedUpwardPrimeResidual_horizon_harmonic_bound`.
+
+Focused check passes without warnings; all four transitive audits use only `propext`, `Classical.choice`, and `Quot.sound`.

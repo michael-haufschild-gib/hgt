@@ -135,7 +135,7 @@ theorem exists_linearizedUpwardCoefficient_boundary_uniform_harmonic_budget {φ 
         congr 1
         · field_simp
         · exact sum_congr rfl fun n _ => by ring
-      _ ≤ _ := add_le_add_left (mul_le_mul_of_nonneg_left (htail.trans hlog) (sq_nonneg _)) _
+      _ ≤ _ := add_le_add le_rfl (mul_le_mul_of_nonneg_left (htail.trans hlog) (sq_nonneg _))
   have h45 := mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hb (by norm_num : 4 ≤ 5))
     (show 0 ≤ 2 * D ^ 2 by positivity)
   change _ ≤ (10 * D ^ 2) * b ^ 5
@@ -330,10 +330,21 @@ theorem exists_actualUpwardRowError_horizon_harmonic_bound {φ : ℝ → ℝ}
   rw [← mul_sum, sum_add_distrib, sum_add_distrib, mul_div_assoc, add_div, add_div] at hfinal
   have hrate₁ : 0 ≤ c ^ 5 / Real.log N := by positivity
   have hrate₂ : 0 ≤ c ^ 10 * (Real.log (N : ℝ) / N) ^ 2 := by positivity
-  have hcross₁ := mul_nonneg (show 0 ≤ 3 * A + 1 by positivity) hrate₁
-  have hcross₂ := mul_nonneg (show 0 ≤ 3 * B₀ + 1 by positivity) hrate₂
-  dsimp only [K, B₀] at hcross₂ ⊢
-  nlinarith only [hfinal, ha', hb', hr', hcross₁, hcross₂]
+  have hmain := hfinal.trans (mul_le_mul_of_nonneg_left
+    (add_le_add (add_le_add ha' hb') hr') (by norm_num : (0 : ℝ) ≤ 3))
+  have hid : 3 * (A * c ^ 10 * (Real.log (N : ℝ) / N) ^ 2 +
+      Cb * d ^ 5 * c ^ 5 / Real.log N + Cd * c ^ 5 / Real.log N) =
+      3 * A * (c ^ 10 * (Real.log (N : ℝ) / N) ^ 2) +
+        3 * B₀ * (c ^ 5 / Real.log N) := by dsimp only [B₀]; ring
+  rw [hid] at hmain
+  have hAK : 3 * A ≤ K := by dsimp only [K]; linarith only [hB₀]
+  have hBK : 3 * B₀ ≤ K := by dsimp only [K]; linarith only [hA]
+  calc
+    _ ≤ 3 * A * (c ^ 10 * (Real.log (N : ℝ) / N) ^ 2) +
+        3 * B₀ * (c ^ 5 / Real.log N) := hmain
+    _ ≤ K * (c ^ 10 * (Real.log (N : ℝ) / N) ^ 2) + K * (c ^ 5 / Real.log N) :=
+      add_le_add (mul_le_mul_of_nonneg_right hAK hrate₂) (mul_le_mul_of_nonneg_right hBK hrate₁)
+    _ = _ := by ring
 
 /-- The actual upward vector has the same two horizon decay rates. -/
 theorem exists_normalizedUpwardPrimeResidual_horizon_harmonic_bound {φ : ℝ → ℝ}
