@@ -66,6 +66,13 @@ $$D-20B^{\mathsf T}B\preceq D-B^{\mathsf T}A^{-1}B\preceq D.$$
 The constant remains fixed at $(c,M,N)=(3/2,2K,3K)$.
 Lean: `WeilPrefixPayment`.
 
+For the complete tilted-spline matrix, the sharp asymptotic inverse cost is
+$E_1(c)^{-1}$, where $E_1(c)>0$ is the completed pole energy. Every larger
+constant eventually pays all inverse directions; every smaller positive
+constant is eventually violated by a unit eigenvector. One finite cost and
+one horizon work uniformly for every bounded interval $0<c\le K$.
+Lean: `WeilInverseCost`.
+
 The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
 Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.
 The energy flux proves zero exclusion throughout this joint argument-order

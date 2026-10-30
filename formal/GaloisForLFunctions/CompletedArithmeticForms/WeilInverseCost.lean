@@ -56,18 +56,18 @@ private theorem inverse_eigenvector_unit_cost {I : Type*} [Fintype I] [Decidable
     {A : Matrix I I ℝ} (hA : A.PosDef) (i : I) :
     ∃ b : I → ℝ, b ⬝ᵥ b = 1 ∧ b ⬝ᵥ A⁻¹ *ᵥ b = (hA.isHermitian.eigenvalues i)⁻¹ := by
   let b : I → ℝ := hA.isHermitian.eigenvectorBasis i
-  let λ := hA.isHermitian.eigenvalues i
-  have hλ : 0 < λ := hA.isHermitian.posDef_iff_eigenvalues_pos.mp hA i
+  let lam := hA.isHermitian.eigenvalues i
+  have hlam : 0 < lam := hA.isHermitian.posDef_iff_eigenvalues_pos.mp hA i
   have hb : b ⬝ᵥ b = 1 := by
     have h := (orthonormal_iff_ite.mp hA.isHermitian.eigenvectorBasis.orthonormal) i i
     simpa only [ite_true, EuclideanSpace.inner_eq_star_dotProduct, star_trivial] using h
-  have heig : A *ᵥ b = λ • b := hA.isHermitian.mulVec_eigenvectorBasis i
-  have hscale : λ • (A⁻¹ *ᵥ b) = b := by
+  have heig : A *ᵥ b = lam • b := hA.isHermitian.mulVec_eigenvectorBasis i
+  have hscale : lam • (A⁻¹ *ᵥ b) = b := by
     rw [← mulVec_smul, ← heig, mulVec_mulVec,
       Matrix.nonsing_inv_mul A (isUnit_iff_ne_zero.mpr hA.det_pos.ne'), one_mulVec]
-  have hinv : A⁻¹ *ᵥ b = λ⁻¹ • b := by
+  have hinv : A⁻¹ *ᵥ b = lam⁻¹ • b := by
     calc
-      _ = λ⁻¹ • (λ • (A⁻¹ *ᵥ b)) := by rw [smul_smul, inv_mul_cancel₀ hλ.ne', one_smul]
+      _ = lam⁻¹ • (lam • (A⁻¹ *ᵥ b)) := by rw [smul_smul, inv_mul_cancel₀ hlam.ne', one_smul]
       _ = _ := by rw [hscale]
   refine ⟨b, hb, ?_⟩
   rw [hinv, dotProduct_smul, smul_eq_mul, hb, mul_one]
@@ -116,12 +116,12 @@ theorem eventually_tiltedWeil_inverse_cost_gt {c C : ℝ} (hc : 0 < c) (hC0 : 0 
   obtain ⟨b, hb, he⟩ := inverse_eigenvector_unit_cost hpos i
   refine ⟨b, hb, ?_⟩
   rw [he]
-  have hλ : hpos.isHermitian.eigenvalues i < C⁻¹ := by
+  have hlam : hpos.isHermitian.eigenvalues i < C⁻¹ := by
     have hu := (abs_lt.mp hi).2
     change hpos.isHermitian.eigenvalues i - completedConductorEnergy tiltedUnitSpline c 1 <
       (C⁻¹ - completedConductorEnergy tiltedUnitSpline c 1) / 2 at hu
     linarith only [hu, hgap]
-  exact (lt_inv_comm₀ hC0 (hpos.isHermitian.posDef_iff_eigenvalues_pos.mp hpos i)).mpr hλ
+  exact (lt_inv_comm₀ hC0 (hpos.isHermitian.posDef_iff_eigenvalues_pos.mp hpos i)).mpr hlam
 
 /-- Bounded moving overlap has one inverse cost and one horizon, for the literal complete source. -/
 theorem exists_tiltedWeil_uniform_boundedOverlap_inverse_cost (K : ℝ) :
@@ -139,7 +139,9 @@ theorem exists_tiltedWeil_uniform_boundedOverlap_inverse_cost (K : ℝ) :
   refine ⟨?_, inverseQuadratic_le_of_squareMass_bound hpos (inv_pos.mpr he)
     (squareMass_le_of_eigenvalue_floor hA (inv_pos.mpr he) ?_) b⟩
   · simpa only [star_trivial] using hpos.inv.posSemidef.dotProduct_mulVec_nonneg b
-  · simpa only [inv_inv] using hN c hc hcK
+  · intro i
+    rw [inv_inv]
+    exact hN c hc hcK i
 
 #print axioms eventually_tiltedWeil_inverse_cost_le
 #print axioms eventually_tiltedWeil_inverse_cost_gt

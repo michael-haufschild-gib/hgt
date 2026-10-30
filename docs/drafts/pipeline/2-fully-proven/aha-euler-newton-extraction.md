@@ -45,6 +45,34 @@ and subtraction preserve ideal membership. Consequently a word of `k`
 shifted Euler factors sends the `(m+k)`th point-ideal power into its
 `m`th power. This is the precise order loss needed by AHA-JETS.
 
+## Arithmetic consequence [PROVED HERE]
+
+For an auxiliary supported on `0<n<2^(dr)`, membership in the `r`th
+point-ideal power at every torsion point forces every Euler word of length
+below `r` to evaluate to zero. The extraction identity then kills every
+Newton coefficient of order below `r`; its scalar normalization is nonzero
+over `ℂ`. `arithmeticNewton_vanishing_iff` forces every original coefficient
+to vanish. Thus a nonzero auxiliary with full algebraic multiplicity `r`
+must have support reaching `2^(dr)`.
+
+For polynomials, full analytic mixed derivatives below order `r` vanish
+exactly when all centered coefficients of total degree below `r` vanish:
+the derivative is that coefficient times the nonzero multi-index factorial.
+Translation identifies this coefficient condition with the `r`th power of
+the origin ideal, hence with the point-ideal power before translation.
+Coordinate relabeling preserves ideal powers, so the same criterion holds
+on the finite prime-coordinate space. The matching boundary example is a
+separate claim.
+
+## Boundary [PROVED HERE]
+
+The integer polynomial `(X^d−1)^r` is monic of degree `dr`. Under the
+prime-two coordinate, its top frequency is `2^(dr)`. Every `d`th root of
+unity is a simple root of `X^d−1` in characteristic zero, so it has exact
+multiplicity `r` in the boundary polynomial. In any number of coordinates,
+`(X_i^d−1)^r` belongs to the `r`th point-ideal power at every torsion point.
+Thus the support threshold is attained; the argument gives no height gain.
+
 ## Scope
 
 The ingredients are classical finite Fourier inversion, falling factorials,

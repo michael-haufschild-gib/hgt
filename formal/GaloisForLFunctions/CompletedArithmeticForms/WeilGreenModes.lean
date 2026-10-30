@@ -21,13 +21,13 @@ open CriticalArithmeticCorrelationTheory RenormalizedArithmeticPotentialTheory
 
 /-- The complete coercivity reserve pays the inverse of a norm quasimode. -/
 theorem norm_inverse_quasimode_residual_le {I : Type*} [Fintype I] [DecidableEq I]
-    {A : Matrix I I ℝ} (hA : A.PosDef) {e λ : ℝ} (he : 0 < e) (hλ : 0 < λ)
+    {A : Matrix I I ℝ} (hA : A.PosDef) {e lam : ℝ} (he : 0 < e) (hlam : 0 < lam)
     (hfloor : ∀ x : EuclideanSpace ℝ I,
       e * ‖x‖ ^ 2 ≤ ⟪Matrix.toEuclideanLin A x, x⟫)
     (v : EuclideanSpace ℝ I) :
-    ‖Matrix.toEuclideanLin A⁻¹ v - λ⁻¹ • v‖ ≤
-      (e * λ)⁻¹ * ‖Matrix.toEuclideanLin A v - λ • v‖ := by
-  let w := Matrix.toEuclideanLin A⁻¹ v - λ⁻¹ • v
+    ‖Matrix.toEuclideanLin A⁻¹ v - lam⁻¹ • v‖ ≤
+      (e * lam)⁻¹ * ‖Matrix.toEuclideanLin A v - lam • v‖ := by
+  let w := Matrix.toEuclideanLin A⁻¹ v - lam⁻¹ • v
   have hinv : Matrix.toEuclideanLin A (Matrix.toEuclideanLin A⁻¹ v) = v := by
     apply PiLp.ext
     change ∀ i, (A *ᵥ (A⁻¹ *ᵥ v)) i = v i
@@ -35,19 +35,19 @@ theorem norm_inverse_quasimode_residual_le {I : Type*} [Fintype I] [DecidableEq 
       (isUnit_iff_ne_zero.mpr hA.det_pos.ne'), one_mulVec]
     exact fun _ => rfl
   have hw : Matrix.toEuclideanLin A w =
-      -(λ⁻¹ • (Matrix.toEuclideanLin A v - λ • v)) := by
+      -(lam⁻¹ • (Matrix.toEuclideanLin A v - lam • v)) := by
     dsimp only [w]
     rw [map_sub, map_smul, hinv, smul_sub, smul_smul,
-      inv_mul_cancel₀ hλ.ne', one_smul, neg_sub]
+      inv_mul_cancel₀ hlam.ne', one_smul, neg_sub]
   let L := (Matrix.toEuclideanLin A).toContinuousLinearMap
   have hb : e * ‖w‖ ≤ ‖Matrix.toEuclideanLin A w‖ :=
     ContinuousLinearMap.norm_le_of_reCoercive (S := L) hfloor w
-  rw [hw, norm_neg, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hλ)] at hb
+  rw [hw, norm_neg, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hlam)] at hb
   calc
-    _ ≤ (λ⁻¹ * ‖Matrix.toEuclideanLin A v - λ • v‖) / e := by
+    _ ≤ (lam⁻¹ * ‖Matrix.toEuclideanLin A v - lam • v‖) / e := by
       rw [le_div_iff₀ he]
       simpa only [mul_comm] using hb
-    _ = _ := by ring
+    _ = _ := by rw [_root_.mul_inv_rev]; ring
 
 /-- Every positive completed conductor energy is paid by the actual pole floor. -/
 theorem tiltedWeilConductorEnergy_pos {c : ℝ} (hc : 0 < c) {m : ℕ} (hm : 0 < m) :
@@ -65,7 +65,7 @@ theorem tendsto_tiltedWeil_inverse_ramanujan_residual_norm {c : ℝ} (hc : 0 < c
         (completedConductorEnergy tiltedUnitSpline c m)⁻¹ •
           normalizedRamanujanHorizonVector m N‖) atTop (𝓝 0) := by
   obtain ⟨e, he, hfloor⟩ := exists_tiltedUnitSpline_completeWeilEnergy_uniform_boundedOverlap_floor c
-  have hλ := tiltedWeilConductorEnergy_pos hc hm
+  have hlam := tiltedWeilConductorEnergy_pos hc hm
   have hres := tendsto_completeWeilMatrix_completedConductor_residual_norm
     contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc hm
   have hmajor := hres.const_mul ((e * completedConductorEnergy tiltedUnitSpline c m)⁻¹)
@@ -73,7 +73,7 @@ theorem tendsto_tiltedWeil_inverse_ramanujan_residual_norm {c : ℝ} (hc : 0 < c
   apply squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ hmajor
   filter_upwards [hfloor, eventually_tiltedUnitSpline_completeWeilMatrix_posDef hc]
     with N hN hpos
-  exact norm_inverse_quasimode_residual_le hpos he hλ (hN c hc le_rfl)
+  exact norm_inverse_quasimode_residual_le hpos he hlam (hN c hc le_rfl)
     (normalizedRamanujanHorizonVector m N)
 
 /-- Every mixed Green entry has its exact arithmetic reciprocal-energy limit. -/
@@ -120,11 +120,10 @@ theorem tendsto_tiltedWeil_inverse_packet_inner {c : ℝ} (hc : 0 < c)
   refine h.congr fun N => ?_
   simp only [normalizedRamanujanPacketVector, map_sum, map_smul, sum_inner, inner_sum,
     real_inner_smul_left, real_inner_smul_right]
-  rw [sum_comm]
-  apply sum_congr rfl
-  intro l _
   apply sum_congr rfl
   intro m _
+  apply sum_congr rfl
+  intro l _
   ring
 
 #print axioms norm_inverse_quasimode_residual_le

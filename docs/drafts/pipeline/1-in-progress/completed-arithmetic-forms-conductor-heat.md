@@ -1,7 +1,7 @@
 # The heat threshold of completed conductor energies
 
-For fixed overlap $c>0$, let $E_m(c)$ be the completed tilted-spline conductor
-energy, including the pole and shell correction. The target is the exact domain
+For fixed overlap $c>0$, let $E_m(c)$ be the completed conductor energy of a
+profile $\phi$, including the pole and shell correction. The exact heat domain is
 \[
 \sum_{m\ge1}e^{-\beta E_m(c)}<\infty\quad\Longleftrightarrow\quad\beta>1.
 \]
@@ -21,9 +21,15 @@ For prime $p$, $\operatorname{tameDifferent}(p)=\log p/(p-1)\le1$, hence
 $E_p\le\log p+A+K+1$.
 
 The upper heat estimate is a constant multiple of the convergent $\beta$-series.
-For $\beta\le1$, positivity of the tilted-spline energies and the prime ceiling
-give a constant multiple of $1/p$ below the prime heat weights. Divergence of
-the prime reciprocal series gives the sharp boundary, including $\beta=1$.
+For $0<\beta\le1$, the prime ceiling and $\beta\log p\le\log p$ give a constant
+multiple of $1/p$ below the prime heat weights. Divergence of the prime reciprocal
+series gives the sharp boundary, including $\beta=1$. For $\beta\le0$, properness
+$E_m\to\infty$ prevents the heat weights from tending to zero. The threshold
+is independent of the profile and the positive overlap.
+
+For the actual tilted spline, $E_m>0$. The inequality
+$E_m^k/k!\le e^{E_m}$ and divergence of the heat series at $\beta=1$ imply
+$\sum_m E_m^{-k}=\infty$ for every integer $k\ge0$.
 
 This concerns the infinite conductor model identified by fixed arithmetic
 packets. Convergence of finite complete-Weil heat traces additionally requires

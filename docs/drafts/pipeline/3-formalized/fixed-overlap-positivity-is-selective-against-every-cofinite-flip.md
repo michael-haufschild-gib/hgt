@@ -1,8 +1,8 @@
 # Fixed-overlap positivity is selective against every cofinite flip
 
 - **ID:** fixed-overlap-positivity-is-selective-against-every-cofinite-flip
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** route-obstacles (review-2910) table: SMAP/ACP missing "a selector beyond finite flips";
   walls-ledger 1.18 (gauge selection); TM `LiouvilleTwinSelectivity`; ACP
   `CofinitePrimeFlipsHaveZeroGap` (`cofiniteFlip_harmonicSum_abs_le`); C7.
@@ -25,5 +25,7 @@ Markov bound and the Robin–Euler limit are unchanged. Cofinite flips: `cofinit
 `|Σ λω_F(n)/n| ≤ 2/c_F` (ACP). ζ side: C7 (`liouvilleSelector_selective`).
 
 ## Log
-- 2026-10-30 — paper proof; Lean: `TM/EveryPoleFreeSignTwinBreaksAboveTheRobinEulerRatio.lean`,
-  `CACT/FixedOverlapPositivityIsSelectiveAgainstEveryCofiniteFlip.lean` (in progress).
+- 2026-10-30 — paper proof and Lean: `TM/EveryPoleFreeSignTwinBreaksAboveTheRobinEulerRatio.lean`
+  (`eventually_signTwin_weilQuadTw_neg_of_gt_robinEuler`, `eventually_cofiniteFlip_weilQuadTw_neg_of_gt_robinEuler`),
+  `CACT/FixedOverlapPositivityIsSelectiveAgainstEveryCofiniteFlip.lean`
+  (`liouvilleSelector_selective_of_signGauge`, `liouvilleSelector_selective_of_cofiniteFlip`); axioms standard.

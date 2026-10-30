@@ -43,3 +43,32 @@ positive finite-packet range along an explicit unbounded overlap schedule.
 Fixed-packet positivity does not control all growing horizon directions.
 Full eventual positivity at $c_N=2(\log N)^\alpha$, $\alpha>1/4$, remains
 the separate RH-equivalent endpoint.
+
+The sharper upward-source target retains
+$c^{10}(\log N/N)^2+c^6/\sqrt{\log N}$ in squared norm. Combining all eight
+terms and dividing by the squared conductor floor would give
+\[
+\frac{\|A_{c,N}r_{m,N}-E_m(c)r_{m,N}\|^2}{E_m(c)^2}
+\le C_m\left[c^{24}(\log N/N)^2+c^{20}/\sqrt{\log N}\right].
+\]
+Both terms vanish for $c_N=(\log N)^\alpha$, $0<\alpha<1/40$.
+This is a relative-quasimode target, not yet a proved source theorem.
+Finite-packet positivity also requires the Gram error after multiplication
+by the varying energies. The quadratic energy bound
+$|E_m(c)|\le C_m c^2$ reduces that separate payment to a quantitative
+Gram estimate against the $c^{-7}$ floor. A fixed-parameter Gram limit
+alone does not supply it.
+
+The literal Ramanujan Gram has the conductor-explicit bound
+\[
+\left|\sum_{n\le N}r_m(n)r_l(n)-\delta_{ml}H_N\right|\le2ml,
+\qquad |H_N-\log N|\le1.
+\]
+For a finite conductor family $S$ and arbitrary real coefficients $b_m$,
+the logarithmic Gram discrepancy is at most
+$(1+2\sum_{m\in S}m^2)\sum_{m\in S}b_m^2$.
+Source: `SignedArithmeticHodgeTheory/GrowingRamanujanFamiliesHaveAUniformGramBudget`.
+Combined with the quadratic energy ceiling, its scaled mixed-entry payment
+is $O_S(c^9/\log N)$, which vanishes throughout $0<\alpha<1/40$.
+
+Lean residual target: `CompletedArithmeticForms/WeilPolynomialResidual.lean`.

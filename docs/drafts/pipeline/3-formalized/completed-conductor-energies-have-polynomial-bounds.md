@@ -1,7 +1,7 @@
 # Completed conductor energies have polynomial bounds
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** fixed-conductor-packets-remain-positive-at-growing-overlap
 
 ## Statement and proof
@@ -16,5 +16,8 @@ This controls amplification of quantitative Gram errors.
 
 ## Lean status
 
-Formalization follows directly. Supporting energy estimate;
-no separate contribution count.
+`CompletedConductorEnergiesHavePolynomialBounds.lean` proves both the
+conductor-uniform shell bound and each fixed conductor energy bound.
+Final direct Lean check passed; both transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`. Umbrella wired.
+Supporting estimate; no separate contribution count.

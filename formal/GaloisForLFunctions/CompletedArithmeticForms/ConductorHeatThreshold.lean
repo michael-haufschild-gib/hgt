@@ -100,15 +100,24 @@ theorem summable_completedConductorHeatWeight (φ : ℝ → ℝ) {c β : ℝ}
   rw [Real.rpow_def_of_pos hn, ← Real.exp_add]
   exact Real.exp_le_exp.mpr hb
 
-/-- The actual positive spline conductor spectrum has the sharp heat threshold `β = 1`. -/
-theorem summable_tiltedWeil_conductor_heat_iff {c β : ℝ} (hc : 0 < c) :
-    Summable (completedConductorHeatWeight tiltedUnitSpline c β) ↔ 1 < β := by
-  refine ⟨?_, summable_completedConductorHeatWeight tiltedUnitSpline hc⟩
+/-- Finite shell completion preserves the exact heat threshold at every positive overlap. -/
+theorem summable_completedConductorHeatWeight_iff (φ : ℝ → ℝ) {c β : ℝ} (hc : 0 < c) :
+    Summable (completedConductorHeatWeight φ c β) ↔ 1 < β := by
+  refine ⟨?_, summable_completedConductorHeatWeight φ hc⟩
   intro hsum
   by_contra hβ
   have hβle : β ≤ 1 := le_of_not_gt hβ
-  let U := completeWeilSelfFinitePart tiltedUnitSpline c +
-    completedShellCorrectionBudget tiltedUnitSpline c + 1
+  have hβ0 : 0 < β := by
+    by_contra h
+    have hβneg : 0 ≤ -β := neg_nonneg.mpr (le_of_not_gt h)
+    have hsmall := hsum.tendsto_atTop_zero.eventually
+      (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))
+    have hlarge := (tendsto_completedConductorEnergy_atTop φ hc).eventually_ge_atTop 0
+    obtain ⟨n, hn, hEn⟩ := (hsmall.and hlarge).exists
+    have hweight : 1 ≤ completedConductorHeatWeight φ c β n :=
+      Real.one_le_exp_iff.mpr (mul_nonneg hβneg hEn)
+    linarith only [hn, hweight]
+  let U := completeWeilSelfFinitePart φ c + completedShellCorrectionBudget φ c + 1
   have hinj : Function.Injective (fun p : Nat.Primes => (p : ℕ) - 1) := by
     intro p q he
     apply Subtype.ext
@@ -116,22 +125,27 @@ theorem summable_tiltedWeil_conductor_heat_iff {c β : ℝ} (hc : 0 < c) :
     have hq := q.property.two_le
     omega
   have hs : Summable (fun p : Nat.Primes =>
-      Real.exp (-β * completedConductorEnergy tiltedUnitSpline c (p : ℕ))) := by
+      Real.exp (-β * completedConductorEnergy φ c (p : ℕ))) := by
     have h := hsum.comp_injective hinj
     refine h.congr fun p => ?_
     simp only [completedConductorHeatWeight, Nat.sub_add_cancel p.property.one_le]
   apply Nat.Primes.not_summable_one_div
-  apply (hs.mul_left (Real.exp U)).of_nonneg_of_le (fun _ => by positivity)
+  apply (hs.mul_left (Real.exp (β * U))).of_nonneg_of_le (fun _ => by positivity)
   intro p
   have hp : (0 : ℝ) < (p : ℕ) := by exact_mod_cast p.property.pos
-  have hE := tiltedWeilConductorEnergy_pos hc p.property.pos
-  have hu := completedConductorEnergy_prime_log_upper tiltedUnitSpline hc p.property
-  have hb : -Real.log (p : ℕ) ≤ U + -β * completedConductorEnergy tiltedUnitSpline c (p : ℕ) := by
-    have h := mul_le_mul_of_nonneg_right hβle hE.le
+  have hu := completedConductorEnergy_prime_log_upper φ hc p.property
+  have hb : -Real.log (p : ℕ) ≤ β * U + -β * completedConductorEnergy φ c (p : ℕ) := by
+    have h := mul_le_mul_of_nonneg_left hu hβ0.le
+    have hlog := mul_le_mul_of_nonneg_right hβle (Real.log_natCast_nonneg (p : ℕ))
     dsimp only [U]
-    linarith only [hu, h]
+    nlinarith only [h, hlog]
   have h := Real.exp_le_exp.mpr hb
   simpa only [Real.exp_neg, Real.exp_log hp, one_div, Real.exp_add] using h
+
+/-- The literal tilted-spline conductor spectrum has the sharp heat threshold `β = 1`. -/
+theorem summable_tiltedWeil_conductor_heat_iff {c β : ℝ} (hc : 0 < c) :
+    Summable (completedConductorHeatWeight tiltedUnitSpline c β) ↔ 1 < β :=
+  summable_completedConductorHeatWeight_iff tiltedUnitSpline hc
 
 /-- No positive integer power of the complete conductor Green weights is summable. -/
 theorem not_summable_tiltedWeil_inverse_energy_pow {c : ℝ} (hc : 0 < c) (k : ℕ) :
@@ -145,7 +159,7 @@ theorem not_summable_tiltedWeil_inverse_energy_pow {c : ℝ} (hc : 0 < c) (k : �
     let E := completedConductorEnergy tiltedUnitSpline c (n + 1)
     have hE : 0 < E := tiltedWeilConductorEnergy_pos hc (Nat.succ_pos n)
     have hf0 : (0 : ℝ) < k.factorial := by exact_mod_cast Nat.factorial_pos k
-    have h := (div_le_iff₀ hf0).mp (Real.pow_div_factorial_le_exp hE.le k)
+    have h := (div_le_iff₀ hf0).mp (Real.pow_div_factorial_le_exp E hE.le k)
     have hpay : Real.exp (-E) * E ^ k ≤ (k.factorial : ℝ) := by
       calc
         _ ≤ Real.exp (-E) * (Real.exp E * k.factorial) :=
@@ -160,6 +174,7 @@ theorem not_summable_tiltedWeil_inverse_energy_pow {c : ℝ} (hc : 0 < c) (k : �
 #print axioms completedConductorEnergy_log_lower
 #print axioms completedConductorEnergy_prime_log_upper
 #print axioms tendsto_completedConductorEnergy_inv_zero
+#print axioms summable_completedConductorHeatWeight_iff
 #print axioms summable_tiltedWeil_conductor_heat_iff
 #print axioms not_summable_tiltedWeil_inverse_energy_pow
 

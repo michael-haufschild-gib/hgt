@@ -10,8 +10,8 @@
 
 Let `φ` be the explicit tilted unit spline, `M=∫φ²`, and let `T>0` be
 `tiltedSplineTailConstant`. For every finite set `S` of positive conductors
-and every `A≥0`, one horizon gives, simultaneously for
-`1≤c≤(log log N)^A` and all real coefficients `a_m`,
+and every `0≤α<1/48`, one horizon gives, simultaneously for
+`1≤c≤(log N)^α` and all real coefficients `a_m`,
 
 `completeWeilEnergy(φ,c,N,Σ_(m∈S) a_m v_(m,N))
  ≥ T/(M c⁷) Σ_(m∈S) a_m²`.
@@ -20,6 +20,8 @@ Here `v_(m,N)` is the actual logarithmically normalized Ramanujan vector.
 Thus the entire fixed conductor span has positive actual energy at
 prescribed unbounded overlap. The conductor set stays fixed; full-matrix
 positivity and RH remain open.
+The same conclusion holds throughout `1≤c≤(log log N)^A` for every
+fixed `A≥0`.
 
 ## Proof
 
@@ -47,9 +49,10 @@ The exact eight-term decomposition therefore gives, for each fixed `m`,
 `||W_(c,N)v_(m,N)−E_m(c)v_(m,N)||²≤K_m c¹⁰/√L`.
 
 Consequently `c⁷` times its norm tends uniformly to zero on the stated
-range: its square is at most `K_m c²⁴/√L`. The horizon condition holds
-uniformly as well. Every power of `log log N` is smaller than every
-positive power of `log N`.
+range: its square is at most `K_m L^(24α−1/2)`, which tends to zero
+because `α<1/48`. The horizon condition holds uniformly since
+`L^(2α)/N→0`. Every fixed power of `log log N` is smaller than every
+positive power of `log N`, giving the second range.
 
 The Hodge Gram bound gives
 `|<v_m,v_l>−1_(m=l)|≤(1+2ml)/L`, and each vector norm is eventually
@@ -58,7 +61,8 @@ at most two. Pair the actual residual with `v_l` and use
 
 `c⁷ |<Wv_m,v_l>−1_(m=l)E_m(c)|→0`
 
-uniformly in overlap; the Gram contribution is `O(c⁹/L)`.
+uniformly in overlap; the Gram contribution is at most `O(L^(9α−1))`,
+which tends to zero under the same restriction.
 For `d=|S|`, choose all mixed-entry errors at most
 `δ/[2(d+1)c⁷]`. Finite Cauchy–Schwarz bounds the packet energy error
 by `d` times this quantity times `Σa_m²`, hence by

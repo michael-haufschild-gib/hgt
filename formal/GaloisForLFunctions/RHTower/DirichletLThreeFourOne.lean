@@ -41,7 +41,7 @@ theorem three_four_one_unit {a : ℝ} (ha : 0 ≤ a) {z : ℂ} (hz : ‖z‖ = 1
     have h := Complex.sq_norm z
     rw [hz, Complex.normSq_apply] at h
     nlinarith
-  simp only [re_ofReal_mul, sq, mul_re]
+  rw [Complex.re_ofReal_mul, Complex.re_ofReal_mul, sq, Complex.mul_re]
   nlinarith [mul_nonneg ha (sq_nonneg (z.re + 1))]
 
 /-- The `n`-th term of the `3-4-1` combination is nonnegative. -/
@@ -156,27 +156,26 @@ theorem hasSum_primePowerWeight {σ : ℝ} (hσ : 1 ≤ σ) {p : ℕ} (hp : p.Pr
   have hr0 : 0 ≤ r := by rw [hr]; positivity
   have hr1 : r ≤ 1 / 2 := by rw [hr]; exact (inv_le_inv₀ (by linarith) (by norm_num)).mpr hpσ |>.trans (by norm_num)
   -- On the prime powers the weight is a geometric sequence.
-  have hcomp : (primePowerWeight σ p ∘ fun k : ℕ => p ^ (k + 1)) =
-      fun k => Real.log p * r * r ^ k := by
-    funext k
-    simp only [Function.comp_apply, primePowerWeight]
+  have hcomp : ∀ k : ℕ, primePowerWeight σ p (p ^ (k + 1)) = Real.log p * r * r ^ k := by
+    intro k
+    unfold primePowerWeight
     rw [Set.indicator_of_mem (Set.mem_range_self k)]
-    push_cast
-    rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity), mul_comm, Real.rpow_mul (by positivity),
-      Real.rpow_natCast, hr, ← inv_pow, pow_succ]
+    have hpow : (((p ^ (k + 1) : ℕ) : ℝ)) ^ σ = ((p : ℝ) ^ σ) ^ (k + 1) := by
+      push_cast
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity), mul_comm,
+        Real.rpow_mul (by positivity), Real.rpow_natCast]
+    rw [hpow, hr, div_eq_mul_inv, ← inv_pow, pow_succ]
     ring
+  have hcompf : (primePowerWeight σ p ∘ fun k : ℕ => p ^ (k + 1)) =
+      fun k => Real.log p * r * r ^ k := funext hcomp
   have hgeo : Summable fun k : ℕ => Real.log p * r * r ^ k :=
     (summable_geometric_of_lt_one hr0 (by linarith)).mul_left _
   have hsum : Summable (primePowerWeight σ p) := by
-    rw [← hinj.summable_iff hsupp, hcomp]
+    rw [← hinj.summable_iff hsupp, hcompf]
     exact hgeo
   refine ⟨hsum, ?_⟩
-  rw [← hinj.tsum_eq (fun n hn => by
-    by_contra h
-    exact hn (Function.mem_support.mpr h |> fun _ => by
-      by_contra hn'
-      exact (Function.mem_support.mp hn) (hsupp n hn'))), hcomp, tsum_mul_left,
-    tsum_geometric_of_lt_one hr0 (by linarith)]
+  rw [← hinj.tsum_eq (fun n hn => by_contra fun h => hn (hsupp n h)), tsum_congr hcomp,
+    tsum_mul_left, tsum_geometric_of_lt_one hr0 (by linarith)]
   have hlog : 0 ≤ Real.log p := Real.log_nonneg (by linarith)
   have h2 : r * (1 - r)⁻¹ ≤ 1 := by
     rw [mul_inv_le_iff₀ (by linarith)]
@@ -209,7 +208,8 @@ theorem tsum_vonMangoldt_not_coprime_le {σ : ℝ} (hσ : 1 ≤ σ) :
       exact hu ((ZMod.isUnit_iff_coprime _ q).mpr hcop)
     have hval : Λ (p ^ k) / ((p ^ k : ℕ) : ℝ) ^ σ = primePowerWeight σ p (p ^ k) := by
       unfold primePowerWeight
-      rw [Set.indicator_of_mem ⟨k - 1, by rw [Nat.sub_add_cancel hk]⟩,
+      rw [Set.indicator_of_mem (show p ^ k ∈ Set.range (fun k : ℕ => p ^ (k + 1)) from
+          ⟨k - 1, by simp only; rw [Nat.sub_add_cancel hk]⟩),
         vonMangoldt_apply_pow hk.ne', vonMangoldt_apply_prime hp]
     rw [hval]
     exact Finset.single_le_sum (fun p' hp' => primePowerWeight_nonneg (hprime p' hp') (p ^ k)) hpq
@@ -231,6 +231,7 @@ theorem tsum_vonMangoldt_not_coprime_le {σ : ℝ} (hσ : 1 ≤ σ) :
         rw [Real.log_prod fun p hp => by exact_mod_cast (hprime p hp).ne_zero]
     _ ≤ Real.log q := by
         refine Real.log_le_log (Finset.prod_pos fun p hp => by exact_mod_cast (hprime p hp).pos) ?_
+        rw [← Nat.cast_prod]
         exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero (NeZero.ne q)) (Nat.prod_primeFactors_dvd q)
 
 /-- **The principal character off the real axis.** `Re(−L₀'/L₀)(s) ≤ Re(−ζ'/ζ)(s) + log q`. -/
@@ -239,8 +240,11 @@ theorem neg_re_logDeriv_trivChar_le {s : ℂ} (hs : 1 < s.re) :
       (-deriv riemannZeta s / riemannZeta s).re + Real.log q := by
   rw [neg_logDeriv_LFunction_eq_LSeries _ hs,
     ← ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs]
-  have h0 := hasSum_re (DirichletCharacter.LSeriesSummable_twist_vonMangoldt
-    (1 : DirichletCharacter ℂ q) hs).LSeriesHasSum
+  have h0 : HasSum (fun n => (LSeries.term (fun n => (1 : DirichletCharacter ℂ q) n *
+      ((Λ n : ℝ) : ℂ)) s n).re) (LSeries (fun n => (1 : DirichletCharacter ℂ q) n *
+      ((Λ n : ℝ) : ℂ)) s).re :=
+    hasSum_re (DirichletCharacter.LSeriesSummable_twist_vonMangoldt
+      (1 : DirichletCharacter ℂ q) hs).LSeriesHasSum
   have hΛ := hasSum_re (ArithmeticFunction.LSeriesSummable_vonMangoldt hs).LSeriesHasSum
   obtain ⟨hsumq, hq⟩ := tsum_vonMangoldt_not_coprime_le (q := q) hs.le
   have hle := hasSum_le (fun n => re_term_trivChar_sub_le s n) h0 (hΛ.add hsumq.hasSum)
@@ -251,8 +255,11 @@ theorem neg_re_logDeriv_trivChar_real_le {σ : ℝ} (hσ1 : 1 < σ) (hσ2 : σ �
     (-logDeriv (1 : DirichletCharacter ℂ q).LFunction σ).re ≤ 1 / (σ - 1) - 1 / 5 := by
   have hs : 1 < ((σ : ℂ)).re := by simpa using hσ1
   rw [neg_logDeriv_LFunction_eq_LSeries _ hs]
-  have h0 := hasSum_re (DirichletCharacter.LSeriesSummable_twist_vonMangoldt
-    (1 : DirichletCharacter ℂ q) hs).LSeriesHasSum
+  have h0 : HasSum (fun n => (LSeries.term (fun n => (1 : DirichletCharacter ℂ q) n *
+      ((Λ n : ℝ) : ℂ)) σ n).re) (LSeries (fun n => (1 : DirichletCharacter ℂ q) n *
+      ((Λ n : ℝ) : ℂ)) σ).re :=
+    hasSum_re (DirichletCharacter.LSeriesSummable_twist_vonMangoldt
+      (1 : DirichletCharacter ℂ q) hs).LSeriesHasSum
   have hΛ := hasSum_re (ArithmeticFunction.LSeriesSummable_vonMangoldt hs).LSeriesHasSum
   -- Termwise the principal coefficients are at most `Λ`.
   have hterm : ∀ n : ℕ,

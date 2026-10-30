@@ -20,20 +20,37 @@ def pieceW (q : ℝ) (X : Fin 4 → Fin 4 → ℝ) (i j : Fin 4) : ℝ :=
     (if i = j then q^6*(8000*(2*q-3)^2*Real.exp (-(529/50)*q)*tailWeight i) else 0) +
     8*q^7*(2*q-3)^2*X i j
 
+theorem bm_00 : basisMajorant 0 0 = 1 := rfl
+theorem bm_01 : basisMajorant 0 1 = 1 := rfl
+theorem bm_02 : basisMajorant 0 2 = 5/4 := rfl
+theorem bm_03 : basisMajorant 0 3 = 5/4 := rfl
+theorem bm_10 : basisMajorant 1 0 = 0 := rfl
+theorem bm_11 : basisMajorant 1 1 = 1/72 := rfl
+theorem bm_12 : basisMajorant 1 2 = 5/144 := rfl
+theorem bm_13 : basisMajorant 1 3 = 5/96 := rfl
+theorem bm_20 : basisMajorant 2 0 = 0 := rfl
+theorem bm_21 : basisMajorant 2 1 = 0 := rfl
+theorem bm_22 : basisMajorant 2 2 = 1/6912 := rfl
+theorem bm_23 : basisMajorant 2 3 = 1/2304 := rfl
+theorem bm_30 : basisMajorant 3 0 = 0 := rfl
+theorem bm_31 : basisMajorant 3 1 = 0 := rfl
+theorem bm_32 : basisMajorant 3 2 = 0 := rfl
+theorem bm_33 : basisMajorant 3 3 = 1/1161216 := rfl
+
 theorem tailWeight_0 : tailWeight 0 = ((10465499600:ℝ)/59049) := by
-  simp only [tailWeight, tailFactor, basisMajorant, Fin.sum_univ_four]
+  simp only [tailWeight, tailFactor, Fin.sum_univ_four, bm_00, bm_01, bm_02, bm_03, bm_10, bm_11, bm_12, bm_13, bm_20, bm_21, bm_22, bm_23, bm_30, bm_31, bm_32, bm_33, fin4_v0, fin4_v1, fin4_v2, fin4_v3]
   norm_num [Nat.factorial]
 
 theorem tailWeight_1 : tailWeight 1 = ((4814744136400:ℝ)/531441) := by
-  simp only [tailWeight, tailFactor, basisMajorant, Fin.sum_univ_four]
+  simp only [tailWeight, tailFactor, Fin.sum_univ_four, bm_00, bm_01, bm_02, bm_03, bm_10, bm_11, bm_12, bm_13, bm_20, bm_21, bm_22, bm_23, bm_30, bm_31, bm_32, bm_33, fin4_v0, fin4_v1, fin4_v2, fin4_v3]
   norm_num [Nat.factorial]
 
 theorem tailWeight_2 : tailWeight 2 = ((2570430941234500:ℝ)/4782969) := by
-  simp only [tailWeight, tailFactor, basisMajorant, Fin.sum_univ_four]
+  simp only [tailWeight, tailFactor, Fin.sum_univ_four, bm_00, bm_01, bm_02, bm_03, bm_10, bm_11, bm_12, bm_13, bm_20, bm_21, bm_22, bm_23, bm_30, bm_31, bm_32, bm_33, fin4_v0, fin4_v1, fin4_v2, fin4_v3]
   norm_num [Nat.factorial]
 
 theorem tailWeight_3 : tailWeight 3 = ((3308571812705231500:ℝ)/129140163) := by
-  simp only [tailWeight, tailFactor, basisMajorant, Fin.sum_univ_four]
+  simp only [tailWeight, tailFactor, Fin.sum_univ_four, bm_00, bm_01, bm_02, bm_03, bm_10, bm_11, bm_12, bm_13, bm_20, bm_21, bm_22, bm_23, bm_30, bm_31, bm_32, bm_33, fin4_v0, fin4_v1, fin4_v2, fin4_v3]
   norm_num [Nat.factorial]
 
 theorem centralNum13_00_list (q : ℝ) :
@@ -163,9 +180,9 @@ theorem nativeOddForm_ge_of_piece {x : ℝ} (hq : 3 ≤ thetaCuspSingleAtomRefle
       pieceW (thetaCuspSingleAtomReflectionScale 1 x) X i j) :
     let q := thetaCuspSingleAtomReflectionScale 1 x
     let c := (centralBasis (1/q)).mulVec y
-    -(4*q^2*Real.exp (x-2*q)*(8*q*(2*q-3)^2)*∑ i : Fin 4, ∑ j : Fin 4, y i * y j * X i j) ≤
-      ∑ i : Fin 4, ∑ j : Fin 4, c i*c j*(-1:ℝ)^(i.val+j.val+1)*
-        thetaCuspNativeReflectionJet (2*(i.val+j.val+1)) x := by
+    ∑ i : Fin 4, ∑ j : Fin 4, c i*c j*(-1:ℝ)^(i.val+j.val+1)*
+        thetaCuspNativeReflectionJet (2*(i.val+j.val+1)) x ≥
+      -(4*q^2*Real.exp (x-2*q)*(8*q*(2*q-3)^2)*∑ i : Fin 4, ∑ j : Fin 4, y i * y j * X i j) := by
   intro q c
   have h := nativeOddForm_ge_central hq y
   have hq0 : 0 < q := by linarith
@@ -182,11 +199,41 @@ theorem nativeOddForm_ge_of_piece {x : ℝ} (hq : 3 ≤ thetaCuspSingleAtomRefle
   have key : -(8*q*(2*q-3)^2*∑ i : Fin 4, ∑ j : Fin 4, y i * y j * X i j) ≤
       (∑ i : Fin 4, ∑ j : Fin 4, y i * y j * centralEntryMat q i j)/q^6 -
         8000*(2*q-3)^2*Real.exp (-(529/50)*q)*∑ k : Fin 4, tailWeight k * y k^2 := by
-    rw [le_sub_iff_add_le, div_add' _ _ _ hq6.ne', le_div_iff₀ hq6]
+    rw [le_sub_iff_add_le, le_div_iff₀ hq6]
     nlinarith [hW]
   calc -(4*q^2*Real.exp (x-2*q)*(8*q*(2*q-3)^2)*∑ i : Fin 4, ∑ j : Fin 4, y i * y j * X i j)
       = 4*q^2*Real.exp (x-2*q)*(-(8*q*(2*q-3)^2*∑ i : Fin 4, ∑ j : Fin 4, y i * y j * X i j)) := by ring
     _ ≤ _ := (mul_le_mul_of_nonneg_left key hK).trans h
+
+
+/-- Assembly of one entry from its component bounds. -/
+theorem entry_assemble {W a1 a2 a3 a4 a5 a6 m1 m2 m5 A B t r1 r2 r3 r4 r5 r6 r7 R : ℝ}
+    (hW : W = a1 + a2 + a3 + a4 + a5 + a6) (h1 : |a1 - m1| ≤ r1) (h2 : |a2 - m2| ≤ r2)
+    (h3 : |a3| ≤ r3) (h4 : |a4| ≤ r4) (h5 : |a5 - m5| ≤ r5) (h6 : |a6| ≤ r6)
+    (h7 : |m1 + m2 + m5 - (A + t*B)| ≤ r7) (hR : r1 + r2 + r3 + r4 + r5 + r6 + r7 ≤ R) :
+    |W - (A + t*B)| ≤ R := by
+  rw [hW]
+  have e : a1 + a2 + a3 + a4 + a5 + a6 - (A + t*B) =
+      (a1 - m1) + (a2 - m2) + a3 + a4 + (a5 - m5) + a6 + (m1 + m2 + m5 - (A + t*B)) := by ring
+  rw [e]
+  calc _ ≤ |a1 - m1| + |a2 - m2| + |a3| + |a4| + |a5 - m5| + |a6| + |m1 + m2 + m5 - (A + t*B)| := by
+        refine (abs_add_le _ _).trans ?_
+        refine add_le_add ((abs_add_le _ _).trans (add_le_add ((abs_add_le _ _).trans (add_le_add
+          ((abs_add_le _ _).trans (add_le_add ((abs_add_le _ _).trans (add_le_add
+          ((abs_add_le _ _).trans (add_le_add le_rfl le_rfl)) le_rfl)) le_rfl)) le_rfl)) le_rfl)) le_rfl
+    _ ≤ _ := by linarith
+
+/-- The affine rounding step: `|α + tβ| ≤ |α| + ρ|β|` on `|t| ≤ ρ`. -/
+theorem affine_round {α β t ρ : ℝ} (ht : |t| ≤ ρ) : |α + t*β| ≤ |α| + ρ*|β| := by
+  refine (abs_add_le _ _).trans (add_le_add le_rfl ?_)
+  rw [abs_mul]
+  exact mul_le_mul_of_nonneg_right ht (abs_nonneg _)
+
+/-- A scaled affine model of a polynomial factor. -/
+theorem scaled_affine {D d0 d1 rD X t : ℝ} (h : |D - d0 - d1*t| ≤ rD) :
+    |D*X - (d0 + d1*t)*X| ≤ |X| * rD := by
+  rw [show D*X - (d0 + d1*t)*X = (D - d0 - d1*t)*X by ring, abs_mul, mul_comm]
+  exact mul_le_mul_of_nonneg_left h (abs_nonneg _)
 
 end
 end RHTower.ThetaCuspOddFourPieces

@@ -52,3 +52,4 @@
 - formal/GaloisForLFunctions/EffectiveArithmeticHodgeTheory/README.md
 - formal/GaloisForLFunctions/CompletedArithmeticForms/README.md
 - formal/GaloisForLFunctions/ArithmeticGaugeTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticHarmonicAnalysis/README.md

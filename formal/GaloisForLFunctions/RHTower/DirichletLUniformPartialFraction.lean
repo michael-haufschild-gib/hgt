@@ -33,14 +33,18 @@ theorem log_three_le_log_conductor (t : ℝ) : Real.log 3 ≤ Real.log ((q : ℝ
   have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast NeZero.pos q
   exact Real.log_le_log (by norm_num) (by nlinarith [abs_nonneg t])
 
-/-- **Partial fraction for `L'/L(s, χ)` at every height**, with an absolute constant. -/
-theorem L_logDeriv_partial_fraction_all (hχ1 : χ ≠ 1) : ∃ C : ℝ, 0 < C ∧ ∀ t : ℝ,
+/-- The absolute constant of the partial fraction. -/
+def pfConst : ℝ := 44795000 / (91/50) * 5
+
+theorem pfConst_pos : 0 < pfConst := by unfold pfConst; positivity
+
+/-- **Partial fraction for `L'/L(s, χ)` at every height**, with the absolute constant `pfConst`. -/
+theorem L_logDeriv_partial_fraction_all (hχ1 : χ ≠ 1) (t : ℝ) :
     ∃ Z : Finset ℂ,
       ((Z : Set ℂ) = {ρ ∈ closedBall (2 + t * I) (22/25 * (91/50)) | χ.LFunction ρ = 0}) ∧
       ∀ s ∈ closedBall (2 + t * I) (3/2), χ.LFunction s ≠ 0 →
         ‖logDeriv χ.LFunction s - ∑ ρ ∈ Z, (analyticOrderNatAt χ.LFunction ρ : ℂ) / (s - ρ)‖
-          ≤ C * Real.log ((q : ℝ) * (|t| + 3)) := by
-  refine ⟨44795000 / (91/50) * 5, by positivity, fun t => ?_⟩
+          ≤ pfConst * Real.log ((q : ℝ) * (|t| + 3)) := by
   have hq1 : (1 : ℝ) ≤ (q : ℝ) := by exact_mod_cast NeZero.pos q
   set s₀ : ℂ := 2 + t * I with hs₀
   have hs₀re : s₀.re = 2 := by simp [hs₀]
@@ -94,7 +98,7 @@ theorem L_logDeriv_partial_fraction_all (hχ1 : χ ≠ 1) : ∃ C : ℝ, 0 < C �
   calc 44795000 / (91/50) * Real.log B
       ≤ 44795000 / (91/50) * (5 * Real.log ((q : ℝ) * (|t| + 3))) :=
         mul_le_mul_of_nonneg_left hlogB (by norm_num)
-    _ = 44795000 / (91/50) * 5 * Real.log ((q : ℝ) * (|t| + 3)) := by ring
+    _ = pfConst * Real.log ((q : ℝ) * (|t| + 3)) := by unfold pfConst; ring
 
 /-- **Zeros count with multiplicity at least one.** -/
 theorem one_le_analyticOrderNatAt_LFunction (hχ1 : χ ≠ 1) {ρ : ℂ} (hρ : χ.LFunction ρ = 0) :
@@ -121,13 +125,12 @@ theorem re_lt_one_of_LFunction_eq_zero (hχ1 : χ ≠ 1) {ρ : ℂ} (hρ : χ.LF
 
 /-- **The zero-sum bound.** For `1 < σ ≤ 2` and any finite set of zeros near `2 + it`,
 `−Re L'/L(σ + it, χ) ≤ C log(q(|t| + 3)) − Σ_{ρ ∈ S} Re 1/(σ + it − ρ)`. -/
-theorem neg_re_logDeriv_LFunction_le (hχ1 : χ ≠ 1) : ∃ C : ℝ, 0 < C ∧ ∀ σ t : ℝ, 1 < σ → σ ≤ 2 →
-    ∀ S : Finset ℂ, (∀ ρ ∈ S, χ.LFunction ρ = 0 ∧ ρ ∈ closedBall (2 + t * I) (22/25 * (91/50))) →
-      -(logDeriv χ.LFunction (σ + t * I)).re ≤
-        C * Real.log ((q : ℝ) * (|t| + 3)) - ∑ ρ ∈ S, ((σ + t * I - ρ)⁻¹).re := by
-  obtain ⟨C, hC, hpf⟩ := L_logDeriv_partial_fraction_all hχ1
-  refine ⟨C, hC, fun σ t hσ1 hσ2 S hS => ?_⟩
-  obtain ⟨Z, hZset, hZpf⟩ := hpf t
+theorem neg_re_logDeriv_LFunction_le (hχ1 : χ ≠ 1) {σ : ℝ} (t : ℝ) (hσ1 : 1 < σ) (hσ2 : σ ≤ 2)
+    (S : Finset ℂ)
+    (hS : ∀ ρ ∈ S, χ.LFunction ρ = 0 ∧ ρ ∈ closedBall (2 + t * I) (22/25 * (91/50))) :
+    -(logDeriv χ.LFunction (σ + t * I)).re ≤
+      pfConst * Real.log ((q : ℝ) * (|t| + 3)) - ∑ ρ ∈ S, ((σ + t * I - ρ)⁻¹).re := by
+  obtain ⟨Z, hZset, hZpf⟩ := L_logDeriv_partial_fraction_all hχ1 t
   set s : ℂ := σ + t * I with hs
   have hsball : s ∈ closedBall (2 + t * I) (3/2) := by
     rw [mem_closedBall, Complex.dist_eq, hs]

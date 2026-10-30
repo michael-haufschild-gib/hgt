@@ -438,6 +438,28 @@ dimension-independent constant. The remaining tail comparison is unpaid.
 See [WeilPrefixPayment](WeilPrefixPayment.lean),
 `eventually_plateauPrefixSchur_quadratic_payment`.
 
+## The sharp complete Weil inverse cost
+
+For the tilted unit spline, write $A_N(c)$ for the literal complete Weil matrix
+and $E_1(c)>0$ for the completed pole energy. The sharp asymptotic inverse cost is
+exactly $E_1(c)^{-1}$:
+\[
+C>E_1(c)^{-1}\quad\Longrightarrow\quad
+0\le b^{\mathsf T}A_N(c)^{-1}b\le C\|b\|^2
+\quad\text{eventually, simultaneously for every }b.
+\]
+Every $0<C<E_1(c)^{-1}$ is eventually violated by an actual unit eigenvector.
+For each finite $K$, one positive cost and one horizon work for all $0<c\le K$.
+The proof retains the complete source floor and the actual ground eigenvalue;
+it pays arbitrary mixed columns rather than individual arithmetic modes alone.
+See [WeilInverseCost](WeilInverseCost.lean),
+`eventually_tiltedWeil_inverse_cost_le`, `eventually_tiltedWeil_inverse_cost_gt`,
+and `exists_tiltedWeil_uniform_boundedOverlap_inverse_cost`.
+
+The exact equality threshold requires the side of finite spectral convergence.
+An unbounded overlap schedule requires a joint estimate against the reciprocal
+vanishing ground reserve.
+
 ## Exact native-tail reserves and their rank boundary
 
 Write $(r)_n=\prod_{j<n}(r+j)$. The scaled Gamma moments $m_k=gw^k(r)_k$, with

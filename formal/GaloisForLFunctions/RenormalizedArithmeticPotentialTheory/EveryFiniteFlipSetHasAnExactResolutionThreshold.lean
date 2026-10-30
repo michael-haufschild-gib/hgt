@@ -46,10 +46,11 @@ theorem finiteFlip_prime_pow {S : Finset ℕ} {q : ℕ} (hq : q.Prime) (j : ℕ)
   unfold finiteFlip
   rw [Nat.Prime.factorization_pow hq]
   split_ifs with hqS
-  · rw [Finset.prod_eq_single q (fun p _ hpq => by rw [Finsupp.single_eq_of_ne hpq, pow_zero])
+  · rw [Finset.prod_eq_single q (fun p _ hpq => by
+        rw [Finsupp.single_apply, if_neg (fun h : q = p => hpq h.symm), pow_zero])
       (fun h => absurd hqS h), Finsupp.single_eq_same]
   · exact Finset.prod_eq_one fun p hp => by
-      rw [Finsupp.single_eq_of_ne (fun h => hqS (h ▸ hp)), pow_zero]
+      rw [Finsupp.single_apply, if_neg (fun h : q = p => hqS (h ▸ hp)), pow_zero]
 
 /-- **The defect of a flip set is the sum of its single-prime defects.** -/
 theorem twistDefect_finiteFlip_eq_sum {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (k : ℕ) :
@@ -68,8 +69,9 @@ theorem twistDefect_finiteFlip_eq_sum {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prim
   split_ifs with hqS
   · rw [Finset.sum_eq_single q (fun p hp hpq => by rw [if_neg (Ne.symm hpq), sub_self])
       (fun h => absurd hqS h), if_pos rfl]
-  · refine (Finset.sum_eq_zero fun p hp => ?_).symm.trans_eq' (by ring)
-    rw [if_neg (fun h => hqS (h ▸ hp)), sub_self]
+  · rw [sub_self, eq_comm]
+    exact Finset.sum_eq_zero fun p hp => by
+      rw [if_neg (fun h : q = p => hqS (h ▸ hp)), sub_self]
 
 /-- **A finite flip set has summable defect.** -/
 theorem summable_abs_twistDefect_finiteFlip {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) :
@@ -131,7 +133,7 @@ theorem primeSquareTrial_coprime_mul {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (
     Nat.Coprime.pow_right k ((Nat.coprime_primes hp hq).mpr hpq)
   have hc2 : Nat.Coprime (p ^ 2) (q ^ k) := Nat.Coprime.pow_left 2 hc1
   unfold primeSquareTrial
-  rw [hc1.dvd_mul_left, hc2.dvd_mul_left]
+  simp only [hc1.dvd_mul_left, hc2.dvd_mul_left]
 
 theorem primeSquareTrial_sq_eq_one (p n : ℕ) : primeSquareTrial p n * primeSquareTrial p n = 1 := by
   rw [← sq, primeSquareTrial_sq]
@@ -148,13 +150,13 @@ theorem flipSetTrial_mul_dilate {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) {q 
 
 /-- The mean of a divisibility indicator over a multiple of the divisor. -/
 theorem periodMean_dvd_indicator {d P : ℕ} (hd : 0 < d) (hdP : d ∣ P) (hP : 0 < P) :
-    periodMean (fun a => if d ∣ a then (1 : ℝ) else 0) P = 1 / d := by
+    (∑ i ∈ range P, (if d ∣ i then (1 : ℝ) else 0)) / P = 1 / d := by
   have hper : ∀ k, (fun a => if d ∣ a then (1 : ℝ) else 0) (k + P) =
       (fun a => if d ∣ a then (1 : ℝ) else 0) k := by
     intro k
-    simp only [(Nat.dvd_add_left hdP).symm, Nat.dvd_add_right hdP]
-  unfold periodMean
+    simp only [Nat.dvd_add_left hdP]
   rw [← sum_range_shift_of_periodic hper 1]
+  simp_rw [add_comm 1]
   have hcount : ∑ i ∈ range P, (if d ∣ i + 1 then (1 : ℝ) else 0) = ((P / d : ℕ) : ℝ) := by
     rw [← Nat.card_multiples P d, Finset.sum_boole]
   rw [hcount, Nat.cast_div hdP (by exact_mod_cast hd.ne')]
@@ -189,11 +191,13 @@ theorem twistLimitEnergy_primeFlip_primeSquareTrial_le {q : ℕ} (hq : q.Prime) 
       exact primeSquareTrial_mul_correlation hq.pos a
     rw [hfun]
     have hmean := periodMean_dvd_indicator (pow_pos hq.pos 2) hqP hP
-    unfold periodMean at hmean ⊢
-    rw [sum_add_distrib, sum_const, card_range, nsmul_eq_mul, ← mul_sum, add_div,
-      mul_div_assoc, hmean]
+    unfold periodMean
+    rw [sum_add_distrib, sum_const, card_range, nsmul_eq_mul, ← mul_sum]
     have hP0 : (P : ℝ) ≠ 0 := by exact_mod_cast hP.ne'
-    field_simp
+    have hsplit : ((P : ℝ) * (-1) + 2 * ∑ i ∈ range P, (if q ^ 2 ∣ i then (1 : ℝ) else 0)) / P =
+        -1 + 2 * ((∑ i ∈ range P, (if q ^ 2 ∣ i then (1 : ℝ) else 0)) / P) := by
+      field_simp
+    rw [hsplit, hmean]
     push_cast
     ring
   -- every later lag has mean at most one
@@ -219,17 +223,19 @@ theorem twistLimitEnergy_primeFlip_primeSquareTrial_le {q : ℕ} (hq : q.Prime) 
     ring
   have hgabs : ∀ j, |g j| ≤ (1 / (q : ℝ)) ^ (2 * j + 1) := by
     intro j
+    have hqj : (0 : ℝ) < (q : ℝ) ^ (2 * j + 1) := pow_pos hq0 _
+    have habs : |shiftMean (primeSquareTrial q) P (q ^ (2 * j + 1))| ≤ 1 := by
+      unfold shiftMean periodMean
+      have hP0 : (0 : ℝ) < P := by exact_mod_cast hP
+      rw [abs_div, abs_of_pos hP0, div_le_one hP0]
+      calc |∑ i ∈ range P, primeSquareTrial q i * primeSquareTrial q (q ^ (2 * j + 1) * i)|
+          ≤ ∑ i ∈ range P, (1 : ℝ) := by
+            refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
+            rw [abs_mul, abs_primeSquareTrial, abs_primeSquareTrial, mul_one]
+        _ = P := by rw [sum_const, card_range, nsmul_eq_mul, mul_one]
     simp only [hg]
-    rw [abs_div, abs_of_pos (by positivity), _root_.one_div_pow, div_le_div_iff_of_pos_right
-      (by positivity)]
-    unfold shiftMean periodMean
-    have hP0 : (0 : ℝ) < P := by exact_mod_cast hP
-    rw [abs_div, abs_of_pos hP0, div_le_one hP0]
-    calc |∑ i ∈ range P, primeSquareTrial q i * primeSquareTrial q (q ^ (2 * j + 1) * i)|
-        ≤ ∑ i ∈ range P, (1 : ℝ) := by
-          refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
-          rw [abs_mul, abs_primeSquareTrial, abs_primeSquareTrial, mul_one]
-      _ = P := by rw [sum_const, card_range, nsmul_eq_mul, mul_one]
+    rw [abs_div, abs_of_pos hqj, _root_.one_div_pow]
+    exact div_le_div_of_nonneg_right habs hqj.le
   have hgsum : Summable g := Summable.of_norm_bounded hgeom fun j => by
     rw [Real.norm_eq_abs]; exact hgabs j
   have htail : ∑' j, g (j + 1) ≤ 1 / ((q : ℝ) * ((q : ℝ) ^ 2 - 1)) := by
@@ -243,12 +249,11 @@ theorem twistLimitEnergy_primeFlip_primeSquareTrial_le {q : ℕ} (hq : q.Prime) 
             ((summable_nat_add_iff 1).mpr hgsum) hsumt
       _ = (1 / (q : ℝ)) ^ 3 * ∑' j : ℕ, ((1 / (q : ℝ)) ^ 2) ^ j := by
           rw [← tsum_mul_left]
-          exact tsum_congr fun j => by rw [← pow_mul, ← pow_add]; ring_nf
+          exact tsum_congr fun j => by ring
       _ = 1 / ((q : ℝ) * ((q : ℝ) ^ 2 - 1)) := by
           rw [hgeo]
           have hqq : (q : ℝ) ^ 2 - 1 ≠ 0 := by linarith
           field_simp
-          ring
   rw [hgsum.tsum_eq_zero_add]
   have hg0 : g 0 = (-1 + 2 / (q : ℝ) ^ 2) / q := by
     simp only [hg]

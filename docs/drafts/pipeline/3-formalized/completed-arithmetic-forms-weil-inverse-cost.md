@@ -7,7 +7,7 @@ eigenvalue lies within $\varepsilon$ of $E(c)$. The unique ground window
 captures the normalized pole vector. These are source theorems in
 `TheCompleteWeilGroundStateIsThePole`.
 
-The expected sharp completion payment is
+The sharp completion payment is
 $$C>E(c)^{-1}\Longrightarrow
   0\le b^{\mathsf T}A_N(c)^{-1}b\le C\|b\|^2
   \quad\text{eventually, for every }b.$$
@@ -22,3 +22,7 @@ inverse comparison. No estimate for an unproved source remainder is assumed.
 For every fixed upper overlap $K$, the uniform source floor gives one
 finite inverse cost and one horizon for all $0<c\le K$. A prescribed
 growing overlap needs a joint estimate relative to its vanishing reserve.
+
+Lean: `CompletedArithmeticForms/WeilInverseCost.lean`,
+`eventually_tiltedWeil_inverse_cost_le`, `eventually_tiltedWeil_inverse_cost_gt`,
+`exists_tiltedWeil_uniform_boundedOverlap_inverse_cost`.

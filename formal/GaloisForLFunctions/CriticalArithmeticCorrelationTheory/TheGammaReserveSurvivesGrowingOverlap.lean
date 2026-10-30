@@ -92,8 +92,48 @@ theorem band_mass_ge {c : ℝ} (hc : 1 ≤ c) {N : ℕ} (hN : 1 ≤ N) (x : ℕ 
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN
   have h := noRealZero_highBand_mass contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero hc0
     (splineBandFloor_pos c) (tiltedUnitSpline_band_floor hc0) hN x
-  refine le_trans (le_of_eq ?_) h
-  field_simp
+  have he : 48 * c ^ 2 * splineBandFloor c / N * (∑ n ∈ Icc 1 N, x n ^ 2) =
+      (48 * (c / N) ^ 2 * splineBandFloor c * N) * (∑ n ∈ Icc 1 N, x n ^ 2) := by
+    field_simp
+  rw [he]
+  exact h
+
+/-- Plancherel bounds the band by the whole mass: `∫_N^{101N} |f̂|² ≤ 2π ∫ f²`. -/
+theorem band_le_two_pi_mass {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    {R : ℝ} (hR : 0 ≤ R) :
+    ∫ t in R..101 * R, ‖Zeta23.paperFT (cx f) (t : ℂ)‖ ^ 2 ≤ 2 * π * ∫ u, f u ^ 2 := by
+  have hcf : HasCompactSupport (fun u => (f u : ℂ)) := hfc.comp_left Complex.ofReal_zero
+  have hcd : ContDiff ℝ 2 (fun u => (f u : ℂ)) := Complex.ofRealCLM.contDiff.comp hf
+  have hpl := RHTower.LebesgueAtomWeil.integral_norm_sq_paperFT_eq hcd hcf
+  simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs] at hpl
+  have hint := RHTower.integrable_normSq_paperFT_ofReal hf hfc
+  have hsub : ∫ t in R..101 * R, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 ≤
+      ∫ t, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 := by
+    rw [intervalIntegral.integral_of_le (by linarith)]
+    exact setIntegral_le_integral hint (Eventually.of_forall fun t => sq_nonneg _)
+  have h2 : ∫ t, ‖Zeta23.paperFT (fun u => (f u : ℂ)) (t : ℂ)‖ ^ 2 = 2 * π * ∫ u, f u ^ 2 := by
+    rw [← hpl]; field_simp
+  exact hsub.trans h2.le
+
+/-- The coefficient comparison behind both floors. -/
+theorem growingMass_coef_le {c N : ℝ} (hc : 1 ≤ c) (hN : 0 < N) :
+    growingMassConstant / c ^ 7 * ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) ≤
+      1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) := by
+  have hc0 : 0 < c := by linarith
+  have hM := integral_tiltedUnitSpline_sq_pos
+  have hfloor := splineBandFloor_ge hc
+  have hfl : Real.sinh 1 ^ 8 / (64 * 161 ^ 4) ≤ c ^ 8 * splineBandFloor c := by
+    rw [div_le_iff₀ (pow_pos hc0 8)] at hfloor; linarith
+  set A := Real.sinh 1 ^ 8 / (64 * 161 ^ 4)
+  set M := ∫ u, tiltedUnitSpline u ^ 2
+  set F := splineBandFloor c
+  have hl : growingMassConstant / c ^ 7 * ((c / N) * M) = 24 * A / (π * c ^ 6 * N) := by
+    unfold growingMassConstant
+    field_simp
+  have hr : 1 / (2 * π) * (48 * c ^ 2 * F / N) = 24 * (c ^ 8 * F) / (π * c ^ 6 * N) := by
+    field_simp
+  rw [hl, hr]
+  exact div_le_div_of_nonneg_right (by linarith) (by positivity)
 
 /-- **The synthesized-mass floor at growing overlap**:
 `∫ f_x² ≥ κ c⁻⁷ (c/N)‖φ‖² Σ x_n²` for every `1 ≤ c` and `N ≥ 1`. -/
@@ -106,47 +146,25 @@ theorem integral_atomicTest_sq_ge_growing {c : ℝ} (hc : 1 ≤ c) {N : ℕ} (hN
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN
   have hw : 0 < c / N := div_pos hc0 hNR
   obtain ⟨hg, hgsupp, hgc⟩ := atomDilate_facts contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero hw
-  set f := atomicTest N x (atomDilate tiltedUnitSpline (c / N))
-  have hf : ContDiff ℝ 2 f := contDiff_atomicTest hg N x
-  have hfc : HasCompactSupport f := hasCompactSupport_atomicTest hgsupp N x
-  -- Plancherel: the band is part of the whole spectrum
-  have hcf : HasCompactSupport (fun u => (f u : ℂ)) := hfc.comp_left Complex.ofReal_zero
-  have hcd : ContDiff ℝ 2 (fun u => (f u : ℂ)) := Complex.ofRealCLM.contDiff.comp hf
-  have hpl := RHTower.LebesgueAtomWeil.integral_norm_sq_paperFT_eq hcd hcf
-  simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs] at hpl
-  have hint : Integrable (fun t : ℝ => ‖Zeta23.paperFT (cx f) (t : ℂ)‖ ^ 2) :=
-    integrable_normSq_paperFT_ofReal hf hfc
-  have hsub : ∫ t in (N : ℝ)..101 * N, ‖Zeta23.paperFT (cx f) (t : ℂ)‖ ^ 2 ≤
-      ∫ t, ‖Zeta23.paperFT (cx f) (t : ℂ)‖ ^ 2 := by
-    rw [intervalIntegral.integral_of_le (by linarith)]
-    exact setIntegral_le_integral hint (Eventually.of_forall fun t => sq_nonneg _)
+  have hf := contDiff_atomicTest hg N x
+  have hfc := hasCompactSupport_atomicTest hgsupp N x
   have hband := band_mass_ge hc hN x
-  have hfloor := splineBandFloor_ge hc
-  have hM := integral_tiltedUnitSpline_sq_pos
+  have hpl := band_le_two_pi_mass hf hfc (Nat.cast_nonneg N)
   have hS : 0 ≤ ∑ n ∈ Icc 1 N, x n ^ 2 := sum_nonneg fun n _ => sq_nonneg _
-  have hmain : growingMassConstant / c ^ 7 * ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) ≤
-      1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) := by
-    unfold growingMassConstant
-    have hfl : Real.sinh 1 ^ 8 / (64 * 161 ^ 4) ≤ c ^ 8 * splineBandFloor c := by
-      rw [div_le_iff₀ (pow_pos hc0 8)] at hfloor; linarith
-    rw [show 24 * (Real.sinh 1 ^ 8 / (64 * 161 ^ 4)) / (π * ∫ u, tiltedUnitSpline u ^ 2) / c ^ 7 *
-        (c / N * ∫ u, tiltedUnitSpline u ^ 2) =
-        24 * (Real.sinh 1 ^ 8 / (64 * 161 ^ 4)) / (π * c ^ 6 * N) by
-      field_simp; ring]
-    rw [div_le_iff₀ (by positivity)]
-    have : 1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) * (π * c ^ 6 * N) =
-        24 * (c ^ 8 * splineBandFloor c) := by field_simp; ring
-    rw [this]
-    linarith
-  calc _ ≤ 1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) * (∑ n ∈ Icc 1 N, x n ^ 2) :=
-        mul_le_mul_of_nonneg_right hmain hS
-    _ ≤ 1 / (2 * π) * ∫ t, ‖Zeta23.paperFT (cx f) (t : ℂ)‖ ^ 2 := by
-        rw [mul_assoc]
-        exact mul_le_mul_of_nonneg_left (hband.trans hsub) (by positivity)
-    _ = _ := hpl
+  have hcoef := mul_le_mul_of_nonneg_right (growingMass_coef_le hc hNR) hS
+  have hpi : 0 < 2 * π := Real.two_pi_pos
+  have : 1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) * (∑ n ∈ Icc 1 N, x n ^ 2) ≤
+      ∫ u, atomicTest N x (atomDilate tiltedUnitSpline (c / N)) u ^ 2 := by
+    rw [mul_assoc, one_div, inv_mul_le_iff₀ hpi]
+    exact hband.trans hpl
+  exact hcoef.trans this
 
 /-- The low-frequency cost constant of the Gamma reserve. -/
 def growingReserveCost : ℝ := (factorialSpanGammaOffset + Real.log 2) * (1 + 2 * Real.exp 1)
+
+theorem growingReserveCost_nonneg : 0 ≤ growingReserveCost :=
+  mul_nonneg (add_nonneg factorialSpanGammaOffset_nonneg (Real.log_nonneg (by norm_num)))
+    (by positivity)
 
 /-- **The Gamma reserve at growing overlap**: for every `1 ≤ c ≤ N`,
 `archForm f_x ≥ (κ c⁻⁷ log N − b c)(c/N)‖φ‖² Σ x_n²`. -/
@@ -154,15 +172,14 @@ theorem archForm_atomicTest_ge_growing {c : ℝ} (hc : 1 ≤ c) {N : ℕ} (hcN :
     (x : ℕ → ℝ) :
     (growingMassConstant / c ^ 7 * Real.log N - growingReserveCost * c) *
         ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) * (∑ n ∈ Icc 1 N, x n ^ 2) ≤
-      archForm (atomicTest N x (atomDilate tiltedUnitSpline (c / N))) := by
+      RHTower.archForm (atomicTest N x (atomDilate tiltedUnitSpline (c / N))) := by
   have hc0 : 0 < c := by linarith
   have hNR : (0 : ℝ) < N := hc0.trans_le hcN
   have hN : 1 ≤ N := by exact_mod_cast (hc.trans hcN)
   have hw : 0 < c / N := div_pos hc0 hNR
   obtain ⟨hg, hgsupp, hgc⟩ := atomDilate_facts contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero hw
-  set f := atomicTest N x (atomDilate tiltedUnitSpline (c / N))
-  have hf : ContDiff ℝ 2 f := contDiff_atomicTest hg N x
-  have hfc : HasCompactSupport f := hasCompactSupport_atomicTest hgsupp N x
+  have hf := contDiff_atomicTest hg N x
+  have hfc := hasCompactSupport_atomicTest hgsupp N x
   have hgamma := archForm_ge_log_band_sub_mass hf hfc hNR
   have hband := band_mass_ge hc hN x
   have hmass := integral_atomicTest_sq_le_of_le_horizon hg.continuous hgc hc0 hcN hgsupp x
@@ -172,26 +189,11 @@ theorem archForm_atomicTest_ge_growing {c : ℝ} (hc : 1 ≤ c) {N : ℕ} (hcN :
   have hlogN : 0 ≤ Real.log N := Real.log_nonneg (by exact_mod_cast hN)
   have hM := integral_tiltedUnitSpline_sq_pos
   have hS : 0 ≤ ∑ n ∈ Icc 1 N, x n ^ 2 := sum_nonneg fun n _ => sq_nonneg _
-  have hfloor := splineBandFloor_ge hc
-  have hfl : Real.sinh 1 ^ 8 / (64 * 161 ^ 4) ≤ c ^ 8 * splineBandFloor c := by
-    rw [div_le_iff₀ (pow_pos hc0 8)] at hfloor; linarith
-  -- the band term
+  have hcoef := growingMass_coef_le hc hNR
   have hbandTerm : growingMassConstant / c ^ 7 * Real.log N *
       ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) * (∑ n ∈ Icc 1 N, x n ^ 2) ≤
-      Real.log N / (2 * π) *
-        ∫ t in (N : ℝ)..101 * N, ‖Zeta23.paperFT (cx f) (t : ℂ)‖ ^ 2 := by
-    have hcoef : growingMassConstant / c ^ 7 * ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) ≤
-        1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) := by
-      unfold growingMassConstant
-      rw [show 24 * (Real.sinh 1 ^ 8 / (64 * 161 ^ 4)) / (π * ∫ u, tiltedUnitSpline u ^ 2) /
-          c ^ 7 * (c / N * ∫ u, tiltedUnitSpline u ^ 2) =
-          24 * (Real.sinh 1 ^ 8 / (64 * 161 ^ 4)) / (π * c ^ 6 * N) by
-        field_simp; ring]
-      rw [div_le_iff₀ (by positivity)]
-      have : 1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N) * (π * c ^ 6 * N) =
-          24 * (c ^ 8 * splineBandFloor c) := by field_simp; ring
-      rw [this]
-      linarith
+      Real.log N / (2 * π) * ∫ t in (N : ℝ)..101 * N,
+        ‖Zeta23.paperFT (cx (atomicTest N x (atomDilate tiltedUnitSpline (c / N)))) (t : ℂ)‖ ^ 2 := by
     calc _ = Real.log N * (growingMassConstant / c ^ 7 *
           ((c / N) * ∫ u, tiltedUnitSpline u ^ 2)) * (∑ n ∈ Icc 1 N, x n ^ 2) := by ring
       _ ≤ Real.log N * (1 / (2 * π) * (48 * c ^ 2 * splineBandFloor c / N)) *
@@ -200,21 +202,29 @@ theorem archForm_atomicTest_ge_growing {c : ℝ} (hc : 1 ≤ c) {N : ℕ} (hcN :
       _ = Real.log N / (2 * π) *
           (48 * c ^ 2 * splineBandFloor c / N * (∑ n ∈ Icc 1 N, x n ^ 2)) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_left hband (by positivity)
-  -- the low-frequency cost
-  have hcostTerm : (factorialSpanGammaOffset + Real.log 2) * (∫ u, f u ^ 2) ≤
+  have hB : 1 + 2 * Real.exp 1 * c ≤ (1 + 2 * Real.exp 1) * c := by
+    have := Real.exp_pos 1; nlinarith
+  have hcostTerm : (factorialSpanGammaOffset + Real.log 2) *
+      (∫ u, atomicTest N x (atomDilate tiltedUnitSpline (c / N)) u ^ 2) ≤
       growingReserveCost * c * ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) *
         (∑ n ∈ Icc 1 N, x n ^ 2) := by
-    have hB : 1 + 2 * Real.exp 1 * c ≤ (1 + 2 * Real.exp 1) * c := by
-      have := Real.exp_pos 1; nlinarith
+    have hG : 0 ≤ c / N * ∫ u, tiltedUnitSpline u ^ 2 := by positivity
     calc _ ≤ (factorialSpanGammaOffset + Real.log 2) *
           ((c / N * ∫ u, tiltedUnitSpline u ^ 2) * (1 + 2 * Real.exp 1 * c) *
             ∑ n ∈ Icc 1 N, x n ^ 2) := mul_le_mul_of_nonneg_left hmass hoff
       _ ≤ (factorialSpanGammaOffset + Real.log 2) *
           ((c / N * ∫ u, tiltedUnitSpline u ^ 2) * ((1 + 2 * Real.exp 1) * c) *
-            ∑ n ∈ Icc 1 N, x n ^ 2) := by
-          refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right
-            (mul_le_mul_of_nonneg_left hB (by positivity)) hS) hoff
+            ∑ n ∈ Icc 1 N, x n ^ 2) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hB hG) hS) hoff
       _ = _ := by unfold growingReserveCost; ring
+  have hexp : (growingMassConstant / c ^ 7 * Real.log N - growingReserveCost * c) *
+      ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) * (∑ n ∈ Icc 1 N, x n ^ 2) =
+      growingMassConstant / c ^ 7 * Real.log N *
+        ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) * (∑ n ∈ Icc 1 N, x n ^ 2) -
+      growingReserveCost * c * ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) *
+        (∑ n ∈ Icc 1 N, x n ^ 2) := by ring
+  rw [hexp]
   linarith
 
 /-- **The reserve grows along every schedule `c_N⁸ = o(log N)`.** -/
@@ -225,10 +235,7 @@ theorem tendsto_gammaReserve_growing {c : ℕ → ℝ} (hc : ∀ᶠ N in atTop, 
   have hlog : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hK := growingMassConstant_pos
-  have hcost : 0 ≤ growingReserveCost := by
-    unfold growingReserveCost
-    exact mul_nonneg (add_nonneg factorialSpanGammaOffset_nonneg
-      (Real.log_nonneg (by norm_num))) (by positivity)
+  have hcost := growingReserveCost_nonneg
   -- `log N / c_N⁷ ≥ c_N · (log N/c_N⁸) → ∞` and `c_N ≤ (log N / c_N⁷)·(c_N⁸/log N)`
   have hratio : Tendsto (fun N : ℕ => Real.log N / c N ^ 8) atTop atTop := by
     have hpos : ∀ᶠ N : ℕ in atTop, 0 < c N ^ 8 / Real.log N := by

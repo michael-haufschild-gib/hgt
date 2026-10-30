@@ -57,6 +57,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.WeilPrefixPayment
 import GaloisForLFunctions.CompletedArithmeticForms.BesselSpectralBand
 import GaloisForLFunctions.CompletedArithmeticForms.BesselBarrierPayment
 import GaloisForLFunctions.CompletedArithmeticForms.WignerSpectralBand
+import GaloisForLFunctions.CompletedArithmeticForms.WeilInverseCost
 
 /-!
 # Quantitative theory of completed arithmetic forms
