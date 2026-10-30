@@ -43,7 +43,6 @@ theorem exists_abs_jointWitnessCoefficient_le_uniform_overlap {φ : ℝ → ℝ}
       (18 + 24 / c) * (c / N + A₁ / M) * G := by
     rw [hG]
     field_simp [hc.ne', hN0.ne', hM.ne']
-    <;> ring
   have hratio : 24 / c ≤ (24 : ℝ) := by
     rw [div_le_iff₀ hc]
     linarith only [hc1]

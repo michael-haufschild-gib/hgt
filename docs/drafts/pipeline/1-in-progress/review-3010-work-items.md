@@ -34,6 +34,17 @@ These are the requested implications; no actual small-time growth envelope is as
 Input: `exists_card_deep_le_mul_nonrealZeroCount`. The bounded-count equivalence and
 `polylog_deep_density_of_polynomial_nonrealZeroCount` already exist.
 
+## Steklov index target
+
+For every `β>2`, the atomic Gram matrices of `steklovDCProfile` at width
+`superGevreyRatio β N / N` should have negative indices converging in `ℕ∞`
+to `HeckeKreinToeplitz.negIndex zetaKernel`.
+`TheExplicitSchedulesReachTheIndex` supplies finite spline families, Gram convergence,
+the atomic index upper bound and residue-class assembly.
+`SuperGevreyCriticalGrowth` supplies `exists_dcLogSynthesis` and the explicit schedule's
+`OverlapGrowthSuperGevrey` law. Its mollification and synthesis-error proofs already
+give the required logarithmic derivative class; the full-index transport remains to formalize.
+
 ## Gates
 
 - [x] Full task scope preserved.

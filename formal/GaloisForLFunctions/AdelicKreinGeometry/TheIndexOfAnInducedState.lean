@@ -252,9 +252,7 @@ theorem hermQuad_gram_extendFromSubgroup {H : Subgroup G} [Fintype (G ⧸ H)]
   rw [← Complex.re_sum]
   congr 1
   simp_rw [hsplit]
-  rw [Finset.sum_comm]
-  refine sum_congr rfl fun a _ => ?_
-  exact Finset.sum_comm
+  exact (sum_congr rfl fun a _ => Finset.sum_comm).trans Finset.sum_comm
 
 /-- **The squares that pay `ψ` pay the regular extension once per coset.** -/
 theorem negIndex_extendFromSubgroup_le {H : Subgroup G} [H.FiniteIndex] {ψ : H → ℂ}
@@ -324,9 +322,9 @@ theorem negIndex_extendFromSubgroup {H : Subgroup G} {ψ : H → ℂ} (hψ : IsH
     rw [ENat.card_eq_top_of_infinite, ENat.top_mul h0]
     refine ENat.eq_top_iff_forall_ge.mpr fun n => ?_
     obtain ⟨s, hs⟩ := Infinite.exists_subset_card_eq (G ⧸ H) n
-    have h1 : (1 : ℕ∞) ≤ negIndex ψ := ENat.one_le_iff_ne_zero.mpr h0
+    have h1 : (1 : ℕ∞) ≤ negIndex ψ := Order.one_le_iff_ne_zero.mpr h0
     calc (n : ℕ∞) = (s.card : ℕ∞) * 1 := by rw [hs, mul_one]
-      _ ≤ (s.card : ℕ∞) * negIndex ψ := mul_le_mul_left' h1 _
+      _ ≤ (s.card : ℕ∞) * negIndex ψ := by gcongr
       _ ≤ _ := hlow s
 
 /-- **Freeing the successor costs the index once per coset.** Off a subgroup of infinite index,

@@ -507,3 +507,6 @@ theorem eventually_logPowerHead_negative_family {A : ℝ} (hA : 0 < A) (K : ℕ)
   omega
 
 end GaloisForLFunctions.ArithmeticIndexDescent
+
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.eventually_eulerHead_negative_family
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.eventually_logPowerHead_negative_family

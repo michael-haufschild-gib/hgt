@@ -112,7 +112,8 @@ theorem sub_mul_xiSamePointResolvent_sub_logDeriv {s : ℂ} (hs : 1 < s.re) :
           (((q.1 : ℂ).re - 1 / 2) / normSq (s - (q.1 : ℂ)) +
             (((xiZeroCopyLineConjEquiv q).1 : ℂ).re - 1 / 2) /
               normSq (s - ((xiZeroCopyLineConjEquiv q).1 : ℂ))) := by
-        rw [h.tsum_add hr, xiZeroCopyLineConjEquiv.tsum_eq]
+        rw [h.tsum_add hr, xiZeroCopyLineConjEquiv.tsum_eq
+          (fun q : XiZeroCopy => ((q.1 : ℂ).re - 1 / 2) / normSq (s - (q.1 : ℂ)))]
         ring
       _ = ∑' q : XiZeroCopy, 2 * xiResolventDepthTerm s q :=
         tsum_congr (pair_xi_signed_depth hs)

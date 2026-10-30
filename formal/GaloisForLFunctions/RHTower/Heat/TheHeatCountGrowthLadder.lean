@@ -106,7 +106,7 @@ private theorem eventually_log_mul_exp_rpow_le_rpow {C K b ε : ℝ}
       with X hX hL
     have hmul := mul_le_mul_of_nonneg_right hX.le hL.le
     rw [Real.rpow_sub hL, Real.rpow_one] at hmul
-    simpa only [mul_div_assoc, div_mul_cancel₀ _ hL.ne'] using hmul
+    rwa [mul_assoc, div_mul_cancel₀ _ hL.ne'] at hmul
   have hprefactor : ∀ᶠ X : ℝ in atTop, C * Real.log X ≤ X ^ (ε / 2) := by
     have hsmall := ((isLittleO_log_rpow_atTop hhalf).const_mul_left C).bound (by norm_num : (0 : ℝ) < 1)
     filter_upwards [hsmall, eventually_ge_atTop (1 : ℝ)] with X hX hX1
