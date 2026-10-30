@@ -124,7 +124,7 @@ private theorem tendsto_log_power_zero {r : ℝ} (hr : r < 0) :
     Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ r) atTop (𝓝 0) := by
   have h := tendsto_inv_atTop_zero.comp ((tendsto_rpow_atTop (neg_pos.mpr hr)).comp
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop))
-  simpa only [Real.rpow_neg (Real.log_natCast_nonneg _), inv_inv] using h
+  simpa only [Function.comp_def, Real.rpow_neg (Real.log_natCast_nonneg _), inv_inv] using h
 
 /-- A fixed overlap power is paid by the logarithmic Gram denominator when its exponent is below one. -/
 theorem tendsto_packetOverlap_pow_div_log {α : ℝ} (k : ℕ) (hk : α * (k : ℝ) < 1) :
@@ -144,7 +144,7 @@ theorem tendsto_relativeWeilResidualScale_zero {α : ℝ} (hα : α < 1 / 40) :
     (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop))
   have hsecond := tendsto_log_power_zero (r := 20 * α - 1 / 2) (by linarith only [hα])
   have h := hfirst.add hsecond
-  simp only [zero_mul, zero_add, Nat.mul_one] at h
+  simp only [Function.comp_def, zero_mul, zero_add, Nat.mul_one] at h
   apply h.congr'
   filter_upwards [eventually_ge_atTop 2] with N hN
   have hL : 0 < Real.log (N : ℝ) :=
@@ -182,7 +182,8 @@ theorem tendsto_tiltedWeil_scaled_residual_norm {α : ℝ} (hα0 : 0 < α) (hα 
   rw [Real.sqrt_zero] at h
   apply h.congr
   intro N
-  exact Real.sqrt_sq (by dsimp only [logarithmicPacketOverlap]; positivity)
+  exact Real.sqrt_sq (mul_nonneg
+    (pow_nonneg (Real.rpow_nonneg (Real.log_natCast_nonneg N) α) 7) (norm_nonneg _))
 
 /-- The actual residual is small relative to the actual completed conductor energy. -/
 theorem tendsto_tiltedWeil_relative_residual_norm {α : ℝ} (hα0 : 0 < α) (hα : α < 1 / 40)

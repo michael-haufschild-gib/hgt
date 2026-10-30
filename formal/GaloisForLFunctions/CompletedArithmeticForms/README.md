@@ -557,6 +557,19 @@ Gamma/downward cancellation, and the upward shell all enter this estimate.
 See [WeilPolynomialResidual](WeilPolynomialResidual.lean),
 `exists_tiltedWeil_polynomial_residual_bound`.
 
+Every fixed completed conductor has matching overlap decay:
+\[
+\kappa c^{-7}\le E_m(c)\le D_m c^{-7},\qquad c\ge m>0,
+\quad \kappa=\frac{2\,\mathrm{tiltedSplineTailConstant}}{\int\phi^2}>0.
+\]
+The literal Fourier spectrum has eighth-power decay; its positive coprime-tail
+series gives $E_m(c)\le[m/\varphi(m)]E_1(c/m)$ and the upper bound.
+Consequently one finite constant bounds every energy ratio in any fixed
+finite positive-conductor family at sufficiently large overlap.
+See [ConductorOverlapDecay](ConductorOverlapDecay.lean),
+`tiltedConductorEnergy_two_sided` and
+`exists_finite_conductor_energy_ratio_bound`.
+
 ## Exact native-tail reserves and their rank boundary
 
 Write $(r)_n=\prod_{j<n}(r+j)$. The scaled Gamma moments $m_k=gw^k(r)_k$, with
@@ -1178,6 +1191,33 @@ This retains the negative argument-derivative term. A finite positive
 frequency band alone does not pay the polynomial-weighted signed tail.
 See [BesselBarrierPayment](BesselBarrierPayment.lean),
 `besselArgDeriv_re_lower_on_band` and `besselSignedRadialCombination_pos`.
+
+The literal Schläfli density has the exact first moment and second-moment bound
+\[
+\int_0^\infty t^2e^{-a\cosh t}\,dt
+\le\int_0^\infty t\sinh(t)e^{-a\cosh t}\,dt=K_0(a)/a.
+\]
+Differentiating the exact complex-order recurrence pays the first moment.
+The quadratic cosine defect then gives
+$1-\tau^2/(2a)\le K_{i\tau}(a)/K_0(a)\le1$ for every real $\tau$ and $a>0$.
+In particular the ratio tends to one at fixed order as $a\to\infty$.
+See [BesselGaussianMoments](BesselGaussianMoments.lean),
+`integral_bessel_first_moment`, `bessel_imaginary_ratio_bounds`, and
+`tendsto_bessel_imaginary_ratio_one`.
+
+The entire nonoscillatory band retains a Gaussian lower density:
+\[
+K_{i\tau}(a)\ge e^{-\tau^2/a}K_0(a)>0,\qquad a>0,\ |\tau|\le a.
+\]
+The Wronskian against $e^{-\tau^2/a}K_0(a)$ has nonnegative derivative
+and zero limit at infinity. The literal normalization fixes its comparison
+constant. For $a\ge6$, the full signed radial combination consequently
+dominates $(a^2-6a+3)e^{-\tau^2/a}K_0(a)$.
+See [BesselGaussianReserve](BesselGaussianReserve.lean),
+`modifiedBesselKOrder_gaussian_lower` and
+`besselSignedRadialCombination_gaussian_lower`.
+A linear physical rank horizon still requires polynomial-weighted control
+outside the band and payment of every native product fibre.
 
 For the literal reflected theta-atom radial profile,
 $$P_a(v)=a^2(a^2+9-6a\cosh(2v))e^{-a\cosh(2v)},$$

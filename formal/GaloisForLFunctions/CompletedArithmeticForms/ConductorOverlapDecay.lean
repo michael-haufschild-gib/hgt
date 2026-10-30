@@ -66,7 +66,7 @@ private theorem tilted_spectrum_decay {t : ℝ} (ht : 0 < t) :
   rw [hrpow, hx]
   unfold spectrumDecayCoefficient
   field_simp
-  <;> ring
+  ring
 
 private theorem tilted_spectrum_tail_decay {z : ℝ} (hz : 0 < z) :
     (∫ t in Ioi z, shellSpectrum tiltedUnitSpline t) ≤
@@ -95,7 +95,7 @@ private theorem sum_inverse_squares_le_two (K : ℕ) :
     _ ≤ ∑ n ∈ range K, (2 / ((n : ℝ) + 1) - 2 / ((n : ℝ) + 2)) :=
       sum_le_sum fun n _ => h n
     _ = 2 - 2 / ((K : ℝ) + 1) := by
-      convert Finset.sum_range_sub' (fun n : ℕ => 2 / ((n : ℝ) + 1)) K using 1 <;> simp
+      convert Finset.sum_range_sub' (fun n : ℕ => 2 / ((n : ℝ) + 1)) K using 1 <;> norm_num [add_assoc]
     _ ≤ 2 := sub_le_self _ (by positivity)
 
 private theorem hasSum_tilted_pole {c : ℝ} (hc : 0 < c) :
@@ -148,7 +148,7 @@ private theorem tilted_pole_energy_upper {c : ℝ} (hc : 1 ≤ c) :
           ((spectrumDecayCoefficient / 7) * ((1 / ((n : ℝ) + 1)) * c ^ (-7 : ℝ))) :=
         mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_right hp (by positivity)) hA) (by positivity)
-      _ = _ := by dsimp only [D]; ring
+      _ = _ := by dsimp only [D]; field_simp
   calc
     _ ≤ ∑ n ∈ range K, D * (1 / ((n : ℝ) + 1) ^ 2) := sum_le_sum fun n _ => hterm n
     _ = D * ∑ n ∈ range K, 1 / ((n : ℝ) + 1) ^ 2 := (mul_sum _ _ _).symm
@@ -194,13 +194,12 @@ theorem tiltedConductorEnergy_two_sided {m : ℕ} (hm : 0 < m) {c : ℝ} (hmc : 
   refine ⟨tiltedUnitSpline_completedConductorEnergy_ge_polynomial_floor hc1 hm, ?_⟩
   have hy : 1 ≤ c / m := (le_div_iff₀ hm0).mpr (by simpa using hmc)
   have h := mul_le_mul_of_nonneg_left (tilted_pole_energy_upper hy)
-    (div_nonneg hm0.le (Nat.cast_nonneg _))
+    (div_nonneg hm0.le (Nat.cast_nonneg m.totient))
   refine (tilted_conductor_le_pole hc0 hm).trans (h.trans_eq ?_)
   rw [Real.rpow_neg (div_pos hc0 hm0).le, show (c / (m : ℝ)) ^ (7 : ℝ) =
     (c / m) ^ (7 : ℕ) by norm_cast]
   unfold tiltedConductorUpperCoefficient
   field_simp
-  <;> ring
 
 private theorem tiltedConductorEnergy_ratio_le {m l : ℕ} (hm : 0 < m) (hl : 0 < l)
     {c : ℝ} (hmc : (m : ℝ) ≤ c) (hlc : (l : ℝ) ≤ c) :

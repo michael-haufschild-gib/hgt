@@ -1,0 +1,31 @@
+# Quasi-RH from effective conductor confinement
+
+- **ID:** quasi-rh-effective-conductor-confinement
+- **Stage:** 1-in-progress
+- **Type:** CONJECTURE
+- **Statement:** The literal complete Weil form admits a lower bound on fixed-width difference-bump tests of separation `v` by `-C exp(σv)`, for some fixed `0≤σ<1/2`.
+
+## Required conclusion
+
+Prove `Re ρ≤1/2+σ<1` for every nontrivial zeta zero, or prove an obstruction to the specified conductor-confinement route. Failure of a coarse estimate alone does not retire the route. Any obstruction requires its strongest positive survivor and a Lean proof.
+
+## Mathematical route
+
+Write `W=W_(N,c)`, `v_m` for normalized Ramanujan vectors, `E_m(c)` for completed conductor energies, and `R_m=Wv_m-E_m(c)v_m`.
+
+1. Retain the coprime-tail floor `E_m(c)≥δ(m/φ(m)) min(1,(m/c)^7)`, with one explicit `δ>0`.
+2. Quantify conductor-coordinate mass of every negative unit eigenvector at growing overlap. Existing bounded-overlap confinement gives mass `≥1/18` on a finite family, but its conductor range and horizon depend on overlap.
+3. Bound the actual weighted residual sum `Σ_(m∈S) ||R_m||²/(E_m(c)+B)²`. A value below `1/18` excludes eigenvalues below `-B`, provided the actual negative eigenvectors have the stated coordinate mass.
+4. Include coefficient normalization, separated-bump synthesis error, poles, prime powers, and horizon boundaries. The resulting physical Weil loss must be `O(exp(σv))` with fixed `σ<1/2`.
+
+## Established inputs and open estimates
+
+- Fixed-conductor actual squared residual: `||R_m||²≤K_m c^10/sqrt(log N)`, beyond a conductor-dependent horizon.
+- Fixed finite conductor packets are positive for `c≤(log N)^α`, `α<1/48`.
+- Growing Gamma reserve: `κ c^-7 log N-bc`, with explicit constants, for `1≤c≤N`.
+- Conductor-sensitive floor: formalized in [conductor-scale-controls-completed-energy.md](../3-formalized/conductor-scale-controls-completed-energy.md), with standard-only axioms.
+- **Open:** effective negative-eigenvector confinement, growing-conductor weighted source estimate, and physical loss with exponent below `1/2`.
+
+The current finite approximation selects a prime threshold exponential in its defect bound, then all divisors of a valuation-box modulus. Neither this qualitative construction nor fixed-modulus prime asymptotics supply the needed growing-conductor estimate.
+
+The exact ratio-prime identity permits a coarser horizon-uniform counterterm `P_N+D_N≤(log N+C)‖x‖²`: boundedness of `A(y)-log y` suffices. Using it avoids a conductor-dependent convergence horizon when the allowed defect loss shrinks with overlap. The next source estimate is a polynomial complete reserve `W_(N,c)≥a c^-7 D_N-C c^9‖x‖²` on `N≥C'c^8`; it would bound the defect of negative unit vectors by `O(c^16)`.

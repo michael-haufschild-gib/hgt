@@ -71,6 +71,7 @@ theorem tendsto_tiltedWeil_scaled_packet_entry_error {α : ℝ}
   let r (N : ℕ) := Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N)
       (normalizedRamanujanHorizonVector m N) - E N • normalizedRamanujanHorizonVector m N
   have hres : Tendsto (fun N : ℕ => ‖c N ^ 7 • r N‖) atTop (𝓝 0) := by
+    dsimp only [c, r, E]
     simpa only [norm_smul, Real.norm_eq_abs,
       abs_of_nonneg (pow_nonneg (Real.rpow_nonneg (Real.log_natCast_nonneg _) α) 7)] using
       tendsto_tiltedWeil_scaled_residual_norm hα0 hα m.property
@@ -99,7 +100,7 @@ theorem tendsto_tiltedWeil_scaled_packet_entry_error {α : ℝ}
   simp only [zero_add] at h
   apply h.congr
   intro N
-  simp only [r, real_inner_smul_left, inner_sub_left, E]
+  simp only [r, real_inner_smul_left, inner_sub_left, E, c]
   split_ifs <;> ring
 
 /-- Every fixed distinct conductor family is positive for all coefficients at the same growing overlap. -/

@@ -37,9 +37,9 @@ theorem hasDerivAt_besselArgDeriv_system {x : ℝ} (hx : 0 < x) (ν : ℂ) :
     (hasDerivAt_modifiedBesselKOrder_arg hx ν)).sub
       (hasDerivAt_modifiedBesselKOrder_arg_succ hx ν)
   apply h.congr_deriv
-  dsimp only [besselArgDeriv]
+  dsimp only [besselArgDeriv, Pi.div_apply, Pi.mul_apply, Pi.sub_apply]
   field_simp [hxC]
-  <;> ring
+  ring
 
 theorem hasDerivAt_besselBandSourceDeriv {x : ℝ} (hx : 0 < x) (τ : ℝ) :
     HasDerivAt (besselBandSourceDeriv τ)
@@ -55,7 +55,8 @@ theorem hasDerivAt_besselBandSourceDeriv {x : ℝ} (hx : 0 < x) (τ : ℝ) :
     (((1 + ((τ : ℂ) * I) ^ 2 / (x : ℂ) ^ 2) *
       modifiedBesselKOrder x ((τ : ℂ) * I) - besselArgDeriv ((τ : ℂ) * I) x / x).re) x at h
   rw [he] at h
-  simpa only [Complex.sub_re, Complex.re_ofReal_mul, Complex.div_ofReal_re] using h
+  simpa only [Complex.sub_re, Complex.re_ofReal_mul, Complex.div_ofReal_re,
+    besselBandSource, besselBandSourceDeriv] using h
 
 theorem besselBandSource_zero_deriv_le {x : ℝ} (hx : 0 < x) :
     besselBandSourceDeriv 0 x ≤ -besselBandSource 0 x := by
@@ -65,9 +66,13 @@ theorem besselBandSource_zero_deriv_le {x : ℝ} (hx : 0 < x) :
     intro t _
     simp only [realBesselOrderKernel, zero_mul, one_mul, Real.cosh_zero, mul_one]
     exact le_mul_of_one_le_right (Real.exp_pos _).le (Real.one_le_cosh t)
+  have hzero := modifiedBesselKOrder_ofReal hx 0
+  have hone := modifiedBesselKOrder_ofReal hx 1
+  simp only [Complex.ofReal_zero] at hzero
+  simp only [Complex.ofReal_one] at hone
   simpa only [besselBandSourceDeriv, besselArgDeriv, besselBandSource,
     Complex.ofReal_zero, zero_mul, zero_div, zero_add, zero_sub,
-    modifiedBesselKOrder_ofReal hx 0, modifiedBesselKOrder_ofReal hx 1,
+    hzero, hone,
     Complex.neg_re, Complex.ofReal_re] using neg_le_neg h
 
 /-- The Gaussian comparison Wronskian, retaining the full source derivatives. -/
@@ -92,9 +97,9 @@ theorem hasDerivAt_besselGaussianFlux {x : ℝ} (hx : 0 < x) (τ : ℝ) :
   have h := he.mul ((((hid.mul hD).mul hg).sub (hf.mul (hid.mul hG))).sub
     ((hc.mul hf).mul hg))
   apply h.congr_deriv
-  dsimp only [id_eq]
+  dsimp only [id_eq, Pi.div_apply, Pi.mul_apply, Pi.sub_apply]
   field_simp [hx.ne']
-  <;> ring
+  ring
 
 private theorem tendsto_arg_mul_bessel_zero (ν : ℂ) :
     Tendsto (fun x : ℝ => (x : ℂ) * modifiedBesselKOrder x ν) atTop (𝓝 0) := by
@@ -121,15 +126,16 @@ private theorem tendsto_arg_mul_besselDeriv_zero (ν : ℂ) :
   dsimp only [besselArgDeriv]
   have hxC : (x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
   field_simp [hxC]
-  <;> ring
 
 theorem tendsto_besselGaussianFlux_zero (τ : ℝ) :
     Tendsto (besselGaussianFlux τ) atTop (𝓝 0) := by
   have hf (t : ℝ) : Tendsto (besselBandSource t) atTop (𝓝 0) := by
+    change Tendsto (fun x : ℝ => (modifiedBesselKOrder x ((t : ℂ) * I)).re) atTop (𝓝 0)
     simpa only [Function.comp_def, Complex.zero_re] using
       Complex.continuous_re.continuousAt.tendsto.comp
         (tendsto_modifiedBesselKOrder_arg_zero ((t : ℂ) * I))
   have hD (t : ℝ) : Tendsto (fun x => x * besselBandSourceDeriv t x) atTop (𝓝 0) := by
+    dsimp only [besselBandSourceDeriv]
     simpa only [Function.comp_def, Complex.zero_re, Complex.re_ofReal_mul] using
       Complex.continuous_re.continuousAt.tendsto.comp
         (tendsto_arg_mul_besselDeriv_zero ((t : ℂ) * I))
@@ -137,8 +143,13 @@ theorem tendsto_besselGaussianFlux_zero (τ : ℝ) :
     simpa only [div_eq_mul_inv, mul_zero] using
       (tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (𝓝 0)).const_mul (τ ^ 2)
   have he : Tendsto (fun x : ℝ => Real.exp (-τ ^ 2 / x)) atTop (𝓝 1) := by
-    simpa only [neg_div, neg_zero, Real.exp_zero] using hc.neg.exp
-  simpa only [besselGaussianFlux, mul_zero, sub_zero] using
+    simpa only [Function.comp_def, neg_div, neg_zero, Real.exp_zero] using
+      Real.continuous_exp.continuousAt.tendsto.comp hc.neg
+  change Tendsto (fun x : ℝ => Real.exp (-τ ^ 2 / x) *
+    (x * besselBandSourceDeriv τ x * besselBandSource 0 x -
+      besselBandSource τ x * (x * besselBandSourceDeriv 0 x) -
+      τ ^ 2 / x * besselBandSource τ x * besselBandSource 0 x)) atTop (𝓝 0)
+  simpa only [mul_zero, sub_zero] using
     he.mul (((hD τ).mul (hf 0)).sub ((hf τ).mul (hD 0)) |>.sub
       ((hc.mul (hf τ)).mul (hf 0)))
 
@@ -189,11 +200,12 @@ theorem modifiedBesselKOrder_gaussian_lower {a τ : ℝ} (ha : 0 < a) (hτ : |τ
     have h := (hasDerivAt_besselBandSource hx τ).div
       ((((hasDerivAt_const x (-τ ^ 2)).div (hasDerivAt_id x) hx.ne').exp).mul
         (hasDerivAt_besselBandSource hx 0)) (hHpos x hx).ne'
+    have hg : 0 < besselBandSource 0 x :=
+      modifiedBesselKOrder_re_pos_on_band hx (by simpa using hx.le)
     apply h.congr_deriv
-    dsimp only [besselGaussianFlux, H, id_eq]
-    field_simp [hx.ne', (Real.exp_pos (-τ ^ 2 / x)).ne',
-      (modifiedBesselKOrder_re_pos_on_band hx (by simpa using hx.le : |(0 : ℝ)| ≤ x)).ne']
-    <;> ring
+    dsimp only [besselGaussianFlux, H, id_eq, Pi.div_apply, Pi.mul_apply]
+    field_simp [hx.ne', (Real.exp_pos (-τ ^ 2 / x)).ne', hg.ne']
+    ring
   have hm : MonotoneOn (fun x => -R x) (Ici a) := by
     refine monotoneOn_of_hasDerivWithinAt_nonneg (convex_Ici a)
       (f' := fun x => -(besselGaussianFlux τ x / (x * H x ^ 2))) ?_ ?_ ?_
@@ -206,12 +218,18 @@ theorem modifiedBesselKOrder_gaussian_lower {a τ : ℝ} (ha : 0 < a) (hτ : |τ
       exact neg_nonneg.mpr (div_nonpos_of_nonpos_of_nonneg
         (besselGaussianFlux_nonpos hx0 (hτ.trans (interior_subset hx))) (by positivity))
   have hexp : Tendsto (fun x : ℝ => Real.exp (-τ ^ 2 / x)) atTop (𝓝 1) := by
-    simpa only [div_eq_mul_inv, mul_zero, Real.exp_zero] using
-      ((tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (𝓝 0)).const_mul (-τ ^ 2)).exp
+    simpa only [Function.comp_def, div_eq_mul_inv, mul_zero, Real.exp_zero] using
+      Real.continuous_exp.continuousAt.tendsto.comp
+        ((tendsto_inv_atTop_zero : Tendsto (fun x : ℝ => x⁻¹) atTop (𝓝 0)).const_mul (-τ ^ 2))
   have hlim : Tendsto R atTop (𝓝 1) := by
     have h := (tendsto_bessel_imaginary_ratio_one τ).div hexp one_ne_zero
-    simpa only [R, H, besselBandSource, Complex.ofReal_zero, zero_mul, div_div,
-      mul_comm (Real.exp (-τ ^ 2 / _)), div_self one_ne_zero] using h
+    simp only [div_one] at h
+    apply h.congr
+    intro x
+    dsimp only [R, H, besselBandSource, Pi.div_apply]
+    simp only [Complex.ofReal_zero, zero_mul, div_div]
+    congr 1
+    ring
   have hR : 1 ≤ R a := by
     apply le_of_tendsto hlim
     filter_upwards [eventually_ge_atTop a] with x hx
@@ -230,9 +248,9 @@ theorem besselSignedRadialCombination_gaussian_lower {a τ : ℝ}
   have hp : 0 ≤ a ^ 2 - 6 * a + 3 := by
     have h := mul_nonneg ha0.le (sub_nonneg.mpr ha)
     nlinarith only [h]
-  exact (by simpa only [mul_assoc] using
-    mul_le_mul_of_nonneg_left (modifiedBesselKOrder_gaussian_lower ha0 hτ) hp).trans
-      (besselSignedRadialCombination_lower ha0 hτ)
+  have h := (mul_le_mul_of_nonneg_left (modifiedBesselKOrder_gaussian_lower ha0 hτ) hp).trans
+    (besselSignedRadialCombination_lower ha0 hτ)
+  simpa only [mul_assoc] using h
 
 #print axioms hasDerivAt_besselGaussianFlux
 #print axioms besselGaussianFlux_nonpos

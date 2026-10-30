@@ -120,6 +120,12 @@ on the joint domain with $c/N\le1/3$. Every prime, polar, Gamma,
 cross, and upward-shell term is retained.
 Lean: `WeilPolynomialResidual`.
 
+For every fixed positive conductor, the actual energy has matching bounds
+$\kappa c^{-7}\le E_m(c)\le D_m c^{-7}$ for $c\ge m$,
+with common $\kappa>0$. The positive coprime-tail series pays the upper bound.
+Every fixed finite conductor family has uniformly bounded energy ratios.
+Lean: `ConductorOverlapDecay`.
+
 The literal Schläfli source has $K_{i\tau}(a)>0$ for $a>0$, $|\tau|\le a$.
 Every complex-order zero satisfies $\Re\nu=0$ and $a<|\Im\nu|$.
 The energy flux proves zero exclusion throughout this joint argument-order
@@ -133,6 +139,18 @@ $$ (a^2+9)K_{i\tau}(a)+6aK'_{i\tau}(a)
 \ge(a^2-6a+3)K_{i\tau}(a)>0\qquad(a\ge6).$$
 The decaying barrier flux has negative derivative throughout the band.
 Lean: `BesselBarrierPayment`.
+
+The exact Schläfli first moment is
+$\int_0^\infty t\sinh(t)e^{-a\cosh t}\,dt=K_0(a)/a$; it bounds the
+second moment and gives $1-\tau^2/(2a)\le K_{i\tau}(a)/K_0(a)\le1$.
+The ratio tends to one for every fixed real order parameter $\tau$.
+Lean: `BesselGaussianMoments`.
+
+Throughout $a>0$, $|\tau|\le a$, the literal source obeys
+$K_{i\tau}(a)\ge e^{-\tau^2/a}K_0(a)>0$.
+For $a\ge6$, its complete signed radial combination dominates
+$(a^2-6a+3)e^{-\tau^2/a}K_0(a)$.
+Lean: `BesselGaussianReserve`.
 
 The actual radial Wigner transform is exactly
 $$\int_{\mathbb R}a^2(a^2+9-6a\cosh(2v))e^{-a\cosh(2v)}e^{2ibv}\,dv

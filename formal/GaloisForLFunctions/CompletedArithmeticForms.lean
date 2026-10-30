@@ -65,6 +65,9 @@ import GaloisForLFunctions.CompletedArithmeticForms.UpwardSourcePayment
 import GaloisForLFunctions.CompletedArithmeticForms.WeilPolynomialResidual
 import GaloisForLFunctions.CompletedArithmeticForms.WeilGreenTail
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorLogLaw
+import GaloisForLFunctions.CompletedArithmeticForms.BesselGaussianMoments
+import GaloisForLFunctions.CompletedArithmeticForms.BesselGaussianReserve
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorOverlapDecay
 
 /-!
 # Quantitative theory of completed arithmetic forms

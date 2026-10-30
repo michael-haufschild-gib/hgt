@@ -17,6 +17,11 @@ namespace GaloisForLFunctions.CompletedArithmeticForms
 
 open HTGeometry
 
+private theorem re_integral_complex {f : ℝ → ℂ} {μ : Measure ℝ} (hf : Integrable f μ) :
+    (∫ t, f t ∂μ).re = ∫ t, (f t).re ∂μ := by
+  rw [← Complex.reCLM_apply, ← ContinuousLinearMap.integral_comp_comm Complex.reCLM hf]
+  rfl
+
 theorem integrableOn_besselOrderKernelDeriv {a : ℝ} (ha : 0 < a) (ν : ℂ) :
     IntegrableOn (besselOrderKernelDeriv a ν) (Ioi 0) := by
   have h := (integrable_mul_exp_neg_mul_sq
@@ -47,11 +52,15 @@ theorem integral_besselOrderKernelDeriv_one {a : ℝ} (ha : 0 < a) :
       modifiedBesselKOrder a 0 / (a : ℂ) := by
   let D (ν : ℂ) := ∫ t in Ioi (0 : ℝ), besselOrderKernelDeriv a ν t
   have hl : HasDerivAt (fun z : ℂ => modifiedBesselKOrder a (z + 1)) (D 1) 0 := by
-    simpa only [zero_add, mul_one] using
-      (hasDerivAt_modifiedBesselKOrder ha (0 + 1)).comp 0 ((hasDerivAt_id 0).add_const 1)
+    dsimp only [D]
+    simpa only [Function.comp_def, id_eq, zero_add, mul_one] using
+      (hasDerivAt_modifiedBesselKOrder ha (0 + 1 : ℂ)).comp (0 : ℂ)
+        ((hasDerivAt_id (0 : ℂ)).add_const 1)
   have hm : HasDerivAt (fun z : ℂ => modifiedBesselKOrder a (z - 1)) (D (-1)) 0 := by
-    simpa only [zero_sub, mul_one] using
-      (hasDerivAt_modifiedBesselKOrder ha (0 - 1)).comp 0 ((hasDerivAt_id 0).sub_const 1)
+    dsimp only [D]
+    simpa only [Function.comp_def, id_eq, zero_sub, mul_one] using
+      (hasDerivAt_modifiedBesselKOrder ha (0 - 1 : ℂ)).comp (0 : ℂ)
+        ((hasDerivAt_id (0 : ℂ)).sub_const 1)
   have hr := hm.add ((((hasDerivAt_id (0 : ℂ)).const_mul 2).div_const (a : ℂ)).mul
     (hasDerivAt_modifiedBesselKOrder ha 0))
   have heq : (fun z : ℂ => modifiedBesselKOrder a (z + 1)) =
@@ -68,8 +77,9 @@ theorem integral_besselOrderKernelDeriv_one {a : ℝ} (ha : 0 < a) :
 theorem integrableOn_bessel_first_moment {a : ℝ} (ha : 0 < a) :
     IntegrableOn (fun t : ℝ => Real.exp (-a * Real.cosh t) * (t * Real.sinh t)) (Ioi 0) := by
   have h := (integrableOn_besselOrderKernelDeriv ha 1).re
-  convert h using 1
-  ext t
+  refine h.congr (Eventually.of_forall fun t => ?_)
+  change (besselOrderKernelDeriv a 1 t).re =
+    Real.exp (-a * Real.cosh t) * (t * Real.sinh t)
   simp only [besselOrderKernelDeriv, one_mul, ← Complex.ofReal_sinh,
     ← Complex.ofReal_cosh, ← Complex.ofReal_mul, ← Complex.ofReal_neg,
     ← Complex.ofReal_exp, Complex.ofReal_re]
@@ -79,7 +89,7 @@ theorem integral_bessel_first_moment {a : ℝ} (ha : 0 < a) :
     (∫ t in Ioi (0 : ℝ), Real.exp (-a * Real.cosh t) * (t * Real.sinh t)) =
       (modifiedBesselKOrder a 0).re / a := by
   have h := congrArg Complex.re (integral_besselOrderKernelDeriv_one ha)
-  rw [← integral_re (integrableOn_besselOrderKernelDeriv ha 1)] at h
+  rw [re_integral_complex (integrableOn_besselOrderKernelDeriv ha 1)] at h
   simpa only [besselOrderKernelDeriv, one_mul, ← Complex.ofReal_sinh,
     ← Complex.ofReal_cosh, ← Complex.ofReal_mul, ← Complex.ofReal_neg,
     ← Complex.ofReal_exp, Complex.ofReal_re, Complex.div_ofReal_re] using h
@@ -117,7 +127,7 @@ private theorem cosine_defect_le (y : ℝ) : 1 - Real.cos y ≤ y ^ 2 / 2 := by
 theorem modifiedBesselKOrder_imaginary_re_integral {a : ℝ} (ha : 0 < a) (τ : ℝ) :
     (modifiedBesselKOrder a ((τ : ℂ) * I)).re =
       ∫ t in Ioi (0 : ℝ), Real.exp (-a * Real.cosh t) * Real.cos (τ * t) := by
-  rw [modifiedBesselKOrder, ← integral_re (integrableOn_besselOrderKernel ha _)]
+  rw [modifiedBesselKOrder, re_integral_complex (integrableOn_besselOrderKernel ha _)]
   apply integral_congr_ae
   filter_upwards with t
   rw [besselOrderKernel_eq_ofReal_mul, Complex.re_ofReal_mul]
@@ -132,16 +142,17 @@ theorem bessel_imaginary_ratio_bounds {a : ℝ} (ha : 0 < a) (τ : ℝ) :
     (modifiedBesselKOrder a ((τ : ℂ) * I)).re / (modifiedBesselKOrder a 0).re ≤ 1 := by
   let w : ℝ → ℝ := fun t => Real.exp (-a * Real.cosh t)
   have hw : IntegrableOn w (Ioi 0) := by
-    simpa only [realBesselOrderKernel, zero_mul, Real.cosh_zero, mul_one] using
-      integrableOn_realBesselOrderKernel ha 0
+    refine (integrableOn_realBesselOrderKernel ha 0).congr (Eventually.of_forall fun t => ?_)
+    simp only [realBesselOrderKernel, zero_mul, Real.cosh_zero, mul_one]
+    rfl
   have hf : IntegrableOn (fun t => w t * Real.cos (τ * t)) (Ioi 0) := by
     have h := (integrableOn_besselOrderKernel ha ((τ : ℂ) * I)).re
-    convert h using 1
-    ext t
+    refine h.congr (Eventually.of_forall fun t => ?_)
+    change (besselOrderKernel a ((τ : ℂ) * I) t).re = w t * Real.cos (τ * t)
     rw [besselOrderKernel_eq_ofReal_mul, Complex.re_ofReal_mul]
     have he : (τ : ℂ) * I * (t : ℂ) = ((τ * t : ℝ) : ℂ) * I := by push_cast; ring
     rw [he, Complex.cosh_mul_I]
-    simp only [Complex.cos_ofReal_re]
+    simp only [Complex.cos_ofReal_re, w]
   have hg : (∫ t in Ioi (0 : ℝ), w t) = (modifiedBesselKOrder a 0).re := by
     simpa only [Complex.ofReal_zero, zero_mul, Real.cos_zero, mul_one]
       using (modifiedBesselKOrder_imaginary_re_integral ha 0).symm
@@ -155,14 +166,17 @@ theorem bessel_imaginary_ratio_bounds {a : ℝ} (ha : 0 < a) (τ : ℝ) :
   have hd : (modifiedBesselKOrder a 0).re -
       (modifiedBesselKOrder a ((τ : ℂ) * I)).re ≤
         τ ^ 2 / 2 * ((modifiedBesselKOrder a 0).re / a) := by
-    rw [modifiedBesselKOrder_imaginary_re_integral ha, ← hg, ← integral_sub hw hf]
     calc
+      _ = ∫ t in Ioi (0 : ℝ), (w t - w t * Real.cos (τ * t)) := by
+        rw [integral_sub hw hf, hg, ← modifiedBesselKOrder_imaginary_re_integral ha]
       _ ≤ ∫ t in Ioi (0 : ℝ), τ ^ 2 / 2 * (w t * t ^ 2) := by
         refine setIntegral_mono_on (hw.sub hf)
           ((integrableOn_bessel_second_moment ha).const_mul _) measurableSet_Ioi fun t _ => ?_
-        have h := mul_le_mul_of_nonneg_left (cosine_defect_le (τ * t)) (Real.exp_pos _).le
-        dsimp only [w] at *
-        nlinarith only [h]
+        calc
+          _ = w t * (1 - Real.cos (τ * t)) := by ring
+          _ ≤ w t * ((τ * t) ^ 2 / 2) := mul_le_mul_of_nonneg_left
+            (cosine_defect_le (τ * t)) (Real.exp_pos (-a * Real.cosh t)).le
+          _ = _ := by ring
       _ = τ ^ 2 / 2 * (∫ t in Ioi (0 : ℝ), w t * t ^ 2) := integral_const_mul _ _
       _ ≤ _ := mul_le_mul_of_nonneg_left (integral_bessel_second_moment_le ha) (by positivity)
   refine ⟨(le_div_iff₀ hgp).mpr ?_, (div_le_iff₀ hgp).mpr (by simpa using hu)⟩
@@ -178,8 +192,11 @@ theorem tendsto_bessel_imaginary_ratio_one (τ : ℝ) :
   have h := (tendsto_inv_atTop_zero : Tendsto (fun a : ℝ => a⁻¹) atTop (𝓝 0)).const_mul
     (τ ^ 2 / 2)
   have hl : Tendsto (fun a : ℝ => 1 - τ ^ 2 / (2 * a)) atTop (𝓝 1) := by
-    convert tendsto_const_nhds.sub h using 1 <;> simp only [mul_zero, sub_zero]
-    ext a
+    have hone : Tendsto (fun _ : ℝ => (1 : ℝ)) atTop (𝓝 1) := tendsto_const_nhds
+    have hh := hone.sub h
+    simp only [mul_zero, sub_zero] at hh
+    apply hh.congr
+    intro a
     ring
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hl tendsto_const_nhds
   · filter_upwards [eventually_gt_atTop (0 : ℝ)] with a ha using
