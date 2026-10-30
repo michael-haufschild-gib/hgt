@@ -12,6 +12,7 @@ import GaloisForLFunctions.ArithmeticResonanceTheory.TheArchimedeanPlaceForbidsF
 import GaloisForLFunctions.ArithmeticResonanceTheory.OverFiniteFieldsTheOddPartIsSpectral
 import GaloisForLFunctions.ArithmeticResonanceTheory.GeneralizedDirichletSeriesAreDeterminedByTheirValues
 import GaloisForLFunctions.ArithmeticResonanceTheory.ARealizationOfZetaIsPrimeLength
+import GaloisForLFunctions.ArithmeticResonanceTheory.TheHolderModulusAlongEveryCycle
 
 /-!
 # Arithmetic Resonance Theory
@@ -21,7 +22,8 @@ commutative and free realizations of the primes and the nature of their poles; a
 realizations are commutative; finite even and virtual realizations are excluded (parity, the
 archimedean place), while over finite fields the odd part is spectral; uniqueness of generalized
 Dirichlet series makes every realization of `ζ` prime-length; a Hölder realization is a zero-free
-strip whose price is a lower bound on its Hölder modulus; the arithmetic
+strip whose price is a lower bound on its Hölder modulus along every re-enterable cycle; the
+arithmetic
 obstructions to realizations (no affine recurrence among primes, integrality against
 super-conformal distortion, the Hölder modulus law of prime-length systems); the failure of
 oscillation on additive and free realizations; the amplifier law (rate = depth, fixed versus

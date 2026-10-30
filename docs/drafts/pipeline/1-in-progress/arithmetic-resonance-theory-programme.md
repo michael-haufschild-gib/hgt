@@ -34,10 +34,11 @@ TheHolderModulusOfAPrimeLengthSystem, TheTwoRealizationsOfThePrimes,
 OscillationFailsOnAdditiveRealizations, TheAmplifierLaw, OrthogonalityAmplifiersAreTrivial,
 EvenRealizationsHaveNoZeros, AHolderRealizationIsAZeroFreeStrip, AdditiveRealizationsAreCommutative,
 TheArchimedeanPlaceForbidsFiniteVirtualRealizations, OverFiniteFieldsTheOddPartIsSpectral,
-GeneralizedDirichletSeriesAreDeterminedByTheirValues, ARealizationOfZetaIsPrimeLength (all in umbrella).
+GeneralizedDirichletSeriesAreDeterminedByTheirValues, ARealizationOfZetaIsPrimeLength,
+TheHolderModulusAlongEveryCycle (all in umbrella).
 README rewritten with Lean names and the answers to the five questions.
-Next: axiom audit (#print axioms on all pillars), then open topics: Mills boundary, sub-conformal
-realizations, countable alphabets, infinite-rank odd parts, identity amplifiers, CGL loss audit.
+Open topics (README §9): Mills boundary, sub-conformal realizations, countable alphabets,
+infinite-rank odd parts, identity amplifiers, CGL loss audit.
 
 ## Log
 - 2026-10-30 — created; README first draft.

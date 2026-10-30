@@ -162,7 +162,7 @@ theorem prod_Ico_one_sincRadius (q : ℕ) :
   rfl
 
 /-- The first average of a base of `L¹` norm at most one is bounded by `2`. -/
-theorem abs_boxStek_one_le {β : ℝ → ℝ} (hβ : Continuous β) (hβi : Integrable β)
+theorem abs_boxStek_one_le {β : ℝ → ℝ} (hβi : Integrable β)
     (hβ1 : ∫ y, |β y| ≤ 1) (x : ℝ) : |boxStek β 1 x| ≤ 2 := by
   have h := abs_steklovAvg_le_integral hβi (sincRadius_pos 0) x
   have hr : (2 * sincRadius 0)⁻¹ = 2 := by norm_num [sincRadius]
@@ -175,7 +175,7 @@ theorem abs_iteratedDeriv_boxStek_le {β : ℝ → ℝ} (hβ : ContDiff ℝ ∞ 
     (hβ1 : ∫ y, |β y| ≤ 1) {m q : ℕ} (hqm : q + 1 ≤ m) (x : ℝ) :
     |iteratedDeriv q (boxStek β m) x| ≤ 2 * ∏ j ∈ Finset.range q, (steklovRadius j)⁻¹ := by
   rw [← prod_Ico_one_sincRadius]
-  exact abs_iteratedDeriv_boxStek_le_of_level hβ (abs_boxStek_one_le hβ.continuous hβi hβ1)
+  exact abs_iteratedDeriv_boxStek_le_of_level hβ (abs_boxStek_one_le hβi hβ1)
     m q (by omega) x
 
 /-! ### A mean-zero base costs its width after two averages -/

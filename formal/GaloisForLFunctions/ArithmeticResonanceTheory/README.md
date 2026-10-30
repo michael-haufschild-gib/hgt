@@ -98,6 +98,7 @@ identity.
 | Finite virtual realization | $Z=\det(1-M^-(s))/\det(1-M^+(s))$ | `riemannZeta_ne_virtualRealization` |
 | Exponential polynomial | $\sum_jc_je^{-\lambda_js}$, $\lambda_j\in\mathbb R$ | `IsExpPoly` |
 | Cycle family | periodic points $(u^nv)^\infty$ shadowing $u^\infty$ | `IsCycleFamily`, `familyPoint`, `fixedPointFamily` |
+| Return word | starts at a symbol, avoids it, returns to it | `IsReturnWord` (subshifts), `IsFirstReturn` (any alphabet) |
 | Conformal defect | $m_n=p_{n+1}-a\,p_n$, $p_n=e^{\varphi(u^nv)}$, $a=e^{\varphi(u)}$; an integer | — |
 | Relative Dolgopyat bound | $\lvert Z_n(\sigma+it)\rvert\le C\rho^nZ_n(\sigma)$ for $t\ge T$, $\rho<1$ | `RelativeDolgopyat` |
 | Phase | $e^{-it\ell}$ of an orbit of length $\ell$ | `phase` |
@@ -184,12 +185,14 @@ phases a family must separate — $2g$ over $\mathbb F_q$, $\pi(x)$ over $\mathb
 6. **The conformal threshold.** Prime cycle families are never super-conformal and never obey a
    conformal expansion or a periodic conformal defect (`not_eventually_prime_of_ratio`,
    `not_eventually_prime_of_conformal_expansion`, `not_eventually_periodic_defect`). For Hölder roofs:
-   $a\,\theta^L\ge1$ along every prime cycle family (`one_le_mul_pow_of_cycleFamily`), and
-   $\theta\,e^{\varphi(a^\infty)}\ge1$ at every re-enterable fixed point of a prime-length system
-   (`one_le_exp_mul_of_isPrimeLength`).
+   $a\,\theta^L\ge1$ along every prime cycle family (`one_le_mul_pow_of_cycleFamily`). Two different
+   return words $u,v$ at a symbol give a primitive family $(u^nv)^\infty$ (`minimalPeriod_familyPoint`),
+   so in a prime-length system $\theta^{|u|}e^{\varphi^{|u|}(u^\infty)}\ge1$ along every re-enterable
+   cycle (`one_le_exp_mul_pow_of_returnWords`; fixed points: `one_le_exp_mul_of_isPrimeLength`).
 7. **The strip and its price.** A Hölder realization of $\zeta$ on a mixing subshift gives
-   $\zeta\ne0$ on $\Re s>1-\varepsilon$ and has Hölder modulus $\theta\ge e^{-\varphi(a^\infty)}$ at every
-   re-enterable fixed point (`one_le_exp_mul_of_holderRealization`).
+   $\zeta\ne0$ on $\Re s>1-\varepsilon$ (`riemannZeta_ne_zero_of_holderRealization`) and has Hölder modulus
+   $\theta\ge p_u^{-1/|u|}$ along every re-enterable cycle $u$ of prime $p_u$
+   (`one_le_exp_mul_pow_of_holderRealization`, `one_le_exp_mul_of_holderRealization`).
 8. **Oscillation fails on additive and free realizations** (`not_relativeDolgopyat_of_finite_edges`,
    `not_relativeDolgopyat_free`); twisting the commutative realization changes no eigenvalue modulus
    (`norm_commEigen_twist`).

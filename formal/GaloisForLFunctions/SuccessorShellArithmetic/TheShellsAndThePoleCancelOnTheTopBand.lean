@@ -114,16 +114,18 @@ theorem hasDerivAt_bumpCorr_atomDilate {w : ℝ} (hw : 0 < w) (s : ℝ) :
   have hA : HasDerivAt (shellAutocorr φ) (deriv (shellAutocorr φ) (s / w)) (s / w) :=
     ((contDiff_shellAutocorr hφ hsupp).differentiable (by norm_num) _).hasDerivAt
   have h := (hA.comp s ((hasDerivAt_id s).div_const w)).const_mul w
-  rw [show (fun s => bumpCorr (atomDilate φ w) s) = fun s => w * (shellAutocorr φ ∘ fun x => x / w) s
-    from funext fun s => bumpCorr_atomDilate_eq hw s] at *
-  convert h using 1
-  field_simp
+  have hf : bumpCorr (atomDilate φ w) = fun y => w * (shellAutocorr φ ∘ fun x => id x / w) y :=
+    funext fun y => bumpCorr_atomDilate_eq hw y
+  have h2 : w * (deriv (shellAutocorr φ) (s / w) * (1 / w)) = deriv (shellAutocorr φ) (s / w) := by
+    rw [one_div, mul_left_comm, mul_inv_cancel₀ hw.ne', mul_one]
+  rw [hf, ← h2]
+  exact h
 
 /-- The profile autocorrelation has a bounded derivative. -/
 theorem exists_abs_deriv_shellAutocorr_le :
     ∃ A₁ : ℝ, 0 ≤ A₁ ∧ ∀ x, |deriv (shellAutocorr φ) x| ≤ A₁ := by
   have hcs : HasCompactSupport (shellAutocorr φ) :=
-    HasCompactSupport.intro isCompact_Icc fun x hx => by
+    HasCompactSupport.intro (isCompact_Icc : IsCompact (Set.Icc (-1 : ℝ) 1)) fun x hx => by
       apply shellAutocorr_eq_zero_of_one_le_abs hφ hsupp
       simp only [Set.mem_Icc, not_and_or, not_le] at hx
       rcases hx with hx | hx
@@ -146,5 +148,114 @@ theorem integral_exp_half_mul_bumpCorr {g : ℝ → ℝ} (hg : Continuous g)
   rw [mul_comm, ← bumpCorr_neg (g := g) v]
   unfold bumpCorr RHTower.WeilOneSided.autoCorr
   simp only [sub_eq_add_neg]
+
+/-! ### The pole on the witness -/
+
+/-- The pole weights of the atom: `a₋ = ∫ g e^{−u/2}`, `a₊ = ∫ g e^{u/2}`. -/
+def poleWeightMinus (g : ℝ → ℝ) : ℝ := ∫ u, g u * Real.exp (-u / 2)
+
+/-- The pole weight `a₊ = ∫ g e^{u/2}`. -/
+def poleWeightPlus (g : ℝ → ℝ) : ℝ := ∫ u, g u * Real.exp (u / 2)
+
+theorem exp_neg_half_log {n : ℕ} (hn : 1 ≤ n) : Real.exp (-(Real.log n / 2)) = poleVector n := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  rw [poleVector, Real.sqrt_eq_rpow, Real.exp_neg, ← Real.rpow_natCast, one_div,
+    ← Real.exp_log (Real.rpow_pos_of_pos hn0 _), Real.log_rpow hn0]
+  congr 2
+  ring
+
+theorem exp_half_log {n : ℕ} (hn : 1 ≤ n) : Real.exp (Real.log n / 2) = Real.sqrt n := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  rw [Real.sqrt_eq_rpow, ← Real.exp_log (Real.rpow_pos_of_pos hn0 _), Real.log_rpow hn0]
+  congr 1
+  ring
+
+/-- The moments of an atomic test against `e^{∓u/2}` are its pole sums times the atom's weights. -/
+theorem poleMoments_atomicTest {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (N : ℕ) (x : ℕ → ℝ) :
+    (∫ u, atomicTest N x g u * Real.exp (-(u / 2))) *
+        (∫ u, atomicTest N x g u * Real.exp (u / 2)) =
+      poleWeightMinus g * poleWeightPlus g *
+        ((∑ n ∈ Icc 1 N, x n * poleVector n) * ∑ n ∈ Icc 1 N, x n * Real.sqrt n) := by
+  have hm := ArithmeticLorentzianGeometry.integral_atomicTest_mul (g := g)
+    (Real.continuous_exp.comp (continuous_id.div_const 2).neg) hg hgsupp N x
+  have hp := ArithmeticLorentzianGeometry.integral_atomicTest_mul (g := g)
+    (Real.continuous_exp.comp (continuous_id.div_const 2)) hg hgsupp N x
+  have hshift : ∀ (n : ℕ) (s : ℝ), ∫ u, g (u - Real.log n) * Real.exp (s * (u / 2)) =
+      Real.exp (s * (Real.log n / 2)) * ∫ u, g u * Real.exp (s * (u / 2)) := by
+    intro n s
+    have h := integral_sub_right_eq_self (μ := volume)
+      (fun u => g u * Real.exp (s * ((u + Real.log n) / 2))) (Real.log n)
+    simp only [sub_add_cancel] at h
+    rw [h, ← integral_const_mul]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun u => ?_)
+    simp only
+    rw [show s * ((u + Real.log n) / 2) = s * (u / 2) + s * (Real.log n / 2) by ring,
+      Real.exp_add]
+    ring
+  have hm' : ∫ u, atomicTest N x g u * Real.exp (-(u / 2)) =
+      (∑ n ∈ Icc 1 N, x n * poleVector n) * poleWeightMinus g := by
+    rw [show (fun u => atomicTest N x g u * Real.exp (-(u / 2))) =
+      fun u => atomicTest N x g u * (Real.exp ∘ fun u => -(u / 2)) u from rfl, hm, sum_mul]
+    refine sum_congr rfl fun n hn => ?_
+    have h := hshift n (-1)
+    simp only [neg_one_mul] at h
+    simp only [Function.comp]
+    rw [h, exp_neg_half_log (mem_Icc.mp hn).1, poleWeightMinus]
+    rw [show (fun u => g u * Real.exp (-(u / 2))) = fun u => g u * Real.exp (-u / 2) from
+      funext fun u => by rw [neg_div]]
+    ring
+  have hp' : ∫ u, atomicTest N x g u * Real.exp (u / 2) =
+      (∑ n ∈ Icc 1 N, x n * Real.sqrt n) * poleWeightPlus g := by
+    rw [show (fun u => atomicTest N x g u * Real.exp (u / 2)) =
+      fun u => atomicTest N x g u * (Real.exp ∘ fun u => u / 2) u from rfl, hp, sum_mul]
+    refine sum_congr rfl fun n hn => ?_
+    have h := hshift n 1
+    simp only [one_mul] at h
+    simp only [Function.comp]
+    rw [h, exp_half_log (mem_Icc.mp hn).1, poleWeightPlus]
+    ring
+  rw [hm', hp']
+  ring
+
+/-- **The pole on the witness**: `Pole(x_η) = a₋a₊(H_N + ηS_T)(N + η|T|)`. -/
+theorem poleMoments_topWitnessVector {g : ℝ → ℝ} {w : ℝ} (hg : Continuous g)
+    (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0) (N : ℕ) (η : ℝ) :
+    (∫ u, atomicTest N (topWitnessVector N w η) g u * Real.exp (-(u / 2))) *
+        (∫ u, atomicTest N (topWitnessVector N w η) g u * Real.exp (u / 2)) =
+      poleWeightMinus g * poleWeightPlus g *
+        ((∑ n ∈ Icc 1 N, 1 / (n : ℝ)) + η * ∑ n ∈ topBand N w, 1 / (n : ℝ)) *
+          ((N : ℝ) + η * (topBand N w).card) := by
+  rw [poleMoments_atomicTest hg hgsupp]
+  have hT : ∀ F : ℕ → ℝ, ∑ n ∈ Icc 1 N, (if n ∈ topBand N w then F n else 0) =
+      ∑ n ∈ topBand N w, F n := by
+    intro F
+    rw [← sum_filter]
+    congr 1
+    ext n
+    simp only [mem_filter]
+    exact ⟨fun h => h.2, fun h => ⟨(mem_topBand.mp h).1, h⟩⟩
+  have h1 : ∑ n ∈ Icc 1 N, topWitnessVector N w η n * poleVector n =
+      (∑ n ∈ Icc 1 N, 1 / (n : ℝ)) + η * ∑ n ∈ topBand N w, 1 / (n : ℝ) := by
+    rw [← hT, mul_sum, ← sum_add_distrib]
+    refine sum_congr rfl fun n _ => ?_
+    simp only [topWitnessVector, topWitness]
+    split_ifs <;> simp [add_mul, ← sq, poleVector_sq]
+  have h2 : ∑ n ∈ Icc 1 N, topWitnessVector N w η n * Real.sqrt n =
+      (N : ℝ) + η * (topBand N w).card := by
+    have hone : ∀ n ∈ Icc 1 N, poleVector n * Real.sqrt n = 1 := by
+      intro n hn
+      have hn0 : 0 < Real.sqrt n := Real.sqrt_pos.mpr (by exact_mod_cast (mem_Icc.mp hn).1)
+      rw [poleVector]; field_simp
+    have hcardT : ((topBand N w).card : ℝ) = ∑ n ∈ topBand N w, (1 : ℝ) := by simp
+    have hcardN : (N : ℝ) = ∑ n ∈ Icc 1 N, (1 : ℝ) := by simp
+    rw [hcardT, hcardN, ← hT, mul_sum, ← sum_add_distrib]
+    refine sum_congr rfl fun n hn => ?_
+    simp only [topWitnessVector, topWitness]
+    split_ifs
+    · rw [add_mul, mul_assoc, hone n hn]; ring
+    · rw [add_mul, hone n hn]; ring
+  rw [h1, h2]
+  ring
 
 end GaloisForLFunctions.SuccessorShellArithmetic

@@ -77,6 +77,12 @@ required three-quarters strip. This is a proposed producer, not a proved bound.
   Its members vanish at all zeta zeros; this does not make the family
   zero-pole. The nonnegative arc measure also forces
   `0≤m_j≤4^(−j)m₀`, so setting `m₀=0` kills this whole family.
+- The Klein–Gordon pair `(F/2,F')` cancels the pole exactly, but replaces
+  the correlation `H` by `H/4−H''`. Values `H(log n)=0` do not control the
+  second derivatives at those nodes. Forward dilation of the symmetric
+  modular pole filter restores integer blindness at the cost of a Mellin
+  phase; the proved positivity applies only after recentering, which loses
+  the restored nodes.
 
 ## First test
 

@@ -762,9 +762,7 @@ theorem cellExpMass_eq {k : ℕ} (hk : 1 ≤ k) :
     exact (((hasDerivAt_neg x).div_const 2).exp.const_mul (-2)).congr_deriv (by ring)
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
     ((Real.continuous_exp.comp (continuous_neg.div_const 2)).intervalIntegrable _ _)]
-  set A := Real.exp (-Real.log ((k + 1 : ℕ) : ℝ) / 2)
-  set B := Real.exp (-Real.log (k : ℝ) / 2)
-  linear_combination
+  ring
 
 /-- The first exponential moment `J_a = ∫ h_a e^{−u/2}` of the balanced detail. -/
 def haarExpMoment (a : ℕ) : ℝ :=
@@ -779,7 +777,7 @@ theorem haarExpMoment_pos {a : ℕ} (ha : 1 ≤ a) : 0 < haarExpMoment a := by
   have hw0 : logCellWidth (2 * a) = s₁ - s₀ := by
     simp only [logCellWidth, s₀, s₁]; push_cast; ring
   have hw1 : logCellWidth (2 * a + 1) = s₂ - s₁ := by
-    simp only [logCellWidth, s₁, s₂]; push_cast; ring
+    simp only [logCellWidth, s₁, s₂]; push_cast; ring_nf
   have h01 : s₀ < s₁ := Real.log_lt_log (by positivity) (by push_cast; linarith)
   have h12 : s₁ < s₂ := Real.log_lt_log (by positivity) (by push_cast; linarith)
   have hslope := strictConvexOn_exp.slope_strict_mono_adjacent (Set.mem_univ (-s₂ / 2))
@@ -836,3 +834,4 @@ theorem headCouplingLimit_self_neg {a : ℕ} (ha : 1 ≤ a) : headCouplingLimit 
   nlinarith [haarExpMoment_pos ha]
 
 end GaloisForLFunctions.ArithmeticIndexDescent
+

@@ -33,6 +33,6 @@ to the head before squaring. Cancellation in that scalar sum remains open.
 - [x] `RHTower.criticalMovingSquareCore_leafEnergy_le` and
   `RHTower.criticalMovingSquareCore_energy_sub_head_sq_le` prove the square-cutoff bound.
 - [x] `RHTower.criticalMovingSquareCore_fourthMesh_leafPrefix_le` proves the cubic prefix bound.
-- [x] `lake --old env lean GaloisForLFunctions/RHTower/MobiusDivisorTerminalLeafMeshBound.lean`
+- [x] `lake --old env lean GaloisForLFunctions/RHTower/MobiusDivisor/TerminalLeafMeshBound.lean`
   passes; all six public declarations depend only on `propext`, `Classical.choice`,
   and `Quot.sound`. Imported by `RHTower.lean`.
