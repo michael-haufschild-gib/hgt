@@ -1,6 +1,6 @@
 # The elliptic additive domain has jointly measurable addition
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** The actual compact elliptic additive domain is second countable;
   its addition is measurable for the product of its inherited Borel structures.
@@ -23,4 +23,4 @@ Borel structure.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticGapTopology.lean`:
 `finitePlace_countable`, `ellipticAdditiveDomain_secondCountable`,
-`ellipticAdditiveDomain_measurableAdd₂`. Direct check pending.
+`ellipticAdditiveDomain_measurableAdd₂`. Direct Lean check passed. All transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.

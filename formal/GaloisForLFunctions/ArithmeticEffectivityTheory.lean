@@ -59,3 +59,4 @@ limits and naive heights, log-torsion and the product formula, the theta surface
 method over `ℤ`. See `ArithmeticEffectivityTheory/README.md`.
 -/
 import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticLoopCarrier
+import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticGapTopology

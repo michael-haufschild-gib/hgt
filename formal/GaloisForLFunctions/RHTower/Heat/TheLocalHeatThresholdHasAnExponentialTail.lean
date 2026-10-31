@@ -160,7 +160,7 @@ theorem setIntegral_le_layers {f : ℝ → ℝ} (hf : Measurable f) (hf0 : ∀ t
       (volume.restrict (Icc a b)) := fun j => (integrable_const _).indicator (hS j)
   have hsumint : Integrable (fun t => ∑ j ∈ Finset.range N,
       {t | lam j < f t}.indicator (fun _ => lam (j + 1) - lam j) t) (volume.restrict (Icc a b)) :=
-    integrable_finset_sum _ fun j _ => hind j
+    integrable_finsetSum _ fun j _ => hind j
   have hfint : Integrable f (volume.restrict (Icc a b)) :=
     Integrable.of_bound hf.aestronglyMeasurable (lam N) (Eventually.of_forall fun t => by
       rw [Real.norm_eq_abs, abs_of_nonneg (hf0 t)]; exact hfN t)
@@ -179,7 +179,7 @@ theorem setIntegral_le_layers {f : ℝ → ℝ} (hf : Measurable f) (hf0 : ∀ t
     _ = lam 0 * (b - a) + ∑ j ∈ Finset.range N,
           (lam (j + 1) - lam j) * volume.real ({t | lam j < f t} ∩ Icc a b) := by
         rw [integral_add (integrable_const _) hsumint, integral_const,
-          integral_finset_sum _ fun j _ => hind j]
+          integral_finsetSum _ fun j _ => hind j]
         congr 1
         · rw [measureReal_restrict_apply_univ, Real.volume_real_Icc_of_le hab, smul_eq_mul, mul_comm]
         · refine Finset.sum_congr rfl fun j _ => ?_
@@ -299,19 +299,12 @@ theorem exists_integral_localHeatThreshold_le :
     calc K * Real.log U ^ 4 ≤ K * (8 ^ 4 * Real.sqrt U) := mul_le_mul_of_nonneg_left h1 hK
       _ ≤ Real.sqrt U * Real.sqrt U := by nlinarith
       _ = U := hsU
-  filter_upwards [hev, Real.tendsto_log_atTop.eventually_ge_atTop (100 : ℝ), hexp, hpoly]
-    with U hU hL100 hexpU hpolyU
+  filter_upwards [hev, Real.tendsto_log_atTop.eventually_ge_atTop (100 : ℝ), hexp, hpoly,
+    eventually_ge_atTop (12 : ℝ)] with U hU hL100 hexpU hpolyU hU12
   obtain ⟨T₁, hT₁, T₂, hT₂, hbound⟩ := hU
   obtain ⟨L, hLdef⟩ : ∃ L, L = Real.log U := ⟨_, rfl⟩
   rw [← hLdef] at hL100 hexpU hpolyU hbound ⊢
   have hL : 0 < L := by linarith
-  have hU12 : 12 ≤ U := by
-    have := Real.add_one_le_exp (Real.log U)
-    rw [Real.exp_log (by
-      by_contra h; push Not at h
-      have : Real.log U ≤ 0 := Real.log_nonpos_of_le_one (by linarith) |>.trans le_rfl
-      linarith)] at this
-    linarith
   obtain ⟨N, hN⟩ : ∃ N : ℕ, N = ⌊L / 2 - 4⌋₊ := ⟨_, rfl⟩
   have hN1 : (N : ℝ) ≤ L / 2 - 4 := by rw [hN]; exact Nat.floor_le (by linarith)
   have hN2 : L / 2 - 5 < N := by
@@ -322,14 +315,15 @@ theorem exists_integral_localHeatThreshold_le :
     intro j; rw [hlam]
   have hNL : ((N : ℝ) + 2) ^ 2 / (3 * L ^ 2) ≤ 1 / 12 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-    have : (0 : ℝ) ≤ N := Nat.cast_nonneg N
-    nlinarith
+    have h2 : ((N : ℝ) + 2) ^ 2 ≤ (L / 2) ^ 2 :=
+      pow_le_pow_left₀ (by positivity) (by linarith) 2
+    linarith
   have hmono : Monotone lam := by
     refine monotone_nat_of_le_succ fun j => ?_
     rw [hlamj j, hlamj (j + 1)]
     split_ifs with h1 h2 h2
     · gcongr
-      push_cast; linarith
+      linarith
     · have : j = N := by omega
       rw [this]; exact hNL
     · omega
@@ -375,26 +369,27 @@ theorem exists_integral_localHeatThreshold_le :
   rw [hlam0] at hmain
   have hKL : K * L ^ 2 / 12 ≤ U / L ^ 2 := by
     rw [div_le_div_iff₀ (by norm_num) (by positivity)]
-    nlinarith [sq_nonneg L]
+    have e : K * L ^ 2 * L ^ 2 = K * L ^ 4 := by ring
+    linarith
   have hfin : 4 / (3 * L ^ 2) * (T₂ - 1 / 2 - (T₁ + 1 / 2)) + (18 * 2400 ^ 3 * (A * (T₂ - T₁))
       / (3 * L ^ 2) + A * (T₂ - T₁) / (12 * L ^ 2) + K * L ^ 2 / 12)
       ≤ (1 / 3 + A * (18 * 2400 ^ 3) / 12 + A / 48 + 1) * U / L ^ 2 := by
-    have hL2 : 0 < L ^ 2 := by positivity
-    have e1 : 4 / (3 * L ^ 2) * (T₂ - 1 / 2 - (T₁ + 1 / 2)) ≤ 1 / 3 * U / L ^ 2 := by
-      rw [div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) hL2]; nlinarith
-    have e2 : 18 * 2400 ^ 3 * (A * (T₂ - T₁)) / (3 * L ^ 2) ≤ A * (18 * 2400 ^ 3) / 12 * U / L ^ 2 := by
-      rw [div_le_div_iff₀ (by positivity) hL2]
-      have := mul_le_mul_of_nonneg_left hΔ hA
-      nlinarith
-    have e3 : A * (T₂ - T₁) / (12 * L ^ 2) ≤ A / 48 * U / L ^ 2 := by
-      rw [div_le_div_iff₀ (by positivity) hL2]
-      have := mul_le_mul_of_nonneg_left hΔ hA
-      nlinarith
-    have e4 : (1 / 3 + A * (18 * 2400 ^ 3) / 12 + A / 48 + 1) * U / L ^ 2
-        = 1 / 3 * U / L ^ 2 + A * (18 * 2400 ^ 3) / 12 * U / L ^ 2 + A / 48 * U / L ^ 2
-          + U / L ^ 2 := by ring
-    rw [e4]
+    have hL2 : 0 ≤ L ^ 2 := sq_nonneg L
+    have hAΔ := mul_le_mul_of_nonneg_left hΔ hA
+    have hnum : 4 * (T₂ - 1 / 2 - (T₁ + 1 / 2)) / 3 + 6 * 2400 ^ 3 * (A * (T₂ - T₁))
+        + A * (T₂ - T₁) / 12 ≤ (1 / 3 + A * (18 * 2400 ^ 3) / 12 + A / 48) * U := by
+      linarith
+    have e1 : 4 / (3 * L ^ 2) * (T₂ - 1 / 2 - (T₁ + 1 / 2)) + (18 * 2400 ^ 3 * (A * (T₂ - T₁))
+        / (3 * L ^ 2) + A * (T₂ - T₁) / (12 * L ^ 2))
+        = (4 * (T₂ - 1 / 2 - (T₁ + 1 / 2)) / 3 + 6 * 2400 ^ 3 * (A * (T₂ - T₁))
+          + A * (T₂ - T₁) / 12) / L ^ 2 := by ring
+    have e2 : (1 / 3 + A * (18 * 2400 ^ 3) / 12 + A / 48 + 1) * U / L ^ 2
+        = (1 / 3 + A * (18 * 2400 ^ 3) / 12 + A / 48) * U / L ^ 2 + U / L ^ 2 := by ring
+    have h3 := div_le_div_of_nonneg_right hnum hL2
+    rw [e2, ← add_assoc, e1]
     linarith
   linarith
 
 end RHTower.DeBruijn
+
+#print axioms RHTower.DeBruijn.exists_integral_localHeatThreshold_le

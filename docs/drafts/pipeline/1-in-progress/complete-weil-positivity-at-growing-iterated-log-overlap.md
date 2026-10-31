@@ -21,9 +21,14 @@ For every fixed `A≥0`, one constant and one eventual horizon control all
 
 `‖U_res‖² ≤ K φ(m)² [c⁵/log N + c¹⁰(log N/N)² + c³/√log N]`.
 
-Every component bound passes Lean with only `propext`, `Classical.choice`,
-`Quot.sound`, including `K m⁴ c⁵/log N` for the full downward source.
-The combined residual, spectral transfer and final direct audits remain pending.
+The complete residual now has one constant:
+
+`‖W_N(c)u_m−E_m(c)u_m‖² ≤ K m⁴ [c⁵/log N+c¹⁰(log N/N)²+c³/√log N]`.
+
+Every logarithmic conductor range shares an eventual horizon. Its Lean proof
+and the finite-coordinate spectral certificate have only `propext`,
+`Classical.choice`, `Quot.sound`. The growing-overlap specialization and final
+direct audits remain pending.
 
 The common conductor floor is `a/c⁷`. If both conductor cutoff and overlap
 are at most `(log N)^(1/100)`, the summed squared residual divided by the
@@ -33,8 +38,7 @@ nonpositive eigenvector.
 
 ## Open inputs
 
-- Lean verification of the combined quartic conductor residual.
-- Lean verification of the finite-coordinate spectral transfer and actual Weil conclusion.
+- Lean verification of the growing-overlap specialization and actual Weil conclusion.
 - Final direct audits and umbrella imports.
 
 This target does not identify the agreement-shell square completion and does

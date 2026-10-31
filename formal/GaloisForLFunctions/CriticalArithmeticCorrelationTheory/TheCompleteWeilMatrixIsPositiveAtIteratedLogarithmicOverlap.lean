@@ -18,7 +18,7 @@ open MeasureTheory Finset Filter Topology
 open scoped RealInnerProductSpace
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 open RenormalizedArithmeticPotentialTheory SpacingScaleHarmonicAnalysis
-  RenormalizedArithmeticPotentialTheory.CompletedShell
+  RenormalizedArithmeticPotentialTheory.CompletedShell ArithmeticElectrostatics
 
 /-- Exponential conductor cutoffs at subcritical iterated-logarithmic overlap are subpowers of the logarithm. -/
 theorem eventually_iteratedLog_cutoff_le_log_rpow {α δ : ℝ}
@@ -86,8 +86,6 @@ theorem eventually_iteratedLog_overlap_le_log_rpow {α δ : ℝ}
         abs_of_nonneg (Real.rpow_nonneg hL0 _), one_mul] using hsmallN
     exact (le_abs_self _).trans habs
   exact hc.trans (hpower.trans hlog)
-
-
 
 private theorem uniform_log_div_sq_le_inv_log {t : ℝ} (ht : 0 < t) (hlog : 0 < Real.log t) :
     (Real.log t / t) ^ 2 ≤ 1 / Real.log t := by
@@ -211,7 +209,7 @@ theorem eventually_matrix_posDef_iteratedLog_of_conductor_bounds
   have hbudgetlim : Tendsto
       (fun N : ℕ => (3 * K / a ^ 2) * Real.log (N : ℝ) ^ (-(21 / 100 : ℝ)))
       atTop (𝓝 0) := by
-    simpa only [mul_zero] using
+    simpa only [Function.comp_def, mul_zero] using
       ((tendsto_rpow_neg_atTop (by norm_num : (0 : ℝ) < 21 / 100)).comp hLlim).const_mul
         (3 * K / a ^ 2)
   filter_upwards [hres (1 / 100) (by norm_num),
