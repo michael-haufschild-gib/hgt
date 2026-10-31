@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheUpwardPrimeRowsRealizeTheCompletedShellCorrection
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCompleteWeilResidualIsTheUpwardDefect
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.MacroscopicOverlapTiltedSplineReserve
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.MacroscopicOverlapPositivityAtEveryOverlap
 
 /-!
 # Complete Weil positivity at every fixed overlap
@@ -110,14 +111,6 @@ theorem exists_tiltedUnitSpline_completeWeil_eigenvalue_floor {c : ℝ} (hc : 0 
       contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc hm)
     hfloor (half_lt_self he)
 
-/-- The complete Weil matrix is eventually positive definite at every fixed positive overlap. -/
-theorem eventually_tiltedUnitSpline_completeWeilMatrix_posDef {c : ℝ} (hc : 0 < c) :
-    ∀ᶠ N : ℕ in atTop, (completeWeilMatrix tiltedUnitSpline c N).PosDef := by
-  obtain ⟨e, he, hfloor⟩ := exists_tiltedUnitSpline_completeWeil_eigenvalue_floor hc
-  filter_upwards [hfloor] with N hN
-  exact (completeWeilMatrix_isHermitian tiltedUnitSpline c N).posDef_iff_eigenvalues_pos.mpr
-    (fun i => he.trans_le (hN i))
-
 /-- The literal complete Weil form is eventually nonnegative on every atomic test
 at each fixed positive overlap, for the explicit tilted unit spline. -/
 theorem eventually_tiltedUnitSpline_weilQuad_atomicTest_nonneg {c : ℝ} (hc : 0 < c) :
@@ -157,6 +150,5 @@ end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_completeWeilMatrix_completedConductor_residual_norm
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_tiltedUnitSpline_completeWeil_eigenvalue_floor
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilMatrix_posDef
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_weilQuad_atomicTest_nonneg

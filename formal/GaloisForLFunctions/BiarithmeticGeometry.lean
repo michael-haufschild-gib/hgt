@@ -1,3 +1,4 @@
+import GaloisForLFunctions.BiarithmeticGeometry.Affine.PolynomialAntidifferences
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.IsotropicTranslations
 import GaloisForLFunctions.BiarithmeticGeometry.HorizonAffineActions
 import GaloisForLFunctions.BiarithmeticGeometry.HorizonBoundaryCalculus

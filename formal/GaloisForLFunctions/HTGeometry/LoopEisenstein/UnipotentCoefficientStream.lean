@@ -28,13 +28,11 @@ def streamLowerLeft (x : ℕ → R) : PowerSeries R :=
 
 private theorem streamUpperLeft_zero (x : ℕ → R) :
     PowerSeries.constantCoeff (streamUpperLeft R x) = 1 := by
-  change PowerSeries.coeff 0 (PowerSeries.mk _) = 1
-  rw [PowerSeries.coeff_mk]
+  rw [← PowerSeries.coeff_zero_eq_constantCoeff, streamUpperLeft, PowerSeries.coeff_mk]
 
 private theorem streamLowerLeft_zero (x : ℕ → R) :
     PowerSeries.constantCoeff (streamLowerLeft R x) = 0 := by
-  change PowerSeries.coeff 0 (PowerSeries.mk _) = 0
-  rw [PowerSeries.coeff_mk]
+  rw [← PowerSeries.coeff_zero_eq_constantCoeff, streamLowerLeft, PowerSeries.coeff_mk]
 
 /-- Decode the three free entries from their interlaced stream. -/
 def streamToUnipotentCoordinates (x : ℕ → R) : UnipotentCoefficientCoordinates R :=
@@ -52,7 +50,7 @@ def unipotentCoordinatesToStream (p : UnipotentCoefficientCoordinates R) (n : �
     unipotentCoordinatesToStream R p (3 * n) = PowerSeries.coeff n p.2.1 := by
   have hm : (3 * n) % 3 = 0 := by omega
   have hd : (3 * n) / 3 = n := by omega
-  simp only [unipotentCoordinatesToStream, hm, hd, if_pos rfl]
+  simp only [unipotentCoordinatesToStream, hm, hd, if_true]
 
 @[simp] theorem unipotentCoordinatesToStream_lowerLeft
     (p : UnipotentCoefficientCoordinates R) (n : ℕ) :
@@ -60,7 +58,7 @@ def unipotentCoordinatesToStream (p : UnipotentCoefficientCoordinates R) (n : �
       PowerSeries.coeff (n + 1) (p.2.2 : PowerSeries R) := by
   have hm : (3 * n + 1) % 3 = 1 := by omega
   have hd : (3 * n + 1) / 3 = n := by omega
-  simp only [unipotentCoordinatesToStream, hm, hd, Nat.one_ne_zero, if_false, if_pos rfl]
+  simp only [unipotentCoordinatesToStream, hm, hd, Nat.one_ne_zero, if_false, if_true]
 
 @[simp] theorem unipotentCoordinatesToStream_upperLeft
     (p : UnipotentCoefficientCoordinates R) (n : ℕ) :
@@ -79,24 +77,33 @@ private theorem stream_coordinates_left (p : UnipotentCoefficientCoordinates R) 
     apply PowerSeries.ext
     intro n
     cases n with
-    | zero => exact (streamUpperLeft_zero R _).trans p.1.property.symm
+    | zero =>
+      simpa only [PowerSeries.coeff_zero_eq_constantCoeff, streamToUnipotentCoordinates] using
+        (streamUpperLeft_zero R (unipotentCoordinatesToStream R p)).trans p.1.property.symm
     | succ n =>
-      change PowerSeries.coeff (n + 1) (streamUpperLeft R _) = _
+      change PowerSeries.coeff (n + 1)
+        (streamUpperLeft R (unipotentCoordinatesToStream R p)) =
+          PowerSeries.coeff (n + 1) (p.1 : PowerSeries R)
       rw [streamUpperLeft, PowerSeries.coeff_mk]
       exact unipotentCoordinatesToStream_upperLeft R p n
   · apply Prod.ext
     · apply PowerSeries.ext
       intro n
-      change PowerSeries.coeff n (streamUpperRight R _) = _
+      change PowerSeries.coeff n (streamUpperRight R (unipotentCoordinatesToStream R p)) =
+        PowerSeries.coeff n p.2.1
       rw [streamUpperRight, PowerSeries.coeff_mk]
       exact unipotentCoordinatesToStream_upperRight R p n
     · apply Subtype.ext
       apply PowerSeries.ext
       intro n
       cases n with
-      | zero => exact (streamLowerLeft_zero R _).trans p.2.2.property.symm
+      | zero =>
+        simpa only [PowerSeries.coeff_zero_eq_constantCoeff, streamToUnipotentCoordinates] using
+          (streamLowerLeft_zero R (unipotentCoordinatesToStream R p)).trans p.2.2.property.symm
       | succ n =>
-        change PowerSeries.coeff (n + 1) (streamLowerLeft R _) = _
+        change PowerSeries.coeff (n + 1)
+          (streamLowerLeft R (unipotentCoordinatesToStream R p)) =
+            PowerSeries.coeff (n + 1) (p.2.2 : PowerSeries R)
         rw [streamLowerLeft, PowerSeries.coeff_mk]
         exact unipotentCoordinatesToStream_lowerLeft R p n
 

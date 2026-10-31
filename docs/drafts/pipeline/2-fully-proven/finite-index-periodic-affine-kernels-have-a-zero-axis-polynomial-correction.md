@@ -26,4 +26,6 @@ Let `D=dim columnSpan(Q)`. Every sampled Gram matrix of `Q` has rank at most `D`
 
 ## Verification boundary
 
-The dependency-closed algebraic proof above requires Lean verification. The further decomposition of the resulting bi-integer-invariant Haar carrier into a positive affine kernel plus a slope kernel remains open.
+`HeckeKreinToeplitz/Index/FiniteColumns.lean` formalizes finite-rank closure under sums, products, polynomial evaluation, and homomorphism pullback. `BiarithmeticGeometry/Affine/PolynomialAntidifferences.lean` formalizes the normalized primitive of every finite-dimensional affine coefficient, including its finite rank and exact right difference. Both have direct Lean checks and standard axiom closures.
+
+The Hermitian normalization, zero translation reading, uniqueness, and index bound still require Lean verification. The further decomposition of the resulting bi-integer-invariant Haar carrier into a positive affine kernel plus a slope kernel remains open.

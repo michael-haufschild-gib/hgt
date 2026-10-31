@@ -14,6 +14,9 @@ its topic subfolder; RH relevance alone does not make `RHTower/` the owner.
 | `RHTower/Heat/` | New heat-flow, Gaussian transport, heat-zero persistence/counting, collision and energy modules |
 | `RHTower/WD/` | New route WD Ward caps, directed source-current estimates and arithmetic collision/extinction arguments |
 | `HTGeometry/` | Reusable hypertranscendence, differential algebra, constraint/value-relation geometry and analytic infrastructure; use topic subfolders |
+| `HeckeKreinToeplitz/Index/` | Kernel column spaces, finite negative index, isotropic subspaces and rank laws |
+| `BiarithmeticGeometry/Affine/` | Rational affine representations, translation unipotence and polynomial coefficients |
+| `AdelicKreinGeometry/Haar/` | Haar successors, affine period defects and polynomial corrections |
 | `HilbertMetric/` | Source-independent Hilbert/finite-metric, Gaussian-kernel and feature-volume laws |
 | `SelbergClass/` | General Selberg-class L-functions, twists and continuation |
 | `Hurwitz/`, `U0/`, `Bottcher/` | Their respective theorem programmes |

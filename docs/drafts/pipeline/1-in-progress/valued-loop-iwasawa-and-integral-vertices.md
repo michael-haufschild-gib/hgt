@@ -38,7 +38,8 @@ audits in `ShiftedPositiveSplitting`. The standard integral vertex and both
 unit-valued Borel coordinates passed the same audits in `IntegralPositiveVertex`.
 For `r=X⁻¹`, the shifted positive splitting differs on the common Iwahori by
 central residue `d(0)`, a valuation unit for an integral matrix. The common
-vertex–Borel intersection is proved on paper; its Lean audit is pending.
+vertex–Borel intersection and both unit-valued torus coordinates passed
+direct Lean and transitive axiom audits in `IntegralAdjacentVertex`.
 
 Reduced alternating vertex words have a unique nonzero extreme Laurent
 coefficient: lower-left order zero at one vertex, upper-right order minus
@@ -48,4 +49,7 @@ intersections, it gives `⟨P₀(O),P₁(O)⟩∩B=B(O)`.
 
 ## Lean status
 
-No torus-independence theorem is claimed. Remaining proofs: integral vertex intersections and compatibility with the restricted adelic group.
+The exact adjacent integral vertex intersections are formalized. The generated-group
+intersection and torus-independence proofs await their direct Lean audit.
+The actual restricted adelic carrier and its integral–Borel factorization also
+have written proofs awaiting audit.

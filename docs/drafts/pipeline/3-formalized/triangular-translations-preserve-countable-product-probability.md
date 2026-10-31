@@ -1,8 +1,8 @@
 # Triangular translations preserve countable product probability
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
-- **Statement:** For an additive commutative measurable group with translation-invariant
+- **Statement:** For an additive commutative group with jointly measurable addition and translation-invariant
   probability `μ`, every measurable triangular map
   `T(x)ₙ=xₙ+φₙ(x₀,…,xₙ₋₁)` preserves the actual product probability `μ^ℕ`.
 
@@ -24,4 +24,4 @@ No Haar measure on the ambient completed unipotent group is asserted.
 
 `HTGeometry/LoopEisenstein/TriangularHaarProbability.lean`:
 `measurePreserving_triangularFinite`, `measurePreserving_triangularSequence`.
-Direct check pending.
+Direct Lean check passed. Transitive axiom audit: `propext`, `Classical.choice`, `Quot.sound`.

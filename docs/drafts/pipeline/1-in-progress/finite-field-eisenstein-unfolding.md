@@ -49,7 +49,9 @@ factorizations inside each vertex. The existing
 `alternating_simpleMatrixWord_not_mem_iwahori` would then give
 `⟨P₀(O),P₁(O)⟩∩B=B(O)`. Both torus coordinates of `B(O)` must be
 proved to have valuation one, including the central coordinate.
-The integral vertex identities are not yet proved.
+Both integral vertex identities passed direct Lean and transitive axiom audits in
+`IntegralAdjacentVertex`. The generated-group intersection and resulting torus
+independence are proved on paper; their Lean audit is pending.
 
 ## Unipotent reduction mechanism
 
@@ -67,6 +69,16 @@ trivial intersection of the diagonal field with the additive domain.
 Finite triangular translations then supply the proposed invariant quotient
 probability. The coefficient dependence, recursion and quotient identification
 still require Lean proofs.
+
+## Convergence mechanism to test
+
+Unfold the nonnegative real-parameter series with Tonelli before claiming
+convergence. If the arithmetic cells give the proved finite Weyl sum,
+its finite integral forces almost-everywhere summability on the unipotent
+quotient. Absolute values at complex parameters are bounded by the
+corresponding real-parameter series, giving the required integral exchange.
+The arithmetic cell decomposition and local-character identity remain
+necessary; this does not prove pointwise convergence everywhere.
 
 ## Established boundary
 

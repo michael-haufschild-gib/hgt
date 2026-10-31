@@ -272,5 +272,6 @@ end
 end GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2
 
 #print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.integralLoop_inf_positiveBorel
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.positiveUnipotent_mem_integralLoop_iff
 #print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.exists_integralLoop_torus_unipotent
 #print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.LoopSL2.borelValuationHom_iwasawa_unique

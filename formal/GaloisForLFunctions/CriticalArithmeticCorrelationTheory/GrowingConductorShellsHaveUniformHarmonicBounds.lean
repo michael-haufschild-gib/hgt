@@ -66,7 +66,8 @@ theorem exists_conductor_uniform_shiftedReciprocal_harmonic_bound
     dsimp only [Y]
     rw [Real.log_exp]
     have heq : L ^ A = Real.sqrt L ^ (2 * A) := by
-      convert Real.rpow_div_two_eq_sqrt (2 * A) hL0.le using 1 <;> ring
+      simpa only [mul_div_cancel_left₀ A (by norm_num : (2 : ℝ) ≠ 0)] using
+        Real.rpow_div_two_eq_sqrt (2 * A) hL0.le
     exact hmN.trans_eq heq
   have hglobal : ∀ n ∈ Icc 1 N,
       |shiftedReciprocalUpwardRowError φ c shift N m n| ≤ b / Real.sqrt n := by

@@ -14,12 +14,23 @@ Negative vectors have a fixed amount of mass on conductors
 Uniform residue Mertens estimates already control reciprocal affine shells
 for conductors bounded by powers of the logarithmic source scale.
 
-Split complementary quotients `N/n` at `2cY`, with
-`Y=exp((log N)^ε)`. Above this threshold use uniform signed shell transfer;
-below it retain the crude source bound and its harmonic measure. The latter
-cost is polynomial in the conductor and in `log Y`, divided by `log N`.
-The kernel, cutoff, downward, center and pole replacements must retain
-explicit polynomial conductor costs before spectral assembly.
+Split complementary quotients at `2c exp(√log N)`. Signed shell transfer
+controls the upper range; the linear source envelope controls its complement.
+For every fixed `A≥0`, one constant and one eventual horizon control all
+`m≤(log N)^A`. The literal upward residual satisfies
+
+`‖U_res‖² ≤ K φ(m)² [c⁵/log N + c¹⁰(log N/N)² + c³/√log N]`.
+
+The reciprocal theorem and the literal upward proof pass Lean with only
+`propext`, `Classical.choice`, `Quot.sound`. Production audits remain pending.
+The remaining residual terms have proposed costs at most `K m⁴ c⁵/log N`
+apart from the self term `K m² c²/N²`; their Lean checks are pending.
+
+The common conductor floor is `a/c⁷`. If both conductor cutoff and overlap
+are at most `(log N)^(1/100)`, the summed squared residual divided by the
+squared floor is at most `K'(log N)^(-21/100)`. The cutoff condition follows
+from `16α<1`. Finite Ramanujan coordinate mass then excludes every
+nonpositive eigenvector.
 
 ## Open inputs
 

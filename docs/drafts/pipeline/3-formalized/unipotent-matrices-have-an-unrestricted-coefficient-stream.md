@@ -1,6 +1,6 @@
 # Unipotent matrices have an unrestricted coefficient stream
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Over every commutative ring `R`, the actual completed unipotent
   coefficient group is in bijection with `ℕ→R`, ordered as
@@ -20,4 +20,4 @@ quotient reduction require separate proofs.
 ## Lean
 
 `HTGeometry/LoopEisenstein/UnipotentCoefficientStream.lean`:
-`unipotentCoefficientStreamEquiv`. Direct check pending.
+`unipotentCoefficientStreamEquiv`. Direct Lean check passed. Transitive axiom audit: `propext`, `Classical.choice`, `Quot.sound`.

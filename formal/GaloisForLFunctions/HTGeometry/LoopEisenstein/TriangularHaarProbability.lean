@@ -13,7 +13,7 @@ of the countable product probability, without an ambient infinite Haar law.
 namespace GaloisForLFunctions.HTGeometry.LoopEisenstein
 open MeasureTheory Set
 noncomputable section
-variable {G : Type*} [MeasurableSpace G] [AddCommGroup G] [MeasurableAdd G]
+variable {G : Type*} [MeasurableSpace G] [AddCommGroup G] [MeasurableAdd₂ G]
 variable (μ : Measure G) [IsProbabilityMeasure μ] [μ.IsAddRightInvariant]
 
 /-- The strictly earlier coordinates of a finite tuple. -/
@@ -63,7 +63,8 @@ theorem measurePreserving_triangularFinite
       fun p => (triangularFinite φ N p.1, p.2 + φ N p.1)
     have hf : MeasurePreserving f ((Measure.pi (fun _ : Fin N => μ)).prod μ)
         ((Measure.pi (fun _ : Fin N => μ)).prod μ) := by
-      apply ih.skew_product (measurable_snd.add ((hφ N).comp measurable_fst))
+      apply ih.skew_product (g := fun x y => y + φ N x) (μc := μ) (μd := μ)
+        (measurable_snd.add ((hφ N).comp measurable_fst))
       exact Filter.Eventually.of_forall fun x => (measurePreserving_add_right μ (φ N x)).map_eq
     have hconj (x : Fin (N + 1) → G) : e (triangularFinite φ (N + 1) x) = f (e x) := by
       apply Prod.ext
@@ -71,12 +72,15 @@ theorem measurePreserving_triangularFinite
         change (headLastEquiv N (triangularFinite φ (N + 1) x)).1 i =
           triangularFinite φ N (headLastEquiv N x).1 i
         rw [headLastEquiv_head]
-        simp only [triangularFinite, strictPrefix, headLastEquiv_head]
+        simp only [triangularFinite, headLastEquiv_head]
+        apply congrArg (fun z : Fin i.val → G => x i.castSucc + φ i.val z)
+        funext j
+        exact (headLastEquiv_head N x ⟨j.val, lt_trans j.isLt i.isLt⟩).symm
       · change (headLastEquiv N (triangularFinite φ (N + 1) x)).2 =
           (headLastEquiv N x).2 + φ N (headLastEquiv N x).1
         rw [headLastEquiv_last, headLastEquiv_last]
         change x (Fin.last N) + φ N (fun i => x ⟨i.val, lt_trans i.isLt (Fin.last N).isLt⟩) = _
-        congr 1
+        apply congrArg (fun z : Fin N → G => x (Fin.last N) + φ N z)
         funext i
         exact (headLastEquiv_head N x i).symm
     have hfun : triangularFinite φ (N + 1) = e.symm ∘ f ∘ e := by
@@ -125,8 +129,11 @@ theorem measurePreserving_triangularSequence
     omega
   let A : Set (Fin N → G) := {x | ∀ i : Fin N, i.val ∈ s → x i ∈ t i.val}
   have hA : MeasurableSet A := by
-    change MeasurableSet (⋂ i : Fin N, ⋂ _ : i.val ∈ s,
-      (fun x : Fin N → G => x i) ⁻¹' t i.val)
+    have heq : A = ⋂ i : Fin N, ⋂ _ : i.val ∈ s,
+        (fun x : Fin N → G => x i) ⁻¹' t i.val := by
+      ext x
+      simp only [A, Set.mem_setOf_eq, Set.mem_iInter, Set.mem_preimage]
+    rw [heq]
     exact MeasurableSet.iInter fun i => MeasurableSet.iInter fun _ =>
       (ht i.val).preimage (measurable_pi_apply i)
   have hpre : countableProductHead N ⁻¹' A = (s : Set ℕ).pi t := by

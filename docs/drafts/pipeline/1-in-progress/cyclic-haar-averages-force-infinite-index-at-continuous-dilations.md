@@ -32,6 +32,10 @@ For a fixed finite index set take `a_(N,i)=1+i/(N+1)` and `b_N=1/(N+1)²`. Then 
 
 For distinct `i,j`, the moving pairing tends to zero by the cyclic bound. Continuity of the original dilation reading gives `B(v_(a_(N,i)),v_(a_(N,j)))→1`. Orthogonality of fixed and moving parts therefore makes the projected Gram matrices converge to `J−I`. Their negative index is bounded by the column-space index, while `J−I` on `n+1` coordinates has `n` negative directions. Stability of negative inertia contradicts every finite bound.
 
+## Positive slopes and adelic carriers
+
+The positive-slope subgroup has two cosets. Extending its kernel by zero gives a Hermitian kernel on the full rational affine group and multiplies negative index by two, by the verified `negIndex_extendFromSubgroup` law. Translation readings and positive dilation readings are unchanged. Thus the proposed obstruction also covers positive-slope affine kernels. An adelic carrier with these rational-axis readings restricts to that subgroup; pullback cannot increase negative index.
+
 ## Verification boundary
 
-Required Lean results: normalized polynomial correction; local periodicity; nonnegative moving subspaces; canonical cyclic projections; cyclic Hecke bound; projected Gram limit and inertia comparison. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+Required Lean results: normalized polynomial correction; local periodicity; nonnegative moving subspaces; canonical cyclic projections; cyclic Hecke bound; projected Gram limit and inertia comparison; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

@@ -1,6 +1,6 @@
 # Adjacent integral vertices have one common Borel
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Integral loop vertices](../1-in-progress/valued-loop-iwasawa-and-integral-vertices.md).
 - **Statement:** For the actual central loop extension, the adjacent coefficient-integral
   vertices `P₀,P₁` have the same intersection `B₀=P₀∩B=P₁∩B` with positive Borel.
@@ -26,4 +26,4 @@ values are those already proved on `P₀∩B`.
 
 `HTGeometry/LoopEisenstein/IntegralAdjacentVertex.lean`:
 `LoopSL2.integralAffineVertex_inf_positiveBorel`,
-`LoopSL2.integralAffineVertex_borel_torus_values`. Direct check pending.
+`LoopSL2.integralAffineVertex_borel_torus_values`. Direct Lean check passed; transitive axioms are exactly `propext`, `Classical.choice`, `Quot.sound`.

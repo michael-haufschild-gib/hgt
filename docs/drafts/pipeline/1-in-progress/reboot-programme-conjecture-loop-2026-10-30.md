@@ -40,8 +40,9 @@
   and averaged densities allow such a row. A large centre value `|ξ(½ + it)| ≍ t^{μ}` is exactly zeros
   displaced away from `½ + it`, and Lindelöf-size centre values exclude dense rows at positive depth
   (corpus: `LindelofOffLineSparse.card_le_window_of_bound`).
-  Under Lindelöf the binding model is the isolated pair at depth `½`: slice floor `¼`, de Bruijn `½`.
-  There the methods give `½` (slice) and `½` (de Bruijn).
+  Under Lindelöf the binding model is the isolated pair at depth `½`: slice floor `¼`, de Bruijn `½`
+  (#23). There the methods give `½` (slice) and `½` (de Bruijn): the de Bruijn method is sharp at
+  both levels; the slice method's Lindelöf value `½` is open against the floor `¼`.
 - **WP-A1** is the missing input for linear heat detection and for collapse-free lag detection. The
   corpus inputs (unit-window count `40 log(180t)`, census proportions, Selberg density) are averages
   or unit-scale counts and allow a central zero of multiplicity `≍ log t` at any single height. For
@@ -125,9 +126,10 @@
 | 19 | `λ_t > 0` iff some unheated slice coefficient at `t` is negative; `λ_t = 0` on lower density `29/50` | B | formalized: added to `3-formalized/the-local-heat-threshold.md` |
 | 21 | The local heat rate `λ_t log t` vanishes in density: for every `κ > 0`, `vol{λ_t > κ/log U} = o(U)` on `[U/4, U/2]` | B | formalized: added to `3-formalized/the-local-heat-threshold.md` (from the corpus a.e. repair at `(log U)^{−2}`) |
 | 22 | The de Bruijn reality horizon `2/3` (`KiKimLeeTwoThirdsHorizon`) is sharp for size + positive kernel: `cos(Lz/2) + e^{θL}e^{−z²/L²}` keeps a nonreal zero of `H_{κ/L}` for every `κ < 4θ` | WD/B | formalized: `3-formalized/a-weyl-bump-keeps-a-nonreal-heat-zero.md` |
+| 23 | Lindelöf level: an isolated pair `(z² + δ²)cos(Lz/2)` keeps a nonreal heat zero up to `κ² + 2κ/L < δ²` (`κ → δ ≤ ½`); the Ki–Kim–Lee method value `½` under Lindelöf is sharp | WD/B | formalized: `3-formalized/an-off-line-pair-survives-the-heat-flow-to-its-depth.md` |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#22 formalized; #18 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#23 formalized; #18 in corpus.

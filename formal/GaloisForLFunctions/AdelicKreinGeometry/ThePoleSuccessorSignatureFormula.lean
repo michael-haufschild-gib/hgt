@@ -247,7 +247,9 @@ theorem add_one_le_negIndex_poleSuccessor (hs : 0 < s) (hv : ∃ u : K, 1 < v u)
       rw [LinearMap.id_apply, HTGeometry.hermQuad_rect_conjugate]
       have hmem : BW.mulVec a = (bW.equivFun.symm a : Fin m → ℂ) := by
         ext i
-        simp [Matrix.mulVec, dotProduct, BW, Basis.equivFun_symm_apply, mul_comm]
+        simp only [Matrix.mulVec, dotProduct, BW, Matrix.of_apply, Module.Basis.equivFun_symm_apply,
+          Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+        exact sum_congr rfl fun k _ => mul_comm _ _
       have hc0 : (bW.equivFun.symm a : Fin m → ℂ) ≠ 0 := fun h =>
         ha (bW.equivFun.symm.injective (Subtype.ext (by rw [h, map_zero]; rfl)))
       rw [hmem, hermQuad_gram_poleSuccessor_translations hψ x _
@@ -260,8 +262,7 @@ theorem add_one_le_negIndex_poleSuccessor (hs : 0 < s) (hv : ∃ u : K, 1 < v u)
     have hval : ∀ e e' : Fin 2, D e e' =
         ((t ^ (e' : ℕ) / t ^ (e : ℕ) + t ^ (e : ℕ) / t ^ (e' : ℕ) : ℝ) : ℂ) := by
       intro e e'
-      simp only [D, gram, Matrix.of_apply, Φ, poleSuccessor_inv_mul hψ, hPslope, hPshift, sub_self,
-        zero_add]
+      simp only [D, gram, Φ, poleSuccessor_inv_mul hψ, hPslope, hPshift, sub_self, zero_add]
       rw [hψ.apply_zero hs ⟨u, hu⟩, mul_zero, add_zero]
     have hneg : hermQuad D ![1, -1] < 0 := by
       have htp : 0 < t := by linarith
@@ -272,7 +273,7 @@ theorem add_one_le_negIndex_poleSuccessor (hs : 0 < s) (hv : ∃ u : K, 1 < v u)
       simp only [hermQuad, dotProduct, Matrix.mulVec, Fin.sum_univ_two, hval, Pi.star_apply,
         Matrix.cons_val_zero, Matrix.cons_val_one, Fin.val_zero, Fin.val_one, pow_zero, pow_one,
         div_one, one_div]
-      simp only [star_one, star_neg, mul_one, mul_neg, neg_mul, one_mul, neg_neg, Complex.add_re,
+      simp only [star_one, star_neg, mul_one, mul_neg, neg_mul, one_mul, Complex.add_re,
         Complex.neg_re, Complex.ofReal_re]
       simp only [div_self htp.ne']
       norm_num
@@ -286,10 +287,10 @@ theorem add_one_le_negIndex_poleSuccessor (hs : 0 < s) (hv : ∃ u : K, 1 < v u)
     hermNegIndex_le_of_hermQuad_eq _ _ (Matrix.mulVecLin S) fun a => by
       rw [Matrix.mulVecLin_apply, ← HTGeometry.hermQuad_rect_conjugate]
   have hfin := hermNegIndex_gram_le_negIndex Φ (Sum.elim τ (P N))
-  rw [hWr] at *
+  have hfinal : r + 1 ≤ hermNegIndex (gram Φ (Sum.elim τ (P N))) := (hlimit.trans hN).trans hcomp
   calc (negIndexOn (gram ψ x) (LinearMap.ker (totalMass (Fin m))) : ℕ∞) + 1
-      = ((r + 1 : ℕ) : ℕ∞) := by rw [← hWr]; push_cast; rfl
-    _ ≤ negIndex Φ := (Nat.cast_le.mpr ((hlimit.trans hN).trans hcomp)).trans hfin
+      = ((r + 1 : ℕ) : ℕ∞) := by push_cast; rw [hWr]
+    _ ≤ negIndex Φ := (Nat.cast_le.mpr hfinal).trans hfin
 
 /-- **The signature formula**: `κ(Φ) = κ₀(ψ) + 1`. -/
 theorem negIndex_poleSuccessor_eq (hs : 0 < s) (hv : ∃ u : K, 1 < v u) (hψ : IsConformal v s ψ)
