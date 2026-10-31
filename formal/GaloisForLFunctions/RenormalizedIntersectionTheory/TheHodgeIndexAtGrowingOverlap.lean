@@ -2,6 +2,7 @@ import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheCompleteWeilMa
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis
 import GaloisForLFunctions.HTGeometry.HermitianSpectralWindowBounds
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleAtEveryRoot
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleHyperplaneIsTheHarmonicHyperplane
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheWeilEnergiesOfTheArithmeticModes
 
@@ -168,7 +169,7 @@ include hφ hsupp in
 `Σ_{n ≤ N} y_n/√n`. -/
 theorem poleMomentNeg_recentred {w : ℝ} (hw : 0 < w) (N : ℕ) (y : ℕ → ℝ) :
     poleMomentNeg (atomicTest N y (dilate (2 / w) (recentredProfile φ))) =
-      Real.exp (-(1 / 2) * -(w / 2)) * ((∫ u, atomDilate φ w u * Real.exp (-(u / 2))) *
+      Real.exp (w / 4) * ((∫ u, atomDilate φ w u * Real.exp (-(u / 2))) *
         ((∑ n ∈ Icc 1 N, y n / Real.sqrt n) / (w * ∫ u, φ u))) := by
   set k := w * ∫ u, φ u
   obtain ⟨hg2, hgs, -⟩ := atomDilate_facts hφ hsupp hw
@@ -186,7 +187,7 @@ theorem poleMomentNeg_recentred {w : ℝ} (hw : 0 < w) (N : ℕ) (y : ℕ → �
   have hshift := SelectiveMultiscaleArithmeticPositivity.integral_shift_mul_exp A (-(w / 2))
     (-(1 / 2))
   simp only [show ∀ u : ℝ, -(1 / 2) * u = -(u / 2) from fun u => by ring] at hshift
-  rw [poleMomentNeg, hT, hshift, hmA, sum_div]
+  rw [poleMomentNeg, hT, hshift, hmA, sum_div, show -(-(w / 2) / 2) = w / 4 by ring]
   congr 2
   exact sum_congr rfl fun n _ => by ring
 
@@ -258,7 +259,9 @@ theorem poleHyperplane_markov_nonneg_iff_hodgeIndex (hnn : ∀ u, 0 ≤ φ u)
       rw [e, hs, mul_zero]
     have h := H y hy
     rw [hmarkov y hy, weilQuad_atomicTest_dilate_recentred hw] at h
-    simpa only [y, mul_div_cancel_right₀ _ hk.ne'] using h
+    have e : (fun n => primeHorizonExtension x n * k / (c / N * ∫ u, φ u)) =
+        primeHorizonExtension x := funext fun n => mul_div_cancel_right₀ _ hk.ne'
+    rwa [e] at h
   · intro H y hy
     rw [hmarkov y hy, weilQuad_atomicTest_dilate_recentred hw, atomicTest_restrict]
     set x : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
@@ -322,6 +325,7 @@ end Logarithmic
 section EveryRoot
 
 open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
+open scoped ContDiff
 
 /-- **For a smooth profile the Hodge index at every power of the logarithm is RH.** For every
 `C^∞` nonnegative profile on `[0, 1]` with positive mass and every `α > 0`, RH holds iff eventually
@@ -332,7 +336,7 @@ theorem riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log {φ : ℝ → ℝ
     RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
       ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
         0 ≤ completeWeilEnergy φ (2 * Real.log N ^ α) N x := by
-  have hφ2 : ContDiff ℝ 2 φ := hφ.of_le (by exact_mod_cast le_top)
+  have hφ2 : ContDiff ℝ 2 φ := hφ.of_le (natCast_le_infty 2)
   set q : ℕ := ⌈1 / α⌉₊ + 1
   have hq : 1 < (q : ℝ) * α := by
     have h1 : 1 / α ≤ ⌈1 / α⌉₊ := Nat.le_ceil _
@@ -357,17 +361,19 @@ def unitBump : ContDiffBump (1 / 2 : ℝ) := ⟨1 / 4, 1 / 2, by norm_num, by no
 theorem unitBump_eq_zero (u : ℝ) (hu : u ∉ Set.Icc 0 1) : unitBump u = 0 := by
   rw [← Function.notMem_support, unitBump.support_eq]
   intro h
-  rw [Metric.mem_ball, Real.dist_eq, abs_lt] at h
+  have hr : unitBump.rOut = 1 / 2 := rfl
+  rw [Metric.mem_ball, Real.dist_eq, abs_lt, hr] at h
   exact hu ⟨by linarith [h.1], by linarith [h.2]⟩
 
 theorem integral_unitBump_sq_pos : 0 < ∫ u, unitBump u ^ 2 := by
-  have hc : Continuous fun u => unitBump u ^ 2 := (unitBump.contDiff (n := 0)).continuous.pow 2
+  have hc : Continuous fun u => unitBump u ^ 2 := unitBump.continuous.pow 2
   have hcs : HasCompactSupport fun u => unitBump u ^ 2 :=
-    unitBump.hasCompactSupport.comp_left (by norm_num)
+    unitBump.hasCompactSupport.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num)
   rw [MeasureTheory.integral_pos_iff_support_of_nonneg (fun u => sq_nonneg _)
     (hc.integrable_of_hasCompactSupport hcs)]
   have hs : Function.support (fun u => unitBump u ^ 2) = Metric.ball (1 / 2 : ℝ) (1 / 2) := by
-    rw [← unitBump.support_eq]
+    have hr : unitBump.rOut = 1 / 2 := rfl
+    rw [← hr, ← unitBump.support_eq]
     ext u
     simp [Function.mem_support]
   rw [hs]

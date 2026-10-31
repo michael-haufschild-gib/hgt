@@ -1,3 +1,5 @@
+import GaloisForLFunctions.BiarithmeticGeometry.Affine.SubgroupOrders
+import GaloisForLFunctions.BiarithmeticGeometry.Affine.SubgroupPrimeHeight
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.PositiveAffineAction
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.PositiveAffineIndex
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.NearIdentityGrids
