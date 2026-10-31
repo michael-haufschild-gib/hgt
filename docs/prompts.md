@@ -463,9 +463,9 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-3010/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-3010/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-3010/walls-ledger.md
+3. Unification of the routes: docs/reports/review-3110/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-3110/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-3110/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
     
@@ -483,7 +483,7 @@ The questions for you to answer:
 5. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 6. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-3010/astra.md
+Write a report in docs docs/reports/review-3110/astra.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -493,7 +493,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-3110/obstacles-summary.md
 
-under "## 2.6 Does closing RH need a new field?" it describes a new field/research programme called "renormalized intersection theory of the scaling surface".
+under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "edge Hodge theory of the scaling surface".
 
 Your task: develop this field/research programme and do the actual research and formalization.
 

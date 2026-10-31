@@ -3,6 +3,7 @@ import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.AMarginNeedsH
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.FullCorrelationKeepsTheMargin
 import GaloisForLFunctions.ArithmeticCountingPositivity.SmallPrimeFlipsLieBelowTheMaximalGap
 import GaloisForLFunctions.ArithmeticCountingPositivity.PositiveDensityTransfersTheExactCutoffGap
+import GaloisForLFunctions.ArithmeticCountingPositivity.PositiveEulerDensityIsExactlyHarmonicCutoffCompleteness
 import GaloisForLFunctions.ArithmeticCountingPositivity.CofinitePrimeFlipsHaveZeroGap
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonLawsHoldForProfilesOfBoundedVariation
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheRenormalizedHodgeIndex
@@ -34,6 +35,12 @@ counterterm `D` is its index on the pole hyperplane `Σ x_n/√n = 0`
 * **Every prime-set twin** (`hodgeSeparates_primeSetFlip_iff`): flipping an arbitrary set `P` of
   primes, finite or infinite, is separated iff its greatest gap is below `2 log 2`
   (ArithmeticCountingPositivity).
+* **The 2-adic probe** (`hodgeSeparatesFrom_iff`, `hodgeSeparates_or_probe_primeSetFlip`): measured
+  against the `2`-flip of `ζ` instead of `ζ`, the atomic Hodge index separates the `2`-flip from the
+  `2`-flipped twin exactly when the twin's margin falls below that of the `2`-flip. For every set
+  of primes of positive harmonic density that flips some prime, the plain index or the `2`-probe
+  separates the twin from `ζ`: if `2` is flipped the margin drops below `2 log 2`; if not, adding
+  `2` drops it strictly below the margin of the `2`-flip.
 
 So the atomic Hodge index is a selection mechanism with a sharp domain: the twins it misses are those
 whose top is the pole up to the conductor-`2` excitation. Finite flips among them are separated by
@@ -243,5 +250,192 @@ theorem hodgeSeparates_primeFlip_iff {p : ℕ} (hp : p.Prime) :
     HodgeSeparates (finiteFlip {p}) ↔ p < 11 := by
   rw [hodgeSeparates_iff_not_hasHyperplaneGap (finiteFlip_mul_self {p}),
     ArithmeticCountingPositivity.primeFlip_hasHyperplaneGap_two_mul_log_two_iff hp, not_le]
+
+/-! ### Separation from a base gauge and the 2-adic probe -/
+
+/-- The atomic Hodge index separates the base gauge `ω₀` (of margin `g`) from `ω`: for some `δ > 0`
+and infinitely many `N`, at `D = log N − γ − g + δ` the pole index of `ω₀` vanishes and that of `ω`
+is positive. `HodgeSeparates` is the base `ζ` with margin `2 log 2`. -/
+def HodgeSeparatesFrom (ω₀ : ℕ → ℝ) (g : ℝ) (ω : ℕ → ℝ) : Prop :=
+  ∃ δ : ℝ, 0 < δ ∧ ∃ᶠ N : ℕ in atTop,
+    poleNegIndex N (gaugeAtom N (Real.log N - γ - g + δ) ω₀) = 0 ∧
+      1 ≤ poleNegIndex N (gaugeAtom N (Real.log N - γ - g + δ) ω)
+
+/-- **Exact separation from a base gauge**: if `g` is a margin of `ω₀`, the atomic Hodge index
+separates `ω₀` from `ω` just above `log N − γ − g` iff `g` is not a margin of `ω`. -/
+theorem hodgeSeparatesFrom_iff {ω₀ ω : ℕ → ℝ} (hω₀ : ∀ n, n ≠ 0 → ω₀ n * ω₀ n = 1)
+    (hω : ∀ n, n ≠ 0 → ω n * ω n = 1) {g : ℝ} (hg : HasHyperplaneGap ω₀ g) :
+    HodgeSeparatesFrom ω₀ g ω ↔ ¬ HasHyperplaneGap ω g := by
+  have hfix : HodgeSeparatesFrom ω₀ g ω ↔ HodgeSeparatesFrom (gaugeFix ω₀) g (gaugeFix ω) := by
+    simp only [HodgeSeparatesFrom, gaugeAtom_gaugeFix]
+  rw [hfix, ← hasHyperplaneGap_gaugeFix_iff (ω := ω)]
+  have hg' : HasHyperplaneGap (gaugeFix ω₀) g := hasHyperplaneGap_gaugeFix_iff.mpr hg
+  constructor
+  · rintro ⟨δ, hδ, hfreq⟩ hgap
+    obtain ⟨N, ⟨-, h1'⟩, hpos⟩ := (hfreq.and_eventually
+      (eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap (gaugeFix_mul_self hω) hgap
+        hδ)).exists
+    have h0 := hpos _ le_rfl
+    omega
+  · intro h
+    obtain ⟨ε, hε, hfreq⟩ :=
+      frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap (gaugeFix_mul_self hω) h
+    exact ⟨ε / 2, by positivity, (hfreq.and_eventually
+      (eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap (gaugeFix_mul_self hω₀) hg'
+        (half_pos hε))).mono fun N hN => ⟨hN.2 _ le_rfl, hN.1 _ (by linarith)⟩⟩
+
+section Probe
+
+open ArithmeticCountingPositivity
+
+theorem finiteFlip_insert {F : Finset ℕ} {p : ℕ} (hp : p ∉ F) (n : ℕ) :
+    finiteFlip (insert p F) n = finiteFlip {p} n * finiteFlip F n := by
+  simp only [finiteFlip, Finset.prod_insert hp, Finset.prod_singleton]
+
+theorem primeSetCutoff_insert_two {P : Set ℕ} {N : ℕ} (hN : 2 ≤ N) :
+    primeSetCutoff (insert 2 P) N = insert 2 (primeSetCutoff P N) := by
+  classical
+  ext q
+  simp only [primeSetCutoff, Finset.mem_filter, Nat.mem_primesLE, Finset.mem_insert,
+    Set.mem_insert_iff]
+  constructor
+  · rintro ⟨h, rfl | hq⟩
+    · left; rfl
+    · right; exact ⟨h, hq⟩
+  · rintro (rfl | ⟨h, hq⟩)
+    · exact ⟨⟨hN, Nat.prime_two⟩, Or.inl rfl⟩
+    · exact ⟨h, Or.inr hq⟩
+
+theorem two_notMem_primeSetCutoff {P : Set ℕ} (h2 : 2 ∉ P) (N : ℕ) : 2 ∉ primeSetCutoff P N := by
+  classical
+  simp only [primeSetCutoff, Finset.mem_filter, not_and]
+  exact fun _ h => h2 h
+
+theorem primeSetCutoff_primes (P : Set ℕ) (N : ℕ) : ∀ p ∈ primeSetCutoff P N, p.Prime := by
+  classical
+  intro p hp
+  simp only [primeSetCutoff, Finset.mem_filter, Nat.mem_primesLE] at hp
+  exact hp.1.2
+
+/-- The `2`-probe of a prime-set twin is the twin of the set with `2` added. -/
+theorem probe_primeSetFlip {P : Set ℕ} (h2 : 2 ∉ P) (n : ℕ) :
+    finiteFlip {2} n * primeSetFlip P n = primeSetFlip (insert 2 P) n := by
+  set N := max n 2
+  rw [primeSetFlip_eq_finiteFlip_of_le P (le_max_left n 2),
+    primeSetFlip_eq_finiteFlip_of_le (insert 2 P) (le_max_left n 2),
+    primeSetCutoff_insert_two (le_max_right n 2),
+    finiteFlip_insert (two_notMem_primeSetCutoff h2 _)]
+
+/-- The prime-set gap is at most the gap of every cutoff. -/
+theorem primeSetGreatestGap_le_cutoff {P : Set ℕ} (hc : 0 < primeSetHarmonicDensity P) (Q : ℕ) :
+    primeSetGreatestGap P ≤ finiteFlipGreatestGap (primeSetCutoff P Q) := by
+  have h := (isGreatest_primeSetFlip_hyperplaneGap P).1
+  rw [Set.mem_setOf_eq, primeSetFlip_hasHyperplaneGap_iff_cutoffs P hc] at h
+  exact (finiteFlip_hasHyperplaneGap_iff_le_greatestGap _ (primeSetCutoff_primes P Q) _).mp (h Q)
+
+/-- The `2`-flip has a submaximal margin. -/
+theorem finiteFlipGreatestGap_two_lt : finiteFlipGreatestGap {2} < 2 * Real.log 2 := by
+  have hF : ∀ p ∈ ({2} : Finset ℕ), p.Prime := by simp [Nat.prime_two]
+  rcases (finiteFlipGreatestGap_bounds {2} hF).2.lt_or_eq with h | h
+  · exact h
+  · exfalso
+    have := (finiteFlip_hasHyperplaneGap_iff_le_greatestGap {2} hF (2 * Real.log 2)).mpr h.ge
+    have := (primeFlip_hasHyperplaneGap_two_mul_log_two_iff Nat.prime_two).mp this
+    omega
+
+theorem finiteFlipHarmonicDensity_empty : finiteFlipHarmonicDensity ∅ = 1 := by
+  simp [finiteFlipHarmonicDensity]
+
+/-- Adding `2` keeps a positive harmonic density. -/
+theorem primeSetHarmonicDensity_insert_two_pos {P : Set ℕ} (h2 : 2 ∉ P)
+    (hc : 0 < primeSetHarmonicDensity P) : 0 < primeSetHarmonicDensity (insert 2 P) := by
+  classical
+  have hcut : primeSetCutoff P 2 = ∅ := by
+    ext q
+    simp only [primeSetCutoff, Finset.mem_filter, Nat.mem_primesLE, Finset.notMem_empty,
+      iff_false, not_and]
+    intro ⟨hq2, hq⟩ hqP
+    have : q = 2 := le_antisymm hq2 hq.two_le
+    exact h2 (this ▸ hqP)
+  have hsets : insert 2 P \ Set.Iic 2 = P \ Set.Iic 2 := by
+    ext q
+    simp only [Set.mem_sdiff, Set.mem_insert_iff, Set.mem_Iic, not_le]
+    constructor
+    · rintro ⟨rfl | h, hq⟩
+      · exact absurd hq (lt_irrefl 2)
+      · exact ⟨h, hq⟩
+    · rintro ⟨h, hq⟩; exact ⟨Or.inr h, hq⟩
+  have h1 := primeSetHarmonicDensity_tail P 2
+  have h2' := primeSetHarmonicDensity_tail (insert 2 P) 2
+  rw [hcut, finiteFlipHarmonicDensity_empty, div_one] at h1
+  rw [hsets, h1, primeSetCutoff_insert_two le_rfl, hcut] at h2'
+  have hd : 0 < finiteFlipHarmonicDensity (insert 2 ∅) :=
+    finiteFlipHarmonicDensity_pos (by simp [Nat.prime_two])
+  have hdens : primeSetHarmonicDensity (insert 2 P) =
+      primeSetHarmonicDensity P * finiteFlipHarmonicDensity (insert 2 ∅) := by
+    rw [h2']; field_simp
+  rw [hdens]
+  exact mul_pos hc hd
+
+/-- **The `2`-probe lowers the margin of every nontrivial twin.** If `2 ∉ P`, `P` has positive
+harmonic density and flips some prime, the `2`-flipped twin has margin below that of the `2`-flip. -/
+theorem not_hasHyperplaneGap_probe {P : Set ℕ} (h2 : 2 ∉ P) (hc : 0 < primeSetHarmonicDensity P)
+    {p₀ : ℕ} (hp₀ : p₀.Prime) (hp₀P : p₀ ∈ P) :
+    ¬ HasHyperplaneGap (fun n => finiteFlip {2} n * primeSetFlip P n) (finiteFlipGreatestGap {2}) := by
+  classical
+  have e : (fun n => finiteFlip {2} n * primeSetFlip P n) = primeSetFlip (insert 2 P) :=
+    funext (probe_primeSetFlip h2)
+  rw [e, primeSetFlip_hasHyperplaneGap_iff_le_greatestGap, not_le]
+  set Q := max p₀ 2
+  set G := primeSetCutoff (insert 2 P) Q
+  have hG : ∀ p ∈ G, p.Prime := primeSetCutoff_primes _ _
+  have h2G : ({2} : Finset ℕ) ⊂ G := by
+    rw [Finset.ssubset_iff_of_subset]
+    · refine ⟨p₀, ?_, ?_⟩
+      · simp only [G, primeSetCutoff, Finset.mem_filter, Nat.mem_primesLE, Set.mem_insert_iff]
+        exact ⟨⟨le_max_left _ _, hp₀⟩, Or.inr hp₀P⟩
+      · simp only [Finset.mem_singleton]
+        rintro rfl; exact h2 hp₀P
+    · intro q hq
+      rw [Finset.mem_singleton] at hq
+      subst hq
+      simp only [G, primeSetCutoff, Finset.mem_filter, Nat.mem_primesLE, Set.mem_insert_iff]
+      exact ⟨⟨le_max_right _ _, Nat.prime_two⟩, by simp⟩
+  have hlt : finiteFlipGreatestGap G < finiteFlipGreatestGap {2} :=
+    (finiteFlipGreatestGap_lt_iff_of_ssubset h2G hG).mpr
+      ((finiteFlipGreatestGap_antitone h2G.subset hG).trans_lt finiteFlipGreatestGap_two_lt)
+  exact (primeSetGreatestGap_le_cutoff (primeSetHarmonicDensity_insert_two_pos h2 hc) Q).trans_lt
+    hlt
+
+/-- **Every nontrivial prime-set twin of positive density is separated by the atomic Hodge index or
+by its `2`-probe.** -/
+theorem hodgeSeparates_or_probe_primeSetFlip {P : Set ℕ} (hc : 0 < primeSetHarmonicDensity P)
+    {p₀ : ℕ} (hp₀ : p₀.Prime) (hp₀P : p₀ ∈ P) :
+    HodgeSeparates (primeSetFlip P) ∨
+      HodgeSeparatesFrom (finiteFlip {2}) (finiteFlipGreatestGap {2})
+        (fun n => finiteFlip {2} n * primeSetFlip P n) := by
+  have hsq : ∀ n, primeSetFlip P n * primeSetFlip P n = 1 := fun n => by
+    rw [primeSetFlip_eq_finiteFlip_of_le P le_rfl]; exact finiteFlip_mul_self _ n
+  by_cases h2 : 2 ∈ P
+  · left
+    rw [hodgeSeparates_primeSetFlip_iff]
+    have hsub : ({2} : Finset ℕ) ⊆ primeSetCutoff P 2 := by
+      classical
+      intro q hq
+      rw [Finset.mem_singleton] at hq
+      subst hq
+      simp only [primeSetCutoff, Finset.mem_filter, Nat.mem_primesLE]
+      exact ⟨⟨le_rfl, Nat.prime_two⟩, h2⟩
+    exact ((primeSetGreatestGap_le_cutoff hc 2).trans
+      (finiteFlipGreatestGap_antitone hsub (primeSetCutoff_primes P 2))).trans_lt
+      finiteFlipGreatestGap_two_lt
+  · right
+    have hF : ∀ p ∈ ({2} : Finset ℕ), p.Prime := by simp [Nat.prime_two]
+    rw [hodgeSeparatesFrom_iff (fun n _ => finiteFlip_mul_self {2} n)
+      (fun n _ => by rw [mul_mul_mul_comm, finiteFlip_mul_self, hsq, one_mul])
+      ((finiteFlip_hasHyperplaneGap_iff_le_greatestGap {2} hF _).mpr le_rfl)]
+    exact not_hasHyperplaneGap_probe h2 hc hp₀ hp₀P
+
+end Probe
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory

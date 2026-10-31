@@ -4,7 +4,7 @@ Three wall families block every route: **Σ** the critical sign, **Π** square-r
 selection of ζ. All three are readings of one integer, `κ(K_ζ) = #` zeros right of the critical line,
 on one hyperplane, the pole-orthogonal hyperplane `v₁^⊥` (= boost hyperplane = Markov hyperplane =
 harmonic hyperplane). The archimedean place glues by that hyperplane and supplies the single global
-square; no assembly of local poles does.
+square; no assembly of local poles at two or more primes does.
 
 Status: **Solved** (the face is a theorem), **Partially solved**, **Sharpened** (open, with its exact
 form a theorem), **Open**, **No-go** (the mechanism is refuted), **Classified** (answered by a
@@ -37,7 +37,7 @@ unfinished or outside its umbrella; `[map]` frontier-map status.
 | Σ11 Product-formula gluing of the global pole | Classified | — | Sum of `|S|` local poles: `|S|` squares; tensor product: `2^{|S|−1}`; renormalized infinite product: `∞`, global-pole weight `2^{−|S|} → 0`; the extremal weight is the archimedean pole on `S`-units and the only archimedean weight [L]. The one square is supplied by the archimedean place. |
 | Σ12 Running counterterm | Sharpened | RH | Local form = renormalized hyperbolic pair + shell squares [L]; no fixed counterterm makes the prime kernel Pontryagin [L]; the infinite assembly needs `log N − γ`. |
 | Σ13 Residual-versus-floor barrier | Sharpened | sub | Norm-quasimode positivity requires `K Q⁵ rate / floor² ≤ 1/36` [L]; residual `K m⁴(c⁵/log N + c³/√log N)` against floor `c⁻⁷` stops fixed packets at `(log N)^{1/19}` [L]. At RH-complete overlap the floor is `≲ 1/log N`. |
-| Σ14 Detection edge | Sharpened | RH | A regime with unconditional positivity cannot see an off-line zero; RH is positivity across the edge between the universal and the RH regime. Edge location: tilted spline in `[α*, ¼]`; C^∞ profiles below every power of `log N`; sinc at `τ(c) log N ≈ 1` [L for the bracketing theorems]. |
+| Σ14 Detection edge | Sharpened | RH | A regime with unconditional positivity cannot exclude an off-line zero beyond what is excluded unconditionally; RH is positivity across the edge between the universal and the RH regime. Edge location: tilted spline in `[α*, ¼]`; C^∞ profiles below every power of `log N`; sinc at `τ(c) log N ≈ 1` [L for the bracketing theorems]. |
 | Σ15 Tensor amplification | No-go | — | `K_ζ^n` PD ⇔ RH for every `n ≥ 1`; `κ_ζ² ≤ κ(K_ζ⊠K_ζ)`; diagonal frequencies `ρ + ρ'`; arithmetic side = square of the prime side; no finite nonzero Künneth index [L]. |
 | Σ16 Heat homotopy of the glued state | Sharpened | RH | `κ(φ_c^{(t)}) = N(t)/2 + 1 < ∞`, continuous source, lower semicontinuous, antitone, drop `Σ⌊m/2⌋` per collision, `1` for `t ≥ 1/8`; RH ⇔ constant index; `κ(φ_c) ≤ liminf_{t→0⁺}`; `0 ≤ Λ < 1/8` [L]. |
 

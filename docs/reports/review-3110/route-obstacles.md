@@ -21,7 +21,7 @@ codes as in the frontier-map source locator; RIT = RenormalizedIntersectionTheor
 | Archimedean Weil state `κ(ratCorr(|a|) − c|a|^{−½}|b|) = κ_ζ + 1`; the same at every prime place; translation reading has exactly one square | AKG `WeilsArchimedeanStateCountsTheZeros`, `TheGluingFormulaAtEveryPlace`, `TheTwoReadingsAdd` [L] | RH ⇔ index one for one explicit affine state; the zeros live entirely in the multiplicative reading |
 | Boost hyperplane = `v₁^⊥` = Markov hyperplane = harmonic hyperplane; `v₁` is the complete-Weil ground state | RIT `ThePoleClassIsTheGroundConductor`, `TheHodgeIndexAtGrowingOverlap` [L] | SC, the complete-Weil cluster and the Markov (SSHA) criterion are one sign problem on one hyperplane |
 | Universal regime: tilted spline all-vector positive for `1 ≤ c ≤ (log N)^α`, `α < α* = min(1/500, 1/(60 C_cut))`, `C_cut` ineffective | CACT `eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog` [L] | positivity proved without zero information at every power of `log N` below `α*` |
-| RH regime: tilted spline full space at `2(log N)^{α>¼}`, `v₁^⊥` at `α>½`; every C^∞ profile on `v₁^⊥` at every `2(log N)^{α>0}`; sinc profile at `≍ L(log L)²`, `L = log log N` | RAPT `riemannHypothesis_iff_tiltedUnitSpline_completeWeil_nonneg_log`; RIT `riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`; TM `TheSincProfileHasAnExactCriticalOverlap` [L] | a regime where positivity is proved unconditionally cannot detect zeros; RH sits at the detection edge between the regimes |
+| RH regime: tilted spline full space at `2(log N)^{α>¼}`, `v₁^⊥` at `α>½`; every C^∞ profile on `v₁^⊥` at every `2(log N)^{α>0}`; sinc profile at `≍ L(log L)²`, `L = log log N` | RAPT `riemannHypothesis_iff_tiltedUnitSpline_completeWeil_nonneg_log`; RIT `riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`; TM `TheSincProfileHasAnExactCriticalOverlap` [L] | a regime where positivity is proved unconditionally excludes no off-line zero beyond what is excluded unconditionally; RH sits at the detection edge between the regimes |
 | Ground energy `E₁(c) ≍ τ(c)` (profile Fourier tail); at the sinc RH threshold `τ(c) log N ≈ 1` | RAPT completed energies; TM sinc [L] | at the edge every method must control the matrix to accuracy below `≈ 1/log N` on all vectors |
 | One-sided count `ψ(x) − x ≤ C√x log²x` ⇔ RH; section shortfall rate ⇔ zero width | ACP, SPTL [L] | every exponent gain on a count is quasi-RH |
 | Index twin-blind; glue pole-blind; glued test index `∞` on finite flips, `κ_ζ+1` on `Λ`; atomic Hodge index separates exactly submaximal margins | AKG `TheIndexIsTwinBlind`, `TheGluingSquareIsSharp`; RIT `TheGluedIndexSelectsZeta`, `TheAtomicHodgeIndexSeparatesExactlyTheSubmaximalMargins` [L] | selection must come from prime data; maximal-margin infinite twins are unselected |
@@ -132,7 +132,7 @@ Established [L]: escape/mixing/height decay ⇒ `κ ∈ {0, ∞}`; local index w
 signature `Σκ₀ + 1 ≤ κ ≤ Σκ₀ + 2`; gluing at every place; stable gluing; the glue absorbs exactly its
 own pair and charges a double pole; shell identity of the archimedean form; Haar classification
 `k = p + ψ∘slope + Q` and sharp punctured limits; global pole = extremal weight; no assembly of local
-poles has one square; glued test index and atomic Hodge selection.
+poles at two or more primes has one square; glued test index and atomic Hodge selection.
 
 | | Obstacle |
 |---|---|
@@ -361,7 +361,8 @@ absorption of its own pair; simple pole absorbed, double pole charged; Haar succ
 continuous dilation have `κ = ∞`, finite-index Haar kernels split uniquely with punctured limits
 exactly the reals `≤ 0`; heat-deformed state `φ_c^{(t)}` source-defined with `κ = N(t)/2 + 1`,
 antitone, `1` for `t ≥ 1/8`, RH ⇔ constant, `κ(φ_c) ≤ liminf κ(φ_c^{(t)})`; global pole =
-extremal weight, no local assembly has one square; Künneth/Hadamard branch: RH-equivalent and
+extremal weight, no assembly of local poles at two or more primes has one square; Künneth/Hadamard
+branch: RH-equivalent and
 all-or-nothing; glued test index selects ζ against finite flips.
 - A: A10, A11; A7 (heat calibration).
 - B: independent `κ(φ_c) ≤ 1`, equivalently positivity on `v₁^⊥` (**RH**, Σ1); B19 (shell identity of

@@ -153,7 +153,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Hodge index at iterated-logarithmic overlap; the Hodge index on `v_1^⊥` is RH at overlap `2(log N)^α` for every `α > 0` (smooth profiles) and every `α > 1/2` (tilted spline); it leaves at most one negative eigenvalue | `eventually_completeWeil_hodgeIndex_iteratedLog`, `riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`, `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log`, `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `poleHyperplane_markov_nonneg_iff_hodgeIndex`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal` | unconditional; equivalences |
 | Schur product; every Hadamard power of `K_ζ` is RH | `isPosDefKernel_mul`, `isPosDefKernel_pow`, `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `riemannHypothesis_iff_negIndex_zetaKernel_pow_eq_zero` | unconditional; equivalences |
 | Off-line zeros are neutral pairs: `κ(K_ζ) ≤ κ₊(K_ζ)` on the finite stratum; the Künneth square at least squares the index, `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ)`; a finite Künneth index is Lindelöf and a zero-free half-plane | `negIndex_zetaKernel_le_posIndex`, `sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`, `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top` | unconditional; implications |
-| The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1` | `hodgeSeparates_iff_not_hasHyperplaneGap`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
+| The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, every cofinite flip, the prime flips `p < 11`, and exactly those flips of an arbitrary prime set (finite or infinite) whose greatest gap is below `2 log 2`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1` | `hodgeSeparates_iff_not_hasHyperplaneGap`, `hodgeSeparates_primeSetFlip_iff`, `hodgeSeparates_cofiniteFlip`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
 | The renormalized Hodge index is the Hodge index of the scaling surface, and a sign-free Serre-dual `h⁰` with quadratic Riemann–Roch growth exists iff it holds | `renormalizedHodgeIndex_ratCorr_iff_scalingSurface_hodgeIndex`, `renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0` | equivalences |
 | Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 
@@ -206,9 +206,10 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 2. The positive index of `K_ζ` on the infinite stratum (it is infinite on the finite stratum and
    for the on-line part); with it the Künneth square would be all-or-nothing by the same mechanism on
    both strata (the dichotomy itself is already proved).
-3. Twins outside both selection mechanisms: infinite flip sets of maximal margin (all flipped
-   primes `≥ 11`, harmonic correlation `→ 1` or between) are invisible to the atomic Hodge index and
-   are not finite flips; whether the glued test index separates them is open.
+3. Twins outside both selection mechanisms: flips of an infinite prime set whose greatest gap is
+   the maximal `2 log 2`. The atomic Hodge index separates every other prime-set twin, the glued
+   test index every finite one; which infinite sets keep the maximal gap, and whether the glued test
+   index separates them, is open.
 
 ## 9. Traps
 
