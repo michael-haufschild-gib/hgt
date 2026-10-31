@@ -11,7 +11,8 @@
   local count. (iii) If every window `(S − 1, S + 1]` holds at most `M` off-line zeros and
   Riemann–von Mangoldt holds, then `N₀(T, 2T)/N(T, 2T) → 1`; the same if the bound fails only on a
   set of window centres of measure `o(T)`. (iv) For every configuration `Z` and
-  `W`, `Z ⊕ clusters` (#26) has a window `(S − 1, S + 1]` with `Σ m (Re ρ − ½)² > W`.
+  `W`, `Z ⊕ clusters` (#26) has a window `(S − 1, S + 1]` with `Σ m (Re ρ − ½)² > W`. (v) If every
+  window has depth mass `≤ W`, every zero has `(Re ρ − ½)² ≤ W`.
 
 ## Lean
 Module `SquareRootThreshold/TheLocalCountBoundsTheMultiplicity.lean` (namespace
@@ -21,7 +22,7 @@ Module `SquareRootThreshold/TheLocalCountBoundsTheMultiplicity.lean` (namespace
 `offLinePart_N_le`, `eventually_N_ge_of_rvm`, `tendsto_N0_div_N_of_offLineLocallyBounded`,
 `AlmostOffLineLocallyBounded`, `two_mul_offLine_N_le_integral`,
 `tendsto_N0_div_N_of_almostOffLineLocallyBounded`, `OffLineDepthLocallyBounded`,
-`not_offLineDepthLocallyBounded_superpose`; `riemannVonMangoldt_superpose_of_N_le` in
+`not_offLineDepthLocallyBounded_superpose`, `sq_re_sub_half_le_of_offLineDepthLocallyBounded`; `riemannVonMangoldt_superpose_of_N_le` in
 `CountingInputsDoNotBoundTheLocalCount`.
 Axioms: `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -46,6 +47,7 @@ of length `2`, so `2N_off(T, 2T) ≤ ∫_{T−1}^{2T+1} N_off(S − 1, S + 1) dS
 (windows hold `≤ 2A₀ log(2T + 4)` zeros by the unit count). Dividing by `N ≥ (T/4π) log T` leaves
 `N_off/N ≤ o(1) + 16πA₀ε` for every `ε`.
 (iv) The cluster at `exp(eᵏ)` alone carries depth mass `⌊eᵏ⌋/(k + 3)² ≥ (eᵏ − 1)/(k + 3)² → ∞`.
+(v) The window about `Im ρ` contains `ρ`, whose term is `m (Re ρ − ½)² ≥ (Re ρ − ½)²`.
 
 ## What it changes (WP-A)
 At the tangency point `½ + it` the local count of §6 A1 is a multiplicity statement: A1 implies
@@ -58,7 +60,13 @@ consistent with RH and needs `S(t + r) − S(t − r) ≪ r log t + 1` (#8). The
 off-line count per unit window, forces critical proportion `1`, beyond the known proportions, and
 so does its version in density; under counting it fails (#26). The depth-weighted variant is the one
 the Selberg moments control on average. So does the depth-weighted input `OffLineDepthLocallyBounded` of the CCM
-ground-energy floor (`TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster`).
+ground-energy floor (`TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster`), which pointwise
+is at least a zero-free strip `|Re ρ − ½| ≤ √W`.
+
+Classification of the local inputs. A1: implies bounded critical multiplicity (open under RH), holds
+for almost all heights (#28). Off-line count per window (lag): implies critical proportion one, also
+in density (#33, #35); not known in density. Depth mass per window (CCM): implies a zero-free strip,
+holds off density-`o(1)` heights (#36). None follows from counting (#26, #29, #34).
 
 ## Log
 - 2026-10-31 — created; proved; formalized.

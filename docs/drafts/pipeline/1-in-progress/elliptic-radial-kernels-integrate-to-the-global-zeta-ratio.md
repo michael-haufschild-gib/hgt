@@ -28,8 +28,9 @@ the finite-cylinder identities to the same zeta ratio.
 
 - [Actual local spectral integrals](../3-formalized/actual-elliptic-local-spectral-characters-have-exact-integrals.md): audited.
 - [Finite-cylinder measure identity](../3-formalized/elliptic-adelic-haar-has-exact-finite-cylinder-products.md): audited.
-- Actual global kernel, integral-translation invariance, finite-cylinder
-  integration and exhaustion limit: unformalized.
+- [Finite-cylinder spectral integrals](../3-formalized/elliptic-finite-cylinder-spectral-integrals-factor-exactly.md): audited.
+- Actual global kernel, integral-translation invariance and exhaustion limit:
+  unformalized.
 
 Identifying this radial kernel with the loop Iwasawa section remains a
 separate input to arithmetic unfolding.

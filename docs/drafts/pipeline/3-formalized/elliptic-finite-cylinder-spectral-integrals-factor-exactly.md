@@ -1,6 +1,6 @@
 # Elliptic finite-cylinder spectral integrals factor exactly
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Global radial integral](../1-in-progress/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
 - **Statement:** Assembly maps the local cylinder product measure to actual
   adelic Haar restricted to that cylinder. For `Re(s)>0`, its radial spectral
@@ -26,4 +26,5 @@ integrals. Substitute their audited residue-cardinality formulas.
 `ellipticCylinderAssembly_measurePreserving`,
 `integral_ellipticCylinderAssembly`,
 `ellipticCylinderSpectralKernel_integrable`,
-`integral_ellipticCylinderSpectralKernel`. Direct audit pending.
+`integral_ellipticCylinderSpectralKernel`. Direct Lean audit passed. All four transitive axiom checks contain only
+`propext`, `Classical.choice`, and `Quot.sound`.

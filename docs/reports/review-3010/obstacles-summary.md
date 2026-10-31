@@ -191,9 +191,9 @@ Subquestions:
   The harmonic Gram finite part is exactly
   `B_ml=γ·1_(m=l)−I(m,l)/√(φ(m)φ(l))`. For every coefficient vector through
   `Q≥2`, its correction to `H_N∑a_m²` is the negative torsion pairing,
-  with absolute remainder at most `Q(Q−1)/(N+1)∑a_m²`.
+  with absolute remainder at most `min{Q(Q−1)/(N+1),6log Q+log4+5}∑a_m²`.
   [Finite part](../../drafts/pipeline/3-formalized/ramanujan-harmonic-gram-finite-parts-are-prime-local.md)
-  and [uniform remainder](../../drafts/pipeline/3-formalized/harmonic-ramanujan-gram-has-a-logarithmic-operator-bound.md)
+  and [uniform remainder with logarithmic plateau](../../drafts/pipeline/3-formalized/harmonic-gram-remainders-have-a-logarithmic-plateau.md)
   passed direct Lean and standard-axiom audits.
   Complete-period affine correlations also have an exact conductor rule:
   `∑_(n<M)c_m(n)c_l(kn+h)=1_(m=l/gcd(l,k)) M c_l(h)`, with every mixed

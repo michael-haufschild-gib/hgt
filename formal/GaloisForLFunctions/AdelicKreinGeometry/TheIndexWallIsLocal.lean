@@ -1,4 +1,5 @@
 import GaloisForLFunctions.AdelicKreinGeometry.TheAdelicProductState
+import GaloisForLFunctions.AdelicKreinGeometry.HeckeSupportedStatesHaveIndexZeroOrInfinity
 import GaloisForLFunctions.AdelicKreinGeometry.TheWitnessComplementIsPositive
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.LocalConstituentsMeetOnlyAtTheIdentity
 import GaloisForLFunctions.HeckeKreinToeplitz.TheSelectiveIndexOfTheAtomicKernelIsOneSquare
@@ -29,6 +30,15 @@ normalized overlap `vol(B ∩ B')/√(vol B · vol B')` of `p`-adic balls.
 * **The local wall** (`negIndex_localHecke`): `κ(φ_{p,s}) = 0` for `s ≥ 1/2` and `∞` for `s < 1/2`,
   at every prime.
 
+* **The product formula** (`heckeState_eq_prod_localHecke`): `φ_s = ∏_ℓ φ_{ℓ,s}` over any finite set
+  of primes containing those of `n`, `d` and the denominator of `b`; `(nd)^{−s} = ∏ ℓ^{−s|v_ℓ(a)|}`
+  and `db ∈ ℤ` iff `v_ℓ(b) ≥ min(0, v_ℓ(a))` at every `ℓ`.
+* **Local to global** (`isPosDefKernel_heckeState_of_local`): on a finite family the global Gram
+  matrix is the Hadamard product of finitely many local ones, so local positivity gives global
+  positivity.
+* **The Hasse principle for the index** (`negIndex_heckeState_eq_negIndex_localHecke`): the global
+  Hecke state and every local one have the same index at every exponent.
+
 So the Kakutani threshold is not produced by the infinite product over primes: each prime tower
 already carries the full wall, and the global wall is the common value of the local ones.
 -/
@@ -43,6 +53,12 @@ noncomputable section
 
 namespace GaloisForLFunctions.AdelicKreinGeometry
 
+/-- **The local Hecke state** at `p`: `p^{−s|v_p(a)|}` if `aℤ_p + b` meets `ℤ_p`, else `0`. (The
+convention `v_p(0) = 0` makes `b = 0` satisfy the condition, as it should.) -/
+def localHecke (p : ℕ) (s : ℝ) (g : AffineGroupQ) : ℂ :=
+  if min 0 (padicValRat p (affSlope g)) ≤ padicValRat p (affShift g) then
+    (((p : ℝ) ^ (-(s * |(padicValRat p (affSlope g) : ℝ)|)) : ℝ) : ℂ) else 0
+
 variable (p : ℕ) [hp : Fact p.Prime]
 
 /-- The `p`-adic valuation of the slope. -/
@@ -50,12 +66,6 @@ def slopeVal : AffineGroupQ →* Multiplicative ℤ := (ratPadicValHom p).comp s
 
 theorem toAdd_slopeVal (g : AffineGroupQ) :
     Multiplicative.toAdd (slopeVal p g) = padicValRat p (affSlope g) := rfl
-
-/-- **The local Hecke state** at `p`: `p^{−s|v_p(a)|}` if `aℤ_p + b` meets `ℤ_p`, else `0`. (The
-convention `v_p(0) = 0` makes `b = 0` satisfy the condition, as it should.) -/
-def localHecke (s : ℝ) (g : AffineGroupQ) : ℂ :=
-  if min 0 (padicValRat p (affSlope g)) ≤ padicValRat p (affShift g) then
-    (((p : ℝ) ^ (-(s * |(padicValRat p (affSlope g) : ℝ)|)) : ℝ) : ℂ) else 0
 
 theorem isHermKernel_poissonKernel (r : ℝ) :
     IsHermKernel (ArithmeticKreinLangerTheory.poissonKernel r) := fun n => by
@@ -342,5 +352,178 @@ theorem negIndex_localHecke (s : ℝ) :
       rw [h] at this
       exact absurd this (by norm_num)
     · exact h
+
+/-! ### The product formula -/
+
+/-- `q ∈ ℤ` iff `v_ℓ(q) ≥ 0` at every prime `ℓ`. -/
+theorem den_eq_one_iff_forall_padicValRat_nonneg (q : ℚ) :
+    q.den = 1 ↔ ∀ ℓ : ℕ, ℓ.Prime → 0 ≤ padicValRat ℓ q := by
+  constructor
+  · intro h ℓ _
+    simp [padicValRat, h]
+  · intro h
+    by_contra hd
+    obtain ⟨ℓ, hℓ, hℓd⟩ := Nat.exists_prime_and_dvd hd
+    haveI := Fact.mk hℓ
+    have hℓn : ¬ ℓ ∣ q.num.natAbs := fun hn => by
+      have := Nat.dvd_gcd hn hℓd
+      rw [q.reduced.gcd_eq_one] at this
+      exact hℓ.one_lt.ne' (Nat.dvd_one.mp this)
+    have h1 := one_le_padicValNat_of_dvd q.den_nz hℓd
+    have h2 := h ℓ hℓ
+    simp only [padicValRat, padicValInt, padicValNat.eq_zero_of_not_dvd hℓn] at h2
+    omega
+
+theorem padicValRat_eq_sub (ℓ : ℕ) (a : ℚ) :
+    padicValRat ℓ a = (padicValNat ℓ a.num.natAbs : ℤ) - padicValNat ℓ a.den := rfl
+
+/-- A prime divides at most one of numerator and denominator. -/
+theorem padicValNat_num_eq_zero_or_den (ℓ : ℕ) [hℓ : Fact ℓ.Prime] (a : ℚ) :
+    padicValNat ℓ a.num.natAbs = 0 ∨ padicValNat ℓ a.den = 0 := by
+  by_contra h
+  push Not at h
+  have h1 := dvd_of_one_le_padicValNat (Nat.one_le_iff_ne_zero.mpr h.1)
+  have h2 := dvd_of_one_le_padicValNat (Nat.one_le_iff_ne_zero.mpr h.2)
+  have := Nat.dvd_gcd h1 h2
+  rw [a.reduced.gcd_eq_one] at this
+  exact hℓ.out.one_lt.ne' (Nat.dvd_one.mp this)
+
+theorem padicValRat_nonneg_of_not_dvd_den {ℓ : ℕ} {q : ℚ} (h : ¬ ℓ ∣ q.den) :
+    0 ≤ padicValRat ℓ q := by
+  rw [padicValRat_eq_sub, padicValNat.eq_zero_of_not_dvd h]; simp
+
+/-- `nd = ∏_{ℓ ∈ S} ℓ^{|v_ℓ(a)|}` for `a = ±n/d`. -/
+theorem natAbs_num_mul_den_eq_prod {a : ℚ} (ha : a ≠ 0) {S : Finset ℕ} (hS : ∀ ℓ ∈ S, ℓ.Prime)
+    (hcover : (a.num.natAbs * a.den).primeFactors ⊆ S) :
+    a.num.natAbs * a.den = ∏ ℓ ∈ S, ℓ ^ (padicValRat ℓ a).natAbs := by
+  have hn : a.num.natAbs ≠ 0 := Int.natAbs_ne_zero.mpr (Rat.num_ne_zero.mpr ha)
+  have hm : a.num.natAbs * a.den ≠ 0 := mul_ne_zero hn a.den_nz
+  conv_lhs => rw [← Nat.prod_factorization_pow_eq_self hm]
+  rw [Finsupp.prod, Nat.support_factorization, Finset.prod_subset hcover fun ℓ hℓS hℓ => by
+    rw [Nat.factorization_eq_zero_of_not_dvd fun hd =>
+      hℓ (Nat.mem_primeFactors.mpr ⟨hS ℓ hℓS, hd, hm⟩), pow_zero]]
+  refine Finset.prod_congr rfl fun ℓ hℓ => ?_
+  haveI := Fact.mk (hS ℓ hℓ)
+  rw [Nat.factorization_mul hn a.den_nz, Finsupp.add_apply, Nat.factorization_def _ (hS ℓ hℓ),
+    Nat.factorization_def _ (hS ℓ hℓ), padicValRat_eq_sub]
+  rcases padicValNat_num_eq_zero_or_den ℓ a with h | h <;> simp [h]
+
+/-- `(nd)^{−s} = ∏_{ℓ ∈ S} ℓ^{−s|v_ℓ(a)|}`. -/
+theorem rpow_natAbs_num_mul_den_eq_prod {a : ℚ} (ha : a ≠ 0) {S : Finset ℕ}
+    (hS : ∀ ℓ ∈ S, ℓ.Prime) (hcover : (a.num.natAbs * a.den).primeFactors ⊆ S) (s : ℝ) :
+    ((a.num.natAbs : ℝ) * a.den) ^ (-s) = ∏ ℓ ∈ S, (ℓ : ℝ) ^ (-(s * |(padicValRat ℓ a : ℝ)|)) := by
+  have h := congrArg (fun m : ℕ => (m : ℝ)) (natAbs_num_mul_den_eq_prod ha hS hcover)
+  simp only [Nat.cast_mul, Nat.cast_prod, Nat.cast_pow] at h
+  rw [h, ← Real.finsetProd_rpow _ _ fun ℓ _ => by positivity]
+  refine Finset.prod_congr rfl fun ℓ _ => ?_
+  rw [← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg _), Nat.cast_natAbs, Int.cast_abs]
+  ring_nf
+
+/-- `db ∈ ℤ` iff `v_ℓ(b) ≥ min(0, v_ℓ(a))` at every `ℓ ∈ S`. -/
+theorem den_mul_shift_eq_one_iff {g : AffineGroupQ} {S : Finset ℕ} (hS : ∀ ℓ ∈ S, ℓ.Prime)
+    (hcover : ((affSlope g).num.natAbs * (affSlope g).den * (affShift g).den).primeFactors ⊆ S) :
+    (((affSlope g).den : ℚ) * affShift g).den = 1 ↔
+      ∀ ℓ ∈ S, min 0 (padicValRat ℓ (affSlope g)) ≤ padicValRat ℓ (affShift g) := by
+  set a := affSlope g
+  set b := affShift g
+  have ha : a ≠ 0 := affSlope_ne_zero g
+  have hm : a.num.natAbs * a.den * b.den ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (Int.natAbs_ne_zero.mpr (Rat.num_ne_zero.mpr ha)) a.den_nz) b.den_nz
+  have key : ∀ ℓ : ℕ, ℓ.Prime → (0 ≤ padicValRat ℓ ((a.den : ℚ) * b) ↔
+      min 0 (padicValRat ℓ a) ≤ padicValRat ℓ b) := by
+    intro ℓ hℓ
+    haveI := Fact.mk hℓ
+    by_cases hb : b = 0
+    · simp [hb]
+    · rw [padicValRat.mul (by exact_mod_cast a.den_nz) hb, padicValRat.of_nat,
+        padicValRat_eq_sub ℓ a]
+      rcases padicValNat_num_eq_zero_or_den ℓ a with h | h <;> rw [h] <;> omega
+  rw [den_eq_one_iff_forall_padicValRat_nonneg]
+  constructor
+  · intro h ℓ hℓ
+    exact (key ℓ (hS ℓ hℓ)).mp (h ℓ (hS ℓ hℓ))
+  · intro h ℓ hℓ
+    by_cases hℓS : ℓ ∈ S
+    · exact (key ℓ hℓ).mpr (h ℓ hℓS)
+    · have hnd : ¬ ℓ ∣ a.num.natAbs * a.den * b.den := fun hd =>
+        hℓS (hcover (Nat.mem_primeFactors.mpr ⟨hℓ, hd, hm⟩))
+      refine padicValRat_nonneg_of_not_dvd_den fun hd => hnd ?_
+      have h1 := hd.trans (Rat.mul_den_dvd _ _)
+      simp only [Rat.den_natCast, one_mul] at h1
+      exact dvd_mul_of_dvd_right h1 _
+
+/-- **The product formula**: the global Hecke state is the product of the local ones over any
+finite set of primes containing those of `n`, `d` and the denominator of the shift. -/
+theorem heckeState_eq_prod_localHecke (s : ℝ) (g : AffineGroupQ) {S : Finset ℕ}
+    (hS : ∀ ℓ ∈ S, ℓ.Prime)
+    (hcover : ((affSlope g).num.natAbs * (affSlope g).den * (affShift g).den).primeFactors ⊆ S) :
+    heckeState s g = ∏ ℓ ∈ S, localHecke ℓ s g := by
+  have ha := affSlope_ne_zero g
+  have hm : (affSlope g).num.natAbs * (affSlope g).den * (affShift g).den ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (Int.natAbs_ne_zero.mpr (Rat.num_ne_zero.mpr ha)) (affSlope g).den_nz)
+      (affShift g).den_nz
+  have hcover' : ((affSlope g).num.natAbs * (affSlope g).den).primeFactors ⊆ S :=
+    (Nat.primeFactors_mono (Nat.dvd_mul_right _ _) hm).trans hcover
+  unfold heckeState
+  by_cases hc : (((affSlope g).den : ℚ) * affShift g).den = 1
+  · rw [if_pos hc, rpow_natAbs_num_mul_den_eq_prod ha hS hcover' s, Complex.ofReal_prod]
+    refine Finset.prod_congr rfl fun ℓ hℓ => ?_
+    rw [localHecke, if_pos (((den_mul_shift_eq_one_iff hS hcover).mp hc) ℓ hℓ)]
+  · rw [if_neg hc]
+    obtain ⟨ℓ, hℓ, hfail⟩ : ∃ ℓ ∈ S,
+        ¬ (min 0 (padicValRat ℓ (affSlope g)) ≤ padicValRat ℓ (affShift g)) := by
+      by_contra h
+      push Not at h
+      exact hc ((den_mul_shift_eq_one_iff hS hcover).mpr h)
+    exact (Finset.prod_eq_zero hℓ (by rw [localHecke, if_neg hfail])).symm
+
+/-! ### Local to global -/
+
+/-- A finite product of local Hecke states at exponent `s ≥ 1/2` is positive definite. -/
+theorem isPosDefKernel_prod_localHecke {s : ℝ} (hs : 1 / 2 ≤ s) (S : Finset ℕ)
+    (hS : ∀ ℓ ∈ S, ℓ.Prime) : IsPosDefKernel fun g => ∏ ℓ ∈ S, localHecke ℓ s g := by
+  induction S using Finset.induction_on with
+  | empty =>
+    have e : (fun g : AffineGroupQ => ∏ ℓ ∈ (∅ : Finset ℕ), localHecke ℓ s g) =
+        ArithmeticKreinLangerTheory.poissonKernel 1 ∘ (1 : AffineGroupQ →* Multiplicative ℤ) :=
+      funext fun g => by simp [ArithmeticKreinLangerTheory.poissonKernel]
+    rw [e]
+    exact (isPosDefKernel_poissonKernel zero_le_one le_rfl).comp _
+  | insert ℓ S hℓS ih =>
+    haveI : Fact ℓ.Prime := ⟨hS ℓ (Finset.mem_insert_self ℓ S)⟩
+    have e : (fun g => ∏ q ∈ insert ℓ S, localHecke q s g) =
+        fun g => localHecke ℓ s g * ∏ q ∈ S, localHecke q s g :=
+      funext fun g => Finset.prod_insert hℓS
+    rw [e]
+    exact IsPosDefKernel.mul (isPosDefKernel_localHecke ℓ hs)
+      (ih fun q hq => hS q (Finset.mem_insert_of_mem hq))
+
+/-- **Local to global**: for `s ≥ 1/2` the Hecke state is positive definite because on every finite
+family it is the Schur product of finitely many positive local states. -/
+theorem isPosDefKernel_heckeState_of_local {s : ℝ} (hs : 1 / 2 ≤ s) :
+    IsPosDefKernel (heckeState s) := by
+  classical
+  refine (posSemidef_gram_iff (isHermKernel_heckeState s)).mpr fun n x => ?_
+  -- the primes of all the `x_a⁻¹ x_b`
+  let F : Fin n × Fin n → Finset ℕ := fun ab =>
+    ((affSlope ((x ab.1)⁻¹ * x ab.2)).num.natAbs * (affSlope ((x ab.1)⁻¹ * x ab.2)).den *
+      (affShift ((x ab.1)⁻¹ * x ab.2)).den).primeFactors
+  have hS : ∀ ℓ ∈ Finset.univ.biUnion F, ℓ.Prime := fun ℓ hℓ => by
+    obtain ⟨ab, -, h⟩ := Finset.mem_biUnion.mp hℓ
+    exact Nat.prime_of_mem_primeFactors h
+  have hP := isPosDefKernel_prod_localHecke hs _ hS
+  have e : gram (heckeState s) x =
+      gram (fun g => ∏ ℓ ∈ Finset.univ.biUnion F, localHecke ℓ s g) x := by
+    funext a b
+    exact heckeState_eq_prod_localHecke s _ hS
+      (Finset.subset_biUnion_of_mem F (Finset.mem_univ (a, b)))
+  rw [e]
+  exact (posSemidef_gram_iff hP.1).mp hP n x
+
+/-- **The Hasse principle for the Hecke index**: the global Hecke state and each local one have the
+same index at every exponent. -/
+theorem negIndex_heckeState_eq_negIndex_localHecke (s : ℝ) :
+    negIndex (heckeState s) = negIndex (localHecke p s) := by
+  rw [negIndex_heckeState, negIndex_localHecke]
 
 end GaloisForLFunctions.AdelicKreinGeometry

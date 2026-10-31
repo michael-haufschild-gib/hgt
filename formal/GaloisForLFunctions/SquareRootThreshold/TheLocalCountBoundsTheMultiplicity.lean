@@ -26,7 +26,9 @@ zeros each, so a violating set of measure `εT` adds `O(εT log T)` (Fubini over
 **The depth mass** (`not_offLineDepthLocallyBounded_superpose`).  The clusters of
 `CountingInputsDoNotBoundTheLocalCount` also violate every bound `Σ m (Re ρ − ½)²` over the windows
 `(S − 1, S + 1]`: a cluster carries `2⌊eᵏ⌋/(k + 3)² → ∞`.  So the depth-weighted local input does
-not follow from counting either.
+not follow from counting either.  Pointwise it is a zero-free strip
+(`sq_re_sub_half_le_of_offLineDepthLocallyBounded`): one zero of depth `δ` already carries `δ²`, so
+the bound `W` forces `|Re ρ − ½| ≤ √W`.
 -/
 
 open Complex Set Zeta23 Filter Topology
@@ -717,6 +719,23 @@ theorem not_offLineDepthLocallyBounded_superpose (Z : ZeroConfig) (W : ℝ) :
         * ((clusterPoint 1 k).re - 1 / 2) ^ 2 := by
     rw [hre, ← div_eq_mul_one_div]
     exact div_le_div_of_nonneg_right h3 (by positivity)
+  linarith
+
+/-- **The depth-mass bound is a zero-free strip.**  If every window carries depth mass `≤ W`, every
+zero has `(Re ρ − ½)² ≤ W`. -/
+theorem sq_re_sub_half_le_of_offLineDepthLocallyBounded {Z : ZeroConfig} {W : ℝ}
+    (h : OffLineDepthLocallyBounded Z W) {ρ : ℂ} (hρ : ρ ∈ Z.carrier) : (ρ.re - 1 / 2) ^ 2 ≤ W := by
+  have hfin := Z.finite_window (ρ.im - 1) (ρ.im + 1)
+  have hmem : ρ ∈ Z.carrier ∩ {z | ρ.im - 1 < z.im ∧ z.im ≤ ρ.im + 1} :=
+    ⟨hρ, by linarith, by linarith⟩
+  have h1 := h ρ.im
+  unfold ZeroConfig.window at h1
+  rw [finsum_mem_eq_finite_toFinset_sum _ hfin] at h1
+  have h2 := Finset.single_le_sum (f := fun z => (Z.mult z : ℝ) * (z.re - 1 / 2) ^ 2)
+    (fun z _ => by positivity) (hfin.mem_toFinset.mpr hmem)
+  have hm : (1 : ℝ) ≤ Z.mult ρ := by exact_mod_cast Z.one_le_mult ρ hρ
+  have h3 : (ρ.re - 1 / 2) ^ 2 ≤ (Z.mult ρ : ℝ) * (ρ.re - 1 / 2) ^ 2 :=
+    le_mul_of_one_le_left (sq_nonneg _) hm
   linarith
 
 end

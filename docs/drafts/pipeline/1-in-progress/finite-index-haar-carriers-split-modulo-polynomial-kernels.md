@@ -33,3 +33,5 @@ The converse requires no new analytic input. For a finite-rank kernel `Q` of col
 Hence any decomposition `k=p+ψ∘slope+Q` with positive Haar `p` and Hermitian `ψ` satisfies `κ(k)<∞ ↔ κ(ψ)<∞`. If `Q` is Hermitian and zero on both axes and `ψ(1)=0`, then `k` is Hermitian with the Haar successor. These conditions, together with finite index of `ψ`, therefore characterize the kernels in the statement; existence and uniqueness remain dependent on the cyclic splitting conjecture.
 
 The corpus already supplies the exact slope-index law and one rank perturbation bound. Their converse does not classify Haar kernels without the proposed splitting. The complete equivalence and symmetric bound await Lean formalization.
+
+A [stronger slope-index monotonicity](../0-backlog/polynomial-translation-corrections-cannot-lower-the-slope-index.md), using polynomial-annihilating translation averages, remains conjectural.

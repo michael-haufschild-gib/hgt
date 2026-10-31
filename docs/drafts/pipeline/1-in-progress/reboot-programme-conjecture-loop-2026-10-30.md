@@ -13,7 +13,9 @@
   pointwise quantities: the depth of the zeros near `t`, the off-line count in the tangent lens, and
   the critical multiplicity at the tangency point. All three are invisible to counting inputs (#26,
   #29); the first two hold on sets of heights of density one (#24, #28), and the third is open even
-  under RH (#29). The method constants are
+  under RH (#29). The three local inputs of the instruments imply, pointwise, bounded critical
+  multiplicity (A1), critical proportion one (lag), a zero-free strip (CCM depth mass) (#29, #33,
+  #37). The method constants are
   the floors of their input classes (size: `4μ(½) = 2/3`; Lindelöf: `½` de Bruijn). A proof of a
   zero-free strip from these instruments needs one of the three pointwise, and that needs the
   explicit formula at scale `δ`.
@@ -159,11 +161,12 @@
 | 33 | The lag input (off-line copies `≤ M` per unit window) forces critical proportion one: with RvM, `N₀(T, 2T)/N(T, 2T) → 1` | A2 | formalized: card of #29 |
 | 34 | The depth-weighted local input (`Σ m(Re ρ − ½)² ≤ W` per unit window, the CCM ground-energy input) is not a counting consequence: `ζ ⊕ clusters` violates it for every `W` | A2 | formalized: card of #29 |
 | 35 | The lag input in density (failing on `o(T)` window centres) still forces critical proportion one (Fubini over the window centre + unit count) | A2 | formalized: card of #29 |
-| 36 | The off-line second moment `Σ m(Re ρ − ½)₊² = o(V)` (Selberg tail law + 67/1000 first moment): the depth-weighted input holds on average | A2/CCM | formalized: `3-formalized/the-off-line-second-moment-is-little-o.md` |
+| 36 | The off-line second moment `Σ m(Re ρ − ½)₊² = o(V)` (Selberg tail law + 67/1000 first moment); the right-half depth mass of unit windows is `≤ W` off a density-`o(1)` set of heights | A2/CCM | formalized: `3-formalized/the-off-line-second-moment-is-little-o.md` |
+| 37 | The depth-weighted input (CCM) pointwise is a zero-free strip: depth mass `≤ W` per window ⇒ `|Re ρ − ½| ≤ √W` | A2/CCM | formalized: card of #29 (with the classification of the local inputs) |
 | C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#36 formalized; #18, C2 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#37 formalized; #18, C2 in corpus.

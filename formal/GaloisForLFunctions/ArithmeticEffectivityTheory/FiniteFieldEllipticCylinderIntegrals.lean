@@ -20,6 +20,9 @@ local instance cylinderIntegralFiniteMeasurable (v : FinitePlace) : MeasurableSp
 local instance cylinderIntegralFiniteBorel (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
 local instance cylinderIntegralFiniteCompact (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
   finiteCompletionInteger_compact v
+local instance cylinderIntegralIntegerSecondCountable (v : FinitePlace) :
+    SecondCountableTopology (v.adicCompletionIntegers K) :=
+  (Valued.isOpen_valuationSubring (v.adicCompletion K)).isOpenEmbedding_subtypeVal.isEmbedding.secondCountableTopology
 local instance cylinderIntegralFiniteNontrivial (v : FinitePlace) :
     (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰).IsNontrivial := inferInstance
 local instance cylinderIntegralIntegerTopAdd (v : FinitePlace) : IsTopologicalAddGroup (v.adicCompletionIntegers K) :=
@@ -122,7 +125,9 @@ theorem integral_ellipticCylinderSpectralKernel (S : Finset FinitePlace)
       ((1 - (3 : ℂ)⁻¹ * localSpectralParameter 3 s) / (1 - localSpectralParameter 3 s)) := by
   letI (v : S) : SigmaFinite (normalizedHaar (v.1.adicCompletion K)) := inferInstance
   unfold ellipticCylinderSpectralKernel ellipticCylinderProductHaar
-  rw [integral_prod_mul, integral_ignore_probability,
+  rw [integral_prod_mul
+    (fun y : FiniteCylinderFields S × FiniteCylinderTail S => finiteCylinderSpectralKernel S s y.1)
+    (infinityCompletionSpectralKernel s), integral_ignore_probability,
     integral_infinityCompletionSpectralKernel s hs]
   congr 1
   unfold finiteCylinderSpectralKernel

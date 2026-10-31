@@ -72,7 +72,9 @@ equal the normalized finite-place and infinity magnitudes. The
 [actual local radial spectral integrals](../3-formalized/actual-elliptic-local-spectral-characters-have-exact-integrals.md)
 have their exact residue factors for `Re(s)>0`. Both passed direct Lean
 and axiom audits. [Actual finite-cylinder Haar](../3-formalized/elliptic-adelic-haar-has-exact-finite-cylinder-products.md)
-is exactly the local product, with the same audits. Relative finite-cell periodization and the identification of local-integral products with the actual adelic integral
+is exactly the local product, with the same audits.
+[Finite-cylinder spectral integrals](../3-formalized/elliptic-finite-cylinder-spectral-integrals-factor-exactly.md)
+factor exactly, with direct Lean and axiom audits. Relative finite-cell periodization and the identification of local-integral products with the actual adelic integral
 remain necessary for unfolding.
 
 ## Convergence mechanism to test
