@@ -1,5 +1,7 @@
 import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Data.Complex.Basic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Newton identities and the pair-difference polynomial from power sums
@@ -73,7 +75,7 @@ private lemma derivative_revPoly (L : List ℂ) :
   | nil => simp [revPoly, leibnizSum]
   | cons a L ih =>
     simp only [revPoly, leibnizSum, derivative_mul, derivative_sub, derivative_one,
-      derivative_C_mul_X, zero_sub, ih]
+      derivative_C, derivative_X, zero_mul, mul_one, zero_sub, ih]
     ring
 
 private lemma one_sub_mul_geom_sum (a : ℂ) (K : ℕ) :
@@ -151,7 +153,7 @@ private lemma newtonElem_eq_signed_revPoly_coeff (L : List ℂ) {s : ℕ → ℂ
   | h k ih =>
     rcases k with _ | k
     · simp [newtonElem, revPoly_coeff_zero]
-    · have hk1ne : ((k + 1 : ℂ)) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.succ_ne_zero k)
+    · have hk1ne : (k : ℂ) + 1 ≠ 0 := by exact_mod_cast Nat.succ_ne_zero k
       rw [newtonElem]
       have hsum :
           (∑ j ∈ Finset.range (k + 1), (-1 : ℂ) ^ j * newtonElem s (k - j) * s (j + 1)) =
@@ -185,7 +187,7 @@ private lemma natDegree_revPoly_le (L : List ℂ) : (revPoly L).natDegree ≤ L.
     have hdeg1 : (1 - C a * X).natDegree ≤ 1 := by
       refine (natDegree_sub_le _ _).trans ?_
       simp only [natDegree_one, zero_max]
-      exact (natDegree_C_mul_X_le a)
+      exact natDegree_mul_le.trans (by simp [natDegree_C, natDegree_X])
     exact (natDegree_mul_le).trans (by simp [List.length_cons]; omega)
 
 private lemma eval_revPoly (L : List ℂ) (u : ℂ) :
@@ -276,23 +278,26 @@ private def weightedRootList {κ : Type*} (l : List κ) (z : κ → ℂ) (m : κ
 
 private lemma weightedRootList_length {κ : Type*} (l : List κ) (z : κ → ℂ) (m : κ → ℕ) :
     (weightedRootList l z m).length = (l.map m).sum := by
+  unfold weightedRootList
   induction l with
-  | nil => simp [weightedRootList]
-  | cons i l ih => simp [weightedRootList, ih]
+  | nil => simp
+  | cons i l ih => simp [List.flatMap_cons, ih]
 
 private lemma weightedRootList_powerSum {κ : Type*} (l : List κ) (z : κ → ℂ) (m : κ → ℕ) (r : ℕ) :
     ((weightedRootList l z m).map (fun a => a ^ r)).sum =
       (l.map (fun i => (m i : ℂ) * (z i) ^ r)).sum := by
+  unfold weightedRootList
   induction l with
-  | nil => simp [weightedRootList]
-  | cons i l ih => simp [weightedRootList, ih]
+  | nil => simp
+  | cons i l ih => simp [List.flatMap_cons, List.map_replicate, nsmul_eq_mul, ih]
 
 private lemma weightedRootList_prod {κ : Type*} (l : List κ) (z : κ → ℂ) (m : κ → ℕ) :
     ((weightedRootList l z m).map (fun a => X - C a)).prod =
       (l.map (fun i => (X - C (z i)) ^ m i)).prod := by
+  unfold weightedRootList
   induction l with
-  | nil => simp [weightedRootList]
-  | cons i l ih => simp [weightedRootList, ih]
+  | nil => simp
+  | cons i l ih => simp [List.flatMap_cons, List.map_replicate, ih]
 
 /-- **Newton divisor polynomial reconstruction.** For any finite weighted root set `(t, z, m)` of
 total multiplicity `M = ∑_{i ∈ t} m_i`, the polynomial `newtonPoly M s` built from the power sums
@@ -343,7 +348,10 @@ private lemma listPairDiff_prod {κ : Type*} (t : Finset κ) (z : κ → ℂ) (m
     intro L₁
     induction L₁ with
     | nil => simp
-    | cons a L₁ ih => simp [List.map_flatMap, List.map_map, ih]
+    | cons a L₁ ih =>
+      rw [List.flatMap_cons, List.map_append, List.prod_append, List.map_cons, List.prod_cons,
+        ih, List.map_map]
+      rfl
   change ((L.flatMap (fun a => L.map (fun b => a - b))).map (fun d => X - C d)).prod = _
   rw [houter]
   have hinner : ∀ a : ℂ,
@@ -354,10 +362,11 @@ private lemma listPairDiff_prod {κ : Type*} (t : Finset κ) (z : κ → ℂ) (m
     have haux : ∀ l : List κ,
         ((weightedRootList l z m).map (fun b => X - C (a - b))).prod =
           (l.map (fun j => (X - C (a - z j)) ^ m j)).prod := by
+      unfold weightedRootList
       intro l
       induction l with
-      | nil => simp [weightedRootList]
-      | cons j l ih => simp [weightedRootList, ih]
+      | nil => simp
+      | cons j l ih => simp [List.flatMap_cons, List.map_replicate, ih]
     rw [haux, Finset.prod_map_toList]
   have hstep :
       (L.map (fun a => ∏ j ∈ t, (X - C (a - z j)) ^ m j)).prod =
@@ -366,10 +375,11 @@ private lemma listPairDiff_prod {κ : Type*} (t : Finset κ) (z : κ → ℂ) (m
     have haux : ∀ l : List κ,
         ((weightedRootList l z m).map (fun a => ∏ j ∈ t, (X - C (a - z j)) ^ m j)).prod =
           (l.map (fun i => (∏ j ∈ t, (X - C (z i - z j)) ^ m j) ^ m i)).prod := by
+      unfold weightedRootList
       intro l
       induction l with
-      | nil => simp [weightedRootList]
-      | cons i l ih => simp [weightedRootList, ih]
+      | nil => simp
+      | cons i l ih => simp [List.flatMap_cons, List.map_replicate, ih]
     rw [haux, Finset.prod_map_toList]
   have hcongr : L.map (fun a => (L.map (fun b => X - C (a - b))).prod) =
       L.map (fun a => ∏ j ∈ t, (X - C (a - z j)) ^ m j) :=
@@ -398,7 +408,10 @@ private lemma listPairDiff_powerSum (L : List ℂ) (K : ℕ) :
     intro L₁
     induction L₁ with
     | nil => simp
-    | cons a L₁ ih => simp [List.map_flatMap, List.map_map, ih]
+    | cons a L₁ ih =>
+      rw [List.flatMap_cons, List.map_append, List.sum_append, List.map_cons, List.sum_cons,
+        ih, List.map_map]
+      rfl
   unfold listPairDiff
   rw [hflat]
   have hbinom : ∀ a b : ℂ, (a - b) ^ K =
@@ -416,8 +429,9 @@ private lemma listPairDiff_powerSum (L : List ℂ) (K : ℕ) :
     induction L with
     | nil => simp
     | cons b L' ih =>
-      simp only [List.map_cons, List.sum_cons, ih, hbinom a b, ← Finset.sum_add_distrib]
+      rw [List.map_cons, List.sum_cons, ih, hbinom a b, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun r _ => ?_
+      simp only [List.map_cons, List.sum_cons]
       ring
   have houter : ∀ L₁ : List ℂ,
       (L₁.map (fun a => ∑ r ∈ Finset.range (K + 1),
@@ -430,8 +444,9 @@ private lemma listPairDiff_powerSum (L : List ℂ) (K : ℕ) :
     induction L₁ with
     | nil => simp
     | cons a L₁ ih =>
-      simp only [List.map_cons, List.sum_cons, ih, ← Finset.sum_add_distrib]
+      rw [List.map_cons, List.sum_cons, ih, ← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun r _ => ?_
+      simp only [List.map_cons, List.sum_cons]
       ring
   have hmap : L.map (fun a => (L.map (fun b => (a - b) ^ K)).sum) =
       L.map (fun a => ∑ r ∈ Finset.range (K + 1),
@@ -469,7 +484,9 @@ theorem pairDiffPoly_eq_finset_prod {κ : Type*} (t : Finset κ) (z : κ → ℂ
       pairDiffPowerSum M s K = ((listPairDiff L).map (fun d => d ^ K)).sum := by
     intro K _ hK
     rw [hlenD] at hK
-    rw [pairDiffPowerSum, listPairDiff_powerSum]
+    unfold pairDiffPowerSum
+    dsimp only
+    rw [listPairDiff_powerSum]
     refine Finset.sum_congr rfl fun r hr => ?_
     have hrK : r ≤ K := Nat.lt_succ_iff.mp (Finset.mem_range.mp hr)
     rw [hs0 r (hrK.trans hK), hs0 (K - r) ((Nat.sub_le K r).trans hK)]
@@ -481,9 +498,9 @@ theorem eval_pairDiffPoly_eq_finset_prod {κ : Type*} (t : Finset κ) (z : κ �
     {M : ℕ} {s : ℕ → ℂ} (hM : M = ∑ i ∈ t, m i)
     (hs : ∀ r, 1 ≤ r → r ≤ M ^ 2 → s r = ∑ i ∈ t, (m i : ℂ) * (z i) ^ r) (w : ℂ) :
     (pairDiffPoly M s).eval w = ∏ i ∈ t, ∏ j ∈ t, (w - (z i - z j)) ^ (m i * m j) := by
-  rw [pairDiffPoly_eq_finset_prod t z m hM hs, eval_finset_prod]
+  rw [pairDiffPoly_eq_finset_prod t z m hM hs, Polynomial.eval_prod]
   refine Finset.prod_congr rfl fun i _ => ?_
-  rw [eval_finset_prod]
+  rw [Polynomial.eval_prod]
   refine Finset.prod_congr rfl fun j _ => ?_
   simp
 

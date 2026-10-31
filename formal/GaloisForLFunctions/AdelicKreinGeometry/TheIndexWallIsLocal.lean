@@ -515,7 +515,9 @@ theorem isPosDefKernel_heckeState_of_local {s : ℝ} (hs : 1 / 2 ≤ s) :
   have e : gram (heckeState s) x =
       gram (fun g => ∏ ℓ ∈ Finset.univ.biUnion F, localHecke ℓ s g) x := by
     funext a b
-    exact heckeState_eq_prod_localHecke s _ hS
+    show heckeState s ((x a)⁻¹ * x b) =
+      ∏ ℓ ∈ Finset.univ.biUnion F, localHecke ℓ s ((x a)⁻¹ * x b)
+    exact heckeState_eq_prod_localHecke s ((x a)⁻¹ * x b) hS
       (Finset.subset_biUnion_of_mem F (Finset.mem_univ (a, b)))
   rw [e]
   exact (posSemidef_gram_iff hP.1).mp hP n x

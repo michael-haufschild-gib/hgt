@@ -8,7 +8,7 @@
 
 ## Proposed extraction
 
-Fix finitely many slopes `a_i`. Choose `M` bounding the degrees of the translation polynomials for `Q` at all ratios `a_j/a_i`. For `1≤s≤M+1`, put
+Fix a nonempty finite family of slopes `a_i`. Choose `M` bounding the degrees of the translation polynomials for `Q` at all ratios `a_j/a_i`. For `1≤s≤M+1`, put
 
 `c_s=(-1)^(s+1) binom(M+1,s)`.
 

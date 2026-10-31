@@ -27,7 +27,7 @@ that amplification is all-or-nothing: tensor squares carry no finite nonzero ind
 positive part is infinite.
 -/
 
-open Complex Finset Matrix
+open Complex Finset
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 
 noncomputable section
@@ -41,7 +41,7 @@ Gram matrices. -/
 def posIndex (k : G → ℂ) : ℕ∞ := negIndex fun g => -k g
 
 theorem gram_neg (k : G → ℂ) {ι : Type*} (x : ι → G) : gram (fun g => -k g) x = -gram k x := by
-  ext a b; simp [gram]
+  ext a b; simp [HeckeKreinToeplitz.gram]
 
 theorem hermPosIndex_gram_le_posIndex (k : G → ℂ) {ι : Type*} [Fintype ι] (x : ι → G) :
     (hermPosIndex (gram k x) : ℕ∞) ≤ posIndex k := by
@@ -51,7 +51,9 @@ theorem hermPosIndex_gram_le_posIndex (k : G → ℂ) {ι : Type*} [Fintype ι] 
 theorem hermPosIndex_submatrix_le {α β : Type*} [Fintype α] [Fintype β] [DecidableEq β]
     (M : Matrix β β ℂ) (f : α → β) : hermPosIndex (M.submatrix f f) ≤ hermPosIndex M := by
   have h := hermNegIndex_submatrix_le (-M) f
-  rwa [hermNegIndex, hermNegIndex, neg_neg, submatrix_neg, neg_neg] at h
+  have e : (-M).submatrix f f = -(M.submatrix f f) := by ext; simp
+  rw [e] at h
+  simpa only [hermNegIndex, neg_neg] using h
 
 /-- The **tensor (Künneth) kernel** `(g, h) ↦ k(g) l(h)` on `G × H`. -/
 def tensorKernel (k : G → ℂ) (l : H → ℂ) (z : G × H) : ℂ := k z.1 * l z.2
@@ -62,17 +64,17 @@ theorem isHermKernel_tensorKernel {k : G → ℂ} {l : H → ℂ} (hk : IsHermKe
 
 /-- On a product family the Gram matrix is the Kronecker product of the Gram matrices. -/
 theorem gram_tensorKernel_prod (k : G → ℂ) (l : H → ℂ) {ι κ : Type*} (x : ι → G) (y : κ → H) :
-    gram (tensorKernel k l) (fun ab : ι × κ => (x ab.1, y ab.2)) = kronecker (gram k x) (gram l y) := by
+    gram (tensorKernel k l) (fun ab : ι × κ => (x ab.1, y ab.2)) = Matrix.kronecker (gram k x) (gram l y) := by
   ext ⟨a, b⟩ ⟨a', b'⟩
-  simp [gram, tensorKernel, kronecker, kroneckerMap]
+  simp [HeckeKreinToeplitz.gram, tensorKernel, Matrix.kronecker, Matrix.kroneckerMap]
 
 /-- On any family the Gram matrix is the diagonal principal submatrix of a Kronecker product. -/
 theorem gram_tensorKernel (k : G → ℂ) (l : H → ℂ) {ι : Type*} (z : ι → G × H) :
     gram (tensorKernel k l) z =
-      (kronecker (gram k (Prod.fst ∘ z)) (gram l (Prod.snd ∘ z))).submatrix (fun a => (a, a))
+      (Matrix.kronecker (gram k (Prod.fst ∘ z)) (gram l (Prod.snd ∘ z))).submatrix (fun a => (a, a))
         (fun a => (a, a)) := by
   ext a b
-  simp [gram, tensorKernel, kronecker, kroneckerMap]
+  simp [HeckeKreinToeplitz.gram, tensorKernel, Matrix.kronecker, Matrix.kroneckerMap]
 
 /-- **Lower bound.** Every pair of finite families gives
 `κ₊(x)κ(y) + κ(x)κ₊(y)` negative squares of the tensor kernel. -/
@@ -81,7 +83,7 @@ theorem hermIndex_kronecker_le_negIndex_tensor {k : G → ℂ} {l : H → ℂ} (
     ((hermPosIndex (gram k x) * hermNegIndex (gram l y) +
       hermNegIndex (gram k x) * hermPosIndex (gram l y) : ℕ) : ℕ∞) ≤ negIndex (tensorKernel k l) := by
   classical
-  rw [← negIndex_kronecker (gram_isHermitian hk x) (gram_isHermitian hl y),
+  rw [← negIndex_Matrix.kronecker (gram_isHermitian hk x) (gram_isHermitian hl y),
     ← gram_tensorKernel_prod]
   exact hermNegIndex_gram_le_negIndex _ _
 
@@ -93,13 +95,13 @@ theorem negIndex_tensorKernel_le {k : G → ℂ} {l : H → ℂ} (hk : IsHermKer
   rw [negIndex_le_iff]
   intro n z
   rw [gram_tensorKernel]
-  calc (hermNegIndex ((kronecker (gram k (Prod.fst ∘ z)) (gram l (Prod.snd ∘ z))).submatrix
+  calc (hermNegIndex ((Matrix.kronecker (gram k (Prod.fst ∘ z)) (gram l (Prod.snd ∘ z))).submatrix
         (fun a => (a, a)) (fun a => (a, a))) : ℕ∞)
-      ≤ hermNegIndex (kronecker (gram k (Prod.fst ∘ z)) (gram l (Prod.snd ∘ z))) :=
+      ≤ hermNegIndex (Matrix.kronecker (gram k (Prod.fst ∘ z)) (gram l (Prod.snd ∘ z))) :=
         Nat.cast_le.mpr (hermNegIndex_submatrix_le _ _)
     _ = ((hermPosIndex (gram k (Prod.fst ∘ z)) * hermNegIndex (gram l (Prod.snd ∘ z)) +
           hermNegIndex (gram k (Prod.fst ∘ z)) * hermPosIndex (gram l (Prod.snd ∘ z)) : ℕ) : ℕ∞) := by
-        rw [negIndex_kronecker (gram_isHermitian hk _) (gram_isHermitian hl _)]
+        rw [negIndex_Matrix.kronecker (gram_isHermitian hk _) (gram_isHermitian hl _)]
     _ ≤ posIndex k * negIndex l + negIndex k * posIndex l := by
         push_cast
         exact add_le_add
