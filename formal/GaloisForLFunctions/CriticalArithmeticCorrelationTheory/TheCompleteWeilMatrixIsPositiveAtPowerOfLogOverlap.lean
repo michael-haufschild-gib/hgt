@@ -1077,6 +1077,367 @@ private theorem exists_completeWeilEnergy_ge_prime_sub_overlap :
   dsimp only [C_dec]
   linarith only [hdecomp, hself_term, hsum_err_le1, habs_c, habs_s, habs_o]
 
+private theorem abs_add_three_le (x₁ x₂ x₃ : ℝ) :
+    |x₁ + x₂ + x₃| ≤ |x₁| + |x₂| + |x₃| :=
+  (abs_add_le (x₁ + x₂) x₃).trans (add_le_add (abs_add_le x₁ x₂) le_rfl)
+
+private theorem mul_le_one_of_le_mul_le_one {A C T S : ℝ}
+    (hA : A ≤ C) (hC0 : 0 ≤ C) (hT0 : 0 ≤ T) (hTS : T ≤ S) (hCS : C * S ≤ 1) :
+    A * T ≤ 1 :=
+  (mul_le_mul hA hTS hT0 hC0).trans hCS
+
+private def lowBandPacket (Q₁ N : ℕ) (a : ℕ → ℝ) :
+    EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  ∑ m ∈ Icc 1 Q₁, a m • normalizedRamanujanHorizonVector m N
+
+private def highBandCoeffs (Q₁ : ℕ) (a : ℕ → ℝ) (m : ℕ) : ℝ :=
+  if m ≤ Q₁ then 0 else a m
+
+private def highBandPacket (Q₁ R' N : ℕ) (a : ℕ → ℝ) :
+    EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  ∑ m ∈ Icc 1 R', highBandCoeffs Q₁ a m • normalizedRamanujanHorizonVector m N
+
+private def lowBandDiagPacket (Q₁ N : ℕ) (a : ℕ → ℝ) :
+    EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  ∑ m ∈ Icc 1 Q₁,
+    (a m * (Real.log N - ramanujanAdjunctionEnergy m)) •
+      normalizedRamanujanHorizonVector m N
+
+private def lowBandAdjPacket (Q₁ N : ℕ) (a : ℕ → ℝ) :
+    EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  ∑ m ∈ Icc 1 Q₁,
+    (a m * ramanujanAdjunctionEnergy m) • normalizedRamanujanHorizonVector m N
+
+private theorem lowBand_highBand_packet_split {Q₁ R' N : ℕ} {a : ℕ → ℝ}
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hQ₁ : 2 ≤ Q₁) (hQR' : Q₁ ≤ R') (hRR_N : R' * R' ≤ N)
+    (hlog18_R' : 18 * (1 + Real.log R') ≤ Real.log N)
+    (hu_eq : u = ∑ m ∈ Icc 1 R', a m • normalizedRamanujanHorizonVector m N)
+    (huQ : u ∈ (conductorSubspace Q₁ N)ᗮ)
+    (hu_sq_ge : 3 / 4 ≤ ‖u‖ ^ 2) (hu_le1 : ‖u‖ ≤ 1)
+    (h1080 : 1080 * ((1 + Real.log R') / Real.log N) ≤ 1) :
+    u = lowBandPacket Q₁ N a + highBandPacket Q₁ R' N a ∧
+    lowBandPacket Q₁ N a ∈ conductorSubspace R' N ∧
+    highBandPacket Q₁ R' N a ∈ conductorSubspace R' N ∧
+    ‖lowBandPacket Q₁ N a‖ ≤ 54 * (1 + Real.log R') / Real.log N ∧
+    ‖lowBandPacket Q₁ N a‖ ≤ 1 / 20 ∧
+    1 / 2 ≤ ‖highBandPacket Q₁ R' N a‖ ^ 2 ∧
+    ‖highBandPacket Q₁ R' N a‖ ≤ 2 := by
+  have hR'2 : 2 ≤ R' := hQ₁.trans hQR'
+  have huLow_R' : lowBandPacket Q₁ N a = ∑ m ∈ Icc 1 R',
+      (if m ≤ Q₁ then a m else 0) • normalizedRamanujanHorizonVector m N := by
+    unfold lowBandPacket
+    have hsub : Icc 1 Q₁ ⊆ Icc 1 R' := Icc_subset_Icc le_rfl hQR'
+    calc
+      (∑ m ∈ Icc 1 Q₁, a m • normalizedRamanujanHorizonVector m N) =
+          ∑ m ∈ Icc 1 Q₁,
+            (if m ≤ Q₁ then a m else 0) • normalizedRamanujanHorizonVector m N :=
+        sum_congr rfl fun m hm => by rw [if_pos (mem_Icc.mp hm).2]
+      _ = _ := sum_subset hsub fun m hmR hmQ => by
+        have hnot : ¬m ≤ Q₁ := fun h => hmQ (mem_Icc.mpr ⟨(mem_Icc.mp hmR).1, h⟩)
+        rw [if_neg hnot, zero_smul]
+  have hu_split : u = lowBandPacket Q₁ N a + highBandPacket Q₁ R' N a := by
+    rw [hu_eq, huLow_R', highBandPacket]
+    unfold highBandCoeffs
+    rw [← sum_add_distrib]
+    refine sum_congr rfl fun m _ => ?_
+    split_ifs <;> simp
+  have huLow_mem : lowBandPacket Q₁ N a ∈ conductorSubspace R' N := by
+    unfold lowBandPacket
+    exact conductorSubspace_mono hQR' N
+      (sum_normalizedRamanujanHorizonVector_mem_conductorSubspace Q₁ N a)
+  have hy_mem : highBandPacket Q₁ R' N a ∈ conductorSubspace R' N := by
+    unfold highBandPacket
+    exact sum_normalizedRamanujanHorizonVector_mem_conductorSubspace R' N (highBandCoeffs Q₁ a)
+  have huLow_bound : ‖lowBandPacket Q₁ N a‖ ≤ 54 * (1 + Real.log R') / Real.log N := by
+    have hlow := (low_band_norm_le_of_mem_orthogonal (by omega : 1 ≤ Q₁) hQR' hR'2 hRR_N
+      hlog18_R' (hu_eq ▸ huQ)).2
+    rw [← hu_eq, show (∑ m ∈ Icc 1 Q₁, a m • normalizedRamanujanHorizonVector m N) =
+      lowBandPacket Q₁ N a from rfl] at hlow
+    have h0 : 0 ≤ 54 * (1 + Real.log R') / Real.log N := by
+      have := Real.log_natCast_nonneg R'; positivity
+    exact hlow.trans ((mul_le_mul_of_nonneg_left hu_le1 h0).trans_eq (mul_one _))
+  have huLow_le20 : ‖lowBandPacket Q₁ N a‖ ≤ 1 / 20 := by
+    have h54 : 54 * (1 + Real.log R') / Real.log N =
+        54 * ((1 + Real.log R') / Real.log N) := by ring
+    linarith only [huLow_bound, h1080, h54]
+  have hy_bounds : 1 / 2 ≤ ‖highBandPacket Q₁ R' N a‖ ^ 2 ∧ ‖highBandPacket Q₁ R' N a‖ ≤ 2 := by
+    have hu_ge : 17 / 20 ≤ ‖u‖ := by nlinarith only [hu_sq_ge, norm_nonneg u]
+    have htri1 : ‖u‖ ≤ ‖lowBandPacket Q₁ N a‖ + ‖highBandPacket Q₁ R' N a‖ := by
+      rw [hu_split]; exact norm_add_le _ _
+    have hy_ge : 4 / 5 ≤ ‖highBandPacket Q₁ R' N a‖ := by
+      linarith only [hu_ge, htri1, huLow_le20]
+    have hy_eq : highBandPacket Q₁ R' N a = u - lowBandPacket Q₁ N a := by
+      rw [hu_split]; abel
+    have htri2 : ‖highBandPacket Q₁ R' N a‖ ≤ ‖u‖ + ‖lowBandPacket Q₁ N a‖ := by
+      rw [hy_eq]; exact norm_sub_le _ _
+    exact ⟨by nlinarith only [hy_ge], by linarith only [htri2, hu_le1, huLow_le20]⟩
+  exact ⟨hu_split, huLow_mem, hy_mem, huLow_bound, huLow_le20, hy_bounds.1, hy_bounds.2⟩
+
+private theorem overlap_diff_of_conductor_split {R' N : ℕ} {c C_ov : ℝ}
+    (hC_ov : 0 < C_ov)
+    (hov : ∀ {R₁ R₂ N : ℕ} {c : ℝ},
+      2 ≤ R₁ → 2 ≤ R₂ →
+      18 * (1 + Real.log R₁) ≤ Real.log N →
+      18 * (1 + Real.log R₂) ≤ Real.log N →
+      1 ≤ c → c ≤ Real.log N → c / N ≤ 1 / 3 →
+      ((R₁ * R₁ : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
+      ((R₂ * R₂ : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
+      ∀ {u v : EuclideanSpace ℝ (PrimeHorizonIndex N)},
+        u ∈ conductorSubspace R₁ N → v ∈ conductorSubspace R₂ N →
+        |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) u, v⟫| ≤
+          C_ov * c * (1 + Real.log c) * ‖u‖ * ‖v‖)
+    (hR'2 : 2 ≤ R') (hlog18_R' : 18 * (1 + Real.log R') ≤ Real.log N)
+    (hc1 : 1 ≤ c) (hcL : c ≤ Real.log N) (hw1 : c / N ≤ 1 / 3)
+    (hRNT : ((R' * R' : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N)
+    {u v y : EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hu_split : u = v + y)
+    (hv_mem : v ∈ conductorSubspace R' N) (hy_mem : y ∈ conductorSubspace R' N)
+    (hv_bound : ‖v‖ ≤ 54 * (1 + Real.log R') / Real.log N)
+    (hv_le20 : ‖v‖ ≤ 1 / 20) (hy_le2 : ‖y‖ ≤ 2)
+    (h270 : 270 * C_ov * (c * (1 + Real.log c) * (1 + Real.log R') / Real.log N) ≤ 1) :
+    |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) u, u⟫ -
+      ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, y⟫| ≤ 1 := by
+  have hexp :
+      ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) u, u⟫ -
+        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, y⟫ =
+      ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) v, v⟫ +
+        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) v, y⟫ +
+        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, v⟫ := by
+    rw [hu_split, map_add, inner_add_left, inner_add_right, inner_add_right]
+    ring
+  have h1 := hov hR'2 hR'2 hlog18_R' hlog18_R' hc1 hcL hw1 hRNT hRNT hv_mem hv_mem
+  have h2 := hov hR'2 hR'2 hlog18_R' hlog18_R' hc1 hcL hw1 hRNT hRNT hv_mem hy_mem
+  have h3 := hov hR'2 hR'2 hlog18_R' hlog18_R' hc1 hcL hw1 hRNT hRNT hy_mem hv_mem
+  have hnorm_sum : ‖v‖ * ‖v‖ + ‖v‖ * ‖y‖ + ‖y‖ * ‖v‖ ≤ 5 * ‖v‖ := by
+    nlinarith only [hv_le20, hy_le2, norm_nonneg v]
+  rw [hexp]
+  calc
+    |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) v, v⟫ +
+        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) v, y⟫ +
+        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, v⟫| ≤
+        |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) v, v⟫| +
+          |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) v, y⟫| +
+          |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, v⟫| :=
+      abs_add_three_le _ _ _
+    _ ≤ C_ov * c * (1 + Real.log c) * (‖v‖ * ‖v‖ + ‖v‖ * ‖y‖ + ‖y‖ * ‖v‖) := by
+      linarith only [h1, h2, h3]
+    _ ≤ C_ov * c * (1 + Real.log c) * (5 * (54 * (1 + Real.log R') / Real.log N)) := by
+      refine mul_le_mul_of_nonneg_left (hnorm_sum.trans (by linarith only [hv_bound])) ?_
+      have := Real.log_nonneg hc1; positivity
+    _ = 270 * C_ov * (c * (1 + Real.log c) * (1 + Real.log R') / Real.log N) := by ring
+    _ ≤ 1 := h270
+
+private theorem lowBandPacket_prime_cross_le {Q₁ R' N : ℕ} {C_pr : ℝ} {a : ℕ → ℝ}
+    (hC_pr : 0 < C_pr)
+    (hpr_res : ∀ {M N : ℕ}, 2 ≤ M → M ^ 6 ≤ N → 18 * (1 + Real.log M) ≤ Real.log N →
+      ∀ a : ℕ → ℝ,
+        ‖Matrix.toEuclideanLin (fullPrimeMatrix N)
+            (∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N) -
+          ∑ m ∈ Icc 1 M,
+            (a m * (Real.log N - ramanujanAdjunctionEnergy m)) •
+              normalizedRamanujanHorizonVector m N‖ ≤
+          C_pr * (1 + (1 + Real.log M) ^ 2 / Real.sqrt (Real.log N)) *
+            ‖∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N‖)
+    (hQ₁ : 2 ≤ Q₁) (hQR' : Q₁ ≤ R') (hQ6N : Q₁ ^ 6 ≤ N) (hQQ_N : Q₁ * Q₁ ≤ N)
+    (hlog18_Q : 18 * (1 + Real.log Q₁) ≤ Real.log N)
+    (ht2_1 : (1 + Real.log R') ^ 2 / Real.sqrt (Real.log N) ≤ 1)
+    (h864 : 864 * ((1 + Real.log R') ^ 2 / Real.log N) ≤ 1)
+    (h432 : 432 * C_pr * ((1 + Real.log R') / Real.log N) ≤ 1)
+    (huLow_bound : ‖lowBandPacket Q₁ N a‖ ≤ 54 * (1 + Real.log R') / Real.log N)
+    {y : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hy_le2 : ‖y‖ ≤ 2) :
+    2 * |⟪Real.log N • lowBandPacket Q₁ N a -
+      Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a), y⟫| ≤ 2 := by
+  have hlog_Q_le_R' : Real.log Q₁ ≤ Real.log R' :=
+    Real.log_le_log (by exact_mod_cast (show 0 < Q₁ by omega)) (by exact_mod_cast hQR')
+  have hid : Real.log N • lowBandPacket Q₁ N a -
+        Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) =
+      lowBandAdjPacket Q₁ N a -
+        (Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+          lowBandDiagPacket Q₁ N a) := by
+    have hsub : Real.log N • lowBandPacket Q₁ N a - lowBandDiagPacket Q₁ N a =
+        lowBandAdjPacket Q₁ N a := by
+      unfold lowBandPacket lowBandDiagPacket lowBandAdjPacket
+      rw [Finset.smul_sum, ← sum_sub_distrib]
+      refine sum_congr rfl fun m _ => ?_
+      rw [smul_smul, ← sub_smul]
+      congr 1; ring
+    rw [← hsub]; abel
+  have hadj_norm : ‖lowBandAdjPacket Q₁ N a‖ ≤
+      4 * (1 + Real.log R') * ‖lowBandPacket Q₁ N a‖ := by
+    have hγ : |Real.eulerMascheroniConstant| ≤ 1 := by
+      rw [abs_le]
+      have h1 := Real.eulerMascheroniSeq_lt_eulerMascheroniConstant 0
+      simp [Real.eulerMascheroniSeq] at h1
+      exact ⟨by linarith, by linarith [Real.eulerMascheroniConstant_lt_two_thirds]⟩
+    have hadj_m : ∀ m ∈ Icc 1 Q₁, |ramanujanAdjunctionEnergy m| ≤ 2 * (1 + Real.log R') := by
+      intro m hm
+      obtain ⟨hm1, hmQ⟩ := mem_Icc.mp hm
+      have hlm0 : 0 ≤ Real.log (m : ℝ) := Real.log_natCast_nonneg m
+      have hlmR : Real.log m ≤ Real.log R' :=
+        (Real.log_le_log (by exact_mod_cast hm1) (by exact_mod_cast hmQ)).trans hlog_Q_le_R'
+      have htd0 := tameDifferent_nonneg m
+      have htd := (CompletedArithmeticForms.tameDifferent_le_log hm1).trans hlmR
+      unfold ramanujanAdjunctionEnergy
+      exact (abs_add_le _ _).trans (by
+        rw [abs_of_nonneg (add_nonneg hlm0 htd0)]
+        linarith only [hγ, hlmR, htd])
+    have hadj_sq : (∑ m ∈ Icc 1 Q₁, (a m * ramanujanAdjunctionEnergy m) ^ 2) ≤
+        (2 * (1 + Real.log R')) ^ 2 * ∑ m ∈ Icc 1 Q₁, a m ^ 2 := by
+      rw [mul_sum]
+      refine sum_le_sum fun m hm => ?_
+      have hsq := pow_le_pow_left₀ (abs_nonneg _) (hadj_m m hm) 2
+      rw [sq_abs] at hsq
+      nlinarith only [hsq, sq_nonneg (a m)]
+    have hru_lo := (half_and_three_halves_riesz_of_log_le hQ₁ hQQ_N hlog18_Q a).1
+    have hru_hi := (half_and_three_halves_riesz_of_log_le hQ₁ hQQ_N hlog18_Q
+      (fun m => a m * ramanujanAdjunctionEnergy m)).2
+    rw [show (∑ m ∈ Icc 1 Q₁, a m • normalizedRamanujanHorizonVector m N) =
+      lowBandPacket Q₁ N a from rfl] at hru_lo
+    rw [show (∑ m ∈ Icc 1 Q₁, (a m * ramanujanAdjunctionEnergy m) •
+      normalizedRamanujanHorizonVector m N) = lowBandAdjPacket Q₁ N a from rfl] at hru_hi
+    have hnorm_sq : ‖lowBandAdjPacket Q₁ N a‖ ^ 2 ≤
+        (4 * (1 + Real.log R') * ‖lowBandPacket Q₁ N a‖) ^ 2 := by
+      calc
+        ‖lowBandAdjPacket Q₁ N a‖ ^ 2 ≤ (3 / 2 : ℝ) *
+            ∑ m ∈ Icc 1 Q₁, (a m * ramanujanAdjunctionEnergy m) ^ 2 := hru_hi
+        _ ≤ (3 / 2 : ℝ) * ((2 * (1 + Real.log R')) ^ 2 * ∑ m ∈ Icc 1 Q₁, a m ^ 2) :=
+          mul_le_mul_of_nonneg_left hadj_sq (by norm_num)
+        _ ≤ (3 / 2 : ℝ) * ((2 * (1 + Real.log R')) ^ 2 * (2 * ‖lowBandPacket Q₁ N a‖ ^ 2)) :=
+          mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_left (by linarith only [hru_lo]) (sq_nonneg _)) (by norm_num)
+        _ ≤ (4 * (1 + Real.log R') * ‖lowBandPacket Q₁ N a‖) ^ 2 := by
+          nlinarith only [sq_nonneg ((1 + Real.log R') * ‖lowBandPacket Q₁ N a‖)]
+    have hrhs0 : 0 ≤ 4 * (1 + Real.log R') * ‖lowBandPacket Q₁ N a‖ := by
+      have := Real.log_natCast_nonneg R'; positivity
+    nlinarith only [hnorm_sq, norm_nonneg (lowBandAdjPacket Q₁ N a), hrhs0]
+  have hres_norm :
+      ‖Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+        lowBandDiagPacket Q₁ N a‖ ≤ 2 * C_pr * ‖lowBandPacket Q₁ N a‖ := by
+    have h1 := hpr_res hQ₁ hQ6N hlog18_Q a
+    rw [show (∑ m ∈ Icc 1 Q₁, a m • normalizedRamanujanHorizonVector m N) =
+      lowBandPacket Q₁ N a from rfl,
+      show (∑ m ∈ Icc 1 Q₁, (a m * (Real.log N - ramanujanAdjunctionEnergy m)) •
+        normalizedRamanujanHorizonVector m N) = lowBandDiagPacket Q₁ N a from rfl] at h1
+    have h2 : (1 + Real.log Q₁) ^ 2 / Real.sqrt (Real.log N) ≤ 1 := by
+      have hle : (1 + Real.log Q₁) ^ 2 ≤ (1 + Real.log R') ^ 2 :=
+        pow_le_pow_left₀ (by have := Real.log_natCast_nonneg Q₁; positivity)
+          (by linarith only [hlog_Q_le_R']) 2
+      exact (div_le_div_of_nonneg_right hle (Real.sqrt_nonneg _)).trans ht2_1
+    exact h1.trans (mul_le_mul_of_nonneg_right (by nlinarith only [hC_pr, h2]) (norm_nonneg _))
+  have hadj_part : 2 * |⟪lowBandAdjPacket Q₁ N a, y⟫| ≤ 1 := by
+    calc
+      2 * |⟪lowBandAdjPacket Q₁ N a, y⟫| ≤ 2 * (‖lowBandAdjPacket Q₁ N a‖ * ‖y‖) :=
+        mul_le_mul_of_nonneg_left (abs_real_inner_le_norm _ _) zero_le_two
+      _ ≤ 2 * ((4 * (1 + Real.log R') * (54 * (1 + Real.log R') / Real.log N)) * 2) := by
+        refine mul_le_mul_of_nonneg_left ?_ zero_le_two
+        exact mul_le_mul
+          (hadj_norm.trans (mul_le_mul_of_nonneg_left huLow_bound
+            (by have := Real.log_natCast_nonneg R'; positivity)))
+          hy_le2 (norm_nonneg y) (by have := Real.log_natCast_nonneg R'; positivity)
+      _ = 864 * ((1 + Real.log R') ^ 2 / Real.log N) := by ring
+      _ ≤ 1 := h864
+  have hres_part :
+      2 * |⟪Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+        lowBandDiagPacket Q₁ N a, y⟫| ≤ 1 := by
+    calc
+      2 * |⟪Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+          lowBandDiagPacket Q₁ N a, y⟫| ≤
+          2 * (‖Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+            lowBandDiagPacket Q₁ N a‖ * ‖y‖) :=
+        mul_le_mul_of_nonneg_left (abs_real_inner_le_norm _ _) zero_le_two
+      _ ≤ 2 * ((2 * C_pr * (54 * (1 + Real.log R') / Real.log N)) * 2) := by
+        refine mul_le_mul_of_nonneg_left ?_ zero_le_two
+        exact mul_le_mul
+          (hres_norm.trans (mul_le_mul_of_nonneg_left huLow_bound (by positivity)))
+          hy_le2 (norm_nonneg y) (by have := Real.log_natCast_nonneg R'; positivity)
+      _ = 432 * C_pr * ((1 + Real.log R') / Real.log N) := by ring
+      _ ≤ 1 := h432
+  rw [hid, inner_sub_left]
+  calc
+    2 * |⟪lowBandAdjPacket Q₁ N a, y⟫ -
+        ⟪Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+          lowBandDiagPacket Q₁ N a, y⟫| ≤
+        2 * |⟪lowBandAdjPacket Q₁ N a, y⟫| +
+          2 * |⟪Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+            lowBandDiagPacket Q₁ N a, y⟫| := by
+      linarith only [abs_sub ⟪lowBandAdjPacket Q₁ N a, y⟫
+        ⟪Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a) -
+          lowBandDiagPacket Q₁ N a, y⟫]
+    _ ≤ 2 := by linarith only [hadj_part, hres_part]
+
+private theorem highBandPacket_prime_and_overlap_bounds {Q₁ R' N : ℕ} {c C_mid : ℝ} {a : ℕ → ℝ}
+    (hmid : ∀ {Q₁ Q₂ N : ℕ} {c : ℝ},
+      2 ≤ Q₁ → Q₁ ≤ Q₂ → Q₂ * Q₂ ≤ N →
+      18 * (1 + Real.log Q₂) ≤ Real.log N →
+      1 ≤ c → c ≤ Real.log N → c / N ≤ 1 / 3 →
+      4 * (linearNearRowRadius c + 1) ^ 2 ≤ N →
+      ((Q₂ * Q₂ : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
+      ∀ {a : ℕ → ℝ}, (∀ m ∈ Icc 1 Q₁, a m = 0) →
+        |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N)
+            (∑ m ∈ Icc 1 Q₂, a m • normalizedRamanujanHorizonVector m N),
+          ∑ m ∈ Icc 1 Q₂, a m • normalizedRamanujanHorizonVector m N⟫| ≤
+          C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
+            c ^ 5 * Real.log N / N +
+            c ^ 4 / Real.sqrt Q₁ +
+            c ^ 3 * (Q₂ : ℝ) ^ 4 / N) *
+          ‖∑ m ∈ Icc 1 Q₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2)
+    (hQ₁ : 2 ≤ Q₁) (hQR' : Q₁ ≤ R') (hRR_N : R' * R' ≤ N)
+    (hlog36 : 36 * (1 + Real.log R') ≤ Real.log N)
+    (hc1 : 1 ≤ c) (hcL : c ≤ Real.log N) (hw1 : c / N ≤ 1 / 3)
+    (hradN : 4 * (linearNearRowRadius c + 1) ^ 2 ≤ N)
+    (hRNT : ((R' * R' : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N)
+    (hQ₁_large : Real.log 4 + 5 ≤ Real.log Q₁ / conductorCutoffConstant)
+    (hmid_le1 : C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
+      c ^ 5 * Real.log N / N + c ^ 4 / Real.sqrt Q₁ + c ^ 3 * (R' : ℝ) ^ 4 / N) ≤ 1)
+    (hy_sq_ge : 1 / 2 ≤ ‖highBandPacket Q₁ R' N a‖ ^ 2)
+    (hy_le2 : ‖highBandPacket Q₁ R' N a‖ ≤ 2) :
+    |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N)
+        (highBandPacket Q₁ R' N a), highBandPacket Q₁ R' N a⟫| ≤ 4 ∧
+    (1 / (2 * conductorCutoffConstant)) * Real.log Q₁ - (Real.log 4 + 5) / 2 ≤
+      renormalizedPrimeEnergy N (highBandPacket Q₁ R' N a) := by
+  have hlog18_R' : 18 * (1 + Real.log R') ≤ Real.log N := by
+    have := Real.log_natCast_nonneg R'; linarith only [hlog36, this]
+  have ha0 : ∀ m ∈ Icc 1 Q₁, highBandCoeffs Q₁ a m = 0 := fun m hm => by
+    unfold highBandCoeffs; exact if_pos (mem_Icc.mp hm).2
+  have hov_y :
+      |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N)
+          (highBandPacket Q₁ R' N a), highBandPacket Q₁ R' N a⟫| ≤ 4 := by
+    have hm := hmid hQ₁ hQR' hRR_N hlog18_R' hc1 hcL hw1 hradN hRNT ha0
+    rw [show (∑ m ∈ Icc 1 R', highBandCoeffs Q₁ a m • normalizedRamanujanHorizonVector m N) =
+      highBandPacket Q₁ R' N a from rfl] at hm
+    have hy_sq4 : ‖highBandPacket Q₁ R' N a‖ ^ 2 ≤ 4 := by
+      nlinarith only [hy_le2, norm_nonneg (highBandPacket Q₁ R' N a)]
+    calc
+      |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N)
+          (highBandPacket Q₁ R' N a), highBandPacket Q₁ R' N a⟫| ≤
+          C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
+            c ^ 5 * Real.log N / N + c ^ 4 / Real.sqrt Q₁ +
+            c ^ 3 * (R' : ℝ) ^ 4 / N) * ‖highBandPacket Q₁ R' N a‖ ^ 2 := hm
+      _ ≤ 1 * 4 := mul_le_mul hmid_le1 hy_sq4 (sq_nonneg _) zero_le_one
+      _ = 4 := one_mul 4
+  have hprime_y :
+      (1 / (2 * conductorCutoffConstant)) * Real.log Q₁ - (Real.log 4 + 5) / 2 ≤
+        renormalizedPrimeEnergy N (highBandPacket Q₁ R' N a) := by
+    have hdef := poleDefect_ge_of_supported_above hQ₁ hQR' hRR_N hlog36 ha0
+    rw [show (∑ m ∈ Icc 1 R', highBandCoeffs Q₁ a m • normalizedRamanujanHorizonVector m N) =
+      highBandPacket Q₁ R' N a from rfl] at hdef
+    have hrow := poleDefect_le_primeEnergy_add_row_cost (highBandPacket Q₁ R' N a)
+    have hgap : (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) *
+        ‖highBandPacket Q₁ R' N a‖ ^ 2 ≤
+        renormalizedPrimeEnergy N (highBandPacket Q₁ R' N a) := by
+      linarith only [hdef, hrow]
+    have hgap0 : 0 ≤ Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5) := by
+      linarith only [hQ₁_large]
+    have hhalf : (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) * (1 / 2 : ℝ) ≤
+        (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) *
+          ‖highBandPacket Q₁ R' N a‖ ^ 2 :=
+      mul_le_mul_of_nonneg_left hy_sq_ge hgap0
+    have heq : (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) * (1 / 2 : ℝ) =
+        (1 / (2 * conductorCutoffConstant)) * Real.log Q₁ - (Real.log 4 + 5) / 2 := by ring
+    linarith only [hgap, hhalf, heq]
+  exact ⟨hov_y, hprime_y⟩
+
 /-- Coercivity above `Q₁`: every `u ∈ conductorSubspace R' N ⊓ (conductorSubspace Q₁ N)ᗮ` with
 `3 / 4 ≤ ‖u‖ ^ 2 ≤ 1` has complete Weil energy bounded below by
 `(1 / (2 * conductorCutoffConstant)) * log Q₁ - log c - C_coerc`. -/
@@ -1109,11 +1470,10 @@ private theorem exists_high_band_coercivity :
   obtain ⟨C_pr, hC_pr, hpr_res⟩ := exists_fullPrimeMatrix_packet_residual_norm_le
   obtain ⟨C_mid, hC_mid, hmid⟩ := exists_overlapMatrix_midBand_inner_le
     contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos
-  let C_small := C_err + 1080 + 270 * C_ov + 864 + 432 * C_pr + C_mid + 1
-  let C_coerc := C_dec + (Real.log 4 + 4) + 8 + (Real.log 4 + 5) / 2
   have hlog4_0 : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
-  refine ⟨C_coerc, C_small, by dsimp only [C_coerc]; positivity,
-    by dsimp only [C_small]; positivity, ?_⟩
+  refine ⟨C_dec + (Real.log 4 + 4) + 8 + (Real.log 4 + 5) / 2,
+    C_err + 1080 + 270 * C_ov + 864 + 432 * C_pr + C_mid + 1,
+    by positivity, by positivity, ?_⟩
   intro Q₁ R' N c hQ₁ hQR' hR6N hlog36 hc1 hcL hw1 hradN hRNT hQ₁_large hsmall
     u hu huQ hu_sq_ge hu_le1
   have hR'2 : 2 ≤ R' := hQ₁.trans hQR'
@@ -1152,47 +1512,6 @@ private theorem exists_high_band_coercivity :
   have ht9 : 0 ≤ c ^ 3 * (R' : ℝ) ^ 4 / N := by positivity
   have ht10 : 0 ≤ c ^ 2 * (1 + Real.log c) / Real.log N := by
     have := Real.log_nonneg hc1; positivity
-  have herr_dec : C_err * (c * (1 + Real.log R') / Real.sqrt (Real.log N) +
-      c ^ 2 / Real.log N +
-      c ^ 2 * (1 + Real.log R') * Real.sqrt ((1 + Real.log c) / Real.log N) +
-      c ^ 2 * (R' : ℝ) * Real.sqrt (Real.log N / N)) ≤ 1 := by
-    dsimp only [C_small] at hsmall
-    nlinarith only [hsmall, hC_err, hC_ov, hC_pr, hC_mid,
-      ht1, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]
-  have hbase_dec := hdec hR'2 hR6N hlog18_R' hc1 hw1 hRNT herr_dec hu hu1 hu_le1
-  -- Decompose u = uLow + y
-  obtain ⟨a, -, hu_eq⟩ := (mem_conductorSubspace_iff (M := R') (N := N) (x := u)).mp hu
-  let uLow := ∑ m ∈ Icc 1 Q₁, a m • normalizedRamanujanHorizonVector m N
-  let aRest : ℕ → ℝ := fun m => if m ≤ Q₁ then 0 else a m
-  let y := ∑ m ∈ Icc 1 R', aRest m • normalizedRamanujanHorizonVector m N
-  have huLow_R' : uLow = ∑ m ∈ Icc 1 R',
-      (if m ≤ Q₁ then a m else 0) • normalizedRamanujanHorizonVector m N := by
-    have hsub : Icc 1 Q₁ ⊆ Icc 1 R' := Icc_subset_Icc le_rfl hQR'
-    calc
-      uLow = ∑ m ∈ Icc 1 Q₁,
-          (if m ≤ Q₁ then a m else 0) • normalizedRamanujanHorizonVector m N :=
-        sum_congr rfl fun m hm => by rw [if_pos (mem_Icc.mp hm).2]
-      _ = _ := sum_subset hsub fun m hmR hmQ => by
-        have hnot : ¬m ≤ Q₁ := fun h => hmQ (mem_Icc.mpr ⟨(mem_Icc.mp hmR).1, h⟩)
-        rw [if_neg hnot, zero_smul]
-  have hu_split : u = uLow + y := by
-    rw [hu_eq, huLow_R']
-    dsimp only [y, aRest]
-    rw [← sum_add_distrib]
-    refine sum_congr rfl fun m _ => ?_
-    split_ifs <;> simp
-  have huLow_mem : uLow ∈ conductorSubspace R' N :=
-    conductorSubspace_mono hQR' N (sum_normalizedRamanujanHorizonVector_mem_conductorSubspace Q₁ N a)
-  have hy_mem : y ∈ conductorSubspace R' N :=
-    sum_normalizedRamanujanHorizonVector_mem_conductorSubspace R' N aRest
-  -- Low-band norm bound
-  have huLow_bound : ‖uLow‖ ≤ 54 * (1 + Real.log R') / Real.log N := by
-    have hlow := (low_band_norm_le_of_mem_orthogonal (by omega : 1 ≤ Q₁) hQR' hR'2 hRR_N
-      hlog18_R' (hu_eq ▸ huQ)).2
-    rw [← hu_eq] at hlow
-    have h0 : 0 ≤ 54 * (1 + Real.log R') / Real.log N := by
-      have := Real.log_natCast_nonneg R'; positivity
-    exact hlow.trans ((mul_le_mul_of_nonneg_left hu_le1 h0).trans_eq (mul_one _))
   have h1R_div_le : (1 + Real.log R') / Real.log N ≤
       c * (1 + Real.log c) * (1 + Real.log R') / Real.log N := by
     have h1cc : 1 ≤ c * (1 + Real.log c) := by
@@ -1204,227 +1523,77 @@ private theorem exists_high_band_coercivity :
       _ ≤ (c * (1 + Real.log c)) * ((1 + Real.log R') / Real.log N) :=
         mul_le_mul_of_nonneg_right h1cc h1R0
       _ = _ := by ring
-  have huLow_le20 : ‖uLow‖ ≤ 1 / 20 := by
-    have h1080 : 1080 * ((1 + Real.log R') / Real.log N) ≤ 1 := by
-      have h := mul_le_mul_of_nonneg_left h1R_div_le (by norm_num : (0 : ℝ) ≤ 1080)
-      dsimp only [C_small] at hsmall
-      nlinarith only [h, hsmall, hC_err, hC_ov, hC_pr, hC_mid,
-        ht1, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]
-    have h54 : 54 * (1 + Real.log R') / Real.log N =
-        54 * ((1 + Real.log R') / Real.log N) := by ring
-    linarith only [huLow_bound, h1080, h54]
-  have hy_bounds : 1 / 2 ≤ ‖y‖ ^ 2 ∧ ‖y‖ ≤ 2 := by
-    have hu_ge : 17 / 20 ≤ ‖u‖ := by nlinarith only [hu_sq_ge, norm_nonneg u]
-    have htri1 : ‖u‖ ≤ ‖uLow‖ + ‖y‖ := by rw [hu_split]; exact norm_add_le _ _
-    have hy_ge : 4 / 5 ≤ ‖y‖ := by linarith only [hu_ge, htri1, huLow_le20]
-    have hy_eq : y = u - uLow := by rw [hu_split]; abel
-    have htri2 : ‖y‖ ≤ ‖u‖ + ‖uLow‖ := by rw [hy_eq]; exact norm_sub_le _ _
-    exact ⟨by nlinarith only [hy_ge], by linarith only [htri2, hu_le1, huLow_le20]⟩
-  -- Overlap difference between u and y
-  have hov_diff :
-      |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) u, u⟫ -
-        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, y⟫| ≤ 1 := by
-    have hexp :
-        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) u, u⟫ -
-          ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, y⟫ =
-        ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) uLow, uLow⟫ +
-          ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) uLow, y⟫ +
-          ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, uLow⟫ := by
-      rw [hu_split, map_add, inner_add_left, inner_add_right, inner_add_right]
-      ring
-    have h1 := hov hR'2 hR'2 hlog18_R' hlog18_R' hc1 hcL hw1 hRNT hRNT huLow_mem huLow_mem
-    have h2 := hov hR'2 hR'2 hlog18_R' hlog18_R' hc1 hcL hw1 hRNT hRNT huLow_mem hy_mem
-    have h3 := hov hR'2 hR'2 hlog18_R' hlog18_R' hc1 hcL hw1 hRNT hRNT hy_mem huLow_mem
-    have hnorm_sum : ‖uLow‖ * ‖uLow‖ + ‖uLow‖ * ‖y‖ + ‖y‖ * ‖uLow‖ ≤ 5 * ‖uLow‖ := by
-      nlinarith only [huLow_le20, hy_bounds.2, norm_nonneg uLow]
-    have h270 : 270 * C_ov * (c * (1 + Real.log c) * (1 + Real.log R') / Real.log N) ≤ 1 := by
-      dsimp only [C_small] at hsmall
-      nlinarith only [hsmall, hC_err, hC_ov, hC_pr, hC_mid,
-        ht1, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]
-    rw [hexp]
-    calc
-      _ ≤ |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) uLow, uLow⟫| +
-            |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) uLow, y⟫| +
-            |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, uLow⟫| :=
-        (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
-      _ ≤ C_ov * c * (1 + Real.log c) * (‖uLow‖ * ‖uLow‖ + ‖uLow‖ * ‖y‖ + ‖y‖ * ‖uLow‖) := by
-        linarith only [h1, h2, h3]
-      _ ≤ C_ov * c * (1 + Real.log c) * (5 * (54 * (1 + Real.log R') / Real.log N)) := by
-        refine mul_le_mul_of_nonneg_left (hnorm_sum.trans (by linarith only [huLow_bound])) ?_
-        have := Real.log_nonneg hc1; positivity
-      _ = 270 * C_ov * (c * (1 + Real.log c) * (1 + Real.log R') / Real.log N) := by ring
-      _ ≤ 1 := h270
-  -- Prime energy comparison between u and y
-  have hprime_uLow : -(Real.log 4 + 4) ≤ renormalizedPrimeEnergy N uLow := by
-    have hp := poleDefect_le_primeEnergy_add_row_cost uLow
-    have hd0 := poleDefect_nonneg N (primeHorizonExtension uLow)
-    have huL_sq1 : ‖uLow‖ ^ 2 ≤ 1 := by nlinarith only [huLow_le20, norm_nonneg uLow]
+  have h1R_sq_div : (1 + Real.log R') ^ 2 / Real.log N ≤
+      (1 + Real.log R') ^ 2 / Real.sqrt (Real.log N) :=
+    div_le_div_of_nonneg_left (sq_nonneg _) (Real.sqrt_pos.mpr hL0) hsL_le_L
+  -- Extract individual smallness consequences from hsmall
+  have hC0 : 0 ≤ C_err + 1080 + 270 * C_ov + 864 + 432 * C_pr + C_mid + 1 := by positivity
+  have h1R0 : 0 ≤ (1 + Real.log R') / Real.log N := by
+    have := Real.log_natCast_nonneg R'; positivity
+  have herr_dec : C_err * (c * (1 + Real.log R') / Real.sqrt (Real.log N) +
+      c ^ 2 / Real.log N +
+      c ^ 2 * (1 + Real.log R') * Real.sqrt ((1 + Real.log c) / Real.log N) +
+      c ^ 2 * (R' : ℝ) * Real.sqrt (Real.log N / N)) ≤ 1 :=
+    mul_le_one_of_le_mul_le_one
+      (by linarith only [hC_ov, hC_pr, hC_mid]) hC0
+      (by linarith only [ht3, ht4, ht5, ht6])
+      (by linarith only [ht1, ht2, ht7, ht8, ht9, ht10]) hsmall
+  have h1080 : 1080 * ((1 + Real.log R') / Real.log N) ≤ 1 :=
+    mul_le_one_of_le_mul_le_one
+      (by linarith only [hC_err, hC_ov, hC_pr, hC_mid]) hC0 h1R0
+      (by linarith only [h1R_div_le, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]) hsmall
+  have h270 : 270 * C_ov * (c * (1 + Real.log c) * (1 + Real.log R') / Real.log N) ≤ 1 :=
+    mul_le_one_of_le_mul_le_one
+      (by linarith only [hC_err, hC_pr, hC_mid]) hC0 ht1
+      (by linarith only [ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]) hsmall
+  have ht2_1 : (1 + Real.log R') ^ 2 / Real.sqrt (Real.log N) ≤ 1 := by
+    simpa only [one_mul] using mul_le_one_of_le_mul_le_one (A := 1)
+      (by linarith only [hC_err, hC_ov, hC_pr, hC_mid]) hC0 ht2
+      (by linarith only [ht1, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]) hsmall
+  have h864 : 864 * ((1 + Real.log R') ^ 2 / Real.log N) ≤ 1 :=
+    mul_le_one_of_le_mul_le_one
+      (by linarith only [hC_err, hC_ov, hC_pr, hC_mid]) hC0 (by positivity)
+      (by linarith only [h1R_sq_div, ht1, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]) hsmall
+  have h432 : 432 * C_pr * ((1 + Real.log R') / Real.log N) ≤ 1 :=
+    mul_le_one_of_le_mul_le_one
+      (by linarith only [hC_err, hC_ov, hC_mid]) hC0 h1R0
+      (by linarith only [h1R_div_le, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]) hsmall
+  have hmid_le1 : C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
+      c ^ 5 * Real.log N / N + c ^ 4 / Real.sqrt Q₁ + c ^ 3 * (R' : ℝ) ^ 4 / N) ≤ 1 :=
+    mul_le_one_of_le_mul_le_one
+      (by linarith only [hC_err, hC_ov, hC_pr]) hC0
+      (by linarith only [ht10, ht7, ht8, ht9])
+      (by linarith only [ht1, ht2, ht3, ht4, ht5, ht6]) hsmall
+  have hbase_dec := hdec hR'2 hR6N hlog18_R' hc1 hw1 hRNT herr_dec hu hu1 hu_le1
+  obtain ⟨a, -, hu_eq⟩ := (mem_conductorSubspace_iff (M := R') (N := N) (x := u)).mp hu
+  obtain ⟨hu_split, huLow_mem, hy_mem, huLow_bound, huLow_le20, hy_sq_ge, hy_le2⟩ :=
+    lowBand_highBand_packet_split hQ₁ hQR' hRR_N hlog18_R' hu_eq huQ hu_sq_ge hu_le1 h1080
+  have hov_diff := overlap_diff_of_conductor_split hC_ov hov hR'2 hlog18_R' hc1 hcL hw1 hRNT
+    hu_split huLow_mem hy_mem huLow_bound huLow_le20 hy_le2 h270
+  have hprime_uLow : -(Real.log 4 + 4) ≤ renormalizedPrimeEnergy N (lowBandPacket Q₁ N a) := by
+    have hp := poleDefect_le_primeEnergy_add_row_cost (lowBandPacket Q₁ N a)
+    have hd0 := poleDefect_nonneg N (primeHorizonExtension (lowBandPacket Q₁ N a))
+    have huL_sq1 : ‖lowBandPacket Q₁ N a‖ ^ 2 ≤ 1 := by
+      nlinarith only [huLow_le20, norm_nonneg (lowBandPacket Q₁ N a)]
     nlinarith only [hp, hd0, huL_sq1, hlog4_0]
-  have hprime_cross :
-      2 * |⟪Real.log N • uLow - Matrix.toEuclideanLin (fullPrimeMatrix N) uLow, y⟫| ≤ 2 := by
-    let diagLow := ∑ m ∈ Icc 1 Q₁,
-      (a m * (Real.log N - ramanujanAdjunctionEnergy m)) • normalizedRamanujanHorizonVector m N
-    let adjLow := ∑ m ∈ Icc 1 Q₁,
-      (a m * ramanujanAdjunctionEnergy m) • normalizedRamanujanHorizonVector m N
-    have hid : Real.log N • uLow - Matrix.toEuclideanLin (fullPrimeMatrix N) uLow =
-        adjLow - (Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow) := by
-      have hsub : Real.log N • uLow - diagLow = adjLow := by
-        dsimp only [uLow, diagLow, adjLow]
-        rw [Finset.smul_sum, ← sum_sub_distrib]
-        refine sum_congr rfl fun m _ => ?_
-        rw [smul_smul, ← sub_smul]
-        congr 1; ring
-      rw [← hsub]; abel
-    have hadj_norm : ‖adjLow‖ ≤ 4 * (1 + Real.log R') * ‖uLow‖ := by
-      have hγ : |Real.eulerMascheroniConstant| ≤ 1 := by
-        rw [abs_le]
-        have h1 := Real.eulerMascheroniSeq_lt_eulerMascheroniConstant 0
-        simp [Real.eulerMascheroniSeq] at h1
-        exact ⟨by linarith, by linarith [Real.eulerMascheroniConstant_lt_two_thirds]⟩
-      have hadj_m : ∀ m ∈ Icc 1 Q₁, |ramanujanAdjunctionEnergy m| ≤ 2 * (1 + Real.log R') := by
-        intro m hm
-        obtain ⟨hm1, hmQ⟩ := mem_Icc.mp hm
-        have hlm0 : 0 ≤ Real.log (m : ℝ) := Real.log_natCast_nonneg m
-        have hlmR : Real.log m ≤ Real.log R' :=
-          (Real.log_le_log (by exact_mod_cast hm1) (by exact_mod_cast hmQ)).trans hlog_Q_le_R'
-        have htd0 := tameDifferent_nonneg m
-        have htd := (CompletedArithmeticForms.tameDifferent_le_log hm1).trans hlmR
-        unfold ramanujanAdjunctionEnergy
-        exact (abs_add_le _ _).trans (by
-          rw [abs_of_nonneg (add_nonneg hlm0 htd0)]
-          linarith only [hγ, hlmR, htd])
-      have hadj_sq : (∑ m ∈ Icc 1 Q₁, (a m * ramanujanAdjunctionEnergy m) ^ 2) ≤
-          (2 * (1 + Real.log R')) ^ 2 * ∑ m ∈ Icc 1 Q₁, a m ^ 2 := by
-        rw [mul_sum]
-        refine sum_le_sum fun m hm => ?_
-        have hsq := pow_le_pow_left₀ (abs_nonneg _) (hadj_m m hm) 2
-        rw [sq_abs] at hsq
-        nlinarith only [hsq, sq_nonneg (a m)]
-      have hru_lo := (half_and_three_halves_riesz_of_log_le hQ₁ hQQ_N hlog18_Q a).1
-      have hru_hi := (half_and_three_halves_riesz_of_log_le hQ₁ hQQ_N hlog18_Q
-        (fun m => a m * ramanujanAdjunctionEnergy m)).2
-      have hnorm_sq : ‖adjLow‖ ^ 2 ≤ (4 * (1 + Real.log R') * ‖uLow‖) ^ 2 := by
-        calc
-          ‖adjLow‖ ^ 2 ≤ (3 / 2 : ℝ) *
-              ∑ m ∈ Icc 1 Q₁, (a m * ramanujanAdjunctionEnergy m) ^ 2 := hru_hi
-          _ ≤ (3 / 2 : ℝ) * ((2 * (1 + Real.log R')) ^ 2 * ∑ m ∈ Icc 1 Q₁, a m ^ 2) :=
-            mul_le_mul_of_nonneg_left hadj_sq (by norm_num)
-          _ ≤ (3 / 2 : ℝ) * ((2 * (1 + Real.log R')) ^ 2 * (2 * ‖uLow‖ ^ 2)) :=
-            mul_le_mul_of_nonneg_left
-              (mul_le_mul_of_nonneg_left (by linarith only [hru_lo]) (sq_nonneg _)) (by norm_num)
-          _ ≤ (4 * (1 + Real.log R') * ‖uLow‖) ^ 2 := by
-            nlinarith only [sq_nonneg ((1 + Real.log R') * ‖uLow‖)]
-      have hrhs0 : 0 ≤ 4 * (1 + Real.log R') * ‖uLow‖ := by
-        have := Real.log_natCast_nonneg R'; positivity
-      nlinarith only [hnorm_sq, norm_nonneg adjLow, hrhs0]
-    have hres_norm : ‖Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow‖ ≤
-        2 * C_pr * ‖uLow‖ := by
-      have h1 := hpr_res hQ₁ hQ6N hlog18_Q a
-      have h2 : (1 + Real.log Q₁) ^ 2 / Real.sqrt (Real.log N) ≤ 1 := by
-        have hle : (1 + Real.log Q₁) ^ 2 ≤ (1 + Real.log R') ^ 2 :=
-          pow_le_pow_left₀ (by have := Real.log_natCast_nonneg Q₁; positivity)
-            (by linarith only [hlog_Q_le_R']) 2
-        have ht2_1 : (1 + Real.log R') ^ 2 / Real.sqrt (Real.log N) ≤ 1 := by
-          dsimp only [C_small] at hsmall
-          nlinarith only [hsmall, hC_err, hC_ov, hC_pr, hC_mid,
-            ht1, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]
-        exact (div_le_div_of_nonneg_right hle (Real.sqrt_nonneg _)).trans ht2_1
-      exact h1.trans (mul_le_mul_of_nonneg_right (by nlinarith only [hC_pr, h2]) (norm_nonneg _))
-    have h1R_sq_div : (1 + Real.log R') ^ 2 / Real.log N ≤
-        (1 + Real.log R') ^ 2 / Real.sqrt (Real.log N) :=
-      div_le_div_of_nonneg_left (sq_nonneg _) (Real.sqrt_pos.mpr hL0) hsL_le_L
-    have hadj_part : 2 * |⟪adjLow, y⟫| ≤ 1 := by
-      have h864 : 864 * ((1 + Real.log R') ^ 2 / Real.log N) ≤ 1 := by
-        have h := mul_le_mul_of_nonneg_left h1R_sq_div (by norm_num : (0 : ℝ) ≤ 864)
-        dsimp only [C_small] at hsmall
-        nlinarith only [h, hsmall, hC_err, hC_ov, hC_pr, hC_mid,
-          ht1, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]
-      calc
-        2 * |⟪adjLow, y⟫| ≤ 2 * (‖adjLow‖ * ‖y‖) :=
-          mul_le_mul_of_nonneg_left (abs_real_inner_le_norm _ _) zero_le_two
-        _ ≤ 2 * ((4 * (1 + Real.log R') * (54 * (1 + Real.log R') / Real.log N)) * 2) := by
-          refine mul_le_mul_of_nonneg_left ?_ zero_le_two
-          exact mul_le_mul
-            (hadj_norm.trans (mul_le_mul_of_nonneg_left huLow_bound
-              (by have := Real.log_natCast_nonneg R'; positivity)))
-            hy_bounds.2 (norm_nonneg y) (by have := Real.log_natCast_nonneg R'; positivity)
-        _ = 864 * ((1 + Real.log R') ^ 2 / Real.log N) := by ring
-        _ ≤ 1 := h864
-    have hres_part : 2 * |⟪Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow, y⟫| ≤ 1 := by
-      have h432 : 432 * C_pr * ((1 + Real.log R') / Real.log N) ≤ 1 := by
-        have h := mul_le_mul_of_nonneg_left h1R_div_le (by positivity : 0 ≤ 432 * C_pr)
-        dsimp only [C_small] at hsmall
-        nlinarith only [h, hsmall, hC_err, hC_ov, hC_pr, hC_mid,
-          ht1, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]
-      calc
-        2 * |⟪Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow, y⟫| ≤
-            2 * (‖Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow‖ * ‖y‖) :=
-          mul_le_mul_of_nonneg_left (abs_real_inner_le_norm _ _) zero_le_two
-        _ ≤ 2 * ((2 * C_pr * (54 * (1 + Real.log R') / Real.log N)) * 2) := by
-          refine mul_le_mul_of_nonneg_left ?_ zero_le_two
-          exact mul_le_mul
-            (hres_norm.trans (mul_le_mul_of_nonneg_left huLow_bound (by positivity)))
-            hy_bounds.2 (norm_nonneg y) (by have := Real.log_natCast_nonneg R'; positivity)
-        _ = 432 * C_pr * ((1 + Real.log R') / Real.log N) := by ring
-        _ ≤ 1 := h432
-    rw [hid, inner_sub_left]
-    calc
-      2 * |⟪adjLow, y⟫ - ⟪Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow, y⟫| ≤
-          2 * |⟪adjLow, y⟫| +
-            2 * |⟪Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow, y⟫| := by
-        linarith only [abs_sub ⟪adjLow, y⟫
-          ⟪Matrix.toEuclideanLin (fullPrimeMatrix N) uLow - diagLow, y⟫]
-      _ ≤ 2 := by linarith only [hadj_part, hres_part]
-  -- Intermediate/high packet bounds directly on y
-  have ha0 : ∀ m ∈ Icc 1 Q₁, aRest m = 0 := fun m hm => if_pos (mem_Icc.mp hm).2
-  have hov_y : |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, y⟫| ≤ 4 := by
-    have hm := hmid hQ₁ hQR' hRR_N hlog18_R' hc1 hcL hw1 hradN hRNT ha0
-    change |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, y⟫| ≤
-      C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
-        c ^ 5 * Real.log N / N + c ^ 4 / Real.sqrt Q₁ +
-        c ^ 3 * (R' : ℝ) ^ 4 / N) * ‖y‖ ^ 2 at hm
-    have hmid_le1 : C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
-        c ^ 5 * Real.log N / N + c ^ 4 / Real.sqrt Q₁ + c ^ 3 * (R' : ℝ) ^ 4 / N) ≤ 1 := by
-      dsimp only [C_small] at hsmall
-      nlinarith only [hsmall, hC_err, hC_ov, hC_pr, hC_mid,
-        ht1, ht2, ht3, ht4, ht5, ht6, ht7, ht8, ht9, ht10]
-    have hy_sq4 : ‖y‖ ^ 2 ≤ 4 := by nlinarith only [hy_bounds.2, norm_nonneg y]
-    calc
-      |⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) y, y⟫| ≤
-          C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
-            c ^ 5 * Real.log N / N + c ^ 4 / Real.sqrt Q₁ +
-            c ^ 3 * (R' : ℝ) ^ 4 / N) * ‖y‖ ^ 2 := hm
-      _ ≤ 1 * 4 := mul_le_mul hmid_le1 hy_sq4 (sq_nonneg _) zero_le_one
-      _ = 4 := one_mul 4
-  have hprime_y :
-      (1 / (2 * conductorCutoffConstant)) * Real.log Q₁ - (Real.log 4 + 5) / 2 ≤
-        renormalizedPrimeEnergy N y := by
-    have hdef := poleDefect_ge_of_supported_above hQ₁ hQR' hRR_N hlog36 ha0
-    change (Real.log Q₁ / conductorCutoffConstant - 1) * ‖y‖ ^ 2 ≤
-      poleDefect N (primeHorizonExtension y) at hdef
-    have hrow := poleDefect_le_primeEnergy_add_row_cost y
-    have hgap : (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) * ‖y‖ ^ 2 ≤
-        renormalizedPrimeEnergy N y := by
-      linarith only [hdef, hrow]
-    have hgap0 : 0 ≤ Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5) := by
-      linarith only [hQ₁_large]
-    have hhalf : (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) * (1 / 2 : ℝ) ≤
-        (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) * ‖y‖ ^ 2 :=
-      mul_le_mul_of_nonneg_left hy_bounds.1 hgap0
-    have heq : (Real.log Q₁ / conductorCutoffConstant - (Real.log 4 + 5)) * (1 / 2 : ℝ) =
-        (1 / (2 * conductorCutoffConstant)) * Real.log Q₁ - (Real.log 4 + 5) / 2 := by ring
-    linarith only [hgap, hhalf, heq]
+  have hprime_cross := lowBandPacket_prime_cross_le hC_pr hpr_res hQ₁ hQR' hQ6N hQQ_N
+    hlog18_Q ht2_1 h864 h432 huLow_bound hy_le2
+  obtain ⟨hov_y, hprime_y⟩ := highBandPacket_prime_and_overlap_bounds hmid hQ₁ hQR' hRR_N
+    hlog36 hc1 hcL hw1 hradN hRNT hQ₁_large hmid_le1 hy_sq_ge hy_le2
   have hprime_u :
       (1 / (2 * conductorCutoffConstant)) * Real.log Q₁ - (Real.log 4 + 5) / 2 -
         (Real.log 4 + 4) - 2 ≤ renormalizedPrimeEnergy N u := by
-    have hexp := renormalizedPrimeEnergy_add_eq uLow y
+    have hexp := renormalizedPrimeEnergy_add_eq (lowBandPacket Q₁ N a) (highBandPacket Q₁ R' N a)
     rw [← hu_split] at hexp
-    have hcr := (abs_le.mp (le_rfl :
-      |⟪Real.log N • uLow - Matrix.toEuclideanLin (fullPrimeMatrix N) uLow, y⟫| ≤ _)).1
-    linarith only [hexp, hprime_uLow, hprime_y, hprime_cross, hcr]
+    have hcr_lb : -2 ≤ 2 * ⟪Real.log N • lowBandPacket Q₁ N a -
+        Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a),
+        highBandPacket Q₁ R' N a⟫ := by
+      linarith only [neg_abs_le ⟪Real.log N • lowBandPacket Q₁ N a -
+        Matrix.toEuclideanLin (fullPrimeMatrix N) (lowBandPacket Q₁ N a),
+        highBandPacket Q₁ R' N a⟫, hprime_cross]
+    linarith only [hexp, hprime_uLow, hprime_y, hcr_lb]
   have hov_u : ⟪Matrix.toEuclideanLin (overlapMatrix tiltedUnitSpline c N) u, u⟫ ≤ 5 := by
     linarith only [(abs_le.mp hov_diff).2, (abs_le.mp hov_y).2]
-  dsimp only [C_coerc]
   linarith only [hbase_dec, hprime_u, hov_u]
 
 /-! ### 5. Asymptotic parameter discharge and unconditional main theorems -/
@@ -1459,7 +1628,6 @@ private theorem eventually_floor_log_rpow_twelfth_bounds :
   filter_upwards [hQlim.eventually_ge_atTop 4,
     hllim.eventually_ge_atTop (12 * (conductorCutoffConstant * (Real.log 4 + 5) + 1)),
     hLlim.eventually_ge_atTop 1, eventually_ge_atTop 2] with N hX4 hll hL1 hN2
-  dsimp only [Function.comp_def] at hX4 hll
   dsimp only
   let L := Real.log (N : ℝ)
   let X12 := L ^ (1 / 12 : ℝ)
@@ -1500,7 +1668,7 @@ private theorem eventually_floor_log_rpow_twelfth_bounds :
   exact ⟨hQ2, hQ_le, hQ_quarter, hlogQ_lb, hQ_large, hQ4_N⟩
 
 private theorem rpow_horizon_N_bounds {N R' : ℕ} {c H_res : ℝ}
-    (hN1 : 1 ≤ N) (hR'2 : 2 ≤ R') (hc1 : 1 ≤ c) (hH0 : 0 < H_res)
+    (hN1 : 1 ≤ N) (hR'2 : 2 ≤ R') (hc1 : 1 ≤ c) (_hH0 : 0 < H_res)
     (hL2000 : 2000 ≤ Real.log (N : ℝ)) (hHL : H_res ≤ Real.log (N : ℝ))
     (hLX : Real.log (N : ℝ) ≤ (N : ℝ) ^ (1 / 36 : ℝ))
     (hcL : c ≤ Real.log (N : ℝ))
@@ -1533,7 +1701,7 @@ private theorem rpow_horizon_N_bounds {N R' : ℕ} {c H_res : ℝ}
   have hR'X : (R' : ℝ) ≤ X := by
     have hR'0 : (0 : ℝ) < R' := by exact_mod_cast (show 0 < R' by omega)
     have hlog_le : Real.log (R' : ℝ) ≤ Real.log X := by
-      have h1 : Real.log X = (1 / 36 : ℝ) * Real.log (N : ℝ) := Real.log_rpow hN0
+      have h1 : Real.log X = (1 / 36 : ℝ) * Real.log (N : ℝ) := Real.log_rpow hN0 (1 / 36 : ℝ)
       linarith only [hlog36, h1]
     exact (Real.exp_log hR'0).symm.trans_le ((Real.exp_le_exp.mpr hlog_le).trans_eq (Real.exp_log hX0))
   have he1 : Real.exp 1 ≤ 3 := by linarith [Real.exp_one_lt_d9]
@@ -1587,9 +1755,10 @@ private theorem rpow_horizon_N_bounds {N R' : ℕ} {c H_res : ℝ}
     exact_mod_cast hR6
   have h6 : ((R' * R' : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ (N : ℝ) := by
     have h38 : 38 * X ^ 3 ≤ X ^ 4 := by
-      have : 38 * X ^ 3 = (38 * X) * X ^ 2 := by ring
-      have : X ^ 4 = (X * X) * X ^ 2 := by ring
-      nlinarith only [hX2000, sq_nonneg X]
+      calc
+        38 * X ^ 3 ≤ X * X ^ 3 :=
+          mul_le_mul_of_nonneg_right (by linarith only [hX2000]) (by positivity)
+        _ = X ^ 4 := by ring
     calc
       ((R' * R' : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ (2 * X ^ 2) * (19 * X) :=
         mul_le_mul hRR1_le hlin_le (by unfold linearNearRowRadius; positivity) (by positivity)
@@ -1614,7 +1783,7 @@ private theorem rpow_horizon_N_bounds {N R' : ℕ} {c H_res : ℝ}
         _ ≤ (N : ℝ) := hpowX 5 (by norm_num)
     have hsq : ((R' : ℝ) * Real.sqrt (L / (N : ℝ))) ^ 2 ≤ (1 / L) ^ 2 := by
       rw [mul_pow, Real.sq_sqrt (by positivity), one_div, inv_pow, ← one_div]
-      rw [ mul_div_assoc, div_le_div_iff₀ hN0 (sq_pos_of_pos hL0)]
+      rw [← mul_div_assoc, div_le_div_iff₀ hN0 (sq_pos_of_pos hL0)]
       calc
         (R' : ℝ) ^ 2 * L * L ^ 2 = (R' : ℝ) ^ 2 * L ^ 3 := by ring
         _ ≤ 1 * (N : ℝ) := by rw [one_mul]; exact hprod
@@ -1778,16 +1947,14 @@ private theorem rpow_horizon_L_smallness_bounds {Q₁ R' N : ℕ} {c C_R C_small
       _ ≤ 2 * δ := mul_le_mul_of_nonneg_left hexp zero_le_two
   have hs2 : (1 + Real.log (R' : ℝ)) ^ 2 / Real.sqrt L ≤ 2 * δ := by linarith only [hs2_δ, hδ0]
   have hs3 : c * (1 + Real.log (R' : ℝ)) / Real.sqrt L ≤ 2 * δ := by
-    have hc1p := hcpow 1
-    rw [pow_one] at hc1p
-    have hexp : L ^ ((1 : ℝ) / 500 + 1 / 5 - 1 / 2) ≤ δ :=
+    have hexp : L ^ ((1 / 500 : ℝ) + 1 / 5 - 1 / 2) ≤ δ :=
       Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
     rw [hsqrtL]
     calc
       c * (1 + Real.log (R' : ℝ)) / L ^ (1 / 2 : ℝ) ≤
-          L ^ ((1 : ℝ) / 500) * L ^ (1 / 5 : ℝ) / L ^ (1 / 2 : ℝ) :=
-        div_le_div_of_nonneg_right (mul_le_mul hc1p h1R_le h1R0 (by positivity)) (by positivity)
-      _ = L ^ ((1 : ℝ) / 500 + 1 / 5 - 1 / 2) := hL_mul_div _ _ _
+          L ^ (1 / 500 : ℝ) * L ^ (1 / 5 : ℝ) / L ^ (1 / 2 : ℝ) :=
+        div_le_div_of_nonneg_right (mul_le_mul hc_500 h1R_le h1R0 (by positivity)) (by positivity)
+      _ = L ^ ((1 / 500 : ℝ) + 1 / 5 - 1 / 2) := hL_mul_div _ _ _
       _ ≤ δ := hexp
       _ ≤ 2 * δ := by linarith only [hδ0]
   have hs4_δ : c ^ 2 / L ≤ δ := by
@@ -1830,7 +1997,7 @@ private theorem rpow_horizon_L_smallness_bounds {Q₁ R' N : ℕ} {c C_R C_small
   have hs8 : c ^ 4 / Real.sqrt (Q₁ : ℝ) ≤ 2 * δ := by
     have hsqrtQ : (1 / 2 : ℝ) * L ^ (1 / 24 : ℝ) ≤ Real.sqrt (Q₁ : ℝ) := by
       have hsq : ((1 / 2 : ℝ) * L ^ (1 / 24 : ℝ)) ^ 2 = (1 / 4 : ℝ) * L ^ (1 / 12 : ℝ) := by
-        rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; norm_num
+        rw [mul_pow, ← Real.rpow_natCast (L ^ (1 / 24 : ℝ)) 2, ← Real.rpow_mul hL0.le]; norm_num
       have hpos : 0 ≤ (1 / 2 : ℝ) * L ^ (1 / 24 : ℝ) := by positivity
       exact (Real.sqrt_sq hpos).symm.trans_le (Real.sqrt_le_sqrt (hsq.trans_le hQ_quarter))
     have hc4 := hcpow 4
@@ -1838,7 +2005,8 @@ private theorem rpow_horizon_L_smallness_bounds {Q₁ R' N : ℕ} {c C_R C_small
       Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
     calc
       c ^ 4 / Real.sqrt (Q₁ : ℝ) ≤ L ^ ((4 : ℝ) / 500) / ((1 / 2 : ℝ) * L ^ (1 / 24 : ℝ)) :=
-        div_le_div hc4 (by positivity) (by positivity) hsqrtQ
+        (div_le_div_of_nonneg_right hc4 (by positivity)).trans
+          (div_le_div_of_nonneg_left (by positivity) (by positivity) hsqrtQ)
       _ = 2 * (L ^ ((4 : ℝ) / 500) / L ^ (1 / 24 : ℝ)) := by ring
       _ = 2 * L ^ ((4 : ℝ) / 500 - 1 / 24) := by rw [← Real.rpow_sub hL0]
       _ ≤ 2 * δ := mul_le_mul_of_nonneg_left hexp zero_le_two
@@ -1888,8 +2056,8 @@ private theorem rpow_horizon_L_smallness_bounds {Q₁ R' N : ℕ} {c C_R C_small
   exact ⟨hcL, hlog36, hR6N, hlog18, hRNT_lin, hRNT_up, hdiv1_le1, hdiv2_le1, hR_sqrt1, hsum_small⟩
 
 private theorem eventually_powerLog_low_band_and_coercivity_gap
-    {K_res C_coerc α : ℝ} (hK : 0 < K_res) (hC_coerc : 0 < C_coerc)
-    (hα : 0 < α) (hα_lt : α < powerLogPositivityExponent) :
+    {K_res C_coerc α : ℝ} (hK : 0 < K_res) (_hC_coerc : 0 < C_coerc)
+    (_hα : 0 < α) (hα_lt : α < powerLogPositivityExponent) :
     ∀ᶠ N : ℕ in atTop,
       let L := Real.log (N : ℝ)
       let Q₁ := ⌊L ^ (1 / 12 : ℝ)⌋₊
@@ -1949,7 +2117,8 @@ private theorem eventually_powerLog_low_band_and_coercivity_gap
   have hgram : 9 * (1 + Real.log (Q₁ : ℝ)) / L *
       (|completeWeilSelfFinitePart tiltedUnitSpline 1| +
         2 * Real.log (Q₁ : ℝ) + 3 * c ^ 4) ≤ 1 / 16 := by
-    have hQ0 : (0 : ℝ) < Q₁ := by exact_mod_cast (show 0 < Q₁ by omega)
+    have hQ2' : 2 ≤ Q₁ := hQ2
+    have hQ0 : (0 : ℝ) < Q₁ := Nat.cast_pos.mpr (zero_lt_two.trans_le hQ2')
     have hQ_15 : (Q₁ : ℝ) ≤ L ^ (1 / 5 : ℝ) :=
       hQ_le.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num : (1 / 12 : ℝ) ≤ 1 / 5))
     have h1logQ : 1 + Real.log (Q₁ : ℝ) ≤ L ^ (1 / 5 : ℝ) :=
@@ -1966,8 +2135,8 @@ private theorem eventually_powerLog_low_band_and_coercivity_gap
       dsimp only [M_self]
       linarith only [ha, hlogQ_15, hc4_15]
     have hexp : L ^ (1 / 5 : ℝ) * L ^ (1 / 5 : ℝ) / L = L ^ (-3 / 5 : ℝ) := by
-      rw [Real.rpow_sub hL0, Real.rpow_add hL0, Real.rpow_one]
-      congr 1; norm_num
+      rw [show (-3 / 5 : ℝ) = 1 / 5 + 1 / 5 - 1 by norm_num,
+        Real.rpow_sub hL0, Real.rpow_add hL0, Real.rpow_one]
     have hmul1 : L ^ (3 / 5 : ℝ) * L ^ (-3 / 5 : ℝ) = 1 := by
       rw [← Real.rpow_add hL0, show (3 / 5 : ℝ) + (-3 / 5) = 0 by norm_num, Real.rpow_zero]
     calc
@@ -2013,7 +2182,11 @@ private theorem eventually_powerLog_low_band_and_coercivity_gap
         _ ≤ c ^ 10 / Real.sqrt L := div_le_div_of_nonneg_left (by positivity) hs0 hsL
     have ht3 : c ^ 3 / Real.sqrt L ≤ c ^ 10 / Real.sqrt L :=
       div_le_div_of_nonneg_right (pow_le_pow_right₀ hc1 (by norm_num : 3 ≤ 10)) hs0.le
-    linarith only [ht1, ht2, ht3]
+    calc
+      c ^ 5 / L + c ^ 10 * (L / (N : ℝ)) ^ 2 + c ^ 3 / Real.sqrt L ≤
+          c ^ 10 / Real.sqrt L + c ^ 10 / Real.sqrt L + c ^ 10 / Real.sqrt L :=
+        add_le_add (add_le_add ht1 ht2) ht3
+      _ = 3 * c ^ 10 / Real.sqrt L := by ring
   have hQ5 : (Q₁ : ℝ) ^ 5 ≤ L ^ (5 / 12 : ℝ) := by
     have hp := pow_le_pow_left₀ (Nat.cast_nonneg Q₁) hQ_le 5
     have he : (L ^ (1 / 12 : ℝ)) ^ (5 : ℕ) = L ^ (5 / 12 : ℝ) := by
@@ -2068,7 +2241,7 @@ private theorem eventually_powerLog_low_band_and_coercivity_gap
   have hcoerc_gap : 2 * tiltedSplineSpectralFloorConstant + 4 + C_coerc ≤
       (1 / (2 * conductorCutoffConstant)) * Real.log (Q₁ : ℝ) - Real.log c := by
     have hlogc : Real.log c ≤ α * Real.log L :=
-      (Real.log_le_log hc0 hcup).trans_eq (Real.log_rpow hL0)
+      (Real.log_le_log hc0 hcup).trans_eq (Real.log_rpow hL0 α)
     have hq_scaled : (1 / (24 * conductorCutoffConstant)) * Real.log L -
         1 / (2 * conductorCutoffConstant) ≤
         (1 / (2 * conductorCutoffConstant)) * Real.log (Q₁ : ℝ) := by
@@ -2080,10 +2253,8 @@ private theorem eventually_powerLog_low_band_and_coercivity_gap
       linarith only [hm, heq]
     have hll_scaled : 2 * tiltedSplineSpectralFloorConstant + 4 + C_coerc +
         1 / (2 * conductorCutoffConstant) ≤
-        (1 / (24 * conductorCutoffConstant) - α) * Real.log L := by
-      have hm := (div_le_iff₀ hgap_pos).mp (show M_coerc ≤ Real.log L from hll)
-      dsimp only [M_coerc] at hm
-      linarith only [hm, mul_comm (Real.log L) (1 / (24 * conductorCutoffConstant) - α)]
+        (1 / (24 * conductorCutoffConstant) - α) * Real.log L :=
+      ((div_le_iff₀ hgap_pos).mp (show M_coerc ≤ Real.log L from hll)).trans_eq (mul_comm _ _)
     linarith only [hlogc, hq_scaled, hll_scaled]
   exact ⟨hc_500, hgram, hres_sum, hbudget, hcoerc_gap⟩
 
@@ -2130,7 +2301,8 @@ theorem eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_powerLog
   obtain ⟨hHN, hwidth, hw1, hradN, _, _, _, _, _, _⟩ :=
     rpow_horizon_N_bounds hN1 hQ2 hc1 hH_res hL2000 hHL hLX hcL hlog36_Q
   have hQQ_N : Q₁ * Q₁ ≤ N := by
-    have h24 : Q₁ ^ 2 ≤ Q₁ ^ 4 := Nat.pow_le_pow_right (by omega) (by norm_num)
+    have hQ2' : 2 ≤ Q₁ := hQ2
+    have h24 : Q₁ ^ 2 ≤ Q₁ ^ 4 := Nat.pow_le_pow_right (zero_lt_two.trans_le hQ2') (by norm_num)
     simpa only [sq] using h24.trans hQ4_N
   let rate := c ^ 5 / L + c ^ 10 * (L / (N : ℝ)) ^ 2 + c ^ 3 / Real.sqrt L
   have hrate0 : 0 ≤ rate := by
@@ -2373,7 +2545,7 @@ theorem exists_tiltedUnitSpline_completeWeilEnergy_ge_poleDefect_reserve_powerLo
   have h2 := mul_le_mul_of_nonneg_left hf (by positivity : 0 ≤ 2 * B * c ^ 16)
   have hcancel : (2 * B * c ^ 16) * ((κ / (2 * c ^ 7)) * ‖x‖ ^ 2) =
       κ * (B * c ^ 9 * ‖x‖ ^ 2) := by
-    field_simp [hc0.ne']; ring
+    field_simp [hc0.ne']
   rw [hcancel] at h2
   have hcomb : κ * ((b / c ^ 7) * poleDefect N (primeHorizonExtension x)) ≤
       (2 * B * c ^ 16 + κ) * completeWeilEnergy tiltedUnitSpline c N x := by
@@ -2384,13 +2556,24 @@ theorem exists_tiltedUnitSpline_completeWeilEnergy_ge_poleDefect_reserve_powerLo
     mul_le_mul_of_nonneg_right (by nlinarith only [hκ, hc16]) hE0
   have hfirst : (b₁ / c ^ 23) * poleDefect N (primeHorizonExtension x) ≤
       completeWeilEnergy tiltedUnitSpline c N x := by
-    rw [← le_div_iff₀' (by positivity : 0 < (2 * B + κ) * c ^ 16)] at *
-    have hle := hcomb.trans hscale
-    have hdiv := (le_div_iff₀' (by positivity : 0 < (2 * B + κ) * c ^ 16)).mpr hle
-    refine (le_of_eq ?_).trans hdiv
-    dsimp only [b₁]
-    field_simp [hc0.ne', hdenom.ne']
-    ring
+    have hpos_d : 0 < (2 * B + κ) * c ^ 23 := by positivity
+    rw [show (b₁ / c ^ 23) * poleDefect N (primeHorizonExtension x) =
+        (κ * b * poleDefect N (primeHorizonExtension x)) / ((2 * B + κ) * c ^ 23) by
+      dsimp only [b₁]; rw [div_div, div_mul_eq_mul_div]]
+    rw [div_le_iff₀ hpos_d]
+    have hle := mul_le_mul_of_nonneg_right (hcomb.trans hscale) (pow_nonneg hc0.le 7)
+    have h_lhs : κ * (b / c ^ 7 * poleDefect N (primeHorizonExtension x)) * c ^ 7 =
+        κ * b * poleDefect N (primeHorizonExtension x) := by
+      have hc7_ne : c ^ 7 ≠ 0 := pow_ne_zero 7 hc0.ne'
+      calc
+        κ * (b / c ^ 7 * poleDefect N (primeHorizonExtension x)) * c ^ 7 =
+            (b / c ^ 7 * c ^ 7) * (κ * poleDefect N (primeHorizonExtension x)) := by ring
+        _ = b * (κ * poleDefect N (primeHorizonExtension x)) := by rw [div_mul_cancel₀ _ hc7_ne]
+        _ = κ * b * poleDefect N (primeHorizonExtension x) := by ring
+    have h_rhs : (2 * B + κ) * c ^ 16 * completeWeilEnergy tiltedUnitSpline c N x * c ^ 7 =
+        completeWeilEnergy tiltedUnitSpline c N x * ((2 * B + κ) * c ^ 23) := by ring
+    rw [h_lhs, h_rhs] at hle
+    exact hle
   have hc23_L : c ^ 23 ≤ Real.log (N : ℝ) := by
     have hp := pow_le_pow_left₀ hc0.le hcup 23
     have he : (Real.log (N : ℝ) ^ α) ^ (23 : ℕ) = Real.log (N : ℝ) ^ (23 * α) := by

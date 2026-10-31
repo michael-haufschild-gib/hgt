@@ -34,6 +34,8 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`,
   `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top`,
   `negIndex_zetaKernel_le_posIndex`, `sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`.
+- Positive squares: `criticalSeen_infinite`, `posIndex_orbitKernel_onLine_eq_top`,
+  `posIndex_zetaKernel_eq_top_of_finite`, `riemannHypothesis_or_negIndex_kunnethZeta_eq_top`.
 - Growing overlap: `eventually_completeWeil_hodgeIndex_iteratedLog`,
   `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
 - Heat flow: `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`,
@@ -42,7 +44,7 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
 - Density: `not_dense_exponents_of_quantized` (commensurable place sizes, `𝔽_q[T]`).
 
 ## Open
-Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{>1/2}` (= RH); positive index of `K_ζ` (critical zeros seen by the cubic spline);
+Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{>1/2}` (= RH); positive index of `K_ζ` on the infinite stratum;
 infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips); sign-free `h⁰` on the scaling surface.
 
 ## Log

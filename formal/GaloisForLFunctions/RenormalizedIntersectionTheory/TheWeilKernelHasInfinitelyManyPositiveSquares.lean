@@ -147,7 +147,7 @@ theorem criticalSeen_infinite : criticalSeen.Infinite := by
     · have him : ((1 / 2 : ℂ) + (τ : ℂ) * I).im = τ := by simp
       rw [him]
       exact paperFT_cubicSpline_ne_zero_of_real hτ0 fun n hn => hlat ⟨n, hn⟩
-  have hsplit := filter_card_add_filter_neg_card_eq_card (s := τS)
+  have hsplit := card_filter_add_card_filter_not (s := τS)
     (p := fun τ => ∃ n : ℤ, τ = n * π)
   have hRr : ((τS.filter fun τ => ¬ ∃ n : ℤ, τ = n * π).card : ℝ) ≤ M := by exact_mod_cast hR
   have hsum : (τS.card : ℝ) = (τS.filter fun τ => ∃ n : ℤ, τ = n * π).card +
@@ -202,7 +202,7 @@ def onLineChar (j : ℕ) : HeckeLattice →* ℂ :=
 def onLineWeight (j : ℕ) : ℝ := (zetaOnLine.Wsummand (cx cubicSpline) (cx cubicSpline) (e j)).re
 
 theorem isUnitaryChar_onLineChar (j : ℕ) : IsUnitaryChar (onLineChar e j) :=
-  isUnitaryChar_logChar_imag _
+  isUnitaryChar_logChar_imag heckeLogScale _
 
 theorem summable_onLineWeight : Summable (onLineWeight e) :=
   (e.summable_iff.mpr (summable_re_Wsummand zetaOnLine
@@ -223,8 +223,7 @@ theorem onLineChar_injective : Function.Injective (onLineChar e) := by
     obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp h
     have him := congrArg Complex.im hn
     simp only [mul_im, mul_re, I_re, I_im, ofReal_re, ofReal_im, mul_zero, sub_zero, zero_mul,
-      mul_one, add_zero, zero_add, intCast_re, intCast_im, ofNat_re, ofNat_im, add_im,
-      one_mul, neg_re, neg_im, neg_zero, re_ofNat, im_ofNat, ofReal_ofNat] at him
+      mul_one, add_zero, zero_add, intCast_re, intCast_im, add_im, re_ofNat, im_ofNat] at him
     set s := scale heckeLogScale u
     have hns : (γj - γi) * s = n * (2 * π) := by linarith
     have hsmall : |(γj - γi) * s| < π := by

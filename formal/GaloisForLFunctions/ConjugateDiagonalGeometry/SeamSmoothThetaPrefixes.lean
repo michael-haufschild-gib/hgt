@@ -294,6 +294,7 @@ theorem finiteThetaAmplitude_subquadratic_growth (N : ℕ) :
           mul_le_mul_of_nonneg_right h1 (abs_nonneg x)
         have h3 : |x| ^ 2 * |x| = |x| ^ 3 := by ring
         have h4 : 0 ≤ s ^ 3 := pow_nonneg hs_pos.le 3
+        have h5 : 0 ≤ s ^ 2 * |x| := mul_nonneg (sq_nonneg s) (abs_nonneg x)
         linarith
     have hcoeff_nn : 0 ≤ ((N + 1 : ℕ) : ℝ) * thetaCuspSeedHalfGaussConst * Real.exp 6 *
         Real.exp (-|x| - (2 / 9 : ℝ) * |x| ^ 3) := by
@@ -313,7 +314,7 @@ theorem finiteThetaAmplitude_subquadratic_growth (N : ℕ) :
             (by positivity [thetaCuspSeedHalfGaussConst_pos])
       _ = (((N + 1 : ℕ) : ℝ) * thetaCuspSeedHalfGaussConst * Real.exp 6 *
             Real.exp (3 * s ^ 3)) * Real.exp (-|x|) := by
-          rw [mul_assoc _ (Real.exp (3 * s ^ 3)), ← Real.exp_add]; congr 1; congr 1; ring
+          rw [sub_eq_add_neg, Real.exp_add, ← mul_assoc]
   have hint_abs : (∫ x : ℝ, Real.exp (-|x|)) = 2 := by
     have heven : ∀ x : ℝ, Real.exp (-|-x|) = Real.exp (-|x|) := fun x => by simp
     have hsplit := HTGeometry.integral_even_eq_two_mul
@@ -746,20 +747,28 @@ private lemma hasDerivAt_gaussMollifiedKernelIntegral (N m : ℕ) {a : ℝ} (ha 
         GaloisForLFunctions.gaussPolyFun (iterGaussPoly (1 / (2 * a)) m) (1 / (2 * a))
           (y - t)) := by
     intro y
-    have h := Integrable.bdd_mul hsrc_int
-      ((GaloisForLFunctions.continuous_gaussPolyFun _ _).comp
-        (continuous_const.sub continuous_id)).aestronglyMeasurable
-      (Eventually.of_forall fun t => by simpa only [Real.norm_eq_abs] using hpt_m y t)
+    have hcont_g : Continuous (fun t : ℝ =>
+        GaloisForLFunctions.gaussPolyFun (iterGaussPoly (1 / (2 * a)) m) (1 / (2 * a)) (y - t)) :=
+      (GaloisForLFunctions.continuous_gaussPolyFun _ _).comp (continuous_const.sub continuous_id)
+    have h := Integrable.bdd_mul hsrc_int hcont_g.aestronglyMeasurable
+      (Eventually.of_forall fun t => by rw [Real.norm_eq_abs]; exact hpt_m y t)
     exact h.congr (Eventually.of_forall fun t => mul_comm _ _)
+  have hF'_cont : Continuous (fun t : ℝ =>
+      _root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
+        GaloisForLFunctions.gaussPolyFun (iterGaussPoly (1 / (2 * a)) (m + 1)) (1 / (2 * a))
+          (x - t)) :=
+    (continuous_reflectedFiniteThetaSource (N + 1)).mul
+      ((GaloisForLFunctions.continuous_gaussPolyFun _ _).comp (continuous_const.sub continuous_id))
   refine (_root_.hasDerivAt_integral_of_dominated_loc_of_deriv_le (s := Set.univ)
+    (F' := fun y t =>
+      _root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
+        GaloisForLFunctions.gaussPolyFun (iterGaussPoly (1 / (2 * a)) (m + 1)) (1 / (2 * a))
+          (y - t))
     (bound := fun t => K_bd * |_root_.RHTower.reflectedFiniteThetaSource (N + 1) t|)
     univ_mem
     (Eventually.of_forall fun y => (hint_y y).aestronglyMeasurable)
     (hint_y x)
-    ((GaloisForLFunctions.continuous_gaussPolyFun _ _).comp
-      (continuous_const.sub continuous_id) |>.mul
-      (continuous_reflectedFiniteThetaSource (N + 1)) |>.aestronglyMeasurable.congr
-      (Eventually.of_forall fun t => mul_comm _ _))
+    hF'_cont.aestronglyMeasurable
     (Eventually.of_forall fun t y _ => ?_)
     (hsrc_int.norm.const_mul K_bd)
     (Eventually.of_forall fun t y _ => ?_)).2
@@ -845,7 +854,7 @@ theorem gaussMollifiedThetaAmplitude_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : �
           Complex.exp (I * w * ((x - t : ℝ) : ℂ)) =
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by
       have hw_mul : I * w * ((x - t : ℝ) : ℂ) = ((1 / 2 : ℂ) - z) * ((x - t : ℝ) : ℂ) := by
-        dsimp [w]; rw [← mul_assoc, ← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul]
+        rw [hIw]
       rw [hw_mul, ← Complex.exp_add]
       congr 1; push_cast; ring
     rw [Complex.ofReal_mul, ← hexp]
@@ -1011,7 +1020,7 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
   have hIw : I * w = (1 / 2 : ℂ) - z := by
     dsimp [w]; rw [← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul]
   have hIw_mul : ∀ c : ℂ, I * w * c = ((1 / 2 : ℂ) - z) * c := fun c => by
-    dsimp [w]; rw [← mul_assoc, ← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul]
+    rw [hIw]
   set f₀ : ℝ → ℂ := fun t =>
     (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
       Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ))
@@ -1097,7 +1106,11 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
       have hid : (2 * a) * (8 * a) - (|y| - |y| ^ 2 / (8 * a)) * (8 * a) =
           (|y| - 4 * a) ^ 2 := by field_simp [ha.ne']; ring
       linarith [sq_nonneg (|y| - 4 * a)]
-    rw [hg₁_eq, Real.norm_eq_abs, abs_of_pos (by dsimp [C₁]; positivity)]
+    have hC₁_pos : 0 < C₁ := by dsimp [C₁]; positivity
+    have hrhs_norm : ‖C₁ * Real.exp (-(1 / (8 * a)) * y ^ 2)‖ =
+        C₁ * Real.exp (-(1 / (8 * a)) * y ^ 2) := by
+      rw [Real.norm_eq_abs, abs_of_pos (mul_pos hC₁_pos (Real.exp_pos _))]
+    rw [hg₁_eq, hrhs_norm]
     calc |y| * ‖g₀ y‖
         ≤ Real.exp |y| * ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
             Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-y ^ 2 / (4 * a))) :=
@@ -1133,10 +1146,10 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
             (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(u ^ 2 / (2 * a))))
             ((-y / a) * ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
               Real.exp (-(y ^ 2 / (2 * a))))) y := by
-          have h1 : HasDerivAt (fun u : ℝ => -(u ^ 2 / (2 * a))) (-(2 * y / (2 * a))) y := by
-            simpa using (((hasDerivAt_pow 2 y).div_const (2 * a)).neg)
+          have h1 : HasDerivAt (fun u : ℝ => -(u ^ 2 / (2 * a))) (-(2 * y / (2 * a))) y :=
+            ((hasDerivAt_pow 2 y).div_const (2 * a)).neg
           refine (h1.exp.const_mul ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)))).congr_deriv ?_
-          field_simp [ha.ne']; ring
+          field_simp [ha.ne']
         simpa only [Complex.ofReal_mul] using hr.ofReal_comp
       have he : HasDerivAt (fun u : ℝ => Complex.exp (I * w * (u : ℂ)))
           (((1 / 2 : ℂ) - z) * Complex.exp (I * w * (y : ℂ))) y := by
@@ -1146,7 +1159,7 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
         rw [hIw, mul_comm]
       refine (hk.mul he).congr_deriv ?_
       dsimp only [g₀, g₁]
-      push_cast; field_simp [ha.ne']; ring
+      push_cast; field_simp [ha.ne']
     have hexp0 : Tendsto (fun u : ℝ => Real.exp (-u ^ 2 / (4 * a))) atTop (𝓝 0) := by
       refine Real.tendsto_exp_atBot.comp ?_
       have h1 : Tendsto (fun u : ℝ => u ^ 2) atTop atTop := tendsto_pow_atTop (by norm_num)
@@ -1169,7 +1182,7 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
         have hcomp : Tendsto (fun y : ℝ => Real.exp (-(-y) ^ 2 / (4 * a))) atBot (𝓝 0) :=
           hexp0.comp tendsto_neg_atBot_atTop
         have h1 : Tendsto (fun y : ℝ => Real.exp (-y ^ 2 / (4 * a))) atBot (𝓝 0) :=
-          hcomp.congr fun y => by dsimp only [Function.comp_apply]; rw [neg_sq]
+          hcomp.congr fun y => by rw [neg_sq]
         simpa only [mul_zero] using h1.const_mul _
       exact squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
         (Eventually.of_forall hg₀_dom) htend
@@ -1179,21 +1192,19 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
     rw [integral_add (hg₁.const_mul _) (hg₀.const_mul _),
       MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul, sub_self] at hftc
     have ha_ne : (a : ℂ) ≠ 0 := by exact_mod_cast ha.ne'
-    have hg₀_val : (∫ y : ℝ, g₀ y) =
-        Complex.exp (((a : ℂ) / 2) * (z - (1 / 2 : ℂ)) ^ 2) := by
+    set E_gauss : ℂ := Complex.exp (((a : ℂ) / 2) * (z - (1 / 2 : ℂ)) ^ 2)
+    have hg₀_val : (∫ y : ℝ, g₀ y) = E_gauss := by
       have hker := _root_.RHTower.heatStripTransform_heatKernel ha w
       unfold _root_.RHTower.heatStripTransform at hker
       have hsq : -(a : ℂ) * w ^ 2 / 2 = ((a : ℂ) / 2) * (z - (1 / 2 : ℂ)) ^ 2 := by
         dsimp [w]
         have hI2 : (-I) ^ 2 = (-1 : ℂ) := by rw [neg_sq, I_sq]
         rw [mul_pow, hI2]; ring
-      simpa only [g₀, mul_assoc, hsq] using hker
+      simpa only [g₀, E_gauss, mul_assoc, hsq] using hker
     rw [hg₀_val] at hftc
-    have hlin : (∫ y : ℝ, g₁ y) =
-        (a : ℂ) * (((1 / 2 : ℂ) - z) *
-          Complex.exp (((a : ℂ) / 2) * (z - (1 / 2 : ℂ)) ^ 2)) := by
-      field_simp [ha_ne] at hftc
-      linear_combination -hftc
+    have hlin : (∫ y : ℝ, g₁ y) = (a : ℂ) * (((1 / 2 : ℂ) - z) * E_gauss) := by
+      have ha_inv : (a : ℂ) * (-(1 / (a : ℂ))) = -1 := by field_simp [ha_ne]
+      linear_combination -(a : ℂ) * hftc + (∫ y : ℝ, g₁ y) * ha_inv
     rw [hlin]; ring
   -- Split `(x : ℂ) = (t : ℂ) + ((x - t : ℝ) : ℂ)` inside the convolution.
   have hconv_pt : ∀ x : ℝ,
@@ -1446,7 +1457,16 @@ private lemma exists_boundaryPath_of_edge {z₁ z₂ z : ℂ}
             _root_.RHTower.rectangleEdgePath, if_neg (by linarith), if_neg (not_le.mpr hτ_gt),
             if_pos hτ_le]
           apply Complex.ext
-          · simp [τ]; field_simp [hdx.ne']; ring
+          · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+              Complex.ofReal_im, Complex.I_im, mul_zero, sub_zero, add_zero]
+            dsimp [τ]
+            have h4 : 4 * (z₂.re - z₁.re) ≠ 0 := by positivity
+            calc z₂.re - (4 * (1 / 2 + (z₂.re - z.re) / (4 * (z₂.re - z₁.re))) - 2) *
+                    (z₂.re - z₁.re)
+                = z₂.re - (4 * (z₂.re - z₁.re)) *
+                    ((z₂.re - z.re) / (4 * (z₂.re - z₁.re))) := by ring
+              _ = z₂.re - (z₂.re - z.re) := by rw [mul_div_cancel₀ _ h4]
+              _ = z.re := by ring
           · simp [hy2]
       · have hx1 : z.re = z₁.re := by
           rcases hedge with h | h | h | h
@@ -1472,7 +1492,16 @@ private lemma exists_boundaryPath_of_edge {z₁ z₂ z : ℂ}
           if_neg (not_le.mpr hτ_gt)]
         apply Complex.ext
         · simp [hx1]
-        · simp [τ]; field_simp [hdy.ne']; ring
+        · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_im,
+            Complex.ofReal_re, Complex.I_re, mul_one, mul_zero, add_zero, zero_add]
+          dsimp [τ]
+          have h4 : 4 * (z₂.im - z₁.im) ≠ 0 := by positivity
+          calc z₂.im - (4 * (3 / 4 + (z₂.im - z.im) / (4 * (z₂.im - z₁.im))) - 3) *
+                  (z₂.im - z₁.im)
+              = z₂.im - (4 * (z₂.im - z₁.im)) *
+                  ((z₂.im - z.im) / (4 * (z₂.im - z₁.im))) := by ring
+            _ = z₂.im - (z₂.im - z.im) := by rw [mul_div_cancel₀ _ h4]
+            _ = z.im := by ring
 
 /-- **Exact gauge invariance of all window contour power sums, degrees, difference polynomials,
 Zhukovsky loops, and Wiener–Hopf collision operators under `x`-space Gaussian mollification.** -/
@@ -1706,6 +1735,7 @@ theorem gaussianPartitionSwitch_neg_bounds {κ : ℝ} (hκ : 0 < κ) {x : ℝ} (
         ← MeasureTheory.integral_add_right_eq_self
           (fun u => (Ioi x).indicator (fun w => Real.exp (-κ * w ^ 2)) u) x]
       refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+      dsimp only
       by_cases hv : 0 < v
       · have hvx : x < v + x := by linarith
         rw [Set.indicator_of_mem hvx, Set.indicator_of_mem hv]
@@ -1718,7 +1748,8 @@ theorem gaussianPartitionSwitch_neg_bounds {κ : ℝ} (hκ : 0 < κ) {x : ℝ} (
       rw [← Real.exp_add]
       apply Real.exp_le_exp.mpr
       have hv0 : 0 < v := mem_Ioi.mp hv
-      nlinarith [hx, hv0]
+      have hvx : 0 ≤ 2 * κ * v * x := by positivity
+      linarith [show -κ * (v + x) ^ 2 = -κ * x ^ 2 + -κ * v ^ 2 - 2 * κ * v * x by ring, hvx]
     have hint_vx : IntegrableOn (fun v : ℝ => Real.exp (-κ * (v + x) ^ 2)) (Ioi (0 : ℝ)) := by
       refine Integrable.mono (hint.integrableOn.const_mul (Real.exp (-κ * x ^ 2)))
         (Real.continuous_exp.comp
@@ -1768,7 +1799,8 @@ private lemma hasDerivAt_gaussianPartitionSwitch (κ x : ℝ) :
   unfold gaussianPartitionSwitch
   have hcont : Continuous (fun u : ℝ => Real.exp (-κ * u ^ 2)) := by fun_prop
   have hint := intervalIntegral.integral_hasStrictDerivAt_right
-    (hcont.intervalIntegrable 0 x) hcont.stronglyMeasurableAtFilter (hcont.continuousAt)
+    (hcont.intervalIntegrable 0 x) (hcont.stronglyMeasurableAtFilter volume (𝓝 x))
+    (hcont.continuousAt)
   refine ((hasDerivAt_const x (1 / 2 : ℝ)).add
     (hint.hasDerivAt.const_mul (Real.sqrt (κ / Real.pi)))).congr_deriv ?_
   unfold GaloisForLFunctions.gaussPolyFun
@@ -1946,18 +1978,27 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
     have hm1 : iteratedDeriv K f₁ x = ∑ i ∈ Finset.range (K + 1),
         (Nat.choose K i : ℝ) * iteratedDeriv i (gaussianPartitionSwitch κ) x *
           iteratedDeriv (K - i) (_root_.RHTower.thetaCuspFiniteShellPrefix (N + 1)) x := by
-      simpa only [nsmul_eq_mul, mul_assoc] using
-        iteratedDeriv_mul
-          ((contDiff_infty.mp (contDiff_gaussianPartitionSwitch κ) K).contDiffAt)
-          ((contDiff_infty.mp (contDiff_thetaCuspFiniteShellPrefix (N + 1)) K).contDiffAt)
+      have hf₁_eq : f₁ = gaussianPartitionSwitch κ *
+          _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) := rfl
+      rw [hf₁_eq, iteratedDeriv_mul
+        ((contDiff_infty.mp (contDiff_gaussianPartitionSwitch κ) K).contDiffAt)
+        ((contDiff_infty.mp (contDiff_thetaCuspFiniteShellPrefix (N + 1)) K).contDiffAt)]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [nsmul_eq_mul]; ring
     have hm2 : iteratedDeriv K f₂ x = ∑ i ∈ Finset.range (K + 1),
         (Nat.choose K i : ℝ) * iteratedDeriv i (fun y => gaussianPartitionSwitch κ (-y)) x *
           iteratedDeriv (K - i)
             (fun y => _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) (-y)) x := by
-      simpa only [nsmul_eq_mul, mul_assoc] using
-        iteratedDeriv_mul
-          ((contDiff_infty.mp ((contDiff_gaussianPartitionSwitch κ).comp contDiff_neg) K).contDiffAt)
-          ((contDiff_infty.mp ((contDiff_thetaCuspFiniteShellPrefix (N + 1)).comp contDiff_neg) K).contDiffAt)
+      let g₁ : ℝ → ℝ := fun y => gaussianPartitionSwitch κ (-y)
+      let g₂ : ℝ → ℝ := fun y => _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) (-y)
+      have hf₂_eq : f₂ = g₁ * g₂ := rfl
+      have hg₁_cd : ContDiffAt ℝ K g₁ x :=
+        (contDiff_infty.mp ((contDiff_gaussianPartitionSwitch κ).comp contDiff_neg) K).contDiffAt
+      have hg₂_cd : ContDiffAt ℝ K g₂ x :=
+        (contDiff_infty.mp ((contDiff_thetaCuspFiniteShellPrefix (N + 1)).comp contDiff_neg) K).contDiffAt
+      rw [hf₂_eq, iteratedDeriv_mul hg₁_cd hg₂_cd]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [nsmul_eq_mul]; ring
     rw [hadd_der, hm1, hm2, ← Finset.sum_add_distrib]
     have hsum_le : |∑ i ∈ Finset.range (K + 1),
           ((Nat.choose K i : ℝ) * iteratedDeriv i (gaussianPartitionSwitch κ) x *
@@ -1986,7 +2027,8 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
           have hjet' : |_root_.RHTower.thetaFiniteShellJet (N + 1) K x| ≤
               C_jet_pos K * Real.exp (-(q : ℝ) * x) := by
             have hmul := mul_le_mul_of_nonneg_left hjet (Real.exp_pos (-(q : ℝ) * x)).le
-            rw [← mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul] at hmul
+            rw [← mul_assoc, ← Real.exp_add,
+              show -(q : ℝ) * x + (q : ℝ) * x = 0 by ring, Real.exp_zero, one_mul] at hmul
             refine hmul.trans ?_
             have hex1 : Real.exp (-x) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
             dsimp [C_jet_pos]
@@ -2003,7 +2045,7 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
                   |_root_.RHTower.thetaFiniteShellJet (N + 1) K x|
               ≤ (Nat.choose K 0 : ℝ) * 1 * (C_jet_pos K * Real.exp (-(q : ℝ) * x)) := by
                 refine mul_le_mul (mul_le_mul_of_nonneg_left hsw_abs (Nat.cast_nonneg _))
-                  hjet' (abs_nonneg _) (Nat.cast_nonneg _)
+                  hjet' (abs_nonneg _) (by positivity)
             _ = _ := by ring
         · simp only [Nat.succ_ne_zero, ↓reduceIte, iteratedDeriv_succ_gaussianPartitionSwitch]
           rw [abs_mul, abs_of_nonneg (Real.sqrt_nonneg _)]
@@ -2041,7 +2083,8 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
                 refine mul_le_mul (mul_le_mul_of_nonneg_left hsw_bd (Nat.cast_nonneg _))
                   hjet_le (abs_nonneg _)
                   (mul_nonneg (Nat.cast_nonneg _)
-                    (mul_nonneg (mul_nonneg (hC_sw_nn _) (Real.exp_pos _).le) (Real.exp_pos _).le))
+                    (mul_nonneg (mul_nonneg (hC_sw_nn (j + 1)) (Real.exp_pos _).le)
+                      (Real.exp_pos _).le))
             _ = _ := by ring
       -- Bound second summand at `i`.
       have hp2 : |(Nat.choose K i : ℝ) * iteratedDeriv i (fun y => gaussianPartitionSwitch κ (-y)) x *
@@ -2053,8 +2096,8 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
         rw [abs_mul, abs_mul, abs_of_nonneg (Nat.cast_nonneg _),
           iteratedDeriv_comp_neg i (gaussianPartitionSwitch κ) x,
           iteratedDeriv_comp_neg (K - i) (_root_.RHTower.thetaCuspFiniteShellPrefix (N + 1)) x,
-          smul_eq_mul, smul_eq_mul, abs_mul, abs_mul, abs_pow, abs_pow, abs_neg, abs_one,
-          one_pow, one_mul, one_mul, iteratedDeriv_thetaCuspFiniteShellPrefix]
+          smul_eq_mul, smul_eq_mul, abs_mul, abs_mul, abs_pow, abs_pow, abs_neg, abs_one]
+        simp only [one_pow, one_mul, iteratedDeriv_thetaCuspFiniteShellPrefix]
         have hjet_neg := (abs_thetaFiniteShellJet_neg_le_of_nonneg N (K - i)).choose_spec.2 hx
         have hsw_neg : |iteratedDeriv i (gaussianPartitionSwitch κ) (-x)| ≤
             C_sw i * Real.exp ((q : ℝ) ^ 2 / (2 * κ)) * Real.exp (-(q : ℝ) * x) := by
@@ -2102,7 +2145,7 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
     dsimp [C_tot]; linarith
   refine ⟨C_tot, hC_pos, fun x => ?_⟩
   have heven_abs : |iteratedDeriv K (partitionSymThetaSource N κ) x| =
-      |iteratedDeriv K (partitionSymThetaSource N κ) |x|| := by
+      |iteratedDeriv K (partitionSymThetaSource N κ) (|x|)| := by
     rcases le_or_gt 0 x with hx | hx
     · rw [abs_of_nonneg hx]
     · rw [abs_of_neg hx, abs_iteratedDeriv_neg_eq_of_even_real (partitionSymThetaSource_even N κ)]
@@ -2122,12 +2165,12 @@ def partitionSymThetaFirstMoment (N : ℕ) (κ : ℝ) (z : ℂ) : ℂ :=
 private lemma integrable_iteratedDeriv_partitionSym_mul_cexp (N K : ℕ) {κ : ℝ} (hκ : 0 < κ)
     (r : ℕ) (z : ℂ) :
     Integrable (fun x : ℝ => (x : ℂ) ^ r *
-      (iteratedDeriv K (partitionSymThetaSource N κ) x : ℂ) *
+      ((iteratedDeriv K (partitionSymThetaSource N κ) x : ℝ) : ℂ) *
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
   obtain ⟨C, hC_pos, hbd⟩ := abs_iteratedDeriv_partitionSymThetaSource_le_exp N K hκ
     (|1 / 2 - z.re| + (r : ℝ) + 2)
   have hcont : Continuous (fun x : ℝ => (x : ℂ) ^ r *
-      (iteratedDeriv K (partitionSymThetaSource N κ) x : ℂ) *
+      ((iteratedDeriv K (partitionSymThetaSource N κ) x : ℝ) : ℂ) *
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
     have hK_cont : Continuous (iteratedDeriv K (partitionSymThetaSource N κ)) :=
       (contDiff_infty.mp (contDiff_partitionSymThetaSource N κ) (K + 1)).continuous_iteratedDeriv K
@@ -2200,7 +2243,7 @@ theorem hasDerivAt_partitionSymThetaAmplitude (N : ℕ) {κ : ℝ} (hκ : 0 < κ
     (Eventually.of_forall fun x w _ => hderiv_pt x w)).2
   · refine hres.congr_deriv ?_
     unfold partitionSymThetaFirstMoment
-    rw [← integral_neg]
+    rw [← MeasureTheory.integral_neg]
     congr 1; funext x; ring
   · rw [Metric.mem_ball, dist_eq_norm] at hw
     have hw_norm : ‖w‖ ≤ R₀ - 1 := by
@@ -2249,7 +2292,7 @@ because `partitionSymThetaSource N κ` is `C^∞` across `x = 0`, every boundary
 theorem pow_mul_partitionSymThetaAmplitude_eq_integral_iteratedDeriv (N K : ℕ) {κ : ℝ}
     (hκ : 0 < κ) (z : ℂ) :
     (z - (1 / 2 : ℂ)) ^ K * partitionSymThetaAmplitude N κ z =
-      ∫ x : ℝ, (iteratedDeriv K (partitionSymThetaSource N κ) x : ℂ) *
+      ∫ x : ℝ, ((iteratedDeriv K (partitionSymThetaSource N κ) x : ℝ) : ℂ) *
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by
   induction K with
   | zero => simp [partitionSymThetaAmplitude]
@@ -2330,12 +2373,12 @@ theorem partitionSymThetaAmplitude_superpolynomial_strip_decay (N K : ℕ) {κ :
   refine ⟨2 * C, by positivity, fun z hz => ?_⟩
   rw [← norm_pow, ← norm_mul, pow_mul_partitionSymThetaAmplitude_eq_integral_iteratedDeriv N K hκ z]
   have hint : Integrable (fun x : ℝ =>
-      (iteratedDeriv K (partitionSymThetaSource N κ) x : ℂ) *
+      ((iteratedDeriv K (partitionSymThetaSource N κ) x : ℝ) : ℂ) *
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
     simpa only [pow_zero, one_mul] using
       integrable_iteratedDeriv_partitionSym_mul_cexp N K hκ 0 z
   have hpt : ∀ x : ℝ,
-      ‖(iteratedDeriv K (partitionSymThetaSource N κ) x : ℂ) *
+      ‖((iteratedDeriv K (partitionSymThetaSource N κ) x : ℝ) : ℂ) *
           Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖ ≤ C * Real.exp (-|x|) := by
     intro x
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_exp]
@@ -2358,11 +2401,11 @@ theorem partitionSymThetaAmplitude_superpolynomial_strip_decay (N K : ℕ) {κ :
         ∫ x in Ioi (0 : ℝ), Real.exp (-x) :=
       setIntegral_congr_fun measurableSet_Ioi fun x hx => by rw [abs_of_pos (mem_Ioi.mp hx)]
     rw [hsplit, hIoi, integral_exp_neg_Ioi_zero]; ring
-  calc ‖∫ x : ℝ, (iteratedDeriv K (partitionSymThetaSource N κ) x : ℂ) *
+  calc ‖∫ x : ℝ, ((iteratedDeriv K (partitionSymThetaSource N κ) x : ℝ) : ℂ) *
             Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖
-      ≤ ∫ x : ℝ, ‖(iteratedDeriv K (partitionSymThetaSource N κ) x : ℂ) *
+      ≤ ∫ x : ℝ, ‖((iteratedDeriv K (partitionSymThetaSource N κ) x : ℝ) : ℂ) *
             Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖ :=
-        norm_integral_le_integral_norm _
+        MeasureTheory.norm_integral_le_integral_norm _
     _ ≤ ∫ x : ℝ, C * Real.exp (-|x|) :=
         integral_mono hint.norm (_root_.RHTower.integrable_thetaAmplitudeProfile.const_mul C) hpt
     _ = 2 * C := by rw [MeasureTheory.integral_const_mul, hint_abs]; ring
@@ -2398,7 +2441,7 @@ private lemma tsum_abs_thetaCuspSourceTerm_neg_le_exp_two {x : ℝ} (hx : 0 ≤ 
     · simp only [Nat.succ_ne_zero, ↓reduceIte]
       unfold _root_.RHTower.thetaCuspSourceTerm
       rw [abs_mul, abs_of_pos (Real.exp_pos _)]
-      have hex_half : Real.exp (-x / 2) ≤ 1 := Real.exp_le_exp.mpr (by linarith)
+      have hex_half : Real.exp (-x / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
       set u := ((m + 1 : ℕ) : ℝ) * Real.exp (-x)
       have hu0 : 0 ≤ u := by positivity
       have hseed := abs_thetaCuspSeed_le_halfGauss hu0
@@ -2445,9 +2488,13 @@ private lemma tsum_abs_thetaCuspSourceTerm_neg_le_exp_two {x : ℝ} (hx : 0 ≤ 
     have hpos_lhs : 0 < α * Real.exp (-2) := by positivity
     have h1 := inv_anti₀ hpos_lhs h1_sub_r
     refine h1.trans (le_of_eq ?_)
-    dsimp [α]
-    rw [mul_inv, mul_inv, ← Real.exp_neg, ← Real.exp_neg, neg_neg, neg_neg]
-    field_simp [Real.pi_ne_zero]; ring
+    calc (α * Real.exp (-2))⁻¹
+        = (Real.pi / 2)⁻¹ * Real.exp (-(-2 * x)) * Real.exp (-(-2 : ℝ)) := by
+          dsimp [α]; rw [mul_inv, mul_inv, ← Real.exp_neg, ← Real.exp_neg]
+      _ = (Real.pi / 2)⁻¹ * Real.exp (2 * x) * Real.exp 2 := by
+          rw [show -(-2 * x) = 2 * x by ring, show -(-2 : ℝ) = 2 by ring]
+      _ = (2 * Real.exp 2 / Real.pi) * Real.exp (2 * x) := by
+          rw [inv_div]; ring
   calc (∑' n : ℕ, |_root_.RHTower.thetaCuspSourceTerm (-x) n|)
       ≤ thetaCuspSeedHalfGaussConst * (1 - r)⁻¹ := htsum_le.trans hgeom
     _ ≤ thetaCuspSeedHalfGaussConst * ((2 * Real.exp 2 / Real.pi) * Real.exp (2 * x)) :=
@@ -2496,7 +2543,8 @@ private lemma tendsto_partitionSymStripIntegral (r : ℕ) {κ : ℝ} (hκ : 0 < 
       exact hcomb
     have habs0 : Tendsto (fun N : ℕ =>
         |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x|) atTop (𝓝 0) := by
-      simpa only [sub_self, abs_zero] using (hsrc.sub tendsto_const_nhds).abs
+      simpa only [sub_self, abs_zero] using
+        (hsrc.sub (tendsto_const_nhds (x := _root_.RHTower.thetaCuspFullSource x))).abs
     simpa only [mul_zero, zero_mul] using
       (habs0.const_mul (|x| ^ r)).mul_const (Real.exp ((R + 1 / 2) * |x|))
   -- Pointwise domination across all `N` and `x : ℝ` (using evenness of both functions).
@@ -2506,7 +2554,7 @@ private lemma tendsto_partitionSymStripIntegral (r : ℕ) {κ : ℝ} (hκ : 0 < 
     intro N x
     rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     have heven_diff : |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x| =
-        |partitionSymThetaSource N κ |x| - _root_.RHTower.thetaCuspFullSource |x|| := by
+        |partitionSymThetaSource N κ (|x|) - _root_.RHTower.thetaCuspFullSource (|x|)| := by
       rcases le_or_gt 0 x with hx | hx
       · rw [abs_of_nonneg hx]
       · rw [abs_of_neg hx, partitionSymThetaSource_even, _root_.RHTower.thetaCuspFullSource_neg]
@@ -2739,7 +2787,7 @@ theorem tendsto_partitionSymThetaAmplitude_xi_strip {κ : ℝ} (hκ : 0 < κ) {R
             Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by push_cast; ring
       rw [hf, norm_mul, Complex.norm_real, Real.norm_eq_abs, pow_zero, one_mul]
       exact mul_le_mul_of_nonneg_left (hre x) (abs_nonneg _)
-    exact (norm_integral_le_integral_norm _).trans_lt
+    exact (MeasureTheory.norm_integral_le_integral_norm _).trans_lt
       ((integral_mono (hpj.sub hfull).norm (hint0 N) hpt).trans_lt hN0)
   · have hrew : -partitionSymThetaFirstMoment N κ z - deriv _root_.RHTower.xi z =
         thetaSourceFirstMoment z - partitionSymThetaFirstMoment N κ z := by
@@ -2774,7 +2822,7 @@ theorem tendsto_partitionSymThetaAmplitude_xi_strip {κ : ℝ} (hκ : 0 < κ) {R
       rw [hf, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
         Real.norm_eq_abs, Real.norm_eq_abs, abs_sub_comm, pow_one]
       exact mul_le_mul_of_nonneg_left (hre x) (by positivity)
-    exact (norm_integral_le_integral_norm _).trans_lt
+    exact (MeasureTheory.norm_integral_le_integral_norm _).trans_lt
       ((integral_mono (hfull1.sub hpj1).norm (hint1 N) hpt1).trans_lt hN1)
 
 /-- Window contour power sums of the Gaussian-partitioned Poisson–Jacobi prefix `(N, κ)`. -/
@@ -2858,6 +2906,18 @@ private lemma boundary_re_abs_le_two (T : ℝ) (n : ℕ) (t : ℝ) :
     thetaWindowLowerLeft_re, thetaWindowUpperRight_re] at hmem
   exact abs_le.mpr ⟨by linarith [hmem.1.1], by linarith [hmem.1.2]⟩
 
+private lemma boundaryPath_on_edges (z₁ z₂ : ℂ) (t : ℝ) :
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = z₁.re ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = z₂.re ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).im = z₁.im ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).im = z₂.im := by
+  unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath
+  split_ifs
+  · right; right; left; simp
+  · right; left; simp
+  · right; right; right; simp
+  · left; simp
+
 private lemma boundary_xi_ne_zero {T : ℝ} {n : ℕ} (hn : thetaWindowScale T ≤ n) (t : ℝ) :
     _root_.RHTower.xi
       (_root_.RHTower.rectangleBoundaryPath
@@ -2871,16 +2931,12 @@ private lemma boundary_xi_ne_zero {T : ℝ} {n : ℕ} (hn : thetaWindowScale T �
   have hmemBox : γt ∈ thetaWindowOpenBox T n := thetaWindowRect_subset_openBox T n hmemRect
   have hmemZ := xi_zero_in_openBox_mem_stripZeros hn hmemBox hz0
   obtain ⟨h1, h2, h3, h4⟩ := stripZeros_strictly_inside_thetaWindow hn hmemZ
-  unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath at *
-  split_ifs at h1 h2 h3 h4
-  · exact h3.ne' (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
-      _root_.RHTower.rectangleEdgePath, *])
-  · exact h2.ne (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
-      _root_.RHTower.rectangleEdgePath, *])
-  · exact h4.ne (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
-      _root_.RHTower.rectangleEdgePath, *])
-  · exact h1.ne' (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
-      _root_.RHTower.rectangleEdgePath, *])
+  rcases boundaryPath_on_edges (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t
+      with h | h | h | h
+  · exact h1.ne' h
+  · exact h2.ne h
+  · exact h3.ne' h
+  · exact h4.ne h
 
 /-- Convergence `N → ∞` of `partitionSymWindowPowerSum T n N κ r` to the exact `xi` power sum at
 any fixed `κ > 0`. -/
@@ -3146,7 +3202,8 @@ theorem partitionSymCollisionOperator_eventually_eq_charge (T : ℝ) {n : ℕ}
         (fun N : ℕ =>
           ‖newtonElem (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) k -
             newtonElem (pairDiffPowerSum M_ord s₀) k‖) atTop (𝓝 0) := by
-      simpa only [sub_self, norm_zero] using ((htend_elem k).sub tendsto_const_nhds).norm
+      simpa only [sub_self, norm_zero] using
+        ((htend_elem k).sub (tendsto_const_nhds (x := newtonElem (pairDiffPowerSum M_ord s₀) k))).norm
     simpa only [zero_mul] using hnorm.mul_const (2 ^ (M_ord ^ 2 - k))
   filter_upwards [hev_deg, hsum_tendsto.eventually (gt_mem_nhds hη_pos)] with N hdeg hsum_lt
   have happrox : ∀ u : HTGeometry.UnitCircle,
@@ -3246,7 +3303,7 @@ theorem norm_partitionSymThetaAmplitude_sub_finite_le_strip (N : ℕ) {R : ℝ} 
       fun x => by rw [neg_sq]
     rw [HTGeometry.integral_even_eq_two_mul hgauss_int heven,
       HTGeometry.integral_Ioi_gaussian (by positivity : 0 < κ / 2)]
-    have hdiv : Real.pi / (κ / 2) = 2 * Real.pi / κ := by field_simp [hκ_pos.ne']; ring
+    have hdiv : Real.pi / (κ / 2) = 2 * Real.pi / κ := by rw [div_div_eq_mul_div]; ring
     rw [hdiv]; ring
   have hpt : ∀ x : ℝ,
       ‖(partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
@@ -3278,8 +3335,9 @@ theorem norm_partitionSymThetaAmplitude_sub_finite_le_strip (N : ℕ) {R : ℝ} 
           (_root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) (-y) -
             _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) y) := by
       unfold partitionSymThetaSource
-      have hsw := gaussianPartitionSwitch_add_neg κ y
-      nlinarith
+      have hsw' : gaussianPartitionSwitch κ y = 1 - gaussianPartitionSwitch κ (-y) := by
+        linarith [gaussianPartitionSwitch_add_neg κ y]
+      rw [hsw']; ring
     have hsw_bd := gaussianPartitionSwitch_neg_bounds hκ_pos hy
     have hneg_le : |_root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) (-y)| ≤
         C_neg * Real.exp (2 * y) := by
@@ -3371,12 +3429,19 @@ theorem norm_partitionSymThetaAmplitude_sub_finite_le_strip (N : ℕ) {R : ℝ} 
             refine mul_le_mul (mul_le_mul_of_nonneg_left hprod_le (by norm_num)) hex_le
               (Real.exp_pos _).le
               (mul_nonneg (by norm_num) (_root_.RHTower.thetaCuspTiltDecayConstant_pos _).le)
+    have hsum_nn : 0 ≤ (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) *
+        (C_neg * Real.exp (2 * y) + _root_.RHTower.thetaCuspFullSource y) :=
+      mul_nonneg (by positivity)
+        (add_nonneg
+          (mul_nonneg (by dsimp [C_neg]; positivity [thetaCuspSeedHalfGaussConst_pos])
+            (Real.exp_pos _).le)
+          (_root_.RHTower.thetaCuspFullSource_pos_all y).le)
     calc |partitionSymThetaSource N κ x - _root_.RHTower.reflectedFiniteThetaSource (N + 1) x| *
             Real.exp (((1 / 2 : ℂ) - z) * (x : ℂ)).re
         ≤ ((1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) *
             (C_neg * Real.exp (2 * y) + _root_.RHTower.thetaCuspFullSource y)) *
             Real.exp (R * y) :=
-          mul_le_mul hdiff_le (Real.exp_le_exp.mpr hre) (Real.exp_pos _).le (by positivity)
+          mul_le_mul hdiff_le (Real.exp_le_exp.mpr hre) (Real.exp_pos _).le hsum_nn
       _ = (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * (C_neg * Real.exp (2 * y)) * Real.exp (R * y) +
             (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * _root_.RHTower.thetaCuspFullSource y *
               Real.exp (R * y) := by ring
@@ -3388,7 +3453,7 @@ theorem norm_partitionSymThetaAmplitude_sub_finite_le_strip (N : ℕ) {R : ℝ} 
           (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
             Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)))‖
       ≤ ∫ x : ℝ, K_c * Real.exp (-(κ / 2) * x ^ 2) :=
-        (norm_integral_le_integral_norm _).trans
+        (MeasureTheory.norm_integral_le_integral_norm _).trans
           (integral_mono (hpj.sub hfin).norm (hgauss_int.const_mul K_c) hpt)
     _ = K_c * Real.sqrt (2 * Real.pi / κ) := by
         rw [MeasureTheory.integral_const_mul, hgauss_val]
@@ -3402,8 +3467,8 @@ private lemma exists_zero_in_ball_of_sphere_half_bound {F G : ℂ → ℂ} {w : 
     (hG_sph : ∀ ζ ∈ Metric.sphere w δ, G ζ ≠ 0)
     (happrox : ∀ ζ ∈ Metric.sphere w δ, ‖F ζ - G ζ‖ < ‖G ζ‖ / 2) :
     ∃ z ∈ Metric.ball w δ, F z = 0 := by
-  by_contra hno
-  push_neg at hno
+  by_contra hno_ex
+  have hno : ∀ z ∈ Metric.ball w δ, F z ≠ 0 := fun z hz h0 => hno_ex ⟨z, hz, h0⟩
   have hF_sph : ∀ ζ ∈ Metric.sphere w δ, ‖G ζ‖ / 2 < ‖F ζ‖ := by
     intro ζ hζ
     have h1 := happrox ζ hζ
@@ -3492,7 +3557,9 @@ theorem exists_kappa_offline_zeros_partitionSym (N M : ℕ) (R : ℝ) :
       rw [Metric.mem_sphere.mp hζ] at htri
       dsimp [B_rad]; linarith
     have hne : ζ ≠ w := by
-      intro heq; rw [heq, dist_self] at hζ; exact hδ_pos.ne (Metric.mem_sphere.mp hζ).symm
+      intro heq
+      rw [heq, Metric.mem_sphere, dist_self] at hζ
+      exact hδ_pos.ne hζ.symm
     have hp_mem : (ζ, w) ∈ P_pairs :=
       Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hζ_Z, hw_mem_Zall w hw⟩, hne⟩
     have hinf_le : δ₁ ≤ dist ζ w / 3 := by
@@ -3560,7 +3627,7 @@ theorem exists_kappa_offline_zeros_partitionSym (N M : ℕ) (R : ℝ) :
     calc K_c * Real.sqrt (2 * Real.pi / κ)
         ≤ K_c * (1 / (2 * K_c / μ + 1)) := mul_le_mul_of_nonneg_left hsqrt_le hK_c_pos.le
       _ < K_c * (μ / (2 * K_c)) := mul_lt_mul_of_pos_left hlt_inv hK_c_pos
-      _ = μ / 2 := by field_simp [hK_c_pos.ne']; ring
+      _ = μ / 2 := by field_simp [hK_c_pos.ne']
   -- Capture one root of `partitionSymThetaAmplitude N κ` inside each disjoint disc `ball w δ`.
   have hcapture : ∀ w ∈ W, ∃ z ∈ Metric.ball w δ, partitionSymThetaAmplitude N κ z = 0 := by
     intro w hw
