@@ -35,7 +35,8 @@ local ones, `λ_WD = sup_t λ_t` (`wdHeatThreshold_eq_iSup_localHeatThreshold`).
   `29/50` (`eventually_volume_localHeatThreshold_eq_zero_ge`).
 * **Density** (`eventually_volume_localHeatThreshold_gt_le`).  For every `κ > 0` the heights in
   `[U/4 + 2, U/2 − 2]` with `λ_t > κ/log U` have measure `o(U)`.
-* **Openness** (`lowerSemicontinuous_localHeatThreshold`, `isOpen_setOf_localHeatThreshold_pos`).  `λ_t`
+* **Openness** (`lowerSemicontinuous_localHeatThreshold`, `isOpen_setOf_localHeatThreshold_pos`).
+  `λ_t`
   is lower semicontinuous in `t`, so the failure set `{t : λ_t > 0}` is open; it is null iff RH
   (`riemannHypothesis_iff_volume_setOf_localHeatThreshold_pos_eq_zero`).
 * **Cone-defect bound** (`localHeatThreshold_le_of_cone`, any `t`).  If every zero satisfies
@@ -47,9 +48,12 @@ So `λ_t` is `≍ depth²/(local count)` at every height: `≍ δ/log t` for reg
 critical, `δ = 0` and `λ_t = 0`.  When the zero-growth functional at an off-line zero is regular,
 `Ψ_{t,r}(ρ) ≤ c log t · ρ + bδ log t`, the lower bound is linear: `λ_t ≥ δ/(3000(b + c + 1) log t)`
 (`le_localHeatThreshold_of_zeroGrowth`), and so is the bound for the de Bruijn–Newman constant
-(`le_newmanConstant_of_zeroGrowth`).  With size repair, `λ_t log t ≤ 2/3 + ε` at large heights for every `ε > 0`
-(`exists_localHeatThreshold_mul_log_le_two_thirds_add`), and `≤ 67/100` with explicit constants, so every
-off-line zero high enough satisfies `(Re ρ − ½)²/200 ≤ λ_{Im ρ} log Im ρ ≤ 67/100` (`exists_heat_pincer`).
+(`le_newmanConstant_of_zeroGrowth`).  With size repair, `λ_t log t ≤ 2/3 + ε` at large heights for
+every `ε > 0`
+(`exists_localHeatThreshold_mul_log_le_two_thirds_add`), and `≤ 67/100` with explicit constants, so
+every
+off-line zero high enough satisfies `(Re ρ − ½)²/200 ≤ λ_{Im ρ} log Im ρ ≤ 67/100`
+(`exists_heat_pincer`).
 -/
 
 open Complex Filter Topology Polynomial
@@ -366,7 +370,8 @@ theorem le_newmanConstant_of_zeroGrowth {ρ : ℂ} (hρ : xi ρ = 0) (hre : 1 / 
   ((le_localHeatThreshold_of_zeroGrowth hρ hre ht16 hΞ hδL hr8 hr4 hfr hc hb hΨ).trans
     (localHeatThreshold_le_wdHeatThreshold _)).trans wdHeatThreshold_le_newmanConstant
 
-/-- **Size repair.**  For `|t| ≥ t₀`, `λ_t log |t| ≤ 67/100` (`exists_xiSliceHeatTransfer_pos_heat_weylFloor`). -/
+/-- **Size repair.**  For `|t| ≥ t₀`, `λ_t log |t| ≤ 67/100`
+(`exists_xiSliceHeatTransfer_pos_heat_weylFloor`). -/
 theorem exists_localHeatThreshold_mul_log_le :
     ∃ t₀ : ℝ, 80 ≤ t₀ ∧ ∀ t : ℝ, t₀ ≤ |t| → localHeatThreshold t * Real.log |t| ≤ 67 / 100 := by
   obtain ⟨t₀, ht₀, hpos⟩ := exists_xiSliceHeatTransfer_pos_heat_weylFloor
@@ -390,7 +395,8 @@ theorem eventually_volume_localHeatThreshold_gt_le {κ ε : ℝ} (hκ : 0 < κ) 
     ∀ᶠ U in atTop, MeasureTheory.volume {t ∈ Set.Icc (U / 4 + 2) (U / 2 - 2) |
       κ / Real.log U < localHeatThreshold t} ≤ ENNReal.ofReal (ε * U) := by
   obtain ⟨c, hc, hfail⟩ := eventually_volume_xiSliceHeatTransfer_fail_le hε
-  filter_upwards [hfail, Real.tendsto_log_atTop.eventually (eventually_ge_atTop (100 * c ^ 2 / κ + 1))]
+  filter_upwards [hfail,
+    Real.tendsto_log_atTop.eventually (eventually_ge_atTop (100 * c ^ 2 / κ + 1))]
     with U hU hlogU
   refine le_trans (MeasureTheory.measure_mono ?_) hU
   intro t ht

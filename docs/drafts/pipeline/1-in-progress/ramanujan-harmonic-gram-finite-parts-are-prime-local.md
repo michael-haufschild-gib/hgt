@@ -1,7 +1,7 @@
 # Ramanujan harmonic Gram finite parts are prime-local
 
 - **Stage:** 1-in-progress
-- **Type:** THEOREM; final direct audits pending
+- **Type:** THEOREM (Lean)
 - **Source:** `three-frontier-questions-full-solutions.md`, Q1/O1.
 
 ## Exact finite part
@@ -62,9 +62,9 @@ Both modules lie in `SuccessorShellArithmetic/Conductor/`:
 - `HarmonicGramTorsionEnergy.lean`: exact torsion identification, normalized
   prime-power entries, finite-packet limit and logarithmic absolute bound.
 
-Both compiled; all sixteen axiom audits contain only `propext`,
-`Classical.choice`, and `Quot.sound`. Umbrella imports are present.
-Final direct no-olean source audits remain.
+Both final direct `lake --old env lean` checks passed; all sixteen axiom
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Umbrella imports are present.
 
 The finite-horizon remainder is a separate target. The full Weil
 agreement-shell identity remains open.

@@ -16,7 +16,8 @@ Let `0 ≤ s ≤ 1`, `A = e^{θL}` and
 * **Size** (`norm_signedBumpModelC_le_profiles`): with `η ≥ 0`, `θ ≤ ½ + 2η − p − s/2`, `c₂ ≤ 1`,
   `|a| ≤ ½ + η` and `4A e^{sL(½+2η)} ≤ e^{L(½+2η)}`, the entire extension satisfies
   `‖g(a + ic)‖ ≤ 4 g(½ + 2η)(e^{−L(p + s(½ − |a|))} + e^{−L(η + c₂(½ + η − |a|))})`.
-* **Euler points** (`signedBumpModel_mul_pow_le_iteratedDeriv`): `g^{(n)}(x₀) ≥ g(x₀) Lⁿ/4` for every
+* **Euler points** (`signedBumpModel_mul_pow_le_iteratedDeriv`): `g^{(n)}(x₀) ≥ g(x₀) Lⁿ/4` for
+  every
   `n` once `L ≥ 1`, `Lx₀ ≥ 1` and `4A e^{sLx₀} ≤ e^{Lx₀}`.
 * **Heat** (`signedBumpHeat_eq`, `hasSum_signedBumpHeatCoeff`): the Gaussian average of variance `λ`
   is `e^{λL²/2} cosh(Lx) − A e^{λs²L²/2} cosh(sLx)`, with `x^{2m}` coefficient
@@ -27,7 +28,8 @@ Let `0 ≤ s ≤ 1`, `A = e^{θL}` and
 
 With `p = s = 1/9` and `θ = 1/3` the threshold is `27/40`: the size inputs alone do not prove repair
 at any lower rate.  The model is negative near `0` (`signedBumpModel_zero_lt_zero`).  The positive
-Weyl bump (`AWeylBumpBreaksSizeOnlyRepair`) meets the same inputs and is `≥ 1` on the real axis, with
+Weyl bump (`AWeylBumpBreaksSizeOnlyRepair`) meets the same inputs and is `≥ 1` on the real axis,
+with
 threshold `2θ`.  So below `27/40` an argument must use the positivity of the slice on the real axis,
 and with it the floor is at least `2/3`.
 -/
@@ -66,7 +68,8 @@ theorem norm_cosh_combination_le (μ a c : ℝ) :
 
 /-- `‖g(a + ic)‖ ≤ cosh(La) + A cosh(sLa)`. -/
 theorem norm_signedBumpModelC_le {A : ℝ} (hA : 0 ≤ A) (L s a c : ℝ) :
-    ‖signedBumpModelC L s A (a + c * Complex.I)‖ ≤ Real.cosh (L * a) + A * Real.cosh (s * L * a) := by
+    ‖signedBumpModelC L s A (a + c * Complex.I)‖
+      ≤ Real.cosh (L * a) + A * Real.cosh (s * L * a) := by
   unfold signedBumpModelC
   refine (norm_sub_le _ _).trans ?_
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hA]
@@ -144,7 +147,8 @@ theorem norm_signedBumpModelC_le_profiles {L s θ η p c₂ a c : ℝ} (hL : 0 �
 theorem iteratedDeriv_signedBumpModel (L s A : ℝ) (n : ℕ) (x : ℝ) :
     iteratedDeriv n (signedBumpModel L s A) x =
       (L ^ n * Real.exp (L * x) + (-L) ^ n * Real.exp (-L * x)) / 2 -
-        A * (((s * L) ^ n * Real.exp (s * L * x) + (-(s * L)) ^ n * Real.exp (-(s * L) * x)) / 2) := by
+        A * (((s * L) ^ n * Real.exp (s * L * x)
+          + (-(s * L)) ^ n * Real.exp (-(s * L) * x)) / 2) := by
   have hfun : signedBumpModel L s A =
       (fun y => Real.cosh (L * y)) - fun y => A * Real.cosh ((s * L) * y) := rfl
   have hc1 : ContDiffAt ℝ n (fun y => Real.cosh (L * y)) x :=
@@ -180,7 +184,8 @@ theorem signedBumpModel_mul_pow_le_iteratedDeriv {L s A x₀ : ℝ} {n : ℕ} (h
   have hsL : (s * L) ^ n ≤ P := by
     rw [hP]; exact pow_le_pow_left₀ (by positivity) (by nlinarith) n
   have hsL0 : 0 ≤ (s * L) ^ n := by positivity
-  have hfe : f ≤ e := Real.exp_le_exp.mpr (by nlinarith [mul_nonneg (mul_nonneg hs0 (by linarith : (0:ℝ) ≤ L)) hx₀])
+  have hfe : f ≤ e := Real.exp_le_exp.mpr
+    (by nlinarith [mul_nonneg (mul_nonneg hs0 (by linarith : (0:ℝ) ≤ L)) hx₀])
   have hsub : ((s * L) ^ n * e + (-(s * L)) ^ n * f) / 2 ≤ P * e := by
     have h1 : (-(s * L)) ^ n * f ≤ (s * L) ^ n * f := by
       rcases Nat.even_or_odd n with h | h
@@ -297,7 +302,8 @@ theorem hasSum_signedBumpHeatCoeff {lam : ℝ} (hlam : 0 < lam) (L s A x : ℝ) 
   rw [← hinj.hasSum_iff hzero]
   have hfun : ((fun n => signedBumpHeatCoeff L s A lam n * x ^ n) ∘ fun m : ℕ => 2 * m) = fun b =>
       Real.exp (lam * L ^ 2 / 2) * ((L * x) ^ (2 * b) / ((2 * b).factorial : ℝ)) -
-        A * (Real.exp (lam * (s * L) ^ 2 / 2) * ((s * L * x) ^ (2 * b) / ((2 * b).factorial : ℝ))) := by
+        A * (Real.exp (lam * (s * L) ^ 2 / 2)
+          * ((s * L * x) ^ (2 * b) / ((2 * b).factorial : ℝ))) := by
     funext m
     simp only [Function.comp, signedBumpHeatCoeff, if_pos (even_two_mul m)]
     rw [mul_pow, mul_pow (s * L)]

@@ -64,8 +64,13 @@ theorem norm_sum_normalizedRamanujanHorizonVector_sq_eq_gram (S : Finset ℕ) (N
 theorem norm_sum_normalizedRamanujanHorizonVector_sq (S : Finset ℕ) (N : ℕ) (a : ℕ → ℝ) :
     ‖∑ m ∈ S, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 =
       (∑ n ∈ Icc 1 N, (∑ m ∈ S, a m * ramanujanPoleProfile m n) ^ 2) / Real.log N := by
-  rw [norm_sum_normalizedRamanujanHorizonVector_sq_eq_gram]
-  simp only [normalizedRamanujanHorizonVector_inner, mul_div_assoc, ← sum_div]
+  have hrew : (∑ m ∈ S, ∑ l ∈ S, a m * a l *
+      ⟪normalizedRamanujanHorizonVector m N, normalizedRamanujanHorizonVector l N⟫) =
+      (∑ m ∈ S, ∑ l ∈ S, a m * a l *
+        ∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) / Real.log N := by
+    simp only [normalizedRamanujanHorizonVector_inner, sum_div]
+    exact sum_congr rfl fun m _ => sum_congr rfl fun l _ => (mul_div_assoc _ _ _).symm
+  rw [norm_sum_normalizedRamanujanHorizonVector_sq_eq_gram, hrew]
   congr 1
   calc
     (∑ m ∈ S, ∑ l ∈ S, a m * a l * ∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) =
@@ -129,19 +134,19 @@ theorem ramanujanConductor_lower_riesz {θ : ℝ} {M N : ℕ} (hM1 : 1 ≤ M) (h
       have h1le : (1 : ℝ) ≤ (N : ℝ) ^ θ := by simpa using hMN
       linarith
     have hv1 : 1 ≤ ‖normalizedRamanujanHorizonVector 1 N‖ ^ 2 := by
-      rw [real_inner_self_eq_norm_sq.symm, normalizedRamanujanHorizonVector_inner, le_div_iff₀ hL, one_mul]
-      have hprof : ∀ n ∈ Icc 1 N, ramanujanPoleProfile 1 n * ramanujanPoleProfile 1 n = 1 / (n : ℝ) := by
+      rw [← real_inner_self_eq_norm_sq, normalizedRamanujanHorizonVector_inner, le_div_iff₀ hL, one_mul]
+      have hprof : ∀ n ∈ Icc 1 N, ramanujanPoleProfile 1 n * ramanujanPoleProfile 1 n = ((n : ℝ))⁻¹ := by
         intro n hn
         have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
         rw [ramanujanPoleProfile, normalizedRamanujanMode_eq_coefficient zero_lt_one]
         simp only [Nat.totient_one, Nat.cast_one, Real.sqrt_one, div_one,
-          ramanujanLagCoefficient_of_dvd (one_dvd n), one_div]
-        rw [div_mul_div_comm, one_mul, ← sq, Real.sq_sqrt hn0]
-      rw [sum_congr rfl hprof, ← HTGeometry.harmonic_eq_sum_Ioc]
-      · have he := eulerMascheroniConstant_lt_eulerMascheroniSeq' N
-        rw [eulerMascheroniSeq', if_neg (by omega : N ≠ 0)] at he
-        have hγ : 0 < Real.eulerMascheroniConstant := eulerMascheroniConstant_pos
-        linarith
+          ramanujanLagCoefficient_of_dvd (one_dvd n)]
+        rw [div_mul_div_comm, one_mul, ← sq, Real.sq_sqrt hn0, one_div]
+      rw [sum_congr rfl hprof, show Icc 1 N = Ioc 0 N from rfl, ← HTGeometry.harmonic_eq_sum_Ioc]
+      have he := Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' N
+      rw [Real.eulerMascheroniSeq', if_neg (by omega : N ≠ 0)] at he
+      have hγ : 0 < Real.eulerMascheroniConstant := Real.eulerMascheroniConstant_pos
+      linarith
     calc
       (1 - 2 * θ) * a 1 ^ 2 ≤ 1 * a 1 ^ 2 :=
         mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg _)
@@ -157,9 +162,10 @@ theorem linearIndependent_conductorBasisFamily {M N : ℕ} (hN : 2 ≤ N)
   intro g hg
   let a : ℕ → ℝ := fun m => if hm : m ∈ Icc 1 M then g ⟨m, hm⟩ else 0
   have hsum : (∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N) = 0 := by
-    rw [← hg, ← Finset.sum_coe_sort (Icc 1 M)]
+    rw [← hg, Finset.univ_eq_attach,
+      ← Finset.sum_attach (Icc 1 M) (fun m => a m • normalizedRamanujanHorizonVector m N)]
     refine sum_congr rfl fun m _ => ?_
-    simp [a, m.2, conductorBasisFamily]
+    simp only [a, dif_pos m.2, conductorBasisFamily]
   have hN1 : (1 : ℝ) < N := by exact_mod_cast (show 1 < N by omega)
   have hL : 0 < Real.log N := Real.log_pos hN1
   by_cases hM2 : 2 ≤ M
@@ -173,20 +179,29 @@ theorem linearIndependent_conductorBasisFamily {M N : ℕ} (hN : 2 ≤ N)
     intro m
     have hm0 := (sum_eq_zero_iff_of_nonneg (fun k _ => sq_nonneg (a k))).mp hsq0 m.1 m.2
     have ha0 : a m.1 = 0 := sq_eq_zero_iff.mp hm0
-    simpa [a, m.2] using ha0
+    dsimp only [a] at ha0
+    rwa [dif_pos m.2] at ha0
   · intro m
     have hM1 : M = 1 := by
       have := (mem_Icc.mp m.2).1
       have := (mem_Icc.mp m.2).2
       omega
     subst hM1
-    have hm1 : m = ⟨1, mem_Icc.mpr ⟨le_rfl, le_rfl⟩⟩ := Subtype.ext (by
+    have hm_eq : ∀ x : ↥(Icc 1 1), x = m := fun x => Subtype.ext (by
+      have := (mem_Icc.mp x.2).1
+      have := (mem_Icc.mp x.2).2
       have := (mem_Icc.mp m.2).1
       have := (mem_Icc.mp m.2).2
       omega)
-    subst hm1
-    have hsingle : g ⟨1, mem_Icc.mpr ⟨le_rfl, le_rfl⟩⟩ • normalizedRamanujanHorizonVector 1 N = 0 := by
-      simpa [Fintype.sum_subsingleton] using hg
+    have huniv : (Finset.univ : Finset ↥(Icc 1 1)) = {m} := by
+      ext x
+      simp [hm_eq x]
+    rw [huniv, sum_singleton] at hg
+    have hm1_val : m.1 = 1 := by
+      have := (mem_Icc.mp m.2).1
+      have := (mem_Icc.mp m.2).2
+      omega
+    rw [conductorBasisFamily, hm1_val] at hg
     have hv0 : normalizedRamanujanHorizonVector 1 N ≠ 0 := by
       intro hz
       have hn0 : ‖normalizedRamanujanHorizonVector 1 N‖ ^ 2 = 0 := by simp [hz]
@@ -200,7 +215,7 @@ theorem linearIndependent_conductorBasisFamily {M N : ℕ} (hN : 2 ≤ N)
         have hge := single_le_sum (fun n _ => mul_self_nonneg (ramanujanPoleProfile 1 n)) h1mem
         linarith
       · exact hL.ne' hL0
-    exact (smul_eq_zero.mp hsingle).resolve_right hv0
+    exact (smul_eq_zero.mp hg).resolve_right hv0
 
 /-- Exact dimension `finrank ℝ (conductorSubspace M N) = M` below the square-root horizon. -/
 theorem finrank_conductorSubspace_eq {M N : ℕ} (hN : 2 ≤ N)
@@ -292,7 +307,8 @@ private theorem sum_Icc_dvd_inv_eq_harmonic (N : ℕ) {L : ℕ} (hL : 1 ≤ L) :
       exact Nat.mul_div_cancel' (mem_filter.mp hn).2
     · intro k _
       exact Nat.mul_div_cancel_left k hL0
-    · intro _ _; rfl
+    · intro n hn
+      rw [Nat.mul_div_cancel' (mem_filter.mp hn).2]
   rw [hbij, show Icc 1 (N / L) = Ioc 0 (N / L) from rfl, HTGeometry.harmonic_eq_sum_Ioc, mul_sum]
   refine sum_congr rfl fun k _ => ?_
   push_cast
@@ -339,7 +355,8 @@ theorem sum_ramanujanLagCoefficient_mul_div_eq {m l N : ℕ} (hm : 0 < m) (hl : 
       ramanujanLagCoefficient m n * ramanujanLagCoefficient l n / (n : ℝ) =
         ∑ e ∈ l.divisors, (μ (l / e) : ℝ) * ∑ d ∈ m.divisors, (μ (m / d) : ℝ) *
           (if Nat.lcm d e ∣ n then (d : ℝ) * e / (n : ℝ) else 0) := by
-    simp only [ramanujanLagCoefficient, moebiusReal, sum_mul, mul_sum, sum_div]
+    rw [ramanujanLagCoefficient, ramanujanLagCoefficient, sum_mul]
+    simp only [moebiusReal, mul_sum, sum_div]
     rw [sum_comm]
     refine sum_congr rfl fun e _ => sum_congr rfl fun d _ => ?_
     by_cases hdn : d ∣ n <;> by_cases hen : e ∣ n
@@ -393,8 +410,11 @@ theorem sum_ramanujanLagCoefficient_mul_div_eq {m l N : ℕ} (hm : 0 < m) (hl : 
         (fun d e => (Nat.gcd d e : ℝ) * (Real.log N + Real.eulerMascheroniConstant)) =
           doubleMoebius m l (fun d e => (Nat.gcd d e : ℝ)) *
             (Real.log N + Real.eulerMascheroniConstant) := by
-      simp only [doubleMoebius, sum_mul]
-      exact sum_congr rfl fun e _ => by simp only [sum_mul]; exact sum_congr rfl fun d _ => by ring
+      unfold doubleMoebius
+      rw [sum_mul]
+      refine sum_congr rfl fun e _ => ?_
+      rw [mul_assoc, ← sum_mul]
+      exact congrArg ((μ (l / e) : ℝ) * ·) (sum_congr rfl fun d _ => (mul_assoc _ _ _).symm)
     rw [hfactor, doubleMoebius_gcd_eq hm hl]
     split_ifs <;> ring
   rw [hconst, doubleMoebius_gcd_log_lcm_eq hm hl]
@@ -430,9 +450,8 @@ theorem normalizedRamanujanHorizonVector_gram_exact {m l N : ℕ} (hm : 0 < m) (
     rw [ramanujanPoleProfile, ramanujanPoleProfile,
       normalizedRamanujanMode_eq_coefficient hm, normalizedRamanujanMode_eq_coefficient hl]
     have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-    have hsq : Real.sqrt n * Real.sqrt n = (n : ℝ) := Real.mul_self_sqrt hn0
     field_simp [hsm, hsl]
-    rw [hsq]
+    rw [Real.sq_sqrt hn0]
   rw [normalizedRamanujanHorizonVector_inner, hpole, div_div,
     sum_ramanujanLagCoefficient_mul_div_eq hm hl hml]
   unfold conductorGramFloorError
@@ -448,18 +467,14 @@ theorem normalizedRamanujanHorizonVector_gram_exact {m l N : ℕ} (hm : 0 < m) (
   · rw [if_neg heq, if_neg heq, orbitIntersection_eq hm hl heq]
     by_cases hlm : l ∣ m
     · rw [if_pos hlm, if_pos hlm, Real.sqrt_div hφl.le]
-      have hss : (l.totient : ℝ) = Real.sqrt (l.totient : ℝ) * Real.sqrt (l.totient : ℝ) :=
-        (Real.mul_self_sqrt hφl.le).symm
-      conv_lhs => rw [hss]
       field_simp [hsm, hsl, hL.ne']
+      rw [Real.sq_sqrt hφl.le]
       ring
     · rw [if_neg hlm, if_neg hlm]
       by_cases hml' : m ∣ l
       · rw [if_pos hml', if_pos hml', Real.sqrt_div hφm.le]
-        have hss : (m.totient : ℝ) = Real.sqrt (m.totient : ℝ) * Real.sqrt (m.totient : ℝ) :=
-          (Real.mul_self_sqrt hφm.le).symm
-        conv_lhs => rw [hss]
         field_simp [hsm, hsl, hL.ne']
+        rw [Real.sq_sqrt hφm.le]
         ring
       · rw [if_neg hml', if_neg hml']
         ring
@@ -493,18 +508,18 @@ private theorem totient_mul_prime_pow_ge (l : ℕ) {p k : ℕ} (hp : p.Prime) (h
   | zero =>
     simp only [pow_zero, mul_one, zero_add, pow_one]
     by_cases hpl : p ∣ l
-    · rw [Nat.totient_mul_of_prime_of_dvd hp hpl]
+    · rw [mul_comm l p, Nat.totient_mul_of_prime_of_dvd hp hpl, mul_comm p l.totient]
       exact Nat.mul_le_mul_left _ (Nat.sub_le p 1)
     · have hcop : l.Coprime p := (hp.coprime_iff_not_dvd.mpr hpl).symm
       rw [Nat.totient_mul hcop, Nat.totient_prime hp]
   | succ j ih =>
     have hdvd : p ∣ l * p ^ (j + 1) := dvd_mul_of_dvd_right (dvd_pow_self p (by omega)) l
-    rw [show l * p ^ (j + 1 + 1) = l * p ^ (j + 1) * p by rw [pow_succ]; ring,
+    rw [show l * p ^ (j + 1 + 1) = p * (l * p ^ (j + 1)) by rw [pow_succ]; ring,
       Nat.totient_mul_of_prime_of_dvd hp hdvd]
     calc
-      l.totient * p ^ (j + 1) * (p - 1) = (l.totient * p ^ j * (p - 1)) * p := by
+      l.totient * p ^ (j + 1) * (p - 1) = p * (l.totient * p ^ j * (p - 1)) := by
         rw [pow_succ]; ring
-      _ ≤ (l * p ^ (j + 1)).totient * p := Nat.mul_le_mul_right p ih
+      _ ≤ p * (l * p ^ (j + 1)).totient := Nat.mul_le_mul_left p (ih (Nat.succ_pos j))
 
 /-- Elementary Chebyshev bound `∑_{t=1}^M Λ(t)/t ≤ 2 log M` without analytic inputs. -/
 private theorem sum_Icc_vonMangoldt_div_le (M : ℕ) :
@@ -542,14 +557,13 @@ private theorem sum_Icc_vonMangoldt_div_le (M : ℕ) :
           (Nat.le_of_dvd hj1 (Nat.dvd_of_mem_divisors ht)).trans hjM⟩,
           Nat.dvd_of_mem_divisors ht⟩
       · obtain ⟨_, htdvd⟩ := mem_filter.mp ht
-        exact False.elim (hnot (Nat.mem_divisors.mpr ⟨htdvd, hj1.ne'⟩))
+        exact False.elim (hnot (Nat.mem_divisors.mpr ⟨htdvd, by omega⟩))
     rw [sum_congr rfl hrew, sum_comm]
     refine sum_congr rfl fun t ht => ?_
     obtain ⟨ht1, _⟩ := mem_Icc.mp ht
     rw [← sum_filter, sum_const, nsmul_eq_mul]
     congr 1
-    have hcard : ((Icc 1 M).filter (t ∣ ·)).card = M / t := by
-      rw [← card_Icc (1 : ℕ) (M / t), Nat.card_Icc, Nat.add_sub_cancel]
+    have hcard : ((Icc 1 M).filter (t ∣ ·)).card = (Icc 1 (M / t)).card := by
       refine Finset.card_bij (fun j _ => j / t) ?_ ?_ ?_
       · intro j hj
         obtain ⟨hjI, hdvd⟩ := mem_filter.mp hj
@@ -598,7 +612,7 @@ private theorem conductorOffDiagKernel_symm {m l : ℕ} (hm : 0 < m) (hl : 0 < l
     · rw [if_neg hlm]
       by_cases hml' : m ∣ l
       · rw [if_pos hml', if_pos hml']
-      · rw [if_neg hml', if_neg hlm]
+      · simp [hlm, hml']
 
 /-- Weighted row sum of `conductorOffDiagKernel` with weight `w_l = 1 / √l`. -/
 private theorem conductorOffDiagKernel_weighted_row_le {M m : ℕ} (hm : m ∈ Icc 1 M) :
@@ -616,7 +630,7 @@ private theorem conductorOffDiagKernel_weighted_row_le {M m : ℕ} (hm : m ∈ I
     have hl0 : (0 : ℝ) < l := by exact_mod_cast hl1
     obtain ⟨p, k, hp, hk0, hpk⟩ :=
       (isPrimePow_nat_iff (m / l)).mp (ArithmeticFunction.vonMangoldt_ne_zero_iff.mp hΛ)
-    have hm_eq : m = l * p ^ k := by rw [← hpk, Nat.mul_div_cancel' hlm]
+    have hm_eq : m = l * p ^ k := by rw [hpk, Nat.mul_div_cancel' hlm]
     have htot := totient_mul_prime_pow_ge l hp hk0
     rw [← hm_eq] at htot
     have hφm : (0 : ℝ) < m.totient := by exact_mod_cast Nat.totient_pos.mpr hm1
@@ -632,7 +646,7 @@ private theorem conductorOffDiagKernel_weighted_row_le {M m : ℕ} (hm : m ∈ I
       have hmR : (m : ℝ) = (l : ℝ) * ((p : ℝ) ^ (k - 1) * p) := by
         rw [hm_eq, Nat.cast_mul, Nat.cast_pow]
         obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, (Nat.sub_add_cancel hk0).symm⟩
-        simp [pow_succ, mul_assoc]
+        simp [pow_succ]
       have hp_le : (p : ℝ) ≤ 2 * ((p : ℝ) - 1) := by linarith
       calc
         (m : ℝ) * l.totient = (l : ℝ) * (l.totient : ℝ) * (p : ℝ) ^ (k - 1) * p := by
@@ -666,13 +680,13 @@ private theorem conductorOffDiagKernel_weighted_row_le {M m : ℕ} (hm : m ∈ I
     have hl0 : (0 : ℝ) < l := by exact_mod_cast hl1
     obtain ⟨p, k, hp, hk0, hpk⟩ :=
       (isPrimePow_nat_iff (l / m)).mp (ArithmeticFunction.vonMangoldt_ne_zero_iff.mp hΛ)
-    have hl_eq : l = m * p ^ k := by rw [← hpk, Nat.mul_div_cancel' hml]
+    have hl_eq : l = m * p ^ k := by rw [hpk, Nat.mul_div_cancel' hml]
     have htot := totient_mul_prime_pow_ge m hp hk0
     rw [← hl_eq] at htot
     have hφl : (0 : ℝ) < l.totient := by exact_mod_cast Nat.totient_pos.mpr hl1
     have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
     have hpk_pos : (0 : ℝ) < ((l / m : ℕ) : ℝ) := by
-      rw [hpk]; exact pow_pos (by linarith) _
+      rw [← hpk]; exact pow_pos (by linarith) _
     have hrat : (m : ℝ) * m.totient / (l * l.totient) ≤ 2 / ((l / m : ℕ) : ℝ) ^ 2 := by
       rw [div_le_div_iff₀ (mul_pos hl0 hφl) (sq_pos_of_pos hpk_pos)]
       have htotR : (m.totient : ℝ) * (p : ℝ) ^ (k - 1) * ((p : ℝ) - 1) ≤ l.totient := by
@@ -682,7 +696,7 @@ private theorem conductorOffDiagKernel_weighted_row_le {M m : ℕ} (hm : m ∈ I
       have hlR : (l : ℝ) = (m : ℝ) * ((l / m : ℕ) : ℝ) := by
         exact_mod_cast (Nat.mul_div_cancel' hml).symm
       have hquotR : ((l / m : ℕ) : ℝ) = (p : ℝ) ^ (k - 1) * p := by
-        rw [hpk, Nat.cast_pow]
+        rw [← hpk, Nat.cast_pow]
         obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, (Nat.sub_add_cancel hk0).symm⟩
         simp [pow_succ]
       have hp_le : (p : ℝ) ≤ 2 * ((p : ℝ) - 1) := by linarith
@@ -721,7 +735,8 @@ private theorem conductorOffDiagKernel_weighted_row_le {M m : ℕ} (hm : m ∈ I
     unfold conductorOffDiagKernel
     by_cases heq : m = l
     · subst heq
-      simp
+      rw [if_pos rfl, zero_div, mul_zero]
+      split_ifs <;> positivity
     · rw [if_neg heq]
       by_cases hlm : l ∣ m
       · have hnot : ¬ m ∣ l := fun h => heq (Nat.dvd_antisymm h hlm)
@@ -737,7 +752,7 @@ private theorem conductorOffDiagKernel_weighted_row_le {M m : ℕ} (hm : m ∈ I
         Real.sqrt 2 * Real.log M := by
     rw [← sum_filter]
     have hsub : (Icc 1 M).filter (· ∣ m) ⊆ m.divisors :=
-      fun l hl => Nat.mem_divisors.mpr ⟨(mem_filter.mp hl).2, hm1.ne'⟩
+      fun l hl => Nat.mem_divisors.mpr ⟨(mem_filter.mp hl).2, by omega⟩
     calc
       (∑ l ∈ (Icc 1 M).filter (· ∣ m), Real.sqrt 2 * (Λ (m / l) : ℝ)) ≤
           ∑ l ∈ m.divisors, Real.sqrt 2 * (Λ (m / l) : ℝ) :=
@@ -852,7 +867,6 @@ private theorem abs_sum_conductorOffDiagKernel_le {M : ℕ} (a : ℕ → ℝ) :
           (Real.sqrt m * ∑ l ∈ Icc 1 M, conductorOffDiagKernel m l / Real.sqrt l) := by
         refine sum_congr rfl fun m _ => ?_
         rw [mul_sum, mul_sum]
-        exact sum_congr rfl fun l _ => by ring
       rw [hfactor]
       ring
     _ ≤ ∑ m ∈ Icc 1 M, a m ^ 2 * (3 * Real.sqrt 2 * Real.log M) :=
@@ -888,7 +902,7 @@ private theorem abs_conductorGramFloorError_le {m l N : ℕ} (hm : 0 < m) (hl : 
         rw [abs_mul]
         refine mul_le_mul_of_nonneg_left ((abs_sum_le_sum_abs _ _).trans (sum_le_sum fun d _ => ?_))
           (abs_nonneg _)
-        rw [abs_mul, abs_mul, abs_of_nonneg (Nat.cast_nonneg _)]
+        rw [abs_mul, abs_mul, abs_of_nonneg (Nat.cast_nonneg (Nat.gcd d e))]
       _ ≤ ∑ e ∈ l.divisors, |(μ (l / e) : ℝ)| *
             ∑ d ∈ m.divisors, |(μ (m / d) : ℝ)| * (4 * (d : ℝ) * e / N) := by
         refine sum_le_sum fun e he => mul_le_mul_of_nonneg_left (sum_le_sum fun d hd => ?_) (abs_nonneg _)
@@ -910,8 +924,9 @@ private theorem abs_conductorGramFloorError_le {m l N : ℕ} (hm : 0 < m) (hl : 
           _ = 4 * (d : ℝ) * e / N := by rw [hprod]; ring
       _ = (4 / (N : ℝ)) * (∑ d ∈ m.divisors, |(μ (m / d) : ℝ)| * (d : ℝ)) *
             (∑ e ∈ l.divisors, |(μ (l / e) : ℝ)| * (e : ℝ)) := by
-        simp only [mul_sum]
-        rw [sum_comm]
+        simp_rw [mul_sum]
+        rw [sum_comm, mul_assoc, sum_mul]
+        simp_rw [mul_sum]
         exact sum_congr rfl fun d _ => sum_congr rfl fun e _ => by ring
   unfold conductorGramFloorError floorAmplitude
   rw [abs_div, abs_of_pos (mul_pos (mul_pos (Real.sqrt_pos.mpr (by exact_mod_cast Nat.totient_pos.mpr hm))
@@ -931,7 +946,7 @@ private theorem floorAmplitude_sq_le_euler {m : ℕ} (hm : 0 < m) :
     · simp
     · have hsum : (∑ d ∈ (p ^ (k + 1)).divisors, |(μ (p ^ (k + 1) / d) : ℝ)| * (d : ℝ)) =
           (p : ℝ) ^ k * ((p : ℝ) + 1) := by
-        rw [Nat.sum_divisors_prime_pow hp, sum_range_succ, sum_range_succ]
+        rw [Nat.sum_divisors_prime_pow hp, Finset.sum_range_succ, Finset.sum_range_succ]
         have hzero : ∀ j ∈ range k,
             |(μ (p ^ (k + 1) / p ^ j) : ℝ)| * ((p ^ j : ℕ) : ℝ) = 0 := by
           intro j hj
@@ -947,9 +962,8 @@ private theorem floorAmplitude_sq_le_euler {m : ℕ} (hm : 0 < m) :
         push_cast
         norm_num
         ring
-      rw [hsum, Nat.totient_prime_pow hp (Nat.succ_pos k),
+      rw [hsum, Nat.totient_prime_pow_succ hp k,
         Nat.primeFactors_prime_pow (Nat.succ_ne_zero k) hp, prod_singleton]
-      simp only [Nat.add_sub_cancel]
       have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
       have hp0 : (0 : ℝ) < p := by linarith
       rw [Nat.cast_mul, Nat.cast_pow, Nat.cast_pow, Nat.cast_sub hp.one_lt.le, Nat.cast_one]
@@ -1072,7 +1086,9 @@ private theorem sum_floorAmplitude_sq_le (M : ℕ) :
           (∑ n ∈ Icc 2 (K + 2), 1 / (n : ℝ) ^ 2) ≤
               ∑ n ∈ Icc 2 (K + 2), (1 / ((n : ℝ) - 1) - 1 / (n : ℝ)) := sum_le_sum hpt
           _ = 1 - 1 / ((K + 2 : ℕ) : ℝ) := htel_eq K
-          _ ≤ 1 := by have : 0 ≤ 1 / ((K + 2 : ℕ) : ℝ) := by positivity; linarith
+          _ ≤ 1 := by
+            have hpos : 0 ≤ 1 / ((K + 2 : ℕ) : ℝ) := by positivity
+            linarith only [hpos]
     calc
       (∑ p ∈ P, 7 / (p : ℝ) ^ 2) ≤ ∑ n ∈ Icc 2 M, 7 / (n : ℝ) ^ 2 :=
         sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
@@ -1093,11 +1109,17 @@ private theorem sum_floorAmplitude_sq_le (M : ℕ) :
       rw [mul_sum]
       have hpow_sub : m.primeFactors.powerset ⊆ P.powerset :=
         powerset_mono.mpr (hm_sub m hm)
-      refine (sum_congr rfl fun T hT => ?_).trans
-        (sum_le_sum_of_subset_of_nonneg hpow_sub fun _ _ _ => by split_ifs <;> positivity)
-      have hdvd : (∏ p ∈ T, p) ∣ m :=
-        (prod_dvd_prod_of_subset _ _ (mem_powerset.mp hT)).trans (Nat.prod_primeFactors_dvd m)
-      rw [if_pos hdvd]
+      calc
+        (∑ T ∈ m.primeFactors.powerset, (m : ℝ) * ∏ p ∈ T, (7 / (p : ℝ))) =
+            ∑ T ∈ m.primeFactors.powerset,
+              if (∏ p ∈ T, p) ∣ m then (m : ℝ) * ∏ p ∈ T, (7 / (p : ℝ)) else 0 := by
+          refine sum_congr rfl fun T hT => ?_
+          have hdvd : (∏ p ∈ T, p) ∣ m :=
+            (prod_dvd_prod_of_subset _ _ (mem_powerset.mp hT)).trans (Nat.prod_primeFactors_dvd m)
+          rw [if_pos hdvd]
+        _ ≤ ∑ T ∈ P.powerset,
+              if (∏ p ∈ T, p) ∣ m then (m : ℝ) * ∏ p ∈ T, (7 / (p : ℝ)) else 0 :=
+          sum_le_sum_of_subset_of_nonneg hpow_sub fun _ _ _ => by split_ifs <;> positivity
     _ = ∑ T ∈ P.powerset, (∏ p ∈ T, (7 / (p : ℝ))) * ∑ m ∈ (Icc 1 M).filter ((∏ p ∈ T, p) ∣ ·), (m : ℝ) := by
       rw [sum_comm]
       refine sum_congr rfl fun T _ => ?_
@@ -1170,8 +1192,8 @@ theorem ramanujanConductor_upper_riesz {M N : ℕ} (hMN : M * M ≤ N)
     rw [sum_ite_eq, if_pos hm]
   rw [hexpand]
   have hγ : Real.eulerMascheroniConstant ≤ 1 := by
-    have h := eulerMascheroniConstant_lt_eulerMascheroniSeq' 1
-    simp [eulerMascheroniSeq'] at h
+    have h := Real.eulerMascheroniConstant_lt_eulerMascheroniSeq' 1
+    simp [Real.eulerMascheroniSeq'] at h
     exact h.le
   have hdiag :
       (∑ m ∈ Icc 1 M, a m ^ 2 *
@@ -1189,7 +1211,7 @@ theorem ramanujanConductor_upper_riesz {M N : ℕ} (hMN : M * M ≤ N)
           a m ^ 2 * 2 := mul_le_mul_of_nonneg_left (by linarith only [hfrac]) (sq_nonneg _)
       _ = 2 * a m ^ 2 := mul_comm _ _
   have hoff :
-      -(∑ m ∈ Icc 1 M, ∑ l ∈ Icc 1 M, a m * a l * conductorOffDiagKernel m l) / Real.log N ≤
+      -((∑ m ∈ Icc 1 M, ∑ l ∈ Icc 1 M, a m * a l * conductorOffDiagKernel m l) / Real.log N) ≤
         3 * ∑ m ∈ Icc 1 M, a m ^ 2 := by
     have habs := abs_sum_conductorOffDiagKernel_le (M := M) a
     have hlogM : 2 * Real.log M ≤ Real.log N := by
@@ -1215,7 +1237,7 @@ theorem ramanujanConductor_upper_riesz {M N : ℕ} (hMN : M * M ≤ N)
             (sum_nonneg fun _ _ => sq_nonneg _)
         _ ≤ 3 * Real.log N * ∑ m ∈ Icc 1 M, a m ^ 2 :=
           mul_le_mul_of_nonneg_right (by linarith only [hlogM]) (sum_nonneg fun _ _ => sq_nonneg _)
-    rw [div_le_iff₀ hL0]
+    rw [← neg_div, div_le_iff₀ hL0]
     linarith only [hnum]
   have hrem :
       (∑ m ∈ Icc 1 M, ∑ l ∈ Icc 1 M, a m * a l * conductorGramFloorError m l N) ≤
@@ -1324,8 +1346,10 @@ private theorem card_divisors_mul_le (a b : ℕ) :
     have h1 := congrArg Prod.fst heq
     have h2 := congrArg Prod.snd heq
     dsimp only at h1 h2
-    rw [← Nat.div_mul_cancel (Nat.gcd_dvd_left d₁ a),
-      ← Nat.div_mul_cancel (Nat.gcd_dvd_left d₂ a), h1, h2]
+    calc
+      d₁ = d₁ / Nat.gcd d₁ a * Nat.gcd d₁ a := (Nat.div_mul_cancel (Nat.gcd_dvd_left d₁ a)).symm
+      _ = d₂ / Nat.gcd d₂ a * Nat.gcd d₂ a := congrArg₂ (· * ·) h2 h1
+      _ = d₂ := Nat.div_mul_cancel (Nat.gcd_dvd_left d₂ a)
 
 /-- Squarefree totient ratio bound `r / φ(r)^2 ≤ τ(r)^2 / r`. -/
 private theorem squarefree_div_totient_sq_le {r : ℕ} (hr0 : 0 < r) (hr : Squarefree r) :
@@ -1335,7 +1359,7 @@ private theorem squarefree_div_totient_sq_le {r : ℕ} (hr0 : 0 < r) (hr : Squar
   rw [div_le_div_iff₀ (sq_pos_of_pos hφr) hrR]
   revert hr0 hr
   refine Nat.recOnPrimeCoprime (fun h => False.elim (Nat.lt_irrefl 0 h)) ?_ ?_ r
-  · intro p k hp _ hk_pos hsq
+  · intro p k hp hk_pos hsq
     rcases k with _ | _ | k
     · simp
     · simp only [pow_one]
@@ -1363,115 +1387,136 @@ private theorem squarefree_div_totient_sq_le {r : ℕ} (hr0 : 0 < r) (hr : Squar
         mul_le_mul (iha ha0 ha_sq) (ihb hb0 hb_sq) (by positivity) (by positivity)
       _ = ((a.divisors.card : ℝ) * b.divisors.card) ^ 2 * ((a.totient : ℝ) * b.totient) ^ 2 := by ring
 
+/-- Dirichlet-convolution harmonic bound on `[1, M]`:
+`∑_{r=1}^M ∑_{d ∣ r} (f(d)/d) (f(r/d)/(r/d)) ≤ (∑_{d=1}^M f(d)/d)^2` for nonnegative `f`. -/
+private theorem sum_Icc_divisors_mul_div_le (M : ℕ) (f : ℕ → ℝ) (hf : ∀ a, 0 ≤ f a) :
+    (∑ r ∈ Icc 1 M, ∑ d ∈ r.divisors, (f d / d) * (f (r / d) / (r / d : ℕ))) ≤
+      (∑ d ∈ Icc 1 M, f d / d) ^ 2 := by
+  have hdiv_eq : ∀ r ∈ Icc 1 M, r.divisors = (Icc 1 M).filter (· ∣ r) := by
+    intro r hr
+    obtain ⟨hr1, hrM⟩ := mem_Icc.mp hr
+    ext d
+    simp only [Nat.mem_divisors, mem_filter, mem_Icc]
+    constructor
+    · rintro ⟨hdvd, _⟩
+      exact ⟨⟨Nat.pos_of_dvd_of_pos hdvd hr1, (Nat.le_of_dvd hr1 hdvd).trans hrM⟩, hdvd⟩
+    · rintro ⟨_, hdvd⟩
+      exact ⟨hdvd, by omega⟩
+  have hrew :
+      (∑ r ∈ Icc 1 M, ∑ d ∈ r.divisors, (f d / d) * (f (r / d) / (r / d : ℕ))) =
+        ∑ d ∈ Icc 1 M, ∑ r ∈ (Icc 1 M).filter (d ∣ ·), (f d / d) * (f (r / d) / (r / d : ℕ)) := by
+    calc
+      (∑ r ∈ Icc 1 M, ∑ d ∈ r.divisors, (f d / d) * (f (r / d) / (r / d : ℕ))) =
+          ∑ r ∈ Icc 1 M, ∑ d ∈ (Icc 1 M).filter (· ∣ r),
+            (f d / d) * (f (r / d) / (r / d : ℕ)) :=
+        sum_congr rfl fun r hr => by rw [hdiv_eq r hr]
+      _ = ∑ r ∈ Icc 1 M, ∑ d ∈ Icc 1 M,
+            if d ∣ r then (f d / d) * (f (r / d) / (r / d : ℕ)) else 0 :=
+        sum_congr rfl fun r _ => sum_filter _ _
+      _ = ∑ d ∈ Icc 1 M, ∑ r ∈ Icc 1 M,
+            if d ∣ r then (f d / d) * (f (r / d) / (r / d : ℕ)) else 0 := sum_comm
+      _ = ∑ d ∈ Icc 1 M, ∑ r ∈ (Icc 1 M).filter (d ∣ ·),
+            (f d / d) * (f (r / d) / (r / d : ℕ)) :=
+        sum_congr rfl fun d _ => (sum_filter _ _).symm
+  rw [hrew, sq, sum_mul]
+  refine sum_le_sum fun d hd => ?_
+  have hd0 : 0 < d := (mem_Icc.mp hd).1
+  have hbij :
+      (∑ r ∈ (Icc 1 M).filter (d ∣ ·), (f d / d) * (f (r / d) / (r / d : ℕ))) =
+        ∑ q ∈ Icc 1 (M / d), (f d / d) * (f q / q) := by
+    refine Finset.sum_bij (fun r _ => r / d) ?_ ?_ ?_ ?_
+    · intro r hr
+      obtain ⟨hrI, hdvd⟩ := mem_filter.mp hr
+      exact mem_Icc.mpr ⟨Nat.div_pos (Nat.le_of_dvd (mem_Icc.mp hrI).1 hdvd) hd0,
+        Nat.div_le_div_right (mem_Icc.mp hrI).2⟩
+    · intro r₁ hr₁ r₂ hr₂ heq
+      dsimp only at heq
+      rw [← Nat.mul_div_cancel' (mem_filter.mp hr₁).2,
+        ← Nat.mul_div_cancel' (mem_filter.mp hr₂).2, heq]
+    · intro q hq
+      obtain ⟨hq1, hqM⟩ := mem_Icc.mp hq
+      exact ⟨d * q, mem_filter.mpr ⟨mem_Icc.mpr ⟨Nat.mul_pos hd0 hq1,
+        (Nat.mul_le_mul_left d hqM).trans (Nat.mul_div_le M d)⟩, dvd_mul_right d q⟩,
+        Nat.mul_div_cancel_left q hd0⟩
+    · intro r _; rfl
+  rw [hbij, ← mul_sum]
+  exact mul_le_mul_of_nonneg_left
+    (sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc_right (Nat.div_le_self M d))
+      fun q _ _ => div_nonneg (hf q) (Nat.cast_nonneg q))
+    (div_nonneg (hf d) (Nat.cast_nonneg d))
+
 /-- Fourth-power harmonic bound `∑_{r=1}^M τ(r)^2 / r ≤ (1 + log M)^4`. -/
 private theorem sum_Icc_card_divisors_sq_div_le (M : ℕ) :
     (∑ r ∈ Icc 1 M, (r.divisors.card : ℝ) ^ 2 / r) ≤ (1 + Real.log M) ^ 4 := by
   have htau1 : (∑ r ∈ Icc 1 M, (r.divisors.card : ℝ) / r) ≤ (1 + Real.log M) ^ 2 := by
     have hrw : ∀ r ∈ Icc 1 M, (r.divisors.card : ℝ) / r =
-        ∑ x ∈ r.divisorsAntidiagonal, (1 / (x.1 : ℝ)) * (1 / (x.2 : ℝ)) := by
-      intro r hr
-      have hr0 : (0 : ℝ) < r := by exact_mod_cast (mem_Icc.mp hr).1
-      have hpt : ∀ x ∈ r.divisorsAntidiagonal,
-          (1 / (x.1 : ℝ)) * (1 / (x.2 : ℝ)) = 1 / (r : ℝ) := by
-        intro x hx
-        have hmul : (x.1 : ℝ) * x.2 = r := by exact_mod_cast Nat.mem_divisorsAntidiagonal.mp hx |>.1
+        ∑ d ∈ r.divisors, ((1 : ℝ) / d) * (1 / (r / d : ℕ)) := by
+      intro r _
+      have hpt : ∀ d ∈ r.divisors, ((1 : ℝ) / d) * (1 / (r / d : ℕ)) = 1 / (r : ℝ) := by
+        intro d hd
+        have hmul : (d : ℝ) * (r / d : ℕ) = r := by
+          exact_mod_cast Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors hd)
         rw [div_mul_div_comm, one_mul, hmul]
-      rw [sum_congr rfl hpt, sum_const, nsmul_eq_mul, ← Nat.sum_divisorsAntidiagonal (fun _ _ => (1 : ℕ))]
-      simp [div_eq_mul_inv]
-    rw [sum_congr rfl hrw, ← sum_sigma']
-    have hinj : ∀ u₁ ∈ (Icc 1 M).sigma (fun r => r.divisorsAntidiagonal),
-        ∀ u₂ ∈ (Icc 1 M).sigma (fun r => r.divisorsAntidiagonal),
-        u₁.2 = u₂.2 → u₁ = u₂ := by
-      intro ⟨r₁, x₁⟩ hu₁ ⟨r₂, x₂⟩ hu₂ hxeq
-      dsimp only at hxeq
-      have hm₁ := (Nat.mem_divisorsAntidiagonal.mp (mem_sigma.mp hu₁).2).1
-      have hm₂ := (Nat.mem_divisorsAntidiagonal.mp (mem_sigma.mp hu₂).2).1
-      have hr_eq : r₁ = r₂ := by rw [← hm₁, ← hm₂, hxeq]
-      cases hr_eq
-      cases hxeq
-      rfl
-    have hsub : ((Icc 1 M).sigma (fun r => r.divisorsAntidiagonal)).image Sigma.snd ⊆
-        Icc 1 M ×ˢ Icc 1 M := by
-      intro x hx
-      obtain ⟨⟨r, y⟩, hu, rfl⟩ := mem_image.mp hx
-      obtain ⟨hrI, hy⟩ := mem_sigma.mp hu
-      obtain ⟨hmul, hr0⟩ := Nat.mem_divisorsAntidiagonal.mp hy
-      have hy1 : 1 ≤ y.1 := Nat.pos_of_ne_zero (left_ne_zero_of_mul (hmul.trans_ne hr0))
-      have hy2 : 1 ≤ y.2 := Nat.pos_of_ne_zero (right_ne_zero_of_mul (hmul.trans_ne hr0))
-      have hle1 : y.1 ≤ M := (Nat.le_mul_of_pos_right y.1 hy2).trans (hmul.le.trans (mem_Icc.mp hrI).2)
-      have hle2 : y.2 ≤ M := (Nat.le_mul_of_pos_left y.2 hy1).trans (hmul.le.trans (mem_Icc.mp hrI).2)
-      exact mem_product.mpr ⟨mem_Icc.mpr ⟨hy1, hle1⟩, mem_Icc.mpr ⟨hy2, hle2⟩⟩
+      rw [sum_congr rfl hpt, sum_const, nsmul_eq_mul, mul_one_div]
     calc
-      (∑ u ∈ (Icc 1 M).sigma (fun r => r.divisorsAntidiagonal), (1 / (u.2.1 : ℝ)) * (1 / (u.2.2 : ℝ))) =
-          ∑ x ∈ ((Icc 1 M).sigma (fun r => r.divisorsAntidiagonal)).image Sigma.snd,
-            (1 / (x.1 : ℝ)) * (1 / (x.2 : ℝ)) := (sum_image hinj).symm
-      _ ≤ ∑ x ∈ Icc 1 M ×ˢ Icc 1 M, (1 / (x.1 : ℝ)) * (1 / (x.2 : ℝ)) :=
-        sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
-      _ = (∑ a ∈ Icc 1 M, 1 / (a : ℝ)) ^ 2 := by
-        rw [sq, sum_product, sum_mul]
-        exact sum_congr rfl fun a _ => (mul_sum _ _ _).symm
+      (∑ r ∈ Icc 1 M, (r.divisors.card : ℝ) / r) =
+          ∑ r ∈ Icc 1 M, ∑ d ∈ r.divisors, ((1 : ℝ) / d) * (1 / (r / d : ℕ)) :=
+        sum_congr rfl hrw
+      _ ≤ (∑ d ∈ Icc 1 M, (1 : ℝ) / d) ^ 2 :=
+        sum_Icc_divisors_mul_div_le M (fun _ => 1) (fun _ => zero_le_one)
       _ ≤ (1 + Real.log M) ^ 2 :=
         pow_le_pow_left₀ (sum_nonneg fun _ _ => by positivity)
           (_root_.RHTower.Sieve.sum_Icc_one_div_le_one_add_log M) 2
   have hpt2 : ∀ r ∈ Icc 1 M, (r.divisors.card : ℝ) ^ 2 / r ≤
-      ∑ x ∈ r.divisorsAntidiagonal,
-        ((x.1.divisors.card : ℝ) / x.1) * ((x.2.divisors.card : ℝ) / x.2) := by
+      ∑ d ∈ r.divisors,
+        ((d.divisors.card : ℝ) / d) * (((r / d).divisors.card : ℝ) / (r / d : ℕ)) := by
     intro r hr
     have hr0 : (0 : ℝ) < r := by exact_mod_cast (mem_Icc.mp hr).1
     have hcard_eq : (r.divisors.card : ℝ) ^ 2 / r =
-        ∑ x ∈ r.divisorsAntidiagonal, (r.divisors.card : ℝ) / r := by
-      rw [sum_const, nsmul_eq_mul, ← Nat.sum_divisorsAntidiagonal (fun _ _ => (1 : ℕ))]
-      simp [sq, mul_div_assoc]
+        ∑ _d ∈ r.divisors, (r.divisors.card : ℝ) / r := by
+      rw [sum_const, nsmul_eq_mul, sq, mul_div_assoc]
     rw [hcard_eq]
-    refine sum_le_sum fun x hx => ?_
-    have hmul := (Nat.mem_divisorsAntidiagonal.mp hx).1
-    have hsubm : (r.divisors.card : ℝ) ≤ (x.1.divisors.card : ℝ) * x.2.divisors.card := by
-      rw [← hmul]; exact_mod_cast card_divisors_mul_le x.1 x.2
-    have hr_cast : (r : ℝ) = (x.1 : ℝ) * x.2 := by exact_mod_cast hmul.symm
+    refine sum_le_sum fun d hd => ?_
+    have hmul : d * (r / d) = r := Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors hd)
+    have hsubm : (r.divisors.card : ℝ) ≤ (d.divisors.card : ℝ) * (r / d).divisors.card := by
+      rw [← hmul]; exact_mod_cast card_divisors_mul_le d (r / d)
+    have hr_cast : (r : ℝ) = (d : ℝ) * (r / d : ℕ) := by exact_mod_cast hmul.symm
     calc
-      (r.divisors.card : ℝ) / r ≤ ((x.1.divisors.card : ℝ) * x.2.divisors.card) / r :=
+      (r.divisors.card : ℝ) / r ≤ ((d.divisors.card : ℝ) * (r / d).divisors.card) / r :=
         div_le_div_of_nonneg_right hsubm hr0.le
-      _ = ((x.1.divisors.card : ℝ) / x.1) * ((x.2.divisors.card : ℝ) / x.2) := by
+      _ = ((d.divisors.card : ℝ) / d) * (((r / d).divisors.card : ℝ) / (r / d : ℕ)) := by
         rw [hr_cast, div_mul_div_comm]
-  have hinj : ∀ u₁ ∈ (Icc 1 M).sigma (fun r => r.divisorsAntidiagonal),
-      ∀ u₂ ∈ (Icc 1 M).sigma (fun r => r.divisorsAntidiagonal),
-      u₁.2 = u₂.2 → u₁ = u₂ := by
-    intro ⟨r₁, x₁⟩ hu₁ ⟨r₂, x₂⟩ hu₂ hxeq
-    dsimp only at hxeq
-    have hm₁ := (Nat.mem_divisorsAntidiagonal.mp (mem_sigma.mp hu₁).2).1
-    have hm₂ := (Nat.mem_divisorsAntidiagonal.mp (mem_sigma.mp hu₂).2).1
-    have hr_eq : r₁ = r₂ := by rw [← hm₁, ← hm₂, hxeq]
-    cases hr_eq
-    cases hxeq
-    rfl
-  have hsub : ((Icc 1 M).sigma (fun r => r.divisorsAntidiagonal)).image Sigma.snd ⊆
-      Icc 1 M ×ˢ Icc 1 M := by
-    intro x hx
-    obtain ⟨⟨r, y⟩, hu, rfl⟩ := mem_image.mp hx
-    obtain ⟨hrI, hy⟩ := mem_sigma.mp hu
-    obtain ⟨hmul, hr0⟩ := Nat.mem_divisorsAntidiagonal.mp hy
-    have hy1 : 1 ≤ y.1 := Nat.pos_of_ne_zero (left_ne_zero_of_mul (hmul.trans_ne hr0))
-    have hy2 : 1 ≤ y.2 := Nat.pos_of_ne_zero (right_ne_zero_of_mul (hmul.trans_ne hr0))
-    have hle1 : y.1 ≤ M := (Nat.le_mul_of_pos_right y.1 hy2).trans (hmul.le.trans (mem_Icc.mp hrI).2)
-    have hle2 : y.2 ≤ M := (Nat.le_mul_of_pos_left y.2 hy1).trans (hmul.le.trans (mem_Icc.mp hrI).2)
-    exact mem_product.mpr ⟨mem_Icc.mpr ⟨hy1, hle1⟩, mem_Icc.mpr ⟨hy2, hle2⟩⟩
   calc
     (∑ r ∈ Icc 1 M, (r.divisors.card : ℝ) ^ 2 / r) ≤
-        ∑ r ∈ Icc 1 M, ∑ x ∈ r.divisorsAntidiagonal,
-          ((x.1.divisors.card : ℝ) / x.1) * ((x.2.divisors.card : ℝ) / x.2) :=
+        ∑ r ∈ Icc 1 M, ∑ d ∈ r.divisors,
+          ((d.divisors.card : ℝ) / d) * (((r / d).divisors.card : ℝ) / (r / d : ℕ)) :=
       sum_le_sum hpt2
-    _ = ∑ x ∈ ((Icc 1 M).sigma (fun r => r.divisorsAntidiagonal)).image Sigma.snd,
-          ((x.1.divisors.card : ℝ) / x.1) * ((x.2.divisors.card : ℝ) / x.2) := by
-      rw [← sum_sigma', sum_image hinj]
-    _ ≤ ∑ x ∈ Icc 1 M ×ˢ Icc 1 M,
-          ((x.1.divisors.card : ℝ) / x.1) * ((x.2.divisors.card : ℝ) / x.2) :=
-      sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
-    _ = (∑ a ∈ Icc 1 M, (a.divisors.card : ℝ) / a) ^ 2 := by
-      rw [sq, sum_product, sum_mul]
-      exact sum_congr rfl fun a _ => (mul_sum _ _ _).symm
+    _ ≤ (∑ d ∈ Icc 1 M, (d.divisors.card : ℝ) / d) ^ 2 :=
+      sum_Icc_divisors_mul_div_le M (fun a => (a.divisors.card : ℝ)) (fun _ => Nat.cast_nonneg _)
     _ ≤ ((1 + Real.log M) ^ 2) ^ 2 :=
       pow_le_pow_left₀ (sum_nonneg fun _ _ => by positivity) htau1 2
     _ = (1 + Real.log M) ^ 4 := by ring
+
+/-- Sublinearity of Euler's totient under multiplication: `φ(d * r) ≤ φ(d) * r`. -/
+private theorem totient_mul_le_self (d : ℕ) : ∀ r : ℕ, (d * r).totient ≤ d.totient * r := by
+  intro r
+  induction r using Nat.strong_induction_on with
+  | _ r ih =>
+    rcases Nat.lt_or_ge r 2 with hr | hr
+    · interval_cases r <;> simp
+    · obtain ⟨p, hp, s, rfl⟩ := Nat.exists_prime_and_dvd (show r ≠ 1 by omega)
+      have hs0 : 0 < s := Nat.pos_of_ne_zero fun h => by simp [h] at hr
+      have hs : s < p * s := lt_mul_left hs0 hp.one_lt
+      have hstep : (p * (d * s)).totient ≤ p * (d * s).totient := by
+        by_cases hdvd : p ∣ d * s
+        · rw [Nat.totient_mul_of_prime_of_dvd hp hdvd]
+        · rw [Nat.totient_mul_of_prime_of_not_dvd hp hdvd]
+          exact Nat.mul_le_mul_right _ (Nat.sub_le p 1)
+      calc
+        (d * (p * s)).totient = (p * (d * s)).totient := by ring_nf
+        _ ≤ p * (d * s).totient := hstep
+        _ ≤ p * (d.totient * s) := Nat.mul_le_mul_left p (ih s hs)
+        _ = d.totient * (p * s) := by ring
 
 /-- Divisor-totient packet envelope: for every `n ≥ 1` and `M : ℕ`,
 `∑_{m=1}^M c̃_m(n)^2 ≤ n (1 + log M)^4`. -/
@@ -1501,7 +1546,7 @@ theorem sum_normalizedRamanujanMode_sq_le (M : ℕ) {n : ℕ} (hn : 1 ≤ n) :
           simp [h1]
       have htot_le : (m.totient : ℝ) ≤ (d.totient : ℝ) * r := by
         have hm_eq : m = d * r := (Nat.mul_div_cancel' hd_dvd).symm
-        have hnat : m.totient ≤ d.totient * r := hm_eq ▸ Nat.totient_mul_le d r
+        have hnat : m.totient ≤ d.totient * r := hm_eq ▸ totient_mul_le_self d r
         exact_mod_cast hnat
       have hφr : (0 : ℝ) < r.totient := by exact_mod_cast Nat.totient_pos.mpr hr0
       have hsimp : ((m.totient : ℝ) * (moebiusReal r / (r.totient : ℝ))) ^ 2 / (m.totient : ℝ) =
@@ -1531,15 +1576,17 @@ theorem sum_normalizedRamanujanMode_sq_le (M : ℕ) {n : ℕ} (hn : 1 ≤ n) :
     have h1 := congrArg Prod.fst heq
     have h2 := congrArg Prod.snd heq
     dsimp only at h1 h2
-    rw [← Nat.mul_div_cancel' (Nat.gcd_dvd_left m₁ n),
-      ← Nat.mul_div_cancel' (Nat.gcd_dvd_left m₂ n), h1, h2]
+    calc
+      m₁ = Nat.gcd m₁ n * (m₁ / Nat.gcd m₁ n) := (Nat.mul_div_cancel' (Nat.gcd_dvd_left m₁ n)).symm
+      _ = Nat.gcd m₂ n * (m₂ / Nat.gcd m₂ n) := congrArg₂ (· * ·) h1 h2
+      _ = m₂ := Nat.mul_div_cancel' (Nat.gcd_dvd_left m₂ n)
   have hsub : (Icc 1 M).image (fun m => (Nat.gcd m n, m / Nat.gcd m n)) ⊆
       n.divisors ×ˢ Icc 1 M := by
     intro p hp
     obtain ⟨m, hm, rfl⟩ := mem_image.mp hp
     obtain ⟨hm1, hmM⟩ := mem_Icc.mp hm
     have hg0 : 0 < Nat.gcd m n := Nat.gcd_pos_of_pos_left n hm1
-    exact mem_product.mpr ⟨Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_right m n, hn.ne'⟩,
+    exact mem_product.mpr ⟨Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_right m n, by omega⟩,
       mem_Icc.mpr ⟨Nat.div_pos (Nat.le_of_dvd hm1 (Nat.gcd_dvd_left m n)) hg0,
         (Nat.div_le_self m _).trans hmM⟩⟩
   calc
@@ -1556,7 +1603,7 @@ theorem sum_normalizedRamanujanMode_sq_le (M : ℕ) {n : ℕ} (hn : 1 ≤ n) :
       sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
     _ = (∑ d ∈ n.divisors, (d.totient : ℝ)) * ∑ r ∈ Icc 1 M, (r.divisors.card : ℝ) ^ 2 / r := by
       rw [sum_product, sum_mul]
-      exact sum_congr rfl fun d _ => (mul_sum _ _ _).symm
+      exact sum_congr rfl fun d _ => by dsimp only; exact (mul_sum _ _ _).symm
     _ = (n : ℝ) * ∑ r ∈ Icc 1 M, (r.divisors.card : ℝ) ^ 2 / r := by
       congr 1
       exact_mod_cast Nat.sum_totient n

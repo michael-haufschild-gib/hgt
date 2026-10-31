@@ -84,7 +84,8 @@ theorem norm_weylBumpModelC_le {A : ℝ} (hA : 0 ≤ A) (L a c : ℝ) :
     rw [Complex.norm_exp]; simp
   have e4 : ‖Complex.exp (-(a + c * Complex.I) * Complex.I)‖ = Real.exp c := by
     rw [Complex.norm_exp]; simp
-  have hb1 : ‖(Complex.exp (L * (a + c * Complex.I)) + Complex.exp (-(L * (a + c * Complex.I)))) / 2‖
+  have hb1 : ‖(Complex.exp (L * (a + c * Complex.I))
+      + Complex.exp (-(L * (a + c * Complex.I)))) / 2‖
       ≤ Real.cosh (L * a) := by
     rw [norm_div, Complex.norm_two, Real.cosh_eq]
     have := norm_add_le (Complex.exp (L * (a + c * Complex.I)))
@@ -112,7 +113,8 @@ theorem cosh_le_exp_abs (x : ℝ) : Real.cosh x ≤ Real.exp |x| := by
 
 /-- **The Weyl bump satisfies the two-profile size bound.** For `L ≥ 0`, `θ ≤ 1/3 + 2η`,
 `c₂ ≤ 1`, `|a| ≤ ½ + η` and `|c| ≤ R`, with `A = e^{θL}`,
-`‖g(a + ic)‖ ≤ 2(1 + cosh R) g(½ + 2η) (e^{−L(1/9 + (1/9)(½ − |a|))} + e^{−L(η + c₂(½ + η − |a|))})`. -/
+`‖g(a + ic)‖ ≤ 2(1 + cosh R) g(½ + 2η) (e^{−L(1/9 + (1/9)(½ − |a|))} + e^{−L(η + c₂(½ + η −
+|a|))})`. -/
 theorem norm_weylBumpModelC_le_two_profiles {L θ η c₂ R a c : ℝ} (hL : 0 ≤ L)
     (hθ : θ ≤ 1 / 3 + 2 * η) (hc₂1 : c₂ ≤ 1) (ha : |a| ≤ 1 / 2 + η)
     (hc : |c| ≤ R) :
@@ -270,7 +272,8 @@ theorem integral_filterGauss_mul_sin {t : ℝ} : ∫ u : ℝ, filterGauss t u * 
 /-- **Closed form of the heated model.** `H(x) = e^{λL²/2} cosh(Lx) + A(1 + e^{−λ/2} cos x)`. -/
 theorem weylBumpHeat_eq {lam : ℝ} (hlam : 0 < lam) (L A x : ℝ) :
     weylBumpHeat L A lam x =
-      Real.exp (lam * L ^ 2 / 2) * Real.cosh (L * x) + A * (1 + Real.exp (-(lam / 2)) * Real.cos x) := by
+      Real.exp (lam * L ^ 2 / 2) * Real.cosh (L * x)
+        + A * (1 + Real.exp (-(lam / 2)) * Real.cos x) := by
   set t := lam / 2 with htdef
   have ht : 0 < t := by positivity
   have hi1 := integrable_filterGauss_mul_rexp ht L
@@ -369,13 +372,15 @@ theorem hasSum_weylBumpHeatCoeff {lam : ℝ} (hlam : 0 < lam) (L A x : ℝ) :
     · rw [if_neg (by omega : 2 * m ≠ 0), if_neg hm.ne', mul_pow]
       ring
   rw [hfun, show Real.exp (lam * L ^ 2 / 2) * Real.cosh (L * x) +
-      A * (1 + Real.exp (-(lam / 2)) * Real.cos x) = Real.exp (lam * L ^ 2 / 2) * Real.cosh (L * x) +
+      A * (1 + Real.exp (-(lam / 2)) * Real.cos x)
+        = Real.exp (lam * L ^ 2 / 2) * Real.cosh (L * x) +
         A * Real.exp (-(lam / 2)) * Real.cos x + A by ring]
   exact h
 
 /-! ### The exact threshold `2θ` -/
 
-/-- **Positivity from rate `2θ`.** For `L ≥ 1`, `0 ≤ κ` and `2θ ≤ κ`, every Taylor coefficient of the
+/-- **Positivity from rate `2θ`.** For `L ≥ 1`, `0 ≤ κ` and `2θ ≤ κ`, every Taylor coefficient of
+the
 heated model at heat `κ/L`, `A = e^{θL}`, is nonnegative. -/
 theorem weylBumpHeatCoeff_nonneg {L θ κ : ℝ} (hL : 1 ≤ L) (hκ : 0 ≤ κ) (hθκ : 2 * θ ≤ κ)
     (n : ℕ) : 0 ≤ weylBumpHeatCoeff L (Real.exp (θ * L)) (κ / L) n := by

@@ -12,7 +12,8 @@ average of variance `2t` in the imaginary direction (`pairModelHeat`),
 
 which for `F = ∫ cos(zu) dμ` is `∫ e^{tu²} cos(zu) dμ`, the de Bruijn deformation.
 
-* **Size** (`norm_pairModel_le`): `‖F(x + iy)‖ ≤ (x² + y² + δ²) cosh(Ly/2)`: no centre bump, the size
+* **Size** (`norm_pairModel_le`): `‖F(x + iy)‖ ≤ (x² + y² + δ²) cosh(Ly/2)`: no centre bump, the
+  size
   of a slice under Lindelöf-size bounds.
 * **On the imaginary axis** (`pairModelHeat_mul_I`): `H_t(iy)` is real and equals
   `(e^{tL²/4}/2)(e^{Ly/2}(δ² − 2t − (y + Lt)²) + e^{−Ly/2}(δ² − 2t − (y − Lt)²))`.
@@ -100,12 +101,14 @@ theorem pairModelHeat_mul_I {L δ t : ℝ} (ht : 0 < t) (y : ℝ) :
     simp only [eval_sub, eval_C, eval_pow, eval_X]
     have e1 : Real.exp (L * (y + u) / 2) = Real.exp (L * y / 2) * Real.exp (L / 2 * u) := by
       rw [← Real.exp_add]; ring_nf
-    have e2 : Real.exp (-(L * (y + u) / 2)) = Real.exp (-(L * y / 2)) * Real.exp (-(L / 2) * u) := by
+    have e2 : Real.exp (-(L * (y + u) / 2))
+        = Real.exp (-(L * y / 2)) * Real.exp (-(L / 2) * u) := by
       rw [← Real.exp_add]; ring_nf
     rw [e1, e2]
     push_cast; ring
   have h2t : 0 < 2 * t := by positivity
-  obtain ⟨i1, v1⟩ := integrable_and_integral_gaussDensity_tilt_poly h2t (C (δ ^ 2) - X ^ 2) (L / 2) y
+  obtain ⟨i1, v1⟩ :=
+    integrable_and_integral_gaussDensity_tilt_poly h2t (C (δ ^ 2) - X ^ 2) (L / 2) y
   obtain ⟨i2, v2⟩ := integrable_and_integral_gaussDensity_tilt_poly h2t (C (δ ^ 2) - X ^ 2)
     (-(L / 2)) y
   rw [show 2 * t / 2 = t by ring] at i1 v1 i2 v2
@@ -130,7 +133,8 @@ theorem exists_pos_pairModelHeat_mul_I_eq_zero {L δ t : ℝ} (ht : 0 < t) (hL :
     (hδ : 0 < δ) (hδ2 : δ ≤ 2) (hκ : (L * t) ^ 2 + 2 * t < δ ^ 2) :
     ∃ y : ℝ, 0 < y ∧ pairModelHeat L δ t (y * I) = 0 := by
   set R : ℝ → ℝ := fun y => Real.exp (t * L ^ 2 / 4) / 2 * (Real.exp (L * y / 2)
-      * (δ ^ 2 - 2 * t - (y + L * t) ^ 2) + Real.exp (-(L * y / 2)) * (δ ^ 2 - 2 * t - (y - L * t) ^ 2))
+      * (δ ^ 2 - 2 * t - (y + L * t) ^ 2)
+        + Real.exp (-(L * y / 2)) * (δ ^ 2 - 2 * t - (y - L * t) ^ 2))
     with hR
   have hRc : Continuous R := by rw [hR]; fun_prop
   have hE := Real.exp_pos (t * L ^ 2 / 4)
@@ -147,7 +151,8 @@ theorem exists_pos_pairModelHeat_mul_I_eq_zero {L δ t : ℝ} (ht : 0 < t) (hL :
     have hLt : 0 ≤ L * t := mul_nonneg hL ht.le
     have h1 : δ ^ 2 - 2 * t - (δ + 1 + L * t) ^ 2 ≤ -(2 * δ + 1) := by
       nlinarith [sq_nonneg (L * t), mul_nonneg (by linarith : (0 : ℝ) ≤ δ + 1) hLt]
-    have h2 : δ ^ 2 - 2 * t - (δ + 1 - L * t) ^ 2 ≤ δ ^ 2 := by nlinarith [sq_nonneg (δ + 1 - L * t)]
+    have h2 : δ ^ 2 - 2 * t - (δ + 1 - L * t) ^ 2 ≤ δ ^ 2 := by
+      nlinarith [sq_nonneg (δ + 1 - L * t)]
     have hA := Real.exp_pos (L * (δ + 1) / 2)
     have hB := Real.exp_pos (-(L * (δ + 1) / 2))
     have hAB : Real.exp (-(L * (δ + 1) / 2)) ≤ Real.exp (L * (δ + 1) / 2) :=
@@ -166,7 +171,8 @@ theorem exists_pos_pairModelHeat_mul_I_eq_zero {L δ t : ℝ} (ht : 0 < t) (hL :
   refine ⟨y, lt_of_le_of_ne hy.1 (Ne.symm hy0), ?_⟩
   rw [pairModelHeat_mul_I ht y]
   have : R y = Real.exp (t * L ^ 2 / 4) / 2 * (Real.exp (L * y / 2)
-      * (δ ^ 2 - 2 * t - (y + L * t) ^ 2) + Real.exp (-(L * y / 2)) * (δ ^ 2 - 2 * t - (y - L * t) ^ 2))
+      * (δ ^ 2 - 2 * t - (y + L * t) ^ 2)
+        + Real.exp (-(L * y / 2)) * (δ ^ 2 - 2 * t - (y - L * t) ^ 2))
     := rfl
   rw [← this, hRy, Complex.ofReal_zero]
 

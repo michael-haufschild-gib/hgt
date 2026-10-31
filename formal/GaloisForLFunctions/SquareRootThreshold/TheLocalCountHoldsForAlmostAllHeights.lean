@@ -88,7 +88,8 @@ theorem volume_localCount_gt_le_sqrt (Z : ZeroConfig) {δ C T : ℝ} (hδ0 : 0 <
     gcongr
     calc (MeasureTheory.volume.restrict (Icc T (2 * T))) (B ρ) ≤ MeasureTheory.volume (B ρ) :=
           MeasureTheory.Measure.restrict_le_self _
-      _ ≤ MeasureTheory.volume (Icc (ρ.im - s ρ) (ρ.im + s ρ)) := MeasureTheory.measure_mono (hBsub ρ)
+      _ ≤ MeasureTheory.volume (Icc (ρ.im - s ρ) (ρ.im + s ρ)) :=
+          MeasureTheory.measure_mono (hBsub ρ)
       _ = ENNReal.ofReal (2 * s ρ) := by rw [Real.volume_Icc]; ring_nf
   have hL : 0 < Real.log T := Real.log_pos hT
   set M : ℝ := C * (δ * Real.log T + 1) with hM
@@ -107,7 +108,8 @@ theorem volume_localCount_gt_le_sqrt (Z : ZeroConfig) {δ C T : ℝ} (hδ0 : 0 <
   have hs0 : ∀ ρ, 0 ≤ s ρ := fun ρ => Real.sqrt_nonneg _
   have hsumF : ∑ ρ ∈ F, (Z.mult ρ : ENNReal) * ENNReal.ofReal (2 * s ρ)
       = ENNReal.ofReal (∑ ρ ∈ F, (Z.mult ρ : ℝ) * (2 * s ρ)) := by
-    rw [ENNReal.ofReal_sum_of_nonneg fun ρ _ => mul_nonneg (Nat.cast_nonneg _) (by linarith [hs0 ρ])]
+    rw [ENNReal.ofReal_sum_of_nonneg fun ρ _ =>
+      mul_nonneg (Nat.cast_nonneg _) (by linarith [hs0 ρ])]
     refine Finset.sum_congr rfl fun ρ _ => ?_
     rw [ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast]
   calc MeasureTheory.volume {t ∈ Icc T (2 * T) | C * (δ * Real.log t + 1) < discCount Z (c t) δ}
@@ -134,7 +136,8 @@ theorem sq_sum_sqrt_le (F : Finset ℂ) (m : ℂ → ℕ) {δ : ℝ} (hδ : 0 �
   have e1 : ∀ ρ, Real.sqrt (m ρ) * (2 * Real.sqrt (m ρ) * Real.sqrt (2 * δ * max (ρ.re - 1 / 2) 0))
       = (m ρ : ℝ) * (2 * Real.sqrt (2 * δ * max (ρ.re - 1 / 2) 0)) := fun ρ => by
     rw [show Real.sqrt (m ρ) * (2 * Real.sqrt (m ρ) * Real.sqrt (2 * δ * max (ρ.re - 1 / 2) 0))
-      = (Real.sqrt (m ρ) * Real.sqrt (m ρ)) * (2 * Real.sqrt (2 * δ * max (ρ.re - 1 / 2) 0)) by ring,
+      = (Real.sqrt (m ρ) * Real.sqrt (m ρ))
+        * (2 * Real.sqrt (2 * δ * max (ρ.re - 1 / 2) 0)) by ring,
       hm ρ]
   have e2 : ∀ ρ, Real.sqrt (m ρ) ^ 2 = (m ρ : ℝ) := fun ρ => Real.sq_sqrt (Nat.cast_nonneg _)
   have e3 : ∀ ρ, (2 * Real.sqrt (m ρ) * Real.sqrt (2 * δ * max (ρ.re - 1 / 2) 0)) ^ 2
@@ -166,7 +169,8 @@ theorem sum_mult_max_le_offLineMoment {T : ℝ} (hT : 1 ≤ T) :
   intro ρ hρ
   obtain ⟨hρF, hre⟩ := Finset.mem_filter.mp hρ
   obtain ⟨hc, hlo, hhi⟩ := (Set.Finite.mem_toFinset _).mp hρF
-  obtain ⟨hxi, -, hre1⟩ := CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip.mp hc
+  obtain ⟨hxi, -, hre1⟩ :=
+    CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip.mp hc
   rw [mem_boxFinsetLe]
   exact ⟨hre, hre1, by linarith, hhi, hxi⟩
 
@@ -206,7 +210,8 @@ theorem eventually_volume_zeta_localCount_gt_le {δ C : ℝ} (hδ0 : 0 < δ) (h�
     linarith [abs_nonneg K, abs_nonneg V₀]
   have hmom0 : 0 ≤ ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 :=
     Finset.sum_nonneg fun ρ _ => mul_nonneg (Nat.cast_nonneg _) (le_max_right _ _)
-  have hN0 : 0 ≤ ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) := Finset.sum_nonneg fun ρ _ => Nat.cast_nonneg _
+  have hN0 : 0 ≤ ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) :=
+    Finset.sum_nonneg fun ρ _ => Nat.cast_nonneg _
   -- `S² ≤ T² δ log T`, so `S ≤ T√(δ log T)`
   have hS0 : 0 ≤ S := Finset.sum_nonneg fun ρ _ =>
     mul_nonneg (Nat.cast_nonneg _) (by positivity)

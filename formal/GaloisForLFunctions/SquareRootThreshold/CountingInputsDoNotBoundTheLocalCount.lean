@@ -9,12 +9,14 @@ The local count at scale `δ` asks for `#{ρ : |ρ − (½ + δ + it)| ≤ δ} �
 **Theorem** (`exists_zeroConfig_rvm_not_localCountBound`).  There is a zero configuration `Z'` with
 * the Riemann–von Mangoldt main term and the unit-window count (`RiemannVonMangoldt Z'`);
 * exactly the critical zeros of `ζ` with their multiplicities: `N₀(Z') = N₀(ζ)` on every window;
-* the window counts of `ζ` up to `4 log(|T₂| + 3)`: `N_ζ(T₁, T₂) ≤ N_{Z'}(T₁, T₂) ≤ N_ζ(T₁, T₂) + 4 log(|T₂| + 3)`;
+* the window counts of `ζ` up to `4 log(|T₂| + 3)`:
+  `N_ζ(T₁, T₂) ≤ N_{Z'}(T₁, T₂) ≤ N_ζ(T₁, T₂) + 4 log(|T₂| + 3)`;
 * the zero-counting form of Lindelöf whenever `ζ` has it (`LindelofCount`);
 * no constant `C` with `LocalCountBound Z' C`, and no `M` bounding the off-line multiplicity of the
   windows `(T − 1, T + 1]` (`OffLineLocallyBounded`, the input of the lag family).
 
-`Z'` superposes (`ZeroConfig.superpose`) on the zeros of `ζ` the clusters `½ ± 1/(k+3) + i exp(eᵏ)` of
+`Z'` superposes (`ZeroConfig.superpose`) on the zeros of `ζ` the clusters `½ ± 1/(k+3) + i exp(eᵏ)`
+of
 multiplicity `⌊log γ⌋ = ⌊eᵏ⌋` (`clusterConfig`).  The heights grow doubly exponentially, so the
 clusters below `T` carry `Σ_{eᵏ ≤ log T} 2⌊eᵏ⌋ ≤ 4 log T` zeros (`clusterConfig_N_le`).  Hence the
 Riemann–von Mangoldt remainder, the unit-window count, the critical proportion, every near-line
@@ -22,9 +24,11 @@ density with a `log T` slack, and the Lindelöf count (finitely many clusters ab
 survive; but at depth `δ = 1/(k+3)` the disc about `½ + δ + i exp(eᵏ)`
 holds `⌊eᵏ⌋` zeros against `C(eᵏ/(k+3) + 1)` (`not_localCountBound_superpose`).
 
-**What counting does give** (`volume_localCount_gt_le`, `eventually_volume_localCount_gt_le`).  For any
+**What counting does give** (`volume_localCount_gt_le`, `eventually_volume_localCount_gt_le`).  For
+any
 configuration with Riemann–von Mangoldt, the heights `t ∈ [T, 2T]` violating the local count with
-constant `C` have measure `≤ T/(πC) + K`: each zero lies in the disc about `½ + δ + it` for `t` in an
+constant `C` have measure `≤ T/(πC) + K`: each zero lies in the disc about `½ + δ + it` for `t` in
+an
 interval of length `≤ 2δ`, and Markov's inequality divides `2δ N(T − 1, 2T + 1)` by `Cδ log T`.  So
 counting gives the local count in density, never pointwise.
 -/
@@ -127,7 +131,8 @@ theorem clusterPoint_im (s : ℝ) (k : ℕ) : (clusterPoint s k).im = Real.exp (
 theorem log_clusterPoint_im (s : ℝ) (k : ℕ) : Real.log (clusterPoint s k).im = Real.exp k := by
   rw [clusterPoint_im, Real.log_exp]
 
-theorem reflect_clusterPoint (s : ℝ) (k : ℕ) : reflect (clusterPoint s k) = clusterPoint (-s) k := by
+theorem reflect_clusterPoint (s : ℝ) (k : ℕ) :
+    reflect (clusterPoint s k) = clusterPoint (-s) k := by
   apply Complex.ext <;> simp [reflect, clusterPoint]
   ring
 
@@ -147,7 +152,8 @@ def clusterConfig : ZeroConfig where
       exact Nat.le_floor (by rw [Nat.cast_one]; exact Real.one_le_exp (Nat.cast_nonneg k))
   strip := by
     have h3 : ∀ k : ℕ, 1 / ((k : ℝ) + 3) ≤ 1 / 2 := fun k => by
-      rw [div_le_div_iff₀ (by positivity) (by norm_num)]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+      rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+      linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
     have h0 : ∀ k : ℕ, 0 ≤ 1 / ((k : ℝ) + 3) := fun k => by positivity
     rintro _ (⟨k, rfl⟩ | ⟨k, rfl⟩) <;> rw [clusterPoint_re]
     · constructor <;> linarith [h3 k, h0 k]
@@ -360,7 +366,8 @@ theorem not_localCountBound_superpose (Z : ZeroConfig) (C : ℝ) :
     refine le_trans ?_ (mult_le_discCount _ hδ2 hmem (Metric.mem_closedBall_self hδ0.le))
     have hc : clusterPoint 1 k ∈ clusterConfig.carrier := Or.inl ⟨k, rfl⟩
     show ⌊Real.exp k⌋₊ ≤ (if clusterPoint 1 k ∈ Z.carrier then Z.mult (clusterPoint 1 k) else 0) +
-      (if clusterPoint 1 k ∈ clusterConfig.carrier then clusterConfig.mult (clusterPoint 1 k) else 0)
+      (if clusterPoint 1 k ∈ clusterConfig.carrier then clusterConfig.mult (clusterPoint 1 k)
+        else 0)
     rw [if_pos hc, clusterConfig_mult]
     omega
   have hbound := hC δ t hδ0 hδ2 ht3
@@ -408,7 +415,8 @@ theorem not_offLineLocallyBounded_superpose (Z : ZeroConfig) (M : ℕ) :
     (fun _ _ => Nat.zero_le _) (hfin.mem_toFinset.mpr hmem)
   have h3 : ⌊Real.exp k⌋₊ ≤ (superpose Z clusterConfig).mult (clusterPoint 1 k) := by
     show ⌊Real.exp k⌋₊ ≤ (if clusterPoint 1 k ∈ Z.carrier then Z.mult (clusterPoint 1 k) else 0) +
-      (if clusterPoint 1 k ∈ clusterConfig.carrier then clusterConfig.mult (clusterPoint 1 k) else 0)
+      (if clusterPoint 1 k ∈ clusterConfig.carrier then clusterConfig.mult (clusterPoint 1 k)
+        else 0)
     have hc : clusterPoint 1 k ∈ clusterConfig.carrier := Or.inl ⟨k, rfl⟩
     rw [if_pos hc, clusterConfig_mult]
     omega
@@ -433,7 +441,8 @@ theorem lindelofCount_superpose {Z : ZeroConfig} (h : LindelofCount Z) :
   intro σ hσ ε hε
   obtain ⟨K, hK⟩ := exists_nat_gt (1 / (σ - 1 / 2))
   filter_upwards [h σ hσ ε hε, Filter.eventually_ge_atTop (Real.exp (Real.exp K))] with T hT hTK
-  have hP : ∀ Z' : ZeroConfig, (Z'.carrier ∩ ({ρ | T < ρ.im ∧ ρ.im ≤ T + 1} ∩ {ρ | σ ≤ ρ.re})).Finite :=
+  have hP : ∀ Z' : ZeroConfig,
+      (Z'.carrier ∩ ({ρ | T < ρ.im ∧ ρ.im ≤ T + 1} ∩ {ρ | σ ≤ ρ.re})).Finite :=
     fun Z' => (Z'.finite_window T (T + 1)).subset fun ρ hρ => ⟨hρ.1, hρ.2.1⟩
   rw [finsum_superpose Z clusterConfig (hP Z) (hP clusterConfig)]
   have h0 : ∑ᶠ ρ ∈ clusterConfig.carrier ∩ ({ρ | T < ρ.im ∧ ρ.im ≤ T + 1} ∩ {ρ | σ ≤ ρ.re}),
@@ -490,7 +499,8 @@ theorem exists_zeroConfig_rvm_not_localCountBound :
 
 /-! ## What counting does give: the local count in measure -/
 
-/-- On `t ∈ [T, 2T]` the disc count is a finite sum over the zeros of the window `(T − 1, 2T + 1]`. -/
+/-- On `t ∈ [T, 2T]` the disc count is a finite sum over the zeros of the window `(T − 1, 2T + 1]`.
+-/
 theorem discCount_eq_sum (Z : ZeroConfig) {δ T t : ℝ} (hδ : δ ≤ 1 / 2) (ht : t ∈ Icc T (2 * T)) :
     discCount Z (((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I) δ =
       ∑ ρ ∈ (Z.finite_window (T - 1) (2 * T + 1)).toFinset,
@@ -516,7 +526,8 @@ theorem discCount_eq_sum (Z : ZeroConfig) {δ T t : ℝ} (hδ : δ ≤ 1 / 2) (h
   exact ⟨fun h => ⟨hsub h, h.2⟩, fun h => ⟨h.1.1, h.2⟩⟩
 
 /-- **The local count holds in measure.**  For `0 < δ ≤ ½`, `C > 0`, `T > 1`, the heights
-`t ∈ [T, 2T]` whose disc about `½ + δ + it` holds more than `C(δ log t + 1)` zeros have measure at most
+`t ∈ [T, 2T]` whose disc about `½ + δ + it` holds more than `C(δ log t + 1)` zeros have measure at
+most
 `2N(T − 1, 2T + 1)/(C log T)`.  Each zero lies in the disc for a set of `t` of length `≤ 2δ`
 (Fubini), and Markov's inequality divides by `C(δ log T + 1) ≥ Cδ log T`. -/
 theorem volume_localCount_gt_le (Z : ZeroConfig) {δ C T : ℝ} (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 2)
@@ -546,7 +557,8 @@ theorem volume_localCount_gt_le (Z : ZeroConfig) {δ C T : ℝ} (hδ0 : 0 < δ) 
     refine Finset.sum_congr rfl fun ρ _ => ?_
     simp only [Set.indicator_apply, hBdef, Set.mem_setOf_eq]
     split_ifs <;> simp
-  have hint : ∫⁻ t in Icc T (2 * T), g t ≤ ∑ ρ ∈ F, (Z.mult ρ : ENNReal) * ENNReal.ofReal (2 * δ) := by
+  have hint : ∫⁻ t in Icc T (2 * T), g t
+      ≤ ∑ ρ ∈ F, (Z.mult ρ : ENNReal) * ENNReal.ofReal (2 * δ) := by
     rw [hg, MeasureTheory.lintegral_finsetSum _ fun ρ _ => measurable_const.indicator (hB ρ)]
     refine Finset.sum_le_sum fun ρ _ => ?_
     rw [MeasureTheory.lintegral_indicator_const (hB ρ)]
@@ -577,7 +589,8 @@ theorem volume_localCount_gt_le (Z : ZeroConfig) {δ C T : ℝ} (hδ0 : 0 < δ) 
       = ENNReal.ofReal (2 * δ * Z.N (T - 1) (2 * T + 1)) := by
     rw [hN, Finset.mul_sum, ENNReal.ofReal_sum_of_nonneg fun ρ _ => by positivity]
     refine Finset.sum_congr rfl fun ρ _ => ?_
-    rw [show ENNReal.ofReal (2 * δ * (Z.mult ρ : ℝ)) = ENNReal.ofReal (2 * δ) * (Z.mult ρ : ENNReal) by
+    rw [show ENNReal.ofReal (2 * δ * (Z.mult ρ : ℝ))
+        = ENNReal.ofReal (2 * δ) * (Z.mult ρ : ENNReal) by
       rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast], mul_comm]
   calc MeasureTheory.volume {t ∈ Icc T (2 * T) | C * (δ * Real.log t + 1) < discCount Z (c t) δ}
       ≤ MeasureTheory.volume ({t | ENNReal.ofReal M ≤ g t} ∩ Icc T (2 * T)) :=

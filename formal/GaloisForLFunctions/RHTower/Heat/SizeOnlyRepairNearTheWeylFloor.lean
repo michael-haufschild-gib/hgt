@@ -6,7 +6,8 @@ import GaloisForLFunctions.RHTower.ZetaElevenEighteenthsProfiles
 Let `S(t, x) = ξ(½+x+it) ξ(½−x+it)` and let `T_n(λ, 0, t)` be the Taylor coefficients at `0` of the
 heated slice.
 
-**Theorem** (`DeBruijn.exists_xiSliceHeatTransfer_pos_heat_two_thirds_add`).  For every `ε > 0` there
+**Theorem** (`DeBruijn.exists_xiSliceHeatTransfer_pos_heat_two_thirds_add`).  For every `ε > 0`
+there
 is `t₀` such that for `|t| ≥ t₀`, every heat `λ ≥ (2/3 + ε)/log |t|` and every `m`,
 `T_{2m}(λ, 0, t) > 0`.  The instance `ε = 1/300` with fixed constants is
 `DeBruijn.exists_xiSliceHeatTransfer_pos_heat_weylFloor` (rate `67/100`).
@@ -17,7 +18,8 @@ relative profile `t^{−(1/9 + (1/9)(½ − |a|))}`, of slope `1/9`, and the gap
 `κ/2 − ½ − 2η − 1/12000 + 1/9 + 1/18 − κ/162 > 0`, i.e. `κ > 27/40` as `η → 0`.  The signed Weyl
 bump (`ASignedWeylBumpAttainsTheMethodFloor`) shows that this gap is sharp for those inputs.
 
-Inserting `μ(11/18) ≤ 1/9` (`exists_norm_riemannZeta_le_profile_ee_one`, `_ee_two`) gives three pieces
+Inserting `μ(11/18) ≤ 1/9` (`exists_norm_riemannZeta_le_profile_ee_one`, `_ee_two`) gives three
+pieces
 (`exists_norm_xiSliceProduct_le_three_profiles`):
 
 * `|a| ≤ 1/9`: `ζ` exponent `1/6 + η − |a|/2`; slice profile `t^{−1/6}`, flat in `a`;
@@ -28,7 +30,8 @@ Inserting `μ(11/18) ≤ 1/9` (`exists_norm_riemannZeta_le_profile_ee_one`, `_ee
 With window width `ω` (`xiSliceReal_mul_gauss_ge_window_width`) the flat piece has slope `0` and gap
 `κ/2 − ⅓ − 2η − 5ω²/6 > 0`; the middle piece needs `(80/169)κ > 4/13 + 2η + 5ω²/6`; the third is the
 corpus one.  At `η = 1/2000`, `ω = 1/100`, `κ = 67/100` all three gaps are positive
-(`weylFloor_gap_pos_one`, `_two`, `_three`); at `κ = 2/3 + ε`, `η = ε/16`, `ω = min(1/100, ε)` they are
+(`weylFloor_gap_pos_one`, `_two`, `_three`); at `κ = 2/3 + ε`, `η = ε/16`, `ω = min(1/100, ε)` they
+are
 positive for every `0 < ε ≤ 1/3` (`weylFloor_gaps_of_eps`).  So the size-only rate reaches
 `2/3 = 4μ(½)`, the floor that the Weyl bump (`AWeylBumpBreaksSizeOnlyRepair`) shows no size-only
 argument can beat.
@@ -50,7 +53,8 @@ theorem mul_le_sum_three {K S P K₁ K₂ K₃ P₁ P₂ P₃ : ℝ} (hS : 0 ≤
   mul_le_mul (mul_le_mul_of_nonneg_right hKs hS) hPs hP (mul_nonneg (hK.trans hKs) hS)
 
 /-- **The slice inside the strip, three profiles.**  For `|a| < ½ + η`,
-`|S(t, a + ic)| ≤ C S(t, ½+2η) (t^{−1/6} + t^{−(1/13 + (3/13)(½ − |a|))} + t^{−(η + c₂(½ + η − |a|))})`. -/
+`|S(t, a + ic)| ≤ C S(t, ½+2η) (t^{−1/6} + t^{−(1/13 + (3/13)(½ − |a|))} + t^{−(η + c₂(½ + η −
+|a|))})`. -/
 theorem exists_norm_xiSliceProduct_le_three_profiles {η R₁ : ℝ} (hη : 0 < η) (hη1 : η ≤ 1 / 10)
     (hR₁ : 1 ≤ R₁) :
     ∃ C : ℝ, 0 < C ∧ ∀ t a c : ℝ, 32 * R₁ + 16 ≤ t → |c| ≤ R₁ → |a| < 1 / 2 + η →
@@ -61,11 +65,14 @@ theorem exists_norm_xiSliceProduct_le_three_profiles {η R₁ : ℝ} (hη : 0 < 
   obtain ⟨C₁, hC₁, h₁⟩ := exists_norm_riemannZeta_le_profile_ee_one hη (by linarith)
   obtain ⟨C₂, hC₂, h₂⟩ := exists_norm_riemannZeta_le_profile_ee_two hη (by linarith)
   obtain ⟨C₃, hC₃, h₃⟩ := exists_norm_riemannZeta_le_profile_two hη (by linarith)
-  obtain ⟨K₁, hK₁⟩ : ∃ K₁, K₁ = Real.exp 1 * (2 * (2 * Real.pi) ^ R₁) * (C₁ * (1 + 1 / (2 * η))) ^ 2 :=
+  obtain ⟨K₁, hK₁⟩ : ∃ K₁,
+      K₁ = Real.exp 1 * (2 * (2 * Real.pi) ^ R₁) * (C₁ * (1 + 1 / (2 * η))) ^ 2 :=
     ⟨_, rfl⟩
-  obtain ⟨K₂, hK₂⟩ : ∃ K₂, K₂ = Real.exp 1 * (2 * (2 * Real.pi) ^ R₁) * (C₂ * (1 + 1 / (2 * η))) ^ 2 :=
+  obtain ⟨K₂, hK₂⟩ : ∃ K₂,
+      K₂ = Real.exp 1 * (2 * (2 * Real.pi) ^ R₁) * (C₂ * (1 + 1 / (2 * η))) ^ 2 :=
     ⟨_, rfl⟩
-  obtain ⟨K₃, hK₃⟩ : ∃ K₃, K₃ = Real.exp 1 * (2 * (2 * Real.pi) ^ R₁) * (C₃ * (1 + 1 / (2 * η))) ^ 2 :=
+  obtain ⟨K₃, hK₃⟩ : ∃ K₃,
+      K₃ = Real.exp 1 * (2 * (2 * Real.pi) ^ R₁) * (C₃ * (1 + 1 / (2 * η))) ^ 2 :=
     ⟨_, rfl⟩
   have hK₁0 : 0 ≤ K₁ := by rw [hK₁]; positivity
   have hK₂0 : 0 ≤ K₂ := by rw [hK₂]; positivity
@@ -220,7 +227,8 @@ theorem exists_norm_iteratedDeriv_xiSliceProduct_le_inner_three_profiles {η : �
           mul_le_mul_of_nonneg_right hc1 (by positivity)
         have h5 : 0 ≤ 2 * E * r := by positivity
         have e1 : c * u * r = c * (u * r) := by ring
-        have e2 : (u + 2 * E) * r - η * u - c * u * (1 / 2 - |x|) - u * -(η + c * (1 / 2 + η - |z.re|))
+        have e2 : (u + 2 * E) * r - η * u - c * u * (1 / 2 - |x|)
+            - u * -(η + c * (1 / 2 + η - |z.re|))
             = (u + 2 * E) * r - c * u * (|z.re| - |x| - η) := by ring
         have e3 : (u + 2 * E) * r = 1 * (u * r) + 2 * E * r := by ring
         linarith only [h3, h4, h5, e1, e2, e3]
@@ -294,7 +302,8 @@ theorem exists_norm_iteratedDeriv_xiSliceProduct_le_inner_three_profiles {η : �
 /-- The inner exponent of the middle profile, `b₂ = 1/13 + 3/26 − (3/13)²κ/2`. -/
 def weylFloorRateTwo (κ : ℝ) : ℝ := 1 / 13 + 3 / 26 - (3 / 13) ^ 2 * κ / 2
 
-/-- **Weighted window bound of width `ω`** for `max(½ + 2η, 3/5) ≤ κ ≤ 1`, `x ∈ [κ, κ + ω]`, `ω ≤ 1`:
+/-- **Weighted window bound of width `ω`** for `max(½ + 2η, 3/5) ≤ κ ≤ 1`, `x ∈ [κ, κ + ω]`,
+`ω ≤ 1`:
 `S(½+2η) e^{u(κ/2 − ½ − 2η − 5ω²/6) − 2(log 2 + 2E)} ≤ S(x) e^{−x²u/(2κ)}`. -/
 theorem xiSliceReal_mul_gauss_ge_window_width {η κ ω t x : ℝ} (hη : 0 < η)
     (hκη : 1 / 2 + 2 * η ≤ κ) (hκ6 : 3 / 5 ≤ κ) (hκ1 : κ ≤ 1) (hω1 : ω ≤ 1)
@@ -619,7 +628,8 @@ theorem weylFloor_gaps_of_eps {ε : ℝ} (hε : 0 < ε) (hε3 : ε ≤ 1 / 3) :
   have hP : 0 < 51 / 2352 * ε + 29 / 896 * ε ^ 2 - 3 / 2048 * ε ^ 3 := by
     have h1 : ε ^ 3 ≤ ε / 9 := by nlinarith [mul_pos hε hε]
     nlinarith [mul_pos hε hε]
-  have hq : 0 < (51 / 2352 * ε + 29 / 896 * ε ^ 2 - 3 / 2048 * ε ^ 3) / (2 * (2 / 7 + ε / 16) ^ 2) :=
+  have hq : 0 < (51 / 2352 * ε + 29 / 896 * ε ^ 2 - 3 / 2048 * ε ^ 3)
+      / (2 * (2 / 7 + ε / 16) ^ 2) :=
     div_pos hP (by positivity)
   linarith
 

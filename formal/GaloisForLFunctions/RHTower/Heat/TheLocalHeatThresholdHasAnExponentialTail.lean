@@ -18,11 +18,14 @@ the heights with `λ_t > κ/log U` have measure `≪ U exp(−√(3κ log U)/240
 `eventually_volume_localHeatThreshold_gt_le`.
 
 **Mean value** (`exists_integral_localHeatThreshold_le`).  `∫_{U/4+2}^{U/2−2} λ_t dt ≤ C U/log² U`.
-The layer-cake bound (`setIntegral_le_layers`) over the layers `λ_j = (j + 2)²/(3L²)`, `j ≤ L/2 − 4`,
+The layer-cake bound (`setIntegral_le_layers`) over the layers `λ_j = (j + 2)²/(3L²)`,
+`j ≤ L/2 − 4`,
 capped by `λ_t ≤ λ_WD < 1/12`, sums the tail: `Σ_j (2j + 5) e^{−(j+2)/2400}` is bounded.
 
-**Proof.**  If `λ_t > κ²/(3L²)`, the cone-defect bound (`localHeatThreshold_le_of_cone`) gives a zero
-`ρ` with `(Re ρ − ½)² > (Im ρ − t)² + κ²/L²`: depth `> κ/L` and `|t − Im ρ| < |Re ρ − ½|`.  So `t` lies in
+**Proof.**  If `λ_t > κ²/(3L²)`, the cone-defect bound (`localHeatThreshold_le_of_cone`) gives a
+zero
+`ρ` with `(Re ρ − ½)² > (Im ρ − t)² + κ²/L²`: depth `> κ/L` and `|t − Im ρ| < |Re ρ − ½|`.  So `t`
+lies in
 the `κ`-shadow of the zeros of depth `≥ κ/L`, whose measure is the Selberg tail bound
 `exists_speiserShadow_exponential_density`.
 -/
@@ -46,7 +49,8 @@ theorem exists_shadow_of_lt_localHeatThreshold {t κ L : ℝ} (hκ : 0 ≤ κ) (
     have him : (xiSpectralPoint q).im = -((q.1 : ℂ).re - 1 / 2) := by simp [xiSpectralPoint]
     rw [hre, him, neg_sq, show 3 * (κ ^ 2 / (3 * L ^ 2)) = (κ / L) ^ 2 by field_simp] at hq
     refine hne ⟨q.1, xi_eq_zero_of_mem_divisor_support q.1, ?_, ?_⟩
-    · have h1 : (κ / L) ^ 2 < ((q.1 : ℂ).re - 1 / 2) ^ 2 := by nlinarith [sq_nonneg ((q.1 : ℂ).im - t)]
+    · have h1 : (κ / L) ^ 2 < ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
+        nlinarith [sq_nonneg ((q.1 : ℂ).im - t)]
       have := sq_lt_sq.mp h1
       rw [abs_of_nonneg (div_nonneg hκ hL.le)] at this
       exact this.le
@@ -149,7 +153,8 @@ theorem le_add_sum_layers {lam : ℕ → ℝ} (hmono : Monotone lam) {x : ℝ} :
       linarith
 
 /-- **Layer cake on an interval.**  If `0 ≤ f ≤ λ_N` with `λ` monotone and the layers
-`{f > λ_j} ∩ [a, b]` have measure `≤ B_j`, then `∫_a^b f ≤ λ_0 (b − a) + Σ_{j<N} (λ_{j+1} − λ_j) B_j`. -/
+`{f > λ_j} ∩ [a, b]` have measure `≤ B_j`, then
+`∫_a^b f ≤ λ_0 (b − a) + Σ_{j<N} (λ_{j+1} − λ_j) B_j`. -/
 theorem setIntegral_le_layers {f : ℝ → ℝ} (hf : Measurable f) (hf0 : ∀ t, 0 ≤ f t) {a b : ℝ}
     (hab : a ≤ b) {lam : ℕ → ℝ} (hmono : Monotone lam) {N : ℕ} (hfN : ∀ t, f t ≤ lam N)
     {B : ℕ → ℝ} (hB : ∀ j < N, volume {t ∈ Icc a b | lam j < f t} ≤ ENNReal.ofReal (B j))
@@ -181,7 +186,8 @@ theorem setIntegral_le_layers {f : ℝ → ℝ} (hf : Measurable f) (hf0 : ∀ t
         rw [integral_add (integrable_const _) hsumint, integral_const,
           integral_finsetSum _ fun j _ => hind j]
         congr 1
-        · rw [measureReal_restrict_apply_univ, Real.volume_real_Icc_of_le hab, smul_eq_mul, mul_comm]
+        · rw [measureReal_restrict_apply_univ, Real.volume_real_Icc_of_le hab, smul_eq_mul,
+            mul_comm]
         · refine Finset.sum_congr rfl fun j _ => ?_
           rw [integral_indicator_const _ (hS j), measureReal_restrict_apply (hS j), smul_eq_mul,
             mul_comm]
@@ -193,7 +199,8 @@ theorem setIntegral_le_layers {f : ℝ → ℝ} (hf : Measurable f) (hf0 : ∀ t
           rw [e, measureReal_def]
           exact ENNReal.toReal_le_of_le_ofReal (hB0 j) (hB j (Finset.mem_range.mp hj))
 
-/-- `Σ_{j<N} (2j + 5) e^{−(j+2)/2400} ≤ 18 · 2400³`: `e^y ≥ y³/6` and telescoping `1/(j+1) − 1/(j+2)`. -/
+/-- `Σ_{j<N} (2j + 5) e^{−(j+2)/2400} ≤ 18 · 2400³`: `e^y ≥ y³/6` and telescoping
+`1/(j+1) − 1/(j+2)`. -/
 theorem sum_layer_exp_le (N : ℕ) :
     ∑ j ∈ Finset.range N, (2 * (j : ℝ) + 5) * Real.exp (-(((j : ℝ) + 2) / 2400))
       ≤ 18 * 2400 ^ 3 := by
@@ -229,7 +236,8 @@ theorem layer_sum_le {L A' E : ℝ} (hL : 0 < L) (hA' : 0 ≤ A') (hE : 0 ≤ E)
     {lam : ℕ → ℝ} (hlam : ∀ j, lam j = if j ≤ N then ((j : ℝ) + 2) ^ 2 / (3 * L ^ 2) else 1 / 12)
     (hNL : ((N : ℝ) + 2) ^ 2 / (3 * L ^ 2) ≤ 1 / 12)
     (heN : A' * Real.exp (-(((N : ℝ) + 2) / 2400)) ≤ A' / L ^ 2) :
-    ∑ j ∈ Finset.range (N + 1), (lam (j + 1) - lam j) * (A' * Real.exp (-(((j : ℝ) + 2) / 2400)) + E)
+    ∑ j ∈ Finset.range (N + 1),
+        (lam (j + 1) - lam j) * (A' * Real.exp (-(((j : ℝ) + 2) / 2400)) + E)
       ≤ 18 * 2400 ^ 3 * A' / (3 * L ^ 2) + A' / (12 * L ^ 2) + E / 12 := by
   simp only [mul_add, Finset.sum_add_distrib]
   have hE' : ∑ j ∈ Finset.range (N + 1), (lam (j + 1) - lam j) * E ≤ E / 12 := by
@@ -237,7 +245,8 @@ theorem layer_sum_le {L A' E : ℝ} (hL : 0 < L) (hA' : 0 ≤ A') (hE : 0 ≤ E)
       if_pos (Nat.zero_le _)]
     have : 0 ≤ ((0 : ℕ) + 2 : ℝ) ^ 2 / (3 * L ^ 2) := by positivity
     nlinarith
-  have hlow : ∀ j ∈ Finset.range N, (lam (j + 1) - lam j) * (A' * Real.exp (-(((j : ℝ) + 2) / 2400)))
+  have hlow : ∀ j ∈ Finset.range N,
+      (lam (j + 1) - lam j) * (A' * Real.exp (-(((j : ℝ) + 2) / 2400)))
       = A' / (3 * L ^ 2) * ((2 * (j : ℝ) + 5) * Real.exp (-(((j : ℝ) + 2) / 2400))) := by
     intro j hj
     have hj' := Finset.mem_range.mp hj

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationMovingPositivity
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PolynomialCorrection
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PeriodDefects

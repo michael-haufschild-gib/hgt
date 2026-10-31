@@ -40,6 +40,9 @@ noncomputable section
 
 namespace GaloisForLFunctions.AdelicKreinGeometry
 
+theorem posUnits_val_pos (u : posUnits) : (0 : ℝ) < (((u : ℚˣ) : ℚ) : ℝ) := by
+  exact_mod_cast u.2
+
 /-- The boost coordinate `ℓ(w) = Σ w_i u_i^{−1/2}` of a family of positive slopes. -/
 def boostMassU {n : ℕ} (u : Fin n → posUnits) : (Fin n → ℂ) →ₗ[ℂ] ℂ where
   toFun w := ∑ i, w i * (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)
@@ -97,7 +100,7 @@ theorem sum_boostWeights_eq {n : ℕ} (g : Fin n → AffineGroupQ) (w : Fin n �
     ∑ a, boostWeights Rat.AbsoluteValue.real 1 g w a = boostMassU (fun a => slopeAbs (g a)) w := by
   simp only [boostWeights, boostMassU, LinearMap.coe_mk, AddHom.coe_mk, slopePow_real_eq]
   refine sum_congr rfl fun a _ => ?_
-  rw [Real.rpow_neg (by positivity), Complex.ofReal_inv, div_eq_mul_inv]
+  rw [Real.rpow_neg (posUnits_val_pos _).le, Complex.ofReal_inv, div_eq_mul_inv]
 
 theorem gram_comp_slopeAbs (K : posUnits → ℂ) {n : ℕ} (g : Fin n → AffineGroupQ) :
     gram (fun x => K (slopeAbs x)) g = gram K fun a => slopeAbs (g a) := by
@@ -198,112 +201,105 @@ theorem add_one_le_negIndex_archGlue {K : posUnits → ℂ} (hK : IsHermKernel K
       Real.tendsto_sqrt_atTop.comp (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
     exact tendsto_inv_atTop_zero.comp h1
   have hσc : Tendsto (fun N : ℕ => ((σ N : ℝ) : ℂ)) atTop (𝓝 0) := by
-    simpa using (Complex.continuous_ofReal.tendsto 0).comp hσ
+    simpa [Function.comp_def] using (Complex.continuous_ofReal.tendsto 0).comp hσ
   have hσsq : ∀ N : ℕ, σ N * σ N = ((N : ℝ) + 1)⁻¹ := fun N => by
     simp only [σ]
     rw [← mul_inv, Real.mul_self_sqrt (by positivity)]
-  -- entries of the cross blocks
   have hneg0 : negAbsRat (Multiplicative.ofAdd 0) = 0 := by simp [negAbsRat, absRat]
+  -- the boost coordinates `ρ_i = u_i^{−1/2}`; the basis of `W` has `ℓ = 0`
+  set ρ : Fin m → ℂ := fun i => (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)
+  have hzero : ∀ k, ∑ i, conj (BW i k) * ρ i = 0 := fun k => by
+    have h := congrArg conj (hBW k)
+    rw [map_sum, map_zero] at h
+    rw [← h]
+    refine sum_congr rfl fun i _ => ?_
+    simp [ρ, Complex.conj_ofReal]
+  have hzero' : ∀ k, ∑ i, ρ i * BW i k = 0 := fun k => by
+    rw [← hBW k]; exact sum_congr rfl fun i _ => mul_comm _ _
+  have hρ : ∀ i, ((slopePow Rat.AbsoluteValue.real 1 (D i))⁻¹ : ℂ) = ρ i := fun i => by
+    rw [hDpow, ← Complex.ofReal_inv, ← Real.rpow_neg (posUnits_val_pos _).le]
+  -- entries of the cross blocks
   have hcross : ∀ k, Tendsto (fun N => (BWᴴ * C N * Sig N) k 0) atTop (𝓝 0) := by
     intro k
     have hent : ∀ N, (BWᴴ * C N * Sig N) k 0 =
         (σ N : ℂ) * (2 * ∑ i, conj (BW i k) * K ((u i)⁻¹)) := by
       intro N
       have hterm : ∀ i e, Φ ((D i)⁻¹ * T N e) = K ((u i)⁻¹) +
-          (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) *
-            ((c : ℂ) * negAbsRat (Multiplicative.ofAdd (shiftOf (T N e)))) := fun i e => by
-        simp only [Φ, archGlue_inv_mul, hDslope, hTslope, mul_one, hDpow, hTpow, hDshift, sub_zero]
-        rw [Real.rpow_neg (by positivity)]
+          ((c : ℂ) * negAbsRat (Multiplicative.ofAdd (shiftOf (T N e)))) * ρ i := fun i e => by
+        simp only [Φ, archGlue_inv_mul, hDslope, hTslope, mul_one, hTpow, hDshift, sub_zero]
+        rw [hρ]
+        ring
+      have hs : ∀ l : ℂ, ∑ i, conj (BW i k) * (K ((u i)⁻¹) + l * ρ i) =
+          ∑ i, conj (BW i k) * K ((u i)⁻¹) := fun l => by
+        simp only [mul_add, sum_add_distrib]
+        rw [show ∑ i, conj (BW i k) * (l * ρ i) = l * ∑ i, conj (BW i k) * ρ i by
+          rw [mul_sum]; exact sum_congr rfl fun i _ => by ring, hzero k, mul_zero, add_zero]
       simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, C, Sig, Matrix.of_apply,
-        Fin.sum_univ_two, hterm, Complex.star_def]
-      have hsum : ∀ e, ∑ i, conj (BW i k) * (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) *
-          ((c : ℂ) * negAbsRat (Multiplicative.ofAdd (shiftOf (T N e)))) = 0 := fun e => by
-        rw [← sum_mul]
-        have : ∑ i, conj (BW i k) * (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) =
-            conj (∑ i, BW i k * (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)) := by
-          rw [map_sum]; simp [Complex.conj_ofReal]
-        rw [this, hBW k, map_zero, zero_mul]
-      simp only [mul_add, sum_add_distrib, ← mul_assoc]
-      rw [hsum 0, hsum 1]
+        Fin.sum_univ_two, hterm, Complex.star_def, hs]
       ring
     simp_rw [hent]
     simpa using hσc.mul_const (2 * ∑ i, conj (BW i k) * K ((u i)⁻¹))
+  -- the other cross block is the adjoint, since `Φ` is Hermitian
+  have hΦ : IsHermKernel Φ := fun g => by
+    have h1 : IsHermKernel fun g : AffineGroupQ => K (slopeAbs g) := hK.comp _
+    have h2 := isHermKernel_conformalInduction (isConformal_negAbsRat c)
+      (isHermKernel_ofReal_mul isHermKernel_negAbsRat c)
+    show K (slopeAbs g⁻¹) + _ = conj (K (slopeAbs g) + _)
+    rw [h1 g, h2 g, map_add]
+  have hC' : ∀ N, C' N = (C N)ᴴ := fun N => by
+    ext e i
+    simp only [C, C', Matrix.of_apply, Matrix.conjTranspose_apply, Complex.star_def]
+    rw [← hΦ, _root_.mul_inv_rev, inv_inv]
   have hcross' : ∀ k, Tendsto (fun N => ((Sig N)ᴴ * C' N * BW) 0 k) atTop (𝓝 0) := by
     intro k
-    have hent : ∀ N, ((Sig N)ᴴ * C' N * BW) 0 k =
-        (σ N : ℂ) * (2 * ∑ i, K (u i) * BW i k) := by
-      intro N
-      have hterm : ∀ e i, Φ ((T N e)⁻¹ * D i) = K (u i) +
-          (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) *
-            ((c : ℂ) * negAbsRat (Multiplicative.ofAdd (-shiftOf (T N e)))) := fun e i => by
-        simp only [Φ, archGlue_inv_mul, hDslope, hTslope, inv_one, one_mul, hDpow, hTpow,
-          hDshift, zero_sub]
-        rw [Real.rpow_neg (by positivity)]
-      simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, C', Sig, Matrix.of_apply,
-        Fin.sum_univ_two, hterm, Complex.star_def, Complex.conj_ofReal]
-      have hsum : ∀ e, ∑ i, (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) *
-          ((c : ℂ) * negAbsRat (Multiplicative.ofAdd (-shiftOf (T N e)))) * BW i k = 0 :=
-        fun e => by
-          have : ∀ i, (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ) *
-              ((c : ℂ) * negAbsRat (Multiplicative.ofAdd (-shiftOf (T N e)))) * BW i k =
-              ((c : ℂ) * negAbsRat (Multiplicative.ofAdd (-shiftOf (T N e)))) *
-                (BW i k * (((((u i : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)) := fun i => by ring
-          simp_rw [this]
-          rw [← mul_sum, hBW k, mul_zero]
-      simp only [add_mul, sum_add_distrib, mul_add, mul_sum]
-      simp only [← mul_sum]
-      rw [hsum 0, hsum 1]
-      simp only [mul_zero, add_zero]
-      rw [show ∑ i, K (u i) * BW i k = ∑ i, K (u i) * BW i k from rfl]
-      ring
-    simp_rw [hent]
-    simpa using hσc.mul_const (2 * ∑ i, K (u i) * BW i k)
+    have e : ∀ N, ((Sig N)ᴴ * C' N * BW) 0 k = conj ((BWᴴ * C N * Sig N) k 0) := fun N => by
+      rw [hC', ← Matrix.conjTranspose_conjTranspose BW, ← Matrix.conjTranspose_mul,
+        ← Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.conjTranspose_apply,
+        Complex.star_def, Matrix.mul_assoc]
+    simp_rw [e]
+    simpa using (Complex.continuous_conj.tendsto 0).comp (hcross k)
   -- the pair block tends to `−2c`
   have hpair : Tendsto (fun N => ((Sig N)ᴴ * E N * Sig N) 0 0) atTop
       (𝓝 ((-2 * c : ℝ) : ℂ)) := by
     have hent : ∀ N, ((Sig N)ᴴ * E N * Sig N) 0 0 =
-        ((σ N * σ N * (4 * (K 1).re) : ℝ) : ℂ) + (σ N * σ N : ℝ) * (4 * (K 1).im * I) -
-          ((2 * c * (σ N * σ N * ((N : ℝ) + 1)) : ℝ) : ℂ) := by
+        ((σ N * σ N : ℝ) : ℂ) * (4 * K 1) - ((2 * c * (σ N * σ N * ((N : ℝ) + 1)) : ℝ) : ℂ) := by
       intro N
-      have hT0 : T N 0 = 1 := rfl
-      have hT1 : T N 1 = translation ((N : ℚ) + 1) := rfl
-      have e00 : Φ ((T N 0)⁻¹ * T N 0) = K 1 := by
-        rw [hT0, mul_one, inv_one]; simp [Φ, archGlue, conformalInduction, hneg0, slopeAbs]
-      have e11 : Φ ((T N 1)⁻¹ * T N 1) = K 1 := by
-        rw [inv_mul_cancel]; simp [Φ, archGlue, conformalInduction, hneg0, slopeAbs]
-      have e01 : Φ ((T N 0)⁻¹ * T N 1) = K 1 - (c : ℂ) * ((N : ℂ) + 1) := by
-        rw [hT0, inv_one, one_mul, hT1]
-        simp only [Φ, archGlue, slopeAbs_translation, conformalInduction, slopePow_translation,
-          inv_one, Complex.ofReal_one, one_mul, affShift_translation, negAbsRat, absRat,
-          toAdd_ofAdd]
-        show K 1 + (c : ℂ) * -(((|(N : ℚ) + 1| : ℚ)) : ℂ) = _
+      have hsp : slopePow Rat.AbsoluteValue.real 1 (translation ((N : ℚ) + 1)) = 1 :=
+        slopePow_translation _ _ _
+      have hsp' : slopePow Rat.AbsoluteValue.real 1 (translation (-((N : ℚ) + 1))) = 1 :=
+        slopePow_translation _ _ _
+      have hsh : shiftOf (translation ((N : ℚ) + 1)) = (N : ℚ) + 1 := affShift_translation _
+      have hsh' : shiftOf (translation (-((N : ℚ) + 1))) = -((N : ℚ) + 1) := affShift_translation _
+      have hinv : (translation ((N : ℚ) + 1))⁻¹ = translation (-((N : ℚ) + 1)) := by
+        rw [eq_comm, ← mul_eq_one_iff_eq_inv, ← translation_add, neg_add_cancel, translation_zero]
+      have e00 : Φ 1 = K 1 := by
+        simp only [Φ, archGlue, map_one, conformalInduction, shiftOf_one, affShift_one, hneg0,
+          mul_zero, add_zero]
+      have e01 : Φ (translation ((N : ℚ) + 1)) = K 1 - (c : ℂ) * ((N : ℂ) + 1) := by
+        simp only [Φ, archGlue, slopeAbs_translation, conformalInduction, hsp, hsh, inv_one,
+          Complex.ofReal_one, one_mul, negAbsRat, absRat, toAdd_ofAdd]
         rw [abs_of_nonneg (by positivity)]; push_cast; ring
-      have e10 : Φ ((T N 1)⁻¹ * T N 0) = K 1 - (c : ℂ) * ((N : ℂ) + 1) := by
-        rw [hT0, mul_one, hT1]
-        have hinv : (translation ((N : ℚ) + 1))⁻¹ = translation (-((N : ℚ) + 1)) := by
-          rw [eq_comm, ← mul_eq_one_iff_eq_inv, ← translation_add, neg_add_cancel, translation_zero]
-        rw [hinv]
-        simp only [Φ, archGlue, slopeAbs_translation, conformalInduction, slopePow_translation,
-          inv_one, Complex.ofReal_one, one_mul, affShift_translation, negAbsRat, absRat,
-          toAdd_ofAdd]
-        show K 1 + (c : ℂ) * -(((|-((N : ℚ) + 1)| : ℚ)) : ℂ) = _
+      have e10 : Φ (translation (-((N : ℚ) + 1))) = K 1 - (c : ℂ) * ((N : ℂ) + 1) := by
+        simp only [Φ, archGlue, slopeAbs_translation, conformalInduction, hsp', hsh', inv_one,
+          Complex.ofReal_one, one_mul, negAbsRat, absRat, toAdd_ofAdd]
         rw [abs_neg, abs_of_nonneg (by positivity)]; push_cast; ring
-      simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, E, Sig, gram, Matrix.of_apply,
-        Fin.sum_univ_two, Fin.sum_univ_one, e00, e11, e01, e10, Complex.star_def,
-        Complex.conj_ofReal]
-      rw [← Complex.re_add_im (K 1)]
+      have e11 : Φ (translation (-((N : ℚ) + 1)) * translation ((N : ℚ) + 1)) = K 1 := by
+        rw [← translation_add, neg_add_cancel, translation_zero, e00]
+      simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, E, Sig, gram, T, Matrix.of_apply,
+        Fin.sum_univ_two, Fin.sum_univ_one, Complex.star_def, Complex.conj_ofReal,
+        Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, inv_one, one_mul, mul_one,
+        inv_mul_cancel, hinv, e00, e01, e10, e11]
       push_cast
       ring
-    have h1 : Tendsto (fun N : ℕ => σ N * σ N * (4 * (K 1).re)) atTop (𝓝 0) := by
-      simpa using (hσ.mul hσ).mul_const (4 * (K 1).re)
-    have h2 : Tendsto (fun N : ℕ => ((σ N * σ N : ℝ) : ℂ) * (4 * (K 1).im * I)) atTop (𝓝 0) := by
-      have := (Complex.continuous_ofReal.tendsto 0).comp (hσ.mul hσ)
-      simpa using this.mul_const (4 * (K 1).im * I)
     have h3 : ∀ N : ℕ, σ N * σ N * ((N : ℝ) + 1) = 1 := fun N => by
       rw [hσsq]; field_simp
     simp_rw [hent, h3]
-    have := ((Complex.continuous_ofReal.tendsto 0).comp h1).add h2
-    simpa using this.sub_const ((2 * c * 1 : ℝ) : ℂ)
+    have h1 : Tendsto (fun N : ℕ => ((σ N * σ N : ℝ) : ℂ)) atTop (𝓝 0) := by
+      have := hσ.mul hσ
+      rw [mul_zero] at this
+      simpa [Function.comp_def] using (Complex.continuous_ofReal.tendsto 0).comp this
+    have := (h1.mul_const (4 * K 1)).sub_const ((2 * c * 1 : ℝ) : ℂ)
+    simpa using this
   have hconv : ∀ p q, Tendsto (fun N => H N p q) atTop (𝓝 (H₀ p q)) := by
     intro p q
     simp only [hH]

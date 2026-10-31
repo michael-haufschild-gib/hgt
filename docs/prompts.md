@@ -400,6 +400,9 @@ read:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
+supporting facts:
+- docs/reports/researchlogs/big-pictures.md
+  
 create new versions of the reviews from scratch to reflect the current status quo and frontier of our research:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
@@ -407,37 +410,54 @@ create new versions of the reviews from scratch to reflect the current status qu
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
    2.3 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
    2.4 suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
-   2.5 suggest if you see any opportunity to make a breakthrough in the real hard questions our proof routes face, weil positivitiy, positivity bounds, etc. Not more receivers, not more optimizing some number, not more lower bounds on this or that, a real breakthrough that opens our research for significant progress and new discoveries.
-   2.6 ideates whether solving these obstacles in 2.2 would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.5 ideate and describe a breakthrough question that is less "hard" than proving RH or quasi-RH and would bring a real advance and breakthrough in:
+   2.5.1 our RH proof research as a whole
+   2.5.2 route SC
+   2.5.3 route WD
+   2.5.4 route ACS
+   2.5.5 route WL
+   2.5.6 route CHMD
+   2.6 ideates whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
-
 do not read other markdown files, only the ones i mentioned.
-do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. keep a working log in logs/ to write down research findings, so they do not get lost during context window compaction. the expectation is that you do real in-depth research and not just read the markdown files and do some spot checks on recently changed files.
+do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. 
+
+first collect information in a working log in logs/ - facts, not process or status updates. only after having collected all information, interprete it, do additional research where new questions arise, and only when no more questions can be asked write the final reports. the expectation is that you do real in-depth research and not just read the markdown files or do some spot checks on recently changed files.
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the  reports in folder docs/reports/review-3010/
+create the new reports in folder docs/reports/review-3110/
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
 ## update programme README.mds
-go one by one through the following research programmes and update their README.md - we have done a lot of research in these programmes which may or may not change the content of the README.md:
+do not use the hgtl7 skill. 
+
+go one by one through the following research programmes and rewrite their README.md:
 
 docs/reports/research-programmes.md
 
-important: the readme.md is not a ledger or status report but a foundational document that explains a new research agent the why, how, what - the motivation, the objects, the language, the mechanisms of the field, traps to avoid, the open research topics, the questions it aims to answer, the tools it aims to create, its foundational pillar theorems, where it sits in the context of our whole research, how it relates to other research programmes.
+1. keep a working log where you write down mathematical facts, not process or status updates. 
+2. actually read every lean proof in the research programme and take notes
+3. rewrite the README.md with correct informantion:
+   1. Motivation
+   2. Objects
+   3. Language
+   4. Mechanisms
+   5. Pillar theorems
+   6. Tools developed and tools still to build
+   7. Open questions and research topics
+   8. Traps
+   9. Where the research programme sits in the context of the other programmes and our research as a whole
+   10. A big picture interpreation without much mathematical facts that tells us what this research programme is telling us about our RH proof research as a whole and what its finding are telling us about the RH proof and our research
 
-where needed use the search tool for the lean corpus to confirm:
-- what are the pillar theorems, objects, mechanisms on which the field/research programme rests
-- what are really the open questions and research topics
-- what are really the missing tools still to build
+important: the readme.md is not a ledger or status report but a foundational document. remove any form of theorem ledger and overly verbose explanations. 
 
-remove any form of theorem ledger and overly verbose explanations. 
 write clean, simple, to the point. the readers are not humans but AI agents like you - so make sure you optimize for maximum information in minimum token usage.
 
-keep the files under 1500 lines.
+keep the files under 2500 lines.
 do not run any builds. do not read anything outside the formal/ folder. do not run web searches. use the search tool for the lean corpus when searching the lean corpus.
 
 ## review
@@ -472,11 +492,11 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read fully docs/reports/review-3010/fable.md
+read and understand docs/reports/review-3010/reboot-final.md
 
-the document describes under "## 7. Question 6: the field that would supply the missing tools" a new field/research programme.
+under "## 6. Research programme" it describes a research programme based on the findings in chapter "## 4. Solution shapes".
 
-Your task: develop this new field / programme.
+Your task: develop this research programme and do the actual research and formalization.
 
 Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 
@@ -590,15 +610,15 @@ Put all lean code for the answer into its own subfolder.
 
 ## argon single task open question
 
-do not use the hgtl7 skill
+Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-3010/fable.md
+read and understand docs/reports/review-3110/obstacles-summary.md and docs/reports/researchlogs/big-pictures.md
 
-under "## 6. Question 5: the three questions to focus on" it asks 3 questions.
+the obstacles-summary document asks one question: Do multivariate, parity-selective integer auxiliaries (outside the Hecke algebra of a single prime) yield the prime number theorem upper bound `ψ(x) ≤ (1 + ε)x` by vanishing-order arguments alone, beating the univariate integer-Chebyshev ceiling (A9)?
 
-your task: find and formalize a final full solution/answer to each question.
+Your task: find an answer/solution to this question and fully formalize it and its collaries unconditionally in lean.
 
-We are not interested in estimates, criterias what the answer could be like, nogos - we accept only a full and final answer/solution to each question.
+We are not interested in criteria of what the answer would be like, improving some number, more receivers, nogos, anything that is not a full answer of the question.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -618,6 +638,8 @@ always look at the big picture, try to understand what all our research is tryin
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 

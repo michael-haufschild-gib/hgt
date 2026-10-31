@@ -1,6 +1,6 @@
 # Degree rotation preserves positive loop spectral coordinates
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Degree rotation commutes with the canonical positive
   central lift, preserves the actual positive Borel, and fixes both
@@ -25,4 +25,5 @@ preservation of the full integral loop subgroup is a separate step.
 
 `HTGeometry/LoopEisenstein/PositiveLoopRotation.lean`:
 `rotation_positiveEmbedding`, `rotation_mem_positiveBorel`,
-`borelTorusHom_rotation`. Direct check pending.
+`borelTorusHom_rotation`. Direct Lean and transitive axiom audits passed; only `propext`,
+`Classical.choice`, and `Quot.sound` occur.

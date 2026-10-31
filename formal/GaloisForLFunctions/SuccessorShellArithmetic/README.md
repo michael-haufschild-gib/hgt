@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 24 modules
-(6 root, `TopBand/` 11, `Conductor/` 7). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 27 modules
+(6 root, `TopBand/` 11, `Conductor/` 10). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -9,9 +9,10 @@ The complete atomic Weil form `W_{N,c}` (atoms at `log n`, `n ≤ N`, width `w =
 built on the integers at square-root precision: its nonnegativity when `c⁴/log N → ∞` is RH
 (`riemannHypothesis_iff_completeWeilEnergy_nonneg_of_growthTwo`). At fixed overlap it is solved: conductor
 modes have nonnegative completed energies because the successor shells `n = km + h` repay the `−log c` of
-the reference energy. Past fixed overlap the corpus pays the shells in absolute value, and that payment is
-the polynomial loss in the confinement of negative vectors (`D ≤ C c¹⁶ S`, from
-`tiltedUnitSpline_complete_defect_reserve_explicit`). SSh studies the shell block itself: where it lives,
+the reference energy. The complete matrix is now positive uniformly for
+`1≤c≤(log log N)^α`, every `0<α<1/16`, with logarithmic defect reserve.
+The common-horizon proof still uses the preliminary cutoff from `D≤Cc¹⁶S`.
+SSh studies the shell block itself: where it lives,
 what its repayment is made of, what separate payment costs, and what joint signed payment with the pole
 achieves.
 
@@ -39,6 +40,7 @@ Profile `φ` (`C²`, support `[0,1]`), `M = ∫φ²`, `q = (∫φ)²/M`, `G = �
 | Divisor packets | `divisorRamanujanPacket`, `divisorJetPacket` | `F = Σ f(m)c_m`, `JF = Σ f(m)J_m` |
 | Source weights | `ramanujanAutocorrelationWeight`, `ramanujanProfileWeight`, `finiteSourceSmoothing` | `φ(k)^{−1}Σ a_i a_j c_k(|i−j|)` (profiled: × `autocorr φ(θ_j − θ_i)`) |
 | Weighted energy | `weightedDivisorJetEnergy` | divisor-jet energy with weight `b(k)` on the lower conductor |
+| Harmonic Gram | `Σ_(n≤N)u_m(n)u_l(n)/n`, `u_m=c_m/√φ(m)` | finite part `γδ_ml−I(m,l)/√(φ(m)φ(l))`, with torsion intersection `I` |
 | Twin shell | `twinShellForm` | shell weighted by `ω(k)(1 − ω(km)ω(km + h))` |
 
 External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `completeWeilMatrix`,
@@ -50,7 +52,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - **Shift** `h`, **dilation** `k`, **base** `m` of a shell; **ratio block** = `h = 0`.
 - **Repayment**: the shell symbol cancels the `−log c` of the reference energy on conductor modes.
 - **Separate payment**: `NR ≤ G(εD + CS)`. **Joint payment**: shells with pole (and archimedean shells), signs kept.
-- **Reserve exponents** `(θ, κ)`: `W ≥ δD − CS` with `δ ≍ c^{−θ}`, `C ≍ c^κ`; confinement exponent `θ + κ` (now 16).
+- **Reserve exponents** `(θ, κ)`: `W ≥ δD − CS` with `δ ≍ c^{−θ}`, `C ≍ c^κ`; preliminary confinement exponent `θ + κ = 16`.
 - **Adjunction value** `λ_d = log d + tameDifferent d`; **reduced lag modulus** `m/gcd(m, n)`.
 - **Successor sign** `ω(ℓ)ω(ℓ + h)`; **disagreement** = −1.
 
@@ -84,9 +86,12 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
     transform squares to `M` ⇒ eigenbasis of the divisor graph.
 12. Signed source ⇒ Ramanujan lag Gram = `Σ_{primitive z}|Σ a_i z^i|² ≥ 0`; shifted orthogonality keeps the
     smoothed Gram diagonal; integrating over a profile translate keeps positivity.
+13. Reciprocal inversion and the harmonic limit `Σ c_m(n)/n→−Λ(m)` identify the sharp Gram finite part
+    with divisor-edge energy and torsion intersection. The two-sided large sieve and Abel summation
+    give quadratic remainder `Q(Q−1)/(N+1)` times coefficient mass.
 
 **E. Gauge**
-13. For completely multiplicative sign `ω`: `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`, zero on ratio pairs.
+14. For completely multiplicative sign `ω`: `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`, zero on ratio pairs.
 
 ## 5. Pillar theorems
 
@@ -106,7 +111,10 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Divisor-jet energy: square completion, kernel = constants, ground packet = comb `f(1)M[M|n]` | `divisorJetEnergy_eq_period_pairing`, `divisorJetEnergy_eq_zero_iff`, `divisorRamanujanPacket_eq_comb_of_energy_zero` | proved |
 | Exact adjunction spectrum `E = M⁻¹Σ_{d|M} φ(d)λ_d F(M/d)² = M⁻¹Σ_{n<M} λ_{M/gcd(M,n)}F(n)²` | `divisorJetEnergy_eq_adjunction_spectrum`, `divisorJetEnergy_eq_period_symbol` | proved |
 | Smoothed packet–jet pairing has positive edge completion; adjunction lag kernel `c_m(h)(tameDiff m − λ_{m/gcd})` PSD (finite source, profiled, log mesh) | `weightedDivisorJetEnergy_eq_source_pairing`, `sum_adjunction_lag_charge_nonneg`, `logarithmic_profile_adjunction_charge_nonneg` | proved |
-| Reserve `W ≥ a c⁻⁷(D − C log(2c)S)` (logarithmic confinement) | — | open |
+| Sharp harmonic finite part `(γ−log M)mass+E_M(f)` for divisor packets; exact mixed entries | `tendsto_divisorPacket_sq_harmonic_finitePart`, `tendsto_ramanujan_mul_harmonic_of_ne` | proved |
+| Harmonic finite part = Euler scalar minus torsion intersection; absolute norm `≤ |γ|+4log Q+log4+4` | `tendsto_ramanujanPacket_harmonic_torsion`, `abs_harmonicGram_finitePart_le_log` | proved |
+| Uniform quadratic tail `Q(Q−1)/(N+1)` times mass; logarithmic finite-horizon Gram budget | `abs_harmonicGram_quadratic_torsion_remainder`, `abs_harmonicGram_sub_log_mass_le` | proved |
+| Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
 
@@ -118,22 +126,23 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Uniform-in-overlap (`1 ≤ c ≤ N/4`) joint coefficient bounds for witness, periodic, Ramanujan and two-mode data.
 - Divisor-jet algebra: conductor expansion, Plancherel, power deformation, reciprocity, finite adjunction spectrum.
 - Positive source/profile autocorrelation weights and smoothed square completion.
+- Exact harmonic finite parts, torsion identification, and a common quadratic tail at conductor scale `Q²/N`.
+- Common complete-conductor residual bounds on every logarithmic conductor range.
 
 **To build**
 - Identification of the divisor-jet completion with the complete Weil shell block (horizon boundary included).
 - Joint payment ledger for shells + pole + archimedean shells with tracked `(θ, κ)`.
-- Conductor-explicit residual constants (effective growing packets).
 - Mean-square conductor costs in the upward prime residual (needs quantitative Mertens on short blocks).
 - Control of the successor-variation form against `D`.
 
 ## 7. Open questions
 
-1. Signed repayment off the conductor span: `D = O(log c)` on negative vectors at growing overlap?
+1. Extend the uniform logarithmic reserve beyond `c≤(log log N)^α`, `α<1/16`.
 2. Does the full agreement-shell block admit a sum-of-squares decomposition matching the divisor-jet completion?
 3. PNT discrepancy `Σ_m f(m)[(1/m)Σf − Σ_k Λ(k)f(km)]` on the top band: size relative to `D`, `S`?
 4. Successor-variation form `Σ_h Σ_ℓ y(ℓ)(x(ℓ+h) − x(ℓ))β`: which inequality with `D` holds; does it fail for Beurling systems?
 5. Archimedean shells (`k = 1`): their signed interaction with prime shells and pole.
-6. Effective growing packet range `Q(N)` with explicit rate.
+6. Operator control of the whole upward residual on growing conductor packets.
 7. Twins: bound the twin defect via density of successor disagreements on the top band.
 
 ## 8. Traps
@@ -154,7 +163,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 ## 9. Context
 
 **Uses** (import counts): RenormalizedArithmeticPotentialTheory 9, RHTower 5, SignedArithmeticHodgeTheory 2,
-HTGeometry 2, CriticalArithmeticCorrelationTheory 2, SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
+HTGeometry 2, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
+SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
 BiScaleUncertainty 1, BezoutValuationIncidence 1, ArithmeticPositiveDuality 1, ArithmeticLorentzianGeometry 1,
 ArithmeticIntersectionTheory 1.
 
@@ -179,9 +189,11 @@ programme shows that the fixed-overlap positivity is not a prime phenomenon but 
 the shift lattice pays the logarithm, and a continuum of shifts would leave the form unboundedly negative. This
 locates the discreteness that RH-strength positivity must use.
 
-It also shows why growing-overlap positivity has been stuck at polynomial loss: paying the shells by themselves
-is provably expensive, while paying them together with the pole is cheap on every family tested so far. The
+Growing-overlap positivity and logarithmic reserve hold on the stated iterated-logarithmic ranges.
+Paying the shells by themselves is provably expensive, while joint payment with the pole retains cancellation. The
 divisor-jet work exposes the finite algebra behind that cancellation as a positive divisor-graph energy with
-explicit spectrum, positive even after arbitrary signed smoothing. The remaining gap is identification: proving
+explicit spectrum, positive even after arbitrary signed smoothing. The harmonic Gram finite part is exactly
+this energy plus its scalar counterterm, equivalently Euler's scalar minus torsion intersection.
+The remaining gap is identification: proving
 that the true complete Weil shell block is such a completion, including its horizon boundary, for vectors off
-the conductor span. That joint signed estimate is the single input the confinement route needs.
+the conductor span at larger overlap. That joint signed estimate is the central missing input to wider confinement.

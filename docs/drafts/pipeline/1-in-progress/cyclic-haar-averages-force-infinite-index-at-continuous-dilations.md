@@ -16,7 +16,7 @@ For the moving-space positivity, take `x=(T_b−1)y` with `T_b^m y=y`, and put `
 
 ## Finite cyclic Hecke bound
 
-Write `v_a=v_(D_a)` and assume `a,c∈bℤ`. Put `u_a=(1−P_b)v_a`, `u_c=(1−P_b)v_c`, and `d=den(c/a)`. The first `d` translates `T_(jc)v_a` are orthonormal by the Haar reading. Their projected fixed parts all equal `P_bv_a`. Consequently
+Write `v_a=v_(D_a)`, with arbitrary nonzero rational `a` and `c` a nonzero natural multiple of `b`. Put `u_a=(1−P_b)v_a`, `u_c=(1−P_b)v_c`, and `d=den(c/a)`. The first `d` translates `T_(jc)v_a` are orthonormal by the Haar reading. Their projected fixed parts all equal `P_bv_a`. Consequently
 
 `B(Σ_(j<d) T_(jc)u_a, Σ_(j<d) T_(jc)u_a) = d−d² B(P_bv_a,P_bv_a) ≤ d`.
 
@@ -56,5 +56,6 @@ Formalized, with direct audits and standard axiom closures:
 - `HeckeKreinToeplitz/Index/PeriodicDilationPositivity.lean`: if `t a=a t^m`, every `m`-periodic, zero-mean vector for `t` has nonnegative norm in a finite-index column representation.
 - `AdelicKreinGeometry/Haar/TranslationMovingPositivity.lean`: a finite-index integer-invariant affine kernel is nonnegative on every rational translation difference range.
 - `HeckeKreinToeplitz/Index/ColumnPositivity.lean`: Cauchy–Schwarz holds on every nonnegative column subspace.
+- `AdelicKreinGeometry/Haar/CyclicOrbits.lean`: complete Haar translation orbits are orthogonal with the Haar scalar as squared norm; normalized fixed projections have squared norm `1/den(b/a)`.
 
 Required Lean results: cyclic Hecke bound; projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

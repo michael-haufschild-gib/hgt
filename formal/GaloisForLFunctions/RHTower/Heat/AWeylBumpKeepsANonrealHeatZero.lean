@@ -29,12 +29,14 @@ Proof.  With `E = e^{tL²/4}`, `B = A(1 − 4t/L²)^{−1/2}` and `cosh a = B/E`
 `G(z) = E cos(Lz/2) + B` vanishes at `z* = (2/L)(π + ia)`.  On the circle `|z − z*| = 1/L`,
 `G = −2E sin((ζ + ζ*)/2) sin((ζ − ζ*)/2)` (`ζ = Lz/2`) has `‖G‖ ≥ E sinh(a − ¼)/π`
 (`‖sin w‖² = sin² Re w + sinh² Im w`), while `‖H_t − G‖ = B‖e^{−z²/(L²−4t)} − 1‖ ≤ 4B‖z‖²/L²`.  For
-`2 ≤ a ≤ L` and `L ≥ 22` the second is smaller, so by Rouché `H_t` vanishes in the disc, which lies in
+`2 ≤ a ≤ L` and `L ≥ 22` the second is smaller, so by Rouché `H_t` vanishes in the disc, which lies
+in
 `Im z > 0`.  `a ≥ 2` needs `(θ − κ/4)L ≥ 2`.
 
 So with Weyl's centre size the model keeps a nonreal zero at height-scale `e^L` up to heat
 `(2/3 − ε)/L`, exactly the horizon of the corpus, and the constant `2/3` in the heat-count bound
-`N(t) ≤ C R log R`, `R = 2π e^{(2/3+ε)/t}` (`exists_nonrealZeroCount_and_collisionMass_le_twoThirds`)
+`N(t) ≤ C R log R`, `R = 2π e^{(2/3+ε)/t}`
+(`exists_nonrealZeroCount_and_collisionMass_le_twoThirds`)
 cannot be lowered from size bounds and kernel positivity alone.
 -/
 
@@ -88,7 +90,8 @@ theorem gaussKernel_heat_eq {L t : ℝ} (hL : 0 < L) (ht : 4 * t < L ^ 2) (u : �
 theorem integral_gaussKernel_heat_mul_cos {L t : ℝ} (hL : 0 < L) (ht : 4 * t < L ^ 2) (z : ℂ) :
     ∫ u : ℝ, ((L / (2 * Real.sqrt Real.pi) * Real.exp (-(L ^ 2 / 4 * u ^ 2))
         * Real.exp (t * u ^ 2) : ℝ) : ℂ) * Complex.cos (z * u)
-      = ((1 / Real.sqrt (1 - 4 * t / L ^ 2) : ℝ) : ℂ) * Complex.exp (-(z ^ 2) / (L ^ 2 - 4 * t)) := by
+      = ((1 / Real.sqrt (1 - 4 * t / L ^ 2) : ℝ) : ℂ)
+        * Complex.exp (-(z ^ 2) / (L ^ 2 - 4 * t)) := by
   have hd : 0 < L ^ 2 - 4 * t := by linarith
   have ht' : 0 < 1 / (L ^ 2 - 4 * t) := by positivity
   set c : ℝ := L / Real.sqrt (L ^ 2 - 4 * t) with hc
@@ -98,18 +101,21 @@ theorem integral_gaussKernel_heat_mul_cos {L t : ℝ} (hL : 0 < L) (ht : 4 * t <
         + (filterGauss (1 / (L ^ 2 - 4 * t)) u : ℂ) * Complex.exp (u * (-(z * I)))) := by
     intro u
     rw [gaussKernel_heat_eq hL ht u,
-      show Complex.cos (z * u) = (Complex.exp (z * u * I) + Complex.exp (-(z * u) * I)) / 2 from rfl]
+      show Complex.cos (z * u)
+        = (Complex.exp (z * u * I) + Complex.exp (-(z * u) * I)) / 2 from rfl]
     rw [show z * u * I = u * (z * I) by ring, show -(z * u) * I = u * (-(z * I)) by ring, hc]
     push_cast; ring
   rw [show (fun u : ℝ => ((L / (2 * Real.sqrt Real.pi) * Real.exp (-(L ^ 2 / 4 * u ^ 2))
       * Real.exp (t * u ^ 2) : ℝ) : ℂ) * Complex.cos (z * u)) = fun u =>
       (c / 2 : ℂ) * ((filterGauss (1 / (L ^ 2 - 4 * t)) u : ℂ) * Complex.exp (u * (z * I))
         + (filterGauss (1 / (L ^ 2 - 4 * t)) u : ℂ) * Complex.exp (u * (-(z * I)))) from funext hpt,
-    MeasureTheory.integral_const_mul, MeasureTheory.integral_add (integrable_filterGauss_mul_exp ht' _)
+    MeasureTheory.integral_const_mul,
+    MeasureTheory.integral_add (integrable_filterGauss_mul_exp ht' _)
       (integrable_filterGauss_mul_exp ht' _), integral_filterGauss_mul_exp ht',
     integral_filterGauss_mul_exp ht']
   have hs : Real.sqrt (1 - 4 * t / L ^ 2) = Real.sqrt (L ^ 2 - 4 * t) / L := by
-    rw [show 1 - 4 * t / L ^ 2 = (L ^ 2 - 4 * t) / L ^ 2 by field_simp, Real.sqrt_div' _ (by positivity),
+    rw [show 1 - 4 * t / L ^ 2 = (L ^ 2 - 4 * t) / L ^ 2 by field_simp,
+      Real.sqrt_div' _ (by positivity),
       Real.sqrt_sq hL.le]
   have hsd : 0 < Real.sqrt (L ^ 2 - 4 * t) := Real.sqrt_pos.mpr hd
   have hexp : ((1 / (L ^ 2 - 4 * t) : ℝ) : ℂ) * (z * I) ^ 2 = -(z ^ 2) / (L ^ 2 - 4 * t) := by
@@ -122,7 +128,8 @@ theorem integral_gaussKernel_heat_mul_cos {L t : ℝ} (hL : 0 < L) (ht : 4 * t <
   ring
 
 /-- **The model's de Bruijn deformation.**  With `F(z) = ∫ cos(zu) dμ(u)`,
-`μ = ½(δ_{L/2} + δ_{−L/2}) + A (L/(2√π)) e^{−L²u²/4} du`, the deformation `∫ e^{tu²} cos(zu) dμ(u)` is
+`μ = ½(δ_{L/2} + δ_{−L/2}) + A (L/(2√π)) e^{−L²u²/4} du`, the deformation `∫ e^{tu²} cos(zu) dμ(u)`
+is
 `cosBumpHeat L A t z` for `4t < L²`. -/
 theorem cosBumpHeat_eq_integral {L A t : ℝ} (hL : 0 < L) (ht : 4 * t < L ^ 2) (z : ℂ) :
     cosBumpHeat L A t z = (Real.exp (t * (L / 2) ^ 2) : ℂ) * ((Complex.cos (z * (L / 2 : ℝ))
@@ -188,7 +195,8 @@ theorem two_div_pi_mul_norm_le_norm_sin {w : ℂ} (hw : |w.re| ≤ Real.pi / 2) 
       rw [abs_of_nonpos h0]
       exact h.trans (neg_le_abs _)
   have hsin : (2 / Real.pi * |w.re|) ^ 2 ≤ Real.sin w.re ^ 2 := by
-    calc (2 / Real.pi * |w.re|) ^ 2 ≤ |Real.sin w.re| ^ 2 := pow_le_pow_left₀ (by positivity) hsin1 2
+    calc (2 / Real.pi * |w.re|) ^ 2 ≤ |Real.sin w.re| ^ 2 :=
+          pow_le_pow_left₀ (by positivity) hsin1 2
       _ = Real.sin w.re ^ 2 := sq_abs _
   -- `|y| ≤ |sinh y|`
   have hsinh : (2 / Real.pi * |w.im|) ^ 2 ≤ Real.sinh w.im ^ 2 := by
@@ -363,7 +371,8 @@ theorem exists_nonreal_zero_cosBumpHeat_of_cosh {L A t a : ℝ} (hL : 22 ≤ L)
       have : Real.exp (-a) ≤ Real.exp a := Real.exp_le_exp.mpr (by linarith)
       linarith
     have hk : 2 * (18 / L ^ 2) < 1 / (4 * Real.pi) := by
-      rw [show 2 * (18 / L ^ 2) = 36 / L ^ 2 by ring, div_lt_div_iff₀ (by positivity) (by positivity)]
+      rw [show 2 * (18 / L ^ 2) = 36 / L ^ 2 by ring,
+        div_lt_div_iff₀ (by positivity) (by positivity)]
       nlinarith [Real.pi_lt_d2]
     have hpos : 0 < E * Real.exp a := by positivity
     calc ‖cosBumpHeat L A t z - G z‖ ≤ B * (2 * (18 / L ^ 2)) := hHGn
@@ -444,7 +453,8 @@ theorem exists_nonreal_zero_cosBumpHeat {θ κ : ℝ} (hθ : 0 < θ) (hθ1 : θ 
     have h2 := Real.exp_pos (-q)
     nlinarith [sq_nonneg (1 - q / 2)]
   have hq0 : 0 ≤ q := le_trans (by norm_num) h1q
-  obtain ⟨a, ⟨ha0, -⟩, hca⟩ := intermediate_value_Icc hq0 Real.continuous_cosh.continuousOn ⟨h1q, hqq⟩
+  obtain ⟨a, ⟨ha0, -⟩, hca⟩ :=
+    intermediate_value_Icc hq0 Real.continuous_cosh.continuousOn ⟨h1q, hqq⟩
   have ha2 : 2 ≤ a := by
     have : Real.cosh 2 ≤ Real.cosh a := hca ▸ hcosh2
     rw [Real.cosh_le_cosh, abs_of_pos (by norm_num : (0:ℝ) < 2), abs_of_nonneg ha0] at this
