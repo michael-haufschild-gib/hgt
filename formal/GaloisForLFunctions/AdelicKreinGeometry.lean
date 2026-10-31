@@ -9,6 +9,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationProjections
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationForms
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.MovingLimit
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.PositivePart
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.GeneralOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationMovingPositivity
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PolynomialCorrection

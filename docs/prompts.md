@@ -412,10 +412,11 @@ update the review reflect the current status quo and frontier of our research ta
    2.5.1 our RH proof research as a whole
    2.5.2 route SC
    2.5.3 route WD
-   2.5.4 route ACS
-   2.5.5 route WL
-   2.5.6 route CHMD
-   2.6 ideates whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.6 ideate and describe a breakthrough question that would clearly open wide the path to the RH proof for:
+   2.6.1 our RH proof research as a whole
+   2.6.2 route SC
+   2.6.3 route WD
+   2.7 ideates whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
@@ -612,7 +613,8 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-3110/obstacles-summary.md
 
-the obstacles-summary document asks one question/poses one challenge to us to solve: Prove that the complete Weil matrix is positive on all vectors for `1 ≤ c ≤ (log N)^α` for some fixed `α > 0`.
+the obstacles-summary document asks one question/poses one challenge to us to solve: Construct from integers alone (theta prefixes, primes, Gamma) a Fredholm operator or a winding number on each natural-height window whose index equals the horizontal collision charge `O`. First milestone: an explicit rate for the theta-prefix readings to round to `O` on a fixed window
+(A8), then uniformly in height.
 
 Your task: find an answer/solution to this question and fully formalize it and its collaries unconditionally in lean.
 

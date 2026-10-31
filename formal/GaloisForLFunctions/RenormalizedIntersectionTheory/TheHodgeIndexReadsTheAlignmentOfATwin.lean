@@ -60,6 +60,32 @@ theorem smallAlignment_liouvilleSign : SmallAlignment liouvilleSign := by
   have : 4 ≤ δ * Real.log N := by rwa [div_le_iff₀' hδ] at hL
   linarith
 
+/-- Cost of the twin's top in the projection: `s²(L + C)H ≤ S²(1 + C)`, `s = S/H`, `L ≤ H`. -/
+theorem cost_pole_le {L H S C : ℝ} (hH : 1 ≤ H) (hLH : L ≤ H) (hC : 0 ≤ C) :
+    (S / H) ^ 2 * ((L + C) * H) ≤ S ^ 2 * (1 + C) := by
+  have hH0 : 0 < H := by linarith
+  have e : (S / H) ^ 2 * ((L + C) * H) = S ^ 2 * ((L + C) / H) := by field_simp
+  rw [e]
+  refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg S)
+  rw [div_le_iff₀ hH0]
+  linarith [mul_le_mul_of_nonneg_left hH hC]
+
+/-- Cost of the cross term in the projection. -/
+theorem cost_cross_le {L H S g B : ℝ} (hH : 1 ≤ H) (hLH : L ≤ H) (hg : 0 ≤ g) :
+    2 * (|S / H| * ((L + g) * |S| + B * H)) ≤ 2 * (S ^ 2 * (1 + g)) + (B ^ 2 + S ^ 2) := by
+  have hH0 : 0 < H := by linarith
+  rw [abs_div, abs_of_pos hH0]
+  have e : |S| / H * ((L + g) * |S| + B * H) = S ^ 2 * ((L + g) / H) + B * |S| := by
+    rw [← sq_abs S]; field_simp
+  rw [e]
+  have h1 : (L + g) / H ≤ 1 + g := by
+    rw [div_le_iff₀ hH0]
+    linarith [mul_le_mul_of_nonneg_left hH hg]
+  have h2 : 2 * (B * |S|) ≤ B ^ 2 + S ^ 2 := by
+    nlinarith [sq_nonneg (B - |S|), sq_abs S]
+  have h3 := mul_le_mul_of_nonneg_left h1 (sq_nonneg S)
+  linarith
+
 /-- **The top of a twin of small alignment lies on the pole hyperplane.** For every `ε > 0`,
 eventually in `N`, the twin's prime form `P_N(ωx)` reaches `(log N − γ − ε)|x|²` at a nonzero `x`
 with `Σ_{n ≤ N} x_n/√n = 0`. -/
@@ -101,18 +127,18 @@ theorem exists_twin_top_on_pole_hyperplane {ω : ℕ → ℝ} (hω : ∀ n, ω n
     have : N = 0 := by omega
     rw [this, Nat.cast_zero, Real.log_zero] at hL3
     linarith
-  set b := truncPole N
+  set b := RenormalizedArithmeticPotentialTheory.truncPole N
   set H := ∑ n ∈ Icc 1 N, (1 : ℝ) / n
   set S := gaugeHarmonicSum ω N
   set L := Real.log N
   have hSδ : S ^ 2 ≤ ε / (4 * A) * L := hN₁ N hN1
   have hS1 : S ^ 2 ≤ 1 * L := hN₄ N hN4
   have hb2 : ∀ n ∈ Icc 1 N, b n ^ 2 = 1 / n := fun n hn => by
-    simp only [b, truncPole, if_pos (mem_Icc.mp hn).2, poleVector_sq]
+    simp only [b, RenormalizedArithmeticPotentialTheory.truncPole, if_pos (mem_Icc.mp hn).2, poleVector_sq]
   have hbsq : ∑ n ∈ Icc 1 N, b n ^ 2 = H := sum_congr rfl hb2
   have hbs : ∀ n ∈ Icc 1 N, b n / Real.sqrt n = 1 / n := fun n hn => by
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
-    simp only [b, truncPole, if_pos (mem_Icc.mp hn).2, poleVector]
+    simp only [b, RenormalizedArithmeticPotentialTheory.truncPole, if_pos (mem_Icc.mp hn).2, poleVector]
     rw [div_div, Real.mul_self_sqrt hn0.le]
   have hHL : L ≤ H := by
     have h := log_add_one_le_harmonic N
@@ -152,7 +178,8 @@ theorem exists_twin_top_on_pole_hyperplane {ω : ℕ → ℝ} (hω : ∀ n, ω n
     rw [hxsq]
     have : S ^ 2 / H < H := by
       rw [div_lt_iff₀ hH0]
-      nlinarith
+      have := lt_mul_self (show 1 < H by linarith)
+      linarith
     linarith
   refine ⟨x, horth, hxpos, ?_⟩
   -- the twin of the witness is the pole minus `s` times the twin's top
@@ -203,39 +230,23 @@ theorem exists_twin_top_on_pole_hyperplane {ω : ℕ → ℝ} (hω : ∀ n, ω n
       rw [show B * H = ∑ n ∈ Icc 1 N, B * (1 / (n : ℝ)) by rw [← mul_sum]]
       refine sum_le_sum fun n hn => ?_
       have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
-      have hωn : |ω n| = 1 := by
-        have h := hω n
-        rw [← abs_mul_abs_self, ← sq] at h
-        nlinarith [abs_nonneg (ω n), sq_nonneg (|ω n| - 1)]
+      have hωn : |ω n| = 1 := abs_eq_one_iff_mul_self_eq_one.mpr (hω n)
       rw [abs_mul, abs_mul, hωn, one_mul, abs_of_pos (by positivity : (0 : ℝ) < 1 / n)]
       exact mul_le_mul_of_nonneg_right (abs_row_sub_le hn) (by positivity)
   -- the two costs of the projection
-  have hT1 : s ^ 2 * ((L + C₀) * H) ≤ S ^ 2 * (1 + C₀) := by
-    have e : s ^ 2 * ((L + C₀) * H) = S ^ 2 * ((L + C₀) / H) := by
-      simp only [s]; field_simp
-    rw [e]
-    refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg S)
-    rw [div_le_iff₀ hH0]
-    nlinarith
-  have hT2 : 2 * (|s| * ((L + γ) * |S| + B * H)) ≤ 2 * (S ^ 2 * (1 + γ)) + (B ^ 2 + S ^ 2) := by
-    have e : 2 * (|s| * ((L + γ) * |S| + B * H)) = 2 * (S ^ 2 * ((L + γ) / H)) + 2 * B * |S| := by
-      simp only [s, abs_div, abs_of_pos hH0]
-      rw [← sq_abs S]
-      field_simp
-    rw [e]
-    have h1 : (L + γ) / H ≤ 1 + γ := by
-      rw [div_le_iff₀ hH0]; nlinarith
-    have h2 : 2 * B * |S| ≤ B ^ 2 + S ^ 2 := by
-      nlinarith [sq_nonneg (B - |S|), sq_abs S]
-    nlinarith [mul_le_mul_of_nonneg_left h1 (sq_nonneg S)]
-  have hεA : S ^ 2 * A ≤ ε / 4 * H := by
-    have : S ^ 2 * A ≤ ε / (4 * A) * L * A := mul_le_mul_of_nonneg_right hSδ hA0.le
-    have e : ε / (4 * A) * L * A = ε / 4 * L := by field_simp
-    nlinarith
+  have hT1 : s ^ 2 * ((L + C₀) * H) ≤ S ^ 2 * (1 + C₀) := cost_pole_le (by linarith) hHL hC₀
+  have hT2 : 2 * (|s| * ((L + γ) * |S| + B * H)) ≤ 2 * (S ^ 2 * (1 + γ)) + (B ^ 2 + S ^ 2) :=
+    cost_cross_le (by linarith) hHL hγ.le
+  have hεA : S ^ 2 * A ≤ ε / 4 * H :=
+    calc S ^ 2 * A ≤ ε / (4 * A) * L * A := mul_le_mul_of_nonneg_right hSδ hA0.le
+      _ = ε / 4 * L := by field_simp
+      _ ≤ ε / 4 * H := mul_le_mul_of_nonneg_left hHL (by positivity)
   have hBε : B ^ 2 ≤ ε / 4 * H := by
     have : 4 * B ^ 2 / ε ≤ H := hLB.trans hHL
     rw [div_le_iff₀ hε] at this
     linarith
+  have hsum : S ^ 2 * (1 + C₀) + 2 * (S ^ 2 * (1 + γ)) + S ^ 2 = S ^ 2 * A := by
+    simp only [A]; ring
   have hxH : ∑ n ∈ Icc 1 N, x n ^ 2 ≤ H := by
     rw [hxsq]
     have : 0 ≤ S ^ 2 / H := div_nonneg (sq_nonneg _) hH0.le
@@ -246,8 +257,7 @@ theorem exists_twin_top_on_pole_hyperplane {ω : ℕ → ℝ} (hω : ∀ n, ω n
         mul_le_mul_of_nonneg_left hxH hcoef
     _ ≤ atomicWeilForm N b + atomicWeilForm N u +
         2 * ∑ n ∈ Icc 1 N, (mertensSum (N / n) + Real.log n) * b n * u n := by
-        simp only [A] at hεA
-        nlinarith
+        linarith
 
 /-- A twin of small alignment has a negative direction on the pole hyperplane at every
 counterterm below `log N − γ`. -/
