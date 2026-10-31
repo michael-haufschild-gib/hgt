@@ -27,7 +27,9 @@ already forces the zeros seen by the square.
 open Complex Filter Topology
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
   GaloisForLFunctions.ArithmeticOrientationGeometry GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
+open Zeta23
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff_cubicSpline
+  hasCompactSupport_cubicSpline)
 
 noncomputable section
 
@@ -53,7 +55,7 @@ theorem orbitCorr_splineCycle_eq (t : ℝ) :
 
 /-- **The spline series is continuous.** -/
 theorem continuous_splineSeries : Continuous splineSeries := by
-  have hsum := summable_norm_Wsummand zetaZeroConfig temperedConfig_zetaZeroConfig
+  have hsum := summable_norm_Wsummand zetaZeroConfig SquareRootThreshold.temperedConfig_zetaZeroConfig
     (cx_contDiff contDiff_cubicSpline) (cx_hasCompactSupport hasCompactSupport_cubicSpline)
     (cx_contDiff contDiff_cubicSpline) (cx_hasCompactSupport hasCompactSupport_cubicSpline)
   rw [continuous_iff_continuousAt]

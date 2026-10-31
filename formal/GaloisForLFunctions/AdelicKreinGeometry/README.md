@@ -70,7 +70,9 @@ at edges with a counterterm of nontrivial null cone.
 5. **The archimedean place glues by a hyperplane.** Dilation data `K` glued to the archimedean successor have
    index `κ^{(½)}(K) + 1`, where `κ^{(½)}` counts the negative squares of `K` orthogonal to the boost character
    `u^{−1/2}`. The hyperplane is free for prime towers and for data that grow slower than the boost. The gluing
-   square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`, and both values occur.
+   square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`, and both values occur. At every stable exponent `0 < s < 1`
+   the same law holds for `K(|a|) − c|a|^{−s/2}|b|^s` with the boost `u^{−s/2}`; the pair the glue absorbs,
+   `u^{±s/2}`, sits at `ρ = (1 ± s)/2` and is the pole pair `{0, 1}` exactly at the Hecke exponent `s = 1`.
 6. **Weil's archimedean state counts the zeros.** `κ(ratCorr(|a|) − c|a|^{−1/2}|b|) = #{zeros of ζ right of the
    critical line} + 1`, unconditionally, and likewise for every primitive Dirichlet `L(s, χ)`. Weil's dilation data
    are carried at finite index when glued at `∞`, never when glued at the integers.
@@ -118,6 +120,7 @@ at edges with a counterterm of nontrivial null cone.
 | Jordan pair kernel | `P(log v)e^{−i u log v} + conj(P(−log v))e^{−i ū log v}` on `ℚ_{>0}` | `jordanPairKernel`, `jordanForward` |
 | Heat-deformed archimedean state | `archGlue(heatDilationKernel t, c)` built from `Φ_t(x) = Φ(x)e^{t x²}` alone | `heatArchState`, `heatDilationKernel`, `heatCollisionPairs` |
 | Simple and double pole pairs | `u^{1/2} + u^{−1/2}`; its `α`-derivative `log u·(u^{1/2} − u^{−1/2})` | `polePair`, `doublePole` |
+| Stable gluing | `K(|a|) − c|a|^{−s/2}|b|^s`, boost `ℓ_s = Σ w_i u_i^{−s/2}`, index `κ^{(s/2)}` on `ℓ_s = 0`; pair `u^{±s/2}` | `archGlueAt`, `boostMassAt`, `boostPolarIndexAt`, `stablePair` |
 | Orbit kernel of a zero configuration | `K_f(u) = W_Z(f, f(· − log u))` | `orbitCorr`, `orbitKernel` (HKT) |
 | Conductor data | Fourier and Ramanujan coefficients on `ℤ/N`, level kernels on `ℚ/ℤ` | `fourierCoeff`, `ramanujanCoeff`, `levelKernel` |
 | Agreement shells | balls `|x − y|_v ≤ r`; half-lines `(−∞, t)` at `∞` | `ballOf`, `shellSquares`, `tailSum` |
@@ -226,6 +229,10 @@ at edges with a counterterm of nontrivial null cone.
   the boost coordinate itself (`TheGluingSquareIsSharp`). The double pole's form is `2Re(ℓ̄M) − 2Re(L̄₁L₂)` with
   `L₁ = Σ w_i log u_i·u_i^{−1/2}`, `L₂ = Σ w_i u_i^{1/2}`; on `ℓ = 0` the second pair survives with one square
   (`TheGlueSeesTheOrderOfThePole`).
+- *Stable gluing.* With `σ_L = L^{−s/2}` the pair `1, x ↦ x + L` has form `4K(1)L^{−s} − 2c → −2c`; the stable
+  successor's form is nonnegative on `Σ w_i u_i^{−s/2} = 0` by Poisson subordination. Against the stable boost
+  `u^{−s/2}|u^{1/2−ρ}| = u^{(1−s)/2 − Re ρ}`, so a configuration with all `Re ρ > (1 − s)/2` is sub-boost
+  (`TheStableGluingFormula`).
 - *Jordan pairs and the heat homotopy.* A sum of lower-half-plane Jordan pair kernels `J_{u_i, P_i}` (`Im u_i < 0`,
   `P_i ≠ 0`) has index `Σ_i (deg P_i + 1)` via confluent exponential-polynomial Vandermonde inversion on a fine
   cyclic subgroup (`JordanPairKernelsOnDilations`). Tangent-disc Poisson–Jensen averaging on `D(−iR, R)` extracts
@@ -261,6 +268,7 @@ at edges with a counterterm of nontrivial null cone.
 | **Heat-deformed archimedean state** `φ_c^{(t)}`: finite index `M(t) + 1`, lower semicontinuous, antitone, jumps by `1` per collided pair, `κ(φ_c) ≤ liminf_{t→0⁺} κ(φ_c^{(t)})` | `negIndex_heatArchState_eq`, `lowerSemicontinuousOn_negIndex_heatArchState`, `antitoneOn_negIndex_heatArchState`, `exists_left_negIndex_heatArchState_eq_add_collisionPairs`, `negIndex_weilArchState_le_liminf_heatArchState` |
 | The gluing square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`; the pole pair is absorbed and the glue is blind to it at any strength | `negIndex_archGlue_eq_or`, `boostPolarIndex_polePair`, `negIndex_archGlue_add_polePair`, `negIndex_archGlue_ratCorr_add_polePair` |
 | **The glue sees the order of the pole**: `κ^{(½)}(doublePole) = 1`, glued index `2` against `1` for a simple pole | `boostPolarIndex_doublePole`, `negIndex_archGlue_doublePole`, `negIndex_archGlue_smul_polePair` |
+| **Stable gluing formula** `κ(K(|a|) − c|a|^{−s/2}|b|^s) = κ^{(s/2)}(K) + 1`, `0 < s < 1`; absorbed pair `u^{±s/2}`; zero configurations with `Re ρ > (1 − s)/2` give `κ(K_Z) + 1`; a drop for `ζ` certifies a zero with `Re ρ ≤ (1 − s)/2` | `negIndex_archGlueAt_eq`, `negIndex_archGlueAt_eq_or`, `boostPolarIndexAt_stablePair`, `negIndex_archGlueAt_orbitCorr`, `exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne` |
 | Shell decomposition of the local pole–successor forms | `hermQuad_gram_poleSuccessor_negUltra_eq`, `hermQuad_gram_poleSuccessorState_eq` |
 | Axis-invisible kernels: zero or `κ ≥ 2`, rank `≤ κ²`, polynomial fibres of degree `< κ`; every `κ ≥ 2` occurs | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `negIndex_haarMixedPowerState` |
 | The index is twin-blind | `negIndex_mul_unitaryChar`, `negIndex_heckeState_mul_slopeChar` |
@@ -332,8 +340,10 @@ at edges with a counterterm of nontrivial null cone.
    a function field and its index.
 6. **Shell identity for the Weil form.** Extend the local shell decomposition to the complete Weil form; the form
    of the archimedean Weil state is `K`'s form at the slopes plus the shell form at the shifts.
-7. **Stable gluing.** At the successor `−|b|^s`, `0 < s < 1`, the hyperplane `Σ w_i u_i^{−s/2} = 0` is free when
-   every zero has `Re ρ > (1 − s)/2`; determine what the index sees otherwise.
+7. **Stable gluing below the strip.** The stable gluing formula holds at every `0 < s < 1`, the hyperplane is free
+   when every zero has `Re ρ > (1 − s)/2`, and for `ζ` a drop of the stable index to `κ(K_ζ)` certifies a zero
+   with `Re ρ ≤ (1 − s)/2`. Open: whether such a zero forces the drop, i.e. whether the stable indices
+   `s ↦ κ_s` read the real parts of the zeros.
 
 ---
 
@@ -433,7 +443,7 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
 - Archimedean gluing: `WeilsCorrelationWithAnArchimedeanSuccessor`, `TheArchimedeanGluingFormula`,
   `PrimeTowersGlueAtFullIndex`, `WeilsArchimedeanStateCountsTheZeros`, `TheGluingSquareIsSharp`,
   `TheGlueSeesTheOrderOfThePole`, `JordanPairKernelsOnDilations`, `HeatTangentBlaschkeExtraction`,
-  `HeatGaussianResidueKernel`, `TheHeatDeformedArchimedeanState`.
+  `HeatGaussianResidueKernel`, `TheHeatDeformedArchimedeanState`, `TheStableGluingFormula`.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,

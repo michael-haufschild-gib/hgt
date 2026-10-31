@@ -38,6 +38,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.TheArchimedeanGluingFormula
 import GaloisForLFunctions.AdelicKreinGeometry.WeilsArchimedeanStateCountsTheZeros
 import GaloisForLFunctions.AdelicKreinGeometry.TheGluingSquareIsSharp
 import GaloisForLFunctions.AdelicKreinGeometry.TheGlueSeesTheOrderOfThePole
+import GaloisForLFunctions.AdelicKreinGeometry.TheStableGluingFormula
 import GaloisForLFunctions.AdelicKreinGeometry.PrimeTowersGlueAtFullIndex
 import GaloisForLFunctions.AdelicKreinGeometry.JordanPairKernelsOnDilations
 import GaloisForLFunctions.AdelicKreinGeometry.HeatTangentBlaschkeExtraction
@@ -75,7 +76,8 @@ its places.
   archimedean state and for Dirichlet L-functions, and the source-defined heat-deformed archimedean
   state `φ_c^{(t)}` of `H_t` (`κ(φ_c^{(t)}) = #{nonreal right zeros of H_t with mult} + 1 < ⊤` for all
   `t > 0`, lower semicontinuous, nonincreasing, jumping by `1` per collided pair); the gluing square is
-  sharp, absorbs the simple pole pair at any strength and charges a double pole.
+  sharp, absorbs the simple pole pair at any strength and charges a double pole; the stable gluing
+  formula at exponent `0 < s < 1`, whose absorbed pair sits at `(1 ± s)/2`.
 * Haar carriers (`Haar/`): index preservation by positive integer-successor carriers, axis-invisible
   kernels and their degree and rank laws, period defects, and infinite index for every Haar kernel
   with a continuous dilation reading.

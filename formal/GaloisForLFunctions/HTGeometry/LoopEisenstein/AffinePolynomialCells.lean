@@ -151,9 +151,25 @@ theorem exists_lower_polynomial_translation_cell (n : ℕ) (g : SL2 (LaurentSeri
     rw [monomial_square_X_series,←map_add]
     exact congrArg (HahnSeries.ofPowerSeries ℤ F) hlp
   refine ⟨p,hp,j,hj,?_⟩
-  rw [hg,hlc,lower_translation_factor]
-  unfold j
-  rw [monomial_square_series]
+  have ht : sl2Lower ((PowerSeries.X*t:PowerSeries F):LaurentSeries F) *
+      sl2Diagonal (powerSeriesLaurentUnit F a) *
+        sl2Upper ((((laurentXUnit F ^ n:(LaurentSeries F)ˣ):LaurentSeries F)^2) *
+          (u:LaurentSeries F)) = j := by
+    dsimp only [j]
+    rw [monomial_square_series]
+  calc
+    _ = (sl2Lower (l:LaurentSeries F) * sl2Diagonal (powerSeriesLaurentUnit F a) *
+        sl2Upper (u:LaurentSeries F)) * sl2Diagonal ((laurentXUnit F ^ n)⁻¹) :=
+      congrArg (fun z : SL2 (LaurentSeries F) => z * sl2Diagonal ((laurentXUnit F ^ n)⁻¹)) hg
+    _ = _ := (congrArg (fun z : LaurentSeries F => sl2Lower z *
+      sl2Diagonal (powerSeriesLaurentUnit F a) * sl2Upper (u:LaurentSeries F) *
+        sl2Diagonal ((laurentXUnit F ^ n)⁻¹)) hlc).trans
+      ((lower_translation_factor (powerSeriesLaurentUnit F a) (laurentXUnit F ^ n)
+        ((PowerSeries.X*(p:PowerSeries F):PowerSeries F):LaurentSeries F)
+        ((PowerSeries.X*t:PowerSeries F):LaurentSeries F) (u:LaurentSeries F)).trans
+        (congrArg (fun z : SL2 (LaurentSeries F) =>
+          sl2Lower ((PowerSeries.X*(p:PowerSeries F):PowerSeries F):LaurentSeries F) *
+            sl2Diagonal ((laurentXUnit F ^ n)⁻¹) * z) ht))
 
 /-- The upper reflection cell has the head degrees `0,…,2n`. -/
 theorem exists_upper_polynomial_reflection_cell (n : ℕ) (g : SL2 (LaurentSeries F))
@@ -178,9 +194,25 @@ theorem exists_upper_polynomial_reflection_cell (n : ℕ) (g : SL2 (LaurentSerie
     rw [monomial_square_X_series,←map_add]
     exact congrArg (HahnSeries.ofPowerSeries ℤ F) hu
   refine ⟨p,hp,j,hj,?_⟩
-  rw [hg,huc,upper_reflection_factor]
-  unfold j
-  rw [monomial_square_series,map_neg,map_neg]
+  have ht : sl2Lower (-((PowerSeries.X*t:PowerSeries F):LaurentSeries F)) *
+      sl2Diagonal ((powerSeriesLaurentUnit F a)⁻¹) *
+        sl2Upper (-((((laurentXUnit F ^ n:(LaurentSeries F)ˣ):LaurentSeries F)^2) *
+          (l:LaurentSeries F))) = j := by
+    dsimp only [j]
+    rw [monomial_square_series, map_neg, map_neg]
+  calc
+    _ = (sl2Upper (u:LaurentSeries F) * sl2Diagonal (powerSeriesLaurentUnit F a) *
+        sl2Lower (l:LaurentSeries F)) * sl2WeylLower ((laurentXUnit F ^ n)⁻¹) :=
+      congrArg (fun z : SL2 (LaurentSeries F) => z * sl2WeylLower ((laurentXUnit F ^ n)⁻¹)) hg
+    _ = _ := (congrArg (fun z : LaurentSeries F => sl2Upper z *
+      sl2Diagonal (powerSeriesLaurentUnit F a) * sl2Lower (l:LaurentSeries F) *
+        sl2WeylLower ((laurentXUnit F ^ n)⁻¹)) huc).trans
+      ((upper_reflection_factor (powerSeriesLaurentUnit F a) (laurentXUnit F ^ n)
+        ((p:PowerSeries F):LaurentSeries F)
+        ((PowerSeries.X*t:PowerSeries F):LaurentSeries F) (l:LaurentSeries F)).trans
+        (congrArg (fun z : SL2 (LaurentSeries F) =>
+          sl2Upper ((p:PowerSeries F):LaurentSeries F) *
+            sl2WeylLower ((laurentXUnit F ^ n)⁻¹) * z) ht))
 
 /-- The lower reflection cell has the head degrees `1,…,2n+1`. -/
 theorem exists_lower_polynomial_reflection_cell (n : ℕ) (g : SL2 (LaurentSeries F))
@@ -207,9 +239,25 @@ theorem exists_lower_polynomial_reflection_cell (n : ℕ) (g : SL2 (LaurentSerie
     rw [monomial_square_series,←map_add]
     exact congrArg (HahnSeries.ofPowerSeries ℤ F) hlp
   refine ⟨p,hp,j,hj,?_⟩
-  rw [hg,hlc,lower_reflection_factor]
-  unfold j
-  rw [monomial_square_series,map_neg,map_neg]
+  have ht : sl2Upper (-(t:LaurentSeries F)) *
+      sl2Diagonal ((powerSeriesLaurentUnit F a)⁻¹) *
+        sl2Lower (-((((laurentXUnit F ^ (n+1):(LaurentSeries F)ˣ):LaurentSeries F)^2) *
+          (u:LaurentSeries F))) = j := by
+    dsimp only [j]
+    rw [monomial_square_series, map_neg, map_neg]
+  calc
+    _ = (sl2Lower (l:LaurentSeries F) * sl2Diagonal (powerSeriesLaurentUnit F a) *
+        sl2Upper (u:LaurentSeries F)) * sl2WeylLower (laurentXUnit F ^ (n+1)) :=
+      congrArg (fun z : SL2 (LaurentSeries F) => z * sl2WeylLower (laurentXUnit F ^ (n+1))) hg
+    _ = _ := (congrArg (fun z : LaurentSeries F => sl2Lower z *
+      sl2Diagonal (powerSeriesLaurentUnit F a) * sl2Upper (u:LaurentSeries F) *
+        sl2WeylLower (laurentXUnit F ^ (n+1))) hlc).trans
+      ((lower_reflection_factor (powerSeriesLaurentUnit F a) (laurentXUnit F ^ (n+1))
+        ((PowerSeries.X*(p:PowerSeries F):PowerSeries F):LaurentSeries F)
+        (t:LaurentSeries F) (u:LaurentSeries F)).trans
+        (congrArg (fun z : SL2 (LaurentSeries F) =>
+          sl2Lower ((PowerSeries.X*(p:PowerSeries F):PowerSeries F):LaurentSeries F) *
+            sl2WeylLower (laurentXUnit F ^ (n+1)) * z) ht))
 
 end
 end GaloisForLFunctions.HTGeometry.LoopEisenstein
