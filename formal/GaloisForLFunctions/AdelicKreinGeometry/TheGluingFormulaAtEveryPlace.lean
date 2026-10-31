@@ -21,7 +21,8 @@ Hermitian, conditionally positive on mass-zero weights, and negative at `1`. The
   glue at full index, `κ(Φ) = κ(K) + 1`.
 * **Weil's correlation glued at a prime** (`negIndex_weilPadicState_eq`,
   `negIndex_weilPadicState_eq_rightZeros`): `κ(ratCorr(|a|) − c|a|_p^{−1/2}|b|_p) = κ(K_ζ) + 1 =
-  #{zeros right of the critical line} + 1` for every prime `p`. Against the `p`-adic boost the slopes
+  #{zeros right of the critical line} + 1` for every prime `p`, and likewise for every primitive
+  Dirichlet `L(s, χ)` (`negIndex_glueAt_padic_dirichlet`). Against the `p`-adic boost the slopes
   `p^{−N}` are large, and `u^{1/2 − ρ}·p^{−N/2}` at `u = p^{−N}` is `p^{−N(1 − Re ρ)} → 0` since every
   zero has `Re ρ < 1`.
 
@@ -36,7 +37,8 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticPositiveDuality
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx cx_contDiff cx_hasCompactSupport)
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig)
-open GaloisForLFunctions.ArithmeticOrientationGeometry (seenRightZeros)
+open GaloisForLFunctions.ArithmeticOrientationGeometry (seenRightZeros seenRightZeros_cubicSpline)
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
 
 noncomputable section
 
@@ -665,9 +667,18 @@ theorem negIndex_weilPadicState_eq_rightZeros {c : ℝ} (hc : 0 < c) :
       (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard + 1 := by
   rw [negIndex_weilPadicState_eq p hc, negIndex_zetaKernel]
 
+/-- **The `p`-adic state of `L(s, χ)` counts its zeros**: for a primitive character `χ` modulo
+`q > 1` and every prime `p`, `κ(K_χ(|a|) − c|a|_p^{−1/2}|b|_p) = #{zeros of L(s, χ) right of the
+critical line} + 1`. -/
+theorem negIndex_glueAt_padic_dirichlet {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
+    (hq : 1 < q) (hprim : χ.IsPrimitive) {c : ℝ} (hc : 0 < c) :
+    negIndex (glueAt (Rat.AbsoluteValue.padic p) 1
+      (fun m => (c : ℂ) * negUltra (Rat.AbsoluteValue.padic p) m)
+      (orbitCorr (ThmE.LZeros (ThmE.LSeam_of hq hprim)) cubicSpline)) =
+      {ρ ∈ (ThmE.LZeros (ThmE.LSeam_of hq hprim)).carrier | 1 / 2 < ρ.re}.encard + 1 := by
+  rw [negIndex_glueAt_padic_orbitCorr p (SquareRootThreshold.temperedConfig_LZeros hq hprim)
+    cubicSpline_mem_realTests (fun ρ => ρ.2.2.2) hc, seenRightZeros_cubicSpline]
+
 end Padic
 
 end GaloisForLFunctions.AdelicKreinGeometry
-
-#print axioms GaloisForLFunctions.AdelicKreinGeometry.negIndex_glueAt_eq
-#print axioms GaloisForLFunctions.AdelicKreinGeometry.negIndex_weilPadicState_eq_rightZeros

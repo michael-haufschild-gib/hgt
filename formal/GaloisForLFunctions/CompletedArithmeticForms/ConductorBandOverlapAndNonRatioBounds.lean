@@ -98,7 +98,8 @@ theorem upwardPrimeVector_self_inner_eq_downward {φ : ℝ → ℝ}
     rw [upwardPrimeRow_eq_sum hgsupp hw.le hn (primeHorizonExtension x), mul_sum]
     refine sum_congr rfl fun k _ => ?_
     rw [← mul_assoc, mul_comm (primeHorizonExtension x n), mul_assoc, mul_sum]
-    exact sum_congr rfl fun j _ => by ring
+    congr 1
+    exact sum_congr rfl fun j _ => by dsimp only [g]; ring
   have hdown : ∀ n ∈ Icc 1 N,
       primeHorizonExtension x n * downwardPrimeRow g N (primeHorizonExtension x) n =
         ∑ k ∈ range K, _root_.RHTower.vonMangoldtAtom k *
@@ -108,7 +109,8 @@ theorem upwardPrimeVector_self_inner_eq_downward {φ : ℝ → ℝ}
     rw [downwardPrimeRow_eq_sum hgsupp hw.le hn (primeHorizonExtension x), mul_sum]
     refine sum_congr rfl fun k _ => ?_
     rw [← mul_assoc, mul_comm (primeHorizonExtension x n), mul_assoc, mul_sum]
-    exact sum_congr rfl fun j _ => by ring
+    congr 1
+    exact sum_congr rfl fun j _ => by dsimp only [g]; ring
   rw [sum_congr rfl hup, sum_congr rfl hdown, sum_comm,
     sum_comm (s := Icc 1 N) (t := range K)]
   refine sum_congr rfl fun k _ => ?_
@@ -328,7 +330,8 @@ private theorem downwardPrimeVector_packet_apply (φ : ℝ → ℝ) {c : ℝ} (h
     rw [downwardPrimeRow_eq_sum hgsupp hw.le n.property, mul_sum]
     refine sum_congr rfl fun k _ => ?_
     rw [← mul_assoc, mul_comm (a m), mul_assoc, mul_sum]
-    exact sum_congr rfl fun j _ => by ring
+    congr 1
+    exact sum_congr rfl fun j _ => by dsimp only [g]; ring
   rw [sum_congr rfl hterm, sum_comm]
   refine sum_congr rfl fun k _ => ?_
   rw [← mul_sum]
@@ -448,12 +451,17 @@ private theorem sum_exterior_packet_sq_le {φ : ℝ → ℝ}
         mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hreg hsL.le) (by positivity)
       _ = 3 * (Real.exp 1 + 1) * c * Real.sqrt (m.totient : ℝ) *
             (Real.sqrt (Real.log N) / Real.sqrt N) := by
-        have hφ_eq : (m.totient : ℝ) = Real.sqrt (m.totient : ℝ) * Real.sqrt (m.totient : ℝ) :=
-          (Real.mul_self_sqrt (Nat.cast_nonneg _)).symm
-        have hL_eq : Real.log N = Real.sqrt (Real.log N) * Real.sqrt (Real.log N) :=
-          (Real.mul_self_sqrt hL0.le).symm
-        conv_lhs => rw [hφ_eq, hL_eq]
-        field_simp [hsφm.ne', hsL.ne', hsN.ne']
+        calc
+          (Real.sqrt (m.totient : ℝ))⁻¹ *
+              ((3 * (Real.exp 1 + 1) * c * (m.totient : ℝ) * Real.log N / Real.sqrt N) /
+                Real.sqrt (Real.log N)) =
+              (Real.sqrt (m.totient : ℝ))⁻¹ *
+                ((3 * (Real.exp 1 + 1) * c * (Real.sqrt (m.totient : ℝ) ^ 2) *
+                  (Real.sqrt (Real.log N) ^ 2) / Real.sqrt N) / Real.sqrt (Real.log N)) := by
+            rw [Real.sq_sqrt (Nat.cast_nonneg _), Real.sq_sqrt hL0.le]
+          _ = 3 * (Real.exp 1 + 1) * c * Real.sqrt (m.totient : ℝ) *
+                (Real.sqrt (Real.log N) / Real.sqrt N) := by
+            field_simp [hsφm.ne', hsL.ne', hsN.ne']
       _ ≤ 3 * (Real.exp 1 + 1) * c * Real.sqrt R * Real.sqrt (Real.log N / N) := by
         rw [Real.sqrt_div hL0.le]
         exact mul_le_mul_of_nonneg_right
@@ -642,8 +650,9 @@ theorem exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace {φ : ℝ �
           (Real.sqrt (m.totient : ℝ) * Real.sqrt j)) := by
     intro j hj
     rw [primeHorizonExtension_coe vJet ⟨j, hj⟩, divisorJetHorizonVector_apply R N a ⟨j, hj⟩]
-    simp only [poleVector, Subtype.coe_mk]
+    simp only [poleVector]
     rw [mul_assoc, mul_sum]
+    congr 1
     exact sum_congr rfl fun m _ => by ring
   have hrow_decomp : ∀ n ∈ Icc 1 N,
       primeHorizonExtension
@@ -1089,7 +1098,7 @@ theorem exists_upwardPrimeVector_norm_le_of_mem_conductorSubspace {φ : ℝ → 
       field_simp [hsn.ne', (Real.sqrt_pos.mpr hj0).ne']
     rw [heq, div_eq_mul_one_div (A_up * c), mul_comm (A_up * c)]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    have hup := up_row_le hw0.le hn1 K
+    have hup := up_row_le (N := N) hw0.le hn1 K
     have hexp32 : Real.exp (3 * w / 2) ≤ Real.exp (3 / 2) :=
       Real.exp_le_exp.mpr (by dsimp only [w]; linarith only [hw_le1])
     have hewN : (Real.exp w - 1) * N ≤ c * Real.exp 1 := by
@@ -1129,7 +1138,7 @@ theorem exists_upwardPrimeVector_norm_le_of_mem_conductorSubspace {φ : ℝ → 
       rw [Real.sqrt_div hj0.le]
       field_simp [hsj.ne', (Real.sqrt_pos.mpr hn0).ne']
     rw [heq]
-    have hdown := down_row_le hw0.le hj1 K
+    have hdown := down_row_le (N := N) hw0.le hj1 K
     have hexp12 : Real.exp (w / 2) ≤ Real.exp (1 / 2) :=
       Real.exp_le_exp.mpr (by dsimp only [w]; linarith only [hw_le1])
     have hjew : (j : ℝ) * (Real.exp w - 1) ≤ c * Real.exp 1 := by
@@ -1512,6 +1521,7 @@ private theorem shifted_mode_osc_Ico_le {m l R₂ : ℕ} (hR₂ : 2 ≤ R₂)
       have hφ0 : (0 : ℝ) < m.totient := by exact_mod_cast Nat.totient_pos.mpr hm1
       rw [Real.mul_self_sqrt hφ0.le]
       field_simp [hφ0.ne']
+      ring
     · rw [if_neg hml, if_neg hml, mul_zero, mul_zero, sub_self]
   have habs_le : ∀ i : ℕ, |g_osc i| ≤ 2 * (R₂ : ℝ) := by
     intro i
@@ -1611,9 +1621,8 @@ private theorem linearized_weight_tv_le {G : ℝ → ℝ} {K_lip : NNReal}
     have hinv_nonneg : 0 ≤ invF i := by dsimp only [invF]; positivity
     have harg_mono : argF (i + 1) ≤ argF i := by
       dsimp only [argF]
-      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-      simpa only [div_eq_mul_one_div] using
-        mul_le_mul_of_nonneg_left (one_div_le_one_div_of_le hi_pos hi_le) (Nat.cast_nonneg h)
+      exact mul_le_mul_of_nonneg_left
+        (div_le_div_of_nonneg_left (Nat.cast_nonneg h) hi_pos hi_le) (by positivity)
     have hlip_i : |G (argF (i + 1)) - G (argF i)| ≤ (K_lip : ℝ) * (argF i - argF (i + 1)) := by
       have hdist := hG.dist_le_mul (argF (i + 1)) (argF i)
       rw [Real.dist_eq, Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr harg_mono)] at hdist
@@ -1642,14 +1651,14 @@ private theorem linearized_weight_tv_le {G : ℝ → ℝ} {K_lip : NNReal}
   have htel_inv : (∑ i ∈ range L', (invF i - invF (i + 1))) ≤ A / N := by
     rw [Finset.sum_range_sub']
     have hpos : 0 ≤ invF L' := by dsimp only [invF]; positivity
-    have h0 : invF 0 = 1 / (a₀ : ℝ) := by dsimp only [invF]; rw [Nat.add_zero]
+    have h0 : invF 0 = 1 / (a₀ : ℝ) := rfl
     linarith only [hpos, h0, ha0_inv]
   have htel_arg : (∑ i ∈ range L', (argF i - argF (i + 1))) ≤ 2 * Real.exp 2 * A := by
     rw [Finset.sum_range_sub']
     have hpos : 0 ≤ argF L' := by dsimp only [argF]; positivity
     have h0 : argF 0 ≤ 2 * Real.exp 2 * A := by
       have heq : argF 0 = ((N : ℝ) / c) * (h : ℝ) * (1 / (a₀ : ℝ)) := by
-        dsimp only [argF]; rw [Nat.add_zero]; ring
+        dsimp only [argF]; ring
       rw [heq]
       calc
         ((N : ℝ) / c) * (h : ℝ) * (1 / (a₀ : ℝ)) ≤
@@ -1711,7 +1720,7 @@ private theorem sum_offDiag_symm_eq_two_mul_sum_Icc_sub (N : ℕ) (F : ℕ → �
     refine sum_congr rfl fun j _ => ?_
     rcases lt_trichotomy j n with hlt | rfl | hgt
     · rw [if_pos hlt.ne, if_pos hlt, if_neg (lt_asymm hlt), add_zero]
-    · rw [if_neg (not_not.mpr rfl), if_neg (lt_irrefl j), if_neg (lt_irrefl j), add_zero]
+    · rw [if_neg (not_not.mpr rfl), if_neg (lt_irrefl j), add_zero]
     · rw [if_pos hgt.ne', if_neg (lt_asymm hgt), if_pos hgt, zero_add]
   have hsymm :
       (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, if j < n then F n j else 0) =
@@ -2093,7 +2102,7 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
           sub_nonneg.mpr (Real.log_le_log hn0 (by exact_mod_cast Nat.le_add_right n h))
         have harg : |Real.log (n + h : ℕ) - Real.log n| / (c / N) =
             (N : ℝ) / c * (Real.log (n + h : ℕ) - Real.log n) := by
-          rw [abs_of_nonneg hlog_nonneg, div_div_eq_mul_div, mul_comm, mul_div_assoc]
+          rw [abs_of_nonneg hlog_nonneg, div_div_eq_mul_div]; ring
         dsimp only [F_symm, K_lead]
         rw [harg]
         have hjac : (1 / (n : ℝ)) * (Real.sqrt n / Real.sqrt (n + h : ℕ)) =
@@ -2215,7 +2224,11 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
                   (mul_le_mul_of_nonneg_right
                     (mul_le_mul_of_nonneg_left hA2 (by positivity)) (sq_nonneg _)) hc0.le
               _ = 4 * (K_lip : ℝ) * (E₂ + 1) ^ 2 * E₂ ^ 2 * c ^ 3 := by
-                field_simp [hc0.ne']
+                calc
+                  4 * (K_lip : ℝ) * ((E₂ + 1) ^ 2 * c ^ 2) * (E₂ * c) ^ 2 / c =
+                      (4 * (K_lip : ℝ) * (E₂ + 1) ^ 2 * E₂ ^ 2 * c ^ 3) * c / c := by ring
+                  _ = 4 * (K_lip : ℝ) * (E₂ + 1) ^ 2 * E₂ ^ 2 * c ^ 3 :=
+                    mul_div_cancel_right₀ _ hc0.ne'
           have hterm2 : A_rad * B_r * M_φ ≤ (E₂ + 1) * E₂ * M_φ * c ^ 3 := by
             rw [hBr_eq]
             have hc23 : c ^ 2 ≤ c ^ 3 := pow_le_pow_right₀ hc1 (by norm_num : 2 ≤ 3)

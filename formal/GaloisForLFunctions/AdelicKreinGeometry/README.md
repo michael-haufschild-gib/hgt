@@ -75,8 +75,10 @@ at edges with a counterterm of nontrivial null cone.
    the same law holds for `K(|a|) − c|a|^{−s/2}|b|^s` with the boost `u^{−s/2}`; the pair the glue absorbs,
    `u^{±s/2}`, sits at `ρ = (1 ± s)/2` and is the pole pair `{0, 1}` exactly at the Hecke exponent `s = 1`. Every
    other real pair `u^{±s'/2}`, `s' ≠ s`, keeps its square: the glue detects exactly its own exponent.
-6. **Weil's archimedean state counts the zeros.** `κ(ratCorr(|a|) − c|a|^{−1/2}|b|) = #{zeros of ζ right of the
-   critical line} + 1`, unconditionally, and likewise for every primitive Dirichlet `L(s, χ)`. Weil's dilation data
+6. **Weil's correlation glued at any place counts the zeros.** `κ(ratCorr(|a|) − c|a|^{−1/2}|b|) = #{zeros of ζ
+   right of the critical line} + 1`, unconditionally, and likewise for every primitive Dirichlet `L(s, χ)`. The
+   same count holds when Weil's correlation is glued to the `p`-adic successor `−c|a|_p^{−1/2}|b|_p` at any prime:
+   the gluing formula holds at every place, and the zero count does not depend on the place of gluing. Weil's dilation data
    are carried at finite index when glued at `∞`, never when glued at the integers.
 7. **The additive side counts exactly.** On `ℤ/N` the index is the number of negative Fourier coefficients; a
    negative Ramanujan coefficient of conductor `d` costs `φ(d)` squares; on `ℚ/ℤ` the index is the supremum over
@@ -123,6 +125,7 @@ at edges with a counterterm of nontrivial null cone.
 | Places | real, `p`-adic, `∞` of `F(X)` | `Rat.AbsoluteValue.real`, `Rat.AbsoluteValue.padic`, `inftyAbs`, `IsUltra` |
 | Boost coordinate, boost-polar index | `ℓ(w) = Σ w_i u_i^{−1/2}`; negative squares of `K` on `ℓ = 0` | `boostMassU`, `boostPolarIndex` |
 | Archimedean gluing | `K(|a|) − c|a|^{−1/2}|b|`; for `K = ratCorr` the archimedean Weil state | `archGlue`, `weilArchState` |
+| Gluing at a place | `K(|a|) + |a|_v^{−s/2}ψ(b)` for a gluing successor `ψ` (conformal, Hermitian, polar-positive, `Re ψ(1) < 0`); boost `ℓ_v = Σ w_i |u_i|_v^{−s/2}` | `glueAt`, `IsGluingSuccessor`, `placeMass`, `placePolarIndex`, `weilPadicState` |
 | Jordan pair kernel | `P(log v)e^{−i u log v} + conj(P(−log v))e^{−i ū log v}` on `ℚ_{>0}` | `jordanPairKernel`, `jordanForward` |
 | Heat-deformed archimedean state | `archGlue(heatDilationKernel t, c)` built from `Φ_t(x) = Φ(x)e^{t x²}` alone | `heatArchState`, `heatDilationKernel`, `heatCollisionPairs` |
 | Simple and double pole pairs | `u^{1/2} + u^{−1/2}`; its `α`-derivative `log u·(u^{1/2} − u^{−1/2})` | `polePair`, `doublePole` |
@@ -238,6 +241,11 @@ at edges with a counterterm of nontrivial null cone.
   the boost coordinate itself (`TheGluingSquareIsSharp`). The double pole's form is `2Re(ℓ̄M) − 2Re(L̄₁L₂)` with
   `L₁ = Σ w_i log u_i·u_i^{−1/2}`, `L₂ = Σ w_i u_i^{1/2}`; on `ℓ = 0` the second pair survives with one square
   (`TheGlueSeesTheOrderOfThePole`).
+- *Every place.* The proof only uses that the successor is conformal at its place, Hermitian, conditionally
+  positive and negative at `1`: the translation pair `1, x ↦ x + u₀^N` with `|u₀|_v > 1` and weights
+  `|u₀^N|_v^{−s/2}` has form `→ 2Re ψ(1) < 0`. At a prime the boost sees `|a|_p`; Weil's correlation at slopes
+  `p^{−N}` against `p^{−N/2}` is `Σ_ρ p^{−N(1 − Re ρ)}(…)`, which tends to `0` because every zero has `Re ρ < 1`
+  (`TheGluingFormulaAtEveryPlace`).
 - *Stable gluing.* With `σ_L = L^{−s/2}` the pair `1, x ↦ x + L` has form `4K(1)L^{−s} − 2c → −2c`; the stable
   successor's form is nonnegative on `Σ w_i u_i^{−s/2} = 0` by Poisson subordination. Against the stable boost
   `u^{−s/2}|u^{1/2−ρ}| = u^{(1−s)/2 − Re ρ}`, so a configuration with all `Re ρ > (1 − s)/2` is sub-boost
@@ -278,6 +286,7 @@ at edges with a counterterm of nontrivial null cone.
 | The gluing square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`; the pole pair is absorbed and the glue is blind to it at any strength | `negIndex_archGlue_eq_or`, `boostPolarIndex_polePair`, `negIndex_archGlue_add_polePair`, `negIndex_archGlue_ratCorr_add_polePair` |
 | **The glue sees the order of the pole**: `κ^{(½)}(doublePole) = 1`, glued index `2` against `1` for a simple pole | `boostPolarIndex_doublePole`, `negIndex_archGlue_doublePole`, `negIndex_archGlue_smul_polePair` |
 | **The index wall over `𝔽_q(X)`**: the local Hecke state at `∞` has `κ = 0` for `s ≥ 1/2` and `∞` below | `negIndex_inftyHecke`, `isPosDefKernel_inftyHecke`, `inftyCommKernel_gram` |
+| **The gluing formula at every place**: `κ(K(|a|) + |a|_v^{−s/2}ψ(b)) = κ_v(K) + 1` for every place `v` and gluing successor `ψ`; **Weil's correlation glued at any prime** has `κ = #rightZeros + 1` | `negIndex_glueAt_eq`, `negIndex_glueAt_eq_of_subBoost`, `negIndex_glueAt_padic_orbitCorr`, `negIndex_weilPadicState_eq_rightZeros` |
 | **Signature formula for prime towers**: `Σ_{p∈S} κ₀(k_p) + 1 ≤ κ(Σ_p k_p(v_p(|a|)) − c|a|^{−1/2}|b|) ≤ Σ_{p∈S} κ₀(k_p) + 2` | `towerSignature_lower`, `towerSignature_upper`, `valS_surjective`, `towerAssembly_periodic` |
 | **The readings add**: `κ(Φ) = κ^{(½)}(K) + κ(Φ|_+)`, `κ(Φ|_+) = 1`; for Weil's state `κ = κ(Φ|_×) + κ(Φ|_+) = #rightZeros + 1` | `negIndex_archGlue_translation`, `negIndex_archGlue_eq_add_readings`, `negIndex_weilArchState_eq_add_readings`, `negIndex_weilArchState_sub_translation` |
 | **The glue absorbs exactly its own pair**: `κ(u^{±s'/2} glued at s) = 1` if `s' = s`, else `2`; at `s = 1` only the pole pair is absorbed | `negIndex_archGlueAt_stablePair_eq`, `boostPolarIndexAt_stablePair_of_ne`, `negIndex_archGlue_stablePair_of_ne` |
@@ -297,7 +306,8 @@ at edges with a counterterm of nontrivial null cone.
    Weil's correlation the hyperplane is free, so the archimedean term is exactly one square. For finitely many
    prime towers this gives the signature formula `κ = Σ_p κ₀(k_p) + 1 + ε`, `ε ∈ {0, 1}`: local defects, one
    archimedean square and at most one pole square; the pole terms
-   contribute nothing to it at any strength. For the Hecke states the local–global law is a product formula with
+   contribute nothing to it at any strength, and every prime glues Weil's correlation the same way, with one square
+   and the same zero count. For the Hecke states the local–global law is a product formula with
    identical local walls at every prime. *Open*: the decomposition of `κ(K_ζ)` itself into prime defects; the Weil
    kernel is neither tower-supported nor separable.
 2. **Do the matched local Hodge indices share one positive direction for every finite sieve, and what obstructs the
@@ -385,6 +395,7 @@ at edges with a counterterm of nontrivial null cone.
 | Conformal Frobenius has a positive analogue | positive states admit no conformal symmetry |
 | The Hecke normalization `|u|^{1/2}` is a convention | it is the boost exponent of the archimedean successor `−|b|` |
 | Gluing at the archimedean place costs an unknown amount | for towers and for Weil's correlation exactly one square |
+| Only the archimedean place can glue Weil's dilation data | every prime glues them at full index too |
 | Index laws select `ζ` | they are twin-blind; only the dilation data select |
 | The matched local Hodge indices assemble on `ℚ_{>0}` | every fixed counterterm leaves infinitely many squares |
 | Finite index is a positive state plus slope data | the Haar mixed quadratic state and the pole–successor states are not |
@@ -397,7 +408,10 @@ at edges with a counterterm of nontrivial null cone.
 AKG is the indefinite counterpart of APD's affine positivity and the affine counterpart of the multiplicative index
 theory of HKT and AKL. It is the field asked for in §2.6 of the obstacles review, and it addresses that review's
 problems B8 (local-to-global signature) and B19 (a successor-carrying carrier) and its opportunities O2 (a Hasse
-principle for the index) and O5 (a second bridge between the primes).
+principle for the index) and O5 (a second bridge between the primes). Its answers there: the Hecke index wall is
+the common wall of identical local walls; finite tower assemblies have a local signature formula; and Weil's
+correlation, glued at the archimedean place or at any prime, has the same index, the number of zeros right of the
+line plus one square for the place. The second bridge is the gluing at a place, not the integer successor.
 
 | Programme | What AKG uses | What AKG adds |
 |---|---|---|
@@ -467,7 +481,7 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
   `TheGlueSeesTheOrderOfThePole`, `JordanPairKernelsOnDilations`, `HeatTangentBlaschkeExtraction`,
   `HeatGaussianResidueKernel`, `TheHeatDeformedArchimedeanState`, `TheStableGluingFormula`,
   `TheGlueAbsorbsExactlyItsOwnPair`, `TheIndexWallOverAFunctionField`, `TheTwoReadingsAdd`,
-  `ASignatureFormulaForPrimeTowers`.
+  `ASignatureFormulaForPrimeTowers`, `TheGluingFormulaAtEveryPlace`.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,
