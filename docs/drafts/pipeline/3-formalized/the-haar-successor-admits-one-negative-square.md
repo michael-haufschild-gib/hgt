@@ -3,7 +3,7 @@
 - **ID:** HAAR-ONE-NEGATIVE-SQUARE
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** On `Aff(ℚ)`, `Φ(g) = haarState(g) − 4(log |affSlope g| / log 2)²` is Hermitian, has the exact integer successor, and has negative index exactly one.
 
 ## Proof [PROVED HERE]

@@ -3,7 +3,7 @@
 - **ID:** SEPARABLE-HAAR-CONTINUITY
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** If `p` is positive definite with integer successor and `ψ` is a Hermitian slope kernel, then continuity at one of the dilation reading of `p+ψ∘slope` forces its negative index to be infinite.
 
 ## Dependency-closed paper proof

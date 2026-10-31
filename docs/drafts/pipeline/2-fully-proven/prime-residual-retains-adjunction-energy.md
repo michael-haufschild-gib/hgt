@@ -26,10 +26,18 @@ The exact prime square identity and first logarithmic moment then give `19 H L`.
 
 All source terms are the actual von Mangoldt function, divisor jet, and prescribed Euler constant. No complete-Weil positivity, cancellation hypothesis, or independent residual estimate is assumed.
 
+## Relative consequence after removing conductor one
+
+Let `a°_1=0` and `a°_m=a_m` for `m≠1`. The proved first-excitation theorem gives `2 log 2 · Σ(a°_m)²≤L_Q(a)`, while `L_Q(a°)=L_Q(a)`. Since `H≥1`, the preceding estimate implies, for an absolute `C'>0`,
+
+`Σ_(n≤N) R_(a°)(N,n)²/log N ≤ C' H²/log N · L_Q(a)`.
+
+This is relative smallness in adjunction energy on any schedule with `H²=o(log N)`. Removing the constant conductor is an explicit coefficient projection; it is not asserted to equal the finite-horizon Weil-pole projection.
+
 ## Scope
 
 This strengthens the existing growing-packet prime residual estimate. It does not bound the Gamma–pole–shell remainder or replace adjunction energy by completed conductor energy.
 
 ## Lean
 
-`CriticalScaleArithmeticRigidity/RelativePrimeResidual.lean`.
+`CriticalScaleArithmeticRigidity/RelativePrimeResidual.lean` and `AdjunctionResidualCoercivity.lean`.

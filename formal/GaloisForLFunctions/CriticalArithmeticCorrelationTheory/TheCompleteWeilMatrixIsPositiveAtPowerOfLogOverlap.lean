@@ -26,8 +26,8 @@ spectral floor, literal `weilQuad` nonnegativity, and zero-mass-loss prime-defec
    vector `zHat ∈ (conductorSubspace Q₁ N)ᗮ` of bounded complete Weil energy.
 3. **High-tail cross-pairing suppression (`m > R'`).** Polynomial defect reserve bounds
    `poleDefect` on `zHat` by `O(c^{16})`. Quantitative exponential confinement at threshold
-   `η = (M₁ ^ 2 * c ^ 9)⁻¹` projects `zHat = u + w` onto `conductorSubspace R' N`
-   (`log R' ≤ C_R * c ^ 34 + log Q₁`), where conductor-subspace operator bounds make
+   `η = 1/4` projects `zHat = u + w` onto `conductorSubspace R' N`
+   (`log R' ≤ C_R * c ^ 16 + log Q₁`), where the reverse defect gap and conductor cross-bound give
    `2 |⟪W u, w⟫| - ⟪W w, w⟫ ≤ 1`.
 4. **Coercivity above `Q₁`.** Decomposing `u = uLow + y` into its `O(log R' / log N)` low-band leak
    and its `(Q₁, R']` packet `y`, the intermediate-band summation-by-parts bound suppresses
@@ -606,13 +606,13 @@ private theorem exists_completeWeilMatrix_orthog_cross_le :
       nlinarith only [hpos]
 
 /-- Projecting a unit vector `zHat ∈ (conductorSubspace Q₁ N)ᗮ` of bounded complete Weil energy
-onto a quantitative confinement subspace `conductorSubspace R' N` (`log R' ≤ C_R * c ^ 34 + log Q₁`)
+onto a quantitative confinement subspace `conductorSubspace R' N` (`log R' ≤ C_R * c ^ 16 + log Q₁`)
 retains `‖u‖ ^ 2 ≥ 3 / 4`, orthogonality to `conductorSubspace Q₁ N`, and bounded energy. -/
 private theorem exists_high_tail_suppression :
     ∃ C_R H_res : ℝ, 0 < C_R ∧ 0 < H_res ∧
       ∀ {Q₁ N : ℕ} {c : ℝ},
         2 ≤ Q₁ → 1 ≤ c → H_res * c ^ 8 ≤ N → c / N ≤ 1 / 3 →
-        (∀ {R' : ℕ}, Q₁ ≤ R' → Real.log R' ≤ C_R * c ^ 34 + Real.log Q₁ →
+        (∀ {R' : ℕ}, Q₁ ≤ R' → Real.log R' ≤ C_R * c ^ 16 + Real.log Q₁ →
           R' ^ 6 ≤ N ∧
           18 * (1 + Real.log R') ≤ Real.log N ∧
           ((R' * R' : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N ∧
@@ -624,33 +624,32 @@ private theorem exists_high_tail_suppression :
         zHat ∈ (conductorSubspace Q₁ N)ᗮ → ‖zHat‖ = 1 →
         completeWeilEnergy tiltedUnitSpline c N zHat ≤
           2 * tiltedSplineSpectralFloorConstant + 2 →
-      ∃ R' : ℕ, Q₁ ≤ R' ∧ Real.log R' ≤ C_R * c ^ 34 + Real.log Q₁ ∧
+      ∃ R' : ℕ, Q₁ ≤ R' ∧ Real.log R' ≤ C_R * c ^ 16 + Real.log Q₁ ∧
         ∃ u : EuclideanSpace ℝ (PrimeHorizonIndex N),
           u ∈ conductorSubspace R' N ∧ u ∈ (conductorSubspace Q₁ N)ᗮ ∧
           3 / 4 ≤ ‖u‖ ^ 2 ∧ ‖u‖ ≤ 1 ∧
           completeWeilEnergy tiltedUnitSpline c N u ≤
             2 * tiltedSplineSpectralFloorConstant + 3 := by
   obtain ⟨b, B, H, hb, hB, hH, hres⟩ := exists_matrix_polynomial_reserve
-  let C_conf := quadraticConfinementConstant
-  have hC_conf := quadraticConfinementConstant_pos
-  have hconf := exists_explicit_quadratic_conductor_projection
   obtain ⟨C_cross, hC_cross1, hcross⟩ := exists_completeWeilMatrix_orthog_cross_le
   let M₀ := 2 * tiltedSplineSpectralFloorConstant + 2
   have hM₀ : 0 < M₀ := by
     have := tiltedSplineSpectralFloorConstant_pos; dsimp only [M₀]; positivity
-  let M₁ := max 2 (max (4 * C_cross) (4 * B))
-  have hM₁_2 : 2 ≤ M₁ := le_max_left _ _
-  have hM₁_pos : 0 < M₁ := by linarith only [hM₁_2]
-  have hM₁_cross : 4 * C_cross ≤ M₁ := (le_max_left _ _).trans (le_max_right _ _)
-  have hM₁_B : 4 * B ≤ M₁ := (le_max_right _ _).trans (le_max_right _ _)
   let K_coef := (B + M₀) / b
-  have hK_coef0 : 0 < K_coef := by dsimp only [K_coef]; positivity
-  let C_R := C_conf * M₁ ^ 4 * (K_coef + 1)
-  have hC_R0 : 0 < C_R := by dsimp only [C_R]; positivity
-  refine ⟨C_R, H, hC_R0, hH, ?_⟩
+  have hK_coef : 0 < K_coef := by dsimp only [K_coef]; positivity
+  let D := explicitConductorCutoffConstant
+  have hD : 0 < D := explicitConductorCutoffConstant_pos
+  let C_gap := D * (1 + (B + 4 * C_cross ^ 2) / b)
+  have hC_gap : 0 < C_gap := by dsimp only [C_gap]; positivity
+  let C_app := 16 * quadraticConfinementConstant * (K_coef + 1)
+  have hC_app : 0 < C_app := by
+    have := quadraticConfinementConstant_pos; dsimp only [C_app]; positivity
+  let C_R := C_app + C_gap + 1
+  have hC_R : 0 < C_R := by dsimp only [C_R]; positivity
+  refine ⟨C_R, H, hC_R, hH, ?_⟩
   intro Q₁ N c hQ₁ hc1 hHN hw1 hR'_conds zHat hz_orth hz_norm hz_energy
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
-  -- Bound poleDefect of zHat
+  have hc16 : 1 ≤ c ^ 16 := one_le_pow₀ hc1
   have hdef_le : poleDefect N (primeHorizonExtension zHat) ≤ K_coef * c ^ 16 := by
     have hr := hres c hc1 N hHN zHat
     rw [hz_norm, one_pow, mul_one] at hr
@@ -667,47 +666,63 @@ private theorem exists_high_tail_suppression :
           b * poleDefect N (primeHorizonExtension zHat) := mul_comm _ _
       _ ≤ (B + M₀) * c ^ 9 * c ^ 7 := h3
       _ = (B + M₀) * c ^ 16 := by ring
-  -- Apply quantitative exponential confinement at η = 1 / (M₁^2 * c^9)
-  let η := 1 / (M₁ ^ 2 * c ^ 9)
-  have hη_pos : 0 < η := by dsimp only [η]; positivity
-  have hη_le4 : η ≤ 1 / 4 := by
-    dsimp only [η]
-    rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-    have hM1_sq : 4 ≤ M₁ ^ 2 := by nlinarith only [hM₁_2]
-    have hc9 : 1 ≤ c ^ 9 := one_le_pow₀ hc1
-    nlinarith only [hM1_sq, hc9]
-  have hη_le1 : η ≤ 1 := hη_le4.trans (by norm_num)
-  obtain ⟨R, _hR2, hR_log, hR_app⟩ := hconf η hη_pos hη_le1 (K_coef * c ^ 16) (by positivity)
-  let R' := max R Q₁
-  have hQR' : Q₁ ≤ R' := le_max_right R Q₁
-  have hRR' : R ≤ R' := le_max_left R Q₁
-  have hR'2 : 2 ≤ R' := hQ₁.trans hQR'
-  have hR_log_bound : Real.log R ≤ C_R * c ^ 34 := by
-    have hη2 : C_conf / η ^ 2 = C_conf * M₁ ^ 4 * c ^ 18 := by
-      dsimp only [η]; field_simp [hM₁_pos.ne', hc0.ne']
-    rw [hη2] at hR_log
-    have hc16 : 1 ≤ c ^ 16 := one_le_pow₀ hc1
-    have hK1 : K_coef * c ^ 16 + 1 ≤ (K_coef + 1) * c ^ 16 := by nlinarith only [hc16]
+  -- A fixed tolerance retains three quarters of the norm.
+  obtain ⟨R₀, hR₀2, hR₀log, happ⟩ := exists_explicit_quadratic_conductor_projection
+    (1 / 4) (by norm_num) (by norm_num) (K_coef * c ^ 16) (by positivity)
+  have hR₀bound : Real.log R₀ ≤ C_app * c ^ 16 := by
+    have hK1 : K_coef * c ^ 16 + 1 ≤ (K_coef + 1) * c ^ 16 := by linarith only [hc16]
     calc
-      Real.log R ≤ C_conf * M₁ ^ 4 * c ^ 18 * (K_coef * c ^ 16 + 1) := hR_log
-      _ ≤ C_conf * M₁ ^ 4 * c ^ 18 * ((K_coef + 1) * c ^ 16) :=
-        mul_le_mul_of_nonneg_left hK1 (by positivity)
-      _ = C_R * c ^ 34 := by dsimp only [C_R]; ring
-  have hR'_log : Real.log R' ≤ C_R * c ^ 34 + Real.log Q₁ := by
-    have hQ0 : 0 ≤ Real.log (Q₁ : ℝ) := Real.log_natCast_nonneg Q₁
-    have hCRc : 0 ≤ C_R * c ^ 34 := by positivity
+      _ ≤ quadraticConfinementConstant / (1 / 4 : ℝ) ^ 2 * (K_coef * c ^ 16 + 1) := hR₀log
+      _ ≤ quadraticConfinementConstant / (1 / 4 : ℝ) ^ 2 * ((K_coef + 1) * c ^ 16) :=
+        mul_le_mul_of_nonneg_left hK1 (by have := quadraticConfinementConstant_pos; positivity)
+      _ = _ := by dsimp only [C_app]; ring
+  -- The enlarged cutoff makes the orthogonal tail itself coercive.
+  let G : ℕ := ⌈Real.exp (C_gap * c ^ 16)⌉₊
+  have hXpos : 0 < C_gap * c ^ 16 := mul_pos hC_gap (pow_pos hc0 16)
+  have hexp1 : 1 < Real.exp (C_gap * c ^ 16) := by
+    simpa only [Real.exp_zero] using Real.exp_lt_exp.mpr hXpos
+  have hceil : Real.exp (C_gap * c ^ 16) ≤ (G : ℝ) := Nat.le_ceil _
+  have hGpos : (0 : ℝ) < G := (zero_lt_one.trans hexp1).trans_le hceil
+  have hGlow : C_gap * c ^ 16 ≤ Real.log G := by
+    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos _) hceil
+  have hGup : Real.log G ≤ C_gap * c ^ 16 + 1 := by
+    have hceilUp : (G : ℝ) < Real.exp (C_gap * c ^ 16) + 1 :=
+      Nat.ceil_lt_add_one (Real.exp_pos _).le
+    have hdouble : (G : ℝ) ≤ 2 * Real.exp (C_gap * c ^ 16) := by
+      linarith only [hceilUp, hexp1]
+    have hlog := Real.log_le_log hGpos hdouble
+    rw [Real.log_mul (by norm_num) (Real.exp_ne_zero _), Real.log_exp] at hlog
+    linarith only [hlog, Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)]
+  let R := max R₀ G
+  let R' := max R Q₁
+  have hQR' : Q₁ ≤ R' := le_max_right _ _
+  have hR₀R' : R₀ ≤ R' := (le_max_left R₀ G).trans (le_max_left R Q₁)
+  have hGR' : G ≤ R' := (le_max_right R₀ G).trans (le_max_left R Q₁)
+  have hR'2 : 2 ≤ R' := hQ₁.trans hQR'
+  have hRbound : Real.log R ≤ C_R * c ^ 16 := by
+    rcases le_total R₀ G with hRG | hGR
+    · rw [show R = G from max_eq_right hRG]
+      dsimp only [C_R]
+      nlinarith only [hGup, hc16, hC_app, pow_nonneg hc0.le 16]
+    · rw [show R = R₀ from max_eq_left hGR]
+      dsimp only [C_R]
+      nlinarith only [hR₀bound, hC_gap, pow_nonneg hc0.le 16]
+  have hR'_log : Real.log R' ≤ C_R * c ^ 16 + Real.log Q₁ := by
+    have hQlog := Real.log_natCast_nonneg Q₁
+    have hCr : 0 ≤ C_R * c ^ 16 := by positivity
     rcases le_total R Q₁ with hRQ | hQR
-    · have heq : R' = Q₁ := max_eq_right hRQ
-      rw [heq]; linarith only [hCRc]
-    · have heq : R' = R := max_eq_left hQR
-      rw [heq]; linarith only [hR_log_bound, hQ0]
+    · rw [show R' = Q₁ from max_eq_right hRQ]
+      linarith only [hCr]
+    · rw [show R' = R from max_eq_left hQR]
+      linarith only [hRbound, hQlog]
+  have hgapLog : C_gap * c ^ 16 ≤ Real.log R' :=
+    hGlow.trans (Real.log_le_log hGpos (by exact_mod_cast hGR'))
   obtain ⟨hR6N, hlogN, hRNT_lin, hRNT_up, hlog_div1, hlog_div2, hR_sqrt⟩ :=
     hR'_conds hQR' hR'_log
   have hN2 : 2 ≤ N := by
-    have h6 : 4 ≤ R' ^ 6 := by
-      have : 2 ^ 2 ≤ R' ^ 6 :=
-        (Nat.pow_le_pow_left hR'2 2).trans (Nat.pow_le_pow_right (by omega) (by norm_num))
-      norm_num at this; exact this
+    have hpow : R' ^ 1 ≤ R' ^ 6 :=
+      Nat.pow_le_pow_right (by omega) (by norm_num)
+    simp only [pow_one] at hpow
     omega
   let u := (conductorSubspace R' N).starProjection zHat
   let w := zHat - u
@@ -718,68 +733,79 @@ private theorem exists_high_tail_suppression :
   have hu_orth1 : u ∈ (conductorSubspace 1 N)ᗮ := fun v hv =>
     hu_orthQ v (conductorSubspace_mono (by omega : 1 ≤ Q₁) N hv)
   have hw_orth : w ∈ (conductorSubspace R' N)ᗮ := sub_starProjection_mem_orthogonal _ zHat
-  have hw_sq : ‖w‖ ^ 2 ≤ η := by
-    have hpR_mem : (conductorSubspace R N).starProjection zHat ∈ conductorSubspace R' N :=
-      conductorSubspace_mono hRR' N ((conductorSubspace R N).starProjection_apply_mem zHat)
+  have hw_sq : ‖w‖ ^ 2 ≤ 1 / 4 := by
+    have hpR_mem : (conductorSubspace R₀ N).starProjection zHat ∈ conductorSubspace R' N :=
+      conductorSubspace_mono hR₀R' N ((conductorSubspace R₀ N).starProjection_apply_mem zHat)
     exact (norm_sub_starProjection_sq_le (conductorSubspace R' N) zHat _ hpR_mem).trans
-      (hR_app N hN2 zHat hz_norm.le hdef_le)
-  have hw_norm : ‖w‖ ≤ 1 / (M₁ * c ^ 4) := by
-    have hη8 : η ≤ (1 / (M₁ * c ^ 4)) ^ 2 := by
-      have heq : (1 / (M₁ * c ^ 4)) ^ 2 = 1 / (M₁ ^ 2 * c ^ 8) := by ring
-      rw [heq]
-      exact one_div_le_one_div_of_le (by positivity)
-        (mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hc1 (show 8 ≤ 9 by norm_num))
-          (sq_nonneg M₁))
-    have hsq := hw_sq.trans hη8
-    have hrhs0 : 0 ≤ 1 / (M₁ * c ^ 4) := by positivity
-    nlinarith only [hsq, norm_nonneg w, hrhs0]
+      (happ N hN2 zHat hz_norm.le hdef_le)
   have hpyth := norm_starProjection_sq_add_sub_sq (conductorSubspace R' N) zHat
   change ‖u‖ ^ 2 + ‖w‖ ^ 2 = ‖zHat‖ ^ 2 at hpyth
   rw [hz_norm, one_pow] at hpyth
-  have hu_sq_ge : 3 / 4 ≤ ‖u‖ ^ 2 := by linarith only [hpyth, hw_sq, hη_le4]
+  have hu_sq_ge : 3 / 4 ≤ ‖u‖ ^ 2 := by linarith only [hpyth, hw_sq]
   have hu_le1 : ‖u‖ ≤ 1 := by nlinarith only [hpyth, sq_nonneg ‖w‖, norm_nonneg u]
-  have hcross_uw :
-      2 * |⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫| ≤ 1 / 2 := by
-    have h1 := hcross hR'2 hR6N hlogN hc1 hw1 hRNT_lin hRNT_up hlog_div1 hlog_div2
-      hR_sqrt hu_mem hu_orth1 hw_orth
-    calc
-      2 * |⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫| ≤
-          2 * (C_cross * c ^ 3 * 1 * (1 / (M₁ * c ^ 4))) := by
-        refine mul_le_mul_of_nonneg_left (h1.trans ?_) zero_le_two
-        exact mul_le_mul
-          (mul_le_mul_of_nonneg_left hu_le1 (by positivity))
-          hw_norm (norm_nonneg w) (by positivity)
-      _ = (2 * C_cross) / (M₁ * c) := by field_simp [hM₁_pos.ne', hc0.ne']
-      _ ≤ 1 / 2 := by
-        rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-        nlinarith only [hM₁_cross, hc1, hC_cross1]
-  have hw_energy : -(1 / 4 : ℝ) ≤ completeWeilEnergy tiltedUnitSpline c N w := by
+  have hw_def : (Real.log R' / D - 1) * ‖w‖ ^ 2 ≤
+      poleDefect N (primeHorizonExtension w) := by
+    by_cases hw0 : ‖w‖ = 0
+    · rw [hw0, zero_pow (by decide : 2 ≠ 0), mul_zero]
+      exact poleDefect_nonneg _ _
+    have hp0 : (conductorSubspace R' N).starProjection w = 0 := by
+      let p := (conductorSubspace R' N).starProjection w
+      have hp_mem : p ∈ conductorSubspace R' N :=
+        (conductorSubspace R' N).starProjection_apply_mem w
+      have hi : ⟪p, w⟫ = 0 := Submodule.inner_right_of_mem_orthogonal hp_mem hw_orth
+      have hj := (conductorSubspace R' N).starProjection_inner_eq_zero w p hp_mem
+      rw [inner_sub_left, real_inner_comm w p, hi, real_inner_self_eq_norm_sq] at hj
+      apply norm_eq_zero.mp
+      nlinarith only [hj, norm_nonneg p]
+    apply poleDefect_ge_explicit_of_norm_sub_starProjection_gt hR'2 hN2
+    rw [hp0, sub_zero]
+    have hp : 0 < ‖w‖ ^ 2 := sq_pos_of_ne_zero hw0
+    linarith only [hp]
+  have hgapCoeff : (B + 4 * C_cross ^ 2) * c ^ 16 ≤ b * (Real.log R' / D - 1) := by
+    have hlow : (1 + (B + 4 * C_cross ^ 2) / b) * c ^ 16 ≤ Real.log R' / D := by
+      apply (le_div_iff₀ hD).mpr
+      convert hgapLog using 1 <;> dsimp only [C_gap] <;> ring
+    have hs := mul_le_mul_of_nonneg_left hlow hb.le
+    have he : b * ((1 + (B + 4 * C_cross ^ 2) / b) * c ^ 16) =
+        b * c ^ 16 + (B + 4 * C_cross ^ 2) * c ^ 16 := by
+      field_simp [hb.ne']
+      ring
+    rw [he] at hs
+    nlinarith only [hs, mul_le_mul_of_nonneg_left hc16 hb.le]
+  have hgap9 : (B + 4 * C_cross ^ 2) * c ^ 9 ≤
+      (b / c ^ 7) * (Real.log R' / D - 1) := by
+    rw [div_mul_eq_mul_div, le_div_iff₀ (pow_pos hc0 7)]
+    convert hgapCoeff using 1 <;> ring
+  have hw_energy : 4 * C_cross ^ 2 * c ^ 6 * ‖w‖ ^ 2 ≤
+      completeWeilEnergy tiltedUnitSpline c N w := by
     have hr := hres c hc1 N hHN w
-    have hd0 : 0 ≤ (b / c ^ 7) * poleDefect N (primeHorizonExtension w) :=
-      mul_nonneg (by positivity) (poleDefect_nonneg N _)
-    have hBw : B * c ^ 9 * ‖w‖ ^ 2 ≤ 1 / 4 := by
-      calc
-        B * c ^ 9 * ‖w‖ ^ 2 ≤ B * c ^ 9 * (1 / (M₁ ^ 2 * c ^ 9)) :=
-          mul_le_mul_of_nonneg_left hw_sq (by positivity)
-        _ = B / M₁ ^ 2 := by field_simp [hM₁_pos.ne', hc0.ne']
-        _ ≤ 1 / 4 := by
-          rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-          have hM1_ge1 : 1 ≤ M₁ := by linarith only [hM₁_2]
-          nlinarith only [hM₁_B, hM1_ge1, hB]
-    linarith only [hr, hd0, hBw]
+    have hd := mul_le_mul_of_nonneg_left hw_def (div_nonneg hb.le (pow_pos hc0 7).le)
+    have hg := mul_le_mul_of_nonneg_right hgap9 (sq_nonneg ‖w‖)
+    have hc69 := mul_le_mul_of_nonneg_left
+      (pow_le_pow_right₀ hc1 (show 6 ≤ 9 by norm_num))
+      (show 0 ≤ 4 * C_cross ^ 2 * ‖w‖ ^ 2 by positivity)
+    nlinarith only [hr, hd, hg, hc69]
+  have htail_cost :
+      2 * |⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫| -
+        completeWeilEnergy tiltedUnitSpline c N w ≤ 1 / 4 := by
+    have hcross' := hcross hR'2 hR6N hlogN hc1 hw1 hRNT_lin hRNT_up hlog_div1 hlog_div2
+      hR_sqrt hu_mem hu_orth1 hw_orth
+    have hcross_bound :
+        2 * |⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫| ≤
+          2 * C_cross * c ^ 3 * ‖w‖ := by
+      have hh := mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hu_le1 (show 0 ≤ C_cross * c ^ 3 by positivity))
+        (norm_nonneg w)
+      nlinarith only [hcross', hh]
+    nlinarith only [hcross_bound, hw_energy, sq_nonneg (2 * C_cross * c ^ 3 * ‖w‖ - 1 / 2)]
   have hu_energy : completeWeilEnergy tiltedUnitSpline c N u ≤
       2 * tiltedSplineSpectralFloorConstant + 3 := by
     have hz_split : zHat = u + w := by dsimp only [w]; abel
     have hexp := completeWeilEnergy_add_eq tiltedUnitSpline c u w
     rw [← hz_split] at hexp
-    have hcr_lb : -(1 / 2 : ℝ) ≤
-        2 * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫ := by
-      linarith only [neg_abs_le ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫,
-        hcross_uw]
-    linarith only [hexp, hz_energy, hcr_lb, hw_energy]
+    linarith only [hexp, hz_energy, htail_cost,
+      neg_abs_le ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫]
   exact ⟨R', hQR', hR'_log, u, hu_mem, hu_orthQ, hu_sq_ge, hu_le1, hu_energy⟩
-
-/-! ### 4. Coercivity on `conductorSubspace R' N ⊓ (conductorSubspace Q₁ N)ᗮ` -/
 
 /-- Exact complete-Weil quadratic reduction on `conductorSubspace R' N ⊓ (conductorSubspace 1 N)ᗮ`
 to `renormalizedPrimeEnergy N u - ⟪overlapMatrix u, u⟫ - log c - O(1)`. -/
@@ -1709,7 +1735,7 @@ private theorem rpow_horizon_L_smallness_bounds {Q₁ R' N : ℕ} {c C_R C_small
     (hQ_le : (Q₁ : ℝ) ≤ Real.log (N : ℝ) ^ (1 / 16 : ℝ))
     (hQ_quarter : (1 / 4 : ℝ) * Real.log (N : ℝ) ^ (1 / 16 : ℝ) ≤ (Q₁ : ℝ))
     (hc_144 : c ≤ Real.log (N : ℝ) ^ (1 / 144 : ℝ))
-    (hR'_log : Real.log (R' : ℝ) ≤ C_R * c ^ 34 + Real.log (Q₁ : ℝ)) :
+    (hR'_log : Real.log (R' : ℝ) ≤ C_R * c ^ 16 + Real.log (Q₁ : ℝ)) :
     c ≤ Real.log (N : ℝ) ∧
     36 * (1 + Real.log (R' : ℝ)) ≤ Real.log (N : ℝ) ∧
     R' ^ 6 ≤ N ∧
@@ -1744,16 +1770,16 @@ private theorem rpow_horizon_L_smallness_bounds {Q₁ R' N : ℕ} {c C_R C_small
     hc_144.trans (by simpa only [Real.rpow_one] using
       Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num : (1 / 144 : ℝ) ≤ 1))
   have h1R_le : 1 + Real.log (R' : ℝ) ≤ L ^ (6 / 25 : ℝ) := by
-    have hc34 : c ^ 34 ≤ L ^ (19 / 80 : ℝ) :=
-      (hcpow 34).trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num : (34 : ℝ) / 144 ≤ 19 / 80))
+    have hc16 : c ^ 16 ≤ L ^ (19 / 80 : ℝ) :=
+      (hcpow 16).trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num : (16 : ℝ) / 144 ≤ 19 / 80))
     have hQ0 : (0 : ℝ) < Q₁ := by exact_mod_cast (show 0 < Q₁ by omega)
     have hlogQ : Real.log (Q₁ : ℝ) ≤ L ^ (19 / 80 : ℝ) :=
       ((Real.log_le_sub_one_of_pos hQ0).trans (by linarith only)).trans
         (hQ_le.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num : (1 / 16 : ℝ) ≤ 19 / 80)))
     have h1_10 : 1 ≤ L ^ (19 / 80 : ℝ) := Real.one_le_rpow hL1 (by norm_num)
     have hlin : 1 + Real.log (R' : ℝ) ≤ (C_R + 2) * L ^ (19 / 80 : ℝ) := by
-      have hCRc : C_R * c ^ 34 ≤ C_R * L ^ (19 / 80 : ℝ) :=
-        mul_le_mul_of_nonneg_left hc34 hCR0.le
+      have hCRc : C_R * c ^ 16 ≤ C_R * L ^ (19 / 80 : ℝ) :=
+        mul_le_mul_of_nonneg_left hc16 hCR0.le
       linarith only [hR'_log, hCRc, hlogQ, h1_10]
     have hmul : L ^ (1 / 400 : ℝ) * L ^ (19 / 80 : ℝ) = L ^ (6 / 25 : ℝ) := by
       rw [← Real.rpow_add hL0]; norm_num
@@ -2175,8 +2201,8 @@ theorem eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_powerLog
   intro c hc1 hcup
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
   obtain ⟨hc_144, hgram, hres_sum_bound, hbudget, hcoerc_gap⟩ := hlow_coerc c hc1 hcup
-  have hQ_R'_log : Real.log (Q₁ : ℝ) ≤ C_R * c ^ 34 + Real.log (Q₁ : ℝ) := by
-    have : 0 ≤ C_R * c ^ 34 := by positivity
+  have hQ_R'_log : Real.log (Q₁ : ℝ) ≤ C_R * c ^ 16 + Real.log (Q₁ : ℝ) := by
+    have : 0 ≤ C_R * c ^ 16 := by positivity
     linarith only [this]
   obtain ⟨hcL, hlog36_Q, _, hlog18_Q, _, _, _, _, _, _⟩ :=
     rpow_horizon_L_smallness_bounds hN1 hQ2 le_rfl hc1 hC_R hC_small hH_res
@@ -2245,7 +2271,7 @@ theorem eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_powerLog
     obtain ⟨zHat, hz_orth, hz_norm, hz_energy⟩ :=
       low_band_decoupling_unit_orthogonal hQ2 hQQ_N hlog18_Q hc1 hres_sum_Q hgram
         hx hxE hdist
-    have hR'_conds : ∀ {R' : ℕ}, Q₁ ≤ R' → Real.log (R' : ℝ) ≤ C_R * c ^ 34 + Real.log (Q₁ : ℝ) →
+    have hR'_conds : ∀ {R' : ℕ}, Q₁ ≤ R' → Real.log (R' : ℝ) ≤ C_R * c ^ 16 + Real.log (Q₁ : ℝ) →
         R' ^ 6 ≤ N ∧
         18 * (1 + Real.log (R' : ℝ)) ≤ Real.log (N : ℝ) ∧
         ((R' * R' : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ (N : ℝ) ∧

@@ -1,14 +1,14 @@
 # Cyclic Haar averages force infinite index at continuous dilations
 
 - **ID:** HAAR-CYCLIC-AVERAGE-INFINITE-INDEX
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** A Hermitian rational affine kernel with integer Haar successor and a dilation reading continuous at one has infinite negative index.
 
 ## Reduction and positive subspaces
 
-The formalized [normalized polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) reduces a putative finite-index example to a bi-integer-invariant kernel with unchanged axis readings. In its column representation, every rational translation acts locally periodically. The [dilation-replication argument](../3-formalized/bi-integer-invariant-haar-kernels-split-into-positive-and-slope-parts.md#positivity-of-the-moving-subspaces) makes each `range(T_b−1)` nonnegative.
+The formalized [normalized polynomial correction](finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) reduces a putative finite-index example to a bi-integer-invariant kernel with unchanged axis readings. In its column representation, every rational translation acts locally periodically. The [dilation-replication argument](bi-integer-invariant-haar-kernels-split-into-positive-and-slope-parts.md#positivity-of-the-moving-subspaces) makes each `range(T_b−1)` nonnegative.
 
 Local periodicity gives the canonical projection `P_b` onto `Fix(T_b)` along `range(T_b−1)`, equal on each vector to its finite orbit average. It is self-adjoint for the column pairing `B` and commutes with every translation.
 
@@ -59,4 +59,11 @@ Formalized, with direct audits and standard axiom closures:
 - `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: fixed-projection Grams converge to `J−I`. `BiarithmeticGeometry/Affine/NearIdentityGrids.lean` supplies the rational grids; `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean` supplies their limiting negative directions.
 - `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio. Its inputs are cyclic orthogonal projections, moving-subspace positivity, Haar orbit norms, and Cauchy–Schwarz.
 
-The [unique positive/slope/polynomial decomposition](../3-formalized/finite-index-haar-carriers-split-modulo-polynomial-kernels.md) and exact residual index are formalized. The [sharp punctured-limit classification](../3-formalized/finite-index-haar-dilation-limits-are-exactly-nonpositive.md) gives precisely real limits `L≤0`, with minimum index zero at `L=0` and one at `L<0`. The [subgroup-indicator classification](../3-formalized/continuous-affine-dilations-classify-subgroup-indicator-successors.md) is also formalized: finite-index continuous-dilation carriers exist exactly for `H={0}` and `H=ℚ`, both with positive witnesses. Only the completed paper proof of [proper-subgroup polynomial index preservation](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md) still awaits its Lean audit.
+## Positive boundaries
+
+- [Unique Haar splitting](finite-index-haar-carriers-split-modulo-polynomial-kernels.md): `k=p+ψ∘slope+Q`, with exact residual index `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`.
+- [Sharp punctured limits](finite-index-haar-dilation-limits-are-exactly-nonpositive.md): exactly real `L≤0`, with minimum index zero at zero and one at negative limits.
+- [Subgroup-indicator classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md): finite-index continuous-dilation carriers exist exactly for `H={0}` and `H=ℚ`, with positive witnesses.
+- [Proper-subgroup polynomial index law](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md): `κ(P+h)=κ(h)` for a positive carrier `P` of `1_H` and Hermitian polynomial-fibre `h`, including infinite index. Properness is sharp; positive carriers of the same proper successor with polynomial-fibre difference are equal.
+
+Each boundary has a dependency-closed proof and direct Lean audits with standard axiom closures.

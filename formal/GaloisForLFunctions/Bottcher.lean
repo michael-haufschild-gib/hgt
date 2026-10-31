@@ -397,3 +397,5 @@ import GaloisForLFunctions.Bottcher.Q62CofinalRootTower
 import GaloisForLFunctions.Bottcher.Q62RootTower
 import GaloisForLFunctions.Bottcher.SeibergWittenTopologicalShadow
 import GaloisForLFunctions.Bottcher.SeibergWittenFlatDiracShadow
+import GaloisForLFunctions.Bottcher.HalfPlane.AnchoredSchwarz
+import GaloisForLFunctions.Bottcher.HalfPlane.XiDonoghueDynamics

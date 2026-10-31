@@ -3,7 +3,7 @@
 - **ID:** HAAR-SLOPE-INDEX-PRESERVATION
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** For every Hermitian group kernel `ψ : ℚˣ → ℂ`, the affine kernel `Φ(g)=haarState(g)+ψ(slope(g))` has exactly the negative index of `ψ`.
 
 ## Dependency-closed paper proof

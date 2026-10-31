@@ -3,7 +3,7 @@
 - **ID:** MIXED-AFFINE-POLYNOMIAL
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** For `g=(a,b)∈Aff(ℚ)`, the Hermitian kernel `K(g)=i(1−a⁻²)b²` has negative index exactly three. Adding it to Haar preserves both axis readings and has index three, but gives unbounded mixed coefficients.
 
 ## Mathematical purpose

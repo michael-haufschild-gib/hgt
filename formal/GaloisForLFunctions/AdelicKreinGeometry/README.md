@@ -65,7 +65,9 @@ at edges with a counterterm of nontrivial null cone.
    on both axes. Its exact index is `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`. Punctured dilation limits are exactly
    real `L≤0`, with minimum index zero at zero and one at every negative limit. For arbitrary subgroup
    successors `1_H`, finite-index continuous-dilation carriers exist exactly for `H={0}` or `H=ℚ`;
-   both admit positive carriers.
+   both admit positive carriers. For every proper `H`, adding a positive carrier of `1_H`
+   preserves the index of every Hermitian polynomial-fibre kernel, including infinite index;
+   positive carriers of the same proper successor are rigid modulo polynomial translation fibres.
 3. **The pole carries a finite nonzero index.** The pole pair `|u|^{1/2} + |u|^{−1/2}` of Weil's kernel extends to
    an index-one state of the whole affine group whose successor is `2 − c|b|`. It is the hyperbolic pair of the
    fixed points `0, ∞` of `ℙ¹(ℚ)`: a boost on `×` glued to a conformal successor on `+`, with the boost exponent
@@ -202,6 +204,8 @@ at edges with a counterterm of nontrivial null cone.
   polynomial primitive has zero axis readings and restores integer invariance. The invariant factorial
   moving-form limit then gives the unique positive Haar and slope parts. Under continuous dilations, cyclic
   fixed-projection Grams instead tend to `J − I`, forcing infinite negative index (`Haar/`).
+  Factorial division separates quadrature grids modulo every proper rational subgroup. This gives
+  the same polynomial index law and rigidity of positive carriers for every proper successor.
 
 **C. The additive side.**
 
@@ -299,7 +303,8 @@ at edges with a counterterm of nontrivial null cone.
 | **Stable gluing formula** `κ(K(|a|) − c|a|^{−s/2}|b|^s) = κ^{(s/2)}(K) + 1`, `0 < s < 1`; absorbed pair `u^{±s/2}`; zero configurations with `Re ρ > (1 − s)/2` give `κ(K_Z) + 1`; a drop for `ζ` certifies a zero with `Re ρ ≤ (1 − s)/2` | `negIndex_archGlueAt_eq`, `negIndex_archGlueAt_eq_or`, `boostPolarIndexAt_stablePair`, `negIndex_archGlueAt_orbitCorr`, `exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne` |
 | Shell decomposition of the local pole–successor forms | `hermQuad_gram_poleSuccessor_negUltra_eq`, `hermQuad_gram_poleSuccessorState_eq` |
 | **Canonical Haar splitting**: unique `k=p+ψ∘slope+Q`, with positive Haar `p` and finite-rank zero-axis polynomial `Q`; `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)` | `exists_unique_haar_relative_split`, `finite_index_haar_iff_relative_split` |
-| **Polynomial index preservation**: `κ(p+h)=κ(h)` for positive Haar `p` and Hermitian polynomial-fibre `h`, including infinite index | `negIndex_add_positive_haar_polynomial` |
+| **Polynomial index preservation**: `κ(P+h)=κ(h)` for every positive carrier of a proper subgroup indicator and Hermitian polynomial-fibre `h`, including infinite index; properness is sharp | `negIndex_add_positive_subgroup_polynomial`, `proper_subgroup_iff_polynomial_index_preservation` |
+| **Polynomial rigidity**: positive carriers of the same proper successor with polynomial-fibre difference are equal | `positive_subgroup_carriers_polynomial_rigid` |
 | **Sharp punctured limits**: precisely real `L≤0`, with minimum index zero at zero and one at negative limits | `exists_finite_index_haar_punctured_limit_iff`, `exists_haar_negative_limit_index_one` |
 | **Subgroup successor classification**: continuous-dilation finite-index carriers exist exactly for `H={0}` or `H=ℚ`, with positive witnesses | `exists_finite_index_continuous_subgroup_successor_iff` |
 | Axis-invisible kernels: zero or `κ ≥ 2`, rank `≤ κ²`, polynomial fibres of degree `< κ`; every `κ ≥ 2` occurs | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `negIndex_haarMixedPowerState` |
@@ -355,7 +360,7 @@ at edges with a counterterm of nontrivial null cone.
 | Pontryagin index theory on groups | induction, witness complements, escape, mixing, block additivity, twist invariance, Krein compressions, conformal induction | Krein–Langer structure on `Aff(ℚ)` |
 | Local–global signature calculus | polar index, separable formula, pole–successor formula, additivity over places, boost-polar index and archimedean gluing | prime-local defects of the Weil kernel; non-separable glue |
 | Kakutani–Hellinger dichotomies | the Kakutani wall as an index wall; zero-or-infinity laws as index zero–one laws; local walls at every prime and their Schur assembly; the local wall at `∞` of `𝔽_q(X)` | local walls at the places of higher degree of `𝔽_q(X)` and their product |
-| Mautner / Howe–Moore phenomena | infinite index for Haar kernels with continuous dilations; unique canonical Haar decomposition and exact polynomial residual index | relative splitting for general nonzero proper rational successors |
+| Mautner / Howe–Moore phenomena | subgroup-indicator classification at continuous dilations; canonical integer-Haar decomposition; exact polynomial index laws for every proper rational successor | relative splitting for general nonzero proper rational successors |
 | Bost–Connes / KMS at the critical temperature | Hecke states at every exponent and their index wall | states below `β = 1` |
 | Ramanujan Plancherel, conductor Hamiltonian | additive index law on `ℤ/N`, `ℚ/ℤ`; Ramanujan law `Σ_{A_d<0} φ(d)` | the spectral measure on `ℤ̂` |
 | Successor-shell calculus | shell decompositions at every place with running counterterms | shells of the complete Weil form |
@@ -508,3 +513,8 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
 - Sharp Haar dilation limits (`Haar/`): `PuncturedLimits`, `SharpDilationLimits`.
 - Subgroup successors (`Haar/`): `TranslationSaturation`, `SubgroupEndpoints`, `SubgroupOrbits`,
   `SubgroupMovingBounds`, `SubgroupGramLimit`, `SubgroupClassification`.
+- Polynomial rigidity for proper subgroup successors (`Haar/`): `SubgroupIndexPreservation`.
+  Arithmetic inputs lie in `BiarithmeticGeometry/Affine/`; Gram and inertia inputs lie in
+  `HeckeKreinToeplitz/Index/`.
+- Factorial orders in proper rational quotients (`BiarithmeticGeometry/Affine/`):
+  `SubgroupFactorialOrders`.

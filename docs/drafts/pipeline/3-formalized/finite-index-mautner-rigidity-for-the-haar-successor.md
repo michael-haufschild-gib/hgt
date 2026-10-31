@@ -1,9 +1,9 @@
 # Finite-index Mautner rigidity for the Haar successor
 
 - **ID:** HAAR-FINITE-INDEX-MAUTNER
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [O5](weil-positivity-five-structural-mechanisms.md)
+- **Parent:** [O5](../1-in-progress/weil-positivity-five-structural-mechanisms.md)
 - **Statement:** A Hermitian kernel on `Aff(ℚ)` with nonzero Haar successor `c·1_ℤ` and dilation correlation continuous at identity has infinite negative index.
 
 ## Obstruction
@@ -29,24 +29,26 @@ The actual finite-adelic Haar overlap integral equals the integral-adele indicat
 ## Positive structure
 
 Every finite-index integer-Haar kernel has a
-[unique relative split](../3-formalized/finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
+[unique relative split](finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
 `k=p+ψ∘slope+Q`: positive Haar `p`, Hermitian slope `ψ`, and a finite-rank
 Hermitian polynomial correction `Q` vanishing on both axes. Its exact index is
 `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`. The construction uses the actual column representation;
 no boundedness or topological representation hypothesis is added.
 
-The [logarithmic carrier](../3-formalized/the-haar-successor-admits-one-negative-square.md)
-has index one. [Mixed polynomial carriers](../3-formalized/axis-invisible-affine-polynomials-realize-arbitrary-finite-index.md)
+The [logarithmic carrier](the-haar-successor-admits-one-negative-square.md)
+has index one. [Mixed polynomial carriers](axis-invisible-affine-polynomials-realize-arbitrary-finite-index.md)
 preserve both Haar axis readings and realize every index at least two. Their
 dilation readings are discontinuous. The
-[quadratic example](../3-formalized/mixed-polynomial-affine-perturbations-preserve-both-axis-readings.md)
+[quadratic example](mixed-polynomial-affine-perturbations-preserve-both-axis-readings.md)
 shows why the finite-rank term cannot be omitted.
 
-The [sharp punctured-limit classification](../3-formalized/finite-index-haar-dilation-limits-are-exactly-nonpositive.md)
+The [sharp punctured-limit classification](finite-index-haar-dilation-limits-are-exactly-nonpositive.md)
 gives exactly real limits `L≤0`, with minimum index zero at `L=0` and one at `L<0`.
-The [subgroup-indicator classification](../3-formalized/continuous-affine-dilations-classify-subgroup-indicator-successors.md)
+The [subgroup-indicator classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md)
 gives finite-index continuous-dilation carriers exactly for `H={0}` and `H=ℚ`,
 with positive carriers at both endpoints. These results are formalized.
-The completed paper proof of
-[proper-subgroup polynomial index preservation](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md)
-still awaits its Lean audit.
+The [proper-subgroup polynomial index law](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md)
+is also formalized: `κ(P+h)=κ(h)` for every positive carrier `P` of a proper
+subgroup indicator and every Hermitian polynomial-fibre `h`, including infinite
+index. Properness is sharp. Positive carriers of the same proper successor
+with polynomial-fibre difference are equal.

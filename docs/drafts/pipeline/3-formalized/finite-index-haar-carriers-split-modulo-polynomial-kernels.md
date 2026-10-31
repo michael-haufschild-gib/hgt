@@ -3,7 +3,7 @@
 - **ID:** HAAR-RELATIVE-PONTRYAGIN-SPLITTING
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** Every Hermitian finite-index kernel `k` on `Aff(ℚ)` with integer Haar successor has a unique decomposition `k=p+ψ∘slope+Q`, where `p` is positive definite with the same successor, `ψ` is Hermitian with `ψ(1)=0`, and `Q` is Hermitian, has finite column rank and polynomial translation fibres, and vanishes on both translations and dilations. Its index is exactly `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`.
 
 ## Canonical decomposition

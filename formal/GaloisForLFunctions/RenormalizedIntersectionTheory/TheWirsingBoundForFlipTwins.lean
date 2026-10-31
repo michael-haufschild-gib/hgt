@@ -127,7 +127,7 @@ theorem sumIcc_eq_sumRange (F : ℕ → ℝ) (N : ℕ) :
     ∑ k ∈ Icc 1 N, F k = ∑ i ∈ range N, F (i + 1) := by
   induction N with
   | zero => simp
-  | succ n ih => rw [sum_Icc_succ_top (by omega), ih, sum_range_succ (fun i => F (i + 1))]
+  | succ n ih => rw [sum_Icc_succ_top (by omega), ih, Finset.sum_range_succ (fun i => F (i + 1))]
 
 theorem sum_range_log_succ_sub (n : ℕ) :
     ∑ i ∈ range n, (Real.log ((i : ℝ) + 1) - Real.log i) = Real.log n := by
@@ -281,7 +281,7 @@ theorem abs_polarMoment_sub_logWeightSum_le (hbd : ∀ n, |ω n| ≤ 1) {N : ℕ
       refine (Real.log_le_sub_one_of_pos (by positivity)).trans ?_
       have hstep1 : (N : ℝ) / m / q - 1 ≤ 1 / q := by
         rw [div_div, sub_le_iff_le_add, div_le_iff₀ (by positivity)]
-        have e : (1 / (q : ℝ) + 1) * (m * q) = m + m * q := by field_simp; ring
+        have e : (1 / (q : ℝ) + 1) * (m * q) = m + m * q := by field_simp
         rw [e]; nlinarith
       have hstep2 : 1 / (q : ℝ) ≤ 2 * m / N := by
         rw [div_le_div_iff₀ hq0 hN0]; nlinarith
@@ -346,7 +346,9 @@ theorem exists_abs_wirsing_equation_le (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → 
         have h0 : (N / d : ℕ) ≤ N := Nat.div_le_self N d
         rcases Nat.eq_zero_or_pos (N / d) with h | h
         · rw [h, Nat.cast_zero, Real.log_zero]; linarith
-        · have := Real.log_le_log (by exact_mod_cast h) (by exact_mod_cast h0); linarith
+        · have h0' : ((N / d : ℕ) : ℝ) ≤ N := by exact_mod_cast h0
+          have hpos : (0 : ℝ) < ((N / d : ℕ) : ℝ) := by exact_mod_cast h
+          have := Real.log_le_log hpos h0'; linarith
       calc Λ d * (|ω d| / d) * |gaugeHarmonicSum ω (N / d)|
           ≤ Λ d * (1 / d) * (1 + Real.log N) := by
             refine mul_le_mul (mul_le_mul_of_nonneg_left

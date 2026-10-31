@@ -48,7 +48,9 @@ theorem isHermKernel_secondDiff {k : Multiplicative ℤ → ℂ} (hk : IsHermKer
     apply Multiplicative.toAdd.injective
     simp only [toAdd_mul, toAdd_inv, toAdd_ofAdd]
     ring
-  simp only [secondDiff, h1, h2, hk, map_sub, map_mul, Complex.conj_ofNat]
+  show secondDiff k m⁻¹ = conj (secondDiff k m)
+  simp only [secondDiff, h1, h2, hk m, hk (m * Multiplicative.ofAdd (-1)),
+    hk (m * Multiplicative.ofAdd 1), map_sub, map_mul, Complex.conj_ofNat]
   ring
 
 theorem secondDiff_add (f g : Multiplicative ℤ → ℂ) (m : Multiplicative ℤ) :
@@ -76,7 +78,7 @@ theorem secondDiff_negAbsKernel_of_pos {n : ℤ} (hn : 1 ≤ n) :
     secondDiff negAbsKernel (Multiplicative.ofAdd n) = 0 := by
   have h0 : 0 ≤ n := by omega
   have h1 : 0 ≤ n + 1 := by omega
-  have h2 : 0 ≤ n - 1 := by omega
+  have h2 : 0 ≤ n + -1 := by omega
   simp only [secondDiff, negAbsKernel, ← ofAdd_add, toAdd_ofAdd, abs_of_nonneg h0,
     abs_of_nonneg h1, abs_of_nonneg h2]
   push_cast
@@ -242,8 +244,7 @@ theorem hermQuad_gram_gridPts_diffMap (k : Multiplicative ℤ → ℂ) (L : ℤ)
     push_cast; ring
   have e11 : (gridPts L M i.succ)⁻¹ * gridPts L M j.succ = m := by
     apply Multiplicative.toAdd.injective
-    simp only [gridPts, gridInit, m, Fin.val_castSucc, Fin.val_succ, toAdd_mul, toAdd_inv,
-      toAdd_ofAdd]
+    simp only [gridPts, gridInit, m, Fin.val_succ, toAdd_mul, toAdd_inv, toAdd_ofAdd]
     push_cast; ring
   rw [e00, e01, e10, e11, secondDiff]
   ring
@@ -323,7 +324,7 @@ theorem polarIndex_eq_negIndex_secondDiff (k : Multiplicative ℤ → ℂ) :
       intro β hβ
       set c : W := bW.equivFun.symm β
       have hc0 : (c : Fin n → ℂ) ≠ 0 := fun h =>
-        hβ (bW.equivFun.symm.injective (Subtype.ext h))
+        hβ (bW.equivFun.symm.injective ((Subtype.ext h).trans (map_zero _).symm))
       have hc_ker : pushVec f (c : Fin n → ℂ) ∈ LinearMap.ker (totalMass (Fin (M + 1))) := by
         rw [LinearMap.mem_ker, totalMass_pushVec]
         exact LinearMap.mem_ker.mp (hWV c.2)
@@ -363,7 +364,7 @@ theorem polarIndex_eq_negIndex_secondDiff (k : Multiplicative ℤ → ℂ) :
       intro β hβ
       set d : W := bW.equivFun.symm β
       have hd0 : (d : Fin m → ℂ) ≠ 0 := fun h =>
-        hβ (bW.equivFun.symm.injective (Subtype.ext h))
+        hβ (bW.equivFun.symm.injective ((Subtype.ext h).trans (map_zero _).symm))
       have hquad : hermQuad (gram k (gridPts L M)) (Φ β) =
           hermQuad (gram (secondDiff k) y) (d : Fin m → ℂ) := by
         simp only [Φ, LinearMap.coe_comp, Function.comp_apply, Submodule.subtype_apply,

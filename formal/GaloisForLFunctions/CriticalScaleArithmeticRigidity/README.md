@@ -39,6 +39,8 @@ Complete-period averaging uses the common period `Q!`. Its coefficient norm is `
 
 The two coordinate conventions serve different exact identities; no weight is discarded when transferring between them.
 
+Complete-period centering removes the constant conductor. The finite-horizon Weil-pole projection instead uses the actual harmonic Gram pairing. These projections are distinct, and a transfer between them must be proved.
+
 ### Successor transversality and the pole
 
 For `r_m(h)=c_m(h)/φ(m)`, every approximating packet satisfies
@@ -121,6 +123,7 @@ The RH-complete versions of these questions remain research targets. Their concl
 | Small average residual excludes every negative vector | Exceptional directions can carry the whole obstruction |
 | A source-blind defect bound gives polynomial conductor capture | Existing counterexamples force stronger arithmetic input |
 | Rigidity of conductor packets classifies every negative complete state | The actual negative state still needs quantitative conductor capture |
+| A zero constant coefficient implies finite-horizon pole neutrality | Complete-period centering and harmonic pole projection use different Gram forms |
 | Relative adjunction control is relative completed-energy control | The completed conductor floor also includes shell, Gamma, and pole contributions |
 | A smoother receiver inherits tilted-spline positivity | Its Fourier tail and spectral floor change together |
 | Fixed packets establish a growing-horizon theorem | Parameter dependence and common horizons must be explicit |

@@ -58,7 +58,7 @@ theorem hasDerivAt_upperToDisk {z : ℂ} (hz : 0 < z.im) :
     HasDerivAt upperToDisk (2 * I / (z + I) ^ 2) z := by
   have h := ((hasDerivAt_id z).sub_const I).div
     ((hasDerivAt_id z).add_const I) (add_I_ne_zero hz)
-  convert h using 1 <;> first | rfl | ring
+  convert h using 1 <;> first | rfl | (simp only [id_eq]; ring)
 
 /-- Disk conjugate of an upper-half-plane map, centered at its fixed point `i`. -/
 def diskConjugate (f : ℂ → ℂ) (w : ℂ) : ℂ := upperToDisk (f (diskToUpper w))

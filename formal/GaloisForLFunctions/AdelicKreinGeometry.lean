@@ -1,3 +1,4 @@
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.SubgroupIndexPreservation
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.SubgroupClassification
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.SubgroupGramLimit
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.SubgroupMovingBounds

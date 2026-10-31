@@ -3,7 +3,7 @@
 - **ID:** AXIS-INVISIBLE-AFFINE-INDEX
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** For each integer `d≥1`, set `K_d(a,b)=γ_d(1−a⁻ᵈ)bᵈ`, where `γ_d=1` for odd `d` and `γ_d=i` for even `d`. Then `K_d` is Hermitian, vanishes on translations and dilations, and `κ(p+K_d)=d+1` for every positive-definite affine kernel `p`.
 
 ## Dependency-closed paper proof

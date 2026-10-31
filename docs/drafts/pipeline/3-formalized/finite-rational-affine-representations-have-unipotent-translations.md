@@ -3,7 +3,7 @@
 - **ID:** RATIONAL-AFFINE-TRANSLATION-UNIPOTENCE
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** For every complex `d`-dimensional matrix representation `ρ` of `Aff(ℚ)` and every `b∈ℚ`, `(ρ(T_b)−I)^d=0`. No unitarity or continuity is required.
 
 ## Dependency-closed paper proof

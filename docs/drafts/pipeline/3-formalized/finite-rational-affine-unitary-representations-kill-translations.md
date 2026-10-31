@@ -3,7 +3,7 @@
 - **ID:** RATIONAL-AFFINE-FINITE-UNITARY
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** Every finite-dimensional complex representation of `Aff(ℚ)` has translation trace equal to its dimension. Every finite-dimensional unitary representation therefore kills all translations and factors through the dilation group `ℚˣ`. None of these statements needs continuity.
 
 ## Dependency-closed paper proof

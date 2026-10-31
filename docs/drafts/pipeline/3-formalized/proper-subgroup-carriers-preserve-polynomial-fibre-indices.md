@@ -1,16 +1,16 @@
 # Proper subgroup carriers preserve polynomial-fibre indices
 
 - **ID:** PROPER-SUBGROUP-POLYNOMIAL-INDEX
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Source:** [Haar polynomial index law](../3-formalized/haar-addition-preserves-index-on-polynomial-translation-fibres.md); [subgroup successor classification](../3-formalized/continuous-affine-dilations-classify-subgroup-indicator-successors.md).
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Source:** [Haar polynomial index law](haar-addition-preserves-index-on-polynomial-translation-fibres.md); [subgroup successor classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md).
 - **Statement:** For every proper additive subgroup `H<ℚ`, every positive-definite affine kernel `P` with translation reading `1_H`, and every Hermitian kernel `h` with polynomial translation fibres, `κ(P+h)=κ(h)`, including infinite index.
 
-## Goal
+## Sharp boundary
 
-Extend the exact residual-index law from integer Haar carriers to every proper rational subgroup. Properness is sharp: for `H=ℚ`, the constant kernels `P=1` and `h=−1` sum to zero, while `h` has a negative one-point Gram.
+Properness is sharp: for `H=ℚ`, the constant kernels `P=1` and `h=−1` sum to zero, while `h` has a negative one-point Gram.
 
-## Paper proof
+## Proof
 
 Choose `r∉H`. For any finite family of nonzero rational coefficients `c_j`,
 choose `N` at least every denominator of `1/c_j`. Write
@@ -45,16 +45,9 @@ has index zero and is positive definite. Its identity value is zero, so the
 positive-kernel norm bound makes it identically zero. This extends the existing
 slope-only uniqueness law to arbitrary polynomial translation fibres.
 
-## Novelty and verification boundary
+## Lean verification
 
-Corpus searches found the integer-Haar slope law, homogeneous rescaling,
-and finite-index rigidity of divisible quotients. None gives this polynomial
-index law. The finite-grid avoidance argument above needs no prime-height or
-p-adic bound. Complete Lean drafts include the index law, sharp converse, and
-polynomial rigidity; all remain unverified.
+- `BiarithmeticGeometry/Affine/FiniteSubgroupAvoidance.lean`: `exists_scale_finite_multiples_not_mem` and `exists_scale_grid_differences_not_mem` prove simultaneous finite-grid separation for every proper subgroup.
+- `AdelicKreinGeometry/Haar/SubgroupIndexPreservation.lean`: `negIndex_add_positive_subgroup_polynomial` proves the exact index law, including infinite index; `proper_subgroup_iff_polynomial_index_preservation` proves sharpness at the full subgroup; `positive_subgroup_carriers_polynomial_rigid` proves uniqueness modulo polynomial translation fibres.
 
-## Gates
-
-- [x] Dependency-closed paper proof, including all-pairs grid separation and the full-subgroup counterexample.
-- [ ] Exact Lean index law and full-subgroup counterexample in existing topic subfolders.
-- [ ] Direct `lake --old env lean` audits and standard transitive axiom closures.
+Both modules passed direct `lake --old env lean` audits. Printed transitive axiom closures contain only `propext`, `Classical.choice`, and `Quot.sound`.

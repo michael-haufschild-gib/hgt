@@ -3,7 +3,7 @@
 - **ID:** AFFINE-CONTINUOUS-SUBGROUP-SUCCESSORS
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Cyclic Haar obstruction](../1-in-progress/cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md)
+- **Parent:** [Cyclic Haar obstruction](cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md)
 - **Statement:** For an additive subgroup `H≤ℚ`, a Hermitian kernel on `Aff(ℚ)` with translation reading `1_H`, finite negative index, and positive-dilation reading continuous at one exists exactly when `H={0}` or `H=ℚ`.
 
 ## Positive boundary

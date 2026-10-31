@@ -1,7 +1,7 @@
 # Xi Donoghue periodic-orbit obstruction
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** A nontrivial upper-half-plane periodic orbit of the normalized Xi logarithmic derivative falsifies RH.
 
 ## Corpus basis and distinction
@@ -11,12 +11,12 @@
 `SuzukiXiFirstDefectJet` proves unconditionally that `m'(i)` is real and lies in `(77/85,1)`.
 `XiNewtonSchwarzPickCriticalLine` provides disk Schwarz rigidity, but concerns Newton maps.
 
-The proposed witness is a periodic orbit of `m`, not a zero of Xi, a negative logarithmic
+The witness is a periodic orbit of `m`, not a zero of Xi, a negative logarithmic
 derivative, or a Newton-invariant disk. Its points can all obey the existing pointwise sign test.
-The missing mechanism is strict contraction towards the anchored point, using the unconditional
+The new mechanism is strict contraction towards the anchored point, using the unconditional
 derivative gap to exclude rotations.
 
-## Conjectures
+## Proven statements
 
 1. RH forces strict decrease of `|(m(z)-i)/(m(z)+i)|` from `|(z-i)/(z+i)|` for every upper point `z ≠ i`.
 2. Therefore every upper periodic point of `m` is `i`; any exception falsifies RH.
@@ -45,3 +45,26 @@ normalization, first and second jets, and source-limit theorems; no orbit classi
 stationary-point endpoint. Generic Schwarz theory is reused, not claimed new. The contribution
 is the Xi dynamical obstruction and its exact Gaussian-stationary witness. No converse or
 existence of a falsifying witness is claimed.
+
+At a fixed point with `XiC(z)≠0`, the witness equation gives
+`Im(logDeriv XiC z) = -c Im(z) < 0`: it passes the existing pointwise Herglotz sign test.
+The obstruction is dynamical rigidity, not a renamed sign violation.
+
+## Lean statements
+
+- `Bottcher/HalfPlane/AnchoredSchwarz.lean`: `cayleyRadius_strict_decrease`,
+  `eq_I_of_iterate_eq_self`.
+- `Bottcher/HalfPlane/XiDonoghueDynamics.lean`:
+  `not_riemannHypothesis_of_xiDonoghue_periodicPoint`,
+  `not_riemannHypothesis_of_xiGaussian_stationaryPoint`,
+  `xiGaussian_stationary_I`, `xiGaussian_stationary_iff_eq_I_of_rh`.
+
+The stationary classification includes the unconditional anchor; the endpoint excludes exactly
+that known solution.
+
+## Verification
+
+Both leaves passed standalone `lake --old env lean <module>.lean` checks. All nine public
+capstones audited by `#print axioms` depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+The general helper's olean was built solely for the Xi specialization. Both leaves are wired
+into `Bottcher.lean`; no umbrella build, numerical experiment, or added proof budget was used.

@@ -3,7 +3,7 @@
 - **ID:** AFFINE-ISOTROPIC-TRANSLATION-UNIPOTENCE
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean verified)
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** For a Hermitian group kernel of negative index at most `r<∞`, every nonpositive column subspace has dimension at most `r`. For an affine kernel, every totally isotropic translation-invariant subspace `W` satisfies `(T_b−1)^(dim W)=0` for every rational `b`. Every nonzero isotropic common translation eigenvector is fixed by all translations. No dilation invariance of `W` is required.
 
 ## Dependency-closed paper proof

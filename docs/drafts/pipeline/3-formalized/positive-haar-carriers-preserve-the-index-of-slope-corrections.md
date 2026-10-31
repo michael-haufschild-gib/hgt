@@ -3,7 +3,7 @@
 - **ID:** POSITIVE-HAAR-SLOPE-INDEX
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [Finite-index Mautner rigidity](../1-in-progress/finite-index-mautner-rigidity-for-the-haar-successor.md)
+- **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** For every positive-definite affine kernel `p` with integer successor and every Hermitian `ψ : ℚˣ → ℂ`, `κ(p+ψ∘slope)=κ(ψ)`.
 
 ## Dependency-closed paper proof
