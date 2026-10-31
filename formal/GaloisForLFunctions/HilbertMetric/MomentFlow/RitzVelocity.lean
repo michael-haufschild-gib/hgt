@@ -114,4 +114,7 @@ theorem ritz_velocity_neg {n : ℕ} {s : ℝ → ℕ → ℝ} {a : ℝ}
   rw [hid]
   exact neg_neg_of_pos hres
 
+#print axioms ritz_velocity_identity
+#print axioms ritz_velocity_neg
+
 end HilbertMetric.MomentFlow

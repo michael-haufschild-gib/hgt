@@ -807,6 +807,8 @@ private theorem exists_high_tail_suppression :
       neg_abs_le ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫]
   exact ⟨R', hQR', hR'_log, u, hu_mem, hu_orthQ, hu_sq_ge, hu_le1, hu_energy⟩
 
+/-! ### 4. Coercivity of the remaining conductor band -/
+
 /-- Exact complete-Weil quadratic reduction on `conductorSubspace R' N ⊓ (conductorSubspace 1 N)ᗮ`
 to `renormalizedPrimeEnergy N u - ⟪overlapMatrix u, u⟫ - log c - O(1)`. -/
 private theorem exists_completeWeilEnergy_ge_prime_sub_overlap :

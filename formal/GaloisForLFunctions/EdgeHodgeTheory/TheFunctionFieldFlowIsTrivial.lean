@@ -78,7 +78,7 @@ theorem windowEdge_eq_top_iff : windowEdge D = ⊤ ↔ ∀ i, ‖D.β i‖ = 1 :
 at most `2g`. -/
 theorem windowEdge_le_card (h : ¬ ∀ i, ‖D.β i‖ = 1) : windowEdge D ≤ Fintype.card ι := by
   rw [D.unitary_iff_negIndex_spanGram_eq_zero] at h
-  exact iInf₂_le _ h
+  exact iInf₂_le (Fintype.card ι) h
 
 theorem hermNegIndex_spanGram_one : hermNegIndex (D.spanGram 1) = 0 := by
   refine negIndex_eq_zero_of_hermQuad_nonneg fun x => ?_
@@ -86,10 +86,11 @@ theorem hermNegIndex_spanGram_one : hermNegIndex (D.spanGram 1) = 0 := by
     simp [CurveDatum.trace, CurveDatum.powerSum]
   simp only [hermQuad, dotProduct, Matrix.mulVec, Fin.sum_univ_one, CurveDatum.spanGram,
     Nat.dist_self, h0]
-  rw [show star (x 0) * ((Fintype.card ι : ℝ) * x 0 : ℂ) =
-    ((Fintype.card ι : ℝ) * Complex.normSq (x 0) : ℝ) by
-      rw [← Complex.mul_conj', Complex.star_def]; push_cast; ring]
-  rw [Complex.ofReal_re]
+  have hx : star x 0 * ((((Fintype.card ι : ℕ) : ℝ) : ℂ) * x 0) =
+      ((((Fintype.card ι : ℕ) : ℝ) * Complex.normSq (x 0) : ℝ) : ℂ) := by
+    rw [Pi.star_apply, Complex.star_def]
+    apply Complex.ext <;> simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im] <;> ring
+  rw [hx, Complex.ofReal_re]
   positivity
 
 /-- **Short windows are positive**: every datum has window edge at least `2`. -/

@@ -212,8 +212,12 @@ theorem exists_primePacket_energy_ge_log :
   have hε : 0 ≤ ε := by dsimp only [ε]; positivity
   have hεM : ε * M ≤ 18 * (g + 1) := by
     have hh := mul_le_mul_of_nonneg_left hsmall' (show 0 ≤ 18 * (g + 1) by positivity)
-    dsimp only [ε, M]
-    nlinarith only [hh]
+    calc
+      ε * M = 18 * (g + 1) * ((1 + Real.log R) ^ 2 / Real.log N) := by
+        dsimp only [ε, M]
+        ring
+      _ ≤ 18 * (g + 1) * 1 := hh
+      _ = 18 * (g + 1) := mul_one _
   have hgram := abs_inner_sum_normalizedRamanujanHorizonVector_sub_le hR hRR
     (fun m => a m * (ramanujanAdjunctionEnergy m + g)) a
   have herr : |⟪d, y⟫ - ∑ m ∈ Icc 1 R,

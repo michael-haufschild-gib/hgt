@@ -23,6 +23,7 @@ strictly stronger obstruction.
 | Singular shifted Xi moment block | `xiShiftedMomentHankelMatrix_posDef_of_riemannHypothesis` | Already formalized; reject restatement |
 | Finite nonreal zero set at negative heat time | `DeBruijn.riemannHeat_neg_nonreal_zeros_infinite` holds unconditionally | Impossible antecedent; reject vacuous endpoint |
 | Interior Abel-susceptibility divergence | `riemannHypothesis_iff_primeArchEndpointBernsteinAbelSusceptibilityFinite` | Already formalized; reject restatement |
+| Shifted reciprocal Ritz Riccati gap | `xiShiftedCanonicalAdmissionHardEdgeWorldlineVelocity_pos` and strict shifted Hankel positivity under RH | Existing hard-root motion law; reject coordinate restatement |
 
 ## Coverage requiring investigation
 
