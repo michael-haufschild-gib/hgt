@@ -26,10 +26,11 @@ Right cosets in `B w B/B` use `I(w⁻¹)`. Representatives `u w⁻¹`, indexed b
 `I(w)`, must be used when matching the existing Weyl-sum convention.
 
 Over the actual countable elliptic function field, finite polynomial coordinates
-have one common finite set of bad places. Their representatives and the Weyl
-lifts lie in the restricted arithmetic group. The remaining Borel factor then
-lies there by group closure. Finite-dimensional cell coordinates would prove
-countability of the actual arithmetic coset set.
+have one common finite set of bad places. Compatibility of loop representatives
+with diagonal field maps is still needed to place them in the actual arithmetic
+group. The remaining Borel factor would then be restricted by group closure.
+Exhaustive finite-dimensional cell coordinates would prove countability of the
+actual arithmetic coset set.
 
 ## Status
 
@@ -42,3 +43,6 @@ have [audited finite polynomial representatives](../3-formalized/affine-monomial
 lift modulo Borel](../3-formalized/affine-polynomial-cell-heads-are-unique.md),
 with direct Lean and axiom audits. Compatibility with diagonal field maps
 and exhaustive parametrization of actual arithmetic cosets remain.
+
+[Every finite adelic or rational free-coefficient prefix is uniformly integral](../3-formalized/finite-elliptic-unipotent-prefixes-are-uniformly-integral.md).
+Both statements passed direct Lean and axiom audits.

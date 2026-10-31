@@ -29,11 +29,13 @@ This does not assert a Gauss-coordinate map from the nonnormal quotient.
 - The residual Borel factor after Weyl conjugation has trivial character,
   including its central coordinate. The expected tame correction is one
   because the relevant power-series diagonal has constant coefficient one.
-- Finite-coordinate measurability, Tonelli and resulting actual cell integral.
+- Assemble scalar sampling and continuous Gauss corrections into actual
+  cell integrals, with justified Tonelli exchanges.
 
 The listed obligations remain unproved. No relative quotient or Jacobian is assumed.
 
 The [Gauss coefficient laws](../3-formalized/unipotent-gauss-defects-use-only-earlier-free-coefficients.md)
+and [continuous strict-prefix corrections](../3-formalized/unipotent-gauss-corrections-are-continuous.md)
 are formalized: for an actual product, each upper or lower Gauss coordinate
 is the sum of the current free coefficients plus a correction depending
 only on strict input prefixes. Direct Lean and transitive axiom audits passed.

@@ -1,6 +1,6 @@
 # Finite elliptic unipotent prefixes are uniformly integral
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic cell coordinates](../1-in-progress/affine-a1-bruhat-cells-have-one-polynomial-root-coordinate.md).
 - **Statement:** Every finite adelic free-coefficient prefix completed by
   zeros is uniformly integral. Every rational prefix belongs to the actual
@@ -18,4 +18,5 @@ with the diagonal function-field embedding, proving the rational claim.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentFinitePrefixes.lean`:
 `unipotentPrefixCompletion_mem_uniformlyIntegral` and
-`unipotentPrefixCompletion_mem_uniformlyIntegralRational`. Direct audit pending.
+`unipotentPrefixCompletion_mem_uniformlyIntegralRational`. Direct Lean and transitive axiom audits passed.
+Only `propext`, `Classical.choice`, and `Quot.sound` occur.

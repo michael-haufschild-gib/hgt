@@ -11,8 +11,10 @@ are continuous functions of the original free coefficients.
 
 namespace GaloisForLFunctions.HTGeometry.LoopEisenstein
 noncomputable section
-variable {R X : Type*} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
-variable [TopologicalSpace X]
+variable {R X : Type*} [CommRing R]
+
+section
+variable [TopologicalSpace R] [IsTopologicalRing R] [TopologicalSpace X]
 
 private theorem continuous_coeff_mul (f g : X → PowerSeries R)
     (hf : ∀ n, Continuous fun x => PowerSeries.coeff n (f x))
@@ -39,6 +41,8 @@ theorem continuous_unipotentLowerGaussDecoded_coeff (N : ℕ) :
       PowerSeries.coeff N (unipotentLowerGauss ((unipotentCoefficientStreamEquiv R).symm x)) :=
   continuous_coeff_mul _ _ (continuous_unipotentDecoded_coeff 1 0)
     (continuous_coeff_invOfUnit_one _ (continuous_unipotentDecoded_coeff 0 0)) N
+
+end
 
 /-- The upper Gauss defect of a product, evaluated on strict input prefixes. -/
 def unipotentUpperGaussCorrection (n : ℕ) (x y : Fin (3*n) → R) : R :=
@@ -83,6 +87,9 @@ theorem unipotentLowerGauss_product_eq_correction (g h : unipotentCoefficientGro
   simp only [unipotentLowerGaussCorrection, unipotentStream_lowerLeft] at *
   linear_combination he
 
+section
+variable [TopologicalSpace R]
+
 private theorem continuous_prefixCompletion_stream (N : ℕ) :
     Continuous fun x : Fin N → R => unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion x) := by
   apply continuous_pi
@@ -94,6 +101,8 @@ private theorem continuous_prefixCompletion_stream (N : ℕ) :
   · simp only [dif_neg hk]
     exact continuous_const
 
+variable [IsTopologicalRing R]
+
 private theorem continuous_prefixProduct_stream (N : ℕ) :
     Continuous fun p : (Fin N → R) × (Fin N → R) =>
       unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.1 * unipotentPrefixCompletion p.2) := by
@@ -101,15 +110,25 @@ private theorem continuous_prefixProduct_stream (N : ℕ) :
     (continuous_fst : Continuous (Prod.fst : (Fin N → R) × (Fin N → R) → Fin N → R))
   have hg := (continuous_prefixCompletion_stream (R := R) N).comp
     (continuous_snd : Continuous (Prod.snd : (Fin N → R) × (Fin N → R) → Fin N → R))
+  have hc : Continuous fun p : (Fin N → R) × (Fin N → R) =>
+      unipotentStreamProduct
+        (unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.1),
+          unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.2)) :=
+    continuous_unipotentStreamProduct.comp (hf.prodMk hg)
   simpa only [unipotentStreamProduct, Equiv.symm_apply_apply] using
-    (continuous_unipotentStreamProduct.comp (hf.prodMk hg))
+    hc
 
 /-- The finite upper correction is continuous in the two strict input prefixes. -/
 theorem continuous_unipotentUpperGaussCorrection (n : ℕ) :
     Continuous fun p : (Fin (3*n) → R) × (Fin (3*n) → R) =>
       unipotentUpperGaussCorrection n p.1 p.2 := by
-  have hp := (continuous_unipotentUpperGaussDecoded_coeff (R := R) n).comp
-    (continuous_prefixProduct_stream (R := R) (3*n))
+  have hp : Continuous fun p : (Fin (3*n) → R) × (Fin (3*n) → R) =>
+      PowerSeries.coeff n (unipotentUpperGauss
+        ((unipotentCoefficientStreamEquiv R).symm
+          (unipotentCoefficientStreamEquiv R
+            (unipotentPrefixCompletion p.1 * unipotentPrefixCompletion p.2)))) :=
+    (continuous_unipotentUpperGaussDecoded_coeff (R := R) n).comp
+      (continuous_prefixProduct_stream (R := R) (3*n))
   simp only [Equiv.symm_apply_apply] at hp
   exact (hp.sub ((continuous_apply (3*n)).comp
     ((continuous_prefixCompletion_stream (R := R) (3*n)).comp continuous_fst))).sub
@@ -120,14 +139,20 @@ theorem continuous_unipotentUpperGaussCorrection (n : ℕ) :
 theorem continuous_unipotentLowerGaussCorrection (n : ℕ) :
     Continuous fun p : (Fin (3*n+1) → R) × (Fin (3*n+1) → R) =>
       unipotentLowerGaussCorrection n p.1 p.2 := by
-  have hp := (continuous_unipotentLowerGaussDecoded_coeff (R := R) (n+1)).comp
-    (continuous_prefixProduct_stream (R := R) (3*n+1))
+  have hp : Continuous fun p : (Fin (3*n+1) → R) × (Fin (3*n+1) → R) =>
+      PowerSeries.coeff (n+1) (unipotentLowerGauss
+        ((unipotentCoefficientStreamEquiv R).symm
+          (unipotentCoefficientStreamEquiv R
+            (unipotentPrefixCompletion p.1 * unipotentPrefixCompletion p.2)))) :=
+    (continuous_unipotentLowerGaussDecoded_coeff (R := R) (n+1)).comp
+      (continuous_prefixProduct_stream (R := R) (3*n+1))
   simp only [Equiv.symm_apply_apply] at hp
   exact (hp.sub ((continuous_apply (3*n+1)).comp
     ((continuous_prefixCompletion_stream (R := R) (3*n+1)).comp continuous_fst))).sub
     ((continuous_apply (3*n+1)).comp
       ((continuous_prefixCompletion_stream (R := R) (3*n+1)).comp continuous_snd))
 
+end
 end
 end GaloisForLFunctions.HTGeometry.LoopEisenstein
 

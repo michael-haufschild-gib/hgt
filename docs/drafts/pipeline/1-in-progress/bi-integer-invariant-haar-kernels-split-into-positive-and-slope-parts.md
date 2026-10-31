@@ -38,4 +38,6 @@ Local periodicity, the orthogonal cyclic projections, and moving-subspace positi
 
 `AdelicKreinGeometry/Haar/GeneralOrbits.lean` proves the reciprocal-denominator projection norm for every affine column, with a direct audit and standard axiom closure.
 
+`BiarithmeticGeometry/Affine/FactorialTranslations.lean` proves cofinal cyclic exhaustion and convergence of the factorial steps to zero. `AdelicKreinGeometry/Haar/SplittingUniqueness.lean` proves uniqueness whenever a positive Haar and Hermitian slope split exists. Both passed direct audits with standard axiom closures.
+
 Boundedness of the Haar moving forms, affine invariance, and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.

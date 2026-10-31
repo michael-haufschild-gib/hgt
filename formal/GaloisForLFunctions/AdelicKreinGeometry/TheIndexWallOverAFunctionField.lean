@@ -358,6 +358,7 @@ omit [Fintype F] [DecidableEq F] in
 theorem intDegree_X_pow (M : ℕ) : ((RatFunc.X : RatFunc F) ^ M).intDegree = M := by
   rw [← RatFunc.algebraMap_X, ← map_pow, intDegree_algebraMap, Polynomial.natDegree_X_pow]
 
+omit [DecidableEq F] in
 /-- **Escape at `∞`**: translation by `X^M`, `M` large, moves every ball `g⁻¹(t·h)(O_∞)` off `O_∞`. -/
 theorem inftyHecke_escape (s : ℝ) (m n : ℕ) (x : Fin m → AffineGroupOf (RatFunc F))
     (y : Fin n → AffineGroupOf (RatFunc F)) :
@@ -451,7 +452,7 @@ theorem one_le_negIndex_inftyHecke {s : ℝ} (hs : s < 1 / 2) :
       simp only [x, Option.elim_none, Option.elim_some, shiftOf_mul, shiftOf_inv, slopeOf_inv,
         slopeOf_dilationOf, shiftOf_dilationOf, shiftOf_translationOf, uX, Units.val_mk0,
         neg_zero, zero_div, add_zero]
-      exact mul_div_cancel_left₀ _ RatFunc.X_ne_zero
+      rw [mul_comm, mul_assoc, mul_inv_cancel₀ (RatFunc.X_ne_zero (K := F)), mul_one]
     have hC : (RatFunc.C e : RatFunc F).intDegree = 0 := RatFunc.intDegree_C e
     simp only [inftyHecke, hsl, hsh, hC, hXinv, y]
     rw [if_pos (by norm_num)]

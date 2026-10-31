@@ -12,7 +12,7 @@ For `H=ℚ`, the constant kernel `1` is positive definite. For `H={0}`, the indi
 
 The proposed obstruction would therefore classify all subgroup indicators, including the single-prime successor `1_{ℤ_(p)}`. It would locate the discontinuity obstruction at any one finite place with bounded denominator depth.
 
-## Proposed argument for the remaining subgroups
+## Paper proof for the remaining subgroups
 
 Conjugating the affine kernel by dilation by a nonzero element of `H` rescales the successor subgroup to contain `ℤ`, while preserving dilation readings and negative index. If `H≠ℚ`, some prime `p` has finite height `h`, meaning `1/p^h∈H` but `1/p^(h+1)∉H`. Otherwise Bézout combinations of prime-power reciprocals would generate every rational. For `q∈H`, Bézout applied to its reduced numerator and denominator first gives `1/den(q)∈H`; integer multiplication then gives each reciprocal prime-power factor. Thus membership forces `v_p(q)≥−h`.
 
@@ -30,10 +30,10 @@ These positive slopes tend to one, and `a_(N,i)/b_N=p^E+p^(E−e_i)` is a positi
 
 The corpus supplies the integer-Haar obstruction, zero-axis polynomial correction, locally periodic projections, and the local Hecke index wall. The latter treats a specified Hecke kernel; it does not classify arbitrary finite-index carriers with a prescribed subgroup indicator.
 
-The finite-height and norm bounds, positive endpoints, saturation law, quotient-order orbit formulas, and moving correlation bounds have complete Lean drafts pending checking. The prime-power grids and generalized Gram limit still need Lean implementations. No complete Lean classification is claimed.
+The finite-height and norm bounds, positive endpoints, saturation law, quotient-order orbit formulas, moving correlation bounds, prime-power grids, Gram limit, and final conjugation argument have complete Lean drafts pending checking. No complete Lean classification is claimed.
 
 ## Gates
 
-- [ ] Complete paper proof, including the two positive branches and every quotient-order input.
+- [x] Complete paper proof, including the two positive branches and every quotient-order input.
 - [ ] Exact Lean classification in the existing topic subfolders.
 - [ ] Direct `lake --old env lean` audit and standard transitive axiom closure.

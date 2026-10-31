@@ -1,10 +1,11 @@
 # Unipotent Gauss corrections are continuous
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Triangular root coefficients](../1-in-progress/triangular-root-coefficients-unfold-arithmetic-cells.md).
-- **Statement:** Upper and lower Gauss coefficients of an actual unipotent
-  product equal the current input coefficients plus a continuous correction
-  depending only on the two strict free-coefficient prefixes.
+- **Statement:** Over any commutative ring, upper and lower Gauss
+  coefficients of an actual unipotent product equal the current input
+  coefficients plus a correction depending only on the two strict prefixes.
+  Over a topological ring, these corrections are continuous.
 
 ## Proof
 
@@ -23,6 +24,8 @@ and the exact product identities.
 ## Lean
 
 `HTGeometry/LoopEisenstein/UnipotentGaussContinuity.lean`:
-`unipotentUpperGauss_product_eq_correction`, its lower counterpart, and
-`continuous_unipotentUpperGaussCorrection` with its lower counterpart.
-Direct audit pending.
+`unipotentUpperGauss_product_eq_correction`,
+`unipotentLowerGauss_product_eq_correction`,
+`continuous_unipotentUpperGaussCorrection`, and
+`continuous_unipotentLowerGaussCorrection` passed direct Lean and transitive
+axiom audits. Only `propext`, `Classical.choice`, and `Quot.sound` occur.
