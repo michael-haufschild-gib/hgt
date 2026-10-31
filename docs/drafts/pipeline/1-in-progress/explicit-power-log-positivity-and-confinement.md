@@ -92,6 +92,11 @@ harmonic mass is at most `4c+(log N)^(1/k)`. Thus one constant, independent of
 This removes the forced square-root logarithmic rate. Lean proof is written in
 scratch; transfer through the actual upward row and complete residual remains.
 
+After that transfer, `k=16`, `Q=floor(L^(1/8))`, and `α<1/68` fit the same
+positivity reduction: the residual is at most `3c⁵L^(−15/16)`, and
+`5/8+19/68−15/16<0`, `4/68−1/16<0`, `16/68<19/80`.
+This sharper all-vector exponent is not yet formalized.
+
 ## Gates
 
 - [x] Precise target and source dependencies identified.

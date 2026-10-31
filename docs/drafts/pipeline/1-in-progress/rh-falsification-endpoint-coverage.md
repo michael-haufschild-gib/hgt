@@ -9,6 +9,7 @@
 |---|---|---|
 | Anchored holomorphic dynamics | A nonanchor upper periodic point of the normalized Xi Donoghue map; period-one Gaussian stationary equation | `Bottcher/HalfPlane/XiDonoghueDynamics.lean` |
 | Heat spectral motion | A differentiable Ritz branch in any fixed finite polynomial space with nonnegative velocity at positive heat time | `arithmetic-positivity-theory/MomentFlow/XiRitzVelocity.lean`; actual source audited, generic final source check pending |
+| Finite differential jets | A nonsplitting Jensen section after any real translation, derivative order, and finite real first-order differential chain | `arithmetic-positivity-theory/Jensen/XiJetObstruction.lean` |
 
 ## Exclusions
 
@@ -26,11 +27,14 @@ strictly stronger obstruction.
 | Interior Abel-susceptibility divergence | `riemannHypothesis_iff_primeArchEndpointBernsteinAbelSusceptibilityFinite` | Already formalized; reject restatement |
 | Shifted reciprocal Ritz Riccati gap | `xiShiftedCanonicalAdmissionHardEdgeWorldlineVelocity_pos` and strict shifted Hankel positivity under RH | Existing hard-root motion law; reject coordinate restatement |
 | Jordan defects of centered Suzuki screw operators | `suzukiCenteredScrewApertureOperator_isSelfAdjoint` and `suzukiCenteredScrewZeroMeanOperator_isSelfAdjoint` hold unconditionally | Self-adjoint rigidity is already unconditional; no RH-specific witness |
+| Positive negative-index count or a failed height truncation | `HeckeKreinToeplitz.riemannHypothesis_iff_negIndex_zetaKernel_eq_zero`, `riemannHypothesis_iff_height_truncations_posDef` | Existing kernel positivity criterion |
+| Bounded positive apertures | `SquareRootThreshold.riemannHypothesis_iff_not_bddAbove_windowPositiveApertures` | Existing aperture criterion |
+| Failure of cofinal integrated damping-autocorrelation bounds | `ArithmeticContinuationAndCriticalEnergy.riemannHypothesis_iff_cofinal_double_integral_tangentCorrelation` | Existing exact energy equivalence |
 
 ## Active candidates
 
-- Jensen differential jets: real translates, derivatives and real first-order factors; missing Xi necessity direction.
 - Strict Jensen roots: exclude repeated nonzero roots through real-factor extraction and multiplicity drop; proof incomplete.
+- Asymmetric heat minors: independent ordered time grids; total positivity beyond principal moment minors; proof incomplete.
 
 For the direct Hedenmalm source generator, RH supplies imaginary nonzero spectrum, not an
 audited skew-adjointness or semisimplicity theorem. Jordan defects cannot be used as falsification

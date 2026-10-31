@@ -335,14 +335,12 @@ theorem tendsto_towerPrime_atTop {lam : ℕ → ℝ}
       refine hzero _ ?_
       have htri := abs_sub_abs_le_abs_sub ((n : ℝ) * ℓ) (-Real.log k)
       rw [abs_of_pos (by linarith [abs_nonneg R, abs_nonneg (Real.log k)]), abs_neg] at htri
-      dsimp only [RHTower.WeilSpectral.transl]
       rw [show Real.log k - -(n : ℝ) * ℓ = (n : ℝ) * ℓ - (-Real.log k) by ring]
       linarith
     have h2 : RHTower.WeilSpectral.transl (-(n : ℝ) * ℓ) K (-Real.log k) = 0 := by
       refine hzero _ ?_
       have htri := abs_sub_abs_le_abs_sub ((n : ℝ) * ℓ) (Real.log k)
       rw [abs_of_pos (by linarith [abs_nonneg R, abs_nonneg (Real.log k)])] at htri
-      dsimp only [RHTower.WeilSpectral.transl]
       rw [show -Real.log k - -(n : ℝ) * ℓ = (n : ℝ) * ℓ - Real.log k by ring]
       linarith
     simp only [F, h1, h2, add_zero, mul_zero]
@@ -488,7 +486,6 @@ theorem tendsto_secondDiff_sTruncatedNonPole (S : Finset Nat.Primes) {lam : ℕ 
       (-(wPrime : ℂ) * towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m +
         (wArch : ℂ) * towerArch g (Real.log (p : ℕ)) m) + ct.eval m := funext fun _ => rfl
   rw [heq, secondDiff_add, secondDiff_add]
-  rfl
 
 /-- **Polar trichotomy of a local `S`-truncated explicit-formula kernel.** -/
 theorem polarIndex_sTruncatedLocal (S : Finset Nat.Primes) {lam : ℕ → ℝ}
@@ -1007,13 +1004,18 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
         refine integral_congr_ae (Eventually.of_forall fun r => ?_)
         dsimp only
         rw [RHTower.WeilSpectral.paperFT_smul]; ring
-      rw [h1, hlin _ _ fun i _ => RHTower.WeilSpectral.Admissible.sum _ fun j _ =>
-        (hadm.transl _).smul _]
+      rw [h1, hlin univ
+        (fun i => ∑ j : Fin (Fintype.card s),
+          (star (w i) * w j) • RHTower.WeilSpectral.transl (t j - t i) K)
+        (fun i _ => RHTower.WeilSpectral.Admissible.sum univ fun j _ =>
+          (hadm.transl (t j - t i)).smul (star (w i) * w j))]
       have hinner : ∀ i, RHTower.WeilSpectral.archPart
           (∑ j, (star (w i) * w j) • RHTower.WeilSpectral.transl (t j - t i) K) =
           ∑ j, conj (w i) * RHTower.WeilSpectral.archPart
             (RHTower.WeilSpectral.transl (t j - t i) K) * w j := fun i => by
-        rw [hlin _ _ fun j _ => (hadm.transl _).smul _]
+        rw [hlin univ
+          (fun j => (star (w i) * w j) • RHTower.WeilSpectral.transl (t j - t i) K)
+          (fun j _ => (hadm.transl (t j - t i)).smul (star (w i) * w j))]
         refine sum_congr rfl fun j _ => ?_
         rw [hsmul, Complex.star_def]; ring
       simp_rw [hinner]

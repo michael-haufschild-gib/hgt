@@ -68,6 +68,38 @@ This holds for every `Q≥2`, every window, and all affine parameters and coeffi
 
 [AffineWindowEnergy.lean](AffineWindowEnergy.lean) proves these identities and estimates through explicit spectral transport, finite Parseval, and the corpus's sharp two-sided large sieve. Complete-period arithmetic energy therefore becomes an observable quantity at quadratic conductor horizons.
 
+### Relative prime transport
+
+Let `H_Q=1+log Q`, `M_Q(a)=Σa_m²`, and
+
+`A_Q=Σ_(p≤Q)log p/(p−1)`.
+
+Only these prime towers act nontrivially on conductor packets. The exact prime-dilation square identity, combined with Cauchy–Schwarz in their arithmetic measure, gives
+
+`mean |G_S a|²≤A_Q L_Q(a)`
+
+for every finite prime head `S`. The same bound holds for the complete convergent generator `G`. It measures each packet in its own adjunction energy. [RelativePrimeHeads.lean](RelativePrimeHeads.lean) also retains this energy in ordinary windows and logarithmic dilation moments.
+
+The literal finite-horizon prime residual has two different sources: a scalar Mertens row and a complementary dilation tail. Their separation gives the unconditional bound
+
+`||R_a||²/log N≤[C H_Q M_Q(a)+38 A_Q H_Q L_Q(a)]/log N`
+
+for `Q,N≥2`, with an absolute constant `C`. Since `A_Q≤14H_Q`, the arithmetic-energy term costs two conductor logarithms. [RelativePrimeResidual.lean](RelativePrimeResidual.lean) proves the source identity and the estimate, keeping every row quotient and the prescribed scalar counterterm.
+
+### Coherent receiving modes
+
+Relative estimates still have an intrinsic arithmetic cost. For prime-supported input, the complete generator has constant coefficient
+
+`P_Q(a)=Σ_(p≤Q)log p/sqrt(p−1) · a_p`.
+
+Its exact squared norm relative to adjunction energy is
+
+`B_Q=Σ_(p≤Q)log p/p=log Q+O(1)`.
+
+The coefficients `a_p=sqrt(p−1)/p` attain equality: both response and adjunction mass equal `B_Q`. The input has zero complete-period mean. Thus a coherent receiving mode can amplify an arithmetically centered input. [PrimePoleNorm.lean](PrimePoleNorm.lean) proves the exact norm and extremizer; [PrimeGeneratorPole.lean](PrimeGeneratorPole.lean) identifies this functional with the literal divisor-jet source and passes the head bound to the complete generator.
+
+Operator norms and quadratic-form signs are different targets. The coherent constant output is orthogonal to prime-supported input under complete-period averaging. Its large norm alone does not force negative prime energy. The corpus's direct dilation-square coercivity illustrates why signed forms must be studied before replacing their interactions by norms.
+
 ## Foundational mechanisms
 
 1. **Arithmetic differences before norms.** Expand the joint successor and dilation expressions, cancel exact divisor and torsion terms, and only then estimate the remaining signed expression.
@@ -125,6 +157,7 @@ The RH-complete versions of these questions remain research targets. Their concl
 | Rigidity of conductor packets classifies every negative complete state | The actual negative state still needs quantitative conductor capture |
 | A zero constant coefficient implies finite-horizon pole neutrality | Complete-period centering and harmonic pole projection use different Gram forms |
 | Relative adjunction control is relative completed-energy control | The completed conductor floor also includes shell, Gamma, and pole contributions |
+| A necessary operator-residual loss is a positivity obstruction | Coherent transport can be orthogonal to its input; direct square identities can retain stronger coercivity |
 | A smoother receiver inherits tilted-spline positivity | Its Fourier tail and spectral floor change together |
 | Fixed packets establish a growing-horizon theorem | Parameter dependence and common horizons must be explicit |
 | One-sided prime-pair bounds control a signed kernel | Positive and negative parts require compatible discrepancy control |

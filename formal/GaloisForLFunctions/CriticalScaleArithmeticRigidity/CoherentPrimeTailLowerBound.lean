@@ -51,8 +51,7 @@ theorem highPrimeCoherentSource_packet_eq {Q : ℕ} (hQ : 1 ≤ Q) (P n : ℕ) :
 
 theorem highPrimeSourceCoefficients_one (P Q : ℕ) :
     highPrimeSourceCoefficients P Q 1 = highPrimePoleMass P Q := by
-  simp only [highPrimeSourceCoefficients, addConstantConductor, if_pos rfl,
-    primeIncidenceCoefficients, primeOnly, Nat.not_prime_one, if_false, zero_add]
+  simp [highPrimeSourceCoefficients, addConstantConductor, primeIncidenceCoefficients, primeOnly]
 
 /-- The coherent constant row gives a lower bound for the full coefficient mass. -/
 theorem highPrimePoleMass_sq_le_mass {Q : ℕ} (hQ : 1 ≤ Q) (P : ℕ) :
@@ -146,7 +145,7 @@ theorem exists_primeResidual_sq_lower_of_tail :
         (div_mul_cancel₀ _ hlog.ne').symm
       _ ≤ (C * (1 + Real.log Q) / Real.log N *
           (∑ m ∈ Icc 1 Q, a m ^ 2)) * Real.log N := mul_le_mul_of_nonneg_right hs hlog.le
-      _ = _ := by field_simp
+      _ = _ := by field_simp [hlog.ne']
   have hrow (n : ℕ) (hn : n ∈ Icc 1 N) :
       (1 / 2 : ℝ) * (completedPrimeDilationTail Q a (N / n) n ^ 2 / (n : ℝ)) -
         r n ^ 2 * F n ^ 2 / (n : ℝ) ≤

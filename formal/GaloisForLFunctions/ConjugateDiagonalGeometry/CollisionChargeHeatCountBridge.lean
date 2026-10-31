@@ -1012,7 +1012,7 @@ theorem nonrealZeroCount_le_two_mul_collisionCharge_of_barrier {t : ℝ} (ht : 0
         refine Finset.disjoint_left.mpr fun z hz hz' => ?_
         exact (Set.disjoint_left.mp (hdisj e he e' he' hne)) (hWb e he z hz) (hWb e' he' z hz')
       set F_s := (riemannHeat_nonreal_zeros_finite hs_pos).toFinset.filter (fun w => |w.re| < R s)
-      have hW_sub : Enums_bi : Enr.biUnion W ⊆ F_s := by
+      have hW_sub : Enr.biUnion W ⊆ F_s := by
         intro w hw
         obtain ⟨e, he, hwe⟩ := Finset.mem_biUnion.mp hw
         have hwb := hWb e he w hwe

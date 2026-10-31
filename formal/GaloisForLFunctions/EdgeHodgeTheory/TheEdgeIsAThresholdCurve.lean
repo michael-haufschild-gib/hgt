@@ -102,7 +102,8 @@ theorem tendsto_horizonThreshold_tiltedUnitSpline :
     linarith
   have hN1 : 1 / w ≤ N := Nat.le_ceil _
   have hNlt : (N : ℝ) < 1 / w + 1 := Nat.ceil_lt_add_one (by positivity)
-  have h' : (((max N₀ M + 1 : ℕ)) : ℝ) < N := by push_cast; exact hwinv.trans_le hN1
+  have h' : (((max N₀ M + 1 : ℕ)) : ℝ) < N := by
+    rw [Nat.cast_add, Nat.cast_one]; exact hwinv.trans_le hN1
   have hNmax : max N₀ M + 1 < N := by exact_mod_cast h'
   have hN : 1 ≤ N := by omega
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN

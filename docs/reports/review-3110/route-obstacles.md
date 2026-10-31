@@ -1,7 +1,8 @@
 # Route obstacles — status quo
 
 Scope: the 33 live routes, the 16 candidates and the retired PW-B branch, checked against the Lean
-corpus at `d4682186c7`. For every route: what is established, the obstacles that are **(A) just
+corpus at `5c51362a92` plus working tree. `[D]` marks a statement derived here from `[L]` results and
+not formalized. For every route: what is established, the obstacles that are **(A) just
 work** (known mathematics, finite computation, effectivisation, formal closure), and the obstacles
 that are **(B) open mathematics** (no known solution).
 
@@ -27,9 +28,10 @@ CSAR = CriticalScaleArithmeticRigidity, BOT = Bottcher.
 | RH regime: tilted spline full space at `2(log N)^{α>¼}`, `v₁^⊥` at `α>½`; every C^∞ nonnegative profile on `v₁^⊥` at every `2(log N)^{α>0}` (unitBump explicit); sinc at `≍ L(log L)²` | RAPT, RIT `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log`, TM [L] | the universal and the strongest RH regime use different profiles; no profile transfer exists |
 | Threshold curve: `W_{φ,c,N}` PSD ⇔ `N < h(atom of width c/N)`; at fixed width positivity at all horizons ⇔ the atom sees no right zero; tilted `h(w) → ∞` as `w → 0⁺`; over a curve the edge is `≤ 2g` | EHT `TheEdgeIsAThresholdCurve`, `TheHorizonFlowAtFixedWidth`, `TheFunctionFieldFlowIsTrivial` [S] | complete-Weil, fixed-test and aperture families are sections of one function `h(w)` |
 | Ground energy `E₁(c) ≍ τ(c)`; at the sinc threshold `τ(c) log N ≈ 1` | RAPT, TM [L] | at the edge every method must control the matrix to accuracy below `≈ 1/log N` |
-| Finite-prime blindness: every separable `S`-truncated explicit-formula tower assembly has glued index `∞` or `r_S + 1`, `r_S + 2` (`r_S` = nonzero local pole shares), independent of the zeros; no pole-free net converges to `κ_ζ + 1` on `0 < κ_ζ < ∞` | AKG `TowerCoupling/STruncatedExplicitTowers` [S] | zero information lives in the infinite prime tail, i.e. in the nonseparable coupling of towers |
+| Coupling carries the index: for `|S| ≥ 2` the coupled assembly `K ∘ proj_S` has glued index `κ_ζ + 1`; on log-height `≤ L` the explicit formula with primes `≤ e^{2L+8}` equals `ratCorr`, window supremum `κ_ζ + 1`; coupled = axial (separable) + inter-tower coupling (coprime cross-differences, zero on axes); separable assemblies kill the coupling, cannot approximate `ratCorr`, are zero-blind when truncated and diverge when untruncated on the finite non-RH stratum; zero coupling + continuity ⇒ affine profile, `κ ≤ 2` | AKG `TowerCoupling/InterTowerCouplingRigidity`, `CoupledTowerSignatureFormula` [L]; `STruncatedExplicitTowers` [S] | finitely many primes suffice on every window; the zeros live in the coupling, not in any separable or single-tower datum; RH ⇔ bounded coupling [D] |
 | One-sided count `ψ(x) − x ≤ C√x log²x` ⇔ RH; section shortfall rate ⇔ zero width | ACP, SPTL [L] | every exponent gain on a count is quasi-RH |
-| Collision charge: `O(T)` cumulative; `n_off(T) ≤ ΔO(T) ≤ 2n(T)n_off(T)`, `ΔO ≪ log²T`; bounded `ΔO` ⇒ critical proportion `→ 1`; with Backlund's equivalence, `ΔO = o(log T)` ⇒ Lindelöf | CDG `CollisionChargeIncrements` [L]; RHTower `BacklundLindelofConverse` [L] | per-window charge bounds are **LH**, cumulative `O(T) = o(N(T))` is density one (**sub**), bounded `O` is **≥qRH** |
+| Collision charge: `O(T)` cumulative; `n_off(T) ≤ ΔO(T) ≤ 2n(T)n_off(T)`, `ΔO ≪ log²T`; bounded `ΔO` ⇒ critical proportion `→ 1`; with Backlund's equivalence, `ΔO = o(log T)` ⇒ Lindelöf. Master inequality `H(γ) ≤ C(1 + log|γ|/L) − Re Π_{F_L} + 4E_γ(L)`; at `L = ¼ log log|γ|`, `H(γ) ≪ log|γ|/log log|γ| + E_γ` | CDG `CollisionChargeIncrements`, `HeckeDefectHorizontalMultiplicity` [L]; RHTower `BacklundLindelofConverse` [L] | per-window charge bounds are **LH**, cumulative `O(T) = o(N(T))` is density one (**sub**), bounded `O` is **≥qRH**; the Hecke defect controls fibre multiplicity |
+| Falsification certificates: RH ⇒ unique upper periodic point of the Xi Donoghue map; RH ⇒ every Jensen section of `∏(1−c_iD)D^kΞ` splits (and RH ⇔ all Xi Jensen polynomials split); RH ⇒ strictly left-moving Ritz branches of the Xi heat-moment form | BOT, Jensen `XiJetObstruction`, MomentFlow `XiRitzVelocity` [L] | finite tests for ¬RH; none has a converse mechanism |
 | Index twin-blind; glue pole-blind; glued test index `∞` on finite flips; edge of every single prime flip bounded; atomic Hodge index separates exactly submaximal margins | AKG, RIT, EHT `eventually_twinEdge_primeFlip_le` [L] | selection must come from prime data; dense/co-dense infinite twins of zero harmonic density remain |
 | Heat: `κ(φ_c^{(t)}) = N(t)/2 + 1`, antitone, `1` for `t ≥ 1/8`; `0 ≤ Λ < 1/8` | AKG, RHTower [L] | heat routes reduce to `Λ = 0` |
 | Crossing-free Hermitian path `A → I` exists iff `A` is PD; index constant on nondegenerate connected families | EHT `IntegersAlongPaths` [L] | homotopy invariance relocates the sign to noncrossing; deformation to a positive model is not a free input |
@@ -53,6 +55,13 @@ Established:
   nineteenth root; fixed `c` with gap on `v₁^⊥`: energy `≥ (E₁ + g/2 − ε)‖x‖²` [L];
 - conductor averages at RH-complete overlap (`M = ⌊N^θ⌋`, `θ < ½`, `c²/log N → 0`): summed residual
   `= o(Σ E_m²)`, nonpositive-conductor fraction `→ 0`, nonpositive span dimension `o(M)` [L];
+- single conductors above polylog: for every C² profile, `θ < ½`, `α < ¼`, `A > 8α`, every mode
+  `(log N)^A ≤ m ≤ N^θ` has energy `≥ ((1−2θ)/4) log m`; no exceptional single conductor there [L];
+  packet pole defect `≥ (log N − 3 log Q − 1) L_Q` [L];
+- prime-incidence calculus: `√(p−1)/p` times a prime mode is `1_{p|n} − 1/p`; dilation jumps are the
+  incidence events `[p|k ∧ p∤n]`; the generator is the nondivisibility sum `Σ_{p∤n} b_p log p/(p−1)`;
+  complementary tails are nonnegative [L]; the coherent prime residual is bounded below by
+  `≍ log P · (pole mass)²` beyond the scalar row's cost [L];
 - packet arithmetic (CSAR): successor projection plus one dyadic pole reading control every
   nonconstant conductor, `(3/4)·mass ≤ energy`, sharp, kernel = constant packet, on windows longer
   than `Q(Q−1)` [L]; finite prime heads and the literal prime residual bounded relative to the
@@ -73,7 +82,7 @@ overlap the ground energy is `≲ 1/log N` (sinc) or `(log N)^{−7/4}` (tilted)
 | | Obstacle |
 |---|---|
 | A1 | Explicit horizon `N₀` for the power-log theorem; optimise its internal exponents (low-band exponent, overlap and residual budgets) up to the method optimum `≈ 1/114` |
-| A2 | Single-mode floor `((1−2θ)/4) log m ≤ W(v_m)` for `(log N)^A ≤ m ≤ N^θ`, `α < ¼`, `A > 8α`, and emptiness of exceptional single conductors there (Lean draft unfinished; pipeline card in `2-fully-proven`) |
+| A2 | Exact complete Weil energy on prime-incidence packets, Gamma and both poles retained |
 | A3 | Single-`K` completeness of the Steklov/sinc schedule at `K L(log L)²` |
 | A4 | Compare the CSAR rigidity and relative prime-residual energies with the complete Weil energy (Gamma, both poles, mixed Schur terms) on fixed and slowly growing packets |
 | A5 | Growing-packet head-pole cancellation on the Gamma/polar side for packets up to `exp(c√log Y)` (window PNT with classical error); the prime side is controlled by `L_Q` |
@@ -81,10 +90,11 @@ overlap the ground energy is `≲ 1/log N` (sinc) or `(log N)^{−7/4}` (tilted)
 | B1 | Positivity on `v₁^⊥` across the detection edge: tilted spline at its RH-complete rate, or any C^∞ profile at any `α > 0` — **RH** (Σ1, Σ14) |
 | B2 | Signed (quadratic-form) estimate on the subthreshold conductor block (`m ≲ c`) beating the residual-versus-floor exponent `19` — **sub** (Σ13) |
 | B3 | Defect bound for nonpositive vectors below `c¹⁶` — **sub** in the universal regime, **RH** at RH-complete overlap (Σ1c) |
-| B4 | Exceptional conductor spans beyond `(log N)^A`: sublinear nonpositive span dimension does not bound the index — **sub** (Σ1g, Π9) |
+| B4 | Low-conductor and exceptional spans: single modes are coercive above `(log N)^A`, but sublinear nonpositive span dimension does not bound the index — **sub** (Σ1g, Π9) |
 | B5 | Conductors `N^{½} < m ≤ N`: frames or residual averages — **sub**, Elliott–Halberstam type (Σ1h) |
 | B6 | Edge location of `ζ` inside `[(log N)^{1/144}, 2(log N)^{¼+}]` under ¬RH; sign-preserving profile transfer between the tilted spline and smooth profiles — **sub** (Σ14) |
-| B7 | Joint prime + Gamma + pole payment of the prime-pole coherence cost `S_Q ≍ log Q` at growing `Q`, by cancellation (no adjunction-only bound is `Q`-uniform) — **sub** (Σ17) |
+| B7 | Mertens cancellation: the pole term with running counterterm `log N − γ` absorbs the coherent prime-pole cost `S_Q = log Q + O(1)` up to `O(1)·L_Q`, uniformly in `Q ≤ N^θ` (no adjunction-only bound is `Q`-uniform) — **sub** (Σ17) |
+| B7a | Localization: near-edge nonpositive vectors lie within `o(1)` of the coherent prime sector — **sub** (Σ17) |
 
 ### S2. Index and finite off-line support
 Routes: HKT, AKLT, AID, SRT towers, CHMD-index, SC, RIT-Künneth.
@@ -119,7 +129,11 @@ charge; RH ⇔ the index at the stopping prefix vanishes eventually in scale at 
 height; seam-smooth Gaussian prefixes preserve divisor and collision operator; unit-window
 increments `n_off ≤ ΔO ≤ 2 n n_off`, `ΔO ≪ log²T`, `O(n) ≤ A + C n log²(n+1)`, bounded `ΔO` ⇒
 density one; dyadic Hecke amplification: RH ⇔ dyadic Hecke defects `E(2^k)` subexponential, and a
-bound at one large dyadic scale transfers losslessly to all smaller scales (RBG).
+bound at one large dyadic scale transfers losslessly to all smaller scales (RBG); Hecke-averaged
+cosh coercivity `H(γ) ≤ D(twist_γ F_L)`, off-line defect `≤ 4E_γ(L) + C(1+log|γ|)/L²`, master
+inequality `H(γ) ≤ C(1 + log|γ|/L) − Re Π_{F_L}(e^{2L+½}, −γ/2π) + 4E_γ(L)` for
+`1 ≤ L ≤ 4 log(1+|γ|)`; `ΔO ≤ 2·max H·n_off`; at `L = c log T` bounded prime polynomial + Hecke defect
+give `ΔO ≪ log T`; at `L = ¼ log log|γ|`, `H(γ) ≪ log|γ|/log log|γ| + E_γ(¼ log log|γ|)`.
 
 | | Obstacle |
 |---|---|
@@ -134,6 +148,8 @@ bound at one large dyadic scale transfers losslessly to all smaller scales (RBG)
 | B15 | Uniform increment bound `ΔO(T) ≤ M` (or `o(log T)`) — **LH** |
 | B16 | Every `Λ_X = 0` — **RH** |
 | B17 | Detection scale independent of the zero gap (a stage choice not depending on divisor separation and strip margins) — **sub** (Π13) |
+| B17a | Hecke defect at doubly-logarithmic scale `E_γ(¼ log log|γ|) = o(log|γ|)`, hence every zero multiplicity `o(log|γ|)` — **sub** |
+| B17b | Prime-side bound for `E_γ(c log T)` by the prime polynomial of length `T^{2c}`, uniformly on `[T, T+1)` — **RH** through dyadic amplification (Γ4) |
 
 ### S4. Counts and producers
 Routes: WL, MC, PBM, RB, JAS, CTF, ACS-effectivity.
@@ -164,22 +180,29 @@ poles at two or more primes has one square [L]. Carrier classification: for ever
 `1` exists iff `H = {0}` or `H = ℚ`, both with PD carriers of dilation coefficient `1`; properness of
 `H` ⇔ universal polynomial-fibre index preservation; saturated translations are two-sided periods
 [L]. Local polar index on `ℤ`: `κ₀(k) = κ(Δ²k)`, decaying `Δ²` gives `{0, ∞}`, plus one pole pair
-`{0, 1, ∞}` [S]. Separable finite-prime explicit towers are zero-blind; diagonal counterterms make
-`Λ` and a prime-flip twin both glued index `1` for every `S` [S]. Selection: prime-set flips
-separated by the atomic Hodge index iff their greatest gap is `< 2 log 2`; flips of thin sets
-(`Σ_{p∈P} 1/p < ∞`) separated directly or by the 2-probe; co-thin flips and cofinite flips
-separated; Wirsing equation `L(N) log N = (1+β)M(N) + O(log N)` for gauges with prime mean `β`
-[L]; edge of every single prime flip bounded [L].
+`{0, 1, ∞}` [S]. Tower coupling [L]: coupled assembly = axial (unique separable) + inter-tower
+coupling (coprime cross-differences, zero on axes); `|S| ≥ 2` coupled assemblies carry `κ_ζ + 1`
+exactly (also tempered orbit kernels, primitive Dirichlet L-functions); window explicit formula
+with primes `≤ e^{2L+8}` exact on log-height `≤ L`, window supremum `κ_ζ + 1`; fixed-`S` global
+truncated correlations `∈ {1, ∞}`; no separable net converges to `ratCorr`; zero coupling of a
+continuous profile on two disjoint two-prime lattices ⇒ affine, `κ, κ₊ ≤ 2`; `ratCorr` has
+`κ = ∞` or `κ₊ = ∞` and nonzero coupling on `⟨2,3⟩ × ⟨5,7⟩`; untruncated axial assemblies
+diverge on the finite non-RH stratum. Separable `S`-truncated towers are zero-blind; diagonal
+counterterms make `Λ` and a prime-flip twin both glued index `1` [S]. Selection [L]: prime-set
+flips separated by the atomic Hodge index iff greatest gap `< 2 log 2`; thin, co-thin and cofinite
+flips separated; every flip of relative logarithmic density `κ > ¼` separated (Wirsing–Gronwall);
+edge of every single prime flip bounded.
 
 | | Obstacle |
 |---|---|
 | A14 | Canonical relative split for general nonzero proper rational subgroup successors (integer-Haar split is the template) |
 | A15 | `𝔽_q(X)` calibration: local walls at higher-degree places, product formula for the global Hecke state, archimedean Weil state of a curve; function-field extremal-weight gluing |
-| A16 | Wirsing–Gronwall decay `|L(N)| ≪ (log N)^{b−1}`, `b ≥ |1+β|`, and separation of regular-density flips with `κ > ¼` |
-| B21 | Exact sum-of-squares (shell) identity for Weil's dilation form on `ℓ = 0`, coupling all prime towers — **RH** |
-| B22 | Index law for nonseparable coupled tower assemblies of the untruncated source — **sub** |
+| A16 | Formalize RH ⇔ bounded inter-tower coupling of `ratCorr` (Hyers–Ulam on `ℝ` + density of two-prime log-lattices + continuity + `riemannHypothesis_of_norm_zetaKernel_le`) [D] |
+| B21 | Exact sum-of-squares (shell) identity for Weil's dilation form on `ℓ = 0` — **RH** |
+| B22 | Quantitative coupling transfer: local Hyers–Ulam with Baker-type constants, `sup_{|log u|≤L}|K(u) − K(1)| ≤ C L^k · sup|coupling|` — **sub** |
+| B22a | Bounded inter-tower coupling of `ratCorr` on `⟨2,3⟩ × ⟨5,7⟩` — **RH** [D] |
 | B23 | Zero-independent selection at the trivial gauge point — **RH** (Γ1) |
-| B24 | Selection of maximal-margin twins in the class `c_P = c_{Pᶜ} = 0` (both `P` and its complement with divergent `Σ 1/p`), including irregular densities — **sub** (Γ12) |
+| B24 | Selection of flip sets of relative logarithmic density `0 < κ ≤ ¼`, zero-density sets with divergent `Σ 1/p`, and irregular densities — **sub** (Γ12) |
 | B25 | Arithmetic correspondence acting as conjugation on the zero divisor (Frobenius at infinity) — **RH** (Γ4) |
 
 ## 2. Live routes
@@ -239,7 +262,9 @@ at zeros; two-horizon windowed aperture modes [L].
 - B: all-test directed covariance or complete odd positivity (**RH**, Σ3).
 
 ### LA — Laguerre/Jensen and local heat
-Established: every fixed Jensen degree eventually real-rooted; slice and flow thresholds; Vitali
+Established: every fixed Jensen degree eventually real-rooted; RH ⇔ every Xi Jensen polynomial
+splits, and RH ⇒ every Jensen section of every real translate of `∏(1−c_iD)D^kΞ` splits; RH ⇒
+strictly left-moving Ritz branches of the Xi heat-moment form; slice and flow thresholds; Vitali
 blow-up; `λ_t log t → 0` ⇔ every fixed-depth strip contains all high zeros; strip ⇒ Littlewood
 windows; right-half squared-depth moment `o(V)`; fixed-depth counts `o(V)` [L].
 - A: explicit horizon per fixed degree; A8.
@@ -286,10 +311,11 @@ Established: compact cone-positive renewal operator with exact regularized deter
 Established: S3 in full; Ward/collision receivers; theta-prefix collision readings and integer
 Fredholm index; low-window sectoriality; transition law; seam-smooth prefixes; source-intrinsic
 root-free stopping rule (sound and eventually complete); unit-window charge increments; dyadic
-Hecke amplification [L].
+Hecke amplification; master inequality bounding fibre multiplicity and `ΔO` by prime polynomial +
+Hecke defect [L].
 - A: A8, A9, A10, A11.
-- B: B11–B17; vanishing global depth energy as `t ↓ 0` (**RH**); Hecke-defect upper bound at one large
-  dyadic scale (**RH**, Γ4); tower branch arithmetic index ceiling (**≥qRH**).
+- B: B11–B17, B17a (**sub**), B17b (**RH**); vanishing global depth energy as `t ↓ 0` (**RH**); tower
+  branch arithmetic index ceiling (**≥qRH**).
 
 ### LI — guarded history zeros
 Established: `Z_S` finite; RH ⇔ `Z_S = ∅`; under ¬RH the last zero has odd order [L].
@@ -408,14 +434,16 @@ pole absorbed, double pole charged; Haar and subgroup successors with continuous
 `κ = ∞` except the trivial endpoints `H = {0}, ℚ`, whose carriers are PD; finite-index Haar kernels
 split uniquely with punctured limits exactly the reals `≤ 0`; heat-deformed state `φ_c^{(t)}` with
 `κ = N(t)/2 + 1`; global pole = extremal weight; Künneth/Hadamard branch RH-equivalent and
-all-or-nothing; glued test index `∞` for every finite flip. [S]: `κ(φ_c) ≠ 2`; local polar index
-`= κ(Δ²k)` with trichotomy `{0, 1, ∞}`; separable `S`-truncated assemblies zero-blind with glued
-index in `{r_S + 1, r_S + 2, ∞}`.
-- A: A14, A15; A9 (heat calibration); transfer of the universal regime to the glued state on
+all-or-nothing; glued test index `∞` for every finite flip; coupled two-prime assemblies have glued
+index exactly `κ_ζ + 1`; the window explicit formula with primes `≤ e^{2L+8}` is exact on log-height
+`≤ L`; the zeros are carried by the inter-tower coupling; separable data are blind or overcount.
+[S]: `κ(φ_c) ≠ 2`; local polar index `= κ(Δ²k)` with trichotomy `{0, 1, ∞}`; separable
+`S`-truncated assemblies zero-blind. [D]: RH ⇔ bounded inter-tower coupling of `ratCorr`.
+- A: A14, A15, A16; A9 (heat calibration); transfer of the universal regime to the glued state on
   atomic test families through the threshold curve.
-- B: independent `κ(φ_c) < 3`, equivalently positivity on `v₁^⊥` (**RH**, Σ1); B21 (**RH**); B22 (**sub**);
-  B13 on the heat branch (**RH**); B11 on the heat branch (**sub**); B8 for the Künneth square (**RH**);
-  a source-defined noncrossing path to an index-one model (**RH**, Σ19).
+- B: independent `κ(φ_c) < 3`, equivalently positivity on `v₁^⊥` (**RH**, Σ1); B22a (**RH**); B22
+  (**sub**); B21 (**RH**); B13 on the heat branch (**RH**); B11 on the heat branch (**sub**); B8 for the
+  Künneth square (**RH**); a source-defined noncrossing path to an index-one model (**RH**, Σ19).
 
 ## 3. Candidates and retired branch
 
@@ -451,4 +479,6 @@ Within Σ the routes split by the face of the sign problem they meet first: the 
 complete Weil family (HF, SRT, AIP, ACS-atomic, ACT, SC, RW, EWU, OWU), the heat/collision integer
 (WD, LA, SC-heat, TG), rank/degree uniformity (TH, HCF, PA, GTA, LA-Jensen), scheduled prime sums
 (FU, CFC, RP, SZ, LI, FEL, EGC) and realization (RN, PTR, W1C). SC sits on two further seams: the
-nonseparable coupling of prime towers (Σ ∩ Π) and the noncrossing of index paths (Σ19).
+inter-tower coupling (Σ ∩ Π: bounded coupling is RH) and the noncrossing of index paths (Σ19). The
+complete-Weil cluster meets a third seam: the coherent prime sector, where the prime part carries
+its one uncancellable logarithmic excitation (Σ17).
