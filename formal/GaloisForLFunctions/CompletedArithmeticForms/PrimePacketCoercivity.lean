@@ -168,13 +168,14 @@ theorem exists_primePacket_energy_ge_log :
     have htm := CompletedArithmeticForms.tameDifferent_le_log hm1
     have htm0 := RenormalizedArithmeticPotentialTheory.tameDifferent_nonneg m
     have hlm := Real.log_natCast_nonneg m
-    have hlmR := Real.log_le_log (by exact_mod_cast hm1) (by exact_mod_cast hmR)
-    have hg₋ := neg_abs_le Real.eulerMascheroniConstant
-    have hg₊ := le_abs_self Real.eulerMascheroniConstant
+    have hlmR : Real.log (m : ℝ) ≤ Real.log (R : ℝ) :=
+      Real.log_le_log (by exact_mod_cast hm1) (by exact_mod_cast hmR)
+    have hgammaLower := neg_abs_le Real.eulerMascheroniConstant
+    have hgammaUpper := le_abs_self Real.eulerMascheroniConstant
     dsimp only [ramanujanAdjunctionEnergy, M, g]
     constructor
-    · linarith only [htm0, hlm, hg₋]
-    · nlinarith only [htm, hlmR, hg₊, hg, hlogR, mul_nonneg hg hlogR]
+    · linarith only [htm0, hlm, hgammaLower]
+    · nlinarith only [htm, hlmR, hgammaUpper, hg, hlogR, mul_nonneg hg hlogR]
   have hdiagLower : Real.log Q * S ≤
       ∑ m ∈ Icc 1 R, (a m * (ramanujanAdjunctionEnergy m + g)) * a m := by
     dsimp only [S]
@@ -183,14 +184,14 @@ theorem exists_primePacket_energy_ge_log :
     by_cases hmQ : m ≤ Q
     · rw [ha m (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, hmQ⟩)]
       simp only [zero_pow (by decide : 2 ≠ 0), mul_zero, zero_mul, le_refl]
-    · have hlQm := Real.log_le_log
+    · have hlQm : Real.log (Q : ℝ) ≤ Real.log (m : ℝ) := Real.log_le_log
         (by exact_mod_cast (show 0 < Q by omega))
         (by exact_mod_cast (not_le.mp hmQ).le)
       have htm := RenormalizedArithmeticPotentialTheory.tameDifferent_nonneg m
-      have hg₋ := neg_abs_le Real.eulerMascheroniConstant
+      have hgammaLower := neg_abs_le Real.eulerMascheroniConstant
       have he : Real.log Q ≤ ramanujanAdjunctionEnergy m + g := by
         dsimp only [ramanujanAdjunctionEnergy, g]
-        linarith only [hlQm, htm, hg₋]
+        linarith only [hlQm, htm, hgammaLower]
       have hh := mul_le_mul_of_nonneg_right he (sq_nonneg (a m))
       nlinarith only [hh]
   have hweighted : (∑ m ∈ Icc 1 R, (a m * (ramanujanAdjunctionEnergy m + g)) ^ 2) ≤

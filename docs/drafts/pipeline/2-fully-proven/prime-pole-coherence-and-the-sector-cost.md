@@ -31,9 +31,15 @@ Every finite prime head has period square mean at most `A_Q L`. Pointwise conver
 
 The optimal pole-row inequality, its extremizer, and the source identification are the positive survivor. A further question is whether subtracting the output pole removes every logarithmic loss, or whether composite conductor fibres reproduce coherence in nonconstant rows. That stronger question is not settled by this proof.
 
+## Exact finite-horizon pole transfer
+
+For the physical profile `x_a(n)=F_a(n)/sqrt n`, set `t=−harmonicSum_N(x_a)/harmonicMass_N` and add `t` to conductor one. The resulting profile is exactly the existing arithmetic `poleProj_N(x_a)`, hence lies on the actual harmonic pole hyperplane for `N≥1`. This adjustment leaves both adjunction energy and the complete prime generator unchanged: the conductor-one weight and its divisor jet vanish.
+
+Apply this adjustment to the explicit prime extremizer. For every `Q≥2` and `N≥1`, the corrected packet is literally harmonic-pole-neutral, still has adjunction mass `B_Q`, and still has complete-period generator mean `B_Q`. Thus the necessary generator-sector cost `B_Q` survives actual finite-horizon pole projection. Its output norm is still the complete-period generator norm; no statement about the complete Weil form follows.
+
 ## Positive content and scope
 
-The survivor is the exact optimal constant-row inequality, its explicit extremizer, and its logarithmic scale. This identifies the source of a necessary loss in the complete-period generator norm. It does not obstruct cancellation with the global pole or Gamma terms in the complete form. The finite-horizon pole projection is a separate transfer to prove.
+The survivor is the exact optimal constant-row inequality, its explicit extremizer, its logarithmic scale, and a source-preserving realization on every actual harmonic pole hyperplane. This identifies the source of a necessary loss in the complete-period generator norm. It does not obstruct cancellation with the global pole or Gamma terms in the complete form.
 
 ## Corpus leads
 
@@ -44,4 +50,4 @@ The survivor is the exact optimal constant-row inequality, its explicit extremiz
 
 ## Lean targets
 
-`CriticalScaleArithmeticRigidity/PrimePoleNorm.lean` and `PrimeGeneratorPole.lean`. Direct Lean audits pending; the mathematical statement above is not yet a formalized result.
+`CriticalScaleArithmeticRigidity/PrimePoleNorm.lean`, `PrimeGeneratorPole.lean`, and `HarmonicPoleCentering.lean`. Direct Lean audits pending; the mathematical statement above is not yet a formalized result.

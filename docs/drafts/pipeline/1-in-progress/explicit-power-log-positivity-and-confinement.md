@@ -62,6 +62,18 @@ All admit margin `L^(−1/500)`. High-packet prime coercivity contributes `¼log
 
 Complete Lean verification and umbrella wiring. Determine whether sharper confinement or residual transfer reaches the stated `1/19` and `1/16` method ceilings; `1/144` does not settle that request. A2–A18 remain outside this card and unsolved by these bounds.
 
+## Direct prime-defect transfer
+
+For `F(n)=Σ_(m≤Q) a_m r_m(n)`, put `E=Σ_(m≤Q)(log m+tameDifferent(m))a_m²`. The exact prime-dilation identity gives `Σ_k Λ(k)/k ‖Δ_k a‖²=E`; its logarithmic moment is at most `(1+log Q)E`. Harmonic lower frames give
+
+`Σ_(n≤N/k) (F(kn)−F(n))²/n ≥ (log N−log k−2log Q)‖Δ_k a‖²`.
+
+The same lower bound holds when `k>N`, since its right side is nonpositive. Sum over all prime powers and use the exact defect edge identity. This proves
+
+`D_N(F/√n) ≥ (log N−3log Q−1)E`.
+
+Thus relative defect coercivity loses only `O(log Q/log N)`. This bypasses the squared logarithmic loss from prime residual norms. Its Lean proof is pending.
+
 ## Gates
 
 - [x] Precise target and source dependencies identified.

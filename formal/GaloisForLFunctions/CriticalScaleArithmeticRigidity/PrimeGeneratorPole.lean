@@ -25,6 +25,20 @@ open SuccessorShellArithmetic BezoutValuationIncidence
 def arithmeticPrimeGenerator (Q : ℕ) (a : ℕ → ℝ) (n : ℕ) : ℝ :=
   completedPrimeDilationTail Q a 0 n
 
+/-- Add a constant conductor without changing any arithmetic excitation coefficient. -/
+def addConstantConductor (a : ℕ → ℝ) (t : ℝ) (m : ℕ) : ℝ :=
+  if m = 1 then a m + t else a m
+
+/-- Adjusting the constant conductor leaves the exact adjunction energy unchanged. -/
+theorem primeAdjunctionMass_addConstantConductor (Q : ℕ) (a : ℕ → ℝ) (t : ℝ) :
+    primeAdjunctionMass Q (addConstantConductor a t) = primeAdjunctionMass Q a := by
+  apply sum_congr rfl
+  intro m _
+  by_cases hm : m = 1
+  · subst m
+    simp [addConstantConductor, tameDifferent]
+  · simp only [addConstantConductor, if_neg hm]
+
 theorem arithmeticPrimeGenerator_eq_jet (Q : ℕ) (a : ℕ → ℝ) (n : ℕ) :
     arithmeticPrimeGenerator Q a n =
       ∑ m ∈ Icc 1 Q, a m *
@@ -32,6 +46,19 @@ theorem arithmeticPrimeGenerator_eq_jet (Q : ℕ) (a : ℕ → ℝ) (n : ℕ) :
           (Real.log m + tameDifferent m) * normalizedRamanujanMode m n) := by
   have h0 : Icc 1 (0 : ℕ) = ∅ := by decide
   rw [arithmeticPrimeGenerator, completedPrimeDilationTail, h0, sum_empty, sub_zero]
+
+/-- The literal complete prime generator annihilates the constant conductor. -/
+theorem arithmeticPrimeGenerator_addConstantConductor (Q : ℕ) (a : ℕ → ℝ)
+    (t : ℝ) (n : ℕ) :
+    arithmeticPrimeGenerator Q (addConstantConductor a t) n =
+      arithmeticPrimeGenerator Q a n := by
+  rw [arithmeticPrimeGenerator_eq_jet, arithmeticPrimeGenerator_eq_jet]
+  apply sum_congr rfl
+  intro m _
+  by_cases hm : m = 1
+  · subst m
+    simp [addConstantConductor, ramanujanLogDivisorJet, tameDifferent]
+  · simp only [addConstantConductor, if_neg hm]
 
 theorem packetMean_sum {ι : Type*} (Q : ℕ) (S : Finset ι) (f : ι → ℕ → ℝ) :
     packetMean Q (fun n => ∑ i ∈ S, f i n) = ∑ i ∈ S, packetMean Q (f i) := by
@@ -160,6 +187,7 @@ theorem primePoleScale_le_generator_sector_constant {Q : ℕ} (hQ : 2 ≤ Q)
   exact (packetMean_sq_le_mean_sq Q (arithmeticPrimeGenerator Q (primeOnly a))).trans (hC a)
 
 #print axioms packetMean_divisorJet
+#print axioms arithmeticPrimeGenerator_addConstantConductor
 #print axioms packetMean_primeOnly_eq_zero
 #print axioms packetMean_arithmeticPrimeGenerator_primeOnly
 #print axioms optimal_arithmeticPrimeGenerator_pole_constant_iff

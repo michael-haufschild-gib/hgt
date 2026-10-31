@@ -17,6 +17,13 @@ contraposition, changed sampling, or an equivalent witness alone does not consti
 Further Donoghue orbit consequences belong to the existing dynamical family unless they add a
 strictly stronger obstruction.
 
+| Candidate | Exact existing result or obstruction | Disposition |
+|---|---|---|
+| Nonzero compactly supported test with zero Weil energy | `ArithmeticCastelnuovoSeveri.riemannHypothesis_iff_weil_positive_definite` | Already formalized; reject restatement |
+| Singular shifted Xi moment block | `xiShiftedMomentHankelMatrix_posDef_of_riemannHypothesis` | Already formalized; reject restatement |
+| Finite nonreal zero set at negative heat time | `DeBruijn.riemannHeat_neg_nonreal_zeros_infinite` holds unconditionally | Impossible antecedent; reject vacuous endpoint |
+| Interior Abel-susceptibility divergence | `riemannHypothesis_iff_primeArchEndpointBernsteinAbelSusceptibilityFinite` | Already formalized; reject restatement |
+
 ## Coverage requiring investigation
 
 - Arithmetic continuation, signed energy, prime correlations, and quantitative source bounds.
