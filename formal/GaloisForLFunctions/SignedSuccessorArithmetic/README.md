@@ -1,225 +1,178 @@
-# Signed Successor Arithmetic (SSA)
+# SignedSuccessorArithmetic (SSA)
 
-Namespace `GaloisForLFunctions.SignedSuccessorArithmetic`; umbrella `SignedSuccessorArithmetic.lean`.
+Namespace `GaloisForLFunctions.SignedSuccessorArithmetic`; umbrella `SignedSuccessorArithmetic.lean`; 21 modules.
+Everything unconditional except the explicitly conditional receiver criteria (§5, marked).
 
-**Question.** The successor `n ↦ n+1` is the one structure of `ℤ` a Beurling system lacks. How does
-it produce signed cancellation in multiplicative data — at what strength, at a single scale, with
-positivity inherited from a count rather than from analysis?
+## 1. Motivation
 
-Basic object: a completely multiplicative sign `f` read through its **successor sign**
-`σ_f(n) = f(n)f(n+1)`. Basic identity: the **dilation cocycle** `∏_{j<m} σ_f(mn+j) = σ_f(n)`. Basic
-theorem: the **one-third floor** — every completely multiplicative sign keeps its sign across at least
-a third of the steps in logarithmic density; exact, attained at conductors three and two.
+The successor `n ↦ n+1` is the structure of `ℤ` that Beurling systems lack. SSA asks how `+1`, interacting
+with `×`, forces signed cancellation in multiplicative data: at what strength, at one scale, with positivity
+coming from an integer count. It has two halves. (a) **Successor calculus** of completely multiplicative
+signs: exact identities, floors, quantized biases and deficits. (b) **Dirichlet forms of Möbius weights**
+(from BezoutValuationIncidence): which truncation of `Σ μ(d₁)μ(d₂)(d₁d₂)^{−σ}Φ_r(d₁/d₂)` carries zero
+information, and the complete unconditional phase diagram of the one that does not.
 
-**Open core.** Over `𝔽_q` successor correlation of characters is a count (`Σχ(x)χ̄(x+1) = −1`,
-`|Σχ(x)ψ(x+1)|² = q`): square-root cancellation is the shadow of an integer. Over `ℤ` SSA has the
-density scale (floors, exact identities, quantized biases and deficits), not the square-root scale the
-RH walls ask for.
+## 2. Objects
 
-**Boundary that guides the objects.** The prime-divisor hypercube Dirichlet form of BVI is unbounded for
-`−½ ≤ ε < ½`, bounded at `ε = ½` and above — its threshold is set by the pole, not the zeros. The
-**size-truncated** form is the one that is the receiver.
-
-Everything is unconditional.
-
----
-
-## 1. Place in the research
-
-SSA is the **source side**: the arithmetic of the signs themselves, using the successor as the chosen
-compatibility between `+` and `×`. The receiver programmes read the zero width; SSA asks which signed
-source estimates could feed them, and tests proposed entry points of the successor against the primes.
-
-| Programme | Interface |
-|---|---|
-| TransHorizonIncidenceMechanics | Classes I (Beurling-universal), II (sign-blind), III (Bézout-selective) of conservation laws; SSA floors are Class III laws with constants |
-| BezoutValuationIncidence | Successor incidence, pronic Gram, hypercube Dirichlet form, damping receiver; SSA settles the hypercube phase diagram and identifies the receiver form |
-| ArithmeticCastelnuovoSeveri | `𝔽_q` calibration; SSA calibrates on the successor side (Jacobi, Kloosterman) |
-| ArithmeticOrientationGeometry, ArithmeticOrientationTheory | Integer invariants; SSA's doubled-agreement count quantizes the two-scale deficit; AOG's heat-collision count is another |
-| SquareRootThreshold, ScaleSignedIncidenceCriticality | Scale needed for transfer; blindness of bounded readings |
-| TransThresholdPairCorrelation | Coalescent prime surplus: cleanest additive test bed |
-| SignedArithmeticEnergyIncidence | Möbius signs through quadratic forms; damping chain bounded at half damping |
-| ArithmeticDefectRigidity | Fixed successor observations vanish on normalized escape; signed moving cofactor work survives |
-| BiScaleUncertainty | Adversarial models every SSA statement is tested against |
-
-`RHTower` supplies PNT with error (`RHTower.Sieve.chebyshevTheta_sub_id_isBigO`), Sonin space and
-dilations, Ramanujan step vectors, receiver dampings; `HTGeometry` the half-line Mellin unitary
-(`HTGeometry.halfLineMellinUnitary`).
-
----
-
-## 2. Why
-
-The walls as questions: **W1** — how does `+1`/Bézout produce square-root cancellation in a *signed*
-multiplicative sum at a *single* scale (classical tools average over families, are sign-blind, or are
-subpower)? **W3** — which observables separate parity twins and carry a constant? **W14** — is there an
-arithmetic object whose count is manifest and whose identities reproduce the explicit formula?
-
-*Signed*: what sign-blind laws cannot see (Möbius/Liouville signs, parity). *Successor*: the structure
-every Bézout-selective law uses (`gcd(n,n+1) = 1`, `pa − qb = 1`, `|log(A/B)| ≥ 1/max(A,B)`).
-*Arithmetic*: positivity of a specified integer count coupled to exact source identities. Point of view:
-`ℤ` = interaction of `×` and `+1`; counts expose signs and quantized deficits; cofinality; quantization
-(prove rigidity, not decay).
-
----
-
-## 3. Objects and language
-
-| Object | Meaning | Lean |
+| Object | Lean | Meaning |
 |---|---|---|
-| CM sign | `f : ℕ → ℤˣ` completely multiplicative; group generated by prime values | `CMSign`, `CMSign.ofPrimes`, `CMSign.liouville` |
-| Successor sign / cocycle | `σ_f(n) = f(n)f(n+1)`; `∏_{j<m}σ(mn+j) = σ(n)` | `succSign`, `IsDilationCocycle` |
-| Agreement counts | `a(n) = [f(n) = f(n+1)]`, `A(N)`; doubled `E_N = #{a(n) = a(2n) = 1}` | `agree`, `agreeCount`, `doubleAgreeCount` |
-| Successor correlation | `C(N) = Σ f(n)f(n+1) = 2A(N) − N` | `succCorr` |
-| Two-scale deficit | `D_N = C(2N+1) − σ(1) + C(N) + N = 4E_N` | `twoScaleDeficit`, `ZeroDefect` |
-| Log masses; lag-`h` | `Σ a(n)/n`; `σ_h(n) = f(n)f(n+h)` | `logAgree`, `shiftSign`, `agreeAt`, `logAgreeAt` |
-| Unimodular sign | `|f| = 1`, phase `f̄(n)f(n+1)` | `CMUnit`, `unitSuccPhase` |
-| Twins | character off one prime, free value `ε` there | `chi3Twin`, `chi4Twin`, `legTwin`, `twoTwin` |
-| Finite-field sums | `S(χ,ψ) = Σχ(x)ψ(x+1)`; Kloosterman | `charSuccCorr`, `kloosterman` |
-| Euler factors | `|1 − p^{−σ}e^{iτ log p}|²`, products | `eulerFactorSq`, `eulerProductSq`, `primeWindow` |
-| Step spectral weight | `W_r(ξ) = |𝓜(v_r|₊)(ξ)|²`, `Φ_r(c) = ∫W_r cos(2πξ log c)` | `stepSpectralWeight` |
-| Prime-divisor hypercube form | `Q_ε(P) = Σ_{d₁,d₂|P} μμ(d₁d₂)^{−½−ε}Φ_r(d₁/d₂)` | `hypercubeDilationDirichletForm` |
-| Size-truncated form | `R_ε(D) = ∫W_r|Σ_{d≤D}μ(d)d^{−½−ε}e^{2πiξ log d}|²` | `sizeHypercubeForm` |
-| Forward-dilated primitive | `G_{ε,D}(x) = Σ_{d≤D}μ(d)d^{−1−ε}C_r(⌊dx⌋)` | `forwardDilatedPrimitive`, `forwardDilatedLimit` |
+| CM sign | `CMSign`, `CMSign.ofPrimes`, `CMSign.liouville` | `f : ℕ → ℤˣ` completely multiplicative; group, free on prime values |
+| Successor sign, cocycle | `succSign`, `IsDilationCocycleAt`, `IsDilationCocycle`, `signOfSucc` | `σ_f(n) = f(n)f(n+1)`; `Π_{j<m}σ(mn+j) = σ(n)`; reconstruction `Π_{k<n}σ(k)` |
+| Agreement data | `agree`, `agreeCount`, `doubleAgreeCount`, `succCorr`, `logAgree`, `logSuccCorr` | `a(n) = [f(n)=f(n+1)]`, `A(N)`, `E_N = #{a(n)=a(2n)=1}`, `C(N) = 2A − N`, log masses |
+| Deficit | `twoScaleDeficit`, `ZeroDefect` | `D_N = C(2N+1) − σ(1) + C(N) + N`; `E_N ≡ 0` |
+| Lag `h` | `shiftSign`, `agreeAt`, `logAgreeAt`, `ZeroDefectAt` | `f(n)f(n+h)` |
+| Unimodular | `CMUnit`, `unitSuccPhase`, `logUnitCorr`, `CMSign.toCMUnit` | `|f| = 1`, phase `f̄(n)f(n+1)` |
+| Twins | `chi3Twin`, `chi4Twin`, `legTwin`, `twoTwin`, `altSign` | character off one prime, free value there; `(−1)^{v₂}`; `(−1)^n` control |
+| Finite-field sums | `charSuccCorr`, `kloosterman` | `Σχ(x)ψ(x+1)`; `Σ_{x≠0}ψ(ax + b/x)` |
+| Euler factors | `eulerFactorSq`, `eulerProductSq`, `primeWindow` | `|1 − p^{−σ}e^{iτ log p}|²`, products, primes in `(x, λx]` |
+| Spectral weight | `stepSpectralWeight`, `stepHalfLine`, `dyadicFreqShell` | `W_r = |𝓜(v_r|₊)|²` of the BVI Ramanujan step vector |
+| Möbius polynomial | `twistedPow`, `moebiusPolySq` | `d^{−σ}e^{iθ log d}`; `|Σ_{d≤D}μ(d)d^{−σ}e^{iθ log d}|²` |
+| Size-truncated form | `sizeHypercubeForm`, `sizeTwinHypercubeForm` | `R_ε(D) = Σ_{d₁,d₂≤D}μμ(d₁d₂)^{−½−ε}Φ_r(d₁/d₂)`; all signs `+1` |
+| Forward dilation | `forwardDilatedPrimitive`, `forwardDilatedVector`, `forwardDilatedLimit`, `weightedForwardVector`, `weightedBackwardVector`, `weightedForwardDilatedLimit` | `G_{ε,D}(x) = Σ_{d≤D}μ(d)d^{−1−ε}C_r(⌊dx⌋)`, `D_d v_r` combinations |
+| Folded profile | `foldedZeroDampingProfile`, `naturalDilationLimit` | `ε = 0, r = 2` profile; cutoff-independent head profile |
+| Prime shells | `shellCut`, `primeShell`, `shellTrig`, `fejerCosKernel`, `desingLogProd` | `⌊e^{e^j}⌋` shells; shell cosine sums; Fejér kernel; desingularized log Euler product |
+| Constants | `sqrtEulerConst`, `twinHalfSlope`, `roughPrimeProd` | `c₀ ∈ [1,3]`; `I_r = c₀√rΠ_{p|r}(1 − p^{−½}) > 0`; `Π_{r<p≤X}p` |
 
-**Words.** *Floor*: universal lower bound on agreement density. *Junction*: the steps next to a multiple
-of the conductor, where the twin's free value enters. *Bias*: mean successor sign. *Zero defect*: `E_N = 0`
-∀N. *Currencies*: natural density, log density, bias, square-root size — converted explicitly.
-*Pole-driven divergence*: growth forced by PNT whatever the zeros are.
+`C_r(n)` = real part of RHTower `pmRamanujanPrimitive r n`; `Φ_r` = `pmRamanujanDilationProfile`; `Q_ε` = BVI
+`hypercubeDilationDirichletForm` (divisors of squarefree `P`).
 
----
+## 3. Language
+
+- **Floor**: universal lower bound on logarithmic agreement density over all CM signs; **sharp** when a twin attains it.
+- **Junction**: steps adjacent to a multiple of the conductor, where the twin's free value enters.
+- **Bias**: mean successor sign (`−1/p` for prime-conductor twins).
+- **Quantization**: a signed quantity equal to a nonnegative integer multiple of a fixed quantum.
+- **Prime-support vs size truncation**: `d | P` versus `d ≤ D`. Only size truncation is a receiver.
+- **Damping** `ε`, `σ = ½ + ε`; half damping `ε = ½` is the line `Re s = 1`.
+- **Pole-driven**: forced by PNT/the pole of `ζ` at 1, independent of zeros.
 
 ## 4. Mechanisms
 
-### Successor calculus and floors
-1. **Cocycle characterizes complete multiplicativity** (`dilation_cocycle`, `exists_cmSign_iff_primeCocycle`);
-   prime values cancel out of it; reconstruction `f(n) = ∏_{k<n}σ(k)`; pronic law `g(n)g(n+1) = g(n(n+1))`.
-2. **One-third floor.** Doubling count `a(2n) + a(2n+1) + a(n) = 1 + 2a(n)a(2n)` (`agree_doubling`); exact
-   two-scale identity `A(2N+1) + A(N) = a(1) + N + 2E_N` (`two_scale_identity`); log floor
-   `Σ_{f(n)=f(n+1)} 1/n ≥ (1/3)log M − 1` (`one_third_log_floor`).
-3. **Attained at conductor three**: zero defect, mass `≤ (1/3)log M + 1` (`one_third_floor_sharp`); the
-   `ε = −1` twin agrees with `λ` below 7 (`chi3Twin_neg_one_vs_liouville`).
-4. **Quantized bias**: Legendre twins `C(pJ) = −J + (1+χ(−1))εM(J)` (`succCorr_legTwin`), mean `−1/p`
-   (`abs_succCorr_legTwin_add_div_le`).
-5. **Shift parity.** Odd shifts keep `1/3` (`odd_shift_log_floor`), attained at every odd shift at once by
-   `T(n) = (−1)^{v₂(n)}` (`odd_shift_floor_sharp`); lag two floor exactly `1/4` (`lag_two_quarter_floor`,
-   `lag_two_floor_sharp`); `(−1)^n` violates the cocycle.
-6. **Quantized deficit.** `D_N = 4E_N` (`twoScaleDeficit_eq`); zero defect ⇔ equality at every scale, forces
-   the floor (`logAgree_le_of_zeroDefect`); every zero-defect sign has `f(2) = −1` (`zeroDefect_two_eq_neg_one`);
-   `T` has zero defect and is not a χ₃ twin (`zeroDefect_twoTwin`).
-7. **Complex floor** `−½` by Cauchy–Schwarz (`complex_log_floor`); true constant in `[−½, −⅓]`
-   (`complex_floor_bracket`); the `−½` configuration dies at Catalan's `9 = 8 + 1` (`no_cubeRoot_successor_coloring`).
+**Successor calculus**
+1. Telescoping over the dilated block `mn, …, mn+m` gives the cocycle; `f(m)² = 1` removes prime values. The
+   cocycle at all primes characterizes CM successor signs; `signOfSucc` reconstructs `f`.
+2. Cocycle at `m = 2` ⇔ per-step count `a(2n) + a(2n+1) + a(n) = 1 + 2a(n)a(2n)`. Summing over the pairs
+   `{2n, 2n+1}` gives the exact two-scale identity; weighting by `1/n` gives the one-third log floor.
+3. Lag `h`: same count along progressions. Odd `h`: positions `2n`, `2n+h` are disjoint ⇒ floor `1/3`. `h = 2`:
+   positions overlap; replaced by "three signs contain an agreeing pair" + `a₂(2m) = a(m)` ⇒ floor `1/4`.
+4. Twins are extremal: periodic structure gives exact counts (`A(3J+1) = J`, `A(4J) = 2J`), zero doubling
+   defect, and exact correlations `C(pJ) = −J + (1+χ(−1))εM(J)` with self-similar `M(pJ) = εM(J)`.
+5. Unimodular case: `(Re u + Re v)² ≤ 2(1 + Re uv)` + Cauchy–Schwarz ⇒ floor `−½`.
+6. Zero defect forces values at small primes by chasing `σ(n) = 1 ⇒ σ(2n) = −1` through factorizations.
 
-### Finite-field calibration
-8. `S(χ,ψ) = χ(−1)J(χ,ψ)`; `S(χ,χ⁻¹) = −1`; `|S|² = q` (`norm_sq_charSuccCorr`); Kloosterman second moment
-   `Σ_a|K(a,b)|² = q(q−1)` (`sum_normSq_kloosterman`) — orthogonality, not Weil.
+**Finite fields**
+7. `S(χ,ψ) = χ(−1)J(χ,ψ)`; orthogonality gives `S(χ,χ⁻¹) = −1`, `|S|² = q`, `Σ_a|K(a,b)|² = q(q−1)`.
 
-### Hypercube forms: the complete phase diagram
-9. **Below half damping: pole-driven divergence.** Aligned prime windows (PNT fills `(x, λx]`, phases near `π`)
-   make partial Euler products large on short height balls (`exists_aligned_window`); against any integrable
-   weight with positive mass they diverge (`spectralHypercube_unbounded_of_integrable`); divisor expansion
-   `Q_ε(P) = ∫W_r∏_p|1 − p^{−½−ε+2πiξ}|²` (`hypercubeDilationDirichletForm_eq_integral`) ⇒ unbounded for
-   `−½ ≤ ε < ½` (`hypercubeDilationDirichletForm_unbounded`), sign-blind threshold shared with the `+1` twin
-   (`hypercubeDilationDirichletForm_threshold`).
-10. **At half damping the sign splits.** `W_r` decays like `(1+|ξ|)^{−4/3}` (convexity) with dyadic shell bounds;
-    subset log-Euler-product bound with no pole loss ⇒ `Q_{1/2}(P)` **bounded over all squarefree `P`**
-    (`hypercubeDilationDirichletForm_half_bounded`); primorials and finite deletions bounded
-    (`hypercubeDilationDirichletForm_half_sdiff_bounded`); every prime subset `S ⊆ primes ≤ z` has
-    `Q ≤ C(log z)^{17/24}` via a two-squares cosine majorant (`hypercubeDilationDirichletForm_half_subset_le_rpow_log`).
-    The `+1` parity twin diverges like `c_r log X` (`not_bddAbove_hypercubeTwinDilationDirichletForm_half`,
-    `tendsto_sizeTwinHypercubeForm_half_atTop`); `hypercube_roughPrimeProd_half_damping_sign_split`.
-11. **Above half damping** bounded (`signedDilationDirichletForm_le_tsum_sq_of_half_lt`, `sizeHypercubeForm_le_of_one_lt`).
-
-### The size-truncated form is the receiver
-12. **Spectral form** `R_ε(D) = ∫W|Σ_{d≤D}μ(d)d^{−σ}e^{2πiξ log d}|² ≥ 0` (`sizeHypercubeForm_eq_integral`).
-    It equals the natural-cutoff dilation Dirichlet form (`sizeHypercubeForm_eq_naturalDilationDirichletForm`)
-    = receiver head + nonnegative trans-cutoff tail (`sizeHypercubeForm_eq_head_add_tail`). Bounded `R_ε` ⇒
-    `ε ∈ receiverDampings` (`mem_receiverDampings_of_bounded_sizeHypercubeForm`); on an interval ⇒ zero-free strip
-    (`re_le_of_bounded_sizeHypercubeForm_on_Ioo`); cofinal in `ε → 0⁺` ⇒ RH
-    (`riemannHypothesis_of_cofinal_bounded_spectral_moebiusPolySq`). Boundedness along a subsequence `D_k → ∞`
-    already suffices (head monotone in the cutoff; `riemannHypothesis_of_cofinal_frequently_bounded_sizeHypercubeForm`).
-    Bounded at `ε = ½` unconditionally (`sizeHypercubeForm_half_bounded`).
-13. **Forward dilation.** `Φ_r` symmetric ⇒ backward and forward dilation Grams agree
-    (`norm_sq_weightedForwardVector_eq_backward`): `R = ∫_0^∞ G_{ε,D}(x)²dx/x²` with absolutely summable weights
-    `μ(d)d^{−1−ε}`; exterior bounded; interior `= ∫_1^D G_{ε,D}(1/u)²du`. RH from cofinal bounds on that integral
-    (`riemannHypothesis_of_cofinal_bounded_forwardDilated_Ioo`); at `r = 2` from Möbius windows over odd floor
-    quotients (`riemannHypothesis_of_cofinal_bounded_alternating_moebius_Ioo`); terminal dyadic window = literal
-    Möbius harmonic tail (`forwardDilatedPrimitive_two_inv_eq_moebius_window`).
-14. **Sieve functional equation.** `G_ε` is `r`-periodic and `Σ_m m^{−1−ε}G_ε(mx) = C_r(⌊x⌋)`
-    (`forwardDilatedLimit_eq_neg_tsum_of_lt_one`); μ is the **unique** bounded weight satisfying it
-    (`eq_moebiusReal_of_sieve_functional_equation`); at `ε = 0`, `r = 2` the folded profile is
-    `(4/π)sin(πx)sin²(πx/2)` (`foldedZeroDampingProfile_eq_sin_cube`).
-
----
+**Hypercube forms**
+8. Mellin unitary turns dilation into modulation: `Φ_r(c) = ∫W_r(ξ)cos(2πξ log c)`, `W_r ≥ 0`, `∫W_r = Φ_r(1) > 0`.
+   Divisor expansion: `Σ_{d₁,d₂|P}μμ(d₁d₂)^{−σ}cos(θ log(d₁/d₂)) = Π_{p|P}|1 − p^{−σ}e^{iθ log p}|²` ⇒
+   `Q_ε(P) = ∫W_r·eulerProductSq(½+ε, 2πξ)`. Size truncation instead gives `∫W_r|Σ_{d≤D}μ d^{−σ}e^{…}|²`.
+9. Below `σ = 1`: PNT fills a prime window `(x, λx]`; at heights `τ ≈ (2πj+π)/log x` all phases sit near `π`, so
+   the window product is `≫ x^{1−σ}/log x` on a ball of radius `≍ 1/log x` — divergence against any weight with
+   mass (Lebesgue differentiation removes regularity).
+10. At `σ = 1` (all Möbius-signed forms bounded): Mertens rate `M(n) ≪ n/log⁴n` + Abel summation on floor shells
+    (size form); `log` Euler product controlled by `log ζ` at `1 + 1/log z`, pole sandwich `−log|u| + O(1)`,
+    two-squares cosine majorant `(17/24 − cos θ + ⅓cos 2θ ≥ 0, ≥ −2cos θ)`, double-exponential prime shells with
+    Fejér-kernel `L²` decay `e^{−j}`, superlevel decay `e^{−6n/5}` ⇒ uniform exponential integrability; `W_r` decay
+    `(1+|ξ|)^{−4/3}` from the convexity bound `ζ(½+it) ≪ t^{1/3}` (prime-divisor form).
+11. `+1` twins at `σ = 1`: test vector `δ(n) = 1/√n − 1/√(n+1)` cancels the main term by `Σ_{b|r}μ(b) = 0`, leaving
+    `I_r·H_X`; Cauchy–Schwarz ⇒ `≥ c log X`.
+12. Forward–backward normality (`Φ_r` symmetric) ⇒ `R_ε(D) = ∫_0^∞G_{ε,D}(x)²dx/x²` with summable weights; exterior
+    `(1,∞)` bounded by `(B_r ζ(1+ε))²`; interior `= ∫_1^D G_{ε,D}(1/u)²du` carries the difficulty.
+13. Sieve functional equation `Σ_m m^{−1−ε}G_ε(mx) = C_r(⌊x⌋)` (fiberwise `Σ_{d|j}μ = [j=1]`); Fourier modes on
+    `[0,r]` are triangular in the dilation index ⇒ harmonic uniqueness ⇒ Möbius uniqueness.
 
 ## 5. Pillar theorems
 
-1. **Cocycle characterization** (`exists_cmSign_iff_primeCocycle`).
-2. **One-third floor, exact and sharp** (`one_third_log_floor`, `one_third_floor_sharp`, `lag_two_quarter_floor`).
-3. **Quantization** (`twoScaleDeficit_eq`, `zeroDefect_two_eq_neg_one`).
-4. **$\mathbb F_q$ counts** (`norm_sq_charSuccCorr`).
-5. **Hypercube phase diagram**: pole-driven divergence below ½, sign split at ½
-   (`hypercubeDilationDirichletForm_unbounded`, `hypercubeDilationDirichletForm_half_bounded`,
-   `not_bddAbove_hypercubeTwinDilationDirichletForm_half`).
-6. **Size-truncated form is the receiver** (`sizeHypercubeForm_eq_head_add_tail`,
-   `riemannHypothesis_of_cofinal_bounded_spectral_moebiusPolySq`).
-7. **Sieve functional equation and Möbius uniqueness** (`eq_moebiusReal_of_sieve_functional_equation`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Cocycle characterization of CM successor signs | `exists_cmSign_iff_primeCocycle`, `dilation_cocycle` | unconditional |
+| Exact two-scale identity; signed form | `two_scale_identity`, `signed_two_scale_identity` | unconditional |
+| One-third log floor, sharp (χ₃ twins) | `one_third_log_floor`, `neg_third_log_floor`, `one_third_floor_sharp` | unconditional |
+| Odd-shift floor `1/3`, attained by `T` for all odd `h` | `odd_shift_log_floor`, `odd_shift_floor_sharp` | unconditional |
+| Lag-two floor exactly `1/4` | `lag_two_quarter_floor`, `lag_two_floor_sharp` | unconditional |
+| Bias `−1/p` of Legendre twins; `C(pJ) = −J` for `p ≡ 3 (4)` | `succCorr_legTwin`, `succCorr_legTwin_of_three_mod_four`, `abs_succCorr_legTwin_add_div_le` | unconditional |
+| Deficit quantization `D_N = 4E_N` | `twoScaleDeficit_eq`, `twoScaleDeficit_lt_four_iff`, `zeroDefect_iff` | unconditional |
+| Zero defect ⇒ `f(2) = −1`; `T` zero-defect, not a χ₃ twin | `zeroDefect_two_eq_neg_one`, `zeroDefect_twoTwin`, `twoTwin_ne_chi3Twin`, `zeroDefect_branches` | unconditional |
+| Complex floor `∈ [−½, −⅓]`; Catalan obstruction | `complex_floor_bracket`, `no_cubeRoot_successor_coloring` | unconditional |
+| `|S(χ,ψ)|² = q`; Kloosterman second moment | `norm_sq_charSuccCorr`, `sum_normSq_kloosterman` | unconditional |
+| Partial Euler products unbounded in the strip | `exists_aligned_window`, `spectralHypercube_unbounded_of_integrable` | unconditional |
+| `Q_ε` unbounded for `−½ ≤ ε < ½` | `hypercubeDilationDirichletForm_unbounded` | unconditional |
+| `R_{½}` bounded; `+1` twins diverge; sign split | `sizeHypercubeForm_half_bounded`, `tendsto_sizeTwinHypercubeForm_half_atTop`, `half_damping_sign_split` | unconditional |
+| `Q_{½}` bounded over all squarefree `P`; subset ceiling `(log z)^{17/24}` | `hypercubeDilationDirichletForm_half_bounded`, `hypercubeDilationDirichletForm_half_subset_le_rpow_log`, `hypercube_roughPrimeProd_half_damping_sign_split` | unconditional |
+| `W_r` bounds: `L^∞`, dyadic decay, `(1+|ξ|)^{−4/3}` | `stepSpectralWeight_ae_le`, `stepSpectralWeight_dyadic_shell_le`, `stepSpectralWeight_ae_le_inv_rpow` | unconditional |
+| Head + tail decomposition; forward/backward normality | `sizeHypercubeForm_eq_head_add_tail`, `norm_sq_weightedForwardVector_eq_backward`, `sizeHypercubeForm_eq_integral_Ioi_forwardDilatedPrimitive` | unconditional |
+| Sieve functional equation; Möbius uniqueness | `hasSum_forwardDilatedLimit_mul`, `eq_moebiusReal_of_sieve_functional_equation` | unconditional |
+| Receiver: bounded `R_ε` ⇒ admission / zero-free strip / RH | `mem_receiverDampings_of_bounded_sizeHypercubeForm`, `re_le_of_bounded_sizeHypercubeForm_on_Ioo`, `riemannHypothesis_of_cofinal_bounded_spectral_moebiusPolySq` | **conditional criterion** |
+| Subsequence suffices; forward `L²(1,D)`; `r = 2` Möbius windows ⇒ RH | `mem_receiverDampings_of_frequently_bounded_sizeHypercubeForm`, `riemannHypothesis_of_cofinal_frequently_bounded_forwardDilated_Ioo`, `riemannHypothesis_of_cofinal_bounded_alternating_moebius_Ioo` | **conditional criterion** |
 
----
+## 6. Tools
 
-## 6. Traps
+**Developed**
+- Successor algebra: telescoping `prod_succSign_range`, `prod_shiftSign_progression`, pair splits `sum_Icc_two_mul_add_one`, `sum_Icc_two_mul_add_two`.
+- Twin constructions for any prime conductor (`legTwin`) with periodic value lemmas.
+- Spectral transport: `dilationProfile_eq_integral`, `hypercube_cos_sum_eq_eulerProductSq`, `sizeHypercubeForm_eq_integral`.
+- Prime-window/alignment kit: `eventually_theta_window_ge`, `cos_le_of_aligned`, `eulerProductSq_window_ge`.
+- `σ = 1` Euler-product kit: `eulerProductSq_one_le_exp`, `exists_neg_sum_cos_div_primesLE_le`, `sum_cos_div_prime_le_of_zeta_upper`, `exists_subset_neg_two_cos_le_pole_free`, `two_squares_cos_majorant`, `exists_unit_L2_primeShell_le`, `exists_integral_exp_desingLogProd_unit_le`.
+- `W_r` integrability: `integrable_stepSpectralWeight_mul_fourthRoot`, `_mul_log_pow`, `_mul_nearZero_rpow`.
+- Forward-dilation kit: `integral_Ioi_one_forwardDilatedPrimitive_le`, `integral_Ioo_zero_one_forwardDilatedPrimitive_eq`, `forwardDilatedLimit_add_natCast`, `eq_zero_of_tsum_pmRamanujanPrimitive_floor_eq_zero`.
 
-| Trap | Truth |
+**To build**
+- Uniform bound of `R_ε(D)` for some `0 < ε < ½` — equivalently of `∫_1^D G_{ε,D}(1/u)²du`.
+- A single-scale power-saving signed successor estimate for `λ` or `μ` with explicit receiver transfer.
+- `Σ_{a≠0}`-balanced Kloosterman bilinear forms matching the BVI cross-scale Gram.
+
+## 7. Open questions
+
+1. Lift the floor for `λ` above `1/3` using `λ(p) = −1` at infinitely many `p ≡ 1 (mod 3)` (twin `ε = −1` agrees with `λ` below 7).
+2. Classify zero-defect signs (`f(2) = −1` forced; χ₃ twins and `T` known).
+3. Even-shift floors for `h ≥ 4`; exact complex floor in `[−½, −⅓]`.
+4. Successor calculus for `μ` (squarefree support breaks the cocycle).
+5. Boundedness of `R_ε` below half damping (first rung = zero-free strip; cofinal = RH). Structure available: sieve
+   functional equation, Möbius uniqueness, terminal dyadic window = Möbius harmonic tail, ε = 0 folded profile.
+6. Pointwise (not mode-wise) meaning of the `ε = 0` folded sieve identity.
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| Floor is a form of Chowla | Universal density bound over all CM signs, attained by pretentious signs |
-| Cocycle constrains prime values | They cancel out |
-| Any shift gives `1/3` | Odd shifts; lag two is `1/4` |
-| Bias `−1/p` = failed cancellation | Pretentious main term, quantized by conductor |
-| `𝔽_q` square-root cancellation transfers to `ℤ` | Periodic data acquire junctions and biases |
-| Density law reaches receivers | Receivers need square-root-scale signed estimates |
-| Prime-divisor hypercube boundedness is quasi-RH | Unbounded below ½ unconditionally (pole); bounded at ½ |
-| Half-damping boundedness is progress below ½ | It is the `1`-line: zero-free there; strip information starts below |
-| Size-truncated vs prime-divisor forms are interchangeable | Only size truncation is the receiver |
-| Forward-dilated summability removes the difficulty | The interior `∫_1^D G(1/u)²` carries it |
-| Complex floor = real floor | `−½` vs `−⅓`; true value open |
-| Lean: `(u : ℤˣ)^k` with `pow_add` | Use term-mode `pow_add ε _ _`; `open _root_.RHTower` inside the package |
+| Floor = Chowla-type cancellation | Density bound over all CM signs, attained by pretentious twins |
+| Cocycle constrains prime values | They cancel; constraints identical for all CM signs |
+| Every shift has floor `1/3` | Odd shifts only; lag two is exactly `1/4` |
+| Bias `−1/p` = failed cancellation | Pretentious main term, quantized by the conductor |
+| `𝔽_q` square-root counts transfer to `ℤ` | Periodic data acquire junctions and biases; law `|S|² = q` has no `ℤ` analogue |
+| Prime-divisor form boundedness is quasi-RH | Unbounded below `½` unconditionally (pole); bounded at `½` unconditionally |
+| `σ = 1` boundedness is strip progress | It uses only `Re s ≥ 1` information (Mertens, convexity, nonvanishing on the 1-line) |
+| Prime-support and size truncation interchangeable | Only size truncation is the receiver |
+| Summable forward weights remove the difficulty | Exterior is trivial; interior `∫_1^D G(1/u)²` carries it |
+| Receiver criteria are results | `riemannHypothesis_of_*` take the boundedness as hypothesis |
+| Folded `ε = 0` identity is pointwise | Proved per sine mode only |
+| Lean: `(u : ℤˣ)^k` with `pow_add` | Use term-mode `pow_add ε _ _`; `open _root_.RHTower` inside the namespace |
 
----
+## 9. Context
 
-## 7. Open problems
+| Direction | Programmes (import counts) |
+|---|---|
+| Uses | RHTower 10 (Sieve: Mertens rates, harmonic/squarefree bounds, prime windows, ζ pole box, `MoebiusSmoothLogPower`; `ZetaConvexityBound`; `PMRamanujanBandMellin`; discrete packets), BezoutValuationIncidence 4, HTGeometry 3 (`HalfLineMellinMultiplier`, `FourierTailSup`, `NearZeroTruncatedPower`), PNTPlus 1 |
+| Used by | ArithmeticCorrelationGeometry 1 (`TheSuccessorDilationCocycle`), MainTheorems |
 
-1. **Break the conductor-three floor for `λ`**: `(1/3 + c)log M − C` using `λ(p) = −1` at infinitely many
-   `p ≡ 1 (mod 3)`.
-2. **Square-root scale over `ℤ` (W1)**: a single-scale power-saving signed successor estimate for `λ` or `μ`
-   with an explicit transfer to a receiver (weights, centering, norm).
-3. **Size-truncated form below half damping**: uniform boundedness of `R_ε(D)` for some `0 < ε < ½` (first rung:
-   a zero-free strip); equivalently of `∫_1^D G_{ε,D}(1/u)²du`. Use the sieve functional equation and Möbius
-   uniqueness as structure.
-4. **Classify zero-defect signs**: are the two χ₃ twins and `T` all of them?
-5. **Even-shift floors** `h ≥ 4` (conductor-eight twins give `1/4` at lag four).
-6. **Complex floor** constant in `[−½, −⅓]`.
-7. **`λ` to `μ`**: successor calculus for squarefree-supported signs (cocycle breaks).
-8. **A count with an upper budget**: a source-derived budget below the first nonzero quantum.
-9. **Kloosterman reciprocity**: second moment → BVI's balanced cross-scale Gram.
-10. **Witt structure**: do Frobenius/Verschiebung give a successor law or are they Beurling-universal?
+| Neighbour | Interface |
+|---|---|
+| BezoutValuationIncidence | supplies `Φ_r`, `hypercubeDilationDirichletForm`, twin forms, `naturalDilationDirichletForm`, residue-gap budget, threshold `hypercubeDilationDirichletForm_threshold` (`ε > ½` bounded); SSA completes the `ε ≤ ½` phase diagram and identifies the receiver |
+| RHTower receiver | `receiverDampings`, `riemannHypothesis_of_accPt_zero_receiverDampings`: target of all conditional criteria |
+| TransHorizonIncidenceMechanics | `pronicNorm` = receiver head energy |
+| ArithmeticCorrelationGeometry | reuses the dilation cocycle |
 
----
+## 10. Big picture
 
-## 8. Tools to build
+SSA shows precisely what the successor buys and what it does not. On the sign side, `+1` against `×` yields exact,
+quantized, sharp density laws — the one-third floor, conductor-quantized biases, a deficit that is four times a
+count — all attained by pretentious twins. These are density-scale facts; the square-root scale that RH needs never
+appears over `ℤ`, although its finite-field shadow is literally a count.
 
-Size-truncated forms against $1/\zeta$ in $\tfrac12<\sigma\le1$ (bound of the interior forward-dilated
-integral below half damping); a square-root-scale successor estimate with explicit receiver transfer;
-balanced Kloosterman forms.
-
----
-
-## 9. Contribution rules and principles
-
-A contribution is unconditional, exact where the mathematics is exact (identity with signed defect), uses
-the successor visibly (block, junction, interleaving, solution of `pa − qb = h`), states what it gives for
-the control group (alternating sign, small-conductor twins, `f ≡ 1`, Beurling systems, `𝔽_q`), names its
-scale, says whether a tested entry point is decided by the zeros or the pole, and records the positive
-survivor of every no-go.
-
-Principles: selectivity; successor visible; integrality; single scale; cofinality; quantization;
-exactness; **pole before zeros**; calibrate over `𝔽_q`.
+On the form side, the programme separates pole from zeros cleanly. Prime-supported Möbius forms diverge below the
+1-line for a reason that has nothing to do with zeros, and are bounded on it; everything provable at `σ = 1` comes
+from the 1-line alone. The one object that carries zero information is the size-truncated form, now characterized
+completely — it is the receiver, its Möbius weights are the unique solution of a sieve functional equation, and its
+difficulty is isolated in one interior integral. The RH content left here is a single uniform bound strictly inside
+the strip; no successor identity proved so far reaches it.

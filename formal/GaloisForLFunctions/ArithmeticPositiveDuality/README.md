@@ -1,222 +1,244 @@
-# Arithmetic Positive Duality (APD)
+# ArithmeticPositiveDuality (APD)
 
-Namespace `GaloisForLFunctions.ArithmeticPositiveDuality`; umbrella `ArithmeticPositiveDuality.lean`.
+Namespace `GaloisForLFunctions.ArithmeticPositiveDuality`; umbrella `ArithmeticPositiveDuality.lean`; 45 modules.
+Every theorem is unconditional. RH enters only as one side of an `↔` (receivers) or as a proved consequence of a
+hypothesis (`weil_extension_classification`).
 
-**Question.** The explicit formula is a Poisson summation between two measures: the prime measure (positive
-because $\Lambda\ge0$) and the zero measure (positive exactly under RH). Everything the corpus has *forced* about
-$\zeta$ has one shape: positivity + an exact self-dual identity + an integer ⇒ rigidity. What is the complete
-rigidity and capacity theory of positive arithmetic distributions under Poisson self-duality and integer
-quantization? What can positivity on the prime side force on the zero side, how much zero charge can each
-positive structure carry, and which structure carries none?
+## 1. Motivation
 
-APD is the rigidity theory of **positive Poisson pairs** $(\mu,\hat\mu)$: one side with arithmetic support
-($\pm\log n$, lattices, $S$-unit groups), the other a spectrum. Objects: positive-definite functions on groups of
-finite rank and their Fourier measures on tori. Mechanism: the **spectral gap identity** (an exact sum of
-nonnegative terms equals a computable constant; integrality or self-duality turns it into rigidity).
-Measurement: **capacity** — the zero charge a positive structure can carry and the integer that pays for it.
+The explicit formula is a Poisson pair: the prime side is the characteristic function of a positive measure
+unconditionally, the zero side is one exactly under RH. Everything forced about ζ so far has one shape:
+positivity + an exact self-dual identity + an integer ⇒ rigidity. APD asks:
 
-**Inserted vs intrinsic charge.** Inserted charge is created by deforming a positive system; the pole pays for
-it exactly. Intrinsic charge is the zero set of $\zeta$ itself; no pole count reaches it. RH = intrinsic off-line
-charge of $\zeta$ is zero.
+- what positivity plus self-duality plus integrality force (on measures, Beurling systems, PD functions on groups);
+- which positive carriers (lattices, ℚ_{>0}, the affine group of ℚ, Meyer-source ideals) can hold Weil's
+  correlation, and what extra structure (an arithmetic successor, a coupling) adds;
+- how stable the forcing is when the functional equation holds only approximately.
 
----
+## 2. Objects
 
-## 1. Place in the research
-
-The walls are three readings of one sentence: *what forces the actual source to be blind to off-line zeros?*
-Over $\mathbb F_q$ the answer is one object (intersection theory with integer pairing, finite rank, positivity
-from sections, a base with nonnegative tensor-power traces). Over $\mathbb Z$ the corpus has the pairing, the
-Lefschetz/adjunction identities, the signature law and the maximal blind carrier; the missing ingredient is a
-structure, not an estimate.
-
-**Exhausted mechanism classes:**
-
-| Class | Exhausting theorem |
-|---|---|
-| Quadratic positivity on a sharp-stable convolution ideal | lies in the maximal blind ideal (ACS) |
-| Quadratic positivity on a scale-shift-invariant test space | blind |
-| Finite harmonic coupling by a nonnegative cosine polynomial | Fejér barrier; interior gain only from growth input (MPG) |
-| Multi-channel positive certificates | direct sum of one-channel problems, one per rational fibre |
-| Height-coupled positivity in completed positive systems | boundary capacity + a $1/\log T$ collar with $\le\kappa^2$ exceptions (SBWF) |
-| Integer quantization in dlVP coupling | no budget below the first quantum at the critical line |
-| Pole order on positive relative deformations | index–pole conservation; pays inserted charge only (RHTower) |
-| Positive relative deformations of $\xi$ at pole order one | none: $E=c\xi$ (SBWF) |
-| Positive functionals on the affine group $\operatorname{Aff}(\mathbb Q)$ | induced from the dilations; the successor reads only the continuous dilation spectrum |
-| Finitely many linear readings | cannot supply Bézout (ACS) |
-
-**Four instances of one law.** Forcing: boundary forcing (MPG: $\zeta(1+it)\ne0$) and theta forcing (a positive
-measure with Riemann's self-dual theta law is the integer comb; on Beurling systems the FE forces $\zeta$).
-Capacity: boundary capacity ($\lfloor k/2\rfloor$ zeros per pole of order $k$) and relative conservation (Weil-index
-increment = pole increment + critical traffic). **Open core:** the third forcing instance in the strip — a law
-bounding intrinsic charge, whose integer is not pole charge and whose gain does not scale with its cost.
-
-| Programme | Interface |
-|---|---|
-| MultiplicativePositivityGeometry | Rank-one height side: boundary divisor, Fejér barrier, growth law, boundary capacity |
-| StripBochnerWeilForcing | Strip side: completed positive systems, collective capacity, gauge collapse, pole-order-one rigidity |
-| `RHTower` deformations | Pole-order-two strays, refunded quartets, index conservation |
-| ArithmeticOrientationGeometry | Scale side: orientation = PD of orbit correlation; spline two-prime orbit decides RH |
-| ArithmeticCastelnuovoSeveri | Maximal blind ideal, Meyer source, golden datum |
-| BiarithmeticGeometry, SignedSuccessorArithmetic | Successor and affine action |
-| ArithmeticDefectRigidity, ArithmeticContinuationAndCriticalEnergy | Limits: cofactor modules, escape states |
-| ScaleSignedIncidenceCriticality | A finite box of $\mathbb Z^2$ is a bounded-aperture condition |
-| TransThresholdPairCorrelation | Signed close-prime-pair surplus: a prime-side coefficient the zero side cannot see |
-
----
-
-## 2. Why
-
-**The explicit formula is a Poisson pair.** For even $g$, $\sum_\rho\hat g(\gamma_\rho)=\hat g(i/2)+\hat g(-i/2)-\sum\Lambda(n)n^{-1/2}(g(\log n)+g(-\log n))+$
-(archimedean). Left: zero measure $\mu_Z$; right: prime measure $\mu_P\ge0$. RH ⇔ $\mu_Z\ge0$; in Bochner form, every
-spectral kernel $y\mapsto W(\tau_y(f\star\tilde f))$ is the characteristic function of a positive measure.
-
-**The two positivities are Fourier dual.** Height variable: $u\mapsto\Re(-\zeta'/\zeta)(\sigma+iu)$ is PD (known, MPG). Scale
-variable: $t\mapsto\Re W(f,f(\cdot-t))$ is PD iff $|\hat f|^2\mu_Z\ge0$ (the theorem, AOG). The prime-free gap $|x|<\log2$ lies
-on the known side, so gap rigidity on the Weil pair yields density statements, not lattice support.
-
-**Forcing is rigidity**: an exact identity with sides of different regularity, a sum of nonnegative terms against a
-computable constant, then quantization (integer PD functions are sign characters; the Fejér tent transform
-$\operatorname{sinc}(\pi\xi)^2$ vanishes exactly on $\mathbb Z\setminus\{0\}$). Weil's theorem for curves is the calibration:
-the trace sequence is PD on $\mathbb Z$ with integer mass $2g$.
-
-**Capacity is counted by the pole** on the boundary and for inserted charge (trace condition at $x=1$; each removed
-critical pair refunds one unit; pole order two buys a real off-line pair or a refunded quartet; pole order one
-admits nothing). **Intrinsic charge is not**: the bookkeeping gives only lower bounds on $\zeta$'s index.
-
-**Rank helps on the zero side only.** Height rank adds nothing per channel; scale rank one is blind (Wolff), scale
-rank two decides RH.
-
-**Amplification is depth-homogeneous over $\mathbb Z$.** Harmonic twists, Følner coupling, family averages and
-tensor powers gain on depth exactly as fast as they pay in arithmetic length. Over $\mathbb F_q$ Deligne escapes
-through a base with nonnegative even tensor powers and a fixed loss.
-
----
-
-## 3. Objects and language
-
-| Object | Meaning | Lean |
+| Object | Lean | Meaning |
 |---|---|---|
-| Poisson pair; gap; tent | $\int\mathcal Fg\,d\mu=\int g\,d\nu$; $(-a,a)\setminus\{0\}$ massless; $\max(0,1-|x|)$ | `IsTentSelfDual`, `tentAt`, `diracComb` |
-| Prime measure | $\tfrac12\sum\Lambda(n)n^{-1-x}(\delta_{\log n}+\delta_{-\log n})$ | `primeMeasure` |
-| Positive-definite function | on $\mathbb Z^\iota$, on a group, even real | `IsPosDefOnLattice`, `IsPosDefOnGroup`, `IsEvenPosDef` |
-| Fourier measure, Kronecker line | measure on the torus; $t\mapsto(\gamma_it)_i$ | `fourierCoeff`, `kroneckerLine` |
-| Certificate fibre; channels | modes in $\mathbb Z\omega$; $\mathbb Q$-independent frequencies | `fibreCoeff`, `channelFreq` |
-| Sign character | $\chi:H\to\{\pm1\}$ extended by zero | `IsSignCharacter`, `extendByZero` |
-| Quantum budget | $b(\eta)=(\sqrt A+\sqrt{G\eta})^2/B$ | `quantumBudget` |
-| Completed positive system | PD in heights on $\Re s>1$; order-one $\Lambda$ with FE | `CompletedPositiveSystem` (SBWF) |
-| Relative deformation, refund | reflection-antisymmetric correction of $\zeta$'s log measure | `poleIncrement`, `indexIncrement`, `refundTransform` (RHTower) |
-| Affine group of $\mathbb Q$ | $x\mapsto ax+b$; dilations, successor; Hecke state $(nd)^{-s}1[db\in\mathbb Z]$ | `AffineGroupQ`, `dilation`, `successor` |
-| Prime torus, Kronecker line in it | spectrum of $\mathbb Q_{>0}$; $x\mapsto(x\log p/2\pi)_p$ | `archPoint` |
-| GNS space | Hilbert space, representation, cyclic vector of a PD function | — |
-| Critical-jet topology | coarsest topology making critical Meyer jets continuous | `criticalJetTopology` |
+| Theta/Dirichlet transforms of a measure | `measureTheta`, `measureDirichlet`, `measureSeries`, `measureDual` | θ_ν(x) = ∫e^{−πu²x}dν, D_ν(s) = ∫u^{−s}dν, Laplace sides ∫t/(π(u²+t²))dν, ∫e^{−2πut}dν |
+| Beurling measures | `mulConvPow`, `beurlingIntegerMeasure`, `riemannPrimeMeasure`; `RHTower.BeurlingSystem`, `beurlingSystemIntegerMeasure` | M = exp⋆P; Σ_{n≥2}(Λ(n)/log n)δ_n |
+| Tent, self-dual pair | `tentAt`, `modTent`, `IsTentSelfDual`, `diracComb`, `dualLatticePair` | Λ = (1−|x|)⁺, 𝓕Λ = sinc²(πξ) vanishes exactly on ℤ∖{0} |
+| Unit tent | `unitTent` | (1−|u−n|)⁺, partition of unity on ℤ |
+| Certificate fibre | `fibreCoeff`, `channelFreq` | resonant modes mω of a nonnegative almost-periodic certificate |
+| Sign character | `IsSignCharacter`, `extendByZero` | χ: H → {±1} on a subgroup, zero off H |
+| PD functions | `IsPosDefOnLattice`, `IsPosDefOnGroup`, `PosDefFn`, `IsEvenPosDef` (MPG) | Gram Σc̄_aφ(x_a⁻¹x_b)c_b real ≥ 0 |
+| Kronecker line | `kroneckerLine`, `archPoint` | t ↦ (γ_i t); x ↦ (x log p/2π)_p, the character u ↦ u^{ix} |
+| Prime torus | `PrimeTorus`, `ratChar`, `valFinsupp`, `primeBox` | Π_p ℝ/ℤ, dual of ℚ_{>0}; valuation characters |
+| Spline correlations | `splineCorr`, `twoPrimeCorr`, `ratCorr` | C(u) = W(B(·−u), B) for Weil's functional, cubic spline B |
+| Curve trace sequence | `traceSeq` | τ(m) = Re Σβ_i^{|m|} |
+| Prime measure | `primeMeasure` | ½ΣΛ(n)n^{−1−x}(δ_{log n} + δ_{−log n}) |
+| Quantum budget | `quantumBudget` | b(η) = (√A + √(Gη))²/B |
+| Affine group | `AffineGroupQ`, `dilation`, `translation`, `affSlope`, `affShift`, `posAffine`, `dilationRange` | x ↦ ax + b over ℚ |
+| Induced function | `extendFromSubgroup` | PD on H extended by zero |
+| Integer successor | `HasIntegerSuccessor`, `successorDensity` | φ(x ↦ x+b) = 1_ℤ(b); A_φ(q) = mass of qẐ |
+| Arithmetic states | `haarState`, `heckeState`, `bcState`, `twistedHaar`, `heckeChar`, `commKernel`, `slopeWeight`, `jordan` | (nd)^{−s}1[db ∈ ℤ] for a = ±n/d; Bost–Connes state; Haar ⊗ character |
+| Hecke extremal | `IsHeckeExtremal` | nd|φ(d_u)|² = 1 ∀u |
+| Archimedean character | `archChar` | u^{iγ} |
+| GNS | `PreGNS`, `GNSHilbert`, `gnsRep`, `gnsCyclic` | Hilbert space, unitary rep, cyclic vector of PD Φ |
+| Eigenvectors, blind families | `IsArchEigen`, `IsBlindFamily`, `atomVec`, `remVec`, `atomAlpha` | π(d_u)v = u^{iγ}v; Gram α + (s−α)δ; atom projections e_γ |
+| Extensions | `archExtension`, `realAffState`, `blindArchState`, `boxExtension` | affine PD functions with prescribed dilation part |
+| Weil spectral measure | `weilWeight`, `weilMeasure` | ν_W = Σ_γ w_γδ_{−γ}, w_γ = μ_Λ{γ}|B̂(γ)|² |
+| Meyer-source ideals | `meyerTraceBoundedIdeal` (ACS), `divisorOrderIdeal`, `orderJetSpan`, `poissonBoundary`, `criticalJetSpan`, `leftBlindIdeal`, `criticalJetReading` | sources by vanishing order at Xi zeros |
+| Canonical-product tail | `xiTail` | ∏_{ρ∉F}E₁(z/z_ρ), z = (s−½)(−i) |
+| Coupled trace | `coupledTrace`, `couplingMatrix`, `IsDivisorMultiplier`, `PointStable` | Σ_{a,b}tr(g_a, T_{ab}g_b); K_ρ(a,b) |
+| Defect kernel | `RHTower.HamburgerStability.defectKernel`, `defectLaplace` | critical-line defect g of a functional equation |
 
-**Words.** *Positive side / spectral side*; *forcing* (vanishing on the spectral side); *capacity*; *receiver*
-(RH-equivalent reformulation, never its own input); *dominated vs oscillatory payment*; *depth-homogeneous*.
+## 3. Language
 
----
+- **Positive side / spectral side**: the side positive by construction / the side whose positivity is the theorem.
+- **Forcing**: an exact identity with a sum of nonnegative terms against a computable constant, then quantization.
+- **Gap**: an interval around 0 with no mass. Gap and positivity on opposite sides of a self-dual pair give a lattice;
+  on the same side only density.
+- **Receiver**: an RH-equivalent reformulation; never an input to its own proof.
+- **Successor**: the translation coordinate b ↦ φ(x ↦ x + b) of a PD function on Aff(ℚ). **Blind**: constant on b ≠ 0.
+- **Archimedean / Kronecker-null**: spectral measure on ℚ_{>0} carried by / giving zero mass to the Kronecker line.
+- **Atomic box**: the parameter set Π_x[0, ν{x}] of affine extensions of an atomic dilation correlation.
+- **Isotropy vs blindness**: fibres at ρ, ρ* orthogonal for a coupling form vs Mellin values vanishing.
 
 ## 4. Mechanisms
 
-1. **Spectral gap identity**: pair a Poisson identity with a nonnegative test supported in the dual gap.
-2. **Zero set of the tent transform** puts a positive measure on the lattice.
-3. **Gram quantization**: integer PD with $\varphi(0)=1$ ⇔ sign character of a subgroup.
-4. **Bohr projection** of a certificate onto resonant fibres; nonnegativity survives.
-5. **Product extremals** $Q_1(\gamma_1t)Q_2(\gamma_2t)$ for independent channels.
-6. **Fejér means on lattices** + Prokhorov ⇒ Herglotz–Bochner on $\mathbb Z^\iota$; restriction = Kronecker push-forward.
-7. **Induction from a subgroup**: Gram forms split per coset.
-8. **Budget arithmetic**: an integer below one is zero, an even integer below two is zero.
-9. **Følner capacity** and Hadamard zero-pair series in completed systems.
-10. **Trace bookkeeping** and **refund rigidity** (Landau continuation under $s\mapsto1-s$).
-11. **Affine spectral calculus.** Translations act on archimedean dilation eigenvectors by one constant per
-    frequency and never mix them with the continuous part ⇒ successor = blind constant + successor of the
-    continuous part; atomic dilation parts admit only boxes of blind extensions; every $L^2$ wave (any nonzero
-    absolutely continuous dilation part) has a visible, nonconstant successor; GNS orbits extend to real scales.
+**A. Positivity + self-duality rigidity**
+1. Fejér tent pairing on vertical lines t = ε + iτ: series side O(√ε) (collar-blind), dual side → ∫sinc² dν, polar
+   residues cancel ⇒ off-lattice mass zero.
+2. Laplace transforms of the theta law; real-axis Fubini then identity theorem on Re t > 0.
+3. Periodicity of the dual side ⇒ equal integer weights (HTGeometry Hamburger coefficient lemma).
+4. Phragmén–Lindelöf twice (f, then f(s)(s+2)²): edge decay + finite order ⇒ strip decay.
+5. Defect version: Laplace transform of the defect kernel has ‖J(t)‖ ≤ (3/2π)|t|^{−1/2}‖g‖₁; window (1−|s|)
+   absorbs |t|^{−1/2}; Im β read from the theta law at x = 4.
+6. Rounding: near-integer atoms + tent masses ⇒ counts; rounding multiplicative ⇒ primes map to primes.
 
----
+**B. Quantization**
+1. Integer PD with φ(0) = 1 ⇔ sign character (Gram splits over cosets).
+2. Bohr projection onto a resonant fibre preserves nonnegativity; ℚ-independent channels split.
+3. Budget arithmetic: an admissible integer order below 1 (even order below 2) is zero.
+
+**C. Harmonic analysis on groups**
+1. Fejér means on ℤ^ι + Prokhorov ⇒ Herglotz–Bochner; finite-rank stages + infinite-torus Fourier–Lévy ⇒ ℚ_{>0}.
+2. log 2/log 3 ∉ ℚ ⇒ Kronecker line injective; two primes separate archimedean frequencies.
+3. Induction from a subgroup: Gram forms split per coset; restriction–induction law.
+4. GNS construction and completion; vector states are PD; PD closed under pointwise limits.
+
+**D. Successor–dilation calculus**
+1. Bi-invariance from φ(h) = φ(1) (three-point Gram); twisted dilation coefficients (1/d)ℤ-periodic (Bézout).
+2. Hecke–Bessel Gram: nd·Σ|φ(x ↦ ux + b_i)|² ≤ 1 over classes mod (1/d)ℤ.
+3. Two-scale null vector [x/m] − m⁻¹λ_mΣ[x + j/m] ⇒ multiplicativity of extremal dilation coefficients.
+4. Monotone successor densities A(kq) ≤ A(q) ⇒ Mautner rigidity along u = (kq+1)/(kq) → 1.
+5. Jordan totients: gcd^α = Σ J_α(d)1[d|a]1[d|b] ⇒ slope weights are PD multipliers.
+6. Kakutani dichotomy for prime-Poisson products: Σp^{−2s} < ∞ ⇔ absolutely continuous to Haar.
+
+**E. Affine spectral calculus**
+1. Eigenvector covariance + block Cauchy–Schwarz ⇒ diagonal successor coefficient is one real constant.
+2. Blind families: Cesàro means along injective sequences merge; their limit is an eigenvector ⇒ distinct
+   frequencies and the continuous part never mix.
+3. Two-prime box averages N⁻²Σ(2^a3^b)^{−iγ}π(2^a3^b)ξ converge to the projection e_γ; ‖e_γ‖² = ν{γ}.
+4. Conjugation π(t_{rb}) = π_rπ(t_b)π_r⁻¹ transfers dilation continuity to the successor.
+5. Real ax + b vector states on L²(0,∞): any nonzero L² wave has a nonconstant successor.
+
+**F. Meyer source**
+1. Canonical-product tails with half-Gaussian domination uniform in F; finite jet repair; Gaussian damping removed.
+2. Point-supported pairing: S(g,h) = Σ m_σ ĝ(σ)conj ĥ(σ*); two-point packets reduce positivity to Re(α⟨x,y⟩_K) ≥ 0.
 
 ## 5. Pillar theorems
 
-1. **Theta rigidity**: a positive measure on $[1,\infty)$ with Riemann's theta law is $c\sum\delta_k$; a degree-one Beurling
-   system with the completed FE is $\zeta$ (`measure_eq_of_measureTheta_relation`, `beurlingSystem_rigidity_of_completed_functional_equation`).
-2. **Poisson rigidity**: positive self-dual measure with unit gap ⇔ multiple of the Dirac comb; the unit gap is sharp;
-   one-sided gap gives only density (`tentSelfDual_iff_eq_smul_diracComb`, `exists_tentSelfDual_not_comb`, `measure_Icc_le_of_poissonPair`).
-3. **Integer classification** on every abelian group; isolation forces $1_{\{0\}}$ iff no 2-torsion (`intValued_posDef_iff_signCharacter`).
-4. **Herglotz–Bochner** on $\mathbb Z^\iota$ and on $\mathbb Q_{>0}$ (prime torus) (`isPosDefOnLattice_iff`, `isPosDefOnGroup_posUnits_iff`).
-5. **Fibre barrier and independent channels**: the barrier of a certificate is that of its fibre; joint barrier is
-   the product (`multiFrequency_purchase_le_fibre_fejer`, `twoChannel_joint_barrier_attained`).
-6. **Two-prime orbit is a Bochner problem on $T^2$** (`riemannHypothesis_iff_exists_torusMeasure`) — a receiver.
-7. **Quantum budget**: no budget below the first quantum at $\Re s=\tfrac12$, parity included (`fejer_quantumBudget_half`).
-8. **Topology of the blind ideal**: closed in the natural Fréchet topology; dense in the critical-jet topology,
-   closed there iff RH (`isClosed_meyerTraceBoundedIdeal`, `isClosed_criticalJet_iff`).
-9. **Weil over $\mathbb F_q$ = PD on $\mathbb Z$**; golden datum fails on every group (`curve_rh_tfae`, `not_exists_posDef_golden`).
-10. **Positivity on both sides** of the explicit formula (`positive_duality_of_the_explicit_formula`).
-11. **Affine laws.** Restriction–induction: affine positivity is induced from dilations (`exists_isPosDefOnGroup_extension_iff`);
-    the integer successor forces the Hecke weight $(nd)^{-1/2}$, extremals are twisted Haar states, threshold $s\ge\tfrac12$ is
-    the critical line, Bost–Connes temperature $\beta$ forces $(nd)^{-\beta/2}$ (`integer_successor_hecke_weight`,
-    `isPosDefOnGroup_heckeState_iff`, `bc_successor_hecke_exponent`, `heckeExtremal_iff`); archimedean PD functions live on the
-    Kronecker line while arithmetic successors force Kronecker-null spectra (`spectralMeasure_eq_map_archPoint`,
-    `integer_successor_kronecker_null`); Weil's correlation admits only blind successors, its extensions indexed by the
-    zeros (`weil_successor_blind`, `weil_extension_classification`); any nonzero AC dilation part has a visible extension
-    (`exists_nonblind_affine_extension_of_ac_part_ne_zero`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Positive measure on [1,∞) with Riemann's degree-one theta law is (−2Re α)Σδ_{k+1} | `measure_eq_of_measureTheta_relation`, `measure_eq_of_completed_functional_equation` | proved |
+| Same from classical hypotheses: absolute convergence, completed FE, finite order (decay derived) | `measure_eq_of_completed_functional_equation_of_finiteOrder` | proved |
+| Beurling selectivity: prime measure with theta law is `riemannPrimeMeasure` | `eq_riemannPrimeMeasure_of_beurling_theta_relation` | proved |
+| Categorical rigidity: countable Beurling system with Riemann's FE ≅ ℤ, primes ↔ rational primes | `beurlingSystem_rigidity_of_completed_functional_equation` | proved |
+| Signed self-dual coefficients: only the linear constraint Σa_n sinc²(λ_n) = 0 | `tsum_sin_sq_div_sq_eq_zero_of_freqTheta_relation` | proved |
+| Quantitative Hamburger: off-lattice mass ≤ (6/π)‖g‖₁ | `integral_sinc_sq_le_of_critical_line_defect` | proved |
+| Tent masses within (18/π + 4κ/π²)‖g‖₁ of 2Re β | `abs_integral_unitTent_sub_le_of_critical_line_defect` | proved |
+| Approximate FE fixes integers and primes up to height ≍ ‖g‖₁^{−1/2} | `beurling_primes_of_critical_line_defect` | proved |
+| Poisson rigidity: positive self-dual with unit gap ⇔ comb; unit gap sharp; one-sided gap ⇒ density only | `tentSelfDual_iff_eq_smul_diracComb`, `exists_tentSelfDual_not_comb`, `measure_Icc_le_of_poissonPair` | proved |
+| Integer PD functions are sign characters; isolation forces δ₀ ⇔ no 2-torsion | `intValued_posDef_iff_signCharacter`, `isolation_forces_dirac_iff` | proved |
+| Fibre barrier 2cos(π/(K+2)); independent channels add nothing | `multiFrequency_purchase_le_fibre_fejer`, `independentChannel_purchase_le_fejer`, `twoChannel_joint_barrier_attained` | proved |
+| Quantum budget: admissible ⇔ m ≤ b(η); b ≥ 1 (≥ 2) at η = ½ once L ≥ 2 (≥ 8) | `admissible_iff_le_quantumBudget`, `fejer_quantumBudget_half` | proved |
+| Herglotz–Bochner on ℤ^ι and on ℚ_{>0} (prime torus) | `isPosDefOnLattice_iff`, `isPosDefOnGroup_posUnits_iff` | proved |
+| Archimedean PD on ℚ_{>0} lives on the Kronecker line | `spectralMeasure_eq_map_archPoint` | proved |
+| Kronecker decomposition f = f_arch + f_null, unique, f_arch maximal | `kronecker_decomposition`, `kronecker_decomposition_unique`, `archimedean_le_archPart` | proved |
+| Positive duality of the explicit formula | `positive_duality_of_the_explicit_formula` | prime side proved; zero side ⇔ RH |
+| Curves: RH ⇔ τ PD on ℤ ⇔ |τ| ≤ 2g ⇔ Hasse–Weil ⇔ Hodge index; golden datum fails | `curve_rh_tfae`, `not_isEvenPosDef_goldenDatum_traceSeq` | proved |
+| Two-prime orbit: RH ⇔ twoPrimeCorr PD on ℤ² ⇔ torus measure | `riemannHypothesis_iff_exists_torusMeasure` | receiver |
+| Restriction–induction; RH ⇔ ratCorr PD ⇔ affine PD extension | `exists_isPosDefOnGroup_extension_iff`, `riemannHypothesis_iff_exists_affine_posDef` | proved / receiver |
+| Integer successor forces Hecke weight nd|φ(d_u)|² ≤ 1, attained by adelic Haar | `integer_successor_hecke_weight` | proved |
+| Hecke state PD ⇔ s ≥ ½; spectrum Haar-AC ⇔ s > ½ (Kakutani wall) | `isPosDefOnGroup_heckeState_iff`, `heckeState_kakutani_wall` | proved |
+| Bost–Connes temperature β forces exponent β/2 | `bc_successor_hecke_exponent` | proved |
+| Hecke extremals = Haar twisted by unitary characters of ℚ^× | `heckeExtremal_iff` | proved |
+| Mautner: ℤ-periodic successor + dilation continuous at 1 ⇒ constant successor | `translation_eq_of_continuousAt_dilation` | proved |
+| Integer successor forces Kronecker-null dilation spectrum; dominates no archimedean PD | `integer_successor_kronecker_null`, `eq_zero_of_archimedean_le_integer_successor` | proved |
+| Successor = blind constant + successor of the continuous dilation part | `successor_eq_blind_add_continuous`, `norm_successor_sub_le_nonatomic` | proved |
+| Atomic dilation spectrum ⇒ blind successor; extensions = atomic box | `successor_blind_of_atomic`, `hasSum_affine_of_atomic`, `isPosDefOnGroup_boxExtension` | proved |
+| Weil's correlation: extensions ⇒ RH and are exactly the box Π_γ[0, w_γ] | `weil_successor_blind`, `weil_extension_classification`, `weil_extension_exists` | proved |
+| Nonzero absolutely continuous dilation part ⇒ visible (nonconstant) successor | `exists_nonblind_affine_extension_of_ac_part_ne_zero` | proved |
+| Archimedean dilation part ⇒ successor continuous for the real topology | `tendsto_successor_of_continuousAt_dilation` | proved |
+| Blind ideal closed (natural topology); closed in critical-jet topology ⇔ RH | `isClosed_meyerTraceBoundedIdeal`, `isClosed_criticalJet_iff` | proved |
+| Spectral synthesis closure(E_k ⊔ R) = I_k; critical jets dense in source ⇔ RH | `closure_orderJetSpan_sup_poissonBoundary`, `closure_criticalJetSpan_sup_poissonBoundary_eq_univ_iff` | proved |
+| Coupled positivity ⇒ isotropy at off-line pairs; one channel ⇒ half-blind | `coupled_isotropy`, `positive_ideal_halfBlind` | proved |
+| Left-blind ideal is positive, strictly larger than the blind ideal unless RH | `meyerSourceTrace_nonneg_of_mem_leftBlindIdeal`, `meyerTraceBoundedIdeal_lt_leftBlindIdeal` | proved |
 
-**Foundations from siblings**: boundary forcing and capacity (MPG `boundary_forcing_law`, `total_zero_mass_le`); completed-system
-capacity, gauge collapse, pole-order-one rigidity (SBWF `collective_half_pole_interior_forcing`,
-`simple_pole_nonneg_laplace_refund_rigidity`); inserted charge and index–pole conservation (RHTower
-`lambdaPositive_refunded_complex_stray`, `indexIncrement_eq`, `absolute_inequality_fails`); maximality (ACS `isGreatest_meyerSharpPositiveIdeal`).
+## 6. Tools
 
----
+**Developed**
+- Positive-measure theta/Laplace/Fejér machinery, with and without critical-line defect (`measureSeries_eq_of_theta_defect`).
+- Phragmén–Lindelöf strip decay from finite order (`norm_le_of_edges_of_finiteOrder`).
+- Group PD toolkit: induction, bi-invariance, Hermitian symmetry, limits, Jordan-totient multipliers.
+- Herglotz–Bochner on ℤ^ι and the prime torus; Kronecker-line embedding; Kronecker decomposition.
+- GNS spaces for any group (`GNSHilbert`, `inner_gnsCyclic_gnsRep`), weak measurability without separability
+  (`measurable_inner_gnsRep`), real-scale extension of the dilation orbit (`exists_real_dilation_orbit`).
+- Affine spectral calculus: eigenvector blindness, frequency non-mixing, atom projections, regularity transfer.
+- Arithmetic states on Aff(ℚ): adelic Haar, Hecke, Bost–Connes, twisted Haar.
+- Meyer-source synthesis via canonical-product tails; coupled trace and isotropy pairing.
+- Rounding/tent counting for near-integer Beurling systems.
 
-## 6. Traps
+**To build**
+- A positive structure whose integer counts intrinsic (zero-set) charge rather than inserted or pole charge.
+- Successor visibility for singular continuous dilation spectra.
+- Coupled scale positivity on carriers without point stability (Rankin–Selberg-type sources).
+- Bochner–Schwartz theory for the Weil distribution beyond characteristic functions.
+- Quantitative stability with signed or non-integrable defects.
 
-| Trap | Truth |
+## 7. Open questions
+
+1. A third forcing instance inside the strip: exact identity on the Weil pair with a quantization step bounding
+   intrinsic off-line charge.
+2. Are singular continuous archimedean dilation spectra seen by some successor? (AC parts are, atoms are not.)
+3. Which Kronecker-null spectra arise from arithmetic successors beyond Hecke and Bost–Connes; classification of
+   successor-compatible dilation parts.
+4. Sharp height in the approximate-FE prime theorem (currently ≍ ‖g‖₁^{−1/2}); higher degree analogues.
+5. Positive crystalline measures beyond degree one.
+6. Coupled positivity: which coupling matrices K_ρ arise from arithmetic operators, and whether any carrier
+   forces K-isotropy to become blindness.
+7. A self-dual base over Spec ℤ with nonnegative tensor-power traces (the 𝔽_q calibration has one).
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| FE + positivity has many models | At degree one on Beurling systems only $\zeta$ |
-| Hamburger uses only the FE | Remainder holomorphic on the strip with quadratic decay is part of the statement |
-| The FE is a self-duality of the Weil pair | It is of the integer measure; on the Weil pair positivity and gap sit on the same side |
-| Any gap gives a lattice | Only the unit gap |
-| Coupling heights/primes buys more per zero | Fibre barrier; completed systems give boundary capacity only |
-| Rank-two positivity is progress | The two-prime Bochner problem is a receiver |
+| FE + positivity has many models | At degree one, discrete Beurling systems: only ζ |
+| Hamburger needs strip decay as a hypothesis | Finite order suffices; decay follows by Phragmén–Lindelöf |
+| Signed self-dual coefficients give rigidity | Only one linear constraint; positivity is essential |
+| The FE is a self-duality of the Weil pair | On the Weil pair gap and positivity sit on the prime side: density only |
+| Any gap gives a lattice | Only the unit gap; dual lattice pairs refute smaller gaps |
+| Coupling channels buys more per zero | Fibre barrier; independent channels split |
+| Rank-two positivity is progress | Two-prime Bochner problem is a receiver |
 | A non-commutative carrier adds positivity | Affine positivity is induced from dilations |
-| Prescribing the integer successor constrains Weil's correlation | It excludes it (Hecke decay, Kronecker-null spectra) |
+| Prescribing the integer successor constrains Weil's correlation | It excludes it: Hecke decay, Kronecker-null spectrum, wrong regularity class |
+| A Weil extension carries successor information | Only one blind parameter per critical zero |
 | Closedness of the blind ideal is a critical property | Critical data make it dense |
-| Pole order bounds off-line zeros | Counts inserted charge exactly, intrinsic not at all |
-| A complex off-line quartet needs pole order three | Two suffices after one refund |
-| A larger amplification gives a rate | Every tested amplification is depth-homogeneous |
-| Integer point counts force RH over $\mathbb F_q$ | Golden datum |
+| Positivity on a convolution ideal forces blindness | Forces isotropy/half-blindness; left-blind ideal is positive |
+| Integer point counts force RH over 𝔽_q | Golden datum |
+| The adelic Haar state is "near" Weil's correlation | Its spectrum is Haar-singular and Kronecker-null |
 
----
+## 9. Context
 
-## 7. Open problems
+**Uses** (distinct modules imported)
 
-1. **The third forcing instance in the strip**: an exact identity on the Weil pair with a quantization step bounding
-   **intrinsic** charge. Candidate integers: torsion orders, finite affine quotients, Hecke-cycle lattices, the Hodge
-   defect with its pole-plane budget.
-2. **Oscillatory capacity**: a positive structure measuring oscillatory payment of $\zeta$'s own zeros, with the
-   conservation identity as its relative case.
-3. **Coupled scale positivity** beyond point-stable carriers (Rankin–Selberg sources, cones without convolution
-   closure); for point-stable carriers positivity forces isotropy, not vanishing.
-4. **A base over $\operatorname{Spec}\mathbb Z$**: a self-dual system with nonnegative even tensor powers and computable pole part.
-   Multiplicative-only constructions are expected to fail on over-regular Beurling countermodels.
-5. **Depth homogeneity as a law** for each amplification class, with positive survivors.
-6. **Successor coordinates**: classify dilation parts compatible with $1_{\mathbb Z}$; AC parts are seen, atoms are not —
-   whether singular continuous dilation spectra are seen.
-7. **Rank-$r$ realization** of PD profiles by integral (Beurling) systems.
-8. **Positive crystalline measures beyond degree one**; equality case of completed capacity (even $\kappa$).
-9. **Spectral readings of limits**: escape states of cofactor modules as horizon Grams of
-   $G(s)=\zeta(s)(1/\zeta(s+\varepsilon)-1/\zeta(1+\varepsilon))/s$.
-10. **Signed additive prime correlations** at the square-root threshold (TTPC).
+| Programme | # | What |
+|---|---|---|
+| HTGeometry | 13 | Hamburger FE/theta defect, Bochner on ℝ, infinite-torus Fourier–Lévy, prime-Poisson screen, tail canonical products, AC autocorrelations |
+| RHTower | 10 | Weil full cone (spectral measure, exposed point, sign rigidity), Deninger–Meyer source, Xi canonical product, Hamburger stability, Beurling systems |
+| ArithmeticCastelnuovoSeveri | 5 | maximal blind ideal, Meyer radical, lambda ring, Frobenius span Hodge index, fake curves |
+| MultiplicativePositivityGeometry | 4 | growth law, PD functions, zeta boundary divisor, arithmetic realization |
+| ArithmeticOrientationGeometry | 1 | spline orbit decides the critical line |
 
-## 8. Tools to build
+**Used by**
 
-Oscillatory capacity calculus (dominated vs oscillatory payment kept apart); coupled scale positivity with matching
-maximality theorems; base constructions over $\operatorname{Spec}\mathbb Z$; spectral readings of limits; Bochner–Schwartz for the Weil
-distribution beyond characteristic functions.
+| Programme | # | What |
+|---|---|---|
+| AdelicKreinGeometry | 5 | Hecke/Haar states, Mautner, Kakutani wall |
+| ArithmeticCastelnuovoSeveri | 1 | measure Hamburger rigidity |
+| StripBochnerWeilForcing | 1 | rigidity from the bare FE |
+| MultiplicativePositivityGeometry | 1 | sign characters |
+| BiarithmeticGeometry | 1 | Mautner phenomenon |
+| ArithmeticCorrelationGeometry | 1 | Herglotz–Bochner on ℚ_{>0} |
+| MainTheorems | 1 | umbrella |
 
-## 9. Contribution standard
+| Neighbour | Relation |
+|---|---|
+| MultiplicativePositivityGeometry | height-side positivity; APD sharpens its barrier per fibre and quantizes its budget |
+| ArithmeticCastelnuovoSeveri | owns the Meyer source and maximal blind ideal; APD adds topology, synthesis, coupled isotropy |
+| ArithmeticOrientationGeometry | scale-side orientation; APD turns the two-prime orbit into a torus Bochner problem |
+| StripBochnerWeilForcing | strip-side completed systems; consumes APD's FE rigidity |
+| AdelicKreinGeometry | continues the affine/Hecke states into Krein index theory |
+| BiarithmeticGeometry, SignedSuccessorArithmetic | successor and affine action; APD supplies Mautner rigidity |
 
-Unconditional; name positive side, spectral side, gap and integer; say whether the integer counts inserted or
-intrinsic charge and how its depth gain scales with arithmetic cost; state an identity, classification, sharp
-barrier, capacity or rigidity law (not a new RH equivalent); report on the battery — curves (reproduce Weil), golden
-datum (fail), Beurling countermodels, pole-order-two strays and refunded quartets (separate from $\zeta$), pole-order-one
-rigidity (reproduce); record the positive survivor of every no-go. Positivity on one side is known, on the other is
-the theorem; rigidity before estimates; calibrate over $\mathbb F_q$.
+## 10. Big picture
+
+APD shows that positivity is a strong forcing engine exactly where it is paired with self-duality on the opposite
+side and an integer: it recovers the integers, the primes and ζ itself from Riemann's functional equation, and does so
+stably. But on Weil's own pair the gap and the positivity sit on the same (prime) side, so the same engine produces
+only density statements and receivers. Every positive carrier tried — lattices, the prime torus, the affine group,
+convolution ideals, coupled channels — either reduces to the dilation Gram (adding nothing) or, when given genuine
+arithmetic structure, becomes incompatible with Weil's correlation.
+
+The affine programme makes this precise: arithmetic successors live on the Kronecker-null, Haar-singular part of the
+prime torus, Weil's correlation lives on one archimedean line, and the two never meet. The critical line appears as
+a positivity threshold (Hecke s ≥ ½, Bost–Connes β = 1, Kakutani wall) of arithmetic states, not of Weil's
+correlation. For the RH research this says: positivity of a carrier is not the missing ingredient; the missing
+ingredient is a quantized identity that counts the zero set's own charge, and none of the positive structures built
+here can supply it.

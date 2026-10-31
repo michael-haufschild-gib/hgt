@@ -6,9 +6,8 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheVirialLawsOfAFiniteConfig
 /-!
 # Quantization turns windows into points
 
-Averages, proportions and almost-every statements place most zeros near the line and exclude none:
-excluding an individual zero needs control below the zero spacing. A quantized quantity removes
-that obstruction, because a window cannot carry a fraction of a quantum.
+A quantity that every off-line zero changes by at least a fixed quantum turns a bound on a window
+into a statement about its points: a window cannot carry a fraction of a quantum.
 
 * **The energy of a window counts its off-line zeros** (`card_offLine_le_windowEnergy`): for the
   finite window `W(T, H)` of zeros with `|γ − T| ≤ H`, the number of off-line zeros in the window

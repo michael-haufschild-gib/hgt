@@ -18,8 +18,7 @@ Since `ρ` and `1 − ρ` are both zeros, the Dirichlet factors are exactly `−
   The zeros see the pole mode through the boundary of its horizon and through nothing else.
 * **The Li charge** (`emPole_mul_emPole_one_sub`, `horizonBoundary_mul_one_sub`): the pole
   parts multiply to `N/(ρ(1−ρ))` exactly, so the boundary product is
-  `N/(ρ(1−ρ))` plus terms carrying the Euler–Maclaurin tail, whose Fourier expansion is the
-  Poisson dual of the successor shells.
+  `N/(ρ(1−ρ))` plus terms carrying the Euler–Maclaurin tail.
 
 No overlap condition enters: the identity holds at every overlap ratio `c = Nw`.
 -/

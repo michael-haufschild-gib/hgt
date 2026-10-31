@@ -1,237 +1,174 @@
-# Arithmetic Compensation Theory (ACCC)
+# Arithmetic Compensation Theory (ACompT)
 
 Namespace `GaloisForLFunctions.ArithmeticCompensationTheory`; umbrella
-`ArithmeticCompensationTheory.lean`.
+`ArithmeticCompensationTheory.lean`; 30 modules.
 
-**Question.** When several exact arithmetic descriptions belong to the same source, what
-signed critical-norm estimates do their compatibility conditions force that none of the
-descriptions forces separately?
+## 1. Motivation
 
-ACCC (*arithmetic compatibility and compensated coercivity*) studies cancellation between
-descriptions of one source. Separately divergent pieces can cancel to leading order while their sum
-still exceeds the critical norm. The task: identify the coherent part, retain its mixed terms, and
-estimate the absolute remainder with constants independent of the cutoff. **Relative cancellation
-is the starting point, not admission.**
+Several exact descriptions of one arithmetic source can each diverge while their sum stays smaller.
+ACompT asks what cancellation between descriptions of the **same** source (prime atoms vs polar
+density, large-prime sector vs complement, two cutoffs, two origins, a receiver and its corrector)
+forces that no single description forces, and prices every such cancellation as a rate. Relative
+cancellation is the starting point; admission (a horizon-free absolute bound) is the target.
 
----
+## 2. Objects
 
-## 1. Place in the research
+| Object | Lean | Meaning |
+|---|---|---|
+| Prime comb | `combWeight`, `combPrimes`, `combMass` | $w_p=\sqrt p\log p/(p-1)$, $p\le e^{2r}$, $S_r=\sum w_p$ |
+| Comb energies | `combEnergy`, `combCross`, `combDiagonal`, `combCharge` | $\sum w_pw_qA_F(\log q-\log p)$; off-diagonal; $\sum w_p^2$; $\sum w_pA_F(\log p)$ |
+| Slowly varying / concentrated tests | `rescaledTest`, `concentratedTest`, `oddBump`, `unitOddBump` | $r^{-1/2}f(x/r)$; $\sqrt\lambda\varphi(\lambda x)$ |
+| Depth, horizon law | `combDepth`, `combTail`, `horizonDensity`, `horizonIntegral` | $u_p=2r-\log p$; $D_r(u)=S_{r-u/2}/S_r$; $\tfrac12e^{-u/2}du$ |
+| Horizon energy | `horizonEnergy`, `horizonAutoCorr`, `crossCorr` | $J(F)=\iint A_F(u-v)\,d\mu\,d\mu=\int_{u>0}A_F\,d\mu$ |
+| Prime–polar residual | `chebyshevTwoPoleDefect`, `primePolarCutoffSymbol` | $E(s)=e^s+s-1-\psi(e^s)$ |
+| Full ledger | `archimedeanLedgerBudget`, `reflectedPrimePolarCost`, `SobolevGradedIncidenceAllocation` | `fullZeroForm` = budget − cost |
+| Test cones | `BoundedDirichletCone`, `SubEnvelopeDirichletCone`, `OddApertureRegularityClass` | $\int F'^2\le\Lambda^2\int F^2$ etc. |
+| Curve model | `curvePointCount`, `curveComb`, `curveCombEnergy`, `curveHorizonEnergy` | $N(n)=q^n+1-\Re\sum\alpha_i^n$ |
+| Curve receiver | `curveZ`, `curveDampedZinv`, `curveCentredPrefix`, `curveReceiverEnergy`, `ZeroChainCondition` | power-series model of the damped centred source |
+| Compensation coordinates | `compensationAmplitude`, `transverseRemainder`, `gramAmplitude`, `gramTransverse`, `compensationDefect` | $\alpha=-\langle L,C\rangle/\|L\|^2$, $R=C+\alpha L$ |
+| Two-scale data | `twoScaleCompleteShiftEnergy`, `pmConnectionEnergy`, `pmTransverseTransitionEnergy` | cutoff $P^2$ vs $Q^2$ |
+| Pronic norm, origin | `pronicEnergy`, `pronicShellEnergy`, `quarterPower` | $\sum a(n)^2/(n(n+1))$ |
+| Blow-up profile | `normalizedReceiverProfile`, `properUnitDilation`, `normalizedTangentProfile`, `cofactorAliasingWave` | $u_{\varepsilon,T}=A_\varepsilon/\sqrt{E_T}$ |
+| Budgets | `PositivePartContinuation`, `AdaptedEnergy`, `lacunaryEnergy` | continuation demands |
+| Corrector | `bezoutUnitCorrector`, `bezoutCorrectedEnergy`, `compositeCorrectedEnergy`, `bezoutCorrectedRelativeLoss` | $C_T=\sum(1-2A_\varepsilon)/(n(n+1))$ |
+| Aperture ceiling | `apertureCeilingExponent` | $\tfrac{11}2A-\pi e^{2(A-2)}$ |
+| Prime blocks | `flatWindowRow`, `omittedClassWeight`, `omittedClassCorrector`, `packetOmittedCorrector`, `kloostermanPacket` | centred block and its sieve correctors |
 
-Governing example: the actual centred receiver
-$A_\varepsilon(n)=\sum_{d\le n}\mu(d)d^{-\varepsilon}\lfloor n/d\rfloor-n/\zeta(1+\varepsilon)$, $E_T(\varepsilon)=\sum_{n\le T}|A_\varepsilon(n)|^2/(n(n+1))$;
-admission $\exists B_\varepsilon\forall T$; RH = cofinal admission (`RHTower.riemannHypothesis_iff_cofinal_budget`);
-accumulation infimum $\Theta-\tfrac12$.
+## 3. Language
 
-ACCC is the **compensation layer**: subtract the coherent piece before any absolute value; keep
-mixed Gram terms, poles, even parts and boundary terms attached until used; pay every change of norm,
-cutoff, gauge, scale or origin with an explicit transfer term. Progress is a **rate** (residual
-exponent, log saving, aperture decay, resolution threshold); identities and criteria are structure.
-
-| Programme | Interface |
-|---|---|
-| ArithmeticIncidencePositivity | Cross-prime comb aggregate: ACCC proves it is $\sim4e^{2r}$ (AIP's polynomial target fails); comb = translation/resolvent |
-| ArithmeticContinuationAndCriticalEnergy | Owns admission and averaged budgets; ACCC adds positive-part failure, core debt limit, adverse first cell, adapted energies |
-| ArithmeticCriticalityTheory | Gaussian ceiling of $\mu(A)$ read as a forced loss rate |
-| BezoutValuationIncidence | Centred prime row: ACCC widens the range to $Q\le P^{30/17-\delta}$ and the balanced regime |
-| SquareRootThreshold | Graded floor dictionary used as scoring rule |
-| BiScaleUncertainty | Schur residual algebra; selectivity test models |
-| TransHorizonIncidenceMechanics, ScaleSignedIncidenceCriticality | Recovery needs stability; origin loss |
-| ArithmeticDefectRigidity | Next step after the blow-up profile: paid power subtraction, antipodal cofactor |
-| ArithmeticOrientationTheory | Floors must respect doubly exponential decay; correctors are readings until built from source terms |
-| Others (APT, ACS, SAEI) | Weil–Markov–pole target; effectivity; signed incidence kernel |
-
-Feeds AIP, MC, RW, ACT, BVI; supplies no source-derived zero-rate bound. `RHTower` supplies PNT via
-Abel summation, the $17/30$ short-window theorem and module `RHTower/PMRamanujanComplementaryCancellation.lean`.
-
----
-
-## 2. Why
-
-The walls are failures of particular estimates, each a missing **rate**. Two facts make compensation
-the right object: (1) the actual source already realizes leading-order cancellation of divergent
-pieces — the large-prime sector $L$ and its complement $C$ of the damped Möbius–Ramanujan expansion
-have $\|C\|^2/\|L\|^2\to1$, $\langle L,C\rangle/\|L\|^2\to-1$ — yet the remainder can still grow with a power;
-(2) a majorant can be exponentially larger than the signed quantity: raw prime-comb energy is $\sim4e^{2r}$
-while the first-power charge is $o(e^r)$ — Cauchy–Schwarz discarded the translation geometry that kills
-the charge.
-
----
-
-## 3. Objects and language
-
-**Prime comb** at aperture $r$: $C_rF=\sum_{p\le e^{2r}}w_pF(\cdot+\log p)$, $w_p=\sqrt p\log p/(p-1)$; mass $S_r$,
-energy $E_r(F)=\sum w_pw_qA_F(\log q-\log p)$, cross aggregate, diagonal, first-power charge
-(`combWeight`, `combMass`, `combEnergy`, `combCross`, `combDiagonal`, `combCharge`). Depth
-$u_p=2r-\log p$; comb tail $D_r(u)=S_{r-u/2}/S_r$; **horizon law** density $\frac12e^{-u/2}$; **horizon energy**
-$J(F)=\iint A_F(u-v)\frac12e^{-u/2}\frac12e^{-v/2}$ (`horizonEnergy`); slowly varying tests $F_r=r^{-1/2}f(x/r)$.
-
-**Compensation coordinates.** Amplitude $\alpha=-\langle L,C\rangle/\|L\|^2$, transverse remainder $R=C+\alpha L$
-(`compensationAmplitude`, `transverseRemainder`; Gram versions `gramAmplitude`, `gramTransverse`).
-
-**Budgets.** Signed averaged (`AveragedContinuation`), positive-part (`PositivePartContinuation`),
-pointwise (`LinearContinuation`), adapted energy (`AdaptedEnergy`: comparable to $1+E_T$ with
-horizon-free constants and signed log-loss budget).
-
-**Words.** Coherent subtraction; signed pairing; anchored restriction (actual source, not a class);
-refinement (scale change with boundary terms); compensated transport; defect extraction.
-**Four qualifiers** for any "bounded correction": which norm, uniform in which cutoff, on which
-source class, with which damping/aperture dependence.
-
----
+- **Coherent subtraction**: remove the part of one description that matches another before any absolute value.
+- **Horizon**: the top scale $e^{2r}$ (comb) or $T$ (receiver); **depth** = distance below it.
+- **Admitted**: horizon-free bound on the pronic energy; **blow-up**: energy $\to\infty$.
+- **dVP rate**: error $\exp(-c\sqrt r)$ from PNT with de la Vallée Poussin; a power saving would be a zero-free strip.
+- **Four qualifiers** of any "bounded correction": norm, uniformity in cutoff, source class, damping/aperture dependence.
 
 ## 4. Mechanisms
 
-### The prime comb
-1. **Mass** $S_r\sim2e^r$ (PNT via Abel summation).
-2. **Horizon concentration:** primes below $e^{(2-\delta)r}$ carry vanishing mass; rescaled shifts concentrate at 2.
-3. **Universal bound** $E_r\le S_r^2A_F(0)$.
-4. **Sharp exponential rate:** on slowly varying tests $E_r\sim4e^{2r}A_f(0)$ and the cross aggregate too
-   (diagonal $O(r^3)$).
-5. **Translation survivor:** $(\sqrt r/S_r)(C_rF_r)(r\cdot)\to f(\cdot+2)$.
-6. **No adverse charge:** $S_r^{-1}\sum w_pA_{F_r}(\log p)\to A_f(2)=0$ for $f$ in $[-1,1]$.
-7. **Compensated ledger residual.** Prime atoms vs polar density cancel up to $E(s)$ before squaring;
-   residuals carry the dlVP saving; $\hat Z=\text{archimedean budget}-\text{reflectedPrimePolarCost}$
-   (budget $\ge-\frac{27}5\int F^2$); unconditional floor $-Ke^{r-c\sqrt r}(\frac14\int F^2+\int F'^2)$, pure $L^2$ on the
-   sub-envelope Dirichlet cone; **width $\le\sigma_0$ ⇔ cost $\le Ce^{2\sigma r}(\frac14\int F^2+\int F'^2)$ for all $\sigma>\sigma_0$**;
-   exponent $<\tfrac12$ ⇔ $\Theta<1$; every positive exponent ⇔ RH.
-   The literal all-parity cutoff has uniform bounded-frequency cancellation and a common
-   all-frequency bound (`ThePrimePolarCutoffHasUniformFrequencyBounds`). The actual Gamma
-   symbol then gives $|P_{\rm prime}(f)-P_{\rm pole}(f)|\le
-   \varepsilon e^R(\Gamma(f)+\int f^2)$ for all sufficiently large $R$, uniformly over
-   compact BV profiles supported in $[-R,R]$ (`ArithmeticIndexDescent.TheFullPrimePolarSourceCancelsInGammaNorm`).
-   Every prime power and both pole moments remain; no derivative norm is required.
-   The remaining $e^R$ factor prevents a uniform critical-norm or sign conclusion.
-8. **Depth law** $D_r(u)\to e^{-u/2}$ uniformly; depth statistics → horizon law uniformly over translates.
-9. **Comb resolvent law:** $E_r(F)\sim4J(F)e^{2r}$ for every continuous compact $F$, $S_r^{-1}C_r\approx\tau_{2r}\Psi$,
-   $\Psi$ = resolvent of $1+2\partial$, $J(F)=\|\Psi F\|^2>0$ (pointwise positive, not uniformly coercive).
-10. **dlVP rate:** $|S_r-2e^r|\le Ke^{r-c\sqrt r}$; resolvent law at rate $e^{-c\sqrt r}$ with universal constants.
-11. **Resolvent energy identity** $J(F)+4J(F')=A_F(0)$; sandwich $A_F(0)-4\int F'^2\le J\le A_F(0)$; second order
-    $J=A_F(0)-4A_{F'}(0)+16J(F'')$; quartic second correction; fixed-aperture coercivity on odd regularity
-    classes $1-4(1-e^{-R})\Lambda^2$; without derivative bounds infimum 0.
-12. **Coercivity: integers vs curves.** Concentrated tests defeat the integer comb ($J(F_\lambda)=O(1/\lambda)$); a
-    curve comb (lattice $\mathbb N\log q$, geometric weights) is uniformly coercive, $J_q\ge((1-q^{-1/2})^2/12)\int F^2$.
-13. **Curve models.** Horizon law geometric $q^{-k/2}$ with error the zero-set width; curve receiver
-    admitted above the zero width; annihilator filters isolate each Frobenius mode (no cancellation
-    across blocks of length $m+3$); **cofinal admission ⇔ Weil bound** (`weil_iff_cofinal_curveReceiverEnergy`).
+**A. The prime comb (integers).**
+1. $S_r\sim2e^r$; primes below $e^{(2-\delta)r}$ carry vanishing mass; rescaled shifts concentrate at the horizon.
+2. Universal $E_r(F)\le S_r^2A_F(0)$, attained asymptotically on slowly varying tests: $E_r\sim4e^{2r}A_f(0)$; diagonal $O(r^3)$, so the cross aggregate is also $\sim4e^{2r}$.
+3. Normalized comb is a **translation** $f(\cdot+2)$ in $L^2$; first-power charge $=o(S_r)$ for $f$ in $[-1,1]$: Cauchy–Schwarz discards exactly the translation geometry.
+4. Depth law $D_r(u)\to e^{-u/2}$ uniformly; **resolvent law** $E_r(F)/S_r^2\to J(F)$ for every continuous compact $F$: the comb acts as $S_r\cdot\tau_{\text{horizon}}\circ(1+2\partial)^{-1}$. $0<J(F)\le A_F(0)$ for $F\ne0$; probe bound $G(v)^2\le A_F(0)J(F)$.
+5. All of it at the dVP rate with universal constants: $|S_r-2e^r|\le Ke^{r-c\sqrt r}$; $|E_r/S_r^2-J|\le K(\Lambda\|F\|_1+A_F(0))e^{-c\sqrt r}$.
+6. $J(F)=\int_{u>0}A_F\,d\mu$; $A(0)-A(s)=\tfrac12\int(F-F(\cdot+s))^2$; horizon moments $2^kk!$. Translation deficit is exactly inverse-square: $r^2(A_f(0)-E_r/S_r^2)\to4\|f'\|^2$.
+7. **Resolvent energy identity** $J(F)+4J(F')=A_F(0)$ on $C^1_c$; hence $\int F^2-4\int F'^2\le J\le\int F^2$ and $J=A_F(0)-4A_{F'}(0)+16J(F'')$; second correction exactly $-16\|f''\|^2/r^4$, no $r^{-3}$ term; prime error reaches neither.
+8. Coercivity: $J(G)\le(1-e^{-R})\int G^2$ for support $[-R,R]$; on odd tests with $\int F'^2\le\Lambda^2\int F^2$, $J\ge(1-4\Lambda^2)\int F^2$, constant 4 optimal. Without derivative control (even at fixed aperture, odd, smooth) $\inf J/\int F^2=0$: narrow bumps defeat the integer comb.
 
-### Compensation coordinates
-14. **Pythagorean law** $\|L+C\|^2=(1-\alpha)^2\|L\|^2+\|R\|^2$, $\langle L,R\rangle=0$.
-15. **Actual instance and rate.** Large-prime sector at cutoff $P^2$: $\alpha_P\to1$, $\|R_P\|^2/\|L_P\|^2\to0$, defect
-    $O(\log^{-m}P)$ for every $m$; complete energy still $O(P^{1-2\varepsilon}/\log^mP)$ (growing). Dyadic summability;
-    moving projection with exact connection identity; **two-scale cutoff shift saves a power**
-    $O(P^{1-3\varepsilon})$ (the divisor remainder cancels on the common head).
+**B. The prime–polar ledger.**
+9. Prime atoms and polar density cancel before squaring: $\sum\Lambda(n)h(\log n)-\int(e^s+1)h=\int E(s)h'(s)$; $|E(s)|e^{-\theta s}\le Ke^{(1-\theta)S-c\sqrt S}$; the saving over $e^{S/2}$ is exactly PNT's.
+10. Literal cutoff symbol: linear frequency loss uniformly, frequency-free bound $17e^{S/2}$ from positivity of each measure.
+11. Full ledger `fullZeroForm` = archimedean budget ($\ge-\tfrac{27}5\int F^2$) − compensated cost; cost = Chebyshev-defect integral (first order) = critical-scale-prefix integral (second order). Unconditional floor $\ge-Ke^{r-c\sqrt r}(\tfrac14\int F^2+\int F'^2)$, pure $L^2$ on the sub-envelope cone.
+12. Width ladder: $\sigma>$ width ⇒ cost $\le K_\sigma e^{2\sigma r}(\tfrac14\int F^2+\int F'^2)$; converse via difference-lag tests (uniformly in a bounded Dirichlet cone). Exponent of the cost **is** the width.
 
-### Blow-up profiles, origins
-16. **Blow-up escapes to the horizon.** Trivial growth $E_N\le D(1+N^{1-2\varepsilon})$ ⇒ admitted, or energy below
-    $E_T^{\theta/(1-2\varepsilon)}$ is a vanishing fraction. Normalized profile $u=A_\varepsilon/\sqrt{E_T}$: unit pronic energy,
-    horizon-shell concentration, two-sided dilation sandwich, normalized inversion law, self-improving
-    identity, Möbius-factored tangent; drifted, majorant, aliasing and oscillating-probe profiles embed.
-    (ArithmeticDefectRigidity continues: power subtraction ⇒ antipodal renormalized cofactor.)
-17. **Change of origin** by $k$ costs exactly $(k+1)(k+2)/2$; admission invariant; a **drifting** origin is
-    priced by the tail beyond it; uniform drift tolerance iff bounded drift.
+**C. Curve models (calibration; eigenvalue bound is a model hypothesis).**
+13. Curve comb: geometric horizon law $q^{-k/2}$ with error $O(gDq^{-D/2})$, growing like $\lambda^D$ off the Weil circle; shift by bounded $\tau_{\log q}$ inverted by geometric weights ⇒ **uniformly coercive** $\|C_DF\|^2\ge(q^D/12)\int F^2$; discrete resolvent law, $J_q\ge((1-q^{-1/2})^2/12)\int F^2$.
+14. Curve receiver: centring removes the pole at $u=1/q$ exactly; admitted above zero width ($\lambda<q^\varepsilon$), refuted below. Annihilator filter of degree $m+2$ isolates each Frobenius mode at degrees $\ge2m+2$: oscillating modes cannot cancel. Exact law: admitted at $\varepsilon$ ⇔ **zero-chain condition** $\mathrm{mult}(a)\le\mathrm{mult}(q^{-\varepsilon}a)+[a=q]$ for $|a|\ge\sqrt q\,q^\varepsilon$ (curve form of "admitted damping translates zeros"). Isolated admitted dampings may sit below the width (chain pairs); accumulating ones read it; cofinal admission ⇔ Weil bound.
 
-### Budgets and floors
-18. **Signed budget strictly weaker than positive part** (lacunary $\sum2^{-k}(2+\sin16^k\varepsilon)$).
-19. **Core debt on positive intervals** $=\log\zeta(1+\eta)-\log\zeta(1+\varepsilon)$; first cell has adverse work $W_1\to-\tfrac12$.
-20. **Aperture floors decay doubly exponentially:** $B(A)\ge\pi e^{2(A-2)}-\frac{11}2A+\log(m_0/K)$; half-summable and
-    harmonic transports impossible.
-21. **Adapted energy = admission** (`adaptedEnergy_iff_admits`); **Bézout unit-boundary corrector**
-    $\sum(1-2A_\varepsilon)/(n(n+1))$ completes the square to $1+$ dual residual, is $(1/3,3)$-comparable
-    unconditionally, removes the adverse first cell, has bounded derivative; composite correctors
-    within $\theta$ keep comparability and change log loss by $\le\log\frac{1+\theta}{1-\theta}$; boundary families give
-    strips; cofinal bounds ⇔ RH.
+**D. Compensation coordinates on the actual source.**
+15. Pythagorean law $\|L+C\|^2=(1-\alpha)^2\|L\|^2+\|R\|^2$: coordinates carry no information beyond the complete energy.
+16. Large-prime sector of the damped Möbius–Ramanujan expansion: $\alpha_P\to1$, defect $\le K_m/\log^mP$ for every $m$ (from all log-powers of Möbius harmonic savings); absolute energy still $O(P^{1-2\varepsilon}/\log^mP)$, growing. Amplitude has bounded (polynomially weighted) dyadic variation.
+17. Two cutoffs share the cutoff-independent divisor remainder: $S_Q-S_P$ cancels it exactly and saves a **power**, $O(P^{1-3\varepsilon})$; relative $O(P^{-\varepsilon}\log^2P)$; absolute $\to0$ for $\varepsilon>\tfrac13$. Moving-projection connection identity splits $R_Q-R_P$ into shift, sector step, and $(\alpha_Q-\alpha_P)L_P$.
 
-### Internal transfer
-22. **Huxley window at the Guth–Maynard exponent**: uniform $|\psi(x+h)-\psi(x)-h|\le\varepsilon h$ for $x^\alpha\le h\le x/2$,
-    $\alpha>17/30$ (tiling).
-23. **Centred prime row** on $P^{1+\delta}\le Q\le P^{30/17-\delta}$ and the balanced regime $P\le Q\le BP$; centring keeps
-    100% of the omitted-residue-class term, cancelled by `omittedClassCorrector`; a power saving in the
-    short-window mean square ⇔ crossing below half damping.
-24. **Multi-modulus Kloosterman dispersion.** Unitary Parseval equates the linear-phase and
-    Kloosterman energies of each reciprocity kernel; Farey separation across primes $\le Q_0$ makes the
-    packet $\sum_pa_pW_K(p,\cdot)$ a two-sided **quasi-isometry** on every window of length $K$ (error
-    $Q_0^2$): log-free dispersion, but also an unconditional $p^4$-order non-cancellation floor.
-    Prime pronic Gram bilinear forms get full square-root dispersion in both variables. CRT
-    orthogonality lets one packet corrector cancel the omitted-class bias at every $p\in S$ at once,
-    keeping the $17/30$ block-mass bound.
+**E. Receiver blow-up, origins, budgets.**
+18. Trivial growth $E_N\le D(1+N^{1-2\varepsilon})$ ⇒ admitted or **blow-up escapes to the horizon** (scales below $E_T^{\theta/(1-2\varepsilon)}$ carry $o(1)$). Normalized profile: unit energy, deep cofactors vanish, exact normalized inversion law $u+D^{\ge2}u=\rho_\varepsilon/\sqrt{E_T}\in[0,n/\sqrt{E_T}]$ (homogeneous in the limit), self-improving identity, Möbius-factored tangent. Escape families embed: drifted $n^{1/4}$, sign-blind majorant (violates the inversion sign), oscillating probes with exact spectral shares.
+19. Origin shift by $k$ costs exactly $(k+1)(k+2)/2$ (attained); admission invariant under finite shifts; a drifting origin is priced by the tail; uniform drift tolerance ⇔ bounded drift ($n^{1/4}$ defeats every unbounded drift).
+20. Signed budget strictly weaker than positive part (lacunary family); first-cell work $W_1\to-\tfrac12$; core debt on $[\eta,\varepsilon]$, $\eta>0$, converges to $\log\zeta(1+\eta)-\log\zeta(1+\varepsilon)$.
+21. Gaussian ceiling forces any positive aperture floor to decay doubly exponentially; no positive floor along unbounded apertures; half-summable and harmonic transports impossible.
+22. Adapted energy ⇔ admission (with admitted right end). Bézout corrector completes the square to $1+$ dual residual, is $(1/3,3)$-comparable unconditionally, removes the adverse first cell, has bounded derivative; composite correctors within $\theta$ cost $\log\frac{1+\theta}{1-\theta}$; families on $(a_0,c]$ give $\Theta\le\tfrac12+a_0$.
 
----
+**F. Prime blocks (transfers).**
+23. Guth–Maynard $17/30$ made uniform in window length by tiling; centred prime row estimate on $P^{1+\delta}\le Q\le P^{30/17-\delta}$.
+24. Centring $\Lambda$ by 1 kills block mass but keeps 100% of the omitted-residue-class term $-\pi^2(p^2-1)^2/(144p^2(p-1))$; the omitted-class corrector cancels it; short-window average controls block mass by Cauchy–Schwarz; balanced regime $P\le Q\le BP$ gets unconditional $o(1)$ savings over the large sieve.
+25. Kloosterman packets: dual Parseval (linear = Kloosterman energy); Montgomery–Vaughan two-sided quasi-isometry on every window; $p^4$-order non-cancellation floor; CRT lets one packet corrector cancel the omitted-class bias at all $p\in S$ simultaneously.
 
 ## 5. Pillar theorems
 
-1. **The comb is a translation / resolvent, sharp rate $4e^{2r}$** (`exists_odd_smooth_family_sharp_comb_rate`,
-   `tendsto_combEnergy_div_combMass_sq_horizonEnergy`, `horizonEnergy_add_four_mul_horizonEnergy_deriv`).
-2. **Pythagorean law and actual rate** (`norm_add_sq_eq_compensation`, `exists_twoScaleCompleteShiftEnergy_le_pow_saving`).
-3. **Compensated ledger graded by width** (`zetaZeroWidth_le_iff_forall_gt_reflectedPrimePolarCost_le_poleTiltedSobolev`,
-   `riemannHypothesis_iff_forall_pos_reflectedPrimePolarCost_le_poleTiltedSobolev`).
-4. **Signed budget strictly weaker than positive part** (`exists_admitted_monotone_not_positivePartContinuation`).
-5. **Forced aperture loss** (`exists_le_floorLoss_of_floor`).
-6. **Correctors = admission** (`adaptedEnergy_dampedMobiusEnergy_iff_admits`, `riemannHypothesis_iff_cofinal_bezoutCorrected_loss`).
-7. **Function-field calibration** (`weil_iff_cofinal_curveReceiverEnergy`).
-8. **Blow-up escapes to the horizon** (`admits_or_escapesToHorizon`, `forall_admitted_drift_admitted_iff`).
-9. **Balanced regime** (`primePowerWindowSaving_iff_receiverDampingRate_lt_half`,
-   `eventually_packetCorrectedPrimeBlock_seventeenThirtieths`).
+| Theorem | Content |
+|---|---|
+| `exists_odd_smooth_family_sharp_comb_rate`, `tendsto_testPairing_normalizedComb_sub_translate` | comb rate $4e^{2r}$; translation |
+| `tendsto_combEnergy_div_combMass_sq_horizonEnergy`, `exists_abs_combEnergy_sub_le` | resolvent law, dVP rate |
+| `horizonEnergy_add_four_mul_horizonEnergy_deriv` | resolvent energy identity |
+| `tendsto_pow_four_mul_combEnergy_rescaledTest_second_deficit` | exact second correction |
+| `not_exists_horizonEnergy_ge`, `exists_curveCombEnergy_ge` | integer comb not coercive; curve comb is |
+| `exists_fullZeroForm_ge_deLaValleePoussin_poleTiltedSobolev` | unconditional ledger floor |
+| `curveReceiver_admits_iff`, `weil_iff_cofinal_curveReceiverEnergy` | zero-chain admission law; Weil calibration |
+| `norm_add_sq_eq_compensation`, `exists_compensationDefect_le_inv_log_pow` | Pythagorean law; all-log-power rate |
+| `exists_twoScaleCompleteShiftEnergy_le_pow_saving` | two-scale power saving |
+| `admits_or_escapesToHorizon`, `normalizedReceiverProfile_add_properUnitDilation_eq` | horizon escape; normalized inversion law |
+| `forall_admitted_drift_admitted_iff` | drift tolerance = bounded drift |
+| `exists_admitted_monotone_not_positivePartContinuation` | signed ≠ positive-part budget |
+| `exists_le_floorLoss_of_floor` | forced doubly exponential loss |
+| `bezoutCorrectedEnergy_eq_one_add_residual`, `bezoutCorrectedEnergy_comparison` | corrector completion and comparability |
+| `tendsto_mul_kernelStatistic_centredPrimeBlock`, `exists_balanced_centredPrimeBlock_rowBilinear_le` | omitted-class law; balanced savings |
+| `abs_sum_window_kloostermanPacket_sq_sub_le` | Kloosterman packet quasi-isometry |
 
----
+## 6. Tools
 
-## 6. Traps
+**Developed.** Comb/horizon calculus (mass, tail, shells, depth statistics, resolvent energy
+identity, Sobolev sandwiches, moments); dVP-rate versions with universal constants; prime–polar
+compensated identity and ledger decomposition; curve-model power-series algebra (centring tail,
+annihilator filters, zero-chain multiset matching, weighted $\ell^2$ energies); compensation
+coordinates (abstract and Gram); two-scale connection identities; pronic origin/drift pricing;
+normalized blow-up profile calculus; Bézout and composite correctors; omitted-class and packet
+correctors; uniform $17/30$ window by tiling; Montgomery–Vaughan Kloosterman packets.
+
+**To build.** A second representation of the prime–polar pairing with exponent $<\tfrac12$; a
+corrector below $\tfrac12$ whose loss bound is proved from independently estimated terms; tail decay
+of the actual receiver beyond a drifting origin; classification of horizon-shell defect profiles
+with arithmetic constraints; a signed prime-shell estimate yielding a graded (negative) aperture floor.
+
+## 7. Open questions
+
+1. Single-scale divisor remainder: a horizon-free bound at one $\varepsilon<\tfrac12$ (current $O(P^{1-2\varepsilon}/\log^mP)$).
+2. Which horizon-escaping profiles survive the normalized inversion law and its sign constraint below $\tfrac12$?
+3. What compatibility (shared divisor coefficients, overlapping cuts, common origin, source-fixed pole) constrains the same residual differently enough to lower the ledger exponent below $\tfrac12$?
+4. Can the two-scale power saving be iterated over dyadic scales without the connection term reintroducing the single-scale growth?
+5. Turn the two factorizations of the damping tangent (prime dilation, Möbius dilation) into an inequality on the quadratic deviation of the work.
+6. Power saving in balanced-regime block mean squares (equivalent to crossing below half damping).
+
+## 8. Traps
 
 | Trap | Truth |
 |---|---|
-| Raw comb energy / aggregate is polynomial | $\sim4e^{2r}$; universal bound attained |
-| Large comb energy = large adverse charge | Charge is $o(S_r)$ on the extremal family |
-| Comb is rank one | Translation (slow tests) / resolvent (fixed tests) |
-| Relative cancellation = bounded remainder | Coordinates add exactly to the relative complete energy |
-| Pay every local loss separately | Positive-part budget is strictly stronger |
-| Nonnegative signed work | $W_1\to-\tfrac12$ |
-| Core divergence on positive intervals | Converges to a zeta-log ratio there |
-| Transport a fixed positive aperture floor | Impossible; target a graded negative floor |
-| Choose a corrector from the desired bound | Circular; the content is the construction |
-| Fixed-length short windows = uniform ones | Needs tiling and $\psi$ monotonicity |
-| $30/17$ range covers balanced scales | Needs the short-window mean-square transfer |
-| Subtract a smooth prime main term and call the remainder estimated | The remainder is the zero-width problem relocated |
-| Integer comb is uniformly coercive | Narrow bumps defeat it; curves differ |
-| Averaging Kloosterman packets over moduli cancels them | Two-sided quasi-isometry: dispersion is exact, no sub-diagonal saving |
+| Raw comb energy or cross aggregate is polynomial | $\sim4e^{2r}$; universal bound attained |
+| Large comb energy means large adverse charge | charge $o(S_r)$ on the extremal family |
+| The integer comb is uniformly coercive | narrow bumps defeat it; only curve combs are |
+| Relative cancellation = bounded remainder | coordinates sum exactly to the relative complete energy |
+| A log saving iterates to admission | absolute energies still grow; dyadic sums diverge |
+| Pay every local loss separately | positive-part budget strictly stronger than signed |
+| Signed damping work is nonnegative | $W_1\to-\tfrac12$ |
+| Fix a positive aperture floor and transport it | impossible; ceiling forces doubly exponential loss |
+| Pick a corrector from the desired bound | adapted energy ⇔ admission; content is the construction |
+| One admitted damping bounds the width | chain pairs are admitted below the width |
+| Finite origin information changes admission | it never does; only a drifting origin |
+| Centring removes all prime bias | omitted-residue-class term survives at 100% |
+| Fixed-length short windows suffice | uniform-length version needs tiling and monotonicity |
+| RH-equivalent restatements (cost exponents, cofinal correctors, cofinal Bézout loss, block power savings) | criteria, not progress |
 
----
+## 9. Context
 
-## 7. Open problems
+| Programme | Relation (verified imports) |
+|---|---|
+| ArithmeticContinuationAndCriticalEnergy | 11 imports: receiver, admission, averaged budgets, damped Möbius energy, renormalization; 4 ACCE modules import ACompT back |
+| BezoutValuationIncidence | 7 imports: centred prime row, omitted-class law, dual norm, Kloosterman Gram, short-window ⇔ quasi-RH; 2 BVI modules import back |
+| ArithmeticIncidencePositivity | comb energy reduction, ledger reduction, lag Abel summation, global allocation, translate pairing |
+| SquareRootThreshold | incidence ledger graded by width, walls, receiver damping |
+| ArithmeticCriticalityTheory | Gaussian ground-energy ceiling |
+| RHTower, HTGeometry, TransHorizonIncidenceMechanics | PNT inputs, 17/30 windows, Möbius–Ramanujan cancellation; smooth transitions; probe spectrum |
+| Consumers | ArithmeticDefectRigidity (escape, blow-up profile), ArithmeticOrientationTheory (aperture ceiling, horizon escape), ArithmeticIndexDescent (prime–polar cutoff), ScaleSignedIncidenceCriticality, ArithmeticCastelnuovoSeveri, ArithmeticCorrespondencePositivity, BiarithmeticGeometry, ReflectiveDirichletPolynomialS2 |
 
-1. **Single-scale divisor remainder below ½**: horizon-free bound at one fixed $\varepsilon<\tfrac12$ (admission in
-   compensation coordinates); current $O(P^{1-2\varepsilon}/\log^mP)$.
-2. **Horizon-shell defect profiles**: exclude oscillating profiles below ½, or classify survivors of the
-   paid power subtraction and moving-horizon signed pairing (ArithmeticDefectRigidity).
-3. **Ledger exponent $<\tfrac12$** (= $\Theta<1$): which second representation of the prime–polar pairing supplies it;
-   pure $L^2$ beyond the sub-envelope cone.
-4. **Tail decay** of the actual receiver beyond the origin (drift tolerance).
-5. **A corrector below ½**: horizon-free bound on integrated Bézout-corrected loss on some $[a,c]$, $a<\tfrac12$,
-   from independently estimated terms.
-6. **Graded aperture floor** at one $\sigma<\tfrac12$ via the isolated signed prime-shell contribution (ACCE).
-7. **Power saving in the balanced regime** (= crossing below half damping).
-8. **Two decompositions of one tangent** (prime-dilation vs Möbius-dilation): turn their compatibility
-   into an inequality on the quadratic deviation term of the work.
+## 10. Big picture
 
-What compatibility must contribute: a second representation constraining the same residual
-differently (shared divisor coefficients, overlapping cuts, common successor boundary, source-fixed
-pole), surviving the change of representation including projection motion. Keep relative vs
-absolute, energy vs signed charge, criterion vs arithmetic producer distinct.
-
----
-
-## 8. Tools to build
-
-A second representation of the prime–polar pairing with exponent $<\tfrac12$; a corrector below ½
-built from independently estimated terms; a signed prime-shell estimate for graded aperture floors.
-Compatibility identities to use as constraints (owned by ACCE/BVI): tangent law, prime-dilation form,
-inversion law, $D^fD^g=D^{f*g}$, Möbius-dilation form of the tangent.
-
----
-
-## 9. Success criteria and principles
-
-Degrees of success: a two-scale rate on the actual source with transfer terms; a corrector on one
-interval; a classified defect family; the endpoint (cofinal admission = RH). Every contribution:
-unconditional on the anchored source; keeps mixed terms, poles, even parts, boundary terms; pays
-every representation change; states uniformity; comes with stability if it recovers; reports a
-rate; keeps failure constructive; hides no analytic input in an interface. Search the corpus first —
-comb, pairing calculus, receiver and dictionaries exist.
+ACompT shows that the arithmetic sources of the RH programme are full of genuine cancellation —
+the comb is a translation, prime atoms cancel the polar density, the large-prime sector cancels its
+complement, two cutoffs cancel the divisor remainder, a sieve corrector cancels residue-class bias —
+and that every such cancellation, measured honestly, stops exactly at the zero width: the exponent of
+the compensated ledger is the width, the curve receiver is admitted exactly on zero chains, and a
+power saving in any single-scale residual is a zero-free strip. Cancellation buys log powers and
+relative rates unconditionally; it buys powers only between two representations that share the
+same hard term. The lesson for the RH proof is that a decisive estimate will not come from making
+one description smaller but from a compatibility between two descriptions that constrains the
+residual differently, kept signed, kept anchored to the actual source, and paid for every change of
+scale, origin and norm. Function fields confirm that the receiver framework is faithful (admission
+⇔ Weil); over the integers the missing piece is the coercivity that curves get from a discrete
+spectrum and integers do not have.

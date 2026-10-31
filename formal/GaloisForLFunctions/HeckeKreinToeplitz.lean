@@ -1,7 +1,17 @@
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.FiniteColumns
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NilpotentSubspaces
 import GaloisForLFunctions.HeckeKreinToeplitz.KernelsOnGroupsAndTheirNegativeIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.HyperbolicPairsAndTheIndexFormula
 import GaloisForLFunctions.HeckeKreinToeplitz.BoundedIndexIsClosedUnderPointwiseLimits
 import GaloisForLFunctions.HeckeKreinToeplitz.FiniteIndexIsPositiveMinusFiniteRank
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NullKernelRigidity
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NullSubgroupRank
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ColumnRepresentation
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ColumnForm
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.IsotropicSubspaces
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.SubgroupColumns
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.HyperbolicFeatures
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.RescalingInvariance
 import GaloisForLFunctions.HeckeKreinToeplitz.TheIndexOfAFiniteExponentialSum
 import GaloisForLFunctions.HeckeKreinToeplitz.TheIndexOfABohrSeries
 import GaloisForLFunctions.HeckeKreinToeplitz.TheIndexUnderRotationDampingAndCoalescence
@@ -48,7 +58,10 @@ Hermitian kernels with finitely many negative squares on groups, and on the Heck
   formula; the exact index of a finite exponential sum without separation and of an absolutely
   convergent Bohr series; finite index as
   positive definite minus finite rank (Pontryagin decomposition),
-  attainment and subadditivity; closedness under pointwise limits; growth and self-upgrade; higher
+  attainment and subadditivity; subgroup zero sets for null kernels of index one;
+  rank at most the square of the index from two zero subgroup readings;
+  an algebraic column representation recovering every group kernel as a coefficient;
+  closedness under pointwise limits; growth and self-upgrade; higher
   moments as higher inertia; rotation, damping and coalescence.
 * **Arithmetic characters.** Logarithmic characters and the arithmetic index formula; Stepanov
   compressions and the annihilation law.

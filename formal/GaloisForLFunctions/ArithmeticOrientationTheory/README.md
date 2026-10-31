@@ -1,236 +1,233 @@
 # Arithmetic Orientation Theory (AOT)
 
-Namespace `GaloisForLFunctions.ArithmeticOrientationTheory`; umbrella `ArithmeticOrientationTheory.lean`.
+Namespace `GaloisForLFunctions.ArithmeticOrientationTheory` (sub-namespaces `WienerAlgebraAt`,
+`WeightedWhiteNoise`, `CriticalKernelAction`); umbrella `ArithmeticOrientationTheory.lean`; 77 modules.
 
-**Question.** Which sign- and integer-valued invariants of arithmetic sources survive passage to
-unbounded aperture, horizon, damping and height — and which counting theorems compute them?
+## 1. Motivation
 
-AOT makes orientation the primitive object. A signed incidence form carries its switching class; a
-divisor row its companion (parity) class; a reading the question whether it separates a datum from
-its flip; a test space at a node divisor the dimension of its sections; an unpaid weight an ideal of
-the critical Wiener algebra and its obstruction hull. Theorems are identities, classifications and
-counts; estimates are corollaries. RH appears only in exact equivalences or as the conclusion of one
-stated inequality.
+Every closing mechanism in the corpus fails by forgetting a sign: amplitude data cannot see the
+even flip, complete-period data cannot see sign twists, rank counts cannot see reweighting,
+positivity cannot see the rank-one pole charge. AOT makes orientation the primitive object and asks
+which sign- and integer-valued invariants survive unbounded aperture, horizon and damping, and which
+exact counting theorems compute them. Results are identities, classifications and counts; RH enters
+only through exact equivalences.
 
----
+## 2. Objects
 
-## 1. Place in the research
+| Object | Lean | Meaning |
+|---|---|---|
+| Signed Dirichlet form | `signedDirichletForm`, `groundEnergy` | $\sum|c_{ij}|(x_i+\operatorname{sgn}c_{ij}x_j)^2$, switching-covariant |
+| Frustration | `frustrationIndex`, `frustrationMass` | misaligned overlaps after the best switching |
+| Tower data | `ratioCorr`, `productCorr`, `towerMellin`, `towerOddPrimeSide`, `cosetToeplitz` | odd prime side of one prime tower |
+| Cholesky tails | `kmsTail`, `cosetTail`, `continuumPrimeTower` | innovation coordinates of a tower |
+| Archimedean diagonal | `archReflectedDiagWeight` | $W_{\rm arch}(n)\approx n/2$ |
+| Shared charge | `primeTowerCharge`, `activeTowerWeight` | per-site tower cost after cancellation |
+| Readings | `Orientation`, `OrientationFaithful`, `Invisible` (SSIC) | flips and what a reading sees |
+| Even flip | `evenFlip`, `amplitudeReading` | $c^\flat=c+(\delta_1-2\delta_2)\star c_e$ |
+| Sections | `h0`, `h1`, `frobeniusMass`, `HasFrameBound`, `dirichletSampling` | kernel/cokernel of a reading matrix |
+| Wiener algebra | `WienerAlgebraAt σ`, `CriticalWiener` (THIM), `IsWienerUnit` | $\ell^1$ Dirichlet algebra at $\Re s=\sigma$ |
+| Spectrum | `BohrPoint`, `bohrEval`, `halfPlanePoint`, `polePoint` | closed polydisk over primes |
+| Repair | `paidIdeal`, `obstructionHull`, `operatorHull` | kernels that pay $c$; common zeros |
+| Zero data | `translatedOffLineZeroHull`, `visibleTranslatedZetaOrder` | $\rho-\varepsilon$, uncancelled order |
+| Orbits | `WienerUnitOrbit`, `WienerMonoidOrbit` | unit equivalence, monoid preorder |
+| Orientation norm | `orientNorm`, `polePairing`, `smoothFlipKernel` | coordinates $(P,P_e)$ of a kernel |
+| Section cones | `sectionEffectivityCone`, `sourceSectionCone`, `gradedChebyshevSectionCone` | effectivity from $h^0$ |
+| Receiver index | `poleJetMatrix`, `nodeDivisorEulerChar`, `apertureH1ChebyshevCorrection` | pole jets; $E(s)=e^s+s-1-\psi(e^s)$ |
+| Aperture transport | `apertureSpectralJump`, `ceilingScaledGroundEnergy` | $\mu(a)-\mu(b)$; $e^{\beta}\mu$ |
+| Width category | `ReceiverObject`, `widthFunctor`, `IsZeroWidthObject` | receivers over $[0,\tfrac12]$ |
 
-Recurring obstructions in the corpus are information lost by a reading: magnitudes and complete-period
-data identify sources whose signed receivers differ; finite apertures admit off-line extensions;
-positivity says nothing about upper bounds. An orientation invariant records the sign, reflection or
-arithmetic distinction a limit must keep. AOT supplies frustration index and mass; the per-tower
-rank-one law; the Nyquist rank bound (rank–nullity RR for readings); the even flip read at the prime 2;
-the critical Wiener algebra $\mathcal W_{1/2}$ with repairing ideals and obstruction hulls; section cones;
-the receiver index theorem; the width dictionary, width functor and the **selectivity battery**.
+## 3. Language
 
-Supporting framework for routes HF, ACS, AIP, PM, MC. Every dictionary entry is an equivalence; progress
-is a bound in one of its units.
-
-| Neighbour | Interface |
-|---|---|
-| ScaleSignedIncidenceCriticality | Readings, shadows, resolution; AOT adds flips, faithfulness, closure of blindness |
-| SignedArithmeticEnergyIncidence | Balance, holonomy, local payment; AOT attaches index and mass |
-| ArithmeticIncidencePositivity | Ratio/product atoms; AOT proves the tower rank-one law |
-| TransHorizonIncidenceMechanics | Even flip, parity barrier, `CriticalWiener`; AOT proves monoid/algebra structure |
-| BezoutValuationIncidence | Damping chain; flow transports orientation |
-| ArithmeticCastelnuovoSeveri | Scaling surface, effectivity axioms; section cones are their section-count form |
-| ArithmeticCriticalityTheory | Prime anti-diagonal non-Z-type obstruction = frustration |
-| ArithmeticContinuationAndCriticalEnergy | Aperture jump = shell flux |
-| SquareRootThreshold, BiScaleUncertainty, TransThresholdPairCorrelation | Nyquist threshold $N\asymp T$ = square-root threshold |
-| ArithmeticDefectRigidity | Cofactor escape modules; Wiener actions on them |
-| ArithmeticOrientationGeometry, ArithmeticLocalDivisorGeometry | Orbit orientation; local source-divisor geometry |
-
----
-
-## 2. Why
-
-**One invariant, many units.** $\Delta=\sup|\Re\rho-\tfrac12|$ is read exactly by every receiver: damping
-($\Theta-\tfrac12$), aperture ($\mu(A)\ge0\ \forall A$), growth (linear Chebyshev band), index (one positive
-square), effectivity (RR + ample). `widthDictionary_tfae` is the change of coordinates; a new unit is not a proof.
-
-**Loss of orientation.** Unconditional estimates sit at width ½ (+ VK). Closing mechanisms fail by losing
-orientation: amplitude readings are blind (payment is a function of Ramanujan amplitudes iff $\varepsilon>\tfrac12$,
-and blindness is closed under post-processing); finite data admit off-line extensions; positivity does not
-see the frustrated rank-one pole charge. Index theory and algebraic effectivity are how mathematics keeps
-orientation through limits; neither exists on $\mathbb Z\times$(scale). AOT builds their finite exact parts.
-
----
-
-## 3. Objects and language
-
-| Orientation | Signed forms | Damped weights | Readings | Sections | Wiener algebra |
-|---|---|---|---|---|---|
-| orientation | switching class | even flip $c^\flat$ | flip $\kappa$ | — | unit orbit |
-| index | frustration index $\nu(c)$ | $W_c(2)$ | — | $h^0(A)$ | $\operatorname{rank}\mathcal W/P(c)$ |
-| trivial | balanced | $W_c(2)=0$ | $\kappa$-fixed | — | $P(c)=\top$ (paid) |
-| faithful | sign-vector energy | first pronic moment | `OrientationFaithful` | rank | obstruction hull |
-| blind | energy of $|c|$ | amplitude reading | `Invisible` | — | — |
-
-Lean entry points: `signedDirichletForm`, `groundEnergy`, `frustrationIndex`, `frustrationMass`;
-`ratioCorr`, `productCorr`, `towerMellin`, `towerOddPrimeSide`, `cosetToeplitz`, `continuumPrimeTower`;
-`h0`, `h1`, `frobeniusMass`, `dirichletSampling`; `Orientation`, `OrientationFaithful`, `Invisible`,
-`evenFlip`, `amplitudeReading`; `WienerAlgebraAt σ`, `BohrPoint`, `bohrEval`, `paidIdeal`, `obstructionHull`,
-`translatedOffLineZeroHull`, `operatorHull`; `sectionEffectivityCone`, `sourceSectionCone`,
-`gradedChebyshevSectionCone`; `poleJetMatrix`, `nodeDivisorEulerChar` $=e^s+s-1-\psi(e^s)$; `widthFunctor`.
-
-**Words.** *Faithful*: separates every datum from its flip; *blind*: invisible to it. *Frustration*:
-misaligned overlaps after the best switching. *Tower*: prime powers of one prime. *Section*: a test
-annihilated by a reading; *Nyquist bound*: sections $\le$ dim − (Frobenius mass)/(frame bound). *Paid*:
-receiver bounded; *repairing ideal* $P(c)$: kernels whose convolution pays $c$; *obstruction hull*: Bohr points
-annihilating $P(c)$.
-
----
+- **Faithful / blind**: a reading separates every datum from its flip / is constant on flip classes.
+  Blindness is closed under post-processing, joins and coarsening.
+- **Frustration**: overlaps of the wrong sign that no switching removes. **Balanced** = index 0.
+- **Tower**: the powers of one prime; **coset**: $p$-free label $a'$ with sites $p^ia'$.
+- **Paid**: receiver bounded. **Repairing ideal** $P(c)$: kernels $k$ with $k\star c$ paid.
+  **Hull**: Bohr points killing $P(c)$. **Index**: $\operatorname{rank}\mathcal W_{1/2}/P(c)$.
+- **Visible order**: $\operatorname{ord}_\rho\zeta-\operatorname{ord}_{\rho-\varepsilon}\zeta$, the pole order of
+  $1/\zeta(s+\varepsilon)$ not cancelled by $\zeta(s)$.
+- **Tied point**: radii at all primes come from one $\Re s$ (half-plane points); untied points exist.
+- **Unit**: any of the equivalent width coordinates (damping, aperture, index, effectivity, growth).
 
 ## 4. Mechanisms
 
-### Frustration and the odd Weil ledger
-1. **Index controls ground energy.** Switching-invariant; ground energy $\le4\nu_w/n$; zero iff balanced (connected
-   patterns); signed Cheeger lower bound $\mu\ge h^2/(4D)$.
-2. **Where the odd ledger frustrates.** Only on prime-sum pairs. Lattice samples ($\log$ of integers) are
-   **balanced at every aperture**; the prime triangle has index exactly 2; sparse samples: index = anti-aligned
-   prime-sum count; collar-skimming samples reach $2M|Q|$ at every positive weight; $(0,3/10]$ is
-   frustration-free. Frustration is a **continuum** phenomenon between lattice points.
+**Frustration.**
+1. Ground energy $\le4\nu_w/n$; zero iff balanced (connected); signed Cheeger $\mu\ge h^2/(4D)$; frustration
+   discounts the local budget by $h^2/(8D)$.
+2. Odd Weil ledger: only prime-sum overlaps can frustrate; the lattice $\{\log n\}$ is balanced at every
+   aperture; prime triangle $\nu=2$; matched samples $2|Q|$ at small weight but quenched at full weight;
+   collar-skimming samples $\nu=2M|Q|$ (100% frustrated) at full weight; $(0,3/10]$ frustration-free.
+   Frustrated configurations are still paid along canonical paths.
 
-### Tower structure of the odd prime side
-3. **Rank-one law.** Tower product part $=\log p(S_p(q)^2-q(1)^2)$; ratio part = sum over $p$-free cosets of
-   one-sided Toeplitz forms; KMS–Cholesky gives $\ge-\log p\sum_{n\ge2}q(n)^2$; odd side independent of $q(1)$.
-   The shifted pair reverses every comparison for $|a|\ge1$.
-4. **Lattice shared payment up to a finite head.** Horizon-uniform Schur dominance: for every $X$, prime set
-   and arbitrary-sign $q$, odd prime side + archimedean diagonal $\ge\frac1{16}\sum_{n\ge256}nq(n)^2-106\sum_{n\le255}q(n)^2$;
-   nonnegative on profiles supported in $[25,X]$.
-5. **Continuum towers.** Reflection Cholesky identity; all primes at once $\ge-12e^A\int_0^AF^2$ — prime-set uniform
-   but exponential in the aperture.
+**Prime towers.**
+3. Rank-one law: tower product part $=\log p\,(S_p(q)^2-q(1)^2)$; ratio part = one-sided Toeplitz forms on
+   $p$-free cosets; odd side independent of $q(1)$.
+4. KMS–Cholesky: odd side $=\log p\,[\text{Cholesky energy}-\text{mass}]$; the Hankel square is the zeroth
+   Cholesky mode of the unit coset and cancels. Continuum: reflection Cholesky, one diagonal mass pays
+   every power of one prime.
+5. Archimedean domination: $\log p\,S_p^{+2}\le\tfrac12$ arch diagonal per tower; summed over all towers,
+   odd side + arch diagonal $\ge\frac1{12}\sum_{n\ge25}nq(n)^2$ for profiles supported in $[25,X]$, and
+   $\ge\frac1{16}\sum_{n\ge256}nq^2-106\sum_{n\le255}q^2$ in general — horizon- and prime-set-uniform.
+   Continuum: all primes $\ge-12e^A\int_0^AF^2$.
+6. Shifted pair $\zeta(s-a)\zeta(s+a)$: tower product part is rank two; Cauchy–Schwarz ratio diverges;
+   $|a|\ge1$ reverses both dominations, already for one point mass.
 
-### Readings and sections
-6. **Oriented readings.** Blindness closed under composition, joins, coarsening; resolving a flipping predicate
-   forces faithfulness; complete-period quadratic data are sign-orbit blind.
-7. **Even flip read at 2.** $M(c^\flat)-M(c)=2\log2\,W_c(2)$; amplitude readings are blind; parity floor.
-8. **Nyquist rank bound.** $h^0+\text{rank}=\dim$, $h^0-h^1=\dim-\#$nodes, $h^0\le\dim-\text{mass}/K$; Dirichlet
-   polynomials at separated heights via large values; log-free frame constant balanced at $T=2eN$: the
-   **diagonal is the square-root aperture**; above it $h^0\ge N-T$.
-9. **Selectivity beyond rank.** $h^0$, rank, $h^1$ are reweighting-invariant (cannot separate $\Lambda$ from the
-   shifted pair); Frobenius mass can; box defect $E(s)=h^0$-supply $-h^1$-obstruction; aperture $h^1$ correction
-   characterizes Bézout on the odd section cone, paid on $(0,181/500]$.
-10. **Section cones.** $\{h^0\ge1\}$ cones calibrate (read the form). Sign-free Bézout: $\delta(x,y)^2\le\Phi(x)\Phi(y)$;
-    RR + Bézout ⇔ $\Phi^+=$ defect; finite linear reading cones fail Bézout. Over $\mathbb F_q$ Rosati cones have
-    Bézout + ample always, RR iff zero reflection defect (golden datum fails RR). Over $\mathbb Z$ the graded
-    Chebyshev cone has RR at every aperture; Bézout at all apertures ⇔ RH.
-11. **Receiver index theorem.** Pole orders = section codimensions; zero multiplicities = jet section counts;
-    node-divisor Euler characteristic from the reflected prime–polar ledger.
-12. **Trichotomy of readings.** Sub-Nyquist sign-factored readings are depth-blind; escapes cost trans-Nyquist
-    precision $\beta^2L^3$, magnitude ratios, or third-kind mass data.
+**Readings and sections.**
+7. Even flip read at 2: $M(c^\flat)-M(c)=2\log2\,W_c(2)$; amplitudes and complete-period data are blind
+   (sign orbit $(\mathbb Z/2)^{N-1}$); amplitude reading does not resolve payment.
+8. Nyquist: $h^0-h^1=\dim-\#\text{nodes}$, $h^0\le\dim-\text{mass}/K$; log-free frame constant
+   $\tfrac{5\pi}2T+5\pi eN$; at 1-separated heights injectivity fails exactly past the square-root
+   aperture, which equals the lattice Nyquist aperture.
+9. Counts are reweighting-invariant ($h^0$ of $\Lambda$ = of shifted pair); Frobenius mass and $E(s)$ are
+   selective. $h^0$-supply $-$ $h^1$-obstruction $=E(s)$ on boxes; on apertures
+   defect + $E$-correction = archimedean budget.
+10. Section cones: $\{h^0\ge1\}$ cones read $x^2$; Ample, RR, Bézout each ⇔ Hodge index. Source cones:
+    RR ∧ Bézout ⇔ $\Phi^+=$ defect; finite linear/Fourier readings never Bézout; Rosati cones have Bézout +
+    Ample on every curve datum, RR ⇔ zero reflection defect.
+11. Trichotomy: sub-Nyquist sign readings are depth-blind; escapes cost $\beta^2L^3$ (aperture),
+    $\tfrac12\beta^2L^2$ (magnitude ratio) or $2L\le\beta^2\ell^3$ (mass/dilution).
 
-### The critical Wiener algebra
-13. **Monoid and algebra.** `CriticalWiener` is a submultiplicative monoid; paid class is a union of unit orbits;
-    $\mathcal W_\sigma$ is a Banach algebra with spectrum the Bohr polydisk; Wiener's lemma; half-plane form needs a
-    uniform lower bound (nonvanishing is not enough); local factor unit ⇔ all $|\alpha_i|<p^\sigma$.
-14. **Unpayability on the polydisk.** Unpaid ⇔ nonempty obstruction hull; $d^{-\varepsilon}$ → pole point;
-    oscillating probe → $\{\rho,\bar\rho\}$ unless $\zeta(\rho)=0$; codimension counts points; ideals record
-    multiplicity (same hull, strictly smaller non-radical ideal).
-15. **Index formula for the Möbius receiver.** Paid ⇔ $P=\top$ ⇔ hull ∅ ⇔ rank 0; translated off-line zeros
-    $\rho-\varepsilon$ are obstructions and their number $\le$ codimension (equality above the width). Order
-    level: every repairing kernel vanishes at $\rho-\varepsilon$ to order $\ge\operatorname{ord}\zeta(\rho)-\operatorname{ord}\zeta(\rho-\varepsilon)$;
-    finite jets and boundary values interpolate jointly, so visible multiplicities + boundary points bound the
-    paid-quotient rank, also on unit orbits and for Liouville. On the critical boundary any order loss makes
-    $\mu d^{-\varepsilon}$ unpaid.
-16. **Orientation-faithful norm.** Both flip members paid ⇔ pole coordinates $P=P_e=0$.
-17. **Wiener actions on modules.** Bounded multiplicative sequences extend to contractive homomorphisms;
-    operator hull ⊆ annihilator hull, equal under closed range; faithful cofactor modules have full annihilator
-    hull while operator spectra contract.
+**Critical Wiener algebra.**
+12. $\mathcal W_\sigma\cong\ell^1$ Banach algebra, spectrum = Bohr polydisk; Wiener's lemma; half-plane form
+    needs a uniform lower bound; local factor unit ⇔ $|\alpha|<p^\sigma$ (Satake threshold).
+13. Payment is a unit invariant; paid class is a forward sink of the monoid; ideal ascends, hull and index
+    descend along monoid moves; single-point ideals obey a stabilizer/annihilator dichotomy.
+14. Localization: unpaid ⇔ hull nonempty. Smooth power → pole point; oscillating probe → $\{\rho,\bar\rho\}$,
+    empty iff $\zeta(\rho)=0$; superpositions of probes never cancel; tower twists obstruct whole
+    hyperplanes and untied points.
+15. Möbius receiver: repairing kernels vanish at $\rho-\varepsilon$ to the visible order (interior and
+    critical boundary); finite jets interpolate in $\mathcal W$, so
+    $\sum$ visible orders + #boundary poles $\le$ index; Liouville is unit-equivalent to Möbius.
+16. Orientation coordinates: over $o$ or $d^{-\varepsilon}$ the flip acts on $(P,P_e)$ by
+    $(P+(1-2^\varepsilon)P_e,-P_e)$; both members paid ⇔ $P=P_e=0$; for multiplicative $f$,
+    $P_e\propto f(2)$.
+17. Operator vs annihilator hull: equal under closed range; weighted cofactor modules are faithful with
+    full annihilator hull while spectra contract.
 
-### Transport and dictionaries
-18. **Damping flow preserves orientation** on residue combinations.
-19. **Aperture transport.** Two-gauge step jump = boundary-shell flux $\ge0$; RH ⇔ spectral jumps sum to $\mu(A_0)$;
-    fixed-margin additive transport refuted by the Gaussian ceiling.
-20. **Width dictionary and functor.** Graded and forcing versions; `widthFunctor` full, faithful,
-    iso-reflecting; six $\zeta$-receivers isomorphic; battery models are non-objects.
-
----
+**Transport and dictionaries.**
+18. Damping flow transports residue-combination signs exactly.
+19. Aperture: step jump = shell flux $\ge0$; RH ⇔ spectral jumps sum to $\mu(A_0)$; additive fixed-margin
+    transport refuted by the Gaussian ceiling; ceiling-renormalized $e^\beta\mu$ is bounded.
+20. Width dictionary (8-, 13-, 14-, 15-way), graded version, width functor; all $\zeta$-receivers isomorphic.
 
 ## 5. Pillar theorems
 
-1. **Frustration controls ground energy** (`groundEnergy_le_frustrationMass`, `le_groundEnergy_of_cheeger`).
-2. **Odd ledger: lattice balanced, frustration = prime-sum count** (`isBalanced_lattice`,
-   `frustrationIndex_oddWeilLedger_of_sparse`, `exists_collarPos_frustrationIndex_eq_two_mul`).
-3. **Tower laws** (`sum_vonMangoldt_productCorr_prime_pow`, `towerOddPrimeSide_eq_cholesky`,
-   `sum_towerOddPrimeSide_add_archDiag_ge_tail_sub_head_255`).
-4. **Nyquist rank bound and its diagonal** (`h0_le_nyquist`, `nyquist_diagonal_and_squareRoot_threshold_synthesis`).
-5. **Even flip at 2** (`firstPronicMoment_evenFlip_sub`, `not_resolves_amplitude_receiverBounded`).
-6. **Wiener's lemma on the Bohr polydisk** (`isUnit_iff_forall_bohrEval_ne_zero`).
-7. **Unpayability located and counted** (`not_receiverBounded_iff_exists_obstruction`,
-   `card_le_rank_quotient_paidIdeal_moebius`, `visibleTranslatedZetaOrder_le_paid_kernel_order`).
-8. **Section-cone boundary laws** (`sourceSectionCone_bezout_of_defect_sq_le`,
-   `rosatiSourceCone_riemannRoch_iff_reflection_zero`, `riemannHypothesis_iff_all_aperture_gradedChebyshev_bezout`).
-9. **Receiver index theorem** (`receiver_index_theorem`).
-10. **Width dictionary** (`widthDictionary_tfae`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Frustration brackets ground energy | `groundEnergy_le_frustrationMass`, `le_groundEnergy_of_cheeger` | unconditional |
+| Lattice balanced; prime triangle $\nu=2$ | `isBalanced_lattice`, `frustrationIndex_primeTriangle` | unconditional |
+| Full-weight frustration unbounded | `exists_collarPos_frustrationIndex_eq_two_mul` | unconditional |
+| Rank-one tower law | `sum_vonMangoldt_productCorr_prime_pow`, `towerOddPrimeSide_eq` | unconditional |
+| Tower = Cholesky − mass | `towerOddPrimeSide_eq_cholesky`, `continuumTower_reflection_cholesky` | unconditional |
+| Horizon-uniform tower domination | `sum_towerOddPrimeSide_add_archDiag_ge_tail_sub_head_255` | unconditional, odd part only |
+| Continuum all-prime payment | `sum_continuumPrimeTower_ge_neg_twelve_exp` | unconditional, loss $e^A$ |
+| Even flip at 2 | `firstPronicMoment_evenFlip_sub`, `not_resolves_amplitude_receiverBounded` | unconditional |
+| Nyquist bound and diagonal | `h0_le_nyquist`, `nyquist_diagonal_and_squareRoot_threshold_synthesis` | unconditional |
+| Wiener's lemma (polydisk, half-plane) | `isUnit_iff_forall_bohrEval_ne_zero`, `WienerAlgebraAt.isUnit_iff_exists_le_norm_lSeries` | unconditional |
+| Unpayability localized | `not_receiverBounded_iff_exists_obstruction`, `obstructionHull_oscillating_nonempty_iff` | unconditional |
+| Visible zero orders bound the index | `sum_visible_orders_add_boundary_card_le_paid_index` | unconditional lower bound |
+| Section cones add nothing | `sectionEffectivityCone_tfae`, `sourceSectionCone_riemannRoch_and_bezout_iff` | unconditional |
+| Rosati Bézout without purity | `rosatiSourceCone_riemannRoch_iff_reflection_zero` | unconditional |
+| Receiver index theorem | `receiver_index_theorem` | unconditional |
+| Width dictionary | `widthDictionary_tfae`, `categoricalWidthDictionary_tfae` | equivalences |
 
----
+## 6. Tools
 
-## 6. Traps
+**Developed.**
+- Switching calculus: cut formula, sparse rigidity, sub-sample monotonicity, fibre superadditivity, co-area.
+- Tower toolkit: regrouping by towers, coset decomposition, KMS–Cholesky, top-site cancellation,
+  multiplicative Schur split with divisor reindexing, $\sum\Lambda(m)/(m\sqrt m)\le8$, dyadic Chebyshev.
+- Reading calculus: closure of blindness, refinement, shadows, trichotomy with precision costs.
+- Reading matrices: rank–trace law, Sobolev/cell/harmonic reweightings preserving $h^0,h^1$.
+- $\mathcal W_\sigma$: Banach algebra, Gelfand spectrum, coefficient functionals, sequence extensions of
+  contractive multiplicative families, coordinate min-modulus untying, Kronecker approximation.
+- Repair calculus: ideal sums/intersections, convolution locality, conjugation symmetry, separated
+  characters onto $\mathbb C^\iota$, finite jet and mixed-data interpolation, cleared continuation identity.
+- Orbit calculus: unit equivalence, monoid preorder, Dirichlet cancellation for $c(1)\ne0$.
+- Selectivity battery as non-objects: `selectivityBattery_goldenDatum_nonObject`,
+  `selectivityBattery_shiftedPair_nonObject`, `selectivityBattery_parityTwins_nonObject`,
+  `selectivityBattery_nodes_nonObject`, `selectivityBattery_finiteAperture_nonObject`,
+  `selectivityBattery_rate_and_precision`.
+
+**To build.**
+- A lower bound on $\mu(A)$ from the switching class of the continuum ledger (Cheeger with
+  archimedean/polar budgets).
+- Signed coset correlations on the lattice head $n\le255$; an aperture-uniform continuum tower bound.
+- An exact index formula below the zero width (reverse inclusion of hulls).
+- A source energy $\Phi\ne$ defect with $\delta(x,y)^2\le\Phi(x)\Phi(y)$ and RR from its definition.
+- A selective section count at/beyond the diagonal coupled to Frobenius mass or $E(s)$.
+- An operator-hull index on the actual cofactor escape module (ADR).
+
+## 7. Open questions
+
+1. Is $\operatorname{hull}(\mu d^{-\varepsilon})$ exactly the translated off-line zero hull below the zero
+   width, with index = visible zero count with multiplicity? (Proved only where both are empty.)
+2. Is $P(c)$ determined by hull plus local orders? (Hull alone is not: non-radical ideals; same ideal,
+   hull and index in distinct unit orbits.)
+3. Does frustration of the continuum ledger bound $\mu(A)$ from below?
+4. Can the continuum all-prime loss $12e^A$ be replaced by a subexponential function of the aperture?
+5. A quantitative relative step $q_j\mu(A_j)\le\mu(A_{j+1})$ compatible with the Gaussian ceiling.
+6. A faithful reading that is also an estimate in one trichotomy branch at its stated precision cost.
+7. Does an orientation coordinate (like $f(2)$ for multiplicative weights) exist for the full Weil form?
+
+## 8. Traps
 
 | Trap | Truth |
 |---|---|
-| Frustration is a small-sample artefact | Unbounded with aperture |
+| Frustration is a small-sample effect | Unbounded at full weight on collar packings |
+| Matched-sample frustration $2|Q|$ | Small-$\alpha$ artefact; quenched at $\alpha=\beta=1$ |
+| Frustration = failure of positivity | Frustrated triangles are paid on canonical paths |
 | Lattice ledger frustrates | Balanced at every aperture; frustration lives between lattice points |
-| Lattice shared payment = RH progress | Restricted test class; continuum bound still costs $e^A$ |
-| $h^0$ counts nodes | Dimension of annihilated tests |
-| Rank counts are selective | Reweighting-invariant; use Frobenius mass or $E(s)$ |
-| Even flip changes amplitudes | Every amplitude reading is blind to it |
-| Critical Wiener kernels form a group | A monoid; units = no zero on the polydisk |
-| No zero on $\Re s\ge\tfrac12$ ⇒ unit | Needs a uniform lower bound |
-| Hull is a complete invariant | Ideal records multiplicity |
-| Annihilator hull of a cofactor module localizes | Faithful modules have full hull |
-| Section effectivity cone is independent effectivity | Membership reads $x^2\ge0$; calibration only |
-| Bézout + ample on Rosati cones ⇒ Weil | Golden datum has both; RR is the selective axiom |
-| A new unit is progress | Dictionary entries are equivalences |
+| Tower domination ⇒ Weil positivity | Odd tower part + arch diagonal only; head $n\le255$ and continuum $e^A$ remain |
+| Rank counts are selective | $h^0$, rank, $h^1$ are reweighting-invariant |
+| Even flip changes amplitudes | Every amplitude and complete-period reading is blind to it |
+| No zero on $\Re s\ge\tfrac12$ ⇒ unit | `not_isUnit_threeTermKernel`; need a uniform bound |
+| Hull is a complete invariant | Ideal records multiplicity (`not_isRadical_paidIdeal_logPower`) |
+| Ideal + hull + index classify unpaid weights | `iterThreeTermConv_smoothPower_chain`: infinitely many unit orbits |
+| Hulls live on the half-plane | `exists_obstruction_not_tied` |
+| Annihilator hull localizes | Faithful modules have full hull (`WeightedWhiteNoise.hull_eq_univ`) |
+| Section/source cones give new effectivity | Exact representation moves all of Hodge index into Bézout |
+| Golden datum fails Bézout on mass cones | Mass (Rosati) cones have Bézout + Ample; RR is selective |
+| Index lower bound ⇒ index formula | Equality only right of the zero width, where both sides are empty |
+| Width functor is deep | The category is a preorder by construction; content = width equalities |
+| RH ⇔ ∃ relative step | Soft: $q=0$ works under RH |
+| Additive aperture transport | Refuted by the Gaussian ceiling; only relative transport survives |
+| Even flip is a symmetry | One-way monoid move on the Möbius receiver |
+| Names in `ConcreteReceiverScales` | Declared in APT, SRT, ACompT namespaces |
+| Clean compile output | Several modules end with `#print axioms` commands |
 
----
+## 9. Context
 
-## 7. Open problems
+| Direction | Programmes (module imports) |
+|---|---|
+| Uses | RHTower 22, TransHorizonIncidenceMechanics 21, ArithmeticCastelnuovoSeveri 16, HTGeometry 8, SquareRootThreshold 7, SignedArithmeticEnergyIncidence 5, ScaleSignedIncidenceCriticality 5, BiScaleUncertainty 4, arithmetic-positivity-theory 3, BezoutValuationIncidence 2, ArithmeticIncidencePositivity 2, ArithmeticCriticalityTheory 2, ArithmeticContinuationAndCriticalEnergy 2, ArithmeticCompensationTheory 2 |
+| Used by | ArithmeticDefectRigidity 16, BiarithmeticGeometry 8, ArithmeticCastelnuovoSeveri 4, SelectivePositivityAndThresholdLaws 2, ScaleSignedIncidenceCriticality 1, BiarithmeticGaugeGeometry 1, ArithmeticOrientationGeometry 1, ArithmeticIncidencePositivity 1, ArithmeticCorrespondencePositivity 1, MainTheorems |
 
-1. **Frustration → $\mu(A)$.** A lower bound on $\mu(A)$ from the switching class of the actual continuum ledger
-   (signed Cheeger constant with archimedean/polar budgets).
-2. **Continuum shared payment.** An aperture-uniform continuum all-prime bound (now $-12e^A\int F^2$); the lattice
-   head $n\le255$ (signed direct coset correlations at small $n$).
-3. **Selective section count at/beyond the diagonal**, coupled to Frobenius mass or $E(s)$, stronger than the mean
-   value theorem and passing the battery. (If the only sections are those the large sieve counts, the field's
-   contribution is its dictionary and battery.)
-4. **A source energy that is not the defect**: arithmetic $\Phi$ with $\delta(x,y)^2\le\Phi(x)\Phi(y)$ and RR from its
-   definition — ACS's open core in section form.
-5. **Index formula below the width**: is $\operatorname{hull}(\mu d^{-\varepsilon})$ exactly the translated off-line zero
-   hull, and the rank the zero count with multiplicity? The reverse inclusion is open.
-6. **Ideals beyond hulls**: is $P(c)$ determined by hull + local orders?
-7. **Aperture jump estimate**: a quantitative bound on the signed new-prime correlation.
-8. **A faithful reading that is an estimate** in one trichotomy branch at its precision cost.
-9. **Wiener index for cofactor modules** that localizes on the actual escape module.
+| Neighbour | Interface |
+|---|---|
+| ScaleSignedIncidenceCriticality | readings, shadows, `Invisible`; AOT adds flips, faithfulness, trichotomy |
+| SignedArithmeticEnergyIncidence | odd Weil ledger, balance, canonical paths; AOT adds index and mass |
+| TransHorizonIncidenceMechanics | `CriticalWiener`, pole laws, Fermi/Möbius receivers; AOT supplies algebra, spectrum, ideals |
+| ArithmeticIncidencePositivity | ratio/product atoms, total crossing kernel; AOT proves tower laws and arch domination |
+| ArithmeticCastelnuovoSeveri | polar surfaces, source cones, curve data; AOT gives section-count forms and boundary rigidity |
+| SquareRootThreshold, BiScaleUncertainty | Nyquist aperture, Chebyshev gauge; AOT identifies diagonal = square-root aperture |
+| ArithmeticDefectRigidity, BiarithmeticGeometry | consume Wiener actions, hulls, cofactor modules, jets |
 
----
+## 10. Big picture
 
-## 8. Selectivity battery
+AOT says the RH problem is a problem of orientation, not of size. Every reading that throws away sign
+information — amplitudes, complete periods, rank counts, finite apertures — provably cannot decide the
+question, and every reading that keeps it pays a precision cost quadratic in the depth it certifies.
+The prime side of the Weil form is not mysterious locally: each prime tower is a Cholesky energy minus a
+mass, the frustrating part is one rank-one square per prime, and the archimedean diagonal already
+dominates all towers at once except for a bounded head and a continuum loss exponential in the aperture.
+The real difficulty is global coupling, not any single prime.
 
-A width-moving claim must pass every applicable test:
-
-| Test | Content | Anchor |
-|---|---|---|
-| golden datum | Beurling $1-5X+5X^2$ impure | `goldenDatum_beurling_not_pure` |
-| shifted pair | fails for $\zeta(s-a)\zeta(s+a)$ | `not_summable_shiftedPairVonMangoldt_windowDilationExponent` |
-| parity twins | separate $\mu$/twin, Fermi/flip | `fermi_evenFlip_parityPair` |
-| nodes | fatal at $\log4$, free at $\log6$ | `zeroPoleBlindPositiveOn_iff` |
-| ceiling | floors decay like $\exp(-\pi e^{2(A-2)})$ | `exists_le_floorLoss_of_floor` |
-| finite data | bounded readings admit off-line extensions | `resolutionLimit_width_aperturePositivity` |
-| rate | use the prime rate in full | `riemannHypothesis_iff_isLeast_primeRate` |
-| function field | reproduce curve Hodge index | `curve_hodgeIndex_tfae` |
-| integrality | exactly one positive square | `riemannHypothesis_iff_one_positive_square` |
-| precision | depth $\beta$ at scale $L$ costs $\beta^2L^3$ | `branchOne_transNyquist_precision_cost` |
-
-Tools to build: a frustration-to-ground-energy bound for the continuum ledger; a selective section count
-beyond the diagonal; an arithmetic source energy with sign-free Bézout and RR.
-
----
-
-## 9. Principles
-
-Counts before estimates; gauge first (check covariance under the flip); name the reading and whether it is
-faithful; pay rank-one charges globally; tag every result with its unit; accompany positivity claims by their
-failure on the battery. Capstones take data only; analytic inputs are proved corpus theorems.
+The Wiener-algebra side shows that payment has a genuine index theory: unpayability is located on a
+compact spectrum, counts zeros of $\zeta$ with multiplicity, and is invariant under units. But every
+proved statement is a lower bound; the matching upper bound — that the obstruction is exactly the
+off-line zeros — is RH-strength. Likewise, every effectivity or section formulation, once made exact,
+returns the Hodge index unchanged. The lesson for the programme: reformulations are coordinates on one
+width line, and frustration is abundant yet paid. Progress requires an estimate that keeps orientation
+through the limit — a selective count, a source energy not equal to the defect, or control of the
+continuum coupling between towers.

@@ -42,31 +42,31 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
 
 - **A1. Top-band joint cancellation (SSH) — formalized.** `exists_abs_jointWitnessCoefficient_le_uniform_overlap` gives `Kφ G(c + 1 + log N)` uniformly for `1 ≤ c ≤ N/4`, hence `Oφ(G(1 + log N))` for `c ≤ log N`. The pole-row lattice estimate and Laplace factorization discharge the cancellation. Direct Lean and axiom audits passed. [Uniform bound](../../drafts/pipeline/3-formalized/joint-top-band-payment-uniform-in-overlap.md).
 - **A2. Growing Euler heads (AID) — formalized.** `eventually_eulerHead_negative_family` gives every prescribed negative dimension once the head and horizon are large enough. The log-power-head corollary gives unbounded index along every positive log-power schedule. Direct Lean and transitive axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/growing-euler-heads-have-unbounded-negative-index.md).
-- **A3. Explicit finite-sieve conductor confinement — formalized.** `exists_sieveProfile_ramanujan_approximation_explicit` gives closed horizon and conductor cutoffs for every prescribed relative squared error in actual harmonic class mass, uniformly over profile coefficients. Direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/finite-sieve-profiles-have-explicit-conductor-cutoffs.md). Complete negative-packet confinement is being checked separately.
-- **A4. Effective horizons** for fixed-c positivity and the explicit full-index schedules remain. **Full-index Steklov exhaustion is formalized:** `steklovDCProfile_atomicGram_reaches_index` gives convergence to the entire Weil index at width `(log log N)(log log log N)^β/N` for every `β>2`, with direct Lean and axiom audits. [Proof](../../drafts/pipeline/3-formalized/the-steklov-schedule-reaches-the-whole-index.md).
-- **A5. Haar branch:** first-prime, coarse, polar and head payments on fixed finite cells and finite sources.
+- **A3. Explicit conductor confinement — formalized.** `exists_sieveProfile_ramanujan_approximation_explicit` gives closed horizon and conductor cutoffs for prescribed relative squared error in actual harmonic class mass, uniformly over profile coefficients. [Finite-sieve proof](../../drafts/pipeline/3-formalized/finite-sieve-profiles-have-explicit-conductor-cutoffs.md). Every nonpositive unit complete Weil packet at `N≥Hc^8` also has conductor cutoff `R≤exp(D(Cc^16+1))`, uniformly in horizon and coefficients. [Complete-packet proof](../../drafts/pipeline/3-formalized/negative-weil-packets-have-exponential-conductor-cutoffs.md). Both passed direct Lean and transitive axiom audits.
+- **A4. Explicit positivity horizons are formalized for every fixed `c>0`:** proved conductor cutoffs and residual constants give finite horizon inequalities for the actual complete matrix, with direct Lean and transitive axiom audits. [Certificate for `c≥1`](../../drafts/pipeline/3-formalized/complete-weil-positivity-above-an-explicit-logarithmic-horizon.md); [one uniform certificate for `0<c≤1`](../../drafts/pipeline/3-formalized/one-explicit-horizon-makes-every-touching-ratio-positive.md). [Finite-family index certificates](../../drafts/pipeline/3-formalized/every-finite-weil-family-has-an-explicit-index-horizon-test.md) also passed: actual Euler–Maclaurin entry budgets retain the entire negative index when the explicit compressed inequalities hold. [Exact Steklov schedule certificates](../../drafts/pipeline/3-formalized/steklov-index-certificates-cover-every-integer-horizon.md) also passed direct Lean and axiom audits, including every integer horizon. **Full-index Steklov exhaustion is formalized:** `steklovDCProfile_atomicGram_reaches_index` gives convergence to the entire Weil index at width `(log log N)(log log log N)^β/N` for every `β>2`, with direct Lean and axiom audits. [Proof](../../drafts/pipeline/3-formalized/the-steklov-schedule-reaches-the-whole-index.md).
+- **A5. Full-source fixed-coarse index bound — formalized.** A universal detail head `A` bounds the negative dimension of the literal full Weil form by `R+A` at coarse cutoff `R`, uniformly in detail coefficients and upper horizon. All primes, Gamma and polar interactions are included; direct Lean and transitive axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/fixed-coarse-cells-control-the-entire-haar-weil-index.md). Joint finite first-prime mixing also retains any Gamma fraction below one and both exact polar moments; its negative dimension is at most `A+1`. [Joint payment and Lean audit](../../drafts/pipeline/3-formalized/finite-first-prime-mixing-shares-the-full-polar-reserve.md).
 - **A6. The matched class Hodge index on a finite sieve — formalized.** `eventually_sieveHodgeGram_one_positive_direction` proves exactly one positive direction for `P_N − (log N − γ − η)I`, for `0 < η < 2 log 2`, on every full finite-sieve partition. One horizon works for every sieve, including growing sieves. The existing all-vector prime gap supplies the shared polar hyperplane. [Proof and Lean audit](../../drafts/pipeline/3-formalized/matched-prime-form-hodge-index-uniform-in-the-sieve.md). Transfer to the complete Weil form remains open (§2.5 O2).
 
 **Theta and heat.**
 
 - **A7.** Theta Hankel ranks nine, ten, … by seam-split piece certificates, each stated as flux domination through the square-plus-flux identity. Rank-N PSD reduces to positivity of the native tail.
-- **A8. The graded heat ladder — formalized.** `stretchedExponential_deep_density_of_nonrealZeroCount` gives `C log X exp(K(log X)^{4α})`; `subpower_deep_density_of_subcritical_nonrealZeroCount` gives `X^ε` eventually for every `ε>0` when `α<1/4`. The existing polynomial rung has exponent `4a+1`. Direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/heat-count-stretched-exponential-density-ladder.md).
-- **A9.** HCF/LA: further finite degrees on the log2/log3 grids and Jensen degrees.
+- **A8. The graded heat ladder — formalized.** Inverse-logarithmic persistence gives `#F≤C log X·N(cd²/log X)`, uniformly in depth. Thus `N(t)≤exp(A t^{−α})` gives subpower deep-zero density for `α<1`, and polynomial growth gives polylogarithmic exponent `a+1`. These improve the earlier `α<1/4` and `4a+1` transfers. [Proof and Lean declarations](../../drafts/pipeline/3-formalized/the-heat-count-ladder-at-inverse-logarithmic-heat.md).
+- **A9. Every fixed Jensen degree is eventually real-rooted — formalized.** `eventually_splits_xiJensenPoly` transports separated Hermite sign changes through the proved actual coefficient limit. Direct Lean and transitive axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/every-fixed-xi-jensen-degree-is-eventually-real-rooted.md). Further finite degrees on the log2/log3 grids remain.
 
 **Fixed-aperture positivity.**
 
-- **A10.** RW, EWU, OWU, ACT: further fixed-radius floors and odd witnesses; effective shift thresholds for fixed-support collars.
+- **A10. Effective collar shifts and aperture improvement — formalized.** Closed shift thresholds cover every integer atom outside `{2,3,4,5,7}` and every finite family of such atoms. [Proof](../../drafts/pipeline/3-formalized/shifted-collars-have-explicit-payment-thresholds.md). [Odd witnesses](../../drafts/pipeline/3-formalized/odd-liouville-witnesses-fit-every-radius-above-twenty-seven-fiftieths.md) fit every radius `r>27/50`, retaining zeta margin `1/25` and Liouville margin `−3/10`. An [explicit aperture strictly above `181/500`](../../drafts/pipeline/3-formalized/a-fixed-weil-floor-survives-an-explicit-aperture-enlargement.md) retains full Weil floor `1/8000` for every real or complex C² test. All passed direct Lean and transitive axiom audits.
 
 **Selection and index bookkeeping.**
 
 - **A11. Finite flip thresholds — formalized.** `tiltedUnitSpline_finiteFlip_resolutionThreshold_spec` specializes the existing all-finite-set theorem to the explicit tilted spline, with no profile conditions left to prove. Every nonempty finite prime set has a positive finite threshold, eventual positivity below it and a unit negative packet above it. Direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/every-finite-prime-flip-has-a-tilted-spline-threshold.md).
-- **A12.** PW-B: restate the native two-response action on source data, removing `XiZeroCopy` indexing.
+- **A12. Native source-data action — formalized.** The action is defined directly on raw source functions and event kernels; responses are constructed by integration. Exact theta-data pullback, absolute admission, cutoff contact and exhaustion limit passed direct Lean and transitive axiom audits. [Proof](../../drafts/pipeline/3-formalized/native-two-response-action-on-source-data.md). An independent realization remains B7.
 
 **Foundations and programmes.**
 
-- **A13.** ACS 𝔽₃ elliptic base: product formula, quotient measures, Iwasawa characters, Eisenstein unfolding.
+- **A13. Actual elliptic product formula, analytic Euler product and additive quotient — formalized.** Every nonzero function on `y²=x³−x` over `𝔽₃` has finite place support and total normalized magnitude one in the [actual adelic completions](../../drafts/pipeline/3-formalized/elliptic-product-formula-uses-the-actual-adelic-completions.md). Actual closed-point counts identify the formal Euler product with the zeta series; the [unordered analytic product equals the nonzero zeta function on `|u|<1/3`](../../drafts/pipeline/3-formalized/elliptic-closed-places-give-the-analytic-euler-product.md). The [additive quotient has Haar probability and covolume one](../../drafts/pipeline/3-formalized/elliptic-adeles-have-a-volume-one-simple-pole-domain.md). All passed direct Lean and transitive axiom audits. [Actual idele spectral characters](../../drafts/pipeline/3-formalized/actual-elliptic-ideles-have-continuous-spectral-characters.md) are continuous and trivial on diagonal field units, with the same audits. Unipotent quotient, loop Iwasawa characters and Eisenstein unfolding remain.
 - **A14. Full Ξ-divisor depth identity — formalized for `σ>1`.** `sub_mul_xiSamePointResolvent_sub_logDeriv` proves `(σ−1/2)S−Re(ξ′/ξ)=D`, with absolute convergence of both series and `D≥0`. The Euler and archimedean terms are also opened exactly. [Proof and Lean audit](../../drafts/pipeline/3-formalized/the-full-xi-resolvent-depth-identity.md).
-- **A15.** MC growing-modulus shell transfer is formalized: uniformly for `q≤(log Y)^A`, every logarithmic error rate `Cφ c/(log Y)^k` holds once `X≥2cY`; direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/growing-conductor-reciprocal-shell-transfer.md). WL: higher-order scalar-jet transfer for general prime families. CTF: terminal and Euler-completion bookkeeping.
+- **A15.** MC growing-modulus shell transfer is formalized: uniformly for `q≤(log Y)^A`, every logarithmic error rate `Cφ c/(log Y)^k` holds once `X≥2cY`; direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/growing-conductor-reciprocal-shell-transfer.md). WL: support-size scalar-jet recovery is formalized for arbitrary prime families and arbitrary complex coefficients, at every complex base point. [Proof and Lean audit](../../drafts/pipeline/3-formalized/arbitrary-prime-support-is-detected-by-finitely-many-scalar-jets.md). CTF completion is formalized with horizon `Tₙ=(n+1)(Mₙ+1)²`, error at most `1/(n+1)` and the signed terminal correction retained. [Proof and Lean audit](../../drafts/pipeline/3-formalized/euler-completion-along-growing-source-cutoffs.md). All-order Euler/jet identities and multiplicity-to-jet vanishing are formalized. [Proof and Lean audit](../../drafts/pipeline/3-formalized/general-prime-logarithmic-higher-jet-transfer.md). Same-order mixed-jet recovery for three or more primes remains separate.
 
 ## 2.2 Open mathematical problems
 
@@ -86,7 +86,7 @@ Nobody knows how to produce these. Strength tags:
 | # | Problem | Strength | Corpus form |
 |---|---|---|---|
 | **B1** | Complete Weil positivity at RH-complete overlap | [RH] | Positivity eventually in N for c⁴/log N → ∞, or at every Kc*_N, c*_N ≍ L(log L)². Margin = synthesis error there. |
-| **B2** | Signed joint edge payment | [sub] | W ≥ ac⁻⁷(D − C log(2c)‖x‖²) for all vectors: shells, Euler heads and pole paid together at the cutoff edges. Separate shell payment is capped at A²/(2ε), absolute head payment ends at (log A)², defect-only capture is exponential. |
+| **B2** | Signed joint edge payment at a controlled horizon | [sub] | W ≥ ac⁻⁷(D − C log(2c)‖x‖²) is formalized for every fixed c, eventually in N, uniformly over vectors. A prescribed growing-overlap horizon and the agreement-shell decomposition remain open. |
 | **B3** | Positive supersolution of the full arithmetic generator | [RH] | The odd Markov form is never subcritical; every obstruction is prime. |
 | **B4** | Rank-uniform theta / heat positivity | [RH] | Flux domination uniformly in rank; Λ_dBN = 0; all-degree Jensen. |
 | **B5** | A source law for the same-point side | [RH] | Force the two reconstructed orientations of the Ξ resolvent to agree, equivalently S = W, the Hecke defect = 0 or D(s) = 0. Explicit formulas compute only W. |
@@ -99,7 +99,7 @@ Nobody knows how to produce these. Strength tags:
 | # | Problem | Strength | Corpus form |
 |---|---|---|---|
 | **B9** | Finite Krein index | [FS] | κ < ∞ ⟺ t-uniform heat count ⟺ eventual criticality. |
-| **B10** | Growth of the heat count N(t) as t ↓ 0 | [sub] | Known exp((2/3+ε)/t). Polynomial growth gives polylog deep density; exp(Ct^{−α}), α < 1/4, gives X^{o(1)}. Depth counting alone cannot bound it (polynomial no-go). |
+| **B10** | Growth of the heat count N(t) as t ↓ 0 | [sub] | Known exp((2/3+ε)/t). Polynomial growth gives polylog deep density; exp(Ct^{−α}), α < 1, gives X^{o(1)}. Depth counting alone cannot bound it (polynomial no-go). |
 | **B11** | A square-root producer over ℤ | [RH] | Parity-selective integer auxiliaries of controlled height. Adams costs 2^{qr}; factorial ratios cost 2 log 2. |
 | **B12** | Quadratic effectivity / Rosati heights | [RH] | Subquadratic h⁰ on degree-zero classes of the scaling surface; infinite genus blocks a constant. |
 | **B13** | A non-envelope amplifier seed | [RH] | Any subexponential bound on the scaling orbit correlation of one generic cycle. Orthogonal families cancel their gain. |
@@ -152,9 +152,38 @@ Why this question:
 
 Subquestions:
 
-- A1 (top-band cancellation). Then the same joint coefficient on the next witness family: Ramanujan modes perturbed on the top band.
-- A2 (growing heads), followed by the joint head–pole–tail version: does PNT on windows cancel the √Y coupling?
-- A Ramanujan–Plancherel decomposition of the shell block (§2.5 O1).
+- **A1, nonpolar Ramanujan top-band cancellation — yes, formalized.** On
+  `u_m+ηu_m1_T`, `m≥2`, the actual joint coefficient is bounded by
+  `Kφ mφ(m)G(1+log N)`, uniformly for `N≥8` and `1≤c≤N/4`.
+  The exact quadratic identity retains both pole cross terms and the quadratic
+  pole term. More generally, any bounded base and independent mean-zero periodic
+  top-band perturbation satisfy the same overlap-uniform logarithmic bound.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/nonpolar-ramanujan-top-band-cancellation.md).
+- **A2, joint head–pole–tail cancellation — yes, formalized.** On the actual
+  detail–far-window witnesses, the literal all-prime mixed source minus both
+  polar terms is `o(√Y)`. The prime tail and both pole moments are retained
+  exactly. Cancellation is uniform over bounded coefficients on every fixed
+  finite family; growing detail or window indices are outside this statement.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/the-full-prime-window-cancels-the-growing-head-pole.md).
+- A Ramanujan–Plancherel decomposition of the shell block (§2.5 O1) remains open.
+  **Two-conductor top-band step — formalized:** on `a=α+βc_m/√φ(m)`, `m≥2`,
+  `J(a,a)−α²J(1,1)` is bounded by `Kφ,m,α,β G(1+log N)`, uniformly for
+  `N≥8`, `1≤c≤N/4`, with explicit conductor and coefficient dependence.
+  Both mixed orientations are retained.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/two-conductor-top-band-polar-channel.md).
+  The downward divisor jet has an exact positive divisor-edge completion and
+  finite adjunction spectrum: for `F=Σ_(k|M)f(k)c_k`,
+  `E_M(f)=M⁻¹Σ_(d|M)φ(d)[log d+tameDifferent(d)]F(M/d)²`.
+  Reciprocal Ramanujan modes give its complete eigenbasis, retaining every
+  valuation boundary.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/finite-divisor-jet-adjunction-spectrum.md).
+  Finite signed-source smoothing preserves an exact positive edge-square
+  completion and gives a positive adjunction lag kernel.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/autocorrelation-divisor-jet-square-completion.md).
+  The lag charge remains positive with compact source profiles at arbitrary
+  real shifts, including exact logarithmic positions.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/profiled-adjunction-lag-kernel.md).
+  The full Weil agreement-shell identity remains open.
 
 **Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**
 
@@ -170,19 +199,30 @@ Why this question:
 
 Subquestions:
 
-- (σ − 1/2)S(s) − Re ξ′/ξ(s) at one σ > 1 as a theta–prime expression.
-- A theta-prefix reading of the collision charge on a window, with an explicit error.
-- The ℤ-analogue of "every circle-calibrated explicit formula is the Rosati pairing" over 𝔽_q.
+- **Theta–prime expression — formalized at `s=4`.** `xiResolventDefect_four_eq_thetaPrime`
+  expresses the defect using two convergent limits of finite integer theta-prefix
+  readings, the Gamma factor, and `ΣΛ(n)n⁻⁴`. The source definition contains no zero
+  locations. [Proof and Lean audit](../../drafts/pipeline/3-formalized/theta-prime-expression-for-the-resolvent-depth.md).
+- **Theta-prefix collision reading — formalized.** `finiteThetaCollisionReading_error`
+  gives the exact window charge an error bound valid from a defined separation
+  threshold. The reading and prefix schedule use no zero locations; the error's
+  separation parameters use the finite divisor. Convergence and eventual exact
+  integer rounding are proved. A bound below the first collision quantum remains
+  open. [Proof and Lean audit](../../drafts/pipeline/3-formalized/theta-prefix-reading-of-horizontal-collision-charge.md).
+- **Integer calibration — formalized.** `tsum_explicit_eq_xiWeilPolarization` identifies
+  every entire line-calibrated explicit statistic with Weil's polarization;
+  `norm_sq_sub_explicit_eq_half_reflectionDefect` gives its exact Hilbertian defect.
+  Both transitive axiom audits contain only the standard three axioms.
 
 **Q3. How fast can the de Bruijn–Newman nonreal count N(t) grow as t ↓ 0?**
 
-Rungs, all exact consequences of `exists_card_deep_le_mul_nonrealZeroCount` and the depth law (A8):
+Rungs, using the uniform inverse-logarithmic persistence law (A8):
 
 | Growth of N(t) | Consequence |
 |---|---|
 | bounded | finite off-line support, hence LH [FS] |
-| ≤ At^{−a} | O((log X)^{4a+1}) zeros of depth ≥ δ in [X, 2X] [sub] |
-| ≤ exp(Ct^{−α}), α < 1/4 | X^{o(1)} such zeros [L] [sub] |
+| ≤ At^{−a} | O((log X)^{a+1}) zeros of fixed depth ≥ δ in [X, 2X] [sub] |
+| ≤ exp(Ct^{−α}), α < 1 | X^{o(1)} such zeros [L] [sub] |
 | ≤ C R log R, R = 2π exp((2/3+ε)/t) | known [L] |
 
 Why this question:
@@ -192,7 +232,9 @@ Why this question:
 - **It is selective by itself.** Finite ζ index forces infinite index for every single-prime flip [L].
 - **The corpus has three attack surfaces:**
   - localized dissipation through collisions and t = 0 [K];
-  - persistence of deep zeros for t ≲ δ²/log⁴X [S];
+  - persistence of deep zeros for `t log X≤cδ²`, with constants uniform in
+    depth and height; `#F≤C log X·N(t)` on each dyadic window. Direct Lean and
+    transitive axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/wd-shrinking-window-heat-persistence.md);
   - the two-sided high-count law [S].
 - **It has a sharp warning.** On real polynomials the heat flow has no depth budget: a deep pair holds a shallow pair off the axis [S]. A bound on N(t) must therefore use Ξ-specific input, such as the zero density (log T)/2π or prime structure, not depth alone.
 
@@ -200,7 +242,11 @@ Subquestions:
 
 - Which rung does the localized dissipation inequality give once its outer flux C log X·∫E_outer is summed over heights?
 - An arithmetic ceiling for one nonblind prime tower.
-- A global monotone functional for the zero dynamics (§2.5 O3).
+- **Global functional — formalized.** The full multiplicity-weighted squared-depth
+  energy is continuous and nonincreasing for positive times, satisfies
+  `E(b)+2∫_a^b N(t)dt≤E(a)`, and vanishes exactly when all heat zeros are real.
+  No finite initial energy or improved growth rung follows yet.
+  [Proof and Lean audit](../../drafts/pipeline/3-formalized/the-global-heat-depth-energy-dissipates.md).
 
 ## 2.4 A wildly different route
 
@@ -270,7 +316,10 @@ Each item is a mechanism that would create positivity or precision from structur
 - **What it would give:**
   - B2 by identity, hence polynomial confinement and a direct attack on B1.
   - Selectivity built in: for a twin the disagreement shells enter with the opposite sign.
-- **First test:** the joint witness coefficient (A1), then the same identity on two-conductor packets at growing c.
+- **First test:** the joint witness coefficient (A1) and the joint top-band coefficient
+  on two-conductor packets are now controlled uniformly in overlap. Only the
+  polar–polar entry remains outside the logarithmic bound. The complete-form
+  sum-of-squares identity on these packets remains open.
 
 **O2. A Hasse principle for the Krein index.**
 
@@ -291,9 +340,17 @@ Each item is a mechanism that would create positivity or precision from structur
 - **The setting:**
   - The zeros of H_t move by the reciprocal field of the other zeros.
   - The corpus has localized energies with a dissipation inequality through collisions [K], and a lower bound for N(t) by deep zeros [S].
-  - It has no global functional, and the polynomial no-go shows that depth alone is not monotone [S].
-- **The opportunity:** a global functional F(t) of the zero configuration with dF/dt ≤ −c·N(t) + (controlled flux), for example a renormalized transverse energy 𝓔 (AES, where RH ⟺ 𝓔 < 1).
-- **What it would give:** an integral bound ∫N(t)dt, hence a rung of the heat ladder (Q3), hence a density statement beyond the density hypothesis. A strict quantum in 𝓔 per off-line zero would turn it into finite support.
+  - The full squared-depth energy now satisfies `E(b)+2∫_a^b N≤E(a)` for
+    `0<a≤b`, with no exterior flux. It is continuous through collisions and
+    vanishes exactly when every heat zero is real.
+    [Proof and Lean audit](../../drafts/pipeline/3-formalized/the-global-heat-depth-energy-dissipates.md).
+  - The polynomial obstruction concerns individual depths and count thresholds;
+    it does not contradict monotonicity of total squared depth.
+- **Remaining opportunity:** control `E(t)` as `t↓0`, or construct a finite
+  renormalized initial energy that retains the dissipation law.
+- **What remains needed:** positive-time dissipation alone supplies no growth
+  rung. An initial-energy bound would control the integrated nonreal count;
+  a strict energy quantum per nonreal zero would additionally constrain support.
 
 **O4. Integrality as margin through the additive reading.**
 

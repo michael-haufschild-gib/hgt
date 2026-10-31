@@ -1239,12 +1239,11 @@ private theorem smooth_eq_zero_of_radius {f : ℝ → ℝ} {R : ℝ} (hf : ∀ x
       rw [hf _ hxt, mul_zero]
   simp only [h0, integral_zero]
 
-/-- **Simultaneous Smooth Odd Two-Prime Witness on `[-23/40, 23/40]`:**
-There exists an explicit odd `F ∈ C²_c(ℝ)` supported in `[-23/40, 23/40]` with `0 < ∫ F²` such
-that simultaneously `(1 / 25) ∫ F² < Re W_ζ(F ⋆ F̃)` and `Re W_{λΛ}(F ⋆ F̃) < -(3 / 10) ∫ F² < 0`. -/
-theorem exists_smooth_odd_twentyThreeFortieths_zeta_pos_liouville_neg :
+/-- Every radius above `27/50` retains both strict margins of the cubic-quintic odd witness. -/
+theorem exists_smooth_odd_zeta_pos_liouville_neg_of_gt_twentySevenFiftieths
+    {r : ℝ} (hr : 27 / 50 < r) :
     ∃ F : ℝ → ℝ, ContDiff ℝ 2 F ∧ HasCompactSupport F ∧
-      (∀ x, F (-x) = -F x) ∧ (∀ x, 23 / 40 < |x| → F x = 0) ∧ 0 < (∫ x, F x ^ 2) ∧
+      (∀ x, F (-x) = -F x) ∧ (∀ x, r < |x| → F x = 0) ∧ 0 < (∫ x, F x ^ 2) ∧
       (1 / 25 : ℝ) * (∫ x, F x ^ 2) <
         (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
           (EF.weilTest (fun x => (F x : ℂ)) (fun x => (F x : ℂ)))).re ∧
@@ -1300,8 +1299,16 @@ theorem exists_smooth_odd_twentyThreeFortieths_zeta_pos_liouville_neg :
         (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re -
         (-(3 / 10 : ℝ) * autocorr f 0) < 0 := sub_neg.mpr hliouv_neg
     exact (hdiff.eventually (Iio_mem_nhds hneg)).mono fun _ hk => sub_neg.mp hk
-  obtain ⟨k, hk50, hknorm, hkzeta, hkliouv⟩ :=
-    ((eventually_ge_atTop 50).and (hev_norm.and (hev_zeta.and hev_liouv))).exists
+  have hwidth : Tendsto (fun k : ℕ => 1 / (4 * ((k : ℝ) + 1))) atTop (𝓝 0) := by
+    have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (1 / 4 : ℝ)
+    simp only [mul_zero] at h
+    apply h.congr'
+    filter_upwards with k
+    field_simp
+  have hev_radius := hwidth.eventually (Iio_mem_nhds (sub_pos.mpr hr))
+  obtain ⟨k, hk50, hkr, hknorm, hkzeta, hkliouv⟩ :=
+    ((eventually_ge_atTop 50).and (hev_radius.and
+      (hev_norm.and (hev_zeta.and hev_liouv)))).exists
   have hk_narrow : ∀ x : ℝ, 109 / 200 < |x| → smooth f k x = 0 := by
     intro x hx
     apply smooth_eq_zero_of_radius hfR k
@@ -1322,12 +1329,25 @@ theorem exists_smooth_odd_twentyThreeFortieths_zeta_pos_liouville_neg :
   refine ⟨smooth f k, (smooth_contDiff hf2 k).of_le (by norm_num),
     smooth_compact f.hasCompactSupport k,
     smooth_odd_of_odd cubicQuinticFun_neg k,
-    fun x hx => hk_narrow x (by linarith),
+    (fun x hx => smooth_eq_zero_of_radius hfR k
+      (by dsimp only [witnessR]; linarith only [hkr, hx])),
     hk_ac0 ▸ hknorm,
     hk_ac0 ▸ hkzeta,
     ?_⟩
   rw [hk_liouv_eq, ← hk_ac0]
   exact hkliouv
+
+/-- The simultaneous odd zeta-positive and Liouville-negative witness at radius `23/40`. -/
+theorem exists_smooth_odd_twentyThreeFortieths_zeta_pos_liouville_neg :
+    ∃ F : ℝ → ℝ, ContDiff ℝ 2 F ∧ HasCompactSupport F ∧
+      (∀ x, F (-x) = -F x) ∧ (∀ x, 23 / 40 < |x| → F x = 0) ∧ 0 < (∫ x, F x ^ 2) ∧
+      (1 / 25 : ℝ) * (∫ x, F x ^ 2) <
+        (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+          (EF.weilTest (fun x => (F x : ℂ)) (fun x => (F x : ℂ)))).re ∧
+      (weilFullFunctional liouvilleTwistedVonMangoldt
+        (EF.weilTest (fun x => (F x : ℂ)) (fun x => (F x : ℂ)))).re <
+        -(3 / 10 : ℝ) * (∫ x, F x ^ 2) :=
+  exists_smooth_odd_zeta_pos_liouville_neg_of_gt_twentySevenFiftieths (by norm_num)
 
 /-- **Strict Negativity of the Liouville Ground Eigenvalue on `[-23/40, 23/40]`:**
 `liouvilleWindowGroundEigenvalue (23 / 40)` is finite (bounded below) and strictly less than
@@ -1344,6 +1364,20 @@ theorem liouvilleWindowGroundEigenvalue_twentyThreeFortieths_lt_neg_threeTenths 
   have hmem : qF ∈ liouvilleWindowRayleighSet (23 / 40) := ⟨F, hF2, hFc, hsupp, hnorm, rfl⟩
   have hlt : qF < -(3 / 10 : ℝ) := (div_lt_iff₀ hnorm).mpr hliouv
   exact (csInf_le hbdd hmem).trans_lt hlt
+
+/-- The Liouville ground energy is below `−3/10` at every radius above `27/50`. -/
+theorem liouvilleWindowGroundEigenvalue_lt_neg_threeTenths_of_gt_twentySevenFiftieths
+    {r : ℝ} (hr : 27 / 50 < r) :
+    BddBelow (liouvilleWindowRayleighSet r) ∧
+      liouvilleWindowGroundEigenvalue r < -(3 / 10 : ℝ) := by
+  have hbdd := bddBelow_liouvilleWindowRayleighSet (by linarith only [hr] : 0 < r)
+  refine ⟨hbdd, ?_⟩
+  obtain ⟨F, hF2, hFc, _, hsupp, hnorm, _, hliouv⟩ :=
+    exists_smooth_odd_zeta_pos_liouville_neg_of_gt_twentySevenFiftieths hr
+  set qF : ℝ := (weilFullFunctional liouvilleTwistedVonMangoldt
+    (EF.weilTest (fun x => (F x : ℂ)) (fun x => (F x : ℂ)))).re / (∫ x, F x ^ 2)
+  have hmem : qF ∈ liouvilleWindowRayleighSet r := ⟨F, hF2, hFc, hsupp, hnorm, rfl⟩
+  exact (csInf_le hbdd hmem).trans_lt ((div_lt_iff₀ hnorm).mpr hliouv)
 
 /-! ## §3. Lattice-to-Continuum Prime-Tower Obstruction & Pole-Neutralized Width Law (Question 6) -/
 
@@ -1929,3 +1963,6 @@ theorem continuum_poleNeutralized_width_equivalence {σ : ℝ} (hσ : 0 ≤ σ) 
   tfae_finish
 
 end GaloisForLFunctions.SelectivePositivityAndThresholdLaws
+
+#print axioms GaloisForLFunctions.SelectivePositivityAndThresholdLaws.exists_smooth_odd_zeta_pos_liouville_neg_of_gt_twentySevenFiftieths
+#print axioms GaloisForLFunctions.SelectivePositivityAndThresholdLaws.liouvilleWindowGroundEigenvalue_lt_neg_threeTenths_of_gt_twentySevenFiftieths

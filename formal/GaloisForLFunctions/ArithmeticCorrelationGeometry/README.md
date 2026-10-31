@@ -1,180 +1,212 @@
 # Arithmetic Correlation Geometry (ACG)
 
-Namespace `GaloisForLFunctions.ArithmeticCorrelationGeometry`; umbrella `ArithmeticCorrelationGeometry.lean`.
+Namespace `GaloisForLFunctions.ArithmeticCorrelationGeometry`; umbrella `ArithmeticCorrelationGeometry.lean`; 27
+modules. All results unconditional; RH appears only inside proved equivalences.
 
-**Question.** How do additive relations among integers constrain signed multiplicative correlations, and how can
-those constraints become global spectral bounds without losing their boundary information?
+## 1. Motivation
 
-**Organizing fact: multiplicative observation has a symmetry group.** The **gauge torus** $G=(\mathbb R/\mathbb Z)^{\text{primes}}$
-acts on sources by unimodular completely multiplicative twists $\chi_x(n)=\prod_pe(x_pv_p(n))$. Every correlation built
-from product coincidences is constant on gauge orbits; every additive relation ($ab-cd=h\ne0$, $n\mapsto an+b$ with
-$b\ne0$, the successor) is **gauge charged** (mean zero). Multiplicative data determine a source exactly up to its
-gauge orbit. The arithmetic content of a signed additive–multiplicative statement is a property of **one gauge point**,
-the actual source ($x=0$).
+Multiplicative observation of a source has a symmetry group: the **gauge torus** $G=(\mathbb R/\mathbb Z)^{\text{primes}}$ of
+completely multiplicative unimodular twists. Every statistic built from product coincidences is constant on gauge orbits;
+every additive relation (successor, $ab-cd=h\neq0$, affine maps with $b\ne0$) has gauge mean zero. ACG makes this the
+organising fact: square-root laws (RH, Chowla) hold at Haar-almost every gauge point, fail at explicit twins, and at the
+point $0$ (the actual source) are the conjectures. It asks where a sign specific to $\zeta$ can come from once
+multiplicative information is exhausted.
 
-**Central picture.** The square-root laws RH and Chowla ask for hold at **Haar-almost every** gauge point, fail at
-the Liouville twin, and at the point $0$ are the conjectures themselves; the exceptional set is **null but comeager**.
-RH asks whether $0$ is typical — and no finite-precision information about prime phases can decide it.
+## 2. Objects
 
----
-
-## 1. Place in the research
-
-Walls: a signed estimate at an RH scale (W1), its survival through apertures/damping/assembly (W3), a source-defined
-carrier with an independent sign (W14). ACG says where a sign can come from once multiplicative information is
-exhausted: whatever multiplicative information proves holds on the whole orbit, so a sign specific to $\zeta$ must be
-gauge charged.
-
-| Programme | Interface |
-|---|---|
-| TransThresholdPairCorrelation | Coalescent surplus at $4/3$ is pure gauge charge; budget holds for a.e. twist; open problem = gauge point 0 |
-| SquareRootThreshold, ArithmeticKunnethTheory | Archimedean family = one line in $G$; below threshold it computes gauge moments exactly |
-| SignedSuccessorArithmetic | Dilation cocycle = gauge covariance of CM signs; sign gauge sees square and Pell pairs |
-| BiarithmeticGeometry, BiarithmeticGaugeGeometry | Finite horizon, affine action, escaped cells; cell holonomy |
-| ArithmeticDefectRigidity | Escape states = spectral measures on $G$; gauge mass = energy ratio |
-| ArithmeticPositiveDuality | Affine positivity induced from dilations; Herglotz–Bochner on $\mathbb Q_{>0}$ |
-| MultiplicativePositivityGeometry | Gauge-invariant positivity forces only $\Re s=1$ |
-| `RHTower` | PNT, squarefree density, Littlewood/von Koch criteria |
-
----
-
-## 2. Why
-
-**Blindness theorems are gauge theorems.** Coefficient-blind correlation moduli, twist-invariant window extremes
-(BSU), boundary-only multiplicative forcing (MPG), free affine extensions (APD) are one statement: by unique
-factorization a twisted monomial averages to itself iff its products coincide, else to zero.
-
-**Additive relations are gauge charged.** Distinct successor pairs have distinct ratios, so a successor correlation
-has gauge mean 0 and gauge variance $\sum|a_n|^2|a_{n+h}|^2$: its *energy* is multiplicative information, its value and
-sign are not.
-
-**The threshold is the price of one line.** Heights $t\mapsto n^{it}$ trace one line in $G$; a window average equals the
-torus average exactly while the window separates the products that occur; beyond it the excess is the
-**near-incidence form** (gauge mean zero at every order). Montgomery–Vaughan and the square-root threshold are this fact.
-
-**Boundaries carry the archimedean place.** In a finite presentation with absorbing boundary, the escaped mass of a
-dilation at weight $n^{-\sigma}$ tends to $\log a$ exactly at $\sigma=\tfrac12$ (0 above, ∞ below); for gauge-charged sources
-the critical weight halves to $\tfrac14$. The boundary separates gauge-equivalent sources: $\mu$ and its twin $\mu^2$ share
-all multiplicative data; their boundaries are $\to0$ (PNT) and $\ge1/100$.
-
----
-
-## 3. Objects and language
-
-| Object | Meaning | Lean |
+| Object | Lean | Meaning |
 |---|---|---|
-| Gauge torus, Haar | one phase per prime | `GaugeTorus`, `gaugeHaar` |
-| Twist, twisted source | $\chi_x(n)$; $(\chi_xa)(n)$ | `twist`, `twisted` |
-| Archimedean point | $\chi(n)=n^{2\pi i\xi}$ | `archPoint` |
-| Dirichlet gauge point | $\chi\bmod q$ with $p\mid q$ values reset to 1 | `dirichletGauge` |
-| Sign twist | 2-torsion of $G$ | `primeSignTwist` |
-| Pair form, ratio energy | $\sum w(m,n)\chi(m)\bar\chi(n)$ | `pairForm` |
-| Successor correlation | $C_h(a)=\sum a_n\bar a_{n+h}$ | `succCorr` |
-| Near-incidence form | off-diagonal of a windowed mean square | `nearIncidence` |
-| Finite presentation, escaped pairing | horizon $\{0..N\}$, absorbing boundary; exact defect | `escapedPairing`, `escapedMass` |
-| Mixed Gram | $\langle A_{a,b}v,A_{c,d}w\rangle$ | `horizonPairing_affine_affine` |
-| Twisted coalescent statistic | `primeCoalSum` with pair characters | `twistedPrimeCoalSum` |
-| Escape-state spectral measure | measure $\nu_L$ on $G$ of a cofactor Gram limit; mass `gaugeMass` | `asymKernel`, `exists_spectralMeasure` |
-| Zero term at aperture $A$ | $Z(\tau)=\int g\,e^{\delta x}\cos((\tau-\gamma)x)$ | `zeroTerm` |
+| Gauge torus, Haar | `GaugeTorus`, `gaugeHaar` | one phase per prime |
+| Twist | `twist`, `twisted` | $\chi_x(n)=\prod_pe(x_pv_p(n))$; $(\chi_xa)(n)$ |
+| Archimedean point | `archPoint` | $\chi(n)=n^{2\pi i\xi}$: the height line in $G$ |
+| Dirichlet gauge point | `dirichletGauge` | $\chi\bmod q$ as a gauge point (values at $p\mid q$ reset) |
+| Sign twist | `primeSignTwist` | 2-torsion of $G$ on a finite prime set |
+| Pair form | `pairForm` | $\sum w(m,n)\chi(m)\bar\chi(n)$ |
+| Successor correlation | `succCorr` | $C_h(a)=\sum a_n\bar a_{n+h}$ |
+| Near-incidence form | `nearIncidence` | off-diagonal of a windowed mean square, kernel $k_\eta(\log j-\log k)$ |
+| Fourfold incidence | `fourfoldIncidence` | $\sum_{ab=cd+h}\alpha_a\alpha_b\overline{\alpha_c\alpha_d}$ |
+| Twisted coalescent sum | `twistedPrimeCoalSum` | coalescent prime pair form; $x=0$ is `primeCoalSum` |
+| Escaped pairing / mass | `escapedPairing`, `escapedMass` | pairing on cells absorbed by an affine map on $\{0..N\}$ |
+| Charged boundary | `chargedBoundary` | escaped tail of a gauge-charged source at weight σ |
+| Asymptotic kernel | `asymKernel` | $\inf_d$ of dilated critical Grams $\sqrt{jk}K(dj,dk)$ |
+| Gauge mass | `gaugeMass` | $\tilde K_\infty(1,1)=\inf_dd\,K(d,d)$ |
+| Zero term | `zeroTerm` | $Z(\tau)=\int g\,e^{\delta x}\cos((\tau-\gamma)x)$ |
+| Twin tail | `twinTail` | keep $x_0$ on finite $I$, phase ½ on all other primes |
+| Twisted Mertens / Chebyshev | `moebiusGaugeSum`, `twistedPsi` | $\sum\mu\chi_x$, $\sum\Lambda\chi_x$ |
 
-**Words.** *Gauge invariant / gauge charged*; *gauge point of a source*; *stabilizer* of a pair (subgroups fixing it);
-*coalescent* (unresolved by the line at that height); *loss law* (growth of an order-$k$ bound with $k$); *typical*
-(outside a Haar-null exceptional set). Parameters: height, level $q$, shift $h$, horizon $N$, multiplier $a$, weight $\sigma$,
-aperture $A$, order $k$ — state which are fixed and which grow.
+## 3. Language
 
----
+- **Gauge invariant / gauge charged**: monomial $\prod a(m_i)\prod\bar a(n_j)$ is invariant iff $\prod m_i=\prod n_j$, else mean 0.
+- **Gauge point of a source**: the actual source is $x=0$; its twists share all multiplicative data.
+- **Stabilizer** of a pair: subgroup fixing it; at level $q$ successor pair $(n,n+h)$ is fixed iff $q\mid h$.
+- **Coalescent**: pair not resolved by the archimedean line at the given height.
+- **Typical**: outside a Haar-null exceptional set. **Twin**: an explicit atypical orbit point (Liouville, twin tails).
+- **Loss law**: growth $b_k$ of an order-$k$ multiplicative bound; sublinear is what amplification needs.
+- **Escape state**: common cofactor Gram limit of the damped Möbius receiver (ADR); a measure on $G$, not a point.
 
 ## 4. Mechanisms
 
-1. **Character orthogonality on $G$** (injectivity of exponent vectors) ⇒ gauge projection onto product coincidences.
-2. **Ratio energy**: gauge mean square of a pair form groups pairs by ratio.
-3. **Expectation pigeonhole**: some twist is at least the mean (square-root size, nonpositive real part).
-4. **Line vs torus**: windowed Gram = $\|\eta\|^2\cdot$gauge moment + near-incidence.
-5. **Finite resolution**: Dirichlet orthogonality projects onto congruence; a successor pair survives at level $q$ iff $q\mid h$.
-6. **Sign orthogonality**: square pairs $j(j+h)=\square$ (finitely many); sign-gauge second moments pair $j,j'$ with equal
-   squarefree kernel — **Pell orbits**, infinite.
-7. **Boundary telescoping**: escaped pairing = defect, a cocycle; harmonic asymptotics at the three weight regimes.
-8. **Rademacher–Menshov on $G$**: twists form an orthonormal system; dyadic maximal inequality + Borel–Cantelli ⇒
-   almost-sure square-root cancellation $|S_N(x)|\le C_x\sqrt N(1+\log N)^2$ (also for successor patterns).
-9. **Twin tails**: phase ½ on all but finitely many primes turns $\mu\chi_x$ into a squarefree count with a pole ⇒ the
-   exceptional set is residual in every open set.
-10. **Spectral reading of escape states**: critical normalisation $\tilde K=\sqrt{jk}K$ makes dilation contractive; the
-    asymptotic kernel is dilation invariant, PD on $\mathbb Q_{>0}$, hence a measure on $G$ (Herglotz–Bochner); its mass is
-    $\inf_dd\,K(d,d)$ = asymptotic energy ratio $E(T/d)/E(T)$ (fibre sandwich).
-11. **Mellin translation**: polynomial receiver energy $O(T^\kappa)$ makes the Mellin pairing holomorphic on $\Re s>(1+\kappa)/2$
-    and translates zeros $\rho\mapsto\rho-\varepsilon$.
-12. **Character extension** ($\mathbb R/\mathbb Z$ divisible) ⇒ phase reconstruction; **Jensen on $G$** ⇒ linear loss.
-13. **Persistence**: $Z(\tau)\ge(1-A|\tau-\gamma|)Z(\gamma)$ at every depth.
+**A. Gauge orthogonality**
+1. Unique factorization: $\int\chi_x(m)\bar\chi_x(n)=[m=n]$ ⇒ gauge projection onto product coincidences; Parseval and
+   $2k$-th moments are multiplicative diagonals at every length.
+2. Ratio energy: gauge mean square of a pair form groups pairs by ratio $m/n$; distinct successor pairs and distinct prime
+   pairs have distinct ratios.
+3. Expectation pigeonhole: some twist is at least the mean square, some has $\Re\le0$.
+4. Phase reconstruction: $\mathbb R/\mathbb Z$ divisible ⇒ injective; phases respecting all multiplicative relations extend
+   to a twist (Baer).
 
----
+**B. Line versus torus**
+5. Windowed Gram = $\|\eta\|^2\cdot$gauge moment + near-incidence, at every product order; below $2rX^k\le1$ near-incidence
+   vanishes. Near-incidence has gauge mean zero; nonnegative sources are the worst case of their orbit.
+6. Finite gauge subgroups (Dirichlet characters mod $q$) project onto congruence classes; the singular series is the
+   stabilizer average.
+7. Sign gauge: mean sees square pairs $j(j+h)=\square$ (finitely many, $2j+h\le h^2$, none for $h=1$); second moment pairs
+   $j,j'$ with equal squarefree kernel — Pell orbits, infinite.
+
+**C. Boundaries**
+8. Escaped pairing = defect of the affine map, a cocycle. Harmonic asymptotics: escaped mass of a dilation → $\log a$ at
+   σ = ½, 0 above, ∞ below; successor → 0. Gauge-charged sources: gauge mean square at σ = escaped mass at 2σ ⇒ critical ¼.
+9. Abel transfer: partial sums $O(n^\alpha)$ ⇒ tails $O(M^{\alpha-s})$ uniformly in $N$.
+
+**D. Almost-sure cancellation and exceptional sets**
+10. Rademacher–Menshov on orthonormal systems: dyadic maximal inequality + Markov + Borel–Cantelli ⇒
+    $|S_N|\le C_\omega\sqrt{N+1}(1+\log(N+1))^2$ a.s. Applies to twists, successor monomials $\chi(n)\bar\chi(n+h)$ and
+    product monomials $\chi(n(n+h))$.
+11. Twin tails: on squarefree $n$, $\mu\chi=\psi(\gcd(n,Q))$ ⇒ $S_N=\sum_{d\mid Q}\psi(d)\#\{m\le N/d\text{ sqfree},(m,Q)=1\}$
+    ⇒ linear growth $S_N/N\to\delta_Q\prod_{p\mid Q}(1-e(x_p)/p)\ne0$. Dense in the product topology ⇒ residual.
+
+**E. Spectral reading of escape states**
+12. Critical normalisation makes dilation contractive; dilated forms decrease along divisibility; infimum is exactly
+    dilation invariant, a positive definite function of $j/k$ on $\mathbb Q_{>0}$ ⇒ finite measure on $G$
+    (Herglotz–Bochner, APD).
+13. Fibre sandwich $(1/j)E(M-1)\le\|D_jv\|^2\le(1/j)E(M)$ ⇒ gauge mass squeezed by energy ratios
+    $E(\lfloor(T+2)/d\rfloor)/E(T+1)$; record horizons of unbounded $E/T^\kappa$ give $d\,K(d,d)\le(2/d)^\kappa$.
+14. Mellin translation: energy $O(T^\kappa)$ ⇒ Mellin pairing holomorphic on $\Re s>(1+\kappa)/2$; cleared function
+    vanishes on $(1-\varepsilon,1)$ ⇒ identically ⇒ zeros translate $\rho\mapsto\rho-\varepsilon$; a whole interval of
+    dampings makes them accumulate.
+
+**F. Amplification and localization**
+15. Gauge Jensen $(\sum|a|^2)^k\le\int|D|^{2k}$ ⇒ multiplicative loss at least linear; relative $k$-th power of
+    $\chi_x$ is $\chi_{kx}$, $\zeta$ is the fixed point.
+16. Persistence: $Z(\tau)\ge(1-A|\tau-\gamma|)Z(\gamma)$ at every depth δ; a witness excludes a zero only on an interval of
+    length $\asymp(1-r/Z(\gamma))/A$.
 
 ## 5. Pillar theorems
 
-1. **Gauge invariance of multiplicative observation; reconstruction up to gauge** (`integral_monomial_twist`,
-   `agreeMultiplicatively_iff_exists_twist`).
-2. **Successor correlations are pure gauge charge** (`integral_normSq_succCorr_twisted`, `exists_twist_re_succCorr_nonpos`).
-3. **The threshold is the price of the archimedean line** (`windowed_pow_eq_gauge_add_nearIncidence`).
-4. **Coalescent surplus is pure gauge charge and splits over its stabilizers**; in the intermediate window it is minus
-   the sum over nontrivial characters (`tendsto_gaugeHaar_large_twistedSurplus`, `primeCoalSum_eq_stabilizer_add_discrepancy`,
-   `primeCoalSum_eq_neg_sum_nontriv`).
-5. **Boundary of a dilation is the archimedean place** (σ = ½); charged boundaries are critical at ¼
-   (`exists_pos_tendsto_escapedMass_iff`, `exists_pos_tendsto_twistedFlatBoundary_iff`).
-6. **Möbius boundary separates gauge twins** (`moebius_boundary_separates_twin`).
-7. **Gauge trichotomies**: half-power law and square-root boundary law hold a.e., fail at the twin, are RH at 0; a.e.
-   square-root Chowla at every shift (`moebius_gauge_trichotomy`, `moebius_boundary_trichotomy`, `ae_moebius_chowla`).
-8. **The exceptional set is comeager and null** (`moebius_exceptional_residual_and_null`, `zero_mem_closure_exceptional`).
-9. **Prime source is typical except for its pole**; RH ⇔ typicality modulo the pole (`riemannHypothesis_iff_twistedPsi_zero_sub`).
-10. **Escape states are spectral measures on $G$; RH ⇔ every escape state has positive gauge mass**; power-type energy
-    growth is invisible (`exists_actualCofactorLimit_spectralMeasure`, `riemannHypothesis_iff_forall_gaugeMass_pos`,
-    `gaugeMass_eq_zero_of_powerGrowth`, `riemannHypothesis_of_subpower_energy`).
-11. **Linear loss of multiplicative amplification; golden datum has no fixed budget** (`nonpos_of_sublinear_loss`,
-    `goldenDatum_no_fixed_budget`).
-12. **Persistence and localization threshold** $\asymp1/A$ (`zeroTerm_ge`, `false_of_volume_lt`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Gauge projection: twisted monomial mean = monomial iff products coincide | `integral_monomial_twist` | proved |
+| Multiplicative data agree ⇔ sources differ by a twist | `agreeMultiplicatively_iff_exists_twist` | proved |
+| Successor correlations: gauge mean 0, mean square $\sum|a_n|^2|a_{n+h}|^2$; twist with $\Re C_h\le0$ | `integral_normSq_succCorr_twisted`, `exists_twist_re_succCorr_nonpos` | proved |
+| Windowed moment = gauge moment + near-incidence; equal below threshold | `windowed_pow_eq_gauge_add_nearIncidence`, `windowed_pow_eq_gauge_of_threshold` | proved |
+| Coalescent surplus at 4/3 is $o(N^2)$ in gauge mean square; large twists Haar → 0 | `twistedPrimeCoalescentSurplus_meanSquare_isLittleO`, `tendsto_gaugeHaar_large_twistedSurplus` | proved |
+| Surplus = congruent (stabilizer) part + discrepancy | `primeCoalSum_eq_stabilizer_add_discrepancy` | proved |
+| Sub-progression window: surplus = −Σ over nontrivial characters | `primeCoalSum_eq_neg_sum_nontriv`, `eventually_bandwidth43_subProgression_window` | proved |
+| Dilation boundary finite nonzero iff σ = ½ (limit $\log a$); charged: iff σ = ¼ | `exists_pos_tendsto_escapedMass_iff`, `exists_pos_tendsto_twistedFlatBoundary_iff` | proved |
+| Möbius boundary → 0, Liouville twin ≥ 1/100 | `moebius_boundary_separates_twin` | proved |
+| Every mixed Gram of one source is PSD | `gram_affine_nonneg` | proved |
+| Möbius half-power law: a.e. / fails at twin / at 0 ⇔ RH | `moebius_gauge_trichotomy` | proved |
+| Möbius boundary law: same trichotomy | `moebius_boundary_trichotomy` | proved |
+| A.e. twist of μ has square-root two-point Chowla, all shifts | `ae_moebius_chowla` | proved |
+| Exceptional set of the half-power law is comeager and Haar-null; 0 in its closure | `moebius_exceptional_residual_and_null`, `zero_mem_closure_exceptional` | proved |
+| A.e. twist of Λ has no pole; at 0 $\psi(N)/N\to1$ | `ae_norm_twistedPsi_le`, `tendsto_twistedPsi_zero_div` | proved |
+| Sign-gauge second moment = diagonal + Pell part, Pell classes infinite | `sum_sq_signTwistedSuccCorr_eq`, `exists_large_pellClass` | proved |
+| Escape states are finite measures on $G$ | `exists_spectralMeasure`, `exists_actualCofactorLimit_spectralMeasure` | proved |
+| Admission ⇒ gauge mass 1; power growth ⇒ gauge mass 0 | `gaugeMass_eq_one_of_admits`, `gaugeMass_eq_zero_of_powerGrowth` | proved |
+| Subpower energy at every damping ⇒ RH | `riemannHypothesis_of_subpower_energy` | proved |
+| RH ⇔ every escape state at every damping has positive gauge mass | `riemannHypothesis_iff_forall_gaugeMass_pos` | proved (equivalence) |
+| Sublinear loss ⇒ no zero; golden datum has no fixed budget | `nonpos_of_sublinear_loss`, `goldenDatum_no_fixed_budget` | proved |
+| Zero term persists over $1/A$ | `zeroTerm_ge`, `false_of_volume_lt` | proved |
+| Charged cells ≥ $(X/162)^{1/4}-1$ for every real sign gauge flipping 2 | `sqrt_sqrt_div_sub_one_le_card_chargedCells` | proved |
 
----
+## 6. Tools
 
-## 6. Traps
+**Developed**
+- Gauge integrals: `integral_twist_mul_conj`, `integral_pairForm_mul_conj`, `integral_normSq_twistSum_pow`.
+- Finite gauge: `sum_twist_dirichletGauge_mul_conj`, `sum_twistedPrimeCoalSum_dirichletGauge`, `dirichletGauge_one_eq_zero`.
+- Sign gauge: `sum_primeSignTwist_mul`, `sum_signTwisted_succCorr`, `pell_step`.
+- Boundary calculus: `escapedPairing_eq_defect`, `escapedPairing_comp`, `norm_sum_Ioc_mul_rpow_neg_le` (Abel transfer).
+- Orthonormal a.s. engine: `sq_norm_orthoSum_le`, `ae_exists_norm_orthoSum_le`, `ae_exists_norm_gaugePartialSum_le`.
+- Twin-tail calculus: `moebius_mul_twist_twinTail`, `moebiusGaugeSum_twinTail`, `card_gcd_eq`.
+- Spectral escape states: `asymKernel_mul_mul`, `isPosDefOnGroup_ratioFunction`, `gaugeMass_eq_iInf`, `exists_record_horizons`.
+- Mellin energy bridge: `summable_abs_mul_rpow_of_energy_growth`, `differentiableOn_complexMellinPairing_of_energy_growth`,
+  `riemannZeta_sub_eq_zero_of_energy_growth`.
+- Amplification: `pow_sum_normSq_le_gauge_moment`, `twist_nsmul`, `twisted_dirichletConv`, `relProd_twisted`.
 
-| Trap | Truth |
+**To build**
+- Residue-class discrepancy calculus for actual primes with singular-series weights, uniform over levels $q<T^{1-\eta}$.
+- A gauge-charged (non-finite-precision) property placing $0$ outside the exceptional set.
+- Order-$k$ signed near-incidence beyond the threshold.
+- Lower bounds on gauge mass of escape states at some damping below ½.
+- Gauge-charged correspondence with a fixed budget (sublinear loss law).
+
+## 7. Open questions
+
+1. Stabilizer discrepancy of the actual primes at bandwidth 4/3 below the TTPC budget, uniformly in admissible $q$.
+2. Square-root boundary law for μ at gauge point 0, any power saving θ > 0 (gives a zero-free strip).
+3. Which gauge-charged property separates $0$ from twin tails? Finite-precision prime-phase data cannot.
+4. Positive gauge mass of some escape state at some damping: any scale-invariant part of escaping energy.
+5. Exact Pell-class sums of successor correlations for μ, λ; sign-gauge vs phase-gauge variance.
+6. Localized averaged positivity: subpower averaged floors combined with the $1/A$ persistence scale.
+7. Two-dimensional horizons: boundary of $ab-cd=h$; $\mathbb F_q[t]$ gauge calibration.
+8. Additive divisor problem as fourfold incidence at one gauge point: what structure beyond the orbit bounds it?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
 | Multiplicative mean values see near-coincidences | They see the gauge projection only |
-| The threshold is a limitation of mean-value theorems | It is the resolution of one line in $G$ |
-| A bound from multiplicative data is a bound for $\zeta$ | It is a bound for the whole orbit, most of which already satisfies it |
+| Threshold is a weakness of mean-value theorems | It is the resolution of one line in $G$ |
+| A bound from multiplicative data bounds $\zeta$ | It bounds the whole orbit, Haar-a.e. of which already satisfies it |
 | Square-root cancellation is atypical | It holds Haar-a.e.; the question is whether 0 is typical |
-| A generic property of prime phases decides RH | The exceptional set is comeager; finite-precision data cannot separate 0 from twin tails |
-| Positive kernels certify the coalescent budget | For nonnegative sources they bound the worst twist |
+| A generic/finite-precision property of prime phases decides RH | Exceptional set is comeager and accumulates at 0 |
+| Positive-kernel bounds certify the coalescent budget | They bound the worst (nonnegative) orbit point, blind to repulsion |
 | Sign twists kill every successor pair | Square pairs survive in the mean; Pell classes in the second moment |
-| A positive mixed Gram is arithmetic information | Every mixed Gram of one source is PSD |
-| Boundary terms are negligible | Dilation boundaries tend to $\log a$ at σ = ½ |
-| Relative tensor powers amplify $\zeta$ | $\zeta$ is the gauge fixed point |
-| An averaged estimate localizes | Only below the persistence scale $\asymp1/A$ |
-| Escape energy is always visible in gauge coordinates | Power-type escape has zero gauge mass |
+| A PSD mixed Gram is arithmetic | Every mixed Gram of one source is PSD |
+| Boundary terms are negligible | Dilation boundary → $\log a$ at σ = ½ |
+| Relative tensor powers amplify $\zeta$ | $\zeta$ is the gauge fixed point; relative squares see only original counts |
+| Positive Künneth counts give a budget | Golden datum: positive counts, no fixed budget |
+| Averaged estimates localize | Only below persistence scale $1/A$ |
+| Escape energy is always gauge-visible | Power-type growth has gauge mass 0 |
+| The prime source is typical | It is atypical by exactly the pole; RH says only by the pole |
 
----
+## 9. Context
 
-## 7. Open problems
+| Uses | Modules |
+|---|---|
+| RHTower | 10 (PNT/ψ, von Koch, Littlewood, Nyman–Beurling, receiver dampings, admission, Weil–Kloosterman) |
+| HTGeometry | 5 (infinite torus characters, squarefree density, real Dirichlet series) |
+| BezoutValuationIncidence | 3 · ArithmeticDefectRigidity 3 |
+| THIM, TTPC, SSA, RBG, BiarithmeticGeometry, APD, AKT, ACCE, ACS | 1 each |
 
-1. **Residue-class discrepancy at 4/3**: bound the stabilizer discrepancy of the actual primes in the normalisation
-   $N(T,2T)$, uniformly over admissible levels (budget $<5/36$ beats 2/3; $<1/18$ gives 3/4).
-2. **Square-root boundary law** for $\mu$ at gauge point 0 (any $\theta>0$ gives a zero-free strip), keeping the affine
-   structure.
-3. **Typicality of 0 from non-multiplicative input**: a gauge-charged property, not finite-precision in prime phases,
-   that places 0 outside the exceptional set.
-4. **Gauge mass of escape states**: show escape states have positive gauge mass at some damping below ½ (any scale-invariant
-   part of escaping energy).
-5. **Gauge-charged correspondence with a fixed budget** (sublinear loss law), calibrated against eventual Hasse–Weil.
-6. **Sign-gauge variance**: exact Pell-class sums of successor correlations vs phase-gauge variance.
-7. **Localized averaged positivity**: combine subpower averaged Weil floors with the persistence threshold.
-8. **Higher presentations** (two-dimensional horizons, boundary of $ab-cd=h$); **$\mathbb F_q[t]$ gauge calibration**.
+| Used by | Modules |
+|---|---|
+| ArithmeticCorrespondencePositivity | 4 (golden datum, subpower translation) |
+| SelectivePositivityAndThresholdLaws | 3 (Möbius boundary, stabilizers, escape visibility) |
+| ArithmeticGaugeTheory | 2 · ArithmeticHarmonicAnalysis 2 |
+| MainTheorems | umbrella |
 
-## 8. Tools to build
+| Neighbour | Relation |
+|---|---|
+| TransThresholdPairCorrelation | coalescent surplus at 4/3 is pure gauge charge; budget holds a.e.; open problem is the point 0 |
+| SquareRootThreshold, ArithmeticKunnethTheory | archimedean family = one line in $G$; below threshold it computes gauge moments |
+| SignedSuccessorArithmetic | dilation cocycle = gauge covariance of multiplicative signs |
+| BiarithmeticGeometry, RBG | finite horizon presentation, escaped cells, cell holonomy |
+| ArithmeticDefectRigidity | escape states supplied; here read as spectral measures |
+| ArithmeticPositiveDuality | Herglotz–Bochner on $\mathbb Q_{>0}$ |
+| MultiplicativePositivityGeometry, BiScaleUncertainty | their blindness theorems are gauge projection |
+| ArithmeticCastelnuovoSeveri | golden datum and fake curves: fixed budget needs a correspondence |
 
-Residue-class discrepancy calculus with singular-series weights; boundary laws at square-root scale; order-$k$ signed
-near-incidence beyond the threshold; gauge-charged correspondences; witness profiles with explicit $r/Z(\gamma)$.
+## 10. Big picture
 
-## 9. Contribution standard
+ACG names the reason so many routes stall: everything provable from multiplicative structure holds for the whole gauge
+orbit of the source, and almost every point of that orbit already satisfies RH-type and Chowla-type cancellation. The
+actual source is one point of a full-measure set that is also meagre, with atypical twins arbitrarily close in every
+finite resolution. Any argument that does not use something specific to the point 0 — additive structure, the
+archimedean pole, an explicit correspondence — proves a statement about the orbit, not about $\zeta$.
 
-Unconditional; say whether each controlled quantity is gauge invariant or charged and at which resolution; keep the
-boundary (escaped terms and weight σ); for a bound on a charged quantity, say what distinguishes the actual source
-from its twists (a bound on the whole orbit is about the orbit); state loss laws and persistence scales; calibrate on
-Dirichlet twists, Liouville and sign twins, the gauge-random twist, $\mathbb F_q$ curves and the golden datum.
+The positive message is a precise address for the missing input. The prime source is atypical exactly by its pole; the
+critical line is the unique weight where dilation boundaries carry finite multiplicative mass; an off-line zero would show
+up as escaping energy with no gauge spectrum. RH is thus a visibility statement — every escape state is seen by the
+gauge torus — and a proof must supply gauge-charged information (singular series, correspondences with a fixed budget,
+boundary structure) rather than sharper multiplicative estimates.

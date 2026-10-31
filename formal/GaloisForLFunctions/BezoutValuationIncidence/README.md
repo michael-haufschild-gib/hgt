@@ -1,239 +1,331 @@
 # Bézout–Valuation Incidence (BVI)
 
-Namespace `GaloisForLFunctions.BezoutValuationIncidence`; umbrella `BezoutValuationIncidence.lean`;
-flat folder.
+Umbrella `BezoutValuationIncidence.lean` (~370 modules, flat folder). Namespace
+`GaloisForLFunctions.BezoutValuationIncidence`. Inputs: `RHTower` (ζ bounds, VK/dlVP zero-free
+regions, Littlewood, Mertens rates, sieve and Weil/Kloosterman, `receiverDampings`), `HTGeometry`
+(digamma, Mellin–Plancherel), `BiScaleUncertainty`, `TransHorizonIncidenceMechanics`, `PNTPlus`, plus
+bridge imports from `RenormalizedBiarithmeticGeometry`, `SelectivePositivityAndThresholdLaws`,
+`ArithmeticElectrostatics`, `SquareRootThreshold`.
 
-**Question.** Divisor rows $c(1),\dots,c(N)$, their signals $s_{N,c}(k)=\sum_{d\le N,\,d\mid k}c(d)$ and
-prefix discrepancies on **polynomial-length windows**, where the period $\operatorname{lcm}(1..N)=e^{\psi(N)}$
-is unreachable. Consecutive coprimality (Bézout), prime-power moduli (valuation) and divisibility
-(incidence) force signed cancellations without period averaging. BVI isolates the single finite
-inequality still needed for RH. RH appears only as the conclusion of an explicit inequality or in
-an equivalence.
+## 1. Motivation
 
----
+Every truncated-divisor route to RH works with a finite row `c(1..N)` and its response
+`s_{N,c}(k) = Σ_{d|k, d≤N} c(d)` on windows `M ≤ N^A`, while the period `lcm(1..N) = e^{ψ(N)}` is
+unreachable. Three integer structures act there and nowhere in an abstract multiplicative system:
 
-## 1. Place in the research
+- **Bézout**: `gcd(k, k+1) = 1`; least seeds of `pa − qb = h`.
+- **Valuation**: lag `h` sees Ramanujan mode `q` iff `q/rad q | h`.
+- **Incidence**: the matrix `1_{d|n}`, its sawtooth `{n/d}` and floor geometry.
 
-BVI is the **finite arithmetic and pronic Gram calculus** of the research. Three bridges locate
-the needed estimate:
+BVI builds the finite calculus of these rows: which data determine a row, which quadratic forms are
+blind, how prefix discrepancies become pronic energies with a von Mangoldt readout, and how the RH
+receiver (Route PM)
 
-- divisor rows → Selberg/Ramanujan coordinates: diagonal period forms, sharp observation horizons;
-- prefix discrepancy → pronic energy: the reciprocal-cell Nyman–Beurling norm with its von
-  Mangoldt readout;
-- off-diagonal Gram → single-modulus residue statistics of the actual Möbius or centred prime row.
+`E_T(ε) = Σ_{n≤T} A_ε(n)²/(n(n+1))`, `A_ε(n) = Σ_{d≤n} μ(d)d^{−ε}⌊n/d⌋ − n/ζ(1+ε)`
 
-Recovery and period orthogonality never replace a signed estimate for a growing row.
+decomposes into signed pieces. It then separates what is unconditional (identities, observability,
+cross-scale dispersion below the diagonal, VK bands) from what is exactly a zero-free strip or RH.
 
-| Neighbour | Interface |
-|---|---|
-| TransHorizonIncidenceMechanics | Uses BVI window laws; observers, parity pairs, receiver symmetries |
-| BiScaleUncertainty | Full-period moment recovery; BVI supplies the window length |
-| ArithmeticContinuationAndCriticalEnergy | Reads the damping derivative as signed work |
-| ArithmeticCompensationTheory | Boundary flux / jump-energy cancellation; Guth–Maynard window transfer |
-| SignedArithmeticEnergyIncidence | Damping-chain receiver coordinates; Hilbert–Schmidt bounds |
-| RenormalizedBiarithmeticGeometry, ConjugateDiagonalGeometry, ArithmeticElectrostatics | Theta-prefix readings, Hecke defect, escaped Möbius boundary |
-| ArithmeticOrientationTheory | Pronic Báez–Duarte unit of the width dictionary |
-| SignedSuccessorArithmetic | Successor defects recover signs that Selberg forms erase |
-| ArithmeticDefectRigidity | Cofactor identities; escape of normalized energy |
-| TransThresholdPairCorrelation | Signed prime statistics beyond the large sieve |
+## 2. Objects
 
-Route consumers: PM (cofactor-row damping laws), MC (fixed-modulus/window cancellation), CTF (von
-Mangoldt readout, centred pronic residual).
+Rows and coordinates.
+- `sieveSeq N c k = s_{N,c}(k)`; harmonic mean `H = Σ c(d)/d`; prefix discrepancy
+  `L_N(M,c) = Σ_{k≤M} s − MH = −Σ_d c(d)(M mod d)/d = Σ_{e≥2} Re R_e(M)Y(e)` (`R_e` Ramanujan
+  primitive).
+- Selberg coordinates `Y_{N,c}(q) = Σ_{q|d≤N} c(d)/d`; inversion `c(d) = d Σ_{m≤N/d} μ(m)Y(dm)` realises
+  any `Y`. Spectral form `s(k) = Σ_{ζ∈T_N} Y(ord ζ)ζ^k` (`T_N` = roots of order `≤ N`).
+- Witt ghost coordinates (`wittSieveReceiver`): `Y(q) = ghost_q`; Frobenius 2 consumes cutoff `2N`.
+- Visibility clock `clock(q) = q/rad q`; lag coefficient `c_q(h) = Σ_{d|q}μ(q/d)d·1_{d|h}`.
+- Möbius bands: `s_{N,μ} = 1_{k=1}` on `[1,N]`, `−μ(k)` on `(N,2N]`, complementary quotients
+  `−Σ_{q≤B, q|k, qN<k} μ(k/q)` on `k ≤ (B+1)N`.
 
----
+Period quadratic forms (diagonal in `Y`, weight at `e ≥ 2`).
+- variance `V` (`φ`), successor covariance (`μ`), reserve `R = Q_Sel − Q_Bez` (`φ − μ`), phase loss
+  (`φ − μ²/φ`), primitive energy `12E_prim` (`J₂`), lag covariance `Cov(h)` (`c_e(h)`), tuple variance
+  (`S_q(H) = Σ_{ζ prim q}|Σ_{h∈H}ζ^h|²`).
 
-## 2. Why
+Pronic objects.
+- Pronic weight `w(M) = 1/(M(M+1))`; `Σ_M R_e(M)w(M) = −Λ(e)`; readout `ℛ(c) = Σ_e Λ(e)Y(e) =
+  Σ_d c(d)log d/d`.
+- Pronic Gram `𝒢 = ΛΛᵀ + 𝒢^ec`; mean-centred `𝒢^mc = 𝒢^ec + κκᵀ`, `κ(q) = φ(q)/2 − Λ(q)`.
+- Vasyunin sums `V(h,k) = Σ_{a<k} cot(πa/k)((ha/k))`; Báez–Duarte residual
+  `Σ_M (1 + L_N(M,c))² w(M) = (1 − ℛ)² + Q^ec(c)`.
 
-**Regime.** $s_{N,c}(k)=\sum_{q\le N}Y_{N,c}(q)c_q(k)$, Selberg coordinates $Y_{N,c}(q)=\sum_{q\mid d\le N}c(d)/d$;
-Ramanujan sums are orthogonal over a full period. Prime questions ask about windows $M\le N^A$,
-where (1) drift mixes with incidence ($L_N(M,c)=-\sum_dc(d)\{M/d\}$ gets drift from every $d>M$);
-(2) shift and cutoff do not commute; (3) lags and depths couple through exact factorizations.
+Sawtooth and Route PM.
+- `B̃₁(d,n) = {n/d} − (d−1)/(2d)`; `W = −Σ c(d)B̃₁(d,·)`, `ΔW = s − H`. At step `n → n+1` moduli
+  split into `d|n` (post-jump peak), `d|n+1` (pre-jump trough), **Bézout interior** (neither).
+- `τ_ε(n) = Π_{p|n}(1 − p^{−ε})` (radical-invariant, GCD–LCM modular), `α_ε = ρ_ε = 1/ζ(1+ε)`,
+  interior prefix `I_ε`, active pair `S_ε ∈ [0, ½]`.
+- `receiverDampings` (bounded `E_T`), `receiverDampingRate` (inf); parity twin `c'_ε` (same `|Y|`,
+  flipped signs).
 
-**The three words.** *Bézout*: $\gcd(n,n+1)=1$; $\Lambda(n(n+1))=0$; least seeds of $pa-qb=1$ govern
-event gaps. Beurling systems satisfy every multiplicative identity yet may have off-line zeros: **a
-mechanism that sees RH must use Bézout structure.** *Valuation*: a lag $h$ sees mode $q$ iff
-$q/\operatorname{rad}q\mid h$. *Incidence*: the matrix $\mathbf1_{d\mid n}$ and its sawtooth geometry.
+Damping chain.
+- Cesàro kernel `K_η(n,k)` (stochastic, semigroup `K_sK_t = K_{s+t}`); entrance law
+  `π_η(k) = ρ_η k(k^{−1−η} − (k+1)^{−1−η})`; centred `C_η = K_η − π_η`; residue modes
+  `v_d(n) = ⌊(n+1)/d⌋/(n+1) − 1/d`; size-bias `h`-transform `h(k) = 1/(k+1)`.
 
-**The receiver.** $\tau_\varepsilon(n)=\prod_{p\mid n}(1-p^{-\varepsilon})$, $\alpha_\varepsilon=1/\zeta(1+\varepsilon)$,
-$A_\varepsilon(n)=\sum_{j\le n}(\tau_\varepsilon(j)-\alpha_\varepsilon)$, $E_T(\varepsilon)=\sum_{n\le T}A_\varepsilon(n)^2/(n(n+1))$.
-If $\forall\delta\,\exists\varepsilon\in(0,\delta)$ with $\sup_TE_T(\varepsilon)<\infty$, then RH. Known for
-$\varepsilon\ge\tfrac12$, unknown for every $\varepsilon<\tfrac12$. The admitted damping set has infimum
-of its derived set $=\Theta-\tfrac12$; width conclusions need accumulation of admitted dampings.
+Cross-scale objects.
+- Rows `c` (small moduli `~P`) and `c'` (large scale `~Q`); `θ = 2log P/log Q`.
+- `B(c,c') = Σ_M V_c V_{c'} w`; row mean `m`, Dirichlet constant `β`, readouts `R, H`.
+- Potentials `Φ_d(M) = (d²/2)B₂(ρ/d) − 1/12 = Σ_{η∈T_d} η^M/|η−1|²` (PD on `ℤ/d`),
+  `Ψ_d` (cubic); kernels `𝔅(d,n) = Σ_j Φ_d(jn)/j²`, `𝔅₃(d,n)`; residue mean `m_d`.
+- Kernel statistic `Λ_d(c') = Σ (c'/n²)(𝔅(d,n) − m_d) + Σ (c'/n³)𝔅₃(d,n)`; dual norm `Σ_{d∈S}|Λ_d|/d`.
+- Actual rows: Möbius block `μ1_{(Q,2Q]}`, centred prime block `(Λ − 1)1_{(Q,2Q]}`.
 
----
+Vaughan objects.
+- Five pieces at cutoffs `U, V` (two small legs, small×small convolution, both-large, pole); centred
+  Gram `G_{ij}(T)`; smooth signs `s = (0,0,−1,1,0)`; smooth coefficient `c_ε`; harmonic partials
+  `μ̃_U = Σ_{d≤U} μ(d)/d`; amplitude set `A = {μ̃_U²μ̃_V²}`; admitted coefficient submodule of `ℝ⁵`.
 
-## 3. Objects and language
+Cofinal Möbius.
+- Profile `P(B) = lim E_N((B+1)N)/N`; band slope `γ_t`; slope `κ = lim P(B)/B`; period mean square
+  `C(N) = Σ_{d,e≤N} μ(d)μ(e)/[d,e]`; `w = μ/σ`, coprime profiles `g_δ(v) = T_δ(⌊e^v⌋)`.
 
-**Coordinates of a row.** Raw $c(d)$; responses $s_{N,c}$ (`sieveSeq`); Selberg $Y_{N,c}$
-(`selbergMultiplesCoord`); spectral form over roots of unity of order $\le N$; Witt ghost coordinates
-(Frobenius $F_2$ consumes cutoff $2N$; Verschiebung dilates). Finite Ramanujan inversion realises any
-$Y$ on $[1,N]$.
+Reciprocity kernel.
+- `W_K(p,n) = 𝔅(p,n) + π²(p²−1)/(72p)` on `p∤n`; coefficients
+  `C_m(p) = (π²p/2)Σ_k β_p(k)β_p(m k̄ mod p)`, `β_p(k) = B₂(k/p) + 1/(6p)`.
 
-**Möbius bands.** $s_{N,\mu}=\mathbf1_{k=1}$ below $N$; $-\mu(k)$ on $(N,2N]$; at most $B$ complementary
-quotients on $k\le(B+1)N$.
+## 3. Language
 
-**Window horizons** (arbitrary phase): period $L_N$; cyclotomic $\Phi(N)=\sum_{q\le N}\varphi(q)$;
-quadratic $N^{2\pm o(1)}$; degree-$m$ $N^{m\pm o(1)}$.
-
-**Sawtooth and interior.** $\tilde B_1(d,n)=\{n/d\}-\frac{d-1}{2d}$. Across $n\mapsto n+1$ moduli are
-active at $n$, at $n+1$, or **interior**; by Bézout none is active at both. Interior prefix
-$I_\varepsilon$, interior energy $E^{\rm int}_T$.
-
-**Quadratic forms** (diagonal in Selberg coordinates, modal weight at $e\ge2$): variance $\varphi(e)$;
-successor covariance $\mu(e)$; reserve $\varphi-\mu$; primitive energy $J_2(e)/12$; lag covariance
-$c_e(h)$. $\mu$ separates 4 from 6 where $\varphi$ does not.
-
-**Pronic measure** $w(M)=1/(M(M+1))$ replaces period averaging. $\sum_MR_e(M)w(M)=-\Lambda(e)$; von
-Mangoldt readout $\mathcal R(c)=\sum_e\Lambda(e)Y(e)$. Pronic Gram $\mathcal G=\Lambda\Lambda^\top+\mathcal G^{\rm ec}$
-(energy-centred, PSD), mean-centred $\mathcal G^{\rm mc}$ = cotangent–sawtooth form; Vasyunin sums;
-Báez–Duarte residual.
-
-**Damped source and chain.** $c_\varepsilon=\mu(d)d^{-\varepsilon}$; cofactor row; stochastic Cesàro kernel
-$P_\eta$ with semigroup and entrance laws; Fermi–Nyman cells $(1/(n+1),1/n]$ carry pronic mass.
-
-**Cross-scale objects.** Bilinear form between small (moduli $\sim P$) and large ($\sim Q$) rows;
-Bernoulli kernel; dual norm $\sum_{d}|\Lambda_d(c')|/d$; exponent $\theta=2\log P/\log Q$. Type II:
-arbitrary small coefficients; Type I: smooth large rows.
-
-**Vaughan objects.** Five pieces of Vaughan's identity at cutoffs $U,V$; 25-entry pronic Gram $G_{ij}$;
-diagonal $D_T$; mixed remainder $R^{\rm mix}_T$; $E^{\rm int}_T=D_T+R^{\rm mix}_T$; admitted coefficient
-space; actual limit Gram (`pmPronicVaughanLimitGram`).
-
-**Escaped Möbius boundary.** `escapedPairing` $=\sum_{(N-b)/a<j\le N}\mu(j)/j$ on `HorizonSpace N`;
-growing-endpoint law `GrowingEndpointEscapedMoebiusLaw θ`.
-
----
+- **Row**: finite `c` on `[1,N]`. **Response / signal**: `s_{N,c}`. **Mode** `q`: Selberg coordinate
+  `Y(q)`. **Active order**: `Y(q) ≠ 0`. **Recurrence complexity**: `Σ_{Y(q)≠0} φ(q)`.
+- **Layer** (at `p^a`): orders with `p^a ‖`-top valuation. **Layer admissible**: no layer count `= 1`
+  (and even at `p = 2`). **Companion**: half-period reflection flipping the top dyadic layer.
+- **Common return**: `M` divisible by every `d ≤ N`. **Arbitrary phase**: any window start.
+- **Pronic / energy-centred / mean-centred**: the three Grams. **Readout**: `ℛ`.
+- **Paid / admitted**: bounded pronic norm. **Extra rank**: receiver direction admitted.
+- **Coherent window**: `n₀` near `0 mod d` for most small moduli; **anti-coherent**: near `d/2`.
+- **Below / on the diagonal**: `θ < 2` / `θ = 2` (`d ≍ Q`). **Minor arcs**: roots of large order.
+- **Omitted class**: residue `0 mod p` missed by primes.
+- **Sign-blind**: depends only on `(Y(q)²)` or `|s|`.
+- **Strip statement**: equivalent to `Θ < 1`; **RH statement**: to `Θ = ½`.
 
 ## 4. Mechanisms
 
-1. **Bézout splitting.** Divisor pairs of $(k,k+1)$ ↔ divisors of $k(k+1)$; coprime products are never
-   prime powers; $\tau_\varepsilon(k)\tau_\varepsilon(k+1)=\tau_\varepsilon(k(k+1))$.
-2. **Simultaneous diagonalization and finite cones.** $2\mu(e)\le\varphi(e)$ (equality only at 6);
-   covariance cones finitely generated by explicit modes, realised by Ramanujan inversion.
-3. **Polarization and renormalization.** $2R_N(M)=-\sum(\Delta s)^2+s(M+1)^2-s(1)^2$; renormalization
-   is forced. Short windows: defect $\le0$ for all rows iff endpoint states agree.
-4. **Observability.** Cyclotomic recurrence of order $\Phi(N)$ determines a row at every phase; **no
-   linear horizon**; window sandwich constant of exact order $N^2$; degree-$m$ moments transfer at
-   $N^{m\pm o(1)}$; degrees 5–6 determine a row up to the half-period companion.
-5. **Pronic Gram calculus.** $\mathcal G^{\rm mc}(p,q)$ is a finite cotangent–sawtooth sum (Vasyunin);
-   $\mathcal G^{\rm ec}$ strictly PD on finite modulus sets; hypercube factorization (coherent across
-   depths only).
-6. **Reciprocity kernel = Ramanujan + Kloosterman.** Zero-mean Kloosterman cosine series with Weil
-   bound $|C_m(p)|\le\frac{\pi^2}{24}p^{3/2}$, **order-sharp**; prime Gram = rank three + Kloosterman.
-7. **Báez–Duarte in pronic coordinates.** Residual $=(1-\mathcal R)^2+Q^{\rm ec}$; minimum
-   $1/(1+\mathcal R^2/Q^{\rm ec})$; unconditional floor $\kappa/\log N$.
-8. **Sawtooth martingale calculus.** $E_T=D^{\rm act}+2P^{\rm pred}+2M^{\rm int}$; after drift
-   compensation the first two are bounded: **the whole obligation is the interior martingale**.
-   Summation by parts is a conservation law, never a contraction.
-9. **Vaughan calibration.** $E^{\rm int}=\sum G_{ij}$; diagonal sign-blind; $R^{\rm mix}/D\to-1$
-   unconditionally; bounded energy ⇔ $|1+R^{\rm mix}/D|=O(1/T)$; leading matrix $\rho^2vv^\top$, second
-   scale rank-one. The **admission rank reads the zero abscissa**: extra-rank dampings = receiver
-   dampings, lower accumulation boundary $\Theta-\tfrac12$. Every uniform power gain (prefix, residual
-   Gram rate, tail, factorial order one) is **exactly a fixed zero-free strip**; exact decay indices
-   $1-\Theta$ (tail), $4(1-\Theta)$ (cutoff energy), $2(1-\Theta)$ (horizon energy); attained endpoint
-   rates force RH and simple zeros; unconditional endpoint floors forbid little-o. For $\varepsilon\ge\tfrac12$
-   the actual limit Gram is PSD of rank two (prefix/pole minor $\ge2^{-4\varepsilon}/15552$); at
-   $\varepsilon=\tfrac12$ moving limits form a ray indexed by harmonic mass. Below ½ the extreme
-   cutoff reads the squared Möbius harmonic sum.
-10. **Dilation profiles and the Bézout seed.** Dyadic windows reduce consecutive divisor edges to the
-    single pair $(2,3)$.
-11. **Literal Möbius on linear windows.** Cofinal slope $\kappa\approx0.4408$ = period variance =
-    one-line energy of $1/\zeta$, $\kappa\ge1/288$.
-12. **Cross-scale dispersion.** Log-free large sieve; **Type-II barrier** $Q\ge P^{5/3}$ sharp
-    (coherent near-multiples); exact loss = $\ell^1$ residue discrepancy (parity-blind); Type I gains
-    one order per smoothness order.
-13. **Actual rows.** Prime row statistic is the omitted-class term $\asymp p/Q$; Möbius $o(1/Q)$.
-    Short-window mean squares (Huxley, Guth–Maynard) beat Type II qualitatively.
-14. **Balanced statistic = quasi-RH.** A power saving at the diagonal $Q\asymp P$ (or short windows at a
-    fixed exponent) ⇔ $\Theta<1$; below the diagonal the saving is unconditional.
-15. **Rate transfer to zero-free bands.** Mertens rates transfer to the receiver on a horizon-dependent
-    band ($\varepsilon\ge\tfrac12-\kappa\sigma(T)/(480\log T)$ from VK); pointwise transfer loses half the width.
-16. **Escaped Möbius boundary.** Growing-endpoint power law at $\theta$ ⇔ $\Theta\le1-\theta$ ⇔ receiver
-    rate $\le\tfrac12-\theta$ ⇔ Hecke-defect strip cap ⇔ Carathéodory positivity of $\Re\,\xi'/\xi$ on
-    $\Re s>1-\theta$. Unconditionally the escaped pairing decays at VK rate uniformly in $N,a,b$; the
-    single-scale theta-prefix reading has a VK sub-trivial ceiling.
-17. **Damping chain operator calculus.** Centred operator compact on $c_0$, spectrum
-    $\{0\}\cup\{d^{-\eta}\}$; admission ⇔ Hilbert–Schmidt of the size-biased chain; residual has a
-    linear cusp $\kappa\varepsilon$ from a critical zero.
-
----
+1. **Bézout splitting.** Divisor pairs of `(k, k+1)` ↔ divisors of `k(k+1)`; coprime `d₁,d₂ ≥ 2` give no
+   prime power: `Λ(k(k+1)) = 0`; `F(k)F(k+1) = F(k(k+1))` for every GCD–LCM modular `F`;
+   `τ_ε(k)τ_ε(k+1) ≤ 1 − 2^{−ε}` (2-adic ceiling), three-step `≤ τ_ε(6)`. The input fails in Beurling
+   systems.
+2. **Simultaneous diagonalization.** All complete-period quadratic forms are diagonal in `Y`;
+   modal inequalities `2μ ≤ φ` (equality `e = 6`), `4μ ≤ φ` off 6, `(q+1)φ ≤ J₂`, `J₂ ≤ n²φ` give exact
+   joint moment regions, sharp frontiers, finite-generated lag-covariance cones (`G_h` from `(h!)²`).
+3. **Polarization.** `2R_N(M) = −Σ(Δs)² + s(M+1)² − s(1)²`; CRT sawtooth `Σs(k)s(k+1) = MQ_Bez + O(‖c‖₁²)`;
+   renormalization is forced (raw Möbius defect is linear).
+4. **Observability.** Monic cyclotomic recurrence `Π_{q≤N}Φ_q` (degree `Φ(N) = Σφ(q)`) kills every
+   response; `Φ(N)` consecutive values at any phase determine the row; minimal recurrence = support
+   totient mass. Superlinear CRT grids kill responses on `mN` points: **no linear horizon at
+   arbitrary phase** (2N − 3 holds only at common returns). Window sandwich constant exact order
+   `N²`; degree-`m` translated moments transfer at exact order `N^m`.
+5. **Moment visibility.** Sign pattern `ε` visible at degree `m` ⇔ some layer-admissible active
+   `m`-tuple has `Πε ≠ 1` (complete classification). Odd modes at degree 3; `{2p, 2r}` exactly at
+   degree 6; degrees 5–6 determine a row up to the companion; quantitative `|ΔY|⁵ ≤ 16·relation energy`.
+6. **Pronic Gram calculus.** Pronic character series `1 + Q(z)`, `Q(z) = (1−z)log(1−z)/z` ⇒
+   `𝒢^mc(p,q)` = cotangent–sawtooth = Vasyunin sums; Möbius–Vasyunin: `𝒢` is the double Möbius
+   transform of Nyman–Beurling residue second moments; Vasyunin reciprocity = residue-difference
+   pronic energy (exact order `h(1 + log⁺(p/h))`); `𝒢^ec` strictly PD.
+7. **Báez–Duarte in rows.** Residual `(1 − ℛ)² + Q^ec`; Rayleigh minimum `Q^ec/Q`; unconditional floor
+   `κ/log N` ⇒ uncertainty `κℛ² ≤ (log N − κ)Q^ec`.
+8. **Sawtooth martingale calculus.** `E_T = active-deleted diagonal + 2·predecessor peak +
+   2·interior martingale`; first two have explicit drifts with `O(1)` compensated remainders; the
+   interior equals `½E_T − counterterm·H^comp + O(1)` with coefficient one. Summation by parts is a
+   conservation law, never a contraction.
+9. **Vaughan calibration.** Five pieces sum to the interior prefix; `E^int = ΣG_{ij}`; diagonal linear
+   (pole mass), `mixed/diagonal → −1` unconditionally; normal form: packet = linear drift +
+   smooth power `n^{1−ε}` (coefficient `c_ε μ̃_U μ̃_V(w₃ − w₂)`) + receiver direction `w₃` + bounded.
+   Admission rank: 4 (`ε > ½`), 3 (`ε = ½`), 3 or 2 below (3 ⇔ interior bounded).
+10. **Uniform logarithmic laws.** Divisor-square bounded families with uniform log partial-sum rates
+    keep every log rate through the damped floor transform; centred Vaughan Gram =
+    `(c_ε μ̃_U μ̃_V)² ssᵀ T^{1−2ε}/(1−2ε) + O(T^{1−2ε}/log^q T)` uniformly.
+11. **Damping chain = vertical shift.** Residue-mode coordinates diagonalize `C_η` (eigenvalue `e^{−η}`):
+    the chain is `F(s) ↦ F(s+η)` on Dirichlet series; reciprocal orbit coefficients `μ(e)e^{−η}` = 1/ζ.
+    Pronic dual norm of the entrance law finite ⇔ `η > ½`; `h`-transform makes it bounded at every `η`.
+12. **Cross-scale rank-two law.** `B + mR' + βH' = Σ c'(n)(c(d)/d)(𝔅(d,n)/n² + 𝔅₃(d,n)/n³) + …` to every
+    order (potential chain); the cross-scale form sees only residue masses `n mod d` plus two readouts
+    (parity-blind); exact loss = `ℓ¹` residue discrepancy at rate `π²/72`; reduction to the single-modulus
+    dual norm `Σ|Λ_d|/d`.
+13. **Barrier and ladder.** Coherent near-multiples ⇒ Type-II barrier `Q ≍ P^{5/3}` (sharp, survives both
+    rank-two side conditions); sharp-cutoff Type I stops at `4/3`; smooth order `K` reaches
+    `θ = 2K/(K+1)`; block equidistribution / twisted short-interval square-root cancellation is the exact
+    replacement hypothesis.
+14. **Minor arcs vs archimedean place.** Vinogradov/Vaughan decomposition at exact denominator `p`
+    (only additive structure of ℕ, not Weil): actual rows have power saving at every modulus
+    `Q^δ ≤ d ≤ Q^{1−δ}`; on the diagonal the low harmonics are slowly varying weights and the statistic
+    is a functional of long-window partial sums only (Mertens / `ψ(x) − x`).
+15. **Möbius inversion of the kernel.** `μ⋆1 = δ` collapses both kernels: full-row statistic is explicit
+    `(d−1)(d−3)/4 − (6/π²)m_d`; all arithmetic of Möbius window statistics sits in the window cutoffs.
+16. **Zero-free bands.** Rate hyperbola transfers Mertens rates to the receiver on horizon-dependent
+    bands (dlVP width `1/(80√log T)`, VK width `κσ(T)/(480 log T)`); Littlewood gives `ε > Θ/2`.
+17. **Cofinal Möbius laws.** Finite alphabet of cofinal values, explicit value law, clock support;
+    slope `κ` = period variance = signed coprime-energy sum = one-line energy of `1/ζ` on `Re s = 1`.
 
 ## 5. Pillar theorems
 
-1. **Observability**: $\Phi(N)$ at every phase, no linear horizon, sandwich order $N^2$, companion
-   classification (`not_exists_linear_observability_horizon`, `windowSandwichConstant_exact_quadratic_order`,
-   `sameRelationSpectrum_five_six_iff`).
-2. **Explicit pronic Gram** (`pmRamanujanMeanCenteredGram_eq_cotangent_sawtooth`).
-3. **Báez–Duarte in rows** (`riemannHypothesis_iff_pronic_prefix_energy`, `exists_readout_energy_uncertainty`).
-4. **Energy is one signed term** (`exists_pmBezoutInterior_compensated_energy_bound`,
-   `pmInterior_strict_contraction_iff_bounded_energy`).
-5. **Sharp Type-II barrier and exact loss** (`exists_readout_free_barrier`).
-6. **Balanced statistic is quasi-RH** (`balancedStatisticPowerSaving_iff`, `moebiusPowerWindowSaving_iff`).
-7. **Cofinal slope = one-line energy of $1/\zeta$** (`cofinalMobiusSlope_eq_integral_eulerProduct`).
-8. **Vaughan rank reads the abscissa; uniform Vaughan power = fixed strip**
-   (`pmPronicVaughanRankDampings_eq_receiverDampings`, `riemannHypothesis_iff_accPt_zero_vaughan_rank`,
-   `zetaZeroAbscissa_lt_one_iff_uniform_pmUndampedVaughan_power`, `rank_pmPronicVaughanLimitGram`).
-9. **Damping chain** (`mem_receiverDampings_iff_hTransformed_hilbertSchmidt`).
-10. **Complete-period quadratic data are exactly sign-blind** (`periodCovariance_eq_iff_exists_scaledSelbergRow`).
-11. **Escaped Möbius / quasi-RH unification** (`escapedMoebius_receiver_abscissa_tfae`,
-    `quasiRH_crossRoute_seven_way_tfae`, `exists_abs_escapedPairing_moebiusSource_le_vk_rate`).
+Observability and moments.
+- `not_exists_linear_observability_horizon`; `windowSandwichConstant_exact_quadratic_order`;
+  `sameRelationSpectrum_five_six_iff` (degrees 5–6 classify up to companion).
+- `periodCovariance_eq_iff_exists_scaledSelbergRow` (complete-period data = sign orbit);
+  `primePairWeights_transHorizon_separated` (`δ₂ ± δ₃`: same period data, separated trans-horizon).
+- Log-free large sieves: `largeSieve_set_properFarey_logFree`, `largeSieve_expSum_fareySet_logFree`,
+  `arithmetic_largeSieve_montgomeryVaughanConstant` (`N + Q² − 1`).
 
----
+Pronic Gram and Báez–Duarte.
+- `pmRamanujanMeanCenteredGram_eq_cotangent_sawtooth`; `vasyunin_reciprocity_exact`,
+  `vasyunin_reciprocity_exact_order`.
+- `riemannHypothesis_iff_pronic_prefix_energy`; `exists_readout_energy_uncertainty`.
 
-## 6. Traps
+Reciprocity kernel.
+- `bernoulliKernel_sub_primeKernelMean_eq_ramanujan_add_kloosterman` (Ramanujan sum + Kloosterman wave);
+  `exists_abs_reciprocityKloostermanCoeff_ge` (Weil bound `|C_m(p)| ≤ (π²/24)p^{3/2}` order-sharp);
+  `abs_pmRamanujanEnergyCenteredGram_sub_rankThree_kloosterman_le` (prime Gram = rank three +
+  `W_K(p,q)/q` ± `¾p³/q²`).
+
+Receiver structure.
+- `exists_pmBezoutInterior_compensated_energy_bound`, `pmInterior_strict_contraction_iff_bounded_energy`
+  (interior martingale is energy in disguise).
+- `exists_receiver_le_on_vinogradovKorobovBand`, `exists_receiver_le_on_vinogradovKorobovBand_of_pos`;
+  `receiverDampingRate_sandwich` (`Θ − ½ ≤ rate ≤ Θ/2`), `receiverDampingRate_lt_half_iff`.
+- `mem_receiverDampings_iff_hTransformed_hilbertSchmidt`;
+  `bounded_naturalDilationHeadEnergy_iff_mem_receiverDampings` (natural cutoff = receiver);
+  `tendsto_hypercubeDilationDirichletForm_primeBlockProd` (prime-support truncation diverges `< ½`).
+
+Vaughan.
+- `pmPronicVaughanRankDampings_eq_receiverDampings`, `riemannHypothesis_iff_accPt_zero_vaughan_rank`,
+  `finrank_pmPronicVaughanAdmittedSubmodule_of_half_lt`, `rank_pmPronicVaughanLimitGram` (rank 2, `ε ≥ ½`).
+- `zetaZeroAbscissa_lt_one_iff_uniform_pmUndampedVaughan_power`.
+- `pmPronicVaughanCentredGram_limit_set_eq`, `pmPronicVaughanCentredGram_converges_iff_escape_or_fixed_amplitude`,
+  `accPt_pmVaughanSmoothAmplitudeSet_iff` (limit set compact, countable, infinite, accumulation only at 0),
+  `exists_horizon_vaughan_zero_and_relative_rank_one_limits`.
+
+Cross-scale.
+- `abs_rowBilinear_add_mean_add_beta_le_smoothnessNorm` (every-order smooth law);
+  `abs_rowBilinear_add_mean_add_beta_sub_smooth_all_le` (all moduli); `exists_readout_free_barrier`.
+- `norm_sum_moebius_mul_pow_le` (minor-arc Möbius at prime roots);
+  `abs_kernelStatistic_moebiusWindowRow_le_rpow`; `crossScale_dichotomy_moebius_and_centredPrime`;
+  `crossScale_allModuli_moebius_and_centredPrime_le_rpow`;
+  `exists_kernelStatisticAll_moebius_and_centredPrime_le_everyModulus`.
+- `exists_abs_rowBilinear_centredPrimeRow_le` (prime row passes the coherent-block obstruction, Huxley).
+- `hasSum_moebius_mul_kernelTerm` (Möbius inverts the kernel).
+
+Strip equivalences (all `⇔ Θ < 1`).
+- `balancedStatisticPowerSaving_iff`, `centredPrimeBandPowerSaving_iff`, `moebiusPowerWindowSaving_iff`,
+  `primePowerWindowSaving_iff`, `quasiRH_crossRoute_seven_way_tfae`.
+- `escapedMoebius_receiver_abscissa_tfae`, `escapedMoebius_rbg_seven_way_tfae` (pointwise at `θ`).
+
+Cofinal Möbius.
+- `tendsto_sieveL2PrefixEnergy_div` (energy transfers at every superlinear horizon to `κ`);
+  `tendsto_twelve_mul_sievePrimitiveEnergy_moebius_div` (`12E_prim/N → c ≈ 0.3311`: diffusive).
+- `cofinalMobiusSlope_eq_tsum_coprimeEnergy`, `cofinalMobiusSlope_eq_integral_one_line`,
+  `cofinalMobiusSlope_eq_integral_eulerProduct`.
+
+Unconditional ceilings.
+- `exists_abs_escapedPairing_moebiusSource_le_vk_rate`; `exists_reading_logHorizon_vk_ceiling`,
+  `tendsto_reading_logHorizon_div_sq_zero` (VK sub-trivial theta-prefix ceiling).
+- `not_eventually_moebiusCombinedPrefixDefect_le_rpow` (raw defect not sublinear).
+
+## 6. Tools developed and tools still to build
+
+Developed.
+- Selberg / spectral / ghost coordinates with Ramanujan inversion; exact joint moment regions and
+  finite cone certificates for lag inequalities.
+- Cyclotomic recurrence observability; zero-product relation classification; relation-spectrum Parseval.
+- Log-free large sieve (window-sandwich and Montgomery–Vaughan constants), multiplicative and arithmetic
+  forms; discrete Gallagher inequality; dilated large sieve (factor `j`).
+- Pronic calculus: character series, cotangent–sawtooth Gram, Vasyunin formulas, Báez–Duarte residual,
+  pronic tails at the quadratic horizon, higher pronic weights `u_k`.
+- Sawtooth/Bézout layer calculus (active, predecessor peak, interior, arbitrary-depth shells).
+- Cross-scale law of every order; Bernoulli/cubic kernels in Fourier, reciprocity and Kloosterman form;
+  residue-discrepancy, block, smoothness and dual-norm reductions.
+- Minor-arc laws at prime and composite roots (Vinogradov/Vaughan, no Weil); archimedean diagonal law.
+- Vaughan pronic Gram toolkit (normal form, admission rank, uniform log laws, limit sets).
+- Damping chain: semigroup, entrance law, compact centred operator, spectrum, residue-mode
+  diagonalization, `h`-transform, paired Markov work FTC.
+- Cofinal Möbius machinery: dilation means, coprime cancellation, harmonic fibres, alphabet and value law.
+- VK/dlVP rate hyperbola; Littlewood transfer; escaped-pairing VK bound.
+
+Still to build.
+- A **signed interior contraction** `2M^int + 2·counterterm ≤ (1−δ)E_T + C` at one fixed `ε < ½`
+  (must use mixed Vaughan entries / Bézout structure; diagonal data are blind).
+- A balanced (`θ = 2`) dispersion gain beyond zero-free-region quality.
+- Twisted short-interval square-root cancellation at length `P²/(aX)` for actual prime packets
+  (replacement hypothesis of the Type-II barrier at fixed exponent).
+- Dual rows with `ℛ²/Q^ec → ∞` (equivalent to RH) or energy-variance vanishing along small-ε paths.
+- Forward `ℓ²` chain bound below `½` reading Möbius signs.
+- Sharp arbitrary-phase observability horizon `H(N)` (between `≫ N` and `Φ(N)`).
+
+## 7. Open questions and research topics
+
+1. **Receiver at one fixed `ε < ½`** (equivalently: bounded interior energy, strict contraction, first
+   chain column in `ℓ²`, extra Vaughan admission rank, bounded dual residual). Strip-strength.
+2. Can mixed Vaughan entries `G_{ij}`, `i ≠ j`, carry a Bézout-selective identity that the diagonal cannot?
+3. Is there a gain at the diagonal from averaging over moduli or the CRT block of `(p, q)` beyond
+   single-modulus statistics (Kloosterman reciprocity is order-sharp at one prime)?
+4. Cross-depth cancellation: a hypercube or natural-cutoff dilation form uniform in the cutoff for
+   `0 < ε ≤ ½` that keeps μ signs.
+5. A finite, cutoff-quantitative statistic separating the parity pair below the VK band.
+6. Exact growth of `H(N)/N`; exact optimal sandwich constant `/N²` (`∈ [3/π², 1]`).
+7. Positivity and value of `κ` (one-line energy of `1/ζ` with Euler factors in `(0,1)`); rate of
+   `C(N) → κ` beyond `(log N)^{−3}`.
+8. Whether Witt structure (Frobenius / Verschiebung) yields an estimate Selberg coordinates do not.
+
+## 8. Traps
 
 | Trap | Correct statement |
 |---|---|
-| Pronic reach is cancellation | A modulus $d>M$ contributes only drift |
-| Observability needs a period | $\Phi(N)$ values suffice; but no linear horizon exists |
-| Degree-$m$ statistics transfer at $N^2$ | Horizon is $N^{m\pm o(1)}$ |
-| Compressed lags form a semigroup | They do not |
-| Raw Möbius defect is small | Only the renormalized defect is bounded |
-| Multiplicative identities can close it | Beurling systems satisfy them all |
-| Fixed-depth cancellation | Cancellation is cross-depth only |
-| The three Grams are interchangeable | They differ by rank-one terms; PD holds for $\mathcal G^{\rm ec}$ |
-| Total variation controls the receiver | Entrance tail non-square-summable at $\eta\le\tfrac12$ |
-| Summation by parts is an estimate | Returns $E_T$ with coefficient 1 |
-| Far scales decouple | Only for $Q\ge P^{5/3}$ |
-| The cross-scale form breaks parity | It sees residue masses + two readouts |
-| Flat/smooth rows model primes | Möbius and prime rows are not smooth at any order |
-| Sub-Weil saving at one prime | The Weil bound on $C_m(p)$ is order-sharp |
-| A diagonal power saving is weaker than a strip | It *is* $\Theta<1$ |
-| A Mertens rate bounds the receiver at fixed $\varepsilon<\tfrac12$ | Only on a horizon-dependent band |
-| Pointwise prefix bounds suffice | Lose half the width; estimate in mean square |
-| Relative Vaughan cancellation is progress | $R^{\rm mix}/D\to-1$ is unconditional; the error is $E^{\rm int}$ itself |
-| A uniform Vaughan power gain is a new input | It is exactly a fixed strip |
-| Another quasi-RH equivalence is progress | Seven are unified; none is closer to a bound |
+| Multiplicative identities can close the gap | Beurling systems satisfy them all; need `gcd(n,n+1)=1`, `pa−qb=h`, omitted classes |
+| Complete-period quadratic data decide the row | They are exactly sign-blind (`(ℤ/2)^{N−1}` orbits); trans-horizon / linear data separate |
+| Observation needs the period `lcm(1..N)` | `Φ(N) ≤ N(N+1)/2` values suffice at any phase |
+| A linear observation horizon exists | Only at common returns; at arbitrary phase it is superlinear |
+| Degree-`m` statistics transfer at `N²` | Exact order `N^m`; no moment argument reaches a linear horizon |
+| Compressed lags form a semigroup | Prime-power revival defect `−1/(p−1)` |
+| Raw Möbius defect is small | Linear in `N` (terminal primes); only the renormalized defect is controlled |
+| Summation by parts is an estimate | It returns `E_T` with coefficient one |
+| Relative Vaughan cancellation is progress | `mixed/diagonal → −1` unconditionally; need `|1 + mixed/diag| = O(1/T)` |
+| A uniform Vaughan / tail / window power gain is new | Each is exactly a fixed strip `Θ < 1` |
+| Factorial log-rate order 3 → 1 is technical | Order one is exactly a strip |
+| Prime-support truncation organises cancellation | Hypercube form diverges below `½` (sign-blind threshold) |
+| Far scales decouple for arbitrary coefficients | Only `Q ≥ P^{5/3}` (coherent near-multiples, side conditions don't help) |
+| The cross-scale form can see parity | Only residue masses + two readouts |
+| Flat/smooth rows model primes | Sharp cutoffs stop at `4/3`; actual rows are not smooth |
+| Sub-Weil saving for `C_m(p)` at one prime | Weil bound is order-sharp (`p ≥ 67`) |
+| Constant centring removes the prime anomaly | Omitted class `0 mod p` survives (`QΛ_p → −π²(p²−1)²/(144p²(p−1))`) |
+| A diagonal power saving is weaker than a strip | `balancedStatisticPowerSaving_iff`: it is a strip |
+| A Mertens rate bounds the receiver at fixed `ε < ½` | Only on a horizon-dependent band |
+| Pointwise prefix bounds suffice | Lose half the width (`Θ/2` vs `Θ − ½`); estimate in mean square |
+| Total variation of the chain controls the receiver | Entrance tail non-square-summable for `η ≤ ½` |
+| Another quasi-RH or RH equivalence is progress | Dozens are unified (rank, tail index, escaped boundary, Carathéodory, theta prefixes); none is a bound |
+| Endpoint rates are attainable with `o` | `M(x) = Ω±(√x)` forbids it; attained endpoint rates force RH and simple zeros |
+| First pronic moment carries the exponent | The leading coefficient is the cutoff mean value |
+| Matomäki–Radziwiłł / Huxley give power savings | Only `o(1)`; a power saving is `Θ < 1` |
 
----
+## 9. Place in the programme
 
-## 7. Open problems
+- **Upstream**: RHTower (all analytic inputs and the receiver definitions), BiScaleUncertainty (full-period
+  moment recovery; BVI supplies window lengths), TransHorizonIncidenceMechanics (horizon rows, rate
+  transfer, two-way: THIM imports ~46 BVI modules, BVI ~39 THIM modules), HTGeometry, PNTPlus.
+- **Downstream**: THIM (window laws, parity pairs, receiver symmetries), BiScaleUncertainty,
+  ArithmeticContinuationAndCriticalEnergy (signed damping work), SignedSuccessorArithmetic (successor
+  defects recover signs), ArithmeticDefectRigidity, ArithmeticCompensationTheory, CriticalArithmeticCorrelationTheory,
+  ArithmeticGaugeTheory, RenormalizedArithmeticPotentialTheory, ArithmeticCorrelationGeometry,
+  ArithmeticIndexDescent, ArithmeticCountingPositivity, CompletedArithmeticForms, ArithmeticOrientation*,
+  TransThresholdPairCorrelation, SelectivePositivityAndThresholdLaws, goldbach, twin-prime, MainTheorems.
+- **Role**: the finite arithmetic and pronic Gram engine of the corpus. It owns divisor rows, Selberg
+  coordinates, the pronic (Nyman–Beurling) calculus, the Route PM receiver decomposition, and the
+  cross-scale (Type I/II) dispersion theory; other programmes read its identities and its exact
+  equivalences.
 
-1. **The receiver.** One fixed $\varepsilon<\tfrac12$ with $\sup_TE_T(\varepsilon)<\infty$ (equivalently bounded
-   interior energy, strict interior contraction, square-summable chain columns, bounded dual residual).
-   Unconditional size = zero-free region.
-2. **Interior martingale contraction.** $2M^{\rm int}+2\,\mathrm{Counterterm}\le(1-\delta)E_T+C_\varepsilon$ at one
-   fixed $\varepsilon<\tfrac12$; must come from the mixed Vaughan entries $G_{ij}$, $i\ne j$.
-3. **Dual construction.** Rows with $\mathcal R^2/Q^{\rm ec}\to\infty$ within the ceiling; sharp rate.
-4. **Balanced dispersion beyond quasi-RH.** Which subpower or Kloosterman-reciprocity gain at
-   $Q\asymp P$ sums into the receiver? Gains must come from averaging over moduli or the CRT block.
-5. **Cross-depth cancellation.** Hypercube Dirichlet form uniform in $P$ for $0<\varepsilon\le\tfrac12$.
-6. **Damping chain.** Forward $\ell^2$ boundedness at one fixed $\eta<\tfrac12$ (must read Möbius signs).
-7. **Observation constants.** Exact growth of $L_{\rm obs}(N)$; exact $S_{\rm opt}(N)/N^2$.
-8. **Topics.** Bézout-selective identities for mixed Vaughan entries; a finite cutoff-quantitative
-   statistic separating the parity pair below the band; whether Witt structure gives a bound the
-   Selberg coordinates do not.
+## 10. Big picture
 
-## 8. Tools to build
+BVI shows where the RH difficulty is, and that it does not move under reformulation. Everything finite
+and structural is in hand: rows are determined by polynomially many values at any phase, the
+Nyman–Beurling Gram is an explicit cotangent sum, the Báez–Duarte residual splits into a readout and a
+centred energy, the receiver splits into pieces whose drifts are computed, and cross-scale correlations
+are dispersed unconditionally at every exponent below the diagonal using only the additive structure
+of the integers.
 
-Signed interior contraction; a receiver-strength balanced dispersion estimate beyond quasi-RH; dual
-rows with vanishing readout defect and energy; a forward $\ell^2$ chain bound below ½.
-
-## 9. Conventions
-
-- Name coordinates (raw/response/Selberg/spectral/ghost) and regime (period, prefix, octave, band,
-  arbitrary-phase window; horizon $\Phi(N)$, $N^2$, $N^m$).
-- Identity before asymptotics; keep boundary terms and signed defects.
-- Test against Beurling: the additive input must be visible ($\gcd(n,n+1)=1$, $pa-qb=h$, an omitted
-  residue class, a valuation layer).
-- State what a bound does not prove (first moment ≠ square root; $\varepsilon\ge\tfrac12$ ≠ below; floor ≠ rate).
+Every remaining gap collapses to one place: the diagonal `d ≍ Q`, the Bézout interior martingale, the
+receiver below half damping. There the statistic is a functional of long-window Möbius partial sums and
+nothing else, so its quality is exactly the zero-free region: power savings there are `Θ < 1`, endpoint
+rates are RH. Quadratic, period and diagonal data are provably sign-blind, so no positivity argument
+built from them can see the zeros. A proof must inject a new signed input at the diagonal — a
+cancellation of Möbius on long windows stronger than the zero-free region provides — and BVI's value is
+that it has reduced every finite route to that single, sharply identified statement.

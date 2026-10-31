@@ -1,1420 +1,233 @@
-# Quantitative theory of completed arithmetic forms
+# CompletedArithmeticForms
 
-Namespace `GaloisForLFunctions.CompletedArithmeticForms`; umbrella `CompletedArithmeticForms.lean`.
+Namespace `GaloisForLFunctions.CompletedArithmeticForms`; umbrella `CompletedArithmeticForms.lean`; 74 modules.
+All results unconditional; each module ends with `#print axioms` for its main theorems.
 
-**Question.** Which relations in an explicit arithmetic or theta source give a lower bound for its
-complete signed form, and preserve that bound through the compression, accumulation, and limits
-needed by its arithmetic conclusion?
+## 1. Motivation
 
-A completed form retains the terms that can alter its sign: prime and archimedean contributions,
-polar coordinates, boundary terms, and mixed entries. Its positive components are comparison
-objects. The programme studies inequalities connecting those components to the original form.
+RH criteria are positivity statements for complete signed forms: complete Weil matrices, signed theta
+Hankel hierarchies, Euler-deletion and Chebyshev energies. Positive pieces of such forms are easy to
+find; the difficulty is the transfer: Schur complements, mixed entries, accumulation, truncation, and
+simultaneous limits each consume reserve. This programme proves exact completions, exact dual costs, and
+quantitative relative estimates that keep every source term (prime, Gamma, polar, mixed, infinite tail)
+and record the exact parameter domain on which each reserve survives.
 
-**Motivation.** A positive block can lose its reserve to a Schur complement; accumulation creates
-off-diagonal covariance; smoothing can destroy sharp-source recovery; fixed-parameter convergence
-can fail along the exhaustion required by a criterion. Exact source identities and positive finite
-sections therefore require quantitative transfer theorems.
+## 2. Objects
 
-## Objects and language
+| Object | Lean | Meaning |
+|---|---|---|
+| Divisor conductor Gram | `divisorGramEnergy Q a` | Σ_{m∣Q, m≠1} primitive-prefix Gram; kernel Q·min(i,j) − ij |
+| Cyclotomic remainder | `cyclotomicRemainder` | Σ over nontrivial roots of |(1+ζ)P_a(ζ)|² |
+| Bridge inverse / cost | `bridgeInverse`, `bridgeSchurCost`, `dirichletEnergy` | L/Q (second difference); Dirichlet energy of the coupling |
+| Mesh Gram | `meshGram`, `meshDirichletEnergy` | kernel min(k_i,k_j) − k_ik_j/Q on arbitrary integer nodes |
+| Prime packet form | `primePacket` | energy-centered pronic prime form on S ⊂ (P,2P] with mass and log-moment zero |
+| Accumulated energy | `cumulativeEnergy c T` | Σ_n (Σ_{j≤n}c_j)²/(n(n+1)) |
+| Finite source energy | `finiteSourceEnergy c T` | cumulative + terminal mass²/(T+1) = Σ c_jc_k/max(j,k) |
+| Free-terminal dual cost | `finiteSourceDualCost b T` | Dirichlet energy of j·b_j on [0,T], no terminal edge |
+| Chebyshev completion | `chebyshevCompletedEnergy`, `chebyshevCyclotomicRemainder` | Cesàro-normalized ψ(x)−x energy and its cyclic remainder |
+| Gamma moments | `gaussianMoment`, `gaussianFullHead` | γ_k = 16^k(½)_k = 4^k(2k)!/k!; full signed Gaussian head |
+| Native balanced moments | `nativeBalancedMoment`, `nativeBalancedFullMoment` | complete theta reflection jets / (f₁²q^{k}), q = πe^{2x} |
+| First-atom invariants | `firstAtomNegativeOrder`, `firstAtomFailureRank` | first negative signed moment ν(x); first non-PSD head κ(x) |
+| Successor Schur | `finiteHankelSuccessorSchur m N` | m(2N) − coupling·H_N⁻¹·coupling |
+| Hermite jet matrix | `hermiteJetMatrix` | unit lower-triangular Gaussian-to-Hermite congruence |
+| Quadratic rank scale | `nativeQuadraticRankScale`, `nativeQuadraticRankHorizon` | q-scale 16(M+2)² + 2·cost(M) ≤ C(M+2)²; center log(M+2) + O(1) |
+| Native tail head | `nativeTailHead N r` | Hankel head of ∫_{s>r} native signed jets |
+| Weighted center moment | `nativeWeightedMoment a U` | ∫_U r sinh(ar)·native jet(r/2) (critical aperture 0<a<½) |
+| Complete Weil inverse cost | `tiltedWeilInverseCost c` | 1/E₁(c), reciprocal completed pole energy |
+| Conductor Green operator | `tiltedConductorGreen` | diagonal ℓ² operator with weights 1/E_m(c) |
+| Residual scale | `weilResidualScale c N` | c¹⁰(log N/N)² + c⁶/√log N |
+| Overlap schedule | `logarithmicPacketOverlap α N` | c_N = (log N)^α |
+| Bessel band source | `besselBandSource`, `besselGaussianFlux` | Re K_{iτ}(x) and its Gaussian Wronskian |
 
-| Object | Mathematical data |
+External: `completeWeilMatrix`, `completedConductorEnergy`, `normalizedRamanujanHorizonVector`
+(CriticalArithmeticCorrelationTheory / RenormalizedArithmeticPotentialTheory); `tiltedUnitSpline`
+(SpacingScaleHarmonicAnalysis); `thetaCuspNativeSignedJet`,
+`thetaCuspCenterMixedSignedJet` (RHTower ThetaCusp); `modifiedBesselKOrder` (HTGeometry); `plateauPrefixBlock`
+(TransMetzlerWeilPositivity).
+
+## 3. Language
+
+- **Completion**: an exact identity form = comparison + nonnegative remainder, every term literal.
+- **Dual cost**: max_a (2⟨a,b⟩ − E(a)); exact when attained, equality set classified.
+- **Relative error η**: |vᵀ(A−G)v| ≤ η·vᵀGv; η < ½ leaves A − G/2 ≻ 0; transfers to successors with no
+  inverse factor.
+- **Horizon**: q-scale or center x beyond which a reserve holds; "joint" = uniform in a second parameter.
+- **Native vs first atom**: complete theta source vs its n = 1 term; physical vs balanced = before/after
+  mass f₁² and scale q^k normalization.
+- **Rank boundary**: ν(x), κ(x): finite at each center, escaping as x → ∞.
+
+## 4. Mechanisms
+
+**A. Arithmetic Gram completion**
+1. Divisor sum of primitive Grams = discrete bridge kernel; 4E_Q(a) = Q[(Σa)² + Σa²] + R_Q(a), R ≥ 0 via
+   the multiplier 1−ζ; zero interior radical.
+2. Exact inverse B_Q⁻¹ = L/Q; E(a) − 2⟨a,b⟩ + D(b)/Q = E(a − Lb/Q); dual cost D(b)/Q attained.
+3. Irregular nodes: same identity with slope differences and reciprocal-gap Dirichlet energy; gap ≥ δ
+   gives F ≥ (δ/4)|a|²; D_k(b) = min Dirichlet extension through the nodes.
+4. Neutral constraints: one or two removed profiles (mass, log-moment) give exact projected dual costs and
+   classified radicals; prime packets pay couplings by D_k(P b) ≤ D_k(b); odd/separated support doubles the
+   coefficient reserve (|a|² ≤ 2𝒫).
+
+**B. Accumulation and terminal completion**
+5. Accumulation a_j = c_j/j turns cumulative energy into E_{T+1}(a)/(T+1); local dual cost of j·b_j.
+6. Terminal completion: adding mass²/(T+1) gives the full max-index covariance; free terminal value removes
+   the last Dirichlet edge; maximizer c* = j·(second difference), mass T b_T; E(c) − 2⟨c,b⟩ + cost = E(c − c*).
+7. Source vs probe support: fixed probe with growing source restores the terminal edge, (T b_T)²; maximizer
+   is neutral.
+8. Euler deletion: |full − completed(T)| ≤ (M+1)²/(T+1); schedule T = (n+1)(M+1)² gives limits uniform in
+   all cutoffs.
+9. Chebyshev: all superlinear energy sits in the cyclotomic remainder; far modes cost O(N^{3/2}), leaving
+   ≤ 2√N near-constant modes.
+
+**C. Complete Weil matrix**
+10. Prefix payment: plateau endpoint energy > 1/20 ⇒ prefix ⪰ I/20 uniformly through touching ⇒ inverse
+    cost ≤ 20 and two-sided Schur sandwich; negative subspaces inject into the tail (index ≤ N − M).
+11. Spectral floor ⇒ inverse cost; ground eigenvector ⇒ sharpness; quasimode inversion
+    |A⁻¹v − λ⁻¹v| ≤ (eλ)⁻¹|Av − λv|.
+12. Conductor spectrum: E_m = log m + O(1) shell budget, E_p ≤ log p + O(1); Σ1/p = ∞ fixes heat threshold β = 1.
+13. Residual payment: eight-term decomposition, each term polynomial in c with decay (log N/N)² or
+    1/√log N; Fourier decay t^{−8} gives E_m(c) ≍ c^{−7}; relative residual → 0 on c_N = (log N)^α, α < 1/40.
+
+**D. Signed theta Hankel hierarchy**
+14. Gamma moments have product determinants and successor gw^{2N}N!(r)_N; native balanced heads converge to
+    them at fixed rank; relative successor fraction N!/(s+½+N)_N ≤ (2/3)^N → 0.
+15. Parity split: H_N(s) ≅ H_{⌈N/2⌉}(m) ⊕ H_{⌊N/2⌋}(m_{·+1}) for interleaved zeros.
+16. First-atom obstruction: continuation at t = iy is periodic; positive signed moments would force
+    monotonicity; g(π/2) > g(π) ⇒ some moment < 0 at every center.
+17. Analytic payment chain: Cauchy on the unit disk (factorial), polynomial scale envelope P_k (quadratic order
+    cost), Wick kernel e^{8zw}·relative factor, Hermite congruence (det 1), adaptive radii r_n = √((n+1)/8),
+    geometric contraction kernel (row mass ≤ 4) ⇒ relative form error 16D(N+1)²/q; infinite native tail adds
+    N·A e⁸/q.
+18. Successor comparison: H_{N+1}(m) ⪰ H_{N+1}(g) ⇒ S_N(m) ≥ S_N(g); relative η transfers to successors.
+19. Rescaling S_N(c t^k m_k) = c t^{2N} S_N(m); Gaussian successor = 8^N N!.
+20. Successor mixture: S(m+n) = S(m) + S(n) + minimizer variance (0 iff minimizers agree); monic energy
+    identity; global minimizer test converts pointwise native positivity into integrated tail reserves.
+21. Seam: tail head at r = 0 is the Gram of derivative packets of the complete theta source ⇒ PD at every rank.
+22. Hyperbolic clock: u = arsinh(t/√q) makes the first atom a Gamma mixture C[(B−3)γ_k + (3/8)γ_{k+1}];
+    the affine-Gamma cone is exactly a, b ≥ 0.
+
+**E. Bessel source band**
+23. Energy flux (x − τ²/x)|K|² + x|K'|² ≥ 0 plus decay ⇒ K_{iτ}(a) > 0 on |τ| ≤ a; all order zeros have
+    |Im ν| > a.
+24. Wronskians against e^{−x}/x and e^{−τ²/x}K_0 give K' ≥ −(1+1/a)K and K_{iτ}(a) ≥ e^{−τ²/a}K_0(a).
+25. Wigner radial transform = a²((a²+9)K + 6aK'); product fibre = divisor trace × radial transform.
+
+## 5. Pillar theorems
+
+| Theorem | Lean | Status |
+|---|---|---|
+| Cyclotomic coercive completion, zero radical | `divisorGramEnergy_completion`, `divisorGramEnergy_eq_zero_iff` | proved |
+| Exact attained bridge dual cost D(b)/Q | `bridgeSchur_completion`, `bridgeSchurCost_isGreatest` | proved |
+| Mesh dual cost = minimal Dirichlet extension | `meshSchurCost_isGreatest`, `meshDirichletEnergy_isLeast_extension` | proved |
+| Neutral prime packet dual payment | `primePacket_neutral_mesh_schur_bound`, `meshDoubleNeutralSchurCost_isGreatest` | proved |
+| Terminal completion: full covariance, attained free-terminal cost | `finiteSourceEnergy_eq_covariance`, `finiteSourceDualCost_isGreatest` | proved |
+| Probe cost = source cost + (T b_T)², neutral maximizer | `finiteProbeDualCost_isGreatest`, `finiteProbe_maximizer_mass_zero` | proved |
+| Euler completion uniform along growing cutoffs | `tendsto_fullErrorEnergy_iff_finiteSourceEnergy_on_schedule` | proved |
+| Chebyshev energy ≤ 60N + R/3; strips ⇔ remainder exponents | `chebyshevEnergy_cyclotomic_bounds`, `five_sixths_strip_iff_chebyshevCyclotomicRemainder_subpower` | proved |
+| Far cyclotomic modes O(N^{3/2}) | `chebyshevCyclotomicFar_sqrt_le` | proved |
+| Complete Weil index ≤ N − M on Young range | `eventually_completeWeil_negative_subspace_dim_le_young_tail` | proved |
+| Uniform prefix inverse cost 20 | `eventually_plateauPrefixSchur_quadratic_payment` | proved |
+| Sharp inverse cost 1/E₁(c) | `eventually_tiltedWeil_inverse_cost_le`, `eventually_tiltedWeil_inverse_cost_gt` | proved |
+| Green form diagonal on Ramanujan packets | `tendsto_tiltedWeil_inverse_packet_inner` | proved |
+| Finitely many readings control the inverse | `exists_tiltedWeil_inverse_finite_reading_tail` | proved |
+| Conductor heat threshold β = 1; E_m/log m → 1 | `summable_completedConductorHeatWeight_iff`, `tendsto_completedConductorEnergy_div_log_one` | proved |
+| Green operator: norm 1/E₁, compact, no power summable | `norm_tiltedConductorGreen`, `not_summable_tiltedConductorGreen_coordinate_power` | proved |
+| Polynomial eight-term residual | `exists_tiltedWeil_polynomial_residual_bound` | proved |
+| E_m(c) ≍ c^{−7} | `tiltedConductorEnergy_two_sided` | proved |
+| Fixed conductor packets positive at c_N = (log N)^α, α < 1/40 | `eventually_tiltedWeil_growing_packet_pos` | proved |
+| No rank-uniform relative native reserve | `not_native_rank_uniform_relative_reserve` | proved |
+| First atom: negative moment at every center; κ(x) → ∞ | `exists_firstAtom_signed_moment_neg`, `firstAtomFailureRank_tendsto` | proved |
+| √(q/C₂) − 3 < κ(x) ≤ 1 + C_* q | `firstAtomFailureRank_sqrt_scale_lower`, `exists_firstAtom_signed_head_failure_le_scale` | proved |
+| Native signed head PD beyond center log(N+2) + O(1) | `nativeSignedHead_posDef_of_quadratic_rank_horizon` | proved |
+| Physical successor ∈ (½, 3/2)·f²q^N 8^N N! | `nativePhysicalSuccessor_half_bounds_of_horizon` | proved |
+| Successor addition law | `successorSchur_add_eq`, `successorMixtureVariance_eq_zero_iff` | proved |
+| Tails strictly Loewner-decreasing; successor strictly decreasing | `nativeTailHead_sub_posDef_of_quadratic_rank_horizon`, `nativeTailSuccessor_strictAnti_of_quadratic_rank_horizon` | proved |
+| Rank-7 center successor ≥ band energy + explicit reserve | `centerSeventhSuccessor_explicit_compact_allowance` | proved |
+| Seam head PD at every rank | `nativeTailHead_zero_posDef` | proved |
+| Clocked first atom positive at all ranks, pullback fails | `firstAtomGaussianClock_positive_pullback_fails` | proved |
+| Affine-Gamma cone ⇔ a, b ≥ 0 | `affineGamma_all_head_posSemidef_iff` | proved |
+| Bessel band zero-free and Gaussian-dominated | `modifiedBesselKOrder_zero_outside_band`, `modifiedBesselKOrder_gaussian_lower` | proved |
+| Fibre sign = divisor-trace sign on the band | `thetaCuspWignerProductFiber_physical_band_sign` | proved |
+| All-rank signed center hierarchy / growing overlap c ≫ (log N)^{1/4} | — | open (RH-equivalent) |
+
+## 6. Tools
+
+**Developed**
+- Cyclotomic/divisor completion and exact Green inverse (`DirichletSchurCost`, `IrregularGreen`,
+  `OptimalInterpolation`, `NeutralPacketDual`).
+- Terminal completion calculus (`TerminalCompletion`, `SourceProbeBoundary`).
+- Inverse-trace and variance-weighted stability (`InverseTraceStability`, `WeightedInverseStability`).
+- Successor calculus: monotonicity, relative error, rescaling, mixture law (`SuccessorComparison`,
+  `PhysicalSuccessorMass`, `SuccessorMixture`).
+- Hermite congruence plus geometric contraction: dimension-free relative form bound with quadratic degree
+  cost (`HermiteJetCongruence`, `GaussianJetConvolution`, `GeometricContraction`, `GaussianContractionBound`).
+- Quasimode inversion and finite-reading certificates for complete Weil inverses (`WeilGreenModes`,
+  `WeilGreenTail`).
+- Bessel flux/Wronskian band estimates (`BesselSpectralBand`, `BesselBarrierPayment`, `BesselGaussianReserve`).
+
+**To build**
+- Compact-center payment for the native successor as rank grows (band term of the global-minimizer split).
+- Joint estimate of all complete Weil directions against the vanishing ground reserve c^{−7} on
+  c_N ≫ (log N)^{1/4}.
+- Arithmetic upper bound for the Chebyshev cyclotomic remainder (near-constant modes).
+- Inner-cutoff-strength bound for accumulated Euler-deletion covariance.
+- Sign control of divisor-character traces in Wigner fibres; polynomial-weighted control outside the band.
+
+## 7. Open questions
+
+1. Exact growth of κ(x) between √q and q.
+2. Does native compensation pay the compact center band at all ranks (RH-equivalent all-order hierarchy)?
+3. Can fixed-packet positivity at (log N)^α, α < 1/40, extend to full-matrix positivity at α > 1/4
+   (RH-equivalent for the tilted spline)?
+4. Which arithmetic relation bounds the near-constant cyclotomic Chebyshev modes by N^{3/2+ε} or N^{5/3+ε}?
+5. Which nonlinear source coordinate transfers positivity back to physical derivatives (clock pullback)?
+6. Is the (log N)^{1/40} packet exponent improvable by sharper residual decay than 1/√log N?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| Source | An explicit prime, divisor, theta, or causal distribution with its exact identities |
-| Domain | The finite packet, test space, or summability class on which the form is defined |
-| Complete form | A signed quadratic or sesquilinear form retaining every source contribution |
-| Comparison form | A nonnegative form identified directly from the source |
-| Radical | Null directions requiring separate treatment |
-| Reserve | A quantitative lower bound in a stated norm or on a stated quotient |
-| Completion cost | The remainder, mixed block, or boundary term between source and comparison forms |
-| Transfer | A proved identity or inequality under a specified map of source domains |
-| Exhaustion | A simultaneous range of rank, conductor, aperture, horizon, or cutoff |
-| Endpoint tolerance | Positivity, semiboundedness, finite index, a count error class, or a census allowance |
-
-A **source comparison** bounds the complete form by a controlled quantity on its natural domain.
-A **relative estimate** measures a remainder against the reserve it consumes. A **successor reserve**
-is the Schur complement permitting enlargement of a positive section. A **completion domain**
-specifies which infinite signed combinations are legitimate.
-
-These terms supply no positivity assumptions. A structure containing the missing source inequality
-as a field has not proved that inequality.
-
-## Mechanisms
-
-**Arithmetic Gram completion.** Primitive cyclotomic prefixes give a genuine overlap Gram.
-A divisor family yields an explicit discrete bridge kernel. Exact radicals and inverse operators
-can turn this identity into a norm estimate.
-
-**Successor compensation.** A strict finite section has a native source Schur integral.
-A reusable identity must control this integral as rank grows, or control any developing radical.
-
-**Signed completion on a domain.** A difference of positive Grams can represent a complete source.
-Its negative channel must be paid by terms present in that source. Divergent channels cannot be
-assigned an unrestricted positive finite part.
-
-**Accumulation and covariance.** Summing divisor coefficients before measuring their error creates
-a new quadratic form. Its unequal-pair terms and infinite tail belong to the estimate.
-
-**Quantitative transfer.** Compression, interpolation, inversion, and cutoff changes carry norms
-and constants. The endpoint determines which losses are permissible.
-
-**Signed dispersion.** A centered correlation functional may admit a useful upper bound without
-individual correlation asymptotics. Its window, centering, parity, and normalization remain fixed.
-
-## Foundational theorems in the corpus
-
-1. **Cyclotomic Gram and radical.** For primitive-prefix Grams $G_m$,
-   $$
-   \sum_{i,j}a_i a_jG_m(k_i,k_j)
-   =\sum_{\zeta\ {\rm primitive}\ m}\left|\sum_i a_i\sum_{r<k_i}\zeta^r\right|^2.
-   $$
-   Vanishing is equivalent to divisibility of the prefix polynomial by $\Phi_m$.
-   See [Gram completion](../CriticalArithmeticCorrelationTheory/TheArithmeticCurvatureHasAnExactGramCompletion.lean)
-   and [radical classification](../CriticalArithmeticCorrelationTheory/CyclotomicDivisibilityClassifiesTheOverlapGramRadical.lean).
-
-2. **Divisor completion.** For $0\le i,j\le Q$,
-   $$
-   \sum_{m\mid Q,\ m\ne1}G_m(i,j)=Q\min(i,j)-ij.
-   $$
-   See [AllDivisorConductorsRecoverTheDiscreteBridge](../CriticalArithmeticCorrelationTheory/AllDivisorConductorsRecoverTheDiscreteBridge.lean).
-   This fixes the actual arithmetic comparison kernel, including its cross entries.
-
-3. **Prime packet uniformity.** At fixed modulus, one prime-window horizon controls every finite
-   complex residue Gram packet. Affine multiplier and shift can vary arbitrarily with the horizon.
-   See [PrimeResidueWindowsControlEveryGramPacket](../CriticalArithmeticCorrelationTheory/PrimeResidueWindowsControlEveryGramPacket.lean)
-   and [ActualAffinePrimeWindowsAreUniformInTheirParameters](../CriticalArithmeticCorrelationTheory/ActualAffinePrimeWindowsAreUniformInTheirParameters.lean).
-
-4. **Signed theta sections.** For $s_a(2n)=(-1)^n k_a^{(2n)}(0)$, $s_a(2n+1)=0$, the full
-   $H_{a,7}=[s_a(i+j)]_{i,j<7}$ is positive definite for $0<a<1/2$.
-   A strict $H_{a,n}$ has nonnegative successor exactly when
-   $$
-   \int_0^\infty r\sinh(ar)\,
-   \mathrm{thetaCuspNativeSuccessorSource}(a,n,r/2)\,dr\ge0.
-   $$
-   The all-order signed Hankel cone is equivalent to RH.
-   See [rank-seven strictness](../RHTower/ThetaCusp/ThetaCuspCenterMixedSeventhRankStrict.lean),
-   [native successor](../RHTower/ThetaCusp/ThetaCuspCenterMixedSuccessorSource.lean), and
-   [signed-jet completeness](../RHTower/ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness.lean).
-
-5. **Cumulative divisor covariance.** Euler-deletion finite error energy equals
-   $$
-   \sum_{j,k\le T}c_jc_k
-   \left(\frac1{\max(j,k)}-\frac1{T+1}\right).
-   $$
-   Full energy includes the literal infinite tail.
-   See [EulerDeletionAveragedDivisorCovariance](../RHTower/EulerDeletionAveragedDivisorCovariance.lean).
-
-6. **Light channels and their domain boundary.** The reflected Suzuki current plus its
-   negative-light Gram equals its positive-light Gram on every finite source and height packet.
-   An unrestricted positive extension of the divergent sharp prime source is impossible.
-   See [light completion](../RHTower/Suzuki/SuzukiWallFieldLightConeKernelCompletion.lean) and
-   [finite-part obstruction](../RHTower/Suzuki/SuzukiCofinalPositiveFinitePartNoGo.lean).
-
-7. **Endpoint precision.** Count has additive stabilizer
-   $\mathcal Q=\{\delta:\sum_{n\le x}\delta(n)=O(\sqrt x\log^2x)\}$.
-   Complete all-generator tower positivity instead determines every coefficient from $n=2$.
-   See [count precision](../ArithmeticOfSquareRootPrecision/PrecisionClassesAndTheCount.lean) and
-   [tower rigidity](../ArithmeticOfSquareRootPrecision/TowerPositivityIsPrecisionExact.lean).
-
-8. **Gauge variance and census.** Unequal ordered prime pairs have distinct ratios. The twisted
-   bandwidth-$4/3$ coalescent source therefore has zero gauge mean and an exact diagonal variance.
-   Its normalized variance is at most
-   $$(1536/\pi^2)(\log T)^3T^{1+\eta}=o(N(T,2T)^2),\qquad\eta<1.$$
-   The actual statistic is its value at the prescribed gauge point zero. Additive prime
-   correlations must control that point; the small gauge variance alone does not.
-   See [TheCoalescentSurplusIsPureGaugeCharge](../ArithmeticCorrelationGeometry/TheCoalescentSurplusIsPureGaugeCharge.lean).
-
-## Arithmetic Green norm and exact Schur cost
-
-For a period $Q\ge1$, coefficients $a_i$ on $1\le i<Q$, and
-$P_a(\zeta)=\sum_i a_i\sum_{r<i}\zeta^r$, define the complete divisor-conductor energy
-$$
-E_Q(a)=\sum_{m\mid Q,\ m\ne1}\sum_{i,j}a_i a_jG_m(i,j).
-$$
-Its coefficient reserve has an exact positive remainder:
-$$
-4E_Q(a)=Q\left[\left(\sum_i a_i\right)^2+\sum_i a_i^2\right]
-+\sum_{m\mid Q,\ m\ne1}\sum_{\zeta\ {\rm primitive}\ m}|(1+\zeta)P_a(\zeta)|^2.
-$$
-Thus the completed arithmetic Gram controls total mass and coefficient square mass simultaneously.
-Its interior radical is zero. The proof uses the complementary multiplier $1-\zeta$, whose
-Parseval energy is exactly the bracketed coefficient norm.
-See [CyclotomicCoercivity](CyclotomicCoercivity.lean), especially
-`divisorGramEnergy_completion`, `divisorGramEnergy_coercive`, and
-`divisorGramEnergy_eq_zero_iff`.
-
-The same form has a local inverse. Extend an interior coupling $b$ by $b_0=b_Q=0$, and put
-$$
-(Lb)_i=2b_i-b_{i-1}-b_{i+1},\qquad
-D_Q(b)=\sum_{0\le i<Q}(b_{i+1}-b_i)^2.
-$$
-Then $B_Q^{-1}=L/Q$ on the interior, and
-$$
-E_Q(a)-2\sum_i a_i b_i+\frac{D_Q(b)}Q
-=E_Q\left(a-\frac{Lb}Q\right)\ge0.
-$$
-Consequently
-$$
-\max_a\left(2\sum_i a_i b_i-E_Q(a)\right)=\frac{D_Q(b)}Q,
-$$
-with equality exactly at $a_i=(Lb)_i/Q$ on every interior coordinate.
-The two boundary differences belong to the cost. This gives an attained, exact payment for a
-mixed coupling in the actual completed arithmetic Gram.
-See [DirichletSchurCost](DirichletSchurCost.lean), especially
-`bridgePotential_inverse`, `bridgeSchur_completion`, and `bridgeSchurCost_isGreatest`.
-
-Application to a completed Weil block requires identification of its coupling in these coordinates
-and an arithmetic bound for this variation energy. The Green inverse alone supplies neither.
-
-## Accumulation, dual variation, and a joint truncation bound
-
-For arbitrary real increments $c_j$, let
-$$
-C_T(c)=\sum_{1\le n\le T}\frac{(\sum_{j\le n}c_j)^2}{n(n+1)}.
-$$
-The exact coordinate change $a_j=c_j/j$, $Q=T+1$, gives
-$$
-E_{T+1}(a)=(T+1)C_T(c),\qquad
-4C_T(c)=\left(\sum_{j\le T}\frac{c_j}{j}\right)^2+
-\sum_{j\le T}\frac{c_j^2}{j^2}+\frac{R_{T+1}(a)}{T+1}.
-$$
-Thus accumulation has an explicit coercive norm and a positive cyclotomic remainder.
-Its mixed-coupling payment is also local:
-$$
-2\sum_{j\le T}c_jb_j-C_T(c)\le D_{T+1}(w),\qquad
-w_j=jb_j\ (1\le j\le T),\quad w_0=w_{T+1}=0.
-$$
-Both conductor factors cancel exactly. The cost concerns variation of the weighted coupling,
-not its absolute coordinate size.
-
-For the actual Euler-deletion increments at $1\le X<M$, write $F_{X,M}$ for the full
-error energy. Its literal coordinate tail obeys the simultaneous estimate
-$$
-0\le F_{X,M}-C_T(c)\le\frac{(M+1)^2}{T+1}.
-$$
-This follows from the source bound $|1-\mathrm{modular}(X,M,n)|\le M+1$ and the
-telescoping carrier tail. It specifies a horizon large enough for any prescribed truncation
-allowance, including when the outer cutoff grows. The estimate does not bound the accumulated
-source energy at the inner-cutoff strength required by the Euler-deletion criterion.
-See [DivisorCovariance](DivisorCovariance.lean), particularly `cumulativeEnergy_completion`,
-`cumulativeEnergy_schur_bound`, and `fullErrorEnergy_truncation_bounds`.
-
-Completing a finite source packet gives a different boundary metric. Put
-$$\mathcal C_T(c)=C_T(c)+\frac{M_T^2}{T+1},\qquad M_T=\sum_{j\le T}c_j.$$
-Its full covariance is
-$$\mathcal C_T(c)=\sum_{j,k\le T}\frac{c_jc_k}{\max(j,k)}.$$
-For a coupling $b$, let $F_0=0$, $F_j=jb_j$ for $1\le j\le T$, and
-$F_{T+1}=F_T$. The exact dual cost is
-$$\max_c\bigl(2\langle c,b\rangle-\mathcal C_T(c)\bigr)
-=D_T(F)=\sum_{j=1}^T(F_j-F_{j-1})^2.$$
-The unique optimizing interior packet is $c_{*,j}=j(2F_j-F_{j-1}-F_{j+1})$,
-with total mass $F_T$, and
-$$\mathcal C_T(c)-2\langle c,b\rangle+D_T(F)
-=\mathcal C_T(c-c_*)=C_T(c-c_*)+\frac{(M_T-F_T)^2}{T+1}.$$
-Thus the terminal source mass pays the last Dirichlet edge. Source extension
-itself has the exact signed law
-$$\mathcal C_{T+1}(c)-\mathcal C_T(c)
-=\frac{c_{T+1}(2M_T+c_{T+1})}{T+1};$$
-it increases energy exactly when the numerator is nonnegative.
-See [TerminalCompletion](TerminalCompletion.lean), `finiteSourceEnergy_completion`,
-`finiteSourceEnergy_schur_equality_iff`, and `finiteSourceEnergy_le_succ_iff`.
-
-For the actual Euler-deletion source, finite completion approximates the full
-infinite energy on a simultaneous cutoff domain:
-$$\left|F_{X,M}-\mathcal C_T(c)\right|\le\frac{(M+1)^2}{T+1},$$
-$$2\sum_{j\le T}c_jb_j-F_{X,M}
-\le D_T(F)-\frac{(M_T-Tb_T)^2}{T+1}+\frac{(M+1)^2}{T+1}.$$
-Both the omitted source tail and inserted terminal mass lie in the same
-explicit interval; their difference gives the two-sided allowance. A cutoff
-$(M+1)^2\le\delta(T+1)$ therefore pays the transfer within $\delta$, with
-the mass-discrepancy gain retained. See [EulerTerminalCost](EulerTerminalCost.lean),
-`fullErrorEnergy_freeTerminal_schur_bound_with_mass`.
-
-Source support and probe support define different completion domains.
-The finite-source energy is literally
-$$\mathcal C_T(c)=\sum_{n\ge1}
-\frac{(\sum_{j\le\min(n,T)}c_j)^2}{n(n+1)}.$$
-For a fixed probe $b^T_j=b_j\mathbf1_{j\le T}$, allowing arbitrary finite
-source support gives the exact attained cost
-$$\max_{K,c}\{2\langle c,b^T\rangle-\mathcal C_K(c)\}
-=D_T(F)+F_T^2.$$
-An optimizing source is supported through $T+1$ and has total mass zero.
-The additional coordinate restores the terminal Dirichlet edge. The two
-domain costs agree exactly when $F_T=0$.
-See [SourceProbeBoundary](SourceProbeBoundary.lean),
-`hasSum_finiteSourceEnergy` and `finiteProbeDualCost_isGreatest`.
-
-## The actual Chebyshev source and its unpaid cyclic form
-
-Let
-$$F(N)=\sum_{2\le d<N}\frac{\psi(d)-d}{\sqrt d},\qquad
-E(N)=\sum_{2\le n\le N}\frac{F(n)^2}{n^2},\qquad c_j=F(j)-F(j-1).$$
-Its literal increment packet $a_j=c_j/j$ satisfies
-$$C_N(c)=\frac{E_{N+1}(a)}{N+1},\qquad
-C_N(c)\le E(N)\le\frac43 C_N(c).$$
-The denominator defect is exactly
-$$E(N)-C_N(c)=\sum_{1\le n\le N}\frac{F(n)^2}{n^2(n+1)}.$$
-The actual source bound $|\psi(d)-d|\le6d$ pays the two explicit channels:
-$$\left|\sum_{j\le N}a_j\right|\le12\sqrt N,\qquad
-\sum_{j\le N}a_j^2\le36N.$$
-Writing $\mathcal R_N=R_{N+1}(a)/(N+1)$ for the normalized cyclotomic remainder,
-$$0\le\mathcal R_N\le4E(N),\qquad E(N)\le60N+\frac13\mathcal R_N.$$
-For every fixed exponent $r\ge1$, a uniform $N^r$ bound for $E$ is therefore
-equivalent to one for $\mathcal R$. The exponent families $5/3+\varepsilon$
-and $3/2+\varepsilon$ for this literal remainder are exactly equivalent to
-the five-sixths and three-quarters zero strips. Its upper bound is the remaining
-arithmetic problem; the explicit coefficient channels already have a linear payment.
-See [ChebyshevCyclotomicCompletion](ChebyshevCyclotomicCompletion.lean),
-`chebyshevEnergy_cyclotomic_bounds` and `chebyshevEnergy_power_bound_iff_cyclotomic`.
-
-## Arithmetic packets and an actual prime-source estimate
-
-For arbitrary interior arithmetic nodes $k_i$, aggregate colliding coefficients as
-$A_r=\sum_{k_i=r}a_i$. The complete packet energy is exactly $E_Q(A)$. Its radical consists
-of the packets with every aggregate $A_r=0$. Distinct indices preserve the coefficient square
-mass and the quarter reserve. This specifies the precise information retained by arithmetic
-compression. See [FinitePackets](FinitePackets.lean).
-
-For a finite prime block $S\subset(P,2P]$, restrict to packets satisfying
-$\sum_{p\in S}a_p=\sum_{p\in S}a_p\log p=0$ and put $Q=2P+2$.
-Let $\mathcal P_S(a)$ be the actual energy-centered pronic prime-packet form. The complete
-first-jump source identity gives $E_Q(A)/Q\le\mathcal P_S(a)$, hence
-$$
-\sum_{p\in S}a_p^2\le4\mathcal P_S(a),\qquad
-2\sum_{p\in S}a_pb(p)-\mathcal P_S(a)\le D_Q(b^0).
-$$
-Here $b^0$ agrees with $b$ at interior integer coordinates and vanishes at both endpoints.
-The estimate retains the actual source's unequal-prime terms and pays an arbitrary coupling
-by an explicit variation norm. Its domain constraints are the two stated arithmetic moments.
-Identifying a complete Weil remainder with such a coupling remains a separate source problem.
-See [PrimePacketSchur](PrimePacketSchur.lean), particularly `divisorGramEnergy_le_primePacket`,
-`primePacket_coefficient_reserve`, and `primePacket_schur_bound`.
-
-For $P\ge2$, every prime in the block is odd, and the coefficient reserve improves to
-$$\sum_{p\in S}a_p^2\le2\mathcal P_S(a).$$
-More generally, distinct nonadjacent integer support has this half reserve in the normalized
-completed conductor form. Its zero-boundary coefficient extension has Dirichlet energy
-exactly twice its square mass. Applying the Schur bound at half that extension proves the
-claim. See [SeparatedPacketReserve](SeparatedPacketReserve.lean), particularly
-`packetBridge_separated_reserve` and `primePacket_odd_coefficient_reserve`.
-
-## Exact arithmetic gap geometry
-
-For increasing integer nodes $0=k_0<k_1<\cdots<k_N=Q$, the normalized arithmetic kernel is
-$$
-K_k(i,j)=\min(k_i,k_j)-\frac{k_i k_j}{Q}.
-$$
-Its inverse on the interior is the difference of adjacent arithmetic slopes:
-$$
-(L_kb)_i=\frac{b_i-b_{i-1}}{k_i-k_{i-1}}-
-\frac{b_{i+1}-b_i}{k_{i+1}-k_i}.
-$$
-For $b_0=b_N=0$, write
-$$
-F_k(a)=\sum_{1\le i,j<N}a_i a_jK_k(i,j),\qquad
-D_k(b)=\sum_{0\le i<N}\frac{(b_{i+1}-b_i)^2}{k_{i+1}-k_i}.
-$$
-Then
-$$
-F_k(a)-2\sum_i a_i b_i+D_k(b)=F_k(a-L_kb)\ge0,
-\qquad
-\max_a\left(2\sum_i a_i b_i-F_k(a)\right)=D_k(b).
-$$
-The maximum is attained at $a=L_kb$. This form is literally $E_Q(A)/Q$ for the
-packet supported at the selected nodes, and its interior radical is zero. No interpolation
-at omitted integer coordinates enters its inverse or completion cost.
-
-If every gap is at least $\delta>0$, then
-$$
-D_k(b)\le\frac4\delta\sum_i b_i^2,\qquad
-F_k(a)\ge\frac\delta4\sum_i a_i^2.
-$$
-Both boundary gaps belong to the minimum. Thus arithmetic spacing strengthens the source
-reserve through the exact inverse, with reciprocal-gap variation as its dual norm.
-See [IrregularGreen](IrregularGreen.lean), particularly `meshGram_eq_completed`,
-`meshPotential_inverse`, `meshSchurCost_isGreatest`, and `meshGram_gap_coercive`.
-
-Restriction to these arithmetic nodes has an exact extension theorem:
-$$
-\min_{u(0)=u(Q)=0,\ u(k_i)=b_i}D_Q(u)=D_k(b).
-$$
-The minimum is attained by the normalized complete arithmetic potential of $L_kb$.
-Its restriction equals $K_kL_kb=b$, and finite Green summation identifies its energy
-with $D_k(b)$. The Schur inequality applied to $L_kb$ proves that every competing
-extension has at least this cost. Both endpoint gaps enter the minimum.
-
-If the mesh contains a prime block $S\subset(P,2P]$ and $Q=2P+2$, the actual neutral
-prime form therefore satisfies
-$$
-2\sum_{p\in S}a_p b_{i(p)}-\mathcal P_S(a)\le D_k(b),\qquad k_{i(p)}=p.
-$$
-The source pays prescribed prime couplings by their arithmetic gap energy. Attainment
-and minimality concern the conductor comparison; the actual prime form may contain
-additional positive energy. See [OptimalInterpolation](OptimalInterpolation.lean),
-particularly `meshDirichletEnergy_isLeast_extension` and `primePacket_mesh_schur_bound`.
-
-## Neutral constraints and the exact quotient dual norm
-
-On the same mesh, the mixed Green pairing is
-$$
-\langle b,c\rangle_D=\sum_{i<N}
-\frac{(b_{i+1}-b_i)(c_{i+1}-c_i)}{k_{i+1}-k_i}
-=\sum_{0<i<N}b_i(L_kc)_i
-$$
-for zero endpoint values. Removing a constraint profile $g$ gives the explicit projection
-$$
-P_gb=b-\frac{\langle b,g\rangle_D}{D_k(g)}g,\qquad
-D_k(P_gb)=D_k(b)-\frac{\langle b,g\rangle_D^2}{D_k(g)}.
-$$
-Division by zero contributes zero: a zero-energy profile vanishes at every selected node.
-The projection is therefore defined and orthogonal even for degenerate constraints.
-For coefficients satisfying $a\cdot g=0$,
-$$
-\max_a\{2a\cdot b-F_k(a):a\cdot g=0\}=D_k(P_gb),
-$$
-attained at $a=L_kP_gb$.
-
-Two constraints have an exact joint payment. Put $v=P_gh$ and $u=P_v(P_gb)$. Then
-$$
-\max_a\{2a\cdot b-F_k(a):a\cdot g=a\cdot h=0\}
-=D_k(u)
-=D_k(b)-\frac{\langle b,g\rangle_D^2}{D_k(g)}
--\frac{\langle P_gb,v\rangle_D^2}{D_k(v)}.
-$$
-The maximizer is $L_ku$; no independence assumption on $g,h$ is needed.
-The exact radical is
-$$D_k(u)=0\quad\Longleftrightarrow\quad
-b_i=\alpha g_i+\beta h_i\quad(0<i<N)
-\quad\text{for some }\alpha,\beta\in\mathbb R.$$
-
-For the actual neutral prime source, choose $g_i=1$ and $h_i=\log k_i$ on the interior,
-with zero endpoints. Its mass and logarithmic moments annihilate both removed profiles.
-Consequently its complete mixed coupling obeys
-$$
-2\sum_{p\in S}a_pb_{i(p)}-\mathcal P_S(a)\le D_k(u)\le D_k(b).
-$$
-The attained equality and radical concern the constrained conductor comparison; the actual
-prime form retains any additional positive energy. See [NeutralPacketDual](NeutralPacketDual.lean),
-particularly `meshDoubleNeutralSchurCost_isGreatest`, `meshDoubleProjection_energy_eq_zero_iff`,
-and `primePacket_neutral_mesh_schur_bound`.
-
-## A macroscopic index ceiling for the complete Weil source
-
-For the actual plateau Weil matrix, one prefix horizon $M_0$ has the following property:
-whenever $M\ge M_0$, $N\ge M$, $c>0$, and $cM\le N$, every strictly negative subspace
-has dimension at most $N-M$. Restriction to tail coordinates is injective on such a
-subspace: a nonzero vector supported on the paid prefix would have nonnegative complete energy.
-
-At fixed overlap $c=3/2$ and length $N=3K$, this gives the unconditional eventual bound
-$$
-\dim W\le K.
-$$
-The matrix retains its prime, Gamma, polar, and mixed entries. The bound grows with the
-horizon; positivity of the remaining Schur form and a finite limiting index remain separate
-questions. See [WeilPrefixIndex](WeilPrefixIndex.lean), particularly
-`eventually_completeWeil_negative_subspace_dim_le_tail` and
-`eventually_three_halves_negative_subspace_dim_le`.
-
-The ceiling extends through the full certified Young range. For every fixed
-$1\le d<c_*$, a horizon $M_0(d)$ controls all $M\ge M_0(d)$, $N\ge M$, and $c>0$
-with $cM=dN$: every strictly negative subspace has dimension at most $N-M$.
-Here $c_*>1$ is the unique zero of the optimized complete Young floor. The exact
-principal-prefix identity identifies the paid block with the complete length-$M$
-source at overlap $d$. Its remaining dimension fraction is $1-d/c$.
-See `eventually_completeWeil_negative_subspace_dim_le_young_tail` and
-[TransMetzlerYoungOptimization](../TransMetzlerWeilPositivity/TransMetzlerYoungOptimization.lean).
-The certificate boundary describes this proved positive range; it does not assert
-that the actual matrix is indefinite beyond that range.
-
-The exact complete prefix also pays its inverse uniformly through touching.
-For one eventual horizon, simultaneously for $N\ge M$, $c>0$, and $cM\le N$,
-its prefix, mixed, and tail blocks satisfy
-$$A\succeq\frac1{20}I,\qquad
-0\le b^{\mathsf T}A^{-1}b\le20\|b\|^2,$$
-$$D-20B^{\mathsf T}B\preceq D-B^{\mathsf T}A^{-1}B\preceq D.$$
-The constant comes from the literal plateau endpoint energy exceeding $1/20$
-and uniform spectral control in the effective prefix overlap $cM/N$.
-At $(c,M,N)=(3/2,2K,3K)$ it pays every complete mixed entry with a
-dimension-independent constant. The remaining tail comparison is unpaid.
-See [WeilPrefixPayment](WeilPrefixPayment.lean),
-`eventually_plateauPrefixSchur_quadratic_payment`.
-
-## The sharp complete Weil inverse cost
-
-For the tilted unit spline, write $A_N(c)$ for the literal complete Weil matrix
-and $E_1(c)>0$ for the completed pole energy. The sharp asymptotic inverse cost is
-exactly $E_1(c)^{-1}$:
-\[
-C>E_1(c)^{-1}\quad\Longrightarrow\quad
-0\le b^{\mathsf T}A_N(c)^{-1}b\le C\|b\|^2
-\quad\text{eventually, simultaneously for every }b.
-\]
-Every $0<C<E_1(c)^{-1}$ is eventually violated by an actual unit eigenvector.
-For each finite $K$, one positive cost and one horizon work for all $0<c\le K$.
-The proof retains the complete source floor and the actual ground eigenvalue;
-it pays arbitrary mixed columns rather than individual arithmetic modes alone.
-See [WeilInverseCost](WeilInverseCost.lean),
-`eventually_tiltedWeil_inverse_cost_le`, `eventually_tiltedWeil_inverse_cost_gt`,
-and `exists_tiltedWeil_uniform_boundedOverlap_inverse_cost`.
-
-The exact equality threshold requires the side of finite spectral convergence.
-An unbounded overlap schedule requires a joint estimate against the reciprocal
-vanishing ground reserve.
-
-Every fixed arithmetic mode passes through the actual complete inverse in norm:
-\[
-\|A_N(c)^{-1}r_{m,N}-E_m(c)^{-1}r_{m,N}\|\longrightarrow0.
-\]
-The full inverse floor pays this transfer through
-$\|A^{-1}v-\lambda^{-1}v\|\le(e\lambda)^{-1}\|Av-\lambda v\|$
-when $A\succeq eI$. Consequently every fixed finite conductor packet has the
-exact mixed Green limit
-\[
-\left\langle A_N(c)^{-1}\sum_{m\in S}b_mr_{m,N},
-\sum_{m\in S}d_mr_{m,N}\right\rangle
-\longrightarrow\sum_{m\in S}\frac{b_md_m}{E_m(c)}.
-\]
-All completed source terms enter these energies. See
-[WeilGreenModes](WeilGreenModes.lean),
-`tendsto_tiltedWeil_inverse_ramanujan_residual_norm` and
-`tendsto_tiltedWeil_inverse_packet_inner`. The overlap and conductor support
-are fixed.
-
-Finitely many arithmetic readings also control every remaining inverse
-direction: for every $\varepsilon>0$, some finite positive-conductor set $S$
-has, eventually in $N$,
-\[
-v\perp r_{m,N}\ (m\in S)\quad\Longrightarrow\quad
-\|A_N(c)^{-1}v\|\le\varepsilon\|v\|.
-\]
-The complete defect reserve gives a finite coordinate certificate on each
-unit energy sublevel. Symmetry of the actual inverse and its norm quasimodes
-pay every reading of an unread vector. See [WeilGreenTail](WeilGreenTail.lean),
-`exists_tiltedWeil_inverse_finite_reading_tail`.
-An explicit operator-norm approximation by the arithmetic Green sum also
-requires the finite Gram projection estimate.
-
-## The exact conductor heat domain
-
-For every profile and fixed positive overlap, the complete conductor energies
-have the sharp heat threshold
-\[
-\sum_{m\ge1}e^{-\beta E_m(c)}<\infty\quad\Longleftrightarrow\quad\beta>1.
-\]
-A conductor-independent shell budget gives $E_m\ge\log m+A-K$.
-At primes, $E_p\le\log p+A+K+1$; the divergent prime reciprocal series
-therefore pays the critical boundary $\beta=1$. All pole and shell terms
-remain in the spectrum. The tilted-spline energies are positive, and
-$e^{-E}\le k!E^{-k}$ gives $\sum_m E_m(c)^{-k}=\infty$ for every integer
-$k\ge0$. See [ConductorHeatThreshold](ConductorHeatThreshold.lean),
-`summable_completedConductorHeatWeight_iff` and
-`not_summable_tiltedWeil_inverse_energy_pow`.
-
-The full conductor spectrum also has the exact logarithmic law
-$E_m(c)/\log m\to1$. Splitting the prime divisors at a fixed cutoff proves
-$\operatorname{tameDifferent}(m)=o(\log m)$; the bounded shell completion
-is negligible on the same scale. This holds for every profile and fixed
-positive overlap. See [ConductorLogLaw](ConductorLogLaw.lean),
-`tendsto_completedConductorEnergy_div_log_one`.
-
-This is the infinite conductor model. Finite complete-Weil heat traces also
-require control of the multiplicities of modes whose energies grow with the horizon.
-
-Its exact Green completion on complex $\ell^2(\mathbb N_{\ge1})$ is
-$G_ce_m=E_m(c)^{-1}e_m$. The positive pole energy gives
-$\|G_c\|=E_1(c)^{-1}$, attained at $e_1$. Properness of the conductor
-energies makes these multipliers tend to zero, so $G_c$ is compact; their
-strict positivity makes it injective. Compactness coexists with divergence
-of every integer coordinate-eigenvalue power sum. See
-[ConductorGreenCompletion](ConductorGreenCompletion.lean),
-`norm_tiltedConductorGreen`, `isCompactOperator_tiltedConductorGreen`, and
-`not_summable_tiltedConductorGreen_coordinate_power`.
-
-## Growing overlap and complete source payment
-
-For each fixed positive conductor, the literal normalized upward residual
-retains the sharper joint bound
-\[
-\|U_{m,c,N}\|^2\le C_m\left[
-c^{10}(\log N/N)^2+c^6/\sqrt{\log N}\right].
-\]
-The domain is $c\ge1$, $c/N\le1$, $B=\lceil ec\rceil\le N$, and
-$2(e+3)cB\le N$, above one conductor-dependent horizon. The exact source
-decomposition retains both offset signs and both horizon cutoffs.
-Kernel replacement costs $c^4(B+1)^6(\log N/N)^2$; the two boundary
-and shell costs have inverse-square-root logarithmic decay. Keeping these
-payments separate preserves the stronger horizon decay of the kernel term.
-See [UpwardSourcePayment](UpwardSourcePayment.lean),
-`exists_tiltedWeil_upward_polynomial_payment`.
-
-The same two costs pay the entire eight-term residual:
-\[
-\|A_N(c)r_{m,N}-E_m(c)r_{m,N}\|^2
-\le C_m\left[c^{10}(\log N/N)^2+c^6/\sqrt{\log N}\right].
-\]
-The simultaneous domain strengthens the width bound to $c/N\le1/3$.
-Prime adjunction, self, both polar terms, separated cross terms, near
-Gamma/downward cancellation, and the upward shell all enter this estimate.
-See [WeilPolynomialResidual](WeilPolynomialResidual.lean),
-`exists_tiltedWeil_polynomial_residual_bound`.
-
-Every fixed completed conductor has matching overlap decay:
-\[
-\kappa c^{-7}\le E_m(c)\le D_m c^{-7},\qquad c\ge m>0,
-\quad \kappa=\frac{2\,\mathrm{tiltedSplineTailConstant}}{\int\phi^2}>0.
-\]
-The literal Fourier spectrum has eighth-power decay; its positive coprime-tail
-series gives $E_m(c)\le[m/\varphi(m)]E_1(c/m)$ and the upper bound.
-Consequently one finite constant bounds every energy ratio in any fixed
-finite positive-conductor family at sufficiently large overlap.
-See [ConductorOverlapDecay](ConductorOverlapDecay.lean),
-`tiltedConductorEnergy_two_sided` and
-`exists_finite_conductor_energy_ratio_bound`.
-
-The actual squared residual divided by $E_m(c)^2$ is bounded by
-\[
-C_m\left[c^{24}(\log N/N)^2+c^{20}/\sqrt{\log N}\right].
-\]
-For $c_N=(\log N)^\alpha$, $0<\alpha<1/40$, all source-domain
-inequalities hold eventually and both costs vanish. Consequently
-\[
-c_N^7\|A_N(c_N)r_{m,N}-E_m(c_N)r_{m,N}\|\to0,\qquad
-\frac{\|A_N(c_N)r_{m,N}-E_m(c_N)r_{m,N}\|}{E_m(c_N)}\to0.
-\]
-These are joint overlap-horizon estimates for the literal complete source.
-See [WeilGrowingOverlap](WeilGrowingOverlap.lean),
-`eventually_logarithmicPacketOverlap_source_domain` and
-`tendsto_tiltedWeil_relative_residual_norm`.
-
-For $N\ge2$, the literal normalized Ramanujan Gram satisfies
-\[
-|\langle r_{m,N},r_{\ell,N}\rangle-\delta_{m\ell}|
-\le\frac{2m\ell+1}{\log N}.
-\]
-The quadratic energy ceiling pays its scaled mixed-entry cost by
-$O_{m,\ell}(c^9/\log N)$. Thus, on the same overlap schedules,
-\[
-c_N^7\bigl(\langle A_N(c_N)r_{m,N},r_{\ell,N}\rangle
--\delta_{m\ell}E_m(c_N)\bigr)\longrightarrow0.
-\]
-For every fixed injective family $m:\mathrm{Fin}(d)\to\mathbb N_{>0}$,
-one horizon makes the literal complete energy of
-$\sum_i b_i r_{m_i,N}$ strictly positive for every nonzero real coefficient
-vector $b$. The varying diagonal has common scaled floor $\kappa$;
-the finite entry error controls all mixed coefficients simultaneously.
-See [WeilGrowingPackets](WeilGrowingPackets.lean),
-`normalizedRamanujan_gram_error_le`,
-`tendsto_tiltedWeil_scaled_packet_entry_error`, and
-`eventually_tiltedWeil_growing_packet_pos`.
-
-## Exact native-tail reserves and their rank boundary
-
-Write $(r)_n=\prod_{j<n}(r+j)$. The scaled Gamma moments $m_k=gw^k(r)_k$, with
-$g,w,r>0$, have exact determinant and successor reserve
-$$
-\det[m_{i+j}]_{i,j<N}=\prod_{j<N}gw^{2j}j!(r)_j,\qquad
-S_N(m)=gw^{2N}N!(r)_N.
-$$
-The determinant follows from monic factorial evaluation at consecutive nodes. Its successive
-quotient retains the complete mixed row. See [GammaSuccessorReserve](GammaSuccessorReserve.lean).
-
-For the complete native reflection jet $R_n(x)$, first-atom mass $f_1(x)$, and actual scale
-$q(x)=\pi e^{2x}$, use the balanced moments
-$$
-\sigma_{s,k}(x)=\frac{(-1)^{s+k}R_{2(s+k)}(x)}{f_1(x)^2q(x)^{s+k}}.
-$$
-At every fixed rank $N$ and shift $s$, the limiting Gamma parameters are
-$g=16^s(\tfrac12)_s$, $w=16$, $r=s+\tfrac12$. If $A_{N,s}(x)$ is the balanced native
-head and $G_{N,s}$ this Gamma head, both
-$$
-A_{N,s}(x)-\tfrac12G_{N,s},\qquad \tfrac32G_{N,s}-A_{N,s}(x)
-$$
-are positive definite on a cofinal ray. Thus the comparison controls every vector in the
-fixed head in its full Gamma quadratic norm. Its successor satisfies
-$$
-S_N(\sigma_s(x))\longrightarrow
-C_{N,s}=16^{s+2N}(\tfrac12)_sN!(s+\tfrac12)_N>0,
-$$
-and eventually lies between $C_{N,s}/2$ and $3C_{N,s}/2$. The literal infinite theta
-remainder enters the proved entrywise limit; no source truncation occurs.
-
-Absolute reserve growth conceals a relative loss:
-$$
-\frac{S_N(\sigma_s(x))}{\sigma_{s,2N}(x)}
-\longrightarrow\frac{N!}{(s+\tfrac12+N)_N}\le(\tfrac23)^N.
-$$
-For every $\delta>0$, some finite rank has actual native ratio below $\delta$ on a cofinal
-ray. Therefore no positive diagonal-relative reserve works for all ranks, even if each
-rank chooses its own threshold. The surviving comparison uses the full Gamma norm and
-the exact rank-dependent successor constant. Compact-source compensation and simultaneous
-rank exhaustion remain separate questions.
-See [NativeTailReserve](NativeTailReserve.lean), particularly
-`nativeBalancedHead_relative_posDef_eventually`, `nativeBalancedSuccessor_tendsto`, and
-`not_native_rank_uniform_relative_reserve`.
-
-The full signed heads retain both parity sectors exactly. For
-$s(2k)=m_k$, $s(2k+1)=0$, simultaneous row and column permutation gives
-$$
-H_N(s)\cong H_{\lceil N/2\rceil}(m)\oplus
-H_{\lfloor N/2\rfloor}(m_{\cdot+1}).
-$$
-Positive definiteness and semidefiniteness are equivalent to the corresponding properties
-of both blocks; the full determinant is their product. Applying this identity to the literal
-complete native signed jets proves that every fixed full head is positive definite on its
-own cofinal ray. All odd entries are the source's exact zeros. The result retains arbitrary
-mixed entries within each parity sector and makes no claim of a common horizon for all ranks.
-See [SignedParityTransfer](SignedParityTransfer.lean), particularly
-`finiteHankelMatrix_parity`, `finiteHankelMatrix_evenMomentSequence_posSemidef_iff`, and
-`nativeSignedHead_posDef_eventually`.
-
-## An escaping obstruction in the literal first atom
-
-At every real center $x$, the first theta atom has a negative signed reflection moment:
-$$
-\exists k,\qquad m_k^{(1)}(x)=
-(-1)^k\partial_t^{2k}[f_1(x+t)f_1(x-t)]_{t=0}<0.
-$$
-Consequently some finite full signed Hankel section has a negative diagonal. No source
-horizon makes all first-atom signed moments nonnegative.
-
-This follows from the exact source profile, without a numerical rank witness. Set
-$q=\pi e^{2x}$, $B=(2q-3)^2$, and $C=4q^2e^{x-2q}>0$. Its entire continuation at $t=iy$ is
-$$
-g_x(y)=Ce^{-2q(\cos(2y)-1)}[B-12q(\cos(2y)-1)].
-$$
-Nonnegative signed moments would make every real Taylor coefficient of $g_x$ nonnegative,
-hence make $g_x$ nondecreasing on $[0,\infty)$. The literal values contradict this:
-$$g_x(\pi/2)=Ce^{4q}(B+24q)>CB=g_x(\pi).$$
-
-The positive survivor determines a source-dependent order invariant:
-$$\nu(x)=\min\{k:m_k^{(1)}(x)<0\}<\infty,\qquad \nu(x)\longrightarrow\infty.
-$$
-Every fixed shifted balanced first-atom Hankel head is positive definite on its own cofinal
-ray. Each fixed raw signed moment is eventually positive, so a finite intersection pushes
-$\nu(x)$ beyond every prescribed order. The invariant records the first negative moment;
-mixed entries may obstruct positivity of a Hankel head before that diagonal appears.
-
-The complete mixed boundary has its own finite invariant:
-$$
-\kappa(x)=\min\{N:H_N(s_x^{(1)})\text{ is not positive semidefinite}\},\qquad
-\kappa(x)\le\nu(x)+1,\qquad \kappa(x)\longrightarrow\infty.
-$$
-Every smaller head is positive semidefinite at that same center. Positive mass and scale
-congruences transfer the balanced shifted estimates to the literal first-atom moments;
-the exact parity identity then makes every fixed full signed head eventually positive
-definite. A finite intersection pushes its first failing dimension beyond any fixed bound.
-Thus the escaping obstruction concerns the whole mixed form as well as individual moments.
-
-Its physical scale has an effective ceiling. Put $H=e^{4\pi}$. At every real center,
-$$
-2^{2\nu(x)}\le
-\frac{e^{2q(H+1)}[(2q-3)^2+12q(H+1)]}{6q}.
-$$
-For $x\ge0$, this gives the explicit bounds
-$$
-\nu(x)\le C_*q(x),\qquad \kappa(x)\le1+C_*q(x),\qquad
-C_*=\frac{9e^{4\pi}+2}{2\log2}.
-$$
-The constant is coarse. The proof bounds the entire rotated source on $|z|=2\pi$,
-then uses Cauchy's coefficient estimate to bound its Taylor tail. If all derivatives
-below order $2\nu(x)$ are nonnegative, its Taylor head cannot decrease between
-$\pi/2$ and $\pi$. The two tails must therefore pay the actual decrease of at least
-$24qC$. This forces the displayed finite rank window without a numerical witness.
-See [FirstAtomEffectiveRankBoundary](FirstAtomEffectiveRankBoundary.lean), particularly
-`firstAtomNegativeOrder_pow_bound`, `firstAtomNegativeOrder_le_physicalScale`, and
-`exists_firstAtom_signed_head_failure_le_scale`.
-
-The complete theta source has a different analytic domain. Its original complex atom series
-is summable exactly when $\cos(2\operatorname{Im}z)>0$. The periodic entire argument above
-therefore cannot be applied to that complete series across its nonsummable sectors.
-See [FirstAtomRankBoundary](FirstAtomRankBoundary.lean), particularly
-`exists_firstAtom_signed_moment_neg`, `exists_firstAtom_signed_head_not_posSemidef`,
-`firstAtomSignedHead_posDef_eventually`, `firstAtomNegativeOrder_tendsto`, and
-`firstAtomFailureRank_tendsto`;
-the exact complete-source admission theorem is
-[ThetaCuspComplexClockSector](../RHTower/ThetaCusp/ThetaCuspComplexClockSector.lean).
-
-## Explicit rank and center comparisons
-
-The normalized first atom admits a simultaneous analytic estimate. Put
-$$
-\gamma_k=16^k(\tfrac12)_k=\frac{4^k(2k)!}{k!},\qquad
-D=e^{4+2e^2}(24+10e^2).
-$$
-At $q\ge3$, its rotated profile in the coordinates $z/\sqrt q$ differs from
-$e^{4z^2}$ by at most $D/q$ on the complex unit disk. The quartic remainder of
-$\cosh$ controls the exponential factor and the exact affine source factor.
-Cauchy's estimate gives every signed first-atom moment the bound
-$$
-|\sigma_k^{(1)}(x)-\gamma_k|\le\frac{(2k)!D}{q(x)}.
-$$
-Consequently $q(x)>D K!$ implies $K<\nu(x)$. A sufficient center is
-$\max(0,\tfrac12\log((D K!+1)/\pi))$.
-See [FirstAtomGaussianHorizon](FirstAtomGaussianHorizon.lean), especially
-`firstAtomScaledEvenJet_gaussian_error_le` and `firstAtomNegativeOrder_gt_of_horizon`.
-
-Mixed heads require the inverse of the full comparison. For any real positive definite
-$N\times N$ matrix $G$,
-$$
-v_i^2\le (G^{-1})_{ii}\,v^TGv,\qquad
-\|v\|_2^2\le\operatorname{tr}(G^{-1})\,v^TGv.
-$$
-Thus an entrywise error $|A_{ij}-G_{ij}|\le\epsilon$ has relative form cost
-$N\epsilon\operatorname{tr}(G^{-1})$. A cost below $1/2$ leaves the strict reserve
-$A-G/2>0$. See [InverseTraceStability](InverseTraceStability.lean).
-
-For $G_{N,s}=[\gamma_{i+j+s}]_{i,j<N}$, write $T_{N,s}=\operatorname{tr}(G_{N,s}^{-1})$.
-This is a finite cofactor sum divided by the exact positive Gamma determinant.
-The first-atom shifted head has relative error at most
-$$\frac{N T_{N,s}(2(s+2N))!D}{q(x)}.$$
-Let $E=\lceil R/2\rceil$, $O=\lfloor R/2\rfloor$. Both parity sectors are strictly positive if
-$$
-q(x)\ge Q_R^{(1)}=3+2D\big[E T_{E,0}(4E)!+O T_{O,1}(2+4O)!\big].
-$$
-This gives $R<\kappa(x)$, an explicit lower boundary for the whole mixed first-atom form.
-See [FirstAtomMixedHorizon](FirstAtomMixedHorizon.lean), particularly
-`gaussianInverseTrace_eq_cofactor_div`, `firstAtomBalancedHead_relative_error_le`, and
-`firstAtomFailureRank_gt_of_horizon`.
-
-The infinite theta remainder also has a simultaneous payment. Its literal estimate is
-$|\sigma_k-\sigma_k^{(1)}|\le27\,24^{2k}q^k(e^{3\pi}/399)e^{-3q}$ at $q\ge2k+6$.
-The exponential series bounds $q^{L+1}e^{-q}$ by $(L+1)!$, so for all $k\le L$ and
-$q\ge2L+6$,
-$$
-|\sigma_k(x)-\gamma_k|\le\frac{C_L}{q(x)},\qquad
-C_L=(2L)!D+27\,24^{2L}\frac{e^{3\pi}}{399}(L+1)!.
-$$
-The complete shifted head therefore has relative cost $N T_{N,s}C_{s+2N}/q$.
-For the full signed rank $R$, the explicit scale
-$$
-Q_R^{\mathrm{nat}}=2(R+1)+6+
-2\big[E T_{E,0}C_{2E}+O T_{O,1}C_{1+2O}\big]
-$$
-pays both analytic domains and both mixed parity sectors:
-$$q(x)\ge Q_R^{\mathrm{nat}}\quad\Longrightarrow\quad H_R(s_x^{\mathrm{nat}})>0.$$
-Thus $x\ge\max(0,\tfrac12\log(Q_R^{\mathrm{nat}}/\pi))$ is a sufficient joint
-rank–center condition. All constants are explicit finite expressions. The complete source
-and all its mixed entries remain present. See [NativeGaussianHorizon](NativeGaussianHorizon.lean),
-especially `nativeBalancedHead_relative_error_le` and `nativeSignedHead_posDef_of_horizon`.
-
-These bounds are coarse. They give no common source center for all ranks and do not pay the
-compact-center contribution in the RH-equivalent integrated signed hierarchy.
-
-## Relative control of exact successor costs
-
-Ordering complete successor forms orders their Schur reserves. If the preceding heads
-of $m$ and $g$ are strict and $H_{N+1}(m)\ge H_{N+1}(g)$, then
-$S_N(m)\ge S_N(g)$, even when either successor reserve is negative. Subtract
-$S_N(g)$ from the terminal moment $2N$. The adjusted $g$ head lies exactly on
-its semidefinite boundary, and the same adjustment to $m$ remains semidefinite.
-The preceding heads and mixed rows are unchanged.
-
-Consequently a relative comparison in the full $(N+1)$-dimensional form gives
-$$
-|v^T(H_{N+1}(m)-H_{N+1}(g))v|\le\eta\,v^TH_{N+1}(g)v,
-\quad H_{N+1}(g)>0,\quad 0\le\eta<1
-$$
-$$\Longrightarrow\quad |S_N(m)-S_N(g)|\le\eta S_N(g).$$
-No additional inverse perturbation factor occurs. See
-[SuccessorComparison](SuccessorComparison.lean), particularly
-`successorSchur_mono` and `successorSchur_relative_error`.
-
-For the complete native source put $M=N+1$, $L=s+2M$, and
-$$A_{N,s}=M T_{M,s}C_L,\qquad \eta_{N,s}(x)=A_{N,s}/q(x).$$
-At $q\ge2L+6$ and $q>A_{N,s}$,
-$$
-|S_N(\sigma_s(x))-C_{N,s}|\le\frac{A_{N,s}}q C_{N,s}.
-$$
-The explicit scale $Q_{N,s}=2L+6+2A_{N,s}$ therefore gives
-$$q(x)\ge Q_{N,s}\quad\Longrightarrow\quad
-\tfrac12C_{N,s}<S_N(\sigma_s(x))<\tfrac32C_{N,s}.$$
-The sufficient source center is $\max(0,\tfrac12\log(Q_{N,s}/\pi))$.
-These bounds retain every native mixed entry and the infinite theta remainder.
-See [NativeSuccessorHorizon](NativeSuccessorHorizon.lean), especially
-`nativeBalancedSuccessor_relative_error_le` and
-`nativeBalancedSuccessor_half_bounds_of_horizon`.
-
-## Strict seam geometry and two complete-source regions
-
-Let $\Phi$ be the complete theta source, $h_k$ its native signed reflection jet,
-and $U_k(r)=\int_{s>r}h_k(s/2)\,ds$. The seam matrix $S_N=[U_{i+j}(0)]$ satisfies
-$$v^\mathsf TS_Nv=\int_{\mathbb R}\left|\sum_{j<N}v_j(2i)^j\Phi^{(j)}(x)\right|^2dx.$$
-Every finite derivative family of $\Phi$ is linearly independent. Integration against
-$x^k$ recovers its coefficients through a triangular system with nonzero diagonal
-$(-1)^k k!\int\Phi$. Thus $S_N$ is positive definite at every rank: the seam has
-zero radical, including for complex derivative packets.
-
-Write $K_k=$ `thetaCuspNativeJetDecayConstant k`, $D_N=\sum_{k\le2N}K_k$, and
-$A_N=N D_N\operatorname{tr}(S_N^{-1})$. The literal tail difference obeys
-$$|U_k(r)-U_k(0)|\le rK_k,\qquad
-|v^\mathsf T(H_N(U(r))-S_N)v|\le rA_Nv^\mathsf TS_Nv.$$
-Consequently
-$$0\le r\le[2(1+A_N)]^{-1}\quad\Longrightarrow\quad H_N(U(r))-\tfrac12S_N>0.$$
-At the other end, $r\ge2\,\mathrm{nativeMixedHorizon}(N)$ implies $H_N(U(r))>0$:
-its quadratic form is the integral of strictly positive complete native forms.
-Both regions retain all theta atoms and all mixed entries. The intervening compact
-interval is the remaining tail-compensation region; these estimates do not assert
-positivity throughout it or uniformly over rank.
-
-See [SeamCoercivity](SeamCoercivity.lean), particularly
-`thetaDerivativePacket_coefficients_eq_zero`, `nativeTailHead_zero_posDef`,
-`nativeTailHead_half_posDef_of_seam_radius`, and `nativeTailHead_posDef_of_horizon`.
-
-## An exact positive clock and its transport boundary
-
-The first atom has an exact all-order comparison beyond its Gaussian limit. With
-$q=\pi e^{2x}$, $B=(2q-3)^2$, and $C=4q^2e^{x-2q}$, the invertible real coordinate
-$u=\operatorname{arsinh}(t/\sqrt q)$ gives the literal identity
-$$
-\rho_x(t)=f_1(x+u)f_1(x-u)=Ce^{-4t^2}(B-24t^2),\qquad
-f_1(x+u)f_1(x-u)=\rho_x(\sqrt q\sinh u).
-$$
-Its signed moments and shifted heads are exactly
-$$
-(-1)^k\rho_x^{(2k)}(0)
-=C\big[(B-3)\gamma_k+\tfrac38\gamma_{k+1}\big]
-=C\gamma_k(B+6k),
-$$
-$$H_{N,s}(\rho_x)=C\big[(B-3)G_{N,s}+\tfrac38G_{N,s+1}\big].$$
-For $B\ge3$, all shifted heads and all full signed heads are positive definite
-simultaneously at the same center. This includes every $x\ge0$.
-
-At those same centers, the physical-coordinate first atom has its finite failing
-rank $\kappa(x)$. Thus an exact invertible nonlinear source coordinate can turn
-an indefinite all-order hierarchy into a positive Gamma mixture. Positivity of
-the clocked form supplies no positivity of its physical pullback. The comparison
-is exact; the missing transfer concerns the nonlinear derivative transformation.
-See [HyperbolicClock](HyperbolicClock.lean), especially
-`firstAtomGaussianClockProfile_eq`, `firstAtomGaussianClockProfile_signed_even_jet`,
-and `firstAtomGaussianClock_positive_pullback_fails`.
-
-The coefficient boundary is exact. For arbitrary real $a,b$, interleave the moments
-$a\gamma_k+b\gamma_{k+1}$ with odd zeros. Every finite full head is positive semidefinite
-if and only if $a,b\ge0$; every finite head is strict if and only if also $a+b>0$.
-The Gaussian density
-$$J_{a,b}(y)=(a+by^2)e^{-y^2/32},\qquad d\mu=e^{-y^2/32}\,dy,$$
-has precisely these moments up to one positive common mass. Polynomial test closure
-identifies the entire Hankel cone with $J_{a,b}\ge0$, which forces both coefficients
-to be nonnegative.
-
-For the actual clock, $a=B-3$ and $b=3/8$. Thus $B\ge3$ is necessary and sufficient
-for all-rank positivity and strictness. At $B<3$, every signed even moment
-$C\gamma_k(B+6k)$ remains nonnegative, but some finite mixed head fails.
-Individual moment signs do not determine the complete cone even in this explicit
-Gaussian source coordinate. See [GaussianClockCone](GaussianClockCone.lean),
-`affineGamma_all_head_posSemidef_iff`, `affineGamma_all_head_posDef_iff`,
-and `firstAtomGaussianClock_mixed_failure_of_shape_lt_three`.
-
-The physical clock also has an exact all-order transport operator. For
-$g(q,t)=\exp[-2q(\cosh(2t)-1)]$ and $H_k(q)=(-1)^k\partial_t^{2k}g(q,0)$,
-$$H_0=1,\qquad H_{k+1}=8qH_k+(16q^2-4q)H'_k-4q^2H''_k.$$
-The actual first-atom signed moment is exactly
-$$(-1)^k\partial_t^{2k}[f_1(x+t)f_1(x-t)]_{t=0}
-=C[BH_k(q)+6qH'_k(q)].$$
-Joint smoothness discharges the scale–reflection derivative commutations at every
-order. The negative second-derivative term remains part of the physical transport.
-See [ScaleJetTransport](ScaleJetTransport.lean), `gaussianScaleSignedJet_succ`
-and `firstAtomSignedMoment_eq_scaleJet`.
-
-This transport has an exact positive coefficient envelope. Set $\mathcal E=X\partial_X$ and
-$$P_0=1,\qquad P_{k+1}=8XP_k+16X\mathcal EP_k+4\mathcal E^2P_k.$$
-Every coefficient of $P_k$ is nonnegative, its degree is at most $k$, and its leading
-coefficient is $\gamma_k$. The physical identity is $H_k(q)=(-1)^kP_k(-q)$.
-The complete affine envelope is $BP_k+6\mathcal EP_k$, with leading coefficient
-$(B+6k)\gamma_k$. Removing that coefficient leaves a nonnegative polynomial, so
-reflection gives the exact source estimate
-$$\left|(-1)^k\partial_t^{2k}[f_1(x+t)f_1(x-t)]_{t=0}
--C(B+6k)\gamma_kq^k\right|
-\le C(B+6k)[P_k(q)-\gamma_kq^k].$$
-All lower-degree clock losses are retained in this bound.
-See [GaussianScalePolynomial](GaussianScalePolynomial.lean),
-`gaussianScaleSignedJet_eq_polynomial` and `firstAtomSignedMoment_polynomial_error_le`.
-
-The envelope has the quantitative bound
-$$[8q-k(k-1)]P_k(q)\le8q\gamma_kq^k,\qquad q>0,\quad q\ge k^2.$$
-Indeed, $\mathcal EP_k\le kP_k$ and $\mathcal E^2P_k\le k^2P_k$ on the positive
-ray. The induction closes through the exact nonnegative difference
-$$8q(2k+1)[8q-k(k-1)]
--[8q(2k+1)+4k^2][8q-k(k+1)]=16qk+4k^3(k+1).$$
-Thus $7P_k(q)\le8\gamma_kq^k$ and
-$7q[P_k(q)-\gamma_kq^k]\le k^2\gamma_kq^k$. At $q\ge\max(3,K^2)$, every $k\le K$ obeys
-$$(-1)^k\partial_t^{2k}[f_1(x+t)f_1(x-t)]_{t=0}
-\ge\tfrac67 C(B+6k)\gamma_kq^k>0.$$
-Consequently $K<\nu(x)$ and, whenever $q\ge3$, $\sqrt q<\nu(x)$.
-A sufficient center for $K<\nu(x)$ is $\max(0,\tfrac12\log((3+K^2)/\pi))$.
-In the original mass normalization, the same source estimate gives
-$$|\sigma_k^{(1)}-\gamma_k(1+6k/B)|
-\le(1+6k/B)\frac{k^2\gamma_k}{7q},\qquad
-|\sigma_k^{(1)}-\gamma_k|\le\frac{3k^2\gamma_k}{q}.$$
-These are simultaneous order–center bounds for the physical source; individual moment
-positivity does not imply mixed-head positivity.
-See [FirstAtomPolynomialHorizon](FirstAtomPolynomialHorizon.lean),
-`firstAtom_signed_moment_six_sevenths_le`, `sqrt_scale_lt_firstAtomNegativeOrder`,
-and `firstAtomScaledEvenJet_quadratic_error_le`.
-
-Relative mixed-entry errors admit a variance-sensitive payment. For a positive
-definite comparison $G$ define
-$$V(G)=\sum_iG_{ii}(G^{-1})_{ii}
-=\frac{\sum_iG_{ii}\operatorname{adj}(G)_{ii}}{\det G},\qquad V(G)\ge N.$$
-Positivity gives $|G_{ij}|\le\sqrt{G_{ii}G_{jj}}$. Therefore
-$$|A_{ij}-G_{ij}|\le\epsilon|G_{ij}|
-\quad\Longrightarrow\quad
-|v^\mathsf T(A-G)v|\le N\epsilon V(G)\,v^\mathsf TGv.$$
-Each variance multiplies its own exact inverse-coordinate cost. The proof first
-normalizes the entry bound by $\sqrt{G_{ii}G_{jj}}$, then applies the inverse
-evaluation inequality to the weighted square mass. Every mixed entry remains present.
-See [WeightedInverseStability](WeightedInverseStability.lean),
-`relative_entry_error_le_varianceInverseCost` and `varianceInverseCost_eq_cofactor_div`.
-
-The complete theta source has the corresponding relative moment estimate. Put
-$A=27e^{3\pi}/399$ and $Q_L=\max(L^2,8L,2L+6)$. For every $k\le L$,
-$$q\ge Q_L\quad\Longrightarrow\quad
-|\sigma_k(x)-\gamma_k|\le\frac{(3L^2+A)\gamma_k}{q}.$$
-The literal infinite remainder costs at most $A\gamma_k/q$ at
-$q\ge\max(8k,2k+6)$: $q^ke^{-q}\le k!$ and $8^kk!\le\gamma_k$
-pay its power and factorial, while $72^k\le e^{8k}$ pays the remaining order
-factor against the source exponential. This estimate includes every theta atom.
-See [NativePolynomialHorizon](NativePolynomialHorizon.lean),
-`nativeScaledEvenJet_firstAtom_relative_error_le` and
-`nativeScaledEvenJet_quadratic_relative_error_le_through`.
-
-For $G_{N,s}=[\gamma_{i+j+s}]$, put $V_{N,s}=V(G_{N,s})$ and
-$$L=s+2N,\qquad B_{N,s}=N V_{N,s}(3L^2+A).$$
-The complete native head satisfies
-$$q\ge Q_L\quad\Longrightarrow\quad
-|v^\mathsf T(H_N(\sigma_s(x))-G_{N,s})v|
-\le\frac{B_{N,s}}q v^\mathsf TG_{N,s}v.$$
-If also $q>2B_{N,s}$, the difference $H_N(\sigma_s(x))-G_{N,s}/2$ is positive
-definite. The exact native successor has the same relative payment at dimension $N+1$:
-$$|S_N(\sigma_s(x))-C_{N,s}|\le\frac{B_{N+1,s}}q C_{N,s},
-\qquad q\ge Q_{s+2(N+1)},\quad q>B_{N+1,s}.$$
-Consequently $q\ge Q_{s+2(N+1)}+2B_{N+1,s}$ gives
-$C_{N,s}/2<S_N(\sigma_s(x))<3C_{N,s}/2$.
-The corresponding center is the positive part of half the logarithm of this scale divided by $\pi$.
-The variance cost is an explicit weighted cofactor sum over the exact Gamma determinant.
-Its rank dependence remains present; a polynomial moment-order estimate alone does not
-establish a polynomial mixed-rank horizon.
-See [NativeVarianceHorizon](NativeVarianceHorizon.lean),
-`nativeBalancedHead_polynomial_relative_error_le`,
-`nativeBalancedHead_half_posDef_of_polynomial_scale`, and
-`nativeBalancedSuccessor_half_bounds_of_polynomial_horizon`.
-
-## The relative source in Gaussian polynomial coordinates
-
-Let $F_q$ be the mass-normalized first-atom source at Gaussian length scale and set
-$$K_q(z,w)=e^{-4z^2-4w^2}F_q(z+w),\qquad D=50e\exp(2e).$$
-For $R\ge1$, $q\ge\max(3,4R^2,R^4)$, and $|z+w|\le R$, the exact source satisfies
-$$|K_q(z,w)-e^{8zw}|\le D\frac{R^4}{q}e^{8|z||w|}.$$
-Indeed, for $u=2i(z+w)/\sqrt q$, $\delta=\cosh u-1$, and $B=(2q-3)^2$,
-$$K_q(z,w)=e^{8zw}e^E(1-12q\delta/B),\qquad
-E=-2q(\cosh u-1-u^2/2).$$
-The source bounds are $|E|\le2eR^4/q\le2e$ and $|12q\delta/B|\le48eR^4/q$.
-The factor $e^{8zw}$ remains intact before taking absolute values. This preserves
-the cancellation needed to compare Hermite coefficients without separate Gaussian
-growth penalties in the two variables. The estimate concerns the literal first atom;
-a mixed-rank theorem also requires the coefficient payment and the infinite remainder.
-
-See [GaussianRelativeKernel](GaussianRelativeKernel.lean), particularly
-`gaussianRelativeProfile_error_le` and `firstAtomWickKernel_error_le`.
-
-For positive radii $r,s$ with $r+s\le R$, the mixed error jet has the bound
-$$|\partial_z^i\partial_w^j(K_q-e^{8zw})(0,0)|
-\le\frac{i!j!}{r^is^j}\,D\frac{R^4}{q}e^{8rs}.$$
-The comparison jet is exactly $\mathbf1_{i=j}8^ii!$. The proof differentiates
-the first coordinate on the joint analytic domain before applying the second
-Cauchy estimate; no interchange of an uncontrolled limiting derivative is required.
-See [WickCauchyPayment](WickCauchyPayment.lean),
-`firstAtomWickError_mixed_jet_le` and `mixedKernelJet_gaussian`.
-
-The exact contraction formula for any entire $h$ is
-$$\partial_z^i\partial_w^j(e^{8zw}h(z+w))_{(0,0)}
-=\sum_{r\le\min(i,j)}\binom ir\binom jr8^rr!\,h^{(i+j-2r)}(0).$$
-For $h(z)=e^{-4z^2}F_q(z)-1$, its left side is the literal physical Hermite
-error jet. A single source-relative Cauchy contour bounds the remaining
-one-variable derivative. See [GaussianJetConvolution](GaussianJetConvolution.lean),
-`mixedKernelJet_gaussianMultiplier` and `gaussianProfileError_jet_le`.
-
-The adaptive radii and weights
-$$r_n=\sqrt{(n+1)/8},\qquad w_n=\sqrt{n!/(n+1)^n}$$
-obey the exact normalization
-$$\frac{n!}{r_n^n}=w_n\sqrt{8^nn!}.$$
-For $i,j\le N$,
-$$w_iw_je^{8r_ir_j}\le e^2(N+1),\qquad r_i+r_j\le\sqrt{N+2}.$$
-Stirling's bound supplies $w_n^2\le e(n+1)e^{-n}$; the inequality
-$16r_ir_j\le i+j+2$ cancels the exponential degree cost. These estimates include
-zero degree. See [HermiteRadiusPayment](HermiteRadiusPayment.lean), particularly
-`hermiteContourPairWeight_le` and `hermiteContour_factorial_identity`.
-
-The coordinate matrix is literal:
-$$T_{nk}=\binom nk\left.\frac{d^{n-k}}{dt^{n-k}}e^{-4t^2}\right|_{t=0}.$$
-It is lower triangular with diagonal one, determinant one, and bijective transpose
-action at every finite rank. For any entire source $F$, its complete real mixed
-kernel head satisfies
-$$[\Re\partial_z^i\partial_w^j(e^{-4z^2-4w^2}F(z+w))_{(0,0)}]
-=T_N[\Re F^{(i+j)}(0)]T_N^{\mathsf T}.$$
-For $F(z)=e^{4z^2}$ the result is exactly $\operatorname{diag}(8^ii!)$.
-The coefficient envelope $|T_{nk}|\le n!e^4$ controls the cost of transporting
-an exponentially small source remainder. See [HermiteJetCongruence](HermiteJetCongruence.lean),
-`realWickJetMatrix_eq_congruence` and `hermiteJetCoefficient_abs_le`.
-
-For $d_i=8^ii!$, $t=\sqrt{(N+1)/8}$, and $R=4t$, the contraction coefficients satisfy
-$$\frac{\binom ir\binom jr d_r(i+j-2r)!}{R^{i+j-2r}}
-\le2^{-(i+j-2r)}\sqrt{d_i d_j},\qquad r\le\min(i,j),\quad i,j\le N.$$
-The complete majorant is the nonnegative kernel $C=LL^{\mathsf T}$ with
-$L_{ij}=\mathbf1_{j\le i}2^{-(i-j)}$. Every row of $C$ has mass at most four,
-independently of dimension. Applying the single-contour bound to the exact
-contraction formula therefore pays the complete rank-$N$ first-atom form:
-$$|v^{\mathsf T}(H^{(1)}_{\rm Hermite}-\mathcal D_N)v|
-\le\frac{16D(N+1)^2}{q}v^{\mathsf T}\mathcal D_Nv,
-\qquad \mathcal D_N=\operatorname{diag}(d_i),\quad q\ge16(N+2)^2.$$
-The quadratic degree cost includes every mixed coefficient. It has no further
-dimension or inverse-matrix factor. See [HermiteContractionPayment](HermiteContractionPayment.lean),
-`hermiteContractionCoefficient_le`, [GeometricContraction](GeometricContraction.lean),
-and [GaussianContractionBound](GaussianContractionBound.lean),
-`firstAtomHermiteHead_quadratic_error_le`.
-
-The complete native moment remainder obeys
-$|\sigma_k^{\rm native}-\sigma_k^{(1)}|\le A24^{2k}q^ke^{-3q}$,
-$A=27e^{3\pi}/399$, on $q\ge2k+6$.
-Transporting both finite coefficient sums gives
-$$|(H^{\rm native}_{\rm Hermite}-H^{(1)}_{\rm Hermite})_{ij}|
-\le N^2(N!)^2e^8 A24^{2N}q^Ne^{-3q}.$$
-For $q\ge16(N+2)^2$ this is at most $Ae^8/q$. The exponential source decay
-pays the factorial transformation before a reciprocal-scale bound is taken.
-The estimate retains the full infinite theta remainder. See
-[HermiteNativeTail](HermiteNativeTail.lean), `nativeHermiteHead_firstAtom_raw_error_le`
-and `nativeHermiteHead_firstAtom_error_le`.
-
-Let $\mathcal G_N$ be the full signed Gaussian moment head and $H_N^{\rm native}$
-the complete native head in the same mass and length coordinates. Define
-$$J_N=16D(N+1)^2+NAe^8.$$
-For $q\ge16(N+2)^2$,
-$$|v^{\mathsf T}(H_N^{\rm native}-\mathcal G_N)v|
-\le\frac{J_N}{q}v^{\mathsf T}\mathcal G_Nv.$$
-Since $d_i\ge1$, the infinite remainder contributes at most $NAe^8/q$ in this
-same complete norm. Bijectivity of $T_N^{\mathsf T}$ returns the estimate to
-every original source direction. The physical first atom alone has cost
-$16D(N+1)^2/q$. See [NativeQuadraticRank](NativeQuadraticRank.lean),
-`nativeBalancedFullHead_quadratic_rank_error_le` and
-`firstAtomBalancedFullHead_quadratic_rank_error_le`.
-
-The monomial embedding $i\mapsto2i+s$ identifies the shifted rank-$n$ even-moment
-head with a principal restriction of full signed dimension $M=2n+s$.
-Its complete relative error is therefore $J_M/q$, on $q\ge16(M+2)^2$.
-For the exact rank-$n$ successor, use $M=2(n+1)+s$:
-$$|S_n(\sigma_s^{\rm native}(x))-C_{n,s}|
-\le\frac{J_M}{q}C_{n,s},\qquad q\ge16(M+2)^2,\quad q>J_M.$$
-The scale $Q_M=16(M+2)^2+2J_M$ leaves a strict half-Gaussian reserve in every
-contained shifted head. Its exact successor satisfies
-$C_{n,s}/2<S_n(\sigma_s^{\rm native}(x))<3C_{n,s}/2$ whenever $q\ge Q_M$.
-The Schur comparison retains the same relative error without another
-conditioning factor. See [QuadraticRankHorizon](QuadraticRankHorizon.lean),
-`nativeBalancedSuccessor_quadratic_rank_error_le` and
-`nativeBalancedSuccessor_half_bounds_of_quadratic_rank_scale`.
-
-The physical shifted head is exactly
-$$H^{\rm physical}_{n,s}(x)=q^sD\,H_n(\sigma_s^{\rm native}(x))D,
-\qquad D_{ii}=\theta_1(x)q^i.$$
-On the stated scale, $q>0$ and $\theta_1(x)\ne0$, so this congruence preserves
-strictness. Both parity blocks of the literal full signed rank-$N$ source fit in
-dimension $M=N+1$; $q\ge Q_{N+1}$ therefore makes that full physical head positive definite.
-Put
-$$C_2=16+32D+2Ae^8,\qquad
-X_M=\max\left(0,\tfrac12\log(C_2/\pi)+\log(M+2)\right).$$
-Then $Q_M\le C_2(M+2)^2$. Both literal native and first-atom signed rank-$N$
-heads are strict at $x\ge X_{N+1}$. The same envelope at $M=2(n+1)+s$ pays
-the exact native successor. In particular the first failing physical first-atom
-dimension obeys the unconditional lower boundary
-$$\sqrt{q(x)/C_2}<\kappa(x)+3.$$
-Together with $\kappa(x)\le1+C_*q(x)$ for $x\ge0$, this bounds its growth
-between square-root and linear source scales. Neither bound identifies the
-exact growth exponent. See [PhysicalQuadraticHorizon](PhysicalQuadraticHorizon.lean),
-`nativeSignedHead_posDef_of_quadratic_rank_horizon` and
-`firstAtomFailureRank_sqrt_scale_lower`.
-
-Exact mass and monomial rescaling also identifies the physical successor size.
-For $m'_k=c t^k m_k$ with $c>0$, $t\ne0$, and a strict rank-$N$ head,
-$$S_N(m')=ct^{2N}S_N(m).$$
-The full signed Gaussian successor is its monic Hermite norm $8^N N!$.
-Consequently the actual full signed native successor satisfies
-$$\frac12 f(x)^2q(x)^N8^NN!<S_N(m(x))<
-\frac32 f(x)^2q(x)^N8^NN!,\qquad x\ge X_{N+1}.$$
-Here $f(x)$ is the literal first-atom source. The infinite native remainder
-is included in both inequalities. See [PhysicalSuccessorMass](PhysicalSuccessorMass.lean),
-`rescaledMoment_successorSchur` and `nativePhysicalSuccessor_half_bounds_of_horizon`.
-
-The literal complete tail $T_N(r)=H_N(k\mapsto\int_r^\infty m_k(s/2)\,ds)$
-retains this rank dependence:
-$$r\ge2X_{N+1}\Longrightarrow T_N(r)\succ0,$$
-$$2X_{N+1}\le r<t\Longrightarrow T_N(r)-T_N(t)\succ0.$$
-Its difference is exactly the integral of the full native form on $(r,t]$.
-Every nonzero direction is positive on that interval. At dimension $N+1$,
-this complete Loewner order makes the exact rank-$N$ integrated successor
-nonincreasing for $r\ge2X_{N+2}$. The inverse belongs to the integrated
-head throughout this comparison. See [TailRankHorizon](TailRankHorizon.lean),
-`nativeTailHead_sub_posDef_of_quadratic_rank_horizon` and
-`nativeTailSuccessor_antitone_of_quadratic_rank_horizon`.
-
-Complete source addition has an exact successor law. Write
-$A_m=H_N(m)$, $b_m=(m_{i+N})_{i<N}$, $u_m=A_m^{-1}b_m$.
-For strict heads $A_m,A_n$ and $w=u_{m+n}$,
-$$S_{m+n}=S_m+S_n+
- (w-u_m)^{\mathsf T}A_m(w-u_m)+
- (w-u_n)^{\mathsf T}A_n(w-u_n).$$
-The extra reserve vanishes exactly when $u_m=u_n$; neither individual successor
-needs to be nonnegative. More generally every monic test $v=(-z,1)$ has
-$$v^{\mathsf T}H_{N+1}(m)v=S_m+(z-u_m)^{\mathsf T}A_m(z-u_m).$$
-For native band and later-tail sources on the stated ray, both full heads
-are strict. Their exact decomposition makes the integrated successor strictly
-decreasing with the endpoint. See [SuccessorMixture](SuccessorMixture.lean),
-`successorSchur_add_eq`, `successorMixtureVariance_eq_zero_iff`, and
-`nativeTailSuccessor_strictAnti_of_quadratic_rank_horizon`.
-
-At each critical aperture $0<a<1/2$, the literal center source is
-$$M_k(a)=\int_0^\infty r\sinh(ar)m_k(r/2)\,dr.$$
-Let $B_{a,R}$ and $T_{a,R}$ be its moment integrals on $(0,R]$ and $(R,\infty)$.
-Every finite weighted form is integrable, the source splits exactly as
-$M=B+T$, and
-$$R\ge2X_{N+1}\Longrightarrow H_N(T_{a,R})\succ0.$$
-The same horizon works for every aperture. For a strict rank-$N$ center
-head and its actual global minimizing vector $v=(-u_M,1)$,
-$$S_N(M)=v^{\mathsf T}H_{N+1}(B)v+v^{\mathsf T}H_{N+1}(T)v.$$
-At the established rank-seven center head, $R\ge2X_9$ gives
-$$S_7(M)\ge v^{\mathsf T}H_8(B)v+S_7(T),\qquad S_7(T)>0.$$
-This is an unconditional compact-center lower bound with a strict tail
-allowance. The sign of the compact term is unresolved. The full quadratic
-integrand at $v$ is essential: the linear native successor source involving
-the integrated inverse does not acquire a pointwise sign from local head
-positivity. See [WeightedCenterTail](WeightedCenterTail.lean),
-`nativeWeightedCenterTail_posDef` and `centerSeventhSuccessor_compact_allowance`.
-
-The allowance has an explicit physical lower bound. For $R\ge2X_{N+2}$, set
-$$\mathcal B_N(a,R)=\frac{8^NN!}{2}\int_R^\infty
-r\sinh(ar)f(r/2)^2q(r/2)^N\,dr.$$
-The literal weighted native diagonal dominates this integrable density, and
-$$0<\mathcal B_N(a,R)\le S_N(T_{a,R}).$$
-The proof tests each complete native form at the integrated tail's own global
-minimizer. At order seven it yields the unconditional inequality
-$$v^{\mathsf T}H_8(B_{a,R})v+\mathcal B_7(a,R)\le S_7(M).$$
-No inverse matrix occurs in the displayed allowance. Its positivity is uniform
-in the admissible aperture and rank domain, while its magnitude retains their
-actual dependence. See [WeightedSuccessorReserve](WeightedSuccessorReserve.lean),
-`nativeWeightedSuccessorReserve_le_schur` and
-`centerSeventhSuccessor_explicit_compact_allowance`.
-
-## The source spectral band
-
-The literal Schläfli source satisfies
-$$K_\nu(a)=\int_0^\infty e^{-a\cosh t}\cosh(\nu t)\,dt,\qquad
-a>0,\ |\tau|\le a\Longrightarrow K_{i\tau}(a)>0.$$
-Every complex-order zero is purely imaginary and obeys $a<|\Im\nu|$.
-The argument energy flux has density
-$(x-\tau^2/x)|K|^2+x|K'|^2$. A zero inside the band would give a strictly
-positive flux on a later ray, contradicting its literal exponential decay.
-Reflection and conjugation determine the real sign. The argument scale is
-retained exactly; no fixed-order limit is used as a joint bound.
-See [BesselSpectralBand](BesselSpectralBand.lean),
-`modifiedBesselKOrder_zero_outside_band` and `modifiedBesselKOrder_re_pos_on_band`.
-
-The signed argument derivative has its own source payment. For
-$f(x)=K_{i\tau}(x)$, the decaying barrier gives
-$$W(x)=e^{-x}\{f'(x)+(1+x^{-1})f(x)\},\qquad
-W'(x)=-e^{-x}\{x^{-1}+(1+\tau^2)x^{-2}\}f(x),\qquad W(\infty)=0.$$
-Thus $W(a)\ge0$ on $|\tau|\le a$, and
-$$K'_{i\tau}(a)\ge-(1+1/a)K_{i\tau}(a),$$
-$$ (a^2+9)K_{i\tau}(a)+6aK'_{i\tau}(a)
-\ge(a^2-6a+3)K_{i\tau}(a)>0\qquad(a\ge6).$$
-This retains the negative argument-derivative term. A finite positive
-frequency band alone does not pay the polynomial-weighted signed tail.
-See [BesselBarrierPayment](BesselBarrierPayment.lean),
-`besselArgDeriv_re_lower_on_band` and `besselSignedRadialCombination_pos`.
-
-The literal Schläfli density has the exact first moment and second-moment bound
-\[
-\int_0^\infty t^2e^{-a\cosh t}\,dt
-\le\int_0^\infty t\sinh(t)e^{-a\cosh t}\,dt=K_0(a)/a.
-\]
-Differentiating the exact complex-order recurrence pays the first moment.
-The quadratic cosine defect then gives
-$1-\tau^2/(2a)\le K_{i\tau}(a)/K_0(a)\le1$ for every real $\tau$ and $a>0$.
-In particular the ratio tends to one at fixed order as $a\to\infty$.
-See [BesselGaussianMoments](BesselGaussianMoments.lean),
-`integral_bessel_first_moment`, `bessel_imaginary_ratio_bounds`, and
-`tendsto_bessel_imaginary_ratio_one`.
-
-The entire nonoscillatory band retains a Gaussian lower density:
-\[
-K_{i\tau}(a)\ge e^{-\tau^2/a}K_0(a)>0,\qquad a>0,\ |\tau|\le a.
-\]
-The Wronskian against $e^{-\tau^2/a}K_0(a)$ has nonnegative derivative
-and zero limit at infinity. The literal normalization fixes its comparison
-constant. For $a\ge6$, the full signed radial combination consequently
-dominates $(a^2-6a+3)e^{-\tau^2/a}K_0(a)$.
-See [BesselGaussianReserve](BesselGaussianReserve.lean),
-`modifiedBesselKOrder_gaussian_lower` and
-`besselSignedRadialCombination_gaussian_lower`.
-A linear physical rank horizon still requires polynomial-weighted control
-outside the band and payment of every native product fibre.
-
-For the literal reflected theta-atom radial profile,
-$$P_a(v)=a^2(a^2+9-6a\cosh(2v))e^{-a\cosh(2v)},$$
-the exact physical transform is
-$$\int_{\mathbb R}P_a(v)e^{2ibv}\,dv
-=a^2\big[(a^2+9)K_{ib}(a)+6aK'_{ib}(a)\big].$$
-Its positive reserve is $a^2(a^2-6a+3)K_{ib}(a)$ on $|b|\le a$, $a\ge6$.
-A complete fixed-product fibre $k$ at center $u$ has scale
-$a=2\pi k e^{2u}$ and factors as
-$$e^u\left(\sum_{nm=k}e^{-ib(\log n-\log m)}\right)
-\int_{\mathbb R}P_a(v)e^{2ibv}\,dv.$$
-For $k\ge1$, $u\ge0$, its sign throughout $|b|\le a$ is exactly the sign
-of the real divisor-character sum. Each individual diagonal pair has a
-strictly positive band. Arithmetic ratio phases therefore remain a distinct
-sign obligation even where the full radial derivative cost is paid.
-See [WignerSpectralBand](WignerSpectralBand.lean),
-`thetaCuspWignerRadialTransform_eq_bessel`,
-`thetaCuspWignerProductFiber_physical_band_sign`, and
-`thetaCuspSourcePairWigner_diagonal_re_pos`.
-
-## Place in the research
-
-| Programme | Connection |
+| Use a fixed fraction of each native diagonal as reserve | Successor fraction ≤ (2/3)^N; no rank-uniform relative reserve |
+| Keep only the first theta atom | Negative signed moment at every center; finite failing rank |
+| Infer mixed-head positivity from moment signs | Clock cone at B < 3: all moments ≥ 0, some head fails |
+| Transport positivity through an invertible clock | Clocked first atom PD at all ranks; physical pullback fails |
+| Treat truncated and completed energies as equal | Source vs probe support differ by (T b_T)²; energy not monotone in T |
+| Bound successors via inverse perturbation | Use successor comparison: same η, no conditioning factor |
+| Read compactness as trace class | Conductor Green operator compact but Σ E_m^{−k} = ∞ for all k |
+| Spend the ground reserve at growing overlap | E_m(c) ≍ c^{−7}: residuals must decay relative to c^{−7} |
+| Apply periodic-continuation argument to the full theta series | Complete series summable only where cos(2 Im z) > 0 |
+| Pointwise local positivity ⇒ integrated successor sign | Integrated inverse is nonlocal; use global-minimizer test |
+| Exchange fixed and exhausting quantifiers | Every horizon here is rank-, conductor- or overlap-dependent |
+
+## 9. Context
+
+**Uses** (import counts): RHTower 20, HTGeometry 19, CriticalArithmeticCorrelationTheory 14,
+TransMetzlerWeilPositivity 3, SignedArithmeticHodgeTheory 2, BezoutValuationIncidence 2,
+SpacingScaleHarmonicAnalysis 1, RenormalizedArithmeticPotentialTheory 1, BiScaleUncertainty 1,
+ArithmeticIntersectionTheory 1.
+
+**Used by**: SuccessorShellArithmetic (`FixedConductorPacketsArePositiveBelowTheNineteenthRoot` imports
+`WeilGrowingPackets`); `MainTheorems`.
+
+| Neighbour | Relation |
 |---|---|
-| ArithmeticCastelnuovoSeveri, ArithmeticOrientationGeometry | Complete Weil geometry, orientation, and index |
-| CriticalArithmeticCorrelationTheory | Arithmetic Grams, radicals, residue averaging |
-| ArithmeticCorrelationGeometry | Gauge variance, additive correlations, and actual source evaluation |
-| TransMetzlerWeilPositivity | Complete positive overlap range and profile-dependent exhaustion |
-| ArithmeticIndexDescent | Joint Gamma, prime-power, polar, coarse, and detail reserves |
-| EffectiveArithmeticHodgeTheory, HeckeKreinToeplitz | Height localization and orbit-kernel classification |
-| ConjugateDiagonalGeometry | Positive depth metric and moving theta reconstruction |
-| ArithmeticOfSquareRootPrecision | Error classes for counting and exact-source positivity |
-| TransThresholdPairCorrelation | Signed coalescent functional and census thresholds |
-| ThetaCusp, Suzuki, CCM, Li clock modules | Actual analytic and causal source forms |
+| CriticalArithmeticCorrelationTheory | Supplies complete Weil matrix, pole ground state, bounded-overlap positivity, residual pieces; CAF adds sharp inverse cost, Green modes, growing-overlap packets |
+| RenormalizedArithmeticPotentialTheory | Conductor energies, Ramanujan packet diagonalization; log-overlap Weil positivity ⇔ RH |
+| TransMetzlerWeilPositivity | Plateau prefix and Young range feed the index ceiling and the cost-20 prefix payment |
+| RHTower ThetaCusp | Native jets, rank-7 strictness, successor source, seam Gram; CAF supplies all-rank horizons |
+| SignedArithmeticHodgeTheory | Uniform residual and Gram budgets for growing Ramanujan families |
+| SuccessorShellArithmetic | Continues packet positivity at larger overlap exponents |
 
-The height Hasse theorem and orbit-kernel converse Krein–Langer theorem are established inputs.
-A source-side upper index bound is a different theorem. Sharing an RH endpoint does not establish
-a norm-preserving transfer between programmes.
+## 10. Big picture
 
-## Research questions
+The programme shows that every RH-equivalent complete form studied here is positive on every fixed finite
+piece, with explicit and usually sharp horizons, and that the remaining difficulty is always a single
+exhaustion: rank for the theta hierarchy, overlap for the Weil matrix, cutoff for Euler deletion, frequency
+near the constant mode for Chebyshev energy. Exact completions show where the unpaid part lives; it is
+never a hidden defect of the method but a precisely located compact region or near-constant band.
 
-1. **Signed theta successors.** Can native compensation propagate rank-seven strictness to arbitrary
-   rank? The first explicit residual is the order-seven successor integral. Degenerating reserves
-   require quantitative bounds or controlled radicals. The complete native tail has an exact
-   Gamma reserve, but its fraction of the next diagonal decreases exponentially with rank.
-   At $x\ge0$, the negative order satisfies $\sqrt{q(x)}<\nu(x)\le C_*q(x)$.
-   The first failing dimension satisfies $\sqrt{q(x)/C_2}<\kappa(x)+3$ and
-   $\kappa(x)\le\nu(x)+1$. The complete native rank-$N$ form has relative error
-   $J_N/q$, where $J_N=16D(N+1)^2+NAe^8$, on $q\ge16(N+2)^2$.
-   Its strict half-Gaussian reserve has a center horizon of $\log(N+2)+O(1)$.
-   Every critical aperture shares that weighted-tail horizon. At order seven,
-   the exact global minimizer gives a compact contribution plus a strict
-   positive integrated tail allowance, bounded below by the explicit
-   first-atom Hermite-mass integral $\mathcal B_7(a,R)$.
-   Every seam tail head is strict,
-   with an explicit half-seam neighborhood and a separate strict distant ray.
-   What are the sharp growth laws, and which native compensation pays the intervening
-   compact-center integral as rank grows? The inherited scalar odd compensation
-   has a literal obstruction. A source-derived moving direction cancels its
-   coupled Schur defect, but the scalar gap and admissible tail join remain open.
-
-2. **Growing overlap and vanishing reserve.** The actual tilted-spline complete Weil matrix
-   is positive definite at every fixed $c>0$. For every finite $K$, one horizon and
-   one positive spectral floor work simultaneously for all $0<c\le K$.
-   Its limiting ground energy is the completed conductor-one energy, attained by
-   the pole mode and separated from all other conductors by a positive Fourier-tail gap.
-   These statements include $c=3/2$ for this explicit profile.
-   See [TheCompleteWeilGroundStateIsThePole](../CriticalArithmeticCorrelationTheory/TheCompleteWeilGroundStateIsThePole.lean)
-   and [OneHorizonMakesEveryBoundedOverlapPositive](../CriticalArithmeticCorrelationTheory/OneHorizonMakesEveryBoundedOverlapPositive.lean).
-   At $c_N=(\log N)^\alpha$, $0<\alpha<1/40$, every fixed conductor has
-   vanishing relative residual, and every fixed finite family of distinct
-   positive conductors is eventually a strictly positive packet for all nonzero
-   real coefficients. See [WeilGrowingPackets](WeilGrowingPackets.lean).
-   Which source estimates control all remaining horizon directions relative to
-   the diminishing ground reserve on an unbounded overlap schedule sufficient
-   for the arithmetic endpoint?
-   For the same tilted spline, eventual nonnegativity on
-   $c_N=2(\log N)^\alpha$, $\alpha>1/4$, is equivalent to RH.
-   More generally the proved transfer uses $c_N=o(N)$ and
-   $c_N^4/\log N\to\infty$.
-   See [LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis](../RenormalizedArithmeticPotentialTheory/LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis.lean).
-   Profile transport must retain its cost. The separate plateau profile has the
-   uniform touching-prefix bound $D-20B^{\mathsf T}B\preceq S\preceq D$;
-   its macroscopic residual is not decided by changing the profile.
-
-3. **Census dispersion.** Can the actual bandwidth-$4/3$ coalescent surplus satisfy
-   $(1/18+o(1))N$ in the receiver's windows, including model, cutoff, and collar errors?
-
-4. **Euler deletion.** Which arithmetic relations control actual cumulative covariance and its
-   infinite tail with subpower growth at the inner cutoff?
-
-5. **Restricted completion.** Can the complete Suzuki rectangular Ward defect be bounded below on
-   its natural domain? Can the actual CCM first-clock source have an eventual constant lower bound?
-
-6. **Theta-clock history.** Can the source budget exclude every guarded zero? The guarded-zero set
-   is unconditionally finite, so an eventual condition on that set is insufficient.
-
-7. **Depth and index.** Can arithmetic readings give a sufficiently small Hecke-defect upper bound
-   or an upper bound for the complete index? Height certificates detect index without bounding it.
-
-8. **Strip precision.** Can actual normalized Chebyshev energy satisfy the $5/3+\varepsilon$ or
-   $3/2+\varepsilon$ exponent bound? Both questions are exactly equivalent to those
-   exponent bounds for its normalized cyclotomic remainder; the two explicit
-   coefficient channels cost only $O(N)$. Which arithmetic relation bounds this remainder?
-   Can both detector Gram contributions enter the exact
-   five-sixths feasible region?
-
-9. **Transfer calculus.** Which concrete source maps preserve reserves, radicals, domains, and
-   endpoint tolerances under simultaneous limits? The exact inverse-hyperbolic clock has an
-   all-rank positive Gamma mixture while its physical pullback has finite failing rank.
-   Its complete clocked cone has the exact boundary $(2q-3)^2\ge3$; all individual
-   signed moments are nonnegative even outside that cone.
-   The exact monic Hermite transform preserves relative complete-form bounds and pays
-   the physical first-atom and infinite native errors by an explicit quadratic rank cost.
-   Gaussian contractions supply a dimension-independent complete-form bound.
-   Which source maps retain this degree payment through actual center integration,
-   and which compact compensation mechanisms supply the remaining rank reserves?
-
-These include RH-equivalent targets. Fixed-rank or fixed-parameter theorems contribute without
-settling the full questions.
-
-## Tools to develop
-
-- Source residual estimates in the arithmetic Green norm; partial-conductor inverses and
-  quantitative transfers from irregular arithmetic packets, retaining radicals and boundaries.
-- Native successor estimates with rank-dependent reserves and controlled degeneracy.
-- Completion theorems combining divergent signed channels on the correct domain.
-- Arithmetic covariance estimates after accumulation, with exact tail control.
-- Comparison inequalities tracking conductor, rank, aperture, profile, horizon, and cutoff together.
-- Signed dispersion estimates for the actual centered census functional.
-- Precision-preserving source bridges with all analytic inputs discharged.
-
-## Traps
-
-| Temptation | Mathematical obstruction |
-|---|---|
-| Spend the same reserve in several blocks | Combined Schur cost can exceed it |
-| Ignore a comparison radical | A remainder can act on its null directions |
-| Bound absolute successor rows uniformly | Actual fixed-overlap fibers grow logarithmically |
-| Infer all-order positivity from finite theta sections | The complete signed hierarchy is RH-equivalent |
-| Use a fixed fraction of each native-tail diagonal as reserve | The exact successor fraction tends to $N!/(s+\tfrac12+N)_N\le(2/3)^N$ |
-| Keep only the first theta atom at all ranks | Every center has a negative signed moment; its least order escapes to infinity along the tail |
-| Transport signed positivity through an invertible nonlinear clock | The exact Gaussian-clock first atom is positive at every rank while its physical pullback fails at a finite rank |
-| Insert an arbitrary positive mixer | Faithful phase-natural mixing can be rigid or equivalent to the desired sign |
-| Extend divergent positive masses to all sequences | No positive extension exists on that domain |
-| Discard cross terms after coefficient estimates | Cumulative covariance measures unequal pairs |
-| Replace actual prime evaluation by gauge variance | A prescribed gauge point need not satisfy an almost-everywhere budget |
-| Use an eventual guarded-zero condition | The guarded-zero set is unconditionally finite |
-| Exchange fixed and exhausting quantifiers | A growing schedule needs a joint horizon |
-| Demand exact rigidity from a count theorem | Count permits the nontrivial class $\mathcal Q$ |
-
-## Success and contribution criteria
-
-A contribution proves an unconditional new source estimate, exact decomposition, sharp boundary,
-classification, or transfer theorem. It specifies domain, normalization, radical, parameter range,
-and arithmetic consequence. Source identifications and analytic inputs are discharged in Lean;
-an unproved estimate cannot be hidden in a structure or imported hypothesis.
-
-A comparison controls its complete remainder in the norm it uses. A limit retains relevant boundary
-and cross terms. A negative result identifies its exact class and extracts a nontrivial positive
-survivor. A source-independent lemma contributes when it supports a proved actual-source application.
-
-Full success requires answers to the research questions and tools at their stated endpoint strengths.
-A collection of criteria alone does not supply the missing inequalities.
+The repeated lesson is that reserves degrade at a definite rate (fraction (2/3)^N, floor c^{−7}, failing rank
+between √q and q) while the sources supply payments at their own rates (quadratic degree cost, 1/√log N
+residuals). RH-strength conclusions require the payment rate to beat the reserve decay along the full
+exhaustion. The programme makes both rates explicit and shows that, where they currently fail to meet, no
+change of normalization or coordinate (clocks, truncations, single atoms) closes the gap by itself.

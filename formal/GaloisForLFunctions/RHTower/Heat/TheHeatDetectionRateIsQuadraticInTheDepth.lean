@@ -28,10 +28,10 @@ Proof.  Suppose every `a_n = Re T_n` is `≥ 0`, so `H(y) = Σ a_n yⁿ`.
   `H(δ/2) ≤ 6D e^{c₁}(2/3)^{⌊δ²/(4λ)⌋+1} H(δ/2)`, impossible once `δ²/λ ≫ log t`, that is
   `κ ≤ δ²/200`.
 
-The corpus loss `log(3/δ)` came from comparing `H(δ/2)` with `f_t(3/2)` directly.  The quadratic
-loss itself is the cluster loss: a cluster of `≍ log t` zeros within `δ` of `½ + it` gives local degree
-`≍ log t` at radius `δ`, against `≍ δ log t` for regularly spaced zeros
-(`re_xiSliceHeatTransfer_neg_of_regular_growth`).
+The corpus loss `log(3/δ)` came from comparing `H(δ/2)` with `f_t(3/2)` directly.  The remaining
+factor `δ` is the price of the local degree `M ≍ log t`: it is sharp for a central cluster of
+`≍ log t` zeros (`DeBruijn.hasSum_clusterModelHeat`), while regular growth of `H` from `δ/2` gives
+the linear rate (`re_xiSliceHeatTransfer_neg_of_regular_growth`).
 -/
 
 open MeasureTheory Filter Topology

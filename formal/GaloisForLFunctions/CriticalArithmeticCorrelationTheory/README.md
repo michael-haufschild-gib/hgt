@@ -1,740 +1,170 @@
 # Critical Arithmetic Correlation Theory
 
-Namespace `GaloisForLFunctions.CriticalArithmeticCorrelationTheory`; umbrella
-`CriticalArithmeticCorrelationTheory.lean`.
+Namespace `GaloisForLFunctions.CriticalArithmeticCorrelationTheory`; umbrella `CriticalArithmeticCorrelationTheory.lean`; 105 modules. Every theorem is unconditional (no RH, no correlation model, no zero hypothesis); modules end with `#print axioms`.
 
-## Why this programme exists
+## 1. Motivation
 
-The explicit formula identifies the arithmetic source of the Riemann zeta function. Existing
-programmes identify its negative index, recover its positive collided metric, classify its
-arithmetic gauges, and price individual off-line zeros. What remains is an estimate: the signed
-prime correlations must be compared with the archimedean and polar contributions at the scale
-where a displaced zero is visible.
+Weil positivity on a family that exhausts the test space is RH. This programme proves positivity of the literal complete Weil form (von Mangoldt source with every prime power, Gamma factor, both pole moments) on atomic test families: `N` dilated copies of one profile at logarithmic positions `log n`, width `c/N`, `n ≤ N`. The ratio `c` measures overlap: `c ≤ 1` keeps supports essentially disjoint (touching at `c = 1`); `c > 1` makes atoms overlap and lets non-ratio prime pairs `km ≠ n` interact. The programme carries positivity from strict separation, through touching, to every fixed overlap, to bounded overlap with one horizon, and to slowly growing overlap on fixed conductor packets. Each step names the exact arithmetic object that pays the error.
 
-Critical Arithmetic Correlation Theory studies that comparison. Its subject is the joint use of
-addition, multiplication, reflection, and completion to control actual arithmetic correlations.
-The central question is how exact arithmetic identities force a quantitative inequality. Source
-identification, a positive replacement form, and a conditional receiver do not answer it.
+## 2. Objects
 
-Three principal targets organize the programme:
-
-1. Control the complete low-energy operator through touching and overlapping test atoms.
-2. Bound the signed prime-pair functional entering the critical-line census.
-3. Bound the annular increment of completed arithmetic source work without assuming finite
-   off-line support.
-
-These targets have different logical strengths. A census estimate can tolerate exceptions. A
-finite-index estimate can retain finitely many exceptions. Positivity on an exhausting family
-must exclude every exception. Constants and quantifiers must reflect the intended conclusion.
-
-## Objects and language
-
-The primary object is the original completed source, with its literal von Mangoldt coefficients,
-Gamma contribution, and both pole moments. It is evaluated on finite families of test functions;
-the resulting quadratic forms retain mixed terms and the normalization of each test.
-
-An arithmetic correlation carries its additive shift, multiplicative conductor, support, and
-scale. A comparison carries the common energy reserve used to pay its error. A limiting statement
-carries the invariant it is meant to preserve: sign, negative index, multiplicity, or a counting
-proportion. These data cannot be replaced by an unspecified norm or by convergence of selected
-matrix entries.
-
-Useful coordinates include:
-
-- **Prime and residue coordinates:** actual integer dilations, successor maps, congruence classes,
-  and the centered discrepancy from a parity-compatible Ramanujan model.
-- **Spectral coordinates:** conductor modes, pole constraints, and the exact Schur complement left
-  after a positive block is eliminated.
-- **Microscopic coordinates:** horizontal displacement and ordinate difference in units of
-  `1 / log T`, with multiplicities and reflection divided differences retained.
-- **Annular coordinates:** differences between two completed source readings at scales `R` and
-  `2R`, keeping every exterior field rather than truncating the interaction to the visible zeros.
-
-The language is that of signed quadratic forms, Fourier and Mellin transforms, arithmetic
-correspondences, relative spectra, and estimates uniform in explicitly stated parameters.
-
-## Foundational mechanisms
-
-### Signed comparison before absolute estimates
-
-The prime main term cancels a polar contribution. Parity-compatible singular-series terms can
-contribute negative repulsion. Estimating their absolute values separately destroys information
-that the desired bound needs. A comparison must first identify the exact signed remainder.
-
-### One reserve for interacting directions
-
-If a complete form has block matrix `[[A, B], [B*, D]]` with positive `D`, the unpaid block is
-`A - B D⁻¹ B*`. The same reserve cannot also be assigned independently to every mixed term.
-Commuting whole-orbit projections provide another exact mechanism: they remove the cross term
-before charging the tail. The arithmetic problem is to extend such control to interacting primes
-and the original completed form.
-
-### Reflection without a depth gap
-
-An off-line reflected pair can have arbitrarily small displacement. Ordinary value moments can
-identify it with two critical points. Divided differences, horizontal jets, and reflected work
-retain information that survives this collision. Their arithmetic upper bounds must pay any
-normalization cost as displacement tends to zero.
-
-### Annular subtraction
-
-Let `W(R)` denote `ArithmeticElectrostatics.xiDampedSourceWork R`. Its rational height damping is
-`h_R(t) = R⁴ / (R² + t²)²`. Subtracting scales before estimating suppresses the constant contribution
-of fixed low zeros while preserving a fixed charge at the height of a new quartet. The task is an
-upper estimate on the signed source difference, not another proof of its positive zero-side
-representation.
-
-### Limits that preserve the intended invariant
-
-Conductor mass can escape while every fixed resolvent reading converges. A finite collection of
-generators still has infinitely many translation levels. Convergence must control the full form
-domain, its poles, and its tails; it must be uniform in the parameters needed by the receiver.
-Explicit escaping profiles may be part of the limit object.
-
-## Pillar theorems supplied by the surrounding corpus
-
-The following are foundations to use, not new claims of this programme.
-
-| Theorem family | Mathematical content | Source programme |
+| Object | Lean | Meaning |
 |---|---|---|
-| Ordered Weil–Chebyshev identity | Separated mixed entries are exact centered prime-error integrals with completion | ArithmeticIndexDescent |
-| Complete bounded spectral counts | Fixed separated profiles have an exhaustive arithmetic description of bounded spectrum | RenormalizedArithmeticPotentialTheory |
-| Positivity beyond touching | A fixed smooth profile has eventually positive complete matrices at `c=1+10⁻¹⁸`, and at every fixed smaller positive ratio | TransMetzlerWeilPositivity |
-| Whole-orbit dyadic tail | One original Gamma reserve pays every power of the dyadic clock | SignedArithmeticHodgeTheory |
-| Parity-compatible stabilizer decomposition | Actual coalescent prime pairs equal their Ramanujan model plus a signed centered discrepancy | TransThresholdPairCorrelation |
-| Polynomial-prefix collided metric | Finite arithmetic sources uniformly recover the positive metric on growing normalized families | ConjugateDiagonalGeometry |
-| Strict annular quartet quantum | Every off-line quartet forces `W(2|γ|) - W(|γ|) > 39/50` | ArithmeticIndexDescent |
-| Finite-support classification | Eventual annular bound by `39/50` is finite support; the bound at every scale is RH | ArithmeticIndexDescent |
-| Arithmetic index laws | The complete zeta kernel's index counts distinct right zeros, already on two primes | HeckeKreinToeplitz |
-
-New pillar theorems must add a proved comparison, a quantitative rigidity law, a faithful limiting
-tool, or a displacement-sensitive estimate. A restatement of one of these foundations is not a
-contribution.
-
-## A source-work comparison theorem
-
-Put `L_R = xiLineTwoLogDerivConstant + log(R+4)`. For every `R ≥ 4`, the actual completed work
-satisfies
-
-\[
-0\le W(R)\le64R L_R(L_R+1).
-\]
-
-Every compactly tapered arithmetic source reading satisfies
-
-\[
-|W_N(R)|\le128R L_R(L_R+1)
-\]
-
-with the same bound for all taper indices `N`. These are
-`xiDampedSourceWork_le_logarithmic_ceiling` and
-`abs_xiTaperedSourceWork_le_logarithmic_ceiling` in
-[TheCompletedSourceWorkHasALogarithmicCeiling](TheCompletedSourceWorkHasALogarithmicCeiling.lean).
-
-The proof uses the arithmetic Lorentzian mass theorem twice. First, reflection compares each
-pair with a unit-width Lorentzian row; its sum is logarithmic in the base height. Second, rational
-damping absorbs that height cost into a Lorentzian of width `R`, whose total mass is
-`O(log R/R)`. Absolute convergence is established before exchanging the rows. The pole and Gamma
-information enters through the completed source identity and the actual log-derivative mass
-bound.
-
-This improves the quartic product majorant to `O(R (log R)^2)` and controls the finite arithmetic
-readings before the outer cutoff is removed. The estimate is not selective enough to prove finite
-exceptions: its positive envelope includes critical zeros. The constant annular target requires
-additional signed arithmetic information.
-
-## Complete positivity through touching
-
-Let `φ_η` be the smooth unit-interval plateau from SpacingScaleHarmonicAnalysis,
-with transition width `η`. Write `M_η = ∫φ_η²`, `I_η = ∫φ_η`, and
-`B_η = bumpRobin(φ_η,1)`. Then
-
-\[
-M_\eta\longrightarrow1,\qquad I_\eta\longrightarrow1,\qquad
-B_\eta\longrightarrow1,
-\qquad
-\frac{B_\eta+I_\eta^2}{M_\eta}\longrightarrow2
-\quad(\eta\downarrow0).
-\]
-
-The lower estimate comes from support overlap: the autocorrelation at shift
-`0 ≤ y ≤ 1` is at most `1-y`. Integrating the nonnegative Robin density only
-over `[δ,1]` gives
-
-\[
-B_\eta\ge(1-\delta)(1-2\eta/\delta).
-\]
-
-Together with the existing upper estimate, this proves the exact indicator
-limit while keeping every profile smooth. The charge term is essential:
-`B_η/M_η + I_η²/M_η - log(2π)` tends to the positive number `2-log(2π)`.
-
-For every `b < 2-log(2π)` and every `ε > 0`, one can choose a single plateau
-with `M_η > 1-ε` and a single horizon `N₀` such that, for every `N≥N₀` and
-every `0<c≤1`, **every eigenvalue** of its actual normalized complete Weil
-matrix is at least `b`. Consequently the entire quadratic form is bounded
-below by `b‖x‖²`. Taking `b>0` gives simultaneous positive definiteness through
-the touching ratio. Both the profile and the horizon are independent of `c`.
-
-The completed conductor-one energy is
-`B_η/M_η-log(2πc)+c I_η²/M_η`. The inequality `-log c ≥ 1-c` bounds it below
-by its endpoint value. Strict charge deficit supplies one prime-defect reserve
-throughout `(0,1]`; this confines every bounded-energy vector to one finite
-Ramanujan family. The actual norm residuals of that family vanish with one
-horizon, including the non-ratio boundary prime correction. A hypothetical
-low eigenvector would have both a definite coordinate mass in this family
-and arbitrarily small coordinates against every member, a contradiction.
-The result therefore controls the full matrix. Near-unit mass prevents a
-narrow profile from supplying positivity by discarding most nominal support.
-
-The statements are in
-[SmoothPlateausRecoverTheCompletedRobinMargin](SmoothPlateausRecoverTheCompletedRobinMargin.lean),
-[ThePlateauShapeAndChargeHaveTheirIndicatorLimits](ThePlateauShapeAndChargeHaveTheirIndicatorLimits.lean),
-and [OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching](OneHorizonMakesTheCompleteWeilMatrixPositiveThroughTouching.lean).
-The last result strengthens
-[SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive](SmoothPlateausMakeTheSeparatedCompleteWeilMatrixPositive.lean)
-by including the endpoint and moving the horizon quantifier before the width
-ratio. The horizon can still depend on the chosen profile and on `b`.
-
-Touching refers to the nominal spacing scale. Distinct internal integer log
-gaps exceed `1/N`, so these actual supports remain disjoint at `c=1`. At an
-index `n` their local coverage fraction is about `n/N`; persistent holes below
-the top of the horizon prevent this family from exhausting compact tests.
-Neither RH nor positivity on an exhausting overlapping family follows. No
-global optimality of `2-log(2π)` over all profiles is asserted.
-
-## Growing conductor families with a square-root horizon
-
-For `Q ≥ 2`, arbitrary real coefficients `a_m`, and every integer horizon `N`,
-let
-
-\[
-F_a(n)=\sum_{m=1}^{Q}a_m\,
-\frac{c_m(n)}{\sqrt{\varphi(m)n}},
-\qquad S=\sum_{m=1}^{Q}a_m^2,
-\qquad K=Q(Q-1).
-\]
-
-Here `c_m(n)` is the actual Ramanujan sum, not a statistical model. The whole
-family obeys
-
-\[
-(H_N-H_K)S\le\sum_{n=1}^{N}F_a(n)^2,
-\]
-
-and, independently of the ordering of `N` and `K`,
-
-\[
-\bigl(\log(N+1)-\log(K+1)\bigr)S
-\le\sum_{n=1}^{N}F_a(n)^2.
-\]
-
-In particular, `log(N+1)-2log Q` is a lower frame constant. The exact logarithmic
-constant is positive once `N>Q(Q-1)`. No conductor is held fixed while the
-horizon grows, and the bound applies simultaneously to every coefficient vector.
-
-The arithmetic step resolves each normalized Ramanujan sum into primitive roots.
-Disjoint exact orders make the root coefficient square mass equal to `S`.
-The existing two-sided large-sieve theorem then gives ordinary cumulative mass
-at least `(N-K)S`. Nonnegativity improves this to the positive part of that
-bound. Summation by parts compares it with constant mass delayed until `K`,
-yielding the harmonic loss `H_K`. Monotonicity of `H_n-log(n+1)` supplies the
-logarithmic version without an additional constant loss.
-
-[GrowingRamanujanFamiliesHaveASquareRootHorizon](GrowingRamanujanFamiliesHaveASquareRootHorizon.lean)
-contains the actual packet and family bounds;
-[HarmonicMassFollowsDelayedCounting](HarmonicMassFollowsDelayedCounting.lean)
-contains the general transfer. This improves lower frame control beyond the
-previous whole-family error proportional to `sum m²`. This whole-prefix
-estimate alone does not give matching upper frame control or a small prime
-residual at the same growing cutoff. The following annular theorem supplies
-two frame bounds on a different family of windows.
-
-For every starting point `A≥0`, length `N≥0`, and the same actual packet,
-
-\[
-\left|\sum_{A<n\le A+N}F_a(n)^2
- -(H_{A+N}-H_A)\sum_{m\le Q}a_m^2\right|
-\le\frac{Q(Q-1)}{A+1}\sum_{m\le Q}a_m^2.
-\]
-
-Shifted large-sieve discrepancy followed by summation against the decreasing
-harmonic weights costs exactly their first value `1/(A+1)`. On `(A,2A]`,
-the harmonic mass lies between `1/2` and `1`. Thus, when `A≥4Q(Q-1)`,
-
-\[
-\frac14\sum_{m\le Q}a_m^2
-\le\sum_{A<n\le2A}F_a(n)^2
-\le\frac54\sum_{m\le Q}a_m^2.
-\]
-
-[AnnularRamanujanFamiliesHaveTwoSidedFrames](AnnularRamanujanFamiliesHaveTwoSidedFrames.lean)
-proves both estimates for every real coefficient vector. It also proves an
-exact boundary: the literal prime kernel, and hence every prime quadratic
-form compressed to one such dyadic annulus, is zero. Distinct integers in
-that annulus cannot divide one another. These frames therefore do not give
-localized prime quasimodes; the missing prime transport crosses annular
-boundaries. No sign estimate for the completed Weil form follows from the
-frame bounds alone.
-
-## A uniform cross budget and a strict charge reserve
-
-For a compact profile `g` supported in `[0,w]`, write
-
-\[
-G_g(z)=\int g(u)g(u+z)\,du,\qquad
-X_g(s)=\int_0^\infty\omega(y)G_g(y-s)\,dy.
-\]
-
-The error in replacing the actual cross integral by its center value is
-`X_g(s)-ω(s)(∫g)²`. Bounding the density variation at the nearest support point
-before integration incurs a factor proportional to `(s-w)⁻²`. The support
-boundary supplies the missing payment: a globally `L`-Lipschitz profile satisfies
-
-\[
-|G_g(z)|\le\frac{L^2w}{4}(w-|z|)^2,
-\qquad
-|X_g(s)-\omega(s)(\textstyle\int g)^2|\le19L^2w^3
-\quad(0<w<s).
-\]
-
-Pairing the endpoint decay with the density increment before integrating
-removes dependence on the remaining gap. For each fixed smooth unit profile
-`φ` of mass `M>0`, its dilates therefore satisfy
-
-\[
-\frac{|X_{\phi_w}(s)-\omega(s)(\int\phi_w)^2|}
- {\int\phi_w^2}\le C_\phi\frac{w^2}{s^2}
-\quad(0<w<s),
-\]
-
-with one constant for all widths and positive gaps.
-
-A second estimate needs only profile height. If `|g|≤B`, the actual overlap
-obeys `|G_g(z)|≤B²(w-|z|)` for `|z|≤w`, and
-
-\[
-|X_g(s)-\omega(s)(\textstyle\int g)^2|
-\le B^2w(1+w/2).
-\]
-
-For dilates of a fixed unit profile and `w≤1`, this yields the explicit
-reciprocal-square coefficient `(152(∫|φ|)²+6B²)/M`. For every smooth plateau
-with `0<η≤1/4`, one coefficient `316` works independently of `η`. Thus shrinking
-transition layers do not force the cross budget to diverge. This refinement is
-in [OverlapLengthControlsTheTouchingCrossError](OverlapLengthControlsTheTouchingCrossError.lean).
-
-Distinct integer logarithms
-among `1,…,N` have distance strictly greater than `1/N`. Consequently this
-estimate controls every entry of the actual cross-error matrix for all
-`0<c≤1`, including the endpoint ratio. Reciprocal integer-distance summation
-gives the whole quadratic-form budget `4 Cφ c² ‖x‖²` and the square-residual
-budget `(36 Cφ A c²)²` on every pole profile `a_n/√n` with `|a_n|≤A`.
-
-The charge has its own strict reserve. Continuity and interval support force
-`φ(0)=0`; a nonzero profile cannot agree almost everywhere with a nonzero
-constant on `[0,1]`. Its variance gives
-
-\[
-q_\phi=\frac{(\int\phi)^2}{M}<1.
-\]
-
-Keeping the actual charge `c qφ` in the center estimate yields a single real
-floor `aφ` and a single horizon such that, simultaneously for every `0<c≤1`
-and all subsequent `N`,
-
-\[
-a_\phi\|x\|^2+\frac{1-q_\phi}{4}D_N(x)
-\le\mathcal W_{\phi,c,N}(x)
-\quad\text{for every }x.
-\]
-
-Both constants and the horizon are independent of `c`. The floor need not be
-positive. The cross and initial charge results are in
-[BoundaryVanishingControlsTheTouchingAutocorrelation](BoundaryVanishingControlsTheTouchingAutocorrelation.lean),
-[EndpointDecayRemovesTheCrossKernelGapLoss](EndpointDecayRemovesTheCrossKernelGapLoss.lean),
-[TheTouchingCrossMatrixHasAUniformErrorBudget](TheTouchingCrossMatrixHasAUniformErrorBudget.lean),
-and [TheChargeDeficitKeepsAUniformPrimeReserve](TheChargeDeficitKeepsAUniformPrimeReserve.lean).
-The simultaneous complete reserve is in
-[OnePrimeDefectReserveCoversEveryRatioThroughTouching](OnePrimeDefectReserveCoversEveryRatioThroughTouching.lean).
-
-The complete source decomposition retains non-ratio prime lags through products
-outside the integer horizon; the next section describes their exact geometry.
-Genuine support overlap also changes the atom Gram matrix. Furthermore, the
-charge reserve tends to zero when plateaus
-approach the unit indicator; uniformity in a fixed profile does not imply
-uniform spectral exhaustion in that profile limit.
-
-## The first arithmetic correction is a vanishing boundary star
-
-The endpoint ratio does admit non-ratio prime lags, even though its actual atom
-supports remain disjoint. Their geometry is rigid. For `N≥2`, if unequal
-positive integers have logarithmic distance at most `1/N` and one belongs to
-`1,…,N`, that pair must be `N,N+1`.
-
-Set `d_N=log(N+1)-log N`. For every profile `g` supported in `[0,1/N]`, the
-entire non-ratio prime source is therefore exactly
-
-\[
-\operatorname{NR}(g,N,x)=2G_g(d_N)x_N
- \sum_{\substack{km=N+1\\ k\ge2,\ 1\le m\le N}}
- \frac{\Lambda(k)}{\sqrt{k}}x_m.
-\]
-
-The sum includes all prime powers. This identity retains the boundary term
-that the strictly separated formula omits. The divisor identity pays its
-weights by `log(N+1)`, giving, for every signed coefficient vector,
-
-\[
-|\operatorname{NR}(g,N,x)|\le
-2|G_g(d_N)|\log(N+1)\sum_{m\le N}x_m^2.
-\]
-
-The remaining support overlap satisfies `1/N-d_N≤1/N²`. If `|φ|≤B` and
-`M=∫φ²>0`, the actual endpoint dilation obeys
-
-\[
-\frac{|\operatorname{NR}(\phi_{1/N},N,x)|}{\int\phi_{1/N}^2}
-\le\frac{2B^2}{M}\frac{\log(N+1)}N\sum_{m\le N}x_m^2.
-\]
-
-One bound also covers every `0<c≤1`, with `2B²/M` replaced by `4B²/M` and
-`φ_{1/N}` replaced by `φ_{c/N}`. At ratios at most one half the correction is
-zero; at the other ratios normalization costs at most a factor two. Every
-smooth nonzero compact profile supplies its own finite height bound, so this
-is an unconditional source estimate for the programme's actual profiles.
-
-Consequently, for every fixed such profile and every `ε>0`, one horizon makes
-the normalized correction at most `ε∑x_m²` simultaneously for all `0<c≤1` and
-all coefficient vectors. The exact classification and source identity are in
-[OnlyTheBoundaryStarEntersAtTouching](OnlyTheBoundaryStarEntersAtTouching.lean);
-the quantitative and uniform eventual bounds are in
-[TheBoundaryPrimeStarVanishesAfterNormalization](TheBoundaryPrimeStarVanishesAfterNormalization.lean).
-
-The exact complete decomposition in
-[TheCompleteWeilMatrixKeepsItsBoundaryCorrection](TheCompleteWeilMatrixKeepsItsBoundaryCorrection.lean)
-combines this correction with the original self term, center, cross error, and
-both poles. Its sign is retained. Uniform scalar errors, finite arithmetic
-coordinate detection, and the complete norm-quasimode theorem then supply the
-positivity result above. Beyond ratio one, additional integer interactions and
-the overlapping atom Gram must be handled together; the single-star
-classification no longer applies.
-
-## A small prime-defect cost for genuine overlap
-
-Every fixed `C²` profile `φ` supported in `[0,1]`, with `M=∫φ²>0`, supplies
-a constant `Cφ>0` such that, for all `1≤c≤2`, `N≥2`, and real coefficient
-vectors,
-
-\[
-\frac{|\operatorname{NR}(\phi_{c/N},N,x)|}{(c/N)M}
-\le C_\phi\left(c-1+\frac1N\right)
- \left(D_N(x)+\sum_{1\le n\le N}x_n^2\right).
-\]
-
-This is a bound on the literal non-ratio prime source, including every prime
-power. If one of two distinct positive integers is at most `N`, their log
-gap exceeds `1/(N+1)`. A profile bounded by `B` therefore contributes at most
-`B² max(0,w-1/(N+1))` at each such lag. Retaining this overlap length through
-the weighted Schur and divisor-row estimates produces the small factor.
-The actual prime defect pays the remaining top-row logarithm. Compact
-smoothness produces the profile-height constant, so it is not an additional
-unproved estimate.
-
-Consequently, for every `ε>0`, one `δ∈(0,1]` and one horizon work for all
-`c∈[1,1+δ]` and all coefficient vectors: the normalized correction is at
-most `ε(D_N(x)+∑x_n²)`. The row estimate is in
-[IntegerSeparationShrinksTheNonRatioPrimeRows](IntegerSeparationShrinksTheNonRatioPrimeRows.lean);
-the normalized and uniform eventual bounds are in
-[TheFirstOverlapPrimeCostHasASmallDefectCoefficient](TheFirstOverlapPrimeCostHasASmallDefectCoefficient.lean).
-
-This supplies general-profile prime control. Complete positivity at one
-genuine overlap was already proved by TransMetzlerWeilPositivity. The
-overlapping atom Gram and joint archimedean and polar contributions still
-require their own complete-form comparison; the prime estimate alone does
-not establish that comparison.
-
-## Cancelled Robin calculus and smooth profile changes
-
-Write `B_W(f)=bumpRobin(f,W)` and define the polarized finite part
-
-\[
-\mathcal B_W(f,g)=\tfrac14\bigl(B_W(f+g)-B_W(-f+g)\bigr).
-\]
-
-For `C²` functions supported in one interval `[0,w]`, with `0<w≤1`, the
-actual mixed Lévy form `𝓛(f,g)=∫₀∞ levyMixed(f,g,y)dy` satisfies
-
-\[
-\left|\mathcal L(f,g)
- -(\log(1/w)+\kappa_{\rm arch})\int fg
- -\mathcal B_w(f,g)\right|
-\le\frac{e^{1/2}}4w\left(\int f^2+\int g^2\right).
-\]
-
-Here `κ_arch=archRobinConstant`. Polarizing the scalar remainder keeps the
-overlap mass in the leading logarithmic term. There is no separation or
-positive-mass assumption. This expansion is in
-[TheMixedRobinExpansionSurvivesActualOverlap](TheMixedRobinExpansionSurvivesActualOverlap.lean).
-
-For arbitrary compact `C²` functions, `W≥0`, and a nonnegative Lipschitz
-bound `L` for `f-g`, factoring the difference of squared increments gives
-
-\[
-|B_W(f)-B_W(g)|\le WL(\|f\|_1+\|g\|_1).
-\]
-
-It removes the factor `1/y` before integration. The corresponding mixed
-bound is `2WL(‖f‖₁+‖g‖₁)`, uniformly over every common translation `a` in
-the pairs `(f,T_a f)` and `(g,T_a g)`, where `T_a f(u)=f(u-a)`. Both bounds
-are proved in
-[TheRobinFinitePartIsStableUnderLipschitzPerturbations](TheRobinFinitePartIsStableUnderLipschitzPerturbations.lean).
-
-A fixed `C²` unit-interval profile supplies the perturbation bound itself.
-For `φ_c(u)=φ(u/c)`, one `C>0` works throughout `1≤c≤2`:
-
-\[
-|(\phi_c-\phi)(u)-(\phi_c-\phi)(v)|
- \le C(c-1)|u-v|,
-\qquad \|\phi_c-\phi\|_1\le6C(c-1).
-\]
-
-Boundedness and Lipschitz continuity of the first derivative produce this
-constant. The mixed Robin change then has a bound proportional to
-`W(c-1)`, uniformly in the translation, both before and after division by
-`c`. In particular, one profile-dependent `K>0` satisfies
-
-\[
-\left|\frac{\mathcal B_W(\phi_c,T_a\phi_c)}c
- -\mathcal B_W(\phi,T_a\phi)\right|
-\le KW(c-1)
-\]
-
-for all `1≤c≤2`, `W≥0`, and real `a`.
-[SmoothDilationHasASmallLipschitzDifference](SmoothDilationHasASmallLipschitzDifference.lean)
-contains these produced profile bounds. These are scalar analytic estimates;
-the complete relative form comparison, with all overlapping Gram entries
-and pole terms paid together, remains open.
-
-## Absolute-mass continuity of separated cross terms
-
-For continuous compactly supported profiles of arbitrary sign, the actual
-autocorrelation satisfies
-
-\[
-\|G_f-G_g\|_1\le\|f-g\|_1(\|f\|_1+\|g\|_1).
-\]
-
-Factoring the integrand difference as
-`(f-g)(u)f(u+z)+g(u)(f-g)(u+z)` retains both signs. An integrable product
-envelope justifies Fubini before translation invariance gives the absolute
-mass factors. If both profiles are supported in `[0,w]` and `s>w`, then
-
-\[
-|X_f(s)-X_g(s)|
-\le\omega(s-w)\|f-g\|_1(\|f\|_1+\|g\|_1).
-\]
-
-The literal cross integral equals the full shifted-density integral;
-its autocorrelation support confines the density to positive arguments
-where it is bounded by `ω(s-w)`. These statements are proved in
-[TheSeparatedCrossTermIsContinuousInAbsoluteMass](TheSeparatedCrossTermIsContinuousInAbsoluteMass.lean).
-Strict separation is essential to this bound. It supplies scalar continuity;
-the normalized width comparison and complete relative form transfer remain
-open, including their pair summation and shared energy payment.
-
-## A conductor-uniform arithmetic curvature floor
-
-For a nontrivial conductor `m>1`, define the literal primitive-root energy
-and its real arithmetic curvature by
-
-\[
-P_m(k)=\sum_{\zeta\text{ primitive of order }m}
- \left|\sum_{j=0}^{k-1}\zeta^j\right|^2,
-\qquad
-A_m(t)=\sum_{d\mid m}\mu(m/d)d^2
- \{t/d\}(1-\{t/d\}).
-\]
-
-Finite root orthogonality and Möbius inversion give the exact identity
-
-\[
-P_m(k)=\sum_{d\mid m}\mu(m/d)(k\bmod d)(d-k\bmod d).
-\]
-
-The constant mode cancels for `m>1`. On every real cell `k+u`, with
-`k≥0` an integer and `0≤u<1`, the same cancellation removes the quadratic
-coefficient and gives
-
-\[
-A_m(k+u)=(1-u)P_m(k)+uP_m(k+1).
-\]
-
-The prefix energy vanishes exactly when `m` divides `k`. Otherwise the
-geometric prefix is a nonzero cyclotomic integer. Its nonzero integral norm
-has absolute value at least one; its embeddings run through all primitive
-roots. Applying the arithmetic–geometric mean to their squared magnitudes
-therefore proves `P_m(k)≥φ(m)`. Consecutive integers cannot both be conductor
-multiples. Interpolation consequently yields the simultaneous bound
-
-\[
-\frac{A_m(t)}{\varphi(m)}\ge\{t\}(1-\{t\})\ge0
-\qquad(m>1,\ t\ge0).
-\]
-
-The exact identities and vanishing classification are in
-[PrimitiveRootPrefixEnergyIsAMobiusQuadraticRemainder](PrimitiveRootPrefixEnergyIsAMobiusQuadraticRemainder.lean).
-The norm argument and conductor-uniform floor are in
-[CyclotomicNormGivesAConductorUniformCurvatureFloor](CyclotomicNormGivesAConductorUniformCurvatureFloor.lean).
-These are finite arithmetic theorems. Identifying an integral of this
-curvature with a complete overlapping spectral symbol, and realizing that
-symbol in the full operator with an exhaustive norm estimate, remain open.
-
-The finite arithmetic excitation also has an exact source description. Put
-
-\[
-J_m(n)=\sum_{\substack{d\mid m\\d\mid n}}\mu(m/d)d\log d.
-\]
-
-For every positive integer `n`, the literal downward convolution satisfies
-
-\[
-\sum_{a\mid n}\Lambda(a)c_m(n/a)=\log n\,c_m(n)-J_m(n).
-\]
-
-Thus the existing downward correction equals `-J_m(n)`. At `n=m>0`, every
-upward correction vanishes, and the completed prime-row identity gives
-
-\[
-\sum_{d\mid m}\mu(m/d)d\log d
-=\varphi(m)\bigl(\log m+\operatorname{tameDifferent}(m)\bigr).
-\]
-
-[TheDownwardPrimeRowIsAnExactLogarithmicDivisorJet](TheDownwardPrimeRowIsAnExactLogarithmicDivisorJet.lean)
-proves these identities directly from the original divisor source. They fix
-the logarithmic correction exactly; they do not estimate a growing family
-of overlapping norm residuals.
-
-## Affine arithmetic averages from actual prime windows
-
-For every positive conductor `q` and natural numbers `n,h`, the finite
-reduced-residue identity is
-
-\[
-\sum_{\substack{0\le r<q\\(r,q)=1}}c_q(rn+h)=c_q(n)c_q(h).
-\]
-
-Primitive-root powers permute the primitive roots as `r` runs through the
-units. Interchanging these finite sums proves the identity. Consequently
-the normalized mode `c_q(n)/√φ(q)` is an eigenfunction of affine unit
-averaging, with exact eigenvalue `c_q(h)/φ(q)` in `[-1,1]`.
-[UnitAveragesDiagonalizeSuccessorCorrections](UnitAveragesDiagonalizeSuccessorCorrections.lean)
-contains this finite character calculation.
-
-The literal prime source realizes the same average. For any real residue
-pattern `F` on `ℤ/qℤ`, put `κ_F=φ(q)⁻¹∑_{r unit}F(r)`. The actual reading
-
-\[
-\sum_{1\le k\le Y}\frac{\Lambda(k)}kF(k\bmod q)-\kappa_F\log Y
-\]
-
-has a finite limit. Existing residue-class Mertens constants give the unit
-contributions; convergent non-unit prime-power classes supply the rest.
-There is no sign or multiplicativity condition on `F`. Subtracting the two
-readings at `AN` and `BN`, for fixed integers `0<A≤B`, cancels the finite
-part and leaves `κ_F(log B-log A)`. This is
-[PrimeResidueWindowsConvergeToTheirUnitMean](PrimeResidueWindowsConvergeToTheirUnitMean.lean).
-
-The affine pattern therefore gives the actual limit
-
-\[
-\lim_{N\to\infty}
-\sum_{AN<k\le BN}\frac{\Lambda(k)}k c_q(kn+h)
-=(\log B-\log A)\frac{c_q(n)c_q(h)}{\varphi(q)}.
-\]
-
-[ActualPrimeWindowsDiagonalizeAffineRamanujanModes](ActualPrimeWindowsDiagonalizeAffineRamanujanModes.lean)
-proves this statement and its normalized-mode version. All prime powers
-are retained. Conductor, affine parameters, and window endpoints are fixed;
-these scalar limits provide neither growing-conductor norm control nor
-spectral exhaustion for the overlapping complete form.
-
-## Questions and tools to develop
-
-**Arithmetic overlap analysis.** What new low modes appear as overlap grows? The surrounding
-TransMetzlerWeilPositivity programme already crosses ratio one with an explicit profile and a
-prime-defect perturbation estimate. The remaining targets include complete form comparisons for general profiles,
-successor corrections at larger ratios, and exhaustion. Derive and estimate the complete
-remaining operator, including pole and Gamma terms and the non-diagonal atom Gram. A fixed-ratio
-theorem must state whether its horizon is uniform as the ratio changes. The ultimate family
-must exhaust the source.
-
-**Mixed prime-action estimates.** Which additive–multiplicative relations allow a joint signed
-bound with one energy reserve? Quantify projection and commutator errors. Fixed-prime absolute
-costs cannot simply be summed over first prime powers.
-
-**Signed short-difference correlations.** Estimate the actual centered stabilizer discrepancy
-with the logarithmic weights and end corrections of its census. The concrete milestones are the
-`70%` exchange-rate input and the bandwidth-`4/3` surplus of at most `1/18 + o(1)` for `75%` simple
-critical zeros. Model correlations alone do not supply these inequalities.
-
-**Confluent reflection calculus.** Construct observables that distinguish reflected pairs through
-coalescence and admit arithmetic upper bounds. Explain their cost at arbitrarily small horizontal
-depth. A lower charge with no source estimate leaves the main problem open.
-
-**Quantitative source rigidity.** Convert response information that distinguishes prime gauges
-into a completed-form estimate. The error must depend explicitly on conductor and aperture;
-fixed precision misses sufficiently remote changes in the prime source.
-
-**Annular arithmetic work.** Establish upper bounds for `W(2R) - W(R)` directly from the completed
-arithmetic expression, uniformly as the outer taper is removed. An eventual bound by `39/50`
-would imply finite exceptions; the same bound at every `R ≥ 4` would imply RH. The known
-classification is an input to research, not an assumption that the bound holds.
-
-**Arithmetic count production.** Find a characteristic-zero mechanism that produces a counting
-inequality. Integrality already provides base Chebyshev control; a replacement for the useful
-flatness of Frobenius must earn its quadratic estimate. A structure with the desired inequality
-as a field would only rename the missing theorem.
-
-## Traps and calibration
-
-The maximal prime gap does not identify zeta: remote prime flips share it. Haar-almost-everywhere
-cancellation does not select the actual Möbius gauge. A compact negative perturbation need not
-have finite negative index when the positive spectrum approaches zero. Density bounds need not
-exclude a single zero. Finite heat counts at each positive time need not be uniformly bounded
-near zero. Low-profile positivity does not exclude undiscovered modes unless the spectral count
-is exhaustive.
-
-Calibration must match the proposed theorem. Liouville, remote prime flips, small weight changes,
-and impure geometric models test different assumptions. A theorem deciding RH must use an
-assumption that fails on every applicable countermodel. A statistical theorem need not exclude
-every finite exceptional configuration.
-
-## Place among the programmes
-
-ArithmeticCastelnuovoSeveri and ArithmeticOrientationGeometry provide the geometric and index
-languages. ArithmeticIndexDescent and SignedArithmeticHodgeTheory expose paid blocks and the
-remaining complete source. RenormalizedArithmeticPotentialTheory resolves the separated
-arithmetic spectrum. TransMetzlerWeilPositivity supplies an actual first-overlap perturbation
-and positivity theorem. TransThresholdPairCorrelation and ShallowCauchyPrimeEnergy provide census
-receivers and collision costs. ConjugateDiagonalGeometry supplies source-built positive metrics.
-ArithmeticCountingPositivity and ArithmeticCorrelationGeometry explain source selection and its
-limits. ArithmeticEffectivityTheory supplies count mechanisms and their current boundary.
-
-This programme connects those tools through quantitative signed comparison. It does not replace
-their objects by an abstract positivity axiom. An estimate should carry enough original-source
-data to be usable by more than one of these neighbouring languages when a proved transfer exists.
-
-## Success and contribution criteria
-
-A contribution must identify the actual object, prove its estimate or classification without an
-unproved analytic premise, preserve the relevant completion and multiplicity, and state all
-uniformity and error dependence. It must locate the improvement over existing corpus results.
-If a proposed mechanism fails, its sharp boundary or strongest positive survivor must be extracted
-and proved.
-
-The programme succeeds through new arithmetic estimates: an overlapping-family sign bound, a
-census improvement with its constant, a finite-index bound, or an exclusion estimate that closes
-an individual-zero argument. Foundational definitions and exact identities are useful only as
-steps toward these tools. The questions above remain research obligations until the corresponding
-unconditional theorems have been formalized.
+| Complete Weil matrix | `completeWeilMatrix φ c N` (RAPT) | normalized complete Weil form on atoms `atomDilate φ (c/N)` at `log n`, `n ≤ N` |
+| Complete energy / spectrum | `completeWeilEnergy`, `completeWeilEigenvalue` | quadratic form `⟨A x, x⟩`, Hermitian eigenvalues |
+| Atomic test | `atomicTest N x g` (SSHA) | `Σ x_n g(u − log n)` |
+| Prime-edge defect | `poleDefect N x` | Dirichlet energy of `x` along prime edges; the reserve that pays errors |
+| Ramanujan pole profile | `ramanujanPoleProfile m n`, `normalizedRamanujanHorizonVector m N` | `c_m(n)/√(φ(m) n)`, normalized by `√log N`; approximate eigenvectors |
+| Completed conductor energy | `completedConductorEnergy φ c m` | `completeWeilAdjunctionEnergy − shellCorrection`; quasimode eigenvalue of conductor `m` |
+| Non-ratio prime source | `nonRatioForm g N x`, `fullWeilNonRatioMatrix` | prime pairs `k·m ≠ n` inside the atom window |
+| Upward / downward rows | `upwardPrimeRow`, `downwardPrimeRow` (RAPT) | non-ratio action split by direction `n ↦ kn` vs `n ↦ n/k` |
+| Affine prime shell | `affineRamanujanPrimeShell`, `affinePrimeShellCorrectionOfShift` | `Σ Λ(k)/k·c_q(kn+b)·autocorr(hX/(ck))`; literal source of the shell correction |
+| Residue prime window | `residuePrimeWindow`, `residuePrimeReading`, `primeClassKappa` | Mangoldt reading of a residue pattern; unit-class mean |
+| Primitive prefix energy | `primitiveRootPrefixEnergy m k`, `primitivePrefixGram` | `Σ_{ζ primitive} |Σ_{j<k} ζ^j|²` and its Gram form |
+| Arithmetic overlap curvature | `arithmeticOverlapCurvature m t`, `arithmeticOverlapGram` | `Σ_{d|m} μ(m/d)d²{t/d}(1−{t/d})` |
+| Divisor jet | `ramanujanLogDivisorJet m n` | `Σ_{d|(m,n)} μ(m/d) d log d` |
+| Profiles | `tiltedUnitSpline` (SSHA), `liouvilleSelector`, `tiltedBoxPlateau` | explicit `C²` profiles on `[0,1]` with no real Fourier zeros |
+| Source work | `xiDampedSourceWork R` (ArithmeticElectrostatics) | rational-damped completed source work |
+
+External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThreshold` (TMWP), `shellSpectrum` (RAPT `CompletedShell`).
+
+## 3. Language
+
+- Overlap `c`: atom width `c/N`. Touching `c = 1`. Distinct integers `≤ N` have log gap `> 1/N`, so at `c ≤ 1` atom supports are disjoint; the only non-ratio pair is the boundary star `(N, N+1)`.
+- Reserve + quasimodes + floor: a positive fraction of `poleDefect`, norm quasimodes `‖A v_m − E_m v_m‖ → 0`, and `E_m ≥ e > 0` together exclude every eigenvalue below `e`.
+- Shell: integer offset `h` between `kn` and a neighbour index; shells `1 ≤ h < c` are active at overlap `c`.
+- Horizon types: eventual (`∀ᶠ N`), uniform in `c` on an interval (one horizon), explicit (stated inequalities on `N`).
+- Harmonic norm: errors measured in `Σ_n err(N/n)²/n`, normalized by `log N`.
+
+## 4. Mechanisms
+
+**A. Exact decomposition of the complete matrix**
+1. Complete matrix = prime energy + self finite part + center (charge) + cross error + both pole errors − non-ratio matrix (`completeWeilMatrix_eq_decomposition_at_touching`); the sign of the non-ratio term is retained.
+2. The complete residual on `v_m` is an exact sum of eight source terms; each is estimated separately with its own rate.
+
+**B. Through touching (`0 < c ≤ 1`)**
+1. Boundary star: at width `≤ 1/N` the only non-ratio pair is `N, N+1` (`small_integer_log_gap_forces_boundary`); its source is `2G(d_N)x_N Σ_{km=N+1} Λ(k)/√k·x_m`, paid by the divisor identity at cost `O(log N/N)`.
+2. Cross error: endpoint decay `|G(z)| ≤ (L²w/4)(w−|z|)²` or overlap length `|G(z)| ≤ B²(w−|z|)` pays the inverse-square kernel without gap loss; one budget `4C c²‖x‖²` for all `c ≤ 1`.
+3. Charge deficit: `(∫φ)²/∫φ² < 1` for every nonzero continuous interval profile; keeps a uniform defect fraction `(1−q)/4`.
+4. Plateau limits: smooth plateaus have Robin, mass, charge `→ 1`, completed shape `→ 2 > log 2π`; endpoint energy `B/M − log 2πc + cI²/M ≥` its value at `c = 1`.
+
+**C. Spectral assembly**
+1. Reserve ⇒ bounded-energy unit vectors have coordinate mass `≥ 1/18` on a finite Ramanujan family (arithmetic compactness).
+2. Coordinate on eigenvector below `e`: `⟨x_i, v_m⟩² ≤ ‖A v_m − E v_m‖²/(E − e)²`; finitely many conductors ⇒ contradiction (`eventually_completeWeil_eigenvalues_ge_of_reserve_quasimodes`).
+3. Shifted matrix (subtract half the prime energy) keeps confinement and gives a logarithmic defect reserve.
+
+**D. Fixed overlap (`c > 1`)**
+1. Integer separation: log gap `> 1/(N+1)` leaves overlap length `max(0, w − 1/(N+1))`; first overlap costs `C(c − 1 + 1/N)` defect.
+2. Directed Young: outgoing rows have bounded mass (Chebyshev), incoming rows carry `log m` paid by the top-row defect; non-ratio form is infinitesimally bounded by `poleDefect`.
+3. Gamma reserve at fixed overlap: macroscopic cutoff `M = N/L`; separated prefix keeps unit self-energy, tail gets a Fourier-band reserve, ordered prefix/tail interaction costs only mass.
+4. Downward cancellation: `Σ_{a|n} Λ(a)c_m(n/a) = log n·c_m(n) − jet` cancels the near-Gamma `log(N/c)` coefficient; exterior products live in a strip of width `⌈ce^c⌉`.
+5. Upward realization: offset reindexing, log-kernel linearization `O(1/N)`, cutoff moves paid by `primeIndexBoundaryMass → 0`, reflected shifts `c_q(T − h) = c_q(T + qh − h)`; the remainder is the affine shell source.
+6. Affine shells: unit averages diagonalize `c_q(rn + h)` with eigenvalue `c_q(h)/φ(q)`; residue Mertens windows; Abel summation with flat reciprocal weights gives the signed mean `c_q(n)c_q(b)/φ(q)·∫_{h/c}^1 autocorr/u`.
+7. Conductor floor: first coprime term of the shell repayment series gives `E_m ≥ (2/M)(m/φ(m))∫_{t>c/m} shellSpectrum > 0` when the profile FT has no real zeros.
+
+**E. Uniformity and growth**
+1. Bounded overlap: every constant monotone in `c` on `[1, K]`; one Fourier floor on `[1, 101K]`.
+2. Polynomial costs: residual `‖·‖² ≤ K(c⁵/log N + c¹⁰(log N/N)²)`, energies `≤ Cc²`, defect reserve `a/c⁷` at mass cost `Cc⁹`, conductor floor `c⁻⁷`.
+3. Quantitative arithmetic: fixed-modulus and conductor-uniform PNT (`q ≤ (log X)^A`) give every inverse-log rate for residue readings and Mertens remainders; total variation (not sup) of reciprocal weights makes the affine source linear in `c`.
+
+**F. Cyclotomic curvature**
+1. `P_m(k) = Σ_{d|m} μ(m/d)(k mod d)(d − k mod d) ≥ φ(m)` when `m ∤ k` (cyclotomic norm ≥ 1 + AM–GM); `A_m(k+u)` interpolates `P_m(k), P_m(k+1)`.
+2. Curvature is a squared Hilbert distance; centered Gram positive, raw kernel conditionally negative; radical = cyclotomic divisibility; all divisor conductors give the discrete bridge = prime-block jump energy.
+
+## 5. Pillar theorems
+
+| Theorem | Lean | Status |
+|---|---|---|
+| Completed source work `0 ≤ W(R) ≤ 64R L_R(L_R+1)`, tapered `|W_N(R)| ≤ 128R L_R(L_R+1)` | `xiDampedSourceWork_le_logarithmic_ceiling`, `abs_xiTaperedSourceWork_le_logarithmic_ceiling` | proved |
+| One horizon, all `c ∈ (0,1]`, every eigenvalue `≥ b` for any `b < 2 − log 2π` (near-unit plateau) | `exists_near_unit_plateau_uniform_completeWeilMatrix_posDef` | proved |
+| Explicit horizon through touching: `Q⁴ ≤ N`, `log N ≥ max(1, 36B/floor²)` ⇒ PosDef for all `c ∈ (0,1]` | `exists_tiltedUnitSpline_completeWeilMatrix_posDef_explicit_through_touching` | proved |
+| Reserve + quasimodes + floor ⇒ spectral floor | `eventually_completeWeil_eigenvalues_ge_of_reserve_quasimodes` | proved |
+| Completed conductor energies are actual quasimode energies at every fixed `c > 0` | `tendsto_completeWeilMatrix_completedConductor_residual_norm` | proved |
+| Positive complete Weil matrix at every fixed `c > 0` (tilted spline) | `eventually_tiltedUnitSpline_completeWeilMatrix_posDef`, `eventually_tiltedUnitSpline_weilQuad_atomicTest_nonneg` | proved |
+| Same for every `C²` profile on `[0,1]` with no real Fourier zeros; low spectral counts; bottom → completed shell energy | `eventually_noRealZero_completeWeilMatrix_posDef`, `noRealZero_spectral_count_eq`, `noRealZero_spectrum_bottom` | proved |
+| Ground state is the pole: one eigenvalue below `E(1) + gap/2`, it tends to `E(1)`, its line captures `v_1` | `eventually_tiltedUnitSpline_completeWeil_ground_count_one`, `tendsto_tiltedUnitSpline_groundProjection_error_sq` | proved |
+| One horizon and one floor for all `0 < c ≤ K` | `exists_tiltedUnitSpline_completeWeil_uniform_boundedOverlap_floor`, `eventually_tiltedUnitSpline_weilQuad_nonneg_uniform_boundedOverlap` | proved |
+| Explicit horizon at `c ≥ 1`: `Q ≤ exp(D(Cc¹⁶+1)) + 2`, `N ≥ Q⁴, Hc⁸`, `log N ≳ c¹⁰` | `exists_tiltedUnitSpline_completeWeilMatrix_posDef_explicit_horizon` | proved |
+| Fixed conductor packets positive for `1 ≤ c ≤ (log N)^A`, `A < 1/48`, and for `c ≤ (log log N)^A` any `A` | `eventually_tiltedUnitSpline_finite_packet_energy_pos_growing_overlap`, `eventually_tiltedUnitSpline_finite_packet_energy_pos_iterated_log_overlap` | proved; full matrix at growing overlap open |
+| Selectivity: ζ positive, every pole-free sign gauge (Liouville, every cofinite flip) negative at the same `c ≥ 1` | `liouvilleSelector_selective_of_one_le`, `liouvilleSelector_selective_of_cofiniteFlip` | proved |
+| Growing Ramanujan families: `(log(N+1) − log(K+1))Σa² ≤ Σ F_a²`, `K = Q(Q−1)`; annular frames `¼, 5/4` | `ramanujanPoleProfile_family_logarithmic_lower`, `ramanujanPoleProfile_dyadic_twoSided_frame` | proved |
+| Cyclotomic floor `P_m(k) ≥ φ(m)`, `A_m(t)/φ(m) ≥ {t}(1−{t})` | `totient_le_primitiveRootPrefixEnergy`, `fract_quadratic_le_normalized_arithmeticOverlapCurvature` | proved |
+| Gamma reserve at growing overlap: `archForm ≥ (κc⁻⁷ log N − bc)(c/N)M Σx²` | `archForm_atomicTest_ge_growing` | proved |
+| Defect reserve `(a/c⁷)D − Cc⁹Σx²` at `N ≥ Hc⁸` | `exists_tiltedUnitSpline_complete_defect_reserve_polynomial` | proved |
+
+## 6. Tools
+
+**Developed**
+- Spectral assembly lemma for complete Weil matrices (`MacroscopicOverlapSpectralAssembly`, `FiniteRamanujanCoordinatesTransferSpectralFloors`).
+- Explicit coordinate mass `1/18` from `Q⁴ ≤ N` (`normalizedRamanujan_coordinate_mass_ge_of_raw_approximation`).
+- Directed Schur/Young split of non-ratio rows (`abs_nonRatioForm_le_relative_defect`).
+- Cancelled Robin calculus: polarized mixed expansion with overlap, Lipschitz stability of `bumpRobin`, dilation differences (`abs_mixed_levy_sub_robin_le`, `abs_bumpRobin_sub_le_lipschitz_difference`).
+- Exact successor-shell thresholds `N log(1 + k/N) ∈ [k − k²/N, k)` (`exists_successor_gap_iff`).
+- Residue-window machinery with uniform horizons over all patterns and Gram packets (`eventually_residuePrimeWindow_uniform`, `eventually_primeWindow_dominates_all_complex_Gram_packets`).
+- Weighted Abel transfer with flat weights; variation version (`weightedResiduePrimeReading_sub_mean_eq`, `eventually_weightedResiduePrimeReading_variation_log_bound`).
+- Harmonic-quotient square budgets (HTGeometry) applied to row errors at `N/n`.
+- Conductor-uniform residue PNT and Mertens rates (`eventually_conductor_uniform_residuePrimeRealError_log_bound`).
+- Explicit profiles: `tiltedUnitSpline`, `tiltedBoxPlateau` (FT `= 2L·Û_L·Û_w⁴` shifted by `iτ`), `liouvilleSelector` (threshold `< 1`).
+
+**To build**
+- Full-matrix positivity at growing overlap `c_N → ∞`: needs a conductor cutoff whose cost does not grow like `exp(c¹⁶)` and residuals with sub-`c¹⁰` cost.
+- Uniform low-energy confinement with conductor count growing with `N` (current certificates fix a finite family before the horizon).
+- An exhausting overlapping family (holes below the horizon top persist at `c ≤ 1`).
+- Annular upper bound on `W(2R) − W(R)` from the completed arithmetic expression (needed `39/50`).
+
+## 7. Open questions
+
+1. Positivity of the full complete matrix along a prescribed schedule `c_N → ∞`. Which loss dominates: the `exp(c¹⁶)` conductor cutoff, the `c⁻⁷` floor, or the `c¹⁰` residual?
+2. Is the `c⁻⁷` Fourier-tail floor sharp for smooth compact profiles, or can a profile family keep a `c`-independent floor?
+3. Can the defect reserve `a/c⁷` be improved to a fixed fraction at growing overlap?
+4. Do the polynomial packet results extend from `A < 1/48` to larger powers of `log N` (SuccessorShellArithmetic reaches `1/19`)?
+5. Which overlapping atomic families exhaust compact tests, and what is their low spectrum?
+6. Does the cyclotomic curvature `A_m` coincide with the overlapping spectral symbol of the complete form?
+7. Signed short-difference correlations for the critical-line census (exchange-rate input, bandwidth-`4/3` surplus).
+
+## 8. Traps
+
+| Trap | Fact |
+|---|---|
+| "Touching ⇒ overlap" | At `c = 1` supports are disjoint; non-ratio interaction is one boundary star. Real overlap starts at `c > 1`. |
+| "Positivity on these families ⇒ RH" | Families are not exhausting; local coverage at index `n` is about `n/N`. |
+| "Fixed `c` positivity is uniform" | Horizons depend on `c` unless stated; bounded-overlap uniformity needs the separate `[1, K]` theorems. |
+| "Absolute estimates suffice" | The prime main term cancels a polar term; near-Gamma cancels the downward row only through the exact divisor jet. |
+| "Large positive conductor energies give positivity" | Without a defect reserve, low-energy vectors can escape to large conductors. |
+| "Individual prefix positivity ⇒ coercive Gram" | The overlap Gram has a radical: packets divisible by the cyclotomic polynomial. |
+| "Dyadic annuli carry prime transport" | The prime kernel vanishes on `(A, 2A]`; transport crosses annulus boundaries. |
+| "Source work ceiling excludes zeros" | `O(R log² R)` includes critical zeros; it is not selective. |
+| Plateau limit | The charge reserve tends to zero as plateaus approach the indicator. |
+| Duplicate name | `eventually_tiltedUnitSpline_completeWeilMatrix_posDef` is declared in both `MacroscopicOverlapPositivityAtEveryOverlap` and `TheCompleteWeilFormIsPositiveAtEveryFixedOverlap` (same namespace). |
+
+## 9. Context
+
+**Uses**
+
+| Programme | Imports | Role |
+|---|---|---|
+| RenormalizedArithmeticPotentialTheory | 30 | complete Weil matrix, completed shells, Ramanujan quasimodes, arithmetic compactness |
+| SpacingScaleHarmonicAnalysis | 19 | atoms, tilted spline, Gamma reserves, row bounds |
+| HTGeometry | 11 | harmonic-quotient budgets, Hermitian projections, finite Gram certificates |
+| RHTower | 9 | Mertens, PNT in progressions, conductor-uniform sums |
+| BezoutValuationIncidence | 5 | large sieve, divisor rows, Brownian bridge |
+| SignedArithmeticHodgeTheory | 3 | horizon-uniform residual and Gram budgets |
+| BiScaleUncertainty, ArithmeticLorentzianGeometry, ArithmeticEffectivityTheory | 3 each | Ramanujan bounds, one-sided cross energy, torsion Fourier coefficients |
+| TransMetzlerWeilPositivity | 2 | Liouville twin and sign-gauge breaking |
+| TransHorizonIncidenceMechanics, ArithmeticIntersectionTheory, ArithmeticIncidencePositivity, ArithmeticElectrostatics, ArithmeticCriticalityTheory | 1 each | single lemmas |
+
+**Used by**: RenormalizedArithmeticPotentialTheory (14 modules), TransMetzlerWeilPositivity (9), CompletedArithmeticForms (7), SuccessorShellArithmetic (2), MainTheorems.
+
+| Neighbour | Relation |
+|---|---|
+| RenormalizedArithmeticPotentialTheory | supplies the complete matrix and shell theory; imports CACT back for quasimodes, ground state, flip thresholds |
+| TransMetzlerWeilPositivity | first-overlap positivity and Robin–Euler twin breaking; CACT supplies selectivity against all sign gauges |
+| SuccessorShellArithmetic | sharpens the growing-overlap packet exponent |
+| CompletedArithmeticForms | packages the growing-overlap and residual bounds |
+| SignedArithmeticHodgeTheory | prime residual budget uniform in the horizon |
+
+## 10. Big picture
+
+The programme shows that the literal Weil form, with nothing modelled away, is positive on every atomic family whose overlap stays bounded, and that it separates ζ from Liouville and from every cofinite sign flip at the same overlap. Positivity is not an accident of one profile: any smooth profile whose Fourier transform has no real zeros works, and the ground state is always the pole. The mechanism is always the same triangle: a prime-defect reserve confines low energy to finitely many conductors, actual prime sums realize each conductor's energy as an approximate eigenvalue, and a Fourier tail gives every conductor a positive floor.
+
+What this says about the RH proof: positivity through the arithmetic of finitely many conductors is now routine, so the difficulty sits entirely in growth. As overlap grows, the floor decays polynomially, the residual costs grow polynomially, and the conductor cutoff grows exponentially. Fixed packets survive to `(log N)^{1/48}`; the full matrix does not yet survive any growing schedule. An RH proof along this route needs either a conductor-count bound that grows slowly with overlap or a family that exhausts the test space without paying conductor confinement.

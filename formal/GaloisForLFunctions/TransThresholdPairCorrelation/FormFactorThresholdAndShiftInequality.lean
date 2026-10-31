@@ -199,9 +199,9 @@ theorem excess_formFactor_of_coalescence {F : ℝ → ℝ} {D Λ f : ℝ} (hF : 
     norm_num
   linarith
 
-/-- **Higher-moment Rudnick–Sarnak bandwidth cap:**
-For a `k`-th order (`k ≥ 3`) trace certificate `tr(G^k)` to avoid trans-threshold prime
-correlations (`k * λ ≤ 1`), the bandwidth `λ` is capped at `1/k ≤ 1/3 < 2/3`. -/
+/-- **Arithmetic of the higher-moment bandwidth cap.**  If `k ≥ 3` and `kλ ≤ 1`, then
+`λ ≤ 1/k ≤ 1/3 < 2/3`.  The condition `kλ ≤ 1` is the range in which a `k`-th order trace `tr(G^k)`
+reads no trans-threshold prime correlation; that such a certificate needs it is not proved here. -/
 theorem higherMoment_rudnick_sarnak_cap {k : ℕ} (hk : 3 ≤ k) {lam : ℝ}
     (hrs : (k : ℝ) * lam ≤ 1) :
     lam ≤ 1 / (k : ℝ) ∧ 1 / (k : ℝ) ≤ 1 / 3 ∧ lam < 2 / 3 := by

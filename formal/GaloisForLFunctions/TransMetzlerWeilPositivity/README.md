@@ -1,131 +1,176 @@
-# Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram
+# Trans-Metzler Weil Positivity
 
-Namespace `GaloisForLFunctions.TransMetzlerWeilPositivity`; umbrella `TransMetzlerWeilPositivity.lean`.
+Namespace `GaloisForLFunctions.TransMetzlerWeilPositivity` (subfolder `BoundedOverlap/` uses `…TransMetzlerWeilPositivity.BoundedOverlap`); umbrella `TransMetzlerWeilPositivity.lean`; 34 modules. Nothing is assumed: RH and finite off-line support appear only as hypotheses of stated implications or as one side of an equivalence. Modules end with `#print axioms`.
 
-**Question.** At horizon $N$ and atom width $w = c/N$ (scaled width $c=Nw$; the exact spacing ratio is $w/\delta_N\to c$, where $\delta_N=\log(1+1/N)$), the complete Weil form of $\zeta$ on atomic families $f_x(u) = \sum_{n \le N} x_n \varphi((u - \log n)/w)$ is governed by a Metzler trickle-down inequality below $c = 1$, while for every profile strictly positive on $(0, 1)$ and every $\rho > 1$ the top-collar triangle $\{1, N - 1, N\}$ frustrates every unimodular gauge (`metzlerThreshold_overlapRatio`). **Does unconditional positivity of the complete Weil form survive strictly past the Metzler wall $c = 1$, where does selectivity against the Liouville twin first turn on, what zero-side content does a fixed overlap ratio carry, and how slowly can an RH-equivalent overlap schedule grow?**
+## 1. Motivation
 
-> Unconditional positivity of $\zeta$'s complete Weil form **crosses the Metzler threshold $c = 1$**: for the explicit smooth full-support plateau $\varphi_0 = \texttt{plateau}(1/1000)$ and explicit rational overlap ratio $c_0 = 1 + 10^{-18} > 1$ (and at exact spacing width $\rho_0 \delta_N$ with $\rho_0 = 1 + \frac{1}{2}\cdot 10^{-18} > 1$), `completeWeilMatrix φ₀ c N` is eventually positive definite on all of $(0, c_0]$ while no unimodular gauge makes the atomic Markov form Metzler. What replaces the diagonal gauge is a **convex combination of Ramanujan norm-quasimode spectral exclusion and strict-variance prime-defect coercivity**, paying both long-shift archimedean overlaps and the additive successor prime correlations $(kn, kn \pm 1)$ in the top third $3n > N$. By contrast, the Liouville twin $\lambda\Lambda$ breaks down inside the strictly separated regime at the **Robin–Euler ratio** $c_{\mathrm{RE}}(\varphi) = e^{\beta(\varphi)/\|\varphi\|_2^2}/(2\pi) < 1/2$ (approaching $e/(2\pi) \approx 0.4326 < 1$ on thin plateaus), failing at both $c = 1$ and $c_0$. On the zero side, finite off-line support bounds the atomic negative index uniformly across all $c > 0$, while the tempered countermodel `isolatedPairConfig` refutes any purely zero-side deduction of fixed-$c$ positivity without $\zeta$'s $\frac{\log T}{2\pi}$ zero density. Finally, a single fixed Steklov infinite-convolution Denjoy–Carleman profile pushes RH-complete overlap growth strictly below every Gevrey power $(\log\log N)^{1+\varepsilon}$ down to $(\log\log N)(\log\log\log N)^\beta$ for every $\beta > 2$.
+The complete Weil form of ζ is tested on atomic families: `N` copies of one profile at `log n`, width `c/N`. Below touching (`c ≤ 1`) a diagonal sign gauge makes the atomic Markov form Metzler; for `c > 1` the top-collar triangle frustrates every gauge. The programme asks four questions. Does unconditional positivity survive past this Metzler wall? At which overlap do twisted sources (Liouville, sign gauges, single prime flips) fail while ζ survives? What can the zero side alone say at fixed overlap? How slowly can an overlap schedule grow and still be equivalent to RH? It answers all four. Positivity crosses `c = 1` by a tiny explicit margin. Twins fail far below touching. Zero-side data alone is insufficient. The RH-equivalent overlap is exactly `L(log L)²`, `L = log log N`, for the logarithmic Denjoy–Carleman profile class. The programme also shows why the full matrix at growing overlap is hard: the non-ratio prime correction is unbounded past touching, and the Gram floor vanishes.
 
----
+## 2. Objects
 
-## 1. Place in the research
+| Object | Lean | Meaning |
+|---|---|---|
+| Plateau profile | `transMetzlerProfile` | `plateau (1/1000)`: smooth, supported in `[0,1]`, positive on `(0,1)`, 8000-Lipschitz |
+| Constants | `deltaZero`, `cZero`, `rhoZero`, `etaZero` | `10⁻¹⁸`, `1 + 10⁻¹⁸` (ratio at width `c/N`), `1 + ½·10⁻¹⁸` (ratio in units of `atomSpacing N`), `1/1000` |
+| Main matrix | `transMetzlerMainMatrix w c N` | renormalized prime matrix + center at `c` + self part; reference for perturbation |
+| Certified range | `certifiedOverlapIncrement`, `certifiedOverlapFloor δ` | overlap excess `δ` admitted by the reference + coercivity bounds; floor `1/25 − 2000δ·loss` |
+| Young boundary | `transMetzlerOptimizedOverlapFloor`, `transMetzlerCertifiedBoundary` | optimized floor over all Young parameters; its unique zero `c_* > 1 + 10⁻¹⁶` |
+| Robin–Euler ratio | `robinEulerThreshold φ` | `exp(β(φ)/‖φ‖²)/(2π)`; twin breakdown threshold |
+| Twisted form | `weilQuadTw ε f` (SSHA) | complete Weil form with source `ε(n)Λ(n)` |
+| Atomic shift Gram | `atomicShiftWeilGram φ w N` | complex Hermitian Weil Gram of shifted atoms |
+| Steklov average | `steklovAvg a f` | `(2a)⁻¹∫_{−a}^{a} f(x+t)dt`; Fourier multiplier `sinc(2πaξ)` |
+| Log-DC weight | `dcLogWeight q` | `q!·log(q+3)^{2q}`; submultiplicative |
+| Fixed profiles | `steklovDCProfile`, `sincProfile` | infinite Steklov iterates / infinite box convolution; `∫|φ^{(q)}| ≤ A·12^q·W_q` |
+| Rate and scale | `dcRate κ N`, `dcScale N` | overlap `N/κ_N` over `ℓℓ₂²`; `L(log L)²` |
+| Critical overlap | `dcCriticalOverlap B N`, `sincCriticalOverlap N` | least `c ≥ 1` with tail² `· log N ≤ 1` (majorant / exact Fourier tail) |
+| Successor fiber | `weightedDownwardDivisorFiber`, `plateauSuccessorFiber c N` | Schur-weighted divisor fiber of row `N` into product `N+1` |
+| Factorial horizon | `factorialSuccessorHorizon Y` | `2·Y! − 1`; every prime `≤ Y` gives a successor edge |
+| Prefix Schur complement | `plateauPrefixSchur` | tail − mixedᴴ·prefix⁻¹·mixed after splitting `[1,M] ⊔ (M,N]` |
+| Height coordinates | `completeWeilMatrixAtHeight φ N T`, `superGevreyHeight` | width `T⁻¹`; `T = N/c` |
+| Prime-square trial | `primeSquareTrial p n` | `1 − 2[p|n] + 2[p²|n]`; prime parity through valuation 2 |
 
-| Programme | Takes / adds |
+External: `completeWeilMatrix`, `normalizedFullWeilHorizonMatrix`, `poleDefect`, `fullWeilNonRatioMatrix`, `completeWeilAdjunctionEnergy` (RAPT); `atomDilate`, `weilQuad`, `dilate` (SSHA); `atomicTest`, `atomSpacing = log(1 + 1/N)` (ArithmeticElectrostatics); `isolatedPairConfig` (SquareRootThreshold); `finiteFlip`, `cofiniteFlip` (ArithmeticCountingPositivity).
+
+## 3. Language
+
+- Overlap `c`: width `c/N` (or `ρ·atomSpacing N`). Touching `c = 1`. Metzler wall: for `ρ > 1` no unimodular gauge makes `atomicMarkovGram` Metzler.
+- Sub-horizon dilution: test only `n ≤ M_N = ⌊θN⌋`; then width `c/N` is a fraction of the local spacing and the form is a Markov (separated) form.
+- Receiver: an overlap schedule whose eventual atomic nonnegativity is equivalent to RH. Window: the set of tests a bounded schedule controls.
+- Length/height: length `N`, height `T = N/c`, bandwidth `log N/log T`.
+- Pole coordinates: coefficients `F(n)/√n`; the prime form becomes `2Σ_m (1/m)Σ_t (Λ(t)/t)F(m)F(tm)`.
+
+## 4. Mechanisms
+
+**A. Crossing the Metzler wall**
+1. Overlap at width `≤ 5/(4N)` only joins adjacent pairs `|n − j| = 1` in the top third `3n > N`; top-third mass `≤ (poleDefect + ‖x‖²)/log(N/3)`.
+2. Perturbation: complete matrix − main matrix `≤ (2000δ + C/log(N/3))(poleDefect + ‖x‖²)` for widths in `[1/(2N), (1+δ)/N]` (`exists_perturbation_bound_transMetzler`); successor pairs `(kn, kn ± 1)` pay `δ + 2/N` via Chebyshev.
+3. Main matrix: charge deficit `1 − q ≥ 1/128000` ⇒ coercivity `−2100000‖x‖² + poleDefect/1024000` up to `c ≤ 1 + 1/512000`; Ramanujan quasimodes with energies `> 1/20` ⇒ eigenvalue floor `1/25`; convex combination ⇒ `‖x‖²/60 + poleDefect/1.0752·10¹⁴`.
+4. The reserve pays the perturbation for `δ ≤ 10⁻¹⁸`; no gauge is used.
+
+**B. Optimizing the certified range**
+1. Reference floor = conductor-one adjunction energy (self finite part + pole shift); no eventual floor can exceed it (conductor one attains it).
+2. Young family: center cost split by parameter `λ`; optimizing gives `L(c) = f − 2000(c−1)(1 + root²)`, strictly decreasing on `[1, 1/q₀)` with a unique zero `c_*`; exact rational certificate `L(1 + 10⁻¹⁶) ≥ 1/200`.
+
+**C. Twin breakdown**
+1. Fejér–Abel: `Σ_{d≤M} cos(dθ)/d ≥ −4` ⇒ archimedean center kernel `≥ −(17/4)Σ n x_n²`; cross error `≤ 56M²` on vectors with `n x_n² ≤ 4`.
+2. Witness: project `ω(n)/√n` onto the pole hyperplane `Σ x_n/√n = 0`; for pole-free `ω` (bounded `Σ ω(n)/n`) the twisted prime form reaches `(log M − γ − ε)Σx²`.
+3. Sub-horizon dilution `M = ⌊(c'/c)N⌋` turns `log(1/(2πc')) + β/‖φ‖²` into `−log(c'/c_RE) < 0` times `log M`, beating `O(1)` center and cross terms.
+4. Single prime flip: the twist changes only the prime matrix at separated widths; `primeSquareTrial` cancels the first prime correlation `4 log p/p`, leaving tail cost from `p³`; a three-conductor Ramanujan packet limit gives a negative margin at ratio `99/100`; zero padding transfers it to all larger ratios.
+
+**D. Zero side**
+1. Finite off-line support bounds the Hermitian negative index of `atomicShiftWeilGram` by `#rightZeros`, uniformly in `c`, `N`, `φ` (Krein index of `zetaKernel`).
+2. One real zero contributes linearly in `c` on `x ≡ 1` (Cauchy–Schwarz `N² ≤ Σn^σ·Σn^{−σ}`).
+3. A two-atom dipole `x₁ = 1, x₂ = −1` kills the whole lattice `½ + 2πik/log 2`; one off-line pair then makes `Re W < 0` at every `c`.
+
+**E. RH receivers via Denjoy–Carleman synthesis**
+1. Steklov averages cost one radius per derivative; summable radii `a_m = 1/(4(m+3)log²(m+3))` give a smooth limit with `∫|φ^{(q)}| ≤ A·12^q·W_q`.
+2. Euler–Maclaurin synthesis of order `2⌈log log κ⌉ + 2` with quadrature ratio `≤ 24·rate⁻¹·B_φ·B + o(1)`; ratio `< e⁻¹` makes the error `O(log⁻²κ)`.
+3. Mollify a negative test by the profile (stays negative, inherits the weight bounds), synthesize it on block `[N/B, N]`: any stable form is globally nonnegative iff eventually nonnegative on atomic families at super-Gevrey overlap.
+4. Bounded rate `K`: window radius `½ log K + O(1)` (`B = ⌈1 + e^{2R+2}⌉`). RH = union over `K`.
+5. Critical overlap: Fourier majorant `μ_B(c) = inf_q B^q W_q/c^q`, `log(1/μ_B(c)) ≍ c/log²c`; the sinc profile's tail `∫_c^{2c}|φ̂|² ≥ c·e^{−Kc/log²c}` (Jensen on sinc products, `π log 2` per period of `−log|sin|`) shows this is exact. Hence `c*_N ≍ L(log L)²`.
+
+**F. Obstructions at growing overlap**
+1. Divisor fiber: with Schur weights all divisors of `ℓ` share one lag and sum to `log ℓ`; the successor fiber grows like `log N` at every `c > 1`, is positive iff `c > N log(1+1/N)`, and tends to 0 at touching.
+2. Factorial horizons `2Y! − 1`: one unit coordinate collects `Σ_{p≤Y}(log p)²/p → ∞`; the non-ratio prime matrix is eventually bounded iff `c ≤ 1`.
+3. Adjacent dipole: synthesized mass / coefficient mass `= 1 − C_φ(t)/C_φ(0)`, `t ≤ 2/c`; no uniform Gram floor along `c_N → ∞`. The Gram is nondegenerate at every fixed width.
+4. Prefix payment: the prefix block at `[1,M]` equals the complete matrix at overlap `cM/N`; one horizon makes it PosDef for all `cM ≤ N`; the full obligation is exactly the Schur complement.
+
+## 5. Pillar theorems
+
+| Theorem | Lean | Status |
+|---|---|---|
+| For every `ρ > 1` the plateau eventually frustrates every unimodular gauge | `transMetzlerProfile_frustrated_of_one_lt` | proved |
+| Perturbation `(2000δ + C/log(N/3))(poleDefect + ‖x‖²)` | `exists_perturbation_bound_transMetzler` | proved |
+| PosDef for every `c ∈ (0, 1 + 10⁻¹⁸]`; there is `c > 1` with PosDef; PosDef and frustrated at `rhoZero·atomSpacing N` | `eventually_completeWeilMatrix_posDef_of_mem_Ioc`, `exists_gt_one_eventually_completeWeilMatrix_posDef`, `eventually_transMetzler_atomSpacing_posDef_and_frustrated` | proved |
+| PosDef on the full certified range `δ < certifiedOverlapIncrement` | `eventually_completeWeilMatrix_posDef_certified` | proved |
+| Young family certifies a positive floor exactly for `1 ≤ c < c_*`; `c_* > 1 + 10⁻¹⁶`; floor `1/400` there | `transMetzler_young_positive_certificate_iff`, `transMetzlerCertifiedBoundary_explicit_lower`, `eventually_completeWeilMatrix_floor_at_explicit_young_ratio` | proved |
+| Liouville twin negative at every `c > c_RE(φ)`; plateau `c_RE < ½`; thin plateaus `→ e/(2π)`; twin nonnegative below `fixedWidthRatio` | `eventually_liouville_weilQuadTw_neg_of_gt_robinEuler`, `eventually_liouville_weilQuadTw_neg_transMetzlerProfile`, `exists_plateau_liouville_weilQuadTw_neg_of_gt_exp_div_two_pi`, `liouville_weilQuadTw_nonneg_of_le_fixedWidthRatio` | proved |
+| Every pole-free sign gauge and every cofinite flip breaks above `c_RE` | `eventually_signGauge_weilQuadTw_neg_of_gt_robinEuler`, `eventually_cofiniteFlip_weilQuadTw_neg_of_gt_robinEuler` | proved |
+| Flipping the prime 11 breaks at every ratio `≥ 99/100` (incl. `2`, `cZero`) | `eventually_elevenFlip_negative_of_ratio`, `eventually_elevenFlip_negative_cZero` | proved |
+| Finite off-line ⇒ uniform negative index `≤ #rightZeros`; tempered pair countermodel at every `c` | `hermNegIndex_atomicShiftWeilGram_le_of_finiteOffLine`, `isolatedPairConfig_atomic_negative_every_ratio` | proved (first is an implication) |
+| Stable form ≥ 0 ⇔ eventual atomic nonnegativity at super-Gevrey overlap | `nonneg_iff_atomicFamilies_nonneg_of_stable_superGevrey`, `riemannHypothesis_iff_atomicFamilies_nonneg_of_superGevrey` | proved |
+| RH ⇔ `steklovDCProfile` receiver at `L(log L)^β`, `β > 2`, and at `L(log L)² log log L` | `riemannHypothesis_iff_steklovDCProfile_nonneg_superGevrey`, `riemannHypothesis_iff_steklovDCProfile_nonneg_endpoint` | proved |
+| Bounded rate `K` sees window `24eB⌈1+e^{2R+2}⌉ < K`; RH ⇔ all bounded rates; every divergent rate is a receiver | `nonneg_of_atomicFamilies_nonneg_of_rate`, `riemannHypothesis_iff_forall_bounded_rate`, `riemannHypothesis_iff_nonneg_of_divergent_rate` | proved |
+| `c*_N ≍ L(log L)²` (majorant and exact sinc tail); rate law in critical units | `eventually_dcCriticalOverlap_le`, `eventually_le_dcCriticalOverlap`, `eventually_sincCriticalOverlap_le`, `eventually_le_sincCriticalOverlap`, `riemannHypothesis_iff_forall_sincCritical_multiple` | proved |
+| Sinc tail `∫_c^{2c}|φ̂|² ≥ c·exp(−(8π/3+3000)c/log²c)` | `exp_mul_le_integral_norm_fourier_sincProfile_sq` | proved |
+| Non-ratio prime matrix eventually bounded ⇔ `c ≤ 1` | `eventually_bounded_fullWeilNonRatio_action_iff` | proved |
+| Successor fiber `~ log N` for `c > 1`; positive iff `c > N log(1+1/N)`; `→ 0` at touching | `plateauSuccessorFiber_atTop`, `plateauSuccessorFiber_pos_iff`, `tendsto_plateauSuccessorFiber_one` | proved |
+| No uniform Gram floor along `c_N → ∞` | `no_uniform_plateau_atomic_mass_floor` | proved |
+| Full PSD ⇔ prefix Schur complement PSD (prefix paid for `cM ≤ N`) | `eventually_completeWeil_posSemidef_iff_prefixSchur` | proved |
+| Receiver bandwidth `→ 1`; `N < T^α` for all `α > 1` | `tendsto_superGevrey_bandwidth`, `eventually_superGevrey_length_lt_height_rpow` | proved |
+| Positivity of the full matrix at any growing overlap | — | open |
+
+## 6. Tools
+
+**Developed**
+- Top-collar adjacency and `poleDefect/log(N/3)` mass payment (`top_adjacent_of_log_gap_le`, `sum_sq_top_third_le`).
+- Convex combination of eigenvalue floor and coercivity (`eventually_transMetzlerMainMatrix_floor_and_defect`).
+- Uniform Fejér–Abel bound and center-kernel floor (`neg_four_le_sum_cos_div`, `sum_archimedeanCenterKernel_ge`).
+- Pole-hyperplane witnesses for any bounded-harmonic sign twin (`exists_bounded_hyperplane_signTwin_witness`).
+- Steklov calculus: derivative, Fourier multiplier, mass preservation, mean-zero two-average bound (`fourier_steklovAvg`, `abs_boxStek_two_le_of_meanZero`).
+- Log-DC synthesis (`exists_dcLogSynthesis`) and the mollify-then-synthesize receiver argument.
+- Fourier-tail majorant `μ_B` with two-sided bounds; Jensen for finite sinc products (`integral_prod_sinc_sq_ge`).
+- Interval Montgomery–Vaughan band mass `∫_N^{101N}|Σx_n n^{it}|² ≥ 48N Σx²` (`dirichletPoly_highBand_mass`).
+- Zero padding and rational ratio transfer (`atomicTest_zero_padding`); variable-ratio packet limits (`tendsto_ramanujanPacketTest_weil_variable`).
+- Prime-square trial with Ramanujan expansion and flip tail bound (`primeSquareTrial_ramanujan`, `tendsto_primeSquareFlipBound`).
+
+**To build**
+- A replacement for coefficient-mass floors at growing overlap (synthesized-mass normalization).
+- Control of the unbounded non-ratio correction against the archimedean terms past `c = 1` (the complete matrix keeps them; the bound alone diverges).
+- A Schur-complement estimate for the tail after the paid prefix.
+- Profiles outside the log-DC class to test whether `L(log L)²` can be lowered.
+
+## 7. Open questions
+
+1. Does ζ's complete matrix stay positive on a macroscopic range `c ≥ 2` (successor shells `kn ± r`, `r < c`)? Any proof must be selective: the 11-flip already fails at `99/100`.
+2. Is the Young boundary `c_*` an actual sign change of the complete matrix, or only the end of this certificate family?
+3. Is `L(log L)²` optimal among all smooth compactly supported profiles? Denjoy–Carleman non-quasianalyticity allows weights down to `Σ 1/(m log m)`-type divergence; the receiver argument needs `ratio < e⁻¹` at order `≈ log log κ`.
+4. Can the positive Schur complement after the paid prefix be shown at overlap `c_N = r_N c*_N`? This is exactly RH.
+5. Does finite off-line support plus ζ's zero density `log T/(2π)` force fixed-`c` positivity?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| `RenormalizedArithmeticPotentialTheory` | Complete Weil horizon matrix, Ramanujan adjunction spectrum $E_m$, prime-defect coercivity, archimedean finite part $-\log 2\pi$ / perturbative trans-Metzler splitting, Fejér–Abel center floor, Liouville breakdown above $c_{\mathrm{RE}}(\varphi)$ |
-| `CriticalArithmeticCorrelationTheory` | Smooth plateau shape/charge limits, overlap-length cross-error control / explicit numerical reserve on $\varphi_0 = \texttt{plateau}(1/1000)$ and crossing $c > 1$ |
-| `ArithmeticLorentzianGeometry` | Sharp Metzler frustration threshold at $\rho = 1$, narrow-spacing twin Hodge index / simultaneous positive definiteness and gauge frustration at $\rho_0 \delta_N > \delta_N$ |
-| `SpacingScaleHarmonicAnalysis` | Single-zero Nyquist weight bound, Euler–Maclaurin synthesis, Gevrey profiles / sharp linear-in-$c$ zero lower bound, Steklov logarithmic Denjoy–Carleman profile and $(\log\log N)(\log\log\log N)^\beta$ RH-equivalence |
-| `HeckeKreinToeplitz`, `ArithmeticIndexDescent`, `SquareRootThreshold` | Krein receiver index bound, complex/real Weil Gram bridge, `isolatedPairConfig` / uniform atomic negative-index bound under `FiniteOffLine` and all-ratio countermodel to purely zero-side proofs |
+| "Crossing `c = 1` needs a new gauge" | No gauge exists for `ρ > 1`; positivity comes from the defect reserve and Ramanujan quasimodes. |
+| "Past touching the non-ratio prime correction is a small perturbation" | Past `c = 1` it is controlled only relative to `poleDefect`; in Euclidean norm it is unbounded along factorial horizons for every fixed `c > 1`. |
+| "`c_*` is where positivity fails" | `c_*` ends the certified Young family; failure beyond it is not proved. |
+| "Twins survive to touching" | Liouville fails above `c_RE < ½`; every pole-free sign gauge and cofinite flip fails above `c_RE`; the 11-flip fails at `99/100`. |
+| "Zero-side data decides fixed overlap" | `isolatedPairConfig` is tempered with one off-line pair and fails at every `c`. |
+| "A bounded overlap rate proves RH" | A single `K` sees a window of radius `½ log K + O(1)`; RH needs all `K` or a divergent rate. |
+| "`β > 2` is a technical loss" | `c*_N ≍ L(log L)²` exactly for the log-DC class; the endpoint `L(log L)² log log L` is reached. |
+| "Coefficient mass controls synthesized mass" | Adjacent dipoles lose mass like `c⁻²`; no floor along `c_N → ∞`. |
+| "Height can replace length" | `T_N = N/c_N` only up to asymptotic equivalence; `log T ~ log N`. |
+| "Successor fiber turns on at `c > 1`" | It turns on at `c > N log(1+1/N) < 1`; at touching it is positive but `O(log N/N²)`. |
+| Conditional statements | `weilQuad_atomicTest_nonneg_of_riemannHypothesis` and the finite off-line index bound are implications, not results about ζ. |
 
----
+## 9. Context
 
-## 2. Regulator, counterterm, anomaly, and gauge map
+**Uses**
 
-* **Regulator:** prime-order horizon $n \le N$ coupled to atom width $w_N = c/N$ (or $\rho \delta_N$).
-* **Counterterm & survival reserve:** rank-one polar counterterm $\ell(x)^2 = (\sum_{n \le N} x_n/\sqrt{n})^2$; strict profile Cauchy–Schwarz variance $1 - q(\varphi_0) = 1 - (\int \varphi_0)^2/\int \varphi_0^2 \ge 1/128000$ retains a uniform `poleDefect` reserve across $c \in (0, 1 + 1/512000]$.
-* **Paying place:** the completed Robin margin $\beta(\varphi_0)/\|\varphi_0\|_2^2 + c\,q(\varphi_0) - \log(2\pi c) > 1/20$ lifts the conductor-$1$ Ramanujan mode, while `poleDefect` pays top-collar mass ($\sum_{n > N/3} x_n^2 \ll (\texttt{poleDefect } N\ x + \|x\|^2)/\log(N/3)$) and absorbs the $O((c - 1) + 1/N)(\texttt{poleDefect } N\ x + \|x\|^2)$ successor prime correlations.
-* **Gauge selectivity:**
-  * **$\zeta$ (trivial gauge):** pole-matched; positive definite for all $c \in (0, c_0]$ with $c_0 = 1 + 10^{-18} > 1$.
-  * **Liouville twin $\lambda\Lambda$:** anti-matched on the pole; its prime form attains $\log M - \gamma + o(1)$ on the pole-orthogonal hyperplane $\sum_{n \le M} x_n/\sqrt{n} = 0$, so its complete Weil form becomes negative at every fixed $c > c_{\mathrm{RE}}(\varphi)$ (for $\varphi_0$, every $c \ge 1/2$), while remaining nonnegative for $0 < c \le \texttt{fixedWidthRatio}$.
+| Programme | Imports | Role |
+|---|---|---|
+| RenormalizedArithmeticPotentialTheory | 11 | complete matrix, `poleDefect`, Ramanujan quasimodes, non-ratio matrix |
+| HTGeometry | 9 | uniform limits of derivatives, Fourier decay, Montgomery–Vaughan, Young optimization |
+| CriticalArithmeticCorrelationTheory | 9 | successor shells, touching autocorrelation, uniform quasimodes through touching |
+| SpacingScaleHarmonicAnalysis | 8 | atoms, plateaus, DC profiles, EM synthesis, overlap coordinates |
+| RHTower | 4 | Mertens, `(log p)²/p` lower bound, Weil–RH equivalence |
+| ArithmeticLorentzianGeometry, ArithmeticCountingPositivity | 3 each | Metzler frustration, atoms; sign gauges, cofinite flips |
+| SquareRootThreshold, SelectiveMultiscaleArithmeticPositivity | 2 each | tempered configurations; harmonic hyperplane |
+| HeckeKreinToeplitz, ArithmeticIndexDescent | 1 each | Krein index of `zetaKernel`; real/complex Gram bridge |
 
-| Scaled-width regime $c=Nw$ | $\zeta$ complete Weil form | Liouville twin $\lambda\Lambda$ | Zero-side stratum |
-|---|---|---|---|
-| $0 < c \le \texttt{fixedWidthRatio}$ | Unconditionally $\ge 0$ | Unconditionally $\ge 0$ | Universal stability |
-| $c_{\mathrm{RE}}(\varphi) < c \le 1$ ($e/(2\pi) < 1$) | Eventually `PosDef` (including $c = 1$) | Eventually $< 0$ | Pole-matching selectivity inside strict separation |
-| $1 < c < c_*$, with $1+10^{-16}<c_*$ | Eventually `PosDef`; floor $1/400$ at $c=1+10^{-16}$ | Eventually $<0$ | Exact positive range of the certified Young-bound family |
-| Arbitrary fixed $c > 0$ | $\ge 0$ under RH; `hermNegIndex ≤ ncard(rightZeros)` under `FiniteOffLine` | Eventually $< 0$ for $c > c_{\mathrm{RE}}(\varphi)$ | Fails on `isolatedPairConfig` at every $c > 0$ |
-| $c_N = (\log\log N)(\log\log\log N)^\beta$ ($\beta > 2$) | Eventually $\ge 0 \iff \texttt{RiemannHypothesis}$ (one fixed profile `steklovDCProfile`) | Infinitely often $< 0$ | Full RH completeness below all Gevrey powers |
+**Used by**: CriticalArithmeticCorrelationTheory (2), CompletedArithmeticForms (2), EffectiveArithmeticHodgeTheory (1), RenormalizedArithmeticPotentialTheory (1), SpacingScaleHarmonicAnalysis (1), MainTheorems.
 
----
-
-## 3. Modules and pillar theorems
-
-### `ExplicitPlateauParameters.lean`
-Quantitative bounds for `transMetzlerProfile = plateau (1 / 1000)` and explicit trans-Metzler constants `deltaZero = 10⁻¹⁸`, `cZero = 1 + 10⁻¹⁸`, `rhoZero = 1 + (1/2) * 10⁻¹⁸`:
-* `deriv_smoothTransition_bounds`: $0 \le \sigma'(x) \le 4$, giving Lipschitz constant $8000$ on `transMetzlerProfile`.
-* `transMetzlerProfile_frustrated_of_one_lt`: for every $\rho > 1$, eventually no unimodular gauge makes `atomicMarkovGram` Metzler.
-* `transMetzlerProfile_charge_deficit_ge`: $1/128000 \le 1 - \texttt{completeWeilPoleShift transMetzlerProfile } 1$.
-* `completeWeilAdjunctionEnergy_transMetzlerProfile_gt_one_twentieth`: $1/20 < E_m(\varphi_0, c)$ for all $c \in (0, 1 + 1/1000]$ and $m \ge 1$.
-* `transMetzlerProfile_robinEuler_lt_half`: $\exp(\beta(\varphi_0)/\|\varphi_0\|_2^2)/(2\pi) < 1/2$.
-
-### `TransMetzlerDecomposition.lean`
-Exact perturbative decomposition `normalizedFullWeilHorizonMatrix = transMetzlerMainMatrix + perturbation` for widths $1/(2N) \le w \le (1 + \delta_0)/N$:
-* `top_adjacent_of_log_gap_le`, `sum_sq_top_third_le`: support overlaps occur only on adjacent pairs $|j - n| = 1$ in the top collar $3n > N$, where mass is paid by `poleDefect / log(N / 3)`.
-* `tendsto_transMetzlerMainMatrix_ramanujan_residual_norm`: norm quasimode convergence $\|H_N^{\mathrm{main}} u_m^{(N)} - E_m u_m^{(N)}\| \to 0$ for every conductor $m \ge 1$.
-* `abs_nonRatioForm_transMetzler_le`: signed prime-defect + Chebyshev bound on the additive successor prime pairs $(kn, kn \pm 1)$ with factor $\delta_0 + 2/N$.
-* `exists_perturbation_bound_transMetzler`: total overlap-and-drift perturbation bounded by $(2000\delta_0 + C_{\mathrm{short}}/\log(N/3))(\texttt{poleDefect } N\ x + \|x\|^2)$.
-
-### `TransMetzlerPositivity.lean`
-Crossing the Metzler threshold unconditionally:
-* `eventually_transMetzlerMainMatrix_floor_and_defect`: convex combination of the $1/25$ eigenvalue floor and uniform coercivity retains $(1/60)\|x\|^2 + c_{\mathrm{pd}}\,\texttt{poleDefect } N\ x$.
-* `exists_gt_one_eventually_completeWeilMatrix_posDef`: unconditional existence of $c > 1$ (`cZero`) and $\varphi \in C_c^\infty(\mathbb{R})$ (`transMetzlerProfile`, positive on $(0, 1)$) with `(completeWeilMatrix φ c N).PosDef` and atomic `weilQuad ≥ 0` eventually.
-* `eventually_completeWeilMatrix_posDef_of_mem_Ioc`, `eventually_completeWeilMatrix_posDef_one`, `eventually_touching_atomSpacing_posDef`: eventual positive definiteness across all $c \in (0, c_0]$ and at exact spacing `atomSpacing N`.
-* `eventually_transMetzler_atomSpacing_posDef_and_frustrated`: simultaneous complete Weil positive definiteness and unimodular Markov gauge frustration at `rhoZero * atomSpacing N`.
-
-### `TransMetzlerReferenceFloor.lean` and `TransMetzlerYoungOptimization.lean`
-The reference floor and every center Young parameter are optimized for the existing analytic
-constants 1276 and 2000. Put $q_0=(\int\varphi_0)^2/\int\varphi_0^2$,
-$\alpha=cq_0$, $r=1-\alpha$, $\psi=\log4+4/e$,
-$s=\beta(\varphi_0)/\|\varphi_0\|_2^2-\log(2\pi c)$, and $f=s+\alpha$.
-Then
-
-$$A=\alpha^2\psi,\qquad Q=1276c^2+\alpha(\psi+16),\qquad
-L(c)=f-2000(c-1)\left(1+\frac{(\sqrt A+\sqrt{A+rQ})^2}{r^2}\right).$$
-
-On $1\le c<1/q_0$, $L$ is continuous and strictly decreasing, with a unique zero
-$c_*\in(1,(1+1/q_0)/2)$. Every floor strictly below $L(c)$ eventually holds for
-`completeWeilMatrix transMetzlerProfile c N` when $c\le c_*$. Thus the actual matrices
-are eventually positive definite for $1\le c<c_*$. Exact rational inequalities certify
-$L(1+10^{-16})\ge1/200$, hence an eventual matrix floor $1/400$ there.
-
-* `eventual_transMetzlerMainMatrix_floor_le_reference`: conductor one attains the limiting
-  reference floor, so no larger eventual reference floor is possible.
-* `transMetzler_young_positive_certificate_iff`: the entire scalar Young family certifies a
-  positive perturbed floor exactly for $1\le c<c_*$; attaining models certify optimality.
-* `eventually_completeWeilMatrix_young_floor_to_boundary`: actual matrix transfer, including
-  arbitrarily small negative floors at $c_*$.
-* `eventually_completeWeilMatrix_floor_at_explicit_young_ratio`: the explicit $1/400$ floor.
-
-The scalar optimization is proved in `HTGeometry/OptimalYoungDefectFloor.lean`. The boundary
-belongs to this certified bound family; it does not assert failure of actual positivity beyond it.
-The original `cZero` and `rhoZero` constants remain unchanged.
-
-### `LiouvilleTwinSelectivity.lean`
-Sharp selectivity of fixed overlap ratios on the Liouville twin:
-* `neg_four_le_sum_cos_div`, `sum_archimedeanCenterKernel_ge`: uniform Fejér–Abel cosine partial-sum bound $\sum_{d=1}^M \cos(d\theta)/d \ge -4$ and Hankel moment positivity give $\sum_{n, j \le M} x_n x_j\,\texttt{archimedeanCenterKernel } n\ j \ge -(17/4)\sum_{n \le M} n x_n^2$.
-* `exists_bounded_hyperplane_liouville_witness`: pole-orthogonal witness $x_n = (\lambda(n) - s_M)/\sqrt{n}$ satisfying $n x_n^2 \le 4$ and attaining $\log M - \gamma - \varepsilon$ in the twin prime form.
-* `eventually_liouville_weilQuadTw_neg_of_gt_robinEuler`: sub-horizon dilution $M_N = \lfloor (c'/c) N \rfloor$ forces eventual negativity of the Liouville twin's complete Weil form at every fixed $c > \texttt{robinEulerThreshold }\varphi$ whenever $\texttt{robinEulerThreshold }\varphi < 1$.
-* `eventually_liouville_weilQuadTw_neg_transMetzlerProfile`, `exists_plateau_liouville_weilQuadTw_neg_of_gt_exp_div_two_pi`, `liouville_weilQuadTw_nonneg_of_le_fixedWidthRatio`: breakdown for $c \ge 1/2$ on `transMetzlerProfile` (hence at $c = 1$ and $c_0$), breakdown above $e/(2\pi)$ on plateaus, and survival up to `fixedWidthRatio`.
-
-### `ZeroSideStratum.lean`
-Zero-side implications and countermodel at fixed overlap ratios:
-* `unconditional_transMetzler_positivity_interval`, `weilQuad_atomicTest_nonneg_of_riemannHypothesis`: unconditional positivity on $(0, c_0]$ and all-ratio positivity under `RiemannHypothesis`.
-* `hermQuad_atomicShiftWeilGram_eq_weilQuad`, `hermNegIndex_atomicShiftWeilGram_le_of_finiteOffLine`: under `(rightZeros zetaZeroConfig).Finite`, the negative index of `atomicShiftWeilGram φ (c / N) N` is at most `(rightZeros zetaZeroConfig).ncard` uniformly across all $c > 0$ and $N \ge 1$.
-* `re_Wsummand_atomicTest_const_one_ge`: sharp linear-in-$c$ lower bound on a single real zero summand at $x \equiv 1$.
-* `isolatedPairConfig_atomic_negative_every_ratio`: on the tempered single-off-line-pair configuration `isolatedPairConfig (Real.log_pos one_lt_two) hδ hδ' 0`, the two-atom witness $x_1 = 1, x_2 = -1$ annihilates the entire vertical lattice and gives $\operatorname{Re} Z.W(f_x, f_x) < 0$ at every $c > 0$ and every $N \ge 2$.
-
-### `SuperGevreyCriticalGrowth.lean`
-Breaking below all Gevrey power schedules with one fixed Denjoy–Carleman profile:
-* `steklovDCProfile`, `contDiff_steklovDCProfile`, `steklovDCProfile_vanishesOff`, `integral_steklovDCProfile`, `integral_abs_iteratedDeriv_steklovDCProfile_le`: explicit smooth profile supported in $[-1, 1]$ with unit integral and $\|\varphi^{(q)}\|_{L^1} \le (2\,\texttt{steklovBaseSup})\cdot 12^q q! (\log(q + 3))^{2q}$, constructed as the uniform limit of iterated Steklov averages at radii $a_m = 1/(4(m + 3)(\log(m + 3))^2)$.
-* `superGevreyRatio_isLittleO_loglog_rpow`, `riemannHypothesis_iff_steklovDCProfile_nonneg_superGevrey`: for every $\beta > 2$, $c_N = (\log\log N)(\log\log\log N)^\beta = o((\log\log N)^{1+\varepsilon})$ for all $\varepsilon > 0$, and eventual atomic Weil nonnegativity of `steklovDCProfile` at ratio $c_N$ is equivalent to `RiemannHypothesis`.
-
----
-
-## 4. Traps
-
-| Trap | Truth |
+| Neighbour | Relation |
 |---|---|
-| Crossing $c = 1$ requires a new diagonal gauge on the atomic basis | Impossible by `metzlerThreshold_overlapRatio`; positivity past $c = 1$ comes from convex-combination spectral exclusion + `poleDefect` reserve |
-| Short-shift archimedean overlaps vanish per pair as $c \to 1^+$ | Individual short-shift entries near $N$ are $\Theta(1)$, not $O(c - 1)$; they vanish only against bounded-`poleDefect` modes via the $1/\log(N/3)$ top-collar mass saving |
-| Touching positivity ($c = 1$) is universal over sign twists | False: the Liouville twin already fails above $c_{\mathrm{RE}}(\varphi) < 1/2$ (down to $e/(2\pi) \approx 0.4326$) via pole-hyperplane witnesses |
-| `TemperedConfig` + `FiniteOffLine` + single-zero Nyquist bound implies eventual fixed-$c$ positivity | False: `isolatedPairConfig` with period $2\pi/\log 2$ fails at every $c > 0$ on $x_1 = 1, x_2 = -1$; $\zeta$'s growing $\frac{\log T}{2\pi}$ density is indispensable |
-| Fixed-profile Euler–Maclaurin synthesis stops at Gevrey powers $(\log\log N)^{1+\varepsilon}$ | One fixed Steklov Denjoy–Carleman profile reaches $(\log\log N)(\log\log\log N)^\beta$ for every $\beta > 2$ |
+| CriticalArithmeticCorrelationTheory | carries positivity to every fixed overlap; imports the twin breakdown for selectivity |
+| RenormalizedArithmeticPotentialTheory | owns the complete matrix; imports the prime-flip complete form and tail bound |
+| CompletedArithmeticForms | imports the prefix Schur reduction and the Young optimization (`WeilPrefixIndex`, `WeilPrefixPayment`) |
+| EffectiveArithmeticHodgeTheory | imports the Steklov super-Gevrey schedule |
+| SpacingScaleHarmonicAnalysis | supplies Gevrey receivers (lowered here to `L(log L)²`); imports the band-mass bound for its Gamma reserve |
 
----
+## 10. Big picture
 
-## 5. Open problems
+The programme fixes the two ends of the atomic route. At bounded overlap, positivity of ζ's complete form is real, unconditional, and selective: it survives past the Metzler wall where no sign gauge helps, while Liouville, every pole-free gauge, and even a single flipped prime fail at the same or smaller overlap. The selectivity is driven by exact pole matching and by the arithmetic of the first prime correlations, not by zero information, which alone cannot decide anything at fixed overlap.
 
-1. **Macroscopic overlap ratios $c \ge 2$:** how far across integer successor shells $(kn, kn \pm r)$ ($1 \le r < c$) does unconditional complete Weil positivity extend for $\zeta$ before any putative off-line zero could enter?
-2. **Finite off-line support for $\zeta$ itself at arbitrary $c \gg 1$:** does `(rightZeros zetaZeroConfig).Finite` imply eventual positivity of `completeWeilMatrix φ c N` for every fixed $c > 0$ once $\zeta$'s $\frac{\log T}{2\pi}$ on-line zero density (or prime explicit formula) decouples off-line Dirichlet polynomial vectors $(n^{\rho_0 - 1/2})_{n \le N}$ from bounded-`poleDefect` modes?
-3. **Sharp Denjoy–Carleman exponent $\beta \in (1, 2]$:** closing the gap between Euler–Maclaurin synthesis at $(\log\log N)(\log\log\log N)^\beta$ ($\beta > 2$, from $\sum (m (\log m)^2)^{-1} < \infty$) and the Denjoy–Carleman quasi-analyticity boundary $\sum (m \log m)^{-1} = \infty$.
+At growing overlap, RH is exactly a statement about the overlap `L(log L)²` (or any divergent multiple of it), and a bounded multiple sees only a window of logarithmic radius. Between the two ends sit three proved obstructions: the non-ratio prime correction becomes unbounded as soon as `c > 1`, the Gram floor collapses, and the remaining obligation after paying a prefix is a Schur complement that retains every arithmetic and archimedean term. An RH proof along this route must show positivity of that Schur complement at overlap `≈ log log N (log log log N)²`, and it must do so with an argument that fails for every twisted source.

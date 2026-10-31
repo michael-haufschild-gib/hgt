@@ -1,153 +1,185 @@
 # Conjugate-Diagonal Geometry (CDG)
 
-Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`.
+Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 61 modules. All results
+unconditional; every reading is evaluated on the actual zeta divisor with multiplicities, without simplicity, separation or
+zero-free hypotheses.
 
-**Question.** Arithmetic constructions can evaluate a positive trace on the **conjugate diagonal** $(\rho,\bar\rho)$ of the zero
-divisor; the explicit formula computes the **reflection pairing** $(\rho,1-\rho)$. Their coincidence on the zero divisor is the
-critical-line assertion. What arithmetic geometry, trace identity or selective count connects the two? Assuming their
-compatibility would assume the missing theorem.
+## 1. Motivation
 
----
+On the zero divisor there are two pairings: the conjugate diagonal $(\rho,\bar\rho)$, which gives the positive **collided form**
+$D(f)=\sum m_\rho|\hat f(\rho)|^2$, and the reflection graph $(\rho,1-\rho)$, which gives the Weil form computed by the explicit
+formula. Their coincidence is the critical-line statement (APol capacity identity $\Re W=D-\Delta$). CDG studies the collided side
+as an object of its own: its translation defect measures off-line depth, and the programme shows that $D$, every depth moment,
+local zero counts and horizontal collision charges are computed by positive integrals of literal arithmetic data — theta
+amplitudes and their first moments — with explicit error certificates. The comparison with the reflection side stays open.
 
-## 1. Why the conjugate diagonal
+## 2. Objects
 
-With $\rho=\tfrac12+\delta_\rho+i\gamma_\rho$, multiplicity $m_\rho$, centred transform $\hat f$:
-- the **collided form** $D(f)=\sum m_\rho|\hat f(\rho)|^2\ge0$ by construction;
-- the **Weil form** $W(f)$ pairs transforms by functional-equation reflection and is computed by the explicit formula.
+| Object | Lean | Meaning |
+|---|---|---|
+| Depth kernel | `depthKernel` | $k(L,d)=2\cosh(2dL)-2=4\sinh^2(dL)$ |
+| Compact tests | `CompactTest`, `sourceTranslate`, `sourceTwist` | $C^2$ compactly supported $f$; translation; ordinate modulation |
+| Depth, weight | `zetaDepth`, `zetaWeight` | $\delta_\rho=\Re\rho-\frac12$; $m_\rho|\hat f(\rho)|^2$ |
+| Hecke defect | `heckeDefect`, `depthTail`, `depthSecondMoment` | $E(f,L)=\sum w_\rho k(L,\delta_\rho)$ |
+| Depth dispersion | `depthDispersion` | $D(E(2L)-4E(L))-E(L)^2$ |
+| Source kernel | `sourceDepthKernel` | $|\hat f(z)|^2k(L,\Re z-\frac12)^j$ on the spectral plane |
+| Cutoffs | `sourceCutoff`, `stripSourceCutoff`, `sourceLocalCutoff` | radial exhaustion; fixed-width strip exhaustion; local bump at $(c,r)$ |
+| Regularized ξ potential | `xiLogPotential`, `xiCurvatureDensity` | $\frac12\log(|\xi|^2+\varepsilon)$; $\varepsilon|\xi'|^2/(|\xi|^2+\varepsilon)^2\ge0$ |
+| Current and trace | `xiCurrentPairing`, `zetaSourceTrace` | $(2\pi)^{-1}\int\log|\xi|\,\Delta\varphi$; $\sum m_\rho\varphi(\rho)$ |
+| Universal weight | `universalSourceWeight` | $W(z)=e^{(\Re z)^2}/(1+(\Im z)^2)^2$ |
+| Regulator schedules | `commonSourceIndex`, `explicitSourceRegulator`, `polynomialSourceRegulator` | error-tested index; $e^{-e^{(n+1)^4}c_n}$; $e^{-M(n+1)^{20}}$ |
+| Theta amplitudes | `thetaSourceAmplitude`, `thetaSourceFirstMoment`, `thetaSourceCurvature` | $\int\theta e^{(1/2-z)x}=\xi(z)$; first moment $=-\xi'$ |
+| Finite theta source | `finiteThetaSourcePotential`, `finiteThetaSourceCurvature`, `explicitThetaIntegerCutoff`, `polynomialThetaIntegerCutoff` | $N$ integer theta summands |
+| Readings | `commonSourceReading`, `explicitSourceReading`, `finiteThetaSourceReading`, `polynomialThetaSourceReading`, `polynomialThetaLocalReading` | positive integrals cutoff·test·curvature |
+| Reference tail | `sourceReferenceTail` | $\sum(1-\chi_n)m_\rho/(1+|\gamma(\rho)|^2)$ |
+| Canonical log mass | `xiCanonicalLogMass` | planar log potential of the canonical divisor |
+| Collision kernel | `horizontalCollisionGaussian`, `collisionWindowPairTest`, `finiteThetaCollisionReading` | $e^{-q\Delta y^2}(1-e^{-q\Delta x^2})$ |
+| Forcing cost | `companionCost` | majorant of the companion-forcing theorem |
 
-Capacity identity (APol): $\Re W=D-\Delta$, $\Delta\ge0$ the reflection disagreement. Positivity of $D$ does not bound $\Delta$; an explicit
-formula for $W$ does not make it positive.
+## 3. Language
 
-**Symmetric Hecke defect.** Centred translation $T_L$ multiplies $\hat f$ by $e^{L(\rho-1/2)}$, so
-$D(T_Lf)+D(T_{-L}f)-2D(f)=\sum m_\rho(2\cosh(2\delta_\rho L)-2)|\hat f(\rho)|^2$: a positive measure of off-line depth; at $L\propto\log T$ a weighted
-zero-density statistic; vanishing for a separating class is RH. An arithmetic *evaluation or upper bound* of it is a
-substantive target even short of vanishing.
+- **Collided / reflection pairing**: $(\rho,\bar\rho)$ vs $(\rho,1-\rho)$; conjugation, $s\mapsto1-s$ and $s\mapsto1-\bar s$ are kept distinct.
+- **Source reading**: positive integral of a test against an arithmetic curvature density; defined without zero coordinates.
+- **Window**: ordinate $|\tau|\le n/2$ and Hecke/physical aperture $a+j|L|\le c\log(n+1)$.
+- **Current error / tail error**: Green-identity error inside the cutoff vs omitted divisor mass outside it.
+- **Stage**: cutoff index $n$ chosen before test, order and motion.
+- **Computed vs posited**: a formula must evaluate the object without its desired sign.
 
-**Arithmetic source currents.** Literal finite theta prefixes give entire amplitudes $A_N$ and positive densities
-$\eta|A_N'|^2/(\pi(|A_N|^2+\eta)^2)$; with prescribed prefixes, regulators and cutoffs they recover the actual multiplicity-weighted
-collided trace and its depth moments. So $D$ and the Hecke defect *are* computed from arithmetic data (in the limit); the
-comparison with the reflection pairing remains the capacity problem.
+## 4. Mechanisms
 
----
+**A. Defect calculus**
+1. Centred translation multiplies $\hat f(\rho)$ by $e^{L(\rho-1/2)}$ ⇒ $D(T_Lf)+D(T_{-L}f)-2D(f)=\sum w_\rho k(L,\delta_\rho)$.
+2. $k\ge4L^2d^2$, $k(2L)=4k+k^2$, Chebyshev tail $k(L,b)\cdot\text{tail}\le E$; pairwise variance identity for two scales.
 
-## 2. Objects and conventions
+**B. Source currents**
+3. Poincaré–Lelong for entire ξ: $\int\log|\xi|\Delta\varphi=2\pi\sum m_\rho\varphi(\rho)$; Green identity needs compact support only on the test.
+4. Regularization $\frac12\log(|\xi|^2+\varepsilon)$ has Laplacian $2\varepsilon|\xi'|^2/(|\xi|^2+\varepsilon)^2$; local $L^1$ convergence from log-integrability.
+5. Theta identities: bilateral Laplace transform of the theta source is ξ, its first moment is $-\xi'$.
+6. Positivity of the density: readings are monotone, linear, dominated ⇒ one weight $W$ fixes the mass and recovers every dominated test.
 
-Spectral surface with independent coordinates $(s,t)$: conjugate diagonal $(\rho,\bar\rho)$, reflection graph $(\rho,1-\rho)$. Keep
-conjugation, holomorphic reflection $s\mapsto1-s$ and Rosati reflection $s\mapsto1-\bar s$ distinct.
+**C. Quantitative control**
+7. Second-translation recurrence raises moment order; Laplacians of moments bounded by $4^j$ times a square envelope.
+8. Cauchy on the unit circle: values and derivatives of moved transforms; on a fixed strip the ordinate costs nothing.
+9. Error splits: current error $\le\frac12B\cdot$(local log error), tail $\le C\cdot$sourceReferenceTail.
+10. Canonical factorization + planar log kernels: $\int_{|z|\le n+2}\log^2|\xi|\le C(n+1)^6$ ⇒ prescribed regulators.
+11. Finite theta prefix: potential stability $|\Delta\log|\le$ tail·envelope²$e^{-(N+1)^2}/\eta$; prefix $N$ chosen so $(N+1)^2$ beats the regulator scale.
+12. Reference tail ≤ Lorentzian zero mass ≤ $(16/n)\Re(\xi'/\xi)$ at width point ≤ $(16/n)(C+\log(n+4))$.
+13. Regularity: a $C^{k+2}$ test pays Hecke aperture $(2k+2)\log(n+1)$.
 
-| Object | Lean (declaration or module) |
+**D. Localization and collisions**
+14. Bumps between disc indicators bracket enclosed multiplicity; integer multiplicity gives a two-radius threshold detector.
+15. Gaussian collision kernel → indicator of distinct points with equal ordinate; positivity telescopes separate row/column
+    errors into a pair-current error; rounding recovers the integer charge.
+
+## 5. Pillar theorems
+
+| Theorem | Lean | Status |
+|---|---|---|
+| Hecke defect = symmetric second difference of $D$ | `heckeDefect_eq_second_difference` | proved |
+| Defect controls tails and the second moment; doubling law | `depthKernel_mul_tail_le`, `four_mul_secondMoment_le`, `heckeDefect_double` | proved |
+| Two scales read depth variance; equality ⇔ one absolute depth | `heckeDefect_sq_le_two_scale`, `depthDispersion_eq_zero_iff` | proved |
+| ξ current = divisor trace; exhaustion recovers $D$ and $E$ | `sourceCurrentReading_eq_trace`, `tendsto_sourceCurrentReading_collided`, `tendsto_sourceCurrentReading_heckeDefect` | proved |
+| Positive source metric = collided form; first moment = defect | `xiSourceMetric_eq_collided`, `xiSourceMoment_one_eq_heckeDefect` | proved |
+| One weight dominates every compact transform and is summable on the divisor | `normSq_tr_le_universalSourceWeight`, `summable_universalSourceWeight` | proved |
+| One schedule recovers all dominated tests, norms and moments | `tendsto_commonSourceReading_of_dominated`, `tendsto_commonSourceReading_depth_moment` | proved |
+| Literal theta integrals recover all depth moments | `thetaSourceAmplitude_eq_xi`, `thetaSourceFirstMoment_eq_neg_deriv_xi`, `tendsto_thetaSourceMomentReading` | proved |
+| Local trace brackets disc multiplicity | `sourceLocalTrace_mass_sandwich` | proved |
+| Uniform moving-window recovery (common / explicit / theta) | `commonSourceReading_uniform_moving_moments`, `explicitSourceReading_uniform_moving_moments`, `thetaSource_uniform_moving_moments` | proved |
+| Polynomial log-square bound for ξ | `exists_xi_log_square_polynomial_bound` | proved |
+| Explicit regulator local error $\le(\pi(n+2)^2/2+8C(n+1)^6)e^{-(n+1)^4}$ | `exists_explicitSourceLocalError_bound` | proved |
+| Reference tail $\le(16/n)(C+\log(n+4))$ | `sourceReferenceTail_le_log_div` | proved |
+| Arithmetic error certificate for theta readings | `exists_explicitThetaSource_logarithmic_error_bound` | proved |
+| Finite theta prefixes recover every compact current | `tendsto_finiteThetaSourceReading_compact`, `finiteThetaSource_uniform_moving_moments` | proved |
+| One stage for all normalized tests in a growing aperture | `exists_finiteThetaSource_aperture_error_bound`, `polynomialThetaSource_uniform_test_aperture_moments` | proved |
+| Regularity pays logarithmic apertures; smooth tests admit all | `source_regularity_moving_trace_tail_le`, `thetaSource_uniform_smooth_log_windows` | proved |
+| Uniform zero detector on discs of radius $(16(n+1)^6)^{-1}$ | `exists_polynomialThetaLocalReading_error_bound`, `polynomialThetaLocalReading_uniform_zero_detector` | proved |
+| Integer theta prefixes read the horizontal collision charge exactly | `tendsto_finiteThetaCollisionReading`, `eventually_floor_finiteThetaCollisionReading` | proved |
+| Conductor horizon and companion forcing are disjoint for $0\le\delta\le\frac12$ | `forcing_requires_exponential_aperture`, `conductor_forcing_disjoint` | proved |
+
+## 6. Tools
+
+**Developed**
+- Kernel and Green calculus: `depthKernel_double`, `laplacian_radialLogPotential`, `laplacian_real_holomorphic_comp`,
+  `source_green_identity`, `laplacian_normSq_holomorphic`, `source_laplacian_mul`.
+- Currents: `xi_realDivisorPairing_eq_carrier`, `xiCurrentPairing_eq_trace`, `tendsto_integral_xiCurvatureDensity`,
+  `abs_xiCurvatureReading_sub_current_le_of_pos`, `tendsto_xiLocalLogError`.
+- Cutoffs: `stripSourceCutoff_eq_one_of_strip_im_le`, `abs_stripSourceCutoff_laplacian_le`, `abs_sourceLocalCutoff_laplacian_le`,
+  `stripSourceCutoff_mul_local_eq`.
+- Transform bounds: `norm_tr_le_sourceGaussian`, `shiftedSourceTransform_disc_bound`, `shiftedSourceTransform_strip_bound`,
+  `normSq_tr_strip_le_sourceTestSize`, `norm_tr_le_sourceRegularitySize`.
+- Moments: `sourceDepthKernel_second_difference`, `abs_laplacian_cutoff_moving_moment_le`,
+  `abs_laplacian_stripCutoff_aperture_moment_le_global`.
+- Tails: `sourceDepthKernel_moving_tail_bound`, `tendsto_sourceReferenceTail`, `sourceAperture_moving_trace_tail_le`,
+  `stripSource_aperture_moving_trace_tail_le`.
+- ξ logarithm: `exists_abs_log_norm_gaussianXi_canonical_bound`, `xi_log_sq_canonical_integrable_bound`.
+- Finite theta: `abs_finiteThetaSourcePotential_sub_xi_le`, `abs_finiteThetaSourcePotential_sub_xi_le_strip`,
+  `exists_uniform_finiteTheta_compact_current_error`, `tendsto_thetaTestStage_error`,
+  `abs_finiteThetaProductSourceReading_sub_finitePair_le`, `exists_finiteTheta_pair_current_error`.
+- Collisions: `horizontalCollisionGaussian_error`, `exists_xiWindowGaussianPairSum_error`, `finiteThetaCollisionReading_error`.
+
+**To build**
+- A prime-side upper bound for the Hecke defect at $L\asymp\log T$ (the readings compute it, they do not bound it).
+- An arithmetic correspondence acting as conjugation on the divisor (Frobenius at infinity), linking $(\rho,\bar\rho)$ to $(\rho,1-\rho)$.
+- A structural bound $\Delta\le D$ uniform in depth and aperture.
+- Bounds on the collision charge (below two) from the finite theta reading.
+- Selection estimates at the zero spacing; exceptional-set control for the odd detector at zero ordinates.
+
+## 7. Open questions
+
+1. Is there a prime-side estimate of the Hecke defect at logarithmic scale, i.e. a zero-density statement read through $E$?
+2. What arithmetic structure realizes conjugation on the zero divisor, so that the collided form becomes a Weil form?
+3. Can the finite theta collision reading be bounded independently of the divisor, giving simplicity-type information?
+4. Can the zero detector be pushed below the zero spacing (radius $\ll1/\log T$) with polynomial resources?
+5. Which positive survivor remains between the conductor horizon and the forcing aperture?
+6. Does two-scale dispersion rigidity combine with another scale to force depth zero?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| Hecke defect, depth kernel, depth dispersion | `heckeDefect`, `depthKernel`, `depthDispersion_eq_zero_iff` |
-| Xi source current and moments | module `XiSourceCurrent`; `xiSourceMoment_one_eq_heckeDefect` |
-| Finite / polynomial theta source readings | `finiteThetaSourceReading`, `polynomialThetaSourceReading` |
-| Common source regulator; fixed-strip exhaustion | modules `CommonSourceRegulator`, `StripSourceCutoff` |
-| Local readings on shrinking discs | `exists_polynomialThetaLocalReading_error_bound` |
-| Conductor–forcing gap; zeta depth distribution | modules `TheConductorForcingGap`, `ZetaDepthDistribution` |
+| A positive sum of squares is Hecke invariant | Invariance under translation is exactly vanishing of the defect, i.e. RH for the tested zeros |
+| Computing $D$ arithmetically bounds $\Delta$ | The readings recover the collided side only |
+| Two Hecke scales force zero depth | Equality means one absolute depth shell, not depth zero |
+| A spectral definition of a norm is an arithmetic metric | It must be evaluated from arithmetic data, as the theta readings do |
+| An existence theorem with the desired sign as a field is progress | Circular |
+| Finite certificates justify cofinal limits | Each limit here carries its own error certificate and tail bound |
+| The explicit formula applies to antiholomorphic arguments | Needs new justification; the collided form is not holomorphic in the test |
+| Companion forcing reaches the conductor horizon | Disjoint at every height for $0\le\delta\le\frac12$ |
+| Zero detection needs isolated zeros | Bracketing by integer multiplicity needs no separation |
 
-Also used: two-variable kernels and diagonal traces; the correspondence algebra (normalized Hecke graphs, archimedean flow,
-localizers $\sigma_\gamma$); prime gauge torus and $(+1,\times p)$; arithmetic counts and quadratic limits; completed and height-coupled
-positive systems; escape measures and phase kernels.
+## 9. Context
 
-A spectral definition of a norm is an object, not an arithmetic computation of it. A model identity is a calibration, not
-a theorem about the zeta divisor.
-
-| Distinction | Consequence |
+| Uses | Modules |
 |---|---|
-| Positive / equivariant | Either can hold without the other |
-| Collided / Rosati | Conjugate and reflection pairings need not coincide |
-| Computed / posited | A formula must evaluate the object without its desired sign |
-| Hyperbolic / elliptic / unipotent | Local type determines what positivity sees |
-| Resonant / localizing | A special scale is not a correspondence isolating an unknown zero |
-| Even / odd sector | Even sector positive at off-line pairs; odd sector can detect them |
-| Gauge invariant / charged | Orbit information does not select the arithmetic point |
-| Count / selective count | A positive quadratic limit can be identical on every fibre |
-| Outward / inward deformation | Positivity can split a central double zero without its reverse |
-| Classification / exclusion | Describing an escape state does not rule it out |
-| Average / individual zero | Exceptional sets must be controlled at the selection scale |
+| RHTower | 17 (Poincaré–Lelong data, theta cusp amplitude bounds, Laplace/Lorentzian zero mass, Gaussian ξ growth, collision charge, deep-zero Hodge index) |
+| HTGeometry | 9 (complex Laplacian, Green identity, planar log kernels, regularized log stability, pairwise variance) |
+| ArithmeticPolarization | 2 (collided form, translation, elliptic localization) |
+| ArithmeticCastelnuovoSeveri | 1 (zeta carrier vs ξ-zero copies) |
 
----
-
-## 3. Mechanisms
-
-1. **Second-difference calculus** of $D$ under Hecke translation: the defect is a depth moment.
-2. **Source currents from theta prefixes**: entire amplitudes, positive regularized densities, Green testing; integer truncation
-   and logarithmic regularization separated.
-3. **Fixed-strip exhaustion**: one bump stretched only in ordinate; Cauchy control on a fixed vertical strip is
-   ordinate-independent, so every depth moment costs only $e^{\text{(support + Hecke displacement)}}$.
-4. **Regularity pays the tail**: a compact test with $r$ derivatives pays the logarithmic window of width $(2r-2)\log(n+1)$; the
-   omitted divisor tail is paid by the summable xi reference density.
-5. **Polynomial schedules**: one integer majorizing bump derivatives fixes regulator scale and number of theta atoms, both
-   polynomial in height, with no zeros used.
-6. **Local bracketing**: bumps between concentric disc indicators bracket actual divisor mass with multiplicity; integer
-   multiplicity turns a fixed threshold into a two-radius detector.
-
----
-
-## 4. Pillar theorems
-
-1. **Hecke defect = second difference = first source moment** (`heckeDefect_eq_second_difference`, `xiSourceMoment_one_eq_heckeDefect`).
-2. **Source readings converge to the Hecke defect** (`tendsto_sourceCurrentReading_heckeDefect`, `tendsto_commonSourceReading_heckeDefect`).
-3. **Polynomial integer-prefix theta sources recover all normalized tests** in a growing physical and Hecke aperture, with
-   multiplicities and no critical-line or separation assumption (`polynomialThetaSource_uniform_test_aperture_moments`,
-   `polynomialThetaSourceReading_error_le`).
-4. **Uniform local readings** bracket shrinking-disc divisor counts in a growing height window (`exists_polynomialThetaLocalReading_error_bound`).
-5. **Conductor–forcing gap** made precise (module `TheConductorForcingGap`); two-scale depth rigidity (`TwoScaleDepthRigidity`).
-
----
-
-## 5. Traps
-
-- A positive sum of squares does not establish Hecke invariance.
-- A norm obtained by declaring spectral vectors orthogonal is not an arithmetic metric.
-- An existence theorem whose object contains the desired sign as a field is circular.
-- A one-variable explicit formula cannot be applied to an antiholomorphic argument without new justification.
-- A finite trace identity does not justify an infinite trace; a finite certificate does not justify a cofinal limit.
-- Computing $D$ arithmetically is not bounding $\Delta$: the readings recover the collided side only.
-- The conductor horizon and the forcing aperture are distinct; neither theorem extrapolates into the gap.
-
----
-
-## 6. Open problems (the eleven questions)
-
-| Question | Required advance |
+| Used by | Modules |
 |---|---|
-| Frobenius at infinity? | An arithmetic correspondence acting as conjugation on the zero divisor |
-| What computes $D$? | Done in the limit by source currents; open: a prime-side upper bound for the Hecke defect at $L\asymp\log T$ |
-| What selects the zeta fibre? | A fibre-dependent counting polarization equal to the Rosati form there |
-| Where does section rank grow? | Section spaces escaping rank-one and product-lattice collapse |
-| Elliptic localization across the horizon? | Odd-detector sign laws at zero ordinates with exceptional-set control |
-| Non-archimedean charge? | Positivity whose separating margin is successor holonomy |
-| What pays the capacity? | A structural proof of $\Delta\le D$, uniform in depth and aperture |
-| Is the coupled class bounded at the centre? | Central-order ceilings (BGG) |
-| Where does escape mass go? | Completeness when the real-part supremum is unattained, incl. infinite-height mass |
-| How does an average select a zero? | Selection estimates at the zero spacing |
-| What supplies the base? | A tensor structure with loss independent of the power |
+| RenormalizedBiarithmeticGeometry | 3 (depth distribution, two-scale rigidity, finite theta metric) |
+| ArithmeticElectrostatics, HilbertianExplicitFormulas | 1 each (depth distribution; finite theta readings) |
+| MainTheorems | umbrella import |
 
-Directions: **defect and density** (relate the Hecke defect to depth distributions; test two-variable or non-holomorphic
-carriers such as truncated Eisenstein norms, proving they compute the intended trace); **elliptic forcing** (make the
-conductor/forcing gap precise; exceptional-set estimates for the odd detector at actual zero ordinates); **successor charge**
-(when one- and two-prime flipped twins lose positivity, and how the margin deteriorates with aperture).
-
-## 7. Tools to build
-
-Conjugate-diagonal explicit formulas; arithmetic Hermitian correspondence spaces with computed flow laws; selective
-counting polarizations; elliptic localization beyond the conductor horizon; non-archimedean charged positivity;
-central-order ceilings; oscillatory capacity bounds; selection estimates at zero spacing.
-
-## 8. Place in the research and contribution standard
-
-| Programme | Interface |
+| Neighbour | Relation |
 |---|---|
-| ArithmeticPolarization | The two forms, capacity identity, Hecke defect, collision, localizers |
-| ArithmeticCastelnuovoSeveri, ArithmeticOrientationGeometry | Intersection forms, Hodge index; orbit forms, orientation indices |
-| ArithmeticCorrespondencePositivity, ArithmeticPositiveDuality | Weil layers; capacity and source selectivity |
-| MultiplicativePositivityGeometry, StripBochnerWeilForcing | One-variable rigidity, anchors, forcing |
-| ArithmeticCorrelationGeometry, BiarithmeticGaugeGeometry | Gauge orbit/point, successor holonomy, twins |
-| ArithmeticEffectivityTheory | Counts, quadratic limits, soft vs selective polarization |
-| BezoutValuationIncidence | Single-scale theta-prefix transfer and VK ceiling |
+| ArithmeticPolarization | defines the two pairings, capacity identity and Hecke defect; CDG computes the collided side |
+| BiarithmeticGaugeGeometry | central ceilings and positive deformations on the coupled class |
+| ArithmeticEffectivityTheory | soft vs selective counting; the readings are counts that see the divisor |
+| RenormalizedBiarithmeticGeometry | continues the Hecke moment problem and dyadic amplification of the defect |
+| ArithmeticElectrostatics | reads the Hecke defect as a moment of inertia |
+| HilbertianExplicitFormulas | uses finite theta readings for the resolvent depth |
 
-CDG owns constructions involving both spectral coordinates and their arithmetic interpretation. A contribution names the
-positive and spectral sides, local type, gauge charge, parameter range and arithmetic content; reports on the battery
-(pole-order relaxations, planted quartets, Beurling systems, golden datum, Liouville/sign-flipped/dominated twins,
-height-coupled deformations, nonzero theta characteristics, escape models); and records the positive survivor of every
-negative result. Definitions and equivalences are infrastructure, not progress on their endpoints.
+## 10. Big picture
+
+CDG settles the question "can the conjugate-diagonal side be computed from arithmetic?" in the affirmative and with
+quantitative force: the collided form, every depth moment, the Hecke defect, local zero counts on discs shrinking polynomially
+with height, and the horizontal collision charge are all limits of positive integrals of literal theta data, with polynomial
+resources and explicit error certificates, uniformly over moving windows and growing apertures.
+
+What this tells the RH effort is where the difficulty is not. Reading the divisor is solved; the depth information is
+present in computable positive quantities. What is missing is a mechanism that forces those quantities to take their
+critical-line values — an upper bound for the Hecke defect from the prime side, or a structure identifying the conjugate
+pairing with the reflection pairing. Positivity of the collided side is free; its translation invariance is RH. The
+conductor-forcing gap and two-scale shell rigidity show that local forcing and moment comparisons alone do not close it.

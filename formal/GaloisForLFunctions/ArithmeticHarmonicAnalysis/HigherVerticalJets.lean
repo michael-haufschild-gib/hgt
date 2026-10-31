@@ -2,7 +2,8 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlgebraicVerticalFirstJets
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.EulerOperatorsLowerMultiplicity
 import Mathlib.RingTheory.MvPolynomial.Ideal
 
-/-!+# Higher logarithmic-flow jets
+/-!
+# Higher logarithmic-flow jets
 
 The weighted Euler operator gives every scalar derivative of a polynomial
 along the prime-logarithmic flow. Leibniz transports point multiplicity to
@@ -24,8 +25,8 @@ theorem hasDerivAt_primeLogTrace_at {n : ℕ} (p : Fin n → ℕ)
   have hg (i : Fin n) :
       HasDerivAt (fun z : ℂ => x i * Complex.exp (z * (Real.log (p i) : ℂ)))
         (x i * Complex.exp (s * (Real.log (p i) : ℂ)) * (Real.log (p i) : ℂ)) s := by
-    convert (((hasDerivAt_id s).mul_const (Real.log (p i) : ℂ)).cexp.const_mul (x i))
-      using 1 <;> ring
+    simpa only [id_eq, one_mul, mul_assoc] using
+      (((hasDerivAt_id s).mul_const (Real.log (p i) : ℂ)).cexp.const_mul (x i))
   have h := HTGeometry.hasDerivAt_mvPolynomial_eval_curve_complex F
     (fun i z => x i * Complex.exp (z * (Real.log (p i) : ℂ)))
     (fun i => x i * Complex.exp (s * (Real.log (p i) : ℂ)) * (Real.log (p i) : ℂ)) s hg

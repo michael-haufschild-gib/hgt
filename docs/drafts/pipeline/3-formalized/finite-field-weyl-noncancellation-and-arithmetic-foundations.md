@@ -4,7 +4,7 @@
 - **Stage:** 3-formalized
 - **Type:** CLASSICAL BRIDGE / FORMALIZATION
 - **Source:** [Finite-field zeta pole transfer](finite-field-zeta-pole-transfer.md).
-- **Deferred target:** [Arithmetic Eisenstein unfolding](../0-backlog/finite-field-eisenstein-unfolding.md).
+- **Remaining target:** [Arithmetic Eisenstein unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 
 ## Exact completed result
 

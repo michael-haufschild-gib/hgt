@@ -1,402 +1,174 @@
-# Arithmetic of Square-Root Precision (ASRP)
+# ArithmeticOfSquareRootPrecision (ASRP)
 
-Namespace `GaloisForLFunctions.ArithmeticOfSquareRootPrecision`; umbrella `ArithmeticOfSquareRootPrecision.lean`.
+Namespace `GaloisForLFunctions.ArithmeticOfSquareRootPrecision`; umbrella `ArithmeticOfSquareRootPrecision.lean`; 24 modules. Every theorem is unconditional; RH appears only inside equivalences. 7 modules end with `#print axioms` lines.
 
-**Question.** The corpus has reduced RH to one count, $\psi(x)-x=O(\sqrt x\log^2x)$, and has shown
-that no estimate stable under relative error $o(1)$ can produce it. Which statements about the
-prime-side source can carry information at square-root precision at all? Which identities and
-integers over $\mathbb Z$ carry it, how much of it can integrality extract, and where exactly is it
-lost in the classical methods?
+## 1. Motivation
 
-ASRP is the arithmetic of **precision**. Basic object: a *weight* $a:\mathbb N\to\mathbb R$ (a
-prime-side source; $\Lambda$ is the arithmetic one) with partial sums $A(x)=\sum_{n\le x}a(n)$.
-Basic invariant: the **precision class** of a statement, the set of perturbations of the weight it
-survives. Basic integer: the **horizon period** $d_N=\operatorname{lcm}(1,\dots,N)$, whose log-order
-is $\psi(N)$. Everything is unconditional; RH appears only inside equivalences.
+The corpus reduces RH to one count, `ψ(x) − x = O(√x log²x)`. ASRP asks which statements about a prime-side weight can carry information at square-root precision, how much integrality over `ℤ` extracts, and where classical methods lose precision. The basic invariant is the precision class of a statement, meaning the set of perturbations of the weight it survives. The basic integer is the horizon period `lcm(1, …, N)`, whose logarithm is `ψ(N)`. Over `𝔽_q` the sign is a point count and the count is an integer. Over `ℤ` the integers are log-orders, and the question is whether integrality reaches beyond linear precision.
 
----
+## 2. Objects
 
-## 1. Place in the research
+| Object | Lean | Meaning |
+|---|---|---|
+| Weight, partial sum | `partialSum a x` | `A(x) = Σ_{1≤n≤x} a(n)` |
+| Square-root scale | `sqrtScale` | `√x log²x` |
+| Precision class | `PrecisionClass φ`, `sqrtClass` | perturbations with partial sums `O(φ)`; `𝒬` for `√x log²x` |
+| Count and halves | `Count`, `UpperCount`, `LowerCount` | `A(x) − x = O(√x log²x)`, one-sided versions |
+| Precision exponent | `precisionExponent a` | `inf{θ : A(x) − x = O(x^θ)}` |
+| Battery weights | `vonMangoldtWeight`, `liouvilleWeight`, `liouvilleMixture t`, `powerWeight η`, `towerWeight p` | `Λ`, `λΛ`, `(1−t)Λ + tλΛ`, `n^{−η}`, `Λ·1_{p^ℕ}` |
+| Deciding-input tests | `liouvilleTwist`, `liouvilleTail` | `λ·a`; `a` on `[0, X]`, `λΛ` beyond |
+| Laws of a weight | `PrimeNumberLaw`, `ShortIntervalLaw α`, `ErrorLaw E` | `A(x)/x → 1`; `(A(x+x^α) − A(x))/x^α → 1`; `A(x) − x = O(E)` |
+| Nair functional | `nairIntegral P`, `horizonPoly` | `∫₀¹P` for `P ∈ ℤ[X]` |
+| Integrality halves | `SiegelHalf φ`, `LiouvilleHalf φ`, `IdealSiegelHalf Q φ`, `IdealLiouvilleHalf Q φ` | small positive Nair integrals exist; every positive one is large; restricted to the ideal `(Q)` |
+| Admissible scale | `AdmissibleScale φ` | monotone, nonnegative, eventually `≥ 1` |
+| Integer Dirichlet polynomial | `intDirichlet a σ` | `Σ_{i<N} a_i (i+1)^{−σ}` |
+| Twin torsion | `twinTorsion n`, `evenVonMangoldt` | `lcm(1..n)/lcm(1..⌊√n⌋)²`; `Λ` on even `Ω` |
+| Chebyshev transform | `chebyshevTransform a n`, `inversionOp E x`, `weightFun` | `Σ_{d≤n} a(d)⌊n/d⌋`; `Σ_{k≤x} μ(k)E(x/k)` |
+| Mertens, Möbius moments | `mertens`, `moebiusMoment`, `logMoebiusMoment` | `M(N)`; `Σ μ(k)/k`; `Σ μ(k) log k/k` |
+| Stirling pieces | `stirlingMain`, `stirlingMonotone`, `stirlingSawtooth`, `stirlingStep` | `t log t − t`; monotone part; sawtooth |
+| Curve precision | `CountAtPrecision D θ`, `LowerCountAtPrecision`, `UpperCountAtPrecision` | `|N_k − q^k − 1| ≤ Cq^{kθ}` and halves |
+| Gauges | `signGauge F`, `flippedMass F`, `torusGauge t`, `gaugeDistance t` | sign flips on a prime set; `θ_F`; cosine rotation; `Σ(1 − cos 2πt_p) log p` |
+| Complex gauges | `ComplexCount`, `complexTorusGauge`, `gaugeCurrent`, `balancedGauge`, `conjugatedGauge`, `meanGaugeCurrent` | complex counts, sine currents, Euler-factor conjugation |
+| Tower positivity | `TowerIndexZero p λ` | every tower kernel along `p` has index zero |
+| Aperture positivity | `AperturePositive A λ` | Weil positivity for tests supported in `[−A, A]` |
+| Successor | `successorWeight` | the weight `1` |
 
-Every route in the corpus ends at the same wall: a deciding input must be **parity-breaking**
-(fail for the Liouville twin $\lambda\Lambda$), **square-root precise** (fail for
-$\Lambda+\varepsilon n^{-\eta}$, $\eta<\tfrac12$), and of **unbounded aperture** (not determined by a
-finite window). The programmes that met this wall stated it as a principle or a test battery. ASRP
-makes it a theory: precision classes, the battery as a classification, and the integrality face of
-the count. It sits one level below the index theory of the Weil kernel, where signs come from
-integers.
+External: `zeroReSup` (`Θ = sup Re ρ`), `exists_abs_chebyshevPsi_sub_le_rpow`, `frequently_rpow_lt_chebyshevPsi_sub`, `mertens_omega_pm_sqrt`, `Matveev.effectiveBakerBound_holds`, `weilFullFunctional`, `WeilPositiveFull` (RHTower); `CurveDatum`, `goldenDatum` (ArithmeticCastelnuovoSeveri); `log_inv_integral_le_psi`, `exists_int_eq_lcmUpto_mul_integral`, `hyperellipticDatum` (ArithmeticEffectivityTheory); `towerKernel`, `forall_negIndex_towerKernel_eq_zero_iff` (HeckeKreinToeplitz); `re_weilFullFunctional_ge_of_aperture_le_threeTenths` (SquareRootThreshold).
 
-| Programme | Interface |
-|---|---|
-| ArithmeticEffectivityTheory | Log-torsion $\psi(N)=\log\lvert\mathbb Z/d_N\rvert$, Nair's floor (`log_inv_integral_le_psi`); ASRP proves the floor is attained and computes its exact precision |
-| HeckeKreinToeplitz, ArithmeticKreinLangerTheory | The global law is the one-sided count (`global_law_count`); index zero on a tower selects $\Lambda$ (`forall_negIndex_towerKernel_eq_zero_iff`); Stepanov compressions. ASRP supplies the precision calculus those principles presuppose, proves that *each* half of the count is RH, and that tower positivity is precision-exact |
-| SelectiveMultiscaleArithmeticPositivity | Precision rigidity of tower positivity (`not_towerPositive_and_perturbed`); ASRP proves the count-level analogue with the sharp threshold |
-| ArithmeticCorrelationGeometry, BiarithmeticGaugeGeometry | The gauge torus; ASRP computes the count's stabilizer in it (sign and torus gauges) |
-| ArithmeticCorrespondencePositivity | "On nonnegative tests $\zeta$ is the worst twin"; its count-level form is the monotonicity of the lower half |
-| SquareRootThreshold | The zero width $\Theta$; ASRP identifies it with the precision exponent and with the integrality exponent |
-| ArithmeticCastelnuovoSeveri, ArithmeticLorentzianGeometry | Curve data, golden datum, one-sided power-sum bounds (`norm_le_of_re_sum_pow_le`); ASRP's calibration of precision exponents |
-| ConjugateDiagonalGeometry, RenormalizedArithmeticPotentialTheory, ArithmeticIntersectionTheory | The Hecke defect, the covariant regulator, torsion orbits: targets whose precision class is open (§9) |
-| `RHTower` | Von Koch, the exponent law $\Theta=$ order of $\psi(x)-x$ (`chebyshevPsi_sub_exponent_law`), Littlewood, PNT, Guth–Maynard short intervals; Littlewood's Mertens criterion and $M(x)=\Omega_\pm(\sqrt x)$; the effective Baker bound for prime logarithms (`Matveev.effectiveBakerBound_holds`) and the Liouville separation at the Liouville point (`LiouvillePointReachability`) |
-| `HTGeometry` | Real zeros of exponential polynomials (`card_lt_of_expPoly_eq_zero`) |
+## 3. Language
 
----
-
-## 2. Why
-
-**Over $\mathbb F_q$ the sign is a count, and the count is an integer.** For a curve,
-$N_m=q^m+1-q^{m/2}\sum_i\beta_i^m$ counts a finite set; Weil is $|N_m-q^m-1|\le2g\,q^{m/2}$; Stepanov
-proves the one-sided half by integrality, with an auxiliary polynomial whose coefficients contain
-$x^q$, invisible to differentiation and equal to $x$ on $\mathbb F_q$.
-
-**Over $\mathbb Z$ the integers are log-orders.** $\psi(N)=\log d_N$ exactly, and integrality gives
-$d_{n+1}\int_0^1P\in\mathbb Z$ for $P\in\mathbb Z[x]$ of degree $\le n$. The classical extraction
-(Chebyshev, Nair) reaches linear precision only. The central question is whether integrality over
-$\mathbb Z$ reaches any precision beyond linear.
-
-**Why precision is the right invariant.** Three facts organise everything, and each is a theorem
-here.
-
-1. The count has a precision class: it survives exactly the perturbations with partial sums
-   $O(\sqrt x\log^2x)$. Every implication into the count must respect that class.
-2. The classical theorems (PNT, Guth–Maynard, every error law weaker than square root) hold for
-   $\Lambda+\varepsilon n^{-\eta}$ with $0<\eta<\tfrac12$, which never satisfies the count. None can decide.
-3. Identities have precision class $\{0\}$: the Chebyshev identity $\sum_d\Lambda(d)\lfloor n/d\rfloor=\log n!$
-   determines $\Lambda$, and the integrality floor $\min^+\int_0^1P=1/d_{n+1}$ is attained. Precision is
-   not missing from the arithmetic of $\mathbb Z$. It is lost when estimates are extracted from
-   identities, and the loss is located: Möbius inversion, and the analytic ceiling of auxiliaries.
-
----
-
-## 3. Objects and language
-
-| Over $\mathbb F_q$ | ASRP object | Over $\mathbb Z$ | Lean |
-|---|---|---|---|
-| point count $N_m$ | weight, partial sum | $a:\mathbb N\to\mathbb R$, $A(x)=\sum_{n\le x}a(n)$ | `partialSum` |
-| $\lvert N_m-q^m-1\rvert\le Cq^{m/2}$ | the count and its halves | $A(x)-x=O(\sqrt x\log^2x)$ | `Count`, `UpperCount`, `LowerCount` |
-| error $O(q^{m\theta})$ | precision class | $\{\delta:\sum_{n\le x}\delta(n)=O(\varphi)\}$ | `PrecisionClass`, `sqrtClass` |
-| $\tfrac12+\max\log\lvert\beta\rvert/\log q$ | precision exponent | order of $A(x)-x$ | `precisionExponent`, `CountAtPrecision` |
-| fake data (golden) | battery move | $\lambda\Lambda$, $c\Lambda$, $\Lambda+\varepsilon n^{-\eta}$, flips | `liouvilleWeight`, `powerWeight`, `towerWeight`, `signGauge` |
-| $x^q-x$ | horizon period | $d_N=\operatorname{lcm}(1..N)$, $\log d_N=\psi(N)$ | `Nat.lcmUpto` |
-| Stepanov auxiliary | Nair functional | $P\mapsto\int_0^1P=D_P(1)$ | `nairIntegral` |
-| integrality of $N_m$ | integrality lattice | $\{\int_0^1P\}=d_{n+1}^{-1}\mathbb Z$ | `nairLattice_eq` |
-| — | Siegel / Liouville halves | small positive integrals exist / all are large | `SiegelHalf`, `LiouvilleHalf` |
-| auxiliary in $\mathbb F_q[x]$ | integer Dirichlet polynomial | $D(s)=\sum_{n\le N}a_nn^{-s}$, $a_n\in\mathbb Z$ | `intDirichlet` |
-| Möbius on $\mathbb F_q[T]$ | Chebyshev transform, inversion | $T_a(n)=\sum_da(d)\lfloor n/d\rfloor$, $I_x$ | `chebyshevTransform`, `inversionOp` |
-
-**Words.**
-*Precision class* of a statement $S$ at a weight $a$: the perturbations $\delta$ with $S(a+\delta)$.
-*Square-root class* $\mathcal Q$: perturbations with partial sums $O(\sqrt x\log^2x)$.
-*Visible move*: one outside $\mathcal Q$; no weight satisfies the count both before and after it.
-*Invisible move*: one inside $\mathcal Q$.
-*Precision-faithful*: fails for $a+\varepsilon n^{-\eta}$, every $0\le\eta<\tfrac12$.
-*Parity-breaking*: fails for the Liouville twin.
-*Aperture-unbounded*: not determined by a finite window of the weight.
-*Precision exponent* $\theta(a)$: the infimum of $\theta$ with $A(x)-x=O(x^\theta)$.
-*Siegel half* at scale $\varphi$: auxiliaries with $0<\int_0^1P\le e^{-(n+1)+C\varphi(n+1)}$ exist.
-*Liouville half*: every positive $\int_0^1P$ is $\ge e^{-(n+1)-C\varphi(n+1)}$.
-*Ceiling*: the analytic bound used to certify a small positive integral.
-*Sign gauge* of a prime set $F$: $\Lambda$ with sign $(-1)^k$ at $p^k$, $p\in F$.
-*Flipped mass* $\theta_F(x)=\sum_{p\le x,\,p\in F}\log p$.
-*Reciprocal torsion*: a horizon value $e^{A(n)}=1/r_n$ with $r_n\in\mathbb N$.
-
----
+- Visible move: a perturbation after which the weight never satisfies the count. Invisible move: one that leaves the count unchanged (count ⇔ RH).
+- Deciding input: a property of weights that implies the count.
+- Stabilizer: the perturbations a statement survives at a weight.
+- Producer: a construction that yields a count without assuming it.
+- Siegel half: existence of small auxiliaries. Liouville half: every nonzero value is large.
+- Successor model: a weight within `𝒬` of the integer count (an over-regular Beurling count).
 
 ## 4. Mechanisms
 
-1. **The stabilizer law.** If $a$ satisfies the count, $a+\delta$ does iff $\delta\in\mathcal Q$. The
-   precision class of the count is the square-root class.
-2. **The power threshold.** For $\varepsilon\ne0$, $\eta\ge0$: $\varepsilon n^{-\eta}\in\mathcal Q$ iff
-   $\eta\ge\tfrac12$, from $\tfrac12x^{1-\eta}\le\sum_{n\le x}n^{-\eta}\le2\sqrt x$ $(\eta\ge\tfrac12)$.
-   Precision rigidity of the count is sharp at $\tfrac12$, inclusive.
-3. **Each half of the count is RH.** A one-sided square-root bound on $\psi(x)-x$, either sign,
-   forces $\Theta\le\tfrac12$: by Landau both signs of $\psi(x)-x$ reach $x^b$ for every $b<\Theta$.
-4. **Precision exponent = zero width.** $\theta(\Lambda)=\Theta$; RH iff $\theta(\Lambda)=\tfrac12$. Every
-   weight has $\theta\ge0$ (a step function stays $\tfrac14$ from $x$), and the count gives $\theta\le\tfrac12$.
-5. **The battery as a classification.** Visible, unconditionally: every Liouville mixture
-   $(1-t)\Lambda+t\lambda\Lambda$, $t\ne0$ (partial sums $(1-2t)\psi+O(\sqrt x)$); $c\Lambda$, $c\ne1$
-   (PNT); cofinite flips; $\Lambda+\varepsilon n^{-\eta}$, $\eta<\tfrac12$ (Littlewood: the count would make
-   $\psi(x)-x$ eventually one-signed). Invisible: finite modifications, rescaled Euler factors (a prime
-   tower carries $\le\log x$), $\varepsilon n^{-\eta}$ with $\eta\ge\tfrac12$.
-6. **Order, majorants and the gauge stabilizer.** The lower half is monotone and the upper half
-   antitone in the weight. Hence an upper count for any majorant $b\ge\Lambda$, or a lower count for any
-   minorant $a\le\Lambda$, proves RH; for $a\le\Lambda$ (or $a\ge\Lambda$) the count is RH together with
-   $\Lambda-a\in\mathcal Q$. A sign gauge passes iff RH and $\theta_F=O(\sqrt x\log^2x)$; a torus gauge
-   $t$ (rotating $\Lambda(p^k)$ by $e^{2\pi ikt_p}$, real part) passes iff RH and the gauge distance
-   $\sum_{p\le x}(1-\cos2\pi t_p)\log p=O(\sqrt x\log^2x)$. The count's stabilizer in the gauge torus is
-   the set of gauges at square-root distance from the arithmetic point. For the complex source,
-   the additional condition is $\sum_{p\le x}\sin(2\pi t_p)\log p=O(\sqrt x\log^2x)$.
-   Every real gauge admits a complex lift: independently conjugating whole Euler factors preserves
-   every real prime-power coefficient and can keep this signed prime current within $\log x$.
-   Any finite prefix of phases may be retained. The existence of a complex count lift is therefore
-   exactly the real count criterion.
-   With independent retention probabilities $q_p$, centered conjugation fluctuations always lie
-   in $\mathcal Q$ almost surely. The additional obstruction is exactly the mean sine current
-   $\sum_{p\le x}(2q_p-1)\sin(2\pi t_p)\log p=O(\sqrt x\log^2x)$.
-   For fair choices the mean vanishes: almost every conjugation has the complex count exactly
-   when its fixed real source has the real count, also with any finite phase prefix retained.
-7. **Precision exponents are abscissas.** For $\delta\ge0$, partial sums $O(x^\theta)$ give absolute
-   convergence of $\sum\delta(n)n^{-s}$ on $\operatorname{Re}s>\theta$, and convergence at $\sigma$ gives
-   partial sums $\le x^\sigma\sum\delta(n)n^{-\sigma}$. A one-signed perturbation is invisible when its
-   abscissa is $<\tfrac12$ and visible when it is $>\tfrac12$.
-8. **The deciding-input theorem.** Every property implying the count is parity-breaking,
-   precision-faithful, aperture-unbounded, with stabilizer in $\mathcal Q$. Stable under the twist, or
-   finitely determined, or stable under one visible move, it holds for no weight.
-9. **Producers are precision-blind.** $\Lambda+\varepsilon n^{-\eta}$, $0<\eta<\tfrac12$, satisfies PNT and
-   the Guth–Maynard law $\psi(x+x^\alpha)-\psi(x)\sim x^\alpha$ for every $\alpha\in(17/30,1)$, and fails the
-   count. An error law $O(E)$ with $x^{1/2+\kappa}=O(E)$ is inherited by a weight failing the count.
-10. **The integrality lattice.** $\{\int_0^1P:P\in\mathbb Z[x],\deg P\le n\}=d_{n+1}^{-1}\mathbb Z$, by Bézout
-   over the horizon ($u/a+v/b=1/\operatorname{lcm}(a,b)$, iterated). The least positive Nair integral is
-   $1/d_{n+1}$, and $\psi(n+1)=\max_P\log(1/\int_0^1P)$. In every fixed nonzero ideal
-   $Q\mathbb Z[x]$, the least positive integral lies between $1/d_N$ and $C_Q/d_N$ once
-   $N\ge2\deg Q+1$, with a fixed positive integer $C_Q$. Fixed divisibility therefore preserves
-   both integrality halves at admissible scales, their complete power-scale sets and their exponents.
-11. **The integrality exponent is the zero width.** The Siegel half and the Liouville half are the
-    lower and upper halves of the count at the same scale. Both hold at $x^\theta$, $\theta>\Theta$, and
-    both fail at every $\theta<\Theta$. Square-root integrality in either half is RH; a zero-free strip
-    $\Theta<1$ is integrality at a fixed precision $\theta<1$.
-12. **Integer Dirichlet polynomials at arithmetic points.** $\int_0^1P=D_P(1)$, the value at the pole.
-    $d_N^m D(m)\in\mathbb Z$, so a nonzero $D(m)$ is $\ge d_N^{-m}=e^{-m\psi(N)}$, and this is attained (the
-    values form $d_N^{-m}\mathbb Z$). $D(-k)\in\mathbb Z$. A nonzero $D$ has fewer real zeros than nonzero
-    coefficients, hence $|D(-k)|\ge1$ at some $k<N$. Siegel's lemma gives $D\ne0$ of length $N$ vanishing at
-    $0,-1,\dots,-(M-1)$ with height $\le(N^M)^{M/(N-M)}$, $M<N$.
-13. **Parity in integrality.** $\sum_{m\le n}\lambda\Lambda(m)=2\psi(\lfloor\sqrt n\rfloor)-\psi(n)$, so
-    $e^{A_\lambda(n)}=1/r_n$ with $r_n=d_n/d_{\lfloor\sqrt n\rfloor}^2\in\mathbb N$: the twin's horizon value is a
-    reciprocal group order.
-14. **Sup-norm ceilings force vanishing.** $b^nP(a/b)\in\mathbb Z$, so a ceiling
-    $\sup_{[0,1]}|P|<b^{-n}$ forces $P(a/b)=0$; every sup-norm certificate at a precision $\theta<1$
-    vanishes at $0,\tfrac12,1$ for large $n$. Precise certificates are Stepanov-like.
-15. **Separation of prime logarithms; two towers see every ordinate difference.** Integrality gives
-    $|a\log p-b\log q|\ge1/\max(p^a,q^b)$ (exponential in the height), Baker gives
-    $c(2+|k_1|+|k_2|)^{-C}$ (polynomial), and Dirichlet shows polynomial decay is attained. Eliminating
-    $2\pi$ from the two phase defects $e_p=\Delta\log p-2\pi k_1$, $e_q=\Delta\log q-2\pi k_2$ gives
-    $|e_p|\log q+|e_q|\log p\ge c\min(|\Delta|,(2+|\Delta|)^{-C})$ for every real $\Delta$: two prime
-    towers certify every pair of ordinates of height $\le T$ with margin polynomial in $T$.
-16. **Where precision is lost.** $T_\Lambda(n)=\log n!$ exactly; $0<\log n!-(n\log n-n)\le1+\tfrac12\log n$;
-    every nonzero nonnegative perturbation moves $T$ linearly; $A(n)=\sum_{k\le n}\mu(k)T_a(\lfloor n/k\rfloor)$,
-    so $\psi(n)=\sum_k\mu(k)\log\lfloor n/k\rfloor!$; the inversion operator sends some $E$ with
-    $|E(y)|\le y^\theta$ to $\ge\pi(x)$, and no bound $Cx^{\theta'}$, $\theta'<1$, survives it.
-17. **Monotone errors invert at Mertens precision.** By Abel summation against $\mu$, a monotone $E$
-    with $|E|\le B$ on $(0,x]$ has $|I_x(E)|\le3B\max_{k\le x}|M(k)|$; constant errors invert to
-    $M(x)=\Omega_\pm(\sqrt x)$, so no exponent below $\tfrac12$ is possible; and RH holds iff monotone
-    errors bounded by $1$ invert to $O(x^{1/2+\delta})$ for every $\delta>0$. Inversion has no precision on
-    oscillating errors and exactly the precision of $M$ on monotone ones.
-18. **The Stirling error splits.** With $F(t)=t\log t-t$: $\log\lfloor y\rfloor!=F(y)+G(y)+h(y)$, where
-    $G(y)=\log\lfloor y\rfloor!-F(\lfloor y\rfloor)$ is monotone with $0\le G\le1+\tfrac12\log y$ and
-    $h(y)=F(\lfloor y\rfloor)-F(y)\in[-\log y,0]$ is a sawtooth. Hence
-    $|\psi(n)-I_n(F)-I_n(h)|\le3(1+\tfrac12\log n)\max_{k\le n}|M(k)|$. The smooth term inverts exactly
-    to the Möbius moments, $I_x(F)=x((\log x-1)m(x)-\ell(x))$ with $m=\sum\mu(k)/k$,
-    $\ell=\sum\mu(k)\log k/k$, and the sawtooth inverts to at most $n\log n-\log n!<n$. So $\psi(n)$ is
-    computed, up to $O(\log n\max|M|)$, from three arithmetic quantities: the two Möbius moments, the
-    sawtooth inversion and the Mertens function.
-19. **Tower positivity is precision-exact.** Index zero of every tower kernel along one prime implies
-    the count, passes the deciding-input tests, and has stabilizer $\{0\}$: $\Lambda+\delta$ is tower
-    positive iff RH and $\delta=0$ on $n\ge2$. $\Lambda+1/n$ satisfies the count iff RH and is never tower
-    positive. At $\Lambda$ both statements are RH; as properties of weights the count sees $\mathcal Q$,
-    positivity sees every coefficient.
-20. **Finite-aperture positivity cannot decide.** Aperture-$A$ positivity reads the weight only on
-    $\{n:\log n\le2A\}$; if it implied the count, it would hold for no weight, so RH would fail. Below
-    $\log2/2$ it is weight-blind: every weight, the Liouville twin included, is aperture-$3/10$ positive.
-    Positivity spans the whole precision scale: blind at small aperture, window-determined at finite
-    aperture, exact on a whole tower.
-21. **The successor enters only modulo $\mathcal Q$.** The successor weight $1$ counts the integers
-    with error $<1$; the count for $a$ is $a-1\in\mathcal Q$, and for any model $u$ of the integer count
-    with $u-1\in\mathcal Q$ it is $a-u\in\mathcal Q$. Over-regular integer systems share the class of the
-    successor, so integer-count precision cannot decide the prime count; the deciding input must come
-    from the prime side.
-22. **Calibration over $\mathbb F_q$.** The count at precision $\theta$ holds iff every
-    $\|\beta_i\|\le q^{\theta-1/2}$, already from its lower half; the precision exponent is
-    $\tfrac12+\max_i\log\|\beta_i\|/\log q\ge\tfrac12$, with equality iff unitary. Odd hyperelliptic data
-    have exponent $\tfrac12$ (Stepanov). The golden datum has $N_k/5^k\to1$ and exponent $\tfrac12+\log\varphi/\log5$.
-    The upper half over $\mathbb F_q$ is blind exactly to real outer eigenvalues: without one it forces
-    unitarity, and the golden datum satisfies $N_k\le q^k+1$. Over $\mathbb Z$ each half is RH.
+**A. Precision classes**
+1. Stabilizer law: if `a` satisfies the count, `a + δ` does iff `δ ∈ 𝒬`.
+2. Power threshold: `Σ_{n≤x} n^{−η} ≥ x^{1−η}/2`, and `≤ 2√x` for `η ≥ ½`. So `εn^{−η} ∈ 𝒬 ⇔ η ≥ ½`.
+3. Landau: both signs of `ψ(x) − x` reach `x^b` for every `b < Θ`, so each half of the count is RH. The step function `A(x)` stays `1/4` away from `x`, so precision exponents are `≥ 0`.
+4. Littlewood's oscillation of `ψ(x) − x` excludes every one-signed `x^{1−η}` drift, unconditionally.
+5. Monotonicity: the lower count is monotone and the upper count antitone in the weight. Minorants with lower counts and majorants with upper counts give RH.
+6. For one-signed perturbations, the precision class is read off the abscissa of absolute convergence relative to `½`.
 
----
+**B. Integrality**
+7. Reciprocal Bézout: integer combinations of `1/b_i` reach exactly `1/lcm(b_i)`. So the Nair lattice in degree `≤ n` is `lcm(1..n+1)⁻¹ℤ` and the floor is attained.
+8. The floor attained makes the Siegel half the lower count and the Liouville half the upper count, at every admissible scale.
+9. Moment residues: clearing lower denominators of `∫₀¹ x^j Q` leaves a fixed residue, so a fixed ideal `(Q)` costs only a bounded factor `C₀`.
+10. Integer Dirichlet polynomials: `lcm^m·D(m) ∈ ℤ` at `s = m ≥ 1` (sharp), `D(−k) ∈ ℤ`, Rolle bounds the real zeros, and Siegel's lemma gives vanishing on the trivial lattice.
+11. Sup-norm ceilings: `b^nP(a/b) ∈ ℤ`, so a sup norm below `b^{−n}` forces `P(a/b) = 0`.
+12. Twin as torsion: `Σ λΛ = 2ψ(√n) − ψ(n)` and `exp(Σ λΛ) = 1/|ℤ/r_n|`.
+
+**C. Where precision is lost**
+13. The Chebyshev identity `T_Λ(n) = log n!` is exact (precision class `{0}`). The count is its Möbius inversion, which is unbounded at every precision: an error of size `y^θ` can invert to `≥ π(x)`.
+14. Abel summation: a monotone error bounded by `B` inverts to `≤ 3BK`, where `K` bounds the Mertens function. Constant errors invert to `M(x) = Ω±(√x)`.
+15. Stirling split `log⌊y⌋! = F + G + h`: `G` is monotone (Mertens precision), and `h` is a sawtooth of amplitude `log y`. `I(F) = x((log x − 1)m − ℓ)`.
+
+**D. Gauges and towers**
+16. Gauge defect: `Λ − signGauge F` has partial sums between `2θ_F` and `2θ_F + 2(ψ − θ)`. Torus gauges measure the cosine deficit.
+17. Complex lift: greedily conjugating whole Euler factors against the running sine current keeps it `≤ log x`. Random fair conjugation has current `O(√x log²x)` a.s.
+18. Two-prime alias elimination: `2π(k₁ log q − k₂ log p) = e_q log p − e_p log q`, with Baker giving polynomial separation.
+19. Aperture window: tests in `[−A, A]` read `λ` only on `n ≤ e^{2A}`.
 
 ## 5. Pillar theorems
 
-1. **Stabilizer law and power threshold** (`count_add_iff_mem_sqrtClass`,
-   `smul_powerWeight_mem_sqrtClass_iff`, `not_count_and_count_add_smul_powerWeight`).
-2. **Each half is RH; exponent = zero width** (`upperCount_vonMangoldt_iff`,
-   `lowerCount_vonMangoldt_iff`, `precisionExponent_vonMangoldt`,
-   `riemannHypothesis_iff_precisionExponent`).
-3. **The battery classification** (`battery_classification`,
-   `count_vonMangoldt_add_smul_powerWeight_iff`).
-4. **Order and the gauge stabilizer** (`riemannHypothesis_of_majorant`,
-   `riemannHypothesis_of_minorant`, `count_iff_of_le_vonMangoldt`, `count_signGauge_iff`,
-   `count_torusGauge_iff`).
-5. **The deciding-input theorem** (`deciding_input_necessary_properties`, `not_of_stable_visible`).
-6. **Producers are precision-blind** (`producers_are_precision_blind`, `errorLaw_cannot_decide`).
-7. **The integrality lattice** (`nairLattice_eq`, `isLeast_positive_nairIntegral`,
-   `isGreatest_log_inv_nairIntegral`).
-8. **The integrality exponent** (`siegelExponent_eq_zeroReSup`, `liouvilleExponent_eq_zeroReSup`,
-   `riemannHypothesis_iff_siegelHalf_sqrtScale`, `riemannHypothesis_iff_liouvilleHalf_sqrtScale`,
-   `zeroReSup_lt_one_iff_siegelHalf`).
-9. **The transcendence toolkit on integer Dirichlet polynomials**
-   (`exists_intDirichlet_eq_one_div_lcmUpto_pow`, `card_lt_of_intDirichlet_eq_zero`,
-   `exists_one_le_abs_intDirichlet_neg`, `exists_intDirichlet_vanishing_on_trivial_lattice`).
-10. **The twin's reciprocal torsion** (`partialSum_liouvilleWeight_eq`, `exp_partialSum_liouvilleWeight`).
-11. **The Chebyshev ledger** (`psi_eq_sum_moebius_log_factorial`, `eq_of_chebyshevTransform_eq`,
-    `log_factorial_sub_bounds`, `not_inversion_bounded`).
-12. **Curve precision exponents** (`countAtPrecision_iff`, `precisionExponent_eq`,
-    `precisionExponent_eq_half_iff`, `golden_countAtPrecision_iff`, `golden_tendsto_pointCount_div`,
-    `golden_upperCount_and_not_lowerCount`).
-13. **Abscissa dictionary** (`abscissaOfAbsConv_le_of_partialSum_isBigO`,
-    `partialSum_isBigO_of_abscissaOfAbsConv_lt`, `not_count_add_of_half_lt_abscissaOfAbsConv`).
-14. **Sup-norm vanishing law** (`aeval_eq_zero_of_sup_lt`, `eventually_vanish_of_supCeiling`).
-15. **The ledger** (`riemannHypothesis_precision_tfae`, `zero_width_three_readings`,
-    `zeroReSup_lt_one_tfae`).
-16. **Separation and non-aliasing** (`liouville_separation`, `exists_baker_separation`,
-    `exists_small_two_prime_form`, `one_prime_aliases`, `two_prime_alias_bound_in_Δ`).
-17. **Monotone inversion law** (`abs_inversionOp_le_of_monotoneOn`, `not_monotone_inversion_lt_half`,
-    `riemannHypothesis_iff_monotone_inversion`).
-18. **Precision-exactness of tower positivity** (`count_of_towerIndexZero`, `towerIndexZero_add_iff`,
-    `count_and_not_towerIndexZero_add_inv`).
-19. **The Stirling split and the arithmetic ledger** (`psi_eq_inversionOp_log_factorial`,
-    `monotoneOn_stirlingMonotone`, `sawtooth_bounds`, `inversionOp_stirlingMain`,
-    `abs_inversionOp_sawtooth_lt`, `abs_psi_sub_moments_sub_sawtooth_le`).
-20. **The window law of finite-aperture positivity** (`aperturePositive_finite_window`,
-    `not_riemannHypothesis_of_aperturePositive_imp_count`, `aperturePositive_threeTenths_not_imp_count`).
-21. **The successor modulo $\mathcal Q$** (`count_iff_sub_one_mem_sqrtClass`,
-    `count_iff_sub_mem_sqrtClass_of_successor`, `riemannHypothesis_iff_vonMangoldt_sub_one_mem_sqrtClass`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Stabilizer law | `count_add_iff_mem_sqrtClass` | proved |
+| Power threshold; precision rigidity, sharp | `smul_powerWeight_mem_sqrtClass_iff`, `not_count_and_count_add_smul_powerWeight`, `count_add_smul_powerWeight` | proved |
+| Count, upper half, lower half each ⇔ RH | `count_vonMangoldt_iff`, `upperCount_vonMangoldt_iff`, `lowerCount_vonMangoldt_iff` | proved |
+| Precision exponent of `Λ` is `Θ`; RH ⇔ exponent `½` | `precisionExponent_vonMangoldt`, `riemannHypothesis_iff_precisionExponent` | proved |
+| Battery classification | `battery_classification`, `not_count_liouvilleMixture`, `not_count_vonMangoldt_add_smul_powerWeight`, `count_vonMangoldt_add_smul_towerWeight_iff` | proved |
+| Deciding-input theorem | `deciding_input_necessary_properties`, `not_of_twist_stable`, `not_of_finite_window`, `not_of_stable_visible` | proved |
+| PNT, Guth–Maynard and error laws above `√x` cannot decide | `producers_are_precision_blind`, `errorLaw_cannot_decide` | proved |
+| Nair lattice; floor attained; `ψ(n+1)` = best integrality bound | `nairLattice_eq`, `isLeast_positive_nairIntegral`, `isGreatest_log_inv_nairIntegral` | proved |
+| Siegel/Liouville halves = lower/upper count; RH at `√x log²x` | `siegelHalf_iff_lower`, `liouvilleHalf_iff_upper`, `riemannHypothesis_iff_siegelHalf_sqrtScale`, `riemannHypothesis_iff_liouvilleHalf_sqrtScale` | proved |
+| Integrality exponent = `Θ`; strip ⇔ integrality at some `θ < 1` | `siegelExponent_eq_zeroReSup`, `liouvilleExponent_eq_zeroReSup`, `zeroReSup_lt_one_iff_siegelHalf` | proved |
+| Fixed polynomial ideals keep integrality precision | `exists_uniform_nairIntegral_multiple`, `exists_isLeast_nairIntegral_multiple`, `ideal_integrality_exponents_eq_zeroReSup`, `riemannHypothesis_iff_idealSiegelHalf` | proved |
+| Integer Dirichlet polynomials: Liouville inequality sharp, zero estimates, Siegel's lemma | `one_div_lcmUpto_pow_le_abs_intDirichlet`, `exists_intDirichlet_eq_one_div_lcmUpto_pow`, `card_lt_of_intDirichlet_eq_zero`, `exists_intDirichlet_vanishing_on_trivial_lattice` | proved |
+| `Σ λΛ = 2ψ(√n) − ψ(n)`; twin value is a reciprocal group order | `partialSum_liouvilleWeight_eq`, `exp_partialSum_liouvilleWeight` | proved |
+| Chebyshev identity exact; inversion unbounded at every precision | `chebyshevTransform_vonMangoldt`, `eq_of_chebyshevTransform_eq`, `psi_eq_sum_moebius_log_factorial`, `not_inversion_bounded` | proved |
+| Curve precision exponent `½ + max log|β|/log q`; lower half suffices; golden calibration | `precisionExponent_eq`, `lowerCountAtPrecision_iff`, `golden_countAtPrecision_iff`, `golden_upperCount_and_not_lowerCount`, `hyperelliptic_countAtPrecision_half` | proved |
+| Weights below `Λ`; sign and torus gauge stabilizers | `count_iff_of_le_vonMangoldt`, `count_signGauge_iff`, `count_signGauge_of_finite`, `count_torusGauge_iff` | proved |
+| Complex count lifts of real gauges | `complexCount_torusGauge_iff`, `complexCount_balancedGauge_iff`, `exists_complexCount_lift_iff`, `ae_fair_complexCount_iff` | proved |
+| RH in eight precision currencies; `Θ` three readings | `riemannHypothesis_precision_tfae`, `zero_width_three_readings`, `zeroReSup_lt_one_tfae` | proved |
+| Sup-norm certificates vanish at `0, ½, 1` | `eventually_vanish_of_supCeiling` | proved |
+| Majorants/minorants; abscissa visibility | `riemannHypothesis_of_majorant`, `riemannHypothesis_of_minorant`, `count_iff_of_vonMangoldt_le`, `not_count_add_of_half_lt_abscissaOfAbsConv` | proved |
+| Two-prime non-aliasing at polynomial precision | `two_prime_alias_bound_in_Δ`, `liouville_separation`, `exists_baker_separation` | proved |
+| Monotone inversion law; RH ⇔ monotone inversion at `x^{½+δ}` | `abs_inversionOp_le_of_monotoneOn`, `not_monotone_inversion_lt_half`, `riemannHypothesis_iff_monotone_inversion` | proved |
+| Tower positivity is precision-exact; `Λ + 1/n` separates it from the count | `towerIndexZero_add_iff`, `count_and_not_towerIndexZero_add_inv` | proved |
+| Stirling split; arithmetic Chebyshev ledger | `abs_psi_sub_smooth_sub_sawtooth_le`, `abs_psi_sub_moments_sub_sawtooth_le` | proved |
+| No finite aperture decides; aperture `3/10` is weight-blind | `not_riemannHypothesis_of_aperturePositive_imp_count`, `aperturePositive_threeTenths` | proved |
+| Count = comparison with the successor | `count_iff_sub_one_mem_sqrtClass`, `riemannHypothesis_iff_vonMangoldt_sub_one_mem_sqrtClass` | proved |
 
----
+## 6. Tools
 
-## 6. Traps
+**Developed**
+- Precision-class calculus (`PrecisionClass.add_mem`, `mono`, `not_mem_precisionClass_of_lower_bound`, `mem_sqrtClass_of_eventually_zero`).
+- Integer-to-real horizon transfer (`lower_real_of_nat`, `upper_real_of_nat`).
+- Reciprocal Bézout (`exists_int_sum_div_eq_inv_lcm`) and moment residues (`exists_int_cofactor_mul_nairRationalMoment`).
+- Abel summation against `μ` (`sum_moebius_mul_eq`, `abs_sum_moebius_mul_le_of_antitone`).
+- Stirling bounds (`log_factorial_sub_bounds`, `sawtooth_bounds`).
+- Greedy and random Euler-factor conjugation (`balancedGauge`, `ae_gaugeCurrent_sub_mean_isBigO`).
+- Abscissa–partial sum dictionary (`abscissaOfAbsConv_le_of_partialSum_isBigO`, `partialSum_isBigO_of_abscissaOfAbsConv_lt`).
 
-| Trap | Truth |
+**To build**
+- A ceiling (certificate) for a small positive Nair integral at square-root precision, beyond sup-norm and the integer Chebyshev problem.
+- Cancellation in the sawtooth inversion `I_n(h)` and in the Möbius moments, from arithmetic input.
+- A deciding input that is parity-breaking, precision-faithful and of unbounded aperture, other than tower positivity itself.
+- The precision classes of Hecke defects, covariant regulators and torsion orbits from other programmes.
+
+## 7. Open questions
+
+1. Can integrality certify a small positive integral at precision `x^{½+ε}` (the Siegel half at square-root scale)?
+2. What arithmetic structure bounds the sawtooth inversion `I_n(h)` below its trivial size `n`?
+3. Is there an intermediate statement with precision class strictly between `{0}` (tower positivity) and `𝒬` (the count) that is provable?
+4. Which auxiliaries vanish at rational points to growing order, as Stepanov's do at `𝔽_q`-points?
+5. Does a selective statement exist whose stabilizer in the gauge torus is exactly the square-root gauge ball?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| A sharper constant in a relative-error theorem approaches RH | Its precision class contains every $\varepsilon n^{-\eta}$, $\eta>0$; constants do not measure distance to the count |
-| The count selects $\Lambda$ | Modulo $\mathcal Q$ only: finite flips, Euler-factor deletions and square-root sparse sign gauges pass |
-| One-sided counts are weaker | Over $\mathbb Z$ each half alone is RH; over $\mathbb F_q$ the upper half is blind only to real outer eigenvalues (golden passes it) |
-| Integrality reaches only linear precision | The floor is exact and the Siegel half at precision $\theta$ is $\Theta\le\theta$; what is linear is the *ceiling* used to certify auxiliaries |
-| Nair's method loses at the integrality step | $\min^+\int_0^1P=1/d_{n+1}$ exactly |
-| Identities are soft | They have precision class $\{0\}$; they lose precision under inversion |
-| A small error in $\log\lfloor x\rfloor!$ gives a small error in $\psi$ | Inversion turns $y^\theta$ errors into $\pi(x)$-size errors |
-| Perturbations with $\eta\ge\tfrac12$ are a defect of the method | They are invisible to the count itself |
-| The golden datum violates integrality | It has integral counts and $N_k/5^k\to1$; its precision exponent is $\tfrac12+\log\varphi/\log5$ |
-| Integer Dirichlet polynomials certify zeros by integrality | Integrality speaks at $s\in\mathbb Z$ (pole side sharp, trivial lattice integral), not at nontrivial zeros |
-| Integrality separates prime logarithms well enough | It gives $e^{-O(H)}$; polynomial separation needs Baker, which is proved and gives two-prime certification at polynomial margin |
-| The Liouville twin is an integrality-preserving move | Its horizon value is a reciprocal group order |
-| A sieve majorant is half of a count | An upper count for any majorant of $\Lambda$ is RH; majorants lose at relative error |
-| The count is gauge invariant | Its stabilizer is the set of gauges at square-root distance |
+| The prime number theorem or short-interval laws carry square-root information | `Λ + εn^{−η}` satisfies PNT and Guth–Maynard and never the count |
+| One half of the count is weaker than RH | Each half is RH over `ℤ` (no real zero in `(½, 1)`); only over `𝔽_q` is the upper half blind |
+| Deleting or flipping one Euler factor changes the count | A prime tower carries `≤ log x`; finite flips are invisible |
+| Integrality over `ℤ` is lossy | The Nair lattice is exact and the floor attained; precision is lost in the analytic ceiling |
+| Restricting auxiliaries to an ideal sharpens integrality | Fixed ideals cost a bounded factor and keep every exponent |
+| Better size bounds on the Stirling error give `ψ` | Möbius inversion is unbounded on every size class; only monotone errors invert, at Mertens precision |
+| The count is gauge-invariant | Sign gauges pass iff the flipped prime mass is `O(√x log²x)`; the Liouville twin fails |
+| RH-equivalent statements have the same precision | The count sees `𝒬`; tower positivity sees every coefficient (`Λ + 1/n` separates them) |
+| Small-aperture Weil positivity carries information | Aperture `3/10` holds for every weight; any finite aperture is window-determined |
+| Exact counting of the integers helps | The count uses the integers only modulo `𝒬`; over-regular Beurling systems share that class |
+| Relative-error point counts see the sign over `𝔽_q` | The golden datum has `N_k/5^k → 1` and fails the square-root count |
 
----
+## 9. Context
 
-## 7. Questions the programme answers
+**Uses**
 
-1. **Which statements can decide the count?** Only parity-breaking, precision-faithful,
-   aperture-unbounded statements whose stabilizer lies in $\mathcal Q$ (the deciding-input theorem).
-   *Answered.*
-2. **Which battery moves does the count see?** The battery classification, the majorant/minorant
-   principle, the gauge stabilizer and the abscissa criterion for one-signed moves. *Answered.*
-3. **What is the precision of the classical producers?** PNT, Guth–Maynard and every error law
-   weaker than square root are inherited by $\Lambda+\varepsilon n^{-\eta}$: none decides. *Answered.*
-4. **How much precision does integrality over $\mathbb Z$ reach?** Exactly $\Theta$, in each half;
-   square-root integrality is RH; a fixed strip is integrality at a fixed precision. *Answered.*
-5. **Where is precision lost in Chebyshev–Nair?** Not at the floor (exact) nor in the identity
-   (precision $\log n$), but in the inversion (unbounded on size classes, exactly Mertens precision on
-   monotone errors) and in the ceiling (a ceiling at precision $\theta<1$ is a zero-free strip).
-   *Answered.*
-6. **How does integrality see parity?** Through reciprocal torsion. *Answered.*
-7. **What is precision over $\mathbb F_q$?** The exponent formula, one half suffices, unitarity is
-   square-root precision, golden is the relative-error twin. *Answered.*
-8. **Where can integer auxiliary Dirichlet polynomials speak?** At $s\in\mathbb Z$, sharply on the
-   pole side; fewer than $N$ real zeros; Siegel existence up to $N-1$ trivial conditions. *Answered;
-   off-line vanishing is open problem 2.*
-9. **At what precision do prime towers separate ordinates?** One tower aliases; two towers see every
-   ordinate difference $\Delta$ with margin $c\min(|\Delta|,(2+|\Delta|)^{-C})$, by Baker; integrality
-   alone gives $e^{-O(|\Delta|)}$; Dirichlet shows the decay is genuinely polynomial. *Answered.*
-10. **What is the precision of positivity?** Tower positivity is precision-exact (stabilizer $\{0\}$),
-    strictly finer than the count, and RH-equivalent at $\Lambda$; aperture-$A$ positivity is
-    window-determined and cannot decide, and below $\log2/2$ it is weight-blind. *Answered for tower and
-    aperture positivity; finite index is open problem 3.*
+| Programme | Imports | What |
+|---|---|---|
+| RHTower | 8 | von Koch, Landau/Littlewood, Guth–Maynard, Mertens criteria, Baker bound, Liouville point |
+| HTGeometry | 3 | exponential-polynomial zeros, positive square integrals, random signs |
+| ArithmeticEffectivityTheory | 2 | Nair integrality, hyperelliptic calibration |
+| ArithmeticCastelnuovoSeveri | 2 | curve data, one-sided power-sum bounds |
+| SquareRootThreshold, HeckeKreinToeplitz | 1 each | aperture window certificates; tower index zero selects `Λ` |
 
----
+**Used by**: ArithmeticKreinLangerTheory (`ChebyshevsProducerPassesTheIntegerChebyshevCap`), EffectiveArithmeticHodgeTheory (`TheTwistTowerCollapsesOverTheIntegers`), RHTower (`InfiniteSymmetry/ConfinementIsTheSquareRootCount`), umbrella.
 
-## 8. Tools
-
-Built: precision classes and the count; each half of the count for $\Lambda$; the precision exponent;
-the battery classification, the majorant/minorant principle and the gauge stabilizer; the abscissa
-dictionary; the deciding-input theorem; precision-blindness of producers; the integrality lattice and
-exponent; the transcendence toolkit on integer Dirichlet polynomials; the sup-norm vanishing law; the
-separation of prime logarithms and the two-prime non-aliasing law; the twin's reciprocal torsion; the
-Chebyshev ledger, the monotone inversion law, the Stirling split and the arithmetic ledger; the precision-exactness of
-tower positivity and the window law of aperture positivity; the successor modulo $\mathcal Q$; curve
-precision exponents; the TFAE ledger.
-
-Open, with what the theory already proves about each:
-
-| Tool | Status |
+| Neighbour | Relation |
 |---|---|
-| A precision-preserving ceiling for Siegel auxiliaries | A ceiling at precision $\theta<1$ is a zero-free strip (`zeroReSup_lt_one_iff_siegelHalf`); sup-norm ceilings must vanish at $0,\tfrac12,1$; must keep sign cancellation |
-| Inversion of the Stirling error | Built as an exact ledger: monotone part at Mertens precision, smooth term $=$ Möbius moments, sawtooth $<n$; open is the cancellation of $\mu$ against the sawtooth below linear size |
-| Precision of finite index on two towers (HKT) | Index zero is precision-exact; finite index is Lindelöf-deep, its stabilizer is open |
-| Precision of the Hecke defect (CDG) | The defect is a zero-side object; a weight-parametrized collided form is needed first |
-| Successor precision | Built at the level of weights: the successor enters only modulo $\mathcal Q$, so any integer model of square-root precision gives the same count; a Beurling model with its own Chebyshev identity is open |
-| Structure: converse Krein–Langer beyond orbit kernels | Owned by HKT/AKL; proved for orbit kernels |
+| ArithmeticEffectivityTheory | Nair floor; ASRP proves it attained and computes its exact precision |
+| HeckeKreinToeplitz, ArithmeticKreinLangerTheory | global law = one-sided count; ASRP supplies the precision calculus and the tower-positivity contrast |
+| SelectiveMultiscaleArithmeticPositivity | precision rigidity of tower positivity; ASRP gives the count-level analogue with sharp threshold |
+| SquareRootThreshold | zero width `Θ`; ASRP identifies it with precision and integrality exponents |
+| ArithmeticCastelnuovoSeveri | curve calibration and the golden datum |
 
----
+## 10. Big picture
 
-## 9. Open research topics
+ASRP shows that the information RH needs is never missing from the arithmetic of `ℤ`. The Chebyshev identity is exact. The integrality lattice of the horizon is exact, and its floor is attained. Tower positivity sees every coefficient of `Λ`. The count itself, by contrast, sees only a square-root class: it cannot distinguish `Λ` from any finite modification, a flipped Euler factor, or an `n^{−1/2}` perturbation. All the classical estimates (PNT, short intervals, any error law weaker than square root) are shared by weights that fail the count, so none of them can decide.
 
-1. **The constructive limit of integrality (integer Chebyshev problem).** The floor is exact and the
-   exponent is $\Theta$; sup-norm certificates at precision $\theta<1$ must vanish at $0,\tfrac12,1$.
-   Any fixed polynomial vanishing pattern preserves that exponent and both square-root criteria;
-   its cost in the log-floor is bounded independently of the horizon.
-   Determine the precision reachable by auxiliaries certified through $\sup_{[0,1]}\lvert P\rvert$ or
-   $\int_0^1\lvert P\rvert$ (expected: linear with constant $<1$, since the integer Chebyshev constant of
-   $[0,1]$ exceeds $e^{-1}$), and design a ceiling that keeps sign cancellation. A ceiling that reaches
-   precision $\theta<1$ proves a zero-free strip.
-2. **Off-line vanishing.** A source of integer Dirichlet polynomials vanishing at one character of
-   every off-line pair (HKT's arithmetic Stepanov problem). Integrality speaks only at $s\in\mathbb Z$;
-   which precision class must such a source have?
-3. **Precision of finite index and of atomic positivity.** Tower positivity is precision-exact and
-   aperture positivity window-determined. Classify the precision classes of finite index on two
-   towers, of atomic tests and of the separated regime; every twin-blind theorem has the twin in its
-   class.
-4. **Inversion of the sawtooth.** The ledger reduces Chebyshev's method to the Möbius moments, the
-   Mertens function and $\sum_k\mu(k)h(n/k)$ with the sawtooth $h(y)=F(\lfloor y\rfloor)-F(y)$; determine
-   the precision at which $\mu$ cancels against $h(n/k)$.
-5. **The successor as a precision source.** The count sees the successor only modulo $\mathcal Q$, so
-   integer-count precision cannot decide; isolate which identity of $\mathbb Z$ beyond the integer
-   count (unique factorization in the Chebyshev identity, used exactly) excludes over-regular Beurling
-   systems.
-6. **Gauge geometry of the stabilizer.** The stabilizer in the gauge torus is the square-root ball
-   of the gauge distance. The complex source additionally needs square-root control of its signed
-   prime sine current; every real gauge has a complex count lift by primewise conjugation, even
-   with any finite phase prefix prescribed (`exists_complexCount_lift_preserving_prefix`).
-   Independent product conjugation is classified by the mean sine current. Fair product measure
-   gives complex count lifts almost surely, including prescribed finite prefixes; every real
-   coefficient remains fixed. This supplies generic cancellation inside each real-source family.
-7. **Precision classes of index, defect and regulator.** The finite-index stratum, the Hecke defect at
-   logarithmic translation, the covariant regulator on the characteristic circle.
-8. **Zero estimates with separation.** Zero counts for integer Dirichlet polynomials on vertical
-   segments and on two-prime supports $\{p^aq^b\}$, using the Baker separation of
-   $a\log p+b\log q$ already proved; the transfer of the two-prime non-aliasing margin into an index
-   statement for the two-prime Weil kernel at height $T$ (HKT, AKL).
-9. **Structure.** The converse Krein–Langer theorem on $\Gamma$ beyond orbit kernels (HKT proves it
-   for orbit kernels; the general Naimark fixed-point route is open) and an index-carrying completion
-   with explicit schedule.
-
----
-
-## 10. Success criteria and what a contribution is
-
-**Success.** A producer: one unconditional inequality about $\zeta$ whose precision class lies in
-$\mathcal Q$, which fails the battery, and which lands in a stratum above [open]. The first target is a
-fixed zero-free strip, which by the integrality exponent is a ceiling for Siegel auxiliaries at a
-fixed precision $\theta<1$; then the count. Intermediate success: a no-go of a new kind (a stated
-class of ceilings or inversions cannot pass a stated precision) with its positive survivor.
-
-**A contribution**
-- states its precision class (which perturbations of the weight it survives) and its parity behaviour;
-- says what it gives for the battery: $\lambda\Lambda$, $c\Lambda$, finite and cofinite flips, sign
-  gauges, $\Lambda+\varepsilon n^{-\eta}$, the golden datum, over-regular Beurling systems;
-- separates identity, floor, ceiling and inversion, and names the step where precision is kept or lost;
-- calibrates over $\mathbb F_q$ (Weil by counting, golden datum by precision exponent);
-- is unconditional, and records the positive survivor of every no-go.
-
-**Principles.** Precision is a class, not a constant. Identities are exact; precision is lost in
-extraction. A statement that survives a visible move cannot decide. Over $\mathbb Z$ each half of the
-count is the whole count. Integrality is exact at the floor; the ceiling is the problem. Calibrate over
-$\mathbb F_q$.
+Precision is lost at identifiable places: Möbius inversion of the Chebyshev identity, the analytic ceiling that certifies a small integral, and the sawtooth part of Stirling's error. A proof of RH along this axis must keep the identities of `Λ` alive through one of these steps, and that cannot be a size estimate. It needs an arithmetic certificate of square-root size: a Stepanov-type auxiliary over `ℤ`, cancellation in `μ` against the sawtooth, or a positivity statement that, like tower positivity, carries the identities of `Λ` and not just its size.

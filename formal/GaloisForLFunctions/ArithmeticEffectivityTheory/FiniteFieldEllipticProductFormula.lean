@@ -44,9 +44,8 @@ theorem affinePlaceMagnitude_algebraMap (v : HeightOneSpectrum CoordinateRing)
   change WithZeroMulInt.toNNReal (finiteNormBase_ne_zero v)
     (v.valuation FunctionField (algebraMap CoordinateRing FunctionField a)) = _
   rw [v.valuation_of_algebraMap, v.intValuation_if_neg ha,
-    WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero,
-    WithZero.unzero_coe]
-  simp only [WithZero.exp, Multiplicative.toAdd_ofAdd, zpow_neg, zpow_natCast,
+    WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero]
+  simp only [WithZero.exp, WithZero.unzero_coe, toAdd_ofAdd, zpow_neg, zpow_natCast,
     HeightOneSpectrum.maxPowDividing, map_pow, Nat.cast_pow]
 
 /-- Only the prime ideal divisors of a nonzero affine function can contribute. -/
@@ -89,11 +88,11 @@ theorem infinityMagnitude_algebraMap {a : CoordinateRing} (ha : a ≠ 0) :
       (((Algebra.norm Constants[X] a).natDegree : ℤ) : WithBot ℤ)
     rw [affine_principal_norm_exponent a ha]
     rfl
-  change WithZeroMulInt.toNNReal _
+  change WithZeroMulInt.toNNReal (by norm_num : (3 : ℝ≥0) ≠ 0)
     (infinityValuation (algebraMap CoordinateRing FunctionField a)) = _
   rw [hv, WithZeroMulInt.toNNReal_neg_apply _ WithZero.exp_ne_zero,
-    WithZero.unzero_coe, affineIdealNorm_principal a ha]
-  simp only [WithZero.exp, Multiplicative.toAdd_ofAdd, zpow_natCast, Nat.cast_pow,
+    affineIdealNorm_principal a ha]
+  simp only [WithZero.exp, WithZero.unzero_coe, toAdd_ofAdd, zpow_natCast, Nat.cast_pow,
     Nat.cast_ofNat]
 
 theorem product_formula_algebraMap {a : CoordinateRing} (ha : a ≠ 0) :

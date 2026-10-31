@@ -1,167 +1,215 @@
-# Renormalized Arithmetic Potential Theory of the Characteristic Circle (RAPT)
+# Renormalized Arithmetic Potential Theory (RAPT)
 
-Namespace `GaloisForLFunctions.RenormalizedArithmeticPotentialTheory`; umbrella `RenormalizedArithmeticPotentialTheory.lean`.
+Namespace `GaloisForLFunctions.RenormalizedArithmeticPotentialTheory` (sub-namespace `CompletedShell` for the shell energy);
+umbrella `RenormalizedArithmeticPotentialTheory.lean`; 189 modules (subfolders `Conductor/`, `Signature/`).
+Everything is unconditional. Two exceptions in form, not in content: the general-overlap spectral counts in
+`TheBoundedCompleteWeilSpectrumIsTheCompletedShellSpectrum` / `TheLowCompleteWeilSpectrumLivesOnTheLowConductors` take a
+prime-defect reserve and quasimode convergence as binders (discharged for the tilted unit spline through
+CriticalArithmeticCorrelationTheory); `LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis` is an equivalence.
 
-**Question.** Over $\mathbb F_q$ Weil uses one pairing that is positive, Frobenius-equivariant and finite on the diagonal. Over $\mathbb Z$ the
-pieces live on separate carriers: potential theory of the zero divisor (AES), intersection theory of the characteristic circle
-with an anomalous diagonal (AIT), renormalization with survival cones (RBG). Every pairing of the explicit formula is a
-regularized self-energy, and the two places of $\mathbb Q$ regularize the same diagonal. **Which regulator, counterterm and coupling
-of the prime place, the archimedean place and the arithmetic point keep positivity and Hecke equivariance together through
-the limit, and which provably cannot?**
+## 1. Motivation
 
-RAPT is the theory of the **renormalization data** of the explicit formula: regulators, their counterterms (rank, survival
-cone), Hecke anomalies, and the coupling of places that pays the divergence.
+Over 𝔽_q Weil uses one pairing that is positive, Frobenius-equivariant and finite on the diagonal. Over ℤ the diagonal
+diverges at both places: torsion orbits at the prime place (Abel self-energy log 1/(1−r)), atoms at log n at the
+archimedean place (width-w self-energy log 1/w), and both meet at the arithmetic point (the pole). Every pairing of the
+explicit formula is a regularized self-energy. RAPT is the theory of the renormalization data — regulator, counterterm
+(rank, survival cone), Hecke anomaly, paying place — then of the finite parts left after subtraction, and finally of the
+renormalized spectrum: of Weil's prime matrix P_N and of the literal complete Weil matrix on atoms of width c/N.
+It locates RH exactly: positivity at every fixed overlap c is proved; positivity at overlap c_N = 2(log N)^α is RH.
 
-> The rank of a counterterm belongs to the regulator, not the pairing. The Abel radius leaves nothing. The **horizon** (Weil's
-> own regulator, orders $\le N$) has as counterterm the tensor product of the two places' counterterms — identity on torsion
-> orbits weighted by size, times the polar projection on log-scale profiles — and it is **Hecke covariant**: the anomaly
-> $\log p$ of $[p]$ becomes the density scaling $1/p$ and cancels. The covariant scalar is $\log N+O(1)$ with constant one (the anomaly
-> of $[N]$); torsion renormalization costs $\varphi\log N$. What remains after the polar counterterm is $-2\gamma$; on $p$-adic classes the
-> tower form of $p$. Polar matching selects the Euler gauge.
+## 2. Objects
 
----
-
-## 1. Place in the research
-
-Of Weil's ingredients, missing over $\mathbb Z$ are a finite self-intersection of the diagonal, archimedean payment of the
-local-to-global divergence, and stability of the computed equilibrium — all statements about one object, the **counterterm**
-and the place that pays it.
-
-| Programme | Takes / adds |
-|---|---|
-| RenormalizedBiarithmeticGeometry | Regularized families, survival cones, torsion and lattice germs / coupled survival law, joint germ |
-| ArithmeticIntersectionTheory | Orbit intersections, different, Hecke cocycle, anomaly, spacing regulator / covariance as constraint; horizon tensor law |
-| ArithmeticElectrostatics | Torsion pairing, atomic Weil form, arithmetic point, atomic stability / exact constants, spectral ends |
-| ArithmeticEffectivityTheory | Torsion orbits, Weil prime kernel as renormalized torsion energy |
-| SpacingScaleHarmonicAnalysis | Stability at a fixed fraction of the spacing; overlap critical exponent |
-| BiarithmeticGaugeGeometry | Gauge torus, twins / gauge behaviour of matching |
-| `RHTower`, `ArtinMertens` | Mertens theorems (with $\gamma$; for Artin characters) |
-
----
-
-## 2. Why
-
-**Over $\mathbb Z$ the diagonal is a divergence.** Prime place: torsion orbits, Green function $-\log|1-z\bar w|$, Abel self-energy $\log1/(1-r)$.
-Archimedean place: atoms at $\log n$, width-$\varepsilon$ self-energy $\log(1/\varepsilon)+O(1)$. The arithmetic point $z=1$ (the pole) is where both
-divergences meet. Positivity lives before the limit (Gram matrices), equivariance after (Hecke invariance of the prime
-kernel); positivity passes the limit exactly on the counterterm's null cone (RBG).
-
-**What the theory decides.**
-1. *Coupling never lowers the prime counterterm's rank*; the archimedean germ (rank one) pays exactly one direction: the arithmetic point.
-2. *The rank belongs to the regulator*: at the horizon the counterterm is the tensor (orbital × polar) one, with nontrivial
-   survival cone: the class-wise polar hyperplane.
-3. *The anomaly cancels at the horizon*: $[p]$ shifts classes, densities scale by $1/p$, the polar functional by $p^{-1/2}$.
-4. *Covariance costs $\log N+O(1)$*, constant one = the archimedean self-energy at spacing $\varepsilon\asymp1/N$. Keeping the self-intersection
-   (torsion renormalization) costs exactly $\varphi\log N+O(1)$, $\varphi$ the golden ratio (extremal charges $\varphi^{\omega(n)}/\sqrt n$).
-5. *The finite part is computed*: $-2\gamma$ on uniform profiles; on $p$-adic classes $-2\gamma_p\cdot1+\log p(K_{p^{-1/2}}-1)$ (the tower form); for a finite prime
-   set $Q$ the matched operator $A_Q=\operatorname{diag}(\log n)-P_Q+\gamma_Q\cdot1$ has a complete basis with simple energies
-   $\gamma+\log m+\text{tameDifferent}(m)$ and compact shifted inverse; the same energies appear in the full prime matrix via Ramanujan profiles.
-6. *Matching is not gauge blind*: $\zeta$ diverges along the polar direction with coefficient $+1$, its Liouville twin with $-1$.
-
----
-
-## 3. Objects and language
-
-| Object | Definition | Lean |
+| Object | Lean | Meaning |
 |---|---|---|
-| Weil's prime kernel; atomic prime form | $P(m,n)=\Lambda(n/m)(n/m)^{-1/2}$; $P_N(x)$ | `weilPrimeKernel`, `atomicWeilForm` |
-| pole vector; polar functional | $u_n=n^{-1/2}$; $\ell(x)=\sum x_nn^{-1/2}$ | `poleVector`, `polarFunctional` |
-| step / class profiles | log-scale steps $u^{(M)}$; valuation classes $w_j^{(M)}$, densities $\delta_j$ | `stepProfile`, `classPole`, `classDensity` |
-| tensor counterterm | $\sum_j\delta_j^{-1}\ell_j(x)^2$ | `tensorCounterterm` |
-| Hecke shift | $(T_tx)(n)=x(n/t)$ | `heckeShift` |
-| coupled counterterm, prime survival, joint germ | prime block + partner block | `coupled`, `primeSurvival`, `jointGerm` |
-| covariant / torsion counterterms | least scalar with $P_N\le\kappa|x|^2$; least renormalizing torsion pairing | `covariantCounterterm_sandwich`, `torsionCounterterm_window` |
-| matched sieve operator | $A_Q$ on the maximal log domain of $\ell^2(S_Q)$ | `sieveAdjunctionOperator` |
-| Ramanujan profile, adjunction energy | $u_m(n)=c_m(n)/\sqrt{\varphi(m)n}$; $\gamma+\log m+\text{tameDifferent}(m)$ | `ramanujanHorizonVector`, `ramanujanAdjunctionEnergy` |
-| complete Weil horizon matrix | normalized self-energy, prime kernel, archimedean cross integrals and both poles at $w=c/N$ | `completeWeilMatrix`, `normalizedFullWeilHorizonMatrix` |
-| archimedean center kernel | collar of the Lévy density in pole gauge | `archimedeanCenterKernel` |
+| Weil prime kernel / form | `weilPrimeKernel` (ArithmeticEffectivityTheory), `atomicWeilForm` (ArithmeticElectrostatics), `primeBilinear` | P(m,n) = Λ(n/m)(n/m)^{−1/2}; P_N(x) on orders ≤ N |
+| Pole vector; polar functional | `poleVector`, `polarFunctional` | u_n = n^{−1/2}; ℓ(x) = Σ x_n n^{−1/2} |
+| Step / class profiles | `truncPole`, `stepProfile`, `classPole`, `classDensity` | u^{(M)} = u·1_{n≤M}; valuation classes v_p(n) = j, density δ_j = (1−1/p)p^{−j} |
+| Tensor counterterm | `tensorCounterterm`, `sieveTensorCounterterm` | Σ_j δ_j^{−1} ℓ_j(x)² |
+| Hecke shift | `heckeShift` | (T_t x)(n) = x(n/t) |
+| Coupled counterterm, joint germ | `jointGram`, `jointGerm` | prime block ⊕ archimedean block |
+| Mertens sum | `mertensSum` (RHTower) | A(y) = Σ_{t≤y} Λ(t)/t = log y − γ + o(1) |
+| Pole defect | `poleDefect` | D_N(x) = Σ_{mt≤N} Λ(t)(x_{mt} − x_m/√t)² |
+| Renormalized prime energy | `renormalizedPrimeEnergy` | log N·|x|² − ⟨P_N x, x⟩ |
+| Ramanujan profiles / energy | `ramanujanPoleProfile`, `normalizedRamanujanMode`, `ramanujanAdjunctionEnergy` | c_m(n)/√(φ(m)n); E(m) = γ + log m + τ(m), τ = tame different |
+| Valuation step | `valuationStep` | 1_{j≥k} − (p−1)^{−1}1_{j=k−1}: eigenvector of the p-tower |
+| Tower finite part / deficit | `towerFinitePart`, `towerDeficit`, `localEuler` | F_p(b) = 2γ_p|b|² + log p(|b|² − K_{p^{−1/2}}(b)); d_p = √p log p/(p−1) − γ |
+| Finite sieve | `sieveEuler`, `sievedHarmonic`, `sieveClassPole`, `sieveAdjunctionOperator`, `sieveAdjunctionBasis` | γ_Q = γ + Σ_{p∈Q} log p/(p−1); A_Q = diag(log n) + γ_Q − P on ℓ²(Q-supported) |
+| Sign gauge | `IsSignGauge`, `liouvilleSign`, `primeSignGauge`, `charGauge` | completely multiplicative ±1 twist of P |
+| Harmonic measure tools | `harmonicVar`, `glauberForm`, `shellTau`, `roughInterval` | variance under 1/n; prime-ladder Dirichlet form |
+| Markov form | `markovEnergy`, `levyEnergy` | archimedean form minus prime sum on atomic tests |
+| Complete Weil matrix | `completeWeilMatrix`, `fullWeilHorizonMatrix` | literal Weil form (both poles) on atoms φ((u − log n)/w), w = c/N, / atom mass |
+| Center kernel | `archimedeanCenterKernel` | Lévy density at log-gaps; in pole gauge ½(1/|n−j| + 1/(n+j)) |
+| Completed energies | `completedShellEnergy`, `completedConductorEnergy` | E(c) = (2/M)Σ_k k^{−1}∫_{kc}^∞|φ̂(2πt)|²; E_m(c) by Möbius inversion |
+| Resolution data | `resolutionBottom`, `resolutionThreshold`, `twistBound`, `packetEnergy`, `flipCoupling` | sign of a twisted Weil matrix at overlap c |
+| Horizon boundary | `horizonBoundary` | B_N(s) = ζ(s) − Σ_{n≤N} n^{−s} (Euler–Maclaurin) |
 
-| Regulator | Counterterm | Rank | Survival | Anomaly of $[t]$ |
-|---|---|---|---|---|
-| Abel radius | $\varphi(n)\delta_{mn}$ | #orders | $\{0\}$ | $\log t-$tame different |
-| spacing radius | scalar | #orders | $\{0\}$ | tame different |
-| horizon, uniform | $\ell(x)^2$ | 1 | $\int g=0$ | — |
-| horizon, class-wise | $\sum_j\delta_j^{-1}\ell_j^2$ | #classes | $\ell_j=0\ \forall j$ | none for $[p]$ |
+## 3. Language
 
-**Words.** Counterterm *scalar / polar / orbital / tensor*; renormalization *covariant / anomalous*; a coupling *pays* a direction;
-divergences *matched / anti-matched*; *uniform* vs *class-wise* profiles. Every theorem states regulator, counterterm (rank,
-survival cone), anomaly, and paying place.
-
----
+- Counterterm: *scalar / polar / orbital / tensor*; *survival cone* = its kernel; a coupling *pays* a direction.
+- Regulator: *Abel radius*, *spacing radius*, *horizon* (orders ≤ N). Rank of the counterterm belongs to the regulator.
+- *Matching coefficient* κ (divergence κℓ²) vs *finite part* 2α (from A_ε(y) = κ log y + α + o(1)).
+- *Overlap* c = wN: c < 1 separated atoms; c fixed > 1 bounded overlap; c → ∞ growing overlap.
+- *Conductor* m labels Ramanujan modes; *flip* = sign twist at a prime; *threshold* = least overlap that resolves it.
 
 ## 4. Mechanisms
 
-1. **Coupled survival**: partner-kernel inclusion; prime survival $\le$ rank of the partner.
-2. **Horizon polarity and tensor law**: on uniform step profiles $P_N=\ell^2+O(\text{mass})$; on class-wise profiles $P_N=\sum\delta_j^{-1}\ell_j^2+O(H_N|c|^2)$; extends to
-   profiles of bounded variation.
-3. **Covariance forces a scalar**; Schur with the pole vector is extremal: $\kappa_{\rm cov}(N)=\log N-\gamma+o(1)$.
-4. **Finite parts from Mertens limits**: if $A_\varepsilon(y)-\kappa\log y\to\alpha$, then $P_N(\varepsilon x)=\kappa\ell^2+2\alpha|x|^2+o(\text{mass})$ (for $\zeta$: $\kappa=1$, $\alpha=-\gamma$); the
-   remainder is the harmonic convolution of the Mertens error.
-5. **Residue classes and characters**: the horizon reads valuations, not residues (rank one on unit classes mod $q$); a class
-   function is seen only through its mean; the finite part is diagonalized by characters with eigenvalues $2\Re(-L'/L(1,\chi))$.
-6. **Prime spectral exhaustion**: the limiting pole gap is exactly $2\log2$ (2-adic step). Finite Ramanujan spans uniformly approximate
-   bounded-defect sublevels. For $\log N\,I-P_N$, exact counts with multiplicity hold eventually at thresholds outside the limiting
-   energies $\gamma+\log m+d(m)$; simple eigenlines converge to Ramanujan profiles.
-7. **Atomic stability**: Lévy self-energy with constant one; Markov form nonnegative down to $\delta_N/(C\log N)$ with absolute
-   interaction; at width $c/N$ the ground energy is $2\theta'(0)+\log(1/c)+\kappa_L(\varphi)+\gamma+O(c)$ (Robin constant + Euler constant).
-8. **Complete Weil spectrum at the spacing**: for a nonzero $C^2$ profile supported in $[0,1]$ and fixed $0<c<1$, widths $w=c/N$
-   give Ramanujan norm quasimodes, eventual exact counts with multiplicity at thresholds outside the limiting spectrum, and simple eigenline convergence.
-   Joint center-pole cancellation and prime-defect coercivity retain both pole terms; only conductor one receives the pole shift.
+**A. Counterterm algebra**
+1. Coupled survival: positive [[A,C],[Cᵀ,D]] ⇒ ker D ⊆ ker C; prime survival ≤ rank D. Rank-one archimedean germ pays exactly the arithmetic point e₁ (`jointGram`).
+2. Gårding = finite-rank survival: A ≥ 0 on the common kernel of k functionals ⇔ survival cone of a rank-k PSD counterterm. RH ⇔ Weil's counterterm can be zero.
 
----
+**B. Horizon regulator**
+3. Polar law: ⟨u^{(M)}, P u^{(M')}⟩ = H_M H_{M'} + O(H_min); step profiles P_N = ℓ² + O(mass); extends to every BV profile g(log n/log N).
+4. Tensor law: class-wise P_N = Σ_j δ_j^{−1}ℓ_j² + O(H_N); rank unbounded on p-adic classes; [p] maps class j → j+1 with δ/p and ℓ/√p, so the finite part is exactly Hecke covariant (no anomaly). Exact factorization: P(dk, el) = [d=e]P(k,l) + [k=l]P(d,e) over a finite sieve.
+5. Residues: unit classes mod q have rank-one divergence (weight q/φ(q)); a class function f is seen only through its mean; Re χ, Im χ profiles have no (log N)² term.
+
+**C. Finite parts are Mertens constants**
+6. If A_ε(y) − κ log y → α then P_N(εx) = κℓ² + 2α|x|² + o(mass); necessary and sufficient: harmonic mean of the Mertens error. ζ: κ = 1, α = −γ.
+7. p-adic classes: finite part −2γ_p + log p(K_{p^{−1/2}} − 1) (tower form). Sign: F_p ≥ 0 ⇔ d_p ≤ 0 ⇔ p ≥ 47; valuation potential j log p left by the archimedean matching pays the deficit for every p.
+8. Finite sieve: one Euler constant γ_Q shared by harmonic and Mertens sums; profile finite part −2γ_Q|b|² + Σ_p tower forms; sieved log sum has no linear log N term.
+9. Characters: α_χ = −L'/L(1,χ); residue finite part diagonalized by characters with eigenvalues 2 Re(−L'/L(1,χ)). Gauge rigidity: among κ = 1 gauges α ≤ −γ with equality iff ε ≡ 1; each flipped prime lowers α by ≥ 2 log p/p; Liouville separates by 2(2γ + τ).
+
+**D. Ground state of the prime form**
+10. Exact ground-state identity P_N(x) + D_N(x) = Σ_n (A(⌊N/n⌋) + log n) x_n²; pole is the top: P_N ≤ (log N − γ + ε)|x|², sharp.
+11. Harmonic measure 1/n on [1,X] tensorizes over primes (approximate Efron–Stein, thin rough shells by Selberg sieve) ⇒ Poincaré constant of the multiplicative walk = 2 log 2; the 2-adic step attains it. Top of P_N on the pole hyperplane = log N − γ − 2 log 2 + o(1).
+12. Box/ladder chains are exactly solvable (valuation steps, eigenvalues k log p + log p/(p−1)); the top spectrum of P_N is exhausted by integers m with energy log m + τ(m).
+13. Fixed-point law: spectrum of α diag(log n) + P_N fills [κ₋, κ₊]·log N, κ² = ακ + 1; torsion pairing (α = 1) costs φ_golden·log N, extremal charges φ^{ω(n)}/√n.
+
+**E. Ramanujan spectral exhaustion**
+14. Ramanujan correction identity: Σ_t (c_m(nt) − c_m(n))Λ(t)/t = −(log m + τ(m))c_m(n) − downward jets ⇒ r_m is a quasimode of P_N at log N − E(m).
+15. Bounded defect ⇒ uniform finite Ramanujan approximation (valuation boxes, smooth–rough fibres); conductor cutoff exp(C(K+1)) suffices and is necessary (E(2^k) = γ + (k+1)log 2).
+16. Coordinate certificate + residuals ⇒ exact counts: #{eigenvalues of log N − P_N below T} = #{m : E(m) < T}; simple eigenlines converge to Ramanujan lines. Finite-sieve version: A_Q has the density-weighted Ramanujan basis as eigenbasis, compact resolvent.
+
+**F. Archimedean place at atomic width**
+17. Lévy self-energy has constant one; Markov form ≥ 0 down to width e^{−C}/(N(1+log N)) (archimedean pays the prime place up to a logarithm).
+18. Finite part at the spacing: ground energy log(1/(2πwN)) + β(φ)/‖φ‖² (Gamma factor, self-energy and pole combine to −log 2π). Arithmetic modes at width K/N: energy log(K_m/K), K_m = m e^{τ(m)} e^{β/‖φ‖²}/(2π).
+
+**G. Complete Weil matrix**
+19. Exact decomposition at every c: W = (log N + self(c) − γ + err)I − P + Center − CrossErr + PoleErr + Overlap − NonRatio. Center row cancels the restored poles up to a boundary layer paid by top atoms.
+20. c < 1: Ramanujan quasimodes at E_m = log(1/(2πc)) + β/M + log m + τ(m) + [m=1]c(∫φ)²/M; coercivity a|x|² + ((1−c)/4)D ≤ W; spectrum = these energies with multiplicity.
+21. Every c > 0: residual = −(Up − κ_m(c)) + o(1), Up the upward prime window; affine prime shells give the shell correction κ_m(c). Completed energies E_m(c) = (2/(Mφ(m)))Σ_{(a,m)=1}(m/a)∫_{ac/m}^∞|φ̂|² ≥ 0 (Möbius signs collapse to coprimality); conductor one minimizes; E(c) → 0 as c → ∞ (Stirling).
+22. Overlap ↔ RH: SSHA second-order overlap law transfers ⇒ for c_N⁴/log N → ∞, c_N = o(N): RH ⇔ W eventually PSD.
+
+**H. Selectivity**
+23. Twists enter only through defect × multiplicative correlations of packet profiles; sign at fixed c = sign of an explicit quadratic form on finitely many Ramanujan coordinates.
+24. Every finite flip set is resolved at an exact positive threshold (profiles without real Fourier zeros); index of the twin grows unboundedly with c; c_0(ω_p) is between (κp/log p)^{1/7} and (Kp)^{1/7}: no bounded overlap sees all flips.
+
+**I. Zero side**
+25. Pole mode: Q(f_pole) = Re Σ_ρ m_ρ ĝĝ B_N(1−ρ)B_N(ρ): zeros see the pole only through the Euler–Maclaurin horizon boundary; general x through Möbius horizons of a = (√n x)*μ. Horizon charge is blind to Re ρ; theta source carries the same boundary; windowed aperture modes are exponential box tests.
 
 ## 5. Pillar theorems
 
-1. **Coupled survival; archimedean place pays the arithmetic point** (`card_le_rank_coupled`, `primeSurvival_jointGram`).
-2. **Covariant counterterm is the anomaly** $\log N-\gamma+o(1)$ (`renormalizedPrimeForm_covariant_iff`).
-3. **Torsion counterterm is the golden ratio** $\varphi\log N+O(1)$ (`torsionCounterterm_golden`); fixed-point law for $\alpha\operatorname{diag}(\log n)+P_N$ (`fixedPoint_top`).
-4. **Tensor law; no anomaly at the horizon** (`abs_atomicWeilForm_classProfile_sub_le`, `finitePart_heckeShift`).
-5. **Finite part is Euler's constant / the tower form / twice the Mertens limit** (`exists_abs_atomicWeilForm_stepProfile_add_le_of_polar`,
-   `exists_abs_atomicWeilForm_classCombination_finitePart_le`).
-6. **Tower deficit changes sign between 43 and 47**; the archimedean valuation potential pays it (`towerDeficit_eq_div_sinh`).
-7. **Matched operator $A_Q$**: complete basis, simple energies, compact resolvent (modules `TheSieveOperatorHasTheAdjunctionEigenbasis`,
-   `TheAdjunctionResolventIsCompact`; `sieveAdjunctionInverse_isCompact`).
-8. **Limiting gap $2\log2$, exact counts and simple eigenlines** (`exists_poleDefect_ge`,
-   `eventually_fullPrime_spectral_count_eq`, `exists_simple_fullPrime_eigenline`).
-9. **Gauge selectivity**: matching coefficient = density of the gauge; finite part sees every flipped prime and $\zeta$ maximizes it;
-   pole hyperplane and finite part separate $\zeta$ from Liouville (`liouville_matching`, `exists_pole_hyperplane_separates_liouville`).
-10. **Characters and Chebotarev patterns matched by their mean** (`exists_norm_charMertensSum_le`, RP25/RP38/RP60 modules).
-11. **Atomic stability with constant one** (`markovEnergy_atomicTest_nonneg_sharp`, `markovEnergy_atomicTest_nonneg_logSpacing`).
-12. **Complete Weil spectral law for $0<c<1$** (`tendsto_completeWeilMatrix_ramanujan_residual_norm`,
-    `eventually_completeWeil_spectral_count_eq`, `exists_simple_completeWeil_eigenline`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Archimedean place pays exactly the arithmetic point | `TheArchimedeanPlacePaysTheArithmeticPoint` | proved |
+| Gårding ⇔ finite-rank survival | `garding_iff_survival`, `garding_iff_regularized` | proved |
+| Covariant counterterm log N − γ + o(1), pole extremal | `covariantCounterterm_sandwich`, `covariantCounterterm_sharp` | proved |
+| Torsion counterterm φ_golden log N + O(1) | `torsionCounterterm_golden` | proved |
+| Horizon counterterm: unbounded rank, tensor law, Hecke covariant | `horizonCounterterm_rank_unbounded`, `TheHorizonCountertermIsHeckeCovariant` | proved |
+| Finite part = 2× Mertens limit; −2γ for ζ | `TheFinitePartIsTwiceTheMertensLimit`, `TheFinitePartIsEulersConstant` | proved |
+| Tower deficit sign change 43/47; valuation potential pays | `TheTowerDeficitChangesSignBetweenFortyThreeAndFortySeven`, `towerFinitePart_add_valuation_ge` | proved |
+| ζ maximizes the finite part among κ = 1 gauges | `finitePartLimit_le_and_eq_iff`, `liouvilleLimit_le_and_eq_iff` | proved |
+| Character Mertens limit = −L'/L(1,χ); character diagonalization | `charMertensLimit_eq_neg_logDeriv`, `sum_residueFinitePart_mul_char` | proved (PNT for characters) |
+| Ground-state identity and pole top | `eventually_atomicWeilForm_add_poleDefect_le` | proved |
+| Spectral gap 2 log 2 below the pole, 2-adic step first excitation | `eventually_atomicWeilForm_le_two_log_two`, `eventually_atomicWeilForm_below_pole_two_log_two` | proved |
+| Matched prime Gram hyperbolic (one positive direction) | `Signature/TheMatchedPrimeFormHasOnePositiveDirection` | proved |
+| Matched sieve operator: Ramanujan eigenbasis, compact resolvent | `TheSieveOperatorHasTheAdjunctionEigenbasis`, `TheAdjunctionResolventIsCompact` | proved |
+| Bounded prime spectrum = adjunction spectrum; eigenlines | `eventually_fullPrime_spectral_count_eq`, `exists_simple_fullPrime_eigenline` | proved |
+| Exponential conductor cutoff, necessary and sufficient | `exists_exponential_conductor_cutoff_of_poleDefect_le`, `PrimeDefectConfinementMustRetainLowEnergyConductors` | proved |
+| Markov finite part −log 2π at the spacing | `eventually_markovEnergy_atomicTest_ge`, `TheArchimedeanFinitePartIsMinusLogTwoPi` | proved |
+| Complete Weil spectrum for c < 1 | `TheBoundedCompleteWeilSpectrumIsTheAdjunctionSpectrum` | proved |
+| Upward defect = shell correction at every c | `tendsto_completeWeilMatrix_ramanujan_residual_add_upward_norm`, `tendsto_sum_sq_upwardPrimeRow_sub_shellCorrection` | proved |
+| Completed shell energy positive Fourier integral; conductor repayment | `TheCompletedShellEnergyIsAPositiveFourierIntegral`, `TheShellsRepayEveryConductor` | proved |
+| Spectrum bottom → E(c) > 0 at every fixed c; RH ⇔ PSD at c = 2(log N)^α | `tiltedUnitSpline_overlap_window` | proved (tilted unit spline) |
+| Flip thresholds exact and polynomial in p | `primeFlip_resolutionThreshold_spec`, `tiltedUnitSpline_primeFlip_resolutionThreshold_sharp_lower`, `tiltedUnitSpline_flip_threshold_polynomial` | proved |
+| Zeros see the pole mode only at the horizon | `weilQuad_poleMode_eq_tsum`, `weilQuad_atomicTest_eq_tsum_mobiusHorizon` | proved |
+| Capstone (26 laws) | `renormalized_arithmetic_potential_theory_laws` | proved |
 
----
+## 6. Tools
 
-## 6. Traps
+**Developed**
+- Weighted Schur test with tilted pole; ground-state transform by n^{−1/2}; ground-state identity P + D = row potential.
+- Harmonic-measure tensorization over primes (rough intervals, thin shells, `shellTau`), smooth–rough fibration, box Poincaré.
+- Exactly solvable towers and box chains (valuation steps); Ramanujan sums as products of valuation steps.
+- Mertens toolkit: gauged, sieved, residue-class and character Mertens sums with constants; harmonic-convolution transfer.
+- Finite Ramanujan approximation with explicit conductor cutoffs; min–max / Davis–Kahan packet machinery.
+- Complete Weil error decomposition; center kernel; Riemann-sum shells; completed energies via Poisson, Stirling and Möbius.
+- Twisted packet calculus; resolution bottom and threshold; flip coupling bound.
+- Euler–Maclaurin horizon boundary and Möbius horizons for the zero-side expansion.
 
-| Trap | Truth |
+**To build**
+- A lower bound for the complete Weil matrix with margin surviving c_N = 2(log N)^α (the RH step).
+- Reserve and quasimodes at general overlap for profiles other than the tilted spline.
+- Mertens constants for Artin/Hecke L-functions (finite parts of Chebotarev patterns).
+- Torsion-pairing O(1) term; finite parts of twisted torsion pairings.
+
+## 7. Open questions
+
+1. Rate of E(c) → 0 versus the error terms as c grows with N: where exactly does positivity become RH?
+2. Does any regulator give finite Hecke-covariant self-intersection with a nonzero survival cone (beyond the horizon tensor one)?
+3. Uniform-in-p flip resolution at overlap c: what overlap profile sees every prime at once (c*(p) → ∞ forbids bounded c)?
+4. Finite part of all primes at once in class profiles (growing sieves); joint Hodge index on all valuation classes.
+5. Can the zero-side horizon boundary B_N(1−ρ)B_N(ρ) be controlled independently of Re ρ for non-pole modes?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| The counterterm rank is intrinsic to the pairing | It belongs to the regulator |
-| Coupling the places lowers the prime counterterm | Never; the archimedean germ pays one direction |
-| Renormalization is necessarily anomalous | At the horizon the anomaly cancels exactly |
-| A covariant scalar counterterm is cheap | $\log N+O(1)$, constant one; torsion costs $\varphi\log N$ |
-| The continuum model gives the torsion constant | $e/(e-1)$ is wrong; extremal charges are multiplicative ($\varphi$) |
-| Each place's counterterm sees the gauge | Each is gauge blind; their matching is not |
-| The horizon reads residue classes | Only through the mean; residues are invisible to the divergence, visible to the finite part |
-| The spacing regime is beyond reach | Separated regime computed; the open part is the overlap regime |
+| Counterterm rank is intrinsic | It belongs to the regulator (Abel: full rank; horizon: polar/tensor) |
+| Coupling lowers prime counterterm rank | Never; archimedean pays one direction |
+| Renormalization is anomalous | At the horizon [p] acts by density 1/p, polar p^{−1/2}: exact covariance |
+| Continuum model gives the torsion constant e/(e−1) | Extremal charges are multiplicative: golden ratio |
+| Raw prime kernel has local Hodge index | Ladder 1..p⁵ has two positive squares; only the matched form is hyperbolic |
+| Gauges are distinguished by divergence | Finite flips have identical κ; only finite parts separate them |
+| Residue classes are seen by the horizon | Divergence is rank one on units; residues live in the finite part |
+| Fixed-overlap positivity is evidence for RH | Holds unconditionally at every fixed c and on an unbounded schedule; RH is growth (log N)^α |
+| Margin at overlap c is uniform | E(c) → 0; flip thresholds c_0(ω_p) → ∞ |
+| General-overlap counts are unconditional | They take reserve + quasimode binders; unconditional only for c < 1 and the tilted spline |
+| Overlap Gram smoothing keeps the pole defect | Needs the ¼ correction (exact threshold) |
+| Several modules end with `#print axioms` lines | Diagnostic only; no logical content |
 
----
+## 9. Context
 
-## 7. Open problems
+| Uses | Modules |
+|---|---|
+| RHTower | 30 (Mertens, Lévy density, Euler–Maclaurin, PNT for characters) |
+| HTGeometry | 27 (harmonic finite parts, atomic tests, Weil quadratic form) |
+| CriticalArithmeticCorrelationTheory | 16 (affine prime shells, reserve, quasimodes, polynomial floor) |
+| SpacingScaleHarmonicAnalysis | 15 (atomic stability, overlap growth law) |
+| ArithmeticIntersectionTheory | 10 (tame different, tower form, transverse towers) |
+| ArithmeticLorentzianGeometry | 8 (Metzler dichotomy, Hardy–Blaschke bases) |
+| BiScaleUncertainty, SelectiveMultiscaleArithmeticPositivity, BezoutValuationIncidence, ArithmeticElectrostatics | 4–5 each |
+| TransMetzlerWeilPositivity, RenormalizedBiarithmeticGeometry, ArithmeticIncidencePositivity, others | 1–2 each |
 
-1. **Overlap regime** $w\gg\delta_N$: which finite part (signed interaction + pole) keeps the matching through overlaps; SSHA ties
-   positivity at widths $N^{-\theta}$, $\theta<1$, to RH.
-2. **All primes at once in the class-profile finite part**, or growing normalized class families.
-3. **The $O(1)$ term of the torsion constant**; twisted torsion pairings.
-4. **Finite parts of Chebotarev patterns** (needs Artin $L$ Mertens constants); patterns not constant on divisions (Hecke $L$-functions).
-5. **Finite parts of the archimedean place and the pole** beyond the separated regime.
+| Used by | Modules |
+|---|---|
+| CriticalArithmeticCorrelationTheory | 27 (Ramanujan certificates, completed spectrum, conductor cutoffs) |
+| TransMetzlerWeilPositivity | 9 (complete Weil errors, arithmetic finite part, spectrum) |
+| ArithmeticCountingPositivity | 9 (adjunction spectrum, matching density, BV horizon laws) |
+| SuccessorShellArithmetic | 7 (completed shells, flip thresholds, pole collapse) |
+| SelectiveMultiscaleArithmeticPositivity | 5 (gap 2 log 2, Liouville separation, spectral points) |
+| ArithmeticLorentzianGeometry, SignedArithmeticHodgeTheory, HeckeKreinToeplitz, SpacingScaleHarmonicAnalysis | 2–4 each |
+| ArithmeticElectrostatics, ArithmeticIntersectionTheory, ArithmeticCastelnuovoSeveri, AdelicKreinGeometry, HeckeLFunctions, CompletedArithmeticForms, ArithmeticIncidencePositivity | 1 each |
 
-## 8. Tools to build
+| Neighbour | Relation |
+|---|---|
+| RenormalizedBiarithmeticGeometry | supplies survival cones and germs; RAPT computes them for the explicit formula |
+| ArithmeticIntersectionTheory | supplies intersection numbers and towers; RAPT renormalizes their diagonal and computes finite parts |
+| ArithmeticElectrostatics | atomic Weil form and stability; RAPT sharpens constants to one and to the spacing |
+| SpacingScaleHarmonicAnalysis | overlap growth law; RAPT turns it into RH ⇔ PSD at logarithmic overlap |
+| CriticalArithmeticCorrelationTheory | mutually dependent: affine prime shells and reserves in, completed spectrum and certificates out |
+| ArithmeticCountingPositivity, SuccessorShellArithmetic | consume the adjunction spectrum and completed shells |
 
-A lower bound for the complete Weil horizon matrix through overlaps; the finite-part law for all primes; Mertens constants
-for Artin and Hecke $L$-functions.
+## 10. Big picture
 
-## 9. Contribution standard
+Every divergence of the explicit formula is understood: its rank is set by the regulator, Weil's own horizon regulator is
+Hecke covariant with a polar (tensor) counterterm, and what remains is a computed finite part built from Euler's constant,
+local tower forms and logarithmic derivatives of L-functions at 1. The renormalized prime form has a clean spectrum — the
+integers, with energies log m + tame different, attained by Ramanujan sums — and the archimedean place pays it down to
+the atom spacing. Positivity of the literal complete Weil matrix is therefore proved at every fixed overlap, with an
+explicit completed spectrum whose bottom is a positive Fourier integral.
 
-State regulator, counterterm (rank, survival cone), anomaly and paying place; separate divergence (matching) from finite
-part; report gauge behaviour (Liouville, character, Chebotarev gauges); unconditional with no positivity premise.
+What it tells us about RH: the obstruction is not hidden in any single prime, character or finite sieve — all of these are
+computed and positive. It is a rate problem. The positivity margin E(c) decays to zero as the overlap grows, flips of
+larger primes need larger overlaps, and RH is exactly positivity at overlap (log N)^α. A proof must control the shrinking
+margin against all primes simultaneously; finite-dimensional arithmetic (sieves, gauges, packets) is fully understood
+and cannot supply it on its own.

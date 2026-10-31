@@ -1,182 +1,196 @@
-# Arithmetic Defect Rigidity (ADR)
+# ArithmeticDefectRigidity (ADR)
 
-Namespace `GaloisForLFunctions.ArithmeticDefectRigidity`; umbrella `ArithmeticDefectRigidity.lean`.
+Namespace `GaloisForLFunctions.ArithmeticDefectRigidity`; umbrella `ArithmeticDefectRigidity.lean`; 88 modules.
+Everything is unconditional. Most statements are dichotomies `Admits dampedMobiusEnergy ε ∨ P`: the
+receiver energy is bounded, or the escape property `P` holds.
 
-**Question.** Which failures of critical arithmetic estimates survive normalization, localization and
-passage to infinity — and which relations of the actual source restrict an escaping defect strongly
-enough to control the signed quantity an established receiver consumes?
+## 1. Motivation
 
-The working receiver is the centred damped Möbius receiver at $0<\varepsilon<\tfrac12$. ADR separates its
-energy from the much larger positive forcing, keeps the receiver as a signed Gram difference, locates the
-forcing in the cofactor tail, pays the forcing by an explicit power subtraction defined by the source's own
-pole trace, and extracts limits (energy quantiles; common cofactor Gram limits carrying a cyclic critical
-Wiener module) that retain signed data. Each result constrains what an escaping state can be.
+At damping `0 < ε < 1/2` the receiver energy `E_T = ‖Ψ‖²_T` of the centred damped Möbius prefix is bounded
+for a cofinal family of dampings iff RH holds (receiver programme). ADR studies the escaping alternative:
+what object carries divergent energy, which source relations survive normalization and limits, and whether
+those relations pin the object to zeros of ζ. Outcome: escape states are cyclic Hilbert modules of the
+critical Wiener algebra; power-like rows obeying the renormalized inversion law exist exactly at translated
+zeros `ζ(s+ε) = 0`, with multiplicity.
 
-**Open core: exclusion.** None of this bounds receiver energy. A source estimate excluding every escaping
-state for a cofinal family of dampings would give RH through the critical-energy receiver.
+## 2. Objects
 
----
-
-## 1. Place in the research
-
-The corpus has exact receivers; compensation theory proves normalized receiver profiles escape every fixed
-window. ADR asks what survives that escape: a pointwise limit can be zero with total energy one; a cofactor
-identity can become homogeneous on fixed cells while its forcing grows; a successor label can act as the
-identity in the chosen norm.
-
-| Programme | Relationship |
-|---|---|
-| ArithmeticCompensationTheory | Normalized profiles, origin costs, escape |
-| ArithmeticContinuationAndCriticalEnergy | Receiver, inversion identity, dilation calculus, incomplete fibres |
-| BezoutValuationIncidence | VK estimate, successor covariance, Vaughan Grams |
-| TransHorizonIncidenceMechanics | Smooth-power expansion, Mellin cells, first-moment identity |
-| ArithmeticOrientationTheory | Critical Wiener algebra, paid ideals, hulls; cofactor limits are Wiener modules |
-| SignedSuccessorArithmetic | Successor counts; transfer must beat fixed-successor collapse |
-| SignedArithmeticEnergyIncidence | Compact negativity vs escape |
-| ArithmeticOrientationGeometry, ArithmeticCastelnuovoSeveri | Geometric carriers must preserve the adverse mode and its cost |
-
----
-
-## 2. Objects and language
-
-At damping $\varepsilon$: $c_\varepsilon(n)=\sum_{d\mid n}\mu(d)d^{-\varepsilon}$, $m_\varepsilon=\zeta(1+\varepsilon)^{-1}$, receiver prefix
-$A(n)=\sum_{j\le n}(c_\varepsilon(j)-m_\varepsilon)$, pronic pairing $\langle u,v\rangle_T=\sum_{n\le T}u(n)v(n)/(n(n+1))$, energy
-$E_T=\|A\|_T^2$. **Inversion identity**: $\rho(n)=n-m_\varepsilon\sum_{j\le n}j^{-\varepsilon}\lfloor n/j\rfloor=A(n)+D(n)$,
-$D(n)=\sum_{2\le j\le n}j^{-\varepsilon}A(\lfloor n/j\rfloor)$.
-
-| Object | Meaning | Lean |
+| Object | Lean | Meaning |
 |---|---|---|
-| Forcing energy | $F_T=\|\rho\|_T^2\ge b_\varepsilon T^{1-2\varepsilon}$ | `forcingEnergy` |
-| Signed Gram | $P=\langle A,\rho\rangle$, $G=\|D\|^2$, $Q=\langle\rho,D\rangle$ | `receiverForcingPairing`, `cofactorEnergy`, `forcingCofactorPairing` |
-| Cofactor tail | $D-D_{\le J}$ | `cofactorTail` |
-| Forcing power / remainder | $c_\varepsilon n^{1-\varepsilon}$, $c_\varepsilon=-m_\varepsilon\zeta(1-\varepsilon)/(1-\varepsilon)>0$; $R=\rho-c_\varepsilon n^{1-\varepsilon}$ | `forcingPower`, `forcingRemainder` |
-| Renormalized cofactor | $\tilde D=D-c_\varepsilon n^{1-\varepsilon}$; operator on the pole-trace domain | `renormalizedCofactor`, `poleTraceDomain`, `renormalizedCofactorOperator` |
-| Pole trace | $\mathcal L(v)$ = Mellin pairing at $1-\varepsilon$ | `traceDilation` |
-| Energy quantile | first crossing of $rE_T$ | `receiverEnergyQuantile`, `quantileCofactorWork` |
-| Cofactor Gram | $K_T(j,k)=\langle D_jA,D_kA\rangle_T/E_T$, $D_jv(n)=v(\lfloor n/j\rfloor)$ | `cofactorGram`, `ActualCofactorLimit` |
-| Eta cofactor sum | $H_\varepsilon v=\sum_{j\le n}(-1)^{j+1}j^{-\varepsilon}v(\lfloor n/j\rfloor)$ | — |
-| Cell word | successor translations + floor dilations; boundary cost $B(w)$ | `CellWord` |
+| Damping | `SubcriticalDamping` | `0 < ε < 1/2`; `α = 1−ε` |
+| Receiver | `pmPowerDampedCenteredDivisorPrefix ε` (Ψ), `dampedMobiusEnergy` | centred prefix; `E_T = Σ_{n≤T} Ψ(n)²/(n(n+1))` |
+| Forcing | `inversionDefect` (ρ), `forcingEnergy` | `ρ = Ψ + Σ_{j≥2} j^{−ε}Ψ(⌊n/j⌋)` (inversion law, ACCE) |
+| Power / remainder | `forcingPower`, `forcingPowerCoefficient`, `forcingRemainder`, `forcingRemainderBudget` | `ρ = c_ε n^α + R`, `c_ε > 0`, `‖R‖_T ≤ B_ε` |
+| Pole trace | `poleTraceDomain`, `poleTrace`, `actualPoleTrace` | `𝓛v = Σ v(n)(n^{−α}−(n+1)^{−α})/α` |
+| Renormalized cofactor | `renormalizedCofactorOperator` (D̃), `renormalizedResidualOperator` | `D̃v = Σ_{j≥2} j^{−ε}v(⌊n/j⌋) − 𝓛(v)n^α`; residual `v + D̃v` |
+| Inverse pole power | `inversePolePower`, `inversePoleVector` | `q_ε = Σ_{d≤n} μ(d)d^{−ε}⌊n/d⌋^α` |
+| Dilation | `rowDilate`, `dil`, `dilOp` | `D_p v(n) = v(⌊n/p⌋)` |
+| Cofactor sums | `totalCofactorSum`, `cTotalCofactorSum`, `etaCofactorSum` | `S_ε v = Σ_{j≤n} j^{−ε}v(⌊n/j⌋)`; `H_ε = S_ε − 2^α D₂S_ε` |
+| Euler laws | `eulerLaw`, `cEulerLaw` | `w − p^s D_p w` |
+| Energies | `pronicEnergy`, `cPronicEnergy`, `CAdmitted`, `Adm`, `EnergyBounded` | full-horizon pronic energy; admitted = `v(0)=0` + finite energy |
+| Cofactor Gram | `cofactorGram`, `cofactorGramRadius` | `K_T(j,k) = ⟨D_jΨ,D_kΨ⟩_{T+1}/E_{T+1}`, `|K| ≤ 1/√(jk)` |
+| Escape state | `ActualCofactorLimit` (`kernel`, `Hilbert`, `vector`, `dilation`, `wienerRepresentation`, `annihilator`, `moduleHull`) | subsequential Gram limit with its cyclic Wiener module |
+| Power rows | `powerRow`, `powerLogRow`, `powerRowCofactorSum`, `powerPoleTrace`, `zetaLeibnizRow` | `Re(a n^s)`, `Σ c_k log^k n·n^s` |
+| Row Mellin | `rowMellin` | `𝓜v(w) = Σ v(n)(n^{−w} − (n+1)^{−w})` |
+| Diffuse coordinates | `receiverEnergyQuantile`, `CellWord`, `BoundedCellMultiplier` | energy quantiles, shift/dilation words, moving localizations |
+| Countermodels | `whiteNoiseKernel`, `oddWhiteNoiseKernel`, `augmentationKernel`, `OriginStepModule.kernel`, `MixedOriginModule.kernel`, `dyadicGhost` | abstract Grams/rows passing partial laws |
 
-**Words.** *Escape*: $E_T\to\infty$; *admission*: bounded. *Defect state*: a proposed carrier of escaping energy
-with its operations, signed covariances, scales and forcing (no interface asserting exclusion is supplied).
-Distinctions: data vs estimate; reconstruction vs bounded output; uniqueness vs coercivity; relative vs
-absolute smallness; a limiting Gram can lose its small signed coordinate; divisor support loses multiplicity.
+## 3. Language
 
----
+- **Admission / escape**: `Admits dampedMobiusEnergy ε` (bounded `E_T`) vs `E_T → ∞`; `admits_or_tendsto_atTop` (ACompT).
+- **Forcing vs receiver normalization**: divide by `F_T` or by `E_T`; they never agree.
+- **Renormalized inversion law** of a row `v`: `v + D̃v` has bounded energy ⇔ `S_ε v − c n^α` has bounded energy.
+- **Tied exponent**: `z` with `2^z = 2^s`, `3^z = 3^t`. **Translated zero**: `ζ(s+ε) = 0`.
+- **Hulls**: `moduleHull` (Bohr zeros of the annihilator) ⊆ AOT `obstructionHull` (zeros of the paid ideal).
+- **Horizon order**: numeric order of horizons, `p ↦ p·K(p,p)` antitone; finer than multiplicative laws.
 
-## 3. Mechanisms
+## 4. Mechanisms
 
-### Scales and signed geometry
-1. **Forcing dominates the receiver.** $E_T\le C_\varepsilon e^{-\kappa\sigma(T)/270}F_T$ (VK); $F_T/E_T\to\infty$ whether or
-   not $E_T$ diverges; no common scalar normalization keeps both visible. Source-selective: the unsigned majorant
-   has constant ratio.
-2. **Receiver = Gram tangent.** $F+G-2Q=E$, $0\le FG-Q^2=EF-P^2$; determinant$/F^2\to0$ while distance$/E=1$: rank or
-   positivity of the limiting Gram loses the receiver.
-3. **The cofactor tail carries the forcing**, also on a moving window $J_T=\lfloor\log(F_T/E_T)\rfloor\to\infty$;
-   fixed-label limits lose the whole forcing.
+**A. Scales.**
+1. Forcing dominates: `F_T ≥ b_ε T^{1−2ε}`, `E_T ≤ C e^{−κσ(T)/270} F_T` (VK); `F/E → ∞`; no common scalar normalization.
+2. Gram tangent: `F + G − 2Q = E` (`G = ‖D‖²`, `Q = ⟨ρ,D⟩`); `(FG−Q²)/F² → 0`: forcing-scale Grams erase the receiver.
+3. Cofactor tail carries the forcing, for fixed `J` and for the moving window `⌊log(F/E)⌋`.
 
-### Successors and words
-4. **Fixed successors disappear on escape** ($\|A(\cdot+k)-A\|^2\le k^2$); with VK, recentred $o(k^{1-\varepsilon})$.
-5. **Words have boundary budgets**: normalized displacement $\le B(w)^2/E_T$, forcing work $\le B(w)L_\varepsilon$; new
-   horizon cells paid uniformly.
+**B. Successors, words, forcing mass.**
+4. `|Ψ(n+k) − Ψ(n)| ≤ k`; fixed shifts vanish on escape. Shift hierarchy: raw `k² = O(E)`, recentred `k = O(E)`,
+   recentred `k^α = O(E)`, raw `k^{2α} = O(E)` all vanish; nonvanishing normalized shifts need `k²/E` unbounded.
+5. Words cost `B(w)²` in energy; forcing mass `Σρ/(n(n+1)) = −ζ'/ζ(1+ε)` pays word work absolutely; horizon tails `≤ B(H+1)^{−ε}`.
 
-### Paid renormalization and the pole trace
-6. **Power subtraction pays the forcing.** $\|R\|_T\le B_\varepsilon$ at every horizon; $A+\tilde D=R$; on escape the
-   inversion is homogeneous and the renormalized pairing is **antipodal**, $(\tilde P/E+1)^2\le B^2/E$.
-   Trace-free form: $H_\varepsilon=(I-2^{1-\varepsilon}D_2)S$ kills the pole exactly, $\|H_\varepsilon A\|_T\le B$, symbol
-   $(1-2^{1-\varepsilon-s})\zeta(s+\varepsilon)$. Euler laws at 2 and 3 together ⇔ the renormalized inversion law.
-7. **Finite forcing mass** $\to L_\varepsilon=-\zeta'/\zeta(1+\varepsilon)$: pays bounded cell errors, not $\langle A,\rho\rangle$.
-8. **Absolute pole trace.** $\mathcal L(A)=c_\varepsilon>0$; dilations preserve the domain with weight $j^{-(1-\varepsilon)}$;
-   packets cost harmonic sums.
-9. **Bounded commutator** $[\tilde D,D_p]$, norm $\le|\mathcal L(v)|$ uniformly in $p,T$; vanishes on escape.
-10. **Residual + trace determine the row**; $\ker(I+\tilde D)=\mathbb Rq_\varepsilon$; the unestimated term is the Möbius floor
-    inverse of $R$.
-11. **Symbol of $\tilde D$.** On power rows $(I+\tilde D)n^s=\zeta(s+\varepsilon)n^s$ modulo admitted rows; for $\Re s\ge\tfrac12$
-    $\tilde Dv\approx-v$ iff $\zeta(s+\varepsilon)=0$. On $\log^kn\cdot n^s$ rows $I+\tilde D$ is the Leibniz matrix of
-    $\zeta^{(i)}(s+\varepsilon)$: eigenspace dimension $=\operatorname{ord}_{s+\varepsilon}\zeta$, additive over exponent sets. Mellin
-    residues: power-like solutions force $\zeta(s+\varepsilon)=0$ at every exponent present.
+**C. Paid renormalization.**
+6. `‖R‖_T ≤ B_ε` at all `T`; `Ψ + D̃Ψ = R`; work `⟨Ψ,D̃Ψ⟩/E → −1` (antipodal), kept by energy quantiles and every bounded moving localization.
+7. `𝓛(Ψ) = c_ε`; `𝓛(j^{−ε}D_j v) = 𝓛(v)/j`; `|[D̃,D_p]v| ≤ |𝓛v|` pointwise.
+8. `v = floorTransform_μ(v + D̃v) + 𝓛(v)q_ε`; `𝓛(q_ε) = 1` (DLVP `M(x) ≪ x e^{−√log x/12}`); `ker(I + D̃) = ℝq_ε`.
 
-### Extraction
-12. **Energy quantiles** keep mass $(s-r)\pm1/E$ and antipodal work $W/E\to-(s-r)$.
-13. **Common cofactor limit.** One subsequence (along any cofinal family) makes every $K_T(j,k)$ converge: PSD,
-    $|K(j,k)|\le1/\sqrt{jk}$, packet contraction $Q(pa)\le Q(a)/p$, scaled diagonals $pK(p,p)\in[0,1]$ antitone;
-    admission ⇒ unique kernel; the kernel family is a singleton or has continuum cardinality; nonuniqueness
-    forces escape.
-14. **Wiener module.** Every limit has a cyclic Hilbert realization with $\|V_p\|\le p^{-1/2}$, a contractive
-    $\mathcal W_{1/2}$-representation, nonempty hull; on escape $\emptyset\ne\text{hull}\subseteq\text{obstructionHull}(\mu_\varepsilon)$;
-    contracted modules $K_p(j,k)=K(pj,pk)/K(p,p)$ with annihilator $I:\delta_p$.
-15. **Module structure.** Admitted modules are faithful, infinite-dimensional, full Bohr hull: a
-    finite-dimensional or non-faithful actual module forces escape. Annihilator quotient finite or continuum;
-    finite index = joint character multiplicities; rank-one characters are augmentation or $\eta(p)p^{-s}$,
-    $s\ge\tfrac12$ (magnitudes forced, signs/exponents not tied to zeros); at row level tiedness is automatic.
-    Hulls are conjugation-symmetric.
-16. **Unit transport.** Möbius and Liouville modules are unit-equivalent.
-17. **Origin boundaries.** Escape records realize every positive origin mass $c$: shifted Gram $K+c/\max(j,k)$
-    (faithful), raw $(K+c)/(1+c)$ — shifted, not actual zero-origin limits.
+**D. Euler factors on the log scale** (`g(u) = e^{−u/2}w(⌊e^u⌋)`, pronic energy = `∫g²`).
+9. Law at `p` = one-prime law `g − e^{κ log p}g(·−log p) ∈ L²`; it fixes `g` modulo `L²` only up to `e^{κu}`×periodic ghost.
+10. Two laws with incommensurable periods (`log 2`, `log 3`) leave `c e^{κu}`: periodic finite-energy functions vanish; two periods force a constant (ergodic irrational rotation). Twisted laws: eigenfunctions of irrational rotations are characters ⇒ tied exponent.
+11. `H_ε = (I − 2^α D₂)S_ε` removes the pole exactly: `‖H_εΨ‖_T` bounded, symbol `(1−2^{α−s})ζ(s+ε)`; laws at 2 and 3 for `S_ε v` ⇔ renormalized inversion.
 
-### Countermodels
-18. White noise satisfies the compactness laws with a unique antipodal extension; prime-deleted white noise
-    violates horizon order; the augmentation model has hull outside every half-plane point. Gram laws do not
-    classify the source.
+**E. Symbol calculus of D̃.**
+12. Hyperbola at `√n`: `S_ε n^s = 𝓛_s n^α + ζ(s+ε)n^s + O(n^{(Re s−ε)/2})`; Cauchy estimates give log-power rows ↦ Leibniz matrix of `ζ^{(i)}(s+ε)`.
+13. Rows `Re(b n^s)`, `Re s ≥ 1/2`, have infinite energy; top log-coefficient dominates; primes 2, 3 separate exponents (`2^a ≠ 3^b`), eliminations `D_p − p^{−s}` kill or are injective per block.
+14. Mellin: `𝓜(S_ε v) = ζ(w+ε)𝓜v` (Re w > 2), `𝓜(n^s) = sζ(w−s+1) + E_s`, `𝓜r` holomorphic on `Re w > 1/2` for finite energy `r`; identity theorem + residue at `s` ⇒ `ζ(s+ε) = 0`.
+15. Finite rank: Lagrange projectors in `D₂`, `D₃` split a row into joint eigen-components; `S_ε` commutes with dilation polynomials.
 
----
+**F. Escape states.**
+16. Compactness: one subsequence (along any cofinal horizon family) gives `K` with `K(1,1)=1`, PSD, `|K| ≤ 1/√(jk)`, packet contraction by `1/p`.
+17. Module: cyclic `Hilbert L`, `‖dilation p‖ ≤ p^{−1/2}`, contractive `WienerAlgebraAt (1/2)` action; on escape paid ideal ⊆ annihilator ⇒ `∅ ≠ moduleHull ⊆ obstructionHull`; repairs and paid kernels vanish.
+18. Annihilator quotient: finite (= dim = Σ joint character multiplicities) or exactly continuum.
+19. Admission ⇒ unique kernel, `K(pj,pk) = K(j,k)/p`, faithful, full Bohr hull, infinite dim. Hence finite-dim or non-faithful ⇒ escape.
+20. Horizon order: `p·K(p,p) = lim E(⌊T/p⌋)/E(T)` ∈ [0,1], antitone on packets and on `p‖D_p x‖²`; zero diagonal ⇒ `dim ≤ p−1` and escape; record-minimum horizons give a limit with `K(p,p) ≥ p^{2ε−2}`.
+21. Contraction `K(pj,pk)/K(p,p)` is again actual; module = closed range of `D_p`, annihilator `I:δ_p`; compose multiplicatively; index drops by `dim ker D_p`.
+22. Rank one: `K(j,k) = χ(j)χ(k)`, `χ` augmentation or `η(p)p^{−s}`, `s ≥ 1/2`, `η` multiplicative sign; finite-dim hull points are augmentation or radial `|ω(p)| = p^{−α'}`, limits of half-plane points `Re s ≥ 1/2`.
+23. Kernel set: singleton or continuum (vanishing Gram steps fill intervals); non-uniqueness ⇒ escape. Hulls conjugation-symmetric; Möbius and Liouville modules unit-equivalent.
+24. Origins: reset-origin shifts realize every `c > 0` with Gram `(K + c/max(j,k))/(1+c)` (faithful, continuum index); raw shifts add constant `c`, never an actual kernel.
 
-## 4. Pillar theorems
+## 5. Pillar theorems
 
-1. **Scale separation** (`tendsto_forcingEnergy_div_receiver_atTop`, `no_common_scalar_normalization`).
-2. **Gram tangent** (`gram_distance_div_receiverEnergy_eq_one`).
-3. **Paid renormalization and antipodality** (`admits_or_renormalized_inversion_is_homogeneous`,
-   `renormalizedCofactorVariation_sq_le`).
-4. **Pole trace and commutator** (`actualPoleTrace_eq_forcingPowerCoefficient`, `admits_or_moving_cofactor_commutator_vanishes`).
-5. **Symbol / index of $\tilde D$** (`powerRow_renormalizedInversion_bounded_iff`, `powerLogRows_global_renormalizedInversion_iff_order`).
-6. **Common limit and Wiener module** (`exists_cofactorGram_limit`, `admits_or_moduleHull_subset_obstructionHull`).
-7. **Faithfulness dichotomy** (`faithful_or_receiver_escapes`, `receiver_escapes_of_finiteDimensional`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Scale separation | `tendsto_forcingEnergy_div_receiver_atTop`, `no_common_scalar_normalization` | unconditional |
+| Gram tangent | `gram_distance_div_receiverEnergy_eq_one`, `tendsto_forcingGramDefect_div_forcingEnergy_sq_zero` | unconditional |
+| Paid remainder, antipodality | `pronicNorm_forcingRemainder_le`, `admits_or_renormalizedCofactorWork_is_antipodal` | unconditional; dichotomy |
+| Pole trace, forcing mass | `actualPoleTrace_eq_forcingPowerCoefficient`, `forcingMassLimit_eq_logarithmicDerivative` | unconditional |
+| Kernel line | `poleTrace_inversePoleVector`, `ker_renormalizedResidualOperator` | unconditional |
+| Eta form paid | `exists_pronicNorm_etaCofactorSum_actual_le` | unconditional |
+| Two Euler factors | `exists_pronicEnergy_sub_pole_ne_top`, `cofactor_two_euler_laws_iff`, `one_euler_factor_leaves_a_ghost` | unconditional |
+| Two-pole expansion | `norm_powerRowCofactorSum_sub_le_rate`, `norm_logPowerCofactorSum_sub_le` | unconditional |
+| Zero detector | `powerRow_renormalizedInversion_bounded_iff` | unconditional (`1/2 ≤ Re s < α`) |
+| Index = zero multiplicity | `powerLogRows_global_renormalizedInversion_iff_order` | unconditional |
+| Tied joint eigenrows | `exists_cPronicEnergy_sub_cpow_ne_top` | unconditional (`Re s ∈ (1/2,1]`) |
+| Mellin residues | `riemannZeta_add_eq_zero_of_powerLike_solution` | unconditional |
+| Rank-one escape ⇔ zero | `riemannZeta_add_eq_zero_iff_exists_rankOneEscapeRow` | unconditional (`1/2 < Re s < α`) |
+| Finite-rank escape | `exists_finiteRank_zeroPower_decomposition`, `cPronicEnergy_ne_top_of_finiteRank_of_zeroFree` | unconditional |
+| Common limit | `exists_cofactorGram_limit`, `exists_actualCofactorLimit_along_cofinal` | unconditional |
+| Escape hull | `admits_or_moduleHull_subset_obstructionHull` | dichotomy |
+| Faithfulness | `faithful_or_receiver_escapes`, `receiver_escapes_of_finiteDimensional` | dichotomy |
+| Index dichotomy | `annihilator_quotient_finite_or_continuum`, `finite_joint_index_or_continuum` | unconditional |
+| Horizon order | `contracted_energy_ratio_tendsto`, `scaled_diagonal_antitone`, `scaled_dilation_norm_sq_antitone` | unconditional |
+| Positive record limit | `exists_actualCofactorLimit_kernel_diag_ge_rpow` | unconditional |
+| Kernel family | `actualCofactorKernelSet_singleton_or_continuum` | unconditional |
+| Rank one | `rankOneCharacter_eq_augmentation_or_signed_rpow` | unconditional |
 
----
+## 6. Tools
 
-## 5. Traps
+**Developed.**
+- Pronic calculus: `pronicPairing_packet_energy_eq`, `pronicNorm_sq_monotone`, `normalized_moving_gram_perturbation_tendsto_zero`, `pronicEnergy_ne_top_iff`.
+- Mellin cells: `hasSum_dil_mul_mellinCell`, `hasSum_dil_mul_complexMellinCell`, `rowMellin_cpow_eq`, `differentiableOn_rowMellin`, `hasSum_cTotalCofactorSum_mul_cell`.
+- Hyperbola / Abel: `sum_mul_partialSum_div_eq_hyperbola`, `sum_Ioc_mul_eq_abel`, `exists_abs_moebiusHarmonic_le`.
+- Log-scale ergodic calculus: `ae_eq_zero_of_periodic`, `exists_ae_eq_const_of_two_periods`, `eigenfunction_of_irrational_rotation`, `exists_lintegral_sub_const_mul_cexp_ne_top`, `lintegral_logProfile_sq`.
+- Prime separation: `exists_separating_prime`, `eq_of_two_three_cpow_eq`, `coeff_eq_zero_of_cAdmitted_sum`.
+- Dilation polynomials: `aeval_dilOp_comm`, `cTotalCofactorSum_aeval`, `euler_mul_basis`, `adm_euler_component`.
+- Module transport: `unitGramUnitary_intertwines`, `exists_actual_contracted_module`, `contractedKernelIsometry_wiener`.
+- Extraction: `exists_actualCofactorLimit_along`, `admits_or_exists_record_horizons`, `exists_record_min_gt`, `pronicEnergy_eulerLaw_ne_top`.
 
-- Pointwise disappearance of forcing does not justify discarding its global pairing.
-- Power subtraction on the actual row is not a bounded operator on arbitrary rows.
-- Finite forcing mass controls bounded cell errors, not the receiver prefix.
-- Vanishing $E_T/F_T$ allows $E_T\to\infty$.
-- A PSD or rank-one limiting Gram can lose the critical distance coordinate.
-- Fixed words lose successor selectivity under energy normalization.
-- Termwise absolute cofactor control has the half-damping threshold.
-- Entrywise convergence does not justify a moving cutoff or infinite cofactor sum.
-- A nonzero common Gram module is not evidence of escape (it exists when admitted).
-- Antipodality and Gram laws hold for white noise; source realization is essential.
-- Shifted origin-reset rows are not unshifted actual limits.
-- $h=D+R$ with $D,R\ge0$ gives no upper bound forcing $D=0$.
+**To build.**
+- A source law forcing escape states (actual limits or receiver rows) to satisfy Euler laws at 2 and 3 with finite-energy error: the bridge from §4F to §4E.
+- Dilation regularity `‖D_jΨ − D_{j+1}Ψ‖` at the energy scale (controls the eta tail, `alternatingPacket_le_of_tail`).
+- Domain invariance and critical-norm bounds for D̃ on rows beyond the actual trace vector.
+- A module invariant finer than the annihilator hull.
 
----
+## 7. Open questions
 
-## 6. Open problems
+1. Do actual escape modules carry joint approximate eigenvectors of `D₂`, `D₃` that lift to rows obeying the Euler laws? If yes, the finite-rank theorem plus a zero-free line excludes them.
+2. Is `moduleHull = obstructionHull` on escape? Are rank-one signs/exponents tied to zeros at the Gram level (they are at row level)?
+3. Is the record limit with all `K(p,p) > 0` infinite-dimensional? Is the kernel set a singleton (it is under admission)?
+4. Critical line: the two-dilation and Mellin theorems need `Re s > 1/2`; the zero detector holds at `Re s = 1/2`. Extend the tied-exponent theorem to `Re s = 1/2`.
+5. Joint extraction: one carrier keeping fixed covariances, quantile work and the moving cofactor tail without exchanging limit and infinite sum.
+6. Moving successors that act nontrivially at the escape scale need `k²/E` unbounded; find their boundary cost.
 
-1. **Joint extraction**: one carrier holding fixed covariances, quantile signed work and the moving cofactor
-   tail, without exchanging an infinite sum and a limit. Via $H_\varepsilon$ the tail is bounded by consecutive
-   dilation differences $\|D_jA-D_{j+1}A\|$: a **dilation-regularity** question.
-2. **Exclusion / source selectivity**: an independent estimate excluding $\tilde Du\approx-u$ for escape states.
-   Rows obeying two dilation laws with $O(1)$ errors and the inversion law exist exactly at zeros; the gap is
-   that escape states need not satisfy polynomial $D_2,D_3$ laws with absolute errors.
-3. **Module classification**: is hull = obstructionHull; are rank-one signs/exponents tied to zeros; exclude
-   finite-dimensional escape modules by a source law.
-4. **Mixed Bézout/Vaughan covariance**: summable signed gain after centring.
-5. **Successor dynamics**: moving words acting nontrivially at the escape scale with proved boundary cost.
-6. **Operator domains**: domain invariance and critical-norm bounds for the full renormalized operator.
-7. **Shared allocation** across overlapping carriers and one Gamma/polar reserve; **anti-collapse** of actual
-   divisor packets with multiplicity.
+## 8. Traps
 
-## 7. Tools to build
+| Trap | Fact |
+|---|---|
+| Gram + antipodal laws are not source laws | white noise satisfies all, with unique antipodal extension (`whiteNoise_has_unique_antipodal_extension`) |
+| Multiplicative laws are not enough | odd white noise passes packet contraction; excluded only by horizon order (`actual_kernel_ne_oddWhiteNoise`) |
+| Abstract laws admit non-Kronecker points | augmentation kernel passes everything; its point is no half-plane point (`augmentationBohrPoint_ne_halfPlanePoint`) |
+| One Euler factor | dyadic ghost `n^α cos(2π log₂ n)` passes the law at 2 (`one_euler_factor_leaves_a_ghost`) |
+| A nonzero module is not escape | admitted limits are faithful with full hull |
+| Forcing normalization | erases the receiver: Gram determinant `/F² → 0` |
+| Fixed cofactors | the tail carries all forcing; entrywise limits do not pass infinite cofactor sums |
+| Finite-horizon symbols | cannot exclude cancellation by `S_ε r`, `r` of finite energy; Mellin residues can |
+| Row vs state | rank-one/finite-rank theorems take Euler laws on a row as hypotheses; actual limits are not shown to satisfy them |
+| Shifted origins | reset-origin Grams are shifted rows, not unshifted limits; raw constant boundary never actual (`unreset_boundary_ne_actual_kernel`) |
+| Positive diagonals | do not force infinite dimension (rank-one limits have them); `RecordMinimaForceInfiniteCofactorLimits` proves positivity only |
+| Power subtraction | not a bounded operator on arbitrary rows; generic domain invariance of D̃ unproved |
+| Hygiene | several modules end with `#print axioms` lines |
 
-A dilation-regularity estimate for consecutive cofactor dilates; a source law forcing polynomial
-$D_2,D_3$ relations on escape states; a module invariant finer than the annihilator hull.
+## 9. Context
 
-## 8. Contribution criteria
+| Uses (imports) | Count | Used by | Count |
+|---|---|---|---|
+| HTGeometry | 26 | BiarithmeticGeometry | 3 |
+| ArithmeticOrientationTheory | 17 | ArithmeticCorrespondencePositivity | 3 |
+| ArithmeticContinuationAndCriticalEnergy | 10 | ArithmeticCorrelationGeometry | 3 |
+| RHTower | 9 | ArithmeticCastelnuovoSeveri | 1 |
+| TransHorizonIncidenceMechanics | 5 | MainTheorems | 1 |
+| BezoutValuationIncidence | 4 | | |
+| ArithmeticCompensationTheory | 3 | | |
 
-A full no-escape theorem extracts a nonzero state from any divergent receiver, retains the signed and moving
-data, and excludes it by an independent source relation for a cofinal damping family; or proves a direct
-energy estimate. A contribution states the source property used and countermodels excluded, the signed
-residual and its norm, treatment of moving support, overlap, boundary and multiplicity, and the consuming
-receiver. Keep horizon, damping, cutoff, location and scale quantifiers visible; charge overlaps, new cells,
-boundaries and the Gamma/polar reserve once; allow diffuse escape (no fixed bad packet, no assumed gap).
+| Neighbour | Interface |
+|---|---|
+| ArithmeticContinuationAndCriticalEnergy | receiver Ψ, inversion law, dilation blocks, pronic calculus |
+| ArithmeticCompensationTheory | `admits_or_tendsto_atTop`, energy growth bound |
+| BezoutValuationIncidence | VK zero-free saving, DLVP Mertens bound, pronic norms |
+| TransHorizonIncidenceMechanics | Mellin cells, smooth-power expansion, critical Wiener kernels, partial ζ sums |
+| ArithmeticOrientationTheory | Wiener algebra, paid ideal, obstruction/operator hulls, Bohr points |
+| HTGeometry | kernel Hilbert spaces, normalized-budget lemmas, monotone characters, ζ meromorphy |
+| RHTower | floor transforms, Möbius power weights, ξ order of zeros |
+| ArithmeticCorrespondencePositivity | imports `TwoEulerFactorsDetermineThePoleTrace`, `TwoDilationEigenrowsArePowerRows`, `WienerCovariancesFollowTheCommonCofactorLimit` |
+| ArithmeticCorrelationGeometry | imports `CommonCofactorLimitsExistAlongPrescribedHorizons`, `TheAdmittedCofactorKernelIsUnique`, `TheCofactorLimitCarriesACyclicDilationAction` |
+| BiarithmeticGeometry | imports `TheForcingDominatesTheReceiver`, `PaidWienerKernelsAnnihilateTheCofactorLimit`, `TheClosedCofactorAnnihilatorHasNoCountableIndex` |
+| ArithmeticCastelnuovoSeveri | imports `RecordMinimaForceInfiniteCofactorLimits` |
+
+## 10. Big picture
+
+ADR turns "the receiver energy might diverge" into a concrete object and asks what that object must look
+like. The source keeps a lot: the forcing is paid by its own pole, the escaping energy is antipodal to its
+cofactors, and every escape state is a cyclic module whose spectrum sits inside the obstruction hull. But
+the same abstract constraints are satisfied by white noise and other countermodels, so geometry of Grams
+alone never forces RH.
+
+The decisive finding is a two-level picture. At the level of rows, the renormalized inversion law plus two
+Euler factors (primes 2 and 3) is a zero detector: power-like solutions exist exactly at translated zeros of
+ζ, counted with multiplicity, and vanish on zero-free lines. At the level of escape states, those Euler laws
+are not yet derived. RH through this route reduces to one bridge: show that a divergent receiver produces a
+row obeying Euler laws at two primes. Everything on either side of that bridge is proved.

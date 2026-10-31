@@ -11,17 +11,21 @@
 | Question | Required mathematical conclusion | Status |
 |---|---|---|
 | Q1 | All-vector logarithmic defect reserve for the complete Weil form; defect-relative conductor decomposition | Reserve formalized for each fixed overlap; prescribed growing-overlap horizon and conductor/shell decomposition open |
-| Q1/A1 | Top-band joint cancellation, then top-band perturbations of Ramanujan modes | Pole-vector case formalized in `TheShellsAndThePoleCancelOnTheTopBand`; conductor perturbations open |
-| Q1/A2 | Growing Euler heads and joint head–pole–tail cancellation | Growing-head theorem exists in `TheIndexOfAGrowingEulerHeadIsUnbounded`; joint cancellation open |
-| Q1/O1 | Ramanujan–Plancherel decomposition of the shell block | Open |
+| Q1/A1 | Top-band joint cancellation, then top-band perturbations of Ramanujan modes | Formalized: actual Ramanujan witness coefficient is at most `Kφ mφ(m)G(1+log N)`, uniformly for `N≥8`, `1≤c≤N/4`; exact quadratic expansion and all direct Lean/axiom audits passed. [Proof](../3-formalized/nonpolar-ramanujan-top-band-cancellation.md) |
+| Q1/A2 | Growing Euler heads and joint head–pole–tail cancellation | Formalized: literal all-prime mixed source minus both polar terms is `o(√Y)` on detail–far-window witnesses, uniformly for bounded coefficients on fixed finite families |
+| Q1/O1 | Ramanujan–Plancherel decomposition of the shell block | Full agreement-shell identity open. [Two-conductor top band](../3-formalized/two-conductor-top-band-polar-channel.md), [finite adjunction spectrum](../3-formalized/finite-divisor-jet-adjunction-spectrum.md), and [signed-source smoothed square completion](../3-formalized/autocorrelation-divisor-jet-square-completion.md) formalized |
 | Q2 | Equality of the two actual Ξ source polarizations | Open; corpus theorem identifies this with RH |
-| Q2/defect | Theta–prime expression for `(σ − 1/2)S(s) − Re(ξ′/ξ)(s)`, at some `σ > 1` | Full-divisor and prime identities formalized; two-limit theta reading at `s=4` in progress |
-| Q2/charge | Theta-prefix reading of window collision charge with explicit error | Open |
+| Q2/defect | Theta–prime expression for `(σ − 1/2)S(s) − Re(ξ′/ξ)(s)`, at some `σ > 1` | Formalized at `s=4`: `xiResolventDefect_four_eq_thetaPrime`; both theta limits and prime-series convergence proved, direct check and standard-axiom audit passed |
+| Q2/charge | Theta-prefix reading of window collision charge with explicit error | Formalized: `finiteThetaCollisionReading_error` gives a canonical separation threshold; convergence and eventual exact integer rounding are proved |
 | Q2/calibration | Integer analogue of the calibrated explicit-formula Rosati pairing | Formalized: `tsum_explicit_eq_xiWeilPolarization` and `norm_sq_sub_explicit_eq_half_reflectionDefect`; source and transitive standard-axiom audits passed |
 | Q3 | Actual growth law for the de Bruijn–Newman nonreal count at zero | Open |
 | Q3/flux | Consequence of summing the actual localized outer flux over heights | Open |
 | Q3/tower | Arithmetic ceiling for a nonblind prime tower | Open |
-| Q3/functional | Global monotone functional for the actual zero dynamics | Open |
+| Q3/functional | Global monotone functional for the actual zero dynamics | Formalized: full squared-depth energy is continuous, nonincreasing and pays `2∫N` between positive times; zero energy iff all heat zeros are real |
+
+The [profiled adjunction lag charge](../3-formalized/profiled-adjunction-lag-kernel.md)
+is also positive on arbitrary real translates, including the exact logarithmic mesh.
+Its comparison with the complete Weil kernel remains open.
 
 ## Proof discipline
 
@@ -33,6 +37,13 @@ Every claimed solution requires the exact theorem, dependency audit and successf
 
 - `riemannHypothesis_iff_xiResolvent_sourcePolarizations_eq`: exact orientation receiver.
 - `exists_card_deep_le_mul_nonrealZeroCount`: transfers a heat-count law to deep-zero counts.
+- The stronger `exists_card_deep_le_heat_count_at_uniform_depth_scale` gives
+  `#F≤C log X·N(t)` when `t log X≤cδ²`, with a depth-independent height threshold.
+  Its transitive audit and the persistence theorem's audit passed with only the
+  standard three axioms. It supplies no upper bound on `N(t)`.
+- The corpus's [inverse-logarithmic heat ladder](../3-formalized/the-heat-count-ladder-at-inverse-logarithmic-heat.md)
+  transfers `N(t)≤exp(A t^{−α})` to subpower deep-zero density for every `α<1`;
+  polynomial growth gives exponent `a+1`. The actual count bound is still missing.
 - `exists_abs_jointWitnessCoefficient_le_uniform_overlap`: the pole and shells cancel on the
   top-band witness with bound `Kφ G(c + 1 + log N)`, uniformly for `1 ≤ c ≤ N/4`.
   Arbitrary coefficient vectors remain outside this theorem.
@@ -73,9 +84,16 @@ Formalized in `HilbertianExplicitFormulas/TheXiResolventDepthIdentity.lean` as
 `sub_mul_xiSamePointResolvent_sub_logDeriv`. Its prime expansion is
 `xiResolventDepth_eq_samePoint_sub_arch_add_prime`. Direct Lean check passed;
 both transitive axiom sets are exactly `propext`, `Classical.choice`, `Quot.sound`.
-Theta-source identification remains separate.
+`TheResolventDepthHasAThetaPrimeExpression` identifies `S(4)` with two limits of
+finite integer theta-prefix readings of `χ_R(z)/(|4−z|²+χ_0(z−4))`.
+Both limits exist. The source definition contains no zero locations.
 
 ## Gates
+
+Q3's functional is proved in
+`../3-formalized/the-global-heat-depth-energy-dissipates.md`.
+It gives `E(b)+2∫_a^b N≤E(a)` for `0<a≤b`, through all collisions.
+No finite initial energy or growth bound as `t↓0` has been proved.
 
 - [x] Full requested conclusions fixed.
 - [ ] Dependency-closed paper proofs of every conclusion.

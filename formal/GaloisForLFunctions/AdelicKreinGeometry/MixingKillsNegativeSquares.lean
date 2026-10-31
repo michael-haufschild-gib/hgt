@@ -16,8 +16,9 @@ does not constrain the coefficients; it constrains the index.
   diagonal of `x` and `y`. Lower semicontinuity of the index gives `κ + ν(y) ≤ κ`, so `ν(y) = 0`:
   the kernel is positive. Exact escape (`negIndex_eq_zero_of_escape`) is the constant case.
 * **Mixing kernels** (`negIndex_eq_zero_or_top_of_mixing`): if one sequence `t_j` makes every
-  two-sided translate `k(g t_j h)` tend to zero, then `κ(k) ∈ {0, ∞}`. On `ℤ`: every Hermitian
-  kernel vanishing at infinity (`negIndex_eq_zero_or_top_of_tendsto_int`).
+  two-sided translate `k(g t_j h)` tend to zero, then `κ(k) ∈ {0, ∞}`. On `ℤ` and on the
+  translations of `ℚ`: every Hermitian kernel vanishing at `+∞`
+  (`negIndex_eq_zero_or_top_of_tendsto_int`, `negIndex_eq_zero_or_top_of_tendsto_rat`).
 * **On `Aff(ℚ)`** (`negIndex_eq_zero_or_top_of_heightDecay`): a Hermitian function that decays with
   the height `|num a|·den a` of the slope has index `0` or `∞`. The escape runs along the
   dilations `x ↦ 2^j x`; the height is submultiplicative (`slopeHeight_mul_le`), so the slopes of
@@ -178,6 +179,24 @@ theorem negIndex_eq_zero_or_top_of_tendsto_int {k : Multiplicative ℤ → ℂ} 
   refine negIndex_eq_zero_or_top_of_mixing hk (t := fun j => Multiplicative.ofAdd (j : ℤ))
     fun g h => ?_
   have hlim : Tendsto (fun j : ℕ => (j : ℤ) + (Multiplicative.toAdd g + Multiplicative.toAdd h))
+      atTop atTop :=
+    tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
+  refine (h0.comp hlim).congr fun j => ?_
+  simp only [Function.comp_apply]
+  congr 1
+  apply Multiplicative.toAdd.injective
+  simp only [toAdd_ofAdd, toAdd_mul]
+  ring
+
+/-- **Decaying additive states.** A Hermitian function on the translations of `ℚ` tending to zero
+at `+∞` has index `0` or `∞`: an additive (successor-side) carrier of a finite nonzero index
+cannot decay. -/
+theorem negIndex_eq_zero_or_top_of_tendsto_rat {k : Multiplicative ℚ → ℂ} (hk : IsHermKernel k)
+    (h0 : Tendsto (fun b : ℚ => k (Multiplicative.ofAdd b)) atTop (𝓝 0)) :
+    negIndex k = 0 ∨ negIndex k = ⊤ := by
+  refine negIndex_eq_zero_or_top_of_mixing hk (t := fun j => Multiplicative.ofAdd (j : ℚ))
+    fun g h => ?_
+  have hlim : Tendsto (fun j : ℕ => (j : ℚ) + (Multiplicative.toAdd g + Multiplicative.toAdd h))
       atTop atTop :=
     tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
   refine (h0.comp hlim).congr fun j => ?_

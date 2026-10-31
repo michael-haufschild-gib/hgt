@@ -1,271 +1,206 @@
 # Signed Arithmetic Hodge Theory (SAHT)
 
-Namespace `GaloisForLFunctions.SignedArithmeticHodgeTheory`; umbrella `SignedArithmeticHodgeTheory.lean`.
+Namespace `GaloisForLFunctions.SignedArithmeticHodgeTheory`; umbrella `SignedArithmeticHodgeTheory.lean`; 42 modules.
+All results are unconditional; no RH-type input. Most modules end with `#print axioms` lines. "Hodge" means signed
+orthogonal decomposition of the complete Weil form against a paid positive carrier, not a cohomology theory.
 
-**Question.** How can arithmetic incidence, archimedean energy and the two polar coordinates jointly control the index of the
-actual Weil form under source exhaustion? Turn positive arithmetic sections into quantitative control of their mixed
-interactions and their complement. A positive section alone does not orient the complete form; a renormalized prime spectrum
-alone does not recover the archimedean term or the poles.
+## 1. Motivation
 
-"Hodge" = signed orthogonal decomposition, index and the arithmetic source of a sign — not a new cohomology or a positive
-polarization. "Source-compatible" = actual tests, poles and mixed pairings survive every comparison. "Renormalized" never means
-discarding an unpaid divergence.
+ArithmeticIndexDescent supplies a positive arithmetic carrier (the closed integer-log cell carrier) with a bounded Weil
+projection, and shows that the Gamma energy pays most mixed Euler sources on complete cell profiles. The open parts are the
+signed complement and the passage from finitely many detail labels to whole translation orbits. SAHT studies three things:
 
----
+- the exact algebra of the signed complement (residual identities, one stationarity budget, the radical);
+- the complete-cell space as a dyadic clock, so cutoffs can keep every translation level of finitely many generators;
+- quantitative budgets for Ramanujan modal families in the prime matrix.
 
-## 1. Place in the research
+The goal is to replace "finite head of detail coordinates" by "finitely many complete generator orbits" with the same original
+Gamma reserve, then pay all Euler layers that admit absolute or signed payment on that object.
 
-Three starting constructions, each partial:
-- **Balanced logarithmic Haar sections** (ACS): full rough-Weil floor above a fixed lower index, uniform in the horizon; coarse
-  directions and inter-scale interactions remain.
-- **Narrow arithmetic sections** (AID): bounded Weil-orthogonal projection in the complete source graph; the complement contains an
-  infinite null radical; its nonnegativity is open (a strict lower bound on it is false).
-- **Ramanujan profiles** (RAPT): prime-matrix quasimodes with distinct spectral points per finite conductor packet; comparison with
-  the full source graph, Gamma and both poles is separate.
+## 2. Objects
 
-Plus the **canonical critical source energy** (AID): finiteness ⇔ finite off-line support; sharp smallness ⇔ RH; index costs bound it
-below; an arithmetic upper bound is missing. SAHT's contribution is the *paid comparison* between these objects.
+| Object | Lean | Meaning |
+|---|---|---|
+| Residual, stationarity | `arithmeticResidual`, `arithmeticStationarity`, `familyStationarity` | `1 − P` for the carrier projection `P`; `D = proj_K ∘ A` (`A` = Weil operator) |
+| Complement, radical | `arithmeticComplement`, `arithmeticWeilRadical` | `ker P`; `ker A` |
+| Scale transport | `sourceTranslate`, `translatedSourceGraph`, `apertureScaleTransport` | translation of compact tests; its extension to completed apertures |
+| Ramanujan budgets | `ramanujanPrimeResidual`, `primeMertensRemainderProfile`, `primeMertensSquareBudget`, `ramanujanResidualConductorCost` | prime-row residual of a modal profile; one Mertens/floor remainder; `√φ(m)(1 + 4 log m)` |
+| Dyadic clock | `logCellDyadicIsometry`, `logCellDyadicWandering`, `logCellDyadicDetail`, `logCellDyadicBasis`, `logCellDyadicCoordinates` | weighted shift `W e_a = α_a e_{2a} + β_a e_{2a+1}`; wandering space; balanced detail; Hilbert basis on `ℕ × Option ℕ+` |
+| Haar readout | `logCellHaarReadout`, `logCellDyadicParentVariance`, `logCellAncestorWeight` | `√haarMass·(child mean difference)`; parent variance; `⌊log₂ a⌋ + 1` |
+| Generator cutoff | `logCellGeneratorHead`, `wholeLineGeneratorTail` | keeps root and labels `< A` at every level; its physical complement |
+| Stopping cells | `logCellStoppingAncestor`, `logCellStoppingVector` | ascend `n ↦ ⌊n/2⌋` until label `< 2A` |
+| Physical head/tail | `finiteLogCellProfile`, `actualGeneratorHeadProfile`, `actualGeneratorTailProfile` | finite cell source; its block-average head; the rest |
+| Correlations | `wholeLineTranslationCorrelation`, `dyadicEulerCorrelation`, `wholeLinePrimeEulerCorrelation`, `wholeLineHigherEulerCorrelation` | `Re⟨T_tF, F⟩`; prime-2, prime-`p`, cube-and-higher Euler sums |
+| Coefficient tails | `criticalEulerTailWeight` | `2Λ(p^{k+r+1})/√p^{k+r+1}` over all primes |
+| Stopping grid | `stoppingGridWidth`, `stoppingGridBoundary`, `stoppingGammaKernelConstant` | padded graded partition; `32e²` |
 
-| Programme | Supplies |
+External: `fixedLogCellWeilProjection`, `closedFixedLogCellGraph`, `graphWeilOperator`, `realTestGraphLift`, `cellGammaWeight`,
+`squarePrimeSource`, `centeredSquarePrimeSource`, `primeTwoPowerWeight`, `primePowerMixedWeight` (ArithmeticIndexDescent);
+`haarProfile`, `haarMass`, `completePairProfile`, `wholeCellProfile` (ArithmeticCastelnuovoSeveri); `ramanujanPoleProfile`,
+`renormalizedPrimeEnergy` (RenormalizedArithmeticPotentialTheory); `levyEnergy`, `SourceGraph`, `weilForm`, `weilBilin`,
+`logCellShift`, `logCellEmbedding` (RHTower).
+
+## 3. Language
+
+- **Paid carrier**: a closed subspace with a proved coercive Weil estimate and bounded Weil projection.
+- **Stationarity**: the Weil operator restricted to the carrier; it is the only charge for trial corrections.
+- **Whole-orbit cutoff**: keep a generator label at every dyadic level, never truncate levels.
+- **Generator / level**: coordinates `(j, a)` of the dyadic basis; `a` is the Haar label, `j` the translation power of `log 2`.
+- **Original Gamma**: `levyEnergy` of the untruncated source; every bound is stated in it.
+- **Stopping block**: integers with the same quotient `⌊m/2^j⌋ = a`, physical interval `j log 2 + [log a, log(a+1))`.
+- **Head / tail**: `P_A f` and `f − P_A f` as actual compact BV profiles.
+
+## 4. Mechanisms
+
+**A. Signed complement**
+
+1. **Trial calculus.** For `u` in the carrier, `W(x − u) = W(res x) + W(Px − u)`; `W(Px) ≤ 2‖Dx‖²`, `‖Px − u‖ ≤ 2‖D(x − u)‖`; mixed
+   entries `|W(x−u, y−v) − W(res x, res y)| ≤ 2‖D(x−u)‖‖D(y−v)‖`. A family is charged once by `‖D(F − U)‖²`.
+2. **Radical.** `D x = 0 ⇔ x ∈ ker P`; `ker A ⊆ ker P`; restricting to the complement creates no new radical; the theta family
+   gives infinitely many independent radical vectors.
+3. **Escape.** The theta kernel decays faster than every exponential, so the graph mass weight dominates `e^{B|u|}` for all `B`.
+   Translation keeps the Weil value and pushes the graph norm past every exponential rate, also in the residual; no amplitude
+   renormalization fixes this. On bounded windows and bounded shifts, translation is a two-sided bounded map and extends to
+   completed apertures, preserving every Weil pairing and multiplying strip readouts by `e^{izt}`.
+
+**B. Ramanujan modal budgets**
+
+4. **Gram.** Periodic Abel summation: `|Σ_{n≤N} ρ_mρ_l − δ_{ml}H_N| ≤ 2ml`, so families cost `(1 + 2Σm²)Σc²` against `log N·Σc²`.
+5. **Residual.** Conductor correction `≤ 4φ(m) log m/y`; every row residual is `cost(m)·profile(⌊N/n⌋)/√n` with one Mertens/floor
+   profile; the square budget is bounded uniformly in `N` (Mertens `e^{−c√log}` decay + Wiener kernel `≤ 1 + 2π²`).
+6. **Capture.** `ρ_m(n)² ≤ φ(m)/n` bounds local mass; fixed modal spans and bounded prime-energy sublevels lose all normalized
+   mass on every fixed integer window.
+
+**C. Dyadic clock**
+
+7. **Wold decomposition.** `W` is a pure isometry (range of `W^j` vanishes below `2^j`); wandering levels are orthogonal and dense.
+   `{e_1} ∪ {balanced details}` is a Hilbert basis of the wandering space; all levels give `ℓ²(ℕ+) ≅ ℓ²(ℕ × Option ℕ+)`.
+8. **Physical identity.** `√haarMass·detail_a` embeds as `haarAtom a`; level `j` is literal translation by `j log 2`; Hilbert
+   coordinates of an actual source are its translated Haar readouts.
+9. **Arithmetic action.** `T_p` commutes with `W`; its level matrix is lower triangular and Toeplitz; prime two shifts levels.
+
+**D. Gamma on the dyadic tree**
+
+10. **Sibling payment.** `Var(parent) = Var(L) + Var(R) + parallel·(mean difference)²`; children of log cells keep `≥ 1/4` of the
+    width, so a sibling rectangle pays `Var/8`. Floor labels make all sibling rectangles disjoint across levels: `Σ Var ≤ 16Γ`.
+11. **Square function.** Variance flow along orbits counts every ancestor once: `Σ (1 + log a)·readout² ≤ 32Γ`; high labels `a ≥ A`
+    cost `32Γ/(1 + log A)` summed over all levels.
+12. **Non-compactness.** Each fixed level of unit-Gamma details is compact, but one generator's orbit is an infinite orthogonal
+    family of equal Gamma: whole orbits must be kept.
+
+**E. Orbit cutoffs and Euler layers**
+
+13. **Exact splitting.** `P_A` commutes with every `W^k`, so `⟨W^kx,x⟩ − ⟨W^kP_Ax,P_Ax⟩ = ⟨W^k(x−P_Ax), x−P_Ax⟩`. A tail vector reads
+    only the other source's tail; translation preserves Γ; hence every real-lag correlation error is `≤ 96Γ/(1 + log A)`.
+14. **Layers.** Prime two: `(2 log 2/(√2−1))·32Γ/(1 + log A)`. Fixed finite prime sets: `Σ_P 2 log p/(√p−1)·96Γ/(1 + log A)`. All
+    cubes and higher of all primes: one total `H < ∞`. Absolute coefficient mass is summable over all primes exactly from cubes on;
+    first powers and squares diverge.
+15. **Stopping averages.** `P_A` fixes cells below `2A`; each cell projects onto its stopping cell; the head's physical height is the
+    log-length weighted mean over the stopping block. The head preserves the integral, the tail has mean zero and is
+    L²-orthogonal to the head.
+16. **Gamma stability.** The stopping grid has widths `≤ 1` and adjacent ratio `≤ 3`; comparable kernels on touching and separated
+    intervals plus zero padding give `Γ(head) ≤ 32e²Γ`, `Γ(head) + Γ(tail) ≤ (2 + 96e²)Γ`.
+17. **Squares.** Centering corrections cancel on head/tail; the zero-mean tail's square-source error is its square mass. With
+    stability, `|S_even(f) − S_even(head)| ≤ (ε + C_ε/(1 + log A))Γ(f)`.
+
+## 5. Pillar theorems
+
+| Theorem | Lean | Status |
+|---|---|---|
+| Certified residual bounds | `arithmetic_trial_energy_bounds`, `arithmetic_trial_mixed_error`, `family_mixed_error_le_opNorm` | proved |
+| Complement keeps exactly the Weil radical | `complement_radical_iff`, `exists_infinite_arithmeticWeilRadical` | proved |
+| Translation escapes every exponential graph bound | `translatedSourceGraph_all_exponential_lower_bounds`, `translatedSourceGraph_eventually_outside_carrier` | proved |
+| Faithful transport on completed apertures | `weilBilin_apertureScaleTransport`, `apertureScaleTransport_injective` | proved |
+| Horizon-uniform Ramanujan residual budget | `exists_uniform_ramanujanPrimeResidual_family_bound` | proved |
+| Bounded prime energy escapes fixed windows | `eventually_primeHorizonWindowMass_le_of_energy_le` | proved |
+| Dyadic coordinates of the cell space | `logCellDyadic_wandering_complete`, `logCellDyadicWanderingBasis`, `logCellDyadicCoordinates` | proved |
+| Details are the physical Haar sources | `sqrt_haarMass_smul_logCellEmbedding_detail`, `physicalLogCellCoordinates_detail` | proved |
+| One Gamma reserve for all parent variances | `sum_logCellDyadicParentVariance_le`, `sum_log_weight_readout_sq_le` | proved |
+| Orbits are not compact | `not_totallyBounded_firstHaarTranslationOrbit` | proved |
+| All-lag tail bound | `abs_allLevel_translation_head_error_le` | proved |
+| Prime-two, finite sets, cubes and higher | `exists_physicalDyadicEuler_finite_generator_approximation`, `exists_finiteEuler_allLevel_generator_approximation`, `exists_allPrimeHigherEuler_allLevel_generator_approximation` | proved |
+| Absolute coefficient threshold at cubes | `summable_criticalEulerTailWeight_iff` | proved |
+| Head is a stopping-interval mean | `logCellGeneratorHead_physicalHeight`, `actualGeneratorHead_eq_intervalMean` | proved |
+| Uniform head/tail Gamma stability | `actualGeneratorHead_tail_gamma_le` | proved |
+| Complete even-power approximation | `exists_allEvenPrimePowers_generator_approximation` | proved |
+
+## 6. Tools
+
+**Developed**
+- Stationarity calculus for trial corrections on a coercive carrier.
+- Dyadic Wold coordinates with exact physical Haar identification and arithmetic level matrices.
+- Sibling-rectangle Gamma allocation, variance flow and the logarithmic Haar square function.
+- Whole-orbit cutoffs with explicit stopping-block matrices; head/tail as BV profiles.
+- Graded-grid Gamma averaging bound (touching-boundary defects, gap comparison, zero padding).
+- Ramanujan Gram, residual and capture budgets with explicit conductor costs.
+
+**To build**
+- A payment for the first-prime layer on whole orbits, jointly with both exponential poles.
+- A sign or index bound on the retained generator orbits.
+- Uniform stationarity smallness for growing Ramanujan families in the full source graph.
+- An arithmetic upper bound on the critical source energy.
+
+## 7. Open questions
+
+1. Can the first-prime and square layers, whose absolute coefficient mass diverges, be paid on whole orbits by cancellation
+   with the poles?
+2. What is the Weil sign on the span of finitely many complete generator orbits?
+3. Can growing Ramanujan families make the carrier stationarity uniformly small while keeping Gamma and both poles?
+4. Is there a moving-coordinate norm in which escaping modes and translated orbits stay controlled?
+5. Does the dyadic clock admit a twin for odd primes with comparable level structure?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| ArithmeticCastelnuovoSeveri | Scaling surface, Haar-cell effectivity, mean-zero Gamma payment |
-| ArithmeticIndexDescent | Complete mixed-cell transfer, source-graph projection, index capture, critical-work costs |
-| RenormalizedArithmeticPotentialTheory | Ramanujan quasimodes, adjunction energies, pole-gap selectivity, finite Ramanujan approximation |
-| SpacingScaleHarmonicAnalysis | Source synthesis beyond narrow spacing |
-| ArithmeticLorentzianGeometry | Constraints on positive gauges and stability mechanisms |
-| ArithmeticOrientationGeometry | Signs along scaling correspondences |
-| `RHTower` (CHMD) | Signed-source radical; two-pole classification of the quotient Weil form |
+| Finite detail heads give finite-dimensional approximation | Each label's orbit is infinite and non-compact; only whole orbits are controlled |
+| Gamma of the cutoff head is automatic | It needs the graded-grid averaging bound; constant `2 + 96e²` |
+| Absolute coefficient payment covers all layers | It works exactly from cubes on; first powers and squares diverge |
+| A null vector is a negative direction | The complement keeps the radical; no graph floor on it |
+| Translation is bounded on the source graph | Only on bounded windows and shifts; globally it escapes every exponential rate |
+| The sparse shift `e_m ↦ e_{2m}` is the cell clock | The clock is the weighted shift `α e_{2m} + β e_{2m+1}` |
+| Ordinary mean zero is a pole condition | Mean, discrete pole and the two exponential moments are different |
+| Prime-matrix positivity is Weil positivity | Gamma and both poles are outside the prime matrix |
+| Bounded prime energy keeps mass locally | It escapes every fixed integer window |
 
----
+## 9. Context
 
-## 2. Objects and language
+**Uses**
 
-Every comparison specifies **source, form, domain, exhaustion, error currency**.
+| Programme | Imports | For |
+|---|---|---|
+| ArithmeticCastelnuovoSeveri | 9 | Haar cells, interval variance, Gamma capacity and exterior subsets, finite-cell arithmetic form |
+| RHTower | 8 | CHMD source graph and theta modes, log-cell shifts, Mertens, CCM remainder |
+| ArithmeticIndexDescent | 6 | carrier projection, Euler mixed weights, compact details, centred square bounds |
+| SpacingScaleHarmonicAnalysis | 3 | Gamma translation invariance, archimedean pairing, constant-one self-energy |
+| RenormalizedArithmeticPotentialTheory | 3 | Ramanujan profiles, quasimodes, prime-energy approximation |
+| HTGeometry | 3 | partial summation, dyadic sibling partition, coordinate projections |
+| PNTPlus | 1 | Wiener kernel bound |
 
-| Object | Content |
+**Used by**
+
+| Programme | Modules | For |
+|---|---|---|
+| CriticalArithmeticCorrelationTheory | 3 | conductor residuals and packets |
+| SuccessorShellArithmetic | 2 | Ramanujan divisor moments, nonpolar joint cancellation |
+| CompletedArithmeticForms | 2 | Weil polynomial residual, growing packets |
+| `MainTheorems.lean` | 1 | aggregation |
+
+| Neighbour | Relation |
 |---|---|
-| Arithmetic source | Real compact logarithmic tests, complete source-graph closure, embedded cell/class spaces |
-| Signed form | Complete Weil pairing with prime, Gamma, mass and two-pole terms |
-| Paid section; residual | Subspace with a proved coercive estimate and bounded Weil projection $P$; $R=1-P$ with induced form |
-| Radical | Vectors pairing to zero with all source vectors (may have nonzero graph norm); `arithmeticWeilRadical` = radical of the full form |
-| Mixed charge; reserve | Bilinear block interaction in a stated norm; a positive term spent once |
-| Dyadic clock | Weighted log-cell shift $W_2e_a=\alpha_ae_{2a}+\beta_ae_{2a+1}$, wandering details $d_a=\beta_ae_{2a}-\alpha_ae_{2a+1}$ |
-| Stopping-cell source | The same whole-orbit cutoff as logarithmic block averaging; literal finite real BV head and tail, with ordinary mean and square mass accounted for |
-| Modal source | Ramanujan profiles $v_m(n)=c_m(n)/\sqrt{\varphi(m)n}$, energies $E_m=\gamma+\log m+\text{tameDifferent}(m)$ |
-| Critical energy | $R^2(\mathcal W(2R)-\mathcal W(R))\to\mathcal E_{\rm crit}\in[0,\infty]$ |
+| ArithmeticIndexDescent | supplies the carrier and Euler layers; SAHT lifts its finite heads to whole orbits |
+| ArithmeticCastelnuovoSeveri | owns cells and Haar profiles; SAHT gives them dyadic coordinates |
+| RenormalizedArithmeticPotentialTheory | owns modal profiles; SAHT gives horizon-uniform budgets |
 
-A morphism is a linear source map with proved formulas for its mixed-form and polar defects. No interface field may assume the
-sign, a complement bound or an unproved estimate. The CHMD signed-source radical can be removed keeping both polar moments; the
-full Weil form then still has a 2-dimensional polar radical (ground and odd polar classes) — quotienting it discards polar
-coordinates unless stored separately.
+## 10. Big picture
 
----
+SAHT shows that the cell space carries a canonical dyadic structure in which the prime two acts as a shift and every Haar
+coefficient is a literal physical readout. In these coordinates one original Gamma reserve pays every layer of the Euler
+product that has finite absolute coefficient mass, and also the even powers by signed compensation, without truncating any
+translation level. The complement of the positive carrier retains exactly the global null directions, so nothing is lost by
+removing the carrier.
 
-## 3. Mechanisms
-
-1. **Exact residual calculus**: for a paid section with projection $P$, exact identities for the residual form; one stationarity operator
-   $D=J(F-U)$ gives a single budget for a whole coefficient family with a bounded trial correction.
-2. **Exact radical retention**: the complement is $\ker P=\ker J$; restricting to it creates no new radical.
-3. **Scale growth and scalar renormalization**: Weil value is translation invariant, pole moments scale by $e^{\pm t/2}$; quantitative source-scale
-   bounds on bounded windows; translation extends to a bounded injective map on completed apertures (faithful transport).
-4. **Dyadic clock**: $W_2$ is a pure isometry with complete wandering decomposition; the details $d_a$ are exactly the literal balanced Haar
-   sources; every finite cell source has a finite dyadic expansion; integer translations act by a triangular level matrix (prime two
-   shifts levels by one).
-5. **Gamma allocation on the dyadic tree**: exact parent variance identity $V_{\rm parent}=V_{\rm left}+V_{\rm right}+\dots$ gives joint Gamma payment of all
-   parent variances and logarithmic Haar tails across all levels. Whole generator cutoffs split every dyadic correlation exactly;
-   the complete prime-two Euler contribution has one original-source Gamma budget. Orthogonal tail localization and Gamma
-   translation invariance pay every real-lag correlation, each fixed finite Euler family, and jointly every cube and higher power
-   of every prime. The cutoff is exactly logarithmic stopping-cell averaging: it preserves the ordinary mean and splits square
-   mass orthogonally. Uniformly, Γ(head)+Γ(tail)≤(2+96e²)Γ(original). Signed compensation and the paid L² tail mass
-   give complete even-power approximation with arbitrarily small original-Gamma error. First-prime transfer, both
-   exponential poles and full-Weil signed payment remain separate.
-6. **Renormalized adjunction**: growing Ramanujan families have one Gram budget $(1+2\sum_{m\in S}m^2)/\log N$; prime-row corrections cost
-   $C_m=\sqrt{\varphi(m)}(1+4\log m)$; one Mertens-type remainder $B_N$, bounded uniformly in $N$, controls every Ramanujan residual.
-7. **Local capture and escape**: modal families lose normalized mass on every fixed integer window ($\le K_{S,L}/(\log N-D_S)$); every bounded
-   prime-energy sublevel escapes fixed windows — completeness on bounded energy coexists with escape in fixed coordinates.
-
----
-
-## 4. Pillar theorems
-
-1. **Exact residual calculus and radical retention** (`TheArithmeticSchurComplementHasCertifiedErrorBounds`,
-   `OneStationarityBudgetControlsTheWholeSourceFamily`, `TheSignedComplementRetainsExactlyTheWeilRadical`).
-2. **Scale transport**: source-compatible on bounded windows, faithful on completed apertures; translation preserves Weil energy but
-   escapes every exponential graph bound (`BoundedWindowsAdmitSourceCompatibleScaleTransport`, `CompletedAperturesCarryTheLiteralScaleTransport`,
-   `TranslationPreservesWeilEnergyButEscapesEveryExponentialGraphBound`).
-3. **Complete wandering decomposition of the log-cell clock; Haar details are the wandering basis**
-   (`TheLogCellClockHasACompleteWanderingDecomposition`, `BalancedCellDetailsFormTheWanderingBasis`,
-   `TheDyadicDetailsAreTheLiteralBalancedHaarSources`, `ArithmeticTranslationsHaveAnExactDyadicLevelMatrix`).
-4. **One Gamma reserve pays all dyadic parent variances**; finite generator orbits approximate the physical cell source, high generator
-   tails are small across levels, but compact details do not make translation orbits compact (`OneGammaReservePaysAllDyadicParentVariances`,
-   `TheSiblingGammaChargePaysItsParentVariance`, `FiniteGeneratorOrbitsApproximateThePhysicalCellSource`,
-   `CompactDetailsDoNotMakeTranslationOrbitsCompact`).
-5. **Uniform Ramanujan budgets** (`GrowingRamanujanFamiliesHaveAUniformGramBudget`, `OneArithmeticRemainderControlsEveryRamanujanResidual`,
-   `TheArithmeticResidualBudgetIsUniformInTheHorizon`).
-6. **Local capture cost and escape of bounded prime energy** (`RamanujanFamiliesHaveAnExplicitLocalCaptureCost`,
-   `BoundedPrimeEnergyEscapesEveryFixedIntegerWindow`).
-7. **Actual stopping averages, uniform Gamma stability and complete even-power approximation** (`EveryGeneratorCutoffStopsAtAnActualDyadicCell`,
-   `GeneratorCutoffsAreLogarithmicBlockAverages`, `ActualGeneratorHeadsPreserveTheSourceMean`,
-   `TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost`, `ActualGeneratorHeadsAreLocalIntervalMeans`,
-   `ActualGeneratorHeadsAndTailsHaveUniformGammaBounds`, `AllEvenPrimePowersHaveOriginalGammaApproximation`).
-
-For the actual complete-cell clock $W_2$, the generator cutoff $P_A$ retains the root and every Haar label $a<A$ at every level.
-[GeneratorOrbitCutoffsReduceTheDyadicClock](GeneratorOrbitCutoffsReduceTheDyadicClock.lean) proves $P_AW_2^k=W_2^kP_A$ and
-\[
-\langle W_2^kx,x\rangle-\langle W_2^kP_Ax,P_Ax\rangle
-=\langle W_2^k(x-P_Ax),x-P_Ax\rangle.
-\]
-Thus every head–tail dyadic correlation vanishes exactly. Let $E_2$ denote the complete physical correlation sum with weights
-$2\Lambda(2^{k+1})/\sqrt{2^{k+1}}$ and literal translations by $\log(2^{k+1})$.
-[OneGammaReserveControlsTheDyadicEulerTail](OneGammaReserveControlsTheDyadicEulerTail.lean) proves absolute convergence and, for
-every finite original cell profile $f$ and $A\ge1$,
-\[
-|E_2(f)-E_2(P_Af)|\le
-\frac{64\log2}{\sqrt2-1}\frac{\Gamma(f)}{1+\log A}.
-\]
-Here $P_Af$ means the physical image of the cutoff applied to the source's exact cell coordinates. One finite generator set makes
-this error at most $\delta\Gamma(f)$ for every profile and horizon, for any $\delta>0$. Entire translation orbits remain; neither
-Gamma contraction under projection nor a coarse-source norm bound is assumed. This controls the full prime-two correlation
-contribution across all levels. It does not determine the complete Weil sign or the sign on the retained generator orbits.
-
-For every real lag $t$, write $C_t(F)=\operatorname{Re}\langle T_tF,F\rangle$ and
-$Q_A=U(1-P_A)U^*$ on whole-line $L^2$. On an original real profile,
-$C_t(f)=\int f(x)f(x+t)\,dx$.
-[EveryTranslationHasAnAllLevelGammaTailBound](EveryTranslationHasAnAllLevelGammaTailBound.lean) proves
-\[
-|C_t(f)-C_t(f-Q_Af)|\le\frac{96\Gamma(f)}{1+\log A}
-\]
-for every compact real BV source. The identity $\langle Q_Af,g\rangle=\langle Q_Af,Q_Ag\rangle$ pays each mixed
-probe from both original Gamma budgets; translating the original source preserves its Gamma. For general profiles the noncell
-component remains in $f-Q_Af$. For actual finite cell sources this is exactly $UP_AU^*f$.
-
-Let $E_P$ sum the complete critical Euler correlations over a fixed finite prime set $P$.
-[FiniteEulerFactorsHaveAllLevelGeneratorApproximation](FiniteEulerFactorsHaveAllLevelGeneratorApproximation.lean) proves
-absolute convergence for each prime on whole-line $L^2$, equality with the original profile-integral series, and
-\[
-|E_P(f)-E_P(UP_AU^*f)|\le
-96\left(\sum_{p\in P}\frac{2\log p}{\sqrt p-1}\right)\frac{\Gamma(f)}{1+\log A}
-\]
-for every finite original cell source. Choosing $A>\exp(96C_P/\delta)$, with $C_P$ the displayed coefficient sum, gives
-error at most $\delta\Gamma(f)$ for every source and horizon. Every prime power and every retained dyadic level is included.
-No odd-prime commutation is assumed. The complete-power constants are not summable over all primes, and the retained spaces remain
-infinite-dimensional.
-
-The all-prime higher-power sector has finite total coefficient mass
-\[
-H=\sum_{p\text{ prime}}\sum_{k\ge3}\frac{2\log p}{p^{k/2}}<\infty.
-\]
-[AllHigherPrimePowersHaveAllLevelGeneratorApproximation](AllHigherPrimePowersHaveAllLevelGeneratorApproximation.lean)
-proves absolute convergence of its complete correlation on whole-line $L^2$, directed finite-sum convergence, and the stronger
-joint error estimate
-\[
-\sum_p\sum_{k\ge3}\frac{2\log p}{p^{k/2}}
- \left|C_{k\log p}(f)-C_{k\log p}(f-Q_Af)\right|
-\le\frac{96H\Gamma(f)}{1+\log A}.
-\]
-This bounds the complete source and every finite prime-power selection before cancellation. For actual finite cell sources,
-one $A>\exp(96H/\delta)$ gives error at most $\delta\Gamma(f)$ simultaneously for every profile, horizon and finite selection.
-All retained generator orbits remain intact. General BV profiles retain their noncell component.
-
-[CriticalEulerCoefficientMassStartsAtCubes](CriticalEulerCoefficientMassStartsAtCubes.lean) gives the sharp boundary:
-the coefficient tail beginning at exponent $r+1$ is summable exactly when $r\ge2$.
-Both $\sum_p2\log p/\sqrt p$ and $\sum_p2\log p/p$ diverge. This classifies the absolute-coefficient method; it does not
-assert divergence of actual compact-source correlations or exclude signed prime–pole compensation. The higher-power theorem
-is its positive survivor, with the literal physical source and one original Gamma reserve.
-
-The whole-orbit cutoff also has an exact physical description. Write $\ell_n=\log((n+1)/n)$.
-Repeated integer halving stops at a pair $(j,a)$ with $n/2^j$ having integer part $a<2A$;
-if $n\ge A$, then $A\le a<2A$. Its block is
-$B_{j,a}=\{2^ja,\ldots,2^j(a+1)-1\}$, and its physical interval is
-$[j\log2+\log a,j\log2+\log(a+1))$.
-[EveryGeneratorCutoffStopsAtAnActualDyadicCell](EveryGeneratorCutoffStopsAtAnActualDyadicCell.lean) and
-[GeneratorCutoffsAreLogarithmicBlockAverages](GeneratorCutoffsAreLogarithmicBlockAverages.lean) prove
-that the projected physical height on this block is
-\[
-\frac{1}{\ell_a}\sum_{m\in B_{j,a}}\ell_m f_m,
-\qquad \sum_{m\in B_{j,a}}\frac{\ell_m}{\ell_a}=1.
-\]
-Cells $n<2A$ are fixed. Every cell in the projected image of cell $n$ has label below $2n$.
-Thus an original finite horizon $X$ produces a finite real head using labels below $2X$, with every retained generator orbit intact.
-
-[ActualGeneratorHeadsPreserveTheSourceMean](ActualGeneratorHeadsPreserveTheSourceMean.lean) constructs this head $h=P_Af$
-and tail $t=f-h$ as actual compact BV functions for every finite real cell source, including the original `wholeCellProfile`.
-It proves
-\[
-\int h=\int f,\quad \int t=0,\quad \int ht=0,\quad
-\int f^2=\int h^2+\int t^2,\qquad
-\int t^2\le\frac{32\Gamma(f)}{1+\log A}.
-\]
-Let $S_{\rm even}(f)=2\sum_n\Lambda(n)n^{-1}C_{2\log n}(f)$, the literal `squarePrimeSource`.
-This includes **all even prime powers**, with exponents at least four also belonging to the higher-power sector above.
-Its centered version subtracts $\tfrac12(\int f)^2+s_0\int f^2$, where $s_0$ is the square-source regular symbol at zero.
-Both centering corrections cancel exactly in the mixed difference for $f=h+t$.
-[TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost](TheSquareSourceHeadErrorHasOnlyAGammaStabilityCost.lean) proves that,
-for every $\varepsilon>0$, one $C_\varepsilon\ge0$ works for every cutoff and every finite source family:
-\[
-|S_{\rm even}(f)-S_{\rm even}(h)|
-\le\varepsilon\bigl(\Gamma(h)+\Gamma(t)\bigr)
- +C_\varepsilon\frac{32\Gamma(f)}{1+\log A}.
-\]
-The centered diagonal estimate follows from quadratic homogeneity; the zero-mean tail's remaining correction costs its square mass.
-[ActualGeneratorHeadsAndTailsHaveUniformGammaBounds](ActualGeneratorHeadsAndTailsHaveUniformGammaBounds.lean) proves
-\[
-\Gamma(h)\le32e^2\Gamma(f),\qquad
-\Gamma(h)+\Gamma(t)\le(2+96e^2)\Gamma(f).
-\]
-This holds for every positive cutoff and every finite real cell source, uniformly in coefficients, cardinality, horizon and
-translation depth. The head equals the original mean on each stopping interval. The grid has widths at most one and adjacent
-width ratios at most three. Integrated touching-boundary defects and separated-kernel comparisons bound its complete energy
-by the original source's simultaneous mean-graph and exterior charges. Finite zero padding discharges the exposed boundary
-conditions. The quadratic triangle inequality pays the tail, without iterating a constant through the levels.
-
-[AllEvenPrimePowersHaveOriginalGammaApproximation](AllEvenPrimePowersHaveOriginalGammaApproximation.lean) consequently gives
-\[
-|S_{\rm even}(f)-S_{\rm even}(h)|
-\le\left(\varepsilon+\frac{C_\varepsilon}{1+\log A}\right)\Gamma(f).
-\]
-For every δ>0 there is one A₀, before all finite source families and horizons, such that every A≥A₀ gives error≤δΓ(f).
-The argument combines bounded Gamma stability with small L² tails; complete translation orbits remain infinite-dimensional
-and noncompact. First-prime transfer, both exponential Weil moments and retained-orbit sign remain separate obligations.
-All seven kernel, grid, physical-mean, Gamma-stability and even-power modules pass individual Lean checks. Their printed
-capstones use only `propext`, `Classical.choice` and `Quot.sound`.
-
----
-
-## 5. Traps
-
-- A null vector is not a negative direction; no graph-norm floor on a residual containing a Weil radical.
-- Ordinary mean zero, the discrete harmonic pole constraint and two continuous exponential moments are different conditions.
-- The sparse Euler shift $e_m\mapsto e_{2m}$ is not the complete-cell clock $e_m\mapsto\alpha_me_{2m}+\beta_me_{2m+1}$; a pole-hyperplane theorem for one is not one for the other.
-- Shared Gamma reserve cannot be spent on every block separately.
-- Fixed support, conductor or profile variation do not give uniform growing families; domain escape must be measured.
-- Prime-matrix positivity ≠ full Weil positivity.
-- Nonnegative entries of the critical pair energy do not make its kernel PSD.
-- Larger horizons alone do not prove density; sparse positive carriers can be proper.
-- No diagonal gauge in obstructed overlap regimes; signed block geometry must address that.
-- Choosing a slow diagonal sequence from fixed-mode limits does not establish Gamma/pole/complement comparisons.
-
----
-
-## 6. Open problems
-
-1. **Joint full-Weil payment** using uniform actual-head Gamma stability and complete even-power approximation. First-prime
-   transfer, both exponential polar moments, retained-orbit sign and a complete-form bounded-index theorem remain distinct
-   obligations. The supplied averaging bound has one original-source reserve, independent of cutoff and translation depth.
-2. **Twin-selective control of generator orbits** with Gamma and both poles; transfer of the discrete prime gap beyond narrow spacing.
-3. **Arithmetic upper bound on $\mathcal E_{\rm crit}$** retaining exterior rows (finiteness ⇒ finite off-line support; $\mathcal E_{\rm crit}\le1294047/2000$ ⇔ RH).
-4. **Growing Ramanujan families** controlling a useful full-source domain, with a complement estimate surviving Gamma and the continuous
-   two-pole comparison; enlarging corrections making stationarity uniformly small.
-5. **Counterterms converging in a topology preserving mixed Weil pairings**; constraints between conductor, class variation and horizon.
-6. **Selective localization** seeing every exceptional ordinate at affordable conductor and inverse cost.
-
-## 7. Tools to build
-
-Complete signed block payment on the dyadic tree; quantitative growing-family schedules with full-form complement and
-Gamma/pole transfer; arithmetic upper control of critical work; moving-coordinate norm comparisons for escaping modes.
-
-## 8. Contribution standard
-
-Identify the actual source; prove a new estimate, sharp classification or structural theorem an estimate needs; preserve the
-complete form; state every growing parameter; account for mixed terms and poles; instantiate abstract lemmas on actual
-arithmetic objects; say precisely which endpoint remains open.
+The lesson for the RH programme is a sharp split. Everything with summable coefficient mass, and the squares, is now paid on
+objects that keep all translation levels. What remains is the first-prime layer together with the two exponential poles, and
+the sign on the retained orbits. These cannot be reached by absolute estimates; they require cancellation between primes and
+poles on infinite-dimensional, non-compact orbit spaces.

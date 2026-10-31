@@ -1,7 +1,8 @@
 import GaloisForLFunctions.ArithmeticIndexDescent.TheFullNonfirstSourceRetainsAlmostAllGamma
 import GaloisForLFunctions.ArithmeticIndexDescent.EveryIntegerPrimeLagHasGammaSmallMixedTails
 
-/-!+# Joint payment of finitely many first-prime mixed sources
+/-!
+# Joint payment of finitely many first-prime mixed sources
 
 A fixed finite first-prime sum is small on high details in the original
 complete-profile Gamma norm. It shares the proved nonfirst payment while
@@ -18,7 +19,8 @@ open ArithmeticCastelnuovoSeveri.LogCells BiarithmeticGaugeGeometry HTGeometry
 def finiteFirstPrimeMixedSource (P : Finset Nat.Primes) (d q : ℕ → ℝ) (X : ℕ) : ℝ :=
   ∑ p ∈ P, integerMixedSource (p : ℕ) d q X X
 
-private def finiteFirstPrimeMixedCost (P : Finset Nat.Primes) : ℝ :=
+/-- Sum of the individual first-prime mixed-tail constants. -/
+def finiteFirstPrimeMixedCost (P : Finset Nat.Primes) : ℝ :=
   ∑ p ∈ P, 2 * (2 * ArithmeticFunction.vonMangoldt (p : ℕ) / Real.sqrt (p : ℝ))
 
 theorem finiteFirstPrimeMixed_tail_bound (P : Finset Nat.Primes) (d q : ℕ → ℝ)
@@ -114,7 +116,71 @@ theorem exists_finiteFirstPrime_fullPolar_completeGamma_reserve
   have he := (abs_le.mp (h q d X hd)).1
   linarith only [he]
 
+/-- The joint source on each original finite complete-profile family. -/
+def finiteFirstPrimeFullPolarProfileForm {n : ℕ} (P : Finset Nat.Primes)
+    (q d : Fin n → ℕ → ℝ) (X : ℕ) (x : Fin n → ℝ) : ℝ :=
+  finiteFirstPrimeFullPolarSource P (fun a => ∑ i, x i * q i a)
+    (fun a => ∑ i, x i * d i a) X
+
+private def firstPrimePolarReadout {n : ℕ} (q d : Fin n → ℕ → ℝ) (X A : ℕ) :
+    (Fin n → ℝ) →ₗ[ℝ] (Fin (A + 1) → ℝ) where
+  toFun x a := if (a : ℕ) < A then ∑ i, x i * d i a else
+    ∑ i, x i * sinhHalfMoment (completePairProfile (q i) (d i) X)
+  map_add' x y := by
+    funext a
+    simp only [Pi.add_apply]
+    split_ifs <;> simp only [add_mul, Finset.sum_add_distrib]
+  map_smul' c x := by
+    funext a
+    simp only [Pi.smul_apply, smul_eq_mul]
+    split_ifs <;> simp only [mul_assoc, Finset.mul_sum]
+    all_goals rfl
+
+/-- The joint finite first-prime, nonfirst and full polar source has uniform finite index. -/
+theorem exists_uniform_finiteFirstPrime_fullPolar_negative_dimension (P : Finset Nat.Primes) :
+    ∃ A : ℕ, 1 ≤ A ∧ ∀ (n : ℕ) (q d : Fin n → ℕ → ℝ) (X : ℕ)
+      (W : Submodule ℝ (Fin n → ℝ)),
+      (∀ x ∈ W, x ≠ 0 → finiteFirstPrimeFullPolarProfileForm P q d X x < 0) →
+        Module.finrank ℝ W ≤ A + 1 := by
+  obtain ⟨A, hA, hpay⟩ := exists_finiteFirstPrime_fullPolar_completeGamma_reserve P
+    (by norm_num : (0 : ℝ) < 1 / 2)
+  refine ⟨A, hA, ?_⟩
+  intro n q d X W hW
+  let T := firstPrimePolarReadout q d X A
+  have hnonneg (x : Fin n → ℝ) (hx : T x = 0) :
+      0 ≤ finiteFirstPrimeFullPolarProfileForm P q d X x := by
+    have hz (a : ℕ) (ha : a < A) : (∑ i, x i * d i a) = 0 := by
+      have h : (if a < A then ∑ i, x i * d i a else
+          ∑ i, x i * sinhHalfMoment (completePairProfile (q i) (d i) X)) = 0 :=
+        congrFun hx (⟨a, by omega⟩ : Fin (A + 1))
+      simpa only [if_pos ha] using h
+    have hs : sinhHalfMoment (completePairProfile (fun a => ∑ i, x i * q i a)
+        (fun a => ∑ i, x i * d i a) X) = 0 := by
+      have h : (if A < A then ∑ i, x i * d i A else
+          ∑ i, x i * sinhHalfMoment (completePairProfile (q i) (d i) X)) = 0 :=
+        congrFun hx (⟨A, by omega⟩ : Fin (A + 1))
+      rw [sinhHalfMoment_completePairProfile_linearCombination]
+      simpa only [if_neg (by omega : ¬A < A)] using h
+    have hp := hpay (fun a => ∑ i, x i * q i a) (fun a => ∑ i, x i * d i a) X hz
+    rw [hs, zero_pow (by norm_num : 2 ≠ 0), mul_zero, add_zero] at hp
+    have hG := levyEnergy_nonneg_bv
+      (completePairProfile_bv (fun a => ∑ i, x i * q i a) (fun a => ∑ i, x i * d i a) X)
+      (completePairProfile_compact (fun a => ∑ i, x i * q i a)
+        (fun a => ∑ i, x i * d i a) X)
+    apply le_trans _ hp
+    positivity
+  have hker : LinearMap.ker (T.domRestrict W) = ⊥ := by
+    rw [Submodule.eq_bot_iff]
+    intro x hx
+    rw [LinearMap.mem_ker, LinearMap.domRestrict_apply] at hx
+    by_contra hx0
+    have hv : (x : Fin n → ℝ) ≠ 0 := fun h0 => hx0 (Subtype.ext h0)
+    exact (not_lt_of_ge (hnonneg x hx)) (hW x x.property hv)
+  have hd := LinearMap.finrank_le_finrank_of_injective (LinearMap.ker_eq_bot.mp hker)
+  simpa only [Module.finrank_fintype_fun_eq_card, Fintype.card_fin] using hd
+
 end GaloisForLFunctions.ArithmeticIndexDescent
 
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_finiteFirstPrimeMixed_gamma_small_tail
 #print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_finiteFirstPrime_fullPolar_completeGamma_reserve
+#print axioms GaloisForLFunctions.ArithmeticIndexDescent.exists_uniform_finiteFirstPrime_fullPolar_negative_dimension

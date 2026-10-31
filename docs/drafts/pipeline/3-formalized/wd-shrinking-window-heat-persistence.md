@@ -198,8 +198,11 @@ lake --old env lean GaloisForLFunctions/RHTower/Heat/HeatUniformDepthZeroDensity
 ```
 
 Imports are wired into `HTGeometry.lean` and `RHTower.lean`; umbrellas
-were not compiled. The API scratch file was removed. No web search,
-novelty checks, numerical experiments, or axiom checks were performed.
+were not compiled. Transitive axiom audits of
+`exists_nonreal_riemannHeat_zero_at_uniform_depth_scale` and
+`exists_card_deep_le_heat_count_at_uniform_depth_scale` passed: both depend
+only on `propext`, `Classical.choice`, and `Quot.sound`. The counting source
+also passed a direct Lean check with both audits appended.
 
 The necessity transfer is closed uniformly in depth. The next required
 input is an arithmetic upper count or signed-source upper bound strong

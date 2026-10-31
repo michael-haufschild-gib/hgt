@@ -90,7 +90,7 @@ theorem stretchedExponential_deep_density_of_nonrealZeroCount
     _ = _ := by rw [logarithmic_heat_rpow_neg hδ hC hL0, ← mul_assoc]
 
 /-- A stretched exponential with exponent below one in `log X` is below every positive power. -/
-private theorem eventually_log_mul_exp_rpow_le_rpow {C K b ε : ℝ}
+theorem eventually_log_mul_exp_rpow_le_rpow {C K b ε : ℝ}
     (hC : 0 ≤ C) (hb : b < 1) (hε : 0 < ε) :
     ∀ᶠ X : ℝ in atTop,
       C * Real.log X * Real.exp (K * Real.log X ^ b) ≤ X ^ ε := by

@@ -16,11 +16,11 @@ which vanishes at `x = δ`.
 `64δ² ≤ λ(m + 2)`, the heated slice `H(x) = E[g(x + √λ Z)]` has a power series at `0` with
 nonnegative coefficients.
 
-At height `t` with `L = log t` and `m ≍ log t` (allowed by the local count `≤ 40 log(180t)`), heated
-positivity at rate `κ = λL ≍ δ²` is thus compatible with an off-line zero of depth `δ`.  Together with
-detection at every `κ ≤ δ²/200` (`re_xiSliceHeatTransfer_neg_of_slice_zero_quadratic`), the order `δ²`
-of the unconditional heat detection rate is optimal for configurations with central clusters.  A
-linear rate needs a bound on the number of zeros within `O(δ)` of `½ + it`.
+With `L = log t` and `m ≍ log t` (a multiplicity the local count `≤ 40 log(180t)` allows), the model
+is heat-positive at rate `κ = λL ≍ δ²` although it carries an off-line zero of depth `δ`.  Against
+detection at every `κ ≤ δ²/200` for `ξ` (`re_xiSliceHeatTransfer_neg_of_slice_zero_quadratic`), the
+order `δ²` cannot be improved by any argument that the model also satisfies; a linear rate needs a
+bound on the number of zeros within `O(δ)` of `½ + it`.
 
 Proof.  With `p(x) = x^{2m}(δ² − x²)²` and `Q = e^{(λ/2)∂²} p`, the Gaussian tilt gives
 `H(x) = ½ e^{λL²/2} (e^{Lx} Q(x + λL) + e^{−Lx} Q(x − λL))` (`clusterModelHeat_eq`).  `p` is the
@@ -320,5 +320,3 @@ theorem hasSum_clusterModelHeat {m : ℕ} {δ L lam : ℝ} (hlam : 0 < lam) (hL 
 end
 
 end RHTower.DeBruijn
-
-#print axioms RHTower.DeBruijn.hasSum_clusterModelHeat

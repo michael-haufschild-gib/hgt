@@ -1,7 +1,8 @@
 import GaloisForLFunctions.RHTower.XiJensenHermiteLimit
 import GaloisForLFunctions.HTGeometry.HermiteSignChanges
 
-/-!+# Eventual real-rootedness at every fixed Xi Jensen degree
+/-!
+# Eventual real-rootedness at every fixed Xi Jensen degree
 
 The actual normalized Jensen polynomials converge to Hermite polynomials.
 Their finitely many separated sign changes persist, forcing the full number
@@ -19,7 +20,8 @@ private theorem splits_of_separated_sign_changes (P : ℝ[X]) (Z : Finset ℝ)
     (hsep : ∀ z ∈ Z, ∀ w ∈ Z, z ≠ w → 2 * ε < |z - w|) : P.Splits := by
   classical
   by_cases hP : P = 0
-  · simp only [hP, splits_zero]
+  · subst P
+    exact Polynomial.Splits.zero
   have hroot : ∀ z ∈ Z, ∃ r ∈ Set.Ioo (z - ε) (z + ε), P.IsRoot r :=
     fun z hz => exists_root_of_sign_change (by linarith) (hsign z hz)
   choose r hr hPr using hroot
@@ -38,26 +40,13 @@ private theorem splits_of_separated_sign_changes (P : ℝ[X]) (Z : Finset ℝ)
   have hcard : Z.card ≤ P.roots.toFinset.card :=
     Finset.card_le_card_of_injOn (f := f)
       (fun z hz => by
+        change f z ∈ P.roots.toFinset
         rw [Multiset.mem_toFinset, mem_roots hP, hf z hz]
         exact hPr z hz) hinj
   have h1 := Multiset.toFinset_card_le P.roots
   have h2 := Polynomial.card_roots' P
   rw [splits_iff_card_roots]
   omega
-
-private theorem eventually_finset {α : Type*} (S : Finset α) (P : ℕ → α → Prop)
-    (h : ∀ a ∈ S, ∀ᶠ n in atTop, P n a) :
-    ∀ᶠ n in atTop, ∀ a ∈ S, P n a := by
-  classical
-  induction S using Finset.induction_on with
-  | empty => simp
-  | @insert a S ha ih =>
-    filter_upwards [h a (mem_insert_self _ _),
-      ih (fun b hb => h b (mem_insert_of_mem hb))] with n hn hS
-    intro b hb
-    rcases mem_insert.mp hb with rfl | hb
-    · exact hn
-    · exact hS b hb
 
 /-- A harmless real dilation matches the separated forward-heat sign intervals. -/
 private def heatScaledJensen (n d : ℕ) : ℝ[X] :=
@@ -89,12 +78,12 @@ theorem eventually_splits_xiJensenHermitePolynomial (d : ℕ) :
     intro z hz
     exact ((heatScaledJensen_eval_tendsto d (z - ε)).mul
       (heatScaledJensen_eval_tendsto d (z + ε))).eventually_lt_const (hsign z hz)
-  filter_upwards [eventually_finset Z _ he] with n hn
+  filter_upwards [(Filter.eventually_all_finset Z).mpr he] with n hn
   have hs := splits_of_separated_sign_changes (heatScaledJensen n d) Z hε
     (by simpa only [hZ] using heatScaledJensen_degree n d) hn hsep
   have hsqrt : Real.sqrt 2 ≠ 0 := by positivity
   have hcomp := (splits_mul_iff_right
-    (C_ne_zero.mpr (pow_ne_zero d hsqrt)) (splits_C _)).mp hs
+    (C_ne_zero.mpr (pow_ne_zero d hsqrt)) (Polynomial.Splits.C _)).mp hs
   exact (splits_iff_comp_splits_of_natDegree_eq_one
     (by rw [natDegree_C_mul (inv_ne_zero hsqrt), natDegree_X])).mpr hcomp
 
@@ -107,7 +96,7 @@ theorem eventually_splits_xiJensenPoly (d : ℕ) :
   have hA := (xiJensenScale_pos n).ne'
   have hcomp := (splits_mul_iff_right
     (C_ne_zero.mpr (inv_ne_zero (mul_ne_zero hγ (pow_ne_zero d hδ))))
-    (splits_C _)).mp hn
+    (Polynomial.Splits.C _)).mp hn
   apply (splits_iff_comp_splits_of_natDegree_eq_one ?_).mpr hcomp
   rw [natDegree_C_mul (inv_ne_zero hA),
     natDegree_sub_eq_left_of_natDegree_lt (by

@@ -1,35 +1,16 @@
 import GaloisForLFunctions.RHTower.AtlasBlindToUnfolded
 
 /-!
-# Correlation statistics bound the number of zeros, never the location of one
+# A squared-norm perturbation bound
 
-The correlation lane is open with respect to the scale obstructions, and its unconditional input is
-the positivity of the pair-correlation form.  This file computes what that input can and cannot do,
-and finds a wall of a different kind: one about the **order** of the statistic rather than its size.
+* `sq_norm_perturbation`: in a real inner product space, `|‖z + c‖² − ‖z‖²| ≤ 2‖z‖‖c‖ + ‖c‖²`.
+* `individual_invisible`, `perturbation_grows`: arithmetic of `2√S + 1`.
+* `count_bound`, `count_excludes_iff`: `N c ≤ S` gives `N ≤ S/c`, and `1 ≤ N ≤ S/c` gives `1 ≤ S/c`.
 
-**The budget is quadratic.**  The correlation form is a squared modulus over all zeros.  Its size in
-a box of height `T` is of order `T log T`.  A single zero enters as one unit vector among that many,
-so removing or adding it changes the form by
-
-```text
-| ‖z + c‖² - ‖z‖² |  ≤  2‖z‖‖c‖ + ‖c‖² ,
-```
-
-which for `‖z‖² ≍ S` and `‖c‖ = 1` is of order `√S` — **larger than the unit contribution being
-tested, and growing with the box**.
-
-> **A bound on the correlation form of size `S` constrains an individual zero only at level `√S`.
-> Correlation statistics therefore yield bounds on the *number* of zeros in a region — density
-> theorems — and can never exclude a single zero.  Any correlation-based argument reproduces
-> zero-density estimates, which are classical and do not settle the hypothesis.**
-
-**Why this wall is different.**  The scale walls of entries 13–36 say a method cannot see far enough
-or dodge cleverly enough; this one says the statistic is of the wrong *order* in the zeros.  It is a
-degree obstruction, not a magnitude obstruction, and it applies to every quadratic functional of the
-zero set regardless of the weight.
-
-This file formalizes the perturbation estimate, the resulting invisibility of an individual term, and
-the counting form of what a quadratic bound does give.
+Read with `z` the vector of a quadratic zero statistic of size `S` and `c` one unit term, the first
+bound says that adding the term moves the statistic by at most `O(√S)`.  This is a heuristic for why
+quadratic statistics give counts; the file does not prove that correlation statistics cannot exclude
+an individual zero.
 -/
 
 open Finset
@@ -61,26 +42,23 @@ theorem sq_norm_perturbation (z c : E) :
 
 end Perturb
 
-/-- **The individual is invisible.**  With the total of size `S` and a unit contribution, the
-perturbation is of order `√S`, which exceeds the unit being tested once `S > 1`. -/
+/-- `1 < 2√S + 1` for `S > 1`. -/
 theorem individual_invisible {S : ℝ} (hS : 1 < S) : 1 < 2 * Real.sqrt S + 1 := by
   have h : 0 < Real.sqrt S := Real.sqrt_pos.mpr (by linarith)
   linarith
 
-/-- The perturbation grows with the box, so no fixed threshold isolates one zero. -/
+/-- `S ↦ 2√S + 1` is monotone on `[0, ∞)`. -/
 theorem perturbation_grows {S₁ S₂ : ℝ} (_h1 : 0 ≤ S₁) (h12 : S₁ ≤ S₂) :
     2 * Real.sqrt S₁ + 1 ≤ 2 * Real.sqrt S₂ + 1 := by
   have := Real.sqrt_le_sqrt h12
   linarith
 
-/-- **What a quadratic bound does give: a count.**  If each of `N` zeros contributes at least `c > 0`
-to a nonnegative form bounded by `S`, then `N ≤ S / c`. -/
+/-- `N c ≤ S` with `c > 0` gives `N ≤ S/c`. -/
 theorem count_bound {N c S : ℝ} (hc : 0 < c) (hlow : N * c ≤ S) : N ≤ S / c := by
   rw [le_div_iff₀ hc]
   exact hlow
 
-/-- **And a count excludes nothing unless it is below one.**  A density bound `N ≤ S/c` refutes the
-existence of a zero only when `S/c < 1`. -/
+/-- `1 ≤ N ≤ S/c` gives `1 ≤ S/c`. -/
 theorem count_excludes_iff {N S c : ℝ} (_hc : 0 < c) (hN : 1 ≤ N) (hbound : N ≤ S / c) :
     1 ≤ S / c := le_trans hN hbound
 

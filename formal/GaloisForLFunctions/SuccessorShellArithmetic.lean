@@ -5,6 +5,23 @@ import GaloisForLFunctions.SuccessorShellArithmetic.TheShellsAloneCostTheSquareO
 import GaloisForLFunctions.SuccessorShellArithmetic.TheTwinDefectIsASuccessorDisagreementShell
 import GaloisForLFunctions.SuccessorShellArithmetic.TheShellsAndThePoleCancelOnTheTopBand
 import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.UniformJointCancellation
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.PeriodicShellWindows
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.WeightedBaseCollapse
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.NonpolarJointCancellation
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.RamanujanDivisorMoments
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.RamanujanDivisorSpectrum
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.RamanujanDivisorPlancherel
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.FullShellRows
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.PeriodMassShellRows
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.MixedPolarCancellation
+import GaloisForLFunctions.SuccessorShellArithmetic.TopBand.RamanujanPackets
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.DivisorJetGroundState
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.RamanujanJetAdjunctionGap
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.DivisorJetReciprocity
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.DivisorJetSpectrum
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.RamanujanAutocorrelationWeights
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.SmoothedDivisorJet
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.ProfiledAdjunctionLagKernel
 
 /-!
 # Successor-Shell Arithmetic
@@ -13,7 +30,10 @@ Umbrella for the arithmetic of the successor shells `n = km + h` of the complete
 at growing overlap: the finite shell decomposition and its top band; the integrality of the shift
 as the source of the logarithmic repayment (continuum shells carry only the pole charge); positivity
 of conductor packets along `c = (log N)^α`, `α < 1/19`; the `c²/ε` floor of every separate payment
-of the shells and its cancellation against the pole on the top band; the twin defect as a
+of the shells and its cancellation against the pole on the top band; overlap-uniform cancellation
+for mean-zero periodic top-band perturbations, including every nonpolar Ramanujan mode; the exact
+finite divisor-jet square completion and adjunction spectrum, preserved by signed-source
+autocorrelation smoothing and compact source profiles on arbitrary real shifts; the twin defect as a
 successor-disagreement shell. See
 `SuccessorShellArithmetic/README.md`.
 -/

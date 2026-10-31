@@ -1,177 +1,220 @@
 # Arithmetic Effectivity Theory (AET)
 
-Namespace `GaloisForLFunctions.ArithmeticEffectivityTheory`; umbrella `ArithmeticEffectivityTheory.lean`.
+Namespace `GaloisForLFunctions.ArithmeticEffectivityTheory` (the 𝔽₃ elliptic files use the sub-namespace
+`…ArithmeticEffectivityTheory.FiniteFieldEllipticBase`); umbrella `ArithmeticEffectivityTheory.lean`; 50 modules. All
+results unconditional; statements "⇔ RH" are proved equivalences.
 
-**Question.** Over $\mathbb F_q$ Weil's sign is the nonnegativity of a dimension: Riemann–Roch on $C\times C$, dropping $h^1\ge0$,
-gives $h^0(D)+h^0(K-D)\ge\tfrac12D\cdot(D-K)+\chi(\mathcal O)$, and sections cannot exist in negative degree. Over $\mathbb Z$ the integers that
-could play $h^0$ are log-orders of finite groups and log-volumes of lattices. Which real-valued cohomology on $\operatorname{Spec}\mathbb Z$ and its
-correspondence surface has a Riemann–Roch proved without the sign, which effectivity laws does it obey, and which signs can
-integers produce?
+## 1. Motivation
 
-**Guiding sentence.** RH is the Hodge index theorem of an arithmetic surface whose points are the primes with residue size
-$\log p$, whose cohomology is measured by volume, whose Frobenius is the Hecke ring, and whose boundary is the archimedean place.
-**Principle.** A sign from integers is a comparison of two computations of one Euler characteristic, positivity entering only
-through the existence of a section or the order of a finite group.
+Over $\mathbb F_q$ Weil's sign is the nonnegativity of a dimension: Riemann–Roch on $C\times C$ with $h^1\ge0$ dropped gives
+$h^0(D)+h^0(K-D)\ge\chi(D)$, and degree-zero classes carry few sections. Over $\mathbb Z$ the integers that could play $h^0$ are
+log-orders of finite groups and log-volumes of lattices. AET asks which real-valued "section counts" exist on $\operatorname{Spec}\mathbb Z$ and
+its scaling surface, which effectivity laws they obey, which signs integers can produce, and how far counting reaches
+(Tate heights, Stepanov, Gauss sums, Burgess). It also builds one positive-genus function field over $\mathbb F_3$ completely,
+as the calibration of what a base with a zeta function looks like.
 
----
+## 2. Objects
 
-## 1. Place in the research
-
-Effective *cones* are tautological (universal floor law, ACS; a Boolean section count with RR and Bézout is the sign, ACP).
-AET moves the question from cones to **functions**: effectivity is a *growth law* of a real function, to be proved from its
-definition. APol studies positivity from symmetry/charge; AET from counting.
-
-| Programme | Takes / adds |
-|---|---|
-| ArithmeticCastelnuovoSeveri | Polar and scaling surfaces, curve data, golden datum, universal floor law / real-valued effectivity calculus |
-| ArithmeticOrientationGeometry | Theta $h^0$ of $\operatorname{Spec}\mathbb Z$ / theta surface with characteristics; non-extension of the base $h^0$ |
-| ArithmeticOrientationTheory | Rank counts, Boolean $h^0$ / log-volume counts |
-| BiarithmeticGeometry | $E(\log(N+1))=N-\log Q_N$ / log-torsion dictionary of the explicit formula; product formula as Bézout |
-| ArithmeticCorrespondencePositivity | Correspondence ring, layers L1–L6 / naive-height form of L5 (Tate limits); Stepanov as Siegel abundance + integrality floor |
-| ArithmeticCorrelationGeometry, ArithmeticPolarization | Gauge charge; local types / counting mechanism of a polarization |
-| ArithmeticPositiveDuality | $\kappa=1$ rigidity, Beurling rigidity / base axioms against Beurling models |
-| `RHTower` | Explicit formula, von Koch, Stepanov and Weil bounds over $\mathbb F_q$, hyperelliptic descent |
-
----
-
-## 2. Why
-
-**Weil's sign is a growth law.** A class $D$ with $D^2>0$, $D\cdot A=0$ would have $h^0(nD)+h^0(K-nD)\ge\tfrac12n^2D^2-O(n)$ while degree-zero
-classes carry boundedly many sections: quadratic growth vs not. Ingredients: $h\ge0$, a **quadratic** Euler characteristic,
-a growth bound in degree zero. None is a cone axiom.
-
-**Over $\mathbb Z$ the integers are log-torsions.** $\psi(N)=\log|\mathbb Z/\operatorname{lcm}(1..N)\mathbb Z|$; each prime power adds the log-order $\Lambda(N+1)$ of a
-cyclic kernel; box Euler characteristic $E(\log(N+1))=N-\log Q_N$ is not a difference of dimensions. The explicit formula is a
-second computation: *log-torsion = zero oscillation + archimedean density*. Cohomology must be real-valued (van der
-Geer–Schoof $h^0=\log\theta$); effectivity is the size of a log-volume.
-
-**One intrinsic integrality inequality**: $|n|\ge1$, i.e. the product formula read as Bézout. Every sign from integers over $\mathbb Z$
-(Liouville, Chebyshev, Nair, Thue–Siegel, determinant methods, Northcott, Néron–Tate positivity) is this inequality applied to
-a Siegel's-lemma auxiliary.
-
-**Positivity of a quadratic form from counting** is a theorem for Néron–Tate heights: theorem of the square up to bounded error
-+ nonnegative naive heights. ACP shows the first is free on the correspondence ring; the missing input is a **naive height** on
-the integral correspondence ring, nonnegative for an arithmetic reason, at bounded distance from the Rosati form.
-
-**One variable is a base.** The theta $h^0$ of $\operatorname{Spec}\mathbb Z$ has exact (linear) Riemann–Roch whose Mellin transform is $\Lambda(s)$. A surface
-needs quadratic $\chi$, hence Hilbert–Samuel growth; the base $h^0$ never extends. On the box class $\sqrt N\cdot A$, $\chi=N$: a surface
-$h^0$ has the size of a dimension of Dirichlet polynomials of length $N$, not of the degree $\log N$.
-
----
-
-## 3. Objects and language
-
-| Over $\mathbb F_q$ | AET object | Lean |
+| Object | Lean | Meaning |
 |---|---|---|
-| $C\times C$ | polar surface, ample class $A=H+V$ | `PolarSurface`, `scalingSurface` |
-| $\chi(D)=\tfrac12D\cdot(D-K)+\chi(\mathcal O)$ | Euler characteristic, Serre symmetric | `eulerChar` |
-| $h^0+h^2\ge\chi$ | Riemann inequality $\chi(x)\le h(x)+h(\kappa-x)$ | `RiemannInequality` |
-| $h^0$ bounded in degree zero | `DegreeBounded`, `DegreeZeroSubquadratic` | — |
-| $D^2>0$, $D\cdot A=0$ | abundant class; abundance rate $\max(0,\tfrac12x^2)$ | `Abundant`, `optimalEffectivity` |
-| Hilbert–Samuel | along the ample ray; box class $\sqrt N A$ | `boxClass` |
-| theta $h^0$ of the base | $h^0(d)=\log\sum e^{-\pi n^2e^{-2d}}$ | `thetaEffectivity`, `arithH0` |
-| Néron–Tate height | naive height; Tate limit; integral Rosati form | `tateLimit`, `intRosatiForm` |
-| $\#C(\mathbb F_{q^m})$ | log-torsion of the horizon | `logTorsion` |
-| degree of principal divisors $=0$ | product formula $\log n=\sum v_p(n)\log p$ | `log_eq_logTorsion` |
-| theta divisor, characteristics | theta surface $h^0(a,d)$, dual, characteristic $\vartheta(J,t)$ | `thetaH0`, `thetaChar` |
-| Frobenius graphs ∩ diagonal | torsion orbits $O_n$; $I(m,n)=\log|\operatorname{Res}(\Phi_m,\Phi_n)|$; Abel energy | `orbitIntersection`, `torsionEnergy` |
-| Stepanov auxiliary | auxiliary integer polynomial; integrality floor vs analytic ceiling | `nairPoly` |
-| $\mathbb P^1\times\mathbb P^1$ | hyperbolic plane, $h^0=(a+1)^+(b+1)^+$ | `hyperbolicPlane`, `p1SquareH0` |
+| Euler characteristic | `eulerChar` | $\chi(x)=\tfrac12x\cdot(x-\kappa)+\chi_0$, Serre symmetric |
+| Riemann inequality | `RiemannInequality` | $\chi(x)\le h(x)+h(\kappa-x)$ |
+| Degree-zero growth | `DegreeBounded`, `DegreeZeroSubquadratic` | bounded on degree levels; $o(n^2)$ along degree-zero classes |
+| Abundant class | `Abundant`, `optimalEffectivity`, `levelBound` | degree 0 class along which every RI function grows quadratically |
+| Theta $h^0$ of the degree | `thetaEffectivity` (with AOG `arithH0`) | $h(x)=\log\sum_ne^{-\pi n^2e^{-2(x\cdot A)}}$ |
+| Tate limit | `tateSeq`, `tateLimit` | $\lim4^{-n}h(2^nx)$ |
+| Integral Rosati forms | `intRosatiForm`, `intRosatiDeg`, `intEndDeg` | $\tau_x(\xi\xi')$ on $\mathbb Z[G]$; $\operatorname{Tr}(P(F)P(F)')$ on $\mathbb Z[F]$; $\deg(m-nF)$ |
+| Horizon log-torsion, box class | `logTorsion`, `boxClass` | $\log|\mathbb Z/\operatorname{lcm}(1..N)|=\psi(N)$; $\sqrt N\cdot A$ with $\chi=N$ |
+| Polar box counts | `polarBoxCount`, `nodeBoxCount` | $(t/2)^2$; $(t/2)^2-\psi((t/2)^2)$ |
+| Theta surface | `thetaH0`, `thetaH0Dual`, `thetaChar` | $h^0(a,d)$ with characteristic; $\vartheta(J,t)=\sum e^{-\pi n^2t+2\pi nJ}$ |
+| Auxiliary sections | `nairPoly` | $x^m(1-x)^m$ |
+| $\mathbb P^1\times\mathbb P^1$ | `hyperbolicPlane`, `p1SquareH0`, `p1SquareCanonical` | $h^0=(a+1)^+(b+1)^+$ |
+| Torsion of the circle | `torsionLogSum`, `ramanujanSum`, `torsionFourier`, `logEnergy`, `orbitIntersection` | Farey log sums; $c_n(m)$; $\hat\nu_N(1)$; $J(a,b)$; $I(m,n)$ |
+| Horizon polynomial | `horizonPoly`, `qInt`, `mertens` | $\prod_{2\le n\le N}\Phi_n$; $[d]_q$; $M(k)$ |
+| Torsion energy | `torsionEnergy`, `gcdTwist`, `twistedEnergy`, `weilPrimeKernel` | $\sum-\log|1-r\zeta\bar\eta|$; $\sum_{e\mid(m,n)}\mu(e)^2/\varphi(e)$; $\Lambda(n/m)(n/m)^{-1/2}$ |
+| Hyperelliptic datum | `hyperellipticDatum` | curve datum of $y^2=f(x)$, $f$ squarefree of odd degree |
+| Burgess objects | `shiftSum`, `EvenTuple`, `burgessEnergy`, `burgessS`, `burgessConst` | $T(x)=\sum_b\chi(x+b)$; box energy; $S(M,N)$ |
+| 𝔽₃ elliptic base | `curve`, `CoordinateRing`, `FunctionField`, `poleDegree`, `geometricGenus` | $Y^2Z=X^3-XZ^2$ over $\mathbb F_3$ |
+| 𝔽₃ arithmetic | `RingOfIntegers`, `FinitePlace`, `infinityValuation`, `Adeles`, `adeleHaar`, `ellipticAdditiveDomain`, `AdditiveQuotient` | places, adeles, gap domain, $\mathbb A/K$ |
+| 𝔽₃ zeta | `datum`, `numerator`, `zeta`, `zetaFunction`, `shiftedZetaQuotient`, `arithmeticZetaRatio` | point-count zeta, $Z(T)/Z(T/3)$, $\zeta(s)/\zeta(s+1)$ |
 
-**Words.** *Effectivity function*; *linear/quadratic Riemann inequality*; *Hilbert–Samuel*; *subquadratic in degree zero*;
-*abundant class*, *abundance rate*; *naive height*, *Tate limit*, *Northcott*; *log-torsion*; *soft* (holds on every datum of a
-family, hence carries none of its arithmetic); *integrality floor*, *ceiling*; *renormalized energy*.
+## 3. Language
 
----
+- **Effectivity function**: real $h$ with the Riemann inequality; **linear / quadratic** RR by the degree of $\chi$.
+- **Hilbert–Samuel**: quadratic growth along the ample ray, forced by any quadratic RI.
+- **Abundance rate**: least growth of $h(nx)+h(\kappa-nx)$; equals $\max(0,\tfrac12x^2)$.
+- **Naive height**: function bounded below at bounded distance from a degree-two form. **Convex height**: midpoint-convex
+  function at bounded distance.
+- **Soft**: holding on every datum of a family (every characteristic, every polar surface), hence carrying no arithmetic.
+- **Integrality floor / analytic ceiling**: $|n|\ge1$ for nonzero integers vs size bounds of the auxiliary.
+- **Torsion characteristics**: roots of unity on $\mathbb R/\mathbb Z$; **arithmetic point**: $a=0$ (or $q=1$).
+- **Renormalized energy**: positive Abel energy minus the divergent diagonal $\log\frac1{1-r}$.
+- **Gap domain**: fundamental domain of $\mathbb A/K$ built from the single Weierstrass gap at $\infty$.
 
 ## 4. Mechanisms
 
-1. **Weil's argument as a growth law**: quadratic Riemann inequality + subquadratic degree-zero growth ⇒ Hodge index on every
-   polar surface; conversely under Hodge $\max(0,\chi)$ works. Abundant ⇔ $x^2>0$; least rate $\max(0,\tfrac12x^2)$; on primitive classes
-   the negative part of Weil's form is twice the least abundance rate.
-2. **The base does not extend**: Riemann inequality forces Hilbert–Samuel; affine growth in the degree has no Riemann
-   inequality; the theta $h^0$ obeys every linear law on every surface and the quadratic one on none.
-3. **Tate's limit**: approximate doubling → unique homogeneous limit at distance $C/3$; approximate parallelogram → exact;
-   bounded below → positive; Northcott → definite. Rosati positivity at a cycle is decided on integral correspondences
-   (rounding) and equals existence of a naive height there.
-4. **Naive heights are traces**: on curve data a naive height on $\mathbb Z[F]$ exists iff unitary; kernel counts never supply one
-   (complex fake); the theta count's Tate limit is $\pi J^2/t$.
-5. **Horizon torsion and box class**: $\log|\mathbb Z/\operatorname{lcm}(1..N)|=\psi(N)$; $\chi(\sqrt NA)=N$.
-6. **Theta surface**: Poisson exchanges translation and modulation, $h^0(a,d)-h^{0\vee}(a,-d)=d$; completing the square gives a nonnegative
-   naive height for $\pi J^2/t$, identical on every translate — the polarization is **soft**; the fibre at characteristic 0 is $\Lambda(s)$.
-7. **Torsion characteristics**: $|\tau(\chi,\psi)|^2=|F|$ by orthogonality; unit root numbers: square-root cancellation is a count at every level.
-8. **Stepanov over $\mathbb Z$**: integrality $\operatorname{lcm}(1..n+1)\int_0^1P\in\mathbb Z$ gives $\log(1/\int P)\le\psi(n+1)$ and Nair's $\psi(2m+1)\ge m\log4$: effectivity of
-   the base only. Over $\mathbb F_q$ the method reaches the sign through Frobenius-flat coefficients ($x^q=x$, Hasse derivatives); over
-   $\mathbb Z$ no coefficients are flat.
-9. **Calibrations**: $\mathbb P^1\times\mathbb P^1$ returns Hodge index; odd-degree hyperelliptic curves of every genus over every finite field of
-   odd characteristic are unitary *by counting* (Stepanov + Gauss-sum modulus + descent) and carry effectivity functions and
-   naive heights; genus one = Hasse.
-10. **The prime side is an intersection**: $\Lambda(n)=\sum_{\zeta\in O_n}\log|1-\zeta|$; orbit energies $J(a,b)=\gcd(a,b)\log\operatorname{lcm}(a,b)$; an orbit meets
-    its Hecke translate of degree $t$ in $\Lambda(t)$ per point; Weil's prime kernel is a renormalized positive gcd-twisted torsion
-    energy — the sign is lost in the renormalization ($\log1/(1-r)$ self-energy).
-11. **Counting reaches short sums**: Pólya–Vinogradov by completion; Burgess's bound by counting on curves $y^2=\prod(x+b_i)$ of
-    growing genus; least quadratic nonresidue $\le p^{1/(4\sqrt e)+\varepsilon}$.
+**A. Effectivity calculus**
+1. RI along $nx$: $\chi(nx)=\tfrac{n^2}2x^2-O(n)$; if $x\cdot A=0$, $x^2>0$, quadratic growth contradicts degree-zero bounds ⇒ Hodge
+   index. Conversely $\max(0,\chi)$ with the level bound from $x^2\le2(x\cdot H)(x\cdot V)$.
+2. Affine growth in $|x\cdot A|$ cannot satisfy a quadratic RI (Hilbert–Samuel along $nA$).
 
----
+**B. Heights from counting**
+3. Tate: geometric series of increments $\le C/4^{n+1}$; parallelogram survives the limit; bounded below ⇒ $q\ge0$;
+   finite sublevel sets ⇒ Northcott.
+4. Rounding principle: $\lfloor nc\rfloor/n\to c$ ⇒ integer-nonnegative quadratic forms are real-nonnegative.
+5. Cauchy–Schwarz for counts: $\log\sum w_ie^{a_iJ}$ is midpoint convex ⇒ convex heights.
+6. Completing the square in $\vartheta(J,t)$: $\log\vartheta=\pi J^2/t+O(1)$ uniformly, same quadratic part on every translate.
+
+**C. Integers of the base**
+7. $\operatorname{lcm}(1..n+1)\int_0^1P\in\mathbb Z$ (Stepanov over $\mathbb Z$); Nair's $\int_0^1x^m(1-x)^m\le4^{-m}$.
+8. $\Lambda(n)=\log\Phi_n(1)=\sum_{\mu\text{ prim}}\log|1-\mu|$ (product formula in $\mathbb Q(\zeta_n)$); $\psi(N)=$ Farey sum of
+   $\log(2\sin\pi a)$.
+9. Möbius inversion of $\prod_{n\mid d}\Phi_n=[d]_q$: $\log P_N(q)=\sum_dM(\lfloor N/d\rfloor)\log[d]_q$.
+10. Ramanujan sums by Möbius inversion of orthogonality: $\sum_{\zeta\text{ prim}}\zeta=\mu(n)$ ⇒ first Fourier coefficient of the
+    torsion measure is $M(N)$.
+11. Power maps on $\mu_a$ + circle sum $\sum_{\theta^b=1,\theta\ne1}\log|1-\theta|=\log b$ ⇒ $J(a,b)=\gcd\cdot\log\operatorname{lcm}$; double
+    Möbius inversion ⇒ orbit intersections (Apostol).
+12. $-\log|1-w|=\sum\Re(w^k)/k$ ⇒ torsion energy is a Gram matrix of Ramanujan sums; Schur product with the PSD gcd twist.
+
+**D. Counting reaches short sums**
+13. Gauss sums by orthogonality $|\tau|^2=|F|$; completion $\chi(a)\tau(\bar\chi)=\sum\bar\chi(x)e(ax/p)$ + Jordan
+    $\sum1/\sin(\pi k/p)\le p(1+\log p)$.
+14. Burgess: $2r$-th moment over shifts (Weil bound on $y^2=\prod(x+b_i)$ for non-even tuples, count of even tuples), box
+    energy (small congruences are equations), Hölder over fibres, strong induction on length.
+15. Vinogradov: residues up to $y$ ⇒ smooth numbers are residues; Mertens window $\sum_{X<q\le X^u}1/q\to\log u$.
+
+**E. Building a base over $\mathbb F_3$**
+16. Weights 2, 3 for $x,y$; pole degree $=\deg$ Norm; parity separates the two basis terms; leading-term cancellation.
+17. Trace/norm integrality + squarefree $x^3-x$ ⇒ coordinate ring is integrally closed (Dedekind).
+18. Dual-number derivation $x\mapsto x+\varepsilon y$, $y\mapsto y+\varepsilon$ ⇒ $dy\ne0$; chart identities ⇒ regular forms $=\mathbb F_3\,dy$.
+19. Ideal norm $=3^{\text{pole degree}}$ ⇒ product formula; finite approximation + CRT + pole reduction ⇒ unique gap representative.
+20. Weil circle $|T|^2=1/3$ ⇒ no cancellation in $Z(T)/Z(T/3)$; poles on $\Re s=-\tfrac12$.
 
 ## 5. Pillar theorems
 
-1. **Effectivity calculus = Hodge index** (`hodgeIndex_tfae`, `abundant_iff`, `eventually_optimalEffectivity_le`).
-2. **The base does not extend** (`thetaEffectivity_not_riemannInequality`, `exists_degree_effectivity_iff_hodgeIndex`).
-3. **Tate's limit law; naive heights are traces** (`tateLimit_parallelogram`, `orbitHodgeIndex_iff_exists_naiveHeight`,
-   `exists_naiveHeight_iff_unitary`, `complexFake_kernelCounts_nonneg_no_naiveHeight`).
-4. **The integer of the sign**: RH ⇔ $\log|\mathbb Z/\operatorname{lcm}(1..N)|=\chi(\sqrt NA)+O(\sqrt N\log^2N)$ (`riemannHypothesis_iff_logTorsion_sub_eulerChar`).
-5. **Theta surface: RR with characteristic, soft polarization** (`thetaH0_riemannRoch`, `tateLimit_log_thetaChar`, `hasSum_shifted_thetaChar`).
-6. **Stepanov reaches the base** (`log_inv_integral_le_psi`, `nair_psi_ge`).
-7. **Calibration** (`hyperbolicPlane_hodgeIndex`, `riemannHypothesis_oddHyperelliptic`, `goldenDatum_multiplicative_axioms_not_effective`).
-8. **One statement in five currencies**: effectivity function ⇔ no abundant class ⇔ naive heights ⇔ fixed tensor loss ⇔ log-torsion
-   law ⇔ RH (`riemannHypothesis_effectivity_tfae`).
-9. **Prime side as intersection** (`orbitIntersection_hecke`, `weilPrimeKernel_renormalized_torsion_energy`).
-10. **Counting reaches short sums** (`abs_burgessS_le`, `eventually_exists_nonresidue_le`).
+| Theorem | Lean | Status |
+|---|---|---|
+| Hodge index ⇔ RI degree-bounded $h$ ⇔ RI subquadratic $h$ ⇔ no abundant class | `hodgeIndex_tfae` | proved |
+| Abundant ⇔ $x^2>0$; least rate $\max(0,\tfrac12x^2)$ | `abundant_iff`, `pair_self_le_two_mul_rate`, `eventually_optimalEffectivity_le` | proved |
+| RH ⇔ effectivity function on the scaling surface ⇔ no abundant class | `riemannHypothesis_iff_exists_effectivity`, `riemannHypothesis_iff_no_abundant_class` | proved |
+| Theta $h^0$ obeys every linear law, the quadratic RI on no polar surface | `thetaEffectivity_linear_laws`, `thetaEffectivity_not_riemannInequality` | proved |
+| Degree-only RI functions exist ⇔ Hodge index | `exists_degree_effectivity_iff_hodgeIndex` | proved |
+| Tate limit exists, unique, parallelogram, nonnegative; Northcott | `tendsto_tateSeq`, `tateLimit_parallelogram`, `tateLimit_nonneg`, `isOfFinAddOrder_of_tateLimit_eq_zero` | proved |
+| Rosati positivity ⇔ integral ⇔ naive height ⇔ convex height | `orbitHodgeIndex_iff_int`, `orbitHodgeIndex_iff_exists_naiveHeight`, `orbitHodgeIndex_iff_exists_convexHeight` | proved |
+| RH ⇔ naive heights ⇔ convex heights for every cycle | `riemannHypothesis_iff_forall_exists_naiveHeight`, `riemannHypothesis_iff_forall_exists_convexHeight` | proved |
+| Curves: naive height on $\mathbb Z[F]$ ⇔ unitary; complex fake has counts ≥ 0 and none | `exists_naiveHeight_iff_unitary`, `complexFake_kernelCounts_nonneg_no_naiveHeight` | proved |
+| Genus one: naive height ⇔ Hasse; golden datum has none | `genusOne_exists_naiveHeight_iff`, `goldenDatum_no_naiveHeight` | proved |
+| Five currencies of effectivity are RH | `riemannHypothesis_effectivity_tfae` | proved |
+| Multiplicative base axioms (Beurling, integral zeta, FE) do not give effectivity | `goldenDatum_multiplicative_axioms_not_effective` | proved |
+| RH ⇔ $\psi(N)=\chi(\sqrt NA)+O(\sqrt N\log^2N)$ | `riemannHypothesis_iff_logTorsion_sub_eulerChar` | proved |
+| Polar box count is RI ⇔ Hodge index; node twist violates RI everywhere | `riemannInequality_polarBoxCount_iff`, `not_riemannInequality_nodeBoxCount` | proved |
+| Theta RR with characteristic; free soft polarization $\pi J^2/t$ | `thetaH0_riemannRoch`, `abs_log_thetaChar_sub_le`, `tateLimit_log_thetaChar`, `hasSum_shifted_thetaChar` | proved |
+| Stepanov over $\mathbb Z$: $\log(1/\int P)\le\psi(n+1)$; Nair $\psi(2m+1)\ge m\log4$ | `log_inv_integral_le_psi`, `nair_psi_ge`, `horizon_logTorsion_comparable` | proved |
+| $\mathbb P^1\times\mathbb P^1$ section count gives the Hodge index | `hyperbolicPlane_hodgeIndex` | proved |
+| $\Lambda(n)=\sum\log|1-\mu|$; $\psi(N)$ = Farey sum; RH ⇔ Farey sum $=N+O(\sqrt N\log^2N)$ | `vonMangoldt_eq_sum_log_norm_one_sub`, `psi_eq_fareySum`, `riemannHypothesis_iff_fareySum` | proved |
+| $\psi(N)=\sum_dM(\lfloor N/d\rfloor)\log d$; $P_N(1)=\operatorname{lcm}(1..N)$ | `psi_eq_sum_mertens_log`, `sum_log_cyclotomic_eq_mertens`, `horizonPoly_eval_one` | proved |
+| $\hat\nu_N(1)=M(N)$; RH ⇔ $\hat\nu_N(1)=O(N^{1/2+\delta})$ | `torsionFourier_eq_mertens`, `riemannHypothesis_iff_torsionFourier` | proved |
+| $J(a,b)=\gcd(a,b)\log\operatorname{lcm}(a,b)$; $I(m,mt)=\varphi(m)\Lambda(t)$ | `logEnergy_eq`, `orbitIntersection_eq`, `orbitIntersection_hecke` | proved |
+| Weil's prime kernel = renormalized limit of a positive torsion energy | `weilPrimeKernel_renormalized_torsion_energy` | proved |
+| Gauss sums $|\tau|^2=|F|$; unit root numbers; Pólya–Vinogradov | `normSq_gaussSum_eq_card`, `norm_rootNumber_eq_one`, `norm_sum_range_le_polyaVinogradov` | proved |
+| Odd hyperelliptic curves: effectivity and naive heights unconditionally | `hyperellipticDatum_window_exists_effectivity`, `hyperellipticDatum_exists_naiveHeight` | proved |
+| Burgess moment, energy, bound | `sum_pow_two_mul_le`, `burgessEnergy_le`, `abs_burgessS_le` | proved |
+| Least quadratic non-residue $\le p^{1/(4\sqrt e)+\varepsilon}$ | `eventually_exists_nonresidue_le` | proved |
+| 𝔽₃ base: genus 1, $2g$ zeta zeros on $|T|=3^{-1/2}$ | `geometricGenus_eq_one`, `positiveGenusBaseField_spec` | proved |
+| 𝔽₃ base: product formula, local integrals, adelic Haar, unique gap representative | `adelic_product_formula`, `integral_finiteLocalKernel`, `adele_existsUnique_gap_representative` | proved |
+| 𝔽₃ base: $\mathbb A/K\cong$ gap domain, Haar probability of covolume 1 | `additiveQuotientHomeomorph`, `adeleHaar_ellipticAdditiveDomain` | proved |
+| 𝔽₃ base: every zeta zero is an uncancelled pole of $Z(T)/Z(T/3)$ | `finiteFieldZetaPoleTransfer_spec`, `shiftedZetaQuotient_pole_iff` | proved |
 
----
+## 6. Tools
 
-## 6. Traps
+**Developed**
+- Calculus: `eulerChar_serre`, `eventually_le_of_riemannInequality`, `eulerChar_le_levelBound`,
+  `degreeZeroSubquadratic_of_degreeBounded`, `hilbertSamuel_of_riemannInequality`.
+- Heights: `abs_tateLimit_sub_le`, `eq_of_two_nsmul_of_bounded`, `exists_naiveHeight_iff_nonneg`, `sum_sum_nonneg_of_int`,
+  `logCount_midpoint_convex`, `tateLimit_nonneg_of_midpointConvex`.
+- Torsion: `sum_nthRoots_pow`, `ramanujanSum_eq_sum_moebius`, `sum_nthRoots_comp_pow`, `sum_log_norm_sub_nthRoots`,
+  `orbitIntersection_formula`, `sum_divisors_twistWeight`, `hasSum_torsionEnergy`.
+- Character sums: `mul_gaussSum_inv_eq_sum`, `sum_inv_sin_le`, `card_evenTuples_le`, `card_shift_le`, `sum_gcd_le`,
+  `pow_sum_le_holder`, `sum_chiR_ge_vinogradov`, `tendsto_primeRecipSum_window`.
+- 𝔽₃ function field: `isIntegral_iff_coordinateRing_image`, `affineIdealNorm_principal`, `exists_scalar_poleDegree_sub_lt`,
+  `infinityParameter_isUniformizer`, `finiteAdele_exists_integral_difference`, `completedInfinity_affine_simplePole_remainder`,
+  `card_points_eq_closed_place_sum`, `zetaFunction_taylor`, `exists_reducedArithmeticRatio_bound`.
 
-| Trap | Truth |
+**To build**
+- A section count on the scaling surface with quadratic $\chi$, defined from arithmetic, of box-class size $N$.
+- A trace-type naive height on $\mathbb Z[G]$ that is nonnegative for an arithmetic reason and not soft.
+- Positivity selective at characteristic 0 of the theta surface.
+- A regularization of the torsion energy finer than the uniform $\log\frac1{1-r}$ self-energy, recovering Weil's archimedean term.
+- The analytic side of the 𝔽₃ base: Tate's thesis (zeta integrals over `adeleHaar`) linking $\mathbb A/K$ to `zeta`.
+
+## 7. Open questions
+
+1. Is there an arithmetic section count on the scaling surface whose growth laws can be proved from its definition?
+2. Can the integrality floor of Stepanov over $\mathbb Z$ reach PNT-strength, or is the integer Chebyshev problem the limit?
+3. Is there a family of finite groups, one per level, computing $\psi(N)-N$ at the arithmetic point with square-root uniformity?
+4. Is every section count with the RI on box classes bounded by a large-sieve count in degree zero?
+5. Does a positive structure renormalize to Weil's full form (prime and archimedean parts), not only the prime kernel?
+6. Can the 𝔽₃ gap-domain construction be transported to $\mathbb Q$, where the base has no positive-genus surface?
+7. Which convex height on $\mathbb Z[G]$ is attached to an arithmetic log-count?
+
+## 8. Traps
+
+| Trap | Fact |
 |---|---|
-| An effective cone with RR is an effectivity | Its RR is the defect floor; a Boolean count with RR + Bézout is the sign |
-| The theta $h^0$ is half of Weil's argument | Linear RR on every surface, quadratic inequality on none |
-| A surface $h^0$ is a log-volume of the degree | Must grow like $\chi$: dimension of the box's sections |
-| Integrality of point counts constrains the sign | Golden datum: integral counts, zeta, FE, abundant class |
-| A positive polarization on a surface over $\mathbb Z$ is Weil's | Theta surface has one at every characteristic: soft |
-| The integrality floor reaches the sign | Reaches Chebyshev; deviation of log-torsion from degree is invisible |
-| Stepanov = integrality + degree bound | Over $\mathbb F_q$ it needs Frobenius-flat coefficients |
-| Square-root cancellation needs analysis | At each finite level it is a count; the open part is uniformity at the arithmetic point |
-| Orders of finite kernels give a naive height | Determinants; complex fake |
+| An effective cone with RR is an effectivity | Effectivity is a growth law of a function; the calculus says what it must do, not how to get it |
+| The theta $h^0$ is half of Weil's argument | It obeys every linear law on every surface and the quadratic RI on none |
+| A surface $h^0$ is a log-volume of the degree | It must grow like $\chi$: $\chi(\sqrt NA)=N$, a dimension, not $\log N$ |
+| Integrality of point counts constrains the sign | Golden datum: Beurling counts, integral zeta, FE, abundant class, no naive height |
+| A positive polarization from counting is Weil's | The theta polarization $\pi J^2/t$ is the same at every characteristic: soft |
+| Midpoint convexity of log-counts is a new input | Soft on every datum, like cardinality |
+| Orders of finite kernels give a naive height | They are determinants; complex fake |
 | Integral positivity is weaker than real | Equivalent by rounding |
-| A positive energy with Weil's prime kernel off-diagonal gives positivity | Divergent self-energy on the diagonal; atomic tests are blind to zeros |
-| The prime matrix separates gauge twins | $\lambda(m)\lambda(mt)=\lambda(t)$; selectivity lives in archimedean/polar parts |
+| The integrality floor reaches the sign | It gives Chebyshev/Nair, comparability of log-torsion and degree only |
+| Subtracting the prime-node conditions keeps an effectivity | The node twist violates the RI on every polar surface |
+| A positive energy with Weil's prime kernel off-diagonal gives positivity | The sign is lost in the divergent diagonal renormalization |
+| Square-root cancellation needs analysis | At each finite level it is a count (Gauss sums, Weil on curves); the open part is uniformity at the arithmetic point |
+| Completion transports to $\psi(x)-x$ | Completion needs a period; the arithmetic point has none |
 
----
+## 9. Context
 
-## 7. Open problems
+| Uses | Modules |
+|---|---|
+| HTGeometry | 9 (Dedekind ideal norms, discrete-valued completions, rank-one local integrals, Hardy Taylor coefficients, fraction-ring derivations) |
+| RHTower | 7 (von Koch, hyperelliptic RH and character sums, Mertens, harmonic log bound) |
+| ArithmeticCastelnuovoSeveri | 5 (polar and scaling surfaces, curve data, golden datum, Witt integrality) |
+| ArithmeticOrientationGeometry, ArithmeticCorrespondencePositivity | 2 each (theta $h^0$, scaling data; kernel counts, base as fixed loss) |
+| BiarithmeticGeometry, ArithmeticContinuationAndCriticalEnergy | 1 each (horizon period jumps; divisor convolution) |
 
-1. **A section count on the scaling surface** with quadratic $\chi$, defined from arithmetic, of box-class size $N$, growth laws
-   proved from the definition (partial forms: degree-zero growth bounds, each bounding the negative part of Weil's form).
-2. **A naive height on $\mathbb Z[G]$** of trace type, nonnegative for an arithmetic reason, not soft.
-3. **Selective sections at torsion characteristics**: positivity separating characteristic 0 from its neighbours.
-4. **Limit of Stepanov over $\mathbb Z$** (integer Chebyshev problem): show the integrality floor cannot reach PNT, or find a family of
-   coefficients invisible to vanishing conditions.
-5. **Uniform square-root cancellation from counting**: finite groups, one per level, computing $\psi(N)-N$ at the arithmetic point.
-6. **Emptiness tests**: is every section count with the Riemann inequality on box classes bounded by a large-sieve count in degree zero?
-7. **Archimedean place of the torsion picture**: a positive structure whose renormalized limit is Weil's archimedean term; a
-   regularization finer than uniform self-energy.
+| Used by | Modules |
+|---|---|
+| ArithmeticIntersectionTheory | 5 (torsion orbits, renormalized torsion energy) |
+| ArithmeticElectrostatics | 3 (torsion energy, log-energy of roots of unity) |
+| CriticalArithmeticCorrelationTheory | 3 (torsion Fourier coefficients, orbit intersections) |
+| RenormalizedBiarithmeticGeometry | 3 (renormalized torsion energy, torsion measure) |
+| ArithmeticOfSquareRootPrecision, SelectivePositivityAndThresholdLaws, HTGeometry, RHTower | 2 each (Stepanov, hyperelliptic calibration; effectivity calculus, theta surface; 𝔽₃ zeta bounds/continuation; torsion characteristics, 𝔽₃ zeta) |
+| TransThresholdPairCorrelation, ArithmeticLorentzianGeometry | 1 each |
 
-## 8. Tools to build
+| Neighbour | Relation |
+|---|---|
+| ArithmeticCastelnuovoSeveri | effective cones are tautological there; AET moves effectivity to growth laws of functions |
+| ArithmeticCorrespondencePositivity | its Weil layers L1–L6; AET gives L5 as naive heights and L6 (fixed loss) as one of five currencies |
+| ArithmeticPolarization | positivity from symmetry and collision; AET is positivity from counting |
+| ArithmeticOrientationGeometry | supplies the theta $h^0$ of the base; AET shows it never extends to a surface |
+| ArithmeticIntersectionTheory, ArithmeticElectrostatics | continue the torsion-orbit intersection theory of the prime side |
+| ArithmeticOfSquareRootPrecision | continues the integrality lattice of the horizon and curve calibration of the exponent |
 
-A section count on the scaling surface defined without the sign; an arithmetic naive height on $\mathbb Z[G]$; the limit of the
-Stepanov method; charged sections at torsion characteristics.
+## 10. Big picture
 
-## 9. Contribution standard
+AET asks where an $h^0$ for the arithmetic surface could come from, and answers with a sharp split. Every quantity that can
+be written down from counting turns out to be either soft (the theta polarization, convexity of log-counts, cardinalities —
+true for every datum, hence silent about $\zeta$) or exactly as strong as RH (an effectivity function, a naive height, a
+log-torsion law at square-root precision, a fixed tensor loss). Nothing intermediate appears. The single integrality
+inequality of the base, $|n|\ge1$, reaches Chebyshev-size statements and no further.
 
-State the Euler characteristic (linear or quadratic) and which effectivity law is proved (Riemann inequality, Hilbert–Samuel,
-degree-zero growth, naive height, Northcott) and from what; report on golden datum, complex fake, curves and the battery; name
-the integer or log-volume carrying any sign; calibrate on $\mathbb P^1\times\mathbb P^1$, Hasse, curve unitarity, theta RR of the base. Effectivity is
-a growth law; integers over $\mathbb Z$ are log-torsions; the product formula is the Bézout of the base; linear RR is free; a
-polarization from counting needs quadratic $\chi$ and must not be soft.
+At the same time the prime side of Weil's formula turns out to be genuine intersection theory: von Mangoldt is the
+intersection number of torsion orbits on the circle, computed by cyclotomic resultants and equivariant under Hecke, and the
+Weil prime kernel is the renormalized limit of a positive energy — the sign is lost precisely in the renormalization. And at
+each finite level square-root cancellation is a count (Gauss sums, Weil on curves, Burgess). For the RH programme this says
+that the missing object is uniformity across levels at the arithmetic point: a structure that counts $\psi(N)-N$ or
+regularizes the torsion energy without spending the sign. The complete 𝔽₃ base shows what such a structure has over a
+function field: a positive-genus curve, a gap domain of covolume one, and a zeta function whose zeros survive as poles.

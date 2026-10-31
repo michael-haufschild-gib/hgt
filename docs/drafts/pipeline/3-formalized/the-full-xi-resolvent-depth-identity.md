@@ -35,4 +35,5 @@ only `propext`, `Classical.choice`, `Quot.sound`. Imported by the HEF umbrella.
 
 This extends the finite resolvent identity to the actual full divisor.
 It proves neither zero depth nor equality of the two source orientations.
-The theta-prefix identification of the same-point term remains separate.
+The theta-prefix identification at `s=4` is formalized in
+[the theta–prime expression](theta-prime-expression-for-the-resolvent-depth.md).
