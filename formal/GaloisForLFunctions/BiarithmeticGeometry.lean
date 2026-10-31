@@ -1,3 +1,4 @@
+import GaloisForLFunctions.BiarithmeticGeometry.Affine.NearIdentityGrids
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.PeriodicTranslations
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.PolynomialFibres
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.PolynomialAntidifferences

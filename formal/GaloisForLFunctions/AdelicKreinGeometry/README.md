@@ -122,7 +122,7 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 | Haar carriers: one square off Hecke support (dilation discontinuous); every `κ ≥ 2` with both Haar axis readings; not positive + slope | `negIndex_haarOneNegativeSquare`, `negIndex_haarMixedPowerState`, `haarMixedQuadraticState_not_positive_add_slope` | proved |
 | Axis-invisible kernels: zero or `κ ≥ 2`; rank `≤ κ²`; fibres polynomial of degree `< κ` | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `exists_polynomial_translation_fibre_lt_index` | proved |
 | Integer successor of index `r`: affine period-defect space has dim `≤ r²` | `finite_affinePeriodSpace_of_integerSuccessor` | proved |
-| Archimedean gluing formula `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`; for Weil `κ = κ^{(½)}(K_ζ) + 1` | `negIndex_archGlue_eq`, `negIndex_weilArchState_eq` | proved |
+| Archimedean gluing formula `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`; for Weil `κ = κ^{(½)}(K_ζ) + 1`; sub-boost data (`‖K(λu)‖ = o(λ^{1/2})`) give `κ(K) + 1` | `negIndex_archGlue_eq`, `negIndex_weilArchState_eq`, `negIndex_archGlue_eq_of_subBoost` | proved |
 | Weil's dilation data with the archimedean successor: `max(1, κ(K_ζ)) ≤ κ ≤ κ(K_ζ) + 1`; finite iff `κ(K_ζ)` is | `negIndex_weilArchState_le`, `le_negIndex_weilArchState`, `one_le_negIndex_weilArchState`, `negIndex_weilArchState_lt_top_iff` | proved |
 | Finite-index state with Weil's dilation data and integer successor (indefinite Mautner) | — | open |
 
@@ -153,8 +153,8 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
    induced Pontryagin representation?
 3. Signature formula for the Weil kernel itself, which is neither tower-supported nor separable: what replaces the
    scalar gluing square when the glue is the archimedean operator? (Answered for the archimedean successor
-   `−c|b|`: the boost hyperplane, `κ = κ^{(½)}(K_ζ) + 1`; open: is `κ^{(½)}(K_ζ) = κ(K_ζ)`, i.e. do Weil's negative
-   squares avoid the boost character `u^{−1/2}`?)
+   `−c|b|`: the boost hyperplane, `κ = κ^{(½)}(K_ζ) + 1`, and `κ^{(½)} = κ` for data growing slower than the boost;
+   open: the growth `‖K_ζ(λu)‖ = o(λ^{1/2})` of Weil's correlation, which would give `κ = κ(K_ζ) + 1`.)
 4. Glue the prime and archimedean parts of Weil's kernel to successors place by place, as the pole pair is glued to
    `−|b|`, and compute the index.
 5. Which additive invariant (count of negative conductor modes) could equal the number of off-line zeros?

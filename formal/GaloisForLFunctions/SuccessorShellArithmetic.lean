@@ -25,6 +25,8 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.ProfiledAdjunction
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramFinitePart
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramTorsionEnergy
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramUniformRemainder
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.AffineShellConductorSelection
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorFinitePart
 
 /-!
 # Successor-Shell Arithmetic

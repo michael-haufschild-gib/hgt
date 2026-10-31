@@ -28,12 +28,15 @@ theorem exists_valued_sl2_integral_upper (g : SL2 F) :
   have hb00 : (b⁻¹ : SL2 F) 0 0 = b 1 1 := by
     change (b⁻¹ : SL2 F).1 0 0 = b 1 1
     rw [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+    rfl
   have hg10 : (g⁻¹ : SL2 F) 1 0 = -(g 1 0) := by
     change (g⁻¹ : SL2 F).1 1 0 = -(g 1 0)
     rw [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+    rfl
   have hg11 : (g⁻¹ : SL2 F) 1 1 = g 0 0 := by
     change (g⁻¹ : SL2 F).1 1 1 = g 0 0
     rw [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+    rfl
   refine ⟨k⁻¹, b⁻¹, (valuationIntegralSL2 v).inv_mem hk, hbi, ?_, ?_⟩
   · calc
       k⁻¹ * b⁻¹ = (b * k)⁻¹ := (mul_inv_rev b k).symm

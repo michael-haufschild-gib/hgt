@@ -62,7 +62,10 @@
   unit-scale inputs; it needs the explicit formula at scale `δ`. Neither is the lag family's
   off-line local bound (same configuration). Counting does give A1 in density: failures with
   constant `C` occupy `≤ T/(πC) + K` of `[T, 2T]` (#27). For `ζ` the off-line first moment makes the
-  failures density zero, `≤ T/(C√(δ log T))` (#28): A1 holds for almost all heights.
+  failures density zero, `≤ T/(C√(δ log T))` (#28): A1 holds for almost all heights. At the
+  tangency point A1 is bounded multiplicity of critical zeros (#29), open even under RH; RH with
+  counting does not give it. A1 should be split into the off-line lens (lag input) and
+  full-window counts at fixed scale (heat input, #8).
 - **WP-A2.** In `zeta_near_top_cluster_collapse` the count enters only as the bound `p ≤ P` on the
   cluster `C`, the evenCoeff points within `δ₀/8` of the record `z₁`; these have real part
   `≥ 3δ₀/8`, so `P` only needs to bound off-line zeros. The corpus takes `P = ⌈80 log(180Γ)⌉` (all
@@ -141,10 +144,11 @@
 | 26 | WP-A falsifier: `ζ` plus doubly exponentially sparse clusters satisfies RvM (dyadic main term, unit count), keeps `N₀(ζ)` and the Lindelöf count, moves window counts by `≤ 4 log T₂`, and violates A1 for every `C` and the off-line local bound for every `M` | A falsifier | formalized: `3-formalized/counting-inputs-do-not-bound-the-local-count.md` |
 | 27 | Positive survivor of #26: counting gives A1 in density, `vol{t ∈ [T, 2T] : A1 fails with C} ≤ T/(πC) + K` for every configuration with RvM | A1 | formalized: same card as #26 |
 | 28 | A1 for almost all heights: for `ζ`, failures with constant `C` occupy `≤ T/(C√(δ log T))` of `[T, 2T]` (tangent disc + Cauchy–Schwarz + explicit off-line first moment) | A1 | formalized: `3-formalized/the-local-count-holds-for-almost-all-heights.md` |
+| 29 | A1 at the tangency point is bounded multiplicity: A1 ⇒ `m(ρ) ≤ C` for critical zeros; `ζ` plus critical clusters (RvM, same off-line counts, critical when `ζ` is) violates A1 for every `C` | A1 | formalized: `3-formalized/the-local-count-bounds-the-multiplicity.md` |
 | C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#28 formalized; #18, C2 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#29 formalized; #18, C2 in corpus.

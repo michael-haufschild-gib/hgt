@@ -78,7 +78,10 @@ theorem adelicDegreeRotation_mem_borel (q : Ideles) {g : AdelicLoop}
 /-- Restrict actual idele rotation to the actual adelic positive Borel. -/
 def adelicBorelRotation (q : Ideles) : adelicPositiveBorel →* adelicPositiveBorel where
   toFun b := ⟨adelicDegreeRotation q b, adelicDegreeRotation_mem_borel q b.property⟩
-  map_one' := Subtype.ext (adelicDegreeRotation q).map_one
+  map_one' := by
+    apply Subtype.ext
+    change adelicDegreeRotationHom q (1 : AdelicLoop) = 1
+    exact (adelicDegreeRotationHom q).map_one
   map_mul' a b := Subtype.ext ((adelicDegreeRotation q).map_mul a.1 b.1)
 
 /-- Rotation fixes either intrinsic Borel coordinate as an actual idele. -/

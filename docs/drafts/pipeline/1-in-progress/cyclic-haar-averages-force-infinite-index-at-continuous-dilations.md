@@ -59,5 +59,8 @@ Formalized, with direct audits and standard axiom closures:
 - `AdelicKreinGeometry/Haar/CyclicOrbits.lean`: complete Haar translation orbits are orthogonal with the Haar scalar as squared norm; normalized fixed projections have squared norm `1/den(b/a)`.
 
 - `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio.
+- `BiarithmeticGeometry/Affine/NearIdentityGrids.lean`: near-identity grid points share a rational lattice with explicit orbit denominators; reciprocal denominators are bounded by distance from one.
+
+- `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean`: a constant perturbation of negative identity on `n+1` coordinates retains at least `n` negative directions.
 
 Required Lean results: projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

@@ -353,7 +353,7 @@ private theorem doubleMoebius_gcd_log_lcm_eq {m l : ℕ} (hm : 0 < m) (hl : 0 < 
 
 /-- Raw finite-horizon Gram identity for unnormalized Kluyver coefficients (`m * l ≤ N`). -/
 theorem sum_ramanujanLagCoefficient_mul_div_eq {m l N : ℕ} (hm : 0 < m) (hl : 0 < l)
-    (hml : m * l ≤ N) :
+    (_hml : m * l ≤ N) :
     (∑ n ∈ Icc 1 N, ramanujanLagCoefficient m n * ramanujanLagCoefficient l n / (n : ℝ)) =
       (if m = l then (m.totient : ℝ) * (Real.log N + Real.eulerMascheroniConstant) else 0) -
         orbitIntersection m l +
@@ -912,7 +912,8 @@ private theorem abs_conductorGramFloorError_le {m l N : ℕ} (hm : 0 < m) (hl : 
         refine mul_le_mul_of_nonneg_left ((abs_sum_le_sum_abs _ _).trans (le_of_eq ?_))
           (abs_nonneg _)
         refine sum_congr rfl fun d _ => ?_
-        rw [abs_mul, abs_mul, abs_of_nonneg (Nat.cast_nonneg (Nat.gcd d e))]
+        rw [abs_mul, abs_mul,
+          show |(Nat.gcd d e : ℝ)| = (Nat.gcd d e : ℝ) from abs_of_nonneg (Nat.cast_nonneg _)]
       _ ≤ ∑ e ∈ l.divisors, |(μ (l / e) : ℝ)| *
             ∑ d ∈ m.divisors, |(μ (m / d) : ℝ)| * (4 * (d : ℝ) * e / N) := by
         refine sum_le_sum fun e he => mul_le_mul_of_nonneg_left (sum_le_sum fun d hd => ?_) (abs_nonneg _)
