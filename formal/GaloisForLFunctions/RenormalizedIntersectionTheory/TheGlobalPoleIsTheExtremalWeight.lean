@@ -280,12 +280,17 @@ theorem weightValue_ne_one {S t : Finset Nat.Primes} (hS : S.Nonempty) (ht : t �
 
 /-! ### Index of weight pairs -/
 
-/-- **Weight count.** A combination `Σ_{t∈J} (ω_t χ^{p₀∪t} + ω̄_t χ^{S∖(p₀∪t)})` of distinct weight
-pairs with nonzero coefficients has exactly `|J|` negative squares. -/
-theorem negIndex_weightPairs {S : Finset Nat.Primes} {p₀ : Nat.Primes} (hp₀ : p₀ ∈ S)
-    (J : Finset (Finset Nat.Primes)) (hJ : J ⊆ (S.erase p₀).powerset) (ω : Finset Nat.Primes → ℂ)
-    (hω : ∀ t ∈ J, ω t ≠ 0) :
-    negIndex (fun u => ∑ t ∈ J, pairKernel (weightChar S (insert p₀ t)) (ω t) u) = J.card := by
+/-- **The weight pairs are separated at `∏_{q∈S} q²`**: the values of `χ^{p₀∪t}` and of its
+reflection are distinct for distinct `t` and never of modulus one. -/
+theorem weightPairs_separation {S : Finset Nat.Primes} {p₀ : Nat.Primes} (hp₀ : p₀ ∈ S)
+    {J : Finset (Finset Nat.Primes)} (hJ : J ⊆ (S.erase p₀).powerset) :
+    (∀ t ∈ J, ‖weightChar S (insert p₀ t) (sepUnit S)‖ ≠ 1) ∧
+    (∀ t ∈ J, ∀ t' ∈ J, weightChar S (insert p₀ t) (sepUnit S) =
+      weightChar S (insert p₀ t') (sepUnit S) → t = t') ∧
+    (∀ t ∈ J, ∀ t' ∈ J, reflectChar (weightChar S (insert p₀ t)) (sepUnit S) =
+      reflectChar (weightChar S (insert p₀ t')) (sepUnit S) → t = t') ∧
+    (∀ t ∈ J, ∀ t' ∈ J, weightChar S (insert p₀ t) (sepUnit S) ≠
+      reflectChar (weightChar S (insert p₀ t')) (sepUnit S)) := by
   have hS : S.Nonempty := ⟨p₀, hp₀⟩
   have hsub : ∀ t ∈ J, insert p₀ t ⊆ S := fun t ht =>
     insert_subset hp₀ ((mem_powerset.mp (hJ ht)).trans (erase_subset p₀ S))
@@ -299,7 +304,7 @@ theorem negIndex_weightPairs {S : Finset Nat.Primes} {p₀ : Nat.Primes} (hp₀ 
   -- `insert p₀ t` determines `t` for `p₀ ∉ t`
   have hins : ∀ t ∈ J, ∀ t' ∈ J, insert p₀ t = insert p₀ t' → t = t' := fun t ht t' ht' h => by
     rw [← erase_insert (hnot t ht), ← erase_insert (hnot t' ht'), h]
-  refine negIndex_sum_pairKernel_eq_card J _ ω hω (sepUnit S) (fun t ht => ?_) ?_ ?_ ?_
+  refine ⟨fun t ht => ?_, ?_, ?_, ?_⟩
   · rw [hval t ht, Complex.norm_real, Real.norm_of_nonneg (weightValue_pos _ _).le]
     exact weightValue_ne_one hS (hsub t ht)
   · intro t ht t' ht' h
@@ -316,6 +321,15 @@ theorem negIndex_weightPairs {S : Finset Nat.Primes} {p₀ : Nat.Primes} (hp₀ 
     have h' := weightValue_injOn (hsub t ht) sdiff_subset h
     have hm : p₀ ∈ S \ insert p₀ t' := h' ▸ mem_insert_self p₀ t
     exact (mem_sdiff.mp hm).2 (mem_insert_self p₀ t')
+
+/-- **Weight count.** A combination `Σ_{t∈J} (ω_t χ^{p₀∪t} + ω̄_t χ^{S∖(p₀∪t)})` of distinct weight
+pairs with nonzero coefficients has exactly `|J|` negative squares. -/
+theorem negIndex_weightPairs {S : Finset Nat.Primes} {p₀ : Nat.Primes} (hp₀ : p₀ ∈ S)
+    (J : Finset (Finset Nat.Primes)) (hJ : J ⊆ (S.erase p₀).powerset) (ω : Finset Nat.Primes → ℂ)
+    (hω : ∀ t ∈ J, ω t ≠ 0) :
+    negIndex (fun u => ∑ t ∈ J, pairKernel (weightChar S (insert p₀ t)) (ω t) u) = J.card := by
+  obtain ⟨h1, h2, h3, h4⟩ := weightPairs_separation hp₀ hJ
+  exact negIndex_sum_pairKernel_eq_card J _ ω hω (sepUnit S) h1 h2 h3 h4
 
 /-- **The tensor product of the local poles has `2^{|S|−1}` negative squares.** -/
 theorem negIndex_tensorPole {S : Finset Nat.Primes} (hS : S.Nonempty) :

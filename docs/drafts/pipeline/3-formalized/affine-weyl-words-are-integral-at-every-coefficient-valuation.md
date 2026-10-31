@@ -1,6 +1,6 @@
 # Affine Weyl words are integral at every coefficient valuation
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic cell coordinates](../1-in-progress/affine-a1-bruhat-cells-have-one-polynomial-root-coordinate.md).
 - **Statement:** Every affine Weyl matrix has an actual central-loop lift
   integral for every coefficient valuation.
@@ -21,4 +21,5 @@ no identification of their central coordinates with another lift is required.
 
 `HTGeometry/LoopEisenstein/IntegralWeylWords.lean`:
 `LoopSL2.projection_integralWeylWord` and
-`LoopSL2.integralWeylWord_mem_integralLoop`. Direct audit pending.
+`LoopSL2.integralWeylWord_mem_integralLoop`. Direct Lean audit passed;
+both declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.

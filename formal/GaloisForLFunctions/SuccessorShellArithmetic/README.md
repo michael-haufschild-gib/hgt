@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 40 modules
-(6 root, `TopBand/` 11, `Conductor/` 23). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 41 modules
+(6 root, `TopBand/` 11, `Conductor/` 24). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -142,6 +142,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Undilated prime packet has finite part `−2T` and common error `C(1+log Q)²/log N`; exact harmonic divisor convolution | `primeHead_harmonic_convolution`, `abs_primeConductorUndilatedPacket_remainder`, `exists_abs_primeConductorUndilatedPacket_finitePart_le` | proved |
 | Packet mass where `N/n<T` is at most `[1+log(2T)+2(6log Q+log4+5)]sum a_m²`; uniform two-range multiplier estimate | `harmonicConductorPacket_quotient_tail_le`, `sum_sq_packet_le_quotient_tail` | proved |
 | Every increasing weight in `[0,1]` has packet Gram discrepancy at most `32(1+log Q)sum a_m²`; actual scalar prime residual squared norm at most `C(1+log Q)sum a_m²/log N`, for every `Q,N≥2` | `abs_harmonicPacket_monotone_weight_le`, `exists_scalarPrimeResidual_packet_sq_le` | proved |
+| Literal full prime-residual packet squared norm at most `C(1+log Q)³sum a_m²/log N`, uniformly for every `Q,N≥2` | `exists_primeResidual_packet_sq_le` | proved |
 | Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
@@ -161,12 +162,12 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Exact reduced-conductor Gram decomposition of literal prime heads; uniform logarithmic period-mean head norm.
 - Uniform undilated prime finite part on every conductor packet, including growing supports.
 - Uniform packet mass on short quotient horizons and scalar prime-residual norm with logarithmic conductor loss.
+- Exact prime-dilation square energy and logarithmic moment; full prime-residual packet norm with cubic logarithmic conductor cost.
 - Common complete-conductor residual bounds on every logarithmic conductor range.
 
 **To build**
 - Identification of the divisor-jet completion with the complete Weil shell block (horizon boundary included).
 - Joint payment ledger for shells + pole + archimedean shells with tracked `(θ, κ)`.
-- Mean-square conductor costs in the upward prime residual (needs quantitative Mertens on short blocks).
 - Control of the successor-variation form against `D`.
 
 ## 7. Open questions
@@ -176,8 +177,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 3. PNT discrepancy `Σ_m f(m)[(1/m)Σf − Σ_k Λ(k)f(km)]` on the top band: size relative to `D`, `S`?
 4. Successor-variation form `Σ_h Σ_ℓ y(ℓ)(x(ℓ+h) − x(ℓ))β`: which inequality with `D` holds; does it fail for Beurling systems?
 5. Archimedean shells (`k = 1`): their signed interaction with prime shells and pole.
-6. Operator control of the whole upward residual on growing conductor packets.
-7. Twins: bound the twin defect via density of successor disagreements on the top band.
+6. Twins: bound the twin defect via density of successor disagreements on the top band.
 
 ## 8. Traps
 

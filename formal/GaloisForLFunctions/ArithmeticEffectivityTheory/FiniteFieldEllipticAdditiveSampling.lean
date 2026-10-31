@@ -64,7 +64,10 @@ def ellipticAdditiveSamplerMeasure : Measure (ellipticAdditiveDomain × K) :=
 private theorem measurable_ellipticAdditiveSampler : Measurable ellipticAdditiveSampler := by
   apply measurable_from_prod_countable_left
   intro z
-  exact (continuous_const.add continuous_subtype_val).measurable
+  have h : Continuous (fun d : ellipticAdditiveDomain =>
+      adeleEmbedding z + (d : Adeles)) :=
+    continuous_const.add continuous_subtype_val
+  exact h.measurable
 
 /-- Scalar periodization is an exact measure-preserving sampling of ambient adelic Haar. -/
 theorem ellipticAdditiveSampler_measurePreserving :

@@ -1,6 +1,6 @@
 # Elliptic idele Haar modulus is the global magnitude
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** For every actual idele `u`, its additive Haar modulus on the
   elliptic adeles equals `ideleMagnitude u`.
@@ -22,4 +22,6 @@ ratio formula identifies the global modulus with this product.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticIdeleHaar.lean`:
 `adeleHaar_idele_smul_integralAdeles` and `adele_distribHaarChar`.
-Direct audit pending. No product formula or quotient normalization is assumed.
+Direct Lean audit passed; both declarations depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. No product formula or quotient
+normalization is assumed.

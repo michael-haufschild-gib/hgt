@@ -20,6 +20,14 @@ noncomputable section
 
 local instance ideleHaarFiniteMeasurable (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
 local instance ideleHaarFiniteBorel (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
+private abbrev ideleHaarFiniteTopAdd (v : FinitePlace) :
+    IsTopologicalAddGroup (v.adicCompletion K) := by
+  letI : IsTopologicalRing (v.adicCompletion K) := Valued.instIsTopologicalRing
+  exact IsTopologicalRing.to_topologicalAddGroup
+attribute [local instance] ideleHaarFiniteTopAdd
+local instance ideleHaarIntegerSecondCountable (v : FinitePlace) :
+    SecondCountableTopology (v.adicCompletionIntegers K) :=
+  (Valued.isOpen_valuationSubring (v.adicCompletion K)).isOpenEmbedding_subtypeVal.isEmbedding.secondCountableTopology
 local instance ideleHaarFiniteCompact (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
   finiteCompletionInteger_compact v
 local instance ideleHaarFiniteSigmaCompact (v : FinitePlace) : SigmaCompactSpace (v.adicCompletion K) := by
@@ -125,8 +133,11 @@ private theorem finite_scaled_integer_mass (u : Ideles) (v : FinitePlace) :
     normalizedHaar (v.adicCompletion K)
       (finiteIdeleUnit u v • (v.adicCompletionIntegers K : Set (v.adicCompletion K))) =
         (finiteCompletionMagnitude v ((u : Adeles).1 v) : ℝ≥0∞) := by
+  have hball : normalizedHaar (v.adicCompletion K)
+      (v.adicCompletionIntegers K : Set (v.adicCompletion K)) = 1 :=
+    normalizedHaar_integer (v.adicCompletion K)
   rw [← distribHaarChar_mul (normalizedHaar (v.adicCompletion K)),
-    normalizedHaar_integer, mul_one, finiteCompletion_distribHaarChar]
+    hball, mul_one, finiteCompletion_distribHaarChar]
   rfl
 
 private theorem infinity_scaled_integer_mass (u : Ideles) :

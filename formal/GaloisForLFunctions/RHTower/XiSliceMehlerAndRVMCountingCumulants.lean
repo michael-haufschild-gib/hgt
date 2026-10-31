@@ -1909,7 +1909,7 @@ private theorem pairedBin_bounds {C T₀ t : ℝ} {N K : ℕ} (hC : 0 < C) (hT�
     unfold pairedBinCount pairedSmoothInc pairedRVMError
     rw [hcu, hcl]
     push_cast
-    ring
+    ring_nf
   · intro k hk
     have hk0 : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
     have hk2 : (2 : ℝ) ≤ (k : ℝ) := by
@@ -3190,7 +3190,7 @@ private theorem abs_one_sub_le_exp_nine_twentyfifths {u : ℝ} (hu : 0 ≤ u) :
     calc (1 + v) ^ 4 ≤ (Real.exp v) ^ 4 :=
           pow_le_pow_left₀ (by positivity) (by linarith [Real.add_one_le_exp v]) 4
       _ = Real.exp ((4 : ℕ) * v) := (Real.exp_nat_mul v 4).symm
-      _ = Real.exp ((9 / 25 : ℝ) * u) := by dsimp only [v]; push_cast; ring
+      _ = Real.exp ((9 / 25 : ℝ) * u) := by dsimp only [v]; push_cast; congr 1; ring
   refine (abs_le.mpr ⟨?_, ?_⟩).trans hpow_exp
   · -- `-(1 + v)^4 ≤ 1 - u`, i.e. `u - 1 ≤ (1 + v)^4`.
     set w := v - 2 / 5

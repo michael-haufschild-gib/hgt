@@ -46,3 +46,7 @@ and exhaustive parametrization of actual arithmetic cosets remain.
 
 [Every finite adelic or rational free-coefficient prefix is uniformly integral](../3-formalized/finite-elliptic-unipotent-prefixes-are-uniformly-integral.md).
 Both statements passed direct Lean and axiom audits.
+[Explicit central-loop Weyl words](../3-formalized/affine-weyl-words-are-integral-at-every-coefficient-valuation.md)
+project to every affine Weyl matrix and are integral for every coefficient
+valuation, with the same audits. Compatibility of these words with the
+actual diagonal field maps remains unproved.

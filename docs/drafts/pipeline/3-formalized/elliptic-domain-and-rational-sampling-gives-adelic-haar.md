@@ -1,6 +1,6 @@
 # Elliptic domain and rational sampling gives adelic Haar
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Triangular root coefficients](../1-in-progress/triangular-root-coefficients-unfold-arithmetic-cells.md).
 - **Statement:** The actual adele ring is second countable, with jointly
   measurable addition. The map `(d,z)↦d+z` from the additive domain times
@@ -26,4 +26,6 @@ Haar integral. Equality of these integrals determines the pushforward measure.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticAdditiveSampling.lean`:
 `ellipticFiniteAdeles_secondCountable`, `ellipticAdeles_measurableAdd₂`, and
-`ellipticAdditiveSampler_measurePreserving`. Direct audit pending.
+`ellipticAdditiveSampler_measurePreserving`. Direct Lean audit passed;
+all three declarations depend only on `propext`, `Classical.choice`,
+and `Quot.sound`.

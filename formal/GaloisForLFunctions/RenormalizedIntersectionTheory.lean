@@ -6,6 +6,7 @@ import GaloisForLFunctions.RenormalizedIntersectionTheory.TheHodgeIndexHoldsAtEv
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheExtremalWeightIsDense
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheKunnethSquareOfWeilsKernelIsRH
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheKunnethSquareCarriesTheSumsOfZeros
+import GaloisForLFunctions.RenormalizedIntersectionTheory.TheGluedIndexSelectsZeta
 
 /-!
 # Renormalized Intersection Theory of the Scaling Surface

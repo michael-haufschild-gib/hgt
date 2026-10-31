@@ -32,8 +32,9 @@ Clipping `w_N` outside `1≤n≤N` applies this statement without changing its
 horizon values.
 
 This gives a common norm estimate for the scalar prime residual on
-every subpower conductor range. The conductor-changing correction and
-complete Weil residual remain separate.
+every subpower conductor range. The
+[full prime residual](prime-dilation-square-energy-is-the-conductor-adjunction.md)
+has cubic logarithmic conductor cost. The complete Weil residual remains separate.
 
 ## Lean
 

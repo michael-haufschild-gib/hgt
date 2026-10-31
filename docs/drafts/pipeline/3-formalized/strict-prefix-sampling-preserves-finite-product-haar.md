@@ -1,6 +1,6 @@
 # Strict-prefix sampling preserves finite product Haar
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Triangular root coefficients](../1-in-progress/triangular-root-coefficients-unfold-arithmetic-cells.md).
 - **Statement:** If `f:(C,μ)→(G,ν)` preserves sigma-finite measures and `ν`
   is translation invariant, then `x_i↦f(x_i)+φ_i(x_{<i})` preserves every
@@ -19,4 +19,5 @@ the original coordinate order.
 ## Lean
 
 `HTGeometry/LoopEisenstein/TriangularSampling.lean`:
-`measurePreserving_finiteTriangularSampling`. Direct audit pending.
+`measurePreserving_finiteTriangularSampling`. Direct Lean audit passed;
+the declaration depends only on `propext`, `Classical.choice`, and `Quot.sound`.

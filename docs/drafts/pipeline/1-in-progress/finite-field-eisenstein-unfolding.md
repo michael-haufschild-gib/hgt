@@ -29,7 +29,7 @@ from a proved quotient normalization.
 
 - Arithmetic coset parametrization. The independently defined actual arithmetic coset series and its right arithmetic invariance are audited. [Coset descent](../3-formalized/elliptic-eisenstein-summands-descend-to-actual-arithmetic-cosets.md). [Actual idele rotation and descent to the literal unipotent quotient](../3-formalized/rotated-elliptic-eisenstein-series-descends-to-the-actual-unipotent-quotient.md) are also audited, independently defining the constant-term integral. Finite root-cell parametrization and convergence remain.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
-- Simple-intertwiner covariance and composition, including the residual Borel character and exact Haar Jacobians.
+- Simple-intertwiner covariance and composition, including the residual Borel character and the coordinate changes in the composed cell integrals.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.
 
 The simple-pole additive domain, quotient topology and covolume are formalized
@@ -68,7 +68,9 @@ Lean and axiom audits. [Proof and declarations](../3-formalized/actual-elliptic-
 This provides the quotient measure. [Scalar additive periodization](../3-formalized/elliptic-additive-haar-periodizes-over-the-actual-function-field.md)
 over the actual function field is also audited, including nonnegative Tonelli
 unfolding. [Actual local Haar moduli](../3-formalized/elliptic-local-haar-moduli-equal-normalized-magnitudes.md)
-equal the normalized finite-place and infinity magnitudes. The
+equal the normalized finite-place and infinity magnitudes.
+[The actual global idele Haar modulus](../3-formalized/elliptic-idele-haar-modulus-is-the-global-magnitude.md)
+equals the global idele magnitude, with direct Lean and axiom audits. The
 [actual local radial spectral integrals](../3-formalized/actual-elliptic-local-spectral-characters-have-exact-integrals.md)
 have their exact residue factors for `Re(s)>0`. Both passed direct Lean
 and axiom audits. [Actual finite-cylinder Haar](../3-formalized/elliptic-adelic-haar-has-exact-finite-cylinder-products.md)
@@ -87,6 +89,14 @@ The global radial integral uniformly bounds each root factor; exponential
 coefficient growth is dominated by Gaussian degree decay. Direct Lean and
 axiom audits passed. This does not prove arithmetic coset-sum convergence
 or the constant-term identity.
+
+[Finite polynomial cell representatives and unique heads](affine-a1-bruhat-cells-have-one-polynomial-root-coordinate.md),
+Borel lifts, integral Weyl words and uniformly integral finite prefixes are
+audited. [Continuous Gauss corrections and scalar/finite triangular Haar
+sampling](triangular-root-coefficients-unfold-arithmetic-cells.md) are also
+audited. These establish the algebraic and measure identities used by the
+candidate mechanism; compatibility with diagonal field maps, exhaustive
+arithmetic cells and their integral assembly remain unproved.
 
 ## Convergence mechanism to test
 

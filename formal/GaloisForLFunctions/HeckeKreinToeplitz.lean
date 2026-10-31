@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.MonotoneHermitianForms
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.HermitianFiniteSums
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.ConstantMatrixInertia
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.ColumnPositivity
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.PeriodicDilationPositivity

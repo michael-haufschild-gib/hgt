@@ -142,8 +142,10 @@ where `L_Q=6log Q+log4+5`. [Quotient-tail proof and final Lean audit](../3-forma
 The actual scalar prime-row residual has squared norm at most
 `C(1+log Q)sum a_m²/log N`, with one absolute constant for all `Q,N≥2`.
 [Uniform norm proof and final Lean audit](../3-formalized/scalar-prime-residuals-have-logarithmic-packet-cost.md).
-The [conductor-changing square energy and logarithmic moment](prime-dilation-square-energy-is-the-conductor-adjunction.md)
-remain separate.
+The exact prime-dilation square energy and its logarithmic moment give the
+literal full prime-residual packet bound `C(1+log Q)³sum a_m²/log N`,
+uniformly for every `Q,N≥2`.
+[Energy, moment, and residual proofs](../3-formalized/prime-dilation-square-energy-is-the-conductor-adjunction.md).
 
 ## Full-divisor resolvent identity
 

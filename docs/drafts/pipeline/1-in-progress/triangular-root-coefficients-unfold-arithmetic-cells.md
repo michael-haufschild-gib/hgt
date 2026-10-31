@@ -40,6 +40,15 @@ are formalized: for an actual product, each upper or lower Gauss coordinate
 is the sum of the current free coefficients plus a correction depending
 only on strict input prefixes. Direct Lean and transitive axiom audits passed.
 
+[The actual additive sampler](../3-formalized/elliptic-domain-and-rational-sampling-gives-adelic-haar.md)
+pushes domain Haar probability times function-field counting measure to
+ambient adelic Haar. Second countability, jointly measurable addition and
+the sampler identity passed direct Lean and axiom audits.
+[Measurable strict-prefix translations preserve every finite sampled
+product Haar law](../3-formalized/strict-prefix-sampling-preserves-finite-product-haar.md),
+with the same audits. Applying this theorem to the actual arithmetic
+cell integrals remains part of the assembly obligation above.
+
 [Polynomial-head uniqueness and lifting modulo Borel](../3-formalized/affine-polynomial-cell-heads-are-unique.md)
 passed direct Lean and axiom audits. This does not establish triviality of
 the residual Borel character.
