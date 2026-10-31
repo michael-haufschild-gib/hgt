@@ -37,12 +37,21 @@ inequality, including infinite indices.
 For `H=ℚ`, `P=1` and `h=−1` have sum zero, while the one-point Gram of `h`
 is negative. Thus properness is exact.
 
+## Polynomial rigidity
+
+Two positive carriers `P,Q` of the same proper successor cannot have a nonzero
+polynomial-fibre difference. Apply the index law to `Q+(P−Q)=P`: the difference
+has index zero and is positive definite. Its identity value is zero, so the
+positive-kernel norm bound makes it identically zero. This extends the existing
+slope-only uniqueness law to arbitrary polynomial translation fibres.
+
 ## Novelty and verification boundary
 
 Corpus searches found the integer-Haar slope law, homogeneous rescaling,
 and finite-index rigidity of divisible quotients. None gives this polynomial
 index law. The finite-grid avoidance argument above needs no prime-height or
-p-adic bound. Its Lean draft and the quadrature extension remain unverified.
+p-adic bound. Complete Lean drafts include the index law, sharp converse, and
+polynomial rigidity; all remain unverified.
 
 ## Gates
 

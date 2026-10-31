@@ -32,12 +32,14 @@ Every rational translation fixes `range(P_(b_n))` for all sufficiently large `n`
 
 Local periodicity, the orthogonal cyclic projections, and moving-subspace positivity are formalized in `BiarithmeticGeometry/Affine/PeriodicTranslations.lean`, `HeckeKreinToeplitz/Index/ColumnProjections.lean`, and `AdelicKreinGeometry/Haar/TranslationMovingPositivity.lean`, with direct audits and standard axiom closures.
 
-`HeckeKreinToeplitz/Index/MonotoneHermitianForms.lean` now formalizes pointwise convergence and nonnegativity of bounded monotone Hermitian forms by polarization, with a direct audit and standard axiom closure.
+`HeckeKreinToeplitz/Index/HermitianFiniteSums.lean` gives the squared `ℓ¹` bound for finite combinations of unit-bounded generators. `MonotoneHermitianForms.lean` gives pointwise convergence and nonnegativity of bounded monotone Hermitian forms by polarization. Both passed direct audits with standard axiom closures.
 
-`HeckeKreinToeplitz/Index/ProjectionFunctoriality.lean` and `ProjectionOrder.lean` formalize intertwining, nested powers, and the resulting order of nonnegative moving forms, with direct audits and standard axiom closures.
+`HeckeKreinToeplitz/Index/ProjectionFunctoriality.lean` and `ProjectionOrder.lean` formalize intertwining, nested powers, and the resulting order of nonnegative moving forms. `AdelicKreinGeometry/Haar/TranslationProjections.lean` gives affine covariance, step reversal, and invariance under integer multiples of the step. All passed direct audits with standard axiom closures.
 
 `AdelicKreinGeometry/Haar/GeneralOrbits.lean` proves the reciprocal-denominator projection norm for every affine column, with a direct audit and standard axiom closure.
 
 `BiarithmeticGeometry/Affine/FactorialTranslations.lean` proves cofinal cyclic exhaustion and convergence of the factorial steps to zero. `AdelicKreinGeometry/Haar/SplittingUniqueness.lean` proves uniqueness whenever a positive Haar and Hermitian slope split exists. Both passed direct audits with standard axiom closures.
 
-Boundedness of the Haar moving forms, affine invariance, and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.
+`AdelicKreinGeometry/Haar/TranslationForms.lean` proves Hermitian symmetry, nonnegativity, uniform boundedness, affine covariance, and monotonicity under enlargement of cyclic subgroups. It passed a direct audit with standard axiom closure.
+
+Affine invariance of the limit and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.

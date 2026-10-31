@@ -24,7 +24,9 @@ Haglund–Jacobi shell-addition pencil `finiteThetaShellPencil N θ`:
    - every fixed prefix `A_N` has only finitely many zeros in `{|Re z - 1 / 2| ≤ R}`;
    - on the critical line `A_N(1 / 2 + i t) < 0` above `thetaPrefixCuspHorizon N 0`, forcing an
      unconditional critical-line zero `t_*(N) > 3` for every `N : ℕ`;
-   - for all `n, N : ℕ` and all `T₁, T₂ ≥ thetaPrefixCuspHorizon N 3 + 2`,
+   - for all `R : ℝ` and all `T₁, T₂ > thetaPrefixCuspHorizon N R`, the height-window zero sets of
+     `A_N` in `{|Re z - 1 / 2| ≤ R}` are identical (`finiteThetaAmplitude_strip_zeros_eq_of_gt_cuspHorizon`),
+     and whenever `A_N` avoids the finite base side segments up to `thetaPrefixCuspHorizon N 3 + 2`,
      `integerThetaCollisionOperator T₁ n N = integerThetaCollisionOperator T₂ n N` identically.
 3. **Direct all-`N`, all-stage sectorial certificate on low windows `T ≤ 3`**:
    Combining the exact Ward–Laplace half-density identity `∫_{x > 0} e^{-x / 2} Φ₁(x) dx =
@@ -93,7 +95,7 @@ theorem reflectedFiniteThetaShellPencil_eq_affine (N : ℕ) (θ x : ℝ) :
         θ * _root_.RHTower.reflectedFiniteThetaSource (N + 2) x := by
   unfold reflectedFiniteThetaShellPencil _root_.RHTower.reflectedFiniteThetaSource
     _root_.RHTower.thetaCuspFiniteShellPrefix
-  rw [Finset.sum_range_succ]
+  rw [Finset.sum_range_succ _ (N + 2)]
   ring
 
 /-- Integral representation of `finiteThetaShellPencil` against `reflectedFiniteThetaShellPencil`. -/
@@ -101,10 +103,16 @@ theorem finiteThetaShellPencil_eq_integral (N : ℕ) (θ : ℝ) (z : ℂ) :
     finiteThetaShellPencil N θ z =
       ∫ x : ℝ, (reflectedFiniteThetaShellPencil N θ x : ℂ) *
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by
-  have hN := _root_.RHTower.integrable_bilateralLaplace
-    (_root_.RHTower.finiteThetaTiltSource N) ((1 / 2 : ℂ) - z)
-  have hN1 := _root_.RHTower.integrable_bilateralLaplace
-    (_root_.RHTower.finiteThetaTiltSource (N + 1)) ((1 / 2 : ℂ) - z)
+  have hN : Integrable (fun x : ℝ => (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
+      Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
+    simpa only [_root_.RHTower.finiteThetaTiltSource] using
+      _root_.RHTower.integrable_bilateralLaplace
+        (_root_.RHTower.finiteThetaTiltSource N) ((1 / 2 : ℂ) - z)
+  have hN1 : Integrable (fun x : ℝ => (_root_.RHTower.reflectedFiniteThetaSource (N + 2) x : ℂ) *
+      Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
+    simpa only [_root_.RHTower.finiteThetaTiltSource] using
+      _root_.RHTower.integrable_bilateralLaplace
+        (_root_.RHTower.finiteThetaTiltSource (N + 1)) ((1 / 2 : ℂ) - z)
   have hrew : (fun x : ℝ => (reflectedFiniteThetaShellPencil N θ x : ℂ) *
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) =
       fun x : ℝ =>
@@ -213,7 +221,7 @@ theorem finiteThetaAmplitude_conj (N : ℕ) (z : ℂ) :
   change (starRingEnd ℂ) (_root_.RHTower.bilateralLaplace (_root_.RHTower.finiteThetaTiltSource N)
     ((1 / 2 : ℂ) - (starRingEnd ℂ) z)) = _
   have hw : (1 / 2 : ℂ) - (starRingEnd ℂ) z = (starRingEnd ℂ) ((1 / 2 : ℂ) - z) := by
-    simp [map_sub]
+    simp [map_sub, map_ofNat]
   rw [hw, _root_.RHTower.bilateralLaplace_conj, RingHomCompTriple.comp_apply, RingHom.id_apply]
 
 theorem finiteThetaShellPencil_one_sub (N : ℕ) (θ : ℝ) (z : ℂ) :
@@ -222,10 +230,13 @@ theorem finiteThetaShellPencil_one_sub (N : ℕ) (θ : ℝ) (z : ℂ) :
 
 theorem finiteThetaShellPencil_conj (N : ℕ) (θ : ℝ) (z : ℂ) :
     star (finiteThetaShellPencil N θ (star z)) = finiteThetaShellPencil N θ z := by
+  have h0 : (starRingEnd ℂ) (_root_.RHTower.finiteThetaAmplitude N ((starRingEnd ℂ) z)) =
+      _root_.RHTower.finiteThetaAmplitude N z := finiteThetaAmplitude_conj N z
+  have h1 : (starRingEnd ℂ) (_root_.RHTower.finiteThetaAmplitude (N + 1) ((starRingEnd ℂ) z)) =
+      _root_.RHTower.finiteThetaAmplitude (N + 1) z := finiteThetaAmplitude_conj (N + 1) z
+  change (starRingEnd ℂ) (finiteThetaShellPencil N θ ((starRingEnd ℂ) z)) = _
   unfold finiteThetaShellPencil
-  have h0 := finiteThetaAmplitude_conj N z
-  have h1 := finiteThetaAmplitude_conj (N + 1) z
-  simp only [star_add, star_mul, Complex.star_def, Complex.conj_ofReal] at h0 h1 ⊢
+  simp only [map_add, map_mul, Complex.conj_ofReal]
   rw [h0, h1]
 
 /-- Every `finiteThetaShellPencil N θ` is real-valued on the critical line `Re z = 1 / 2`. -/
@@ -267,7 +278,10 @@ theorem finiteThetaAmplitude_real_re_pos (N : ℕ) (σ : ℝ) :
   rw [hrew]
   have hint_re : Integrable (fun x : ℝ => _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
       Real.exp ((1 / 2 - σ) * x)) := by
-    simpa only [hrew] using hint.re
+    have h1 := Complex.reCLM.integrable_comp hint
+    exact h1.congr (Eventually.of_forall fun x => by
+      dsimp only [Function.comp_apply, Complex.reCLM_apply]
+      exact congrFun hrew x)
   have hcont : Continuous (fun x : ℝ => _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
       Real.exp ((1 / 2 - σ) * x)) :=
     (_root_.RHTower.continuous_reflectedFiniteThetaSource (N + 1)).mul
@@ -316,7 +330,10 @@ theorem finiteThetaShellPencil_orderAt_ne_top (N : ℕ) {θ : ℝ} (hθ : θ ∈
 
 theorem finiteThetaAmplitude_orderAt_ne_top (N : ℕ) (z : ℂ) :
     analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z ≠ ⊤ := by
-  simpa using finiteThetaShellPencil_orderAt_ne_top N ⟨le_rfl, zero_le_one⟩ z
+  have hfun : _root_.RHTower.finiteThetaAmplitude N = finiteThetaShellPencil N 0 :=
+    funext fun w => (finiteThetaShellPencil_zero N w).symm
+  rw [hfun]
+  exact finiteThetaShellPencil_orderAt_ne_top N ⟨le_rfl, zero_le_one⟩ z
 
 /-- Every `finiteThetaShellPencil N θ` (`θ ∈ [0, 1]`) has finitely many zeros in any closed ball. -/
 theorem finiteThetaShellPencil_zeros_closedBall_finite (N : ℕ) {θ : ℝ} (hθ : θ ∈ Icc (0 : ℝ) 1)
@@ -345,14 +362,17 @@ theorem finiteThetaAmplitude_eq_integral_Ioi (N : ℕ) (z : ℂ) :
       ∫ x in Ioi (0 : ℝ), (_root_.RHTower.thetaFiniteShellJet (N + 1) 0 x : ℂ) *
         (Complex.exp ((z - (1 / 2 : ℂ)) * (x : ℂ)) +
           Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
-  have hint := _root_.RHTower.integrable_bilateralLaplace
-    (_root_.RHTower.finiteThetaTiltSource N) ((1 / 2 : ℂ) - z)
+  have hint : Integrable (fun x : ℝ => (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
+      Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
+    simpa only [_root_.RHTower.finiteThetaTiltSource] using
+      _root_.RHTower.integrable_bilateralLaplace
+        (_root_.RHTower.finiteThetaTiltSource N) ((1 / 2 : ℂ) - z)
   rw [_root_.RHTower.finiteThetaAmplitude, integral_eq_integral_Ioi_add_neg hint]
   refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
   have hpos : _root_.RHTower.reflectedFiniteThetaSource (N + 1) x =
       _root_.RHTower.thetaFiniteShellJet (N + 1) 0 x := by
     rw [_root_.RHTower.thetaFiniteShellJet_zero_eq]
-    simp [_root_.RHTower.reflectedFiniteThetaSource, abs_of_pos hx]
+    simp [_root_.RHTower.reflectedFiniteThetaSource, abs_of_pos (mem_Ioi.mp hx)]
   have heven := _root_.RHTower.reflectedFiniteThetaSource_even (N + 1) x
   rw [heven, hpos]
   have hexp_neg : ((1 / 2 : ℂ) - z) * ((-x : ℝ) : ℂ) = (z - (1 / 2 : ℂ)) * (x : ℂ) := by
@@ -442,13 +462,25 @@ private lemma integral_Ioi_complex_mul_realDeriv
   have hu_im : ∀ x ∈ Ioi (0 : ℝ), HasDerivAt (fun y => (u y).im) ((u' x).im) x :=
     fun x hx => Complex.imCLM.hasFDerivAt.comp_hasDerivAt x (hu x hx)
   have huv'_re : IntegrableOn (fun x => (u x).re * v' x) (Ioi (0 : ℝ)) := by
-    simpa only [hre_eq] using huv'.re
+    have h := Complex.reCLM.integrable_comp (φ := fun x => u x * (v' x : ℂ)) huv'
+    exact h.congr (Eventually.of_forall fun x => by
+      dsimp only [Function.comp_apply, Complex.reCLM_apply]
+      exact hre_eq u v' x)
   have hu'v_re : IntegrableOn (fun x => (u' x).re * v x) (Ioi (0 : ℝ)) := by
-    simpa only [hre_eq] using hu'v.re
+    have h := Complex.reCLM.integrable_comp (φ := fun x => u' x * (v x : ℂ)) hu'v
+    exact h.congr (Eventually.of_forall fun x => by
+      dsimp only [Function.comp_apply, Complex.reCLM_apply]
+      exact hre_eq u' v x)
   have huv'_im : IntegrableOn (fun x => (u x).im * v' x) (Ioi (0 : ℝ)) := by
-    simpa only [him_eq] using huv'.im
+    have h := Complex.imCLM.integrable_comp (φ := fun x => u x * (v' x : ℂ)) huv'
+    exact h.congr (Eventually.of_forall fun x => by
+      dsimp only [Function.comp_apply, Complex.imCLM_apply]
+      exact him_eq u v' x)
   have hu'v_im : IntegrableOn (fun x => (u' x).im * v x) (Ioi (0 : ℝ)) := by
-    simpa only [him_eq] using hu'v.im
+    have h := Complex.imCLM.integrable_comp (φ := fun x => u' x * (v x : ℂ)) hu'v
+    exact h.congr (Eventually.of_forall fun x => by
+      dsimp only [Function.comp_apply, Complex.imCLM_apply]
+      exact him_eq u' v x)
   have hzero_re : Tendsto (fun x => (u x).re * v x) (𝓝[>] (0 : ℝ)) (𝓝 c₀.re) := by
     simpa only [Function.comp_def, hre_eq] using
       (Complex.continuous_re.continuousAt.tendsto).comp hzero
@@ -516,7 +548,8 @@ private lemma integrableOn_cexp_pm_mul_jet (N k : ℕ) (w : ℂ) (s : ℂ) :
       (1 + ‖s‖) * Real.exp ((q : ℝ) * x) := by
     calc ‖Complex.exp (w * (x : ℂ)) + s * Complex.exp (-w * (x : ℂ))‖
         ≤ ‖Complex.exp (w * (x : ℂ))‖ + ‖s‖ * ‖Complex.exp (-w * (x : ℂ))‖ := by
-          simpa only [norm_mul] using norm_add_le _ _
+          simpa only [norm_mul] using
+            norm_add_le (Complex.exp (w * (x : ℂ))) (s * Complex.exp (-w * (x : ℂ)))
       _ ≤ Real.exp ((q : ℝ) * x) + ‖s‖ * Real.exp ((q : ℝ) * x) :=
           add_le_add hexp1 (mul_le_mul_of_nonneg_left hexp2 (norm_nonneg s))
       _ = (1 + ‖s‖) * Real.exp ((q : ℝ) * x) := by ring
@@ -564,7 +597,8 @@ private lemma tendsto_cexp_pm_mul_jet_atTop (N k : ℕ) (w : ℂ) (s : ℂ) :
       (1 + ‖s‖) * Real.exp ((q : ℝ) * x) := by
     calc ‖Complex.exp (w * (x : ℂ)) + s * Complex.exp (-w * (x : ℂ))‖
         ≤ ‖Complex.exp (w * (x : ℂ))‖ + ‖s‖ * ‖Complex.exp (-w * (x : ℂ))‖ := by
-          simpa only [norm_mul] using norm_add_le _ _
+          simpa only [norm_mul] using
+            norm_add_le (Complex.exp (w * (x : ℂ))) (s * Complex.exp (-w * (x : ℂ)))
       _ ≤ (1 + ‖s‖) * Real.exp ((q : ℝ) * x) := by nlinarith [norm_nonneg s]
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
   calc ‖Complex.exp (w * (x : ℂ)) + s * Complex.exp (-w * (x : ℂ))‖ *
@@ -579,31 +613,35 @@ private lemma tendsto_cexp_pm_mul_jet_atTop (N k : ℕ) (w : ℂ) (s : ℂ) :
 private lemma hasDerivAt_cexp_cosh (w : ℂ) (x : ℝ) :
     HasDerivAt (fun y : ℝ => Complex.exp (w * (y : ℂ)) + Complex.exp (-w * (y : ℂ)))
       (w * (Complex.exp (w * (x : ℂ)) - Complex.exp (-w * (x : ℂ)))) x := by
+  have hlin1 : HasDerivAt (fun y : ℝ => w * (y : ℂ)) w x := by
+    simpa only [Complex.ofRealCLM_apply, Complex.ofReal_one, mul_one] using
+      (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul w
+  have hlin2 : HasDerivAt (fun y : ℝ => -w * (y : ℂ)) (-w) x := by
+    simpa only [Complex.ofRealCLM_apply, Complex.ofReal_one, mul_one] using
+      (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (-w)
   have h1 : HasDerivAt (fun y : ℝ => Complex.exp (w * (y : ℂ)))
-      (Complex.exp (w * (x : ℂ)) * w) x := by
-    simpa only [mul_one] using
-      (Complex.hasDerivAt_exp (w * (x : ℂ))).comp x
-        ((Complex.ofRealCLM.hasDerivAt (x := x)).const_mul w)
+      (Complex.exp (w * (x : ℂ)) * w) x :=
+    (Complex.hasDerivAt_exp (w * (x : ℂ))).comp x hlin1
   have h2 : HasDerivAt (fun y : ℝ => Complex.exp (-w * (y : ℂ)))
-      (Complex.exp (-w * (x : ℂ)) * (-w)) x := by
-    simpa only [mul_one] using
-      (Complex.hasDerivAt_exp (-w * (x : ℂ))).comp x
-        ((Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (-w))
+      (Complex.exp (-w * (x : ℂ)) * (-w)) x :=
+    (Complex.hasDerivAt_exp (-w * (x : ℂ))).comp x hlin2
   exact (h1.add h2).congr_deriv (by ring)
 
 private lemma hasDerivAt_cexp_sinh (w : ℂ) (x : ℝ) :
     HasDerivAt (fun y : ℝ => Complex.exp (w * (y : ℂ)) - Complex.exp (-w * (y : ℂ)))
       (w * (Complex.exp (w * (x : ℂ)) + Complex.exp (-w * (x : ℂ)))) x := by
+  have hlin1 : HasDerivAt (fun y : ℝ => w * (y : ℂ)) w x := by
+    simpa only [Complex.ofRealCLM_apply, Complex.ofReal_one, mul_one] using
+      (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul w
+  have hlin2 : HasDerivAt (fun y : ℝ => -w * (y : ℂ)) (-w) x := by
+    simpa only [Complex.ofRealCLM_apply, Complex.ofReal_one, mul_one] using
+      (Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (-w)
   have h1 : HasDerivAt (fun y : ℝ => Complex.exp (w * (y : ℂ)))
-      (Complex.exp (w * (x : ℂ)) * w) x := by
-    simpa only [mul_one] using
-      (Complex.hasDerivAt_exp (w * (x : ℂ))).comp x
-        ((Complex.ofRealCLM.hasDerivAt (x := x)).const_mul w)
+      (Complex.exp (w * (x : ℂ)) * w) x :=
+    (Complex.hasDerivAt_exp (w * (x : ℂ))).comp x hlin1
   have h2 : HasDerivAt (fun y : ℝ => Complex.exp (-w * (y : ℂ)))
-      (Complex.exp (-w * (x : ℂ)) * (-w)) x := by
-    simpa only [mul_one] using
-      (Complex.hasDerivAt_exp (-w * (x : ℂ))).comp x
-        ((Complex.ofRealCLM.hasDerivAt (x := x)).const_mul (-w))
+      (Complex.exp (-w * (x : ℂ)) * (-w)) x :=
+    (Complex.hasDerivAt_exp (-w * (x : ℂ))).comp x hlin2
   exact (h1.sub h2).congr_deriv (by ring)
 
 /-- **Second-order complex seam-cusp identity.**
@@ -646,20 +684,20 @@ theorem finiteThetaAmplitude_mul_sq_sub_half_ibp2 (N : ℕ) (z : ℂ) :
     rw [← h0]
     exact ((hC_cont.mul (Complex.continuous_ofReal.comp (hJ_cont 1))).continuousAt.tendsto).mono_left
       inf_le_left
+  have hwC0 : IntegrableOn (fun x => (w * C x) * (J 0 x : ℂ)) (Ioi (0 : ℝ)) :=
+    ((hC_int 0).const_mul w).congr (Eventually.of_forall fun _ => by dsimp only; ring)
+  have hwS1 : IntegrableOn (fun x => (w * S x) * (J 1 x : ℂ)) (Ioi (0 : ℝ)) :=
+    ((hS_int 1).const_mul w).congr (Eventually.of_forall fun _ => by dsimp only; ring)
   have hibp1 := integral_Ioi_complex_mul_realDeriv
     (u := S) (u' := fun x => w * C x) (v := J 0) (v' := J 1) (c₀ := 0)
     (fun x _ => hasDerivAt_cexp_sinh w x)
     (fun x _ => _root_.RHTower.hasDerivAt_thetaFiniteShellJet (N + 1) 0 x)
-    (hS_int 1)
-    (by simpa only [mul_assoc] using (hC_int 0).const_mul w)
-    hzero1 (hS_inf 0)
+    (hS_int 1) hwC0 hzero1 (hS_inf 0)
   have hibp2 := integral_Ioi_complex_mul_realDeriv
     (u := C) (u' := fun x => w * S x) (v := J 1) (v' := J 2) (c₀ := 2 * (J 1 0 : ℂ))
     (fun x _ => hasDerivAt_cexp_cosh w x)
     (fun x _ => _root_.RHTower.hasDerivAt_thetaFiniteShellJet (N + 1) 1 x)
-    (hC_int 2)
-    (by simpa only [mul_assoc] using (hS_int 1).const_mul w)
-    hzero2 (hC_inf 1)
+    (hC_int 2) hwS1 hzero2 (hC_inf 1)
   have hpull1 : (∫ x in Ioi (0 : ℝ), (w * C x) * (J 0 x : ℂ)) =
       w * ∫ x in Ioi (0 : ℝ), C x * (J 0 x : ℂ) := by
     rw [← MeasureTheory.integral_const_mul]
@@ -712,13 +750,13 @@ theorem finiteThetaAmplitude_mul_sq_sub_half_ibp3 (N : ℕ) (z : ℂ) :
     rw [← h0]
     exact ((hS_cont.mul (Complex.continuous_ofReal.comp hJ2_cont)).continuousAt.tendsto).mono_left
       inf_le_left
+  have hwC2 : IntegrableOn (fun x => (w * C x) * (J 2 x : ℂ)) (Ioi (0 : ℝ)) :=
+    (hC_int.const_mul w).congr (Eventually.of_forall fun _ => by dsimp only; ring)
   have hibp3 := integral_Ioi_complex_mul_realDeriv
     (u := S) (u' := fun x => w * C x) (v := J 2) (v' := J 3) (c₀ := 0)
     (fun x _ => hasDerivAt_cexp_sinh w x)
     (fun x _ => _root_.RHTower.hasDerivAt_thetaFiniteShellJet (N + 1) 2 x)
-    hS_int
-    (by simpa only [mul_assoc] using hC_int.const_mul w)
-    hzero3 hS_inf
+    hS_int hwC2 hzero3 hS_inf
   have hpull3 : (∫ x in Ioi (0 : ℝ), (w * C x) * (J 2 x : ℂ)) =
       w * ∫ x in Ioi (0 : ℝ), C x * (J 2 x : ℂ) := by
     rw [← MeasureTheory.integral_const_mul]
@@ -792,7 +830,11 @@ theorem norm_finiteThetaAmplitude_cusp_remainder_le (N : ℕ) (R : ℝ) {z : ℂ
     rw [hw]; ring
   have hexp_int : (∫ x in Ioi (0 : ℝ), Real.exp (-x)) = 1 := by
     have h := integral_exp_mul_Ioi (by norm_num : (-1 : ℝ) < 0) 0
-    simpa only [mul_zero, Real.exp_zero, neg_neg, div_one, neg_one_mul] using h
+    have hcongr : (∫ x in Ioi (0 : ℝ), Real.exp (-x)) =
+        ∫ x in Ioi (0 : ℝ), Real.exp (-1 * x) :=
+      setIntegral_congr_fun measurableSet_Ioi fun x _ => by ring_nf
+    rw [hcongr, h]
+    norm_num
   calc ‖∫ x in Ioi (0 : ℝ), (_root_.RHTower.thetaFiniteShellJet (N + 1) 3 x : ℂ) *
           (Complex.exp ((z - (1 / 2 : ℂ)) * (x : ℂ)) -
             Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)))‖
@@ -813,7 +855,12 @@ theorem norm_finiteThetaAmplitude_cusp_remainder_le (N : ℕ) (R : ℝ) {z : ℂ
             (by rw [abs_mul, abs_of_nonneg hx0]; exact mul_le_mul_of_nonneg_right hq hx0)
         have hexp2 : ‖Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖ ≤ Real.exp ((q : ℝ) * x) := by
           rw [Complex.norm_exp]; apply Real.exp_le_exp.mpr
-          have hre : (((1 / 2 : ℂ) - z) * (x : ℂ)).re = -(z.re - 1 / 2) * x := by simp; ring
+          have hre : (((1 / 2 : ℂ) - z) * (x : ℂ)).re = -(z.re - 1 / 2) * x := by
+            have h12 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
+            have h12i : (1 / 2 : ℂ).im = 0 := by norm_num
+            simp only [Complex.mul_re, Complex.sub_re, Complex.sub_im, Complex.ofReal_re,
+              Complex.ofReal_im, h12, h12i, mul_zero, sub_zero]
+            ring
           rw [hre]
           exact (le_abs_self _).trans (by
             rw [abs_mul, abs_neg, abs_of_nonneg hx0]
@@ -852,7 +899,8 @@ theorem finiteThetaAmplitude_cusp_sectorial_above_horizon (N : ℕ) (R : ℝ) {z
   rw [norm_mul] at hrem
   have hlt_mul : thetaJetStripThirdBound N R <
       ‖z - (1 / 2 : ℂ)‖ * _root_.RHTower.thetaFiniteShellJet (N + 1) 1 0 := by
-    rwa [thetaPrefixCuspHorizon, div_lt_iff₀ hJ_pos, mul_comm] at hz_norm
+    rw [thetaPrefixCuspHorizon, div_lt_iff₀ hJ_pos] at hz_norm
+    linarith
   have hball : ‖(z - (1 / 2 : ℂ)) ^ 2 * _root_.RHTower.finiteThetaAmplitude N z -
       2 * (_root_.RHTower.thetaFiniteShellJet (N + 1) 1 0 : ℂ)‖ <
       _root_.RHTower.thetaFiniteShellJet (N + 1) 1 0 := by
@@ -905,9 +953,10 @@ theorem finiteThetaAmplitude_criticalLine_neg_above_horizon (N : ℕ) {t : ℝ}
     rw [hz_sub, mul_pow, Complex.I_sq]
     push_cast; ring
   rw [hsq] at hsec
-  have hre : ((-(t ^ 2) : ℝ) * _root_.RHTower.finiteThetaAmplitude N z).re =
+  have hre : (((-(t ^ 2) : ℝ) : ℂ) * _root_.RHTower.finiteThetaAmplitude N z).re =
       -(t ^ 2) * (_root_.RHTower.finiteThetaAmplitude N z).re := by
-    simp [Complex.mul_re]
+    rw [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im]
+    ring
   rw [hre] at hsec
   have hJ_pos := _root_.RHTower.thetaFiniteShellJet_one_zero_pos N
   have ht2_pos : 0 < t ^ 2 := by
@@ -1005,8 +1054,7 @@ theorem integerThetaWindowPowerSum_eq_of_ge_cuspHorizon (n N r : ℕ) {T₁ T₂
       rw [abs_of_pos (by norm_num : (0 : ℝ) < 3), abs_le]
       exact ⟨by linarith [hz.1], by linarith [hz.2.1]⟩
     have hz_im : thetaPrefixCuspHorizon N 3 < z.im := by
-      dsimp [y₂, T₀] at hz
-      linarith [hz.2.2.1]
+      linarith [hz.2.2.1, hhalf_le]
     have hz_norm : thetaPrefixCuspHorizon N 3 < ‖z - (1 / 2 : ℂ)‖ := by
       have him : z.im ≤ ‖z - (1 / 2 : ℂ)‖ := by
         have : (z - (1 / 2 : ℂ)).im = z.im := by simp
@@ -1109,7 +1157,10 @@ theorem integerThetaCollisionOperator_eq_of_ge_cuspHorizon (n N : ℕ) {T₁ T�
   have hpoly : integerThetaDifferencePoly T₁ n N = integerThetaDifferencePoly T₂ n N := by
     unfold integerThetaDifferencePoly; rw [hdeg, hps]
   have hbase : integerThetaBaseLoop T₁ n N = integerThetaBaseLoop T₂ n N := by
-    ext u; simp [integerThetaBaseLoop, hpoly]
+    ext u
+    change (integerThetaDifferencePoly T₁ n N).eval (zhukovskyLoop n u) =
+      (integerThetaDifferencePoly T₂ n N).eval (zhukovskyLoop n u)
+    rw [hpoly]
   have hloop : integerThetaLaurentLoop T₁ n N = integerThetaLaurentLoop T₂ n N := by
     unfold integerThetaLaurentLoop; rw [hbase]
   refine ⟨hdeg, hpoly, hloop, ?_⟩
@@ -1176,14 +1227,13 @@ private lemma two_cosh_mul_thetaCuspSourceTerm_one_le {σ x : ℝ} (hσ : |σ| �
       have he4_pos : 0 < Real.exp (4 * x) := Real.exp_pos _
       have he2_nn : 0 ≤ Real.exp (2 * x) := (Real.exp_pos _).le
       nlinarith [Real.pi_pos]
-    rw [hexp2]
     calc Real.exp (x / 2) *
             (2 * Real.pi * (2 * Real.pi * Real.exp x ^ (4 : ℕ) - 3 * Real.exp x ^ (2 : ℕ)) *
-              Real.exp (-Real.pi * Real.exp (2 * x)))
-        ≤ Real.exp (x / 2) * (40 * Real.exp (4 * x) * Real.exp (-Real.pi * Real.exp (2 * x))) := by
+              Real.exp (-Real.pi * Real.exp x ^ (2 : ℕ)))
+        ≤ Real.exp (x / 2) * (40 * Real.exp (4 * x) * Real.exp (-Real.pi * Real.exp x ^ (2 : ℕ))) := by
           gcongr
       _ = 40 * (Real.exp (x / 2) * Real.exp (4 * x) *
-            Real.exp (-Real.pi * Real.exp (2 * x))) := by ring
+            Real.exp (-Real.pi * Real.exp (2 * x))) := by rw [hexp2]; ring
       _ = 40 * Real.exp ((9 / 2) * x - Real.pi * Real.exp (2 * x)) := by
           rw [← Real.exp_add, ← Real.exp_add]
           congr 2; ring
@@ -1240,10 +1290,11 @@ private lemma integral_Ioi_sq_mul_exp_neg_fifteen_halves :
       2 * ∫ x in Ioi (0 : ℝ), x ^ 2 * Real.exp (-(15 / 2) * x) := by
     rw [← MeasureTheory.integral_const_mul]
     refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
-    rw [abs_neg, abs_of_pos hx, sq_abs]
+    rw [abs_neg, abs_of_pos hx]
     ring
-  rw [hcongr] at hbil
-  norm_num [Nat.factorial] at hbil
+  have hval : (2 : ℝ) * (Nat.factorial 2 : ℝ) / (15 / 2 : ℝ) ^ (2 + 1) = 32 / 3375 := by
+    norm_num [Nat.factorial]
+  rw [hcongr, hval] at hbil
   linarith
 
 /-- **Direct all-`N` right-half-plane sectorial certificate on low windows.**
@@ -1259,31 +1310,30 @@ theorem finiteThetaAmplitude_re_ge_lowWindow (N : ℕ) {z : ℂ}
   let P := _root_.RHTower.reflectedFiniteThetaSource (N + 1)
   have hint_c := _root_.RHTower.integrable_bilateralLaplace
     (_root_.RHTower.finiteThetaTiltSource N) ((1 / 2 : ℂ) - z)
+  have hpt_eq : ∀ x : ℝ, (((_root_.RHTower.finiteThetaTiltSource N).k x : ℂ) *
+      Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))).re =
+      P x * Real.exp (σ * x) * Real.cos (b * x) := by
+    intro x
+    have hw : ((1 / 2 : ℂ) - z) * (x : ℂ) = ((σ * x : ℝ) : ℂ) + ((b * x : ℝ) : ℂ) * I := by
+      dsimp [σ, b]
+      apply Complex.ext <;> simp
+    rw [hw, Complex.exp_add, ← Complex.ofReal_exp, Complex.exp_mul_I, ← Complex.ofReal_cos,
+      ← Complex.ofReal_sin]
+    change ((P x : ℂ) * ((Real.exp (σ * x) : ℂ) *
+      ((Real.cos (b * x) : ℂ) + (Real.sin (b * x) : ℂ) * I))).re = _
+    simp only [Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im,
+      Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
+      mul_zero, zero_mul, add_zero, sub_zero, mul_one]
+    ring
   have hre_int : (_root_.RHTower.finiteThetaAmplitude N z).re =
       ∫ x : ℝ, P x * Real.exp (σ * x) * Real.cos (b * x) := by
     rw [_root_.RHTower.finiteThetaAmplitude_eq_bilateral, _root_.RHTower.bilateralLaplace,
       bochner_integral_re hint_c]
-    refine MeasureTheory.integral_congr_ae (Eventually.of_forall fun x => ?_)
-    have hw : ((1 / 2 : ℂ) - z) * (x : ℂ) = ((σ * x : ℝ) : ℂ) + ((b * x : ℝ) : ℂ) * I := by
-      dsimp [σ, b]
-      apply Complex.ext <;> simp <;> ring
-    rw [hw, Complex.exp_add, ← Complex.ofReal_exp, Complex.exp_mul_I, ← Complex.ofReal_cos,
-      ← Complex.ofReal_sin]
-    change ((P x : ℂ) * ((Real.exp (σ * x) : ℂ) *
-      ((Real.cos (b * x) : ℂ) + (Real.sin (b * x) : ℂ) * I))).re = _
-    simp [Complex.mul_re]
-    ring
-  have hint_real : Integrable (fun x : ℝ => P x * Real.exp (σ * x) * Real.cos (b * x)) := by
-    refine hint_c.re.congr (Eventually.of_forall fun x => ?_)
-    have hw : ((1 / 2 : ℂ) - z) * (x : ℂ) = ((σ * x : ℝ) : ℂ) + ((b * x : ℝ) : ℂ) * I := by
-      dsimp [σ, b]
-      apply Complex.ext <;> simp <;> ring
-    rw [hw, Complex.exp_add, ← Complex.ofReal_exp, Complex.exp_mul_I, ← Complex.ofReal_cos,
-      ← Complex.ofReal_sin]
-    change ((P x : ℂ) * ((Real.exp (σ * x) : ℂ) *
-      ((Real.cos (b * x) : ℂ) + (Real.sin (b * x) : ℂ) * I))).re = _
-    simp [Complex.mul_re]
-    ring
+    exact MeasureTheory.integral_congr_ae (Eventually.of_forall hpt_eq)
+  have hint_real : Integrable (fun x : ℝ => P x * Real.exp (σ * x) * Real.cos (b * x)) :=
+    (Complex.reCLM.integrable_comp hint_c).congr (Eventually.of_forall fun x => by
+      dsimp only [Function.comp_apply, Complex.reCLM_apply]
+      exact hpt_eq x)
   rw [hre_int, integral_eq_integral_Ioi_add_neg hint_real]
   have hfold : (∫ x in Ioi (0 : ℝ),
         P x * Real.exp (σ * x) * Real.cos (b * x) +
@@ -1297,30 +1347,39 @@ theorem finiteThetaAmplitude_re_ge_lowWindow (N : ℕ) {z : ℂ}
   -- Integrability of `P x * (exp(σ x) + exp(-σ x))` on `Ioi 0` (`b = 0` specialization).
   have hint_cosh : IntegrableOn (fun x : ℝ => P x * (Real.exp (σ * x) + Real.exp (-σ * x)))
       (Ioi (0 : ℝ)) := by
-    have hpos := (_root_.RHTower.integrable_bilateralLaplace
-      (_root_.RHTower.finiteThetaTiltSource N) (σ : ℂ)).re.integrableOn (s := Ioi (0 : ℝ))
-    have hneg := (_root_.RHTower.integrable_bilateralLaplace
-      (_root_.RHTower.finiteThetaTiltSource N) ((-σ : ℝ) : ℂ)).re.integrableOn (s := Ioi (0 : ℝ))
+    have hpos : IntegrableOn
+        (fun x : ℝ => (((_root_.RHTower.finiteThetaTiltSource N).k x : ℂ) *
+          Complex.exp ((σ : ℂ) * (x : ℂ))).re) (Ioi (0 : ℝ)) :=
+      (Complex.reCLM.integrable_comp (_root_.RHTower.integrable_bilateralLaplace
+        (_root_.RHTower.finiteThetaTiltSource N) (σ : ℂ))).integrableOn
+    have hneg : IntegrableOn
+        (fun x : ℝ => (((_root_.RHTower.finiteThetaTiltSource N).k x : ℂ) *
+          Complex.exp (((-σ : ℝ) : ℂ) * (x : ℂ))).re) (Ioi (0 : ℝ)) :=
+      (Complex.reCLM.integrable_comp (_root_.RHTower.integrable_bilateralLaplace
+        (_root_.RHTower.finiteThetaTiltSource N) ((-σ : ℝ) : ℂ))).integrableOn
     refine (hpos.add hneg).congr_fun (fun x _ => ?_) measurableSet_Ioi
     have h1 : (((_root_.RHTower.finiteThetaTiltSource N).k x : ℂ) *
         Complex.exp ((σ : ℂ) * (x : ℂ))).re = P x * Real.exp (σ * x) := by
       rw [show (σ : ℂ) * (x : ℂ) = ((σ * x : ℝ) : ℂ) by push_cast; ring,
-        ← Complex.ofReal_exp, ← Complex.ofReal_mul, Complex.ofReal_re]
-      rfl
+        ← Complex.ofReal_exp]
+      change ((P x : ℂ) * (Real.exp (σ * x) : ℂ)).re = _
+      simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
     have h2 : (((_root_.RHTower.finiteThetaTiltSource N).k x : ℂ) *
         Complex.exp (((-σ : ℝ) : ℂ) * (x : ℂ))).re = P x * Real.exp (-σ * x) := by
       rw [show ((-σ : ℝ) : ℂ) * (x : ℂ) = ((-σ * x : ℝ) : ℂ) by push_cast; ring,
-        ← Complex.ofReal_exp, ← Complex.ofReal_mul, Complex.ofReal_re]
-      rfl
+        ← Complex.ofReal_exp]
+      change ((P x : ℂ) * (Real.exp (-σ * x) : ℂ)).re = _
+      simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
     dsimp only [Pi.add_apply]
     rw [h1, h2]; ring
   have hint_cos : IntegrableOn
       (fun x : ℝ => P x * (Real.exp (σ * x) + Real.exp (-σ * x)) * Real.cos (b * x))
       (Ioi (0 : ℝ)) := by
     have hmul := Integrable.bdd_mul hint_cosh
-      (Real.continuous_cos.comp (continuous_const.mul continuous_id)).aestronglyMeasurable.restrict
-      (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact Real.abs_cos_le_one _)
-    exact hmul.congr_fun (fun x _ => mul_comm _ _) measurableSet_Ioi
+      (Real.continuous_cos.comp ((continuous_const : Continuous fun _ : ℝ => b).mul
+        continuous_id)).aestronglyMeasurable.restrict
+      (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact Real.abs_cos_le_one (b * x))
+    exact hmul.congr (Eventually.of_forall fun x => mul_comm _ _)
   have hint_def : IntegrableOn
       (fun x : ℝ => P x * (Real.exp (σ * x) + Real.exp (-σ * x)) * (1 - Real.cos (b * x)))
       (Ioi (0 : ℝ)) := by
@@ -1381,10 +1440,13 @@ theorem finiteThetaAmplitude_re_ge_lowWindow (N : ℕ) {z : ℂ}
     let C_top : ℝ := ((61 / 20 : ℝ) ^ 2 / 2) * (11 / 10) * 400 * Real.exp (-Real.pi)
     have hmom_int : IntegrableOn (fun x : ℝ => C_top * (x ^ 2 * Real.exp (-(15 / 2) * x)))
         (Ioi (0 : ℝ)) := by
-      have h := (_root_.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 2
-        (by norm_num : (0 : ℝ) < 15 / 2)).integrableOn (s := Ioi (0 : ℝ))
-      refine (h.const_mul C_top).congr_fun (fun x hx => ?_) measurableSet_Ioi
-      rw [abs_of_pos hx, sq_abs]
+      have h : IntegrableOn (fun x : ℝ => |x| ^ 2 * Real.exp (-(15 / 2) * |x|)) (Ioi (0 : ℝ)) :=
+        (_root_.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 2
+          (by norm_num : (0 : ℝ) < 15 / 2)).integrableOn
+      exact (h.const_mul C_top).congr
+        ((ae_restrict_mem measurableSet_Ioi).mono fun x hx => by
+          dsimp only
+          rw [abs_of_pos (mem_Ioi.mp hx)])
     have hmono : (∫ x in Ioi (0 : ℝ),
           P x * (Real.exp (σ * x) + Real.exp (-σ * x)) * (1 - Real.cos (b * x))) ≤
         ∫ x in Ioi (0 : ℝ), C_top * (x ^ 2 * Real.exp (-(15 / 2) * x)) := by
@@ -1393,11 +1455,11 @@ theorem finiteThetaAmplitude_re_ge_lowWindow (N : ℕ) {z : ℂ}
       have hx0 : 0 ≤ x := hx.le
       have hP_full : P x ≤ _root_.RHTower.thetaCuspFullSource x :=
         _root_.RHTower.reflectedFiniteThetaSource_le_full (N + 1) x
+      have hsrc1_nn := _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine hx0 1
       have hfull_1 : _root_.RHTower.thetaCuspFullSource x ≤
           (11 / 10) * _root_.RHTower.thetaCuspSourceTerm x 1 := by
         have hsub := _root_.RHTower.thetaCuspFullSource_sub_first_le hx0
         have hw := _root_.RHTower.thetaCuspHigherAtomDominationWeight_le_geometric_rational
-        have hsrc_nn := _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine hx0 1
         nlinarith
       have hP_le : P x ≤ (11 / 10) * _root_.RHTower.thetaCuspSourceTerm x 1 :=
         hP_full.trans hfull_1
@@ -1417,7 +1479,8 @@ theorem finiteThetaAmplitude_re_ge_lowWindow (N : ℕ) {z : ℂ}
           ≤ ((11 / 10) * _root_.RHTower.thetaCuspSourceTerm x 1) *
               (Real.exp (σ * x) + Real.exp (-σ * x)) *
               (((61 / 20 : ℝ) ^ 2 / 2) * x ^ 2) := by
-            refine mul_le_mul ?_ hcos_def hcos_nn (by positivity)
+            refine mul_le_mul ?_ hcos_def hcos_nn
+              (mul_nonneg (mul_nonneg (by norm_num) hsrc1_nn) hcosh_pos)
             exact mul_le_mul_of_nonneg_right hP_le hcosh_pos
         _ = (((61 / 20 : ℝ) ^ 2 / 2) * (11 / 10) * x ^ 2) *
               ((Real.exp (σ * x) + Real.exp (-σ * x)) *
@@ -1569,7 +1632,9 @@ theorem integerThetaCollisionOperator_trivial_of_le_three {T : ℝ} (hT : T ≤ 
     rw [hdeg0]
     simp [newtonElem]
   have hbase1 : integerThetaBaseLoop T n N = 1 := by
-    ext u; simp [integerThetaBaseLoop, hpoly1]
+    ext u
+    change (integerThetaDifferencePoly T n N).eval (zhukovskyLoop n u) = 1
+    rw [hpoly1, Polynomial.eval_one]
   have hloop1 : integerThetaLaurentLoop T n N = 1 := by
     unfold integerThetaLaurentLoop; rw [hbase1, one_pow]
   have hsym1 : integerThetaCollisionSymbol T n N = 1 := by
@@ -1580,8 +1645,8 @@ theorem integerThetaCollisionOperator_trivial_of_le_three {T : ℝ} (hT : T ≤ 
     simp
   have hind0 : HTGeometry.fredholmIndex (integerThetaCollisionOperator T n N) = 0 := by
     rw [fredholmIndex_integerThetaCollisionOperator_eq_circleWinding, hsym1]
-    unfold HTGeometry.circleWinding
-    exact _root_.RHTower.windingNumber_const one_ne_zero
+    change _root_.RHTower.windingNumber (fun _ => (1 : ℂ)) 0 (2 * Real.pi) = 0
+    exact _root_.RHTower.windingNumber_const one_ne_zero 0 (2 * Real.pi)
   have hcharge0 : _root_.RHTower.xiHorizontalCollisionCharge T = 0 := by
     have hno_zeros : (_root_.RHTower.stripZeros_finite T).toFinset = ∅ := by
       refine Finset.eq_empty_of_forall_notMem fun w hw => ?_

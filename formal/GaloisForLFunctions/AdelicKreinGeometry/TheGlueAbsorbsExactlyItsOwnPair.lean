@@ -1,4 +1,5 @@
 import GaloisForLFunctions.AdelicKreinGeometry.TheStableGluingFormula
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.HyperbolicFeatures
 import Mathlib.LinearAlgebra.Vandermonde
 
 /-!
@@ -52,7 +53,6 @@ theorem negIndex_stablePair_le_one (s' : ℝ) : negIndex (stablePair s') ≤ 1 :
         Real.rpow_neg hb.le]
       push_cast
       field_simp
-      ring
   exact_mod_cast h
 
 /-- **The pair has one square at every exponent.** -/

@@ -25,7 +25,10 @@ pole-orthogonal hyperplane: `κ^{(½)}(K) = 0`.
 * **Pole blindness** (`renormalizedHodgeIndex_add_polePair_iff`): adding the pole pair at any
   strength changes nothing on the hyperplane.
 * **Quantum bound** (`boostPolarIndex_ratCorr_le_iSup_collisionCharge`): the hyperplane index is
-  bounded by the supremum of the horizontal collision charges of the heat flow.
+  bounded by the supremum of the horizontal collision charges of the heat flow; finitely many
+  squares leave at least two heat collisions each at every small time
+  (`eventually_two_mul_boostPolarIndex_le_collisionMassAfter`), infinitely many make the collision
+  mass unbounded (`tendsto_collisionMassAfter_of_boostPolarIndex_eq_top`).
 
 So inside the renormalized intersection theory RH is one statement: the pairing of scaling
 correspondences is positive on the hyperplane orthogonal to the pole class.
@@ -128,5 +131,21 @@ theorem boostPolarIndex_ratCorr_le_iSup_collisionCharge :
     boostPolarIndex ratCorr ≤ ⨆ T : ℝ, (RHTower.xiHorizontalCollisionCharge T : ℕ∞) := by
   rw [boostPolarIndex_ratCorr]
   exact negIndex_zetaKernel_le_iSup_horizontalCollisionCharge
+
+/-- **The collision mass reads the hyperplane index**: with finitely many negative squares on the
+pole-orthogonal hyperplane, every small heat time leaves at least two collisions per square. -/
+theorem eventually_two_mul_boostPolarIndex_le_collisionMassAfter
+    (h : boostPolarIndex ratCorr < ⊤) :
+    ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ioi 0),
+      2 * boostPolarIndex ratCorr ≤ (_root_.RHTower.DeBruijn.collisionMassAfter t : ℕ∞) := by
+  rw [boostPolarIndex_ratCorr] at h ⊢
+  exact two_mul_negIndex_zetaKernel_le_collisionMassAfter h
+
+/-- Infinitely many squares on the hyperplane make the collision mass unbounded as the heat
+vanishes. -/
+theorem tendsto_collisionMassAfter_of_boostPolarIndex_eq_top (h : boostPolarIndex ratCorr = ⊤) :
+    Filter.Tendsto _root_.RHTower.DeBruijn.collisionMassAfter (nhdsWithin (0 : ℝ) (Set.Ioi 0)) Filter.atTop := by
+  rw [boostPolarIndex_ratCorr] at h
+  exact tendsto_collisionMassAfter_of_negIndex_eq_top h
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory

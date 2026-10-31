@@ -433,7 +433,7 @@ private theorem abs_sum_far_erase_div_abs_sub_le {g : ℕ → ℝ} {B : ℝ} {n 
     (hn : n ∈ Icc 1 N) (hD : 0 < D) (hB0 : 0 ≤ B)
     (hB : ∀ l k : ℕ, l ≤ k → |∑ j ∈ Ico l k, g j| ≤ B) :
     |∑ j ∈ (Icc 1 N).filter (fun j : ℕ => (D : ℝ) < |(n : ℝ) - j|),
-      g j / |(n : ℝ) - j| | ≤ 2 * B / (D : ℝ) := by
+      (g j / |(n : ℝ) - j|)| ≤ 2 * B / (D : ℝ) := by
   have hD0 : (0 : ℝ) < D := by exact_mod_cast hD
   let S_lo := (Icc 1 N).filter (fun j : ℕ => j + D < n)
   let S_hi := (Icc 1 N).filter (fun j : ℕ => n + D < j)
@@ -473,7 +473,7 @@ private theorem abs_sum_far_erase_div_abs_sub_le {g : ℕ → ℝ} {B : ℝ} {n 
     intro j hj1 hj2
     simp only [S_lo, S_hi, mem_filter] at hj1 hj2
     omega
-  have hlo_bound : |∑ j ∈ S_lo, g j / |(n : ℝ) - j| | ≤ B / (D : ℝ) := by
+  have hlo_bound : |∑ j ∈ S_lo, (g j / |(n : ℝ) - j|)| ≤ B / (D : ℝ) := by
     by_cases hbig : D + 1 < n
     · have hS_lo : S_lo = Icc 1 (n - D - 1) := by
         have hnN := (mem_Icc.mp hn).2
@@ -490,7 +490,7 @@ private theorem abs_sum_far_erase_div_abs_sub_le {g : ℕ → ℝ} {B : ℝ} {n 
         ext j; simp only [S_lo, mem_filter, mem_Icc, notMem_empty, iff_false]; omega
       rw [hempty, sum_empty, abs_zero]
       exact div_nonneg hB0 hD0.le
-  have hhi_bound : |∑ j ∈ S_hi, g j / |(n : ℝ) - j| | ≤ B / (D : ℝ) := by
+  have hhi_bound : |∑ j ∈ S_hi, (g j / |(n : ℝ) - j|)| ≤ B / (D : ℝ) := by
     have hS_hi : S_hi = Ico (n + D + 1) (N + 1) := by
       ext j; simp only [S_hi, mem_filter, mem_Icc, mem_Ico]; omega
     rw [hS_hi]
@@ -502,14 +502,14 @@ private theorem abs_sum_far_erase_div_abs_sub_le {g : ℕ → ℝ} {B : ℝ} {n 
         congr 1; ring
     rw [hcongr]
     have hab := abs_sum_Ico_div_add_le (r := -(n : ℝ)) hB (n + D + 1) (N + 1)
-      (by push_cast; positivity)
+      (by push_cast; linarith only [hD0])
     have hden : -(n : ℝ) + (n + D + 1 : ℕ) = (D : ℝ) + 1 := by push_cast; ring
     rw [hden] at hab
     exact hab.trans (div_le_div_of_nonneg_left hB0 hD0 (by linarith))
   rw [hpart, sum_union hdisj]
   calc
-    |∑ j ∈ S_lo, g j / |(n : ℝ) - j| + ∑ j ∈ S_hi, g j / |(n : ℝ) - j| | ≤
-        |∑ j ∈ S_lo, g j / |(n : ℝ) - j| | + |∑ j ∈ S_hi, g j / |(n : ℝ) - j| | := abs_add_le _ _
+    |(∑ j ∈ S_lo, (g j / |(n : ℝ) - j|)) + (∑ j ∈ S_hi, (g j / |(n : ℝ) - j|))| ≤
+        |∑ j ∈ S_lo, (g j / |(n : ℝ) - j|)| + |∑ j ∈ S_hi, (g j / |(n : ℝ) - j|)| := abs_add_le _ _
     _ ≤ B / D + B / D := add_le_add hlo_bound hhi_bound
     _ = 2 * B / D := by ring
 
@@ -569,6 +569,516 @@ theorem sum_sq_abs_majorized_kernel_le' {N : ℕ} (K U : ℕ → ℕ → ℝ) (x
     _ ≤ ∑ j ∈ Icc 1 N, d j * x j ^ 2 :=
       sum_le_sum fun j hj => mul_le_mul_of_nonneg_right (hcol j hj) (sq_nonneg _)
 
+private def collarKernel (N : ℕ) (n j : ℕ) : ℝ :=
+  (1 / (N : ℝ)) * archimedeanCenterKernel n j
+
+private def collarNearKernel (D : ℕ) (n j : ℕ) : ℝ :=
+  if n ≠ j ∧ |(n : ℝ) - j| ≤ D then (1 / 2 : ℝ) / |(n : ℝ) - j| else 0
+
+private def collarRowSumHalf (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ∑ j ∈ (Icc 1 N).erase n,
+    (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))) *
+      primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j
+
+private def collarRowNear (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
+  Real.sqrt ((n : ℝ) / N) * ∑ j ∈ Icc 1 N, collarNearKernel (R ^ 4) n j *
+    (Real.sqrt ((j : ℝ) / N) *
+      primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j)
+
+private def collarRowFar (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
+  (Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) *
+    ∑ j ∈ (Icc 1 N).filter (fun j : ℕ => ((R ^ 4 : ℕ) : ℝ) < |(n : ℝ) - j|),
+      (∑ m ∈ Icc 1 R, b m * normalizedRamanujanMode m j) / |(n : ℝ) - j|
+
+private theorem collarMatrix_v1_norm_le {N : ℕ} (hN1 : 1 ≤ N) (hL1 : 1 ≤ Real.log N) :
+    ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
+        (normalizedRamanujanHorizonVector 1 N)‖ ≤
+      3 * Real.sqrt (Real.log N) := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hL : 0 < Real.log N := zero_lt_one.trans_le hL1
+  have hsL : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr hL
+  have hsq : ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
+        (normalizedRamanujanHorizonVector 1 N)‖ ^ 2 ≤
+      (3 * Real.sqrt (Real.log N)) ^ 2 := by
+    rw [← horizonProfileVector_extension (normalizedRamanujanHorizonVector 1 N),
+      horizonKernelMatrix_profile_norm_sq]
+    have hrow_le : ∀ n ∈ Icc 1 N,
+        (∑ j ∈ Icc 1 N, collarKernel N n j *
+          primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) ^ 2 ≤
+        9 * Real.log N / N := by
+      intro n hn
+      have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
+      have hnonneg : 0 ≤ ∑ j ∈ Icc 1 N, collarKernel N n j *
+          primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j :=
+        sum_nonneg fun j hj => by
+          rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
+          change 0 ≤ (1 / (N : ℝ)) * archimedeanCenterKernel n j *
+            ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode 1 j / Real.sqrt j))
+          have hm1 : normalizedRamanujanMode 1 j = 1 := by
+            rw [normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one, Nat.cast_one,
+              Real.sqrt_one, div_one]
+          rw [hm1]
+          exact mul_nonneg (mul_nonneg (by positivity) (archimedeanCenterKernel_nonneg n j))
+            (by positivity)
+      have hrow : (∑ j ∈ Icc 1 N, collarKernel N n j *
+          primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) ≤
+          3 * Real.sqrt (Real.log N) * Real.sqrt n / N := by
+        have heq : (∑ j ∈ Icc 1 N, collarKernel N n j *
+            primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) =
+            (1 / (N : ℝ)) * (Real.sqrt (Real.log N))⁻¹ *
+              ∑ j ∈ Icc 1 N, archimedeanCenterKernel n j / Real.sqrt j := by
+          rw [mul_sum]
+          refine sum_congr rfl fun j hj => ?_
+          rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
+          change (1 / (N : ℝ)) * archimedeanCenterKernel n j *
+            ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode 1 j / Real.sqrt j)) = _
+          have hm1 : normalizedRamanujanMode 1 j = 1 := by
+            rw [normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one, Nat.cast_one,
+              Real.sqrt_one, div_one]
+          rw [hm1]; ring
+        rw [heq]
+        have hH := sum_archimedeanCenterKernel_div_sqrt_le hn
+        have hHN : (harmonic N : ℝ) + 1 ≤ 3 * Real.log N := by
+          have hh := harmonic_le_one_add_log N
+          linarith only [hh, hL1]
+        calc
+          (1 / (N : ℝ)) * (Real.sqrt (Real.log N))⁻¹ *
+              (∑ j ∈ Icc 1 N, archimedeanCenterKernel n j / Real.sqrt j) ≤
+              (1 / (N : ℝ)) * (Real.sqrt (Real.log N))⁻¹ *
+                (Real.sqrt n * (3 * Real.log N)) :=
+            mul_le_mul_of_nonneg_left
+              (hH.trans (mul_le_mul_of_nonneg_left hHN (Real.sqrt_nonneg _))) (by positivity)
+          _ = 3 * Real.sqrt (Real.log N) * Real.sqrt n / N := by
+            field_simp [hN0.ne', hsL.ne']
+            rw [Real.sq_sqrt hL.le]
+            ring
+      have hsqn := pow_le_pow_left₀ hnonneg hrow 2
+      calc
+        _ ≤ (3 * Real.sqrt (Real.log N) * Real.sqrt n / N) ^ 2 := hsqn
+        _ = 9 * Real.log N * n / (N : ℝ) ^ 2 := by
+          rw [div_pow, mul_pow, mul_pow, Real.sq_sqrt hL.le, Real.sq_sqrt (Nat.cast_nonneg n)]
+          ring
+        _ ≤ 9 * Real.log N * N / (N : ℝ) ^ 2 :=
+          div_le_div_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hnN (by positivity)) (sq_nonneg _)
+        _ = 9 * Real.log N / N := by field_simp [hN0.ne']
+    calc
+      (∑ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, collarKernel N n j *
+          primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) ^ 2) ≤
+          ∑ _n ∈ Icc 1 N, 9 * Real.log N / N := sum_le_sum hrow_le
+      _ = (N : ℝ) * (9 * Real.log N / N) := by
+        rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
+      _ = (3 * Real.sqrt (Real.log N)) ^ 2 := by
+        rw [mul_pow, Real.sq_sqrt hL.le]; field_simp [hN0.ne']; ring
+  nlinarith only [hsq,
+    norm_nonneg (Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
+      (normalizedRamanujanHorizonVector 1 N)), hsL]
+
+private theorem collarRow_eq_sum_three {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N)
+    (hL : 0 < Real.log N) (b : ℕ → ℝ) {n : ℕ} (hn : n ∈ Icc 1 N) :
+    (∑ j ∈ Icc 1 N, collarKernel N n j *
+        primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j) =
+      collarRowSumHalf R N b n + collarRowNear R N b n + collarRowFar R N b n := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hsL : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr hL
+  have hD0 : 0 < R ^ 4 := pow_pos (by omega : 0 < R) 4
+  set uTilde := ∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N
+  have huTilde_ext : ∀ j ∈ Icc 1 N, primeHorizonExtension uTilde j =
+      (Real.sqrt (Real.log N))⁻¹ * ((∑ m ∈ Icc 1 R, b m * normalizedRamanujanMode m j) / Real.sqrt j) := by
+    intro j hj
+    rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
+    change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) ⟨j, hj⟩) uTilde = _
+    dsimp only [uTilde]
+    rw [map_sum, sum_div, mul_sum]
+    refine sum_congr rfl fun m _ => ?_
+    change b m * ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m j / Real.sqrt j)) = _
+    ring
+  rw [← sum_erase_add (Icc 1 N) (fun j => collarKernel N n j * primeHorizonExtension uTilde j) hn]
+  have hdiag : collarKernel N n n * primeHorizonExtension uTilde n = 0 := by
+    unfold collarKernel; rw [archimedeanCenterKernel_self, mul_zero, zero_mul]
+  rw [hdiag, add_zero]
+  have hterm_erase : ∀ j ∈ (Icc 1 N).erase n,
+      collarKernel N n j * primeHorizonExtension uTilde j =
+        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))) *
+          primeHorizonExtension uTilde j +
+        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
+          primeHorizonExtension uTilde j := by
+    intro j hj
+    obtain ⟨hjn, hjI⟩ := mem_erase.mp hj
+    have h := archimedeanCenterKernel_div_sqrt_mul (mem_Icc.mp hn).1
+      (mem_Icc.mp hjI).1 (Ne.symm hjn)
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+    have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
+    have hsn := (Real.sqrt_pos.mpr hn0).ne'
+    have hsj := (Real.sqrt_pos.mpr hj0).ne'
+    unfold collarKernel
+    have hker : archimedeanCenterKernel n j =
+        (1 / 2 : ℝ) * (1 / |(n : ℝ) - j| + 1 / ((n : ℝ) + j)) *
+          (Real.sqrt n * Real.sqrt j) :=
+      (div_eq_iff (mul_ne_zero hsn hsj)).mp h
+    have hadd_ne : (n : ℝ) + j ≠ 0 := by positivity
+    have hsub_ne : |(n : ℝ) - j| ≠ 0 :=
+      abs_ne_zero.mpr (sub_ne_zero.mpr (by exact_mod_cast Ne.symm hjn))
+    rw [hker]
+    field_simp [hN0.ne', hadd_ne, hsub_ne]
+    ring
+  rw [sum_congr rfl hterm_erase, sum_add_distrib]
+  change collarRowSumHalf R N b n + _ =
+    collarRowSumHalf R N b n + collarRowNear R N b n + collarRowFar R N b n
+  rw [add_assoc]
+  congr 1
+  have near_eq : collarRowNear R N b n =
+      ∑ j ∈ ((Icc 1 N).erase n).filter (fun j : ℕ => |(n : ℝ) - j| ≤ (R ^ 4 : ℕ)),
+        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
+          primeHorizonExtension uTilde j := by
+    unfold collarRowNear collarNearKernel
+    rw [mul_sum]
+    have hsub : ((Icc 1 N).erase n).filter (fun j : ℕ => |(n : ℝ) - j| ≤ (R ^ 4 : ℕ)) ⊆ Icc 1 N :=
+      fun j hj => (mem_erase.mp (mem_filter.mp hj).1).2
+    rw [← sum_subset hsub]
+    · refine sum_congr rfl fun j hj => ?_
+      obtain ⟨hje, hle⟩ := mem_filter.mp hj
+      have hne : n ≠ j := Ne.symm (mem_erase.mp hje).1
+      rw [if_pos ⟨hne, hle⟩, Real.sqrt_div (Nat.cast_nonneg n),
+        Real.sqrt_div (Nat.cast_nonneg j)]
+      field_simp [hN0.ne', (Real.sqrt_pos.mpr hN0).ne']
+      rw [Real.sq_sqrt hN0.le]
+      dsimp only [uTilde]
+      ring
+    · intro j hjI hnot
+      have hfalse : ¬(n ≠ j ∧ |(n : ℝ) - j| ≤ (R ^ 4 : ℕ)) := by
+        rintro ⟨hne, hle⟩
+        exact hnot (mem_filter.mpr ⟨mem_erase.mpr ⟨hne.symm, hjI⟩, hle⟩)
+      rw [if_neg hfalse, zero_mul, mul_zero]
+  have far_eq : collarRowFar R N b n =
+      ∑ j ∈ ((Icc 1 N).erase n).filter (fun j : ℕ => ¬|(n : ℝ) - j| ≤ (R ^ 4 : ℕ)),
+        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
+          primeHorizonExtension uTilde j := by
+    unfold collarRowFar
+    have hf_eq : ((Icc 1 N).erase n).filter (fun j : ℕ => ¬|(n : ℝ) - j| ≤ (R ^ 4 : ℕ)) =
+        (Icc 1 N).filter (fun j : ℕ => ((R ^ 4 : ℕ) : ℝ) < |(n : ℝ) - j|) := by
+      ext j; simp only [mem_filter, mem_erase, not_le]
+      constructor
+      · rintro ⟨⟨_, hj⟩, hlt⟩; exact ⟨hj, hlt⟩
+      · rintro ⟨hj, hlt⟩
+        refine ⟨⟨?_, hj⟩, hlt⟩
+        intro h; subst h; simp only [sub_self, abs_zero] at hlt
+        linarith [show (0 : ℝ) < (R ^ 4 : ℕ) by exact_mod_cast hD0]
+    rw [hf_eq, mul_sum]
+    refine sum_congr rfl fun j hj => ?_
+    have hjI := (mem_filter.mp hj).1
+    have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
+    have hsj := (Real.sqrt_pos.mpr hj0).ne'
+    rw [huTilde_ext j hjI]
+    field_simp [hN0.ne', hsL.ne', hsj]
+  rw [near_eq, far_eq, sum_filter_add_sum_filter_not]
+
+private theorem sum_collarRowSumHalf_sq_le {R N : ℕ} (hN1 : 1 ≤ N)
+    (b : ℕ → ℝ) {S : ℝ}
+    (hlin : (∑ j ∈ Icc 1 N, ((j : ℝ) / N) *
+        primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j ^ 2) ≤
+      16 / Real.log N * S ^ 2) :
+    (∑ n ∈ Icc 1 N, collarRowSumHalf R N b n ^ 2) ≤ 4 / Real.log N * S ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  set uTilde := ∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N
+  let y_lin : ℕ → ℝ := fun j => Real.sqrt ((j : ℝ) / N) * |primeHorizonExtension uTilde j|
+  have hy_lin_sq : (∑ j ∈ Icc 1 N, y_lin j ^ 2) ≤ 16 / Real.log N * S ^ 2 := by
+    have heq : (∑ j ∈ Icc 1 N, y_lin j ^ 2) =
+        ∑ j ∈ Icc 1 N, ((j : ℝ) / N) * primeHorizonExtension uTilde j ^ 2 :=
+      sum_congr rfl fun j _ => by
+        dsimp only [y_lin]
+        rw [mul_pow, Real.sq_sqrt (by positivity), sq_abs]
+    rw [heq]; exact hlin
+  have hpt : ∀ n ∈ Icc 1 N,
+      collarRowSumHalf R N b n ^ 2 ≤ (1 / (4 * (N : ℝ))) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := by
+    intro n hn
+    have hn1 := (mem_Icc.mp hn).1
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+    have habs : |collarRowSumHalf R N b n| ≤
+        (Real.sqrt n / (2 * Real.sqrt N)) * ∑ j ∈ Icc 1 N, (1 / ((n : ℝ) + j)) * y_lin j := by
+      unfold collarRowSumHalf
+      rw [mul_sum]
+      have hsub : (Icc 1 N).erase n ⊆ Icc 1 N := erase_subset _ _
+      refine (abs_sum_le_sum_abs _ _).trans
+        ((sum_le_sum fun j _ => ?_).trans
+          (sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity))
+      dsimp only [y_lin]
+      change |Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j)) *
+          primeHorizonExtension uTilde j| ≤ _
+      rw [abs_mul, abs_of_nonneg (by positivity :
+        0 ≤ Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))),
+        Real.sqrt_div (Nat.cast_nonneg j)]
+      have hadd_ne : (n : ℝ) + j ≠ 0 := by positivity
+      have hident :
+          Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j)) *
+              |primeHorizonExtension uTilde j| =
+            Real.sqrt n / (2 * Real.sqrt N) *
+              (1 / ((n : ℝ) + j) *
+                (Real.sqrt j / Real.sqrt N * |primeHorizonExtension uTilde j|)) := by
+        field_simp [hN0.ne', (Real.sqrt_pos.mpr hN0).ne', hadd_ne]
+        rw [Real.sq_sqrt hN0.le]; ring
+      exact le_of_eq hident
+    have hsq := pow_le_pow_left₀ (abs_nonneg _) habs 2
+    have h22 : (2 : ℝ) ^ 2 = 4 := by norm_num
+    rw [sq_abs, mul_pow, div_pow, mul_pow, Real.sq_sqrt hn0.le, Real.sq_sqrt hN0.le, h22] at hsq
+    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 N)
+      (fun j => 1 / ((n : ℝ) + j)) y_lin
+    calc
+      collarRowSumHalf R N b n ^ 2 ≤ ((n : ℝ) / (4 * N)) *
+          ((∑ j ∈ Icc 1 N, (1 / ((n : ℝ) + j)) ^ 2) * ∑ j ∈ Icc 1 N, y_lin j ^ 2) :=
+        hsq.trans (mul_le_mul_of_nonneg_left hcs (by positivity))
+      _ ≤ ((n : ℝ) / (4 * N)) * ((1 / (n : ℝ)) * ∑ j ∈ Icc 1 N, y_lin j ^ 2) := by
+        refine mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_right ?_ (sum_nonneg fun _ _ => sq_nonneg _)) (by positivity)
+        simpa only [one_div_pow] using sum_inv_add_sq_le hn1
+      _ = (1 / (4 * (N : ℝ))) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := by
+        field_simp [hn0.ne', hN0.ne']
+  calc
+    (∑ n ∈ Icc 1 N, collarRowSumHalf R N b n ^ 2) ≤
+        ∑ _n ∈ Icc 1 N, (1 / (4 * (N : ℝ))) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := sum_le_sum hpt
+    _ = (1 / 4 : ℝ) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := by
+      rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
+      field_simp [hN0.ne']
+    _ ≤ (1 / 4 : ℝ) * (16 / Real.log N * S ^ 2) :=
+      mul_le_mul_of_nonneg_left hy_lin_sq (by norm_num)
+    _ = 4 / Real.log N * S ^ 2 := by ring
+
+private theorem sum_collarRowNear_sq_le {R N : ℕ} (hN1 : 1 ≤ N)
+    (b : ℕ → ℝ) {S : ℝ}
+    (hlin : (∑ j ∈ Icc 1 N, ((j : ℝ) / N) *
+        primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j ^ 2) ≤
+      16 / Real.log N * S ^ 2) :
+    (∑ n ∈ Icc 1 N, collarRowNear R N b n ^ 2) ≤
+      (20 * (1 + Real.log R)) ^ 2 / Real.log N * S ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  set uTilde := ∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N
+  set D := R ^ 4
+  have hK_nonneg : ∀ n ∈ Icc 1 N, ∀ j ∈ Icc 1 N, 0 ≤ collarNearKernel D n j :=
+    fun _ _ _ _ => by unfold collarNearKernel; split_ifs <;> positivity
+  have hK_symm : ∀ n j, collarNearKernel D n j = collarNearKernel D j n := fun n j => by
+    unfold collarNearKernel
+    by_cases hne : n = j
+    · subst hne; simp
+    · have hne' : j ≠ n := Ne.symm hne
+      rw [abs_sub_comm (n : ℝ) j]
+      simp [hne, hne']
+  have hK_row : ∀ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, collarNearKernel D n j) ≤ 5 * (1 + Real.log R) := by
+    intro n _
+    let S_lo := (Icc 1 N).filter (fun j : ℕ => j < n ∧ n - j ≤ D)
+    let S_hi := (Icc 1 N).filter (fun j : ℕ => n < j ∧ j - n ≤ D)
+    have hsupp : ∀ j ∈ Icc 1 N, j ∉ S_lo ∪ S_hi → collarNearKernel D n j = 0 := by
+      intro j hjI hnot
+      unfold collarNearKernel
+      rw [if_neg]
+      rintro ⟨hne, hle⟩
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · apply hnot; refine mem_union.mpr (Or.inr (mem_filter.mpr ⟨hjI, hlt, ?_⟩))
+        rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le))] at hle
+        have hc : ((j - n : ℕ) : ℝ) ≤ D := by
+          rw [Nat.cast_sub hlt.le]; exact hle
+        exact_mod_cast hc
+      · apply hnot; refine mem_union.mpr (Or.inl (mem_filter.mpr ⟨hjI, hgt, ?_⟩))
+        rw [abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hgt.le))] at hle
+        have hc : ((n - j : ℕ) : ℝ) ≤ D := by
+          rw [Nat.cast_sub hgt.le]; exact hle
+        exact_mod_cast hc
+    have hdisj : Disjoint S_lo S_hi := by
+      rw [Finset.disjoint_left]; intro j hj1 hj2
+      simp only [S_lo, S_hi, mem_filter] at hj1 hj2; omega
+    have hsub : S_lo ∪ S_hi ⊆ Icc 1 N := union_subset (filter_subset _ _) (filter_subset _ _)
+    rw [← sum_subset hsub hsupp, sum_union hdisj]
+    have hlo : (∑ j ∈ S_lo, collarNearKernel D n j) ≤ (1 / 2 : ℝ) * (harmonic D : ℝ) := by
+      have hinj : ∀ j ∈ S_lo, n - j ∈ Icc 1 D := fun j hj => by
+        obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj; exact mem_Icc.mpr ⟨by omega, hle⟩
+      calc
+        (∑ j ∈ S_lo, collarNearKernel D n j) = ∑ j ∈ S_lo, (1 / 2 : ℝ) * (1 / ((n - j : ℕ) : ℝ)) := by
+          refine sum_congr rfl fun j hj => ?_
+          obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj
+          have habs : |(n : ℝ) - j| = ((n - j : ℕ) : ℝ) := by
+            rw [abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le)), Nat.cast_sub hlt.le]
+          unfold collarNearKernel
+          rw [if_pos ⟨by omega, by rw [habs]; exact_mod_cast hle⟩, habs]; ring
+        _ = ∑ h ∈ S_lo.image (fun j => n - j), (1 / 2 : ℝ) * (1 / (h : ℝ)) := by
+          rw [sum_image]; intro a ha b' hb hab
+          dsimp only at hab
+          obtain ⟨_, hal, _⟩ := mem_filter.mp ha; obtain ⟨_, hbl, _⟩ := mem_filter.mp hb
+          omega
+        _ ≤ ∑ h ∈ Icc 1 D, (1 / 2 : ℝ) * (1 / (h : ℝ)) :=
+          sum_le_sum_of_subset_of_nonneg (image_subset_iff.mpr hinj) fun _ _ _ => by positivity
+        _ = (1 / 2 : ℝ) * (harmonic D : ℝ) := by
+          rw [← mul_sum, harmonic_eq_sum_Icc]
+          congr 1; push_cast; exact sum_congr rfl fun h _ => by simp [one_div]
+    have hhi : (∑ j ∈ S_hi, collarNearKernel D n j) ≤ (1 / 2 : ℝ) * (harmonic D : ℝ) := by
+      have hinj : ∀ j ∈ S_hi, j - n ∈ Icc 1 D := fun j hj => by
+        obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj; exact mem_Icc.mpr ⟨by omega, hle⟩
+      calc
+        (∑ j ∈ S_hi, collarNearKernel D n j) = ∑ j ∈ S_hi, (1 / 2 : ℝ) * (1 / ((j - n : ℕ) : ℝ)) := by
+          refine sum_congr rfl fun j hj => ?_
+          obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj
+          have habs : |(n : ℝ) - j| = ((j - n : ℕ) : ℝ) := by
+            rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le)),
+              Nat.cast_sub hlt.le]
+          unfold collarNearKernel
+          rw [if_pos ⟨by omega, by rw [habs]; exact_mod_cast hle⟩, habs]; ring
+        _ = ∑ h ∈ S_hi.image (fun j => j - n), (1 / 2 : ℝ) * (1 / (h : ℝ)) := by
+          rw [sum_image]; intro a ha b' hb hab
+          dsimp only at hab
+          obtain ⟨_, hal, _⟩ := mem_filter.mp ha; obtain ⟨_, hbl, _⟩ := mem_filter.mp hb
+          omega
+        _ ≤ ∑ h ∈ Icc 1 D, (1 / 2 : ℝ) * (1 / (h : ℝ)) :=
+          sum_le_sum_of_subset_of_nonneg (image_subset_iff.mpr hinj) fun _ _ _ => by positivity
+        _ = (1 / 2 : ℝ) * (harmonic D : ℝ) := by
+          rw [← mul_sum, harmonic_eq_sum_Icc]
+          congr 1; push_cast; exact sum_congr rfl fun h _ => by simp [one_div]
+    have hHD : (harmonic D : ℝ) ≤ 5 * (1 + Real.log R) := by
+      have hh := harmonic_le_one_add_log D
+      have hlogD : Real.log (D : ℝ) = 4 * Real.log R := by
+        dsimp only [D]; rw [Nat.cast_pow, Real.log_pow]; ring
+      have hR0 := Real.log_natCast_nonneg R
+      linarith only [hh, hlogD, hR0]
+    linarith only [hlo, hhi, hHD]
+  set M_row := 5 * (1 + Real.log R)
+  have hM0 : 0 ≤ M_row := by
+    have := Real.log_natCast_nonneg R; dsimp only [M_row]; positivity
+  have hschur := sum_sq_abs_majorized_kernel_le' (N := N) (collarNearKernel D) (collarNearKernel D)
+    (fun j => Real.sqrt ((j : ℝ) / N) * primeHorizonExtension uTilde j)
+    (fun _ => 1) (fun _ => M_row) (fun _ => M_row ^ 2)
+    hK_nonneg
+    (fun n hn j hj => le_of_eq (abs_of_nonneg (hK_nonneg n hn j hj)))
+    (fun _ _ => zero_lt_one)
+    (fun n hn => by simpa only [mul_one] using hK_row n hn)
+    (fun j hj => by
+      have heq : (∑ n ∈ Icc 1 N, collarNearKernel D n j * (M_row / 1)) =
+          M_row * ∑ n ∈ Icc 1 N, collarNearKernel D j n := by
+        rw [mul_sum]; exact sum_congr rfl fun n _ => by rw [hK_symm n j]; ring
+      rw [heq]
+      exact (mul_le_mul_of_nonneg_left (hK_row j hj) hM0).trans_eq (by ring))
+  have hpt : ∀ n ∈ Icc 1 N, collarRowNear R N b n ^ 2 ≤
+      (∑ j ∈ Icc 1 N, collarNearKernel D n j *
+        (Real.sqrt ((j : ℝ) / N) * primeHorizonExtension uTilde j)) ^ 2 := by
+    intro n hn
+    unfold collarRowNear
+    rw [mul_pow, Real.sq_sqrt (by positivity)]
+    have hnN : (n : ℝ) / N ≤ 1 := (div_le_one hN0).mpr (by exact_mod_cast (mem_Icc.mp hn).2)
+    exact (mul_le_mul_of_nonneg_right hnN (sq_nonneg _)).trans_eq (one_mul _)
+  have hsq_eq : ∀ j : ℕ,
+      (Real.sqrt ((j : ℝ) / N) * primeHorizonExtension uTilde j) ^ 2 =
+        ((j : ℝ) / N) * primeHorizonExtension uTilde j ^ 2 :=
+    fun j => by rw [mul_pow, Real.sq_sqrt (by positivity)]
+  calc
+    (∑ n ∈ Icc 1 N, collarRowNear R N b n ^ 2) ≤
+        ∑ j ∈ Icc 1 N, M_row ^ 2 * (((j : ℝ) / N) * primeHorizonExtension uTilde j ^ 2) := by
+      refine (sum_le_sum hpt).trans (hschur.trans_eq ?_)
+      exact sum_congr rfl fun j _ => by rw [hsq_eq]
+    _ = M_row ^ 2 * ∑ j ∈ Icc 1 N, ((j : ℝ) / N) * primeHorizonExtension uTilde j ^ 2 :=
+      (mul_sum ..).symm
+    _ ≤ M_row ^ 2 * (16 / Real.log N * S ^ 2) :=
+      mul_le_mul_of_nonneg_left hlin (sq_nonneg _)
+    _ = (20 * (1 + Real.log R)) ^ 2 / Real.log N * S ^ 2 := by
+      dsimp only [M_row]; ring
+
+private theorem sum_collarRowFar_sq_le {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N)
+    (hL : 0 < Real.log N) (b : ℕ → ℝ) (hb1 : b 1 = 0) {S : ℝ} (hS0 : 0 ≤ S)
+    (hb_sq : (∑ m ∈ Icc 1 R, b m ^ 2) ≤ 2 * S ^ 2) :
+    (∑ n ∈ Icc 1 N, collarRowFar R N b n ^ 2) ≤ 4 / Real.log N * S ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hD0 : 0 < R ^ 4 := pow_pos (by omega : 0 < R) 4
+  set B' := 2 * (R : ℝ) ^ 2 * Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2)
+  have hB'0 : 0 ≤ B' := by dsimp only [B']; positivity
+  have hg_Ico : ∀ l k : ℕ, l ≤ k →
+      |∑ j ∈ Ico l k, ∑ m ∈ Icc 1 R, b m * normalizedRamanujanMode m j| ≤ B' := by
+    intro l k hlk
+    have hswap : (∑ j ∈ Ico l k, ∑ m ∈ Icc 1 R, b m * normalizedRamanujanMode m j) =
+        ∑ m ∈ Icc 1 R, b m * ∑ j ∈ Ico l k, normalizedRamanujanMode m j := by
+      rw [sum_comm]
+      exact sum_congr rfl fun m _ => (mul_sum ..).symm
+    have hm_bound : ∀ m ∈ Icc 1 R,
+        |b m * ∑ j ∈ Ico l k, normalizedRamanujanMode m j| ≤ |b m| * (2 * R) := by
+      intro m hm
+      obtain ⟨hm1, hmR⟩ := mem_Icc.mp hm
+      rcases eq_or_lt_of_le hm1 with rfl | hm2
+      · simp [hb1]
+      · rw [abs_mul]
+        have hm0 : 0 < m := by omega
+        have hper_le := abs_sum_Ico_le_of_periodic hm0 (normalizedRamanujanMode_periodic hm0)
+          (sum_range_normalizedRamanujanMode_eq_zero_of_two_le hm2) l k hlk
+        have hL1_m := sum_range_abs_normalizedRamanujanMode_le hm0
+        have hmR_cast : (m : ℝ) ≤ R := by exact_mod_cast hmR
+        exact mul_le_mul_of_nonneg_left (by linarith only [hper_le, hL1_m, hmR_cast]) (abs_nonneg _)
+    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 R) (fun m => |b m|) (fun _ => (1 : ℝ))
+    simp only [mul_one, sq_abs, one_pow, sum_const, Nat.card_Icc, Nat.add_sub_cancel,
+      nsmul_eq_mul] at hcs
+    have hsum_abs : (∑ m ∈ Icc 1 R, |b m|) ≤
+        (R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2) := by
+      have hR1 : (1 : ℝ) ≤ R := by exact_mod_cast (show 1 ≤ R by omega)
+      have hsq : (∑ m ∈ Icc 1 R, |b m|) ^ 2 ≤
+          ((R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2)) ^ 2 := by
+        rw [mul_pow, Real.sq_sqrt (sum_nonneg fun _ _ => sq_nonneg _)]
+        have hRR : (R : ℝ) ≤ (R : ℝ) ^ 2 := by nlinarith only [hR1]
+        exact hcs.trans ((mul_comm _ _).trans_le
+          (mul_le_mul_of_nonneg_right hRR (sum_nonneg fun _ _ => sq_nonneg _)))
+      have hrhs0 : 0 ≤ (R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2) := by positivity
+      nlinarith only [hsq, hrhs0]
+    rw [hswap]
+    calc
+      |∑ m ∈ Icc 1 R, b m * ∑ j ∈ Ico l k, normalizedRamanujanMode m j| ≤
+          ∑ m ∈ Icc 1 R, |b m| * (2 * R) :=
+        (abs_sum_le_sum_abs _ _).trans (sum_le_sum hm_bound)
+      _ = (2 * (R : ℝ)) * ∑ m ∈ Icc 1 R, |b m| := by
+        rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring
+      _ ≤ (2 * (R : ℝ)) * ((R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2)) :=
+        mul_le_mul_of_nonneg_left hsum_abs (by positivity)
+      _ = B' := by dsimp only [B']; ring
+  have h2BD : 2 * B' / ((R ^ 4 : ℕ) : ℝ) ≤ 2 * S := by
+    have hR2 : (2 : ℝ) ≤ R := by exact_mod_cast hR
+    have hR0 : (0 : ℝ) < R := by positivity
+    have hsqrt_le : Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2) ≤ 2 * S := by
+      have h4 : (∑ m ∈ Icc 1 R, b m ^ 2) ≤ (2 * S) ^ 2 := by
+        nlinarith only [hb_sq, sq_nonneg S]
+      exact (Real.sqrt_le_sqrt h4).trans_eq (Real.sqrt_sq (by positivity))
+    have hquot : 2 * B' / ((R ^ 4 : ℕ) : ℝ) =
+        (4 / (R : ℝ) ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2) := by
+      dsimp only [B']; rw [Nat.cast_pow]; field_simp [hR0.ne']; ring
+    have hfrac1 : 4 / (R : ℝ) ^ 2 ≤ 1 := by
+      rw [div_le_one (sq_pos_of_pos hR0)]; nlinarith only [hR2]
+    rw [hquot]
+    calc
+      (4 / (R : ℝ) ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b m ^ 2) ≤ 1 * (2 * S) :=
+        mul_le_mul hfrac1 hsqrt_le (Real.sqrt_nonneg _) zero_le_one
+      _ = 2 * S := one_mul _
+  have hpt : ∀ n ∈ Icc 1 N, collarRowFar R N b n ^ 2 ≤ (1 / ((N : ℝ) * Real.log N)) * S ^ 2 := by
+    intro n hn
+    have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
+    have habs : |collarRowFar R N b n| ≤
+        (Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) * (2 * S) := by
+      unfold collarRowFar
+      rw [abs_mul, abs_of_nonneg (by positivity)]
+      exact mul_le_mul_of_nonneg_left
+        ((abs_sum_far_erase_div_abs_sub_le hn hD0 hB'0 hg_Ico).trans h2BD) (by positivity)
+    have hsq := pow_le_pow_left₀ (abs_nonneg _) habs 2
+    rw [sq_abs] at hsq
+    calc
+      collarRowFar R N b n ^ 2 ≤
+          ((Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) * (2 * S)) ^ 2 := hsq
+      _ = ((n : ℝ) / ((N : ℝ) ^ 2 * Real.log N)) * S ^ 2 := by
+        rw [mul_pow, div_pow, mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg n),
+          Real.sq_sqrt hL.le]
+        field_simp [hN0.ne', hL.ne']
+      _ ≤ ((N : ℝ) / ((N : ℝ) ^ 2 * Real.log N)) * S ^ 2 :=
+        mul_le_mul_of_nonneg_right
+          (div_le_div_of_nonneg_right hnN (by positivity)) (sq_nonneg _)
+      _ = (1 / ((N : ℝ) * Real.log N)) * S ^ 2 := by field_simp [hN0.ne', hL.ne']
+  calc
+    (∑ n ∈ Icc 1 N, collarRowFar R N b n ^ 2) ≤
+        ∑ _n ∈ Icc 1 N, (1 / ((N : ℝ) * Real.log N)) * S ^ 2 := sum_le_sum hpt
+    _ = (1 / Real.log N) * S ^ 2 := by
+      rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
+      field_simp [hN0.ne', hL.ne']
+    _ ≤ 4 / Real.log N * S ^ 2 := by
+      have hpos : 0 ≤ 1 / Real.log N * S ^ 2 := by positivity
+      nlinarith only [hpos, (by ring :
+        4 / Real.log N * S ^ 2 = 4 * (1 / Real.log N * S ^ 2))]
+
 /-- Uniform `o(1)` bilinear bound on `fullWeilCenterMatrix α N` for `u ∈ conductorSubspace R N`
 orthogonal to `conductorSubspace 1 N` and any `y ∈ (conductorSubspace 1 N)ᗮ`. -/
 theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
@@ -588,16 +1098,13 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
     have : 4 ≤ R * R := Nat.mul_le_mul hR hR
     omega
   have hN1 : 1 ≤ N := by omega
-  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   have hL1 : 1 ≤ Real.log N := by
     have hR0 := Real.log_natCast_nonneg R
     linarith only [hlog, hR0]
   have hL : 0 < Real.log N := zero_lt_one.trans_le hL1
   have hsL : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr hL
-  -- Reduce `fullWeilCenterMatrix` to `-α • collarMatrix`.
-  let K_col : ℕ → ℕ → ℝ := fun n j => (1 / (N : ℝ)) * archimedeanCenterKernel n j
   have hinner_eq : ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix α N) u, y⟫ =
-      -α * ⟪Matrix.toEuclideanLin (horizonKernelMatrix K_col N) u, y⟫ := by
+      -α * ⟪Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) u, y⟫ := by
     change ⟪Matrix.toEuclideanLin
       (horizonKernelMatrix (fun n j =>
         (α / N) * (arithmeticPoleKernel n j - archimedeanCenterKernel n j)) N) u, y⟫ = _
@@ -607,29 +1114,27 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
             ((α / N) * (arithmeticPoleKernel n j - archimedeanCenterKernel n j)) =
           (α / N) * (primeHorizonExtension y n * primeHorizonExtension u j *
             arithmeticPoleKernel n j) -
-          α * (primeHorizonExtension y n * primeHorizonExtension u j * K_col n j) := by
-      dsimp only [K_col]; ring
+          α * (primeHorizonExtension y n * primeHorizonExtension u j * collarKernel N n j) := by
+      unfold collarKernel; ring
     simp only [hterm, sum_sub_distrib, ← mul_sum]
     rw [arithmeticPoleKernel_bilinear_eq_zero
       (harmonicSum_eq_zero_of_mem_orthog_one hN2 hu1)
       (harmonicSum_eq_zero_of_mem_orthog_one hN2 hy1)]
     ring
-  -- It suffices to bound `‖collarLin u‖ ≤ 144 * (1 + log R) / √(log N) * ‖u‖`.
-  let collarLin := Matrix.toEuclideanLin (horizonKernelMatrix K_col N)
-  suffices hcol_norm : ‖collarLin u‖ ≤
+  suffices hcol_norm : ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) u‖ ≤
       144 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ by
     rw [hinner_eq, abs_mul, abs_neg]
     calc
-      |α| * |⟪collarLin u, y⟫| ≤ |α| * (‖collarLin u‖ * ‖y‖) :=
+      |α| * |⟪Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) u, y⟫| ≤
+          |α| * (‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) u‖ * ‖y‖) :=
         mul_le_mul_of_nonneg_left (abs_real_inner_le_norm _ _) (abs_nonneg _)
       _ ≤ |α| * ((144 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖) * ‖y‖) :=
         mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_right hcol_norm (norm_nonneg y)) (abs_nonneg _)
       _ = 144 * |α| * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ * ‖y‖ := by ring
-  -- Split `u = a 1 • v_1 + uTilde`.
   obtain ⟨a, -, hu_eq⟩ := (mem_conductorSubspace_iff (M := R) (N := N) (x := u)).mp hu
-  let aTilde : ℕ → ℝ := fun m => if m = 1 then 0 else a m
-  let uTilde := ∑ m ∈ Icc 1 R, aTilde m • normalizedRamanujanHorizonVector m N
+  set aTilde : ℕ → ℝ := fun m => if m = 1 then 0 else a m
+  set uTilde := ∑ m ∈ Icc 1 R, aTilde m • normalizedRamanujanHorizonVector m N
   have hu_split : u = a 1 • normalizedRamanujanHorizonVector 1 N + uTilde := by
     rw [hu_eq]
     have h1mem : (1 : ℕ) ∈ Icc 1 R := mem_Icc.mpr ⟨le_rfl, by omega⟩
@@ -642,7 +1147,6 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
     refine sum_congr rfl fun m hm => ?_
     have hm1 : m ≠ 1 := (mem_erase.mp hm).1
     simp [aTilde, hm1]
-  -- Piece 1: `a 1 • v_1`.
   have ha1_le : |a 1| ≤ 36 * (1 + Real.log R) / Real.log N * ‖u‖ := by
     have hlow := (low_band_norm_le_of_mem_orthogonal (by omega : 1 ≤ 1) (by omega : 1 ≤ R)
       hR hRN2 hlog (hu_eq ▸ hu1)).1
@@ -650,94 +1154,21 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
     have h1sq : Real.sqrt (∑ m ∈ Icc 1 1, a m ^ 2) = |a 1| := by
       rw [Icc_self, sum_singleton, Real.sqrt_sq_eq_abs]
     rwa [h1sq] at hlow
-  have hv1_col : ‖collarLin (normalizedRamanujanHorizonVector 1 N)‖ ≤
-      3 * Real.sqrt (Real.log N) := by
-    have hsq : ‖collarLin (normalizedRamanujanHorizonVector 1 N)‖ ^ 2 ≤
-        (3 * Real.sqrt (Real.log N)) ^ 2 := by
-      rw [← horizonProfileVector_extension (normalizedRamanujanHorizonVector 1 N),
-        horizonKernelMatrix_profile_norm_sq]
-      have hrow_le : ∀ n ∈ Icc 1 N,
-          (∑ j ∈ Icc 1 N, K_col n j *
-            primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) ^ 2 ≤
-          9 * Real.log N / N := by
-        intro n hn
-        have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
-        have hnonneg : 0 ≤ ∑ j ∈ Icc 1 N, K_col n j *
-            primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j :=
-          sum_nonneg fun j hj => by
-            rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
-            change 0 ≤ (1 / (N : ℝ)) * archimedeanCenterKernel n j *
-              ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode 1 j / Real.sqrt j))
-            have hm1 : normalizedRamanujanMode 1 j = 1 := by
-              rw [normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one, Nat.cast_one,
-                Real.sqrt_one, div_one]
-            rw [hm1]
-            exact mul_nonneg (mul_nonneg (by positivity) (archimedeanCenterKernel_nonneg n j))
-              (by positivity)
-        have hrow : (∑ j ∈ Icc 1 N, K_col n j *
-            primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) ≤
-            3 * Real.sqrt (Real.log N) * Real.sqrt n / N := by
-          have heq : (∑ j ∈ Icc 1 N, K_col n j *
-              primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) =
-              (1 / (N : ℝ)) * (Real.sqrt (Real.log N))⁻¹ *
-                ∑ j ∈ Icc 1 N, archimedeanCenterKernel n j / Real.sqrt j := by
-            rw [mul_sum]
-            refine sum_congr rfl fun j hj => ?_
-            rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
-            change (1 / (N : ℝ)) * archimedeanCenterKernel n j *
-              ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode 1 j / Real.sqrt j)) = _
-            have hm1 : normalizedRamanujanMode 1 j = 1 := by
-              rw [normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one, Nat.cast_one,
-                Real.sqrt_one, div_one]
-            rw [hm1]; ring
-          rw [heq]
-          have hH := sum_archimedeanCenterKernel_div_sqrt_le hn
-          have hHN : (harmonic N : ℝ) + 1 ≤ 3 * Real.log N := by
-            have hh := harmonic_le_one_add_log N
-            linarith only [hh, hL1]
-          calc
-            (1 / (N : ℝ)) * (Real.sqrt (Real.log N))⁻¹ *
-                (∑ j ∈ Icc 1 N, archimedeanCenterKernel n j / Real.sqrt j) ≤
-                (1 / (N : ℝ)) * (Real.sqrt (Real.log N))⁻¹ *
-                  (Real.sqrt n * (3 * Real.log N)) :=
-              mul_le_mul_of_nonneg_left
-                (hH.trans (mul_le_mul_of_nonneg_left hHN (Real.sqrt_nonneg _))) (by positivity)
-            _ = 3 * Real.sqrt (Real.log N) * Real.sqrt n / N := by
-              field_simp [hN0.ne', hsL.ne']
-              rw [Real.sq_sqrt hL.le]
-              ring
-        have hsqn := pow_le_pow_left₀ hnonneg hrow 2
-        calc
-          _ ≤ (3 * Real.sqrt (Real.log N) * Real.sqrt n / N) ^ 2 := hsqn
-          _ = 9 * Real.log N * n / (N : ℝ) ^ 2 := by
-            rw [div_pow, mul_pow, mul_pow, Real.sq_sqrt hL.le, Real.sq_sqrt (Nat.cast_nonneg n)]
-            ring
-          _ ≤ 9 * Real.log N * N / (N : ℝ) ^ 2 :=
-            div_le_div_of_nonneg_right
-              (mul_le_mul_of_nonneg_left hnN (by positivity)) (sq_nonneg _)
-          _ = 9 * Real.log N / N := by field_simp [hN0.ne']
-      calc
-        (∑ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, K_col n j *
-            primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) j) ^ 2) ≤
-            ∑ _n ∈ Icc 1 N, 9 * Real.log N / N := sum_le_sum hrow_le
-        _ = (N : ℝ) * (9 * Real.log N / N) := by
-          rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
-        _ = (3 * Real.sqrt (Real.log N)) ^ 2 := by
-          rw [mul_pow, Real.sq_sqrt hL.le]; field_simp [hN0.ne']; ring
-    nlinarith only [hsq, norm_nonneg (collarLin (normalizedRamanujanHorizonVector 1 N)), hsL]
-  have hpiece1 : ‖collarLin (a 1 • normalizedRamanujanHorizonVector 1 N)‖ ≤
-      108 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
+  have hpiece1 :
+      ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
+          (a 1 • normalizedRamanujanHorizonVector 1 N)‖ ≤
+        108 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
     rw [map_smul, norm_smul, Real.norm_eq_abs]
     calc
-      |a 1| * ‖collarLin (normalizedRamanujanHorizonVector 1 N)‖ ≤
+      |a 1| * ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
+            (normalizedRamanujanHorizonVector 1 N)‖ ≤
           (36 * (1 + Real.log R) / Real.log N * ‖u‖) * (3 * Real.sqrt (Real.log N)) :=
-        mul_le_mul ha1_le hv1_col (norm_nonneg _) (by
-          have := Real.log_natCast_nonneg R; positivity)
+        mul_le_mul ha1_le (collarMatrix_v1_norm_le hN1 hL1) (norm_nonneg _)
+          (by have := Real.log_natCast_nonneg R; positivity)
       _ = 108 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
         field_simp [hL.ne', hsL.ne']
         rw [Real.sq_sqrt hL.le]
         ring
-  -- Bounds on `uTilde`.
   have ha_sq : (∑ m ∈ Icc 1 R, aTilde m ^ 2) ≤ 2 * ‖u‖ ^ 2 := by
     have hle : (∑ m ∈ Icc 1 R, aTilde m ^ 2) ≤ ∑ m ∈ Icc 1 R, a m ^ 2 :=
       sum_le_sum fun m _ => by dsimp only [aTilde]; split_ifs <;> simp [sq_nonneg]
@@ -761,411 +1192,36 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
       nlinarith only [huTilde_norm, norm_nonneg uTilde, norm_nonneg u]
     rw [div_mul_eq_mul_div, le_div_iff₀' hL]
     linarith only [hm, h4]
-  -- Decompose each row `(collarLin uTilde) n` into sum-half, near-diff (`≤ R^4`), far-diff (`> R^4`).
-  let gTilde : ℕ → ℝ := fun j => ∑ m ∈ Icc 1 R, aTilde m * normalizedRamanujanMode m j
-  have huTilde_ext : ∀ j ∈ Icc 1 N, primeHorizonExtension uTilde j =
-      (Real.sqrt (Real.log N))⁻¹ * (gTilde j / Real.sqrt j) := by
-    intro j hj
-    rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
-    change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) ⟨j, hj⟩) uTilde = _
-    dsimp only [uTilde, gTilde]
-    rw [map_sum, sum_div, mul_sum]
-    refine sum_congr rfl fun m _ => ?_
-    change aTilde m * ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m j / Real.sqrt j)) = _
-    ring
-  let D := R ^ 4
-  have hD0 : 0 < D := pow_pos (by omega : 0 < R) 4
-  let y_lin : ℕ → ℝ := fun j => Real.sqrt ((j : ℝ) / N) * |primeHorizonExtension uTilde j|
-  have hy_lin_sq : (∑ j ∈ Icc 1 N, y_lin j ^ 2) ≤ 16 / Real.log N * ‖u‖ ^ 2 := by
-    have heq : (∑ j ∈ Icc 1 N, y_lin j ^ 2) =
-        ∑ j ∈ Icc 1 N, ((j : ℝ) / N) * primeHorizonExtension uTilde j ^ 2 :=
-      sum_congr rfl fun j _ => by
-        dsimp only [y_lin]
-        rw [mul_pow, Real.sq_sqrt (by positivity), sq_abs]
-    rw [heq]; exact hlin_uTilde
-  -- Row decomposition of `collarLin uTilde`.
-  let rowSumHalf : ℕ → ℝ := fun n =>
-    ∑ j ∈ (Icc 1 N).erase n,
-      (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))) * primeHorizonExtension uTilde j
-  let K_near : ℕ → ℕ → ℝ := fun n j =>
-    if n ≠ j ∧ |(n : ℝ) - j| ≤ D then (1 / 2 : ℝ) / |(n : ℝ) - j| else 0
-  let rowNear : ℕ → ℝ := fun n =>
-    Real.sqrt ((n : ℝ) / N) * ∑ j ∈ Icc 1 N, K_near n j *
-      (Real.sqrt ((j : ℝ) / N) * primeHorizonExtension uTilde j)
-  let rowFar : ℕ → ℝ := fun n =>
-    (Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) *
-      ∑ j ∈ (Icc 1 N).filter (fun j : ℕ => (D : ℝ) < |(n : ℝ) - j|), gTilde j / |(n : ℝ) - j|
-  have hrow_split : ∀ n ∈ Icc 1 N,
-      (∑ j ∈ Icc 1 N, K_col n j * primeHorizonExtension uTilde j) =
-        rowSumHalf n + rowNear n + rowFar n := by
-    intro n hn
-    rw [← sum_erase_add (Icc 1 N) (fun j => K_col n j * primeHorizonExtension uTilde j) hn]
-    have hdiag : K_col n n * primeHorizonExtension uTilde n = 0 := by
-      dsimp only [K_col]; rw [archimedeanCenterKernel_self, mul_zero, zero_mul]
-    rw [hdiag, add_zero]
-    have hterm_erase : ∀ j ∈ (Icc 1 N).erase n,
-        K_col n j * primeHorizonExtension uTilde j =
-          (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))) *
-            primeHorizonExtension uTilde j +
-          (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
-            primeHorizonExtension uTilde j := by
-      intro j hj
-      obtain ⟨hjn, hjI⟩ := mem_erase.mp hj
-      have h := archimedeanCenterKernel_div_sqrt_mul (mem_Icc.mp hn).1
-        (mem_Icc.mp hjI).1 (Ne.symm hjn)
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
-      have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
-      have hsn := (Real.sqrt_pos.mpr hn0).ne'
-      have hsj := (Real.sqrt_pos.mpr hj0).ne'
-      dsimp only [K_col]
-      have hker : archimedeanCenterKernel n j =
-          (1 / 2 : ℝ) * (1 / |(n : ℝ) - j| + 1 / ((n : ℝ) + j)) *
-            (Real.sqrt n * Real.sqrt j) :=
-        (div_eq_iff (mul_ne_zero hsn hsj)).mp h
-      have hadd_ne : (n : ℝ) + j ≠ 0 := by positivity
-      have hsub_ne : |(n : ℝ) - j| ≠ 0 :=
-        abs_ne_zero.mpr (sub_ne_zero.mpr (by exact_mod_cast Ne.symm hjn))
-      rw [hker]
-      field_simp [hN0.ne', hadd_ne, hsub_ne]
-      ring
-    rw [sum_congr rfl hterm_erase, sum_add_distrib]
-    change rowSumHalf n + _ = rowSumHalf n + rowNear n + rowFar n
-    rw [add_assoc]
-    congr 1
-    -- Split `(Icc 1 N).erase n` into `|(n : ℝ) - j| ≤ D` and `(D : ℝ) < |(n : ℝ) - j|`.
-    have near_eq : rowNear n =
-        ∑ j ∈ ((Icc 1 N).erase n).filter (fun j : ℕ => |(n : ℝ) - j| ≤ D),
-          (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
-            primeHorizonExtension uTilde j := by
-      dsimp only [rowNear, K_near]
-      rw [mul_sum]
-      have hsub : ((Icc 1 N).erase n).filter (fun j : ℕ => |(n : ℝ) - j| ≤ D) ⊆ Icc 1 N :=
-        fun j hj => (mem_erase.mp (mem_filter.mp hj).1).2
-      rw [← sum_subset hsub]
-      · refine sum_congr rfl fun j hj => ?_
-        obtain ⟨hje, hle⟩ := mem_filter.mp hj
-        have hne : n ≠ j := Ne.symm (mem_erase.mp hje).1
-        rw [if_pos ⟨hne, hle⟩, Real.sqrt_div (Nat.cast_nonneg n),
-          Real.sqrt_div (Nat.cast_nonneg j)]
-        field_simp [hN0.ne', (Real.sqrt_pos.mpr hN0).ne']
-        rw [Real.sq_sqrt hN0.le]; ring
-      · intro j hjI hnot
-        have hfalse : ¬(n ≠ j ∧ |(n : ℝ) - j| ≤ D) := by
-          rintro ⟨hne, hle⟩
-          exact hnot (mem_filter.mpr ⟨mem_erase.mpr ⟨hne.symm, hjI⟩, hle⟩)
-        rw [if_neg hfalse, zero_mul, mul_zero]
-    have far_eq : rowFar n =
-        ∑ j ∈ ((Icc 1 N).erase n).filter (fun j : ℕ => ¬|(n : ℝ) - j| ≤ D),
-          (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
-            primeHorizonExtension uTilde j := by
-      dsimp only [rowFar]
-      have hf_eq : ((Icc 1 N).erase n).filter (fun j : ℕ => ¬|(n : ℝ) - j| ≤ D) =
-          (Icc 1 N).filter (fun j : ℕ => (D : ℝ) < |(n : ℝ) - j|) := by
-        ext j; simp only [mem_filter, mem_erase, not_le]
-        constructor
-        · rintro ⟨⟨_, hj⟩, hlt⟩; exact ⟨hj, hlt⟩
-        · rintro ⟨hj, hlt⟩
-          refine ⟨⟨?_, hj⟩, hlt⟩
-          intro h; subst h; simp only [sub_self, abs_zero] at hlt
-          linarith [show (0 : ℝ) < D by exact_mod_cast hD0]
-      rw [hf_eq, mul_sum]
-      refine sum_congr rfl fun j hj => ?_
-      have hjI := (mem_filter.mp hj).1
-      have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
-      have hsj := (Real.sqrt_pos.mpr hj0).ne'
-      rw [huTilde_ext j hjI]
-      field_simp [hN0.ne', hsL.ne', hsj]
-    rw [near_eq, far_eq, sum_filter_add_sum_filter_not]
-  -- Bound 1: `∑ (rowSumHalf n)^2 ≤ 4 / log N * ‖u‖^2`.
-  have hsumHalf_sq : (∑ n ∈ Icc 1 N, rowSumHalf n ^ 2) ≤ 4 / Real.log N * ‖u‖ ^ 2 := by
-    have hpt : ∀ n ∈ Icc 1 N, rowSumHalf n ^ 2 ≤ (1 / (4 * (N : ℝ))) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := by
-      intro n hn
-      have hn1 := (mem_Icc.mp hn).1
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-      have habs : |rowSumHalf n| ≤
-          (Real.sqrt n / (2 * Real.sqrt N)) * ∑ j ∈ Icc 1 N, (1 / ((n : ℝ) + j)) * y_lin j := by
-        dsimp only [rowSumHalf]
-        rw [mul_sum]
-        have hsub : (Icc 1 N).erase n ⊆ Icc 1 N := erase_subset _ _
-        refine (abs_sum_le_sum_abs _ _).trans
-          ((sum_le_sum fun j hj => ?_).trans
-            (sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity))
-        dsimp only [y_lin]
-        rw [abs_mul, abs_of_nonneg (by positivity :
-          0 ≤ Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))),
-          Real.sqrt_div (Nat.cast_nonneg j)]
-        have hadd_ne : (n : ℝ) + j ≠ 0 := by positivity
-        have hident :
-            Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j)) *
-                |primeHorizonExtension uTilde j| =
-              Real.sqrt n / (2 * Real.sqrt N) *
-                (1 / ((n : ℝ) + j) *
-                  (Real.sqrt j / Real.sqrt N * |primeHorizonExtension uTilde j|)) := by
-          field_simp [hN0.ne', (Real.sqrt_pos.mpr hN0).ne', hadd_ne]
-          rw [Real.sq_sqrt hN0.le]; ring
-        exact le_of_eq hident
-      have hsq := pow_le_pow_left₀ (abs_nonneg _) habs 2
-      have h22 : (2 : ℝ) ^ 2 = 4 := by norm_num
-      rw [sq_abs, mul_pow, div_pow, mul_pow, Real.sq_sqrt hn0.le, Real.sq_sqrt hN0.le, h22] at hsq
-      have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 N)
-        (fun j => 1 / ((n : ℝ) + j)) y_lin
-      calc
-        rowSumHalf n ^ 2 ≤ ((n : ℝ) / (4 * N)) *
-            ((∑ j ∈ Icc 1 N, (1 / ((n : ℝ) + j)) ^ 2) * ∑ j ∈ Icc 1 N, y_lin j ^ 2) :=
-          hsq.trans (mul_le_mul_of_nonneg_left hcs (by positivity))
-        _ ≤ ((n : ℝ) / (4 * N)) * ((1 / (n : ℝ)) * ∑ j ∈ Icc 1 N, y_lin j ^ 2) := by
-          refine mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_right ?_ (sum_nonneg fun _ _ => sq_nonneg _)) (by positivity)
-          simpa only [one_div_pow] using sum_inv_add_sq_le hn1
-        _ = (1 / (4 * (N : ℝ))) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := by
-          field_simp [hn0.ne', hN0.ne']
-    calc
-      (∑ n ∈ Icc 1 N, rowSumHalf n ^ 2) ≤
-          ∑ _n ∈ Icc 1 N, (1 / (4 * (N : ℝ))) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := sum_le_sum hpt
-      _ = (1 / 4 : ℝ) * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := by
-        rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
-        field_simp [hN0.ne']
-      _ ≤ (1 / 4 : ℝ) * (16 / Real.log N * ‖u‖ ^ 2) :=
-        mul_le_mul_of_nonneg_left hy_lin_sq (by norm_num)
-      _ = 4 / Real.log N * ‖u‖ ^ 2 := by ring
-  -- Bound 2: `∑ (rowNear n)^2 ≤ (20 * (1 + log R))^2 / log N * ‖u‖^2`.
-  have hnear_sq : (∑ n ∈ Icc 1 N, rowNear n ^ 2) ≤
-      (20 * (1 + Real.log R)) ^ 2 / Real.log N * ‖u‖ ^ 2 := by
-    have hK_nonneg : ∀ n ∈ Icc 1 N, ∀ j ∈ Icc 1 N, 0 ≤ K_near n j :=
-      fun _ _ _ _ => by dsimp only [K_near]; split_ifs <;> positivity
-    have hK_symm : ∀ n j, K_near n j = K_near j n := fun n j => by
-      dsimp only [K_near]
-      by_cases hne : n = j
-      · subst hne; simp
-      · have hne' : j ≠ n := Ne.symm hne
-        rw [abs_sub_comm (n : ℝ) j]
-        simp [hne, hne']
-    have hK_row : ∀ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, K_near n j) ≤ 5 * (1 + Real.log R) := by
-      intro n _
-      let S_lo := (Icc 1 N).filter (fun j : ℕ => j < n ∧ n - j ≤ D)
-      let S_hi := (Icc 1 N).filter (fun j : ℕ => n < j ∧ j - n ≤ D)
-      have hsupp : ∀ j ∈ Icc 1 N, j ∉ S_lo ∪ S_hi → K_near n j = 0 := by
-        intro j hjI hnot
-        dsimp only [K_near]
-        rw [if_neg]
-        rintro ⟨hne, hle⟩
-        rcases lt_or_gt_of_ne hne with hlt | hgt
-        · apply hnot; refine mem_union.mpr (Or.inr (mem_filter.mpr ⟨hjI, hlt, ?_⟩))
-          rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le))] at hle
-          have hc : ((j - n : ℕ) : ℝ) ≤ D := by
-            rw [Nat.cast_sub hlt.le]; exact hle
-          exact_mod_cast hc
-        · apply hnot; refine mem_union.mpr (Or.inl (mem_filter.mpr ⟨hjI, hgt, ?_⟩))
-          rw [abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hgt.le))] at hle
-          have hc : ((n - j : ℕ) : ℝ) ≤ D := by
-            rw [Nat.cast_sub hgt.le]; exact hle
-          exact_mod_cast hc
-      have hdisj : Disjoint S_lo S_hi := by
-        rw [Finset.disjoint_left]; intro j hj1 hj2
-        simp only [S_lo, S_hi, mem_filter] at hj1 hj2; omega
-      have hsub : S_lo ∪ S_hi ⊆ Icc 1 N := union_subset (filter_subset _ _) (filter_subset _ _)
-      rw [← sum_subset hsub hsupp, sum_union hdisj]
-      have hlo : (∑ j ∈ S_lo, K_near n j) ≤ (1 / 2 : ℝ) * (harmonic D : ℝ) := by
-        have hinj : ∀ j ∈ S_lo, n - j ∈ Icc 1 D := fun j hj => by
-          obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj; exact mem_Icc.mpr ⟨by omega, hle⟩
-        calc
-          (∑ j ∈ S_lo, K_near n j) = ∑ j ∈ S_lo, (1 / 2 : ℝ) * (1 / ((n - j : ℕ) : ℝ)) := by
-            refine sum_congr rfl fun j hj => ?_
-            obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj
-            have habs : |(n : ℝ) - j| = ((n - j : ℕ) : ℝ) := by
-              rw [abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le)), Nat.cast_sub hlt.le]
-            dsimp only [K_near]
-            rw [if_pos ⟨by omega, by rw [habs]; exact_mod_cast hle⟩, habs]; ring
-          _ = ∑ h ∈ S_lo.image (fun j => n - j), (1 / 2 : ℝ) * (1 / (h : ℝ)) := by
-            rw [sum_image]; intro a ha b hb hab
-            dsimp only at hab
-            obtain ⟨_, hal, _⟩ := mem_filter.mp ha; obtain ⟨_, hbl, _⟩ := mem_filter.mp hb
-            omega
-          _ ≤ ∑ h ∈ Icc 1 D, (1 / 2 : ℝ) * (1 / (h : ℝ)) :=
-            sum_le_sum_of_subset_of_nonneg (image_subset_iff.mpr hinj) fun _ _ _ => by positivity
-          _ = (1 / 2 : ℝ) * (harmonic D : ℝ) := by
-            rw [← mul_sum, harmonic_eq_sum_Icc]
-            congr 1; push_cast; exact sum_congr rfl fun h _ => by simp [one_div]
-      have hhi : (∑ j ∈ S_hi, K_near n j) ≤ (1 / 2 : ℝ) * (harmonic D : ℝ) := by
-        have hinj : ∀ j ∈ S_hi, j - n ∈ Icc 1 D := fun j hj => by
-          obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj; exact mem_Icc.mpr ⟨by omega, hle⟩
-        calc
-          (∑ j ∈ S_hi, K_near n j) = ∑ j ∈ S_hi, (1 / 2 : ℝ) * (1 / ((j - n : ℕ) : ℝ)) := by
-            refine sum_congr rfl fun j hj => ?_
-            obtain ⟨_, hlt, hle⟩ := mem_filter.mp hj
-            have habs : |(n : ℝ) - j| = ((j - n : ℕ) : ℝ) := by
-              rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hlt.le)),
-                Nat.cast_sub hlt.le]
-            dsimp only [K_near]
-            rw [if_pos ⟨by omega, by rw [habs]; exact_mod_cast hle⟩, habs]; ring
-          _ = ∑ h ∈ S_hi.image (fun j => j - n), (1 / 2 : ℝ) * (1 / (h : ℝ)) := by
-            rw [sum_image]; intro a ha b hb hab
-            dsimp only at hab
-            obtain ⟨_, hal, _⟩ := mem_filter.mp ha; obtain ⟨_, hbl, _⟩ := mem_filter.mp hb
-            omega
-          _ ≤ ∑ h ∈ Icc 1 D, (1 / 2 : ℝ) * (1 / (h : ℝ)) :=
-            sum_le_sum_of_subset_of_nonneg (image_subset_iff.mpr hinj) fun _ _ _ => by positivity
-          _ = (1 / 2 : ℝ) * (harmonic D : ℝ) := by
-            rw [← mul_sum, harmonic_eq_sum_Icc]
-            congr 1; push_cast; exact sum_congr rfl fun h _ => by simp [one_div]
-      have hHD : (harmonic D : ℝ) ≤ 5 * (1 + Real.log R) := by
-        have hh := harmonic_le_one_add_log D
-        have hlogD : Real.log (D : ℝ) = 4 * Real.log R := by
-          dsimp only [D]; rw [Nat.cast_pow, Real.log_pow]; ring
-        have hR0 := Real.log_natCast_nonneg R
-        linarith only [hh, hlogD, hR0]
-      linarith only [hlo, hhi, hHD]
-    let M_row := 5 * (1 + Real.log R)
-    have hM0 : 0 ≤ M_row := by
-      have := Real.log_natCast_nonneg R; dsimp only [M_row]; positivity
-    have hschur := sum_sq_abs_majorized_kernel_le' (N := N) K_near K_near
-      (fun j => Real.sqrt ((j : ℝ) / N) * primeHorizonExtension uTilde j)
-      (fun _ => 1) (fun _ => M_row) (fun _ => M_row ^ 2)
-      hK_nonneg
-      (fun n hn j hj => le_of_eq (abs_of_nonneg (hK_nonneg n hn j hj)))
-      (fun _ _ => zero_lt_one)
-      (fun n hn => by simpa only [mul_one] using hK_row n hn)
-      (fun j hj => by
-        have heq : (∑ n ∈ Icc 1 N, K_near n j * (M_row / 1)) = M_row * ∑ n ∈ Icc 1 N, K_near j n := by
-          rw [mul_sum]; exact sum_congr rfl fun n _ => by rw [hK_symm n j]; ring
-        rw [heq]
-        exact (mul_le_mul_of_nonneg_left (hK_row j hj) hM0).trans_eq (by ring))
-    have hpt : ∀ n ∈ Icc 1 N, rowNear n ^ 2 ≤
-        (∑ j ∈ Icc 1 N, K_near n j *
-          (Real.sqrt ((j : ℝ) / N) * primeHorizonExtension uTilde j)) ^ 2 := by
-      intro n hn
-      dsimp only [rowNear]
-      rw [mul_pow, Real.sq_sqrt (by positivity)]
-      have hnN : (n : ℝ) / N ≤ 1 := (div_le_one hN0).mpr (by exact_mod_cast (mem_Icc.mp hn).2)
-      exact (mul_le_mul_of_nonneg_right hnN (sq_nonneg _)).trans_eq (one_mul _)
-    have hsq_eq : ∀ j : ℕ,
-        (Real.sqrt ((j : ℝ) / N) * primeHorizonExtension uTilde j) ^ 2 = y_lin j ^ 2 :=
-      fun j => by dsimp only [y_lin]; rw [mul_pow, mul_pow, sq_abs]
-    calc
-      (∑ n ∈ Icc 1 N, rowNear n ^ 2) ≤
-          ∑ j ∈ Icc 1 N, M_row ^ 2 * y_lin j ^ 2 := by
-        refine (sum_le_sum hpt).trans (hschur.trans_eq ?_)
-        exact sum_congr rfl fun j _ => by rw [hsq_eq]
-      _ = M_row ^ 2 * ∑ j ∈ Icc 1 N, y_lin j ^ 2 := (mul_sum ..).symm
-      _ ≤ M_row ^ 2 * (16 / Real.log N * ‖u‖ ^ 2) :=
-        mul_le_mul_of_nonneg_left hy_lin_sq (sq_nonneg _)
-      _ = (20 * (1 + Real.log R)) ^ 2 / Real.log N * ‖u‖ ^ 2 := by
-        dsimp only [M_row]; ring
-  -- Bound 3: `∑ (rowFar n)^2 ≤ 4 / log N * ‖u‖^2`.
-  have hfar_sq : (∑ n ∈ Icc 1 N, rowFar n ^ 2) ≤ 4 / Real.log N * ‖u‖ ^ 2 := by
-    let B' := 2 * (R : ℝ) ^ 2 * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2)
-    have hB'0 : 0 ≤ B' := by dsimp only [B']; positivity
-    have hg_Ico : ∀ l k : ℕ, l ≤ k → |∑ j ∈ Ico l k, gTilde j| ≤ B' := by
-      intro l k hlk
-      have hswap : (∑ j ∈ Ico l k, gTilde j) =
-          ∑ m ∈ Icc 1 R, aTilde m * ∑ j ∈ Ico l k, normalizedRamanujanMode m j := by
-        dsimp only [gTilde]
-        rw [sum_comm]
-        exact sum_congr rfl fun m _ => (mul_sum ..).symm
-      have hm_bound : ∀ m ∈ Icc 1 R,
-          |aTilde m * ∑ j ∈ Ico l k, normalizedRamanujanMode m j| ≤ |aTilde m| * (2 * R) := by
-        intro m hm
-        obtain ⟨hm1, hmR⟩ := mem_Icc.mp hm
-        rcases eq_or_lt_of_le hm1 with rfl | hm2
-        · simp [aTilde]
-        · rw [abs_mul]
-          have hm0 : 0 < m := by omega
-          have hper_le := abs_sum_Ico_le_of_periodic hm0 (normalizedRamanujanMode_periodic hm0)
-            (sum_range_normalizedRamanujanMode_eq_zero_of_two_le hm2) l k hlk
-          have hL1_m := sum_range_abs_normalizedRamanujanMode_le hm0
-          have hmR_cast : (m : ℝ) ≤ R := by exact_mod_cast hmR
-          exact mul_le_mul_of_nonneg_left (by linarith only [hper_le, hL1_m, hmR_cast]) (abs_nonneg _)
-      have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 R) (fun m => |aTilde m|) (fun _ => (1 : ℝ))
-      simp only [mul_one, sq_abs, one_pow, sum_const, Nat.card_Icc, Nat.add_sub_cancel,
-        nsmul_eq_mul] at hcs
-      have hsum_abs : (∑ m ∈ Icc 1 R, |aTilde m|) ≤
-          (R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2) := by
-        have hR1 : (1 : ℝ) ≤ R := by exact_mod_cast (show 1 ≤ R by omega)
-        have hsq : (∑ m ∈ Icc 1 R, |aTilde m|) ^ 2 ≤
-            ((R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2)) ^ 2 := by
-          rw [mul_pow, Real.sq_sqrt (sum_nonneg fun _ _ => sq_nonneg _)]
-          have hRR : (R : ℝ) ≤ (R : ℝ) ^ 2 := by nlinarith only [hR1]
-          exact hcs.trans ((mul_comm _ _).trans_le
-            (mul_le_mul_of_nonneg_right hRR (sum_nonneg fun _ _ => sq_nonneg _)))
-        have hrhs0 : 0 ≤ (R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2) := by positivity
-        nlinarith only [hsq, hrhs0]
-      rw [hswap]
-      calc
-        |∑ m ∈ Icc 1 R, aTilde m * ∑ j ∈ Ico l k, normalizedRamanujanMode m j| ≤
-            ∑ m ∈ Icc 1 R, |aTilde m| * (2 * R) :=
-          (abs_sum_le_sum_abs _ _).trans (sum_le_sum hm_bound)
-        _ = (2 * (R : ℝ)) * ∑ m ∈ Icc 1 R, |aTilde m| := by rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring
-        _ ≤ (2 * (R : ℝ)) * ((R : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2)) :=
-          mul_le_mul_of_nonneg_left hsum_abs (by positivity)
-        _ = B' := by dsimp only [B']; ring
-    have h2BD : 2 * B' / (D : ℝ) ≤ 2 * ‖u‖ := by
-      have hR2 : (2 : ℝ) ≤ R := by exact_mod_cast hR
-      have hR0 : (0 : ℝ) < R := by positivity
-      have hsqrt_le : Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2) ≤ 2 * ‖u‖ := by
-        have h4 : (∑ m ∈ Icc 1 R, aTilde m ^ 2) ≤ (2 * ‖u‖) ^ 2 := by
-          nlinarith only [ha_sq, sq_nonneg ‖u‖]
-        exact (Real.sqrt_le_sqrt h4).trans_eq (Real.sqrt_sq (by positivity))
-      have hquot : 2 * B' / (D : ℝ) = (4 / (R : ℝ) ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2) := by
-        dsimp only [B', D]; rw [Nat.cast_pow]; field_simp [hR0.ne']; ring
-      have hfrac1 : 4 / (R : ℝ) ^ 2 ≤ 1 := by
-        rw [div_le_one (sq_pos_of_pos hR0)]; nlinarith only [hR2]
-      rw [hquot]
-      calc
-        (4 / (R : ℝ) ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2) ≤
-            1 * (2 * ‖u‖) :=
-          mul_le_mul hfrac1 hsqrt_le (Real.sqrt_nonneg _) zero_le_one
-        _ = 2 * ‖u‖ := one_mul _
-    have hpt : ∀ n ∈ Icc 1 N, rowFar n ^ 2 ≤ (1 / ((N : ℝ) * Real.log N)) * ‖u‖ ^ 2 := by
-      intro n hn
-      have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
-      have habs : |rowFar n| ≤ (Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) * (2 * ‖u‖) := by
-        dsimp only [rowFar]
-        rw [abs_mul, abs_of_nonneg (by positivity)]
-        exact mul_le_mul_of_nonneg_left
-          ((abs_sum_far_erase_div_abs_sub_le hn hD0 hB'0 hg_Ico).trans h2BD) (by positivity)
-      have hsq := pow_le_pow_left₀ (abs_nonneg _) habs 2
-      rw [sq_abs] at hsq
-      calc
-        rowFar n ^ 2 ≤ ((Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) * (2 * ‖u‖)) ^ 2 := hsq
-        _ = ((n : ℝ) / ((N : ℝ) ^ 2 * Real.log N)) * ‖u‖ ^ 2 := by
-          rw [mul_pow, div_pow, mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg n),
-            Real.sq_sqrt hL.le]
-          field_simp [hN0.ne', hL.ne']
-        _ ≤ ((N : ℝ) / ((N : ℝ) ^ 2 * Real.log N)) * ‖u‖ ^ 2 :=
-          mul_le_mul_of_nonneg_right
-            (div_le_div_of_nonneg_right hnN (by positivity)) (sq_nonneg _)
-        _ = (1 / ((N : ℝ) * Real.log N)) * ‖u‖ ^ 2 := by field_simp [hN0.ne', hL.ne']
-    calc
-      (∑ n ∈ Icc 1 N, rowFar n ^ 2) ≤
-          ∑ _n ∈ Icc 1 N, (1 / ((N : ℝ) * Real.log N)) * ‖u‖ ^ 2 := sum_le_sum hpt
-      _ = (1 / Real.log N) * ‖u‖ ^ 2 := by
-        rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
-        field_simp [hN0.ne', hL.ne']
-      _ ≤ 4 / Real.log N * ‖u‖ ^ 2 := by
-        have hpos : 0 ≤ 1 / Real.log N * ‖u‖ ^ 2 := by positivity
-        nlinarith only [hpos, (by ring :
-          4 / Real.log N * ‖u‖ ^ 2 = 4 * (1 / Real.log N * ‖u‖ ^ 2))]
-  -- Combine the 3 row pieces of `collarLin uTilde`.
-  have huTilde_col : ‖collarLin uTilde‖ ≤
-      36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
+  have huTilde_col :
+      ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) uTilde‖ ≤
+        36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
     have hrhs0 : 0 ≤ 36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
       have := Real.log_natCast_nonneg R; positivity
-    have hsq : ‖collarLin uTilde‖ ^ 2 ≤
-        (36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖) ^ 2 := by
+    have hsq :
+        ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) uTilde‖ ^ 2 ≤
+          (36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖) ^ 2 := by
       rw [← horizonProfileVector_extension uTilde, horizonKernelMatrix_profile_norm_sq]
-      have h3 : ∀ a b c : ℝ, (a + b + c) ^ 2 ≤ 3 * (a ^ 2 + b ^ 2 + c ^ 2) := fun a b c => by
-        nlinarith only [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (b - c)]
+      have h3 : ∀ x₁ x₂ x₃ : ℝ, (x₁ + x₂ + x₃) ^ 2 ≤ 3 * (x₁ ^ 2 + x₂ ^ 2 + x₃ ^ 2) :=
+        fun x₁ x₂ x₃ => by
+          nlinarith only [sq_nonneg (x₁ - x₂), sq_nonneg (x₁ - x₃), sq_nonneg (x₂ - x₃)]
       have hpt : ∀ n ∈ Icc 1 N,
-          (∑ j ∈ Icc 1 N, K_col n j * primeHorizonExtension uTilde j) ^ 2 ≤
-            3 * (rowSumHalf n ^ 2 + rowNear n ^ 2 + rowFar n ^ 2) := by
-        intro n hn; rw [hrow_split n hn]; exact h3 _ _ _
+          (∑ j ∈ Icc 1 N, collarKernel N n j * primeHorizonExtension uTilde j) ^ 2 ≤
+            3 * (collarRowSumHalf R N aTilde n ^ 2 + collarRowNear R N aTilde n ^ 2 +
+              collarRowFar R N aTilde n ^ 2) := by
+        intro n hn
+        rw [collarRow_eq_sum_three hR hN1 hL aTilde hn]
+        exact h3 _ _ _
+      have hsumHalf_sq := sum_collarRowSumHalf_sq_le hN1 aTilde hlin_uTilde
+      have hnear_sq := sum_collarRowNear_sq_le hN1 aTilde hlin_uTilde
+      have hfar_sq := sum_collarRowFar_sq_le hR hN1 hL aTilde (by simp [aTilde]) (norm_nonneg u) ha_sq
       have h1R : 1 ≤ 1 + Real.log R := by
-        have := Real.log_natCast_nonneg R; linarith
+        have := Real.log_natCast_nonneg R; linarith only [this]
       have h1R_sq : 1 ≤ (1 + Real.log R) ^ 2 := by nlinarith only [h1R]
       calc
-        (∑ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, K_col n j * primeHorizonExtension uTilde j) ^ 2) ≤
-            3 * ((∑ n ∈ Icc 1 N, rowSumHalf n ^ 2) +
-              (∑ n ∈ Icc 1 N, rowNear n ^ 2) + (∑ n ∈ Icc 1 N, rowFar n ^ 2)) := by
+        (∑ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, collarKernel N n j * primeHorizonExtension uTilde j) ^ 2) ≤
+            3 * ((∑ n ∈ Icc 1 N, collarRowSumHalf R N aTilde n ^ 2) +
+              (∑ n ∈ Icc 1 N, collarRowNear R N aTilde n ^ 2) +
+              (∑ n ∈ Icc 1 N, collarRowFar R N aTilde n ^ 2)) := by
           refine (sum_le_sum hpt).trans_eq ?_
           rw [← mul_sum, sum_add_distrib, sum_add_distrib]
         _ ≤ 3 * (4 / Real.log N * ‖u‖ ^ 2 +
@@ -1178,12 +1234,16 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
           linarith only [h1R_sq]
         _ = (36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖) ^ 2 := by
           rw [mul_pow, div_pow, mul_pow, Real.sq_sqrt hL.le]; ring
-    nlinarith only [hsq, norm_nonneg (collarLin uTilde), hrhs0]
-  -- Combine `a 1 • v_1` and `uTilde`.
+    nlinarith only [hsq,
+      norm_nonneg (Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) uTilde), hrhs0]
   conv_lhs => rw [hu_split, map_add]
   calc
-    ‖collarLin (a 1 • normalizedRamanujanHorizonVector 1 N) + collarLin uTilde‖ ≤
-        ‖collarLin (a 1 • normalizedRamanujanHorizonVector 1 N)‖ + ‖collarLin uTilde‖ :=
+    ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
+        (a 1 • normalizedRamanujanHorizonVector 1 N) +
+      Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) uTilde‖ ≤
+        ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
+            (a 1 • normalizedRamanujanHorizonVector 1 N)‖ +
+          ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N) uTilde‖ :=
       norm_add_le _ _
     _ ≤ 108 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ +
           36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ :=
@@ -1241,7 +1301,7 @@ theorem norm_separatedCrossErrorMatrix_le {φ : ℝ → ℝ}
       (∑ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, K n j * primeHorizonExtension x j) ^ 2) ≤
           ∑ j ∈ Icc 1 N, (4 * K₀ * c ^ 2) ^ 2 * primeHorizonExtension x j ^ 2 := hschur
       _ = (4 * K₀ * c ^ 2) ^ 2 * ∑ j ∈ Icc 1 N, primeHorizonExtension x j ^ 2 := (mul_sum ..).symm
-      _ = (4 * K₀ * c ^ 2 * ‖x‖) ^ 2 := by rw [sum_primeHorizonExtension_sq, mul_pow]
+      _ = (4 * K₀ * c ^ 2 * ‖x‖) ^ 2 := by rw [sum_primeHorizonExtension_sq]; ring
   have hrhs0 : 0 ≤ 4 * K₀ * c ^ 2 * ‖x‖ := by positivity
   nlinarith only [hnorm_sq, norm_nonneg (Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) x),
     hrhs0]
@@ -1298,7 +1358,7 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
         _ = 2 * K₀ * c ^ 2 *
               (((n : ℝ) / N) * ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
             2 * K₀ * (c / N) ^ 2 := by
-          field_simp [hN0.ne', hd_ne]; ring
+          field_simp [hN0.ne', hd_ne]
   change |⟪Matrix.toEuclideanLin (horizonKernelMatrix K N) u, u⟫| ≤ _
   rw [horizonKernelMatrix_inner]
   let y : ℕ → ℝ := fun n => ((n : ℝ) / N) * |primeHorizonExtension u n|
@@ -1312,7 +1372,7 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
       have hsq : ((n : ℝ) / N) ^ 2 ≤ (n : ℝ) / N := by nlinarith only [hnN, hn0]
       exact mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
     have hm := sum_linear_moment_sq_le_four_div_log hR hRN4 hlog hu
-    rw [le_div_iff₀' hL]
+    rw [div_mul_eq_mul_div, le_div_iff₀' hL]
     exact (mul_le_mul_of_nonneg_left (sum_le_sum hpt) hL.le).trans hm
   have hpart1 :
       (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, y n * y j * (1 / |(n : ℝ) - j| ^ 2)) ≤
@@ -1327,7 +1387,7 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
           ∑ n ∈ Icc 1 N, y n ^ 2 * ∑ j ∈ Icc 1 N, 1 / |(n : ℝ) - j| ^ 2 := hschur
       _ ≤ ∑ n ∈ Icc 1 N, y n ^ 2 * 4 :=
         sum_le_sum fun n _ =>
-          mul_le_mul_of_nonneg_left (sum_inv_sq_integer_distance_le_four N n) (sq_nonneg _)
+          mul_le_mul_of_nonneg_left (sum_inv_sq_integer_distance_le_four (Icc 1 N) n) (sq_nonneg _)
       _ = 4 * ∑ n ∈ Icc 1 N, y n ^ 2 := by rw [← sum_mul]; ring
   have hpart2 : (∑ n ∈ Icc 1 N, |primeHorizonExtension u n|) ^ 2 ≤ (N : ℝ) * ‖u‖ ^ 2 := by
     have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 N)
@@ -1365,7 +1425,6 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
       simp_rw [hterm_eq, sum_add_distrib, ← mul_sum]
       congr 2
       rw [pow_two, sum_mul]
-      exact sum_congr rfl fun n _ => (mul_sum ..).symm
     _ ≤ 2 * K₀ * c ^ 2 * (4 * (4 / Real.log N * ‖u‖ ^ 2)) +
           2 * K₀ * (c / N) ^ 2 * ((N : ℝ) * ‖u‖ ^ 2) :=
       add_le_add
@@ -1672,7 +1731,7 @@ theorem exists_divisorJetHorizonVector_norm_le :
           _ ≤ 2 * ∑ k ∈ Icc 1 M, (2 * mertensSum M) *
               ∑ m ∈ (Icc 1 M).filter (fun m => k ∈ m.divisors), Λ (m / k) * a m ^ 2 :=
             mul_le_mul_of_nonneg_left (sum_le_sum hoff_k) zero_le_two
-          _ = _ := by rw [← mul_sum, mul_assoc]
+          _ = _ := by rw [← mul_sum]; ring
       have hLM_le : Real.log M ≤ 1 + Real.log M := by linarith
       calc
         (∑ k ∈ Icc 1 M, 2 * offCoeff k ^ 2) ≤
@@ -1982,11 +2041,12 @@ private theorem sum_reducedDilationCoeff_sq_le {M t : ℕ} (hM : 2 ≤ M) (ht : 
           exact htot
         have hg_mem : g ∈ m.divisors.filter (2 ≤ ·) :=
           mem_filter.mpr ⟨Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_left _ _, hm1.ne'⟩, hg2⟩
+        have hg_dvd : g ∣ p ^ k := Nat.gcd_dvd_right m (p ^ k)
         have hg_le_sum : (g : ℝ) ≤
             ∑ g' ∈ m.divisors.filter (2 ≤ ·), if g' ∣ p ^ k then (g' : ℝ) else 0 := by
           have hs := single_le_sum (f := fun g' : ℕ => if g' ∣ p ^ k then (g' : ℝ) else 0)
             (fun g' _ => by split_ifs <;> positivity) hg_mem
-          simpa only [if_pos (Nat.gcd_dvd_right m (p ^ k))] using hs
+          rwa [if_pos hg_dvd] at hs
         rw [mul_pow]
         exact mul_le_mul_of_nonneg_left (hrat.trans hg_le_sum) (sq_nonneg _)
       exact hcs.trans (mul_le_mul hcard_Sd (sum_le_sum hterm_Sd)
@@ -2053,7 +2113,7 @@ private def packetPrimeCorrTerm (M N : ℕ) (a : ℕ → ℝ) (n : ℕ) : ℝ :=
 each quotient satisfies `N / n ≥ M ^ 4`, giving `O(1 / M)` pointwise cancellation per mode and
 total `L²` mass `≤ 32 * (log N) * ∑ a_m^2` without any factor of `M` or `log M`. -/
 private theorem sum_deep_packetPrimeCorrTerm_sq_le
-    {M N : ℕ} (hM : 2 ≤ M) (hM6N : M ^ 6 ≤ N) (hL1 : 1 ≤ Real.log N) (a : ℕ → ℝ) :
+    {M N : ℕ} (hM : 2 ≤ M) (_hM6N : M ^ 6 ≤ N) (hL1 : 1 ≤ Real.log N) (a : ℕ → ℝ) :
     (Real.log N)⁻¹ * (∑ n ∈ Icc 1 (N / M ^ 4), packetPrimeCorrTerm M N a n ^ 2) ≤
       32 * ∑ m ∈ Icc 1 M, a m ^ 2 := by
   have hM4_pos : 0 < M ^ 4 := pow_pos (by omega) 4
@@ -2137,11 +2197,14 @@ private theorem sum_deep_packetPrimeCorrTerm_sq_le
       _ = (16 / (n : ℝ)) * ∑ m ∈ Icc 1 M, a m ^ 2 := by ring
   have hhar_K : (∑ n ∈ Icc 1 (N / M ^ 4), (1 / (n : ℝ))) ≤ 2 * Real.log N := by
     have hsub : Icc 1 (N / M ^ 4) ⊆ Icc 1 N := Icc_subset_Icc_right hKN
-    have h1 : (∑ n ∈ Icc 1 (N / M ^ 4), (1 / (n : ℝ))) ≤
-        RenormalizedArithmeticPotentialTheory.harmonicSum N :=
+    have h1 : (∑ n ∈ Icc 1 (N / M ^ 4), (1 / (n : ℝ))) ≤ ∑ n ∈ Icc 1 N, (1 / (n : ℝ)) :=
       sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
-    have h2 := RenormalizedArithmeticPotentialTheory.harmonicSum_le_one_add_log N
-    linarith only [h1, h2, hL1]
+    have hhar_eq : (∑ n ∈ Icc 1 N, (1 / (n : ℝ))) = (harmonic N : ℝ) := by
+      rw [harmonic_eq_sum_Icc]
+      push_cast
+      exact sum_congr rfl fun n _ => one_div (n : ℝ)
+    have h2 : (harmonic N : ℝ) ≤ 1 + Real.log N := harmonic_le_one_add_log N
+    linarith only [h1, hhar_eq, h2, hL1]
   have hSa0 : 0 ≤ ∑ m ∈ Icc 1 M, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
   calc
     (Real.log N)⁻¹ * (∑ n ∈ Icc 1 (N / M ^ 4), packetPrimeCorrTerm M N a n ^ 2) ≤
@@ -2391,10 +2454,10 @@ private theorem sum_top_upJump_sq_le
       have hnonneg_div : 0 ≤ ∑ t ∈ Icc 2 (M ^ 4), (Λ t / (t : ℝ)) *
           ∑ m ∈ Icc 1 M, a m ^ 2 *
             ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ t then (g : ℝ) else 0 :=
-        sum_nonneg fun _ _ => mul_nonneg (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _))
+        sum_nonneg fun t _ => mul_nonneg (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _))
           (sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _)
             (sum_nonneg fun g _ => by
-              by_cases h : g ∣ _
+              by_cases h : g ∣ t
               · simp [h]
               · simp [h]))
       have hp2 :
@@ -2813,7 +2876,8 @@ theorem exists_fullPrimeMatrix_packet_residual_norm_le :
             ‖∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N‖ := by
   obtain ⟨C_env, hC_env_pos, hC_env⟩ := exists_primeMertensRemainder_log_envelope
   obtain ⟨C_jet, hC_jet_pos, hC_jet⟩ := exists_divisorJetHorizonVector_norm_le
-  have hC_mert1 : 1 ≤ C_env + |Real.eulerMascheroniConstant| + 1 := by positivity
+  have hC_mert0 : 0 ≤ C_env + |Real.eulerMascheroniConstant| := by positivity
+  have hC_mert1 : 1 ≤ C_env + |Real.eulerMascheroniConstant| + 1 := by linarith only [hC_mert0]
   have hC_top_pos : 0 < 160 * (C_env + |Real.eulerMascheroniConstant| + 1 + 4) ^ 2 +
       64 * C_jet ^ 2 + 128 := by positivity
   refine ⟨2 * C_env + 16 + 4 * Real.sqrt
@@ -2850,7 +2914,8 @@ theorem exists_fullPrimeMatrix_packet_residual_norm_le :
       intro idx
       change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) idx)
         (Matrix.toEuclideanLin (fullPrimeMatrix N) u - diagVec) = _
-      rw [map_sub, map_sum, map_sum, ← sum_sub_distrib, mul_sum]
+      dsimp only [u, diagVec]
+      rw [map_sub, map_sum, map_sum, map_sum, ← sum_sub_distrib, mul_sum]
       refine sum_congr rfl fun m _ => ?_
       rw [map_smul, map_smul, map_smul]
       change a m * (Matrix.toEuclideanLin (fullPrimeMatrix N)
