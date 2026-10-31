@@ -2,7 +2,7 @@
 
 - **ID:** HAAR-CYCLIC-AVERAGE-INFINITE-INDEX
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (rational obstruction formalized; adelic extension and positive survivor open)
+- **Type:** THEOREM (rational and adelic obstructions formalized; positive survivor open)
 - **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** A Hermitian rational affine kernel with integer Haar successor and a dilation reading continuous at one has infinite negative index.
 
@@ -51,10 +51,12 @@ The argument also covers every nonzero Haar multiple `c·1_ℤ`. Hermitian symme
 Formalized, with direct audits and standard axiom closures:
 
 - `BiarithmeticGeometry/Affine/PositiveAffineIndex.lean` and `PositiveAffineAction.lean`: positive slopes have index two; injective rational-linear translation maps induce injective positive affine homomorphisms.
+- `AdelicKreinGeometry/Haar/AdelicObstruction.lean`: `not_exists_finite_index_adelic_haar_coefficient_weil_state` excludes the actual nonzero finite-adelic Haar coefficient and pure Weil dilation reading on `ℚ⁺ ⋉ (ℝ × 𝔸_f)`, with positive rational scalars acting on both components. Integrality of a rational diagonal is proved equivalent to denominator one.
+- `AdelicKreinGeometry/Haar/FiniteAdelicReading.lean`: `finiteAdelicHaarTranslation_eq` identifies the actual normalized Haar overlap integral with the integral-adele indicator.
 - `AdelicKreinGeometry/Haar/PositiveAffineObstruction.lean`: `negIndex_posAffine_eq_top_of_nonzero_haar_continuous_dilation` transfers the obstruction to positive slopes by extension with index bound `2r`.
 - `AdelicKreinGeometry/Haar/ScaledHaarObstruction.lean`: every nonzero Haar multiple has infinite index with continuous dilations. Negative scalars already have infinite translation index; positive scalars normalize to the integer successor.
 - `AdelicKreinGeometry/Haar/FiniteIndexObstruction.lean`: `negIndex_eq_top_of_haar_continuous_dilation` proves the stated rational-affine obstruction without an integer-invariance premise, using the zero-axis polynomial correction.
 - `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: fixed-projection Grams converge to `J−I`. `BiarithmeticGeometry/Affine/NearIdentityGrids.lean` supplies the rational grids; `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean` supplies their limiting negative directions.
 - `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio. Its inputs are cyclic orthogonal projections, moving-subspace positivity, Haar orbit norms, and Cauchy–Schwarz.
 
-Required Lean results: the actual finite-adelic Haar coefficient and the adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+The positive structural conclusions already proved are the nonnegative moving subspaces and their finite cyclic bound. The unique positive/slope/polynomial decomposition and its exact residual index remain to be formalized; the route stays open under the positive-survivor requirement.

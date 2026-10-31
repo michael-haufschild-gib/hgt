@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** [Q1/O1](three-frontier-questions-full-solutions.md);
-  [undilated component](undilated-prime-heads-have-a-uniform-torsion-finite-part.md).
+  [undilated component](../3-formalized/undilated-prime-heads-have-a-uniform-torsion-finite-part.md).
 
 For `Q,N≥2`, put `M=sum_(m≤Q)a_m²`, `v_m,N=u_m/sqrt(n log N)`,
 `T=sum_(m,l≤Q)a_m a_l I(m,l)/sqrt(phi(m)phi(l))`, and

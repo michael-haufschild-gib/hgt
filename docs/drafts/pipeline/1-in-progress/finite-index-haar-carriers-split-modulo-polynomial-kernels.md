@@ -34,4 +34,4 @@ Hence any decomposition `k=p+ψ∘slope+Q` with positive Haar `p` and Hermitian 
 
 The corpus already supplies the exact slope-index law and one rank perturbation bound. Their converse does not classify Haar kernels without the proposed splitting. The complete equivalence and symmetric bound await Lean formalization.
 
-A [stronger slope-index monotonicity](../0-backlog/polynomial-translation-corrections-cannot-lower-the-slope-index.md), using polynomial-annihilating translation averages, remains conjectural.
+A [polynomial quadrature argument](haar-addition-preserves-index-on-polynomial-translation-fibres.md) further gives the exact residual law `κ(k)=κ(ψ∘slope+Q)` and the sharper lower bound `κ(ψ)≤κ(k)` on paper. It reproduces polynomial Gram entries while the positive Haar matrix tends to zero. These stronger statements remain pending Lean verification; no index additivity between `ψ` and `Q` is asserted.

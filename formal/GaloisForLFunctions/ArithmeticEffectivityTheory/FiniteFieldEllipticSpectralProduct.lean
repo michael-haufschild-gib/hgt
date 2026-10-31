@@ -62,16 +62,23 @@ theorem hasProd_elliptic_affine_intertwining_factors {u : ℂ} (hu : ‖u‖ < 1
   rw [← Finset.prod_div_distrib]
   apply Finset.prod_congr rfl
   intro v _
-  simp only [ellipticAffineIntertwiningFactor, div_inv_eq_mul, div_eq_mul_inv, mul_comm]
+  simp only [ellipticAffineIntertwiningFactor, div_eq_mul_inv, inv_inv]
+  exact mul_comm _ _
+
+private theorem cancel_intertwining_factors (a b x y : ℂ)
+    (ha : a ≠ 0) (hb : b ≠ 0) (hy : y ≠ 0) :
+    (a * x / (b * y)) * (b / a) = x / y := by
+  field_simp
 
 /-- Including the degree-one infinity factor gives the complete curve zeta ratio. -/
 theorem elliptic_intertwining_product_eq_zeta_ratio {u : ℂ} (hu : ‖u‖ < 1 / 3) :
     ((1 - u / 3) / (1 - u)) * (∏' v, ellipticAffineIntertwiningFactor u v) =
       zetaFunction u / zetaFunction (u / 3) := by
   rw [(hasProd_elliptic_affine_intertwining_factors hu).tprod_eq]
-  field_simp [one_sub_ne_zero_small hu, one_sub_ne_zero_small (div_three_small hu),
-    elliptic_euler_product_limit_ne_zero (div_three_small hu)]
-  <;> ring
+  rw [mul_comm]
+  exact cancel_intertwining_factors _ _ _ _ (one_sub_ne_zero_small hu)
+    (one_sub_ne_zero_small (div_three_small hu))
+    (elliptic_euler_product_limit_ne_zero (div_three_small hu))
 
 
 /-- The finite-place factor in the actual normalized Haar integral. -/
@@ -142,13 +149,17 @@ theorem tendsto_ellipticSpectralCylinderProduct (s : ℂ) (hs : 1 < s.re) :
         ((1 - localSpectralParameter 3 s / 3) * zetaFunction (localSpectralParameter 3 s / 3)))) :=
     hasProd_ellipticFiniteSpectralFactor s hs
   have h := hbase.mul_const (ellipticInfinitySpectralFactor s)
-  convert h using 1
-  unfold ellipticSpectralZetaRatio ellipticInfinitySpectralFactor
   have hz := elliptic_euler_product_limit_ne_zero (div_three_small hu)
   have h₁ := one_sub_ne_zero_small hu
   have h₂ := one_sub_ne_zero_small (div_three_small hu)
-  field_simp [h₁, h₂, hz]
-  <;> ring
+  have he :
+      (((1 - localSpectralParameter 3 s) * zetaFunction (localSpectralParameter 3 s)) /
+        ((1 - localSpectralParameter 3 s / 3) * zetaFunction (localSpectralParameter 3 s / 3))) *
+          ellipticInfinitySpectralFactor s = ellipticSpectralZetaRatio s := by
+    simpa only [ellipticSpectralZetaRatio, ellipticInfinitySpectralFactor,
+      div_eq_mul_inv, mul_comm] using
+      cancel_intertwining_factors _ _ (zetaFunction (localSpectralParameter 3 s)) _ h₁ h₂ hz
+  rwa [he] at h
 
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase

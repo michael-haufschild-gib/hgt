@@ -141,13 +141,13 @@ theorem tendsto_offLineCountBeyond_div {d₀ : ℝ} (hd₀ : 0 < d₀) :
     Tendsto (fun V => offLineCountBeyond d₀ V / V) atTop (𝓝 0) := by
   rw [Metric.tendsto_atTop]
   intro ε hε
-  obtain ⟨R, hR0, hRg⟩ : ∃ R : ℝ, 0 < R ∧ selbergTailRate R < ε * d₀ := by
+  obtain ⟨R, hR0, hRg⟩ : ∃ R : ℝ, 0 < R ∧ selbergTailRate R < ε * d₀ / 2 := by
     obtain ⟨R, hR⟩ := (tendsto_selbergTailRate.eventually
-      (gt_mem_nhds (show (0 : ℝ) < ε * d₀ by positivity))).and
+      (gt_mem_nhds (show (0 : ℝ) < ε * d₀ / 2 by positivity))).and
       (eventually_gt_atTop (0 : ℝ)) |>.exists
     exact ⟨R, hR.2, hR.1⟩
   have hev : ∀ᶠ V in atTop, offLineCountBeyond d₀ V ≤ ε / 2 * V := by
-    filter_upwards [eventually_offLineTail_le_selberg hR0 (show (0 : ℝ) < ε * d₀ by positivity),
+    filter_upwards [eventually_offLineTail_le_selberg hR0 (show (0 : ℝ) < ε * d₀ / 2 by positivity),
       Real.tendsto_log_atTop.eventually_ge_atTop (2 * R / d₀), eventually_gt_atTop (0 : ℝ)]
       with V htail hL hV0
     have hL0 : 0 < Real.log V := lt_of_lt_of_le (by positivity) hL
@@ -156,14 +156,17 @@ theorem tendsto_offLineCountBeyond_div {d₀ : ℝ} (hd₀ : 0 < d₀) :
     have h1 := mul_offLineCountBeyond_le_offLineTail (d₀ / 2) V
     rw [show 2 * (d₀ / 2) = d₀ by ring] at h1
     have h2 := offLineTail_anti hshift (T := V)
-    have hπ : (1 : ℝ) ≤ 4 * Real.pi := by linarith [Real.pi_gt_three]
-    have h3 : offLineTail (R / Real.log V) V ≤ 2 * ε * d₀ * V / (4 * Real.pi) := by
-      rw [le_div_iff₀ (by positivity)]; linarith
-    have h4 : 2 * ε * d₀ * V / (4 * Real.pi) ≤ 2 * ε * d₀ * V / 4 := by
-      apply div_le_div_of_nonneg_left (by positivity) (by norm_num)
-      linarith [Real.pi_gt_three]
-    have hc0 : 0 ≤ offLineCountBeyond d₀ V := Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
-    nlinarith
+    have h3' : 4 * Real.pi * offLineTail (R / Real.log V) V ≤ ε * d₀ * V :=
+      htail.trans (by nlinarith)
+    have h3 : offLineTail (R / Real.log V) V ≤ ε * d₀ * V / 4 := by
+      have hπ : 4 ≤ 4 * Real.pi := by linarith [Real.pi_gt_three]
+      have ht0 : 0 ≤ offLineTail (R / Real.log V) V := offLineTail_nonneg _ _
+      rw [le_div_iff₀ (by norm_num)]
+      nlinarith
+    have key : d₀ / 2 * offLineCountBeyond d₀ V ≤ d₀ / 2 * (ε / 2 * V) := by
+      calc d₀ / 2 * offLineCountBeyond d₀ V ≤ ε * d₀ * V / 4 := h1.trans (h2.trans h3)
+        _ = d₀ / 2 * (ε / 2 * V) := by ring
+    exact le_of_mul_le_mul_left key (by positivity)
   obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp (hev.and (eventually_gt_atTop (0 : ℝ)))
   refine ⟨N, fun V hV => ?_⟩
   obtain ⟨h1, hV0⟩ := hN V hV
@@ -221,6 +224,7 @@ theorem volume_deepWindow_le {d₀ T : ℝ} (hd₀ : 0 < d₀) (hT : 3 ≤ T) :
     exact ENNReal.ofReal_le_ofReal (by linarith)
   refine (Finset.sum_le_sum hterm).trans ?_
   rw [← ENNReal.ofReal_sum_of_nonneg fun z _ => by positivity, ← Finset.mul_sum]
+  exact le_rfl
 
 /-- **The deep-companion input holds for almost all heights.**  For `d₀ > 0` and `ε > 0`, for all
 large `T`, the centres `S ∈ [T − 1, 2T + 1]` whose window `|Im ρ − S| ≤ 1` holds a zero of depth

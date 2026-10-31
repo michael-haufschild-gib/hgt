@@ -125,7 +125,7 @@ theorem continuous_adelicLogHeight : Continuous adelicLogHeight := by
   have ha : a ∈ V := by
     change a-a ∈ integralAdeles
     rw [sub_self]
-    exact integralAdeles.zero_mem
+    exact ⟨fun _ => zero_mem _, zero_mem _⟩
   have heq : (fun _ : Adeles => adelicLogHeight a) =ᶠ[𝓝 a] adelicLogHeight := by
     filter_upwards [hopen.mem_nhds ha] with b hb
     have he : a+(b-a) = b := by abel

@@ -26,6 +26,7 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramFinite
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramTorsionEnergy
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramUniformRemainder
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramLogarithmicPlateau
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicPacketQuotientTails
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.AffineShellConductorSelection
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorFinitePart
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorHeadBoundary
@@ -33,6 +34,7 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorLogM
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorGrowingCorrection
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorPowerHeads
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorHeadNorm
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorUndilatedNorm
 
 /-!
 # Successor-Shell Arithmetic
@@ -53,6 +55,7 @@ the opposite torsion limits of fixed prime heads and their complementary boundar
 the half-square asymptotic of the prime head's logarithmic moment;
 the exact finite parts at every power cutoff and their diagonal square-root head;
 the exact dilation reduction of prime heads and their logarithmic centered period-mean norm;
+the undilated torsion finite part with a uniform squared-logarithmic packet error;
 the invariant centered torsion correction at every exhausting prime cutoff. See
 `SuccessorShellArithmetic/README.md`.
 -/

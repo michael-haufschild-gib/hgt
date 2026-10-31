@@ -131,6 +131,19 @@ uniformly in its cutoff and for arbitrary real coefficients.
 [Exact identities, bound and final Lean audit](../3-formalized/centered-prime-heads-have-logarithmic-packet-norms.md).
 Transfer of this period-mean bound to moving finite horizons remains separate.
 
+The full undilated component
+`U_N=2sum_(k≤N)Lambda(k)G(floor(N/k))/(k log N)` satisfies
+`|U_N−log N·sum a_m²+2T_Q(a)|≤C(1+log Q)² sum a_m²/log N`,
+with one absolute `C` for every `Q,N≥2` and every packet.
+[Exact scalar identity, finite part and final Lean audit](../3-formalized/undilated-prime-heads-have-a-uniform-torsion-finite-part.md).
+
+Packet mass on rows `N/n<T` is at most `[1+log(2T)+2L_Q]sum a_m²`,
+where `L_Q=6log Q+log4+5`.
+For every `epsilon>0`, the actual scalar prime-row residual has squared norm
+at most `[epsilon+2048(1+log Q)/log N]sum a_m²`, eventually at one common
+horizon for all packets. [Proof and final Lean audit](../3-formalized/conductor-packet-quotient-tails-cost-only-logarithms.md).
+The conductor-changing correction remains separate.
+
 ## Full-divisor resolvent identity
 
 At `Re s>1`, positivity of `Re(s−ρ)⁻¹` gives absolute convergence of

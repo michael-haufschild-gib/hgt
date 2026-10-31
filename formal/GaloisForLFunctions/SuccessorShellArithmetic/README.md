@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 35 modules
-(6 root, `TopBand/` 11, `Conductor/` 18). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 37 modules
+(6 root, `TopBand/` 11, `Conductor/` 20). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -46,6 +46,7 @@ Profile `φ` (`C²`, support `[0,1]`), `M = ∫φ²`, `q = (∫φ)²/M`, `G = �
 | Prime head and boundary | `primeConductorHeadPairing`, `primeConductorBoundaryFinitePart` | centered head limit `+I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; complementary boundary `−2I/√(φ(m)φ(l))` |
 | Power head | `primePowerHeadCutoff θ N` | cutoff `⌊N^θ⌋`; leading coefficient `θ(2−θ)δ_ml log N`; mixed torsion coefficient `1−2θ` |
 | Centered period head | `centeredPrimeConductorHead` | every cutoff has quadratic norm at most `6log Q+log4+4` on conductors through `Q` |
+| Undilated prime packet | `2Σ_(k≤N)Λ(k)G(floor(N/k))/(k log N)` | finite part `−2T`, with error `C(1+log Q)²/log N` times coefficient mass |
 | Twin shell | `twinShellForm` | shell weighted by `ω(k)(1 − ω(km)ω(km + h))` |
 
 External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `completeWeilMatrix`,
@@ -136,6 +137,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Scalar-identity centering retains `(1−θ²)B_ml`; bands between powers carry `2(β−α)B_ml` | `tendsto_primeConductorPowerHead_renormalized`, `tendsto_primeConductorPowerBand_finitePart` | proved |
 | Exact dilation `φ(q)c_l(kn)=φ(l)c_q(n)`, `q=l/gcd(l,k)`; literal head is a sum of reduced-conductor Grams | `ramanujanLagCoefficient_dilate_reduced`, `primeConductorHeadPairing_eq_reducedGram` | proved |
 | Centered head means: off-diagonal interval `[0,I/√(φ(m)φ(l))]`, diagonal interval `[−2τ(m),0]`; packet norm `≤6log Q+log4+4` uniformly in cutoff | `centeredPrimeConductorHead_offDiagonal_bounds`, `centeredPrimeConductorHead_diagonal_bounds`, `abs_centeredPrimeConductorHeadPacket_le_log` | proved |
+| Undilated prime packet has finite part `−2T` and common error `C(1+log Q)²/log N`; exact harmonic divisor convolution | `primeHead_harmonic_convolution`, `abs_primeConductorUndilatedPacket_remainder`, `exists_abs_primeConductorUndilatedPacket_finitePart_le` | proved |
+| Packet mass where `N/n<T` is at most `[1+log(2T)+2(6log Q+log4+5)]sum a_m²`; scalar prime residual squared norm at most `[epsilon+2048(1+log Q)/log N]sum a_m²` eventually, uniformly in every packet | `harmonicConductorPacket_quotient_tail_le`, `eventually_primeRowScalarError_packet_sq_le` | proved |
 | Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
@@ -153,6 +156,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Exact fixed-head limits and their complementary torsion boundary.
 - Exact power-cutoff and band finite parts, including square-root cancellation of mixed raw pairings.
 - Exact reduced-conductor Gram decomposition of literal prime heads; uniform logarithmic period-mean head norm.
+- Uniform undilated prime finite part on every conductor packet, including growing supports.
+- Uniform packet mass on short quotient horizons and scalar prime-residual norm with logarithmic conductor loss.
 - Common complete-conductor residual bounds on every logarithmic conductor range.
 
 **To build**
@@ -188,8 +193,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 
 ## 9. Context
 
-**Uses** (import counts): RenormalizedArithmeticPotentialTheory 13, RHTower 10, SignedArithmeticHodgeTheory 2,
-HTGeometry 3, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
+**Uses** (import counts): RenormalizedArithmeticPotentialTheory 16, RHTower 11, SignedArithmeticHodgeTheory 2,
+HTGeometry 5, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
 SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
 BiScaleUncertainty 1, BezoutValuationIncidence 1, ArithmeticPositiveDuality 1, ArithmeticLorentzianGeometry 1,
 ArithmeticIntersectionTheory 1.

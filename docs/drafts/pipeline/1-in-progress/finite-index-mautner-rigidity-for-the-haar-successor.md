@@ -12,7 +12,7 @@ The rational-affine statement is proved for every nonzero scalar by `negIndex_eq
 
 For a Haar successor, all vectors `v_{b+n}−v_b`, with `b∈ℚ` and `n∈ℤ`, span a totally isotropic translation-invariant space. Finite negative index bounds its dimension in the nondegenerate kernel quotient. The analogous radical of the dilation-cyclic space is also finite-dimensional. These are the only directions invisible to the positive-kernel Mautner argument.
 
-The canonical polynomial correction removes the finite period defect without changing either axis reading. Cyclic averaging then excludes a finite-index bi-integer-invariant remainder with continuous dilation reading. The obstruction is formalized on both the full and positive-slope rational affine groups. The actual adelic restriction and positive structural decomposition remain unfinished.
+The canonical polynomial correction removes the finite period defect without changing either axis reading. Cyclic averaging then excludes a finite-index bi-integer-invariant remainder with continuous dilation reading. The obstruction is formalized on the full and positive-slope rational affine groups and on `ℚ⁺ ⋉ (ℝ × 𝔸_f)`, where rational dilations act on both components. The actual finite-adelic Haar overlap integral is identified with the integral-subring indicator. The positive structural decomposition remains unfinished.
 
 Without dilation continuity, Haar successors admit finite nonzero index: [the explicit state `haarState−4(log|affSlope|/log 2)²`](../3-formalized/the-haar-successor-admits-one-negative-square.md) has index exactly one. Its rank-one completion, Haar reading, failure of Hecke support, and dilation discontinuity are formalized.
 

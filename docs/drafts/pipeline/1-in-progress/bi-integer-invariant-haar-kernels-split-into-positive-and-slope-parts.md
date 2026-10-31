@@ -32,4 +32,6 @@ Every rational translation fixes `range(P_(b_n))` for all sufficiently large `n`
 
 Local periodicity, the orthogonal cyclic projections, and moving-subspace positivity are formalized in `BiarithmeticGeometry/Affine/PeriodicTranslations.lean`, `HeckeKreinToeplitz/Index/ColumnProjections.lean`, and `AdelicKreinGeometry/Haar/TranslationMovingPositivity.lean`, with direct audits and standard axiom closures.
 
-The nested-projection order, bounded monotone limit, affine invariance, and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.
+`HeckeKreinToeplitz/Index/MonotoneHermitianForms.lean` now formalizes pointwise convergence and nonnegativity of bounded monotone Hermitian forms by polarization, with a direct audit and standard axiom closure.
+
+The nested-projection order, boundedness of the Haar moving forms, affine invariance, and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.

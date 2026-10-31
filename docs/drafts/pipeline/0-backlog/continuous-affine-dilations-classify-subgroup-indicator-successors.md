@@ -14,9 +14,9 @@ The proposed obstruction would therefore classify all subgroup indicators, inclu
 
 ## Proposed argument for the remaining subgroups
 
-Rescale a nonzero element of `H` to arrange `ℤ⊆H`. If `H≠ℚ`, some prime `p` has finite height `h`, meaning `1/p^h∈H` but `1/p^(h+1)∉H`. Otherwise Bézout combinations of prime-power reciprocals would generate every rational. Membership in `H` then forces `v_p(q)≥−h`.
+Conjugating the affine kernel by dilation by a nonzero element of `H` rescales the successor subgroup to contain `ℤ`, while preserving dilation readings and negative index. If `H≠ℚ`, some prime `p` has finite height `h`, meaning `1/p^h∈H` but `1/p^(h+1)∉H`. Otherwise Bézout combinations of prime-power reciprocals would generate every rational. For `q∈H`, Bézout applied to its reduced numerator and denominator first gives `1/den(q)∈H`; integer multiplication then gives each reciprocal prime-power factor. Thus membership forces `v_p(q)≥−h`.
 
-Let `d_H(q)` be the order of `q+H` in `ℚ/H`. It divides the ordinary denominator, and satisfies `d_H(q)≥p^max(0,−v_p(q)−h)`. After the existing zero-axis polynomial correction, integer translations are invariant. Cyclic projection norms should equal `1/d_H(b/a)`, while the moving-column estimate should have squared bound `1/d_H(c/a)` whenever `c` is a natural multiple of `b`.
+Let `d_H(q)` be the order of `q+H` in `ℚ/H`. It divides the ordinary denominator, and satisfies `d_H(q)≥p^max(0,−v_p(q)−h)`. After the existing zero-axis polynomial correction, integer translations are invariant. Use the full ordinary-denominator period `m=den(b/a)` in the cyclic projection. Each class in the cyclic quotient of size `d_H(b/a)` occurs `m/d_H(b/a)` times, so its projection norm should equal `1/d_H(b/a)` without requiring invariance under all of `H`. The first `d_H(c/a)` orbit vectors are orthonormal; the moving-column estimate should therefore have squared bound `1/d_H(c/a)` whenever `c` is a natural multiple of `b`.
 
 For finitely many indices and `N≥1`, choose `a_(N,i)=p^(N(i+1))/(p^(N(i+1))+1)`. These positive slopes tend to one, with pairwise valuation differences `N(i−j)`. A common step
 

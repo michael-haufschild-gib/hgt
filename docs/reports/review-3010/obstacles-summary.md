@@ -214,6 +214,16 @@ Subquestions:
   exact finite-head decomposition into reduced-conductor harmonic Grams.
   Centered period heads have packet norm at most `6log Q+log4+4`, uniformly
   in cutoff. [Identities and norm bound, final Lean audit](../../drafts/pipeline/3-formalized/centered-prime-heads-have-logarithmic-packet-norms.md).
+  The full undilated component `U_N=2sum_(k≤N)Lambda(k)G(floor(N/k))/(k log N)`
+  has `|U_N−log N·sum a_m²+2T_Q(a)|≤C(1+log Q)² sum a_m²/log N`,
+  with one absolute `C` for all `Q,N≥2` and every packet.
+  [Exact scalar and finite part, final Lean audit](../../drafts/pipeline/3-formalized/undilated-prime-heads-have-a-uniform-torsion-finite-part.md).
+  Packet mass on rows `N/n<T` costs only `[1+log(2T)+2L_Q]sum a_m²`,
+  where `L_Q=6log Q+log4+5`.
+  The actual scalar prime-row residual has squared norm at most
+  `[epsilon+2048(1+log Q)/log N]sum a_m²` eventually, uniformly in every packet.
+  [Proof and final Lean audit](../../drafts/pipeline/3-formalized/conductor-packet-quotient-tails-cost-only-logarithms.md).
+  The conductor-changing correction remains separate.
   The full Weil agreement-shell identity remains open.
 
 **Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**
@@ -406,7 +416,8 @@ Each item is a mechanism that would create positivity or precision from structur
   - On Aff(ℚ) the integer successor cannot carry Weil's correlation positively: they are spectrally singular, and a ℤ-periodic successor with continuous dilation part is constant [S].
   - Every Hermitian kernel on `Aff(ℚ)` with a nonzero integer-Haar multiple and dilation reading continuous at one has infinite negative index. The zero-axis polynomial correction removes any integer-period defect before the cyclic Gram-limit argument. Extension by zero gives the same obstruction on `Aff⁺(ℚ)`. [Lean theorems and verification boundary](../../drafts/pipeline/1-in-progress/cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md).
   - The Bost–Connes states are PD for β > 1 with Hecke exponent β/2 [S], and at s = 1/2 the Hecke state is the Haar state [L].
-- **The remaining scope:** an adelic state whose archimedean dilation part is Weil's correlation and whose finite-adelic part is the Haar state at the critical temperature. The rational-affine obstruction is proved for full and positive slopes; the actual adelic restriction and positive structural decomposition remain to be formalized.
+- **Adelic obstruction:** on `ℚ⁺ ⋉ (ℝ × 𝔸_f)`, with rational scalars acting on both components, the actual nonzero finite-adelic Haar overlap coefficient and pure Weil dilation reading cannot coexist at finite index. The Haar integral and rational-affine restriction are formalized in `AdelicKreinGeometry/Haar/FiniteAdelicReading.lean` and `AdelicObstruction.lean`.
+- **Remaining positive survivor:** the canonical positive Haar, slope, and zero-axis polynomial decomposition, with its exact residual index, remains to be formalized.
 
 ## 2.6 Does crossing the walls need a new field?
 

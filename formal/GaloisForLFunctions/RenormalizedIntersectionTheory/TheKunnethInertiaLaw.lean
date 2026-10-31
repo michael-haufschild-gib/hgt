@@ -83,7 +83,7 @@ theorem hermIndex_kronecker_le_negIndex_tensor {k : G → ℂ} {l : H → ℂ} (
     ((hermPosIndex (gram k x) * hermNegIndex (gram l y) +
       hermNegIndex (gram k x) * hermPosIndex (gram l y) : ℕ) : ℕ∞) ≤ negIndex (tensorKernel k l) := by
   classical
-  rw [← negIndex_Matrix.kronecker (gram_isHermitian hk x) (gram_isHermitian hl y),
+  rw [← negIndex_kronecker (gram_isHermitian hk x) (gram_isHermitian hl y),
     ← gram_tensorKernel_prod]
   exact hermNegIndex_gram_le_negIndex _ _
 
@@ -101,7 +101,7 @@ theorem negIndex_tensorKernel_le {k : G → ℂ} {l : H → ℂ} (hk : IsHermKer
         Nat.cast_le.mpr (hermNegIndex_submatrix_le _ _)
     _ = ((hermPosIndex (gram k (Prod.fst ∘ z)) * hermNegIndex (gram l (Prod.snd ∘ z)) +
           hermNegIndex (gram k (Prod.fst ∘ z)) * hermPosIndex (gram l (Prod.snd ∘ z)) : ℕ) : ℕ∞) := by
-        rw [negIndex_Matrix.kronecker (gram_isHermitian hk _) (gram_isHermitian hl _)]
+        rw [negIndex_kronecker (gram_isHermitian hk _) (gram_isHermitian hl _)]
     _ ≤ posIndex k * negIndex l + negIndex k * posIndex l := by
         push_cast
         exact add_le_add

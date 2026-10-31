@@ -95,14 +95,15 @@ theorem hermQuad_gram_polePair_of_boostMass {n : ℕ} (u : Fin n → posUnits) {
   rw [e, hermQuad_gram_boostPair, hmass]
   simp
 
-private def four : posUnits := ⟨Units.mk0 4 (by norm_num), show (0 : ℚ) < 4 by norm_num⟩
+/-- The positive slope `4`. -/
+def posFour : posUnits := ⟨Units.mk0 4 (by norm_num), show (0 : ℚ) < 4 by norm_num⟩
 
 private theorem polePair_one : polePair 1 = ((2 : ℝ) : ℂ) := by
   rw [polePair]; norm_num
 
-private theorem polePair_four : polePair four = ((5 / 2 : ℝ) : ℂ) := by
-  have h : (((four : ℚˣ) : ℚ) : ℝ) = (2 : ℝ) ^ (2 : ℝ) := by
-    rw [Real.rpow_two]; norm_num [four]
+private theorem polePair_four : polePair posFour = ((5 / 2 : ℝ) : ℂ) := by
+  have h : (((posFour : ℚˣ) : ℚ) : ℝ) = (2 : ℝ) ^ (2 : ℝ) := by
+    rw [Real.rpow_two]; norm_num [posFour]
   rw [polePair, h, ← Real.rpow_mul (by norm_num)]
   norm_num
 
@@ -112,7 +113,7 @@ theorem negIndex_polePair : negIndex polePair = 1 := by
   · have h := negIndex_le_negIndex_archGlue polePair 1
     rwa [archGlue_polePair, negIndex_poleSuccessorState zero_le_one] at h
   · -- slopes `1, 4` with weights `1, −1`: `2 + 2 − 5/2 − 5/2 < 0`
-    have hneg : hermQuad (gram polePair ![1, four]) ![1, -1] < 0 := by
+    have hneg : hermQuad (gram polePair ![1, posFour]) ![1, -1] < 0 := by
       rw [hermQuad_gram]
       simp [Fin.sum_univ_two, polePair_inv, polePair_four, polePair_one]
       norm_num

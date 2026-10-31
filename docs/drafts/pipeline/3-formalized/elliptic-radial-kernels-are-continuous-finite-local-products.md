@@ -1,7 +1,7 @@
 # Elliptic radial kernels are continuous finite local products
 
-- **Stage:** 2-fully-proven
-- **Parent:** [Global radial integral](../1-in-progress/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
+- **Stage:** 3-formalized
+- **Parent:** [Global radial integral](../2-fully-proven/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
 - **Statement:** The actual adelic logarithmic height is continuous and is
   the finite sum of local logarithmic heights on each cylinder. Its spectral
   exponential equals the independently defined local product and is integrable
@@ -26,4 +26,5 @@ cylinder assembly transfers its audited integrability to ambient Haar.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticRadialKernel.lean`:
 `continuous_ellipticAdeleSpectralKernel`, `ellipticAdeleSpectralKernel_cylinder`,
-`ellipticAdeleSpectralKernel_integrableOn_cylinder`. Direct audit pending.
+`ellipticAdeleSpectralKernel_integrableOn_cylinder`. Direct Lean audit passed. All three transitive axiom checks contain only
+`propext`, `Classical.choice`, and `Quot.sound`.

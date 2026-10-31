@@ -1,3 +1,5 @@
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.AdelicObstruction
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.FiniteAdelicReading
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PositiveAffineObstruction
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.ScaledHaarObstruction
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.FiniteIndexObstruction
@@ -16,6 +18,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.TheSignatureOfASeparableAssembly
 import GaloisForLFunctions.AdelicKreinGeometry.ConformalSymmetryNeedsANegativeSquare
 import GaloisForLFunctions.AdelicKreinGeometry.TheIndexIsTwinBlind
 import GaloisForLFunctions.AdelicKreinGeometry.TheAdelicProductState
+import GaloisForLFunctions.AdelicKreinGeometry.TheIndexWallIsLocal
 import GaloisForLFunctions.AdelicKreinGeometry.NoFixedCountertermMakesThePrimeKernelPontryagin
 import GaloisForLFunctions.AdelicKreinGeometry.ArchimedeanContinuityAgainstHeightDecay
 import GaloisForLFunctions.AdelicKreinGeometry.TheAdditiveIndexLaw
@@ -34,7 +37,12 @@ import GaloisForLFunctions.AdelicKreinGeometry.LocalSignaturesAddOverDistinctPla
 import GaloisForLFunctions.AdelicKreinGeometry.TheArchimedeanGluingFormula
 import GaloisForLFunctions.AdelicKreinGeometry.WeilsArchimedeanStateCountsTheZeros
 import GaloisForLFunctions.AdelicKreinGeometry.TheGluingSquareIsSharp
+import GaloisForLFunctions.AdelicKreinGeometry.TheGlueSeesTheOrderOfThePole
 import GaloisForLFunctions.AdelicKreinGeometry.PrimeTowersGlueAtFullIndex
+import GaloisForLFunctions.AdelicKreinGeometry.JordanPairKernelsOnDilations
+import GaloisForLFunctions.AdelicKreinGeometry.HeatTangentBlaschkeExtraction
+import GaloisForLFunctions.AdelicKreinGeometry.HeatGaussianResidueKernel
+import GaloisForLFunctions.AdelicKreinGeometry.TheHeatDeformedArchimedeanState
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.OneNegativeSquare
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.IndexPreservation
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.ContinuousDilationsNeedInfiniteIndex
@@ -52,17 +60,22 @@ its places.
 
 * Index calculus on groups: induced states, witness complements and escape, mixing and height decay,
   twin-blindness, block additivity.
-* Arithmetic types: the affine zero-or-infinity law, the Kakutani wall as an index wall, Weil's affine
-  extensions, the running counterterm of the prime kernel, archimedean continuity against height
-  decay, the adelic product state.
+* Arithmetic types: the affine zero-or-infinity law, the Kakutani wall as an index wall and its locality
+  (the same wall at every prime, the product formula), Weil's affine extensions, the running
+  counterterm of the prime kernel, archimedean continuity against height decay, the adelic product
+  state.
 * Additive side: the additive and Ramanujan index laws on `ℤ/N` and `ℚ/ℤ`, conditionally positive
   successors (`−|b|`, `−|b|^s`, ultrametric `−|b|_v`, `−|·|_∞` on `F[X]`).
 * Conformal and pole structure: conformal symmetry costs one square; the pole as a Krein state;
   conformal induction and the pole–successor states over any field and place, their signature formula
   `κ = κ₀(ψ) + 1`, additivity over places, shell decompositions.
 * Gluing at the archimedean place: the boost-polar index, the gluing formula `κ = κ^{(½)}(K) + 1`, free
-  hyperplanes for sub-boost and periodic data, prime towers, and the count
-  `κ = #{zeros right of the line} + 1` for Weil's archimedean state and for Dirichlet L-functions.
+  hyperplanes for sub-boost and periodic data, prime towers, Jordan pair kernels on dilations
+  `κ(Σ_i J_{u_i, P_i}) = Σ_i (deg P_i + 1)`, the count `κ = #{zeros right of the line} + 1` for Weil's
+  archimedean state and for Dirichlet L-functions, and the source-defined heat-deformed archimedean
+  state `φ_c^{(t)}` of `H_t` (`κ(φ_c^{(t)}) = #{nonreal right zeros of H_t with mult} + 1 < ⊤` for all
+  `t > 0`, lower semicontinuous, nonincreasing, jumping by `1` per collided pair); the gluing square is
+  sharp, absorbs the simple pole pair at any strength and charges a double pole.
 * Haar carriers (`Haar/`): index preservation by positive integer-successor carriers, axis-invisible
   kernels and their degree and rank laws, period defects, and infinite index for every Haar kernel
   with a continuous dilation reading.

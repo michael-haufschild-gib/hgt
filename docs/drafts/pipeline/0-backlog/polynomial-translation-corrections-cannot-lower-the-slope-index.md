@@ -20,6 +20,8 @@ The weights sum to one and reproduce evaluation at zero through degree `M`. Appl
 
 ## Consequence for the positive survivor
 
+A [stronger polynomial-fibre index equality](../1-in-progress/haar-addition-preserves-index-on-polynomial-translation-fibres.md) now has a complete paper argument: the same quadrature preserves arbitrary polynomial Gram entries while removing the positive Haar matrix. Lean verification remains open.
+
 Subadditivity and the existing exact Haar-plus-slope law give the opposite estimate
 
 `κ(p+ψ∘slope+Q) ≤ κ(ψ)+κ(Q)`.

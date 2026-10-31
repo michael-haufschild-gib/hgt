@@ -52,7 +52,9 @@ at edges with a counterterm of nontrivial null cone.
 ## 2. What AKG establishes
 
 1. **Support and decay decide type.** Escape (exact by Hecke support, approximate by mixing or height decay)
-   forces `κ ∈ {0, ∞}`. The Kakutani wall of the Hecke states is an index jump `0 → ∞` at `s = 1/2`.
+   forces `κ ∈ {0, ∞}`. The Kakutani wall of the Hecke states is an index jump `0 → ∞` at `s = 1/2`, and the wall
+   is local: the Hecke state is the product of local states, one per prime, and each local state already jumps
+   from `0` to `∞` at `s = 1/2`.
 2. **The integer successor and continuous dilation data never meet at finite index.** Every Hermitian kernel on
    `Aff(ℚ)` with the integer (Haar) successor and a dilation reading continuous at `1` has infinite index; Weil's
    correlation is such a dilation reading. The mechanisms are the near coincidence of the two topologies
@@ -67,7 +69,8 @@ at edges with a counterterm of nontrivial null cone.
    different places add; a shared pole (separable assemblies) adds at most one square.
 5. **The archimedean place glues by a hyperplane.** Dilation data `K` glued to the archimedean successor have
    index `κ^{(½)}(K) + 1`, where `κ^{(½)}` counts the negative squares of `K` orthogonal to the boost character
-   `u^{−1/2}`. The hyperplane is free for prime towers and for data that grow slower than the boost.
+   `u^{−1/2}`. The hyperplane is free for prime towers and for data that grow slower than the boost. The gluing
+   square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`, and both values occur.
 6. **Weil's archimedean state counts the zeros.** `κ(ratCorr(|a|) − c|a|^{−1/2}|b|) = #{zeros of ζ right of the
    critical line} + 1`, unconditionally, and likewise for every primitive Dirichlet `L(s, χ)`. Weil's dilation data
    are carried at finite index when glued at `∞`, never when glued at the integers.
@@ -76,6 +79,15 @@ at edges with a counterterm of nontrivial null cone.
    levels.
 8. **The index is twin-blind.** Unitary slope twists are Gram congruences; selectivity must come from the dilation
    data, which the archimedean states read zero by zero.
+9. **The glue selects by the order of the pole.** The boost hyperplane is the null direction of the simple pole
+   pair: adding `u^{1/2} + u^{−1/2}` at any strength leaves the glued index unchanged. A double pole
+   `log u·(u^{1/2} − u^{−1/2})` is not absorbed and costs a second square.
+10. **The heat-deformed archimedean state is a source-defined Pontryagin homotopy.** From the Gaussian-weighted
+    theta kernel `Φ_t(x) = Φ(x)e^{t x²}` of `H_t` alone (via tangent-disc Poisson–Jensen extraction on `D(−iR, R)`
+    and Gaussian-damped contour integration on `Im z = ∓1`), `φ_c^{(t)} = archGlue(K_t, c)` is pointwise continuous
+    in `t ∈ (0, ∞)` and satisfies `κ(φ_c^{(t)}) = #{nonreal right zeros of H_t with multiplicity} + 1 < ∞` for every
+    `t > 0`, is lower semicontinuous and nonincreasing on `(0, ∞)`, equals `1` on `[1/8, ∞)`, and drops only at
+    real-axis collisions by `⌊m_t(z)/2⌋` (one square per collided conjugate pair).
 
 ---
 
@@ -89,6 +101,7 @@ at edges with a counterterm of nontrivial null cone.
 | Readings | dilation reading `u ↦ φ(x ↦ ux)`, successor `b ↦ φ(x ↦ x + b)` | `dilation`, `translation`, `dilationOf`, `translationOf` |
 | Hecke support | `φ(ax + b) ≠ 0 ⇒ den(a)·b ∈ ℤ` | `IsHeckeSupported` |
 | Hecke and Haar states | `(nd)^{−s}·1[db ∈ ℤ]`; the case `s = 1/2` | `heckeState`, `haarState`, `HasIntegerSuccessor` (APD) |
+| Local Hecke state | `p^{−s|v_p(a)|}·1[v_p(b) ≥ min(0, v_p(a))]`: `aℤ_p + b` meets `ℤ_p` | `localHecke`, `slopeVal` |
 | Height decay | decay in `|num a|·den a` | `HasHeightDecay`, `slopeHeight` |
 | Weil's correlation | dilation correlation `ratCorr = K_ζ` on `ℚ_{>0}` | `ratCorr`, `zetaKernel` |
 | Blind / regular extension | `ratCorr(|a|)`; extension by zero off the dilations | `blindWeilState`, `regularWeilState` |
@@ -102,6 +115,9 @@ at edges with a counterterm of nontrivial null cone.
 | Places | real, `p`-adic, `∞` of `F(X)` | `Rat.AbsoluteValue.real`, `Rat.AbsoluteValue.padic`, `inftyAbs`, `IsUltra` |
 | Boost coordinate, boost-polar index | `ℓ(w) = Σ w_i u_i^{−1/2}`; negative squares of `K` on `ℓ = 0` | `boostMassU`, `boostPolarIndex` |
 | Archimedean gluing | `K(|a|) − c|a|^{−1/2}|b|`; for `K = ratCorr` the archimedean Weil state | `archGlue`, `weilArchState` |
+| Jordan pair kernel | `P(log v)e^{−i u log v} + conj(P(−log v))e^{−i ū log v}` on `ℚ_{>0}` | `jordanPairKernel`, `jordanForward` |
+| Heat-deformed archimedean state | `archGlue(heatDilationKernel t, c)` built from `Φ_t(x) = Φ(x)e^{t x²}` alone | `heatArchState`, `heatDilationKernel`, `heatCollisionPairs` |
+| Simple and double pole pairs | `u^{1/2} + u^{−1/2}`; its `α`-derivative `log u·(u^{1/2} − u^{−1/2})` | `polePair`, `doublePole` |
 | Orbit kernel of a zero configuration | `K_f(u) = W_Z(f, f(· − log u))` | `orbitCorr`, `orbitKernel` (HKT) |
 | Conductor data | Fourier and Ramanujan coefficients on `ℤ/N`, level kernels on `ℚ/ℤ` | `fourierCoeff`, `ramanujanCoeff`, `levelKernel` |
 | Agreement shells | balls `|x − y|_v ≤ r`; half-lines `(−∞, t)` at `∞` | `ballOf`, `shellSquares`, `tailSum` |
@@ -150,6 +166,11 @@ at edges with a counterterm of nontrivial null cone.
 
 - *Hecke escape.* Translation by `1/P`, `P` a prime above all denominators, escapes every Hecke-supported state;
   hence the affine zero-or-infinity law and the index wall (`HeckeSupportedStatesHaveIndexZeroOrInfinity`).
+- *Local walls.* Over a common denominator the local Haar state at `p` is the commensurability kernel of the
+  classes `C_i + p^{v_p(A_i)}ℤ`, and the exponent splits off a Poisson kernel `r^{|v_p(a)|}` on the slope valuation;
+  translation by `p^{−M}` escapes; below `1/2` the dilation by `1/p` against the `p` translations by `j/p` has form
+  `p − p²·p^{−2s} < 0`. Since `nd = ∏ ℓ^{|v_ℓ(a)|}` and `db ∈ ℤ` is a condition at each prime, the global Gram
+  matrix on a finite family is the Hadamard product of finitely many local ones (`TheIndexWallIsLocal`).
 - *Height decay.* The slope height is submultiplicative; doubling dilations escape height-decaying states.
 - *Running counterterm.* Translation by a product of two new primes escapes the prime lattice kernel, and the
   truncated pole vector beats any fixed counterterm (`NoFixedCountertermMakesThePrimeKernelPontryagin`).
@@ -200,6 +221,18 @@ at edges with a counterterm of nontrivial null cone.
 - *Zeros against the boost.* On the zero side `K_f(u) = Σ_ρ u^{1/2−ρ}w_ρ` with summable weights;
   `u^{−1/2}|u^{1/2−ρ}| = u^{−Re ρ}` and `Re ρ > 0`, so dominated convergence makes `K_f` sub-boost
   (`WeilsArchimedeanStateCountsTheZeros`).
+- *Absorption and selection.* The dilation reading of the glued state is `K`, so gluing never loses a square. The
+  form of the pole pair is `2Re(ℓ̄m)`, `m = Σ w_i u_i^{1/2}`, which vanishes on `ℓ = 0`: the pole pair's square is
+  the boost coordinate itself (`TheGluingSquareIsSharp`). The double pole's form is `2Re(ℓ̄M) − 2Re(L̄₁L₂)` with
+  `L₁ = Σ w_i log u_i·u_i^{−1/2}`, `L₂ = Σ w_i u_i^{1/2}`; on `ℓ = 0` the second pair survives with one square
+  (`TheGlueSeesTheOrderOfThePole`).
+- *Jordan pairs and the heat homotopy.* A sum of lower-half-plane Jordan pair kernels `J_{u_i, P_i}` (`Im u_i < 0`,
+  `P_i ≠ 0`) has index `Σ_i (deg P_i + 1)` via confluent exponential-polynomial Vandermonde inversion on a fine
+  cyclic subgroup (`JordanPairKernelsOnDilations`). Tangent-disc Poisson–Jensen averaging on `D(−iR, R)` extracts
+  the lower Blaschke boundary values of `H_t` from `Φ_t` without referencing zeros (`HeatTangentBlaschkeExtraction`),
+  and Gaussian-damped contour integration on `Im z = ∓1` evaluates `K_t` as a Jordan pair sum over nonreal right
+  zeros while keeping `t ↦ φ_c^{(t)}(g)` continuous across collisions (`HeatGaussianResidueKernel`,
+  `TheHeatDeformedArchimedeanState`).
 
 ---
 
@@ -210,6 +243,7 @@ at edges with a counterterm of nontrivial null cone.
 | Induction formula `κ(ext₀ψ) = [G : H]·κ(ψ)`; blind extensions are index-minimal | `negIndex_extendFromSubgroup`, `negIndex_comp_retraction` |
 | Escape, mixing and height decay force `κ ∈ {0, ∞}` | `negIndex_eq_zero_or_top_of_escape`, `negIndex_eq_zero_or_top_of_mixing`, `negIndex_eq_zero_or_top_of_heightDecay` |
 | Affine zero-or-infinity law; the Kakutani wall is an index wall | `negIndex_eq_zero_or_top_of_isHeckeSupported`, `negIndex_heckeState` |
+| **The index wall is local**: every local Hecke state jumps `0 → ∞` at `1/2`; `φ_s = ∏_ℓ φ_{ℓ,s}`; global positivity is the Schur product of local positivity | `negIndex_localHecke`, `heckeState_eq_prod_localHecke`, `isPosDefKernel_heckeState_of_local`, `negIndex_heckeState_eq_negIndex_localHecke` |
 | Weil's affine extensions: minimum `κ(K_ζ)`; Hecke support with the Haar successor costs `∞` | `negIndex_blindWeilState`, `negIndex_eq_top_of_weil_haarSuccessor` |
 | **Every nonzero integer-Haar multiple with a continuous dilation reading has infinite index** (every Hermitian kernel) | `negIndex_eq_top_of_nonzero_haar_continuous_dilation` |
 | Positive integer-successor carriers are invisible: `κ(p + ψ ∘ slope) = κ(ψ)` | `negIndex_add_slope_of_integer_successor` |
@@ -223,6 +257,10 @@ at edges with a counterterm of nontrivial null cone.
 | Distinct places add: `κ(Φ_∞ + Φ_p) = 2` | `negIndex_placeAssembly_eq`, `negIndex_real_add_padic` |
 | **Archimedean gluing formula** `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`; prime towers give `κ(k) + 1` | `negIndex_archGlue_eq`, `negIndex_archGlue_eq_of_subBoost`, `negIndex_archGlue_tower` |
 | **Weil's archimedean state counts the zeros**; also every Dirichlet `L(s, χ)` | `negIndex_weilArchState_eq_rightZeros`, `negIndex_archGlue_orbitCorr`, `negIndex_archGlue_dirichlet` |
+| **Jordan pair signature formula** `κ(Σ_i J_{u_i, P_i}) = Σ_i (deg P_i + 1)` and sub-boost gluing | `negIndex_sum_jordanPairKernel_eq`, `negIndex_archGlue_finset_sum_jordanPairKernel_eq` |
+| **Heat-deformed archimedean state** `φ_c^{(t)}`: finite index `M(t) + 1`, lower semicontinuous, antitone, jumps by `1` per collided pair, `κ(φ_c) ≤ liminf_{t→0⁺} κ(φ_c^{(t)})` | `negIndex_heatArchState_eq`, `lowerSemicontinuousOn_negIndex_heatArchState`, `antitoneOn_negIndex_heatArchState`, `exists_left_negIndex_heatArchState_eq_add_collisionPairs`, `negIndex_weilArchState_le_liminf_heatArchState` |
+| The gluing square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`; the pole pair is absorbed and the glue is blind to it at any strength | `negIndex_archGlue_eq_or`, `boostPolarIndex_polePair`, `negIndex_archGlue_add_polePair`, `negIndex_archGlue_ratCorr_add_polePair` |
+| **The glue sees the order of the pole**: `κ^{(½)}(doublePole) = 1`, glued index `2` against `1` for a simple pole | `boostPolarIndex_doublePole`, `negIndex_archGlue_doublePole`, `negIndex_archGlue_smul_polePair` |
 | Shell decomposition of the local pole–successor forms | `hermQuad_gram_poleSuccessor_negUltra_eq`, `hermQuad_gram_poleSuccessorState_eq` |
 | Axis-invisible kernels: zero or `κ ≥ 2`, rank `≤ κ²`, polynomial fibres of degree `< κ`; every `κ ≥ 2` occurs | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `negIndex_haarMixedPowerState` |
 | The index is twin-blind | `negIndex_mul_unitaryChar`, `negIndex_heckeState_mul_slopeChar` |
@@ -235,8 +273,10 @@ at edges with a counterterm of nontrivial null cone.
    *Answered for the glue.* Local constituents sharing the pole glue with at most one square (separable
    assemblies); a conformal successor glues to its pole with exactly one (`κ₀ + 1`); distinct places add; the
    archimedean place glues dilation data by the boost hyperplane, `κ^{(½)}(K) + 1`, and for prime towers and for
-   Weil's correlation the hyperplane is free, so the archimedean term is exactly one square. *Open*: the
-   decomposition of `κ(K_ζ)` itself into prime defects; the Weil kernel is neither tower-supported nor separable.
+   Weil's correlation the hyperplane is free, so the archimedean term is exactly one square; the pole terms
+   contribute nothing to it at any strength. For the Hecke states the local–global law is a product formula with
+   identical local walls at every prime. *Open*: the decomposition of `κ(K_ζ)` itself into prime defects; the Weil
+   kernel is neither tower-supported nor separable.
 2. **Do the matched local Hodge indices share one positive direction for every finite sieve, and what obstructs the
    infinite assembly?** *Yes*, uniformly in the sieve
    (`RenormalizedArithmeticPotentialTheory.eventually_sieveHodgeGram_one_positive_direction`); the counterterm
@@ -267,12 +307,12 @@ at edges with a counterterm of nontrivial null cone.
 |---|---|---|
 | Pontryagin index theory on groups | induction, witness complements, escape, mixing, block additivity, twist invariance, Krein compressions, conformal induction | Krein–Langer structure on `Aff(ℚ)` |
 | Local–global signature calculus | polar index, separable formula, pole–successor formula, additivity over places, boost-polar index and archimedean gluing | prime-local defects of the Weil kernel; non-separable glue |
-| Kakutani–Hellinger dichotomies | the Kakutani wall as an index wall; zero-or-infinity laws as index zero–one laws | local Hellinger affinities at each prime |
+| Kakutani–Hellinger dichotomies | the Kakutani wall as an index wall; zero-or-infinity laws as index zero–one laws; local walls at every prime and their Schur assembly | the local walls over `𝔽_q(T)` |
 | Mautner / Howe–Moore phenomena | indefinite Howe–Moore (mixing, height decay, near coincidence, dilution, Haar averaging); infinite index for every Haar kernel with continuous dilations | uniqueness of the Haar decomposition |
 | Bost–Connes / KMS at the critical temperature | Hecke states at every exponent and their index wall | states below `β = 1` |
 | Ramanujan Plancherel, conductor Hamiltonian | additive index law on `ℤ/N`, `ℚ/ℤ`; Ramanujan law `Σ_{A_d<0} φ(d)` | the spectral measure on `ℤ̂` |
 | Successor-shell calculus | shell decompositions at every place with running counterterms | shells of the complete Weil form |
-| Lyapunov methods for the dBN flow | — (corpus: `RHTower/Heat`) | a link between heat counts and affine indices |
+| Lyapunov methods for the dBN flow | source-defined heat Pontryagin homotopy `φ_c^{(t)}` linking dBN collision counts to affine indices | a purely additive or `t → 0⁺` source bound without `ξ`-zero input |
 | Linear independence of logarithms | separating units for distinct places | quantitative bounds in the pre-ergodic regime |
 
 ---
@@ -306,6 +346,8 @@ at edges with a counterterm of nontrivial null cone.
 | The integer successor forbids a finite nonzero index | `haarOneNegativeSquare` has index one, with a discontinuous dilation reading |
 | Some correction lets the integer successor carry continuous dilation data | never: every such Hermitian kernel has infinite index |
 | The Kakutani wall is a gradual change of index | it is a jump `0 → ∞` |
+| The wall at `1/2` comes from the infinite product over primes | every single prime already carries it |
+| The glue absorbs every pole term | only the simple pole pair; a double pole costs a square |
 | A decaying state can carry a few negative squares | mixing and height decay kill them |
 | Local polar indices add exactly | up to one gluing square, carried by the shared pole |
 | The successor can absorb the pole's square | never: `κ = κ₀(ψ) + 1` |
@@ -349,8 +391,9 @@ principle for the index) and O5 (a second bridge between the primes).
 1. *intrinsic objects defined from `ℤ` without zeros*: Hecke support, height, polar and boost-polar indices,
    conformal successors, point vectors, agreement shells. Met.
 2. *a local signature theorem at each place and a global gluing theorem*: the pole–successor formula at every
-   place, additivity over places, the separable and archimedean gluing formulas. Met for the glue; the
-   prime-local decomposition of `κ(K_ζ)` is open.
+   place, additivity over places, the separable and archimedean gluing formulas; for the Hecke family the local
+   wall at every prime and the product formula. Met for the glue and for the Hecke family; the prime-local
+   decomposition of `κ(K_ζ)` is open.
 3. *an additive–multiplicative comparison proved as an identity*: the Gram identities of the pole–successor and
    archimedean states, and the index identity `κ = #{zeros right of the line} + 1`. Met for the archimedean
    comparison; `S = W` itself is not addressed.
@@ -359,7 +402,7 @@ principle for the index) and O5 (a second bridge between the primes).
 5. *calibration over `𝔽_q[T]`*: the conformal successor and the pole–successor state at `∞` with boost `q^{±1/2}`.
    The Hecke wall over `𝔽_q(T)` is open.
 6. *selectivity*: index laws are twin-blind; the archimedean states of different L-functions count their own
-   zeros. Met at the level of dilation data.
+   zeros; the glue absorbs a simple pole and charges a double one. Met at the level of dilation data.
 7. *edge control*: running counterterms are forced (`log N − γ`) and exact in the local shell forms (`cR`). A
    nontrivial null cone in the limit of the Weil form is open.
 
@@ -376,7 +419,8 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
 
 - Index calculus: `TheIndexOfAnInducedState`, `TheWitnessComplementIsPositive`, `MixingKillsNegativeSquares`,
   `TheIndexIsTwinBlind`.
-- Arithmetic types: `HeckeSupportedStatesHaveIndexZeroOrInfinity`, `ThePontryaginExtensionsOfWeilsCorrelation`,
+- Arithmetic types: `HeckeSupportedStatesHaveIndexZeroOrInfinity`, `TheIndexWallIsLocal`,
+  `ThePontryaginExtensionsOfWeilsCorrelation`,
   `TheAdelicProductState`, `NoFixedCountertermMakesThePrimeKernelPontryagin`,
   `ArchimedeanContinuityAgainstHeightDecay`.
 - Signatures and the additive side: `TheSignatureOfASeparableAssembly`, `TheAdditiveIndexLaw`,
@@ -387,9 +431,11 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
   `ThePoleSuccessorSignatureFormula`, `LocalSignaturesAddOverDistinctPlaces`,
   `TheShellDecompositionOfAPoleSuccessorForm`.
 - Archimedean gluing: `WeilsCorrelationWithAnArchimedeanSuccessor`, `TheArchimedeanGluingFormula`,
-  `PrimeTowersGlueAtFullIndex`, `WeilsArchimedeanStateCountsTheZeros`.
+  `PrimeTowersGlueAtFullIndex`, `WeilsArchimedeanStateCountsTheZeros`, `TheGluingSquareIsSharp`,
+  `TheGlueSeesTheOrderOfThePole`, `JordanPairKernelsOnDilations`, `HeatTangentBlaschkeExtraction`,
+  `HeatGaussianResidueKernel`, `TheHeatDeformedArchimedeanState`.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,
   `CyclicHecke`, `CyclicGramLimit`, `FiniteIndexObstruction`, `ScaledHaarObstruction`,
-  `PositiveAffineObstruction`.
+  `PositiveAffineObstruction`, `FiniteAdelicReading`, `AdelicObstruction`.

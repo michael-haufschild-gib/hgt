@@ -22,8 +22,11 @@
 - **Heat is a depth²/count gauge.** Pincer: `(Re ρ − ½)²/200 ≤ λ_{Im ρ} log Im ρ ≤ 2/3 + ε` (#6, #20). At height `t`, local depth `δ`, local count `N(t, ·)`:
   detection at `λ ≤ δ²/(200 log t)` uniformly in `δ` (#1), repair at `λ ≥ 128δ²/N(t, √2δ)` (#3), a
   central cluster realizes the order `δ²` (#2), and the regular cosh model has exact threshold
-  `κ = δ/2` (`RHTower/XiSliceHeatCoshSharpThreshold.lean`). Closing the heat pincer (WP-B) is the
-  same problem as bounding depths. In distribution `λ_t` inherits Selberg's depth law:
+  `κ = δ/2` (`RHTower/XiSliceHeatCoshSharpThreshold.lean`). Closing the heat pincer (WP-B) at rate
+  `κ` forces a zero-free strip of depth `√(200κ)` (formal, #1, #6). The converse (a strip of depth
+  `d` gives repair at rate `O(d)`) needs a local count `N(t, R) ≫ R log t` at `R ≍ d` (#3). That is a
+  strip version of Littlewood's short-window count, which the corpus has only under RH
+  (`LittlewoodShortWindowZeroCount`). Not formalized. In distribution `λ_t` inherits Selberg's depth law:
   `vol{λ_t > κ²/(3L²)} ≪ U e^{−κ/2400}` and `∫_{U/4}^{U/2} λ_t ≪ U/L²` (#24, #25).
 - **B1.** The cosh model has Lindelöf-size slices (`|g(a + ic)| ≤ C(1+|c|)⁴ e^{L|a|}`), an Euler-region
   lower bound, and exact threshold `δ/2` with `δ` up to `½`. Any repair argument whose inputs the
@@ -163,10 +166,11 @@
 | 35 | The lag input in density (failing on `o(T)` window centres) still forces critical proportion one (Fubini over the window centre + unit count) | A2 | formalized: card of #29 |
 | 36 | The off-line second moment `Σ m(Re ρ − ½)₊² = o(V)` (Selberg tail law + 67/1000 first moment); the right-half depth mass of unit windows is `≤ W` off a density-`o(1)` set of heights | A2/CCM | formalized: `3-formalized/the-off-line-second-moment-is-little-o.md` |
 | 37 | The depth-weighted input (CCM) pointwise is a zero-free strip: depth mass `≤ W` per window ⇒ `|Re ρ − ½| ≤ √W` | A2/CCM | formalized: card of #29 (with the classification of the local inputs) |
+| 38 | Deep zeros are `o(V)` (`Re ρ ≥ ½ + d₀`, Selberg tail law), so windows holding a zero of depth `≥ d₀` occupy `o(T)` of the heights: the lag family's deep-companion input holds for almost all heights | A2 | formalized: card of #36 |
 | C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#37 formalized; #18, C2 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#38 formalized; #18, C2 in corpus.

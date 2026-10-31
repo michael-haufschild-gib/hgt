@@ -1,7 +1,7 @@
 # Elliptic local spectral products converge to the zeta ratio
 
-- **Stage:** 2-fully-proven
-- **Parent:** [Global radial integral](../1-in-progress/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
+- **Stage:** 3-formalized
+- **Parent:** [Global radial integral](../2-fully-proven/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
 - **Statement:** For `Re(s)>1`, unordered finite products of the actual
   normalized local spectral integrals, including infinity, converge to
   `ζ_K(u)/ζ_K(u/3)`, where `u=exp(-s log 3)`.
@@ -25,4 +25,4 @@ the missing factors and gives the complete zeta ratio.
 `ArithmeticEffectivityTheory/FiniteFieldEllipticSpectralProduct.lean`:
 `hasProd_elliptic_affine_intertwining_factors`,
 `ellipticFiniteSpectralFactor_eq_affine`,
-`tendsto_ellipticSpectralCylinderProduct`. Direct audit pending.
+`tendsto_ellipticSpectralCylinderProduct`. Direct Lean and transitive axiom audits passed; only `propext`, `Classical.choice`, and `Quot.sound` occur.
