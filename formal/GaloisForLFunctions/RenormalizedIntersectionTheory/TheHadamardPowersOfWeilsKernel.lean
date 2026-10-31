@@ -1,4 +1,7 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheKunnethSquareOfWeilsKernelIsRH
+import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
+import GaloisForLFunctions.HeckeKreinToeplitz.LogarithmicCharactersAndTheArithmeticIndexFormula
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheCollisionMassIsTheWaveNumber
 
 /-!
 # The Hadamard powers of Weil's kernel
@@ -15,6 +18,12 @@ product scaling surface; their frequencies are the sums of `n` zeros (`TheKunnet
 * **The Künneth square dominates the index** (`negIndex_zetaKernel_le_negIndex_kunnethZeta`):
   `κ(K_ζ) ≤ κ(K_ζ ⊠ K_ζ)`; unless RH holds, `K_ζ` has a positive square, which multiplies every
   negative square of `K_ζ` into one of the square.
+* **Off-line zeros are neutral** (`negIndex_zetaKernel_le_posIndex`): on the finite stratum every
+  right zero also carries a positive square, `κ(K_ζ) ≤ κ₊(K_ζ)`: the hyperbolic pair of `ρ` and
+  `1 − ρ̄` has signature `(1, 1)`, and the on-line part only adds positive squares.
+* **The Künneth square squares the index** (`sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`):
+  `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ)`, unconditionally; with the Künneth law,
+  `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ) ≤ 2 κ₊(K_ζ) κ(K_ζ)`.
 * **A finite Künneth index is Lindelöf-deep** (`lindelof_of_negIndex_kunnethZeta_lt_top`,
   `quasiRH_of_negIndex_kunnethZeta_lt_top`): a finite index for the Künneth square gives finitely many
   off-line zeros, hence Lindelöf and a zero-free half-plane.
@@ -94,5 +103,93 @@ theorem lindelof_of_negIndex_kunnethZeta_lt_top (h : negIndex kunnethZeta < ⊤)
 theorem quasiRH_of_negIndex_kunnethZeta_lt_top (h : negIndex kunnethZeta < ⊤) :
     ∃ α : ℝ, α < 1 / 2 ∧ _root_.RHTower.XiZeroHalfPlaneBound α :=
   quasiRH_of_negIndex_zetaKernel_lt_top (negIndex_zetaKernel_le_negIndex_kunnethZeta.trans_lt h)
+
+/-! ### Off-line zeros are neutral pairs -/
+
+section Neutral
+
+open scoped ComplexConjugate
+open Zeta23
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx rightZeros)
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
+
+/-- **Every off-line zero carries a positive square.** On the finite stratum the positive index of
+Weil's kernel is at least its negative index. -/
+theorem negIndex_zetaKernel_le_posIndex (hR : (rightZeros zetaZeroConfig).Finite) :
+    negIndex zetaKernel ≤ posIndex zetaKernel := by
+  classical
+  set R := hR.toFinset
+  set W : ℂ → ℂ := fun ρ => zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) ρ
+  set Kon := orbitKernel (onLineConfig zetaZeroConfig) cubicSpline
+  have hdec : ∀ u, zetaKernel u = Kon u + ∑ ρ ∈ R, pairKernel (zeroChar (conj ρ)) (conj (W ρ)) u :=
+    fun u => orbitKernel_eq_onLine_add_pairs temperedConfig_zetaZeroConfig
+      cubicSpline_mem_realTests hR u
+  -- the negated pairs are the on-line part plus `−K_ζ`
+  set P : HeckeLattice → ℂ := fun u => ∑ ρ ∈ R, pairKernel (zeroChar (conj ρ)) (-conj (W ρ)) u
+  have hP : P = fun u => Kon u + -zetaKernel u := by
+    funext u
+    rw [hdec u]
+    simp only [P, pairKernel, map_neg, neg_mul, sum_add_distrib, sum_neg_distrib]
+    ring
+  have hle : negIndex P ≤ posIndex zetaKernel := by
+    rw [hP, posIndex]
+    exact negIndex_add_posDef_le (isPosDefKernel_orbitKernel_onLine temperedConfig_zetaZeroConfig
+      cubicSpline_mem_realTests)
+  -- the negated pairs have exactly `|R|` negative squares
+  set e := R.equivFin.symm
+  have hcard : negIndex P = R.card := by
+    have h := negIndex_hecke_pairs_eq (κ := R.card) HeckeKreinToeplitz.isPosDefKernel_zero
+      (fun j => conj (e j : ℂ)) (fun i j h => e.injective (Subtype.ext (star_injective h)))
+      (fun j => by
+        have hm := (hR.mem_toFinset.mp (e j).2)
+        simpa only [Complex.conj_re] using hm.2)
+      (fun j => -conj (W (e j)))
+      (fun j => neg_ne_zero.mpr ((map_ne_zero _).mpr
+        (ArithmeticKreinLangerTheory.Wsummand_ne_zero_of_rightZero (hR.mem_toFinset.mp (e j).2))))
+    rw [← h]
+    congr 1
+    funext u
+    simp only [Pi.zero_apply, zero_add, P, conj_conj]
+    rw [← R.sum_coe_sort, ← e.sum_comp]
+    rfl
+  rw [negIndex_zetaKernel, hR.encard_eq_coe_toFinset_card, ← hcard]
+  exact hle
+
+/-- **The Künneth square at least squares the index**: `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ)`. -/
+theorem sq_negIndex_zetaKernel_le_negIndex_kunnethZeta :
+    negIndex zetaKernel * negIndex zetaKernel ≤ negIndex kunnethZeta := by
+  rcases (rightZeros zetaZeroConfig).finite_or_infinite with hR | hR
+  · have hκ : negIndex zetaKernel = (hR.toFinset.card : ℕ∞) := by
+      rw [negIndex_zetaKernel, hR.encard_eq_coe_toFinset_card]
+    set k := hR.toFinset.card
+    have hpos := (negIndex_zetaKernel_le_posIndex hR).trans_eq' hκ.symm
+    rw [hκ]
+    rcases Nat.eq_zero_or_pos k with hk | hk
+    · simp [hk]
+    -- a family with `k` negative squares and a family with `k` positive squares
+    obtain ⟨n, y, hy⟩ : ∃ (n : ℕ) (y : Fin n → HeckeLattice), k ≤ hermNegIndex (gram zetaKernel y) := by
+      by_contra h
+      push Not at h
+      have : negIndex zetaKernel ≤ (k - 1 : ℕ) := negIndex_le_iff.mpr fun n y => by
+        exact_mod_cast Nat.le_sub_one_of_lt (h n y)
+      rw [hκ] at this
+      exact absurd (Nat.cast_le.mp this) (by omega)
+    obtain ⟨m, x, hx⟩ : ∃ (m : ℕ) (x : Fin m → HeckeLattice), k ≤ hermPosIndex (gram zetaKernel x) := by
+      by_contra h
+      push Not at h
+      have : posIndex zetaKernel ≤ (k - 1 : ℕ) := negIndex_le_iff.mpr fun n x => by
+        have := h n x
+        rw [gram_neg, hermNegIndex, neg_neg]
+        exact_mod_cast Nat.le_sub_one_of_lt this
+      exact absurd (Nat.cast_le.mp (hpos.trans this)) (by omega)
+    refine le_trans ?_ (hermIndex_kronecker_le_negIndex_tensor isHermKernel_zetaKernel
+      isHermKernel_zetaKernel x y)
+    exact_mod_cast le_add_right (Nat.mul_le_mul hx hy)
+  · have htop : negIndex zetaKernel = ⊤ := by
+      rw [negIndex_zetaKernel]; exact Set.encard_eq_top_iff.mpr hR
+    rw [htop, top_mul (by simp), top_le_iff, ← top_le_iff, ← htop]
+    exact negIndex_zetaKernel_le_negIndex_kunnethZeta
+
+end Neutral
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory
