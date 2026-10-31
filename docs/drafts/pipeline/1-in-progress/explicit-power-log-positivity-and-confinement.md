@@ -35,7 +35,15 @@ Set `δ=η/8`. Choose `log P ≥ C₀(K+1)/δ`, `log A ≥ 2(K+L(P))/δ`, and
 `log R ≤ C₂(K+1)/η²`,
 `C₂ = 64[54(2(C₀+3)+2(log 4+4))+49]`.
 
-The reverse gap constant is consequently `256C₂`. These statements are being checked in `Conductor/ExplicitRoughConditioning.lean`, `Conductor/RamanujanApproximationByLogarithmicMoment.lean`, and `Conductor/QuadraticConductorConfinement.lean` under `RenormalizedArithmeticPotentialTheory`.
+The reverse gap constant is consequently `256C₂`. The explicit conditioning module compiles with only `propext`, `Classical.choice`, and `Quot.sound`; weighted approximation and quadratic confinement remain under Lean verification. Final direct audits remain pending.
+
+## Numerical prime coercivity
+
+For a packet supported on `Q<m≤R`, assume `R⁶≤N`, `18(1+log R)≤log N`, and `(1+log R)²/√log N≤1`. The existing prime residual estimate and polarized Gram bound imply
+
+`primeEnergy(y) ≥ (½ log Q − C) ‖y‖²`.
+
+Indeed, shift adjunction energies by `g=|γ|`. They lie between `log m` and `2(g+1)(1+log R)`. Polarization bounds the diagonal discrepancy by `36(g+1)‖y‖²`; the prime residual costs `2C_res‖y‖²`; the Riesz bounds give `½‖y‖²≤Σa_m²≤2‖y‖²`. Thus `C=37g+36+2C_res`. This removes the confinement constant from the logarithmic slope. Lean verification is pending in `CompletedArithmeticForms/PrimePacketCoercivity.lean`.
 
 ## Remaining mathematical work
 

@@ -63,7 +63,9 @@ at edges with a counterterm of nontrivial null cone.
    corrections with zero axis readings. Every finite-index integer-Haar kernel has a unique split
    `k=p+ψ∘slope+Q`, with positive Haar `p`, Hermitian slope `ψ`, and finite-rank polynomial `Q` vanishing
    on both axes. Its exact index is `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`. Punctured dilation limits are exactly
-   real `L≤0`, with minimum index zero at zero and one at every negative limit.
+   real `L≤0`, with minimum index zero at zero and one at every negative limit. For arbitrary subgroup
+   successors `1_H`, finite-index continuous-dilation carriers exist exactly for `H={0}` or `H=ℚ`;
+   both admit positive carriers.
 3. **The pole carries a finite nonzero index.** The pole pair `|u|^{1/2} + |u|^{−1/2}` of Weil's kernel extends to
    an index-one state of the whole affine group whose successor is `2 − c|b|`. It is the hyperbolic pair of the
    fixed points `0, ∞` of `ℙ¹(ℚ)`: a boost on `×` glued to a conformal successor on `+`, with the boost exponent
@@ -299,6 +301,7 @@ at edges with a counterterm of nontrivial null cone.
 | **Canonical Haar splitting**: unique `k=p+ψ∘slope+Q`, with positive Haar `p` and finite-rank zero-axis polynomial `Q`; `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)` | `exists_unique_haar_relative_split`, `finite_index_haar_iff_relative_split` |
 | **Polynomial index preservation**: `κ(p+h)=κ(h)` for positive Haar `p` and Hermitian polynomial-fibre `h`, including infinite index | `negIndex_add_positive_haar_polynomial` |
 | **Sharp punctured limits**: precisely real `L≤0`, with minimum index zero at zero and one at negative limits | `exists_finite_index_haar_punctured_limit_iff`, `exists_haar_negative_limit_index_one` |
+| **Subgroup successor classification**: continuous-dilation finite-index carriers exist exactly for `H={0}` or `H=ℚ`, with positive witnesses | `exists_finite_index_continuous_subgroup_successor_iff` |
 | Axis-invisible kernels: zero or `κ ≥ 2`, rank `≤ κ²`, polynomial fibres of degree `< κ`; every `κ ≥ 2` occurs | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `negIndex_haarMixedPowerState` |
 | The index is twin-blind | `negIndex_mul_unitaryChar`, `negIndex_heckeState_mul_slopeChar` |
 
@@ -503,3 +506,5 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
   `TranslationForms`, `MovingLimit`, `PositivePart`, `PositiveSlopeSplit`, `SplittingUniqueness`,
   `RelativeSplit`, `PolynomialIndexPreservation`, `Classification`.
 - Sharp Haar dilation limits (`Haar/`): `PuncturedLimits`, `SharpDilationLimits`.
+- Subgroup successors (`Haar/`): `TranslationSaturation`, `SubgroupEndpoints`, `SubgroupOrbits`,
+  `SubgroupMovingBounds`, `SubgroupGramLimit`, `SubgroupClassification`.

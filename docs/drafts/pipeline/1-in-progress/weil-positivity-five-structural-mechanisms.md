@@ -28,6 +28,8 @@
 - O5 finite structure: [The affine period-defect orbit](../3-formalized/haar-period-defects-have-a-finite-affine-orbit.md) has dimension at most `r²`. [Zero-axis kernels](../3-formalized/axis-invisible-finite-index-kernels-have-finite-rank.md) also have rank at most `r²`, and their [polynomial fibres](../3-formalized/the-negative-index-bounds-zero-axis-translation-degree.md) have degree below `r`.
 - O5 positive survivor: [Positive Haar carriers preserve slope index](../3-formalized/positive-haar-carriers-preserve-the-index-of-slope-corrections.md): `κ(p+ψ∘slope)=κ(ψ)`. The [unique relative splitting](../3-formalized/finite-index-haar-carriers-split-modulo-polynomial-kernels.md) is formalized, with `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`.
 
+- O5 subgroup boundary: [Subgroup-indicator classification](../3-formalized/continuous-affine-dilations-classify-subgroup-indicator-successors.md) gives finite-index continuous-dilation carriers exactly for `H={0}` and `H=ℚ`, both with positive witnesses. Every nonzero proper subgroup forces infinite index.
+
 ## Completion gates
 
 - [ ] O1 fully resolved; exact unconditional Lean theorem and axiom audit.

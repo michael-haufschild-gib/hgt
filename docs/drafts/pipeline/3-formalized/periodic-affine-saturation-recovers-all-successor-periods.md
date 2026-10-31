@@ -3,7 +3,7 @@
 - **ID:** AFFINE-PERIODIC-SATURATION
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Subgroup-indicator successors](../1-in-progress/continuous-affine-dilations-classify-subgroup-indicator-successors.md)
+- **Parent:** [Subgroup-indicator successors](continuous-affine-dilations-classify-subgroup-indicator-successors.md)
 - **Statement:** Let `k` be a Hermitian finite-index kernel on `Aff(ℚ)` invariant under right integer translations. If `k(T_b)=k(1)`, then `k(gT_b)=k(T_bg)=k(g)` for every affine `g`.
 
 ## Proof

@@ -85,7 +85,10 @@ private theorem active_prime_mass_le (Q : ℕ) (S : Finset ℕ)
     obtain ⟨p, hp, hpk⟩ := hS k hk
     have h := single_le_sum (f := fun p : ℕ =>
       if p ∣ k then vonMangoldt k / (k : ℝ) else 0)
-      (fun p _ => by split_ifs <;> positivity) hp
+      (fun p _ => by
+        split_ifs
+        · exact div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)
+        · exact le_rfl) hp
     simpa only [if_pos hpk] using h
   calc
     _ ≤ ∑ k ∈ S, ∑ p ∈ (Icc 1 Q).filter Nat.Prime,
@@ -94,7 +97,8 @@ private theorem active_prime_mass_le (Q : ℕ) (S : Finset ℕ)
         if p ∣ k then vonMangoldt k / (k : ℝ) else 0 := sum_comm
     _ ≤ _ := sum_le_sum fun p hp => sum_dvd_vonMangoldt_div_le (mem_filter.mp hp).2 S
 
-private theorem weighted_sum_sq_le {ι : Type*} (S : Finset ι) (w x : ι → ℝ)
+/-- Cauchy–Schwarz in a finite nonnegative arithmetic measure. -/
+theorem nonnegative_weighted_sum_sq_le {ι : Type*} (S : Finset ι) (w x : ι → ℝ)
     (hw : ∀ i ∈ S, 0 ≤ w i) :
     (∑ i ∈ S, w i * x i) ^ 2 ≤ (∑ i ∈ S, w i) * ∑ i ∈ S, w i * x i ^ 2 := by
   have h := sum_mul_sq_le_sq_mul_sq S (fun i => Real.sqrt (w i))
@@ -140,7 +144,7 @@ theorem primeHead_value_sq_le (Q : ℕ) (a : ℕ → ℝ) (S : Finset ℕ) (n : 
       mul_nonneg (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)) (sq_nonneg _)
   change (∑ k ∈ S, vonMangoldt k / (k : ℝ) * d k) ^ 2 ≤ _
   rw [heq]
-  exact (weighted_sum_sq_le T _ d (fun k _ =>
+  exact (nonnegative_weighted_sum_sq_le T _ d (fun k _ =>
     div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k))).trans
       (mul_le_mul hmass henergy
         (sum_nonneg fun k _ => mul_nonneg
@@ -189,7 +193,7 @@ theorem primeHeadCoefficient_sq_sum_le (Q : ℕ) (a : ℕ → ℝ) (S : Finset �
       primeHeadCoefficient Q a S m ^ 2 ≤ (∑ k ∈ T, vonMangoldt k / (k : ℝ)) *
         ∑ k ∈ T, vonMangoldt k / (k : ℝ) * primeConductorDilationJump Q a k m ^ 2 := by
     rw [heq m hm]
-    exact weighted_sum_sq_le T _ _ (fun k _ =>
+    exact nonnegative_weighted_sum_sq_le T _ _ (fun k _ =>
       div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k))
   have hsum := sum_le_sum hcs
   rw [← mul_sum, sum_comm] at hsum

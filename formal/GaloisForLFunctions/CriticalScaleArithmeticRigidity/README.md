@@ -9,7 +9,7 @@ The complete Weil form has positive conductor energies and an identified pole gr
 
 This programme studies which signed states remain compatible with the joint arithmetic identities of addition and multiplication. Its aim is to derive arithmetic rigidity and relative energy bounds at growing scales. The source, its archimedean boundary, and its pole functional remain part of every object.
 
-The initial foundation is a research specification. Existing results below are imported foundations; the proposed tools and questions are not assertions of new theorems.
+The finite-packet foundation consists of exact joint arithmetic rigidity and source-preserving sampling theorems. The complete critical-scale questions require these tools to interact with the full signed form and its exceptional states.
 
 ## Objects and language
 
@@ -26,6 +26,45 @@ The initial foundation is a research specification. Existing results below are i
 | Critical schedule | A profile-preserving growth schedule whose tests detect the desired zero-depth range |
 
 Horizon, overlap, conductor, profile, and detection depth are separate parameters. Fixed-conductor identities, conductor averages, and uniform statements over growing conductors are different results.
+
+## Exact packet calculus
+
+Write `c_m(n)` for the actual Ramanujan sum. The raw packet is
+
+`F_a(n)=Σ_(1≤m≤Q) a_m c_m(n)`.
+
+Complete-period averaging uses the common period `Q!`. Its coefficient norm is `Σ_m φ(m)a_m²`. Normalized coordinates instead use `c_m/√φ(m)` and Euclidean coefficient mass. Prime adjunction energy in normalized coordinates is
+
+`L_Q(a)=Σ_(1≤m≤Q)[log m+tameDifferent(m)]a_m²`.
+
+The two coordinate conventions serve different exact identities; no weight is discarded when transferring between them.
+
+### Successor transversality and the pole
+
+For `r_m(h)=c_m(h)/φ(m)`, every approximating packet satisfies
+
+`mean (F_a(n+h)−F_b(n))²`
+`=Σ_m φ(m)(b_m−r_m(h)a_m)² + Σ_m φ(m)(1−r_m(h)²)a_m²`.
+
+This is the raw-coordinate realization of the existing successor projection geometry in `BezoutValuationIncidence`. At lag one, its sharp three-quarters leakage controls every conductor above parity. The added dyadic reading is exact:
+
+`mean (F_a(2n)−F_a(n)) = 1_(2≤Q)a_2`.
+
+Consequently successor approximation error plus the square of this pole reading controls three quarters of the entire nonconstant coefficient mass. The constant is optimal. The common zero fibre consists exactly of constant packets with matching approximants. See [DyadicPoleRigidity.lean](DyadicPoleRigidity.lean), `three_quarters_nonconstantPacketMass_le_jointRigidityEnergy`, `universal_joint_rigidity_lower_iff`, and `jointRigidityEnergy_eq_zero_iff`.
+
+### Affine sampling without period-length horizons
+
+An integer affine map sends each primitive root to a root of no greater order and changes its phase. The exact affine spectrum sums coefficients at every collision before taking a norm. Thus, for
+
+`f(n)=F_a(kn+h)−F_b(ln+j)` and `E(f)=mean_(n<Q!) f(n)²`,
+
+`|Σ_(A<n≤A+K) f(n)²−K E(f)| ≤ Q(Q−1) E(f)`.
+
+This holds for every `Q≥2`, every window, and all affine parameters and coefficient families. The error is relative to the actual difference energy, including its mixed terms. Harmonic sampling gives
+
+`[log(N+1)−log(Q(Q−1)+1)] E(f) ≤ Σ_(1≤n≤N) f(n)²/n`.
+
+[AffineWindowEnergy.lean](AffineWindowEnergy.lean) proves these identities and estimates through explicit spectral transport, finite Parseval, and the corpus's sharp two-sided large sieve. Complete-period arithmetic energy therefore becomes an observable quantity at quadratic conductor horizons.
 
 ## Foundational mechanisms
 
@@ -81,6 +120,8 @@ The RH-complete versions of these questions remain research targets. Their concl
 | Positive conductor diagonals imply a positive complete form | Mixed interactions and the full complement must be paid |
 | Small average residual excludes every negative vector | Exceptional directions can carry the whole obstruction |
 | A source-blind defect bound gives polynomial conductor capture | Existing counterexamples force stronger arithmetic input |
+| Rigidity of conductor packets classifies every negative complete state | The actual negative state still needs quantitative conductor capture |
+| Relative adjunction control is relative completed-energy control | The completed conductor floor also includes shell, Gamma, and pole contributions |
 | A smoother receiver inherits tilted-spline positivity | Its Fourier tail and spectral floor change together |
 | Fixed packets establish a growing-horizon theorem | Parameter dependence and common horizons must be explicit |
 | One-sided prime-pair bounds control a signed kernel | Positive and negative parts require compatible discrepancy control |
@@ -94,6 +135,7 @@ The RH-complete versions of these questions remain research targets. Their concl
 | Programme | Interface |
 |---|---|
 | `ArithmeticCastelnuovoSeveri`, `ArithmeticOrientationGeometry` | Scaling surfaces, signed intersection forms, arithmetic actions, and orientation obstructions |
+| `BezoutValuationIncidence` | Exact successor projection, sharp phase loss, affine conductor identities, and two-sided large-sieve sampling |
 | `CriticalArithmeticCorrelationTheory` | Complete conductor energies, ground state, finite-horizon residuals, and unconditional growing-overlap positivity |
 | `SuccessorShellArithmetic` | Joint shell–pole identities and exact prime-dilation energies |
 | `RenormalizedArithmeticPotentialTheory` | Completed conductor energies and their scale dependence |

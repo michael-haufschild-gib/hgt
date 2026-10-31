@@ -23,7 +23,8 @@ Let `W(T)` be the ξ-zeros with `0 < Re < 1`, `T ≤ Im < T + 1`, `n(T)` their t
   `n_off(T) ≤ ΔO(T) ≤ 2 n(T) n_off(T)`. A fibre in `W(T)` lies in `W(T)`; a critical zero meets
   only off-line zeros in its fibre, an off-line zero meets at most `n(T)` copies.
 * `exists_xiCollisionIncrement_le_log_sq`: unconditionally `ΔO(T) ≤ C log² T` for large `T`, from
-  the local count `n(T) ≤ C log T`.
+  the local count `n(T) ≤ C log T`; summed, `O(n) ≤ A + C n log²(n + 1)`
+  (`exists_xiHorizontalCollisionCharge_nat_le`).
 * `tendsto_lineOrder_div_totalOrder_of_bounded_increment`: if `ΔO` is bounded, then the critical
   proportion `N₀(T)/N(T)` of the windows tends to `1`. Bounded increments bound the off-line count
   linearly, `n_off ≤ M(T + 1)`, against `N(T) ≍ T log T`.
@@ -225,6 +226,54 @@ theorem exists_xiCollisionIncrement_le_log_sq :
         exact hn0.trans hT
     _ = 2 * C ^ 2 * Real.log T ^ 2 := by ring
 
+/-- Charge at the next unit height: `O(T + 1) = O(T) + ΔO(T)`. -/
+theorem xiHorizontalCollisionCharge_add_one_eq_add_increment (T : ℝ) :
+    xiHorizontalCollisionCharge (T + 1) =
+      xiHorizontalCollisionCharge T + xiCollisionIncrement T := by
+  rw [xiCollisionIncrement_eq, xiHorizontalCollisionCharge_add_one]
+
+/-- **Unconditional cumulative bound.** `O(n) ≤ A + C n log²(n + 1)` at natural heights. -/
+theorem exists_xiHorizontalCollisionCharge_nat_le :
+    ∃ A C : ℝ, 0 < C ∧ ∀ n : ℕ,
+      (xiHorizontalCollisionCharge n : ℝ) ≤ A + C * n * Real.log ((n : ℝ) + 1) ^ 2 := by
+  obtain ⟨C, hC, hev⟩ := exists_xiCollisionIncrement_le_log_sq
+  obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp hev
+  set k₀ : ℕ := ⌈max T₁ 1⌉₊ with hk₀
+  refine ⟨xiHorizontalCollisionCharge k₀, C, hC, fun n => ?_⟩
+  have hk₀T : max T₁ 1 ≤ (k₀ : ℝ) := Nat.le_ceil _
+  have hbase : ∀ n : ℕ, n ≤ k₀ →
+      (xiHorizontalCollisionCharge n : ℝ) ≤ xiHorizontalCollisionCharge k₀ := fun n hn => by
+    exact_mod_cast xiHorizontalCollisionCharge_mono (by exact_mod_cast hn)
+  have hlogsq : ∀ x y : ℝ, 1 ≤ x → x ≤ y → Real.log x ^ 2 ≤ Real.log y ^ 2 := fun x y hx hxy =>
+    pow_le_pow_left₀ (Real.log_nonneg hx) (Real.log_le_log (by linarith) hxy) 2
+  induction n with
+  | zero =>
+    have h0 := hbase 0 (Nat.zero_le _)
+    simp only [Nat.cast_zero, mul_zero, zero_mul, add_zero] at h0 ⊢
+    exact h0
+  | succ m ih =>
+    have hnn : 0 ≤ C * ((m : ℝ) + 1) * Real.log ((m : ℝ) + 1 + 1) ^ 2 := by positivity
+    push_cast
+    by_cases hm : m + 1 ≤ k₀
+    · have h := hbase (m + 1) hm
+      push_cast at h
+      linarith
+    · have hkm : k₀ ≤ m := by omega
+      have hmT : T₁ ≤ (m : ℝ) :=
+        (le_max_left _ _).trans (hk₀T.trans (by exact_mod_cast hkm))
+      have hm1 : (1 : ℝ) ≤ m := (le_max_right _ _).trans (hk₀T.trans (by exact_mod_cast hkm))
+      have hinc := hT₁ (m : ℝ) hmT
+      have hstep := xiHorizontalCollisionCharge_add_one_eq_add_increment (m : ℝ)
+      have hstepR : (xiHorizontalCollisionCharge ((m : ℝ) + 1) : ℝ) =
+          xiHorizontalCollisionCharge (m : ℝ) + xiCollisionIncrement (m : ℝ) := by
+        exact_mod_cast hstep
+      have hl1 := hlogsq (m : ℝ) ((m : ℝ) + 1 + 1) hm1 (by linarith)
+      have hl2 := hlogsq ((m : ℝ) + 1) ((m : ℝ) + 1 + 1) (by linarith) (by linarith)
+      have hm0 : (0 : ℝ) ≤ m := by linarith
+      rw [hstepR]
+      nlinarith [mul_le_mul_of_nonneg_left hl2 (mul_nonneg hC.le hm0),
+        mul_le_mul_of_nonneg_left hl1 hC.le]
+
 /-! ## Bounded increments give critical density one -/
 
 theorem xiStripWindowOffLineOrder_add_one (T : ℝ) :
@@ -374,4 +423,5 @@ end
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.xiUnitWindowOffLineOrder_le_increment
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.xiCollisionIncrement_le_two_mul
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_xiCollisionIncrement_le_log_sq
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_xiHorizontalCollisionCharge_nat_le
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.tendsto_lineOrder_div_totalOrder_of_bounded_increment

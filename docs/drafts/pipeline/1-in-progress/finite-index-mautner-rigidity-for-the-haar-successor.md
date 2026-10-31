@@ -43,8 +43,10 @@ dilation readings are discontinuous. The
 shows why the finite-rank term cannot be omitted.
 
 The [sharp punctured-limit classification](../3-formalized/finite-index-haar-dilation-limits-are-exactly-nonpositive.md)
-is formalized: possible limits are real `L≤0`, with minimum index zero at `L=0`
-and one at `L<0`. Completed paper proofs of
-[subgroup-indicator classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md)
-and [proper-subgroup polynomial index preservation](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md)
-still await Lean audits.
+gives exactly real limits `L≤0`, with minimum index zero at `L=0` and one at `L<0`.
+The [subgroup-indicator classification](../3-formalized/continuous-affine-dilations-classify-subgroup-indicator-successors.md)
+gives finite-index continuous-dilation carriers exactly for `H={0}` and `H=ℚ`,
+with positive carriers at both endpoints. These results are formalized.
+The completed paper proof of
+[proper-subgroup polynomial index preservation](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md)
+still awaits its Lean audit.

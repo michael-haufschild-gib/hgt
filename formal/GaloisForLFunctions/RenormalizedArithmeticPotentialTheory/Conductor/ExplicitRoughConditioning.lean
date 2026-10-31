@@ -356,6 +356,7 @@ theorem rough_harmonicVar_le_glauberForm_explicit : ∀ Q X : ℕ, ∀ f : ℕ �
     harmonicVar Q X f ≤ explicitRoughConditioningConstant * glauberForm Q X f := by
   let Cτ := explicitRoughShellConstant
   have hCτ1 := explicitRoughShellConstant_ge_one
+  have hCτ0 : 0 < Cτ := zero_lt_one.trans_le hCτ1
   have hτ := shellTau_le_explicit
   set η := 4 * Cτ
   have hη : 0 < η := by positivity
@@ -420,12 +421,18 @@ theorem rough_harmonicVar_le_glauberForm_explicit : ∀ Q X : ℕ, ∀ f : ℕ �
       have hδ0 : 0 ≤ δ := by positivity
       have hδs : δ ≤ δs := by
         have e : (1 + 1 / η) * (1 - 1 / (1 + 2 * Cτ)) = δs := by
-          simp only [δs, η]; field_simp; ring
+          simp only [δs, η]
+          field_simp [hCτ0.ne',
+            (by positivity : (1 + 2 * Cτ) ≠ 0),
+            (by positivity : (4 * Cτ + 2) ≠ 0)]
+          ring
         calc δ ≤ (1 + 1 / η) * (1 - 1 / (1 + 2 * Cτ)) :=
               mul_le_mul_of_nonneg_left hτ2 (by positivity)
           _ = δs := e
       have hδs1 : 1 - δs = 1 / (4 * Cτ + 2) := by
-        simp only [δs]; field_simp; ring
+        simp only [δs]
+        field_simp [(by positivity : (4 * Cτ + 2) ≠ 0)]
+        ring
       have hδ1 : 0 < 1 - δ := by
         have : δs < 1 := by
           have : 0 < 1 / (4 * Cτ + 2) := by positivity
@@ -507,6 +514,7 @@ theorem rough_harmonicVar_le_glauberForm_explicit : ∀ Q X : ℕ, ∀ f : ℕ �
         _ ≤ K * Real.exp (Ψ (Q + 1) X) * glauberForm (Q + 1) X f := hih
         _ = K * Real.exp (Ψ Q X) * glauberForm Q X f := by simp only [Ψ, hS, hG]
   intro Q X f
+  change harmonicVar Q X f ≤ K * glauberForm Q X f
   by_cases hX : 2 ≤ X
   · have h := claim (X + 1 - Q) Q X le_rfl hX f
     have hlog : 0 ≤ Real.log X := Real.log_natCast_nonneg X

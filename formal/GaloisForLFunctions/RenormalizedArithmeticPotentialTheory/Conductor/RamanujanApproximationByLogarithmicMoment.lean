@@ -119,12 +119,12 @@ theorem exists_sieveProfile_ramanujan_approximation_logMoment
       (Q := Q) (d := fun a : sieveClassPrefix Q A => a.val) Subtype.val_injective
       (fun a => Real.sqrt (sieveClassDensity Q a.val) * f a.val) hTR
     refine h.trans_eq ?_
-    rw [Finset.sum_coe_sort]
+    rw [← Finset.sum_coe_sort (s := sieveClassPrefix Q A)]
     dsimp only [C]
     rw [div_mul_eq_mul_div]
     apply congrArg (fun t : ℝ => 2 * t / Real.log R)
     refine sum_congr rfl fun a _ => ?_
-    rw [mul_pow, Real.sq_sqrt (sieveClassDensity_pos a.property).le]
+    rw [mul_pow, Real.sq_sqrt (sieveClassDensity_pos a.val.property).le]
     ring
   have hpoint (a : SieveClass Q) :
       sieveClassDensity Q a *

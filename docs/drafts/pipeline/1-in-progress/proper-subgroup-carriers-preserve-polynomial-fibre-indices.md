@@ -3,7 +3,7 @@
 - **ID:** PROPER-SUBGROUP-POLYNOMIAL-INDEX
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** [Haar polynomial index law](../3-formalized/haar-addition-preserves-index-on-polynomial-translation-fibres.md); [subgroup successor classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md).
+- **Source:** [Haar polynomial index law](../3-formalized/haar-addition-preserves-index-on-polynomial-translation-fibres.md); [subgroup successor classification](../3-formalized/continuous-affine-dilations-classify-subgroup-indicator-successors.md).
 - **Statement:** For every proper additive subgroup `H<ℚ`, every positive-definite affine kernel `P` with translation reading `1_H`, and every Hermitian kernel `h` with polynomial translation fibres, `κ(P+h)=κ(h)`, including infinite index.
 
 ## Goal
