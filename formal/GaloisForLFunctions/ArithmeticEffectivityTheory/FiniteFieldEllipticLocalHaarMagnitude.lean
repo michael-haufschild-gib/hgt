@@ -16,12 +16,12 @@ open HTGeometry.DiscreteValuationHaar HTGeometry.LoopEisenstein
 open scoped WithZero WithZeroMulInt NNReal
 noncomputable section
 
-local instance (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
-local instance (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
-local instance (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
+local instance localMagnitudeFiniteMeasurable (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
+local instance localMagnitudeFiniteBorel (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
+local instance localMagnitudeFiniteCompact (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
   finiteCompletionInteger_compact v
-local instance : MeasurableSpace InfinityCompletion := borel _
-local instance : BorelSpace InfinityCompletion := ⟨rfl⟩
+local instance localMagnitudeInfinityMeasurable : MeasurableSpace InfinityCompletion := borel _
+local instance localMagnitudeInfinityBorel : BorelSpace InfinityCompletion := ⟨rfl⟩
 
 private theorem toNNReal_base_congr {q r : ℝ≥0} (hq : q ≠ 0) (hr : r ≠ 0)
     (h : q = r) (z : ℤᵐ⁰) :

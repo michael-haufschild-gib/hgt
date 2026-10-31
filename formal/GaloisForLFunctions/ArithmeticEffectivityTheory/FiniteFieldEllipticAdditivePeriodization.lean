@@ -30,7 +30,7 @@ def diagonalAdelesEquiv : K ≃+ diagonalAdeles where
 instance diagonalAdeles_countable : Countable diagonalAdeles :=
   diagonalAdelesEquiv.symm.injective.countable
 
-local instance : MeasurableAdd Adeles := ContinuousAdd.measurableAdd
+local instance periodizationMeasurableAdd : MeasurableAdd Adeles := ContinuousAdd.measurableAdd
 
 /-- The actual simple-pole domain is a fundamental domain for diagonal translations. -/
 theorem ellipticAdditiveDomain_isAddFundamentalDomain :

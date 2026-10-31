@@ -156,6 +156,7 @@ theorem norm_finiteThetaFirstMoment_sub_deriv_xi_le_strip (N : ℕ) {R : ℝ} (h
         apply integral_mono_ae (hfull.sub hN).norm
           ((_root_.RHTower.integrable_thetaAmplitudeProfile.const_mul _).const_mul _)
         filter_upwards with x
+        dsimp only [Pi.sub_apply]
         have hfact : (x : ℂ) * (_root_.RHTower.thetaCuspFullSource x : ℂ) *
               Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
             (x : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
@@ -188,7 +189,7 @@ theorem norm_finiteThetaFirstMoment_sub_deriv_xi_le_strip (N : ℕ) {R : ℝ} (h
             mul_le_mul_of_nonneg_left (theta_firstMoment_integrand_strip_bound hR hz x) hC0
     _ = _root_.RHTower.thetaCuspIntegerTailConstant * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) *
           _root_.RHTower.thetaAmplitudeEnvelope R := by
-        rw [integral_const_mul, integral_const_mul]
+        rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
         rfl
 
 /-! ## §2 Source-pure window contour, Laurent loop, and Wiener–Hopf operator -/
@@ -208,7 +209,7 @@ theorem thetaWindowLowerLeft_re (n : ℕ) : (thetaWindowLowerLeft n).re = -1 / 2
 
 @[simp]
 theorem thetaWindowLowerLeft_im (n : ℕ) :
-    (thetaWindowLowerLeft n).im = -1 / (2 * (zhukovskyStage n : ℝ)) := by
+    (thetaWindowLowerLeft n).im = -(1 / (2 * (zhukovskyStage n : ℝ))) := by
   simp [thetaWindowLowerLeft]
   ring
 
@@ -224,7 +225,8 @@ theorem thetaWindowUpperRight_im (T : ℝ) (n : ℕ) :
 
 theorem thetaWindow_re_le (T : ℝ) (n : ℕ) :
     (thetaWindowLowerLeft n).re ≤ (thetaWindowUpperRight T n).re := by
-  simp
+  rw [thetaWindowLowerLeft_re, thetaWindowUpperRight_re]
+  norm_num
 
 theorem thetaWindow_im_le (T : ℝ) (n : ℕ) :
     (thetaWindowLowerLeft n).im ≤ (thetaWindowUpperRight T n).im := by
@@ -323,14 +325,14 @@ theorem integerThetaWindowPowerSum_zero_is_int (T : ℝ) (n N : ℕ)
     rw [pow_zero, one_mul, logDeriv_apply, _root_.RHTower.deriv_finiteThetaAmplitude]
   unfold integerThetaWindowPowerSum
   rw [hfun]
-  exact hk.symm
+  simpa [D] using hk
 
 /-! ## §3 Window zero isolation and weighted Cauchy power sums of `xi` -/
 
 /-- Open box neighbourhood around the closed `(T, n)` window rectangle. -/
 def thetaWindowOpenBox (T : ℝ) (n : ℕ) : Set ℂ :=
   {z : ℂ | -1 < z.re ∧ z.re < 2 ∧
-    -3 / (4 * (zhukovskyStage n : ℝ)) < z.im ∧
+    -(3 / (4 * (zhukovskyStage n : ℝ))) < z.im ∧
     z.im < max 0 T - 1 / (4 * (zhukovskyStage n : ℝ))}
 
 theorem isOpen_thetaWindowOpenBox (T : ℝ) (n : ℕ) : IsOpen (thetaWindowOpenBox T n) := by
@@ -353,7 +355,7 @@ theorem thetaWindowRect_subset_openBox (T : ℝ) (n : ℕ) :
   have hquarter : 1 / (4 * (zhukovskyStage n : ℝ)) < 1 / (2 * (zhukovskyStage n : ℝ)) := by
     exact one_div_lt_one_div_of_lt (by positivity) (by linarith)
   have hthree_quarter :
-      -3 / (4 * (zhukovskyStage n : ℝ)) < -1 / (2 * (zhukovskyStage n : ℝ)) := by
+      -(3 / (4 * (zhukovskyStage n : ℝ))) < -(1 / (2 * (zhukovskyStage n : ℝ))) := by
     have hlt : 1 / (2 * (zhukovskyStage n : ℝ)) < 3 / (4 * (zhukovskyStage n : ℝ)) := by
       rw [div_lt_div_iff₀ (by positivity) (by positivity)]
       linarith
@@ -460,9 +462,7 @@ theorem stripZeros_strictly_inside_thetaWindow {T : ℝ} {n : ℕ} (hn : thetaWi
   rw [thetaWindowLowerLeft_re, thetaWindowUpperRight_re,
     thetaWindowLowerLeft_im, thetaWindowUpperRight_im, hmax]
   refine ⟨by linarith [hwdata.1.1], by linarith [hwdata.1.2.1], ?_, ?_⟩
-  · have hneg : -1 / (2 * (zhukovskyStage n : ℝ)) < 0 := by
-      have : 0 < 1 / (2 * (zhukovskyStage n : ℝ)) := by positivity
-      linarith
+  · have hneg : -(1 / (2 * (zhukovskyStage n : ℝ))) < 0 := neg_neg_of_pos (by positivity)
     linarith [hwdata.1.2.2.1]
   · linarith
 
@@ -482,7 +482,7 @@ theorem xi_zero_in_openBox_mem_stripZeros {T : ℝ} {n : ℕ} (hn : thetaWindowS
   have hz_im_abs : |z.im| ≤ |T| + 1 := by
     rw [abs_le]
     have hlow : -(|T| + 1) ≤ z.im := by
-      have h1 : -1 < -3 / (4 * (zhukovskyStage n : ℝ)) := by linarith
+      have h1 : -1 < -(3 / (4 * (zhukovskyStage n : ℝ))) := by linarith
       linarith [hzBox.2.2.1, abs_nonneg T]
     have hhigh : z.im ≤ |T| + 1 := by
       have hmax_le : max 0 T ≤ |T| := max_le (abs_nonneg T) (le_abs_self T)
@@ -509,7 +509,7 @@ theorem xi_zero_in_openBox_mem_stripZeros {T : ℝ} {n : ℕ} (hn : thetaWindowS
   -- Rule out `z.im < 0` using the coordinate gap against `0`.
   have hzim_nonneg : 0 ≤ z.im := by
     by_contra hneg
-    push_neg at hneg
+    replace hneg : z.im < 0 := lt_of_not_ge hneg
     have hgap0 : collisionWindowGap T ≤ -z.im := by
       have h1 : collisionWindowGap T ≤ |z.im - (0 : ℂ).im| :=
         (min_le_right _ _).trans
@@ -527,7 +527,7 @@ theorem xi_zero_in_openBox_mem_stripZeros {T : ℝ} {n : ℕ} (hn : thetaWindowS
     linarith [hzBox.2.2.2]
   have hT_pos : 0 < T := by
     by_contra hle
-    push_neg at hle
+    replace hle : T ≤ 0 := le_of_not_gt hle
     rw [max_eq_left hle] at hmax_pos
     exact lt_irrefl 0 hmax_pos
   have hzim_lt_T : z.im < T := by
@@ -575,13 +575,20 @@ theorem xi_rectIntegral_powerSum_eq_stripZeros_sum (T : ℝ) {n : ℕ} (hn : the
       refine AnalyticAt.mul ?_ (hhan w₀ (htU w₀ hw₀))
       have : ∀ w ∈ Z.erase w₀, AnalyticAt ℂ (fun z => (z - w) ^ m₀ w) w₀ :=
         fun w _ => (analyticAt_id.sub analyticAt_const).pow (m₀ w)
-      simpa only [Finset.prod_apply] using Finset.analyticAt_prod (Z.erase w₀) this
+      have hprod_eq : (fun z => ∏ w ∈ Z.erase w₀, (z - w) ^ m₀ w) =
+          ∏ w ∈ Z.erase w₀, fun z => (z - w) ^ m₀ w := by
+        funext z
+        exact (Finset.prod_apply z (Z.erase w₀) _).symm
+      rw [hprod_eq]
+      exact Finset.analyticAt_prod (Z.erase w₀) this
     have hG0 : G w₀ ≠ 0 := by
       refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun w hw => ?_) (hh0 w₀ (htU w₀ hw₀))
       exact pow_ne_zero _ (sub_ne_zero.mpr (Finset.ne_of_mem_erase hw).symm)
     have hev : _root_.RHTower.xi =ᶠ[nhds w₀] (fun z => (z - w₀) ^ m₀ w₀) • G := by
       filter_upwards [hUopen.mem_nhds (htU w₀ hw₀)] with z hzU
-      rw [Pi.smul_apply, smul_eq_mul, hfact z hzU, ← Finset.mul_prod_erase Z _ hw₀, mul_assoc]
+      change _root_.RHTower.xi z = (z - w₀) ^ m₀ w₀ * G z
+      dsimp only [G]
+      rw [hfact z hzU, ← Finset.mul_prod_erase Z _ hw₀, mul_assoc]
     have hord_eq : analyticOrderAt _root_.RHTower.xi w₀ = (m₀ w₀ : ℕ∞) :=
       ((_root_.RHTower.xi_analyticOnNhd U w₀ (htU w₀ hw₀)).analyticOrderAt_eq_natCast).mpr
         ⟨G, hGan, hG0, hev⟩
@@ -685,7 +692,7 @@ private lemma tendsto_gaussian_tail_zero (C : ℝ) :
     (Filter.tendsto_pow_atTop (by norm_num : 2 ≠ 0)).comp
       (tendsto_natCast_atTop_atTop.comp (tendsto_add_atTop_nat 1))
   have hexp : Tendsto (fun N : ℕ => Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2)) atTop (𝓝 0) := by
-    simpa only [Function.comp_apply, pow_zero, one_mul] using
+    simpa only [Function.comp_def, pow_zero, one_mul] using
       (Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 0).comp hsq
   simpa only [mul_zero] using hexp.const_mul C
 
@@ -827,8 +834,10 @@ theorem tendsto_integerThetaWindowPowerSum (T : ℝ) {n : ℕ} (hn : thetaWindow
     set B_N := _root_.RHTower.finiteThetaAmplitude N (γ t)
     set A := deriv _root_.RHTower.xi (γ t)
     set B := _root_.RHTower.xi (γ t)
+    have hBN_nz : B_N ≠ 0 := hamp_nz t
     have hquot : A_N / B_N - A / B = ((A_N - A) * B + A * (B - B_N)) / (B_N * B) := by
-      field_simp [hamp_nz t, hxi_nz]
+      rw [div_sub_div _ _ hBN_nz hxi_nz]
+      congr 1
       ring
     have hdenom_pos : 0 < μ ^ 2 / 2 := by positivity
     have hdenom_le : μ ^ 2 / 2 ≤ ‖B_N * B‖ := by
@@ -853,7 +862,7 @@ theorem tendsto_integerThetaWindowPowerSum (T : ℝ) {n : ℕ} (hn : thetaWindow
           ≤ ((M_xi + M_dxi + μ) * err N) / (μ ^ 2 / 2) := by
             have hBB_pos : 0 < ‖B_N * B‖ := lt_of_lt_of_le hdenom_pos hdenom_le
             rw [div_le_div_iff₀ hBB_pos hdenom_pos]
-            nlinarith
+            exact mul_le_mul hnum_le hdenom_le hdenom_pos.le (by positivity)
         _ = ((M_xi + M_dxi + μ) / (μ ^ 2 / 2)) * err N := by ring
     have halg : gN (γ t) * vel t - ((γ t) ^ r * logDeriv _root_.RHTower.xi (γ t)) * vel t =
         (γ t) ^ r * (A_N / B_N - logDeriv _root_.RHTower.xi (γ t)) * vel t := by
@@ -894,15 +903,13 @@ theorem eventually_integerThetaWindowDegree_eq (T : ℝ) {n : ℕ} (hn : thetaWi
   have hk_eq : k = (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) := by
     have habs : |(k : ℝ) - (_root_.RHTower.xiStripWindowTotalOrder T : ℝ)| < 1 / 2 := by
       exact_mod_cast hdist
-    have hlt1 : (k : ℝ) - (_root_.RHTower.xiStripWindowTotalOrder T : ℝ) < 1 :=
-      (abs_lt.mp habs).2.trans (by norm_num)
-    have hgt1 : -1 < (k : ℝ) - (_root_.RHTower.xiStripWindowTotalOrder T : ℝ) :=
-      (by norm_num : (-1 : ℝ) < -1 / 2).trans (abs_lt.mp habs).1
-    have hk_le : k < (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) + 1 := by exact_mod_cast hlt1
-    have hk_ge : (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) - 1 < k := by
-      have : ((_root_.RHTower.xiStripWindowTotalOrder T : ℤ) - 1 : ℝ) < (k : ℝ) := by
-        push_cast; linarith
-      exact_mod_cast this
+    obtain ⟨h1, h2⟩ := abs_lt.mp habs
+    have hlt : ((k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) : ℤ) : ℝ) < 1 := by
+      push_cast; linarith
+    have hgt : (-1 : ℝ) < ((k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) : ℤ) : ℝ) := by
+      push_cast; linarith
+    have hlt' : k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) < 1 := by exact_mod_cast hlt
+    have hgt' : -1 < k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) := by exact_mod_cast hgt
     omega
   have hp0 : integerThetaWindowPowerSum T n N 0 = (_root_.RHTower.xiStripWindowTotalOrder T : ℂ) := by
     rw [hk, hk_eq]
@@ -924,7 +931,7 @@ private lemma tendsto_newtonElem {d : ℕ → ℕ → ℂ} {d₀ : ℕ → ℂ}
     rcases k with _ | k
     · simp only [newtonElem, tendsto_const_nhds]
     · simp only [newtonElem]
-      refine Tendsto.const_mul _ (tendsto_finset_sum _ fun j hj => ?_)
+      refine Tendsto.const_mul _ (tendsto_finsetSum _ fun j _ => ?_)
       have hjk : k - j < k + 1 := by omega
       exact ((ih (k - j) hjk).const_mul ((-1 : ℂ) ^ j)).mul (hd (j + 1))
 
@@ -933,7 +940,7 @@ private lemma tendsto_pairDiffPowerSum (M : ℕ) {s : ℕ → ℕ → ℂ} {s₀
     Tendsto (fun N => pairDiffPowerSum M (s N) K) atTop (𝓝 (pairDiffPowerSum M s₀ K)) := by
   unfold pairDiffPowerSum
   dsimp only
-  refine tendsto_finset_sum _ fun r _ => ?_
+  refine tendsto_finsetSum _ fun r _ => ?_
   have h1 : Tendsto (fun N => if r = 0 then (M : ℂ) else s N r) atTop
       (𝓝 (if r = 0 then (M : ℂ) else s₀ r)) := by
     by_cases hr : r = 0
@@ -1068,12 +1075,13 @@ private lemma eventually_integerThetaDifferencePoly_rouche (T : ℝ) {n : ℕ}
       atTop (𝓝 0) := by
     have h0 : (0 : ℝ) = ∑ _k ∈ Finset.range (M ^ 2 + 1), (0 : ℝ) := by simp
     rw [h0]
-    refine tendsto_finset_sum _ fun k _ => ?_
+    refine tendsto_finsetSum _ fun k _ => ?_
     have hnorm : Tendsto
         (fun N : ℕ => ‖newtonElem (pairDiffPowerSum M (integerThetaWindowPowerSum T n N)) k -
           newtonElem (pairDiffPowerSum M s₀) k‖) atTop (𝓝 0) := by
       simpa only [sub_self, norm_zero] using
-        ((helem_tendsto k).sub tendsto_const_nhds).norm
+        ((helem_tendsto k).sub
+          (tendsto_const_nhds (x := newtonElem (pairDiffPowerSum M s₀) k))).norm
     simpa only [zero_mul] using hnorm.mul_const (2 ^ (M ^ 2 - k))
   filter_upwards [eventually_integerThetaWindowDegree_eq T hn,
     hsum_tendsto.eventually (gt_mem_nhds hη_pos)] with N hdeg hsum_lt

@@ -570,4 +570,24 @@ theorem negIndex_weilArchState_lt_top_iff_bdd {c : ℝ} (hc : 0 < c) :
     have hnat : heatRightZeroMultiplicity t₀ + 1 ≤ M := by exact_mod_cast hbound
     omega
 
+#print axioms isHermKernel_heatArchState
+#print axioms continuousOn_heatArchState
+#print axioms negIndex_heatArchState_lt_top
+#print axioms negIndex_heatArchState_eq
+#print axioms negIndex_heatArchState_eq_nonrealZeroCount
+#print axioms negIndex_heatArchState_eq_card_of_simple
+#print axioms lowerSemicontinuousAt_negIndex_heatArchState
+#print axioms lowerSemicontinuousOn_negIndex_heatArchState
+#print axioms antitoneOn_negIndex_heatArchState
+#print axioms exists_right_negIndex_heatArchState_eq
+#print axioms exists_left_negIndex_heatArchState_eq_add_collisionPairs
+#print axioms eventually_negIndex_heatArchState_eq_iff_realMultipleZeros_eq_empty
+#print axioms negIndex_heatArchState_eq_add_interval_collisionPairs
+#print axioms negIndex_heatArchState_eq_iff_forall_realMultipleZeros_eq_empty
+#print axioms negIndex_heatArchState_eq_one_of_eighth_le
+#print axioms riemannHypothesis_iff_forall_negIndex_heatArchState_eq_one
+#print axioms riemannHypothesis_iff_negIndex_heatArchState_const
+#print axioms negIndex_weilArchState_le_liminf_heatArchState
+#print axioms negIndex_weilArchState_lt_top_iff_bdd
+
 end GaloisForLFunctions.AdelicKreinGeometry

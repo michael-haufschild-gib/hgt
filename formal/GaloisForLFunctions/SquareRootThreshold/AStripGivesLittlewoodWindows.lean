@@ -68,7 +68,7 @@ theorem norm_paperFT_shift_sub_le {f : ℝ → ℂ} {a : ℝ} (ha : 0 ≤ a) (hf
     · simp [hu]
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
     have hre : (I * z * (u : ℂ)).re = -(z.im * u) := by
-      simp only [mul_re, mul_im, I_re, I_im, ofReal_re, ofReal_im]; ring
+      simp only [mul_re, mul_im, I_re, I_im, ofReal_re, ofReal_im]; ring1
     have h1 : -(z.im * u) ≤ |z.im| * |u| := by rw [← abs_mul]; exact neg_le_abs _
     have h2 : |z.im| * |u| ≤ |y| * a :=
       mul_le_mul hz (hsupp u hu) (abs_nonneg _) (abs_nonneg _)
@@ -97,10 +97,10 @@ theorem norm_paperFT_shift_sub_le {f : ℝ → ℂ} {a : ℝ} (ha : 0 ≤ a) (hf
       f u * Complex.exp (I * (x : ℂ) * (u : ℂ)) =
       f u * Complex.exp (I * (x : ℂ) * (u : ℂ)) * (((Real.exp (-(y * u)) - 1 : ℝ)) : ℂ) := by
     rw [hexp, Complex.exp_add, Complex.ofReal_sub, Complex.ofReal_exp, Complex.ofReal_one]
-    ring
+    ring1
   rw [hfac, norm_mul, norm_mul, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs]
   have hre : (I * (x : ℂ) * (u : ℂ)).re = 0 := by
-    simp only [mul_re, mul_im, I_re, I_im, ofReal_re, ofReal_im]; ring
+    simp only [mul_re, mul_im, I_re, I_im, ofReal_re, ofReal_im]; ring1
   rw [hre, Real.exp_zero, mul_one, mul_comm K]
   refine mul_le_mul_of_nonneg_left ((abs_exp_sub_one_le_mul_exp _).trans ?_) (norm_nonneg _)
   have hyu : |-(y * u)| ≤ |y| * a := by
@@ -173,13 +173,13 @@ theorem norm_paperFT_cb_shift_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (k : ℕ) (x :
     have hz0 : z ≠ 0 := by
       intro h; rw [h, Complex.zero_re] at hzre; exact hx0 (by rw [← hzre]; simp)
     have hkz : paperFT (cb ℓ k) z = -paperFT (cb ℓ (k + 2)) z / z ^ 2 := by
-      rw [eq_div_iff (pow_ne_zero 2 hz0), paperFT_cb_add_two hℓ k z]; ring
+      rw [eq_div_iff (pow_ne_zero 2 hz0), paperFT_cb_add_two hℓ k z]; ring1
     have hkx : paperFT (cb ℓ k) x = -paperFT (cb ℓ (k + 2)) x / (x : ℂ) ^ 2 := by
-      rw [eq_div_iff (pow_ne_zero 2 hx0), paperFT_cb_add_two hℓ k x]; ring
+      rw [eq_div_iff (pow_ne_zero 2 hx0), paperFT_cb_add_two hℓ k x]; ring1
     have hsplit : paperFT (cb ℓ k) z - paperFT (cb ℓ k) x =
         -(paperFT (cb ℓ (k + 2)) z - paperFT (cb ℓ (k + 2)) x) / z ^ 2 +
           paperFT (cb ℓ (k + 2)) x * ((z ^ 2 - (x : ℂ) ^ 2) / (z ^ 2 * (x : ℂ) ^ 2)) := by
-      rw [hkz, hkx]; field_simp; ring
+      rw [hkz, hkx]; field_simp; ring1
     have hnz : x ^ 2 ≤ ‖z‖ ^ 2 := by
       rw [hz, Complex.sq_norm, Complex.normSq_add_mul_I]; nlinarith [sq_nonneg y]
     have hxsq : 1 ≤ x ^ 2 := by nlinarith [sq_abs x, abs_nonneg x]
@@ -223,7 +223,7 @@ theorem norm_paperFT_cb_shift_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (k : ℕ) (x :
         rw [div_le_div_iff₀ (mul_pos hzn hx2) (mul_pos (by linarith) (by linarith))]
         calc ‖z ^ 2 - (x : ℂ) ^ 2‖ * (|x| * x ^ 2) ≤ 3 * |x| * |y| * (|x| * x ^ 2) :=
               mul_le_mul_of_nonneg_right hnum (by positivity)
-          _ = 3 * |y| * (x ^ 2 * x ^ 2) := by rw [← hxa]; ring
+          _ = 3 * |y| * (x ^ 2 * x ^ 2) := by rw [← hxa]; ring1
           _ ≤ 3 * |y| * (‖z‖ ^ 2 * |x| ^ 2) := mul_le_mul_of_nonneg_left hden (by positivity)
       have hq2 : 3 * |y| / (|x| * x ^ 2) * (1 + |x|) ^ 2 ≤ 12 * |y| := by
         rw [div_mul_eq_mul_div, div_le_iff₀ (mul_pos (by linarith) (by linarith))]
@@ -234,9 +234,9 @@ theorem norm_paperFT_cb_shift_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (k : ℕ) (x :
             (1 + |x|) ^ 2
           ≤ (∫ u, ‖cb ℓ (k + 2) u‖) * (3 * |y| / (|x| * x ^ 2)) * (1 + |x|) ^ 2 :=
             mul_le_mul_of_nonneg_right hFq (by positivity)
-        _ = (∫ u, ‖cb ℓ (k + 2) u‖) * (3 * |y| / (|x| * x ^ 2) * (1 + |x|) ^ 2) := by ring
+        _ = (∫ u, ‖cb ℓ (k + 2) u‖) * (3 * |y| / (|x| * x ^ 2) * (1 + |x|) ^ 2) := by ring1
         _ ≤ (∫ u, ‖cb ℓ (k + 2) u‖) * (12 * |y|) := mul_le_mul_of_nonneg_left hq2 hI2
-        _ = 12 * |y| * ∫ u, ‖cb ℓ (k + 2) u‖ := by ring
+        _ = 12 * |y| * ∫ u, ‖cb ℓ (k + 2) u‖ := by ring1
     rw [hsplit]
     have htri := norm_add_le (-(paperFT (cb ℓ (k + 2)) z - paperFT (cb ℓ (k + 2)) x) / z ^ 2)
       (paperFT (cb ℓ (k + 2)) x * ((z ^ 2 - (x : ℂ) ^ 2) / (z ^ 2 * (x : ℂ) ^ 2)))
@@ -286,7 +286,7 @@ theorem norm_wsummand_window_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (T : ℝ) (k : 
     rw [mul_assoc, Complex.mul_conj, Complex.normSq_eq_norm_sq]
     simp only [psi]
     push_cast
-    ring
+    ring1
   rw [hW, hψ]
   set A := paperFT (cb ℓ k) ((x : ℂ) + ((-η : ℝ) : ℂ) * I)
   set B := paperFT (cb ℓ k) ((x : ℂ) + (η : ℂ) * I)
@@ -294,7 +294,7 @@ theorem norm_wsummand_window_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (T : ℝ) (k : 
   have hfac : (zetaZeroConfig.mult ρ : ℂ) * A * conj B -
       (zetaZeroConfig.mult ρ : ℂ) * C * conj C =
       (zetaZeroConfig.mult ρ : ℂ) * ((A - C) * conj B + C * conj (B - C)) := by
-    rw [map_sub]; ring
+    rw [map_sub]; ring1
   rw [hfac, norm_mul, Complex.norm_natCast]
   refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
   refine (norm_add_le _ _).trans ?_
@@ -316,7 +316,7 @@ theorem norm_wsummand_window_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (T : ℝ) (k : 
   have hD := decayConst_nonneg ℓ k
   have hE2 : Real.exp (2 * ℓ * |η|) = Real.exp (ℓ * |η|) * Real.exp (ℓ * |η|) := by
     rw [← Real.exp_add]; ring_nf
-  have h4 : (1 + |x|) ^ 4 = (1 + |x|) ^ 2 * (1 + |x|) ^ 2 := by ring
+  have h4 : (1 + |x|) ^ 4 = (1 + |x|) ^ 2 * (1 + |x|) ^ 2 := by ring1
   rw [hE2, h4]
   set E := Real.exp (ℓ * |η|)
   set u := (1 + |x|) ^ 2
@@ -330,7 +330,7 @@ theorem norm_wsummand_window_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (T : ℝ) (k : 
   calc ‖A - C‖ * ‖B‖ + ‖C‖ * ‖B - C‖
       ≤ |η| * E * shiftConst ℓ k / u * (E * decayConst ℓ k / u) +
           |η| * E * shiftConst ℓ k / u * (E * decayConst ℓ k / u) := add_le_add h1 (h2.trans h3)
-    _ = errConst ℓ k * (|η| * (E * E)) / (u * u) := by unfold errConst; ring
+    _ = errConst ℓ k * (|η| * (E * E)) / (u * u) := by unfold errConst; ring1
 
 /-! ## Comparison with the explicit formula -/
 
@@ -424,12 +424,12 @@ theorem tsum_psi_zero_le_of_summable {ℓ δ : ℝ} (hℓ : 0 < ℓ) (hδ : 0 < 
       calc (zetaZeroConfig.mult ρ : ℝ) * psi ℓ 0 ((ρ : ℂ).im - T)
           ≤ (zetaZeroConfig.mult ρ : ℝ) * ((ℓ * bumpMass) ^ 2 * 1 +
               psi ℓ 1 ((ρ : ℂ).im - T) / δ ^ 2) := h
-        _ = _ := by ring
+        _ = _ := by ring1
     · rw [if_neg (fun h' => hw (hiff.mp h'))] at h; rw [if_neg hw]
       calc (zetaZeroConfig.mult ρ : ℝ) * psi ℓ 0 ((ρ : ℂ).im - T)
           ≤ (zetaZeroConfig.mult ρ : ℝ) * ((ℓ * bumpMass) ^ 2 * 0 +
               psi ℓ 1 ((ρ : ℂ).im - T) / δ ^ 2) := h
-        _ = _ := by ring
+        _ = _ := by ring1
   have hR : Summable fun ρ : zetaZeroConfig.carrier => (ℓ * bumpMass) ^ 2 * g ρ +
       (zetaZeroConfig.mult ρ : ℝ) * psi ℓ 1 ((ρ : ℂ).im - T) / δ ^ 2 :=
     (hgs.mul_left _).add (hs1.div_const _)
@@ -489,7 +489,7 @@ theorem exists_analytic_window_bound :
       (m₁ + 1) * (4 / T ^ 2) * (2 * Real.pi * energy 1 / ℓ) -
       ((m₃ + K) * (2 * Real.pi * energy 1 / ℓ) +
         c * (4 / T ^ 2) * (2 * Real.pi * energy 2 / ℓ ^ 3)) / (D / ℓ) ^ 2 = ℓ * Q := by
-    rw [hQ]; field_simp; ring
+    rw [hQ]; field_simp; ring1
   have hsq : Y = ℓ * (Y / ℓ) := by field_simp
   have hkey : ℓ * Q ≤ ℓ * (Y / ℓ) := by linarith
   have hQle : Q ≤ Y / ℓ := le_of_mul_le_mul_left hkey hℓ0
@@ -503,7 +503,7 @@ theorem exists_analytic_window_bound :
     calc 2 * Real.pi * (m₃ + K) * energy 1
         ≤ 2 * Real.pi * (m₃ + K) * (energy 0 / 2 * (2 * energy 1 / energy 0 + 1)) :=
           mul_le_mul_of_nonneg_left h (by positivity)
-      _ = Real.pi * (m₃ + K) * energy 0 * (2 * energy 1 / energy 0 + 1) := by ring
+      _ = Real.pi * (m₃ + K) * energy 0 * (2 * energy 1 / energy 0 + 1) := by ring1
   have hm1 : m₁ + 1 ≤ (C + 2) * (T ^ 2 * ℓ ^ 2) := by
     have h := mu_half_le hC0 hC hT
     have hT2 : T ≤ T ^ 2 := by rw [sq]; exact le_mul_of_one_le_left hT0.le (by linarith)
@@ -520,7 +520,7 @@ theorem exists_analytic_window_bound :
     calc (m₁ + 1) * (8 * Real.pi * energy 1)
         ≤ (C + 2) * (T ^ 2 * ℓ ^ 2) * (8 * Real.pi * energy 1) :=
           mul_le_mul_of_nonneg_right hm1 (by positivity)
-      _ = 8 * Real.pi * energy 1 * (C + 2) * (T ^ 2 * ℓ ^ 2) := by ring
+      _ = 8 * Real.pi * energy 1 * (C + 2) * (T ^ 2 * ℓ ^ 2) := by ring1
   have hb3 : 8 * Real.pi * c * energy 2 / (D ^ 2 * T ^ 2 * ℓ ^ 2) ≤ 8 * Real.pi * c * energy 2 := by
     apply div_le_self (by positivity)
     have h1 : 1 ≤ D ^ 2 := one_le_pow₀ hD
@@ -535,13 +535,13 @@ theorem exists_analytic_window_bound :
     have e : 2 * Real.pi * energy 0 *
         ((Real.log T - Real.log (12 * Real.pi)) / (4 * Real.pi) - 2 * C) =
         energy 0 / 2 * (Real.log T - Real.log (12 * Real.pi)) - 4 * Real.pi * energy 0 * C := by
-      field_simp; ring
+      field_simp; ring1
     linarith
   have hQ2 : Q = 2 * Real.pi * energy 0 * (m₁ - m₃ / 2) - 3 * Real.pi * energy 0 * K -
       (m₁ + 1) * (8 * Real.pi * energy 1) / (T ^ 2 * ℓ ^ 2) -
       (2 * Real.pi * (m₃ + K) * energy 1 / D ^ 2 - Real.pi * (m₃ + K) * energy 0) -
       8 * Real.pi * c * energy 2 / (D ^ 2 * T ^ 2 * ℓ ^ 2) := by
-    rw [hQ]; ring
+    rw [hQ]; ring1
   linarith
 
 /-! ## The strip -/
@@ -593,7 +593,7 @@ theorem stripWeight_le {ℓ d T₀ : ℝ} (T : ℝ) (hℓ : 0 < ℓ) (hd : 0 ≤
   set x := (ρ : ℂ).im - T with hx
   have hx1 : 1 ≤ 1 + |x| := by linarith [abs_nonneg x]
   have h4 : 1 + (T - (ρ : ℂ).im) ^ 2 ≤ (1 + |x|) ^ 4 := by
-    have e : (T - (ρ : ℂ).im) ^ 2 = |x| ^ 2 := by rw [sq_abs, hx]; ring
+    have e : (T - (ρ : ℂ).im) ^ 2 = |x| ^ 2 := by rw [sq_abs, hx]; ring1
     have h2 : (1 + |x|) ^ 2 ≤ (1 + |x|) ^ 4 := pow_le_pow_right₀ hx1 (by norm_num)
     rw [e]; nlinarith [abs_nonneg x]
   have hind : 0 ≤ Real.exp (2 * ℓ) *
@@ -692,12 +692,12 @@ theorem exists_strip_window_count_bound :
               (1 + |(ρ : ℂ).im - T|) ^ 4)
           = errConst ℓ k * ((zetaZeroConfig.mult (ρ : ℂ) : ℝ) *
             (|(ρ : ℂ).re - 1 / 2| * Real.exp (2 * ℓ * |(ρ : ℂ).re - 1 / 2|) /
-              (1 + |(ρ : ℂ).im - T|) ^ 4)) := by ring
+              (1 + |(ρ : ℂ).im - T|) ^ 4)) := by ring1
         _ ≤ errConst ℓ k * ((zetaZeroConfig.mult (ρ : ℂ) : ℝ) *
             (d * Real.exp (2 * ℓ * d) * (1 / (1 + (T - (ρ : ℂ).im) ^ 2)) +
               Real.exp (2 * ℓ) * (if -T₀ < (ρ : ℂ).im ∧ (ρ : ℂ).im ≤ T₀ then 1 else 0))) :=
             mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hq hm) hc
-        _ = _ := by beta_reduce; rw [mul_add, ← hind]; ring
+        _ = _ := by beta_reduce; rw [mul_add, ← hind]; ring1
   obtain ⟨e₀, he₀s, he₀t, he₀⟩ := herr 0
   obtain ⟨e₁, he₁s, he₁t, he₁⟩ := herr 1
   obtain ⟨hs₀, hi₀, hd₀⟩ := abs_tsum_psi_sub_integral_le hℓ0 T 0 he₀s he₀
@@ -718,18 +718,18 @@ theorem exists_strip_window_count_bound :
   have hA := hM₀ ℓ T _ hℓ hT2 hY hi₀ hi₁
   have hsplit : ((ℓ * bumpMass) ^ 2 * N + E₀ + E₁ / δ ^ 2) / ℓ =
       ℓ * bumpMass ^ 2 * N + (E₀ + E₁ / δ ^ 2) / ℓ := by
-    field_simp; ring
+    field_simp; ring1
   have h3 : E₀ + E₁ / δ ^ 2 ≤ (errConst ℓ 0 + errConst ℓ 1 / δ ^ 2) * B := by
     have := div_le_div_of_nonneg_right he₁t hδ2.le
     have e : (errConst ℓ 0 + errConst ℓ 1 / δ ^ 2) * B = errConst ℓ 0 * B +
-        errConst ℓ 1 * B / δ ^ 2 := by ring
+        errConst ℓ 1 * B / δ ^ 2 := by ring1
     rw [e]; linarith
   have hbound : (E₀ + E₁ / δ ^ 2) / ℓ ≤ stripConst ℓ * B := by
     calc (E₀ + E₁ / δ ^ 2) / ℓ ≤ (errConst ℓ 0 + errConst ℓ 1 / δ ^ 2) * B / ℓ :=
           div_le_div_of_nonneg_right h3 hℓ0.le
-      _ = stripConst ℓ * B := by unfold stripConst; rw [← hδ]; ring
+      _ = stripConst ℓ * B := by unfold stripConst; rw [← hδ]; ring1
   have hB' : stripConst ℓ * B = d * Real.exp (2 * ℓ * d) * stripConst ℓ * C * Real.log T +
-      stripConst ℓ * (Real.exp (2 * ℓ) * N₀) := by rw [hB]; ring
+      stripConst ℓ * (Real.exp (2 * ℓ) * N₀) := by rw [hB]; ring1
   linarith
 
 end

@@ -736,7 +736,7 @@ theorem half_and_three_halves_riesz_of_log_le {Q N : ℕ} (hQ : 2 ≤ Q) (hQN : 
 /-- Low-band leak bound: if `u = ∑_{m=1}^R a_m v_m` is orthogonal to `conductorSubspace Q N`
 (`1 ≤ Q ≤ R`, `2 ≤ R`, `R * R ≤ N`, `18 * (1 + log R) ≤ log N`), then both its low-band `ℓ²`
 coefficient norm and Euclidean low-band norm `‖∑_{m=1}^Q a_m v_m‖` are `O((1 + log R) / log N) ‖u‖`. -/
-theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (hQ1 : 1 ≤ Q) (hQR : Q ≤ R)
+theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (_hQ1 : 1 ≤ Q) (hQR : Q ≤ R)
     (hR2 : 2 ≤ R) (hRN : R * R ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
     {a : ℕ → ℝ}
     (horth : (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N) ∈
@@ -970,8 +970,8 @@ theorem sum_Ioc_packet_sq_le {R K N : ℕ} (hR : 2 ≤ R) (hRK : R * R ≤ K) (h
     (∑ n ∈ Ioc K N, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2) ≤
       ((harmonic N : ℝ) - harmonic K + 2) * ∑ m ∈ Icc 1 R, a m ^ 2 := by
   have hK1 : 1 ≤ K := (Nat.mul_le_mul hR hR).trans hRK |>.trans' (by omega)
-  have hset : Ioc K N = Icc 1 N \ Icc 1 K := Finset.ext fun n => by
-    simp only [mem_Ioc, mem_sdiff, mem_Icc]
+  have hset : Ioc K N = Icc (1 : ℕ) N \ Icc (1 : ℕ) K := Finset.ext fun n => by
+    rw [Finset.mem_Ioc, Finset.mem_sdiff, Finset.mem_Icc, Finset.mem_Icc]
     omega
   have hpole (X : ℕ) : (∑ n ∈ Icc 1 X, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2) =
       ∑ n ∈ Icc 1 X, (∑ m ∈ Icc 1 R, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ) := by

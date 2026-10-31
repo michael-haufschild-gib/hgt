@@ -230,3 +230,6 @@ theorem negIndex_archGlue_smul_polePair (t : ℝ) {c : ℝ} (hc : 0 < c) :
   rw [e, negIndex_archGlue_add_polePair isHermKernel_zero_posUnits t hc, negIndex_archGlue_zero hc]
 
 end GaloisForLFunctions.AdelicKreinGeometry
+
+#print axioms GaloisForLFunctions.AdelicKreinGeometry.negIndex_archGlue_doublePole
+#print axioms GaloisForLFunctions.AdelicKreinGeometry.negIndex_archGlue_smul_polePair

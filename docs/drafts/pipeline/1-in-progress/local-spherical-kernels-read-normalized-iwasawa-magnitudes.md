@@ -26,4 +26,6 @@ passed direct Lean and transitive axiom audits. The
 passed the same audits. The finite simple root has torus valuations `(1,M)`;
 the [affine simple root](../3-formalized/affine-simple-loop-iwasawa-values-are-column-norms.md)
 has `(M,M⁻¹)`, where `M=max(1,v(x))`. Both passed direct Lean and axiom
-audits. Substitution into the normalized Iwasawa character remains.
+audits. Both [actual adelic simple-root factorizations](../3-formalized/actual-elliptic-simple-roots-have-exact-iwasawa-values.md)
+also passed direct Lean and axiom audits. Substitution into the normalized
+Iwasawa character remains.

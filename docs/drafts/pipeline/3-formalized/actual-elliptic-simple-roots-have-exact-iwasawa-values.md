@@ -1,6 +1,6 @@
 # Actual elliptic simple roots have exact Iwasawa values
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** Every actual adele defines finite and affine negative simple
   root elements in the restricted adelic loop group. Their actual global
@@ -26,4 +26,5 @@ or any extra analytic assumption.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticSimpleRoots.lean`:
 `exists_adelicFiniteNegativeRoot_iwasawa_values` and
-`exists_adelicAffineNegativeRoot_iwasawa_values`. Direct audit pending.
+`exists_adelicAffineNegativeRoot_iwasawa_values`. Direct Lean and transitive axiom audits passed.
+Only `propext`, `Classical.choice`, and `Quot.sound` occur.
