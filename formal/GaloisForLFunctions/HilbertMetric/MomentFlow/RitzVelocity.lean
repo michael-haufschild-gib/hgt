@@ -90,7 +90,7 @@ theorem ritz_velocity_identity {n : ℕ} {s : ℝ → ℕ → ℝ} {a : ℝ}
     ring
   change lam' * momentInner (s a) P P = _
   rw [hexpand]
-  linarith only [hderiv]
+  nlinarith only [hderiv]
 
 /-- No stationary or right-moving Ritz branch exists for a positive heat moment form. -/
 theorem ritz_velocity_neg {n : ℕ} {s : ℝ → ℕ → ℝ} {a : ℝ}
@@ -110,6 +110,8 @@ theorem ritz_velocity_neg {n : ℕ} {s : ℝ → ℕ → ℝ} {a : ℝ}
   have hid := ritz_velocity_identity b hs hv hlam heig
   have hnorm := hpos.pos_of_ne_zero _ hne
   have hres := hpos.pos_of_ne_zero _ (mul_ne_zero (X_sub_C_ne_zero (lam a)) hne)
-  exact (mul_neg_iff_of_pos_right hnorm).mp (hid ▸ neg_neg_of_pos hres)
+  apply (mul_neg_iff_of_pos_right hnorm).mp
+  rw [hid]
+  exact neg_neg_of_pos hres
 
 end HilbertMetric.MomentFlow

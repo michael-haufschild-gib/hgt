@@ -6,8 +6,8 @@
 
 ## Source and novelty question
 
-`HankelHeatAdmissionFlow` supplies the actual moment evolution `s'_k=-s_(k+1)` and the
-canonical polynomial connection. Existing heat-moment work resolves determinant signs, singular
+`XiGaussianHeatEndpointRigidity.hasDerivAt_heatMomentInner` supplies the actual moment
+evolution `s'_k=-s_(k+1)`. Existing heat-moment work resolves determinant signs, singular
 gaps, Padé cancellation, and escaping polynomial roots. The candidate concerns the sign of motion
 inside a regular finite section, not a determinant defect or a nonreal zero.
 
@@ -22,6 +22,10 @@ eigenvector-velocity terms:
 For `p(X)=sum_i v_i X^i`, the right side is
 `-L(((X-lambda)p)^2)`. Under RH the actual heat moment form is strictly positive; both
 `p` and `(X-lambda)p` are nonzero. Therefore `lambda'<0`.
+
+The same identity holds in any fixed finite polynomial trial space: test the differentiated
+weak eigenvalue equation against `p`, and the original equation against `p'`.
+No simplicity assumption or monomial basis is required.
 
 ## Required audits
 
