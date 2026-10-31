@@ -1,7 +1,7 @@
 # Xi heat-moment Ritz velocity
 
-- **Stage:** 1-in-progress
-- **Type:** THEOREM; generic final source audit pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** A stationary or right-moving differentiable generalized eigenvalue branch of the actual finite Xi heat-moment pencil falsifies RH.
 
 ## Source and novelty question
@@ -34,6 +34,6 @@ No simplicity assumption or monomial basis is required.
   `xiHeatRitz_velocity_neg_of_rh`,
   `not_riemannHypothesis_of_xiHeatRitz_nonnegative_velocity`.
 
-Generic dependency build and actual Xi source audit pass; all printed transitive axioms are
+Both final `lake --old env lean` source audits pass; all printed transitive axioms are
 `propext`, `Classical.choice`, `Quot.sound`. Both modules are wired into their owning umbrellas.
-No umbrella build was run. The generic module still requires its final no-output-file check.
+The generic dependency was built only for the Xi leaf. No umbrella build was run.

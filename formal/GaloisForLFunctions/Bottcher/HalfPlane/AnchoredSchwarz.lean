@@ -1,7 +1,8 @@
 import GaloisForLFunctions.HTGeometry.UpperHalfPlaneCayleyDensity
 import Mathlib.Analysis.Complex.Schwarz
 
-/-!+# Strict contraction about an interior fixed point
+/-!
+# Strict contraction about an interior fixed point
 
 A holomorphic upper-half-plane self-map fixing `i`, with derivative of modulus less than one
 there, strictly decreases Cayley radius away from `i`. Consequently it has no other periodic

@@ -1,6 +1,6 @@
 # Asymmetric Xi heat minors
 
-- **Stage:** 1-in-progress
+- **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Statement:** A nonpositive determinant of an ordered asymmetric positive-time Xi heat-trace kernel section falsifies RH.
 
@@ -17,6 +17,18 @@ Under RH the actual heat trace is a sum of positive exponentials over positive s
 Xi frequencies. Ordered exponential determinants have a fixed sign. Cauchy–Binet
 pairs two such determinants, and Hardy's infinitely many positive real zeros supply
 strictly positive terms of every finite order.
+
+`ExponentialKernelTotalPositivity.det_expKernel_neg_div_delta_pos` supplies the
+strict exponential determinant sign; `CauchyBinet.factorial_mul_det_mul` supplies
+the finite expansion. `FIDHankelTotalPositivity` demonstrates the monotone-truncation
+limit mechanism, but its integer-divisor kernel is unconditionally positive and is
+not the actual Xi heat trace.
+
+A single fixed injective tuple of actual critical-line nodes supplies a positive
+Cauchy–Binet term in every sufficiently large truncation. The factorial-scaled
+determinants stay above that same term; entrywise convergence then preserves a
+strict lower bound. No zero-spacing estimate or monotonicity of the full determinant
+sequence is needed. Row and column parameters need only have positive pairwise sums.
 
 ## Open obligations
 

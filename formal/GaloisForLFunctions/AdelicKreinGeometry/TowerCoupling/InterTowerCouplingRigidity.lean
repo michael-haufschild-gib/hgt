@@ -552,8 +552,8 @@ theorem negIndex_or_posIndex_ratCorr_eq_top :
 
 def prime2 : Nat.Primes := ⟨2, Nat.prime_two⟩
 def prime3 : Nat.Primes := ⟨3, Nat.prime_three⟩
-def prime5 : Nat.Primes := ⟨5, by decide⟩
-def prime7 : Nat.Primes := ⟨7, by decide⟩
+def prime5 : Nat.Primes := ⟨5, by norm_num⟩
+def prime7 : Nat.Primes := ⟨7, by norm_num⟩
 
 /-- **Unconditional nonvanishing of inter-tower coupling in `ratCorr`.** There exist `u ∈ ⟨2, 3⟩`
 and `v ∈ ⟨5, 7⟩` with `coprimeCrossDiff ratCorr u v ≠ 0`. -/
@@ -562,8 +562,8 @@ theorem exists_coprimeCrossDiff_ratCorr_ne_zero :
       coprimeCrossDiff ratCorr u v ≠ 0 := by
   by_contra hall
   push Not at hall
-  have hpq : prime2 ≠ prime3 := by decide
-  have hrs : prime5 ≠ prime7 := by decide
+  have hpq : prime2 ≠ prime3 := Subtype.ne_of_val_ne (by norm_num [prime2, prime3])
+  have hrs : prime5 ≠ prime7 := Subtype.ne_of_val_ne (by norm_num [prime5, prime7])
   have hΦ : Continuous fun x : ℝ => splineCorr (-x) :=
     continuous_splineCorr.comp continuous_neg
   obtain ⟨_, hneg, hpos⟩ := negIndex_le_two_of_coprimeCrossDiff_eq_zero hΦ hpq hrs hall
@@ -585,7 +585,11 @@ theorem not_tendsto_towerAssembly_ratCorr {ι : Type*} {l : Filter ι} [l.NeBot]
       l (𝓝 (coprimeCrossDiff ratCorr u v)) :=
     (((htend (u * v)).sub (htend u)).sub (htend v)).add (htend 1)
   have hzero : ∀ i, coprimeCrossDiff (towerAssembly (S i) (k i)) u v = 0 := fun i =>
-    coprimeCrossDiff_towerAssembly_twoPrimeUnits (by decide) (by decide) (by decide) (by decide)
+    coprimeCrossDiff_towerAssembly_twoPrimeUnits
+      (Subtype.ne_of_val_ne (by norm_num [prime2, prime5]))
+      (Subtype.ne_of_val_ne (by norm_num [prime2, prime7]))
+      (Subtype.ne_of_val_ne (by norm_num [prime3, prime5]))
+      (Subtype.ne_of_val_ne (by norm_num [prime3, prime7]))
       (S i) (k i) hu hv
   simp_rw [hzero] at hlim
   exact hne (tendsto_nhds_unique tendsto_const_nhds hlim).symm

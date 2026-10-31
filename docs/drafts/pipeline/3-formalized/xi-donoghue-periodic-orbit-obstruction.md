@@ -56,15 +56,17 @@ The obstruction is dynamical rigidity, not a renamed sign violation.
   `eq_I_of_iterate_eq_self`.
 - `Bottcher/HalfPlane/XiDonoghueDynamics.lean`:
   `not_riemannHypothesis_of_xiDonoghue_periodicPoint`,
-  `not_riemannHypothesis_of_xiGaussian_stationaryPoint`,
+  `xiGaussian_stationary_eq_I_of_rh`,
   `xiGaussian_stationary_I`, `xiGaussian_stationary_iff_eq_I_of_rh`.
 
 The stationary classification includes the unconditional anchor; the endpoint excludes exactly
-that known solution.
+that known solution. It is the period-one case of the same endpoint family, without a second
+falsification wrapper.
 
 ## Verification
 
 Both leaves passed standalone `lake --old env lean <module>.lean` checks. All nine public
 capstones audited by `#print axioms` depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+The stationary-wrapper consolidation also passed its standalone source audit.
 The general helper's olean was built solely for the Xi specialization. Both leaves are wired
 into `Bottcher.lean`; no umbrella build, numerical experiment, or added proof budget was used.

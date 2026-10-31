@@ -26,7 +26,7 @@ open scoped BigOperators RealInnerProductSpace
 namespace GaloisForLFunctions.CompletedArithmeticForms
 
 open SignedArithmeticHodgeTheory RenormalizedArithmeticPotentialTheory
-  RenormalizedArithmeticPotentialTheory.CompletedShell
+  RenormalizedArithmeticPotentialTheory.CompletedShell RenormalizedBiarithmeticGeometry
   ArithmeticIntersectionTheory ArithmeticEffectivityTheory BezoutValuationIncidence
   SuccessorShellArithmetic CriticalArithmeticCorrelationTheory
   SpacingScaleHarmonicAnalysis HTGeometry
@@ -130,11 +130,12 @@ private theorem abs_arithmeticPoleKernel_mode_le {m N : ℕ} (hm : 2 ≤ m) (hN 
       2 * (m : ℝ) ^ 2 / Real.log N := by
   have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
   have hsL : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr hL
-  set v := primeHorizonExtension (normalizedRamanujanHorizonVector m N)
+  let v := primeHorizonExtension (normalizedRamanujanHorizonVector m N)
   have hv_sqrt : ∀ n ∈ Icc 1 N, v n * Real.sqrt n =
       (Real.sqrt (Real.log N))⁻¹ * normalizedRamanujanMode m n := by
     intro n hn
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+    dsimp only [v]
     rw [primeHorizonExtension_coe _ ⟨n, hn⟩]
     change ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m n / Real.sqrt n)) *
       Real.sqrt n = _
@@ -143,6 +144,7 @@ private theorem abs_arithmeticPoleKernel_mode_le {m N : ℕ} (hm : 2 ≤ m) (hN 
       (Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m j / (j : ℝ)) := by
     intro j hj
     have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hj).1
+    dsimp only [v]
     rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
     change ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m j / Real.sqrt j)) /
       Real.sqrt j = _
@@ -228,9 +230,10 @@ private theorem sum_linear_moment_mode_sq_le {m N : ℕ} (hm : 1 ≤ m) (hmN : m
     field_simp [hn0.ne', hN0.ne', hL0.ne']
   rw [sum_congr rfl hpt, ← mul_sum]
   have hp_sub : Icc 1 N ⊆ Ioc 0 (0 + (N / m + 1) * m) := by
-    have hdiv := Nat.div_add_mod N m
-    have hmod := Nat.mod_lt N hm
-    have hmul : m * (N / m) = (N / m) * m := Nat.mul_comm _ _
+    have hlt : N < (N / m + 1) * m := by
+      have hdiv := Nat.div_add_mod N m
+      have hmod := Nat.mod_lt N hm
+      nlinarith only [hdiv, hmod, Nat.mul_comm m (N / m)]
     intro n hn; simp only [mem_Icc, mem_Ioc] at hn ⊢; omega
   have hper_sq : Function.Periodic (fun n => normalizedRamanujanMode m n ^ 2) m :=
     fun n => by dsimp only; rw [normalizedRamanujanMode_periodic hm n]
@@ -314,7 +317,7 @@ private theorem abs_fullWeilPoleErrorMatrix_mode_inner_le {φ : ℝ → ℝ}
       mul_le_mul hcoef hpole (abs_nonneg _) (by positivity)
     _ = 2 * atomPoleMomentErrorConstant φ * c ^ 2 * ((m : ℝ) ^ 2 / N) /
           ((N : ℝ) * Real.log N) := by
-      field_simp [hN0.ne', hL0.ne']; ring
+      field_simp [hN0.ne', hL0.ne']
     _ ≤ 2 * atomPoleMomentErrorConstant φ * c ^ 2 * 1 / ((N : ℝ) * Real.log N) := by
       refine div_le_div_of_nonneg_right ?_ (by positivity)
       exact mul_le_mul_of_nonneg_left ((div_le_one hN0).mpr hm2N) (by positivity)
@@ -336,9 +339,8 @@ private theorem abs_sum_Icc_div_sub_gap_le {a : ℕ → ℝ} {B : ℝ} {n d : �
   have hpartial : ∀ k ≤ n - d, |∑ i ∈ range k, a (n - d - i)| ≤ B := by
     intro k hk
     rw [← Nat.Ico_zero_eq_range,
-      sum_Ico_reflect a 0 (show k ≤ n - d + 1 by omega),
-      Nat.sub_add_cancel (by omega : 1 ≤ n - d + 1), Nat.sub_zero]
-    exact hB (n - d + 1 - k) (n - d + 1) (Nat.sub_le _ _)
+      sum_Ico_reflect a 0 (show k ≤ n - d + 1 by omega)]
+    exact hB _ _ (Nat.sub_le _ _)
   have hab := abs_sum_mul_le_of_finite_partial
     (g := fun i => a (n - d - i)) (w := fun i => 1 / ((d : ℝ) + i))
     (n - d) hpartial (fun i => by positivity)
@@ -358,8 +360,8 @@ private theorem abs_sum_Icc_div_sub_gap_le {a : ℕ → ℝ} {B : ℝ} {n d : �
         rw [Nat.cast_sub (show i ≤ n - d by omega), Nat.cast_sub (by omega : d ≤ n)]
         ring
       rw [hsub]; ring
-  rw [heq, Nat.cast_zero, add_zero, div_eq_mul_inv, one_mul, mul_comm] at hab
-  rwa [div_eq_mul_inv]
+  rw [heq] at hab
+  exact hab.trans_eq (by push_cast; ring)
 
 /-- Uniform single-mode quadratic bound on `fullWeilCenterMatrix α N` across all `2 ≤ m`
 with `m * m ≤ N` and `1 ≤ log N`:
@@ -428,7 +430,8 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
           (mul_le_mul_of_nonneg_left ((div_le_one hN0).mpr hm2N) (by positivity)) hL0.le
       _ ≤ 2 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) := by
         rw [div_le_div_iff₀ hL0 hsL0]
-        nlinarith only [abs_nonneg α, h1m, hsqrt_le, hsL0]
+        exact mul_le_mul (mul_le_mul_of_nonneg_left h1m (by positivity))
+          hsqrt_le hsL0.le (by positivity)
   -- Part 2: `archimedeanCenterKernel` row split into `K_near` (`2 * m < n` and `|n - j| < m`) + far.
   let K_near : ℕ → ℕ → ℝ := fun n j =>
     if 2 * m < n ∧ j ≠ n ∧ (n < j + m ∧ j < n + m) then
@@ -476,21 +479,24 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
         let F_far := (Icc 1 N).filter (fun j => ¬(j ≠ n ∧ (n < j + m ∧ j < n + m)))
         have hfar_eq : row_far n = (Real.sqrt (Real.log N))⁻¹ * (α / N) *
             ∑ j ∈ F_far.erase n, archimedeanCenterKernel n j * (a j / Real.sqrt j) := by
-          have h1 : row_far n = ∑ j ∈ Icc 1 N,
-              (if ¬(j ≠ n ∧ (n < j + m ∧ j < n + m)) then
-                (α / N) * archimedeanCenterKernel n j else 0) * v j := by
-            dsimp only [row_far, row_col, row_near, K_near]
-            rw [← sum_sub_distrib]
+          have h1 : row_far n = ∑ j ∈ F_far, ((α / N) * archimedeanCenterKernel n j) * v j := by
+            dsimp only [row_far, row_col, row_near, K_near, F_far]
+            rw [sum_filter, ← sum_sub_distrib]
             refine sum_congr rfl fun j _ => ?_
             by_cases hcond : j ≠ n ∧ (n < j + m ∧ j < n + m)
             · rw [if_pos ⟨hn_gt, hcond⟩, if_neg (not_not.mpr hcond)]; ring
             · rw [if_neg (fun h => hcond h.2), if_pos hcond]; ring
           have hn_F : n ∈ F_far := mem_filter.mpr ⟨hn, fun h => h.1 rfl⟩
-          rw [h1, ← sum_erase_add F_far
+          have h2 : (∑ j ∈ F_far, ((α / N) * archimedeanCenterKernel n j) * v j) =
+              (Real.sqrt (Real.log N))⁻¹ * (α / N) *
+                ∑ j ∈ F_far, archimedeanCenterKernel n j * (a j / Real.sqrt j) := by
+            rw [mul_sum]
+            refine sum_congr rfl fun j hj => ?_
+            rw [hv_eq j (mem_filter.mp hj).1]
+            ring
+          rw [h1, h2, ← sum_erase_add F_far
             (fun j => archimedeanCenterKernel n j * (a j / Real.sqrt j)) hn_F,
-            archimedeanCenterKernel_self, zero_mul, add_zero, sum_filter, mul_sum]
-          refine sum_congr rfl fun j hj => ?_
-          split_ifs <;> [rw [hv_eq j hj]; skip] <;> ring
+            archimedeanCenterKernel_self, zero_mul, add_zero]
         -- Expand `archimedeanCenterKernel` into difference + sum reciprocal pieces on `F_far.erase n`.
         have hdecomp_far :
             (∑ j ∈ F_far.erase n, archimedeanCenterKernel n j * (a j / Real.sqrt j)) =
@@ -638,7 +644,7 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
           (N : ℝ) * (4 * α ^ 2 / ((N : ℝ) * Real.log N)) := by
         rw [sum_add_distrib, sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
       _ ≤ 36 * α ^ 2 / Real.log N + 4 * α ^ 2 / Real.log N :=
-        add_le_add hsum_low (by field_simp [hN0.ne', hL0.ne'])
+        add_le_add hsum_low (by field_simp [hN0.ne', hL0.ne']; exact le_rfl)
       _ = 40 * α ^ 2 / Real.log N := by ring
   -- Near collar `L²` square bound: `∑_{n=1}^N row_near n ^ 2 ≤ 128 * α^2 * (1 + log m)^2 / log N`.
   have hnear_sq : (∑ n ∈ Icc 1 N, row_near n ^ 2) ≤
@@ -659,8 +665,8 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
         have hj1 := (mem_Icc.mp hj).1
         have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
         have hj0 : (0 : ℝ) < j := by exact_mod_cast hj1
-        have hjn_ne : |(n : ℝ) - j| ≠ 0 :=
-          abs_ne_zero.mpr (sub_ne_zero.mpr (by exact_mod_cast hjn.symm))
+        have hjn_pos : 0 < |(n : ℝ) - j| :=
+          abs_pos.mpr (sub_ne_zero.mpr (by exact_mod_cast hjn.symm))
         -- For `n > 2 * m` and `|n - j| < m`, `j > m` and `n ≤ 2 * j`, so `archimedeanCenterKernel n j ≤ 2 * j / |n - j|`.
         have hn_le_2j : (n : ℝ) ≤ 2 * j := by exact_mod_cast (show n ≤ 2 * j by omega)
         have hkern_le : archimedeanCenterKernel n j ≤ 2 * (j : ℝ) / |(n : ℝ) - j| := by
@@ -672,7 +678,7 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
             have := (div_eq_iff (mul_pos hsn hsj).ne').mp hk
             linarith only [this]
           have hadd_le : 1 / ((n : ℝ) + j) ≤ 1 / |(n : ℝ) - j| := by
-            refine one_div_le_one_div_of_le (pos_of_ne_zero hjn_ne) ?_
+            refine one_div_le_one_div_of_le hjn_pos ?_
             rw [abs_le]
             exact ⟨by linarith only [hn0, hj0], by linarith only [hn0, hj0]⟩
           have hsqrt_prod : Real.sqrt n * Real.sqrt j ≤ 2 * j := by
@@ -719,7 +725,16 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
           simp only [S_lo, S_hi, mem_filter] at h1 h2; omega
         have heq_f : (Icc 1 N).filter (fun j => j ≠ n ∧ (n < j + m ∧ j < n + m)) =
             S_lo ∪ S_hi := by
-          ext j; simp only [S_lo, S_hi, mem_filter, mem_union]; omega
+          ext j
+          simp only [S_lo, S_hi, mem_filter, mem_union]
+          constructor
+          · rintro ⟨hjI, hne, h1, h2⟩
+            rcases lt_or_gt_of_ne hne with hlt | hgt
+            · exact Or.inl ⟨hjI, hlt, h1⟩
+            · exact Or.inr ⟨hjI, hgt, h2⟩
+          · rintro (⟨hjI, hlt, h1⟩ | ⟨hjI, hgt, h2⟩)
+            · exact ⟨hjI, hlt.ne, h1, by linarith⟩
+            · exact ⟨hjI, hgt.ne', by linarith, h2⟩
         dsimp only [W_ker]
         simp_rw [show ∀ j, (if j ≠ n ∧ (n < j + m ∧ j < n + m) then 2 * |α| / |(n : ℝ) - j| else 0) =
           2 * |α| * (if j ≠ n ∧ (n < j + m ∧ j < n + m) then 1 / |(n : ℝ) - j| else 0) from
@@ -777,7 +792,7 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
     have hschur := sum_sq_abs_majorized_kernel_le' (N := N) W_ker W_ker w_v
       (fun _ => 1) (fun _ => B_W) (fun _ => B_W ^ 2)
       (fun n _ j _ => by dsimp only [W_ker]; split_ifs <;> positivity)
-      (fun n _ j _ => le_abs_self _)
+      (fun n _ j _ => (abs_of_nonneg (by dsimp only [W_ker]; split_ifs <;> positivity)).le)
       (fun _ _ => zero_lt_one)
       (fun n hn => by simpa only [mul_one] using hW_row n hn)
       (fun j hj => by
@@ -822,8 +837,8 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
         add_le_add (mul_le_mul_of_nonneg_left hfar_sq zero_le_two)
           (mul_le_mul_of_nonneg_left hnear_sq zero_le_two)
       _ ≤ (361 * α ^ 2 * (1 + Real.log m) ^ 2) / Real.log N := by
-        rw [div_add_div_same, div_le_div_iff_of_pos_right hL0]
-        nlinarith only [h1m_sq, sq_nonneg α]
+        rw [← mul_div_assoc, ← mul_div_assoc, ← add_div]
+        exact div_le_div_of_nonneg_right (by nlinarith only [h1m_sq, sq_nonneg α]) hL0.le
       _ = (19 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N)) ^ 2 := by
         rw [div_pow, mul_pow, mul_pow, sq_abs, Real.sq_sqrt hL0.le]; ring
   have hcol_part :
@@ -841,8 +856,7 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
         _ ≤ 25 * (19 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N)) ^ 2 :=
           mul_le_mul hv25 hcol_sq (sum_nonneg fun _ _ => sq_nonneg _) (by positivity)
         _ = (95 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N)) ^ 2 := by ring
-    exact abs_le_of_sq_le_sq' hsq_le (by positivity) |>.2
-  -- Wait: `2 + 95 = 97 ≤ 100`, update statement constant from `80` to `100`!
+    exact abs_le.mpr (abs_le_of_sq_le_sq' hsq_le (by positivity))
   linarith only [abs_sub ((α / N) * ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, v n * v j * arithmeticPoleKernel n j)
     (∑ n ∈ Icc 1 N, v n * row_col n), hpole_part, hcol_part,
     (show 0 ≤ |α| * (1 + Real.log m) / Real.sqrt (Real.log N) by positivity)]
@@ -1405,17 +1419,6 @@ private theorem sum_singlePrimeCorrection_sq_div_le {m N : ℕ}
         (Nat.le_div_iff_mul_le hn0).mpr (Nat.mul_comm n (y + 1) ▸ hmul)
       omega
     exact mem_biUnion.mpr ⟨y, mem_Icc.mpr ⟨hy1, hym⟩, mem_Ioc.mpr ⟨hn_lo, hn_hi⟩⟩
-  have hdisj_y : Set.PairwiseDisjoint (↑(Icc 1 (m - 1)) : Set ℕ)
-      (fun y => Ioc (N / (y + 1)) (N / y)) := by
-    intro y₁ _ y₂ _ hne
-    change Disjoint _ _
-    rw [Finset.disjoint_left]
-    intro n hn₁ hn₂
-    obtain ⟨h1a, h1b⟩ := mem_Ioc.mp hn₁
-    obtain ⟨h2a, h2b⟩ := mem_Ioc.mp hn₂
-    rcases lt_or_gt_of_ne hne with hlt | hgt
-    · have := Nat.div_le_div_left (by omega : y₁ + 1 ≤ y₂) (by omega : 0 < y₁ + 1); omega
-    · have := Nat.div_le_div_left (by omega : y₂ + 1 ≤ y₁) (by omega : 0 < y₂ + 1); omega
   have hy_eq : ∀ y ∈ Icc 1 (m - 1), ∀ n ∈ Ioc (N / (y + 1)) (N / y), N / n = y := by
     intro y hyI n hn
     obtain ⟨hy1, _⟩ := mem_Icc.mp hyI
@@ -1430,6 +1433,13 @@ private theorem sum_singlePrimeCorrection_sq_div_le {m N : ℕ}
         (Nat.le_div_iff_mul_le (by omega)).mpr (Nat.mul_comm (y + 1) n ▸ hmul)
       omega
     omega
+  have hdisj_y : Set.PairwiseDisjoint (↑(Icc 1 (m - 1)) : Set ℕ)
+      (fun y => Ioc (N / (y + 1)) (N / y)) := by
+    intro y₁ hy₁ y₂ hy₂ hne
+    change Disjoint _ _
+    rw [Finset.disjoint_left]
+    intro n hn₁ hn₂
+    exact hne ((hy_eq y₁ hy₁ n hn₁).symm.trans (hy_eq y₂ hy₂ n hn₂))
   have hfor_y : ∀ y ∈ Icc 1 (m - 1),
       (∑ n ∈ Ioc (N / (y + 1)) (N / y),
         singlePrimeCorrection m (N / n) n ^ 2 / (n : ℝ)) ≤
@@ -1569,18 +1579,19 @@ private theorem exists_renormalizedPrimeEnergy_mode_sub_le :
             Matrix.toEuclideanLin (fullPrimeMatrix N) (ramanujanHorizonVector m N) idx := by
         dsimp only [v_m, normalizedRamanujanHorizonVector]
         rw [map_smul]; rfl
-      rw [hlin, hv_idx, fullPrimeMatrix_apply_ramanujanHorizonVector,
-        primeHorizonExtension_coe v_m idx, hv_idx]
+      rw [hlin, hv_idx, primeHorizonExtension_coe v_m idx, hv_idx]
       have hcorr : ramanujanPrimeResidual m N idx.1 =
           ((e (N / idx.1) - r idx.1) * normalizedRamanujanMode m idx.1 +
             singlePrimeCorrection m (N / idx.1) idx.1) * poleVector idx.1 := by
-        rw [ramanujanPrimeResidual, ramanujanPoleProfile_eq_mul_poleVector,
-          sum_weilPrimeKernel_poleProfile_eq_correction (normalizedRamanujanMode m) hn0 hnN]
+        rw [ramanujanPrimeResidual]
+        simp only [ramanujanPoleProfile_eq_mul_poleVector]
+        rw [sum_weilPrimeKernel_poleProfile_eq_correction (normalizedRamanujanMode m) hn0 hnN]
         dsimp only [e, r, singlePrimeCorrection, ramanujanAdjunctionEnergy]
         ring
       have hsub_eq : Matrix.toEuclideanLin (fullPrimeMatrix N) (ramanujanHorizonVector m N) idx -
           (Real.log N - ramanujanAdjunctionEnergy m) * ramanujanPoleProfile m idx.1 =
-          ramanujanPrimeResidual m N idx.1 := rfl
+          ramanujanPrimeResidual m N idx.1 := by
+        rw [fullPrimeMatrix_apply_ramanujanHorizonVector, ramanujanPrimeResidual]
       have halg : (Real.sqrt (Real.log N))⁻¹ *
           Matrix.toEuclideanLin (fullPrimeMatrix N) (ramanujanHorizonVector m N) idx -
           (Real.log N - ramanujanAdjunctionEnergy m) *
@@ -1597,7 +1608,9 @@ private theorem exists_renormalizedPrimeEnergy_mode_sub_le :
         ((e (N / idx.1) - r idx.1) * primeHorizonExtension v_m idx.1 +
           (Real.sqrt (Real.log N))⁻¹ * (singlePrimeCorrection m (N / idx.1) idx.1 / Real.sqrt idx.1)) ^ 2
       · exact sum_congr rfl fun idx _ => by rw [hcoord idx]
-      · exact Finset.sum_coe_sort (Icc 1 N) _
+      · exact Finset.sum_coe_sort (Icc 1 N) (fun n =>
+          ((e (N / n) - r n) * primeHorizonExtension v_m n +
+            (Real.sqrt (Real.log N))⁻¹ * (singlePrimeCorrection m (N / n) n / Real.sqrt n)) ^ 2)
     have hmert_sq : (∑ n ∈ Icc 1 N, ((e (N / n) - r n) * primeHorizonExtension v_m n) ^ 2) ≤
         19 * C_env ^ 2 := by
       have hpt : ∀ n ∈ Icc 1 N,
@@ -1658,10 +1671,10 @@ private theorem exists_renormalizedPrimeEnergy_mode_sub_le :
     have hX_sq : X ^ 2 = (Real.log m) ^ 2 / Real.log N := by
       dsimp only [X]; rw [div_pow, Real.sq_sqrt hL0.le]
     have hsq : ‖res‖ ^ 2 ≤ ((8 * C_env + 25) * (1 + X)) ^ 2 := by
-      rw [← hX_sq] at hres_sq
+      rw [mul_div_assoc, ← hX_sq] at hres_sq
       nlinarith only [hres_sq, hC_env_pos, hX0, sq_nonneg C_env, sq_nonneg X,
         mul_nonneg hC_env_pos.le hX0]
-    nlinarith only [hsq, norm_nonneg res, hC_env_pos, hX0]
+    exact (abs_le_of_sq_le_sq' hsq (by positivity)).2
   rw [hid_inner, abs_neg]
   calc
     |⟪res, v_m⟫| ≤ ‖res‖ * ‖v_m‖ := abs_real_inner_le_norm _ _
@@ -1824,33 +1837,36 @@ private theorem exists_overlapMatrix_mode_inner_le {φ : ℝ → ℝ}
         ∑ n ∈ Icc 1 N, vTop n *
           ∑ j ∈ nearRowIndices c N n, K_ov n j * primeHorizonExtension v_m j := by
     rw [EuclideanSpace.inner_eq_star_dotProduct]
-    change (∑ n : PrimeHorizonIndex N, v_m.ofLp n *
-      ∑ j : PrimeHorizonIndex N, overlapMatrix φ c N n j * v_m.ofLp j) = _
+    change (∑ n : PrimeHorizonIndex N, v_m n *
+      ∑ j : PrimeHorizonIndex N, overlapMatrix φ c N n j * v_m j) = _
     rw [← sum_coe_sort (Icc 1 N) (fun n => vTop n *
       ∑ j ∈ nearRowIndices c N n, K_ov n j * primeHorizonExtension v_m j)]
-    refine sum_congr rfl fun n hn => ?_
+    refine sum_congr rfl fun n _ => ?_
     dsimp only [vTop]
     split_ifs with hlt
-    · rw [primeHorizonExtension_coe v_m ⟨n, hn⟩]
+    · rw [primeHorizonExtension_coe v_m n]
       congr 1
-      rw [nearRowIndices, sum_filter, ← sum_coe_sort (Icc 1 N)]
+      rw [nearRowIndices, sum_filter, ← sum_coe_sort (Icc 1 N) (fun j =>
+        if j ≠ (n : ℕ) ∧ |Real.log (j : ℕ) - Real.log (n : ℕ)| ≤ 2 * c / N then
+          K_ov (n : ℕ) j * primeHorizonExtension v_m j else 0)]
       refine sum_congr rfl fun j _ => ?_
       rw [primeHorizonExtension_coe v_m j]
       dsimp only [overlapMatrix, K_ov, g, G0]
-      by_cases h : (j : ℕ) ≠ n ∧ |Real.log (j : ℕ) - Real.log (n : ℕ)| ≤ 2 * c / N
-      · rw [if_pos ⟨Ne.symm h.1, by rw [← mul_div_assoc]; exact h.2⟩, if_pos h]
-      · rw [if_neg fun h' => h ⟨Ne.symm h'.1, by rw [mul_div_assoc]; exact h'.2⟩, if_neg h, zero_mul]
+      by_cases h : (j : ℕ) ≠ (n : ℕ) ∧ |Real.log (j : ℕ) - Real.log (n : ℕ)| ≤ 2 * c / N
+      · rw [if_pos ⟨Ne.symm h.1, by simpa only [mul_div_assoc] using h.2⟩, if_pos h]
+      · rw [if_neg fun h' => h ⟨Ne.symm h'.1, by simpa only [mul_div_assoc] using h'.2⟩,
+          if_neg h, zero_mul]
     · rw [zero_mul]
-      suffices hempty : ∀ j : PrimeHorizonIndex N, overlapMatrix φ c N ⟨n, hn⟩ j = 0 by
+      suffices hempty : ∀ j : PrimeHorizonIndex N, overlapMatrix φ c N n j = 0 by
         simp [hempty]
       intro j
       dsimp only [overlapMatrix]
       split_ifs with hcond
       · exfalso
-        have hjI : (j : ℕ) ∈ nearRowIndices c N n :=
-          mem_filter.mpr ⟨j.2, Ne.symm hcond.1, by rw [← mul_div_assoc]; exact hcond.2⟩
-        have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
-        have hgeom := (nearRow_geometry_small_width hc0 hn hjI hw).2.1
+        have hjI : (j : ℕ) ∈ nearRowIndices c N (n : ℕ) :=
+          mem_filter.mpr ⟨j.2, Ne.symm hcond.1, by simpa only [mul_div_assoc] using hcond.2⟩
+        have hn0 : (0 : ℝ) < (n : ℕ) := by exact_mod_cast (mem_Icc.mp n.2).1
+        have hgeom := (nearRow_geometry_small_width hc0 n.2 hjI hw).2.1
         exact hlt (by dsimp only [T]; linarith only [(div_le_iff₀ hn0).mpr hgeom])
       · rfl
   have hKov_le : ∀ n ∈ Icc 1 N, ∀ j ∈ nearRowIndices c N n,
@@ -1980,7 +1996,8 @@ private theorem exists_overlapMatrix_mode_inner_le {φ : ℝ → ℝ}
         refine pow_le_pow_left₀ (by dsimp only [M_ov]; have := Real.log_nonneg hc1; positivity) ?_ 2
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_right hC_ge hc0.le) (by linarith [Real.log_nonneg hc1])
-  exact abs_le_of_sq_le_sq' hsq_le (by dsimp only [C_ov1, M_ov]; have := Real.log_nonneg hc1; positivity) |>.2
+  exact abs_le.mpr (abs_le_of_sq_le_sq' hsq_le
+    (by dsimp only [C_ov1, M_ov]; have := Real.log_nonneg hc1; positivity))
 
 /-- Single-mode quadratic bound on `fullWeilNonRatioMatrix φ c N`:
 `|⟪fullWeilNonRatioMatrix φ c N v_m, v_m⟫| ≤ 40 * √(log 4 + 4) * exp 3 * c`. -/
@@ -2136,7 +2153,7 @@ private theorem abs_fullWeilNonRatioMatrix_mode_inner_le {φ : ℝ → ℝ}
         (fun n => (upwardPrimeRow g N (primeHorizonExtension v_m) n /
           (∫ u, g u ^ 2)) ^ 2)).trans ?_
       rw [sum_congr rfl hrow_eq, ← sum_div]
-    have hschur := sum_sq_abs_majorized_kernel_le (N := N) K_mat U_mat
+    have hschur := sum_sq_abs_majorized_kernel_le' (N := N) K_mat U_mat
       (fun j => normalizedRamanujanMode m j / Real.sqrt j)
       (fun j => 1 / Real.sqrt j)
       (fun n => R_up / Real.sqrt n)
@@ -2202,7 +2219,131 @@ private theorem abs_fullWeilNonRatioMatrix_mode_inner_le {φ : ℝ → ℝ}
 private theorem log_le_rpow_div_pos {x δ : ℝ} (hx : 0 < x) (hδ : 0 < δ) :
     Real.log x ≤ x ^ δ / δ := by
   rw [le_div_iff₀ hδ, mul_comm, Real.rpow_def_of_pos hx]
-  exact (Real.lt_exp_self (δ * Real.log x)).le
+  linarith [Real.add_one_le_exp (δ * Real.log x)]
+
+private theorem rpow_neg_le_one_div_of_ge {L B γ : ℝ}
+    (hL0 : 0 < L) (hB : 0 < B) (hγ : 0 < γ) (hL_ge : (B + 1) ^ (1 / γ) ≤ L) :
+    L ^ (-γ) ≤ 1 / B := by
+  have h1 : B + 1 ≤ L ^ γ := by
+    have hp := Real.rpow_le_rpow (by positivity) hL_ge hγ.le
+    rwa [← Real.rpow_mul (by positivity), one_div_mul_cancel hγ.ne', Real.rpow_one] at hp
+  rw [Real.rpow_neg hL0.le, inv_eq_one_div]
+  exact one_div_le_one_div_of_le hB (by linarith only [h1])
+
+private theorem rpow_pow_nat_eq {x α : ℝ} (hx : 0 ≤ x) (k : ℕ) :
+    (x ^ α) ^ k = x ^ ((k : ℝ) * α) := by
+  rw [← Real.rpow_natCast _ k, ← Real.rpow_mul hx]
+  congr 1; ring
+
+private theorem mode_geometry_and_overlap_width_bounds
+    {N m : ℕ} {θ α A c : ℝ}
+    (hθ : θ < 1 / 2) (hα : α < 1 / 4)
+    (hN16 : 16 ≤ N) (hL200 : 200 ≤ Real.log N)
+    (hLA4 : (4 : ℝ) ≤ Real.log N ^ A)
+    (hMθ_sq : ⌊(N : ℝ) ^ θ⌋₊ * ⌊(N : ℝ) ^ θ⌋₊ ≤ N)
+    (hMθ_le : (⌊(N : ℝ) ^ θ⌋₊ : ℝ) ≤ (N : ℝ) ^ θ)
+    (hN5_rad : (68 ^ 2 * 100 ^ 2 + 1 : ℝ) ≤ (N : ℝ) ^ (1 / 5 : ℝ))
+    (hNη : 34 / ((1 - 2 * θ) / 2) + 1 ≤ (N : ℝ) ^ ((1 - 2 * θ) / 2))
+    (hc1 : 1 ≤ c) (hc_ub : c ≤ Real.log N ^ α)
+    (hm_mem : m ∈ Icc ⌈Real.log N ^ A⌉₊ ⌊(N : ℝ) ^ θ⌋₊) :
+    4 ≤ m ∧ m * m ≤ N ∧ Real.log N ^ A ≤ m ∧
+      A * Real.log (Real.log N) ≤ Real.log m ∧ 1 ≤ Real.log m ∧
+      c ≤ Real.log N ∧ 4 * (linearNearRowRadius c + 1) ^ 2 ≤ N ∧
+      c / N ≤ 1 / 3 ∧ c ≤ N ∧
+      ((m * m : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N := by
+  have hN1 : 1 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hL1 : 1 ≤ Real.log N := by linarith only [hL200]
+  have hL0 : 0 < Real.log N := zero_lt_one.trans_le hL1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  obtain ⟨hm_lo, hm_hi⟩ := mem_Icc.mp hm_mem
+  have hm_ge4 : 4 ≤ m := by
+    have h4R : (4 : ℝ) ≤ ⌈Real.log N ^ A⌉₊ := hLA4.trans (Nat.le_ceil _)
+    have h4c : 4 ≤ ⌈Real.log N ^ A⌉₊ := by exact_mod_cast h4R
+    omega
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
+  have hmN_sq : m * m ≤ N := (Nat.mul_le_mul hm_hi hm_hi).trans hMθ_sq
+  have hmR_ge_LA : Real.log N ^ A ≤ m := (Nat.le_ceil _).trans (by exact_mod_cast hm_lo)
+  have hlogm_ge : A * Real.log (Real.log N) ≤ Real.log m := by
+    have h := Real.log_le_log (Real.rpow_pos_of_pos hL0 A) hmR_ge_LA
+    rwa [Real.log_rpow hL0 A] at h
+  have hlogm_ge1 : 1 ≤ Real.log m := by
+    have hLA_ge4 : (4 : ℝ) ≤ m := by exact_mod_cast hm_ge4
+    have hlog4 : 1 ≤ Real.log (4 : ℝ) := by
+      have he : Real.exp 1 ≤ 4 := by linarith [Real.exp_one_lt_d9]
+      exact (Real.log_exp 1).symm.trans_le (Real.log_le_log (Real.exp_pos 1) he)
+    exact hlog4.trans (Real.log_le_log (by norm_num) hLA_ge4)
+  have hc_le_L : c ≤ Real.log N :=
+    hc_ub.trans ((Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [hα])).trans_eq
+      (Real.rpow_one _))
+  have hL_le_N5 : Real.log N ≤ 5 * (N : ℝ) ^ (1 / 5 : ℝ) := by
+    have h := log_le_rpow_div_pos hN0 (by norm_num : (0 : ℝ) < 1 / 5)
+    linarith only [h, (by ring : (N : ℝ) ^ (1 / 5 : ℝ) / (1 / 5) = 5 * (N : ℝ) ^ (1 / 5 : ℝ))]
+  have hrad_le : linearNearRowRadius c + 1 ≤ 17 * c := by
+    have he2 : Real.exp 2 ≤ 8 := by
+      have h1 : Real.exp 1 ≤ 14 / 5 := by linarith [Real.exp_one_lt_d9]
+      have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      nlinarith only [h1, h2, Real.exp_pos 1]
+    unfold linearNearRowRadius; nlinarith only [hc1, he2]
+  have hrad_N : 4 * (linearNearRowRadius c + 1) ^ 2 ≤ N := by
+    have h1 : 2 * (linearNearRowRadius c + 1) ≤ 34 * Real.log N := by linarith only [hrad_le, hc_le_L]
+    have h2 : 34 * Real.log N ≤ 170 * (N : ℝ) ^ (1 / 5 : ℝ) := by linarith only [hL_le_N5]
+    have h3 : (170 * (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 ≤ N := by
+      have hp : ((N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 * (N : ℝ) ^ (1 / 5 : ℝ) ≤ N := by
+        have hsum : (N : ℝ) ^ (1 / 5 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ) =
+            (N : ℝ) ^ (3 / 5 : ℝ) := by
+          rw [← Real.rpow_add hN0, ← Real.rpow_add hN0]; norm_num
+        rw [sq, hsum]
+        exact (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1)
+          (by norm_num : (3 / 5 : ℝ) ≤ 1)).trans_eq (Real.rpow_one _)
+      have h170 : (170 : ℝ) ^ 2 ≤ 68 ^ 2 * 100 ^ 2 := by norm_num
+      nlinarith only [hN5_rad, hp, h170, sq_nonneg ((N : ℝ) ^ (1 / 5 : ℝ))]
+    have h0 : 0 ≤ 2 * (linearNearRowRadius c + 1) := by unfold linearNearRowRadius; positivity
+    have hsq := pow_le_pow_left₀ h0 (h1.trans h2) 2
+    nlinarith only [hsq, h3]
+  have hw3 : c / N ≤ 1 / 3 := by
+    rw [div_le_iff₀ hN0]
+    have hrad0 : 0 ≤ linearNearRowRadius c := by unfold linearNearRowRadius; positivity
+    have hc_le_rad : 2 * c ≤ linearNearRowRadius c + 1 := by
+      have he2 : (1 : ℝ) ≤ Real.exp 2 := Real.one_le_exp (by norm_num)
+      unfold linearNearRowRadius; nlinarith only [hc1, he2]
+    nlinarith only [hrad_N, hc_le_rad, hrad0, hc1]
+  have hcN : c ≤ N := by have := (div_le_iff₀ hN0).mp hw3; linarith only [this, hc0]
+  have hRNT_m : ((m * m : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N := by
+    let η_θ := (1 - 2 * θ) / 2
+    have hη_θ : 0 < η_θ := by dsimp only [η_θ]; linarith only [hθ]
+    have hmR_θ : (m : ℝ) ≤ (N : ℝ) ^ θ :=
+      (by exact_mod_cast hm_hi : (m : ℝ) ≤ ⌊(N : ℝ) ^ θ⌋₊).trans hMθ_le
+    have hm2_2θ : ((m * m : ℕ) + 1 : ℝ) ≤ 2 * (N : ℝ) ^ (2 * θ) := by
+      have h1 : ((m * m : ℕ) : ℝ) ≤ (N : ℝ) ^ (2 * θ) := by
+        push_cast
+        calc
+          (m : ℝ) * m ≤ (N : ℝ) ^ θ * (N : ℝ) ^ θ := mul_le_mul hmR_θ hmR_θ hm0.le (by positivity)
+          _ = (N : ℝ) ^ (2 * θ) := by rw [← Real.rpow_add hN0]; ring_nf
+      have hge1 : 1 ≤ (N : ℝ) ^ (2 * θ) :=
+        Real.one_le_rpow (by exact_mod_cast hN1) (by linarith only [hm0, hmR_θ] : (0 : ℝ) ≤ 2 * θ)
+      -- Wait: `θ > 0` might not be passed here; let's use `0 ≤ 2 * θ` via `hmR_θ`? Even simpler: pass `hθ0 : 0 < θ`!
+      linarith only [h1, hge1]
+    have hL_η : Real.log N ≤ (N : ℝ) ^ η_θ / η_θ := log_le_rpow_div_pos hN0 hη_θ
+    have hrad_η : linearNearRowRadius c + 1 ≤ (17 / η_θ) * (N : ℝ) ^ η_θ := by
+      calc
+        linearNearRowRadius c + 1 ≤ 17 * Real.log N := by linarith only [hrad_le, hc_le_L]
+        _ ≤ 17 * ((N : ℝ) ^ η_θ / η_θ) := mul_le_mul_of_nonneg_left hL_η (by norm_num)
+        _ = (17 / η_θ) * (N : ℝ) ^ η_θ := by ring
+    have hprod_eq : (N : ℝ) ^ (2 * θ) * (N : ℝ) ^ η_θ * (N : ℝ) ^ η_θ = N := by
+      rw [← Real.rpow_add hN0, ← Real.rpow_add hN0]
+      have hexp : 2 * θ + η_θ + η_θ = 1 := by dsimp only [η_θ]; ring
+      rw [hexp, Real.rpow_one]
+    calc
+      ((m * m : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤
+          (2 * (N : ℝ) ^ (2 * θ)) * ((17 / η_θ) * (N : ℝ) ^ η_θ) :=
+        mul_le_mul hm2_2θ hrad_η (by unfold linearNearRowRadius; positivity) (by positivity)
+      _ = (34 / η_θ) * ((N : ℝ) ^ (2 * θ) * (N : ℝ) ^ η_θ) := by ring
+      _ ≤ (N : ℝ) ^ η_θ * ((N : ℝ) ^ (2 * θ) * (N : ℝ) ^ η_θ) :=
+        mul_le_mul_of_nonneg_right (by dsimp only [η_θ]; linarith only [hNη]) (by positivity)
+      _ = (N : ℝ) ^ (2 * θ) * (N : ℝ) ^ η_θ * (N : ℝ) ^ η_θ := by ring
+      _ = N := hprod_eq
+  exact ⟨hm_ge4, hmN_sq, hmR_ge_LA, hlogm_ge, hlogm_ge1, hc_le_L, hrad_N, hw3, hcN, hRNT_m⟩
 
 /-- **Diverging positive single-mode floor above polylogarithmic scales.**
 For every `C²` profile `φ` supported in `[0, 1]` with `0 < ∫ φ²`, every Bombieri–Vinogradov

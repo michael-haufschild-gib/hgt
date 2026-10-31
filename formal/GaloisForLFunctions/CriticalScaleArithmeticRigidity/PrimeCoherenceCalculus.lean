@@ -122,7 +122,7 @@ theorem ramanujanDivisorJet_prime {p : ℕ} (hp : p.Prime) (n : ℕ) :
       ramanujanLagCoefficient_of_dvd (one_dvd n)
   rw [ramanujanLogDivisorJet_eq_weighted_conductors hp.pos, hp.divisors,
     sum_pair (Ne.symm hp.ne_one)]
-  simp only [ramanujanJetConductorWeight, if_neg (Ne.symm hp.ne_one), if_pos rfl,
+  simp only [ramanujanJetConductorWeight, if_neg (Ne.symm hp.ne_one), ite_true,
     Nat.div_one, Nat.div_self hp.pos, vonMangoldt_apply_prime hp, vonMangoldt_apply_one,
     zero_add, add_zero, h1, mul_one]
   ring
@@ -212,8 +212,7 @@ theorem completedPrimeDilationTail_primeIncidence_eq (Q : ℕ) (b : ℕ → ℝ)
         · rw [if_neg hn, mul_sum]
           apply sum_congr rfl
           intro k _
-          by_cases hk : p ∣ k <;> simp only [hk, hn, not_false_eq_true, and_true,
-            if_true, if_false, mul_zero] <;> ring
+          by_cases hk : p ∣ k <;> simp [hk, hn, mul_comm]
   rw [completedPrimeDilationTail, ← arithmeticPrimeGenerator_eq_jet,
     primeIncidenceGenerator_eq, hhead, ← sum_sub_distrib]
   apply sum_congr rfl
@@ -233,8 +232,10 @@ theorem highPrimeCoherentSource_nonneg (P Q n : ℕ) :
   apply sum_nonneg
   intro p hp
   have hp1 : (1 : ℝ) < p := by exact_mod_cast (mem_filter.mp hp).2.one_lt
-  split_ifs <;> first | exact le_rfl | exact
-    div_nonneg (Real.log_natCast_nonneg p) (sub_nonneg.mpr hp1.le)
+  split_ifs
+  · exact le_rfl
+  · exact div_nonneg (Real.log_natCast_nonneg p) (sub_nonneg.mpr hp1.le)
+  · exact le_rfl
 
 /-- Primes beyond the complementary quotient contribute their complete positive towers. -/
 theorem highPrimeCoherentSource_le_completedTail {P y : ℕ} (hy : y ≤ P) (Q n : ℕ) :

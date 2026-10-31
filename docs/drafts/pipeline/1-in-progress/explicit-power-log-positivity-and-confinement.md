@@ -10,7 +10,7 @@
 
 1. Explicit conductor confinement, uniformly in the horizon: squared projection error at most `η` for `log R ≤ C (K + 1) / η^p`, with numerical `C` and improved `p`.
 2. An explicit reverse defect gap and numerical positive overlap exponent.
-3. Optimized low-band, projection-accuracy, and high-cutoff exponents in all-vector positivity, with the residual and confinement ceilings accounted for.
+3. Optimized internal exponents and an explicit starting horizon for all-vector positivity.
 
 ## Existing bounds
 
@@ -47,8 +47,8 @@ The direct defect bound below gives `D_N(y)≥¾E`, where
 `primeEnergy(y) ≥ (½ log Q − log 4 − 4) ‖y‖²`.
 
 The logarithmic coefficient and additive loss are numerical; no prime residual
-smallness is required. The earlier residual-based proof passed Lean with standard
-axioms. The stronger direct proof is awaiting verification.
+smallness is required. Direct defect transfer and prime coercivity passed Lean
+with standard axioms. Final direct audits remain pending.
 
 ## All-vector exponent
 
@@ -65,7 +65,21 @@ All admit margin `L^(−1/500)`. High-packet prime coercivity contributes `¼log
 
 ## Remaining mathematical work
 
-Complete Lean verification and umbrella wiring. Determine whether sharper confinement or residual transfer reaches the stated `1/19` and `1/16` method ceilings; `1/144` does not settle that request. A2–A18 remain outside this card and unsolved by these bounds.
+Complete Lean verification and umbrella wiring; optimize the overlap exponent and make the starting horizon explicit. The residual and confinement ceilings `1/19`, `1/16` concern stronger estimates beyond the present internal optimization. Other obstacles remain outside this card.
+
+The current prime-distribution input is not explicit: `DirichletLConductorUniformLogDerivative.exists_conductor_uniform_character_zero_gap` invokes `siegel_zero_free`. An explicit `N₀` therefore requires an effective zero-gap replacement, not merely extraction of eventual inequalities.
+
+An effective candidate uses `F(s)=ζ(s)L(s,χ)` for quadratic `χ`. Its coefficients
+are nonnegative, the coefficient at one is one, and `F(−2)=0`. Write
+`G(s)=F(s)−L(1,χ)/(s−1)`. On `|s−100|=120`, the periodic functional equation
+and existing Hurwitz bounds suggest `|G(s)|≤M₀q²²` with numerical `M₀`.
+The Taylor head grows by `34/33`, the tail decays by `17/20`, and
+`log(34/33)/log(20/17)≤20/99<9/44`. For
+`K=ceil(log((40/3)(M+1))/log(20/17))`, its tail is at most `1/2` and its head
+at most `e((40/3)(M+1))^(9/44)`. Thus the candidate explicit constant is
+`c=(3/2)/(e((40/3)(M₀+1))^(9/44))`, giving `L(1,χ)≥cq⁻⁹ᐟ²` and an effective
+real-zero gap of order `q⁻⁵`. Circle and Taylor proofs are drafted, not yet
+Lean-verified.
 
 ## Direct prime-defect transfer
 
@@ -77,7 +91,7 @@ The same lower bound holds when `k>N`, since its right side is nonpositive. Sum 
 
 `D_N(F/√n) ≥ (log N−3log Q−1)E`.
 
-Thus relative defect coercivity loses only `O(log Q/log N)`. This bypasses the squared logarithmic loss from prime residual norms. Its Lean proof is pending.
+Thus relative defect coercivity loses only `O(log Q/log N)`. This bypasses the squared logarithmic loss from prime residual norms. Both the raw and normalized Lean statements compile with standard axioms.
 
 ## Variable quotient cutoff
 
@@ -89,8 +103,9 @@ harmonic mass is at most `4c+(log N)^(1/k)`. Thus one constant, independent of
 
 `≤K φ(m)² c³ (log N)^(1/k−1)`.
 
-This removes the forced square-root logarithmic rate. Lean proof is written in
-scratch; transfer through the actual upward row and complete residual remains.
+This removes the forced square-root logarithmic rate. The reciprocal row,
+actual upward row, and complete residual are formalized in
+`VariableCutoffConductorResiduals`; all axiom audits report standard axioms.
 
 After that transfer, `k=16`, `Q=floor(L^(1/8))`, and `α<1/68` fit the same
 positivity reduction: the residual is at most `3c⁵L^(−15/16)`, and

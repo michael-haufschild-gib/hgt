@@ -912,6 +912,204 @@ theorem summable_norm_towerPrime_truncWeight (S : Finset Nat.Primes) {lam : ℕ 
         simp only [W]; linarith
     _ = (∑' n, c n) * W := tsum_mul_right
 
+private theorem archPart_sum {ι : Type*} (u : Finset ι) (f : ι → ℝ → ℂ)
+    (hf : ∀ i ∈ u, RHTower.WeilSpectral.Admissible (f i)) :
+    RHTower.WeilSpectral.archPart (∑ i ∈ u, f i) =
+      ∑ i ∈ u, RHTower.WeilSpectral.archPart (f i) := by
+  classical
+  induction u using Finset.induction_on with
+  | empty => simp [RHTower.WeilSpectral.archPart, paperFT]
+  | insert a u ha ih =>
+    have h1 := hf a (mem_insert_self a u)
+    have h2 := RHTower.WeilSpectral.Admissible.sum u fun i hi => hf i (mem_insert_of_mem hi)
+    rw [sum_insert ha, sum_insert ha, ← ih fun i hi => hf i (mem_insert_of_mem hi)]
+    unfold RHTower.WeilSpectral.archPart
+    rw [← mul_add, ← integral_add h1.arch h2.arch]
+    congr 1
+    refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+    dsimp only
+    rw [RHTower.WeilSpectral.paperFT_add h1 h2]; ring
+
+private theorem archPart_smul (a : ℂ) (f : ℝ → ℂ) :
+    RHTower.WeilSpectral.archPart (a • f) = a * RHTower.WeilSpectral.archPart f := by
+  unfold RHTower.WeilSpectral.archPart
+  rw [mul_left_comm, ← integral_const_mul a]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+  dsimp only
+  rw [RHTower.WeilSpectral.paperFT_smul]; ring
+
+private theorem archPart_weilTest_sum_transl {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g)
+    (hgc : HasCompactSupport g) {N : ℕ} (t : Fin N → ℝ) (w : Fin N → ℂ) :
+    RHTower.WeilSpectral.archPart
+      (EF.weilTest (∑ j, w j • RHTower.WeilSpectral.transl (t j) g)
+        (∑ j, w j • RHTower.WeilSpectral.transl (t j) g)) =
+      ∑ i : Fin N, ∑ j : Fin N, conj (w i) *
+        RHTower.WeilSpectral.archPart
+          (RHTower.WeilSpectral.transl (t j - t i) (EF.weilTest g g)) * w j := by
+  have hadm := RHTower.WeilSpectral.admissible_weilTest hg hgc
+  rw [RHTower.WeilSpectral.weilTest_sum_transl hg.continuous hgc t w,
+    archPart_sum univ _ fun i _ => RHTower.WeilSpectral.Admissible.sum univ fun j _ =>
+      (hadm.transl (t j - t i)).smul (star (w i) * w j)]
+  refine sum_congr rfl fun i _ => ?_
+  rw [archPart_sum univ _ fun j _ => (hadm.transl (t j - t i)).smul (star (w i) * w j)]
+  refine sum_congr rfl fun j _ => ?_
+  rw [archPart_smul, Complex.star_def]
+  ring
+
+private theorem integral_norm_sq_sum_transl {g : ℝ → ℂ} (hg : Continuous g)
+    (hgc : HasCompactSupport g) {N : ℕ} (t : Fin N → ℝ) (w : Fin N → ℂ) :
+    ∫ u, ‖(∑ j, w j • RHTower.WeilSpectral.transl (t j) g) u‖ ^ 2 =
+      (∑ i : Fin N, ∑ j : Fin N,
+        conj (w i) * EF.weilTest g g (-(t j - t i)) * w j).re := by
+  have h0 : EF.weilTest (∑ j, w j • RHTower.WeilSpectral.transl (t j) g)
+      (∑ j, w j • RHTower.WeilSpectral.transl (t j) g) 0 =
+      ((∫ u, ‖(∑ j, w j • RHTower.WeilSpectral.transl (t j) g) u‖ ^ 2 : ℝ) : ℂ) := by
+    rw [RHTower.WeilSpectral.weilTest_apply, ← integral_complex_ofReal]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    simp only [sub_zero, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  have h1 := congrFun (RHTower.WeilSpectral.weilTest_sum_transl hg hgc t w) 0
+  rw [h0] at h1
+  have hre := congrArg Complex.re h1
+  rw [Complex.ofReal_re] at hre
+  rw [hre]
+  congr 1
+  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, RHTower.WeilSpectral.transl,
+    zero_sub, Complex.star_def]
+  exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
+
+private theorem neg_ten_mul_norm_sq_le_archPart {G : ℝ → ℂ} (hGc : ContDiff ℝ 2 G)
+    (hGs : HasCompactSupport G) :
+    -10 * ∫ u, ‖G u‖ ^ 2 ≤ (RHTower.WeilSpectral.archPart (EF.weilTest G G)).re := by
+  have hPn : ∀ r : ℝ, paperFT (EF.weilTest G G) r = ((‖paperFT G r‖ ^ 2 : ℝ) : ℂ) := fun r => by
+    rw [EF.paperFT_weilTest hGc.continuous hGc.continuous hGs hGs, Complex.conj_ofReal,
+      Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  have hkd : ContDiff ℝ 2 (EF.weilTest G G) := EF.weilTest_contDiff hGc hGc.continuous hGs
+  have hks : HasCompactSupport (EF.weilTest G G) := EF.weilTest_hasCompactSupport hGs hGs
+  have hD : Integrable fun r : ℝ => ‖paperFT G r‖ ^ 2 := by
+    have hP : Integrable fun r : ℝ => paperFT (EF.weilTest G G) r :=
+      EF.integrable_paperFT_ofReal (EF.integrable_fourier_of_contDiff_two hkd hks)
+    exact hP.norm.congr (Eventually.of_forall fun r => by
+      simp only; rw [hPn, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)])
+  have hGint : Integrable fun r : ℝ => ‖paperFT G r‖ ^ 2 * EF.gammaBracket r := by
+    have hGc' := RHTower.LebesgueAtomWeil.integrable_paperFT_weilTest_mul_gammaBracket
+      hGc hGs hGc hGs
+    exact hGc'.re.congr (Eventually.of_forall fun r => by
+      change (paperFT (EF.weilTest G G) r * (EF.gammaBracket r : ℂ)).re = _
+      rw [hPn, ← Complex.ofReal_mul, Complex.ofReal_re])
+  have hre : (RHTower.WeilSpectral.archPart (EF.weilTest G G)).re =
+      (1 / (2 * π)) * ∫ r : ℝ, ‖paperFT G r‖ ^ 2 * EF.gammaBracket r := by
+    unfold RHTower.WeilSpectral.archPart
+    have : ∫ r : ℝ, paperFT (EF.weilTest G G) r * (EF.gammaBracket r : ℂ) =
+        ((∫ r : ℝ, ‖paperFT G r‖ ^ 2 * EF.gammaBracket r : ℝ) : ℂ) := by
+      rw [← integral_complex_ofReal]
+      exact integral_congr_ae (Eventually.of_forall fun r => by simp only; rw [hPn]; push_cast; rfl)
+    rw [this, show (1 / (2 * π) : ℂ) = ((1 / (2 * π) : ℝ) : ℂ) by push_cast; ring,
+      ← Complex.ofReal_mul, Complex.ofReal_re]
+  have hgamma : (∫ r : ℝ, ‖paperFT G r‖ ^ 2) * (-10) ≤
+      ∫ r : ℝ, ‖paperFT G r‖ ^ 2 * EF.gammaBracket r := by
+    rw [← integral_mul_const]
+    exact integral_mono (hD.mul_const (-10)) hGint fun r => by
+      refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
+      have hl := Real.log_nonneg (show 1 ≤ 1 + |r| / 4 by linarith [abs_nonneg r])
+      linarith [RHTower.WeilWorkPBAP.gammaBracket_lower r]
+  have hpl := RHTower.LebesgueAtomWeil.integral_norm_sq_paperFT_eq hGc hGs
+  have hmul := mul_le_mul_of_nonneg_left hgamma (by positivity : (0 : ℝ) ≤ 1 / (2 * π))
+  rw [← hre, ← mul_assoc, hpl] at hmul
+  linarith
+
+private theorem neg_ten_tsum_le_hermQuad_towerArch {g : ℝ → ℂ} (hg : ContDiff ℝ 2 g)
+    (hgc : HasCompactSupport g) (ℓ : ℝ)
+    (hk₀_sum : Summable fun m : Multiplicative ℤ =>
+      ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖)
+    (s : Finset (Multiplicative ℤ)) (c : s → ℂ) :
+    -10 * ((∑' m : Multiplicative ℤ,
+        ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) * ∑ i : s, ‖c i‖ ^ 2) ≤
+      hermQuad (gram (towerArch g ℓ) fun z : s => (z : Multiplicative ℤ)) c := by
+  let e := Fintype.equivFin s
+  let w : Fin (Fintype.card s) → ℂ := fun i => c (e.symm i)
+  let t : Fin (Fintype.card s) → ℝ := fun i =>
+    -((Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ
+  let k₀ : Multiplicative ℤ → ℂ := fun m =>
+    EF.weilTest g g (((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)
+  have hGc : ContDiff ℝ 2 (∑ j, w j • RHTower.WeilSpectral.transl (t j) g) := by
+    have heq : (∑ j, w j • RHTower.WeilSpectral.transl (t j) g) =
+        fun x => ∑ j, w j * g (x - t j) := funext fun x => by
+      simp [Finset.sum_apply, RHTower.WeilSpectral.transl]
+    rw [heq]
+    exact ContDiff.sum fun j _ => contDiff_const.mul (hg.comp (contDiff_id.sub contDiff_const))
+  have hGs : HasCompactSupport (∑ j, w j • RHTower.WeilSpectral.transl (t j) g) :=
+    HasCompactSupport.finset_sum fun j _ =>
+      (hgc.comp_homeomorph (Homeomorph.subRight (t j))).smul_left
+  have hlo := neg_ten_mul_norm_sq_le_archPart hGc hGs
+  rw [archPart_weilTest_sum_transl hg hgc t w,
+    integral_norm_sq_sum_transl hg.continuous hgc t w] at hlo
+  have harg : ∀ i j : Fin (Fintype.card s), t j - t i =
+      -((Multiplicative.toAdd (((e.symm i : s) : Multiplicative ℤ)⁻¹ *
+        ((e.symm j : s) : Multiplicative ℤ)) : ℤ) : ℝ) * ℓ := fun i j => by
+    simp only [t, toAdd_mul, toAdd_inv]
+    push_cast
+    ring
+  have harch_eq : (∑ i : Fin (Fintype.card s), ∑ j : Fin (Fintype.card s),
+      conj (w i) * RHTower.WeilSpectral.archPart
+        (RHTower.WeilSpectral.transl (t j - t i) (EF.weilTest g g)) * w j).re =
+      hermQuad (gram (towerArch g ℓ) fun z : s => (z : Multiplicative ℤ)) c := by
+    rw [hermQuad_gram]
+    congr 1
+    rw [← e.symm.sum_comp]
+    refine sum_congr rfl fun i _ => ?_
+    rw [← e.symm.sum_comp]
+    refine sum_congr rfl fun j _ => ?_
+    simp only [w, towerArch, harg]
+  have hk₀_eq : (∑ i : Fin (Fintype.card s), ∑ j : Fin (Fintype.card s),
+      conj (w i) * EF.weilTest g g (-(t j - t i)) * w j).re =
+      hermQuad (gram k₀ fun z : s => (z : Multiplicative ℤ)) c := by
+    rw [hermQuad_gram]
+    congr 1
+    rw [← e.symm.sum_comp]
+    refine sum_congr rfl fun i _ => ?_
+    rw [← e.symm.sum_comp]
+    refine sum_congr rfl fun j _ => ?_
+    have harg2 : -(t j - t i) =
+        ((Multiplicative.toAdd (((e.symm i : s) : Multiplicative ℤ)⁻¹ *
+          ((e.symm j : s) : Multiplicative ℤ)) : ℤ) : ℝ) * ℓ := by
+      rw [harg]; ring
+    simp only [w, k₀, harg2]
+  have hk₀_norm : ∀ m : Multiplicative ℤ,
+      ‖k₀ m‖ = ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ := fun m => by
+    have h := congrFun (RHTower.WeilSpectral.tilde_weilTest_self g)
+      (((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)
+    simp only [EF.tilde] at h
+    rw [show -(((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ) =
+      -((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ by ring] at h
+    rw [show k₀ m = EF.weilTest g g (((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ) from rfl, ← h,
+      Complex.norm_conj]
+  have hk₀_sum' : Summable fun m : Multiplicative ℤ => ‖k₀ m‖ :=
+    hk₀_sum.congr fun m => (hk₀_norm m).symm
+  rw [harch_eq, hk₀_eq] at hlo
+  rw [← tsum_congr hk₀_norm]
+  have hschur := (le_abs_self _).trans (abs_hermQuad_gram_le_tsum_norm hk₀_sum' s c)
+  have hmul := mul_le_mul_of_nonpos_left hschur (by norm_num : (-10 : ℝ) ≤ 0)
+  exact hmul.trans hlo
+
+private theorem hermQuad_diag_counterterm (D : ℝ) (s : Finset (Multiplicative ℤ)) (c : s → ℂ) :
+    hermQuad (gram (LocalCounterterm.eval ⟨0, D, 0⟩) fun z : s => (z : Multiplicative ℤ)) c =
+      D * ∑ i : s, ‖c i‖ ^ 2 := by
+  rw [hermQuad_gram]
+  have hterm : ∀ i j : s,
+      conj (c i) * LocalCounterterm.eval ⟨0, D, 0⟩ (((i : Multiplicative ℤ))⁻¹ * j) * c j =
+      if i = j then ((D * ‖c i‖ ^ 2 : ℝ) : ℂ) else 0 := fun i j => by
+    have h1 : ((i : Multiplicative ℤ))⁻¹ * (j : Multiplicative ℤ) = 1 ↔ i = j := by
+      rw [inv_mul_eq_one]; exact Subtype.ext_iff.symm
+    simp only [LocalCounterterm.eval, Complex.ofReal_zero, zero_add, zero_mul, add_zero, h1]
+    split_ifs with hij
+    · subst hij
+      rw [mul_right_comm, Complex.conj_mul', ← Complex.ofReal_pow]
+      push_cast; ring
+    · ring
+  simp_rw [hterm, Finset.sum_ite_eq, if_pos (mem_univ _), ← Complex.ofReal_sum,
+    Complex.ofReal_re, mul_sum]
+
 /-- **Explicit diagonal counterterm positivity.** For every finite prime set `S`, tower-bounded
 weight `lam`, `C²` compactly supported `g`, `p ∈ Nat.Primes`, and `wPrime : ℝ`, there exists `D₀`
 such that for all `D ≥ D₀`, the pole-free local kernel with Gamma weight `1` and diagonal
@@ -922,237 +1120,92 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
     ∃ D₀ : ℝ, ∀ D : ℝ, D₀ ≤ D →
       IsPosDefKernel (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩) ∧
       polarIndex (sTruncatedLocal S lam g p 0 wPrime 1 ⟨0, D, 0⟩) = 0 := by
-  set ℓ : ℝ := Real.log (p : ℕ)
-  have hℓ : 0 < ℓ := Real.log_pos (by exact_mod_cast p.2.one_lt)
-  set K : ℝ → ℂ := EF.weilTest g g
-  have hKc : Continuous K := (EF.weilTest_contDiff hg hg.continuous hgc).continuous
-  have hKs : HasCompactSupport K := EF.weilTest_hasCompactSupport hgc hgc
+  have hℓ : 0 < Real.log (p : ℕ) := Real.log_pos (by exact_mod_cast p.2.one_lt)
+  have hKc : Continuous (EF.weilTest g g) := (EF.weilTest_contDiff hg hg.continuous hgc).continuous
+  have hKs : HasCompactSupport (EF.weilTest g g) := EF.weilTest_hasCompactSupport hgc hgc
   obtain ⟨R, hR⟩ := RHTower.WeilSpectral.exists_abs_bound_of_hasCompactSupport hKs
   obtain ⟨x₀, hx₀⟩ := hKc.norm.exists_forall_ge_of_hasCompactSupport hKs.norm
-  set k₀ : Multiplicative ℤ → ℂ := fun m => K (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)
-  have hk₀_sum : Summable fun m : Multiplicative ℤ => ‖k₀ m‖ := by
+  have hk₀_sum : Summable fun m : Multiplicative ℤ =>
+      ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * Real.log (p : ℕ))‖ := by
     refine summable_of_sum_le (fun _ => norm_nonneg _)
-      (c := ‖K x₀‖ * (2 * (⌈|R| / ℓ⌉₊ : ℝ) + 3)) fun t => ?_
-    have h := sum_norm_shift_le (K := fun u => K (-u))
+      (c := ‖EF.weilTest g g x₀‖ * (2 * (⌈|R| / Real.log (p : ℕ)⌉₊ : ℝ) + 3)) fun t => ?_
+    have h := sum_norm_shift_le (K := fun u => EF.weilTest g g (-u))
       (fun u hu => by simpa using hR (-u) hu) (fun u => hx₀ (-u)) hℓ 0 t
     refine le_trans ?_ h
     refine sum_le_sum fun m _ => ?_
-    simp only [k₀, zero_add]
+    simp only [zero_add]
     exact le_of_eq (by congr 2; ring)
   have hp_sum := summable_norm_towerPrime_truncWeight S hlam hg hgc hℓ
-  set D₀ : ℝ := 10 * (∑' m, ‖k₀ m‖) + |wPrime| * ∑' m, ‖towerPrime (truncWeight S lam) g ℓ m‖
-  refine ⟨D₀, fun D hD => ?_⟩
-  have hherm := isHermKernel_sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩
+  refine ⟨10 * (∑' m : Multiplicative ℤ,
+      ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * Real.log (p : ℕ))‖) +
+    |wPrime| * ∑' m, ‖towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m‖, fun D hD => ?_⟩
   have hpd : IsPosDefKernel (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩) := by
-    rw [isPosDefKernel_iff hherm]
-    refine nonpos_iff_eq_zero.mp (negIndex_le_of_finset _ fun s => ?_)
-    rw [nonpos_iff_eq_zero, Nat.cast_eq_zero]
-    by_contra hne
-    obtain ⟨W, hWr, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex
-      (-gram (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩) fun z : s => (z : Multiplicative ℤ))
-    have hWpos : 0 < Module.finrank ℂ W := by rw [hWr]; exact Nat.pos_of_ne_zero hne
-    set bW := Module.finBasis ℂ W
-    set v : W := bW ⟨0, hWpos⟩
-    have hv0 : (v : s → ℂ) ≠ 0 := fun h => bW.ne_zero ⟨0, hWpos⟩ (Subtype.ext h)
-    have hneg : hermQuad (gram (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩)
-        (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ) < 0 := by
-      have := hW _ v.2 hv0; rw [hermQuad_neg] at this; linarith
-    -- Evaluate the archimedean form as a packet Gamma integral
-    set e := Fintype.equivFin s
-    set w : Fin (Fintype.card s) → ℂ := fun i => (v : s → ℂ) (e.symm i)
-    set t : Fin (Fintype.card s) → ℝ := fun i =>
-      ((Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ
-    set G : ℝ → ℂ := ∑ j, w j • RHTower.WeilSpectral.transl (t j) g
-    have hGc : ContDiff ℝ 2 G := by
-      have heq : G = fun x => ∑ j, w j * g (x - t j) := funext fun x => by
-        simp [G, Finset.sum_apply, RHTower.WeilSpectral.transl]
-      rw [heq]
-      exact ContDiff.sum fun j _ => contDiff_const.mul (hg.comp (contDiff_id.sub contDiff_const))
-    have hGs : HasCompactSupport G :=
-      HasCompactSupport.finset_sum fun j _ =>
-        (hgc.comp_homeomorph (Homeomorph.subRight (t j))).smul_left
-    have hadm : RHTower.WeilSpectral.Admissible K :=
-      RHTower.WeilSpectral.admissible_weilTest hg hgc
-    have harch_eq : hermQuad (gram (towerArch g ℓ) fun z : s => (z : Multiplicative ℤ))
-        (v : s → ℂ) = (RHTower.WeilSpectral.archPart (EF.weilTest G G)).re := by
-      have h1 : EF.weilTest G G =
-          ∑ i, ∑ j, (star (w i) * w j) • RHTower.WeilSpectral.transl (t j - t i) K :=
-        RHTower.WeilSpectral.weilTest_sum_transl hg.continuous hgc t w
-      have hlin : ∀ {ι : Type*} (u : Finset ι) (f : ι → ℝ → ℂ),
-          (∀ i ∈ u, RHTower.WeilSpectral.Admissible (f i)) →
-          RHTower.WeilSpectral.archPart (∑ i ∈ u, f i) =
-            ∑ i ∈ u, RHTower.WeilSpectral.archPart (f i) := by
-        intro ι u f hf
-        classical
-        induction u using Finset.induction_on with
-        | empty => simp [RHTower.WeilSpectral.archPart, paperFT]
-        | insert a u ha ih =>
-          have h1 := hf a (mem_insert_self a u)
-          have h2 := RHTower.WeilSpectral.Admissible.sum u fun i hi => hf i (mem_insert_of_mem hi)
-          rw [sum_insert ha, sum_insert ha, ← ih fun i hi => hf i (mem_insert_of_mem hi)]
-          unfold RHTower.WeilSpectral.archPart
-          rw [← mul_add, ← integral_add h1.arch h2.arch]
-          congr 1
-          refine integral_congr_ae (Eventually.of_forall fun r => ?_)
-          dsimp only
-          rw [RHTower.WeilSpectral.paperFT_add h1 h2]; ring
-      have hsmul : ∀ (a : ℂ) (f : ℝ → ℂ),
-          RHTower.WeilSpectral.archPart (a • f) = a * RHTower.WeilSpectral.archPart f := fun a f => by
-        unfold RHTower.WeilSpectral.archPart
-        rw [mul_left_comm, ← integral_const_mul a]
-        congr 1
-        refine integral_congr_ae (Eventually.of_forall fun r => ?_)
-        dsimp only
-        rw [RHTower.WeilSpectral.paperFT_smul]; ring
-      rw [h1, hlin univ
-        (fun i => ∑ j : Fin (Fintype.card s),
-          (star (w i) * w j) • RHTower.WeilSpectral.transl (t j - t i) K)
-        (fun i _ => RHTower.WeilSpectral.Admissible.sum univ fun j _ =>
-          (hadm.transl (t j - t i)).smul (star (w i) * w j))]
-      have hinner : ∀ i, RHTower.WeilSpectral.archPart
-          (∑ j, (star (w i) * w j) • RHTower.WeilSpectral.transl (t j - t i) K) =
-          ∑ j, conj (w i) * RHTower.WeilSpectral.archPart
-            (RHTower.WeilSpectral.transl (t j - t i) K) * w j := fun i => by
-        rw [hlin univ
-          (fun j => (star (w i) * w j) • RHTower.WeilSpectral.transl (t j - t i) K)
-          (fun j _ => (hadm.transl (t j - t i)).smul (star (w i) * w j))]
-        refine sum_congr rfl fun j _ => ?_
-        rw [hsmul, Complex.star_def]; ring
-      simp_rw [hinner]
-      rw [hermQuad_gram]
-      congr 1
-      rw [← e.symm.sum_comp]
-      refine sum_congr rfl fun i _ => ?_
-      rw [← e.symm.sum_comp]
-      refine sum_congr rfl fun j _ => ?_
-      simp only [w, t, towerArch, toAdd_mul, toAdd_inv]
-      congr 3
-      push_cast; ring
-    have hk₀_eq : ∫ u, ‖G u‖ ^ 2 =
-        hermQuad (gram k₀ fun z : s => (z : Multiplicative ℤ)) (v : s → ℂ) := by
-      have h0 : EF.weilTest G G 0 = ((∫ u, ‖G u‖ ^ 2 : ℝ) : ℂ) := by
-        rw [RHTower.WeilSpectral.weilTest_apply, ← integral_complex_ofReal]
-        refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-        simp only [sub_zero, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-      have h1 := congrFun (RHTower.WeilSpectral.weilTest_sum_transl hg.continuous hgc t w) 0
-      rw [h0] at h1
-      have hre := congrArg Complex.re h1
-      simp only [Complex.ofReal_re, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
-        RHTower.WeilSpectral.transl, zero_sub, Complex.star_def] at hre
-      rw [hre, hermQuad_gram]
-      congr 1
-      rw [← e.symm.sum_comp]
-      refine sum_congr rfl fun i _ => ?_
-      rw [← e.symm.sum_comp]
-      refine sum_congr rfl fun j _ => ?_
-      simp only [w, t, k₀, toAdd_mul, toAdd_inv]
-      have hsh : -(((Multiplicative.toAdd ((e.symm j : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ -
-          ((Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ) =
-          -((-Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) +
-            Multiplicative.toAdd ((e.symm j : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ := by
-        push_cast; ring
-      rw [hsh]; ring
-    have harch_lo : -10 * ((∑' m, ‖k₀ m‖) * ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2) ≤
-        hermQuad (gram (towerArch g ℓ) fun z : s => (z : Multiplicative ℤ)) (v : s → ℂ) := by
-      rw [harch_eq]
-      have hPn : ∀ r : ℝ, paperFT (EF.weilTest G G) r = ((‖paperFT G r‖ ^ 2 : ℝ) : ℂ) := fun r => by
-        rw [EF.paperFT_weilTest hGc.continuous hGc.continuous hGs hGs, Complex.conj_ofReal,
-          Complex.mul_conj, Complex.normSq_eq_norm_sq]
-      have hkd : ContDiff ℝ 2 (EF.weilTest G G) := EF.weilTest_contDiff hGc hGc.continuous hGs
-      have hks : HasCompactSupport (EF.weilTest G G) := EF.weilTest_hasCompactSupport hGs hGs
-      have hD : Integrable fun r : ℝ => ‖paperFT G r‖ ^ 2 := by
-        have hP : Integrable fun r : ℝ => paperFT (EF.weilTest G G) r :=
-          EF.integrable_paperFT_ofReal (EF.integrable_fourier_of_contDiff_two hkd hks)
-        exact hP.norm.congr (Eventually.of_forall fun r => by
-          simp only; rw [hPn, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)])
-      have hGint : Integrable fun r : ℝ => ‖paperFT G r‖ ^ 2 * EF.gammaBracket r := by
-        have hGc' := RHTower.LebesgueAtomWeil.integrable_paperFT_weilTest_mul_gammaBracket
-          hGc hGs hGc hGs
-        exact hGc'.re.congr (Eventually.of_forall fun r => by
-          change (paperFT (EF.weilTest G G) r * (EF.gammaBracket r : ℂ)).re = _
-          rw [hPn, ← Complex.ofReal_mul, Complex.ofReal_re])
-      have hre : (RHTower.WeilSpectral.archPart (EF.weilTest G G)).re =
-          (1 / (2 * π)) * ∫ r : ℝ, ‖paperFT G r‖ ^ 2 * EF.gammaBracket r := by
-        unfold RHTower.WeilSpectral.archPart
-        have : ∫ r : ℝ, paperFT (EF.weilTest G G) r * (EF.gammaBracket r : ℂ) =
-            ((∫ r : ℝ, ‖paperFT G r‖ ^ 2 * EF.gammaBracket r : ℝ) : ℂ) := by
-          rw [← integral_complex_ofReal]
-          exact integral_congr_ae (Eventually.of_forall fun r => by simp only; rw [hPn]; push_cast; rfl)
-        rw [this, show (1 / (2 * π) : ℂ) = ((1 / (2 * π) : ℝ) : ℂ) by push_cast; ring,
-          ← Complex.ofReal_mul, Complex.ofReal_re]
-      have hgamma : ∫ r : ℝ, ‖paperFT G r‖ ^ 2 * (-10) ≤
-          ∫ r : ℝ, ‖paperFT G r‖ ^ 2 * EF.gammaBracket r :=
-        integral_mono (hD.mul_const (-10)) hGint fun r => by
-          refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
-          have hl := Real.log_nonneg (show 1 ≤ 1 + |r| / 4 by linarith [abs_nonneg r])
-          linarith [RHTower.WeilWorkPBAP.gammaBracket_lower r]
-      rw [integral_mul_const] at hgamma
-      have hpl := RHTower.LebesgueAtomWeil.integral_norm_sq_paperFT_eq hGc hGs
-      have hstep1 : -10 * ∫ u, ‖G u‖ ^ 2 ≤ (RHTower.WeilSpectral.archPart (EF.weilTest G G)).re := by
-        rw [hre, ← hpl]
-        have hπ : 0 < 1 / (2 * π) := by positivity
-        nlinarith
-      have hstep2 : ∫ u, ‖G u‖ ^ 2 ≤ (∑' m, ‖k₀ m‖) * ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2 := by
-        rw [hk₀_eq]
-        exact (le_abs_self _).trans (abs_hermQuad_gram_le_tsum_norm hk₀_sum s (v : s → ℂ))
-      nlinarith
-    have hprime_lo : -(|wPrime| * ((∑' m, ‖towerPrime (truncWeight S lam) g ℓ m‖) *
-        ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2)) ≤
-        hermQuad (gram (fun m => -(wPrime : ℂ) * towerPrime (truncWeight S lam) g ℓ m)
-          fun z : s => (z : Multiplicative ℤ)) (v : s → ℂ) := by
-      have hsmul : gram (fun m => -(wPrime : ℂ) * towerPrime (truncWeight S lam) g ℓ m)
+    refine ⟨isHermKernel_sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩, fun n x c => ?_⟩
+    classical
+    let s : Finset (Multiplicative ℤ) := univ.image x
+    let f : Fin n → s := fun a => ⟨x a, mem_image_of_mem x (mem_univ a)⟩
+    let c' : s → ℂ := pushVec f c
+    have hpush := hermQuad_gram_pushVec (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩)
+      (fun z : s => (z : Multiplicative ℤ)) f c
+    rw [show ((fun z : s => (z : Multiplicative ℤ)) ∘ f) = x from rfl] at hpush
+    rw [← hpush]
+    have harch_lo := neg_ten_tsum_le_hermQuad_towerArch hg hgc (Real.log (p : ℕ)) hk₀_sum s c'
+    have hprime_lo : -(|wPrime| * ((∑' m, ‖towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m‖) *
+        ∑ i : s, ‖c' i‖ ^ 2)) ≤
+        hermQuad (gram (fun m => -(wPrime : ℂ) *
+          towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m)
+          fun z : s => (z : Multiplicative ℤ)) c' := by
+      have hsmul : gram (fun m => -(wPrime : ℂ) *
+          towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m)
           (fun z : s => (z : Multiplicative ℤ)) =
-          ((-wPrime : ℝ) : ℂ) • gram (towerPrime (truncWeight S lam) g ℓ)
+          ((-wPrime : ℝ) : ℂ) • gram (towerPrime (truncWeight S lam) g (Real.log (p : ℕ)))
             (fun z : s => (z : Multiplicative ℤ)) := by
         ext i j; simp [gram]
       rw [hsmul, ArithmeticCastelnuovoSeveri.hermQuad_ofReal_smul]
-      have habs := abs_hermQuad_gram_le_tsum_norm hp_sum s (v : s → ℂ)
-      have hmul : |(-wPrime) * hermQuad (gram (towerPrime (truncWeight S lam) g ℓ)
-          (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ)| ≤
-          |wPrime| * ((∑' m, ‖towerPrime (truncWeight S lam) g ℓ m‖) *
-            ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2) := by
+      have habs := abs_hermQuad_gram_le_tsum_norm hp_sum s c'
+      have hmul : |(-wPrime) * hermQuad (gram (towerPrime (truncWeight S lam) g (Real.log (p : ℕ)))
+          (fun z : s => (z : Multiplicative ℤ))) c'| ≤
+          |wPrime| * ((∑' m, ‖towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m‖) *
+            ∑ i : s, ‖c' i‖ ^ 2) := by
         rw [abs_mul, abs_neg]
         exact mul_le_mul_of_nonneg_left habs (abs_nonneg _)
-      linarith [neg_abs_le ((-wPrime) * hermQuad (gram (towerPrime (truncWeight S lam) g ℓ)
-        (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ))]
-    have hdiag : hermQuad (gram (LocalCounterterm.eval ⟨0, D, 0⟩)
-        (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ) =
-        D * ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2 := by
-      rw [hermQuad_gram]
-      have hterm : ∀ i j : s,
-          conj ((v : s → ℂ) i) * LocalCounterterm.eval ⟨0, D, 0⟩ (((i : Multiplicative ℤ))⁻¹ * j) *
-            (v : s → ℂ) j =
-          if i = j then ((D * ‖(v : s → ℂ) i‖ ^ 2 : ℝ) : ℂ) else 0 := fun i j => by
-        have h1 : ((i : Multiplicative ℤ))⁻¹ * (j : Multiplicative ℤ) = 1 ↔ i = j := by
-          rw [inv_mul_eq_one]; exact Subtype.ext_iff.symm
-        simp only [LocalCounterterm.eval, Complex.ofReal_zero, zero_add, zero_mul, add_zero, h1]
-        split_ifs with hij
-        · subst hij
-          rw [mul_right_comm, Complex.conj_mul', ← Complex.ofReal_pow]
-          push_cast; ring
-        · ring
-      simp_rw [hterm, Finset.sum_ite_eq, if_pos (mem_univ _), ← Complex.ofReal_sum,
-        Complex.ofReal_re, mul_sum]
+      linarith [neg_abs_le ((-wPrime) *
+        hermQuad (gram (towerPrime (truncWeight S lam) g (Real.log (p : ℕ)))
+          (fun z : s => (z : Multiplicative ℤ))) c')]
+    have hdiag := hermQuad_diag_counterterm D s c'
     have hsplit : hermQuad (gram (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩)
-        (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ) =
-        hermQuad (gram (fun m => -(wPrime : ℂ) * towerPrime (truncWeight S lam) g ℓ m)
-          (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ) +
-        hermQuad (gram (towerArch g ℓ) (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ) +
+        (fun z : s => (z : Multiplicative ℤ))) c' =
+        hermQuad (gram (fun m => -(wPrime : ℂ) *
+          towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m)
+          (fun z : s => (z : Multiplicative ℤ))) c' +
+        hermQuad (gram (towerArch g (Real.log (p : ℕ)))
+          (fun z : s => (z : Multiplicative ℤ))) c' +
         hermQuad (gram (LocalCounterterm.eval ⟨0, D, 0⟩)
-          (fun z : s => (z : Multiplicative ℤ))) (v : s → ℂ) := by
+          (fun z : s => (z : Multiplicative ℤ))) c' := by
       have heq : gram (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩)
           (fun z : s => (z : Multiplicative ℤ)) =
-          (gram (fun m => -(wPrime : ℂ) * towerPrime (truncWeight S lam) g ℓ m)
+          (gram (fun m => -(wPrime : ℂ) * towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m)
             (fun z : s => (z : Multiplicative ℤ)) +
-          gram (towerArch g ℓ) (fun z : s => (z : Multiplicative ℤ))) +
+          gram (towerArch g (Real.log (p : ℕ))) (fun z : s => (z : Multiplicative ℤ))) +
           gram (LocalCounterterm.eval ⟨0, D, 0⟩) (fun z : s => (z : Multiplicative ℤ)) := by
-        ext i j; simp [gram, sTruncatedNonPole, ℓ]
+        ext i j; simp [gram, sTruncatedNonPole]
       rw [heq, HeckeKreinToeplitz.hermQuad_add, HeckeKreinToeplitz.hermQuad_add]
-    have hnorm_nonneg : 0 ≤ ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
-    have hD_diff : 0 ≤ (D - D₀) * ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2 :=
-      mul_nonneg (by linarith) hnorm_nonneg
-    rw [hsplit, hdiag] at hneg
-    simp only [D₀] at hD_diff
+    have hdiff_nonneg : 0 ≤ (D - (10 * (∑' m : Multiplicative ℤ,
+        ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * Real.log (p : ℕ))‖) +
+      |wPrime| * ∑' m, ‖towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m‖)) *
+        ∑ i : s, ‖c' i‖ ^ 2 :=
+      mul_nonneg (sub_nonneg.mpr hD) (sum_nonneg fun _ _ => sq_nonneg _)
+    have hlin : (D - (10 * (∑' m : Multiplicative ℤ,
+        ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * Real.log (p : ℕ))‖) +
+      |wPrime| * ∑' m, ‖towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m‖)) *
+        ∑ i : s, ‖c' i‖ ^ 2 =
+        D * ∑ i : s, ‖c' i‖ ^ 2 -
+        10 * ((∑' m : Multiplicative ℤ,
+          ‖EF.weilTest g g (-((Multiplicative.toAdd m : ℤ) : ℝ) * Real.log (p : ℕ))‖) *
+          ∑ i : s, ‖c' i‖ ^ 2) -
+        |wPrime| * ((∑' m, ‖towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m‖) *
+          ∑ i : s, ‖c' i‖ ^ 2) := by ring
+    rw [hsplit, hdiag]
     linarith
   refine ⟨hpd, ?_⟩
   have heq : sTruncatedLocal S lam g p 0 wPrime 1 ⟨0, D, 0⟩ =

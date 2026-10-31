@@ -1,6 +1,7 @@
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailPhase
 import GaloisForLFunctions.«arithmetic-positivity-theory».MomentFlow.XiRitzVelocity
 import GaloisForLFunctions.«arithmetic-positivity-theory».Jensen.XiJetObstruction
+import GaloisForLFunctions.«arithmetic-positivity-theory».Jensen.XiStrictRoots
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailWeightedMass
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailTranslation
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialTailLogTranslation

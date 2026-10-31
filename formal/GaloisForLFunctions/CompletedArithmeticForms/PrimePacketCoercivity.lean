@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandPrimeAndCenterBounds
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.Conductor.PrimePacketDefect
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.PrimeDefectConfinementMustRetainLowEnergyConductors
 
 set_option autoImplicit false
 

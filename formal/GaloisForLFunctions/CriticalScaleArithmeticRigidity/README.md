@@ -98,6 +98,10 @@ Its exact squared norm relative to adjunction energy is
 
 The coefficients `a_p=sqrt(p−1)/p` attain equality: both response and adjunction mass equal `B_Q`. The input has zero complete-period mean. Thus a coherent receiving mode can amplify an arithmetically centered input. [PrimePoleNorm.lean](PrimePoleNorm.lean) proves the exact norm and extremizer; [PrimeGeneratorPole.lean](PrimeGeneratorPole.lean) identifies this functional with the literal divisor-jet source and passes the head bound to the complete generator.
 
+The full generator's optimal relative square constant lies between `B_Q` and `B_Q+8`. Indeed `A_Q−B_Q=Σ_(p≤Q)log p/[p(p−1)]≤8`. This identifies the leading logarithmic cost with coefficient one. [SharpPrimeSector.lean](SharpPrimeSector.lean) also proves that no uniform constant works on the actual harmonic pole hyperplane, even along the growing horizon `N=Q²`.
+
+The physical pole constraint is retained explicitly. [HarmonicPoleCentering.lean](HarmonicPoleCentering.lean) realizes the prescribed harmonic projection by changing coefficient one; this preserves both `L_Q` and the literal generator. Thus input pole removal and removal of a coherent receiving mode are separate operations. These assertions concern complete-period output norms.
+
 Operator norms and quadratic-form signs are different targets. The coherent constant output is orthogonal to prime-supported input under complete-period averaging. Its large norm alone does not force negative prime energy. The corpus's direct dilation-square coercivity illustrates why signed forms must be studied before replacing their interactions by norms.
 
 ## Foundational mechanisms

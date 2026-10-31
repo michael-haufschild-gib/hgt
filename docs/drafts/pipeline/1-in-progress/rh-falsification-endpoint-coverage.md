@@ -8,8 +8,9 @@
 | Mechanism | Exact witness | Lean owner |
 |---|---|---|
 | Anchored holomorphic dynamics | A nonanchor upper periodic point of the normalized Xi Donoghue map; period-one Gaussian stationary equation | `Bottcher/HalfPlane/XiDonoghueDynamics.lean` |
-| Heat spectral motion | A differentiable Ritz branch in any fixed finite polynomial space with nonnegative velocity at positive heat time | `arithmetic-positivity-theory/MomentFlow/XiRitzVelocity.lean`; actual source audited, generic final source check pending |
+| Heat spectral motion | A differentiable Ritz branch in any fixed finite polynomial space with nonnegative velocity at positive heat time | `arithmetic-positivity-theory/MomentFlow/XiRitzVelocity.lean` |
 | Finite differential jets | A nonsplitting Jensen section after any real translation, derivative order, and finite real first-order differential chain | `arithmetic-positivity-theory/Jensen/XiJetObstruction.lean` |
+| Strict Jensen roots | A repeated real root of any reversed finite Xi Jensen section, including splitting sections | `arithmetic-positivity-theory/Jensen/XiStrictRoots.lean` |
 
 ## Exclusions
 
@@ -31,10 +32,12 @@ strictly stronger obstruction.
 | Bounded positive apertures | `SquareRootThreshold.riemannHypothesis_iff_not_bddAbove_windowPositiveApertures` | Existing aperture criterion |
 | Failure of cofinal integrated damping-autocorrelation bounds | `ArithmeticContinuationAndCriticalEnergy.riemannHypothesis_iff_cofinal_double_integral_tangentCorrelation` | Existing exact energy equivalence |
 
-## Active candidates
+## Remaining candidates
 
-- Strict Jensen roots: exclude repeated nonzero roots through real-factor extraction and multiplicity drop; proof incomplete.
-- Asymmetric heat minors: independent ordered time grids; total positivity beyond principal moment minors; proof incomplete.
+Strict Jensen roots are formalized through real-factor extraction and exact multiplicity drop.
+
+Backlog: asymmetric heat minors on independent ordered time grids; Donoghue global attraction
+excluding nonconvergent aperiodic orbits. Neither has a completed Lean proof.
 
 For the direct Hedenmalm source generator, RH supplies imaginary nonzero spectrum, not an
 audited skew-adjointness or semisimplicity theorem. Jordan defects cannot be used as falsification

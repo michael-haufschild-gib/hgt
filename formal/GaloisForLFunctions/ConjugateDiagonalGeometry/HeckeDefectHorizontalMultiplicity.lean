@@ -236,6 +236,7 @@ theorem heckeAvgReal_eq_primitive_sub (L u : ℝ) :
     heckeAvgReal L u =
       (1 / (2 * L)) * (baseBumpPrimitive (u + L) - baseBumpPrimitive (u - L)) := by
   unfold heckeAvgReal baseBumpPrimitive
+  congr 1
   have h1 := intervalIntegral.integral_add_adjacent_intervals
     ((contDiff_baseBumpReal (n := ⊤)).continuous.intervalIntegrable (μ := volume) 0 (u - L))
     ((contDiff_baseBumpReal (n := ⊤)).continuous.intervalIntegrable (μ := volume) (u - L) (u + L))
@@ -246,7 +247,8 @@ theorem heckeAvgReal_eq_shift_integral (L u : ℝ) :
   unfold heckeAvgReal
   congr 1
   have h := intervalIntegral.integral_comp_sub_left baseBumpReal u (a := -L) (b := L)
-  simp [sub_neg_eq_add, h.symm]
+  rw [h]
+  simp [sub_neg_eq_add]
 
 theorem contDiff_heckeAvgReal (L : ℝ) : ContDiff ℝ ∞ (heckeAvgReal L) := by
   have heq : heckeAvgReal L = fun u =>
@@ -342,19 +344,24 @@ theorem deriv_deriv_heckeAvgReal (L u : ℝ) :
     have heq : heckeAvgReal L = fun y =>
         (1 / (2 * L)) * (baseBumpPrimitive (y + L) - baseBumpPrimitive (y - L)) :=
       funext (heckeAvgReal_eq_primitive_sub L)
-    rw [heq, deriv_const_mul _
-      ((differentiableAt_comp_add_const.mpr (hdf _)).sub
-        (differentiableAt_comp_sub_const.mpr (hdf _))),
-      deriv_sub (differentiableAt_comp_add_const.mpr (hdf _))
-        (differentiableAt_comp_sub_const.mpr (hdf _)),
+    have hp1 : DifferentiableAt ℝ (fun y => baseBumpPrimitive (y + L)) x :=
+      differentiableAt_comp_add_const.mpr (hdf (x + L))
+    have hp2 : DifferentiableAt ℝ (fun y => baseBumpPrimitive (y - L)) x :=
+      differentiableAt_comp_sub_const.mpr (hdf (x - L))
+    have hp12 : DifferentiableAt ℝ
+        (fun y => baseBumpPrimitive (y + L) - baseBumpPrimitive (y - L)) x :=
+      hp1.sub hp2
+    rw [heq, deriv_const_mul _ hp12, deriv_fun_sub hp1 hp2,
       deriv_comp_add_const, deriv_comp_sub_const, deriv_baseBumpPrimitive]
   have hdb : Differentiable ℝ baseBumpReal :=
     (contDiff_baseBumpReal (n := 1)).differentiable one_ne_zero
-  rw [hd1, deriv_const_mul _
-    ((differentiableAt_comp_add_const.mpr (hdb _)).sub
-      (differentiableAt_comp_sub_const.mpr (hdb _))),
-    deriv_sub (differentiableAt_comp_add_const.mpr (hdb _))
-      (differentiableAt_comp_sub_const.mpr (hdb _)),
+  have hb1 : DifferentiableAt ℝ (fun x => baseBumpReal (x + L)) u :=
+    differentiableAt_comp_add_const.mpr (hdb (u + L))
+  have hb2 : DifferentiableAt ℝ (fun x => baseBumpReal (x - L)) u :=
+    differentiableAt_comp_sub_const.mpr (hdb (u - L))
+  have hb12 : DifferentiableAt ℝ (fun x => baseBumpReal (x + L) - baseBumpReal (x - L)) u :=
+    hb1.sub hb2
+  rw [hd1, deriv_const_mul _ hb12, deriv_fun_sub hb1 hb2,
     deriv_comp_add_const, deriv_comp_sub_const]
 
 theorem deriv_deriv_heckeAvgBump (L u : ℝ) :
@@ -505,7 +512,7 @@ theorem one_le_re_tr_twist_of_im_eq {f : ℝ → ℝ} (hf : Continuous f) (hfc :
   have hexp : ∀ u : ℝ, (ρ - (γ : ℂ) * I - 1 / 2) * (u : ℂ) = ((δ * u : ℝ) : ℂ) := by
     intro u
     apply Complex.ext
-    · simp [δ]; ring
+    · simp [δ]
     · simp [him]
   have hint_exp : Integrable (fun u : ℝ => f u * Real.exp (δ * u)) :=
     (hf.mul (Real.continuous_exp.comp (continuous_const.mul continuous_id))).integrable_of_hasCompactSupport
@@ -668,8 +675,8 @@ private theorem sq_exp_mul_sub_one_le_depthKernel {L δ l : ℝ} (hL : 0 < L) (h
   have h2 : depthKernel 1 (δ * l) = depthKernel δ l := by
     unfold depthKernel; ring_nf
   have h3 : depthKernel δ l ≤ depthKernel δ L := by
-    rw [depthKernel_le_iff, abs_of_pos hL]
-    exact hl
+    rw [depthKernel_le_iff, abs_mul, abs_mul, abs_of_pos hL]
+    exact mul_le_mul_of_nonneg_right hl (abs_nonneg δ)
   have h4 : depthKernel δ L = depthKernel L δ := by
     unfold depthKernel; ring_nf
   exact h1.trans (h2.le.trans (h3.trans_eq h4))
@@ -713,14 +720,14 @@ private theorem norm_tr_twist_baseBump_sub_refl_le (γ : ℝ) (ρ : zetaZeroConf
       ((δ * x : ℝ) : ℂ) + I * ((dω * x : ℝ) : ℂ) := by
     intro x
     apply Complex.ext
-    · simp [δ, dω]; ring
-    · simp [δ, dω]; ring
+    · simp [δ, dω]
+    · simp [δ, dω]
   have hexp2 : ∀ x : ℝ, (rosatiRefl (ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ) =
       ((-(δ * x) : ℝ) : ℂ) + I * ((dω * x : ℝ) : ℂ) := by
     intro x
     apply Complex.ext
     · simp [rosatiRefl, δ, dω]; ring
-    · simp [rosatiRefl, δ, dω]; ring
+    · simp [rosatiRefl, δ, dω]
   have hint1 : Integrable (fun x : ℝ =>
       baseBump x * Complex.exp (((ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ))) :=
     ((contDiff_baseBump (n := ⊤)).continuous.mul
@@ -754,11 +761,15 @@ private theorem norm_tr_twist_baseBump_sub_refl_le (γ : ℝ) (ρ : zetaZeroConf
       (Complex.continuous_ofReal.comp ((Real.continuous_exp.comp (continuous_const.mul continuous_id)).sub
         (Real.continuous_exp.comp (continuous_neg.comp (continuous_const.mul continuous_id)))))).integrable_of_hasCompactSupport
       hasCompactSupport_baseBump.mul_right
-  have hsub0 : (∫ x : ℝ, baseBump x * Complex.exp (((ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ)) -
-      baseBump x * Complex.exp ((rosatiRefl (ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ))) =
+  have hsub0 : (∫ x : ℝ, (baseBump x * Complex.exp (((ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ)) -
+      baseBump x * Complex.exp ((rosatiRefl (ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ)))) =
       ∫ x : ℝ, (baseBumpReal x : ℂ) * (Complex.exp (I * ((dω * x : ℝ) : ℂ)) - 1) *
         (((Real.exp (δ * x) - Real.exp (-(δ * x)) : ℝ) : ℂ)) := by
-    rw [← sub_zero (∫ x : ℝ, _ - _), ← hodd0, ← integral_sub (hint1.sub hint2) hint0]
+    have hint12 : Integrable (fun x : ℝ =>
+        baseBump x * Complex.exp (((ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ)) -
+          baseBump x * Complex.exp ((rosatiRefl (ρ : ℂ) - (γ : ℂ) * I - 1 / 2) * (x : ℂ))) :=
+      hint1.sub hint2
+    rw [← sub_zero (∫ x : ℝ, _ - _), ← hodd0, ← integral_sub hint12 hint0]
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
     dsimp only [baseBump]
     rw [hexp1 x, hexp2 x, Complex.exp_add, Complex.exp_add, ← Complex.ofReal_exp,
@@ -837,6 +848,265 @@ theorem sincLorentzConst_pos : 0 < sincLorentzConst := by
   unfold sincLorentzConst
   positivity
 
+/-- Averaged oscillatory factor `(2L)⁻¹ ∫_{-L}^L e^{i dω ℓ} dℓ`. -/
+private def sincFactor (L dω : ℝ) : ℂ :=
+  ((1 / (2 * L) : ℝ) : ℂ) * ∫ l in (-L)..L, Complex.exp (I * (dω : ℂ) * (l : ℂ))
+
+/-- Averaged off-line exponential-minus-one remainder on `[-L, L]`. -/
+private def depthDiffIntegral (L δ dω : ℝ) (u v : ℂ) : ℂ :=
+  ((1 / (2 * L) : ℝ) : ℂ) * ∫ l in (-L)..L,
+    Complex.exp (I * (dω : ℂ) * (l : ℂ)) *
+      ((((Real.exp (δ * l) - 1 : ℝ) : ℂ) * u) - (((Real.exp ((-δ) * l) - 1 : ℝ) : ℂ) * v))
+
+/-- Exact decomposition of `tr (twist γ F_L) z − tr (twist γ F_L) (rosatiRefl z)` into its
+sinc-damped reflection mismatch and its `depthKernel`-controlled off-line remainder. -/
+private theorem tr_twist_heckeAvgBump_sub_refl_eq {L : ℝ} (hL : 0 < L) (γ : ℝ) (z : ℂ) :
+    tr (twist γ (heckeAvgBump L)) z - tr (twist γ (heckeAvgBump L)) (rosatiRefl z) =
+      (tr (twist γ baseBump) z - tr (twist γ baseBump) (rosatiRefl z)) *
+        sincFactor L (z.im - γ) +
+      depthDiffIntegral L (z.re - 1 / 2) (z.im - γ)
+        (tr (twist γ baseBump) z) (tr (twist γ baseBump) (rosatiRefl z)) := by
+  have he1 : ∀ l : ℝ, (z - 1 / 2 - (γ : ℂ) * I) * (l : ℂ) =
+      (((z.re - 1 / 2) * l : ℝ) : ℂ) + I * (((z.im - γ) * l : ℝ) : ℂ) := by
+    intro l
+    apply Complex.ext
+    · simp
+    · simp
+  have he2 : ∀ l : ℝ, (rosatiRefl z - 1 / 2 - (γ : ℂ) * I) * (l : ℂ) =
+      (((-(z.re - 1 / 2)) * l : ℝ) : ℂ) + I * (((z.im - γ) * l : ℝ) : ℂ) := by
+    intro l
+    apply Complex.ext
+    · simp [rosatiRefl]; left; ring
+    · simp [rosatiRefl]
+  rw [tr_twist_heckeAvgBump_eq hL γ z, tr_twist_heckeAvgBump_eq hL γ (rosatiRefl z)]
+  unfold sincFactor depthDiffIntegral
+  have hi1 : IntervalIntegrable (fun l : ℝ =>
+      Complex.exp ((z - 1 / 2 - (γ : ℂ) * I) * (l : ℂ)) * tr (twist γ baseBump) z)
+      volume (-L) L :=
+    ((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).mul
+      continuous_const).intervalIntegrable (μ := volume) _ _
+  have hi2 : IntervalIntegrable (fun l : ℝ =>
+      Complex.exp ((rosatiRefl z - 1 / 2 - (γ : ℂ) * I) * (l : ℂ)) *
+        tr (twist γ baseBump) (rosatiRefl z)) volume (-L) L :=
+    ((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).mul
+      continuous_const).intervalIntegrable (μ := volume) _ _
+  have hiA : IntervalIntegrable (fun l : ℝ =>
+      Complex.exp (I * ((z.im - γ : ℝ) : ℂ) * (l : ℂ))) volume (-L) L :=
+    (Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).intervalIntegrable
+      (μ := volume) _ _
+  have hiB : IntervalIntegrable (fun l : ℝ =>
+      Complex.exp (I * ((z.im - γ : ℝ) : ℂ) * (l : ℂ)) *
+        ((((Real.exp ((z.re - 1 / 2) * l) - 1 : ℝ) : ℂ) * tr (twist γ baseBump) z) -
+          (((Real.exp ((-(z.re - 1 / 2)) * l) - 1 : ℝ) : ℂ) *
+            tr (twist γ baseBump) (rosatiRefl z)))) volume (-L) L :=
+    ((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).mul
+      (((Complex.continuous_ofReal.comp ((Real.continuous_exp.comp
+        (continuous_const.mul continuous_id)).sub continuous_const)).mul continuous_const).sub
+      ((Complex.continuous_ofReal.comp ((Real.continuous_exp.comp
+        (continuous_const.mul continuous_id)).sub continuous_const)).mul continuous_const))).intervalIntegrable
+      (μ := volume) _ _
+  rw [← mul_sub ((1 / (2 * L) : ℝ) : ℂ), ← intervalIntegral.integral_sub hi1 hi2,
+    mul_comm (tr (twist γ baseBump) z - tr (twist γ baseBump) (rosatiRefl z)),
+    mul_assoc, ← intervalIntegral.integral_mul_const,
+    ← mul_add ((1 / (2 * L) : ℝ) : ℂ), ← intervalIntegral.integral_add (hiA.mul_const _) hiB]
+  congr 1
+  refine intervalIntegral.integral_congr fun l _ => ?_
+  rw [he1 l, he2 l, Complex.exp_add, Complex.exp_add, ← Complex.ofReal_exp, ← Complex.ofReal_exp,
+    Complex.ofReal_mul (z.im - γ) l, ← mul_assoc I]
+  push_cast
+  ring
+
+/-- Quadratic bound on `depthDiffIntegral` via `depthKernel L δ`. -/
+private theorem normSq_depthDiffIntegral_le {L : ℝ} (hL : 0 < L) (δ dω : ℝ) (u v : ℂ) :
+    Complex.normSq (depthDiffIntegral L δ dω u v) ≤
+      2 * depthKernel L δ * (Complex.normSq u + Complex.normSq v) := by
+  have hK2 : Real.sqrt (depthKernel L δ) ^ 2 = depthKernel L δ :=
+    Real.sq_sqrt (depthKernel_nonneg L δ)
+  have hB_norm : ‖depthDiffIntegral L δ dω u v‖ ≤ Real.sqrt (depthKernel L δ) * (‖u‖ + ‖v‖) := by
+    unfold depthDiffIntegral
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    have hI : ‖∫ l in (-L)..L,
+        Complex.exp (I * (dω : ℂ) * (l : ℂ)) *
+          ((((Real.exp (δ * l) - 1 : ℝ) : ℂ) * u) - (((Real.exp ((-δ) * l) - 1 : ℝ) : ℂ) * v))‖ ≤
+        Real.sqrt (depthKernel L δ) * (‖u‖ + ‖v‖) * |L - -L| :=
+      intervalIntegral.norm_integral_le_of_norm_le_const fun l hl => by
+        rw [uIoc_of_le (by linarith)] at hl
+        have hlabs : |l| ≤ L := abs_le.mpr ⟨hl.1.le, hl.2⟩
+        rw [norm_mul, show I * (dω : ℂ) * (l : ℂ) = ((dω * l : ℝ) : ℂ) * I by push_cast; ring,
+          Complex.norm_exp_ofReal_mul_I, one_mul]
+        refine (norm_sub_le _ _).trans ?_
+        rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
+          Real.norm_eq_abs, Real.norm_eq_abs]
+        have hd1 : |Real.exp (δ * l) - 1| ≤ Real.sqrt (depthKernel L δ) := by
+          rw [← Real.sqrt_sq_eq_abs]
+          exact Real.sqrt_le_sqrt (sq_exp_mul_sub_one_le_depthKernel hL hlabs)
+        have hd2 : |Real.exp ((-δ) * l) - 1| ≤ Real.sqrt (depthKernel L δ) := by
+          rw [← Real.sqrt_sq_eq_abs]
+          have hdk_neg : depthKernel L (-δ) = depthKernel L δ := by
+            unfold depthKernel; rw [show 2 * -δ * L = -(2 * δ * L) by ring, Real.cosh_neg]
+          exact (Real.sqrt_le_sqrt (sq_exp_mul_sub_one_le_depthKernel hL hlabs)).trans_eq
+            (by rw [hdk_neg])
+        calc |Real.exp (δ * l) - 1| * ‖u‖ + |Real.exp ((-δ) * l) - 1| * ‖v‖
+            ≤ Real.sqrt (depthKernel L δ) * ‖u‖ + Real.sqrt (depthKernel L δ) * ‖v‖ := by gcongr
+          _ = Real.sqrt (depthKernel L δ) * (‖u‖ + ‖v‖) := by ring
+    rw [abs_of_pos (by linarith : 0 < L - -L), sub_neg_eq_add] at hI
+    calc 1 / (2 * L) * ‖∫ l in (-L)..L, _‖
+        ≤ 1 / (2 * L) * (Real.sqrt (depthKernel L δ) * (‖u‖ + ‖v‖) * (L + L)) :=
+          mul_le_mul_of_nonneg_left hI (by positivity)
+      _ = Real.sqrt (depthKernel L δ) * (‖u‖ + ‖v‖) := by field_simp; ring
+  rw [Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq]
+  calc ‖depthDiffIntegral L δ dω u v‖ ^ 2
+      ≤ (Real.sqrt (depthKernel L δ) * (‖u‖ + ‖v‖)) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) hB_norm 2
+    _ = Real.sqrt (depthKernel L δ) ^ 2 * (‖u‖ + ‖v‖) ^ 2 := by ring
+    _ ≤ Real.sqrt (depthKernel L δ) ^ 2 * (2 * (‖u‖ ^ 2 + ‖v‖ ^ 2)) := by
+        gcongr; nlinarith [sq_nonneg (‖u‖ - ‖v‖)]
+    _ = 2 * depthKernel L δ * (‖u‖ ^ 2 + ‖v‖ ^ 2) := by rw [hK2]; ring
+
+/-- Sinc-cancelled Lorentzian bound on `(tr (twist γ h₀) ρ − tr (twist γ h₀) (1 − ρ̄)) * sincFactor`. -/
+private theorem normSq_refl_sinc_le {L : ℝ} (hL : 0 < L) (γ : ℝ) (ρ : zetaZeroConfig.carrier) :
+    Complex.normSq ((tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+        sincFactor L ((ρ : ℂ).im - γ)) ≤
+      (max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2) *
+        (1 / (1 + (γ - (ρ : ℂ).im) ^ 2)) := by
+  have hgL_rw : 1 / (1 + (γ - (ρ : ℂ).im) ^ 2) = 1 / (1 + ((ρ : ℂ).im - γ) ^ 2) := by
+    congr 2; ring
+  rw [hgL_rw, Complex.normSq_eq_norm_sq]
+  by_cases hdω0 : (ρ : ℂ).im - γ = 0
+  · have huv0 : ‖tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)‖ = 0 :=
+      le_antisymm ((norm_tr_twist_baseBump_sub_refl_le γ ρ).trans (by rw [hdω0, abs_zero]))
+        (norm_nonneg _)
+    rw [norm_mul, huv0, zero_mul]
+    simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow]
+    positivity
+  · rcases le_or_gt |(ρ : ℂ).im - γ| 1 with hdω1 | hdω1
+    · have hnormA : ‖(tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+          sincFactor L ((ρ : ℂ).im - γ)‖ ≤ 1 / L := by
+        rw [norm_mul]
+        have h1 := norm_tr_twist_baseBump_sub_refl_le γ ρ
+        have h2 : ‖sincFactor L ((ρ : ℂ).im - γ)‖ ≤ 1 / (L * |(ρ : ℂ).im - γ|) :=
+          norm_sinc_intervalIntegral_le hL hdω0
+        have hdωp : 0 < |(ρ : ℂ).im - γ| := abs_pos.mpr hdω0
+        calc ‖tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)‖ *
+              ‖sincFactor L ((ρ : ℂ).im - γ)‖
+            ≤ |(ρ : ℂ).im - γ| * (1 / (L * |(ρ : ℂ).im - γ|)) :=
+              mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
+          _ = 1 / L := by field_simp
+      have h1dω : 1 + ((ρ : ℂ).im - γ) ^ 2 ≤ 2 := by
+        nlinarith [sq_abs ((ρ : ℂ).im - γ), abs_nonneg ((ρ : ℂ).im - γ)]
+      have h2MK : (2 : ℝ) ≤ max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) :=
+        le_max_left _ _
+      calc ‖(tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+              sincFactor L ((ρ : ℂ).im - γ)‖ ^ 2
+          ≤ (1 / L) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hnormA 2
+        _ = 2 / L ^ 2 * (1 / 2) := by ring
+        _ ≤ max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2 *
+              (1 / (1 + ((ρ : ℂ).im - γ) ^ 2)) := by
+            refine mul_le_mul (by gcongr) ?_ (by positivity) (by positivity)
+            exact one_div_le_one_div_of_le (by positivity) h1dω
+    · have hstrip := zetaZeroConfig.strip ρ ρ.2
+      have hstrip' : 0 ≤ (rosatiRefl (ρ : ℂ)).re ∧ (rosatiRefl (ρ : ℂ)).re ≤ 1 := by
+        simp only [rosatiRefl, Complex.sub_re, Complex.one_re, Complex.conj_re]
+        exact ⟨by linarith [hstrip.2], by linarith [hstrip.1]⟩
+      have hb_supp : ∀ x, baseBump x ≠ 0 → |x| ≤ 1 / 4 := fun x hx => by
+        by_contra h; exact hx (baseBump_eq_zero_of_abs_ge (not_le.mp h).le)
+      have hu_dec := norm_tr_twist_le (contDiff_baseBump (n := 2)) (by norm_num : (0 : ℝ) ≤ 1 / 4)
+        hb_supp γ hstrip
+      have hv_dec := norm_tr_twist_le (contDiff_baseBump (n := 2)) (by norm_num : (0 : ℝ) ≤ 1 / 4)
+        hb_supp γ hstrip'
+      have him_refl : (rosatiRefl (ρ : ℂ)).im = (ρ : ℂ).im := by simp [rosatiRefl]
+      rw [him_refl] at hv_dec
+      have hsinc : ‖sincFactor L ((ρ : ℂ).im - γ)‖ ≤ 1 / L :=
+        (norm_sinc_intervalIntegral_le hL hdω0).trans
+          (one_div_le_one_div_of_le hL (le_mul_of_one_le_right hL.le hdω1.le))
+      have huv_dec : ‖tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)‖ ≤
+          2 * Real.exp (1 / 8) * envelope baseBump / (1 + |(ρ : ℂ).im - γ|) ^ 2 := by
+        refine (norm_sub_le _ _).trans ?_
+        have h18 : (1 / 4 : ℝ) / 2 = 1 / 8 := by norm_num
+        rw [h18] at hu_dec hv_dec
+        exact (add_le_add hu_dec hv_dec).trans_eq (by ring)
+      have henv0 : 0 ≤ envelope baseBump := envelope_nonneg baseBump
+      have hnormA : ‖(tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+            sincFactor L ((ρ : ℂ).im - γ)‖ ≤
+          (2 * Real.exp (1 / 8) * envelope baseBump / L) / (1 + |(ρ : ℂ).im - γ|) ^ 2 := by
+        rw [norm_mul]
+        calc ‖tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)‖ *
+              ‖sincFactor L ((ρ : ℂ).im - γ)‖
+            ≤ (2 * Real.exp (1 / 8) * envelope baseBump / (1 + |(ρ : ℂ).im - γ|) ^ 2) * (1 / L) :=
+              mul_le_mul huv_dec hsinc (norm_nonneg _)
+                (div_nonneg (mul_nonneg (by positivity) henv0) (by positivity))
+          _ = (2 * Real.exp (1 / 8) * envelope baseBump / L) / (1 + |(ρ : ℂ).im - γ|) ^ 2 := by ring
+      have hden : 1 + ((ρ : ℂ).im - γ) ^ 2 ≤ (1 + |(ρ : ℂ).im - γ|) ^ 4 := by
+        nlinarith [sq_abs ((ρ : ℂ).im - γ), abs_nonneg ((ρ : ℂ).im - γ),
+          sq_nonneg |(ρ : ℂ).im - γ|]
+      have h4MK : 4 * Real.exp (1 / 4) * envelope baseBump ^ 2 ≤
+          max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) := le_max_right _ _
+      calc ‖(tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+              sincFactor L ((ρ : ℂ).im - γ)‖ ^ 2
+          ≤ ((2 * Real.exp (1 / 8) * envelope baseBump / L) / (1 + |(ρ : ℂ).im - γ|) ^ 2) ^ 2 :=
+            pow_le_pow_left₀ (norm_nonneg _) hnormA 2
+        _ = (4 * Real.exp (1 / 4) * envelope baseBump ^ 2 / L ^ 2) *
+              (1 / (1 + |(ρ : ℂ).im - γ|) ^ 4) := by
+            rw [div_pow, div_pow, mul_pow, mul_pow, ← Real.exp_nat_mul]
+            push_cast; ring_nf
+        _ ≤ (max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2) *
+              (1 / (1 + ((ρ : ℂ).im - γ) ^ 2)) := by
+            refine mul_le_mul (by gcongr) ?_ (by positivity) (by positivity)
+            exact one_div_le_one_div_of_le (by positivity) hden
+
+/-- Pointwise Carrier Bound for the `offLineDefect` summand of `heckeAvgBump L`. -/
+private theorem offLineDefect_heckeAvg_summand_le {L : ℝ} (hL : 0 < L) (γ : ℝ)
+    (ρ : zetaZeroConfig.carrier) :
+    (zetaZeroConfig.mult ρ : ℝ) / 2 *
+      Complex.normSq (tr (twist γ (heckeAvgBump L)) ρ -
+        tr (twist γ (heckeAvgBump L)) (rosatiRefl ρ)) ≤
+    2 * (zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ)) +
+    2 * ((zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ baseBump) (rosatiRefl ρ)) *
+      depthKernel L (zetaDepth ρ)) +
+    (max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2) *
+      ((zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (γ - (ρ : ℂ).im) ^ 2))) := by
+  rw [tr_twist_heckeAvgBump_sub_refl_eq hL γ (ρ : ℂ)]
+  have hAB : ∀ a b : ℂ, Complex.normSq (a + b) ≤ 2 * Complex.normSq a + 2 * Complex.normSq b := by
+    intro a b
+    rw [Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq]
+    have htri := norm_add_le a b
+    have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
+    nlinarith [sq_nonneg (‖a‖ - ‖b‖)]
+  have hm0 : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+  have hA := mul_le_mul_of_nonneg_left (normSq_refl_sinc_le hL γ ρ) hm0
+  have hB := mul_le_mul_of_nonneg_left
+    (normSq_depthDiffIntegral_le hL ((ρ : ℂ).re - 1 / 2) ((ρ : ℂ).im - γ)
+      (tr (twist γ baseBump) ρ) (tr (twist γ baseBump) (rosatiRefl ρ))) hm0
+  have hB' : (zetaZeroConfig.mult ρ : ℝ) *
+      Complex.normSq (depthDiffIntegral L ((ρ : ℂ).re - 1 / 2) ((ρ : ℂ).im - γ)
+        (tr (twist γ baseBump) ρ) (tr (twist γ baseBump) (rosatiRefl ρ))) ≤
+      2 * (zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ)) +
+      2 * ((zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ baseBump) (rosatiRefl ρ)) *
+        depthKernel L (zetaDepth ρ)) := by
+    refine hB.trans_eq ?_
+    simp only [zetaWeight, baseTwistTest, zetaDepth]
+    ring
+  have hA' : (zetaZeroConfig.mult ρ : ℝ) *
+      Complex.normSq ((tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+        sincFactor L ((ρ : ℂ).im - γ)) ≤
+      (max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2) *
+        ((zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (γ - (ρ : ℂ).im) ^ 2))) :=
+    hA.trans_eq (by ring)
+  calc (zetaZeroConfig.mult ρ : ℝ) / 2 * Complex.normSq _
+      ≤ (zetaZeroConfig.mult ρ : ℝ) / 2 *
+          (2 * Complex.normSq ((tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+              sincFactor L ((ρ : ℂ).im - γ)) +
+            2 * Complex.normSq (depthDiffIntegral L ((ρ : ℂ).re - 1 / 2) ((ρ : ℂ).im - γ)
+              (tr (twist γ baseBump) ρ) (tr (twist γ baseBump) (rosatiRefl ρ)))) :=
+        mul_le_mul_of_nonneg_left (hAB _ _) (div_nonneg hm0 zero_le_two)
+    _ = (zetaZeroConfig.mult ρ : ℝ) *
+          Complex.normSq ((tr (twist γ baseBump) ρ - tr (twist γ baseBump) (rosatiRefl ρ)) *
+            sincFactor L ((ρ : ℂ).im - γ)) +
+        (zetaZeroConfig.mult ρ : ℝ) *
+          Complex.normSq (depthDiffIntegral L ((ρ : ℂ).re - 1 / 2) ((ρ : ℂ).im - γ)
+            (tr (twist γ baseBump) ρ) (tr (twist γ baseBump) (rosatiRefl ρ))) := by ring
+    _ ≤ _ := by linarith [hA', hB']
+
 /-- **Sinc-cancelled off-line defect bound.** For every `L > 0` and height `γ ∈ ℝ`, the off-line
 capacity defect of `twist γ (heckeAvgBump L)` is controlled by `4 * heckeDefect (baseTwistTest γ) L`
 plus an `O((1 + log(|γ| + 4)) / L²)` Lorentzian tail. -/
@@ -844,18 +1114,17 @@ theorem offLineDefect_heckeAvg_le_heckeDefect_add_lorentz {L : ℝ} (hL : 0 < L)
     offLineDefect zetaZeroConfig (twist γ (heckeAvgBump L)) ≤
       4 * heckeDefect (baseTwistTest γ) L +
         sincLorentzConst * (1 + Real.log (|γ| + 4)) / L ^ 2 := by
-  -- Summability of the three dominating series
-  set M_K : ℝ := max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2)
-  have hMK0 : 0 < M_K := lt_of_lt_of_le two_pos (le_max_left _ _)
-  set gL : ℂ → ℝ := fun z => 1 / (1 + (γ - z.im) ^ 2)
+  have hl_sum : Summable (fun q : XiZeroCopy => 1 / (1 + (γ - (q.1 : ℂ).im) ^ 2)) :=
+    RHTower.summable_lorentzMassTerm γ
   have hgL_sum : Summable fun ρ : zetaZeroConfig.carrier =>
-      (zetaZeroConfig.mult ρ : ℝ) * gL (ρ : ℂ) :=
+      (zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (γ - (ρ : ℂ).im) ^ 2)) :=
     ArithmeticCastelnuovoSeveri.summable_zetaCarrier_of_xiZeroCopy
-      (fun z => by simp only [gL]; positivity) (RHTower.summable_lorentzMassTerm γ)
-  have hgL_eq : (∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℝ) * gL (ρ : ℂ)) =
+      (g := fun z : ℂ => 1 / (1 + (γ - z.im) ^ 2)) (fun _ => by positivity) hl_sum
+  have hgL_eq : (∑' ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (γ - (ρ : ℂ).im) ^ 2))) =
       RHTower.lorentzMass γ :=
     (ArithmeticCastelnuovoSeveri.tsum_xiZeroCopy_eq_zetaCarrier
-      (RHTower.summable_lorentzMassTerm γ)).symm
+      (g := fun z : ℂ => 1 / (1 + (γ - z.im) ^ 2)) hl_sum).symm
   have hd_sum1 : Summable fun ρ : zetaZeroConfig.carrier =>
       zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ) :=
     summable_heckeDefect (baseTwistTest γ) L
@@ -865,21 +1134,29 @@ theorem offLineDefect_heckeAvg_le_heckeDefect_add_lorentz {L : ℝ} (hL : 0 < L)
       (fun ρ : zetaZeroConfig.carrier =>
         zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ)) ∘
         reflEquiv zetaZeroConfig := by
-    ext ρ
+    funext ρ
     simp only [Function.comp, zetaWeight, baseTwistTest, mult_reflEquiv]
     have hdepth : zetaDepth (reflEquiv zetaZeroConfig ρ) = -zetaDepth ρ := by
       change (rosatiRefl (ρ : ℂ)).re - 1 / 2 = -((ρ : ℂ).re - 1 / 2)
       simp [rosatiRefl]; ring
     have hdk : depthKernel L (-zetaDepth ρ) = depthKernel L (zetaDepth ρ) := by
-      unfold depthKernel; rw [show 2 * -zetaDepth ρ * L = -(2 * zetaDepth ρ * L) by ring, Real.cosh_neg]
+      unfold depthKernel
+      rw [show 2 * -zetaDepth ρ * L = -(2 * zetaDepth ρ * L) by ring, Real.cosh_neg]
     rw [hdepth, hdk]
     rfl
   have hd_sum2 : Summable fun ρ : zetaZeroConfig.carrier =>
       (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ baseBump) (rosatiRefl ρ)) *
         depthKernel L (zetaDepth ρ) := by
     rw [hd_refl_eq]
-    exact (reflEquiv zetaZeroConfig).summable_iff.mpr hd_sum1
-  -- Summability of the `offLineDefect` summand
+    exact (Equiv.summable_iff (f := fun ρ : zetaZeroConfig.carrier =>
+      zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ))
+      (reflEquiv zetaZeroConfig)).mpr hd_sum1
+  have hd_tsum2 : (∑' ρ : zetaZeroConfig.carrier,
+      (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ baseBump) (rosatiRefl ρ)) *
+        depthKernel L (zetaDepth ρ)) = heckeDefect (baseTwistTest γ) L := by
+    rw [hd_refl_eq]
+    exact (reflEquiv zetaZeroConfig).tsum_eq
+      (fun ρ : zetaZeroConfig.carrier => zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ))
   have hsF := zeta_summable_collided (contDiff_twist (contDiff_heckeAvgBump L) γ)
     (hasCompactSupport_twist (hasCompactSupport_heckeAvgBump hL) γ)
   have hsF_refl : Summable fun ρ : zetaZeroConfig.carrier =>
@@ -891,8 +1168,11 @@ theorem offLineDefect_heckeAvg_le_heckeDefect_add_lorentz {L : ℝ} (hL : 0 < L)
         (fun ρ : zetaZeroConfig.carrier =>
           (zetaZeroConfig.mult ρ : ℝ) *
             Complex.normSq (tr (twist γ (heckeAvgBump L)) ρ)) ∘ reflEquiv zetaZeroConfig := by
-      ext ρ; simp only [Function.comp, mult_reflEquiv]; rfl
-    rw [heq]; exact (reflEquiv zetaZeroConfig).summable_iff.mpr hsF
+      funext ρ; simp only [Function.comp, mult_reflEquiv]; rfl
+    rw [heq]
+    exact (Equiv.summable_iff (f := fun ρ : zetaZeroConfig.carrier =>
+      (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ (heckeAvgBump L)) ρ))
+      (reflEquiv zetaZeroConfig)).mpr hsF
   have hs_def : Summable fun ρ : zetaZeroConfig.carrier =>
       (zetaZeroConfig.mult ρ : ℝ) / 2 *
         Complex.normSq (tr (twist γ (heckeAvgBump L)) ρ -
@@ -911,219 +1191,17 @@ theorem offLineDefect_heckeAvg_le_heckeDefect_add_lorentz {L : ℝ} (hL : 0 < L)
       nlinarith [sq_nonneg (‖tr (twist γ (heckeAvgBump L)) ρ‖ -
         ‖tr (twist γ (heckeAvgBump L)) (rosatiRefl ρ)‖)]
     nlinarith
-  -- Pointwise bound at each zero `ρ`
-  have hpt : ∀ ρ : zetaZeroConfig.carrier,
-      (zetaZeroConfig.mult ρ : ℝ) / 2 *
-        Complex.normSq (tr (twist γ (heckeAvgBump L)) ρ -
-          tr (twist γ (heckeAvgBump L)) (rosatiRefl ρ)) ≤
-      2 * (zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ)) +
-      2 * ((zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ baseBump) (rosatiRefl ρ)) *
-        depthKernel L (zetaDepth ρ)) +
-      (M_K / L ^ 2) * ((zetaZeroConfig.mult ρ : ℝ) * gL (ρ : ℂ)) := by
-    intro ρ
-    set u := tr (twist γ baseBump) ρ
-    set v := tr (twist γ baseBump) (rosatiRefl ρ)
-    set δ := zetaDepth ρ
-    set dω := (ρ : ℂ).im - γ
-    -- Rewrite `tr (twist γ F_L) ρ − tr (twist γ F_L) (rosatiRefl ρ)` via `tr_twist_heckeAvgBump_eq`
-    have he1 : ∀ l : ℝ, ((ρ : ℂ) - 1 / 2 - (γ : ℂ) * I) * (l : ℂ) =
-        ((δ * l : ℝ) : ℂ) + I * (dω : ℂ) * (l : ℂ) := by
-      intro l
-      apply Complex.ext
-      · simp [δ, zetaDepth, dω]; ring
-      · simp [δ, zetaDepth, dω]; ring
-    have he2 : ∀ l : ℝ, (rosatiRefl (ρ : ℂ) - 1 / 2 - (γ : ℂ) * I) * (l : ℂ) =
-        (((-δ) * l : ℝ) : ℂ) + I * (dω : ℂ) * (l : ℂ) := by
-      intro l
-      apply Complex.ext
-      · simp [rosatiRefl, δ, zetaDepth, dω]; ring
-      · simp [rosatiRefl, δ, zetaDepth, dω]; ring
-    set A : ℂ := (u - v) * (((1 / (2 * L) : ℝ) : ℂ) * ∫ l in (-L)..L, Complex.exp (I * (dω : ℂ) * (l : ℂ)))
-    set B : ℂ := ((1 / (2 * L) : ℝ) : ℂ) * ∫ l in (-L)..L,
-        Complex.exp (I * (dω : ℂ) * (l : ℂ)) *
-          ((((Real.exp (δ * l) - 1 : ℝ) : ℂ) * u) - (((Real.exp ((-δ) * l) - 1 : ℝ) : ℂ) * v))
-    have hdecomp : tr (twist γ (heckeAvgBump L)) ρ -
-        tr (twist γ (heckeAvgBump L)) (rosatiRefl ρ) = A + B := by
-      rw [tr_twist_heckeAvgBump_eq hL γ ρ, tr_twist_heckeAvgBump_eq hL γ (rosatiRefl ρ)]
-      have hi1 : IntervalIntegrable (fun l : ℝ =>
-          Complex.exp (((ρ : ℂ) - 1 / 2 - (γ : ℂ) * I) * (l : ℂ)) * u) volume (-L) L :=
-        ((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).mul
-          continuous_const).intervalIntegrable (μ := volume) _ _
-      have hi2 : IntervalIntegrable (fun l : ℝ =>
-          Complex.exp ((rosatiRefl (ρ : ℂ) - 1 / 2 - (γ : ℂ) * I) * (l : ℂ)) * v) volume (-L) L :=
-        ((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).mul
-          continuous_const).intervalIntegrable (μ := volume) _ _
-      have hiA : IntervalIntegrable (fun l : ℝ =>
-          Complex.exp (I * (dω : ℂ) * (l : ℂ))) volume (-L) L :=
-        (Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).intervalIntegrable (μ := volume) _ _
-      have hiB : IntervalIntegrable (fun l : ℝ =>
-          Complex.exp (I * (dω : ℂ) * (l : ℂ)) *
-            ((((Real.exp (δ * l) - 1 : ℝ) : ℂ) * u) - (((Real.exp ((-δ) * l) - 1 : ℝ) : ℂ) * v)))
-          volume (-L) L :=
-        ((Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal)).mul
-          (((Complex.continuous_ofReal.comp ((Real.continuous_exp.comp
-            (continuous_const.mul continuous_id)).sub continuous_const)).mul continuous_const).sub
-          ((Complex.continuous_ofReal.comp ((Real.continuous_exp.comp
-            (continuous_const.mul continuous_id)).sub continuous_const)).mul continuous_const))).intervalIntegrable (μ := volume) _ _
-      dsimp only [A, B, u, v]
-      rw [← mul_sub ((1 / (2 * L) : ℝ) : ℂ), ← intervalIntegral.integral_sub hi1 hi2,
-        mul_comm (u - v), mul_assoc, ← intervalIntegral.integral_mul_const,
-        ← mul_add ((1 / (2 * L) : ℝ) : ℂ), ← intervalIntegral.integral_add (hiA.mul_const _) hiB]
-      congr 1
-      refine intervalIntegral.integral_congr fun l _ => ?_
-      rw [he1 l, he2 l, Complex.exp_add, Complex.exp_add, ← Complex.ofReal_exp, ← Complex.ofReal_exp]
-      push_cast
-      ring
-    -- Bound `‖B‖² ≤ 2 * depthKernel L δ * (‖u‖² + ‖v‖²)`
-    have hB_sq : Complex.normSq B ≤
-        2 * depthKernel L δ * (Complex.normSq u + Complex.normSq v) := by
-      set K := Real.sqrt (depthKernel L δ)
-      have hK0 : 0 ≤ K := Real.sqrt_nonneg _
-      have hK2 : K ^ 2 = depthKernel L δ := Real.sq_sqrt (depthKernel_nonneg L δ)
-      have hB_norm : ‖B‖ ≤ K * (‖u‖ + ‖v‖) := by
-        dsimp only [B]
-        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
-        have hI := intervalIntegral.norm_integral_le_of_norm_le_const (C := K * (‖u‖ + ‖v‖))
-          (a := -L) (b := L) fun l hl => by
-            rw [uIoc_of_le (by linarith)] at hl
-            have hlabs : |l| ≤ L := abs_le.mpr ⟨hl.1.le, hl.2⟩
-            rw [norm_mul, show I * (dω : ℂ) * (l : ℂ) = ((dω * l : ℝ) : ℂ) * I by push_cast; ring,
-              Complex.norm_exp_ofReal_mul_I, one_mul]
-            refine (norm_sub_le _ _).trans ?_
-            rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
-              Real.norm_eq_abs, Real.norm_eq_abs]
-            have hd1 : |Real.exp (δ * l) - 1| ≤ K := by
-              rw [← Real.sqrt_sq_eq_abs]
-              exact Real.sqrt_le_sqrt (sq_exp_mul_sub_one_le_depthKernel hL hlabs)
-            have hd2 : |Real.exp ((-δ) * l) - 1| ≤ K := by
-              rw [← Real.sqrt_sq_eq_abs]
-              have hdk_neg : depthKernel L (-δ) = depthKernel L δ := by
-                unfold depthKernel; rw [show 2 * -δ * L = -(2 * δ * L) by ring, Real.cosh_neg]
-              exact (Real.sqrt_le_sqrt (sq_exp_mul_sub_one_le_depthKernel hL hlabs)).trans_eq
-                (by rw [hdk_neg])
-            calc |Real.exp (δ * l) - 1| * ‖u‖ + |Real.exp ((-δ) * l) - 1| * ‖v‖
-                ≤ K * ‖u‖ + K * ‖v‖ := by gcongr
-              _ = K * (‖u‖ + ‖v‖) := by ring
-        rw [abs_of_pos (by linarith : 0 < L - -L), sub_neg_eq_add] at hI
-        calc 1 / (2 * L) * ‖∫ l in (-L)..L, _‖
-            ≤ 1 / (2 * L) * (K * (‖u‖ + ‖v‖) * (L + L)) :=
-              mul_le_mul_of_nonneg_left hI (by positivity)
-          _ = K * (‖u‖ + ‖v‖) := by field_simp; ring
-      rw [Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq]
-      calc ‖B‖ ^ 2 ≤ (K * (‖u‖ + ‖v‖)) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hB_norm 2
-        _ = K ^ 2 * (‖u‖ + ‖v‖) ^ 2 := by ring
-        _ ≤ K ^ 2 * (2 * (‖u‖ ^ 2 + ‖v‖ ^ 2)) := by
-            gcongr; nlinarith [sq_nonneg (‖u‖ - ‖v‖)]
-        _ = 2 * depthKernel L δ * (‖u‖ ^ 2 + ‖v‖ ^ 2) := by rw [hK2]; ring
-    -- Bound `‖A‖² ≤ (M_K / L²) * gL ρ`
-    have hA_sq : Complex.normSq A ≤ (M_K / L ^ 2) * gL (ρ : ℂ) := by
-      have hgL_rw : gL (ρ : ℂ) = 1 / (1 + dω ^ 2) := by
-        simp only [gL, dω]; congr 2; ring
-      rw [hgL_rw, Complex.normSq_eq_norm_sq]
-      by_cases hdω0 : dω = 0
-      · have huv0 : ‖u - v‖ = 0 :=
-          le_antisymm ((norm_tr_twist_baseBump_sub_refl_le γ ρ).trans (by simp [dω, hdω0])) (norm_nonneg _)
-        have hA0 : ‖A‖ = 0 := by simp only [A, norm_mul, huv0, zero_mul]
-        rw [hA0]
-        simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow]
-        positivity
-      · rcases le_or_gt |dω| 1 with hdω1 | hdω1
-        · -- Small frequency `0 < |dω| ≤ 1`: `‖u − v‖ ≤ |dω|` and `‖sinc‖ ≤ 1 / (L |dω|)`
-          have hnormA : ‖A‖ ≤ 1 / L := by
-            dsimp only [A]
-            rw [norm_mul]
-            have h1 := norm_tr_twist_baseBump_sub_refl_le γ ρ
-            have h2 := norm_sinc_intervalIntegral_le hL hdω0
-            have hdωp : 0 < |dω| := abs_pos.mpr hdω0
-            calc ‖u - v‖ * ‖_‖ ≤ |dω| * (1 / (L * |dω|)) :=
-                  mul_le_mul h1 h2 (norm_nonneg _) (by positivity)
-              _ = 1 / L := by field_simp
-          have h1dω : 1 + dω ^ 2 ≤ 2 := by nlinarith [sq_abs dω, abs_nonneg dω]
-          have h2MK : (2 : ℝ) ≤ M_K := le_max_left _ _
-          calc ‖A‖ ^ 2 ≤ (1 / L) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hnormA 2
-            _ = 2 / L ^ 2 * (1 / 2) := by ring
-            _ ≤ M_K / L ^ 2 * (1 / (1 + dω ^ 2)) := by
-                refine mul_le_mul (by gcongr) ?_ (by positivity) (by positivity)
-                exact one_div_le_one_div_of_le (by positivity) h1dω
-        · -- Large frequency `|dω| > 1`: transform decay on `baseBump` + `‖sinc‖ ≤ 1 / L`
-          have hstrip := zetaZeroConfig.strip ρ ρ.2
-          have hstrip' : 0 ≤ (rosatiRefl (ρ : ℂ)).re ∧ (rosatiRefl (ρ : ℂ)).re ≤ 1 := by
-            simp only [rosatiRefl, Complex.sub_re, Complex.one_re, Complex.conj_re]
-            exact ⟨by linarith [hstrip.2], by linarith [hstrip.1]⟩
-          have hb_supp : ∀ x, baseBump x ≠ 0 → |x| ≤ 1 / 4 := fun x hx => by
-            by_contra h; exact hx (baseBump_eq_zero_of_abs_ge (not_le.mp h).le)
-          have hu_dec := norm_tr_twist_le (contDiff_baseBump (n := 2)) (by norm_num : (0 : ℝ) ≤ 1 / 4)
-            hb_supp γ ⟨hstrip.1.le, hstrip.2.le⟩
-          have hv_dec := norm_tr_twist_le (contDiff_baseBump (n := 2)) (by norm_num : (0 : ℝ) ≤ 1 / 4)
-            hb_supp γ hstrip'
-          have him_refl : (rosatiRefl (ρ : ℂ)).im = (ρ : ℂ).im := by simp [rosatiRefl]
-          rw [him_refl] at hv_dec
-          have hsinc : ‖((1 / (2 * L) : ℝ) : ℂ) * ∫ l in (-L)..L, Complex.exp (I * (dω : ℂ) * (l : ℂ))‖ ≤
-              1 / L :=
-            (norm_sinc_intervalIntegral_le hL hdω0).trans
-              (one_div_le_one_div_of_le hL (le_mul_of_one_le_right hL.le hdω1.le))
-          have huv_dec : ‖u - v‖ ≤ 2 * Real.exp (1 / 8) * envelope baseBump / (1 + |dω|) ^ 2 := by
-            refine (norm_sub_le u v).trans ?_
-            change ‖tr (twist γ baseBump) ρ‖ + ‖tr (twist γ baseBump) (rosatiRefl ρ)‖ ≤ _
-            have h18 : (1 / 4 : ℝ) / 2 = 1 / 8 := by norm_num
-            rw [h18] at hu_dec hv_dec
-            linarith
-          have hnormA : ‖A‖ ≤ (2 * Real.exp (1 / 8) * envelope baseBump / L) / (1 + |dω|) ^ 2 := by
-            dsimp only [A]
-            rw [norm_mul]
-            calc ‖u - v‖ * ‖_‖
-                ≤ (2 * Real.exp (1 / 8) * envelope baseBump / (1 + |dω|) ^ 2) * (1 / L) :=
-                  mul_le_mul huv_dec hsinc (norm_nonneg _) (by positivity)
-              _ = (2 * Real.exp (1 / 8) * envelope baseBump / L) / (1 + |dω|) ^ 2 := by ring
-          have hden : 1 + dω ^ 2 ≤ (1 + |dω|) ^ 4 := by
-            nlinarith [sq_abs dω, abs_nonneg dω, sq_nonneg |dω|]
-          have h4MK : 4 * Real.exp (1 / 4) * envelope baseBump ^ 2 ≤ M_K := le_max_right _ _
-          calc ‖A‖ ^ 2
-              ≤ ((2 * Real.exp (1 / 8) * envelope baseBump / L) / (1 + |dω|) ^ 2) ^ 2 :=
-                pow_le_pow_left₀ (norm_nonneg _) hnormA 2
-            _ = (4 * Real.exp (1 / 4) * envelope baseBump ^ 2 / L ^ 2) *
-                  (1 / (1 + |dω|) ^ 4) := by
-                rw [div_pow, div_pow, mul_pow, mul_pow, ← Real.exp_nat_mul]
-                push_cast; ring_nf
-            _ ≤ (M_K / L ^ 2) * (1 / (1 + dω ^ 2)) := by
-                refine mul_le_mul (by gcongr) ?_ (by positivity) (by positivity)
-                exact one_div_le_one_div_of_le (by positivity) hden
-    -- Combine `A` and `B` via `normSq (A + B) ≤ 2 normSq A + 2 normSq B`
-    have hAB : Complex.normSq (A + B) ≤ 2 * Complex.normSq A + 2 * Complex.normSq B := by
-      rw [Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq, Complex.normSq_eq_norm_sq]
-      have htri := norm_add_le A B
-      have hsq := pow_le_pow_left₀ (norm_nonneg _) htri 2
-      nlinarith [sq_nonneg (‖A‖ - ‖B‖)]
-    rw [hdecomp]
-    have hm0 : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
-    have hstep : (zetaZeroConfig.mult ρ : ℝ) / 2 * Complex.normSq (A + B) ≤
-        (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq A +
-          (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq B := by
-      nlinarith
-    have h1 : (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq A ≤
-        (M_K / L ^ 2) * ((zetaZeroConfig.mult ρ : ℝ) * gL (ρ : ℂ)) := by
-      nlinarith [mul_le_mul_of_nonneg_left hA_sq hm0]
-    have h2 : (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq B ≤
-        2 * (zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ)) +
-          2 * ((zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ baseBump) (rosatiRefl ρ)) *
-            depthKernel L (zetaDepth ρ)) := by
-      have hmB := mul_le_mul_of_nonneg_left hB_sq hm0
-      dsimp only [zetaWeight, baseTwistTest, u, v, δ] at hmB ⊢
-      linarith
-    linarith
-  -- Sum over `zetaZeroConfig.carrier`
-  have hsum_rhs := ((hd_sum1.mul_left 2).add (hd_sum2.mul_left 2)).add (hgL_sum.mul_left (M_K / L ^ 2))
-  have htsum := hs_def.tsum_le_tsum hpt hsum_rhs
+  have hsum_rhs := ((hd_sum1.mul_left 2).add (hd_sum2.mul_left 2)).add
+    (hgL_sum.mul_left (max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2))
+  have htsum := hs_def.tsum_le_tsum (offLineDefect_heckeAvg_summand_le hL γ) hsum_rhs
   rw [offLineDefect]
   refine htsum.trans ?_
-  rw [(((hd_sum1.mul_left 2).add (hd_sum2.mul_left 2))).tsum_add (hgL_sum.mul_left (M_K / L ^ 2)),
+  rw [(((hd_sum1.mul_left 2).add (hd_sum2.mul_left 2))).tsum_add
+      (hgL_sum.mul_left (max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2)),
     (hd_sum1.mul_left 2).tsum_add (hd_sum2.mul_left 2),
-    tsum_mul_left, tsum_mul_left, tsum_mul_left, hgL_eq,
-    show (∑' ρ, (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (twist γ baseBump) (rosatiRefl ρ)) *
-      depthKernel L (zetaDepth ρ)) = heckeDefect (baseTwistTest γ) L by
-      rw [hd_refl_eq, (reflEquiv zetaZeroConfig).tsum_eq]; rfl]
+    tsum_mul_left, tsum_mul_left, tsum_mul_left, hgL_eq, hd_tsum2]
   change 2 * heckeDefect (baseTwistTest γ) L + 2 * heckeDefect (baseTwistTest γ) L +
-      M_K / L ^ 2 * RHTower.lorentzMass γ ≤ _
+      max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2 * RHTower.lorentzMass γ ≤ _
   have hlorentz := RHTower.lorentzMass_le_log γ
   have hlog0 : 0 ≤ Real.log (|γ| + 4) := Real.log_nonneg (by linarith [abs_nonneg γ])
   have hc_le : RHTower.xiLineTwoLogDerivConstant ≤ |RHTower.xiLineTwoLogDerivConstant| :=
@@ -1131,13 +1209,16 @@ theorem offLineDefect_heckeAvg_le_heckeDefect_add_lorentz {L : ℝ} (hL : 0 < L)
   have hmass_le : RHTower.lorentzMass γ ≤
       8 * (|RHTower.xiLineTwoLogDerivConstant| + 1) * (1 + Real.log (|γ| + 4)) := by
     nlinarith [abs_nonneg RHTower.xiLineTwoLogDerivConstant]
-  have htail : M_K / L ^ 2 * RHTower.lorentzMass γ ≤
+  have htail : max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2 *
+      RHTower.lorentzMass γ ≤
       sincLorentzConst * (1 + Real.log (|γ| + 4)) / L ^ 2 := by
-    have : M_K / L ^ 2 * RHTower.lorentzMass γ ≤
-        M_K / L ^ 2 * (8 * (|RHTower.xiLineTwoLogDerivConstant| + 1) * (1 + Real.log (|γ| + 4))) :=
+    have : max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2 *
+        RHTower.lorentzMass γ ≤
+        max 2 (4 * Real.exp (1 / 4) * envelope baseBump ^ 2) / L ^ 2 *
+          (8 * (|RHTower.xiLineTwoLogDerivConstant| + 1) * (1 + Real.log (|γ| + 4))) :=
       mul_le_mul_of_nonneg_left hmass_le (by positivity)
     refine this.trans_eq ?_
-    unfold sincLorentzConst M_K
+    unfold sincLorentzConst
     ring
   linarith
 
@@ -1313,8 +1394,9 @@ theorem exists_xiCollisionIncrement_le_log_of_prime_and_heckeDefect_at_log_scale
   have hB_le : (B : ℝ) ≤ K_fib * (1 + M) := by
     have h1 : (B : ℝ) ≤ B_real := Nat.floor_le (by positivity)
     have h2 : B_real ≤ K_fib * (1 + M) := by
+      have hpos_term : 0 ≤ C_star * (1 + 2 / c) * M := by positivity
       dsimp only [B_real, K_fib]
-      nlinarith [hCs, div_pos two_pos hc0]
+      linarith
     exact h1.trans h2
   have hlogT0 : 0 ≤ Real.log T := Real.log_nonneg (by linarith)
   calc (xiCollisionIncrement T : ℝ)
@@ -1385,7 +1467,6 @@ theorem primeEnvelope_heckeAvgBump_le {L : ℝ} (hL : 0 < L) (N : ℕ) :
     _ = ((Finset.Icc 2 N).card * 2 : ℕ) * (1 / L) := by
         rw [Finset.sum_const, Finset.card_product, Finset.card_univ, Fintype.card_bool,
           nsmul_eq_mul]
-        push_cast
     _ ≤ (2 * (N : ℝ)) * (1 / L) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
         have hcard : (Finset.Icc 2 N).card ≤ N := by rw [Nat.card_Icc]; omega

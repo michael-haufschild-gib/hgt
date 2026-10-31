@@ -1,7 +1,8 @@
 import GaloisForLFunctions.Bottcher.HalfPlane.AnchoredSchwarz
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiXiFirstDefectJet
 
-/-!+# Periodic Xi Donoghue orbits falsify RH
+/-!
+# Periodic Xi Donoghue orbits falsify RH
 
 The normalized map `m(z) = -XiC'(z)/(c XiC(z))` fixes `i` unconditionally, with real multiplier
 strictly between `77/85` and `1`. Under RH it is a holomorphic upper-half-plane self-map.
@@ -57,13 +58,11 @@ theorem not_riemannHypothesis_of_xiDonoghue_periodicPoint :
   rintro ⟨z, n, hz, hzi, hn, hper⟩ hRH
   exact hzi (xiDonoghue_periodicPoint_eq_I_of_rh hRH hz hn hper)
 
-/-- A second upper stationary point of the Gaussian-weighted Xi function falsifies RH.
-The unavoidable anchor `i` is excluded explicitly. No nonvanishing premise is required. -/
-theorem not_riemannHypothesis_of_xiGaussian_stationaryPoint :
-    (∃ z : ℂ, 0 < z.im ∧ z ≠ I ∧
-      deriv XiC z + (xiHedenmalmDonoghueScale : ℂ) * z * XiC z = 0) →
-      ¬ RiemannHypothesis := by
-  rintro ⟨z, hz, hzi, hstat⟩ hRH
+/-- The period-one classification in the Gaussian stationary equation. -/
+theorem xiGaussian_stationary_eq_I_of_rh (hRH : RiemannHypothesis)
+    {z : ℂ} (hz : 0 < z.im)
+    (hstat : deriv XiC z + (xiHedenmalmDonoghueScale : ℂ) * z * XiC z = 0) :
+    z = I := by
   have hXi : XiC z ≠ 0 := XiC_ne_zero_upperHalf_of_rh hRH hz
   have hc : (xiHedenmalmDonoghueScale : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr xiHedenmalmDonoghueScale_pos.ne'
@@ -71,8 +70,8 @@ theorem not_riemannHypothesis_of_xiGaussian_stationaryPoint :
     rw [xiHedenmalmDonoghueTarget, logDeriv_apply]
     field_simp [hXi, hc]
     linear_combination -hstat
-  exact hzi (xiDonoghue_periodicPoint_eq_I_of_rh hRH hz (n := 1) Nat.zero_lt_one
-    (by simpa only [Function.iterate_one] using hfix))
+  exact xiDonoghue_periodicPoint_eq_I_of_rh hRH hz (n := 1) Nat.zero_lt_one
+    (by simpa only [Function.iterate_one] using hfix)
 
 /-- The excluded stationary point `i` exists unconditionally. -/
 theorem xiGaussian_stationary_I :
@@ -90,9 +89,7 @@ theorem xiGaussian_stationary_iff_eq_I_of_rh (hRH : RiemannHypothesis)
     {z : ℂ} (hz : 0 < z.im) :
     deriv XiC z + (xiHedenmalmDonoghueScale : ℂ) * z * XiC z = 0 ↔ z = I := by
   constructor
-  · intro hstat
-    by_contra hzi
-    exact not_riemannHypothesis_of_xiGaussian_stationaryPoint ⟨z, hz, hzi, hstat⟩ hRH
+  · exact xiGaussian_stationary_eq_I_of_rh hRH hz
   · rintro rfl
     exact xiGaussian_stationary_I
 
@@ -103,6 +100,6 @@ end Bottcher.HalfPlane
 #print axioms Bottcher.HalfPlane.xiDonoghue_cayleyRadius_strict_decrease_of_rh
 #print axioms Bottcher.HalfPlane.xiDonoghue_periodicPoint_eq_I_of_rh
 #print axioms Bottcher.HalfPlane.not_riemannHypothesis_of_xiDonoghue_periodicPoint
-#print axioms Bottcher.HalfPlane.not_riemannHypothesis_of_xiGaussian_stationaryPoint
+#print axioms Bottcher.HalfPlane.xiGaussian_stationary_eq_I_of_rh
 #print axioms Bottcher.HalfPlane.xiGaussian_stationary_I
 #print axioms Bottcher.HalfPlane.xiGaussian_stationary_iff_eq_I_of_rh

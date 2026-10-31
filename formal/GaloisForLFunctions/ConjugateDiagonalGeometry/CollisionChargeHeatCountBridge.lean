@@ -830,7 +830,7 @@ theorem nonrealZeroCount_le_two_mul_collisionCharge_of_barrier {t : ℝ} (ht : 0
       exact hzU (mem_iUnion₂.mpr ⟨_, hmemE, mem_ball_self (hrpos _)⟩)
     have hev_rem : ∀ᶠ s in 𝓝[>] s₀, ∀ z ∈ K_rem, riemannHeat s z ≠ 0 := by
       rcases K_rem.eq_empty_or_nonempty with hemp | hne
-      ·exact Eventually.of_forall fun _ z hz => by rw [hemp] at hz; exact False.elim hz
+      · exact Eventually.of_forall fun _ z hz => by rw [hemp] at hz; exact False.elim hz
       · obtain ⟨w₀, hw₀, hmin⟩ := hK_rem_comp.exists_isMinOn hne
           (differentiable_riemannHeat hs₀_nn).continuous.norm.continuousOn
         have hμ : 0 < ‖riemannHeat s₀ w₀‖ := norm_pos_iff.mpr (hK_rem_nz w₀ hw₀)

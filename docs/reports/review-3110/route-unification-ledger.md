@@ -26,7 +26,9 @@ resolution-theoretic name: RH ⇔ the complete Weil family has no edge.
 | Loop group | band poles of the loop-Eisenstein factor `Λ(s)/Λ(s+1)` in `−½ < Re s < 0` = Hodge defect | RIT `TheLoopEisensteinReflectionCarriesTheHodgeDefect` [L] |
 | Künneth | `κ(K_ζ⊠K_ζ) ∈ {0, ∞}`, `0` ⇔ RH; `K_ζ^n` PD ⇔ RH | RIT [L] |
 | Geometry | `κ` = Hodge defect of the scaling surface; RH ⇔ effectivity ⇔ section count ⇔ Castelnuovo–Severi at rational scales | ACS, ACP, RIT [L] |
-| Locality | every separable finite-prime truncation of the arithmetic is zero-blind; the zeros live in the coupling of all towers | AKG `TowerCoupling/STruncatedExplicitTowers` [S] |
+| Coupling | coupled two-prime assembly has glued index `κ_ζ + 1`; coupled = axial + inter-tower coupling (coprime cross-differences); separable data blind or overcounting; primes `≤ e^{2L+8}` exact on log-height `≤ L`; RH ⇔ bounded coupling [D] | AKG `TowerCoupling/InterTowerCouplingRigidity`, `CoupledTowerSignatureFormula` [L]; `STruncatedExplicitTowers` [S] |
+| Incidence | prime modes are centered divisibility indicators; generator, jumps, tails are nonnegative counts; coherent pole cost `log Q` sharp | CSAR `PrimeCoherenceCalculus`, `CoherentPrimeTailLowerBound` [L]; `PrimePoleNorm` [S] |
+| Multiplicity | fibre multiplicity ≤ prime polynomial + Hecke defect at every scale | CDG `HeckeDefectHorizontalMultiplicity` [L] |
 
 The three walls are the three ways a reading of `κ` fails: the sign is not determined by estimates
 across the detection edge (Σ), the count is not precise enough in the prime tail (Π), the reading
@@ -98,8 +100,8 @@ the index twice; Künneth square squares the index; index constant on nondegener
 ## U-Π — square-root precision of the prime tail
 
 Core problem: an unconditional one-sided count at square-root precision, or an exact geometric object
-whose Riemann–Roch delivers it. In index language: control of the coupling that the infinite prime
-tail induces between towers, since every finite separable truncation is zero-blind.
+whose Riemann–Roch delivers it. In index language: uniform control, over all window heights, of the
+inter-tower coupling, i.e. of coupled prime windows; finitely many primes are exact on each window.
 
 | Face | Routes / programmes | Reduction |
 |---|---|---|
@@ -111,7 +113,8 @@ tail induces between towers, since every finite separable truncation is zero-bli
 | Census / density / local counts | SRT, IGP, Zeta23, CDG | 100% critical; pointwise local count; collision increments (Π8, Π12) |
 | Heat counts | WD, LA, SC-heat | `N(t)` growth (Σ5 ∩ Π) |
 | Integer collision readings | WD, CDG | detection scale = collision gap (Π13) |
-| Tower coupling | SC, AKG, HKT | nonseparable coupling of all towers carries `κ` (Π14 = Σ18) |
+| Tower coupling | SC, AKG, HKT | bounded coprime cross-differences of `ratCorr` (Σ20, Π14) |
+| Hecke defect / multiplicity | WD, CDG, RBG | Hecke defect at doubly-logarithmic or logarithmic scale bounds fibre multiplicity and `ΔO` |
 | Candidates | APF, EWJ, FEL, WBF, IRK | integral counts from a source lift |
 
 Identities [L]: one-sided count ⇔ `κ = 0`; graded strip shortfall rate = zero width; prime-error
@@ -147,8 +150,9 @@ finite-index carrier type with Weil dilation and visible successor; glued index 
 | Σ: one threshold curve | complete Weil matrix, fixed-test horizon index and aperture minimum are sections of `h(w)`; the edge is where the section `w = c/N` meets the graph | HF, SRT, AIP, RW, SC, EHT |
 | Σ ∩ Π: detection edge | at the RH threshold the ground energy is `≲ 1/log N`; unconditional positivity stops at the edge; profile mismatch between universal and RH regimes | HF, SRT, AIP, SC, CACT, RAPT, EHT |
 | Σ ∩ Π: confinement | defect `≤ Cc¹⁶` confines negative vectors only below `exp(Cc¹⁶)`; above `√N` frames and averages are missing | CACT, CAF, RAPT, HF, SC |
-| Σ ∩ Π: prime-pole coherence | the prime generator's pole response costs `log Q` relative to adjunction energy, on `v₁^⊥` too; payment must cancel against Gamma and poles | CSAR, HF, SRT, AIP, ACS |
-| Σ ∩ Π: infinite tail | a two-prime test lattice carries `κ`; every finite separable truncation of the arithmetic is zero-blind | SC, AKG, HKT, WL, MC |
+| Σ ∩ Π: coherent prime sector | in incidence coordinates the prime part is a nonnegative count with one sharp `log Q` coherent excitation, bounded below; only the pole term, its counterterm and Mertens' constant can absorb it; single conductors above `(log N)^A` are coercive | CSAR, CAF, RAPT, HF, SRT, AIP, ACS |
+| Σ ∩ Π: coupling | two primes carry `κ`; finitely many primes are exact on each window; separable data are blind; bounded coupling is RH | SC, AKG, HKT, WL, MC |
+| Σ ∩ Γ: Hecke defect and collisions | the collided-side Hecke defect (Frobenius-at-infinity object) bounds fibre multiplicity and `ΔO` at every scale | WD, CDG, RBG, HEF |
 | Σ ∩ Π: finite index | `κ < ∞` ⇔ `sup O < ∞` ⇒ Lindelöf + zero-free half-plane; `κ(K_ζ⊠K_ζ) < ∞` ⇒ RH | HKT, AKLT, SRT towers, CHMD, WD, RIT |
 | Σ ∩ Γ: gluing | the archimedean place supplies the square; the glue is pole-blind; selection by prime data | AKG, SC, RIT |
 | Σ ∩ Π ∩ Γ: heat and collisions | SC-heat index − 1 = WD future collisions; integer readings exact and source-certified; detection scale = zero gap; `ΔO` bounded ⇒ density one, `ΔO = o(log T)` ⇒ Lindelöf | SC, WD, LA, CDG, RIT |
@@ -193,6 +197,7 @@ gives the sign, Riemann–Roch the count, and the graph is canonical; the edge o
 | Positivity by identity | local pole–successor forms = hyperbolic pair + shell squares; archimedean successor side = exact shell squares on `ℓ = 0`; matched prime form with one positive direction on every finite sieve; successor/dyadic rigidity `3/4` with constant kernel; `D ≥ 0` | an identity for Weil's dilation form on `ℓ = 0` that couples all prime towers |
 | Positivity across the detection edge | universal regime to `(log N)^{1/144}`; conductor averages at RH-complete overlap; edge `→ ∞` unconditionally | a mechanism that is not an estimate (estimates are zero-blind); a profile transfer to the C^∞ receivers |
 | Count from geometry | linear theta RR; arithmetic Bézout; producers at the main term; quadratic RR ⇔ Hodge index | an unconditional Serre-dual `h⁰`; ε-uniform producers |
-| Infinite-prime coupling | separable towers classified and zero-blind; two-prime test lattices carry `κ` | an index law for the nonseparable coupling of the untruncated source |
+| Coupling control | coupled assemblies exact; axial/coupling decomposition; separable blindness; window exactness with finitely many primes | a bound (or a quantitative transfer) for the inter-tower coupling, uniform in window height |
+| Coherent-sector positivity | incidence calculus; sharp pole cost and matching residual lower bound; single-conductor coercivity above polylog | Mertens cancellation of the coherent pole; localization of negative directions in the coherent sector |
 | Canonical selector | glued test index; edge selection against single flips; atomic Hodge selection of finite, thin, co-thin, cofinite flips | selection in the class `c_P = c_{Pᶜ} = 0`; a conformal correspondence over ℤ whose factor is not archimedean size |
 | Integrality with homotopy invariance | collision charge as a source-certified Fredholm index; heat index as a Pontryagin homotopy; index constant on nondegenerate paths | a zero-independent noncrossing mechanism (detection scale or kernel rigidity) along which the integer cannot jump |
