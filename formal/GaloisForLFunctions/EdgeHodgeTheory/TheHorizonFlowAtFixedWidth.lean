@@ -1,6 +1,7 @@
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeOfTheCompleteWeilFamily
 import GaloisForLFunctions.HeckeKreinToeplitz.EveryReceiverAtEveryWidthIsBoundedByTheIndex
 import GaloisForLFunctions.RHTower.WeilDecayClassRHCriterion
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.OneHorizonMakesEveryBoundedOverlapPositive
 
 /-!
 # The horizon flow at fixed width
@@ -44,7 +45,8 @@ namespace GaloisForLFunctions.EdgeHodgeTheory
 
 open HTGeometry SpacingScaleHarmonicAnalysis ArithmeticElectrostatics RenormalizedArithmeticPotentialTheory
 open ArithmeticCastelnuovoSeveri (cx realTests weilGram weilGram_eq_zeroGram cx_contDiff
-  cx_hasCompactSupport translate_contDiff translate_hasCompactSupport hermQuad_weilGram)
+  cx_hasCompactSupport translate_contDiff translate_hasCompactSupport hermQuad_weilGram
+  contDiff_sum_smul hasCompactSupport_sum_smul)
 open ArithmeticOrientationGeometry (seenRightZeros)
 open HeckeKreinToeplitz (gram orbitKernel gram_orbitKernel intWindow scale_intWindow
   negIndex_orbitKernel negIndex_eq_iSup_intWindow hermNegIndex_submatrix_le)
@@ -157,12 +159,19 @@ theorem exists_horizonDefect_eq {f : ℝ → ℝ} (hf : f ∈ realTests)
 
 /-! ### Positivity of the horizon family -/
 
-/-- The real atomic test with coefficients `y` is the real part of the combination of the
-translates with coefficients `y`. -/
+private theorem sum_Icc_one_eq_sum_fin' {M : Type*} [AddCommMonoid M] (N : ℕ) (g : ℕ → M) :
+    ∑ n ∈ Icc 1 N, g n = ∑ a : Fin N, g ((a : ℕ) + 1) := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+    rw [Finset.sum_Icc_succ_top (by omega), ih, Fin.sum_univ_castSucc]
+    simp
+
+/-- An atomic test as a sum over `Fin N`. -/
 theorem atomicTest_eq_sum_fin (N : ℕ) (y : ℕ → ℝ) (f : ℝ → ℝ) (u : ℝ) :
-    atomicTest N y f u = ∑ a : Fin N, y (a + 1) * f (u - Real.log ((a : ℝ) + 1)) := by
+    atomicTest N y f u = ∑ a : Fin N, y ((a : ℕ) + 1) * f (u - Real.log ((a : ℝ) + 1)) := by
   unfold atomicTest
-  rw [EffectiveArithmeticHodgeTheory.sum_Icc_one_eq_sum_fin]
+  rw [sum_Icc_one_eq_sum_fin' N (fun n => y n * f (u - Real.log n))]
   push_cast
   rfl
 
@@ -178,11 +187,8 @@ theorem horizonDefect_eq_zero_iff {f : ℝ → ℝ} (hf : f ∈ realTests) (N : 
   -- the combination with coefficients `conj x`
   set G : (Fin N → ℂ) → ℝ → ℂ := fun x => ∑ a, conj (x a) •
     ArithmeticCastelnuovoSeveri.translate (Real.log ((a : ℝ) + 1)) (cx f) with hG
-  have hGc : ∀ x, ContDiff ℝ 2 (G x) := fun x =>
-    ContDiff.sum fun a _ => contDiff_const.smul (hT a)
-  have hGcs : ∀ x, HasCompactSupport (G x) := fun x => by
-    refine (HasCompactSupport.finset_sum (s := univ) fun a _ => ?_)
-    exact (hTc a).smul_left
+  have hGc : ∀ x, ContDiff ℝ 2 (G x) := fun x => contDiff_sum_smul _ hT _
+  have hGcs : ∀ x, HasCompactSupport (G x) := fun x => hasCompactSupport_sum_smul _ hTc _
   have hquad : ∀ x, hermQuad (horizonGram f N) x =
       (RHTower.weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
         (EF.weilTest (G x) (G x))).re := fun x =>
@@ -191,10 +197,13 @@ theorem horizonDefect_eq_zero_iff {f : ℝ → ℝ} (hf : f ∈ realTests) (N : 
   have hpart : ∀ (x : Fin N → ℂ) (r : ℂ → ℝ), (r = Complex.re ∨ r = Complex.im) →
       ∃ y : ℕ → ℝ, (fun u => r (G x u)) = atomicTest N y f := by
     intro x r hr
-    refine ⟨fun n => if hn : n - 1 < N then r (conj (x ⟨n - 1, hn⟩)) else 0, ?_⟩
+    refine ⟨fun n => ∑ b : Fin N, if (b : ℕ) + 1 = n then r (conj (x b)) else 0, ?_⟩
     funext u
     rw [atomicTest_eq_sum_fin]
-    simp only [hG, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+    have hy : ∀ a : Fin N, (∑ b : Fin N, if (b : ℕ) + 1 = (a : ℕ) + 1 then r (conj (x b)) else 0) =
+        r (conj (x a)) := fun a => by
+      simp only [add_left_inj, Fin.val_inj, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    simp only [hy, hG, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
       ArithmeticCastelnuovoSeveri.translate, cx]
     rcases hr with rfl | rfl
     · rw [Complex.re_sum]
@@ -206,9 +215,9 @@ theorem horizonDefect_eq_zero_iff {f : ℝ → ℝ} (hf : f ∈ realTests) (N : 
   constructor
   · intro h0 y
     have h := ArithmeticCastelnuovoSeveri.hermQuad_nonneg_of_negIndex_eq_zero h0
-      (fun a => ((y (a + 1) : ℝ) : ℂ))
+      (fun a => ((y ((a : ℕ) + 1) : ℝ) : ℂ))
     rw [hquad] at h
-    have hGy : G (fun a => ((y (a + 1) : ℝ) : ℂ)) = cx (atomicTest N y f) := by
+    have hGy : G (fun a => ((y ((a : ℕ) + 1) : ℝ) : ℂ)) = cx (atomicTest N y f) := by
       funext u
       rw [atomicTest_eq_sum_fin]
       simp [hG, cx, ArithmeticCastelnuovoSeveri.translate, Finset.sum_apply]
@@ -250,7 +259,7 @@ theorem horizonDefect_eq_zero_iff_lt_horizonThreshold (f : ℝ → ℝ) (N : ℕ
 theorem horizonThreshold_eq_top_iff {f : ℝ → ℝ} (hf : f ∈ realTests) :
     horizonThreshold f = ⊤ ↔ seenRightZeros zetaZeroConfig f = ∅ := by
   rw [← Set.encard_eq_zero, ← iSup_horizonDefect hf, ENat.iSup_eq_zero]
-  simp only [horizonThreshold, iInf_eq_top, ENat.coe_ne_top, imp_false, not_not, Nat.cast_eq_zero]
+  simp [horizonThreshold, iInf_eq_top]
 
 /-! ### The section of the complete Weil family -/
 
@@ -267,28 +276,28 @@ theorem positiveAt_iff_lt_horizonThreshold {φ : ℝ → ℝ} (hφ : Admissible 
   have hw : 0 < c / N := div_pos hc (by exact_mod_cast hN)
   rw [positiveAt_iff_twinPositiveAt hφ hc hN, ← horizonDefect_eq_zero_iff_lt_horizonThreshold,
     horizonDefect_eq_zero_iff (atomDilate_mem_realTests' hφ hw)]
-  rfl
+  exact Iff.rfl
 
 /-- **Width positivity is seeing.** At a fixed width the complete Weil family is positive at every
 horizon iff its atom sees no zero right of the line. -/
 theorem forall_positiveAt_width_iff {φ : ℝ → ℝ} (hφ : Admissible φ) {w : ℝ} (hw : 0 < w) :
     (∀ N : ℕ, 1 ≤ N → PositiveAt φ (w * N) N) ↔
       seenRightZeros zetaZeroConfig (atomDilate φ w) = ∅ := by
-  rw [← horizonThreshold_eq_top_iff (atomDilate_mem_realTests' hφ hw)]
   constructor
   · intro H
-    refine (horizonThreshold_eq_top_iff (atomDilate_mem_realTests' hφ hw)).mpr ?_
     rw [← Set.encard_eq_zero, ← iSup_horizonDefect (atomDilate_mem_realTests' hφ hw),
       ENat.iSup_eq_zero]
     intro N
     rcases Nat.eq_zero_or_pos N with rfl | hN
-    · simp [horizonDefect, hermNegIndex_eq_zero_of_isEmpty]
+    · exact_mod_cast ArithmeticCastelnuovoSeveri.negIndex_eq_zero_of_hermQuad_nonneg fun x => by
+        simp [hermQuad, dotProduct]
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
     have hcN : w * N / N = w := by field_simp
     have h := (positiveAt_iff_lt_horizonThreshold hφ (mul_pos hw hN0) hN).mp (H N hN)
     rw [hcN] at h
     exact_mod_cast (horizonDefect_eq_zero_iff_lt_horizonThreshold _ N).mpr h
-  · intro htop N hN
+  · intro hseen N hN
+    have htop := (horizonThreshold_eq_top_iff (atomDilate_mem_realTests' hφ hw)).mpr hseen
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
     have hcN : w * N / N = w := by field_simp
     rw [positiveAt_iff_lt_horizonThreshold hφ (mul_pos hw hN0) hN, hcN, htop]

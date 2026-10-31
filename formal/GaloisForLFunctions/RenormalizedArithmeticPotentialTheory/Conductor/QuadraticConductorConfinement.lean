@@ -450,5 +450,235 @@ theorem exists_explicit_quadratic_conductor_cutoff :
       rw [sum_horizon_truncated_coefficients hNR, ← hb n hn, sub_self, zero_pow (by decide)]
     rw [hzero]
     exact hη.le
+private theorem primeHorizonExtension_smul (N : ℕ) (s : ℝ)
+    (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    primeHorizonExtension (s • x) = s • primeHorizonExtension x := by
+  funext n
+  simp only [primeHorizonExtension, Pi.smul_apply, smul_eq_mul]
+  split_ifs
+  · rfl
+  · exact (mul_zero s).symm
+
+private theorem poleDefect_smul (N : ℕ) (s : ℝ) (x : ℕ → ℝ) :
+    poleDefect N (s • x) = s ^ 2 * poleDefect N x := by
+  unfold poleDefect
+  simp only [mul_sum, Pi.smul_apply, smul_eq_mul]
+  exact sum_congr rfl fun _ _ => sum_congr rfl fun _ _ => by ring
+
+private theorem norm_sub_normalizedRamanujan_sum_sq {R N : ℕ} (hN : 2 ≤ N)
+    (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) (b : ℕ → ℝ) :
+    ‖x - ∑ m ∈ Icc 1 R, (b m * Real.sqrt (Real.log N)) • normalizedRamanujanHorizonVector m N‖ ^ 2 =
+      ∑ n ∈ Icc 1 N,
+        (primeHorizonExtension x n - ∑ m ∈ Icc 1 R, b m * ramanujanPoleProfile m n) ^ 2 := by
+  have hlog : 0 < Real.log N := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
+  have hs : Real.sqrt (Real.log N) ≠ 0 := (Real.sqrt_pos.mpr hlog).ne'
+  have heq : (∑ m ∈ Icc 1 R,
+      (b m * Real.sqrt (Real.log N)) • normalizedRamanujanHorizonVector m N) =
+      ∑ m ∈ Icc 1 R, b m • ramanujanHorizonVector m N := by
+    refine sum_congr rfl fun m _ => ?_
+    rw [normalizedRamanujanHorizonVector, smul_smul]
+    congr 1
+    field_simp [hs]
+  rw [heq, EuclideanSpace.real_norm_sq_eq, ← sum_coe_sort (Icc 1 N) (fun n =>
+    (primeHorizonExtension x n - ∑ m ∈ Icc 1 R, b m * ramanujanPoleProfile m n) ^ 2)]
+  refine sum_congr rfl fun n _ => ?_
+  have hsum : (∑ m ∈ Icc 1 R, b m • ramanujanHorizonVector m N) n =
+      ∑ m ∈ Icc 1 R, b m * ramanujanPoleProfile m n := by
+    change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) n)
+      (∑ m ∈ Icc 1 R, b m • ramanujanHorizonVector m N) = _
+    rw [map_sum]
+    exact sum_congr rfl fun _ _ => rfl
+  simp only [PiLp.sub_apply, hsum, primeHorizonExtension_coe]
+
+
+/-- The conductor cutoff also controls the canonical orthogonal projection. -/
+theorem exists_explicit_quadratic_conductor_projection :
+    ∀ η : ℝ, 0 < η → η ≤ 1 → ∀ K : ℝ, 0 ≤ K →
+      ∃ R : ℕ, 2 ≤ R ∧ Real.log R ≤ quadraticConfinementConstant / η ^ 2 * (K + 1) ∧
+        ∀ N : ℕ, 2 ≤ N → ∀ z : EuclideanSpace ℝ (PrimeHorizonIndex N),
+          ‖z‖ ≤ 1 → poleDefect N (primeHorizonExtension z) ≤ K →
+          ‖z - (conductorSubspace R N).starProjection z‖ ^ 2 ≤ η := by
+  intro η hη hη1 K hK
+  obtain ⟨R, hR, hRlog, happ⟩ := exists_explicit_quadratic_conductor_cutoff η hη hη1 K hK
+  refine ⟨R, hR, hRlog, fun N hN z hznorm hdef => ?_⟩
+  have hmass : (∑ n ∈ Icc 1 N, primeHorizonExtension z n ^ 2) ≤ 1 := by
+    rw [sum_primeHorizonExtension_sq]
+    nlinarith only [hznorm, norm_nonneg z]
+  obtain ⟨b, hb⟩ := happ N (primeHorizonExtension z) hmass hdef
+  let v := ∑ m ∈ Icc 1 R, (b m * Real.sqrt (Real.log N)) • normalizedRamanujanHorizonVector m N
+  have hv : v ∈ conductorSubspace R N :=
+    sum_normalizedRamanujanHorizonVector_mem_conductorSubspace R N _
+  exact (norm_sub_starProjection_sq_le (conductorSubspace R N) z v hv).trans
+    ((norm_sub_normalizedRamanujan_sum_sq hN z b).trans_le hb)
+
+/-- Closed-form reverse-gap constant at squared projection tolerance `1/16`. -/
+def explicitConductorCutoffConstant : ℝ := 256 * quadraticConfinementConstant
+
+theorem explicitConductorCutoffConstant_pos : 0 < explicitConductorCutoffConstant :=
+  mul_pos (by norm_num) quadraticConfinementConstant_pos
+
+/-- A vector outside the low-conductor tube pays an explicit logarithmic defect gap. -/
+theorem poleDefect_ge_explicit_of_norm_sub_starProjection_gt {Q N : ℕ} (hQ : 2 ≤ Q) (hN : 2 ≤ N)
+    {y : EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hdist : (1 / 16 : ℝ) * ‖y‖ ^ 2 < ‖y - (conductorSubspace Q N).starProjection y‖ ^ 2) :
+    (Real.log Q / explicitConductorCutoffConstant - 1) * ‖y‖ ^ 2 ≤
+      poleDefect N (primeHorizonExtension y) := by
+  have hy0 : ‖y‖ ≠ 0 := by
+    intro hz
+    rw [norm_eq_zero.mp hz] at hdist
+    simp at hdist
+  have hypos : 0 < ‖y‖ := lt_of_le_of_ne (norm_nonneg y) (Ne.symm hy0)
+  let z := (‖y‖)⁻¹ • y
+  have hznorm : (∑ n ∈ Icc 1 N, primeHorizonExtension z n ^ 2) ≤ 1 := by
+    rw [sum_primeHorizonExtension_sq, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hypos,
+      inv_mul_cancel₀ hy0, one_pow]
+  let K := poleDefect N (primeHorizonExtension z)
+  have hK0 : 0 ≤ K := poleDefect_nonneg N _
+  obtain ⟨R, _, hRlog, happ⟩ := exists_explicit_quadratic_conductor_cutoff
+    (1 / 16) (by norm_num) (by norm_num) K hK0
+  have hRbound : Real.log R ≤ explicitConductorCutoffConstant * (K + 1) := by
+    refine hRlog.trans_eq ?_
+    unfold explicitConductorCutoffConstant
+    ring
+  obtain ⟨b, hb⟩ := happ N (primeHorizonExtension z) hznorm le_rfl
+  have hQR : Q < R := by
+    by_contra hnot
+    have hRQ : R ≤ Q := le_of_not_gt hnot
+    let v := ∑ m ∈ Icc 1 R, (b m * Real.sqrt (Real.log N)) • normalizedRamanujanHorizonVector m N
+    have hvQ : ‖y‖ • v ∈ conductorSubspace Q N :=
+      conductorSubspace_mono hRQ N
+        (Submodule.smul_mem _ _ (sum_normalizedRamanujanHorizonVector_mem_conductorSubspace R N _))
+    have hzv : ‖z - v‖ ^ 2 ≤ 1 / 16 :=
+      (norm_sub_normalizedRamanujan_sum_sq hN z b).trans_le hb
+    have hyv : ‖y - ‖y‖ • v‖ ^ 2 ≤ (1 / 16) * ‖y‖ ^ 2 := by
+      have hid : y - ‖y‖ • v = ‖y‖ • (z - v) := by
+        dsimp only [z]
+        rw [smul_sub, smul_smul, mul_inv_cancel₀ hy0, one_smul]
+      rw [hid, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs, mul_comm]
+      exact mul_le_mul_of_nonneg_right hzv (sq_nonneg _)
+    linarith only [hdist, norm_sub_starProjection_sq_le (conductorSubspace Q N) y (‖y‖ • v) hvQ, hyv]
+  have hQpos : (0 : ℝ) < Q := by exact_mod_cast (show 0 < Q by omega)
+  have hlogQ : Real.log Q ≤ explicitConductorCutoffConstant * (K + 1) :=
+    (Real.log_le_log hQpos (by exact_mod_cast hQR.le)).trans hRbound
+  have hD0 : 0 < explicitConductorCutoffConstant := explicitConductorCutoffConstant_pos
+  have hKge : Real.log Q / explicitConductorCutoffConstant - 1 ≤ K := by
+    rw [sub_le_iff_le_add, div_le_iff₀ hD0]
+    linarith only [hlogQ]
+  have hKeq : K * ‖y‖ ^ 2 = poleDefect N (primeHorizonExtension y) := by
+    dsimp only [K, z]
+    rw [primeHorizonExtension_smul, poleDefect_smul, inv_pow]
+    field_simp [hy0]
+  exact (mul_le_mul_of_nonneg_right hKge (sq_nonneg ‖y‖)).trans_eq hKeq
+
+/-- Packets supported above `Q` inherit the explicit reverse defect gap. -/
+theorem poleDefect_ge_explicit_of_supported_above {Q R N : ℕ} (hQ : 2 ≤ Q) (hQR : Q ≤ R)
+    (hRN : R * R ≤ N) (hlog : 36 * (1 + Real.log R) ≤ Real.log N)
+    {a : ℕ → ℝ} (hzero : ∀ m ∈ Icc 1 Q, a m = 0) :
+    (Real.log Q / explicitConductorCutoffConstant - 1) *
+        ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤
+      poleDefect N (primeHorizonExtension
+        (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N)) := by
+  let y := ∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N
+  have hR2 : 2 ≤ R := hQ.trans hQR
+  have hN2 : 2 ≤ N := by
+    have h4 : 4 ≤ N := (Nat.mul_le_mul hR2 hR2).trans hRN
+    omega
+  by_cases hy0 : ‖y‖ = 0
+  · have hy_eq : y = 0 := norm_eq_zero.mp hy0
+    have hdef0 : poleDefect N (primeHorizonExtension y) = 0 := by
+      have hp0 : primeHorizonExtension y = 0 := by
+        rw [hy_eq, ← zero_smul ℝ (0 : EuclideanSpace ℝ (PrimeHorizonIndex N)),
+          primeHorizonExtension_smul, zero_smul]
+      rw [hp0, ← zero_smul ℝ (0 : ℕ → ℝ), poleDefect_smul]
+      norm_num
+    rw [hy0, hdef0]
+    norm_num
+  have hypos : 0 < ‖y‖ := lt_of_le_of_ne (norm_nonneg y) (Ne.symm hy0)
+  apply poleDefect_ge_explicit_of_norm_sub_starProjection_gt hQ hN2
+  let v := (conductorSubspace Q N).starProjection y
+  obtain ⟨b, -, hv_eq⟩ :=
+    (mem_conductorSubspace_iff (M := Q) (N := N) (x := v)).mp
+      ((conductorSubspace Q N).starProjection_apply_mem y)
+  let b' : ℕ → ℝ := fun m => if m ≤ Q then b m else 0
+  have hv_R : v = ∑ m ∈ Icc 1 R, b' m • normalizedRamanujanHorizonVector m N := by
+    rw [hv_eq]
+    have hsub : Icc 1 Q ⊆ Icc 1 R := Icc_subset_Icc le_rfl hQR
+    calc
+      _ = ∑ m ∈ Icc 1 Q, b' m • normalizedRamanujanHorizonVector m N :=
+        sum_congr rfl fun m hm => by simp [b', (mem_Icc.mp hm).2]
+      _ = _ := sum_subset hsub fun m hmR hmQ => by
+        have hnot : ¬m ≤ Q := fun h => hmQ (mem_Icc.mpr ⟨(mem_Icc.mp hmR).1, h⟩)
+        simp [b', hnot]
+  have hdisj : (∑ m ∈ Icc 1 R, a m * b' m) = 0 := by
+    refine sum_eq_zero fun m hm => ?_
+    dsimp only [b']
+    split_ifs with hmQ
+    · rw [hzero m (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, hmQ⟩), zero_mul]
+    · rw [mul_zero]
+  have hlog18 : 18 * (1 + Real.log R) ≤ Real.log N := by
+    have hR0 := Real.log_natCast_nonneg R
+    linarith only [hlog, hR0]
+  have hL : 0 < Real.log N := by
+    have hR0 := Real.log_natCast_nonneg R
+    linarith only [hlog, hR0]
+  have hoff := abs_inner_sum_normalizedRamanujanHorizonVector_of_orthog_le hR2 hRN hdisj
+  rw [← hv_R] at hoff
+  have hry := (half_and_three_halves_riesz_of_log_le hR2 hRN hlog18 a).1
+  have hrv := (half_and_three_halves_riesz_of_log_le hR2 hRN hlog18 b').1
+  rw [← hv_R] at hrv
+  have hprod_sqrt :
+      Real.sqrt (∑ m ∈ Icc 1 R, a m ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b' m ^ 2) ≤
+        2 * ‖y‖ * ‖v‖ := by
+    rw [← Real.sqrt_mul (sum_nonneg fun _ _ => sq_nonneg _)]
+    have hmul : (∑ m ∈ Icc 1 R, a m ^ 2) * (∑ m ∈ Icc 1 R, b' m ^ 2) ≤
+        (2 * ‖y‖ * ‖v‖) ^ 2 := by
+      calc
+        (∑ m ∈ Icc 1 R, a m ^ 2) * (∑ m ∈ Icc 1 R, b' m ^ 2) ≤
+            (2 * ‖y‖ ^ 2) * (2 * ‖v‖ ^ 2) :=
+          mul_le_mul (by linarith only [hry]) (by linarith only [hrv])
+            (sum_nonneg fun _ _ => sq_nonneg _) (by positivity)
+        _ = (2 * ‖y‖ * ‖v‖) ^ 2 := by ring
+    exact (Real.sqrt_le_sqrt hmul).trans_eq (Real.sqrt_sq (by positivity))
+  have hfrac_half : 18 * (1 + Real.log R) / Real.log N ≤ 1 / 2 := by
+    rw [div_le_iff₀ hL]
+    linarith only [hlog]
+  have hy_v : |⟪y, v⟫| ≤ (1 / 2 : ℝ) * ‖y‖ * ‖v‖ := by
+    have hcoef0 : 0 ≤ 9 * (1 + Real.log R) / Real.log N := by
+      have := Real.log_natCast_nonneg R; positivity
+    calc
+      |⟪y, v⟫| ≤ 9 * (1 + Real.log R) / Real.log N *
+          Real.sqrt (∑ m ∈ Icc 1 R, a m ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b' m ^ 2) := hoff
+      _ = 9 * (1 + Real.log R) / Real.log N *
+          (Real.sqrt (∑ m ∈ Icc 1 R, a m ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b' m ^ 2)) := by ring
+      _ ≤ 9 * (1 + Real.log R) / Real.log N * (2 * ‖y‖ * ‖v‖) :=
+        mul_le_mul_of_nonneg_left hprod_sqrt hcoef0
+      _ = (18 * (1 + Real.log R) / Real.log N) * (‖y‖ * ‖v‖) := by ring
+      _ ≤ (1 / 2 : ℝ) * (‖y‖ * ‖v‖) := mul_le_mul_of_nonneg_right hfrac_half (by positivity)
+      _ = (1 / 2 : ℝ) * ‖y‖ * ‖v‖ := by ring
+  have hpyth := norm_starProjection_sq_add_sub_sq (conductorSubspace Q N) y
+  change ‖v‖ ^ 2 + ‖y - v‖ ^ 2 = ‖y‖ ^ 2 at hpyth
+  have hv_sq_eq : ‖v‖ ^ 2 = ⟪y, v⟫ := by
+    have h0 : ⟪y - v, v⟫ = 0 :=
+      (conductorSubspace Q N).starProjection_inner_eq_zero y v
+        ((conductorSubspace Q N).starProjection_apply_mem y)
+    rw [inner_sub_left, real_inner_self_eq_norm_sq] at h0
+    linarith only [h0]
+  have hv_le : ‖v‖ ≤ (1 / 2 : ℝ) * ‖y‖ := by
+    have hsq : ‖v‖ ^ 2 ≤ (1 / 2 : ℝ) * ‖y‖ * ‖v‖ := by
+      rw [hv_sq_eq]
+      exact (le_abs_self _).trans hy_v
+    by_cases hvz : ‖v‖ = 0
+    · rw [hvz]; positivity
+    · have hvpos : 0 < ‖v‖ := lt_of_le_of_ne (norm_nonneg v) (Ne.symm hvz)
+      nlinarith only [hsq, hvpos]
+  have hv_sq_le : ‖v‖ ^ 2 ≤ (1 / 4 : ℝ) * ‖y‖ ^ 2 := by
+    nlinarith only [hv_le, norm_nonneg v, hypos]
+  have hy_pos_sq : 0 < ‖y‖ ^ 2 := sq_pos_of_pos hypos
+  nlinarith only [hpyth, hv_sq_le, hy_pos_sq]
+
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.exists_explicit_quadratic_conductor_cutoff
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.exists_explicit_quadratic_conductor_projection
+#print axioms GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.poleDefect_ge_explicit_of_supported_above

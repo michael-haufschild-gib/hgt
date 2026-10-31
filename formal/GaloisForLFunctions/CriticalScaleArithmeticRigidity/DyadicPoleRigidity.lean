@@ -161,7 +161,8 @@ theorem nonconstantPacketMass_eq_zero_iff (Q : ℕ) (a : ℕ → ℝ) :
   rw [nonconstantPacketMass, sum_eq_zero_iff_of_nonneg hnonneg]
   constructor
   · intro hz m hm
-    have hm1 : m ∈ Icc 1 Q := mem_Icc.mpr ⟨by omega, (mem_Icc.mp hm).2⟩
+    have hm1 : m ∈ Icc 1 Q :=
+      mem_Icc.mpr ⟨by have := (mem_Icc.mp hm).1; omega, (mem_Icc.mp hm).2⟩
     have hmne : m ≠ 1 := by have := (mem_Icc.mp hm).1; omega
     have he := hz m hm1
     rw [if_neg hmne] at he
@@ -216,7 +217,7 @@ theorem jointRigidityEnergy_eq_zero_iff (Q : ℕ) (a b : ℕ → ℝ) :
         packetMean Q (fun n => conductorPacket Q (fun m => a m - b m) (n + 0) ^ 2) := by
       congr 1
       funext n
-      rw [Nat.add_zero, hlin, hshift]
+      simp only [Nat.add_zero, hlin, hshift]
     rw [he, packetMean_shift_sq] at herr
     have hcoeff := (sum_eq_zero_iff_of_nonneg (fun m (_ : m ∈ Icc 1 Q) =>
       mul_nonneg (Nat.cast_nonneg m.totient) (sq_nonneg (a m - b m)))).mp herr

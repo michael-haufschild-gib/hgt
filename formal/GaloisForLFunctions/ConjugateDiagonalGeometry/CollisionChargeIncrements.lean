@@ -220,7 +220,9 @@ theorem exists_xiCollisionIncrement_le_log_sq :
   have hn0 : (0 : ℝ) ≤ xiUnitWindowOrder T := Nat.cast_nonneg _
   calc (xiCollisionIncrement T : ℝ)
       ≤ 2 * ((xiUnitWindowOrder T : ℝ) * xiUnitWindowOrder T) := hreal
-    _ ≤ 2 * ((C * Real.log T) * (C * Real.log T)) := by gcongr
+    _ ≤ 2 * ((C * Real.log T) * (C * Real.log T)) := by
+        gcongr
+        exact hn0.trans hT
     _ = 2 * C ^ 2 * Real.log T ^ 2 := by ring
 
 /-! ## Bounded increments give critical density one -/

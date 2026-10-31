@@ -32,6 +32,10 @@ def primeAdjunctionMass (Q : ℕ) (a : ℕ → ℝ) : ℝ :=
 def primeHeadCoefficient (Q : ℕ) (a : ℕ → ℝ) (S : Finset ℕ) (m : ℕ) : ℝ :=
   ∑ k ∈ S, vonMangoldt k / (k : ℝ) * primeConductorDilationJump Q a k m
 
+/-- The arithmetic packet in orthonormal conductor coordinates. -/
+def normalizedConductorPacket (Q : ℕ) (a : ℕ → ℝ) (n : ℕ) : ℝ :=
+  ∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n
+
 theorem primeActivityMass_nonneg (Q : ℕ) : 0 ≤ primeActivityMass Q := by
   apply sum_nonneg
   intro p hp
@@ -108,6 +112,66 @@ private theorem weighted_sum_sq_le {ι : Type*} (S : Finset ι) (w x : ι → �
     intro i hi
     rw [mul_pow, Real.sq_sqrt (hw i hi)]
   rwa [h1, h2, h3] at h
+
+/-- The active-prime mass controls each literal row before any row-dependent head is chosen. -/
+theorem primeHead_value_sq_le (Q : ℕ) (a : ℕ → ℝ) (S : Finset ℕ) (n : ℕ) :
+    (∑ k ∈ S, vonMangoldt k / (k : ℝ) *
+      (normalizedConductorPacket Q a (k * n) - normalizedConductorPacket Q a n)) ^ 2 ≤
+      primeActivityMass Q * ∑ k ∈ S, vonMangoldt k / (k : ℝ) *
+        (normalizedConductorPacket Q a (k * n) - normalizedConductorPacket Q a n) ^ 2 := by
+  let T := S.filter (activePrimeTower Q)
+  let d := fun k => normalizedConductorPacket Q a (k * n) - normalizedConductorPacket Q a n
+  have hzero (k : ℕ) (hk : ¬activePrimeTower Q k) :
+      vonMangoldt k / (k : ℝ) * d k = 0 := by
+    dsimp only [d, normalizedConductorPacket]
+    rw [← primeConductorDilationJump_packet, mul_sum]
+    apply sum_eq_zero
+    intro m hm
+    rw [← mul_assoc, primeJump_weighted_eq_zero_of_inactive a hm hk, zero_mul]
+  have heq : (∑ k ∈ S, vonMangoldt k / (k : ℝ) * d k) =
+      ∑ k ∈ T, vonMangoldt k / (k : ℝ) * d k := by
+    apply (sum_subset (filter_subset _ _) ?_).symm
+    intro k hk hnot
+    exact hzero k (fun ha => hnot (mem_filter.mpr ⟨hk, ha⟩))
+  have hmass := active_prime_mass_le Q T (fun k hk => (mem_filter.mp hk).2)
+  have henergy : (∑ k ∈ T, vonMangoldt k / (k : ℝ) * d k ^ 2) ≤
+      ∑ k ∈ S, vonMangoldt k / (k : ℝ) * d k ^ 2 :=
+    sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun k _ _ =>
+      mul_nonneg (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)) (sq_nonneg _)
+  change (∑ k ∈ S, vonMangoldt k / (k : ℝ) * d k) ^ 2 ≤ _
+  rw [heq]
+  exact (weighted_sum_sq_le T _ d (fun k _ =>
+    div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k))).trans
+      (mul_le_mul hmass henergy
+        (sum_nonneg fun k _ => mul_nonneg
+          (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)) (sq_nonneg _))
+        (primeActivityMass_nonneg Q))
+
+/-- The first logarithmic prime moment preserves the exact adjunction mass. -/
+theorem primeDilation_logWeightedEnergy_le {Q : ℕ} (hQ : 1 ≤ Q)
+    (a : ℕ → ℝ) (K : ℕ) :
+    (∑ k ∈ Icc 1 K, vonMangoldt k / (k : ℝ) *
+      ((18 * (1 + Real.log Q) + Real.log k) *
+        ∑ m ∈ Icc 1 Q, primeConductorDilationJump Q a k m ^ 2)) ≤
+      19 * (1 + Real.log Q) * primeAdjunctionMass Q a := by
+  have henergy := primeJump_energy_head_le Q a (Icc 1 K)
+  have hmoment := sum_primeConductorDilationJump_logMoment_le hQ a K
+  change _ ≤ (1 + Real.log Q) * primeAdjunctionMass Q a at hmoment
+  have heq : (∑ k ∈ Icc 1 K, vonMangoldt k / (k : ℝ) *
+      ((18 * (1 + Real.log Q) + Real.log k) *
+        ∑ m ∈ Icc 1 Q, primeConductorDilationJump Q a k m ^ 2)) =
+      18 * (1 + Real.log Q) * (∑ k ∈ Icc 1 K, vonMangoldt k / (k : ℝ) *
+        ∑ m ∈ Icc 1 Q, primeConductorDilationJump Q a k m ^ 2) +
+      ∑ k ∈ Icc 1 K, vonMangoldt k * Real.log k / (k : ℝ) *
+        ∑ m ∈ Icc 1 Q, primeConductorDilationJump Q a k m ^ 2 := by
+    rw [mul_sum, ← sum_add_distrib]
+    apply sum_congr rfl
+    intro k _
+    ring
+  rw [heq]
+  have h := add_le_add (mul_le_mul_of_nonneg_left henergy
+    (by positivity : 0 ≤ 18 * (1 + Real.log (Q : ℝ)))) hmoment
+  nlinarith only [h]
 
 /-- Every finite prime head is bounded in the packet's exact adjunction energy. -/
 theorem primeHeadCoefficient_sq_sum_le (Q : ℕ) (a : ℕ → ℝ) (S : Finset ℕ) :
