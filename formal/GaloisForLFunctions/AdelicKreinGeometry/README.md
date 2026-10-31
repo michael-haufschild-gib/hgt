@@ -60,7 +60,9 @@ at edges with a counterterm of nontrivial null cone.
    `Aff(ℚ)` with the integer (Haar) successor and a dilation reading continuous at `1` has infinite index; Weil's
    correlation is such a dilation reading. The mechanisms are the near coincidence of the two topologies
    (rationals near `1` have large denominators), Haar averaging over rational translates, and polynomial
-   corrections with zero axis readings.
+   corrections with zero axis readings. Every finite-index integer-Haar kernel has a unique split
+   `k=p+ψ∘slope+Q`, with positive Haar `p`, Hermitian slope `ψ`, and finite-rank polynomial `Q` vanishing
+   on both axes. Its exact index is `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`.
 3. **The pole carries a finite nonzero index.** The pole pair `|u|^{1/2} + |u|^{−1/2}` of Weil's kernel extends to
    an index-one state of the whole affine group whose successor is `2 − c|b|`. It is the hyperbolic pair of the
    fixed points `0, ∞` of `ℙ¹(ℚ)`: a boost on `×` glued to a conformal successor on `+`, with the boost exponent
@@ -191,12 +193,12 @@ at edges with a counterterm of nontrivial null cone.
   truncated pole vector beats any fixed counterterm (`NoFixedCountertermMakesThePrimeKernelPontryagin`).
 - *Near coincidence and dilution.* A state continuous at `1` minus one decaying with the denominator has infinite
   index; spreading over `x + j/P` removes Hecke-supported parts (`ArchimedeanContinuityAgainstHeightDecay`).
-- *Haar averaging and polynomial correction.* Rational translates average a positive integer-successor carrier to
-  zero, so it is invisible to the index. For an arbitrary finite-index kernel with the integer successor, the
-  translation-period defects span an isotropic space of dimension at most `κ²`; its polynomial primitive has zero
-  axis readings, and subtracting it restores integer invariance on both sides. Cyclic orbits of dilation columns
-  then make fixed projections tend to `J − I` under continuous dilations, which has unbounded negative index
-  (`Haar/`).
+- *Haar averaging and polynomial correction.* Signed translation quadrature removes a positive Haar summand
+  without changing the index of a Hermitian polynomial-fibre kernel. For an arbitrary finite-index integer-Haar
+  kernel, the translation-period defects have finite affine orbit of dimension at most `κ²`. Their canonical
+  polynomial primitive has zero axis readings and restores integer invariance. The invariant factorial
+  moving-form limit then gives the unique positive Haar and slope parts. Under continuous dilations, cyclic
+  fixed-projection Grams instead tend to `J − I`, forcing infinite negative index (`Haar/`).
 
 **C. The additive side.**
 
@@ -293,6 +295,8 @@ at edges with a counterterm of nontrivial null cone.
 | **The glue absorbs exactly its own pair**: `κ(u^{±s'/2} glued at s) = 1` if `s' = s`, else `2`; at `s = 1` only the pole pair is absorbed | `negIndex_archGlueAt_stablePair_eq`, `boostPolarIndexAt_stablePair_of_ne`, `negIndex_archGlue_stablePair_of_ne` |
 | **Stable gluing formula** `κ(K(|a|) − c|a|^{−s/2}|b|^s) = κ^{(s/2)}(K) + 1`, `0 < s < 1`; absorbed pair `u^{±s/2}`; zero configurations with `Re ρ > (1 − s)/2` give `κ(K_Z) + 1`; a drop for `ζ` certifies a zero with `Re ρ ≤ (1 − s)/2` | `negIndex_archGlueAt_eq`, `negIndex_archGlueAt_eq_or`, `boostPolarIndexAt_stablePair`, `negIndex_archGlueAt_orbitCorr`, `exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne` |
 | Shell decomposition of the local pole–successor forms | `hermQuad_gram_poleSuccessor_negUltra_eq`, `hermQuad_gram_poleSuccessorState_eq` |
+| **Canonical Haar splitting**: unique `k=p+ψ∘slope+Q`, with positive Haar `p` and finite-rank zero-axis polynomial `Q`; `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)` | `exists_unique_haar_relative_split`, `finite_index_haar_iff_relative_split` |
+| **Polynomial index preservation**: `κ(p+h)=κ(h)` for positive Haar `p` and Hermitian polynomial-fibre `h`, including infinite index | `negIndex_add_positive_haar_polynomial` |
 | Axis-invisible kernels: zero or `κ ≥ 2`, rank `≤ κ²`, polynomial fibres of degree `< κ`; every `κ ≥ 2` occurs | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `negIndex_haarMixedPowerState` |
 | The index is twin-blind | `negIndex_mul_unitaryChar`, `negIndex_heckeState_mul_slopeChar` |
 
@@ -346,7 +350,7 @@ at edges with a counterterm of nontrivial null cone.
 | Pontryagin index theory on groups | induction, witness complements, escape, mixing, block additivity, twist invariance, Krein compressions, conformal induction | Krein–Langer structure on `Aff(ℚ)` |
 | Local–global signature calculus | polar index, separable formula, pole–successor formula, additivity over places, boost-polar index and archimedean gluing | prime-local defects of the Weil kernel; non-separable glue |
 | Kakutani–Hellinger dichotomies | the Kakutani wall as an index wall; zero-or-infinity laws as index zero–one laws; local walls at every prime and their Schur assembly; the local wall at `∞` of `𝔽_q(X)` | local walls at the places of higher degree of `𝔽_q(X)` and their product |
-| Mautner / Howe–Moore phenomena | indefinite Howe–Moore (mixing, height decay, near coincidence, dilution, Haar averaging); infinite index for every Haar kernel with continuous dilations | uniqueness of the Haar decomposition |
+| Mautner / Howe–Moore phenomena | infinite index for Haar kernels with continuous dilations; unique canonical Haar decomposition and exact polynomial residual index | relative splitting for general nonzero proper rational successors |
 | Bost–Connes / KMS at the critical temperature | Hecke states at every exponent and their index wall | states below `β = 1` |
 | Ramanujan Plancherel, conductor Hamiltonian | additive index law on `ℤ/N`, `ℚ/ℤ`; Ramanujan law `Σ_{A_d<0} φ(d)` | the spectral measure on `ℤ̂` |
 | Successor-shell calculus | shell decompositions at every place with running counterterms | shells of the complete Weil form |
@@ -362,8 +366,10 @@ at edges with a counterterm of nontrivial null cone.
 2. **Krein–Langer structure on `Aff(ℚ)`.** Is every Pontryagin state a positive state plus coefficients of
    finite-dimensional or conformally induced Pontryagin representations? Known pieces: pole–successor states, the
    Borel's `Sym^d` (mixed power kernels), archimedean Weil states.
-3. **The Haar decomposition.** Does every finite-index integer-Haar kernel decompose uniquely into a positive Haar
-   kernel, a Hermitian slope kernel and a finite-rank polynomial kernel vanishing on both axes?
+3. **Relative splitting for rational subgroup successors.** The integer-Haar case has a unique positive,
+   slope and zero-axis polynomial split with exact residual index. The
+   [extension to general nonzero proper subgroups](../../../docs/drafts/pipeline/0-backlog/nonzero-proper-subgroup-carriers-have-a-canonical-relative-split.md)
+   remains open.
 4. **Purely additive counters.** An index on the translations alone that equals the number of zeros right of the
    line, or a proof that none exists among natural classes.
 5. **Calibration over `𝔽_q(T)`.** The local wall at the place `∞` holds. Open: the places of higher degree, the
@@ -491,3 +497,6 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,
   `CyclicHecke`, `CyclicGramLimit`, `FiniteIndexObstruction`, `ScaledHaarObstruction`,
   `PositiveAffineObstruction`, `FiniteAdelicReading`, `AdelicObstruction`.
+- Canonical Haar splitting and residual index (`Haar/`): `GeneralOrbits`, `TranslationProjections`,
+  `TranslationForms`, `MovingLimit`, `PositivePart`, `PositiveSlopeSplit`, `SplittingUniqueness`,
+  `RelativeSplit`, `PolynomialIndexPreservation`, `Classification`.

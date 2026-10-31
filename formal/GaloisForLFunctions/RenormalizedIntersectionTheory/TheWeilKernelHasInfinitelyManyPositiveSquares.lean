@@ -33,8 +33,10 @@ open scoped ComplexConjugate
 open Zeta23
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx rightZeros summable_re_Wsummand)
-open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline upow unif
-  contDiff_cubicSpline hasCompactSupport_cubicSpline)
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff_cubicSpline
+  hasCompactSupport_cubicSpline)
+open RHTower.WeilDeletion (upow)
+open scoped Real
 open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
 
 noncomputable section
@@ -54,8 +56,8 @@ theorem paperFT_cubicSpline_ne_zero_of_real {x : ℝ} (hx0 : x ≠ 0) (hx : ∀ 
   obtain ⟨n, hn⟩ := Complex.exp_eq_exp_iff_exists_int.mp (sub_eq_zero.mp h)
   have him := congrArg Complex.im hn
   simp only [mul_one, mul_im, I_re, I_im, ofReal_re, ofReal_im, zero_mul, one_mul, zero_add,
-    neg_im, add_im, mul_re, intCast_re, intCast_im, sub_zero, mul_zero, ofReal_ofNat,
-    re_ofNat, im_ofNat, zero_sub] at him
+    neg_im, add_im, mul_re, intCast_re, intCast_im, sub_zero, mul_zero, re_ofNat,
+    im_ofNat] at him
   exact hx n (by linarith)
 
 /-! ### Infinitely many critical zeros are seen -/
@@ -73,8 +75,10 @@ theorem card_Icc_int_le (a b : ℤ) : ((Icc a b).card : ℝ) ≤ max 0 ((b : ℝ
     rw [hc]; push_cast; exact le_max_right _ _
   · rw [Int.toNat_of_nonpos h.le]; simp
 
+open Classical in
 /-- A window `(T, 2T]` contains at most `T/π + 1` multiples of `π`. -/
-theorem card_filter_lattice_le {T : ℝ} (τS : Finset ℝ) (hτS : ∀ τ ∈ τS, T < τ ∧ τ ≤ 2 * T) :
+theorem card_filter_lattice_le {T : ℝ} (hT0 : 0 ≤ T) (τS : Finset ℝ)
+    (hτS : ∀ τ ∈ τS, T < τ ∧ τ ≤ 2 * T) :
     ((τS.filter fun τ => ∃ n : ℤ, τ = n * π).card : ℝ) ≤ T / π + 1 := by
   classical
   set a := ⌈T / π⌉
@@ -101,18 +105,9 @@ theorem card_filter_lattice_le {T : ℝ} (τS : Finset ℝ) (hτS : ∀ τ ∈ �
   calc ((τS.filter fun τ => ∃ n : ℤ, τ = n * π).card : ℝ) ≤ (Icc a b).card := by
         exact_mod_cast hcard
     _ ≤ max 0 ((b : ℝ) + 1 - a) := h1
-    _ ≤ T / π + 1 := by
-        refine max_le ?_ (by linarith)
-        rcases le_or_gt 0 T with hT0 | hT0
-        · positivity
-        · have hτ := τS.eq_empty_or_nonempty
-          linarith [div_neg_of_neg_of_pos hT0 Real.pi_pos, show (0 : ℝ) ≤ 0 from le_rfl,
-            (show (0:ℝ) ≤ (a : ℝ) - T / π by linarith)]
-            |> fun _ => by
-              by_contra hlt
-              push Not at hlt
-              linarith [div_neg_of_neg_of_pos hT0 Real.pi_pos]
+    _ ≤ T / π + 1 := max_le (by positivity) (by linarith)
 
+open Classical in
 /-- **The cubic spline sees infinitely many critical zeros.** -/
 theorem criticalSeen_infinite : criticalSeen.Infinite := by
   classical
@@ -136,7 +131,7 @@ theorem criticalSeen_infinite : criticalSeen.Infinite := by
     have h2 : T / π = T * (1 / π) := by ring
     nlinarith
   obtain ⟨τS, hτS, hcard⟩ := hmany T hTT₀
-  have hL := card_filter_lattice_le τS fun τ hτ => ⟨(hτS τ hτ).1, (hτS τ hτ).2.1⟩
+  have hL := card_filter_lattice_le hT0.le τS fun τ hτ => ⟨(hτS τ hτ).1, (hτS τ hτ).2.1⟩
   -- the ordinates off the lattice give distinct seen zeros
   have hR : (τS.filter fun τ => ¬ ∃ n : ℤ, τ = n * π).card ≤ M := by
     refine card_le_card_of_injOn (fun τ : ℝ => (1 / 2 : ℂ) + (τ : ℂ) * I) (fun τ hτ => ?_)
@@ -144,7 +139,7 @@ theorem criticalSeen_infinite : criticalSeen.Infinite := by
     obtain ⟨hτ, hlat⟩ := mem_filter.mp hτ
     obtain ⟨hT1, -, hXi⟩ := hτS τ hτ
     have hτ0 : τ ≠ 0 := by linarith
-    rw [Set.Finite.mem_toFinset]
+    rw [Finset.mem_coe, Set.Finite.mem_toFinset]
     refine ⟨?_, by simp, ?_⟩
     · rw [RHTower.CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip]
       refine ⟨?_, by norm_num, by norm_num⟩

@@ -688,9 +688,9 @@ private theorem exists_completeWeilMatrix_orthog_cross_le :
       |(-x₁) + x₂ - x₃ + x₄ - x₅| ≤ |x₁| + |x₂| + |x₃| + |x₄| + |x₅| := by
     intro x₁ x₂ x₃ x₄ x₅
     have h1 := abs_sub ((-x₁) + x₂ - x₃ + x₄) x₅
-    have h2 := abs_add ((-x₁) + x₂ - x₃) x₄
+    have h2 := abs_add_le ((-x₁) + x₂ - x₃) x₄
     have h3 := abs_sub ((-x₁) + x₂) x₃
-    have h4 := abs_add (-x₁) x₂
+    have h4 := abs_add_le (-x₁) x₂
     rw [abs_neg] at h4
     linarith only [h1, h2, h3, h4]
   calc
@@ -761,7 +761,6 @@ private theorem exists_high_tail_suppression :
     have h2 : B * c ^ 9 + M₀ ≤ (B + M₀) * c ^ 9 := by nlinarith only [hM₀, hc9]
     have h3 := (div_le_iff₀ (pow_pos hc0 7)).mp (by
       simpa only [div_mul_eq_mul_div] using h1.trans h2)
-    rw [le_div_iff₀' hb] at *
     dsimp only [K_coef]
     rw [div_mul_eq_mul_div, le_div_iff₀ hb]
     calc
@@ -786,7 +785,7 @@ private theorem exists_high_tail_suppression :
   have hR'2 : 2 ≤ R' := hQ₁.trans hQR'
   have hR_log_bound : Real.log R ≤ C_R * c ^ 46 := by
     have hη3 : C_conf / η ^ 3 = C_conf * M₁ ^ 6 * c ^ 30 := by
-      dsimp only [η]; field_simp [hM₁_pos.ne', hc0.ne']; ring
+      dsimp only [η]; field_simp [hM₁_pos.ne', hc0.ne']
     rw [hη3] at hR_log
     have hc16 : 1 ≤ c ^ 16 := one_le_pow₀ hc1
     have hK1 : K_coef * c ^ 16 + 1 ≤ (K_coef + 1) * c ^ 16 := by nlinarith only [hc16]
@@ -848,7 +847,7 @@ private theorem exists_high_tail_suppression :
         exact mul_le_mul
           (mul_le_mul_of_nonneg_left hu_le1 (by positivity))
           hw_norm (norm_nonneg w) (by positivity)
-      _ = (2 * C_cross) / (M₁ * c ^ 2) := by field_simp [hM₁_pos.ne', hc0.ne']; ring
+      _ = (2 * C_cross) / (M₁ * c ^ 2) := by field_simp [hM₁_pos.ne', hc0.ne']
       _ ≤ 1 / 2 := by
         rw [div_le_div_iff₀ (by positivity) (by norm_num)]
         nlinarith only [hM₁_cross, hc2, hC_cross1]
@@ -871,7 +870,11 @@ private theorem exists_high_tail_suppression :
     have hz_split : zHat = u + w := by dsimp only [w]; abel
     have hexp := completeWeilEnergy_add_eq tiltedUnitSpline c u w
     rw [← hz_split] at hexp
-    linarith only [hexp, hz_energy, hcross_uw, hw_energy]
+    have hcr_lb : -(1 / 2 : ℝ) ≤
+        2 * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫ := by
+      linarith only [neg_abs_le ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) u, w⟫,
+        hcross_uw]
+    linarith only [hexp, hz_energy, hcr_lb, hw_energy]
   exact ⟨R', hQR', hR'_log, u, hu_mem, hu_orthQ, hu_sq_ge, hu_le1, hu_energy⟩
 
 /-! ### 4. Coercivity on `conductorSubspace R' N ⊓ (conductorSubspace Q₁ N)ᗮ` -/
@@ -930,7 +933,12 @@ private theorem exists_completeWeilEnergy_ge_prime_sub_overlap :
     have he12 : Real.exp (1 / 2) ≤ 3 := by
       have he1 : Real.exp 1 ≤ 3 := by linarith [Real.exp_one_lt_d9]
       exact (Real.exp_le_exp.mpr (by norm_num : (1 / 2 : ℝ) ≤ 1)).trans he1
-    nlinarith only [h1, he12, hw1]
+    calc
+      |completeWeilSelfError tiltedUnitSpline c N| ≤
+          Real.exp (1 / 2) / 2 * (c / N) := h1
+      _ ≤ (3 / 2) * (1 / 3) :=
+        mul_le_mul (by linarith only [he12]) hw1 (by positivity) (by norm_num)
+      _ ≤ 1 := by norm_num
   have hself_term :
       -Real.log c - (|completeWeilSelfFinitePart tiltedUnitSpline 1| +
         |Real.eulerMascheroniConstant| + 1) ≤
