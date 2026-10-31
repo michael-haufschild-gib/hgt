@@ -1479,20 +1479,23 @@ private theorem exists_sum_upwardPrimeDefect_norm_sq_le {φ : ℝ → ℝ}
       rw [Real.sqrt_div hj0.le]
       field_simp [hsn, hsj.ne']
     rw [heq]
-    have hdown := down_row_le hw0.le hj1 K_lag
+    have hdown := down_row_le (N := N) hw0.le hj1 K_lag
     have hexp12 : Real.exp (w / 2) ≤ Real.exp 1 := Real.exp_le_exp.mpr (by linarith only [hw1])
     have hlogj : Real.log j + w ≤ 2 * Real.log N := by
       have h1 : Real.log j ≤ Real.log N := Real.log_le_log hj0 (by exact_mod_cast hjN)
       linarith only [h1, hw1, hlogN]
-    refine mul_le_mul_of_nonneg_left (hdown.trans ?_) hR_up0 |>.trans_eq (by ring)
-    calc
-      2 * Real.exp (w / 2) * j * (Real.exp w - 1) * (Real.log j + w) ≤
-          2 * Real.exp 1 * j * (w * Real.exp 1) * (2 * Real.log N) := by
-        refine mul_le_mul ?_ hlogj (by linarith [Real.log_natCast_nonneg j]) (by positivity)
-        refine mul_le_mul ?_ hew hew_nonneg (by positivity)
-        exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hexp12 zero_le_two) hj0.le
-      _ = 4 * Real.exp 2 * w * Real.log N * j := by
-        rw [show Real.exp 2 = Real.exp 1 * Real.exp 1 by rw [← Real.exp_add]; norm_num]; ring
+    have hdown_ub :
+        2 * Real.exp (w / 2) * j * (Real.exp w - 1) * (Real.log j + w) ≤
+          4 * Real.exp 2 * w * Real.log N * j := by
+      calc
+        2 * Real.exp (w / 2) * j * (Real.exp w - 1) * (Real.log j + w) ≤
+            2 * Real.exp 1 * j * (w * Real.exp 1) * (2 * Real.log N) := by
+          refine mul_le_mul ?_ hlogj (by linarith [Real.log_natCast_nonneg j]) (by positivity)
+          refine mul_le_mul ?_ hew hew_nonneg (by positivity)
+          exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hexp12 zero_le_two) hj0.le
+        _ = 4 * Real.exp 2 * w * Real.log N * j := by
+          rw [show Real.exp 2 = Real.exp 1 * Real.exp 1 by rw [← Real.exp_add]; norm_num]; ring
+    exact (mul_le_mul_of_nonneg_left (hdown.trans hdown_ub) hR_up0).trans_eq (by ring)
   have hpt : ∀ m ∈ Icc 1 M,
       ‖upwardPrimeVector φ c N (normalizedRamanujanHorizonVector m N) -
         shellCorrection φ c m • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤

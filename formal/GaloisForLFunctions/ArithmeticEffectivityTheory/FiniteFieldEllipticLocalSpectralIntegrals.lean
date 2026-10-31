@@ -140,7 +140,7 @@ theorem integral_infinityCompletionSpectralKernel (s : ℂ) (hs : 0 < s.re) :
         (1 - localSpectralParameter (Nat.card (Residue InfinityCompletion)) s) :=
       integral_valuationSpectralKernel InfinityCompletion
         infinityCompletion_valuation_exp_neg_one_mem_range s hs
-    _ = _ := by rw [infinityCompletionResidue_card]
+    _ = _ := by norm_num [infinityCompletionResidue_card]
 
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase

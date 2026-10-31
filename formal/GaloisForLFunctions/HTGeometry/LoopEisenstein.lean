@@ -84,3 +84,4 @@ import GaloisForLFunctions.HTGeometry.LoopEisenstein.IntegralLoopRotation
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.FiniteSimpleIwasawaValues
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.DiscreteHaarMagnitude
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.UnipotentGaussCoefficients
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.ValuationSpectralKernel

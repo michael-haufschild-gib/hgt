@@ -9,14 +9,16 @@
   `RiemannVonMangoldt Z'`, the off-line counts `N − N₀` of `ζ` on every window, all zeros critical
   whenever those of `ζ` are, window counts within `4 log(|T₂| + 3)` of `ζ`'s, and no `C` with the
   local count. (iii) If every window `(S − 1, S + 1]` holds at most `M` off-line zeros and
-  Riemann–von Mangoldt holds, then `N₀(T, 2T)/N(T, 2T) → 1`.
+  Riemann–von Mangoldt holds, then `N₀(T, 2T)/N(T, 2T) → 1`. (iv) For every configuration `Z` and
+  `W`, `Z ⊕ clusters` (#26) has a window `(S − 1, S + 1]` with `Σ m (Re ρ − ½)² > W`.
 
 ## Lean
 Module `SquareRootThreshold/TheLocalCountBoundsTheMultiplicity.lean` (namespace
 `RHTower.LocalCountFalsifier`): `mult_le_of_localCountBound`, `criticalPoint`,
 `criticalClusterConfig`, `criticalClusterConfig_N_le`, `criticalClusterConfig_N0`,
 `exists_zeroConfig_rvm_rh_not_localCountBound`, `offLinePart`, `N_eq_N0_add_offLinePart`,
-`offLinePart_N_le`, `tendsto_N0_div_N_of_offLineLocallyBounded`; `riemannVonMangoldt_superpose_of_N_le` in
+`offLinePart_N_le`, `tendsto_N0_div_N_of_offLineLocallyBounded`, `OffLineDepthLocallyBounded`,
+`not_offLineDepthLocallyBounded_superpose`; `riemannVonMangoldt_superpose_of_N_le` in
 `CountingInputsDoNotBoundTheLocalCount`.
 Axioms: `propext`, `Classical.choice`, `Quot.sound`.
 
@@ -36,6 +38,7 @@ unbounded, so (i) rules out every `C`. (iii) `N = N₀ + N_off` with `N_off` the
 part (a zero configuration: `Re ρ ≠ ½` is reflection-invariant); covering `(T, 2T]` by `⌈T/2⌉` windows
 of length `2` gives `N_off(T, 2T) ≤ M(T/2 + 1)`, while RvM gives `N(T, 2T) ≥ (T/4π) log T` for large `T`
 (`ell1 T ≥ (log T)/2 + 2`, `C log T ≤ T/8π`). So `1 − M(T/2 + 1)/((T/4π) log T) ≤ N₀/N ≤ 1`.
+(iv) The cluster at `exp(eᵏ)` alone carries depth mass `⌊eᵏ⌋/(k + 3)² ≥ (eᵏ − 1)/(k + 3)² → ∞`.
 
 ## What it changes (WP-A)
 At the tangency point `½ + it` the local count of §6 A1 is a multiplicity statement: A1 implies
@@ -46,7 +49,8 @@ clusters live) and full-window counts at scale `r ∈ [δ, 1]`. A1 should be spl
 off-line part is the lag input (#26: not from counting). The full-window part at fixed scale is
 consistent with RH and needs `S(t + r) − S(t − r) ≪ r log t + 1` (#8). The lag input itself, a bounded
 off-line count per unit window, forces critical proportion `1`, beyond the known proportions; under
-counting it fails (#26).
+counting it fails (#26). So does the depth-weighted input `OffLineDepthLocallyBounded` of the CCM
+ground-energy floor (`TheWidthIsTheGroundEnergyRateWhenOffLineZerosDoNotCluster`).
 
 ## Log
 - 2026-10-31 — created; proved; formalized.

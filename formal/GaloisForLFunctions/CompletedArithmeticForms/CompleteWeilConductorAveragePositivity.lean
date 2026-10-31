@@ -1,5 +1,5 @@
 import GaloisForLFunctions.CompletedArithmeticForms.CompleteWeilResidualLevelOfDistribution
-import GaloisForLFunctions.CompletedArithmeticForms.ConductorLogLaw
+import GaloisForLFunctions.ArithmeticIntersectionTheory.ThePositiveSquaresOfTheTorsionFormLiveBelowFourFifths
 
 /-!
 # Conductor-Average Positivity and Sublinear Negative Index of the Complete Weil Form

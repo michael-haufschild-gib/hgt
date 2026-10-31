@@ -68,14 +68,16 @@ Lean and axiom audits. [Proof and declarations](../3-formalized/actual-elliptic-
 This provides the quotient measure. [Scalar additive periodization](../3-formalized/elliptic-additive-haar-periodizes-over-the-actual-function-field.md)
 over the actual function field is also audited, including nonnegative Tonelli
 unfolding. [Actual local Haar moduli](../3-formalized/elliptic-local-haar-moduli-equal-normalized-magnitudes.md)
-equal the normalized finite-place and infinity magnitudes, with direct Lean
+equal the normalized finite-place and infinity magnitudes. The
+[actual local radial spectral integrals](../3-formalized/actual-elliptic-local-spectral-characters-have-exact-integrals.md)
+have their exact residue factors for `Re(s)>0`. Both passed direct Lean
 and axiom audits. Relative finite-cell periodization and the identification of local-integral products with the actual adelic integral
 remain necessary for unfolding.
 
 ## Convergence mechanism to test
 
 Unfold the nonnegative real-parameter series with Tonelli before claiming
-convergence. If the arithmetic cells give the proved finite Weyl sum,
+convergence. If the arithmetic cells give the proved convergent Weyl sum,
 its finite integral forces almost-everywhere summability on the unipotent
 quotient. Absolute values at complex parameters are bounded by the
 corresponding real-parameter series, giving the required integral exchange.

@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 31 modules
-(6 root, `TopBand/` 11, `Conductor/` 14). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 32 modules
+(6 root, `TopBand/` 11, `Conductor/` 15). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -98,6 +98,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
     harmonic Gram finite part gives the exact prime finite part, including diagonal `−2log m`.
 16. Period averaging of the completed upward correction gives the positive torsion head.
     Fixed-dilation harmonic averaging preserves it; subtracting from the full prime form leaves `−2I`.
+    A summable correction majorant preserves the same centered limit at every exhausting cutoff.
 
 **E. Gauge**
 17. For completely multiplicative sign `ω`: `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`, zero on ratio pairs.
@@ -127,6 +128,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Full prime finite part `−I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; exact packet polarization | `tendsto_primeConductorPairing_finitePart`, `tendsto_primeConductorPacket_finitePart` | proved |
 | Exact prime head at the full horizon; complementary boundary limit `−2I/√(φ(m)φ(l))` | `primeConductorHeadPairing_horizon`, `tendsto_primeConductorBoundaryFinitePart` | proved |
 | Prime logarithmic moment `Σ_(n≤N)Λ(n)log(n)/n=(log N)²/2+o(log N)` | `tendsto_primeHeadLogMoment_remainder` | proved |
+| Every exhausting head retains the centered torsion correction `I/√(φ(m)φ(l))−δ_ml(log m+τ(m))` | `tendsto_primeConductorGrowingHead_correction` | proved |
 | Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
@@ -177,7 +179,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 
 ## 9. Context
 
-**Uses** (import counts): RenormalizedArithmeticPotentialTheory 12, RHTower 8, SignedArithmeticHodgeTheory 2,
+**Uses** (import counts): RenormalizedArithmeticPotentialTheory 13, RHTower 9, SignedArithmeticHodgeTheory 2,
 HTGeometry 3, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
 SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
 BiScaleUncertainty 1, BezoutValuationIncidence 1, ArithmeticPositiveDuality 1, ArithmeticLorentzianGeometry 1,

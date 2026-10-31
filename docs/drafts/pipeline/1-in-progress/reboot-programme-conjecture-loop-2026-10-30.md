@@ -157,10 +157,11 @@
 | 31 | Comparison of the flows: `Λ_X ≤ M` on `|X − t| ≤ 1` ⇒ `λ_t ≤ M log(t + 1)/(3c)` (cone defect #13 + #30 lower bound) | B/WD | formalized: same card as #30 |
 | 32 | `λ_t = 0` on lower density `433/500` (was `29/50`) | B | formalized: card of #24; the slice-coefficient density is in corpus (`eventually_volume_sliceCoeff_nonneg_ge_upper`, Selberg-weight moment `67/1000`), #32 is its translation through #19 |
 | 33 | The lag input (off-line copies `≤ M` per unit window) forces critical proportion one: with RvM, `N₀(T, 2T)/N(T, 2T) → 1` | A2 | formalized: card of #29 |
+| 34 | The depth-weighted local input (`Σ m(Re ρ − ½)² ≤ W` per unit window, the CCM ground-energy input) is not a counting consequence: `ζ ⊕ clusters` violates it for every `W` | A2 | formalized: card of #29 |
 | C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#33 formalized; #18, C2 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#34 formalized; #18, C2 in corpus.

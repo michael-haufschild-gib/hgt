@@ -1,6 +1,6 @@
 # Local spherical integrals read normalized valuations
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Actual local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** For a locally compact discretely valued field whose valuation
   attains `exp(-1)`, let `Q` be its residue cardinality and `|x|` the normalized
@@ -31,5 +31,5 @@ actual Iwasawa sections remains in the parent task.
 `HTGeometry/LoopEisenstein/ValuationSpectralKernel.lean`:
 `valuationShell_normalizedMagnitude`, `sphericalKernel_eq_valuationSpectralKernel`,
 `valuationSpectralKernel_integrable`, `integral_valuationSpectralKernel`.
-Full shell and spectral proofs passed scratch elaboration; direct module and
-transitive axiom audits pending.
+Direct Lean audit passed. All three transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`.

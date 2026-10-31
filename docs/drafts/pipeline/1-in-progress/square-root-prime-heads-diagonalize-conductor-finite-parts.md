@@ -49,6 +49,7 @@ Mertens gives `A(K)=log K−gamma+o(1)`; Abel summation gives
 `B(K)=(log K)^2/2+o(log K)`. Substitution yields the stated finite parts.
 
 The [weighted Mertens limit](../3-formalized/prime-head-logarithmic-moment.md)
-passed final Lean and standard-axiom audits. Moving-cutoff domination and
-the combined finite-part law still need Lean verification.
+and [moving-cutoff correction](../3-formalized/growing-prime-heads-preserve-the-centered-torsion-correction.md)
+passed final Lean and standard-axiom audits. The combined finite-part law
+still needs Lean verification.
 The full Gamma, pole, and successor-shell comparison remains open.

@@ -2,17 +2,17 @@
 
 - **ID:** HAAR-FINITE-INDEX-MAUTNER
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM (rational obstruction formalized; positive survivor open)
 - **Parent:** [O5](weil-positivity-five-structural-mechanisms.md)
 - **Statement:** A Hermitian kernel on `Aff(ℚ)` with nonzero Haar successor `c·1_ℤ` and dilation correlation continuous at the identity has infinite negative index.
 
 ## Mathematical issue
 
-The normalized case `c=1` is proved by `negIndex_eq_top_of_haar_continuous_dilation` in `AdelicKreinGeometry/Haar/FiniteIndexObstruction.lean`, with a direct Lean audit and standard axiom closure. It requires no Hecke support or integer-invariance premise. Weil's scalar dilation correlation has the required continuity.
+The rational-affine statement is proved for every nonzero scalar by `negIndex_eq_top_of_nonzero_haar_continuous_dilation` in `AdelicKreinGeometry/Haar/ScaledHaarObstruction.lean`, with a direct Lean audit and standard axiom closure. It requires no Hecke support or integer-invariance premise. Weil's scalar dilation correlation has the required continuity.
 
 For a Haar successor, all vectors `v_{b+n}−v_b`, with `b∈ℚ` and `n∈ℤ`, span a totally isotropic translation-invariant space. Finite negative index bounds its dimension in the nondegenerate kernel quotient. The analogous radical of the dilation-cyclic space is also finite-dimensional. These are the only directions invisible to the positive-kernel Mautner argument.
 
-The canonical polynomial correction removes the finite period defect without changing either axis reading. Cyclic averaging then excludes a finite-index bi-integer-invariant remainder with continuous dilation reading. Nonzero Haar scalings, the positive-slope subgroup, and the actual adelic restriction remain to be formalized before this route settles O5's stated carrier. Its positive structural decomposition is also unfinished.
+The canonical polynomial correction removes the finite period defect without changing either axis reading. Cyclic averaging then excludes a finite-index bi-integer-invariant remainder with continuous dilation reading. The positive-slope subgroup and the actual adelic restriction remain to be formalized before this route settles O5's stated carrier. Its positive structural decomposition is also unfinished.
 
 Without dilation continuity, Haar successors admit finite nonzero index: [the explicit state `haarState−4(log|affSlope|/log 2)²`](../3-formalized/the-haar-successor-admits-one-negative-square.md) has index exactly one. Its rank-one completion, Haar reading, failure of Hecke support, and dilation discontinuity are formalized.
 

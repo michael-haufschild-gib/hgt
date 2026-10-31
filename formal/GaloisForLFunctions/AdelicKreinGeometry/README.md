@@ -211,7 +211,7 @@ at edges with a counterterm of nontrivial null cone.
 | Escape, mixing and height decay force `κ ∈ {0, ∞}` | `negIndex_eq_zero_or_top_of_escape`, `negIndex_eq_zero_or_top_of_mixing`, `negIndex_eq_zero_or_top_of_heightDecay` |
 | Affine zero-or-infinity law; the Kakutani wall is an index wall | `negIndex_eq_zero_or_top_of_isHeckeSupported`, `negIndex_heckeState` |
 | Weil's affine extensions: minimum `κ(K_ζ)`; Hecke support with the Haar successor costs `∞` | `negIndex_blindWeilState`, `negIndex_eq_top_of_weil_haarSuccessor` |
-| **The integer successor with a continuous dilation reading has infinite index** (every Hermitian kernel) | `negIndex_eq_top_of_haar_continuous_dilation` |
+| **Every nonzero integer-Haar multiple with a continuous dilation reading has infinite index** (every Hermitian kernel) | `negIndex_eq_top_of_nonzero_haar_continuous_dilation` |
 | Positive integer-successor carriers are invisible: `κ(p + ψ ∘ slope) = κ(ψ)` | `negIndex_add_slope_of_integer_successor` |
 | Period defects of an integer successor of index `r` span at most `r²` dimensions | `finite_affinePeriodSpace_of_integerSuccessor` |
 | No fixed counterterm makes the prime kernel Pontryagin | `negIndex_counterterm_sub_primeLatticeKernel` |
@@ -391,4 +391,4 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,
-  `CyclicHecke`, `CyclicGramLimit`, `FiniteIndexObstruction`.
+  `CyclicHecke`, `CyclicGramLimit`, `FiniteIndexObstruction`, `ScaledHaarObstruction`.

@@ -21,4 +21,7 @@ apply. Actual finite and infinity residue equivalences must discharge all
 normalization parameters. The affine simple Iwasawa values remain a
 separate algebraic input.
 
-Lean shell identification and the spectral-kernel bridge remain unproved.
+The [general shell and spectral-kernel bridge](../3-formalized/local-spherical-integrals-read-normalized-valuations.md)
+passed direct Lean and transitive axiom audits. The
+[actual finite-place and infinity specialization](../3-formalized/actual-elliptic-local-spectral-characters-have-exact-integrals.md)
+passed the same audits. Identification with the Iwasawa section remains.
