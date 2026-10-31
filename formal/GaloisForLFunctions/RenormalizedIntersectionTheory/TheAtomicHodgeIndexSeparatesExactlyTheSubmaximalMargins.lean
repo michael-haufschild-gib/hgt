@@ -2,6 +2,9 @@ import GaloisForLFunctions.HeckeKreinToeplitz.TheSelectiveIndexOfTheAtomicKernel
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.AMarginNeedsHarmonicCorrelation
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.FullCorrelationKeepsTheMargin
 import GaloisForLFunctions.ArithmeticCountingPositivity.SmallPrimeFlipsLieBelowTheMaximalGap
+import GaloisForLFunctions.ArithmeticCountingPositivity.PositiveDensityTransfersTheExactCutoffGap
+import GaloisForLFunctions.ArithmeticCountingPositivity.CofinitePrimeFlipsHaveZeroGap
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonLawsHoldForProfilesOfBoundedVariation
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheRenormalizedHodgeIndex
 
 /-!
@@ -24,9 +27,13 @@ counterterm `D` is its index on the pole hyperplane `Σ x_n/√n = 0`
   iff `2 log 2` is not a gap of `ω`.
 * **The twins** (corollaries, from the margin classifications of SMAP and ArithmeticCountingPositivity):
   separated are the Liouville twin (`hodgeSeparates_liouville`), every gauge with
-  `S_N(ω)² = o(log N)` (`hodgeSeparates_of_harmonicSum_small`) and the prime flips `p < 11`
-  (`hodgeSeparates_primeFlip_iff`); not separated are the prime flips `p ≥ 11` and every gauge with
-  harmonic correlation `S_N(ω)/H_N → 1` (`not_hodgeSeparates_of_correlation`).
+  `S_N(ω)² = o(log N)` (`hodgeSeparates_of_harmonicSum_small`), every cofinite flip
+  (`hodgeSeparates_cofiniteFlip`) and the prime flips `p < 11` (`hodgeSeparates_primeFlip_iff`); not
+  separated are the prime flips `p ≥ 11` and every gauge with harmonic correlation `S_N(ω)/H_N → 1`
+  (`not_hodgeSeparates_of_correlation`).
+* **Every prime-set twin** (`hodgeSeparates_primeSetFlip_iff`): flipping an arbitrary set `P` of
+  primes, finite or infinite, is separated iff its greatest gap is below `2 log 2`
+  (ArithmeticCountingPositivity).
 
 So the atomic Hodge index is a selection mechanism with a sharp domain: the twins it misses are those
 whose top is the pole up to the conductor-`2` excitation. Finite flips among them are separated by
@@ -175,6 +182,61 @@ theorem finiteFlip_mul_self (F : Finset ℕ) (n : ℕ) : finiteFlip F n * finite
   refine prod_eq_one fun p _ => ?_
   rw [← mul_pow]
   norm_num
+
+/-! ### Sign gauges defined up to the value at `0` -/
+
+/-- The gauge with its value at `0` set to `1`; the atomic forms read only `n ≥ 1`. -/
+def gaugeFix (ω : ℕ → ℝ) (n : ℕ) : ℝ := if n = 0 then 1 else ω n
+
+theorem gaugeFix_mul_self {ω : ℕ → ℝ} (hω : ∀ n, n ≠ 0 → ω n * ω n = 1) (n : ℕ) :
+    gaugeFix ω n * gaugeFix ω n = 1 := by
+  unfold gaugeFix
+  split_ifs with h
+  · norm_num
+  · exact hω n h
+
+theorem gaugeAtom_gaugeFix (N : ℕ) (D : ℝ) (ω : ℕ → ℝ) :
+    gaugeAtom N D (gaugeFix ω) = gaugeAtom N D ω := by
+  have h : ∀ n : PrimeHorizonIndex N, gaugeFix ω n = ω n := fun n =>
+    if_neg (by have := (mem_Icc.mp n.2).1; omega)
+  ext m n
+  simp only [gaugeAtom, Matrix.map_apply, gaugeAtomMatrix, h]
+
+theorem hasHyperplaneGap_gaugeFix_iff {ω : ℕ → ℝ} {g : ℝ} :
+    HasHyperplaneGap (gaugeFix ω) g ↔ HasHyperplaneGap ω g := by
+  have h : ∀ (N : ℕ) (x : ℕ → ℝ), atomicWeilForm N (fun n => gaugeFix ω n * x n) =
+      atomicWeilForm N (fun n => ω n * x n) := fun N x =>
+    RenormalizedArithmeticPotentialTheory.atomicWeilForm_congr fun n hn => by
+      rw [gaugeFix, if_neg (by have := (mem_Icc.mp hn).1; omega)]
+  simp only [HasHyperplaneGap, h]
+
+/-- **Exact separation for gauges with `ω(n)² = 1` for `n ≥ 1`.** -/
+theorem hodgeSeparates_iff_of_ne_zero {ω : ℕ → ℝ} (hω : ∀ n, n ≠ 0 → ω n * ω n = 1) :
+    HodgeSeparates ω ↔ ¬ HasHyperplaneGap ω (2 * Real.log 2) := by
+  have h : HodgeSeparates (gaugeFix ω) ↔ HodgeSeparates ω := by
+    simp only [HodgeSeparates, gaugeAtom_gaugeFix]
+  rw [← h, hodgeSeparates_iff_not_hasHyperplaneGap (gaugeFix_mul_self hω),
+    hasHyperplaneGap_gaugeFix_iff]
+
+/-- **Every cofinite flip is separated**: it has no positive margin. -/
+theorem hodgeSeparates_cofiniteFlip {F : Finset ℕ} (hF : ∀ p ∈ F, p.Prime) :
+    HodgeSeparates (ArithmeticCountingPositivity.cofiniteFlip F) := by
+  rw [hodgeSeparates_iff_of_ne_zero fun n hn =>
+    (ArithmeticCountingPositivity.cofiniteFlip_isSignGauge F).mul_self hn]
+  intro h
+  have := (ArithmeticCountingPositivity.isGreatest_cofiniteFlip_hyperplaneGap hF).2 h
+  linarith [Real.log_pos one_lt_two]
+
+/-- **Every prime-set twin is separated iff its greatest gap is below `2 log 2`.** -/
+theorem hodgeSeparates_primeSetFlip_iff (P : Set ℕ) :
+    HodgeSeparates (ArithmeticCountingPositivity.primeSetFlip P) ↔
+      ArithmeticCountingPositivity.primeSetGreatestGap P < 2 * Real.log 2 := by
+  have hω : ∀ n, n ≠ 0 → ArithmeticCountingPositivity.primeSetFlip P n *
+      ArithmeticCountingPositivity.primeSetFlip P n = 1 := fun n _ => by
+    rw [ArithmeticCountingPositivity.primeSetFlip_eq_finiteFlip_of_le P le_rfl]
+    exact finiteFlip_mul_self _ n
+  rw [hodgeSeparates_iff_of_ne_zero hω,
+    ArithmeticCountingPositivity.primeSetFlip_hasHyperplaneGap_iff_le_greatestGap, not_le]
 
 /-- **A prime flip is separated iff `p < 11`.** -/
 theorem hodgeSeparates_primeFlip_iff {p : ℕ} (hp : p.Prime) :

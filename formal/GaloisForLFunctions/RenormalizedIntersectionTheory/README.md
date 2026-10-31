@@ -154,6 +154,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Schur product; every Hadamard power of `K_ζ` is RH | `isPosDefKernel_mul`, `isPosDefKernel_pow`, `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `riemannHypothesis_iff_negIndex_zetaKernel_pow_eq_zero` | unconditional; equivalences |
 | Off-line zeros are neutral pairs: `κ(K_ζ) ≤ κ₊(K_ζ)` on the finite stratum; the Künneth square at least squares the index, `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ)`; a finite Künneth index is Lindelöf and a zero-free half-plane | `negIndex_zetaKernel_le_posIndex`, `sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`, `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top` | unconditional; implications |
 | The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1` | `hodgeSeparates_iff_not_hasHyperplaneGap`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
+| The renormalized Hodge index is the Hodge index of the scaling surface, and a sign-free Serre-dual `h⁰` with quadratic Riemann–Roch growth exists iff it holds | `renormalizedHodgeIndex_ratCorr_iff_scalingSurface_hodgeIndex`, `renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0` | equivalences |
 | Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 
 ## 6. Tools
@@ -195,7 +196,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Why are negative directions confined to low conductors? | At fixed overlap: the low spectrum lives on the low conductors (`RenormalizedArithmeticPotentialTheory.TheLowCompleteWeilSpectrumLivesOnTheLowConductors`), the pole class carries the bottom and the hyperplane sits a gap above it. At iterated-logarithmic overlap the Hodge index holds. At overlap `(log N)^α` the Hodge index on `v_1^⊥` is RH, for every `α > 0` with a smooth profile: confinement at any power of the logarithm is exactly the missing sign. |
 | Does the pairing select `ζ` among its twins? | Yes, by two mechanisms. The glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. At atomic resolution the Hodge index separates `ζ` from a sign gauge exactly when the gauge's margin is below `2 log 2`: the Liouville twin, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`. The prime flips `p ≥ 11` keep the maximal margin and are invisible to the atomic Hodge index; the glued test index separates them. |
 | Is the heat flow a homotopy of glued states? | Yes: the Hodge defect of `K_t` is the number of nonreal right zeros of `H_t`; it is nonincreasing, drops by one per colliding pair, vanishes for `t ≥ 1/8`; RH is the Hodge index along the whole flow, and finite defect at `t = 0` is bounded defect along the flow. |
-| What is `h⁰` on the scaling surface? | Outside RIT: the theta log-volume `h⁰` of `Spec ℤ` has exact Riemann–Roch (`ArithmeticOrientationGeometry.TheThetaH0OfSpecZ`); on the scaling surface a sign-free Serre-dual pair with subquadratic degree-zero growth is RH (`SelectivePositivityAndThresholdLaws`). |
+| What is `h⁰` on the scaling surface, and its Serre dual? | On the base, the theta log-volume `h⁰` of `Spec ℤ` with exact linear Riemann–Roch (`ArithmeticOrientationGeometry.TheThetaH0OfSpecZ`). On the surface, a sign-free `h⁰` with Serre dual `h¹ = h⁰(K − ·)`, quadratic Riemann–Roch growth and subquadratic degree-zero growth exists iff the renormalized Hodge index holds (`renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0`): it is the same datum as the sign, so it cannot be built before the sign is proved. |
 
 ## 8. Open research topics
 
@@ -208,7 +209,6 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 3. Twins outside both selection mechanisms: infinite flip sets of maximal margin (all flipped
    primes `≥ 11`, harmonic correlation `→ 1` or between) are invisible to the atomic Hodge index and
    are not finite flips; whether the glued test index separates them is open.
-4. A sign-free `h⁰` on the scaling surface with quadratic growth, in the language of the pairing.
 
 ## 9. Traps
 
@@ -259,7 +259,7 @@ The criteria the field must meet, and where they stand:
 | Positivity by identity on `v_1^⊥` | Open; at fixed and iterated-logarithmic overlap positivity holds by estimate, at every power of the logarithm it is RH |
 | Confinement with polynomial dependence | Fixed overlap and iterated-logarithmic overlap; growing overlap open |
 | Product-formula gluing to one square | Settled as a classification: only the extremal weight, i.e. the archimedean pole, has one square |
-| Quadratic Riemann–Roch | Open; linear Riemann–Roch for the base in ArithmeticOrientationGeometry |
+| Quadratic Riemann–Roch | Equivalent to the renormalized Hodge index (`renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0`); linear Riemann–Roch for the base in ArithmeticOrientationGeometry |
 | One topology for both readings | Dense exponents with two primes; continuity against height decay in AdelicKreinGeometry |
 | Integrality | Indices are integers: Hodge defects in `ℕ∞`, so any bound below `1` is the Hodge index |
 | Zero-independence and twin sensitivity | Glued test index and atomic Hodge index separate `ζ` from its twins |

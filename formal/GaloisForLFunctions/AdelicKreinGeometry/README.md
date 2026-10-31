@@ -298,6 +298,7 @@ at edges with a counterterm of nontrivial null cone.
 | Shell decomposition of the local pole–successor forms | `hermQuad_gram_poleSuccessor_negUltra_eq`, `hermQuad_gram_poleSuccessorState_eq` |
 | **Canonical Haar splitting**: unique `k=p+ψ∘slope+Q`, with positive Haar `p` and finite-rank zero-axis polynomial `Q`; `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)` | `exists_unique_haar_relative_split`, `finite_index_haar_iff_relative_split` |
 | **Polynomial index preservation**: `κ(p+h)=κ(h)` for positive Haar `p` and Hermitian polynomial-fibre `h`, including infinite index | `negIndex_add_positive_haar_polynomial` |
+| **Sharp punctured limits**: precisely real `L≤0`, with minimum index zero at zero and one at negative limits | `exists_finite_index_haar_punctured_limit_iff`, `exists_haar_negative_limit_index_one` |
 | Axis-invisible kernels: zero or `κ ≥ 2`, rank `≤ κ²`, polynomial fibres of degree `< κ`; every `κ ≥ 2` occurs | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `negIndex_haarMixedPowerState` |
 | The index is twin-blind | `negIndex_mul_unitaryChar`, `negIndex_heckeState_mul_slopeChar` |
 

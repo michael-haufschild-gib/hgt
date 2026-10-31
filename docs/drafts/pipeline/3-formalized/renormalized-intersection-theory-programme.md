@@ -42,11 +42,13 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
 - Heat flow: `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`,
   `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`,
   `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat`.
+- Riemann–Roch: `renormalizedHodgeIndex_ratCorr_iff_scalingSurface_hodgeIndex`,
+  `renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0`.
 - Density: `not_dense_exponents_of_quantized` (commensurable place sizes, `𝔽_q[T]`).
 
 ## Open
 Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{α}`, every `α > 0` (= RH); positive index of `K_ζ` on the infinite stratum;
-infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips); sign-free `h⁰` on the scaling surface.
+infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips).
 
 ## Log
 - 2026-10-31 — created; formalized pillars listed above
