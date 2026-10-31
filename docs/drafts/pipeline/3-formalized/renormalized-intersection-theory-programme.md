@@ -40,12 +40,15 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `posIndex_zetaKernel_eq_top_of_finite`, `riemannHypothesis_or_negIndex_kunnethZeta_eq_top`.
 - Growing overlap: `eventually_completeWeil_hodgeIndex_iteratedLog`,
   `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`,
+  `eventually_completeWeil_hodgeIndex_packet_root`, `exists_growing_packet_hodgeIndex_root`,
   `poleHyperplane_markov_nonneg_iff_hodgeIndex`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
 - Heat flow: `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`,
   `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`,
   `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat`.
 - Riemann–Roch: `renormalizedHodgeIndex_ratCorr_iff_scalingSurface_hodgeIndex`,
   `renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0`.
+- Loop Eisenstein: `boostPolarIndex_ratCorr_eq_encard_reflectionPoles`,
+  `riemannHypothesis_iff_reflectionPoles_eq_empty`.
 - Density: `not_dense_exponents_of_quantized` (commensurable place sizes, `𝔽_q[T]`).
 
 ## Open

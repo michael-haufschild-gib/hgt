@@ -41,6 +41,10 @@ counterterm `D` is its index on the pole hyperplane `Σ x_n/√n = 0`
   of primes of positive harmonic density that flips some prime, the plain index or the `2`-probe
   separates the twin from `ζ`: if `2` is flipped the margin drops below `2 log 2`; if not, adding
   `2` drops it strictly below the margin of the `2`-flip.
+* **Co-dense flips** (`hodgeSeparates_liouville_mul_primeSetFlip`): flipping every prime outside a set
+  `E` of positive harmonic density keeps the harmonic sums bounded by `2/δ(E)`, so the margin is `0`.
+  These twins flip a set of primes of harmonic density zero; with them the open twins are the flips
+  of sets `P` for which both `Σ_{p∈P} 1/p` and `Σ_{p∉P} 1/p` diverge.
 
 So the atomic Hodge index is a selection mechanism with a sharp domain: the twins it misses are those
 whose top is the pole up to the conductor-`2` excitation. Finite flips among them are separated by
@@ -435,6 +439,44 @@ theorem hodgeSeparates_or_probe_primeSetFlip {P : Set ℕ} (hc : 0 < primeSetHar
       (fun n _ => by rw [mul_mul_mul_comm, finiteFlip_mul_self, hsq, one_mul])
       ((finiteFlip_hasHyperplaneGap_iff_le_greatestGap {2} hF _).mpr le_rfl)]
     exact not_hasHyperplaneGap_probe h2 hc hp₀ hp₀P
+
+/-- The cutoff density dominates the density of the whole set. -/
+theorem primeSetHarmonicDensity_le_cutoff' (E : Set ℕ) (N : ℕ) :
+    primeSetHarmonicDensity E ≤ finiteFlipHarmonicDensity (primeSetCutoff E N) := by
+  have hpos := finiteFlipHarmonicDensity_pos (primeSetCutoff_primes E N)
+  have h := primeSetHarmonicDensity_tail E N
+  have hle := (primeSetHarmonicDensity_bounds (E \ Set.Iic N)).2
+  rw [h, div_le_one hpos] at hle
+  exact hle
+
+/-- **Flipping every prime outside a set of positive harmonic density keeps the harmonic sums
+bounded**: `|Σ_{n ≤ N} λ(n) ω_E(n)/n| ≤ 2/δ(E)`. -/
+theorem abs_harmonicSum_liouville_mul_primeSetFlip_le {E : Set ℕ}
+    (hE : 0 < primeSetHarmonicDensity E) (N : ℕ) :
+    |gaugeHarmonicSum (fun n => liouvilleSign n * primeSetFlip E n) N| ≤
+      2 / primeSetHarmonicDensity E := by
+  have e : gaugeHarmonicSum (fun n => liouvilleSign n * primeSetFlip E n) N =
+      gaugeHarmonicSum (cofiniteFlip (primeSetCutoff E N)) N := by
+    unfold gaugeHarmonicSum
+    refine Finset.sum_congr rfl fun n hn => ?_
+    rw [cofiniteFlip, primeSetFlip_eq_finiteFlip_of_le E (mem_Icc.mp hn).2]
+  rw [e]
+  refine (cofiniteFlip_harmonicSum_abs_le (primeSetCutoff_primes E N) N).trans ?_
+  exact div_le_div_of_nonneg_left (by norm_num) hE (primeSetHarmonicDensity_le_cutoff' E N)
+
+/-- **Co-dense flips are separated**: the twin flipping every prime outside a set of positive
+harmonic density has margin `0`. -/
+theorem hodgeSeparates_liouville_mul_primeSetFlip {E : Set ℕ}
+    (hE : 0 < primeSetHarmonicDensity E) :
+    HodgeSeparates (fun n => liouvilleSign n * primeSetFlip E n) := by
+  have hω : ∀ n, (liouvilleSign n * primeSetFlip E n) * (liouvilleSign n * primeSetFlip E n) = 1 :=
+    fun n => by
+      rw [mul_mul_mul_comm, liouvilleSign_mul_self, one_mul,
+        primeSetFlip_eq_finiteFlip_of_le E le_rfl]
+      exact finiteFlip_mul_self _ n
+  rw [hodgeSeparates_iff_not_hasHyperplaneGap hω]
+  exact not_hasHyperplaneGap_of_abs_harmonicSum_le hω
+    (abs_harmonicSum_liouville_mul_primeSetFlip_le hE) (by positivity)
 
 end Probe
 

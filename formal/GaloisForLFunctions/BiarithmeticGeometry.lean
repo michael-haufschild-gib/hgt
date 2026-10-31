@@ -1,3 +1,4 @@
+import GaloisForLFunctions.BiarithmeticGeometry.Affine.PrimePowerGrids
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.SubgroupNormControl
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.SubgroupOrders
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.SubgroupPrimeHeight

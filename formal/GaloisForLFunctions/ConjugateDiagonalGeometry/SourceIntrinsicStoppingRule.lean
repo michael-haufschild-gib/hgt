@@ -222,7 +222,7 @@ theorem isCompact_sourcePerforatedWindowSet (T : ℝ) (n N : ℕ) :
   unfold sourcePerforatedWindowSet
   rw [Set.sdiff_eq]
   exact (isCompact_windowClosedRect T n).inter_right
-    ((prefixEnclosedZeros T n N).finite_toSet.isOpen_biUnion fun _ _ => Metric.isOpen_ball).isClosed_compl
+    (isOpen_biUnion fun _ _ => Metric.isOpen_ball).isClosed_compl
 
 theorem thetaWindowLowerLeft_mem_sourcePerforatedWindowSet {T : ℝ} {n N : ℕ}
     (hre_nn : ∀ w ∈ prefixEnclosedZeros T n N, 0 ≤ w.re) :
@@ -303,16 +303,20 @@ private lemma closedBall_two_rouche_inside_of_sourceCert {T : ℝ} {n N : ℕ}
     (hz : z ∈ Metric.closedBall w (2 * roucheDiscRadius n)) :
     (thetaWindowLowerLeft n).re < z.re ∧ z.re < (thetaWindowUpperRight T n).re ∧
       (thetaWindowLowerLeft n).im < z.im ∧ z.im < (thetaWindowUpperRight T n).im := by
-  obtain ⟨hmarg, _, _, _⟩ := hcert
+  have ⟨hmarg, _, _, _⟩ := hcert
   obtain ⟨hre_lo, hre_hi, him_lo, him_hi⟩ := hmarg w hw
   have hs_pos : (0 : ℝ) < (zhukovskyStage n : ℝ) := zhukovskyStage_pos n
   have h2s_pos : 0 < 2 / (zhukovskyStage n : ℝ) := by positivity
   have h2r_le : 2 * roucheDiscRadius n ≤ 1 / 144 := by linarith [roucheDiscRadius_le_inv_288 n]
   rw [Metric.mem_closedBall, dist_eq_norm] at hz
-  have hre_diff : |z.re - w.re| ≤ 2 * roucheDiscRadius n :=
-    (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z - w)).trans hz
-  have him_diff : |z.im - w.im| ≤ 2 * roucheDiscRadius n :=
-    (by simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z - w)).trans hz
+  have hre_diff : |z.re - w.re| ≤ 2 * roucheDiscRadius n := by
+    calc |z.re - w.re| = |(z - w).re| := by rw [Complex.sub_re]
+      _ ≤ ‖z - w‖ := Complex.abs_re_le_norm (z - w)
+      _ ≤ 2 * roucheDiscRadius n := hz
+  have him_diff : |z.im - w.im| ≤ 2 * roucheDiscRadius n := by
+    calc |z.im - w.im| = |(z - w).im| := by rw [Complex.sub_im]
+      _ ≤ ‖z - w‖ := Complex.abs_im_le_norm (z - w)
+      _ ≤ 2 * roucheDiscRadius n := hz
   obtain ⟨hr1, hr2⟩ := abs_le.mp hre_diff
   obtain ⟨hi1, hi2⟩ := abs_le.mp him_diff
   rw [thetaWindowLowerLeft_re, thetaWindowUpperRight_re]
@@ -346,7 +350,7 @@ private lemma sphere_rouche_subset_sourcePerforatedWindowSet {T : ℝ} {n N : �
     (hcert : IsSourceAlgebraicPerforatedCertified T n N)
     {w : ℂ} (hw : w ∈ prefixEnclosedZeros T n N) :
     Metric.sphere w (roucheDiscRadius n) ⊆ sourcePerforatedWindowSet T n N := by
-  obtain ⟨_, hsep_all, _, _⟩ := hcert
+  have ⟨_, hsep_all, _, _⟩ := hcert
   intro ζ hζ
   have hζ_cb : ζ ∈ Metric.closedBall w (2 * roucheDiscRadius n) := by
     rw [Metric.mem_closedBall, Metric.mem_sphere.mp hζ]
@@ -509,7 +513,7 @@ private lemma source_rouche_disc_multiplicity_eq {T : ℝ} {n N M : ℕ}
     (∑ z ∈ (prefixEnclosedZeros T n M).filter (· ∈ Metric.ball w (roucheDiscRadius n)),
       (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude M) z).toNat) =
       (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) w).toNat := by
-  obtain ⟨_, hsep_all, _, hmod⟩ := hcert
+  have ⟨_, hsep_all, _, hmod⟩ := hcert
   have hr_pos : 0 < roucheDiscRadius n := roucheDiscRadius_pos n
   have hr_2r : roucheDiscRadius n < 2 * roucheDiscRadius n := by linarith
   have hμ_pos : 0 < sourcePerforatedMin T n N :=
@@ -645,7 +649,7 @@ theorem sourceAlgebraicPerforatedCertified_locks_all_ge {T : ℝ} {n N : ℕ}
       (∀ u : HTGeometry.UnitCircle, integerThetaLaurentLoop T n M u ≠ 0) ∧
       HTGeometry.fredholmIndex (integerThetaCollisionOperator T n M) = targetIdx := by
     intro M hNM
-    obtain ⟨_, hsep_all, _, hmod⟩ := hcert
+    have ⟨_, hsep_all, _, hmod⟩ := hcert
     have hFM_perf : ∀ z ∈ sourcePerforatedWindowSet T n N,
         _root_.RHTower.finiteThetaAmplitude M z ≠ 0 := by
       intro z hz h0
@@ -794,8 +798,9 @@ theorem sourceAlgebraicPerforatedCertified_sound {T : ℝ} {n N : ℕ}
     IsArtifactFreeFrom T n N ∧ firstArtifactFreePrefix T n ≤ N := by
   have hlocks := sourceAlgebraicPerforatedCertified_locks_all_ge hcert
   let M₀ := max N (thetaPrefixThreshold T n)
-  have hM₀_lock := hlocks M₀ (le_max_left _ _)
-  have hM₀_xi := integerThetaCollisionOperator_index_and_winding_eq_charge T hn (le_max_right _ _)
+  have hM₀_lock := hlocks M₀ (le_max_left N (thetaPrefixThreshold T n))
+  have hM₀_xi := integerThetaCollisionOperator_index_and_winding_eq_charge T hn
+    (N := M₀) (le_max_right N (thetaPrefixThreshold T n))
   have hdeg_N : integerThetaWindowDegree T n N = _root_.RHTower.xiStripWindowTotalOrder T :=
     hM₀_lock.2.2.1.symm.trans hM₀_xi.2.1
   have hind_N : HTGeometry.fredholmIndex (integerThetaCollisionOperator T n N) =
@@ -874,8 +879,7 @@ theorem isCompact_halfPerforatedWindowSet (T : ℝ) (n : ℕ) :
   unfold halfPerforatedWindowSet
   rw [Set.sdiff_eq]
   exact (isCompact_windowClosedRect T n).inter_right
-    ((_root_.RHTower.stripZeros_finite T).toFinset.finite_toSet.isOpen_biUnion
-      fun _ _ => Metric.isOpen_ball).isClosed_compl
+    (isOpen_biUnion fun _ _ => Metric.isOpen_ball).isClosed_compl
 
 theorem thetaWindowLowerLeft_mem_halfPerforatedWindowSet (T : ℝ) (n : ℕ) :
     thetaWindowLowerLeft n ∈ halfPerforatedWindowSet T n := by
@@ -1067,10 +1071,14 @@ private lemma stripZeros_closedBall_rouche_inside {T : ℝ} {n : ℕ}
   have hr_le : roucheDiscRadius n ≤ 1 / 288 := roucheDiscRadius_le_inv_288 n
   have hr_pos : 0 < roucheDiscRadius n := roucheDiscRadius_pos n
   rw [Metric.mem_closedBall, dist_eq_norm] at hz
-  have hre_diff : |z.re - w.re| ≤ roucheDiscRadius n :=
-    (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z - w)).trans hz
-  have him_diff : |z.im - w.im| ≤ roucheDiscRadius n :=
-    (by simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z - w)).trans hz
+  have hre_diff : |z.re - w.re| ≤ roucheDiscRadius n := by
+    calc |z.re - w.re| = |(z - w).re| := by rw [Complex.sub_re]
+      _ ≤ ‖z - w‖ := Complex.abs_re_le_norm (z - w)
+      _ ≤ roucheDiscRadius n := hz
+  have him_diff : |z.im - w.im| ≤ roucheDiscRadius n := by
+    calc |z.im - w.im| = |(z - w).im| := by rw [Complex.sub_im]
+      _ ≤ ‖z - w‖ := Complex.abs_im_le_norm (z - w)
+      _ ≤ roucheDiscRadius n := hz
   obtain ⟨hr1, hr2⟩ := abs_le.mp hre_diff
   obtain ⟨hi1, hi2⟩ := abs_le.mp him_diff
   rw [thetaWindowLowerLeft_re, thetaWindowUpperRight_re]
@@ -1160,7 +1168,8 @@ private lemma finset_eq_singleton_of_sum_eq_one {α : Type*} [DecidableEq α] {S
     · exact hz
     · rw [Finset.mem_singleton.mp hu']
       exact hw
-  have hle := Finset.sum_le_sum_of_subset hsub
+  have hle : ∑ x ∈ ({z, w} : Finset α), f x ≤ ∑ x ∈ S, f x :=
+    Finset.sum_le_sum_of_subset (f := f) hsub
   rw [Finset.sum_pair hzw] at hle
   have hz1 := hpos z hz
   have hw1 := hpos w hw
@@ -1349,8 +1358,9 @@ theorem isSourceAlgebraicPerforatedCertified_of_simpleZeros {T : ℝ} {n N : ℕ
     obtain ⟨hρ_im1, hρ_im2⟩ := stripZeros_im_margins_three_rouche hn hρ
     have h23 : 2 / (zhukovskyStage n : ℝ) + 1 / (zhukovskyStage n : ℝ) =
         3 / (zhukovskyStage n : ℝ) := by ring
-    exact ⟨by linarith [(abs_lt.mp hre_d).1, hr_lt_half_s],
-      by linarith [(abs_lt.mp hre_d).2, hr_lt_half_s],
+    have hhalf_eq : 1 / (2 * (zhukovskyStage n : ℝ)) = (1 / (zhukovskyStage n : ℝ)) / 2 := by ring
+    exact ⟨by linarith [(abs_lt.mp hre_d).1, hr_lt_half_s, hhalf_eq],
+      by linarith [(abs_lt.mp hre_d).2, hr_lt_half_s, hhalf_eq],
       by linarith [(abs_lt.mp him_d).1],
       by linarith [(abs_lt.mp him_d).2]⟩
   refine ⟨hmarg, ?_, ?_, ?_⟩
@@ -1775,7 +1785,10 @@ private lemma norm_integerThetaWindowPowerSum_sub_and_le {T : ℝ} {n N M : ℕ}
       calc ‖γ t‖ ^ r * ‖A_M / B_M - A_N / B_N‖ * ‖vel t‖
           ≤ ((windowNormUpper T) ^ r * ((8 * E / b ^ 2) * thetaStripTailBound N)) *
               windowVelocityUpper T := by
-            refine mul_le_mul ?_ hvel_le (norm_nonneg _) (by positivity [thetaStripTailBound_nonneg N])
+            refine mul_le_mul ?_ hvel_le (norm_nonneg _)
+              (mul_nonneg (pow_nonneg (zero_le_one.trans (one_le_windowNormUpper T)) r)
+                (mul_nonneg (div_nonneg (mul_nonneg (by norm_num) hE_nn) (sq_nonneg b))
+                  (thetaStripTailBound_nonneg N)))
             exact mul_le_mul hpow_le hquot_le (norm_nonneg _)
               (pow_nonneg (zero_le_one.trans (one_le_windowNormUpper T)) r)
         _ = sourcePowerSumPerturbationBound T n N r := by
@@ -1815,7 +1828,7 @@ private lemma norm_integerThetaWindowPowerSum_sub_and_le {T : ℝ} {n N M : ℕ}
             ≤ E / (b / 2) := by
               rw [div_le_div_iff₀ hBM_pos (half_pos hb_pos)]
               exact mul_le_mul hAM_le (hBM_lower t) (half_pos hb_pos).le hE_nn
-          _ = 2 * E / b := by field_simp [hb_pos.ne']; ring
+          _ = 2 * E / b := by field_simp [hb_pos.ne']
       dsimp only [g]
       rw [norm_mul, norm_mul, norm_pow]
       have hpow_le : ‖γ t‖ ^ r ≤ (windowNormUpper T) ^ r :=
@@ -1825,7 +1838,9 @@ private lemma norm_integerThetaWindowPowerSum_sub_and_le {T : ℝ} {n N M : ℕ}
             ‖-_root_.RHTower.finiteThetaFirstMoment M (γ t) /
               _root_.RHTower.finiteThetaAmplitude M (γ t)‖ * ‖vel t‖
           ≤ ((windowNormUpper T) ^ r * (2 * E / b)) * windowVelocityUpper T := by
-            refine mul_le_mul ?_ hvel_le (norm_nonneg _) (by positivity)
+            refine mul_le_mul ?_ hvel_le (norm_nonneg _)
+              (mul_nonneg (pow_nonneg (zero_le_one.trans (one_le_windowNormUpper T)) r)
+                (div_nonneg (mul_nonneg (by norm_num) hE_nn) hb_pos.le))
             exact mul_le_mul hpow_le hquot_le (norm_nonneg _)
               (pow_nonneg (zero_le_one.trans (one_le_windowNormUpper T)) r)
         _ = (windowNormUpper T) ^ r * windowVelocityUpper T * (2 * E / b) := by ring
@@ -2128,7 +2143,7 @@ private lemma norm_eval_newtonPoly_sub_le_explicit (L n : ℕ) {d₁ d₂ : ℕ 
                 (mul_nonneg (pow_nonneg (zero_le_one.trans hD) k) (by positivity))
                 (Nat.cast_nonneg L)
     _ = ((L + 1 : ℕ) : ℝ) * (L : ℝ) * (2 * D) ^ L * δ := by
-        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_assoc, mul_assoc]
+        rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; ring
 
 /-- **Prefix-to-all-`M ≥ N` locking theorem for `IsSourceLoopCertified`.**
 Whenever `IsSourceLoopCertified T n N` holds at a single prefix `N`, every prefix `M ≥ N` avoids
@@ -2192,10 +2207,11 @@ theorem sourceLoopCertified_locks_all_ge {T : ℝ} {n N : ℕ}
   set δ := sourcePairDiffPerturbation T n N
   have hS_one : 1 ≤ S := by
     dsimp only [S, sourcePowerSumUpper]
-    exact (by linarith [Nat.cast_nonneg M_deg] : (1 : ℝ) ≤ 1 + (M_deg : ℝ)).trans (le_max_left _ _)
+    exact le_trans (by linarith [Nat.cast_nonneg (α := ℝ) M_deg] : (1 : ℝ) ≤ 1 + (M_deg : ℝ))
+      (le_max_left _ _)
   have hS_deg : (M_deg : ℝ) ≤ S := by
     dsimp only [S, sourcePowerSumUpper]
-    exact (by linarith : (M_deg : ℝ) ≤ 1 + (M_deg : ℝ)).trans (le_max_left _ _)
+    exact le_trans (by linarith : (M_deg : ℝ) ≤ 1 + (M_deg : ℝ)) (le_max_left _ _)
   have hb_pos : 0 < boundaryPrefixMin T n N :=
     lt_of_le_of_lt (by positivity [thetaStripTailBound_nonneg N]) hmod
   have hΔ_nn : 0 ≤ Δ := by
@@ -2313,8 +2329,9 @@ theorem sourceLoopCertified_sound {T : ℝ} {n N : ℕ}
     IsArtifactFreeFrom T n N ∧ firstArtifactFreePrefix T n ≤ N := by
   have hlocks := sourceLoopCertified_locks_all_ge hcert
   let M₀ := max N (thetaPrefixThreshold T n)
-  have hM₀_lock := hlocks M₀ (le_max_left _ _)
-  have hM₀_xi := integerThetaCollisionOperator_index_and_winding_eq_charge T hn (le_max_right _ _)
+  have hM₀_lock := hlocks M₀ (le_max_left N (thetaPrefixThreshold T n))
+  have hM₀_xi := integerThetaCollisionOperator_index_and_winding_eq_charge T hn
+    (N := M₀) (le_max_right N (thetaPrefixThreshold T n))
   have hdeg_N : integerThetaWindowDegree T n N = _root_.RHTower.xiStripWindowTotalOrder T :=
     hM₀_lock.2.1.symm.trans hM₀_xi.2.1
   have hind_N : HTGeometry.fredholmIndex (integerThetaCollisionOperator T n N) =
@@ -2583,7 +2600,13 @@ theorem eventually_isSourceLoopCertified (T : ℝ) {n : ℕ} (hn : thetaWindowSc
             refine mul_le_mul
               (mul_le_mul_of_nonneg_left hS_le (by positivity))
               hpL_le
-              (by unfold sourcePowerSumPerturbationBound; positivity [thetaStripTailBound_nonneg N])
+              (by
+                unfold sourcePowerSumPerturbationBound
+                exact mul_nonneg (mul_nonneg (mul_nonneg
+                  (pow_nonneg (zero_le_one.trans (one_le_windowNormUpper T)) _)
+                  (windowVelocityUpper_pos T).le)
+                  (div_nonneg (mul_nonneg (by norm_num) hE_nn) (sq_nonneg _)))
+                  (thetaStripTailBound_nonneg N))
               (mul_nonneg (by positivity) hS_max_nn)
         _ = ((2 : ℝ) ^ (M₀ ^ 2 + 1) * S_max * C_pL) * thetaStripTailBound N := by ring
     have hδ_nn : 0 ≤ sourcePairDiffPerturbation T n N := by
@@ -2628,8 +2651,9 @@ theorem isArtifactFreeFrom_sourceLoopStoppingPrefix (T : ℝ) {n : ℕ}
       (integerThetaCollisionOperator T n (sourceLoopStoppingPrefix T n)) =
       (_root_.RHTower.xiHorizontalCollisionCharge T : ℤ) := by
   obtain ⟨N_wit, hN_wit⟩ := (eventually_isSourceLoopCertified T hn).exists
+  have hwit : N_wit ∈ {N : ℕ | IsSourceLoopCertified T n N} := hN_wit
   have hcert : IsSourceLoopCertified T n (sourceLoopStoppingPrefix T n) :=
-    Nat.sInf_mem ⟨N_wit, hN_wit⟩
+    Nat.sInf_mem (s := {N : ℕ | IsSourceLoopCertified T n N}) ⟨N_wit, hwit⟩
   obtain ⟨haf, hfirst⟩ := sourceLoopCertified_sound hn hcert
   exact ⟨hcert, haf, hfirst, (haf (sourceLoopStoppingPrefix T n) le_rfl).2.2.2⟩
 

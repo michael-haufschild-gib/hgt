@@ -1,3 +1,4 @@
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.SubgroupMovingBounds
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.SubgroupOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.SubgroupEndpoints
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationSaturation

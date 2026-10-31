@@ -3,6 +3,7 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.LogarithmicOver
 import GaloisForLFunctions.HTGeometry.HermitianSpectralWindowBounds
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleIsTheOnlyNegativeSquareBeyondTheThreshold
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.ThePoleAtEveryRoot
+import GaloisForLFunctions.SuccessorShellArithmetic.FixedConductorPacketsArePositiveBelowTheNineteenthRoot
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.ThePoleHyperplaneIsTheHarmonicHyperplane
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheWeilEnergiesOfTheArithmeticModes
 
@@ -28,6 +29,11 @@ class is the normalized Ramanujan vector `v_1`. At fixed `c` the Hodge index hol
 * **Every power of the logarithm** (`riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`,
   `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log`): for a smooth nonnegative profile on
   `[0, 1]` the same holds at `c = 2(log N)^α` for every `α > 0`.
+* **Packets below the nineteenth root** (`eventually_completeWeil_hodgeIndex_packet_root`,
+  `exists_growing_packet_hodgeIndex_root`): at overlap `(log N)^α`, `α < 1/19`, the Hodge index holds
+  on every fixed conductor packet and on slowly growing initial packets
+  (SuccessorShellArithmetic). What is RH at a power of the logarithm is its uniformity over all of
+  `v_1^⊥`.
 * **One hyperplane, two readings** (`poleHyperplane_markov_nonneg_iff_hodgeIndex`): at each horizon,
   Markov positivity on the recentred atomic tests with `m₋ = 0` is Hodge positivity on `v_1^⊥`.
 * **The Hodge index leaves at most one square** (`eigenvalues_nonneg_or_of_nonneg_on_orthogonal`,
@@ -324,6 +330,40 @@ theorem riemannHypothesis_iff_completeWeil_hodgeIndex_log {α : ℝ} (hα : 1 / 
     integral_tiltedUnitSpline_sq_pos (by positivity) hN2
 
 end Logarithmic
+
+/-! ### Packets below the nineteenth root -/
+
+section Packets
+
+open CompletedArithmeticForms SuccessorShellArithmetic
+
+/-- **The Hodge index on fixed conductor packets below the nineteenth root.** -/
+theorem eventually_completeWeil_hodgeIndex_packet_root {α : ℝ} (hα0 : 0 < α) (hα : α < 1 / 19)
+    {d : ℕ} (m : Fin d → ℕ+) (hm : Function.Injective m) :
+    ∀ᶠ N : ℕ in atTop, ∀ b : Fin d → ℝ,
+      ⟪∑ i, b i • normalizedRamanujanHorizonVector (m i) N, normalizedRamanujanHorizonVector 1 N⟫ =
+          0 →
+        0 ≤ completeWeilEnergy φ₀ (logarithmicPacketOverlap α N) N
+          (∑ i, b i • normalizedRamanujanHorizonVector (m i) N) := by
+  filter_upwards [eventually_tiltedWeil_packet_pos_of_lt_one_nineteenth hα0 hα m hm] with N hN b _
+  by_cases hb : b = 0
+  · subst hb
+    simp [completeWeilEnergy]
+  · exact (hN b hb).le
+
+/-- **The Hodge index on slowly growing initial packets below the nineteenth root.** -/
+theorem exists_growing_packet_hodgeIndex_root {α : ℝ} (hα0 : 0 < α) (hα : α < 1 / 19) :
+    ∃ Q : ℕ → ℕ, Filter.Tendsto Q atTop atTop ∧ ∀ N : ℕ, ∀ b : Fin (Q N) → ℝ,
+      0 ≤ completeWeilEnergy φ₀ (logarithmicPacketOverlap α N) N
+        (∑ i, b i • normalizedRamanujanHorizonVector (firstConductors (Q N) i) N) := by
+  obtain ⟨Q, hQ, h⟩ := exists_growing_packet_pos_of_lt_one_nineteenth hα0 hα
+  refine ⟨Q, hQ, fun N b => ?_⟩
+  by_cases hb : b = 0
+  · subst hb
+    simp [completeWeilEnergy]
+  · exact (h N b hb).le
+
+end Packets
 
 /-! ### Every power of the logarithm -/
 

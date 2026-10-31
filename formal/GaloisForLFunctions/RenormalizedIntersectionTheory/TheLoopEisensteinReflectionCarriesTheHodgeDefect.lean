@@ -89,13 +89,10 @@ theorem riemannHypothesis_iff_reflectionPoles_eq_empty :
   rw [riemannHypothesis_iff_renormalizedHodgeIndex,
     renormalizedHodgeIndex_iff_reflectionPoles_eq_empty]
 
-/-- The band poles are exactly where the rank-one coefficient `xiRatio` of the loop Eisenstein
-series has a vanishing denominator. -/
-theorem mem_reflectionPoles_iff (s : ℂ) :
-    s ∈ reflectionPoles ↔
-      completedRiemannZeta (s + 1) = 0 ∧ -(1 / 2) < s.re ∧ s.re < 0 ∧
-        LoopEisenstein.AffineA1.xiRatio s =
-          completedRiemannZeta s / completedRiemannZeta (s + 1) :=
-  ⟨fun h => ⟨h.1, h.2.1, h.2.2, rfl⟩, fun h => ⟨h.1, h.2.1, h.2.2.1⟩⟩
+/-- The rank-one coefficient of the loop Eisenstein series is `Λ(s)/Λ(s + 1)`; its denominator is
+the one whose band zeros are `reflectionPoles`. -/
+theorem xiRatio_eq_div (s : ℂ) :
+    LoopEisenstein.AffineA1.xiRatio s = completedRiemannZeta s / completedRiemannZeta (s + 1) :=
+  rfl
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory
