@@ -93,11 +93,8 @@ theorem localHecke_half_of_int {g : AffineGroupQ} {A A' C C' : ℤ} (hA : A ≠ 
   -- the gcd of two powers of `p`
   have hgcd : (((p : ℤ) ^ k).gcd ((p : ℤ) ^ k') : ℤ) = (p : ℤ) ^ min k k' := by
     rcases le_total k k' with h | h
-    · rw [min_eq_left h, Int.gcd_eq_left (by positivity) (pow_dvd_pow _ h), Int.natAbs_pow, Int.natAbs_ofNat]
-      push_cast; rfl
-    · rw [min_eq_right h, Int.gcd_comm, Int.gcd_eq_left (by positivity) (pow_dvd_pow _ h), Int.natAbs_pow,
-        Int.natAbs_ofNat]
-      push_cast; rfl
+    · rw [min_eq_left h, Int.gcd_eq_left (by positivity) (pow_dvd_pow _ h)]
+    · rw [min_eq_right h, Int.gcd_comm, Int.gcd_eq_left (by positivity) (pow_dvd_pow _ h)]
   -- the support conditions agree
   have hcond : (min 0 (padicValRat p (affSlope g)) ≤ padicValRat p (affShift g)) ↔
       (((p : ℤ) ^ k).gcd ((p : ℤ) ^ k') : ℤ) ∣ C' - C := by
@@ -121,10 +118,10 @@ theorem localHecke_half_of_int {g : AffineGroupQ} {A A' C C' : ℤ} (hA : A ≠ 
     congr 2
     rcases le_total k k' with hk | hk
     · rw [min_eq_left (Nat.cast_le.mpr hk),
-        abs_of_nonneg (Int.cast_nonneg.mpr (sub_nonneg.mpr (by exact_mod_cast hk)))]
+        abs_of_nonneg (by exact_mod_cast (sub_nonneg.mpr (by exact_mod_cast hk) : (0 : ℤ) ≤ (k' : ℤ) - k))]
       push_cast; ring
     · rw [min_eq_right (Nat.cast_le.mpr hk),
-        abs_of_nonpos (Int.cast_nonpos.mpr (sub_nonpos.mpr (by exact_mod_cast hk)))]
+        abs_of_nonpos (by exact_mod_cast (sub_nonpos.mpr (by exact_mod_cast hk) : (k' : ℤ) - k ≤ 0))]
       push_cast; ring
   · rw [if_neg h, if_neg (mt hcond.mpr h)]; simp
 
@@ -193,7 +190,8 @@ theorem isPosDefKernel_localHecke {s : ℝ} (hs : 1 / 2 ≤ s) : IsPosDefKernel 
 
 theorem isHermKernel_localHecke (s : ℝ) : IsHermKernel (localHecke p s) := fun g => by
   have h1 := (isPosDefKernel_iff_isPosDefOnGroup.mpr (isPosDefOnGroup_localHaar p)).1 g
-  rw [localHecke_eq_mul, localHecke_eq_mul, h1, map_inv, isHermKernel_poissonKernel, map_mul]
+  have h2 := isHermKernel_poissonKernel ((p : ℝ) ^ (-(s - 1 / 2))) (slopeVal p g)
+  rw [localHecke_eq_mul p s g⁻¹, localHecke_eq_mul p s g, h1, map_inv, h2, map_mul]
 
 /-! ### Local escape -/
 
@@ -220,7 +218,6 @@ theorem localHecke_escape (s : ℝ) (m n : ℕ) (x : Fin m → AffineGroupQ) (y 
         (fun _ _ => Nat.zero_le _) (Finset.mem_univ a)
     exact_mod_cast (show _ < M by omega)
   push_cast at hM
-  simp only [Int.natCast_natAbs] at hM
   have hα : affSlope (x a) ≠ 0 := affSlope_ne_zero _
   have hβ0 : β ≠ 0 := inv_ne_zero (pow_ne_zero _ (by exact_mod_cast hp.out.ne_zero))
   have hβ : padicValRat p β = -(M : ℤ) := padicValRat.self_pow_inv M
@@ -255,7 +252,8 @@ theorem localHecke_escape (s : ℝ) (m n : ℕ) (x : Fin m → AffineGroupQ) (y 
   have := le_abs_self (va a)
   have := neg_abs_le (va a)
   have := neg_abs_le (vb b)
-  exact lt_min (by linarith [abs_nonneg (vd a b)]) (by linarith [abs_nonneg (vd a b)])
+  exact lt_min (by linarith [abs_nonneg (vb b), abs_nonneg (vd a b)])
+    (by linarith [abs_nonneg (vb b), abs_nonneg (vd a b)])
 
 /-- Every local Hecke state has index `0` or `∞`. -/
 theorem negIndex_localHecke_eq_zero_or_top (s : ℝ) :
@@ -289,7 +287,7 @@ theorem one_le_negIndex_localHecke {s : ℝ} (hs : s < 1 / 2) : 1 ≤ negIndex (
     have hk : (0 : ℤ) ≤ padicValRat p ((k : ℕ) : ℚ) := by
       rw [padicValRat.of_nat]; exact Nat.cast_nonneg _
     simp only [localHecke, hsl, hsh, hvp, y]
-    rw [if_pos (by simpa using hk)]
+    rw [if_pos (by simp [hk])]
     norm_num
   have hk0 : ∀ k : Fin p, localHecke p s ((x (some k))⁻¹ * x none) = (y : ℂ) := fun k => by
     rw [show (x (some k))⁻¹ * x none = ((x none)⁻¹ * x (some k))⁻¹ by group,
@@ -305,7 +303,7 @@ theorem one_le_negIndex_localHecke {s : ℝ} (hs : s < 1 / 2) : 1 ≤ negIndex (
         intro h; exact hjk (Fin.ext (by omega))
       have hnd : ¬ (p : ℤ) ∣ ((k : ℕ) : ℤ) - (j : ℕ) := fun hd => by
         have := Int.eq_zero_of_abs_lt_dvd hd (by
-          rw [abs_lt]; constructor <;> push_cast <;> omega)
+          rw [abs_lt]; constructor <;> omega)
         exact hz this
       have hv : padicValRat p ((k : ℚ) / p - (j : ℚ) / p) = -1 := by
         rw [← sub_div, show (k : ℚ) - j = ((((k : ℕ) : ℤ) - (j : ℕ) : ℤ) : ℚ) by push_cast; rfl,

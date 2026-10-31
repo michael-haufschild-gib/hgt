@@ -30,5 +30,7 @@ countability of the actual arithmetic coset set.
 ## Status
 
 Inversion intervals, both Iwahori Gauss factorizations and unique Weyl double-coset
-labels are audited. The polynomial refinement, uniqueness and arithmetic
-restriction statements remain conjectures requiring proofs and Lean audits.
+labels are audited. [Positive translations](../3-formalized/positive-affine-translations-have-finite-polynomial-cells.md)
+now have finite polynomial representatives of degree below `2n`, with direct
+Lean and axiom audits. Negative translations, reflections, uniqueness and
+arithmetic restriction remain unproved.

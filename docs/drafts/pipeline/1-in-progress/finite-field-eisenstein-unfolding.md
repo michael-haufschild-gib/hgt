@@ -27,7 +27,7 @@ from a proved quotient normalization.
 
 ## Unproved dependencies
 
-- Arithmetic coset parametrization. The independently defined actual arithmetic coset series and its right arithmetic invariance are audited. [Coset descent](../3-formalized/elliptic-eisenstein-summands-descend-to-actual-arithmetic-cosets.md). Finite root-cell parametrization and convergence remain.
+- Arithmetic coset parametrization. The independently defined actual arithmetic coset series and its right arithmetic invariance are audited. [Coset descent](../3-formalized/elliptic-eisenstein-summands-descend-to-actual-arithmetic-cosets.md). [Actual idele rotation and descent to the literal unipotent quotient](../3-formalized/rotated-elliptic-eisenstein-series-descends-to-the-actual-unipotent-quotient.md) are also audited, independently defining the constant-term integral. Finite root-cell parametrization and convergence remain.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
 - Local Iwasawa-character identification with the radial Haar kernel. [Finite simple loop values](../3-formalized/finite-simple-loop-iwasawa-values-are-column-norms.md) are audited: central valuation one and finite valuation equal to the first-column norm. Normalized character identification and the affine simple root remain.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.

@@ -104,7 +104,7 @@ theorem exists_upper_polynomial_translation_cell (n : ℕ) (g : SL2 (LaurentSeri
         (t : LaurentSeries F) := by
     calc
       (u : LaurentSeries F) =
-          ((p + PowerSeries.X ^ (2 * n) * t : PowerSeries F) : LaurentSeries F) :=
+          (((p : PowerSeries F) + PowerSeries.X ^ (2 * n) * t : PowerSeries F) : LaurentSeries F) :=
         congrArg (HahnSeries.ofPowerSeries ℤ F) hu
       _ = _ := by rw [map_add, monomial_squared_mul_series]
   have hex := upper_gauss_translation (powerSeriesLaurentUnit F a) (laurentXUnit F ^ n)

@@ -116,6 +116,10 @@ theorem reflect_localBoost_primeUnit_sq (p q : Nat.Primes) :
   rw [localBoost, boostChar_apply, Complex.ofReal_inj] at h
   rw [localBoost, reflectChar_boostChar, h]
 
+theorem prod_localValue_left (S : Finset Nat.Primes) (p : Nat.Primes) :
+    ∏ q ∈ S, localValue p q = if p ∈ S then ((p : ℝ))⁻¹ else 1 :=
+  prod_ite_eq S p fun _ => ((p : ℝ))⁻¹
+
 theorem prod_localValue (t : Finset Nat.Primes) (q : Nat.Primes) :
     ∏ p ∈ t, localValue p q = if q ∈ t then ((q : ℝ))⁻¹ else 1 :=
   prod_ite_eq' t q fun p => ((p : ℝ))⁻¹
@@ -159,9 +163,8 @@ theorem reflectChar_weightChar {S t : Finset Nat.Primes} (ht : t ⊆ S) :
   ext u
   rw [reflectChar_apply, weightChar_apply, weightChar_apply, Finset.sdiff_sdiff_eq_self ht, map_mul,
     map_prod, map_prod, mul_comm]
-  congr 1 <;> refine prod_congr rfl fun p _ => ?_
-  · rw [conj_reflectChar, inv_inv]
-  · rfl
+  congr 1
+  exact prod_congr rfl fun p _ => by rw [conj_reflectChar, inv_inv]
 
 /-- **The tensor product is a sum of weight pairs**: fixing `p₀ ∈ S`, each pair `{t, S ∖ t}` has
 exactly one member containing `p₀`. -/
@@ -197,7 +200,7 @@ def sepUnit (S : Finset Nat.Primes) : ℚˣ := ∏ q ∈ S, primeUnit q ^ 2
 /-- The value `∏_{q∈S} (q⁻¹ if q ∈ t, q otherwise)` of `χ^t` at the separating unit. -/
 def weightValue (S t : Finset Nat.Primes) : ℝ := ∏ q ∈ S, if q ∈ t then ((q : ℝ))⁻¹ else q
 
-theorem weightChar_primeUnit_sq {S t : Finset Nat.Primes} (ht : t ⊆ S) {q : Nat.Primes}
+theorem weightChar_primeUnit_sq {S t : Finset Nat.Primes} (_ht : t ⊆ S) {q : Nat.Primes}
     (hq : q ∈ S) :
     weightChar S t (primeUnit q ^ 2) = ((if q ∈ t then ((q : ℝ))⁻¹ else q : ℝ) : ℂ) := by
   rw [weightChar_apply]
@@ -335,9 +338,8 @@ theorem negIndex_extremalPair {S : Finset Nat.Primes} (hS : S.Nonempty) :
 are distinct and the reflected values `p` lie on the other side of `1`. -/
 theorem negIndex_sumPole (S : Finset Nat.Primes) : negIndex (sumPole S) = S.card := by
   have hval : ∀ p ∈ S, localBoost p (sepUnit S) = ((((p : ℝ))⁻¹ : ℝ) : ℂ) := fun p hp => by
-    rw [sepUnit, map_prod, ← prod_congr rfl fun q _ => (localBoost_primeUnit_sq p q).symm,
-      ← Complex.ofReal_prod, localValue, prod_ite_eq, if_pos hp]
-    rfl
+    rw [sepUnit, map_prod]
+    simp only [localBoost_primeUnit_sq, ← Complex.ofReal_prod, prod_localValue_left, if_pos hp]
   have hrval : ∀ p ∈ S, reflectChar (localBoost p) (sepUnit S) = (((p : ℝ) : ℝ) : ℂ) :=
     fun p hp => by
       have h := hval p hp
@@ -380,6 +382,10 @@ theorem reflect_localBoost_primeUnit (p q : Nat.Primes) :
   rw [localBoost, reflectChar_boostChar, primeUnit, Units.val_mk0, padic_prime]
   rfl
 
+theorem rpow_localValue (p q : Nat.Primes) :
+    localValue p q ^ ((1 : ℝ) / 2) = if p = q then (((p : ℝ))⁻¹) ^ ((1 : ℝ) / 2) else 1 := by
+  unfold localValue; split_ifs <;> simp
+
 /-- The value of `χ^t` at a prime `q ∈ S`: `q^{−1/2}` if `q ∈ t`, `q^{1/2}` otherwise. -/
 theorem weightChar_primeUnit {S t : Finset Nat.Primes} {q : Nat.Primes} (hq : q ∈ S) :
     weightChar S t (primeUnit q) =
@@ -387,14 +393,7 @@ theorem weightChar_primeUnit {S t : Finset Nat.Primes} {q : Nat.Primes} (hq : q 
   have hq0 : (0 : ℝ) ≤ q := Nat.cast_nonneg _
   rw [weightChar_apply]
   simp only [localBoost_primeUnit, reflect_localBoost_primeUnit, ← Complex.ofReal_prod,
-    ← Complex.ofReal_mul, Complex.ofReal_inj, localValue]
-  have e1 : ∀ p : Nat.Primes, (if p = q then ((p : ℝ))⁻¹ else 1) ^ ((1 : ℝ) / 2) =
-      if p = q then (((q : ℝ))⁻¹) ^ ((1 : ℝ) / 2) else 1 := fun p => by
-    split_ifs with h
-    · rw [h]
-    · simp
-  simp only [e1, apply_ite (·⁻¹), inv_one]
-  rw [prod_ite_eq', prod_ite_eq']
+    ← Complex.ofReal_mul, Complex.ofReal_inj, rpow_localValue, prod_ite_eq']
   by_cases hqt : q ∈ t
   · have : q ∉ S \ t := fun h => (mem_sdiff.mp h).2 hqt
     simp [hqt, this, Real.inv_rpow hq0, Real.rpow_neg hq0]
@@ -419,7 +418,7 @@ theorem archPole_sUnit_eq_extremalPair (S : Finset Nat.Primes) (n : Nat.Primes �
     rw [reflectChar_apply, hinv, archBoost_sUnit_eq_weightChar_empty, ← hinv, ← reflectChar_apply,
       reflectChar_weightChar (empty_subset S), sdiff_empty]
   rw [pairKernel_one_apply, pairKernel_one_apply, h1, archBoost_sUnit_eq_weightChar_empty,
-    reflectChar_weightChar subset_rfl, sdiff_self, add_comm]
+    reflectChar_weightChar subset_rfl, Finset.sdiff_self, add_comm]
 
 /-- **Exactly the extremal weights are archimedean.** `χ^t` agrees on the primes of `S` with an
 archimedean character `u ↦ u^s` iff `t = ∅` or `t = S`. -/
@@ -437,12 +436,9 @@ theorem exists_cpow_weightChar_iff {S t : Finset Nat.Primes} (ht : t ⊆ S) :
       exact le_antisymm ((Real.rpow_le_rpow_left_iff hq1).mp h.ge)
         ((Real.rpow_le_rpow_left_iff hq1).mp h.le)
     by_contra hne
-    push_neg at hne
+    rw [not_or] at hne
     obtain ⟨q₁, hq₁⟩ := nonempty_iff_ne_empty.mpr hne.1
-    obtain ⟨q₂, hq₂S, hq₂t⟩ : ∃ q ∈ S, q ∉ t := by
-      by_contra h
-      push_neg at h
-      exact hne.2 (Subset.antisymm ht h)
+    obtain ⟨q₂, hq₂S, hq₂t⟩ := not_subset.mp fun h : S ⊆ t => hne.2 (Subset.antisymm ht h)
     have h1 := hre q₁ (ht hq₁)
     have h2 := hre q₂ hq₂S
     rw [if_pos hq₁] at h1
@@ -450,7 +446,7 @@ theorem exists_cpow_weightChar_iff {S t : Finset Nat.Primes} (ht : t ⊆ S) :
     linarith
   · rintro (rfl | rfl)
     · refine ⟨(1 / 2 : ℝ), fun q hq => ?_⟩
-      rw [weightChar_primeUnit hq, if_neg (not_mem_empty q),
+      rw [weightChar_primeUnit hq, if_neg (Finset.notMem_empty q),
         Complex.ofReal_cpow (Nat.cast_nonneg _)]
       push_cast; rfl
     · refine ⟨(-(1 / 2) : ℝ), fun q hq => ?_⟩

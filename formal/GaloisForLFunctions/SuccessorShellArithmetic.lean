@@ -31,6 +31,7 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorHead
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorLogMoment
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorGrowingCorrection
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorPowerHeads
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorHeadNorm
 
 /-!
 # Successor-Shell Arithmetic
@@ -50,6 +51,7 @@ the full prime-matrix finite part on every fixed finite conductor packet;
 the opposite torsion limits of fixed prime heads and their complementary boundary;
 the half-square asymptotic of the prime head's logarithmic moment;
 the exact finite parts at every power cutoff and their diagonal square-root head;
+the exact dilation reduction of prime heads and their logarithmic centered period-mean norm;
 the invariant centered torsion correction at every exhausting prime cutoff. See
 `SuccessorShellArithmetic/README.md`.
 -/

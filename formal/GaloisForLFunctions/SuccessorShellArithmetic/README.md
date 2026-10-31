@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 33 modules
-(6 root, `TopBand/` 11, `Conductor/` 16). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 34 modules
+(6 root, `TopBand/` 11, `Conductor/` 17). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -45,6 +45,7 @@ Profile `φ` (`C²`, support `[0,1]`), `M = ∫φ²`, `q = (∫φ)²/M`, `G = �
 | Prime finite part | `⟨v_m,N,P_N v_l,N⟩−δ_ml log N`, `v_m,N=u_m/√(n log N)` | `−I(m,l)/√(φ(m)φ(l))−δ_ml(log m+τ(m))` |
 | Prime head and boundary | `primeConductorHeadPairing`, `primeConductorBoundaryFinitePart` | centered head limit `+I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; complementary boundary `−2I/√(φ(m)φ(l))` |
 | Power head | `primePowerHeadCutoff θ N` | cutoff `⌊N^θ⌋`; leading coefficient `θ(2−θ)δ_ml log N`; mixed torsion coefficient `1−2θ` |
+| Centered period head | `centeredPrimeConductorHead` | every cutoff has quadratic norm at most `6log Q+log4+4` on conductors through `Q` |
 | Twin shell | `twinShellForm` | shell weighted by `ω(k)(1 − ω(km)ω(km + h))` |
 
 External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `completeWeilMatrix`,
@@ -132,6 +133,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Every exhausting head retains the centered torsion correction `I/√(φ(m)φ(l))−δ_ml(log m+τ(m))` | `tendsto_primeConductorGrowingHead_correction` | proved |
 | Power-head finite part `(1−2θ)I/√(φ(m)φ(l))−δ_ml[log m+τ(m)+2(1−θ)γ]`; square-root head diagonal | `tendsto_primeConductorPowerHead_finitePart`, `tendsto_primeConductorSqrtHead_finitePart` | proved |
 | Scalar-identity centering retains `(1−θ²)B_ml`; bands between powers carry `2(β−α)B_ml` | `tendsto_primeConductorPowerHead_renormalized`, `tendsto_primeConductorPowerBand_finitePart` | proved |
+| Exact dilation `φ(q)c_l(kn)=φ(l)c_q(n)`, `q=l/gcd(l,k)`; literal head is a sum of reduced-conductor Grams | `ramanujanLagCoefficient_dilate_reduced`, `primeConductorHeadPairing_eq_reducedGram` | proved |
+| Centered head means: off-diagonal interval `[0,I/√(φ(m)φ(l))]`, diagonal interval `[−2τ(m),0]`; packet norm `≤6log Q+log4+4` uniformly in cutoff | `centeredPrimeConductorHead_offDiagonal_bounds`, `centeredPrimeConductorHead_diagonal_bounds`, `abs_centeredPrimeConductorHeadPacket_le_log` | proved |
 | Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
@@ -148,6 +151,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Exact affine conductor selection and full prime finite parts on every fixed finite packet.
 - Exact fixed-head limits and their complementary torsion boundary.
 - Exact power-cutoff and band finite parts, including square-root cancellation of mixed raw pairings.
+- Exact reduced-conductor Gram decomposition of literal prime heads; uniform logarithmic period-mean head norm.
 - Common complete-conductor residual bounds on every logarithmic conductor range.
 
 **To build**

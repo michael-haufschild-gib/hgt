@@ -3,11 +3,11 @@
 **Arithmetic signature theory: indefinite harmonic analysis on the dilation–translation system of `ℚ`.**
 
 Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`. Haar successors,
-period defects and cyclic projections belong in `Haar/`. Every theorem is unconditional; RH appears only inside
-equivalences.
+period defects and cyclic projections belong in `Haar/`. Index laws are unconditional; RH assumptions
+in positivity corollaries are explicit.
 
 > **The question.** Which Hermitian forms of finite negative index live on the dilation–translation system
-> `ℚ^×_{>0} ⋉ 𝔸 ⊃ Aff(ℚ)` and on its places? How is their index computed from local constituents glued at
+> `ℚ^×_{>0} ⋉ 𝔸 ⊃ Aff⁺(ℚ)` and on its places? How is their index computed from local constituents glued at
 > the archimedean place, and how do their additive readings (successor, Haar, theta) compare with their
 > multiplicative readings (dilation, Euler, Mellin)?
 

@@ -42,6 +42,8 @@ The positive-slope subgroup has two cosets, represented by identity and dilation
 
 For the actual group `ℚ⁺ ⋉ (ℝ × 𝔸_f)`, embed rational translations by `b↦(0,b_f)` and retain rational dilations. This is an affine homomorphism because finite diagonal embedding is rational-linear. A rational diagonal belongs to `∏ₚℤₚ` exactly when its denominator is one: integrality at every height-one valuation implies membership in `ℤ`, and integers are integral everywhere. The critical finite Haar reading therefore pulls back to `1_ℤ`; the dilation reading is unchanged. Pullback cannot increase negative index, so the rational obstruction applies to this adelic group.
 
+This reading is the actual Haar translation coefficient. For `U=∏ₚℤₚ` and additive Haar measure `μ(U)=1`, it is `∫_U 1_U(x−b) dμ(x)`. For `x∈U`, subgroup closure gives `x−b∈U ↔ b∈U`; the integral is therefore `1_U(b)`. This identifies the required translation reading without assuming an unproved integral formula.
+
 The argument also covers every nonzero Haar multiple `c·1_ℤ`. Hermitian symmetry makes `c` real. For `c<0`, distinct rational translation cosets already give arbitrarily large negative diagonal Grams. For `c>0`, division by `c` preserves finite index and dilation continuity and normalizes the Haar reading.
 
 ## Verification boundary

@@ -2,6 +2,7 @@ import GaloisForLFunctions.SquareRootThreshold.CountingInputsDoNotBoundTheLocalC
 import GaloisForLFunctions.RHTower.ZetaOffLineMomentExplicit
 import GaloisForLFunctions.RHTower.CrossRouteReceiverBridges
 import GaloisForLFunctions.RHTower.WeilConditionalConstantSignRigidity
+import GaloisForLFunctions.SquareRootThreshold.TheOffLineSecondMomentIsLittleO
 
 /-!
 # The local count holds for almost all heights
@@ -21,6 +22,11 @@ Riemann–von Mangoldt and the off-line first moment `Σ m η₊ ≤ (21/100)(2T
 
 With `CountingInputsDoNotBoundTheLocalCount`: no counting input gives the local count at every
 height, but the zeros of `ζ` satisfy it on a set of density one, through the off-line first moment.
+
+**The depth mass in density** (`eventually_volume_rightDepthMass_gt_le`).  For every `W > 0`
+the right-half depth mass `Σ_{Re ρ > ½} m (Re ρ − ½)²` of the windows `(S − 1, S + 1]` is `≤ W` off a
+set of centres `S ∈ [T − 1, 2T + 1]` of measure `o(T)`: Markov with the second moment `o(V)`
+(`tendsto_offLineSecondMoment_div`).
 -/
 
 open Complex Set Zeta23
@@ -241,6 +247,143 @@ theorem eventually_volume_zeta_localCount_gt_le {δ C : ℝ} (hδ0 : 0 < δ) (h�
           = T * C * (Real.sqrt (δ * Real.log T) * Real.sqrt (δ * Real.log T)) by ring, hsq]
         ring
     _ ≤ T * (C * (δ * Real.log T + 1)) := by nlinarith
+
+/-! ## The depth mass in density -/
+
+/-- The right-half depth mass `Σ m (Re ρ − ½)₊²` of the window `(S − 1, S + 1]`. -/
+def rightDepthMass (Z : ZeroConfig) (S : ℝ) : ℝ :=
+  ∑ᶠ ρ ∈ Z.window (S - 1) (S + 1), (Z.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2
+
+/-- On `S ∈ [T − 1, 2T + 1]` the depth mass is a finite sum of indicators of intervals of
+length `2`. -/
+theorem rightDepthMass_eq_sum (Z : ZeroConfig) {T S : ℝ} (hS : S ∈ Icc (T - 1) (2 * T + 1)) :
+    rightDepthMass Z S = ∑ ρ ∈ (Z.finite_window (T - 2) (2 * T + 2)).toFinset,
+      (Ico (ρ.im - 1) (ρ.im + 1)).indicator
+        (fun _ => (Z.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2) S := by
+  set F := (Z.finite_window (T - 2) (2 * T + 2)).toFinset with hF
+  have hsub : Z.window (S - 1) (S + 1) ⊆ Z.window (T - 2) (2 * T + 2) := by
+    rintro ρ ⟨hc, h1, h2⟩
+    exact ⟨hc, by linarith [hS.1], by linarith [hS.2]⟩
+  have hfinS := Z.finite_window (S - 1) (S + 1)
+  show (∑ᶠ ρ ∈ Z.carrier ∩ {ρ | S - 1 < ρ.im ∧ ρ.im ≤ S + 1},
+    (Z.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2) = _
+  rw [finsum_mem_eq_finite_toFinset_sum _ hfinS,
+    ← Finset.sum_filter_add_sum_filter_not F (fun ρ => ρ ∈ Z.window (S - 1) (S + 1))]
+  have h0 : ∑ ρ ∈ F.filter (fun ρ => ρ ∉ Z.window (S - 1) (S + 1)),
+      (Ico (ρ.im - 1) (ρ.im + 1)).indicator
+        (fun _ => (Z.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2) S = 0 := by
+    refine Finset.sum_eq_zero fun ρ hρ => ?_
+    obtain ⟨hρF, hρw⟩ := Finset.mem_filter.mp hρ
+    rw [Set.indicator_of_notMem]
+    intro hSB
+    apply hρw
+    have hρw' := (Set.Finite.mem_toFinset _).mp hρF
+    exact ⟨hρw'.1, by linarith [hSB.2], by linarith [hSB.1]⟩
+  rw [h0, add_zero]
+  refine Finset.sum_congr ?_ fun ρ hρ => ?_
+  · ext ρ
+    simp only [Finset.mem_filter, Set.Finite.mem_toFinset, hF]
+    exact ⟨fun h => ⟨hsub h, h⟩, fun h => h.2⟩
+  · rw [Finset.mem_filter] at hρ
+    rw [Set.indicator_of_mem]
+    exact ⟨by linarith [hρ.2.2.2], by linarith [hρ.2.2.1]⟩
+
+/-- The window sum of `m (Re ρ − ½)₊²` is at most the second moment. -/
+theorem sum_window_le_offLineSecondMoment {T : ℝ} (hT : 2 ≤ T) :
+    ∑ ρ ∈ (zetaZeroConfig.finite_window (T - 2) (2 * T + 2)).toFinset,
+        (zetaZeroConfig.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2
+      ≤ offLineSecondMoment (2 * T + 2) := by
+  set F := (zetaZeroConfig.finite_window (T - 2) (2 * T + 2)).toFinset with hF
+  have hsplit : ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2
+      = ∑ ρ ∈ F.filter (fun ρ => 1 / 2 < ρ.re),
+          ((analyticOrderAt xi ρ).toNat : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2 := by
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun ρ hρ => ?_
+    split_ifs with h
+    · have hc : ρ ∈ zetaZeroConfig.carrier := ((Set.Finite.mem_toFinset _).mp hρ).1
+      have := WeilConditional.mult_eq_analyticOrderNatAt ⟨ρ, hc⟩
+      simp only at this
+      rw [this, analyticOrderNatAt]
+    · rw [max_eq_right (by linarith), sq, mul_zero, mul_zero]
+  rw [hsplit, offLineSecondMoment]
+  refine Finset.sum_le_sum_of_subset_of_nonneg ?_ fun z _ _ => by positivity
+  intro ρ hρ
+  obtain ⟨hρF, hre⟩ := Finset.mem_filter.mp hρ
+  obtain ⟨hc, hlo, hhi⟩ := (Set.Finite.mem_toFinset _).mp hρF
+  obtain ⟨hxi, hre0, hre1⟩ :=
+    CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip.mp hc
+  rw [mem_stripFinsetPos]
+  exact ⟨hre0, hre1, by linarith, hhi, hxi⟩
+
+/-- **The depth-weighted local input holds for almost all window centres.**  For `W > 0` and
+`ε > 0`, for all large `T`, the centres `S ∈ [T − 1, 2T + 1]` whose window `(S − 1, S + 1]` has
+right-half depth mass `> W` have measure `≤ εT`. -/
+theorem eventually_volume_rightDepthMass_gt_le {W ε : ℝ} (hW : 0 < W) (hε : 0 < ε) :
+    ∀ᶠ T in atTop, MeasureTheory.volume
+      {S ∈ Icc (T - 1) (2 * T + 1) | W < rightDepthMass zetaZeroConfig S}
+        ≤ ENNReal.ofReal (ε * T) := by
+  set δ := ε * W / 8 with hδ
+  have hδ0 : 0 < δ := by positivity
+  have hmom : ∀ᶠ T : ℝ in atTop, offLineSecondMoment (2 * T + 2) ≤ δ * (2 * T + 2) := by
+    have h := (tendsto_offLineSecondMoment_div.eventually (gt_mem_nhds hδ0)).and
+      (eventually_gt_atTop (0 : ℝ))
+    have hlin : Tendsto (fun T : ℝ => 2 * T + 2) atTop atTop :=
+      tendsto_atTop_add_const_right _ 2 (tendsto_id.const_mul_atTop (by norm_num))
+    filter_upwards [hlin.eventually h] with T hT
+    obtain ⟨h1, h2⟩ := hT
+    rw [div_lt_iff₀ h2] at h1
+    exact h1.le
+  filter_upwards [hmom, eventually_ge_atTop (2 : ℝ)] with T hmT hT2
+  set F := (zetaZeroConfig.finite_window (T - 2) (2 * T + 2)).toFinset with hF
+  set w : ℂ → ℝ := fun ρ => (zetaZeroConfig.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ^ 2 with hw
+  have hw0 : ∀ ρ, 0 ≤ w ρ := fun ρ => by positivity
+  set g : ℝ → ENNReal := fun S => ∑ ρ ∈ F,
+    (Ico (ρ.im - 1) (ρ.im + 1)).indicator (fun _ => ENNReal.ofReal (w ρ)) S with hg
+  have hgm : Measurable g := Finset.measurable_sum _ fun ρ _ =>
+    measurable_const.indicator measurableSet_Ico
+  have hgS : ∀ S ∈ Icc (T - 1) (2 * T + 1),
+      ENNReal.ofReal (rightDepthMass zetaZeroConfig S) = g S := by
+    intro S hS
+    rw [rightDepthMass_eq_sum zetaZeroConfig hS, ENNReal.ofReal_sum_of_nonneg fun ρ _ =>
+      Set.indicator_nonneg (fun _ _ => hw0 ρ) _]
+    refine Finset.sum_congr rfl fun ρ _ => ?_
+    simp only [Set.indicator_apply]
+    split_ifs <;> simp
+  have hint : ∫⁻ S in Icc (T - 1) (2 * T + 1), g S ≤ ENNReal.ofReal (2 * ∑ ρ ∈ F, w ρ) := by
+    rw [hg, MeasureTheory.lintegral_finsetSum _ fun ρ _ =>
+      measurable_const.indicator measurableSet_Ico]
+    rw [Finset.mul_sum, ENNReal.ofReal_sum_of_nonneg fun ρ _ => by linarith [hw0 ρ]]
+    refine Finset.sum_le_sum fun ρ _ => ?_
+    rw [MeasureTheory.lintegral_indicator_const measurableSet_Ico]
+    calc ENNReal.ofReal (w ρ) * (MeasureTheory.volume.restrict (Icc (T - 1) (2 * T + 1)))
+          (Ico (ρ.im - 1) (ρ.im + 1))
+        ≤ ENNReal.ofReal (w ρ) * MeasureTheory.volume (Ico (ρ.im - 1) (ρ.im + 1)) := by
+          gcongr; exact MeasureTheory.Measure.restrict_le_self _
+      _ = ENNReal.ofReal (2 * w ρ) := by
+          rw [Real.volume_Ico, ← ENNReal.ofReal_mul (hw0 ρ)]; ring_nf
+  have hset : {S ∈ Icc (T - 1) (2 * T + 1) | W < rightDepthMass zetaZeroConfig S}
+      ⊆ {S | ENNReal.ofReal W ≤ g S} ∩ Icc (T - 1) (2 * T + 1) := by
+    rintro S ⟨hS, hlt⟩
+    exact ⟨by rw [Set.mem_setOf_eq, ← hgS S hS]; exact ENNReal.ofReal_le_ofReal hlt.le, hS⟩
+  have hsum := sum_window_le_offLineSecondMoment hT2
+  calc MeasureTheory.volume {S ∈ Icc (T - 1) (2 * T + 1) | W < rightDepthMass zetaZeroConfig S}
+      ≤ MeasureTheory.volume ({S | ENNReal.ofReal W ≤ g S} ∩ Icc (T - 1) (2 * T + 1)) :=
+        MeasureTheory.measure_mono hset
+    _ = (MeasureTheory.volume.restrict (Icc (T - 1) (2 * T + 1))) {S | ENNReal.ofReal W ≤ g S} :=
+        (MeasureTheory.Measure.restrict_apply' measurableSet_Icc).symm
+    _ ≤ (∫⁻ S in Icc (T - 1) (2 * T + 1), g S) / ENNReal.ofReal W :=
+        MeasureTheory.meas_ge_le_lintegral_div hgm.aemeasurable (by simpa using hW)
+          ENNReal.ofReal_ne_top
+    _ ≤ ENNReal.ofReal (2 * ∑ ρ ∈ F, w ρ) / ENNReal.ofReal W := by gcongr
+    _ = ENNReal.ofReal (2 * ∑ ρ ∈ F, w ρ / W) := by
+        rw [← ENNReal.ofReal_div_of_pos hW, mul_div_assoc]
+    _ ≤ ENNReal.ofReal (ε * T) := by
+        refine ENNReal.ofReal_le_ofReal ?_
+        rw [mul_div_assoc', div_le_iff₀ hW]
+        have : 2 * ∑ ρ ∈ F, w ρ ≤ 2 * (δ * (2 * T + 2)) := by
+          have := hsum.trans hmT; linarith
+        rw [hδ] at this
+        nlinarith
 
 end
 

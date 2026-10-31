@@ -1,6 +1,6 @@
 # Rotated elliptic Eisenstein series descends to the actual unipotent quotient
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** The arithmetic coset series with an actual idele rotation
   is well-defined on arithmetic Borel cosets and invariant under rotated
@@ -31,4 +31,8 @@ unproved assertions.
 ## Lean
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticRotatedEisenstein.lean`.
-Direct check pending.
+`rotatedIwasawaSection_arithmetic_coset`,
+`ellipticRotatedEisensteinSeries_right_arithmetic`,
+`ellipticEisensteinOnUnipotentQuotient`, and
+`ellipticEisensteinConstantTerm` passed direct Lean and transitive axiom audits;
+only `propext`, `Classical.choice`, and `Quot.sound` occur.
