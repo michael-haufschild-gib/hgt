@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Power-cutoff conductor heads](../1-in-progress/square-root-prime-heads-diagonalize-conductor-finite-parts.md).
+- **Source:** [Power-cutoff conductor heads](square-root-prime-heads-diagonalize-conductor-finite-parts.md).
 
 The exact weighted Mertens asymptotic is
 

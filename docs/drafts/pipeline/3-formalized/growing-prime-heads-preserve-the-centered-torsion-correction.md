@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Power-cutoff conductor heads](../1-in-progress/square-root-prime-heads-diagonalize-conductor-finite-parts.md).
+- **Source:** [Power-cutoff conductor heads](square-root-prime-heads-diagonalize-conductor-finite-parts.md).
 
 Let `u_m=c_m/sqrt(phi(m))`, `G_ml(Y)=sum_(n≤Y)u_m(n)u_l(n)/n`,
 and let `H_K,N` be the literal prime head with dilation ratios `k<K`.

@@ -13,8 +13,8 @@ So the off-line first moment `Σ m (Re ρ − ½)₊ ≤ (67/1000) V` sits at de
 **Proof.**  For `x ≤ ½`, `x₊² ≤ ½ (x − d)₊ + d x₊` (`sq_max_le`): below `d` use `x ≤ d`,
 above it `x(x − d) ≤ ½(x − d)`.  With `d = R/log V`, the tail law with Selberg's mollifier
 (`eventually_offLineTail_le_selberg`) gives `4π Σ m (x − d)₊ ≤ (g(R) + η) V` with `g(R) → 0`
-(`tendsto_selbergTailRate`), and the first moment (`eventually_offLineMoment_le_selberg_upper`) makes
-`d Σ m x₊ ≤ (67/1000) R V/log V = o(V)`.
+(`tendsto_selbergTailRate`), and the first moment (`eventually_offLineMoment_le_selberg_upper`)
+makes `d Σ m x₊ ≤ (67/1000) R V/log V = o(V)`.
 -/
 
 open Filter Topology
@@ -130,3 +130,5 @@ theorem tendsto_offLineSecondMoment_div :
 end
 
 end RHTower
+
+#print axioms RHTower.tendsto_offLineSecondMoment_div

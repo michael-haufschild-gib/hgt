@@ -62,6 +62,13 @@ private theorem lower_series_mem (l : PowerSeries F) (hl : PowerSeries.constantC
     sl2Lower (l : LaurentSeries F) ∈ laurentIwahori F :=
   sl2Lower_mem_laurentIwahori F ((valuation_powerSeries_lt_one_iff F l).mpr hl)
 
+private theorem exists_polynomial_head (n : ℕ) (u : PowerSeries F) :
+    ∃ p : Polynomial F, ∃ t : PowerSeries F,
+      p.degree < n ∧ u = (p : PowerSeries F) + PowerSeries.X ^ n * t := by
+  refine ⟨PowerSeries.trunc n u, PowerSeries.mk (fun i => PowerSeries.coeff (i + n) u),
+    PowerSeries.degree_trunc_lt u n, ?_⟩
+  exact (PowerSeries.eq_X_pow_mul_shift_add_trunc n u).trans (add_comm _ _)
+
 /-- A positive monomial translation cell has a finite upper-polynomial representative. -/
 theorem exists_upper_polynomial_translation_cell (n : ℕ) (g : SL2 (LaurentSeries F))
     (hg : g ∈ laurentIwahori F) :
@@ -72,10 +79,7 @@ theorem exists_upper_polynomial_translation_cell (n : ℕ) (g : SL2 (LaurentSeri
             sl2Diagonal (laurentXUnit F ^ n) * j := by
   obtain ⟨g₀, hg₀, rfl⟩ := hg
   obtain ⟨u, a, l, hl, he⟩ := exists_iwahori_upper_diagonal_lower F ⟨g₀, hg₀⟩
-  let p := PowerSeries.trunc (2 * n) u
-  let t := PowerSeries.mk fun i => PowerSeries.coeff (i + 2 * n) u
-  have hu : u = (p : PowerSeries F) + PowerSeries.X ^ (2 * n) * t :=
-    (PowerSeries.eq_X_pow_mul_shift_add_trunc (2 * n) u).trans (add_comm _ _)
+  obtain ⟨p, t, hp, hu⟩ := exists_polynomial_head F (2 * n) u
   let j := sl2Upper (t : LaurentSeries F) * sl2Diagonal (powerSeriesLaurentUnit F a) *
     sl2Lower ((PowerSeries.X ^ (2 * n) * l : PowerSeries F) : LaurentSeries F)
   have hl' : PowerSeries.constantCoeff (PowerSeries.X ^ (2 * n) * l) = 0 := by
@@ -86,19 +90,43 @@ theorem exists_upper_polynomial_translation_cell (n : ℕ) (g : SL2 (LaurentSeri
         (sl2Upper_mem_laurentIwahori F (valuation_powerSeries_le_one F t))
         (sl2Diagonal_powerSeriesUnit_mem_laurentIwahori F a))
       (lower_series_mem F _ hl')
-  refine ⟨p, PowerSeries.degree_trunc_lt u (2 * n), j, hj, ?_⟩
   change FiniteRingSl2.upper u * powerSeriesDiagonal F a * FiniteRingSl2.lower l = g₀ at he
-  rw [← he, map_mul, map_mul, powerSeriesSL2Map_upper,
-    powerSeriesSL2Map_diagonal, powerSeriesSL2Map_lower]
+  have hmap : sl2Upper (u : LaurentSeries F) * sl2Diagonal (powerSeriesLaurentUnit F a) *
+      sl2Lower (l : LaurentSeries F) = powerSeriesSL2Map F g₀ := by
+    calc
+      _ = powerSeriesSL2Map F
+          (FiniteRingSl2.upper u * powerSeriesDiagonal F a * FiniteRingSl2.lower l) := by
+        rw [map_mul, map_mul, powerSeriesSL2Map_upper,
+          powerSeriesSL2Map_diagonal, powerSeriesSL2Map_lower]
+      _ = _ := congrArg (powerSeriesSL2Map F) he
   have huc : (u : LaurentSeries F) = ((p : PowerSeries F) : LaurentSeries F) +
       (((laurentXUnit F ^ n : (LaurentSeries F)ˣ) : LaurentSeries F) ^ 2) *
         (t : LaurentSeries F) := by
-    rw [hu, map_add, monomial_squared_mul_series]
-  rw [huc]
+    calc
+      (u : LaurentSeries F) =
+          ((p + PowerSeries.X ^ (2 * n) * t : PowerSeries F) : LaurentSeries F) :=
+        congrArg (HahnSeries.ofPowerSeries ℤ F) hu
+      _ = _ := by rw [map_add, monomial_squared_mul_series]
   have hex := upper_gauss_translation (powerSeriesLaurentUnit F a) (laurentXUnit F ^ n)
     ((p : PowerSeries F) : LaurentSeries F) (t : LaurentSeries F) (l : LaurentSeries F)
-  rw [monomial_squared_mul_series] at hex
-  exact hex
+  refine ⟨p, hp, j, hj, ?_⟩
+  calc
+    powerSeriesSL2Map F g₀ * sl2Diagonal (laurentXUnit F ^ n) =
+        (sl2Upper (u : LaurentSeries F) * sl2Diagonal (powerSeriesLaurentUnit F a) *
+          sl2Lower (l : LaurentSeries F)) * sl2Diagonal (laurentXUnit F ^ n) :=
+      congrArg (fun z : SL2 (LaurentSeries F) => z * sl2Diagonal (laurentXUnit F ^ n)) hmap.symm
+    _ = (sl2Upper (((p : PowerSeries F) : LaurentSeries F) +
+          (((laurentXUnit F ^ n : (LaurentSeries F)ˣ) : LaurentSeries F) ^ 2) *
+            (t : LaurentSeries F)) * sl2Diagonal (powerSeriesLaurentUnit F a) *
+          sl2Lower (l : LaurentSeries F)) * sl2Diagonal (laurentXUnit F ^ n) :=
+      congrArg (fun z : LaurentSeries F => sl2Upper z *
+        sl2Diagonal (powerSeriesLaurentUnit F a) * sl2Lower (l : LaurentSeries F) *
+        sl2Diagonal (laurentXUnit F ^ n)) huc
+    _ = _ := hex.trans (congrArg
+      (fun z : LaurentSeries F => sl2Upper ((p : PowerSeries F) : LaurentSeries F) *
+        sl2Diagonal (laurentXUnit F ^ n) *
+          (sl2Upper (t : LaurentSeries F) * sl2Diagonal (powerSeriesLaurentUnit F a) * sl2Lower z))
+      (monomial_squared_mul_series F n l))
 
 end
 end GaloisForLFunctions.HTGeometry.LoopEisenstein

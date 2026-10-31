@@ -112,6 +112,12 @@ The centered fixed-prime head instead tends to
 its complementary boundary tends to `−2I(m,l)/√(φ(m)φ(l))`.
 The exact head/full-matrix identity and both ordered limits passed final
 Lean and standard-axiom audits. [Proof](../3-formalized/prime-conductor-heads-and-tails-have-opposite-torsion-limits.md).
+At cutoff `floor(N^theta)`, `0<theta≤1`, the exact leading term is
+`theta(2−theta)delta_ml log N`; the finite part is
+`(1−2theta)I/√(φ(m)φ(l))−delta_ml[log m+tau(m)+2(1−theta)gamma]`.
+The square-root head is diagonal. Scalar-identity centering retains
+`(1−theta²)B_ml`, and bands between powers carry `2(beta−alpha)B_ml`.
+[Exact formulas and final Lean audit](../3-formalized/square-root-prime-heads-diagonalize-conductor-finite-parts.md).
 The complete Gamma, pole, and successor-shell identity remains open.
 
 The [affine period identity](../3-formalized/affine-shell-correlations-select-conductor-quotients.md)

@@ -68,13 +68,12 @@ theorem normalizedRamanujanHorizonVector_norm_sq_ge
   simpa only [ite_smul, one_smul, zero_smul, sum_ite_eq', if_pos hm, ite_pow, one_pow,
     zero_pow (by decide : 2 ≠ 0), mul_one] using h
 
-/-- Bessel inequality along the ambient coercion of `stdOrthonormalBasis ℝ W`. -/
-private theorem sum_sq_inner_stdOrthonormalBasis_le
-    {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-    (W : Submodule ℝ V) [FiniteDimensional ℝ W] (x : V) :
-    (∑ j : Fin (Module.finrank ℝ W), ⟪x, ((stdOrthonormalBasis ℝ W) j : V)⟫ ^ 2) ≤ ‖x‖ ^ 2 := by
-  let b := stdOrthonormalBasis ℝ W
-  have hv : Orthonormal ℝ (fun j : Fin (Module.finrank ℝ W) => (b j : V)) := by
+/-- Bessel inequality along the ambient coercion of any finite `OrthonormalBasis` of `W`. -/
+private theorem sum_sq_inner_orthonormalBasis_le
+    {V ι : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [Fintype ι]
+    {W : Submodule ℝ V} (b : OrthonormalBasis ι ℝ W) (x : V) :
+    (∑ j : ι, ⟪x, (b j : V)⟫ ^ 2) ≤ ‖x‖ ^ 2 := by
+  have hv : Orthonormal ℝ (fun j : ι => (b j : V)) := by
     rw [orthonormal_iff_ite]
     intro i j
     rw [← W.coe_inner, orthonormal_iff_ite.mp b.orthonormal i j]
@@ -455,7 +454,7 @@ theorem tendsto_nonpositive_conductor_fraction_zero {φ : ℝ → ℝ}
     let bad_low := bad.filter (· ≤ M_low)
     let bad_high := bad.filter (fun m => ¬ m ≤ M_low)
     have hcard_split : bad.card = bad_low.card + bad_high.card :=
-      (Finset.filter_card_add_filter_neg_card_eq_card (s := bad) (p := (· ≤ M_low))).symm
+      (Finset.card_filter_add_card_filter_not (s := bad) (· ≤ M_low)).symm
     -- Low conductors: `bad_low ⊆ Icc 1 M_low`, so `bad_low.card ≤ M_low ≤ δ * M`.
     have hlow_le : (bad_low.card : ℝ) ≤ (b / 2) * (M : ℝ) := by
       have hsub_low : bad_low ⊆ Icc 1 M_low := fun m hm => by
@@ -548,6 +547,318 @@ theorem tendsto_nonpositive_conductor_fraction_zero {φ : ℝ → ℝ}
       exact_mod_cast hcard_split
     linarith only [hcardR, hlow_le, hhigh_lt]
 
+/-! ### High-conductor subspace and deterministic dimension bound -/
+
+/-- The high-conductor subspace spanned by `normalizedRamanujanHorizonVector m N`
+for `m ∈ Ioc M_low M`. -/
+def highConductorSubspace (M_low M N : ℕ) :
+    Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N)) :=
+  Submodule.span ℝ
+    (Set.range (fun m : ↥(Ioc M_low M) => normalizedRamanujanHorizonVector m.1 N))
+
+theorem highConductorSubspace_le_conductorSubspace (M_low M N : ℕ) :
+    highConductorSubspace M_low M N ≤ conductorSubspace M N := by
+  refine Submodule.span_mono ?_
+  rintro _ ⟨m, rfl⟩
+  have hm : m.1 ∈ Icc 1 M :=
+    mem_Icc.mpr ⟨(Nat.zero_le _).trans_lt (mem_Ioc.mp m.2).1, (mem_Ioc.mp m.2).2⟩
+  exact ⟨⟨m.1, hm⟩, rfl⟩
+
+theorem finrank_highConductorSubspace_eq {M_low M N : ℕ} (hN : 2 ≤ N)
+    (h2log : 2 * Real.log M < Real.log N) :
+    Module.finrank ℝ (highConductorSubspace M_low M N) = M - M_low := by
+  have hS_sub : Ioc M_low M ⊆ Icc 1 M := fun m hm =>
+    mem_Icc.mpr ⟨(Nat.zero_le _).trans_lt (mem_Ioc.mp hm).1, (mem_Ioc.mp hm).2⟩
+  have hemb : Function.Injective (fun m : ↥(Ioc M_low M) => (⟨m.1, hS_sub m.2⟩ : ↥(Icc 1 M))) :=
+    fun _ _ h => Subtype.ext (Subtype.ext_iff.mp h)
+  have hli : LinearIndependent ℝ
+      (fun m : ↥(Ioc M_low M) => normalizedRamanujanHorizonVector m.1 N) :=
+    (linearIndependent_conductorBasisFamily hN h2log).comp _ hemb
+  unfold highConductorSubspace
+  rw [finrank_span_eq_card hli, Fintype.card_coe]
+  exact Nat.card_Ioc M_low M
+
+theorem mem_highConductorSubspace_exists_coeff {M_low M N : ℕ}
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hu : u ∈ highConductorSubspace M_low M N) :
+    ∃ a : ℕ → ℝ, (∀ m, m ∉ Ioc M_low M → a m = 0) ∧
+      u = ∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N := by
+  have hS_sub : Ioc M_low M ⊆ Icc 1 M := fun m hm =>
+    mem_Icc.mpr ⟨(Nat.zero_le _).trans_lt (mem_Ioc.mp hm).1, (mem_Ioc.mp hm).2⟩
+  unfold highConductorSubspace at hu
+  rw [Submodule.mem_span_range_iff_exists_fun] at hu
+  obtain ⟨c_fn, hc_eq⟩ := hu
+  refine ⟨fun m => if hm : m ∈ Ioc M_low M then c_fn ⟨m, hm⟩ else 0,
+    fun m hm => dif_neg hm, ?_⟩
+  have h1 : (∑ x : ↥(Ioc M_low M), c_fn x • normalizedRamanujanHorizonVector x.1 N) =
+      ∑ x : ↥(Ioc M_low M),
+        (if hm : x.1 ∈ Ioc M_low M then c_fn ⟨x.1, hm⟩ else 0) •
+          normalizedRamanujanHorizonVector x.1 N :=
+    Finset.sum_congr rfl fun x _ => by simp only [dif_pos x.2]
+  have h2 := Finset.sum_coe_sort (Ioc M_low M) (fun m =>
+    (if hm : m ∈ Ioc M_low M then c_fn ⟨m, hm⟩ else 0) •
+      normalizedRamanujanHorizonVector m N)
+  have h3 : (∑ m ∈ Ioc M_low M,
+      (if hm : m ∈ Ioc M_low M then c_fn ⟨m, hm⟩ else 0) •
+        normalizedRamanujanHorizonVector m N) =
+      ∑ m ∈ Icc 1 M,
+        (if hm : m ∈ Ioc M_low M then c_fn ⟨m, hm⟩ else 0) •
+          normalizedRamanujanHorizonVector m N :=
+    Finset.sum_subset hS_sub fun m _ hm_not => by simp only [dif_neg hm_not, zero_smul]
+  exact hc_eq.symm.trans (h1.trans (h2.trans h3))
+
+theorem finrank_le_finrank_inf_highConductorSubspace_add
+    {M_low M N : ℕ} (hN : 2 ≤ N) (h2log : 2 * Real.log M < Real.log N)
+    (U : Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N)))
+    (hU : U ≤ conductorSubspace M N) :
+    Module.finrank ℝ U ≤
+      Module.finrank ℝ ↥(U ⊓ highConductorSubspace M_low M N) + M_low := by
+  have hgrass := Submodule.finrank_sup_add_finrank_inf_eq U (highConductorSubspace M_low M N)
+  have hsup_le : Module.finrank ℝ ↥(U ⊔ highConductorSubspace M_low M N) ≤ M := by
+    have hmono := Submodule.finrank_mono
+      (sup_le hU (highConductorSubspace_le_conductorSubspace M_low M N))
+    rwa [finrank_conductorSubspace_eq hN h2log] at hmono
+  rw [finrank_highConductorSubspace_eq hN h2log] at hgrass
+  omega
+
+private theorem completeWeilMatrix_apply_sum_eq (φ : ℝ → ℝ) (c : ℝ) (N M : ℕ)
+    (E₀ : ℝ) (a : ℕ → ℝ) :
+    Matrix.toEuclideanLin (completeWeilMatrix φ c N)
+        (∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N) =
+      (∑ m ∈ Icc 1 M, a m • completeWeilConductorResidual φ c N m) +
+        (∑ m ∈ Icc 1 M,
+          (a m * (completedConductorEnergy φ c m - E₀)) •
+            normalizedRamanujanHorizonVector m N) +
+        E₀ • ∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N := by
+  rw [map_sum, smul_sum, ← sum_add_distrib, ← sum_add_distrib]
+  refine sum_congr rfl fun m _ => ?_
+  rw [map_smul, smul_smul]
+  unfold completeWeilConductorResidual
+  module
+
+private theorem highConductor_unit_vector_residual_pairing_ge
+    {φ : ℝ → ℝ} {c θ E₀ : ℝ} {M_low M N : ℕ}
+    (hθ0 : 0 < θ) (hθ : θ < 1 / 2) (hE₀_pos : 0 < E₀)
+    (hM1 : 1 ≤ M) (hN4 : 4 ≤ N) (hfl_le : (M : ℝ) ≤ (N : ℝ) ^ θ)
+    (hMN : M * M ≤ N) (hLN_exp : 4 * Real.exp 7 ≤ Real.log N)
+    (hE_conc : ∀ m ∈ Ioc M_low M,
+      |completedConductorEnergy φ c m - E₀| ≤ ((1 - 2 * θ) / 6) * E₀)
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu_norm_sq : ‖u‖ ^ 2 = 1)
+    (hu_neg : completeWeilEnergy φ c N u ≤ 0)
+    {a : ℕ → ℝ} (ha_supp : ∀ m, m ∉ Ioc M_low M → a m = 0)
+    (hu_eq : u = ∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N) :
+    (∑ m ∈ Icc 1 M, a m ^ 2 ≤ 1 / (1 - 2 * θ)) ∧
+      E₀ / 2 ≤ ∑ m ∈ Icc 1 M, (-a m) * ⟪completeWeilConductorResidual φ c N m, u⟫ := by
+  have h12θ : 0 < 1 - 2 * θ := by linarith only [hθ]
+  have ha_riesz : (∑ m ∈ Icc 1 M, a m ^ 2) ≤ 1 / (1 - 2 * θ) := by
+    have hlow := ramanujanConductor_lower_riesz hM1 hN4 hfl_le a
+    rw [← hu_eq, hu_norm_sq] at hlow
+    rwa [le_div_iff₀' h12θ]
+  refine ⟨ha_riesz, ?_⟩
+  have hu_norm : ‖u‖ = 1 := by
+    have h0 := norm_nonneg u
+    nlinarith only [hu_norm_sq, h0]
+  have hW_vec : Matrix.toEuclideanLin (completeWeilMatrix φ c N) u =
+      (∑ m ∈ Icc 1 M, a m • completeWeilConductorResidual φ c N m) +
+        (∑ m ∈ Icc 1 M,
+          (a m * (completedConductorEnergy φ c m - E₀)) •
+            normalizedRamanujanHorizonVector m N) +
+        E₀ • u := by
+    have h := completeWeilMatrix_apply_sum_eq φ c N M E₀ a
+    rwa [← hu_eq] at h
+  generalize hw_def : (∑ m ∈ Icc 1 M,
+      (a m * (completedConductorEnergy φ c m - E₀)) •
+        normalizedRamanujanHorizonVector m N) = w_shift at hW_vec
+  have hW_expand : completeWeilEnergy φ c N u =
+      (∑ m ∈ Icc 1 M, a m * ⟪completeWeilConductorResidual φ c N m, u⟫) +
+        ⟪w_shift, u⟫ + E₀ := by
+    unfold completeWeilEnergy
+    rw [hW_vec, inner_add_left, inner_add_left, sum_inner, real_inner_smul_left,
+      real_inner_self_eq_norm_sq, hu_norm_sq, mul_one]
+    congr 2
+    exact sum_congr rfl fun m _ => real_inner_smul_left _ _ _
+  have hw_sq : ‖w_shift‖ ^ 2 ≤ (E₀ / 2) ^ 2 := by
+    rw [← hw_def]
+    have hup := ramanujanConductor_upper_riesz hMN hLN_exp
+      (fun m => a m * (completedConductorEnergy φ c m - E₀))
+    have hcoef : ∀ m ∈ Icc 1 M,
+        (a m * (completedConductorEnergy φ c m - E₀)) ^ 2 ≤
+          a m ^ 2 * (((1 - 2 * θ) / 6) * E₀) ^ 2 := by
+      intro m _
+      by_cases hmS : m ∈ Ioc M_low M
+      · rw [mul_pow, ← sq_abs (completedConductorEnergy φ c m - E₀)]
+        exact mul_le_mul_of_nonneg_left
+          (pow_le_pow_left₀ (abs_nonneg _) (hE_conc m hmS) 2) (sq_nonneg _)
+      · rw [ha_supp m hmS]
+        simp
+    have heta_alg : 6 * (1 / (1 - 2 * θ)) * ((1 - 2 * θ) / 6) ^ 2 ≤ 1 / 4 := by
+      have h1 : 6 * (1 / (1 - 2 * θ)) * ((1 - 2 * θ) / 6) ^ 2 = (1 - 2 * θ) / 6 := by
+        field_simp [h12θ.ne']
+      rw [h1]
+      linarith only [hθ0]
+    calc
+      _ ≤ 6 * ∑ m ∈ Icc 1 M, (a m * (completedConductorEnergy φ c m - E₀)) ^ 2 := hup
+      _ ≤ 6 * ∑ m ∈ Icc 1 M, a m ^ 2 * (((1 - 2 * θ) / 6) * E₀) ^ 2 :=
+        mul_le_mul_of_nonneg_left (sum_le_sum hcoef) (by norm_num)
+      _ = 6 * (∑ m ∈ Icc 1 M, a m ^ 2) * (((1 - 2 * θ) / 6) * E₀) ^ 2 := by
+        rw [← sum_mul, mul_assoc]
+      _ ≤ 6 * (1 / (1 - 2 * θ)) * (((1 - 2 * θ) / 6) * E₀) ^ 2 :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left ha_riesz (by norm_num)) (sq_nonneg _)
+      _ = (6 * (1 / (1 - 2 * θ)) * ((1 - 2 * θ) / 6) ^ 2) * E₀ ^ 2 := by ring
+      _ ≤ (1 / 4) * E₀ ^ 2 := mul_le_mul_of_nonneg_right heta_alg (sq_nonneg _)
+      _ = (E₀ / 2) ^ 2 := by ring
+  have hw_norm : ‖w_shift‖ ≤ E₀ / 2 := by
+    by_contra hgt
+    have hlt : E₀ / 2 < ‖w_shift‖ := lt_of_not_ge hgt
+    nlinarith only [hw_sq, hlt, hE₀_pos]
+  have hshift_ge : -(E₀ / 2) ≤ ⟪w_shift, u⟫ := by
+    have h1 : -⟪w_shift, u⟫ ≤ ‖w_shift‖ * ‖u‖ := by
+      rw [← inner_neg_left]
+      exact (real_inner_le_norm _ _).trans_eq (by rw [norm_neg])
+    rw [hu_norm, mul_one] at h1
+    linarith only [h1, hw_norm]
+  have hsum_neg : (∑ m ∈ Icc 1 M, (-a m) *
+      ⟪completeWeilConductorResidual φ c N m, u⟫) =
+      -(∑ m ∈ Icc 1 M, a m * ⟪completeWeilConductorResidual φ c N m, u⟫) := by
+    rw [← sum_neg_distrib]
+    exact sum_congr rfl fun m _ => neg_mul _ _
+  rw [hsum_neg]
+  linarith only [hu_neg, hW_expand, hshift_ge]
+
+private theorem card_orthonormalBasis_nonpos_highConductor_le
+    {ι : Type*} [Fintype ι]
+    {φ : ℝ → ℝ} {c θ E₀ : ℝ} {M_low M N : ℕ}
+    (hθ0 : 0 < θ) (hθ : θ < 1 / 2) (hE₀_pos : 0 < E₀)
+    (hM1 : 1 ≤ M) (hN4 : 4 ≤ N) (hfl_le : (M : ℝ) ≤ (N : ℝ) ^ θ)
+    (hMN : M * M ≤ N) (hLN_exp : 4 * Real.exp 7 ≤ Real.log N)
+    (hE_conc : ∀ m ∈ Ioc M_low M,
+      |completedConductorEnergy φ c m - E₀| ≤ ((1 - 2 * θ) / 6) * E₀)
+    {W : Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N))}
+    (hW_high : W ≤ highConductorSubspace M_low M N)
+    (hW_neg : ∀ u ∈ W, completeWeilEnergy φ c N u ≤ 0)
+    (b : OrthonormalBasis ι ℝ W) :
+    (Fintype.card ι : ℝ) * ((1 - 2 * θ) * E₀ ^ 2 / 4) ≤
+      ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ c N m‖ ^ 2 := by
+  have h12θ : 0 < 1 - 2 * θ := by linarith only [hθ]
+  have hex_coord : ∀ i : ι, ∃ a : ℕ → ℝ,
+      (∀ m, m ∉ Ioc M_low M → a m = 0) ∧
+      (b i : EuclideanSpace ℝ (PrimeHorizonIndex N)) =
+        ∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N :=
+    fun i => mem_highConductorSubspace_exists_coeff (hW_high (b i).2)
+  obtain ⟨A, hA⟩ := Classical.axiomOfChoice hex_coord
+  have hb_norm_sq : ∀ i : ι, ‖(b i : EuclideanSpace ℝ (PrimeHorizonIndex N))‖ ^ 2 = 1 := by
+    intro i
+    rw [← real_inner_self_eq_norm_sq, ← W.coe_inner,
+      orthonormal_iff_ite.mp b.orthonormal i i, if_pos rfl]
+  have hpair : ∀ i : ι,
+      (∑ m ∈ Icc 1 M, A i m ^ 2 ≤ 1 / (1 - 2 * θ)) ∧
+        E₀ / 2 ≤ ∑ m ∈ Icc 1 M,
+          (-A i m) * ⟪completeWeilConductorResidual φ c N m,
+            (b i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ :=
+    fun i => highConductor_unit_vector_residual_pairing_ge hθ0 hθ hE₀_pos
+      hM1 hN4 hfl_le hMN hLN_exp hE_conc (hb_norm_sq i)
+      (hW_neg _ (b i).2) (hA i).1 (hA i).2
+  generalize ht_def : (1 - 2 * θ) * E₀ / 2 = t
+  have ht_pos : 0 < t := by rw [← ht_def]; positivity
+  have hpt_young : ∀ i : ι,
+      2 * t * (E₀ / 2) ≤
+        t ^ 2 * (∑ m ∈ Icc 1 M, A i m ^ 2) +
+          ∑ m ∈ Icc 1 M,
+            ⟪completeWeilConductorResidual φ c N m,
+              (b i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ ^ 2 := by
+    intro i
+    have h1 := mul_le_mul_of_nonneg_left (hpair i).2 (by positivity : 0 ≤ 2 * t)
+    have h2 : 2 * t * (∑ m ∈ Icc 1 M,
+        (-A i m) * ⟪completeWeilConductorResidual φ c N m,
+          (b i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫) ≤
+        ∑ m ∈ Icc 1 M, (t ^ 2 * A i m ^ 2 +
+          ⟪completeWeilConductorResidual φ c N m,
+            (b i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ ^ 2) := by
+      rw [mul_sum]
+      refine sum_le_sum fun m _ => ?_
+      have hsq := sq_nonneg
+        (t * (-A i m) -
+          ⟪completeWeilConductorResidual φ c N m,
+            (b i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫)
+      nlinarith only [hsq]
+    rw [sum_add_distrib, ← mul_sum] at h2
+    exact h1.trans h2
+  have hsum_young : (Fintype.card ι : ℝ) * (t * E₀) ≤
+      t ^ 2 * ((Fintype.card ι : ℝ) * (1 / (1 - 2 * θ))) +
+        ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ c N m‖ ^ 2 := by
+    have hlhs : (∑ _i : ι, 2 * t * (E₀ / 2)) = (Fintype.card ι : ℝ) * (t * E₀) := by
+      rw [sum_const, Finset.card_univ, nsmul_eq_mul]
+      ring
+    have hrhs1 : (∑ i : ι, t ^ 2 * (∑ m ∈ Icc 1 M, A i m ^ 2)) ≤
+        t ^ 2 * ((Fintype.card ι : ℝ) * (1 / (1 - 2 * θ))) := by
+      rw [← mul_sum]
+      refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg t)
+      calc
+        (∑ i : ι, ∑ m ∈ Icc 1 M, A i m ^ 2) ≤ ∑ _i : ι, 1 / (1 - 2 * θ) :=
+          sum_le_sum fun i _ => (hpair i).1
+        _ = (Fintype.card ι : ℝ) * (1 / (1 - 2 * θ)) := by
+          rw [sum_const, Finset.card_univ, nsmul_eq_mul]
+    have hrhs2 : (∑ i : ι, ∑ m ∈ Icc 1 M,
+        ⟪completeWeilConductorResidual φ c N m,
+          (b i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ ^ 2) ≤
+        ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ c N m‖ ^ 2 := by
+      rw [Finset.sum_comm]
+      exact sum_le_sum fun m _ =>
+        sum_sq_inner_orthonormalBasis_le b (completeWeilConductorResidual φ c N m)
+    have htot := sum_le_sum (s := (Finset.univ : Finset ι)) fun i _ => hpt_young i
+    rw [hlhs, sum_add_distrib] at htot
+    exact htot.trans (add_le_add hrhs1 hrhs2)
+  have hcoef_eq : (Fintype.card ι : ℝ) * (t * E₀) -
+      t ^ 2 * ((Fintype.card ι : ℝ) * (1 / (1 - 2 * θ))) =
+      (Fintype.card ι : ℝ) * ((1 - 2 * θ) * E₀ ^ 2 / 4) := by
+    rw [← ht_def]
+    have hne : 1 - 2 * θ ≠ 0 := h12θ.ne'
+    calc
+      (Fintype.card ι : ℝ) * (((1 - 2 * θ) * E₀ / 2) * E₀) -
+          ((1 - 2 * θ) * E₀ / 2) ^ 2 * ((Fintype.card ι : ℝ) * (1 / (1 - 2 * θ))) =
+        (Fintype.card ι : ℝ) * ((1 - 2 * θ) * E₀ ^ 2 / 2 -
+          ((1 - 2 * θ) * E₀ ^ 2 / 4) * ((1 - 2 * θ) / (1 - 2 * θ))) := by ring
+      _ = (Fintype.card ι : ℝ) * ((1 - 2 * θ) * E₀ ^ 2 / 4) := by
+        rw [div_self hne]; ring
+  linarith only [hsum_young, hcoef_eq]
+
+/-- Deterministic bound on the dimension of any nonpositive subspace of
+`highConductorSubspace M_low M N` in terms of the collective complete-Weil residual energy. -/
+theorem finrank_nonpos_highConductor_subspace_le
+    {φ : ℝ → ℝ} {c θ : ℝ} {M_low M N : ℕ}
+    (hθ0 : 0 < θ) (hθ : θ < 1 / 2)
+    (hM1 : 1 ≤ M) (hN4 : 4 ≤ N) (hfl_le : (M : ℝ) ≤ (N : ℝ) ^ θ)
+    (hMN : M * M ≤ N) (hLN_exp : 4 * Real.exp 7 ≤ Real.log N)
+    (hE_conc : ∀ m ∈ Ioc M_low M,
+      |completedConductorEnergy φ c m - θ * Real.log N| ≤
+        ((1 - 2 * θ) / 6) * (θ * Real.log N))
+    (W : Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N)))
+    (hW_high : W ≤ highConductorSubspace M_low M N)
+    (hW_neg : ∀ u ∈ W, completeWeilEnergy φ c N u ≤ 0) :
+    (Module.finrank ℝ W : ℝ) ≤
+      (4 / ((1 - 2 * θ) * θ ^ 2)) *
+        ((∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ c N m‖ ^ 2) / (Real.log N) ^ 2) := by
+  have h12θ : 0 < 1 - 2 * θ := by linarith only [hθ]
+  have hLN0 : 0 < Real.log N := by linarith [Real.exp_pos 7]
+  have hcard := card_orthonormalBasis_nonpos_highConductor_le hθ0 hθ (mul_pos hθ0 hLN0)
+    hM1 hN4 hfl_le hMN hLN_exp hE_conc hW_high hW_neg (stdOrthonormalBasis ℝ W)
+  rw [Fintype.card_fin] at hcard
+  generalize (∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ c N m‖ ^ 2) = S at hcard ⊢
+  have hden : 0 < (1 - 2 * θ) * (θ * Real.log N) ^ 2 / 4 := by positivity
+  rw [← le_div_iff₀ hden] at hcard
+  refine hcard.trans_eq ?_
+  have hne1 : (1 - 2 * θ) * (θ * Real.log N) ^ 2 / 4 ≠ 0 := hden.ne'
+  have hne2 : (1 - 2 * θ) * θ ^ 2 ≠ 0 := (mul_pos h12θ (sq_pos_of_pos hθ0)).ne'
+  have hne3 : (Real.log N) ^ 2 ≠ 0 := (sq_pos_of_pos hLN0).ne'
+  rw [div_eq_iff hne1]
+  calc
+    (4 / ((1 - 2 * θ) * θ ^ 2)) * (S / (Real.log N) ^ 2) *
+        ((1 - 2 * θ) * (θ * Real.log N) ^ 2 / 4) =
+      S * (((1 - 2 * θ) * θ ^ 2) / ((1 - 2 * θ) * θ ^ 2)) *
+        ((Real.log N) ^ 2 / (Real.log N) ^ 2) := by ring
+    _ = S := by rw [div_self hne2, div_self hne3, mul_one, mul_one]
+
 /-- **Sublinear Negative Index on the Conductor Subspace (`κ(W_{N, c_N}|_{V_M}) = o(M)`).**
 For every `C²` profile `φ` supported in `[0, 1]` with `0 < ∫ φ²`, every Bombieri–Vinogradov
 exponent `0 < θ < 1 / 2`, every overlap schedule `c : ℕ → ℝ` with `∀ᶠ N, 1 ≤ c N` and
@@ -571,296 +882,60 @@ theorem tendsto_completeWeil_conductorSubspace_negIndex_div_zero {φ : ℝ → �
     exact Eventually.of_forall fun N =>
       ha.trans_le (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))
   · intro b hb
-    let δ := min (b / 2) (1 / 2)
-    have hδ0 : 0 < δ := by dsimp only [δ]; positivity
-    have hδ_b : δ ≤ b / 2 := min_le_left _ _
-    have hδ_half : δ ≤ 1 / 2 := min_le_right _ _
     have h12θ : 0 < 1 - 2 * θ := by linarith only [hθ]
-    let η := (1 - 2 * θ) / 6
-    have hη0 : 0 < η := by dsimp only [η]; positivity
-    let K_dim := 4 / ((1 - 2 * θ) * θ ^ 2)
-    have hK_dim0 : 0 < K_dim := by dsimp only [K_dim]; positivity
+    have hδ0 : 0 < min (b / 2) (1 / 2) := by positivity
+    have hη0 : 0 < (1 - 2 * θ) / 6 := by positivity
+    have hK_dim0 : 0 < 4 / ((1 - 2 * θ) * θ ^ 2) := by positivity
     have hres := tendsto_completeWeil_residual_div_mul_log_sq_zero hφ hsupp hM_int hθ0 hθ hc1 hc_lim
-    have heps : 0 < (b / 2) / K_dim := by positivity
+    have heps : 0 < (b / 2) / (4 / ((1 - 2 * θ) * θ ^ 2)) := by positivity
     filter_upwards [eventually_conductorCutoff_bounds hθ0 hθ,
       eventually_abs_completedConductorEnergy_sub_theta_log_le hφ hsupp hM_int hθ0 hθ hc1 hc_lim
         hδ0 hη0,
       hres.eventually (gt_mem_nhds heps),
       eventually_ge_atTop 4] with N hcut hE_conc hres_lt hN4
     obtain ⟨hM2, hMN, _, hfl_le, hLN_exp⟩ := hcut
-    let M := ⌊(N : ℝ) ^ θ⌋₊
-    have hM1 : 1 ≤ M := by omega
-    have hMR0 : (0 : ℝ) < M := by exact_mod_cast hM1
+    have hM1 : 1 ≤ ⌊(N : ℝ) ^ θ⌋₊ := by omega
+    have hMR0 : (0 : ℝ) < ⌊(N : ℝ) ^ θ⌋₊ := by exact_mod_cast hM1
     have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
     have hLN0 : 0 < Real.log N := by linarith [Real.exp_pos 7]
-    have h2log : 2 * Real.log M < Real.log N := by
-      have hlogM : Real.log M ≤ θ * Real.log N := by
+    have h2log : 2 * Real.log (⌊(N : ℝ) ^ θ⌋₊ : ℝ) < Real.log N := by
+      have hlogM : Real.log (⌊(N : ℝ) ^ θ⌋₊ : ℝ) ≤ θ * Real.log N := by
         have h := Real.log_le_log hMR0 hfl_le
         rwa [Real.log_rpow hN0] at h
       nlinarith only [hlogM, hθ, hLN0]
-    -- High-conductor subspace `V_high = span {v_m : m ∈ Ioc ⌊δ * M⌋₊ M}` and Grassmann dimension bound.
-    let M_low := ⌊δ * (M : ℝ)⌋₊
-    have hM_low_le_R : (M_low : ℝ) ≤ δ * (M : ℝ) := Nat.floor_le (by positivity)
-    have hM_low_le : M_low ≤ M := by
-      have hR : (M_low : ℝ) ≤ (M : ℝ) := hM_low_le_R.trans (by nlinarith only [hδ_half, hMR0])
-      exact_mod_cast hR
-    let S_high := Ioc M_low M
-    have hS_sub : S_high ⊆ Icc 1 M := fun m hm =>
-      mem_Icc.mpr ⟨(Nat.zero_le _).trans_lt (mem_Ioc.mp hm).1, (mem_Ioc.mp hm).2⟩
-    let fam_high : ↥S_high → EuclideanSpace ℝ (PrimeHorizonIndex N) :=
-      fun m => normalizedRamanujanHorizonVector m.1 N
-    let V_high : Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N)) :=
-      Submodule.span ℝ (Set.range fam_high)
-    have hV_high_le : V_high ≤ conductorSubspace M N := by
-      refine Submodule.span_mono ?_
-      rintro _ ⟨m, rfl⟩
-      exact ⟨⟨m.1, hS_sub m.2⟩, rfl⟩
-    have hV_high_dim : Module.finrank ℝ V_high = M - M_low := by
-      let emb : ↥S_high → ↥(Icc 1 M) := fun m => ⟨m.1, hS_sub m.2⟩
-      have hemb : Function.Injective emb := fun x y h => Subtype.ext (congrArg Subtype.val h)
-      have hli : LinearIndependent ℝ fam_high :=
-        (linearIndependent_conductorBasisFamily (by omega) h2log).comp emb hemb
-      dsimp only [V_high]
-      rw [finrank_span_eq_card hli, Fintype.card_coe]
-      exact Nat.card_Ioc M_low M
-    let W : Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N)) := U N ⊓ V_high
-    let d := Module.finrank ℝ W
-    have hrank_U : Module.finrank ℝ (U N) ≤ d + M_low := by
-      have hgrass := Submodule.finrank_sup_add_finrank_inf_eq (U N) V_high
-      have hsup_le : Module.finrank ℝ ↥(U N ⊔ V_high) ≤ M := by
-        have hmono := Submodule.finrank_mono (sup_le (hU_sub N) hV_high_le)
-        rwa [finrank_conductorSubspace_eq (by omega) h2log] at hmono
-      dsimp only [d, W] at hgrass ⊢
-      rw [hV_high_dim] at hgrass
-      omega
-    -- Coordinate expansion on `W = U N ⊓ V_high` via `stdOrthonormalBasis ℝ W`.
-    let e := stdOrthonormalBasis ℝ W
-    have hex_coord : ∀ i : Fin d, ∃ a : ℕ → ℝ,
-        (∀ m, m ∉ S_high → a m = 0) ∧
-        (e i : EuclideanSpace ℝ (PrimeHorizonIndex N)) =
-          ∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N := by
-      intro i
-      have hmem : (e i : EuclideanSpace ℝ (PrimeHorizonIndex N)) ∈ V_high :=
-        (Submodule.mem_inf.mp (e i).2).2
-      dsimp only [V_high] at hmem
-      obtain ⟨c_fn, hc_eq⟩ := Submodule.mem_span_range_iff_exists_fun.mp hmem
-      let a : ℕ → ℝ := fun m => if hm : m ∈ S_high then c_fn ⟨m, hm⟩ else 0
-      refine ⟨a, fun m hm => dif_neg hm, ?_⟩
-      have h1 : (∑ x : ↥S_high, c_fn x • fam_high x) =
-          ∑ x : ↥S_high, a x.1 • normalizedRamanujanHorizonVector x.1 N :=
-        Finset.sum_congr rfl fun x _ => by simp only [a, dif_pos x.2, fam_high]
-      have h2 : (∑ x : ↥S_high, a x.1 • normalizedRamanujanHorizonVector x.1 N) =
-          ∑ m ∈ S_high, a m • normalizedRamanujanHorizonVector m N :=
-        Finset.sum_coe_sort S_high (fun m => a m • normalizedRamanujanHorizonVector m N)
-      have h3 : (∑ m ∈ S_high, a m • normalizedRamanujanHorizonVector m N) =
-          ∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N :=
-        Finset.sum_subset hS_sub fun m _ hm_not => by simp only [a, dif_neg hm_not, zero_smul]
-      exact hc_eq.symm.trans (h1.trans (h2.trans h3))
-    let A : Fin d → ℕ → ℝ := fun i => (hex_coord i).choose
-    have hA_supp : ∀ i : Fin d, ∀ m, m ∉ S_high → A i m = 0 :=
-      fun i => (hex_coord i).choose_spec.1
-    have hA_eq : ∀ i : Fin d, (e i : EuclideanSpace ℝ (PrimeHorizonIndex N)) =
-        ∑ m ∈ Icc 1 M, A i m • normalizedRamanujanHorizonVector m N :=
-      fun i => (hex_coord i).choose_spec.2
-    -- Norm and Riesz bounds on each orthonormal basis vector `e i`.
-    have he_norm_sq : ∀ i : Fin d, ‖(e i : EuclideanSpace ℝ (PrimeHorizonIndex N))‖ ^ 2 = 1 := by
-      intro i
-      rw [← real_inner_self_eq_norm_sq, ← W.coe_inner,
-        orthonormal_iff_ite.mp e.orthonormal i i, if_pos rfl]
-    have he_norm : ∀ i : Fin d, ‖(e i : EuclideanSpace ℝ (PrimeHorizonIndex N))‖ = 1 := by
-      intro i
-      have hsq := he_norm_sq i
-      have h0 := norm_nonneg (e i : EuclideanSpace ℝ (PrimeHorizonIndex N))
-      nlinarith only [hsq, h0]
-    have hA_riesz : ∀ i : Fin d, (∑ m ∈ Icc 1 M, A i m ^ 2) ≤ 1 / (1 - 2 * θ) := by
-      intro i
-      have hlow := ramanujanConductor_lower_riesz hM1 hN4 hfl_le (A i)
-      rw [← hA_eq i, he_norm_sq i] at hlow
-      rwa [le_div_iff₀' h12θ]
-    -- Reference energy `E₀ = θ * log N` and pointwise trace inequality on each `e i`.
-    let E₀ := θ * Real.log N
-    have hE₀_pos : 0 < E₀ := mul_pos hθ0 hLN0
-    let W_lin := Matrix.toEuclideanLin (completeWeilMatrix φ (c N) N)
-    have hpt_trace : ∀ i : Fin d,
-        E₀ / 2 ≤ ∑ m ∈ Icc 1 M,
-          (-A i m) * ⟪completeWeilConductorResidual φ (c N) N m,
-            (e i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ := by
-      intro i
-      let u : EuclideanSpace ℝ (PrimeHorizonIndex N) := e i
-      have hu_neg : completeWeilEnergy φ (c N) N u ≤ 0 :=
-        hU_neg N u (Submodule.mem_inf.mp (e i).2).1
-      -- Expand `W_lin u` along `u = ∑ m ∈ Icc 1 M, A i m • v_m`.
-      let w_shift := ∑ m ∈ Icc 1 M,
-        (A i m * (completedConductorEnergy φ (c N) m - E₀)) •
-          normalizedRamanujanHorizonVector m N
-      have hW_expand : completeWeilEnergy φ (c N) N u =
-          (∑ m ∈ Icc 1 M, A i m * ⟪completeWeilConductorResidual φ (c N) N m, u⟫) +
-            ⟪w_shift, u⟫ + E₀ := by
-        have hW_vec : W_lin u =
-            (∑ m ∈ Icc 1 M, A i m • completeWeilConductorResidual φ (c N) N m) +
-              w_shift + E₀ • u := by
-          have hu_sum : u = ∑ m ∈ Icc 1 M, A i m • normalizedRamanujanHorizonVector m N := hA_eq i
-          conv_lhs => rw [hu_sum]
-          rw [map_sum, smul_sum]
-          dsimp only [w_shift]
-          rw [← sum_add_distrib, ← sum_add_distrib]
-          refine sum_congr rfl fun m _ => ?_
-          rw [map_smul, smul_smul]
-          unfold completeWeilConductorResidual
-          module
-        unfold completeWeilEnergy
-        change ⟪W_lin u, u⟫ = _
-        rw [hW_vec, inner_add_left, inner_add_left, sum_inner, real_inner_smul_left,
-          real_inner_self_eq_norm_sq, show ‖u‖ ^ 2 = 1 from he_norm_sq i, mul_one]
-        congr 2
-        exact sum_congr rfl fun m _ => real_inner_smul_left _ _ _
-      -- Bound `|⟪w_shift, u⟫| ≤ E₀ / 2` via `ramanujanConductor_upper_riesz` and `hE_conc`.
-      have hw_sq : ‖w_shift‖ ^ 2 ≤ (E₀ / 2) ^ 2 := by
-        have hup := ramanujanConductor_upper_riesz hMN hLN_exp
-          (fun m => A i m * (completedConductorEnergy φ (c N) m - E₀))
-        have hcoef : ∀ m ∈ Icc 1 M,
-            (A i m * (completedConductorEnergy φ (c N) m - E₀)) ^ 2 ≤
-              A i m ^ 2 * (η * E₀) ^ 2 := by
-          intro m hm
-          by_cases hmS : m ∈ S_high
-          · rw [mul_pow, ← sq_abs (completedConductorEnergy φ (c N) m - E₀)]
-            exact mul_le_mul_of_nonneg_left
-              (pow_le_pow_left₀ (abs_nonneg _) (hE_conc m hmS) 2) (sq_nonneg _)
-          · rw [hA_supp i m hmS]
-            simp
-        have heta_alg : 6 * (1 / (1 - 2 * θ)) * η ^ 2 ≤ 1 / 4 := by
-          dsimp only [η]
-          have h1 : 6 * (1 / (1 - 2 * θ)) * ((1 - 2 * θ) / 6) ^ 2 = (1 - 2 * θ) / 6 := by
-            field_simp [h12θ.ne']
-          rw [h1]
-          linarith only [hθ0]
-        calc
-          ‖w_shift‖ ^ 2 ≤ 6 * ∑ m ∈ Icc 1 M,
-              (A i m * (completedConductorEnergy φ (c N) m - E₀)) ^ 2 := hup
-          _ ≤ 6 * ∑ m ∈ Icc 1 M, A i m ^ 2 * (η * E₀) ^ 2 :=
-            mul_le_mul_of_nonneg_left (sum_le_sum hcoef) (by norm_num)
-          _ = 6 * (∑ m ∈ Icc 1 M, A i m ^ 2) * (η * E₀) ^ 2 := by rw [← sum_mul, mul_assoc]
-          _ ≤ 6 * (1 / (1 - 2 * θ)) * (η * E₀) ^ 2 :=
-            mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_left (hA_riesz i) (by norm_num)) (sq_nonneg _)
-          _ = (6 * (1 / (1 - 2 * θ)) * η ^ 2) * E₀ ^ 2 := by ring
-          _ ≤ (1 / 4) * E₀ ^ 2 := mul_le_mul_of_nonneg_right heta_alg (sq_nonneg _)
-          _ = (E₀ / 2) ^ 2 := by ring
-      have hw_norm : ‖w_shift‖ ≤ E₀ / 2 := by
-        by_contra hgt
-        have hlt : E₀ / 2 < ‖w_shift‖ := lt_of_not_ge hgt
-        nlinarith only [hw_sq, hlt, hE₀_pos]
-      have hshift_ge : -(E₀ / 2) ≤ ⟪w_shift, u⟫ := by
-        have h1 : -⟪w_shift, u⟫ ≤ ‖w_shift‖ * ‖u‖ := by
-          rw [← inner_neg_left]
-          exact (real_inner_le_norm _ _).trans_eq (by rw [norm_neg])
-        have h2 : ‖u‖ = 1 := he_norm i
-        rw [h2, mul_one] at h1
-        linarith only [h1, hw_norm]
-      have hsum_neg : (∑ m ∈ Icc 1 M, (-A i m) *
-          ⟪completeWeilConductorResidual φ (c N) N m, u⟫) =
-          -(∑ m ∈ Icc 1 M, A i m * ⟪completeWeilConductorResidual φ (c N) N m, u⟫) := by
-        rw [← sum_neg_distrib]
-        exact sum_congr rfl fun m _ => neg_mul _ _
-      rw [hsum_neg]
-      linarith only [hu_neg, hW_expand, hshift_ge]
-    -- Sum over `i : Fin d` and apply Cauchy–Schwarz + Bessel on `W`.
-    have hd_bound : (d : ℝ) ≤ K_dim *
-        ((∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) /
-          (Real.log N) ^ 2) := by
-      by_cases hd0 : d = 0
-      · simp only [hd0, Nat.cast_zero]
-        positivity
-      · have hd_pos : (0 : ℝ) < d := by exact_mod_cast Nat.pos_of_ne_zero hd0
-        have hsum_i : (d : ℝ) * (E₀ / 2) ≤
-            ∑ p ∈ (Finset.univ : Finset (Fin d)) ×ˢ Icc 1 M,
-              (-A p.1 p.2) * ⟪completeWeilConductorResidual φ (c N) N p.2,
-                (e p.1 : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ := by
-          calc
-            (d : ℝ) * (E₀ / 2) = ∑ _i : Fin d, (E₀ / 2) := by
-              rw [sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-            _ ≤ ∑ i : Fin d, ∑ m ∈ Icc 1 M,
-                  (-A i m) * ⟪completeWeilConductorResidual φ (c N) N m,
-                    (e i : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ :=
-              sum_le_sum fun i _ => hpt_trace i
-            _ = ∑ p ∈ (Finset.univ : Finset (Fin d)) ×ˢ Icc 1 M,
-                  (-A p.1 p.2) * ⟪completeWeilConductorResidual φ (c N) N p.2,
-                    (e p.1 : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ :=
-              (Finset.sum_product _ _ _).symm
-        have hcs := Finset.sum_mul_sq_le_sq_mul_sq
-          ((Finset.univ : Finset (Fin d)) ×ˢ Icc 1 M)
-          (fun p => -A p.1 p.2)
-          (fun p => ⟪completeWeilConductorResidual φ (c N) N p.2,
-            (e p.1 : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫)
-        have hfac1 : (∑ p ∈ (Finset.univ : Finset (Fin d)) ×ˢ Icc 1 M, (-A p.1 p.2) ^ 2) ≤
-            (d : ℝ) / (1 - 2 * θ) := by
-          rw [Finset.sum_product]
-          simp only [neg_sq]
-          calc
-            (∑ i : Fin d, ∑ m ∈ Icc 1 M, A i m ^ 2) ≤ ∑ _i : Fin d, 1 / (1 - 2 * θ) :=
-              sum_le_sum fun i _ => hA_riesz i
-            _ = (d : ℝ) / (1 - 2 * θ) := by
-              rw [sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one_div]
-        have hfac2 : (∑ p ∈ (Finset.univ : Finset (Fin d)) ×ˢ Icc 1 M,
-            ⟪completeWeilConductorResidual φ (c N) N p.2,
-              (e p.1 : EuclideanSpace ℝ (PrimeHorizonIndex N))⟫ ^ 2) ≤
-            ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2 := by
-          rw [Finset.sum_product, Finset.sum_comm]
-          exact sum_le_sum fun m _ =>
-            sum_sq_inner_stdOrthonormalBasis_le W (completeWeilConductorResidual φ (c N) N m)
-        have hsq_ineq : ((d : ℝ) * (E₀ / 2)) ^ 2 ≤
-            ((d : ℝ) / (1 - 2 * θ)) *
-              ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2 := by
-          calc
-            ((d : ℝ) * (E₀ / 2)) ^ 2 ≤ _ :=
-              pow_le_pow_left₀ (by positivity) hsum_i 2
-            _ ≤ _ := hcs
-            _ ≤ ((d : ℝ) / (1 - 2 * θ)) *
-                  ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2 :=
-              mul_le_mul hfac1 hfac2 (sum_nonneg fun _ _ => sq_nonneg _) (by positivity)
-        -- Cancel `d > 0` and divide by `(E₀ / 2)^2 = θ^2 * (log N)^2 / 4`.
-        have hd_mul : (d : ℝ) * ((d : ℝ) * (θ ^ 2 * (Real.log N) ^ 2 / 4)) ≤
-            (d : ℝ) * (1 / (1 - 2 * θ) *
-              ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) := by
-          have h1 : ((d : ℝ) * (E₀ / 2)) ^ 2 =
-              (d : ℝ) * ((d : ℝ) * (θ ^ 2 * (Real.log N) ^ 2 / 4)) := by
-            dsimp only [E₀]; ring
-          have h2 : ((d : ℝ) / (1 - 2 * θ)) *
-              (∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) =
-              (d : ℝ) * (1 / (1 - 2 * θ) *
-                ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) := by ring
-          linarith only [hsq_ineq, h1, h2]
-        have hd_step : (d : ℝ) * (θ ^ 2 * (Real.log N) ^ 2 / 4) ≤
-            1 / (1 - 2 * θ) *
-              ∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2 :=
-          le_of_mul_le_mul_left hd_mul hd_pos
-        have hden : 0 < θ ^ 2 * (Real.log N) ^ 2 / 4 := by positivity
-        rw [← le_div_iff₀ hden] at hd_step
-        refine hd_step.trans_eq ?_
-        dsimp only [K_dim]
-        field_simp [h12θ.ne', hθ0.ne', hLN0.ne']
-    -- Combine `finrank (U N) ≤ d + M_low` with `d / M < b / 2` and `M_low / M ≤ δ ≤ b / 2`.
-    have hd_div_lt : (d : ℝ) / (M : ℝ) < b / 2 := by
-      have h1 : K_dim *
-          ((∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) /
-            ((M : ℝ) * (Real.log N) ^ 2)) < b / 2 := by
+    have hrank_U := finrank_le_finrank_inf_highConductorSubspace_add
+      (M_low := ⌊min (b / 2) (1 / 2) * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊)
+      (by omega : 2 ≤ N) h2log (U N) (hU_sub N)
+    have hd_bound := finrank_nonpos_highConductor_subspace_le hθ0 hθ hM1 hN4 hfl_le hMN hLN_exp
+      hE_conc (U N ⊓ highConductorSubspace ⌊min (b / 2) (1 / 2) * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊
+        ⌊(N : ℝ) ^ θ⌋₊ N)
+      inf_le_right (fun u hu => hU_neg N u hu.1)
+    generalize (Module.finrank ℝ
+      ↥(U N ⊓ highConductorSubspace ⌊min (b / 2) (1 / 2) * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊
+        ⌊(N : ℝ) ^ θ⌋₊ N)) = d at hrank_U hd_bound
+    generalize (∑ m ∈ Icc 1 ⌊(N : ℝ) ^ θ⌋₊,
+      ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) = S at hd_bound hres_lt
+    have hd_div_lt : (d : ℝ) / (⌊(N : ℝ) ^ θ⌋₊ : ℝ) < b / 2 := by
+      have h1 : (4 / ((1 - 2 * θ) * θ ^ 2)) *
+          (S / ((⌊(N : ℝ) ^ θ⌋₊ : ℝ) * (Real.log N) ^ 2)) < b / 2 := by
         have := mul_lt_mul_of_pos_left hres_lt hK_dim0
         rwa [mul_div_cancel₀ _ hK_dim0.ne'] at this
       calc
-        (d : ℝ) / (M : ℝ) ≤ (K_dim *
-            ((∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) /
-              (Real.log N) ^ 2)) / (M : ℝ) :=
+        (d : ℝ) / (⌊(N : ℝ) ^ θ⌋₊ : ℝ) ≤
+            ((4 / ((1 - 2 * θ) * θ ^ 2)) * (S / (Real.log N) ^ 2)) / (⌊(N : ℝ) ^ θ⌋₊ : ℝ) :=
           div_le_div_of_nonneg_right hd_bound hMR0.le
-        _ = K_dim *
-            ((∑ m ∈ Icc 1 M, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) /
-              ((M : ℝ) * (Real.log N) ^ 2)) := by
-          field_simp [hMR0.ne', hLN0.ne']
+        _ = (4 / ((1 - 2 * θ) * θ ^ 2)) *
+            (S / ((⌊(N : ℝ) ^ θ⌋₊ : ℝ) * (Real.log N) ^ 2)) := by
+          rw [mul_div_assoc, div_div, mul_comm ((Real.log N) ^ 2) (⌊(N : ℝ) ^ θ⌋₊ : ℝ)]
         _ < b / 2 := h1
-    have hlow_div_le : (M_low : ℝ) / (M : ℝ) ≤ b / 2 := by
+    have hlow_div_le :
+        (⌊min (b / 2) (1 / 2) * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊ : ℝ) / (⌊(N : ℝ) ^ θ⌋₊ : ℝ) ≤ b / 2 := by
       rw [div_le_iff₀ hMR0]
-      exact hM_low_le_R.trans (mul_le_mul_of_nonneg_right hδ_b hMR0.le)
-    have hU_le : (Module.finrank ℝ (U N) : ℝ) / (M : ℝ) ≤
-        (d : ℝ) / (M : ℝ) + (M_low : ℝ) / (M : ℝ) := by
+      exact (Nat.floor_le (by positivity)).trans
+        (mul_le_mul_of_nonneg_right (min_le_left _ _) hMR0.le)
+    have hU_le : (Module.finrank ℝ (U N) : ℝ) / (⌊(N : ℝ) ^ θ⌋₊ : ℝ) ≤
+        (d : ℝ) / (⌊(N : ℝ) ^ θ⌋₊ : ℝ) +
+          (⌊min (b / 2) (1 / 2) * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊ : ℝ) / (⌊(N : ℝ) ^ θ⌋₊ : ℝ) := by
       rw [← add_div]
       refine div_le_div_of_nonneg_right ?_ hMR0.le
       exact_mod_cast hrank_U

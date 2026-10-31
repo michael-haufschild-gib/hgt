@@ -205,6 +205,11 @@ Subquestions:
   The centered fixed-prime head has the opposite torsion sign; the
   complementary boundary has ordered limit `−2I(m,l)/√(φ(m)φ(l))`.
   [Exact cutoff identity and Lean audit](../../drafts/pipeline/3-formalized/prime-conductor-heads-and-tails-have-opposite-torsion-limits.md).
+  At cutoff `floor(N^theta)`, `0<theta≤1`, the leading term is `theta(2−theta)delta_ml log N`
+  and the finite part is
+  `(1−2theta)I/√(φ(m)φ(l))−delta_ml[log m+tau(m)+2(1−theta)gamma]`.
+  The square-root head is diagonal; scalar-identity centering still retains
+  `(1−theta²)B_ml`. [Power and band formulas, final Lean audit](../../drafts/pipeline/3-formalized/square-root-prime-heads-diagonalize-conductor-finite-parts.md).
   The full Weil agreement-shell identity remains open.
 
 **Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**
