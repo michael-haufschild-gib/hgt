@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheGlobalPoleIsTheExtremalWeight
+import GaloisForLFunctions.RHTower.GelfondSchneider
 import Mathlib.Topology.Instances.AddCircle.DenseSubgroup
 
 /-!
@@ -35,33 +36,8 @@ local instance (p : Nat.Primes) : Fact (p : ℕ).Prime := ⟨p.2⟩
 
 /-- **Distinct primes have incommensurable logarithms.** -/
 theorem irrational_log_div_log {p q : Nat.Primes} (hpq : p ≠ q) :
-    Irrational (Real.log p / Real.log q) := by
-  rintro ⟨r, hr⟩
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast p.2.one_lt
-  have hq1 : (1 : ℝ) < q := by exact_mod_cast q.2.one_lt
-  have hlp := Real.log_pos hp1
-  have hlq := Real.log_pos hq1
-  have hrpos : (0 : ℝ) < r := by rw [hr]; exact div_pos hlp hlq
-  have hnum : 0 < r.num := Rat.num_pos.mpr (by exact_mod_cast hrpos)
-  -- `den · log p = num · log q`, hence `p^den = q^num`
-  have hcast : (r : ℝ) = (r.num : ℝ) / r.den := by
-    rw [Rat.cast_def]
-  have hden : (0 : ℝ) < r.den := by exact_mod_cast r.den_pos
-  have hrel : (r.den : ℝ) * Real.log p = (r.num.toNat : ℝ) * Real.log q := by
-    have hnn : ((r.num.toNat : ℕ) : ℝ) = (r.num : ℝ) := by
-      exact_mod_cast Int.toNat_of_nonneg hnum.le
-    rw [hnn]
-    have := hr.symm.trans hcast
-    field_simp at this
-    linarith
-  have hpow : ((p : ℕ) ^ r.den : ℕ) = (q : ℕ) ^ r.num.toNat := by
-    have h := congrArg Real.exp hrel
-    rw [← Real.log_pow, ← Real.log_pow, Real.exp_log (by positivity),
-      Real.exp_log (by positivity)] at h
-    exact_mod_cast h
-  have hdvd : (p : ℕ) ∣ (q : ℕ) ^ r.num.toNat := by
-    rw [← hpow]; exact dvd_pow_self _ r.den_pos.ne'
-  exact hpq (Subtype.ext ((Nat.prime_dvd_prime_iff_eq p.2 q.2).mp (p.2.dvd_of_dvd_pow hdvd)))
+    Irrational (Real.log p / Real.log q) :=
+  GaloisForLFunctions.RHTower.irrational_log_ratio q.2 p.2 fun h => hpq (Subtype.ext h.symm)
 
 /-- **Two primes: the exponents are dense.** -/
 theorem dense_exponents_pair {p q : Nat.Primes} (hpq : p ≠ q) :

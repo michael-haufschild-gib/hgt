@@ -36,6 +36,9 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.RenormalizedArithmeticPo
 
 namespace GaloisForLFunctions.RenormalizedIntersectionTheory
 
+/-- The tilted unit spline, the profile of the atoms. -/
+local notation "φ₀" => SpacingScaleHarmonicAnalysis.tiltedUnitSpline
+
 section Codimension
 
 variable {I : Type*} [Fintype I] [DecidableEq I] {A : Matrix I I ℝ}
@@ -97,10 +100,10 @@ theorem eventually_completeWeil_hodgeIndex_iteratedLog {α : ℝ} (hα : 0 < α)
     ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log (Real.log (N : ℝ)) ^ α →
       ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
         ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
-          0 ≤ ⟪Matrix.toEuclideanLin (completeWeilMatrix SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N) x, x⟫ := by
+          0 ≤ ⟪Matrix.toEuclideanLin (completeWeilMatrix φ₀ c N) x, x⟫ := by
   filter_upwards [eventually_tiltedUnitSpline_completeWeilMatrix_posDef_iteratedLog hα hα16]
     with N hN c hc hcup x _
-  exact energy_nonneg_of_posDef (completeWeilMatrix_isHermitian SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N)
+  exact energy_nonneg_of_posDef (completeWeilMatrix_isHermitian φ₀ c N)
     (hN c hc hcup) x
 
 /-- **RH gives the Hodge index at logarithmic overlap.** -/
@@ -108,7 +111,7 @@ theorem eventually_completeWeil_hodgeIndex_log_of_RH {α : ℝ} (hα : 1 / 4 < �
     (hRH : RiemannHypothesis) :
     ∀ᶠ N : ℕ in atTop, ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
       ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
-        0 ≤ completeWeilEnergy SpacingScaleHarmonicAnalysis.tiltedUnitSpline (2 * Real.log N ^ α) N x := by
+        0 ≤ completeWeilEnergy φ₀ (2 * Real.log N ^ α) N x := by
   filter_upwards [(riemannHypothesis_iff_tiltedUnitSpline_completeWeil_nonneg_log hα).mp hRH]
     with N hN x _
   exact hN x
@@ -116,10 +119,10 @@ theorem eventually_completeWeil_hodgeIndex_log_of_RH {α : ℝ} (hα : 1 / 4 < �
 /-- **The Hodge index at an overlap leaves at most one negative eigenvalue there.** -/
 theorem completeWeil_eigenvalues_nonneg_or_of_hodgeIndex {c : ℝ} {N : ℕ}
     (h : ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
-      ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 → 0 ≤ completeWeilEnergy SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N x)
+      ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 → 0 ≤ completeWeilEnergy φ₀ c N x)
     {i j : PrimeHorizonIndex N} (hij : i ≠ j) :
-    0 ≤ (completeWeilMatrix_isHermitian SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N).eigenvalues i ∨
-      0 ≤ (completeWeilMatrix_isHermitian SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N).eigenvalues j :=
+    0 ≤ (completeWeilMatrix_isHermitian φ₀ c N).eigenvalues i ∨
+      0 ≤ (completeWeilMatrix_isHermitian φ₀ c N).eigenvalues j :=
   eigenvalues_nonneg_or_of_nonneg_on_orthogonal _ _ h hij
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory

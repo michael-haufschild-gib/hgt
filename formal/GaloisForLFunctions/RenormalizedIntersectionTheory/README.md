@@ -39,6 +39,10 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Integer slopes | `integerSlopes`, `finHorizon` | the atoms `1, …, N` of the complete Weil matrix |
 | Glued test index | `gluedTestIndex` | supremum over tests of the index of `K_{λ,g}` glued to the archimedean successor |
 | `S`-unit group; renormalized infinite product | `sUnitHom`, `sUnits`, `halfPole`, `infTensorPole` | `∏_p ½(χ_p + χ_p⁻¹)` |
+| Hadamard powers | `fun u => zetaKernel u ^ (n + 1)` | restriction of the tensor powers to the diagonal |
+| Sign gauge, harmonic sum, alignment | `gaugeHarmonicSum`, `SmallAlignment` | `S_N(ω) = Σ_{n≤N} ω(n)/n`, the pole moment of the twin's top; small: `S_N² = o(log N)` |
+| Atomic pole index | `HeckeKreinToeplitz.poleNegIndex`, `gaugeAtomMatrix` | index of `D·1 − P_N(ω·)` on `Σ x_n/√n = 0` |
+| Heat dilation kernel | `AdelicKreinGeometry.heatDilationKernel` | the correlation of `H_t`, glued as `heatArchState` |
 
 ## 3. Language
 
@@ -52,6 +56,9 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 - **Archimedean weight**: one that agrees on the primes of `S` with `u ↦ u^s`.
 - **Exponents**: `log |u|` on the `S`-units, the dilation factors of the extremal weight.
 - **All-or-nothing**: an index that only takes the values `0` and `∞`.
+- **Hodge defect**: the hyperplane index `boostPolarIndex K`; the Hodge index is defect `0`.
+- **Alignment** of a sign gauge `ω`: `S_N(ω)/H_N`, the cosine between its top vector `ω(n)n^{−1/2}`
+  and the pole; `ζ` is totally aligned, `S_N(1) = H_N`.
 
 ## 4. Mechanisms
 
@@ -86,6 +93,25 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 10. On integer slopes the boost functional is `√(log N)⟨·, v_1⟩`.
 11. A single eigenvalue below `T` and a floor `L` give `⟨Ax, x⟩ ≥ T‖x‖² − (T − L)⟨x, e⟩²`, and
    orthogonality to `v_1` bounds `⟨x, e⟩` by the projection error of `v_1`.
+12. Codimension one: two negative eigenvectors span a plane that meets every hyperplane, so
+   positivity on one hyperplane leaves at most one negative eigenvalue.
+
+**Powers.**
+13. Schur: the Hadamard product is the tensor kernel restricted to the diagonal, so positive times
+   positive is positive; a positive-definite power bounds `‖K_ζ‖`, which is RH.
+14. Unless RH, `K_ζ` has a positive square; tensoring it with every negative square of `K_ζ` embeds
+   the index of `K_ζ` into that of its square.
+
+**Selection.**
+15. Alignment: project the twin's top `ω(n)n^{−1/2}` onto the pole hyperplane with coefficient
+   `s = S_N/H_N`; the twin of the projection is the pole minus `s` times the twin's top, and the
+   polarized ground-state identity prices the projection at `O(S_N²) + O(|S_N|)`, negligible against
+   `ε log N` once `S_N² = o(log N)`.
+
+**Heat.**
+16. The heat kernel `K_t` is a finite sum of Jordan pair kernels at the nonreal right zeros of `H_t`;
+   the archimedean glue adds one square, so the Hodge defect of `K_t` is the zero count, which only
+   drops, by one per conjugate pair colliding on the real line.
 
 ## 5. Pillar theorems
 
@@ -108,6 +134,11 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Künneth spectral identity: the diagonal square has the sums `ρ + ρ'` as frequencies | `kunnethZeta_eq_tsum`, `zetaKernel_sq_eq_tsum` | unconditional |
 | Pole class on integer slopes = complete-Weil ground conductor | `boostMassU_integerSlopes_eq_inner`, `boostMassU_integerSlopes_eq_zero_iff` | unconditional |
 | Hodge index with gap at every fixed overlap | `eventually_completeWeil_floor_on_poleHyperplane` | unconditional |
+| Hodge index at iterated-logarithmic overlap; RH gives it at logarithmic overlap; it leaves at most one negative eigenvalue | `eventually_completeWeil_hodgeIndex_iteratedLog`, `eventually_completeWeil_hodgeIndex_log_of_RH`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`, `completeWeil_eigenvalues_nonneg_or_of_hodgeIndex` | unconditional; implication |
+| Schur product; every Hadamard power of `K_ζ` is RH | `isPosDefKernel_mul`, `isPosDefKernel_pow`, `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `riemannHypothesis_iff_negIndex_zetaKernel_pow_eq_zero` | unconditional; equivalences |
+| The Künneth square dominates the index; a finite Künneth index is Lindelöf and a zero-free half-plane | `negIndex_zetaKernel_le_negIndex_kunnethZeta`, `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top` | unconditional; implications |
+| The Hodge index selects `ζ` against every twin of small alignment, the Liouville twin included | `exists_twin_top_on_pole_hyperplane`, `eventually_poleNegIndex_window_of_smallAlignment`, `smallAlignment_liouvilleSign` | unconditional |
+| Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 
 ## 6. Tools
 
@@ -121,14 +152,20 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 - Continuity of zero-side exponential sums on the strip and density transfer from `ℚ_{>0}` to `ℝ`.
 - Single-window Rayleigh bound and orthogonal-overlap bound for spectral windows.
 - Pole-class identity between the archimedean glue and the complete Weil matrix.
+- Codimension-one bound: hyperplane positivity leaves at most one negative eigenvalue.
+- Schur product for kernels on groups through the Künneth law.
+- Alignment calculus for sign gauges: projection of the twin's top onto the pole hyperplane and
+  its price, uniform in the gauge.
+- Hodge defects of the heat kernels, read off the glued heat states.
 
 **To build.**
-- Index lower bounds for Hadamard powers, graded by weight layers.
-- The positive index of `K_ζ` (expected infinite; with it the Künneth square is all-or-nothing).
-- Hyperplane positivity of the complete Weil matrix along growing overlap schedules.
-- A function-field version of the extremal-weight gluing theorem (the quantization of its exponents is proved).
-- The heat flow as a homotopy of Pontryagin spaces: a zero configuration of `H_t` and its glued
-  state, with index the nonreal right zeros of `H_t` plus one.
+- Placement of the off-line negative direction on the pole hyperplane at logarithmic overlap: with
+  it the Hodge index at logarithmic overlap is RH.
+- A test whose transform has no real zeros inside the corpus's test class, giving `κ₊(K_ζ) = ∞` and
+  with it the all-or-nothing Künneth square.
+- Alignment bounds for sign gauges with `S_N = o(log N)` but not `o(√log N)`.
+- A function-field version of the extremal-weight gluing theorem (the quantization of its exponents
+  is proved).
 
 ## 7. Questions and answers
 
@@ -137,22 +174,25 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Is the global pole a product-formula coupling of local poles with one square? | Not as a sum (`|S|` squares), nor as a tensor product (`2^{|S|−1}`), nor as the renormalized product over all primes (infinite index, global pole of weight `2^{−|S|} → 0`); exactly as the extremal weight of the tensor product, which the product formula makes the archimedean pole and which is the only archimedean-continuous weight. The one square must be supplied by the archimedean place. |
 | Is the renormalized pairing definite on the pole-orthogonal hyperplane? | This is RH (`riemannHypothesis_iff_hyperplane_nonneg`). At every fixed overlap the complete Weil form is positive there with a gap above the pole energy. |
 | What is Castelnuovo–Severi for `Γ_u`? | `‖K_ζ(u)‖ ≤ K_ζ(1)` at every rational scale; it is RH, and any uniform bound on `K_ζ` already is. |
-| Does the Künneth square soften the sign? | No: it is positive iff RH; its diagonal carries the sums `ρ + ρ'`; with infinitely many positive squares its index is `0` or `∞`. |
+| Does the Künneth square soften the sign? | No: it is positive iff RH, and so is every Hadamard power; its diagonal carries the sums `ρ + ρ'`; its index dominates `κ(K_ζ)`, so a finite Künneth index already gives Lindelöf and a zero-free half-plane; with infinitely many positive squares its index is `0` or `∞`. |
 | What is the canonical counterterm and finite part? | The running counterterm `log N − γ` (Mertens); over `𝔽_q[T]` the ceiling is exact (`ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact`); no fixed counterterm works (`AdelicKreinGeometry.NoFixedCountertermMakesThePrimeKernelPontryagin`). |
 | Is the collision quantum an index? | The hyperplane index is bounded by the largest horizontal collision charge; on the finite stratum the collision mass is twice the index plus the multiplicity excess (HKT). |
 | What separates `ℤ` from `𝔽_q[T]`? | Density of the extremal weight: dense exponents for two primes, a lattice over one prime and over `𝔽_q[T]`. |
-| Why are negative directions confined to low conductors? | At fixed overlap: the low spectrum lives on the low conductors (`RenormalizedArithmeticPotentialTheory.TheLowCompleteWeilSpectrumLivesOnTheLowConductors`), the pole class carries the bottom and the hyperplane sits a gap above it. At growing overlap: open; it is the logarithmic-reserve question of the complete Weil matrix. |
-| Does the pairing select `ζ` among its twins? | The glued index is blind to the pole and to unitary twists, but the glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. |
+| Why are negative directions confined to low conductors? | At fixed overlap: the low spectrum lives on the low conductors (`RenormalizedArithmeticPotentialTheory.TheLowCompleteWeilSpectrumLivesOnTheLowConductors`), the pole class carries the bottom and the hyperplane sits a gap above it. At iterated-logarithmic overlap the Hodge index holds. At logarithmic overlap RH gives it, and it leaves at most one negative eigenvalue; whether it is RH there is the placement question of §6. |
+| Does the pairing select `ζ` among its twins? | Yes, by two mechanisms. The glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. At atomic resolution the Hodge index holds for `ζ` and fails for every twin of small alignment, the Liouville twin included: `ζ` is totally aligned with its pole, a twin of small alignment points its top into the hyperplane. |
+| Is the heat flow a homotopy of glued states? | Yes: the Hodge defect of `K_t` is the number of nonreal right zeros of `H_t`; it is nonincreasing, drops by one per colliding pair, vanishes for `t ≥ 1/8`; RH is the Hodge index along the whole flow, and finite defect at `t = 0` is bounded defect along the flow. |
 | What is `h⁰` on the scaling surface? | Outside RIT: the theta log-volume `h⁰` of `Spec ℤ` has exact Riemann–Roch (`ArithmeticOrientationGeometry.TheThetaH0OfSpecZ`); on the scaling surface a sign-free Serre-dual pair with subquadratic degree-zero growth is RH (`SelectivePositivityAndThresholdLaws`). |
 
 ## 8. Open research topics
 
-1. Hyperplane positivity of the complete Weil matrix at growing overlap (polynomial confinement).
-2. The positive index of `K_ζ` and index laws for Hadamard powers.
-3. The heat flow as a homotopy of finite-index glued states, with index jumps at collisions.
-4. A selection input on the pole-orthogonal hyperplane for twins that are not finite flips (the
-   Liouville twin flips every prime): the glued state is blind to the pole and to unitary twists.
-5. A sign-free `h⁰` on the scaling surface with quadratic growth, in the language of the pairing.
+1. The Hodge index at logarithmic overlap: does positivity on `v_1^⊥` force positivity on the whole
+   space (the one possible negative eigenvalue is carried by the pole class)? With the RH
+   equivalence at logarithmic overlap this would make the finite-resolution Hodge index RH.
+2. The positive index of `K_ζ`: under RH it counts the critical zeros the cubic spline sees; it is
+   infinite as soon as the test transform avoids infinitely many critical ordinates.
+3. Twins between the two selection mechanisms: infinite flip sets whose alignment tends to `0`
+   slower than `(log N)^{−1/2}`.
+4. A sign-free `h⁰` on the scaling surface with quadratic growth, in the language of the pairing.
 
 ## 9. Traps
 
@@ -168,6 +208,9 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | The archimedean place is one more place | Its exponents are dense once two primes are present |
 | A fixed counterterm renormalizes the diagonal | Only the running counterterm `log N − γ` does |
 | Positivity at fixed overlap is a step toward RH | It holds unconditionally, with a gap on the hyperplane; RH needs growing overlap |
+| A Hadamard power or tensor square is an easier sign problem | Every Hadamard power is RH; a finite Künneth index already carries the finite stratum |
+| The Liouville twin escapes selection because it flips every prime | Its alignment is bounded, so the atomic Hodge index rejects it |
+| The heat flow could create Hodge defect | The defect only drops, one per colliding pair |
 
 ## 10. Context
 
@@ -213,5 +256,9 @@ complete Weil matrix. On that hyperplane positivity holds at every fixed overlap
 positivity at every resolution is RH. Castelnuovo–Severi for the rational scaling correspondences, a
 uniform bound on `K_ζ`, positivity of the Künneth square and glued test index one are each RH: the
 intersection-theoretic reformulations do not soften the problem; they concentrate it on one
-hyperplane and one function. The glued index is blind to the pole yet separates `ζ` from every finite
-flip twin, so the selection input exists inside the pairing; what is missing is the sign.
+hyperplane and one function; so does every Hadamard power. Selection exists inside the pairing:
+the glued test index separates `ζ` from every finite flip twin, and the alignment of a twin's top
+with the pole separates it from the Liouville twin and every twin of small alignment. The heat flow
+deforms the glued state through finite-index states, paying one unit of Hodge defect per collision,
+to the Hodge-index state at `t = 1/8`. What is missing is the sign at growing resolution: the Hodge
+index holds at iterated-logarithmic overlap, and at logarithmic overlap it is RH up to one square.

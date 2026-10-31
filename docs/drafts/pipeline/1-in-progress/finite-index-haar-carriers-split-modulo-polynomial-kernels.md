@@ -32,6 +32,6 @@ The converse requires no new analytic input. For a finite-rank kernel `Q` of col
 
 Hence any decomposition `k=p+ψ∘slope+Q` with positive Haar `p` and Hermitian `ψ` satisfies `κ(k)<∞ ↔ κ(ψ)<∞`. If `Q` is Hermitian and zero on both axes and `ψ(1)=0`, then `k` is Hermitian with the Haar successor. These conditions, together with finite index of `ψ`, therefore characterize the kernels in the statement; the full equivalence remains pending Lean audit.
 
-The complete equivalence and symmetric rank bound await Lean formalization.
+`HeckeKreinToeplitz/Index/FiniteRankStability.lean` formalizes both rank bounds and preservation of finite index, with a direct audit and standard axiom closure. The complete equivalence remains pending.
 
 A [polynomial quadrature argument](haar-addition-preserves-index-on-polynomial-translation-fibres.md) further gives the exact residual law `κ(k)=κ(ψ∘slope+Q)` and the sharper lower bound `κ(ψ)≤κ(k)` on paper. It reproduces polynomial Gram entries while the positive Haar matrix tends to zero. These stronger statements remain pending Lean verification; no index additivity between `ψ` and `Q` is asserted.

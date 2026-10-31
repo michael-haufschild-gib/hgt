@@ -27,11 +27,22 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `kunnethZeta_eq_tsum`, `zetaKernel_sq_eq_tsum`.
 - Castelnuovo–Severi: `riemannHypothesis_of_norm_zetaKernel_le`, `riemannHypothesis_iff_castelnuovoSeveri`.
 - Selection: `gluedTestIndex_vonMangoldt`, `gluedTestIndex_finiteFlip_eq_top`,
-  `riemannHypothesis_iff_gluedTestIndex_eq_one`.
+  `riemannHypothesis_iff_gluedTestIndex_eq_one`; alignment: `exists_twin_top_on_pole_hyperplane`,
+  `eventually_poleNegIndex_window_of_smallAlignment`, `smallAlignment_liouvilleSign`.
+- Hadamard powers: `isPosDefKernel_mul`, `isPosDefKernel_pow`,
+  `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`,
+  `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top`.
+- Growing overlap: `eventually_completeWeil_hodgeIndex_iteratedLog`,
+  `eventually_completeWeil_hodgeIndex_log_of_RH`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
+- Heat flow: `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`,
+  `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`,
+  `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat`.
+- Density: `not_dense_exponents_of_quantized` (commensurable place sizes, `𝔽_q[T]`).
 
 ## Open
-Positive index of `K_ζ` (all-or-nothing Künneth square for ζ); Hadamard-power index laws; hyperplane
-positivity at growing overlap; heat flow as a homotopy of glued states; Liouville-type twins.
+Hodge index at logarithmic overlap ⇒ full positivity (placement of the off-line direction on the pole
+hyperplane at finite resolution); positive index of `K_ζ` (critical zeros seen by the cubic spline);
+twins with alignment `o(1)` but not `o((log N)^{−1/2})`; sign-free `h⁰` on the scaling surface.
 
 ## Log
 - 2026-10-31 — created; formalized pillars listed above
