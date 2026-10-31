@@ -42,4 +42,6 @@ Local periodicity, the orthogonal cyclic projections, and moving-subspace positi
 
 `AdelicKreinGeometry/Haar/TranslationForms.lean` proves Hermitian symmetry, nonnegativity, uniform boundedness, affine covariance, and monotonicity under enlargement of cyclic subgroups. It passed a direct audit with standard axiom closure.
 
-Affine invariance of the limit and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.
+`AdelicKreinGeometry/Haar/MovingLimit.lean` proves convergence, affine invariance, and translation invariance of the discarded form. Its direct audit passed with standard axiom closure.
+
+The positive coefficient, preservation of the Haar successor, and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.

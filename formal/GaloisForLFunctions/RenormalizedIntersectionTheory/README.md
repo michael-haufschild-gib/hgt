@@ -101,7 +101,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | The extremal pair has one square and is the archimedean pole on the `S`-units | `negIndex_extremalPair`, `archBoost_sUnit_eq_weightChar_empty`, `archPole_sUnit_eq_extremalPair` | unconditional |
 | The archimedean weights are exactly the extremal ones | `exists_cpow_weightChar_iff` | unconditional |
 | The renormalized infinite product of the local poles has infinite index and gives the global pole weight `2^{−|S|}` on the `S`-units | `infTensorPole_sUnit`, `negIndex_infTensorPole_comp_sUnits`, `negIndex_infTensorPole_eq_top`, `infTensorPole_sUnit_eq_arch_add` | unconditional |
-| Exponents: dense for two primes, quantized for one | `irrational_log_div_log`, `dense_exponents_pair`, `not_dense_exponents_single`, `log_norm_archBoost_sUnit` | unconditional |
+| Exponents: dense for two primes; quantized for one prime and for commensurable place sizes (`𝔽_q[T]`) | `irrational_log_div_log`, `dense_exponents_pair`, `not_dense_exponents_single`, `not_dense_exponents_of_quantized`, `log_norm_archBoost_sUnit` | unconditional |
 | Künneth inertia law | `hermIndex_kronecker_le_negIndex_tensor`, `negIndex_tensorKernel_le`, `negIndex_tensorKernel_eq_zero`, `negIndex_tensorKernel_self_eq_zero_or_top`, `negIndex_mul_le_negIndex_tensorKernel` | unconditional |
 | A bounded Weil kernel is RH; Castelnuovo–Severi for rational scaling correspondences is RH | `riemannHypothesis_of_norm_zetaKernel_le`, `riemannHypothesis_iff_castelnuovoSeveri` | implication; equivalence |
 | `K_ζ` has a positive square unless RH; the Künneth square of `K_ζ` is RH | `riemannHypothesis_of_posIndex_zetaKernel_eq_zero`, `riemannHypothesis_iff_negIndex_kunnethZeta_eq_zero` | implication; equivalence |
@@ -126,7 +126,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 - Index lower bounds for Hadamard powers, graded by weight layers.
 - The positive index of `K_ζ` (expected infinite; with it the Künneth square is all-or-nothing).
 - Hyperplane positivity of the complete Weil matrix along growing overlap schedules.
-- A function-field version of the extremal-weight theorem with the quantized factor `q`.
+- A function-field version of the extremal-weight gluing theorem (the quantization of its exponents is proved).
 - The heat flow as a homotopy of Pontryagin spaces: a zero configuration of `H_t` and its glued
   state, with index the nonreal right zeros of `H_t` plus one.
 

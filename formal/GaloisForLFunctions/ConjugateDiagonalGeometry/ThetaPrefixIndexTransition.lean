@@ -186,7 +186,7 @@ theorem pencilCollisionOperator_one (T : ℝ) (n N : ℕ) :
 /-- Every point on any of the four boundary edges of `[z₁.re, z₂.re] × [z₁.im, z₂.im]` lies in the
 image of `rectangleBoundaryPath z₁ z₂`. -/
 private lemma exists_rectangleBoundaryPath_eq_of_mem_boundary {z₁ z₂ z : ℂ}
-    (hre : z₁.re ≤ z₂.re) (him : z₁.im ≤ z₂.im)
+    (hre : z₁.re ≤ z₂.re) (_ : z₁.im ≤ z₂.im)
     (hx : z₁.re ≤ z.re ∧ z.re ≤ z₂.re) (hy : z₁.im ≤ z.im ∧ z.im ≤ z₂.im)
     (hedge : z.re = z₁.re ∨ z.re = z₂.re ∨ z.im = z₁.im ∨ z.im = z₂.im) :
     ∃ t : ℝ, _root_.RHTower.rectangleBoundaryPath z₁ z₂ t = z := by
@@ -206,7 +206,7 @@ private lemma exists_rectangleBoundaryPath_eq_of_mem_boundary {z₁ z₂ z : ℂ
         _root_.RHTower.rectangleEdgePath, if_pos hτ4]
       apply Complex.ext
       · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-          Complex.ofReal_im, Complex.I_im, mul_zero, sub_zero, add_zero]
+          Complex.ofReal_im, Complex.I_im, mul_zero]
         dsimp [τ]; field_simp [hdx.ne']; ring
       · simp [hy1]
   · have hy1_lt : z₁.im < z.im := lt_of_le_of_ne hy.1 (Ne.symm hy1)
@@ -228,7 +228,7 @@ private lemma exists_rectangleBoundaryPath_eq_of_mem_boundary {z₁ z₂ z : ℂ
       apply Complex.ext
       · simp [hx2]
       · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
-          Complex.ofReal_re, Complex.I_im, mul_one, add_zero, zero_add]
+          Complex.ofReal_re, Complex.I_im, mul_one, zero_add]
         dsimp [τ]; field_simp [hdy.ne']; ring
     · have hx2_lt : z.re < z₂.re := lt_of_le_of_ne hx.2 hx2
       have hre_lt : z₁.re < z₂.re := hx.1.trans_lt hx2_lt
@@ -249,7 +249,7 @@ private lemma exists_rectangleBoundaryPath_eq_of_mem_boundary {z₁ z₂ z : ℂ
           if_pos hτ_le]
         apply Complex.ext
         · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-            Complex.ofReal_im, Complex.I_im, mul_zero, sub_zero, add_zero]
+            Complex.ofReal_im, Complex.I_im, mul_zero]
           dsimp [τ]; field_simp [hdx.ne']; ring
         · simp [hy2]
       · have hy2_lt : z.im < z₂.im := lt_of_le_of_ne hy.2 hy2
@@ -275,7 +275,7 @@ private lemma exists_rectangleBoundaryPath_eq_of_mem_boundary {z₁ z₂ z : ℂ
         apply Complex.ext
         · simp [hx1]
         · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
-            Complex.ofReal_re, Complex.I_im, mul_one, add_zero, zero_add]
+            Complex.ofReal_re, Complex.I_im, mul_one, zero_add]
           dsimp [τ]; field_simp [hdy.ne']; ring
 
 /-- Finite set of zeros of `finiteThetaShellPencil N θ` (`θ ∈ [0, 1]`) strictly enclosed by the
@@ -642,14 +642,12 @@ theorem fredholmIndex_integerThetaCollisionOperator_eq_pairSum (T : ℝ) (n N : 
       (_root_.RHTower.rectangleBoundaryPath
         (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t) ≠ 0 := by
     simpa only [finiteThetaShellPencil_zero] using hbdry
-  have hm_eq : (fun w => (analyticOrderAt (finiteThetaShellPencil N 0) w).toNat) =
-      fun w => (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) w).toNat := by
-    have hfun : finiteThetaShellPencil N 0 = _root_.RHTower.finiteThetaAmplitude N :=
-      funext (finiteThetaShellPencil_zero N)
-    rw [hfun]
+  have hfun : finiteThetaShellPencil N 0 = _root_.RHTower.finiteThetaAmplitude N :=
+    funext (finiteThetaShellPencil_zero N)
   have hmain := fredholmIndex_pencilCollisionOperator_eq_pairSum T n N ⟨le_rfl, zero_le_one⟩
     hbdry0 hellipse
-  simpa only [pencilLaurentLoop_zero, pencilCollisionOperator_zero, hm_eq] using hmain
+  simpa only [pencilLaurentLoop_zero, pencilCollisionOperator_zero, prefixEnclosedZeros, hfun]
+    using hmain
 
 /-- **Critical-line collar zero-index theorem.**
 Whenever `finiteThetaAmplitude N` avoids `∂R_{T,n}` and every enclosed zero lies in the collar
@@ -669,11 +667,14 @@ theorem fredholmIndex_integerThetaCollisionOperator_eq_zero_of_collar (T : ℝ) 
     intro z hz w hw
     have hz_c := abs_lt.mp (hcollar z hz)
     have hw_c := abs_lt.mp (hcollar w hw)
+    have h42 : 1 / (4 * (zhukovskyStage n : ℝ)) + 1 / (4 * (zhukovskyStage n : ℝ)) =
+        1 / (2 * (zhukovskyStage n : ℝ)) := by ring
     have hdiff_re : (z - w).re - 1 / 2 < -zhukovskyMajorAxis n := by
       rw [Complex.sub_re, zhukovskyMajorAxis]
       linarith
     have ha_pos := zhukovskyMajorAxis_pos n
-    have hsq : zhukovskyMajorAxis n ^ 2 < ((z - w).re - 1 / 2) ^ 2 := by nlinarith
+    have hsq : zhukovskyMajorAxis n ^ 2 < ((z - w).re - 1 / 2) ^ 2 := by
+      nlinarith [ha_pos, hdiff_re]
     unfold zhukovskyEllipseForm
     have hdiv : 1 < ((z - w).re - 1 / 2) ^ 2 / zhukovskyMajorAxis n ^ 2 :=
       (one_lt_div (sq_pos_of_pos ha_pos)).mpr hsq
@@ -849,16 +850,17 @@ private lemma pencilWindowDegree_clamp_eq (T : ℝ) (n N : ℕ)
     have hc := (continuous_pencilWindowPowerSum_clamp T n N hbdry 0).tendsto τ₀
     filter_upwards [hc.eventually (Metric.ball_mem_nhds _ (by norm_num : (0 : ℝ) < 1 / 2))]
       with τ hτ
-    rw [Metric.mem_ball, dist_eq_norm, hp_eq τ, hp_eq τ₀] at hτ
-    have hcast : (d τ : ℂ) - (d τ₀ : ℂ) = (((d τ : ℤ) - (d τ₀ : ℤ) : ℤ) : ℂ) := by
-      push_cast; ring
+    change dist (pencilWindowPowerSum T n N (clamp01 τ) 0)
+      (pencilWindowPowerSum T n N (clamp01 τ₀) 0) < 1 / 2 at hτ
+    rw [dist_eq_norm, hp_eq τ, hp_eq τ₀] at hτ
+    set k : ℤ := (d τ : ℤ) - (d τ₀ : ℤ)
+    have hcast : (d τ : ℂ) - (d τ₀ : ℂ) = (k : ℂ) := by dsimp [k]; push_cast; ring
     rw [hcast, Complex.norm_intCast] at hτ
-    have habs : |((d τ : ℤ) : ℝ) - ((d τ₀ : ℤ) : ℝ)| < 1 / 2 := by exact_mod_cast hτ
-    obtain ⟨h1, h2⟩ := abs_lt.mp habs
-    have hlt : (((d τ : ℤ) - (d τ₀ : ℤ) : ℤ) : ℝ) < 1 := by push_cast; linarith
-    have hgt : (-1 : ℝ) < (((d τ : ℤ) - (d τ₀ : ℤ) : ℤ) : ℝ) := by push_cast; linarith
-    have hlt' : (d τ : ℤ) - (d τ₀ : ℤ) < 1 := by exact_mod_cast hlt
-    have hgt' : -1 < (d τ : ℤ) - (d τ₀ : ℤ) := by exact_mod_cast hgt
+    obtain ⟨h1, h2⟩ := abs_lt.mp hτ
+    have hlt : (k : ℝ) < ((1 : ℤ) : ℝ) := by norm_num; linarith
+    have hgt : ((-1 : ℤ) : ℝ) < (k : ℝ) := by norm_num; linarith
+    have hlt' : k < 1 := Int.cast_lt.mp hlt
+    have hgt' : -1 < k := Int.cast_lt.mp hgt
     omega
   have heq := hloc.apply_eq_of_preconnectedSpace σ 0
   dsimp only [d] at heq
@@ -1061,7 +1063,9 @@ theorem exists_xiStripWindowTotalOrder_gt (M : ℕ) :
     have hpos : 1 ≤ (analyticOrderAt _root_.RHTower.xi (_root_.RHTower.linePt τ)).toNat :=
       Nat.pos_of_ne_zero (_root_.RHTower.xi_order_toNat_ne_zero hzero)
     exact lt_of_lt_of_le (by omega)
-      (hpos.trans (Finset.single_le_sum (fun _ _ => Nat.zero_le _) hmem))
+      (hpos.trans (Finset.single_le_sum
+        (f := fun rho => (analyticOrderAt _root_.RHTower.xi rho).toNat)
+        (fun _ _ => Nat.zero_le _) hmem))
   | succ M ih =>
     obtain ⟨T, hT0, hM⟩ := ih
     obtain ⟨τ, hτT, hzero, _⟩ := _root_.RHTower.exists_odd_order_line_zero_gt T
@@ -1293,7 +1297,7 @@ theorem isCompact_windowClosedRect (T : ℝ) (n : ℕ) : IsCompact (windowClosed
 
 theorem isCompact_perforatedWindowSet (T : ℝ) (n : ℕ) : IsCompact (perforatedWindowSet T n) := by
   unfold perforatedWindowSet
-  rw [Set.diff_eq]
+  rw [Set.sdiff_eq]
   exact (isCompact_windowClosedRect T n).inter_right
     (isOpen_biUnion fun _ _ => Metric.isOpen_ball).isClosed_compl
 
@@ -1405,13 +1409,25 @@ private lemma gaussian_tail_lt_half_perforatedWindowXiMin {T : ℝ} {n N : ℕ}
         have hsq := pow_lt_pow_left₀ hsqrt_lt (Real.sqrt_nonneg _) (by norm_num : 2 ≠ 0)
         rwa [Real.sq_sqrt hlog_pos.le] at hsq
       have hexp_lt : Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) < μ / (2 * C_env) := by
-        have h1 : Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) < Real.exp (-Real.log (2 * C_env / μ)) :=
-          Real.exp_lt_exp.mpr (by linarith)
-        rw [Real.exp_neg, Real.exp_log (by positivity), inv_div] at h1
-        exact h1
+        have hrhs : μ / (2 * C_env) = Real.exp (-Real.log (2 * C_env / μ)) := by
+          rw [Real.exp_neg, Real.exp_log (by positivity), inv_div]
+        rw [hrhs]
+        exact Real.exp_lt_exp.mpr (by linarith)
       calc C_env * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2)
           < C_env * (μ / (2 * C_env)) := mul_lt_mul_of_pos_left hexp_lt hC_pos
         _ = μ / 2 := by field_simp [hC_pos.ne']
+
+private lemma rectangleBoundaryPath_on_edges (z₁ z₂ : ℂ) (t : ℝ) :
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = z₁.re ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = z₂.re ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).im = z₁.im ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).im = z₂.im := by
+  unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath
+  split_ifs
+  · right; right; left; simp
+  · right; left; simp
+  · right; right; right; simp
+  · left; simp
 
 private lemma rectangleBoundaryPath_mem_perforatedWindowSet {T : ℝ} {n : ℕ}
     (hn : thetaAnnihilationScale T ≤ n) (t : ℝ) :
@@ -1453,9 +1469,7 @@ private lemma sphere_rouche_subset_perforatedWindowSet {T : ℝ} {n : ℕ}
   by_cases heq : w' = w
   · rw [heq, Metric.mem_sphere.mp hζ]
   · have hsep := stripZeros_dist_gt_four_rouche hn hw hw' (Ne.symm heq)
-    have htri := dist_triangle w w' ζ
-    rw [dist_comm w' ζ] at htri
-    rw [Metric.mem_sphere.mp hζ, dist_comm ζ w] at *
+    have htri := dist_triangle w ζ w'
     have hdist_eq : dist w ζ = roucheDiscRadius n := by
       rw [dist_comm]; exact Metric.mem_sphere.mp hζ
     linarith [roucheDiscRadius_pos n]
@@ -1510,6 +1524,223 @@ private lemma two_mul_ordered_collision_sum_eq_charge (T : ℝ) :
   refine Finset.sum_congr rfl fun w₁ _ => Finset.sum_congr rfl fun w₂ _ => ?_
   by_cases h : w₁.im = w₂.im ∧ w₁ ≠ w₂ <;> simp [h, m]
 
+/-- Four-case Zhukovsky ellipse dichotomy on pairs of points inside Rouché discs of radius
+`1 / (8 s_n²)`: ordered horizontal pairs `(w₁.im = w₂.im ∧ w₂.re < w₁.re)` lie strictly inside
+`E_n < 1`, whereas all other pairs (including same-disc splittings `w₁ = w₂`) lie strictly outside
+`E_n > 1`. -/
+private lemma rouche_pair_zhukovsky_class {n : ℕ} {w₁ w₂ z₁ z₂ : ℂ}
+    (hb₁ : dist z₁ w₁ < roucheDiscRadius n) (hb₂ : dist z₂ w₂ < roucheDiscRadius n)
+    (hm₁ : 2 / (zhukovskyStage n : ℝ) ≤ w₁.re ∧ w₁.re ≤ 1 - 2 / (zhukovskyStage n : ℝ))
+    (hm₂ : 2 / (zhukovskyStage n : ℝ) ≤ w₂.re ∧ w₂.re ≤ 1 - 2 / (zhukovskyStage n : ℝ))
+    (hgap_re_imp : w₂.re < w₁.re → 3 / (zhukovskyStage n : ℝ) < w₁.re - w₂.re)
+    (hgap_im_imp : w₁.im ≠ w₂.im → 3 / (zhukovskyStage n : ℝ) < |w₁.im - w₂.im|) :
+    (w₁.im = w₂.im ∧ w₂.re < w₁.re → zhukovskyEllipseForm n (z₁ - z₂) < 1) ∧
+    (¬ (w₁.im = w₂.im ∧ w₂.re < w₁.re) → 1 < zhukovskyEllipseForm n (z₁ - z₂)) := by
+  have hs6 : (6 : ℝ) ≤ (zhukovskyStage n : ℝ) := six_le_zhukovskyStage_real n
+  have hs_pos : (0 : ℝ) < (zhukovskyStage n : ℝ) := zhukovskyStage_pos n
+  have ha_pos : 0 < zhukovskyMajorAxis n := zhukovskyMajorAxis_pos n
+  have hb_pos : 0 < zhukovskyMinorAxis n := zhukovskyMinorAxis_pos n
+  have hinv_pos : 0 < 1 / (zhukovskyStage n : ℝ) := one_div_pos.mpr hs_pos
+  have hinv_le : 1 / (zhukovskyStage n : ℝ) ≤ 1 / 6 :=
+    one_div_le_one_div_of_le (by norm_num) hs6
+  have hr_lt : roucheDiscRadius n < (1 / 4) * (1 / (zhukovskyStage n : ℝ)) := by
+    rw [roucheDiscRadius,
+      show (1 / 4 : ℝ) * (1 / (zhukovskyStage n : ℝ)) = 1 / (4 * (zhukovskyStage n : ℝ)) by ring]
+    exact one_div_lt_one_div_of_lt (mul_pos (by norm_num) hs_pos) (by nlinarith [hs6])
+  have hr_eq : roucheDiscRadius n = (1 / 8) * (1 / (zhukovskyStage n : ℝ)) ^ 2 := by
+    unfold roucheDiscRadius; ring
+  have h2_eq : 2 / (zhukovskyStage n : ℝ) = 2 * (1 / (zhukovskyStage n : ℝ)) := by ring
+  have h3_eq : 3 / (zhukovskyStage n : ℝ) = 3 * (1 / (zhukovskyStage n : ℝ)) := by ring
+  have hmaj_eq : zhukovskyMajorAxis n = 1 / 2 - (1 / 2) * (1 / (zhukovskyStage n : ℝ)) := by
+    unfold zhukovskyMajorAxis; ring
+  rw [dist_eq_norm] at hb₁ hb₂
+  have hre₁ : |z₁.re - w₁.re| < roucheDiscRadius n :=
+    lt_of_le_of_lt (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z₁ - w₁)) hb₁
+  have him₁ : |z₁.im - w₁.im| < roucheDiscRadius n :=
+    lt_of_le_of_lt (by simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z₁ - w₁)) hb₁
+  have hre₂ : |z₂.re - w₂.re| < roucheDiscRadius n :=
+    lt_of_le_of_lt (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z₂ - w₂)) hb₂
+  have him₂ : |z₂.im - w₂.im| < roucheDiscRadius n :=
+    lt_of_le_of_lt (by simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z₂ - w₂)) hb₂
+  constructor
+  · rintro ⟨him_eq, hre_lt⟩
+    have hgap_re := hgap_re_imp hre_lt
+    have hu_abs : |(z₁ - z₂).re - 1 / 2| < 1 / 2 - 1 / (zhukovskyStage n : ℝ) := by
+      rw [Complex.sub_re]
+      exact abs_lt.mpr ⟨by linarith [(abs_lt.mp hre₁).1, (abs_lt.mp hre₂).2],
+        by linarith [hm₁.2, hm₂.1, (abs_lt.mp hre₁).2, (abs_lt.mp hre₂).1]⟩
+    have hu_sq : ((z₁ - z₂).re - 1 / 2) ^ 2 < (1 / 2 - 1 / (zhukovskyStage n : ℝ)) ^ 2 := by
+      rw [← sq_abs ((z₁ - z₂).re - 1 / 2)]
+      exact pow_lt_pow_left₀ hu_abs (abs_nonneg _) (by norm_num : 2 ≠ 0)
+    have hpoly_maj :
+        (1 - 1 / (zhukovskyStage n : ℝ)) * zhukovskyMajorAxis n ^ 2 -
+          (1 / 2 - 1 / (zhukovskyStage n : ℝ)) ^ 2 =
+        (1 / (zhukovskyStage n : ℝ) / 4) *
+          (1 - 1 / (zhukovskyStage n : ℝ) - (1 / (zhukovskyStage n : ℝ)) ^ 2) := by
+      rw [hmaj_eq]; ring
+    have hquad_pos :
+        0 < 1 - 1 / (zhukovskyStage n : ℝ) - (1 / (zhukovskyStage n : ℝ)) ^ 2 := by
+      have hsq_le : (1 / (zhukovskyStage n : ℝ)) ^ 2 ≤ (1 / 6 : ℝ) ^ 2 :=
+        pow_le_pow_left₀ hinv_pos.le hinv_le 2
+      linarith
+    have hmaj_gap_pos : 0 < (1 - 1 / (zhukovskyStage n : ℝ)) * zhukovskyMajorAxis n ^ 2 -
+        (1 / 2 - 1 / (zhukovskyStage n : ℝ)) ^ 2 := by
+      rw [hpoly_maj]
+      exact mul_pos (div_pos hinv_pos (by norm_num)) hquad_pos
+    have hmaj_term : ((z₁ - z₂).re - 1 / 2) ^ 2 / zhukovskyMajorAxis n ^ 2 <
+        1 - 1 / (zhukovskyStage n : ℝ) :=
+      (div_lt_iff₀ (sq_pos_of_pos ha_pos)).mpr (by linarith)
+    have him_abs : |(z₁ - z₂).im| < (1 / 4) * (1 / (zhukovskyStage n : ℝ)) ^ 2 := by
+      have hdiff : (z₁ - z₂).im = (z₁.im - w₁.im) - (z₂.im - w₂.im) := by
+        rw [Complex.sub_im]; linarith [him_eq]
+      rw [hdiff]
+      exact abs_lt.mpr ⟨by linarith [(abs_lt.mp him₁).1, (abs_lt.mp him₂).2, hr_eq],
+        by linarith [(abs_lt.mp him₁).2, (abs_lt.mp him₂).1, hr_eq]⟩
+    have him_sq : (z₁ - z₂).im ^ 2 < ((1 / 4) * (1 / (zhukovskyStage n : ℝ)) ^ 2) ^ 2 := by
+      rw [← sq_abs ((z₁ - z₂).im)]
+      exact pow_lt_pow_left₀ him_abs (abs_nonneg _) (by norm_num : 2 ≠ 0)
+    have hmin_gap_pos :
+        0 < (1 / (zhukovskyStage n : ℝ)) * zhukovskyMinorAxis n ^ 2 -
+          ((1 / 4) * (1 / (zhukovskyStage n : ℝ)) ^ 2) ^ 2 := by
+      have hident : (1 / (zhukovskyStage n : ℝ)) * zhukovskyMinorAxis n ^ 2 -
+          ((1 / 4) * (1 / (zhukovskyStage n : ℝ)) ^ 2) ^ 2 =
+          (1 / (zhukovskyStage n : ℝ)) ^ 3 *
+            (1 - (1 / 16) * (1 / (zhukovskyStage n : ℝ))) := by
+        unfold zhukovskyMinorAxis; ring
+      rw [hident]
+      exact mul_pos (pow_pos hinv_pos 3) (by linarith)
+    have hmin_term : (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 <
+        1 / (zhukovskyStage n : ℝ) :=
+      (div_lt_iff₀ (sq_pos_of_pos hb_pos)).mpr (by linarith)
+    unfold zhukovskyEllipseForm
+    linarith
+  · intro hnot
+    by_cases him_eq : w₁.im = w₂.im
+    · have hle_re : w₁.re ≤ w₂.re := not_lt.mp fun hlt => hnot ⟨him_eq, hlt⟩
+      have hsub_lt : (z₁ - z₂).re - 1 / 2 < -zhukovskyMajorAxis n := by
+        rw [Complex.sub_re]
+        linarith [(abs_lt.mp hre₁).2, (abs_lt.mp hre₂).1]
+      have hsq : zhukovskyMajorAxis n ^ 2 < ((z₁ - z₂).re - 1 / 2) ^ 2 := by
+        nlinarith [ha_pos, hsub_lt]
+      unfold zhukovskyEllipseForm
+      have hdiv : 1 < ((z₁ - z₂).re - 1 / 2) ^ 2 / zhukovskyMajorAxis n ^ 2 :=
+        (one_lt_div (sq_pos_of_pos ha_pos)).mpr hsq
+      have hnn : 0 ≤ (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 := by positivity
+      linarith
+    · have hgap_im := hgap_im_imp him_eq
+      have him_gt : zhukovskyMinorAxis n < |(z₁ - z₂).im| := by
+        unfold zhukovskyMinorAxis
+        have htri : |w₁.im - w₂.im| - |z₁.im - w₁.im| - |z₂.im - w₂.im| ≤ |(z₁ - z₂).im| := by
+          have h1 : w₁.im - w₂.im = (z₁ - z₂).im - (z₁.im - w₁.im) + (z₂.im - w₂.im) := by
+            rw [Complex.sub_im]; ring
+          have h2 := abs_add_le ((z₁ - z₂).im - (z₁.im - w₁.im)) (z₂.im - w₂.im)
+          rw [← h1] at h2
+          have h3 := abs_sub ((z₁ - z₂).im) (z₁.im - w₁.im)
+          linarith
+        linarith
+      have hsq : zhukovskyMinorAxis n ^ 2 < (z₁ - z₂).im ^ 2 := by
+        have h1 := pow_lt_pow_left₀ him_gt hb_pos.le (by norm_num : 2 ≠ 0)
+        rwa [sq_abs] at h1
+      unfold zhukovskyEllipseForm
+      have hdiv : 1 < (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 :=
+        (one_lt_div (sq_pos_of_pos hb_pos)).mpr hsq
+      have hnn : 0 ≤ ((z₁ - z₂).re - 1 / 2) ^ 2 / zhukovskyMajorAxis n ^ 2 := by positivity
+      linarith
+
+/-- Symmetric Rouché zero-sum equality on each open disc `ball w (roucheDiscRadius n)` (`w ∈ stripZeros T`). -/
+private lemma rouche_disc_multiplicity_eq {T : ℝ} {n N : ℕ}
+    (hn : thetaAnnihilationScale T ≤ n)
+    (happrox_rect : ∀ z ∈ windowClosedRect T n,
+      ‖_root_.RHTower.finiteThetaAmplitude N z - _root_.RHTower.xi z‖ <
+        perforatedWindowXiMin T n / 2)
+    (hF_perf : ∀ z ∈ perforatedWindowSet T n, _root_.RHTower.finiteThetaAmplitude N z ≠ 0)
+    {w : ℂ} (hw : w ∈ (_root_.RHTower.stripZeros_finite T).toFinset) :
+    (∑ z ∈ (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w (roucheDiscRadius n)),
+      (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z).toNat) =
+      (analyticOrderAt _root_.RHTower.xi w).toNat := by
+  have hr_pos : 0 < roucheDiscRadius n := roucheDiscRadius_pos n
+  have hr_2r : roucheDiscRadius n < 2 * roucheDiscRadius n := by linarith
+  have hμ_pos : 0 < perforatedWindowXiMin T n := perforatedWindowXiMin_pos hn
+  have hsph_perf := sphere_rouche_subset_perforatedWindowSet hn hw
+  have hxi_sph : ∀ ζ ∈ Metric.sphere w (roucheDiscRadius n), _root_.RHTower.xi ζ ≠ 0 :=
+    fun ζ hζ => xi_ne_zero_on_perforatedWindowSet hn (hsph_perf hζ)
+  have hF_sph : ∀ ζ ∈ Metric.sphere w (roucheDiscRadius n),
+      _root_.RHTower.finiteThetaAmplitude N ζ ≠ 0 :=
+    fun ζ hζ => hF_perf ζ (hsph_perf hζ)
+  have hslit : ∀ ζ ∈ Metric.sphere w (roucheDiscRadius n),
+      _root_.RHTower.finiteThetaAmplitude N ζ / _root_.RHTower.xi ζ ∈ Complex.slitPlane := by
+    intro ζ hζ
+    have hperf := hsph_perf hζ
+    have hxi_min := perforatedWindowXiMin_le_norm_xi hperf
+    have hdiff_lt : ‖_root_.RHTower.finiteThetaAmplitude N ζ - _root_.RHTower.xi ζ‖ <
+        ‖_root_.RHTower.xi ζ‖ :=
+      (happrox_rect ζ hperf.1).trans (by linarith)
+    have hq : _root_.RHTower.finiteThetaAmplitude N ζ / _root_.RHTower.xi ζ - 1 =
+        (_root_.RHTower.finiteThetaAmplitude N ζ - _root_.RHTower.xi ζ) /
+          _root_.RHTower.xi ζ := by
+      field_simp [hxi_sph ζ hζ]
+    have hq_norm : ‖_root_.RHTower.finiteThetaAmplitude N ζ / _root_.RHTower.xi ζ - 1‖ < 1 := by
+      rw [hq, norm_div, div_lt_one (norm_pos_iff.mpr (hxi_sph ζ hζ))]
+      exact hdiff_lt
+    have hre_lt : |(_root_.RHTower.finiteThetaAmplitude N ζ / _root_.RHTower.xi ζ - 1).re| < 1 :=
+      (Complex.abs_re_le_norm _).trans_lt hq_norm
+    rw [Complex.sub_re, Complex.one_re] at hre_lt
+    exact Complex.mem_slitPlane_iff.mpr (Or.inl (by linarith [(abs_lt.mp hre_lt).1]))
+  have hF_diff : DifferentiableOn ℂ (_root_.RHTower.finiteThetaAmplitude N) Set.univ :=
+    (_root_.RHTower.differentiable_finiteThetaAmplitude N).differentiableOn
+  have hxi_diff : DifferentiableOn ℂ _root_.RHTower.xi Set.univ :=
+    _root_.RHTower.xi_differentiable.differentiableOn
+  have hzsum := HTGeometry.zeroSumBall_eq_of_quotient_mem_slitPlane hr_pos hr_2r isOpen_univ
+    (Set.subset_univ (Metric.closedBall w (2 * roucheDiscRadius n))) hF_diff hxi_diff hxi_sph hslit
+  obtain ⟨ZF, hZF_ball, hZF_zero, hZF_sum⟩ := HTGeometry.exists_zeroSet_zeroSumBall
+    hr_pos hr_2r isOpen_univ (Set.subset_univ _) hF_diff hF_sph
+  obtain ⟨ZG, hZG_ball, hZG_zero, hZG_sum⟩ := HTGeometry.exists_zeroSet_zeroSumBall
+    hr_pos hr_2r isOpen_univ (Set.subset_univ _) hxi_diff hxi_sph
+  have hZG_eq : ZG = {w} := by
+    ext z
+    rw [Finset.mem_singleton]
+    constructor
+    · intro hzG
+      have hz_ball := hZG_ball z hzG
+      have hz0 := (hZG_zero z hz_ball).2 hzG
+      have hz_in := stripZeros_closedBall_two_rouche_inside hn hw
+        (Metric.ball_subset_closedBall (Metric.ball_subset_ball hr_2r.le hz_ball))
+      have hzRect : z ∈ uIcc (thetaWindowLowerLeft n).re (thetaWindowUpperRight T n).re ×ℂ
+          uIcc (thetaWindowLowerLeft n).im (thetaWindowUpperRight T n).im := by
+        rw [uIcc_of_le (thetaWindow_re_le T n), uIcc_of_le (thetaWindow_im_le T n),
+          Complex.mem_reProdIm]
+        exact ⟨⟨hz_in.1.le, hz_in.2.1.le⟩, ⟨hz_in.2.2.1.le, hz_in.2.2.2.le⟩⟩
+      have hzW : z ∈ (_root_.RHTower.stripZeros_finite T).toFinset :=
+        xi_zero_in_openBox_mem_stripZeros
+          ((thetaWindowScale_le_annihilationScale T).trans hn)
+          (thetaWindowRect_subset_openBox T n hzRect) hz0
+      by_contra hne
+      have hsep := stripZeros_dist_gt_four_rouche hn hzW hw hne
+      have hd_lt : dist z w < roucheDiscRadius n := Metric.mem_ball.mp hz_ball
+      linarith
+    · rintro rfl
+      exact (hZG_zero z (Metric.mem_ball_self hr_pos)).1
+        ((_root_.RHTower.stripZeros_finite T).mem_toFinset.mp hw).2
+  have hZF_eq : ZF =
+      (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w (roucheDiscRadius n)) := by
+    ext z
+    rw [Finset.mem_filter, mem_prefixEnclosedZeros_iff]
+    constructor
+    · intro hzF
+      have hzb := hZF_ball z hzF
+      exact ⟨⟨stripZeros_closedBall_two_rouche_inside hn hw
+        (Metric.ball_subset_closedBall (Metric.ball_subset_ball hr_2r.le hzb)),
+        (hZF_zero z hzb).2 hzF⟩, hzb⟩
+    · rintro ⟨⟨_, hz0⟩, hzb⟩
+      exact (hZF_zero z hzb).1 hz0
+  rw [hZF_sum, hZG_sum, hZG_eq, hZF_eq, Finset.sum_singleton] at hzsum
+  have hcast : ((∑ z ∈ (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w (roucheDiscRadius n)),
+      (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z).toNat : ℕ) : ℂ) =
+      (((analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℂ) := by
+    push_cast
+    exact hzsum
+  exact Nat.cast_injective hcast
+
 /-- **Perforated-rectangle Rouché artifact-annihilation theorem.**
 For every height `T : ℝ`, every stage `n ≥ thetaAnnihilationScale T`, and every prefix
 `N ≥ thetaArtifactAnnihilationPrefix T n`:
@@ -1534,126 +1765,51 @@ theorem integerThetaCollisionOperator_rouche_annihilation (T : ℝ) {n N : ℕ}
     (∀ u : HTGeometry.UnitCircle, integerThetaLaurentLoop T n N u ≠ 0) ∧
     HTGeometry.fredholmIndex (integerThetaCollisionOperator T n N) =
       (_root_.RHTower.xiHorizontalCollisionCharge T : ℤ) := by
-  set F := _root_.RHTower.finiteThetaAmplitude N
-  set W := (_root_.RHTower.stripZeros_finite T).toFinset
-  set r := roucheDiscRadius n
-  have hr_pos : 0 < r := roucheDiscRadius_pos n
-  have hr_2r : r < 2 * r := by linarith
   have htail := gaussian_tail_lt_half_perforatedWindowXiMin hn hN
-  have hμ_pos : 0 < perforatedWindowXiMin T n := perforatedWindowXiMin_pos hn
   -- Uniform Rouché approximation on the closed rectangle `windowClosedRect T n`.
   have happrox_rect : ∀ z ∈ windowClosedRect T n,
-      ‖F z - _root_.RHTower.xi z‖ < perforatedWindowXiMin T n / 2 := by
+      ‖_root_.RHTower.finiteThetaAmplitude N z - _root_.RHTower.xi z‖ <
+        perforatedWindowXiMin T n / 2 := by
     intro z hz
-    have hre_two : |z.re| ≤ 2 := by
-      rw [thetaWindowLowerLeft_re] at hz
-      have h2 := hz.2.1; rw [thetaWindowUpperRight_re] at h2
-      exact abs_le.mpr ⟨by linarith [hz.1], by linarith [h2]⟩
+    obtain ⟨hz1, hz2, _, _⟩ := hz
+    rw [thetaWindowLowerLeft_re] at hz1
+    rw [thetaWindowUpperRight_re] at hz2
+    have hre_two : |z.re| ≤ 2 := abs_le.mpr ⟨by linarith, by linarith⟩
     have hbd := norm_finiteThetaAmplitude_sub_xi_le_strip N (by norm_num : (0 : ℝ) ≤ 2) hre_two
     refine hbd.trans_lt ?_
     simpa only [mul_right_comm] using htail
-  -- Part 1: `F` is nonvanishing on `perforatedWindowSet T n` and on `∂R_{T,n}`.
-  have hF_perf : ∀ z ∈ perforatedWindowSet T n, F z ≠ 0 := by
+  -- Part 1: `finiteThetaAmplitude N` is nonvanishing on `perforatedWindowSet T n` and on `∂R_{T,n}`.
+  have hF_perf : ∀ z ∈ perforatedWindowSet T n, _root_.RHTower.finiteThetaAmplitude N z ≠ 0 := by
     intro z hz h0
     have hlt := happrox_rect z hz.1
     rw [h0, zero_sub, norm_neg] at hlt
-    linarith [perforatedWindowXiMin_le_norm_xi hz]
-  have hbdry : ∀ t : ℝ, F (_root_.RHTower.rectangleBoundaryPath
-      (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t) ≠ 0 :=
+    linarith [perforatedWindowXiMin_le_norm_xi hz, perforatedWindowXiMin_pos hn]
+  have hbdry : ∀ t : ℝ, _root_.RHTower.finiteThetaAmplitude N
+      (_root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t) ≠ 0 :=
     fun t => hF_perf _ (rectangleBoundaryPath_mem_perforatedWindowSet hn t)
-  -- Part 2: Symmetric Rouché zero-sum equality on each disc `ball w r` (`w ∈ W`).
-  have hdisc_mult : ∀ w ∈ W,
-      (∑ z ∈ (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w r),
-        (analyticOrderAt F z).toNat) = (analyticOrderAt _root_.RHTower.xi w).toNat := by
-    intro w hw
-    have hsph_perf := sphere_rouche_subset_perforatedWindowSet hn hw
-    have hxi_sph : ∀ ζ ∈ Metric.sphere w r, _root_.RHTower.xi ζ ≠ 0 :=
-      fun ζ hζ => xi_ne_zero_on_perforatedWindowSet hn (hsph_perf hζ)
-    have hF_sph : ∀ ζ ∈ Metric.sphere w r, F ζ ≠ 0 :=
-      fun ζ hζ => hF_perf ζ (hsph_perf hζ)
-    have hslit : ∀ ζ ∈ Metric.sphere w r, F ζ / _root_.RHTower.xi ζ ∈ Complex.slitPlane := by
-      intro ζ hζ
-      have hperf := hsph_perf hζ
-      have hxi_min := perforatedWindowXiMin_le_norm_xi hperf
-      have hdiff_lt : ‖F ζ - _root_.RHTower.xi ζ‖ < ‖_root_.RHTower.xi ζ‖ :=
-        (happrox_rect ζ hperf.1).trans (by linarith)
-      have hq : F ζ / _root_.RHTower.xi ζ - 1 =
-          (F ζ - _root_.RHTower.xi ζ) / _root_.RHTower.xi ζ := by
-        field_simp [hxi_sph ζ hζ]
-      have hq_norm : ‖F ζ / _root_.RHTower.xi ζ - 1‖ < 1 := by
-        rw [hq, norm_div, div_lt_one (norm_pos_iff.mpr (hxi_sph ζ hζ))]
-        exact hdiff_lt
-      have hre_lt : |(F ζ / _root_.RHTower.xi ζ - 1).re| < 1 :=
-        (Complex.abs_re_le_norm _).trans_lt hq_norm
-      rw [Complex.sub_re, Complex.one_re] at hre_lt
-      exact Complex.mem_slitPlane_iff.mpr (Or.inl (by linarith [(abs_lt.mp hre_lt).1]))
-    have hF_diff : DifferentiableOn ℂ F Set.univ :=
-      (_root_.RHTower.differentiable_finiteThetaAmplitude N).differentiableOn
-    have hxi_diff : DifferentiableOn ℂ _root_.RHTower.xi Set.univ :=
-      _root_.RHTower.xi_differentiable.differentiableOn
-    have hzsum := HTGeometry.zeroSumBall_eq_of_quotient_mem_slitPlane hr_pos hr_2r isOpen_univ
-      (Set.subset_univ (Metric.closedBall w (2 * r))) hF_diff hxi_diff hxi_sph hslit
-    obtain ⟨ZF, hZF_ball, hZF_zero, hZF_sum⟩ := HTGeometry.exists_zeroSet_zeroSumBall
-      hr_pos hr_2r isOpen_univ (Set.subset_univ _) hF_diff hF_sph
-    obtain ⟨ZG, hZG_ball, hZG_zero, hZG_sum⟩ := HTGeometry.exists_zeroSet_zeroSumBall
-      hr_pos hr_2r isOpen_univ (Set.subset_univ _) hxi_diff hxi_sph
-    have hZG_eq : ZG = {w} := by
-      ext z
-      rw [Finset.mem_singleton]
-      constructor
-      · intro hzG
-        have hz_ball := hZG_ball z hzG
-        have hz0 := (hZG_zero z hz_ball).2 hzG
-        have hz_in := stripZeros_closedBall_two_rouche_inside hn hw
-          (Metric.ball_subset_closedBall (Metric.ball_subset_ball hr_2r.le hz_ball))
-        have hzRect : z ∈ uIcc (thetaWindowLowerLeft n).re (thetaWindowUpperRight T n).re ×ℂ
-            uIcc (thetaWindowLowerLeft n).im (thetaWindowUpperRight T n).im := by
-          rw [uIcc_of_le (thetaWindow_re_le T n), uIcc_of_le (thetaWindow_im_le T n),
-            Complex.mem_reProdIm]
-          exact ⟨⟨hz_in.1.le, hz_in.2.1.le⟩, ⟨hz_in.2.2.1.le, hz_in.2.2.2.le⟩⟩
-        have hzW : z ∈ W := xi_zero_in_openBox_mem_stripZeros
-          ((thetaWindowScale_le_annihilationScale T).trans hn)
-          (thetaWindowRect_subset_openBox T n hzRect) hz0
-        by_contra hne
-        have hsep := stripZeros_dist_gt_four_rouche hn hzW hw hne
-        have hd_lt : dist z w < r := Metric.mem_ball.mp hz_ball
-        linarith
-      · rintro rfl
-        exact (hZG_zero w (Metric.mem_ball_self hr_pos)).1
-          ((_root_.RHTower.stripZeros_finite T).mem_toFinset.mp hw).2
-    have hZF_eq : ZF = (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w r) := by
-      ext z
-      rw [Finset.mem_filter, mem_prefixEnclosedZeros_iff]
-      constructor
-      · intro hzF
-        have hzb := hZF_ball z hzF
-        exact ⟨⟨stripZeros_closedBall_two_rouche_inside hn hw
-          (Metric.ball_subset_closedBall (Metric.ball_subset_ball hr_2r.le hzb)),
-          (hZF_zero z hzb).2 hzF⟩, hzb⟩
-      · rintro ⟨⟨_, hz0⟩, hzb⟩
-        exact (hZF_zero z hzb).1 hz0
-    rw [hZF_sum, hZG_sum, hZG_eq, hZF_eq, Finset.sum_singleton] at hzsum
-    have hcast : ((∑ z ∈ (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w r),
-        (analyticOrderAt F z).toNat : ℕ) : ℂ) =
-        (((analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℂ) := by
-      push_cast
-      exact hzsum
-    exact Nat.cast_injective hcast
+  -- Part 2: Symmetric Rouché zero-sum equality on each disc `ball w (roucheDiscRadius n)`.
+  have hdisc_mult : ∀ w ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+      (∑ z ∈ (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w (roucheDiscRadius n)),
+        (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z).toNat) =
+        (analyticOrderAt _root_.RHTower.xi w).toNat :=
+    fun _ hw => rouche_disc_multiplicity_eq hn happrox_rect hF_perf hw
   -- Partition `prefixEnclosedZeros T n N` into the pairwise disjoint Rouché discs.
-  set Z_N := prefixEnclosedZeros T n N
-  let slice : ℂ → Finset ℂ := fun w => Z_N.filter (· ∈ Metric.ball w r)
-  have hdisj : (W : Set ℂ).PairwiseDisjoint slice := by
+  let slice : ℂ → Finset ℂ :=
+    fun w => (prefixEnclosedZeros T n N).filter (· ∈ Metric.ball w (roucheDiscRadius n))
+  have hdisj : (((_root_.RHTower.stripZeros_finite T).toFinset : Set ℂ)).PairwiseDisjoint slice := by
     intro w₁ hw₁ w₂ hw₂ hne
+    change Disjoint (slice w₁) (slice w₂)
     rw [Finset.disjoint_left]
     intro z hz₁ hz₂
-    have hb₁ := (Finset.mem_filter.mp hz₁).2
-    have hb₂ := (Finset.mem_filter.mp hz₂).2
-    rw [Metric.mem_ball] at hb₁ hb₂
+    have hb₁ := Metric.mem_ball.mp (Finset.mem_filter.mp hz₁).2
+    have hb₂ := Metric.mem_ball.mp (Finset.mem_filter.mp hz₂).2
     have hsep := stripZeros_dist_gt_four_rouche hn hw₁ hw₂ hne
     have htri := dist_triangle w₁ z w₂
     rw [dist_comm z w₁] at hb₁
-    linarith
-  have hpart : Z_N = W.biUnion slice := by
+    linarith [roucheDiscRadius_pos n]
+  have hpart : prefixEnclosedZeros T n N =
+      ((_root_.RHTower.stripZeros_finite T).toFinset).biUnion slice := by
     ext z
     rw [Finset.mem_biUnion]
     constructor
@@ -1669,7 +1825,7 @@ theorem integerThetaCollisionOperator_rouche_annihilation (T : ℝ) {n N : ℕ}
       exact hF_perf z hperf hz0
     · rintro ⟨w, _, hzw⟩
       exact (Finset.mem_filter.mp hzw).1
-  -- Part 3a: Exact window degree equality `integerThetaWindowDegree T n N = xiStripWindowTotalOrder T`.
+  -- Part 3a: Exact window degree equality.
   have hdeg_eq : integerThetaWindowDegree T n N = _root_.RHTower.xiStripWindowTotalOrder T := by
     have hbdry0 : ∀ t : ℝ, finiteThetaShellPencil N 0
         (_root_.RHTower.rectangleBoundaryPath
@@ -1677,167 +1833,39 @@ theorem integerThetaCollisionOperator_rouche_annihilation (T : ℝ) {n N : ℕ}
       simpa only [finiteThetaShellPencil_zero] using hbdry
     have hd := (pencilWindowDegree_eq_sum T n N ⟨le_rfl, zero_le_one⟩ hbdry0).2
     rw [pencilWindowDegree_zero] at hd
-    have hfun : finiteThetaShellPencil N 0 = F := funext (finiteThetaShellPencil_zero N)
+    have hfun : finiteThetaShellPencil N 0 = _root_.RHTower.finiteThetaAmplitude N :=
+      funext (finiteThetaShellPencil_zero N)
     rw [hfun] at hd
-    change integerThetaWindowDegree T n N = ∑ z ∈ Z_N, (analyticOrderAt F z).toNat at hd
-    rw [hd, hpart, Finset.sum_biUnion hdisj]
+    have hd' : integerThetaWindowDegree T n N = ∑ z ∈ prefixEnclosedZeros T n N,
+        (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z).toNat := hd
+    rw [hd', hpart, Finset.sum_biUnion hdisj]
     unfold _root_.RHTower.xiStripWindowTotalOrder
     exact Finset.sum_congr rfl fun w hw => hdisc_mult w hw
-  -- Part 3b: Four-case Zhukovsky ellipse classification on pairs `(z₁ ∈ slice w₁, z₂ ∈ slice w₂)`.
-  have hs6 : (6 : ℝ) ≤ (zhukovskyStage n : ℝ) := six_le_zhukovskyStage_real n
-  have hs_pos : (0 : ℝ) < (zhukovskyStage n : ℝ) := zhukovskyStage_pos n
-  have ha_pos : 0 < zhukovskyMajorAxis n := zhukovskyMajorAxis_pos n
-  have hb_pos : 0 < zhukovskyMinorAxis n := zhukovskyMinorAxis_pos n
-  have h2r_lt_s : 2 * r < 1 / (zhukovskyStage n : ℝ) := by
-    dsimp only [r]
-    unfold roucheDiscRadius
-    rw [show 2 * (1 / (8 * (zhukovskyStage n : ℝ) ^ 2)) =
-      1 / (4 * (zhukovskyStage n : ℝ) ^ 2) by ring]
-    exact one_div_lt_one_div_of_lt hs_pos (by nlinarith)
-  have h2r_lt_half_s : 2 * r < 1 / (2 * (zhukovskyStage n : ℝ)) := by
-    dsimp only [r]
-    unfold roucheDiscRadius
-    rw [show 2 * (1 / (8 * (zhukovskyStage n : ℝ) ^ 2)) =
-      1 / (4 * (zhukovskyStage n : ℝ) ^ 2) by ring]
-    exact one_div_lt_one_div_of_lt (by positivity) (by nlinarith)
-  have hpair_class : ∀ w₁ ∈ W, ∀ w₂ ∈ W, ∀ z₁ ∈ slice w₁, ∀ z₂ ∈ slice w₂,
+  -- Part 3b: Instantiate the four-case Zhukovsky classification across Rouché slices.
+  have hpair_class : ∀ w₁ ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+      ∀ w₂ ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+      ∀ z₁ ∈ slice w₁, ∀ z₂ ∈ slice w₂,
       (w₁.im = w₂.im ∧ w₂.re < w₁.re → zhukovskyEllipseForm n (z₁ - z₂) < 1) ∧
       (¬ (w₁.im = w₂.im ∧ w₂.re < w₁.re) → 1 < zhukovskyEllipseForm n (z₁ - z₂)) := by
     intro w₁ hw₁ w₂ hw₂ z₁ hz₁ z₂ hz₂
-    have hb₁ : dist z₁ w₁ < r := Metric.mem_ball.mp (Finset.mem_filter.mp hz₁).2
-    have hb₂ : dist z₂ w₂ < r := Metric.mem_ball.mp (Finset.mem_filter.mp hz₂).2
-    rw [dist_eq_norm] at hb₁ hb₂
-    have hre₁ : |z₁.re - w₁.re| < r :=
-      (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z₁ - w₁)).trans_lt hb₁
-    have him₁ : |z₁.im - w₁.im| < r :=
-      (by simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z₁ - w₁)).trans_lt hb₁
-    have hre₂ : |z₂.re - w₂.re| < r :=
-      (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (z₂ - w₂)).trans_lt hb₂
-    have him₂ : |z₂.im - w₂.im| < r :=
-      (by simpa only [Complex.sub_im] using Complex.abs_im_le_norm (z₂ - w₂)).trans_lt hb₂
-    have hd_gap : collisionWindowGap T ≤ finiteCollisionGap W := min_le_left _ _
     have hgap3 := three_div_stage_lt_collisionWindowGap hn
-    constructor
-    · rintro ⟨him_eq, hre_lt⟩
-      have hgap_re : collisionWindowGap T ≤ |w₁.re - w₂.re| :=
+    have hd_gap : collisionWindowGap T ≤
+        finiteCollisionGap ((_root_.RHTower.stripZeros_finite T).toFinset) := min_le_left _ _
+    refine rouche_pair_zhukovsky_class
+      (Metric.mem_ball.mp (Finset.mem_filter.mp hz₁).2)
+      (Metric.mem_ball.mp (Finset.mem_filter.mp hz₂).2)
+      (stripZeros_re_margins hn hw₁)
+      (stripZeros_re_margins hn hw₂)
+      (fun hlt => ?_) (fun him_ne => ?_)
+    · have hgap_re : collisionWindowGap T ≤ |w₁.re - w₂.re| :=
         hd_gap.trans ((min_le_left _ _).trans
-          (finiteCoordinateGap_le W Complex.re hw₁ hw₂ hre_lt.ne'))
-      rw [abs_of_pos (sub_pos.mpr hre_lt)] at hgap_re
-      have hw₁_m := stripZeros_re_margins hn hw₁
-      have hw₂_m := stripZeros_re_margins hn hw₂
-      have hre_low : 2 / (zhukovskyStage n : ℝ) < (z₁ - z₂).re := by
-        rw [Complex.sub_re]
-        have h3_sub : 2 / (zhukovskyStage n : ℝ) =
-            3 / (zhukovskyStage n : ℝ) - 1 / (zhukovskyStage n : ℝ) := by ring
-        linarith [(abs_lt.mp hre₁).1, (abs_lt.mp hre₂).2]
-      have hre_high : (z₁ - z₂).re < 1 - 1 / (zhukovskyStage n : ℝ) := by
-        rw [Complex.sub_re]
-        have h1 : (1 - 2 / (zhukovskyStage n : ℝ)) - 2 / (zhukovskyStage n : ℝ) +
-            1 / (zhukovskyStage n : ℝ) ≤ 1 - 1 / (zhukovskyStage n : ℝ) := by
-          have : 0 < 1 / (zhukovskyStage n : ℝ) := by positivity
-          linarith
-        linarith [hw₁_m.2, hw₂_m.1, (abs_lt.mp hre₁).2, (abs_lt.mp hre₂).1]
-      set u : ℝ := (z₁ - z₂).re - 1 / 2
-      have hu_abs : |u| < zhukovskyMajorAxis n - 1 / (2 * (zhukovskyStage n : ℝ)) := by
-        dsimp only [u]
-        unfold zhukovskyMajorAxis
-        have hlow : 1 / (zhukovskyStage n : ℝ) < 2 / (zhukovskyStage n : ℝ) :=
-          div_lt_div_of_pos_right (by norm_num) hs_pos
-        exact abs_lt.mpr ⟨by linarith, by linarith⟩
-      set δ : ℝ := 1 / (2 * (zhukovskyStage n : ℝ) * zhukovskyMajorAxis n)
-      have hδ_pos : 0 < δ := by dsimp only [δ]; positivity
-      have hδ_lt_one : δ < 1 := by
-        dsimp only [δ]
-        rw [div_lt_one (by positivity)]
-        nlinarith [five_twelfths_le_zhukovskyMajorAxis n]
-      have hinv_s_lt_δ : 1 / (zhukovskyStage n : ℝ) < δ := by
-        dsimp only [δ]
-        exact one_div_lt_one_div_of_lt (by positivity)
-          (by nlinarith [zhukovskyMajorAxis_lt_half n])
-      have hu_div : |u| / zhukovskyMajorAxis n < 1 - δ := by
-        rw [div_lt_iff₀ ha_pos]
-        have heq : (1 - δ) * zhukovskyMajorAxis n =
-            zhukovskyMajorAxis n - 1 / (2 * (zhukovskyStage n : ℝ)) := by
-          dsimp only [δ]
-          field_simp [ha_pos.ne']
-        rwa [heq]
-      have hmaj_term : u ^ 2 / zhukovskyMajorAxis n ^ 2 < 1 - 1 / (zhukovskyStage n : ℝ) := by
-        have h1 : u ^ 2 / zhukovskyMajorAxis n ^ 2 = (|u| / zhukovskyMajorAxis n) ^ 2 := by
-          rw [div_pow, sq_abs]
-        rw [h1]
-        have hsq : (|u| / zhukovskyMajorAxis n) ^ 2 < (1 - δ) ^ 2 :=
-          pow_lt_pow_left₀ hu_div (div_nonneg (abs_nonneg u) ha_pos.le) (by norm_num)
-        nlinarith [sq_pos_of_pos hδ_pos]
-      have him_abs : |(z₁ - z₂).im| < 1 / (4 * (zhukovskyStage n : ℝ) ^ 2) := by
-        have hdiff : (z₁ - z₂).im = (z₁.im - w₁.im) - (z₂.im - w₂.im) := by
-          rw [Complex.sub_im]; linarith [him_eq]
-        have h2r_eq : 2 * r = 1 / (4 * (zhukovskyStage n : ℝ) ^ 2) := by
-          dsimp only [r]; unfold roucheDiscRadius; ring
-        rw [hdiff]
-        exact abs_lt.mpr ⟨by linarith [(abs_lt.mp him₁).1, (abs_lt.mp him₂).2],
-          by linarith [(abs_lt.mp him₁).2, (abs_lt.mp him₂).1]⟩
-      have hmin_div : |(z₁ - z₂).im| / zhukovskyMinorAxis n < 1 / (4 * (zhukovskyStage n : ℝ)) := by
-        unfold zhukovskyMinorAxis
-        rw [div_lt_iff₀ (one_div_pos.mpr hs_pos)]
-        have heq : 1 / (4 * (zhukovskyStage n : ℝ)) * (1 / (zhukovskyStage n : ℝ)) =
-            1 / (4 * (zhukovskyStage n : ℝ) ^ 2) := by ring
-        rwa [heq]
-      have hmin_term : (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 <
-          1 / (zhukovskyStage n : ℝ) := by
-        have h1 : (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 =
-            (|(z₁ - z₂).im| / zhukovskyMinorAxis n) ^ 2 := by rw [div_pow, sq_abs]
-        rw [h1]
-        have hsq : (|(z₁ - z₂).im| / zhukovskyMinorAxis n) ^ 2 <
-            (1 / (4 * (zhukovskyStage n : ℝ))) ^ 2 :=
-          pow_lt_pow_left₀ hmin_div (div_nonneg (abs_nonneg _) hb_pos.le) (by norm_num)
-        have hsub : (1 / (4 * (zhukovskyStage n : ℝ))) ^ 2 < 1 / (zhukovskyStage n : ℝ) := by
-          rw [show (1 / (4 * (zhukovskyStage n : ℝ))) ^ 2 =
-            1 / (16 * (zhukovskyStage n : ℝ) ^ 2) by ring]
-          exact one_div_lt_one_div_of_lt hs_pos (by nlinarith)
-        exact hsq.trans hsub
-      unfold zhukovskyEllipseForm
-      change u ^ 2 / zhukovskyMajorAxis n ^ 2 + (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 < 1
-      linarith
-    · intro hnot
-      by_cases him_eq : w₁.im = w₂.im
-      · have hle_re : w₁.re ≤ w₂.re := not_lt.mp fun hlt => hnot ⟨him_eq, hlt⟩
-        have hdiff_re : (z₁ - z₂).re < 1 / (2 * (zhukovskyStage n : ℝ)) := by
-          rw [Complex.sub_re]
-          linarith [(abs_lt.mp hre₁).2, (abs_lt.mp hre₂).1]
-        have hsub_lt : (z₁ - z₂).re - 1 / 2 < -zhukovskyMajorAxis n := by
-          unfold zhukovskyMajorAxis; linarith
-        have hsq : zhukovskyMajorAxis n ^ 2 < ((z₁ - z₂).re - 1 / 2) ^ 2 := by nlinarith
-        unfold zhukovskyEllipseForm
-        have hdiv : 1 < ((z₁ - z₂).re - 1 / 2) ^ 2 / zhukovskyMajorAxis n ^ 2 :=
-          (one_lt_div (sq_pos_of_pos ha_pos)).mpr hsq
-        have hnn : 0 ≤ (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 := by positivity
-        linarith
-      · have hgap_im : collisionWindowGap T ≤ |w₁.im - w₂.im| :=
-          hd_gap.trans ((min_le_right _ _).trans
-            (finiteCoordinateGap_le W Complex.im hw₁ hw₂ him_eq))
-        have him_gt : zhukovskyMinorAxis n < |(z₁ - z₂).im| := by
-          unfold zhukovskyMinorAxis
-          have htri : |w₁.im - w₂.im| - |z₁.im - w₁.im| - |z₂.im - w₂.im| ≤ |(z₁ - z₂).im| := by
-            have h1 : w₁.im - w₂.im = (z₁ - z₂).im - (z₁.im - w₁.im) + (z₂.im - w₂.im) := by
-              rw [Complex.sub_im]; ring
-            have h2 := abs_add_le ((z₁ - z₂).im - (z₁.im - w₁.im)) (z₂.im - w₂.im)
-            have h3 := abs_sub ((z₁ - z₂).im) (z₁.im - w₁.im)
-            linarith
-          have h3_gt : 1 / (zhukovskyStage n : ℝ) <
-              3 / (zhukovskyStage n : ℝ) - 1 / (zhukovskyStage n : ℝ) := by
-            rw [show 3 / (zhukovskyStage n : ℝ) - 1 / (zhukovskyStage n : ℝ) =
-              2 / (zhukovskyStage n : ℝ) by ring]
-            exact div_lt_div_of_pos_right (by norm_num) hs_pos
-          linarith
-        have hsq : zhukovskyMinorAxis n ^ 2 < (z₁ - z₂).im ^ 2 := by
-          have h1 := pow_lt_pow_left₀ him_gt hb_pos.le (by norm_num : 2 ≠ 0)
-          rwa [sq_abs] at h1
-        unfold zhukovskyEllipseForm
-        have hdiv : 1 < (z₁ - z₂).im ^ 2 / zhukovskyMinorAxis n ^ 2 :=
-          (one_lt_div (sq_pos_of_pos hb_pos)).mpr hsq
-        have hnn : 0 ≤ ((z₁ - z₂).re - 1 / 2) ^ 2 / zhukovskyMajorAxis n ^ 2 := by positivity
-        linarith
-  have hellipse_ne : ∀ z₁ ∈ Z_N, ∀ z₂ ∈ Z_N, zhukovskyEllipseForm n (z₁ - z₂) ≠ 1 := by
+          (finiteCoordinateGap_le _ Complex.re hw₁ hw₂ hlt.ne'))
+      rw [abs_of_pos (sub_pos.mpr hlt)] at hgap_re
+      exact hgap3.trans_le hgap_re
+    · exact hgap3.trans_le (hd_gap.trans ((min_le_right _ _).trans
+        (finiteCoordinateGap_le _ Complex.im hw₁ hw₂ him_ne)))
+  have hellipse_ne : ∀ z₁ ∈ prefixEnclosedZeros T n N, ∀ z₂ ∈ prefixEnclosedZeros T n N,
+      zhukovskyEllipseForm n (z₁ - z₂) ≠ 1 := by
     intro z₁ hz₁ z₂ hz₂
     rw [hpart, Finset.mem_biUnion] at hz₁ hz₂
     obtain ⟨w₁, hw₁, hz₁_s⟩ := hz₁
@@ -1850,26 +1878,27 @@ theorem integerThetaCollisionOperator_rouche_annihilation (T : ℝ) {n N : ℕ}
     hbdry hellipse_ne
   refine ⟨hF_perf, hdisc_mult, hdeg_eq, hL_nz, ?_⟩
   rw [hind]
-  change 2 * (∑ z₁ ∈ Z_N, ∑ z₂ ∈ Z_N,
-      ((analyticOrderAt F z₁).toNat : ℤ) * ((analyticOrderAt F z₂).toNat : ℤ) *
-        (if zhukovskyEllipseForm n (z₁ - z₂) < 1 then 1 else 0)) = _
   have hsum_collapse :
-      (∑ z₁ ∈ Z_N, ∑ z₂ ∈ Z_N,
-        ((analyticOrderAt F z₁).toNat : ℤ) * ((analyticOrderAt F z₂).toNat : ℤ) *
+      (∑ z₁ ∈ prefixEnclosedZeros T n N, ∑ z₂ ∈ prefixEnclosedZeros T n N,
+        ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₁).toNat : ℤ) *
+          ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₂).toNat : ℤ) *
           (if zhukovskyEllipseForm n (z₁ - z₂) < 1 then 1 else 0)) =
-      ∑ w₁ ∈ W, ∑ w₂ ∈ W,
-        ((analyticOrderAt _root_.RHTower.xi w₁).toNat : ℤ) *
-          ((analyticOrderAt _root_.RHTower.xi w₂).toNat : ℤ) *
-          (if w₁.im = w₂.im ∧ w₂.re < w₁.re then 1 else 0) := by
+      ∑ w₁ ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+        ∑ w₂ ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+          ((analyticOrderAt _root_.RHTower.xi w₁).toNat : ℤ) *
+            ((analyticOrderAt _root_.RHTower.xi w₂).toNat : ℤ) *
+            (if w₁.im = w₂.im ∧ w₂.re < w₁.re then 1 else 0) := by
     rw [hpart, Finset.sum_biUnion hdisj]
     refine Finset.sum_congr rfl fun w₁ hw₁ => ?_
     have hinner : ∀ z₁ ∈ slice w₁,
-        (∑ z₂ ∈ W.biUnion slice,
-          ((analyticOrderAt F z₁).toNat : ℤ) * ((analyticOrderAt F z₂).toNat : ℤ) *
+        (∑ z₂ ∈ ((_root_.RHTower.stripZeros_finite T).toFinset).biUnion slice,
+          ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₁).toNat : ℤ) *
+            ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₂).toNat : ℤ) *
             (if zhukovskyEllipseForm n (z₁ - z₂) < 1 then 1 else 0)) =
-        ∑ w₂ ∈ W, ((analyticOrderAt F z₁).toNat : ℤ) *
-          ((analyticOrderAt _root_.RHTower.xi w₂).toNat : ℤ) *
-          (if w₁.im = w₂.im ∧ w₂.re < w₁.re then 1 else 0) := by
+        ∑ w₂ ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+          ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₁).toNat : ℤ) *
+            ((analyticOrderAt _root_.RHTower.xi w₂).toNat : ℤ) *
+            (if w₁.im = w₂.im ∧ w₂.re < w₁.re then 1 else 0) := by
       intro z₁ hz₁
       rw [Finset.sum_biUnion hdisj]
       refine Finset.sum_congr rfl fun w₂ hw₂ => ?_
@@ -1882,27 +1911,31 @@ theorem integerThetaCollisionOperator_rouche_annihilation (T : ℝ) {n N : ℕ}
         · rw [if_pos h, if_pos (hcl.1 h)]
         · rw [if_neg h, if_neg (not_lt.mpr (hcl.2 h).le)]
       have hfactor : (∑ z₂ ∈ slice w₂,
-            ((analyticOrderAt F z₁).toNat : ℤ) * ((analyticOrderAt F z₂).toNat : ℤ) *
+            ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₁).toNat : ℤ) *
+              ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₂).toNat : ℤ) *
               (if zhukovskyEllipseForm n (z₁ - z₂) < 1 then 1 else 0)) =
-          ((analyticOrderAt F z₁).toNat : ℤ) *
-            (∑ z₂ ∈ slice w₂, ((analyticOrderAt F z₂).toNat : ℤ)) *
+          ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₁).toNat : ℤ) *
+            (∑ z₂ ∈ slice w₂,
+              ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₂).toNat : ℤ)) *
             (if w₁.im = w₂.im ∧ w₂.re < w₁.re then 1 else 0) := by
         rw [Finset.mul_sum, Finset.sum_mul]
         refine Finset.sum_congr rfl fun z₂ hz₂ => ?_
         rw [hcond z₂ hz₂]
       rw [hfactor, ← Nat.cast_sum, hdisc_mult w₂ hw₂]
     rw [Finset.sum_congr rfl hinner, Finset.sum_comm]
-    refine Finset.sum_congr rfl fun w₂ hw₂ => ?_
+    refine Finset.sum_congr rfl fun w₂ _ => ?_
     have hfactor₁ : (∑ z₁ ∈ slice w₁,
-          ((analyticOrderAt F z₁).toNat : ℤ) *
+          ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₁).toNat : ℤ) *
             ((analyticOrderAt _root_.RHTower.xi w₂).toNat : ℤ) *
             (if w₁.im = w₂.im ∧ w₂.re < w₁.re then 1 else 0)) =
-        (∑ z₁ ∈ slice w₁, ((analyticOrderAt F z₁).toNat : ℤ)) *
+        (∑ z₁ ∈ slice w₁,
+          ((analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z₁).toNat : ℤ)) *
           (((analyticOrderAt _root_.RHTower.xi w₂).toNat : ℤ) *
             (if w₁.im = w₂.im ∧ w₂.re < w₁.re then 1 else 0)) := by
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl fun z₁ _ => by ring
     rw [hfactor₁, ← Nat.cast_sum, hdisc_mult w₁ hw₁, mul_assoc]
+  dsimp only at hind ⊢
   rw [hsum_collapse]
   exact two_mul_ordered_collision_sum_eq_charge T
 
@@ -1962,7 +1995,8 @@ theorem firstArtifactFreePrefix_eq_zero_of_le_three {T : ℝ} (hT : T ≤ 3) (n 
         thetaWindowLowerLeft_im, thetaWindowUpperRight_im] at hmem
       have hhalf_le : 1 / (2 * (zhukovskyStage n : ℝ)) ≤ 1 / 12 :=
         one_div_le_one_div_of_le (by norm_num) (by linarith [six_le_zhukovskyStage_real n])
-      have hhalf_pos : 0 < 1 / (2 * (zhukovskyStage n : ℝ)) := by positivity
+      have hhalf_pos : 0 < 1 / (2 * (zhukovskyStage n : ℝ)) :=
+        one_div_pos.mpr (mul_pos (by norm_num) (zhukovskyStage_pos n))
       have hmax3 : max 0 T ≤ 3 := max_le (by norm_num) hT
       have hre : |z.re - 1 / 2| ≤ 9 / 8 :=
         abs_le.mpr ⟨by linarith [hmem.1.1], by linarith [hmem.1.2]⟩

@@ -8,6 +8,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicHecke
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationProjections
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationForms
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.MovingLimit
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.GeneralOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationMovingPositivity
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PolynomialCorrection
@@ -45,6 +46,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.TheStableGluingFormula
 import GaloisForLFunctions.AdelicKreinGeometry.TheGlueAbsorbsExactlyItsOwnPair
 import GaloisForLFunctions.AdelicKreinGeometry.TheIndexWallOverAFunctionField
 import GaloisForLFunctions.AdelicKreinGeometry.TheTwoReadingsAdd
+import GaloisForLFunctions.AdelicKreinGeometry.ASignatureFormulaForPrimeTowers
 import GaloisForLFunctions.AdelicKreinGeometry.PrimeTowersGlueAtFullIndex
 import GaloisForLFunctions.AdelicKreinGeometry.JordanPairKernelsOnDilations
 import GaloisForLFunctions.AdelicKreinGeometry.HeatTangentBlaschkeExtraction
@@ -86,7 +88,8 @@ its places.
   sharp, absorbs the simple pole pair at any strength and charges a double pole; the stable gluing
   formula at exponent `0 < s < 1`, whose absorbed pair sits at `(1 ± s)/2`, and every other real pair
   costs its square; the local wall over `𝔽_q(X)` at the place `∞`; the additive reading of a glued
-  state has one square and the two readings add.
+  state has one square and the two readings add; the signature formula
+  `Σ_p κ₀(k_p) + 1 ≤ κ ≤ Σ_p κ₀(k_p) + 2` for finitely many prime towers glued at `∞`.
 * Haar carriers (`Haar/`): index preservation by positive integer-successor carriers, axis-invisible
   kernels and their degree and rank laws, period defects, and infinite index for every Haar kernel
   with a continuous dilation reading.

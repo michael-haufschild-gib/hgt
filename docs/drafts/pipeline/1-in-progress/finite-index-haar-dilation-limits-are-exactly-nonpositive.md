@@ -16,6 +16,8 @@ For every positive Haar carrier `P`, the audited bound `|P(D_u)|²≤|u−1|` gi
 
 Conversely, for `a≥0`, use `k=P+a(δ_1−1)∘slope`, where `P` is the Haar state and `δ_1` is the positive identity indicator on rational units. The slope correction has index at most one: its restriction to the coefficient-sum-zero hyperplane is positive. If `a>0`, its Gram on two distinct units has one negative square. Exact Haar slope-index preservation therefore gives index one and punctured limit `−a`. Taking `a=0` gives a positive carrier with limit zero. A positive carrier cannot have a negative limit by the proved vanishing bound, so these indices are minimal.
 
+The same explicit family has a sharp sign transition: `κ(k_a)=0` for `a=0`, `1` for `a>0`, and `∞` for `a<0`. In the last case its punctured limit `−a` is positive, so the cyclic Gram obstruction applies. Corpus searches found no existing theorem for this jump family; this corollary shares the complete paper proof above and still awaits Lean verification.
+
 ## Verification boundary
 
 Corpus searches found the positive-carrier vanishing bound and the continuous-dilation obstruction, not this full limit classification. Punctured-limit transport, the scaled constant-matrix inertia argument, and the exact jump-carrier index remain to be formalized. The proof uses the existing zero-axis correction and exact Haar slope-index law; it does not depend on the unproved full splitting. No assertion concerns a carrier whose punctured limit fails to exist.

@@ -278,6 +278,7 @@ at edges with a counterterm of nontrivial null cone.
 | The gluing square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`; the pole pair is absorbed and the glue is blind to it at any strength | `negIndex_archGlue_eq_or`, `boostPolarIndex_polePair`, `negIndex_archGlue_add_polePair`, `negIndex_archGlue_ratCorr_add_polePair` |
 | **The glue sees the order of the pole**: `κ^{(½)}(doublePole) = 1`, glued index `2` against `1` for a simple pole | `boostPolarIndex_doublePole`, `negIndex_archGlue_doublePole`, `negIndex_archGlue_smul_polePair` |
 | **The index wall over `𝔽_q(X)`**: the local Hecke state at `∞` has `κ = 0` for `s ≥ 1/2` and `∞` below | `negIndex_inftyHecke`, `isPosDefKernel_inftyHecke`, `inftyCommKernel_gram` |
+| **Signature formula for prime towers**: `Σ_{p∈S} κ₀(k_p) + 1 ≤ κ(Σ_p k_p(v_p(|a|)) − c|a|^{−1/2}|b|) ≤ Σ_{p∈S} κ₀(k_p) + 2` | `towerSignature_lower`, `towerSignature_upper`, `valS_surjective`, `towerAssembly_periodic` |
 | **The readings add**: `κ(Φ) = κ^{(½)}(K) + κ(Φ|_+)`, `κ(Φ|_+) = 1`; for Weil's state `κ = κ(Φ|_×) + κ(Φ|_+) = #rightZeros + 1` | `negIndex_archGlue_translation`, `negIndex_archGlue_eq_add_readings`, `negIndex_weilArchState_eq_add_readings`, `negIndex_weilArchState_sub_translation` |
 | **The glue absorbs exactly its own pair**: `κ(u^{±s'/2} glued at s) = 1` if `s' = s`, else `2`; at `s = 1` only the pole pair is absorbed | `negIndex_archGlueAt_stablePair_eq`, `boostPolarIndexAt_stablePair_of_ne`, `negIndex_archGlue_stablePair_of_ne` |
 | **Stable gluing formula** `κ(K(|a|) − c|a|^{−s/2}|b|^s) = κ^{(s/2)}(K) + 1`, `0 < s < 1`; absorbed pair `u^{±s/2}`; zero configurations with `Re ρ > (1 − s)/2` give `κ(K_Z) + 1`; a drop for `ζ` certifies a zero with `Re ρ ≤ (1 − s)/2` | `negIndex_archGlueAt_eq`, `negIndex_archGlueAt_eq_or`, `boostPolarIndexAt_stablePair`, `negIndex_archGlueAt_orbitCorr`, `exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne` |
@@ -293,7 +294,9 @@ at edges with a counterterm of nontrivial null cone.
    *Answered for the glue.* Local constituents sharing the pole glue with at most one square (separable
    assemblies); a conformal successor glues to its pole with exactly one (`κ₀ + 1`); distinct places add; the
    archimedean place glues dilation data by the boost hyperplane, `κ^{(½)}(K) + 1`, and for prime towers and for
-   Weil's correlation the hyperplane is free, so the archimedean term is exactly one square; the pole terms
+   Weil's correlation the hyperplane is free, so the archimedean term is exactly one square. For finitely many
+   prime towers this gives the signature formula `κ = Σ_p κ₀(k_p) + 1 + ε`, `ε ∈ {0, 1}`: local defects, one
+   archimedean square and at most one pole square; the pole terms
    contribute nothing to it at any strength. For the Hecke states the local–global law is a product formula with
    identical local walls at every prime. *Open*: the decomposition of `κ(K_ζ)` itself into prime defects; the Weil
    kernel is neither tower-supported nor separable.
@@ -419,8 +422,9 @@ principle for the index) and O5 (a second bridge between the primes).
    conformal successors, point vectors, agreement shells. Met.
 2. *a local signature theorem at each place and a global gluing theorem*: the pole–successor formula at every
    place, additivity over places, the separable and archimedean gluing formulas; for the Hecke family the local
-   wall at every prime and the product formula. Met for the glue and for the Hecke family; the prime-local
-   decomposition of `κ(K_ζ)` is open.
+   wall at every prime and the product formula; for finitely many prime towers the signature formula
+   `Σ_p κ₀(k_p) + 1 ≤ κ ≤ Σ_p κ₀(k_p) + 2`. Met for the glue, the Hecke family and finite tower assemblies; the
+   prime-local decomposition of `κ(K_ζ)` is open.
 3. *an additive–multiplicative comparison proved as an identity*: the Gram identities of the pole–successor and
    archimedean states, the index identity `κ = #{zeros right of the line} + 1`, and its splitting
    `κ(Φ) = κ(Φ|_×) + κ(Φ|_+)` into the multiplicative and the additive reading. Met for the archimedean
@@ -462,7 +466,8 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
   `PrimeTowersGlueAtFullIndex`, `WeilsArchimedeanStateCountsTheZeros`, `TheGluingSquareIsSharp`,
   `TheGlueSeesTheOrderOfThePole`, `JordanPairKernelsOnDilations`, `HeatTangentBlaschkeExtraction`,
   `HeatGaussianResidueKernel`, `TheHeatDeformedArchimedeanState`, `TheStableGluingFormula`,
-  `TheGlueAbsorbsExactlyItsOwnPair`, `TheIndexWallOverAFunctionField`, `TheTwoReadingsAdd`.
+  `TheGlueAbsorbsExactlyItsOwnPair`, `TheIndexWallOverAFunctionField`, `TheTwoReadingsAdd`,
+  `ASignatureFormulaForPrimeTowers`.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,

@@ -132,6 +132,3 @@ theorem towerSignature_upper {k : S → Multiplicative ℤ → ℂ} (hk : ∀ p,
     le_rfl
 
 end GaloisForLFunctions.AdelicKreinGeometry
-
-#print axioms GaloisForLFunctions.AdelicKreinGeometry.towerSignature_lower
-#print axioms GaloisForLFunctions.AdelicKreinGeometry.towerSignature_upper

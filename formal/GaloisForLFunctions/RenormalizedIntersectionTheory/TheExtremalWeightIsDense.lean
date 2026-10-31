@@ -9,8 +9,10 @@ On the `S`-units the archimedean pole is the extremal weight `χ^∅ = ∏_{p∈
 boost. This file compares their value group over one prime and over two.
 
 * **One prime: quantized** (`not_dense_exponents_single`): on the `p`-units the exponents form the
-  lattice `(log p) ℤ`. This is the function-field situation, where every place has values in
-  `q^ℤ` and Frobenius is the generator.
+  lattice `(log p) ℤ`.
+* **Function fields: quantized** (`not_dense_exponents_of_quantized`): when all place sizes are
+  integer multiples of one size — over `𝔽_q[T]` the place `P` has size `deg P · log q` — the
+  exponents of every `S`-unit group lie in a lattice; Frobenius is the generator.
 * **Two primes: dense** (`irrational_log_div_log`, `dense_exponents_pair`): `log p / log q` is
   irrational for distinct primes, so the exponents `a log p + b log q` are dense in `ℝ`.
 * **The archimedean boost reads the exponents** (`log_norm_archBoost_sUnit`):
@@ -75,6 +77,18 @@ theorem not_dense_exponents_single (p : Nat.Primes) :
     ¬ Dense (Set.range fun n : ℤ => (n : ℝ) * Real.log p) := by
   have h := not_denseRange_zsmul (a := Real.log p)
   simpa [DenseRange, zsmul_eq_mul] using h
+
+/-- **Commensurable sizes are quantized.** If every place has size `d_v · c` with `d_v ∈ ℤ` — as over
+`𝔽_q[T]`, where the place `P` has size `deg P · log q` — the exponents `Σ n_v d_v c` of the
+`S`-units lie in `c ℤ` and are not dense. -/
+theorem not_dense_exponents_of_quantized {ι : Type*} (S : Finset ι) (d : ι → ℤ) (c : ℝ) :
+    ¬ Dense (Set.range fun n : ι → ℤ => ∑ v ∈ S, (n v : ℝ) * (d v * c)) := by
+  intro hd
+  refine not_denseRange_zsmul (a := c) (hd.mono ?_)
+  rintro _ ⟨n, rfl⟩
+  refine ⟨∑ v ∈ S, n v * d v, ?_⟩
+  simp only [zsmul_eq_mul, Int.cast_sum, Int.cast_mul, sum_mul]
+  exact sum_congr rfl fun v _ => by ring
 
 /-- **The archimedean boost reads the exponents** on the `S`-units. -/
 theorem log_norm_archBoost_sUnit (S : Finset Nat.Primes) (n : Nat.Primes → ℤ) :
