@@ -114,8 +114,150 @@ theorem completedPrimeDilationTail_primeWitness_nonneg (Q y n : ℕ) :
   have h := le_of_tendsto hlim (Eventually.of_forall fun K => neg_nonpos.mpr (hfinite K))
   exact neg_nonpos.mp h
 
+/-- The prime divisor jet has one constant row and one prime row. -/
+theorem ramanujanDivisorJet_prime {p : ℕ} (hp : p.Prime) (n : ℕ) :
+    ramanujanLogDivisorJet p n = Real.log p * (ramanujanLagCoefficient p n + 1) := by
+  have h1 : ramanujanLagCoefficient 1 n = 1 := by
+    simpa only [Nat.totient_one, Nat.cast_one] using
+      ramanujanLagCoefficient_of_dvd (one_dvd n)
+  rw [ramanujanLogDivisorJet_eq_weighted_conductors hp.pos, hp.divisors,
+    sum_pair (Ne.symm hp.ne_one)]
+  simp only [ramanujanJetConductorWeight, if_neg (Ne.symm hp.ne_one), if_pos rfl,
+    Nat.div_one, Nat.div_self hp.pos, vonMangoldt_apply_prime hp, vonMangoldt_apply_one,
+    zero_add, add_zero, h1, mul_one]
+  ring
+
+private theorem primeIncidence_generator_term {p : ℕ} (hp : p.Prime) (b : ℝ) (n : ℕ) :
+    (primePoleWitness p * b) *
+      (ramanujanLogDivisorJet p n / Real.sqrt (p.totient : ℝ) -
+        (Real.log p + tameDifferent p) * normalizedRamanujanMode p n) =
+      if p ∣ n then 0 else b * Real.log p / ((p : ℝ) - 1) := by
+  have hpR : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
+  have hp0 : (p : ℝ) ≠ 0 := (zero_lt_one.trans hpR).ne'
+  have hp1 : (p : ℝ) - 1 ≠ 0 := (sub_pos.mpr hpR).ne'
+  have hs : Real.sqrt ((p : ℝ) - 1) ≠ 0 := (Real.sqrt_pos.mpr (sub_pos.mpr hpR)).ne'
+  have ht := tameDifferent_prime_pow hp (show (1 : ℕ) ≠ 0 by decide)
+  simp only [pow_one] at ht
+  rw [ramanujanDivisorJet_prime hp, normalizedRamanujanMode_eq_coefficient hp.pos,
+    primePoleWitness, ht, Nat.totient_prime hp, Nat.cast_sub hp.one_lt.le, Nat.cast_one,
+    ramanujanCoefficient_prime hp]
+  by_cases hn : p ∣ n
+  · simp only [if_pos hn]
+    field_simp [hp0, hp1, hs]
+    ring
+  · simp only [if_neg hn]
+    field_simp [hp0, hp1, hs]
+    ring
+
+/-- The full generator on prime incidence coordinates is an explicit nondivisibility sum. -/
+theorem primeIncidenceGenerator_eq (Q : ℕ) (b : ℕ → ℝ) (n : ℕ) :
+    arithmeticPrimeGenerator Q (primeIncidenceCoefficients b) n =
+      ∑ p ∈ (Icc 1 Q).filter Nat.Prime,
+        if p ∣ n then 0 else b p * Real.log p / ((p : ℝ) - 1) := by
+  rw [arithmeticPrimeGenerator_eq_jet, sum_filter]
+  apply sum_congr rfl
+  intro p _
+  by_cases hp : p.Prime
+  · rw [primeIncidenceCoefficients, primeOnly, if_pos hp, if_pos hp]
+    exact primeIncidence_generator_term hp (b p) n
+  · simp only [primeIncidenceCoefficients, primeOnly, if_neg hp, zero_mul]
+
+/-- The remaining reciprocal Mangoldt mass in one prime tower. -/
+def primeTowerRemainder (p y : ℕ) : ℝ :=
+  Real.log p / ((p : ℝ) - 1) -
+    ∑ k ∈ Icc 1 y, if p ∣ k then vonMangoldt k / (k : ℝ) else 0
+
+theorem primeTowerRemainder_nonneg {p : ℕ} (hp : p.Prime) (y : ℕ) :
+    0 ≤ primeTowerRemainder p y :=
+  sub_nonneg.mpr (sum_dvd_vonMangoldt_div_le hp (Icc 1 y))
+
+/-- A cutoff below the prime has not removed any part of its tower. -/
+theorem primeTowerRemainder_eq_of_lt {p y : ℕ} (hy : y < p) :
+    primeTowerRemainder p y = Real.log p / ((p : ℝ) - 1) := by
+  have hzero : (∑ k ∈ Icc 1 y, if p ∣ k then vonMangoldt k / (k : ℝ) else 0) = 0 := by
+    apply sum_eq_zero
+    intro k hk
+    have hpk : ¬p ∣ k := by
+      intro h
+      have hle := Nat.le_of_dvd (mem_Icc.mp hk).1 h
+      have hky := (mem_Icc.mp hk).2
+      omega
+    rw [if_neg hpk]
+  rw [primeTowerRemainder, hzero, sub_zero]
+
+/-- The complementary prime tail has exact positive tower coefficients in incidence coordinates. -/
+theorem completedPrimeDilationTail_primeIncidence_eq (Q : ℕ) (b : ℕ → ℝ) (y n : ℕ) :
+    completedPrimeDilationTail Q (primeIncidenceCoefficients b) y n =
+      ∑ p ∈ (Icc 1 Q).filter Nat.Prime,
+        if p ∣ n then 0 else b p * primeTowerRemainder p y := by
+  have hhead : (∑ k ∈ Icc 1 y, vonMangoldt k / (k : ℝ) *
+      (normalizedConductorPacket Q (primeIncidenceCoefficients b) (k * n) -
+        normalizedConductorPacket Q (primeIncidenceCoefficients b) n)) =
+      ∑ p ∈ (Icc 1 Q).filter Nat.Prime,
+        if p ∣ n then 0 else b p *
+          ∑ k ∈ Icc 1 y, if p ∣ k then vonMangoldt k / (k : ℝ) else 0 := by
+    calc
+      _ = ∑ k ∈ Icc 1 y, ∑ p ∈ (Icc 1 Q).filter Nat.Prime,
+          vonMangoldt k / (k : ℝ) * (if p ∣ k ∧ ¬p ∣ n then b p else 0) := by
+        apply sum_congr rfl
+        intro k _
+        rw [primeIncidencePacket_dilation_jump, mul_sum]
+      _ = ∑ p ∈ (Icc 1 Q).filter Nat.Prime, ∑ k ∈ Icc 1 y,
+          vonMangoldt k / (k : ℝ) * (if p ∣ k ∧ ¬p ∣ n then b p else 0) := sum_comm
+      _ = _ := by
+        apply sum_congr rfl
+        intro p _
+        by_cases hn : p ∣ n
+        · simp only [hn, not_true_eq_false, and_false, if_false, mul_zero, sum_const_zero, if_true]
+        · rw [if_neg hn, mul_sum]
+          apply sum_congr rfl
+          intro k _
+          by_cases hk : p ∣ k <;> simp only [hk, hn, not_false_eq_true, and_true,
+            if_true, if_false, mul_zero] <;> ring
+  rw [completedPrimeDilationTail, ← arithmeticPrimeGenerator_eq_jet,
+    primeIncidenceGenerator_eq, hhead, ← sum_sub_distrib]
+  apply sum_congr rfl
+  intro p _
+  by_cases hn : p ∣ n
+  · simp only [if_pos hn, sub_self]
+  · simp only [if_neg hn, primeTowerRemainder]
+    ring
+
+/-- The high-prime part of the coherent arithmetic generator. -/
+def highPrimeCoherentSource (P Q n : ℕ) : ℝ :=
+  ∑ p ∈ (Icc 1 Q).filter Nat.Prime,
+    if P < p then (if p ∣ n then 0 else Real.log p / ((p : ℝ) - 1)) else 0
+
+theorem highPrimeCoherentSource_nonneg (P Q n : ℕ) :
+    0 ≤ highPrimeCoherentSource P Q n := by
+  apply sum_nonneg
+  intro p hp
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast (mem_filter.mp hp).2.one_lt
+  split_ifs <;> first | exact le_rfl | exact
+    div_nonneg (Real.log_natCast_nonneg p) (sub_nonneg.mpr hp1.le)
+
+/-- Primes beyond the complementary quotient contribute their complete positive towers. -/
+theorem highPrimeCoherentSource_le_completedTail {P y : ℕ} (hy : y ≤ P) (Q n : ℕ) :
+    highPrimeCoherentSource P Q n ≤
+      completedPrimeDilationTail Q (primeOnly primePoleWitness) y n := by
+  have heq := completedPrimeDilationTail_primeIncidence_eq Q (fun _ => 1) y n
+  simp only [primeIncidenceCoefficients, mul_one, one_mul] at heq
+  rw [heq, highPrimeCoherentSource]
+  apply sum_le_sum
+  intro p hp
+  by_cases hP : P < p
+  · rw [if_pos hP, primeTowerRemainder_eq_of_lt (hy.trans_lt hP)]
+  · rw [if_neg hP]
+    by_cases hn : p ∣ n
+    · rw [if_pos hn]
+    · rw [if_neg hn]
+      exact primeTowerRemainder_nonneg (mem_filter.mp hp).2 y
+
 #print axioms primePoleWitness_mul_mode
 #print axioms primeIncidencePacket_dilation_jump
 #print axioms completedPrimeDilationTail_primeWitness_nonneg
+#print axioms primeIncidenceGenerator_eq
+#print axioms completedPrimeDilationTail_primeIncidence_eq
+#print axioms highPrimeCoherentSource_le_completedTail
 
 end GaloisForLFunctions.CriticalScaleArithmeticRigidity

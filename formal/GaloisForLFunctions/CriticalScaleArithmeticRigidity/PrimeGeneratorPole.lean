@@ -3,7 +3,8 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.PrimePoleNorm
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.DyadicPoleRigidity
 import GaloisForLFunctions.BezoutValuationIncidence.HardyLittlewoodTupleSeriesFromRadicalClosedRows
 
-/-!+# Coherent pole response of the literal prime generator
+/-!
+# Coherent pole response of the literal prime generator
 
 The convergent Mangoldt-weighted dilation generator has a divisor-jet
 description. Complete-period averaging extracts its exact pole row.
@@ -20,6 +21,7 @@ namespace GaloisForLFunctions.CriticalScaleArithmeticRigidity
 
 open SuccessorShellArithmetic BezoutValuationIncidence
   CriticalArithmeticCorrelationTheory ArithmeticIntersectionTheory
+  RenormalizedArithmeticPotentialTheory
 
 /-- The actual complete Mangoldt-weighted dilation difference. -/
 def arithmeticPrimeGenerator (Q : ℕ) (a : ℕ → ℝ) (n : ℕ) : ℝ :=
@@ -77,7 +79,7 @@ theorem packetMean_div_const (Q : ℕ) (f : ℕ → ℝ) (c : ℝ) :
 /-- Divisor-jet charge is unchanged when its period is repeated to the common packet period. -/
 theorem packetMean_divisorJet {Q m : ℕ} (hm : m ∈ Icc 1 Q) :
     packetMean Q (ramanujanLogDivisorJet m) = vonMangoldt m := by
-  have hm0 := (mem_Icc.mp hm).1
+  have hm0 : 0 < m := (mem_Icc.mp hm).1
   have hd : m ∣ Q.factorial := Nat.dvd_factorial hm0 (mem_Icc.mp hm).2
   have hmR : (m : ℝ) ≠ 0 := by exact_mod_cast hm0.ne'
   have hQR : (Q.factorial : ℝ) ≠ 0 := by exact_mod_cast (Nat.factorial_pos Q).ne'
@@ -96,7 +98,7 @@ theorem packetMean_divisorJet {Q m : ℕ} (hm : m ∈ Icc 1 Q) :
 theorem packetMean_normalizedMode_eq_zero {Q m : ℕ}
     (hm : m ∈ Icc 1 Q) (hm1 : m ≠ 1) :
     packetMean Q (normalizedRamanujanMode m) = 0 := by
-  have hm0 := (mem_Icc.mp hm).1
+  have hm0 : 0 < m := (mem_Icc.mp hm).1
   have hconst (n : ℕ) : ramanujanLagCoefficient 1 n = 1 := by
     simpa only [Nat.totient_one, Nat.cast_one] using
       ramanujanLagCoefficient_of_dvd (one_dvd n)
@@ -109,7 +111,9 @@ theorem packetMean_normalizedMode_eq_zero {Q m : ℕ}
 /-- Prime-supported input has zero constant conductor before applying the generator. -/
 theorem packetMean_primeOnly_eq_zero (Q : ℕ) (a : ℕ → ℝ) :
     packetMean Q (normalizedConductorPacket Q (primeOnly a)) = 0 := by
-  rw [normalizedConductorPacket, packetMean_sum]
+  change packetMean Q (fun n => ∑ m ∈ Icc 1 Q,
+    primeOnly a m * normalizedRamanujanMode m n) = 0
+  rw [packetMean_sum]
   apply sum_eq_zero
   intro m hm
   rw [packetMean_const_mul]

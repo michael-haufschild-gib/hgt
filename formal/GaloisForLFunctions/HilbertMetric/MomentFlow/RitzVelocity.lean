@@ -36,10 +36,10 @@ theorem hasDerivAt_momentInner_combination {n : ℕ} {s : ℝ → ℕ → ℝ}
     HasDerivAt (fun t => momentInner (s t) (polynomialCombination b (v t)) Q)
       (momentInner (s a) (polynomialCombination b v') Q -
         momentInner (s a) (polynomialCombination b (v a)) (X * Q)) a := by
-  simp only [momentInner_combination]
-  convert HasDerivAt.fun_sum (u := Finset.univ)
-    (fun i _ => (hv i).mul (hs (b i) Q)) using 1
-  simp only [mul_neg, ← Finset.sum_sub_distrib, sub_eq_add_neg]
+  have hsum := HasDerivAt.fun_sum (u := Finset.univ)
+    (fun i _ => (hv i).mul (hs (b i) Q))
+  simpa only [momentInner_combination, Finset.sum_add_distrib,
+    mul_neg, Finset.sum_neg_distrib, sub_eq_add_neg] using hsum
 
 /-- Exact velocity identity, valid even for an indefinite moment form. -/
 theorem ritz_velocity_identity {n : ℕ} {s : ℝ → ℕ → ℝ} {a : ℝ}
@@ -65,7 +65,9 @@ theorem ritz_velocity_identity {n : ℕ} {s : ℝ → ℕ → ℝ} {a : ℝ}
     hbase (v a)
   have hDP : momentInner (s a) D (X * P) = lam a * momentInner (s a) D P := by
     rw [momentInner_comm, momentInner_X_mul]
-    simpa only [momentInner_comm (s a) P D] using hbase v'
+    have h := hbase v'
+    change momentInner (s a) P (X * D) = lam a * momentInner (s a) P D at h
+    rwa [momentInner_comm (s a) P D] at h
   have hleft := hasDerivAt_momentInner_combination b hs hv (X * P)
   have hright := hlam.mul (hasDerivAt_momentInner_combination b hs hv P)
   have heq : (fun t => momentInner (s t) (polynomialCombination b (v t)) (X * P))
@@ -110,9 +112,10 @@ theorem ritz_velocity_neg {n : ℕ} {s : ℝ → ℕ → ℝ} {a : ℝ}
   have hid := ritz_velocity_identity b hs hv hlam heig
   have hnorm := hpos.pos_of_ne_zero _ hne
   have hres := hpos.pos_of_ne_zero _ (mul_ne_zero (X_sub_C_ne_zero (lam a)) hne)
-  apply (mul_neg_iff_of_pos_right hnorm).mp
-  rw [hid]
-  exact neg_neg_of_pos hres
+  by_contra hnot
+  have hprod := mul_nonneg (le_of_not_gt hnot) hnorm.le
+  rw [hid] at hprod
+  exact (not_le_of_gt hres) (neg_nonneg.mp hprod)
 
 #print axioms ritz_velocity_identity
 #print axioms ritz_velocity_neg

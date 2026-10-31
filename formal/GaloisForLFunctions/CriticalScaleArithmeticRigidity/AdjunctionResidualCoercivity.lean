@@ -1,7 +1,8 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.RelativePrimeResidual
 import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.TheConductorTwoIsTheFirstExcitation
 
-/-!+# The prime residual is small relative to adjunction energy
+/-!
+# The prime residual is small relative to adjunction energy
 
 Removing the constant conductor leaves the exact arithmetic excitation
 gap `2 log 2`. The source-relative residual estimate then has a quadratic

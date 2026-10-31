@@ -221,7 +221,7 @@ theorem isHermKernel_sTruncatedCorr (S : Finset Nat.Primes) :
     funext x
     have h := congrFun (RHTower.WeilSpectral.tilde_weilTest_self (cx cubicSpline)) (x - logPos u)
     simp only [EF.tilde, RHTower.WeilSpectral.transl, K] at h ⊢
-    rw [← h]; congr 2; ring
+    rw [show -x - -logPos u = -(x - logPos u) by ring, h]
   rw [sTruncatedCorr, sTruncatedCorr, weilTest_translate_eq_transl, weilTest_translate_eq_transl,
     logPos_inv, neg_neg, ← RHTower.WeilSpectral.weilFullFunctional_tilde, htilde]
 
@@ -264,7 +264,9 @@ private theorem tendsto_sTruncatedCorrNonPole_logPos_atTop (S : Finset Nat.Prime
       · simp
     rw [hcoeff]
     refine mul_le_mul_of_nonneg_left ?_ (by split_ifs <;> positivity)
-    exact (norm_add_le _ _).trans (by linarith [hx₀ (Real.log k - -y), hx₀ (-Real.log k - -y)])
+    have ht1 : ‖RHTower.WeilSpectral.transl (-y) K (Real.log k)‖ ≤ M := hx₀ _
+    have ht2 : ‖RHTower.WeilSpectral.transl (-y) K (-Real.log k)‖ ≤ M := hx₀ _
+    exact (norm_add_le _ _).trans (by linarith)
   have hlim : ∀ k : ℕ, Tendsto (fun y : ℝ => F y k) atTop (𝓝 0) := fun k => by
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_gt_atTop (|R| + |Real.log k|)] with y hy
@@ -299,7 +301,7 @@ private theorem tendsto_sTruncatedCorrNonPole_logPos_atTop (S : Finset Nat.Prime
       funext x
       have h := congrFun (RHTower.WeilSpectral.tilde_weilTest_self (cx cubicSpline)) (x + y)
       simp only [EF.tilde, RHTower.WeilSpectral.transl, K] at h ⊢
-      rw [← h]; congr 2; ring
+      rw [show -x - y = -(x + y) by ring, show x - -y = x + y by ring, h]
     rw [← htilde]
     unfold RHTower.WeilSpectral.archPart
     have hint : (∫ r : ℝ, paperFT (EF.tilde (RHTower.WeilSpectral.transl y K)) r *
@@ -309,7 +311,7 @@ private theorem tendsto_sTruncatedCorrNonPole_logPos_atTop (S : Finset Nat.Prime
       rw [← integral_conj]
       refine integral_congr_ae (Eventually.of_forall fun r => ?_)
       simp only [EF.paperFT_tilde, Complex.conj_ofReal, map_mul]
-    rw [hint, map_mul, map_div₀, map_one, map_ofNat, Complex.conj_ofReal]
+    rw [hint, map_mul, map_div₀, map_one, map_mul, map_ofNat, Complex.conj_ofReal]
   simpa using hp_lim.neg.add ha_lim
 
 private theorem tendsto_sTruncatedCorrNonPole_twoPos (S : Finset Nat.Primes) (g h : posUnits) :
@@ -355,7 +357,7 @@ theorem not_tendsto_negIndex_archGlue_sTruncatedCorr_of_finite_pos {ι : Type*} 
     ¬ Tendsto (fun i => negIndex (archGlue (sTruncatedCorr (S i)) c))
       l (𝓝 (negIndex (weilArchState c))) := by
   intro htend
-  obtain ⟨m, _, hm_eq⟩ := ENat.ne_top_iff_exists.mp hfin.ne
+  obtain ⟨m, hm_eq⟩ := ENat.ne_top_iff_exists.mp hfin.ne
   have hm2 : 2 ≤ m := by
     by_contra hlt
     have hle1 : negIndex zetaKernel ≤ 1 := by
@@ -399,7 +401,7 @@ theorem sTruncatedCorr_eq_ratCorr_of_abs_logPos_le {B : ℝ} {S : Finset Nat.Pri
     · by_cases hs : IsSPrimePow S n
       · simp [vonMangoldtS, truncWeight, hs, vonMangoldtWeight]
       · obtain ⟨k, _, hk_pos, p, hp_le, hnp, hp⟩ :=
-          (Nat.isPrimePow_nat_iff_bounded_log n).mp
+          (isPrimePow_nat_iff_bounded_log n).mp
             (ArithmeticFunction.vonMangoldt_ne_zero_iff.mp hΛ)
         have hp_not_S : (⟨p, hp⟩ : Nat.Primes) ∉ S := fun hmem =>
           hs ⟨⟨p, hp⟩, hmem, k, hk_pos, hnp⟩

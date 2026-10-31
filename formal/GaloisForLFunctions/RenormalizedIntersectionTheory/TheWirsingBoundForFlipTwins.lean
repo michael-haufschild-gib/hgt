@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity.AMarginNeedsHarmonicCorrelation
+import GaloisForLFunctions.RenormalizedIntersectionTheory.TheAtomicHodgeIndexSeparatesExactlyTheSubmaximalMargins
 import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
 import GaloisForLFunctions.RHTower.MertensFirst
 
@@ -385,5 +385,264 @@ theorem exists_abs_wirsing_equation_le (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → 
         nlinarith
 
 end Equation
+
+section Gronwall
+
+theorem one_le_log_of_three_le {N : ℕ} (hN : 3 ≤ N) : 1 ≤ Real.log N := by
+  have h3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
+  rw [Real.le_log_iff_exp_le (by linarith)]
+  exact (Real.exp_one_lt_d9.trans (by norm_num : (2.7182818286 : ℝ) < 3)).le.trans h3
+
+/-- Bernoulli's inequality in the form `ℓ^b + b δ ℓ^{b−1} ≤ (ℓ + δ)^b`. -/
+theorem rpow_add_mul_le {ℓ δ b : ℝ} (hℓ : 0 < ℓ) (hδ : 0 ≤ δ) (hb : 1 ≤ b) :
+    ℓ ^ b + b * δ * ℓ ^ (b - 1) ≤ (ℓ + δ) ^ b := by
+  have hs : -1 ≤ δ / ℓ := by have : 0 ≤ δ / ℓ := div_nonneg hδ hℓ.le; linarith
+  have hB := one_add_mul_self_le_rpow_one_add hs hb
+  have e1 : ℓ + δ = ℓ * (1 + δ / ℓ) := by field_simp
+  rw [e1, Real.mul_rpow hℓ.le (by linarith), Real.rpow_sub_one hℓ.ne']
+  calc ℓ ^ b + b * δ * (ℓ ^ b / ℓ) = ℓ ^ b * (1 + b * (δ / ℓ)) := by ring
+    _ ≤ ℓ ^ b * (1 + δ / ℓ) ^ b := mul_le_mul_of_nonneg_left hB (Real.rpow_nonneg hℓ.le b)
+
+/-- **Discrete Gronwall for the Wirsing equation.** If `M(N + 1) = M(N) + L(N) Δ log N` and
+`L(N) log N = a M(N) + O(log N)`, then `M ≪ (log N)^b` and `L ≪ (log N)^{b − 1}` for every `b ≥ 1`
+with `|a| < b`: the comparison sequence `A (log N)^b` absorbs the forcing because
+`(log(N + 1))^b ≥ (log N)^b + b Δ log N (log N)^{b − 1}`. -/
+theorem exists_abs_le_rpow_of_wirsing {M L : ℕ → ℝ} {a K b : ℝ} (hK : 0 ≤ K) (hb1 : 1 ≤ b)
+    (hab : |a| < b)
+    (hstep : ∀ N, 3 ≤ N → M (N + 1) = M N + L N * (Real.log ((N + 1 : ℕ) : ℝ) - Real.log N))
+    (heq : ∀ N, 3 ≤ N → |L N * Real.log N - a * M N| ≤ K * Real.log N) :
+    ∃ A, 0 ≤ A ∧ ∀ N, 3 ≤ N →
+      |M N| ≤ A * Real.log N ^ b ∧ |L N| ≤ A * Real.log N ^ (b - 1) := by
+  have hgap : 0 < b - |a| := by linarith
+  set A₀ := max (|M 3| / Real.log ((3 : ℕ) : ℝ) ^ b) (K / (b - |a|)) with hA₀
+  have hA₀0 : 0 ≤ A₀ := le_max_of_le_right (div_nonneg hK hgap.le)
+  have hKA : K ≤ A₀ * (b - |a|) := by
+    have := le_max_right (|M 3| / Real.log ((3 : ℕ) : ℝ) ^ b) (K / (b - |a|))
+    rwa [div_le_iff₀ hgap] at this
+  -- the equation turns a bound on `M` into a bound on `L`
+  have hL : ∀ N, 3 ≤ N → |M N| ≤ A₀ * Real.log N ^ b →
+      |L N| ≤ |a| * A₀ * Real.log N ^ (b - 1) + K := by
+    intro N hN hM
+    have hℓ0 : 0 < Real.log N := by linarith [one_le_log_of_three_le hN]
+    have hpow : Real.log N ^ b = Real.log N * Real.log N ^ (b - 1) := by
+      rw [Real.rpow_sub_one hℓ0.ne']; field_simp
+    have h2 : |L N * Real.log N| ≤ |L N * Real.log N - a * M N| + |a * M N| := by
+      simpa using abs_add_le (L N * Real.log N - a * M N) (a * M N)
+    rw [abs_mul, abs_of_pos hℓ0, abs_mul] at h2
+    have h3 : |L N| * Real.log N ≤ (|a| * A₀ * Real.log N ^ (b - 1) + K) * Real.log N := by
+      calc |L N| * Real.log N ≤ |a| * |M N| + K * Real.log N := by linarith [heq N hN]
+        _ ≤ |a| * (A₀ * (Real.log N * Real.log N ^ (b - 1))) + K * Real.log N := by
+            rw [← hpow]; exact add_le_add_right (mul_le_mul_of_nonneg_left hM (abs_nonneg a)) _
+        _ = (|a| * A₀ * Real.log N ^ (b - 1) + K) * Real.log N := by ring
+    exact le_of_mul_le_mul_right h3 hℓ0
+  have hM : ∀ N, 3 ≤ N → |M N| ≤ A₀ * Real.log N ^ b := by
+    intro N hN
+    induction N, hN using Nat.le_induction with
+    | base =>
+      have h3 : 0 < Real.log ((3 : ℕ) : ℝ) ^ b :=
+        Real.rpow_pos_of_pos (by linarith [one_le_log_of_three_le (le_refl 3)]) b
+      have := le_max_left (|M 3| / Real.log ((3 : ℕ) : ℝ) ^ b) (K / (b - |a|))
+      rwa [div_le_iff₀ h3] at this
+    | succ N hN ih =>
+      have hℓ := one_le_log_of_three_le hN
+      have hℓ0 : 0 < Real.log N := by linarith
+      have hN0 : (0 : ℝ) < N := by have : (3 : ℝ) ≤ N := by exact_mod_cast hN
+                                    linarith
+      set δ := Real.log ((N + 1 : ℕ) : ℝ) - Real.log N with hδdef
+      have hδ : 0 ≤ δ := sub_nonneg.mpr (Real.log_le_log hN0 (by push_cast; linarith))
+      have hpow1 : 1 ≤ Real.log N ^ (b - 1) := Real.one_le_rpow hℓ (by linarith)
+      have key := rpow_add_mul_le hℓ0 hδ hb1
+      rw [show Real.log N + δ = Real.log ((N + 1 : ℕ) : ℝ) by rw [hδdef]; ring] at key
+      have hK' : K ≤ A₀ * (b - |a|) * Real.log N ^ (b - 1) :=
+        hKA.trans (le_mul_of_one_le_right (mul_nonneg hA₀0 hgap.le) hpow1)
+      rw [hstep N hN]
+      calc |M N + L N * δ| ≤ |M N| + |L N| * δ := by
+            refine (abs_add_le _ _).trans ?_; rw [abs_mul, abs_of_nonneg hδ]
+        _ ≤ A₀ * Real.log N ^ b + (|a| * A₀ * Real.log N ^ (b - 1) + K) * δ :=
+            add_le_add ih (mul_le_mul_of_nonneg_right (hL N hN ih) hδ)
+        _ ≤ A₀ * Real.log N ^ b +
+              (|a| * A₀ * Real.log N ^ (b - 1) + A₀ * (b - |a|) * Real.log N ^ (b - 1)) * δ :=
+            add_le_add_left (mul_le_mul_of_nonneg_right (add_le_add_left hK' _) hδ) _
+        _ = A₀ * (Real.log N ^ b + b * δ * Real.log N ^ (b - 1)) := by ring
+        _ ≤ A₀ * Real.log ((N + 1 : ℕ) : ℝ) ^ b := mul_le_mul_of_nonneg_left key hA₀0
+  have hAa : 0 ≤ |a| * A₀ := mul_nonneg (abs_nonneg a) hA₀0
+  refine ⟨A₀ + |a| * A₀ + K, add_nonneg (add_nonneg hA₀0 hAa) hK, fun N hN => ⟨?_, ?_⟩⟩
+  · exact (hM N hN).trans (mul_le_mul_of_nonneg_right (by linarith)
+      (Real.rpow_nonneg (by linarith [one_le_log_of_three_le hN]) b))
+  · have hpow1 : 1 ≤ Real.log N ^ (b - 1) :=
+      Real.one_le_rpow (one_le_log_of_three_le hN) (by linarith)
+    have := hL N hN (hM N hN)
+    nlinarith
+
+/-- **The Wirsing bound.** For a completely multiplicative `ω` with `|ω| ≤ 1` whose prime mean is
+`β log n + O(1)`: `|M(N)| ≪ (log N)^b` and `|L(N)| ≪ (log N)^{b − 1}` for every `b ≥ 1`, `b > |1 + β|`. -/
+theorem exists_abs_gaugeHarmonicSum_le_rpow {ω : ℕ → ℝ}
+    (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b) (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
+    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) {b : ℝ} (hb1 : 1 ≤ b)
+    (hb : |1 + β| < b) :
+    ∃ A, 0 ≤ A ∧ ∀ N, 3 ≤ N → |polarMoment ω N| ≤ A * Real.log N ^ b ∧
+      |gaugeHarmonicSum ω N| ≤ A * Real.log N ^ (b - 1) := by
+  obtain ⟨K, hK⟩ := exists_abs_wirsing_equation_le hmul hbd hA
+  have hK0 : 0 ≤ K := by simpa using (abs_nonneg _).trans (hK 1 le_rfl)
+  refine exists_abs_le_rpow_of_wirsing (K := 2 * K) (by linarith) hb1 hb (fun N hN => ?_)
+    (fun N hN => ?_)
+  · have hN0 : (0 : ℝ) < N := by have : (3 : ℝ) ≤ N := by exact_mod_cast hN
+                                  linarith
+    rw [polarMoment_succ ω (by omega : 1 ≤ N), Real.log_div (by positivity) hN0.ne']
+    push_cast; ring
+  · have hℓ := one_le_log_of_three_le hN
+    refine (hK N (by omega)).trans ?_
+    nlinarith
+
+/-- A Wirsing bound with exponent `b − 1 < 1/2` makes `L(N)² = o(log N)`. -/
+theorem tendsto_sq_div_log_of_rpow {L : ℕ → ℝ} {A b : ℝ} (hb : b < 3 / 2)
+    (hL : ∀ N, 3 ≤ N → |L N| ≤ A * Real.log N ^ (b - 1)) :
+    Tendsto (fun N : ℕ => L N ^ 2 / Real.log N) atTop (nhds 0) := by
+  have hlim : Tendsto (fun N : ℕ => A ^ 2 * Real.log N ^ (-(3 - 2 * b))) atTop (nhds 0) := by
+    have := ((tendsto_rpow_neg_atTop (by linarith : (0 : ℝ) < 3 - 2 * b)).comp
+      (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)).const_mul (A ^ 2)
+    simpa using this
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim ?_ ?_
+  · filter_upwards [eventually_ge_atTop 3] with N hN
+    exact div_nonneg (sq_nonneg _) (by linarith [one_le_log_of_three_le hN])
+  · filter_upwards [eventually_ge_atTop 3] with N hN
+    have hℓ0 : 0 < Real.log N := by linarith [one_le_log_of_three_le hN]
+    calc L N ^ 2 / Real.log N ≤ (A * Real.log N ^ (b - 1)) ^ 2 / Real.log N := by
+          refine div_le_div_of_nonneg_right ?_ hℓ0.le
+          rw [← sq_abs]
+          exact pow_le_pow_left₀ (abs_nonneg _) (hL N hN) 2
+      _ = A ^ 2 * Real.log N ^ (-(3 - 2 * b)) := by
+          rw [show -(3 - 2 * b) = ((b - 1) + (b - 1)) - 1 by ring, Real.rpow_sub_one hℓ0.ne',
+            Real.rpow_add hℓ0]
+          ring
+
+end Gronwall
+
+section FlipTwins
+
+open ArithmeticCountingPositivity (primeSetFlip primeSetCutoff primeSetFlip_eq_finiteFlip_of_le)
+open RenormalizedArithmeticPotentialTheory (primeSignGauge_isSignGauge primeSignGauge_prime)
+
+/-- The **logarithmic prime mass** `Σ_{p ∈ P, p ≤ n} log p / p` of a set of primes. -/
+def primeSetLogMass (P : Set ℕ) (n : ℕ) : ℝ := ∑ p ∈ primeSetCutoff P n, Real.log p / p
+
+theorem primeSetFlip_isSignGauge (P : Set ℕ) :
+    RenormalizedArithmeticPotentialTheory.IsSignGauge (primeSetFlip P) := by
+  classical
+  apply primeSignGauge_isSignGauge
+  intro p
+  split_ifs <;> norm_num
+
+theorem primeSetFlip_mul_self (P : Set ℕ) (n : ℕ) : primeSetFlip P n * primeSetFlip P n = 1 := by
+  rw [primeSetFlip_eq_finiteFlip_of_le P le_rfl]
+  exact finiteFlip_mul_self _ n
+
+theorem abs_primeSetFlip_le (P : Set ℕ) (n : ℕ) : |primeSetFlip P n| ≤ 1 := by
+  have h := primeSetFlip_mul_self P n
+  rw [abs_le]
+  constructor <;> nlinarith [sq_nonneg (primeSetFlip P n - 1), sq_nonneg (primeSetFlip P n + 1)]
+
+theorem primeSetFlip_prime_of_mem (P : Set ℕ) {p : ℕ} (hp : p.Prime) (h : p ∈ P) :
+    primeSetFlip P p = -1 := by
+  unfold primeSetFlip
+  rw [primeSignGauge_prime hp]
+  simp [h]
+
+theorem primeSetFlip_prime_of_notMem (P : Set ℕ) {p : ℕ} (hp : p.Prime) (h : p ∉ P) :
+    primeSetFlip P p = 1 := by
+  unfold primeSetFlip
+  rw [primeSignGauge_prime hp]
+  simp [h]
+
+open Classical in
+theorem primeSetCutoff_eq_filter (P : Set ℕ) (n : ℕ) :
+    primeSetCutoff P n = ((Icc 1 n).filter Nat.Prime).filter (· ∈ P) := by
+  ext k
+  simp only [primeSetCutoff, mem_filter, Nat.mem_primesLE, mem_Icc]
+  constructor
+  · rintro ⟨⟨hkn, hk⟩, hP⟩; exact ⟨⟨⟨hk.one_lt.le, hkn⟩, hk⟩, hP⟩
+  · rintro ⟨⟨⟨_, hkn⟩, hk⟩, hP⟩; exact ⟨⟨hkn, hk⟩, hP⟩
+
+/-- The prime mean of a flip twin is the full Mertens sum minus twice the flipped mass. -/
+theorem primeMean_primeSetFlip (P : Set ℕ) (n : ℕ) :
+    primeMean (primeSetFlip P) n =
+      ∑ k ∈ Icc 1 n with k.Prime, Real.log k / k - 2 * primeSetLogMass P n := by
+  classical
+  unfold primeMean primeSetLogMass
+  rw [primeSetCutoff_eq_filter, sum_filter (s := (Icc 1 n).filter Nat.Prime), mul_sum,
+    ← sum_sub_distrib]
+  refine sum_congr rfl fun k hk => ?_
+  have hp := (mem_filter.mp hk).2
+  by_cases h : k ∈ P
+  · rw [if_pos h, primeSetFlip_prime_of_mem P hp h]; ring
+  · rw [if_neg h, primeSetFlip_prime_of_notMem P hp h]; ring
+
+/-- A relative logarithmic density of the flipped primes gives the prime mean `(1 − 2κ) log n`. -/
+theorem abs_primeMean_primeSetFlip_sub_le (P : Set ℕ) {κ C : ℝ}
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) {n : ℕ} (hn : 1 ≤ n) :
+    |primeMean (primeSetFlip P) n - (1 - 2 * κ) * Real.log n| ≤
+      (Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail) + 2 * C := by
+  rw [primeMean_primeSetFlip]
+  have h1 := RHTower.Mertens.mertens_first_prime n hn
+  have h2 := hP n hn
+  rw [abs_le] at h1 h2 ⊢
+  constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
+
+/-- A relative logarithmic density is at most `1`. -/
+theorem le_one_of_primeSetLogMass (P : Set ℕ) {κ C : ℝ}
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) : κ ≤ 1 := by
+  classical
+  by_contra hκ
+  push_neg at hκ
+  set C₀ := (Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)
+  obtain ⟨n, hn1, hnX⟩ := ((eventually_ge_atTop 1).and
+    ((Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop
+      ((C + C₀) / (κ - 1)))).exists
+  rw [Function.comp_apply, div_lt_iff₀ (by linarith)] at hnX
+  have hmass : primeSetLogMass P n ≤ ∑ k ∈ Icc 1 n with k.Prime, Real.log k / k := by
+    rw [primeSetLogMass, primeSetCutoff_eq_filter]
+    exact sum_le_sum_of_subset_of_nonneg (filter_subset _ _)
+      fun k _ _ => div_nonneg (Real.log_natCast_nonneg k) (Nat.cast_nonneg k)
+  have h1 := RHTower.Mertens.mertens_first_prime n hn1
+  have h2 := hP n hn1
+  rw [abs_le] at h1 h2
+  nlinarith [h1.2, h2.1]
+
+/-- **The Wirsing bound for flip twins.** If the flipped primes have relative logarithmic density
+`κ`, then `|Σ_{n ≤ N} ω_P(n)/n| ≪ (log N)^{b − 1}` for every `b ≥ 1` with `b > |2 − 2κ|`. -/
+theorem exists_abs_gaugeHarmonicSum_primeSetFlip_le (P : Set ℕ) {κ C : ℝ}
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) {b : ℝ} (hb1 : 1 ≤ b)
+    (hb : |2 - 2 * κ| < b) :
+    ∃ A, 0 ≤ A ∧ ∀ N, 3 ≤ N →
+      |gaugeHarmonicSum (primeSetFlip P) N| ≤ A * Real.log N ^ (b - 1) := by
+  obtain ⟨A, hA0, hA⟩ := exists_abs_gaugeHarmonicSum_le_rpow (β := 1 - 2 * κ)
+    (fun a b ha hb => (primeSetFlip_isSignGauge P).mul ha hb) (abs_primeSetFlip_le P)
+    (fun n hn => abs_primeMean_primeSetFlip_sub_le P hP hn) hb1
+    (by rwa [show 1 + (1 - 2 * κ) = 2 - 2 * κ by ring])
+  exact ⟨A, hA0, fun N hN => (hA N hN).2⟩
+
+/-- **Flips of relative density above `1/2` have bounded harmonic sums.** -/
+theorem exists_abs_gaugeHarmonicSum_primeSetFlip_le_const (P : Set ℕ) {κ C : ℝ} (hκ : 1 / 2 < κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+    ∃ A, ∀ N, 3 ≤ N → |gaugeHarmonicSum (primeSetFlip P) N| ≤ A := by
+  have hκ1 := le_one_of_primeSetLogMass P hP
+  obtain ⟨A, -, hA⟩ := exists_abs_gaugeHarmonicSum_primeSetFlip_le P hP le_rfl
+    (by rw [abs_lt]; constructor <;> linarith)
+  exact ⟨A, fun N hN => by simpa using hA N hN⟩
+
+/-- **The atomic Hodge index separates every flip twin of relative density `κ > 1/4`.** The Wirsing
+bound gives `L(N)² = o(log N)`, so the twin has margin `0`. -/
+theorem hodgeSeparates_primeSetFlip_of_primeSetLogMass (P : Set ℕ) {κ C : ℝ} (hκ : 1 / 4 < κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+    HodgeSeparates (primeSetFlip P) := by
+  have hκ1 := le_one_of_primeSetLogMass P hP
+  have habs : |2 - 2 * κ| = 2 - 2 * κ := abs_of_nonneg (by linarith)
+  obtain ⟨A, -, hA⟩ := exists_abs_gaugeHarmonicSum_primeSetFlip_le P hP
+    (b := max 1 ((2 - 2 * κ) / 2 + 3 / 4)) (le_max_left _ _)
+    (by rw [habs]; exact lt_max_of_lt_right (by linarith))
+  exact hodgeSeparates_of_harmonicSum_small (primeSetFlip_mul_self P)
+    (tendsto_sq_div_log_of_rpow (max_lt (by norm_num) (by linarith)) hA)
+
+end FlipTwins
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory

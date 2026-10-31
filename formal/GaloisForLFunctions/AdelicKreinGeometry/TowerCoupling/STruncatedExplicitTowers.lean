@@ -5,6 +5,7 @@ import GaloisForLFunctions.HeckeKreinToeplitz.TheSelectivityBatteryOnPrimeTowers
 import GaloisForLFunctions.HeckeKreinToeplitz.OnTheFiniteStratumEveryFlipHasInfiniteIndex
 import GaloisForLFunctions.RHTower.WeilFullConePNTErrorWiener
 import GaloisForLFunctions.RHTower.WeilWorkPBAPPacketEnergy
+import Mathlib.Topology.Instances.ENat
 
 /-!
 # Separable `S`-truncated explicit-formula prime-tower assemblies
@@ -40,6 +41,7 @@ open Complex Finset Filter Topology MeasureTheory
 open scoped ComplexConjugate Real
 open Zeta23
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
+open GaloisForLFunctions.ArithmeticPositiveDuality
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx cx_contDiff cx_hasCompactSupport
   rightZeros)
 open GaloisForLFunctions.ArithmeticCountingPositivity (primeFlipWeight abs_primeFlipWeight)
@@ -110,7 +112,8 @@ theorem summable_truncWeight_div_sqrt (S : Finset Nat.Primes) {lam : ℕ → ℝ
         have hsup : (p₀ : ℕ) ^ k₀ ≤ K := Finset.le_sup (f := id) hn
         exact hlt.le.trans hsup
       have hval : g ((p₀ : ℕ) ^ k₀) ≤ C p₀ * r p₀ ^ k₀ := by
-        simp only [g, if_pos hn2, truncWeight, if_pos ⟨p₀, hp₀, k₀, hk₀, rfl⟩]
+        have hs₀ : IsSPrimePow S ((p₀ : ℕ) ^ k₀) := ⟨p₀, hp₀, k₀, hk₀, rfl⟩
+        simp only [g, if_pos hn2, truncWeight, if_pos hs₀]
         have hsq : Real.sqrt (((p₀ : ℕ) ^ k₀ : ℕ) : ℝ) = Real.sqrt (p₀ : ℕ) ^ k₀ := by
           rw [Nat.cast_pow, Real.sqrt_eq_rpow, Real.sqrt_eq_rpow, ← Real.rpow_natCast,
             ← Real.rpow_mul (Nat.cast_nonneg _), ← Real.rpow_natCast,
@@ -125,8 +128,9 @@ theorem summable_truncWeight_div_sqrt (S : Finset Nat.Primes) {lam : ℕ → ℝ
           (mem_Icc.mpr ⟨hk₀, hkK⟩)
         simpa using this
       exact (hval.trans hsingle1).trans (single_le_sum
-        (f := fun p => ∑ k ∈ Icc 1 K, if (p₀ : ℕ) ^ k₀ = (p : ℕ) ^ k then C p * r p ^ k else 0)
-        (fun p _ => sum_nonneg fun k _ => by
+        (f := fun p : Nat.Primes =>
+          ∑ k ∈ Icc 1 K, if (p₀ : ℕ) ^ k₀ = (p : ℕ) ^ k then C p * r p ^ k else 0)
+        (fun (p : Nat.Primes) _ => sum_nonneg fun k _ => by
           split_ifs; exact mul_nonneg (hC0 p) (pow_nonneg (hr0 p) _); exact le_rfl) hp₀)
     · have hg_zero : g n = 0 := by
         simp only [g, truncWeight]
@@ -177,7 +181,7 @@ theorem summable_truncWeight_primeFlipWeight_div_sqrt (S : Finset Nat.Primes) (q
     Summable fun n : ℕ =>
       if 2 ≤ n then |truncWeight S (primeFlipWeight q) n| / Real.sqrt n else 0 :=
   summable_truncWeight_div_sqrt S fun p _ => ⟨Real.log (p : ℕ), fun k hk => by
-    rw [abs_primeFlipWeight]; exact vonMangoldt_prime_pow_le_log p hk⟩
+    rw [abs_primeFlipWeight]; exact (le_abs_self _).trans (vonMangoldt_prime_pow_le_log p hk)⟩
 
 /-! ### Explicit-formula tower pieces on `ℤ` -/
 
@@ -196,7 +200,7 @@ theorem poleWeight_cubicSpline_ne_zero : poleWeight (cx cubicSpline) ≠ 0 := by
   rw [poleWeight_eq_mul_conj (cx_contDiff contDiff_cubicSpline).continuous
     (cx_hasCompactSupport hasCompactSupport_cubicSpline)]
   exact mul_ne_zero (paperFT_cubicSpline_ne_zero h1)
-    ((map_ne_zero _).mpr (paperFT_cubicSpline_ne_zero h2))
+    ((_root_.map_ne_zero (starRingEnd ℂ)).mpr (paperFT_cubicSpline_ne_zero h2))
 
 /-- The pole term of the explicit formula along the tower of step `ℓ`. -/
 def towerPole (g : ℝ → ℂ) (ℓ : ℝ) (m : Multiplicative ℤ) : ℂ :=
@@ -222,9 +226,7 @@ private theorem tilde_transl_weilTest_self (g : ℝ → ℂ) (y : ℝ) :
   funext x
   have h := congrFun (RHTower.WeilSpectral.tilde_weilTest_self g) (x + y)
   simp only [EF.tilde, RHTower.WeilSpectral.transl] at h ⊢
-  rw [← h]
-  congr 2
-  ring
+  rw [show -x - y = -(x + y) by ring, show x - -y = x + y by ring, h]
 
 theorem isHermKernel_towerPrime (lam : ℕ → ℝ) (g : ℝ → ℂ) (ℓ : ℝ) :
     IsHermKernel (towerPrime lam g ℓ) := fun m => by
@@ -252,7 +254,7 @@ theorem isHermKernel_towerArch (g : ℝ → ℂ) (ℓ : ℝ) :
     rw [← integral_conj]
     refine integral_congr_ae (Eventually.of_forall fun r => ?_)
     simp only [EF.paperFT_tilde, Complex.conj_ofReal, map_mul]
-  rw [hint, map_mul, map_div₀, map_one, map_ofNat, Complex.conj_ofReal]
+  rw [hint, map_mul, map_div₀, map_one, map_mul, map_ofNat, Complex.conj_ofReal]
 
 /-- **The tower pole term is a single hyperbolic pair.** -/
 theorem towerPole_eq_pairKernel (g : ℝ → ℂ) (ℓ : ℝ) :
@@ -269,14 +271,16 @@ theorem towerPole_eq_pairKernel (g : ℝ → ℂ) (ℓ : ℝ) :
     have h1 : I * (I / 2) * ((-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ : ℝ) : ℂ) =
         (Multiplicative.toAdd m : ℤ) * ((ℓ / 2 : ℝ) : ℂ) := by
       push_cast; ring_nf; rw [I_sq]; ring
-    rw [h1, Complex.exp_int_mul, ← Complex.ofReal_exp, valChar, dif_pos hr]
+    rw [h1, Complex.exp_int_mul, ← Complex.ofReal_exp]
+    simp only [valChar, MonoidHom.coe_mk, OneHom.coe_mk, if_neg hr]
   have hexp2 : cexp (I * (-I / 2) * ((-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ : ℝ) : ℂ)) =
       reflectChar (valChar (r : ℂ)) m := by
     have h1 : I * (-I / 2) * ((-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ : ℝ) : ℂ) =
         (-(Multiplicative.toAdd m : ℤ) : ℤ) * ((ℓ / 2 : ℝ) : ℂ) := by
       push_cast; ring_nf; rw [I_sq]; ring
-    rw [reflectChar_valChar hr, Complex.conj_ofReal, h1, Complex.exp_int_mul, ← Complex.ofReal_exp,
-      valChar, dif_pos (inv_ne_zero hr), inv_zpow, ← zpow_neg]
+    rw [reflectChar_valChar hr, Complex.conj_ofReal, h1, Complex.exp_int_mul, ← Complex.ofReal_exp]
+    simp only [valChar, MonoidHom.coe_mk, OneHom.coe_mk, if_neg (inv_ne_zero hr), inv_zpow,
+      ← zpow_neg]
   simp only [towerPole, RHTower.WeilSpectral.polePart, RHTower.WeilSpectral.paperFT_transl,
     htilde, hexp1, hexp2, pairKernel, poleWeight]
   ring
@@ -314,8 +318,9 @@ theorem tendsto_towerPrime_atTop {lam : ℕ → ℝ}
       · simp
     rw [hcoeff]
     refine mul_le_mul_of_nonneg_left ?_ (by split_ifs <;> positivity)
-    exact (norm_add_le _ _).trans (by linarith [hM (Real.log k - -(n : ℝ) * ℓ),
-      hM (-Real.log k - -(n : ℝ) * ℓ)])
+    have ht1 : ‖RHTower.WeilSpectral.transl (-(n : ℝ) * ℓ) K (Real.log k)‖ ≤ M := hM _
+    have ht2 : ‖RHTower.WeilSpectral.transl (-(n : ℝ) * ℓ) K (-Real.log k)‖ ≤ M := hM _
+    exact (norm_add_le _ _).trans (by linarith)
   have hlim : ∀ k : ℕ, Tendsto (fun n : ℤ => F n k) atTop (𝓝 0) := fun k => by
     refine tendsto_const_nhds.congr' ?_
     obtain ⟨N₀, hN₀⟩ := exists_int_gt ((|R| + |Real.log k|) / ℓ)
@@ -359,7 +364,8 @@ theorem tendsto_towerArch_atTop (g : ℝ → ℂ) {ℓ : ℝ} (hℓ : 0 < ℓ) :
   simp only [Function.comp_apply]
   have hh := isHermKernel_towerArch g ℓ (Multiplicative.ofAdd (-n))
   rw [← ofAdd_neg, neg_neg] at hh
-  rw [← hh]
+  rw [hh]
+  congr 1
   simp [towerArch]
 
 theorem tendsto_secondDiff_of_tendsto {k : Multiplicative ℤ → ℂ}
@@ -464,9 +470,15 @@ theorem tendsto_secondDiff_sTruncatedNonPole (S : Finset Nat.Primes) {lam : ℕ 
   have hℓ : 0 < Real.log (p : ℕ) := Real.log_pos (by exact_mod_cast p.2.one_lt)
   have hp_lim := tendsto_towerPrime_atTop (summable_truncWeight_div_sqrt S hlam) hg hgc hℓ
   have ha_lim := tendsto_towerArch_atTop g hℓ
-  have hsd1 := tendsto_secondDiff_of_tendsto (hp_lim.const_mul (-(wPrime : ℂ)))
-  have hsd2 := tendsto_secondDiff_of_tendsto (ha_lim.const_mul (wArch : ℂ))
-  rw [mul_zero] at hsd1 hsd2
+  have hp_lim' : Tendsto (fun n : ℤ => -(wPrime : ℂ) *
+      towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) (Multiplicative.ofAdd n))
+      atTop (𝓝 0) := by
+    simpa using hp_lim.const_mul (-(wPrime : ℂ))
+  have ha_lim' : Tendsto (fun n : ℤ => (wArch : ℂ) *
+      towerArch g (Real.log (p : ℕ)) (Multiplicative.ofAdd n)) atTop (𝓝 0) := by
+    simpa using ha_lim.const_mul (wArch : ℂ)
+  have hsd1 := tendsto_secondDiff_of_tendsto hp_lim'
+  have hsd2 := tendsto_secondDiff_of_tendsto ha_lim'
   have hsum := (hsd1.add hsd2).add ct.tendsto_secondDiff_atTop
   rw [add_zero, add_zero] at hsum
   refine hsum.congr fun n => ?_
@@ -547,9 +559,7 @@ theorem negIndex_archGlue_sTruncatedAssembly (S : Finset Nat.Primes) {lam : ℕ 
           rw [if_neg (not_not.mpr hw), h0 (hall p) hw]
       simp_rw [hp]
       rw [Finset.sum_boole]
-      rfl
     refine ⟨hall, hsum, ?_⟩
-    change _ at hlo hhi
     rw [sTruncatedAssembly]
     rw [hsum] at hlo hhi
     generalize negIndex (archGlue (towerAssembly S fun p =>
@@ -574,7 +584,7 @@ theorem negIndex_archGlue_sTruncatedAssembly (S : Finset Nat.Primes) {lam : ℕ 
         (wPole p₀) (wPrime p₀) (wArch p₀) (ct p₀)) ≤
         ∑ p : S, polarIndex (sTruncatedLocal S lam g (p : Nat.Primes)
           (wPole p) (wPrime p) (wArch p) (ct p)) :=
-      single_le_sum (fun _ _ => zero_le _) (mem_univ p₀)
+      single_le_sum (fun _ _ => zero_le) (mem_univ p₀)
     rw [htop, top_le_iff] at hle
     rw [sTruncatedAssembly]
     calc (⊤ : ℕ∞) = ⊤ + 1 := rfl
@@ -602,7 +612,7 @@ theorem card_add_one_le_negIndex_archGlue_poleRetaining (S : Finset Nat.Primes) 
       have hfilt : (univ.filter fun p : S =>
           (wPole p : ℂ) * poleWeight (cx cubicSpline) ≠ 0) = univ := by
         ext p
-        simp only [mem_filter, mem_univ, true_and]
+        simp only [mem_filter, mem_univ, true_and, iff_true]
         exact mul_ne_zero (Complex.ofReal_ne_zero.mpr (hwPole p)) poleWeight_cubicSpline_ne_zero
       rw [hfilt, Finset.card_univ, Fintype.card_coe]
     rw [hcard] at hmem
@@ -614,14 +624,14 @@ theorem card_add_one_le_negIndex_archGlue_poleRetaining (S : Finset Nat.Primes) 
 sets `S`, the glued negative index of any pole-retaining cubic-spline assembly tends to `⊤`. -/
 theorem tendsto_negIndex_archGlue_poleRetaining_atTop
     {lam : Finset Nat.Primes → ℕ → ℝ}
-    (hlam : ∀ S, ∀ q ∈ S, ∃ C : ℝ, ∀ k : ℕ, 1 ≤ k → |lam S ((q : ℕ) ^ k)| ≤ C)
+    (hlam : ∀ S : Finset Nat.Primes, ∀ q ∈ S, ∃ C : ℝ, ∀ k : ℕ, 1 ≤ k → |lam S ((q : ℕ) ^ k)| ≤ C)
     {wPole : (S : Finset Nat.Primes) → S → ℝ} (hwPole : ∀ S p, wPole S p ≠ 0)
     (wPrime wArch : (S : Finset Nat.Primes) → S → ℝ)
     (ct : (S : Finset Nat.Primes) → S → LocalCounterterm) {c : ℝ} (hc : 0 < c) :
     Tendsto (fun S => negIndex
       (archGlue (sTruncatedAssembly S (lam S) (cx cubicSpline)
         (wPole S) (wPrime S) (wArch S) (ct S)) c)) atTop (𝓝 ⊤) := by
-  rw [ENat.tendsto_nhds_top_iff_nat]
+  rw [ENat.tendsto_nhds_top_iff_natCast_lt]
   intro m
   obtain ⟨S₀, hS₀⟩ : ∃ S₀ : Finset Nat.Primes, m ≤ S₀.card := by
     have hinf : (Set.univ : Set Nat.Primes).Infinite := Set.infinite_univ_iff.mpr
@@ -629,8 +639,11 @@ theorem tendsto_negIndex_archGlue_poleRetaining_atTop
     obtain ⟨S₀, _, hcard⟩ := hinf.exists_subset_card_eq m
     exact ⟨S₀, hcard.ge⟩
   filter_upwards [eventually_ge_atTop S₀] with S hS
-  have hm : (m : ℕ∞) ≤ (S.card : ℕ∞) := Nat.cast_le.mpr (hS₀.trans (Finset.card_le_card hS))
-  exact hm.trans ((le_self_add (a := (S.card : ℕ∞)) (b := 1)).trans
+  have hm_lt : (m : ℕ∞) < ((m + 1 : ℕ) : ℕ∞) := Nat.cast_lt.mpr (Nat.lt_succ_self m)
+  have hm_le : ((m + 1 : ℕ) : ℕ∞) ≤ (S.card : ℕ∞) + 1 := by
+    have hle : m + 1 ≤ S.card + 1 := Nat.add_le_add_right (hS₀.trans (Finset.card_le_card hS)) 1
+    exact_mod_cast hle
+  exact hm_lt.trans_le (hm_le.trans
     (card_add_one_le_negIndex_archGlue_poleRetaining S (hlam S) (hwPole S)
       (wPrime S) (wArch S) (ct S) hc))
 
@@ -649,7 +662,9 @@ theorem negIndex_archGlue_poleFree_mem (S : Finset Nat.Primes) {lam : ℕ → �
   · simp [htop]
   · have hfilt : (univ.filter fun _ : S => ((0 : ℝ) : ℂ) * poleWeight g ≠ 0) = ∅ := by simp
     rw [hfilt, Finset.card_empty, Nat.cast_zero, zero_add, zero_add] at hmem
-    rcases hmem with h1 | h2 <;> simp [h1, h2]
+    rcases hmem with h1 | h2
+    · simp [h1]
+    · simp [h2]
 
 /-- **Unconditional parity gap of Weil's archimedean state.** Because `κ(K_ζ)` is even
 (`negIndex_zetaKernel_le_one_iff`), `κ(weilArchState c) = κ(K_ζ) + 1` is never `2`: it is `1` (under
@@ -678,7 +693,7 @@ theorem not_tendsto_negIndex_archGlue_poleFree_of_finite_pos {ι : Type*} {l : F
           (wPrime i) (wArch i) (ct i)) c))
       l (𝓝 (negIndex (weilArchState c))) := by
   intro htend
-  obtain ⟨m, hm_top, hm_eq⟩ := ENat.ne_top_iff_exists.mp hfin.ne
+  obtain ⟨m, hm_eq⟩ := ENat.ne_top_iff_exists.mp hfin.ne
   have hm2 : 2 ≤ m := by
     by_contra hlt
     have hmle1 : negIndex zetaKernel ≤ 1 := by
@@ -737,17 +752,19 @@ theorem abs_hermQuad_gram_le_tsum_norm {G : Type*} [Group G] [DecidableEq G] {h 
         have hrow : ∀ i : s, ∑ j : s, ‖h (((i : G))⁻¹ * (j : G))‖ ≤ ∑' m : G, ‖h m‖ := fun i => by
           let f : s ↪ G := ⟨fun j => ((i : G))⁻¹ * (j : G), fun j₁ j₂ h =>
             Subtype.ext (mul_left_cancel h)⟩
-          rw [← Finset.sum_map univ f (fun m => ‖h m‖)]
-          exact hh.sum_le_tsum _ fun _ _ => norm_nonneg _
+          calc ∑ j : s, ‖h (((i : G))⁻¹ * (j : G))‖
+              = ∑ m ∈ univ.map f, ‖h m‖ := (Finset.sum_map univ f (fun m => ‖h m‖)).symm
+            _ ≤ ∑' m : G, ‖h m‖ := hh.sum_le_tsum _ fun _ _ => norm_nonneg _
         have hcol : ∀ j : s, ∑ i : s, ‖h (((i : G))⁻¹ * (j : G))‖ ≤ ∑' m : G, ‖h m‖ := fun j => by
           let f : s ↪ G := ⟨fun i => ((i : G))⁻¹ * (j : G), fun i₁ i₂ h => by
             have := mul_right_cancel h
             exact Subtype.ext (inv_injective this)⟩
-          rw [← Finset.sum_map univ f (fun m => ‖h m‖)]
-          exact hh.sum_le_tsum _ fun _ _ => norm_nonneg _
+          calc ∑ i : s, ‖h (((i : G))⁻¹ * (j : G))‖
+              = ∑ m ∈ univ.map f, ‖h m‖ := (Finset.sum_map univ f (fun m => ‖h m‖)).symm
+            _ ≤ ∑' m : G, ‖h m‖ := hh.sum_le_tsum _ fun _ _ => norm_nonneg _
         gcongr
-        · exact mul_le_mul_of_nonneg_left (hrow _) (sq_nonneg _)
-        · exact mul_le_mul_of_nonneg_left (hcol _) (sq_nonneg _)
+        · exact hrow _
+        · exact hcol _
     _ = (∑' m : G, ‖h m‖) * ∑ i : s, ‖w i‖ ^ 2 := by
         simp_rw [← sum_mul]
         ring
@@ -756,7 +773,7 @@ theorem abs_hermQuad_gram_le_tsum_norm {G : Type*} [Group G] [DecidableEq G] {h 
 with respect to `x ∈ ℝ`. -/
 private theorem sum_norm_shift_le {K : ℝ → ℂ} {R M : ℝ} (hR : ∀ u, K u ≠ 0 → |u| ≤ R)
     (hM : ∀ u, ‖K u‖ ≤ M) {ℓ : ℝ} (hℓ : 0 < ℓ) (x : ℝ) (t : Finset (Multiplicative ℤ)) :
-    ∑ m ∈ t, ‖K (x + (Multiplicative.toAdd m : ℝ) * ℓ)‖ ≤
+    ∑ m ∈ t, ‖K (x + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ ≤
       M * (2 * (⌈|R| / ℓ⌉₊ : ℝ) + 3) := by
   classical
   have hM0 : 0 ≤ M := (norm_nonneg (K 0)).trans (hM 0)
@@ -765,14 +782,14 @@ private theorem sum_norm_shift_le {K : ℝ → ℂ} {R M : ℝ} (hR : ∀ u, K u
   set b : ℤ := ⌊-x / ℓ⌋ + N
   set J : Finset (Multiplicative ℤ) := (Icc a b).map
     ⟨Multiplicative.ofAdd, Multiplicative.ofAdd.injective⟩
-  have hvan : ∀ m ∈ t, m ∉ J → ‖K (x + (Multiplicative.toAdd m : ℝ) * ℓ)‖ = 0 := by
+  have hvan : ∀ m ∈ t, m ∉ J → ‖K (x + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ = 0 := by
     intro m _ hmJ
     rw [norm_eq_zero]
     by_contra hne
     have habs := hR _ hne
-    have hdiv : |x / ℓ + (Multiplicative.toAdd m : ℝ)| ≤ |R| / ℓ := by
-      have heq : x / ℓ + (Multiplicative.toAdd m : ℝ) =
-          (x + (Multiplicative.toAdd m : ℝ) * ℓ) / ℓ := by field_simp
+    have hdiv : |x / ℓ + ((Multiplicative.toAdd m : ℤ) : ℝ)| ≤ |R| / ℓ := by
+      have heq : x / ℓ + ((Multiplicative.toAdd m : ℤ) : ℝ) =
+          (x + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ) / ℓ := by field_simp
       rw [heq, abs_div, abs_of_pos hℓ]
       exact div_le_div_of_nonneg_right (habs.trans (le_abs_self R)) hℓ.le
     have hN : |R| / ℓ < (N : ℝ) := by
@@ -782,16 +799,16 @@ private theorem sum_norm_shift_le {K : ℝ → ℂ} {R M : ℝ} (hR : ∀ u, K u
     have hfl2 := Int.lt_floor_add_one (-x / ℓ)
     obtain ⟨hlo, hhi⟩ := abs_le.mp hdiv
     have hma : a ≤ Multiplicative.toAdd m := by
-      have : (a : ℝ) < (Multiplicative.toAdd m : ℝ) + 1 := by
+      have : (a : ℝ) < ((Multiplicative.toAdd m : ℤ) : ℝ) + 1 := by
         simp only [a]; push_cast; linarith [show -x / ℓ = -(x / ℓ) by ring]
-      exact_mod_cast Int.lt_add_one_iff.mp (by exact_mod_cast this)
+      exact Int.lt_add_one_iff.mp (by exact_mod_cast this)
     have hmb : Multiplicative.toAdd m ≤ b := by
-      have : (Multiplicative.toAdd m : ℝ) < (b : ℝ) + 1 := by
+      have : ((Multiplicative.toAdd m : ℤ) : ℝ) < (b : ℝ) + 1 := by
         simp only [b]; push_cast; linarith [show -x / ℓ = -(x / ℓ) by ring]
       exact Int.lt_add_one_iff.mp (by exact_mod_cast this)
     exact hmJ (Finset.mem_map.mpr ⟨Multiplicative.toAdd m, mem_Icc.mpr ⟨hma, hmb⟩, ofAdd_toAdd m⟩)
-  have hsub : ∑ m ∈ t, ‖K (x + (Multiplicative.toAdd m : ℝ) * ℓ)‖ =
-      ∑ m ∈ t.filter (· ∈ J), ‖K (x + (Multiplicative.toAdd m : ℝ) * ℓ)‖ := by
+  have hsub : ∑ m ∈ t, ‖K (x + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ =
+      ∑ m ∈ t.filter (· ∈ J), ‖K (x + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ := by
     rw [Finset.sum_filter]
     refine sum_congr rfl fun m hm => ?_
     split_ifs with h
@@ -812,7 +829,7 @@ private theorem sum_norm_shift_le {K : ℝ → ℂ} {R M : ℝ} (hR : ∀ u, K u
       _ ≤ (b : ℝ) + 1 - a := hle3
       _ = 2 * (⌈|R| / ℓ⌉₊ : ℝ) + 3 := by simp only [a, b, N]; push_cast; ring
   rw [hsub]
-  calc ∑ m ∈ t.filter (· ∈ J), ‖K (x + (Multiplicative.toAdd m : ℝ) * ℓ)‖
+  calc ∑ m ∈ t.filter (· ∈ J), ‖K (x + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖
       ≤ ∑ _m ∈ t.filter (· ∈ J), M := sum_le_sum fun m _ => hM _
     _ = ((t.filter (· ∈ J)).card : ℝ) * M := by rw [sum_const, nsmul_eq_mul]
     _ ≤ (2 * (⌈|R| / ℓ⌉₊ : ℝ) + 3) * M := mul_le_mul_of_nonneg_right hcard hM0
@@ -834,19 +851,24 @@ theorem summable_norm_towerPrime_truncWeight (S : Finset Nat.Primes) {lam : ℕ 
   have hc : Summable c := summable_truncWeight_div_sqrt S hlam
   refine summable_of_sum_le (fun _ => norm_nonneg _) (c := (∑' n, c n) * W) fun t => ?_
   have hpt : ∀ m : Multiplicative ℤ, ‖towerPrime (truncWeight S lam) g ℓ m‖ ≤
-      ∑' n : ℕ, c n * (‖K (Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖ +
-        ‖K (-Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖) := fun m => by
+      ∑' n : ℕ, c n * (‖K (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ +
+        ‖K (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) := fun m => by
     have hsum_m : Summable fun n : ℕ =>
-        c n * (‖K (Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖ +
-          ‖K (-Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖) := by
+        c n * (‖K (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ +
+          ‖K (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) := by
       refine (hc.mul_right (2 * M)).of_nonneg_of_le (fun n => by
         refine mul_nonneg ?_ (by positivity)
         simp only [c]; split_ifs <;> positivity) fun n => ?_
       refine mul_le_mul_of_nonneg_left ?_ (by simp only [c]; split_ifs <;> positivity)
-      linarith [hx₀ (Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ),
-        hx₀ (-Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)]
-    refine (norm_tsum_le_tsum_norm ?_).trans ?_
-    · refine hsum_m.of_nonneg_of_le (fun _ => norm_nonneg _) fun n => ?_
+      have hx1 := hx₀ (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)
+      have hx2 := hx₀ (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)
+      linarith
+    have hterm_le : ∀ n : ℕ,
+        ‖((if 2 ≤ n then truncWeight S lam n / Real.sqrt n else 0 : ℝ) : ℂ) *
+          (RHTower.WeilSpectral.transl (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ) K (Real.log n) +
+            RHTower.WeilSpectral.transl (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ) K (-Real.log n))‖ ≤
+        c n * (‖K (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ +
+          ‖K (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) := fun n => by
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
       have hcn : |if 2 ≤ n then truncWeight S lam n / Real.sqrt n else 0| = c n := by
         simp only [c]; split_ifs with hn
@@ -854,51 +876,31 @@ theorem summable_norm_towerPrime_truncWeight (S : Finset Nat.Primes) {lam : ℕ 
         · simp
       rw [hcn, RHTower.WeilSpectral.transl, RHTower.WeilSpectral.transl,
         show Real.log n - -((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ =
-          Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ by ring,
+          Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ by ring,
         show -Real.log n - -((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ =
-          -Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ by ring]
+          -Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ by ring]
       exact mul_le_mul_of_nonneg_left (norm_add_le _ _)
         (by simp only [c]; split_ifs <;> positivity)
-    · refine hsum_m.tsum_mono (hsum_m.of_nonneg_of_le (fun _ => norm_nonneg _) fun n => ?_)
-        fun n => ?_
-      · rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
-        have hcn : |if 2 ≤ n then truncWeight S lam n / Real.sqrt n else 0| = c n := by
-          simp only [c]; split_ifs with hn
-          · rw [abs_div, abs_of_nonneg (Real.sqrt_nonneg _)]
-          · simp
-        rw [hcn, RHTower.WeilSpectral.transl, RHTower.WeilSpectral.transl,
-          show Real.log n - -((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ =
-            Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ by ring,
-          show -Real.log n - -((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ =
-            -Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ by ring]
-        exact mul_le_mul_of_nonneg_left (norm_add_le _ _)
-          (by simp only [c]; split_ifs <;> positivity)
-      · rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
-        have hcn : |if 2 ≤ n then truncWeight S lam n / Real.sqrt n else 0| = c n := by
-          simp only [c]; split_ifs with hn
-          · rw [abs_div, abs_of_nonneg (Real.sqrt_nonneg _)]
-          · simp
-        rw [hcn, RHTower.WeilSpectral.transl, RHTower.WeilSpectral.transl,
-          show Real.log n - -((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ =
-            Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ by ring,
-          show -Real.log n - -((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ =
-            -Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ by ring]
-        exact mul_le_mul_of_nonneg_left (norm_add_le _ _)
-          (by simp only [c]; split_ifs <;> positivity)
+    have hnorm_sum : Summable fun n : ℕ =>
+        ‖((if 2 ≤ n then truncWeight S lam n / Real.sqrt n else 0 : ℝ) : ℂ) *
+          (RHTower.WeilSpectral.transl (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ) K (Real.log n) +
+            RHTower.WeilSpectral.transl (-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ) K (-Real.log n))‖ :=
+      hsum_m.of_nonneg_of_le (fun _ => norm_nonneg _) hterm_le
+    exact (norm_tsum_le_tsum_norm hnorm_sum).trans (hnorm_sum.tsum_le_tsum hterm_le hsum_m)
   have hsum_n : ∀ m ∈ t, Summable fun n : ℕ =>
-      c n * (‖K (Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖ +
-        ‖K (-Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖) := fun m _ => by
+      c n * (‖K (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ +
+        ‖K (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) := fun m _ => by
     refine (hc.mul_right (2 * M)).of_nonneg_of_le
-      (fun n => mul_nonneg (by simp only [c]; split_ifs <;> positivity) (by positivity)) fun n =>
-      mul_le_mul_of_nonneg_left (by linarith [hx₀ (Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ),
-        hx₀ (-Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)])
-        (by simp only [c]; split_ifs <;> positivity)
+      (fun n => mul_nonneg (by simp only [c]; split_ifs <;> positivity) (by positivity)) fun n => ?_
+    have hx1 := hx₀ (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)
+    have hx2 := hx₀ (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)
+    exact mul_le_mul_of_nonneg_left (by linarith) (by simp only [c]; split_ifs <;> positivity)
   calc ∑ m ∈ t, ‖towerPrime (truncWeight S lam) g ℓ m‖
-      ≤ ∑ m ∈ t, ∑' n : ℕ, c n * (‖K (Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖ +
-          ‖K (-Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖) :=
+      ≤ ∑ m ∈ t, ∑' n : ℕ, c n * (‖K (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ +
+          ‖K (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) :=
         sum_le_sum fun m _ => hpt m
-    _ = ∑' n : ℕ, ∑ m ∈ t, c n * (‖K (Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖ +
-          ‖K (-Real.log n + (Multiplicative.toAdd m : ℝ) * ℓ)‖) :=
+    _ = ∑' n : ℕ, ∑ m ∈ t, c n * (‖K (Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖ +
+          ‖K (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) :=
         (Summable.tsum_finsetSum hsum_n).symm
     _ ≤ ∑' n : ℕ, c n * W := by
         refine (Summable.sum fun m hm => hsum_n m hm).tsum_le_tsum (fun n => ?_) (hc.mul_right W)
@@ -943,7 +945,7 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
   have hpd : IsPosDefKernel (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩) := by
     rw [isPosDefKernel_iff hherm]
     refine nonpos_iff_eq_zero.mp (negIndex_le_of_finset _ fun s => ?_)
-    rw [Nat.cast_le_zero]
+    rw [nonpos_iff_eq_zero, Nat.cast_eq_zero]
     by_contra hne
     obtain ⟨W, hWr, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex
       (-gram (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩) fun z : s => (z : Multiplicative ℤ))
@@ -958,7 +960,7 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
     set e := Fintype.equivFin s
     set w : Fin (Fintype.card s) → ℂ := fun i => (v : s → ℂ) (e.symm i)
     set t : Fin (Fintype.card s) → ℝ := fun i =>
-      (Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) : ℝ) * ℓ
+      ((Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ
     set G : ℝ → ℂ := ∑ j, w j • RHTower.WeilSpectral.transl (t j) g
     have hGc : ContDiff ℝ 2 G := by
       have heq : G = fun x => ∑ j, w j * g (x - t j) := funext fun x => by
@@ -1035,10 +1037,10 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
       rw [← e.symm.sum_comp]
       refine sum_congr rfl fun j _ => ?_
       simp only [w, t, k₀, toAdd_mul, toAdd_inv]
-      have hsh : -((Multiplicative.toAdd (e.symm j : Multiplicative ℤ) : ℝ) * ℓ -
-          (Multiplicative.toAdd (e.symm i : Multiplicative ℤ) : ℝ) * ℓ) =
-          -((-Multiplicative.toAdd (e.symm i : Multiplicative ℤ) +
-            Multiplicative.toAdd (e.symm j : Multiplicative ℤ) : ℤ) : ℝ) * ℓ := by
+      have hsh : -(((Multiplicative.toAdd ((e.symm j : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ -
+          ((Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ) =
+          -((-Multiplicative.toAdd ((e.symm i : s) : Multiplicative ℤ) +
+            Multiplicative.toAdd ((e.symm j : s) : Multiplicative ℤ) : ℤ) : ℝ) * ℓ := by
         push_cast; ring
       rw [hsh]; ring
     have harch_lo : -10 * ((∑' m, ‖k₀ m‖) * ∑ i : s, ‖(v : s → ℂ) i‖ ^ 2) ≤
@@ -1188,7 +1190,7 @@ theorem isPosDefKernel_towerAssembly (S : Finset Nat.Primes) {k : S → Multipli
       rw [sum_insert hp, HeckeKreinToeplitz.hermQuad_add]
       exact add_nonneg ((hk p).2 n (fun a => valS S (x a) p) c) ih
   have hgram : gram (towerAssembly S k) x = ∑ p : S, gram (k p) fun a => valS S (x a) p := by
-    ext a b; simp [towerAssembly, gram, separable, Finset.sum_apply]
+    ext a b; simp [towerAssembly, gram, separable, Matrix.sum_apply]
   rw [hgram]
   exact hsum univ
 
@@ -1250,7 +1252,7 @@ theorem exists_prime_flip_obstruction (c : ℝ) (hc : 0 < c) :
       hg hgc (p : Nat.Primes) 1
     obtain ⟨D₂, hD₂⟩ := exists_diagonal_counterterm_posDef S
       (fun r _ => ⟨Real.log (r : ℕ), fun k hk => by
-        rw [abs_primeFlipWeight]; exact vonMangoldt_prime_pow_le_log r hk⟩)
+        rw [abs_primeFlipWeight]; exact (le_abs_self _).trans (vonMangoldt_prime_pow_le_log r hk)⟩)
       hg hgc (p : Nat.Primes) 1
     exact ⟨max D₁ D₂, (hD₁ _ (le_max_left _ _)).1, (hD₂ _ (le_max_right _ _)).1⟩
   choose D hD₁ hD₂ using hD

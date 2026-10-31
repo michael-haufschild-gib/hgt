@@ -3,6 +3,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.ASignatureFormulaForPrimeTowers
 import GaloisForLFunctions.AdelicKreinGeometry.WeilsArchimedeanStateCountsTheZeros
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FiniteSupportMakesAlmostEveryPrimeDecideZeta
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheWeilKernelHasInfinitelyManyPositiveSquares
+import Mathlib.Topology.Instances.ENat
 
 /-!
 # Inter-tower coupling rigidity and untruncated separable obstructions
@@ -344,15 +345,16 @@ theorem towerVal_eq_one_of_mem_twoPrimeUnits {p q r : Nat.Primes} (hrp : r ≠ p
     {u : posUnits} (hu : u ∈ twoPrimeUnits p q) :
     @towerVal (r : ℕ) ⟨r.2⟩ u = 1 := by
   haveI : Fact (r : ℕ).Prime := ⟨r.2⟩
-  refine Subgroup.closure_induction (k := {primeUnit p, primeUnit q})
-    (p := fun v _ => towerVal (r : ℕ) v = 1) ?_ (map_one _)
-    (fun x y _ _ hx hy => by rw [map_mul, hx, hy, one_mul])
-    (fun x _ hx => by rw [map_inv, hx, inv_one]) hu
-  intro v hv
-  rcases Set.mem_insert_iff.mp hv with rfl | hv'
-  · rw [primeUnit_eq_primePos, towerVal_primePos, if_neg hrp.symm, ofAdd_zero]
-  · rw [Set.mem_singleton_iff.mp hv', primeUnit_eq_primePos, towerVal_primePos,
-      if_neg hrq.symm, ofAdd_zero]
+  unfold twoPrimeUnits at hu
+  induction hu using Subgroup.closure_induction with
+  | mem v hv =>
+    rcases Set.mem_insert_iff.mp hv with rfl | hv'
+    · rw [primeUnit_eq_primePos, towerVal_primePos, if_neg hrp.symm, ofAdd_zero]
+    · rw [Set.mem_singleton_iff.mp hv', primeUnit_eq_primePos, towerVal_primePos,
+        if_neg hrq.symm, ofAdd_zero]
+  | one => exact map_one _
+  | mul x y _ _ hx hy => rw [map_mul, hx, hy, one_mul]
+  | inv x _ hx => rw [map_inv, hx, inv_one]
 
 /-- On two disjoint prime pairs, EVERY separable prime-tower assembly (for every `S` and `k`) has
 identically zero `coprimeCrossDiff`. -/
@@ -622,7 +624,7 @@ theorem negIndex_archGlue_axialAssembly_ratCorr_ge {S : Finset Nat.Primes} (hS :
   obtain ⟨p₀, hp₀⟩ := hS
   have hR : (rightZeros zetaZeroConfig).Finite := by
     rw [← Set.encard_lt_top_iff, ← negIndex_zetaKernel]; exact hfin
-  obtain ⟨m, _, hm_eq⟩ := ENat.ne_top_iff_exists.mp hfin.ne
+  obtain ⟨m, hm_eq⟩ := ENat.ne_top_iff_exists.mp hfin.ne
   have hm2 : 2 ≤ m := by
     by_contra hlt
     have hle1 : negIndex zetaKernel ≤ 1 := by
@@ -684,7 +686,7 @@ theorem negIndex_archGlue_axialAssembly_ratCorr_ge {S : Finset Nat.Primes} (hS :
   refine sum_le_sum fun p _ => ?_
   split_ifs with hnb
   · exact hpol_ge p hnb
-  · exact zero_le _
+  · exact zero_le
 
 /-- **Untruncated axial replication divergence.** On the non-RH finite stratum
 `0 < κ(K_ζ) < ⊤`, the glued negative index of `axialAssembly S ratCorr` diverges to `⊤` along the
@@ -702,7 +704,7 @@ theorem tendsto_negIndex_archGlue_axialAssembly_ratCorr_atTop {c : ℝ} (hc : 0 
     have huniv : (Set.univ : Set Nat.Primes).Infinite :=
       Set.infinite_univ_iff.mpr ⟨Nat.infinite_setOf_prime.to_subtype⟩
     exact (huniv.diff hblind_fin).mono fun p hp => hp.2
-  rw [ENat.tendsto_nhds_top_iff_nat]
+  rw [ENat.tendsto_nhds_top_iff_natCast_lt]
   intro m
   obtain ⟨T, hT_sub, hT_card⟩ := hinf_nonblind.exists_subset_card_eq (max m 1)
   have hT_ne : T.Nonempty := Finset.card_pos.mp (by rw [hT_card]; positivity)
@@ -710,9 +712,13 @@ theorem tendsto_negIndex_archGlue_axialAssembly_ratCorr_atTop {c : ℝ} (hc : 0 
   have hS_ne : S.Nonempty := hT_ne.mono hTS
   have hsub : T ⊆ S.filter fun p : Nat.Primes => (p : ℕ) ∉ zetaBlindPrimes := fun p hp =>
     mem_filter.mpr ⟨hTS hp, hT_sub hp⟩
-  have hm_le : (m : ℕ∞) ≤ ((S.filter fun p : Nat.Primes => (p : ℕ) ∉ zetaBlindPrimes).card : ℕ∞) :=
-    Nat.cast_le.mpr ((le_max_left m 1).trans (hT_card.symm.le.trans (Finset.card_le_card hsub)))
-  exact hm_le.trans ((le_self_add (b := (1 : ℕ∞))).trans
+  have hm_lt : (m : ℕ∞) < ((m + 1 : ℕ) : ℕ∞) := Nat.cast_lt.mpr (Nat.lt_succ_self m)
+  have hm_le : ((m + 1 : ℕ) : ℕ∞) ≤
+      ((S.filter fun p : Nat.Primes => (p : ℕ) ∉ zetaBlindPrimes).card : ℕ∞) + 1 := by
+    have hle : m + 1 ≤ (S.filter fun p : Nat.Primes => (p : ℕ) ∉ zetaBlindPrimes).card + 1 :=
+      Nat.add_le_add_right ((le_max_left m 1).trans (hT_card.symm.le.trans (Finset.card_le_card hsub))) 1
+    exact_mod_cast hle
+  exact hm_lt.trans_le (hm_le.trans
     (negIndex_archGlue_axialAssembly_ratCorr_ge hS_ne hc hpos hfin))
 
 end GaloisForLFunctions.AdelicKreinGeometry.TowerCoupling

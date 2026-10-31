@@ -91,7 +91,7 @@ theorem hermNegIndex_spanGram_one : hermNegIndex (D.spanGram 1) = 0 := by
     rw [Pi.star_apply, Complex.star_def]
     apply Complex.ext <;> simp [Complex.normSq_apply, Complex.mul_re, Complex.mul_im] <;> ring
   rw [hx, Complex.ofReal_re]
-  positivity
+  exact mul_nonneg (Nat.cast_nonneg _) (Complex.normSq_nonneg _)
 
 /-- **Short windows are positive**: every datum has window edge at least `2`. -/
 theorem two_le_windowEdge : 2 ≤ windowEdge D := by
