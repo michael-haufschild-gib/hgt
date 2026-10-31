@@ -25,6 +25,11 @@ class is the normalized Ramanujan vector `v_1`. At fixed `c` the Hodge index hol
   at `c = 2(log N)^α`, `α > 1/2`, RH holds iff eventually the complete Weil energy is nonnegative on
   `v_1^⊥`. The pole class carries no information: positivity on its orthogonal complement already
   forces RH.
+* **Every power of the logarithm** (`riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`,
+  `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log`): for a smooth nonnegative profile on
+  `[0, 1]` the same holds at `c = 2(log N)^α` for every `α > 0`.
+* **One hyperplane, two readings** (`poleHyperplane_markov_nonneg_iff_hodgeIndex`): at each horizon,
+  Markov positivity on the recentred atomic tests with `m₋ = 0` is Hodge positivity on `v_1^⊥`.
 * **The Hodge index leaves at most one square** (`eigenvalues_nonneg_or_of_nonneg_on_orthogonal`,
   `completeWeil_eigenvalues_nonneg_or_of_hodgeIndex`): positivity on one hyperplane allows at most
   one negative eigenvalue, since two negative eigenvectors span a plane that meets every hyperplane.
@@ -372,8 +377,9 @@ theorem integral_unitBump_sq_pos : 0 < ∫ u, unitBump u ^ 2 := by
   rw [MeasureTheory.integral_pos_iff_support_of_nonneg (fun u => sq_nonneg _)
     (hc.integrable_of_hasCompactSupport hcs)]
   have hs : Function.support (fun u => unitBump u ^ 2) = Metric.ball (1 / 2 : ℝ) (1 / 2) := by
-    have hr : unitBump.rOut = 1 / 2 := rfl
-    rw [← hr, ← unitBump.support_eq]
+    have hb : Function.support (unitBump : ℝ → ℝ) = Metric.ball (1 / 2 : ℝ) (1 / 2) :=
+      unitBump.support_eq
+    rw [← hb]
     ext u
     simp [Function.mem_support]
   rw [hs]

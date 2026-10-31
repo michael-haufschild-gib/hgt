@@ -150,7 +150,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | The spline sees infinitely many critical zeros; the critical zeros carry infinitely many positive squares, `κ₊(K_on) = ∞`; on the finite stratum `κ₊(K_ζ) = ∞`; the Künneth square is all-or-nothing: RH or `κ(K_ζ ⊠ K_ζ) = ∞` | `criticalSeen_infinite`, `orbitKernel_onLine_eq_bohrSum`, `posIndex_orbitKernel_onLine_eq_top`, `posIndex_zetaKernel_eq_top_of_finite`, `riemannHypothesis_or_negIndex_kunnethZeta_eq_top` | unconditional; dichotomy |
 | Pole class on integer slopes = complete-Weil ground conductor | `boostMassU_integerSlopes_eq_inner`, `boostMassU_integerSlopes_eq_zero_iff` | unconditional |
 | Hodge index with gap at every fixed overlap | `eventually_completeWeil_floor_on_poleHyperplane` | unconditional |
-| Hodge index at iterated-logarithmic overlap; at overlap `2(log N)^α`, `α > 1/2`, the Hodge index on `v_1^⊥` is RH; it leaves at most one negative eigenvalue | `eventually_completeWeil_hodgeIndex_iteratedLog`, `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `harmonic_eq_zero_of_poleMomentNeg_eq_zero`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal` | unconditional; equivalence |
+| Hodge index at iterated-logarithmic overlap; the Hodge index on `v_1^⊥` is RH at overlap `2(log N)^α` for every `α > 0` (smooth profiles) and every `α > 1/2` (tilted spline); it leaves at most one negative eigenvalue | `eventually_completeWeil_hodgeIndex_iteratedLog`, `riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`, `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log`, `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `poleHyperplane_markov_nonneg_iff_hodgeIndex`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal` | unconditional; equivalences |
 | Schur product; every Hadamard power of `K_ζ` is RH | `isPosDefKernel_mul`, `isPosDefKernel_pow`, `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `riemannHypothesis_iff_negIndex_zetaKernel_pow_eq_zero` | unconditional; equivalences |
 | Off-line zeros are neutral pairs: `κ(K_ζ) ≤ κ₊(K_ζ)` on the finite stratum; the Künneth square at least squares the index, `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ)`; a finite Künneth index is Lindelöf and a zero-free half-plane | `negIndex_zetaKernel_le_posIndex`, `sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`, `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top` | unconditional; implications |
 | The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1` | `hodgeSeparates_iff_not_hasHyperplaneGap`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
@@ -192,16 +192,16 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | What is the canonical counterterm and finite part? | The running counterterm `log N − γ` (Mertens); over `𝔽_q[T]` the ceiling is exact (`ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact`); no fixed counterterm works (`AdelicKreinGeometry.NoFixedCountertermMakesThePrimeKernelPontryagin`). |
 | Is the collision quantum an index? | Yes: along the heat flow the Hodge defect of `K_t` is the number of conjugate pairs colliding after time `t`, and it drops by one per colliding pair. At `t = 0` the hyperplane index is bounded by the largest horizontal collision charge and, on the finite stratum, the collision mass is twice the index plus the multiplicity excess (HKT). |
 | What separates `ℤ` from `𝔽_q[T]`? | Density of the extremal weight: dense exponents for two primes, a lattice over one prime and over `𝔽_q[T]`. |
-| Why are negative directions confined to low conductors? | At fixed overlap: the low spectrum lives on the low conductors (`RenormalizedArithmeticPotentialTheory.TheLowCompleteWeilSpectrumLivesOnTheLowConductors`), the pole class carries the bottom and the hyperplane sits a gap above it. At iterated-logarithmic overlap the Hodge index holds. At overlap `(log N)^α`, `α > 1/2`, the Hodge index on `v_1^⊥` is RH: confinement at logarithmic resolution is exactly the missing sign. |
+| Why are negative directions confined to low conductors? | At fixed overlap: the low spectrum lives on the low conductors (`RenormalizedArithmeticPotentialTheory.TheLowCompleteWeilSpectrumLivesOnTheLowConductors`), the pole class carries the bottom and the hyperplane sits a gap above it. At iterated-logarithmic overlap the Hodge index holds. At overlap `(log N)^α` the Hodge index on `v_1^⊥` is RH, for every `α > 0` with a smooth profile: confinement at any power of the logarithm is exactly the missing sign. |
 | Does the pairing select `ζ` among its twins? | Yes, by two mechanisms. The glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. At atomic resolution the Hodge index separates `ζ` from a sign gauge exactly when the gauge's margin is below `2 log 2`: the Liouville twin, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`. The prime flips `p ≥ 11` keep the maximal margin and are invisible to the atomic Hodge index; the glued test index separates them. |
 | Is the heat flow a homotopy of glued states? | Yes: the Hodge defect of `K_t` is the number of nonreal right zeros of `H_t`; it is nonincreasing, drops by one per colliding pair, vanishes for `t ≥ 1/8`; RH is the Hodge index along the whole flow, and finite defect at `t = 0` is bounded defect along the flow. |
 | What is `h⁰` on the scaling surface? | Outside RIT: the theta log-volume `h⁰` of `Spec ℤ` has exact Riemann–Roch (`ArithmeticOrientationGeometry.TheThetaH0OfSpecZ`); on the scaling surface a sign-free Serre-dual pair with subquadratic degree-zero growth is RH (`SelectivePositivityAndThresholdLaws`). |
 
 ## 8. Open research topics
 
-1. The Hodge index between iterated-logarithmic and logarithmic overlap: it holds at
-   `(log log N)^{α}`, `α < 1/16`, and is RH at `(log N)^α`, `α > 1/2`; every intermediate schedule
-   on which it is proved is a new unconditional positivity statement.
+1. The Hodge index between iterated-logarithmic overlap and every power of the logarithm: it holds
+   at `(log log N)^{α}`, `α < 1/16`, and is RH at `(log N)^α` for every `α > 0`; every schedule in
+   between on which it is proved is a new unconditional positivity statement.
 2. The positive index of `K_ζ` on the infinite stratum (it is infinite on the finite stratum and
    for the on-line part); with it the Künneth square would be all-or-nothing by the same mechanism on
    both strata (the dichotomy itself is already proved).
@@ -224,7 +224,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | The archimedean place is one more place | Its exponents are dense once two primes are present |
 | A fixed counterterm renormalizes the diagonal | Only the running counterterm `log N − γ` does |
 | Positivity at fixed overlap is a step toward RH | It holds unconditionally, with a gap on the hyperplane; RH needs growing overlap |
-| The pole class might carry the negative square at finite resolution, so the hyperplane is weaker than RH | At logarithmic overlap positivity on `v_1^⊥` alone is RH |
+| The pole class might carry the negative square at finite resolution, so the hyperplane is weaker than RH | At every power of the logarithm positivity on `v_1^⊥` alone is RH |
 | A finite but nonzero Künneth index is possible | The Künneth square is all-or-nothing: RH or infinitely many negative squares |
 | A Hadamard power or tensor square is an easier sign problem | Every Hadamard power is RH; a finite Künneth index already carries the finite stratum |
 | The Liouville twin escapes selection because it flips every prime | Its margin is `0`, so the atomic Hodge index separates it |
@@ -256,7 +256,7 @@ The criteria the field must meet, and where they stand:
 | Criterion | Status |
 |---|---|
 | Calibration over `𝔽_q`; the golden datum fails where the Hodge index fails | Quantized exponents over `𝔽_q[T]` (`not_dense_exponents_of_quantized`); calibration and the golden datum in ArithmeticCastelnuovoSeveri (`goldenDatum_not_hodgeIndex_at_01`) |
-| Positivity by identity on `v_1^⊥` | Open; at fixed and iterated-logarithmic overlap positivity holds by estimate, at logarithmic overlap it is RH |
+| Positivity by identity on `v_1^⊥` | Open; at fixed and iterated-logarithmic overlap positivity holds by estimate, at every power of the logarithm it is RH |
 | Confinement with polynomial dependence | Fixed overlap and iterated-logarithmic overlap; growing overlap open |
 | Product-formula gluing to one square | Settled as a classification: only the extremal weight, i.e. the archimedean pole, has one square |
 | Quadratic Riemann–Roch | Open; linear Riemann–Roch for the base in ArithmeticOrientationGeometry |
@@ -296,4 +296,4 @@ the glued test index separates `ζ` from every finite flip twin, and the atomic 
 it from exactly the twins of submaximal margin, the Liouville twin among them. The heat flow
 deforms the glued state through finite-index states, paying one unit of Hodge defect per collision,
 to the Hodge-index state at `t = 1/8`. What is missing is the sign at growing resolution: the Hodge
-index holds at iterated-logarithmic overlap, and at logarithmic overlap it is RH.
+index holds at iterated-logarithmic overlap, and at every power of the logarithm it is RH.

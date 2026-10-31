@@ -37,14 +37,15 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
 - Positive squares: `criticalSeen_infinite`, `posIndex_orbitKernel_onLine_eq_top`,
   `posIndex_zetaKernel_eq_top_of_finite`, `riemannHypothesis_or_negIndex_kunnethZeta_eq_top`.
 - Growing overlap: `eventually_completeWeil_hodgeIndex_iteratedLog`,
-  `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
+  `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`,
+  `poleHyperplane_markov_nonneg_iff_hodgeIndex`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
 - Heat flow: `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`,
   `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`,
   `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat`.
 - Density: `not_dense_exponents_of_quantized` (commensurable place sizes, `𝔽_q[T]`).
 
 ## Open
-Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{>1/2}` (= RH); positive index of `K_ζ` on the infinite stratum;
+Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{α}`, every `α > 0` (= RH); positive index of `K_ζ` on the infinite stratum;
 infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips); sign-free `h⁰` on the scaling surface.
 
 ## Log

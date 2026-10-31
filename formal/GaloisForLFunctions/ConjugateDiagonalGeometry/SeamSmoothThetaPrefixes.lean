@@ -2052,7 +2052,8 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
                 |GaloisForLFunctions.gaussPolyFun (iterGaussPoly κ j) κ x| ≤
               C_sw (j + 1) * Real.exp ((q : ℝ) ^ 2 / (2 * κ)) * Real.exp (-(q : ℝ) * x) := by
             have h1 := mul_le_mul_of_nonneg_left
-              (abs_gaussPolyFun_le_halfGauss (iterGaussPoly κ j) hκ x) (Real.sqrt_nonneg _)
+              (abs_gaussPolyFun_le_halfGauss (iterGaussPoly κ j) hκ x)
+              (Real.sqrt_nonneg (κ / Real.pi))
             change Real.sqrt (κ / Real.pi) * _ ≤
               Real.sqrt (κ / Real.pi) * (_ * Real.exp (-(κ / 2) * x ^ 2)) at h1
             refine h1.trans ?_
@@ -2115,7 +2116,8 @@ theorem abs_iteratedDeriv_partitionSymThetaSource_le_exp (N K : ℕ) {κ : ℝ} 
           · rw [iteratedDeriv_succ_gaussianPartitionSwitch, abs_mul,
               abs_of_nonneg (Real.sqrt_nonneg _)]
             have h1 := mul_le_mul_of_nonneg_left
-              (abs_gaussPolyFun_le_halfGauss (iterGaussPoly κ j) hκ (-x)) (Real.sqrt_nonneg _)
+              (abs_gaussPolyFun_le_halfGauss (iterGaussPoly κ j) hκ (-x))
+              (Real.sqrt_nonneg (κ / Real.pi))
             rw [neg_sq] at h1
             refine h1.trans ?_
             have h2 := mul_le_mul_of_nonneg_left (hgauss_to_exp hx) (hC_sw_nn (j + 1))
