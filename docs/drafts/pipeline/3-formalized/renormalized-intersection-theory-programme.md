@@ -32,7 +32,8 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation`.
 - Hadamard powers: `isPosDefKernel_mul`, `isPosDefKernel_pow`,
   `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`,
-  `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top`.
+  `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top`,
+  `negIndex_zetaKernel_le_posIndex`, `sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`.
 - Growing overlap: `eventually_completeWeil_hodgeIndex_iteratedLog`,
   `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
 - Heat flow: `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`,

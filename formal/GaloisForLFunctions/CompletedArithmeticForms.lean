@@ -76,6 +76,9 @@ import GaloisForLFunctions.CompletedArithmeticForms.RamanujanConductorFrames
 import GaloisForLFunctions.CompletedArithmeticForms.PrimeResidualLevelOfDistribution
 import GaloisForLFunctions.CompletedArithmeticForms.CompleteWeilResidualLevelOfDistribution
 import GaloisForLFunctions.CompletedArithmeticForms.CompleteWeilConductorAveragePositivity
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandTopTailBounds
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandPrimeAndCenterBounds
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandOverlapAndNonRatioBounds
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -164,6 +167,10 @@ operators up to the zero-log-loss overlap threshold `c_N^2 / log N → 0` (cover
 entire RH-complete logarithmic window), and yields diverging positive conductor-average
 energy, almost-all positive conductor census, and sublinear nonpositive subspace
 dimension on the conductor span.
+On sub-horizon conductor subspaces, quantitative exponential confinement, reverse defect
+gaps, quotient-tail torsion cancellation, collective prime and center cross-bounds, and
+intermediate-band summation-by-parts overlap decay control every component of the
+complete Weil operator at power-of-logarithm overlap.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/

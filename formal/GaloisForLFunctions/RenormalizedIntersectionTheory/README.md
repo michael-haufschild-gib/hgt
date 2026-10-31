@@ -105,8 +105,10 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 **Powers.**
 14. Schur: the Hadamard product is the tensor kernel restricted to the diagonal, so positive times
    positive is positive; a positive-definite power bounds `‖K_ζ‖`, which is RH.
-15. Unless RH, `K_ζ` has a positive square; tensoring it with every negative square of `K_ζ` embeds
-   the index of `K_ζ` into that of its square.
+15. Neutral pairs: on the finite stratum `−K_ζ` is the negated on-line part (negative semidefinite)
+   plus the hyperbolic pairs of the right zeros with negated weights; removing the semidefinite part
+   can only lower the index, and the arithmetic index formula counts one square per pair. So
+   `κ₊ ≥ κ`, and the Kronecker inertia of positive against negative families gives `κ(K ⊠ K) ≥ κ²`.
 
 **Selection.**
 16. Margin and Hodge defect are the same datum read two ways: a gap bounds the form on the
@@ -142,7 +144,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Hodge index with gap at every fixed overlap | `eventually_completeWeil_floor_on_poleHyperplane` | unconditional |
 | Hodge index at iterated-logarithmic overlap; at overlap `2(log N)^α`, `α > 1/2`, the Hodge index on `v_1^⊥` is RH; it leaves at most one negative eigenvalue | `eventually_completeWeil_hodgeIndex_iteratedLog`, `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `harmonic_eq_zero_of_poleMomentNeg_eq_zero`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal` | unconditional; equivalence |
 | Schur product; every Hadamard power of `K_ζ` is RH | `isPosDefKernel_mul`, `isPosDefKernel_pow`, `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `riemannHypothesis_iff_negIndex_zetaKernel_pow_eq_zero` | unconditional; equivalences |
-| The Künneth square dominates the index; a finite Künneth index is Lindelöf and a zero-free half-plane | `negIndex_zetaKernel_le_negIndex_kunnethZeta`, `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top` | unconditional; implications |
+| Off-line zeros are neutral pairs: `κ(K_ζ) ≤ κ₊(K_ζ)` on the finite stratum; the Künneth square at least squares the index, `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ)`; a finite Künneth index is Lindelöf and a zero-free half-plane | `negIndex_zetaKernel_le_posIndex`, `sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`, `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top` | unconditional; implications |
 | The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1` | `hodgeSeparates_iff_not_hasHyperplaneGap`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
 | Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 
@@ -180,7 +182,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Is the renormalized pairing definite on the pole-orthogonal hyperplane? | This is RH, at infinite resolution (`riemannHypothesis_iff_hyperplane_nonneg`) and at logarithmic overlap (`riemannHypothesis_iff_completeWeil_hodgeIndex_log`). At every fixed overlap the complete Weil form is positive there with a gap above the pole energy, and at iterated-logarithmic overlap it is positive. |
 | What is `Γ_u · Γ_u`, and does Castelnuovo–Severi hold? | At infinite resolution `Γ_u · Γ_u = K_ζ(1)` for every `u`; at atomic resolution the diagonal diverges and is renormalized by the running counterterm `log N − γ`. Castelnuovo–Severi is `‖K_ζ(u)‖ ≤ K_ζ(1)` at every rational scale; it is RH, and any uniform bound on `K_ζ` already is. |
 | Is there a Künneth formula whose `H²` carries `ρ + ρ'`? | The diagonal of `K_ζ ⊠ K_ζ` is the exponential sum over pairs of zeros with frequencies `ρ + ρ'`; its arithmetic side is the square of the prime side, so no new Euler product appears, and products of the spectrum are depth-homogeneous (ArithmeticKunnethTheory). |
-| Does the Künneth square soften the sign? | No: it is positive iff RH, and so is every Hadamard power; its diagonal carries the sums `ρ + ρ'`; its index dominates `κ(K_ζ)`, so a finite Künneth index already gives Lindelöf and a zero-free half-plane; with infinitely many positive squares its index is `0` or `∞`. |
+| Does the Künneth square soften the sign? | No: it is positive iff RH, and so is every Hadamard power; its diagonal carries the sums `ρ + ρ'`; its index is at least `κ(K_ζ)²`, so a finite Künneth index already gives Lindelöf and a zero-free half-plane; with infinitely many positive squares its index is `0` or `∞`. |
 | What is the canonical counterterm and finite part? | The running counterterm `log N − γ` (Mertens); over `𝔽_q[T]` the ceiling is exact (`ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact`); no fixed counterterm works (`AdelicKreinGeometry.NoFixedCountertermMakesThePrimeKernelPontryagin`). |
 | Is the collision quantum an index? | Yes: along the heat flow the Hodge defect of `K_t` is the number of conjugate pairs colliding after time `t`, and it drops by one per colliding pair. At `t = 0` the hyperplane index is bounded by the largest horizontal collision charge and, on the finite stratum, the collision mass is twice the index plus the multiplicity excess (HKT). |
 | What separates `ℤ` from `𝔽_q[T]`? | Density of the extremal weight: dense exponents for two primes, a lattice over one prime and over `𝔽_q[T]`. |
@@ -194,8 +196,10 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 1. The Hodge index between iterated-logarithmic and logarithmic overlap: it holds at
    `(log log N)^{α}`, `α < 1/16`, and is RH at `(log N)^α`, `α > 1/2`; every intermediate schedule
    on which it is proved is a new unconditional positivity statement.
-2. The positive index of `K_ζ`: under RH it counts the critical zeros the cubic spline sees; it is
-   infinite as soon as the test transform avoids infinitely many critical ordinates.
+2. The positive index of `K_ζ`: it is at least `κ(K_ζ)` on the finite stratum; under RH it counts
+   the critical zeros the cubic spline sees, and is infinite as soon as infinitely many critical
+   ordinates avoid the real zeros of the spline transform, a lattice (the corpus census gives
+   `≫ √T/log² T` distinct ordinates in `(T, 2T]`, fewer than the `≍ T` lattice points there).
 3. Twins outside both selection mechanisms: infinite flip sets of maximal margin (all flipped
    primes `≥ 11`, harmonic correlation `→ 1` or between) are invisible to the atomic Hodge index and
    are not finite flips; whether the glued test index separates them is open.

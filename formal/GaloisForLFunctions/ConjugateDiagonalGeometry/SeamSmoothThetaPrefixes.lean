@@ -106,6 +106,55 @@ private lemma abs_thetaCuspSeed_le_halfGauss {u : ℝ} (hu : 0 ≤ u) :
           (mul_le_mul_of_nonneg_left h4' (by positivity))
           (mul_le_mul_of_nonneg_left h2' (by positivity))
 
+/-- Explicit polynomial evaluation bound on `ℝ[X]` over its finite support. -/
+private lemma abs_eval_le_sum_support (Q : ℝ[X]) (y : ℝ) :
+    |Q.eval y| ≤ ∑ k ∈ Q.support, |Q.coeff k| * |y| ^ k := by
+  rw [Polynomial.eval_eq_sum, Polynomial.sum_def]
+  exact (Finset.abs_sum_le_sum_abs _ _).trans
+    (Finset.sum_le_sum fun k _ => by rw [abs_mul, abs_pow])
+
+private lemma iteratedDeriv_thetaCuspFiniteShellPrefix (N r : ℕ) :
+    iteratedDeriv r (_root_.RHTower.thetaCuspFiniteShellPrefix N) =
+      _root_.RHTower.thetaFiniteShellJet N r := by
+  induction r with
+  | zero =>
+    rw [iteratedDeriv_zero, _root_.RHTower.thetaFiniteShellJet_zero_eq]
+  | succ r ih =>
+    rw [iteratedDeriv_succ, ih]
+    funext x
+    exact (_root_.RHTower.hasDerivAt_thetaFiniteShellJet N r x).deriv
+
+private lemma contDiff_thetaCuspFiniteShellPrefix (N : ℕ) :
+    ContDiff ℝ ∞ (_root_.RHTower.thetaCuspFiniteShellPrefix N) := by
+  rw [contDiff_infty]
+  intro n
+  apply contDiff_of_differentiable_iteratedDeriv
+  intro m _ x
+  rw [iteratedDeriv_thetaCuspFiniteShellPrefix N m]
+  exact (_root_.RHTower.hasDerivAt_thetaFiniteShellJet N m x).differentiableAt
+
+private lemma reflectedFiniteThetaSource_nonneg (N : ℕ) (x : ℝ) :
+    0 ≤ _root_.RHTower.reflectedFiniteThetaSource N x := by
+  unfold _root_.RHTower.reflectedFiniteThetaSource _root_.RHTower.thetaCuspFiniteShellPrefix
+  exact Finset.sum_nonneg fun m _ =>
+    _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine (abs_nonneg x) m
+
+private lemma continuous_reflectedFiniteThetaSource (N : ℕ) :
+    Continuous (_root_.RHTower.reflectedFiniteThetaSource N) :=
+  (contDiff_thetaCuspFiniteShellPrefix N).continuous.comp continuous_abs
+
+private lemma integrable_reflectedFiniteThetaSource (N : ℕ) :
+    Integrable (_root_.RHTower.reflectedFiniteThetaSource (N + 1)) := by
+  have hc := _root_.RHTower.integrable_bilateralLaplace (_root_.RHTower.finiteThetaTiltSource N) 0
+  refine (Complex.reCLM.integrable_comp hc).congr (Eventually.of_forall fun x => ?_)
+  simp [_root_.RHTower.finiteThetaTiltSource]
+
+private lemma integrable_id_mul_reflectedFiniteThetaSource (N : ℕ) :
+    Integrable (fun t : ℝ => (t : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ)) := by
+  have hc := (_root_.RHTower.finiteThetaTiltSource N).integrable_mul_exp 0 1
+  refine hc.congr (Eventually.of_forall fun t => ?_)
+  simp [_root_.RHTower.finiteThetaTiltSource]
+
 /-- Cubic exponential decay of `reflectedFiniteThetaSource (N + 1)` across `ℝ`. -/
 private lemma reflectedFiniteThetaSource_le_cubic_exp (N : ℕ) (x : ℝ) :
     _root_.RHTower.reflectedFiniteThetaSource (N + 1) x ≤
@@ -122,7 +171,13 @@ private lemma reflectedFiniteThetaSource_le_cubic_exp (N : ℕ) (x : ℝ) :
       rw [← Real.exp_nat_mul]; congr 1; ring
     linarith [h3, hexp3]
   have hpoly_t : t / 2 - (4 / 9 : ℝ) * t ^ 3 ≤ 6 - t - (2 / 9 : ℝ) * t ^ 3 := by
-    rcases le_or_gt t 3 with hle | hgt <;> nlinarith
+    rcases le_or_gt t 3 with hle | hgt
+    · have ht3 : 0 ≤ t ^ 3 := pow_nonneg ht 3
+      linarith
+    · have hc : 0 ≤ t * (t - 3) ^ 2 := mul_nonneg ht (sq_nonneg _)
+      have hexpnd : t * (t - 3) ^ 2 = t ^ 3 - 6 * t ^ 2 + 9 * t := by ring
+      have ht2 : 3 * t ≤ t ^ 2 := by nlinarith
+      linarith
   have hterm : ∀ m ∈ Finset.range (N + 2),
       _root_.RHTower.thetaCuspSourceTerm t m ≤
         (if m = 0 then 0 else
@@ -138,7 +193,7 @@ private lemma reflectedFiniteThetaSource_le_cubic_exp (N : ℕ) (x : ℝ) :
       have hu2 : Real.exp (2 * t) ≤ u ^ 2 := by
         have hsq : (1 : ℝ) ≤ ((m + 1 : ℕ) : ℝ) ^ 2 := by nlinarith
         have he2 : (Real.exp t) ^ 2 = Real.exp (2 * t) := by
-          rw [← Real.exp_nat_mul]; congr 1; ring
+          rw [← Real.exp_nat_mul]; push_cast; rfl
         calc Real.exp (2 * t) = 1 * (Real.exp t) ^ 2 := by rw [one_mul, he2]
           _ ≤ ((m + 1 : ℕ) : ℝ) ^ 2 * (Real.exp t) ^ 2 :=
               mul_le_mul_of_nonneg_right hsq (by positivity)
@@ -159,14 +214,14 @@ private lemma reflectedFiniteThetaSource_le_cubic_exp (N : ℕ) (x : ℝ) :
                 = thetaCuspSeedHalfGaussConst *
                     (Real.exp (t / 2) * Real.exp (-(Real.pi / 2) * u ^ 2)) := by ring
               _ = thetaCuspSeedHalfGaussConst * Real.exp (t / 2 - (Real.pi / 2) * u ^ 2) := by
-                  rw [← Real.exp_add]; congr 2; ring
+                  rw [← Real.exp_add]; congr 1; congr 1; ring
         _ ≤ thetaCuspSeedHalfGaussConst * Real.exp (6 - t - (2 / 9 : ℝ) * t ^ 3) := by
             refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_)
               thetaCuspSeedHalfGaussConst_pos.le
             linarith
         _ = thetaCuspSeedHalfGaussConst * Real.exp 6 *
               Real.exp (-t - (2 / 9 : ℝ) * t ^ 3) := by
-            rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+            rw [mul_assoc, ← Real.exp_add]; congr 1; congr 1; ring
   unfold _root_.RHTower.reflectedFiniteThetaSource _root_.RHTower.thetaCuspFiniteShellPrefix
   calc (∑ m ∈ Finset.range (N + 2), _root_.RHTower.thetaCuspSourceTerm t m)
       ≤ ∑ m ∈ Finset.range (N + 2),
@@ -215,40 +270,50 @@ theorem finiteThetaAmplitude_subquadratic_growth (N : ℕ) :
           Real.exp (3 * s ^ 3)) * Real.exp (-|x|) := by
     intro x
     have hsrc_nn : 0 ≤ _root_.RHTower.reflectedFiniteThetaSource (N + 1) x :=
-      Finset.sum_nonneg fun m _ =>
-        _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine (abs_nonneg x) m
+      reflectedFiniteThetaSource_nonneg (N + 1) x
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hsrc_nn, Complex.norm_exp]
     have hre : (((1 / 2 : ℂ) - z) * (x : ℂ)).re ≤ s ^ 2 * |x| := by
       have heq : (((1 / 2 : ℂ) - z) * (x : ℂ)).re = (1 / 2 - z.re) * x := by simp
       have habs : |1 / 2 - z.re| ≤ s ^ 2 := by
         rw [hs_sq]
-        have htri := abs_sub (1 / 2 : ℝ) z.re
         have hre_le := Complex.abs_re_le_norm z
-        norm_num at htri
-        linarith
+        obtain ⟨h1, h2⟩ := abs_le.mp hre_le
+        exact abs_le.mpr ⟨by linarith, by linarith⟩
       calc (((1 / 2 : ℂ) - z) * (x : ℂ)).re
           ≤ |(1 / 2 - z.re) * x| := by rw [heq]; exact le_abs_self _
         _ = |1 / 2 - z.re| * |x| := abs_mul _ _
         _ ≤ s ^ 2 * |x| := mul_le_mul_of_nonneg_right habs (abs_nonneg x)
     have hyoung : s ^ 2 * |x| - (2 / 9 : ℝ) * |x| ^ 3 ≤ 3 * s ^ 3 := by
-      rcases le_or_gt |x| (3 * s) with hle | hgt <;>
-        nlinarith [abs_nonneg x, hs_pos]
+      rcases le_or_gt |x| (3 * s) with hle | hgt
+      · have h1 : s ^ 2 * |x| ≤ s ^ 2 * (3 * s) := mul_le_mul_of_nonneg_left hle (sq_nonneg s)
+        have h2 : s ^ 2 * (3 * s) = 3 * s ^ 3 := by ring
+        have h3 : 0 ≤ |x| ^ 3 := pow_nonneg (abs_nonneg x) 3
+        linarith
+      · have h1 : 9 * s ^ 2 ≤ |x| ^ 2 := by nlinarith [abs_nonneg x, hs_pos]
+        have h2 : (9 * s ^ 2) * |x| ≤ |x| ^ 2 * |x| :=
+          mul_le_mul_of_nonneg_right h1 (abs_nonneg x)
+        have h3 : |x| ^ 2 * |x| = |x| ^ 3 := by ring
+        have h4 : 0 ≤ s ^ 3 := pow_nonneg hs_pos.le 3
+        linarith
+    have hcoeff_nn : 0 ≤ ((N + 1 : ℕ) : ℝ) * thetaCuspSeedHalfGaussConst * Real.exp 6 *
+        Real.exp (-|x| - (2 / 9 : ℝ) * |x| ^ 3) := by
+      positivity [thetaCuspSeedHalfGaussConst_pos]
     calc _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
             Real.exp (((1 / 2 : ℂ) - z) * (x : ℂ)).re
         ≤ (((N + 1 : ℕ) : ℝ) * thetaCuspSeedHalfGaussConst * Real.exp 6 *
             Real.exp (-|x| - (2 / 9 : ℝ) * |x| ^ 3)) * Real.exp (s ^ 2 * |x|) :=
           mul_le_mul (reflectedFiniteThetaSource_le_cubic_exp N x)
-            (Real.exp_le_exp.mpr hre) (Real.exp_pos _).le (by positivity)
+            (Real.exp_le_exp.mpr hre) (Real.exp_pos _).le hcoeff_nn
       _ = ((N + 1 : ℕ) : ℝ) * thetaCuspSeedHalfGaussConst * Real.exp 6 *
             Real.exp ((s ^ 2 * |x| - (2 / 9 : ℝ) * |x| ^ 3) - |x|) := by
-          rw [mul_assoc _ (Real.exp _), ← Real.exp_add]; ring_nf
+          rw [mul_assoc _ (Real.exp _), ← Real.exp_add]; congr 1; congr 1; ring
       _ ≤ ((N + 1 : ℕ) : ℝ) * thetaCuspSeedHalfGaussConst * Real.exp 6 *
             Real.exp (3 * s ^ 3 - |x|) := by
           refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith))
             (by positivity [thetaCuspSeedHalfGaussConst_pos])
       _ = (((N + 1 : ℕ) : ℝ) * thetaCuspSeedHalfGaussConst * Real.exp 6 *
             Real.exp (3 * s ^ 3)) * Real.exp (-|x|) := by
-          rw [mul_assoc _ (Real.exp (3 * s ^ 3)), ← Real.exp_add]; congr 2; ring
+          rw [mul_assoc _ (Real.exp (3 * s ^ 3)), ← Real.exp_add]; congr 1; congr 1; ring
   have hint_abs : (∫ x : ℝ, Real.exp (-|x|)) = 2 := by
     have heven : ∀ x : ℝ, Real.exp (-|-x|) = Real.exp (-|x|) := fun x => by simp
     have hsplit := HTGeometry.integral_even_eq_two_mul
@@ -307,7 +372,7 @@ theorem finiteThetaAmplitude_superlinear_real_ray (N : ℕ) (A : ℝ) :
     dsimp only [Function.comp_apply, Complex.reCLM_apply]
     have hexp : Complex.exp (((1 / 2 : ℂ) - (sigma : ℂ)) * (x : ℂ)) =
         (Real.exp ((1 / 2 - sigma) * x) : ℂ) := by
-      rw [← Complex.ofReal_exp]; congr 1; push_cast; ring
+      rw [Complex.ofReal_exp]; congr 1; push_cast; ring
     rw [hexp, ← Complex.ofReal_mul, Complex.ofReal_re]
   have hamp_eq : _root_.RHTower.finiteThetaAmplitude N (sigma : ℂ) =
       ((∫ x : ℝ, _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
@@ -320,10 +385,7 @@ theorem finiteThetaAmplitude_superlinear_real_ray (N : ℕ) (A : ℝ) :
   have hnonneg : ∀ x : ℝ,
       0 ≤ _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
         Real.exp ((1 / 2 - sigma) * x) := fun x =>
-    mul_nonneg
-      (Finset.sum_nonneg fun m _ =>
-        _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine (abs_nonneg x) m)
-      (Real.exp_pos _).le
+    mul_nonneg (reflectedFiniteThetaSource_nonneg (N + 1) x) (Real.exp_pos _).le
   have hset_le : (∫ x in Icc (-(x₀ + 1)) (-x₀),
         _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
           Real.exp ((1 / 2 - sigma) * x)) ≤
@@ -352,16 +414,16 @@ theorem finiteThetaAmplitude_superlinear_real_ray (N : ℕ) (A : ℝ) :
     have hpi3 : (3 : ℝ) < Real.pi := Real.pi_gt_three
     have hpoly_ge : 3 ≤ 2 * Real.pi * (1 * Real.exp y) ^ 4 - 3 * (1 * Real.exp y) ^ 2 := by
       have hp4 : (1 * Real.exp y) ^ 4 = Real.exp (4 * y) := by
-        rw [one_mul, ← Real.exp_nat_mul]; congr 1; ring
+        rw [one_mul, ← Real.exp_nat_mul]; push_cast; rfl
       have hp2 : (1 * Real.exp y) ^ 2 = Real.exp (2 * y) := by
-        rw [one_mul, ← Real.exp_nat_mul]; congr 1; ring
+        rw [one_mul, ← Real.exp_nat_mul]; push_cast; rfl
       rw [hp4, hp2]
       nlinarith
     have hgauss_ge : Real.exp (-Real.pi * Real.exp (2 * (x₀ + 1))) ≤
         Real.exp (-Real.pi * (1 * Real.exp y) ^ 2) := by
       apply Real.exp_le_exp.mpr
       have hp2 : (1 * Real.exp y) ^ 2 = Real.exp (2 * y) := by
-        rw [one_mul, ← Real.exp_nat_mul]; congr 1; ring
+        rw [one_mul, ← Real.exp_nat_mul]; push_cast; rfl
       rw [hp2]
       have hexp_le : Real.exp (2 * y) ≤ Real.exp (2 * (x₀ + 1)) :=
         Real.exp_le_exp.mpr (by linarith)
@@ -391,7 +453,9 @@ theorem finiteThetaAmplitude_superlinear_real_ray (N : ℕ) (A : ℝ) :
     calc κ * Real.exp (x₀ * sigma)
         = (18 * Real.exp (-Real.pi * Real.exp (2 * (x₀ + 1)))) *
             Real.exp (x₀ * sigma - x₀ / 2) := by
-          dsimp [κ]; rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+          dsimp [κ]
+          rw [mul_assoc, ← Real.exp_add, mul_assoc, ← Real.exp_add]
+          congr 1; congr 1; ring
       _ ≤ _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
             Real.exp ((1 / 2 - sigma) * x) :=
           mul_le_mul (hterm_ge.trans hsrc_ge) hexp_ge (Real.exp_pos _).le
@@ -401,9 +465,9 @@ theorem finiteThetaAmplitude_superlinear_real_ray (N : ℕ) (A : ℝ) :
         _root_.RHTower.reflectedFiniteThetaSource (N + 1) x *
           Real.exp ((1 / 2 - sigma) * x) := by
     have hmono := setIntegral_mono_on
-      (integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_lt_top))
+      (integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top))
       hreal_int.integrableOn measurableSet_Icc hpt_lower
-    rw [setIntegral_const, Real.volume_Icc,
+    rw [setIntegral_const, Measure.real_def, Real.volume_Icc,
       show -x₀ - -(x₀ + 1) = (1 : ℝ) by ring, ENNReal.toReal_ofReal zero_le_one, one_smul] at hmono
     exact hmono
   have htotal_ge : κ * Real.exp (x₀ * sigma) ≤
@@ -437,7 +501,7 @@ For every prefix `N : ℕ` and every strip half-width `R : ℝ`, `finiteThetaAmp
 infinitely many complex zeros satisfying `R < |z.re - 1 / 2|`. -/
 theorem finiteThetaAmplitude_offline_zeros_outside_strip_infinite (N : ℕ) (R : ℝ) :
     {z : ℂ | _root_.RHTower.finiteThetaAmplitude N z = 0 ∧ R < |z.re - 1 / 2|}.Infinite := by
-  have hinf := (finiteThetaAmplitude_zeros_infinite N).diff
+  have hinf := (finiteThetaAmplitude_zeros_infinite N).sdiff
     (finiteThetaAmplitude_strip_zeros_finite N R)
   refine hinf.mono fun z hz => ?_
   refine ⟨hz.1, ?_⟩
@@ -460,7 +524,7 @@ theorem not_laguerrePolya_finiteThetaAmplitude_criticalLine (N : ℕ) :
   have h0_ne : _root_.RHTower.finiteThetaAmplitude N ((1 / 2 : ℂ) + I * 0) ≠ 0 := by
     rw [mul_zero, add_zero]
     have hre := finiteThetaAmplitude_re_ge_lowWindow N (z := (1 / 2 : ℂ))
-      (by simp) (by simp)
+      (by norm_num) (by norm_num)
     intro h0
     rw [h0, Complex.zero_re] at hre
     have hpos : (0 : ℝ) < (5026 / 16875) * Real.exp (-Real.pi) := by positivity
@@ -494,7 +558,7 @@ private lemma abs_iteratedDeriv_neg_eq_of_even_real {f : ℝ → ℝ} (heven : �
   have hfun : (fun y : ℝ => f (-y)) = f := funext heven
   have hcomp := iteratedDeriv_comp_neg K f (-x)
   rw [hfun, neg_neg, smul_eq_mul] at hcomp
-  rw [← hcomp, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul]
+  rw [hcomp, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul]
 
 /-- Iterated polynomial factors for derivatives of `gaussPolyFun 1 β`. -/
 private def iterGaussPoly (β : ℝ) : ℕ → ℝ[X]
@@ -522,7 +586,7 @@ private lemma abs_gaussPolyFun_le_halfGauss (Q : ℝ[X]) {β : ℝ} (hβ : 0 < �
       (∑ k ∈ Q.support, |Q.coeff k| * Real.exp ((k : ℝ) ^ 2 / (2 * β))) *
         Real.exp (-(β / 2) * y ^ 2) := by
   have heval : |Q.eval y| ≤ ∑ k ∈ Q.support, |Q.coeff k| * |y| ^ k :=
-    Q.abs_eval_le_sum_abs_coeff_mul_abs_pow y
+    abs_eval_le_sum_support Q y
   have hsplit : Real.exp (-(β * y ^ 2)) =
       Real.exp (-(β / 2) * y ^ 2) * Real.exp (-(β / 2) * y ^ 2) := by
     rw [← Real.exp_add]; congr 1; ring
@@ -534,8 +598,10 @@ private lemma abs_gaussPolyFun_le_halfGauss (Q : ℝ[X]) {β : ℝ} (hβ : 0 < �
       calc |y| ^ k ≤ (Real.exp |y|) ^ k := pow_le_pow_left₀ (abs_nonneg y) hy_exp k
         _ = Real.exp ((k : ℝ) * |y|) := (Real.exp_nat_mul |y| k).symm
     have hquad : (k : ℝ) * |y| - (β / 2) * y ^ 2 ≤ (k : ℝ) ^ 2 / (2 * β) := by
-      rw [le_div_iff₀ (by positivity)]
-      nlinarith [sq_nonneg (β * |y| - (k : ℝ)), sq_abs y]
+      rw [le_div_iff₀ (by positivity), ← sq_abs y]
+      have hid : (k : ℝ) ^ 2 - ((k : ℝ) * |y| - (β / 2) * |y| ^ 2) * (2 * β) =
+          (β * |y| - (k : ℝ)) ^ 2 := by ring
+      linarith [sq_nonneg (β * |y| - (k : ℝ))]
     calc |y| ^ k * Real.exp (-(β / 2) * y ^ 2)
         ≤ Real.exp ((k : ℝ) * |y|) * Real.exp (-(β / 2) * y ^ 2) :=
           mul_le_mul_of_nonneg_right hpow_exp (Real.exp_pos _).le
@@ -565,7 +631,7 @@ def gaussMollifiedThetaSource (N : ℕ) (a x : ℝ) : ℝ :=
 theorem gaussMollifiedThetaSource_even (N : ℕ) (a x : ℝ) :
     gaussMollifiedThetaSource N a (-x) = gaussMollifiedThetaSource N a x := by
   unfold gaussMollifiedThetaSource _root_.RHTower.heatSmooth
-  rw [← MeasureTheory.integral_comp_neg (fun t =>
+  rw [← MeasureTheory.integral_neg_eq_self (fun t =>
     _root_.RHTower.reflectedFiniteThetaSource (N + 1) t * _root_.RHTower.gaussHeatKernel a (-x - t))]
   refine integral_congr_ae (Eventually.of_forall fun t => ?_)
   dsimp only
@@ -579,39 +645,35 @@ theorem gaussMollifiedThetaSource_even (N : ℕ) (a x : ℝ) :
 theorem gaussMollifiedThetaSource_pos (N : ℕ) {a : ℝ} (ha : 0 < a) (x : ℝ) :
     0 < gaussMollifiedThetaSource N a x := by
   unfold gaussMollifiedThetaSource _root_.RHTower.heatSmooth
-  have hsrc_int : Integrable (_root_.RHTower.reflectedFiniteThetaSource (N + 1)) := by
-    simpa only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one,
-      _root_.RHTower.finiteThetaTiltSource] using
-      (Complex.reCLM.integrable_comp
-        (_root_.RHTower.integrable_bilateralLaplace (_root_.RHTower.finiteThetaTiltSource N) 0))
+  have hsrc_int : Integrable (_root_.RHTower.reflectedFiniteThetaSource (N + 1)) :=
+    integrable_reflectedFiniteThetaSource N
   have hker_le : ∀ t : ℝ, |_root_.RHTower.gaussHeatKernel a (x - t)| ≤
       (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) := by
     intro t
     unfold _root_.RHTower.gaussHeatKernel
     rw [abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by positivity) _), abs_of_pos (Real.exp_pos _)]
     exact mul_le_of_le_one_right (by positivity)
-      (Real.exp_le_one_iff.mpr (by positivity))
+      (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity)))
   have hint' : Integrable (fun t : ℝ =>
       _root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
         _root_.RHTower.gaussHeatKernel a (x - t)) := by
-    have h := Integrable.bdd_mul' hsrc_int ?_
-      (Eventually.of_forall fun t => by rw [Real.norm_eq_abs]; exact hker_le t)
-    · exact h.congr (Eventually.of_forall fun t => mul_comm _ _)
-    · unfold _root_.RHTower.gaussHeatKernel
+    have haesm : AEStronglyMeasurable (fun t : ℝ => _root_.RHTower.gaussHeatKernel a (x - t)) := by
+      unfold _root_.RHTower.gaussHeatKernel
       exact (continuous_const.mul (Real.continuous_exp.comp
         (((continuous_const.sub continuous_id).pow 2).div_const (2 * a)).neg)).aestronglyMeasurable
+    have h := Integrable.bdd_mul hsrc_int haesm
+      (Eventually.of_forall fun t => by simpa only [Real.norm_eq_abs] using hker_le t)
+    exact h.congr (Eventually.of_forall fun t => mul_comm _ _)
   have hnn : ∀ t : ℝ, 0 ≤ _root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
       _root_.RHTower.gaussHeatKernel a (x - t) := by
     intro t
-    refine mul_nonneg
-      (Finset.sum_nonneg fun m _ =>
-        _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine (abs_nonneg t) m) ?_
+    refine mul_nonneg (reflectedFiniteThetaSource_nonneg (N + 1) t) ?_
     unfold _root_.RHTower.gaussHeatKernel; positivity
   have hset_le := setIntegral_le_integral hint' (Eventually.of_forall hnn) (s := Icc (0 : ℝ) 1)
   have hcont : Continuous (fun t : ℝ =>
       _root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
         _root_.RHTower.gaussHeatKernel a (x - t)) := by
-    refine (_root_.RHTower.finiteThetaTiltSource N).continuous.mul ?_
+    refine (continuous_reflectedFiniteThetaSource (N + 1)).mul ?_
     unfold _root_.RHTower.gaussHeatKernel
     exact continuous_const.mul (Real.continuous_exp.comp
       (((continuous_const.sub continuous_id).pow 2).div_const (2 * a)).neg)
@@ -633,17 +695,18 @@ theorem gaussMollifiedThetaSource_pos (N : ℕ) {a : ℝ} (ha : 0 < a) (x : ℝ)
         have hpi := Real.pi_gt_three
         exact mul_pos (Real.exp_pos _) (mul_pos (mul_pos (by positivity) (by nlinarith))
           (Real.exp_pos _))
-    have hsrc_pos : 0 < _root_.RHTower.reflectedFiniteThetaSource (N + 1) t₀ :=
-      lt_of_lt_of_le ht1_pos (Finset.single_le_sum
+    have hsrc_pos : 0 < _root_.RHTower.reflectedFiniteThetaSource (N + 1) t₀ := by
+      unfold _root_.RHTower.reflectedFiniteThetaSource _root_.RHTower.thetaCuspFiniteShellPrefix
+      exact lt_of_lt_of_le ht1_pos (Finset.single_le_sum
         (fun m _ => _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine (abs_nonneg t₀) m) hm1)
     have hker_pos : 0 < _root_.RHTower.gaussHeatKernel a (x - t₀) := by
       unfold _root_.RHTower.gaussHeatKernel; positivity
     exact mul_pos hsrc_pos hker_pos
   have hmono := setIntegral_mono_on
-    (integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_lt_top))
+    (integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top))
     hint'.integrableOn measurableSet_Icc (fun t ht => isMinOn_iff.mp ht₀_min t ht)
-  rw [setIntegral_const, Real.volume_Icc, sub_zero, ENNReal.toReal_ofReal zero_le_one,
-    one_smul] at hmono
+  rw [setIntegral_const, Measure.real_def, Real.volume_Icc, sub_zero,
+    ENNReal.toReal_ofReal zero_le_one, one_smul] at hmono
   exact lt_of_lt_of_le hc_pos (hmono.trans hset_le)
 
 /-- Stepwise differentiation under the integral for `gaussMollifiedThetaSource N a`. -/
@@ -654,11 +717,8 @@ private lemma hasDerivAt_gaussMollifiedKernelIntegral (N m : ℕ) {a : ℝ} (ha 
         GaloisForLFunctions.gaussPolyFun (iterGaussPoly (1 / (2 * a)) (m + 1)) (1 / (2 * a))
           (x - t)) x := by
   have hβ : 0 < 1 / (2 * a) := by positivity
-  have hsrc_int : Integrable (_root_.RHTower.reflectedFiniteThetaSource (N + 1)) := by
-    simpa only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one,
-      _root_.RHTower.finiteThetaTiltSource] using
-      (Complex.reCLM.integrable_comp
-        (_root_.RHTower.integrable_bilateralLaplace (_root_.RHTower.finiteThetaTiltSource N) 0))
+  have hsrc_int : Integrable (_root_.RHTower.reflectedFiniteThetaSource (N + 1)) :=
+    integrable_reflectedFiniteThetaSource N
   let K_bd : ℝ := ∑ k ∈ (iterGaussPoly (1 / (2 * a)) (m + 1)).support,
     |(iterGaussPoly (1 / (2 * a)) (m + 1)).coeff k| *
       Real.exp ((k : ℝ) ^ 2 / (2 * (1 / (2 * a))))
@@ -672,7 +732,7 @@ private lemma hasDerivAt_gaussMollifiedKernelIntegral (N m : ℕ) {a : ℝ} (ha 
     refine (abs_gaussPolyFun_le_halfGauss _ hβ (y - t)).trans ?_
     exact mul_le_of_le_one_right
       (Finset.sum_nonneg fun k _ => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le)
-      (Real.exp_le_one_iff.mpr (by positivity))
+      (Real.exp_le_one_iff.mpr (by nlinarith [sq_nonneg (y - t)]))
   have hpt_bd : ∀ (y t : ℝ),
       |GaloisForLFunctions.gaussPolyFun (iterGaussPoly (1 / (2 * a)) (m + 1)) (1 / (2 * a))
           (y - t)| ≤ K_bd := by
@@ -680,25 +740,25 @@ private lemma hasDerivAt_gaussMollifiedKernelIntegral (N m : ℕ) {a : ℝ} (ha 
     refine (abs_gaussPolyFun_le_halfGauss _ hβ (y - t)).trans ?_
     exact mul_le_of_le_one_right
       (Finset.sum_nonneg fun k _ => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le)
-      (Real.exp_le_one_iff.mpr (by positivity))
+      (Real.exp_le_one_iff.mpr (by nlinarith [sq_nonneg (y - t)]))
   have hint_y : ∀ y : ℝ, Integrable (fun t : ℝ =>
       _root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
         GaloisForLFunctions.gaussPolyFun (iterGaussPoly (1 / (2 * a)) m) (1 / (2 * a))
           (y - t)) := by
     intro y
-    have h := Integrable.bdd_mul' hsrc_int
+    have h := Integrable.bdd_mul hsrc_int
       ((GaloisForLFunctions.continuous_gaussPolyFun _ _).comp
         (continuous_const.sub continuous_id)).aestronglyMeasurable
-      (Eventually.of_forall fun t => by rw [Real.norm_eq_abs]; exact hpt_m y t)
+      (Eventually.of_forall fun t => by simpa only [Real.norm_eq_abs] using hpt_m y t)
     exact h.congr (Eventually.of_forall fun t => mul_comm _ _)
-  refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le (s := Set.univ)
+  refine (_root_.hasDerivAt_integral_of_dominated_loc_of_deriv_le (s := Set.univ)
     (bound := fun t => K_bd * |_root_.RHTower.reflectedFiniteThetaSource (N + 1) t|)
     univ_mem
     (Eventually.of_forall fun y => (hint_y y).aestronglyMeasurable)
     (hint_y x)
     ((GaloisForLFunctions.continuous_gaussPolyFun _ _).comp
       (continuous_const.sub continuous_id) |>.mul
-      (_root_.RHTower.finiteThetaTiltSource N).continuous |>.aestronglyMeasurable.congr
+      (continuous_reflectedFiniteThetaSource (N + 1)) |>.aestronglyMeasurable.congr
       (Eventually.of_forall fun t => mul_comm _ _))
     (Eventually.of_forall fun t y _ => ?_)
     (hsrc_int.norm.const_mul K_bd)
@@ -735,7 +795,7 @@ private lemma iteratedDeriv_gaussMollifiedThetaSource_eq (N : ℕ) {a : ℝ} (ha
 
 /-- **`C^∞` smoothness of `gaussMollifiedThetaSource N a` across the entire real line (`a > 0`).** -/
 theorem contDiff_gaussMollifiedThetaSource (N : ℕ) {a : ℝ} (ha : 0 < a) :
-    ContDiff ℝ ⊤ (gaussMollifiedThetaSource N a) := by
+    ContDiff ℝ ∞ (gaussMollifiedThetaSource N a) := by
   rw [contDiff_infty]
   intro n
   apply contDiff_of_differentiable_iteratedDeriv
@@ -778,13 +838,15 @@ theorem gaussMollifiedThetaAmplitude_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : �
         (f ⋆[ContinuousLinearMap.mul ℂ ℂ, volume] g) x := by
     intro x
     rw [convolution_def, gaussMollifiedThetaSource, _root_.RHTower.heatSmooth,
-      ← integral_complex_ofReal, ← integral_mul_const]
+      ← integral_complex_ofReal, ← MeasureTheory.integral_mul_const]
     congr 1; funext t
     simp only [f, g, ContinuousLinearMap.mul_apply']
     have hexp : Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
           Complex.exp (I * w * ((x - t : ℝ) : ℂ)) =
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by
-      rw [← mul_assoc I w, hIw, ← Complex.exp_add]
+      have hw_mul : I * w * ((x - t : ℝ) : ℂ) = ((1 / 2 : ℂ) - z) * ((x - t : ℝ) : ℂ) := by
+        dsimp [w]; rw [← mul_assoc, ← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul]
+      rw [hw_mul, ← Complex.exp_add]
       congr 1; push_cast; ring
     rw [Complex.ofReal_mul, ← hexp]
     ring
@@ -827,9 +889,8 @@ theorem gaussMollifiedThetaAmplitude_superpolynomial_strip_decay (N : ℕ) {a : 
   refine ⟨B, by dsimp [B, M_amp]; positivity, fun z hz => ?_⟩
   rw [gaussMollifiedThetaAmplitude_eq N ha z, norm_mul, Complex.norm_exp]
   have hz_re : |z.re| ≤ R + 1 := by
-    have htri := abs_sub z.re (1 / 2 : ℝ)
-    norm_num at htri
-    linarith [abs_le.mp hz]
+    obtain ⟨h1, h2⟩ := abs_le.mp hz
+    exact abs_le.mpr ⟨by linarith, by linarith⟩
   have hamp_le : ‖_root_.RHTower.finiteThetaAmplitude N z‖ ≤ M_amp := by
     have h1 := _root_.RHTower.norm_finiteThetaAmplitude_le_strip N (by linarith : 0 ≤ R + 1) hz_re
     exact h1.trans (le_max_right 1 _)
@@ -837,8 +898,9 @@ theorem gaussMollifiedThetaAmplitude_superpolynomial_strip_decay (N : ℕ) {a : 
       (a / 2) * R ^ 2 - (a / 2) * z.im ^ 2 := by
     have hre_calc : (((a : ℂ) / 2) * (z - (1 / 2 : ℂ)) ^ 2).re =
         (a / 2) * ((z.re - 1 / 2) ^ 2 - z.im ^ 2) := by
-      rw [sq, Complex.mul_re, Complex.mul_re]
-      simp [Complex.sub_re, Complex.sub_im]
+      simp only [sq, Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im,
+        Complex.ofReal_re, Complex.ofReal_im, Complex.div_ofNat_re, Complex.div_ofNat_im,
+        Complex.one_re, Complex.one_im]
       ring
     rw [hre_calc]
     have hsq : (z.re - 1 / 2) ^ 2 ≤ R ^ 2 := by
@@ -848,7 +910,7 @@ theorem gaussMollifiedThetaAmplitude_superpolynomial_strip_decay (N : ℕ) {a : 
   have hnorm_sub : ‖z - (1 / 2 : ℂ)‖ ≤ R + |z.im| := by
     have h1 : ‖z - (1 / 2 : ℂ)‖ ≤ |(z - (1 / 2 : ℂ)).re| + |(z - (1 / 2 : ℂ)).im| :=
       Complex.norm_le_abs_re_add_abs_im (z - (1 / 2 : ℂ))
-    simp only [Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.ofReal_re,
+    simp only [Complex.sub_re, Complex.sub_im, Complex.one_re,
       Complex.div_ofNat_re, Complex.div_ofNat_im, Complex.one_im, zero_div, sub_zero] at h1
     linarith
   have hpow_le : ‖z - (1 / 2 : ℂ)‖ ^ K ≤
@@ -862,8 +924,10 @@ theorem gaussMollifiedThetaAmplitude_superpolynomial_strip_decay (N : ℕ) {a : 
       _ = Real.exp ((K : ℝ) * R + (K : ℝ) * |z.im|) := by
           rw [← Real.exp_nat_mul]; congr 1; ring
   have hquad : (K : ℝ) * |z.im| - (a / 4) * z.im ^ 2 ≤ (K : ℝ) ^ 2 / a := by
-    rw [le_div_iff₀ ha]
-    nlinarith [sq_nonneg ((a / 2) * |z.im| - (K : ℝ)), sq_abs z.im]
+    rw [le_div_iff₀ ha, ← sq_abs z.im]
+    have hid : (K : ℝ) ^ 2 - ((K : ℝ) * |z.im| - (a / 4) * |z.im| ^ 2) * a =
+        ((a / 2) * |z.im| - (K : ℝ)) ^ 2 := by ring
+    linarith [sq_nonneg ((a / 2) * |z.im| - (K : ℝ))]
   calc ‖z - (1 / 2 : ℂ)‖ ^ K *
           (Real.exp (((a : ℂ) / 2) * (z - (1 / 2 : ℂ)) ^ 2).re *
             ‖_root_.RHTower.finiteThetaAmplitude N z‖)
@@ -889,7 +953,7 @@ theorem gaussMollifiedThetaAmplitude_superpolynomial_strip_decay (N : ℕ) {a : 
         refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith))
           (le_trans zero_le_one (le_max_left 1 _))
     _ = B * Real.exp (-(a / 4) * z.im ^ 2) := by
-        dsimp [B]; rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+        dsimp [B]; rw [mul_assoc, ← Real.exp_add]; congr 1; congr 1; ring
 
 /-- **Exact zero-set preservation under Gaussian seam mollification.** -/
 theorem gaussMollifiedThetaAmplitude_zero_iff (N : ℕ) {a : ℝ} (ha : 0 < a) (z : ℂ) :
@@ -920,7 +984,8 @@ theorem not_laguerrePolya_gaussMollified_criticalLine (N : ℕ) {a : ℝ} (ha : 
     rw [mul_zero, add_zero]
     intro h0
     have hf0 := (gaussMollifiedThetaAmplitude_zero_iff N ha (1 / 2 : ℂ)).mp h0
-    have hre := finiteThetaAmplitude_re_ge_lowWindow N (z := (1 / 2 : ℂ)) (by simp) (by simp)
+    have hre := finiteThetaAmplitude_re_ge_lowWindow N (z := (1 / 2 : ℂ))
+      (by norm_num) (by norm_num)
     rw [hf0, Complex.zero_re] at hre
     have hpos : (0 : ℝ) < (5026 / 16875) * Real.exp (-Real.pi) := by positivity
     linarith
@@ -945,6 +1010,8 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
   set w : ℂ := -I * ((1 / 2 : ℂ) - z)
   have hIw : I * w = (1 / 2 : ℂ) - z := by
     dsimp [w]; rw [← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul]
+  have hIw_mul : ∀ c : ℂ, I * w * c = ((1 / 2 : ℂ) - z) * c := fun c => by
+    dsimp [w]; rw [← mul_assoc, ← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul]
   set f₀ : ℝ → ℂ := fun t =>
     (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
       Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ))
@@ -964,29 +1031,94 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
       (_root_.RHTower.finiteThetaTiltSource N).integrable_mul_exp ((1 / 2 : ℂ) - z) 1
   have hg₀ : Integrable g₀ := _root_.RHTower.integrable_heatKernel_mul_cexp ha w
   have hb : 0 < 1 / (2 * a) := by positivity
+  -- Bound `g₀` and `g₁` uniformly by integrable Gaussians on `ℝ`.
+  have hg₀_dom : ∀ y : ℝ, ‖g₀ y‖ ≤
+      (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+        Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-y ^ 2 / (4 * a)) := by
+    intro y
+    dsimp only [g₀]
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, _root_.RHTower.gaussHeatKernel,
+      abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by positivity) _),
+      abs_of_pos (Real.exp_pos _), Complex.norm_exp]
+    have hre_Iw : (I * w * (y : ℂ)).re ≤ |(1 / 2 - z.re)| * |y| := by
+      rw [hIw_mul]
+      have he : (((1 / 2 : ℂ) - z) * (y : ℂ)).re = (1 / 2 - z.re) * y := by simp
+      rw [he]
+      exact (le_abs_self _).trans (by rw [abs_mul])
+    have hquad : -(y ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y| ≤
+        a * |(1 / 2 - z.re)| ^ 2 - y ^ 2 / (4 * a) := by
+      have h4a : 0 < 4 * a := by positivity
+      suffices h : (-(y ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y|) * (4 * a) ≤
+          (a * |(1 / 2 - z.re)| ^ 2 - y ^ 2 / (4 * a)) * (4 * a) by
+        exact le_of_mul_le_mul_right h h4a
+      rw [← sq_abs y]
+      have hid : (a * |(1 / 2 - z.re)| ^ 2 - |y| ^ 2 / (4 * a)) * (4 * a) -
+          (-(|y| ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y|) * (4 * a) =
+          (|y| - 2 * a * |(1 / 2 - z.re)|) ^ 2 := by
+        field_simp [ha.ne']; ring
+      linarith [sq_nonneg (|y| - 2 * a * |(1 / 2 - z.re)|)]
+    calc (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(y ^ 2 / (2 * a))) *
+            Real.exp (I * w * (y : ℂ)).re
+        ≤ (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(y ^ 2 / (2 * a))) *
+            Real.exp (|(1 / 2 - z.re)| * |y|) :=
+          mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hre_Iw) (by positivity)
+      _ = (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+            Real.exp (-(y ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y|) := by
+          rw [mul_assoc, ← Real.exp_add]
+      _ ≤ (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+            Real.exp (a * |(1 / 2 - z.re)| ^ 2 - y ^ 2 / (4 * a)) :=
+          mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hquad) (by positivity)
+      _ = _ := by
+          rw [mul_assoc ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ))), ← Real.exp_add]
+          congr 2; ring
   have hg₁ : Integrable g₁ := by
-    have hid_eq : Polynomial.X =
-        (-(a : ℝ) • GaloisForLFunctions.gaussPolyDerivPoly 1 (1 / (2 * a))) := by
-      unfold GaloisForLFunctions.gaussPolyDerivPoly
-      rw [Polynomial.derivative_one, zero_sub, mul_one, Polynomial.smul_eq_C_mul]
-      ext k
-      rcases k with _ | _ | k
-      · simp
-      · simp; field_simp [ha.ne']
-      · simp
-    have hpoly_int := _root_.RHTower.integrable_gaussDeriv_mul_cexp hb 1 w
-    refine (hpoly_int.const_mul
-      ((-(a : ℂ)) * ((2 * Real.pi * a : ℝ) : ℂ) ^ (-(1 / 2 : ℂ)))).congr
+    let C₁ : ℝ := (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+      Real.exp (a * |(1 / 2 - z.re)| ^ 2 + 2 * a)
+    have hgauss8 : Integrable (fun y : ℝ => Real.exp (-(1 / (8 * a)) * y ^ 2)) :=
+      integrable_exp_neg_mul_sq (by positivity)
+    have hg₁_cont : Continuous g₁ := by
+      dsimp [g₁]
+      unfold _root_.RHTower.gaussHeatKernel
+      exact (Complex.continuous_ofReal.mul
+        (Complex.continuous_ofReal.comp
+          (continuous_const.mul (Real.continuous_exp.comp
+            (((continuous_pow 2).div_const (2 * a)).neg))))).mul
+        (Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal))
+    refine Integrable.mono (hgauss8.const_mul C₁) hg₁_cont.aestronglyMeasurable
       (Eventually.of_forall fun y => ?_)
-    dsimp only [g₁]
-    rw [_root_.RHTower.heatKernel_ofReal_eq ha y]
-    unfold _root_.RHTower.gaussDeriv _root_.RHTower.gaussDerivPoly
-    simp only [Polynomial.derivative_one, zero_sub, mul_one, Polynomial.eval_neg,
-      Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, Complex.ofReal_neg,
-      Complex.ofReal_mul]
-    push_cast
-    field_simp [ha.ne']
-    ring
+    have hg₁_eq : ‖g₁ y‖ = |y| * ‖g₀ y‖ := by
+      dsimp only [g₁, g₀]; rw [ mul_assoc, norm_mul, Complex.norm_real, Real.norm_eq_abs ]
+    have hy_exp : |y| ≤ Real.exp |y| := by linarith [Real.add_one_le_exp |y|]
+    have hq8 : |y| - y ^ 2 / (8 * a) ≤ 2 * a := by
+      have h8a : 0 < 8 * a := by positivity
+      suffices h : (|y| - y ^ 2 / (8 * a)) * (8 * a) ≤ (2 * a) * (8 * a) by
+        exact le_of_mul_le_mul_right h h8a
+      rw [← sq_abs y]
+      have hid : (2 * a) * (8 * a) - (|y| - |y| ^ 2 / (8 * a)) * (8 * a) =
+          (|y| - 4 * a) ^ 2 := by field_simp [ha.ne']; ring
+      linarith [sq_nonneg (|y| - 4 * a)]
+    rw [hg₁_eq, Real.norm_eq_abs, abs_of_pos (by dsimp [C₁]; positivity)]
+    calc |y| * ‖g₀ y‖
+        ≤ Real.exp |y| * ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+            Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-y ^ 2 / (4 * a))) :=
+          mul_le_mul hy_exp (hg₀_dom y) (norm_nonneg _) (Real.exp_pos _).le
+      _ = (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+            Real.exp (a * |(1 / 2 - z.re)| ^ 2 + (|y| - y ^ 2 / (8 * a))) *
+            Real.exp (-(1 / (8 * a)) * y ^ 2) := by
+          calc Real.exp |y| * ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+                  Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-y ^ 2 / (4 * a)))
+              = (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
+                  (Real.exp |y| * Real.exp (a * |(1 / 2 - z.re)| ^ 2) *
+                    Real.exp (-y ^ 2 / (4 * a))) := by ring
+            _ = _ := by
+                rw [← Real.exp_add, ← Real.exp_add, mul_assoc ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ))),
+                  ← Real.exp_add]
+                congr 2; ring
+      _ ≤ C₁ * Real.exp (-(1 / (8 * a)) * y ^ 2) := by
+          dsimp [C₁]
+          refine mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (by positivity))
+            (Real.exp_pos _).le
   -- Evaluate `∫ y, g₁ y` via whole-line FTC on `g₀`.
   have hg₁_int : (∫ y : ℝ, g₁ y) =
       -(a : ℂ) * (z - (1 / 2 : ℂ)) *
@@ -1001,10 +1133,9 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
             (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(u ^ 2 / (2 * a))))
             ((-y / a) * ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
               Real.exp (-(y ^ 2 / (2 * a))))) y := by
-          have hexp : HasDerivAt (fun u : ℝ => Real.exp (-(u ^ 2 / (2 * a))))
-              (Real.exp (-(y ^ 2 / (2 * a))) * (-(2 * y / (2 * a)))) y :=
-            (((hasDerivAt_pow 2 y).div_const (2 * a)).neg).exp
-          refine (hexp.const_mul ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)))).congr_deriv ?_
+          have h1 : HasDerivAt (fun u : ℝ => -(u ^ 2 / (2 * a))) (-(2 * y / (2 * a))) y := by
+            simpa using (((hasDerivAt_pow 2 y).div_const (2 * a)).neg)
+          refine (h1.exp.const_mul ((2 * Real.pi * a) ^ (-(1 / 2 : ℝ)))).congr_deriv ?_
           field_simp [ha.ne']; ring
         simpa only [Complex.ofReal_mul] using hr.ofReal_comp
       have he : HasDerivAt (fun u : ℝ => Complex.exp (I * w * (u : ℂ)))
@@ -1016,118 +1147,37 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
       refine (hk.mul he).congr_deriv ?_
       dsimp only [g₀, g₁]
       push_cast; field_simp [ha.ne']; ring
+    have hexp0 : Tendsto (fun u : ℝ => Real.exp (-u ^ 2 / (4 * a))) atTop (𝓝 0) := by
+      refine Real.tendsto_exp_atBot.comp ?_
+      have h1 : Tendsto (fun u : ℝ => u ^ 2) atTop atTop := tendsto_pow_atTop (by norm_num)
+      have h2 : Tendsto (fun u : ℝ => -(u / (4 * a))) atTop atBot :=
+        tendsto_neg_atTop_atBot.comp (tendsto_id.atTop_div_const (by positivity))
+      exact (h2.comp h1).congr fun u => by dsimp only [Function.comp_apply]; ring
     have hg₀_tendsto_top : Tendsto g₀ atTop (𝓝 0) := by
       rw [tendsto_zero_iff_norm_tendsto_zero]
-      have hdom : ∀ᶠ y : ℝ in atTop, ‖g₀ y‖ ≤
-          (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
-            Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-y ^ 2 / (4 * a)) := by
-        filter_upwards [eventually_ge_atTop (0 : ℝ)] with y _
-        dsimp only [g₀]
-        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, _root_.RHTower.gaussHeatKernel,
-          abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by positivity) _),
-          abs_of_pos (Real.exp_pos _), Complex.norm_exp]
-        have hre_Iw : (I * w * (y : ℂ)).re ≤ |(1 / 2 - z.re)| * |y| := by
-          rw [← mul_assoc, hIw]
-          have he : (((1 / 2 : ℂ) - z) * (y : ℂ)).re = (1 / 2 - z.re) * y := by simp
-          rw [he]
-          exact (le_abs_self _).trans (by rw [abs_mul])
-        have hquad : -(y ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y| ≤
-            a * |(1 / 2 - z.re)| ^ 2 - y ^ 2 / (4 * a) := by
-          have hsq := sq_nonneg (|y| / (2 * Real.sqrt a) - Real.sqrt a * |(1 / 2 - z.re)|)
-          have hsa : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
-          have hysq : |y| ^ 2 = y ^ 2 := sq_abs y
-          have hdiv : (|y| / (2 * Real.sqrt a)) ^ 2 = y ^ 2 / (4 * a) := by
-            rw [div_pow, hysq, mul_pow, hsa]; norm_num
-          have hmul : 2 * (|y| / (2 * Real.sqrt a)) * (Real.sqrt a * |(1 / 2 - z.re)|) =
-              |(1 / 2 - z.re)| * |y| := by
-            have hs_ne : Real.sqrt a ≠ 0 := (Real.sqrt_pos.mpr ha).ne'
-            field_simp [hs_ne]; ring
-          have hr_sq : (Real.sqrt a * |(1 / 2 - z.re)|) ^ 2 = a * |(1 / 2 - z.re)| ^ 2 := by
-            rw [mul_pow, hsa]
-          nlinarith
-        calc (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(y ^ 2 / (2 * a))) *
-                Real.exp (I * w * (y : ℂ)).re
-            ≤ (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(y ^ 2 / (2 * a))) *
-                Real.exp (|(1 / 2 - z.re)| * |y|) :=
-              mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hre_Iw) (by positivity)
-          _ = (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
-                Real.exp (-(y ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y|) := by
-              rw [mul_assoc, ← Real.exp_add]
-          _ ≤ (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
-                Real.exp (a * |(1 / 2 - z.re)| ^ 2 - y ^ 2 / (4 * a)) :=
-              mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hquad) (by positivity)
-          _ = _ := by rw [mul_assoc, ← Real.exp_add]; congr 2; ring
       have htend : Tendsto (fun y : ℝ =>
           (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
             Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-y ^ 2 / (4 * a))) atTop (𝓝 0) := by
-        have hexp0 : Tendsto (fun y : ℝ => Real.exp (-y ^ 2 / (4 * a))) atTop (𝓝 0) := by
-          refine Real.tendsto_exp_atBot.comp ?_
-          have h1 : Tendsto (fun y : ℝ => y ^ 2) atTop atTop := tendsto_pow_atTop (by norm_num)
-          have h2 : Tendsto (fun u : ℝ => -(u / (4 * a))) atTop atBot :=
-            tendsto_neg_atTop_atBot.comp (h1.atTop_div_const (by positivity) |> fun _ =>
-              tendsto_id.atTop_div_const (by positivity))
-          exact (h2.comp h1).congr fun y => by ring
         simpa only [mul_zero] using hexp0.const_mul _
-      exact squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) hdom htend
+      exact squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
+        (Eventually.of_forall hg₀_dom) htend
     have hg₀_tendsto_bot : Tendsto g₀ atBot (𝓝 0) := by
       rw [tendsto_zero_iff_norm_tendsto_zero]
-      have hdom : ∀ᶠ y : ℝ in atBot, ‖g₀ y‖ ≤
-          (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
-            Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-(-y) ^ 2 / (4 * a)) := by
-        filter_upwards [eventually_le_atBot (0 : ℝ)] with y _
-        dsimp only [g₀]
-        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, _root_.RHTower.gaussHeatKernel,
-          abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by positivity) _),
-          abs_of_pos (Real.exp_pos _), Complex.norm_exp, neg_sq]
-        have hre_Iw : (I * w * (y : ℂ)).re ≤ |(1 / 2 - z.re)| * |y| := by
-          rw [← mul_assoc, hIw]
-          have he : (((1 / 2 : ℂ) - z) * (y : ℂ)).re = (1 / 2 - z.re) * y := by simp
-          rw [he]
-          exact (le_abs_self _).trans (by rw [abs_mul])
-        have hquad : -(y ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y| ≤
-            a * |(1 / 2 - z.re)| ^ 2 - y ^ 2 / (4 * a) := by
-          have hsq := sq_nonneg (|y| / (2 * Real.sqrt a) - Real.sqrt a * |(1 / 2 - z.re)|)
-          have hsa : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
-          have hysq : |y| ^ 2 = y ^ 2 := sq_abs y
-          have hdiv : (|y| / (2 * Real.sqrt a)) ^ 2 = y ^ 2 / (4 * a) := by
-            rw [div_pow, hysq, mul_pow, hsa]; norm_num
-          have hmul : 2 * (|y| / (2 * Real.sqrt a)) * (Real.sqrt a * |(1 / 2 - z.re)|) =
-              |(1 / 2 - z.re)| * |y| := by
-            have hs_ne : Real.sqrt a ≠ 0 := (Real.sqrt_pos.mpr ha).ne'
-            field_simp [hs_ne]; ring
-          have hr_sq : (Real.sqrt a * |(1 / 2 - z.re)|) ^ 2 = a * |(1 / 2 - z.re)| ^ 2 := by
-            rw [mul_pow, hsa]
-          nlinarith
-        calc (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(y ^ 2 / (2 * a))) *
-                Real.exp (I * w * (y : ℂ)).re
-            ≤ (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
-                Real.exp (a * |(1 / 2 - z.re)| ^ 2 - y ^ 2 / (4 * a)) := by
-              calc (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(y ^ 2 / (2 * a))) *
-                      Real.exp (I * w * (y : ℂ)).re
-                  ≤ (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) * Real.exp (-(y ^ 2 / (2 * a))) *
-                      Real.exp (|(1 / 2 - z.re)| * |y|) :=
-                    mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hre_Iw) (by positivity)
-                _ = (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
-                      Real.exp (-(y ^ 2 / (2 * a)) + |(1 / 2 - z.re)| * |y|) := by
-                    rw [mul_assoc, ← Real.exp_add]
-                _ ≤ _ := mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hquad) (by positivity)
-          _ = _ := by rw [mul_assoc, ← Real.exp_add]; congr 2; ring
       have htend : Tendsto (fun y : ℝ =>
           (2 * Real.pi * a) ^ (-(1 / 2 : ℝ)) *
-            Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-(-y) ^ 2 / (4 * a))) atBot (𝓝 0) := by
-        have hexp0 : Tendsto (fun u : ℝ => Real.exp (-u ^ 2 / (4 * a))) atTop (𝓝 0) := by
-          refine Real.tendsto_exp_atBot.comp ?_
-          have h1 : Tendsto (fun u : ℝ => u ^ 2) atTop atTop := tendsto_pow_atTop (by norm_num)
-          have h2 : Tendsto (fun u : ℝ => -(u / (4 * a))) atTop atBot :=
-            tendsto_neg_atTop_atBot.comp (tendsto_id.atTop_div_const (by positivity))
-          exact (h2.comp h1).congr fun u => by ring
-        simpa only [mul_zero] using (hexp0.comp tendsto_neg_atBot_atTop).const_mul _
-      exact squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) hdom htend
+            Real.exp (a * |(1 / 2 - z.re)| ^ 2) * Real.exp (-y ^ 2 / (4 * a))) atBot (𝓝 0) := by
+        have hcomp : Tendsto (fun y : ℝ => Real.exp (-(-y) ^ 2 / (4 * a))) atBot (𝓝 0) :=
+          hexp0.comp tendsto_neg_atBot_atTop
+        have h1 : Tendsto (fun y : ℝ => Real.exp (-y ^ 2 / (4 * a))) atBot (𝓝 0) :=
+          hcomp.congr fun y => by dsimp only [Function.comp_apply]; rw [neg_sq]
+        simpa only [mul_zero] using h1.const_mul _
+      exact squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
+        (Eventually.of_forall hg₀_dom) htend
     have hftc := integral_of_hasDerivAt_of_tendsto hderiv_g₀
       ((hg₁.const_mul (-(1 / (a : ℂ)))).add (hg₀.const_mul ((1 / 2 : ℂ) - z)))
       hg₀_tendsto_bot hg₀_tendsto_top
     rw [integral_add (hg₁.const_mul _) (hg₀.const_mul _),
-      integral_const_mul, integral_const_mul, sub_self] at hftc
+      MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul, sub_self] at hftc
     have ha_ne : (a : ℂ) ≠ 0 := by exact_mod_cast ha.ne'
     have hg₀_val : (∫ y : ℝ, g₀ y) =
         Complex.exp (((a : ℂ) / 2) * (z - (1 / 2 : ℂ)) ^ 2) := by
@@ -1152,25 +1202,21 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
         (f₁ ⋆[ContinuousLinearMap.mul ℂ ℂ, volume] g₀) x +
           (f₀ ⋆[ContinuousLinearMap.mul ℂ ℂ, volume] g₁) x := by
     intro x
-    have hsrc_int : Integrable (_root_.RHTower.reflectedFiniteThetaSource (N + 1)) := by
-      simpa only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one,
-        _root_.RHTower.finiteThetaTiltSource] using
-        (Complex.reCLM.integrable_comp
-          (_root_.RHTower.integrable_bilateralLaplace (_root_.RHTower.finiteThetaTiltSource N) 0))
+    have hsrc_int : Integrable (_root_.RHTower.reflectedFiniteThetaSource (N + 1)) :=
+      integrable_reflectedFiniteThetaSource N
     have hker_int : Integrable (fun t : ℝ =>
         _root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
           _root_.RHTower.gaussHeatKernel a (x - t)) := by
-      have h := Integrable.bdd_mul' hsrc_int
-        (by
-          unfold _root_.RHTower.gaussHeatKernel
-          exact (continuous_const.mul (Real.continuous_exp.comp
-            (((continuous_const.sub continuous_id).pow 2).div_const (2 * a)).neg)).aestronglyMeasurable)
+      have haesm : AEStronglyMeasurable (fun t : ℝ => _root_.RHTower.gaussHeatKernel a (x - t)) := by
+        unfold _root_.RHTower.gaussHeatKernel
+        exact (continuous_const.mul (Real.continuous_exp.comp
+          (((continuous_const.sub continuous_id).pow 2).div_const (2 * a)).neg)).aestronglyMeasurable
+      have h := Integrable.bdd_mul hsrc_int haesm
         (Eventually.of_forall fun t => by
-          rw [Real.norm_eq_abs]
-          unfold _root_.RHTower.gaussHeatKernel
-          rw [abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by positivity) _),
-            abs_of_pos (Real.exp_pos _)]
-          exact mul_le_of_le_one_right (by positivity) (Real.exp_le_one_iff.mpr (by positivity)))
+          rw [Real.norm_eq_abs, _root_.RHTower.gaussHeatKernel, abs_mul,
+            abs_of_pos (Real.rpow_pos_of_pos (by positivity) _), abs_of_pos (Real.exp_pos _)]
+          exact mul_le_of_le_one_right (by positivity)
+            (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity))))
       exact h.congr (Eventually.of_forall fun t => mul_comm _ _)
     have hc1 : Integrable (fun t : ℝ => f₁ t * g₀ (x - t)) := by
       have hexp_eq : ∀ t : ℝ, f₁ t * g₀ (x - t) =
@@ -1182,7 +1228,7 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
         have he : Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
               Complex.exp (I * w * ((x - t : ℝ) : ℂ)) =
             Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by
-          rw [← mul_assoc I w, hIw, ← Complex.exp_add]; congr 1; push_cast; ring
+          rw [hIw_mul, ← Complex.exp_add]; congr 1; push_cast; ring
         calc (t : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
                 Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
                 ((_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
@@ -1193,28 +1239,28 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
                   Complex.exp (I * w * ((x - t : ℝ) : ℂ))) := by ring
           _ = _ := by rw [he]
       have hsrc1 : Integrable (fun t : ℝ =>
-          (t : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ)) := by
-        simpa only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one, pow_one,
-          _root_.RHTower.finiteThetaTiltSource] using
-          (_root_.RHTower.finiteThetaTiltSource N).integrable_mul_exp 0 1
+          (t : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ)) :=
+        integrable_id_mul_reflectedFiniteThetaSource N
+      have haesm1 : AEStronglyMeasurable
+          (fun t : ℝ => (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ)) := by
+        unfold _root_.RHTower.gaussHeatKernel
+        exact (Complex.continuous_ofReal.comp
+          (continuous_const.mul (Real.continuous_exp.comp
+            (((continuous_const.sub continuous_id).pow 2).div_const (2 * a)).neg))).aestronglyMeasurable
       have hbdd : Integrable (fun t : ℝ =>
           (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
             ((t : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ))) :=
-        Integrable.bdd_mul' hsrc1
-          (by
-            unfold _root_.RHTower.gaussHeatKernel
-            exact Complex.continuous_ofReal.comp
-              (continuous_const.mul (Real.continuous_exp.comp
-                (((continuous_const.sub continuous_id).pow 2).div_const (2 * a)).neg))
-              |>.aestronglyMeasurable)
+        Integrable.bdd_mul hsrc1 haesm1
           (Eventually.of_forall fun t => by
-            rw [Complex.norm_real, Real.norm_eq_abs]
-            unfold _root_.RHTower.gaussHeatKernel
-            rw [abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by positivity) _),
+            rw [Complex.norm_real, Real.norm_eq_abs, _root_.RHTower.gaussHeatKernel,
+              abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by positivity) _),
               abs_of_pos (Real.exp_pos _)]
-            exact mul_le_of_le_one_right (by positivity) (Real.exp_le_one_iff.mpr (by positivity)))
-      exact (hbdd.mul_const (Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)))).congr
-        (Eventually.of_forall fun t => by rw [hexp_eq t]; ring)
+            exact mul_le_of_le_one_right (by positivity)
+              (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity))))
+      refine (hbdd.mul_const (Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)))).congr
+        (Eventually.of_forall fun t => ?_)
+      dsimp only
+      rw [hexp_eq t]; ring
     have hc2 : Integrable (fun t : ℝ => f₀ t * g₁ (x - t)) := by
       have hdiff_eq : ∀ t : ℝ, f₀ t * g₁ (x - t) =
           (x : ℂ) * (((_root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
@@ -1226,17 +1272,39 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
         have he : Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
               Complex.exp (I * w * ((x - t : ℝ) : ℂ)) =
             Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by
-          rw [← mul_assoc I w, hIw, ← Complex.exp_add]; congr 1; push_cast; ring
-        push_cast
+          rw [hIw_mul, ← Complex.exp_add]; congr 1; push_cast; ring
         calc (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
                 Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
-                (((x : ℂ) - (t : ℂ)) * (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
-                  Complex.exp (I * w * ((x : ℂ) - (t : ℂ))))
-            = ((x : ℂ) - (t : ℂ)) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
+                (((x - t : ℝ) : ℂ) * (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
+                  Complex.exp (I * w * ((x - t : ℝ) : ℂ)))
+            = ((x - t : ℝ) : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
                 (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
                 (Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
-                  Complex.exp (I * w * ((x - t : ℝ) : ℂ))) := by push_cast; ring
-          _ = _ := by rw [he]; ring
+                  Complex.exp (I * w * ((x - t : ℝ) : ℂ))) := by ring
+          _ = ((x - t : ℝ) : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
+                (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
+                Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by rw [he]
+          _ = _ := by
+                rw [hexp : Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
+                  Complex.exp (I * w * ((x - t : ℝ) : ℂ)) =
+                  Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := he] |> fun _ => ?_
+                have hmul_he : (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
+                    Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) =
+                    (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
+                      Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) := rfl
+                -- Direct algebraic rewrite after rewriting `he` on the subtracted term:
+                calc ((x - t : ℝ) : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
+                        (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
+                        Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))
+                    = (x : ℂ) * (((_root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
+                        _root_.RHTower.gaussHeatKernel a (x - t) : ℝ) : ℂ) *
+                        Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) -
+                      (t : ℂ) * (_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
+                        (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ) *
+                        (Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
+                          Complex.exp (I * w * ((x - t : ℝ) : ℂ))) := by
+                      rw [he]; push_cast; ring
+                  _ = _ := by ring
       have htot : Integrable (fun t : ℝ =>
           (x : ℂ) * (((_root_.RHTower.reflectedFiniteThetaSource (N + 1) t *
               _root_.RHTower.gaussHeatKernel a (x - t) : ℝ) : ℂ) *
@@ -1246,13 +1314,14 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
     rw [convolution_def, convolution_def]
     simp only [ContinuousLinearMap.mul_apply']
     rw [← integral_add hc1 hc2, gaussMollifiedThetaSource, _root_.RHTower.heatSmooth,
-      ← integral_complex_ofReal, ← integral_const_mul, ← integral_mul_const]
+      ← integral_complex_ofReal, ← MeasureTheory.integral_const_mul,
+      ← MeasureTheory.integral_mul_const]
     congr 1; funext t
     simp only [f₀, f₁, g₀, g₁]
     have he : Complex.exp (((1 / 2 : ℂ) - z) * (t : ℂ)) *
           Complex.exp (I * w * ((x - t : ℝ) : ℂ)) =
         Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by
-      rw [← mul_assoc I w, hIw, ← Complex.exp_add]; congr 1; push_cast; ring
+      rw [hIw_mul, ← Complex.exp_add]; congr 1; push_cast; ring
     rw [Complex.ofReal_mul]
     calc (x : ℂ) * ((_root_.RHTower.reflectedFiniteThetaSource (N + 1) t : ℂ) *
             (_root_.RHTower.gaussHeatKernel a (x - t) : ℂ)) *
@@ -1266,8 +1335,8 @@ theorem gaussMollifiedThetaFirstMoment_eq (N : ℕ) {a : ℝ} (ha : 0 < a) (z : 
       _ = _ := by ring
   unfold gaussMollifiedThetaFirstMoment
   simp_rw [hconv_pt]
-  have hint_conv1 := ContinuousLinearMap.integrable_convolution (ContinuousLinearMap.mul ℂ ℂ) hf₁ hg₀
-  have hint_conv2 := ContinuousLinearMap.integrable_convolution (ContinuousLinearMap.mul ℂ ℂ) hf₀ hg₁
+  have hint_conv1 := hf₁.integrable_convolution (ContinuousLinearMap.mul ℂ ℂ) hg₀
+  have hint_conv2 := hf₀.integrable_convolution (ContinuousLinearMap.mul ℂ ℂ) hg₁
   rw [integral_add hint_conv1 hint_conv2,
     integral_convolution (ContinuousLinearMap.mul ℂ ℂ) hf₁ hg₀,
     integral_convolution (ContinuousLinearMap.mul ℂ ℂ) hf₀ hg₁,
