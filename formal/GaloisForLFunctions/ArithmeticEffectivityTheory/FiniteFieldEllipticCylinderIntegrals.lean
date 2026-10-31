@@ -16,16 +16,16 @@ open HTGeometry.DiscreteValuationHaar HTGeometry.LoopEisenstein
 open scoped WithZero WithZeroMulInt
 noncomputable section
 
-local instance (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
-local instance (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
-local instance (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
+local instance cylinderIntegralFiniteMeasurable (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
+local instance cylinderIntegralFiniteBorel (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
+local instance cylinderIntegralFiniteCompact (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
   finiteCompletionInteger_compact v
-local instance (v : FinitePlace) :
+local instance cylinderIntegralFiniteNontrivial (v : FinitePlace) :
     (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰).IsNontrivial := inferInstance
-local instance (v : FinitePlace) : IsTopologicalAddGroup (v.adicCompletionIntegers K) :=
+local instance cylinderIntegralIntegerTopAdd (v : FinitePlace) : IsTopologicalAddGroup (v.adicCompletionIntegers K) :=
   Topology.IsInducing.subtypeVal.topologicalAddGroup
     (v.adicCompletionIntegers K).subtype.toAddMonoidHom
-local instance (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderTail S) :=
+local instance cylinderIntegralTailTopAdd (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderTail S) :=
   Pi.topologicalAddGroup
 private abbrev cylinderIntegerAddGroup (v : FinitePlace) :
     AddCommGroup (v.adicCompletionIntegers K) := inferInstance
@@ -33,15 +33,15 @@ private abbrev cylinderIntegerAdd (v : FinitePlace) :
     Add (v.adicCompletionIntegers K) := inferInstance
 attribute [local instance] cylinderIntegerAddGroup cylinderIntegerAdd
 
-local instance (v : FinitePlace) : SigmaCompactSpace (v.adicCompletion K) := by
+local instance cylinderIntegralFiniteSigmaCompact (v : FinitePlace) : SigmaCompactSpace (v.adicCompletion K) := by
   letI := finiteCompletion_secondCountable v
   letI := finiteCompletion_locallyCompact v
   exact sigmaCompactSpace_of_locallyCompact_secondCountable
-local instance (v : FinitePlace) : (normalizedHaar (v.adicCompletion K)).IsAddHaarMeasure :=
+local instance cylinderIntegralFiniteHaar (v : FinitePlace) : (normalizedHaar (v.adicCompletion K)).IsAddHaarMeasure :=
   normalizedHaar_isAddHaar (v.adicCompletion K)
-local instance (v : FinitePlace) : SigmaFinite (normalizedHaar (v.adicCompletion K)) := inferInstance
-local instance : MeasurableSpace InfinityCompletion := borel _
-local instance : BorelSpace InfinityCompletion := ⟨rfl⟩
+local instance cylinderIntegralFiniteSigmaFinite (v : FinitePlace) : SigmaFinite (normalizedHaar (v.adicCompletion K)) := inferInstance
+local instance cylinderIntegralInfinityMeasurable : MeasurableSpace InfinityCompletion := borel _
+local instance cylinderIntegralInfinityBorel : BorelSpace InfinityCompletion := ⟨rfl⟩
 
 /-- The actual adelic cylinder, with unrestricted infinity coordinate. -/
 def ellipticAdeleCylinder (S : Finset FinitePlace) : Set Adeles :=

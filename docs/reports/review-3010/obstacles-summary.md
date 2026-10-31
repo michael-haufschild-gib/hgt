@@ -210,6 +210,10 @@ Subquestions:
   `(1−2theta)I/√(φ(m)φ(l))−delta_ml[log m+tau(m)+2(1−theta)gamma]`.
   The square-root head is diagonal; scalar-identity centering still retains
   `(1−theta²)B_ml`. [Power and band formulas, final Lean audit](../../drafts/pipeline/3-formalized/square-root-prime-heads-diagonalize-conductor-finite-parts.md).
+  Pointwise dilation `phi(q)c_l(kn)=phi(l)c_q(n)`, `q=l/gcd(l,k)`, gives an
+  exact finite-head decomposition into reduced-conductor harmonic Grams.
+  Centered period heads have packet norm at most `6log Q+log4+4`, uniformly
+  in cutoff. [Identities and norm bound, final Lean audit](../../drafts/pipeline/3-formalized/centered-prime-heads-have-logarithmic-packet-norms.md).
   The full Weil agreement-shell identity remains open.
 
 **Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**

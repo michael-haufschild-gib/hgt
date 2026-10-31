@@ -29,7 +29,7 @@ from a proved quotient normalization.
 
 - Arithmetic coset parametrization. The independently defined actual arithmetic coset series and its right arithmetic invariance are audited. [Coset descent](../3-formalized/elliptic-eisenstein-summands-descend-to-actual-arithmetic-cosets.md). [Actual idele rotation and descent to the literal unipotent quotient](../3-formalized/rotated-elliptic-eisenstein-series-descends-to-the-actual-unipotent-quotient.md) are also audited, independently defining the constant-term integral. Finite root-cell parametrization and convergence remain.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
-- Local Iwasawa-character identification with the radial Haar kernel. [Finite simple loop values](../3-formalized/finite-simple-loop-iwasawa-values-are-column-norms.md) are audited: central valuation one and finite valuation equal to the first-column norm. Normalized character identification and the affine simple root remain.
+- Local Iwasawa-character identification with the radial Haar kernel. [Finite simple loop values](../3-formalized/finite-simple-loop-iwasawa-values-are-column-norms.md) are audited: central valuation one and finite valuation equal to the first-column norm. [Affine simple loop values](../3-formalized/affine-simple-loop-iwasawa-values-are-column-norms.md) are also audited: central value `M` and finite value `M⁻¹`. Normalized character identification remains.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.
 
 The simple-pole additive domain, quotient topology and covolume are formalized

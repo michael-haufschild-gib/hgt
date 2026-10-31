@@ -25,6 +25,7 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.ProfiledAdjunction
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramFinitePart
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramTorsionEnergy
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramUniformRemainder
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramLogarithmicPlateau
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.AffineShellConductorSelection
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorFinitePart
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorHeadBoundary
@@ -46,7 +47,7 @@ finite divisor-jet square completion and adjunction spectrum, preserved by signe
 autocorrelation smoothing and compact source profiles on arbitrary real shifts; the twin defect as a
 successor-disagreement shell; the exact harmonic Ramanujan Gram finite part as positive divisor-edge
 energy plus a scalar counterterm, equivalently Euler's scalar minus torsion intersection;
-the uniform quadratic tail at the square-root conductor scale; exact affine conductor selection;
+the uniform quadratic tail and its logarithmic plateau at short horizons; exact affine conductor selection;
 the full prime-matrix finite part on every fixed finite conductor packet;
 the opposite torsion limits of fixed prime heads and their complementary boundary;
 the half-square asymptotic of the prime head's logarithmic moment;

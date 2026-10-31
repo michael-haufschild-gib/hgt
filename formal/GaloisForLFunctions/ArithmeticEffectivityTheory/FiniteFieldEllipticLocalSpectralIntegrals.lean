@@ -17,12 +17,12 @@ open HTGeometry.DiscreteValuationHaar HTGeometry.LoopEisenstein
 open scoped NNReal WithZero WithZeroMulInt
 noncomputable section
 
-local instance (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
-local instance (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
-local instance (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
+local instance localSpectralFiniteMeasurable (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
+local instance localSpectralFiniteBorel (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
+local instance localSpectralFiniteCompact (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
   finiteCompletionInteger_compact v
-local instance : MeasurableSpace InfinityCompletion := borel _
-local instance : BorelSpace InfinityCompletion := ⟨rfl⟩
+local instance localSpectralInfinityMeasurable : MeasurableSpace InfinityCompletion := borel _
+local instance localSpectralInfinityBorel : BorelSpace InfinityCompletion := ⟨rfl⟩
 
 /-- The actual finite completion attains the normalized uniformizer value. -/
 theorem finiteCompletion_valuation_exp_neg_one_mem_range (v : FinitePlace) :

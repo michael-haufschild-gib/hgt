@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 34 modules
-(6 root, `TopBand/` 11, `Conductor/` 17). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 35 modules
+(6 root, `TopBand/` 11, `Conductor/` 18). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -126,6 +126,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Sharp harmonic finite part `(γ−log M)mass+E_M(f)` for divisor packets; exact mixed entries | `tendsto_divisorPacket_sq_harmonic_finitePart`, `tendsto_ramanujan_mul_harmonic_of_ne` | proved |
 | Harmonic finite part = Euler scalar minus torsion intersection; absolute norm `≤ |γ|+4log Q+log4+4` | `tendsto_ramanujanPacket_harmonic_torsion`, `abs_harmonicGram_finitePart_le_log` | proved |
 | Uniform quadratic tail `Q(Q−1)/(N+1)` times mass; logarithmic finite-horizon Gram budget | `abs_harmonicGram_quadratic_torsion_remainder`, `abs_harmonicGram_sub_log_mass_le` | proved |
+| Every-horizon Gram remainder bounded by `min{Q(Q−1)/(N+1),6log Q+log4+5}` times mass | `abs_harmonicGram_torsion_remainder_le_log`, `abs_harmonicGram_torsion_remainder_le_min` | proved |
 | Affine shell correlation selects `m=l/gcd(l,k)`; exact finite packet expansion | `sum_range_ramanujanLagCoefficient_mul_affine`, `sum_range_ramanujanPacket_mul_affine` | proved |
 | Full prime finite part `−I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; exact packet polarization | `tendsto_primeConductorPairing_finitePart`, `tendsto_primeConductorPacket_finitePart` | proved |
 | Exact prime head at the full horizon; complementary boundary limit `−2I/√(φ(m)φ(l))` | `primeConductorHeadPairing_horizon`, `tendsto_primeConductorBoundaryFinitePart` | proved |
@@ -147,7 +148,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Uniform-in-overlap (`1 ≤ c ≤ N/4`) joint coefficient bounds for witness, periodic, Ramanujan and two-mode data.
 - Divisor-jet algebra: conductor expansion, Plancherel, power deformation, reciprocity, finite adjunction spectrum.
 - Positive source/profile autocorrelation weights and smoothed square completion.
-- Exact harmonic finite parts, torsion identification, and a common quadratic tail at conductor scale `Q²/N`.
+- Exact harmonic finite parts and torsion identification; remainder bounded by a quadratic tail and a logarithmic plateau at every horizon.
 - Exact affine conductor selection and full prime finite parts on every fixed finite packet.
 - Exact fixed-head limits and their complementary torsion boundary.
 - Exact power-cutoff and band finite parts, including square-root cancellation of mixed raw pairings.

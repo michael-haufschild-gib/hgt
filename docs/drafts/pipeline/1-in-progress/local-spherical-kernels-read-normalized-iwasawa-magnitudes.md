@@ -17,11 +17,13 @@ ball as shell zero. The residue-normalized magnitude therefore has
 Substitute `z=exp(-s log Q)` in the audited spherical kernel. Its shell
 value `(z/Q)^n` is `exp(-(s+1)log(max(1,|x|)))`. Since `Q>1` and
 `Re(s)>0`, the existing absolute-integrability and exact-integral theorems
-apply. Actual finite and infinity residue equivalences must discharge all
-normalization parameters. The affine simple Iwasawa values remain a
-separate algebraic input.
+apply. Actual finite and infinity residue equivalences discharge the
+normalization parameters.
 
 The [general shell and spectral-kernel bridge](../3-formalized/local-spherical-integrals-read-normalized-valuations.md)
 passed direct Lean and transitive axiom audits. The
 [actual finite-place and infinity specialization](../3-formalized/actual-elliptic-local-spectral-characters-have-exact-integrals.md)
-passed the same audits. Identification with the Iwasawa section remains.
+passed the same audits. The finite simple root has torus valuations `(1,M)`;
+the [affine simple root](../3-formalized/affine-simple-loop-iwasawa-values-are-column-norms.md)
+has `(M,M⁻¹)`, where `M=max(1,v(x))`. Both passed direct Lean and axiom
+audits. Substitution into the normalized Iwasawa character remains.

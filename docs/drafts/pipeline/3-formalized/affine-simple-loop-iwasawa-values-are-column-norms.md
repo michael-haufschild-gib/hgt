@@ -1,6 +1,6 @@
 # Affine simple loop Iwasawa values are column norms
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** For a valued coefficient field and `g∈SL₂`, the affine-simple
   embedding has Iwasawa torus valuations `(M,M⁻¹)`, where
@@ -27,4 +27,5 @@ shifted constant embedding does not have the stated positive-root convention.
 `HTGeometry/LoopEisenstein/AffineSimpleIwasawaValues.lean`:
 `exists_affineSimpleSL2Embedding_iwasawa_values`,
 `affineSimpleSL2Embedding_iwasawa_values`,
-`affineLowerRoot_iwasawa_values`. Direct audit pending.
+`affineLowerRoot_iwasawa_values`. Direct Lean and transitive axiom audits passed;
+only `propext`, `Classical.choice`, and `Quot.sound` occur.

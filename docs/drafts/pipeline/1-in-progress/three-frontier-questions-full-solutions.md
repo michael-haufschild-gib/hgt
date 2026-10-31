@@ -123,7 +123,13 @@ The complete Gamma, pole, and successor-shell identity remains open.
 The [affine period identity](../3-formalized/affine-shell-correlations-select-conductor-quotients.md)
 is exact: `∑_(n<M)c_m(n)c_l(kn+h)=1_(m=l/gcd(l,k)) M c_l(h)` for positive
 conductors dividing `M`. Its finite-packet expansion retains every mixed entry.
-The logarithmic horizon boundary is separate.
+Pointwise dilation also reduces exactly: `phi(q)c_l(kn)=phi(l)c_q(n)`,
+`q=l/gcd(l,k)`, giving a literal head decomposition into reduced-conductor
+harmonic Grams at `floor(N/k)`.
+Every centered period head has packet norm at most `6log Q+log4+4`,
+uniformly in its cutoff and for arbitrary real coefficients.
+[Exact identities, bound and final Lean audit](../3-formalized/centered-prime-heads-have-logarithmic-packet-norms.md).
+Transfer of this period-mean bound to moving finite horizons remains separate.
 
 ## Full-divisor resolvent identity
 

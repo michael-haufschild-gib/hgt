@@ -24,12 +24,12 @@ With `CountingInputsDoNotBoundTheLocalCount`: no counting input gives the local 
 height, but the zeros of `ζ` satisfy it on a set of density one, through the off-line first moment.
 
 **The depth mass in density** (`eventually_volume_rightDepthMass_gt_le`).  For every `W > 0`
-the right-half depth mass `Σ_{Re ρ > ½} m (Re ρ − ½)²` of the windows `(S − 1, S + 1]` is `≤ W` off a
-set of centres `S ∈ [T − 1, 2T + 1]` of measure `o(T)`: Markov with the second moment `o(V)`
+the right-half depth mass `Σ_{Re ρ > ½} m (Re ρ − ½)²` of the windows `(S − 1, S + 1]` is `≤ W`
+off a set of centres `S ∈ [T − 1, 2T + 1]` of measure `o(T)`: Markov with the second moment `o(V)`
 (`tendsto_offLineSecondMoment_div`).
 -/
 
-open Complex Set Zeta23
+open Complex Set Zeta23 Filter Topology
 
 namespace RHTower.LocalCountFalsifier
 
@@ -358,7 +358,7 @@ theorem eventually_volume_rightDepthMass_gt_le {W ε : ℝ} (hW : 0 < W) (hε : 
     calc ENNReal.ofReal (w ρ) * (MeasureTheory.volume.restrict (Icc (T - 1) (2 * T + 1)))
           (Ico (ρ.im - 1) (ρ.im + 1))
         ≤ ENNReal.ofReal (w ρ) * MeasureTheory.volume (Ico (ρ.im - 1) (ρ.im + 1)) := by
-          gcongr; exact MeasureTheory.Measure.restrict_le_self _
+          gcongr; exact MeasureTheory.Measure.restrict_le_self
       _ = ENNReal.ofReal (2 * w ρ) := by
           rw [Real.volume_Ico, ← ENNReal.ofReal_mul (hw0 ρ)]; ring_nf
   have hset : {S ∈ Icc (T - 1) (2 * T + 1) | W < rightDepthMass zetaZeroConfig S}
@@ -375,13 +375,13 @@ theorem eventually_volume_rightDepthMass_gt_le {W ε : ℝ} (hW : 0 < W) (hε : 
         MeasureTheory.meas_ge_le_lintegral_div hgm.aemeasurable (by simpa using hW)
           ENNReal.ofReal_ne_top
     _ ≤ ENNReal.ofReal (2 * ∑ ρ ∈ F, w ρ) / ENNReal.ofReal W := by gcongr
-    _ = ENNReal.ofReal (2 * ∑ ρ ∈ F, w ρ / W) := by
-        rw [← ENNReal.ofReal_div_of_pos hW, mul_div_assoc]
+    _ = ENNReal.ofReal ((2 * ∑ ρ ∈ F, w ρ) / W) := (ENNReal.ofReal_div_of_pos hW).symm
     _ ≤ ENNReal.ofReal (ε * T) := by
         refine ENNReal.ofReal_le_ofReal ?_
-        rw [mul_div_assoc', div_le_iff₀ hW]
+        rw [div_le_iff₀ hW]
+        have hsum' : ∑ ρ ∈ F, w ρ ≤ offLineSecondMoment (2 * T + 2) := hsum
         have : 2 * ∑ ρ ∈ F, w ρ ≤ 2 * (δ * (2 * T + 2)) := by
-          have := hsum.trans hmT; linarith
+          have := hsum'.trans hmT; linarith
         rw [hδ] at this
         nlinarith
 

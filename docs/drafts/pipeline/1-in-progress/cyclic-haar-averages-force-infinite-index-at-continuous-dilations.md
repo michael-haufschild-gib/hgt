@@ -50,6 +50,7 @@ The argument also covers every nonzero Haar multiple `c·1_ℤ`. Hermitian symme
 
 Formalized, with direct audits and standard axiom closures:
 
+- `BiarithmeticGeometry/Affine/PositiveAffineIndex.lean` and `PositiveAffineAction.lean`: positive slopes have index two; injective rational-linear translation maps induce injective positive affine homomorphisms.
 - `AdelicKreinGeometry/Haar/ScaledHaarObstruction.lean`: every nonzero Haar multiple has infinite index with continuous dilations. Negative scalars already have infinite translation index; positive scalars normalize to the integer successor.
 - `AdelicKreinGeometry/Haar/FiniteIndexObstruction.lean`: `negIndex_eq_top_of_haar_continuous_dilation` proves the stated rational-affine obstruction without an integer-invariance premise, using the zero-axis polynomial correction.
 - `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: fixed-projection Grams converge to `J−I`. `BiarithmeticGeometry/Affine/NearIdentityGrids.lean` supplies the rational grids; `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean` supplies their limiting negative directions.

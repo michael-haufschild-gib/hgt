@@ -284,10 +284,8 @@ theorem one_le_negIndex_localHecke {s : ℝ} (hs : s < 1 / 2) : 1 ≤ negIndex (
       simp [x, u, affShift_mul, affShift_inv, affSlope_inv, affSlope_dilation, affShift_dilation,
         affShift_translation]
       field_simp
-    have hk : (0 : ℤ) ≤ padicValRat p ((k : ℕ) : ℚ) := by
-      rw [padicValRat.of_nat]; exact Nat.cast_nonneg _
     simp only [localHecke, hsl, hsh, hvp, y]
-    rw [if_pos (by simp [hk])]
+    rw [if_pos (by simp)]
     norm_num
   have hk0 : ∀ k : Fin p, localHecke p s ((x (some k))⁻¹ * x none) = (y : ℂ) := fun k => by
     rw [show (x (some k))⁻¹ * x none = ((x none)⁻¹ * x (some k))⁻¹ by group,
