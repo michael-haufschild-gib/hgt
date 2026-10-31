@@ -36,6 +36,7 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorGrow
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorPowerHeads
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorHeadNorm
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorDilationEnergy
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorDilationMoments
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorUndilatedNorm
 
 /-!
@@ -58,6 +59,7 @@ the half-square asymptotic of the prime head's logarithmic moment;
 the exact finite parts at every power cutoff and their diagonal square-root head;
 the exact dilation reduction of prime heads and their logarithmic centered period-mean norm;
 the exact prime-dilation square energy in normalized conductor coordinates;
+its finite and full logarithmic moments, controlled by valuation saturation;
 the undilated torsion finite part with a uniform squared-logarithmic packet error;
 the invariant centered torsion correction at every exhausting prime cutoff. See
 `SuccessorShellArithmetic/README.md`.

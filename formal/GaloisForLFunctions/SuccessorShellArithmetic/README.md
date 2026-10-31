@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 39 modules
-(6 root, `TopBand/` 11, `Conductor/` 22). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 40 modules
+(6 root, `TopBand/` 11, `Conductor/` 23). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -138,6 +138,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Exact dilation `φ(q)c_l(kn)=φ(l)c_q(n)`, `q=l/gcd(l,k)`; literal head is a sum of reduced-conductor Grams | `ramanujanLagCoefficient_dilate_reduced`, `primeConductorHeadPairing_eq_reducedGram` | proved |
 | Centered head means: off-diagonal interval `[0,I/√(φ(m)φ(l))]`, diagonal interval `[−2τ(m),0]`; packet norm `≤6log Q+log4+4` uniformly in cutoff | `centeredPrimeConductorHead_offDiagonal_bounds`, `centeredPrimeConductorHead_diagonal_bounds`, `abs_centeredPrimeConductorHeadPacket_le_log` | proved |
 | Exact prime-dilation square energy `sum Lambda(k)||E_k a||²/k = sum[log m+tau(m)]a_m²`; completed upward packet row | `hasSum_primeConductorDilationJump_sq`, `hasSum_normalizedRamanujanPacket_up` | proved |
+| Prime-dilation logarithmic square moment, at every cutoff and over the full series, at most `(1+log Q)sum[log m+tau(m)]a_m²` | `sum_primeConductorDilationJump_logMoment_le`, `summable_primeConductorDilationJump_logMoment`, `tsum_primeConductorDilationJump_logMoment_le` | proved |
 | Undilated prime packet has finite part `−2T` and common error `C(1+log Q)²/log N`; exact harmonic divisor convolution | `primeHead_harmonic_convolution`, `abs_primeConductorUndilatedPacket_remainder`, `exists_abs_primeConductorUndilatedPacket_finitePart_le` | proved |
 | Packet mass where `N/n<T` is at most `[1+log(2T)+2(6log Q+log4+5)]sum a_m²`; uniform two-range multiplier estimate | `harmonicConductorPacket_quotient_tail_le`, `sum_sq_packet_le_quotient_tail` | proved |
 | Every increasing weight in `[0,1]` has packet Gram discrepancy at most `32(1+log Q)sum a_m²`; actual scalar prime residual squared norm at most `C(1+log Q)sum a_m²/log N`, for every `Q,N≥2` | `abs_harmonicPacket_monotone_weight_le`, `exists_scalarPrimeResidual_packet_sq_le` | proved |
@@ -195,7 +196,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 
 ## 9. Context
 
-**Uses** (import counts): RenormalizedArithmeticPotentialTheory 17, RHTower 12, SignedArithmeticHodgeTheory 3,
+**Uses** (import counts): RenormalizedArithmeticPotentialTheory 19, RHTower 12, SignedArithmeticHodgeTheory 3,
 HTGeometry 5, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
 SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
 BiScaleUncertainty 1, BezoutValuationIncidence 1, ArithmeticPositiveDuality 1, ArithmeticLorentzianGeometry 1,

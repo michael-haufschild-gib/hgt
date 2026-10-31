@@ -1,7 +1,7 @@
 # Actual elliptic local spectral characters have exact integrals
 
 - **Stage:** 3-formalized
-- **Parent:** [Actual local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
+- **Parent:** [Actual local Iwasawa kernels](../3-formalized/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** At every actual finite completion and at infinity, the
   radial character `exp(-(s+1) log(max(1,|x|)))`, using the named adelic
   magnitude, is absolutely integrable for `Re(s)>0`. Its integral is

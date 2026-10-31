@@ -41,6 +41,9 @@ Above it, only prime powers with `p≤Q` contribute; their geometric tails,
 together with the logarithmic Gram plateau, give `O(Q⁴/N^(1/4))M`.
 The omitted period-head tail fits the same error.
 
-The logarithmic-moment lemma, bilinear Gram bounds, finite-horizon transfer,
-and final Lean theorem remain unproved. This concerns the literal prime
+Prime-chain selection and the exact local geometric moment are formalized as
+`primeConductorDilationMean_prime_chain` and `hasSum_localMangoldt_logMoment`
+in `Conductor.PrimeConductorDilationMoments`; direct Lean and axiom audits passed.
+The entrywise absolute logarithmic-moment lemma, bilinear Gram bounds,
+finite-horizon transfer, and final Lean theorem remain unproved. This concerns the literal prime
 compression; the Gamma, pole, and successor-shell comparison remains open.

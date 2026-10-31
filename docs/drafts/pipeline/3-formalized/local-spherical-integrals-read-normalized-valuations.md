@@ -1,7 +1,7 @@
 # Local spherical integrals read normalized valuations
 
 - **Stage:** 3-formalized
-- **Parent:** [Actual local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
+- **Parent:** [Actual local Iwasawa kernels](../3-formalized/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** For a locally compact discretely valued field whose valuation
   attains `exp(-1)`, let `Q` be its residue cardinality and `|x|` the normalized
   valuation magnitude. For `Re(s)>0`, `exp(-(s+1) log(max(1,|x|)))` is absolutely

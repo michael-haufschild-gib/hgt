@@ -1,6 +1,6 @@
 # Affine monomial cells have finite polynomial representatives
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic cell coordinates](../1-in-progress/affine-a1-bruhat-cells-have-one-polynomial-root-coordinate.md).
 - **Statement:** The remaining negative translation and both reflection families
   have finite polynomial representatives modulo the right Iwahori.
@@ -33,7 +33,8 @@ a power-series unit. Entrywise Iwahori criteria finish the proof.
 `HTGeometry/LoopEisenstein/AffinePolynomialCells.lean`:
 `exists_lower_polynomial_translation_cell`,
 `exists_upper_polynomial_reflection_cell`,
-`exists_lower_polynomial_reflection_cell`. Direct audit pending.
+`exists_lower_polynomial_reflection_cell`. Direct Lean and transitive axiom audits passed.
+Only `propext`, `Classical.choice`, and `Quot.sound` occur.
 
-The positive translation family is already audited. Uniqueness and actual
-arithmetic restriction remain separate obligations on the parent card.
+The positive translation family and [uniqueness of all four heads](affine-polynomial-cell-heads-are-unique.md)
+are also audited. Actual arithmetic coset parametrization remains on the parent card.

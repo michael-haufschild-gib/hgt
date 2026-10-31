@@ -37,5 +37,8 @@ Inversion intervals, both Iwahori Gauss factorizations and unique Weyl double-co
 labels are audited. [Positive translations](../3-formalized/positive-affine-translations-have-finite-polynomial-cells.md)
 now have finite polynomial representatives of degree below `2n`, with direct
 Lean and axiom audits. Negative translations and both reflection families
-have [complete paper proofs and Lean implementations awaiting audit](../2-fully-proven/affine-monomial-cells-have-finite-polynomial-representatives.md).
-Uniqueness and arithmetic restriction remain unproved.
+have [audited finite polynomial representatives](../3-formalized/affine-monomial-cells-have-finite-polynomial-representatives.md).
+[All four polynomial heads are unique, and projected right factorizations
+lift modulo Borel](../3-formalized/affine-polynomial-cell-heads-are-unique.md),
+with direct Lean and axiom audits. Compatibility with diagonal field maps
+and exhaustive parametrization of actual arithmetic cosets remain.

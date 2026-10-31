@@ -62,9 +62,13 @@ theorem kunnethZeta_eq_tsum (u v : HeckeLattice) :
     splineSeries, splineSeries,
     tsum_mul_tsum_of_summable_norm (summable_norm_splineTerm _) (summable_norm_splineTerm _)]
   refine tsum_congr fun z => ?_
-  rw [sub_eq_add_neg, Complex.exp_add]
-  push_cast
-  ring_nf
+  dsimp only
+  rw [show -(Real.log ((u : ℚ) : ℝ) : ℂ) * ((z.1 : ℂ) - 1 / 2) -
+      (Real.log ((v : ℚ) : ℝ) : ℂ) * ((z.2 : ℂ) - 1 / 2) =
+      ((-Real.log ((u : ℚ) : ℝ) : ℝ) : ℂ) * ((z.1 : ℂ) - 1 / 2) +
+        ((-Real.log ((v : ℚ) : ℝ) : ℝ) : ℂ) * ((z.2 : ℂ) - 1 / 2) by push_cast; ring,
+    Complex.exp_add]
+  ring
 
 /-- **The diagonal square has the sums of zeros as frequencies.** -/
 theorem zetaKernel_sq_eq_tsum (u : HeckeLattice) :

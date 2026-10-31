@@ -1,7 +1,7 @@
 # Actual elliptic simple-root integrals are zeta ratios
 
-- **Stage:** 2-fully-proven
-- **Parent:** [Local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
+- **Stage:** 3-formalized
+- **Parent:** [Local Iwasawa kernels](../3-formalized/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** The actual finite and affine negative-root sections equal
   `exp(t H(a))` and `exp((s-t) H(a))`. After spectral normalization, both
   are absolutely integrable for `Re(z)>1` and integrate to
@@ -23,4 +23,5 @@ Its audited global integrability and integral give the claims.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticSimpleRootIntegrals.lean`:
 `integral_adelicIwasawaSection_finiteNegativeRoot` and
-`integral_adelicIwasawaSection_affineNegativeRoot`. Direct audit pending.
+`integral_adelicIwasawaSection_affineNegativeRoot`. Direct Lean and transitive axiom audits passed.
+Only `propext`, `Classical.choice`, and `Quot.sound` occur.

@@ -1,131 +1,197 @@
 # Renormalized Intersection Theory of the Scaling Surface (RIT)
 
 Namespace `GaloisForLFunctions.RenormalizedIntersectionTheory`; umbrella
-`RenormalizedIntersectionTheory.lean`. Everything is unconditional; theorems named
-`riemannHypothesis_iff_*` are equivalences, not proofs of RH.
+`RenormalizedIntersectionTheory.lean`. Everything is unconditional. Theorems named
+`riemannHypothesis_iff_*` are equivalences and `riemannHypothesis_of_*` are implications into RH;
+neither is a proof of RH.
 
 ## 1. Motivation
 
-Weil's proof for a curve `C/𝔽_q` uses one object on `C × C`: the graph of Frobenius. Its intersection
-with the diagonal counts points (Lefschetz), the Hodge index theorem on the plane it spans with the
-fibres gives the sign (Castelnuovo–Severi), Riemann–Roch gives the count, and the graph is canonical,
-so no twin of `ζ_C` carries it.
+Weil's proof for a curve `C/𝔽_q` uses one object on `C × C`, the graph of Frobenius. Its
+intersection with the diagonal counts points, the Hodge index on the plane it spans with the fibres
+gives the sign (Castelnuovo–Severi), and the graph is canonical, so no twin of `ζ_C` carries it.
 
-Over `ℤ` the corpus has every ingredient separately and no object that carries two of them:
-
-- the scaling correspondences `Γ_u` and their intersection numbers exist: the intersection matrix of
-  the `Γ_u` is the Weil correlation, an exponential sum over the zeros (AOG, HKT);
-- the self-intersection of the diagonal diverges like `log N` and only exists after a counterterm
-  that runs with the horizon (`log N − γ`); every fixed counterterm loses the sign (AIT, RBG, AKG);
-- the local data at every place are hyperbolic planes (pole–successor states), and the archimedean
-  place glues the global object by one hyperplane, not by a square (AKG);
-- the sign of the complete Weil form is localized: averages over conductors are positive at
-  RH-complete resolution, the ground state is the pole conductor, and the open part is the
-  pole-orthogonal hyperplane (CAF, CACT, RAPT).
-
-RIT is the geometry that puts these on one object: a **renormalized intersection pairing on the
-scaling surface**, with local terms at all places coupled through the product formula, a canonical
-running counterterm, and a Hodge index statement on the hyperplane orthogonal to the pole class.
-Its purpose is to answer, with theorems, what this geometry can and cannot deliver, and which single
-statement inside it is RH.
+Over `ℤ` the corpus has these ingredients separately: the scaling correspondences and their
+intersection numbers (the Weil correlation, AOG, HKT), the local hyperbolic planes at every place
+(pole–successor states, AKG), the divergent diagonal and its running counterterm (AIT, RBG, AKLT),
+and the localized sign problem of the complete Weil matrix (CACT, CAF, RAPT). RIT puts them on one
+object, the **renormalized intersection pairing of scaling correspondences**, and answers with
+theorems what this geometry delivers: how local poles glue to the global one, where the Hodge index
+lives, what Castelnuovo–Severi says, what a Künneth square adds, and what separates `ℤ` from
+`𝔽_q[T]`.
 
 ## 2. Objects
 
-| Object | Meaning |
-|---|---|
-| Scaling surface | the test space of the explicit formula, with the Weil pairing as intersection form |
-| Scaling correspondence `Γ_u` | dilation by `u ∈ ℚ_{>0}`; `Γ_u · Γ_v = K(u⁻¹v)`, `K` the Weil correlation |
-| Pole class `v_1` | the boost functional `w ↦ Σ w_i u_i^{−1/2}`; on integer slopes the pole-conductor vector `n^{−1/2}` |
-| Successor class | the conformal successor `−c|b|` on translations; with the pole it spans the hyperbolic plane |
-| Local boost characters | `χ_v(u) = |u|_v^{1/2}` at every place `v`; local pole pair `χ_v + χ_v^{−1}` |
-| Weights | sign patterns `ε ∈ {±1}^S`; weight characters `χ^ε = ∏_{p∈S} χ_p^{ε_p}` |
-| Extremal weight | `ε` constant; by the product formula the archimedean boost |
-| Tensor (Künneth) square | the kernel `K ⊗ K` on the product scaling surface; frequencies `ρ + ρ'` |
-| Renormalized self-intersection | horizon value minus the running counterterm; finite part |
-| Index `κ` | number of negative squares of a Hermitian kernel on a group |
-| Collision quantum `O` | horizontal collision charge of the heat flow on a window |
+| Object | Lean | Meaning |
+|---|---|---|
+| Scaling correspondences, intersection matrix | `AdelicKreinGeometry.ratCorr`, `HeckeKreinToeplitz.zetaKernel` | `Γ_u · Γ_v = K_ζ(u⁻¹v)`, `K_ζ(u) = W(B, B(· − log u))` |
+| Pole class | `AdelicKreinGeometry.boostMassU` | `ℓ(w) = Σ w_i u_i^{−1/2}`; on integer slopes the pole conductor `v_1` |
+| Glued global state | `AdelicKreinGeometry.archGlue`, `weilArchState` | `K(|a|) − c|a|^{−1/2}|b|`: pole class + archimedean successor |
+| Hyperplane index | `AdelicKreinGeometry.boostPolarIndex` | negative squares on `ℓ = 0` |
+| Renormalized Hodge index | `RenormalizedHodgeIndex` | `boostPolarIndex K = 0` |
+| Local boosts | `localBoost`, `archBoost`, `primeUnit` | `χ_p(u) = |u|_p^{1/2}`, `χ_∞(u) = |u|^{1/2}` |
+| Weights | `weightChar S t` | `χ^t = ∏_{p∈t} χ_p · ∏_{p∈S∖t} χ_p⁻¹` |
+| Separated sum / tensor product of local poles | `sumPole`, `tensorPole` | `Σ_p (χ_p + χ_p⁻¹)`, `∏_p (χ_p + χ_p⁻¹)` |
+| `S`-units, separating unit | `sUnit`, `sepUnit` | `∏_{q∈S} q^{n_q}`, `∏_{q∈S} q²` |
+| Positive index | `posIndex` | `κ₊(k) = κ(−k)` |
+| Tensor (Künneth) kernel | `tensorKernel`, `kunnethZeta` | `(k ⊠ l)(g, h) = k(g) l(h)`; `K_ζ ⊠ K_ζ` |
+| Spline series, spline weights | `splineSeries`, `splineWeight` | `F(t) = Σ_ρ e^{t(ρ−1/2)} w_ρ`, `K_ζ(u) = F(−log u)` |
+| Integer slopes | `integerSlopes`, `finHorizon` | the atoms `1, …, N` of the complete Weil matrix |
 
 ## 3. Language
 
-- **Renormalized pairing**: a pairing defined at horizon `N` minus a counterterm that runs with `N`.
-- **Pole-orthogonal hyperplane**: kernel of the boost functional; on integer slopes `v_1^⊥`.
-- **Renormalized Hodge index**: the pairing is definite on the pole-orthogonal hyperplane; equivalently
-  the global state has exactly one negative square.
-- **Separated sum / tensor product / extremal component** of local poles: the three ways local hyperbolic
-  planes can be combined.
-- **Archimedean-continuous weight**: a weight character that is the restriction of `u ↦ u^s`.
-- **All-or-nothing index**: an index that takes only the values `0` and `∞`.
+- **Renormalized pairing**: the pairing of scaling correspondences on families of slopes, with the
+  pole class split off by the archimedean glue.
+- **Pole-orthogonal hyperplane**: `ℓ = 0`; on the integer slopes `v_1^⊥`.
+- **Renormalized Hodge index**: no negative square on the pole-orthogonal hyperplane; equivalently
+  the glued global state has exactly one negative square, the successor's.
+- **Separated sum, tensor product, extremal component**: the three ways to combine local poles.
+- **Weight**: a sign pattern `t ⊆ S`; **extremal** weights are `t = ∅` and `t = S`.
+- **Archimedean weight**: one that agrees on the primes of `S` with `u ↦ u^s`.
+- **Exponents**: `log |u|` on the `S`-units, the dilation factors of the extremal weight.
+- **All-or-nothing**: an index that only takes the values `0` and `∞`.
 
-## 4. Mechanisms (target)
+## 4. Mechanisms
 
-1. **Hyperbolic plane of the pole.** The pole and successor classes span a plane of signature `(1, 1)`;
-   the archimedean glue costs exactly one square and is blind to the weight of the pole.
-2. **Product-formula gluing.** Separated local poles keep one square each; their tensor product
-   decomposes into weight pairs `{ε, −ε}`; the product formula identifies the archimedean pole with the
-   extremal weight, the only archimedean-continuous one.
-3. **Weight amplification.** Tensor powers multiply positive and negative squares; with infinitely many
-   positive squares the index of a tensor power is `0` or `∞`.
-4. **Running counterterm.** The divergent self-intersection is `log N` plus a finite part; the finite
-   part is the archimedean constant; over `𝔽_q` the counterterm is exact.
-5. **Hodge index on the hyperplane.** RH is the definiteness of the renormalized pairing on the
-   pole-orthogonal hyperplane, i.e. index one for the glued global state.
+**Gluing.**
+1. The archimedean place glues by a hyperplane: `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`. For
+   Weil's correlation the hyperplane carries the whole index, `κ^{(½)}(K_ζ) = κ(K_ζ)`. The pole pair
+   vanishes on the hyperplane, so the glued index is blind to the pole weight.
+2. Local poles expand in weights: `∏_{p∈S}(χ_p + χ_p⁻¹) = Σ_{t⊆S} χ^t`; weights pair as `t ↔ S∖t`; at
+   the separating unit `∏ q²` the values `∏_{S∖t} q / ∏_t q` are distinct by unique factorization, so
+   every weight pair costs exactly one square.
+3. The product formula identifies the archimedean boost with the extremal weight on the `S`-units;
+   comparing moduli prime by prime shows that the extremal weights are the only archimedean ones.
 
-## 5. Pillar theorems (target list; statuses in §12)
+**Density.**
+4. `log p / log q` is irrational, so with two primes the exponents of the extremal weight are dense;
+   with one prime (and over `𝔽_q[T]`) they form a lattice.
 
-| Pillar | Statement |
+**Künneth.**
+5. On product families the Gram matrix of `k ⊠ l` is a Kronecker product, on arbitrary families its
+   diagonal principal submatrix; Kronecker inertia gives both bounds of the index law.
+6. The zero side of `K_ζ` is absolutely summable on the strip, so `F` is continuous and the tensor
+   square is the exponential sum over pairs of zeros.
+7. A bound on `K_ζ` over `ℚ_{>0}` transfers to all real scales by density of `log ℚ_{>0}` and
+   continuity of `F`; a bounded spline orbit has zero width `0`.
+
+**Complete Weil matrix.**
+8. On integer slopes the boost functional is `√(log N)⟨·, v_1⟩`.
+9. A single eigenvalue below `T` and a floor `L` give `⟨Ax, x⟩ ≥ T‖x‖² − (T − L)⟨x, e⟩²`, and
+   orthogonality to `v_1` bounds `⟨x, e⟩` by the projection error of `v_1`.
+
+## 5. Pillar theorems
+
+| Pillar | Lean | Status |
+|---|---|---|
+| Hodge index = index one of the glued state; hyperplane positivity | `renormalizedHodgeIndex_iff_negIndex_archGlue_eq_one`, `renormalizedHodgeIndex_iff` | unconditional |
+| The pole class carries no zero: `κ^{(½)}(K_ζ) = κ(K_ζ)` | `boostPolarIndex_ratCorr` | unconditional |
+| RH = renormalized Hodge index = positivity on the pole-orthogonal hyperplane | `riemannHypothesis_iff_renormalizedHodgeIndex`, `riemannHypothesis_iff_hyperplane_nonneg` | equivalences |
+| Pole blindness; quantum bound | `renormalizedHodgeIndex_add_polePair_iff`, `boostPolarIndex_ratCorr_le_iSup_collisionCharge` | unconditional |
+| Separated sum of `|S|` local poles has `|S|` squares | `negIndex_sumPole` | unconditional |
+| Tensor product of `|S|` local poles has `2^{|S|−1}` squares; weight count | `negIndex_tensorPole`, `negIndex_weightPairs`, `tensorPole_eq_sum_pairKernel` | unconditional |
+| The extremal pair has one square and is the archimedean pole on the `S`-units | `negIndex_extremalPair`, `archBoost_sUnit_eq_weightChar_empty`, `archPole_sUnit_eq_extremalPair` | unconditional |
+| The archimedean weights are exactly the extremal ones | `exists_cpow_weightChar_iff` | unconditional |
+| Exponents: dense for two primes, quantized for one | `irrational_log_div_log`, `dense_exponents_pair`, `not_dense_exponents_single`, `log_norm_archBoost_sUnit` | unconditional |
+| Künneth inertia law | `hermIndex_kronecker_le_negIndex_tensor`, `negIndex_tensorKernel_le`, `negIndex_tensorKernel_eq_zero`, `negIndex_tensorKernel_self_eq_zero_or_top`, `negIndex_mul_le_negIndex_tensorKernel` | unconditional |
+| A bounded Weil kernel is RH; Castelnuovo–Severi for rational scaling correspondences is RH | `riemannHypothesis_of_norm_zetaKernel_le`, `riemannHypothesis_iff_castelnuovoSeveri` | implication; equivalence |
+| `K_ζ` has a positive square unless RH; the Künneth square of `K_ζ` is RH | `riemannHypothesis_of_posIndex_zetaKernel_eq_zero`, `riemannHypothesis_iff_negIndex_kunnethZeta_eq_zero` | implication; equivalence |
+| Künneth spectral identity: the diagonal square has the sums `ρ + ρ'` as frequencies | `kunnethZeta_eq_tsum`, `zetaKernel_sq_eq_tsum` | unconditional |
+| Pole class on integer slopes = complete-Weil ground conductor | `boostMassU_integerSlopes_eq_inner`, `boostMassU_integerSlopes_eq_zero_iff` | unconditional |
+| Hodge index with gap at every fixed overlap | `eventually_completeWeil_floor_on_poleHyperplane` | unconditional |
+
+## 6. Tools
+
+**Developed.**
+- Finset form of the Krein–Langer index formula (`negIndex_sum_pairKernel_eq_card`).
+- Weight calculus: expansion, reflection `t ↔ S∖t`, separating unit, unique-factorization separation
+  (`weightValue_injOn`, `weightValue_ne_one`).
+- Positive index and Kronecker inertia for tensor kernels on product groups; diagonal restriction.
+- Continuity of zero-side exponential sums on the strip and density transfer from `ℚ_{>0}` to `ℝ`.
+- Single-window Rayleigh bound and orthogonal-overlap bound for spectral windows.
+- Pole-class identity between the archimedean glue and the complete Weil matrix.
+
+**To build.**
+- The global product formula as the extremal weight of the infinite tensor product over all primes.
+- Index lower bounds for Hadamard powers, graded by weight layers.
+- The positive index of `K_ζ` (expected infinite; with it the Künneth square is all-or-nothing).
+- Hyperplane positivity of the complete Weil matrix along growing overlap schedules.
+- A function-field version of the extremal-weight theorem with the quantized factor `q`.
+
+## 7. Questions and answers
+
+| Question | Answer |
 |---|---|
-| P1 Hyperbolic plane | the glued global state has index `κ_ζ + 1`; RH ⇔ index one ⇔ positivity on the pole-orthogonal hyperplane |
-| P2 Product-formula gluing | separated sum of `m` local poles: index `m`; tensor product: index `2^{m−1}`; extremal component: index one, equal to the archimedean pole on `S`-units; extremal ⇔ archimedean-continuous |
-| P3 Künneth square | `κ(K ⊗ K) ∈ {0, ∞}`; RH ⇔ the tensor square of the Weil correlation is positive ⇔ its index is finite |
-| P4 Canonical finite part | renormalized self-intersection of the diagonal = `−γ`; exact counterterm over `𝔽_q` |
-| P5 Pole class on integer slopes | the boost functional on slopes `1..N` is the pole-conductor vector, the complete-Weil ground state |
-| P6 Quantum | collision mass after small heat = twice the hyperplane index plus multiplicity excess |
+| Is the global pole a product-formula coupling of local poles with one square? | Not as a sum (`|S|` squares) nor as a tensor product (`2^{|S|−1}`); exactly as the extremal weight of the tensor product, which the product formula makes the archimedean pole and which is the only archimedean-continuous weight. |
+| Is the renormalized pairing definite on the pole-orthogonal hyperplane? | This is RH (`riemannHypothesis_iff_hyperplane_nonneg`). At every fixed overlap the complete Weil form is positive there with a gap above the pole energy. |
+| What is Castelnuovo–Severi for `Γ_u`? | `‖K_ζ(u)‖ ≤ K_ζ(1)` at every rational scale; it is RH, and any uniform bound on `K_ζ` already is. |
+| Does the Künneth square soften the sign? | No: it is positive iff RH; its diagonal carries the sums `ρ + ρ'`; with infinitely many positive squares its index is `0` or `∞`. |
+| What is the canonical counterterm and finite part? | The running counterterm `log N − γ` (Mertens); over `𝔽_q[T]` the ceiling is exact (`ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIsExact`); no fixed counterterm works (`AdelicKreinGeometry.NoFixedCountertermMakesThePrimeKernelPontryagin`). |
+| Is the collision quantum an index? | The hyperplane index is bounded by the largest horizontal collision charge; on the finite stratum the collision mass is twice the index plus the multiplicity excess (HKT). |
+| What separates `ℤ` from `𝔽_q[T]`? | Density of the extremal weight: dense exponents for two primes, a lattice over one prime and over `𝔽_q[T]`. |
+| Why are negative directions confined to low conductors? | Open. At every fixed overlap the pole class carries the bottom of the spectrum and the hyperplane sits a gap above it. |
 
-## 6. Tools (target)
+## 8. Open research topics
 
-- Weight calculus for products of local pole pairs (expansion, pairing of `ε` with `−ε`, separation by
-  `∏_{p∈S} p`).
-- Kronecker inertia for tensor kernels on product groups.
-- Hyperplane index (boost-polar index) and its gluing formula.
-- Finite-part extraction for divergent prime sums.
+1. Hyperplane positivity of the complete Weil matrix at growing overlap (polynomial confinement).
+2. The positive index of `K_ζ` and index laws for Hadamard powers.
+3. The infinite tensor product over all primes and its extremal weight as a renormalized object.
+4. A selection input on the pole-orthogonal hyperplane: the glued state is blind to the pole, so ζ
+   must be separated from its twins by Gamma and prime data.
+5. A sign-free `h⁰` on the scaling surface with quadratic growth, in the language of the pairing.
 
-## 7. Questions
-
-1. Is the global pole a product-formula coupling of local poles with one negative square?
-2. Is the renormalized pairing definite on the pole-orthogonal hyperplane, and what is it equivalent to?
-3. Does the Künneth square carry a finite-index stratum?
-4. What is the canonical finite part of the renormalized self-intersection?
-5. Is the collision quantum an intersection index?
-6. Why are negative directions confined to low conductors, and with which dependence?
-7. What separates `ℤ` from `𝔽_q[T]` inside this geometry?
-
-## 8. Traps (initial)
+## 9. Traps
 
 | Trap | Fact |
 |---|---|
-| Summing local poles gives the global pole | separated places keep one square each |
-| A fixed counterterm gives a sign | no fixed counterterm makes the prime kernel Pontryagin |
-| The pole selects ζ on the hyperplane | the glued index is blind to the pole weight |
+| Summing local poles gives the global pole | Separated places keep one square each (`negIndex_sumPole`) |
+| The tensor product of local poles is the global pole | It has `2^{|S|−1}` squares; only its extremal weight is global |
+| The pole selects ζ on the hyperplane | The glued index is blind to the pole weight |
+| A tensor square softens the sign | `K_ζ ⊠ K_ζ` is positive iff RH |
+| Castelnuovo–Severi is weaker than RH | At rational scales it is RH; so is any uniform bound on `K_ζ` |
+| The archimedean place is one more place | Its exponents are dense once two primes are present |
+| A fixed counterterm renormalizes the diagonal | Only the running counterterm `log N − γ` does |
+| Positivity at fixed overlap is a step toward RH | It holds unconditionally, with a gap on the hyperplane; RH needs growing overlap |
 
-## 9. Context
+## 10. Context
 
-Neighbours: AdelicKreinGeometry (local signatures, gluing), HeckeKreinToeplitz (index formula),
-ArithmeticIntersectionTheory (circle intersection, regulator anomaly), RenormalizedBiarithmeticGeometry
-(survival cones), ArithmeticOrientationGeometry (scaling correspondences), ArithmeticCastelnuovoSeveri
-(scaling surface, Hodge index), CompletedArithmeticForms / CriticalArithmeticCorrelationTheory /
-RenormalizedArithmeticPotentialTheory (complete Weil matrix), HTGeometry (tensor inertia), RHTower
-(Mertens, heat collisions).
+| Neighbour | Interface |
+|---|---|
+| AdelicKreinGeometry | archimedean gluing formula, boost-polar index, pole pair, local signatures |
+| HeckeKreinToeplitz | index formula for hyperbolic pairs, `K_ζ`, index = right zeros, collision charges |
+| ArithmeticOrientationGeometry | spline orbit, rate theorem, configuration orbit correlations |
+| CriticalArithmeticCorrelationTheory, RenormalizedArithmeticPotentialTheory | complete Weil matrix, ground state, Ramanujan vectors |
+| HTGeometry | Hermitian inertia, Kronecker inertia, spectral windows |
+| ArithmeticKreinLangerTheory, ArithmeticIntersectionTheory, RenormalizedBiarithmeticGeometry | counterterms, circle intersections, survival cones |
+| SquareRootThreshold | zero width, tempered configurations |
 
-## 10. Success criteria (initial)
+In the RH research map RIT sits on the seam of the three wall families: the sign (Σ) is the
+hyperplane positivity, the count (Π) enters through the zero width and the running counterterm, and
+selection (Γ) is the open input on the pole-blind hyperplane.
 
-A pillar counts when it is a Lean theorem, unconditional, and either (a) answers a question of §7 with
-an equivalence, a classification or a no-go, or (b) builds a tool used by another pillar.
+## 11. Success criteria
 
-## 11. Contribution criteria (initial)
+The field is developed when each question of §7 has a Lean theorem that answers it — an equivalence,
+a classification or a no-go — and each tool of §6 is used by a pillar. It succeeds when one of its sign
+statements on the pole-orthogonal hyperplane is proved at a resolution beyond fixed overlap without
+passing through an estimate that its own no-gos exclude.
 
-New objects must be built from integers and adeles; every equivalence with RH must be stated as such;
-every positive theorem must say which wall it does not cross.
+## 12. What counts as a contribution
 
-## 12. Status
+- A Lean theorem, unconditional, in this folder, wired into the umbrella.
+- It states a property of the renormalized pairing (gluing, hyperplane, weights, Künneth, density,
+  counterterm) or builds a tool that another pillar uses.
+- Equivalences with RH are labelled as such; every positive theorem says which wall it does not cross.
+- New objects are built from integers, adeles and Weil's data, never from zero copies.
 
-First draft. Modules and pillar statuses are added as they are proved.
+## 13. Big picture
+
+The geometry Weil used survives over `ℤ` in renormalized form, and RIT pins down where the missing
+sign sits. The global pole is the extremal weight of the product of the local poles — the unique
+archimedean-continuous one — and the product formula makes its exponents dense as soon as two primes
+are present; that density is what distinguishes `ℤ` from `𝔽_q[T]`. The archimedean place glues by one
+hyperplane, orthogonal to the pole class, which on integer slopes is the ground conductor of the
+complete Weil matrix. On that hyperplane positivity holds at every fixed overlap with a gap, and
+positivity at every resolution is RH. Castelnuovo–Severi for the rational scaling correspondences, a
+uniform bound on `K_ζ`, and positivity of the Künneth square are each RH: the intersection-theoretic
+reformulations do not soften the problem; they concentrate it on one hyperplane and one function.

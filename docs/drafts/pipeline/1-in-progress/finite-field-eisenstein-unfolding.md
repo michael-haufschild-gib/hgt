@@ -29,7 +29,7 @@ from a proved quotient normalization.
 
 - Arithmetic coset parametrization. The independently defined actual arithmetic coset series and its right arithmetic invariance are audited. [Coset descent](../3-formalized/elliptic-eisenstein-summands-descend-to-actual-arithmetic-cosets.md). [Actual idele rotation and descent to the literal unipotent quotient](../3-formalized/rotated-elliptic-eisenstein-series-descends-to-the-actual-unipotent-quotient.md) are also audited, independently defining the constant-term integral. Finite root-cell parametrization and convergence remain.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
-- Local Iwasawa-character identification with the radial Haar kernel. [Finite simple loop values](../3-formalized/finite-simple-loop-iwasawa-values-are-column-norms.md) are audited: central valuation one and finite valuation equal to the first-column norm. [Affine simple loop values](../3-formalized/affine-simple-loop-iwasawa-values-are-column-norms.md) are also audited: central value `M` and finite value `M⁻¹`. Normalized character identification remains.
+- Simple-intertwiner covariance and composition, including the residual Borel character and exact Haar Jacobians.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.
 
 The simple-pole additive domain, quotient topology and covolume are formalized
@@ -77,8 +77,10 @@ is exactly the local product, with the same audits.
 factor exactly, with direct Lean and axiom audits. The
 [actual adelic radial integral](../3-formalized/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md)
 is absolutely convergent for `Re(s)>1` and equals the global zeta ratio,
-with the same audits. Relative finite-cell periodization and identification
-with the loop Iwasawa section remain necessary for unfolding.
+with the same audits. [Both actual simple-root sections equal their radial
+kernels and have the exact zeta-ratio integrals](../3-formalized/actual-elliptic-simple-root-integrals-are-zeta-ratios.md),
+with direct Lean and axiom audits. Relative finite-cell periodization,
+residual-character triviality and simple-intertwiner composition remain.
 
 The [actual Weyl series converges absolutely throughout the full Godement chamber](../3-formalized/elliptic-godement-coefficients-have-uniform-exponential-bounds.md).
 The global radial integral uniformly bounds each root factor; exponential
@@ -93,7 +95,7 @@ convergence. If the arithmetic cells give the proved convergent Weyl sum,
 its finite integral forces almost-everywhere summability on the unipotent
 quotient. Absolute values at complex parameters are bounded by the
 corresponding real-parameter series, giving the required integral exchange.
-The arithmetic cell decomposition and local-character identity remain
+The arithmetic cell decomposition and intertwiner composition remain
 necessary; this does not prove pointwise convergence everywhere.
 
 ## Established boundary

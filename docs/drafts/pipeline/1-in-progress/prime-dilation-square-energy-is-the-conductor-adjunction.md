@@ -79,6 +79,7 @@ The divisor-packet and normalized square identities are formalized as
 all six capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 Umbrella import present.
 The finite and full logarithmic moment bounds, including summability,
-are Lean-checked in `PrimeConductorDilationMoments`.
+are formalized in `PrimeConductorDilationMoments`. Its direct production
+audit passed; all ten capstones have only the standard three axioms.
 Norm transfer awaits Lean verification.
 The complete Weil shell and pole residuals remain separate.

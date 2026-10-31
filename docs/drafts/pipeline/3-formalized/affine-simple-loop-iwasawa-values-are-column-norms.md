@@ -1,7 +1,7 @@
 # Affine simple loop Iwasawa values are column norms
 
 - **Stage:** 3-formalized
-- **Parent:** [Local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
+- **Parent:** [Local Iwasawa kernels](../3-formalized/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** For a valued coefficient field and `g∈SL₂`, the affine-simple
   embedding has Iwasawa torus valuations `(M,M⁻¹)`, where
   `M=max(v(g₀₀),v(g₁₀))`. Every full-loop integral–Borel factorization

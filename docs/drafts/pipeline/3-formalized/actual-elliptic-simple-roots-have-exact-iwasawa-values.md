@@ -1,7 +1,7 @@
 # Actual elliptic simple roots have exact Iwasawa values
 
 - **Stage:** 3-formalized
-- **Parent:** [Local Iwasawa kernels](../1-in-progress/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
+- **Parent:** [Local Iwasawa kernels](../3-formalized/local-spherical-kernels-read-normalized-iwasawa-magnitudes.md).
 - **Statement:** Every actual adele defines finite and affine negative simple
   root elements in the restricted adelic loop group. Their actual global
   integral–Borel factorizations have local torus valuations `(1,M_v)` and

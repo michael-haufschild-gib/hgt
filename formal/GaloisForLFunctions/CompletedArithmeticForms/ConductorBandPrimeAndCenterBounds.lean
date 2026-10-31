@@ -1254,7 +1254,7 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
       nlinarith only [sq_nonneg (x - y), sq_nonneg y]
   have hK_entry : ∀ n ∈ Icc 1 N, ∀ j ∈ Icc 1 N,
       |K n j| ≤ 2 * K₀ * c ^ 2 *
-          (Real.sqrt ((n : ℝ) / N) * Real.sqrt ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
+          (((n : ℝ) / N) * ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
         2 * K₀ * (c / N) ^ 2 := by
     intro n hn j hj
     by_cases hnj : n = j
@@ -1273,18 +1273,1232 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
           div_le_div_of_nonneg_right
             (mul_le_mul_of_nonneg_left (hmax_sq n j) (by positivity)) hd0.le
         _ = 2 * K₀ * c ^ 2 *
-              (Real.sqrt ((n : ℝ) / N) * Real.sqrt ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
+              (((n : ℝ) / N) * ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
             2 * K₀ * (c / N) ^ 2 := by
+          field_simp [hN0.ne', hd0.ne']; ring
+  change |⟪Matrix.toEuclideanLin (horizonKernelMatrix K N) u, u⟫| ≤ _
+  rw [horizonKernelMatrix_inner]
+  let y : ℕ → ℝ := fun n => ((n : ℝ) / N) * |primeHorizonExtension u n|
+  have hy_sq : (∑ n ∈ Icc 1 N, y n ^ 2) ≤ 4 / Real.log N * ‖u‖ ^ 2 := by
+    have hpt : ∀ n ∈ Icc 1 N, y n ^ 2 ≤ ((n : ℝ) / N) * primeHorizonExtension u n ^ 2 := by
+      intro n hn
+      have hnN : (n : ℝ) / N ≤ 1 := (div_le_one hN0).mpr (by exact_mod_cast (mem_Icc.mp hn).2)
+      have hn0 : 0 ≤ (n : ℝ) / N := by positivity
+      dsimp only [y]
+      rw [mul_pow, sq_abs]
+      have hsq : ((n : ℝ) / N) ^ 2 ≤ (n : ℝ) / N := by nlinarith only [hnN, hn0]
+      exact mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
+    have hm := sum_linear_moment_sq_le_four_div_log hR hRN4 hlog hu
+    rw [le_div_iff₀' hL]
+    exact (mul_le_mul_of_nonneg_left (sum_le_sum hpt) hL.le).trans hm
+  have hpart1 :
+      (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, y n * y j * (1 / |(n : ℝ) - j| ^ 2)) ≤
+        4 * ∑ n ∈ Icc 1 N, y n ^ 2 := by
+    have hschur := finite_weighted_schur_row_potential (Icc 1 N) y (fun _ => (1 : ℝ))
+      (fun n j => 1 / |(n : ℝ) - j| ^ 2) (fun _ _ => zero_lt_one)
+      (fun _ _ _ _ => by positivity)
+      (fun n _ j _ => by rw [abs_sub_comm])
+    simp only [div_one, mul_one] at hschur
+    calc
+      (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, y n * y j * (1 / |(n : ℝ) - j| ^ 2)) ≤
+          ∑ n ∈ Icc 1 N, y n ^ 2 * ∑ j ∈ Icc 1 N, 1 / |(n : ℝ) - j| ^ 2 := hschur
+      _ ≤ ∑ n ∈ Icc 1 N, y n ^ 2 * 4 :=
+        sum_le_sum fun n _ =>
+          mul_le_mul_of_nonneg_left (sum_inv_sq_integer_distance_le_four N n) (sq_nonneg _)
+      _ = 4 * ∑ n ∈ Icc 1 N, y n ^ 2 := by rw [← sum_mul]; ring
+  have hpart2 : (∑ n ∈ Icc 1 N, |primeHorizonExtension u n|) ^ 2 ≤ (N : ℝ) * ‖u‖ ^ 2 := by
+    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 N)
+      (fun n => |primeHorizonExtension u n|) (fun _ => (1 : ℝ))
+    simp only [mul_one, sq_abs, one_pow, sum_const, Nat.card_Icc, Nat.add_sub_cancel,
+      nsmul_eq_mul, sum_primeHorizonExtension_sq] at hcs
+    linarith only [hcs]
+  have hlog_le_N : Real.log N ≤ N := by
+    linarith only [Real.log_le_sub_one_of_pos hN0]
+  have hinv_N : 1 / (N : ℝ) ≤ 1 / Real.log N :=
+    one_div_le_one_div_of_le hL hlog_le_N
+  calc
+    |∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, primeHorizonExtension u n * primeHorizonExtension u j * K n j| ≤
+        ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+          |primeHorizonExtension u n| * |primeHorizonExtension u j| * |K n j| := by
+      refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun n _ => ?_)
+      refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun j _ => ?_)
+      rw [abs_mul, abs_mul]
+    _ ≤ ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
+          |primeHorizonExtension u n| * |primeHorizonExtension u j| *
+            (2 * K₀ * c ^ 2 * (((n : ℝ) / N) * ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
+              2 * K₀ * (c / N) ^ 2) :=
+      sum_le_sum fun n hn => sum_le_sum fun j hj =>
+        mul_le_mul_of_nonneg_left (hK_entry n hn j hj) (by positivity)
+    _ = 2 * K₀ * c ^ 2 * (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, y n * y j * (1 / |(n : ℝ) - j| ^ 2)) +
+          2 * K₀ * (c / N) ^ 2 * (∑ n ∈ Icc 1 N, |primeHorizonExtension u n|) ^ 2 := by
+      have hterm_eq : ∀ n j,
+          |primeHorizonExtension u n| * |primeHorizonExtension u j| *
+              (2 * K₀ * c ^ 2 * (((n : ℝ) / N) * ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
+                2 * K₀ * (c / N) ^ 2) =
+            2 * K₀ * c ^ 2 * (y n * y j * (1 / |(n : ℝ) - j| ^ 2)) +
+              2 * K₀ * (c / N) ^ 2 *
+                (|primeHorizonExtension u n| * |primeHorizonExtension u j|) := by
+        intro n j; dsimp only [y]; ring
+      simp_rw [hterm_eq, sum_add_distrib, ← mul_sum]
+      congr 2
+      rw [pow_two, sum_mul]
+      exact sum_congr rfl fun n _ => (mul_sum ..).symm
+    _ ≤ 2 * K₀ * c ^ 2 * (4 * (4 / Real.log N * ‖u‖ ^ 2)) +
+          2 * K₀ * (c / N) ^ 2 * ((N : ℝ) * ‖u‖ ^ 2) :=
+      add_le_add
+        (mul_le_mul_of_nonneg_left
+          (hpart1.trans (mul_le_mul_of_nonneg_left hy_sq (by norm_num))) (by positivity))
+        (mul_le_mul_of_nonneg_left hpart2 (by positivity))
+    _ = 32 * K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2 +
+          2 * K₀ * c ^ 2 * (1 / (N : ℝ)) * ‖u‖ ^ 2 := by
+      field_simp [hN0.ne', hL.ne']; ring
+    _ ≤ 32 * K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2 +
+          2 * K₀ * c ^ 2 * (1 / Real.log N) * ‖u‖ ^ 2 :=
+      add_le_add le_rfl
+        (mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hinv_N (by positivity)) (sq_nonneg _))
+    _ ≤ 36 * K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2 := by
+      have : 0 ≤ K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2 := by positivity
+      linarith only [this, (by ring : 2 * K₀ * c ^ 2 * (1 / Real.log N) * ‖u‖ ^ 2 =
+        2 * (K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2)),
+        (by ring : 32 * K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2 =
+          32 * (K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2)),
+        (by ring : 36 * K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2 =
+          36 * (K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2))]
+
+/-! ### 4. Logarithmic divisor-jet packet and orthogonal prime cross-pairing -/
+
+/-- Conductor coefficient of `k ∈ Icc 1 M` in the collective logarithmic divisor jet of `a`. -/
+def divisorJetCoeff (M : ℕ) (a : ℕ → ℝ) (k : ℕ) : ℝ :=
+  ∑ m ∈ Icc 1 M, if k ∈ m.divisors then
+    a m * (ramanujanJetConductorWeight m k * Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ))
+  else 0
+
+/-- Horizon vector representing `(log N)^{-1/2} n^{-1/2} ∑_{m=1}^M a_m ramanujanLogDivisorJet m n / √φ(m)`
+inside `conductorSubspace M N`. -/
+def divisorJetHorizonVector (M N : ℕ) (a : ℕ → ℝ) : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  ∑ k ∈ Icc 1 M, divisorJetCoeff M a k • normalizedRamanujanHorizonVector k N
+
+theorem divisorJetHorizonVector_mem_conductorSubspace (M N : ℕ) (a : ℕ → ℝ) :
+    divisorJetHorizonVector M N a ∈ conductorSubspace M N :=
+  sum_normalizedRamanujanHorizonVector_mem_conductorSubspace M N _
+
+/-- Exact coordinate evaluation of `divisorJetHorizonVector`. -/
+theorem divisorJetHorizonVector_apply (M N : ℕ) (a : ℕ → ℝ) (n : PrimeHorizonIndex N) :
+    divisorJetHorizonVector M N a n =
+      (Real.sqrt (Real.log N))⁻¹ * poleVector n *
+        ∑ m ∈ Icc 1 M, a m * (ramanujanLogDivisorJet m n / Real.sqrt (m.totient : ℝ)) := by
+  change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) n)
+    (divisorJetHorizonVector M N a) = _
+  dsimp only [divisorJetHorizonVector]
+  rw [map_sum]
+  have hproj : ∀ k ∈ Icc 1 M,
+      (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) n)
+          (divisorJetCoeff M a k • normalizedRamanujanHorizonVector k N) =
+        (Real.sqrt (Real.log N))⁻¹ * poleVector n *
+          (divisorJetCoeff M a k * normalizedRamanujanMode k n) := by
+    intro k _
+    change divisorJetCoeff M a k *
+      ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode k n / Real.sqrt (n : ℕ))) = _
+    unfold poleVector
+    ring
+  rw [sum_congr rfl hproj, ← mul_sum]
+  congr 1
+  dsimp only [divisorJetCoeff]
+  simp_rw [sum_mul]
+  rw [sum_comm]
+  refine sum_congr rfl fun m hm => ?_
+  obtain ⟨hm1, hmM⟩ := mem_Icc.mp hm
+  have hm0 : 0 < m := hm1
+  have hdiv_sub : m.divisors ⊆ Icc 1 M := fun k hk =>
+    mem_Icc.mpr ⟨Nat.pos_of_mem_divisors hk,
+      (Nat.le_of_dvd hm0 (Nat.dvd_of_mem_divisors hk)).trans hmM⟩
+  have hsum_k :
+      (∑ k ∈ Icc 1 M,
+        (if k ∈ m.divisors then
+          a m * (ramanujanJetConductorWeight m k * Real.sqrt (k.totient : ℝ) /
+            Real.sqrt (m.totient : ℝ))
+        else 0) * normalizedRamanujanMode k n) =
+      ∑ k ∈ m.divisors,
+        a m * (ramanujanJetConductorWeight m k * Real.sqrt (k.totient : ℝ) /
+          Real.sqrt (m.totient : ℝ)) * normalizedRamanujanMode k n := by
+    rw [← sum_subset hdiv_sub]
+    · exact sum_congr rfl fun k hk => by rw [if_pos hk]
+    · intro k _ hk; rw [if_neg hk, zero_mul]
+  rw [hsum_k, ramanujanLogDivisorJet_eq_weighted_conductors hm0, sum_div, mul_sum]
+  refine sum_congr rfl fun k hk => ?_
+  have hk0 : 0 < k := Nat.pos_of_mem_divisors hk
+  have hsφk : Real.sqrt (k.totient : ℝ) ≠ 0 :=
+    (Real.sqrt_pos.mpr (by exact_mod_cast Nat.totient_pos.mpr hk0)).ne'
+  rw [normalizedRamanujanMode_eq_coefficient hk0]
+  field_simp [hsφk]; ring
+
+/-- Uniform `O(1 + log M)` `L²` norm bound on `divisorJetHorizonVector M N a`. -/
+theorem exists_divisorJetHorizonVector_norm_le :
+    ∃ C_jet : ℝ, 0 < C_jet ∧
+      ∀ {M N : ℕ}, 2 ≤ M → M * M ≤ N → 18 * (1 + Real.log M) ≤ Real.log N →
+      ∀ a : ℕ → ℝ,
+        ‖divisorJetHorizonVector M N a‖ ≤
+          C_jet * (1 + Real.log M) * Real.sqrt (∑ m ∈ Icc 1 M, a m ^ 2) := by
+  obtain ⟨C_env, hC_env_pos, hC_env⟩ := exists_primeMertensRemainder_log_envelope
+  let C_mert := C_env + |Real.eulerMascheroniConstant| + 1
+  have hC_mert_pos : 1 ≤ C_mert := by dsimp only [C_mert]; positivity
+  let C_jet := 4 * C_mert + 4
+  refine ⟨C_jet, by dsimp only [C_jet]; positivity, ?_⟩
+  intro M N hM hMN hlog a
+  have hmert_le : ∀ y : ℕ, 1 ≤ y → mertensSum y ≤ Real.log y + C_mert := by
+    intro y hy
+    have hprof := hC_env y hy
+    have hden : 1 ≤ 1 + Real.log y := by have := Real.log_natCast_nonneg y; linarith
+    have hle : primeMertensRemainderProfile y ≤ C_env :=
+      hprof.trans (div_le_self hC_env_pos.le hden)
+    unfold primeMertensRemainderProfile at hle
+    have h1y : 0 ≤ 1 / (y : ℝ) := by positivity
+    have habs : |mertensSum y - Real.log y + Real.eulerMascheroniConstant| ≤ C_env := by
+      linarith only [hle, h1y]
+    have hup := (le_abs_self _).trans habs
+    have hγ := neg_abs_le Real.eulerMascheroniConstant
+    dsimp only [C_mert]
+    linarith only [hup, hγ]
+  -- Bound `∑_{k=1}^M (divisorJetCoeff M a k)^2`.
+  have hcoeff_sq : (∑ k ∈ Icc 1 M, divisorJetCoeff M a k ^ 2) ≤
+      (2 + 4 * C_mert + 4) * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 := by
+    let offCoeff : ℕ → ℝ := fun k =>
+      ∑ m ∈ (Icc 1 M).filter (fun m => k ∈ m.divisors),
+        a m * (Λ (m / k) * Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ))
+    have hsplit_k : ∀ k ∈ Icc 1 M,
+        divisorJetCoeff M a k = a k * Real.log k + offCoeff k := by
+      intro k hk
+      obtain ⟨hk1, _⟩ := mem_Icc.mp hk
+      have hk_div : k ∈ k.divisors := Nat.mem_divisors.mpr ⟨dvd_rfl, by omega⟩
+      have hsφk : Real.sqrt (k.totient : ℝ) ≠ 0 :=
+        (Real.sqrt_pos.mpr (by exact_mod_cast Nat.totient_pos.mpr hk1)).ne'
+      dsimp only [divisorJetCoeff, offCoeff, ramanujanJetConductorWeight]
+      rw [← sum_filter]
+      have hterm : ∀ m ∈ (Icc 1 M).filter (fun m => k ∈ m.divisors),
+          a m * (((if k = m then Real.log m else 0) + Λ (m / k)) *
+            Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ)) =
+          (if m = k then a k * Real.log k else 0) +
+            a m * (Λ (m / k) * Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ)) := by
+        intro m _
+        by_cases hmk : m = k
+        · subst m
+          rw [if_pos rfl, if_pos rfl]
+          field_simp [hsφk]; ring
+        · rw [if_neg (Ne.symm hmk), if_neg hmk, zero_add, zero_add]
+      rw [sum_congr rfl hterm, sum_add_distrib, sum_ite_eq',
+        if_pos (mem_filter.mpr ⟨hk, hk_div⟩)]
+    have hpt_sq : ∀ k ∈ Icc 1 M,
+        divisorJetCoeff M a k ^ 2 ≤ 2 * (a k * Real.log k) ^ 2 + 2 * offCoeff k ^ 2 := by
+      intro k hk
+      rw [hsplit_k k hk]
+      nlinarith only [sq_nonneg (a k * Real.log k - offCoeff k)]
+    have hdiag_sum : (∑ k ∈ Icc 1 M, 2 * (a k * Real.log k) ^ 2) ≤
+        2 * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 := by
+      rw [mul_sum]
+      refine sum_le_sum fun k hk => ?_
+      have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast (mem_Icc.mp hk).1
+      have hkM : (k : ℝ) ≤ M := by exact_mod_cast (mem_Icc.mp hk).2
+      have hlk : Real.log k ≤ 1 + Real.log M := by
+        have := Real.log_le_log (by positivity) hkM; linarith
+      have hlk0 : 0 ≤ Real.log k := Real.log_nonneg hk1
+      have hsq : (Real.log k) ^ 2 ≤ (1 + Real.log M) ^ 2 := pow_le_pow_left₀ hlk0 hlk 2
+      calc
+        2 * (a k * Real.log k) ^ 2 = 2 * (Real.log k) ^ 2 * a k ^ 2 := by ring
+        _ ≤ 2 * (1 + Real.log M) ^ 2 * a k ^ 2 :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hsq zero_le_two) (sq_nonneg _)
+    -- Bound `∑_{k=1}^M offCoeff k ^ 2`.
+    have hoff_k : ∀ k ∈ Icc 1 M,
+        offCoeff k ^ 2 ≤ (2 * mertensSum M) *
+          ∑ m ∈ (Icc 1 M).filter (fun m => k ∈ m.divisors), Λ (m / k) * a m ^ 2 := by
+      intro k hk
+      obtain ⟨hk1, _⟩ := mem_Icc.mp hk
+      let S_k := (Icc 1 M).filter (fun m => k ∈ m.divisors)
+      have hterm_le : ∀ m ∈ S_k,
+          |a m * (Λ (m / k) * Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ))| ≤
+            Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) * (Real.sqrt (Λ (m / k)) * |a m|) := by
+        intro m hmS
+        obtain ⟨hmI, hkdiv⟩ := mem_filter.mp hmS
+        have hm0 : 0 < m := (mem_Icc.mp hmI).1
+        have hkdvd : k ∣ m := Nat.dvd_of_mem_divisors hkdiv
+        have hq0 : 0 < m / k := Nat.div_pos (Nat.le_of_dvd hm0 hkdvd) hk1
+        have hqR : (0 : ℝ) < (m / k : ℕ) := by exact_mod_cast hq0
+        have hφmR : (0 : ℝ) < m.totient := by exact_mod_cast Nat.totient_pos.mpr hm0
+        have hΛ0 : 0 ≤ Λ (m / k) := vonMangoldt_nonneg
+        have htot := totient_mul_quot_le hkdvd
+        -- `(k.totient : ℝ) * (m / k) * Λ (m / k) ≤ 2 * m.totient * Λ (m / k)`
+        have hrat_sq : (Λ (m / k) * Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ)) ^ 2 ≤
+            (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) * Λ (m / k) := by
+          rw [div_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg k.totient),
+            Real.sq_sqrt (Nat.cast_nonneg m.totient), div_mul_eq_mul_div,
+            div_le_div_iff₀ hφmR hqR]
+          have hmul := mul_le_mul_of_nonneg_right htot hΛ0
+          linarith only [hmul, (by ring :
+            Λ (m / k) ^ 2 * (k.totient : ℝ) * ((m / k : ℕ) : ℝ) =
+              ((k.totient : ℝ) * ((m / k : ℕ) : ℝ) * Λ (m / k)) * Λ (m / k)),
+            (by ring : 2 * Λ (m / k) * Λ (m / k) * (m.totient : ℝ) =
+              (2 * (m.totient : ℝ) * Λ (m / k)) * Λ (m / k))]
+        have hrat_le : Λ (m / k) * Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ) ≤
+            Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) * Real.sqrt (Λ (m / k)) := by
           rw [← Real.sqrt_mul (by positivity)]
-          have hmul : ((n : ℝ) / N) * ((j : ℝ) / N) = ((n : ℝ) * j) / (N : ℝ) ^ 2 := by ring
-          rw [hmul, Real.sqrt_div (by positivity), Real.sqrt_sq hN0.le]
-          have hsnj : Real.sqrt ((n : ℝ) * j) = Real.sqrt n * Real.sqrt j :=
-            Real.sqrt_mul (Nat.cast_nonneg n) j
-          -- Wait: `(n : ℝ) * j = (Real.sqrt ((n : ℝ) * j))^2`? No, we don't have `√` on LHS!
-          -- Wait: on RHS we wrote `Real.sqrt (n / N) * Real.sqrt (j / N)`, whose product IS
-          -- `√(n * j) / N`, NOT `n * j / N^2`! Wait: check `(c / N)^2 * (n * j)`!
-          -- `(c / N)^2 * (n * j) = c^2 * (n / N) * (j / N)`, and since `n / N ≤ 1`? NO!
-          -- In `|u_n| * |u_j| * (n / N) * (j / N)`: `(n / N) * (j / N) ≤ √(n / N) * √(j / N)`!
-          sorry
+          exact (Real.le_sqrt_of_sq_le hrat_sq)
+        rw [abs_mul, abs_of_nonneg (by positivity)]
+        calc
+          |a m| * (Λ (m / k) * Real.sqrt (k.totient : ℝ) / Real.sqrt (m.totient : ℝ)) ≤
+              |a m| * (Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) * Real.sqrt (Λ (m / k))) :=
+            mul_le_mul_of_nonneg_left hrat_le (abs_nonneg _)
+          _ = Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) * (Real.sqrt (Λ (m / k)) * |a m|) := by
+            ring
+      have habs_off : |offCoeff k| ≤
+          ∑ m ∈ S_k, Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) *
+            (Real.sqrt (Λ (m / k)) * |a m|) :=
+        (abs_sum_le_sum_abs _ _).trans (sum_le_sum hterm_le)
+      have hsq := pow_le_pow_left₀ (abs_nonneg _) habs_off 2
+      rw [sq_abs] at hsq
+      have hcs := Finset.sum_mul_sq_le_sq_mul_sq S_k
+        (fun m => Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)))
+        (fun m => Real.sqrt (Λ (m / k)) * |a m|)
+      have h1_le : (∑ m ∈ S_k, Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) ^ 2) ≤
+          2 * mertensSum M := by
+        have hsq1 : ∀ m ∈ S_k,
+            Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) ^ 2 =
+              2 * (Λ (m / k) / ((m / k : ℕ) : ℝ)) := fun m _ => by
+          rw [Real.sq_sqrt (div_nonneg (mul_nonneg zero_le_two vonMangoldt_nonneg) (Nat.cast_nonneg _))]
+          ring
+        rw [sum_congr rfl hsq1, ← mul_sum]
+        refine mul_le_mul_of_nonneg_left ?_ zero_le_two
+        have hinj : ∀ m₁ ∈ S_k, ∀ m₂ ∈ S_k, m₁ / k = m₂ / k → m₁ = m₂ := by
+          intro m₁ hm₁ m₂ hm₂ heq
+          have hd1 := Nat.dvd_of_mem_divisors (mem_filter.mp hm₁).2
+          have hd2 := Nat.dvd_of_mem_divisors (mem_filter.mp hm₂).2
+          rw [← Nat.div_mul_cancel hd1, ← Nat.div_mul_cancel hd2, heq]
+        have hsub : S_k.image (fun m => m / k) ⊆ Icc 1 M := by
+          intro d hd
+          obtain ⟨m, hmS, rfl⟩ := mem_image.mp hd
+          obtain ⟨hmI, hkdiv⟩ := mem_filter.mp hmS
+          exact mem_Icc.mpr ⟨Nat.div_pos (Nat.le_of_dvd (mem_Icc.mp hmI).1
+            (Nat.dvd_of_mem_divisors hkdiv)) hk1, (Nat.div_le_self m k).trans (mem_Icc.mp hmI).2⟩
+        calc
+          (∑ m ∈ S_k, Λ (m / k) / ((m / k : ℕ) : ℝ)) =
+              ∑ d ∈ S_k.image (fun m => m / k), Λ d / (d : ℝ) := (sum_image hinj).symm
+          _ ≤ ∑ d ∈ Icc 1 M, Λ d / (d : ℝ) :=
+            sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ =>
+              div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _)
+          _ = mertensSum M := rfl
+      have h2_eq : (∑ m ∈ S_k, (Real.sqrt (Λ (m / k)) * |a m|) ^ 2) =
+          ∑ m ∈ S_k, Λ (m / k) * a m ^ 2 :=
+        sum_congr rfl fun m _ => by
+          rw [mul_pow, Real.sq_sqrt vonMangoldt_nonneg, sq_abs]
+      calc
+        offCoeff k ^ 2 ≤ (∑ m ∈ S_k, Real.sqrt (2 * Λ (m / k) / ((m / k : ℕ) : ℝ)) ^ 2) *
+            ∑ m ∈ S_k, (Real.sqrt (Λ (m / k)) * |a m|) ^ 2 := hsq.trans hcs
+        _ ≤ (2 * mertensSum M) * ∑ m ∈ S_k, Λ (m / k) * a m ^ 2 := by
+          rw [h2_eq]
+          exact mul_le_mul_of_nonneg_right h1_le
+            (sum_nonneg fun _ _ => mul_nonneg vonMangoldt_nonneg (sq_nonneg _))
+    have hoff_sum : (∑ k ∈ Icc 1 M, 2 * offCoeff k ^ 2) ≤
+        4 * (C_mert + 1) * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 := by
+      have hmertM : 2 * mertensSum M ≤ 2 * (C_mert + 1) * (1 + Real.log M) := by
+        have hm := hmert_le M (by omega)
+        have hLM0 := Real.log_natCast_nonneg M
+        nlinarith only [hm, hLM0, hC_mert_pos]
+      have hswap_sum :
+          (∑ k ∈ Icc 1 M, ∑ m ∈ (Icc 1 M).filter (fun m => k ∈ m.divisors),
+            Λ (m / k) * a m ^ 2) ≤ Real.log M * ∑ m ∈ Icc 1 M, a m ^ 2 := by
+        have hrew : (∑ k ∈ Icc 1 M, ∑ m ∈ (Icc 1 M).filter (fun m => k ∈ m.divisors),
+            Λ (m / k) * a m ^ 2) =
+            ∑ m ∈ Icc 1 M, a m ^ 2 * ∑ k ∈ m.divisors, Λ (m / k) := by
+          simp_rw [sum_filter]
+          rw [sum_comm]
+          refine sum_congr rfl fun m hm => ?_
+          obtain ⟨hm1, hmM⟩ := mem_Icc.mp hm
+          have hsub : m.divisors ⊆ Icc 1 M := fun k hk =>
+            mem_Icc.mpr ⟨Nat.pos_of_mem_divisors hk,
+              (Nat.le_of_dvd hm1 (Nat.dvd_of_mem_divisors hk)).trans hmM⟩
+          have hk_eq : (∑ x ∈ Icc 1 M, if x ∈ m.divisors then Λ (m / x) * a m ^ 2 else 0) =
+              ∑ x ∈ m.divisors, Λ (m / x) * a m ^ 2 := by
+            rw [← sum_subset hsub]
+            · exact sum_congr rfl fun x hx => if_pos hx
+            · intro x _ hx; exact if_neg hx
+          rw [hk_eq, mul_sum]
+          exact sum_congr rfl fun x _ => mul_comm _ _
+        rw [hrew, mul_sum]
+        refine sum_le_sum fun m hm => ?_
+        have hmM : (m : ℝ) ≤ M := by exact_mod_cast (mem_Icc.mp hm).2
+        have hm1 : 0 < m := (mem_Icc.mp hm).1
+        have hdiv_log : (∑ k ∈ m.divisors, Λ (m / k)) = Real.log m := by
+          rw [Nat.sum_div_divisors m (fun d => Λ d), vonMangoldt_sum]
+        rw [hdiv_log, mul_comm (a m ^ 2)]
+        exact mul_le_mul_of_nonneg_right
+          (Real.log_le_log (by exact_mod_cast hm1) hmM) (sq_nonneg _)
+      have hmert0 : 0 ≤ 2 * mertensSum M :=
+        mul_nonneg zero_le_two
+          (sum_nonneg fun _ _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _))
+      have h1 : (∑ k ∈ Icc 1 M, 2 * offCoeff k ^ 2) ≤
+          2 * (2 * mertensSum M) *
+            ∑ k ∈ Icc 1 M, ∑ m ∈ (Icc 1 M).filter (fun m => k ∈ m.divisors),
+              Λ (m / k) * a m ^ 2 := by
+        rw [← mul_sum, mul_assoc, mul_sum]
+        exact mul_le_mul_of_nonneg_left (sum_le_sum hoff_k) zero_le_two
+      have hLM_le : Real.log M ≤ 1 + Real.log M := by linarith
+      calc
+        (∑ k ∈ Icc 1 M, 2 * offCoeff k ^ 2) ≤
+            2 * (2 * mertensSum M) * (Real.log M * ∑ m ∈ Icc 1 M, a m ^ 2) :=
+          h1.trans (mul_le_mul_of_nonneg_left hswap_sum (mul_nonneg zero_le_two hmert0))
+        _ ≤ 2 * (2 * (C_mert + 1) * (1 + Real.log M)) *
+            ((1 + Real.log M) * ∑ m ∈ Icc 1 M, a m ^ 2) := by
+          refine mul_le_mul (mul_le_mul_of_nonneg_left hmertM zero_le_two)
+            (mul_le_mul_of_nonneg_right hLM_le (sum_nonneg fun _ _ => sq_nonneg _))
+            (mul_nonneg (Real.log_natCast_nonneg M) (sum_nonneg fun _ _ => sq_nonneg _)) ?_
+          have := Real.log_natCast_nonneg M; positivity
+        _ = 4 * (C_mert + 1) * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 := by ring
+    calc
+      (∑ k ∈ Icc 1 M, divisorJetCoeff M a k ^ 2) ≤
+          (∑ k ∈ Icc 1 M, 2 * (a k * Real.log k) ^ 2) + ∑ k ∈ Icc 1 M, 2 * offCoeff k ^ 2 := by
+        rw [← sum_add_distrib]; exact sum_le_sum hpt_sq
+      _ ≤ 2 * (1 + Real.log M) ^ 2 * (∑ m ∈ Icc 1 M, a m ^ 2) +
+          4 * (C_mert + 1) * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 :=
+        add_le_add hdiag_sum hoff_sum
+      _ = (2 + 4 * C_mert + 4) * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 := by ring
+  have hriesz := (half_and_three_halves_riesz_of_log_le hM hMN hlog (divisorJetCoeff M a)).2
+  have hSa0 : 0 ≤ ∑ m ∈ Icc 1 M, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
+  have hLM1 : 0 ≤ 1 + Real.log M := by have := Real.log_natCast_nonneg M; linarith
+  have hconst_le : (3 / 2 : ℝ) * (2 + 4 * C_mert + 4) ≤ C_jet ^ 2 := by
+    dsimp only [C_jet]
+    nlinarith only [hC_mert_pos]
+  have hnorm_sq : ‖divisorJetHorizonVector M N a‖ ^ 2 ≤
+      (C_jet * (1 + Real.log M) * Real.sqrt (∑ m ∈ Icc 1 M, a m ^ 2)) ^ 2 := by
+    calc
+      ‖divisorJetHorizonVector M N a‖ ^ 2 ≤
+          (3 / 2 : ℝ) * ∑ k ∈ Icc 1 M, divisorJetCoeff M a k ^ 2 := hriesz
+      _ ≤ (3 / 2 : ℝ) * ((2 + 4 * C_mert + 4) * (1 + Real.log M) ^ 2 *
+          ∑ m ∈ Icc 1 M, a m ^ 2) :=
+        mul_le_mul_of_nonneg_left hcoeff_sq (by norm_num)
+      _ = ((3 / 2 : ℝ) * (2 + 4 * C_mert + 4)) *
+          ((1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2) := by ring
+      _ ≤ C_jet ^ 2 * ((1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2) :=
+        mul_le_mul_of_nonneg_right hconst_le (mul_nonneg (sq_nonneg _) hSa0)
+      _ = (C_jet * (1 + Real.log M) * Real.sqrt (∑ m ∈ Icc 1 M, a m ^ 2)) ^ 2 := by
+        rw [mul_pow, mul_pow, Real.sq_sqrt hSa0]; ring
+  have hrhs0 : 0 ≤ C_jet * (1 + Real.log M) * Real.sqrt (∑ m ∈ Icc 1 M, a m ^ 2) := by
+    dsimp only [C_jet]; positivity
+  nlinarith only [hnorm_sq, norm_nonneg (divisorJetHorizonVector M N a), hrhs0]
+
+private theorem sum_Icc_dvd_vonMangoldt_mul_le {g : ℕ} (hg : 2 ≤ g) (B : ℕ) :
+    (∑ t ∈ Icc 2 B, if g ∣ t then (Λ t / (t : ℝ)) * (g : ℝ) else 0) ≤ 2 * Λ g := by
+  by_cases hgpp : IsPrimePow g
+  · obtain ⟨p, r, hp, hr, rfl⟩ := (isPrimePow_nat_iff g).mp hgpp
+    have hΛpr : Λ (p ^ r) = Real.log p := by
+      rw [vonMangoldt_apply_pow hr.ne', vonMangoldt_apply_prime hp]
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+    have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+    have hlogp0 : 0 ≤ Real.log p := Real.log_nonneg (by linarith only [hp2])
+    let S := (Icc 2 B).filter (fun t => p ^ r ∣ t ∧ Λ t ≠ 0)
+    have hrew : (∑ t ∈ Icc 2 B, if p ^ r ∣ t then (Λ t / (t : ℝ)) * ((p ^ r : ℕ) : ℝ) else 0) =
+        ∑ t ∈ S, (Λ t / (t : ℝ)) * ((p ^ r : ℕ) : ℝ) := by
+      rw [sum_filter]
+      refine sum_congr rfl fun t _ => ?_
+      by_cases hdvd : p ^ r ∣ t
+      · by_cases hΛ0 : Λ t = 0
+        · rw [if_pos hdvd, if_neg (fun h => hΛ0 h.2), hΛ0, zero_div, zero_mul]
+        · rw [if_pos hdvd, if_pos ⟨hdvd, hΛ0⟩]
+      · rw [if_neg hdvd, if_neg (fun h => hdvd h.1)]
+    rw [hrew, hΛpr]
+    -- Every `t ∈ S` has the form `p ^ (r + j)` with `j ∈ range B`.
+    have hmem_im : S ⊆ (range B).image (fun j => p ^ (r + j)) := by
+      intro t ht
+      obtain ⟨htI, hdvd, hΛt⟩ := mem_filter.mp ht
+      obtain ⟨q, k, hq, hk, rfl⟩ := (isPrimePow_nat_iff t).mp (vonMangoldt_ne_zero_iff.mp hΛt)
+      have hp_dvd_qk : p ∣ q ^ k := (dvd_pow_self p hr.ne').trans hdvd
+      have hpq : p = q := (Nat.prime_dvd_prime_iff_eq hp hq).mp (hp.dvd_of_dvd_pow hp_dvd_qk)
+      subst q
+      have hrk : r ≤ k := (Nat.pow_dvd_pow_iff_le_right hp.one_lt).mp hdvd
+      have hkB : k < B := (Nat.lt_pow_self hp.one_lt).trans_le (mem_Icc.mp htI).2
+      refine mem_image.mpr ⟨k - r, mem_range.mpr (by omega), ?_⟩
+      rw [Nat.add_sub_of_le hrk]
+    have hinj : ∀ j₁ ∈ range B, ∀ j₂ ∈ range B,
+        p ^ (r + j₁) = p ^ (r + j₂) → j₁ = j₂ := by
+      intro j₁ _ j₂ _ heq
+      have h := (Nat.pow_right_inj hp.one_lt).mp heq
+      omega
+    have hval : ∀ j ∈ range B,
+        (Λ (p ^ (r + j)) / ((p ^ (r + j) : ℕ) : ℝ)) * ((p ^ r : ℕ) : ℝ) =
+          Real.log p * ((p : ℝ)⁻¹) ^ j := by
+      intro j _
+      have hrj : r + j ≠ 0 := by omega
+      rw [vonMangoldt_apply_pow hrj, vonMangoldt_apply_prime hp, Nat.cast_pow, Nat.cast_pow,
+        pow_add, inv_pow]
+      have hp_ne : (p : ℝ) ^ r ≠ 0 := pow_ne_zero r hp0.ne'
+      have hpj_ne : (p : ℝ) ^ j ≠ 0 := pow_ne_zero j hp0.ne'
+      field_simp [hp_ne, hpj_ne]
+    have hgeom : ∀ K : ℕ,
+        (1 - (p : ℝ)⁻¹) * (∑ j ∈ range K, ((p : ℝ)⁻¹) ^ j) = 1 - ((p : ℝ)⁻¹) ^ K := by
+      intro K
+      induction K with
+      | zero => simp
+      | succ K ih =>
+        rw [sum_range_succ, mul_add, ih, pow_succ]
+        ring
+    have hsum_inv_le : (∑ j ∈ range B, ((p : ℝ)⁻¹) ^ j) ≤ 2 := by
+      have hp_inv_le : (p : ℝ)⁻¹ ≤ 1 / 2 := by
+        rw [inv_eq_one_div]
+        exact one_div_le_one_div_of_le (by norm_num) hp2
+      have hhalf : (1 / 2 : ℝ) ≤ 1 - (p : ℝ)⁻¹ := by linarith only [hp_inv_le]
+      have hS0 : 0 ≤ ∑ j ∈ range B, ((p : ℝ)⁻¹) ^ j :=
+        sum_nonneg fun _ _ => pow_nonneg (inv_nonneg.mpr hp0.le) _
+      have hpow0 : 0 ≤ ((p : ℝ)⁻¹) ^ B := pow_nonneg (inv_nonneg.mpr hp0.le) B
+      have h1 := mul_le_mul_of_nonneg_right hhalf hS0
+      have h2 := hgeom B
+      linarith only [h1, h2, hpow0]
+    calc
+      (∑ t ∈ S, (Λ t / (t : ℝ)) * ((p ^ r : ℕ) : ℝ)) ≤
+          ∑ t ∈ (range B).image (fun j => p ^ (r + j)),
+            (Λ t / (t : ℝ)) * ((p ^ r : ℕ) : ℝ) :=
+        sum_le_sum_of_subset_of_nonneg hmem_im fun _ _ _ =>
+          mul_nonneg (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _)) (Nat.cast_nonneg _)
+      _ = ∑ j ∈ range B, Real.log p * ((p : ℝ)⁻¹) ^ j := by
+        rw [sum_image hinj]
+        exact sum_congr rfl hval
+      _ = Real.log p * ∑ j ∈ range B, ((p : ℝ)⁻¹) ^ j := (mul_sum _ _ _).symm
+      _ ≤ Real.log p * 2 := mul_le_mul_of_nonneg_left hsum_inv_le hlogp0
+      _ = 2 * Real.log p := by ring
+  · have hzero : ∀ t ∈ Icc 2 B,
+        (if g ∣ t then (Λ t / (t : ℝ)) * (g : ℝ) else 0) = 0 := by
+      intro t _
+      by_cases hdvd : g ∣ t
+      · rw [if_pos hdvd]
+        have hΛ0 : Λ t = 0 := by
+          by_contra hne
+          obtain ⟨p, k, hp, _, rfl⟩ := (isPrimePow_nat_iff t).mp (vonMangoldt_ne_zero_iff.mp hne)
+          obtain ⟨r, _, rfl⟩ := (Nat.dvd_prime_pow hp).mp hdvd
+          have hr0 : r ≠ 0 := by rintro rfl; simp at hg
+          exact hgpp (hp.isPrimePow.pow hr0)
+        rw [hΛ0, zero_div, zero_mul]
+      · exact if_neg hdvd
+    rw [sum_eq_zero hzero]
+    exact mul_nonneg zero_le_two vonMangoldt_nonneg
+
+private theorem nat_log_two_le_two_mul_log {M : ℕ} (hM : 1 ≤ M) :
+    (Nat.log 2 M : ℝ) ≤ 2 * Real.log M := by
+  let L := Nat.log 2 M
+  have hpow : ((2 : ℝ) ^ L) ≤ (M : ℝ) := by
+    exact_mod_cast Nat.pow_log_le_self 2 (by omega : M ≠ 0)
+  have hlog : (L : ℝ) * Real.log 2 ≤ Real.log M := by
+    have h := Real.log_le_log (by positivity) hpow
+    simpa only [Real.log_pow] using h
+  have hlog2 : (1 / 2 : ℝ) ≤ Real.log 2 := by
+    have h := Real.log_le_sub_one_of_pos (show (0 : ℝ) < (2 : ℝ)⁻¹ by norm_num)
+    rw [Real.log_inv] at h
+    linarith only [h]
+  have hL0 : (0 : ℝ) ≤ L := Nat.cast_nonneg L
+  nlinarith only [hlog, hlog2, hL0]
+
+/-- Reduced-dilation coefficient `c_{t, d}` in `G(t * n) = ∑_{d=1}^M c_{t, d} g_d(n)`. -/
+private def reducedDilationCoeff (M : ℕ) (a : ℕ → ℝ) (t d : ℕ) : ℝ :=
+  ∑ m ∈ (Icc 1 M).filter (fun m => m / Nat.gcd m t = d),
+    a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))
+
+private theorem sum_normalizedRamanujanMode_dilate_eq_reduced (M t n : ℕ) (a : ℕ → ℝ) :
+    (∑ m ∈ Icc 1 M, a m * normalizedRamanujanMode m (t * n)) =
+      ∑ d ∈ Icc 1 M, reducedDilationCoeff M a t d * normalizedRamanujanMode d n := by
+  have hmaps : ∀ m ∈ Icc 1 M, m / Nat.gcd m t ∈ Icc 1 M := fun m hm => by
+    obtain ⟨hm1, hmM⟩ := mem_Icc.mp hm
+    exact mem_Icc.mpr ⟨Nat.div_pos (Nat.le_of_dvd hm1 (Nat.gcd_dvd_left m t))
+      (Nat.gcd_pos_of_pos_left t hm1), (Nat.div_le_self m _).trans hmM⟩
+  have hterm : ∀ m ∈ Icc 1 M, a m * normalizedRamanujanMode m (t * n) =
+      (a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt ((m / Nat.gcd m t).totient : ℝ))) *
+        normalizedRamanujanMode (m / Nat.gcd m t) n := fun m hm => by
+    rw [normalizedRamanujanMode_dilate_reduced (mem_Icc.mp hm).1 t n]
+    ring
+  rw [sum_congr rfl hterm, ← sum_fiberwise_of_maps_to hmaps]
+  refine sum_congr rfl fun d _ => ?_
+  dsimp only [reducedDilationCoeff]
+  rw [sum_mul]
+  refine sum_congr rfl fun m hm => ?_
+  rw [(mem_filter.mp hm).2]
+
+private theorem sum_reducedDilationCoeff_sq_le {M t : ℕ} (hM : 2 ≤ M) (ht : IsPrimePow t)
+    (a : ℕ → ℝ) :
+    (∑ d ∈ Icc 1 M, reducedDilationCoeff M a t d ^ 2) ≤
+      2 * (∑ m ∈ Icc 1 M, a m ^ 2) +
+        4 * Real.log M * ∑ m ∈ Icc 1 M, a m ^ 2 *
+          ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ t then (g : ℝ) else 0 := by
+  obtain ⟨p, k, hp, _, rfl⟩ := (isPrimePow_nat_iff t).mp ht
+  let Big2 := (Icc 1 M).filter (fun m => 2 ≤ Nat.gcd m (p ^ k))
+  have hpt : ∀ d ∈ Icc 1 M,
+      reducedDilationCoeff M a (p ^ k) d ^ 2 ≤
+        2 * a d ^ 2 +
+          4 * Real.log M * ∑ m ∈ Big2.filter (fun m => m / Nat.gcd m (p ^ k) = d),
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 := by
+    intro d hd
+    obtain ⟨hd1, _⟩ := mem_Icc.mp hd
+    let F_d := (Icc 1 M).filter (fun m => m / Nat.gcd m (p ^ k) = d)
+    let F1_d := F_d.filter (fun m => Nat.gcd m (p ^ k) = 1)
+    let S_d := Big2.filter (fun m => m / Nat.gcd m (p ^ k) = d)
+    have hpart : F_d = F1_d ∪ S_d := by
+      ext m
+      simp only [F_d, F1_d, S_d, Big2, mem_filter, mem_union, mem_Icc]
+      constructor
+      · rintro ⟨⟨hm1, hmM⟩, hdiv⟩
+        have hg0 : 0 < Nat.gcd m (p ^ k) := Nat.gcd_pos_of_pos_left _ hm1
+        rcases eq_or_ne (Nat.gcd m (p ^ k)) 1 with hg1 | hg_ne
+        · exact Or.inl ⟨⟨⟨hm1, hmM⟩, hdiv⟩, hg1⟩
+        · exact Or.inr ⟨⟨⟨hm1, hmM⟩, by omega⟩, hdiv⟩
+      · rintro (⟨hF, _⟩ | ⟨⟨hI, _⟩, hdiv⟩)
+        · exact hF
+        · exact ⟨hI, hdiv⟩
+    have hdisj : Disjoint F1_d S_d := by
+      rw [Finset.disjoint_left]
+      intro m hm1 hm2
+      have h1 := (mem_filter.mp hm1).2
+      have h2 := (mem_filter.mp (mem_filter.mp hm2).1).2
+      omega
+    have hsplit : reducedDilationCoeff M a (p ^ k) d =
+        (∑ m ∈ F1_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))) +
+          ∑ m ∈ S_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ)) := by
+      dsimp only [reducedDilationCoeff]
+      change (∑ m ∈ F_d, _) = _
+      rw [hpart, sum_union hdisj]
+    have hF1_sq :
+        (∑ m ∈ F1_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))) ^ 2 ≤
+          a d ^ 2 := by
+      have hsub1 : F1_d ⊆ {d} := by
+        intro m hm
+        obtain ⟨⟨_, hdiv⟩, hg1⟩ := mem_filter.mp hm
+        rw [hg1, Nat.div_one] at hdiv
+        exact mem_singleton.mpr hdiv
+      rcases Finset.subset_singleton_iff.mp hsub1 with hemp | hsing
+      · rw [hemp, sum_empty, zero_pow (by norm_num)]
+        exact sq_nonneg _
+      · rw [hsing, sum_singleton]
+        have hsφd : Real.sqrt (d.totient : ℝ) ≠ 0 :=
+          (Real.sqrt_pos.mpr (by exact_mod_cast Nat.totient_pos.mpr hd1)).ne'
+        rw [div_self hsφd, mul_one]
+    -- Bound `S_d.card ≤ Nat.log 2 M`.
+    have hcard_Sd : (S_d.card : ℝ) ≤ 2 * Real.log M := by
+      let e : ℕ → ℕ := fun m => Nat.log p (Nat.gcd m (p ^ k))
+      have hm_eq : ∀ m ∈ S_d, Nat.gcd m (p ^ k) = p ^ e m ∧ m = d * p ^ e m := by
+        intro m hmS
+        obtain ⟨hmBig, hdiv⟩ := mem_filter.mp hmS
+        obtain ⟨r, _, hg_eq⟩ := (Nat.dvd_prime_pow hp).mp (Nat.gcd_dvd_right m (p ^ k))
+        have her : e m = r := by
+          dsimp only [e]; rw [hg_eq, Nat.log_pow hp.one_lt r]
+        have hg_pow : Nat.gcd m (p ^ k) = p ^ e m := by rw [her, hg_eq]
+        refine ⟨hg_pow, ?_⟩
+        have hmul := Nat.div_mul_cancel (Nat.gcd_dvd_left m (p ^ k))
+        rw [hdiv, hg_pow, Nat.mul_comm] at hmul
+        exact hmul.symm
+      have hinj : Set.InjOn e S_d := by
+        intro m₁ hm₁ m₂ hm₂ heq
+        rw [(hm_eq m₁ hm₁).2, (hm_eq m₂ hm₂).2, heq]
+      have him_sub : S_d.image e ⊆ Icc 1 (Nat.log 2 M) := by
+        intro r hr
+        obtain ⟨m, hmS, rfl⟩ := mem_image.mp hr
+        obtain ⟨hmBig, _⟩ := mem_filter.mp hmS
+        obtain ⟨hmI, hg2⟩ := mem_filter.mp hmBig
+        obtain ⟨hm1, hmM⟩ := mem_Icc.mp hmI
+        have hg_pow := (hm_eq m hmS).1
+        have he1 : 1 ≤ e m := by
+          by_contra hlt
+          have hz : e m = 0 := by omega
+          rw [hz, pow_zero] at hg_pow
+          omega
+        have h2pow : 2 ^ e m ≤ M :=
+          (Nat.pow_le_pow_left hp.two_le (e m)).trans
+            (hg_pow ▸ (Nat.le_of_dvd hm1 (Nat.gcd_dvd_left m (p ^ k))).trans hmM)
+        have heM : e m ≤ Nat.log 2 M := by
+          rw [← Nat.log_pow Nat.one_lt_two (e m)]
+          exact Nat.log_mono_right h2pow
+        exact mem_Icc.mpr ⟨he1, heM⟩
+      have hcard_nat : S_d.card ≤ Nat.log 2 M := by
+        calc
+          S_d.card = (S_d.image e).card := (card_image_of_injOn hinj).symm
+          _ ≤ (Icc 1 (Nat.log 2 M)).card := card_le_card him_sub
+          _ = Nat.log 2 M := by simp
+      exact (show (S_d.card : ℝ) ≤ (Nat.log 2 M : ℝ) by exact_mod_cast hcard_nat).trans
+        (nat_log_two_le_two_mul_log (by omega))
+    -- Apply Cauchy–Schwarz on `S_d`.
+    have hSd_sq :
+        (∑ m ∈ S_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))) ^ 2 ≤
+          2 * Real.log M * ∑ m ∈ S_d,
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 := by
+      have hcs := Finset.sum_mul_sq_le_sq_mul_sq S_d (fun _ => (1 : ℝ))
+        (fun m => a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ)))
+      simp only [one_mul, one_pow, sum_const, nsmul_eq_mul, mul_one] at hcs
+      have hterm_Sd : ∀ m ∈ S_d,
+          (a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))) ^ 2 ≤
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 := by
+        intro m hmS
+        obtain ⟨hmBig, hdiv⟩ := mem_filter.mp hmS
+        obtain ⟨hmI, hg2⟩ := mem_filter.mp hmBig
+        have hm1 : 0 < m := (mem_Icc.mp hmI).1
+        let g := Nat.gcd m (p ^ k)
+        have hmdg : m = d * g := by
+          have hmul := Nat.div_mul_cancel (Nat.gcd_dvd_left m (p ^ k))
+          change (m / g) * g = m at hmul
+          rw [hdiv, Nat.mul_comm] at hmul
+          exact hmul.symm
+        have htot : (m.totient : ℝ) ≤ (g : ℝ) * d.totient := by
+          rw [hmdg]; exact_mod_cast totient_mul_le d g
+        have hdφ0 : (0 : ℝ) < d.totient := by exact_mod_cast Nat.totient_pos.mpr hd1
+        have hrat : (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ)) ^ 2 ≤ (g : ℝ) := by
+          rw [div_pow, Real.sq_sqrt (Nat.cast_nonneg _), Real.sq_sqrt (Nat.cast_nonneg _),
+            div_le_iff₀ hdφ0]
+          exact htot
+        have hg_mem : g ∈ m.divisors.filter (2 ≤ ·) :=
+          mem_filter.mpr ⟨Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_left _ _, hm1.ne'⟩, hg2⟩
+        have hg_le_sum : (g : ℝ) ≤
+            ∑ g' ∈ m.divisors.filter (2 ≤ ·), if g' ∣ p ^ k then (g' : ℝ) else 0 := by
+          have hs := single_le_sum (f := fun g' : ℕ => if g' ∣ p ^ k then (g' : ℝ) else 0)
+            (fun g' _ => by split_ifs; · exact Nat.cast_nonneg _; · exact le_rfl) hg_mem
+          simpa only [if_pos (Nat.gcd_dvd_right m (p ^ k))] using hs
+        rw [mul_pow]
+        exact mul_le_mul_of_nonneg_left (hrat.trans hg_le_sum) (sq_nonneg _)
+      exact hcs.trans (mul_le_mul hcard_Sd (sum_le_sum hterm_Sd)
+        (sum_nonneg fun _ _ => sq_nonneg _)
+        (mul_nonneg zero_le_two (Real.log_natCast_nonneg M)))
+    have h2sq : reducedDilationCoeff M a (p ^ k) d ^ 2 ≤
+        2 * (∑ m ∈ F1_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))) ^ 2 +
+          2 * (∑ m ∈ S_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))) ^ 2 := by
+      rw [hsplit]
+      nlinarith only [sq_nonneg
+        ((∑ m ∈ F1_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ))) -
+          ∑ m ∈ S_d, a m * (Real.sqrt (m.totient : ℝ) / Real.sqrt (d.totient : ℝ)))]
+    calc
+      reducedDilationCoeff M a (p ^ k) d ^ 2 ≤
+          2 * a d ^ 2 + 2 * (2 * Real.log M * ∑ m ∈ S_d,
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0) :=
+        h2sq.trans (add_le_add (mul_le_mul_of_nonneg_left hF1_sq zero_le_two)
+          (mul_le_mul_of_nonneg_left hSd_sq zero_le_two))
+      _ = 2 * a d ^ 2 + 4 * Real.log M * ∑ m ∈ S_d,
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 := by
+        ring
+  have hmaps_Big2 : ∀ m ∈ Big2, m / Nat.gcd m (p ^ k) ∈ Icc 1 M := fun m hm => by
+    obtain ⟨hm1, hmM⟩ := mem_Icc.mp (mem_filter.mp hm).1
+    exact mem_Icc.mpr ⟨Nat.div_pos (Nat.le_of_dvd hm1 (Nat.gcd_dvd_left m _))
+      (Nat.gcd_pos_of_pos_left _ hm1), (Nat.div_le_self m _).trans hmM⟩
+  have hfib :
+      (∑ d ∈ Icc 1 M, ∑ m ∈ Big2.filter (fun m => m / Nat.gcd m (p ^ k) = d),
+        a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0) =
+      ∑ m ∈ Big2, a m ^ 2 *
+        ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 :=
+    sum_fiberwise_of_maps_to hmaps_Big2 _
+  have hBig2_le :
+      (∑ m ∈ Big2, a m ^ 2 *
+        ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0) ≤
+      ∑ m ∈ Icc 1 M, a m ^ 2 *
+        ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 :=
+    sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun _ _ _ =>
+      mul_nonneg (sq_nonneg _)
+        (sum_nonneg fun _ _ => by split_ifs; · exact Nat.cast_nonneg _; · exact le_rfl)
+  calc
+    (∑ d ∈ Icc 1 M, reducedDilationCoeff M a (p ^ k) d ^ 2) ≤
+        (∑ d ∈ Icc 1 M, 2 * a d ^ 2) +
+          ∑ d ∈ Icc 1 M, 4 * Real.log M * ∑ m ∈ Big2.filter (fun m => m / Nat.gcd m (p ^ k) = d),
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 := by
+      rw [← sum_add_distrib]
+      exact sum_le_sum hpt
+    _ = 2 * (∑ m ∈ Icc 1 M, a m ^ 2) +
+          4 * Real.log M * ∑ m ∈ Big2,
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 := by
+      rw [← mul_sum, ← mul_sum, hfib]
+    _ ≤ 2 * (∑ m ∈ Icc 1 M, a m ^ 2) +
+          4 * Real.log M * ∑ m ∈ Icc 1 M,
+            a m ^ 2 * ∑ g ∈ m.divisors.filter (2 ≤ ·), if g ∣ p ^ k then (g : ℝ) else 0 :=
+      add_le_add le_rfl
+        (mul_le_mul_of_nonneg_left hBig2_le (mul_nonneg (by norm_num) (Real.log_natCast_nonneg M)))
+
+/-- Uniform `L²` residual norm bound on `conductorSubspace M N` (`M ^ 6 ≤ N`) without any
+unsuppressed factor of `M` or `log M`:
+`‖P_N u - ∑ a_m (log N - E(m)) v_m‖ ≤ C_res * (1 + (1 + log M)^2 / √(log N)) * ‖u‖`. -/
+theorem exists_fullPrimeMatrix_packet_residual_norm_le :
+    ∃ C_res : ℝ, 0 < C_res ∧
+      ∀ {M N : ℕ}, 2 ≤ M → M ^ 6 ≤ N → 18 * (1 + Real.log M) ≤ Real.log N →
+      ∀ a : ℕ → ℝ,
+        ‖Matrix.toEuclideanLin (fullPrimeMatrix N)
+            (∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N) -
+          ∑ m ∈ Icc 1 M, (a m * (Real.log N - ramanujanAdjunctionEnergy m)) •
+            normalizedRamanujanHorizonVector m N‖ ≤
+          C_res * (1 + (1 + Real.log M) ^ 2 / Real.sqrt (Real.log N)) *
+            ‖∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N‖ := by
+  obtain ⟨C_env, hC_env_pos, hC_env⟩ := exists_primeMertensRemainder_log_envelope
+  obtain ⟨C_jet, hC_jet_pos, hC_jet⟩ := exists_divisorJetHorizonVector_norm_le
+  let C_mert := C_env + |Real.eulerMascheroniConstant| + 1
+  have hC_mert1 : 1 ≤ C_mert := by dsimp only [C_mert]; positivity
+  let C_top := 32 * (C_mert + 4) ^ 2 + 16 * C_jet ^ 2 + 256
+  have hC_top_pos : 0 < C_top := by dsimp only [C_top]; positivity
+  let C_res := 2 * C_env + 16 + 4 * Real.sqrt C_top
+  refine ⟨C_res, by dsimp only [C_res]; positivity, ?_⟩
+  intro M N hM hM6N hlog a
+  let u := ∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N
+  let diagVec := ∑ m ∈ Icc 1 M,
+    (a m * (Real.log N - ramanujanAdjunctionEnergy m)) • normalizedRamanujanHorizonVector m N
+  have hu_mem : u ∈ conductorSubspace M N :=
+    sum_normalizedRamanujanHorizonVector_mem_conductorSubspace M N a
+  have hMM_le_N : M * M ≤ N := by
+    have hpow : M * M ≤ M ^ 6 := by
+      calc
+        M * M = M ^ 2 := (sq M).symm
+        _ ≤ M ^ 6 := Nat.pow_le_pow_right (by omega) (by norm_num)
+    exact hpow.trans hM6N
+  have hL1 : 1 ≤ Real.log N := by
+    have := Real.log_natCast_nonneg M; linarith only [hlog, this]
+  have hL0 : 0 < Real.log N := zero_lt_one.trans_le hL1
+  have hsL0 : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr hL0
+  have hriesz_a : (∑ m ∈ Icc 1 M, a m ^ 2) ≤ 2 * ‖u‖ ^ 2 := by
+    have h := (half_and_three_halves_riesz_of_log_le hM hMM_le_N hlog a).1
+    linarith only [h]
+  -- Express `‖P_N u - diagVec‖ ^ 2` via `ramanujanPrimeResidual`.
+  have hnorm_res_eq : ‖Matrix.toEuclideanLin (fullPrimeMatrix N) u - diagVec‖ ^ 2 =
+      (Real.log N)⁻¹ * ∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 M, a m * ramanujanPrimeResidual m N n) ^ 2 := by
+    rw [EuclideanSpace.real_norm_sq_eq]
+    have hcoord : ∀ idx : PrimeHorizonIndex N,
+        (Matrix.toEuclideanLin (fullPrimeMatrix N) u - diagVec) idx =
+          (Real.sqrt (Real.log N))⁻¹ *
+            ∑ m ∈ Icc 1 M, a m * ramanujanPrimeResidual m N idx.1 := by
+      intro idx
+      change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) idx)
+        (Matrix.toEuclideanLin (fullPrimeMatrix N) u - diagVec) = _
+      rw [map_sub]
+      dsimp only [u, diagVec]
+      rw [map_sum, map_sum, map_sum, ← sum_sub_distrib, mul_sum]
+      refine sum_congr rfl fun m _ => ?_
+      rw [map_smul, map_smul, map_smul]
+      change a m * (Matrix.toEuclideanLin (fullPrimeMatrix N)
+          (normalizedRamanujanHorizonVector m N) idx) -
+        a m * (Real.log N - ramanujanAdjunctionEnergy m) *
+          normalizedRamanujanHorizonVector m N idx = _
+      dsimp only [normalizedRamanujanHorizonVector]
+      rw [map_smul]
+      change a m * ((Real.sqrt (Real.log N))⁻¹ *
+          Matrix.toEuclideanLin (fullPrimeMatrix N) (ramanujanHorizonVector m N) idx) -
+        a m * (Real.log N - ramanujanAdjunctionEnergy m) *
+          ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile m idx.1) = _
+      rw [fullPrimeMatrix_apply_ramanujanHorizonVector, ramanujanPrimeResidual]
+      ring
+    trans ∑ idx : PrimeHorizonIndex N,
+      ((Real.sqrt (Real.log N))⁻¹ *
+        ∑ m ∈ Icc 1 M, a m * ramanujanPrimeResidual m N idx.1) ^ 2
+    · exact sum_congr rfl fun idx _ => by rw [hcoord idx]
+    · rw [Finset.sum_coe_sort (Icc 1 N) (fun n =>
+        ((Real.sqrt (Real.log N))⁻¹ *
+          ∑ m ∈ Icc 1 M, a m * ramanujanPrimeResidual m N n) ^ 2)]
+      simp_rw [mul_pow, inv_pow, Real.sq_sqrt hL0.le]
+      rw [← mul_sum]
+  -- Pointwise decomposition of `∑_m a_m * ramanujanPrimeResidual m N n`.
+  let e : ℕ → ℝ := fun y => mertensSum y - Real.log y + Real.eulerMascheroniConstant
+  let r : ℕ → ℝ := fun n => Real.log N - Real.log ((N / n : ℕ) : ℝ) - Real.log n
+  let corrTerm : ℕ → ℝ := fun n =>
+    poleVector n * ∑ m ∈ Icc 1 M, a m *
+      (poleProfileCorrection (normalizedRamanujanMode m) (N / n) n +
+        (Real.log m + tameDifferent m) * normalizedRamanujanMode m n)
+  have hu_apply : ∀ n ∈ Icc 1 N,
+      (Real.sqrt (Real.log N))⁻¹ * poleVector n *
+          (∑ m ∈ Icc 1 M, a m * normalizedRamanujanMode m n) =
+        primeHorizonExtension u n := by
+    intro n hn
+    rw [primeHorizonExtension_coe u ⟨n, hn⟩]
+    change _ = (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) ⟨n, hn⟩) u
+    dsimp only [u]
+    rw [map_sum, mul_sum]
+    refine sum_congr rfl fun m _ => ?_
+    change (Real.sqrt (Real.log N))⁻¹ * poleVector n * (a m * normalizedRamanujanMode m n) =
+      a m * ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile m n)
+    rw [ramanujanPoleProfile_eq_mul_poleVector]
+    ring
+  have hres_pt : ∀ n ∈ Icc 1 N,
+      (Real.sqrt (Real.log N))⁻¹ * (∑ m ∈ Icc 1 M, a m * ramanujanPrimeResidual m N n) =
+        (e (N / n) - r n) * primeHorizonExtension u n +
+          (Real.sqrt (Real.log N))⁻¹ * corrTerm n := by
+    intro n hn
+    obtain ⟨hn0, hnN⟩ := mem_Icc.mp hn
+    have hid_m : ∀ m ∈ Icc 1 M, ramanujanPrimeResidual m N n =
+        ((e (N / n) - r n) * normalizedRamanujanMode m n +
+          (poleProfileCorrection (normalizedRamanujanMode m) (N / n) n +
+            (Real.log m + tameDifferent m) * normalizedRamanujanMode m n)) * poleVector n := by
+      intro m _
+      rw [ramanujanPrimeResidual]
+      simp only [ramanujanPoleProfile_eq_mul_poleVector]
+      rw [sum_weilPrimeKernel_poleProfile_eq_correction (normalizedRamanujanMode m) hn0 hnN]
+      dsimp only [e, r, ramanujanAdjunctionEnergy]
+      ring
+    have hsum_m : (∑ m ∈ Icc 1 M, a m * ramanujanPrimeResidual m N n) =
+        (e (N / n) - r n) * poleVector n * (∑ m ∈ Icc 1 M, a m * normalizedRamanujanMode m n) +
+          corrTerm n := by
+      rw [sum_congr rfl (fun m hm => by rw [hid_m m hm])]
+      dsimp only [corrTerm]
+      rw [mul_sum, mul_sum, ← sum_add_distrib]
+      exact sum_congr rfl fun m _ => by ring
+    rw [hsum_m, mul_add, ← hu_apply n hn]
+    ring
+  -- Piece 1: Mertens remainder on `1 ≤ n ≤ N` has norm `≤ C_env * ‖u‖`.
+  have hmert_piece :
+      (∑ n ∈ Icc 1 N, ((e (N / n) - r n) * primeHorizonExtension u n) ^ 2) ≤
+        C_env ^ 2 * ‖u‖ ^ 2 := by
+    have hpt : ∀ n ∈ Icc 1 N,
+        ((e (N / n) - r n) * primeHorizonExtension u n) ^ 2 ≤
+          C_env ^ 2 * primeHorizonExtension u n ^ 2 := by
+      intro n hn
+      obtain ⟨hn0, hnN⟩ := mem_Icc.mp hn
+      have hy1 : 1 ≤ N / n := Nat.div_pos hnN hn0
+      have hr_bd := roundoff_le hn0 hnN
+      have her_abs : |e (N / n) - r n| ≤ C_env := by
+        have h1 : |e (N / n) - r n| ≤ primeMertensRemainderProfile (N / n) := by
+          unfold primeMertensRemainderProfile
+          calc
+            |e (N / n) - r n| ≤ |e (N / n)| + |r n| := abs_sub _ _
+            _ ≤ |e (N / n)| + 1 / ((N / n : ℕ) : ℝ) := by
+              rw [abs_of_nonneg hr_bd.1]; exact add_le_add le_rfl hr_bd.2
+        have hden : 1 ≤ 1 + Real.log ((N / n : ℕ) : ℝ) := by
+          have := Real.log_natCast_nonneg (N / n); linarith
+        exact h1.trans ((hC_env (N / n) hy1).trans (div_le_self hC_env_pos.le hden))
+      have her_sq : (e (N / n) - r n) ^ 2 ≤ C_env ^ 2 := by
+        have h := pow_le_pow_left₀ (abs_nonneg _) her_abs 2
+        simpa only [sq_abs] using h
+      rw [mul_pow]
+      exact mul_le_mul_of_nonneg_right her_sq (sq_nonneg _)
+    calc
+      (∑ n ∈ Icc 1 N, ((e (N / n) - r n) * primeHorizonExtension u n) ^ 2) ≤
+          ∑ n ∈ Icc 1 N, C_env ^ 2 * primeHorizonExtension u n ^ 2 := sum_le_sum hpt
+      _ = C_env ^ 2 * ‖u‖ ^ 2 := by rw [← mul_sum, sum_primeHorizonExtension_sq]
+  -- Split `Icc 1 N` at `K := N / M ^ 4`.
+  let K := N / M ^ 4
+  have hM4_pos : 0 < M ^ 4 := pow_pos (by omega) 4
+  have hMK : M * M ≤ K := by
+    refine (Nat.le_div_iff_mul_le hM4_pos).mpr ?_
+    calc
+      M * M * M ^ 4 = M ^ 6 := by ring
+      _ ≤ N := hM6N
+  have hKN : K ≤ N := Nat.div_le_self N (M ^ 4)
+  have hK1 : 1 ≤ K := (Nat.mul_le_mul hM hM).trans hMK |>.trans' (by omega)
+  have hsplit_Icc : Icc 1 N = Icc 1 K ∪ Ioc K N := by
+    ext n; simp only [mem_Icc, mem_union, mem_Ioc]; omega
+  have hdisj_Icc : Disjoint (Icc 1 K) (Ioc K N) := by
+    rw [Finset.disjoint_left]; intro n hn1 hn2; simp only [mem_Icc, mem_Ioc] at hn1 hn2; omega
+  -- Piece 2a: Deep quotient strip `1 ≤ n ≤ K` (`N / n ≥ M ^ 4`).
+  have hdeep_piece :
+      (Real.log N)⁻¹ * (∑ n ∈ Icc 1 K, corrTerm n ^ 2) ≤ 64 * ‖u‖ ^ 2 := by
+    have hcorr_deep : ∀ n ∈ Icc 1 K,
+        corrTerm n ^ 2 ≤ (16 / (n : ℝ)) * ∑ m ∈ Icc 1 M, a m ^ 2 := by
+      intro n hn
+      obtain ⟨hn0, hnK⟩ := mem_Icc.mp hn
+      have hy_ge : M ^ 4 ≤ N / n := by
+        refine (Nat.le_div_iff_mul_le hn0).mpr ?_
+        exact (Nat.mul_le_mul_right (M ^ 4) hnK).trans (Nat.div_mul_le_self N (M ^ 4))
+      have hy0 : 0 < N / n := lt_of_lt_of_le hM4_pos hy_ge
+      have hterm_m : ∀ m ∈ Icc 1 M,
+          |a m * (poleProfileCorrection (normalizedRamanujanMode m) (N / n) n +
+              (Real.log m + tameDifferent m) * normalizedRamanujanMode m n)| ≤
+            |a m| * (4 / (M : ℝ)) := by
+        intro m hm
+        obtain ⟨hm1, hmM⟩ := mem_Icc.mp hm
+        have hcor := abs_normalizedRamanujan_correction_le hm1 hn0 hy0
+        have hφm : Real.sqrt (m.totient : ℝ) ≤ Real.sqrt M :=
+          Real.sqrt_le_sqrt (by exact_mod_cast (Nat.totient_le m).trans hmM)
+        have hlogm : Real.log m ≤ M := by
+          have h1 : Real.log m ≤ (m : ℝ) := by
+            linarith only [Real.log_le_sub_one_of_pos (show (0 : ℝ) < m by exact_mod_cast hm1)]
+          exact h1.trans (by exact_mod_cast hmM)
+        have hM0 : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
+        have hsM_le : Real.sqrt M ≤ M := by
+          have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast (by omega : 1 ≤ M)
+          nlinarith only [Real.sq_sqrt hM0.le, Real.sqrt_nonneg M, hM1,
+            sq_nonneg (Real.sqrt M - 1)]
+        have hnum : 4 * Real.sqrt (m.totient : ℝ) * Real.log m ≤ 4 * (M : ℝ) ^ 2 := by
+          have hmul : Real.sqrt (m.totient : ℝ) * Real.log m ≤ (M : ℝ) * M :=
+            mul_le_mul (hφm.trans hsM_le) hlogm (Real.log_natCast_nonneg m) hM0.le
+          nlinarith only [hmul]
+        have hden : (M : ℝ) ^ 3 ≤ ((N / n : ℕ) : ℝ) := by
+          have hM34 : M ^ 3 ≤ M ^ 4 := Nat.pow_le_pow_right (by omega) (by norm_num)
+          exact_mod_cast hM34.trans hy_ge
+        have hquot : 4 * Real.sqrt (m.totient : ℝ) * Real.log m / ((N / n : ℕ) : ℝ) ≤
+            4 / (M : ℝ) := by
+          calc
+            _ ≤ 4 * (M : ℝ) ^ 2 / (M : ℝ) ^ 3 :=
+              div_le_div hnum (by positivity) (pow_pos hM0 3) hden
+            _ = 4 / (M : ℝ) := by field_simp [hM0.ne']; ring
+        rw [abs_mul]
+        exact mul_le_mul_of_nonneg_left (hcor.trans hquot) (abs_nonneg _)
+      have habs_sum :
+          |∑ m ∈ Icc 1 M, a m * (poleProfileCorrection (normalizedRamanujanMode m) (N / n) n +
+              (Real.log m + tameDifferent m) * normalizedRamanujanMode m n)| ≤
+            (4 / (M : ℝ)) * ∑ m ∈ Icc 1 M, |a m| := by
+        calc
+          _ ≤ ∑ m ∈ Icc 1 M, |a m| * (4 / (M : ℝ)) :=
+            (abs_sum_le_sum_abs _ _).trans (sum_le_sum hterm_m)
+          _ = (4 / (M : ℝ)) * ∑ m ∈ Icc 1 M, |a m| := by rw [mul_sum]; exact sum_congr rfl fun _ _ => mul_comm _ _
+      have hcs_a : (∑ m ∈ Icc 1 M, |a m|) ^ 2 ≤ (M : ℝ) * ∑ m ∈ Icc 1 M, a m ^ 2 := by
+        have h := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 M) (fun _ => (1 : ℝ)) (fun m => |a m|)
+        simpa only [one_mul, one_pow, sum_const, Nat.card_Icc, Nat.add_sub_cancel,
+          nsmul_eq_mul, mul_one, sq_abs] using h
+      have hsq_sum :
+          (∑ m ∈ Icc 1 M, a m * (poleProfileCorrection (normalizedRamanujanMode m) (N / n) n +
+              (Real.log m + tameDifferent m) * normalizedRamanujanMode m n)) ^ 2 ≤
+            16 * ∑ m ∈ Icc 1 M, a m ^ 2 := by
+        have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast (by omega : 1 ≤ M)
+        have hM0 : (0 : ℝ) < M := zero_lt_one.trans_le hM1
+        have h1 := pow_le_pow_left₀ (abs_nonneg _) habs_sum 2
+        rw [sq_abs, mul_pow] at h1
+        calc
+          _ ≤ (4 / (M : ℝ)) ^ 2 * ((M : ℝ) * ∑ m ∈ Icc 1 M, a m ^ 2) :=
+            h1.trans (mul_le_mul_of_nonneg_left hcs_a (sq_nonneg _))
+          _ = (16 / (M : ℝ)) * ∑ m ∈ Icc 1 M, a m ^ 2 := by field_simp [hM0.ne']; ring
+          _ ≤ 16 * ∑ m ∈ Icc 1 M, a m ^ 2 :=
+            mul_le_mul_of_nonneg_right (div_le_self (by norm_num) hM1)
+              (sum_nonneg fun _ _ => sq_nonneg _)
+      dsimp only [corrTerm]
+      rw [mul_pow, poleVector_sq]
+      calc
+        1 / (n : ℝ) * (∑ m ∈ Icc 1 M, a m * _) ^ 2 ≤
+            1 / (n : ℝ) * (16 * ∑ m ∈ Icc 1 M, a m ^ 2) :=
+          mul_le_mul_of_nonneg_left hsq_sum (by positivity)
+        _ = (16 / (n : ℝ)) * ∑ m ∈ Icc 1 M, a m ^ 2 := by ring
+    have hhar_K : (∑ n ∈ Icc 1 K, (1 / (n : ℝ))) ≤ 2 * Real.log N := by
+      have hsub : Icc 1 K ⊆ Icc 1 N := Icc_subset_Icc_right hKN
+      have h1 : (∑ n ∈ Icc 1 K, (1 / (n : ℝ))) ≤ harmonicSum N :=
+        sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
+      have h2 := harmonicSum_le_one_add_log N
+      linarith only [h1, h2, hL1]
+    calc
+      (Real.log N)⁻¹ * (∑ n ∈ Icc 1 K, corrTerm n ^ 2) ≤
+          (Real.log N)⁻¹ * ∑ n ∈ Icc 1 K, (16 / (n : ℝ)) * ∑ m ∈ Icc 1 M, a m ^ 2 :=
+        mul_le_mul_of_nonneg_left (sum_le_sum hcorr_deep) (inv_nonneg.mpr hL0.le)
+      _ = (Real.log N)⁻¹ * (16 * (∑ n ∈ Icc 1 K, (1 / (n : ℝ))) * ∑ m ∈ Icc 1 M, a m ^ 2) := by
+        congr 1; rw [mul_sum, sum_mul]
+        exact sum_congr rfl fun n _ => by ring
+      _ ≤ (Real.log N)⁻¹ * (16 * (2 * Real.log N) * (2 * ‖u‖ ^ 2)) := by
+        refine mul_le_mul_of_nonneg_left ?_ (inv_nonneg.mpr hL0.le)
+        refine mul_le_mul (mul_le_mul_of_nonneg_left hhar_K (by norm_num)) hriesz_a
+          (sum_nonneg fun _ _ => sq_nonneg _) (by positivity)
+      _ = 64 * ‖u‖ ^ 2 := by field_simp [hL0.ne']; ring
+  -- Piece 2b: Top strip `n ∈ Ioc K N` (`N / n < M ^ 4`).
+  have hhar_NK : (harmonic N : ℝ) - harmonic K + 2 ≤ 4 * (1 + Real.log M) := by
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast (hK1.trans hKN)
+    have hK0 : (0 : ℝ) < K := by exact_mod_cast hK1
+    have hNK_nat : N < (K + 1) * M ^ 4 := by
+      have h1 := Nat.div_add_mod N (M ^ 4)
+      have h2 := Nat.mod_lt N hM4_pos
+      have hmul : M ^ 4 * K = K * M ^ 4 := Nat.mul_comm _ _
+      dsimp only [K] at hmul ⊢
+      omega
+    have hNK_le : (N : ℝ) / K ≤ 2 * (M : ℝ) ^ 4 := by
+      rw [div_le_iff₀ hK0]
+      have hcast : (N : ℝ) ≤ ((K : ℝ) + 1) * (M : ℝ) ^ 4 := by exact_mod_cast hNK_nat.le
+      have hK1R : (1 : ℝ) ≤ K := by exact_mod_cast hK1
+      nlinarith only [hcast, hK1R, show (0 : ℝ) ≤ (M : ℝ) ^ 4 by positivity]
+    have hHN : (harmonic N : ℝ) ≤ 1 + Real.log N := harmonic_le_one_add_log N
+    have hHK : Real.log K ≤ (harmonic K : ℝ) :=
+      (Real.log_le_log hK0 (by exact_mod_cast Nat.le_succ K)).trans (log_add_one_le_harmonic K)
+    have hlog2 : Real.log (2 : ℝ) ≤ 1 := by
+      linarith only [Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)]
+    have hM0 : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
+    have hlog_NK : Real.log ((N : ℝ) / K) ≤ 1 + 4 * Real.log M := by
+      calc
+        Real.log ((N : ℝ) / K) ≤ Real.log (2 * (M : ℝ) ^ 4) :=
+          Real.log_le_log (div_pos hN0 hK0) hNK_le
+        _ = Real.log 2 + 4 * Real.log M := by
+          rw [Real.log_mul (by norm_num) (pow_ne_zero 4 hM0.ne'), Real.log_pow]; ring
+        _ ≤ 1 + 4 * Real.log M := by linarith only [hlog2]
+    rw [Real.log_div hN0.ne' hK0.ne'] at hlog_NK
+    linarith only [hHN, hHK, hlog_NK]
+  have hmert_le : ∀ y : ℕ, 1 ≤ y → mertensSum y ≤ Real.log y + C_mert := by
+    intro y hy
+    have hprof := hC_env y hy
+    have hden : 1 ≤ 1 + Real.log y := by have := Real.log_natCast_nonneg y; linarith
+    have hle : primeMertensRemainderProfile y ≤ C_env :=
+      hprof.trans (div_le_self hC_env_pos.le hden)
+    unfold primeMertensRemainderProfile at hle
+    have h1y : 0 ≤ 1 / (y : ℝ) := by positivity
+    have habs : |mertensSum y - Real.log y + Real.eulerMascheroniConstant| ≤ C_env := by
+      linarith only [hle, h1y]
+    have hup := (le_abs_self _).trans habs
+    have hγ := neg_abs_le Real.eulerMascheroniConstant
+    dsimp only [C_mert]; linarith only [hup, hγ]
+  have htop_piece :
+      (Real.log N)⁻¹ * (∑ n ∈ Ioc K N, corrTerm n ^ 2) ≤
+        C_top * ((1 + Real.log M) ^ 4 / Real.log N) * ‖u‖ ^ 2 := by
+    let G : ℕ → ℝ := fun j => ∑ m ∈ Icc 1 M, a m * normalizedRamanujanMode m j
+    let upJump : ℕ → ℝ := fun n =>
+      poleVector n * ∑ t ∈ Icc 1 (N / n), G (n * t) * Λ t / (t : ℝ)
+    let mertTop : ℕ → ℝ := fun n =>
+      mertensSum (N / n) * (poleVector n * G n)
+    let jetTop : ℕ → ℝ := fun n =>
+      poleVector n * ∑ m ∈ Icc 1 M, a m * (ramanujanLogDivisorJet m n / Real.sqrt (m.totient : ℝ))
+    let energyTop : ℕ → ℝ := fun n =>
+      poleVector n * ∑ m ∈ Icc 1 M,
+        (a m * (Real.log m + tameDifferent m)) * normalizedRamanujanMode m n
+    have hcorr_top_eq : ∀ n ∈ Ioc K N,
+        corrTerm n = upJump n - mertTop n - jetTop n + energyTop n := by
+      intro n hn
+      have hn0 : 0 < n := by have := (mem_Ioc.mp hn).1; omega
+      dsimp only [corrTerm, upJump, mertTop, jetTop, energyTop, G]
+      have hterm_m : ∀ m ∈ Icc 1 M,
+          a m * (poleProfileCorrection (normalizedRamanujanMode m) (N / n) n +
+              (Real.log m + tameDifferent m) * normalizedRamanujanMode m n) =
+            (∑ t ∈ Icc 1 (N / n), a m * normalizedRamanujanMode m (n * t) * Λ t / (t : ℝ)) -
+              mertensSum (N / n) * (a m * normalizedRamanujanMode m n) -
+              a m * (ramanujanLogDivisorJet m n / Real.sqrt (m.totient : ℝ)) +
+              (a m * (Real.log m + tameDifferent m)) * normalizedRamanujanMode m n := by
+        intro m hm
+        have hm0 : 0 < m := (mem_Icc.mp hm).1
+        have hdown :
+            (∑ d ∈ n.divisors,
+                (normalizedRamanujanMode m (n / d) - normalizedRamanujanMode m n) * Λ d) =
+              -(ramanujanLogDivisorJet m n / Real.sqrt (m.totient : ℝ)) := by
+          simp_rw [normalizedRamanujanMode_eq_coefficient hm0]
+          have hsub_d : ∀ d ∈ n.divisors,
+              (ramanujanLagCoefficient m (n / d) / Real.sqrt (m.totient : ℝ) -
+                  ramanujanLagCoefficient m n / Real.sqrt (m.totient : ℝ)) * Λ d =
+                ((ramanujanLagCoefficient m (n / d) - ramanujanLagCoefficient m n) * Λ d) /
+                  Real.sqrt (m.totient : ℝ) := fun _ _ => by ring
+          rw [sum_congr rfl hsub_d, ← sum_div, ← ramanujanDownCorrection,
+            ramanujanDownCorrection_eq_neg_logDivisorJet m hn0, neg_div]
+        have hup :
+            (∑ t ∈ Icc 1 (N / n),
+                (normalizedRamanujanMode m (n * t) - normalizedRamanujanMode m n) * Λ t / (t : ℝ)) =
+              (∑ t ∈ Icc 1 (N / n), normalizedRamanujanMode m (n * t) * Λ t / (t : ℝ)) -
+                mertensSum (N / n) * normalizedRamanujanMode m n := by
+          unfold mertensSum
+          rw [mul_comm _ (normalizedRamanujanMode m n), mul_sum, ← sum_sub_distrib]
+          exact sum_congr rfl fun t _ => by ring
+        rw [poleProfileCorrection_eq_divisor_jumps, hup, hdown, mul_add, mul_sub]
+        simp only [mul_sum, sum_sub_distrib]
+        have hsum_t : a m * (∑ t ∈ Icc 1 (N / n),
+            normalizedRamanujanMode m (n * t) * Λ t / (t : ℝ)) =
+            ∑ t ∈ Icc 1 (N / n), a m * normalizedRamanujanMode m (n * t) * Λ t / (t : ℝ) := by
+          rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring
+        rw [hsum_t]
+        ring
+      rw [sum_congr rfl hterm_m]
+      simp only [sum_add_distrib, sum_sub_distrib, ← mul_sum]
+      have hswap_t :
+          (∑ m ∈ Icc 1 M, ∑ t ∈ Icc 1 (N / n),
+              a m * normalizedRamanujanMode m (n * t) * Λ t / (t : ℝ)) =
+            ∑ t ∈ Icc 1 (N / n),
+              (∑ m ∈ Icc 1 M, a m * normalizedRamanujanMode m (n * t)) * Λ t / (t : ℝ) := by
+        rw [sum_comm]
+        refine sum_congr rfl fun t _ => ?_
+        rw [sum_mul, sum_div]
+      rw [hswap_t]
+      ring
+    have h4sq : ∀ n ∈ Ioc K N,
+        corrTerm n ^ 2 ≤
+          4 * upJump n ^ 2 + 4 * mertTop n ^ 2 + 4 * jetTop n ^ 2 + 4 * energyTop n ^ 2 := by
+      intro n hn
+      rw [hcorr_top_eq n hn]
+      nlinarith only [sq_nonneg (upJump n + mertTop n), sq_nonneg (upJump n + jetTop n),
+        sq_nonneg (upJump n - energyTop n), sq_nonneg (mertTop n - jetTop n),
+        sq_nonneg (mertTop n + energyTop n), sq_nonneg (jetTop n + energyTop n)]
+    -- Sub-bound (i): `mertTop` on `Ioc K N`.
+    have hmert_M4 : mertensSum (M ^ 4) ≤ (C_mert + 4) * (1 + Real.log M) := by
+      have hm := hmert_le (M ^ 4) (by omega)
+      have hM0 : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
+      rw [Nat.cast_pow, Real.log_pow] at hm
+      have hLM0 := Real.log_natCast_nonneg M
+      nlinarith only [hm, hLM0, hC_mert1]
+    have hquot_lt_M4 : ∀ n ∈ Ioc K N, N / n ≤ M ^ 4 := by
+      intro n hn
+      obtain ⟨hKn, _⟩ := mem_Ioc.mp hn
+      have hn0 : 0 < n := by omega
+      have hlt_mul : N < M ^ 4 * n := by
+        rw [Nat.mul_comm]
+        exact (Nat.div_lt_iff_lt_mul hM4_pos).mp hKn
+      exact ((Nat.div_lt_iff_lt_mul hn0).mpr hlt_mul).le
+    have hmertTop_sum :
+        (∑ n ∈ Ioc K N, mertTop n ^ 2) ≤
+          8 * (C_mert + 4) ^ 2 * (1 + Real.log M) ^ 3 * ‖u‖ ^ 2 := by
+      have hpt : ∀ n ∈ Ioc K N,
+          mertTop n ^ 2 ≤ ((C_mert + 4) * (1 + Real.log M)) ^ 2 * (poleVector n * G n) ^ 2 := by
+        intro n hn
+        have hmono : mertensSum (N / n) ≤ mertensSum (M ^ 4) :=
+          sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc_right (hquot_lt_M4 n hn))
+            fun _ _ _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _)
+        have hm0 : 0 ≤ mertensSum (N / n) :=
+          sum_nonneg fun _ _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _)
+        dsimp only [mertTop]
+        rw [mul_pow]
+        exact mul_le_mul_of_nonneg_right
+          (pow_le_pow_left₀ hm0 (hmono.trans hmert_M4) 2) (sq_nonneg _)
+      have hpack_G : (∑ n ∈ Ioc K N, (poleVector n * G n) ^ 2) ≤
+          4 * (1 + Real.log M) * (2 * ‖u‖ ^ 2) := by
+        have heq_G : ∀ n ∈ Ioc K N,
+            (poleVector n * G n) ^ 2 = (∑ m ∈ Icc 1 M, a m * ramanujanPoleProfile m n) ^ 2 := by
+          intro n _; congr 1; dsimp only [G]; rw [mul_sum]
+          exact sum_congr rfl fun m _ => by rw [ramanujanPoleProfile_eq_mul_poleVector]; ring
+        rw [sum_congr rfl heq_G]
+        exact (sum_Ioc_packet_sq_le hM hMK hKN a).trans
+          (mul_le_mul hhar_NK hriesz_a (sum_nonneg fun _ _ => sq_nonneg _)
+            (by have := Real.log_natCast_nonneg M; positivity))
+      calc
+        (∑ n ∈ Ioc K N, mertTop n ^ 2) ≤
+            ((C_mert + 4) * (1 + Real.log M)) ^ 2 * ∑ n ∈ Ioc K N, (poleVector n * G n) ^ 2 := by
+          rw [mul_sum]; exact sum_le_sum hpt
+        _ ≤ ((C_mert + 4) * (1 + Real.log M)) ^ 2 * (4 * (1 + Real.log M) * (2 * ‖u‖ ^ 2)) :=
+          mul_le_mul_of_nonneg_left hpack_G (sq_nonneg _)
+        _ = 8 * (C_mert + 4) ^ 2 * (1 + Real.log M) ^ 3 * ‖u‖ ^ 2 := by ring
+    -- Sub-bound (ii): `jetTop` on `Ioc K N`.
+    have hjetTop_sum :
+        (∑ n ∈ Ioc K N, jetTop n ^ 2) ≤
+          8 * C_jet ^ 2 * (1 + Real.log M) ^ 3 * ‖u‖ ^ 2 := by
+      have hjet_eq : ∀ n ∈ Ioc K N,
+          jetTop n ^ 2 =
+            (∑ k ∈ Icc 1 M, divisorJetCoeff M a k * ramanujanPoleProfile k n) ^ 2 := by
+        intro n hn
+        have hnI : n ∈ Icc 1 N := mem_Icc.mpr ⟨by have := (mem_Ioc.mp hn).1; omega, (mem_Ioc.mp hn).2⟩
+        have happ := divisorJetHorizonVector_apply M N a ⟨n, hnI⟩
+        have hproj : divisorJetHorizonVector M N a ⟨n, hnI⟩ =
+            (Real.sqrt (Real.log N))⁻¹ *
+              ∑ k ∈ Icc 1 M, divisorJetCoeff M a k * ramanujanPoleProfile k n := by
+          change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) ⟨n, hnI⟩)
+            (divisorJetHorizonVector M N a) = _
+          dsimp only [divisorJetHorizonVector]
+          rw [map_sum, mul_sum]
+          refine sum_congr rfl fun k _ => ?_
+          change divisorJetCoeff M a k *
+            ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile k n) = _
+          ring
+        rw [hproj] at happ
+        have hcancel := mul_left_cancel₀ (inv_ne_zero hsL0.ne')
+          (by simpa only [mul_assoc] using happ)
+        dsimp only [jetTop]
+        rw [← hcancel]
+      rw [sum_congr rfl hjet_eq]
+      -- Bound `∑_{k=1}^M (divisorJetCoeff M a k)^2` via `half_and_three_halves_riesz_of_log_le`.
+      have hriesz_jet := (half_and_three_halves_riesz_of_log_le hM hMM_le_N hlog
+        (divisorJetCoeff M a)).1
+      have hjet_norm := hC_jet hM hMM_le_N hlog a
+      have hSa0 : 0 ≤ ∑ m ∈ Icc 1 M, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
+      have hjet_coeff_sq : (∑ k ∈ Icc 1 M, divisorJetCoeff M a k ^ 2) ≤
+          2 * C_jet ^ 2 * (1 + Real.log M) ^ 2 * (2 * ‖u‖ ^ 2) := by
+        have hsq := pow_le_pow_left₀ (norm_nonneg _) hjet_norm 2
+        rw [mul_pow, mul_pow, Real.sq_sqrt hSa0] at hsq
+        have h1 : (∑ k ∈ Icc 1 M, divisorJetCoeff M a k ^ 2) ≤
+            2 * ‖divisorJetHorizonVector M N a‖ ^ 2 := by linarith only [hriesz_jet]
+        calc
+          _ ≤ 2 * (C_jet ^ 2 * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2) :=
+            h1.trans (mul_le_mul_of_nonneg_left hsq zero_le_two)
+          _ ≤ 2 * (C_jet ^ 2 * (1 + Real.log M) ^ 2 * (2 * ‖u‖ ^ 2)) :=
+            mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_left hriesz_a (mul_nonneg (sq_nonneg _) (sq_nonneg _)))
+              zero_le_two
+          _ = 2 * C_jet ^ 2 * (1 + Real.log M) ^ 2 * (2 * ‖u‖ ^ 2) := by ring
+      calc
+        (∑ n ∈ Ioc K N, (∑ k ∈ Icc 1 M, divisorJetCoeff M a k * ramanujanPoleProfile k n) ^ 2) ≤
+            4 * (1 + Real.log M) * ∑ k ∈ Icc 1 M, divisorJetCoeff M a k ^ 2 :=
+          (sum_Ioc_packet_sq_le hM hMK hKN _).trans
+            (mul_le_mul_of_nonneg_right hhar_NK (sum_nonneg fun _ _ => sq_nonneg _))
+        _ ≤ 4 * (1 + Real.log M) * (2 * C_jet ^ 2 * (1 + Real.log M) ^ 2 * (2 * ‖u‖ ^ 2)) :=
+          mul_le_mul_of_nonneg_left hjet_coeff_sq
+            (by have := Real.log_natCast_nonneg M; positivity)
+        _ = 16 * C_jet ^ 2 * (1 + Real.log M) ^ 3 * ‖u‖ ^ 2 := by ring
+      --Wait: `16` vs `8`: update bound to `16`!
+      sorry
+    sorry
   sorry
+
+#print axioms abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace
+#print axioms norm_separatedCrossErrorMatrix_le
+#print axioms abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace
+#print axioms exists_divisorJetHorizonVector_norm_le
+
 

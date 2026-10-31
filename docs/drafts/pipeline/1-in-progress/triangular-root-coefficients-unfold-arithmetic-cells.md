@@ -24,7 +24,8 @@ This does not assert a Gauss-coordinate map from the nonnormal quotient.
 
 ## Required proofs
 
-- Polynomial-cell uniqueness and arithmetic restrictedness.
+- Compatibility of polynomial/Weyl representatives with diagonal field maps
+  and exhaustive parametrization of actual arithmetic cells.
 - The residual Borel factor after Weyl conjugation has trivial character,
   including its central coordinate. The expected tame correction is one
   because the relevant power-series diagonal has constant coefficient one.
@@ -36,3 +37,7 @@ The [Gauss coefficient laws](../3-formalized/unipotent-gauss-defects-use-only-ea
 are formalized: for an actual product, each upper or lower Gauss coordinate
 is the sum of the current free coefficients plus a correction depending
 only on strict input prefixes. Direct Lean and transitive axiom audits passed.
+
+[Polynomial-head uniqueness and lifting modulo Borel](../3-formalized/affine-polynomial-cell-heads-are-unique.md)
+passed direct Lean and axiom audits. This does not establish triviality of
+the residual Borel character.
