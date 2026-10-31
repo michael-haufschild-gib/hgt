@@ -10,6 +10,8 @@ import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationProjections
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationForms
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.MovingLimit
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PositivePart
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.PositiveSlopeSplit
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.RelativeSplit
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.GeneralOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationMovingPositivity
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PolynomialCorrection
@@ -49,6 +51,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.TheIndexWallOverAFunctionField
 import GaloisForLFunctions.AdelicKreinGeometry.TheTwoReadingsAdd
 import GaloisForLFunctions.AdelicKreinGeometry.ASignatureFormulaForPrimeTowers
 import GaloisForLFunctions.AdelicKreinGeometry.TheGluingFormulaAtEveryPlace
+import GaloisForLFunctions.AdelicKreinGeometry.TheArchimedeanWeilFormIsAShellIdentity
 import GaloisForLFunctions.AdelicKreinGeometry.PrimeTowersGlueAtFullIndex
 import GaloisForLFunctions.AdelicKreinGeometry.JordanPairKernelsOnDilations
 import GaloisForLFunctions.AdelicKreinGeometry.HeatTangentBlaschkeExtraction
@@ -93,7 +96,7 @@ its places.
   state has one square and the two readings add; the signature formula
   `Σ_p κ₀(k_p) + 1 ≤ κ ≤ Σ_p κ₀(k_p) + 2` for finitely many prime towers glued at `∞`; the gluing
   formula at every place and every gluing successor, and Weil's correlation glued at every prime with
-  `κ = #{zeros right of the line} + 1`.
+  `κ = #{zeros right of the line} + 1`; the shell identity of the archimedean Weil form.
 * Haar carriers (`Haar/`): index preservation by positive integer-successor carriers, axis-invisible
   kernels and their degree and rank laws, period defects, and infinite index for every Haar kernel
   with a continuous dilation reading.

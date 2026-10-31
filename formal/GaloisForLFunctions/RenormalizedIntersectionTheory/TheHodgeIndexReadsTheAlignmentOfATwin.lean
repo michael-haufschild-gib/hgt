@@ -230,7 +230,9 @@ theorem exists_twin_top_on_pole_hyperplane {ω : ℕ → ℝ} (hω : ∀ n, ω n
       rw [show B * H = ∑ n ∈ Icc 1 N, B * (1 / (n : ℝ)) by rw [← mul_sum]]
       refine sum_le_sum fun n hn => ?_
       have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
-      have hωn : |ω n| = 1 := abs_eq_one_iff_mul_self_eq_one.mpr (hω n)
+      have hωn : |ω n| = 1 := by
+        have h : |ω n| ^ 2 = 1 ^ 2 := by rw [sq_abs, sq, hω, one_pow]
+        exact (pow_left_inj₀ (abs_nonneg _) zero_le_one two_ne_zero).mp h
       rw [abs_mul, abs_mul, hωn, one_mul, abs_of_pos (by positivity : (0 : ℝ) < 1 / n)]
       exact mul_le_mul_of_nonneg_right (abs_row_sub_le hn) (by positivity)
   -- the two costs of the projection

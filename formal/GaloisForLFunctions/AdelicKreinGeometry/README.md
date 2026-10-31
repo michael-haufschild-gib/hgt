@@ -286,6 +286,7 @@ at edges with a counterterm of nontrivial null cone.
 | The gluing square is sharp: `κ(K) ≤ κ(glued) ≤ κ(K) + 1`; the pole pair is absorbed and the glue is blind to it at any strength | `negIndex_archGlue_eq_or`, `boostPolarIndex_polePair`, `negIndex_archGlue_add_polePair`, `negIndex_archGlue_ratCorr_add_polePair` |
 | **The glue sees the order of the pole**: `κ^{(½)}(doublePole) = 1`, glued index `2` against `1` for a simple pole | `boostPolarIndex_doublePole`, `negIndex_archGlue_doublePole`, `negIndex_archGlue_smul_polePair` |
 | **The index wall over `𝔽_q(X)`**: the local Hecke state at `∞` has `κ = 0` for `s ≥ 1/2` and `∞` below | `negIndex_inftyHecke`, `isPosDefKernel_inftyHecke`, `inftyCommKernel_gram` |
+| **The archimedean Weil form is a shell identity**: `Q_Φ = Q_K(slopes) + 2c∫|tail sums|² − 2c Re(ℓ̄ Σβ(R − b))`; on `ℓ = 0` Weil's dilation form plus shell squares | `hermQuad_gram_archGlue_shell`, `hermQuad_gram_weilArchState_shell` |
 | **The gluing formula at every place**: `κ(K(|a|) + |a|_v^{−s/2}ψ(b)) = κ_v(K) + 1` for every place `v` and gluing successor `ψ`; **Weil's correlation glued at any prime** has `κ = #rightZeros + 1` | `negIndex_glueAt_eq`, `negIndex_glueAt_eq_of_subBoost`, `negIndex_glueAt_padic_orbitCorr`, `negIndex_weilPadicState_eq_rightZeros`, `negIndex_glueAt_padic_dirichlet` |
 | **Signature formula for prime towers**: `Σ_{p∈S} κ₀(k_p) + 1 ≤ κ(Σ_p k_p(v_p(|a|)) − c|a|^{−1/2}|b|) ≤ Σ_{p∈S} κ₀(k_p) + 2` | `towerSignature_lower`, `towerSignature_upper`, `valS_surjective`, `towerAssembly_periodic` |
 | **The readings add**: `κ(Φ) = κ^{(½)}(K) + κ(Φ|_+)`, `κ(Φ|_+) = 1`; for Weil's state `κ = κ(Φ|_×) + κ(Φ|_+) = #rightZeros + 1` | `negIndex_archGlue_translation`, `negIndex_archGlue_eq_add_readings`, `negIndex_weilArchState_eq_add_readings`, `negIndex_weilArchState_sub_translation` |
@@ -331,7 +332,10 @@ at edges with a counterterm of nontrivial null cone.
    collision charge, a Toeplitz Fredholm index).
 6. **Is there an exact sum-of-squares decomposition of the complete Weil form indexed by successor-agreement
    shells?** *Answered for the local pole–successor forms*: a renormalized hyperbolic pair plus squares of shell
-   sums over balls (at `p`) or half-lines (at `∞`). *Open* for the complete Weil form.
+   sums over balls (at `p`) or half-lines (at `∞`); and for the archimedean Weil state: on the boost hyperplane
+   its form is Weil's dilation form plus the squares of the half-line shells of the shifts, so the successor
+   side is an exact sum of squares. *Open* for Weil's dilation form itself, whose indefiniteness is the
+   number of zeros right of the line.
 
 ---
 
@@ -481,7 +485,7 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
   `TheGlueSeesTheOrderOfThePole`, `JordanPairKernelsOnDilations`, `HeatTangentBlaschkeExtraction`,
   `HeatGaussianResidueKernel`, `TheHeatDeformedArchimedeanState`, `TheStableGluingFormula`,
   `TheGlueAbsorbsExactlyItsOwnPair`, `TheIndexWallOverAFunctionField`, `TheTwoReadingsAdd`,
-  `ASignatureFormulaForPrimeTowers`, `TheGluingFormulaAtEveryPlace`.
+  `ASignatureFormulaForPrimeTowers`, `TheGluingFormulaAtEveryPlace`, `TheArchimedeanWeilFormIsAShellIdentity`.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,
