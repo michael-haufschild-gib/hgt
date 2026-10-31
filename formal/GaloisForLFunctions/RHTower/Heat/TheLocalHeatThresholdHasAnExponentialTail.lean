@@ -391,5 +391,3 @@ theorem exists_integral_localHeatThreshold_le :
   linarith
 
 end RHTower.DeBruijn
-
-#print axioms RHTower.DeBruijn.exists_integral_localHeatThreshold_le

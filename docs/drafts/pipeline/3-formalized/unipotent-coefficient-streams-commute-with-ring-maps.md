@@ -1,6 +1,6 @@
 # Unipotent coefficient streams commute with ring maps
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Every homomorphism of commutative rings acts entrywise on the
   actual unipotent coefficient group and coefficientwise on its unrestricted
@@ -21,4 +21,5 @@ mapped stream into a matrix.
 `HTGeometry/LoopEisenstein/UnipotentCoefficientMap.lean`:
 `unipotentCoefficientMap`, `unipotentCoefficientMap_injective`,
 `unipotentStream_map`, `unipotentCoefficientMap_stream_symm`.
-Direct check pending.
+Direct `lake --old env lean` check passed. Both transitive axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.

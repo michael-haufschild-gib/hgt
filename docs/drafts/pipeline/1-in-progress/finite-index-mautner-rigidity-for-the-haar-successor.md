@@ -12,7 +12,7 @@ The proved obstruction `negIndex_eq_top_of_weil_haarSuccessor` assumes Hecke sup
 
 For a Haar successor, all vectors `v_{b+n}−v_b`, with `b∈ℚ` and `n∈ℤ`, span a totally isotropic translation-invariant space. Finite negative index bounds its dimension in the nondegenerate kernel quotient. The analogous radical of the dilation-cyclic space is also finite-dimensional. These are the only directions invisible to the positive-kernel Mautner argument.
 
-The unresolved step is controlling those isotropic directions from scalar dilation continuity. Continuity of mixed coefficients must be proved; it cannot be added as a premise. A counterexample with finite isotropic transport would instead identify a possible carrier beyond Hecke support.
+The canonical polynomial correction removes the finite period defect without changing either axis reading. The remaining problem is to exclude a finite-index bi-integer-invariant kernel with continuous dilation reading. The cyclic averaging route below uses its locally periodic translations.
 
 No paper proof or Lean theorem is claimed. The Hecke-supported no-go does not settle this conjecture or O5.
 
@@ -34,6 +34,6 @@ The [relative splitting conjecture](finite-index-haar-carriers-split-modulo-poly
 
 [Isotropic translation unipotence](../3-formalized/isotropic-translation-defects-are-unipotent.md) is formalized via the canonical column form and dilation orbits of joint characters. It controls the translation-period radical without assuming dilation invariance.
 
-The [full affine orbit of period defects](../3-formalized/haar-period-defects-have-a-finite-affine-orbit.md) is formalized: it is invariant and has dimension at most `r²` when the kernel has negative index at most `r`. Its [zero-axis polynomial correction](../2-fully-proven/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) has a paper proof awaiting Lean verification.
+The [full affine orbit of period defects](../3-formalized/haar-period-defects-have-a-finite-affine-orbit.md) is formalized: it is invariant and has dimension at most `r²` when the kernel has negative index at most `r`. Its [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) is formalized, including uniqueness, Hermitian symmetry, both zero-axis identities, and finite index of the bi-integer-invariant remainder.
 
 The [finite cyclic averaging route](cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md) proposes a direct obstruction for the resulting bi-integer-invariant remainder: nonnegative moving subspaces give a cyclic Hecke bound, while fixed-part Gram matrices converge to `J−I`. The positive-plus-slope decomposition is not needed for this proposed obstruction. Neither conclusion is yet formalized.

@@ -3,7 +3,7 @@
 - **ID:** `finite-field-eisenstein-unfolding`
 - **Stage:** 1-in-progress
 - **Type:** CLASSICAL BRIDGE / FORMALIZATION TARGET
-- **Status:** Arithmetic product formula, analytic Euler product and normalized additive quotient formalized; actual idele characters formalized; loop-character and unfolding bridges remain.
+- **Status:** Arithmetic product formula, analytic Euler product, normalized additive quotient and actual loop Iwasawa characters formalized; unipotent quotient and unfolding remain.
 - **Completed work:** [Finite-field Weyl-sum noncancellation and arithmetic foundations](../3-formalized/finite-field-weyl-noncancellation-and-arithmetic-foundations.md).
 - **Arithmetic source:** [Finite-field zeta pole transfer](../3-formalized/finite-field-zeta-pole-transfer.md).
 
@@ -28,7 +28,7 @@ from a proved quotient normalization.
 ## Unproved dependencies
 
 - Unipotent quotient measure. The additive quotient has Haar probability and covolume one. Its continuous additive retraction and rational correction preserving every integral finite place are audited. The three-free-entry equivalence is audited over arbitrary commutative rings, including the adele ring; completed arithmetic reduction and invariant quotient probability remain.
-- Arithmetic cosets, Iwasawa spectral characters and their torus normalization. The actual restricted adelic loop group, faithful restricted arithmetic embedding and integral–Borel factorization are audited.
+- Arithmetic coset parametrization. The actual restricted adelic loop group, faithful arithmetic embedding, integral–Borel factorization and spectral section with its transformation laws are audited. The Borel character is trivial on the actual arithmetic intersection.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
 - Local Iwasawa-character identification with the already proved radial Haar kernel.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.
@@ -39,20 +39,14 @@ adelic completions, also with direct Lean and axiom audits.
 The unordered analytic Euler product over actual closed places equals the
 nonzero curve zeta function throughout `|u|<1/3`, with the same audits.
 Actual idele magnitudes and their continuous complex spectral characters are
-formalized and trivial on diagonal field units. Loop-factorization independence,
-Bruhat-coordinate identification and unfolding remain unproved targets.
+formalized and trivial on diagonal field units. Actual loop-factorization
+independence and arithmetic-Borel triviality are also audited. Bruhat-coordinate
+identification and unfolding remain unproved targets.
 
-For local Iwasawa uniqueness, the integral-vertex target is
-`P₀(O)∩B=P₁(O)∩B=B(O)`, with integral finite/affine rank-one
-factorizations inside each vertex. The existing
-`subgroup_join_base_or_alternating` and
-`alternating_simpleMatrixWord_not_mem_iwahori` would then give
-`⟨P₀(O),P₁(O)⟩∩B=B(O)`. Both torus coordinates of `B(O)` must be
-proved to have valuation one, including the central coordinate.
-Both integral vertex identities passed direct Lean and transitive axiom audits in
-`IntegralAdjacentVertex`. The generated-group intersection, actual `KHU` decomposition, both torus
-valuation invariances and the exact unipotent coefficient-integrality criterion
-are audited in `IntegralLoopBorelIntersection`.
+The full coefficient-integral local loop group satisfies `K∩B=B(O)`.
+Actual `KHU` decomposition, both torus valuation invariances and the exact
+unipotent coefficient-integrality criterion are audited in
+`IntegralLoopBorelIntersection`.
 
 ## Unipotent reduction mechanism
 
@@ -63,14 +57,14 @@ Their zero constant terms make each defect depend only on earlier free
 coefficients. The fourth entry through degree `n` uses `a,c` through `n`
 and `b` below `n`.
 
-Recursive right multiplication by rational coefficients should place every
-coordinate in the compact additive domain. The audited additive correction
+Recursive right multiplication by one completed rational matrix places every
+coordinate in the compact additive domain; existence and uniqueness are audited. The audited additive correction
 preserves a common finite exceptional-place set. Uniqueness follows from the
 trivial intersection of the diagonal field with the additive domain.
 Finite triangular translations then supply the proposed invariant quotient
-probability. The free coefficient stream, finite coefficient dependence and countable
-triangular probability theorem are audited. The full stream multiplication law,
-recursion and quotient identification still require Lean proofs.
+probability. The free coefficient stream, strict triangular multiplication, coefficient-map
+naturality, subring descent and countable triangular probability theorem are
+audited. Uniform integrality of the recursive correction is audited: it introduces no new finite exceptional place. Normalization continuity and quotient identification remain.
 
 ## Convergence mechanism to test
 

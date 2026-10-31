@@ -60,3 +60,6 @@ method over `ℤ`. See `ArithmeticEffectivityTheory/README.md`.
 -/
 import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticLoopCarrier
 import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticGapTopology
+import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticLoopCharacters
+import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticUnipotentReduction
+import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticUnipotentIntegrality

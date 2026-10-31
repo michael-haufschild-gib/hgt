@@ -30,4 +30,4 @@ Every rational translation fixes `range(P_(b_n))` for all sufficiently large `n`
 
 ## Verification boundary
 
-The cyclic projection, moving-subspace positivity, and invariant monotone-limit arguments require complete paper and Lean audits. Combined with the proposed [zero-axis polynomial correction](../2-fully-proven/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), this would supply the full relative splitting; it is not yet a proved decomposition.
+The cyclic projection, moving-subspace positivity, and invariant monotone-limit arguments require complete paper and Lean audits. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), this would supply the full relative splitting; it is not yet a proved decomposition.

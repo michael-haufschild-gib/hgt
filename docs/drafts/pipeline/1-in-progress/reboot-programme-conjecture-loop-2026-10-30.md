@@ -13,7 +13,8 @@
   detection at `λ ≤ δ²/(200 log t)` uniformly in `δ` (#1), repair at `λ ≥ 128δ²/N(t, √2δ)` (#3), a
   central cluster realizes the order `δ²` (#2), and the regular cosh model has exact threshold
   `κ = δ/2` (`RHTower/XiSliceHeatCoshSharpThreshold.lean`). Closing the heat pincer (WP-B) is the
-  same problem as bounding depths.
+  same problem as bounding depths. In distribution `λ_t` inherits Selberg's depth law:
+  `vol{λ_t > κ²/(3L²)} ≪ U e^{−κ/2400}` and `∫_{U/4}^{U/2} λ_t ≪ U/L²` (#24, #25).
 - **B1.** The cosh model has Lindelöf-size slices (`|g(a + ic)| ≤ C(1+|c|)⁴ e^{L|a|}`), an Euler-region
   lower bound, and exact threshold `δ/2` with `δ` up to `½`. Any repair argument whose inputs the
   model satisfies cannot reach rates below `¼`. A Weyl-size central bump `cosh(Lx) + e^{θL}(1 + cos x)`
@@ -31,6 +32,12 @@
   the zeros (cone defect #13, local degree #3), i.e. a depth bound. The de Bruijn reality horizon of
   the corpus (`KiKimLeeTwoThirdsHorizon`, `2/3 + ε`) sits at the same Weyl floor, and #22 shows it is
   sharp for size bounds plus a positive kernel; the WD heat-count constant `2/3` is size-limited.
+- **B2 (inference from the corpus statements).** The two listed candidates are blind or circular.
+  Euler-region slice positivity holds for the Weyl bump (#11). The Turán layer at the centre is
+  `TuranSeq`, which contains nonnegativity of every coefficient, i.e. `λ_t = 0`; the corpus proves it
+  only at `|t| ≤ 56/5` or under the depth cone (`xiSliceCoeff_turanSeq_of_cone`), and off-centre
+  Turán only under saddle hypotheses. So no unconditional non-size input at the centre exists in the
+  corpus; every centre input is a zero-location statement.
 - **Rows (inference from the bump models).** The Weyl bump moves the background zeros off the line.
   In `cosh(Lx) + e^{θL}(1 + cos x)` the zeros near the centre solve `e^{L|Re x|} ≈ 2e^{θL}`, so a row
   of `≍ L` zeros sits at depth `θ` across a unit window. In `cos(Lz/2) + e^{θL}e^{−z²/L²}` the row sits
@@ -49,11 +56,11 @@
   heat the count includes on-line zeros: it is `|S(t + r) − S(t − r)| ≪ r log t + 1` for `r ∈ [δ, 1]`.
   The corpus has no count below the unit window; `S(t) = o(log t)` would give it at every fixed `r`.
   For the lag family only off-line clusters hide (K4).
-  Falsifier (inference, not formalized: the corpus has no predicates for these inputs): the on-line
-  lattice of density `L/2π` plus, at each dyadic height `T_k`, one off-line cluster of `⌊log T_k⌋`
-  zeros of depth `δ` within radius `e^{−T_k}` keeps the unit-window count `O(log T)`, the off-line
-  count `O((log T)²)` far below Selberg density, and on-line proportion `→ 1`, yet violates A1 at
-  every `T_k`. So A1 is not a consequence of averaged or unit-scale inputs.
+  Falsifier (#26, formalized): the zeros of `ζ` plus clusters `½ ± 1/(k+3) + i exp(eᵏ)` of
+  multiplicity `⌊log γ⌋` satisfy RvM (`Zeta23.RiemannVonMangoldt`), keep `N₀(ζ)` and every window
+  count up to `4 log T₂`, yet violate A1 for every `C`. So A1 is not a consequence of averaged or
+  unit-scale inputs; it needs the explicit formula at scale `δ`. Neither is the lag family's
+  off-line local bound (same configuration).
 - **WP-A2.** In `zeta_near_top_cluster_collapse` the count enters only as the bound `p ≤ P` on the
   cluster `C`, the evenCoeff points within `δ₀/8` of the record `z₁`; these have real part
   `≥ 3δ₀/8`, so `P` only needs to bound off-line zeros. The corpus takes `P = ⌈80 log(180Γ)⌉` (all
@@ -128,10 +135,12 @@
 | 22 | The de Bruijn reality horizon `2/3` (`KiKimLeeTwoThirdsHorizon`) is sharp for size + positive kernel: `cos(Lz/2) + e^{θL}e^{−z²/L²}` keeps a nonreal zero of `H_{κ/L}` for every `κ < 4θ` | WD/B | formalized: `3-formalized/a-weyl-bump-keeps-a-nonreal-heat-zero.md` |
 | 23 | Lindelöf level: an isolated pair `(z² + δ²)cos(Lz/2)` keeps a nonreal heat zero up to `κ² + 2κ/L < δ²` (`κ → δ ≤ ½`); the Ki–Kim–Lee method value `½` under Lindelöf is sharp | WD/B | formalized: `3-formalized/an-off-line-pair-survives-the-heat-flow-to-its-depth.md` |
 | 24 | Distribution of `λ_t`: `vol{t : λ_t > κ²/(3L²)} ≤ A ΔT e^{−κ/2400} + KL²`; heights with `λ_t > κ/log U` have measure `≪ U exp(−√(3κ log U)/2400)` | B | formalized: `3-formalized/the-local-heat-threshold-has-an-exponential-tail.md` (cone defect #13 + corpus Selberg shadow density) |
+| 25 | Mean value: `∫_{U/4}^{U/2} λ_t dt ≪ U/log² U` (layer cake over #24, `λ_t ≤ λ_WD < 1/12`) | B | formalized: same card as #24 |
+| 26 | WP-A falsifier: `ζ` plus doubly exponentially sparse clusters satisfies RvM (dyadic main term, unit count), keeps `N₀(ζ)`, moves window counts by `≤ 4 log T₂`, and violates A1 for every `C` and the off-line local bound for every `M` | A falsifier | formalized: `3-formalized/counting-inputs-do-not-bound-the-local-count.md` |
 | C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#24 formalized; #18, C2 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#26 formalized; #18, C2 in corpus.

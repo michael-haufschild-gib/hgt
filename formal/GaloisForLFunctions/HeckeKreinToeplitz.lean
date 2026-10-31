@@ -1,3 +1,6 @@
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ColumnProjections
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.LocallyPeriodicProjection
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ColumnInertia
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.FiniteRankPerturbations
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.FiniteColumns
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.NilpotentSubspaces

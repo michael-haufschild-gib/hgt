@@ -8,7 +8,7 @@
 
 ## Reduction and positive subspaces
 
-The [normalized polynomial correction](../2-fully-proven/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) reduces a putative finite-index example to a bi-integer-invariant kernel with unchanged axis readings. In its column representation, every rational translation acts locally periodically. The [dilation-replication argument](bi-integer-invariant-haar-kernels-split-into-positive-and-slope-parts.md#positivity-of-the-moving-subspaces) makes each `range(T_b−1)` nonnegative.
+The formalized [normalized polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) reduces a putative finite-index example to a bi-integer-invariant kernel with unchanged axis readings. In its column representation, every rational translation acts locally periodically. The [dilation-replication argument](bi-integer-invariant-haar-kernels-split-into-positive-and-slope-parts.md#positivity-of-the-moving-subspaces) makes each `range(T_b−1)` nonnegative.
 
 Local periodicity gives the canonical projection `P_b` onto `Fix(T_b)` along `range(T_b−1)`, equal on each vector to its finite orbit average. It is self-adjoint for the column pairing `B` and commutes with every translation.
 
@@ -19,6 +19,8 @@ For the moving-space positivity, take `x=(T_b−1)y` with `T_b^m y=y`, and put `
 Write `v_a=v_(D_a)` and assume `a,c∈bℤ`. Put `u_a=(1−P_b)v_a`, `u_c=(1−P_b)v_c`, and `d=den(c/a)`. The first `d` translates `T_(jc)v_a` are orthonormal by the Haar reading. Their projected fixed parts all equal `P_bv_a`. Consequently
 
 `B(Σ_(j<d) T_(jc)u_a, Σ_(j<d) T_(jc)u_a) = d−d² B(P_bv_a,P_bv_a) ≤ d`.
+
+Indeed, the `T_b` orbit of `v_a` has length `den(b/a)` and is orthonormal, so `B(P_bv_a,P_bv_a)=1/den(b/a)>0`.
 
 Every summand has the same pairing with `u_c`, since `T_cu_c=u_c`. Also `0≤B(u_c,u_c)≤1`. Cauchy–Schwarz on the nonnegative moving subspace gives
 
@@ -36,8 +38,17 @@ For distinct `i,j`, the moving pairing tends to zero by the cyclic bound. Contin
 
 ## Positive slopes and adelic carriers
 
-The positive-slope subgroup has two cosets. Extending its kernel by zero gives a Hermitian kernel on the full rational affine group and multiplies negative index by two, by the verified `negIndex_extendFromSubgroup` law. Translation readings and positive dilation readings are unchanged. Thus the proposed obstruction also covers positive-slope affine kernels. An adelic carrier with these rational-axis readings restricts to that subgroup; pullback cannot increase negative index.
+The positive-slope subgroup has two cosets, represented by identity and dilation by `−1`. Extending its kernel by zero gives a Hermitian kernel on the full rational affine group and multiplies negative index by two, by the verified `negIndex_extendFromSubgroup` law. Translation readings and positive dilation readings are unchanged.
+
+For the actual group `ℚ⁺ ⋉ (ℝ × 𝔸_f)`, embed rational translations by `b↦(0,b_f)` and retain rational dilations. This is an affine homomorphism because finite diagonal embedding is rational-linear. A rational diagonal belongs to `∏ₚℤₚ` exactly when its denominator is one: integrality at every height-one valuation implies membership in `ℤ`, and integers are integral everywhere. The critical finite Haar reading therefore pulls back to `1_ℤ`; the dilation reading is unchanged. Pullback cannot increase negative index, so the rational obstruction applies to this adelic group.
 
 ## Verification boundary
 
-Required Lean results: normalized polynomial correction; local periodicity; nonnegative moving subspaces; canonical cyclic projections; cyclic Hecke bound; projected Gram limit and inertia comparison; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+Formalized, with direct audits and standard axiom closures:
+
+- The normalized zero-axis polynomial correction.
+- `HeckeKreinToeplitz/Index/ColumnInertia.lean`: every finite column-space Gram family retains the kernel's index bound.
+- `HeckeKreinToeplitz/Index/LocallyPeriodicProjection.lean`: fixed and moving vectors are complementary; the fixed projection equals every complete orbit average and commutes with the operator's commutant.
+- `HeckeKreinToeplitz/Index/ColumnProjections.lean`: fixed and moving vectors are orthogonal; the fixed projection is self-adjoint and its Gram entries are finite cyclic averages.
+
+Required Lean results: local periodicity of affine translations; nonnegative moving subspaces; cyclic Hecke bound; projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

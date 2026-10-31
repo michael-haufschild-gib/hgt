@@ -1,6 +1,6 @@
 # Unipotent coefficient multiplication is triangular
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Over every commutative ring, the actual unipotent coefficient
   stream satisfies `(xy)ₙ=xₙ+yₙ+Pₙ(x_{<n},y_{<n})`, where `Pₙ` depends only on
@@ -29,4 +29,5 @@ Reading this zero-extended product defines `Pₙ` and proves the identity.
 
 `HTGeometry/LoopEisenstein/UnipotentTriangularMultiplication.lean`:
 `unipotentStreamDefect_prefix_congr`, `unipotentStream_mul`.
-Direct check pending.
+Direct `lake --old env lean` check passed. Both transitive axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.

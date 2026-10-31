@@ -10,10 +10,10 @@
 
 The dilation reading of `k` equals that of `p+ψ∘slope`. If it is continuous at identity, the existing separable-carrier theorem gives infinite index for `p+ψ∘slope`; a finite-rank perturbation cannot remove infinitely many negative directions. Thus this splitting would resolve the finite-index Mautner obstruction while classifying its mixed polynomial component.
 
-The [zero-axis rank law](../3-formalized/axis-invisible-finite-index-kernels-have-finite-rank.md) and [polynomial-fibre theorem](../3-formalized/finite-rank-affine-kernels-have-polynomial-translation-fibres.md) constrain `Q` once it exists. They do not construct `p` or prove that the remainder has finite index or finite rank. Subtracting a positive kernel from a finite-index kernel does not preserve finite negative index.
+The [canonical polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) constructs `Q` and proves finite negative index of the bi-integer-invariant remainder. Constructing its positive part `p` and slope part `ψ` remains open. Subtracting an arbitrary positive kernel from a finite-index kernel does not preserve finite negative index.
 
 No paper proof or Lean theorem is claimed. The missing input is a relative decomposition along the normal translation subgroup; arbitrary negative completion features cannot be treated as a group representation.
 
 The [finite affine orbit of period defects](../3-formalized/haar-period-defects-have-a-finite-affine-orbit.md) is formalized from unipotence and the isotropic fixed kernel. It supplies a covariant finite-dimensional correction space.
 
-The [canonical polynomial correction](../2-fully-proven/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) would integrate that defect kernel while preserving both axis readings. A [cyclic averaging decomposition](bi-integer-invariant-haar-kernels-split-into-positive-and-slope-parts.md) is proposed for the resulting bi-integer-invariant carrier.
+A [cyclic averaging decomposition](bi-integer-invariant-haar-kernels-split-into-positive-and-slope-parts.md) is proposed for the resulting bi-integer-invariant carrier.

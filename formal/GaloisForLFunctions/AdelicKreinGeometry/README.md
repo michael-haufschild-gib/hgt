@@ -1,7 +1,7 @@
 # AdelicKreinGeometry (AKG)
 
-Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 30 modules
-(23 root, `Haar/` 7). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 33 modules
+(23 root, `Haar/` 10). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -30,9 +30,11 @@ data can sit on a finite-index state with the integer successor.
 | Conformal data | `IsConformal`, `slopePow`, `conformalInduction`, `poleSuccessor`, `boostMass` | `ψ(ub) = |u|_v^s ψ(b)`; `|a|^{∓s/2}`; `|a|^{−s/2}ψ(b)`; boost pair + induction |
 | Pole state | `poleState`, `kreinForm`, `krein2` | `a^{1/2} + a^{−1/2} − i b a^{−1/2}` from `SL(2,ℝ)` on signature `(1,1)` |
 | Places | `IsUltra`, `ballSubgroup`, `inftyAbs`, `inftyNorm` | nonarchimedean balls; `|f|_∞ = b^{deg f}` on `F(X)` |
+| Shells | `ballOf`, `shellSquares`, `tailSum` | balls of radius `r` at `p`; half-lines `(−∞, t)` at `∞`; squares of class sums |
 | Prime lattice kernel | `primeLatticeKernel`, `countertermKernel` | `Λ(u)u^{−1/2}` on prime powers of `ℚ_{>0}`; `D·δ₁ − P` |
 | Twists | `slopeChar` | unitary character of the slope |
 | Product state | `adelicWeilState` | `ratCorr(|a|)·haarState` |
+| Archimedean Weil state | `weilArchState` | `ratCorr(|a|) − c|a|^{−1/2}|b|`: blind extension plus conformal induction of `−c|b|` |
 | Haar carriers | `haarOneNegativeSquare`, `affineLogTwo`, `mixedQuadraticKernel`, `haarMixedQuadraticState`, `mixedPowerKernel`, `mixedPowerPhase`, `haarMixedPowerState` | Haar ± log-slope or axis-invisible polynomial perturbations |
 | Period defects | `translationPeriodDefect`, `translationPeriodSpace`, `affinePeriodSpace` | `col(b + 1) − col(b)` and its affine orbit |
 
@@ -49,6 +51,7 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 - **Conformal successor** of exponent `s`: `ψ(ub) = |u|^s ψ(b)`; **boost pair**: `|u|^{s/2} + |u|^{−s/2}`.
 - **Pole–successor state**: boost pair plus conformal induction of a successor; one per place.
 - **Axis-invisible kernel**: zero on all translations and all dilations.
+- **Agreement shell** of radius `r`: a class of points with `|x − y|_v ≤ r`.
 - **Near coincidence**: rationals close to 1 have large denominators.
 
 ## 4. Mechanisms
@@ -83,6 +86,9 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
     pole–successor state `= 2Re(X̄Y) + ψ`-form with total mass `X`.
 13. Borel of `SL(2,ℝ)` preserves a signature `(1,1)` form: Gram `= Wᴴ h W` ⇒ one negative square.
 14. Product formula `∏_v |a|_v = 1`: local boosts multiply to 1 on `ℚ^×`.
+14a. Equivalence kernels are sums of squares of class sums; with the layer cake the local pole–successor form is
+    a renormalized hyperbolic pair plus shell squares: `2Re(X̄Y) − cR|X|²` at `p` (balls), `2Re(X̄Y_R)` with
+    `Y_R = Y − cΣ w_g|a_g|^{−1/2}(R − b_g)` at `∞` (half-lines `(−∞, t)`).
 
 **E. Axis-invisible kernels**
 15. Zero set of an index-≤1 kernel is a subgroup; axes generate `Aff(ℚ)`. Translation columns span `≤ κ`
@@ -105,9 +111,11 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 | Index is twin-blind | `negIndex_mul_unitaryChar`, `negIndex_heckeState_mul_slopeChar` | proved |
 | Pole state of `Aff(ℚ)` has `κ = 1`; conformal induction keeps `κ` | `negIndex_poleState`, `negIndex_conformalInduction` | proved |
 | Pole–successor signature formula `κ = κ₀(ψ) + 1`; index one at the real place, every `p`, and `∞` of `F(X)` | `negIndex_poleSuccessor_eq`, `negIndex_poleSuccessorState`, `negIndex_padicPoleSuccessor`, `negIndex_inftyPoleSuccessor` | proved |
+| Shell decomposition: local pole–successor form `= 2Re(X̄Y) − cR|X|² + c∫_0^R Σ_B |shell sum|²` at `p`, `= 2Re(X̄Y_R) + 2c∫_L^R |T_t|²` at `∞` | `hermQuad_gram_poleSuccessor_negUltra_eq`, `hermQuad_gram_poleSuccessorState_eq`, `hermQuad_gram_negUltra_eq`, `hermQuad_gram_negAbsRat_eq` | proved |
 | Haar carriers: one square off Hecke support (dilation discontinuous); every `κ ≥ 2` with both Haar axis readings; not positive + slope | `negIndex_haarOneNegativeSquare`, `negIndex_haarMixedPowerState`, `haarMixedQuadraticState_not_positive_add_slope` | proved |
 | Axis-invisible kernels: zero or `κ ≥ 2`; rank `≤ κ²`; fibres polynomial of degree `< κ` | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `exists_polynomial_translation_fibre_lt_index` | proved |
 | Integer successor of index `r`: affine period-defect space has dim `≤ r²` | `finite_affinePeriodSpace_of_integerSuccessor` | proved |
+| Weil's dilation data with the archimedean successor: `max(1, κ(K_ζ)) ≤ κ ≤ κ(K_ζ) + 1`; finite iff `κ(K_ζ)` is | `negIndex_weilArchState_le`, `le_negIndex_weilArchState`, `one_le_negIndex_weilArchState`, `negIndex_weilArchState_lt_top_iff` | proved |
 | Finite-index state with Weil's dilation data and integer successor (indefinite Mautner) | — | open |
 
 ## 6. Tools
@@ -118,14 +126,15 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 - Local–global signature calculus: polar index, separable formula, pole–successor formula `κ₀ + 1`.
 - Indefinite Howe–Moore: mixing, height decay, near coincidence, dilution, Haar averaging.
 - Exact additive index laws on `ℤ/N`, `ℚ/ℤ` and for Ramanujan (unit-invariant) kernels.
-- Conditional positivity toolkit: min kernels, Poisson subordination, ultrametric layer cake.
+- Conditional positivity toolkit: min kernels, Poisson subordination, ultrametric layer cake, shell sums of squares.
 - Axis-invisible kernel theory: degree, rank and exact-index laws; period-defect bounds.
 
 **To build**
 - Krein–Langer structure on `Aff(ℚ)` beyond finite rank modulo slope data.
 - Non-separable gluing with the archimedean operator in place of a scalar counterterm.
 - Hecke states and the index wall over `F_q(T)`.
-- Additive carrier of the collision charge; shell sum-of-squares for the complete Weil form.
+- Additive carrier of the collision charge; shell sum-of-squares for the complete Weil form (solved for the local
+  pole–successor forms).
 
 ## 7. Open questions
 
@@ -138,7 +147,8 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 4. Glue the prime and archimedean parts of Weil's kernel to successors place by place, as the pole pair is glued to
    `−|b|`, and compute the index.
 5. Which additive invariant (count of negative conductor modes) could equal the number of off-line zeros?
-6. Exact sum-of-squares decomposition of the complete Weil form indexed by successor-agreement shells.
+6. Exact sum-of-squares decomposition of the complete Weil form indexed by successor-agreement shells (the local
+   pole–successor forms have one, with the running counterterm `cR` on the pole coordinate).
 
 ## 8. Traps
 
@@ -159,6 +169,7 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 | The adelic product of the two readings is a new carrier | It is Hecke-supported: `0` or `∞` |
 | Finite index = positive + slope data | The Haar mixed quadratic state is not |
 | Only the archimedean place carries a square | Every `p`-adic place carries an index-one pole–successor state |
+| Weil's dilation data forbids a nonconstant successor at finite index | Only the integer one: with `−c|b|` the index is `κ(K_ζ) + ε`, `ε ∈ {0, 1}` |
 
 ## 9. Context
 

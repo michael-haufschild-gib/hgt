@@ -83,17 +83,15 @@ theorem continuous_unipotentDecoded_coeff (i j : Fin 2) (N : ℕ) :
   · exact continuous_streamLowerLeft_coeff N
   · have hbc (n : ℕ) : Continuous fun x : ℕ → R =>
         PowerSeries.coeff n (1 + streamUpperRight R x * streamLowerLeft R x) := by
-      simpa only [map_add] using continuous_const.add
-        (continuous_coeff_product (streamUpperRight R) (streamLowerLeft R)
-          continuous_streamUpperRight_coeff continuous_streamLowerLeft_coeff n)
-    have he : (fun x : ℕ → R =>
-        PowerSeries.coeff N (((unipotentCoefficientStreamEquiv R).symm x).1 1 1)) =
-        (fun x => PowerSeries.coeff N (PowerSeries.invOfUnit (streamUpperLeft R x) 1 *
-          (1 + streamUpperRight R x * streamLowerLeft R x))) := by
+      have hc : Continuous (fun _ : ℕ → R => PowerSeries.coeff n (1 : PowerSeries R)) := continuous_const
+      have hp := continuous_coeff_product (streamUpperRight R) (streamLowerLeft R)
+        continuous_streamUpperRight_coeff continuous_streamLowerLeft_coeff n
+      convert hc.add hp using 1
       funext x
-      exact congrArg (PowerSeries.coeff N (R := R))
-        (unipotentCoefficient_lowerRight ((unipotentCoefficientStreamEquiv R).symm x))
-    rw [he]
+      exact map_add (PowerSeries.coeff n) 1 (streamUpperRight R x * streamLowerLeft R x)
+    change Continuous fun x : ℕ → R =>
+      PowerSeries.coeff N (PowerSeries.invOfUnit (streamUpperLeft R x) 1 *
+        (1 + streamUpperRight R x * streamLowerLeft R x))
     exact continuous_coeff_product _ _
       (continuous_coeff_invOfUnit_one (streamUpperLeft R) continuous_streamUpperLeft_coeff) hbc N
 
@@ -146,9 +144,34 @@ private theorem continuous_prefixCompletion_stream (N : ℕ) :
   simp only [unipotentPrefixCompletion, Equiv.apply_symm_apply]
   by_cases hk : k < N
   · simp only [dif_pos hk]
-    exact continuous_apply ⟨k, hk⟩
+    exact continuous_apply (⟨k, hk⟩ : Fin N)
   · simp only [dif_neg hk]
     exact continuous_const
+
+/-- Actual group inversion expressed in the unrestricted coefficient stream. -/
+def unipotentStreamInverse (x : ℕ → R) : ℕ → R :=
+  unipotentCoefficientStreamEquiv R (((unipotentCoefficientStreamEquiv R).symm x)⁻¹)
+
+/-- Inversion is continuous because the determinant-one inverse is the matrix adjugate. -/
+theorem continuous_unipotentStreamInverse : Continuous (unipotentStreamInverse (R := R)) := by
+  apply continuous_stream_of_coefficients
+  intro i j N
+  change Continuous fun x : ℕ → R => PowerSeries.coeff N
+    ((((unipotentCoefficientStreamEquiv R).symm x).1)⁻¹ i j)
+  simp only [Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+  fin_cases i <;> fin_cases j
+  · exact continuous_unipotentDecoded_coeff 1 1 N
+  · change Continuous fun x : ℕ → R =>
+      PowerSeries.coeff N (-(((unipotentCoefficientStreamEquiv R).symm x).1 0 1))
+    convert (continuous_unipotentDecoded_coeff (R := R) 0 1 N).neg using 1
+    funext x
+    exact map_neg (PowerSeries.coeff N) (((unipotentCoefficientStreamEquiv R).symm x).1 0 1)
+  · change Continuous fun x : ℕ → R =>
+      PowerSeries.coeff N (-(((unipotentCoefficientStreamEquiv R).symm x).1 1 0))
+    convert (continuous_unipotentDecoded_coeff (R := R) 1 0 N).neg using 1
+    funext x
+    exact map_neg (PowerSeries.coeff N) (((unipotentCoefficientStreamEquiv R).symm x).1 1 0)
+  · exact continuous_unipotentDecoded_coeff 0 0 N
 
 /-- The finite strict-prefix correction is continuous in both prefixes. -/
 theorem continuous_unipotentTriangularCorrection (N : ℕ) :
@@ -161,8 +184,12 @@ theorem continuous_unipotentTriangularCorrection (N : ℕ) :
     (continuous_prefixCompletion_stream (R := R) N).comp continuous_snd
   have hp : Continuous fun p : (Fin N → R) × (Fin N → R) =>
       unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.1 * unipotentPrefixCompletion p.2) := by
-    simpa only [unipotentStreamProduct, Function.comp_apply, Equiv.symm_apply_apply] using
+    have hc : Continuous fun p : (Fin N → R) × (Fin N → R) =>
+        unipotentStreamProduct
+          (unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.1),
+            unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.2)) :=
       continuous_unipotentStreamProduct.comp (hf.prodMk hg)
+    simpa only [unipotentStreamProduct, Equiv.symm_apply_apply] using hc
   change Continuous fun p : (Fin N → R) × (Fin N → R) =>
     unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.1 * unipotentPrefixCompletion p.2) N -
       unipotentCoefficientStreamEquiv R (unipotentPrefixCompletion p.1) N -
@@ -174,4 +201,5 @@ end
 end GaloisForLFunctions.HTGeometry.LoopEisenstein
 
 #print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.continuous_unipotentStreamProduct
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.continuous_unipotentStreamInverse
 #print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.continuous_unipotentTriangularCorrection

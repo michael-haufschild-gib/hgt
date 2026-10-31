@@ -1,6 +1,6 @@
 # Elliptic unipotent matrices have unique additive-domain representatives
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Every completed unipotent matrix over the actual elliptic
   adele ring has exactly one right rational correction whose entire
@@ -33,4 +33,5 @@ integrality assertion.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentReduction.lean`:
 `adeleUnipotentReduced_mem`, `adeleUnipotentRationalCorrection_unique`,
-`existsUnique_adeleUnipotentRationalCorrection`. Direct check pending.
+`existsUnique_adeleUnipotentRationalCorrection`. Direct `lake --old env lean` check passed. All three transitive axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.

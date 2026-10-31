@@ -73,25 +73,19 @@ def adelicBorelCoordinate (i : Bool) : adelicPositiveBorel →* Ideles where
     apply Prod.ext
     · apply RestrictedProduct.ext
       intro v
-      change ((borelUnitCoordinate i (finiteBorelEvaluation v 1) : (v.adicCompletion K)ˣ) :
-        v.adicCompletion K) = 1
-      rw [map_one, map_one, Units.val_one]
-    · change ((borelUnitCoordinate i (infinityBorelEvaluation 1) : InfinityCompletionˣ) :
-        InfinityCompletion) = 1
-      rw [map_one, map_one, Units.val_one]
+      exact congrArg (fun z : (v.adicCompletion K)ˣ => (z : v.adicCompletion K))
+        (((borelUnitCoordinate (F := v.adicCompletion K) i).comp (finiteBorelEvaluation v)).map_one)
+    · exact congrArg (fun z : InfinityCompletionˣ => (z : InfinityCompletion))
+        (((borelUnitCoordinate (F := InfinityCompletion) i).comp infinityBorelEvaluation).map_one)
   map_mul' a b := by
     apply Units.ext
     apply Prod.ext
     · apply RestrictedProduct.ext
       intro v
-      change ((borelUnitCoordinate i (finiteBorelEvaluation v (a * b)) :
-          (v.adicCompletion K)ˣ) : v.adicCompletion K) = _
-      rw [map_mul, map_mul, Units.val_mul]
-      rfl
-    · change ((borelUnitCoordinate i (infinityBorelEvaluation (a * b)) :
-          InfinityCompletionˣ) : InfinityCompletion) = _
-      rw [map_mul, map_mul, Units.val_mul]
-      rfl
+      exact congrArg (fun z : (v.adicCompletion K)ˣ => (z : v.adicCompletion K))
+        (((borelUnitCoordinate (F := v.adicCompletion K) i).comp (finiteBorelEvaluation v)).map_mul a b)
+    · exact congrArg (fun z : InfinityCompletionˣ => (z : InfinityCompletion))
+        (((borelUnitCoordinate (F := InfinityCompletion) i).comp infinityBorelEvaluation).map_mul a b)
 
 /-- The two intrinsic adelic Borel coordinates. -/
 def adelicBorelTorus : adelicPositiveBorel →* (Ideles × Ideles) where
@@ -122,10 +116,16 @@ private theorem adelicBorelCoordinate_magnitude_integral (i : Bool) (b : adelicP
     change finiteCompletionMagnitude v
       ((borelUnitCoordinate i (finiteBorelEvaluation v b) : (v.adicCompletion K)ˣ) :
         v.adicCompletion K) = 1
-    simp only [finiteCompletionMagnitude, MonoidWithZeroHom.comp_apply, hv, map_one]
+    have hv' := hv v
+    change (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰).toMonoidWithZeroHom
+      ((borelUnitCoordinate i (finiteBorelEvaluation v b) : (v.adicCompletion K)ˣ) :
+        v.adicCompletion K) = 1 at hv'
+    simp only [finiteCompletionMagnitude, MonoidWithZeroHom.comp_apply, hv', map_one]
   have hmi : infinityCompletionMagnitude (((adelicBorelCoordinate i b : Ideles) : Adeles).2) = 1 := by
     change infinityCompletionMagnitude
       ((borelUnitCoordinate i (infinityBorelEvaluation b) : InfinityCompletionˣ) : InfinityCompletion) = 1
+    change (Valued.v : Valuation InfinityCompletion ℤᵐ⁰).toMonoidWithZeroHom
+      ((borelUnitCoordinate i (infinityBorelEvaluation b) : InfinityCompletionˣ) : InfinityCompletion) = 1 at hi
     simp only [infinityCompletionMagnitude, MonoidWithZeroHom.comp_apply, hi, map_one]
   change infinityCompletionMagnitude (((adelicBorelCoordinate i b : Ideles) : Adeles).2) *
     (∏ᶠ v : FinitePlace,
@@ -185,25 +185,33 @@ theorem adelicBorelCharacter_arithmetic (s t : ℂ) (b : adelicPositiveBorel)
     ideleCharacter t (adelicBorelCoordinate true b) = 1
   rw [hcoord false, hcoord true, ideleCharacter_diagonal, ideleCharacter_diagonal, one_mul]
 
+private theorem character_iwasawa_unique {G M : Type*} [Group G] [Monoid M]
+    (C B : Subgroup G) (χ : B →* M)
+    (hχ : ∀ b : B, (b : G) ∈ C → χ b = 1)
+    (k₁ k₂ : C) (b₁ b₂ : B) (he : (k₁ : G) * b₁ = (k₂ : G) * b₂) :
+    χ b₁ = χ b₂ := by
+  have hd : ((b₁ * b₂⁻¹ : B) : G) = (k₁ : G)⁻¹ * k₂ := by
+    change (b₁ : G) * (b₂ : G)⁻¹ = _
+    calc
+      _ = (k₁ : G)⁻¹ * ((k₁ : G) * b₁) * (b₂ : G)⁻¹ := by group
+      _ = (k₁ : G)⁻¹ * ((k₂ : G) * b₂) * (b₂ : G)⁻¹ := by rw [he]
+      _ = _ := by group
+  have hk : ((b₁ * b₂⁻¹ : B) : G) ∈ C := by
+    rw [hd]
+    exact C.mul_mem (C.inv_mem k₁.property) k₂.property
+  have hv := hχ (b₁ * b₂⁻¹) hk
+  calc
+    χ b₁ = χ ((b₁ * b₂⁻¹) * b₂) := by congr 1; group
+    _ = χ (b₁ * b₂⁻¹) * χ b₂ := χ.map_mul _ _
+    _ = χ b₂ := by rw [hv, one_mul]
+
 /-- Spectral values do not depend on the chosen actual Iwasawa factors. -/
 theorem adelicBorelCharacter_iwasawa_unique (s t : ℂ)
     (k₁ k₂ : adelicIntegralLoop) (b₁ b₂ : adelicPositiveBorel)
     (he : (k₁ : AdelicLoop) * b₁ = (k₂ : AdelicLoop) * b₂) :
-    adelicBorelCharacter s t b₁ = adelicBorelCharacter s t b₂ := by
-  have hd : ((b₁ * b₂⁻¹ : adelicPositiveBorel) : AdelicLoop) = (k₁ : AdelicLoop)⁻¹ * k₂ := by
-    change (b₁ : AdelicLoop) * (b₂ : AdelicLoop)⁻¹ = _
-    calc
-      _ = (k₁ : AdelicLoop)⁻¹ * ((k₁ : AdelicLoop) * b₁) * (b₂ : AdelicLoop)⁻¹ := by group
-      _ = (k₁ : AdelicLoop)⁻¹ * ((k₂ : AdelicLoop) * b₂) * (b₂ : AdelicLoop)⁻¹ := by rw [he]
-      _ = _ := by group
-  have hk : ((b₁ * b₂⁻¹ : adelicPositiveBorel) : AdelicLoop) ∈ adelicIntegralLoop := by
-    rw [hd]
-    exact adelicIntegralLoop.mul_mem (adelicIntegralLoop.inv_mem k₁.property) k₂.property
-  have hv := adelicBorelCharacter_integral s t (b₁ * b₂⁻¹) hk
-  calc
-    adelicBorelCharacter s t b₁ = adelicBorelCharacter s t ((b₁ * b₂⁻¹) * b₂) := by congr 1; group
-    _ = adelicBorelCharacter s t (b₁ * b₂⁻¹) * adelicBorelCharacter s t b₂ := map_mul _ _ _
-    _ = adelicBorelCharacter s t b₂ := by rw [hv, one_mul]
+    adelicBorelCharacter s t b₁ = adelicBorelCharacter s t b₂ :=
+  character_iwasawa_unique adelicIntegralLoop adelicPositiveBorel
+    (adelicBorelCharacter s t) (adelicBorelCharacter_integral s t) k₁ k₂ b₁ b₂ he
 
 private def adelicIwasawaFactors (g : AdelicLoop) : adelicIntegralLoop × adelicPositiveBorel :=
   (Classical.choose (exists_adelic_integral_borel g),
@@ -228,7 +236,7 @@ theorem adelicIwasawaSection_ne_zero (s t : ℂ) (g : AdelicLoop) :
 theorem adelicIwasawaSection_left_integral (s t : ℂ) (k : adelicIntegralLoop) (g : AdelicLoop) :
     adelicIwasawaSection s t ((k : AdelicLoop) * g) = adelicIwasawaSection s t g := by
   obtain ⟨l, b, rfl⟩ := exists_adelic_integral_borel g
-  rw [← mul_assoc]
+  rw [← mul_assoc (k : AdelicLoop) (l : AdelicLoop) (b : AdelicLoop)]
   change adelicIwasawaSection s t (((k * l : adelicIntegralLoop) : AdelicLoop) * b) = _
   rw [adelicIwasawaSection_evaluate, adelicIwasawaSection_evaluate]
 
@@ -236,9 +244,17 @@ theorem adelicIwasawaSection_left_integral (s t : ℂ) (k : adelicIntegralLoop) 
 theorem adelicIwasawaSection_right_borel (s t : ℂ) (g : AdelicLoop) (b : adelicPositiveBorel) :
     adelicIwasawaSection s t (g * b) = adelicIwasawaSection s t g * adelicBorelCharacter s t b := by
   obtain ⟨k, a, rfl⟩ := exists_adelic_integral_borel g
-  rw [mul_assoc]
-  change adelicIwasawaSection s t ((k : AdelicLoop) * (a * b : adelicPositiveBorel)) = _
-  rw [adelicIwasawaSection_evaluate, adelicIwasawaSection_evaluate, map_mul]
+  calc
+    adelicIwasawaSection s t (((k : AdelicLoop) * a) * b) =
+        adelicIwasawaSection s t ((k : AdelicLoop) * (a * b : adelicPositiveBorel)) :=
+      congrArg (adelicIwasawaSection s t)
+        (mul_assoc (k : AdelicLoop) (a : AdelicLoop) (b : AdelicLoop))
+    _ = adelicBorelCharacter s t (a * b) := adelicIwasawaSection_evaluate s t k (a * b)
+    _ = adelicBorelCharacter s t a * adelicBorelCharacter s t b :=
+      (adelicBorelCharacter s t).map_mul a b
+    _ = adelicIwasawaSection s t ((k : AdelicLoop) * a) * adelicBorelCharacter s t b :=
+      congrArg (fun z : ℂ => z * adelicBorelCharacter s t b)
+        (adelicIwasawaSection_evaluate s t k a).symm
 
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase

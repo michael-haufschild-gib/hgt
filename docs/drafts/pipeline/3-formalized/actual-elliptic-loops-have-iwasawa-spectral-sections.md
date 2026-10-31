@@ -1,6 +1,6 @@
 # Actual elliptic loops have Iwasawa spectral sections
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Each pair of complex spectral parameters defines a nonzero
   function on the actual restricted adelic central loop group, invariant under
@@ -38,4 +38,5 @@ Continuity and Eisenstein summation remain separate.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticLoopCharacters.lean`:
 `adelicIwasawaSection`, `adelicIwasawaSection_left_integral`,
-`adelicIwasawaSection_right_borel`, `adelicBorelCharacter_arithmetic`. Direct check pending.
+`adelicIwasawaSection_right_borel`, `adelicBorelCharacter_arithmetic`. Direct `lake --old env lean` check passed. All four transitive axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.

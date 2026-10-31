@@ -61,9 +61,11 @@ theorem adeleUnipotentReduced_stream (g : unipotentCoefficientGroup Adeles) (n :
   calc
     x n + -adeleEmbedding (adeleRationalProjection (x n + p)) + p =
         (x n + p) - adeleEmbedding (adeleRationalProjection (x n + p)) := by abel
-    _ = (adeleGapProjection (x n + p) : Adeles) := by
-      rw [← hs]
-      abel
+    _ = (adeleEmbedding (adeleRationalProjection (x n + p)) +
+          (adeleGapProjection (x n + p) : Adeles)) -
+          adeleEmbedding (adeleRationalProjection (x n + p)) :=
+      congrArg (fun a : Adeles => a - adeleEmbedding (adeleRationalProjection (x n + p))) hs.symm
+    _ = (adeleGapProjection (x n + p) : Adeles) := by abel
 
 /-- Every coordinate of the reduced matrix belongs to the actual compact additive domain. -/
 theorem adeleUnipotentReduced_mem (g : unipotentCoefficientGroup Adeles) (n : ℕ) :

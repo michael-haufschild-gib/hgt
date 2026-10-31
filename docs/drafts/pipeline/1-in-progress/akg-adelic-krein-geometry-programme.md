@@ -21,7 +21,7 @@ Develop the field asked for in §2.6: answer its six questions as theorems or sh
 - D. Signature calculus: `TheSignatureOfASeparableAssembly`, `NoFixedCountertermMakesThePrimeKernelPontryagin`. [A6 finite sieve is formalized](../3-formalized/matched-prime-form-hodge-index-uniform-in-the-sieve.md), with a horizon independent of the sieve; transfer to the complete Weil form remains open.
 - E. Conformal symmetry: `ConformalSymmetryNeedsANegativeSquare`, `StableConformalSuccessors`, `TheFunctionFieldConformalSuccessor`.
 - F. Additive index law: `TheAdditiveIndexLaw` (`ℤ/N`), `TheAdditiveIndexLawOnQModZ` (`ℚ/ℤ`), `TheRamanujanIndexLaw` (`κ = Σ_{A_d<0} φ(d)` for unit-invariant kernels and conductor-invariant successors).
-- G. One state, two actions: `ThePoleIsAKreinStateOfTheAffineGroup`, `TheAffineGroupOfAField`, `TheHeckeBoostAndTheConformalSuccessorAreOneState` (conformal induction, pole–successor law for any field and absolute value), `EveryPlaceCarriesAPoleSuccessorState` (ultrametric successors, `p`-adic states, the place at infinity of `F(X)`), `ThePoleSuccessorSignatureFormula` (`κ = κ₀(ψ) + 1`).
+- G. One state, two actions: `ThePoleIsAKreinStateOfTheAffineGroup`, `TheAffineGroupOfAField`, `TheHeckeBoostAndTheConformalSuccessorAreOneState` (conformal induction, pole–successor law for any field and absolute value), `EveryPlaceCarriesAPoleSuccessorState` (ultrametric successors, `p`-adic states, the place at infinity of `F(X)`), `ThePoleSuccessorSignatureFormula` (`κ = κ₀(ψ) + 1`), `TheShellDecompositionOfAPoleSuccessorForm` (renormalized pair plus shell squares).
 - H. Haar carriers (another agent): `Haar/IndexPreservation`, `Haar/ContinuousDilationsNeedInfiniteIndex`, `Haar/AxisInvisibility`, `Haar/PolynomialPerturbations`, `Haar/FiniteRankPerturbations`, `Haar/PowerKernels`, `Haar/MixedPolynomialPerturbation`.
 
 ## Open
@@ -29,7 +29,7 @@ Develop the field asked for in §2.6: answer its six questions as theorems or sh
 - Krein–Langer structure on `Aff(ℚ)`: positive part plus finite-dimensional or conformally induced Pontryagin coefficients?
 - Weil's prime and archimedean parts glued to successors as the pole is glued to `−|b|`; non-separable gluing for the complete Weil form.
 - Calibration over `𝔽_q(T)`: the Hecke wall on `Aff(𝔽_q(T))`.
-- Q5 additive carrier of the collision charge; Q6 shell sum-of-squares.
+- Q5 additive carrier of the collision charge; Q6 shell sum-of-squares for the complete Weil form.
 
 ## Paper proofs
 

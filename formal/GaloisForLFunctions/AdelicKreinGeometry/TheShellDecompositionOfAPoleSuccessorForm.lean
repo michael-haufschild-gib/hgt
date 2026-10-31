@@ -11,9 +11,13 @@ shells of radius `r` are the classes of `K` modulo the ball `{|z|_v ≤ r}`.
   radius `r` (`shellSquares`).
 * **The pole–successor form** (`hermQuad_gram_poleSuccessor_negUltra_eq`):
   `Q_Φ(w) = 2 Re(X̄Y) − cR|X|² + c ∫_0^R Σ_B |Σ_{b_g ∈ B} w_g |a_g|_v^{−1/2}|² dr`.
+* **The real place** (`hermQuad_gram_negAbsRat_eq`, `hermQuad_gram_poleSuccessorState_eq`): the shells
+  are the half-lines `(−∞, t)`, `Q_{−|·|}(c) = 2 ∫_L^R |T_t|² dt − 2 Re(S̄ Z)` with tail sums `T_t`
+  (`tailSum`), and `Q_Φ(w) = 2 Re(X̄ Y_R) + 2c ∫_L^R |T_t|² dt` with the renormalized coordinate
+  `Y_R = Y − c Σ w_g|a_g|^{−1/2}(R − b_g)`.
 
-So the form of the local pole–successor state is a hyperbolic pair renormalized by the counterterm
-`cR` on the pole coordinate `X`, plus squares indexed by agreement shells. The counterterm runs with
+So at every place the form of the local pole–successor state is a renormalized hyperbolic pair plus
+squares indexed by agreement shells. The counterterm runs with
 the cutoff `R`, as the matched counterterm `log N − γ` runs with the horizon; for every `R` the
 renormalized pair `2 Re(X̄Y) − cR|X|²` has signature `(1, 1)`, and on its null hyperplane `X = 0` only
 the shell squares remain (`hermQuad_gram_poleSuccessor_negUltra_of_mass_zero`): positivity off the
@@ -124,5 +128,146 @@ theorem hermQuad_gram_poleSuccessor_negUltra_of_mass_zero (hv : IsUltra v) (c : 
       c * ∫ r in Set.Icc 0 R, shellSquares hv (fun a => shiftOf (g a)) (boostWeights v 1 g w) r := by
   rw [hermQuad_gram_poleSuccessor_negUltra_eq hv c g w hR, hX]
   simp
+
+/-! ### The real place: half-line shells -/
+
+/-- The tail sum `T_t = Σ_{y_a < t} c_a`, the class sum of the half-line shell `(−∞, t)`. -/
+def tailSum {n : ℕ} (y : Fin n → ℝ) (c : Fin n → ℂ) (t : ℝ) : ℂ :=
+  ∑ a, if y a < t then c a else 0
+
+/-- `R − a = ∫_L^R 1[a < t] dt` for `L ≤ a ≤ R`. -/
+theorem integral_indicator_Ioi_eq {a L R : ℝ} (hLa : L ≤ a) (haR : a ≤ R) :
+    ∫ t in Set.Icc L R, (Set.Ioi a).indicator (fun _ => (1 : ℝ)) t = R - a := by
+  have e : Set.Ioi a ∩ Set.Icc L R = Set.Ioc a R := Set.ext fun t => by
+    simp only [Set.mem_inter_iff, Set.mem_Ioi, Set.mem_Icc, Set.mem_Ioc]
+    exact ⟨fun h => ⟨h.1, h.2.2⟩, fun h => ⟨h.1, hLa.trans h.1.le, h.2⟩⟩
+  rw [integral_indicator measurableSet_Ioi, Measure.restrict_restrict measurableSet_Ioi, e,
+    setIntegral_const, smul_eq_mul, mul_one, measureReal_def, Real.volume_Ioc,
+    ENNReal.toReal_ofReal (by linarith)]
+
+theorem indicator_Ioi_mul (a b t : ℝ) :
+    (Set.Ioi a).indicator (fun _ => (1 : ℝ)) t * (Set.Ioi b).indicator (fun _ => (1 : ℝ)) t =
+      (Set.Ioi (max a b)).indicator (fun _ => (1 : ℝ)) t := by
+  simp only [Set.indicator, Set.mem_Ioi, max_lt_iff]
+  split_ifs <;> simp_all
+
+/-- `|T_t|² = Σ_{a,b} Re(c̄_a c_b) 1[max(y_a, y_b) < t]`. -/
+theorem normSq_tailSum {n : ℕ} (y : Fin n → ℝ) (c : Fin n → ℂ) (t : ℝ) :
+    normSq (tailSum y c t) =
+      ∑ a, ∑ b, (conj (c a) * c b).re * (Set.Ioi (max (y a) (y b))).indicator (fun _ => 1) t := by
+  rw [← Complex.ofReal_re (normSq _), Complex.normSq_eq_conj_mul_self, tailSum, map_sum,
+    sum_mul_sum, Complex.re_sum]
+  refine sum_congr rfl fun a _ => ?_
+  rw [Complex.re_sum]
+  refine sum_congr rfl fun b _ => ?_
+  by_cases ha : y a < t <;> by_cases hb : y b < t <;>
+    simp [ha, hb, Set.indicator]
+
+/-- **The shell identity at the real place**: for points in `[L, R]`,
+`Q_{−|·|}(c) = 2 ∫_L^R |T_t|² dt − 2 Re(S̄ Z)`, `S = Σ c_a`, `Z = Σ c_a (R − y_a)`. -/
+theorem hermQuad_gram_negAbsRat_eq {n : ℕ} (x : Fin n → Multiplicative ℚ) (c : Fin n → ℂ)
+    {L R : ℝ} (hL : ∀ a, L ≤ ((Multiplicative.toAdd (x a) : ℚ) : ℝ))
+    (hR : ∀ a, ((Multiplicative.toAdd (x a) : ℚ) : ℝ) ≤ R) :
+    hermQuad (gram negAbsRat x) c =
+      2 * (∫ t in Set.Icc L R, normSq (tailSum (fun a => ((Multiplicative.toAdd (x a) : ℚ) : ℝ)) c t)) -
+      2 * (conj (∑ a, c a) * ∑ a, c a * ((R - ((Multiplicative.toAdd (x a) : ℚ) : ℝ) : ℝ) : ℂ)).re := by
+  set y : Fin n → ℝ := fun a => ((Multiplicative.toAdd (x a) : ℚ) : ℝ)
+  set ρ : Fin n → Fin n → ℝ := fun a b => (conj (c a) * c b).re
+  -- `−|y_a − y_b| = 2(R − max) − (R − y_a) − (R − y_b)`
+  have hform : hermQuad (gram negAbsRat x) c = ∑ a, ∑ b, ρ a b *
+      (2 * (R - max (y a) (y b)) - (R - y a) - (R - y b)) := by
+    rw [hermQuad_gram, Complex.re_sum]
+    refine sum_congr rfl fun a _ => ?_
+    rw [Complex.re_sum]
+    refine sum_congr rfl fun b _ => ?_
+    have hab : -|y b - y a| = 2 * (R - max (y a) (y b)) - (R - y a) - (R - y b) := by
+      rcases le_total (y a) (y b) with h | h
+      · rw [max_eq_right h, abs_of_nonneg (by linarith)]; ring
+      · rw [max_eq_left h, abs_of_nonpos (by linarith)]; ring
+    simp only [negAbsRat, absRat, toAdd_mul, toAdd_inv, neg_add_eq_sub]
+    have hq : ((|Multiplicative.toAdd (x b) - Multiplicative.toAdd (x a)| : ℚ) : ℂ) =
+        ((|y b - y a| : ℝ) : ℂ) := by
+      simp only [y]
+      rw [← Complex.ofReal_ratCast, Rat.cast_abs, Rat.cast_sub]
+    rw [hq, show conj (c a) * -((|y b - y a| : ℝ) : ℂ) * c b =
+        ((-|y b - y a| : ℝ) : ℂ) * (conj (c a) * c b) by push_cast; ring, Complex.re_ofReal_mul,
+      hab, mul_comm]
+  -- the linear part is `2 Re(S̄ Z)`
+  have hlin : ∑ a, ∑ b, ρ a b * ((R - y a) + (R - y b)) =
+      2 * (conj (∑ a, c a) * ∑ a, c a * ((R - y a : ℝ) : ℂ)).re := by
+    have h1 : ∑ a, ∑ b, ρ a b * (R - y a) =
+        (conj (∑ a, c a * ((R - y a : ℝ) : ℂ)) * ∑ b, c b).re := by
+      rw [map_sum, sum_mul_sum, Complex.re_sum]
+      refine sum_congr rfl fun a _ => ?_
+      rw [Complex.re_sum]
+      refine sum_congr rfl fun b _ => ?_
+      rw [map_mul, Complex.conj_ofReal, show conj (c a) * ((R - y a : ℝ) : ℂ) * c b =
+        ((R - y a : ℝ) : ℂ) * (conj (c a) * c b) by ring, Complex.re_ofReal_mul, mul_comm]
+    have h2 : ∑ a, ∑ b, ρ a b * (R - y b) =
+        (conj (∑ a, c a) * ∑ b, c b * ((R - y b : ℝ) : ℂ)).re := by
+      rw [map_sum, sum_mul_sum, Complex.re_sum]
+      refine sum_congr rfl fun a _ => ?_
+      rw [Complex.re_sum]
+      refine sum_congr rfl fun b _ => ?_
+      rw [show conj (c a) * (c b * ((R - y b : ℝ) : ℂ)) =
+        ((R - y b : ℝ) : ℂ) * (conj (c a) * c b) by ring, Complex.re_ofReal_mul, mul_comm]
+    have h3 : (conj (∑ a, c a * ((R - y a : ℝ) : ℂ)) * ∑ b, c b).re =
+        (conj (∑ a, c a) * ∑ a, c a * ((R - y a : ℝ) : ℂ)).re := by
+      rw [← Complex.conj_re, map_mul, Complex.conj_conj, mul_comm]
+    simp_rw [mul_add, sum_add_distrib]
+    rw [h1, h2, h3]
+    ring
+  -- the quadratic part is the integral of the tail squares
+  have hquad : ∑ a, ∑ b, ρ a b * (R - max (y a) (y b)) =
+      ∫ t in Set.Icc L R, normSq (tailSum y c t) := by
+    have hint : ∀ a b, Integrable
+        (fun t => ρ a b * (Set.Ioi (max (y a) (y b))).indicator (fun _ => (1 : ℝ)) t)
+        (volume.restrict (Set.Icc L R)) := fun a b =>
+      ((integrable_const (1 : ℝ)).indicator measurableSet_Ioi).const_mul _
+    simp_rw [normSq_tailSum]
+    rw [integral_finsetSum _ fun a _ => integrable_finsetSum _ fun b _ => hint a b]
+    refine sum_congr rfl fun a _ => ?_
+    rw [integral_finsetSum _ fun b _ => hint a b]
+    refine sum_congr rfl fun b _ => ?_
+    rw [integral_const_mul, integral_indicator_Ioi_eq ((hL a).trans (le_max_left _ _))
+      (max_le (hR a) (hR b))]
+  rw [hform]
+  have : ∑ a, ∑ b, ρ a b * (2 * (R - max (y a) (y b)) - (R - y a) - (R - y b)) =
+      2 * ∑ a, ∑ b, ρ a b * (R - max (y a) (y b)) -
+        ∑ a, ∑ b, ρ a b * ((R - y a) + (R - y b)) := by
+    rw [mul_sum, ← sum_sub_distrib]
+    refine sum_congr rfl fun a _ => ?_
+    rw [mul_sum, ← sum_sub_distrib]
+    refine sum_congr rfl fun b _ => by ring
+  rw [this, hquad, hlin]
+
+/-- **The shell decomposition of the archimedean pole–successor form**: with `X = Σ w_g|a_g|^{−1/2}`,
+`Y = Σ w_g|a_g|^{1/2}` and the renormalized coordinate `Y_R = Y − c Σ_g w_g|a_g|^{−1/2}(R − b_g)`,
+`Q_Φ(w) = 2 Re(X̄ Y_R) + 2c ∫_L^R |T_t|² dt` over the half-line shells. -/
+theorem hermQuad_gram_poleSuccessorState_eq (c : ℝ) {n : ℕ} (g : Fin n → AffineGroupOf ℚ)
+    (w : Fin n → ℂ) {L R : ℝ} (hL : ∀ a, L ≤ ((shiftOf (g a) : ℚ) : ℝ))
+    (hR : ∀ a, ((shiftOf (g a) : ℚ) : ℝ) ≤ R) :
+    hermQuad (gram (poleSuccessor Rat.AbsoluteValue.real 1 fun m => (c : ℂ) * negAbsRat m) g) w =
+      2 * (conj (∑ a, boostWeights Rat.AbsoluteValue.real 1 g w a) *
+        (∑ a, w a * slopePow Rat.AbsoluteValue.real 1 (g a) -
+          c * ∑ a, boostWeights Rat.AbsoluteValue.real 1 g w a *
+            ((R - ((shiftOf (g a) : ℚ) : ℝ) : ℝ) : ℂ))).re +
+      2 * c * ∫ t in Set.Icc L R, normSq
+        (tailSum (fun a => ((shiftOf (g a) : ℚ) : ℝ)) (boostWeights Rat.AbsoluteValue.real 1 g w) t) := by
+  rw [hermQuad_gram_poleSuccessor (isConformal_negAbsRat c)]
+  have e : gram (fun m => (c : ℂ) * negAbsRat m) (shifts g) = (c : ℂ) • gram negAbsRat (shifts g) := by
+    ext a b; simp [gram]
+  rw [e, hermQuad_smul, hermQuad_gram_negAbsRat_eq (shifts g) _ (L := L) (R := R)
+    (fun a => by simpa [shifts] using hL a) (fun a => by simpa [shifts] using hR a)]
+  simp only [shifts, toAdd_ofAdd]
+  set X := ∑ a, boostWeights Rat.AbsoluteValue.real 1 g w a
+  set Y := ∑ a, w a * (slopePow Rat.AbsoluteValue.real 1 (g a) : ℂ)
+  set Z := ∑ a, boostWeights Rat.AbsoluteValue.real 1 g w a * ((R - ((shiftOf (g a) : ℚ) : ℝ) : ℝ) : ℂ)
+  have hYX : (conj Y * X).re = (conj X * Y).re := by
+    rw [← Complex.conj_re, map_mul, Complex.conj_conj, mul_comm]
+  have hZ : (conj X * ((c : ℂ) * Z)).re = c * (conj X * Z).re := by
+    rw [mul_left_comm, Complex.re_ofReal_mul]
+  rw [mul_sub (conj X) Y ((c : ℂ) * Z), Complex.sub_re, hZ, Complex.add_re, hYX]
+  ring
 
 end GaloisForLFunctions.AdelicKreinGeometry

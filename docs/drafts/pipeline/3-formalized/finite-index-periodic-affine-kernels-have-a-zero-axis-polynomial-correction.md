@@ -1,8 +1,8 @@
 # Finite-index periodic affine kernels have a zero-axis polynomial correction
 
 - **ID:** AFFINE-CANONICAL-POLYNOMIAL-CORRECTION
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM; Lean verification pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [Relative Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
 - **Statement:** Every Hermitian finite-index affine kernel with period-one translation reading has a unique polynomial-fibre kernel `Q`, zero on dilations, such that `k−Q` is right invariant under integer translations. This `Q` is Hermitian, has finite column rank, and vanishes on translations. Consequently `k−Q` is Hermitian of finite negative index and invariant under integer translations on both sides, with both axis readings unchanged.
 
@@ -24,8 +24,10 @@ Let `h=k−Q` and `Q*(g)=conj(Q(g⁻¹))`. For fixed rational slope `a=p/q≠0`,
 
 Let `D=dim columnSpan(Q)`. Every sampled Gram matrix of `Q` has rank at most `D`, since its columns are evaluations of kernel columns. For every finite sample, intersect a maximal negative subspace of `gram(k−Q)` with the kernel of `gram(Q)`. This loses at most `D` dimensions, and on the intersection the forms of `k−Q` and `k` agree. Hence `κ(k−Q)≤κ(k)+D`; this is the corpus's matrix inequality `hermNegIndex_le_add_rank`. The Hermitian identity above makes the remainder a Hermitian finite-index kernel.
 
-## Verification boundary
+## Lean
+
+[`AdelicKreinGeometry/Haar/PolynomialCorrection.lean`](../../../../formal/GaloisForLFunctions/AdelicKreinGeometry/Haar/PolynomialCorrection.lean) proves the complete result in `exists_zero_axis_polynomial_correction`. `polynomial_period_correction_unique` supplies uniqueness; `isHermKernel_of_polynomial_correction` proves the Hermitian normalization.
 
 `HeckeKreinToeplitz/Index/FiniteColumns.lean` formalizes finite-rank closure under sums, products, polynomial evaluation, and homomorphism pullback. `BiarithmeticGeometry/Affine/PolynomialAntidifferences.lean` formalizes the normalized primitive of every finite-dimensional affine coefficient, including its finite rank and exact right difference. `BiarithmeticGeometry/Affine/PolynomialFibres.lean` proves closure under conjugate inversion and rigidity of periodic polynomial fibres. `HeckeKreinToeplitz/Index/FiniteRankPerturbations.lean` proves `κ(k−Q)≤κ(k)+dim columnSpan(Q)`. All have direct Lean checks and standard axiom closures.
 
-The Hermitian normalization, zero translation reading, uniqueness, and assembly of the correction still require Lean verification. The further decomposition of the resulting bi-integer-invariant Haar carrier into a positive affine kernel plus a slope kernel remains open.
+The complete correction has a direct Lean audit with only `propext`, `Classical.choice`, and `Quot.sound`. The further decomposition of the bi-integer-invariant Haar remainder into a positive affine kernel plus a slope kernel remains open.
