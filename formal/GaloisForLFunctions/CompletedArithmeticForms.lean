@@ -72,6 +72,10 @@ import GaloisForLFunctions.CompletedArithmeticForms.BesselGaussianReserve
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorOverlapDecay
 import GaloisForLFunctions.CompletedArithmeticForms.WeilGrowingOverlap
 import GaloisForLFunctions.CompletedArithmeticForms.WeilGrowingPackets
+import GaloisForLFunctions.CompletedArithmeticForms.RamanujanConductorFrames
+import GaloisForLFunctions.CompletedArithmeticForms.PrimeResidualLevelOfDistribution
+import GaloisForLFunctions.CompletedArithmeticForms.CompleteWeilResidualLevelOfDistribution
+import GaloisForLFunctions.CompletedArithmeticForms.CompleteWeilConductorAveragePositivity
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -153,6 +157,13 @@ Every fixed finite family of distinct positive conductors is eventually a strict
 positive packet on those schedules, uniformly over all nonzero real coefficients.
 The literal imaginary-order Bessel source retains a Gaussian reserve throughout
 its positive band, including an explicit reserve for the signed radial combination.
+Across every Bombieri–Vinogradov exponent below one half, the normalized Ramanujan
+conductor prefix forms a two-sided Riesz frame with exact prime-power Gram coupling,
+satisfies unconditional mean-square residual decay for the prime and complete Weil
+operators up to the zero-log-loss overlap threshold `c_N^2 / log N → 0` (covering the
+entire RH-complete logarithmic window), and yields diverging positive conductor-average
+energy, almost-all positive conductor census, and sublinear nonpositive subspace
+dimension on the conductor span.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/

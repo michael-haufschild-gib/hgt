@@ -27,6 +27,12 @@ local instance (v : FinitePlace) : IsTopologicalAddGroup (v.adicCompletionIntege
     (v.adicCompletionIntegers K).subtype.toAddMonoidHom
 local instance (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderTail S) :=
   Pi.topologicalAddGroup
+private abbrev cylinderIntegerAddGroup (v : FinitePlace) :
+    AddCommGroup (v.adicCompletionIntegers K) := inferInstance
+private abbrev cylinderIntegerAdd (v : FinitePlace) :
+    Add (v.adicCompletionIntegers K) := inferInstance
+attribute [local instance] cylinderIntegerAddGroup cylinderIntegerAdd
+
 local instance (v : FinitePlace) : SigmaCompactSpace (v.adicCompletion K) := by
   letI := finiteCompletion_secondCountable v
   letI := finiteCompletion_locallyCompact v

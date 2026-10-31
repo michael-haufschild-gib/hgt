@@ -10,8 +10,8 @@ import GaloisForLFunctions.RHTower.ZetaOffLineMomentSelbergUpper
 So the off-line first moment `Σ m (Re ρ − ½)₊ ≤ (67/1000) V` sits at depths `o(1)`: the depth mass
 `Σ m (Re ρ − ½)²` of a unit window is `o(1)` on average over the heights.
 
-**Proof.**  For `x ≤ ½`, `x₊² ≤ ½ (x − d)₊ + d x₊` (`sq_max_le`): below `d` use `x ≤ d`,
-above it `x(x − d) ≤ ½(x − d)`.  With `d = R/log V`, the tail law with Selberg's mollifier
+**Proof.**  For `x ≤ ½`, `x₊² ≤ ½ (x − d)₊ + d x₊` (`sq_max_le_half_tail_add`): below `d` use
+`x ≤ d`, above it `x(x − d) ≤ ½(x − d)`.  With `d = R/log V`, the tail law with Selberg's mollifier
 (`eventually_offLineTail_le_selberg`) gives `4π Σ m (x − d)₊ ≤ (g(R) + η) V` with `g(R) → 0`
 (`tendsto_selbergTailRate`), and the first moment (`eventually_offLineMoment_le_selberg_upper`)
 makes `d Σ m x₊ ≤ (67/1000) R V/log V = o(V)`.
@@ -31,7 +31,7 @@ theorem offLineSecondMoment_nonneg (V : ℝ) : 0 ≤ offLineSecondMoment V :=
   Finset.sum_nonneg fun _ _ => by positivity
 
 /-- `x₊² ≤ ½ (x − d)₊ + d x₊` for `x ≤ ½`. -/
-theorem sq_max_le {x d : ℝ} (hx : x ≤ 1 / 2) :
+theorem sq_max_le_half_tail_add {x d : ℝ} (hx : x ≤ 1 / 2) :
     max x 0 ^ 2 ≤ 1 / 2 * max (x - d) 0 + d * max x 0 := by
   rcases le_or_gt x 0 with h0 | h0
   · rw [max_eq_right h0]
@@ -88,7 +88,7 @@ theorem tendsto_offLineSecondMoment_div :
       rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
       refine Finset.sum_le_sum fun z hz => ?_
       have hre1 := (mem_stripFinsetPos.mp hz).2.1
-      have h := sq_max_le (d := d) (show z.re - 1 / 2 ≤ 1 / 2 by linarith)
+      have h := sq_max_le_half_tail_add (d := d) (show z.re - 1 / 2 ≤ 1 / 2 by linarith)
       have hm : (0 : ℝ) ≤ ((analyticOrderAt xi z).toNat : ℝ) := Nat.cast_nonneg _
       rw [sub_zero]
       calc ((analyticOrderAt xi z).toNat : ℝ) * max (z.re - 1 / 2) 0 ^ 2
@@ -130,5 +130,3 @@ theorem tendsto_offLineSecondMoment_div :
 end
 
 end RHTower
-
-#print axioms RHTower.tendsto_offLineSecondMoment_div

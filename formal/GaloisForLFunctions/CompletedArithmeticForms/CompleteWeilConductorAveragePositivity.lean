@@ -70,7 +70,7 @@ theorem normalizedRamanujanHorizonVector_norm_sq_ge
 
 /-- Bessel inequality along the ambient coercion of any finite `OrthonormalBasis` of `W`. -/
 private theorem sum_sq_inner_orthonormalBasis_le
-    {V ι : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [Fintype ι]
+    {V ι : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V] [Fintype ι] [DecidableEq ι]
     {W : Submodule ℝ V} (b : OrthonormalBasis ι ℝ W) (x : V) :
     (∑ j : ι, ⟪x, (b j : V)⟫ ^ 2) ≤ ‖x‖ ^ 2 := by
   have hv : Orthonormal ℝ (fun j : ι => (b j : V)) := by
@@ -569,11 +569,14 @@ theorem finrank_highConductorSubspace_eq {M_low M N : ℕ} (hN : 2 ≤ N)
     Module.finrank ℝ (highConductorSubspace M_low M N) = M - M_low := by
   have hS_sub : Ioc M_low M ⊆ Icc 1 M := fun m hm =>
     mem_Icc.mpr ⟨(Nat.zero_le _).trans_lt (mem_Ioc.mp hm).1, (mem_Ioc.mp hm).2⟩
-  have hemb : Function.Injective (fun m : ↥(Ioc M_low M) => (⟨m.1, hS_sub m.2⟩ : ↥(Icc 1 M))) :=
-    fun _ _ h => Subtype.ext (Subtype.ext_iff.mp h)
+  have hemb : Function.Injective (fun m : ↥(Ioc M_low M) => (⟨m.1, hS_sub m.2⟩ : ↥(Icc 1 M))) := by
+    rintro ⟨x, _⟩ ⟨y, _⟩ h
+    simp only [Subtype.mk.injEq] at h ⊢
+    exact h
   have hli : LinearIndependent ℝ
       (fun m : ↥(Ioc M_low M) => normalizedRamanujanHorizonVector m.1 N) :=
-    (linearIndependent_conductorBasisFamily hN h2log).comp _ hemb
+    (linearIndependent_conductorBasisFamily hN h2log).comp
+      (fun m : ↥(Ioc M_low M) => (⟨m.1, hS_sub m.2⟩ : ↥(Icc 1 M))) hemb
   unfold highConductorSubspace
   rw [finrank_span_eq_card hli, Fintype.card_coe]
   exact Nat.card_Ioc M_low M
@@ -727,7 +730,7 @@ private theorem highConductor_unit_vector_residual_pairing_ge
   linarith only [hu_neg, hW_expand, hshift_ge]
 
 private theorem card_orthonormalBasis_nonpos_highConductor_le
-    {ι : Type*} [Fintype ι]
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
     {φ : ℝ → ℝ} {c θ E₀ : ℝ} {M_low M N : ℕ}
     (hθ0 : 0 < θ) (hθ : θ < 1 / 2) (hE₀_pos : 0 < E₀)
     (hM1 : 1 ≤ M) (hN4 : 4 ≤ N) (hfl_le : (M : ℝ) ≤ (N : ℝ) ^ θ)
@@ -852,6 +855,7 @@ theorem finrank_nonpos_highConductor_subspace_le
   have hne2 : (1 - 2 * θ) * θ ^ 2 ≠ 0 := (mul_pos h12θ (sq_pos_of_pos hθ0)).ne'
   have hne3 : (Real.log N) ^ 2 ≠ 0 := (sq_pos_of_pos hLN0).ne'
   rw [div_eq_iff hne1]
+  symm
   calc
     (4 / ((1 - 2 * θ) * θ ^ 2)) * (S / (Real.log N) ^ 2) *
         ((1 - 2 * θ) * (θ * Real.log N) ^ 2 / 4) =
@@ -910,6 +914,9 @@ theorem tendsto_completeWeil_conductorSubspace_negIndex_div_zero {φ : ℝ → �
       hE_conc (U N ⊓ highConductorSubspace ⌊min (b / 2) (1 / 2) * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊
         ⌊(N : ℝ) ^ θ⌋₊ N)
       inf_le_right (fun u hu => hU_neg N u hu.1)
+    change (∑ m ∈ Icc 1 ⌊(N : ℝ) ^ θ⌋₊, ‖completeWeilConductorResidual φ (c N) N m‖ ^ 2) /
+        ((⌊(N : ℝ) ^ θ⌋₊ : ℝ) * (Real.log N) ^ 2) <
+      (b / 2) / (4 / ((1 - 2 * θ) * θ ^ 2)) at hres_lt
     generalize (Module.finrank ℝ
       ↥(U N ⊓ highConductorSubspace ⌊min (b / 2) (1 / 2) * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊
         ⌊(N : ℝ) ^ θ⌋₊ N)) = d at hrank_U hd_bound

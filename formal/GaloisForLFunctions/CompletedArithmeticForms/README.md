@@ -1,6 +1,6 @@
 # CompletedArithmeticForms
 
-Namespace `GaloisForLFunctions.CompletedArithmeticForms`; umbrella `CompletedArithmeticForms.lean`; 74 modules.
+Namespace `GaloisForLFunctions.CompletedArithmeticForms`; umbrella `CompletedArithmeticForms.lean`; 78 modules.
 All results unconditional; each module ends with `#print axioms` for its main theorems.
 
 ## 1. Motivation
@@ -37,6 +37,7 @@ and record the exact parameter domain on which each reserve survives.
 | Conductor Green operator | `tiltedConductorGreen` | diagonal ℓ² operator with weights 1/E_m(c) |
 | Residual scale | `weilResidualScale c N` | c¹⁰(log N/N)² + c⁶/√log N |
 | Overlap schedule | `logarithmicPacketOverlap α N` | c_N = (log N)^α |
+| Conductor subspace | `conductorSubspace M N`, `highConductorSubspace M_low M N` | span of normalized Ramanujan horizon modes v_m (1 ≤ m ≤ M, resp. M_low < m ≤ M) |
 | Bessel band source | `besselBandSource`, `besselGaussianFlux` | Re K_{iτ}(x) and its Gaussian Wronskian |
 
 External: `completeWeilMatrix`, `completedConductorEnergy`, `normalizedRamanujanHorizonVector`
@@ -87,6 +88,13 @@ External: `completeWeilMatrix`, `completedConductorEnergy`, `normalizedRamanujan
 12. Conductor spectrum: E_m = log m + O(1) shell budget, E_p ≤ log p + O(1); Σ1/p = ∞ fixes heat threshold β = 1.
 13. Residual payment: eight-term decomposition, each term polynomial in c with decay (log N/N)² or
     1/√log N; Fourier decay t^{−8} gives E_m(c) ≍ c^{−7}; relative residual → 0 on c_N = (log N)^α, α < 1/40.
+14. Conductor level of distribution (`0 < θ < 1/2`, `M = ⌊N^θ⌋₊`): exact Kluyver–Möbius Gram expansion
+    isolates prime-power steps `l ∣ m` or `m ∣ l` at scale `1/log N`, giving a two-sided Riesz frame
+    `(1 − 2θ)Σ a_m² ≤ ‖Σ a_m v_m‖² ≤ 6 Σ a_m²`; divisor-totient envelope `Σ_{m≤M} c̃_m(n)² ≤ n(1 + log M)⁴`
+    and periodic gcd-permutation Cauchy–Schwarz give `Σ_{m≤M} ‖P_N v_m − (log N − E_arith(m))v_m‖² = O(M log N)`
+    and collective complete-Weil residual decay up to `c_N² / log N → 0` (covering `c_N = 2(log N)^α`,
+    `1/4 < α < 1/2`), forcing diverging conductor-average energy, `o(M)` nonpositive census, and
+    `κ(W_{N,c_N}|_{V_M}) = o(M)`.
 
 **D. Signed theta Hankel hierarchy**
 14. Gamma moments have product determinants and successor gw^{2N}N!(r)_N; native balanced heads converge to
@@ -135,6 +143,10 @@ External: `completeWeilMatrix`, `completedConductorEnergy`, `normalizedRamanujan
 | Polynomial eight-term residual | `exists_tiltedWeil_polynomial_residual_bound` | proved |
 | E_m(c) ≍ c^{−7} | `tiltedConductorEnergy_two_sided` | proved |
 | Fixed conductor packets positive at c_N = (log N)^α, α < 1/40 | `eventually_tiltedWeil_growing_packet_pos` | proved |
+| Whole-prefix Ramanujan Riesz frame (`1 − 2θ` lower, `6` upper) & exact Gram | `ramanujanConductor_lower_riesz`, `ramanujanConductor_upper_riesz`, `normalizedRamanujanHorizonVector_gram_exact` | proved |
+| Bombieri–Vinogradov level of distribution (`0 < θ < 1/2`) for `fullPrimeMatrix` | `exists_fullPrimeMatrix_levelOfDistribution` | proved |
+| Complete-Weil residual level of distribution (`0 < θ < 1/2`, `c_N² / log N → 0`, RH-complete `α < 1/2`) | `tendsto_completeWeil_residual_levelOfDistribution`, `tendsto_tiltedUnitSpline_completeWeil_residual_rhComplete` | proved |
+| Diverging conductor average, `o(M)` census, and `κ(W_{N,c_N}|_{V_M}) = o(M)` at RH-complete overlap | `tendsto_completeWeil_conductorAverage_atTop`, `tendsto_nonpositive_conductor_fraction_zero`, `tendsto_completeWeil_conductorSubspace_negIndex_div_zero` | proved |
 | No rank-uniform relative native reserve | `not_native_rank_uniform_relative_reserve` | proved |
 | First atom: negative moment at every center; κ(x) → ∞ | `exists_firstAtom_signed_moment_neg`, `firstAtomFailureRank_tendsto` | proved |
 | √(q/C₂) − 3 < κ(x) ≤ 1 + C_* q | `firstAtomFailureRank_sqrt_scale_lower`, `exists_firstAtom_signed_head_failure_le_scale` | proved |

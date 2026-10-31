@@ -37,7 +37,7 @@ open Complex Finset
 open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticPositiveDuality
-open GaloisForLFunctions.ArithmeticKreinLangerTheory (poissonKernel isPosDefKernel_poissonKernel)
+open GaloisForLFunctions.ArithmeticKreinLangerTheory (isPosDefKernel_poissonKernel)
 
 noncomputable section
 
@@ -57,15 +57,17 @@ def localHecke (s : ℝ) (g : AffineGroupQ) : ℂ :=
   if min 0 (padicValRat p (affSlope g)) ≤ padicValRat p (affShift g) then
     (((p : ℝ) ^ (-(s * |(padicValRat p (affSlope g) : ℝ)|)) : ℝ) : ℂ) else 0
 
-theorem isHermKernel_poissonKernel (r : ℝ) : IsHermKernel (poissonKernel r) := fun n => by
-  simp [poissonKernel, toAdd_inv, Int.natAbs_neg]
+theorem isHermKernel_poissonKernel (r : ℝ) :
+    IsHermKernel (ArithmeticKreinLangerTheory.poissonKernel r) := fun n => by
+  simp [ArithmeticKreinLangerTheory.poissonKernel, toAdd_inv, Int.natAbs_neg]
 
 /-- The exponent splits off a Poisson kernel of the slope valuation. -/
 theorem localHecke_eq_mul (s : ℝ) (g : AffineGroupQ) :
     localHecke p s g =
-      localHecke p (1 / 2) g * poissonKernel ((p : ℝ) ^ (-(s - 1 / 2))) (slopeVal p g) := by
+      localHecke p (1 / 2) g *
+        ArithmeticKreinLangerTheory.poissonKernel ((p : ℝ) ^ (-(s - 1 / 2))) (slopeVal p g) := by
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.out.pos
-  simp only [localHecke, poissonKernel, toAdd_slopeVal]
+  simp only [localHecke, ArithmeticKreinLangerTheory.poissonKernel, toAdd_slopeVal]
   split_ifs
   · rw [← Complex.ofReal_mul, ← Real.rpow_natCast, ← Real.rpow_mul hp0.le, ← Real.rpow_add hp0,
       Nat.cast_natAbs, Int.cast_abs]
@@ -91,9 +93,9 @@ theorem localHecke_half_of_int {g : AffineGroupQ} {A A' C C' : ℤ} (hA : A ≠ 
   -- the gcd of two powers of `p`
   have hgcd : (((p : ℤ) ^ k).gcd ((p : ℤ) ^ k') : ℤ) = (p : ℤ) ^ min k k' := by
     rcases le_total k k' with h | h
-    · rw [min_eq_left h, Int.gcd_eq_left (pow_dvd_pow _ h), Int.natAbs_pow, Int.natAbs_ofNat]
+    · rw [min_eq_left h, Int.gcd_eq_left (by positivity) (pow_dvd_pow _ h), Int.natAbs_pow, Int.natAbs_ofNat]
       push_cast; rfl
-    · rw [min_eq_right h, Int.gcd_comm, Int.gcd_eq_left (pow_dvd_pow _ h), Int.natAbs_pow,
+    · rw [min_eq_right h, Int.gcd_comm, Int.gcd_eq_left (by positivity) (pow_dvd_pow _ h), Int.natAbs_pow,
         Int.natAbs_ofNat]
       push_cast; rfl
   -- the support conditions agree
@@ -118,9 +120,11 @@ theorem localHecke_half_of_int {g : AffineGroupQ} {A A' C C' : ℤ} (hA : A ≠ 
       ← Real.rpow_sub hp0]
     congr 2
     rcases le_total k k' with hk | hk
-    · rw [min_eq_left hk, abs_of_nonneg (by push_cast; exact_mod_cast sub_nonneg.mpr hk)]
+    · rw [min_eq_left (Nat.cast_le.mpr hk),
+        abs_of_nonneg (Int.cast_nonneg.mpr (sub_nonneg.mpr (by exact_mod_cast hk)))]
       push_cast; ring
-    · rw [min_eq_right hk, abs_of_nonpos (by push_cast; exact_mod_cast sub_nonpos.mpr hk)]
+    · rw [min_eq_right (Nat.cast_le.mpr hk),
+        abs_of_nonpos (Int.cast_nonpos.mpr (sub_nonpos.mpr (by exact_mod_cast hk)))]
       push_cast; ring
   · rw [if_neg h, if_neg (mt hcond.mpr h)]; simp
 
@@ -179,7 +183,8 @@ theorem isPosDefOnGroup_localHaar : IsPosDefOnGroup (localHecke p (1 / 2)) := by
 theorem isPosDefKernel_localHecke {s : ℝ} (hs : 1 / 2 ≤ s) : IsPosDefKernel (localHecke p s) := by
   have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.out.one_lt.le
   have e : localHecke p s = fun g =>
-      localHecke p (1 / 2) g * (poissonKernel ((p : ℝ) ^ (-(s - 1 / 2))) ∘ slopeVal p) g :=
+      localHecke p (1 / 2) g *
+        (ArithmeticKreinLangerTheory.poissonKernel ((p : ℝ) ^ (-(s - 1 / 2))) ∘ slopeVal p) g :=
     funext (localHecke_eq_mul p s)
   rw [e]
   exact IsPosDefKernel.mul (isPosDefKernel_iff_isPosDefOnGroup.mpr (isPosDefOnGroup_localHaar p))
