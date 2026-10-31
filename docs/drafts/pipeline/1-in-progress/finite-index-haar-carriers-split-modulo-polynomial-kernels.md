@@ -34,4 +34,4 @@ Hence any decomposition `k=p+ψ∘slope+Q` with positive Haar `p` and Hermitian 
 
 `HeckeKreinToeplitz/Index/FiniteRankStability.lean` formalizes both rank bounds and preservation of finite index, with a direct audit and standard axiom closure. The complete equivalence remains pending.
 
-A [polynomial quadrature argument](haar-addition-preserves-index-on-polynomial-translation-fibres.md) further gives the exact residual law `κ(k)=κ(ψ∘slope+Q)` and the sharper lower bound `κ(ψ)≤κ(k)` on paper. It reproduces polynomial Gram entries while the positive Haar matrix tends to zero. These stronger statements remain pending Lean verification; no index additivity between `ψ` and `Q` is asserted.
+A [polynomial quadrature argument](../3-formalized/haar-addition-preserves-index-on-polynomial-translation-fibres.md) further gives the exact residual law `κ(k)=κ(ψ∘slope+Q)` and the sharper lower bound `κ(ψ)≤κ(k)` on paper. It reproduces polynomial Gram entries while the positive Haar matrix tends to zero. These stronger statements remain pending Lean verification; no index additivity between `ψ` and `Q` is asserted.

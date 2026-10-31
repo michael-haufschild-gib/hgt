@@ -2022,7 +2022,7 @@ private theorem exists_midBand_subKernel_sum_le {φ : ℝ → ℝ}
               (((c ^ 2 * (1 + Real.log c)) * (Real.log N)⁻¹) ^ 2 * (‖u‖ ^ 2) ^ 2) := by ring
           _ = (20 * (80 * (2 * Real.exp 2) ^ 2) * (K_pair + (1 + Real.exp (1 / 2))) ^ 2) *
                 ((c ^ 2 * (1 + Real.log c) / Real.log N) ^ 2 * (‖u‖ ^ 2) ^ 2) := by
-            rw [div_eq_mul_inv]
+            rw [div_eq_mul_inv (c ^ 2 * (1 + Real.log c)) (Real.log N)]
       _ ≤ (Real.sqrt (20 * (80 * (2 * Real.exp 2) ^ 2)) *
             (K_pair + (1 + Real.exp (1 / 2))) + 1) ^ 2 *
             ((c ^ 2 * (1 + Real.log c) / Real.log N) ^ 2 * (‖u‖ ^ 2) ^ 2) :=
@@ -2145,7 +2145,7 @@ private theorem midBand_leadKernel_sum_eq {φ : ℝ → ℝ}
         linarith only [hgeom.1, hsub]
       have hK0_lt_n : ⌊(N : ℝ) / (linearNearRowRadius c + 1)⌋₊ < n := by
         have hA_pos : 0 < linearNearRowRadius c + 1 := by unfold linearNearRowRadius; positivity
-        have hn_real : (1 : ℝ) ≤ n := Nat.cast_le.mpr hn1
+        have hn_real : (1 : ℝ) ≤ n := by exact_mod_cast hn1
         have hstrict : (N : ℝ) < (linearNearRowRadius c + 1) * n := by
           nlinarith only [hgeom.2.1, hn_real]
         exact Nat.floor_lt (div_nonneg hN0.le hA_pos.le) |>.mpr ((div_lt_iff₀' hA_pos).mpr hstrict)
@@ -2235,11 +2235,9 @@ private theorem exists_midBand_lag_sub_linearized_le {φ : ℝ → ℝ}
       have : (0 : ℝ) ≤ linearNearRowRadius c := by unfold linearNearRowRadius; positivity
       nlinarith only [this]
     exact_mod_cast (h1.trans h2).trans hradN
-  have hB_le : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ (2 * Real.exp 2) * c := by
-    have h1 : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ linearNearRowRadius c :=
-      Nat.floor_le (by unfold linearNearRowRadius; positivity)
-    unfold linearNearRowRadius at h1
-    linarith only [h1, (by ring : 2 * c * Real.exp 2 = (2 * Real.exp 2) * c)]
+  have hB_le : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ (2 * Real.exp 2) * c :=
+    (Nat.floor_le (by unfold linearNearRowRadius; positivity)).trans_eq
+      (by unfold linearNearRowRadius; ring)
   have hArad_pos : 0 < linearNearRowRadius c + 1 := by unfold linearNearRowRadius; positivity
   have hArad_le : linearNearRowRadius c + 1 ≤ (2 * Real.exp 2 + 1) * c := by
     unfold linearNearRowRadius; nlinarith only [hc1]
@@ -2325,30 +2323,29 @@ private theorem exists_midBand_lag_sub_linearized_le {φ : ℝ → ℝ}
         have hterm1 :
             4 * (K_lip : ℝ) * (linearNearRowRadius c + 1) ^ 2 * linearNearRowRadius c ^ 2 / c ≤
               4 * (K_lip : ℝ) * (2 * Real.exp 2 + 1) ^ 2 * (2 * Real.exp 2) ^ 2 * c ^ 3 := by
-          rw [hBr_eq]
           calc
             4 * (K_lip : ℝ) * (linearNearRowRadius c + 1) ^ 2 *
-                ((2 * Real.exp 2) * c) ^ 2 / c ≤
+                linearNearRowRadius c ^ 2 / c ≤
               4 * (K_lip : ℝ) * ((2 * Real.exp 2 + 1) ^ 2 * c ^ 2) *
-                ((2 * Real.exp 2) * c) ^ 2 / c :=
+                linearNearRowRadius c ^ 2 / c :=
               div_le_div_of_nonneg_right
                 (mul_le_mul_of_nonneg_right
                   (mul_le_mul_of_nonneg_left hA2 (by positivity)) (sq_nonneg _)) hc0.le
             _ = (4 * (K_lip : ℝ) * (2 * Real.exp 2 + 1) ^ 2 *
-                  (2 * Real.exp 2) ^ 2 * c ^ 3) * c / c := by ring
+                  (2 * Real.exp 2) ^ 2 * c ^ 3) * c / c := by rw [hBr_eq]; ring
             _ = 4 * (K_lip : ℝ) * (2 * Real.exp 2 + 1) ^ 2 *
                   (2 * Real.exp 2) ^ 2 * c ^ 3 := mul_div_cancel_right₀ _ hc0.ne'
         have hterm2 :
             (linearNearRowRadius c + 1) * linearNearRowRadius c * (∫ t, φ t ^ 2) ≤
               (2 * Real.exp 2 + 1) * (2 * Real.exp 2) * (∫ t, φ t ^ 2) * c ^ 3 := by
-          rw [hBr_eq]
           have hc23 : c ^ 2 ≤ c ^ 3 := pow_le_pow_right₀ hc1 (by norm_num : 2 ≤ 3)
           calc
-            (linearNearRowRadius c + 1) * ((2 * Real.exp 2) * c) * (∫ t, φ t ^ 2) ≤
-                ((2 * Real.exp 2 + 1) * c) * ((2 * Real.exp 2) * c) * (∫ t, φ t ^ 2) :=
+            (linearNearRowRadius c + 1) * linearNearRowRadius c * (∫ t, φ t ^ 2) ≤
+                ((2 * Real.exp 2 + 1) * c) * linearNearRowRadius c * (∫ t, φ t ^ 2) :=
               mul_le_mul_of_nonneg_right
-                (mul_le_mul_of_nonneg_right hArad_le (by positivity)) hM.le
-            _ = (2 * Real.exp 2 + 1) * (2 * Real.exp 2) * (∫ t, φ t ^ 2) * c ^ 2 := by ring
+                (mul_le_mul_of_nonneg_right hArad_le hBr0) hM.le
+            _ = (2 * Real.exp 2 + 1) * (2 * Real.exp 2) * (∫ t, φ t ^ 2) * c ^ 2 := by
+              rw [hBr_eq]; ring
             _ ≤ (2 * Real.exp 2 + 1) * (2 * Real.exp 2) * (∫ t, φ t ^ 2) * c ^ 3 :=
               mul_le_mul_of_nonneg_left hc23 (by positivity)
         linarith only [hterm1, hterm2, (by ring :
@@ -2569,11 +2566,9 @@ private theorem exists_midBand_mean_sum_le {φ : ℝ → ℝ}
     linarith only [this, hradN]
   have hQ₁0 : (0 : ℝ) < Q₁ := Nat.cast_pos.mpr (by omega)
   have hsQ1 : 0 < Real.sqrt Q₁ := Real.sqrt_pos.mpr hQ₁0
-  have hB_le : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ (2 * Real.exp 2) * c := by
-    have h1 : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ linearNearRowRadius c :=
-      Nat.floor_le (by unfold linearNearRowRadius; positivity)
-    unfold linearNearRowRadius at h1
-    linarith only [h1, (by ring : 2 * c * Real.exp 2 = (2 * Real.exp 2) * c)]
+  have hB_le : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ (2 * Real.exp 2) * c :=
+    (Nat.floor_le (by unfold linearNearRowRadius; positivity)).trans_eq
+      (by unfold linearNearRowRadius; ring)
   have ha_riesz :
       (∑ m ∈ Icc 1 R₂, a m ^ 2) ≤
         4 * ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
@@ -2633,7 +2628,8 @@ private theorem exists_midBand_mean_sum_le {φ : ℝ → ℝ}
           calc
             Real.sqrt Q₁ ≤ Real.sqrt ((2 * (m.totient : ℝ)) ^ 2) := Real.sqrt_le_sqrt hcast
             _ = 2 * (m.totient : ℝ) := Real.sqrt_sq (by positivity)
-        rwa [div_le_div_iff₀ hφ0 hsQ1, one_mul, mul_comm]
+        rw [div_le_div_iff₀ hφ0 hsQ1]
+        linarith only [hsqrt]
       have hlag_le : |ramanujanLagCoefficient m h| ≤ (2 * Real.exp 2) ^ 2 * c ^ 2 := by
         have h1 := abs_ramanujanLagCoefficient_le_lag_sq m hh1
         have hh_le : (h : ℝ) ≤ (2 * Real.exp 2) * c := (Nat.cast_le.mpr hhB).trans hB_le
@@ -2646,7 +2642,7 @@ private theorem exists_midBand_mean_sum_le {φ : ℝ → ℝ}
         calc
           |ramanujanLagCoefficient m h| * (1 / (m.totient : ℝ)) ≤
               ((2 * Real.exp 2) ^ 2 * c ^ 2) * (2 / Real.sqrt Q₁) :=
-            mul_le_mul hlag_le htot_inv (abs_nonneg _) (by positivity)
+            mul_le_mul hlag_le htot_inv (by positivity) (by positivity)
           _ = 2 * (2 * Real.exp 2) ^ 2 * c ^ 2 / Real.sqrt Q₁ := by ring
       rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg _), mul_assoc]
       refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
@@ -2739,11 +2735,9 @@ private theorem exists_midBand_osc_sum_le {φ : ℝ → ℝ}
       have h0 : 0 ≤ linearNearRowRadius c := by unfold linearNearRowRadius; positivity
       nlinarith only [h0]
     exact_mod_cast this.trans hradN
-  have hB_le : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ (2 * Real.exp 2) * c := by
-    have h1 : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ linearNearRowRadius c :=
-      Nat.floor_le (by unfold linearNearRowRadius; positivity)
-    unfold linearNearRowRadius at h1
-    linarith only [h1, (by ring : 2 * c * Real.exp 2 = (2 * Real.exp 2) * c)]
+  have hB_le : (⌊linearNearRowRadius c⌋₊ : ℝ) ≤ (2 * Real.exp 2) * c :=
+    (Nat.floor_le (by unfold linearNearRowRadius; positivity)).trans_eq
+      (by unfold linearNearRowRadius; ring)
   have ha_riesz :
       (∑ m ∈ Icc 1 R₂, a m ^ 2) ≤
         4 * ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
@@ -2753,15 +2747,17 @@ private theorem exists_midBand_osc_sum_le {φ : ℝ → ℝ}
       (∑ m ∈ Icc 1 R₂, ∑ l ∈ Icc 1 R₂, |a m| * |a l|) ≤
         4 * (R₂ : ℝ) * ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
     have heq : (∑ m ∈ Icc 1 R₂, ∑ l ∈ Icc 1 R₂, |a m| * |a l|) =
-        (∑ m ∈ Icc 1 R₂, |a m|) ^ 2 := by
+        (∑ m ∈ Icc 1 R₂, 1 * |a m|) ^ 2 := by
+      simp only [one_mul]
       rw [sq, sum_mul]
       exact sum_congr rfl fun m _ => by rw [mul_sum]
-    have hcs := Finset.sq_sum_le_card_mul_sum_sq (s := Icc 1 R₂) (f := fun m => |a m|)
-    have hcard : ((Icc 1 R₂).card : ℝ) = R₂ := by
-      rw [Nat.card_Icc, Nat.add_sub_cancel_right (by omega : 1 ≤ R₂)]
+    have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 R₂) (fun _ => (1 : ℝ)) (fun m => |a m|)
+    have hcard : (∑ _m ∈ Icc 1 R₂, (1 : ℝ) ^ 2) = R₂ := by
+      rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, one_pow, mul_one]
     rw [heq]
     calc
-      (∑ m ∈ Icc 1 R₂, |a m|) ^ 2 ≤ ((Icc 1 R₂).card : ℝ) * ∑ m ∈ Icc 1 R₂, |a m| ^ 2 := hcs
+      (∑ m ∈ Icc 1 R₂, 1 * |a m|) ^ 2 ≤
+          (∑ _m ∈ Icc 1 R₂, (1 : ℝ) ^ 2) * ∑ m ∈ Icc 1 R₂, |a m| ^ 2 := hcs
       _ = (R₂ : ℝ) * ∑ m ∈ Icc 1 R₂, a m ^ 2 := by
         rw [hcard]; congr 1; exact sum_congr rfl fun m _ => sq_abs (a m)
       _ ≤ (R₂ : ℝ) * (4 * ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2) :=
@@ -2813,7 +2809,7 @@ private theorem exists_midBand_osc_sum_le {φ : ℝ → ℝ}
                 (2 * (∫ t, φ t ^ 2) +
                   (2 * Real.exp 2) * (2 * Real.exp 2 + 1) * (K_lip : ℝ))) *
                 c ^ 2 / N)) := by
-        rw [← sum_mul]; exact sum_congr rfl fun m _ => (sum_mul _ _ _).symm
+        rw [sum_mul]; exact sum_congr rfl fun m _ => (sum_mul _ _ _).symm
       _ ≤ (4 * (R₂ : ℝ) *
             ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2) *
           (4 * (R₂ : ℝ) ^ 3 *
@@ -2925,10 +2921,10 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
       exact sum_congr rfl fun j _ => by unfold midBandSubKernel midBandLeadKernel; ring
     rw [hrow]; ring
   have hI_sub := hsub_le hR₂ hlog hc1 hw1 hradN hRNT hu_mem
-  have hlead_eq := midBand_leadKernel_sum_eq hφ hsupp hL0 hc0 hw hradN a
-  have hS_err := herr_le hL0 hc1 hradN a
+  have hlead_eq := midBand_leadKernel_sum_eq (R₂ := R₂) hφ hsupp hL0 hc0 hw hradN a
+  have hS_err := herr_le (R₂ := R₂) hL0 hc1 hradN a
   have hS_mean := hmean_le hQ₁ hQR hR₂N hlog hc1 hradN ha0
-  have hS_osc := hosc_le hR₂ hR₂N hlog hc1 hradN a
+  have hS_osc := hosc_le (R₂ := R₂) hR₂ hR₂N hlog hc1 hradN a
   have hS_lag_le :
       |midBandLagSum φ R₂ N c a| ≤
         (C_2 * (c ^ 5 * Real.log N / N) +
@@ -2938,7 +2934,7 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
     have hid : midBandLagSum φ R₂ N c a =
         (midBandLagSum φ R₂ N c a - midBandLinearizedSum φ R₂ N c a) +
           midBandMeanSum φ R₂ N c a + midBandOscSum φ R₂ N c a := by
-      rw [← midBandLinearizedSum_eq_mean_add_osc]; ring
+      linarith only [midBandLinearizedSum_eq_mean_add_osc φ R₂ N c a]
     rw [hid]
     exact (abs_add_three _ _ _).trans ((add_le_add (add_le_add hS_err hS_mean) hS_osc).trans_eq
       (by ring))
@@ -2949,8 +2945,14 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
         rw [one_div, Real.log_inv, Real.log_div hc0.ne' hN0.ne']; ring
       rw [heq, abs_of_nonneg (sub_nonneg.mpr (Real.log_le_log hc0 (by linarith only [hcN2, hc0])))]
       linarith [Real.log_nonneg hc1]
-    rw [abs_mul, abs_div, abs_of_pos hM, abs_inv, abs_of_pos hL0, div_mul_eq_div_div_swap]
-    exact div_le_div_of_nonneg_right (div_le_one_of_le₀ hlog_inv hL0.le) hM.le
+    have hdiv1 : |Real.log (1 / (c / N))| * (Real.log N)⁻¹ ≤ 1 := by
+      rw [← div_eq_mul_inv]
+      exact div_le_one_of_le₀ hlog_inv hL0.le
+    rw [abs_mul, abs_div, abs_of_pos hM, abs_inv, abs_of_pos hL0]
+    calc
+      (|Real.log (1 / (c / N))| / ∫ t, φ t ^ 2) * (Real.log N)⁻¹ =
+          (|Real.log (1 / (c / N))| * (Real.log N)⁻¹) / ∫ t, φ t ^ 2 := by ring
+      _ ≤ 1 / ∫ t, φ t ^ 2 := div_le_div_of_nonneg_right hdiv1 hM.le
   have hI_lead :
       |(Real.log (1 / (c / N)) / ∫ t, φ t ^ 2) *
           (∑ n ∈ Icc 1 N,

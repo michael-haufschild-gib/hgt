@@ -27,22 +27,22 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `kunnethZeta_eq_tsum`, `zetaKernel_sq_eq_tsum`.
 - Castelnuovo–Severi: `riemannHypothesis_of_norm_zetaKernel_le`, `riemannHypothesis_iff_castelnuovoSeveri`.
 - Selection: `gluedTestIndex_vonMangoldt`, `gluedTestIndex_finiteFlip_eq_top`,
-  `riemannHypothesis_iff_gluedTestIndex_eq_one`; alignment: `exists_twin_top_on_pole_hyperplane`,
-  `eventually_poleNegIndex_window_of_smallAlignment`, `smallAlignment_liouvilleSign`.
+  `riemannHypothesis_iff_gluedTestIndex_eq_one`; atomic Hodge index:
+  `hodgeSeparates_iff_not_hasHyperplaneGap`, `hodgeSeparates_liouville`,
+  `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation`.
 - Hadamard powers: `isPosDefKernel_mul`, `isPosDefKernel_pow`,
   `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`,
   `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top`.
 - Growing overlap: `eventually_completeWeil_hodgeIndex_iteratedLog`,
-  `eventually_completeWeil_hodgeIndex_log_of_RH`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
+  `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal`.
 - Heat flow: `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`,
   `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`,
   `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat`.
 - Density: `not_dense_exponents_of_quantized` (commensurable place sizes, `𝔽_q[T]`).
 
 ## Open
-Hodge index at logarithmic overlap ⇒ full positivity (placement of the off-line direction on the pole
-hyperplane at finite resolution); positive index of `K_ζ` (critical zeros seen by the cubic spline);
-twins with alignment `o(1)` but not `o((log N)^{−1/2})`; sign-free `h⁰` on the scaling surface.
+Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{>1/2}` (= RH); positive index of `K_ζ` (critical zeros seen by the cubic spline);
+infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips); sign-free `h⁰` on the scaling surface.
 
 ## Log
 - 2026-10-31 — created; formalized pillars listed above

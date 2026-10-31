@@ -1,9 +1,9 @@
 # Haar addition preserves index on polynomial translation fibres
 
 - **ID:** HAAR-POLYNOMIAL-INDEX-PRESERVATION
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Parent:** [Relative Haar splitting](finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Parent:** [Relative Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
 - **Statement:** If `p` is positive definite with integer Haar successor and `h` is Hermitian with polynomial translation fibres on `Aff(ℚ)`, then `κ(p+h)=κ(h)`, including infinite index.
 
 ## Polynomial quadrature
@@ -30,19 +30,27 @@ It has degree at most `M` in each of `b,b'`. Apply quadrature in each variable. 
 
 Every compressed index is bounded by `κ(p+h)`. Lower semicontinuity at the Hermitian limit gives `index(Gram_h(g))≤κ(p+h)`; the empty family contributes zero. Taking the supremum proves `κ(h)≤κ(p+h)`. Positivity of `p` gives the reverse inequality.
 
-## Consequences and novelty boundary
+## Consequences
 
 Taking `h=ψ∘slope+Q`, with `Q` polynomial on translation fibres and zero on dilations, gives
 
 `κ(ψ) ≤ κ(ψ∘slope+Q) = κ(p+ψ∘slope+Q)`.
 
-The first inequality is restriction to the dilation subgroup. This strengthens the [slope-index conjecture](../0-backlog/polynomial-translation-corrections-cannot-lower-the-slope-index.md): the positive Haar summand preserves the entire residual index, not only the slope contribution. No additivity between slope and polynomial terms is asserted.
+The first inequality is restriction to the dilation subgroup. This strengthens the [slope-index comparison](polynomial-translation-corrections-cannot-lower-the-slope-index.md): the positive Haar summand preserves the entire residual index, not only the slope contribution. No additivity between slope and polynomial terms is asserted.
 
-The corpus has the constant-fibre case in `Haar/IndexPreservation.lean`, special mixed-power laws in `Haar/PowerKernels.lean`, and polynomial moment cancellation in `HTGeometry/MicroSpectrumMomentCollapse.lean`. The general polynomial-fibre theorem was not found. The proof above requires explicit Lean quadrature, node separation, and compression lemmas; no Lean theorem is claimed.
+## Lean formalization
 
-## Gates
+`AdelicKreinGeometry/Haar/PolynomialIndexPreservation.lean` proves
+`negIndex_add_positive_haar_polynomial`, including infinite indices. Its corollaries
+`negIndex_positive_haar_slope_polynomial_eq`,
+`negIndex_slope_le_positive_haar_polynomial`, and
+`negIndex_positive_haar_slope_polynomial_le` give the exact residual index and
+both slope/polynomial bounds.
 
-- [x] Dependency-closed paper argument for the stated index equality.
-- [ ] Formalize polynomial quadrature and separated rational nodes.
-- [ ] Formalize the exact index equality in topic subfolders.
-- [ ] Direct `lake --old env lean` audit and standard transitive axiom closure.
+Polynomial reproduction and separated rational grids are in
+`BiarithmeticGeometry/Affine/PolynomialQuadrature.lean`, `SmallTranslationGrids.lean`,
+and `TranslationQuadrature.lean`. `HeckeKreinToeplitz/Index/WeightedGrams.lean`
+provides the compression and positive-matrix bounds.
+
+All five modules passed direct `lake --old env lean` audits. The printed endpoint
+axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
