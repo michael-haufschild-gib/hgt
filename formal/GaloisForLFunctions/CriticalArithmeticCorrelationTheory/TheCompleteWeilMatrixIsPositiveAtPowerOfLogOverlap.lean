@@ -1501,7 +1501,7 @@ private theorem exists_high_band_coercivity :
     hlog18_Q ht2_1 h864 h432 huLow_bound hy_le2
   have hpacket_prime : (Real.log Q₁ / 2 - C_prime) * ‖highBandPacket Q₁ R' N a‖ ^ 2 ≤
       renormalizedPrimeEnergy N (highBandPacket Q₁ R' N a) :=
-    hprime hQ₁ hQR' hR6N hlog18_R' ht2_1 (highBandCoeffs Q₁ a)
+    hprime hQ₁ hQR' hRR_N hlog18_R' (highBandCoeffs Q₁ a)
       (fun m hm => by unfold highBandCoeffs; exact if_pos (mem_Icc.mp hm).2)
   obtain ⟨hov_y, hprime_y⟩ := highBandPacket_prime_and_overlap_bounds hmid hC_prime hpacket_prime hQ₁ hQR' hRR_N
     hlog36 hc1 hcL hw1 hradN hRNT hmid_le1 hy_sq_ge hy_le2

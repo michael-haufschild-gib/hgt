@@ -272,7 +272,7 @@ theorem towerPole_eq_pairKernel (g : ℝ → ℂ) (ℓ : ℝ) :
         (Multiplicative.toAdd m : ℤ) * ((ℓ / 2 : ℝ) : ℂ) := by
       push_cast; ring_nf; rw [I_sq]; ring
     rw [h1, Complex.exp_int_mul, ← Complex.ofReal_exp]
-    simp only [valChar, MonoidHom.coe_mk, OneHom.coe_mk, if_neg hr]
+    simp only [valChar, MonoidHom.coe_mk, OneHom.coe_mk, if_neg hr, r]
   have hexp2 : cexp (I * (-I / 2) * ((-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ : ℝ) : ℂ)) =
       reflectChar (valChar (r : ℂ)) m := by
     have h1 : I * (-I / 2) * ((-((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ : ℝ) : ℂ) =
@@ -280,7 +280,7 @@ theorem towerPole_eq_pairKernel (g : ℝ → ℂ) (ℓ : ℝ) :
       push_cast; ring_nf; rw [I_sq]; ring
     rw [reflectChar_valChar hr, Complex.conj_ofReal, h1, Complex.exp_int_mul, ← Complex.ofReal_exp]
     simp only [valChar, MonoidHom.coe_mk, OneHom.coe_mk, if_neg (inv_ne_zero hr), inv_zpow,
-      ← zpow_neg]
+      ← zpow_neg, r]
   simp only [towerPole, RHTower.WeilSpectral.polePart, RHTower.WeilSpectral.paperFT_transl,
     htilde, hexp1, hexp2, pairKernel, poleWeight]
   ring
@@ -335,17 +335,17 @@ theorem tendsto_towerPrime_atTop {lam : ℕ → ℝ}
       refine hzero _ ?_
       have htri := abs_sub_abs_le_abs_sub ((n : ℝ) * ℓ) (-Real.log k)
       rw [abs_of_pos (by linarith [abs_nonneg R, abs_nonneg (Real.log k)]), abs_neg] at htri
-      rw [RHTower.WeilSpectral.transl, show Real.log k - -(n : ℝ) * ℓ =
-        (n : ℝ) * ℓ - (-Real.log k) by ring]
+      dsimp only [RHTower.WeilSpectral.transl]
+      rw [show Real.log k - -(n : ℝ) * ℓ = (n : ℝ) * ℓ - (-Real.log k) by ring]
       linarith
     have h2 : RHTower.WeilSpectral.transl (-(n : ℝ) * ℓ) K (-Real.log k) = 0 := by
       refine hzero _ ?_
       have htri := abs_sub_abs_le_abs_sub ((n : ℝ) * ℓ) (Real.log k)
       rw [abs_of_pos (by linarith [abs_nonneg R, abs_nonneg (Real.log k)])] at htri
-      rw [RHTower.WeilSpectral.transl, show -Real.log k - -(n : ℝ) * ℓ =
-        (n : ℝ) * ℓ - Real.log k by ring]
+      dsimp only [RHTower.WeilSpectral.transl]
+      rw [show -Real.log k - -(n : ℝ) * ℓ = (n : ℝ) * ℓ - Real.log k by ring]
       linarith
-    simp [F, h1, h2]
+    simp only [F, h1, h2, add_zero, mul_zero]
   have htsum := tendsto_tsum_of_dominated_convergence hb hlim (Eventually.of_forall hbd)
   simpa [F, towerPrime, RHTower.WeilSpectral.primePart] using htsum
 
@@ -477,8 +477,10 @@ theorem tendsto_secondDiff_sTruncatedNonPole (S : Finset Nat.Primes) {lam : ℕ 
   have ha_lim' : Tendsto (fun n : ℤ => (wArch : ℂ) *
       towerArch g (Real.log (p : ℕ)) (Multiplicative.ofAdd n)) atTop (𝓝 0) := by
     simpa using ha_lim.const_mul (wArch : ℂ)
-  have hsd1 := tendsto_secondDiff_of_tendsto hp_lim'
-  have hsd2 := tendsto_secondDiff_of_tendsto ha_lim'
+  have hsd1 := tendsto_secondDiff_of_tendsto
+    (k := fun m => -(wPrime : ℂ) * towerPrime (truncWeight S lam) g (Real.log (p : ℕ)) m) hp_lim'
+  have hsd2 := tendsto_secondDiff_of_tendsto
+    (k := fun m => (wArch : ℂ) * towerArch g (Real.log (p : ℕ)) m) ha_lim'
   have hsum := (hsd1.add hsd2).add ct.tendsto_secondDiff_atTop
   rw [add_zero, add_zero] at hsum
   refine hsum.congr fun n => ?_
@@ -584,7 +586,8 @@ theorem negIndex_archGlue_sTruncatedAssembly (S : Finset Nat.Primes) {lam : ℕ 
         (wPole p₀) (wPrime p₀) (wArch p₀) (ct p₀)) ≤
         ∑ p : S, polarIndex (sTruncatedLocal S lam g (p : Nat.Primes)
           (wPole p) (wPrime p) (wArch p) (ct p)) :=
-      single_le_sum (fun _ _ => zero_le) (mem_univ p₀)
+      single_le_sum (f := fun p : S => polarIndex (sTruncatedLocal S lam g (p : Nat.Primes)
+        (wPole p) (wPrime p) (wArch p) (ct p))) (fun _ _ => zero_le) (mem_univ p₀)
     rw [htop, top_le_iff] at hle
     rw [sTruncatedAssembly]
     calc (⊤ : ℕ∞) = ⊤ + 1 := rfl
@@ -634,8 +637,8 @@ theorem tendsto_negIndex_archGlue_poleRetaining_atTop
   rw [ENat.tendsto_nhds_top_iff_natCast_lt]
   intro m
   obtain ⟨S₀, hS₀⟩ : ∃ S₀ : Finset Nat.Primes, m ≤ S₀.card := by
-    have hinf : (Set.univ : Set Nat.Primes).Infinite := Set.infinite_univ_iff.mpr
-      ⟨Nat.infinite_setOf_prime.to_subtype⟩
+    haveI : Infinite Nat.Primes := Nat.infinite_setOf_prime.to_subtype
+    have hinf : (Set.univ : Set Nat.Primes).Infinite := Set.infinite_univ
     obtain ⟨S₀, _, hcard⟩ := hinf.exists_subset_card_eq m
     exact ⟨S₀, hcard.ge⟩
   filter_upwards [eventually_ge_atTop S₀] with S hS
@@ -903,7 +906,8 @@ theorem summable_norm_towerPrime_truncWeight (S : Finset Nat.Primes) {lam : ℕ 
           ‖K (-Real.log n + ((Multiplicative.toAdd m : ℤ) : ℝ) * ℓ)‖) :=
         (Summable.tsum_finsetSum hsum_n).symm
     _ ≤ ∑' n : ℕ, c n * W := by
-        refine (Summable.sum fun m hm => hsum_n m hm).tsum_le_tsum (fun n => ?_) (hc.mul_right W)
+        refine (_root_.summable_sum fun m hm => hsum_n m hm).tsum_le_tsum (fun n => ?_)
+          (hc.mul_right W)
         rw [← mul_sum, sum_add_distrib]
         refine mul_le_mul_of_nonneg_left ?_ (by simp only [c]; split_ifs <;> positivity)
         have h1 := sum_norm_shift_le hR hx₀ hℓ (Real.log n) t
@@ -949,7 +953,7 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
     by_contra hne
     obtain ⟨W, hWr, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex
       (-gram (sTruncatedNonPole S lam g p wPrime 1 ⟨0, D, 0⟩) fun z : s => (z : Multiplicative ℤ))
-    have hWpos : 0 < Module.finrank ℂ W := by rw [← hWr]; exact Nat.pos_of_ne_zero hne
+    have hWpos : 0 < Module.finrank ℂ W := by rw [hWr]; exact Nat.pos_of_ne_zero hne
     set bW := Module.finBasis ℂ W
     set v : W := bW ⟨0, hWpos⟩
     have hv0 : (v : s → ℂ) ≠ 0 := fun h => bW.ne_zero ⟨0, hWpos⟩ (Subtype.ext h)
@@ -970,7 +974,8 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
     have hGs : HasCompactSupport G :=
       HasCompactSupport.finset_sum fun j _ =>
         (hgc.comp_homeomorph (Homeomorph.subRight (t j))).smul_left
-    have hadm := RHTower.WeilSpectral.admissible_weilTest hg hgc
+    have hadm : RHTower.WeilSpectral.Admissible K :=
+      RHTower.WeilSpectral.admissible_weilTest hg hgc
     have harch_eq : hermQuad (gram (towerArch g ℓ) fun z : s => (z : Multiplicative ℤ))
         (v : s → ℂ) = (RHTower.WeilSpectral.archPart (EF.weilTest G G)).re := by
       have h1 : EF.weilTest G G =
@@ -992,13 +997,15 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
           rw [← mul_add, ← integral_add h1.arch h2.arch]
           congr 1
           refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+          dsimp only
           rw [RHTower.WeilSpectral.paperFT_add h1 h2]; ring
       have hsmul : ∀ (a : ℂ) (f : ℝ → ℂ),
           RHTower.WeilSpectral.archPart (a • f) = a * RHTower.WeilSpectral.archPart f := fun a f => by
         unfold RHTower.WeilSpectral.archPart
-        rw [mul_left_comm, ← integral_const_mul]
+        rw [mul_left_comm, ← integral_const_mul a]
         congr 1
         refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+        dsimp only
         rw [RHTower.WeilSpectral.paperFT_smul]; ring
       rw [h1, hlin _ _ fun i _ => RHTower.WeilSpectral.Admissible.sum _ fun j _ =>
         (hadm.transl _).smul _]
@@ -1061,7 +1068,7 @@ theorem exists_diagonal_counterterm_posDef (S : Finset Nat.Primes) {lam : ℕ �
           hGc hGs hGc hGs
         exact hGc'.re.congr (Eventually.of_forall fun r => by
           change (paperFT (EF.weilTest G G) r * (EF.gammaBracket r : ℂ)).re = _
-          rw [hPn]; simp)
+          rw [hPn, ← Complex.ofReal_mul, Complex.ofReal_re])
       have hre : (RHTower.WeilSpectral.archPart (EF.weilTest G G)).re =
           (1 / (2 * π)) * ∫ r : ℝ, ‖paperFT G r‖ ^ 2 * EF.gammaBracket r := by
         unfold RHTower.WeilSpectral.archPart

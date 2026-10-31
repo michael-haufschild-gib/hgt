@@ -29,9 +29,15 @@ The function `T` is an actual conductor packet. Its constant coefficient is `B_(
 
 Apply the existing sharp annular harmonic frame to this packet. Its lower coefficient is `Σ_(A<n≤N)1/n−Q(Q−1)/(A+1)`. If this coefficient is nonnegative, retain only the constant part of coefficient mass. If it is negative, use nonnegativity of the tail square. Pointwise domination and inclusion of the annulus in `1≤n≤N` finish the proof.
 
-## Scope
+## Scalar correction
 
-This is an exact finite lower bound for the literal prime tail, not yet a lower bound for the residual after its scalar correction. The cubic logarithmic specialization and the matching relative-residual threshold remain separate questions.
+The exact residual is `(r_N(n)F_a(n)−Tail_a(N/n,n))/sqrt n`. The elementary inequality `(s−t)²≥t²/2−s²`, summed over rows, and the proved scalar residual estimate give
+
+`Σ_n R_a(N,n)² ≥ (1/2)Σ_n Tail_a(N/n,n)²/n − C(1+log Q)Σ_m a_m²`.
+
+Combining this with the annular bound proves an explicit finite lower bound for the actual coherent residual, with its scalar coefficient cost subtracted. The constant `C` is unconditional and uniform in all cutoffs and horizons.
+
+The cubic logarithmic specialization and matching relative-residual threshold remain separate questions. No complete-Weil obstruction follows from the prime piece alone.
 
 ## Lean
 

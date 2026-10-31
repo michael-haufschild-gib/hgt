@@ -39,7 +39,13 @@ Apply this adjustment to the explicit prime extremizer. For every `Q≥2` and `N
 
 ## Positive content and scope
 
-The survivor is the exact optimal constant-row inequality, its explicit extremizer, its logarithmic scale, and a source-preserving realization on every actual harmonic pole hyperplane. This identifies the source of a necessary loss in the complete-period generator norm. It does not obstruct cancellation with the global pole or Gamma terms in the complete form.
+The activity excess is exactly
+
+`A_Q−B_Q=Σ_(p≤Q)log p/[p(p−1)]≤8`,
+
+by the corpus's convergent prime correction theorem. Thus the optimal full-generator relative square constant lies between `B_Q` and `B_Q+8`. Its leading logarithmic coefficient is one. Mertens implies `B_Q→∞`, so no cutoff-independent constant is possible even on any fixed actual harmonic pole hyperplane. The obstruction also holds on the growing schedule `N=Q²`; it does not rely on keeping the physical horizon smaller than the conductor cutoff.
+
+The survivor is the exact optimal constant-row inequality, its explicit extremizer, its logarithmic scale with an absolute additive sector error, and a source-preserving realization on every actual harmonic pole hyperplane. This identifies the source of a necessary loss in the complete-period generator norm. It does not obstruct cancellation with the global pole or Gamma terms in the complete form.
 
 ## Corpus leads
 
@@ -50,4 +56,4 @@ The survivor is the exact optimal constant-row inequality, its explicit extremiz
 
 ## Lean targets
 
-`CriticalScaleArithmeticRigidity/PrimePoleNorm.lean`, `PrimeGeneratorPole.lean`, and `HarmonicPoleCentering.lean`. Direct Lean audits pending; the mathematical statement above is not yet a formalized result.
+`CriticalScaleArithmeticRigidity/PrimePoleNorm.lean`, `PrimeGeneratorPole.lean`, `HarmonicPoleCentering.lean`, and `SharpPrimeSector.lean`. Direct Lean audits pending; the mathematical statement above is not yet a formalized result.

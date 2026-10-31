@@ -19,6 +19,8 @@ open scoped Classical
 namespace GaloisForLFunctions.CriticalScaleArithmeticRigidity
 
 open RenormalizedArithmeticPotentialTheory CriticalArithmeticCorrelationTheory
+  SuccessorShellArithmetic SignedArithmeticHodgeTheory ArithmeticElectrostatics
+  ArithmeticEffectivityTheory
 
 /-- The constant coefficient of the high-prime nondivisibility source. -/
 def highPrimePoleMass (P Q : ℕ) : ℝ :=
@@ -120,8 +122,68 @@ theorem coherentPrimeTail_annular_lower {P Q : ℕ} (hP : 0 < P) (hQ : 2 ≤ Q) 
     · intro n _ _
       exact div_nonneg (sq_nonneg _) (Nat.cast_nonneg n)
 
+/-- The scalar row cannot cancel a tail square larger than its proved logarithmic cost. -/
+theorem exists_primeResidual_sq_lower_of_tail :
+    ∃ C : ℝ, 0 < C ∧ ∀ Q N : ℕ, 2 ≤ Q → 2 ≤ N → ∀ a : ℕ → ℝ,
+      (1 / 2 : ℝ) *
+          (∑ n ∈ Icc 1 N, completedPrimeDilationTail Q a (N / n) n ^ 2 / (n : ℝ)) -
+        C * (1 + Real.log Q) * (∑ m ∈ Icc 1 Q, a m ^ 2) ≤
+          ∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * ramanujanPrimeResidual m N n) ^ 2 := by
+  obtain ⟨C, hC, hscalar⟩ := exists_scalarPrimeResidual_packet_sq_le
+  refine ⟨C, hC, ?_⟩
+  intro Q N hQ hN a
+  let r : ℕ → ℝ := fun n => mertensSum (N / n) + Real.log n -
+    (Real.log N - Real.eulerMascheroniConstant)
+  let F := normalizedConductorPacket Q a
+  have hlog : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
+  have hs : (∑ n ∈ Icc 1 N, r n ^ 2 * F n ^ 2 / (n : ℝ)) / Real.log N ≤
+      C * (1 + Real.log Q) / Real.log N * (∑ m ∈ Icc 1 Q, a m ^ 2) := by
+    simpa only [r, F, normalizedConductorPacket] using hscalar Q N hQ hN a
+  have hs0 : (∑ n ∈ Icc 1 N, r n ^ 2 * F n ^ 2 / (n : ℝ)) ≤
+      C * (1 + Real.log Q) * (∑ m ∈ Icc 1 Q, a m ^ 2) := by
+    calc
+      _ = ((∑ n ∈ Icc 1 N, r n ^ 2 * F n ^ 2 / (n : ℝ)) / Real.log N) * Real.log N :=
+        (div_mul_cancel₀ _ hlog.ne').symm
+      _ ≤ (C * (1 + Real.log Q) / Real.log N *
+          (∑ m ∈ Icc 1 Q, a m ^ 2)) * Real.log N := mul_le_mul_of_nonneg_right hs hlog.le
+      _ = _ := by field_simp
+  have hrow (n : ℕ) (hn : n ∈ Icc 1 N) :
+      (1 / 2 : ℝ) * (completedPrimeDilationTail Q a (N / n) n ^ 2 / (n : ℝ)) -
+        r n ^ 2 * F n ^ 2 / (n : ℝ) ≤
+          (∑ m ∈ Icc 1 Q, a m * ramanujanPrimeResidual m N n) ^ 2 := by
+    rw [primeResidual_packet_eq_scalar_sub_tail a hn, mul_pow, poleVector, div_pow,
+      one_pow, Real.sq_sqrt (Nat.cast_nonneg n), mul_one_div]
+    have hsq : completedPrimeDilationTail Q a (N / n) n ^ 2 / 2 - r n ^ 2 * F n ^ 2 ≤
+        (r n * F n - completedPrimeDilationTail Q a (N / n) n) ^ 2 := by
+      nlinarith only [sq_nonneg (r n * F n - completedPrimeDilationTail Q a (N / n) n / 2)]
+    exact (show _ = (completedPrimeDilationTail Q a (N / n) n ^ 2 / 2 -
+      r n ^ 2 * F n ^ 2) / (n : ℝ) by ring).trans_le
+        (div_le_div_of_nonneg_right hsq (Nat.cast_nonneg n))
+  have hsum := sum_le_sum hrow
+  rw [sum_sub_distrib, ← mul_sum] at hsum
+  linarith only [hsum, hs0]
+
+/-- A completely explicit coherent source survives the scalar correction, with only
+the independently proved scalar coefficient cost subtracted. -/
+theorem exists_coherentPrimeResidual_annular_lower :
+    ∃ C : ℝ, 0 < C ∧ ∀ P Q N : ℕ, 0 < P → 2 ≤ Q → 2 ≤ N →
+      (1 / 2 : ℝ) *
+        ((∑ n ∈ Icc (N / P + 1) N, 1 / (n : ℝ)) -
+          ((Q : ℝ) * ((Q : ℝ) - 1)) / (((N / P : ℕ) : ℝ) + 1)) * highPrimePoleMass P Q ^ 2 -
+        C * (1 + Real.log Q) * (∑ m ∈ Icc 1 Q, primeOnly primePoleWitness m ^ 2) ≤
+          ∑ n ∈ Icc 1 N,
+            (∑ m ∈ Icc 1 Q, primeOnly primePoleWitness m * ramanujanPrimeResidual m N n) ^ 2 := by
+  obtain ⟨C, hC, hres⟩ := exists_primeResidual_sq_lower_of_tail
+  refine ⟨C, hC, ?_⟩
+  intro P Q N hP hQ hN
+  have hr := hres Q N hQ hN (primeOnly primePoleWitness)
+  have ht := coherentPrimeTail_annular_lower hP hQ N
+  linarith only [hr, ht]
+
 #print axioms highPrimeCoherentSource_packet_eq
 #print axioms highPrimeCoherentSource_annular_lower
 #print axioms coherentPrimeTail_annular_lower
+#print axioms exists_primeResidual_sq_lower_of_tail
+#print axioms exists_coherentPrimeResidual_annular_lower
 
 end GaloisForLFunctions.CriticalScaleArithmeticRigidity

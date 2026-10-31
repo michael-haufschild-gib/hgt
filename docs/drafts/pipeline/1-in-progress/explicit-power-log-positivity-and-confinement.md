@@ -39,11 +39,16 @@ The reverse gap constant is consequently `256C₂`. Explicit conditioning, weigh
 
 ## Numerical prime coercivity
 
-For a packet supported on `Q<m≤R`, assume `R⁶≤N`, `18(1+log R)≤log N`, and `(1+log R)²/√log N≤1`. The existing prime residual estimate and polarized Gram bound imply
+For a packet supported on `Q<m≤R`, assume `R²≤N` and `18(1+log R)≤log N`.
+The direct defect bound below gives `D_N(y)≥¾E`, where
+`E=Σ(log m+tameDifferent(m))a_m²`. Since `log Q·Σa_m²≤E` and
+`‖y‖²≤3/2·Σa_m²`, the bounded row counterterm gives
 
-`primeEnergy(y) ≥ (½ log Q − C) ‖y‖²`.
+`primeEnergy(y) ≥ (½ log Q − log 4 − 4) ‖y‖²`.
 
-Indeed, shift adjunction energies by `g=|γ|`. They lie between `log m` and `2(g+1)(1+log R)`. Polarization bounds the diagonal discrepancy by `36(g+1)‖y‖²`; the prime residual costs `2C_res‖y‖²`; the Riesz bounds give `½‖y‖²≤Σa_m²≤2‖y‖²`. Thus `C=37g+36+2C_res`. This removes the confinement constant from the logarithmic slope. Lean verification is pending in `CompletedArithmeticForms/PrimePacketCoercivity.lean`.
+The logarithmic coefficient and additive loss are numerical; no prime residual
+smallness is required. The earlier residual-based proof passed Lean with standard
+axioms. The stronger direct proof is awaiting verification.
 
 ## All-vector exponent
 
@@ -73,6 +78,19 @@ The same lower bound holds when `k>N`, since its right side is nonpositive. Sum 
 `D_N(F/√n) ≥ (log N−3log Q−1)E`.
 
 Thus relative defect coercivity loses only `O(log Q/log N)`. This bypasses the squared logarithmic loss from prime residual norms. Its Lean proof is pending.
+
+## Variable quotient cutoff
+
+For every fixed integer `k≥1`, use `Y=exp((log N)^(1/k))` in the affine-shell
+source bound, with conductor exponent `Ak` and source decay power `k`.
+For `m≤(log N)^A`, the large-quotient error is `≤Cc/log N`; the complementary
+harmonic mass is at most `4c+(log N)^(1/k)`. Thus one constant, independent of
+`A,k`, gives normalized squared source error
+
+`≤K φ(m)² c³ (log N)^(1/k−1)`.
+
+This removes the forced square-root logarithmic rate. Lean proof is written in
+scratch; transfer through the actual upward row and complete residual remains.
 
 ## Gates
 

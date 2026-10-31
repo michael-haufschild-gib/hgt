@@ -36,9 +36,11 @@ theorem hasDerivAt_momentInner_combination {n : ℕ} {s : ℝ → ℕ → ℝ}
     HasDerivAt (fun t => momentInner (s t) (polynomialCombination b (v t)) Q)
       (momentInner (s a) (polynomialCombination b v') Q -
         momentInner (s a) (polynomialCombination b (v a)) (X * Q)) a := by
-  have hsum := HasDerivAt.fun_sum (u := Finset.univ)
-    (fun i _ => (hv i).mul (hs (b i) Q))
-  simpa only [momentInner_combination, Finset.sum_add_distrib,
+  have hsum : HasDerivAt (fun t => ∑ i, v t i * momentInner (s t) (b i) Q)
+      (∑ i, (v' i * momentInner (s a) (b i) Q +
+        v a i * (-momentInner (s a) (b i) (X * Q)))) a :=
+    HasDerivAt.fun_sum (fun i _ => (hv i).mul (hs (b i) Q))
+  simpa only [momentInner_combination, Pi.mul_apply, Finset.sum_add_distrib,
     mul_neg, Finset.sum_neg_distrib, sub_eq_add_neg] using hsum
 
 /-- Exact velocity identity, valid even for an indefinite moment form. -/

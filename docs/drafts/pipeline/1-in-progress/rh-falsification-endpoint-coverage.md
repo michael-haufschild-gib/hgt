@@ -24,6 +24,17 @@ strictly stronger obstruction.
 | Finite nonreal zero set at negative heat time | `DeBruijn.riemannHeat_neg_nonreal_zeros_infinite` holds unconditionally | Impossible antecedent; reject vacuous endpoint |
 | Interior Abel-susceptibility divergence | `riemannHypothesis_iff_primeArchEndpointBernsteinAbelSusceptibilityFinite` | Already formalized; reject restatement |
 | Shifted reciprocal Ritz Riccati gap | `xiShiftedCanonicalAdmissionHardEdgeWorldlineVelocity_pos` and strict shifted Hankel positivity under RH | Existing hard-root motion law; reject coordinate restatement |
+| Jordan defects of centered Suzuki screw operators | `suzukiCenteredScrewApertureOperator_isSelfAdjoint` and `suzukiCenteredScrewZeroMeanOperator_isSelfAdjoint` hold unconditionally | Self-adjoint rigidity is already unconditional; no RH-specific witness |
+
+## Active candidates
+
+- Heat Ritz velocity: arbitrary fixed finite polynomial trial spaces; exact negative residual norm.
+- Jensen differential jets: real translates, derivatives and real first-order factors; missing Xi necessity direction.
+- Strict Jensen roots: exclude repeated nonzero roots through real-factor extraction and multiplicity drop; proof incomplete.
+
+For the direct Hedenmalm source generator, RH supplies imaginary nonzero spectrum, not an
+audited skew-adjointness or semisimplicity theorem. Jordan defects cannot be used as falsification
+witnesses from that statement alone.
 
 ## Coverage requiring investigation
 

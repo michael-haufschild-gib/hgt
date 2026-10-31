@@ -1,6 +1,6 @@
 # Tower Coupling (`AdelicKreinGeometry/TowerCoupling`)
 
-Resolution of the `S`-truncated prime-tower signature problem (`docs/reports/review-3110/obstacles-summary.md` §2.5.2, Route SC): whether `κ(K_ζ) + 1 = κ(weilArchState c)` can be computed as the limit of `κ(archGlue(K_S, c)) = Σ_{p ∈ S} κ₀(k_p^{(S)}) + 1 + ε_S` (`ε_S ∈ {0, 1}`) along separable prime-tower assemblies `K_S = Σ_{p ∈ S} k_p^{(S)}(v_p(·))` built from the `S`-truncated complete explicit formula (primes in `S`, Gamma, pole, running counterterm).
+Does there exist a sequence of separable prime-tower assemblies `K_S = Σ_{p ∈ S} k_p^{(S)}(v_p(·))` built from the `S`-truncated complete explicit formula (primes in `S`, Gamma, pole, running counterterm) whose archimedean-glued signature `κ(archGlue(K_S, c)) = Σ_{p ∈ S} κ₀(k_p^{(S)}) + 1 + ε_S` (`ε_S ∈ {0, 1}`) converges to `κ(K_ζ) + 1 = κ(weilArchState c)`?
 
 ## Answer
 

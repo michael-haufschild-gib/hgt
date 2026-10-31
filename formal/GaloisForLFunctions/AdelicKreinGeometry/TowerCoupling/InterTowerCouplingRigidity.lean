@@ -701,8 +701,8 @@ theorem tendsto_negIndex_archGlue_axialAssembly_ratCorr_atTop {c : ℝ} (hc : 0 
   have hblind_fin : ({p : Nat.Primes | (p : ℕ) ∈ zetaBlindPrimes}).Finite :=
     (zetaBlindPrimes_finite_card_le hR).1.preimage Subtype.val_injective.injOn
   have hinf_nonblind : ({p : Nat.Primes | (p : ℕ) ∉ zetaBlindPrimes}).Infinite := by
-    have huniv : (Set.univ : Set Nat.Primes).Infinite :=
-      Set.infinite_univ_iff.mpr ⟨Nat.infinite_setOf_prime.to_subtype⟩
+    haveI : Infinite Nat.Primes := Nat.infinite_setOf_prime.to_subtype
+    have huniv : (Set.univ : Set Nat.Primes).Infinite := Set.infinite_univ
     exact (huniv.diff hblind_fin).mono fun p hp => hp.2
   rw [ENat.tendsto_nhds_top_iff_natCast_lt]
   intro m

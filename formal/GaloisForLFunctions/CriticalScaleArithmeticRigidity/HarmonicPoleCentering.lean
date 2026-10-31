@@ -44,7 +44,7 @@ theorem normalizedConductorPacket_addConstantConductor {Q : ℕ} (hQ : 1 ≤ Q)
       a m * normalizedRamanujanMode m n + if m = 1 then t else 0 := by
     by_cases hm : m = 1
     · subst m
-      simp only [addConstantConductor, if_pos rfl, normalizedMode_one, mul_one]
+      simp [addConstantConductor, normalizedMode_one]
     · simp only [addConstantConductor, if_neg hm, add_zero]
   simp only [normalizedConductorPacket, hterm, sum_add_distrib, sum_ite_eq', if_pos h1]
 

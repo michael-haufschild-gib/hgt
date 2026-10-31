@@ -102,7 +102,8 @@ theorem tendsto_horizonThreshold_tiltedUnitSpline :
     linarith
   have hN1 : 1 / w ≤ N := Nat.le_ceil _
   have hNlt : (N : ℝ) < 1 / w + 1 := Nat.ceil_lt_add_one (by positivity)
-  have hNmax : max N₀ M < N := by exact_mod_cast hwinv.trans_le hN1
+  have h' : (((max N₀ M + 1 : ℕ)) : ℝ) < N := by push_cast; exact hwinv.trans_le hN1
+  have hNmax : max N₀ M + 1 < N := by exact_mod_cast h'
   have hN : 1 ≤ N := by omega
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   set c : ℝ := w * N
@@ -129,7 +130,7 @@ theorem tendsto_horizonThreshold_tiltedUnitSpline :
 a window bounded by `2g`; over `ℤ`, the edge of the tilted spline tends to `∞` with the horizon,
 unconditionally. -/
 theorem edge_bounded_over_curves_and_unbounded_over_integers :
-    (∀ (ι : Type) [Fintype ι] (D : CurveDatum ι), ¬ (∀ i, ‖D.β i‖ = 1) →
+    (∀ (ι : Type) [Fintype ι] (D : ArithmeticCastelnuovoSeveri.CurveDatum ι), ¬ (∀ i, ‖D.β i‖ = 1) →
       windowEdge D ≤ Fintype.card ι) ∧
     Tendsto (edge SpacingScaleHarmonicAnalysis.tiltedUnitSpline) atTop (𝓝 ⊤) :=
   ⟨fun _ _ D h => windowEdge_le_card D h, tendsto_edge_tiltedUnitSpline⟩

@@ -108,7 +108,7 @@ theorem poleDefect_ramanujanPacket_ge_logarithmic {Q N : ℕ}
         ∑ n ∈ Icc 1 (N / k), (F (k * n) - F n) ^ 2 / (n : ℝ) :=
       (mul_le_mul_of_nonneg_right (by linarith only [hlog]) (hJ k)).trans hframe'
     have hm := mul_le_mul_of_nonneg_left hlow
-      (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k))
+      (div_nonneg (vonMangoldt_nonneg (n := k)) (Nat.cast_nonneg k))
     dsimp only [e, g]
     nlinarith only [hm]
   have hgzero (k : ℕ) (hk : N < k) : g k = 0 := by
@@ -150,6 +150,7 @@ theorem poleDefect_ramanujanPacket_ge_logarithmic {Q N : ℕ}
     apply hh.congr'
     apply Eventually.of_forall
     intro K
+    change (∑ k ∈ range (K + 1), e k) = ∑ k ∈ Icc 1 K, e k
     have hrange : range (K + 1) = insert 0 (Icc 1 K) := by
       ext k
       simp only [mem_range, mem_insert, mem_Icc]

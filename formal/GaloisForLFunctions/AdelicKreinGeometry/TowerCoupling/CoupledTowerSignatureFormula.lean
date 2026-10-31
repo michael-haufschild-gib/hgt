@@ -276,15 +276,17 @@ private theorem tendsto_sTruncatedCorrNonPole_logPos_atTop (S : Finset Nat.Prime
       refine hzero _ ?_
       have htri := abs_sub_abs_le_abs_sub y (-Real.log k)
       rw [abs_of_pos (by linarith [abs_nonneg R, abs_nonneg (Real.log k)]), abs_neg] at htri
-      rw [RHTower.WeilSpectral.transl, show Real.log k - -y = y - (-Real.log k) by ring]
+      dsimp only [RHTower.WeilSpectral.transl]
+      rw [show Real.log k - -y = y - (-Real.log k) by ring]
       linarith
     have h2 : RHTower.WeilSpectral.transl (-y) K (-Real.log k) = 0 := by
       refine hzero _ ?_
       have htri := abs_sub_abs_le_abs_sub y (Real.log k)
       rw [abs_of_pos (by linarith [abs_nonneg R, abs_nonneg (Real.log k)])] at htri
-      rw [RHTower.WeilSpectral.transl, show -Real.log k - -y = y - Real.log k by ring]
+      dsimp only [RHTower.WeilSpectral.transl]
+      rw [show -Real.log k - -y = y - Real.log k by ring]
       linarith
-    simp [F, h1, h2]
+    simp only [F, h1, h2, add_zero, mul_zero]
   have hp_lim : Tendsto (fun y : ℝ => RHTower.WeilSpectral.primePart (vonMangoldtS S)
       (RHTower.WeilSpectral.transl (-y) K)) atTop (𝓝 0) := by
     simpa [F, RHTower.WeilSpectral.primePart] using

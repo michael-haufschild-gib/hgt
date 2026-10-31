@@ -432,7 +432,7 @@ theorem exists_abs_le_rpow_of_wirsing {M L : ℕ → ℝ} {a K b : ℝ} (hK : 0 
     have h3 : |L N| * Real.log N ≤ (|a| * A₀ * Real.log N ^ (b - 1) + K) * Real.log N := by
       calc |L N| * Real.log N ≤ |a| * |M N| + K * Real.log N := by linarith [heq N hN]
         _ ≤ |a| * (A₀ * (Real.log N * Real.log N ^ (b - 1))) + K * Real.log N := by
-            rw [← hpow]; exact add_le_add_right (mul_le_mul_of_nonneg_left hM (abs_nonneg a)) _
+            rw [← hpow]; exact add_le_add (mul_le_mul_of_nonneg_left hM (abs_nonneg a)) le_rfl
         _ = (|a| * A₀ * Real.log N ^ (b - 1) + K) * Real.log N := by ring
     exact le_of_mul_le_mul_right h3 hℓ0
   have hM : ∀ N, 3 ≤ N → |M N| ≤ A₀ * Real.log N ^ b := by
@@ -446,8 +446,8 @@ theorem exists_abs_le_rpow_of_wirsing {M L : ℕ → ℝ} {a K b : ℝ} (hK : 0 
     | succ N hN ih =>
       have hℓ := one_le_log_of_three_le hN
       have hℓ0 : 0 < Real.log N := by linarith
-      have hN0 : (0 : ℝ) < N := by have : (3 : ℝ) ≤ N := by exact_mod_cast hN
-                                    linarith
+      have h3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
+      have hN0 : (0 : ℝ) < N := by linarith
       set δ := Real.log ((N + 1 : ℕ) : ℝ) - Real.log N with hδdef
       have hδ : 0 ≤ δ := sub_nonneg.mpr (Real.log_le_log hN0 (by push_cast; linarith))
       have hpow1 : 1 ≤ Real.log N ^ (b - 1) := Real.one_le_rpow hℓ (by linarith)
@@ -462,7 +462,7 @@ theorem exists_abs_le_rpow_of_wirsing {M L : ℕ → ℝ} {a K b : ℝ} (hK : 0 
             add_le_add ih (mul_le_mul_of_nonneg_right (hL N hN ih) hδ)
         _ ≤ A₀ * Real.log N ^ b +
               (|a| * A₀ * Real.log N ^ (b - 1) + A₀ * (b - |a|) * Real.log N ^ (b - 1)) * δ :=
-            add_le_add_left (mul_le_mul_of_nonneg_right (add_le_add_left hK' _) hδ) _
+            add_le_add le_rfl (mul_le_mul_of_nonneg_right (add_le_add le_rfl hK') hδ)
         _ = A₀ * (Real.log N ^ b + b * δ * Real.log N ^ (b - 1)) := by ring
         _ ≤ A₀ * Real.log ((N + 1 : ℕ) : ℝ) ^ b := mul_le_mul_of_nonneg_left key hA₀0
   have hAa : 0 ≤ |a| * A₀ := mul_nonneg (abs_nonneg a) hA₀0
@@ -486,8 +486,8 @@ theorem exists_abs_gaugeHarmonicSum_le_rpow {ω : ℕ → ℝ}
   have hK0 : 0 ≤ K := by simpa using (abs_nonneg _).trans (hK 1 le_rfl)
   refine exists_abs_le_rpow_of_wirsing (K := 2 * K) (by linarith) hb1 hb (fun N hN => ?_)
     (fun N hN => ?_)
-  · have hN0 : (0 : ℝ) < N := by have : (3 : ℝ) ≤ N := by exact_mod_cast hN
-                                  linarith
+  · have h3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
+    have hN0 : (0 : ℝ) < N := by linarith
     rw [polarMoment_succ ω (by omega : 1 ≤ N), Real.log_div (by positivity) hN0.ne']
     push_cast; ring
   · have hℓ := one_le_log_of_three_le hN
@@ -512,9 +512,10 @@ theorem tendsto_sq_div_log_of_rpow {L : ℕ → ℝ} {A b : ℝ} (hb : b < 3 / 2
           rw [← sq_abs]
           exact pow_le_pow_left₀ (abs_nonneg _) (hL N hN) 2
       _ = A ^ 2 * Real.log N ^ (-(3 - 2 * b)) := by
-          rw [show -(3 - 2 * b) = ((b - 1) + (b - 1)) - 1 by ring, Real.rpow_sub_one hℓ0.ne',
-            Real.rpow_add hℓ0]
-          ring
+          have e : Real.log N ^ (-(3 - 2 * b)) * Real.log N =
+              Real.log N ^ (b - 1) * Real.log N ^ (b - 1) := by
+            rw [← Real.rpow_add_one hℓ0.ne', ← Real.rpow_add hℓ0]; congr 1; ring
+          rw [div_eq_iff hℓ0.ne', mul_assoc, e]; ring
 
 end Gronwall
 
@@ -593,7 +594,7 @@ theorem le_one_of_primeSetLogMass (P : Set ℕ) {κ C : ℝ}
     (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) : κ ≤ 1 := by
   classical
   by_contra hκ
-  push_neg at hκ
+  rw [not_le] at hκ
   set C₀ := (Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)
   obtain ⟨n, hn1, hnX⟩ := ((eventually_ge_atTop 1).and
     ((Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop
