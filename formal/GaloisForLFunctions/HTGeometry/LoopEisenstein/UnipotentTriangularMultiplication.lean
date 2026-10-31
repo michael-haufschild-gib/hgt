@@ -26,12 +26,26 @@ variable {R : Type*} [CommRing R]
     unipotentCoefficientStreamEquiv R g (3 * n + 2) = PowerSeries.coeff (n + 1) (g.1 0 0) :=
   unipotentCoordinatesToStream_upperLeft R (unipotentCoefficientEquiv R g) n
 
+/-- The identity matrix is the zero coefficient stream. -/
+@[simp] theorem unipotentStream_one :
+    unipotentCoefficientStreamEquiv R (1 : unipotentCoefficientGroup R) = 0 := by
+  funext N
+  change unipotentCoordinatesToStream R (unipotentCoefficientToCoordinates R 1) N = 0
+  unfold unipotentCoordinatesToStream
+  split_ifs
+  · change PowerSeries.coeff (N / 3) (0 : PowerSeries R) = 0
+    exact map_zero _
+  · change PowerSeries.coeff (N / 3 + 1) (0 : PowerSeries R) = 0
+    exact map_zero _
+  · change PowerSeries.coeff (N / 3 + 1) (1 : PowerSeries R) = 0
+    rw [PowerSeries.coeff_one, if_neg (Nat.add_one_ne_zero (N / 3))]
+
 private theorem prefix_upperLeft {g h : unipotentCoefficientGroup R} {N : ℕ}
     (hp : ∀ k < N, unipotentCoefficientStreamEquiv R g k = unipotentCoefficientStreamEquiv R h k)
     (m : ℕ) (hm : 3 * m ≤ N) : PowerSeries.coeff m (g.1 0 0) = PowerSeries.coeff m (h.1 0 0) := by
   cases m with
   | zero =>
-    rw [PowerSeries.coeff_zero_eq_constantCoeff,
+    simp only [PowerSeries.coeff_zero_eq_constantCoeff,
       ((mem_unipotentCoefficientGroup R g).mp g.property).1,
       ((mem_unipotentCoefficientGroup R h).mp h.property).1]
   | succ m => simpa only [unipotentStream_upperLeft] using hp (3 * m + 2) (by omega)
@@ -46,7 +60,7 @@ private theorem prefix_lowerLeft {g h : unipotentCoefficientGroup R} {N : ℕ}
     (m : ℕ) (hm : 3 * m ≤ N + 1) : PowerSeries.coeff m (g.1 1 0) = PowerSeries.coeff m (h.1 1 0) := by
   cases m with
   | zero =>
-    rw [PowerSeries.coeff_zero_eq_constantCoeff,
+    simp only [PowerSeries.coeff_zero_eq_constantCoeff,
       ((mem_unipotentCoefficientGroup R g).mp g.property).2.1,
       ((mem_unipotentCoefficientGroup R h).mp h.property).2.1]
   | succ m => simpa only [unipotentStream_lowerLeft] using hp (3 * m + 1) (by omega)
@@ -163,6 +177,23 @@ def unipotentPrefixCompletion {N : ℕ} (x : Fin N → R) : unipotentCoefficient
 /-- The finite correction in the actual completed group multiplication law. -/
 def unipotentTriangularCorrection (N : ℕ) (x y : Fin N → R) : R :=
   unipotentStreamDefect (unipotentPrefixCompletion x) (unipotentPrefixCompletion y) N
+
+@[simp] theorem unipotentPrefixCompletion_zero (N : ℕ) :
+    unipotentPrefixCompletion (0 : Fin N → R) = 1 := by
+  apply (unipotentCoefficientStreamEquiv R).injective
+  funext k
+  simp only [unipotentPrefixCompletion, Equiv.apply_symm_apply, unipotentStream_one, Pi.zero_apply]
+  split_ifs <;> rfl
+
+@[simp] theorem unipotentTriangularCorrection_zero_right (N : ℕ) (x : Fin N → R) :
+    unipotentTriangularCorrection N x 0 = 0 := by
+  rw [unipotentTriangularCorrection, unipotentPrefixCompletion_zero]
+  simp only [unipotentStreamDefect, mul_one, unipotentStream_one, Pi.zero_apply, sub_self, sub_zero]
+
+@[simp] theorem unipotentTriangularCorrection_zero_left (N : ℕ) (x : Fin N → R) :
+    unipotentTriangularCorrection N 0 x = 0 := by
+  rw [unipotentTriangularCorrection, unipotentPrefixCompletion_zero]
+  simp only [unipotentStreamDefect, one_mul, unipotentStream_one, Pi.zero_apply, sub_zero, sub_self]
 
 /-- Multiplication is triangular in the unrestricted coefficient stream. -/
 theorem unipotentStream_mul (g h : unipotentCoefficientGroup R) (N : ℕ) :

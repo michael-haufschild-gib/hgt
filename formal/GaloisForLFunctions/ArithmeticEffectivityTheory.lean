@@ -58,3 +58,4 @@ argument with `h⁰` a real function), the failure of the base `h⁰` to extend 
 limits and naive heights, log-torsion and the product formula, the theta surface, and the Stepanov
 method over `ℤ`. See `ArithmeticEffectivityTheory/README.md`.
 -/
+import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticLoopCarrier

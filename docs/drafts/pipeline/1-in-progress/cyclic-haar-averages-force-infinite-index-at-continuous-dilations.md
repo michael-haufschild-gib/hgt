@@ -12,6 +12,8 @@ The [normalized polynomial correction](../2-fully-proven/finite-index-periodic-a
 
 Local periodicity gives the canonical projection `P_b` onto `Fix(T_b)` along `range(T_b−1)`, equal on each vector to its finite orbit average. It is self-adjoint for the column pairing `B` and commutes with every translation.
 
+For the moving-space positivity, take `x=(T_b−1)y` with `T_b^m y=y`, and put `U=D_(1/m)`. Then `T_b U=U T_b^m`, `T_b^m x=x`, and `Σ_(j<m)T_b^j x=0`. Every `U^n x`, `n≥1`, is fixed by `T_b`, hence orthogonal to `x`. Isometry of `U` makes all distinct `U^i x` mutually orthogonal with the same norm. A negative norm would contradict finite negative index.
+
 ## Finite cyclic Hecke bound
 
 Write `v_a=v_(D_a)` and assume `a,c∈bℤ`. Put `u_a=(1−P_b)v_a`, `u_c=(1−P_b)v_c`, and `d=den(c/a)`. The first `d` translates `T_(jc)v_a` are orthonormal by the Haar reading. Their projected fixed parts all equal `P_bv_a`. Consequently

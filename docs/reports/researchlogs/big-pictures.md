@@ -1,14 +1,14 @@
 # Big pictures of the research programmes
 
-Section 10 ("Big picture") of the 54 programme READMEs in `formal/GaloisForLFunctions/<Programme>/README.md`,
+Section 10 ("Big picture") of the 55 programme READMEs in `formal/GaloisForLFunctions/<Programme>/README.md`,
 preceded by a synthesis of all of them. Numbering follows `docs/reports/research-programmes.md`.
 
 ## Synthesis: the big picture of the big pictures
 
 ### 1. There is one barrier, and every programme reaches it
 
-Fifty-four programmes, started from different mathematics (incidence, criticality, intersection theory, gauge
-theory, electrostatics, Krein spaces, dynamics), end at the same place. Its names differ: half damping, the
+Fifty-five programmes, started from different mathematics (incidence, criticality, intersection theory, gauge
+theory, electrostatics, Krein spaces, adelic index theory, dynamics), end at the same place. Its names differ: half damping, the
 square-root threshold, the zero width as an exponent, the first-prime layer, the Nyquist or spacing scale, the
 growing-overlap limit, the diagonal `d ≍ Q`, the long-modulus Möbius tail, the index of the Weil kernel. Every
 programme that carried its reformulation to the end proved these are coordinates on one line. RH-equivalent
@@ -34,7 +34,10 @@ from Liouville, from flipped primes and from pole-free gauges. What fails is alw
 rank, prime cutoff, conductor count, height, or the coupling between transverse prime towers. Each programme
 that measured it found a reserve that degrades at a definite rate and payments that arrive at their own rate.
 RH is a rate problem: payment must beat reserve decay uniformly along the exhaustion. No change of
-normalization, gauge, completion or coordinate alters the rates.
+normalization, gauge, completion or coordinate alters the rates. The same pattern holds for signatures: every
+place and every finite sieve carries its local index with one gluing square, but the prime kernel has no
+Pontryagin limit at any fixed renormalization. The counterterm must run with the horizon, so the global assembly
+is itself an exhaustion.
 
 ### 4. Two filters decide which arguments can work
 
@@ -47,8 +50,8 @@ by cancellation, and every unsigned bound overshoots by a constant factor.
 and that class contains counterexamples. The twins appear in every guise: Beurling systems, Liouville and sign
 gauges, flipped Euler factors, fake curves (golden datum), `n^{−1/2}` perturbations, the κ ≥ 2 axiomatic class,
 the gauge orbit (where almost every point satisfies RH and `ζ` is atypical), the Bohr closure. Euler product,
-functional equation, positive coefficients, integrality of prime data, Hecke covariance, local positivity and
-moment positivity are all twin-blind.
+functional equation, positive coefficients, integrality of prime data, Hecke covariance, local positivity,
+moment positivity and the negative index itself (unitary twists are Gram congruences) are all twin-blind.
 
 A candidate route must name what it reads, read signs, keep every prime's exact weight, and fail for at least
 one twin. Most machinery in the corpus passes neither filter and is transfer, not proof.
@@ -60,10 +63,12 @@ margin, carried by the prime 2 and the correlation of `Λ` with the pole, is the
 and the only thing that separates the arithmetic point from its gauge neighbours. Selectivity enters one prime
 at a time, as finite arithmetic checks, at atomic or spacing scale. Additive structure is the other selective
 ingredient. The successor, the unit gap of the integers, non-ratio lags and log-cells are what pin the Euler
-point. Purely multiplicative structure is gauge-blind and stops at the 1-line. The decisive cancellation is
-therefore joint: primes against pole, multiplicative against additive, prime place against archimedean place.
-Paying any of these pieces separately is provably too expensive; paying them together has been cheap on every
-family tested.
+point. Purely multiplicative structure is gauge-blind and stops at the 1-line. The pole is also where the two
+structures meet. On the affine group it is the only carrier of a finite nonzero index. At every place it is a
+hyperbolic pair: a boost on the multiplicative side glued to a conformal successor on the additive side, at the
+cost of exactly one square. The decisive cancellation is therefore joint: primes against pole, multiplicative
+against additive, prime place against archimedean place. Paying any of these pieces separately is provably too
+expensive; paying them together has been cheap on every family tested.
 
 ### 6. Weil's proof over ℤ: the parts exist, the engine does not
 
@@ -76,8 +81,11 @@ Hecke covariance and sign; a correspondence carrying Rosati sufficiency. The fun
 transplant. Stepanov's auxiliary pays its multiplicity exactly in support length, because `ℤ` has no identity like
 `x^q = x`. Deligne's amplifier works at finite rank, and over `ℤ` orthogonality costs exactly what it gains. Transfer-operator
 realizations are forced to be prime-length and are cut down by integrality, unique factorization and the Gamma
-factor. The explicit formula computes only reflection pairings; the same-point side needs a non-holomorphic
-input. Every engine that produces RH over `F_q` relies on finiteness (rank, genus, Frobenius identity, discrete
+factor. Indefiniteness does not help either. On the affine group, every integer-supported, decaying or
+mixing state has no negative squares or infinitely many. Conformal Frobenius has no positive analogue, and its
+substitute is the index-one pole–successor state. Weil's continuous dilation data with a visible integer
+successor costs infinitely many squares on every carrier built from positive pieces and slope corrections. The
+explicit formula computes only reflection pairings; the same-point side needs a non-holomorphic input. Every engine that produces RH over `F_q` relies on finiteness (rank, genus, Frobenius identity, discrete
 spectrum) that `ℤ` lacks.
 
 ### 7. The missing input has one description
@@ -90,13 +98,18 @@ Read across all programmes, the missing input is one object, described consisten
   or the Chebyshev error between scales, at the scale where zeros and primes are in uncertainty balance;
 - **joint**: primes paid together with the pole and the archimedean place, additive together with multiplicative;
 - **uniform**: valid along the whole exhaustion with constants that do not degrade;
+- **non-separable and non-escaping**: carried through the pole and the archimedean place, because structures that
+  separate into local pieces or let translates escape (integer support, decay, mixing) have index `0` or `∞`;
 - **selective**: false for every twin.
 
 The concrete targets are different coordinates on this input. The joint signed shell–pole payment at growing
-overlap is the atomic Weil-matrix route, the most quantitatively advanced. The other targets are: prime–pole
-cancellation in the first-prime layer with uniform control; long-modulus Möbius cancellation below half damping;
-a producer (an auxiliary vanishing on one parity class to growing order); sections of the scaling surface; and a
-non-holomorphic same-point identity with controlled depth term.
+overlap is the atomic Weil-matrix route, the most quantitatively advanced. The other targets are:
+- prime–pole cancellation in the first-prime layer with uniform control;
+- long-modulus Möbius cancellation below half damping;
+- a producer (an auxiliary vanishing on one parity class to growing order);
+- sections of the scaling surface;
+- a non-holomorphic same-point identity with controlled depth term;
+- a non-separable affine carrier of Weil's dilation data with the integer successor.
 
 ### 8. What this means for the research as a whole
 
@@ -112,7 +125,8 @@ exactly, with every route's stopping point proved and its positive survivor form
 3. **Look for a new arithmetic identity, not a sharper estimate.** The function-field proofs work because of an
    identity or a finiteness that `ℤ` lacks. A proof over `ℤ` needs an identity of comparable force tying additive
    and multiplicative structure at the square-root scale. Positivity is the last step, after such an identity
-   has computed the index.
+   has computed the index. Local pieces are already in hand at every place; what is missing is the global glue,
+   and it has to run through the pole rather than through a sum of local constituents.
 4. **Use the twins and the finite field as standing tests.** Every proposed mechanism should be run on Beurling
    systems, Liouville and flipped-prime twins, fake curves and curves over `F_q` before it is developed. The
    corpus already contains these test objects, and most routes the programmes closed were closed by exactly
@@ -886,3 +900,21 @@ is available off the shelf; both require a genuinely new arithmetic input (a non
 identity with fixed loss), and integrality, unique factorization and the Gamma factor are the precise constraints
 it must respect.
 
+
+### 55 AdelicKreinGeometry
+
+AKG turns the question "what positive object could carry both arithmetic operations" into an index question, and
+the answer is sharply constrained. Every natural arithmetic state, whether supported on integers, decaying in
+height, mixing, or a product of the two readings, has either no negative squares or infinitely many. A finite
+nonzero index needs a carrier that never escapes, and over `ℚ` that carrier is the pole: the hyperbolic pair at
+`0, ∞` of the projective line, which appears at every place as a boost on the multiplicative side glued to a
+conformal successor on the additive side, at the price of exactly one square. Index calculus is also twin-blind,
+so it cannot by itself select `ζ`.
+
+For the RH effort this locates the missing object precisely. Weil's correlation can be extended to the affine
+group without extra cost only by making the successor blind; attaching the integer successor while keeping Weil's
+continuous dilation data costs infinitely many squares for every carrier built from positive pieces and slope
+corrections. The finite-dimensional local pictures (each place, each finite sieve) all work with one gluing square,
+but the global assembly fails at any fixed renormalization. What is needed is a genuinely non-separable,
+non-escaping carrier that couples slope and shift in infinite rank, and none of the structures built from local
+data supplies it.

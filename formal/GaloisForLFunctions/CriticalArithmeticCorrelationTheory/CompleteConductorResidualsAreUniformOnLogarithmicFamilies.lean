@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ActualUpwardRowsHaveUniformConductorBounds
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.WeilReplacementsHaveUniformConductorBounds
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.DownwardRowsHaveUniformConductorBounds
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.RamanujanFamiliesHaveExplicitCoordinateMass
 
 /-!
 # Complete residuals on growing logarithmic conductor families
@@ -13,9 +14,44 @@ a prescribed logarithmic range, uniformly in the permitted overlap.
 
 noncomputable section
 open MeasureTheory Finset Filter Topology
+open scoped RealInnerProductSpace
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 open RenormalizedArithmeticPotentialTheory SpacingScaleHarmonicAnalysis
   RenormalizedArithmeticPotentialTheory.CompletedShell
+
+/-- A positive conductor gap bounds each coordinate of a nonpositive eigenvector by its residual. -/
+theorem nonpositive_eigenvector_coordinate_sq_le_uniform_residual
+    {I : Type*} [Fintype I] [DecidableEq I] {A : Matrix I I ℝ}
+    (hA : A.IsHermitian) (i : I) (hi : hA.eigenvalues i ≤ 0)
+    {e E : ℝ} (he : 0 < e) (hE : e ≤ E) (v : EuclideanSpace ℝ I) :
+    ⟪hA.eigenvectorBasis i, v⟫ ^ 2 ≤
+      ‖Matrix.toEuclideanLin A v - E • v‖ ^ 2 / e ^ 2 := by
+  let x := hA.eigenvectorBasis i
+  have hx : ‖x‖ = 1 := by
+    have h : ⟪x, x⟫ = (1 : ℝ) := by
+      simpa only [ite_true] using (orthonormal_iff_ite.mp hA.eigenvectorBasis.orthonormal) i i
+    rw [real_inner_self_eq_norm_sq] at h
+    nlinarith only [h, norm_nonneg x]
+  have hAx : Matrix.toEuclideanLin A x = hA.eigenvalues i • x := by
+    ext j
+    exact congrFun (hA.mulVec_eigenvectorBasis i) j
+  have hr : ⟪Matrix.toEuclideanLin A v - E • v, x⟫ =
+      (hA.eigenvalues i - E) * ⟪x, v⟫ := by
+    rw [inner_sub_left, (Matrix.isSymmetric_toEuclideanLin_iff.mpr hA) v x,
+      hAx, real_inner_smul_right, real_inner_smul_left, real_inner_comm v x]
+    ring
+  have hcs := norm_inner_le_norm (𝕜 := ℝ) (Matrix.toEuclideanLin A v - E • v) x
+  rw [Real.norm_eq_abs, hx, mul_one, hr] at hcs
+  have hsq := mul_self_le_mul_self (abs_nonneg _) hcs
+  rw [← sq, sq_abs, ← sq, mul_pow] at hsq
+  have hgap : e ^ 2 ≤ (hA.eigenvalues i - E) ^ 2 := by
+    have h := mul_self_le_mul_self he.le
+      (show e ≤ E - hA.eigenvalues i by linarith only [hE, hi])
+    nlinarith only [h]
+  apply (le_div_iff₀ (sq_pos_of_pos he)).mpr
+  have h := mul_le_mul_of_nonneg_right hgap (sq_nonneg ⟪x, v⟫)
+  nlinarith only [h, hsq]
+
 
 private theorem norm_add_sq_le_two_uniform {E : Type*} [SeminormedAddCommGroup E] (a b : E) :
     ‖a + b‖ ^ 2 ≤ 2 * (‖a‖ ^ 2 + ‖b‖ ^ 2) := by
@@ -217,7 +253,59 @@ theorem exists_tiltedUnitSpline_uniform_conductor_residual_bound :
   exists_completeWeil_uniform_conductor_residual_bound contDiff_tiltedUnitSpline
     tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos
 
+/-- A finite conductor family excludes every nonpositive eigenvector when its
+summed residual budget is below the coordinate mass supplied by approximation. -/
+theorem matrix_posDef_of_uniform_conductor_budget {N R Q : ℕ}
+    {A : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ} (hA : A.IsHermitian)
+    (E : ℕ → ℝ) {e K rate : ℝ} (he : 0 < e) (hK : 0 < K) (hrate : 0 ≤ rate)
+    (hRQ : R ≤ Q) (hQ : 2 ≤ Q) (hQN : Q ^ 4 ≤ N)
+    (hfloor : ∀ m ∈ Icc 1 Q, e ≤ E m)
+    (happrox : ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N), ‖x‖ = 1 →
+      ⟪Matrix.toEuclideanLin A x, x⟫ ≤ 0 →
+      ∃ a : ℕ → ℝ, (∑ n ∈ Icc 1 N,
+        (primeHorizonExtension x n -
+          ∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2) ≤ 1 / 4)
+    (hres : ∀ m ∈ Icc 1 Q,
+      ‖Matrix.toEuclideanLin A (normalizedRamanujanHorizonVector m N) -
+        E m • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤ K * (m : ℝ) ^ 4 * rate)
+    (hbudget : K * (Q : ℝ) ^ 5 * rate / e ^ 2 ≤ 1 / 36) : A.PosDef := by
+  classical
+  apply hA.posDef_iff_eigenvalues_pos.mpr
+  intro i
+  by_contra hi
+  have hi0 : hA.eigenvalues i ≤ 0 := le_of_not_gt hi
+  let x := hA.eigenvectorBasis i
+  have hx : ‖x‖ = 1 := by
+    have hh : ⟪x, x⟫ = (1 : ℝ) := by
+      simpa only [ite_true] using (orthonormal_iff_ite.mp hA.eigenvectorBasis.orthonormal) i i
+    rw [real_inner_self_eq_norm_sq] at hh
+    nlinarith only [hh, norm_nonneg x]
+  have henergy : ⟪Matrix.toEuclideanLin A x, x⟫ ≤ 0 := by
+    have hAx : Matrix.toEuclideanLin A x = hA.eigenvalues i • x := by
+      ext j
+      exact congrFun (hA.mulVec_eigenvectorBasis i) j
+    rw [hAx, real_inner_smul_left, real_inner_self_eq_norm_sq, hx, one_pow, mul_one]
+    exact hi0
+  obtain ⟨a, ha⟩ := happrox x hx henergy
+  have hmass := normalizedRamanujan_coordinate_mass_ge_of_raw_approximation
+    hRQ hQ hQN x hx a ha
+  have hterm (m : ℕ) (hm : m ∈ Icc 1 Q) :
+      ⟪x, normalizedRamanujanHorizonVector m N⟫ ^ 2 ≤ K * (Q : ℝ) ^ 4 * rate / e ^ 2 := by
+    have hcoord := nonpositive_eigenvector_coordinate_sq_le_uniform_residual hA i hi0 he
+      (hfloor m hm) (normalizedRamanujanHorizonVector m N)
+    have hmQ : (m : ℝ) ≤ Q := by exact_mod_cast (mem_Icc.mp hm).2
+    have hp := pow_le_pow_left₀ (Nat.cast_nonneg m) hmQ 4
+    exact hcoord.trans (div_le_div_of_nonneg_right
+      ((hres m hm).trans (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hp hK.le) hrate)) (sq_nonneg _))
+  have hsum := sum_le_sum hterm
+  rw [sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel] at hsum
+  have hupper : (∑ m ∈ Icc 1 Q, ⟪x, normalizedRamanujanHorizonVector m N⟫ ^ 2) ≤
+      K * (Q : ℝ) ^ 5 * rate / e ^ 2 := hsum.trans_eq (by ring)
+  linarith only [hmass, hupper.trans hbudget]
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_completeWeil_uniform_conductor_residual_bound
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_tiltedUnitSpline_uniform_conductor_residual_bound
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.matrix_posDef_of_uniform_conductor_budget

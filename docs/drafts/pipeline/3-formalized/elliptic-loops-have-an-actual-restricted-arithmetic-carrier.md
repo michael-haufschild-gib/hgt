@@ -1,6 +1,6 @@
 # Elliptic loops have an actual restricted arithmetic carrier
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** The actual elliptic local central loop groups have a restricted
   adelic group and a faithfully embedded arithmetic subgroup. Every adelic loop
@@ -32,4 +32,4 @@ these are actual adelic factors whose product is the original element.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticLoopCarrier.lean`:
 `arithmeticLoopEmbedding_injective`, `adelicBorel_torus_eventually_integral`,
-`exists_adelic_integral_borel`. Direct check pending.
+`exists_adelic_integral_borel`. Direct Lean check passed. All transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.

@@ -28,7 +28,7 @@ from a proved quotient normalization.
 ## Unproved dependencies
 
 - Unipotent quotient measure. The additive quotient has Haar probability and covolume one. Its continuous additive retraction and rational correction preserving every integral finite place are audited. The three-free-entry equivalence is audited over arbitrary commutative rings, including the adele ring; completed arithmetic reduction and invariant quotient probability remain.
-- Actual adelic loop group, arithmetic cosets, Iwasawa characters and torus normalization.
+- Arithmetic cosets, Iwasawa spectral characters and their torus normalization. The actual restricted adelic loop group, faithful restricted arithmetic embedding and integral–Borel factorization are audited.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
 - Local Iwasawa-character identification with the already proved radial Haar kernel.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.

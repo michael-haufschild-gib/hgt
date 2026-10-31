@@ -12,8 +12,8 @@ Frobenius.
 * **Ultrametric decomposition** (`absInf_sub_eq_sum`): with `p ∼_k p'` meaning that `p` and `p'`
   agree in all degrees `≥ k`, `|p − p'|_∞ = Σ_{k ≤ D} w_k 1[p ≁_k p']`, `w_0 = 1`,
   `w_k = b^k − b^{k−1}`.
-* **Equivalence kernels are positive** (`re_sum_ite_eq_nonneg`): `Σ c̄_a c_b 1[f(a) = f(b)]` is a sum
-  of squares of the class sums.
+* **Equivalence kernels are positive** (`re_sum_ite_eq_sum_normSq`, `re_sum_ite_eq_nonneg`):
+  `Σ c̄_a c_b 1[f(a) = f(b)]` is the sum of the squares of the class sums.
 * **One negative square** (`negIndex_negAbsInf`): `−|·|_∞` is conditionally positive, so it has
   exactly one negative square.
 
@@ -34,9 +34,10 @@ namespace GaloisForLFunctions.AdelicKreinGeometry
 
 /-! ### Equivalence kernels -/
 
-/-- **Equivalence kernels are positive.** -/
-theorem re_sum_ite_eq_nonneg {ι β : Type*} [Fintype ι] [DecidableEq β] (f : ι → β) (c : ι → ℂ) :
-    0 ≤ (∑ a, ∑ b, conj (c a) * c b * (if f a = f b then 1 else 0)).re := by
+/-- **Equivalence kernels are sums of squares**: `Σ c̄_a c_b 1[f(a) = f(b)] = Σ_v |Σ_{f(b) = v} c_b|²`. -/
+theorem re_sum_ite_eq_sum_normSq {ι β : Type*} [Fintype ι] [DecidableEq β] (f : ι → β)
+    (c : ι → ℂ) : (∑ a, ∑ b, conj (c a) * c b * (if f a = f b then 1 else 0)).re =
+      ∑ v ∈ univ.image f, normSq (∑ b ∈ univ.filter (fun b => f b = v), c b) := by
   set S : β → ℂ := fun v => ∑ b ∈ univ.filter (fun b => f b = v), c b
   have h1 : ∀ a, ∑ b, conj (c a) * c b * (if f a = f b then 1 else 0) = conj (c a) * S (f a) := by
     intro a
@@ -53,7 +54,16 @@ theorem re_sum_ite_eq_nonneg {ι β : Type*} [Fintype ι] [DecidableEq β] (f : 
     rw [sum_congr rfl this, ← sum_mul, ← map_sum]
   simp_rw [h1]
   rw [h2, Complex.re_sum]
-  exact sum_nonneg fun v _ => by rw [Complex.conj_mul']; norm_cast; positivity
+  refine sum_congr rfl fun v _ => ?_
+  rw [Complex.conj_mul']
+  norm_cast
+  rw [Complex.sq_norm]
+
+/-- **Equivalence kernels are positive.** -/
+theorem re_sum_ite_eq_nonneg {ι β : Type*} [Fintype ι] [DecidableEq β] (f : ι → β) (c : ι → ℂ) :
+    0 ≤ (∑ a, ∑ b, conj (c a) * c b * (if f a = f b then 1 else 0)).re := by
+  rw [re_sum_ite_eq_sum_normSq]
+  exact sum_nonneg fun v _ => normSq_nonneg _
 
 /-! ### The absolute value at infinity -/
 

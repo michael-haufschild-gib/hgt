@@ -1,3 +1,4 @@
+import GaloisForLFunctions.BiarithmeticGeometry.Affine.PolynomialFibres
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.PolynomialAntidifferences
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.IsotropicTranslations
 import GaloisForLFunctions.BiarithmeticGeometry.HorizonAffineActions

@@ -127,9 +127,11 @@
 | 21 | The local heat rate `λ_t log t` vanishes in density: for every `κ > 0`, `vol{λ_t > κ/log U} = o(U)` on `[U/4, U/2]` | B | formalized: added to `3-formalized/the-local-heat-threshold.md` (from the corpus a.e. repair at `(log U)^{−2}`) |
 | 22 | The de Bruijn reality horizon `2/3` (`KiKimLeeTwoThirdsHorizon`) is sharp for size + positive kernel: `cos(Lz/2) + e^{θL}e^{−z²/L²}` keeps a nonreal zero of `H_{κ/L}` for every `κ < 4θ` | WD/B | formalized: `3-formalized/a-weyl-bump-keeps-a-nonreal-heat-zero.md` |
 | 23 | Lindelöf level: an isolated pair `(z² + δ²)cos(Lz/2)` keeps a nonreal heat zero up to `κ² + 2κ/L < δ²` (`κ → δ ≤ ½`); the Ki–Kim–Lee method value `½` under Lindelöf is sharp | WD/B | formalized: `3-formalized/an-off-line-pair-survives-the-heat-flow-to-its-depth.md` |
+| 24 | Distribution of `λ_t`: `vol{t : λ_t > κ²/(3L²)} ≤ A ΔT e^{−κ/2400} + KL²`; heights with `λ_t > κ/log U` have measure `≪ U exp(−√(3κ log U)/2400)` | B | formalized: `3-formalized/the-local-heat-threshold-has-an-exponential-tail.md` (cone defect #13 + corpus Selberg shadow density) |
+| C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#23 formalized; #18 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#24 formalized; #18, C2 in corpus.

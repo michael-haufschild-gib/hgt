@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticLoopCarrier
 import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticIdeleCharacters
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.PositiveLoopFieldMap
 
 /-!
 # Spectral sections on the actual elliptic adelic loop group
@@ -22,6 +23,14 @@ private def borelUnitCoordinate {F : Type*} [Field F] (i : Bool) :
     Prod.fst_one, Prod.snd_one]
   map_mul' a b := by cases i <;> simp only [Bool.false_eq_true, if_false, if_true, map_mul,
     Prod.fst_mul, Prod.snd_mul]
+
+private theorem borelUnitCoordinate_fieldMap {F E : Type*} [Field F] [Field E]
+    (ι : F →+* E) (i : Bool) (b : LoopSL2.positiveBorel F) :
+    borelUnitCoordinate i (LoopSL2.borelFieldMap ι b) =
+      Units.map ι.toMonoidHom (borelUnitCoordinate i b) := by
+  cases i
+  · exact congrArg Prod.fst (LoopSL2.borelTorusHom_fieldMap ι b)
+  · exact congrArg Prod.snd (LoopSL2.borelTorusHom_fieldMap ι b)
 
 /-- Assemble local units and their inverses into a unit of the actual adele ring. -/
 def ideleOfLocalUnits (x : ∀ v : FinitePlace, (v.adicCompletion K)ˣ) (y : InfinityCompletionˣ)
@@ -140,6 +149,42 @@ theorem adelicBorelCharacter_integral (s t : ℂ) (b : adelicPositiveBorel)
     adelicBorelCoordinate_magnitude_integral _ b hb, NNReal.coe_one, Real.log_one,
     Complex.ofReal_zero, mul_zero, Complex.exp_zero, one_mul]
 
+/-- The actual arithmetic Borel has trivial spectral character by the curve product formula. -/
+theorem adelicBorelCharacter_arithmetic (s t : ℂ) (b : adelicPositiveBorel)
+    (hb : (b : AdelicLoop) ∈ arithmeticLoopGroup) : adelicBorelCharacter s t b = 1 := by
+  obtain ⟨r, hr⟩ := hb
+  have hrInf : LoopSL2.fieldMap infinityEmbedding (r : LoopSL2 K) ∈
+      LoopSL2.positiveBorel InfinityCompletion := by
+    have he := congrArg Prod.snd hr
+    change LoopSL2.fieldMap infinityEmbedding (r : LoopSL2 K) = (b : AdelicLoop).2 at he
+    rw [he]
+    exact b.property.2
+  let br : LoopSL2.positiveBorel K := ⟨r,
+    (LoopSL2.fieldMap_mem_positiveBorel_iff infinityEmbedding (r : LoopSL2 K)).mp hrInf⟩
+  have hfinite (v : FinitePlace) : finiteBorelEvaluation v b =
+      LoopSL2.borelFieldMap (algebraMap K (v.adicCompletion K)) br := by
+    apply Subtype.ext
+    exact (congrArg (fun g : AdelicLoop => g.1 v) hr).symm
+  have hinfinity : infinityBorelEvaluation b = LoopSL2.borelFieldMap infinityEmbedding br := by
+    apply Subtype.ext
+    exact (congrArg Prod.snd hr).symm
+  have hcoord (i : Bool) : adelicBorelCoordinate i b = diagonalIdeles (borelUnitCoordinate i br) := by
+    apply Units.ext
+    apply Prod.ext
+    · apply RestrictedProduct.ext
+      intro v
+      change ((borelUnitCoordinate i (finiteBorelEvaluation v b) : (v.adicCompletion K)ˣ) :
+        v.adicCompletion K) = algebraMap K (v.adicCompletion K) ((borelUnitCoordinate i br : Kˣ) : K)
+      rw [hfinite, borelUnitCoordinate_fieldMap]
+      rfl
+    · change ((borelUnitCoordinate i (infinityBorelEvaluation b) : InfinityCompletionˣ) :
+        InfinityCompletion) = infinityEmbedding ((borelUnitCoordinate i br : Kˣ) : K)
+      rw [hinfinity, borelUnitCoordinate_fieldMap]
+      rfl
+  change ideleCharacter s (adelicBorelCoordinate false b) *
+    ideleCharacter t (adelicBorelCoordinate true b) = 1
+  rw [hcoord false, hcoord true, ideleCharacter_diagonal, ideleCharacter_diagonal, one_mul]
+
 /-- Spectral values do not depend on the chosen actual Iwasawa factors. -/
 theorem adelicBorelCharacter_iwasawa_unique (s t : ℂ)
     (k₁ k₂ : adelicIntegralLoop) (b₁ b₂ : adelicPositiveBorel)
@@ -201,3 +246,5 @@ end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicBorelCharacter_integral
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicIwasawaSection_left_integral
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicIwasawaSection_right_borel
+
+#print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicBorelCharacter_arithmetic

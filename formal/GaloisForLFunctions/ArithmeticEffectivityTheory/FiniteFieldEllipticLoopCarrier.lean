@@ -45,18 +45,24 @@ def diagonalFiniteLoop : LoopSL2 K →* FiniteLoopProduct where
 def restrictedRationalLoop : Subgroup (LoopSL2 K) where
   carrier := {g | ∀ᶠ v : FinitePlace in cofinite, diagonalFiniteLoop g v ∈ finiteIntegralLoop v}
   one_mem' := by
+    change ∀ᶠ v : FinitePlace in cofinite, diagonalFiniteLoop 1 v ∈ finiteIntegralLoop v
     filter_upwards [] with v
     change LoopSL2.fieldMap (algebraMap K (v.adicCompletion K)) 1 ∈ finiteIntegralLoop v
     rw [map_one]
     exact (finiteIntegralLoop v).one_mem
   mul_mem' := by
     intro g h hg hh
+    change ∀ᶠ v : FinitePlace in cofinite, diagonalFiniteLoop g v ∈ finiteIntegralLoop v at hg
+    change ∀ᶠ v : FinitePlace in cofinite, diagonalFiniteLoop h v ∈ finiteIntegralLoop v at hh
+    change ∀ᶠ v : FinitePlace in cofinite, diagonalFiniteLoop (g * h) v ∈ finiteIntegralLoop v
     filter_upwards [hg, hh] with v hv hw
     change LoopSL2.fieldMap (algebraMap K (v.adicCompletion K)) (g * h) ∈ finiteIntegralLoop v
     rw [map_mul]
     exact (finiteIntegralLoop v).mul_mem hv hw
   inv_mem' := by
     intro g hg
+    change ∀ᶠ v : FinitePlace in cofinite, diagonalFiniteLoop g v ∈ finiteIntegralLoop v at hg
+    change ∀ᶠ v : FinitePlace in cofinite, diagonalFiniteLoop g⁻¹ v ∈ finiteIntegralLoop v
     filter_upwards [hg] with v hv
     change LoopSL2.fieldMap (algebraMap K (v.adicCompletion K)) g⁻¹ ∈ finiteIntegralLoop v
     rw [map_inv]
@@ -69,14 +75,22 @@ def arithmeticLoopEmbedding : restrictedRationalLoop →* AdelicLoop where
     apply Prod.ext
     · apply RestrictedProduct.ext
       intro v
-      exact map_one _
-    · exact map_one _
+      change LoopSL2.fieldMap (algebraMap K (v.adicCompletion K)) 1 = 1
+      exact map_one (LoopSL2.fieldMap (algebraMap K (v.adicCompletion K)))
+    · change LoopSL2.fieldMap infinityEmbedding 1 = 1
+      exact map_one (LoopSL2.fieldMap infinityEmbedding)
   map_mul' g h := by
     apply Prod.ext
     · apply RestrictedProduct.ext
       intro v
-      exact map_mul _ _ _
-    · exact map_mul _ _ _
+      change LoopSL2.fieldMap (algebraMap K (v.adicCompletion K))
+        ((g : LoopSL2 K) * (h : LoopSL2 K)) =
+          LoopSL2.fieldMap (algebraMap K (v.adicCompletion K)) (g : LoopSL2 K) *
+            LoopSL2.fieldMap (algebraMap K (v.adicCompletion K)) (h : LoopSL2 K)
+      exact (LoopSL2.fieldMap (algebraMap K (v.adicCompletion K))).map_mul _ _
+    · change LoopSL2.fieldMap infinityEmbedding ((g : LoopSL2 K) * (h : LoopSL2 K)) =
+        LoopSL2.fieldMap infinityEmbedding (g : LoopSL2 K) * LoopSL2.fieldMap infinityEmbedding (h : LoopSL2 K)
+      exact (LoopSL2.fieldMap infinityEmbedding).map_mul _ _
 
 theorem arithmeticLoopEmbedding_injective : Function.Injective arithmeticLoopEmbedding := by
   intro g h he

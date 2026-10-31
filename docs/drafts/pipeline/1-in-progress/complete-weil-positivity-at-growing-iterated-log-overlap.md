@@ -21,10 +21,9 @@ For every fixed `A≥0`, one constant and one eventual horizon control all
 
 `‖U_res‖² ≤ K φ(m)² [c⁵/log N + c¹⁰(log N/N)² + c³/√log N]`.
 
-The reciprocal theorem and the literal upward proof pass Lean with only
-`propext`, `Classical.choice`, `Quot.sound`. Production audits remain pending.
-The remaining residual terms have proposed costs at most `K m⁴ c⁵/log N`
-apart from the self term `K m² c²/N²`; their Lean checks are pending.
+Every component bound passes Lean with only `propext`, `Classical.choice`,
+`Quot.sound`, including `K m⁴ c⁵/log N` for the full downward source.
+The combined residual, spectral transfer and final direct audits remain pending.
 
 The common conductor floor is `a/c⁷`. If both conductor cutoff and overlap
 are at most `(log N)^(1/100)`, the summed squared residual divided by the

@@ -118,3 +118,44 @@
 - Nontrivial ultrametric v ⇒ local pole–successor state has κ = 1. p-adic: |a|_p^{1/2} + |a|_p^{−1/2} − c|a|_p^{−1/2}|b|_p has κ = 1; conformal induction −|a|_p^{−1/2}|b|_p has κ = 1.
 - F(X) at ∞: |f|_∞ = b^{intDegree f} is an ultrametric absolute value, |X|_∞ = b; pole–successor state has κ = 1 and dilation by X is the boost b^{1/2} + b^{−1/2} (over F_q: Frobenius eigenvalues 1, q on H⁰, H² after twist q^{−1/2}).
 - Every place of ℚ carries its own index-one state (local signature 1); product formula ∏|a|_v = 1 ⇒ local boosts multiply to 1 on ℚ^×: pole pairs live place by place, their product is not a boost.
+
+## Haar/OneNegativeSquare (uses APD AMautnerPhenomenonForTheAffineGroupOfQ)
+- affineLogTwo(g) = log|a|/log 2 (additive in g, odd under inverse, 0 on translations). haarOneNegativeSquare = haarState − 4·affineLogTwo²: keeps the integer successor; Hermitian.
+- Completion: adding |Σ c·2(1 + L²)|² gives Haar form + |Σ 2c|² + 2|Σ c·2L|² + |Σ c·2L²|² (from −4(y−x)² + 4(1+x²)(1+y²) = 4 + 8xy + 4x²y²) ⇒ κ ≤ 1; dilation by 2 violates |φ(g)| ≤ φ(1) ⇒ κ = 1.
+- Not Hecke-supported (finite nonzero index). No dilation reading continuous at 1 (would make the Haar reading continuous, contradicting positive Mautner rigidity for its nonconstant integer successor).
+
+## Haar/IndexPreservation (uses HKT BoundedIndexIsClosedUnderPointwiseLimits, HTGeometry ReductionPencilKPositivity)
+- Prime-denominator translation escape for Hecke-supported kernels; arbitrarily many mutually Haar-orthogonal translates of any finite family.
+- Weighted (block-averaged) Gram compression; PSD matrix with constant diagonal δ has entries ≤ δ.
+- For positive p with integer successor and Hermitian ψ on ℚˣ: κ(p + ψ∘slopeUnit) = κ(ψ) (≤: adding a positive kernel; ≥: average over N Haar-orthogonal translates of dilations ⇒ positive part has diagonal 1/N, entries ≤ 1/N → 0; slope Gram unchanged; lower semicontinuity). Haar + slope kernel keeps index (finite or infinite).
+
+## Haar/ContinuousDilationsNeedInfiniteIndex
+- height(u)·|u − 1| ≥ 1 for u ≠ 1; positive p with integer successor ⇒ |p(D_u)|² ≤ |u − 1| (u ≠ 1); dilations tending to 1 have p(D_u) → 0.
+- Constant matrix minus identity is negative definite on zero-sum hyperplane (n negative squares in dim n+1).
+- If p(dilation u) + ψ(u) = f(u) with f continuous at 1: slope Grams at near-identity units 1 + i/(N+1) converge to (ψ(1)+1)J − I ⇒ κ(ψ) = ∞ ⇒ κ(p + ψ∘slope) = ∞. Weil's correlation (splineCorr(−log r) continuous at 1) cannot be the dilation reading of a finite-index positive integer-successor carrier with slope correction — no Hecke support assumed.
+
+## Haar/MixedPolynomialPerturbation (uses HKT FiniteIndexIsPositiveMinusFiniteRank, BoundedIndexIsClosedUnderPointwiseLimits)
+- mixedQuadraticKernel K(ax + b) = i(1 − a⁻²)b²: vanishes on translations and dilations; Hermitian; K(g⁻¹h) = i(a_g⁻² − a_h⁻²)(b_h − b_g)². Three feature squares complete it to six positive squares ⇒ κ ≤ 3; six-point Gram (3 translations at slopes 1 and 2) has explicit negative 3-dim subspace (congruence to −3/2·I) ⇒ κ(K) = 3.
+- haarMixedQuadraticState = Haar + K: same translation (integer successor) and dilation readings as Haar; κ = 3 (≤ by adding positive; ≥ by dilation conjugation scaling K by u² while Haar stays bounded, rescale by 1/u², lower semicontinuity).
+- Imaginary part at slope 2 equals (3/4)b², unbounded ⇒ not (positive affine kernel + slope kernel). Finite-index Haar carriers exist outside the "positive + slope" class.
+
+## Haar/AxisInvisibility (uses HKT Index.NullKernelRigidity; APD TheExtremalsOfTheHeckeLawAreTwistedHaarStates)
+- Hermitian affine kernel vanishing on translations and dilations with κ ≤ 1 is zero (zero set is a subgroup at index ≤ 1; axes generate Aff(ℚ)). Nonzero such kernel has κ ≥ 2.
+
+## Haar/FiniteRankPerturbations (uses HKT Index.NullSubgroupRank)
+- Zero-axis Hermitian affine kernel with κ ≤ r: column space finite of dim ≤ r²; every Gram matrix has rank ≤ r² (translation subgroup = ker slopeUnit normal, g = translation·dilation).
+
+## Haar/PolynomialPerturbations (uses HKT Index.SubgroupColumns, BiarithmeticGeometry Affine.PolynomialCoefficients, APD ArchimedeanEigenvectorsAreInvisibleToTranslations, HTGeometry ConstitutiveNilpotentSocleLaw)
+- Nonzero zero-axis Hermitian affine kernel with κ ≤ r: on every translation fibre b ↦ k(translation b · dilation u) is a polynomial of degree < r (translation columns span dim ≤ r; unipotent rational action; unipotent power polynomial).
+
+## Haar/PowerKernels (uses HKT Index.HyperbolicFeatures, Index.RescalingInvariance)
+- mixedPowerKernel_d,γ(ax + b) = γ(1 − a^{−d})b^d: zero on both axes (d > 0); quotient γ(a_g^{−d} − a_h^{−d})(b_h − b_g)^d; with conj γ·(−1)^d = −γ it is a sum of d+1 hyperbolic feature pairs ⇒ Hermitian, κ ≤ d + 1.
+- Translation-degree law sharpens: fibre at slope 2 is γ(1 − 2^{−d})b^d of degree d < κ ⇒ κ = d + 1 exactly (d > 0, γ ≠ 0).
+- Dilation conjugation scales by u^d; rescaling invariance ⇒ any positive-definite addition keeps κ = d + 1. Canonical phase (i for even d, 1 for odd d). haarMixedPowerState_d = Haar + kernel keeps both Haar axis readings and integer successor with κ = d + 1: every index ≥ 2 realized by Haar carriers with Haar axis readings (index 1 by haarOneNegativeSquare, which changes the dilation reading).
+
+## ThePoleSuccessorSignatureFormula
+- poleSuccessor(g⁻¹h) formula; Hermitian for Hermitian conformal ψ; slopePow multiplicative.
+- Upper bound κ(Φ) ≤ κ₀(ψ) + 1 (on boost-mass hyperplane X = 0 the form is ψ's polar form at weights w|a|^{−s/2}).
+- Lower bound: polar negative subspace of ψ on translations and boost pair on dilations u^N, u^{N+1} decouple as N → ∞ (cross terms ~ |u|^{−(N+e)s/2}·const after compression; mass-zero kills the boost-pair part); lower semicontinuity ⇒ κ₀ + 1 ≤ κ.
+- Signature formula κ(Φ) = κ₀(ψ) + 1 for conformal Hermitian ψ, s > 0, nontrivial v: one local constituent glued to the pole, gluing ε = 1 exactly.
+- c|b| (c > 0) negative definite on every polar hyperplane ⇒ κ₀ = ∞. Real-place trichotomy: |a|^{1/2} + |a|^{−1/2} − c|a|^{−1/2}|b| has κ = 1 for c ≥ 0, ∞ for c < 0.

@@ -4,7 +4,8 @@
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Each pair of complex spectral parameters defines a nonzero
   function on the actual restricted adelic central loop group, invariant under
-  left integral loops and equivariant under right positive Borel.
+  left integral loops and equivariant under right positive Borel. Its Borel
+  character is trivial on the actual arithmetic Borel.
 
 ## Proof
 
@@ -25,11 +26,16 @@ actual adelic Iwasawa factors to define the section. The factorizations
 `k₀(kb)=(k₀k)b` and `(kb)b₀=k(bb₀)` give its two transformation laws.
 A character of a group takes nonzero values.
 
-This statement does not assert continuity, arithmetic Borel triviality or an
-Eisenstein sum; those require further identifications.
+For an arithmetic adelic Borel element, the faithful infinity field map
+reflects Borel membership of its rational preimage. Naturality of the
+positive splitting and both torus coordinates identifies its two ideles
+with diagonal rational units. The audited curve product formula makes
+both spectral characters one.
+
+Continuity and Eisenstein summation remain separate.
 
 ## Lean
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticLoopCharacters.lean`:
 `adelicIwasawaSection`, `adelicIwasawaSection_left_integral`,
-`adelicIwasawaSection_right_borel`. Direct check pending.
+`adelicIwasawaSection_right_borel`, `adelicBorelCharacter_arithmetic`. Direct check pending.
